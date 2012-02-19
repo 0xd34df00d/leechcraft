@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_TYPINGMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_TYPINGMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QMap>
 #include <QSet>
@@ -61,5 +61,3 @@ namespace Proto
 }
 }
 }
-
-#endif

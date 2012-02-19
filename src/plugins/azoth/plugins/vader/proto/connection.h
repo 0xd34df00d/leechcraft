@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_CONNECTION_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_CONNECTION_H
+#pragma once
+
 #include <functional>
 #include <QObject>
 #include <QMap>
@@ -161,5 +161,3 @@ namespace Proto
 }
 }
 }
-
-#endif

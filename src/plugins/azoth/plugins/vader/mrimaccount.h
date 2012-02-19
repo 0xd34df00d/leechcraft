@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_MRIMACCOUNT_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_MRIMACCOUNT_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iaccount.h>
 #include <interfaces/isupporttune.h>
@@ -134,5 +134,3 @@ namespace Vader
 }
 }
 }
-
-#endif

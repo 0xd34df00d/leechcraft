@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_PACKETFACTORY_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_PACKETFACTORY_H
+#pragma once
+
 #include <QByteArray>
 #include "headers.h"
 #include "conversions.h"
@@ -67,5 +67,3 @@ namespace Proto
 }
 }
 }
-
-#endif

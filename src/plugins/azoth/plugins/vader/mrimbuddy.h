@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_MRIMBUDDY_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_MRIMBUDDY_H
+#pragma once
+
 #include <QObject>
 #include <QSet>
 #include <interfaces/iclentry.h>
@@ -125,5 +125,3 @@ namespace Vader
 }
 }
 }
-
-#endif

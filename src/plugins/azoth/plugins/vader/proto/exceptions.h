@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_EXCEPTIONS_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_EXCEPTIONS_H
+#pragma once
+
 #include <stdexcept>
 
 namespace LeechCraft
@@ -49,5 +49,3 @@ namespace Proto
 }
 }
 }
-
-#endif

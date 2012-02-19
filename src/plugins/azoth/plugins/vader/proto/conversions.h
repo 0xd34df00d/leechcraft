@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_CONVERSIONS_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_CONVERSIONS_H
+#pragma once
+
 #include <QString>
 #include <QByteArray>
 #include <QTextCodec>
@@ -105,5 +105,3 @@ namespace Proto
 }
 }
 }
-
-#endif

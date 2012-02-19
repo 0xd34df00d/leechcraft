@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_VADERUTIL_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_VADERUTIL_H
+#pragma once
+
 #include <interfaces/azothcommon.h>
 
 namespace LeechCraft
@@ -28,12 +28,10 @@ namespace Vader
 {
 namespace VaderUtil
 {
-	State StatusID2State (quint32);	
+	State StatusID2State (quint32);
 	QList<QAction*> GetBuddyServices (QObject *receiver, const char *slot);
 	QString SubstituteNameDomain (const QString& string, const QString& fullEmail);
 }
 }
 }
 }
-
-#endif

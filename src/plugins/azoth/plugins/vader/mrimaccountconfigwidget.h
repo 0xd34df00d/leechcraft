@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_MRIMACCOUNTCONFIGWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_MRIMACCOUNTCONFIGWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include "ui_mrimaccountconfigwidget.h"
 
@@ -41,5 +41,3 @@ namespace Vader
 }
 }
 }
-
-#endif
