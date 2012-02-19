@@ -88,9 +88,6 @@ namespace Vader
 			return;
 		}
 
-		qDebug () << Q_FUNC_INFO << reply->header (QNetworkRequest::LastModifiedHeader);
-		qDebug () << reply->rawHeaderPairs ();
-
 		const auto& dt = reply->header (QNetworkRequest::LastModifiedHeader).toDateTime ();
 		if (dt <= PreviousDateTime_)
 			return;
@@ -98,7 +95,7 @@ namespace Vader
 		PreviousDateTime_ = dt;
 
 		auto nam = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
-		QNetworkReply *getReply = nam->head (QNetworkRequest (GetReqURL ()));
+		QNetworkReply *getReply = nam->get (QNetworkRequest (GetReqURL ()));
 		connect (getReply,
 				SIGNAL (finished ()),
 				this,
