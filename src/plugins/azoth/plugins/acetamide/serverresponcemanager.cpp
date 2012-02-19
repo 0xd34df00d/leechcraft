@@ -269,10 +269,10 @@ namespace Acetamide
 
 	void ServerResponceManager::GotPrivMsg (const IrcMessageOptions& opts)
 	{
-        if (opts.Parameters_.isEmpty ())
+		if (opts.Parameters_.isEmpty ())
 			return;
 
-        const QString target (QString::fromUtf8 (opts.Parameters_.first ().c_str ()));
+		const QString target (QString::fromUtf8 (opts.Parameters_.first ().c_str ()));
 		ISH_->IncomingMessage (opts.Nick_, target, opts.Message_);
 	}
 
