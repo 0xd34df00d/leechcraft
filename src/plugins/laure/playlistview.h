@@ -47,6 +47,7 @@ namespace Laure
 		QStandardItemModel *PlayListModel_;
 		int CurrentItem_;
 		int NotHiddenColumnCount_;
+		boost::shared_ptr<VLCWrapper> VLCWrapper_;
 	public:
 		/** @brief Constructs a new PlayListView class
 		 * with the given model and parent.
@@ -54,6 +55,8 @@ namespace Laure
 		 * @param[in] model Playlist model.
 		 */
 		PlayListView (QStandardItemModel *model, QWidget* = 0);
+		
+		void Init (boost::shared_ptr<VLCWrapper> wrapper);
 		
 		/** @brief Adds the item into the playlist.
 		 * 
@@ -85,6 +88,10 @@ namespace Laure
 		void handleDoubleClicked (const QModelIndex&);
 		void handleHideHeaders ();
 		void handleHeaderMenu (const QPoint& point);
+		void handleMenu (const QPoint& point);
+	private:
+		void UpdateQueueIndexes ();
+		
 	signals:
 		/** @brief Is emitted when the item index is removed.
 		 * 

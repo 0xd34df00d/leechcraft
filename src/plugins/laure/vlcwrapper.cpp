@@ -46,7 +46,6 @@ namespace Laure
 			switch (event->type)
 			{
 			case libvlc_MediaListPlayerNextItemSet:
-				wrapper->handledHasPlayed ();
 				wrapper->handleNextItemSet ();
 				break;
 			}
@@ -66,9 +65,10 @@ namespace Laure
 		return map;
 	}
 	
-	VLCWrapper::VLCWrapper (QObject* parent)
+	VLCWrapper::VLCWrapper (QObject *parent)
 	: QObject (parent)
 	, CurrentItem_ (-1)
+	, IsPlayedFromQueue_ (false)
 	{	
 		Instance_ = libvlc_instance_ptr (libvlc_new (sizeof (vlc_args)
 				/ sizeof (vlc_args[0]), vlc_args), libvlc_release);
@@ -87,11 +87,34 @@ namespace Laure
 				     ListEventCallback, this);
 	}
 	
+	int VLCWrapper::PlayQueue ()
+	{
+		if (IsPlayedFromQueue_)
+			QueueListIndex_.pop_front ();
+
+		IsPlayedFromQueue_ = !QueueListIndex_.empty ();
+		if (IsPlayedFromQueue_)
+		{
+			int index = QueueListIndex_.first ();
+			libvlc_media_list_player_play_item_at_index (LPlayer_.get (), index);
+			return index;
+		}
+		
+		return -1;
+	}
+	
+	//TODO: Rewrite it for QueueList;
 	void VLCWrapper::handleNextItemSet ()
 	{
-		auto list = List_.get ();
-		int index = libvlc_media_list_index_of_item (list,
-				libvlc_media_player_get_media (Player_.get ()));
+		int index = PlayQueue ();
+		if (index < 0)
+		{
+			auto list = List_.get ();
+			index = libvlc_media_list_index_of_item (list,
+					libvlc_media_player_get_media (Player_.get ()));
+		}
+		
+		qDebug () << Q_FUNC_INFO << index << IsPlayedFromQueue_;
 		
 		const MediaMeta& meta = GetItemMeta (index);
 		emit gotEntity (Util::MakeNotification ("Laure",
@@ -103,8 +126,14 @@ namespace Laure
 		QTimer::singleShot (5000, this, SLOT (nowPlaying ()));
 	}
 	
-	void VLCWrapper::handledHasPlayed ()
+	void VLCWrapper::addToQueue (int index)
 	{
+		QueueListIndex_ << index;
+	}
+		
+	void VLCWrapper::removeFromQueue (int index)
+	{
+		QueueListIndex_.removeOne (index);
 	}
 	
 	MediaMeta VLCWrapper::GetItemMeta (int row, const QString& location) const
@@ -178,7 +207,7 @@ namespace Laure
 		int time = libvlc_media_player_get_time (m);
 		libvlc_media_player_stop (m);
 #ifdef Q_WS_WIN
-		libvlc_media_player_set_hwnd(m, winId);
+		libvlc_media_player_set_hwnd (m, winId);
 #endif
 #ifdef Q_WS_X11
 		libvlc_media_player_set_xwindow (m, winId);
@@ -189,7 +218,22 @@ namespace Laure
 
 	bool VLCWrapper::removeRow (int pos)
 	{
-		return !libvlc_media_list_remove_index (List_.get (), pos);
+		bool res = !libvlc_media_list_remove_index (List_.get (), pos);
+		QueueListIndex_.removeOne (pos);
+		
+		auto itr = QueueListIndex_.begin ();
+		for (; itr != QueueListIndex_.end (); ++itr)
+		{
+			if (*itr > pos)
+				--(*itr);
+		}
+		
+		return res;
+	}
+	
+	QList<int> VLCWrapper::GetQueueListIndexes () const
+	{
+		return QueueListIndex_;
 	}
 	
 	void VLCWrapper::addRow (const QString& location)
@@ -232,6 +276,7 @@ namespace Laure
 	
 	void VLCWrapper::playItem (int val)
 	{
+		qDebug () << Q_FUNC_INFO << val;
 		const int count = RowCount ();
 		if (val == count)
 			CurrentItem_ = 0;
@@ -269,14 +314,17 @@ namespace Laure
 	
 	void VLCWrapper::play ()
 	{
-		libvlc_media_player_play (Player_.get ());
+		libvlc_media_list_player_play (LPlayer_.get ());
+		//libvlc_media_player_play (Player_.get ());
 		if (!IsPlaying ())
 			emit paused ();
 	}
 	
 	void VLCWrapper::next ()
 	{
-		libvlc_media_list_player_next (LPlayer_.get ());
+		int index = PlayQueue ();
+		if (index < 0)
+			libvlc_media_list_player_next (LPlayer_.get ());
 	}
 	
 	void VLCWrapper::prev ()

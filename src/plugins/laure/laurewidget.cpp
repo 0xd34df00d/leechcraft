@@ -46,10 +46,13 @@ namespace Laure
 	LaureWidget::LaureWidget (QWidget *parent, Qt::WindowFlags f)
 	: QWidget (parent, f)
 	, ToolBar_ (new QToolBar (this))
-	, VLCWrapper_ (new VLCWrapper (this))
+	, VLCWrapper_ (new VLCWrapper)
 	, PlayListAction_ (NULL)
 	{	
 		Ui_.setupUi (this);
+		
+		Ui_.PlayListWidget_->Init (VLCWrapper_);
+		
 		Ui_.Player_->SetVLCWrapper (VLCWrapper_);
 		SeparatePlayer_.reset (new SeparatePlayer);
 		
@@ -58,22 +61,8 @@ namespace Laure
 				this,
 				SLOT (handleSeparatePlayerClosed ()));
 		
-		connect (Ui_.PlayListWidget_,
-				SIGNAL (metaChangedRequest (libvlc_meta_t, QString, int)),
-				VLCWrapper_,
-				SLOT (setMeta (libvlc_meta_t, QString, int)));
-		connect (Ui_.PlayListWidget_,
-				SIGNAL (itemAddedRequest (QString)),
-				VLCWrapper_,
-				SLOT (addRow (QString)));
-		connect (Ui_.PlayListWidget_,
-				SIGNAL (itemRemoved (int)),
-				VLCWrapper_,
-				SLOT (removeRow (int)));
-		connect (Ui_.PlayListWidget_,
-				SIGNAL (playItem (int)),
-				VLCWrapper_,
-				SLOT (playItem (int)));
+		VLCWrapper *wrapper = VLCWrapper_.get ();
+
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (gotEntity (Entity)),
 				this,
@@ -82,10 +71,6 @@ namespace Laure
 				SIGNAL (delegateEntity (Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (Entity, int*, QObject**)));
-		connect (Ui_.PlayListWidget_,
-				SIGNAL (playbackModeChanged (PlaybackMode)),
-				VLCWrapper_,
-				SLOT (setPlaybackMode (PlaybackMode)));
 		
 		connect (Ui_.Player_,
 				SIGNAL (timeout ()),
@@ -97,30 +82,21 @@ namespace Laure
 				SLOT (setPosition (int)));
 		connect (Ui_.VolumeSlider_,
 				SIGNAL (valueChanged (int)),
-				VLCWrapper_,
+				wrapper,
 				SLOT (setVolume (int)));
-		
-		connect (VLCWrapper_,
-				SIGNAL (itemAdded (MediaMeta, QString)),
-				Ui_.PlayListWidget_,
-				SLOT (handleItemAdded (MediaMeta, QString)));
-		connect (VLCWrapper_,
+				
+		connect (wrapper,
 				SIGNAL (gotEntity (Entity)),
 				this,
 				SIGNAL (gotEntity (Entity)));
-		connect (VLCWrapper_,
+		connect (wrapper,
 				SIGNAL (delegateEntity (Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (Entity, int*, QObject**)));
-
-		connect (VLCWrapper_,
-				SIGNAL (itemPlayed (int)),
-				Ui_.PlayListWidget_,
-				SLOT (handleItemPlayed (int)));
 		
 		connect (this,
 				SIGNAL (addItem (QString)),
-				VLCWrapper_,
+				wrapper,
 				SLOT (addRow (QString)));
 		
 		const int playlistWidth = XmlSettingsManager::Instance ()
@@ -202,11 +178,12 @@ namespace Laure
 		bar->addAction (actionStop);
 		bar->addAction (actionNext);
 		
-		connect (VLCWrapper_,
+		VLCWrapper *wrapper = VLCWrapper_.get ();
+		connect (wrapper,
 				SIGNAL (paused ()),
 				actionPlay,
 				SLOT (handlePause ()));
-		connect (VLCWrapper_,
+		connect (wrapper,
 				SIGNAL (itemPlayed (int)),
 				actionPlay,
 				SLOT (handlePlay ()));
@@ -216,23 +193,23 @@ namespace Laure
 				SLOT (handlePause ()));
 		connect (actionStop,
 				SIGNAL (triggered (bool)),
-				VLCWrapper_,
+				wrapper,
 				SLOT (stop ()));
 		connect (actionNext,
 				SIGNAL (triggered (bool)),
-				VLCWrapper_,
+				wrapper,
 				SLOT (next ()));
 		connect (actionPrev,
 				SIGNAL (triggered (bool)),
-				VLCWrapper_,
+				wrapper,
 				SLOT (prev ()));
 		connect (actionPlay,
 				SIGNAL (play ()),
-				VLCWrapper_,
+				wrapper,
 				SLOT (play ()));
 		connect (actionPlay,
 				SIGNAL (pause ()),
-				VLCWrapper_,
+				wrapper,
 				SLOT (pause ()));
 		connect (this,
 				SIGNAL (playPause ()),
@@ -311,7 +288,7 @@ namespace Laure
 					.GetRawValue ("PlayListWidgetWidth").toInt ();
 			Ui_.Splitter_->addWidget (Ui_.PlayListWidget_);
 			PlayListAction_->setChecked (false);
-			Ui_.Splitter_->setSizes ({size ().width (), playlistWidth});
+			Ui_.Splitter_->setSizes (QList<int> () << size ().width () << playlistWidth);
 		}
 		else
 		{

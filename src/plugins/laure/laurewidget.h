@@ -53,7 +53,7 @@ namespace Laure
 		
 		QToolBar *ToolBar_;
 		Ui::LaureWidget Ui_;
-		VLCWrapper *VLCWrapper_;
+		boost::shared_ptr<VLCWrapper> VLCWrapper_;
 		boost::shared_ptr<SeparatePlayer> SeparatePlayer_;
 		QAction *DetachedVideo_;
 		QAction *PlayListAction_;

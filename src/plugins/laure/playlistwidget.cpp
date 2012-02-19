@@ -43,18 +43,6 @@ namespace Laure
 		setLayout (GridLayout_);
 		setVisible (false);
 		
-		QStringList headers;
-		
-		headers << tr ("Artist")
-				<< tr ("Title")
-				<< tr ("Album")
-				<< tr ("Genre")
-				<< tr ("Date");
-		for (int i = 1, count = PlayListModel_->columnCount ();
-				i < count; ++i)
-			PlayListModel_->setHeaderData (i, Qt::Horizontal,
-					headers [i - 1]);
-		
 		connect (PlayListModel_,
 				SIGNAL (itemChanged (QStandardItem*)),
 				this,
@@ -107,14 +95,35 @@ namespace Laure
 				SIGNAL (playbackModeChanged (PlaybackMode)),
 				this,
 				SIGNAL (playbackModeChanged (PlaybackMode)));
-		connect (PlayListView_,
-				SIGNAL (itemRemoved (int)),
+	}
+	
+	void PlayListWidget::Init (boost::shared_ptr<VLCWrapper> wrapper)
+	{
+		PlayListView_->Init (wrapper);
+		VLCWrapper_ = wrapper;
+		
+		VLCWrapper *w = wrapper.get ();
+		connect (this,
+				SIGNAL (itemAddedRequest (QString)),
+				w,
+				SLOT (addRow (QString)));
+
+		connect (this,
+				SIGNAL (playbackModeChanged (PlaybackMode)),
+				w,
+				SLOT (setPlaybackMode (PlaybackMode)));
+		connect (w,
+				SIGNAL (itemAdded (MediaMeta, QString)),
 				this,
-				SIGNAL (itemRemoved (int)));
-		connect (PlayListView_,
-				SIGNAL (playItem (int)),
+				SLOT (handleItemAdded (MediaMeta, QString)));
+		connect (w,
+				SIGNAL (itemPlayed (int)),
 				this,
-				SIGNAL (playItem (int)));
+				SLOT (handleItemPlayed (int)));
+		connect (this,
+				SIGNAL (metaChangedRequest (libvlc_meta_t, QString, int)),
+				w,
+				SLOT (setMeta (libvlc_meta_t, QString, int)));
 	}
 	
 	namespace
