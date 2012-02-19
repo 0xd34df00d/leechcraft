@@ -216,7 +216,7 @@ namespace Astrality
 				this,
 				SLOT (handleCurrentPresence (Tp::Presence)));
 
-		if (GetState ().State_ != SOffline)
+		if (S_.Autodisconnect_ && GetState ().State_ != SOffline)
 			A_->setRequestedPresence (Status2Telepathy (EntryStatus (SOffline, QString ())));
 	}
 
