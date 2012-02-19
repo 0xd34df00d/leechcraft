@@ -232,10 +232,15 @@ namespace Acetamide
 		{
 			if (ChannelHandlers_.contains (chnnl))
 			{
-				AddCommand2Queue (chnnl, ISH_->ParseMessageForCommand (msg, chnnl));
-				ChannelHandlers_ [chnnl]->HandleServiceMessage (msg,
-						IMessage::MTEventMessage,
-						IMessage::MSTOther);
+				const QString& cmd = ISH_->ParseMessageForCommand (msg, chnnl);
+				AddCommand2Queue (chnnl, cmd);
+				if (cmd == "say")
+					ChannelHandlers_ [chnnl]->HandleIncomingMessage (ISH_->GetNickName (),
+							msg.mid (4));
+				else
+					ChannelHandlers_ [chnnl]->HandleServiceMessage (msg,
+							IMessage::MTEventMessage,
+							IMessage::MSTOther);
 			}
 		}
 		else
