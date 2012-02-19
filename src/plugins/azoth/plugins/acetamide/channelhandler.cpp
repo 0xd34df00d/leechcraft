@@ -83,7 +83,7 @@ namespace Acetamide
 			if (cpe->GetEntryName () == CM_->GetOurNick ())
 				return cpe;
 
-		return ChannelParticipantEntry_ptr ();
+		return GetParticipantEntry (CM_->GetOurNick ());
 	}
 
 	ChannelParticipantEntry_ptr ChannelHandler::GetParticipantEntry (const QString& nick)
