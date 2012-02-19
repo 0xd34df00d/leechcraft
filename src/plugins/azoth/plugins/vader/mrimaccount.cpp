@@ -397,17 +397,13 @@ namespace Vader
 
 	void MRIMAccount::handleGotContacts (const QList<Proto::ContactInfo>& contacts)
 	{
-		QList<QObject*> objs;
 		Q_FOREACH (const Proto::ContactInfo& contact, contacts)
 		{
 			qDebug () << Q_FUNC_INFO << GetAccountName () << contact.Email_ << contact.Alias_ << contact.ContactID_ << contact.UA_ << contact.Features_;
-			MRIMBuddy *buddy = new MRIMBuddy (contact, this);
+			MRIMBuddy *buddy = GetBuddy (contact);
 			buddy->SetGroup (GM_->GetGroup (contact.GroupNumber_));
-			objs << buddy;
 			Buddies_ [contact.Email_] = buddy;
 		}
-
-		emit gotCLItems (objs);
 	}
 
 	void MRIMAccount::handleUserStatusChanged (const Proto::ContactInfo& status)
