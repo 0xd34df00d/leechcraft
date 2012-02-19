@@ -18,6 +18,7 @@
 
 #include <stdexcept>
 #include <algorithm>
+#include <functional>
 #include <QApplication>
 #include <QDir>
 #include <QStringList>
@@ -570,9 +571,9 @@ namespace LeechCraft
 
 	void PluginManager::FindPlugins ()
 	{
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 		ScanDir (QApplication::applicationDirPath () + "/plugins/bin");
-#elif defined (Q_WS_MAC)
+#elif defined (Q_OS_MAC)
 		ScanDir (QApplication::applicationDirPath () + "/../plugins");
 #else
 		QString libdir (PLUGINS_LIBDIR);
@@ -616,6 +617,132 @@ namespace LeechCraft
 		settings.endGroup ();
 	}
 
+	namespace Checks
+	{
+		struct Fail
+		{
+			QString Error_;
+			bool Unload_;
+
+			Fail (const QString& e, bool unload = false)
+			: Error_ (e)
+			, Unload_ (unload)
+			{
+			}
+		};
+
+		void IsFile (QPluginLoader_ptr loader)
+		{
+			if (!QFileInfo (loader->fileName ()).isFile ())
+			{
+				qWarning () << "A plugin isn't really a file, aborting load:"
+						<< loader->fileName ();
+				throw Fail (PluginManager::tr ("Refusing to load plugin from %1 because it's not a file.")
+							.arg (QFileInfo (loader->fileName ()).fileName ()));
+			}
+		}
+
+		void APILevel (QPluginLoader_ptr loader)
+		{
+			const QString& file = loader->fileName ();
+			if (file.isEmpty ())
+				return;
+
+			QLibrary library (file);
+			if (!library.load ())
+			{
+				qWarning () << "Could not load library:"
+					<< library.fileName ()
+					<< ";"
+					<< library.errorString ();
+				throw Fail (PluginManager::tr ("Could not load library %1: %2.")
+							.arg (file)
+							.arg (library.errorString ()));
+			}
+
+			bool apiMatches = true;
+			typedef QMap<QByteArray, quint64> (*APIVersion_t) ();
+			auto getter = reinterpret_cast<APIVersion_t> (library.resolve ("GetAPILevels"));
+			if (!getter)
+			{
+				apiMatches = false;
+				qWarning () << Q_FUNC_INFO
+						<< "unable to resolve function GetAPILevels() in"
+						<< file;
+			}
+
+			if (apiMatches && getter () ["Core"] != CURRENT_API_LEVEL)
+			{
+				apiMatches = false;
+				qWarning () << Q_FUNC_INFO
+						<< "API level mismatch for"
+						<< file
+						<< getter ();
+			}
+
+			if (!apiMatches)
+				throw Fail (PluginManager::tr ("Could not load plugin from %1: API level mismatch.")
+							.arg (file));
+		}
+
+		void TryLoad (QPluginLoader_ptr loader)
+		{
+			loader->load ();
+			if (!loader->isLoaded ())
+			{
+				qWarning () << "Could not load library:"
+					<< loader->fileName ()
+					<< ";"
+					<< loader->errorString ();
+				throw Fail (PluginManager::tr ("Could not load plugin from %1: %2.")
+							.arg (loader->fileName ())
+							.arg (loader->errorString ()));
+			}
+		}
+
+		void TryInstance (QPluginLoader_ptr loader)
+		{
+			QObject *inst = 0;
+			try
+			{
+				inst = loader->instance ();
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "failed to construct the instance with"
+					<< e.what ()
+					<< "for"
+					<< loader->fileName ();
+				throw Fail (PluginManager::tr ("Could not load plugin from %1: "
+								"failed to construct plugin instance with exception %2.")
+							.arg (loader->fileName ())
+							.arg (e.what ()),
+						true);
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to construct the instance for"
+						<< loader->fileName ();
+				throw Fail (PluginManager::tr ("Could not load plugin from %1: "
+								"failed to construct plugin instance.")
+							.arg (loader->fileName ()),
+						true);
+			}
+
+			if (!qobject_cast<IInfo*> (inst))
+			{
+				qWarning () << "Casting to IInfo failed:"
+						<< loader->fileName ();
+				throw Fail (PluginManager::tr ("Could not load plugin from %1: "
+								"unable to cast plugin instance to IInfo*.")
+							.arg (loader->fileName ()),
+						true);
+			}
+		}
+	}
+
 	void PluginManager::CheckPlugins ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
@@ -624,79 +751,36 @@ namespace LeechCraft
 
 		QHash<QByteArray, QString> id2source;
 
+		QList<std::function<void (QPluginLoader_ptr)>> checks;
+		checks << Checks::IsFile
+				<< Checks::APILevel
+				<< Checks::TryLoad
+				<< Checks::TryInstance;
+
 		for (int i = 0; i < PluginContainers_.size (); ++i)
 		{
 			QPluginLoader_ptr loader = PluginContainers_.at (i);
 
-			QString file = loader->fileName ();
+			bool success = true;
+			Q_FOREACH (auto check, checks)
+				try
+				{
+					check (loader);
+				}
+				catch (const Checks::Fail& f)
+				{
+					PluginLoadErrors_ << f.Error_;
+					success = false;
+					break;
+				}
 
-			if (!QFileInfo (loader->fileName ()).isFile ())
+			if (!success)
 			{
-				qWarning () << "A plugin isn't really a file, aborting load:"
-						<< file;
-				PluginLoadErrors_ << tr ("Refusing to load plugin from %1 because it's not a file.")
-						.arg (QFileInfo (file).fileName ());
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
 
-			loader->load ();
-			if (!loader->isLoaded ())
-			{
-				qWarning () << "Could not load library:"
-					<< file
-					<< ";"
-					<< loader->errorString ();
-				PluginLoadErrors_ << tr ("Could not load plugin from %1: %2.")
-						.arg (QFileInfo (file).fileName ())
-						.arg (loader->errorString ());
-				PluginContainers_.removeAt (i--);
-				continue;
-			}
-
-			QObject *pluginEntity;
-			try
-			{
-				pluginEntity = loader->instance ();
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "failed to construct the instance with"
-					<< e.what ()
-					<< "for"
-					<< file;
-				PluginLoadErrors_ << tr ("Could not load plugin from %1: "
-							"failed to construct plugin instance with exception %2.")
-						.arg (QFileInfo (file).fileName ())
-						.arg (e.what ());
-				PluginContainers_.removeAt (i--);
-				continue;
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "failed to construct the instance for"
-						<< file;
-				PluginLoadErrors_ << tr ("Could not load plugin from %1: "
-						"failed to construct plugin instance.")
-					.arg (QFileInfo (file).fileName ());
-				PluginContainers_.removeAt (i--);
-				continue;
-			}
-
-			IInfo *info = qobject_cast<IInfo*> (pluginEntity);
-			if (!info)
-			{
-				qWarning () << "Casting to IInfo failed:"
-						<< file;
-				PluginLoadErrors_ << tr ("Could not load plugin from %1: "
-						"unable to cast plugin instance to IInfo*.")
-					.arg (QFileInfo (file).fileName ());
-				PluginContainers_.removeAt (i--);
-				continue;
-			}
-
+			IInfo *info = qobject_cast<IInfo*> (loader->instance ());
 			try
 			{
 				const QByteArray& id = info->GetUniqueID ();
@@ -707,17 +791,17 @@ namespace LeechCraft
 							"from %3.")
 						.arg (QString::fromUtf8 (id.constData ()))
 						.arg (id2source [id])
-						.arg (file);
+						.arg (loader->fileName ());
 					PluginContainers_.removeAt (i--);
 				}
 				else
-					id2source [id] = file;
+					id2source [id] = loader->fileName ();
 			}
 			catch (const std::exception& e)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "failed to obtain plugin ID for plugin from"
-						<< file
+						<< loader->fileName ()
 						<< "with error:"
 						<< e.what ();
 				PluginContainers_.removeAt (i--);
@@ -727,47 +811,17 @@ namespace LeechCraft
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "failed to obtain plugin ID for plugin from"
-						<< file
+						<< loader->fileName ()
 						<< "with unknown error";
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
 
-			QString name;
-			QString pinfo;
-			QIcon icon;
-			try
-			{
-				name = info->GetName ();
-				pinfo = info->GetInfo ();
-				icon = info->GetIcon ();
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "failed to get name/icon"
-					<< e.what ()
-					<< "for"
-					<< file;
-				PluginLoadErrors_ << tr ("Could not load plugin from %1: "
-							"unable to get name/info/icon with exception %2.")
-						.arg (QFileInfo (file).fileName ())
-						.arg (e.what ());
-				PluginContainers_.removeAt (i--);
-				continue;
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "failed to get name/icon"
-					<< file;
-				PluginLoadErrors_ << tr ("Could not load plugin from %1: "
-							"unable to get name/info/icon.")
-						.arg (QFileInfo (file).fileName ());
-				PluginContainers_.removeAt (i--);
-				continue;
-			}
-			settings.beginGroup (file);
+			QString name = info->GetName ();
+			QString pinfo = info->GetInfo ();
+			QIcon icon = info->GetIcon ();
+
+			settings.beginGroup (loader->fileName ());
 			settings.setValue ("Name", name);
 			settings.setValue ("Info", pinfo);
 			settings.setValue ("Icon", icon.pixmap (48, 48));

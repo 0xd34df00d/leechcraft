@@ -84,7 +84,7 @@ namespace LeechCraft
 				return result;
 			}
 
-			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
+			std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}
@@ -107,5 +107,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_tabpp, LeechCraft::Plugins::TabPP::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_tabpp, LeechCraft::Plugins::TabPP::Plugin);
 

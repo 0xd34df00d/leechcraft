@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_AUTOIDLER_AUTOIDLER_H
 #define PLUGINS_AZOTH_PLUGINS_AUTOIDLER_AUTOIDLER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QMap>
 #include <interfaces/iinfo.h>
@@ -50,10 +50,10 @@ namespace Autoidler
 
 		ICoreProxy_ptr Proxy_;
 		IProxyObject *AzothProxy_;
-		boost::shared_ptr<QTranslator> Translator_;
+		std::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
-		boost::shared_ptr<Idle> Idle_;
+		std::shared_ptr<Idle> Idle_;
 
 		QMap<QObject*, EntryStatus> OldStatuses_;
 

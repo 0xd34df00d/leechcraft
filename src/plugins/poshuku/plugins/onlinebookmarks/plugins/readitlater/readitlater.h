@@ -44,7 +44,7 @@ namespace ReadItLater
 		Q_INTERFACES (IInfo IPlugin2
 				LeechCraft::Poshuku::OnlineBookmarks::IServicePlugin)
 
-		boost::shared_ptr<ReadItLaterService> ReadItLaterService_;
+		std::shared_ptr<ReadItLaterService> ReadItLaterService_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();

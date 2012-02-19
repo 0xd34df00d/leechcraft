@@ -59,7 +59,7 @@ namespace LeechCraft
 			void SetValue (const QByteArray&, const QVariant&);
 		};
 
-		typedef boost::shared_ptr<DefaultHookProxy> DefaultHookProxy_ptr;
+		typedef std::shared_ptr<DefaultHookProxy> DefaultHookProxy_ptr;
 	};
 };
 

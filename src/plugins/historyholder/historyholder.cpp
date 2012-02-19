@@ -104,5 +104,5 @@ void Plugin::handleTasksTreeActivated (const QModelIndex& index)
 	Core::Instance ().handleTasksTreeActivated (index);
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_historyholder, Plugin);
+LC_EXPORT_PLUGIN (leechcraft_historyholder, Plugin);
 

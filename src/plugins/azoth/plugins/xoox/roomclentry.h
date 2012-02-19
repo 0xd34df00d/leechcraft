@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCLENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCLENTRY_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QStringList>
 #include <QXmppMucIq.h>

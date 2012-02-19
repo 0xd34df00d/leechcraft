@@ -53,8 +53,8 @@ namespace Aggregator
 		StorageBackend (QObject* = 0);
 		virtual ~StorageBackend ();
 
-		static boost::shared_ptr<StorageBackend> Create (const QString&, const QString& = QString ());
-		static boost::shared_ptr<StorageBackend> Create (Type, const QString& = QString ());
+		static std::shared_ptr<StorageBackend> Create (const QString&, const QString& = QString ());
+		static std::shared_ptr<StorageBackend> Create (Type, const QString& = QString ());
 
 		static QString LoadQuery (const QString&, const QString&);
 

@@ -40,7 +40,7 @@ namespace LeechCraft
 				Q_INTERFACES (IInfo IFinder IHaveSettings)
 
 				std::auto_ptr<QTranslator> Translator_;
-				boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+				std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -58,7 +58,7 @@ namespace LeechCraft
 				QStringList GetCategories () const;
 				QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
 
-				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+				std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 			signals:
 				void categoriesChanged (const QStringList&, const QStringList&);
 			};

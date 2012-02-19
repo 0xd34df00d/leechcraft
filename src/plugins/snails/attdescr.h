@@ -20,6 +20,7 @@
 
 #include <QString>
 #include <QMetaType>
+#include <vmime/attachment.hpp>
 
 namespace LeechCraft
 {
@@ -35,6 +36,7 @@ namespace Snails
 		QByteArray SubType_;
 	public:
 		AttDescr ();
+		AttDescr (vmime::ref<const vmime::attachment>);
 		AttDescr (const QString& name, const QString& descr,
 				const QByteArray& type, const QByteArray& subtype,
 				qlonglong size);

@@ -27,6 +27,7 @@
 #include <QXmppVersionIq.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/iadvancedclentry.h>
+#include <interfaces/ihavedirectedstatus.h>
 #include <interfaces/isupportgeolocation.h>
 
 class QXmppPresence;
@@ -53,20 +54,25 @@ namespace Xoox
 	class EntryBase : public QObject
 					, public ICLEntry
 					, public IAdvancedCLEntry
+					, public IHaveDirectedStatus
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry LeechCraft::Azoth::IAdvancedCLEntry)
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
+				LeechCraft::Azoth::IAdvancedCLEntry
+				LeechCraft::Azoth::IHaveDirectedStatus)
 	protected:
+		GlooxAccount *Account_;
+
 		QList<QObject*> AllMessages_;
 		QMap<QString, EntryStatus> CurrentStatus_;
 		QList<QAction*> Actions_;
-		mutable QAction *Commands_;
+		QAction *Commands_;
+		QAction *DetectNick_;
 
 		QMap<QString, GeolocationInfo_t> Location_;
 
 		QImage Avatar_;
 		QString RawInfo_;
-		GlooxAccount *Account_;
 		QXmppVCardIq VCardIq_;
 		QPointer<VCardDialog> VCardDialog_;
 
@@ -96,6 +102,10 @@ namespace Xoox
 		AdvancedFeatures GetAdvancedFeatures () const;
 		void DrawAttention (const QString&, const QString&);
 
+		// IHaveDirectedStatus
+		bool CanSendDirectedStatusNow (const QString&);
+		void SendDirectedStatus (const EntryStatus&, const QString&);
+
 		virtual QString GetJID () const = 0;
 
 		void HandleMessage (GlooxMessage*);
@@ -121,8 +131,10 @@ namespace Xoox
 		QXmppVersionIq GetClientVersion (const QString&) const;
 	private:
 		QString FormatRawInfo (const QXmppVCardIq&);
+		void SetNickFromVCard (const QXmppVCardIq&);
 	private slots:
 		void handleCommands ();
+		void handleDetectNick ();
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);

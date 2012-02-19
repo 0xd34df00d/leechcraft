@@ -60,9 +60,9 @@ namespace Importers
 				SIGNAL (currentIdChanged (int)),
 				this,
 				SLOT (handleAccepted (int)));
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 		QString defaultFile = QDir::homePath () + "/Application Data/Mozilla/Firefox/profiles.ini";
-#elif defined Q_WS_MAC
+#elif defined Q_OS_MAC
 #warning Please check location of stuff on Mac OS X
 		QString defaultFile = QDir::homePath () + "/.mozilla/firefox/profiles.ini";
 #else

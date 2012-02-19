@@ -139,5 +139,5 @@ QDataStream& operator>> (QDataStream& in, QList<QStringList>& list)
 	return in;
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_acetamide,
+LC_EXPORT_PLUGIN (leechcraft_azoth_acetamide,
 		LeechCraft::Azoth::Acetamide::Plugin);

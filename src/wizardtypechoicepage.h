@@ -34,6 +34,10 @@ namespace LeechCraft
 		virtual ~WizardTypeChoicePage ();
 
 		StartupWizard::Type GetChosenType () const;
+	private slots:
+		void handleButtonToggled ();
+	signals:
+		void chosenTypeChanged (StartupWizard::Type);
 	};
 };
 

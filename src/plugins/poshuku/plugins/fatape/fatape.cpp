@@ -228,4 +228,4 @@ namespace FatApe
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_fatape, LeechCraft::Poshuku::FatApe::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_fatape, LeechCraft::Poshuku::FatApe::Plugin);

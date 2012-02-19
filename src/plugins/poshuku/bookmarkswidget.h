@@ -19,7 +19,6 @@
 #ifndef PLUGINS_POSHUKU_BOOKMARKSWIDGET_H
 #define PLUGINS_POSHUKU_BOOKMARKSWIDGET_H
 #include <memory>
-#include <boost/shared_ptr.hpp>
 #include <QWidget>
 #include <util/tagscompleter.h>
 #include "filtermodel.h"
@@ -39,7 +38,7 @@ namespace Poshuku
 		Q_OBJECT
 
 		Ui::BookmarksWidget Ui_;
-		boost::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
+		std::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 		std::unique_ptr<FilterModel> FavoritesFilterModel_;
 		std::unique_ptr<Util::TagsCompleter> FavoritesFilterLineCompleter_;
 	public:

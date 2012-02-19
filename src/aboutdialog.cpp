@@ -155,6 +155,11 @@ namespace LeechCraft
 				QString (), "lik3a11@gmail.com",
 				QStringList (tr ("Artwork.")),
 				QList<int> () << 2011 << 2012);
+		contribs << ContributorInfo ("Boris Pek", "Tehnick",
+				QString (), "tehnick-8@mail.ru",
+				QStringList (tr ("Debian/Ubuntu maintainership."))
+					<< tr ("Small fixes."),
+				QList<int> () << 2011 << 2012);
 		contribs << ContributorInfo ("Elena Belova", "Zereal",
 				"elena.zereal@neko.im", "zereal25@gmail.com",
 				QStringList (tr ("French translations."))

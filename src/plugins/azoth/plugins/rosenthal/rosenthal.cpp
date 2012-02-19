@@ -154,15 +154,15 @@ namespace Rosenthal
 
 		QString base;
 		QStringList candidates (Util::CreateIfNotExists ("data/dicts/myspell/").absolutePath ());
-#ifdef Q_WS_X11
+#ifdef Q_OS_WIN32
+		candidates << qApp->applicationDirPath () + "/myspell/";
+#else
 		candidates << "/usr/local/share/myspell/"
 				<< "/usr/share/myspell/"
 				<< "/usr/local/share/myspell/dicts/"
 				<< "/usr/share/myspell/dicts/"
 				<< "/usr/local/share/hunspell/"
 				<< "/usr/share/hunspell/";
-#elif defined(Q_WS_WIN32)
-		candidates << qApp->applicationDirPath () + "/myspell/";
 #endif
 		Q_FOREACH (base, candidates)
 			if (QFile::exists (base + locale + ".aff"))
@@ -252,4 +252,4 @@ namespace Rosenthal
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_rosenthal, LeechCraft::Azoth::Rosenthal::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_rosenthal, LeechCraft::Azoth::Rosenthal::Plugin);

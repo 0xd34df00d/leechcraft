@@ -80,8 +80,8 @@ namespace Aggregator
 
 		QMenu *ToolMenu_;
 
-		boost::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
-		boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
+		std::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
+		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 		std::unique_ptr<Util::TagsCompleter> TagsLineCompleter_;
 		std::unique_ptr<QSystemTrayIcon> TrayIcon_;
 		std::unique_ptr<RegexpMatcherUi> RegexpMatcherUi_;
@@ -390,7 +390,7 @@ namespace Aggregator
 		emit removeTab (this);
 	}
 
-	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Aggregator::GetSettingsDialog () const
+	std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Aggregator::GetSettingsDialog () const
 	{
 		return Impl_->XmlSettingsDialog_;
 	}
@@ -897,4 +897,4 @@ namespace Aggregator
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_aggregator, LeechCraft::Aggregator::Aggregator);
+LC_EXPORT_PLUGIN (leechcraft_aggregator, LeechCraft::Aggregator::Aggregator);

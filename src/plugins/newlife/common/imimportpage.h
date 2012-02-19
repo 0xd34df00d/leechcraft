@@ -38,6 +38,8 @@ namespace Common
 		Ui::IMImportPage Ui_;
 
 		QStandardItemModel *AccountsModel_;
+
+		static QObject* S_Plugin_;
 	public:
 		enum Roles
 		{
@@ -51,6 +53,8 @@ namespace Common
 			ImportAcc,
 			ImportHist
 		};
+
+		static void SetPluginInstance (QObject*);
 
 		IMImportPage (QWidget* = 0);
 

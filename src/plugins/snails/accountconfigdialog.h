@@ -73,11 +73,17 @@ namespace Snails
 		bool GetSASLRequired () const;
 		void SetSASLRequired (bool);
 
-		bool GetUseTLS () const;
-		void SetUseTLS (bool);
+		Account::SecurityType GetInSecurity () const;
+		void SetInSecurity (Account::SecurityType);
 
-		bool GetTLSRequired () const;
-		void SetTLSRequired (bool);
+		bool GetInSecurityRequired () const;
+		void SetInSecurityRequired (bool);
+
+		Account::SecurityType GetOutSecurity () const;
+		void SetOutSecurity (Account::SecurityType);
+
+		bool GetOutSecurityRequired () const;
+		void SetOutSecurityRequired (bool);
 
 		bool GetSMTPAuth () const;
 		void SetSMTPAuth (bool);

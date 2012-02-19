@@ -19,7 +19,7 @@
 #pragma once
 
 #include <vector>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <util/mergemodel.h>
 #include <interfaces/ifinder.h>
 #include "filtermodel.h"
@@ -41,16 +41,16 @@ namespace Summary
 	{
 		Q_OBJECT
 
-		typedef std::vector<boost::shared_ptr<IFindProxy> > proxies_t;
+		typedef std::vector<std::shared_ptr<IFindProxy> > proxies_t;
 		proxies_t Proxies_;
-		boost::shared_ptr<Util::MergeModel> MergeModel_;
-		std::auto_ptr<FilterModel> FilterModel_;
+		std::shared_ptr<Util::MergeModel> MergeModel_;
+		std::unique_ptr<FilterModel> FilterModel_;
 	public:
 		/** Constructs the merger according to request. Uses the merge
 		 * as a MergeModel if categories is the one of the built-ins.
 		 */
 		CategoryMerger (const Request& req,
-				const boost::shared_ptr<Util::MergeModel>& merge,
+				const std::shared_ptr<Util::MergeModel>& merge,
 				QObject* = 0);
 	};
 }

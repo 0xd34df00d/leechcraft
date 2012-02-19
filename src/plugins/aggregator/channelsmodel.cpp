@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include <stdexcept>
+#include <algorithm>
 #include <QtDebug>
 #include <QApplication>
 #include <QFont>
@@ -241,6 +242,13 @@ namespace Aggregator
 		beginRemoveRows (QModelIndex (), pos, pos);
 		Channels_.erase (idx);
 		endRemoveRows ();
+	}
+
+	void ChannelsModel::Clear ()
+	{
+		beginResetModel ();
+		Channels_.clear ();
+		endResetModel ();
 	}
 
 	QModelIndex ChannelsModel::GetUnreadChannelIndex () const

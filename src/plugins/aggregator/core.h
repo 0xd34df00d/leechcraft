@@ -19,7 +19,6 @@
 #ifndef PLUGINS_AGGREGATOR_CORE_H
 #define PLUGINS_AGGREGATOR_CORE_H
 #include <memory>
-#include <boost/shared_ptr.hpp>
 #include <QAbstractItemModel>
 #include <QString>
 #include <QMap>
@@ -84,7 +83,7 @@ namespace Aggregator
 			QString URL_;
 			QString Filename_;
 			QStringList Tags_;
-			boost::shared_ptr<Feed::FeedSettings> FeedSettings_;
+			std::shared_ptr<Feed::FeedSettings> FeedSettings_;
 		};
 		struct ExternalData
 		{
@@ -104,7 +103,7 @@ namespace Aggregator
 		bool SaveScheduled_;
 		ChannelsModel *ChannelsModel_;
 		QTimer *UpdateTimer_, *CustomUpdateTimer_;
-		boost::shared_ptr<StorageBackend> StorageBackend_;
+		std::shared_ptr<StorageBackend> StorageBackend_;
 		JobHolderRepresentation *JobHolderRepresentation_;
 		QMap<IDType_t, QDateTime> Updates_;
 		ChannelsFilterModel *ChannelsFilterModel_;
@@ -149,7 +148,10 @@ namespace Aggregator
 		void StartAddingOPML (const QString&);
 		void SetAppWideActions (const AppWideActions&);
 		const AppWideActions& GetAppWideActions () const;
+
 		bool DoDelayedInit ();
+		bool ReinitStorage ();
+
 		void AddFeed (const QString&, const QString&);
 		void AddFeed (const QString&, const QStringList&,
 				FeedSettings_ptr = FeedSettings_ptr ());
@@ -247,6 +249,8 @@ namespace Aggregator
 		void gotEntity (const LeechCraft::Entity&);
 		void channelRemoved (IDType_t);
 		void itemDataUpdated (Item_ptr, Channel_ptr);
+
+		void storageChanged ();
 
 		// Plugin API
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,

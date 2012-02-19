@@ -25,8 +25,11 @@ namespace NewLife
 {
 namespace Importers
 {
-	PsiPlusImporter::PsiPlusImporter (QWidget *parent)
-	: Common::IMImporter ("Psi+", QIcon (":/resources/images/apps/psiplus.png"), new PsiPlusImportPage, parent)
+	PsiPlusImporter::PsiPlusImporter (QObject *parent)
+	: Common::IMImporter ("Psi+",
+				QIcon (":/resources/images/apps/psiplus.png"),
+				new PsiPlusImportPage,
+				parent)
 	{
 	}
 }

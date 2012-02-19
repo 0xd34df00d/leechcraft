@@ -18,7 +18,7 @@
 
 #ifndef INTERFACES_IFINDER_H
 #define INTERFACES_IFINDER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QStringList>
 #include <QHash>
 #include <QVariant>
@@ -68,7 +68,7 @@ namespace LeechCraft
 		 */
 		QHash<QString, QVariant> Params_;
 	};
-};
+}
 
 /** @brief Represents search results for a single Request.
  *
@@ -121,7 +121,7 @@ public:
 	virtual QStringList GetCategories () const = 0;
 };
 
-typedef boost::shared_ptr<IFindProxy> IFindProxy_ptr;
+typedef std::shared_ptr<IFindProxy> IFindProxy_ptr;
 
 /** @brief Base class for search providers.
  *

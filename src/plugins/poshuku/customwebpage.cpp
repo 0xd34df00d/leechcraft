@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "customwebpage.h"
+#include <algorithm>
 #include <QtDebug>
 #include <QFile>
 #include <QBuffer>

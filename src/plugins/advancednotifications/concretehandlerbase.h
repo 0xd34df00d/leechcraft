@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_ADVANCEDNOTIFICATIONS_CONCRETEHANDLERBASE_H
 #define PLUGINS_ADVANCEDNOTIFICATIONS_CONCRETEHANDLERBASE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include "common.h"
 
@@ -41,8 +41,8 @@ namespace AdvancedNotifications
 		virtual NotificationMethod GetHandlerMethod () const = 0;
 		virtual void Handle (const Entity&, const NotificationRule&) = 0;
 	};
-	
-	typedef boost::shared_ptr<ConcreteHandlerBase> ConcreteHandlerBase_ptr;
+
+	typedef std::shared_ptr<ConcreteHandlerBase> ConcreteHandlerBase_ptr;
 }
 }
 

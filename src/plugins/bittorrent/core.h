@@ -21,7 +21,7 @@
 #include <map>
 #include <list>
 #include <deque>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QAbstractItemModel>
 #include <QPair>
 #include <QList>
@@ -124,11 +124,11 @@ namespace LeechCraft
 				QList<QString> Headers_;
 				mutable int CurrentTorrent_;
 				std::unique_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
-				boost::shared_ptr<PiecesModel> PiecesModel_;
-				boost::shared_ptr<PeersModel> PeersModel_;
-				boost::shared_ptr<TorrentFilesModel> TorrentFilesModel_;
-				boost::shared_ptr<QStandardItemModel> WebSeedsModel_;
-				boost::shared_ptr<LiveStreamManager> LiveStreamManager_;
+				std::shared_ptr<PiecesModel> PiecesModel_;
+				std::shared_ptr<PeersModel> PeersModel_;
+				std::shared_ptr<TorrentFilesModel> TorrentFilesModel_;
+				std::shared_ptr<QStandardItemModel> WebSeedsModel_;
+				std::shared_ptr<LiveStreamManager> LiveStreamManager_;
 				QString ExternalAddress_;
 				bool SaveScheduled_;
 				QToolBar *Toolbar_;

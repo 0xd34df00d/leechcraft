@@ -97,6 +97,7 @@ namespace Proto
 
 		PacketActors_ [Packets::MsgAck] = [this] (HalfPacket hp) { IncomingMsg (hp); };
 		PacketActors_ [Packets::MsgStatus] = [this] (HalfPacket hp) { MsgStatus (hp); };
+		PacketActors_ [Packets::SMSAck] = [this] (HalfPacket hp) { SMSAck (hp); };
 		PacketActors_ [Packets::OfflineMsgAck] = [this] (HalfPacket hp) { OfflineMsg (hp); };
 		PacketActors_ [Packets::MicroblogRecv] = [this] (HalfPacket hp) { MicroblogRecv (hp); };
 
@@ -205,6 +206,20 @@ namespace Proto
 	quint32 Connection::SendMessage (const QString& to, const QString& message)
 	{
 		auto hp = PF_.Message (0, to, message);
+		Write (hp.Packet_);
+		return hp.Seq_;
+	}
+
+	quint32 Connection::SendSMS (const QString& to, const QString& message)
+	{
+		auto hp = PF_.Message (MsgFlag::SMS, to, message);
+		Write (hp.Packet_);
+		return hp.Seq_;
+	}
+
+	quint32 Connection::SendSMS2Number (const QString& phone, const QString& message)
+	{
+		auto hp = PF_.SMS (phone, message);
 		Write (hp.Packet_);
 		return hp.Seq_;
 	}
@@ -503,6 +518,26 @@ namespace Proto
 
 		if (status == MessageStatus::Delivered)
 			emit messageDelivered (seq);
+	}
+
+	void Connection::SMSAck (HalfPacket hp)
+	{
+		quint32 seq = hp.Header_.Seq_;
+		quint32 status = 0;
+		FromMRIM (hp.Data_, status);
+
+		switch (status)
+		{
+		case SMSStatus::OK:
+			emit smsDelivered (seq);
+			break;
+		case SMSStatus::ServUnavail:
+			emit smsServiceUnavailable (seq);
+			break;
+		case SMSStatus::InvalidParams:
+			emit smsBadParms (seq);
+			break;
+		}
 	}
 
 	namespace

@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="es_ES">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
 <context>
     <name>IntMatcherConfigWidget</name>
     <message>
@@ -197,7 +195,6 @@
     <message>
         <location filename="notificationruleswidget.cpp" line="635"/>
         <source>Please enter new argument text:</source>
-        <translatorcomment>?</translatorcomment>
         <translation>Por favor introduzca el texto nuevo de argumento:</translation>
     </message>
 </context>
@@ -253,6 +250,13 @@
         <translation>Añadir</translation>
     </message>
     <message>
+        <location filename="notificationruleswidget.ui" line="72"/>
+        <location filename="notificationruleswidget.ui" line="265"/>
+        <location filename="notificationruleswidget.ui" line="379"/>
+        <source>Remove</source>
+        <translation>Remover</translation>
+    </message>
+    <message>
         <location filename="notificationruleswidget.ui" line="37"/>
         <source>Update</source>
         <translation>Actualizar</translation>
@@ -266,13 +270,6 @@
         <location filename="notificationruleswidget.ui" line="58"/>
         <source>Move down</source>
         <translation>Bajar</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.ui" line="72"/>
-        <location filename="notificationruleswidget.ui" line="265"/>
-        <location filename="notificationruleswidget.ui" line="379"/>
-        <source>Remove</source>
-        <translation>Remover</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="79"/>
@@ -329,7 +326,7 @@
     <message>
         <location filename="notificationruleswidget.ui" line="218"/>
         <source>Single shot</source>
-        <translation type="unfinished"></translation>
+        <translation>único disparo</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="230"/>
@@ -352,11 +349,6 @@
         <location filename="notificationruleswidget.ui" line="372"/>
         <source>Modify...</source>
         <translation>Modificar...</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.ui" line="287"/>
-        <source>File:</source>
-        <translation>Archivo:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="306"/>
@@ -382,6 +374,11 @@
         <location filename="notificationruleswidget.ui" line="355"/>
         <source>Argument</source>
         <translation>Argumento</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.ui" line="287"/>
+        <source>File:</source>
+        <translation>Archivo:</translation>
     </message>
 </context>
 <context>

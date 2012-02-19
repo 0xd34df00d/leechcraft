@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "findproxy.h"
+#include <algorithm>
 #include <QUrl>
 #include <QtDebug>
 #include <interfaces/structures.h>

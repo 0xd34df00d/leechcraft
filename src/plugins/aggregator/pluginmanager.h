@@ -32,7 +32,7 @@ namespace Aggregator
 	{
 		Q_OBJECT
 
-		boost::shared_ptr<ProxyObject> ProxyObject_;
+		std::shared_ptr<ProxyObject> ProxyObject_;
 	public:
 		PluginManager (QObject* = 0);
 

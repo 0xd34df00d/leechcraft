@@ -186,7 +186,7 @@ namespace Azoth
 			"Search",
 			tr ("Search"),
 			tr ("A search tab allows one to search within IM services"),
-			QIcon (),
+			QIcon (":/plugins/azoth/resources/images/searchtab.svg"),
 			55,
 			TFOpenableByRequest
 		};
@@ -196,7 +196,7 @@ namespace Azoth
 			tr ("Service discovery"),
 			tr ("A service discovery tab that allows one to discover "
 				"capabilities of remote entries"),
-			QIcon (),
+			QIcon (":/plugins/azoth/resources/images/sdtab.svg"),
 			55,
 			TFOpenableByRequest
 		};
@@ -226,6 +226,16 @@ namespace Azoth
 				Core::Instance ().GetChatStylesOptionsModel ());
 		XmlSettingsDialog_->SetDataSource ("MUCWindowStyle",
 				Core::Instance ().GetChatStylesOptionsModel ());
+
+		Entity e = Util::MakeEntity (QVariant (),
+				QString (),
+				OnlyHandle,
+				"x-leechcraft/global-action-register");
+		e.Additional_ ["ActionID"] = GetUniqueID () + "_ShowNextUnread";
+		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (&Core::Instance ());
+		e.Additional_ ["Method"] = SLOT (handleShowNextUnread ());
+		e.Additional_ ["Shortcut"] = QKeySequence (QString ("Ctrl+Alt+Shift+M"));
+		emit gotEntity (e);
 	}
 
 	void Plugin::Release ()
@@ -395,4 +405,4 @@ namespace Azoth
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth, LeechCraft::Azoth::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth, LeechCraft::Azoth::Plugin);

@@ -24,6 +24,25 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	uint qHash (Message::Address a)
+	{
+		return static_cast<uint> (a);
+	}
+
+	QDataStream& operator<< (QDataStream& out, Message::Address a)
+	{
+		out << static_cast<quint16> (a);
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, Message::Address& a)
+	{
+		quint16 t = 0;
+		in >> t;
+		a = static_cast<Message::Address> (t);
+		return in;
+	}
+
 	Message::Message (QObject *parent)
 	: QObject (parent)
 	, IsRead_ (false)
@@ -70,34 +89,29 @@ namespace Snails
 		Size_ = size;
 	}
 
-	QString Message::GetFrom () const
+	Message::Address_t Message::GetAddress (Message::Address a) const
 	{
-		return From_;
+		return GetAddresses (a).value (0);
 	}
 
-	void Message::SetFrom (const QString& from)
+	Message::Addresses_t Message::GetAddresses (Message::Address a) const
 	{
-		From_ = from;
+		return Addresses_ [a];
 	}
 
-	QString Message::GetFromEmail () const
+	void Message::AddAddress (Message::Address a, const Message::Address_t& pair)
 	{
-		return FromEmail_;
+		Addresses_ [a] << pair;
 	}
 
-	void Message::SetFromEmail (const QString& fe)
+	void Message::SetAddress (Message::Address a, const Message::Address_t& pair)
 	{
-		FromEmail_ = fe;
+		SetAddresses (a, { pair });
 	}
 
-	QList<QPair<QString, QString>> Message::GetTo () const
+	void Message::SetAddresses (Message::Address a, const Message::Addresses_t& list)
 	{
-		return To_;
-	}
-
-	void Message::SetTo (const QList<QPair<QString, QString>>& to)
-	{
-		To_ = to;
+		Addresses_ [a] = list;
 	}
 
 	QDateTime Message::GetDate () const
@@ -108,16 +122,6 @@ namespace Snails
 	void Message::SetDate (const QDateTime& date)
 	{
 		Date_ = date;
-	}
-
-	QStringList Message::GetRecipients () const
-	{
-		return Recipients_;
-	}
-
-	void Message::SetRecipients (const QStringList& recips)
-	{
-		Recipients_ = recips;
 	}
 
 	QString Message::GetSubject () const
@@ -185,15 +189,15 @@ namespace Snails
 				<< ID_.toHex ()
 				<< Folders_
 				<< Size_
-				<< From_
-				<< FromEmail_
-				<< To_
 				<< Date_
 				<< Recipients_
 				<< Subject_
 				<< IsRead_
 				<< Body_
 				<< HTMLBody_;
+		Q_FOREACH (const auto key, Addresses_.keys ())
+			qDebug () << static_cast<int> (key)
+					<< Addresses_ [key];
 		qDebug () << Attachments_.size () << "attachments";
 		Q_FOREACH (const auto& att, Attachments_)
 			att.Dump ();
@@ -208,15 +212,13 @@ namespace Snails
 			<< ID_
 			<< Folders_
 			<< Size_
-			<< From_
-			<< FromEmail_
-			<< To_
 			<< Date_
 			<< Recipients_
 			<< Subject_
 			<< IsRead_
 			<< Body_
 			<< HTMLBody_
+			<< Addresses_
 			<< Attachments_;
 
 		return result;
@@ -233,16 +235,22 @@ namespace Snails
 		str >> ID_
 			>> Folders_
 			>> Size_
-			>> From_
-			>> FromEmail_
-			>> To_
 			>> Date_
 			>> Recipients_
 			>> Subject_
 			>> IsRead_
 			>> Body_
 			>> HTMLBody_
+			>> Addresses_
 			>> Attachments_;
+	}
+
+	QString GetNiceMail (const Message::Address_t& pair)
+	{
+		const QString& fromName = pair.first;
+		return fromName.isEmpty () ?
+				pair.second :
+				fromName + " <" + pair.second + ">";
 	}
 }
 }

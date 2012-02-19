@@ -32,9 +32,9 @@ namespace LeechCraft
 namespace Laure
 {
 	class PlayListView;
-	
+
 	/** @brief Provides menu for choosing add item options.
-	 * 
+	 *
 	 * @author Minh Ngo <nlminhtl@gmail.com>
 	 */
 	class PlayListAddMenu : public QMenu
@@ -61,7 +61,7 @@ namespace Laure
 		void LoadM3U (const QString&);
 	signals:
 		/** @brief Is emitted when the media file is chosen.
-		 * 
+		 *
 		 * @param[out] location Media file location.
 		 */
 		void addItem (const QString& location);

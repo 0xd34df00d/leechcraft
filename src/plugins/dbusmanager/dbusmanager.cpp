@@ -89,7 +89,7 @@ namespace LeechCraft
 				return QIcon (":/resources/images/dbusmanager.svg");
 			}
 
-			boost::shared_ptr<Util::XmlSettingsDialog> DBusManager::GetSettingsDialog () const
+			std::shared_ptr<Util::XmlSettingsDialog> DBusManager::GetSettingsDialog () const
 			{
 				return SettingsDialog_;
 			}
@@ -109,5 +109,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_dbusmanager, LeechCraft::Plugins::DBusManager::DBusManager);
+LC_EXPORT_PLUGIN (leechcraft_dbusmanager, LeechCraft::Plugins::DBusManager::DBusManager);
 

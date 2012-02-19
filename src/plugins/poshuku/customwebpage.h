@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_CUSTOMWEBPAGE_H
 #define PLUGINS_POSHUKU_PLUGINS_POSHUKU_CUSTOMWEBPAGE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <qwebpage.h>
 #include <QUrl>
 #include <QNetworkRequest>
@@ -41,8 +41,8 @@ namespace Poshuku
 		Qt::KeyboardModifiers Modifiers_;
 
 		QUrl LoadingURL_;
-		boost::shared_ptr<JSProxy> JSProxy_;
-		boost::shared_ptr<ExternalProxy> ExternalProxy_;
+		std::shared_ptr<JSProxy> JSProxy_;
+		std::shared_ptr<ExternalProxy> ExternalProxy_;
 		typedef QMap<QWebFrame*, QWebHistoryItem*> Frame2History_t;
 		Frame2History_t Frame2History_;
 		PageFormsData_t FilledState_;

@@ -37,7 +37,7 @@ namespace Herbicide
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_herbicide"));
+		Util::InstallTranslator ("azoth_herbicide");
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
@@ -81,25 +81,25 @@ namespace Herbicide
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
 	}
-	
+
 	bool Plugin::IsConfValid () const
 	{
 		if (!XmlSettingsManager::Instance ()
 				.property ("EnableQuest").toBool ())
 			return false;
-		
+
 		if (ConfWidget_->GetQuestion ().isEmpty () ||
 				ConfWidget_->GetAnswers ().isEmpty ())
 			return false;
-		
+
 		return true;
 	}
-	
+
 	bool Plugin::IsEntryAllowed (QObject *entryObj) const
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -108,19 +108,19 @@ namespace Herbicide
 
 		if ((entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) == ICLEntry::FPermanentEntry)
 			return true;
-		
+
 		if (AllowedEntries_.contains (entryObj))
 			return true;
-		
+
 		return false;
 	}
-	
+
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message)
 	{
 		if (!IsConfValid ())
 			return;
-		
+
 		if (OurMessages_.contains (message))
 		{
 			OurMessages_.remove (message);
@@ -136,16 +136,16 @@ namespace Herbicide
 					<< "doesn't implement IMessage";
 			return;
 		}
-		
+
 		if (msg->GetMessageType () != IMessage::MTChatMessage)
 			return;
-		
+
 		QObject *entryObj = msg->OtherPart ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		
+
 		if (IsEntryAllowed (entryObj))
 			return;
-		
+
 		if (!AskedEntries_.contains (entryObj))
 		{
 			AskedEntries_ << entryObj;
@@ -156,7 +156,7 @@ namespace Herbicide
 			QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
 			OurMessages_ << msgObj;
 			qobject_cast<IMessage*> (msgObj)->Send ();
-			
+
 			proxy->CancelDefault ();
 		}
 		else if (ConfWidget_->GetAnswers ().contains (msg->GetBody ().toLower ()))
@@ -176,7 +176,7 @@ namespace Herbicide
 			QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
 			OurMessages_ << msgObj;
 			qobject_cast<IMessage*> (msgObj)->Send ();
-			
+
 			proxy->CancelDefault ();
 		}
 	}
@@ -184,4 +184,4 @@ namespace Herbicide
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_herbicide, LeechCraft::Azoth::Herbicide::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_herbicide, LeechCraft::Azoth::Herbicide::Plugin);

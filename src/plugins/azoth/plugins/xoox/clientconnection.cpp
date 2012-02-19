@@ -699,8 +699,16 @@ namespace Xoox
 			return RoomHandlers_ [bareJid]->GetParticipantEntry (variant).get ();
 		else if (bareJid == OurBareJID_)
 			return SelfContact_;
-		else
+		else if (JID2CLEntry_.contains (bareJid))
 			return JID2CLEntry_ [bareJid];
+		else
+		{
+			QString trueBare, trueVar;
+			Split (bareJid, &trueBare, &trueVar);
+			if (trueBare != bareJid)
+				return GetCLEntry (trueBare, trueVar);
+			return 0;
+		}
 	}
 
 	GlooxCLEntry* ClientConnection::AddODSCLEntry (OfflineDataSource_ptr ods)
@@ -732,15 +740,14 @@ namespace Xoox
 		ScheduleFetchVCard (jid);
 	}
 
-	void ClientConnection::FetchVCard (const QString& jid, VCardDialog *dia)
+	void ClientConnection::FetchVCard (const QString& jid, VCardCallback_t callback)
 	{
-		AwaitingVCardDialogs_ [jid] = QPointer<VCardDialog> (dia);
-		FetchVCard (jid);
+		VCardFetchCallbacks_ [jid] << callback;
+		ScheduleFetchVCard (jid);
 	}
 
 	void ClientConnection::FetchVersion (const QString& jid)
 	{
-		qDebug () << Q_FUNC_INFO << jid;
 		VersionQueue_->Schedule (jid);
 	}
 
@@ -1009,13 +1016,8 @@ namespace Xoox
 		if (jid.isEmpty ())
 			jid = OurBareJID_;
 
-		if (AwaitingVCardDialogs_.contains (jid))
-		{
-			QPointer<VCardDialog> dia = AwaitingVCardDialogs_ [jid];
-			if (dia)
-				dia->UpdateInfo (vcard);
-			AwaitingVCardDialogs_.remove (jid);
-		}
+		Q_FOREACH (auto f, VCardFetchCallbacks_.take (jid))
+			f (vcard);
 
 		if (JID2CLEntry_.contains (jid))
 			JID2CLEntry_ [jid]->SetVCard (vcard);

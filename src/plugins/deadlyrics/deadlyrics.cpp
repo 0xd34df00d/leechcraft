@@ -100,13 +100,14 @@ namespace LeechCraft
 				return result;
 			}
 
-			boost::shared_ptr<Util::XmlSettingsDialog> DeadLyRicS::GetSettingsDialog () const
+			std::shared_ptr<Util::XmlSettingsDialog> DeadLyRicS::GetSettingsDialog () const
 			{
 				return SettingsDialog_;
 			}
 
-			Q_EXPORT_PLUGIN2 (leechcraft_deadlyrics, DeadLyRicS);
 		};
 	};
 };
+
+LC_EXPORT_PLUGIN (leechcraft_deadlyrics, LeechCraft::Plugins::DeadLyrics::DeadLyRicS);
 

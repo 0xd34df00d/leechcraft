@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "cstp.h"
+#include <algorithm>
 #include <boost/bind.hpp>
 #include <boost/logic/tribool.hpp>
 #include <QMenu>
@@ -269,4 +270,4 @@ namespace CSTP
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_cstp, LeechCraft::CSTP::CSTP);
+LC_EXPORT_PLUGIN (leechcraft_cstp, LeechCraft::CSTP::CSTP);

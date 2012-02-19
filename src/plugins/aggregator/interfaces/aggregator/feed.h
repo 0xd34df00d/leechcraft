@@ -18,12 +18,12 @@
 
 #ifndef PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_FEED_H
 #define PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_FEED_H
+#include <memory>
+#include <vector>
 #include <QString>
 #include <QDateTime>
 #include <QList>
 #include <QMetaType>
-#include <boost/shared_ptr.hpp>
-#include <vector>
 #include "channel.h"
 #include "common.h"
 
@@ -132,8 +132,8 @@ namespace Aggregator
 		Feed (const IDType_t& id);
 	};
 
-	typedef boost::shared_ptr<Feed::FeedSettings> FeedSettings_ptr;
-	typedef boost::shared_ptr<Feed> Feed_ptr;
+	typedef std::shared_ptr<Feed::FeedSettings> FeedSettings_ptr;
+	typedef std::shared_ptr<Feed> Feed_ptr;
 	typedef std::vector<Feed_ptr> feeds_container_t;
 	typedef std::vector<QString> feeds_urls_t;
 

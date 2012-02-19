@@ -137,7 +137,7 @@ namespace LeechCraft
 				return result;
 			}
 
-			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> SeekThru::GetSettingsDialog () const
+			std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> SeekThru::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}
@@ -199,4 +199,4 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_seekthru, LeechCraft::Plugins::SeekThru::SeekThru);
+LC_EXPORT_PLUGIN (leechcraft_seekthru, LeechCraft::Plugins::SeekThru::SeekThru);

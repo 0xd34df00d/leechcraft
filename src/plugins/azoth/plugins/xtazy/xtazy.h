@@ -43,7 +43,7 @@ namespace Xtazy
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
-		boost::shared_ptr<QTranslator> Translator_;
+		std::shared_ptr<QTranslator> Translator_;
 		ICoreProxy_ptr Proxy_;
 		IProxyObject *AzothProxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;

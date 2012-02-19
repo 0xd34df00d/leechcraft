@@ -91,9 +91,9 @@ namespace LeechCraft
 
 		void ResourceLoader::AddGlobalPrefix ()
 		{
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 			QStringList prefixes = QStringList (QApplication::applicationDirPath () + "/../Resources/");
-#elif defined (Q_WS_WIN)
+#elif defined (Q_OS_WIN32)
 			QStringList prefixes = QStringList (QApplication::applicationDirPath () + "/share/");
 #elif defined (INSTALL_PREFIX)
 			QStringList prefixes = QStringList (INSTALL_PREFIX "/share/leechcraft/");
@@ -209,14 +209,14 @@ namespace LeechCraft
 
 			if (CachePathContents_.contains (path))
 			{
-				boost::shared_ptr<QBuffer> result (new QBuffer ());
+				std::shared_ptr<QBuffer> result (new QBuffer ());
 				result->setData (*CachePathContents_ [path]);
 				if (open)
 					result->open (QIODevice::ReadOnly);
 				return result;
 			}
 
-			boost::shared_ptr<QFile> result (new QFile (path));
+			std::shared_ptr<QFile> result (new QFile (path));
 
 			if (!result->isSequential () &&
 					result->size () < CachePathContents_.maxCost () / 2)

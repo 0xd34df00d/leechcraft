@@ -39,6 +39,33 @@ namespace Snails
 
 	void ProgressManager::AddAccount (Account *acc)
 	{
+		connect (acc,
+				SIGNAL (gotProgressListener (ProgressListener_g_ptr)),
+				this,
+				SLOT (handlePL (ProgressListener_g_ptr)));
+	}
+
+	void ProgressManager::handlePL (ProgressListener_g_ptr pl)
+	{
+		if (!pl)
+			return;
+
+		connect (pl,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handlePLDestroyed (QObject*)));
+		connect (pl,
+				SIGNAL (progress (int, int)),
+				this,
+				SLOT (handleProgress (int, int)));
+
+		QList<QStandardItem*> row;
+		row << new QStandardItem (pl->GetContext ());
+		row << new QStandardItem (tr ("Running..."));
+		row << new QStandardItem (QString (""));
+		Model_->appendRow (row);
+
+		Listener2Row_ [pl] = row.last ();
 	}
 
 	void ProgressManager::handlePLDestroyed (QObject *obj)

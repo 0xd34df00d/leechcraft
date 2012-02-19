@@ -91,4 +91,4 @@ namespace Keeso
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_keeso, LeechCraft::Azoth::Keeso::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_keeso, LeechCraft::Azoth::Keeso::Plugin);

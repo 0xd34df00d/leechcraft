@@ -84,4 +84,4 @@ namespace WebAccess
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_aggregator_webaccess, LeechCraft::Aggregator::WebAccess::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_aggregator_webaccess, LeechCraft::Aggregator::WebAccess::Plugin);

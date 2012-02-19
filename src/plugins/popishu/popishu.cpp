@@ -140,7 +140,7 @@ namespace LeechCraft
 				Core::Instance ().Handle (entity);
 			}
 
-			boost::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
+			std::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}
@@ -148,5 +148,5 @@ namespace LeechCraft
 	}
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_popishu, LeechCraft::Plugins::Popishu::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_popishu, LeechCraft::Plugins::Popishu::Plugin);
 

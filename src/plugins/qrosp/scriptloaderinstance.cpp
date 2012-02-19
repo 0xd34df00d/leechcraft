@@ -35,17 +35,17 @@ namespace Qrosp
 		if (!RelativePath_.endsWith ('/'))
 			RelativePath_ += '/';
 	}
-	
+
 	QObject* ScriptLoaderInstance::GetObject ()
 	{
 		return this;
 	}
-	
+
 	void ScriptLoaderInstance::AddGlobalPrefix ()
 	{
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 			Prefixes_ << QString (QApplication::applicationDirPath () + "/../Resources/scripts/");
-#elif defined (Q_WS_WIN)
+#elif defined (Q_OS_WIN32)
 			Prefixes_ << QString (QApplication::applicationDirPath () + "/share/scripts/");
 #elif defined (INSTALL_PREFIX)
 			Prefixes_ << QString (INSTALL_PREFIX "/share/leechcraft/scripts/");
@@ -54,7 +54,7 @@ namespace Qrosp
 					<< "/usr/share/leechcraft/scripts/";
 #endif
 	}
-	
+
 	void ScriptLoaderInstance::AddLocalPrefix (QString prefix)
 	{
 		if (!prefix.isEmpty () &&
@@ -62,7 +62,7 @@ namespace Qrosp
 				prefix.append ('/');
 		Prefixes_ << QDir::homePath () + "/.leechcraft/data/scripts/" + prefix;
 	}
-	
+
 	QStringList ScriptLoaderInstance::EnumerateScripts () const
 	{
 		ID2Interpereter_.clear ();
@@ -93,7 +93,7 @@ namespace Qrosp
 
 		return result;
 	}
-	
+
 	QVariantMap ScriptLoaderInstance::GetScriptInfo (const QString& id)
 	{
 		QFile file (id);
@@ -104,7 +104,7 @@ namespace Qrosp
 					<< id;
 			return QVariantMap ();
 		}
-		
+
 		QVariantMap result;
 		for (int i = 0; i < 20; ++i)
 		{
@@ -122,12 +122,12 @@ namespace Qrosp
 						<< data;
 				continue;
 			}
-			
+
 			result [data.left (sepPos).trimmed ()] = data.mid (sepPos + 1).trimmed ();
 		}
 		return result;
 	}
-	
+
 	IScript_ptr ScriptLoaderInstance::LoadScript (const QString& id)
 	{
 		return IScript_ptr (new LoadedScript (id, ID2Interpereter_ [id]));

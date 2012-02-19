@@ -66,10 +66,10 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 		filename = basename;
 	else if (QFile::exists (QString (":/") + basename))
 		filename = QString (":/") + basename;
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 	else if (QFile::exists (QString ("settings/") + basename))
 		filename = QString ("settings/") + basename;
-#elif defined (Q_WS_MAC)
+#elif defined (Q_OS_MAC)
 	else if (QFile::exists (QApplication::applicationDirPath () +
 			"/../Resources/settings/" + basename))
 		filename = QApplication::applicationDirPath () +
@@ -344,7 +344,7 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 	WorkingObject_->setProperty (property.toLatin1 ().constData (), GetValue (item));
 }
 
-#if defined (Q_WS_WIN) || defined (Q_WS_MAC)
+#if defined (Q_OS_WIN32) || defined (Q_OS_MAC)
 #include <QCoreApplication>
 #include <QLocale>
 

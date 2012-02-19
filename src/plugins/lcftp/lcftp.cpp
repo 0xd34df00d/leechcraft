@@ -208,7 +208,7 @@ namespace LeechCraft
 				Core::Instance ().Handle (e);
 			}
 
-			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> LCFTP::GetSettingsDialog () const
+			std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> LCFTP::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}
@@ -216,5 +216,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_lcftp, LeechCraft::Plugins::LCFTP::LCFTP);
+LC_EXPORT_PLUGIN (leechcraft_lcftp, LeechCraft::Plugins::LCFTP::LCFTP);
 

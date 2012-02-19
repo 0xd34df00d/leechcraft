@@ -21,11 +21,19 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
+
+#if Q_OS_WIN32
+#include <vmime/platforms/windows/windowsHandler.hpp>
+#else
+#include <vmime/platforms/posix/posixHandler.hpp>
+#endif
+
 #include <util/resourceloader.h>
 #include "message.h"
 #include "storage.h"
 #include "progressmanager.h"
 #include "accountfoldermanager.h"
+#include "composemessagetab.h"
 
 namespace LeechCraft
 {
@@ -37,6 +45,12 @@ namespace Snails
 	, ProgressManager_ (new ProgressManager (this))
 	, MsgView_ (new Util::ResourceLoader ("snails/msgview"))
 	{
+#if Q_OS_WIN32
+		vmime::platform::setHandler<vmime::platforms::windows::windowsHandler> ();
+#else
+		vmime::platform::setHandler<vmime::platforms::posix::posixHandler> ();
+#endif
+
 		MsgView_->AddGlobalPrefix ();
 		MsgView_->AddLocalPrefix ();
 
@@ -46,6 +60,7 @@ namespace Snails
 		qRegisterMetaType<QList<Message_ptr>> ("QList<Message_ptr>");
 		qRegisterMetaType<AttDescr> ("LeechCraft::Snails::AttDescr");
 		qRegisterMetaType<AttDescr> ("AttDescr");
+		qRegisterMetaType<ProgressListener_g_ptr> ("ProgressListener_g_ptr");
 		qRegisterMetaType<Account::FetchFlags> ("Account::FetchFlags");
 		qRegisterMetaType<QList<QStringList>> ("QList<QStringList>");
 
@@ -121,6 +136,14 @@ namespace Snails
 			return tr ("<h1 style='color:#f00'>Unable to load message view template.</h1>");
 
 		return QString::fromUtf8 (dev->readAll ());
+	}
+
+	void Core::PrepareReplyTab (Message_ptr message, Account_ptr account)
+	{
+		auto cmt = new ComposeMessageTab ();
+		cmt->SelectAccount (account);
+		cmt->PrepareReply (message);
+		emit gotTab (cmt->GetTabClassInfo ().VisibleName_, cmt);
 	}
 
 	void Core::AddAccount (Account_ptr account)

@@ -1,37 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk" version="2.0">
 <context>
     <name>IntMatcherConfigWidget</name>
     <message>
         <location filename="intmatcherconfigwidget.ui" line="21"/>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;</translation>
     </message>
     <message utf8="true">
         <location filename="intmatcherconfigwidget.ui" line="26"/>
         <source>≥</source>
-        <translation type="unfinished"></translation>
+        <translation>≥</translation>
     </message>
     <message>
         <location filename="intmatcherconfigwidget.ui" line="31"/>
         <source>=</source>
-        <translation type="unfinished"></translation>
+        <translation>=</translation>
     </message>
     <message utf8="true">
         <location filename="intmatcherconfigwidget.ui" line="36"/>
         <source>≤</source>
-        <translation type="unfinished"></translation>
+        <translation>≤</translation>
     </message>
     <message>
         <location filename="intmatcherconfigwidget.ui" line="41"/>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="intmatcherconfigwidget.ui" line="49"/>
         <source>then</source>
-        <translation type="unfinished"></translation>
+        <translation>ніж</translation>
     </message>
 </context>
 <context>
@@ -39,7 +37,7 @@
     <message>
         <location filename="matchconfigdialog.cpp" line="131"/>
         <source>Invalid matcher type %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не правельний тип матчеру %1.</translation>
     </message>
 </context>
 <context>
@@ -47,157 +45,157 @@
     <message>
         <location filename="notificationruleswidget.cpp" line="59"/>
         <source>Instant messaging</source>
-        <translation type="unfinished"></translation>
+        <translation>Миттєві повідомлення</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="61"/>
         <source>Attention request</source>
-        <translation type="unfinished"></translation>
+        <translation>Я вимагаю твоєї уваги</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="62"/>
         <source>Incoming file transfer request</source>
-        <translation type="unfinished"></translation>
+        <translation>Прийміть файл</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="63"/>
         <source>Incoming chat message</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви отримали нове повідомлення</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="64"/>
         <source>MUC highlight</source>
-        <translation type="unfinished"></translation>
+        <translation>Виділення в конференції</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="65"/>
         <source>MUC invitation</source>
-        <translation type="unfinished"></translation>
+        <translation>Запрошення в конференцію</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="66"/>
         <source>General MUC message</source>
-        <translation type="unfinished"></translation>
+        <translation>Звичайне повідомлення в конференції</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="67"/>
         <source>Contact status change</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити статус контакту</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="68"/>
         <source>Authorization granted</source>
-        <translation type="unfinished"></translation>
+        <translation>Отримання авторизації</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="69"/>
         <source>Authorization revoked</source>
-        <translation type="unfinished"></translation>
+        <translation>Відміна авторизації</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="70"/>
         <source>Authorization requested</source>
-        <translation type="unfinished"></translation>
+        <translation>Прохання авторизації</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="71"/>
         <source>Contact subscribed</source>
-        <translation type="unfinished"></translation>
+        <translation>Контакт підписався</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="72"/>
         <source>Contact unsubscribed</source>
-        <translation type="unfinished"></translation>
+        <translation>Контакт відмінив підписку</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="131"/>
         <source>Incoming chat messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Отримані повідомлення в чаті</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="137"/>
         <source>MUC highlights</source>
-        <translation type="unfinished"></translation>
+        <translation>Виділення в конференціях</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="143"/>
         <source>MUC invitations</source>
-        <translation type="unfinished"></translation>
+        <translation>Запрошення в конференції</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="149"/>
         <source>Incoming file transfers</source>
-        <translation type="unfinished"></translation>
+        <translation>Файли які отримуються</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="154"/>
         <source>Subscription requests</source>
-        <translation type="unfinished"></translation>
+        <translation>Прохання авторизації</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="160"/>
         <source>Subscription changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Зміни авторизації</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="168"/>
         <source>Attention requests</source>
-        <translation type="unfinished"></translation>
+        <translation>Прохання звернути увагу</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="192"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім’я</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="193"/>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Категорія</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="194"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="203"/>
         <source>Field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле імені</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="204"/>
         <source>Rule description</source>
-        <translation type="unfinished"></translation>
+        <translation>Опис правила</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="331"/>
         <source>&lt;empty matcher&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;порожній матчер&gt;</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="493"/>
         <source>Are you sure you want to replace all rules with the default set?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви впевнені що хочете замінити всі правила на початкові?</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="582"/>
         <source>Select audio file</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть аудіо файл</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="584"/>
         <source>Audio files (*.ogg *.wav *.flac *.mp3);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Аудіо файли (*.ogg *.wav *.flac *.mp3);;Всі файли (*.*)</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="619"/>
         <source>Please enter the argument:</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка введіть аргумент:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="635"/>
         <source>Please enter new argument text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка введіть новий текст аргументу:</translation>
     </message>
 </context>
 <context>
@@ -205,7 +203,7 @@
     <message>
         <location filename="advancednotifications.cpp" line="77"/>
         <source>Module for the advanced notifications framework.</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль для фреймворку Advanced Notifications.</translation>
     </message>
 </context>
 <context>
@@ -213,7 +211,7 @@
     <message>
         <location filename="systemtrayhandler.cpp" line="182"/>
         <source>Dismiss</source>
-        <translation type="unfinished"></translation>
+        <translation>Пропустити</translation>
     </message>
 </context>
 <context>
@@ -221,27 +219,27 @@
     <message>
         <location filename="matchconfigdialog.ui" line="14"/>
         <source>Field match</source>
-        <translation type="unfinished"></translation>
+        <translation>Перевірка поля</translation>
     </message>
     <message>
         <location filename="matchconfigdialog.ui" line="25"/>
         <source>Source plugin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Початковий модуль:</translation>
     </message>
     <message>
         <location filename="matchconfigdialog.ui" line="35"/>
         <source>Field name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва поля:</translation>
     </message>
     <message>
         <location filename="matchconfigdialog.ui" line="45"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Опис:</translation>
     </message>
     <message>
         <location filename="matchconfigdialog.ui" line="67"/>
         <source>Matcher configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування перевірки</translation>
     </message>
 </context>
 <context>
@@ -249,138 +247,138 @@
     <message>
         <location filename="notificationruleswidget.ui" line="30"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="72"/>
         <location filename="notificationruleswidget.ui" line="265"/>
         <location filename="notificationruleswidget.ui" line="379"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Знищити</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="37"/>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="51"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вгору</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="58"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вниз</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="79"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Початкові</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="110"/>
         <source>Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Правило</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="126"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="136"/>
         <source>Event category:</source>
-        <translation type="unfinished"></translation>
+        <translation>Категорія події:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="146"/>
         <source>Event type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип події:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="174"/>
         <source>Notify via:</source>
-        <translation type="unfinished"></translation>
+        <translation>Повідомляти за допомогою:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="194"/>
         <source>Visual</source>
-        <translation type="unfinished"></translation>
+        <translation>Вікно сповіщення</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="187"/>
         <source>System tray</source>
-        <translation type="unfinished"></translation>
+        <translation>Системний трей</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="201"/>
         <location filename="notificationruleswidget.ui" line="275"/>
         <source>Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Аудіо</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="208"/>
         <location filename="notificationruleswidget.ui" line="326"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Команда</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="218"/>
         <source>Single shot</source>
-        <translation type="unfinished"></translation>
+        <translation>Одне спрацювання</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="230"/>
         <source>Fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Поля</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="239"/>
         <source>Matches:</source>
-        <translation type="unfinished"></translation>
+        <translation>Співпадіння:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="251"/>
         <location filename="notificationruleswidget.ui" line="365"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати...</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="258"/>
         <location filename="notificationruleswidget.ui" line="372"/>
         <source>Modify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити...</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="306"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати...</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="313"/>
         <source>Test</source>
-        <translation type="unfinished"></translation>
+        <translation>Тест</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="335"/>
         <source>Command:</source>
-        <translation type="unfinished"></translation>
+        <translation>Команда:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="345"/>
         <source>Arguments:</source>
-        <translation type="unfinished"></translation>
+        <translation>Аргументи:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="355"/>
         <source>Argument</source>
-        <translation type="unfinished"></translation>
+        <translation>Аргумент</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="287"/>
         <source>File:</source>
-        <translation type="unfinished"></translation>
+        <translation>Файли:</translation>
     </message>
 </context>
 <context>
@@ -388,27 +386,27 @@
     <message>
         <location filename="typedmatchers.cpp" line="147"/>
         <source>contains pattern `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation>вміщує шаблон `%1`</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="148"/>
         <source>doesn&apos;t contain pattern `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation>не вміщує шаблон `%1`</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="166"/>
         <source>contains element matching %1</source>
-        <translation type="unfinished"></translation>
+        <translation>вміщує елемент, задовільняючий `%1`</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="167"/>
         <source>doesn&apos;t contain element matching %1</source>
-        <translation type="unfinished"></translation>
+        <translation>не вміщує елемент, задовільняючий `%1`</translation>
     </message>
     <message>
         <location filename="typedmatchers.cpp" line="220"/>
         <source>is %1 then %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ніж %2</translation>
     </message>
 </context>
 <context>
@@ -416,27 +414,27 @@
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="21"/>
         <source>contains</source>
-        <translation type="unfinished"></translation>
+        <translation>вміщує</translation>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="26"/>
         <source>doesn&apos;t contain</source>
-        <translation type="unfinished"></translation>
+        <translation>не вміщує</translation>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="45"/>
         <source>string</source>
-        <translation type="unfinished"></translation>
+        <translation>лінія</translation>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="50"/>
         <source>wildcard</source>
-        <translation type="unfinished"></translation>
+        <translation>маска</translation>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="55"/>
         <source>regexp</source>
-        <translation type="unfinished"></translation>
+        <translation>регексп</translation>
     </message>
 </context>
 <context>
@@ -444,47 +442,47 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Правила</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Methods</source>
-        <translation type="unfinished"></translation>
+        <translation>Методи</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Аудіо</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Enable audio notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>Ввімкнути аудіо сповіщення</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Audio theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Звукова тема:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Oxygen</source>
-        <translation type="unfinished"></translation>
+        <translation>Oxygen</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>System tray</source>
-        <translation type="unfinished"></translation>
+        <translation>Системний трей</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>Counters</source>
-        <translation type="unfinished"></translation>
+        <translation>Лічильники</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>Enable for IM events</source>
-        <translation type="unfinished"></translation>
+        <translation>Включити для подій в IM</translation>
     </message>
 </context>
 </TS>

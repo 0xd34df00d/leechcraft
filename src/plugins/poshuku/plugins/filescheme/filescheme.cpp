@@ -109,6 +109,6 @@ namespace FileScheme
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_filescheme,
+LC_EXPORT_PLUGIN (leechcraft_poshuku_filescheme,
 		LeechCraft::Poshuku::FileScheme::FileScheme);
 

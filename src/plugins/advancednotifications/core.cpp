@@ -78,7 +78,7 @@ namespace AdvancedNotifications
 		return NRW_;
 	}
 
-	boost::shared_ptr<Util::ResourceLoader> Core::GetAudioThemeLoader () const
+	std::shared_ptr<Util::ResourceLoader> Core::GetAudioThemeLoader () const
 	{
 		return AudioThemeLoader_;
 	}

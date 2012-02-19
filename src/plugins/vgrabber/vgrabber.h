@@ -43,7 +43,7 @@ namespace LeechCraft
 				Q_INTERFACES (IInfo IFinder IHaveSettings)
 
 				std::auto_ptr<QTranslator> Translator_;
-				boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+				std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 				ICoreProxy_ptr Proxy_;
 
 				CategoriesSelector *Audio_;
@@ -61,7 +61,7 @@ namespace LeechCraft
 				QStringList GetCategories () const;
 				QList<IFindProxy_ptr> GetProxy (const Request&);
 
-				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+				std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 				ICoreProxy_ptr GetProxy () const;
 			private slots:

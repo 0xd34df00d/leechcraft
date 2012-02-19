@@ -33,9 +33,9 @@ namespace Poshuku
 	{
 	}
 	
-	boost::shared_ptr<StorageBackend> StorageBackend::Create (Type type)
+	std::shared_ptr<StorageBackend> StorageBackend::Create (Type type)
 	{
-		boost::shared_ptr<StorageBackend> result;
+		std::shared_ptr<StorageBackend> result;
 		switch (type)
 		{
 			case SBSQLite:

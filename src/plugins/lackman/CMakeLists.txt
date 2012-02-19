@@ -55,7 +55,7 @@ SET (HEADERS
 	delegatebuttongroup.h
 	stringfiltermodel.h
 	)
-CreateTrVars ("lackman" "de;en;fr;it;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrVars ("lackman" "de;en;es;fr;it;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 SET (RESOURCES
 	lackmanresources.qrc
 	)

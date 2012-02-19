@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
 #define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -51,8 +51,8 @@ namespace ChatHistory
 				IHaveTabs
 				LeechCraft::Azoth::IHistoryPlugin)
 
-		boost::shared_ptr<STGuard<Core>> Guard_;
-		boost::shared_ptr<QTranslator> Translator_;
+		std::shared_ptr<STGuard<Core>> Guard_;
+		std::shared_ptr<QTranslator> Translator_;
 		QAction *ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionEnableHistory_;
@@ -101,7 +101,6 @@ namespace ChatHistory
 		void handleHistoryRequested ();
 		void handleEntryHistoryRequested ();
 		void handleEntryEnableHistoryRequested (bool);
-		void handleEntryDestroyed ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

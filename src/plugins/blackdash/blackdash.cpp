@@ -84,4 +84,4 @@ namespace BlackDash
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_blackdash, LeechCraft::BlackDash::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_blackdash, LeechCraft::BlackDash::Plugin);

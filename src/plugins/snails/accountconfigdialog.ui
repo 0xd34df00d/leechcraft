@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>521</width>
-    <height>343</height>
+    <width>621</width>
+    <height>332</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>4</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -136,34 +136,84 @@
          <property name="title">
           <string>Connection</string>
          </property>
-         <layout class="QFormLayout" name="formLayout_2">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_3">
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <layout class="QFormLayout" name="formLayout_2">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Host:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="InHost_"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Port:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="InPort_">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>65535</number>
+              </property>
+              <property name="value">
+               <number>998</number>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_13">
+              <property name="text">
+               <string>Security:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QComboBox" name="InSecurityType_">
+                <item>
+                 <property name="text">
+                  <string>TLS/STARTTLS</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>SSL</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="InSecurityRequired_">
+                <property name="text">
+                 <string>Required</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="UseSASL_">
             <property name="text">
-             <string>Host:</string>
+             <string>Use SASL</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="InHost_"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_4">
+          <item>
+           <widget class="QCheckBox" name="SASLRequired_">
             <property name="text">
-             <string>Port:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="InPort_">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>65535</number>
-            </property>
-            <property name="value">
-             <number>998</number>
+             <string>SASL required</string>
             </property>
            </widget>
           </item>
@@ -247,6 +297,38 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>Security:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QComboBox" name="OutSecurityType_">
+              <item>
+               <property name="text">
+                <string>TLS/STARTTLS</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>SSL</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="OutSecurityRequired_">
+              <property name="text">
+               <string>Required</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
          </layout>
         </widget>
        </item>
@@ -259,7 +341,7 @@
           <bool>true</bool>
          </property>
          <property name="checked">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <layout class="QFormLayout" name="formLayout_4">
           <item row="0" column="0">
@@ -295,34 +377,6 @@
        <string>Auth options</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QCheckBox" name="UseSASL_">
-         <property name="text">
-          <string>Use SASL</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="SASLRequired_">
-         <property name="text">
-          <string>SASL required</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="UseTLS_">
-         <property name="text">
-          <string>Use TLS</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="TLSRequired_">
-         <property name="text">
-          <string>TLS required</string>
-         </property>
-        </widget>
-       </item>
        <item>
         <widget class="QCheckBox" name="SMTPAuthRequired_">
          <property name="text">
@@ -463,22 +517,6 @@
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>UseTLS_</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>TLSRequired_</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>67</x>
-     <y>44</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>69</x>
-     <y>66</y>
     </hint>
    </hints>
   </connection>

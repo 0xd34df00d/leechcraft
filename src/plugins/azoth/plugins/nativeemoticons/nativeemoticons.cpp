@@ -79,4 +79,4 @@ namespace NativeEmoticons
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_nativeemoticons, LeechCraft::Azoth::NativeEmoticons::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_nativeemoticons, LeechCraft::Azoth::NativeEmoticons::Plugin);

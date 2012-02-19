@@ -39,7 +39,7 @@ namespace Autopaste
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_autopaste"));
+		Util::InstallTranslator ("azoth_autopaste");
 
 		Proxy_ = proxy;
 
@@ -219,4 +219,4 @@ namespace Autopaste
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_autopaste, LeechCraft::Azoth::Autopaste::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_autopaste, LeechCraft::Azoth::Autopaste::Plugin);

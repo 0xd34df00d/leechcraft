@@ -21,6 +21,7 @@
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include "ui_composemessagetab.h"
+#include "account.h"
 
 class IEditorWidget;
 
@@ -41,6 +42,7 @@ namespace Snails
 
 		QToolBar *Toolbar_;
 		QMenu *AccountsMenu_;
+		QMenu *AttachmentsMenu_;
 
 		QWidget *MsgEditWidget_;
 		IEditorWidget *MsgEdit_;
@@ -54,8 +56,13 @@ namespace Snails
 		QObject* ParentMultiTabs();
 		void Remove();
 		QToolBar* GetToolBar() const;
+
+		void SelectAccount (Account_ptr);
+		void PrepareReply (Message_ptr);
 	private slots:
 		void handleSend ();
+		void handleAddAttachment ();
+		void handleRemoveAttachment ();
 	signals:
 		void removeTab (QWidget*);
 	};

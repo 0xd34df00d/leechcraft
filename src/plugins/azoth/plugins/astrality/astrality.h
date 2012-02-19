@@ -16,11 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ASTRALITY_ASTRALITY_H
-#define PLUGINS_AZOTH_PLUGINS_ASTRALITY_ASTRALITY_H
+#pragma once
+
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iprotocolplugin.h>
+
+namespace Tp
+{
+	class PendingOperation;
+}
 
 namespace LeechCraft
 {
@@ -28,6 +33,8 @@ namespace Azoth
 {
 namespace Astrality
 {
+	class CMWrapper;
+
 	class Plugin : public QObject
 					, public IInfo
 					, public IPlugin2
@@ -35,6 +42,8 @@ namespace Astrality
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
+
+		QList<CMWrapper*> Wrappers_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -50,12 +59,15 @@ namespace Astrality
 		QList<QObject*> GetProtocols () const;
 	public slots:
 		void initPlugin (QObject*);
+	private slots:
+		void handleListNames (Tp::PendingOperation*);
+		void handleProtoWrappers (const QList<QObject*>&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (LeechCraft::Entity, int*, QObject**);
+
 		void gotNewProtocols (const QList<QObject*>&);
 	};
 }
 }
 }
-
-#endif

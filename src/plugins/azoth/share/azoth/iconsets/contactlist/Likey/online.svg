@@ -15,7 +15,7 @@
    height="96"
    id="svg2408"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="main.svg"
+   sodipodi:docname="online.svg"
    inkscape:export-filename="/home/buckstabu/Dropbox/Public/lcicons/lcproto2.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
@@ -28,15 +28,15 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1858"
-     inkscape:window-height="1058"
+     inkscape:window-width="1862"
+     inkscape:window-height="1036"
      id="namedview68"
      showgrid="false"
      inkscape:zoom="0.83333333"
-     inkscape:cx="10.526307"
+     inkscape:cx="-223.47369"
      inkscape:cy="-0.45248522"
-     inkscape:window-x="54"
-     inkscape:window-y="-8"
+     inkscape:window-x="66"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg2408" />
   <defs
@@ -44,11 +44,11 @@
     <linearGradient
        id="linearGradient4017">
       <stop
-         style="stop-color:#ff6600;stop-opacity:1;"
+         style="stop-color:#48f200;stop-opacity:1;"
          offset="0"
          id="stop4019" />
       <stop
-         style="stop-color:#ff1e00;stop-opacity:1;"
+         style="stop-color:#2c6603;stop-opacity:1;"
          offset="1"
          id="stop4021" />
     </linearGradient>
@@ -87,37 +87,6 @@
          style="stop-color:#000000;stop-opacity:1"
          offset="1" />
     </linearGradient>
-    <linearGradient
-       id="linearGradient3737-4-0">
-      <stop
-         id="stop3739-8-4"
-         style="stop-color:#ffffff;stop-opacity:1"
-         offset="0" />
-      <stop
-         id="stop3741-71-8"
-         style="stop-color:#ffffff;stop-opacity:0"
-         offset="1" />
-    </linearGradient>
-    <filter
-       x="-0.192"
-       y="-0.192"
-       width="1.3839999"
-       height="1.3839999"
-       color-interpolation-filters="sRGB"
-       id="filter3794-2">
-      <feGaussianBlur
-         id="feGaussianBlur3796-9"
-         stdDeviation="5.28" />
-    </filter>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3737-4-0"
-       id="linearGradient4102"
-       gradientUnits="userSpaceOnUse"
-       x1="48"
-       y1="20.220806"
-       x2="48"
-       y2="138.66119" />
     <radialGradient
        inkscape:collect="always"
        xlink:href="#linearGradient3224-6"
@@ -129,15 +98,6 @@
        fx="47.098362"
        fy="78.286942"
        r="38.957481" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient4017"
-       id="linearGradient4023"
-       x1="48.732876"
-       y1="37.021988"
-       x2="48.609169"
-       y2="60.526169"
-       gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4017"
@@ -157,7 +117,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

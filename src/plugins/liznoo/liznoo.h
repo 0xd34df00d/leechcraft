@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QLinkedList>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/iactionsexporter.h>
 #include "batteryhistory.h"
 #include "batteryinfo.h"
@@ -34,12 +35,16 @@ namespace Liznoo
 
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IHaveSettings
 				 , public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
+		Q_INTERFACES (IInfo IHaveSettings IActionsExporter)
 
 		ICoreProxy_ptr Proxy_;
+
+		Util::XmlSettingsDialog_ptr XSD_;
+
 		PlatformLayer *PL_;
 		QMap<QString, QAction*> Battery2Action_;
 		QMap<QString, BatteryInfo> Battery2LastInfo_;
@@ -57,8 +62,13 @@ namespace Liznoo
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 		QMap<QString, QList<QAction*>> GetMenuActions () const;
+	private:
+		void UpdateAction (const BatteryInfo&);
+		void CheckNotifications (const BatteryInfo&);
 	private slots:
 		void handleBatteryInfo (Liznoo::BatteryInfo);
 		void handleUpdateHistory ();

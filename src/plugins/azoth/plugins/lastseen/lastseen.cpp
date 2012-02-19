@@ -37,7 +37,7 @@ namespace LastSeen
 	{
 		SaveScheduled_ = false;
 
-		Translator_.reset (Util::InstallTranslator ("azoth_lastseen"));
+		Util::InstallTranslator ("azoth_lastseen");
 
 		qRegisterMetaType<LastHash_t> ("LeechCraft::Azoth::LastSeen::LastHash_t");
 		qRegisterMetaTypeStreamOperators<LastHash_t> ("LeechCraft::Azoth::LastSeen::LastHash_t");
@@ -47,7 +47,7 @@ namespace LastSeen
 
 	void Plugin::SecondInit ()
 	{
-	}	
+	}
 
 	QByteArray Plugin::GetUniqueID () const
 	{
@@ -79,7 +79,7 @@ namespace LastSeen
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	namespace
 	{
 		bool IsGoodEntry (QObject *entryObj)
@@ -92,25 +92,25 @@ namespace LastSeen
 						<< "doesn't implement ICLEntry";
 				return false;
 			}
-			
+
 			if ((entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
 				return false;
-			
+
 			return true;
 		}
 	}
-	
+
 	void Plugin::ScheduleSave ()
 	{
 		if (SaveScheduled_)
 			return;
-		
+
 		QTimer::singleShot (3000,
 				this,
 				SLOT (save ()));
 		SaveScheduled_ = true;
 	}
-	
+
 	void Plugin::Load ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
@@ -118,11 +118,11 @@ namespace LastSeen
 		LastAvailable_ = settings.value ("LastAvailable").value<LastHash_t> ();
 		LastOnline_ = settings.value ("LastOnline").value<LastHash_t> ();
 	}
-	
+
 	void Plugin::save ()
 	{
 		SaveScheduled_ = false;
-		
+
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_LastSeen");
 		settings.setValue ("LastAvailable",
@@ -130,12 +130,12 @@ namespace LastSeen
 		settings.setValue ("LastOnline",
 				QVariant::fromValue<LastHash_t> (LastOnline_));
 	}
-	
+
 	void Plugin::hookEntryStatusChanged (IHookProxy_ptr, QObject *entryObj, QString)
 	{
 		if (!IsGoodEntry (entryObj))
 			return;
-		
+
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		const QString& id = entry->GetEntryID ();
 		const EntryStatus& status = entry->GetStatus ();
@@ -145,7 +145,7 @@ namespace LastSeen
 			LastState_ [id] = status.State_;
 			return;
 		}
-		
+
 		const State oldState = LastState_ [id];
 		LastState_ [id] = status.State_;
 
@@ -164,19 +164,19 @@ namespace LastSeen
 			ScheduleSave ();
 		}
 	}
-	
+
 	void Plugin::hookTooltipBeforeVariants (IHookProxy_ptr proxy, QObject *entryObj)
 	{
 		if (!IsGoodEntry (entryObj))
 			return;
-		
+
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		const QString& id = entry->GetEntryID ();
 
 		QString addition;
 
 		const State curState = entry->GetStatus ().State_;
-		
+
 		if (curState != SOnline)
 		{
 			const QDateTime& avail = LastAvailable_.value (id);
@@ -198,7 +198,7 @@ namespace LastSeen
 					.arg (online.toString ());
 			}
 		}
-		
+
 		if (addition.isEmpty ())
 			return;
 
@@ -209,4 +209,4 @@ namespace LastSeen
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_lastseen, LeechCraft::Azoth::LastSeen::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_lastseen, LeechCraft::Azoth::LastSeen::Plugin);

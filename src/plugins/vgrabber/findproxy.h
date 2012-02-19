@@ -97,7 +97,7 @@ namespace LeechCraft
 				void error (const QString&);
 			};
 
-			typedef boost::shared_ptr<FindProxy> FindProxy_ptr;
+			typedef std::shared_ptr<FindProxy> FindProxy_ptr;
 		};
 	};
 };

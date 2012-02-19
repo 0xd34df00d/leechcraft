@@ -344,7 +344,7 @@ namespace LackMan
 
 		QString dirname = Util::GetTemporaryName ("lackman_stagingarea");
 		QStringList args;
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 		args << "x";
 
 		QString outDirArg("-o");
@@ -383,7 +383,7 @@ namespace LackMan
 			return;
 		}
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 		QString command = "7za";
 #else
 		QString command = "tar";

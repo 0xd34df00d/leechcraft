@@ -348,7 +348,7 @@ namespace LackMan
 	{
 		UpdateAll_ = new QAction (tr ("Update all repos"), this);
 		UpdateAll_->setProperty ("ActionIcon", "view-refresh");
-		UpdateAll_->setShortcut (QString ("U"));
+		UpdateAll_->setShortcut (QString ("Ctrl+U"));
 		connect (UpdateAll_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
@@ -357,7 +357,7 @@ namespace LackMan
 
 		UpgradeAll_ = new QAction (tr ("Upgrade all packages"), this);
 		UpgradeAll_->setProperty ("ActionIcon", "system-software-update");
-		UpgradeAll_->setShortcut (QString ("Ctrl+U"));
+		UpgradeAll_->setShortcut (QString ("Ctrl+Shift+U"));
 		connect (UpgradeAll_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
@@ -391,4 +391,4 @@ namespace LackMan
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_lackman, LeechCraft::LackMan::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lackman, LeechCraft::LackMan::Plugin);

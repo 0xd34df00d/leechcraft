@@ -24,6 +24,7 @@
 #include <QStringList>
 #include <QMetaType>
 #include <QPair>
+#include <QHash>
 #include "attdescr.h"
 
 namespace LeechCraft
@@ -37,9 +38,6 @@ namespace Snails
 		QByteArray ID_;
 		QList<QStringList> Folders_;
 		quint64 Size_;
-		QString From_;
-		QString FromEmail_;
-		QList<QPair<QString, QString>> To_;
 		QDateTime Date_;
 		QStringList Recipients_;
 		QString Subject_;
@@ -50,6 +48,20 @@ namespace Snails
 		bool IsRead_;
 
 		QList<AttDescr> Attachments_;
+	public:
+		enum class Address
+		{
+			To,
+			Cc,
+			Bcc,
+			From,
+			ReplyTo
+		};
+
+		typedef QPair<QString, QString> Address_t;
+		typedef QList<Address_t> Addresses_t;
+	private:
+		QHash<Address, Addresses_t> Addresses_;
 	public:
 		Message (QObject* = 0);
 
@@ -65,20 +77,14 @@ namespace Snails
 		quint64 GetSize () const;
 		void SetSize (quint64);
 
-		QString GetFrom () const;
-		void SetFrom (const QString&);
-
-		QString GetFromEmail () const;
-		void SetFromEmail (const QString&);
-
-		QList<QPair<QString, QString>> GetTo () const;
-		void SetTo (const QList<QPair<QString, QString>>&);
+		Address_t GetAddress (Address) const;
+		Addresses_t GetAddresses (Address) const;
+		void AddAddress (Address, const Address_t&);
+		void SetAddress (Address, const Address_t&);
+		void SetAddresses (Address, const Addresses_t&);
 
 		QDateTime GetDate () const;
 		void SetDate (const QDateTime&);
-
-		QStringList GetRecipients () const;
-		void SetRecipients (const QStringList&);
 
 		QString GetSubject () const;
 		void SetSubject (const QString&);
@@ -105,6 +111,8 @@ namespace Snails
 	};
 
 	typedef std::shared_ptr<Message> Message_ptr;
+
+	QString GetNiceMail (const Message::Address_t&);
 }
 }
 

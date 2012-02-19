@@ -39,6 +39,9 @@ SET (SRCS
 	importers/akregator/akregatorimportpage.cpp
 	importers/liferea/lifereaimportpage.cpp
 	importers/liferea/lifereaimporter.cpp
+	importers/kopete/kopeteimporter.cpp
+	importers/kopete/kopeteimportpage.cpp
+	importers/kopete/kopeteimportthread.cpp
 	importers/ktorrent/ktorrentimportpage.cpp
 	importers/ktorrent/ktorrentimporter.cpp
 	importers/firefox/firefoximportpage.cpp
@@ -62,6 +65,9 @@ SET (HEADERS
 	importers/akregator/akregatorimportpage.h
 	importers/liferea/lifereaimportpage.h
 	importers/liferea/lifereaimporter.h
+	importers/kopete/kopeteimporter.h
+	importers/kopete/kopeteimportpage.h
+	importers/kopete/kopeteimportthread.h
 	importers/ktorrent/ktorrentimportpage.h
 	importers/ktorrent/ktorrentimporter.h
 	importers/firefox/firefoximportpage.h

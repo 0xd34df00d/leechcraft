@@ -156,5 +156,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_networkmonitor, LeechCraft::Plugins::NetworkMonitor::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_networkmonitor, LeechCraft::Plugins::NetworkMonitor::Plugin);
 

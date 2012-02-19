@@ -18,14 +18,14 @@
 
 #ifndef PLUGINS_QROSP_WRAPPERS_HOOKPROXYWRAPPER_H
 #define PLUGINS_QROSP_WRAPPERS_HOOKPROXYWRAPPER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QVariant>
 
 namespace LeechCraft
 {
 class IHookProxy;
-typedef boost::shared_ptr<IHookProxy> IHookProxy_ptr;
+typedef std::shared_ptr<IHookProxy> IHookProxy_ptr;
 
 namespace Qrosp
 {

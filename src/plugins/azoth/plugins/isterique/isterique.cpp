@@ -126,4 +126,4 @@ namespace Isterique
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_isterique, LeechCraft::Azoth::Isterique::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_isterique, LeechCraft::Azoth::Isterique::Plugin);
