@@ -239,7 +239,7 @@ namespace Astrality
 	Tp::ContactMessengerPtr AccountWrapper::GetMessenger (const QString& id)
 	{
 		if (!Messengers_.contains (id))
-				Messengers_ [id] = Tp::ContactMessenger::create (A_, id);
+			Messengers_ [id] = Tp::ContactMessenger::create (A_, id);
 
 		return Messengers_ [id];
 	}
