@@ -221,6 +221,21 @@ namespace Astrality
 		return 0;
 	}
 
+	QObject* AccountWrapper::GetSelfContact () const
+	{
+		return 0;
+	}
+
+	QImage AccountWrapper::GetSelfAvatar () const
+	{
+		return QImage::fromData (A_->avatar ().avatarData);
+	}
+
+	QIcon AccountWrapper::GetAccountIcon () const
+	{
+		return QIcon::fromTheme (A_->iconName ());
+	}
+
 	Tp::ContactMessengerPtr AccountWrapper::GetMessenger (const QString& id)
 	{
 		if (!Messengers_.contains (id))

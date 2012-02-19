@@ -23,6 +23,7 @@
 #include <ContactMessenger>
 #include <interfaces/structures.h>
 #include <interfaces/iaccount.h>
+#include <interfaces/iextselfinfoaccount.h>
 
 namespace LeechCraft
 {
@@ -34,9 +35,10 @@ namespace Astrality
 
 	class AccountWrapper : public QObject
 						 , public IAccount
+						 , public IExtSelfInfoAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount);
+		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::IExtSelfInfoAccount);
 
 		Tp::AccountPtr A_;
 		QList<EntryWrapper*> Entries_;
@@ -52,6 +54,7 @@ namespace Astrality
 	public:
 		AccountWrapper (Tp::AccountPtr, QObject*);
 
+		// IAccount
 		QObject* GetObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
@@ -71,6 +74,11 @@ namespace Astrality
 				const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager() const;
+
+		// IExtSelfInfoAccount
+		QObject* GetSelfContact () const;
+		QImage GetSelfAvatar () const;
+		QIcon GetAccountIcon () const;
 
 		Tp::ContactMessengerPtr GetMessenger (const QString&);
 		void Shutdown ();
