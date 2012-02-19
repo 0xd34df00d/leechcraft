@@ -28,19 +28,7 @@
 namespace LeechCraft
 {
 namespace Laure
-{
-	enum PlayListColumns
-	{
-		URLColumn,
-		ArtistColumn,
-		TitleColumn,
-		AlbumColumn,
-		GenreColumn,
-		DateColumn,
-		QueueColumn,
-		MAX
-	};
-	
+{	
 	PlayListView::PlayListView (QStandardItemModel *model, QWidget *parent)
 	: QTreeView (parent)
 	, PlayListModel_ (model)

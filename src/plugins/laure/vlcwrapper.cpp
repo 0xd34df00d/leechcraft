@@ -69,6 +69,7 @@ namespace Laure
 	: QObject (parent)
 	, CurrentItem_ (-1)
 	, IsPlayedFromQueue_ (false)
+	, IsPlaying_ (false)
 	{	
 		Instance_ = libvlc_instance_ptr (libvlc_new (sizeof (vlc_args)
 				/ sizeof (vlc_args[0]), vlc_args), libvlc_release);
@@ -103,9 +104,9 @@ namespace Laure
 		return -1;
 	}
 	
-	//TODO: Rewrite it for QueueList;
 	void VLCWrapper::handleNextItemSet ()
 	{
+		qDebug () << Q_FUNC_INFO;
 		int index = PlayQueue ();
 		if (index < 0)
 		{
@@ -113,8 +114,6 @@ namespace Laure
 			index = libvlc_media_list_index_of_item (list,
 					libvlc_media_player_get_media (Player_.get ()));
 		}
-		
-		qDebug () << Q_FUNC_INFO << index << IsPlayedFromQueue_;
 		
 		const MediaMeta& meta = GetItemMeta (index);
 		emit gotEntity (Util::MakeNotification ("Laure",
@@ -176,7 +175,7 @@ namespace Laure
 	
 	bool VLCWrapper::IsPlaying () const
 	{
-		return libvlc_media_list_player_is_playing (LPlayer_.get ());
+		return IsPlaying_;
 	}
 	
 	int VLCWrapper::GetVolume () const
@@ -186,7 +185,7 @@ namespace Laure
 	
 	float VLCWrapper::GetMediaPosition () const
 	{
-		return IsPlaying () ?
+		return IsPlaying_ ?
 				libvlc_media_player_get_position (Player_.get ()) :
 				-1;
 	}
@@ -276,7 +275,6 @@ namespace Laure
 	
 	void VLCWrapper::playItem (int val)
 	{
-		qDebug () << Q_FUNC_INFO << val;
 		const int count = RowCount ();
 		if (val == count)
 			CurrentItem_ = 0;
@@ -304,20 +302,22 @@ namespace Laure
 	
 	void VLCWrapper::stop ()
 	{
+		IsPlaying_ = false;
 		libvlc_media_player_stop (Player_.get ());
 	}
 	
 	void VLCWrapper::pause ()
 	{
+		IsPlaying_ = true;
 		libvlc_media_player_pause (Player_.get ());
 	}
 	
 	void VLCWrapper::play ()
 	{
-		libvlc_media_list_player_play (LPlayer_.get ());
-		//libvlc_media_player_play (Player_.get ());
-		if (!IsPlaying ())
-			emit paused ();
+		int index;
+		if (IsPlaying () || (index = PlayQueue ()) < 0)
+			libvlc_media_list_player_play (LPlayer_.get ());
+		IsPlaying_ = true;
 	}
 	
 	void VLCWrapper::next ()

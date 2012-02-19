@@ -36,6 +36,18 @@ namespace Laure
 		IsPlayingRole = Qt::UserRole + 1
 	};
 	
+	enum PlayListColumns
+	{
+		URLColumn,
+		ArtistColumn,
+		TitleColumn,
+		AlbumColumn,
+		GenreColumn,
+		DateColumn,
+		QueueColumn,
+		MAX
+	};
+	
 	/** @brief Provides a model/view implementation of a playlist view.
 	 * 
 	 * @author Minh Ngo <nlminhtl@gmail.com>

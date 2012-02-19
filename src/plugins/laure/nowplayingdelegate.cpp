@@ -33,7 +33,7 @@ namespace Laure
 	void NowPlayingDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option,
 				const QModelIndex& id) const
 	{
-		const bool played = id.sibling (id.row (), 0)
+		const bool played = id.sibling (id.row (), PlayListColumns::URLColumn)
 				.data (IsPlayingRole).toBool ();
 				
 		if (played)

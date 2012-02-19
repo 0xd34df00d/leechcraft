@@ -73,6 +73,7 @@ namespace Laure
 		libvlc_media_list_player_ptr LPlayer_;
 		libvlc_media_player_ptr Player_;
 		bool IsPlayedFromQueue_;
+		bool IsPlaying_;
 	public:
 		/** @brief Constructs a new VLCWrapper class
 		 * with the given parent.
