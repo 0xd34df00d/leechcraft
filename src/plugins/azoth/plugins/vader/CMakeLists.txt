@@ -22,6 +22,7 @@ SET (VADER_SRCS
 	vaderutil.cpp
 	groupmanager.cpp
 	smsdialog.cpp
+	selfavatarfetcher.cpp
 	proto/headers.cpp
 	proto/conversions.cpp
 	proto/connection.cpp
@@ -44,6 +45,7 @@ SET (VADER_HEADERS
 	vaderutil.h
 	groupmanager.h
 	smsdialog.h
+	selfavatarfetcher.h
 	proto/headers.h
 	proto/conversions.h
 	proto/connection.h
