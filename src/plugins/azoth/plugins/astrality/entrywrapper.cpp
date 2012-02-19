@@ -50,6 +50,10 @@ namespace Astrality
 				SIGNAL (subscriptionStateChanged (Tp::Contact::PresenceState)),
 				this,
 				SLOT (handleSubStateChanged (Tp::Contact::PresenceState)));
+		connect (C_.data (),
+				SIGNAL (avatarDataChanged (Tp::AvatarData)),
+				this,
+				SLOT (handleAvatarDataChanged ()));
 
 		connect (this,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
@@ -164,7 +168,7 @@ namespace Astrality
 
 	QImage EntryWrapper::GetAvatar () const
 	{
-		return QImage ();
+		return QImage (C_->avatarData ().fileName);
 	}
 
 	QString EntryWrapper::GetRawInfo () const
@@ -226,6 +230,11 @@ namespace Astrality
 	void EntryWrapper::handlePresenceChanged ()
 	{
 		emit statusChanged (GetStatus (QString ()), QString ());
+	}
+
+	void EntryWrapper::handleAvatarDataChanged ()
+	{
+		emit avatarChanged (GetAvatar ());
 	}
 
 	void EntryWrapper::handlePublishStateChanged (Tp::Contact::PresenceState state, const QString& msg)

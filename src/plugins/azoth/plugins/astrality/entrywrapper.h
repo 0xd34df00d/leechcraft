@@ -82,6 +82,7 @@ namespace Astrality
 		void RerequestAuth (const QString&);
 	private slots:
 		void handlePresenceChanged ();
+		void handleAvatarDataChanged ();
 		void handlePublishStateChanged (Tp::Contact::PresenceState, const QString&);
 		void handleSubStateChanged (Tp::Contact::PresenceState);
 		void handleMessageReceived (const Tp::ReceivedMessage&, Tp::TextChannelPtr);

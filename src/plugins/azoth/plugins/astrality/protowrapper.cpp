@@ -39,14 +39,20 @@ namespace Astrality
 	, ProtoInfo_ (CM_->protocol (ProtoName_))
 	{
 		const auto& sb = QDBusConnection::sessionBus ();
-		auto accf = Tp::AccountFactory::create (sb, Tp::Account::FeatureCore);
+		auto accf = Tp::AccountFactory::create (sb,
+				Tp::Account::FeatureCore |
+				Tp::Account::FeatureAvatar |
+				Tp::Account::FeatureProtocolInfo |
+				Tp::Account::FeatureProfile);
 		auto channelf = Tp::ChannelFactory::create (sb);
 		auto connf = Tp::ConnectionFactory::create (sb,
 				Tp::Connection::FeatureConnected |
 				Tp::Connection::FeatureRoster |
 				Tp::Connection::FeatureRosterGroups);
 		auto contactf = Tp::ContactFactory::create (Tp::Contact::FeatureAlias |
-				Tp::Contact::FeatureSimplePresence);
+				Tp::Contact::FeatureSimplePresence |
+				Tp::Contact::FeatureAvatarData |
+				Tp::Contact::FeatureAvatarToken);
 		AM_ = Tp::AccountManager::create (accf, connf, channelf, contactf);
 
 		connect (AM_->becomeReady (),
