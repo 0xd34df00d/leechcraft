@@ -55,6 +55,8 @@ namespace Astrality
 				this,
 				SLOT (handleAvatarDataChanged ()));
 
+		C_->requestAvatarData ();
+
 		connect (this,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				AW_,
