@@ -78,6 +78,7 @@ namespace Vader
 	void SelfAvatarFetcher::handleHeadFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
 		if (reply->error () == QNetworkReply::ContentNotFoundError)
 		{
 			qDebug () << Q_FUNC_INFO
@@ -107,6 +108,7 @@ namespace Vader
 	void SelfAvatarFetcher::handleGetFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
 		const QImage& image = QImage::fromData (reply->readAll ());
 		emit gotImage (image);
 	}
