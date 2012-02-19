@@ -251,6 +251,11 @@ namespace Astrality
 
 	void AccountWrapper::Shutdown ()
 	{
+		emit removedCLItems (GetCLEntries ());
+		qDeleteAll (Entries_);
+		Entries_.clear ();
+		Messengers_.clear ();
+
 		disconnect (A_.data (),
 				SIGNAL (currentPresenceChanged (Tp::Presence)),
 				this,
