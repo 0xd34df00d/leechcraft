@@ -56,7 +56,7 @@ namespace Acetamide
 		IrcServerCLEntry *ServerCLEntry_;
 		IrcServerSocket *Socket_;
 		UserCommandManager *CmdManager_;
-				ServerResponseManager *ServerResponseManager_;
+		ServerResponseManager *ServerResponeManager_;
 		RplISupportParser *RplISupportParser_;
 		ChannelsManager *ChannelsManager_;
 
