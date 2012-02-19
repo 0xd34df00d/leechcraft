@@ -156,6 +156,7 @@ namespace Xoox
 
 		// IExtSelfInfoAccount
 		QObject* GetSelfContact () const;
+		QImage GetSelfAvatar () const;
 		QIcon GetAccountIcon () const;
 
 		// IHaveServiceDiscovery

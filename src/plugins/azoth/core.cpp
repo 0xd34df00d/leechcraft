@@ -1448,16 +1448,22 @@ namespace Azoth
 
 		QImage avatar = entry ? entry->GetAvatar () : QImage ();
 		if (avatar.isNull () || !avatar.width ())
-		{
-			const QString& name = XmlSettingsManager::Instance ()
-					.property ("SystemIcons").toString () + "/default_avatar";
-			avatar = ResourceLoaders_ [RLTSystemIconLoader]->LoadPixmap (name).toImage ();
-		}
+			avatar = GetDefaultAvatar (size);
 
 		const QImage& scaled = avatar.scaled (size, size,
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
 		Entry2SmoothAvatarCache_ [entry] = scaled;
 		return scaled;
+	}
+
+	QImage Core::GetDefaultAvatar (int size)
+	{
+		const QString& name = XmlSettingsManager::Instance ()
+				.property ("SystemIcons").toString () + "/default_avatar";
+		const QImage& image = ResourceLoaders_ [RLTSystemIconLoader]->
+				LoadPixmap (name).toImage ();
+		return image.scaled (size, size,
+				Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 
 	ActionsManager* Core::GetActionsManager () const

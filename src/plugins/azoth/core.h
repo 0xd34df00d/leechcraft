@@ -280,6 +280,7 @@ namespace Azoth
 		 * @return Entry's avatar scaled to the given size.
 		 */
 		QImage GetAvatar (ICLEntry *entry, int size);
+		QImage GetDefaultAvatar (int size);
 
 		ActionsManager* GetActionsManager () const;
 

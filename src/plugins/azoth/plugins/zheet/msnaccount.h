@@ -120,6 +120,7 @@ namespace Zheet
 
 		// IExtSelfInfoAccount
 		QObject* GetSelfContact () const;
+		QImage GetSelfAvatar () const;
 		QIcon GetAccountIcon () const;
 	private slots:
 		void handleConnected ();

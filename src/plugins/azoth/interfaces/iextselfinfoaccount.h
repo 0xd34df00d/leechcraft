@@ -28,9 +28,11 @@ namespace Azoth
 	{
 	public:
 		virtual ~IExtSelfInfoAccount () {}
-		
+
 		virtual QObject* GetSelfContact () const = 0;
-		
+
+		virtual QImage GetSelfAvatar () const = 0;
+
 		virtual QIcon GetAccountIcon () const = 0;
 	};
 }

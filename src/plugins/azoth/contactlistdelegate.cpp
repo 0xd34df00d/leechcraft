@@ -145,10 +145,12 @@ namespace Azoth
 		const int sHeight = r.height ();
 		const int iconSize = sHeight;
 
-		const QImage& avatarImg = Core::Instance ().GetAvatar (extAcc ?
-					qobject_cast<ICLEntry*> (extAcc->GetSelfContact ()) :
-					0,
-				iconSize);
+		QImage avatarImg;
+		if (extAcc)
+			avatarImg = extAcc->GetSelfAvatar ().scaled (iconSize, iconSize,
+					Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		if (avatarImg.isNull ())
+			avatarImg = Core::Instance ().GetDefaultAvatar (iconSize);
 
 		QPoint pxDraw = o.rect.topRight () - QPoint (CPadding, 0);
 
