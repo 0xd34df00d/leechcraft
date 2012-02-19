@@ -31,11 +31,11 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	typedef boost::shared_ptr<libvlc_instance_t> libvlc_instance_ptr;
-	typedef boost::shared_ptr<libvlc_media_list_t> libvlc_media_list_ptr;
-	typedef boost::shared_ptr<libvlc_media_list_player_t> libvlc_media_list_player_ptr;
-	typedef boost::shared_ptr<libvlc_media_player_t> libvlc_media_player_ptr;
-	typedef boost::shared_ptr<libvlc_media_t> libvlc_media_ptr;
+	typedef std::shared_ptr<libvlc_instance_t> libvlc_instance_ptr;
+	typedef std::shared_ptr<libvlc_media_list_t> libvlc_media_list_ptr;
+	typedef std::shared_ptr<libvlc_media_list_player_t> libvlc_media_list_player_ptr;
+	typedef std::shared_ptr<libvlc_media_player_t> libvlc_media_player_ptr;
+	typedef std::shared_ptr<libvlc_media_t> libvlc_media_ptr;
 	typedef QMap<QString, QVariant> QVariantMap;
 	
 	/** @brief Provides a structure for storing media meta info

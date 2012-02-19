@@ -83,13 +83,11 @@ namespace Laure
 				<< tr ("Genre")
 				<< tr ("Date")
 				<< "";
-		for (int i = 1, count = PlayListModel_->columnCount ();
-				i < count; ++i)
-			PlayListModel_->setHeaderData (i, Qt::Horizontal,
-					headers [i - 1]);
+		for (int i = 1, count = PlayListModel_->columnCount (); i < count; ++i)
+			PlayListModel_->setHeaderData (i, Qt::Horizontal, headers [i - 1]);
 	}
 	
-	void PlayListView::Init (boost::shared_ptr<VLCWrapper> wrapper)
+	void PlayListView::Init (std::shared_ptr<VLCWrapper> wrapper)
 	{
 		VLCWrapper_ = wrapper;
 		VLCWrapper *w = wrapper.get ();
@@ -124,7 +122,6 @@ namespace Laure
 			int columnIndex = selectedItem->data ().toInt ();
 			XmlSettingsManager::Instance ().setProperty ("Header"
 					+ QString::number (columnIndex).toAscii (), selectedItem->isChecked ());
-			qDebug () << Q_FUNC_INFO << QString::number (columnIndex).toAscii () << selectedItem->isChecked ();
 		}
 	}
 	
@@ -135,15 +132,7 @@ namespace Laure
 		
 		const int row = selectedIndexes ().first ().row ();
 		
-		bool found = false;
-		Q_FOREACH (int val, VLCWrapper_->GetQueueListIndexes ())
-		{
-			if (val == row)
-			{
-				found = true;
-				break;
-			}
-		}
+		bool found = VLCWrapper_->GetQueueListIndexes ().contains (row);
 		
 		QMenu menu;
 		QAction *menuAction = new QAction (tr (found ? "Unqueue" : "Queue"), &menu);
@@ -164,20 +153,16 @@ namespace Laure
 	
 	void PlayListView::UpdateQueueIndexes ()
 	{
-		const QList<int> queueIndexes = VLCWrapper_->GetQueueListIndexes ();
-		int i = 0;
-		for (; i < PlayListModel_->columnCount (); ++i)
-		{
-			PlayListModel_->setData (PlayListModel_
-					->index (i, PlayListColumns::QueueColumn), QString ());
-		}
+		const QList<int>& queueIndexes = VLCWrapper_->GetQueueListIndexes ();
 		
-		i = 0;
+		for (int i = 0; i < PlayListModel_->columnCount (); ++i)
+			PlayListModel_->setData (PlayListModel_->
+					index (i, PlayListColumns::QueueColumn), QString ());
+		
+		int i = 0;
 		Q_FOREACH (const int index, queueIndexes)
-		{
-			PlayListModel_->setData (PlayListModel_
-					->index (index, PlayListColumns::QueueColumn), "#" + QString::number (i++));
-		}
+			PlayListModel_->setData (PlayListModel_->
+					index (index, PlayListColumns::QueueColumn), "#" + QString::number (i++));
 	}
 	
 	void PlayListView::handleHideHeaders ()
@@ -239,7 +224,7 @@ namespace Laure
 	{
 		const QModelIndexList& indexList = selectedIndexes ();
 		const int c = indexList.count ();
-		if (!c)
+		if (!c || !NotHiddenColumnCount_)
 			return;
 		
 		const int first = indexList.first ().row ();

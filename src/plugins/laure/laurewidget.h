@@ -19,7 +19,7 @@
 
 #ifndef PLUGINS_LAURE_LAUREWIDGET_H
 #define PLUGINS_LAURE_LAUREWIDGET_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iinfo.h>
@@ -53,8 +53,8 @@ namespace Laure
 		
 		QToolBar *ToolBar_;
 		Ui::LaureWidget Ui_;
-		boost::shared_ptr<VLCWrapper> VLCWrapper_;
-		boost::shared_ptr<SeparatePlayer> SeparatePlayer_;
+		std::shared_ptr<VLCWrapper> VLCWrapper_;
+		std::shared_ptr<SeparatePlayer> SeparatePlayer_;
 		QAction *DetachedVideo_;
 		QAction *PlayListAction_;
 	public:

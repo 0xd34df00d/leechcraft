@@ -100,7 +100,7 @@ namespace Laure
 				SLOT (addRow (QString)));
 		
 		const int playlistWidth = XmlSettingsManager::Instance ()
-				.GetRawValue ("PlayListWidgetWidth").toInt ();
+				.property ("PlayListWidgetWidth").toInt ();
 		
 		Ui_.Splitter_->setSizes (QList<int> () << size ().width () << playlistWidth);
 		
@@ -285,14 +285,14 @@ namespace Laure
 		if (checked)
 		{
 			const int playlistWidth = XmlSettingsManager::Instance ()
-					.GetRawValue ("PlayListWidgetWidth").toInt ();
+					.property ("PlayListWidgetWidth").toInt ();
 			Ui_.Splitter_->addWidget (Ui_.PlayListWidget_);
 			PlayListAction_->setChecked (false);
 			Ui_.Splitter_->setSizes (QList<int> () << size ().width () << playlistWidth);
 		}
 		else
 		{
-			XmlSettingsManager::Instance ().SetRawValue ("PlayListWidgetWidth",
+			XmlSettingsManager::Instance ().setProperty ("PlayListWidgetWidth",
 					Ui_.PlayListWidget_->size ().width ());
 			Ui_.GlobalGridLayout_->addWidget (Ui_.PlayListWidget_, 0, 1, 1, 4);
 		}

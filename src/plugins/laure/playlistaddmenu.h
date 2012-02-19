@@ -19,9 +19,9 @@
 
 #ifndef PLUGINS_LAURE_PLAYLISTADDMENU_H
 #define PLUGINS_LAURE_PLAYLISTADDMENU_H
+#include <memory>
 #include <QMenu>
 #include <QFileInfoList>
-#include <boost/shared_ptr.hpp>
 
 #ifdef HAVE_MAGIC
 	#include <magic.h>
@@ -41,7 +41,7 @@ namespace Laure
 	{
 		Q_OBJECT
 #ifdef HAVE_MAGIC
-		boost::shared_ptr<magic_set> Magic_;
+		std::shared_ptr<magic_set> Magic_;
 #else
 		QStringList Formats_;
 #endif

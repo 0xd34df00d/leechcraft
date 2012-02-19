@@ -42,7 +42,7 @@ namespace Laure
 		Poller_->start (300);
 	}
 	
-	void Player::SetVLCWrapper (boost::shared_ptr<VLCWrapper> core)
+	void Player::SetVLCWrapper (std::shared_ptr<VLCWrapper> core)
 	{
 		VLCWrapper_ = core;
 		VLCWrapper_->setWindow (winId ());

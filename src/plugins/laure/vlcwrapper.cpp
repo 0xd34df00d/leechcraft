@@ -222,10 +222,8 @@ namespace Laure
 		
 		auto itr = QueueListIndex_.begin ();
 		for (; itr != QueueListIndex_.end (); ++itr)
-		{
 			if (*itr > pos)
 				--(*itr);
-		}
 		
 		return res;
 	}

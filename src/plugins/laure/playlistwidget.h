@@ -47,13 +47,13 @@ namespace Laure
 		QStandardItemModel *PlayListModel_;
 		PlayListView *PlayListView_;
 		QToolBar *ActionBar_;
-		boost::shared_ptr<VLCWrapper> VLCWrapper_;
+		std::shared_ptr<VLCWrapper> VLCWrapper_;
 	public:
 		/** @brief Constructs a new PlayListWidget class
 		 * with the given parent.
 		 */
 		PlayListWidget (QWidget* = 0);
-		void Init (boost::shared_ptr<VLCWrapper> wrapper);
+		void Init (std::shared_ptr<VLCWrapper> wrapper);
 	public slots:
 		/** @brief Is called when the media file has added to
 		 * VLCWrapper.

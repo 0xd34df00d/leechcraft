@@ -97,7 +97,7 @@ namespace Laure
 				SIGNAL (playbackModeChanged (PlaybackMode)));
 	}
 	
-	void PlayListWidget::Init (boost::shared_ptr<VLCWrapper> wrapper)
+	void PlayListWidget::Init (std::shared_ptr<VLCWrapper> wrapper)
 	{
 		PlayListView_->Init (wrapper);
 		VLCWrapper_ = wrapper;
