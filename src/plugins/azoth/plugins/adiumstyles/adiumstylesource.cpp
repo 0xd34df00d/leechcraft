@@ -487,8 +487,8 @@ namespace AdiumStyles
 		else if (acc)
 		{
 			IExtSelfInfoAccount *self = qobject_cast<IExtSelfInfoAccount*> (acc->GetObject ());
-			if (self && self->GetSelfContact ())
-				image = qobject_cast<ICLEntry*> (self->GetSelfContact ())->GetAvatar ();
+			if (self)
+				image = self->GetSelfAvatar ();
 		}
 
 		if (image.isNull ())
