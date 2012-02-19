@@ -30,6 +30,7 @@
 #include "groupmanager.h"
 #include "smsdialog.h"
 #include "core.h"
+#include "selfavatarfetcher.h"
 
 namespace LeechCraft
 {
@@ -43,6 +44,7 @@ namespace Vader
 	, Info_ (info)
 	, IsAuthorized_ (true)
 	, SendSMS_ (new QAction (tr ("Send SMS..."), this))
+	, AvatarFetcher_ (new SelfAvatarFetcher (this))
 	{
 		Status_.State_ = VaderUtil::StatusID2State (info.StatusID_);
 
@@ -51,6 +53,12 @@ namespace Vader
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleSendSMS ()));
+
+		connect (AvatarFetcher_,
+				SIGNAL (gotImage (QImage)),
+				this,
+				SLOT (updateAvatar (QImage)));
+		AvatarFetcher_->Restart (info.Email_);
 	}
 
 	void MRIMBuddy::HandleMessage (MRIMMessage *msg)
@@ -264,7 +272,7 @@ namespace Vader
 
 	QImage MRIMBuddy::GetAvatar () const
 	{
-		return QImage ();
+		return Avatar_;
 	}
 
 	QString MRIMBuddy::GetRawInfo () const
@@ -298,6 +306,12 @@ namespace Vader
 	void MRIMBuddy::DrawAttention (const QString& text, const QString&)
 	{
 		A_->GetConnection ()->SendAttention (GetHumanReadableID (), text);
+	}
+
+	void MRIMBuddy::updateAvatar (const QImage& image)
+	{
+		Avatar_ = image;
+		emit avatarChanged (Avatar_);
 	}
 
 	void MRIMBuddy::handleSendSMS ()
