@@ -6,47 +6,47 @@
     <message>
         <location filename="accountregfirstpage.ui" line="14"/>
         <source>General account settings</source>
-        <translation type="unfinished"></translation>
+        <translation>General account settings</translation>
     </message>
     <message>
         <location filename="accountregfirstpage.ui" line="25"/>
         <source>Account ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>Account ID:</translation>
     </message>
     <message>
         <location filename="accountregfirstpage.ui" line="35"/>
         <source>Server:</source>
-        <translation type="unfinished"></translation>
+        <translation>Server:</translation>
     </message>
     <message>
         <location filename="accountregfirstpage.ui" line="45"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Port:</translation>
     </message>
     <message>
         <location filename="accountregfirstpage.ui" line="52"/>
         <source>Default port</source>
-        <translation type="unfinished"></translation>
+        <translation>Default port</translation>
     </message>
     <message>
         <location filename="accountregfirstpage.ui" line="62"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Password:</translation>
     </message>
     <message>
         <location filename="accountregfirstpage.ui" line="78"/>
         <source>Require encryption</source>
-        <translation type="unfinished"></translation>
+        <translation>Require encryption</translation>
     </message>
     <message>
         <location filename="accountregfirstpage.ui" line="88"/>
         <source>Automatically disconnect on LeechCraft shutdown.</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatically disconnect on LeechCraft shutdown.</translation>
     </message>
     <message>
         <location filename="accountregfirstpage.ui" line="91"/>
         <source>Autodisconnect</source>
-        <translation type="unfinished"></translation>
+        <translation>Autodisconnect</translation>
     </message>
 </context>
 <context>
@@ -54,127 +54,127 @@
     <message>
         <location filename="accountwrapper.cpp" line="276"/>
         <source>Enter password for account %1 with login %2:</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter password for account %1 with login %2:</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="351"/>
         <source>Error enabling account %1: %2 (%3).</source>
-        <translation type="unfinished"></translation>
+        <translation>Error enabling account %1: %2 (%3).</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="370"/>
         <source>Error removing account %1: %2 (%3).</source>
-        <translation type="unfinished"></translation>
+        <translation>Error removing account %1: %2 (%3).</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="389"/>
         <source>Error renaming account %1: %2 (%3).</source>
-        <translation type="unfinished"></translation>
+        <translation>Error renaming account %1: %2 (%3).</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="412"/>
         <source>network error</source>
-        <translation type="unfinished"></translation>
+        <translation>network error</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="415"/>
         <source>authentication failed</source>
-        <translation type="unfinished"></translation>
+        <translation>authentication failed</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="418"/>
         <source>encryption error</source>
-        <translation type="unfinished"></translation>
+        <translation>encryption error</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="421"/>
         <source>resource or name is already in use</source>
-        <translation type="unfinished"></translation>
+        <translation>resource or name is already in use</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="424"/>
         <source>certificate hasn&apos;t been provided</source>
-        <translation type="unfinished"></translation>
+        <translation>certificate hasn&apos;t been provided</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="427"/>
         <source>certificate is untrusted</source>
-        <translation type="unfinished"></translation>
+        <translation>certificate is untrusted</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="430"/>
         <source>certificate expired</source>
-        <translation type="unfinished"></translation>
+        <translation>certificate expired</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="433"/>
         <source>certificate isn&apos;t activated</source>
-        <translation type="unfinished"></translation>
+        <translation>certificate isn&apos;t activated</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="436"/>
         <source>hostname mismatch in certificate</source>
-        <translation type="unfinished"></translation>
+        <translation>hostname mismatch in certificate</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="439"/>
         <source>certificate fingerprint mismatch</source>
-        <translation type="unfinished"></translation>
+        <translation>certificate fingerprint mismatch</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="442"/>
         <source>certificate is self-signed</source>
-        <translation type="unfinished"></translation>
+        <translation>certificate is self-signed</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="445"/>
         <source>other certificate error</source>
-        <translation type="unfinished"></translation>
+        <translation>other certificate error</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="448"/>
         <source>certificate is revoked</source>
-        <translation type="unfinished"></translation>
+        <translation>certificate is revoked</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="451"/>
         <source>certificate is insecure</source>
-        <translation type="unfinished"></translation>
+        <translation>certificate is insecure</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="454"/>
         <source>certificate length limit is exceeded</source>
-        <translation type="unfinished"></translation>
+        <translation>certificate length limit is exceeded</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="457"/>
         <source>other error</source>
-        <translation type="unfinished"></translation>
+        <translation>other error</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="462"/>
         <source>Connection error for account %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Connection error for account %1: %2.</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="466"/>
         <source>Backend message: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Backend message: %1.</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="513"/>
         <source>Failed to update password for account %1: %2 (%3).</source>
-        <translation type="unfinished"></translation>
+        <translation>Failed to update password for account %1: %2 (%3).</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="535"/>
         <source>Error changing state for account %1: %2 (%3).</source>
-        <translation type="unfinished"></translation>
+        <translation>Error changing state for account %1: %2 (%3).</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="635"/>
         <source>Failed to request authorization: %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Failed to request authorization: %1 (%2).</translation>
     </message>
 </context>
 <context>
@@ -182,15 +182,15 @@
     <message>
         <location filename="msgwrapper.cpp" line="134"/>
         <source>Unable to send message to %1: %2 (%3).</source>
-        <translation type="unfinished"></translation>
+        <translation>Unable to send message to %1: %2 (%3).</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Astrality::Plugin</name>
     <message>
-        <location filename="astrality.cpp" line="79"/>
+        <location filename="astrality.cpp" line="80"/>
         <source>Support for protocols provided by Telepathy.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support for protocols provided by Telepathy.</translation>
     </message>
 </context>
 <context>
@@ -198,7 +198,7 @@
     <message>
         <location filename="protowrapper.cpp" line="221"/>
         <source>Failed to create account: %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Failed to create account: %1 (%2).</translation>
     </message>
 </context>
 </TS>
