@@ -116,8 +116,6 @@ namespace Acetamide
 		if (!ichEntry)
 			return false;
 
-		ISH_->GetAccount ()->handleGotRosterItems (QObjectList () << ichEntry);
-
 		return true;
 	}
 
@@ -219,7 +217,10 @@ namespace Acetamide
 	{
 		if (ChannelHandlers_.contains (channel) &&
 				!ChannelHandlers_ [channel]->IsRosterReceived ())
+		{
 			ChannelHandlers_ [channel]->SetRosterReceived (true);
+			ISH_->GetAccount ()->handleGotRosterItems (QObjectList () << ChannelHandlers_ [channel]->GetCLEntry ());
+		}
 		else
 			ReceiveCmdAnswerMessage ("names", "End of /NAMES", true);
 	}
