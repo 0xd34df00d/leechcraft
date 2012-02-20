@@ -49,11 +49,14 @@ namespace Astrality
 		auto connf = Tp::ConnectionFactory::create (sb,
 				Tp::Connection::FeatureConnected |
 				Tp::Connection::FeatureRoster |
+				Tp::Connection::FeatureSimplePresence |
 				Tp::Connection::FeatureRosterGroups);
 		auto contactf = Tp::ContactFactory::create (Tp::Contact::FeatureAlias |
 				Tp::Contact::FeatureSimplePresence |
 				Tp::Contact::FeatureAvatarData |
-				Tp::Contact::FeatureAvatarToken);
+				Tp::Contact::FeatureAvatarToken |
+				Tp::Contact::FeatureCapabilities |
+				Tp::Contact::FeatureInfo);
 		AM_ = Tp::AccountManager::create (accf, connf, channelf, contactf);
 
 		connect (AM_->becomeReady (),
