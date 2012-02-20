@@ -1839,6 +1839,11 @@ namespace Azoth
 				this,
 				SLOT (handleAccountStatusChanged (const EntryStatus&)));
 
+		connect (accObject,
+				SIGNAL (accountRenamed (const QString&)),
+				this,
+				SLOT (handleAccountRenamed (const QString&)));
+
 		if (qobject_cast<IHaveServiceDiscovery*> (accObject))
 			connect (accObject,
 					SIGNAL (gotSDSession (QObject*)),
@@ -2051,6 +2056,19 @@ namespace Azoth
 				<< "item for account"
 				<< sender ()
 				<< "not found";
+	}
+
+	void Core::handleAccountRenamed (const QString& name)
+	{
+		for (int i = 0, size = CLModel_->rowCount (); i < size; ++i)
+		{
+			QStandardItem *item = CLModel_->item (i);
+			if (item->data (CLRAccountObject).value<QObject*> () != sender ())
+				continue;
+
+			item->setText (name);
+			return;
+		}
 	}
 
 	void Core::handleStatusChanged (const EntryStatus& status, const QString& variant)

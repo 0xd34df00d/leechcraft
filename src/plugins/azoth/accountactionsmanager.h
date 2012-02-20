@@ -48,6 +48,7 @@ namespace Azoth
 		QAction *AccountSetLocation_;
 		QAction *AccountSD_;
 		QAction *AccountConsole_;
+		QAction *AccountRename_;
 		QAction *AccountModify_;
 	public:
 		AccountActionsManager (QWidget*, QObject* = 0);
@@ -63,6 +64,7 @@ namespace Azoth
 		void handleAccountSetLocation ();
 		void handleAccountSD ();
 		void handleAccountConsole ();
+		void handleAccountRename ();
 		void handleAccountModify ();
 
 		void consoleRemoved (QWidget*);

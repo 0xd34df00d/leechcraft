@@ -443,6 +443,8 @@ namespace Azoth
 		 */
 		void handleAccountStatusChanged (const EntryStatus& status);
 
+		void handleAccountRenamed (const QString&);
+
 		/** Handles the status change of a CL entry to new status.
 		 */
 		void handleStatusChanged (const EntryStatus& status, const QString& variant);

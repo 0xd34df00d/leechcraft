@@ -19,6 +19,7 @@
 #include "accountactionsmanager.h"
 #include <QAction>
 #include <QMenu>
+#include <QInputDialog>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/iaccount.h"
@@ -55,6 +56,7 @@ namespace Azoth
 	, AccountSetLocation_ (new QAction (tr ("Set location..."), this))
 	, AccountSD_ (new QAction (tr ("Service discovery..."), this))
 	, AccountConsole_ (new QAction (tr ("Console..."), this))
+	, AccountRename_ (new QAction (tr ("Rename..."), this))
 	, AccountModify_ (new QAction (tr ("Modify..."), this))
 	{
 		AccountJoinConference_->setProperty ("ActionIcon", "irc-join-channel");
@@ -63,6 +65,7 @@ namespace Azoth
 		AccountSetMood_->setProperty ("ActionIcon", "face-smile");
 		AccountSD_->setProperty ("ActionIcon", "services");
 		AccountConsole_->setProperty ("ActionIcon", "utilities-terminal");
+		AccountRename_->setProperty ("ActionIcon", "edit-rename");
 		connect (AccountJoinConference_,
 				SIGNAL (triggered ()),
 				this,
@@ -95,6 +98,10 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAccountConsole ()));
+		connect (AccountRename_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountRename ()));
 		connect (AccountModify_,
 				SIGNAL (triggered ()),
 				this,
@@ -174,6 +181,8 @@ namespace Azoth
 
 		actions << Util::CreateSeparator (menu);
 
+		if (account->GetAccountFeatures () & IAccount::FRenamable)
+			actions << AccountRename_;
 		actions << AccountModify_;
 
 		Q_FOREACH (QAction *act, actions)
@@ -368,6 +377,25 @@ namespace Azoth
 		}
 
 		emit gotConsoleWidget (Account2CW_ [account]);
+	}
+
+	void AccountActionsManager::handleAccountRename ()
+	{
+		IAccount *account = GetAccountFromSender (sender (), Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		const QString& name = account->GetAccountName ();
+		const QString& newName = QInputDialog::getText (0,
+				tr ("Rename account"),
+				tr ("Enter new name for account %1:")
+					.arg (name),
+				QLineEdit::Normal,
+				name);
+		if (newName.isEmpty ())
+			return;
+
+		account->RenameAccount (newName);
 	}
 
 	void AccountActionsManager::handleAccountModify ()
