@@ -31,11 +31,15 @@ namespace Azoth
 		Q_OBJECT
 
 		Ui::SetStatusDialog Ui_;
+		QString Context_;
 	public:
-		SetStatusDialog (QWidget* = 0);
+		SetStatusDialog (const QString& context, QWidget* = 0);
 
 		State GetState () const;
 		QString GetStatusText () const;
+	private slots:
+		void save ();
+		void on_StatusBox__currentIndexChanged ();
 	};
 }
 }

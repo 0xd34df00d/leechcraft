@@ -446,7 +446,7 @@ namespace Azoth
 		}
 		else
 		{
-			SetStatusDialog ssd (this);
+			SetStatusDialog ssd (acc ? acc->GetAccountID () : "global", this);
 			if (ssd.exec () != QDialog::Accepted)
 				return;
 

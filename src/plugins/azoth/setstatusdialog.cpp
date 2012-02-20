@@ -17,15 +17,34 @@
  **********************************************************************/
 
 #include "setstatusdialog.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	SetStatusDialog::SetStatusDialog (QWidget *parent)
+	namespace
+	{
+		QByteArray BuildSettingName (const QString& context, State st)
+		{
+			return QString ("FastStatusText_%1_%2")
+					.arg (context)
+					.arg (st)
+					.toUtf8 ();
+		}
+	}
+
+	SetStatusDialog::SetStatusDialog (const QString& context, QWidget *parent)
 	: QDialog (parent)
+	, Context_ (context)
 	{
 		Ui_.setupUi (this);
+		on_StatusBox__currentIndexChanged ();
+
+		connect (this,
+				SIGNAL (accepted ()),
+				this,
+				SLOT (save ()));
 	}
 
 	State SetStatusDialog::GetState () const
@@ -50,6 +69,19 @@ namespace Azoth
 	QString SetStatusDialog::GetStatusText () const
 	{
 		return Ui_.StatusText_->toPlainText ();
+	}
+
+	void SetStatusDialog::save ()
+	{
+		const auto& name = BuildSettingName (Context_, GetState ());
+		XmlSettingsManager::Instance ().setProperty (name, GetStatusText ());
+	}
+
+	void SetStatusDialog::on_StatusBox__currentIndexChanged ()
+	{
+		const auto& name = BuildSettingName (Context_, GetState ());
+		const auto& str = XmlSettingsManager::Instance ().property (name).toString ();
+		Ui_.StatusText_->setText (str);
 	}
 }
 }

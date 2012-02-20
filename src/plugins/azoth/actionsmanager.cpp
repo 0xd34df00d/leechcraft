@@ -772,7 +772,7 @@ namespace Azoth
 		if (variant == variants.front ())
 			variant.clear ();
 
-		SetStatusDialog dia;
+		SetStatusDialog dia ((QString ()));
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
