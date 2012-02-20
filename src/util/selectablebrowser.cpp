@@ -30,6 +30,7 @@ namespace LeechCraft
 			QVBoxLayout *lay = new QVBoxLayout ();
 			lay->setContentsMargins (0, 0, 0, 0);
 			setLayout (lay);
+			setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 			PrepareInternal ();
 		}
@@ -46,9 +47,8 @@ namespace LeechCraft
 			}
 			else
 			{
-				PrepareInternal ();
 				ExternalBrowser_.reset ();
-				layout ()->addWidget (InternalBrowser_.get ());
+				PrepareInternal ();
 			}
 		}
 
@@ -77,7 +77,8 @@ namespace LeechCraft
 			Internal_ = true;
 			InternalBrowser_.reset (new QTextBrowser (this));
 			InternalBrowser_->setOpenExternalLinks (true);
+			InternalBrowser_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+			layout ()->addWidget (InternalBrowser_.get ());
 		}
-	};
-};
-
+	}
+}
