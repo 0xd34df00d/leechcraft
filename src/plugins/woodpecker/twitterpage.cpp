@@ -17,14 +17,18 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 	Toolbar_ (new QToolBar)
 {
 	ui->setupUi (this);
-//  Toolbar_->addAction(ui->actionRefresh);
+//	Toolbar_->addAction(ui->actionRefresh);
 	interface = new twitterInterface (this);
-	connect (interface, SIGNAL (tweetsReady (QList<boost::shared_ptr<Tweet> >)),
-			 this, SLOT (updateTweetList (QList<boost::shared_ptr<Tweet> >)));
+	connect (interface, SIGNAL (tweetsReady (QList<std::shared_ptr<Tweet> >)),
+			 this, SLOT (updateTweetList (QList<std::shared_ptr<Tweet> >)));
 	timer = new QTimer (this);
 	timer->setInterval (90e3); // Update twits every 1.5 minutes
 	connect (timer, SIGNAL (timeout()), interface, SLOT (getHomeFeed()));
 	tryToLogin();
+	int newSliderPos;
+
+	connect((ui->TwitList_->verticalScrollBar()), SIGNAL (valueChanged(int)),
+			this, SLOT (scrolledDown(int)));
 //    connect(ui->login_Test_, SIGNAL (clicked ()), SLOT(tryToLogin()));
 	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (twit()));
 	settings = new QSettings (QCoreApplication::organizationName (),
@@ -46,6 +50,7 @@ TwitterPage::~TwitterPage()
 	settings->deleteLater();
 	timer->stop();
 	timer->deleteLater();
+	delete interface;
 	delete ui;
 }
 
@@ -96,30 +101,39 @@ void TwitterPage::requestUserTimeline (QString username)
 	interface->getUserTimeline (username);
 }
 
-void TwitterPage::updateTweetList (QList< boost::shared_ptr< Tweet > > twits)
+void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 {
-	boost::shared_ptr<Tweet> twit;
-	boost::shared_ptr<Tweet> firstNewTwit;
+	std::shared_ptr<Tweet> twit;
+	std::shared_ptr<Tweet> firstNewTwit;
 	int i;
 
 	if (! (twits.length())) return; // if we have no tweets to parse
 
 	firstNewTwit = twits.first();
 
-	// Now we'd find firstNewTwit in twitList
+	if (screenTwits.length() && (twits.last()->id() == screenTwits.first()->id())) // if we should prepend
+		for (auto i = twits.end()-2; i >= twits.begin(); i--)
+			screenTwits.insert(0,*i);
+	else
+	{
 
-	for (i = 0; i < screenTwits.length(); i++)
-		if ( (screenTwits.at (i)->id()) == firstNewTwit->id()) break;
+		// Now we'd find firstNewTwit in twitList
 
-	int insertionShift = screenTwits.length() - i;    // We've already got insertionShift twits to our list
+		for (i = 0; i < screenTwits.length(); i++)
+			if ( (screenTwits.at (i)->id()) == firstNewTwit->id()) break;
 
-
-	for (i = 0; i < insertionShift; i++)
-		twits.removeFirst();
+		int insertionShift = screenTwits.length() - i;    // We've already got insertionShift twits to our list
 
 
-	screenTwits.append (twits);
+		for (i = 0; i < insertionShift; i++)
+		{
+			qDebug() << "uTL: cycle i " << i << endl;
+			twits.removeFirst();
+		}
 
+
+		screenTwits.append (twits);
+	}
 	ui->TwitList_->clear();
 
 	Q_FOREACH (twit, screenTwits)
@@ -133,6 +147,7 @@ void TwitterPage::updateTweetList (QList< boost::shared_ptr< Tweet > > twits)
 		ui->TwitList_->insertItem (0, tmpitem);
 	}
 	ui->TwitList_->update();
+	ui->TwitList_->setEnabled(true);
 }
 
 void TwitterPage::recvdAuth (QString token, QString tokenSecret)
@@ -148,6 +163,20 @@ void TwitterPage::twit()
 	interface->sendTweet (ui->TwitEdit_->text());
 	ui->TwitEdit_->clear();
 }
+
+void TwitterPage::scrolledDown (int sliderPos)
+{
+	qDebug() << "Scrolled down to: " << sliderPos << " Min/Max: " <<
+		ui->TwitList_->verticalScrollBar()->minimum() << "/" << ui->TwitList_->verticalScrollBar()->maximum();
+	if (sliderPos == ui->TwitList_->verticalScrollBar()->maximum())
+	{
+		ui->TwitList_->verticalScrollBar()->setSliderPosition(ui->TwitList_->verticalScrollBar()->maximum()-1);
+
+		ui->TwitList_->setEnabled(false);
+		interface->getMoreTweets(QString("%1").arg((*(screenTwits.begin()))->id()));
+	}
+}
+
 
 }
 }

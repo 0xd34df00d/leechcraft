@@ -49,11 +49,6 @@ void twitterInterface::getCommonFeed (unsigned int number)
 	requestTwitter (link);
 }
 
-void twitterInterface::getHomeFeed()
-{
-	qDebug() << "Getting home feed";
-	signedRequest (TRHomeTimeline, KQOAuthRequest::GET);
-}
 
 
 void twitterInterface::requestTwitter (QUrl requestAddress)
@@ -65,7 +60,7 @@ void twitterInterface::requestTwitter (QUrl requestAddress)
 
 void twitterInterface::replyFinished (QNetworkReply *reply)
 {
-	QList< boost::shared_ptr<Tweet> >    tweets;
+	QList< std::shared_ptr<Tweet> >    tweets;
 	QByteArray       jsonText;
 	jsonText = QByteArray (reply->readAll());
 	reply->deleteLater();
@@ -75,10 +70,10 @@ void twitterInterface::replyFinished (QNetworkReply *reply)
 	emit tweetsReady (tweets);
 }
 
-QList< boost::shared_ptr<Tweet> > twitterInterface::parseReply (QByteArray json)
+QList< std::shared_ptr<Tweet> > twitterInterface::parseReply (QByteArray json)
 {
 	QJson::Parser parser;
-	QList< boost::shared_ptr<Tweet> > result;
+	QList< std::shared_ptr<Tweet> > result;
 	bool ok;
 
 	QVariantList answers = parser.parse (json, &ok).toList();
@@ -95,7 +90,7 @@ QList< boost::shared_ptr<Tweet> > twitterInterface::parseReply (QByteArray json)
 		tweetMap = answers[i].toMap();
 		userMap = tweetMap["user"].toMap();
 		QLocale::setDefault (QLocale::English);
-		boost::shared_ptr<Tweet> tempTweet (new Tweet (this));
+		std::shared_ptr<Tweet> tempTweet (new Tweet (this));
 
 		tempTweet->setText (tweetMap["text"].toString());
 		tempTweet->author()->setUsername (userMap["screen_name"].toString());
@@ -146,7 +141,7 @@ void twitterInterface::signedRequest (twitterRequest req, KQOAuthRequest::Reques
 	{
 	case TRHomeTimeline:
 		reqUrl = "https://api.twitter.com/1/statuses/home_timeline.json";
-		params.insert ("count", "10");
+		params.insert ("count", "50");
 		params.insert ("include_entities", "true");
 		break;
 
@@ -237,6 +232,7 @@ void twitterInterface::xauth() {
 	oauthRequest->initRequest (KQOAuthRequest::AccessToken, QUrl ("https://api.twitter.com/oauth/access_token"));
 	oauthRequest->setConsumerKey ("nbwLYUDIlgsMgDFCu6jfuA");
 	oauthRequest->setConsumerSecretKey ("7TWYPzLUqZlihIRA2VWfZhCRfss2JNKvkSWMQx4");
+
 	// oauthRequest->setXAuthLogin("login","password");
 
 	oauthManager->executeRequest (oauthRequest);
@@ -245,8 +241,26 @@ void twitterInterface::xauth() {
 void twitterInterface::searchTwitter (QString text)
 {
 	QString link ("http://search.twitter.com/search.json?q=" + text);
-
+	setLastRequestMode(FMSearchResult);
 	requestTwitter (link);
+}
+
+void twitterInterface::getHomeFeed()
+{
+	qDebug() << "Getting home feed";
+	setLastRequestMode(FMHomeTimeline);
+	signedRequest (TRHomeTimeline, KQOAuthRequest::GET);
+}
+
+void twitterInterface::getMoreTweets(QString last)
+{
+	KQOAuthParameters param;
+
+	qDebug() << "Getting more tweets from " << last;
+	param.insert ("max_id",last);
+	param.insert ("count",QString("%1").arg(10));
+	setLastRequestMode(FMHomeTimeline);
+	signedRequest (TRHomeTimeline, KQOAuthRequest::GET,param);
 }
 
 
@@ -254,6 +268,7 @@ void twitterInterface::getUserTimeline (QString username)
 {
 	KQOAuthParameters param;
 	param.insert ("screen_name", username);
+	setLastRequestMode(FMUserTimeline);
 	signedRequest (TRUserTimeline, KQOAuthRequest::GET, param);
 }
 

@@ -40,8 +40,8 @@ class Plugin : public QObject
 	Q_OBJECT
 	Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
 
-	boost::shared_ptr<QTranslator> Translator_;
-	boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
+	std::shared_ptr<QTranslator> Translator_;
+	std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 public:
 	void Init (ICoreProxy_ptr);
 	void SecondInit ();
@@ -54,7 +54,7 @@ public:
 	TabClasses_t GetTabClasses () const;
 	void TabOpenRequested (const QByteArray&);
 
-	boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+	std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 signals:
 	void addNewTab (const QString&, QWidget*);
 	void removeTab (QWidget*);

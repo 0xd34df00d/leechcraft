@@ -21,8 +21,17 @@ namespace Woodpecker
 enum twitterRequest
 {
 	TRHomeTimeline,
+	TRMentions,
 	TRUserTimeline,
 	TRUpdate
+};
+
+enum feedMode
+{
+	FMHomeTimeline,
+	FMMentions,
+	FMUserTimeline,
+	FMSearchResult
 };
 
 class twitterInterface : public QObject
@@ -35,6 +44,8 @@ public:
 	void sendTweet (QString tweet);
 	void getAccess ();
 	void login (QString savedToken, QString savedTokenSecret);
+	feedMode getLastRequestMode() { return  lastRequestMode;};
+	void setLastRequestMode(feedMode newLastRequestMode) { lastRequestMode = newLastRequestMode;};
 
 private:
 	QNetworkAccessManager *HttpClient;
@@ -45,11 +56,12 @@ private:
 	QString consumerKey;
 	QString consumerKeySecret;
 	QSettings *settings;
+	feedMode lastRequestMode;
 
 	void signedRequest (twitterRequest req, KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET, KQOAuthParameters params = KQOAuthParameters());
 
 	void requestTwitter (QUrl requestAddress);
-	QList < boost::shared_ptr<Tweet> > parseReply (QByteArray json);
+	QList < std::shared_ptr<Tweet> > parseReply (QByteArray json);
 
 
 	void xauth();
@@ -63,7 +75,7 @@ private slots:
 	void onAuthorizedRequestDone ();
 	void onAccessTokenReceived (QString token, QString tokenSecret);
 signals:
-	void tweetsReady (QList< boost::shared_ptr<Tweet> >);
+	void tweetsReady (QList< std::shared_ptr<Tweet> >);
 	void authorized (QString, QString);
 
 public slots:
@@ -71,6 +83,7 @@ public slots:
 	void getHomeFeed ();
 	void searchTwitter (QString text);
 	void getUserTimeline (QString username);
+	void getMoreTweets (QString last);
 };
 }
 }

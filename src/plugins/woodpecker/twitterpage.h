@@ -2,6 +2,7 @@
 #define TWITTERPAGE_H
 
 #include <QWidget>
+#include <QScrollBar>
 #include <QTimer>
 
 #include <interfaces/ihavetabs.h>
@@ -55,9 +56,10 @@ public:
 public slots:
     void tryToLogin();
     void requestUserTimeline (QString username);
-    void updateTweetList (QList< boost::shared_ptr< Tweet > > twits);
+    void updateTweetList (QList< std::shared_ptr< Tweet > > twits);
     void recvdAuth (QString token, QString tokenSecret);
     void twit();
+	void scrolledDown(int sliderPos);
 
 
 private:
@@ -65,7 +67,7 @@ private:
     twitterInterface *interface;
     QTimer *timer;
     QSettings *settings;
-    QList< boost::shared_ptr< Tweet > > screenTwits;
+    QList< std::shared_ptr< Tweet > > screenTwits;
 
 signals:
     void removeTab (QWidget*);

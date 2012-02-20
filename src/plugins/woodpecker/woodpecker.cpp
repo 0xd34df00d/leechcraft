@@ -118,7 +118,6 @@ void Plugin::TabOpenRequested (const QByteArray& tabClass)
 {
 	if (tabClass == "Woodpecker")
 		Core::Instance ().NewTabRequested ();
-
 	else
 		qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
@@ -126,13 +125,13 @@ void Plugin::TabOpenRequested (const QByteArray& tabClass)
 }
 
 
-boost::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
+std::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
 {
 	return XmlSettingsDialog_;
 }
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_woodpecker, LeechCraft::Woodpecker::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_woodpecker, LeechCraft::Woodpecker::Plugin);
 
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;
