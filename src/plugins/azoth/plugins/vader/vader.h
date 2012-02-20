@@ -19,6 +19,7 @@
 #pragma once
 
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iprotocolplugin.h>
 #include <interfaces/core/ihookproxy.h>
@@ -31,11 +32,14 @@ namespace Vader
 {
 	class Plugin : public QObject
 					, public IInfo
+					, public IHaveSettings
 					, public IPlugin2
 					, public IProtocolPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
+		Q_INTERFACES (IInfo IHaveSettings IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
+
+		Util::XmlSettingsDialog_ptr XSD_;
 
 		QMap<QObject*, QList<QAction*>> EntryServices_;
 	public:
@@ -46,6 +50,8 @@ namespace Vader
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
 

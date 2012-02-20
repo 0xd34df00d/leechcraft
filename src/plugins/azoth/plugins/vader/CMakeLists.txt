@@ -23,6 +23,7 @@ SET (VADER_SRCS
 	groupmanager.cpp
 	smsdialog.cpp
 	selfavatarfetcher.cpp
+	xmlsettingsmanager.cpp
 	proto/headers.cpp
 	proto/conversions.cpp
 	proto/connection.cpp
@@ -46,6 +47,7 @@ SET (VADER_HEADERS
 	groupmanager.h
 	smsdialog.h
 	selfavatarfetcher.h
+	xmlsettingsmanager.h
 	proto/headers.h
 	proto/conversions.h
 	proto/connection.h
@@ -90,4 +92,4 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth_vader
 
 INSTALL (TARGETS leechcraft_azoth_vader DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${VADER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-#INSTALL (FILES azothvadersettings.xml DESTINATION ${LC_SETTINGS_DEST})
+INSTALL (FILES azothvadersettings.xml DESTINATION ${LC_SETTINGS_DEST})

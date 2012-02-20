@@ -21,10 +21,12 @@
 #include <QAction>
 #include <QUrl>
 #include <util/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "mrimprotocol.h"
 #include "mrimbuddy.h"
 #include "vaderutil.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -35,8 +37,13 @@ namespace Vader
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
         Util::InstallTranslator ("azoth_vader");
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothvadersettings.xml");
+
 		Core::Instance ().SetCoreProxy (proxy);
 		Core::Instance ().GetProtocol ()->setParent (this);
+
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
@@ -72,6 +79,11 @@ namespace Vader
 		return QIcon (":/plugins/azoth/plugins/vader/resources/images/vader.svg");
 	}
 
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
+	}
+
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> classes;
@@ -93,7 +105,7 @@ namespace Vader
 	{
 		Core::Instance ().SetProxy (proxy);
 	}
-	
+
 	void Plugin::hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 			QObject *action,
 			QObject *entry)
@@ -105,7 +117,7 @@ namespace Vader
 	{
 		if (!qobject_cast<MRIMBuddy*> (entry))
 			return;
-		
+
 		if (!EntryServices_.contains (entry))
 		{
 			auto list = VaderUtil::GetBuddyServices (this,
@@ -114,13 +126,13 @@ namespace Vader
 				act->setProperty ("Azoth/Vader/Entry", QVariant::fromValue<QObject*> (entry));
 			EntryServices_ [entry] = list;
 		}
-		
+
 		QList<QVariant> list = proxy->GetReturnValue ().toList ();
 		Q_FOREACH (QAction *act, EntryServices_ [entry])
 			list += QVariant::fromValue<QObject*> (act);
 		proxy->SetReturnValue (list);
 	}
-	
+
 	void Plugin::entryServiceRequested ()
 	{
 		const QString& url = sender ()->property ("URL").toString ();
