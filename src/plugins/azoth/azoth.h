@@ -28,6 +28,7 @@
 #include <interfaces/ijobholder.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ianemitter.h>
 
 namespace LeechCraft
@@ -46,6 +47,7 @@ namespace Azoth
 				 , public IJobHolder
 				 , public IActionsExporter
 				 , public IEntityHandler
+				 , public IHaveShortcuts
 				 , public IANEmitter
 	{
 		Q_OBJECT
@@ -56,6 +58,7 @@ namespace Azoth
 				IJobHolder
 				IActionsExporter
 				IEntityHandler
+				IHaveShortcuts
 				IANEmitter)
 
 		MainWidget *MW_;
@@ -88,7 +91,12 @@ namespace Azoth
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
 
+		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QString, ActionInfo> GetActionInfo() const;
+
 		QList<ANFieldData> GetANFields () const;
+	private :
+		void InitShortcuts ();
 	public slots:
 		void handleSDWidget (ServiceDiscoveryWidget*);
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);

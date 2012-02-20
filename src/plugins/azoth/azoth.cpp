@@ -34,6 +34,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/resourceloader.h>
 #include <util/util.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include "core.h"
 #include "mainwidget.h"
 #include "chattabsmanager.h"
@@ -58,6 +59,7 @@ namespace Azoth
 		SearchWidget::SetParentMultiTabs (this);
 
 		Core::Instance ().SetProxy (proxy);
+		InitShortcuts ();
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
@@ -344,9 +346,36 @@ namespace Azoth
 		}
 	}
 
+	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& seqs)
+	{
+		Core::Instance ().GetShortcutManager ()->SetShortcut (id, seqs);
+	}
+
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	{
+		return Core::Instance ().GetShortcutManager ()->GetActionInfo ();
+	}
+
 	QList<ANFieldData> Plugin::GetANFields () const
 	{
 		return Core::Instance ().GetANFields ();
+	}
+
+	void Plugin::InitShortcuts ()
+	{
+		auto proxy = Core::Instance ().GetProxy ();
+
+		auto sm = Core::Instance ().GetShortcutManager ();
+		sm->SetObject (this);
+
+		sm->RegisterActionInfo ("org.LeechCraft.Azoth.ClearChat",
+				ActionInfo (tr ("Clear chat window"),
+						QString ("Ctrl+L"),
+						proxy->GetIcon ("edit-clear-history")));
+		sm->RegisterActionInfo ("org.LeechCraft.Azoth.QuoteSelected",
+				ActionInfo (tr ("Quote selected in chat tab"),
+						QString ("Ctrl+Q"),
+						proxy->GetIcon ("mail-reply-sender")));
 	}
 
 	void Plugin::handleSDWidget (ServiceDiscoveryWidget *sd)

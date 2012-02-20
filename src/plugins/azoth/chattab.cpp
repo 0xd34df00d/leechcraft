@@ -30,6 +30,7 @@
 #include <QKeyEvent>
 #include <util/defaulthookproxy.h>
 #include <util/util.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/iclentry.h"
@@ -924,11 +925,16 @@ namespace Azoth
 	{
 		QAction *clearAction = new QAction (tr ("Clear chat window"), this);
 		clearAction->setProperty ("ActionIcon", "edit-clear-history");
+		clearAction->setShortcut (QString ("Ctrl+L"));
 		connect (clearAction,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleClearChat ()));
 		TabToolbar_->addAction (clearAction);
+
+		Core::Instance ().GetShortcutManager ()->
+				RegisterAction ("org.LeechCraft.Azoth.ClearChat",
+						clearAction, true);
 
 		ToggleRichText_ = new QAction (tr ("Enable rich text"), this);
 		ToggleRichText_->setProperty ("ActionIcon", "text-enriched");
@@ -951,6 +957,10 @@ namespace Azoth
 				SLOT (handleQuoteSelection ()));
 		TabToolbar_->addAction (quoteSelection);
 		TabToolbar_->addSeparator ();
+
+		Core::Instance ().GetShortcutManager ()->
+				RegisterAction ("org.LeechCraft.Azoth.QuoteSelected",
+						quoteSelection, true);
 
 		Ui_.View_->SetQuoteAction (quoteSelection);
 	}

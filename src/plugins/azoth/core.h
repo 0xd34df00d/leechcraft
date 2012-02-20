@@ -49,7 +49,9 @@ namespace LeechCraft
 namespace Util
 {
 	class ResourceLoader;
+	class ShortcutManager;
 }
+
 namespace Azoth
 {
 	class ICLEntry;
@@ -141,6 +143,7 @@ namespace Azoth
 		std::shared_ptr<EventsNotifier> EventsNotifier_;
 		std::shared_ptr<ImportManager> ImportManager_;
 		std::shared_ptr<UnreadQueueManager> UnreadQueueManager_;
+		std::shared_ptr<Util::ShortcutManager> ShortcutManager_;
 
 		Core ();
 	public:
@@ -180,7 +183,8 @@ namespace Azoth
 		Util::ResourceLoader* GetResourceLoader (ResourceLoaderType) const;
 		QAbstractItemModel* GetSmilesOptionsModel () const;
 		IEmoticonResourceSource* GetCurrentEmoSource () const;
-		QAbstractItemModel* GetChatStylesOptionsModel ();
+		QAbstractItemModel* GetChatStylesOptionsModel () const;
+		Util::ShortcutManager* GetShortcutManager () const;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);

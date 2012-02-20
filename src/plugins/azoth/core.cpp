@@ -35,6 +35,7 @@
 #include <util/defaulthookproxy.h>
 #include <util/categoryselector.h>
 #include <util/notificationactionhandler.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/iprotocolplugin.h"
@@ -248,6 +249,8 @@ namespace Azoth
 	{
 		ResourceLoaders_.clear ();
 
+		ShortcutManager_.reset ();
+
 #ifdef ENABLE_CRYPT
 		QCAEventHandler_.reset ();
 		KeyStoreMgr_.reset ();
@@ -258,6 +261,7 @@ namespace Azoth
 	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+		ShortcutManager_.reset (new Util::ShortcutManager (proxy));
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -287,9 +291,14 @@ namespace Azoth
 		return SmilesOptionsModel_->GetSourceForOption (pack);
 	}
 
-	QAbstractItemModel* Core::GetChatStylesOptionsModel()
+	QAbstractItemModel* Core::GetChatStylesOptionsModel () const
 	{
 		return ChatStylesOptionsModel_.get ();
+	}
+
+	Util::ShortcutManager* Core::GetShortcutManager () const
+	{
+		return ShortcutManager_.get ();
 	}
 
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const
