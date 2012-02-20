@@ -32,6 +32,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	const QString CLEntryFormat = "x-leechcraft/azoth-cl-entry";
+
 	CLModel::CLModel (QObject *parent)
 	: QStandardItemModel (parent)
 	{
@@ -39,7 +40,7 @@ namespace Azoth
 
 	QStringList CLModel::mimeTypes () const
 	{
-		return QStringList (CLEntryFormat) << "text/uri-list";
+		return QStringList (CLEntryFormat) << "text/uri-list" << "text/plain";
 	}
 
 	QMimeData* CLModel::mimeData (const QModelIndexList& indexes) const
@@ -48,6 +49,8 @@ namespace Azoth
 
 		QByteArray encoded;
 		QDataStream stream (&encoded, QIODevice::WriteOnly);
+
+		QStringList names;
 
 		Q_FOREACH (const QModelIndex& index, indexes)
 		{
@@ -65,9 +68,12 @@ namespace Azoth
 					.data (Core::CLREntryCategory).toString ();
 
 			stream << entry->GetEntryID () << thisGroup;
+
+			names << entry->GetEntryName ();
 		}
 
 		result->setData (CLEntryFormat, encoded);
+		result->setText (names.join ("; "));
 
 		return result;
 	}
