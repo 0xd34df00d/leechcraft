@@ -212,6 +212,8 @@ namespace Xoox
 	void GlooxAccount::RenameAccount (const QString& name)
 	{
 		Name_ = name;
+		emit accountRenamed (name);
+		emit accountSettingsChanged ();
 	}
 
 	QByteArray GlooxAccount::GetAccountID () const

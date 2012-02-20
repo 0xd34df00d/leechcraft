@@ -260,6 +260,17 @@ namespace Azoth
 		 */
 		virtual QObject* GetTransferManager () const = 0;
 
+		/** @brief This signal should be emitted when account is renamed.
+		 *
+		 * This signal should be emitted even after an explicit call to
+		 * RenameAccount().
+		 *
+		 * @note This function is expected to be a signal.
+		 *
+		 * @param[out] newName The new name of this account.
+		 */
+		virtual void accountRenamed (const QString& newName) = 0;
+
 		/** @brief This signal should be emitted when new contact list
 		 * items appear in this account.
 		 *

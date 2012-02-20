@@ -183,6 +183,8 @@ namespace Vader
 	void MRIMAccount::RenameAccount (const QString& name)
 	{
 		Name_ = name;
+		emit accountRenamed (Name_);
+		emit accountSettingsChanged ();
 	}
 
 	QByteArray MRIMAccount::GetAccountID () const

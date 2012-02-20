@@ -34,11 +34,11 @@ namespace Metacontacts
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount);
-		
+
 		MetaProtocol *Parent_;
 	public:
 		MetaAccount (MetaProtocol*);
-		
+
 		QObject* GetObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
@@ -62,6 +62,7 @@ namespace Metacontacts
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
+		void accountRenamed (const QString&);
 		void authorizationRequested (QObject*, const QString&);
 		void itemSubscribed (QObject*, const QString&);
 		void itemUnsubscribed (QObject*, const QString&);

@@ -243,6 +243,8 @@ namespace Zheet
 	void MSNAccount::RenameAccount (const QString& name)
 	{
 		Name_ = name;
+		emit accountRenamed (name);
+		emit accountSettingsChanged ();
 	}
 
 	QByteArray MSNAccount::GetAccountID () const

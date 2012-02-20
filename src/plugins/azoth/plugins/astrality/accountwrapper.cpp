@@ -403,6 +403,8 @@ namespace Astrality
 					PCritical_));
 			return;
 		}
+
+		emit accountRenamed (GetAccountName ());
 	}
 
 	void AccountWrapper::handleConnStatusChanged (Tp::ConnectionStatus status)

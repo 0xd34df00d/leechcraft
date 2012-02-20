@@ -113,6 +113,7 @@ namespace Astrality
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
+		void accountRenamed (const QString&);
 		void authorizationRequested (QObject*, const QString&);
 		void itemSubscribed (QObject*, const QString&);
 		void itemUnsubscribed (QObject*, const QString&);

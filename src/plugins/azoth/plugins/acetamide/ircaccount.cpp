@@ -138,6 +138,8 @@ namespace Acetamide
 	void IrcAccount::RenameAccount (const QString& name)
 	{
 		AccountName_ = name;
+		emit accountRenamed (name);
+		emit accountSettingsChanged ();
 	}
 
 	QByteArray IrcAccount::GetAccountID () const

@@ -135,6 +135,7 @@ namespace Vader
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
 		void authorizationRequested (QObject*, const QString&);
+		void accountRenamed (const QString&);
 		void itemSubscribed (QObject*, const QString&);
 		void itemUnsubscribed (QObject*, const QString&);
 		void itemUnsubscribed (const QString&, const QString&);
