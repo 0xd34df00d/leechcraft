@@ -103,6 +103,8 @@ namespace Vader
 		// IAdvancedCLEntry
 		AdvancedFeatures GetAdvancedFeatures () const;
 		void DrawAttention (const QString&, const QString&);
+	private:
+		void UpdateClientVersion ();
 	private slots:
 		void updateAvatar (const QImage&);
 

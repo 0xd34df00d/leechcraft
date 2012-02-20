@@ -59,6 +59,8 @@ namespace Vader
 				this,
 				SLOT (updateAvatar (QImage)));
 		AvatarFetcher_->Restart (info.Email_);
+
+		UpdateClientVersion ();
 	}
 
 	void MRIMBuddy::HandleMessage (MRIMMessage *msg)
@@ -141,7 +143,11 @@ namespace Vader
 				[this] (QString name) { emit nameChanged (name); });
 		CmpXchg (Info_, info,
 				GetMem<QString> (&Proto::ContactInfo::UA_),
-				[this] (QString) { emit entryGenerallyChanged (); });
+				[this] (QString)
+				{
+					UpdateClientVersion ();
+					emit entryGenerallyChanged ();
+				});
 
 		bool stChanged = false;
 		const int oldVars = Variants ().size ();
@@ -306,6 +312,34 @@ namespace Vader
 	void MRIMBuddy::DrawAttention (const QString& text, const QString&)
 	{
 		A_->GetConnection ()->SendAttention (GetHumanReadableID (), text);
+	}
+
+	void MRIMBuddy::UpdateClientVersion ()
+	{
+		auto defClient = [&ClientInfo_] ()
+		{
+			ClientInfo_ ["client_type"] = "mailruagent";
+			ClientInfo_ ["client_name"] = tr ("Mail.Ru Agent");
+			ClientInfo_.remove ("client_version");
+		};
+
+		if (Info_.UA_.contains ("leechcraft azoth", Qt::CaseInsensitive))
+		{
+			ClientInfo_ ["client_type"] = "leechcraft-azoth";
+			ClientInfo_ ["client_name"] = "LeechCraft Azoth";
+
+			QString ver = Info_.UA_;
+			ver.remove ("leechcraft azoth", Qt::CaseInsensitive);
+			ClientInfo_ ["client_version"] = ver.trimmed ();
+		}
+		else if (Info_.UA_.isEmpty ())
+			defClient ();
+		else
+		{
+			qWarning () << Q_FUNC_INFO << "unknown client" << Info_.UA_;
+
+			defClient ();
+		}
 	}
 
 	void MRIMBuddy::updateAvatar (const QImage& image)
