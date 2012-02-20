@@ -96,7 +96,7 @@ namespace Azoth
 		invalidate ();
 	}
 
-	void SortFilterProxyModel::handleMUCDestroyed()
+	void SortFilterProxyModel::handleMUCDestroyed ()
 	{
 		SetMUC (0);
 		SetMUCMode (false);
