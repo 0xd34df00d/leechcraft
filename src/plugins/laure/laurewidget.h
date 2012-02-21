@@ -53,9 +53,10 @@ namespace Laure
 
 		QToolBar *ToolBar_;
 		Ui::LaureWidget Ui_;
-		VLCWrapper *VLCWrapper_;
+		std::shared_ptr<VLCWrapper> VLCWrapper_;
 		std::shared_ptr<SeparatePlayer> SeparatePlayer_;
 		QAction *DetachedVideo_;
+		QAction *PlayListAction_;
 	public:
 		/** @brief Constructs a new LaureWidget tab
 		 * with the given parent and flags.

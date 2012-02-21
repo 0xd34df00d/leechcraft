@@ -30,7 +30,7 @@ else (VLC_LIBRARIES AND VLC_INCLUDE_DIRS)
 	)
 
 	IF (NOT MSVC)
-		FIND_PATH (VLC_LIBRARY
+		find_library (VLC_LIBRARY
 			NAMES
 			vlc
 			PATHS
