@@ -121,7 +121,8 @@ namespace Acetamide
 				.arg (oldNick, newNick);
 		HandleServiceMessage (mess,
 				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantNickChange);
+				IMessage::MSTParticipantNickChange,
+				Nick2Entry_ [oldNick]);
 
 		CM_->GetAccount ()->handleEntryRemoved (Nick2Entry_ [oldNick].get ());
 		QList<ChannelRole> roles = Nick2Entry_ [oldNick]->Roles ();
@@ -129,7 +130,6 @@ namespace Acetamide
 		entry->SetEntryName (newNick);
 		entry->SetRoles (roles);
 		CM_->GetAccount ()->handleGotRosterItems (QObjectList () << entry.get ());
-
 
 		Nick2Entry_ [newNick] = entry;
 	}
@@ -145,13 +145,15 @@ namespace Acetamide
 	}
 
 	void ChannelHandler::HandleServiceMessage (const QString& msg,
-			IMessage::MessageType mt, IMessage::MessageSubType mst)
+			IMessage::MessageType mt, IMessage::MessageSubType mst,
+			ChannelParticipantEntry_ptr entry)
 	{
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
 				IMessage::DIn,
 				ChannelCLEntry_.get (),
 				mt,
-				mst);
+				mst,
+				entry);
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
