@@ -34,6 +34,7 @@
 #include "util.h"
 #include "glooxprotocol.h"
 #include "formbuilder.h"
+#include "sdmanager.h"
 
 namespace LeechCraft
 {
@@ -49,6 +50,12 @@ namespace Xoox
 	, Room_ (MUCManager_->addRoom (jid))
 	, CLEntry_ (new RoomCLEntry (this, Account_))
 	{
+		const QString& server = jid.split ('@', QString::SkipEmptyParts).value (1);
+		auto sdManager = Account_->GetClientConnection ()->GetSDManager ();
+		sdManager->RequestInfo ([&ServerDisco_] (const QXmppDiscoveryIq& iq)
+					{ ServerDisco_ = iq; },
+				server);
+
 		Room_->setNickName (ourNick);
 
 		connect (Room_,
@@ -584,6 +591,9 @@ namespace Xoox
 	{
 		RoomParticipantEntry_ptr entry (new RoomParticipantEntry (nick,
 					this, Account_));
+		if (IsGateway ())
+			entry->SetVersionReqsEnabled (false);
+
 		connect (entry.get (),
 				SIGNAL (messagesAreRead ()),
 				this,
@@ -625,7 +635,9 @@ namespace Xoox
 				QString ());
 		entry->SetClientInfo ("", pres);
 
-		Account_->GetClientConnection ()->FetchVCard (jid);
+		if (!IsGateway ())
+			Account_->GetClientConnection ()->FetchVCard (jid);
+
 		MakeJoinMessage (pres, nick);
 	}
 
@@ -743,6 +755,15 @@ namespace Xoox
 
 		if (entry->GetStatus (QString ()).State_ == SOffline)
 			RemoveEntry (entry);
+	}
+
+	bool RoomHandler::IsGateway () const
+	{
+		if (ServerDisco_.identities ().size () != 1)
+			return true;
+
+		auto id = ServerDisco_.identities ().at (0);
+		return id.category () == "conference" && id.type () != "text";
 	}
 
 	void RoomHandler::RemoveEntry (RoomParticipantEntry *entry)

@@ -51,6 +51,8 @@ namespace Xoox
 		QString Subject_;
 		// contains new nicks
 		QSet<QString> PendingNickChanges_;
+
+		QXmppDiscoveryIq ServerDisco_;
 	public:
 		RoomHandler (const QString& roomJID, const QString& ourNick, GlooxAccount*);
 
@@ -100,6 +102,7 @@ namespace Xoox
 
 		void handleMessagesAreRead ();
 	private:
+		bool IsGateway () const;
 		/** Creates a new entry for the given nick.
 		 */
 		RoomParticipantEntry_ptr CreateParticipantEntry (const QString& nick, bool announce);
