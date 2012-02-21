@@ -19,8 +19,9 @@
 
 #ifndef PLUGINS_LAURE_PLAYER_H
 #define PLUGINS_LAURE_PLAYER_H
-
+#include <memory>
 #include <QFrame>
+#include "vlcwrapper.h"
 
 class QTime;
 class QPushButton;
@@ -42,7 +43,7 @@ namespace Laure
 		Q_OBJECT
 		
 		QTimer *Poller_;
-		VLCWrapper *VLCWrapper_;
+		std::shared_ptr<VLCWrapper> VLCWrapper_;
 	public:
 		/** @brief Constructs a new PlaybackModeMenu class
 		 * with the given parent.
@@ -55,7 +56,7 @@ namespace Laure
 		 * 
 		 * @sa VLCWrapper
 		 */
-		void SetVLCWrapper (VLCWrapper *core);
+		void SetVLCWrapper (std::shared_ptr<VLCWrapper> core);
 		
 		/** @brief Returns current media time in the QTime format.
 		 */

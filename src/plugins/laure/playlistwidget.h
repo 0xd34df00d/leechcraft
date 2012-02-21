@@ -47,11 +47,13 @@ namespace Laure
 		QStandardItemModel *PlayListModel_;
 		PlayListView *PlayListView_;
 		QToolBar *ActionBar_;
+		std::shared_ptr<VLCWrapper> VLCWrapper_;
 	public:
 		/** @brief Constructs a new PlayListWidget class
 		 * with the given parent.
 		 */
 		PlayListWidget (QWidget* = 0);
+		void Init (std::shared_ptr<VLCWrapper> wrapper);
 	public slots:
 		/** @brief Is called when the media file has added to
 		 * VLCWrapper.
@@ -93,19 +95,6 @@ namespace Laure
 		 */
 		void metaChangedRequest (libvlc_meta_t type, const QString& value,
 				int index);
-		
-		/** @brief Is emitted when the item index is removed.
-		 * 
-		 * @param[out] index Item index.
-		 */
-		void itemRemoved (int index);
-		
-		/** @brief Notifies that the given item needs to be played.
-		 * 
-		 * @param[out] index The index of the item to play.
-		 */
-		void playItem (int index);
-		
 
 		void gotEntity (const Entity&);
 		void delegateEntity (const Entity&, int*, QObject**);

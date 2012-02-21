@@ -36,6 +36,18 @@ namespace Laure
 		IsPlayingRole = Qt::UserRole + 1
 	};
 	
+	enum PlayListColumns
+	{
+		URLColumn,
+		ArtistColumn,
+		TitleColumn,
+		AlbumColumn,
+		GenreColumn,
+		DateColumn,
+		QueueColumn,
+		MAX
+	};
+	
 	/** @brief Provides a model/view implementation of a playlist view.
 	 * 
 	 * @author Minh Ngo <nlminhtl@gmail.com>
@@ -46,6 +58,8 @@ namespace Laure
 		
 		QStandardItemModel *PlayListModel_;
 		int CurrentItem_;
+		int NotHiddenColumnCount_;
+		std::shared_ptr<VLCWrapper> VLCWrapper_;
 	public:
 		/** @brief Constructs a new PlayListView class
 		 * with the given model and parent.
@@ -53,6 +67,8 @@ namespace Laure
 		 * @param[in] model Playlist model.
 		 */
 		PlayListView (QStandardItemModel *model, QWidget* = 0);
+		
+		void Init (std::shared_ptr<VLCWrapper> wrapper);
 		
 		/** @brief Adds the item into the playlist.
 		 * 
@@ -83,6 +99,11 @@ namespace Laure
 	private slots:
 		void handleDoubleClicked (const QModelIndex&);
 		void handleHideHeaders ();
+		void handleHeaderMenu (const QPoint& point);
+		void handleMenu (const QPoint& point);
+	private:
+		void UpdateQueueIndexes ();
+		
 	signals:
 		/** @brief Is emitted when the item index is removed.
 		 * 

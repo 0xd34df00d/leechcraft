@@ -46,6 +46,7 @@ namespace Laure
 		QString Artist_, Album_, Title_, Genre_, Date_;
 		int TrackNumber_;
 		int Length_;
+		libvlc_track_type_t Type_;
 	};
 
 	/** @brief Defines playback modes for playlist.
@@ -70,6 +71,10 @@ namespace Laure
 		libvlc_media_list_ptr List_;
 		libvlc_media_list_player_ptr LPlayer_;
 		libvlc_media_player_ptr Player_;
+		QList<int> QueueListIndex_;
+		bool IsPlayedFromQueue_;
+		
+		MediaMeta CurrentItemMeta_;
 	public:
 		/** @brief Constructs a new VLCWrapper class
 		 * with the given parent.
@@ -121,7 +126,16 @@ namespace Laure
 		 * @return Media meta info.
 		 */
 		MediaMeta GetItemMeta (int row, const QString& location = QString ()) const;
+		
+		void HandlePlayed ();
+		
+		/** @brief Is called when the next item is chosen.
+		 */
+		void HandleNextItemSet ();
 	public slots:
+		void addToQueue (int index);
+		void removeFromQueue (int index);
+		
 		/** @brief Adds media file to the libvlc media list.
 		 *
 		 * @param[in] location Media file location.
@@ -203,14 +217,6 @@ namespace Laure
 		 */
 		void setPlaybackMode (PlaybackMode mode);
 
-		/** @brief Is called when the track is finished.
-		 */
-		void handledHasPlayed ();
-
-		/** @brief Is called when the next item is chosen.
-		 */
-		void handleNextItemSet ();
-
 		/** @brief Sets and save the meta of the media.
 		 *
 		 * @param[in] type Media type.
@@ -218,14 +224,19 @@ namespace Laure
 		 * @param[in] index Playlist item index.
 		 */
 		void setMeta (libvlc_meta_t type, const QString& value, int index);
-	private slots:
-		void nowPlaying ();
+		
+		QList<int> GetQueueListIndexes () const;
+	private:
+		int PlayQueue ();
+
 	signals:
 		/** @brief Is emitted when the item index is played.
 		 *
 		 * @param[out] index Item index.
 		 */
 		void itemPlayed (int index);
+		
+		void currentItemMeta (const MediaMeta& meta);
 
 		/** @brief Is emitted when the media file is added to
 		 * libvlc media list.

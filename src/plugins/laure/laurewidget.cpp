@@ -46,11 +46,14 @@ namespace Laure
 	LaureWidget::LaureWidget (QWidget *parent, Qt::WindowFlags f)
 	: QWidget (parent, f)
 	, ToolBar_ (new QToolBar (this))
-	, VLCWrapper_ (new VLCWrapper (this))
+	, VLCWrapper_ (new VLCWrapper)
+	, PlayListAction_ (NULL)
 	{	
 		Ui_.setupUi (this);
-		Ui_.Player_->SetVLCWrapper (VLCWrapper_);
 		
+		Ui_.PlayListWidget_->Init (VLCWrapper_);
+		
+		Ui_.Player_->SetVLCWrapper (VLCWrapper_);
 		SeparatePlayer_.reset (new SeparatePlayer);
 		
 		connect (SeparatePlayer_.get (),
@@ -58,22 +61,8 @@ namespace Laure
 				this,
 				SLOT (handleSeparatePlayerClosed ()));
 		
-		connect (Ui_.PlayListWidget_,
-				SIGNAL (metaChangedRequest (libvlc_meta_t, QString, int)),
-				VLCWrapper_,
-				SLOT (setMeta (libvlc_meta_t, QString, int)));
-		connect (Ui_.PlayListWidget_,
-				SIGNAL (itemAddedRequest (QString)),
-				VLCWrapper_,
-				SLOT (addRow (QString)));
-		connect (Ui_.PlayListWidget_,
-				SIGNAL (itemRemoved (int)),
-				VLCWrapper_,
-				SLOT (removeRow (int)));
-		connect (Ui_.PlayListWidget_,
-				SIGNAL (playItem (int)),
-				VLCWrapper_,
-				SLOT (playItem (int)));
+		VLCWrapper *wrapper = VLCWrapper_.get ();
+
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (gotEntity (Entity)),
 				this,
@@ -82,10 +71,6 @@ namespace Laure
 				SIGNAL (delegateEntity (Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (Entity, int*, QObject**)));
-		connect (Ui_.PlayListWidget_,
-				SIGNAL (playbackModeChanged (PlaybackMode)),
-				VLCWrapper_,
-				SLOT (setPlaybackMode (PlaybackMode)));
 		
 		connect (Ui_.Player_,
 				SIGNAL (timeout ()),
@@ -97,31 +82,27 @@ namespace Laure
 				SLOT (setPosition (int)));
 		connect (Ui_.VolumeSlider_,
 				SIGNAL (valueChanged (int)),
-				VLCWrapper_,
+				wrapper,
 				SLOT (setVolume (int)));
-		
-		connect (VLCWrapper_,
-				SIGNAL (itemAdded (MediaMeta, QString)),
-				Ui_.PlayListWidget_,
-				SLOT (handleItemAdded (MediaMeta, QString)));
-		connect (VLCWrapper_,
+				
+		connect (wrapper,
 				SIGNAL (gotEntity (Entity)),
 				this,
 				SIGNAL (gotEntity (Entity)));
-		connect (VLCWrapper_,
+		connect (wrapper,
 				SIGNAL (delegateEntity (Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (Entity, int*, QObject**)));
-
-		connect (VLCWrapper_,
-				SIGNAL (itemPlayed (int)),
-				Ui_.PlayListWidget_,
-				SLOT (handleItemPlayed (int)));
 		
 		connect (this,
 				SIGNAL (addItem (QString)),
-				VLCWrapper_,
+				wrapper,
 				SLOT (addRow (QString)));
+		
+		const int playlistWidth = XmlSettingsManager::Instance ()
+				.property ("PlayListWidgetWidth").toInt ();
+		
+		Ui_.Splitter_->setSizes (QList<int> () << size ().width () << playlistWidth);
 		
 		InitToolBar ();
 		InitCommandFrame ();
@@ -131,17 +112,17 @@ namespace Laure
 	{
 		QAction *actionOpenFile = new QAction (tr ("Open File"), this);
 		QAction *actionOpenURL = new QAction (tr ("Open URL"), this);
-		QAction *playList = new QAction (tr ("Playlist"), this);
+		PlayListAction_ = new QAction (tr ("Playlist"), this);
 		QAction *videoMode = new QAction (tr ("Video mode"), this);
 		DetachedVideo_ = new QAction (tr ("Detached video"), this);
 		
 		actionOpenFile->setProperty ("ActionIcon", "folder");
 		actionOpenURL->setProperty ("ActionIcon", "document-open-remote");
-		playList->setProperty ("ActionIcon", "format-list-unordered");
+		PlayListAction_->setProperty ("ActionIcon", "format-list-unordered");
 		videoMode->setProperty ("ActionIcon", "tool-animator");
 		DetachedVideo_->setProperty ("ActionIcon", "view-fullscreen");
 		
-		playList->setCheckable (true);
+		PlayListAction_->setCheckable (true);
 		videoMode->setCheckable (true);
 		DetachedVideo_->setCheckable (true);
 		
@@ -150,7 +131,7 @@ namespace Laure
 		
 		ToolBar_->addAction (actionOpenFile);
 		ToolBar_->addAction (actionOpenURL);
-		ToolBar_->addAction (playList);
+		ToolBar_->addAction (PlayListAction_);
 		ToolBar_->addAction (videoMode);
 		ToolBar_->addAction (DetachedVideo_);
 		
@@ -162,7 +143,7 @@ namespace Laure
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handleOpenURL ()));
-		connect (playList,
+		connect (PlayListAction_,
 				SIGNAL (triggered (bool)),
 				Ui_.PlayListWidget_,
 				SLOT (setVisible (bool)));
@@ -197,11 +178,12 @@ namespace Laure
 		bar->addAction (actionStop);
 		bar->addAction (actionNext);
 		
-		connect (VLCWrapper_,
+		VLCWrapper *wrapper = VLCWrapper_.get ();
+		connect (wrapper,
 				SIGNAL (paused ()),
 				actionPlay,
 				SLOT (handlePause ()));
-		connect (VLCWrapper_,
+		connect (wrapper,
 				SIGNAL (itemPlayed (int)),
 				actionPlay,
 				SLOT (handlePlay ()));
@@ -211,23 +193,23 @@ namespace Laure
 				SLOT (handlePause ()));
 		connect (actionStop,
 				SIGNAL (triggered (bool)),
-				VLCWrapper_,
+				wrapper,
 				SLOT (stop ()));
 		connect (actionNext,
 				SIGNAL (triggered (bool)),
-				VLCWrapper_,
+				wrapper,
 				SLOT (next ()));
 		connect (actionPrev,
 				SIGNAL (triggered (bool)),
-				VLCWrapper_,
+				wrapper,
 				SLOT (prev ()));
 		connect (actionPlay,
 				SIGNAL (play ()),
-				VLCWrapper_,
+				wrapper,
 				SLOT (play ()));
 		connect (actionPlay,
 				SIGNAL (pause ()),
-				VLCWrapper_,
+				wrapper,
 				SLOT (pause ()));
 		connect (this,
 				SIGNAL (playPause ()),
@@ -251,7 +233,7 @@ namespace Laure
 
 	TabClassInfo LaureWidget::GetTabClassInfo () const
 	{
-		return qobject_cast<Plugin *> (S_ParentMultiTabs_)->GetTabClasses ().first ();
+		return qobject_cast<Plugin*> (S_ParentMultiTabs_)->GetTabClasses ().first ();
 	}
 	
 	QObject* LaureWidget::ParentMultiTabs ()
@@ -301,10 +283,21 @@ namespace Laure
 	void LaureWidget::handleVideoMode (bool checked)
 	{
 		if (checked)
+		{
+			const int playlistWidth = XmlSettingsManager::Instance ()
+					.property ("PlayListWidgetWidth").toInt ();
 			Ui_.Splitter_->addWidget (Ui_.PlayListWidget_);
+			PlayListAction_->setChecked (false);
+			Ui_.Splitter_->setSizes (QList<int> () << size ().width () << playlistWidth);
+		}
 		else
+		{
+			XmlSettingsManager::Instance ().setProperty ("PlayListWidgetWidth",
+					Ui_.PlayListWidget_->size ().width ());
 			Ui_.GlobalGridLayout_->addWidget (Ui_.PlayListWidget_, 0, 1, 1, 4);
-
+		}
+		
+		PlayListAction_->setEnabled (checked);
 		Ui_.Player_->setVisible (checked);
 		Ui_.PlayListWidget_->setVisible (!checked);
 	}
