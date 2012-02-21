@@ -69,7 +69,7 @@ namespace Acetamide
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
 
-		IrcServerHandler*ish = new IrcServerHandler (server, Account_);
+		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
 
 		ish->SetConsoleEnabled (IsConsoleEnabled_);
 		if (IsConsoleEnabled_)
