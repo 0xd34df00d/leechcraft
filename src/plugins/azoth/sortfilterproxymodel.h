@@ -49,6 +49,7 @@ namespace Azoth
 		bool lessThan (const QModelIndex&, const QModelIndex&) const;
 	signals:
 		void mucMode ();
+		void wholeMode ();
 	};
 }
 }

@@ -100,6 +100,7 @@ namespace Azoth
 	{
 		SetMUC (0);
 		SetMUCMode (false);
+		emit wholeMode ();
 	}
 
 	namespace

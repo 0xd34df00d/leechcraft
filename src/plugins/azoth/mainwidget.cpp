@@ -166,6 +166,10 @@ namespace Azoth
 				SIGNAL (mucMode ()),
 				Ui_.CLTree_,
 				SLOT (expandAll ()));
+		connect (ProxyModel_,
+				SIGNAL (wholeMode ()),
+				this,
+				SLOT (resetToWholeMode ()));
 
 		QMetaObject::invokeMethod (Ui_.CLTree_,
 				"expandToDepth",
@@ -626,6 +630,11 @@ namespace Azoth
 
 		if (isMUC)
 			ProxyModel_->SetMUC (obj);
+	}
+
+	void MainWidget::resetToWholeMode ()
+	{
+		Ui_.RosterMode_->setCurrentIndex (0);
 	}
 
 	void MainWidget::on_RosterMode__currentIndexChanged (int index)
