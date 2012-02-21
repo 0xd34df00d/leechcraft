@@ -22,6 +22,7 @@
 #include <QHeaderView>
 #include <QStandardItemModel>
 #include <QMenu>
+#include <QTime>
 #include "nowplayingdelegate.h"
 #include "xmlsettingsmanager.h"
 
@@ -77,14 +78,16 @@ namespace Laure
 		
 		QStringList headers;
 		
-		headers << tr ("Artist")
+		headers << QString ()
+				<< tr ("Artist")
 				<< tr ("Title")
 				<< tr ("Album")
 				<< tr ("Genre")
 				<< tr ("Date")
-				<< "";
-		for (int i = 1, count = PlayListModel_->columnCount (); i < count; ++i)
-			PlayListModel_->setHeaderData (i, Qt::Horizontal, headers [i - 1]);
+				<< ""
+				<< tr ("Length");
+				
+		PlayListModel_->setHorizontalHeaderLabels (headers);
 	}
 	
 	void PlayListView::Init (std::shared_ptr<VLCWrapper> wrapper)
@@ -104,7 +107,7 @@ namespace Laure
 	void PlayListView::handleHeaderMenu (const QPoint& point)
 	{
 		QMenu menu;
-		for (int i = 1; i < PlayListModel_->columnCount () - 1; ++i)
+		for (int i = 1; i < PlayListModel_->columnCount () - 2; ++i)
 		{
 			QAction *menuAction = new QAction (header ()->model ()->
 					headerData (i, Qt::Horizontal).toString (), &menu);
@@ -168,7 +171,7 @@ namespace Laure
 	void PlayListView::handleHideHeaders ()
 	{
 		NotHiddenColumnCount_ = 0;
-		for (int i = 1; i < PlayListModel_->columnCount () - 1; ++i)
+		for (int i = 1; i < PlayListModel_->columnCount () - 2; ++i)
 		{
 			const QString& itemName = "Header" + QString::number (i);
 			const bool checked = XmlSettingsManager::Instance ()
@@ -188,12 +191,12 @@ namespace Laure
 	void PlayListView::AddItem (const MediaMeta& item, const QString& fileName)
 	{
 		QList<QStandardItem*> list;
-		list << new QStandardItem (fileName);
-		list << new QStandardItem (item.Artist_);
-		list << new QStandardItem (item.Title_);
-		list << new QStandardItem (item.Album_);
-		list << new QStandardItem (item.Genre_);
-		list << new QStandardItem (item.Date_);
+		list << new QStandardItem (fileName)
+				<< new QStandardItem (item.Artist_)
+				<< new QStandardItem (item.Title_)
+				<< new QStandardItem (item.Album_)
+				<< new QStandardItem (item.Genre_)
+				<< new QStandardItem (item.Date_);
 		
 		Q_FOREACH (QStandardItem *itemList, list)
 			itemList->setFlags (Qt::ItemIsSelectable | Qt::ItemIsEnabled
@@ -201,7 +204,12 @@ namespace Laure
 		
 		QStandardItem *queueItem = new QStandardItem ();
 		queueItem->setFlags (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		list << queueItem;
+		
+		QStandardItem *timeItem = new QStandardItem (QTime ()
+				.addSecs (item.Length_).toString ());
+		timeItem->setFlags (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		
+		list << queueItem << timeItem;
 		PlayListModel_->appendRow (list);
 	}
 	

@@ -45,6 +45,7 @@ namespace Laure
 		GenreColumn,
 		DateColumn,
 		QueueColumn,
+		LengthColumn,
 		MAX
 	};
 	
