@@ -40,7 +40,7 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
-		ChannelCLEntry *ChannelCLEntry_;
+		std::shared_ptr<ChannelCLEntry> ChannelCLEntry_ptr;
 		ChannelsManager *CM_;
 
 		QString ChannelID_;

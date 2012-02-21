@@ -58,7 +58,7 @@ namespace Acetamide
 	QObjectList ChannelsManager::GetCLEntries () const
 	{
 		QObjectList result;
-		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+		Q_FOREACH (auto ich, ChannelHandlers_.values ())
 		{
 			result << ich->GetParticipants ();
 			result << ich->GetCLEntry ();
@@ -74,10 +74,10 @@ namespace Acetamide
 
 	ChannelHandler* ChannelsManager::GetChannelHandler (const QString& channel)
 	{
-		return ChannelHandlers_.value (channel.toLower ());
+		return ChannelHandlers_.value (channel.toLower ()).get ();
 	}
 
-	QList<ChannelHandler*> ChannelsManager::GetChannels () const
+	QList<std::shared_ptr<ChannelHandler>> ChannelsManager::GetChannels () const
 	{
 		return ChannelHandlers_.values ();
 	}
@@ -109,7 +109,7 @@ namespace Acetamide
 
 	bool ChannelsManager::AddChannel (const ChannelOptions& options)
 	{
-		ChannelHandler *ch = new ChannelHandler (options, this);
+		std::shared_ptr<ChannelHandler> ch (new ChannelHandler (options, this));
 		ChannelHandlers_ [options.ChannelName_.toLower ()] = ch;
 
 		ChannelCLEntry *ichEntry = ch->GetCLEntry ();
@@ -133,7 +133,7 @@ namespace Acetamide
 
 	void ChannelsManager::CloseAllChannels ()
 	{
-		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+		Q_FOREACH (auto ich, ChannelHandlers_.values ())
 			ich->CloseChannel ();
 	}
 
@@ -150,7 +150,7 @@ namespace Acetamide
 	QHash<QString, QObject*> ChannelsManager::GetParticipantsByNick (const QString& nick) const
 	{
 		QHash<QString, QObject*> result;
-		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+		Q_FOREACH (auto ich, ChannelHandlers_.values ())
 			if (ich->IsUserExists (nick))
 				result [ich->GetChannelOptions ().ChannelName_] = ich->GetParticipantEntry (nick).get ();
 		return result;
@@ -174,7 +174,7 @@ namespace Acetamide
 
 	void ChannelsManager::QuitParticipant (const QString& nick, const QString& msg)
 	{
-		Q_FOREACH (ChannelHandler *ch, ChannelHandlers_)
+		Q_FOREACH (auto ch, ChannelHandlers_)
 			if (ch->IsUserExists (nick))
 				ch->LeaveParticipant (nick, msg);
 	}
@@ -195,7 +195,7 @@ namespace Acetamide
 
 	void ChannelsManager::ChangeNickname (const QString& oldNick, const QString& newNick)
 	{
-		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+		Q_FOREACH (auto ich, ChannelHandlers_.values ())
 			if (ich->IsUserExists (oldNick))
 				ich->ChangeNickname (oldNick, newNick);
 	}
@@ -295,7 +295,7 @@ namespace Acetamide
 
 	void ChannelsManager::CTCPReply (const QString& msg)
 	{
-		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+		Q_FOREACH (auto ich, ChannelHandlers_.values ())
 			ich->HandleServiceMessage (msg,
 					IMessage::MTServiceMessage,
 					IMessage::MSTOther);
@@ -307,7 +307,7 @@ namespace Acetamide
 
 	void ChannelsManager::CTCPRequestResult (const QString& msg)
 	{
-		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+		Q_FOREACH (auto ich, ChannelHandlers_.values ())
 		{
 			ich->HandleServiceMessage (msg,
 					IMessage::MTServiceMessage,

@@ -37,10 +37,10 @@ namespace Acetamide
 	, ChannelOptions_ (channel)
 	, IsRosterReceived_ (false)
 	{
-		ChannelCLEntry_ = new ChannelCLEntry (this);
+		ChannelCLEntry_ptr.reset (new ChannelCLEntry (this));
 		connect (this,
 				SIGNAL (updateChanModes (const ChannelModes&)),
-				ChannelCLEntry_,
+				ChannelCLEntry_ptr.get (),
 				SIGNAL (gotNewChannelModes (const ChannelModes&)));
 	}
 
@@ -51,7 +51,7 @@ namespace Acetamide
 
 	ChannelCLEntry* ChannelHandler::GetCLEntry () const
 	{
-		return ChannelCLEntry_;
+		return ChannelCLEntry_ptr.get ();
 	}
 
 	ChannelsManager* ChannelHandler::GetChannelsManager () const
@@ -149,10 +149,10 @@ namespace Acetamide
 	{
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
 				IMessage::DIn,
-				ChannelCLEntry_,
+				ChannelCLEntry_ptr.get (),
 				mt,
 				mst);
-		ChannelCLEntry_->HandleMessage (message);
+		ChannelCLEntry_ptr->HandleMessage (message);
 	}
 
 	void ChannelHandler::SendPublicMessage (const QString& msg)
@@ -171,11 +171,11 @@ namespace Acetamide
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (msg,
 						IMessage::DIn,
-						ChannelCLEntry_,
+						ChannelCLEntry_ptr.get (),
 						IMessage::MTMUCMessage,
 						IMessage::MSTOther,
 						entry);
-		ChannelCLEntry_->HandleMessage (message);
+		ChannelCLEntry_ptr->HandleMessage (message);
 	}
 
 	void ChannelHandler::SetChannelUser (const QString& nick,
@@ -235,17 +235,17 @@ namespace Acetamide
 	{
 		QString msg  = tr ("%1 joined the channel as %2")
 				.arg (nick)
-				.arg (ChannelCLEntry_->Role2String (Nick2Entry_ [nick]->HighestRole ()));
+				.arg (ChannelCLEntry_ptr->Role2String (Nick2Entry_ [nick]->HighestRole ()));
 
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (msg,
 					IMessage::DIn,
-					ChannelCLEntry_,
+					ChannelCLEntry_ptr.get (),
 					IMessage::MTStatusMessage,
 					IMessage::MSTParticipantJoin,
 					Nick2Entry_ [nick]);
 
-		ChannelCLEntry_->HandleMessage (message);
+		ChannelCLEntry_ptr->HandleMessage (message);
 	}
 
 	void ChannelHandler::MakeLeaveMessage (const QString& nick,
@@ -260,11 +260,11 @@ namespace Acetamide
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (mess,
 					IMessage::DIn,
-					ChannelCLEntry_,
+					ChannelCLEntry_ptr.get (),
 					IMessage::MTStatusMessage,
 					IMessage::MSTParticipantLeave,
 					Nick2Entry_ [nick]);
-		ChannelCLEntry_->HandleMessage (message);
+		ChannelCLEntry_ptr->HandleMessage (message);
 	}
 
 	void ChannelHandler::MakeKickMessage (const QString& nick,
@@ -289,27 +289,27 @@ namespace Acetamide
 
 		ChannelPublicMessage *message = new ChannelPublicMessage (mess,
 				IMessage::DIn,
-				ChannelCLEntry_,
+				ChannelCLEntry_ptr.get (),
 				IMessage::MTEventMessage,
 				IMessage::MSTKickNotification);
-		ChannelCLEntry_->HandleMessage (message);
+		ChannelCLEntry_ptr->HandleMessage (message);
 	}
 
 	void ChannelHandler::MakePermsChangedMessage (const QString& nick,
 			ChannelRole role, bool isSet)
 	{
-		const QString& roleStr = ChannelCLEntry_->Role2String (role);
+		const QString& roleStr = ChannelCLEntry_ptr->Role2String (role);
 		QString msg = isSet ?
 				tr ("%1 is now %2").arg (nick, roleStr) :
 				tr ("%1 is not %2 anymore").arg (nick, roleStr);
 
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
 				IMessage::DIn,
-				ChannelCLEntry_,
+				ChannelCLEntry_ptr.get (),
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantRoleAffiliationChange,
 				GetParticipantEntry (nick));
-		ChannelCLEntry_->HandleMessage (message);
+		ChannelCLEntry_ptr->HandleMessage (message);
 	}
 
 	void ChannelHandler::SetMUCSubject (const QString& subject)
@@ -323,10 +323,10 @@ namespace Acetamide
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (subj.arg (subject),
 						IMessage::DIn,
-						ChannelCLEntry_,
+						ChannelCLEntry_ptr.get (),
 						IMessage::MTEventMessage,
 						IMessage::MSTRoomSubjectChange);
-		ChannelCLEntry_->HandleMessage (message);
+		ChannelCLEntry_ptr->HandleMessage (message);
 	}
 
 	QString ChannelHandler::GetMUCSubject () const
@@ -470,7 +470,7 @@ namespace Acetamide
 		}
 		Nick2Entry_.clear ();
 
-		CM_->GetAccount ()->handleEntryRemoved (ChannelCLEntry_);
+		CM_->GetAccount ()->handleEntryRemoved (ChannelCLEntry_ptr.get ());
 
 		CM_->UnregisterChannel (this);
 
@@ -525,8 +525,8 @@ namespace Acetamide
 	void ChannelHandler::SetBanListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
-		ChannelCLEntry_->SetBanListItem (mask, nick, date);
-		if (!ChannelCLEntry_->GetIsWidgetRequest ())
+		ChannelCLEntry_ptr->SetBanListItem (mask, nick, date);
+		if (!ChannelCLEntry_ptr->GetIsWidgetRequest ())
 		{
 			const QString msg = tr ("%1 set by %2 on %3")
 					.arg (mask)
@@ -539,8 +539,8 @@ namespace Acetamide
 	void ChannelHandler::SetExceptListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
-		ChannelCLEntry_->SetExceptListItem (mask, nick, date);
-		if (!ChannelCLEntry_->GetIsWidgetRequest ())
+		ChannelCLEntry_ptr->SetExceptListItem (mask, nick, date);
+		if (!ChannelCLEntry_ptr->GetIsWidgetRequest ())
 		{
 			const QString msg = tr ("%1 set by %2 on %3")
 					.arg (mask)
@@ -553,8 +553,8 @@ namespace Acetamide
 	void ChannelHandler::SetInviteListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
-		ChannelCLEntry_->SetInviteListItem (mask, nick, date);
-		if (!ChannelCLEntry_->GetIsWidgetRequest ())
+		ChannelCLEntry_ptr->SetInviteListItem (mask, nick, date);
+		if (!ChannelCLEntry_ptr->GetIsWidgetRequest ())
 		{
 			const QString msg = tr ("%1 set by %2 on %3")
 					.arg (mask)

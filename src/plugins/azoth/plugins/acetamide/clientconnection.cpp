@@ -69,7 +69,7 @@ namespace Acetamide
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
 
-		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
+		IrcServerHandler*ish = new IrcServerHandler (server, Account_);
 
 		ish->SetConsoleEnabled (IsConsoleEnabled_);
 		if (IsConsoleEnabled_)
@@ -166,20 +166,20 @@ namespace Acetamide
 
 	void ClientConnection::DisconnectFromAll ()
 	{
-		Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
-			ish->DisconnectFromServer ();
+		Q_FOREACH (auto ish, ServerHandlers_.values ())
+			ish->SendQuit ();
 	}
 
 	void ClientConnection::QuitServer (const QStringList& list)
 	{
-		IrcServerHandler *ish = ServerHandlers_ [list.last ()];
+		auto ish = ServerHandlers_ [list.last ()];
 		ish->DisconnectFromServer ();
 	}
 
 	void ClientConnection::SetConsoleEnabled (bool enabled)
 	{
 		IsConsoleEnabled_ = enabled;
-		Q_FOREACH (IrcServerHandler *srv, ServerHandlers_.values ())
+		Q_FOREACH (auto srv, ServerHandlers_.values ())
 		{
 			srv->SetConsoleEnabled (enabled);
 			if (enabled)
@@ -214,7 +214,7 @@ namespace Acetamide
 	{
 		Account_->handleEntryRemoved (ServerHandlers_ [serverId]->
 				GetCLEntry ());
-		ServerHandlers_.remove (serverId);
+		ServerHandlers_.take (serverId)->deleteLater ();
 		if (!ServerHandlers_.count ())
 			Account_->ChangeState (EntryStatus (SOffline,
 					QString ()));

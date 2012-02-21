@@ -74,7 +74,6 @@ namespace Acetamide
 	public:
 		IrcServerHandler (const ServerOptions&,
 				IrcAccount*);
-
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;
 		IrcParser* GetParser () const;
@@ -85,7 +84,7 @@ namespace Acetamide
 		QObjectList GetCLEntries () const;
 
 		ChannelHandler* GetChannelHandler (const QString& channel);
-		QList<ChannelHandler*> GetChannelHandlers () const;
+		QList<std::shared_ptr<ChannelHandler>> GetChannelHandlers () const;
 
 		IrcMessage* CreateMessage (IMessage::MessageType type,
 				const QString& variant, const QString& body);
@@ -104,7 +103,7 @@ namespace Acetamide
 		void LeaveParticipant (const QString& nick,
 				const QString& channel, const QString& msg);
 
-		void QuitServer ();
+		void SendQuit ();
 		void QuitParticipant (const QString& nick, const QString& msg);
 
 		void SendMessage (const QStringList&);

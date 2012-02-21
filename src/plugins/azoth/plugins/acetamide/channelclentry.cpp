@@ -32,8 +32,7 @@ namespace Azoth
 namespace Acetamide
 {
 	ChannelCLEntry::ChannelCLEntry (ChannelHandler *handler)
-	: QObject (handler->GetChannelsManager ()->GetAccount ())
-	, ICH_ (handler)
+	: ICH_ (handler)
 	, IsWidgetRequest_ (false)
 	{
 		Perms_ ["permclass_managment"] << "kick";
