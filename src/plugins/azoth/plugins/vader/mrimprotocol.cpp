@@ -109,7 +109,7 @@ namespace Vader
 
 	void MRIMProtocol::RemoveAccount (QObject *acc)
 	{
-		if (Accounts_.removeAll (static_cast<MRIMAccount*> (acc)))
+		if (Accounts_.removeAll (qobject_cast<MRIMAccount*> (acc)))
 		{
 			emit accountRemoved (acc);
 			saveAccounts ();
