@@ -46,7 +46,10 @@ namespace Laure
 			switch (event->type)
 			{
 			case libvlc_MediaListPlayerNextItemSet:
-				wrapper->handleNextItemSet ();
+				wrapper->HandleNextItemSet ();
+				break;
+			case libvlc_MediaPlayerPlaying:
+				wrapper->HandlePlayed ();
 				break;
 			}
 		}
@@ -62,6 +65,7 @@ namespace Laure
 		map ["Date"] = Date_;
 		map ["TrackNumber"] = TrackNumber_;
 		map ["Length"] = Length_;
+		map ["Type"] = Type_ == libvlc_track_audio ? "Audio" : "Video";
 		return map;
 	}
 	
@@ -69,7 +73,6 @@ namespace Laure
 	: QObject (parent)
 	, CurrentItem_ (-1)
 	, IsPlayedFromQueue_ (false)
-	, IsPlaying_ (false)
 	{
 		Instance_ = libvlc_instance_ptr (libvlc_new (sizeof (vlc_args)
 				/ sizeof (vlc_args[0]), vlc_args), libvlc_release);
@@ -86,6 +89,10 @@ namespace Laure
 		auto listEventManager = libvlc_media_list_player_event_manager (LPlayer_.get ());
 		libvlc_event_attach (listEventManager, libvlc_MediaListPlayerNextItemSet,
 				     ListEventCallback, this);
+		
+		auto playerEventManager = libvlc_media_player_event_manager (Player_.get ());
+		libvlc_event_attach (playerEventManager, libvlc_MediaPlayerPlaying,
+					ListEventCallback, this);
 	}
 
 	int VLCWrapper::PlayQueue ()
@@ -98,31 +105,39 @@ namespace Laure
 		{
 			int index = QueueListIndex_.first ();
 			libvlc_media_list_player_play_item_at_index (LPlayer_.get (), index);
+			CurrentItemMeta_ = GetItemMeta (index);
 			return index;
 		}
 		
 		return -1;
 	}
 	
-	void VLCWrapper::handleNextItemSet ()
+	void VLCWrapper::HandleNextItemSet ()
 	{
-		qDebug () << Q_FUNC_INFO;
 		int index = PlayQueue ();
 		if (index < 0)
 		{
 			auto list = List_.get ();
 			index = libvlc_media_list_index_of_item (list,
 					libvlc_media_player_get_media (Player_.get ()));
+			CurrentItemMeta_ = GetItemMeta (index);
 		}
-
-		const MediaMeta& meta = GetItemMeta (index);
+			
 		emit gotEntity (Util::MakeNotification ("Laure",
-				tr ("%1 - %2").arg (meta.Artist_).arg (meta.Title_),
+				tr ("%1 - %2").arg (CurrentItemMeta_.Artist_).arg (CurrentItemMeta_.Title_),
 					PInfo_));
 
 		CurrentItem_ = index;
 		emit (itemPlayed (CurrentItem_));
-		QTimer::singleShot (5000, this, SLOT (nowPlaying ()));
+	}
+
+	void VLCWrapper::HandlePlayed ()
+	{
+		Entity scrobbleEntity;
+		scrobbleEntity.Additional_ = CurrentItemMeta_.ToVariantMap ();
+		scrobbleEntity.Mime_ = "x-leechcraft/now-playing-track-info";
+
+		emit gotEntity (scrobbleEntity);
 	}
 	
 	void VLCWrapper::addToQueue (int index)
@@ -156,6 +171,13 @@ namespace Laure
 		meta.Title_ = libvlc_media_get_meta (m, libvlc_meta_Title);
 		meta.Genre_ = libvlc_media_get_meta (m, libvlc_meta_Genre);
 		meta.Date_ = libvlc_media_get_meta (m, libvlc_meta_Date);
+		meta.Length_ = libvlc_media_get_duration (m) / 1000;
+		
+		libvlc_media_track_info_t *pTrackInfo;
+		int numOfStream = libvlc_media_get_tracks_info (m, &pTrackInfo);
+		
+		if (numOfStream >= 1)
+			meta.Type_ = pTrackInfo->i_type;
 
 		meta.TrackNumber_ = QString (libvlc_media_get_meta (m,
 						libvlc_meta_TrackNumber))
@@ -175,7 +197,7 @@ namespace Laure
 
 	bool VLCWrapper::IsPlaying () const
 	{
-		return IsPlaying_;
+		return libvlc_media_player_is_playing (Player_.get ());
 	}
 
 	int VLCWrapper::GetVolume () const
@@ -185,9 +207,7 @@ namespace Laure
 
 	float VLCWrapper::GetMediaPosition () const
 	{
-		return IsPlaying_ ?
-				libvlc_media_player_get_position (Player_.get ()) :
-				-1;
+		return libvlc_media_player_get_position (Player_.get ());
 	}
 
 	int VLCWrapper::GetTime () const
@@ -218,7 +238,7 @@ namespace Laure
 
 	bool VLCWrapper::removeRow (int pos)
 	{
-		bool res = !libvlc_media_list_remove_index (List_.get (), pos);
+		const bool res = !libvlc_media_list_remove_index (List_.get (), pos);
 		QueueListIndex_.removeOne (pos);
 		
 		auto itr = QueueListIndex_.begin ();
@@ -236,7 +256,7 @@ namespace Laure
 
 	void VLCWrapper::addRow (const QString& location)
 	{
-		auto m = libvlc_media_new_path (Instance_.get (),
+		libvlc_media_t *m = libvlc_media_new_path (Instance_.get (),
 				location.toAscii ());
 
 		if (!libvlc_media_list_add_media (List_.get (), m))
@@ -286,28 +306,13 @@ namespace Laure
 				CurrentItem_);
 	}
 
-	void VLCWrapper::nowPlaying ()
-	{
-		MediaMeta meta = GetItemMeta (CurrentItem_);
-		meta.Length_ = libvlc_media_player_get_length (Player_.get ())
-				/ 1000;
-
-		Entity scrobbleEntity;
-		scrobbleEntity.Additional_ = meta.ToVariantMap ();
-		scrobbleEntity.Mime_ = "x-leechcraft/now-playing-track-info";
-		
-		emit gotEntity (scrobbleEntity);
-	}
-
 	void VLCWrapper::stop ()
 	{
-		IsPlaying_ = false;
 		libvlc_media_player_stop (Player_.get ());
 	}
 
 	void VLCWrapper::pause ()
 	{
-		IsPlaying_ = true;
 		libvlc_media_player_pause (Player_.get ());
 	}
 
@@ -316,7 +321,6 @@ namespace Laure
 		int index = 0;
 		if (IsPlaying () || (index = PlayQueue ()) < 0)
 			libvlc_media_list_player_play (LPlayer_.get ());
-		IsPlaying_ = true;
 	}
 
 	void VLCWrapper::next ()

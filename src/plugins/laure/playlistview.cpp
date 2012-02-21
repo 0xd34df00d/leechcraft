@@ -106,8 +106,8 @@ namespace Laure
 		QMenu menu;
 		for (int i = 1; i < PlayListModel_->columnCount () - 1; ++i)
 		{
-			QAction *menuAction = new QAction (header ()->model ()
-					->headerData (i, Qt::Horizontal).toString (), &menu);
+			QAction *menuAction = new QAction (header ()->model ()->
+					headerData (i, Qt::Horizontal).toString (), &menu);
 			menuAction->setCheckable (true);
 			menuAction->setData (i);
 			
@@ -120,19 +120,19 @@ namespace Laure
 		if (selectedItem)
 		{
 			int columnIndex = selectedItem->data ().toInt ();
-			XmlSettingsManager::Instance ().setProperty ("Header"
-					+ QString::number (columnIndex).toAscii (), selectedItem->isChecked ());
+			const QByteArray& prop = "Header" + QString::number (columnIndex).toAscii ();
+			XmlSettingsManager::Instance ().setProperty (prop, selectedItem->isChecked ());
 		}
 	}
 	
 	void PlayListView::handleMenu (const QPoint& point)
 	{
-		if (!selectedIndexes ().empty ())
+		if (selectedIndexes ().empty ())
 			return;
 		
 		const int row = selectedIndexes ().first ().row ();
 		
-		bool found = VLCWrapper_->GetQueueListIndexes ().contains (row);
+		const bool found = VLCWrapper_->GetQueueListIndexes ().contains (row);
 		
 		QMenu menu;
 		QAction *menuAction = new QAction (found ? tr ("Unqueue") : tr ("Queue"), &menu);
