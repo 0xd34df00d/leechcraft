@@ -131,6 +131,8 @@ namespace Vader
 
 		void handleOpenMailbox ();
 		void handleServices ();
+
+		void handleShowTechSupport ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);

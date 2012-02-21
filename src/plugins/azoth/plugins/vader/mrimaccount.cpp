@@ -31,6 +31,7 @@
 #include "groupmanager.h"
 #include "selfavatarfetcher.h"
 #include "vaderutil.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -119,6 +120,9 @@ namespace Vader
 				SIGNAL (gotImage (QImage)),
 				this,
 				SLOT (updateSelfAvatar (QImage)));
+
+		XmlSettingsManager::Instance ().RegisterObject ("ShowSupportContact",
+				this, "handleShowTechSupport");
 	}
 
 	void MRIMAccount::FillConfig (MRIMAccountConfigWidget *w)
@@ -388,7 +392,12 @@ namespace Vader
 
 		MRIMBuddy *buddy = new MRIMBuddy (info, this);
 		Buddies_ [info.Email_] = buddy;
-		emit gotCLItems (QList<QObject*> () << buddy);
+
+		if (info.Email_ != "support@corp.mail.ru" ||
+				XmlSettingsManager::Instance ()
+					.property ("ShowSupportContact").toBool ())
+			emit gotCLItems (QList<QObject*> () << buddy);
+
 		return buddy;
 	}
 
@@ -590,6 +599,20 @@ namespace Vader
 				QString (),
 				static_cast<LeechCraft::TaskParameters> (OnlyHandle | FromUserInitiated));
 		Core::Instance ().SendEntity (e);
+	}
+
+	void MRIMAccount::handleShowTechSupport ()
+	{
+		if (!Buddies_.contains ("support@corp.mail.ru"))
+			return;
+
+		const bool show = XmlSettingsManager::Instance ()
+				.property ("ShowSupportContact").toBool ();
+		QList<QObject*> list;
+		list << Buddies_ ["support@corp.mail.ru"];
+		emit show ?
+				gotCLItems (list) :
+				removedCLItems (list);
 	}
 }
 }
