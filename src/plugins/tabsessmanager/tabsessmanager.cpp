@@ -193,6 +193,12 @@ namespace TabSessManager
 				}
 
 				QObject *plugin = pluginCache [pluginId];
+				if (!plugin)
+				{
+					qWarning () << "null plugin for" << pluginId;
+					continue;
+				}
+
 				tabs [plugin] << RecInfo { recData, name, icon };
 
 				qDebug () << "got restore data for" << pluginId << name << plugin;
