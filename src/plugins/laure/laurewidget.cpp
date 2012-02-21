@@ -108,6 +108,12 @@ namespace Laure
 		InitCommandFrame ();
 	}
 	
+	LaureWidget::~LaureWidget ()
+	{
+		XmlSettingsManager::Instance ().setProperty ("PlayListWidgetWidth",
+				Ui_.PlayListWidget_->size ().width ());
+	}
+	
 	void LaureWidget::InitToolBar ()
 	{
 		QAction *actionOpenFile = new QAction (tr ("Open File"), this);

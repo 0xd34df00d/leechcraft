@@ -62,6 +62,7 @@ namespace Laure
 		 * with the given parent and flags.
 		 */
 		LaureWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
+		~LaureWidget ();
 
 		static void SetParentMultiTabs (QObject*);
 		TabClassInfo GetTabClassInfo () const;
