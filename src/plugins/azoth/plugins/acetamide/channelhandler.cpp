@@ -37,10 +37,10 @@ namespace Acetamide
 	, ChannelOptions_ (channel)
 	, IsRosterReceived_ (false)
 	{
-		ChannelCLEntry_ = new ChannelCLEntry (this);
+		ChannelCLEntry_.reset (new ChannelCLEntry (this));
 		connect (this,
 				SIGNAL (updateChanModes (const ChannelModes&)),
-				ChannelCLEntry_,
+				ChannelCLEntry_.get (),
 				SIGNAL (gotNewChannelModes (const ChannelModes&)));
 	}
 
@@ -51,7 +51,7 @@ namespace Acetamide
 
 	ChannelCLEntry* ChannelHandler::GetCLEntry () const
 	{
-		return ChannelCLEntry_;
+		return ChannelCLEntry_.get ();
 	}
 
 	ChannelsManager* ChannelHandler::GetChannelsManager () const
@@ -149,7 +149,7 @@ namespace Acetamide
 	{
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
 				IMessage::DIn,
-				ChannelCLEntry_,
+				ChannelCLEntry_.get (),
 				mt,
 				mst);
 		ChannelCLEntry_->HandleMessage (message);
@@ -171,7 +171,7 @@ namespace Acetamide
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (msg,
 						IMessage::DIn,
-						ChannelCLEntry_,
+						ChannelCLEntry_.get (),
 						IMessage::MTMUCMessage,
 						IMessage::MSTOther,
 						entry);
@@ -240,7 +240,7 @@ namespace Acetamide
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (msg,
 					IMessage::DIn,
-					ChannelCLEntry_,
+					ChannelCLEntry_.get (),
 					IMessage::MTStatusMessage,
 					IMessage::MSTParticipantJoin,
 					Nick2Entry_ [nick]);
@@ -260,7 +260,7 @@ namespace Acetamide
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (mess,
 					IMessage::DIn,
-					ChannelCLEntry_,
+					ChannelCLEntry_.get (),
 					IMessage::MTStatusMessage,
 					IMessage::MSTParticipantLeave,
 					Nick2Entry_ [nick]);
@@ -289,7 +289,7 @@ namespace Acetamide
 
 		ChannelPublicMessage *message = new ChannelPublicMessage (mess,
 				IMessage::DIn,
-				ChannelCLEntry_,
+				ChannelCLEntry_.get (),
 				IMessage::MTEventMessage,
 				IMessage::MSTKickNotification);
 		ChannelCLEntry_->HandleMessage (message);
@@ -305,7 +305,7 @@ namespace Acetamide
 
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
 				IMessage::DIn,
-				ChannelCLEntry_,
+				ChannelCLEntry_.get (),
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantRoleAffiliationChange,
 				GetParticipantEntry (nick));
@@ -319,18 +319,24 @@ namespace Acetamide
 
 		Subject_ = subject;
 
+		QString subj ("Topic changed to: %1");
 		ChannelPublicMessage *message =
-				new ChannelPublicMessage (subject,
-							IMessage::DIn,
-							ChannelCLEntry_,
-							IMessage::MTEventMessage,
-							IMessage::MSTRoomSubjectChange);
+				new ChannelPublicMessage (subj.arg (subject),
+						IMessage::DIn,
+						ChannelCLEntry_.get (),
+						IMessage::MTEventMessage,
+						IMessage::MSTRoomSubjectChange);
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
 	QString ChannelHandler::GetMUCSubject () const
 	{
 		return Subject_;
+	}
+
+	void ChannelHandler::SetTopic (const QString& topic)
+	{
+		CM_->SetTopic (ChannelOptions_.ChannelName_.toLower (), topic);
 	}
 
 	void ChannelHandler::Leave (const QString& msg)
@@ -464,7 +470,7 @@ namespace Acetamide
 		}
 		Nick2Entry_.clear ();
 
-		CM_->GetAccount ()->handleEntryRemoved (ChannelCLEntry_);
+		CM_->GetAccount ()->handleEntryRemoved (ChannelCLEntry_.get ());
 
 		CM_->UnregisterChannel (this);
 

@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELSMANAGER_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELSMANAGER_H
 
+#include <memory>
 #include <QObject>
 #include <QHash>
 #include <QSet>
@@ -42,13 +43,12 @@ namespace Acetamide
 
 		IrcServerHandler *ISH_;
 
-		QHash<QString, ChannelHandler*> ChannelHandlers_;
+		QHash<QString, std::shared_ptr<ChannelHandler>> ChannelHandlers_;
 		QSet<ChannelOptions> ChannelsQueue_;
 
 		QQueue<CommandMessage> CmdQueue_;
 	public:
 		ChannelsManager (IrcServerHandler* = 0);
-
 		IrcAccount* GetAccount () const;
 
 		QString GetOurNick () const;
@@ -62,7 +62,7 @@ namespace Acetamide
 		bool IsCmdQueueEmpty () const;
 
 		ChannelHandler* GetChannelHandler (const QString& channel);
-		QList<ChannelHandler*> GetChannels () const;
+		QList<std::shared_ptr<ChannelHandler>> GetChannels () const;
 
 		bool IsChannelExists (const QString& channel) const;
 
@@ -106,6 +106,7 @@ namespace Acetamide
 				const QString& answer, bool endOdfCmd = false);
 
 		void SetMUCSubject (const QString& channel, const QString& topic);
+		void SetTopic (const QString& channel, const QString& topic);
 
 		void CTCPReply (const QString& msg);
 		void CTCPRequestResult (const QString& msg);

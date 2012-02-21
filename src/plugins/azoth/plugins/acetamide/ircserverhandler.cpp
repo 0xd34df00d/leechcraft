@@ -134,7 +134,7 @@ namespace Acetamide
 		return ChannelsManager_->GetChannelHandler (channel);
 	}
 
-	QList<ChannelHandler*> IrcServerHandler::GetChannelHandlers () const
+	QList<std::shared_ptr<ChannelHandler>> IrcServerHandler::GetChannelHandlers () const
 	{
 		return ChannelsManager_->GetChannels ();
 	}
@@ -209,11 +209,10 @@ namespace Acetamide
 		ChannelsManager_->LeaveParticipant (channel, nick, msg);
 	}
 
-	void IrcServerHandler::QuitServer ()
+	void IrcServerHandler::SendQuit ()
 	{
 		//TODO quit message
 		IrcParser_->QuitCommand (QStringList ());
-		DisconnectFromServer ();
 	}
 
 	void IrcServerHandler::QuitParticipant (const QString& nick, const QString& msg)
@@ -408,6 +407,11 @@ namespace Acetamide
 	void IrcServerHandler::PongMessage (const QString& msg)
 	{
 		IrcParser_->PongCommand (QStringList () << msg);
+	}
+
+	void IrcServerHandler::SetTopic (const QString& channel, const QString& topic)
+	{
+		IrcParser_->TopicCommand (QStringList () << channel << topic);
 	}
 
 	void IrcServerHandler::GotTopic (const QString& channel,
@@ -671,6 +675,8 @@ namespace Acetamide
 
 		Q_FOREACH (ServerParticipantEntry_ptr entry, Nick2Entry_.values ())
 			Account_->handleEntryRemoved (entry.get ());
+
+		Nick2Entry_.clear ();
 
 		if (ServerConnectionState_ != NotConnected)
 			Socket_->DisconnectFromHost ();

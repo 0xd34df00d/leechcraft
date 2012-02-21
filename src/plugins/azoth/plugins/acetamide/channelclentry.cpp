@@ -32,8 +32,7 @@ namespace Azoth
 namespace Acetamide
 {
 	ChannelCLEntry::ChannelCLEntry (ChannelHandler *handler)
-	: QObject (handler->GetChannelsManager ()->GetAccount ())
-	, ICH_ (handler)
+	: ICH_ (handler)
 	, IsWidgetRequest_ (false)
 	{
 		Perms_ ["permclass_managment"] << "kick";
@@ -238,7 +237,7 @@ namespace Acetamide
 
 	void ChannelCLEntry::SetMUCSubject (const QString& subject)
 	{
-		ICH_->SetMUCSubject (subject);
+		ICH_->SetTopic (subject);
 	}
 
 	QList<QObject*> ChannelCLEntry::GetParticipants ()
