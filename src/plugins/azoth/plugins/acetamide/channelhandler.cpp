@@ -117,8 +117,8 @@ namespace Acetamide
 
 	void ChannelHandler::ChangeNickname (const QString& oldNick, const QString& newNick)
 	{
-		const QString mess = tr ("has changed nickname to %2")
-				.arg (newNick);
+		const QString mess = tr ("%1 has changed nickname to %2")
+				.arg (oldNick, newNick);
 		HandleServiceMessage (mess,
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantNickChange,
