@@ -79,7 +79,8 @@ namespace Acetamide
 		void SetRosterReceived (bool);
 
 		void HandleServiceMessage (const QString&, IMessage::MessageType,
-				IMessage::MessageSubType);
+				IMessage::MessageSubType,
+				ChannelParticipantEntry_ptr entry = ChannelParticipantEntry_ptr ());
 
 		void SendPublicMessage (const QString&);
 		void HandleIncomingMessage (const QString& nick, const QString& msg);
