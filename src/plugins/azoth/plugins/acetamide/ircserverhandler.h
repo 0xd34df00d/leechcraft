@@ -128,6 +128,8 @@ namespace Acetamide
 		void SetNewChannelMode (const QString&, const QString&, const QString&);
 
 		void PongMessage (const QString&);
+
+		void SetTopic (const QString& channel, const QString& topic);
 		void GotTopic (const QString&, const QString&);
 		void GotKickCommand (const QString&, const QString&,
 				const QString&, const QString&);

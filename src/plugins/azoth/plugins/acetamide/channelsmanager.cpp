@@ -288,6 +288,11 @@ namespace Acetamide
 		ReceiveCmdAnswerMessage ("topic", topic, ISH_->IsCmdHasLongAnswer ("topic"));
 	}
 
+	void ChannelsManager::SetTopic (const QString& channel, const QString& topic)
+	{
+		ISH_->SetTopic (channel, topic);
+	}
+
 	void ChannelsManager::CTCPReply (const QString& msg)
 	{
 		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())

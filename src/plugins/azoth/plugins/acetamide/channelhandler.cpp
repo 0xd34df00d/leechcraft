@@ -319,18 +319,24 @@ namespace Acetamide
 
 		Subject_ = subject;
 
+		QString subj ("Topic changed to: %1");
 		ChannelPublicMessage *message =
-				new ChannelPublicMessage (subject,
-							IMessage::DIn,
-							ChannelCLEntry_,
-							IMessage::MTEventMessage,
-							IMessage::MSTRoomSubjectChange);
+				new ChannelPublicMessage (subj.arg (subject),
+						IMessage::DIn,
+						ChannelCLEntry_,
+						IMessage::MTEventMessage,
+						IMessage::MSTRoomSubjectChange);
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
 	QString ChannelHandler::GetMUCSubject () const
 	{
 		return Subject_;
+	}
+
+	void ChannelHandler::SetTopic (const QString& topic)
+	{
+		CM_->SetTopic (ChannelOptions_.ChannelName_.toLower (), topic);
 	}
 
 	void ChannelHandler::Leave (const QString& msg)

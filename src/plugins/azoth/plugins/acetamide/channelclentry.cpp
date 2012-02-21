@@ -238,7 +238,7 @@ namespace Acetamide
 
 	void ChannelCLEntry::SetMUCSubject (const QString& subject)
 	{
-		ICH_->SetMUCSubject (subject);
+		ICH_->SetTopic (subject);
 	}
 
 	QList<QObject*> ChannelCLEntry::GetParticipants ()

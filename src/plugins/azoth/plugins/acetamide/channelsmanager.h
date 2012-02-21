@@ -106,6 +106,7 @@ namespace Acetamide
 				const QString& answer, bool endOdfCmd = false);
 
 		void SetMUCSubject (const QString& channel, const QString& topic);
+		void SetTopic (const QString& channel, const QString& topic);
 
 		void CTCPReply (const QString& msg);
 		void CTCPRequestResult (const QString& msg);

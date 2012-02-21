@@ -410,6 +410,11 @@ namespace Acetamide
 		IrcParser_->PongCommand (QStringList () << msg);
 	}
 
+	void IrcServerHandler::SetTopic (const QString& channel, const QString& topic)
+	{
+		IrcParser_->TopicCommand (QStringList () << channel << topic);
+	}
+
 	void IrcServerHandler::GotTopic (const QString& channel,
 			const QString& message)
 	{
