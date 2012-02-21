@@ -67,6 +67,7 @@
 #include "lastactivitymanager.h"
 #include "jabbersearchmanager.h"
 #include "useravatarmanager.h"
+#include "sdmanager.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -103,6 +104,7 @@ namespace Xoox
 	, JabberSearchManager_ (new JabberSearchManager)
 	, UserAvatarManager_ (0)
 	, RIEXManager_ (new RIEXManager)
+	, SDManager_ (new SDManager (this))
 #ifdef ENABLE_CRYPT
 	, PGPManager_ (0)
 #endif
@@ -483,6 +485,11 @@ namespace Xoox
 	RIEXManager* ClientConnection::GetRIEXManager () const
 	{
 		return RIEXManager_;
+	}
+
+	SDManager* ClientConnection::GetSDManager () const
+	{
+		return SDManager_;
 	}
 
 #ifdef ENABLE_CRYPT
