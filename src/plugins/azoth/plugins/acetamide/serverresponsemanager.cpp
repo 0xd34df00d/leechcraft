@@ -262,7 +262,7 @@ namespace Acetamide
 	void ServerResponseManager::GotQuit (const IrcMessageOptions& opts)
 	{
 		if (opts.Nick_ == ISH_->GetNickName ())
-			ISH_->QuitServer ();
+			ISH_->DisconnectFromServer ();
 		else
 			ISH_->QuitParticipant (opts.Nick_, opts.Message_);
 	}

@@ -40,7 +40,7 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
-		ChannelCLEntry *ChannelCLEntry_;
+		std::shared_ptr<ChannelCLEntry> ChannelCLEntry_;
 		ChannelsManager *CM_;
 
 		QString ChannelID_;
@@ -95,6 +95,7 @@ namespace Acetamide
 
 		void SetMUCSubject (const QString&);
 		QString GetMUCSubject () const;
+		void SetTopic (const QString& topic);
 
 		void Leave (const QString&);
 		void CloseChannel ();

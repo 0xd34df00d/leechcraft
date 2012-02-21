@@ -460,8 +460,8 @@ namespace Acetamide
 	void IrcAccount::SaveActiveChannels ()
 	{
 		ActiveChannels_.clear ();
-		Q_FOREACH (IrcServerHandler *ish, ClientConnection_->GetServerHandlers ())
-			Q_FOREACH (ChannelHandler *ich, ish->GetChannelHandlers ())
+		Q_FOREACH (auto ish, ClientConnection_->GetServerHandlers ())
+			Q_FOREACH (auto ich, ish->GetChannelHandlers ())
 			{
 				IrcBookmark bookmark;
 				bookmark.ServerName_ = ish->GetServerOptions ().ServerName_;
