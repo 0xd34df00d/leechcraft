@@ -81,6 +81,7 @@ namespace Xoox
 		QMap<QString, QXmppVersionIq> Variant2Version_;
 
 		bool HasUnreadMsgs_;
+		bool VersionReqsEnabled_;
 	public:
 		EntryBase (GlooxAccount* = 0);
 		virtual ~EntryBase ();
@@ -126,6 +127,8 @@ namespace Xoox
 		void SetClientVersion (const QString&, const QXmppVersionIq&);
 
 		GeolocationInfo_t GetGeolocationInfo (const QString&) const;
+
+		void SetVersionReqsEnabled (bool);
 
 		QByteArray GetVariantVerString (const QString&) const;
 		QXmppVersionIq GetClientVersion (const QString&) const;

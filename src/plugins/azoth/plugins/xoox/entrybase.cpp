@@ -61,6 +61,7 @@ namespace Xoox
 	, Commands_ (new QAction (tr ("Commands..."), Account_))
 	, DetectNick_ (new QAction (tr ("Detect nick"), Account_))
 	, HasUnreadMsgs_ (false)
+	, VersionReqsEnabled_ (true)
 	{
 		connect (this,
 				SIGNAL (locationChanged (const QString&, QObject*)),
@@ -414,7 +415,9 @@ namespace Xoox
 				wasOffline)
 			emit availableVariantsChanged (vars);
 
-		if ((!existed || wasOffline) && status.State_ != SOffline)
+		if (VersionReqsEnabled_ &&
+				(!existed || wasOffline) &&
+				status.State_ != SOffline)
 		{
 			const QString& jid = variant.isEmpty () ?
 					GetJID () :
@@ -573,6 +576,11 @@ namespace Xoox
 	GeolocationInfo_t EntryBase::GetGeolocationInfo (const QString& variant) const
 	{
 		return Location_ [variant];
+	}
+
+	void EntryBase::SetVersionReqsEnabled (bool enabled)
+	{
+		VersionReqsEnabled_ = enabled;
 	}
 
 	QByteArray EntryBase::GetVariantVerString (const QString& var) const
