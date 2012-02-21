@@ -300,6 +300,9 @@ namespace Acetamide
 					IMessage::MTServiceMessage,
 					IMessage::MSTOther);
 
+		if (CmdQueue_.isEmpty ())
+			return;
+
 		const CommandMessage& cmdMsg = CmdQueue_.head ();
 		if (cmdMsg.Cmd_ == "ctcp")
 			CmdQueue_.dequeue ();
