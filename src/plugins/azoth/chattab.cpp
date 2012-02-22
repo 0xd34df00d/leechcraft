@@ -171,6 +171,18 @@ namespace Azoth
 		XmlSettingsManager::Instance ().RegisterObject ("FontSize",
 				this, "handleFontSizeChanged");
 		handleFontSizeChanged ();
+
+		QList<QByteArray> fontProps;
+		fontProps << "StandardFont"
+				<< "FixedFont"
+				<< "SerifFont"
+				<< "SansSerifFont"
+				<< "CursiveFont"
+				<< "FantasyFont";
+		XmlSettingsManager::Instance ().RegisterObject (fontProps,
+				this, "handleFontSettingsChanged");
+		handleFontSettingsChanged ();
+
 		Ui_.View_->setFocusProxy (Ui_.MsgEdit_);
 
 		HandleMUCParticipantsChanged ();
@@ -899,6 +911,25 @@ namespace Azoth
 				SIGNAL (gotLastMessages (QObject*, const QList<QObject*>&)),
 				this,
 				SLOT (handleGotLastMessages (QObject*, const QList<QObject*>&)));
+	}
+
+	void ChatTab::handleFontSettingsChanged ()
+	{
+		QWebSettings *s = Ui_.View_->settings ();
+
+		auto font = [s] (QWebSettings::FontFamily f, const QByteArray& str)
+		{
+			const QString& family = XmlSettingsManager::Instance ()
+					.property (str).value<QFont> ().family ();
+			s->setFontFamily (f, family);
+		};
+
+		font (QWebSettings::StandardFont, "StandardFont");
+		font (QWebSettings::FixedFont, "FixedFont");
+		font (QWebSettings::SerifFont, "SerifFont");
+		font (QWebSettings::SansSerifFont, "SansSerifFont");
+		font (QWebSettings::CursiveFont, "CursiveFont");
+		font (QWebSettings::FantasyFont, "FantasyFont");
 	}
 
 	void ChatTab::handleFontSizeChanged ()

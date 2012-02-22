@@ -148,6 +148,7 @@ namespace Azoth
 
 		void handleGotLastMessages (QObject*, const QList<QObject*>&);
 
+		void handleFontSettingsChanged ();
 		void handleFontSizeChanged ();
 	private:
 		template<typename T>
