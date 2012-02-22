@@ -237,6 +237,9 @@ namespace Acetamide
 				if (cmd == "say")
 					ChannelHandlers_ [chnnl]->HandleIncomingMessage (ISH_->GetNickName (),
 							msg.mid (4));
+				else if (cmd == "me")
+					ChannelHandlers_ [chnnl]->HandleIncomingMessage (ISH_->GetNickName (),
+							msg);
 				else
 					ChannelHandlers_ [chnnl]->HandleServiceMessage (msg,
 							IMessage::MTEventMessage,
