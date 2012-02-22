@@ -58,8 +58,8 @@ namespace Acetamide
 
 		if (cmd == "me")
 		{
-			messageList.insert (1, channelName);
-			messageList.insert (2, "ACTION");
+			messageList.insert (0, channelName);
+			messageList.insert (1, "ACTION");
 		}
 		else if (cmd == "part" && message.isEmpty ())
 			messageList << channelName; //TODO message for part
