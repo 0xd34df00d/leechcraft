@@ -64,6 +64,7 @@ namespace Xoox
 		GlooxAccount *Account_;
 
 		QList<QObject*> AllMessages_;
+		QList<GlooxMessage*> UnreadMessages_;
 		QMap<QString, EntryStatus> CurrentStatus_;
 		QList<QAction*> Actions_;
 		QAction *Commands_;
@@ -121,6 +122,7 @@ namespace Xoox
 		void SetRawInfo (const QString&);
 
 		bool HasUnreadMsgs () const;
+		QList<GlooxMessage*> GetUnreadMessages () const;
 
 		void SetClientInfo (const QString&, const QString&, const QByteArray&);
 		void SetClientInfo (const QString&, const QXmppPresence&);

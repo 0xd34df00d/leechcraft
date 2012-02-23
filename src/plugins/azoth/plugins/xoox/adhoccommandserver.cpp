@@ -18,11 +18,12 @@
 
 #include "adhoccommandserver.h"
 #include <QXmppDiscoveryManager.h>
+#include <interfaces/iproxyobject.h>
 #include "clientconnection.h"
 #include "util.h"
 #include "roomclentry.h"
 #include "core.h"
-#include <interfaces/iproxyobject.h>
+#include "glooxmessage.h"
 
 namespace LeechCraft
 {
@@ -34,6 +35,7 @@ namespace Xoox
 	const QString RcStr = "http://jabber.org/protocol/rc";
 	const QString NodeChangeStatus = "ttp://jabber.org/protocol/rc#set-status";
 	const QString NodeLeaveGroupchats = "http://jabber.org/protocol/rc#leave-groupchats";
+	const QString NodeForward = "http://jabber.org/protocol/rc#forward";
 
 	AdHocCommandServer::AdHocCommandServer (ClientConnection *conn)
 	: Conn_ (conn)
@@ -69,6 +71,13 @@ namespace Xoox
 		NodeSubmitHandlers_ [leaveGroupchats.node ()] =
 				[this] (QDomElement e, QString s, QXmppDataForm f)
 					{ LeaveGroupchatsSubmitted (e, s, f); };
+
+		QXmppDiscoveryIq::Item forward;
+		forward.setNode (NodeForward);
+		forward.setJid (jid);
+		forward.setName (tr ("Forward unread messages"));
+		XEP0146Items_ [forward.node ()] = forward;
+		NodeInfos_ [forward.node ()] = [this] (QDomElement e) { Forward (e); };
 	}
 
 	bool AdHocCommandServer::handleStanza (const QDomElement& elem)
@@ -325,6 +334,33 @@ namespace Xoox
 		}
 
 		SendCompleted (sourceElem, NodeLeaveGroupchats, sessionId);
+	}
+
+	void AdHocCommandServer::Forward (const QDomElement& sourceElem)
+	{
+		const QString& to = sourceElem.attribute ("from");
+
+		QList<GlooxMessage*> msgs;
+		Q_FOREACH (QObject *obj, Conn_->GetCLEntries ())
+		{
+			EntryBase *base = qobject_cast<EntryBase*> (obj);
+			if (!base)
+				continue;
+
+			Q_FOREACH (GlooxMessage *msgObj, base->GetUnreadMessages ())
+			{
+				QXmppMessage msg (QString (), to, msgObj->GetBody ());
+				msg.setStamp (msgObj->GetDateTime ());
+
+				QXmppExtendedAddress address ("ofrom", base->GetHumanReadableID ());
+				msg.setExtendedAddresses (QXmppExtendedAddressList () << address);
+
+				Conn_->GetClient ()->sendPacket (msg);
+			}
+		}
+
+		const QString& sess = sourceElem.firstChildElement ("command").attribute ("session");
+		SendCompleted (sourceElem, NodeForward, sess);
 	}
 
 	void AdHocCommandServer::handleDiscoItems (const QXmppDiscoveryIq& iq)

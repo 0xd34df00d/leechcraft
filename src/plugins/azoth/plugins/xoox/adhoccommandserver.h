@@ -63,6 +63,7 @@ namespace Xoox
 		void LeaveGroupchatsInfo (const QDomElement&);
 		void LeaveGroupchatsSubmitted (const QDomElement&,
 				const QString&, const QXmppDataForm&);
+		void Forward (const QDomElement&);
 	private slots:
 		void handleDiscoItems (const QXmppDiscoveryIq&);
 		void handleDiscoInfo (const QXmppDiscoveryIq&);

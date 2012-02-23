@@ -202,6 +202,7 @@ namespace Xoox
 	void EntryBase::MarkMsgsRead ()
 	{
 		HasUnreadMsgs_ = false;
+		UnreadMessages_.clear ();
 		emit messagesAreRead ();
 	}
 
@@ -261,7 +262,10 @@ namespace Xoox
 	void EntryBase::HandleMessage (GlooxMessage *msg)
 	{
 		if (msg->GetMessageType () == IMessage::MTChatMessage)
+		{
 			HasUnreadMsgs_ = true;
+			UnreadMessages_ << msg;
+		}
 
 		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
@@ -520,6 +524,11 @@ namespace Xoox
 	bool EntryBase::HasUnreadMsgs () const
 	{
 		return HasUnreadMsgs_;
+	}
+
+	QList<GlooxMessage*> EntryBase::GetUnreadMessages () const
+	{
+		return UnreadMessages_;
 	}
 
 	void EntryBase::SetClientInfo (const QString& variant,
