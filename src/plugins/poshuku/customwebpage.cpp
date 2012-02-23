@@ -257,6 +257,11 @@ namespace Poshuku
 		}
 	}
 
+	void CustomWebPage::handleFeaturePermissionReq (QWebFrame *frame, QWebPage::Feature feature)
+	{
+		qDebug () << Q_FUNC_INFO << frame << feature;
+	}
+
 	void CustomWebPage::handleContentsChanged ()
 	{
 		emit hookContentsChanged (IHookProxy_ptr (new Util::DefaultHookProxy),
