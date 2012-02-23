@@ -126,6 +126,7 @@ namespace Xoox
 		Ui_.OrgUnit_->setText (vcard.orgUnit ());
 		Ui_.Title_->setText (vcard.title ());
 		Ui_.Role_->setText (vcard.role ());
+		Ui_.About_->setPlainText (vcard.desc ());
 	}
 
 	void VCardDialog::InitConnections (EntryBase *entry)
@@ -199,6 +200,7 @@ namespace Xoox
 		VCard_.setOrgUnit (Ui_.OrgUnit_->text ());
 		VCard_.setTitle (Ui_.Title_->text ());
 		VCard_.setRole (Ui_.Role_->text ());
+		VCard_.setDesc (Ui_.About_->toPlainText ());
 
 		const QPixmap *px = Ui_.LabelPhoto_->pixmap ();
 		if (px)
@@ -257,6 +259,8 @@ namespace Xoox
 
 		Q_FOREACH (QLineEdit *edit, findChildren<QLineEdit*> ())
 			edit->setReadOnly (false);
+
+		Ui_.About_->setReadOnly (false);
 	}
 
 	void VCardDialog::UpdateNote (GlooxAccount *acc, const QString& jid)
