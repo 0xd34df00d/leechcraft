@@ -21,6 +21,8 @@
 #include <QTextCodec>
 #include "ircserverhandler.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -347,13 +349,14 @@ namespace Acetamide
 
 		QString cmd;
 		QString outputMessage;
-		const QString version = QString ("%1 %2 %3").arg ("Acetamide",
-				"2.0",
-				"(C) 2011 by the LeechCraft team");
+		const QString& lcVer = Core::Instance ().GetProxy ()->GetVersion ();
+		const QString version = QString ("LeechCraft %1 (Acetamide 2.0) "
+					"(c) 2006-2012 LeechCraft team")
+				.arg (lcVer);
 		const QDateTime currentDT = QDateTime::currentDateTime ();
-		const QString firstPartOutput = QString ("%1 %2 - %3").arg ("Acetamide",
-				"2.0",
-				"http://www.leechcraft.org");
+		const QString firstPartOutput = QString ("LeechCraft %1 (Acetamide 2.0) - "
+					"http://leechcraft.org")
+				.arg (lcVer);
 		const QString target = QString::fromUtf8 (opts.Parameters_.last ().c_str ());
 
 		if (ctcpList.at (0).toLower () == "version")
