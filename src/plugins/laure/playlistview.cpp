@@ -58,13 +58,20 @@ namespace Laure
 		setItemDelegate (new NowPlayingDelegate (this));
 		
 		header ()->setResizeMode (QHeaderView::Interactive);
+		header ()->setContextMenuPolicy (Qt::CustomContextMenu);
+		connect (header (),
+				SIGNAL (sectionResized (int, int, int)),
+				this,
+				SLOT (handleSectionResized (int, int, int)));
 		
 		setColumnWidth (StatusColumn, 40);
+		header ()->setResizeMode (StatusColumn, QHeaderView::Fixed);
+		header ()->setResizeMode (QueueColumn, QHeaderView::ResizeToContents);
+		header ()->setResizeMode (LengthColumn, QHeaderView::ResizeToContents);
 
 		setItemDelegateForColumn (PlayListColumns::StatusColumn, new PlayListStatusDelegate (this));
 		setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
 		
-		header ()->setContextMenuPolicy (Qt::CustomContextMenu);
 		connect (header (),
 				SIGNAL (customContextMenuRequested (QPoint)),
 				this,
@@ -94,6 +101,16 @@ namespace Laure
 				<< tr ("Length");
 				
 		PlayListModel_->setHorizontalHeaderLabels (headers);
+		
+		for (int i = ArtistColumn; i < QueueColumn; ++i)
+		{
+			const int prop = XmlSettingsManager::Instance ()
+					.property ("PlayListHeader" + QString::number (i).toAscii ())
+					.toInt ();
+			if (!prop)
+				continue;
+			setColumnWidth (i, prop);
+		}
 	}
 	
 	void PlayListView::Init (std::shared_ptr<VLCWrapper> wrapper)
@@ -108,6 +125,13 @@ namespace Laure
 				SIGNAL (playItem (int)),
 				w,
 				SLOT (playItem (int)));
+	}
+	
+	void PlayListView::handleSectionResized (int logicalIndex,
+			int oldSize, int newSize)
+	{
+		XmlSettingsManager::Instance ().setProperty ("PlayListHeader"
+				+ QString::number (logicalIndex).toAscii (), newSize);
 	}
 	
 	void PlayListView::handleHeaderMenu (const QPoint& point)

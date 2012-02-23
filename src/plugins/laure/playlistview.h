@@ -103,6 +103,7 @@ namespace Laure
 		void handleHideHeaders ();
 		void handleHeaderMenu (const QPoint& point);
 		void handleMenu (const QPoint& point);
+		void handleSectionResized (int logicalIndex, int oldSize, int newSize);
 	private:
 		void UpdateQueueIndexes ();
 		
