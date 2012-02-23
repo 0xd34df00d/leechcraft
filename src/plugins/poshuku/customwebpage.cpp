@@ -137,91 +137,12 @@ namespace Poshuku
 				this,
 				SLOT (handleWindowCloseRequested ()));
 
-		QString checkDown = tr ("<a href=\"http://downforeveryoneorjustme.com/{host}\" "
-				"target=\"_blank\">check</a> if the site <strong>{host}</strong> is down for you only;",
-				"{host} would be substituded with site's host name.");
-		QString tryAgainLater = tr ("try again later");
-		QString contactRemoteAdmin = tr ("contact remote server's administrator "
-				"(typically at <a href=\"mailto:webmaster@{host}\">webmaster@{host}</a>)");
-		QString contactSystemAdmin = tr ("contact your system/network administrator, "
-				"especially if you can't load any single page");
-		QString checkProxySettings = tr ("check your proxy settings");
+		connect (this,
+				SIGNAL (featurePermissionRequested (QWebFrame*, QWebPage::Feature)),
+				this,
+				SLOT (handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature)));
 
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ConnectionRefusedError]
-				<< tryAgainLater + ";"
-				<< contactRemoteAdmin + ";"
-				<< checkDown;
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::RemoteHostClosedError]
-				<< tryAgainLater + ";"
-				<< contactRemoteAdmin + ";"
-				<< checkDown;
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::HostNotFoundError]
-				<< tr ("check if the URL is written correctly;")
-				<< tr ("try changing your DNS servers;")
-				<< tr ("make sure that LeechCraft is allowed to access the Internet and particularly web sites;")
-				<< contactSystemAdmin + ";"
-				<< checkDown;
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::TimeoutError]
-				<< tryAgainLater + ";"
-				<< tr ("check whether some downloads consume too much bandwidth: try limiting their speed or reducing number of connections for them;")
-				<< contactSystemAdmin + ";"
-				<< contactRemoteAdmin + ";"
-				<< checkDown;
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::OperationCanceledError]
-				<< tr ("try again.");
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::SslHandshakeFailedError]
-				<< tr ("make sure that remote server is really what it claims to be;")
-				<< contactSystemAdmin + ".";
-#if QT_VERSION >= 0x040700
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::TemporaryNetworkFailureError]
-				<< tryAgainLater + ";"
-				<< contactSystemAdmin + ".";
-#endif
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError]
-				<< tryAgainLater + ";"
-				<< checkProxySettings + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionClosedError]
-				<< tryAgainLater + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyNotFoundError] =
-				Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError];
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyTimeoutError] =
-				Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError];
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyAuthenticationRequiredError] =
-				Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError];
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentNotFoundError]
-				<< tr ("check if the URL is written correctly;")
-				<< tr ("go to web site's <a href=\"{schema}://{host}/\">main page</a> and find the required page from there.");
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::AuthenticationRequiredError]
-				<< tr ("check the login and password you entered and try again");
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentReSendError]
-				<< tryAgainLater + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProtocolUnknownError]
-				<< tr ("check if the URL is written correctly, particularly, the part before the '://';")
-				<< tr ("try installing plugins that are known to support this protocol;")
-				<< tryAgainLater + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProtocolInvalidOperationError]
-										<< tryAgainLater + ";"
-				<< contactRemoteAdmin + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::UnknownNetworkError]
-										<< tryAgainLater + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::UnknownProxyError]
-				<< checkProxySettings + ";"
-				<< tryAgainLater + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::UnknownContentError]
-				<< tryAgainLater + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProtocolFailure]
-				<< tryAgainLater + ";"
-				<< contactRemoteAdmin + ";"
-				<< contactSystemAdmin + ".";
-
-		Error2Suggestions_ [Http] [404] = Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentNotFoundError];
+		FillErrorSuggestions ();
 
 		{
 			Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
@@ -521,6 +442,93 @@ namespace Poshuku
 				}
 				break;
 		}
+	}
+
+	void CustomWebPage::FillErrorSuggestions ()
+	{
+		QString checkDown = tr ("<a href=\"http://downforeveryoneorjustme.com/{host}\" "
+				"target=\"_blank\">check</a> if the site <strong>{host}</strong> is down for you only;",
+				"{host} would be substituded with site's host name.");
+		QString tryAgainLater = tr ("try again later");
+		QString contactRemoteAdmin = tr ("contact remote server's administrator "
+				"(typically at <a href=\"mailto:webmaster@{host}\">webmaster@{host}</a>)");
+		QString contactSystemAdmin = tr ("contact your system/network administrator, "
+				"especially if you can't load any single page");
+		QString checkProxySettings = tr ("check your proxy settings");
+
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ConnectionRefusedError]
+				<< tryAgainLater + ";"
+				<< contactRemoteAdmin + ";"
+				<< checkDown;
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::RemoteHostClosedError]
+				<< tryAgainLater + ";"
+				<< contactRemoteAdmin + ";"
+				<< checkDown;
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::HostNotFoundError]
+				<< tr ("check if the URL is written correctly;")
+				<< tr ("try changing your DNS servers;")
+				<< tr ("make sure that LeechCraft is allowed to access the Internet and particularly web sites;")
+				<< contactSystemAdmin + ";"
+				<< checkDown;
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::TimeoutError]
+				<< tryAgainLater + ";"
+				<< tr ("check whether some downloads consume too much bandwidth: try limiting their speed or reducing number of connections for them;")
+				<< contactSystemAdmin + ";"
+				<< contactRemoteAdmin + ";"
+				<< checkDown;
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::OperationCanceledError]
+				<< tr ("try again.");
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::SslHandshakeFailedError]
+				<< tr ("make sure that remote server is really what it claims to be;")
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::TemporaryNetworkFailureError]
+				<< tryAgainLater + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError]
+				<< tryAgainLater + ";"
+				<< checkProxySettings + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionClosedError]
+				<< tryAgainLater + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyNotFoundError] =
+				Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError];
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyTimeoutError] =
+				Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError];
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyAuthenticationRequiredError] =
+				Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError];
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentNotFoundError]
+				<< tr ("check if the URL is written correctly;")
+				<< tr ("go to web site's <a href=\"{schema}://{host}/\">main page</a> and find the required page from there.");
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::AuthenticationRequiredError]
+				<< tr ("check the login and password you entered and try again");
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentReSendError]
+				<< tryAgainLater + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProtocolUnknownError]
+				<< tr ("check if the URL is written correctly, particularly, the part before the '://';")
+				<< tr ("try installing plugins that are known to support this protocol;")
+				<< tryAgainLater + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProtocolInvalidOperationError]
+										<< tryAgainLater + ";"
+				<< contactRemoteAdmin + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::UnknownNetworkError]
+										<< tryAgainLater + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::UnknownProxyError]
+				<< checkProxySettings + ";"
+				<< tryAgainLater + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::UnknownContentError]
+				<< tryAgainLater + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProtocolFailure]
+				<< tryAgainLater + ";"
+				<< contactRemoteAdmin + ";"
+				<< contactSystemAdmin + ".";
+
+		Error2Suggestions_ [Http] [404] = Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentNotFoundError];
 	}
 
 	QString CustomWebPage::MakeErrorReplyContents (int statusCode,

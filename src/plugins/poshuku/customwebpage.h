@@ -84,6 +84,7 @@ namespace Poshuku
 		virtual bool javaScriptPrompt (QWebFrame*, const QString&, const QString&, QString*);
 		virtual QString userAgentForUrl (const QUrl&) const;
 	private:
+		void FillErrorSuggestions ();
 		QString MakeErrorReplyContents (int, const QUrl&,
 				const QString&, ErrorDomain = WebKit) const;
 		QWebFrame* FindFrame (const QUrl&);
