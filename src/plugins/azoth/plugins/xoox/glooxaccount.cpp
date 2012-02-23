@@ -70,6 +70,7 @@ namespace Xoox
 	, Name_ (name)
 	, ParentProtocol_ (qobject_cast<GlooxProtocol*> (parent))
 	, Port_ (-1)
+	, KAParams_ (qMakePair (90, 60))
 	, PrivacyDialogAction_ (new QAction (tr ("Privacy lists..."), this))
 	{
 		AccState_.State_ = SOffline;
@@ -91,6 +92,7 @@ namespace Xoox
 	{
 		ClientConnection_.reset (new ClientConnection (JID_ + "/" + Resource_,
 						this));
+		ClientConnection_->SetKAParams (KAParams_);
 
 		TransferManager_.reset (new TransferManager (ClientConnection_->
 						GetTransferManager (),
@@ -248,6 +250,9 @@ namespace Xoox
 			dia->W ()->SetPort (Port_);
 		dia->W ()->SetPriority (AccState_.Priority_);
 
+		dia->W ()->SetKAInterval (KAParams_.first);
+		dia->W ()->SetKATimeout (KAParams_.second);
+
 		if (dia->exec () == QDialog::Rejected)
 			return;
 
@@ -280,6 +285,10 @@ namespace Xoox
 		const QString& pass = w->GetPassword ();
 		if (!pass.isNull ())
 			Core::Instance ().GetPluginProxy ()->SetPassword (pass, this);
+
+		KAParams_ = qMakePair (w->GetKAInterval (), w->GetKATimeout ());
+		if (ClientConnection_)
+			ClientConnection_->SetKAParams (KAParams_);
 
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, AccState_.Status_));
@@ -713,7 +722,7 @@ namespace Xoox
 
 	QByteArray GlooxAccount::Serialize () const
 	{
-		quint16 version = 2;
+		quint16 version = 3;
 
 		QByteArray result;
 		{
@@ -725,7 +734,8 @@ namespace Xoox
 				<< Resource_
 				<< AccState_.Priority_
 				<< Host_
-				<< Port_;
+				<< Port_
+				<< KAParams_;
 		}
 
 		return result;
@@ -738,7 +748,7 @@ namespace Xoox
 		QDataStream in (data);
 		in >> version;
 
-		if (version < 1 || version > 2)
+		if (version < 1 || version > 3)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -756,6 +766,8 @@ namespace Xoox
 		if (version >= 2)
 			in >> result->Host_
 				>> result->Port_;
+		if (version >= 3)
+			in >> result->KAParams_;
 		result->Init ();
 
 		return result;

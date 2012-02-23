@@ -122,6 +122,8 @@ namespace Xoox
 	, VersionQueue_ (new FetchQueue ([this] (QString str) { Client_->versionManager ().requestVersion (str); },
 				jid.contains ("gmail.com") ? 1200 : 250, 1, this))
 	, SocketErrorAccumulator_ (0)
+	, KAInterval_ (90)
+	, KATimeout_ (30)
 	{
 		SetOurJID (OurJID_);
 
@@ -343,6 +345,8 @@ namespace Xoox
 				conf.setHost (host);
 			if (port >= 0)
 				conf.setPort (port);
+			conf.setKeepAliveInterval (KAInterval_);
+			conf.setKeepAliveTimeout (KATimeout_);
 			Client_->connectToServer (conf, pres);
 
 			FirstTimeConnect_ = false;
@@ -366,6 +370,23 @@ namespace Xoox
 	GlooxAccountState ClientConnection::GetLastState () const
 	{
 		return LastState_;
+	}
+
+	QPair<int, int> ClientConnection::GetKAParams () const
+	{
+		return qMakePair (KAInterval_, KATimeout_);
+	}
+
+	void ClientConnection::SetKAParams (const QPair<int, int>& p)
+	{
+		KAInterval_ = p.first;
+		KATimeout_ = p.second;
+
+		if (Client_)
+		{
+			Client_->configuration ().setKeepAliveInterval (KAInterval_);
+			Client_->configuration ().setKeepAliveTimeout (KATimeout_);
+		}
 	}
 
 	void ClientConnection::Synchronize ()

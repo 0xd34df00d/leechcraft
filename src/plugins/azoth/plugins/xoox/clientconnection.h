@@ -146,6 +146,8 @@ namespace Xoox
 		FetchQueue *VersionQueue_;
 
 		int SocketErrorAccumulator_;
+		int KAInterval_;
+		int KATimeout_;
 
 		QList<QXmppMessage> OfflineMsgQueue_;
 		QList<QPair<QString, PEPEventBase*> > InitialEventQueue_;
@@ -176,6 +178,10 @@ namespace Xoox
 
 		void SetState (const GlooxAccountState&);
 		GlooxAccountState GetLastState () const;
+
+		QPair<int, int> GetKAParams () const;
+		void SetKAParams (const QPair<int, int>&);
+
 		void Synchronize ();
 
 		void SetPassword (const QString&);

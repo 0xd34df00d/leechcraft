@@ -115,6 +115,8 @@ namespace Xoox
 		QString Host_;
 		int Port_;
 
+		QPair<int, int> KAParams_;
+
 		QIcon AccountIcon_;
 
 		std::shared_ptr<ClientConnection> ClientConnection_;

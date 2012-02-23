@@ -51,6 +51,11 @@ namespace Xoox
 		int GetPort () const;
 		void SetPort (int);
 
+		int GetKAInterval () const;
+		void SetKAInterval (int);
+		int GetKATimeout () const;
+		void SetKATimeout (int);
+
 		QString GetPassword () const;
 	private slots:
 		void on_UpdatePassword__released ();

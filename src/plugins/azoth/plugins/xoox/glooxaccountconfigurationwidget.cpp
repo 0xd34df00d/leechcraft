@@ -97,6 +97,26 @@ namespace Xoox
 		Ui_.ConnectionPort_->setValue (port);
 	}
 
+	int GlooxAccountConfigurationWidget::GetKAInterval () const
+	{
+		return Ui_.KeepAliveInterval_->value ();
+	}
+
+	void GlooxAccountConfigurationWidget::SetKAInterval (int val)
+	{
+		Ui_.KeepAliveInterval_->setValue (val);
+	}
+
+	int GlooxAccountConfigurationWidget::GetKATimeout () const
+	{
+		return Ui_.KeepAliveTimeout_->value ();
+	}
+
+	void GlooxAccountConfigurationWidget::SetKATimeout (int val)
+	{
+		Ui_.KeepAliveTimeout_->setValue (val);
+	}
+
 	QString GlooxAccountConfigurationWidget::GetPassword () const
 	{
 		return Password_;
