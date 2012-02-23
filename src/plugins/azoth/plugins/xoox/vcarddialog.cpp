@@ -104,10 +104,29 @@ namespace Xoox
 
 			phones << (attrs.isEmpty () ?
 						phone.number :
-						(phone.number + "(" + attrs.join (", ") + ")"));
+						(phone.number + " (" + attrs.join (", ") + ")"));
 		}
-
 		Ui_.EditPhone_->setText (phones.join ("; "));
+
+		QStringList emails;
+		Q_FOREACH (const QXmppVCardEmail& email, vcard.emails ())
+		{
+			QStringList attrs;
+			if (email.isPref)
+				attrs << tr ("preferred");
+			if (email.isHome)
+				attrs << tr ("home");
+			if (email.isWork)
+				attrs << tr ("work");
+			if (email.isX400)
+				attrs << "X400";
+
+			emails << (attrs.isEmpty () ?
+						email.address :
+						(email.address + " (" + attrs.join (", ") + ")"));
+		}
+		Ui_.EditEmail_->setText (emails.join ("; "));
+
 		Ui_.EditURL_->setText (vcard.url ());
 
 		QPixmap px = QPixmap::fromImage (QImage::fromData (vcard.photo ()));
