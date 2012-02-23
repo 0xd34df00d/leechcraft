@@ -108,6 +108,15 @@
 				<label value="Show rich text message body (if available)" />
 				<tooltip>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
 			</item>
+			<item type="combobox" property="RichFormatterPosition">
+				<label value="Rich text format toolbar position:" />
+				<option name="aboveEdit" default="true">
+					<label value="Above message editor" />
+				</option>
+				<option name="belowEdit">
+					<label value="Below message editor" />
+				</option>
+			</item>
 			<item type="color" property="HighlightColor" default="#FF0000">
 				<label value="Highlight color:" />
 			</item>

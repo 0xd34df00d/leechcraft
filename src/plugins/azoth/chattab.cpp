@@ -183,6 +183,9 @@ namespace Azoth
 				this, "handleFontSettingsChanged");
 		handleFontSettingsChanged ();
 
+		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition",
+				this, "handleRichFormatterPosition");
+
 		Ui_.View_->setFocusProxy (Ui_.MsgEdit_);
 
 		HandleMUCParticipantsChanged ();
@@ -913,6 +916,14 @@ namespace Azoth
 				SLOT (handleGotLastMessages (QObject*, const QList<QObject*>&)));
 	}
 
+	void ChatTab::handleRichFormatterPosition ()
+	{
+		const QString& posStr = XmlSettingsManager::Instance ()
+				.property ("RichFormatterPosition").toString ();
+		const int pos = Ui_.MainLayout_->indexOf (Ui_.View_) + (posStr == "belowEdit" ? 2 : 1);
+		Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
+	}
+
 	void ChatTab::handleFontSettingsChanged ()
 	{
 		QWebSettings *s = Ui_.View_->settings ();
@@ -1185,10 +1196,8 @@ namespace Azoth
 				SLOT (clearAvailableNick ()));
 		UpdateTextHeight ();
 
-		const int pos = Ui_.MainLayout_->indexOf (Ui_.View_) + 1;
-
 		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_, Ui_.MsgEdit_);
-		Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
+		handleRichFormatterPosition ();
 		connect (ToggleRichText_,
 				SIGNAL (toggled (bool)),
 				MsgFormatter_,

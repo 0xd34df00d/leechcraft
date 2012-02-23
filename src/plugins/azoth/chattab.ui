@@ -175,7 +175,7 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="MsgEditLayout_">
      <property name="spacing">
       <number>0</number>
      </property>
