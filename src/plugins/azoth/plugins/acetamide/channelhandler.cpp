@@ -475,8 +475,6 @@ namespace Acetamide
 		CM_->GetAccount ()->handleEntryRemoved (ChannelCLEntry_.get ());
 
 		CM_->UnregisterChannel (this);
-
-		deleteLater ();
 	}
 
 	void ChannelHandler::RequestBanList ()
