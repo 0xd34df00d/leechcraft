@@ -125,9 +125,6 @@
    <property name="menuRole">
     <enum>QAction::QuitRole</enum>
    </property>
-   <property name="ActionIcon" stdset="0">
-    <string>application-exit</string>
-   </property>
   </action>
   <action name="ActionFullscreenMode_">
    <property name="checkable">
