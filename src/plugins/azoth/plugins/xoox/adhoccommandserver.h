@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMANDSERVER_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMANDSERVER_H
-#include <boost/function.hpp>
+#include <functional>
 #include <QSet>
 #include <QXmppClientExtension.h>
 #include <QXmppDataForm.h>
@@ -37,21 +37,21 @@ namespace Xoox
 	class AdHocCommandServer : public QXmppClientExtension
 	{
 		Q_OBJECT
-		
+
 		ClientConnection *Conn_;
 
 		QMap<QString, QXmppDiscoveryIq::Item> XEP0146Items_;
-		
-		typedef boost::function<void (const QDomElement&)> NodeActor_t;
+
+		typedef std::function<void (const QDomElement&)> NodeActor_t;
 		QMap<QString, NodeActor_t> NodeInfos_;
-		typedef boost::function<void (const QDomElement&,
+		typedef std::function<void (const QDomElement&,
 				const QString&, const QXmppDataForm&)> NodeSubmitHandler_t;
 		QMap<QString, NodeSubmitHandler_t> NodeSubmitHandlers_;
-		
+
 		QMap<QString, QStringList> PendingSessions_;
 	public:
 		AdHocCommandServer (ClientConnection*);
-		
+
 		bool handleStanza (const QDomElement&);
 	private:
 		void Send (const QXmppDataForm&, const QDomElement&, const QString&);
