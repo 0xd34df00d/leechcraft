@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Minh Ngo
+ * Copyright (C) 2011-2012 Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -88,11 +88,11 @@ namespace Laure
 
 		auto listEventManager = libvlc_media_list_player_event_manager (LPlayer_.get ());
 		libvlc_event_attach (listEventManager, libvlc_MediaListPlayerNextItemSet,
-				     ListEventCallback, this);
+				ListEventCallback, this);
 		
 		auto playerEventManager = libvlc_media_player_event_manager (Player_.get ());
 		libvlc_event_attach (playerEventManager, libvlc_MediaPlayerPlaying,
-					ListEventCallback, this);
+				ListEventCallback, this);
 	}
 
 	int VLCWrapper::PlayQueue ()

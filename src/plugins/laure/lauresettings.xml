@@ -4,19 +4,19 @@
 		<label value="Laure" />
 		<groupbox>
 			<label value="Playlist" />
-			<item type="checkbox" property="Header1" default="true">
+			<item type="checkbox" property="Header2" default="true">
 				<label value="Show Artist" />
 			</item>
-			<item type="checkbox" property="Header2" default="true">
+			<item type="checkbox" property="Header3" default="true">
 				<label value="Show Title" />
 			</item>
-			<item type="checkbox" property="Header3" default="true">
+			<item type="checkbox" property="Header4" default="true">
 				<label value="Show Album" />
 			</item>
-			<item type="checkbox" property="Header4" default="true">
+			<item type="checkbox" property="Header5" default="true">
 				<label value="Show Genre" />
 			</item>
-			<item type="checkbox" property="Header5" default="true">
+			<item type="checkbox" property="Header6" default="true">
 				<label value="Show Date" />
 			</item>
 		</groupbox>

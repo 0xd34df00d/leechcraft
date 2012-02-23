@@ -38,6 +38,7 @@ INCLUDE_DIRECTORIES (
 	)
 
 SET (SRCS
+	playliststatusdelegate.cpp
 	separateplayer.cpp
 	playbackmodemenu.cpp
 	nowplayingdelegate.cpp
@@ -54,6 +55,7 @@ SET (SRCS
 	laure.cpp
 	)
 SET (HEADERS
+	playliststatusdelegate.h
 	separateplayer.h
 	playbackmodemenu.h
 	nowplayingdelegate.h

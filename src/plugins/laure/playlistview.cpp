@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011-2012 Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@
 #include <QTime>
 #include "nowplayingdelegate.h"
 #include "xmlsettingsmanager.h"
+#include "playliststatusdelegate.h"
 
 namespace LeechCraft
 {
@@ -42,22 +43,26 @@ namespace Laure
 		setEditTriggers (SelectedClicked);
 		setSelectionMode (ContiguousSelection);
 		setAlternatingRowColors (true);
-		hideColumn (0);
+		hideColumn (URLColumn);
 
 		handleHideHeaders ();
 		
 		QList<QByteArray> propNames;
 		
-		for (int i = 0; i < PlayListModel_->columnCount () - 1; ++i)
+		for (int i = ArtistColumn; i < QueueColumn; ++i)
 			propNames.push_back ("Header" + QString::number (i).toAscii ());
 		
 		XmlSettingsManager::Instance ().RegisterObject (propNames, this,
 				"handleHideHeaders");
 
 		setItemDelegate (new NowPlayingDelegate (this));
-		setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
 		
-		header ()->setResizeMode (QHeaderView::ResizeToContents);
+		header ()->setResizeMode (QHeaderView::Interactive);
+		
+		setColumnWidth (StatusColumn, 40);
+
+		setItemDelegateForColumn (PlayListColumns::StatusColumn, new PlayListStatusDelegate (this));
+		setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
 		
 		header ()->setContextMenuPolicy (Qt::CustomContextMenu);
 		connect (header (),
@@ -79,12 +84,13 @@ namespace Laure
 		QStringList headers;
 		
 		headers << QString ()
+				<< QString ()
 				<< tr ("Artist")
 				<< tr ("Title")
 				<< tr ("Album")
 				<< tr ("Genre")
 				<< tr ("Date")
-				<< ""
+				<< QString ()
 				<< tr ("Length");
 				
 		PlayListModel_->setHorizontalHeaderLabels (headers);
@@ -107,7 +113,7 @@ namespace Laure
 	void PlayListView::handleHeaderMenu (const QPoint& point)
 	{
 		QMenu menu;
-		for (int i = 1; i < PlayListModel_->columnCount () - 2; ++i)
+		for (int i = ArtistColumn; i < QueueColumn; ++i)
 		{
 			QAction *menuAction = new QAction (header ()->model ()->
 					headerData (i, Qt::Horizontal).toString (), &menu);
@@ -171,7 +177,7 @@ namespace Laure
 	void PlayListView::handleHideHeaders ()
 	{
 		NotHiddenColumnCount_ = 0;
-		for (int i = 1; i < PlayListModel_->columnCount () - 2; ++i)
+		for (int i = ArtistColumn; i < QueueColumn; ++i)
 		{
 			const QString& itemName = "Header" + QString::number (i);
 			const bool checked = XmlSettingsManager::Instance ()
@@ -210,6 +216,11 @@ namespace Laure
 		timeItem->setFlags (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		
 		list << queueItem << timeItem;
+		
+		QStandardItem *statusItem = new QStandardItem ();
+		statusItem->setFlags (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		list.push_front (statusItem);
+		
 		PlayListModel_->appendRow (list);
 	}
 	
@@ -218,6 +229,7 @@ namespace Laure
 		auto it = PlayListModel_->item (CurrentItem_);
 		if (it)
 			it->setData (false, Roles::IsPlayingRole);
+		
 		it = PlayListModel_->item (row);
 		it->setData (true, Roles::IsPlayingRole);
 		CurrentItem_ = row;

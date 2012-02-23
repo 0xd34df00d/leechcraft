@@ -17,41 +17,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_VOLUMESLIDER_H
-#define PLUGINS_LAURE_VOLUMESLIDER_H
-
-#include <QSlider>
-#include <QPixmap>
-
-class QMouseEvent;
-class QPaintEvent;
+#include "playliststatusdelegate.h"
+#include <iostream>
+#include <QPainter>
+#include "playlistview.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	/** @brief An implementation of the Volume slider
-	 * 
-	 *  @author Minh Ngo <nlminhtl@gmail.com>
-	 */
-	class VolumeSlider : public QSlider
+	PlayListStatusDelegate::PlayListStatusDelegate (QObject *parent)
+	: QStyledItemDelegate (parent)
+	, PlayPixmap_ (":/plugins/laure/resources/img/media-play.png")
 	{
-		Q_OBJECT
-		
-		QPixmap VolumeSliderInset_, VolumeSliderGradient_;
-	public:
-		/** @brief Constructs a new VolumeSlider class
-		 * with the given parent.
-		 */
-		VolumeSlider (QWidget* = 0);
-	protected:
-		void paintEvent (QPaintEvent *ev);
-		void mousePressEvent (QMouseEvent *ev);
-		void mouseMoveEvent (QMouseEvent *ev);
-	private:
-		void GenerateGradient ();
-	};
+	
+	}
+	
+	void PlayListStatusDelegate::paint (QPainter *painter,
+			const QStyleOptionViewItem& option, const QModelIndex& id) const
+	{
+		QStyledItemDelegate::paint (painter, option, id);
+		const bool played = id.sibling (id.row (), PlayListColumns::StatusColumn)
+				.data (IsPlayingRole).toBool ();
+				
+		if (played)
+		{
+			painter->drawPixmap (option.rect, PlayPixmap_);
+		}
+	}
 }
 }
-
-#endif // PLUGINS_LAURE_VOLUMESLIDER_H
