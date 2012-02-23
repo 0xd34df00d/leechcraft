@@ -205,10 +205,6 @@
         <translation>Abbandona</translation>
     </message>
     <message>
-        <source>exit</source>
-        <translation>esci</translation>
-    </message>
-    <message>
         <source>Fullscreen mode</source>
         <translation>Modalità schermo intero</translation>
     </message>
@@ -336,10 +332,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Artwork designer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>French translations.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -353,6 +345,34 @@
     </message>
     <message>
         <source>Extensive and thorough testing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Artwork.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Debian/Ubuntu maintainership.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Small fixes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Microsoft Windows backend for Liznoo plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Microsoft Windows builds.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Laure plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last.FM Scrobbler plugin.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -429,6 +449,10 @@
     <message>
         <source>Context-dependent</source>
         <translation type="unfinished">Dipendente dal contesto</translation>
+    </message>
+    <message>
+        <source>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -611,14 +635,6 @@
         <translation>Impossibile caricare il plugin da%1: impossibile cast plugin istanza IInfo *.</translation>
     </message>
     <message>
-        <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
-        <translation>Impossibile caricare il plugin da%1: impossibile ottenere il nome / info / icona con eccezione%2.</translation>
-    </message>
-    <message>
-        <source>Could not load plugin from %1: unable to get name/info/icon.</source>
-        <translation>Impossibile caricare il plugin da%1: impossibile ottenere il nome / info / icona.</translation>
-    </message>
-    <message>
         <source>Initializing %1: stage one...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -636,6 +652,21 @@
     </message>
     <message>
         <source>Are you sure you want to disable this one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load library %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: API level mismatch.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::PrefDelegate</name>
+    <message>
+        <source>Configure...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

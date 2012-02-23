@@ -217,10 +217,6 @@
         <translation>Лог</translation>
     </message>
     <message>
-        <source>exit</source>
-        <translation>Выход</translation>
-    </message>
-    <message>
         <source>New tab</source>
         <translation>Новая вкладка</translation>
     </message>
@@ -340,10 +336,6 @@
         <translation>Переводы на испанский.</translation>
     </message>
     <message>
-        <source>Artwork designer.</source>
-        <translation>Графический дизайн.</translation>
-    </message>
-    <message>
         <source>French translations.</source>
         <translation>Французская локализация.</translation>
     </message>
@@ -358,6 +350,34 @@
     <message>
         <source>Extensive and thorough testing.</source>
         <translation>Мощное и изощренное тестирование.</translation>
+    </message>
+    <message>
+        <source>Artwork.</source>
+        <translation>Графика.</translation>
+    </message>
+    <message>
+        <source>Debian/Ubuntu maintainership.</source>
+        <translation>Поддержка пакетов для Debian/Ubuntu.</translation>
+    </message>
+    <message>
+        <source>Small fixes.</source>
+        <translation>Различные исправления.</translation>
+    </message>
+    <message>
+        <source>Microsoft Windows backend for Liznoo plugin.</source>
+        <translation>Реализация Liznoo для Microsoft Windows.</translation>
+    </message>
+    <message>
+        <source>Microsoft Windows builds.</source>
+        <translation>Сборки для Microsoft Windows.</translation>
+    </message>
+    <message>
+        <source>Laure plugin.</source>
+        <translation>Модуль Laure.</translation>
+    </message>
+    <message>
+        <source>Last.FM Scrobbler plugin.</source>
+        <translation>Скробблер Last.FM.</translation>
     </message>
 </context>
 <context>
@@ -433,6 +453,10 @@
     <message>
         <source>Context-dependent</source>
         <translation>В зависимости от контекста</translation>
+    </message>
+    <message>
+        <source>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</source>
+        <translation>Некоторые графические ресурсы могли быть удалены из LeechCraft из-за лицензионных соображений. Воспользуйтесь модулем LackMan для установки этих ресурсов.</translation>
     </message>
 </context>
 <context>
@@ -611,14 +635,6 @@
         <translation>Невозможно загрузить модуль из %1: невозможно преобразовать экземпляр модуля к IInfo*.</translation>
     </message>
     <message>
-        <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
-        <translation>Невозможно загрузить модуль из %1: не удалось получить имя, информацию или значок с исключением %2.</translation>
-    </message>
-    <message>
-        <source>Could not load plugin from %1: unable to get name/info/icon.</source>
-        <translation>Невозможно загрузить модуль из %1: не удалось получить имя, информацию или значок.</translation>
-    </message>
-    <message>
         <source>Description</source>
         <translation>Описание</translation>
     </message>
@@ -641,6 +657,21 @@
     <message>
         <source>Are you sure you want to disable this one?</source>
         <translation>Вы уверены, что хотите отключить этот модуль?</translation>
+    </message>
+    <message>
+        <source>Could not load library %1: %2.</source>
+        <translation>Невозможно загрузить библиотеку %1: %2.</translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: API level mismatch.</source>
+        <translation>Невозможно загрузить модуль %1: несоответствие уровня API.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::PrefDelegate</name>
+    <message>
+        <source>Configure...</source>
+        <translation>Настроить...</translation>
     </message>
 </context>
 <context>

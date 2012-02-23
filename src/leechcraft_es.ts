@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="es">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -239,89 +241,84 @@
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="42"/>
+        <location filename="leechcraft.ui" line="104"/>
         <source>Add task</source>
         <translation>Añadir tarea</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="47"/>
+        <location filename="leechcraft.ui" line="109"/>
         <source>Settings</source>
         <translation>Preferencias</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="50"/>
+        <location filename="leechcraft.ui" line="112"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="58"/>
+        <location filename="leechcraft.ui" line="120"/>
         <source>Quit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="61"/>
+        <location filename="leechcraft.ui" line="123"/>
         <source>F10</source>
         <translation>F10</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="67"/>
-        <source>exit</source>
-        <translation>salir</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="75"/>
-        <location filename="leechcraft.ui" line="78"/>
+        <location filename="leechcraft.ui" line="134"/>
+        <location filename="leechcraft.ui" line="137"/>
         <source>Fullscreen mode</source>
         <translation>Modo a pantalla completa</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="83"/>
-        <location filename="leechcraft.ui" line="86"/>
+        <location filename="leechcraft.ui" line="142"/>
+        <location filename="leechcraft.ui" line="145"/>
         <source>Log</source>
         <translation>Registro</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="91"/>
+        <location filename="leechcraft.ui" line="150"/>
         <source>About LeechCraft...</source>
         <translation>Sobre LeechCraft...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="96"/>
+        <location filename="leechcraft.ui" line="155"/>
         <source>About Qt...</source>
         <translation>Sobre Qt...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="105"/>
+        <location filename="leechcraft.ui" line="164"/>
         <source>Menu</source>
         <translation>Menu</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="116"/>
+        <location filename="leechcraft.ui" line="175"/>
         <source>Show status bar</source>
         <translation>Mostrar barra de estado</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="121"/>
+        <location filename="leechcraft.ui" line="180"/>
         <source>Close tab</source>
         <translation>Cerrar la etiqueta</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="124"/>
+        <location filename="leechcraft.ui" line="183"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="140"/>
+        <location filename="leechcraft.ui" line="199"/>
         <source>Show toolbar</source>
         <translation>Mostrar barra de herramientas</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="129"/>
+        <location filename="leechcraft.ui" line="188"/>
         <source>New tab</source>
         <translation>Nueva etiqueta</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="132"/>
+        <location filename="leechcraft.ui" line="191"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
@@ -362,9 +359,9 @@
     <message>
         <location filename="aboutdialog.cpp" line="133"/>
         <location filename="aboutdialog.cpp" line="140"/>
-        <location filename="aboutdialog.cpp" line="190"/>
-        <location filename="aboutdialog.cpp" line="194"/>
-        <location filename="aboutdialog.cpp" line="211"/>
+        <location filename="aboutdialog.cpp" line="202"/>
+        <location filename="aboutdialog.cpp" line="206"/>
+        <location filename="aboutdialog.cpp" line="223"/>
         <source>Various patches.</source>
         <translation>Varios parches.</translation>
     </message>
@@ -380,7 +377,7 @@
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="148"/>
-        <location filename="aboutdialog.cpp" line="212"/>
+        <location filename="aboutdialog.cpp" line="224"/>
         <source>Ukrainian translations.</source>
         <translation>Traducciones de Ucrania.</translation>
     </message>
@@ -391,61 +388,92 @@
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="156"/>
-        <source>Artwork designer.</source>
-        <translation>Diseñador.</translation>
+        <source>Artwork.</source>
+        <oldsource>Artwork designer.</oldsource>
+        <translation type="unfinished">Diseñador.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="160"/>
+        <source>Debian/Ubuntu maintainership.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="161"/>
+        <source>Small fixes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="165"/>
         <source>French translations.</source>
         <translation>Traducciones al francés.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="161"/>
+        <location filename="aboutdialog.cpp" line="166"/>
         <source>Italian translations.</source>
         <translation>Traducciones al italiano.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="162"/>
+        <location filename="aboutdialog.cpp" line="167"/>
         <source>Public relations.</source>
         <translation>Las relaciones públicas.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="171"/>
+        <source>Microsoft Windows backend for Liznoo plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="172"/>
+        <source>Microsoft Windows builds.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="181"/>
+        <source>Laure plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="182"/>
+        <source>Last.FM Scrobbler plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="183"/>
         <source>openSUSE package maintainer</source>
         <translation>Mantenedor del paquete de openSUSE</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="172"/>
+        <location filename="aboutdialog.cpp" line="184"/>
         <source>Fedora package maintainer</source>
         <translation>Fedora mantenedor del paquete</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="180"/>
+        <location filename="aboutdialog.cpp" line="192"/>
         <source>Extensive and thorough testing.</source>
         <translation>Pruebas exhaustivas y minuciosas.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="189"/>
+        <location filename="aboutdialog.cpp" line="201"/>
         <source>FatApe plugin, the GreaseMonkey support layer for Poshuku.</source>
         <translation>FatApe plugin, la capa de soporte de Greasemonkey para Poshuku.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="198"/>
+        <location filename="aboutdialog.cpp" line="210"/>
         <source>Graphical artwork.</source>
         <translation>Arte gráfico.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="202"/>
+        <location filename="aboutdialog.cpp" line="214"/>
         <source>Arabic translations.</source>
         <translation>Traducciones al árabe.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="206"/>
+        <location filename="aboutdialog.cpp" line="218"/>
         <source>Esperanto translations</source>
         <translation>Traducciones a esperanto</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="210"/>
+        <location filename="aboutdialog.cpp" line="222"/>
         <source>Aggregator fixes and improvements.</source>
         <translation>Correcciones y mejoras de agregador.</translation>
     </message>
@@ -482,43 +510,43 @@
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <location filename="core.cpp" line="304"/>
+        <location filename="core.cpp" line="320"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>No hay complementos disponibles &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="454"/>
+        <location filename="core.cpp" line="470"/>
         <source>Do you really want to clear the network cache?</source>
         <translation>¿Realmente quiere borrar la caché de la red?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="466"/>
+        <location filename="core.cpp" line="482"/>
         <source>Do you really want to clear cookies?</source>
         <translation>¿Realmente quiere borrar cookies?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="700"/>
-        <location filename="core.cpp" line="717"/>
+        <location filename="core.cpp" line="711"/>
+        <location filename="core.cpp" line="728"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="701"/>
+        <location filename="core.cpp" line="712"/>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
         <translation>No se pudo añadir tarea al programa seleccionado ¿Podria probar otro?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="718"/>
+        <location filename="core.cpp" line="729"/>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
         <translation>No se pudo manejar la tarea con el manejador seleccionado, ¿quiere intentarlo con otro?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="756"/>
+        <location filename="core.cpp" line="767"/>
         <source>Could not handle download entity %1.</source>
         <translation>No se pudo manejar la entidad de descarga %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="784"/>
+        <location filename="core.cpp" line="795"/>
         <source>Plugin load error</source>
         <translation>Error de de carga de Plugin</translation>
     </message>
@@ -526,25 +554,30 @@
 <context>
     <name>LeechCraft::CoreInstanceObject</name>
     <message>
-        <location filename="coreinstanceobject.cpp" line="165"/>
+        <location filename="coreinstanceobject.cpp" line="172"/>
         <source>LeechCraft Core module.</source>
         <translation>LeechCraft módulo Core.</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="187"/>
+        <location filename="coreinstanceobject.cpp" line="194"/>
         <source>Settings</source>
         <translation>Preferencias</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="216"/>
+        <location filename="coreinstanceobject.cpp" line="228"/>
         <source>Context-dependent</source>
         <translation>Dependiente del contexto</translation>
+    </message>
+    <message>
+        <location filename="coreinstanceobject.cpp" line="264"/>
+        <source>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::FancyPopupManager</name>
     <message>
-        <location filename="fancypopupmanager.cpp" line="117"/>
+        <location filename="fancypopupmanager.cpp" line="122"/>
         <source>LeechCraft Notification</source>
         <translation>Notificación LeechCraft</translation>
     </message>
@@ -625,66 +658,66 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="84"/>
+        <location filename="mainwindow.cpp" line="86"/>
         <source>Initializing LeechCraft...</source>
         <translation>Inicializamos LeechCraft...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="113"/>
+        <location filename="mainwindow.cpp" line="116"/>
         <source>Finalizing...</source>
         <translation>Finalizamos...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="157"/>
+        <location filename="mainwindow.cpp" line="160"/>
         <source>F11</source>
         <comment>FullScreen</comment>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="316"/>
+        <location filename="mainwindow.cpp" line="339"/>
         <source>View</source>
         <translation>Mirar</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="320"/>
+        <location filename="mainwindow.cpp" line="343"/>
         <source>Tools</source>
         <translation>instrumentos</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="385"/>
+        <location filename="mainwindow.cpp" line="406"/>
         <source>/s	</source>
         <translation>/s	</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="388"/>
-        <location filename="mainwindow.cpp" line="392"/>
-        <location filename="mainwindow.cpp" line="674"/>
-        <location filename="mainwindow.cpp" line="675"/>
+        <location filename="mainwindow.cpp" line="409"/>
+        <location filename="mainwindow.cpp" line="413"/>
+        <location filename="mainwindow.cpp" line="695"/>
+        <location filename="mainwindow.cpp" line="696"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="489"/>
+        <location filename="mainwindow.cpp" line="510"/>
         <source>Do you really want to quit?</source>
         <translation>¿Realmente quiere salir?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="494"/>
+        <location filename="mainwindow.cpp" line="515"/>
         <source>Always</source>
         <translation>Siempre</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="571"/>
+        <location filename="mainwindow.cpp" line="592"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>Este cambio requiere reiniciar LeechCraft. ¿Quiéres reiniciar ahora?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="681"/>
+        <location filename="mainwindow.cpp" line="702"/>
         <source>%1 down, %2 up</source>
         <translation>%1 descarga, %2 subida</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="760"/>
+        <location filename="mainwindow.cpp" line="793"/>
         <source>LeechCraft menu</source>
         <translation>LeechCraft menu</translation>
     </message>
@@ -739,64 +772,72 @@
         <translation>Descripcion</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="230"/>
+        <location filename="pluginmanager.cpp" line="247"/>
         <source>The following plugins would also be disabled as the result:</source>
         <translation>Los siguientes plugins también serán discapacitados como el resultado:</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="232"/>
+        <location filename="pluginmanager.cpp" line="249"/>
         <source>Are you sure you want to disable this one?</source>
         <translation>¿Seguro que desea desactivar este?</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="292"/>
+        <location filename="pluginmanager.cpp" line="309"/>
         <source>Initializing %1: stage one...</source>
         <translation>Inicializamos %1: la primera etapa...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="378"/>
+        <location filename="pluginmanager.cpp" line="395"/>
         <source>Initializing %1: stage two...</source>
         <translation>Inicializamos %1: la segunda etapa...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="630"/>
+        <location filename="pluginmanager.cpp" line="640"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation>Se nega a cargar plugins de%1 porque no es un archivo.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="643"/>
+        <location filename="pluginmanager.cpp" line="658"/>
+        <source>Could not load library %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="pluginmanager.cpp" line="684"/>
+        <source>Could not load plugin from %1: API level mismatch.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="pluginmanager.cpp" line="697"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation>No se puede cargar el plug-in de%1: %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="662"/>
+        <location filename="pluginmanager.cpp" line="717"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation>No se puede cargar el plug-in de%1: no se puede construir instancia del complemento con la excepción %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="674"/>
+        <location filename="pluginmanager.cpp" line="728"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation>No se puede cargar el plug-in de%1: no se puede construir instancia del complemento.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="686"/>
+        <location filename="pluginmanager.cpp" line="738"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation>No se puede cargar el plug-in de %1: No se puede convertir a la instancia del complemento IInfo *.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="698"/>
+        <location filename="pluginmanager.cpp" line="789"/>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
         <translation>Plugin con ID %1 ya se ha cargado de %2; abortando la carga de %3.</translation>
     </message>
+</context>
+<context>
+    <name>LeechCraft::PrefDelegate</name>
     <message>
-        <location filename="pluginmanager.cpp" line="745"/>
-        <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
-        <translation>No se puede cargar el plug-in de%1: no se puede obtener el nombre/info/ icono con la excepción%2.</translation>
-    </message>
-    <message>
-        <location filename="pluginmanager.cpp" line="757"/>
-        <source>Could not load plugin from %1: unable to get name/info/icon.</source>
-        <translation>No se puede cargar el plug-in de%1: no se puede obtener el nombre/info/ icono.</translation>
+        <location filename="pluginmanagerdialog.cpp" line="49"/>
+        <source>Configure...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -846,24 +887,24 @@
     </message>
     <message>
         <location filename="settingstab.cpp" line="128"/>
+        <location filename="settingstab.cpp" line="154"/>
         <location filename="settingstab.cpp" line="156"/>
-        <location filename="settingstab.cpp" line="158"/>
-        <location filename="settingstab.cpp" line="159"/>
+        <location filename="settingstab.cpp" line="157"/>
         <source>General plugins</source>
         <translation>General plugins</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="204"/>
+        <location filename="settingstab.cpp" line="202"/>
         <source>Settings</source>
         <translation>Preferencias</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="205"/>
+        <location filename="settingstab.cpp" line="203"/>
         <source>LeechCraft-wide settings dashboard</source>
         <translation>Seleccionar...</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="242"/>
+        <location filename="settingstab.cpp" line="231"/>
         <source>Settings for %1</source>
         <translation>Ajustes para %1</translation>
     </message>
@@ -975,12 +1016,12 @@
 <context>
     <name>LeechCraft::StartupWizard</name>
     <message>
-        <location filename="startupwizard.cpp" line="32"/>
+        <location filename="startupwizard.cpp" line="33"/>
         <source>Startup wizard</source>
         <translation>Asistente de inicio</translation>
     </message>
     <message>
-        <location filename="startupwizard.cpp" line="77"/>
+        <location filename="startupwizard.cpp" line="79"/>
         <source>Would you like to set advanced options?</source>
         <translation>¿Le gustaría configurar las opciones avanzadas?</translation>
     </message>
@@ -996,7 +1037,7 @@
 <context>
     <name>LeechCraft::TagsManager</name>
     <message>
-        <location filename="tagsmanager.cpp" line="34"/>
+        <location filename="tagsmanager.cpp" line="33"/>
         <source>untagged</source>
         <translation>sin etiqueta</translation>
     </message>
@@ -1051,7 +1092,7 @@
         <location filename="winwarndialog.cpp" line="38"/>
         <source>Seems like you are running Microsoft Windows.
 
-LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That's because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you'll understand us.
+LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That&apos;s because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you&apos;ll understand us.
 
 If you have read and really understood all these letters, click Cancel button in this dialog so that it won&apos;t pop up again next time you run LeechCraft.</source>
         <translation>Parece que está ejecutando Microsoft Windows.
@@ -1084,63 +1125,66 @@ Si usted ha leído y entendido bien todas estas cartas, haga clic en el botón C
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util/util.cpp" line="50"/>
+        <location filename="util/util.cpp" line="52"/>
         <source>Too long to show</source>
         <translation>Demasiado largo para mostrarlo</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="67"/>
+        <location filename="util/util.cpp" line="69"/>
         <source>Binary entity</source>
         <translation>Entidad binaria</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="70"/>
+        <location filename="util/util.cpp" line="72"/>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
         <translation>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="77"/>
+        <location filename="util/util.cpp" line="79"/>
         <source>&lt;br /&gt;from %1</source>
         <translation>&lt;br /&gt;de %1</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="107"/>
+        <location filename="util/util.cpp" line="109"/>
         <source> b</source>
         <translation>b</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="109"/>
+        <location filename="util/util.cpp" line="111"/>
         <source> KiB</source>
         <translation>KiB</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="111"/>
+        <location filename="util/util.cpp" line="113"/>
         <source> MiB</source>
         <translation>MiB</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="113"/>
+        <location filename="util/util.cpp" line="115"/>
         <source> GiB</source>
         <translation>GiB</translation>
     </message>
     <message numerus="yes">
-        <location filename="util/util.cpp" line="125"/>
+        <location filename="util/util.cpp" line="127"/>
         <source>%n day(s), </source>
-        <translation><numerusform>%n dia</numerusform><numerusform>%n días</numerusform></translation>
+        <translation>
+            <numerusform>%n dia</numerusform>
+            <numerusform>%n días</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="221"/>
-        <location filename="util/util.cpp" line="238"/>
+        <location filename="util/util.cpp" line="223"/>
+        <location filename="util/util.cpp" line="240"/>
         <source>Could not cd into %1</source>
         <translation>No se puede cd al %1</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="215"/>
+        <location filename="util/util.cpp" line="217"/>
         <source>Could not create %1</source>
         <translation>No se puede crear %1</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="96"/>
+        <location filename="coreinstanceobject.cpp" line="97"/>
         <source>System</source>
         <translation>Sistema</translation>
     </message>
