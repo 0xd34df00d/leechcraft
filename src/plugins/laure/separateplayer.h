@@ -17,8 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_SEPARATEPLAYER_H
-#define PLUGINS_LAURE_SEPARATEPLAYER_H
+#pragma once
 #include <QWidget>
 
 namespace LeechCraft
@@ -44,5 +43,3 @@ namespace Laure
 	};
 }
 }
-
-#endif // PLUGINS_LAURE_SEPARATEPLAYER_H

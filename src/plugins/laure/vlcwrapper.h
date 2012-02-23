@@ -17,8 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_VLCWRAPPER_H
-#define PLUGINS_LAURE_VLCWRAPPER_H
+#pragma once
 #include <memory>
 #include <QObject>
 #include <vlc/vlc.h>
@@ -255,4 +254,3 @@ namespace Laure
 	};
 }
 }
-#endif // PLUGINS_LAURE_VLCWRAPPER_H

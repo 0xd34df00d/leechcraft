@@ -17,8 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_PLAYBACKMODEMENU_H
-#define PLUGINS_LAURE_PLAYBACKMODEMENU_H
+#pragma once
 #include <QMenu>
 #include "vlcwrapper.h"
 
@@ -60,4 +59,3 @@ namespace Laure
 	};
 }
 }
-#endif // PLUGINS_LAURE_PLAYBACKMODEMENU_H

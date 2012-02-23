@@ -17,8 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_PLAYLISTWIDGET_H
-#define PLUGINS_LAURE_PLAYLISTWIDGET_H
+#pragma once
 #include <QWidget>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
@@ -109,5 +108,3 @@ namespace Laure
 	};
 }
 }
-
-#endif // PLUGINS_LAURE_PLAYLISTWIDGET_H

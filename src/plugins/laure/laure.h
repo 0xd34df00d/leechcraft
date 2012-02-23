@@ -17,8 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_LAURE_H
-#define PLUGINS_LAURE_LAURE_H
+#pragma once
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
@@ -92,4 +91,3 @@ namespace Laure
 }
 }
 
-#endif

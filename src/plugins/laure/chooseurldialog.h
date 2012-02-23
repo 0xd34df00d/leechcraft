@@ -17,8 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_CHOOSEURLDIALOG_H
-#define PLUGINS_LAURE_CHOOSEURLDIALOG_H
+#pragma once
 #include <QDialog>
 #include "ui_chooseurldialog.h"
 
@@ -63,5 +62,3 @@ namespace Laure
 	};
 }
 }
-
-#endif // PLUGINS_LAURE_CHOOSEURLDIALOG_H

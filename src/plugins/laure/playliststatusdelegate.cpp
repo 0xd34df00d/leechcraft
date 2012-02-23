@@ -30,7 +30,6 @@ namespace Laure
 	: QStyledItemDelegate (parent)
 	, PlayPixmap_ (":/plugins/laure/resources/img/media-play.png")
 	{
-	
 	}
 	
 	void PlayListStatusDelegate::paint (QPainter *painter,

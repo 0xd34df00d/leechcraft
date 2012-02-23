@@ -17,25 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_PLAYLISTSTATUSDELEGATE_H
-#define PLUGINS_LAURE_PLAYLISTSTATUSDELEGATE_H
-
+#pragma once
 #include <QStyledItemDelegate>
 
 namespace LeechCraft
 {
 namespace Laure
 {
-class PlayListStatusDelegate : public QStyledItemDelegate
-{
-	Q_OBJECT
-	QPixmap PlayPixmap_;
-public:
-	PlayListStatusDelegate (QObject *parent = 0);
-	void paint (QPainter *painter, const QStyleOptionViewItem& option,
-				const QModelIndex& id) const;
-};
+	class PlayListStatusDelegate : public QStyledItemDelegate
+	{
+		QPixmap PlayPixmap_;
+	public:
+		PlayListStatusDelegate (QObject *parent = 0);
+		void paint (QPainter *painter, const QStyleOptionViewItem& option,
+					const QModelIndex& id) const;
+	};
 }
 }
-
-#endif // PLUGINS_LAURE_PLAYLISTSTATUSDELEGATE_H

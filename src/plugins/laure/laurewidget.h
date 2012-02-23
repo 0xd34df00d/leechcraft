@@ -17,8 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_LAUREWIDGET_H
-#define PLUGINS_LAURE_LAUREWIDGET_H
+#pragma once
 #include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
@@ -110,5 +109,3 @@ namespace Laure
 	};
 }
 }
-
-#endif // PLUGINS_LAURE_LAUREWIDGET_H

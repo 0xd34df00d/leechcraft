@@ -17,8 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_XMLSETTINGSMANAGER_H
-#define PLUGINS_LAURE_XMLSETTINGSMANAGER_H
+#pragma once
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
@@ -44,5 +43,3 @@ namespace Laure
 	};
 }
 }
-
-#endif // PLUGINS_LAURE_XMLSETTINGSMANAGER_H
