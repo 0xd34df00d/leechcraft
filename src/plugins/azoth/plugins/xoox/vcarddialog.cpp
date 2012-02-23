@@ -89,7 +89,25 @@ namespace Xoox
 			Ui_.EditBirthday_->setDate (date);
 		Ui_.EditBirthday_->setVisible (date.isValid ());
 
-		Ui_.EditPhone_->setText ("<phones not supported yet>");
+		QStringList phones;
+		Q_FOREACH (const QXmppVCardPhone& phone, vcard.phones ())
+		{
+			QStringList attrs;
+			if (phone.isPref)
+				attrs << tr ("preferred");
+			if (phone.isHome)
+				attrs << tr ("home");
+			if (phone.isWork)
+				attrs << tr ("work");
+			if (phone.isCell)
+				attrs << tr ("cell");
+
+			phones << (attrs.isEmpty () ?
+						phone.number :
+						(phone.number + "(" + attrs.join (", ") + ")"));
+		}
+
+		Ui_.EditPhone_->setText (phones.join ("; "));
 		Ui_.EditURL_->setText (vcard.url ());
 
 		QPixmap px = QPixmap::fromImage (QImage::fromData (vcard.photo ()));
