@@ -44,24 +44,24 @@ namespace Xoox
 		: Builder_ (builder)
 		{
 		}
-		
+
 		virtual ~FieldHandler () {}
-		
+
 		void CreateWidget (QXmppDataForm::Field& field, QFormLayout *layout)
 		{
 			QWidget *w = CreateWidgetImpl (field, layout);
 			if (!w)
 				return;
-			
+
 			qDebug () << "field" << field.type ()
 					<< field.value () << field.options ();
 
 			w->setToolTip (field.description ());
 			w->setObjectName (field.key ());
-			
+
 			Widget2Field_ [w] = &field;
 		}
-		
+
 		void Save ()
 		{
 			Q_FOREACH (QWidget *widget, Widget2Field_.keys ())
@@ -72,22 +72,22 @@ namespace Xoox
 				Widget2Field_ [widget]->setValue (var);
 			}
 		}
-		
+
 	protected:
 		virtual QWidget* CreateWidgetImpl (QXmppDataForm::Field&, QFormLayout*) = 0;
 		virtual QVariant GetData (QWidget*) = 0;
-		
+
 		QWidget* CombineWithMedia (const QXmppDataForm::Media& media, QWidget *widget = 0)
 		{
 			QWidget *container = new QWidget;
 			QVBoxLayout *layout = new QVBoxLayout ();
 			QWidget *mediaWidget = 0;
-			
+
 			QPair<QString, QString> uri = media.uris ().first ();
-			
+
 			if (uri.first.startsWith ("image/"))
 				mediaWidget = new ImageMediaWidget (uri, Builder_->BobManager (), Builder_->From (), container);
-			
+
 			if (!mediaWidget)
 			{
 				mediaWidget = new QLabel (QObject::tr ("Unable to represent embedded media data."));
@@ -101,7 +101,7 @@ namespace Xoox
 			return container;
 		}
 	};
-	
+
 	class BooleanHandler : public FieldHandler
 	{
 	public:
@@ -109,7 +109,7 @@ namespace Xoox
 		: FieldHandler (builder)
 		{
 		}
-		
+
 	protected:
 		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
 		{
@@ -118,7 +118,7 @@ namespace Xoox
 			layout->addWidget (box);
 			return box;
 		}
-		
+
 		QVariant GetData (QWidget *widget)
 		{
 			QCheckBox *box = qobject_cast<QCheckBox*> (widget);
@@ -130,11 +130,11 @@ namespace Xoox
 						<< "to QCheckBox";
 				return QVariant ();
 			}
-			
+
 			return box->isChecked ();
 		}
 	};
-	
+
 	class FixedHandler : public FieldHandler
 	{
 	public:
@@ -150,13 +150,13 @@ namespace Xoox
 			layout->addRow (field.label (), label);
 			return label;
 		}
-		
+
 		QVariant GetData (QWidget*)
 		{
 			return QVariant ();
 		}
 	};
-	
+
 	class NullHandler : public FieldHandler
 	{
 	public:
@@ -170,13 +170,13 @@ namespace Xoox
 		{
 			return 0;
 		}
-		
+
 		QVariant GetData (QWidget*)
 		{
 			return QVariant ();
 		}
 	};
-	
+
 	class MultiTextHandler : public FieldHandler
 	{
 	public:
@@ -192,7 +192,7 @@ namespace Xoox
 			layout->addRow (field.label (), edit);
 			return edit;
 		}
-		
+
 		QVariant GetData (QWidget *widget)
 		{
 			QTextEdit *edit = qobject_cast<QTextEdit*> (widget);
@@ -204,12 +204,12 @@ namespace Xoox
 						<< "to QTextEdit";
 				return QVariant ();
 			}
-			
+
 			QStringList result = edit->toPlainText ().split ('\n', QString::SkipEmptyParts);
 			return result;
 		}
 	};
-	
+
 	class SingleTextHandler : public FieldHandler
 	{
 		bool IsPassword_;
@@ -231,7 +231,7 @@ namespace Xoox
 				layout->addRow (field.label (), edit);
 			return edit;
 		}
-		
+
 		QVariant GetData (QWidget *widget)
 		{
 			QLineEdit *edit = qobject_cast<QLineEdit*> (widget);
@@ -243,11 +243,11 @@ namespace Xoox
 						<< "to QLineEdit";
 				return QVariant ();
 			}
-			
+
 			return edit->text ();
 		}
 	};
-	
+
 	class ListHandler : public FieldHandler
 	{
 		QAbstractItemView::SelectionMode SelMode_;
@@ -263,21 +263,21 @@ namespace Xoox
 			QTreeWidget *tree = new QTreeWidget ();
 			tree->setSelectionMode (SelMode_);
 			tree->setHeaderHidden (true);
-			
+
 			QPair<QString, QString> option;
 			Q_FOREACH (option, field.options ())
 			{
 				QTreeWidgetItem *item = new QTreeWidgetItem (tree, QStringList (option.first));
 				item->setData (0, Qt::UserRole, option.second);
-				
+
 				if (option.second == field.value ())
 					tree->setCurrentItem (item, 0, QItemSelectionModel::SelectCurrent);
 			}
-			
+
 			layout->addRow (field.label (), tree);
 			return tree;
 		}
-		
+
 		QVariant GetData (QWidget *widget)
 		{
 			QTreeWidget *tree = qobject_cast<QTreeWidget*> (widget);
@@ -289,8 +289,11 @@ namespace Xoox
 						<< "to QTreeWidget";
 				return QVariant ();
 			}
-			
-			return tree->currentItem ()->data (0, Qt::UserRole);
+
+			QStringList result;
+			Q_FOREACH (auto item, tree->selectedItems ())
+				result << item->data (0, Qt::UserRole).toString ();
+			return result;
 		}
 	};
 
@@ -309,7 +312,7 @@ namespace Xoox
 		Type2Handler_ [QXmppDataForm::Field::TextPrivateField].reset (new SingleTextHandler (true, this));
 		Type2Handler_ [QXmppDataForm::Field::TextSingleField].reset (new SingleTextHandler (false, this));
 	}
-	
+
 	QXmppBobManager* FormBuilder::BobManager () const
 	{
 		return BobManager_;
@@ -324,7 +327,7 @@ namespace Xoox
 	{
 		if (form.isNull ())
 			return 0;
-		
+
 		Form_ = form;
 
 		QWidget *widget = new QWidget (parent);
@@ -337,7 +340,7 @@ namespace Xoox
 			layout->addRow (new QLabel (form.title ()));
 		if (!form.instructions ().isEmpty ())
 			layout->addRow (new QLabel (form.instructions ()));
-		
+
 		try
 		{
 			QList<QXmppDataForm::Field>& fields = Form_.fields ();
@@ -364,7 +367,7 @@ namespace Xoox
 
 		return widget;
 	}
-	
+
 	QXmppDataForm FormBuilder::GetForm ()
 	{
 		Q_FOREACH (FieldHandler_ptr handler, Type2Handler_.values ())
