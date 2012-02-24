@@ -106,7 +106,8 @@ namespace Xoox
 			return false;
 
 		if (!cmdElem.attribute ("action").isEmpty () &&
-				cmdElem.attribute ("action") != "execute")
+				cmdElem.attribute ("action") != "execute" &&
+				cmdElem.attribute ("action") != "complete")
 			return false;
 
 		QString from, resource;
@@ -127,6 +128,8 @@ namespace Xoox
 
 		if (!XEP0146Items_.contains (node))
 		{
+			qWarning () << Q_FUNC_INFO << "no node" << node;
+			qWarning () << XEP0146Items_.keys ();
 			QXmppIq iq;
 			iq.parse (elem);
 			iq.setTo (elem.attribute ("from"));
