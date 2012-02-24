@@ -19,15 +19,18 @@ INCLUDE_DIRECTORIES (
 
 SET (SRCS
 	blogique.cpp
+	blogiquewidget.cpp
 	xmlsettingsmanager.cpp
 	)
+
 SET (HEADERS
 	blogique.h
+	blogiquewidget.h
 	xmlsettingsmanager.h
 	)
 
-SET (FORMS
-)
+SET (FORMS blogiquewidget.ui
+	)
 
 SET (RESOURCES)
 
