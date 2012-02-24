@@ -352,7 +352,11 @@ namespace Xoox
 				QXmppMessage msg (QString (), to, msgObj->GetBody ());
 				msg.setStamp (msgObj->GetDateTime ());
 
-				QXmppExtendedAddress address ("ofrom", base->GetHumanReadableID ());
+				const QString& var = msgObj->GetOtherVariant ();
+				const QString& from = var.isEmpty () ?
+						base->GetHumanReadableID () :
+						base->GetHumanReadableID () + '/' + var;
+				QXmppExtendedAddress address ("ofrom", from);
 				msg.setExtendedAddresses (QXmppExtendedAddressList () << address);
 
 				Conn_->GetClient ()->sendPacket (msg);
