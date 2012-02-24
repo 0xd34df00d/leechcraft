@@ -361,6 +361,8 @@ namespace Xoox
 
 				Conn_->GetClient ()->sendPacket (msg);
 			}
+
+			base->MarkMsgsRead ();
 		}
 
 		const QString& sess = sourceElem.firstChildElement ("command").attribute ("session");
