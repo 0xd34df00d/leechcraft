@@ -33,7 +33,7 @@ namespace Xoox
 {
 	const QString NsCommands = "http://jabber.org/protocol/commands";
 	const QString RcStr = "http://jabber.org/protocol/rc";
-	const QString NodeChangeStatus = "ttp://jabber.org/protocol/rc#set-status";
+	const QString NodeChangeStatus = "http://jabber.org/protocol/rc#set-status";
 	const QString NodeLeaveGroupchats = "http://jabber.org/protocol/rc#leave-groupchats";
 	const QString NodeForward = "http://jabber.org/protocol/rc#forward";
 
