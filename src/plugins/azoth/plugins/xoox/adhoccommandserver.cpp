@@ -17,7 +17,10 @@
  **********************************************************************/
 
 #include "adhoccommandserver.h"
+#include <QDir>
+#include <QUrl>
 #include <QXmppDiscoveryManager.h>
+#include <util/util.h>
 #include <interfaces/iproxyobject.h>
 #include "clientconnection.h"
 #include "util.h"
@@ -36,6 +39,8 @@ namespace Xoox
 	const QString NodeChangeStatus = "http://jabber.org/protocol/rc#set-status";
 	const QString NodeLeaveGroupchats = "http://jabber.org/protocol/rc#leave-groupchats";
 	const QString NodeForward = "http://jabber.org/protocol/rc#forward";
+
+	const QString NodeAddTask = "http://leechcraft.org/plugins-azoth-xoox#add-task";
 
 	AdHocCommandServer::AdHocCommandServer (ClientConnection *conn)
 	: Conn_ (conn)
@@ -78,6 +83,16 @@ namespace Xoox
 		forward.setName (tr ("Forward unread messages"));
 		XEP0146Items_ [forward.node ()] = forward;
 		NodeInfos_ [forward.node ()] = [this] (QDomElement e) { Forward (e); };
+
+		QXmppDiscoveryIq::Item addTask;
+		addTask.setNode (NodeAddTask);
+		addTask.setJid (jid);
+		addTask.setName (tr ("Add download task"));
+		XEP0146Items_ [addTask.node ()] = addTask;
+		NodeInfos_ [addTask.node ()] = [this] (QDomElement e) { AddTaskInfo (e); };
+		NodeSubmitHandlers_ [addTask.node ()] =
+				[this] (QDomElement e, QString s, QXmppDataForm f)
+					{ AddTaskSubmitted (e, s, f); };
 	}
 
 	bool AdHocCommandServer::handleStanza (const QDomElement& elem)
@@ -367,6 +382,58 @@ namespace Xoox
 
 		const QString& sess = sourceElem.firstChildElement ("command").attribute ("session");
 		SendCompleted (sourceElem, NodeForward, sess);
+	}
+
+	void AdHocCommandServer::AddTaskInfo (const QDomElement& sourceElem)
+	{
+		QList<QXmppDataForm::Field> fields;
+
+		QXmppDataForm::Field field (QXmppDataForm::Field::HiddenField);
+		field.setValue (RcStr);
+		field.setKey ("FORM_TYPE");
+		fields.append (field);
+
+		QXmppDataForm::Field url (QXmppDataForm::Field::TextSingleField);
+		url.setLabel ("URL");
+		url.setKey ("url");
+		url.setRequired (true);
+		fields.append (url);
+
+		QXmppDataForm::Field dest (QXmppDataForm::Field::TextSingleField);
+		dest.setLabel (tr ("Destination"));
+		dest.setKey ("dest");
+		dest.setRequired (true);
+		dest.setValue (QDir::home ().filePath ("downloads"));
+		fields.append (dest);
+
+		QXmppDataForm form (QXmppDataForm::Form);
+		form.setTitle (tr ("Add task"));
+		form.setInstructions (tr ("Enter task parameters"));
+		form.setFields (fields);
+
+		Send (form, sourceElem, NodeAddTask);
+	}
+
+	void AdHocCommandServer::AddTaskSubmitted (const QDomElement& sourceElem,
+			const QString& sessionId, const QXmppDataForm& form)
+	{
+		QUrl url;
+		QString location;
+		Q_FOREACH (const QXmppDataForm::Field& field, form.fields ())
+		{
+			if (field.key () == "url")
+				url = QUrl::fromUserInput (field.value ().toString ());
+			else if (field.key () == "dest")
+				location = field.value ().toString ();
+		}
+
+		if (url.isValid () && !location.isEmpty ())
+		{
+			const auto& e = Util::MakeEntity (url, location, OnlyDownload);
+			Core::Instance ().SendEntity (e);
+		}
+
+		SendCompleted (sourceElem, NodeAddTask, sessionId);
 	}
 
 	void AdHocCommandServer::handleDiscoItems (const QXmppDiscoveryIq& iq)
