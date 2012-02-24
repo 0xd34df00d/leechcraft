@@ -1163,7 +1163,18 @@ namespace Xoox
 		else if (!Client_->rosterManager ().isRosterReceived ())
 			OfflineMsgQueue_ << msg;
 		else if (jid == OurBareJID_)
+		{
+			Q_FOREACH (const QXmppExtendedAddress& address, msg.extendedAddresses ())
+			{
+				if (address.type () == "ofrom" && !address.jid ().isEmpty ())
+				{
+					msg.setFrom (address.jid ());
+					handleMessageReceived (msg);
+					return;
+				}
+			}
 			HandleMessageForEntry (SelfContact_, msg, resource, this);
+		}
 		else
 		{
 			qWarning () << Q_FUNC_INFO
