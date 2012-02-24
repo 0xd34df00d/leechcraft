@@ -38,7 +38,6 @@ namespace Blogique
 		Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
 
 		TabClasses_t TabClasses_;
-		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
@@ -53,6 +52,8 @@ namespace Blogique
 		void TabOpenRequested (const QByteArray& tabClass);
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	private:
+		void CreateTab ();
 	signals:
 		void addNewTab (const QString& name, QWidget *tabContents);
 		void removeTab (QWidget *tabContents);

@@ -19,6 +19,7 @@
 #include "blogique.h"
 #include <QIcon>
 #include <util/util.h>
+#include "blogiquewidget.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -32,7 +33,7 @@ namespace Blogique
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquesettings.xml");
 
-		Proxy_ = proxy;
+		BlogiqueWidget::SetParentMultiTabs (this);
 
 		TabClassInfo tabClass =
 		{
@@ -81,11 +82,30 @@ namespace Blogique
 
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
+		if (tabClass == "Blogique")
+			CreateTab ();
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tabClass;
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
+	}
+
+	void Plugin::CreateTab ()
+	{
+		BlogiqueWidget *blogPage = new BlogiqueWidget ();
+
+		connect (blogPage,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+
+		emit addNewTab ("Blogique", blogPage);
+		emit raiseTab (blogPage);
 	}
 }
 }
