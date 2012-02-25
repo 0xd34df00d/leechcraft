@@ -135,8 +135,8 @@ namespace Laure
 	void PlayListView::handleSectionResized (int logicalIndex,
 			int oldSize, int newSize)
 	{
-		XmlSettingsManager::Instance ().setProperty ("PlayListHeader"
-				+ QString::number (logicalIndex).toAscii (), newSize);
+		XmlSettingsManager::Instance ().setProperty ("PlayListHeader" +
+				QString::number (logicalIndex).toAscii (), newSize);
 	}
 	
 	void PlayListView::handleHeaderMenu (const QPoint& point)
@@ -209,8 +209,7 @@ namespace Laure
 		for (int i = ArtistColumn; i < QueueColumn; ++i)
 		{
 			const bool checked = XmlSettingsManager::Instance ()
-					.property (HeaderProperties_ [static_cast<PlayListColumns> (i)])
-					.toBool ();
+					.property (HeaderProperties_ [static_cast<PlayListColumns> (i)]).toBool ();
 			if (checked)
 				++NotHiddenColumnCount_;
 			

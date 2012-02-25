@@ -57,6 +57,7 @@ namespace Laure
 		std::shared_ptr<SeparatePlayer> SeparatePlayer_;
 		QAction *DetachedVideo_;
 		QAction *PlayListAction_;
+		QAction *SubtitleAction_;
 		QMenu *SubtitleMenu_;
 	public:
 		/** @brief Constructs a new LaureWidget tab

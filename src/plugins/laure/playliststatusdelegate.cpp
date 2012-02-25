@@ -40,9 +40,7 @@ namespace Laure
 				.data (IsPlayingRole).toBool ();
 				
 		if (played)
-		{
 			painter->drawPixmap (option.rect, PlayPixmap_);
-		}
 	}
 }
 }
