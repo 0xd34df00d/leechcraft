@@ -60,6 +60,7 @@ namespace Laure
 		int CurrentItem_;
 		int NotHiddenColumnCount_;
 		std::shared_ptr<VLCWrapper> VLCWrapper_;
+		QMap<PlayListColumns, QByteArray> HeaderProperties_;
 	public:
 		/** @brief Constructs a new PlayListView class
 		 * with the given model and parent.

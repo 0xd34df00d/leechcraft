@@ -44,13 +44,18 @@ namespace Laure
 		setSelectionMode (ContiguousSelection);
 		setAlternatingRowColors (true);
 		hideColumn (URLColumn);
-
+		
+		HeaderProperties_ [ArtistColumn] = "ArtistHeader";
+		HeaderProperties_ [TitleColumn] = "TitleHeader";
+		HeaderProperties_ [AlbumColumn] = "AlbumHeader";
+		HeaderProperties_ [GenreColumn] = "GenreHeader";
+		HeaderProperties_ [DateColumn] = "DateHeader";
+		
 		handleHideHeaders ();
 		
 		QList<QByteArray> propNames;
-		
-		for (int i = ArtistColumn; i < QueueColumn; ++i)
-			propNames.push_back ("Header" + QString::number (i).toAscii ());
+		Q_FOREACH (const QByteArray& el, HeaderProperties_)
+			propNames << el;
 		
 		XmlSettingsManager::Instance ().RegisterObject (propNames, this,
 				"handleHideHeaders");
@@ -152,9 +157,9 @@ namespace Laure
 		QAction *selectedItem = menu.exec (mapToGlobal (point));
 		if (selectedItem)
 		{
-			int columnIndex = selectedItem->data ().toInt ();
-			const QByteArray& prop = "Header" + QString::number (columnIndex).toAscii ();
-			XmlSettingsManager::Instance ().setProperty (prop, selectedItem->isChecked ());
+			PlayListColumns columnIndex = (PlayListColumns) selectedItem->data ().toInt ();
+			XmlSettingsManager::Instance ().setProperty (HeaderProperties_ [columnIndex],
+						selectedItem->isChecked ());
 		}
 	}
 	
@@ -203,9 +208,9 @@ namespace Laure
 		NotHiddenColumnCount_ = 0;
 		for (int i = ArtistColumn; i < QueueColumn; ++i)
 		{
-			const QString& itemName = "Header" + QString::number (i);
 			const bool checked = XmlSettingsManager::Instance ()
-					.property (itemName.toAscii ()).toBool ();
+					.property (HeaderProperties_ [static_cast<PlayListColumns> (i)])
+					.toBool ();
 			if (checked)
 				++NotHiddenColumnCount_;
 			
