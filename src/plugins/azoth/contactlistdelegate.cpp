@@ -147,10 +147,12 @@ namespace Azoth
 
 		QImage avatarImg;
 		if (extAcc)
-			avatarImg = extAcc->GetSelfAvatar ().scaled (iconSize, iconSize,
-					Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			avatarImg = extAcc->GetSelfAvatar ();
 		if (avatarImg.isNull ())
 			avatarImg = Core::Instance ().GetDefaultAvatar (iconSize);
+		else
+			avatarImg = avatarImg.scaled (iconSize, iconSize,
+					Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
 		QPoint pxDraw = o.rect.topRight () - QPoint (CPadding, 0);
 
