@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011-2012 Minh Ngo
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -65,6 +65,7 @@ namespace Laure
 		actionAdd->setProperty ("ActionIcon", "list-add");
 		actionRemove->setProperty ("ActionIcon", "list-remove");
 		actionExport->setProperty ("ActionIcon", "document-save-as");
+		actionPlayback->setProperty ("ActionIcon", "flag-black");
 		
 		actionAdd->setMenu (menuAdd);
 		actionAdd->setMenuRole (QAction::ApplicationSpecificRole);

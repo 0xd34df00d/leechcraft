@@ -20,6 +20,7 @@
 #include "playliststatusdelegate.h"
 #include <iostream>
 #include <QPainter>
+#include <interfaces/core/icoreproxy.h>
 #include "playlistview.h"
 
 namespace LeechCraft
@@ -30,6 +31,7 @@ namespace Laure
 	: QStyledItemDelegate (parent)
 	, PlayPixmap_ (":/plugins/laure/resources/img/media-play.png")
 	{
+		ICoreProxy::GetIcon();
 	}
 	
 	void PlayListStatusDelegate::paint (QPainter *painter,

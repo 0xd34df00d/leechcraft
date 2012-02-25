@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011-2012 Minh Ngo
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -195,7 +195,7 @@ namespace Laure
 		const bool isVideo = meta.Type_ == libvlc_track_video;
 		SubtitleMenu_->clear ();
 		SubtitleAction_->setVisible (isVideo);
-		if (isVideo)
+		if (!isVideo)
 			return;
 		
 		const QFileInfo metaFileInfo = QFileInfo (meta.Location_.path ());
@@ -235,7 +235,7 @@ namespace Laure
 	{
 		const QString& fileName = QFileDialog::getOpenFileName (this,
 				tr ("Open subtitles"), QDir::homePath (),
-				tr ("Subtitles (*.srt *.ass), All (*)"));
+				tr ("Subtitles (*.srt *.ass);;All (*)"));
 		
 		if (fileName.isEmpty ())
 			return;
