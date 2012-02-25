@@ -90,7 +90,6 @@ namespace Vader
 		void OpenConfigurationDialog ();
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
-		void Synchronize ();
 		void Authorize (QObject*);
 		void DenyAuth (QObject*);
 		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&);

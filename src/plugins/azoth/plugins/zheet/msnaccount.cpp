@@ -316,10 +316,6 @@ namespace Zheet
 		}
 	}
 
-	void MSNAccount::Synchronize ()
-	{
-	}
-
 	void MSNAccount::Authorize (QObject*)
 	{
 	}

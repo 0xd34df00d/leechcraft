@@ -316,11 +316,6 @@ namespace Xoox
 		ClientConnection_->SetState (AccState_);
 	}
 
-	void GlooxAccount::Synchronize ()
-	{
-		ClientConnection_->Synchronize ();
-	}
-
 	void GlooxAccount::Authorize (QObject *entryObj)
 	{
 		ClientConnection_->AckAuth (entryObj, true);

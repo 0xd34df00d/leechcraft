@@ -358,10 +358,6 @@ namespace Acetamide
 		emit statusChanged (state);
 	}
 
-	void IrcAccount::Synchronize ()
-	{
-	}
-
 	void IrcAccount::Authorize (QObject*)
 	{
 	}

@@ -389,10 +389,6 @@ namespace Xoox
 		}
 	}
 
-	void ClientConnection::Synchronize ()
-	{
-	}
-
 	void ClientConnection::SetPassword (const QString& pwd)
 	{
 		Password_ = pwd;

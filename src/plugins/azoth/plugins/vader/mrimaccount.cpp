@@ -225,10 +225,6 @@ namespace Vader
 		Conn_->SetState (status);
 	}
 
-	void MRIMAccount::Synchronize ()
-	{
-	}
-
 	void MRIMAccount::Authorize (QObject *obj)
 	{
 		qDebug () << Q_FUNC_INFO << GetAccountName ();

@@ -182,8 +182,6 @@ namespace Xoox
 		QPair<int, int> GetKAParams () const;
 		void SetKAParams (const QPair<int, int>&);
 
-		void Synchronize ();
-
 		void SetPassword (const QString&);
 
 		QString GetOurJID () const;

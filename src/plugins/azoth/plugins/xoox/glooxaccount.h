@@ -146,7 +146,6 @@ namespace Xoox
 		void FillSettings (GlooxAccountConfigurationWidget*);
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
-		void Synchronize ();
 		void Authorize (QObject*);
 		void DenyAuth (QObject*);
 		void AddEntry (const QString&,
