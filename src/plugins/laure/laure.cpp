@@ -31,6 +31,7 @@ namespace Laure
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		qRegisterMetaType<MediaMeta> ("MediaMeta");
 		Util::InstallTranslator ("laure");
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());

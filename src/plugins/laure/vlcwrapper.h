@@ -20,6 +20,7 @@
 #pragma once
 #include <memory>
 #include <QObject>
+#include <QUrl>
 #include <vlc/vlc.h>
 #include <interfaces/ientityhandler.h>
 
@@ -43,6 +44,7 @@ namespace Laure
 		QVariantMap ToVariantMap () const;
 
 		QString Artist_, Album_, Title_, Genre_, Date_;
+		QUrl Location_;
 		int TrackNumber_;
 		int Length_;
 		libvlc_track_type_t Type_;
@@ -225,6 +227,8 @@ namespace Laure
 		void setMeta (libvlc_meta_t type, const QString& value, int index);
 		
 		QList<int> GetQueueListIndexes () const;
+		
+		void setSubtitle (const QString& location = QString ()) const;
 	private:
 		int PlayQueue ();
 

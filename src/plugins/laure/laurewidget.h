@@ -26,6 +26,7 @@
 
 class QToolBar;
 class QUrl;
+class QMenu;
 
 namespace LeechCraft
 {
@@ -56,6 +57,7 @@ namespace Laure
 		std::shared_ptr<SeparatePlayer> SeparatePlayer_;
 		QAction *DetachedVideo_;
 		QAction *PlayListAction_;
+		QMenu *SubtitleMenu_;
 	public:
 		/** @brief Constructs a new LaureWidget tab
 		 * with the given parent and flags.
@@ -99,6 +101,8 @@ namespace Laure
 		 * @param[in] location Media file location.
 		 */
 		void handleOpenMediaContent (const QString& location);
+		
+		void updateSubtitleMenu (const MediaMeta& meta);
 	private slots:
 		void handleOpenFile ();
 		void handleOpenURL ();
@@ -106,6 +110,8 @@ namespace Laure
 		void handleVideoMode (bool);
 		void handleDetachPlayer (bool);
 		void handleSeparatePlayerClosed ();
+		void subtitleDialog ();
+		void showSubtitleMenu ();
 	};
 }
 }
