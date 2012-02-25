@@ -53,7 +53,6 @@ namespace Laure
 
 		TabClasses_t TabClasses_;
 		QList<LaureWidget*> Others_;
-		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);

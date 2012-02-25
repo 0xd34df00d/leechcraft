@@ -52,6 +52,7 @@ namespace Laure
 		 * with the given parent.
 		 */
 		PlayListWidget (QWidget* = 0);
+
 		void Init (std::shared_ptr<VLCWrapper> wrapper);
 	public slots:
 		/** @brief Is called when the media file has added to

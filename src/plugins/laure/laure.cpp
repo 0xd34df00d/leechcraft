@@ -24,6 +24,7 @@
 #include <util/util.h>
 #include "laurewidget.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -38,7 +39,7 @@ namespace Laure
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"lauresettings.xml");
 
-		Proxy_ = proxy;
+		Core::Instance ().SetProxy (proxy);
 
 		LaureWidget::SetParentMultiTabs (this);
 

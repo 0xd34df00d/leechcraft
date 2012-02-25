@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011-2012 Minh Ngo
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2011-2012  Minh Ngo
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,33 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "playliststatusdelegate.h"
-#include <iostream>
-#include <QPainter>
+#pragma once
 #include <interfaces/core/icoreproxy.h>
-#include "playlistview.h"
-#include "core.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	PlayListStatusDelegate::PlayListStatusDelegate (QObject *parent)
-	: QStyledItemDelegate (parent)
-	, PlayPixmap_ (Core::Instance ().GetProxy ()->GetIcon ("media-playback-start").pixmap (16, 16))
+	class Core
 	{
+		ICoreProxy_ptr Proxy_;
 		
-	}
-	
-	void PlayListStatusDelegate::paint (QPainter *painter,
-			const QStyleOptionViewItem& option, const QModelIndex& id) const
-	{
-		QStyledItemDelegate::paint (painter, option, id);
-		const bool played = id.sibling (id.row (), PlayListColumns::StatusColumn)
-				.data (IsPlayingRole).toBool ();
-				
-		if (played)
-			painter->drawPixmap (option.rect, PlayPixmap_);
-	}
+		Core ();
+		Core (Core&);
+		Core& operator= (const Core&);
+	public:
+		static Core& Instance ();
+		void SetProxy (ICoreProxy_ptr proxy);
+		ICoreProxy_ptr GetProxy ();
+	};
 }
 }
