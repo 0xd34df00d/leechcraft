@@ -148,6 +148,7 @@ namespace Azoth
 
 		void handleGotLastMessages (QObject*, const QList<QObject*>&);
 
+		void handleSendButtonVisible ();
 		void handleRichFormatterPosition ();
 		void handleFontSettingsChanged ();
 		void handleFontSizeChanged ();
@@ -160,6 +161,7 @@ namespace Azoth
 		void HandleMUC ();
 		void InitExtraActions ();
 		void InitMsgEdit ();
+		void RegisterSettings ();
 
 		void RequestLogs ();
 

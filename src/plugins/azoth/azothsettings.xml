@@ -95,34 +95,43 @@
 		</tab>
 		<tab>
 			<label value="Chat windows" />
-			<item type="lineedit" property="PreNickText" default="">
-				<label value="Pre-nick text:" />
-			</item>
-			<item type="lineedit" property="PostNickText" default=":">
-				<label value="Post-nick text:" />
-			</item>
-			<item type="lineedit" property="PostAddressText" default=":">
-				<label value="Post-address text:" />
-			</item>
-			<item type="checkbox" property="ShowRichTextMessageBody" default="true">
-				<label value="Show rich text message body (if available)" />
-				<tooltip>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
-			</item>
-			<item type="combobox" property="RichFormatterPosition">
-				<label value="Rich text format toolbar position:" />
-				<option name="aboveEdit" default="true">
-					<label value="Above message editor" />
-				</option>
-				<option name="belowEdit">
-					<label value="Below message editor" />
-				</option>
-			</item>
-			<item type="color" property="HighlightColor" default="#FF0000">
-				<label value="Highlight color:" />
-			</item>
-			<item type="spinbox" property="FontSize" default="12">
-				<label value="Font size:" />
-			</item>
+			<groupbox>
+				<label value="Chat view formatting"/>
+				<item type="lineedit" property="PreNickText" default="">
+					<label value="Pre-nick text:" />
+				</item>
+				<item type="lineedit" property="PostNickText" default=":">
+					<label value="Post-nick text:" />
+				</item>
+				<item type="lineedit" property="PostAddressText" default=":">
+					<label value="Post-address text:" />
+				</item>
+				<item type="checkbox" property="ShowRichTextMessageBody" default="true">
+					<label value="Show rich text message body (if available)" />
+					<tooltip>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
+				</item>
+				<item type="color" property="HighlightColor" default="#FF0000">
+					<label value="Highlight color:" />
+				</item>
+				<item type="spinbox" property="FontSize" default="12">
+					<label value="Font size:" />
+				</item>
+			</groupbox>
+			<groupbox>
+				<label value="Chat tab" />
+				<item type="combobox" property="RichFormatterPosition">
+					<label value="Rich text format toolbar position:" />
+					<option name="aboveEdit" default="true">
+						<label value="Above message editor" />
+					</option>
+					<option name="belowEdit">
+						<label value="Below message editor" />
+					</option>
+				</item>
+				<item type="checkbox" property="SendButtonVisible" default="false">
+					<label value="Display send button" />
+				</item>
+			</groupbox>
 		</tab>
 		<tab>
 			<label value="Fonts" />

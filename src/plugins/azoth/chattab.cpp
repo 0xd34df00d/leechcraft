@@ -130,6 +130,12 @@ namespace Azoth
 		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events"), this));
 		Ui_.EventsButton_->hide ();
 
+		Ui_.SendButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("key-enter"));
+		connect (Ui_.SendButton_,
+				SIGNAL (released ()),
+				this,
+				SLOT (messageSend ()));
+
 		BuildBasicActions ();
 
 		Core::Instance ().RegisterHookable (this);
@@ -162,29 +168,12 @@ namespace Azoth
 		CheckMUC ();
 		InitExtraActions ();
 		InitMsgEdit ();
+		RegisterSettings ();
 
 		emit hookChatTabCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
 				this,
 				GetEntry<QObject> (),
 				Ui_.View_);
-
-		XmlSettingsManager::Instance ().RegisterObject ("FontSize",
-				this, "handleFontSizeChanged");
-		handleFontSizeChanged ();
-
-		QList<QByteArray> fontProps;
-		fontProps << "StandardFont"
-				<< "FixedFont"
-				<< "SerifFont"
-				<< "SansSerifFont"
-				<< "CursiveFont"
-				<< "FantasyFont";
-		XmlSettingsManager::Instance ().RegisterObject (fontProps,
-				this, "handleFontSettingsChanged");
-		handleFontSettingsChanged ();
-
-		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition",
-				this, "handleRichFormatterPosition");
 
 		Ui_.View_->setFocusProxy (Ui_.MsgEdit_);
 
@@ -916,6 +905,12 @@ namespace Azoth
 				SLOT (handleGotLastMessages (QObject*, const QList<QObject*>&)));
 	}
 
+	void ChatTab::handleSendButtonVisible ()
+	{
+		Ui_.SendButton_->setVisible (XmlSettingsManager::Instance ()
+					.property ("SendButtonVisible").toBool ());
+	}
+
 	void ChatTab::handleRichFormatterPosition ()
 	{
 		const QString& posStr = XmlSettingsManager::Instance ()
@@ -1203,6 +1198,31 @@ namespace Azoth
 				MsgFormatter_,
 				SLOT (setVisible (bool)));
 		MsgFormatter_->setVisible (ToggleRichText_->isChecked ());
+	}
+
+	void ChatTab::RegisterSettings()
+	{
+		XmlSettingsManager::Instance ().RegisterObject ("FontSize",
+				this, "handleFontSizeChanged");
+		handleFontSizeChanged ();
+
+		QList<QByteArray> fontProps;
+		fontProps << "StandardFont"
+				<< "FixedFont"
+				<< "SerifFont"
+				<< "SansSerifFont"
+				<< "CursiveFont"
+				<< "FantasyFont";
+		XmlSettingsManager::Instance ().RegisterObject (fontProps,
+				this, "handleFontSettingsChanged");
+		handleFontSettingsChanged ();
+
+		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition",
+				this, "handleRichFormatterPosition");
+
+		XmlSettingsManager::Instance ().RegisterObject ("SendButtonVisible",
+				this, "handleSendButtonVisible");
+		handleSendButtonVisible ();
 	}
 
 	void ChatTab::RequestLogs ()
