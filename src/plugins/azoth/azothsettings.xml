@@ -128,7 +128,7 @@
 						<label value="Below message editor" />
 					</option>
 				</item>
-				<item type="checkbox" property="SendButtonVisible" default="false">
+				<item type="checkbox" property="SendButtonVisible" default="true">
 					<label value="Display send button" />
 				</item>
 			</groupbox>
