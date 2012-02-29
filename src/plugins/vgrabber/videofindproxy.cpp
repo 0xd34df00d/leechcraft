@@ -114,7 +114,7 @@ namespace LeechCraft
 
 			QUrl VideoFindProxy::GetURL () const
 			{
-				QByteArray urlStr = "http://vkontakte.ru/gsearch.php?q=FIND&section=video";
+				QByteArray urlStr = "http://vk.com/gsearch.php?q=FIND&section=video";
 				urlStr.replace ("FIND",
 						QTextCodec::codecForName ("Windows-1251")->fromUnicode (R_.String_).toPercentEncoding ());
 				QUrl result = QUrl::fromEncoded (urlStr);
@@ -139,7 +139,7 @@ namespace LeechCraft
 				while ((pos = upt.indexIn (contents, pos)) >= 0)
 				{
 					QStringList captured = upt.capturedTexts ();
-					QUrl url = QUrl (QString ("http://vkontakte.ru/video%1")
+					QUrl url = QUrl (QString ("http://vk.com/video%1")
 							.arg (captured.at (1)));
 					QString title = captured.at (2);
 					title.remove ("<span class=\"match\">").remove ("</span>");

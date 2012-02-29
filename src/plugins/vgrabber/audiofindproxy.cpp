@@ -58,7 +58,7 @@ namespace LeechCraft
 			{
 				if (!index.isValid ())
 					return QVariant ();
-			
+
 				switch (role)
 				{
 					case Qt::DisplayRole:
@@ -105,7 +105,7 @@ namespace LeechCraft
 						return QVariant ();
 				}
 			}
-			
+
 			int AudioFindProxy::rowCount (const QModelIndex& parent) const
 			{
 				if (parent.isValid ())
@@ -135,7 +135,7 @@ namespace LeechCraft
 
 			QUrl AudioFindProxy::GetURL () const
 			{
-				QByteArray urlStr = "http://vkontakte.ru/gsearch.php?q=FIND&section=audio";
+				QByteArray urlStr = "http://vk.com/gsearch.php?q=FIND&section=audio";
 				urlStr.replace ("FIND",
 						QTextCodec::codecForName ("Windows-1251")->fromUnicode (R_.String_).toPercentEncoding ());
 				QUrl result = QUrl::fromEncoded (urlStr);
