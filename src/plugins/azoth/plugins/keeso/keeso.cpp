@@ -28,7 +28,7 @@ namespace Keeso
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 	}
-	
+
 	void Plugin::SecondInit ()
 	{
 	}
@@ -54,7 +54,7 @@ namespace Keeso
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/keeso/resources/images/keeso.svg");
+		return QIcon (":/azoth/keeso/resources/images/keeso.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
