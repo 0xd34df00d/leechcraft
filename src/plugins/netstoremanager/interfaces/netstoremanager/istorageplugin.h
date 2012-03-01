@@ -40,6 +40,7 @@ namespace NetStoreManager
 
 		virtual void RegisterAccount (const QString&) = 0;
 		virtual QObjectList GetAccounts () const = 0;
+		virtual void RemoveAccount (QObject*) = 0;
 	protected:
 		virtual void accountAdded (QObject*) = 0;
 		virtual void accountRemoved (QObject*) = 0;

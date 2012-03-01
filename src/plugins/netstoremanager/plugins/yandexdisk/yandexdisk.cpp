@@ -106,6 +106,19 @@ namespace YandexDisk
 		return result;
 	}
 
+	void Plugin::RemoveAccount (QObject *obj)
+	{
+		auto pos = std::find_if (Accounts_.begin (), Accounts_.end (),
+				[obj] (decltype (Accounts_.front ()) acc)
+					{ return acc.get () == obj; });
+		if (pos == Accounts_.end ())
+			return;
+
+		Accounts_.erase (pos);
+		WriteAccounts ();
+		emit accountRemoved (obj);
+	}
+
 	void Plugin::ReadAccounts ()
 	{
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,

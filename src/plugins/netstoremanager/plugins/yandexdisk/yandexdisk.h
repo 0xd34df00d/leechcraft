@@ -60,6 +60,7 @@ namespace YandexDisk
 		QIcon GetStorageIcon () const;
 		void RegisterAccount (const QString&);
 		QObjectList GetAccounts () const;
+		void RemoveAccount (QObject*);
 	private:
 		void ReadAccounts ();
 		void WriteAccounts () const;
