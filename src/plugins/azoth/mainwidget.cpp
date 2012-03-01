@@ -103,6 +103,7 @@ namespace Azoth
 	, MainMenu_ (new QMenu (tr ("Azoth menu"), this))
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel (this))
+	, ActionCLMode_ (new QAction (tr ("CL mode"), this))
 	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
 	, AccountActsMgr_ (new AccountActionsManager (this, this))
 	{
@@ -242,17 +243,13 @@ namespace Azoth
 		joinConf->setProperty ("ActionIcon", "irc-join-channel");
 
 		MainMenu_->addSeparator ();
-
 		MainMenu_->addAction (tr ("Manage bookmarks..."),
 				this,
 				SLOT (handleManageBookmarks ()));
-
 		MainMenu_->addSeparator ();
-
 		MainMenu_->addAction (tr ("Add account..."),
 				this,
 				SLOT (handleAddAccountRequested ()));
-
 		MainMenu_->addSeparator ();
 
 		QAction *showOffline = MainMenu_->addAction (tr ("Show offline contacts"));
@@ -267,6 +264,13 @@ namespace Azoth
 				this,
 				SLOT (handleShowOffline (bool)));
 
+		ActionCLMode_->setCheckable (true);
+		ActionCLMode_->setProperty ("ActionIcon", "meeting-attending");
+		connect (ActionCLMode_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleCLMode (bool)));
+
 		auto addBottomAct = [this] (QAction *act)
 		{
 			BottomBar_->addAction (act);
@@ -275,6 +279,7 @@ namespace Azoth
 		};
 		addBottomAct (addContact);
 		addBottomAct (showOffline);
+		addBottomAct (ActionCLMode_);
 	}
 
 	QMenu* MainWidget::CreateStatusChangeMenu (const char *slot, bool withCustom)
@@ -626,7 +631,7 @@ namespace Azoth
 		const bool isMUC = qobject_cast<IMUCEntry*> (obj);
 
 		if (XmlSettingsManager::Instance ().property ("AutoMUCMode").toBool ())
-			Ui_.RosterMode_->setCurrentIndex (isMUC ? 1 : 0);
+			ActionCLMode_->setChecked (isMUC);
 
 		if (isMUC)
 			ProxyModel_->SetMUC (obj);
@@ -634,13 +639,11 @@ namespace Azoth
 
 	void MainWidget::resetToWholeMode ()
 	{
-		Ui_.RosterMode_->setCurrentIndex (0);
+		ActionCLMode_->setChecked (false);
 	}
 
-	void MainWidget::on_RosterMode__currentIndexChanged (int index)
+	void MainWidget::handleCLMode (bool mucMode)
 	{
-		const bool mucMode = index == 1;
-
 		if (mucMode)
 		{
 			FstLevelExpands_.clear ();

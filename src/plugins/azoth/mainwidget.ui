@@ -68,23 +68,6 @@
    <item>
     <layout class="QHBoxLayout" name="BottomLayout_">
      <item>
-      <widget class="QComboBox" name="RosterMode_">
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
-       </property>
-       <item>
-        <property name="text">
-         <string>CL</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>MUC</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
       <widget class="QToolButton" name="FastStatusButton_">
        <property name="text">
         <string/>

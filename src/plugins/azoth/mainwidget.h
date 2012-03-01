@@ -45,6 +45,7 @@ namespace Azoth
 		QToolButton *MenuButton_;
 		SortFilterProxyModel *ProxyModel_;
 
+		QAction *ActionCLMode_;
 		QToolBar *BottomBar_;
 
 		QMenu *MenuChangeStatus_;
@@ -83,7 +84,7 @@ namespace Azoth
 
 		void handleEntryMadeCurrent (QObject*);
 		void resetToWholeMode ();
-		void on_RosterMode__currentIndexChanged (int);
+		void handleCLMode (bool);
 		void menuBarVisibilityToggled ();
 
 		void handleRowsInserted (const QModelIndex&, int, int);
