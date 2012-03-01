@@ -55,7 +55,6 @@ namespace Laure
 	, DetachedVideo_ (new QAction (tr ("Detached video"), this))
 	, PlayListAction_ (new QAction (tr ("Playlist"), this))
 	, SubtitleAction_ (new QAction (tr ("Subtitle"), this))
-
 	, SubtitleMenu_ (new QMenu (this))
 	{
 		Ui_.setupUi (this);

@@ -26,11 +26,11 @@ namespace Laure
 {
 	class Core
 	{
+		Q_DISABLE_COPY(Core)
+
 		ICoreProxy_ptr Proxy_;
 		
 		Core ();
-		Core (Core&);
-		Core& operator= (const Core&);
 	public:
 		static Core& Instance ();
 		void SetProxy (ICoreProxy_ptr proxy);
