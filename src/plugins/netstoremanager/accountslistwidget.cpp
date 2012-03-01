@@ -52,6 +52,11 @@ namespace NetStoreManager
 
 	void AccountsListWidget::on_Remove__released ()
 	{
+		const QModelIndex& cur = Ui_.Accounts_->currentIndex ();
+		if (!cur.isValid ())
+			return;
+
+		Manager_->RemoveAccount (cur);
 	}
 }
 }

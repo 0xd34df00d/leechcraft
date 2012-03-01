@@ -22,6 +22,7 @@
 
 class QAbstractItemModel;
 class QStandardItemModel;
+class QModelIndex;
 
 namespace LeechCraft
 {
@@ -48,6 +49,8 @@ namespace NetStoreManager
 		QList<IStoragePlugin*> GetPlugins () const;
 		QList<IStorageAccount*> GetAccounts () const;
 		QAbstractItemModel* GetModel () const;
+
+		void RemoveAccount (const QModelIndex&);
 	private slots:
 		void handleAccountAdded (QObject*);
 		void handleAccountRemoved (QObject*);

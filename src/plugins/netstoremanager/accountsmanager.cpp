@@ -71,6 +71,19 @@ namespace NetStoreManager
 		return Model_;
 	}
 
+	void AccountsManager::RemoveAccount (const QModelIndex& index)
+	{
+		if (!index.isValid ())
+			return;
+
+		QObject *accObj = index.sibling (index.row (), 0)
+				.data (Roles::AccountObj).value<QObject*> ();
+		auto acc = qobject_cast<IStorageAccount*> (accObj);
+
+		auto plugin = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
+		plugin->RemoveAccount (accObj);
+	}
+
 	void AccountsManager::handleAccountAdded (QObject *obj)
 	{
 		IStorageAccount *acc = qobject_cast<IStorageAccount*> (obj);
