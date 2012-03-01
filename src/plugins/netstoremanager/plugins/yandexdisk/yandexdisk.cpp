@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "yandexdisk.h"
+#include <algorithm>
 #include <QIcon>
 #include <QSettings>
 #include <QCoreApplication>
