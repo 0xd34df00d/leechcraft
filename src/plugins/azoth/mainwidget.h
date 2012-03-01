@@ -45,6 +45,7 @@ namespace Azoth
 		QToolButton *MenuButton_;
 		SortFilterProxyModel *ProxyModel_;
 
+		QToolButton *FastStatusButton_;
 		QAction *ActionCLMode_;
 		QToolBar *BottomBar_;
 

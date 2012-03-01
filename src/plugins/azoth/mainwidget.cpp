@@ -103,6 +103,7 @@ namespace Azoth
 	, MainMenu_ (new QMenu (tr ("Azoth menu"), this))
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel (this))
+	, FastStatusButton_ (new QToolButton (this))
 	, ActionCLMode_ (new QAction (tr ("CL mode"), this))
 	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
 	, AccountActsMgr_ (new AccountActionsManager (this, this))
@@ -122,6 +123,8 @@ namespace Azoth
 
 		BottomBar_->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Preferred);
 		BottomBar_->addWidget (MenuButton_);
+		FastStatusButton_->setPopupMode (QToolButton::MenuButtonPopup);
+		BottomBar_->addWidget (FastStatusButton_);
 
 		Ui_.setupUi (this);
 		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
@@ -195,10 +198,10 @@ namespace Azoth
 
 		MenuChangeStatus_->menuAction ()->setProperty ("ActionIcon", "im-status-message-edit");
 
-		Ui_.FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ()), true));
-		Ui_.FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
+		FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ()), true));
+		FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
 		updateFastStatusButton (SOffline);
-		connect (Ui_.FastStatusButton_->defaultAction (),
+		connect (FastStatusButton_->defaultAction (),
 				SIGNAL (triggered ()),
 				this,
 				SLOT (applyFastStatus ()));
@@ -275,7 +278,7 @@ namespace Azoth
 		{
 			BottomBar_->addAction (act);
 			const int count = BottomBar_->actions ().count ();
-			BottomBar_->setMaximumWidth ((32 + 2) * count + 10);
+			BottomBar_->setMaximumWidth ((32 + 2) * (count + 1));
 		};
 		addBottomAct (addContact);
 		addBottomAct (showOffline);
@@ -322,8 +325,8 @@ namespace Azoth
 
 	void MainWidget::updateFastStatusButton (State state)
 	{
-		Ui_.FastStatusButton_->defaultAction ()->setIcon (Core::Instance ().GetIconForState (state));
-		Ui_.FastStatusButton_->setProperty ("Azoth/TargetState",
+		FastStatusButton_->defaultAction ()->setIcon (Core::Instance ().GetIconForState (state));
+		FastStatusButton_->setProperty ("Azoth/TargetState",
 				QVariant::fromValue<State> (state));
 	}
 
@@ -481,7 +484,7 @@ namespace Azoth
 
 	void MainWidget::applyFastStatus ()
 	{
-		State state = Ui_.FastStatusButton_->
+		State state = FastStatusButton_->
 				property ("Azoth/TargetState").value<State> ();
 
 		EntryStatus status (state, QString ());
