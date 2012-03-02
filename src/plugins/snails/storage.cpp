@@ -20,7 +20,11 @@
 #include <stdexcept>
 #include <QFile>
 #include <QApplication>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
 #include <util/util.h>
+#include <util/dblock.h>
 #include "xmlsettingsmanager.h"
 #include "account.h"
 
@@ -28,6 +32,18 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	namespace
+	{
+		template<typename T>
+		QByteArray Serialize (const T& t)
+		{
+			QByteArray result;
+			QDataStream stream (&result, QIODevice::WriteOnly);
+			stream << t;
+			return result;
+		}
+	}
+
 	Storage::Storage (QObject *parent)
 	: QObject (parent)
 	, Settings_ (QCoreApplication::organizationName (),
@@ -183,6 +199,27 @@ namespace Snails
 		return result;
 	}
 
+	QSet<QByteArray> Storage::LoadIDs (Account *acc, const QStringList& folder)
+	{
+		QSet<QByteArray> result;
+
+		const QByteArray& ba = Serialize (folder.isEmpty () ? QStringList ("INBOX") : folder);
+
+		QSqlQuery query (*BaseForAccount (acc));
+		query.prepare ("SELECT msgId FROM folder2msg WHERE folder = :folder;");
+		query.bindValue (":folder", ba);
+		if (!query.exec ())
+		{
+			Util::DBLock::DumpError (query);
+			throw std::runtime_error ("Query execution failed for fetching IDs.");
+		}
+
+		while (query.next ())
+			result << query.value (0).toByteArray ();
+
+		return result;
+	}
+
 	int Storage::GetNumMessages (Account *acc) const
 	{
 		int result = 0;
@@ -236,9 +273,91 @@ namespace Snails
 		return dir;
 	}
 
+	namespace
+	{
+		void InitStorageBase (QSqlDatabase_ptr base)
+		{
+			QHash<QString, QStringList> table2queries;
+			table2queries ["folder2msg"] << "CREATE TABLE folder2msg "
+					"(folder BLOB NOT NULL, msgId BLOB NOT NULL, UNIQUE (folder, msgId) ON CONFLICT IGNORE);";
+			table2queries ["folder2msg"] << "CREATE INDEX folder2msg_idx ON folder2msg (folder);";
+			table2queries ["msg2folder"] << "CREATE TABLE msg2folder "
+					"(msgId BLOB NOT NULL, folder BLOB NOT NULL, UNIQUE (msgId, folder) ON CONFLICT IGNORE);";
+			table2queries ["msg2folder"] << "CREATE INDEX msg2folder_idx ON msg2folder (msgId);";
+
+			Q_FOREACH (const QString& key, table2queries.keys ())
+				if (!base->tables ().contains (key))
+					Q_FOREACH (const QString& queryStr, table2queries [key])
+					{
+						QSqlQuery query (*base);
+						if (!query.exec (queryStr))
+						{
+							Util::DBLock::DumpError (query);
+							throw std::runtime_error ("Query execution failed for storage creation.");
+						}
+					}
+		}
+	}
+
+	QSqlDatabase_ptr Storage::BaseForAccount (Account *acc)
+	{
+		if (AccountBases_.contains (acc))
+			return AccountBases_ [acc];
+
+		const auto& dir = DirForAccount (acc);
+
+		auto db = QSqlDatabase::addDatabase ("QSQLITE", "SnailsStorage_" + acc->GetID ());
+		QSqlDatabase_ptr base (new QSqlDatabase (db));
+		if (!base->isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "database invalid :(";
+			Util::DBLock::DumpError (base->lastError ());
+			throw std::runtime_error ("Unable to add database connection.");
+		}
+
+		base->setDatabaseName (dir.filePath ("msgs.db"));
+		if (!base->open ())
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (base->lastError ());
+			throw std::runtime_error (qPrintable (QString ("Could not initialize database: %1")
+						.arg (base->lastError ().text ())));
+		}
+
+		InitStorageBase (base);
+		AccountBases_ [acc] = base;
+		return base;
+	}
+
 	void Storage::AddMsgToFolders (Message_ptr msg, Account *acc)
 	{
-		const QString& indexFile = DirForAccount (acc).filePath ("folders.idx");
+		const auto& folders = msg->GetFolders ();
+		const auto& id = msg->GetID ();
+
+		qDebug () << Q_FUNC_INFO << id << folders << msg->GetSubject ();
+
+		auto base = BaseForAccount (acc);
+
+		QSqlQuery query (*base);
+		QStringList queries;
+		queries << "INSERT INTO folder2msg (folder, msgId) VALUES (:folder, :msgId);";
+		queries << "INSERT INTO msg2folder (msgId, folder) VALUES (:msgId, :folder);";
+		Q_FOREACH (const QString& qStr, queries)
+		{
+			query.prepare (qStr);
+			Q_FOREACH (auto folder, folders)
+			{
+				if (folder.isEmpty ())
+					folder << "INBOX";
+
+				query.bindValue (":folder", Serialize (folder));
+				query.bindValue (":msgId", id);
+				if (!query.exec ())
+					Util::DBLock::DumpError (query);
+			}
+			query.finish ();
+		}
 	}
 
 	void Storage::UpdateCaches (Message_ptr msg)

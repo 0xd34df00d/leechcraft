@@ -106,18 +106,7 @@ namespace Snails
 		return FoldersModel_;
 	}
 
-	void Account::Synchronize (Account::FetchFlags flags)
-	{
-		MailModelMgr_->clear ();
-		MailModelMgr_->SetCurrentFolder (QStringList ("INBOX"));
-		QMetaObject::invokeMethod (Thread_->GetWorker (),
-				"synchronize",
-				Qt::QueuedConnection,
-				Q_ARG (Account::FetchFlags, flags),
-				Q_ARG (QList<QStringList>, FolderManager_->GetSyncFolders ()));
-	}
-
-	void Account::Synchronize (const QModelIndex& idx)
+	void Account::ShowFolder (const QModelIndex& idx)
 	{
 		MailModelMgr_->clear ();
 
@@ -127,6 +116,33 @@ namespace Snails
 
 		MailModelMgr_->SetCurrentFolder (path);
 
+		QList<Message_ptr> messages;
+		const auto& ids = Core::Instance ().GetStorage ()->LoadIDs (this, path);
+		Q_FOREACH (const auto& id, ids)
+			messages << Core::Instance ().GetStorage ()->LoadMessage (this, id);
+
+		MailModelMgr_->appendMessages (messages);
+
+		Synchronize (path);
+	}
+
+	void Account::Synchronize (Account::FetchFlags flags)
+	{
+		MailModelMgr_->clear ();
+		MailModelMgr_->SetCurrentFolder (QStringList ("INBOX"));
+
+		auto folders = FolderManager_->GetSyncFolders ();
+		if (folders.isEmpty ())
+			folders << QStringList ("INBOX");
+		QMetaObject::invokeMethod (Thread_->GetWorker (),
+				"synchronize",
+				Qt::QueuedConnection,
+				Q_ARG (Account::FetchFlags, flags),
+				Q_ARG (QList<QStringList>, folders));
+	}
+
+	void Account::Synchronize (const QStringList& path)
+	{
 		QMetaObject::invokeMethod (Thread_->GetWorker (),
 				"synchronize",
 				Qt::QueuedConnection,

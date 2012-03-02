@@ -382,13 +382,8 @@ namespace Snails
 	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags fetchFlags,
 			const QList<QStringList>& origFolders, vmime::ref<vmime::net::store> store)
 	{
-		FetchMessagesInFolder (QStringList ("INBOX"), store->getDefaultFolder ());
-
 		Q_FOREACH (const auto& folder, origFolders)
 		{
-			if (folder == QStringList ("INBOX"))
-				continue;
-
 			auto netFolder = store->getFolder (Folder2Path (folder));
 			FetchMessagesInFolder (folder, netFolder);
 		}
