@@ -141,6 +141,7 @@ OPTION (ENABLE_LASTFMSCROBBLE "Build Last.fm scrobbler" OFF)
 OPTION (ENABLE_LHTR "Build LeechCraft HTML Text editoR" ${WITH_PLUGINS})
 OPTION (ENABLE_GACTS "Build Global Actions provider plugin" OFF)
 OPTION (ENABLE_CEMENTO "Build Cemento, LeechCraft common persistent storage" OFF)
+OPTION (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging plugin" OFF)
 
 # Defunct
 OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" OFF)
@@ -353,6 +354,10 @@ ENDIF (ENABLE_CEMENTO)
 IF (ENABLE_GACTS)
 	ADD_SUBDIRECTORY (plugins/gacts)
 ENDIF (ENABLE_GACTS)
+
+IF (ENABLE_BLOGIQUE)
+	ADD_SUBDIRECTORY (plugins/blogique)
+ENDIF (ENABLE_BLOGIQUE)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
