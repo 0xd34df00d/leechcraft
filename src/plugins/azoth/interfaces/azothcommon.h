@@ -73,7 +73,7 @@ namespace Azoth
 		/** User and contact are subscribed to each other (two-way).
 		 */
 		ASBoth = 0x03,
-		
+
 		/** Contact has requested our subscription.
 		 */
 		ASContactRequested = 0x08
@@ -111,9 +111,9 @@ namespace Azoth
 		 */
 		CPSPaused
 	};
-	
+
 	/** Represents Azoth-specific action embed places.
-	 * 
+	 *
 	 * To be used with IActionsExporter.
 	 */
 	enum AzothActionsEmbedPlace

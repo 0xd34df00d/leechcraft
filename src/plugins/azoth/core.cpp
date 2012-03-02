@@ -1669,8 +1669,14 @@ namespace Azoth
 
 	void Core::UpdateInitState (State state)
 	{
+		if (state == SConnecting)
+			return;
+
 		const State prevTop = FindTop (StateCounter_);
-		++StateCounter_ [state];
+
+		StateCounter_.clear ();
+		Q_FOREACH (IAccount *acc, GetAccounts ())
+			++StateCounter_ [acc->GetState ().State_];
 		const State newTop = FindTop (StateCounter_);
 
 		if (newTop != prevTop)
@@ -1874,9 +1880,9 @@ namespace Azoth
 				QDataStream stream (var.toByteArray ());
 				stream >> s;
 				account->ChangeState (s);
-
-				UpdateInitState (s.State_);
 			}
+			else
+				UpdateInitState (account->GetState ().State_);
 		}
 		else
 			qWarning () << Q_FUNC_INFO
@@ -2039,6 +2045,8 @@ namespace Azoth
 					<< acc->GetParentProtocol ();
 			return;
 		}
+
+		UpdateInitState (status.State_);
 
 		if (status.State_ == SOffline)
 			LastAccountStatusChange_.remove (acc);
