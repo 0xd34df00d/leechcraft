@@ -217,8 +217,6 @@ namespace Azoth
 
 		adjustSize ();
 		layout ()->update ();
-		qDebug () << "BottomBar" << BottomBar_->width () << BottomBar_->sizeHint ()
-				<< BottomBar_->sizePolicy ().horizontalPolicy () << BottomBar_->sizePolicy ().horizontalStretch ();
 	}
 
 	QList<QAction*> MainWidget::GetMenuActions()
@@ -278,7 +276,8 @@ namespace Azoth
 		{
 			BottomBar_->addAction (act);
 			const int count = BottomBar_->actions ().count ();
-			BottomBar_->setMaximumWidth ((32 + 2) * (count + 1));
+			const int spacing = BottomBar_->layout ()->spacing ();
+			BottomBar_->setMaximumWidth ((32 + spacing) * (count + 2));
 		};
 		addBottomAct (addContact);
 		addBottomAct (showOffline);
