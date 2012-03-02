@@ -72,7 +72,7 @@ namespace Blogique
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+        return QIcon (":/plugins/blogique/resources/images/blogique.svg");
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
