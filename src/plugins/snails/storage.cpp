@@ -334,6 +334,9 @@ namespace Snails
 							throw std::runtime_error ("Query execution failed for storage creation.");
 						}
 					}
+
+			QSqlQuery pragmas (*base);
+			pragmas.exec ("PRAGMA synchronous = OFF;");
 		}
 	}
 
