@@ -1677,6 +1677,9 @@ namespace Azoth
 		StateCounter_.clear ();
 		Q_FOREACH (IAccount *acc, GetAccounts ())
 			++StateCounter_ [acc->GetState ().State_];
+
+		StateCounter_.remove (SOffline);
+
 		const State newTop = FindTop (StateCounter_);
 
 		if (newTop != prevTop)
