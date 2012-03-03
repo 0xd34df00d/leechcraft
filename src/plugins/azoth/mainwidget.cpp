@@ -730,7 +730,8 @@ namespace Azoth
 			{
 				const QString& path = BuildPath (index);
 
-				const bool expanded = XmlSettingsManager::Instance ().Property (path, true).toBool ();
+				const bool expanded = ProxyModel_->IsMUCMode () ||
+						XmlSettingsManager::Instance ().Property (path, true).toBool ();
 				if (expanded)
 					QMetaObject::invokeMethod (this,
 							"expandIndex",
@@ -741,18 +742,22 @@ namespace Azoth
 					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
 			}
 			else if (type == Core::CLETAccount)
+			{
 				QMetaObject::invokeMethod (this,
 						"expandIndex",
 						Qt::QueuedConnection,
 						Q_ARG (QPersistentModelIndex, QPersistentModelIndex (index)));
+
+				if (clModel->rowCount (index))
+					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
+			}
 		}
 	}
 
 	void MainWidget::rebuildTreeExpansions ()
 	{
-		if (Core::Instance ().GetCLModel ()->rowCount ())
-			handleRowsInserted (QModelIndex (),
-					0, Core::Instance ().GetCLModel ()->rowCount () - 1);
+		if (ProxyModel_->rowCount ())
+			handleRowsInserted (QModelIndex (), 0, ProxyModel_->rowCount () - 1);
 	}
 
 	void MainWidget::expandIndex (const QPersistentModelIndex& pIdx)
