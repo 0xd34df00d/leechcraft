@@ -56,6 +56,11 @@ namespace Azoth
 		  emit mucMode ();
 	}
 
+	bool SortFilterProxyModel::IsMUCMode () const
+	{
+		return MUCMode_;
+	}
+
 	void SortFilterProxyModel::SetMUC (QObject *mucEntry)
 	{
 		if (MUCEntry_)
