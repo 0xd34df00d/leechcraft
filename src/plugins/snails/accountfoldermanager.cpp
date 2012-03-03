@@ -18,11 +18,7 @@
 
 #include "accountfoldermanager.h"
 #include <stdexcept>
-
-uint qHash (const QStringList& list)
-{
-	return qHash (list.join ("<|>"));
-}
+#include "common.h"
 
 namespace LeechCraft
 {

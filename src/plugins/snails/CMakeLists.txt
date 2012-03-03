@@ -54,6 +54,7 @@ SET (SRCS
 	vmimeconversions.cpp
 	outputiodevadapter.cpp
 	mailmodelmanager.cpp
+	common.cpp
 	)
 SET (HEADERS
 	snails.h
@@ -76,6 +77,7 @@ SET (HEADERS
 	vmimeconversions.h
 	outputiodevadapter.h
 	mailmodelmanager.h
+	common.h
 	)
 SET (FORMS
 	mailtab.ui
