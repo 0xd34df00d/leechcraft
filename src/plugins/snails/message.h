@@ -25,6 +25,7 @@
 #include <QMetaType>
 #include <QPair>
 #include <QHash>
+#include <QSet>
 #include "attdescr.h"
 
 namespace LeechCraft
@@ -111,10 +112,13 @@ namespace Snails
 	};
 
 	typedef std::shared_ptr<Message> Message_ptr;
+	typedef QSet<Message_ptr> MessageSet;
 
 	QString GetNiceMail (const Message::Address_t&);
 }
 }
+
+uint qHash (const LeechCraft::Snails::Message_ptr);
 
 Q_DECLARE_METATYPE (LeechCraft::Snails::Message_ptr);
 Q_DECLARE_METATYPE (QList<LeechCraft::Snails::Message_ptr>);
