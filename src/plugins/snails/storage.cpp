@@ -321,10 +321,7 @@ namespace Snails
 			QHash<QString, QStringList> table2queries;
 			table2queries ["folder2msg"] << "CREATE TABLE folder2msg "
 					"(folder BLOB NOT NULL, msgId BLOB NOT NULL, UNIQUE (folder, msgId) ON CONFLICT IGNORE);";
-			table2queries ["folder2msg"] << "CREATE INDEX folder2msg_idx ON folder2msg (folder);";
-			table2queries ["msg2folder"] << "CREATE TABLE msg2folder "
-					"(msgId BLOB NOT NULL, folder BLOB NOT NULL, UNIQUE (msgId, folder) ON CONFLICT IGNORE);";
-			table2queries ["msg2folder"] << "CREATE INDEX msg2folder_idx ON msg2folder (msgId);";
+			table2queries ["folder2msg"] << "CREATE INDEX folder2msg_idx_folder ON folder2msg (folder);";
 
 			Q_FOREACH (const QString& key, table2queries.keys ())
 				if (!base->tables ().contains (key))
@@ -376,14 +373,11 @@ namespace Snails
 		const auto& folders = msg->GetFolders ();
 		const auto& id = msg->GetID ();
 
-		qDebug () << Q_FUNC_INFO << id << folders << msg->GetSubject ();
-
 		auto base = BaseForAccount (acc);
 
 		QSqlQuery query (*base);
 		QStringList queries;
 		queries << "INSERT INTO folder2msg (folder, msgId) VALUES (:folder, :msgId);";
-		queries << "INSERT INTO msg2folder (msgId, folder) VALUES (:msgId, :folder);";
 		Q_FOREACH (const QString& qStr, queries)
 		{
 			query.prepare (qStr);
