@@ -23,6 +23,8 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 #include <util/util.h>
 #include <util/dblock.h>
 #include "xmlsettingsmanager.h"
@@ -52,9 +54,53 @@ namespace Snails
 		SDir_ = Util::CreateIfNotExists ("snails/storage");
 	}
 
+	namespace
+	{
+		QList<Message_ptr> MessageSaverProc (QList<Message_ptr> msgs, const QDir dir)
+		{
+			Q_FOREACH (Message_ptr msg, msgs)
+			{
+				if (msg->GetID ().isEmpty ())
+					continue;
+
+				const QString dirName = msg->GetID ().toHex ().right (3);
+
+				QDir msgDir = dir;
+				if (!dir.exists (dirName))
+					msgDir.mkdir (dirName);
+				if (!msgDir.cd (dirName))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to cd into"
+							<< msgDir.filePath (dirName);
+					continue;
+				}
+
+				QFile file (msgDir.filePath (msg->GetID ().toHex ()));
+				file.open (QIODevice::WriteOnly);
+				file.write (qCompress (msg->Serialize (), 9));
+			}
+
+			return msgs;
+		}
+	}
+
 	void Storage::SaveMessages (Account *acc, const QList<Message_ptr>& msgs)
 	{
 		const QDir& dir = DirForAccount (acc);
+
+		Q_FOREACH (Message_ptr msg, msgs)
+			PendingSaveMessages_ [acc] [msg->GetID ()] = msg;
+
+		auto watcher = new QFutureWatcher<QList<Message_ptr>> ();
+		FutureWatcher2Account_ [watcher] = acc;
+
+		auto future = QtConcurrent::run (MessageSaverProc, msgs, dir);
+		watcher->setFuture (future);
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleMessagesSaved ()));
 
 		Q_FOREACH (Message_ptr msg, msgs)
 		{
@@ -62,33 +108,13 @@ namespace Snails
 				continue;
 
 			AddMsgToFolders (msg, acc);
-
-			const QString dirName = msg->GetID ().toHex ().right (3);
-
-			QDir msgDir = dir;
-			if (!dir.exists (dirName))
-				msgDir.mkdir (dirName);
-			if (!msgDir.cd (dirName))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cd into"
-						<< msgDir.filePath (dirName);
-				continue;
-			}
-
-			QFile file (msgDir.filePath (msg->GetID ().toHex ()));
-			file.open (QIODevice::WriteOnly);
-			file.write (qCompress (msg->Serialize (), 9));
-
-			qApp->processEvents ();
-
 			UpdateCaches (msg);
 		}
 	}
 
-	QList<Message_ptr> Storage::LoadMessages (Account *acc)
+	MessageSet Storage::LoadMessages (Account *acc)
 	{
-		QList<Message_ptr> result;
+		MessageSet result;
 
 		const QDir& dir = DirForAccount (acc);
 		Q_FOREACH (auto str, dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
@@ -118,8 +144,6 @@ namespace Snails
 				try
 				{
 					msg->Deserialize (qUncompress (file.readAll ()));
-					result << msg;
-					UpdateCaches (msg);
 				}
 				catch (const std::exception& e)
 				{
@@ -129,7 +153,15 @@ namespace Snails
 							<< e.what ();
 					continue;
 				}
+				result << msg;
+				UpdateCaches (msg);
 			}
+		}
+
+		Q_FOREACH (auto msg, PendingSaveMessages_ [acc].values ())
+		{
+			result << msg;
+			UpdateCaches (msg);
 		}
 
 		return result;
@@ -137,6 +169,9 @@ namespace Snails
 
 	Message_ptr Storage::LoadMessage (Account *acc, const QByteArray& id)
 	{
+		if (PendingSaveMessages_ [acc].contains (id))
+			return PendingSaveMessages_ [acc] [id];
+
 		QDir dir = DirForAccount (acc);
 		if (!dir.cd (id.toHex ().right (3)))
 		{
@@ -196,6 +231,8 @@ namespace Snails
 				result << QByteArray::fromHex (str.toUtf8 ());
 		}
 
+		result += PendingSaveMessages_ [acc].keys ().toSet ();
+
 		return result;
 	}
 
@@ -216,6 +253,10 @@ namespace Snails
 
 		while (query.next ())
 			result << query.value (0).toByteArray ();
+
+		Q_FOREACH (auto msg, PendingSaveMessages_ [acc].values ())
+			if (msg->GetFolders ().contains (folder))
+				result << msg->GetID ();
 
 		return result;
 	}
@@ -363,6 +404,27 @@ namespace Snails
 	void Storage::UpdateCaches (Message_ptr msg)
 	{
 		IsMessageRead_ [msg->GetID ()] = msg->IsRead ();
+	}
+
+	void Storage::handleMessagesSaved ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<QList<Message_ptr>>*> (sender ());
+		watcher->deleteLater ();
+
+		auto acc = FutureWatcher2Account_.take (watcher);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no account for future watcher"
+					<< watcher;
+			return;
+		}
+
+		auto& hash = PendingSaveMessages_ [acc];
+
+		auto messages = watcher->result ();
+		Q_FOREACH (Message_ptr msg, messages)
+			hash.remove (msg->GetID ());
 	}
 }
 }

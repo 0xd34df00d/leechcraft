@@ -43,11 +43,14 @@ namespace Snails
 		QHash<QByteArray, bool> IsMessageRead_;
 
 		QHash<Account*, QSqlDatabase_ptr> AccountBases_;
+		QHash<Account*, QHash<QByteArray, Message_ptr>> PendingSaveMessages_;
+
+		QHash<QObject*, Account*> FutureWatcher2Account_;
 	public:
 		Storage (QObject* = 0);
 
 		void SaveMessages (Account*, const QList<Message_ptr>&);
-		QList<Message_ptr> LoadMessages (Account*);
+		MessageSet LoadMessages (Account*);
 		Message_ptr LoadMessage (Account*, const QByteArray&);
 		QSet<QByteArray> LoadIDs (Account*);
 		QSet<QByteArray> LoadIDs (Account*, const QStringList&);
@@ -61,6 +64,8 @@ namespace Snails
 
 		void AddMsgToFolders (Message_ptr, Account*);
 		void UpdateCaches (Message_ptr);
+	private slots:
+		void handleMessagesSaved ();
 	};
 }
 }
