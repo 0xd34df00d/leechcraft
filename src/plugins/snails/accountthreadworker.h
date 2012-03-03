@@ -41,12 +41,18 @@ namespace Snails
 		Account *A_;
 		vmime::ref<vmime::net::session> Session_;
 		vmime::ref<vmime::net::store> CachedStore_;
+		QHash<QStringList, vmime::ref<vmime::net::folder>> CachedFolders_;
 		QTimer *DisconnectTimer_;
+
+		QHash<QStringList, QHash<QByteArray, int>> SeqCache_;
 	public:
 		AccountThreadWorker (Account*);
 	private:
 		vmime::ref<vmime::net::store> MakeStore ();
 		vmime::ref<vmime::net::transport> MakeTransport ();
+
+		vmime::ref<vmime::net::folder> GetFolder (const QStringList& folder, int mode);
+
 		Message_ptr FromHeaders (const vmime::ref<vmime::net::message>&) const;
 		void FetchMessagesPOP3 (Account::FetchFlags);
 		void FetchMessagesIMAP (Account::FetchFlags, const QList<QStringList>&, vmime::ref<vmime::net::store>);
