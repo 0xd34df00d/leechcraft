@@ -346,6 +346,49 @@ namespace LeechCraft
 		return AddTabButtonContextMenu_;
 	}
 
+	QMenu* SeparateTabWidget::GetMenuForTab (int index)
+	{
+		QMenu *menu = new QMenu ("", MainTabBar_);
+		if (XmlSettingsManager::Instance ()->
+					property ("ShowPluginMenuInTabs").toBool ())
+		{
+			bool asSub = XmlSettingsManager::Instance ()->
+				property ("ShowPluginMenuInTabsAsSubmenu").toBool ();
+			ITabWidget *imtw =
+				qobject_cast<ITabWidget*> (Widget (index));
+			if (imtw)
+			{
+				QList<QAction*> tabActions = imtw->GetTabBarContextMenuActions ();
+
+				QMenu *subMenu = new QMenu (TabText (index), menu);
+				Q_FOREACH (QAction *act, tabActions)
+					(asSub ? subMenu : menu)->addAction (act);
+				if (asSub)
+					menu->addMenu (subMenu);
+				if (tabActions.size ())
+					menu->addSeparator ();
+			}
+		}
+
+		Q_FOREACH (QAction *act, TabBarActions_)
+		{
+			if (!act)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "detected null pointer";
+				continue;
+			}
+			menu->addAction (act);
+		}
+
+		if (MainTabBar_->IsPinTab (index))
+			menu->insertAction (TabBarActions_.at (0).data (), UnPinTab_);
+		else
+			menu->insertAction (TabBarActions_.at (0).data (), PinTab_);
+
+		return menu;
+	}
+
 	void SeparateTabWidget::AddWidget2TabBarLayout (QTabBar::ButtonPosition pos,
 			QWidget *w)
 	{
@@ -622,11 +665,12 @@ namespace LeechCraft
 		if (point.isNull ())
 			return;
 
-		QMenu *menu = new QMenu ("", MainTabBar_);
+		QMenu *menu = 0;
 		int index = MainTabBar_->tabAt (point);
 
 		if (index == -1)
 		{
+			menu = new QMenu ("", MainTabBar_);
 			Q_FOREACH (QAction *act, TabBarActions_)
 			{
 				if (!act)
@@ -637,56 +681,18 @@ namespace LeechCraft
 				}
 				menu->addAction (act);
 			}
-			menu->exec (MainTabBar_->mapToGlobal (point));
 		}
 		else if ((index == MainTabBar_->count () - 1) && !AddTabButtonAction_->isVisible ())
 		{
+			menu = new QMenu ("", MainTabBar_);
 			menu->addActions (AddTabButtonContextMenu_->actions ());
-			menu->exec (MainTabBar_->mapToGlobal (point));
 		}
 		else
 		{
 			LastContextMenuTab_ = index;
-			if (index != -1 &&
-					XmlSettingsManager::Instance ()->
-						property ("ShowPluginMenuInTabs").toBool ())
-			{
-				bool asSub = XmlSettingsManager::Instance ()->
-					property ("ShowPluginMenuInTabsAsSubmenu").toBool ();
-				ITabWidget *imtw =
-					qobject_cast<ITabWidget*> (Widget (index));
-				if (imtw)
-				{
-					QList<QAction*> tabActions = imtw->GetTabBarContextMenuActions ();
-
-					QMenu *subMenu = new QMenu (TabText (index), menu);
-					Q_FOREACH (QAction *act, tabActions)
-						(asSub ? subMenu : menu)->addAction (act);
-					if (asSub)
-						menu->addMenu (subMenu);
-					if (tabActions.size ())
-						menu->addSeparator ();
-				}
-			}
-
-			Q_FOREACH (QAction *act, TabBarActions_)
-			{
-				if (!act)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "detected null pointer";
-					continue;
-				}
-				menu->addAction (act);
-			}
-
-			if (MainTabBar_->IsPinTab (index))
-				menu->insertAction (TabBarActions_.at (0).data (), UnPinTab_);
-			else
-				menu->insertAction (TabBarActions_.at (0).data (), PinTab_);
-
-			menu->exec (MainTabBar_->mapToGlobal (point));
+			menu = GetMenuForTab (index);
 		}
+		menu->exec (MainTabBar_->mapToGlobal (point));
 		delete menu;
 	}
 

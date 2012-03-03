@@ -23,6 +23,7 @@
 class QObject;
 class QWidget;
 class QIcon;
+class QMenu;
 
 class ICoreTabWidget
 {
@@ -38,6 +39,8 @@ public:
 	virtual QString TabText (int) const = 0;
 	virtual bool IsPinTab (int) const = 0;
 	virtual int CurrentIndex () const = 0;
+
+	virtual QMenu* GetMenuForTab (int) = 0;
 
 	virtual void setCurrentIndex (int) = 0;
 	virtual void setCurrentWidget (QWidget*) = 0;

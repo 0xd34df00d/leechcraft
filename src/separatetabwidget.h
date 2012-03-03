@@ -68,6 +68,7 @@ namespace LeechCraft
 		bool InMoveProcess_;
 	public:
 		explicit SeparateTabWidget (QWidget* = 0);
+
 		QObject* GetObject ();
 
 		int WidgetCount () const;
@@ -103,6 +104,8 @@ namespace LeechCraft
 		QMenu* GetDefaultContextMenu () const;
 		void SetAddTabButtonContextMenu (QMenu*);
 		QMenu* GetAddTabButtonContextMenu () const;
+
+		QMenu* GetMenuForTab (int);
 
 		void AddWidget2TabBarLayout (QTabBar::ButtonPosition, QWidget*);
 		void AddAction2TabBarLayout (QTabBar::ButtonPosition, QAction*);
