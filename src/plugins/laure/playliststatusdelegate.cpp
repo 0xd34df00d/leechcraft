@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011-2012  Minh Ngo
+ * Copyright (C) 2011-2012 Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,23 +17,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "separateplayer.h"
-#include <QCloseEvent>
+#include "playliststatusdelegate.h"
+#include <QPainter>
+#include <interfaces/core/icoreproxy.h>
+#include "playlistview.h"
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	SeparatePlayer::SeparatePlayer (QWidget *parent, Qt::WindowFlags f)
-	: QWidget (parent, f)
+	PlayListStatusDelegate::PlayListStatusDelegate (QObject *parent)
+	: QStyledItemDelegate (parent)
+	, PlayPixmap_ (Core::Instance ().GetProxy ()->GetIcon ("media-playback-start").pixmap (16, 16))
 	{
-		setPalette (QPalette (Qt::black));
 	}
 	
-	void SeparatePlayer::closeEvent (QCloseEvent *event)
+	void PlayListStatusDelegate::paint (QPainter *painter,
+			const QStyleOptionViewItem& option, const QModelIndex& id) const
 	{
-		emit closed ();
-		event->accept ();
+		QStyledItemDelegate::paint (painter, option, id);
+		const bool played = id.sibling (id.row (), PlayListColumns::StatusColumn)
+				.data (IsPlayingRole).toBool ();
+				
+		if (played)
+			painter->drawPixmap (option.rect, PlayPixmap_);
 	}
 }
 }

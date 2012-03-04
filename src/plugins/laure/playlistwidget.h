@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,8 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_PLAYLISTWIDGET_H
-#define PLUGINS_LAURE_PLAYLISTWIDGET_H
+#pragma once
 #include <QWidget>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
@@ -53,6 +52,7 @@ namespace Laure
 		 * with the given parent.
 		 */
 		PlayListWidget (QWidget* = 0);
+
 		void Init (std::shared_ptr<VLCWrapper> wrapper);
 	public slots:
 		/** @brief Is called when the media file has added to
@@ -109,5 +109,3 @@ namespace Laure
 	};
 }
 }
-
-#endif // PLUGINS_LAURE_PLAYLISTWIDGET_H

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Minh Ngo
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_VLCWRAPPER_H
-#define PLUGINS_LAURE_VLCWRAPPER_H
+#pragma once
 #include <memory>
 #include <QObject>
+#include <QUrl>
 #include <vlc/vlc.h>
 #include <interfaces/ientityhandler.h>
 
@@ -44,6 +44,7 @@ namespace Laure
 		QVariantMap ToVariantMap () const;
 
 		QString Artist_, Album_, Title_, Genre_, Date_;
+		QUrl Location_;
 		int TrackNumber_;
 		int Length_;
 		libvlc_track_type_t Type_;
@@ -226,6 +227,8 @@ namespace Laure
 		void setMeta (libvlc_meta_t type, const QString& value, int index);
 		
 		QList<int> GetQueueListIndexes () const;
+		
+		void setSubtitle (const QString& location = QString ()) const;
 	private:
 		int PlayQueue ();
 
@@ -255,4 +258,3 @@ namespace Laure
 	};
 }
 }
-#endif // PLUGINS_LAURE_VLCWRAPPER_H

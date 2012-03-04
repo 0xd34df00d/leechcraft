@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,8 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_LAUREWIDGET_H
-#define PLUGINS_LAURE_LAUREWIDGET_H
+#pragma once
 #include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
@@ -27,6 +26,7 @@
 
 class QToolBar;
 class QUrl;
+class QMenu;
 
 namespace LeechCraft
 {
@@ -57,11 +57,14 @@ namespace Laure
 		std::shared_ptr<SeparatePlayer> SeparatePlayer_;
 		QAction *DetachedVideo_;
 		QAction *PlayListAction_;
+		QAction *SubtitleAction_;
+		QMenu *SubtitleMenu_;
 	public:
 		/** @brief Constructs a new LaureWidget tab
 		 * with the given parent and flags.
 		 */
 		LaureWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
+		~LaureWidget ();
 
 		static void SetParentMultiTabs (QObject*);
 		TabClassInfo GetTabClassInfo () const;
@@ -99,6 +102,8 @@ namespace Laure
 		 * @param[in] location Media file location.
 		 */
 		void handleOpenMediaContent (const QString& location);
+		
+		void updateSubtitleMenu (const MediaMeta& meta);
 	private slots:
 		void handleOpenFile ();
 		void handleOpenURL ();
@@ -106,8 +111,8 @@ namespace Laure
 		void handleVideoMode (bool);
 		void handleDetachPlayer (bool);
 		void handleSeparatePlayerClosed ();
+		void subtitleDialog ();
+		void showSubtitleMenu ();
 	};
 }
 }
-
-#endif // PLUGINS_LAURE_LAUREWIDGET_H
