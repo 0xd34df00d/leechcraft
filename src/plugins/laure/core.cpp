@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011-2012  Minh Ngo
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2011  Minh Ngo
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,23 +17,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "separateplayer.h"
-#include <QCloseEvent>
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	SeparatePlayer::SeparatePlayer (QWidget *parent, Qt::WindowFlags f)
-	: QWidget (parent, f)
+	Core::Core ()
 	{
-		setPalette (QPalette (Qt::black));
 	}
 	
-	void SeparatePlayer::closeEvent (QCloseEvent *event)
+	Core& Core::Instance ()
 	{
-		emit closed ();
-		event->accept ();
+		static Core obj;
+		return obj;
+	}
+	
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
+	
+	ICoreProxy_ptr Core::GetProxy ()
+	{
+		return Proxy_;
 	}
 }
 }

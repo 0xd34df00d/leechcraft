@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Minh Ngo
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ namespace Laure
 	void NowPlayingDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option,
 				const QModelIndex& id) const
 	{
-		const bool played = id.sibling (id.row (), PlayListColumns::URLColumn)
+		const bool played = id.sibling (id.row (), PlayListColumns::StatusColumn)
 				.data (IsPlayingRole).toBool ();
 				
 		if (played)
