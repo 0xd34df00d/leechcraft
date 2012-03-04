@@ -266,11 +266,11 @@ namespace Laure
 				return;
 		
 			libvlc_video_set_subtitle_file (Player_.get (),
-					senderAction->data ().toString ().toStdString ().c_str ());
+					senderAction->data ().toString ().toUtf8 ().constData ());
 		}
 		else
 			libvlc_video_set_subtitle_file (Player_.get (),
-					location.toStdString ().c_str ());
+					location.toUtf8 ().constData ());
 	}
 	
 	QList<int> VLCWrapper::GetQueueListIndexes () const

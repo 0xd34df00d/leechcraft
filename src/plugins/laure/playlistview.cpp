@@ -156,7 +156,7 @@ namespace Laure
 		QAction *selectedItem = menu.exec (mapToGlobal (point));
 		if (selectedItem)
 		{
-			PlayListColumns columnIndex = (PlayListColumns) selectedItem->data ().toInt ();
+			PlayListColumns columnIndex = static_cast<PlayListColumns> (selectedItem->data ().toInt ());
 			XmlSettingsManager::Instance ().setProperty (HeaderProperties_ [columnIndex],
 						selectedItem->isChecked ());
 		}

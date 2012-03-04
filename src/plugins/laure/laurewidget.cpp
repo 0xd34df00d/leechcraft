@@ -211,7 +211,7 @@ namespace Laure
 		VLCWrapper *wrapper = VLCWrapper_.get ();
 		Q_FOREACH (const QFileInfo& file, list)
 		{
-			QAction *subtitleMenuAction = new QAction (file.fileName (), this);
+			QAction *subtitleMenuAction = new QAction (file.fileName (), SubtitleMenu_);
 			subtitleMenuAction->setData (file.absoluteFilePath ());
 			SubtitleMenu_->addAction (subtitleMenuAction);
 			
@@ -221,7 +221,7 @@ namespace Laure
 					SLOT (setSubtitle ()));
 		}
 		
-		QAction *otherSubtitle = new QAction (tr ("Other subtitle..."),this);
+		QAction *otherSubtitle = new QAction (tr ("Other subtitle..."), SubtitleMenu_);
 		SubtitleMenu_->addAction (otherSubtitle);
 		
 		connect (otherSubtitle,

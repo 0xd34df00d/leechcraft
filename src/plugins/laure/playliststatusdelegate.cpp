@@ -18,7 +18,6 @@
  **********************************************************************/
 
 #include "playliststatusdelegate.h"
-#include <iostream>
 #include <QPainter>
 #include <interfaces/core/icoreproxy.h>
 #include "playlistview.h"
@@ -32,7 +31,6 @@ namespace Laure
 	: QStyledItemDelegate (parent)
 	, PlayPixmap_ (Core::Instance ().GetProxy ()->GetIcon ("media-playback-start").pixmap (16, 16))
 	{
-		
 	}
 	
 	void PlayListStatusDelegate::paint (QPainter *painter,
