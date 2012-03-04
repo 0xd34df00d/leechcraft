@@ -768,8 +768,8 @@ namespace Xoox
 
 	void RoomHandler::RemoveEntry (RoomParticipantEntry *entry)
 	{
-		Nick2Entry_.remove (entry->GetNick ());
 		Account_->handleEntryRemoved (entry);
+		Nick2Entry_.remove (entry->GetNick ());
 	}
 
 	void RoomHandler::RemoveThis ()

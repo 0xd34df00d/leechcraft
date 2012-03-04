@@ -92,6 +92,9 @@ namespace Xoox
 		QStringList phones;
 		Q_FOREACH (const QXmppVCardPhone& phone, vcard.phones ())
 		{
+			if (phone.number.isEmpty ())
+				continue;
+
 			QStringList attrs;
 			if (phone.isPref)
 				attrs << tr ("preferred");
@@ -111,6 +114,9 @@ namespace Xoox
 		QStringList emails;
 		Q_FOREACH (const QXmppVCardEmail& email, vcard.emails ())
 		{
+			if (email.address.isEmpty ())
+				continue;
+
 			QStringList attrs;
 			if (email.isPref)
 				attrs << tr ("preferred");

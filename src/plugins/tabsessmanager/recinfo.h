@@ -21,6 +21,7 @@
 #include <QByteArray>
 #include <QString>
 #include <QIcon>
+#include <QVariant>
 #include <QMetaType>
 
 namespace LeechCraft
@@ -30,6 +31,7 @@ namespace TabSessManager
 	struct RecInfo
 	{
 		QByteArray Data_;
+		QList<QPair<QByteArray, QVariant>> Props_;
 		QString Name_;
 		QIcon Icon_;
 	};

@@ -197,21 +197,90 @@ namespace Azoth
 		 */
 		virtual QObject* GetEntry (const QString& entryID, const QString& accID) const = 0;
 
+		/** @brief Opens the chat with the given entry.
+		 *
+		 * This function allows to open a chat with the given entry
+		 * identified by entryID for the given account identified by
+		 * accId.
+		 *
+		 * @param[in] entryID The ID of the entry to open chat with.
+		 * @param[in] accID The ID of the account where entryID belongs.
+		 * @param[in] message Prepare this text in the message editor.
+		 * @param[in] variant Select this variant, if available.
+		 */
 		virtual void OpenChat (const QString& entryID,
 				const QString& accID,
 				const QString& message = QString (),
 				const QString& variant = QString ()) const = 0;
 
-		virtual QString GetSelectedChatTemplate (QObject*, QWebFrame*) const = 0;
-
+		/** @brief Generates the nickname colors for the given scheme.
+		 *
+		 * If the scheme is empty or equals "hash", then a random set of
+		 * colors is generated based on current palette and settings.
+		 * Otherwise, scheme is interpreted as space-separated list of
+		 * colors, either named, like "green" or "cyan", or their RGB
+		 * values in forms like "#FA12BB".
+		 *
+		 * @param[in] scheme The color scheme to use.
+		 * @return The list of colors matching the given color scheme.
+		 */
 		virtual QList<QColor> GenerateColors (const QString& scheme) const = 0;
+
+		/** @brief Returns the color for the given nick and color set.
+		 *
+		 * This function should be used to choose a color for the given
+		 * nick. Internally, it calculates a hash from the nick and uses
+		 * it to choose a corresponding color.
+		 *
+		 * @param[in] nick The nickname for which to choose the color.
+		 * @param[in] colors The list of colors to choose from.
+		 * @return The color name to use.
+		 */
 		virtual QString GetNickColor (const QString& nick, const QList<QColor>& colors) const = 0;
 
-		virtual QString FormatDate (QDateTime, QObject*) const = 0;
-		virtual QString FormatNickname (QString, QObject*, const QString&) const = 0;
-		virtual QString FormatBody (QString, QObject*) const = 0;
+		/** @brief Formats the date for the given message.
+		 *
+		 * This function should be used to format the date when
+		 * displaying the given message.
+		 *
+		 * @param[in] date The date to format.
+		 * @param[in] message The message object implementing IMessage.
+		 * @return The formatted date string.
+		 */
+		virtual QString FormatDate (QDateTime date, QObject *message) const = 0;
 
-		virtual void PreprocessMessage (QObject*) = 0;
+		/** @brief Formats the nickname for the given message and color.
+		 *
+		 * This function should be used to format the nick when
+		 * displaying the given message. The color should be the one
+		 * from GetNickColor().
+		 *
+		 * @param[in] nick The nickname to format.
+		 * @param[in] message The message object implementing IMessage.
+		 * @param[in] color The color of the nickname.
+		 * @return The formatted nickname.
+		 */
+		virtual QString FormatNickname (QString nick, QObject *message, const QString& color) const = 0;
+
+		/** @brief Formats the body for the given message.
+		 *
+		 * This function should be used to format the body of the given
+		 * message.
+		 *
+		 * @param[in] body The body to format.
+		 * @param[in] message The message object implementing IMessage.
+		 * @return The formatted body.
+		 */
+		virtual QString FormatBody (QString body, QObject *message) const = 0;
+
+		/** @brief Preprocesses the message before displaying it.
+		 *
+		 * This function should be called once on each message before
+		 * displaying it.
+		 *
+		 * @param[in] message The message to preprocess.
+		 */
+		virtual void PreprocessMessage (QObject *message) = 0;
 
 		virtual Util::ResourceLoader* GetResourceLoader (PublicResourceLoader loader) const = 0;
 

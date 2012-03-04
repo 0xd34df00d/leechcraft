@@ -25,6 +25,7 @@
 class QObject;
 class QWidget;
 class QIcon;
+class QMenu;
 
 class ICoreTabWidget
 {

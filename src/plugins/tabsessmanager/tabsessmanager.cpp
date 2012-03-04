@@ -104,6 +104,24 @@ namespace TabSessManager
 		return result;
 	}
 
+	bool Plugin::eventFilter (QObject *obj, QEvent *e)
+	{
+		if (e->type () != QEvent::DynamicPropertyChange)
+			return false;
+
+		auto propEvent = static_cast<QDynamicPropertyChangeEvent*> (e);
+		if (propEvent->propertyName ().startsWith ("SessionData/"))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "changed"
+					<< propEvent->propertyName ()
+					<< obj->property (propEvent->propertyName ());
+			handleTabRecoverDataChanged ();
+		}
+
+		return false;
+	}
+
 	QByteArray Plugin::GetCurrentSession () const
 	{
 		QByteArray result;
@@ -127,6 +145,15 @@ namespace TabSessManager
 					<< data
 					<< rec->GetTabRecoverName ()
 					<< rec->GetTabRecoverIcon ();
+
+			QList<QPair<QByteArray, QVariant>> props;
+			Q_FOREACH (const QByteArray& propName, tab->dynamicPropertyNames ())
+			{
+				if (!propName.startsWith ("SessionData/"))
+					continue;
+
+				props << qMakePair (propName, tab->property (propName));
+			}
 
 			qDebug () << "appended data for" << plugin->GetUniqueID () << rec->GetTabRecoverName ();
 		}
@@ -159,6 +186,8 @@ namespace TabSessManager
 				this,
 				SLOT (handleTabDestroyed ()));
 
+		widget->installEventFilter (this);
+
 		if (!tab->GetTabRecoverData ().isEmpty ())
 			handleTabRecoverDataChanged ();
 	}
@@ -183,8 +212,9 @@ namespace TabSessManager
 				QByteArray recData;
 				QString name;
 				QIcon icon;
+				QList<QPair<QByteArray, QVariant>> props;
 
-				str >> pluginId >> recData >> name >> icon;
+				str >> pluginId >> recData >> name >> icon >> props;
 				if (!pluginCache.contains (pluginId))
 				{
 					QObject *obj = proxy->GetPluginsManager ()->
@@ -199,7 +229,7 @@ namespace TabSessManager
 					continue;
 				}
 
-				tabs [plugin] << RecInfo { recData, name, icon };
+				tabs [plugin] << RecInfo { recData, props, name, icon };
 
 				qDebug () << "got restore data for" << pluginId << name << plugin;
 			}
@@ -235,10 +265,10 @@ namespace TabSessManager
 				if (!ihrt)
 					continue;
 
-				QList<QByteArray> datas;
+				QList<TabRecoverInfo> datas;
 				const auto& infos = tabs [plugin];
 				std::transform (infos.begin (), infos.end (), std::back_inserter (datas),
-						[] (const RecInfo& rec) { return rec.Data_; });
+						[] (const RecInfo& rec) { return TabRecoverInfo { rec.Data_, QList<QPair<QByteArray, QVariant>> () }; });
 				qDebug () << "recovering" << plugin << infos.size ();
 				ihrt->RecoverTabs (datas);
 			}

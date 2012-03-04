@@ -50,6 +50,8 @@ namespace TabSessManager
 		QIcon GetIcon () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+	protected:
+		bool eventFilter (QObject*, QEvent*);
 	private:
 		QByteArray GetCurrentSession () const;
 		void AddCustomSession (const QString&);

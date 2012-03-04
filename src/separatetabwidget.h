@@ -65,7 +65,11 @@ namespace LeechCraft
 		QMap<int, std::shared_ptr<QWidget> > Widgets_;
 		QList<QPointer<QAction> > TabBarActions_;
 	public:
+<<<<<<< HEAD
 		explicit SeparateTabWidget (QWidget *parent = 0);
+=======
+		explicit SeparateTabWidget (QWidget* = 0);
+>>>>>>> c1da8af0f4fb068cecea2645a3d27e859174b9bf
 
 		QObject* GetObject ();
 
@@ -103,6 +107,7 @@ namespace LeechCraft
 
 		int CurrentIndex () const;
 		QWidget* CurrentWidget () const;
+
 		int IndexOf (QWidget *page) const;
 
 		int GetLastContextMenuTab () const;

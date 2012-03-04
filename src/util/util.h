@@ -71,12 +71,12 @@ namespace LeechCraft
 				return i.second == Object_;
 			}
 		};
-		
+
 		/** @brief Returns the given image in a Base64-encoded form.
-		 * 
+		 *
 		 * The return result is suitable for inserting into <img>'s src
 		 * attribute as is.
-		 * 
+		 *
 		 * @param[in] image The image to represent as Base64-encoded
 		 * form.
 		 * @return The source string.
@@ -244,6 +244,39 @@ namespace LeechCraft
 		UTIL_API Entity MakeNotification (const QString& header,
 				const QString& text,
 				Priority priority);
+
+		/** @brief Makes an event for canceling another Advanced
+		 * Notifications event.
+		 *
+		 * Creates an Entity that cancels a previously generated
+		 * Advanced Notifications event. The returned entity can be
+		 * then emitted to notify plugins that the given event has been
+		 * canceled.
+		 *
+		 * @param[in] event The event to cancel.
+		 * @return The Entity canceling the given event.
+		 */
+		UTIL_API Entity MakeANCancel (const Entity& event);
+
+		/** @brief Makes an event for canceling another Advanced
+		 * Notifications event.
+		 *
+		 * Creates an Entity that cancels a previously generated
+		 * Advanced Notifications event. The returned entity can be
+		 * then emitted to notify plugins that the given event has been
+		 * canceled.
+		 *
+		 * This function doesn't take a previously created entity as the
+		 * other overload does. Instead, it plainly creates the required
+		 * entity from the given senderId and eventId. They should match
+		 * those of the event in question.
+		 *
+		 * @param[in] senderId The ID of the sender of the event that is
+		 * to be canceled.
+		 * @param[in] eventId The ID of the event that is to be canceled.
+		 * @return The Entity canceling the given event.
+		 */
+		UTIL_API Entity MakeANCancel (const QString& senderId, const QString& eventId);
 
 		UTIL_API QModelIndexList GetSummarySelectedRows (QObject *sender);
 

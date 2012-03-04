@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Minh Ngo
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 
 #include "vlcwrapper.h"
 #include <memory>
+#include <QAction>
 #include <QString>
 #include <QTime>
 #include <QDebug>
@@ -66,6 +67,7 @@ namespace Laure
 		map ["TrackNumber"] = TrackNumber_;
 		map ["Length"] = Length_;
 		map ["Type"] = Type_ == libvlc_track_audio ? "Audio" : "Video";
+		map ["Location"] = Location_;
 		return map;
 	}
 	
@@ -88,11 +90,11 @@ namespace Laure
 
 		auto listEventManager = libvlc_media_list_player_event_manager (LPlayer_.get ());
 		libvlc_event_attach (listEventManager, libvlc_MediaListPlayerNextItemSet,
-				     ListEventCallback, this);
+				ListEventCallback, this);
 		
 		auto playerEventManager = libvlc_media_player_event_manager (Player_.get ());
 		libvlc_event_attach (playerEventManager, libvlc_MediaPlayerPlaying,
-					ListEventCallback, this);
+				ListEventCallback, this);
 	}
 
 	int VLCWrapper::PlayQueue ()
@@ -138,6 +140,7 @@ namespace Laure
 		scrobbleEntity.Mime_ = "x-leechcraft/now-playing-track-info";
 
 		emit gotEntity (scrobbleEntity);
+		emit currentItemMeta (CurrentItemMeta_);
 	}
 	
 	void VLCWrapper::addToQueue (int index)
@@ -172,6 +175,11 @@ namespace Laure
 		meta.Genre_ = libvlc_media_get_meta (m, libvlc_meta_Genre);
 		meta.Date_ = libvlc_media_get_meta (m, libvlc_meta_Date);
 		meta.Length_ = libvlc_media_get_duration (m) / 1000;
+		
+		if (location.isNull ())
+			meta.Location_ = QUrl (libvlc_media_get_mrl (m));
+		else
+			meta.Location_ = QUrl (location);
 		
 		libvlc_media_track_info_t *pTrackInfo;
 		int numOfStream = libvlc_media_get_tracks_info (m, &pTrackInfo);
@@ -249,6 +257,22 @@ namespace Laure
 		return res;
 	}
 	
+	void VLCWrapper::setSubtitle (const QString& location) const
+	{
+		if (location.isEmpty ())
+		{
+			QAction *senderAction = qobject_cast<QAction*> (sender ());
+			if (!senderAction)
+				return;
+		
+			libvlc_video_set_subtitle_file (Player_.get (),
+					senderAction->data ().toString ().toUtf8 ().constData ());
+		}
+		else
+			libvlc_video_set_subtitle_file (Player_.get (),
+					location.toUtf8 ().constData ());
+	}
+	
 	QList<int> VLCWrapper::GetQueueListIndexes () const
 	{
 		return QueueListIndex_;
@@ -301,7 +325,7 @@ namespace Laure
 			CurrentItem_ = count - 1;
 		else
 			CurrentItem_ = val;
-
+		CurrentItemMeta_ = GetItemMeta (val);
 		libvlc_media_list_player_play_item_at_index (LPlayer_.get (),
 				CurrentItem_);
 	}

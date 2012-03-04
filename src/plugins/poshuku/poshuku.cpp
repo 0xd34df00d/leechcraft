@@ -354,13 +354,17 @@ namespace Poshuku
 		return result;
 	}
 
-	void Poshuku::RecoverTabs (const QList<QByteArray>& datas)
+	void Poshuku::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
-		Q_FOREACH (const QByteArray& data, datas)
+		Q_FOREACH (const TabRecoverInfo& info, infos)
 		{
 			auto bw = Core::Instance ().NewURL (QUrl ());
-			bw->SetTabRecoverData (data);
-			emit tabRecovered (data, bw);
+			bw->SetTabRecoverData (info.Data_);
+
+			Q_FOREACH (const auto& pair, info.DynProperties_)
+				bw->setProperty (pair.first, pair.second);
+
+			emit tabRecovered (info.Data_, bw);
 		}
 	}
 

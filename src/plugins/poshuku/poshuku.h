@@ -109,7 +109,7 @@ namespace Poshuku
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 
-		void RecoverTabs (const QList<QByteArray>&);
+		void RecoverTabs (const QList<TabRecoverInfo>&);
 	private:
 		void InitConnections ();
 		void RegisterSettings ();

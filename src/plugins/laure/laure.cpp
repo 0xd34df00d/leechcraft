@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@
 #include <util/util.h>
 #include "laurewidget.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -31,13 +32,14 @@ namespace Laure
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		qRegisterMetaType<MediaMeta> ("MediaMeta");
 		Util::InstallTranslator ("laure");
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"lauresettings.xml");
 
-		Proxy_ = proxy;
+		Core::Instance ().SetProxy (proxy);
 
 		LaureWidget::SetParentMultiTabs (this);
 
