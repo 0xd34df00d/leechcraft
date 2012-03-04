@@ -235,10 +235,10 @@ namespace TabSessManager
 				if (!ihrt)
 					continue;
 
-				QList<QByteArray> datas;
+				QList<TabRecoverInfo> datas;
 				const auto& infos = tabs [plugin];
 				std::transform (infos.begin (), infos.end (), std::back_inserter (datas),
-						[] (const RecInfo& rec) { return rec.Data_; });
+						[] (const RecInfo& rec) { return TabRecoverInfo { rec.Data_, QList<QPair<QByteArray, QVariant>> () }; });
 				qDebug () << "recovering" << plugin << infos.size ();
 				ihrt->RecoverTabs (datas);
 			}
