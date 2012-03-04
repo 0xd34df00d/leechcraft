@@ -22,6 +22,10 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/icoretabwidget.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/core/ihookproxy.h>
+
+class QMenu;
 
 namespace LeechCraft
 {
@@ -29,11 +33,19 @@ namespace PinTab
 {
 	class Plugin : public QObject
 				, public IInfo
+				, public IPlugin2
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IPlugin2)
 
 		ICoreTabWidget *MainTabWidget_;
+		QAction *PinTab_;
+		QAction *UnPinTab_;
+
+		int Id_;
+
+		QHash<int, QPair<QString, QWidget*>> PinTabsIndex2TabData_;
+		QTabBar::ButtonPosition CloseSide_;
 	public:
 		void Init(ICoreProxy_ptr proxy);
 		void SecondInit();
@@ -42,8 +54,16 @@ namespace PinTab
 		QString GetName() const;
 		QString GetInfo() const;
 		QIcon GetIcon() const;
+
+		QSet<QByteArray> GetPluginClasses () const;
+	public slots:
+		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
+				QMenu *menu, int index);
+		void hookReleaseMouseAfterMove (LeechCraft::IHookProxy_ptr proxy, int index);
 	private slots:
-		void handleContextMenuRequested (const QPoint& point);
+		void pinTab (int index = -1);
+		void unPinTab (int index = -1);
+		void checkPinState (int index);
 	};
 }
 }
