@@ -47,13 +47,13 @@ namespace PinTab
 		QHash<int, QPair<QString, QWidget*>> PinTabsIndex2TabData_;
 		QTabBar::ButtonPosition CloseSide_;
 	public:
-		void Init(ICoreProxy_ptr proxy);
-		void SecondInit();
-		QByteArray GetUniqueID() const;
-		void Release();
-		QString GetName() const;
-		QString GetInfo() const;
-		QIcon GetIcon() const;
+		void Init (ICoreProxy_ptr proxy);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
