@@ -213,8 +213,6 @@ namespace Azoth
 				const QString& message = QString (),
 				const QString& variant = QString ()) const = 0;
 
-		virtual QString GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const = 0;
-
 		/** @brief Generates the nickname colors for the given scheme.
 		 *
 		 * If the scheme is empty or equals "hash", then a random set of
