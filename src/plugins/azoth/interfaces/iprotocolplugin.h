@@ -51,10 +51,23 @@ namespace Azoth
 		 *
 		 * @return The list of this plugin's protocols.
 		 *
-		 * @sa IProtocol
+		 * @sa IProtocol, gotNewProtocols()
 		 */
 		virtual QList<QObject*> GetProtocols () const = 0;
 	protected:
+		/** @brief Notifies Azoth that new protocols are available.
+		 *
+		 * Each object in the protocols list must implement the
+		 * IProtocol interface.
+		 *
+		 * After this signal the protocols should be contained in the
+		 * list returned by GetProtocols().
+		 *
+		 * @note This function is expected to be a signal.
+		 *
+		 * @param[out] protocols The new protocols made available in
+		 * this protocol plugin.
+		 */
 		virtual void gotNewProtocols (const QList<QObject*>& protocols) = 0;
 	};
 }
