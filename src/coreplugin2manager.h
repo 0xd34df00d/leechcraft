@@ -40,7 +40,7 @@ namespace LeechCraft
 					QIODevice **dev);
 		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
 					QMenu *menu, int index);
-		void hookReleaseMouseAfterMove (LeechCraft::IHookProxy_ptr proxy,
+		void hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy,
 				int index);
 		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy,
 				int index);

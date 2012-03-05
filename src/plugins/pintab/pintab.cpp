@@ -31,7 +31,7 @@ namespace PinTab
 	{
 		MainTabWidget_ = proxy->GetTabWidget ();
 		connect (MainTabWidget_->GetObject (),
-				SIGNAL (tabWasInserted (int)),
+				SIGNAL (tabInserted (int)),
 				this,
 				SLOT (checkPinState (int)));
 
@@ -72,12 +72,12 @@ namespace PinTab
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Provide pin tabs");
+		return tr ("Support tabs pinning.");
 	}
 
 	QIcon Plugin::GetIcon () const
 	{
-		return  QIcon ();
+		return QIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -108,7 +108,7 @@ namespace PinTab
 		}
 	}
 
-	void Plugin::hookReleaseMouseAfterMove (LeechCraft::IHookProxy_ptr proxy, int index)
+	void Plugin::hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy, int index)
 	{
 		int realIndex = MainTabWidget_->TabData (index).toInt ();
 		int realNextIndex = MainTabWidget_->TabData (index + 1).toInt ();
@@ -152,7 +152,7 @@ namespace PinTab
 		MainTabWidget_->Widget (index)->
 				setProperty ("SessionData/org.LeechCraft.PinTab.PinState", true);
 		++Id_;
-		auto pair = qMakePair<QString, QWidget*> (MainTabWidget_->TabText (index),
+		auto pair = qMakePair (MainTabWidget_->TabText (index),
 				MainTabWidget_->TabButton (index, CloseSide_));
 		MainTabWidget_->SetTabData (index, Id_);
 		MainTabWidget_->SetTabText (index, "");

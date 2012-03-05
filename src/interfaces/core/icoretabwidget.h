@@ -160,7 +160,7 @@ public:
 	 *
 	 * @param[out] index The index of new tab.
 	 */
-	virtual void tabWasInserted (int index) = 0;
+	virtual void tabInserted (int index) = 0;
 };
 
 Q_DECLARE_INTERFACE (ICoreTabWidget, "org.Deviant.LeechCraft.ICoreTabWidget/1.0");

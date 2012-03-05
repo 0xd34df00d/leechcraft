@@ -119,8 +119,7 @@ namespace LeechCraft
 	QList<QAction*> SeparateTabWidget::GetPermanentActions () const
 	{
 		QList<QAction*> result;
-		std::transform (TabBarActions_.begin (),
-				TabBarActions_.end (),
+		std::transform (TabBarActions_.begin (), TabBarActions_.end (),
 				std::back_inserter (result),
 				[] (decltype (TabBarActions_.front ()) action)
 				{
@@ -329,7 +328,7 @@ namespace LeechCraft
 		MainStackedWidget_->addWidget (page);
 		if (!AddTabButtonAction_->isVisible ())
 			newIndex = MainTabBar_->
-			insertTab (MainTabBar_->count () - 1, icon, text);
+					insertTab (MainTabBar_->count () - 1, icon, text);
 		else
 			newIndex = MainTabBar_->addTab (icon, text);
 
@@ -374,7 +373,7 @@ namespace LeechCraft
 
 		Widgets_.remove (index);
 		QList<int> keys = Widgets_.keys ();
-		for (QList<int>::const_iterator i = keys.begin (),
+		for (auto i = keys.begin (),
 				end = keys.end (); i != end; ++i)
 			if (*i > index)
 			{
@@ -473,7 +472,7 @@ namespace LeechCraft
 		connect (MainTabBar_,
 				SIGNAL (tabWasInserted (int)),
 				this,
-				SIGNAL (tabWasInserted (int)));
+				SIGNAL (tabInserted (int)));
 		connect (MainTabBar_,
 				SIGNAL (tabWasRemoved (int)),
 				this,
@@ -634,8 +633,6 @@ namespace LeechCraft
 
 			Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 			emit hookTabContextMenuFill (proxy, menu, index);
-			if (proxy->IsCancelled ())
-				return;
 		}
 		menu->exec (MainTabBar_->mapToGlobal (point));
 		delete menu;
@@ -651,9 +648,7 @@ namespace LeechCraft
 	void SeparateTabWidget::releaseMouseAfterMove (int index)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookReleaseMouseAfterMove (proxy, index);
-		if (proxy->IsCancelled ())
-			return;
+		emit hookTabFinishedMoving (proxy, index);
 	}
 
 	void SeparateTabWidget::handleSelectionBehavior ()
