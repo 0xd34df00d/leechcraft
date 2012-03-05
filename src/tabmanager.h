@@ -53,9 +53,6 @@ namespace LeechCraft
 		void rotateLeft ();
 		void rotateRight ();
 		void navigateToTabNumber ();
-		
-		void handlePinTab ();
-		void handleUnpinTab ();
 
 		void add (const QString&, QWidget*);
 		void add (const QString&, QWidget*,
