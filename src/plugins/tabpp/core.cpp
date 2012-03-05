@@ -252,7 +252,8 @@ namespace LeechCraft
 
 			void Core::HandleLogicalPathChanged (QWidget *widget)
 			{
-				int idx = TabWidget_->IndexOf (widget);
+				// TODO
+				int idx = -1;//TabWidget_->IndexOf (widget);
 				if (idx < 0)
 					return;
 
