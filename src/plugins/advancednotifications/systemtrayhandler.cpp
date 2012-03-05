@@ -27,6 +27,7 @@
 #include "xmlsettingsmanager.h"
 
 #ifdef HAVE_QML
+#include <QGraphicsObject>
 #include "qml/visualnotificationsview.h"
 #endif
 
@@ -119,12 +120,12 @@ namespace AdvancedNotifications
 
 #ifdef HAVE_QML
 		VisualNotificationsView *vnv = new VisualNotificationsView;
-		connect (vnv,
-				SIGNAL (actionTriggered (const QString&, int)),
+		connect (vnv->rootObject (),
+				SIGNAL (eventActionTriggered (const QString&, int)),
 				this,
 				SLOT (handleActionTriggered (const QString&, int)));
-		connect (vnv,
-				SIGNAL (dismissEvent (const QString&)),
+		connect (vnv->rootObject (),
+				SIGNAL (eventDismissed (const QString&)),
 				this,
 				SLOT (dismissNotification (const QString&)));
 		Icon2NotificationView_ [trayIcon] = vnv;

@@ -23,6 +23,7 @@
 #include <QtDebug>
 #include "eventproxyobject.h"
 #include <QApplication>
+#include <util/objectlistmodel.h>
 
 namespace LeechCraft
 {
@@ -30,6 +31,7 @@ namespace AdvancedNotifications
 {
 	VisualNotificationsView::VisualNotificationsView (QWidget *parent)
 	: QDeclarativeView (parent)
+	, Model_ (new Util::ObjectListModel (this))
 	{
 		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
@@ -64,32 +66,21 @@ namespace AdvancedNotifications
 		}
 
 		Location_ = QUrl::fromLocalFile (fileLocation);
+		setSource (Location_);
+		rootContext ()->setContextProperty ("eventsModel", Model_);
 	}
 
 	void VisualNotificationsView::SetEvents (const QList<EventData>& events)
 	{
-		QObjectList oldEvents = LastEvents_;
-
-		LastEvents_.clear ();
+		QObjectList newEvents;
 		Q_FOREACH (const EventData& ed, events)
 		{
 			EventProxyObject *obj = new EventProxyObject (ed, this);
-			connect (obj,
-					SIGNAL (actionTriggered (const QString&, int)),
-					this,
-					SIGNAL (actionTriggered (const QString&, int)));
-			connect (obj,
-					SIGNAL (dismissEventRequested (const QString&)),
-					this,
-					SIGNAL (dismissEvent (const QString&)));
-			LastEvents_ << obj;
+			newEvents << obj;
 		}
 
-		rootContext ()->setContextProperty ("eventsModel",
-				QVariant::fromValue<QList<QObject*> > (LastEvents_));
-
-		setSource (Location_);
-
+		QObjectList oldEvents = Model_->GetObjects ();
+		Model_->SetObjects (newEvents);
 		qDeleteAll (oldEvents);
 	}
 

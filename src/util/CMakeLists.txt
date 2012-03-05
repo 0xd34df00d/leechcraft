@@ -37,6 +37,7 @@ SET (SRCS
 	sysinfo.cpp
 	passutils.cpp
 	shortcuts/shortcutmanager.cpp
+	objectlistmodel.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -69,6 +70,7 @@ SET (HEADERS
 	passutils.h
 	shortcuts/shortcutmanager.h
 	idpool.h
+	objectlistmodel.h
 	)
 SET (FORMS
 	backendselector.ui
