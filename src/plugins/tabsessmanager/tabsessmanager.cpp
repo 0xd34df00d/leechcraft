@@ -155,7 +155,10 @@ namespace TabSessManager
 				props << qMakePair (propName, tab->property (propName));
 			}
 
-			qDebug () << "appended data for" << plugin->GetUniqueID () << rec->GetTabRecoverName ();
+			str << props;
+
+			qDebug () << Q_FUNC_INFO << "appended data for"
+					<< plugin->GetUniqueID () << rec->GetTabRecoverName ();
 		}
 
 		return result;
@@ -231,7 +234,8 @@ namespace TabSessManager
 
 				tabs [plugin] << RecInfo { recData, props, name, icon };
 
-				qDebug () << "got restore data for" << pluginId << name << plugin;
+				qDebug () << Q_FUNC_INFO << "got restore data for"
+						<< pluginId << name << plugin;
 			}
 
 			Q_FOREACH (QObject *obj, tabs.keys (QList<RecInfo> ()))
@@ -268,8 +272,9 @@ namespace TabSessManager
 				QList<TabRecoverInfo> datas;
 				const auto& infos = tabs [plugin];
 				std::transform (infos.begin (), infos.end (), std::back_inserter (datas),
-						[] (const RecInfo& rec) { return TabRecoverInfo { rec.Data_, QList<QPair<QByteArray, QVariant>> () }; });
-				qDebug () << "recovering" << plugin << infos.size ();
+						[] (const RecInfo& rec) { return TabRecoverInfo { rec.Data_, rec.Props_ }; });
+				qDebug () << Q_FUNC_INFO << "recovering"
+						<< plugin << infos.size ();
 				ihrt->RecoverTabs (datas);
 			}
 		}
