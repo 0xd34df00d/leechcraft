@@ -155,7 +155,10 @@ namespace TabSessManager
 				props << qMakePair (propName, tab->property (propName));
 			}
 
-			qDebug () << "appended data for" << plugin->GetUniqueID () << rec->GetTabRecoverName ();
+			str << props;
+
+			qDebug () << Q_FUNC_INFO << "appended data for"
+					<< plugin->GetUniqueID () << rec->GetTabRecoverName ();
 		}
 
 		return result;
