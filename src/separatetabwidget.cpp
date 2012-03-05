@@ -630,8 +630,6 @@ namespace LeechCraft
 			emit hookTabContextMenuFill (proxy, menu, index);
 			if (proxy->IsCancelled ())
 				return;
-
-			menu->exec (MainTabBar_->mapToGlobal (point));
 		}
 		menu->exec (MainTabBar_->mapToGlobal (point));
 		delete menu;
