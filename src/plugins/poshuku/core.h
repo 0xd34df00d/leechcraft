@@ -116,7 +116,8 @@ namespace Poshuku
 		void AddPlugin (QObject*);
 
 		QUrl MakeURL (QString);
-		BrowserWidget* NewURL (const QUrl&, bool = false);
+		BrowserWidget* NewURL (const QUrl&, bool = false,
+				const QList<QPair<QByteArray, QVariant>>& = QList<QPair<QByteArray, QVariant>> ());
 		BrowserWidget* NewURL (const QString&, bool = false);
 		IWebWidget* GetWidget ();
 		CustomWebView* MakeWebView (bool = false);

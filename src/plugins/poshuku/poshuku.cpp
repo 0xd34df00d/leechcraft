@@ -358,12 +358,8 @@ namespace Poshuku
 	{
 		Q_FOREACH (const TabRecoverInfo& info, infos)
 		{
-			auto bw = Core::Instance ().NewURL (QUrl ());
+			auto bw = Core::Instance ().NewURL (QUrl (), false, info.DynProperties_);
 			bw->SetTabRecoverData (info.Data_);
-
-			Q_FOREACH (const auto& pair, info.DynProperties_)
-				bw->setProperty (pair.first, pair.second);
-
 			emit tabRecovered (info.Data_, bw);
 		}
 	}

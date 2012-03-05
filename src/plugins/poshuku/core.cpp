@@ -328,7 +328,8 @@ namespace Poshuku
 		return result;
 	}
 
-	BrowserWidget* Core::NewURL (const QUrl& url, bool raise)
+	BrowserWidget* Core::NewURL (const QUrl& url, bool raise,
+			const QList<QPair<QByteArray, QVariant>>& props)
 	{
 		if (!Initialized_)
 			return 0;
@@ -337,6 +338,9 @@ namespace Poshuku
 		widget->InitShortcuts ();
 		widget->SetUnclosers (Unclosers_);
 		Widgets_.push_back (widget);
+
+		Q_FOREACH (const auto& pair, props)
+			widget->setProperty (pair.first, pair.second);
 
 		QString tabTitle = "Poshuku";
 		if (url.host ().size ())
