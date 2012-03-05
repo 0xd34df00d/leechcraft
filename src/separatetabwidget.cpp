@@ -332,13 +332,13 @@ namespace LeechCraft
 
 		return newIndex;
 	}
-	
+
 	int SeparateTabWidget::InsertTab (int index, QWidget *page,
 			const QString& text)
 	{
 		return InsertTab (index, page, QIcon (), text);
 	}
-	
+
 	int SeparateTabWidget::InsertTab (int index, QWidget *page,
 			const QIcon& icon, const QString& text)
 	{
@@ -351,7 +351,7 @@ namespace LeechCraft
 
 		return idx;
 	}
-	
+
 	void SeparateTabWidget::RemoveTab (int index)
 	{
 		if (index >= WidgetCount () &&
@@ -362,10 +362,10 @@ namespace LeechCraft
 					<< index;
 			return;
 		}
-		
+
 		MainStackedWidget_->removeWidget (Widget (index));
 		MainTabBar_->removeTab (index);
-		
+
 		Widgets_.remove (index);
 		QList<int> keys = Widgets_.keys ();
 		for (QList<int>::const_iterator i = keys.begin (),
@@ -570,12 +570,11 @@ namespace LeechCraft
 		if (point.isNull ())
 			return;
 
-		QMenu *menu = 0;
+		QMenu *menu = new QMenu ("", MainTabBar_);
 		int index = MainTabBar_->tabAt (point);
 
 		if (index == -1)
 		{
-			menu = new QMenu ("", MainTabBar_);
 			Q_FOREACH (QAction *act, TabBarActions_)
 			{
 				if (!act)
@@ -590,7 +589,6 @@ namespace LeechCraft
 		else if ((index == MainTabBar_->count () - 1) &&
 				!AddTabButtonAction_->isVisible ())
 		{
-			menu = new QMenu ("", MainTabBar_);
 			menu->addActions (AddTabButtonContextMenu_->actions ());
 		}
 		else
