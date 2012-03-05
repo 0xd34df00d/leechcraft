@@ -120,7 +120,7 @@ namespace LeechCraft
 		boost::program_options::variables_map map = qobject_cast<Application*> (qApp)->GetVarMap ();
 		if (map.count ("plugin"))
 		{
-			const std::vector<std::string>& plugins = map ["plugin"].as<std::vector<std::string> > ();
+			const std::vector<std::string>& plugins = map ["plugin"].as<std::vector<std::string>> ();
 			Q_FOREACH (const std::string& plugin, plugins)
 				paths << QDir (QString::fromUtf8 (plugin.c_str ())).absolutePath ();
 		}
@@ -208,11 +208,11 @@ namespace LeechCraft
 		return PluginManager_->GetAllCastableRoots<IHaveShortcuts*> ();
 	}
 
-	QList<QList<QAction*> > Core::GetActions2Embed () const
+	QList<QList<QAction*>> Core::GetActions2Embed () const
 	{
 		const QList<IActionsExporter*>& plugins =
 				PluginManager_->GetAllCastableTo<IActionsExporter*> ();
-		QList<QList<QAction*> > actions;
+		QList<QList<QAction*>> actions;
 		Q_FOREACH (const IActionsExporter *plugin, plugins)
 		{
 			const QList<QAction*>& list = plugin->GetActions (AEPCommonContextMenu);

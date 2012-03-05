@@ -98,8 +98,8 @@ namespace LeechCraft
 
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
 
-		void AddMenus (const QMap<QString, QList<QAction*> >&);
-		void RemoveMenus (const QMap<QString, QList<QAction*> >&);
+		void AddMenus (const QMap<QString, QList<QAction*>>&);
+		void RemoveMenus (const QMap<QString, QList<QAction*>>&);
 	public slots:
 		void catchError (QString);
 	protected:

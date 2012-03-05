@@ -42,7 +42,7 @@ namespace LeechCraft
 		QList<QKeyEvent*> Events_;
 		QMap<QWidget*, QObject*> EmbedTabs_;
 		QMenu *NewTabMenu_;
-		QMap<QString, QList<QAction*> > Menus_;
+		QMap<QString, QList<QAction*>> Menus_;
 	public:
 		TabManager (SeparateTabWidget*, QObject* = 0);
 

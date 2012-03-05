@@ -216,7 +216,7 @@ namespace SecureStorage
 		}
 	}
 
-	void Plugin::Save (const QList<QPair<QByteArray, QVariantList> >& keyValues,
+	void Plugin::Save (const QList<QPair<QByteArray, QVariantList>>& keyValues,
 			IStoragePlugin::StorageType st, bool overwrite)
 	{
 		QPair<QByteArray, QVariantList> keyValue;

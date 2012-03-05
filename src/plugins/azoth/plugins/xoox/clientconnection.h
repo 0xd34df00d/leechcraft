@@ -150,15 +150,15 @@ namespace Xoox
 		int KATimeout_;
 
 		QList<QXmppMessage> OfflineMsgQueue_;
-		QList<QPair<QString, PEPEventBase*> > InitialEventQueue_;
-		QHash<QString, QPointer<GlooxMessage> > UndeliveredMessages_;
+		QList<QPair<QString, PEPEventBase*>> InitialEventQueue_;
+		QHash<QString, QPointer<GlooxMessage>> UndeliveredMessages_;
 
 		QSet<QString> SignedPresences_;
 		QSet<QString> SignedMessages_;
 		QHash<QString, QString> EncryptedMessages_;
 		QSet<QString> Entries2Crypt_;
 
-		QHash<QString, QList<RIEXManager::Item> > AwaitingRIEXItems_;
+		QHash<QString, QList<RIEXManager::Item>> AwaitingRIEXItems_;
 	public:
 		typedef std::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
 		typedef std::function<void (const QXmppVCardIq&)> VCardCallback_t;

@@ -72,7 +72,7 @@ namespace ChatHistory
 
 		// IActionsExporter
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-		QMap<QString, QList<QAction*> > GetMenuActions () const;
+		QMap<QString, QList<QAction*>> GetMenuActions () const;
 
 		// IHaveTabs
 		TabClasses_t GetTabClasses () const;

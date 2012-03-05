@@ -42,7 +42,7 @@ namespace LeechCraft
 		{
 			Q_OBJECT
 
-			QMap<QByteArray, QPair<QPointer<QObject>, QByteArray> > Properties2Object_;
+			QMap<QByteArray, QPair<QPointer<QObject>, QByteArray>> Properties2Object_;
 			bool Initializing_;
 			QSettings *Settings_;
 		protected:

@@ -39,7 +39,7 @@ namespace Acetamide
 		Q_OBJECT
 
 		IrcServerHandler *ISH_;
-		QHash<QString, boost::function<void (const IrcMessageOptions&)> > Command2Action_;
+		QHash<QString, boost::function<void (const IrcMessageOptions&)>> Command2Action_;
 	public:
 				ServerResponseManager (IrcServerHandler*);
         void DoAction (const IrcMessageOptions& opts);

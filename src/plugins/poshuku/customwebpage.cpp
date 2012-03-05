@@ -819,7 +819,7 @@ namespace Poshuku
 			return true;
 		}
 
-		QPair<PageFormsData_t, QMap<ElementData, QWebElement> > HarvestForms (QWebFrame *frame, const QUrl& reqUrl = QUrl ())
+		QPair<PageFormsData_t, QMap<ElementData, QWebElement>> HarvestForms (QWebFrame *frame, const QUrl& reqUrl = QUrl ())
 		{
 			PageFormsData_t formsData;
 			QMap<ElementData, QWebElement> ed2element;
@@ -933,7 +933,7 @@ namespace Poshuku
 	{
 		PageFormsData_t formsData;
 
-		QPair<PageFormsData_t, QMap<ElementData, QWebElement> > pair =
+		QPair<PageFormsData_t, QMap<ElementData, QWebElement>> pair =
 				HarvestForms (frame ? frame : mainFrame ());
 
 		if (pair.first.isEmpty ())

@@ -50,7 +50,7 @@ namespace StandardStyles
 		QMap<QWebFrame*, bool> HasBeenAppended_;
 		IProxyObject *Proxy_;
 
-		mutable QHash<QString, QList<QColor> > Coloring2Colors_;
+		mutable QHash<QString, QList<QColor>> Coloring2Colors_;
 		mutable QString LastPack_;
 
 		QHash<QObject*, QWebFrame*> Msg2Frame_;

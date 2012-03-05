@@ -45,7 +45,7 @@ namespace LeechCraft
 
 			mutable bool DefaultAcceptsRowImpl_;
 		protected:
-			typedef std::deque<QPointer<QAbstractItemModel> > models_t;
+			typedef std::deque<QPointer<QAbstractItemModel>> models_t;
 			models_t Models_;
 		private:
 			QStringList Headers_;

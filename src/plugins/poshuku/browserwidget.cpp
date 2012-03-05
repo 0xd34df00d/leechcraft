@@ -819,7 +819,7 @@ namespace Poshuku
 		return result;
 	}
 
-	QMap<QString, QList<QAction*> > BrowserWidget::GetWindowMenus () const
+	QMap<QString, QList<QAction*>> BrowserWidget::GetWindowMenus () const
 	{
 		return WindowMenus_;
 	}

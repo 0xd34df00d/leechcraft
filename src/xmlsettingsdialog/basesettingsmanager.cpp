@@ -107,7 +107,7 @@ bool BaseSettingsManager::event (QEvent *e)
 
 	if (Properties2Object_.contains (name))
 	{
-		QList<QPair<QPointer<QObject>, QByteArray> > objects = Properties2Object_.values (name);
+		QList<QPair<QPointer<QObject>, QByteArray>> objects = Properties2Object_.values (name);
 		QPair<QPointer<QObject>, QByteArray> object;
 		Q_FOREACH (object, objects)
 		{

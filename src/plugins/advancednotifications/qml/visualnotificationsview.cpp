@@ -86,7 +86,7 @@ namespace AdvancedNotifications
 		}
 
 		rootContext ()->setContextProperty ("eventsModel",
-				QVariant::fromValue<QList<QObject*> > (LastEvents_));
+				QVariant::fromValue<QList<QObject*>> (LastEvents_));
 
 		setSource (Location_);
 

@@ -69,7 +69,7 @@ void RangeWidget::SetHigher (int val)
 
 void RangeWidget::SetRange (const QVariant& variant)
 {
-	if (!variant.canConvert<QList<QVariant> > ())
+	if (!variant.canConvert<QList<QVariant>> ())
 		return;
 
 	QList<QVariant> list = variant.toList ();

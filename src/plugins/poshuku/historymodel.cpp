@@ -222,9 +222,9 @@ namespace Poshuku
 		Core::Instance ().GetStorageBackend ()->AddToHistory (item);
 	}
 
-	QList<QMap<QString, QVariant> > HistoryModel::getItemsMap () const
+	QList<QMap<QString, QVariant>> HistoryModel::getItemsMap () const
 	{
-		QList<QMap<QString, QVariant> > result;
+		QList<QMap<QString, QVariant>> result;
 		Q_FOREACH (const HistoryItem& item, Items_)
 		{
 			QMap<QString, QVariant> map;

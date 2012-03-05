@@ -63,13 +63,13 @@ namespace LeechCraft
 
 	namespace
 	{
-		QList<QPair<QString, QString> > GetFirstClassPlugins (IPlugin2 *ip2)
+		QList<QPair<QString, QString>> GetFirstClassPlugins (IPlugin2 *ip2)
 		{
 			const QSet<QByteArray>& classes = ip2->GetPluginClasses ();
 			const QObjectList& pReady = Core::Instance ()
 					.GetPluginManager ()->GetAllCastableRoots<IPluginReady*> ();
 
-			QList<QPair<QString, QString> > result;
+			QList<QPair<QString, QString>> result;
 
 			Q_FOREACH (QObject *obj, pReady)
 			{

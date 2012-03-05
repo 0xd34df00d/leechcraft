@@ -334,7 +334,7 @@ namespace Aggregator
 		bool unreadOnly = Ui_.UnreadOnly_->checkState () == Qt::Checked;
 		QStringList categories = Selector_->GetSelections ();
 
-		QMap<ChannelShort, QList<Item_ptr> > items2write;
+		QMap<ChannelShort, QList<Item_ptr>> items2write;
 		QStringList authors;
 
 		Q_FOREACH (QModelIndex row, rows)

@@ -124,7 +124,7 @@ namespace LackMan
 		QHash<int, Vertex_t> Package2Vertex_;
 		QHash<Dependency, Vertex_t> Dependency2Vertex_;
 
-		typedef QMap<Edge_t, QPair<Vertex_t, Vertex_t> > Edge2Vertices_t;
+		typedef QMap<Edge_t, QPair<Vertex_t, Vertex_t>> Edge2Vertices_t;
 		Edge2Vertices_t Edge2Vertices_;
 
 		Graph_t Graph_;

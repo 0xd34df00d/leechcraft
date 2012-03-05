@@ -259,7 +259,7 @@ namespace Xoox
 				result << presences.begin ().key ();
 			else
 			{
-				QMap<int, QList<QString> > prio2res;
+				QMap<int, QList<QString>> prio2res;
 				for (QMap<QString, QXmppPresence>::const_iterator i = presences.begin ();
 						i != presences.end (); ++i)
 					prio2res [i->status ().priority ()] << i.key ();

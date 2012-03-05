@@ -104,7 +104,7 @@ namespace Azoth
 
 		QHash<IAccount*, EntryStatus> SavedStatus_;
 
-		typedef QHash<ICLEntry*, QList<QStandardItem*> > Entry2Items_t;
+		typedef QHash<ICLEntry*, QList<QStandardItem*>> Entry2Items_t;
 		Entry2Items_t Entry2Items_;
 
 		ActionsManager *ActionsManager_;
@@ -112,7 +112,7 @@ namespace Azoth
 		typedef QHash<QString, QObject*> ID2Entry_t;
 		ID2Entry_t ID2Entry_;
 
-		typedef QHash<ICLEntry*, QMap<QString, QIcon> > EntryClientIconCache_t;
+		typedef QHash<ICLEntry*, QMap<QString, QIcon>> EntryClientIconCache_t;
 		EntryClientIconCache_t EntryClientIconCache_;
 
 		typedef QHash<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;

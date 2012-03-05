@@ -57,7 +57,7 @@ namespace CSTP
 	, Toolbar_ (0)
 	{
 		setObjectName ("CSTP Core");
-		qRegisterMetaType<boost::intrusive_ptr<MorphFile> > ("boost::intrusive_ptr<MorphFile>");
+		qRegisterMetaType<boost::intrusive_ptr<MorphFile>> ("boost::intrusive_ptr<MorphFile>");
 		qRegisterMetaType<QNetworkReply*> ("QNetworkReply*");
 
 		Headers_ << tr ("URL")

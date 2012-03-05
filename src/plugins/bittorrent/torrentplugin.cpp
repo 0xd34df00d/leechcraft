@@ -177,8 +177,8 @@ namespace LeechCraft
 							tags << Core::Instance ()->GetProxy ()->
 								GetTagsManager ()->GetID (tag);
 
-						QList<QPair<QString, QString> > queryItems = resource.queryItems ();
-						for (QList<QPair<QString, QString> >::const_iterator i = queryItems.begin (),
+						QList<QPair<QString, QString>> queryItems = resource.queryItems ();
+						for (QList<QPair<QString, QString>>::const_iterator i = queryItems.begin (),
 								end = queryItems.end (); i != end; ++i)
 							if (i->first == "kt")
 							{
@@ -428,7 +428,7 @@ namespace LeechCraft
 					return;
 
 				Core::Instance ()->ClearFilter ();
-				QList<QPair<Core::BanRange_t, bool> > filter = dia.GetFilter ();
+				QList<QPair<Core::BanRange_t, bool>> filter = dia.GetFilter ();
 				QPair<Core::BanRange_t, bool> pair;
 				Q_FOREACH (pair, filter)
 					Core::Instance ()->BanPeers (pair.first, pair.second);

@@ -98,11 +98,11 @@ namespace LeechCraft
 	{
 		Graph& G_;
 		const QList<Vertex>& BackVerts_;
-		const QMap<Vertex, QList<Vertex> >& Reachable_;
+		const QMap<Vertex, QList<Vertex>>& Reachable_;
 
 		FulfillableChecker (Graph& g,
 				const QList<Vertex>& backVerts,
-				const QMap<Vertex, QList<Vertex> >& reachable)
+				const QMap<Vertex, QList<Vertex>>& reachable)
 		: G_ (g)
 		, BackVerts_ (backVerts)
 		, Reachable_ (reachable)
@@ -163,9 +163,9 @@ namespace LeechCraft
 		Result_.clear ();
 
 		CreateGraph ();
-		QMap<Edge_t, QPair<Vertex_t, Vertex_t> > edge2vert = MakeEdges ();
+		QMap<Edge_t, QPair<Vertex_t, Vertex_t>> edge2vert = MakeEdges ();
 
-		QMap<Vertex_t, QList<Vertex_t> > reachable;
+		QMap<Vertex_t, QList<Vertex_t>> reachable;
 		QPair<Vertex_t, Vertex_t> pair;
 		Q_FOREACH (pair, edge2vert)
 			reachable [pair.first] << pair.second;
@@ -181,7 +181,7 @@ namespace LeechCraft
 		FulfillableChecker<Graph_t, Vertex_t> checker (Graph_, backVertices, reachable);
 		boost::depth_first_search (Graph_, boost::visitor (checker));
 
-		typedef boost::filtered_graph<Graph_t, boost::keep_all, VertexPredicate<Graph_t> > fg_t;
+		typedef boost::filtered_graph<Graph_t, boost::keep_all, VertexPredicate<Graph_t>> fg_t;
 		fg_t fg = fg_t (Graph_,
 				boost::keep_all (),
 				VertexPredicate<Graph_t> (Graph_));
@@ -221,9 +221,9 @@ namespace LeechCraft
 		}
 	}
 
-	QMap<PluginTreeBuilder::Edge_t, QPair<PluginTreeBuilder::Vertex_t, PluginTreeBuilder::Vertex_t> > PluginTreeBuilder::MakeEdges ()
+	QMap<PluginTreeBuilder::Edge_t, QPair<PluginTreeBuilder::Vertex_t, PluginTreeBuilder::Vertex_t>> PluginTreeBuilder::MakeEdges ()
 	{
-		QSet<QPair<Vertex_t, Vertex_t> > depVertices;
+		QSet<QPair<Vertex_t, Vertex_t>> depVertices;
 		boost::graph_traits<Graph_t>::vertex_iterator vi, vi_end;
 		for (boost::tie (vi, vi_end) = boost::vertices (Graph_); vi != vi_end; ++vi)
 		{
@@ -251,7 +251,7 @@ namespace LeechCraft
 			}
 		}
 
-		QMap<Edge_t, QPair<Vertex_t, Vertex_t> > result;
+		QMap<Edge_t, QPair<Vertex_t, Vertex_t>> result;
 		QPair<Vertex_t, Vertex_t> pair;
 		Q_FOREACH (pair, depVertices)
 			result [boost::add_edge (pair.first, pair.second, Graph_).first] = pair;

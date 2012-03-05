@@ -65,7 +65,7 @@ namespace Aggregator
 		QSortFilterProxyModel *ChannelsFilter_;
 
 		std::auto_ptr<ItemsListModel> CurrentItemsModel_;
-		QList<std::shared_ptr<ItemsListModel> > SupplementaryModels_;
+		QList<std::shared_ptr<ItemsListModel>> SupplementaryModels_;
 		std::auto_ptr<Util::MergeModel> ItemLists_;
 		std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
 		std::auto_ptr<CategorySelector> ItemCategorySelector_;

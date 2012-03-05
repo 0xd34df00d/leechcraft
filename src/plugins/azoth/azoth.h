@@ -83,7 +83,7 @@ namespace Azoth
 		QAbstractItemModel* GetRepresentation () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-		QMap<QString, QList<QAction*> > GetMenuActions () const;
+		QMap<QString, QList<QAction*>> GetMenuActions () const;
 
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);

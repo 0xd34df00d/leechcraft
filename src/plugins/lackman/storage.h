@@ -103,9 +103,9 @@ namespace LackMan
 		void RemovePackage (int packageId);
 		void AddPackages (const PackageInfo&);
 
-		QMap<int, QList<QString> > GetPackageLocations (int);
+		QMap<int, QList<QString>> GetPackageLocations (int);
 		QList<int> GetPackagesInComponent (int);
-		QMap<QString, QList<ListPackageInfo> > GetListPackageInfos ();
+		QMap<QString, QList<ListPackageInfo>> GetListPackageInfos ();
 		QList<Image> GetImages (const QString&);
 		ListPackageInfo GetSingleListPackageInfo (int);
 		DependencyList GetDependencies (int);

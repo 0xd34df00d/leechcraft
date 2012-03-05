@@ -45,7 +45,7 @@ namespace AdvancedNotifications
 		QMap<QString, EventData> Events_;
 		
 #ifdef HAVE_QML
-		QMap<QSystemTrayIcon*, QList<EventData> > EventsForIcon_;
+		QMap<QSystemTrayIcon*, QList<EventData>> EventsForIcon_;
 		QMap<QSystemTrayIcon*, VisualNotificationsView*> Icon2NotificationView_;
 #endif
 	public:

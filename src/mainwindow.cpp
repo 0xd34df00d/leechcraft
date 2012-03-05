@@ -273,7 +273,7 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*>>& men
 	}
 }
 
-void LeechCraft::MainWindow::RemoveMenus (const QMap<QString, QList<QAction*> >& menus)
+void LeechCraft::MainWindow::RemoveMenus (const QMap<QString, QList<QAction*>>& menus)
 {
 	if (IsQuitting_)
 		return;
@@ -764,7 +764,7 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 			.GetPluginManager ()->GetAllCastableTo<IActionsExporter*> ();
 	Q_FOREACH (IActionsExporter *exp, exporters)
 	{
-		QMap<QString, QList<QAction*> > map = exp->GetMenuActions ();
+		QMap<QString, QList<QAction*>> map = exp->GetMenuActions ();
 		if (!map.isEmpty ())
 			AddMenus (map);
 	}

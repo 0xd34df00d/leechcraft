@@ -173,7 +173,7 @@ namespace LeechCraft
 					}
 				}
 
-				QList<QPair<QString, QString> > infos;
+				QList<QPair<QString, QString>> infos;
 				QRegExp names (".*performer[0-9]*\">(.*)</b><span>&nbsp;-&nbsp;</span><span id=\"title[0-9]*\">(.*)</spa.*");
 				names.setMinimal (true);
 				pos = startPos;

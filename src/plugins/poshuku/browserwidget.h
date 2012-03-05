@@ -93,7 +93,7 @@ namespace Poshuku
 		QString PreviousFindText_;
 		bool HtmlMode_;
 		bool Own_;
-		QMap<QString, QList<QAction*> > WindowMenus_;
+		QMap<QString, QList<QAction*>> WindowMenus_;
 
 		CustomWebView *WebView_;
 		std::shared_ptr<QGraphicsTextItem> LinkTextItem_;
@@ -131,7 +131,7 @@ namespace Poshuku
 		void Remove ();
 		QToolBar* GetToolBar () const;
 		QList<QAction*> GetTabBarContextMenuActions () const;
-		QMap<QString, QList<QAction*> > GetWindowMenus () const;
+		QMap<QString, QList<QAction*>> GetWindowMenus () const;
 		QObject* ParentMultiTabs ();
 		TabClassInfo GetTabClassInfo () const;
 

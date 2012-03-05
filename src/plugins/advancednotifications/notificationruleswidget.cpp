@@ -177,7 +177,7 @@ namespace AdvancedNotifications
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_AdvancedNotifications");
 		settings.beginGroup ("rules");
-		Rules_ = settings.value ("RulesList").value<QList<NotificationRule> > ();
+		Rules_ = settings.value ("RulesList").value<QList<NotificationRule>> ();
 		settings.endGroup ();
 
 		if (Rules_.isEmpty ())
@@ -315,7 +315,7 @@ namespace AdvancedNotifications
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_AdvancedNotifications");
 		settings.beginGroup ("rules");
-		settings.setValue ("RulesList", QVariant::fromValue<QList<NotificationRule> > (Rules_));
+		settings.setValue ("RulesList", QVariant::fromValue<QList<NotificationRule>> (Rules_));
 		settings.endGroup ();
 	}
 

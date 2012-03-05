@@ -74,7 +74,7 @@ namespace Poshuku
 	public slots:
 		void addItem (QString title, QString url,
 				QDateTime datetime, QObject *browserwidget = 0);
-		QList<QMap<QString, QVariant> > getItemsMap () const;
+		QList<QMap<QString, QVariant>> getItemsMap () const;
 	private:
 		void Add (const HistoryItem&);
 	private slots:

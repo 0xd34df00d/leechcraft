@@ -38,7 +38,7 @@ namespace Acetamide
 
 		qsrand (time (NULL));
 
-		qRegisterMetaTypeStreamOperators<QList<QStringList> > ("QList<QStringList>");
+		qRegisterMetaTypeStreamOperators<QList<QStringList>> ("QList<QStringList>");
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),

@@ -375,7 +375,7 @@ namespace Azoth
 		{
 			if (perms)
 			{
-				const QMap<QByteArray, QList<QByteArray> >& possible = perms->GetPossiblePerms ();
+				const QMap<QByteArray, QList<QByteArray>>& possible = perms->GetPossiblePerms ();
 				Q_FOREACH (const QByteArray& permClass, possible.keys ())
 				{
 					QMenu *changeClass = new QMenu (perms->GetUserString (permClass));
@@ -583,7 +583,7 @@ namespace Azoth
 		{
 			if (mucPerms)
 			{
-				const QMap<QByteArray, QList<QByteArray> > possible = mucPerms->GetPossiblePerms ();
+				const QMap<QByteArray, QList<QByteArray>> possible = mucPerms->GetPossiblePerms ();
 				QObject *entryObj = entry->GetObject ();
 				Q_FOREACH (const QByteArray& permClass, possible.keys ())
 					Q_FOREACH (QAction *action,

@@ -34,7 +34,7 @@ namespace Xoox
 		Q_OBJECT
 
 		QHash<QByteArray, QStringList> Ver2Features_;
-		QHash<QByteArray, QList<QXmppDiscoveryIq::Identity> > Ver2Identities_;
+		QHash<QByteArray, QList<QXmppDiscoveryIq::Identity>> Ver2Identities_;
 		mutable bool SaveScheduled_;
 	public:
 		CapsDatabase (QObject* = 0);

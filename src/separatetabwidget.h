@@ -63,8 +63,8 @@ namespace LeechCraft
 		QAction *PinTab_;
 		QAction *UnPinTab_;
 		QAction *DefaultTabAction_;
-		QMap<int, std::shared_ptr<QWidget> > Widgets_;
-		QList<QPointer<QAction> > TabBarActions_;
+		QMap<int, std::shared_ptr<QWidget>> Widgets_;
+		QList<QPointer<QAction>> TabBarActions_;
 		bool InMoveProcess_;
 	public:
 		explicit SeparateTabWidget (QWidget* = 0);

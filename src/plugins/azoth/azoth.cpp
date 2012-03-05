@@ -304,9 +304,9 @@ namespace Azoth
 		return result;
 	}
 
-	QMap<QString, QList<QAction*> > Plugin::GetMenuActions () const
+	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
 	{
-		QMap<QString, QList<QAction*> > result;
+		QMap<QString, QList<QAction*>> result;
 		result ["Azoth"] << MW_->GetMenuActions ();
 		return result;
 	}

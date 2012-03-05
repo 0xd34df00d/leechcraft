@@ -321,8 +321,8 @@ namespace LeechCraft
 					QUrl url = e.Entity_.toUrl ();
 					if (url.scheme () == "magnet")
 					{
-						QList<QPair<QString, QString> > queryItems = url.queryItems ();
-						for (QList<QPair<QString, QString> >::const_iterator i = queryItems.begin (),
+						QList<QPair<QString, QString>> queryItems = url.queryItems ();
+						for (QList<QPair<QString, QString>>::const_iterator i = queryItems.begin (),
 								end = queryItems.end (); i != end; ++i)
 							if (i->first == "xt" &&
 									i->second.startsWith ("urn:btih:"))
@@ -1478,11 +1478,11 @@ namespace LeechCraft
 
 			QMap<Core::BanRange_t, bool> Core::GetFilter () const
 			{
-				boost::tuple<std::vector<libtorrent::ip_range<libtorrent::address_v4> >,
-					std::vector<libtorrent::ip_range<libtorrent::address_v6> > > both =
+				boost::tuple<std::vector<libtorrent::ip_range<libtorrent::address_v4>>,
+					std::vector<libtorrent::ip_range<libtorrent::address_v6>>> both =
 						Session_->get_ip_filter ().export_filter ();
-				std::vector<libtorrent::ip_range<libtorrent::address_v4> > v4 = both.get<0> ();
-				std::vector<libtorrent::ip_range<libtorrent::address_v6> > v6 = both.get<1> ();
+				std::vector<libtorrent::ip_range<libtorrent::address_v4>> v4 = both.get<0> ();
+				std::vector<libtorrent::ip_range<libtorrent::address_v6>> v6 = both.get<1> ();
 
 				QMap<Core::BanRange_t, bool> result;
 				Q_FOREACH (libtorrent::ip_range<libtorrent::address_v4> range, v4)

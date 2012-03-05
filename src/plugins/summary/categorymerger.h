@@ -41,7 +41,7 @@ namespace Summary
 	{
 		Q_OBJECT
 
-		typedef std::vector<std::shared_ptr<IFindProxy> > proxies_t;
+		typedef std::vector<std::shared_ptr<IFindProxy>> proxies_t;
 		proxies_t Proxies_;
 		std::shared_ptr<Util::MergeModel> MergeModel_;
 		std::unique_ptr<FilterModel> FilterModel_;

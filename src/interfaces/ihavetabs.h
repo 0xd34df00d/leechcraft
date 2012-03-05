@@ -211,9 +211,9 @@ public:
 	 * @return The map with keys identifying menus and values containing
 	 * lists of actions to be inserted into corresponding menus.
 	 */
-	virtual QMap<QString, QList<QAction*> > GetWindowMenus () const
+	virtual QMap<QString, QList<QAction*>> GetWindowMenus () const
 	{
-		return QMap<QString, QList<QAction*> > ();
+		return QMap<QString, QList<QAction*>> ();
 	}
 	
 	/** @brief This method is called when this tab becomes active.

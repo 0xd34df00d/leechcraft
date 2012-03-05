@@ -69,7 +69,7 @@ namespace WYFV
 			else if (parts.at (0) == "video_id")
 				video_id = parts.at (1);
 		}
-		QList<QPair<QByteArray, QByteArray> > query;
+		QList<QPair<QByteArray, QByteArray>> query;
 		query << QPair<QByteArray, QByteArray> ("video_id", video_id.toUtf8 ());
 		query << QPair<QByteArray, QByteArray> ("t", t.toUtf8 ());
 

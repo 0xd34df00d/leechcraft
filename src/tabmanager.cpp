@@ -347,7 +347,7 @@ void TabManager::handleCurrentChanged (int index)
 		return;
 	}
 
-	QMap<QString, QList<QAction*> > menus = imtw->GetWindowMenus ();
+	QMap<QString, QList<QAction*>> menus = imtw->GetWindowMenus ();
 	Core::Instance ().GetReallyMainWindow ()->AddMenus (menus);
 	Menus_ = menus;
 

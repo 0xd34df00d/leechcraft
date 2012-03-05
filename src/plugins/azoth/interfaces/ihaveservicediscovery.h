@@ -114,7 +114,7 @@ namespace Azoth
 		 *
 		 * @sa GetRepresentationModel, ExecuteAction
 		 */
-		virtual QList<QPair<QByteArray, QString> > GetActionsFor (const QModelIndex& index) = 0;
+		virtual QList<QPair<QByteArray, QString>> GetActionsFor (const QModelIndex& index) = 0;
 
 		/** @brief Executes the action with the given id.
 		 *

@@ -96,9 +96,9 @@ namespace ChatHistory
 		return QList<QAction*> ();
 	}
 
-	QMap<QString, QList<QAction*> > Plugin::GetMenuActions () const
+	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
 	{
-		QMap<QString, QList<QAction*> > result;
+		QMap<QString, QList<QAction*>> result;
 		result ["Azoth"] << ActionHistory_;
 		return result;
 	}

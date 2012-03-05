@@ -273,7 +273,7 @@ namespace LeechCraft
 				return QList<QAction*> ();
 			}
 
-			QMap<QString, QList<QAction*> > EditorPage::GetWindowMenus () const
+			QMap<QString, QList<QAction*>> EditorPage::GetWindowMenus () const
 			{
 				return WindowMenus_;
 			}

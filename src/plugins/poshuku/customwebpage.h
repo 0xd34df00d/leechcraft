@@ -47,7 +47,7 @@ namespace Poshuku
 		Frame2History_t Frame2History_;
 		PageFormsData_t FilledState_;
 
-		QMap<ErrorDomain, QMap<int, QStringList> > Error2Suggestions_;
+		QMap<ErrorDomain, QMap<int, QStringList>> Error2Suggestions_;
 	public:
 		CustomWebPage (QObject* = 0);
 		virtual ~CustomWebPage ();
