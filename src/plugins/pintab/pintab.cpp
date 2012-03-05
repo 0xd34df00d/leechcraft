@@ -128,6 +128,13 @@ namespace PinTab
 		}
 	}
 
+	void Plugin::hookTabSetText (IHookProxy_ptr proxy, int index)
+	{
+		int realIndex = MainTabWidget_->TabData (index).toInt ();
+		if (PinTabsIndex2TabData_.contains (realIndex))
+			proxy->CancelDefault ();
+	}
+
 	void Plugin::pinTab (int index)
 	{
 		if (index == -1)
@@ -144,11 +151,14 @@ namespace PinTab
 
 		MainTabWidget_->Widget (index)->
 				setProperty ("SessionData/org.LeechCraft.PinTab.PinState", true);
-		PinTabsIndex2TabData_ [++Id_] = qMakePair<QString, QWidget*> (MainTabWidget_->TabText (index),
+		++Id_;
+		auto pair = qMakePair<QString, QWidget*> (MainTabWidget_->TabText (index),
 				MainTabWidget_->TabButton (index, CloseSide_));
 		MainTabWidget_->SetTabData (index, Id_);
 		MainTabWidget_->SetTabText (index, "");
 		MainTabWidget_->SetTabClosable (index, false);
+		PinTabsIndex2TabData_ [Id_] = pair;
+
 		MainTabWidget_->MoveTab (index, PinTabsIndex2TabData_.count () - 1);
 	}
 
@@ -169,10 +179,11 @@ namespace PinTab
 		int realIndex = MainTabWidget_->TabData (index).toInt ();
 		MainTabWidget_->Widget (index)->
 				setProperty ("SessionData/org.LeechCraft.PinTab.PinState", false);
-		MainTabWidget_->SetTabText (index, PinTabsIndex2TabData_ [realIndex].first);
-		MainTabWidget_->SetTabClosable (index, true, PinTabsIndex2TabData_ [realIndex].second);
+		auto data = PinTabsIndex2TabData_.take (realIndex);
 
-		PinTabsIndex2TabData_.remove (realIndex);
+		MainTabWidget_->SetTabText (index, data.first);
+		MainTabWidget_->SetTabClosable (index, true, data.second);
+
 		MainTabWidget_->MoveTab (index, PinTabsIndex2TabData_.count ());
 	}
 

@@ -154,6 +154,12 @@ namespace LeechCraft
 			return;
 		}
 
+
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookTabSetText (proxy, index);
+		if (proxy->IsCancelled ())
+			return;
+
 		MainTabBar_->setTabText (index, text);
 	}
 

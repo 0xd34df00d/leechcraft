@@ -60,6 +60,7 @@ namespace PinTab
 		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu, int index);
 		void hookReleaseMouseAfterMove (LeechCraft::IHookProxy_ptr proxy, int index);
+		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy, int index);
 	private slots:
 		void pinTab (int index = -1);
 		void unPinTab (int index = -1);
