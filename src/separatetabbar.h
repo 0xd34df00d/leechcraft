@@ -31,20 +31,18 @@ namespace LeechCraft
 		Q_OBJECT
 		int Id_;
 		bool IsLastTab_;
-		QHash<int, QString> PinTabsIndex2Name_;
-		QHash<int, QWidget*> PinTabsIndex2CloseWidget_;
-		QTabBar::ButtonPosition CloseSide_;
+		bool InMove_;
 		SeparateTabWidget *TabWidget_;
 	public:
 		explicit SeparateTabBar (QWidget* = 0);
-		bool IsPinTab (int) const;
-		int PinTabsCount () const;
-		QList<int> GetPinTabs () const;
 		void SetTabData (int);
-		void SetTabNoClosable (int);
+		void SetTabClosable (int index, bool closable, QWidget *closeButton = 0);
 		void SetLastTab (bool);
 		void SetTabWidget (SeparateTabWidget*);
-		QString GetPinTabText (int) const;
+
+		QTabBar::ButtonPosition GetCloseButtonPosition ();
+
+		void SetInMove (bool inMove);
 	protected:
 		QSize tabSizeHint (int) const;
 		void mouseReleaseEvent (QMouseEvent*);
@@ -53,14 +51,12 @@ namespace LeechCraft
 		void tabInserted (int);
 		void tabRemoved (int);
 		void paintEvent (QPaintEvent*);
-	public slots:
-		void setPinTab (int);
-		void setUnPinTab (int);
 	signals:
-		void addDefaultTab (bool);
+		void addDefaultTab ();
 		void showAddTabButton (bool);
 		void tabWasInserted (int);
-		void tabWasRemoved (int);		
+		void tabWasRemoved (int);
+		void releasedMouseAfterMove (int index);
 	};
 }
 

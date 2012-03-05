@@ -27,6 +27,7 @@
 #include <QLayoutItem>
 #include <QLayout>
 #include <QShortcut>
+#include <QStyle>
 #include <QtDebug>
 #include <interfaces/ihavetabs.h>
 #include "coreproxy.h"
@@ -34,6 +35,9 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "3dparty/qxttooltip.h"
+#include "util/defaulthookproxy.h"
+#include "coreinstanceobject.h"
+#include "coreplugin2manager.h"
 
 namespace LeechCraft
 {
@@ -42,20 +46,17 @@ namespace LeechCraft
 	, LastContextMenuTab_ (-1)
 	, PreviousTab_ (-1)
 	, CurrentTab_ (-1)
-	, DefaultContextMenu_ (0)
-	, AddTabButtonContextMenu_ (0)
 	, MainStackedWidget_ (new QStackedWidget)
 	, MainTabBar_ (new SeparateTabBar)
 	, AddTabButton_ (new QToolButton)
 	, LeftToolBar_ (new QToolBar)
 	, RightToolBar_ (new QToolBar)
-	, PinTab_ (new QAction (tr ("Pin tab"), this))
-	, UnPinTab_ (new QAction (tr ("Unpin tab"), this))
 	, DefaultTabAction_ (new QAction (QString (), this))
-	, InMoveProcess_ (false)
 	{
 		XmlSettingsManager::Instance ()->RegisterObject ("SelectionBehavior",
 			this, "handleSelectionBehavior");
+		Core::Instance ().GetCoreInstanceObject ()->
+				GetCorePluginManager ()->RegisterHookable (this);
 		handleSelectionBehavior ();
 
 		MainTabBar_->setMovable (true);
@@ -98,7 +99,6 @@ namespace LeechCraft
 
 		Init ();
 		AddTabButtonInit ();
-		PinTabActionsInit ();
 	}
 
 	QObject* SeparateTabWidget::GetObject ()
@@ -111,10 +111,168 @@ namespace LeechCraft
 		return MainStackedWidget_->count ();
 	}
 
-	void SeparateTabWidget::Clear ()
+	QWidget* SeparateTabWidget::Widget (int index) const
 	{
-		for (int i = 0; i < MainTabBar_->count () - 1; ++i)
-			RemoveTab (i);
+		return MainStackedWidget_->widget (index);
+	}
+
+	QList<QAction*> SeparateTabWidget::GetPermanentActions () const
+	{
+		QList<QAction*> result;
+		std::transform (TabBarActions_.begin (),
+				TabBarActions_.end (),
+				std::back_inserter (result),
+				[] (decltype (TabBarActions_.front ()) action)
+				{
+					return action.data ();
+				});
+		return result;
+	}
+
+	QVariant SeparateTabWidget::TabData (int index) const
+	{
+		return MainTabBar_->tabData (index);
+	}
+
+	void SeparateTabWidget::SetTabData (int index, QVariant data)
+	{
+		MainTabBar_->setTabData (index, data);
+	}
+
+	QString SeparateTabWidget::TabText (int index) const
+	{
+		return MainTabBar_->tabText (index);
+	}
+
+	void SeparateTabWidget::SetTabText (int index, const QString& text)
+	{
+		if (index < 0 || index >= WidgetCount ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid index"
+					<< index;
+			return;
+		}
+
+
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookTabSetText (proxy, index);
+		if (proxy->IsCancelled ())
+			return;
+
+		MainTabBar_->setTabText (index, text);
+	}
+
+	QIcon SeparateTabWidget::TabIcon (int index) const
+	{
+		return MainTabBar_->tabIcon (index);
+	}
+
+	void SeparateTabWidget::SetTabIcon (int index, const QIcon& icon)
+	{
+		if (index < 0 ||
+				index >= WidgetCount ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid index"
+					<< index;
+			return;
+		}
+
+		MainTabBar_->setTabIcon (index, icon);
+	}
+
+	QString SeparateTabWidget::TabToolTip (int index) const
+	{
+		return MainTabBar_->tabToolTip (index);
+	}
+
+	void SeparateTabWidget::SetTabToolTip (int index, const QString& tip)
+	{
+		if (index < 0 ||
+				index >= WidgetCount ())
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "invalid index"
+				<< index;
+			return;
+		}
+
+		MainTabBar_->setTabToolTip (index, tip);
+	}
+
+	void SeparateTabWidget::SetTooltip (int index, QWidget *widget)
+	{
+		if (index >= WidgetCount () &&
+				!IsAddTabActionVisible ())
+			return;
+
+		Widgets_ [index].reset (widget);
+	}
+
+	QWidget* SeparateTabWidget::TabButton (int index, QTabBar::ButtonPosition positioin) const
+	{
+		return MainTabBar_->tabButton (index, positioin);
+	}
+
+	QTabBar::ButtonPosition SeparateTabWidget::GetCloseButtonPosition () const
+	{
+		return MainTabBar_->GetCloseButtonPosition ();
+	}
+
+	void SeparateTabWidget::SetTabClosable (int index, bool closable, QWidget *closeButton)
+	{
+		MainTabBar_->SetTabClosable (index, closable, closeButton);
+	}
+
+	void SeparateTabWidget::SetTabsClosable (bool closable)
+	{
+		MainTabBar_->setTabsClosable (closable);
+		MainTabBar_->SetTabClosable (WidgetCount (), false);
+	}
+
+	void SeparateTabWidget::AddWidget2TabBarLayout (QTabBar::ButtonPosition pos,
+			QWidget *w)
+	{
+		if (pos == QTabBar::LeftSide)
+			LeftToolBar_->addWidget (w);
+		else
+			RightToolBar_->addWidget (w);
+	}
+
+	void SeparateTabWidget::AddAction2TabBarLayout (QTabBar::ButtonPosition pos,
+			QAction *action)
+	{
+		if (pos == QTabBar::LeftSide)
+			LeftToolBar_->addAction (action);
+		else
+			RightToolBar_->addAction (action);
+	}
+
+	void SeparateTabWidget::AddAction2TabBar (QAction *act)
+	{
+		TabBarActions_ << act;
+		connect (act,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleActionDestroyed ()));
+	}
+
+	void SeparateTabWidget::InsertAction2TabBar (int index, QAction *act)
+	{
+		TabBarActions_.insert (index, act);
+		connect (act,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleActionDestroyed ()));
+	}
+
+	void SeparateTabWidget::InsertAction2TabBar (QAction *before, QAction *action)
+	{
+		int idx = TabBarActions_.indexOf (before);
+		if (idx < 0)
+			idx = TabBarActions_.size ();
+		InsertAction2TabBar (idx, action);
 	}
 
 	int SeparateTabWidget::CurrentIndex () const
@@ -127,9 +285,25 @@ namespace LeechCraft
 		return MainStackedWidget_->currentWidget ();
 	}
 
-	int SeparateTabWidget::IndexOf (QWidget *w) const
+	int SeparateTabWidget::IndexOf (QWidget *page) const
 	{
-		return MainStackedWidget_->indexOf (w);
+		return MainStackedWidget_->indexOf (page);
+	}
+
+	int SeparateTabWidget::GetLastContextMenuTab () const
+	{
+		return LastContextMenuTab_;
+	}
+
+	void SeparateTabWidget::SetAddTabButtonContextMenu (QMenu *menu)
+	{
+		AddTabButtonContextMenu_ = menu;
+		AddTabButton_->setMenu (AddTabButtonContextMenu_);
+	}
+
+	SeparateTabBar* SeparateTabWidget::TabBar () const
+	{
+		return MainTabBar_;
 	}
 
 	int SeparateTabWidget::AddTab (QWidget *page, const QString& text)
@@ -155,7 +329,7 @@ namespace LeechCraft
 		MainStackedWidget_->addWidget (page);
 		if (!AddTabButtonAction_->isVisible ())
 			newIndex = MainTabBar_->
-					insertTab (MainTabBar_->count () - 1, icon, text);
+			insertTab (MainTabBar_->count () - 1, icon, text);
 		else
 			newIndex = MainTabBar_->addTab (icon, text);
 
@@ -187,7 +361,7 @@ namespace LeechCraft
 	void SeparateTabWidget::RemoveTab (int index)
 	{
 		if (index >= WidgetCount () &&
-				!AddTabButtonAction_->isVisible ())
+			!AddTabButtonAction_->isVisible ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index"
@@ -209,202 +383,9 @@ namespace LeechCraft
 			}
 	}
 
-	void SeparateTabWidget::SetTabEnabled (int index, bool enabled)
+	bool SeparateTabWidget::IsAddTabActionVisible () const
 	{
-		if (index < 0 || index >= WidgetCount ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "nvalid index"
-					<< index;
-			return;
-		}
-
-		MainStackedWidget_->widget (index)->setEnabled (enabled);
-	}
-
-	void SeparateTabWidget::SetTabIcon (int index, const QIcon& icon)
-	{
-		if (index < 0 || index >= WidgetCount ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid index"
-					<< index;
-			return;
-		}
-
-		MainTabBar_->setTabIcon (index, icon);
-	}
-
-	void SeparateTabWidget::SetTabText (int index, const QString& text)
-	{
-		if (index < 0 || index >= WidgetCount ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid index"
-					<< index;
-			return;
-		}
-		if (!MainTabBar_->IsPinTab (index))
-			MainTabBar_->setTabText (index, text);
-	}
-
-	void SeparateTabWidget::SetTabToolTip (int index, const QString& tip)
-	{
-		if (index < 0 || index >= WidgetCount ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid index"
-					<< index;
-			return;
-		}
-
-		MainTabBar_->setTabToolTip (index, tip);
-	}
-
-	void SeparateTabWidget::SetTabWhatsThis (int index, const QString& text)
-	{
-		if (index < 0 || index >= WidgetCount ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid index"
-					<< index;
-			return;
-		}
-
-		MainTabBar_->setTabWhatsThis (index, text);
-	}
-
-	void SeparateTabWidget::SetTabsClosable (bool closable)
-	{
-		MainTabBar_->setTabsClosable (closable);
-		MainTabBar_->SetTabNoClosable (WidgetCount ());
-	}
-
-	void SeparateTabWidget::SetTooltip (int index, QWidget *widget)
-	{
-		if (index >= WidgetCount () && !IsAddTabActionVisible ())
-			return;
-
-		Widgets_ [index].reset (widget);
-	}
-
-	bool SeparateTabWidget::IsTabEnabled (int index) const
-	{
-		return MainStackedWidget_->widget (index)->isEnabled ();
-	}
-
-	QIcon SeparateTabWidget::TabIcon (int index) const
-	{
-		return MainTabBar_->tabIcon (index);
-	}
-
-	QString SeparateTabWidget::TabText (int index) const
-	{
-		return IsPinTab (index) ?
-				MainTabBar_->GetPinTabText (index) :
-				MainTabBar_->tabText (index);
-	}
-
-	QString SeparateTabWidget::TabToolTip (int index) const
-	{
-		return MainTabBar_->tabToolTip (index);
-	}
-
-	QString SeparateTabWidget::TabWhatsThis (int index) const
-	{
-		return MainTabBar_->tabWhatsThis (index);
-	}
-
-	QWidget* SeparateTabWidget::Widget (int index) const
-	{
-		return MainStackedWidget_->widget (index);
-	}
-
-	int SeparateTabWidget::TabAt (const QPoint& pos)
-	{
-		return MainTabBar_->tabAt (pos);
-	}
-
-	void SeparateTabWidget::SetDefaultContextMenu (QMenu *menu)
-	{
-		DefaultContextMenu_ = menu;
-	}
-
-	QMenu* SeparateTabWidget::GetDefaultContextMenu () const
-	{
-		return DefaultContextMenu_;
-	}
-
-	void SeparateTabWidget::SetAddTabButtonContextMenu (QMenu *menu)
-	{
-		AddTabButtonContextMenu_ = menu;
-		AddTabButton_->setMenu (AddTabButtonContextMenu_);
-	}
-
-	QMenu* SeparateTabWidget::GetAddTabButtonContextMenu () const
-	{
-		return AddTabButtonContextMenu_;
-	}
-
-	QMenu* SeparateTabWidget::GetMenuForTab (int index)
-	{
-		QMenu *menu = new QMenu ("", MainTabBar_);
-		if (XmlSettingsManager::Instance ()->
-					property ("ShowPluginMenuInTabs").toBool ())
-		{
-			bool asSub = XmlSettingsManager::Instance ()->
-				property ("ShowPluginMenuInTabsAsSubmenu").toBool ();
-			ITabWidget *imtw =
-				qobject_cast<ITabWidget*> (Widget (index));
-			if (imtw)
-			{
-				QList<QAction*> tabActions = imtw->GetTabBarContextMenuActions ();
-
-				QMenu *subMenu = new QMenu (TabText (index), menu);
-				Q_FOREACH (QAction *act, tabActions)
-					(asSub ? subMenu : menu)->addAction (act);
-				if (asSub)
-					menu->addMenu (subMenu);
-				if (tabActions.size ())
-					menu->addSeparator ();
-			}
-		}
-
-		Q_FOREACH (QAction *act, TabBarActions_)
-		{
-			if (!act)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "detected null pointer";
-				continue;
-			}
-			menu->addAction (act);
-		}
-
-		if (MainTabBar_->IsPinTab (index))
-			menu->insertAction (TabBarActions_.at (0).data (), UnPinTab_);
-		else
-			menu->insertAction (TabBarActions_.at (0).data (), PinTab_);
-
-		return menu;
-	}
-
-	void SeparateTabWidget::AddWidget2TabBarLayout (QTabBar::ButtonPosition pos,
-			QWidget *w)
-	{
-		if (pos == QTabBar::LeftSide)
-			LeftToolBar_->addWidget (w);
-		else
-			RightToolBar_->addWidget (w);
-	}
-
-	void SeparateTabWidget::AddAction2TabBarLayout (QTabBar::ButtonPosition pos,
-			QAction *action)
-	{
-		if (pos == QTabBar::LeftSide)
-			LeftToolBar_->addAction (action);
-		else
-			RightToolBar_->addAction (action);
+		return AddTabButtonAction_->isVisible ();
 	}
 
 	void SeparateTabWidget::AddWidget2SeparateTabWidget (QWidget *widget)
@@ -413,74 +394,20 @@ namespace LeechCraft
 		MainToolBarLayout_->addWidget (widget);
 	}
 
-	void SeparateTabWidget::RemoveWidgetFromSeparateTabWidget (QWidget *w)
+	void SeparateTabWidget::RemoveWidgetFromSeparateTabWidget (QWidget *widget)
 	{
-		MainToolBarLayout_->removeWidget (w);
-		w->hide ();
+		MainToolBarLayout_->removeWidget (widget);
+		widget->hide ();
 	}
 
-	void SeparateTabWidget::SetToolBarVisible (bool visible)
+	int SeparateTabWidget::TabAt (const QPoint& point)
 	{
-		if (!visible)
-			MainLayout_->removeItem (MainToolBarLayout_);
-		else
-			MainLayout_->insertLayout (1, MainToolBarLayout_);
+		return MainTabBar_->tabAt (point);
 	}
 
-	SeparateTabBar* SeparateTabWidget::TabBar () const
+	void SeparateTabWidget::MoveTab (int from, int to)
 	{
-		return MainTabBar_;
-	}
-
-	bool SeparateTabWidget::IsAddTabActionVisible () const
-	{
-		return AddTabButtonAction_->isVisible ();
-	}
-
-	void SeparateTabWidget::AddAction2TabBar (QAction *act)
-	{
-		TabBarActions_ << act;
-		connect (act,
-				SIGNAL (destroyed (QObject*)),
-				this,
-				SLOT (handleActionDestroyed ()));
-	}
-
-	void SeparateTabWidget::InsertAction2TabBar (int index, QAction *act)
-	{
-		TabBarActions_.insert (index, act);
-		connect (act,
-				SIGNAL (destroyed (QObject*)),
-				this,
-				SLOT (handleActionDestroyed ()));
-	}
-
-	void SeparateTabWidget::InsertAction2TabBar (QAction *before, QAction *action)
-	{
-		int idx = TabBarActions_.indexOf (before);
-		if (idx < 0)
-			idx = TabBarActions_.size ();
-		InsertAction2TabBar (idx, action);
-	}
-
-	int SeparateTabWidget::GetLastContextMenuTab () const
-	{
-		return LastContextMenuTab_;
-	}
-
-	bool SeparateTabWidget::IsPinTab (int index) const
-	{
-		return MainTabBar_->IsPinTab (index);
-	}
-
-	bool SeparateTabWidget::IsInMoveProcess () const
-	{
-		return InMoveProcess_;
-	}
-
-	void SeparateTabWidget::SetInMoveProcess (bool move)
-	{
-		InMoveProcess_ = move;
+		MainTabBar_->moveTab (from, to);
 	}
 
 	void SeparateTabWidget::resizeEvent (QResizeEvent *event)
@@ -489,6 +416,7 @@ namespace LeechCraft
 		int length = 0;
 		for (int i = 0; i < MainTabBar_->count (); ++i)
 			length += MainTabBar_->tabRect (i).width ();
+
 		if (event->oldSize ().width () > event->size ().width ())
 		{
 			if (length + 30 > MainTabBar_->width () &&
@@ -507,7 +435,7 @@ namespace LeechCraft
 				handleShowAddTabButton (false);
 				MainTabBar_->SetLastTab (true);
 				int index = MainTabBar_->addTab (QString ());
-				MainTabBar_->SetTabNoClosable (index);
+				MainTabBar_->SetTabClosable (index, false);
 			}
 		}
 	}
@@ -533,34 +461,14 @@ namespace LeechCraft
 	void SeparateTabWidget::Init ()
 	{
 		connect (MainTabBar_,
-				SIGNAL (currentChanged (int)),
+				SIGNAL (addDefaultTab ()),
 				this,
-				SLOT (handleCurrentChanged (int)));
+				SLOT (handleAddDefaultTab ()));
 
-		connect (MainTabBar_,
-				SIGNAL (tabCloseRequested (int)),
+		connect (DefaultTabAction_,
+				SIGNAL (triggered ()),
 				this,
-				SIGNAL (tabCloseRequested (int)));
-
-		connect (MainTabBar_,
-				SIGNAL (tabMoved (int, int)),
-				this,
-				SLOT (handleTabMoved (int, int)));
-
-		connect (MainTabBar_,
-				SIGNAL (customContextMenuRequested (const QPoint&)),
-				this,
-				SLOT (handleContextMenuRequested (const QPoint&)));
-
-		connect (MainTabBar_,
-				SIGNAL (showAddTabButton (bool)),
-				this,
-				SLOT (handleShowAddTabButton (bool)));
-
-		connect (MainTabBar_,
-				SIGNAL (addDefaultTab (bool)),
-				this,
-				SLOT (handleAddDefaultTab (bool)));
+				SLOT (handleAddDefaultTab ()));
 
 		connect (MainTabBar_,
 				SIGNAL (tabWasInserted (int)),
@@ -570,6 +478,30 @@ namespace LeechCraft
 				SIGNAL (tabWasRemoved (int)),
 				this,
 				SIGNAL (tabWasRemoved (int)));
+		connect (MainTabBar_,
+				SIGNAL (tabCloseRequested (int)),
+				this,
+				SIGNAL (tabCloseRequested (int)));
+		connect (MainTabBar_,
+				SIGNAL (tabMoved (int, int)),
+				this,
+				SLOT (handleTabMoved (int, int)));
+		connect (MainTabBar_,
+				SIGNAL (currentChanged (int)),
+				this,
+				SLOT (setCurrentIndex (int)));
+		connect (MainTabBar_,
+				SIGNAL (customContextMenuRequested (const QPoint&)),
+				this,
+				SLOT (handleContextMenuRequested (const QPoint&)));
+		connect (MainTabBar_,
+				SIGNAL (showAddTabButton (bool)),
+				this,
+				SLOT (handleShowAddTabButton (bool)));
+		connect (MainTabBar_,
+				SIGNAL (releasedMouseAfterMove (int)),
+				this,
+				SLOT (releaseMouseAfterMove (int)));
 	}
 
 	void SeparateTabWidget::AddTabButtonInit ()
@@ -584,26 +516,10 @@ namespace LeechCraft
 		RightToolBar_->addSeparator ();
 	}
 
-	void SeparateTabWidget::PinTabActionsInit ()
-	{
-		connect (PinTab_,
-				SIGNAL (triggered ()),
-				this,
-				SIGNAL (pinTabRequested ()));
-		connect (UnPinTab_,
-				SIGNAL (triggered ()),
-				this,
-				SIGNAL (unpinTabRequested ()));
-
-		connect (DefaultTabAction_,
-				SIGNAL (triggered (bool)),
-				this,
-				SLOT (handleAddDefaultTab (bool)));
-	}
-
 	void SeparateTabWidget::setCurrentIndex (int index)
 	{
-		if (index >= WidgetCount () && !AddTabButtonAction_->isVisible ())
+		if (index >= WidgetCount () &&
+				!AddTabButtonAction_->isVisible ())
 			--index;
 
 		emit currentChanged (index);
@@ -618,26 +534,21 @@ namespace LeechCraft
 		}
 	}
 
-	void SeparateTabWidget::setCurrentWidget (QWidget *w)
+	void SeparateTabWidget::setCurrentWidget (QWidget *widget)
 	{
-		int index = MainStackedWidget_->indexOf (w);
+		int index = MainStackedWidget_->indexOf (widget);
 		setCurrentIndex (index);
 	}
 
 	void SeparateTabWidget::handleNewTabShortcutActivated ()
 	{
-		handleAddDefaultTab (true);
+		handleAddDefaultTab ();
 	}
 
 	void SeparateTabWidget::setPreviousTab ()
 	{
 		if (PreviousTab_ <= WidgetCount () - 1 && WidgetCount () >= 2)
 			setCurrentIndex (PreviousTab_);
-	}
-
-	void SeparateTabWidget::handleCurrentChanged (int index)
-	{
-		setCurrentIndex (index);
 	}
 
 	void SeparateTabWidget::handleTabMoved (int from, int to)
@@ -653,9 +564,9 @@ namespace LeechCraft
 				!AddTabButtonAction_->isVisible ())
 			return;
 
-		MainStackedWidget_->insertWidget (to,
-				MainStackedWidget_->widget (from));
-		InMoveProcess_ = true;
+		MainStackedWidget_->insertWidget (to, MainStackedWidget_->widget (from));
+
+		MainTabBar_->SetInMove (true);
 		std::swap (Widgets_ [from], Widgets_ [to]);
 		emit tabWasMoved (from, to);
 	}
@@ -665,12 +576,11 @@ namespace LeechCraft
 		if (point.isNull ())
 			return;
 
-		QMenu *menu = 0;
+		QMenu *menu = new QMenu ("", MainTabBar_);
 		int index = MainTabBar_->tabAt (point);
 
 		if (index == -1)
 		{
-			menu = new QMenu ("", MainTabBar_);
 			Q_FOREACH (QAction *act, TabBarActions_)
 			{
 				if (!act)
@@ -682,29 +592,86 @@ namespace LeechCraft
 				menu->addAction (act);
 			}
 		}
-		else if ((index == MainTabBar_->count () - 1) && !AddTabButtonAction_->isVisible ())
+		else if ((index == MainTabBar_->count () - 1) &&
+				!AddTabButtonAction_->isVisible ())
 		{
-			menu = new QMenu ("", MainTabBar_);
 			menu->addActions (AddTabButtonContextMenu_->actions ());
 		}
 		else
 		{
 			LastContextMenuTab_ = index;
-			menu = GetMenuForTab (index);
+			if (index != -1 &&
+					XmlSettingsManager::Instance ()->
+							property ("ShowPluginMenuInTabs").toBool ())
+			{
+				bool asSub = XmlSettingsManager::Instance ()->
+					property ("ShowPluginMenuInTabsAsSubmenu").toBool ();
+				ITabWidget *imtw = qobject_cast<ITabWidget*> (Widget (index));
+				if (imtw)
+				{
+					QList<QAction*> tabActions = imtw->GetTabBarContextMenuActions ();
+
+					QMenu *subMenu = new QMenu (TabText (index), menu);
+					Q_FOREACH (QAction *act, tabActions)
+						(asSub ? subMenu : menu)->addAction (act);
+					if (asSub)
+						menu->addMenu (subMenu);
+					if (tabActions.size ())
+						menu->addSeparator ();
+				}
+			}
+
+			Q_FOREACH (QAction *act, TabBarActions_)
+			{
+				if (!act)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "detected null pointer";
+					continue;
+				}
+				menu->addAction (act);
+			}
+
+			Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+			emit hookTabContextMenuFill (proxy, menu, index);
+			if (proxy->IsCancelled ())
+				return;
 		}
 		menu->exec (MainTabBar_->mapToGlobal (point));
 		delete menu;
 	}
 
-	void SeparateTabWidget::handleShowAddTabButton (bool show)
+	void SeparateTabWidget::handleActionDestroyed()
 	{
-		AddTabButtonAction_->setVisible (show);
+		Q_FOREACH (QPointer<QAction> act, TabBarActions_)
+			if (!act || act == sender ())
+				TabBarActions_.removeAll (act);
 	}
 
-	void SeparateTabWidget::handleAddDefaultTab (bool)
+	void SeparateTabWidget::releaseMouseAfterMove (int index)
+	{
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookReleaseMouseAfterMove (proxy, index);
+		if (proxy->IsCancelled ())
+			return;
+	}
+
+	void SeparateTabWidget::handleSelectionBehavior ()
+	{
+		const QString& selection = XmlSettingsManager::Instance ()->
+				property ("SelectionBehavior").toString ();
+		if (selection == "PreviousActive")
+			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectPreviousTab);
+		else if (selection == "NextIndex")
+			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectRightTab);
+		else if (selection == "PreviousIndex")
+			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectLeftTab);
+	}
+
+	void SeparateTabWidget::handleAddDefaultTab ()
 	{
 		QByteArray combined = XmlSettingsManager::Instance ()->
-		property ("DefaultNewTab").toString ().toLatin1 ();
+				property ("DefaultNewTab").toString ().toLatin1 ();
 		if (combined != "contextdependent")
 		{
 			QList<QByteArray> parts = combined.split ('|');
@@ -751,8 +718,7 @@ namespace LeechCraft
 				highestPriority = info.Priority_;
 			}
 
-		ITabWidget *imtw =
-			qobject_cast<ITabWidget*> (CurrentWidget ());
+		ITabWidget *imtw = qobject_cast<ITabWidget*> (CurrentWidget ());
 		const int delta = 15;
 		if (imtw && imtw->GetTabClassInfo ().Priority_ + delta > highestPriority)
 		{
@@ -770,22 +736,8 @@ namespace LeechCraft
 		highestIHT->TabOpenRequested (highestTabClass);
 	}
 
-	void SeparateTabWidget::handleActionDestroyed()
+	void SeparateTabWidget::handleShowAddTabButton (bool show)
 	{
-		Q_FOREACH (QPointer<QAction> act, TabBarActions_)
-			if (!act || act == sender ())
-				TabBarActions_.removeAll (act);
-	}
-
-	void SeparateTabWidget::handleSelectionBehavior ()
-	{
-		QString selection = XmlSettingsManager::Instance ()->
-			property ("SelectionBehavior").toString ();
-		if (selection == "PreviousActive")
-			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectPreviousTab);
-		else if (selection == "NextIndex")
-			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectRightTab);
-		else if (selection == "PreviousIndex")
-			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectLeftTab);
+		AddTabButtonAction_->setVisible (show);
 	}
 }
