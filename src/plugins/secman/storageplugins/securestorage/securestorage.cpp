@@ -170,8 +170,8 @@ namespace SecureStorage
 
 	void Plugin::UpdateActionsStates ()
 	{
-		ForgetKeyAction_->setEnabled (bool (CryptoSystem_) && !IsPasswordEmpty());
-		InputKeyAction_->setEnabled (!bool (CryptoSystem_) && !IsPasswordEmpty());
+		ForgetKeyAction_->setEnabled (bool (CryptoSystem_) && !IsPasswordEmpty ());
+		InputKeyAction_->setEnabled (!bool (CryptoSystem_) && !IsPasswordEmpty ());
 	}
 
 	QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType)
