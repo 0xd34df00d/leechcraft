@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "separatetabwidget.h"
+#include <algorithm>
 #include <QStackedWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
