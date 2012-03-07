@@ -633,7 +633,6 @@ namespace CSTP
 		settings.remove ("");
 		int taskIndex = 0;
 		for (tasks_t::const_iterator i = ActiveTasks_.begin (),
-				begin = ActiveTasks_.begin (),
 				end = ActiveTasks_.end (); i != end; ++i)
 		{
 			if (i->Parameters_ & LeechCraft::NotPersistent)
