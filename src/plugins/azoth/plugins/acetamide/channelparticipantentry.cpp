@@ -68,6 +68,7 @@ namespace Acetamide
 				this,
 				SLOT (handleCTCPAction (QAction*)));
 
+		Actions_.append (infoMenu->menuAction ());
 		Actions_.append (ctcpMenu->menuAction ());
 
 		ServerID_ = ICH_->GetParentID ();
