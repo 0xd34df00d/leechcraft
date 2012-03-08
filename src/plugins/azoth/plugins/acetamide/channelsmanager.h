@@ -100,7 +100,7 @@ namespace Acetamide
 
 		void ReceivePublicMessage (const QString& channel,
 				const QString& nick, const QString& msg);
-		void ReceiveCmdAnswerMessage (const QString& cmd,
+		bool ReceiveCmdAnswerMessage (const QString& cmd,
 				const QString& answer, bool endOdfCmd = false);
 
 		void SetMUCSubject (const QString& channel, const QString& topic);

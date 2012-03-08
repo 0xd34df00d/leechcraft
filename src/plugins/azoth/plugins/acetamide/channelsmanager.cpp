@@ -258,15 +258,18 @@ namespace Acetamide
 			ChannelHandlers_ [chnnl]->HandleIncomingMessage (nick, msg);
 	}
 
-	void ChannelsManager::ReceiveCmdAnswerMessage (const QString& cmd,
+	bool ChannelsManager::ReceiveCmdAnswerMessage (const QString& cmd,
 			const QString& answer, bool endOfCmd)
 	{
-		if (ChannelHandlers_.contains (LastActiveChannel_))
-		{
-			ChannelHandlers_ [LastActiveChannel_]->HandleServiceMessage (answer,
-					IMessage::MTEventMessage,
-					IMessage::MSTOther);
-		}
+		if (LastActiveChannel_.isEmpty () ||
+				!ChannelHandlers_.contains (LastActiveChannel_))
+			return false;
+
+		ChannelHandlers_ [LastActiveChannel_]->HandleServiceMessage (answer,
+				IMessage::MTEventMessage,
+				IMessage::MSTOther);
+
+		return true;
 	}
 
 	void ChannelsManager::SetMUCSubject (const QString& channel, const QString& topic)
