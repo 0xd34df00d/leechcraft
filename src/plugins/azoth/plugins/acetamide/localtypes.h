@@ -119,13 +119,6 @@ namespace Acetamide
 		QString AuthMessage_;
 	};
 
-	struct CommandMessage
-	{
-		QString Cmd_;
-		QString Channel_;
-		bool IsLongAnwser_;
-	};
-
 	bool operator== (const ChannelOptions&, const ChannelOptions&);
 
 	bool operator== (const NickServIdentify&, const NickServIdentify&);
