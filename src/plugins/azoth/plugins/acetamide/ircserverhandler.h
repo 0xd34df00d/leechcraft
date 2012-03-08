@@ -148,9 +148,9 @@ namespace Acetamide
 		void ShowUserHost (const QString&, const QString&);
 		void ShowIsUserOnServer (const QString&);
 
-		void ShowWhoIsReply (const QString&, bool isEndOf = false);
+		void ShowWhoIsReply (const WhoIsMessage& msg, bool isEndOf = false);
 		void ShowWhoWasReply (const QString&, bool isEndOf = false);
-		void ShowWhoReply (const QString&, bool isEndOf = false);
+		void ShowWhoReply (const WhoMessage& msg, bool isEndOf = false);
 		void ShowLinksReply (const QString&, bool isEndOf = false);
 		void ShowInfoReply (const QString&, bool isEndOf = false);
 		void ShowMotdReply (const QString&, bool isEndOf = false);

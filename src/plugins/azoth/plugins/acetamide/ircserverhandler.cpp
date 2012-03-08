@@ -510,9 +510,69 @@ namespace Acetamide
 		ShowAnswer ("ison", tr ("%1 is on server").arg (nick));
 	}
 
-	void IrcServerHandler::ShowWhoIsReply (const QString& msg, bool isEndOf)
+	void IrcServerHandler::ShowWhoIsReply (const WhoIsMessage& msg, bool isEndOf)
 	{
-		ShowAnswer ("whois", msg, isEndOf);
+		QString message;
+		if (!msg.Nick_.isEmpty () &&
+				!msg.UserName_.isEmpty () &&
+				!msg.Host_.isEmpty ())
+		{
+			message = msg.Nick_ + tr ("%1 is %2!%3@%4")
+					.arg (msg.Nick_, msg.Nick_, msg.UserName_, msg.Host_);
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.RealName_.isEmpty ())
+		{
+			message = tr ("%1's real name is %2").arg (msg.Nick_, msg.RealName_);
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.Channels_.isEmpty ())
+		{
+			message = tr ("%1 on channels: %2")
+					.arg (msg.Nick_, msg.Channels_.join (", "));
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.ServerName_.isEmpty () &&
+				!msg.ServerCountry_.isEmpty ())
+		{
+			message = tr ("%1 server is: %2 - %3")
+					.arg (msg.Nick_, msg.ServerName_, msg.ServerCountry_);
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.IdleTime_.isEmpty ())
+		{
+			message = tr ("%1 idle time: %2").arg (msg.Nick_, msg.IdleTime_);
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.AuthTime_.isEmpty ())
+		{
+			message = tr ("%1 auth date: %2").arg (msg.Nick_, msg.AuthTime_);
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.IrcOperator_.isEmpty ())
+		{
+			message = msg.Nick_ + ": " + msg.IrcOperator_;
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.EndString_.isEmpty ())
+		{
+			message = msg.Nick_ + " " + msg.EndString_;
+			ShowAnswer ("whois", message, isEndOf);
+		}
 	}
 
 	void IrcServerHandler::ShowWhoWasReply (const QString& msg, bool isEndOf)
@@ -520,9 +580,30 @@ namespace Acetamide
 		ShowAnswer ("whowas", msg, isEndOf);
 	}
 
-	void IrcServerHandler::ShowWhoReply (const QString& msg, bool isEndOf)
+	void IrcServerHandler::ShowWhoReply (const WhoMessage&  msg, bool isEndOf)
 	{
-        ShowAnswer ("who", msg, isEndOf);
+		QString message;
+		if (!msg.Nick_.isEmpty () &&
+				!msg.EndString_.isEmpty ())
+		{
+			message = msg.Nick_ + " " + msg.EndString_;
+			ShowAnswer ("who", message, isEndOf);
+		}
+		else
+		{
+			message = tr ("%1 [%2@%3]: Channel: %4, Server: %5, "
+					"Hops: %6, Flags: %7, Away: %8, Real Name: %9")
+							.arg (msg.Nick_,
+									msg.UserName_,
+									msg.Host_,
+									msg.Channel_,
+									msg.ServerName_,
+									QString::number (msg.Jumps_),
+									msg.Flags_,
+									msg.IsAway_ ? "true" : "false",
+									msg.RealName_);
+			ShowAnswer ("who", message, isEndOf);
+		}
 	}
 
 	void IrcServerHandler::ShowLinksReply (const QString& msg, bool isEndOf)
