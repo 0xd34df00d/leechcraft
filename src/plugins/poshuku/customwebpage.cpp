@@ -712,6 +712,11 @@ namespace Poshuku
 				widget->show ();
 				return widget->GetView ()->page ();
 			}
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown type"
+					<< type;
+			return 0;
 		}
 	}
 
