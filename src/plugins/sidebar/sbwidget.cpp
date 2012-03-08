@@ -72,6 +72,7 @@ namespace Sidebar
 		ITabWidget *tw = qobject_cast<ITabWidget*> (w);
 		const auto& tabClass = tw->GetTabClassInfo ();
 		TabClass2Action_ [tabClass.TabClass_] << act;
+		TabAction2Tab_ [act] = w;
 
 		if (TabClass2Action_ [tabClass.TabClass_].size () >= FoldThreshold)
 			FoldTabClass (tabClass, act);
@@ -93,6 +94,7 @@ namespace Sidebar
 		ITabWidget *tw = qobject_cast<ITabWidget*> (w);
 		const auto& tabClass = tw->GetTabClassInfo ();
 		TabClass2Action_ [tabClass.TabClass_].removeAll (act);
+		TabAction2Tab_.remove (act);
 
 		delete CurTab2Button_.take (act);
 
@@ -255,6 +257,14 @@ namespace Sidebar
 			tb->setSizePolicy (QSizePolicy::Expanding,
 					tb->sizePolicy ().verticalPolicy ());
 			layout->addWidget (tb);
+
+			QWidget *w = TabAction2Tab_ [act];
+			tb->setProperty ("Sidebar/TabPage", QVariant::fromValue<QWidget*> (w));
+			tb->setContextMenuPolicy (Qt::CustomContextMenu);
+			connect (tb,
+					SIGNAL (customContextMenuRequested (QPoint)),
+					this,
+					SLOT (handleTabContextMenu (QPoint)));
 
 			connect (act,
 					SIGNAL (triggered ()),

@@ -19,8 +19,8 @@
 #pragma once
 
 #include <QWidget>
-#include "ui_sbwidget.h"
 #include <interfaces/core/icoreproxy.h>
+#include "ui_sbwidget.h"
 
 class QToolButton;
 
@@ -48,6 +48,7 @@ namespace Sidebar
 
 		QMap<QByteArray, QList<QAction*>> TabClass2Action_;
 		QMap<QByteArray, QToolButton*> TabClass2Folder_;
+		QMap<QAction*, QWidget*> TabAction2Tab_;
 
 		QMap<QAction*, QToolButton*> CurTab2Button_;
 		QMap<QAction*, QToolButton*> TrayAct2Button_;
