@@ -20,6 +20,7 @@
 
 #include <QWidget>
 #include "ui_sbwidget.h"
+#include <interfaces/core/icoreproxy.h>
 
 class QToolButton;
 
@@ -41,6 +42,8 @@ namespace Sidebar
 		Ui::SBWidget Ui_;
 		Util::FlowLayout *TrayLay_;
 
+		ICoreProxy_ptr Proxy_;
+
 		const QSize IconSize_;
 
 		QMap<QByteArray, QList<QAction*>> TabClass2Action_;
@@ -49,7 +52,7 @@ namespace Sidebar
 		QMap<QAction*, QToolButton*> CurTab2Button_;
 		QMap<QAction*, QToolButton*> TrayAct2Button_;
 	public:
-		SBWidget (QWidget* = 0);
+		SBWidget (ICoreProxy_ptr, QWidget* = 0);
 
 		void AddTabOpenAction (QAction*);
 		void RemoveTabOpenAction (QAction*);
@@ -69,6 +72,7 @@ namespace Sidebar
 		void AddToFolder (const QByteArray&, QAction*);
 		void UnfoldTabClass (const TabClassInfo&);
 	private slots:
+		void handleTabContextMenu (const QPoint&);
 		void showFolded ();
 		void handleTrayActDestroyed ();
 	};

@@ -39,7 +39,7 @@ namespace Sidebar
 	{
 		Proxy_ = proxy;
 
-		Bar_ = new SBWidget;
+		Bar_ = new SBWidget (proxy);
 		NewTabMgr_ = new NewTabActionManager (Bar_, this);
 		QLMgr_ = new QLActionManager (Bar_, Proxy_, this);
 		OTMgr_ = new OpenedTabManager (Bar_, Proxy_, this);
