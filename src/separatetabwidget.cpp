@@ -285,6 +285,46 @@ namespace LeechCraft
 		return MainStackedWidget_->currentWidget ();
 	}
 
+	QMenu* SeparateTabWidget::GetTabMenu (int index)
+	{
+		QMenu *menu = new QMenu ();
+		if (XmlSettingsManager::Instance ()->
+				property ("ShowPluginMenuInTabs").toBool ())
+		{
+			bool asSub = XmlSettingsManager::Instance ()->
+				property ("ShowPluginMenuInTabsAsSubmenu").toBool ();
+			ITabWidget *imtw = qobject_cast<ITabWidget*> (Widget (index));
+			if (imtw)
+			{
+				QList<QAction*> tabActions = imtw->GetTabBarContextMenuActions ();
+
+				QMenu *subMenu = new QMenu (TabText (index), menu);
+				Q_FOREACH (QAction *act, tabActions)
+					(asSub ? subMenu : menu)->addAction (act);
+				if (asSub)
+					menu->addMenu (subMenu);
+				if (tabActions.size ())
+					menu->addSeparator ();
+			}
+		}
+
+		Q_FOREACH (QAction *act, TabBarActions_)
+		{
+			if (!act)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "detected null pointer";
+				continue;
+			}
+			menu->addAction (act);
+		}
+
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookTabContextMenuFill (proxy, menu, index);
+
+		return menu;
+	}
+
 	int SeparateTabWidget::IndexOf (QWidget *page) const
 	{
 		return MainStackedWidget_->indexOf (page);
@@ -600,40 +640,8 @@ namespace LeechCraft
 		else
 		{
 			LastContextMenuTab_ = index;
-			if (index != -1 &&
-					XmlSettingsManager::Instance ()->
-							property ("ShowPluginMenuInTabs").toBool ())
-			{
-				bool asSub = XmlSettingsManager::Instance ()->
-					property ("ShowPluginMenuInTabsAsSubmenu").toBool ();
-				ITabWidget *imtw = qobject_cast<ITabWidget*> (Widget (index));
-				if (imtw)
-				{
-					QList<QAction*> tabActions = imtw->GetTabBarContextMenuActions ();
-
-					QMenu *subMenu = new QMenu (TabText (index), menu);
-					Q_FOREACH (QAction *act, tabActions)
-						(asSub ? subMenu : menu)->addAction (act);
-					if (asSub)
-						menu->addMenu (subMenu);
-					if (tabActions.size ())
-						menu->addSeparator ();
-				}
-			}
-
-			Q_FOREACH (QAction *act, TabBarActions_)
-			{
-				if (!act)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "detected null pointer";
-					continue;
-				}
-				menu->addAction (act);
-			}
-
-			Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-			emit hookTabContextMenuFill (proxy, menu, index);
+			delete menu;
+			menu = GetTabMenu (index);
 		}
 		menu->exec (MainTabBar_->mapToGlobal (point));
 		delete menu;

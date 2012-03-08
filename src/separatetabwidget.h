@@ -104,6 +104,8 @@ namespace LeechCraft
 		int CurrentIndex () const;
 		QWidget* CurrentWidget () const;
 
+		QMenu* GetTabMenu (int);
+
 		int IndexOf (QWidget *page) const;
 
 		int GetLastContextMenuTab () const;
@@ -130,17 +132,14 @@ namespace LeechCraft
 	protected:
 		void resizeEvent (QResizeEvent *event);
 		bool event (QEvent *event);
-
 	private:
 		void Init ();
 		void AddTabButtonInit ();
-
 	public slots:
 		void setCurrentIndex (int index);
 		void setCurrentWidget (QWidget *widget);
 		void handleNewTabShortcutActivated ();
 		void setPreviousTab ();
-
 	private slots:
 		void handleSelectionBehavior ();
 		void handleAddDefaultTab ();
