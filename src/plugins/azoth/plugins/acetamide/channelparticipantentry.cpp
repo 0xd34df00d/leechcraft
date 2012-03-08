@@ -170,7 +170,8 @@ namespace Acetamide
 
 	void ChannelParticipantEntry::handleCTCPAction (QAction *action)
 	{
-		ICH_->handleCTCPRequest (QStringList () << Nick_ << action->property ("ctcp_type").toString ());
+		ICH_->handleCTCPRequest (QStringList () << Nick_
+				<< action->property ("ctcp_type").toString ());
 	}
 
 }

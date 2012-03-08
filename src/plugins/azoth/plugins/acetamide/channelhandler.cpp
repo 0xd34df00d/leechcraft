@@ -728,7 +728,7 @@ namespace Acetamide
 
 	void ChannelHandler::handleCTCPRequest (const QStringList& cmd)
 	{
-		CM_->CTCPRequest (cmd);
+		CM_->CTCPRequest (cmd, ChannelOptions_.ChannelName_.toLower ());
 	}
 
 };

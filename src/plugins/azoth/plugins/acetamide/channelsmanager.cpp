@@ -67,11 +67,6 @@ namespace Acetamide
 		return result;
 	}
 
-	bool ChannelsManager::IsCmdQueueEmpty () const
-	{
-		return CmdQueue_.isEmpty ();
-	}
-
 	ChannelHandler* ChannelsManager::GetChannelHandler (const QString& channel)
 	{
 		return ChannelHandlers_.value (channel.toLower ()).get ();
@@ -227,13 +222,13 @@ namespace Acetamide
 
 	void ChannelsManager::SendPublicMessage (const QString& channel, const QString& msg)
 	{
+		LastActiveChannel_ = channel.toLower ();
 		const QString& chnnl = channel.toLower ();
 		if (msg.startsWith ('/'))
 		{
 			if (ChannelHandlers_.contains (chnnl))
 			{
 				const QString& cmd = ISH_->ParseMessageForCommand (msg, chnnl);
-				AddCommand2Queue (chnnl, cmd);
 				if (cmd == "say")
 					ChannelHandlers_ [chnnl]->HandleIncomingMessage (ISH_->GetNickName (),
 							msg.mid (4));
@@ -266,19 +261,11 @@ namespace Acetamide
 	void ChannelsManager::ReceiveCmdAnswerMessage (const QString& cmd,
 			const QString& answer, bool endOfCmd)
 	{
-		if (CmdQueue_.isEmpty ())
-			return;
-
-		const CommandMessage& msg = CmdQueue_.head ();
-		if (msg.Cmd_ == cmd &&
-				ChannelHandlers_.contains (msg.Channel_))
+		if (ChannelHandlers_.contains (LastActiveChannel_))
 		{
-			ChannelHandlers_ [msg.Channel_]->HandleServiceMessage (answer,
+			ChannelHandlers_ [LastActiveChannel_]->HandleServiceMessage (answer,
 					IMessage::MTEventMessage,
 					IMessage::MSTOther);
-			if (!msg.IsLongAnwser_ ||
-					endOfCmd)
-				CmdQueue_.dequeue ();
 		}
 	}
 
@@ -302,13 +289,6 @@ namespace Acetamide
 			ich->HandleServiceMessage (msg,
 					IMessage::MTServiceMessage,
 					IMessage::MSTOther);
-
-		if (CmdQueue_.isEmpty ())
-			return;
-
-		const CommandMessage& cmdMsg = CmdQueue_.head ();
-		if (cmdMsg.Cmd_ == "ctcp")
-			CmdQueue_.dequeue ();
 	}
 
 	void ChannelsManager::CTCPRequestResult (const QString& msg)
@@ -318,12 +298,6 @@ namespace Acetamide
 			ich->HandleServiceMessage (msg,
 					IMessage::MTServiceMessage,
 					IMessage::MSTOther);
-
-			if (CmdQueue_.isEmpty ())
-				continue;
-			const CommandMessage& msg = CmdQueue_.head ();
-			if (msg.Cmd_ == "ctcp")
-				CmdQueue_.dequeue ();
 		}
 	}
 
@@ -510,24 +484,25 @@ namespace Acetamide
 
 	void ChannelsManager::RequestWhoIs (const QString& channel, const QString& nick)
 	{
-		AddCommand2Queue (channel, "whois");
+		LastActiveChannel_ = channel;
 		ISH_->RequestWhoIs (nick);
 	}
 
 	void ChannelsManager::RequestWhoWas (const QString& channel, const QString& nick)
 	{
-		AddCommand2Queue (channel, "whowas");
+		LastActiveChannel_ = channel;
 		ISH_->RequestWhoWas (nick);
 	}
 
 	void ChannelsManager::RequestWho (const QString& channel, const QString& nick)
 	{
-		AddCommand2Queue (channel, "who");
+		LastActiveChannel_ = channel;
 		ISH_->RequestWho (nick);
 	}
 
-	void ChannelsManager::CTCPRequest (const QStringList& cmd)
+	void ChannelsManager::CTCPRequest (const QStringList& cmd, const QString& channel)
 	{
+		LastActiveChannel_ = channel;
 		ISH_->CTCPRequst (cmd);
 	}
 
@@ -551,16 +526,6 @@ namespace Acetamide
 	void ChannelsManager::CreateServerParticipantEntry (QString nick)
 	{
 		ISH_->CreateServerParticipantEntry (nick);
-	}
-
-	void ChannelsManager::AddCommand2Queue (const QString& channel, const QString& cmd)
-	{
-		CommandMessage msg;
-		msg.Channel_ = channel.toLower ();
-		msg.Cmd_ = cmd;
-		msg.IsLongAnwser_ = ISH_->IsCmdHasLongAnswer (cmd.toLower ());
-
-		CmdQueue_.enqueue (msg);
 	}
 
 	uint qHash (const ChannelOptions& opts)

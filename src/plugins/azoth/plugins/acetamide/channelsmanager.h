@@ -46,7 +46,7 @@ namespace Acetamide
 		QHash<QString, std::shared_ptr<ChannelHandler>> ChannelHandlers_;
 		QSet<ChannelOptions> ChannelsQueue_;
 
-		QQueue<CommandMessage> CmdQueue_;
+		QString LastActiveChannel_;
 	public:
 		ChannelsManager (IrcServerHandler* = 0);
 		IrcAccount* GetAccount () const;
@@ -58,8 +58,6 @@ namespace Acetamide
 		ServerOptions GetServerOptions () const;
 
 		QObjectList GetCLEntries () const;
-
-		bool IsCmdQueueEmpty () const;
 
 		ChannelHandler* GetChannelHandler (const QString& channel);
 		QList<std::shared_ptr<ChannelHandler>> GetChannels () const;
@@ -139,15 +137,13 @@ namespace Acetamide
 		void RequestWhoWas (const QString& channel, const QString& nick);
 		void RequestWho (const QString& channel, const QString& nick);
 
-		void CTCPRequest (const QStringList& cmd);
+		void CTCPRequest (const QStringList& cmd, const QString& channel);
 
 		QMap<QString, QString> GetISupport () const;
 
 		void SetPrivateChat (const QString& nick);
 
 		void CreateServerParticipantEntry (QString nick);
-	private:
-		void AddCommand2Queue (const QString& channel, const QString& cmd);
 	};
 }
 }

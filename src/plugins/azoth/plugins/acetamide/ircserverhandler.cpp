@@ -461,12 +461,10 @@ namespace Acetamide
 	void IrcServerHandler::ShowAnswer (const QString& cmd, const QString& answer, bool isEndOf)
 	{
 		QString msg = "[" + cmd.toUpper () + "] " + answer;
-		if (!ChannelsManager_->IsCmdQueueEmpty ())
-			ChannelsManager_->ReceiveCmdAnswerMessage (cmd, msg, isEndOf);
-		else
-			ServerCLEntry_->HandleMessage (CreateMessage (IMessage::MTEventMessage,
-					ServerID_,
-					msg));
+		ChannelsManager_->ReceiveCmdAnswerMessage (cmd, msg, isEndOf);
+		ServerCLEntry_->HandleMessage (CreateMessage (IMessage::MTEventMessage,
+				ServerID_,
+				msg));
 	}
 
 	void IrcServerHandler::CTCPReply (const QString& nick,
