@@ -28,7 +28,7 @@ class QIcon;
 class QMenu;
 
 /** @brief This interface is used to represent LeechCraft's core tab widget
- * 
+ *
  * This interface is for communication with the core tab widget.
  *
  * Object returned by the GetObject() function emits these signals:
@@ -61,6 +61,23 @@ public:
 	 * @return the page at inted position.
 	 */
 	virtual QWidget* Widget (int index) const = 0;
+
+	/** @brief Returns the index of the given page.
+	 *
+	 * @param[in] page page to find.
+	 * @return the index of that page, or -1 if not found.
+	 */
+	virtual int IndexOf (QWidget *page) const = 0;
+
+	/** @brief Returns the tab menu for the given tab index.
+	 *
+	 * Ownership of the menu goes to the caller — it's his responsibility
+	 * to delete the menu when done.
+	 *
+	 * @param[in] index tab index.
+	 * @return tab menu for that index, or null if index is invalid.
+	 */
+	virtual QMenu* GetTabMenu (int index) = 0;
 
 	/** @brief Returns the list of actions witch always shows in context menu.
 	 * of the tab
