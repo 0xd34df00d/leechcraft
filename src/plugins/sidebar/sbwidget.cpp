@@ -115,6 +115,7 @@ namespace Sidebar
 		tb->setIconSize (IconSize_);
 		tb->setAutoRaise (true);
 		tb->setDefaultAction (act);
+		tb->setPopupMode (QToolButton::DelayedPopup);
 		TrayAct2Button_ [act] = tb;
 
 		TrayLay_->addWidget (tb);
