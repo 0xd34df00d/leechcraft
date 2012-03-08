@@ -11,7 +11,7 @@
 						<label value="Show invite dialog" />
 				</item>
 				<item type="checkbox" property="ServerDuplicateCommandAnswer" state="off">
-					<label value="Duplicate answer on command in server's tab" />
+					<label value="Duplicate command answer in server's tab" />
 				</item>
 			</groupbox>
 			<groupbox>
