@@ -195,8 +195,8 @@ namespace Xoox
 			gapp (tr ("Version"), version.version ());
 			gapp (tr ("OS"), version.os ());
 
-			const QStringList& caps =
-					mgr->GetCaps (entry->GetVariantVerString (variant));
+			QStringList caps = mgr->GetCaps (entry->GetVariantVerString (variant));
+			caps.sort ();
 			if (caps.size ())
 				html += "<strong>" + tr ("Capabilities") +
 						"</strong>:<ul><li>" + caps.join ("</li><li>") + "</li></ul>";
