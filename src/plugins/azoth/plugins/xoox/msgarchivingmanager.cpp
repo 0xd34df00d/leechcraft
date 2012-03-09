@@ -32,47 +32,139 @@ namespace Xoox
 
 	namespace
 	{
-		MsgArchOTR OTRFromStr (const QString& str)
+		template<typename T>
+		class BaseConverter
 		{
-			QMap<QString, MsgArchOTR> map;
-			map ["approve"] = MsgArchOTR::Approve;
-			map ["concede"] = MsgArchOTR::Concede;
-			map ["forbid"] = MsgArchOTR::Forbid;
-			map ["oppose"] = MsgArchOTR::Oppose;
-			map ["prefer"] = MsgArchOTR::Prefer;
-			map ["require"] = MsgArchOTR::Require;
-			return map.value (str, MsgArchOTR::Concede);
-		}
+			const QString& Str_;
+			const T T_;
 
-		MsgArchSave SaveFromStr (const QString& str)
-		{
-			QMap<QString, MsgArchSave> map;
-			map ["body"] = MsgArchSave::Body;
-			map ["false"] = MsgArchSave::False;
-			map ["message"] = MsgArchSave::Message;
-			map ["stream"] = MsgArchSave::Stream;
-			return map.value (str, MsgArchSave::False);
-		}
+			const QString DefStr_;
+			const T DefT_;
+		protected:
+			QMap<QString, T> Map_;
+		public:
+			BaseConverter (const QString& str, const QString& defStr, const T defT)
+			: Str_ (str)
+			, T_ (defT)
+			, DefStr_ (defStr)
+			, DefT_ (defT)
+			{
+			}
 
-		MsgArchMethod MethodFromStr (const QString& str)
-		{
-			if (str == "auto")
-				return MsgArchMethod::Auto;
-			else if (str == "local")
-				return MsgArchMethod::Local;
-			else
-				return MsgArchMethod::Manual;
-		}
+			BaseConverter (const T t, const QString& defStr, const T defT)
+			: Str_ (QString ())
+			, T_ (t)
+			, DefStr_ (defStr)
+			, DefT_ (defT)
+			{
+			}
 
-		MsgArchMethodPolicy MethodPolicyFromStr (const QString& str)
+			operator QString () const
+			{
+				return Map_.key (T_, DefStr_);
+			}
+
+			operator T () const
+			{
+				return Map_.value (Str_, DefT_);
+			}
+		};
+
+		class OTRConverter : public BaseConverter<MsgArchOTR>
 		{
-			if (str == "concede")
-				return MsgArchMethodPolicy::Concede;
-			else if (str == "forbid")
-				return MsgArchMethodPolicy::Forbid;
-			else
-				return MsgArchMethodPolicy::Prefer;
-		}
+		public:
+			OTRConverter (const QString& str)
+			: BaseConverter (str, "concede", MsgArchOTR::Concede)
+			{
+				InitMap ();
+			}
+
+			OTRConverter (MsgArchOTR otr)
+			: BaseConverter (otr, "concede", MsgArchOTR::Concede)
+			{
+				InitMap ();
+			}
+		private:
+			void InitMap ()
+			{
+				Map_ ["approve"] = MsgArchOTR::Approve;
+				Map_ ["concede"] = MsgArchOTR::Concede;
+				Map_ ["forbid"] = MsgArchOTR::Forbid;
+				Map_ ["oppose"] = MsgArchOTR::Oppose;
+				Map_ ["prefer"] = MsgArchOTR::Prefer;
+				Map_ ["require"] = MsgArchOTR::Require;
+			}
+		};
+
+		class SaveConverter : public BaseConverter<MsgArchSave>
+		{
+		public:
+			SaveConverter (const QString& str)
+			: BaseConverter (str, "false", MsgArchSave::False)
+			{
+				InitMap ();
+			}
+
+			SaveConverter (MsgArchSave save)
+			: BaseConverter (save, "false", MsgArchSave::False)
+			{
+				InitMap ();
+			}
+		private:
+			void InitMap ()
+			{
+				Map_ ["body"] = MsgArchSave::Body;
+				Map_ ["false"] = MsgArchSave::False;
+				Map_ ["message"] = MsgArchSave::Message;
+				Map_ ["stream"] = MsgArchSave::Stream;
+			}
+		};
+
+		class MethodConverter : public BaseConverter<MsgArchMethod>
+		{
+		public:
+			MethodConverter (const QString& str)
+			: BaseConverter (str, "manual", MsgArchMethod::Manual)
+			{
+				InitMap ();
+			}
+
+			MethodConverter (MsgArchMethod meth)
+			: BaseConverter (meth, "manual", MsgArchMethod::Manual)
+			{
+				InitMap ();
+			}
+		private:
+			void InitMap ()
+			{
+				Map_ ["auto"] = MsgArchMethod::Auto;
+				Map_ ["local"] = MsgArchMethod::Local;
+				Map_ ["manual"] = MsgArchMethod::Manual;
+			}
+		};
+
+		class MethodPolicyConverter : public BaseConverter<MsgArchMethodPolicy>
+		{
+		public:
+			MethodPolicyConverter (const QString& str)
+			: BaseConverter (str, "prefer", MsgArchMethodPolicy::Prefer)
+			{
+				InitMap ();
+			}
+
+			MethodPolicyConverter (MsgArchMethodPolicy pol)
+			: BaseConverter (pol, "prefer", MsgArchMethodPolicy::Prefer)
+			{
+				InitMap ();
+			}
+		private:
+			void InitMap ()
+			{
+				Map_ ["concede"] = MsgArchMethodPolicy::Concede;
+				Map_ ["forbid"] = MsgArchMethodPolicy::Forbid;
+				Map_ ["prefer"] = MsgArchMethodPolicy::Prefer;
+			}
+		};
 	}
 
 	bool operator< (MsgArchMethod m1, MsgArchMethod m2)
@@ -112,13 +204,31 @@ namespace Xoox
 
 	void MsgArchivingManager::RequestPrefs ()
 	{
-		QXmppIq iq;
-
 		QXmppElement elem;
 		elem.setTagName ("pref");
 		elem.setAttribute ("xmlns", NsArchive);
-		iq.setExtensions (elem);
 
+		QXmppIq iq;
+		iq.setExtensions (elem);
+		client ()->sendPacket (iq);
+	}
+
+	void MsgArchivingManager::SetDefaultSetting (const MsgArchSetting& setting)
+	{
+		QXmppElement def;
+		def.setTagName ("default");
+		def.setAttribute ("otr", OTRConverter (setting.OTR_));
+		def.setAttribute ("save", SaveConverter (setting.Save_));
+		if (setting.Expire_ > 0)
+			def.setAttribute ("expire", QString::number (setting.Expire_));
+
+		QXmppElement pref;
+		pref.setTagName ("pref");
+		pref.setAttribute ("xmlns", NsArchive);
+		pref.appendChild (def);
+
+		QXmppIq iq (QXmppIq::Set);
+		iq.setExtensions (pref);
 		client ()->sendPacket (iq);
 	}
 
@@ -153,8 +263,8 @@ namespace Xoox
 
 		auto handleMeth = [&Prefs_] (const QDomElement& meth)
 		{
-			Prefs_.MethodPolicies_ [MethodFromStr (meth.attribute ("type"))] =
-					MethodPolicyFromStr (meth.attribute ("use"));
+			Prefs_.MethodPolicies_ [MethodConverter (meth.attribute ("type"))] =
+					MethodPolicyConverter (meth.attribute ("use"));
 		};
 		handleMeth (autoMeth);
 		handleMeth (localMeth);
@@ -164,8 +274,8 @@ namespace Xoox
 		{
 			MsgArchSetting setting =
 			{
-				OTRFromStr (elem.attribute ("otr")),
-				SaveFromStr (elem.attribute ("save")),
+				OTRConverter (elem.attribute ("otr")),
+				SaveConverter (elem.attribute ("save")),
 				elem.attribute ("expire").toLongLong ()
 			};
 			return setting;
