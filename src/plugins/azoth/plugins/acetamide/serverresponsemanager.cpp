@@ -453,8 +453,10 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		const QString target = QString::fromUtf8 (opts.Parameters_.last ().c_str ());
-		ISH_->ShowAnswer ("away", target + " " + opts.Message_);
+		const QString& target = QString::fromUtf8 (opts.Parameters_.last ().c_str ());
+		const QString& nick = QString::fromUtf8 (opts.Parameters_.first ().c_str ());
+		ISH_->IncomingMessage (target, target, QString ("[AWAY] %1 :%2")
+				.arg (target, opts.Message_), IMessage::MTStatusMessage);
 	}
 
 	void ServerResponseManager::GotSetAway (const IrcMessageOptions& opts)
@@ -469,7 +471,7 @@ namespace Acetamide
 			break;
 		}
 
-		ISH_->ShowAnswer ("away", opts.Message_);
+		ISH_->ShowAnswer ("away", opts.Message_, IMessage::MTStatusMessage);
 	}
 
 	void ServerResponseManager::GotUserHost (const IrcMessageOptions& opts)

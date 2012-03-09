@@ -255,14 +255,14 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::IncomingMessage (const QString& nick,
-			const QString& target, const QString& msg)
+			const QString& target, const QString& msg, IMessage::MessageType type)
 	{
 		if (ChannelsManager_->IsChannelExists (target))
 			ChannelsManager_->ReceivePublicMessage (target, nick, msg);
 		else
 		{
 			//TODO Work only for exists entries
-			IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
+			IrcMessage *message = new IrcMessage (type,
 					IMessage::DIn,
 					ServerID_,
 					nick,
@@ -478,7 +478,8 @@ namespace Acetamide
 		InviteChannelsDialog_->show ();
 	}
 
-	void IrcServerHandler::ShowAnswer (const QString& cmd, const QString& answer, bool isEndOf)
+	void IrcServerHandler::ShowAnswer (const QString& cmd,
+			const QString& answer, bool isEndOf, IMessage::MessageType type)
 	{
 		QString msg = "[" + cmd.toUpper () + "] " + answer;
 		bool res = ChannelsManager_->ReceiveCmdAnswerMessage (cmd, msg, isEndOf);
@@ -486,7 +487,7 @@ namespace Acetamide
 		if (!res ||
 				XmlSettingsManager::Instance ()
 						.property ("ServerDuplicateCommandAnswer").toBool ())
-			ServerCLEntry_->HandleMessage (CreateMessage (IMessage::MTEventMessage,
+			ServerCLEntry_->HandleMessage (CreateMessage (type,
 					ServerID_,
 					msg));
 	}
