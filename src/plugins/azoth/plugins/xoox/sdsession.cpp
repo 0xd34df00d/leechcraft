@@ -295,7 +295,7 @@ namespace Xoox
 		if (jid.isEmpty ())
 			return;
 
-		QPointer<VCardDialog> dia (new VCardDialog);
+		QPointer<VCardDialog> dia (new VCardDialog (Account_));
 		dia->show ();
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		Account_->GetClientConnection ()->FetchVCard (jid,

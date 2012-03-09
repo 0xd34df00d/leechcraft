@@ -35,9 +35,9 @@ namespace Azoth
 {
 namespace Xoox
 {
-	VCardDialog::VCardDialog (QWidget *parent)
+	VCardDialog::VCardDialog (GlooxAccount *acc, QWidget *parent)
 	: QDialog (parent)
-	, Account_ (0)
+	, Account_ (acc)
 	{
 		Ui_.setupUi (this);
 		connect (this,
