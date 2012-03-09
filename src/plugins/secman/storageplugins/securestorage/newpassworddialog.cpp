@@ -17,8 +17,8 @@
  **********************************************************************/
 
 #include "newpassworddialog.h"
-#include "securestorage.h"
 #include <QString>
+#include "securestorage.h"
 
 namespace LeechCraft
 {
@@ -55,15 +55,15 @@ namespace SecureStorage
 			Qt::QueuedConnection);
 	}
 
-	QString NewPasswordDialog::GetPassword ()
+	QString NewPasswordDialog::GetPassword () const
 	{
 		return ReturnIfEqual (Ui_.PasswordEdit1_->text (),  Ui_.PasswordEdit2_->text ());
 	}
 
 	void NewPasswordDialog::clear ()
 	{
-		Ui_.PasswordEdit1_->setText ("");
-		Ui_.PasswordEdit2_->setText ("");
+		Ui_.PasswordEdit1_->clear ();
+		Ui_.PasswordEdit2_->clear ();
 	}
 
 	void NewPasswordDialog::checkPasswords ()

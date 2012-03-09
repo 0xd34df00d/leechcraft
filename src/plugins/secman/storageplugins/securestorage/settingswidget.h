@@ -33,7 +33,7 @@ namespace StoragePlugins
 {
 namespace SecureStorage
 {
-	class SettingsWidget: public QWidget
+	class SettingsWidget : public QWidget
 	{
 		Q_OBJECT
 

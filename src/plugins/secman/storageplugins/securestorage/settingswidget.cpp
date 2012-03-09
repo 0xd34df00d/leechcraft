@@ -47,7 +47,7 @@ namespace SecureStorage
 		return Ui_.OldPassword_->text ();
 	}
 
-	QString SettingsWidget::GetNewPassword()
+	QString SettingsWidget::GetNewPassword ()
 	{
 		return ReturnIfEqual (Ui_.NewPassword1_->text (), Ui_.NewPassword2_->text ());
 	}

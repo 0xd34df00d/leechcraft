@@ -31,14 +31,15 @@ namespace StoragePlugins
 {
 namespace SecureStorage
 {
-	class NewPasswordDialog: public QDialog
+	class NewPasswordDialog : public QDialog
 	{
 		Q_OBJECT
 
 		Ui::NewPasswordDialog Ui_;
 	public:
 		NewPasswordDialog ();
-		QString GetPassword ();
+		QString GetPassword () const;
+	public slots:
 		void clear ();
 	private slots:
 		void checkPasswords ();

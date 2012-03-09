@@ -18,8 +18,7 @@
  **********************************************************************/
 
 #include "securestorage.h"
-#include <interfaces/secman/istorageplugin.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <exception>
 #include <QSettings>
 #include <QIcon>
 #include <QCoreApplication>
@@ -30,7 +29,8 @@
 #include <QList>
 #include <QMap>
 #include <QDataStream>
-#include <exception>
+#include <interfaces/secman/istorageplugin.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "settingswidget.h"
 #include "xmlsettingsmanager.h"
 
@@ -64,7 +64,7 @@ namespace StoragePlugins
 namespace SecureStorage
 {
 	
-	QString ReturnIfEqual(const QString& s1, const QString& s2)
+	QString ReturnIfEqual (const QString& s1, const QString& s2)
 	{
 		if (s1 == s2)
 			return s1;
@@ -170,8 +170,8 @@ namespace SecureStorage
 
 	void Plugin::UpdateActionsStates ()
 	{
-		ForgetKeyAction_->setEnabled (bool (CryptoSystem_) && !IsPasswordEmpty ());
-		InputKeyAction_->setEnabled (!bool (CryptoSystem_) && !IsPasswordEmpty ());
+		ForgetKeyAction_->setEnabled (CryptoSystem_ && !IsPasswordEmpty ());
+		InputKeyAction_->setEnabled (!CryptoSystem_ && !IsPasswordEmpty ());
 	}
 
 	QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType)
@@ -324,7 +324,7 @@ namespace SecureStorage
 						InputPasswordDialog_->setTextEchoMode (QLineEdit::Password);
 						InputPasswordDialog_->setWindowTitle (WindowTitle_);
 						InputPasswordDialog_->setLabelText (tr ("Enter master password:"));
-						InputPasswordDialog_->setTextValue ("");
+						InputPasswordDialog_->clear ();
 						InputPasswordDialog_->setVisible (true);
 					}
 
