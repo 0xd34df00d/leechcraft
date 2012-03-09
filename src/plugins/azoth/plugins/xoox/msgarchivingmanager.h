@@ -94,6 +94,8 @@ namespace Xoox
 		bool handleStanza (const QDomElement&);
 
 		void RequestPrefs ();
+		MsgArchPrefs GetPrefs () const;
+
 		void SetArchSetting (const MsgArchSetting& setting,
 				const QString& jid = QString ());
 	private:

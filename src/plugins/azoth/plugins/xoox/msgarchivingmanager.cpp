@@ -213,6 +213,11 @@ namespace Xoox
 		client ()->sendPacket (iq);
 	}
 
+	MsgArchPrefs MsgArchivingManager::GetPrefs () const
+	{
+		return Prefs_;
+	}
+
 	void MsgArchivingManager::SetArchSetting (const MsgArchSetting& setting, const QString& jid)
 	{
 		QXmppElement def;
