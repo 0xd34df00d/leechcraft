@@ -98,6 +98,8 @@ namespace Xoox
 				const QString& jid = QString ());
 	private:
 		void HandlePref (const QDomElement&);
+	signals:
+		void archPreferencesChanged ();
 	};
 }
 }

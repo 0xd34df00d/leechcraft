@@ -290,6 +290,8 @@ namespace Xoox
 			Prefs_.ItemSettings_ [item.attribute ("jid")] = handleSetting (item);
 			item = item.nextSiblingElement ("item");
 		}
+
+		emit archPreferencesChanged ();
 	}
 }
 }
