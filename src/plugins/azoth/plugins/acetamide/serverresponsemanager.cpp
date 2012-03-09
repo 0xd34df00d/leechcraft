@@ -24,6 +24,7 @@
 #include "ircserverhandler.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
+#include "ircaccount.h"
 
 namespace LeechCraft
 {
@@ -458,6 +459,16 @@ namespace Acetamide
 
 	void ServerResponseManager::GotSetAway (const IrcMessageOptions& opts)
 	{
+		switch (opts.Command_.toInt ())
+		{
+		case 305:
+			ISH_->ChangeAway (false);
+			break;
+		case 306:
+			ISH_->ChangeAway (true, opts.Message_);
+			break;
+		}
+
 		ISH_->ShowAnswer ("away", opts.Message_);
 	}
 

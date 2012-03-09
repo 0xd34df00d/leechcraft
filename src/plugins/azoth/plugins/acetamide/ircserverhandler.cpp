@@ -482,7 +482,7 @@ namespace Acetamide
 	{
 		QString msg = "[" + cmd.toUpper () + "] " + answer;
 		bool res = ChannelsManager_->ReceiveCmdAnswerMessage (cmd, msg, isEndOf);
-
+		
 		if (!res ||
 				XmlSettingsManager::Instance ()
 						.property ("ServerDuplicateCommandAnswer").toBool ())
@@ -1034,6 +1034,19 @@ namespace Acetamide
 	{
 		RequestWhoIs (nick);
 		SpyNick2WhoIsMessage_.insert (nick, WhoIsMessage ());
+	}
+
+	void IrcServerHandler::SetAway (const QString& message)
+	{
+		IrcParser_->AwayCommand (QStringList (message));
+	}
+
+	void IrcServerHandler::ChangeAway (bool away, const QString& message)
+	{
+		away ?
+			Account_->SetState (EntryStatus (SAway, message)) :
+			Account_->SetState (EntryStatus (SOnline, QString ()));
+		autoWhoRequest ();
 	}
 
 	void IrcServerHandler::connectionEstablished ()

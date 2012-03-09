@@ -25,6 +25,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "nickservidentifywidget.h"
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -49,8 +50,6 @@ namespace Acetamide
 
 		SettingsDialog_->SetCustomWidget ("NickServIdentifyWidget",
 				Core::Instance ().GetNickServIdentifyWidget ());
-// 		SettingsDialog_->SetDataSource ("NickServIdentifyModel",
-// 				Core::Instance ().GetNickServIdentifyModel ());
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),

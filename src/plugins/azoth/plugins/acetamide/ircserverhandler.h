@@ -209,6 +209,9 @@ namespace Acetamide
 		void CreateServerParticipantEntry (QString nick);
 
 		void VCardRequest (const QString& nick);
+
+		void SetAway (const QString& message);
+		void ChangeAway (bool away, const QString& message = QString ());
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();

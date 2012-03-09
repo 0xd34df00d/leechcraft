@@ -107,6 +107,7 @@ namespace Acetamide
 
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
+		void SetState (const EntryStatus& status);
 		void Authorize (QObject*);
 		void DenyAuth (QObject*);
 		void RequestAuth (const QString&, const QString&,
