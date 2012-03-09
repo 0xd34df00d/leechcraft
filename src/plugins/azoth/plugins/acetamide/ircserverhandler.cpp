@@ -623,6 +623,15 @@ namespace Acetamide
 			}
 
 		if (!msg.Nick_.isEmpty () &&
+				!msg.LoggedName_.isEmpty ())
+			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				message = tr ("%1 is logged in as %2 ")
+						.arg (msg.Nick_, msg.LoggedName_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
+
+		if (!msg.Nick_.isEmpty () &&
 				!msg.EndString_.isEmpty ())
 			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
 			{

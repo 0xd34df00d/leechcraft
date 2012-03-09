@@ -123,6 +123,9 @@ namespace Acetamide
 		void GotExceptListEnd (const IrcMessageOptions& opts);
 		void GotInviteList (const IrcMessageOptions& opts);
 		void GotInviteListEnd (const IrcMessageOptions& opts);
+
+		//not from rfc
+		void GotWhoIsAccount (const IrcMessageOptions& opts);
 	};
 };
 };

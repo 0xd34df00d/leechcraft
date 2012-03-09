@@ -223,6 +223,10 @@ namespace Acetamide
 				 this, _1);
 		Command2Action_ ["324"] = boost::bind (&ServerResponseManager::GotChannelModes,
 				 this, _1);
+
+		//not from rfc
+		Command2Action_ ["330"] = boost::bind (&ServerResponseManager::GotWhoIsAccount,
+				this, _1);
 	}
 
 	bool ServerResponseManager::IsCTCPMessage (const QString& msg)
@@ -1063,6 +1067,18 @@ namespace Acetamide
 	{
 		ISH_->ShowInviteListEnd (opts.Message_);
 	}
+
+	void ServerResponseManager::GotWhoIsAccount (const IrcMessageOptions& opts)
+	{
+		if (opts.Parameters_.count () < 3)
+			return;
+		
+		WhoIsMessage msg;
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.LoggedName_ = QString::fromUtf8 (opts.Parameters_.at (2).c_str ());
+		ISH_->ShowWhoIsReply (msg);
+	}
+
 }
 }
 }
