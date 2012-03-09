@@ -23,6 +23,7 @@
 #include <QImage>
 #include <QVariant>
 #include <interfaces/iclentry.h>
+#include "localtypes.h"
 
 namespace LeechCraft
 {
@@ -30,9 +31,9 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
 	class IrcAccount;
 	class IrcMessage;
+	class VCardDialog;
 
 	class EntryBase : public QObject
 					, public ICLEntry
@@ -45,6 +46,7 @@ namespace Acetamide
 		QList<QAction*> Actions_;
 
 		IrcAccount *Account_;
+		QPointer<VCardDialog> VCardDialog_;
 	public:
 		EntryBase (IrcAccount* = 0);
 		virtual ~EntryBase ();
@@ -68,6 +70,7 @@ namespace Acetamide
 		void SetAvatar (const QByteArray&);
 		void SetAvatar (const QImage&);
 		void SetRawInfo (const QString&);
+		void SetInfo (const WhoIsMessage& msg);
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);

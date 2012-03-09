@@ -202,6 +202,14 @@ namespace Acetamide
 			ServerHandlers_ [serverID]->ClosePrivateChat (nick);
 	}
 
+	void ClientConnection::FetchVCard (const QString& serverId, const QString& nick)
+	{
+		if (!ServerHandlers_.contains (serverId))
+			return;
+
+		ServerHandlers_ [serverId]->VCardRequest (nick);
+	}
+
 	void ClientConnection::serverConnected (const QString& serverId)
 	{
 		if (Account_->GetState ().State_ == SOffline)

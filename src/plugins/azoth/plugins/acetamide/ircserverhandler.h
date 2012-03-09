@@ -73,6 +73,7 @@ namespace Acetamide
 		QMap<QString, QString> ISupport_;
 
 		QHash<QString, QPair<bool, int>> SpyWho_;
+		QHash<QString, WhoIsMessage> SpyNick2WhoIsMessage_;
 		QTimer *AutoWhoTimer_;
 	public:
 		IrcServerHandler (const ServerOptions&,
@@ -206,15 +207,18 @@ namespace Acetamide
 		void ClosePrivateChat (const QString& nick);
 
 		void CreateServerParticipantEntry (QString nick);
+
+		void VCardRequest (const QString& nick);
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();
 		ServerParticipantEntry_ptr CreateParticipantEntry (const QString&);
+	public slots:
+		void autoWhoRequest ();
 	private slots:
 		void connectionEstablished ();
 		void connectionClosed ();
 		void joinAfterInvite ();
-		void autoWhoRequest ();
 		void handleSetAutoWho ();
 		void handleUpdateWhoPeriod ();
 	signals:

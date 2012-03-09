@@ -205,10 +205,6 @@ namespace Acetamide
 		else
 			Add2ChannelsQueue (channel);
 
-		IrcParser_->WhoCommand (QStringList (channelName));
-		SpyWho_ [channelName] = qMakePair (true,
-				ChannelsManager_->GetChannelUsersCount (channelName));
-
 		return res;
 	}
 
@@ -537,66 +533,116 @@ namespace Acetamide
 	void IrcServerHandler::ShowWhoIsReply (const WhoIsMessage& msg, bool isEndOf)
 	{
 		QString message;
+		bool spy = false;
 		if (!msg.Nick_.isEmpty () &&
 				!msg.UserName_.isEmpty () &&
 				!msg.Host_.isEmpty ())
-		{
-			message = tr ("%1 is %2")
-					.arg (msg.Nick_, msg.Nick_ + "!" + msg.UserName_ + "@" + msg.Host_);
-			ShowAnswer ("whois", message, isEndOf);
-		}
+			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
+				whois.Nick_ = msg.Nick_;
+				whois.UserName_ = msg.UserName_;
+				whois.Host_ = msg.Host_;
+			}
+			else
+			{
+				message = tr ("%1 is %2")
+						.arg (msg.Nick_, msg.Nick_ + "!" + msg.UserName_ + "@" + msg.Host_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.RealName_.isEmpty ())
-		{
-			message = tr ("%1's real name is %2").arg (msg.Nick_, msg.RealName_);
-			ShowAnswer ("whois", message, isEndOf);
-		}
+			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
+				whois.Nick_ = msg.Nick_;
+				whois.RealName_ = msg.RealName_;
+			}
+			else
+			{
+				message = tr ("%1's real name is %2").arg (msg.Nick_, msg.RealName_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.Channels_.isEmpty ())
-		{
-			message = tr ("%1 is on channels: %2")
-					.arg (msg.Nick_, msg.Channels_.join (", "));
-			ShowAnswer ("whois", message, isEndOf);
-		}
+			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
+				whois.Nick_ = msg.Nick_;
+				whois.Channels_ = msg.Channels_;
+			}
+			else
+			{
+				message = tr ("%1 is on channels: %2")
+						.arg (msg.Nick_, msg.Channels_.join (", "));
+				ShowAnswer ("whois", message, isEndOf);
+			}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.ServerName_.isEmpty () &&
 				!msg.ServerCountry_.isEmpty ())
-		{
-			message = tr ("%1's server is: %2 - %3")
-					.arg (msg.Nick_, msg.ServerName_, msg.ServerCountry_);
-			ShowAnswer ("whois", message, isEndOf);
-		}
+			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
+				whois.Nick_ = msg.Nick_;
+				whois.ServerName_ = msg.ServerName_;
+				whois.ServerCountry_ = msg.ServerCountry_;
+			}
+			else
+			{
+				message = tr ("%1's server is: %2 - %3")
+						.arg (msg.Nick_, msg.ServerName_, msg.ServerCountry_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.IdleTime_.isEmpty ())
-		{
-			message = tr ("%1's idle time: %2").arg (msg.Nick_, msg.IdleTime_);
-			ShowAnswer ("whois", message, isEndOf);
-		}
+			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				message = tr ("%1's idle time: %2").arg (msg.Nick_, msg.IdleTime_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.AuthTime_.isEmpty ())
-		{
-			message = tr ("%1's auth date: %2").arg (msg.Nick_, msg.AuthTime_);
-			ShowAnswer ("whois", message, isEndOf);
-		}
+			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				message = tr ("%1's auth date: %2").arg (msg.Nick_, msg.AuthTime_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.IrcOperator_.isEmpty ())
-		{
-			message = msg.Nick_ + ": " + msg.IrcOperator_;
-			ShowAnswer ("whois", message, isEndOf);
-		}
+			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				message = msg.Nick_ + ": " + msg.IrcOperator_;
+				ShowAnswer ("whois", message, isEndOf);
+			}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.EndString_.isEmpty ())
-		{
-			message = msg.Nick_ + " " + msg.EndString_;
-			ShowAnswer ("whois", message, isEndOf);
-		}
+			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				Q_FOREACH (QObject *entryObj,ChannelsManager_->
+						GetParticipantsByNick (msg.Nick_))
+				{
+					ChannelParticipantEntry *entry =
+							qobject_cast<ChannelParticipantEntry*> (entryObj);
+					if (!entry)
+						continue;
+
+					entry->SetInfo (SpyNick2WhoIsMessage_ [msg.Nick_]);
+				}
+
+				SpyNick2WhoIsMessage_.remove (msg.Nick_);
+			}
+			else
+			{
+				message = msg.Nick_ + " " + msg.EndString_;
+				ShowAnswer ("whois", message, isEndOf);
+			}
 	}
 
 	void IrcServerHandler::ShowWhoWasReply (const QString& msg, bool isEndOf)
@@ -622,10 +668,24 @@ namespace Acetamide
 									msg.Flags_,
 									msg.IsAway_ ? "true" : "false",
 									msg.RealName_);
-		if (SpyWho_ [msg.Channel_.toLower ()].first)
+
+		if (SpyWho_ [msg.Channel_.toLower ()].first ||
+				isEndOf)
 		{
-			ChannelsManager_->UpdateEntry (msg);
-			auto& pair = SpyWho_ [msg.Channel_.toLower ()];
+			const QString& name = (isEndOf ? msg.Nick_ : msg.Channel_).toLower ();
+
+			if (!isEndOf)
+				ChannelsManager_->UpdateEntry (msg);
+			else if (SpyWho_.contains (name) &&
+					!SpyWho_ [name].first)
+				ShowAnswer ("who", message, isEndOf);
+			else if (!SpyWho_.contains (name))
+			{
+				ShowAnswer ("who", message, isEndOf);
+				return;
+			}
+
+			auto& pair = SpyWho_ [name];
 			--pair.second;
 			if (!pair.second)
 				pair.first = false;
@@ -970,6 +1030,12 @@ namespace Acetamide
 		entry->SetStatus (EntryStatus (SOnline, ""));
 	}
 
+	void IrcServerHandler::VCardRequest (const QString& nick)
+	{
+		RequestWhoIs (nick);
+		SpyNick2WhoIsMessage_.insert (nick, WhoIsMessage ());
+	}
+
 	void IrcServerHandler::connectionEstablished ()
 	{
 		ServerConnectionState_ = Connected;
@@ -1008,7 +1074,7 @@ namespace Acetamide
 			IrcParser_->WhoCommand (QStringList (channelName));
 			auto& pair = SpyWho_ [channelName];
 			pair.first = true;
-			pair.second = ChannelsManager_->GetChannelUsersCount (channelName);
+			pair.second = ChannelsManager_->GetChannelUsersCount (channelName) + 1;
 		}
 	}
 

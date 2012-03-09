@@ -73,6 +73,8 @@ namespace Acetamide
 		void SetConsoleEnabled (bool);
 
 		void ClosePrivateChat (const QString& serverID, QString nick);
+
+		void FetchVCard (const QString& serverId, const QString& nick);
 	public slots:
 		void serverConnected (const QString&);
 		void serverDisconnected (const QString&);

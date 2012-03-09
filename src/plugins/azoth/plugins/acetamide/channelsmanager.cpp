@@ -199,11 +199,15 @@ namespace Acetamide
 	{
 		if (IsChannelExists (channel) &&
 				!ChannelHandlers_ [channel]->IsRosterReceived ())
+		{
 			Q_FOREACH (const QString& nick, participants)
 			{
 				if (!nick.isEmpty ())
 					ChannelHandlers_ [channel]->SetChannelUser (nick);
 			}
+
+			ISH_->autoWhoRequest ();
+		}
 		else
 			ReceiveCmdAnswerMessage ("names", participants.join (" "), false);
 	}
