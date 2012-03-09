@@ -67,6 +67,7 @@
 #include "lastactivitymanager.h"
 #include "jabbersearchmanager.h"
 #include "useravatarmanager.h"
+#include "msgarchivingmanager.h"
 #include "sdmanager.h"
 
 #ifdef ENABLE_CRYPT
@@ -104,6 +105,7 @@ namespace Xoox
 	, JabberSearchManager_ (new JabberSearchManager)
 	, UserAvatarManager_ (0)
 	, RIEXManager_ (new RIEXManager)
+	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
 #ifdef ENABLE_CRYPT
 	, PGPManager_ (0)

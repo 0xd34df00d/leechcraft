@@ -77,6 +77,7 @@ namespace Xoox
 	class LastActivityManager;
 	class JabberSearchManager;
 	class UserAvatarManager;
+	class MsgArchivingManager;
 	class SDManager;
 
 #ifdef ENABLE_CRYPT
@@ -108,6 +109,7 @@ namespace Xoox
 		JabberSearchManager *JabberSearchManager_;
 		UserAvatarManager *UserAvatarManager_;
 		RIEXManager *RIEXManager_;
+		MsgArchivingManager *MsgArchivingManager_;
 		SDManager *SDManager_;
 
 #ifdef ENABLE_CRYPT
