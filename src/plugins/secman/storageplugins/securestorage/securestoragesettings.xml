@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Settings" />
+		<item type="customwidget" name="SettingsWidget" label="own" />
+	</page>
+</settings>
