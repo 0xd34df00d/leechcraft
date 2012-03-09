@@ -25,7 +25,6 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "nickservidentifywidget.h"
-#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {

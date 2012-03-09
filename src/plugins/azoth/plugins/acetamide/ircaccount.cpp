@@ -333,23 +333,18 @@ namespace Acetamide
 			autoJoin = obj->GetSettingsManager ()->
 					property ("IsAutojoinAllowed").toBool ();
 
-		EntryStatus newStatus;
+		EntryStatus newStatus = state;
 		switch (state.State_)
 		{
-		case SOffline:
-		case SOnline:
-		case SAway:
-			newStatus = state;
-			break;
-		case SDND:
-		case SXA:
-			newStatus = EntryStatus (SAway, state.StatusString_);
-			break;
-		case SChat:
-			newStatus = EntryStatus (SOnline, state.StatusString_);
-			break;
-		default:
-			break;
+			case SDND:
+			case SXA:
+				newStatus.State_ = SAway;
+				break;
+			case SChat:
+				newStatus.State_ = SOnline;
+				break;
+			default:
+				break;
 		}
 
 		if (newStatus.State_ == SOffline)

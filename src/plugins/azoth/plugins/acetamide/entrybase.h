@@ -46,7 +46,7 @@ namespace Acetamide
 		QList<QAction*> Actions_;
 
 		IrcAccount *Account_;
-		QPointer<VCardDialog> VCardDialog_;
+		VCardDialog *VCardDialog_;
 	public:
 		EntryBase (IrcAccount* = 0);
 		virtual ~EntryBase ();

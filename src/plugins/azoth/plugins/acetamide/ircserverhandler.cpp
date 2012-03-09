@@ -538,6 +538,7 @@ namespace Acetamide
 		if (!msg.Nick_.isEmpty () &&
 				!msg.UserName_.isEmpty () &&
 				!msg.Host_.isEmpty ())
+		{
 			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
 			{
 				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
@@ -551,9 +552,11 @@ namespace Acetamide
 						.arg (msg.Nick_, msg.Nick_ + "!" + msg.UserName_ + "@" + msg.Host_);
 				ShowAnswer ("whois", message, isEndOf);
 			}
+		}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.RealName_.isEmpty ())
+		{
 			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
 			{
 				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
@@ -565,9 +568,11 @@ namespace Acetamide
 				message = tr ("%1's real name is %2").arg (msg.Nick_, msg.RealName_);
 				ShowAnswer ("whois", message, isEndOf);
 			}
+		}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.Channels_.isEmpty ())
+		{
 			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
 			{
 				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
@@ -580,10 +585,12 @@ namespace Acetamide
 						.arg (msg.Nick_, msg.Channels_.join (", "));
 				ShowAnswer ("whois", message, isEndOf);
 			}
+		}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.ServerName_.isEmpty () &&
 				!msg.ServerCountry_.isEmpty ())
+		{
 			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
 			{
 				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
@@ -597,51 +604,63 @@ namespace Acetamide
 						.arg (msg.Nick_, msg.ServerName_, msg.ServerCountry_);
 				ShowAnswer ("whois", message, isEndOf);
 			}
+		}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.IdleTime_.isEmpty ())
+		{
 			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
 			{
 				message = tr ("%1's idle time: %2").arg (msg.Nick_, msg.IdleTime_);
 				ShowAnswer ("whois", message, isEndOf);
 			}
+		}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.AuthTime_.isEmpty ())
+		{
 			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
 			{
 				message = tr ("%1's auth date: %2").arg (msg.Nick_, msg.AuthTime_);
 				ShowAnswer ("whois", message, isEndOf);
 			}
+		}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.IrcOperator_.isEmpty ())
+		{
 			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
 			{
 				message = msg.Nick_ + ": " + msg.IrcOperator_;
 				ShowAnswer ("whois", message, isEndOf);
 			}
+		}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.LoggedName_.isEmpty ())
+		{
 			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
 			{
 				message = tr ("%1 is logged in as %2 ")
 						.arg (msg.Nick_, msg.LoggedName_);
 				ShowAnswer ("whois", message, isEndOf);
 			}
+		}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.Secure_.isEmpty ())
+		{
 			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
 			{
 				message = tr ("%1 is using a secure connection")
 						.arg (msg.Nick_);
 				ShowAnswer ("whois", message, isEndOf);
 			}
+		}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.EndString_.isEmpty ())
+		{
 			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
 			{
 				Q_FOREACH (QObject *entryObj,ChannelsManager_->
@@ -662,6 +681,7 @@ namespace Acetamide
 				message = msg.Nick_ + " " + msg.EndString_;
 				ShowAnswer ("whois", message, isEndOf);
 			}
+		}
 	}
 
 	void IrcServerHandler::ShowWhoWasReply (const QString& msg, bool isEndOf)

@@ -36,6 +36,7 @@ namespace Acetamide
 	EntryBase::EntryBase (IrcAccount *account)
 	: QObject (account)
 	, Account_ (account)
+	, VCardDialog_ (0)
 	{
 	}
 
@@ -102,7 +103,6 @@ namespace Acetamide
 		Account_->GetClientConnection ()->FetchVCard (entry->GetServerID (),
 				entry->GetEntryName());
 		VCardDialog_->show ();
-		
 	}
 
 	QMap<QString, QVariant> EntryBase::GetClientInfo (const QString&) const
