@@ -213,14 +213,16 @@ namespace Xoox
 		client ()->sendPacket (iq);
 	}
 
-	void MsgArchivingManager::SetDefaultSetting (const MsgArchSetting& setting)
+	void MsgArchivingManager::SetArchSetting (const MsgArchSetting& setting, const QString& jid)
 	{
 		QXmppElement def;
-		def.setTagName ("default");
+		def.setTagName (jid.isEmpty () ? "default" : "item");
 		def.setAttribute ("otr", OTRConverter (setting.OTR_));
 		def.setAttribute ("save", SaveConverter (setting.Save_));
 		if (setting.Expire_ > 0)
 			def.setAttribute ("expire", QString::number (setting.Expire_));
+		if (!jid.isEmpty ())
+			def.setAttribute ("jid", jid);
 
 		QXmppElement pref;
 		pref.setTagName ("pref");
