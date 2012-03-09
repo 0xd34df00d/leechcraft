@@ -71,6 +71,9 @@ namespace Acetamide
 		std::unique_ptr<InviteChannelsDialog> InviteChannelsDialog_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QMap<QString, QString> ISupport_;
+
+		QHash<QString, QPair<bool, int>> SpyWho_;
+		QTimer *AutoWhoTimer_;
 	public:
 		IrcServerHandler (const ServerOptions&,
 				IrcAccount*);
@@ -211,6 +214,9 @@ namespace Acetamide
 		void connectionEstablished ();
 		void connectionClosed ();
 		void joinAfterInvite ();
+		void autoWhoRequest ();
+		void handleSetAutoWho ();
+		void handleUpdateWhoPeriod ();
 	signals:
 		void connected (const QString&);
 		void disconnected (const QString&);

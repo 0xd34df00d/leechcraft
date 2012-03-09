@@ -144,6 +144,10 @@ namespace Acetamide
 		void SetPrivateChat (const QString& nick);
 
 		void CreateServerParticipantEntry (QString nick);
+
+		void UpdateEntry (const WhoMessage& message);
+
+		int GetChannelUsersCount (const QString& channel);
 	};
 }
 }

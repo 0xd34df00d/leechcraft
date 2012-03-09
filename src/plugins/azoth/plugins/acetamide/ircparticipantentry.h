@@ -37,6 +37,7 @@ namespace Acetamide
 		QString Nick_;
 		QString UserName_;
 		QString HostName_;
+		QString RealName_;
 		QString ServerID_;
 		bool IsPrivateChat_;
 	public:
@@ -55,11 +56,14 @@ namespace Acetamide
 		QStringList Variants () const;
 
 		QString GetUserName () const;
-		void SetUserName (const QString&);
+		void SetUserName (const QString& user);
 
 		QString GetHostName () const;
-		void SetHostName (const QString&);
+		void SetHostName (const QString& host);
 
+		QString GetRealName () const;
+		void SetRealName (const QString& realName);
+		
 		QString GetServerID () const;
 
 		bool IsPrivateChat () const;

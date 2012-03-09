@@ -19,6 +19,7 @@
 #include "ircserverhandler.h"
 #include <boost/bind.hpp>
 #include <QTextCodec>
+#include <QTimer>
 #include <QMessageBox>
 #include <QInputDialog>
 #include <util/util.h>
@@ -65,7 +66,13 @@ namespace Acetamide
 		ServerResponseManager_ = new ServerResponseManager (this);
 		RplISupportParser_ = new RplISupportParser (this);
 		ChannelsManager_ = new ChannelsManager (this);
+		AutoWhoTimer_ = new QTimer (this);
 
+		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoPeriod",
+				this, "handleUpdateWhoPeriod");
+		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoRequest",
+				this, "handleSetAutoWho");
+		
 		connect (this,
 				SIGNAL (connected (const QString&)),
 				Account_->GetClientConnection ().get (),
@@ -80,6 +87,13 @@ namespace Acetamide
 				SIGNAL (nicknameConflict (const QString&)),
 				ServerCLEntry_,
 				SIGNAL (nicknameConflict (const QString&)));
+
+		connect (AutoWhoTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (autoWhoRequest ()));
+
+		handleSetAutoWho ();
 	}
 
 	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
@@ -183,19 +197,28 @@ namespace Acetamide
 
 	bool IrcServerHandler::JoinedChannel (const ChannelOptions& channel)
 	{
+		QString channelName = channel.ChannelName_.toLower ();
+		bool res = false;
 		if (ServerConnectionState_ == Connected &&
-				!ChannelsManager_->IsChannelExists (channel.ChannelName_.toLower ()))
-			return ChannelsManager_->AddChannel (channel);
+				!ChannelsManager_->IsChannelExists (channelName))
+			res = ChannelsManager_->AddChannel (channel);
 		else
 			Add2ChannelsQueue (channel);
 
-		return true;
+		IrcParser_->WhoCommand (QStringList (channelName));
+		SpyWho_ [channelName] = qMakePair (true,
+				ChannelsManager_->GetChannelUsersCount (channelName));
+
+		return res;
 	}
 
 	void IrcServerHandler::JoinParticipant (const QString& nick,
 			const QString& msg, const QString& user, const QString& host)
 	{
 		ChannelsManager_->AddParticipant (msg.toLower (), nick, user, host);
+		IrcParser_->WhoCommand (QStringList (nick));
+		SpyWho_ [msg.toLower ()].first = true;
+		++SpyWho_ [msg.toLower ()].second;
 	}
 
 	void IrcServerHandler::CloseChannel (const QString& channel)
@@ -585,12 +608,8 @@ namespace Acetamide
 		QString message;
 		if (!msg.Nick_.isEmpty () &&
 				!msg.EndString_.isEmpty ())
-		{
 			message = msg.Nick_ + " " + msg.EndString_;
-			ShowAnswer ("who", message, isEndOf);
-		}
 		else
-		{
 			message = tr ("%1 [%2@%3]: Channel: %4, Server: %5, "
 					"Hops: %6, Flags: %7, Away: %8, Real Name: %9")
 							.arg (msg.Nick_,
@@ -602,8 +621,15 @@ namespace Acetamide
 									msg.Flags_,
 									msg.IsAway_ ? "true" : "false",
 									msg.RealName_);
-			ShowAnswer ("who", message, isEndOf);
+		if (SpyWho_ [msg.Channel_.toLower ()].first)
+		{
+			ChannelsManager_->UpdateEntry (msg);
+			--SpyWho_ [msg.Channel_.toLower ()].second;
+			if (!SpyWho_ [msg.Channel_.toLower ()].second)
+				SpyWho_ [msg.Channel_.toLower ()].first = false;
 		}
+		else
+			ShowAnswer ("who", message, isEndOf);
 	}
 
 	void IrcServerHandler::ShowLinksReply (const QString& msg, bool isEndOf)
@@ -971,6 +997,36 @@ namespace Acetamide
 		}
 	}
 
+	void IrcServerHandler::autoWhoRequest ()
+	{
+		Q_FOREACH (std::shared_ptr<ChannelHandler> channel,
+				ChannelsManager_->GetChannels ())
+		{
+			const QString& channelName = channel->GetChannelOptions()
+					.ChannelName_.toLower ();
+			IrcParser_->WhoCommand (QStringList (channelName));
+			SpyWho_ [channelName].first = true;
+			SpyWho_ [channelName].second = ChannelsManager_->
+					GetChannelUsersCount (channelName);
+		}
+	}
+
+	void IrcServerHandler::handleSetAutoWho ()
+	{
+		if (!XmlSettingsManager::Instance ().property ("AutoWhoRequest").toBool () &&
+				AutoWhoTimer_->isActive ())
+			AutoWhoTimer_->stop ();
+		else if (XmlSettingsManager::Instance ().property ("AutoWhoRequest").toBool () &&
+				!AutoWhoTimer_->isActive ())
+			AutoWhoTimer_->start (XmlSettingsManager::Instance ()
+					.property ("AutoWhoPeriod").toInt () * 60 * 1000);
+	}
+
+	void IrcServerHandler::handleUpdateWhoPeriod ()
+	{
+		AutoWhoTimer_->setInterval (XmlSettingsManager::Instance ()
+				.property ("AutoWhoPeriod").toInt () * 60 * 1000);
+	}
 };
 };
 };
