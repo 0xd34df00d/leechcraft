@@ -333,6 +333,8 @@ namespace LeechCraft
 		else
 			newIndex = MainTabBar_->addTab (icon, text);
 
+		MainTabBar_->setTabToolTip (newIndex, text);
+
 		if (MainTabBar_->currentIndex () >= WidgetCount ())
 			setCurrentIndex (WidgetCount () - 1);
 
@@ -354,6 +356,7 @@ namespace LeechCraft
 
 		MainStackedWidget_->insertWidget (index, page);
 		int idx = MainTabBar_->insertTab (newIndex, icon, text);
+		MainTabBar_->setTabToolTip (idx, text);
 
 		return idx;
 	}
