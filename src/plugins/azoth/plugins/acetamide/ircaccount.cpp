@@ -321,8 +321,6 @@ namespace Acetamide
 				!ClientConnection_)
 			return;
 
-		IrcAccountState_ = state.State_;
-
 		IProxyObject *obj = qobject_cast<IProxyObject*> (ParentProtocol_->GetProxyObject ());
 		bool autoJoin = false;
 		if (!obj)
@@ -335,13 +333,40 @@ namespace Acetamide
 			autoJoin = obj->GetSettingsManager ()->
 					property ("IsAutojoinAllowed").toBool ();
 
-			if (state.State_ == SOffline)
+		EntryStatus newStatus = state;
+		switch (state.State_)
+		{
+			case SDND:
+			case SXA:
+				newStatus.State_ = SAway;
+				break;
+			case SChat:
+				newStatus.State_ = SOnline;
+				break;
+			default:
+				break;
+		}
+
+		if (newStatus.State_ == SOffline)
+		{
+			if (ClientConnection_->GetServerHandlers ().count ())
+				SaveActiveChannels ();
+			ClientConnection_->DisconnectFromAll ();
+			SetState (newStatus);
+		}
+		else 
+		{
+			if (newStatus.State_ == SOnline)
 			{
-				if (ClientConnection_->GetServerHandlers ().count ())
-					SaveActiveChannels ();
-				ClientConnection_->DisconnectFromAll ();
+				if (IrcAccountState_ == SAway)
+					ClientConnection_->SetAway (false, QString ());
+				else
+					SetState (newStatus);
 			}
-			else if (autoJoin)
+			else if (newStatus.State_ == SAway)
+				ClientConnection_->SetAway (true, newStatus.StatusString_);
+
+			if (autoJoin)
 			{
 				if (ActiveChannels_.isEmpty ())
 					ActiveChannels_ << GetBookmarks ();
@@ -353,9 +378,15 @@ namespace Acetamide
 			}
 			else
 				joinFromBookmarks ();
+		}
 
 		IsFirstStart_ = false;
-		emit statusChanged (state);
+	}
+
+	void IrcAccount::SetState (const EntryStatus& status)
+	{
+		IrcAccountState_ = status.State_;
+		emit statusChanged (status);
 	}
 
 	void IrcAccount::Authorize (QObject*)

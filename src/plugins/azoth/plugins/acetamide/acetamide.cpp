@@ -49,8 +49,6 @@ namespace Acetamide
 
 		SettingsDialog_->SetCustomWidget ("NickServIdentifyWidget",
 				Core::Instance ().GetNickServIdentifyWidget ());
-// 		SettingsDialog_->SetDataSource ("NickServIdentifyModel",
-// 				Core::Instance ().GetNickServIdentifyModel ());
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),

@@ -73,6 +73,7 @@ namespace Acetamide
 		QMap<QString, QString> ISupport_;
 
 		QHash<QString, QPair<bool, int>> SpyWho_;
+		QHash<QString, WhoIsMessage> SpyNick2WhoIsMessage_;
 		QTimer *AutoWhoTimer_;
 	public:
 		IrcServerHandler (const ServerOptions&,
@@ -110,7 +111,9 @@ namespace Acetamide
 		void QuitParticipant (const QString& nick, const QString& msg);
 
 		void SendMessage (const QStringList&);
-		void IncomingMessage (const QString&, const QString&, const QString&);
+		void IncomingMessage (const QString& nick,
+				const QString& target, const QString& msg,
+				IMessage::MessageType type = IMessage::MTChatMessage);
 		void IncomingNoticeMessage (const QString&, const QString&);
 
 		void ChangeNickname (const QString&, const QString&);
@@ -139,7 +142,8 @@ namespace Acetamide
 				const QString&);
 		void GotInvitation (const QString&, const QString&);
 		void ShowAnswer (const QString& cmd,
-                const QString& answer, bool isEndOf = false);
+				const QString& answer, bool isEndOf = false,
+				IMessage::MessageType type = IMessage::MTEventMessage);
 
 		void CTCPReply (const QString&, const QString&, const QString&);
 		void CTCPRequestResult (const QString&);
@@ -206,15 +210,21 @@ namespace Acetamide
 		void ClosePrivateChat (const QString& nick);
 
 		void CreateServerParticipantEntry (QString nick);
+
+		void VCardRequest (const QString& nick);
+
+		void SetAway (const QString& message);
+		void ChangeAway (bool away, const QString& message = QString ());
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();
 		ServerParticipantEntry_ptr CreateParticipantEntry (const QString&);
+	public slots:
+		void autoWhoRequest ();
 	private slots:
 		void connectionEstablished ();
 		void connectionClosed ();
 		void joinAfterInvite ();
-		void autoWhoRequest ();
 		void handleSetAutoWho ();
 		void handleUpdateWhoPeriod ();
 	signals:
