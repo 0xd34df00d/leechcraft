@@ -19,6 +19,7 @@
 #include "ircserverhandler.h"
 #include <boost/bind.hpp>
 #include <QTextCodec>
+#include <QTimer>
 #include <QMessageBox>
 #include <QInputDialog>
 #include <util/util.h>
@@ -65,7 +66,13 @@ namespace Acetamide
 		ServerResponseManager_ = new ServerResponseManager (this);
 		RplISupportParser_ = new RplISupportParser (this);
 		ChannelsManager_ = new ChannelsManager (this);
+		AutoWhoTimer_ = new QTimer (this);
 
+		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoPeriod",
+				this, "handleUpdateWhoPeriod");
+		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoRequest",
+				this, "handleSetAutoWho");
+		
 		connect (this,
 				SIGNAL (connected (const QString&)),
 				Account_->GetClientConnection ().get (),
@@ -80,6 +87,13 @@ namespace Acetamide
 				SIGNAL (nicknameConflict (const QString&)),
 				ServerCLEntry_,
 				SIGNAL (nicknameConflict (const QString&)));
+
+		connect (AutoWhoTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (autoWhoRequest ()));
+
+		handleSetAutoWho ();
 	}
 
 	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
@@ -183,19 +197,29 @@ namespace Acetamide
 
 	bool IrcServerHandler::JoinedChannel (const ChannelOptions& channel)
 	{
+		QString channelName = channel.ChannelName_.toLower ();
+		bool res = false;
 		if (ServerConnectionState_ == Connected &&
-				!ChannelsManager_->IsChannelExists (channel.ChannelName_.toLower ()))
-			return ChannelsManager_->AddChannel (channel);
+				!ChannelsManager_->IsChannelExists (channelName))
+			res = ChannelsManager_->AddChannel (channel);
 		else
 			Add2ChannelsQueue (channel);
 
-		return true;
+		IrcParser_->WhoCommand (QStringList (channelName));
+		SpyWho_ [channelName] = qMakePair (true,
+				ChannelsManager_->GetChannelUsersCount (channelName));
+
+		return res;
 	}
 
 	void IrcServerHandler::JoinParticipant (const QString& nick,
 			const QString& msg, const QString& user, const QString& host)
 	{
 		ChannelsManager_->AddParticipant (msg.toLower (), nick, user, host);
+		IrcParser_->WhoCommand (QStringList (nick));
+		auto& pair = SpyWho_ [msg.toLower ()];
+		pair.first = true;
+		++pair.second;
 	}
 
 	void IrcServerHandler::CloseChannel (const QString& channel)
@@ -510,9 +534,69 @@ namespace Acetamide
 		ShowAnswer ("ison", tr ("%1 is on server").arg (nick));
 	}
 
-	void IrcServerHandler::ShowWhoIsReply (const QString& msg, bool isEndOf)
+	void IrcServerHandler::ShowWhoIsReply (const WhoIsMessage& msg, bool isEndOf)
 	{
-		ShowAnswer ("whois", msg, isEndOf);
+		QString message;
+		if (!msg.Nick_.isEmpty () &&
+				!msg.UserName_.isEmpty () &&
+				!msg.Host_.isEmpty ())
+		{
+			message = tr ("%1 is %2")
+					.arg (msg.Nick_, msg.Nick_ + "!" + msg.UserName_ + "@" + msg.Host_);
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.RealName_.isEmpty ())
+		{
+			message = tr ("%1's real name is %2").arg (msg.Nick_, msg.RealName_);
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.Channels_.isEmpty ())
+		{
+			message = tr ("%1 is on channels: %2")
+					.arg (msg.Nick_, msg.Channels_.join (", "));
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.ServerName_.isEmpty () &&
+				!msg.ServerCountry_.isEmpty ())
+		{
+			message = tr ("%1's server is: %2 - %3")
+					.arg (msg.Nick_, msg.ServerName_, msg.ServerCountry_);
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.IdleTime_.isEmpty ())
+		{
+			message = tr ("%1's idle time: %2").arg (msg.Nick_, msg.IdleTime_);
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.AuthTime_.isEmpty ())
+		{
+			message = tr ("%1's auth date: %2").arg (msg.Nick_, msg.AuthTime_);
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.IrcOperator_.isEmpty ())
+		{
+			message = msg.Nick_ + ": " + msg.IrcOperator_;
+			ShowAnswer ("whois", message, isEndOf);
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.EndString_.isEmpty ())
+		{
+			message = msg.Nick_ + " " + msg.EndString_;
+			ShowAnswer ("whois", message, isEndOf);
+		}
 	}
 
 	void IrcServerHandler::ShowWhoWasReply (const QString& msg, bool isEndOf)
@@ -520,9 +604,34 @@ namespace Acetamide
 		ShowAnswer ("whowas", msg, isEndOf);
 	}
 
-	void IrcServerHandler::ShowWhoReply (const QString& msg, bool isEndOf)
+	void IrcServerHandler::ShowWhoReply (const WhoMessage&  msg, bool isEndOf)
 	{
-        ShowAnswer ("who", msg, isEndOf);
+		QString message;
+		if (!msg.Nick_.isEmpty () &&
+				!msg.EndString_.isEmpty ())
+			message = msg.Nick_ + " " + msg.EndString_;
+		else
+			message = tr ("%1 [%2@%3]: Channel: %4, Server: %5, "
+					"Hops: %6, Flags: %7, Away: %8, Real Name: %9")
+							.arg (msg.Nick_,
+									msg.UserName_,
+									msg.Host_,
+									msg.Channel_,
+									msg.ServerName_,
+									QString::number (msg.Jumps_),
+									msg.Flags_,
+									msg.IsAway_ ? "true" : "false",
+									msg.RealName_);
+		if (SpyWho_ [msg.Channel_.toLower ()].first)
+		{
+			ChannelsManager_->UpdateEntry (msg);
+			auto& pair = SpyWho_ [msg.Channel_.toLower ()];
+			--pair.second;
+			if (!pair.second)
+				pair.first = false;
+		}
+		else
+			ShowAnswer ("who", message, isEndOf);
 	}
 
 	void IrcServerHandler::ShowLinksReply (const QString& msg, bool isEndOf)
@@ -890,6 +999,35 @@ namespace Acetamide
 		}
 	}
 
+	void IrcServerHandler::autoWhoRequest ()
+	{
+		Q_FOREACH (auto channel, ChannelsManager_->GetChannels ())
+		{
+			const QString& channelName = channel->GetChannelOptions()
+					.ChannelName_.toLower ();
+			IrcParser_->WhoCommand (QStringList (channelName));
+			auto& pair = SpyWho_ [channelName];
+			pair.first = true;
+			pair.second = ChannelsManager_->GetChannelUsersCount (channelName);
+		}
+	}
+
+	void IrcServerHandler::handleSetAutoWho ()
+	{
+		if (!XmlSettingsManager::Instance ().property ("AutoWhoRequest").toBool () &&
+				AutoWhoTimer_->isActive ())
+			AutoWhoTimer_->stop ();
+		else if (XmlSettingsManager::Instance ().property ("AutoWhoRequest").toBool () &&
+				!AutoWhoTimer_->isActive ())
+			AutoWhoTimer_->start (XmlSettingsManager::Instance ()
+					.property ("AutoWhoPeriod").toInt () * 60 * 1000);
+	}
+
+	void IrcServerHandler::handleUpdateWhoPeriod ()
+	{
+		AutoWhoTimer_->setInterval (XmlSettingsManager::Instance ()
+				.property ("AutoWhoPeriod").toInt () * 60 * 1000);
+	}
 };
 };
 };

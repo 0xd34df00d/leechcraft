@@ -37,6 +37,12 @@ namespace Acetamide
 	{
 	}
 
+	EntryBase::~EntryBase ()
+	{
+		qDeleteAll (AllMessages_);
+		qDeleteAll (Actions_);
+	}
+
 	QObject* EntryBase::GetObject ()
 	{
 		return this;

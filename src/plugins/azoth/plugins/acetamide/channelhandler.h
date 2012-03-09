@@ -135,6 +135,8 @@ namespace Acetamide
 		void SetUserLimit (bool, int limit = 0);
 		void SetChannelKey (bool, const QString& key = QString ());
 		void SetNewChannelModes (const ChannelModes&);
+
+		void UpdateEntry (const WhoMessage& message);
 	private:
 		bool RemoveUserFromChannel (const QString&);
 		ChannelParticipantEntry_ptr CreateParticipantEntry (const QString&);

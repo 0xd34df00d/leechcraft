@@ -107,6 +107,16 @@ namespace Acetamide
 		HostName_ = host;
 	}
 
+	QString IrcParticipantEntry::GetRealName () const
+	{
+		return RealName_;
+	}
+
+	void IrcParticipantEntry::SetRealName (const QString& realName)
+	{
+		RealName_ = realName;
+	}
+
 	QString IrcParticipantEntry::GetServerID () const
 	{
 		return ServerID_;

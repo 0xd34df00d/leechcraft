@@ -531,6 +531,22 @@ namespace Acetamide
 		ISH_->CreateServerParticipantEntry (nick);
 	}
 
+	void ChannelsManager::UpdateEntry (const WhoMessage& message)
+	{
+		if (!ChannelHandlers_.contains (message.Channel_.toLower ()))
+			return;
+
+		ChannelHandlers_ [message.Channel_.toLower ()]->UpdateEntry (message);
+	}
+
+	int ChannelsManager::GetChannelUsersCount (const QString& channel)
+	{
+		if (!ChannelHandlers_.contains (channel.toLower ()))
+			return 0;
+
+		return ChannelHandlers_ [channel.toLower ()]->GetParticipants ().count ();
+	}
+
 	uint qHash (const ChannelOptions& opts)
 	{
 		return qHash (opts.ChannelName_ + opts.ChannelPassword_ + opts.ServerName_);

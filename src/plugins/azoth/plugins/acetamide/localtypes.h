@@ -21,6 +21,7 @@
 
 #include <QStringList>
 #include <QPair>
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -119,11 +120,33 @@ namespace Acetamide
 		QString AuthMessage_;
 	};
 
-	struct CommandMessage
+	struct MainEntryInfo
 	{
-		QString Cmd_;
+		QString Nick_;
+		QString UserName_;
+		QString Host_;
+		QString RealName_;
+		QString ServerName_;
+	};
+
+	struct WhoMessage : MainEntryInfo
+	{
+		QString Flags_;
 		QString Channel_;
-		bool IsLongAnwser_;
+		bool IsAway_;
+		int Jumps_;
+		QString EndString_;
+	};
+
+	struct WhoIsMessage : MainEntryInfo
+	{
+		QStringList Channels_;
+		QString IdentifyAs_;
+		QString IdleTime_;
+		QString AuthTime_;
+		QString IrcOperator_;
+		QString ServerCountry_;
+		QString EndString_;
 	};
 
 	bool operator== (const ChannelOptions&, const ChannelOptions&);

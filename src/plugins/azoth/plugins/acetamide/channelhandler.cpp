@@ -691,6 +691,20 @@ namespace Acetamide
 		CM_->SetNewChannelModes (ChannelOptions_.ChannelName_, modes);
 	}
 
+	void ChannelHandler::UpdateEntry (const WhoMessage& message)
+	{
+		if (Nick2Entry_.contains (message.Nick_))
+		{
+			ChannelParticipantEntry_ptr entry = Nick2Entry_ [message.Nick_];
+			entry->SetUserName (message.UserName_);
+			entry->SetHostName (message.Host_);
+			entry->SetRealName (message.RealName_);
+			entry->SetStatus (message.IsAway_ ?
+					EntryStatus (SAway, QString ()) :
+					EntryStatus (SOnline, QString ()));
+		}
+	}
+
 	bool ChannelHandler::RemoveUserFromChannel (const QString& nick)
 	{
 		if (!Nick2Entry_.contains (nick))
