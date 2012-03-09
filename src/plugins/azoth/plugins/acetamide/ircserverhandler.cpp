@@ -632,6 +632,15 @@ namespace Acetamide
 			}
 
 		if (!msg.Nick_.isEmpty () &&
+				!msg.Secure_.isEmpty ())
+			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				message = tr ("%1 is using a secure connection")
+						.arg (msg.Nick_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
+
+		if (!msg.Nick_.isEmpty () &&
 				!msg.EndString_.isEmpty ())
 			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
 			{

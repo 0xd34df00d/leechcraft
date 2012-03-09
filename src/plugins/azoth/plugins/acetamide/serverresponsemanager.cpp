@@ -227,6 +227,8 @@ namespace Acetamide
 		//not from rfc
 		Command2Action_ ["330"] = boost::bind (&ServerResponseManager::GotWhoIsAccount,
 				this, _1);
+		Command2Action_ ["671"] = boost::bind (&ServerResponseManager::GotWhoIsSecure,
+				this, _1);
 	}
 
 	bool ServerResponseManager::IsCTCPMessage (const QString& msg)
@@ -1072,10 +1074,21 @@ namespace Acetamide
 	{
 		if (opts.Parameters_.count () < 3)
 			return;
-		
+
 		WhoIsMessage msg;
 		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
 		msg.LoggedName_ = QString::fromUtf8 (opts.Parameters_.at (2).c_str ());
+		ISH_->ShowWhoIsReply (msg);
+	}
+
+	void ServerResponseManager::GotWhoIsSecure (const IrcMessageOptions& opts)
+	{
+		if (opts.Parameters_.count () < 2)
+			return;
+
+		WhoIsMessage msg;
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.Secure_ = opts.Message_;
 		ISH_->ShowWhoIsReply (msg);
 	}
 

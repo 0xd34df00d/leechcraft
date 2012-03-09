@@ -147,6 +147,7 @@ namespace Acetamide
 		QString IrcOperator_;
 		QString ServerCountry_;
 		QString LoggedName_;
+		QString Secure_;
 		QString EndString_;
 	};
 

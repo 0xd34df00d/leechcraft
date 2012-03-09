@@ -126,6 +126,7 @@ namespace Acetamide
 
 		//not from rfc
 		void GotWhoIsAccount (const IrcMessageOptions& opts);
+		void GotWhoIsSecure (const IrcMessageOptions& opts);
 	};
 };
 };
