@@ -20,7 +20,7 @@
 #include <boost/bind.hpp>
 #include <QTextCodec>
 #include <interfaces/core/icoreproxy.h>
-#include "util/util.h"
+#include <util/util.h>
 #include "ircserverhandler.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -587,7 +587,7 @@ namespace Acetamide
 		WhoMessage msg;
 		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
 		msg.EndString_ = opts.Message_;
-        ISH_->ShowWhoReply (msg, true);
+		ISH_->ShowWhoReply (msg, true);
 	}
 
 	void ServerResponseManager::GotSummoning (const IrcMessageOptions& opts)

@@ -700,8 +700,8 @@ namespace Acetamide
 			entry->SetHostName (message.Host_);
 			entry->SetRealName (message.RealName_);
 			entry->SetStatus (message.IsAway_ ?
-					EntryStatus (SAway, "") :
-					EntryStatus (SOnline, ""));
+					EntryStatus (SAway, QString ()) :
+					EntryStatus (SOnline, QString ()));
 		}
 	}
 

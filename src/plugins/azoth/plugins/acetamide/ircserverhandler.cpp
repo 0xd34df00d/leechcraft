@@ -217,8 +217,9 @@ namespace Acetamide
 	{
 		ChannelsManager_->AddParticipant (msg.toLower (), nick, user, host);
 		IrcParser_->WhoCommand (QStringList (nick));
-		SpyWho_ [msg.toLower ()].first = true;
-		++SpyWho_ [msg.toLower ()].second;
+		auto& pair = SpyWho_ [msg.toLower ()];
+		pair.first = true;
+		++pair.second;
 	}
 
 	void IrcServerHandler::CloseChannel (const QString& channel)
@@ -540,8 +541,8 @@ namespace Acetamide
 				!msg.UserName_.isEmpty () &&
 				!msg.Host_.isEmpty ())
 		{
-			message = msg.Nick_ + tr ("%1 is %2!%3@%4")
-					.arg (msg.Nick_, msg.Nick_, msg.UserName_, msg.Host_);
+			message = tr ("%1 is %2")
+					.arg (msg.Nick_, msg.Nick_ + "!" + msg.UserName_ + "@" + msg.Host_);
 			ShowAnswer ("whois", message, isEndOf);
 		}
 
@@ -555,7 +556,7 @@ namespace Acetamide
 		if (!msg.Nick_.isEmpty () &&
 				!msg.Channels_.isEmpty ())
 		{
-			message = tr ("%1 on channels: %2")
+			message = tr ("%1 is on channels: %2")
 					.arg (msg.Nick_, msg.Channels_.join (", "));
 			ShowAnswer ("whois", message, isEndOf);
 		}
@@ -564,7 +565,7 @@ namespace Acetamide
 				!msg.ServerName_.isEmpty () &&
 				!msg.ServerCountry_.isEmpty ())
 		{
-			message = tr ("%1 server is: %2 - %3")
+			message = tr ("%1's server is: %2 - %3")
 					.arg (msg.Nick_, msg.ServerName_, msg.ServerCountry_);
 			ShowAnswer ("whois", message, isEndOf);
 		}
@@ -572,14 +573,14 @@ namespace Acetamide
 		if (!msg.Nick_.isEmpty () &&
 				!msg.IdleTime_.isEmpty ())
 		{
-			message = tr ("%1 idle time: %2").arg (msg.Nick_, msg.IdleTime_);
+			message = tr ("%1's idle time: %2").arg (msg.Nick_, msg.IdleTime_);
 			ShowAnswer ("whois", message, isEndOf);
 		}
 
 		if (!msg.Nick_.isEmpty () &&
 				!msg.AuthTime_.isEmpty ())
 		{
-			message = tr ("%1 auth date: %2").arg (msg.Nick_, msg.AuthTime_);
+			message = tr ("%1's auth date: %2").arg (msg.Nick_, msg.AuthTime_);
 			ShowAnswer ("whois", message, isEndOf);
 		}
 
@@ -624,9 +625,10 @@ namespace Acetamide
 		if (SpyWho_ [msg.Channel_.toLower ()].first)
 		{
 			ChannelsManager_->UpdateEntry (msg);
-			--SpyWho_ [msg.Channel_.toLower ()].second;
-			if (!SpyWho_ [msg.Channel_.toLower ()].second)
-				SpyWho_ [msg.Channel_.toLower ()].first = false;
+			auto& pair = SpyWho_ [msg.Channel_.toLower ()];
+			--pair.second;
+			if (!pair.second)
+				pair.first = false;
 		}
 		else
 			ShowAnswer ("who", message, isEndOf);
@@ -999,15 +1001,14 @@ namespace Acetamide
 
 	void IrcServerHandler::autoWhoRequest ()
 	{
-		Q_FOREACH (std::shared_ptr<ChannelHandler> channel,
-				ChannelsManager_->GetChannels ())
+		Q_FOREACH (auto channel, ChannelsManager_->GetChannels ())
 		{
 			const QString& channelName = channel->GetChannelOptions()
 					.ChannelName_.toLower ();
 			IrcParser_->WhoCommand (QStringList (channelName));
-			SpyWho_ [channelName].first = true;
-			SpyWho_ [channelName].second = ChannelsManager_->
-					GetChannelUsersCount (channelName);
+			auto& pair = SpyWho_ [channelName];
+			pair.first = true;
+			pair.second = ChannelsManager_->GetChannelUsersCount (channelName);
 		}
 	}
 
