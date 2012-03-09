@@ -239,6 +239,29 @@ namespace Xoox
 		client ()->sendPacket (iq);
 	}
 
+	void MsgArchivingManager::SetMethodPolicies (const QMap<MsgArchMethod, MsgArchMethodPolicy>& map)
+	{
+		if (map.isEmpty ())
+			return;
+
+		QXmppElement pref;
+		pref.setTagName ("pref");
+		pref.setAttribute ("xmlns", NsArchive);
+
+		Q_FOREACH (MsgArchMethod meth, map.keys ())
+		{
+			QXmppElement elem;
+			elem.setTagName ("method");
+			elem.setAttribute ("type", MethodConverter (meth));
+			elem.setAttribute ("use", MethodPolicyConverter (map [meth]));
+			pref.appendChild (elem);
+		}
+
+		QXmppIq iq (QXmppIq::Set);
+		iq.setExtensions (pref);
+		client ()->sendPacket (iq);
+	}
+
 	void MsgArchivingManager::HandlePref (const QDomElement& prefElem)
 	{
 		const QDomElement& autoSave = prefElem.firstChildElement ("auto");

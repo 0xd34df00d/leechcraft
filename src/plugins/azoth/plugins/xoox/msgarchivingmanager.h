@@ -98,6 +98,7 @@ namespace Xoox
 
 		void SetArchSetting (const MsgArchSetting& setting,
 				const QString& jid = QString ());
+		void SetMethodPolicies (const QMap<MsgArchMethod, MsgArchMethodPolicy>&);
 	private:
 		void HandlePref (const QDomElement&);
 	signals:
