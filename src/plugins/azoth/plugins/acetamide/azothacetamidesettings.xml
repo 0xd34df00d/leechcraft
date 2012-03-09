@@ -15,8 +15,9 @@
 				</item>
 				<item type="groupbox" property="AutoWhoRequest" state="on" checkable="true">
 					<label lang="en" value="Use WHO request for checking AWAY status" />
-					<item type="spinbox" property="AutoWhoPeriod" default="1" step="1" minimum="1" maximum="360">
-						<label lang="en" value="Period for WHO request (in minutes):" />
+					<item type="spinbox" property="AutoWhoPeriod" default="1" step="1" minimum="1" maximum="360" >
+						<label lang="en" value="Period for WHO request:" />
+						<suffix value=" min" />
 					</item>
 				</item>
 			</groupbox>
