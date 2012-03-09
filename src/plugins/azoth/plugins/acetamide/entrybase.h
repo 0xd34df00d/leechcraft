@@ -47,6 +47,7 @@ namespace Acetamide
 		IrcAccount *Account_;
 	public:
 		EntryBase (IrcAccount* = 0);
+		virtual ~EntryBase ();
 
 		virtual QObject* GetObject ();
 		virtual QList<QObject*> GetAllMessages () const;
