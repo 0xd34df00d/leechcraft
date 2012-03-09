@@ -76,6 +76,8 @@ namespace Xoox
 		MsgArchSetting Default_;
 		QMap<MsgArchMethod, MsgArchMethodPolicy> MethodPolicies_;
 
+		QMap<QString, MsgArchSetting> ItemSettings_;
+
 		MsgArchPrefs ();
 	};
 
@@ -92,6 +94,8 @@ namespace Xoox
 		bool handleStanza (const QDomElement&);
 
 		void RequestPrefs ();
+	private:
+		void HandlePref (const QDomElement&);
 	};
 }
 }
