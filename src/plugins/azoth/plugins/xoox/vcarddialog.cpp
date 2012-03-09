@@ -78,8 +78,10 @@ namespace Xoox
 	{
 		VCard_ = vcard;
 
-		setWindowTitle (tr ("VCard for %1")
-					.arg (vcard.nickName ()));
+		const QString& forString = vcard.nickName ().isEmpty () ?
+				vcard.from () :
+				vcard.nickName ();
+		setWindowTitle (tr ("VCard for %1").arg (forString));
 
 		Ui_.EditJID_->setText (vcard.from ());
 		Ui_.EditRealName_->setText (vcard.fullName ());
