@@ -24,6 +24,7 @@
 #include "ircserverhandler.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
+#include "ircaccount.h"
 
 namespace LeechCraft
 {
@@ -222,6 +223,12 @@ namespace Acetamide
 				 this, _1);
 		Command2Action_ ["324"] = boost::bind (&ServerResponseManager::GotChannelModes,
 				 this, _1);
+
+		//not from rfc
+		Command2Action_ ["330"] = boost::bind (&ServerResponseManager::GotWhoIsAccount,
+				this, _1);
+		Command2Action_ ["671"] = boost::bind (&ServerResponseManager::GotWhoIsSecure,
+				this, _1);
 	}
 
 	bool ServerResponseManager::IsCTCPMessage (const QString& msg)
@@ -452,13 +459,25 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		const QString target = QString::fromUtf8 (opts.Parameters_.last ().c_str ());
-		ISH_->ShowAnswer ("away", target + " " + opts.Message_);
+		const QString& target = QString::fromUtf8 (opts.Parameters_.last ().c_str ());
+		const QString& nick = QString::fromUtf8 (opts.Parameters_.first ().c_str ());
+		ISH_->IncomingMessage (target, target, QString ("[AWAY] %1 :%2")
+				.arg (target, opts.Message_), IMessage::MTStatusMessage);
 	}
 
 	void ServerResponseManager::GotSetAway (const IrcMessageOptions& opts)
 	{
-		ISH_->ShowAnswer ("away", opts.Message_);
+		switch (opts.Command_.toInt ())
+		{
+		case 305:
+			ISH_->ChangeAway (false);
+			break;
+		case 306:
+			ISH_->ChangeAway (true, opts.Message_);
+			break;
+		}
+
+		ISH_->ShowAnswer ("away", opts.Message_, IMessage::MTStatusMessage);
 	}
 
 	void ServerResponseManager::GotUserHost (const IrcMessageOptions& opts)
@@ -1050,6 +1069,29 @@ namespace Acetamide
 	{
 		ISH_->ShowInviteListEnd (opts.Message_);
 	}
+
+	void ServerResponseManager::GotWhoIsAccount (const IrcMessageOptions& opts)
+	{
+		if (opts.Parameters_.count () < 3)
+			return;
+
+		WhoIsMessage msg;
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.LoggedName_ = QString::fromUtf8 (opts.Parameters_.at (2).c_str ());
+		ISH_->ShowWhoIsReply (msg);
+	}
+
+	void ServerResponseManager::GotWhoIsSecure (const IrcMessageOptions& opts)
+	{
+		if (opts.Parameters_.count () < 2)
+			return;
+
+		WhoIsMessage msg;
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.Secure_ = opts.Message_;
+		ISH_->ShowWhoIsReply (msg);
+	}
+
 }
 }
 }

@@ -202,10 +202,42 @@ namespace Acetamide
 			ServerHandlers_ [serverID]->ClosePrivateChat (nick);
 	}
 
+	void ClientConnection::FetchVCard (const QString& serverId, const QString& nick)
+	{
+		if (!ServerHandlers_.contains (serverId))
+			return;
+
+		ServerHandlers_ [serverId]->VCardRequest (nick);
+	}
+
+	void ClientConnection::SetAway (bool away, const QString& message)
+	{
+		QString msg = message;
+		if (msg.isEmpty ())
+		{
+			QString statusKey = "DefaultStatus" + QString::number (SAway);
+			msg = ProxyObject_->GetSettingsManager ()->
+					property (statusKey.toUtf8 ()).toString ();
+		}
+
+		if (!away)
+			msg.clear ();
+
+		QList<IrcServerHandler*> handlers = ServerHandlers_.values ();
+		std::for_each (handlers.begin (), handlers.end (),
+				[msg] (decltype (handlers.front ()) handler)
+				{
+					handler->SetAway (msg);
+				});
+	}
+
 	void ClientConnection::serverConnected (const QString& serverId)
 	{
 		if (Account_->GetState ().State_ == SOffline)
+		{
 			Account_->ChangeState (EntryStatus (SOnline, QString ()));
+			Account_->SetState (EntryStatus (SOnline, QString ()));
+		}
 		emit gotRosterItems (QList<QObject*> () <<
 				ServerHandlers_ [serverId]->GetCLEntry ());
 	}
@@ -216,7 +248,7 @@ namespace Acetamide
 				GetCLEntry ());
 		ServerHandlers_.take (serverId)->deleteLater ();
 		if (!ServerHandlers_.count ())
-			Account_->ChangeState (EntryStatus (SOffline,
+			Account_->SetState (EntryStatus (SOffline,
 					QString ()));
 	}
 
@@ -236,6 +268,7 @@ namespace Acetamide
 				PCritical_);
 		Core::Instance ().SendEntity (e);
 		Account_->ChangeState (EntryStatus (SOffline, QString ()));
+		Account_->SetState (EntryStatus (SOffline, QString ()));
 	}
 
 	void ClientConnection::handleLog (IMessage::Direction type, const QString& msg)
