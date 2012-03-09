@@ -40,6 +40,7 @@ namespace Xoox
 		Caps2String_ ["urn:ietf:params:xml:ns:xmpp-stanzas"] = "stanzas";
 		Caps2String_ ["vcard-temp"] = "XEP-0054: vCards";
 		Caps2String_ ["vcard-temp:x:update"] = "XEP-0054: vCard update";
+		Caps2String_ ["http://jabber.org/protocol/address"] = "XEP-0033: Extended Stanza Addressing";
 		Caps2String_ ["http://jabber.org/features/iq-auth"] = "XEP-0078: non-SASL authentication (features)";
 		Caps2String_ ["http://jabber.org/protocol/caps"] = "XEP-0115: Entity Capabilities";
 		Caps2String_ ["http://jabber.org/protocol/compress"] = "XEP-0138: Stream Compression";
@@ -73,16 +74,22 @@ namespace Xoox
 		Caps2String_ ["urn:xmpp:delay"] = "XEP-0203: Delayed Delivery";
 		Caps2String_ ["urn:xmpp:attention:0"] = "XEP-0224: Attention";
 		Caps2String_ ["urn:xmpp:bob"] = "XEP-0231: Bits of Binary";
+		Caps2String_ ["urn:xmpp:time"] = "XEP-0202: Entity Time";
+		Caps2String_ ["urn:xmpp:avatar:data"] = "XEP-0084: User Avatar";
+		Caps2String_ ["urn:xmpp:avatar:metadata"] = "XEP-0084: User Avatar (metadata)";
+		Caps2String_ ["urn:xmpp:avatar:metadata+notify"] = "Notifications about User Avatar";
 		Caps2String_ ["jabber:iq:rpc"] = "XEP-0009: Jabber-RPC";
-		Caps2String_ ["jabber:x:conference"] = "XEP-0249: Direct MUC Invitations";
-		Caps2String_ ["jabber:x:delay"] = "XEP-0091: Legacy Delayed Delivery";
 		Caps2String_ ["jabber:iq:auth"] = "XEP-0078: non-SASL authentication";
-		Caps2String_ ["jabber:client"] = "client";
-		Caps2String_ ["jabber:server"] = "server";
-		Caps2String_ ["jabber:server:dialback"] = "XEP-0220: Server Dialback";
 		Caps2String_ ["jabber:iq:roster"] = "Jabber Roster";
 		Caps2String_ ["jabber:iq:last"] = "XEP-0012: Last Activity";
 		Caps2String_ ["jabber:iq:privacy"] = "XEP-0016: Privacy Lists";
+		Caps2String_ ["jabber:iq:version"] = "XEP-0092: Software Version";
+		Caps2String_ ["jabber:iq:time"] = "XEP-0090: Legacy Entity Time";
+		Caps2String_ ["jabber:x:conference"] = "XEP-0249: Direct MUC Invitations";
+		Caps2String_ ["jabber:x:delay"] = "XEP-0091: Legacy Delayed Delivery";
+		Caps2String_ ["jabber:client"] = "client";
+		Caps2String_ ["jabber:server"] = "server";
+		Caps2String_ ["jabber:server:dialback"] = "XEP-0220: Server Dialback";
 	}
 
 	void CapsManager::FetchCaps (const QString& jid, const QByteArray& verNode)
