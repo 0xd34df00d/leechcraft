@@ -281,7 +281,7 @@ namespace Laure
 	void VLCWrapper::addRow (const QString& location)
 	{
 		libvlc_media_t *m = libvlc_media_new_path (Instance_.get (),
-				location.toAscii ());
+				location.toUtf8 ());
 
 		if (!libvlc_media_list_add_media (List_.get (), m))
 			emit itemAdded (GetItemMeta (RowCount () - 1, location), location);
@@ -312,7 +312,7 @@ namespace Laure
 	void VLCWrapper::setMeta (libvlc_meta_t type, const QString& value, int index)
 	{
 		auto m = libvlc_media_list_item_at_index (List_.get (), index);
-		libvlc_media_set_meta (m, type, value.toAscii ());
+		libvlc_media_set_meta (m, type, value.toUtf8 ());
 		libvlc_media_save_meta (m);
 	}
 
