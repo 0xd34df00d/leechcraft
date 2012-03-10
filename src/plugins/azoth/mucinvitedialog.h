@@ -32,11 +32,15 @@ namespace Azoth
 		Q_OBJECT
 
 		Ui::MUCInviteDialog Ui_;
+		bool ManualMode_;
 	public:
 		MUCInviteDialog (IAccount*, QWidget* = 0);
 
 		QString GetID () const;
 		QString GetMessage () const;
+	private slots:
+		void on_Invitee__currentIndexChanged ();
+		void on_Invitee__editTextChanged ();
 	};
 }
 }
