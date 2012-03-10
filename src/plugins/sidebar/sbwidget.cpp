@@ -259,8 +259,8 @@ namespace Sidebar
 					tb->sizePolicy ().verticalPolicy ());
 			layout->addWidget (tb);
 
-			QWidget *w = TabAction2Tab_ [act];
-			tb->setProperty ("Sidebar/TabPage", QVariant::fromValue<QWidget*> (w));
+			QWidget *tabWidget = TabAction2Tab_ [act];
+			tb->setProperty ("Sidebar/TabPage", QVariant::fromValue<QWidget*> (tabWidget));
 			tb->setContextMenuPolicy (Qt::CustomContextMenu);
 			connect (tb,
 					SIGNAL (customContextMenuRequested (QPoint)),
