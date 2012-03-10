@@ -2694,8 +2694,14 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = reason;
 
+		const auto cancel = Util::MakeANCancel (e);
+
 		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e);
-		nh->AddFunction (tr ("Join"), [this, acc, ident] () { SuggestJoiningMUC (acc, ident); });
+		nh->AddFunction (tr ("Join"), [this, acc, ident, cancel] ()
+				{
+					SuggestJoiningMUC (acc, ident);
+					emit gotEntity (cancel);
+				});
 		nh->AddDependentObject (acc->GetObject ());
 
 		emit gotEntity (e);
