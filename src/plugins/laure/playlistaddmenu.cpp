@@ -107,7 +107,7 @@ namespace Laure
 		if (fileName.isEmpty ())
 			return;
 #ifdef HAVE_MAGIC
-		const QString& mime = QString (magic_file (Magic_.get (), fileName.toAscii ()));
+		const QString& mime = QString (magic_file (Magic_.get (), fileName.toUtf8 ()));
 		if (!mime.contains ("text"))
 			return;
 #endif
@@ -160,7 +160,7 @@ namespace Laure
 	{
 #ifdef HAVE_MAGIC
 		const QString& mime = magic_file (Magic_.get (),
-				file.absoluteFilePath ().toAscii ());
+				file.absoluteFilePath ().toUtf8 ());
 		return mime.contains ("audio") || mime.contains ("video");		
 #else
 		Q_FOREACH (const QString& format, Formats_)
