@@ -156,8 +156,7 @@ namespace Laure
 			return;
 		
 		emit metaChangedRequest (static_cast<libvlc_meta_t> (type),
-				item->data (Qt::DisplayRole).toString ()
-						.toAscii (),
+				item->data (Qt::DisplayRole).toString ().toUtf8 (),
 				item->row ());
 	}
 	
