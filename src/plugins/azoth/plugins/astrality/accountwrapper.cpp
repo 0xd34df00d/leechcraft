@@ -535,9 +535,14 @@ namespace Astrality
 				this,
 				SLOT (handleCMStateChanged (Tp::ContactListState)));
 		connect (cm,
-				SIGNAL (allKnownContactsChanged (Tp::Contacts, Tp::Contacts, Tp::Channel::GroupMemberChangeDetails)),
+				SIGNAL (allKnownContactsChanged (Tp::Contacts,
+						Tp::Contacts, Tp::Channel::GroupMemberChangeDetails)),
 				this,
-				SLOT (handleKnownContactsChanged (Tp::Contacts, Tp::Contacts, Tp::Channel::GroupMemberChangeDetails)));
+				SLOT (handleKnownContactsChanged (Tp::Contacts,
+						Tp::Contacts, Tp::Channel::GroupMemberChangeDetails)));
+		qDebug () << Q_FUNC_INFO << GetAccountName () << cm->supportedFeatures ();
+		qDebug () << "supports FeatureInfo?"
+				<< cm->supportedFeatures ().contains (Tp::Contact::FeatureInfo);
 
 		handleCMStateChanged (cm->state ());
 	}
