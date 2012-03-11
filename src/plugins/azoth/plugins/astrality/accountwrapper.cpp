@@ -62,6 +62,10 @@ namespace Astrality
 				SIGNAL (connectionChanged (Tp::ConnectionPtr)),
 				this,
 				SLOT (handleConnectionChanged (Tp::ConnectionPtr)));
+		connect (A_.data (),
+				SIGNAL (avatarChanged (Tp::Avatar)),
+				this,
+				SLOT (handleAccountAvatar (Tp::Avatar)));
 
 		auto features = Tp::Account::FeatureAvatar |
 				Tp::Account::FeatureProfile |
@@ -376,6 +380,9 @@ namespace Astrality
 			emit gotEntity (Util::MakeNotification ("Azoth", msg, PCritical_));
 			return;
 		}
+
+		qDebug () << A_->actualFeatures ().contains (Tp::Account::FeatureAvatar);
+		handleAccountAvatar (A_->avatar ());
 	}
 
 	void AccountWrapper::handleEnabled (Tp::PendingOperation *po)
@@ -590,6 +597,11 @@ namespace Astrality
 	{
 		qDebug () << Q_FUNC_INFO << pres.type ();
 		emit statusChanged (GetState ());
+	}
+
+	void AccountWrapper::handleAccountAvatar (const Tp::Avatar& avatar)
+	{
+		qDebug () << Q_FUNC_INFO << avatar.avatarData.size ();
 	}
 
 	void AccountWrapper::handlePresencePubRequested (Tp::Contacts contacts)

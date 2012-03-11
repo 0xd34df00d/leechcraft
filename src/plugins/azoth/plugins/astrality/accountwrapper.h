@@ -105,6 +105,8 @@ namespace Astrality
 		void handleRequestedPresenceFinish (Tp::PendingOperation*);
 		void handleCurrentPresence (Tp::Presence);
 
+		void handleAccountAvatar (const Tp::Avatar&);
+
 		void handlePresencePubRequested (Tp::Contacts);
 		void handleCMStateChanged (Tp::ContactListState);
 		void handleKnownContactsChanged (Tp::Contacts,
