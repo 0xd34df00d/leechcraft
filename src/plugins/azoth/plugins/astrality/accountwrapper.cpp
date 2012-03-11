@@ -27,6 +27,7 @@
 #include <PendingContacts>
 #include <Connection>
 #include <ContactManager>
+#include <PendingReady>
 #include <util/util.h>
 #include <util/passutils.h>
 #include "astralityutil.h"
@@ -61,6 +62,17 @@ namespace Astrality
 				SIGNAL (connectionChanged (Tp::ConnectionPtr)),
 				this,
 				SLOT (handleConnectionChanged (Tp::ConnectionPtr)));
+
+		auto features = Tp::Account::FeatureAvatar |
+				Tp::Account::FeatureProfile |
+				Tp::Account::FeatureCapabilities;
+		if (!A_->isReady (features))
+			connect (A_->becomeReady (features),
+					SIGNAL (finished (Tp::PendingOperation*)),
+					this,
+					SLOT (handleAccountReady (Tp::PendingOperation*)));
+		else
+			handleAccountReady ();
 
 		LoadSettings ();
 	}
@@ -347,6 +359,23 @@ namespace Astrality
 		settings.beginGroup (GetAccountID ());
 		settings.setValue ("Autodisconnect", S_.Autodisconnect_);
 		settings.endGroup ();
+	}
+
+	void AccountWrapper::handleAccountReady (Tp::PendingOperation *op)
+	{
+		qDebug () << Q_FUNC_INFO << op;
+		if (op && op->isError ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< op->errorName ()
+					<< op->errorMessage ();
+			const QString& msg = tr ("Failed to make account %1 ready: %2 (%3).")
+					.arg (GetAccountName ())
+					.arg (op->errorName ())
+					.arg (op->errorMessage ());
+			emit gotEntity (Util::MakeNotification ("Azoth", msg, PCritical_));
+			return;
+		}
 	}
 
 	void AccountWrapper::handleEnabled (Tp::PendingOperation *po)

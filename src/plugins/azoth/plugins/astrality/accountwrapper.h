@@ -92,6 +92,8 @@ namespace Astrality
 		void LoadSettings ();
 		void SaveSettings ();
 	private slots:
+		void handleAccountReady (Tp::PendingOperation* = 0);
+
 		void handleEnabled (Tp::PendingOperation*);
 		void handleRemoved (Tp::PendingOperation*);
 		void handleRenamed (Tp::PendingOperation*);
