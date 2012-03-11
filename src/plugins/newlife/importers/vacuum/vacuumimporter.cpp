@@ -27,7 +27,7 @@ namespace Importers
 {
 	VacuumImporter::VacuumImporter (QObject *obj)
 	: Common::IMImporter ("Vacuum IM",
-			QIcon (":/resources/images/apps/vacuum.png"), new VacuumImportPage, obj)
+			QIcon (":/resources/images/apps/vacuum.svg"), new VacuumImportPage, obj)
 	{
 	}
 }

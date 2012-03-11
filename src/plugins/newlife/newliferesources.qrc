@@ -7,6 +7,6 @@
 	<file>resources/images/apps/ktorrent.svg</file>
 	<file>resources/images/apps/liferea.svg</file>
 	<file>resources/images/apps/psi-plus.svg</file>
-	<file>resources/images/apps/vacuum.png</file>
+	<file>resources/images/apps/vacuum.svg</file>
   </qresource>
 </RCC>
