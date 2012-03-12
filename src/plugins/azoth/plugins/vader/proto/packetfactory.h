@@ -46,6 +46,7 @@ namespace Proto
 				quint32 state, const QString& status, const QString& ua);
 		Packet SetStatus (quint32 state, const QString& status);
 
+		Packet RequestInfo (const QString& id);
 		Packet Message (MsgFlags flags, const QString& to, const QString& msg);
 		Packet MessageAck (const QString& from, quint32 msgId);
 		Packet OfflineMessageAck (const UIDL& id);

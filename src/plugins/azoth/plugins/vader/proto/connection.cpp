@@ -95,6 +95,14 @@ namespace Proto
 		PacketActors_ [Packets::UserStatus] = [this] (HalfPacket hp) { UserStatus (hp); };
 		PacketActors_ [Packets::ContactList2] = [this] (HalfPacket hp) { ContactList (hp); };
 
+		PacketActors_ [Packets::WPInfo] = [this] (HalfPacket hp)
+		{
+			if (RequestedInfos_.contains (hp.Header_.Seq_))
+				HandleWPInfo (hp, RequestedInfos_.take (hp.Header_.Seq_));
+			else
+				qWarning () << Q_FUNC_INFO << "WP info for unknown request";
+		};
+
 		PacketActors_ [Packets::MsgAck] = [this] (HalfPacket hp) { IncomingMsg (hp); };
 		PacketActors_ [Packets::MsgStatus] = [this] (HalfPacket hp) { MsgStatus (hp); };
 		PacketActors_ [Packets::SMSAck] = [this] (HalfPacket hp) { SMSAck (hp); };
@@ -201,6 +209,13 @@ namespace Proto
 				UserState::Away;
 			Write (PF_.SetStatus (state, status.StatusString_).Packet_);
 		}
+	}
+
+	void Connection::RequestInfo (const QString& email)
+	{
+		auto packet = PF_.RequestInfo (email);
+		RequestedInfos_ [packet.Seq_] = email;
+		Write (packet.Packet_);
 	}
 
 	quint32 Connection::SendMessage (const QString& to, const QString& message)
@@ -347,6 +362,8 @@ namespace Proto
 				break;
 			}
 		}
+
+		qDebug () << info;
 	}
 
 	void Connection::UserStatus (HalfPacket hp)
@@ -478,6 +495,73 @@ namespace Proto
 			}
 		}
 		emit gotContacts (contacts);
+	}
+
+	void Connection::HandleWPInfo (HalfPacket hp, const QString& id)
+	{
+		quint32 status = 0;
+		FromMRIM (hp.Data_, status);
+
+		qDebug () << Q_FUNC_INFO << status;
+		if (status != static_cast<quint32> (AnketaInfoStatus::OK))
+		{
+			if (status == static_cast<quint32> (AnketaInfoStatus::NoUser) ||
+				status == static_cast<quint32> (AnketaInfoStatus::DBErr) ||
+				status == static_cast<quint32> (AnketaInfoStatus::RateLimit))
+				emit gotUserInfoError (id, static_cast<AnketaInfoStatus> (status));
+			else
+				emit gotUserInfoError (id, AnketaInfoStatus::Other);
+			return;
+		}
+
+		quint32 colsNum = 0;
+		quint32 rowsNum = 0;
+		quint32 date = 0;
+		FromMRIM (hp.Data_, colsNum, rowsNum, date);
+		qDebug () << colsNum << rowsNum << date;
+		if (rowsNum > 1)
+			rowsNum = 1;
+
+		QStringList colsHeaders;
+
+		QVector<bool> unicodes (colsNum, false);
+		QSet<QString> unicodeCols;
+		unicodeCols << "Nickname" << "FirstName" << "LastName" << "Location" << "status_title" << "status_desc";
+		for (quint32 i = 0; i < colsNum; ++i)
+		{
+			Str1251 str;
+			FromMRIM (hp.Data_, str);
+			colsHeaders << str;
+
+			if (unicodeCols.contains (str))
+				unicodes [i] = true;
+		}
+
+		qDebug () << "got columns:" << colsHeaders;
+
+		QList<QStringList> rows;
+		for (quint32 i = 0; i < rowsNum; ++i)
+		{
+			QStringList row;
+			for (quint32 j = 0; j < colsNum; ++j)
+			{
+				if (unicodes [j])
+				{
+					Str16 str;
+					FromMRIM (hp.Data_, str);
+					row << str;
+				}
+				else
+				{
+					Str1251 str;
+					FromMRIM (hp.Data_, str);
+					row << str;
+				}
+			}
+			qDebug () << "got row:" << row;
+			rows << row;
+		}
+		emit gotUserInfoResult (id, colsHeaders, rows.value (0));
 	}
 
 	void Connection::IncomingMsg (HalfPacket hp)

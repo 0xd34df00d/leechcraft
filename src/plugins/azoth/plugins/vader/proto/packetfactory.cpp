@@ -19,6 +19,7 @@
 #include "packetfactory.h"
 #include <QCryptographicHash>
 #include <QtDebug>
+#include <QStringList>
 #include "headers.h"
 #include "conversions.h"
 #include "halfpacket.h"
@@ -74,6 +75,16 @@ namespace Proto
 				QByteArray (),
 				ToMRIM16 (status));
 		return HalfPacket { { Packets::ChangeStatus, Seq_++ }, data };
+	}
+
+	Packet PacketFactory::RequestInfo (const QString& id)
+	{
+		const QStringList& split = id.split ("@", QString::SkipEmptyParts);
+		const QByteArray& data = ToMRIM (static_cast<quint32> (WPParams::User),
+				split.value (0),
+				static_cast<quint32> (WPParams::Domain),
+				split.value (1));
+		return HalfPacket { { Packets::WPRequest, Seq_++ }, data };
 	}
 
 	Packet PacketFactory::Message (MsgFlags flags,
