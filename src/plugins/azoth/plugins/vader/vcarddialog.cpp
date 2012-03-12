@@ -30,6 +30,12 @@ namespace Vader
 		Ui_.setupUi (this);
 	}
 
+	void VCardDialog::SetAvatar (const QImage& avatar)
+	{
+		if (!avatar.isNull ())
+			Ui_.AvatarLabel_->setPixmap (QPixmap::fromImage (avatar));
+	}
+
 	void VCardDialog::SetInfo (QMap<QString, QString> headers)
 	{
 		Ui_.InfoFields_->clear ();

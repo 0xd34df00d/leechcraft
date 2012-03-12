@@ -35,6 +35,7 @@ namespace Vader
 	public:
 		VCardDialog (QWidget* = 0);
 
+		void SetAvatar (const QImage&);
 		void SetInfo (QMap<QString, QString>);
 	};
 }

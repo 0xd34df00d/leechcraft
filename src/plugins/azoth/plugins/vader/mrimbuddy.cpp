@@ -180,6 +180,7 @@ namespace Vader
 		VCardDialog *dia = new VCardDialog ();
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->SetInfo (values);
+		dia->SetAvatar (GetAvatar ());
 		dia->show ();
 	}
 
