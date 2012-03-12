@@ -23,6 +23,7 @@ SET (ASTRALITY_SRCS
 	entrywrapper.cpp
 	msgwrapper.cpp
 	astralityutil.cpp
+	vcarddialog.cpp
 	)
 SET (ASTRALITY_HEADERS
 	astrality.h
@@ -33,9 +34,11 @@ SET (ASTRALITY_HEADERS
 	entrywrapper.h
 	msgwrapper.h
 	astralityutil.h
+	vcarddialog.h
 	)
 SET (ASTRALITY_FORMS
 	accountregfirstpage.ui
+	vcarddialog.ui
 	)
 SET (ASTRALITY_RESOURCES azothastralityresources.qrc)
 CreateTrVars ("azoth_astrality" "en;ru_RU" ASTRALITY_TRANSLATIONS ASTRALITY_COMPILED_TRANSLATIONS)
