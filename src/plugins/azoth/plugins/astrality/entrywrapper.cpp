@@ -24,6 +24,7 @@
 #include "accountwrapper.h"
 #include "astralityutil.h"
 #include "msgwrapper.h"
+#include "vcarddialog.h"
 
 namespace LeechCraft
 {
@@ -249,6 +250,11 @@ namespace Astrality
 
 	void EntryWrapper::handleContactInfo (Tp::PendingOperation *op)
 	{
+		VCardDialog *dia = new VCardDialog;
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->SetAvatar (GetAvatar ());
+		dia->show ();
+
 		if (op->isError ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -267,6 +273,8 @@ namespace Astrality
 		qDebug () << Q_FUNC_INFO << fields.allFields ().size ();
 		Q_FOREACH (Tp::ContactInfoField field, fields.allFields ())
 			qDebug () << field.fieldName << field.fieldValue << field.parameters;
+
+		dia->SetInfoFields (fields.allFields ());
 	}
 
 	void EntryWrapper::handlePublishStateChanged (Tp::Contact::PresenceState state, const QString& msg)
