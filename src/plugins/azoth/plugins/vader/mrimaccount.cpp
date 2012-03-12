@@ -151,6 +151,11 @@ namespace Vader
 		Conn_->SetTypingState (to, state == CPSComposing);
 	}
 
+	void MRIMAccount::RequestInfo (const QString& email)
+	{
+		Conn_->RequestInfo (email);
+	}
+
 	QObject* MRIMAccount::GetObject ()
 	{
 		return this;

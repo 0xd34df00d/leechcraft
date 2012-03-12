@@ -75,6 +75,7 @@ namespace Vader
 		Proto::Connection* GetConnection () const;
 		GroupManager* GetGroupManager () const;
 		void SetTypingState (const QString&, ChatPartState);
+		void RequestInfo (const QString&);
 
 		// IAccount
 		QObject* GetObject ();

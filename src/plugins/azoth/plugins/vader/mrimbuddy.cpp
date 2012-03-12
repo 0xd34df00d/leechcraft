@@ -288,6 +288,7 @@ namespace Vader
 
 	void MRIMBuddy::ShowInfo ()
 	{
+		A_->RequestInfo (GetHumanReadableID ());
 	}
 
 	QList<QAction*> MRIMBuddy::GetActions () const
