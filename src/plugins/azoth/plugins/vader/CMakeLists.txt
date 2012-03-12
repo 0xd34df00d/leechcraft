@@ -24,6 +24,7 @@ SET (VADER_SRCS
 	smsdialog.cpp
 	selfavatarfetcher.cpp
 	xmlsettingsmanager.cpp
+	vcarddialog.cpp
 	proto/headers.cpp
 	proto/conversions.cpp
 	proto/connection.cpp
@@ -48,6 +49,7 @@ SET (VADER_HEADERS
 	smsdialog.h
 	selfavatarfetcher.h
 	xmlsettingsmanager.h
+	vcarddialog.h
 	proto/headers.h
 	proto/conversions.h
 	proto/connection.h
@@ -62,6 +64,7 @@ SET (VADER_HEADERS
 SET (VADER_FORMS
 	mrimaccountconfigwidget.ui
 	smsdialog.ui
+	vcarddialog.ui
 	)
 SET (VADER_RESOURCES azothvaderresources.qrc)
 CreateTrVars ("azoth_vader" "en;ru_RU" VADER_TRANSLATIONS VADER_COMPILED_TRANSLATIONS)
