@@ -118,8 +118,7 @@ namespace Vader
 		void handleContactAdded (quint32, quint32);
 
 		void handleGotUserInfoError (const QString&, Proto::AnketaInfoStatus);
-		void handleGotUserInfo (const QString&,
-				const QStringList&, const QStringList&);
+		void handleGotUserInfo (const QString&, const QMap<QString, QString>&);
 
 		void handleGotAuthRequest (const QString&, const QString&);
 		void handleGotAuthAck (const QString&);

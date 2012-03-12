@@ -138,8 +138,7 @@ namespace Proto
 		void gotContacts (const QList<Proto::ContactInfo>&);
 
 		void gotUserInfoError (const QString& email, Proto::AnketaInfoStatus);
-		void gotUserInfoResult (const QString& email,
-				const QStringList& headers, const QStringList& vals);
+		void gotUserInfoResult (const QString& email, const QMap<QString, QString>& vals);
 
 		void gotMessage (const Proto::Message&);
 		void gotOfflineMessage (const Proto::Message&);

@@ -31,6 +31,7 @@
 #include "smsdialog.h"
 #include "core.h"
 #include "selfavatarfetcher.h"
+#include "vcarddialog.h"
 
 namespace LeechCraft
 {
@@ -172,6 +173,14 @@ namespace Vader
 		}
 
 		Info_.GroupNumber_ = info.GroupNumber_;
+	}
+
+	void MRIMBuddy::HandleWPInfo (const QMap<QString, QString>& values)
+	{
+		VCardDialog *dia = new VCardDialog ();
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->SetInfo (values);
+		dia->show ();
 	}
 
 	qint64 MRIMBuddy::GetID () const

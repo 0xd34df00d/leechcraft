@@ -60,9 +60,9 @@ namespace Vader
 				this,
 				SLOT (handleGotUserInfoError (QString, Proto::AnketaInfoStatus)));
 		connect (Conn_,
-				SIGNAL (gotUserInfoResult (QString, QStringList, QStringList)),
+				SIGNAL (gotUserInfoResult (QString, QMap<QString, QString>)),
 				this,
-				SLOT (handleGotUserInfo (QString, QStringList, QStringList)));
+				SLOT (handleGotUserInfo (QString, QMap<QString, QString>)));
 		connect (Conn_,
 				SIGNAL (gotAuthRequest (QString, QString)),
 				this,
@@ -489,9 +489,18 @@ namespace Vader
 		Core::Instance ().SendEntity (e);
 	}
 
-	void MRIMAccount::handleGotUserInfo (const QString&,
-			const QStringList&, const QStringList&)
+	void MRIMAccount::handleGotUserInfo (const QString& from,
+			const QMap<QString, QString>& values)
 	{
+		if (!Buddies_.contains (from))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown buddy"
+					<< from;
+			return;
+		}
+
+		Buddies_ [from]->HandleWPInfo (values);
 	}
 
 	void MRIMAccount::handleGotAuthRequest (const QString& from, const QString& msg)

@@ -561,7 +561,14 @@ namespace Proto
 			qDebug () << "got row:" << row;
 			rows << row;
 		}
-		emit gotUserInfoResult (id, colsHeaders, rows.value (0));
+
+		QMap<QString, QString> map;
+		const QStringList& row = rows.value (0);
+		for (int i = 0, size = std::min (row.size (), colsHeaders.size ());
+				i < size; ++i)
+			map [colsHeaders.at (i)] = row.at (i);
+
+		emit gotUserInfoResult (id, map);
 	}
 
 	void Connection::IncomingMsg (HalfPacket hp)
