@@ -24,6 +24,7 @@
 #include <interfaces/isupporttune.h>
 #include <interfaces/iextselfinfoaccount.h>
 #include "proto/contactinfo.h"
+#include "proto/headers.h"
 
 namespace LeechCraft
 {
@@ -115,6 +116,10 @@ namespace Vader
 		void handleGotContacts (const QList<Proto::ContactInfo>&);
 		void handleUserStatusChanged (const Proto::ContactInfo&);
 		void handleContactAdded (quint32, quint32);
+
+		void handleGotUserInfoError (const QString&, Proto::AnketaInfoStatus);
+		void handleGotUserInfo (const QString&,
+				const QStringList&, const QStringList&);
 
 		void handleGotAuthRequest (const QString&, const QString&);
 		void handleGotAuthAck (const QString&);
