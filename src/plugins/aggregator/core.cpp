@@ -68,6 +68,7 @@ namespace Aggregator
 	, JobHolderRepresentation_ (0)
 	, ChannelsFilterModel_ (0)
 	, Initialized_ (false)
+	, ReprWidget_ (0)
 	, PluginManager_ (new PluginManager)
 	, DBUpThread_ (new DBUpdateThread (this))
 	{
