@@ -553,17 +553,17 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::ChannelsManager</name>
     <message>
-        <location filename="channelsmanager.cpp" line="484"/>
+        <location filename="channelsmanager.cpp" line="465"/>
         <source>%1 added to your ban list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelsmanager.cpp" line="488"/>
+        <location filename="channelsmanager.cpp" line="469"/>
         <source>%1 added to your except list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelsmanager.cpp" line="492"/>
+        <location filename="channelsmanager.cpp" line="473"/>
         <source>%1 added to your invite list.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -634,13 +634,58 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::IrcServerHandler</name>
     <message>
-        <location filename="ircserverhandler.cpp" line="503"/>
+        <location filename="ircserverhandler.cpp" line="526"/>
         <source>%1 is a %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="508"/>
+        <location filename="ircserverhandler.cpp" line="531"/>
         <source>%1 is on server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="551"/>
+        <source>%1 is %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="568"/>
+        <source>%1&apos;s real name is %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="584"/>
+        <source>%1 is on channels: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="603"/>
+        <source>%1&apos;s server is: %2 - %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="614"/>
+        <source>%1&apos;s idle time: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="624"/>
+        <source>%1&apos;s auth date: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="644"/>
+        <source>%1 is logged in as %2 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="655"/>
+        <source>%1 is using a secure connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="699"/>
+        <source>%1 [%2@%3]: Channel: %4, Server: %5, Hops: %6, Flags: %7, Away: %8, Real Name: %9</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -675,7 +720,7 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::Plugin</name>
     <message>
-        <location filename="acetamide.cpp" line="83"/>
+        <location filename="acetamide.cpp" line="81"/>
         <source>IRC protocol support.</source>
         <translation>Підтримка протоколу IRC.</translation>
     </message>
@@ -691,52 +736,50 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::ServerResponseManager</name>
     <message>
-        <location filename="serverresponsemanager.cpp" line="325"/>
+        <location filename="serverresponsemanager.cpp" line="333"/>
         <source> invites you to a channel </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="333"/>
+        <location filename="serverresponsemanager.cpp" line="341"/>
         <source>You invite </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="334"/>
+        <location filename="serverresponsemanager.cpp" line="342"/>
         <source> to a channel </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="366"/>
-        <location filename="serverresponsemanager.cpp" line="373"/>
+        <location filename="serverresponsemanager.cpp" line="374"/>
         <location filename="serverresponsemanager.cpp" line="381"/>
-        <location filename="serverresponsemanager.cpp" line="388"/>
+        <location filename="serverresponsemanager.cpp" line="389"/>
         <location filename="serverresponsemanager.cpp" line="396"/>
+        <location filename="serverresponsemanager.cpp" line="404"/>
         <source>Received request %1 from %2, sending response</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="424"/>
+        <location filename="serverresponsemanager.cpp" line="432"/>
         <source>Received answer CTCP-%1 from %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="497"/>
-        <source> connected via </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="serverresponsemanager.cpp" line="534"/>
-        <source> on the channels : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="serverresponsemanager.cpp" line="576"/>
+        <location filename="serverresponsemanager.cpp" line="618"/>
         <source> summoning to IRC</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="675"/>
+        <location filename="serverresponsemanager.cpp" line="717"/>
         <source>End of USERS</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Acetamide::VCardDialog</name>
+    <message>
+        <location filename="vcarddialog.cpp" line="40"/>
+        <source>VCard for %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1140,9 +1183,51 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>VCardDialog</name>
+    <message>
+        <location filename="vcarddialog.ui" line="24"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.ui" line="38"/>
+        <source>Real name:</source>
+        <translation type="unfinished">Справжнє ім&apos;я:</translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.ui" line="55"/>
+        <source>Nick:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.ui" line="72"/>
+        <source>User name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.ui" line="89"/>
+        <source>Host name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.ui" line="106"/>
+        <source>Server name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.ui" line="120"/>
+        <source>Server dislocation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>azothacetamidesettings</name>
     <message>
         <location filename="dummy.cpp" line="2"/>
+        <source>Behavior</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Acetamide</source>
         <translation type="unfinished"></translation>
@@ -1159,6 +1244,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
+        <source>Duplicate command answer in server&apos;s tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="7"/>
+        <source>Use WHO request for checking AWAY status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="8"/>
+        <source>Period for WHO request:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
+        <source> min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="10"/>
+        <source>NickServ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
         <source>NickServ identify</source>
         <translation type="unfinished"></translation>
     </message>

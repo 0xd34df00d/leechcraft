@@ -291,67 +291,67 @@
     <message>
         <location filename="channelclentry.cpp" line="56"/>
         <source>Role</source>
-        <translation type="unfinished"></translation>
+        <translation>Роль</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="57"/>
         <source>Participant</source>
-        <translation type="unfinished"></translation>
+        <translation>Участник</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="59"/>
         <source>Kick and Ban</source>
-        <translation type="unfinished"></translation>
+        <translation>Кикнуть и забанить</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="60"/>
         <source>Kick</source>
-        <translation type="unfinished"></translation>
+        <translation>Кикнуть</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="61"/>
         <source>Ban by nickname</source>
-        <translation type="unfinished"></translation>
+        <translation>Забанить по нику</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="62"/>
         <source>Ban by mask (*!*@domain)</source>
-        <translation type="unfinished"></translation>
+        <translation>Забанить по маске (*!*@domain)</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="63"/>
         <source>Ban by mask (*!user@domain)</source>
-        <translation type="unfinished"></translation>
+        <translation>Забанить по маске (*!user@domain)</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="64"/>
         <source>Kick and ban</source>
-        <translation type="unfinished"></translation>
+        <translation>Кикнуть и забанить</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="75"/>
         <source>Voiced</source>
-        <translation type="unfinished"></translation>
+        <translation>С голосом</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="81"/>
         <source>HalfOperator</source>
-        <translation type="unfinished"></translation>
+        <translation>Халф-Оп</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="87"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Оператор</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="93"/>
         <source>Admin</source>
-        <translation type="unfinished"></translation>
+        <translation>Админ</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="99"/>
         <source>Owner</source>
-        <translation type="unfinished"></translation>
+        <translation>Владелец</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="153"/>
@@ -411,32 +411,32 @@
     <message>
         <location filename="channelhandler.cpp" line="120"/>
         <source>%1 has changed nickname to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 изменил ник на %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="238"/>
         <source>%1 joined the channel as %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 вошел на канал как %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="286"/>
         <source>You kicked %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы кикнули %1: %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="289"/>
         <source>%1 has been kicked by %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%2 кикнул %1: %3</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="305"/>
         <source>%1 is now %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 теперь %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="306"/>
         <source>%1 is not %2 anymore</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 больше не %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="531"/>
@@ -449,62 +449,62 @@
     <message>
         <location filename="channelhandler.cpp" line="577"/>
         <source>Channel mode set to invite only channel (+i)</source>
-        <translation type="unfinished"></translation>
+        <translation>Установлен режим канал только по приглашениям (+i)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="579"/>
         <source>Channel mode set to non invite only channel (-i)</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим канала только по приглашениям снят (-i)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="590"/>
         <source>Channel mode set to moderate channel (+m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Установлен режим модерируемого канала (+m)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="592"/>
         <source>Channel mode set to unmoderate channel (-m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим модерируемого канала снят (-m)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="603"/>
         <source>Channel mode set to block outside messages (+n)</source>
-        <translation type="unfinished"></translation>
+        <translation>Канал блокирует сообщения извне (+n)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="605"/>
         <source>Channel mode set to not block outside messages (-n)</source>
-        <translation type="unfinished"></translation>
+        <translation>Канал не блокирует сообщения извне (-n)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="616"/>
         <source>Channel mode set to private channel (+p)</source>
-        <translation type="unfinished"></translation>
+        <translation>Установлен режим приватности канала (+p)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="618"/>
         <source>Channel mode set to non private channel (-p)</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим приватности канала снят (-p)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="629"/>
         <source>Channel mode set to secret channel (+s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Канал секретный (+s)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="631"/>
         <source>Channel mode set to non secret channel (-s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Канал не секретный (-s)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="642"/>
         <source>Reop flag is set (+r)</source>
-        <translation type="unfinished"></translation>
+        <translation>Установлен флаг reop (+r)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="644"/>
         <source>Reop flag is remove (-r)</source>
-        <translation type="unfinished"></translation>
+        <translation>Флаг reop снят (-r)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="655"/>
@@ -542,30 +542,30 @@
     <message>
         <location filename="channelparticipantentry.cpp" line="39"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация</translation>
     </message>
     <message>
         <location filename="channelparticipantentry.cpp" line="50"/>
         <source>CTCP</source>
-        <translation type="unfinished"></translation>
+        <translation>CTCP</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Acetamide::ChannelsManager</name>
     <message>
-        <location filename="channelsmanager.cpp" line="484"/>
+        <location filename="channelsmanager.cpp" line="465"/>
         <source>%1 added to your ban list.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 добавлен в ваш бан-лист.</translation>
     </message>
     <message>
-        <location filename="channelsmanager.cpp" line="488"/>
+        <location filename="channelsmanager.cpp" line="469"/>
         <source>%1 added to your except list.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 добавлен в ваш список исключений.</translation>
     </message>
     <message>
-        <location filename="channelsmanager.cpp" line="492"/>
+        <location filename="channelsmanager.cpp" line="473"/>
         <source>%1 added to your invite list.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 добавлен в ваш список приглашений.</translation>
     </message>
 </context>
 <context>
@@ -634,14 +634,59 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::IrcServerHandler</name>
     <message>
-        <location filename="ircserverhandler.cpp" line="503"/>
+        <location filename="ircserverhandler.cpp" line="526"/>
         <source>%1 is a %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 — %2</translation>
     </message>
     <message>
-        <location filename="ircserverhandler.cpp" line="508"/>
+        <location filename="ircserverhandler.cpp" line="531"/>
         <source>%1 is on server</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 на сервере</translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="551"/>
+        <source>%1 is %2</source>
+        <translation>%1 — %2</translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="568"/>
+        <source>%1&apos;s real name is %2</source>
+        <translation>Настоящее имя %1 — %2</translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="584"/>
+        <source>%1 is on channels: %2</source>
+        <translation>%1 на следующих каналах: %2</translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="603"/>
+        <source>%1&apos;s server is: %2 - %3</source>
+        <translation>Сервер %1 — %2 — %3</translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="614"/>
+        <source>%1&apos;s idle time: %2</source>
+        <translation>Время бездействия %1 — %2</translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="624"/>
+        <source>%1&apos;s auth date: %2</source>
+        <translation>Дата авторизации %1 — %2</translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="644"/>
+        <source>%1 is logged in as %2 </source>
+        <translation>%1 зашел как %2</translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="655"/>
+        <source>%1 is using a secure connection</source>
+        <translation>%1 использует защищенное соединение</translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="699"/>
+        <source>%1 [%2@%3]: Channel: %4, Server: %5, Hops: %6, Flags: %7, Away: %8, Real Name: %9</source>
+        <translation>%1 [%2@%3]: Канал: %4, Сервер: %5, Хопов: %6, Флаги: %7, Away-сообщение: %8, Настоящее имя: %9</translation>
     </message>
 </context>
 <context>
@@ -675,7 +720,7 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::Plugin</name>
     <message>
-        <location filename="acetamide.cpp" line="83"/>
+        <location filename="acetamide.cpp" line="81"/>
         <source>IRC protocol support.</source>
         <translation>Поддержка протокола IRC.</translation>
     </message>
@@ -685,59 +730,57 @@
     <message>
         <location filename="serverparticipantentry.cpp" line="60"/>
         <source>Private chats</source>
-        <translation type="unfinished"></translation>
+        <translation>Приватные разговоры</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Acetamide::ServerResponseManager</name>
     <message>
-        <location filename="serverresponsemanager.cpp" line="325"/>
-        <source> invites you to a channel </source>
-        <translation type="unfinished"> приглашает вас на канал </translation>
-    </message>
-    <message>
         <location filename="serverresponsemanager.cpp" line="333"/>
+        <source> invites you to a channel </source>
+        <translation> приглашает вас на канал </translation>
+    </message>
+    <message>
+        <location filename="serverresponsemanager.cpp" line="341"/>
         <source>You invite </source>
-        <translation type="unfinished">Вы приглашаете </translation>
+        <translation>Вы приглашаете </translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="334"/>
+        <location filename="serverresponsemanager.cpp" line="342"/>
         <source> to a channel </source>
-        <translation type="unfinished"> на канал </translation>
+        <translation> на канал </translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="366"/>
-        <location filename="serverresponsemanager.cpp" line="373"/>
+        <location filename="serverresponsemanager.cpp" line="374"/>
         <location filename="serverresponsemanager.cpp" line="381"/>
-        <location filename="serverresponsemanager.cpp" line="388"/>
+        <location filename="serverresponsemanager.cpp" line="389"/>
         <location filename="serverresponsemanager.cpp" line="396"/>
+        <location filename="serverresponsemanager.cpp" line="404"/>
         <source>Received request %1 from %2, sending response</source>
-        <translation type="unfinished">Получен запрос %1 от %2, посылается ответ</translation>
+        <translation>Получен запрос %1 от %2, посылается ответ</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="424"/>
+        <location filename="serverresponsemanager.cpp" line="432"/>
         <source>Received answer CTCP-%1 from %2: %3</source>
-        <translation type="unfinished">Получен ответ CTCP-%1 от %2: %3</translation>
+        <translation>Получен ответ CTCP-%1 от %2: %3</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="497"/>
-        <source> connected via </source>
-        <translation type="unfinished"> подключён через </translation>
-    </message>
-    <message>
-        <location filename="serverresponsemanager.cpp" line="534"/>
-        <source> on the channels : </source>
-        <translation type="unfinished"> на каналах : </translation>
-    </message>
-    <message>
-        <location filename="serverresponsemanager.cpp" line="576"/>
+        <location filename="serverresponsemanager.cpp" line="618"/>
         <source> summoning to IRC</source>
-        <translation type="unfinished"> призывается в IRC</translation>
+        <translation> призывается в IRC</translation>
     </message>
     <message>
-        <location filename="serverresponsemanager.cpp" line="675"/>
+        <location filename="serverresponsemanager.cpp" line="717"/>
         <source>End of USERS</source>
-        <translation type="unfinished">Конец USERS</translation>
+        <translation>Конец USERS</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Acetamide::VCardDialog</name>
+    <message>
+        <location filename="vcarddialog.cpp" line="40"/>
+        <source>VCard for %1</source>
+        <translation>VCard для %1</translation>
     </message>
 </context>
 <context>
@@ -802,17 +845,17 @@
     <message>
         <location filename="serverinfowidget.ui" line="14"/>
         <source>Server information</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация о сервере</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="24"/>
         <source>Base parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Базовые параметры</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="50"/>
         <source>The IRC network name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя сети IRC.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="53"/>
@@ -1140,9 +1183,51 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>VCardDialog</name>
+    <message>
+        <location filename="vcarddialog.ui" line="24"/>
+        <source>General</source>
+        <translation>Общее</translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.ui" line="38"/>
+        <source>Real name:</source>
+        <translation>Настоящее имя:</translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.ui" line="55"/>
+        <source>Nick:</source>
+        <translation>Ник:</translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.ui" line="72"/>
+        <source>User name</source>
+        <translation>Имя пользователя</translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.ui" line="89"/>
+        <source>Host name</source>
+        <translation>Хост</translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.ui" line="106"/>
+        <source>Server name:</source>
+        <translation>Имя сервера:</translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.ui" line="120"/>
+        <source>Server dislocation:</source>
+        <translation>Местоположение сервера:</translation>
+    </message>
+</context>
+<context>
     <name>azothacetamidesettings</name>
     <message>
         <location filename="dummy.cpp" line="2"/>
+        <source>Behavior</source>
+        <translation>Поведение</translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Acetamide</source>
         <translation>Acetamide</translation>
@@ -1159,6 +1244,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
+        <source>Duplicate command answer in server&apos;s tab</source>
+        <translation>Дублировать ответ на команду во вкладке сервера</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="7"/>
+        <source>Use WHO request for checking AWAY status</source>
+        <translation>Использовать запросы WHO для проверки статуса AWAY</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="8"/>
+        <source>Period for WHO request:</source>
+        <translation>Период WHO-запросов:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
+        <source> min</source>
+        <translation> мин</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="10"/>
+        <source>NickServ</source>
+        <translation>NickServ</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
         <source>NickServ identify</source>
         <translation>Идентификация NickServ</translation>
     </message>
