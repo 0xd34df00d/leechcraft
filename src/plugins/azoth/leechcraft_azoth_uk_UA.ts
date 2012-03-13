@@ -1685,7 +1685,7 @@
         <translation>Ви були запрошені до %1 %2: %3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2698"/>
+        <location filename="core.cpp" line="2700"/>
         <source>Join</source>
         <translation>Зайти</translation>
     </message>
@@ -1778,72 +1778,72 @@
 <context>
     <name>LeechCraft::Azoth::MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="202"/>
+        <location filename="mainwidget.cpp" line="204"/>
         <source>Set status</source>
         <translation>Встановити статус</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="247"/>
+        <location filename="mainwidget.cpp" line="249"/>
         <source>Manage bookmarks...</source>
         <translation>Управляти закладками...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="251"/>
+        <location filename="mainwidget.cpp" line="253"/>
         <source>Add account...</source>
         <translation>Додати обліковий запис ...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="289"/>
+        <location filename="mainwidget.cpp" line="295"/>
         <source>Change status</source>
         <translation>Змінити статус</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="291"/>
+        <location filename="mainwidget.cpp" line="297"/>
         <source>Online</source>
         <translation>Онлайн</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="295"/>
+        <location filename="mainwidget.cpp" line="301"/>
         <source>Free to chat</source>
         <translation>Готовий поспілкуватись</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="299"/>
+        <location filename="mainwidget.cpp" line="305"/>
         <source>Away</source>
         <translation>Відійшов</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="303"/>
+        <location filename="mainwidget.cpp" line="309"/>
         <source>DND</source>
         <translation>Не турбувати</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="307"/>
+        <location filename="mainwidget.cpp" line="313"/>
         <source>Not available</source>
         <translation>Недоступний</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="311"/>
+        <location filename="mainwidget.cpp" line="317"/>
         <source>Offline</source>
         <translation>Відключений</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="318"/>
+        <location filename="mainwidget.cpp" line="324"/>
         <source>Custom...</source>
         <translation>Особливий...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="376"/>
+        <location filename="mainwidget.cpp" line="382"/>
         <source>Send message...</source>
         <translation>Відправити повідомлення...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="539"/>
+        <location filename="mainwidget.cpp" line="545"/>
         <source>Rename group</source>
         <translation>Перейменувати групу</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="540"/>
+        <location filename="mainwidget.cpp" line="546"/>
         <source>Enter new group name for %1:</source>
         <translation>Будь ласка, введіть нове ім&apos;я групи для %1:</translation>
     </message>
@@ -1863,32 +1863,32 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="236"/>
+        <location filename="mainwidget.cpp" line="238"/>
         <source>Add contact...</source>
         <translation>Додати контакт...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="241"/>
+        <location filename="mainwidget.cpp" line="243"/>
         <source>Join conference...</source>
         <translation>Зайти в конференцію...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="131"/>
+        <location filename="mainwidget.cpp" line="133"/>
         <source>Search...</source>
         <translation>Пошук...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="256"/>
+        <location filename="mainwidget.cpp" line="258"/>
         <source>Show offline contacts</source>
         <translation>Показати вiдключенi контакти</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="366"/>
+        <location filename="mainwidget.cpp" line="372"/>
         <source>Rename group...</source>
         <translation>Перейменувати групу...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="348"/>
+        <location filename="mainwidget.cpp" line="354"/>
         <source>Entry context menu</source>
         <translation>Контекстне меню контакту</translation>
     </message>
@@ -2850,7 +2850,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="57"/>
+        <location filename="util.cpp" line="59"/>
         <source>Add account</source>
         <translation>Додати акаунт</translation>
     </message>
@@ -3119,6 +3119,11 @@
         <location filename="dummy.cpp" line="42"/>
         <source>Highlight color:</source>
         <translation>Колір підсвічування:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="44"/>
+        <source>Chat tab</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="45"/>

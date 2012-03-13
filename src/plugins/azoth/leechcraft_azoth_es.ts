@@ -1681,7 +1681,7 @@
         <translation>Usted esta invitado a %1 por %2: %3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2698"/>
+        <location filename="core.cpp" line="2700"/>
         <source>Join</source>
         <translation>Participar</translation>
     </message>
@@ -1774,72 +1774,72 @@
 <context>
     <name>LeechCraft::Azoth::MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="202"/>
+        <location filename="mainwidget.cpp" line="204"/>
         <source>Set status</source>
         <translation>Establecer el estado</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="247"/>
+        <location filename="mainwidget.cpp" line="249"/>
         <source>Manage bookmarks...</source>
         <translation>Gestionar los marcadores...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="251"/>
+        <location filename="mainwidget.cpp" line="253"/>
         <source>Add account...</source>
         <translation>Añadir cuenta...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="289"/>
+        <location filename="mainwidget.cpp" line="295"/>
         <source>Change status</source>
         <translation>Cambiar estado</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="291"/>
+        <location filename="mainwidget.cpp" line="297"/>
         <source>Online</source>
         <translation>Conectado</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="295"/>
+        <location filename="mainwidget.cpp" line="301"/>
         <source>Free to chat</source>
         <translation>Disponible para conversar</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="299"/>
+        <location filename="mainwidget.cpp" line="305"/>
         <source>Away</source>
         <translation>Ausente</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="303"/>
+        <location filename="mainwidget.cpp" line="309"/>
         <source>DND</source>
         <translation>No molestar</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="307"/>
+        <location filename="mainwidget.cpp" line="313"/>
         <source>Not available</source>
         <translation>No disponible</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="311"/>
+        <location filename="mainwidget.cpp" line="317"/>
         <source>Offline</source>
         <translation>Desconectado</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="318"/>
+        <location filename="mainwidget.cpp" line="324"/>
         <source>Custom...</source>
         <translation>Personalizado...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="376"/>
+        <location filename="mainwidget.cpp" line="382"/>
         <source>Send message...</source>
         <translation>Enviar mensaje...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="539"/>
+        <location filename="mainwidget.cpp" line="545"/>
         <source>Rename group</source>
         <translation>Renombrar grupo</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="540"/>
+        <location filename="mainwidget.cpp" line="546"/>
         <source>Enter new group name for %1:</source>
         <translation>Establecer el nombre nuevo para el grupo %1:</translation>
     </message>
@@ -1859,32 +1859,32 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="236"/>
+        <location filename="mainwidget.cpp" line="238"/>
         <source>Add contact...</source>
         <translation>Añadir contacto...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="241"/>
+        <location filename="mainwidget.cpp" line="243"/>
         <source>Join conference...</source>
         <translation>Entrar a sala de charla...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="131"/>
+        <location filename="mainwidget.cpp" line="133"/>
         <source>Search...</source>
         <translation>Buscar...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="256"/>
+        <location filename="mainwidget.cpp" line="258"/>
         <source>Show offline contacts</source>
         <translation>Mostrar contactos desconectados</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="366"/>
+        <location filename="mainwidget.cpp" line="372"/>
         <source>Rename group...</source>
         <translation>Renombrar grupo...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="348"/>
+        <location filename="mainwidget.cpp" line="354"/>
         <source>Entry context menu</source>
         <translation>Menú contextual del pasadizo</translation>
     </message>
@@ -2846,7 +2846,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="57"/>
+        <location filename="util.cpp" line="59"/>
         <source>Add account</source>
         <translation>Añadir cuenta</translation>
     </message>
@@ -3115,6 +3115,11 @@
         <location filename="dummy.cpp" line="42"/>
         <source>Highlight color:</source>
         <translation>Color de resaltado:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="44"/>
+        <source>Chat tab</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="45"/>

@@ -1681,7 +1681,7 @@
         <translation>You have been invited to %1 by %2: %3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2698"/>
+        <location filename="core.cpp" line="2700"/>
         <source>Join</source>
         <translation>Join</translation>
     </message>
@@ -1774,72 +1774,72 @@
 <context>
     <name>LeechCraft::Azoth::MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="202"/>
+        <location filename="mainwidget.cpp" line="204"/>
         <source>Set status</source>
         <translation>Set status</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="247"/>
+        <location filename="mainwidget.cpp" line="249"/>
         <source>Manage bookmarks...</source>
         <translation>Manage bookmarks...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="251"/>
+        <location filename="mainwidget.cpp" line="253"/>
         <source>Add account...</source>
         <translation>Add account...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="289"/>
+        <location filename="mainwidget.cpp" line="295"/>
         <source>Change status</source>
         <translation>Change status</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="291"/>
+        <location filename="mainwidget.cpp" line="297"/>
         <source>Online</source>
         <translation>Online</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="295"/>
+        <location filename="mainwidget.cpp" line="301"/>
         <source>Free to chat</source>
         <translation>Free to chat</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="299"/>
+        <location filename="mainwidget.cpp" line="305"/>
         <source>Away</source>
         <translation>Away</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="303"/>
+        <location filename="mainwidget.cpp" line="309"/>
         <source>DND</source>
         <translation>DND</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="307"/>
+        <location filename="mainwidget.cpp" line="313"/>
         <source>Not available</source>
         <translation>Not available</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="311"/>
+        <location filename="mainwidget.cpp" line="317"/>
         <source>Offline</source>
         <translation>Offline</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="318"/>
+        <location filename="mainwidget.cpp" line="324"/>
         <source>Custom...</source>
         <translation>Custom...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="376"/>
+        <location filename="mainwidget.cpp" line="382"/>
         <source>Send message...</source>
         <translation>Send message...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="539"/>
+        <location filename="mainwidget.cpp" line="545"/>
         <source>Rename group</source>
         <translation>Rename group</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="540"/>
+        <location filename="mainwidget.cpp" line="546"/>
         <source>Enter new group name for %1:</source>
         <translation>Enter new group name for %1:</translation>
     </message>
@@ -1859,32 +1859,32 @@
         <translation>Azoth bar</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="236"/>
+        <location filename="mainwidget.cpp" line="238"/>
         <source>Add contact...</source>
         <translation>Add contact...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="241"/>
+        <location filename="mainwidget.cpp" line="243"/>
         <source>Join conference...</source>
         <translation>Join conference...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="131"/>
+        <location filename="mainwidget.cpp" line="133"/>
         <source>Search...</source>
         <translation>Search...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="256"/>
+        <location filename="mainwidget.cpp" line="258"/>
         <source>Show offline contacts</source>
         <translation>Show offline contacts</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="366"/>
+        <location filename="mainwidget.cpp" line="372"/>
         <source>Rename group...</source>
         <translation>Rename group...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="348"/>
+        <location filename="mainwidget.cpp" line="354"/>
         <source>Entry context menu</source>
         <translation>Entry context menu</translation>
     </message>
@@ -2846,7 +2846,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="57"/>
+        <location filename="util.cpp" line="59"/>
         <source>Add account</source>
         <translation>Add account</translation>
     </message>
@@ -3115,6 +3115,11 @@
         <location filename="dummy.cpp" line="42"/>
         <source>Highlight color:</source>
         <translation>Highlight color:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="44"/>
+        <source>Chat tab</source>
+        <translation>Chat tab</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="45"/>
