@@ -1201,12 +1201,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="vcarddialog.ui" line="72"/>
-        <source>User name</source>
+        <source>User name:</source>
+        <oldsource>User name</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="89"/>
-        <source>Host name</source>
+        <source>Host name:</source>
+        <oldsource>Host name</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
