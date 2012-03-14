@@ -213,7 +213,6 @@ namespace Azoth
 				this,
 				SLOT (updateFastStatusButton (LeechCraft::Azoth::State)));
 
-		BottomBar_->setMaximumWidth (sizeHint ().width ());
 		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
 	}
 
@@ -274,6 +273,8 @@ namespace Azoth
 
 		auto addBottomAct = [this] (QAction *act)
 		{
+			const QString& icon = act->property ("ActionIcon").toString ();
+			act->setIcon (Core::Instance ().GetProxy ()->GetIcon (icon));
 			BottomBar_->addAction (act);
 		};
 		addBottomAct (addContact);
