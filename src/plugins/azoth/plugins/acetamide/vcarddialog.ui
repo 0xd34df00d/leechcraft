@@ -69,7 +69,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>User name</string>
+            <string>User name:</string>
            </property>
            <property name="buddy">
             <cstring>EditUserName_</cstring>
@@ -86,7 +86,7 @@
          <item row="3" column="0">
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>Host name</string>
+            <string>Host name:</string>
            </property>
            <property name="buddy">
             <cstring>EditHostName_</cstring>
