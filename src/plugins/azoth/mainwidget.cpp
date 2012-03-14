@@ -121,15 +121,11 @@ namespace Azoth
 
 		MainMenu_->setIcon (QIcon (":/plugins/azoth/resources/images/azoth.svg"));
 
-		BottomBar_->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Preferred);
-		MenuButton_->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Preferred);
-		FastStatusButton_->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Preferred);
 		BottomBar_->addWidget (MenuButton_);
 		BottomBar_->addWidget (FastStatusButton_);
 		FastStatusButton_->setPopupMode (QToolButton::MenuButtonPopup);
 
 		Ui_.setupUi (this);
-		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
 		Ui_.FilterLine_->setPlaceholderText (tr ("Search..."));
 		Ui_.CLTree_->setFocusProxy (Ui_.FilterLine_);
 
@@ -217,8 +213,8 @@ namespace Azoth
 				this,
 				SLOT (updateFastStatusButton (LeechCraft::Azoth::State)));
 
-		adjustSize ();
-		layout ()->update ();
+		BottomBar_->setMaximumWidth (sizeHint ().width ());
+		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
 	}
 
 	QList<QAction*> MainWidget::GetMenuActions()
@@ -279,11 +275,6 @@ namespace Azoth
 		auto addBottomAct = [this] (QAction *act)
 		{
 			BottomBar_->addAction (act);
-
-			const int count = BottomBar_->actions ().count ();
-			const int spacing = BottomBar_->layout ()->spacing ();
-			const int width = (32 + spacing) * (count + 1);
-			BottomBar_->setMaximumWidth (width);
 		};
 		addBottomAct (addContact);
 		addBottomAct (showOffline);
