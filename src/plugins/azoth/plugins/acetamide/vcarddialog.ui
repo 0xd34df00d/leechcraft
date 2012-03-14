@@ -105,6 +105,9 @@
            <property name="text">
             <string>Server name:</string>
            </property>
+           <property name="buddy">
+            <cstring>ServerName_</cstring>
+           </property>
           </widget>
          </item>
          <item row="4" column="1">
@@ -118,6 +121,9 @@
           <widget class="QLabel" name="serverDislocationLabel">
            <property name="text">
             <string>Server dislocation:</string>
+           </property>
+           <property name="buddy">
+            <cstring>ServerDislocation_</cstring>
            </property>
           </widget>
          </item>
