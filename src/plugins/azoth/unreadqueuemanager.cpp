@@ -32,21 +32,23 @@ namespace Azoth
 	{
 	}
 
-	void UnreadQueueManager::AddMessage (QObject *msg)
+	void UnreadQueueManager::AddMessage (QObject *msgObj)
 	{
-		Queue_ << msg;
+		IMessage *msg = qobject_cast<IMessage*> (msgObj);
+		QObject *entryObj = msg->ParentCLEntry ();
+		if (!Queue_.contains (entryObj))
+			Queue_ << entryObj;
 	}
 
 	void UnreadQueueManager::ShowNext ()
 	{
-		QObject *msgObj = 0;
-		while (!Queue_.isEmpty () && !msgObj)
-			msgObj = Queue_.takeFirst ();
-		if (!msgObj)
+		QObject *entryObj = 0;
+		while (!Queue_.isEmpty () && !entryObj)
+			entryObj = Queue_.takeFirst ();
+		if (!entryObj)
 			return;
 
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		ICLEntry *entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		Core::Instance ().GetChatTabsManager ()->OpenChat (entry);
 
 		QMainWindow *mw = Core::Instance ().GetProxy ()->GetMainWindow ();
@@ -57,23 +59,7 @@ namespace Azoth
 
 	void UnreadQueueManager::clearMessagesForEntry (QObject *entryObj)
 	{
-		for (auto i = Queue_.begin (); i != Queue_.end (); )
-		{
-			if (!*i)
-			{
-				i = Queue_.erase (i);
-				continue;
-			}
-
-			IMessage *msg = qobject_cast<IMessage*> (*i);
-			if (msg->ParentCLEntry () == entryObj)
-			{
-				i = Queue_.erase (i);
-				continue;
-			}
-
-			++i;
-		}
+		Queue_.removeAll (entryObj);
 	}
 }
 }
