@@ -47,6 +47,7 @@ namespace Azoth
 
 		QToolButton *FastStatusButton_;
 		QAction *ActionCLMode_;
+		QAction *ActionShowOffline_;
 		QToolBar *BottomBar_;
 
 		QMenu *MenuChangeStatus_;
@@ -87,6 +88,7 @@ namespace Azoth
 		void resetToWholeMode ();
 		void handleCLMode (bool);
 		void menuBarVisibilityToggled ();
+		void handleStatusIconsChanged ();
 
 		void handleRowsInserted (const QModelIndex&, int, int);
 		void rebuildTreeExpansions ();

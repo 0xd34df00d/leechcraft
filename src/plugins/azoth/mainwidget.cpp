@@ -105,6 +105,7 @@ namespace Azoth
 	, ProxyModel_ (new SortFilterProxyModel (this))
 	, FastStatusButton_ (new QToolButton (this))
 	, ActionCLMode_ (new QAction (tr ("CL mode"), this))
+	, ActionShowOffline_ (0)
 	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
 	, AccountActsMgr_ (new AccountActionsManager (this, this))
 	{
@@ -208,6 +209,10 @@ namespace Azoth
 				this, "menuBarVisibilityToggled");
 		menuBarVisibilityToggled ();
 
+		XmlSettingsManager::Instance ().RegisterObject ("StatusIcons",
+				this, "handleStatusIconsChanged");
+		handleStatusIconsChanged ();
+
 		connect (&Core::Instance (),
 				SIGNAL (topStatusChanged (LeechCraft::Azoth::State)),
 				this,
@@ -250,14 +255,13 @@ namespace Azoth
 				SLOT (handleAddAccountRequested ()));
 		MainMenu_->addSeparator ();
 
-		QAction *showOffline = MainMenu_->addAction (tr ("Show offline contacts"));
-		showOffline->setProperty ("ActionIcon", "view-user-offline-kopete");
-		showOffline->setCheckable (true);
+		ActionShowOffline_ = MainMenu_->addAction (tr ("Show offline contacts"));
+		ActionShowOffline_->setCheckable (true);
 		bool show = XmlSettingsManager::Instance ()
 				.Property ("ShowOfflineContacts", true).toBool ();
 		ProxyModel_->showOfflineContacts (show);
-		showOffline->setChecked (show);
-		connect (showOffline,
+		ActionShowOffline_->setChecked (show);
+		connect (ActionShowOffline_,
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (handleShowOffline (bool)));
@@ -278,7 +282,7 @@ namespace Azoth
 			BottomBar_->addAction (act);
 		};
 		addBottomAct (addContact);
-		addBottomAct (showOffline);
+		addBottomAct (ActionShowOffline_);
 		addBottomAct (ActionCLMode_);
 	}
 
@@ -696,6 +700,11 @@ namespace Azoth
 	void MainWidget::menuBarVisibilityToggled ()
 	{
 		BottomBar_->setVisible (XmlSettingsManager::Instance ().property ("ShowMenuBar").toBool ());
+	}
+
+	void MainWidget::handleStatusIconsChanged ()
+	{
+		ActionShowOffline_->setIcon (Core::Instance ().GetIconForState (SOffline));
 	}
 
 	namespace
