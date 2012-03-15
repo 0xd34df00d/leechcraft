@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QAbstractItemModel>
+#include <interfaces/structures.h>
 #include "filter.h"
 
 namespace LeechCraft
@@ -58,6 +59,8 @@ namespace CleanWeb
 		void WriteSettings () const;
 	private slots:
 		void blockImage ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

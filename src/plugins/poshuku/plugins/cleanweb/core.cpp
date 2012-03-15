@@ -148,6 +148,11 @@ namespace CleanWeb
 		QTimer::singleShot (0,
 				this,
 				SLOT (update ()));
+
+		connect (UserFilters_,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 
 	Core& Core::Instance ()
