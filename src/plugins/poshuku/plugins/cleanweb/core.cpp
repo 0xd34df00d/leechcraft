@@ -710,7 +710,7 @@ namespace CleanWeb
 
 		f.SD_.Filename_ = QFileInfo (filePath).fileName ();
 
-		QList<Filter>::iterator pos = std::find_if (Filters_.begin (), Filters_.end (),
+		auto pos = std::find_if (Filters_.begin (), Filters_.end (),
 				FilterFinder<FTFilename_> (f.SD_.Filename_));
 		if (pos != Filters_.end ())
 		{
