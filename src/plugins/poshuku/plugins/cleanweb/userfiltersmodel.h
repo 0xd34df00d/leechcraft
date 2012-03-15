@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_USERFILTERSMODEL_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_USERFILTERSMODEL_H
+#pragma once
+
 #include <QAbstractItemModel>
 #include "filter.h"
 
@@ -60,5 +60,3 @@ namespace CleanWeb
 }
 }
 }
-
-#endif

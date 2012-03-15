@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_SUBSCRIPTIONADDDIALOG_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_SUBSCRIPTIONADDDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_subscriptionadddialog.h"
 
@@ -49,5 +49,3 @@ namespace CleanWeb
 }
 }
 }
-
-#endif

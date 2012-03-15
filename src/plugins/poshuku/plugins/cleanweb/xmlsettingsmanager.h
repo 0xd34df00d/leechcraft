@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_XMLSETTINGSMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
@@ -40,5 +40,3 @@ namespace CleanWeb
 }
 }
 }
-
-#endif

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_FILTER_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_FILTER_H
+#pragma once
+
 #include <QMetaType>
 #include <QStringList>
 #include <QDateTime>
@@ -89,5 +89,3 @@ namespace CleanWeb
 
 Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::RegExpsDict_t);
 Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::OptionsDict_t);
-
-#endif

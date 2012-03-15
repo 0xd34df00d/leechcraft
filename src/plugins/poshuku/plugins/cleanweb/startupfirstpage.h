@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_STARTUPFIRSTPAGE_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_STARTUPFIRSTPAGE_H
+#pragma once
+
 #include <QWizardPage>
 #include <QUrl>
 #include "ui_startupfirstpage.h"
@@ -43,5 +43,3 @@ namespace CleanWeb
 }
 }
 }
-
-#endif

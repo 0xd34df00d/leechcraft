@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_FLASHONCLICK_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_FLASHONCLICK_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iwebplugin.h>
 
@@ -45,5 +45,3 @@ namespace CleanWeb
 }
 }
 }
-
-#endif
