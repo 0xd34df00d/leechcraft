@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +21,7 @@
 #include <QIcon>
 #include <QMenu>
 #include <QtDebug>
+#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/icoretabwidget.h>
 
@@ -29,6 +31,8 @@ namespace PinTab
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("pintab");
+
 		MainTabWidget_ = proxy->GetTabWidget ();
 		connect (MainTabWidget_->GetObject (),
 				SIGNAL (tabInserted (int)),
