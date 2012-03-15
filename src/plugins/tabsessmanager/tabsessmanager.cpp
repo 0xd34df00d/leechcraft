@@ -26,6 +26,7 @@
 #include <QInputDialog>
 #include <QMainWindow>
 #include <QtDebug>
+#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/ihaverecoverabletabs.h>
@@ -39,6 +40,8 @@ namespace TabSessManager
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("tabsessmanager");
+
 		Proxy_ = proxy;
 		IsRecovering_ = true;
 
