@@ -28,13 +28,27 @@ namespace CleanWeb
 {
 	LineParser::LineParser (Filter *f)
 	: Filter_ (f)
+	, Total_ (0)
+	, Success_ (0)
 	{
+	}
+
+	int LineParser::GetTotal () const
+	{
+		return Total_;
+	}
+
+	int LineParser::GetSuccess () const
+	{
+		return Success_;
 	}
 
 	void LineParser::operator() (const QString& line)
 	{
 		if (line.startsWith ('!'))
 			return;
+
+		++Total_;
 
 		QString actualLine;
 		FilterOption f = FilterOption ();
@@ -138,6 +152,8 @@ namespace CleanWeb
 
 		if (f.MatchType_ == FilterOption::MTRegexp)
 			Filter_->RegExps_ [actualLine] = QRegExp (actualLine, f.Case_, QRegExp::RegExp);
+
+		++Success_;
 	}
 }
 }

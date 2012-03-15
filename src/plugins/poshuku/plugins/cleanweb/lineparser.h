@@ -31,8 +31,13 @@ namespace CleanWeb
 	class LineParser
 	{
 		Filter *Filter_;
+		int Total_;
+		int Success_;
 	public:
 		LineParser (Filter*);
+
+		int GetTotal () const;
+		int GetSuccess () const;
 
 		void operator() (const QString&);
 	};
