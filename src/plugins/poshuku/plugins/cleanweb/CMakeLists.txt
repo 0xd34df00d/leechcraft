@@ -15,6 +15,7 @@ SET (CLEANWEB_SRCS
 	wizardgenerator.cpp
 	startupfirstpage.cpp
 	subscriptionadddialog.cpp
+	lineparser.cpp
 	)
 SET (CLEANWEB_HEADERS
 	cleanweb.h
@@ -31,6 +32,7 @@ SET (CLEANWEB_HEADERS
 	wizardgenerator.h
 	startupfirstpage.h
 	subscriptionadddialog.h
+	lineparser.h
 	)
 SET (CLEANWEB_FORMS
 	subscriptionsmanager.ui

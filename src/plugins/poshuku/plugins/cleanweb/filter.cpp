@@ -41,7 +41,7 @@ namespace CleanWeb
 	{
 		qint8 version = 0;
 		in >> version;
-		
+
 		if (version < 1 || version > 2)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -49,7 +49,7 @@ namespace CleanWeb
 				<< version;
 			return in;
 		}
-		
+
 		if (version >= 1)
 		{
 			qint8 cs;
@@ -65,7 +65,7 @@ namespace CleanWeb
 		}
 		if (version >= 2)
 			in >> opt.AbortForeign_;
-		
+
 		return in;
 	}
 
@@ -88,6 +88,19 @@ namespace CleanWeb
 	bool operator!= (const FilterOption& f1, const FilterOption& f2)
 	{
 		return !(f1 == f2);
+	}
+
+	Filter& Filter::operator+= (const Filter& f)
+	{
+		ExceptionStrings_ << f.ExceptionStrings_;
+		ExceptionStrings_.removeDuplicates ();
+		FilterStrings_ << f.FilterStrings_;
+		FilterStrings_.removeDuplicates ();
+
+		Options_.unite (f.Options_);
+		RegExps_.unite (f.RegExps_);
+
+		return *this;
 	}
 }
 }

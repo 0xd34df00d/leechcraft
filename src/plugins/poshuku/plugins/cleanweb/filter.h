@@ -82,6 +82,8 @@ namespace CleanWeb
 		RegExpsDict_t RegExps_;
 
 		SubscriptionData SD_;
+
+		Filter& operator+= (const Filter&);
 	};
 }
 }
