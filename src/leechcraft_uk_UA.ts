@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -390,17 +388,17 @@
         <location filename="aboutdialog.cpp" line="156"/>
         <source>Artwork.</source>
         <oldsource>Artwork designer.</oldsource>
-        <translation type="unfinished">Графічний дізайнер.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="160"/>
         <source>Debian/Ubuntu maintainership.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="161"/>
         <source>Small fixes.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="165"/>
@@ -420,22 +418,22 @@
     <message>
         <location filename="aboutdialog.cpp" line="171"/>
         <source>Microsoft Windows backend for Liznoo plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="172"/>
         <source>Microsoft Windows builds.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="181"/>
         <source>Laure plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="182"/>
         <source>Last.FM Scrobbler plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="183"/>
@@ -571,7 +569,7 @@
     <message>
         <location filename="coreinstanceobject.cpp" line="264"/>
         <source>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -774,7 +772,7 @@
     <message>
         <location filename="pluginmanager.cpp" line="247"/>
         <source>The following plugins would also be disabled as the result:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="249"/>
@@ -799,12 +797,12 @@
     <message>
         <location filename="pluginmanager.cpp" line="658"/>
         <source>Could not load library %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="684"/>
         <source>Could not load plugin from %1: API level mismatch.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="697"/>
@@ -829,7 +827,7 @@
     <message>
         <location filename="pluginmanager.cpp" line="789"/>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -837,7 +835,7 @@
     <message>
         <location filename="pluginmanagerdialog.cpp" line="49"/>
         <source>Configure...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -845,12 +843,12 @@
     <message>
         <location filename="separatetabwidget.cpp" line="52"/>
         <source>Pin tab</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="separatetabwidget.cpp" line="53"/>
         <source>Unpin tab</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -901,7 +899,7 @@
     <message>
         <location filename="settingstab.cpp" line="203"/>
         <source>LeechCraft-wide settings dashboard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="settingstab.cpp" line="231"/>
@@ -1092,10 +1090,10 @@
         <location filename="winwarndialog.cpp" line="38"/>
         <source>Seems like you are running Microsoft Windows.
 
-LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That&apos;s because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you&apos;ll understand us.
+LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That's because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you'll understand us.
 
 If you have read and really understood all these letters, click Cancel button in this dialog so that it won&apos;t pop up again next time you run LeechCraft.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1164,11 +1162,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message numerus="yes">
         <location filename="util/util.cpp" line="127"/>
         <source>%n day(s), </source>
-        <translation>
-            <numerusform>%n день, </numerusform>
-            <numerusform>%n дні, </numerusform>
-            <numerusform>%n днів, </numerusform>
-        </translation>
+        <translation><numerusform>%n день, </numerusform><numerusform>%n дні, </numerusform><numerusform>%n днів, </numerusform></translation>
     </message>
     <message>
         <location filename="util/util.cpp" line="223"/>
@@ -1204,12 +1198,12 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="util/socketerrorstrings.cpp" line="37"/>
         <source>socket access error (lacking required privileges)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="39"/>
         <source>system ran out of sockets</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="41"/>
@@ -1234,7 +1228,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="util/socketerrorstrings.cpp" line="49"/>
         <source>specified address doesn&apos;t belong to the host</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="51"/>
@@ -1259,7 +1253,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="util/socketerrorstrings.cpp" line="59"/>
         <source>proxy connection has been refused</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="61"/>
@@ -1269,7 +1263,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="util/socketerrorstrings.cpp" line="63"/>
         <source>connection to the proxy server timed out</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="65"/>
@@ -1400,12 +1394,12 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Use tab scroll buttons</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Tool button style:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
@@ -1487,7 +1481,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="23"/>
         <source>Watch clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="24"/>
@@ -1502,17 +1496,17 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="26"/>
         <source>Manual toolbar visibility control</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
         <source>Open new tab next to current</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
         <source>Tab selection behavior: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="29"/>
@@ -1522,17 +1516,17 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="30"/>
         <source>Select the tab to the right of the one being removed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="31"/>
         <source>Select the tab to the left of the one being removed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="32"/>
         <source>Automatically accept task when there is only one handler</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="33"/>
@@ -1542,7 +1536,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="34"/>
         <source>Show plugin-dependent actions in tab bar context menu</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="35"/>
@@ -1557,12 +1551,12 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="37"/>
         <source>Message timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="38"/>
         <source> s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="39"/>

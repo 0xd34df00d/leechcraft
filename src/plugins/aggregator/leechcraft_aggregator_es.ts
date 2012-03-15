@@ -1496,7 +1496,7 @@
     <message numerus="yes">
         <location filename="itemswidget.cpp" line="654"/>
         <source>%n comment(s), &lt;a href=&apos;%1&apos;%2&gt;view them&lt;/a&gt;&lt;br /&gt;</source>
-        <translation><numerusform>%n comentario, &lt;a href='%1'%2&gt;verlos&lt;/a&gt;&lt;br /&gt;</numerusform><numerusform>%n comentarios, &lt;a href='%1'%2&gt;verlos&lt;/a&gt;&lt;br /&gt;</numerusform></translation>
+        <translation><numerusform>%n comentario, &lt;a href=&apos;%1&apos;%2&gt;verlos&lt;/a&gt;&lt;br /&gt;</numerusform><numerusform>%n comentarios, &lt;a href=&apos;%1&apos;%2&gt;verlos&lt;/a&gt;&lt;br /&gt;</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="itemswidget.cpp" line="659"/>

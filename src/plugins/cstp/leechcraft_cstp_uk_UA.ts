@@ -9,12 +9,12 @@
     <message>
         <location filename="addtask.cpp" line="110"/>
         <source>Directory %1 isn&apos;t readable, would you like to select another?</source>
-        <translation>Не можу читати з теки %1. Хочете обрати іншу?</translation>
+        <translation>Не можу читати з теки %1. Бажаєте обрати іншу?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="113"/>
         <source>Directory %1 isn&apos;t writable, would you like to select another?</source>
-        <translation>Не можу писати в теку %1. Хочете обрати іншу?</translation>
+        <translation>Не можу писати в теку %1. Бажаєте обрати іншу?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="116"/>
@@ -57,7 +57,7 @@
     <message>
         <location filename="cstp.cpp" line="243"/>
         <source>Stop all</source>
-        <translation>Зупунити всі</translation>
+        <translation>Зупинити всі</translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="255"/>

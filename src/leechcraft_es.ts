@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="es">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -390,17 +388,17 @@
         <location filename="aboutdialog.cpp" line="156"/>
         <source>Artwork.</source>
         <oldsource>Artwork designer.</oldsource>
-        <translation type="unfinished">Diseñador.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="160"/>
         <source>Debian/Ubuntu maintainership.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="161"/>
         <source>Small fixes.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="165"/>
@@ -420,22 +418,22 @@
     <message>
         <location filename="aboutdialog.cpp" line="171"/>
         <source>Microsoft Windows backend for Liznoo plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="172"/>
         <source>Microsoft Windows builds.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="181"/>
         <source>Laure plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="182"/>
         <source>Last.FM Scrobbler plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="183"/>
@@ -571,7 +569,7 @@
     <message>
         <location filename="coreinstanceobject.cpp" line="264"/>
         <source>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -799,12 +797,12 @@
     <message>
         <location filename="pluginmanager.cpp" line="658"/>
         <source>Could not load library %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="684"/>
         <source>Could not load plugin from %1: API level mismatch.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="697"/>
@@ -837,7 +835,7 @@
     <message>
         <location filename="pluginmanagerdialog.cpp" line="49"/>
         <source>Configure...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1092,7 +1090,7 @@
         <location filename="winwarndialog.cpp" line="38"/>
         <source>Seems like you are running Microsoft Windows.
 
-LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That&apos;s because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you&apos;ll understand us.
+LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That's because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you'll understand us.
 
 If you have read and really understood all these letters, click Cancel button in this dialog so that it won&apos;t pop up again next time you run LeechCraft.</source>
         <translation>Parece que está ejecutando Microsoft Windows.
@@ -1167,10 +1165,7 @@ Si usted ha leído y entendido bien todas estas cartas, haga clic en el botón C
     <message numerus="yes">
         <location filename="util/util.cpp" line="127"/>
         <source>%n day(s), </source>
-        <translation>
-            <numerusform>%n dia</numerusform>
-            <numerusform>%n días</numerusform>
-        </translation>
+        <translation><numerusform>%n dia</numerusform><numerusform>%n días</numerusform></translation>
     </message>
     <message>
         <location filename="util/util.cpp" line="223"/>

@@ -764,7 +764,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="peersmodel.cpp" line="97"/>
         <source>%1/%2</source>
-        <translation type="unfinished"/>
+        <translation>%1/%2</translation>
     </message>
 </context>
 <context>

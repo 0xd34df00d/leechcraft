@@ -17,12 +17,12 @@
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Enable autoidler</source>
-        <translation type="unfinished"/>
+        <translation>Activar desactivador automatico</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>&apos;Away&apos; timeout:</source>
-        <translation type="unfinished"/>
+        <translation>Tiempo de espera de &quot;Ausente&quot;</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
@@ -33,17 +33,17 @@
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>&apos;Not Available&apos; timeout:</source>
-        <translation type="unfinished"/>
+        <translation>Tiempo de espera de &quot;No disponible&quot;</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>&apos;Away&apos; status text:</source>
-        <translation type="unfinished"/>
+        <translation>Texto del estado &quot;Ausente&quot;</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>&apos;Not Available&apos; status text:</source>
-        <translation type="unfinished"/>
+        <translation>Texto del estado &quot;No Disponible&quot;</translation>
     </message>
 </context>
 </TS>

@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
 <context>
     <name>AcceptRIEXDialog</name>
     <message>
@@ -226,7 +224,7 @@
     <message>
         <location filename="chattab.ui" line="222"/>
         <source>Send</source>
-        <translation type="unfinished">Вiдправити</translation>
+        <translation>Вiдправити</translation>
     </message>
 </context>
 <context>
@@ -326,7 +324,7 @@
     <message>
         <location filename="joinconferencedialog.ui" line="93"/>
         <source>Add to bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -431,7 +429,7 @@
     <message>
         <location filename="accountactionsmanager.cpp" line="57"/>
         <source>Service discovery...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="accountactionsmanager.cpp" line="58"/>
@@ -441,12 +439,12 @@
     <message>
         <location filename="accountactionsmanager.cpp" line="59"/>
         <source>Rename...</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити назву...</translation>
     </message>
     <message>
         <location filename="accountactionsmanager.cpp" line="60"/>
         <source>Modify...</source>
-        <translation>Змінити...</translation>
+        <translation>Змінювати...</translation>
     </message>
     <message>
         <location filename="accountactionsmanager.cpp" line="127"/>
@@ -456,12 +454,12 @@
     <message>
         <location filename="accountactionsmanager.cpp" line="390"/>
         <source>Rename account</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="accountactionsmanager.cpp" line="391"/>
         <source>Enter new name for account %1:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -517,7 +515,7 @@
     <message>
         <location filename="actionsmanager.cpp" line="284"/>
         <source>Send directed status...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="296"/>
@@ -602,7 +600,7 @@
     <message>
         <location filename="actionsmanager.cpp" line="450"/>
         <source>Add to bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="462"/>
@@ -627,12 +625,12 @@
     <message>
         <location filename="actionsmanager.cpp" line="680"/>
         <source>Select file to send</source>
-        <translation>Обрати файл для надсилання</translation>
+        <translation>Обрати файл для відправлення</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="690"/>
         <source>Unable to send file to %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="714"/>
@@ -647,17 +645,17 @@
     <message>
         <location filename="actionsmanager.cpp" line="757"/>
         <source>All variants</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="764"/>
         <source>Select variant</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="765"/>
         <source>Select variant to send directed status to:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="813"/>
@@ -1126,11 +1124,7 @@
         <location filename="clmodel.cpp" line="198"/>
         <source>Are you sure you want to send %n files to %1?</source>
         <oldsource>Are you sure you want to send %1 files to %2?</oldsource>
-        <translation>
-            <numerusform>Ви дійсно хочете надіслати файл %n до %1?</numerusform>
-            <numerusform>Ви дійсно хочете надіслати файли %n до %1?</numerusform>
-            <numerusform>Ви дійсно хочете надіслати файли %n до %1?</numerusform>
-        </translation>
+        <translation><numerusform>Ви дійсно хочете надіслати файл %n до %1?</numerusform><numerusform>Ви дійсно хочете надіслати файли %n до %1?</numerusform><numerusform>Ви дійсно хочете надіслати файли %n до %1?</numerusform></translation>
     </message>
     <message>
         <location filename="clmodel.cpp" line="205"/>
@@ -1199,11 +1193,7 @@
     <message numerus="yes">
         <location filename="chattab.cpp" line="290"/>
         <source>%1 (%n participant(s))</source>
-        <translation>
-            <numerusform>%1 (%n учасник)</numerusform>
-            <numerusform>%1 (%n учасники)</numerusform>
-            <numerusform>%1 (%n учасники)</numerusform>
-        </translation>
+        <translation><numerusform>%1 (%n учасник)</numerusform><numerusform>%1 (%n учасники)</numerusform><numerusform>%1 (%n учасники)</numerusform></translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="963"/>
@@ -1304,7 +1294,7 @@
     <message>
         <location filename="chattab.cpp" line="1308"/>
         <source>Conversation ended.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="chattab.cpp" line="1534"/>
@@ -1429,7 +1419,7 @@
     <message>
         <location filename="core.cpp" line="1269"/>
         <source>%1 is now %2.</source>
-        <translation>%1 зараз %2.</translation>
+        <translation>%1 зараз %2</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1272"/>
@@ -1439,7 +1429,7 @@
     <message>
         <location filename="core.cpp" line="1524"/>
         <source>Client went to sleep</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="core.cpp" line="2412"/>
@@ -1520,29 +1510,17 @@
         <location filename="core.cpp" line="2353"/>
         <location filename="core.cpp" line="2364"/>
         <source>%n message(s) from</source>
-        <translation>
-            <numerusform>%n повідомлення від</numerusform>
-            <numerusform>%n повідомленнь від</numerusform>
-            <numerusform>%n повідомленнь від</numerusform>
-        </translation>
+        <translation><numerusform>%n повідомлення від</numerusform><numerusform>%n повідомленнь від</numerusform><numerusform>%n повідомленнь від</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="core.cpp" line="2357"/>
         <source>%n message(s) in</source>
-        <translation>
-            <numerusform>%n вхідне повідомлення</numerusform>
-            <numerusform>%n вхідних повідомлень</numerusform>
-            <numerusform>%n вхідних повідомлень</numerusform>
-        </translation>
+        <translation><numerusform>%n вхідне повідомлення</numerusform><numerusform>%n вхідних повідомлень</numerusform><numerusform>%n вхідних повідомлень</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="core.cpp" line="2370"/>
         <source>%n message(s)</source>
-        <translation>
-            <numerusform>%n повідомлення(нь)</numerusform>
-            <numerusform>%n повідомленнь</numerusform>
-            <numerusform>%n повідомленнь</numerusform>
-        </translation>
+        <translation><numerusform>%n повідомлення(нь)</numerusform><numerusform>%n повідомленнь</numerusform><numerusform>%n повідомленнь</numerusform></translation>
     </message>
     <message>
         <location filename="core.cpp" line="2394"/>
@@ -1764,7 +1742,7 @@
     <message>
         <location filename="importmanager.cpp" line="139"/>
         <source>Select account to import history from %1 into:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1855,12 +1833,12 @@
     <message>
         <location filename="mainwidget.cpp" line="107"/>
         <source>CL mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="108"/>
         <source>Azoth bar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="238"/>
@@ -2456,12 +2434,12 @@
     <message>
         <location filename="azoth.cpp" line="372"/>
         <source>Clear chat window</source>
-        <translation type="unfinished">Очистити вікно чату</translation>
+        <translation>Очистити вікно чату</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="376"/>
         <source>Quote selected in chat tab</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -2469,7 +2447,7 @@
     <message>
         <location filename="proxyobject.cpp" line="125"/>
         <source>Enter password for %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть пароль для %1:</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="286"/>
@@ -3022,7 +3000,7 @@
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Likey</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
@@ -3038,7 +3016,7 @@
         <location filename="dummy.cpp" line="25"/>
         <source>Show toolbar on top of the contact list</source>
         <oldsource>Show Azoth menu under the contact list</oldsource>
-        <translation>Показати меню Azoth під списком контактів</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="26"/>
@@ -3088,7 +3066,7 @@
     <message>
         <location filename="dummy.cpp" line="36"/>
         <source>Chat view formatting</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="37"/>
@@ -3123,63 +3101,63 @@
     <message>
         <location filename="dummy.cpp" line="44"/>
         <source>Chat tab</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="45"/>
         <source>Rich text format toolbar position:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="46"/>
         <source>Above message editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="47"/>
         <source>Below message editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="48"/>
         <source>Display send button</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="49"/>
         <location filename="dummy.cpp" line="50"/>
         <source>Fonts</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифти</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="51"/>
         <source>Standard font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартний шрифт:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="52"/>
         <source>Fixed font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Моноширинний шрифт:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="53"/>
         <source>Serif font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифт з зарубками:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="54"/>
         <source>SansSerif font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифт без зарубок:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="55"/>
         <source>Cursive font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Курсивний шрифт:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="56"/>
         <source>Fantasy font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fantasy-шрифт:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="57"/>
@@ -3195,7 +3173,7 @@
     <message>
         <location filename="dummy.cpp" line="60"/>
         <source>Open chat tab on new message</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="61"/>
@@ -3205,7 +3183,7 @@
     <message>
         <location filename="dummy.cpp" line="62"/>
         <source>Leave conferences when closing their tabs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="63"/>
@@ -3240,22 +3218,22 @@
     <message>
         <location filename="dummy.cpp" line="69"/>
         <source>Entry activates on:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="70"/>
         <source>Single click</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="71"/>
         <source>Double click</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="72"/>
         <source>Let the environment decide</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="73"/>

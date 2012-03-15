@@ -289,7 +289,7 @@
     <message>
         <location filename="browserwidget.cpp" line="242"/>
         <source>Ctrl+s</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+s</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="244"/>
@@ -588,7 +588,7 @@
     <message>
         <location filename="customwebpage.cpp" line="323"/>
         <source>Unable to send the request to %1. Please try submitting it again.</source>
-        <translation type="unfinished"/>
+        <translation>Неможливо відправити запит до %1. Будь ласка, спробуйте ще раз.</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="534"/>
