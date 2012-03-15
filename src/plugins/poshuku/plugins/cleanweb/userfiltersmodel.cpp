@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "userfiltersmodel.h"
+#include <algorithm>
 #include <QSettings>
 #include <QCoreApplication>
 #include <QString>
