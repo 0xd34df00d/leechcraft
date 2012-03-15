@@ -38,6 +38,8 @@ namespace CleanWeb
 		void on_Add__released ();
 		void on_Modify__released ();
 		void on_Remove__released ();
+		void on_Paste__released ();
+		void on_Load__released ();
 	};
 }
 }
