@@ -27,6 +27,7 @@
 #include <qwebelement.h>
 #include <QtDebug>
 #include "ruleoptiondialog.h"
+#include "lineparser.h"
 
 namespace LeechCraft
 {
@@ -222,6 +223,22 @@ namespace CleanWeb
 		else
 			Filter_.FilterStrings_.removeAt (pos);
 		endRemoveRows ();
+		WriteSettings ();
+	}
+
+	void UserFiltersModel::AddMultiFilters (QStringList lines)
+	{
+		std::for_each (lines.begin (), lines.end (),
+				[] (QString& str) { str = str.trimmed (); });
+
+		beginResetModel ();
+		auto p = std::for_each (lines.begin (), lines.end (),
+				LineParser (&Filter_));
+		endResetModel ();
+
+		if (p.GetSuccess () <= 0)
+			return;
+
 		WriteSettings ();
 	}
 

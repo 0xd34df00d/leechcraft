@@ -49,6 +49,8 @@ namespace CleanWeb
 		bool InitiateAdd (const QString& = QString ());
 		void Modify (int);
 		void Remove (int);
+
+		void AddMultiFilters (QStringList);
 	private:
 		bool Add (const RuleOptionDialog&);
 		void SplitRow (int*, bool*) const;
