@@ -23,6 +23,7 @@
 #include <QLineEdit>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QShortcut>
 #include "userfiltersmodel.h"
 #include "core.h"
 
@@ -38,6 +39,13 @@ namespace CleanWeb
 		Ui_.setupUi (this);
 		Ui_.View_->setModel (Core::Instance ()
 				.GetUserFiltersModel ());
+
+		QShortcut *sh = new QShortcut (Qt::Key_Delete, Ui_.View_);
+		connect (sh,
+				SIGNAL (activated ()),
+				this,
+				SLOT (on_Remove__released ()));
+		sh->setContext (Qt::WidgetWithChildrenShortcut);
 	}
 
 	void UserFilters::on_Add__released ()
