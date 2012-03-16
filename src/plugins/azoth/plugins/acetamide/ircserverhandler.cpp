@@ -229,8 +229,8 @@ namespace Acetamide
 
 	void IrcServerHandler::SendQuit ()
 	{
-		//TODO quit message
-		IrcParser_->QuitCommand (QStringList ());
+		IrcParser_->QuitCommand (QStringList (Account_->GetClientConnection ()->
+				GetStatusStringForState (SOffline)));
 	}
 
 	void IrcServerHandler::QuitParticipant (const QString& nick, const QString& msg)

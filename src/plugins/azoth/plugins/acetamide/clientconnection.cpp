@@ -214,11 +214,7 @@ namespace Acetamide
 	{
 		QString msg = message;
 		if (msg.isEmpty ())
-		{
-			QString statusKey = "DefaultStatus" + QString::number (SAway);
-			msg = ProxyObject_->GetSettingsManager ()->
-					property (statusKey.toUtf8 ()).toString ();
-		}
+			msg = GetStatusStringForState (SAway);
 
 		if (!away)
 			msg.clear ();
@@ -229,6 +225,13 @@ namespace Acetamide
 				{
 					handler->SetAway (msg);
 				});
+	}
+
+	QString ClientConnection::GetStatusStringForState (State state)
+	{
+		const QString& statusKey = "DefaultStatus" + QString::number (state);
+		return ProxyObject_->GetSettingsManager ()->
+				property (statusKey.toUtf8 ()).toString ();
 	}
 
 	void ClientConnection::serverConnected (const QString& serverId)

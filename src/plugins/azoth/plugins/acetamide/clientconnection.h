@@ -77,6 +77,8 @@ namespace Acetamide
 		void FetchVCard (const QString& serverId, const QString& nick);
 
 		void SetAway (bool away, const QString& message);
+
+		QString GetStatusStringForState (Azoth::State state);
 	public slots:
 		void serverConnected (const QString&);
 		void serverDisconnected (const QString&);
