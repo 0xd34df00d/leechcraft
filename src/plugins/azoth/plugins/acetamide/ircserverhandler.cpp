@@ -236,6 +236,8 @@ namespace Acetamide
 	void IrcServerHandler::QuitParticipant (const QString& nick, const QString& msg)
 	{
 		ChannelsManager_->QuitParticipant (nick, msg);
+		if (Nick2Entry_.contains (nick))
+			Nick2Entry_.remove (nick);
 	}
 
 	void IrcServerHandler::SendMessage (const QStringList& cmd)
@@ -268,17 +270,27 @@ namespace Acetamide
 			message->SetBody (msg);
 			message->SetDateTime (QDateTime::currentDateTime ());
 
+			bool found = false;
 			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick).values ())
 			{
 				EntryBase *entry = qobject_cast<EntryBase*> (entryObj);
 				if (!entry)
 					continue;
 
+				found = true;
 				entry->HandleMessage (message);
 			}
 
-			if (Nick2Entry_.contains (nick))
-				Nick2Entry_ [nick]->HandleMessage (message);
+			if (!found)
+			{
+				if (Nick2Entry_.contains (nick))
+					Nick2Entry_ [nick]->HandleMessage (message);
+				else
+				{
+					ServerParticipantEntry_ptr entry = GetParticipantEntry (nick);
+					entry->HandleMessage (message);
+				}
+			}
 		}
 	}
 
@@ -822,6 +834,7 @@ namespace Acetamide
 					<< msg->GetOtherVariant ()
 					<< str);
 
+		bool found = false;
 		Q_FOREACH (QObject *entryObj, ChannelsManager_->
 				GetParticipantsByNick (msg->GetOtherVariant ()).values ())
 		{
@@ -829,10 +842,12 @@ namespace Acetamide
 			if (!entry)
 				continue;
 
+			found = true;
 			entry->HandleMessage (msg);
 		}
 
-		if (Nick2Entry_.contains (msg->GetOtherVariant ()))
+		if (!found &&
+				Nick2Entry_.contains (msg->GetOtherVariant ()))
 			Nick2Entry_ [msg->GetOtherVariant ()]->HandleMessage (msg);
 	}
 
@@ -977,6 +992,7 @@ namespace Acetamide
 	{
 		ServerParticipantEntry_ptr entry (new ServerParticipantEntry (nick, this, Account_));
 		Account_->handleGotRosterItems (QObjectList () << entry.get ());
+		entry->SetStatus (EntryStatus (SOnline, QString ()));
 		return entry;
 	}
 
@@ -1049,7 +1065,7 @@ namespace Acetamide
 	void IrcServerHandler::ClosePrivateChat (const QString& nick)
 	{
 		if (Nick2Entry_.contains (nick))
-			Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
+			Account_->handleEntryRemoved (Nick2Entry_.take (nick).get ());
 		else
 			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick).values ())
 			{
