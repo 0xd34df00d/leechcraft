@@ -68,7 +68,6 @@ namespace Poshuku
 	Core::Core ()
 	: NetworkAccessManager_ (0)
 	, WebPluginFactory_ (0)
-	, IsShuttingDown_ (false)
 	, ShortcutProxy_ (0)
 	, FavoritesChecker_ (0)
 	, Initialized_ (false)
@@ -187,7 +186,6 @@ namespace Poshuku
 
 	void Core::Release ()
 	{
-		IsShuttingDown_ = true;
 		while (Widgets_.begin () != Widgets_.end ())
 			delete *Widgets_.begin ();
 

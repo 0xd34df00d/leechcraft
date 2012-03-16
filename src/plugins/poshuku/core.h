@@ -68,10 +68,6 @@ namespace Poshuku
 		QNetworkAccessManager *NetworkAccessManager_;
 		WebPluginFactory *WebPluginFactory_;
 
-		bool IsShuttingDown_;
-		QList<int> RestoredURLs_;
-
-		QMap<QString, QString> SavedSession_;
 		IShortcutProxy *ShortcutProxy_;
 
 		ICoreProxy_ptr Proxy_;
