@@ -62,7 +62,7 @@ namespace Azoth
 		OpenChat (entry);
 	}
 
-	QWidget* ChatTabsManager::OpenChat (const ICLEntry *entry)
+	QWidget* ChatTabsManager::OpenChat (const ICLEntry *entry, const DynPropertiesList_t& props)
 	{
 		const QString& id = entry->GetEntryID ();
 		if (Entry2Tab_.contains (id))
@@ -76,6 +76,9 @@ namespace Azoth
 		QPointer<ChatTab> tab (new ChatTab (id));
 		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
+
+		Q_FOREACH (const auto& prop, props)
+			tab->setProperty (prop.first, prop.second);
 
 		connect (tab,
 				SIGNAL (needToClose (ChatTab*)),
@@ -210,6 +213,19 @@ namespace Azoth
 		entry->MarkMsgsRead ();
 	}
 
+	void ChatTabsManager::EnqueueRestoreInfos (const QList<RestoreChatInfo>& infos)
+	{
+		Q_FOREACH (const RestoreChatInfo& info, infos)
+		{
+			auto entryObj = Core::Instance ().GetEntry (info.EntryID_);
+			qDebug () << Q_FUNC_INFO << info.EntryID_ << entryObj;
+			if (entryObj)
+				RestoreChat (info, entryObj);
+			else
+				RestoreInfo_ [info.EntryID_] = info;
+		}
+	}
+
 	QString ChatTabsManager::GetActiveVariant (ICLEntry *entry) const
 	{
 		ChatTab_ptr tab = Entry2Tab_ [entry->GetEntryID ()];
@@ -247,6 +263,20 @@ namespace Azoth
 			Entry2Tab_ [muc->GetEntryID ()]->HandleMUCParticipantsChanged ();
 	}
 
+	void ChatTabsManager::RestoreChat (const ChatTabsManager::RestoreChatInfo& info, QObject *entryObj)
+	{
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null entry for"
+					<< entryObj;
+			return;
+		}
+		auto tab = qobject_cast<ChatTab*> (OpenChat (entry, info.Props_));
+		tab->selectVariant (info.Variant_);
+	}
+
 	void ChatTabsManager::handleNeedToClose (ChatTab *tab)
 	{
 		emit removeTab (tab);
@@ -263,6 +293,17 @@ namespace Azoth
 			if (muc)
 				muc->Leave ();
 		}
+	}
+
+	void ChatTabsManager::handleAddingCLEntryEnd (IHookProxy_ptr,
+			QObject *entryObj)
+	{
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto& id = entry->GetHumanReadableID ();
+		if (!RestoreInfo_.contains (id))
+			return;
+
+		RestoreChat (RestoreInfo_.take (id), entryObj);
 	}
 
 	void ChatTabsManager::chatWindowStyleChanged ()

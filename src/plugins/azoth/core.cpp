@@ -207,6 +207,10 @@ namespace Azoth
 				SIGNAL (clearUnreadMsgCount (QObject*)),
 				this,
 				SLOT (handleClearUnreadMsgCount (QObject*)));
+		connect (this,
+				SIGNAL (hookAddingCLEntryEnd (LeechCraft::IHookProxy_ptr, QObject*)),
+				ChatTabsManager_,
+				SLOT (handleAddingCLEntryEnd (LeechCraft::IHookProxy_ptr, QObject*)));
 		connect (XferJobManager_.get (),
 				SIGNAL (jobNoLongerOffered (QObject*)),
 				this,

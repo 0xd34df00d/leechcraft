@@ -40,10 +40,20 @@ namespace Azoth
 		QHash<QString, ChatTab_ptr> Entry2Tab_;
 		QSet<QString> EverOpened_;
 	public:
+		struct RestoreChatInfo
+		{
+			QString EntryID_;
+			QString Variant_;
+			DynPropertiesList_t Props_;
+		};
+	private:
+		QHash<QString, RestoreChatInfo> RestoreInfo_;
+	public:
 		ChatTabsManager(QObject* = 0);
 
 		void OpenChat (const QModelIndex&);
-		QWidget* OpenChat (const ICLEntry*);
+		QWidget* OpenChat (const ICLEntry*,
+				const DynPropertiesList_t& = DynPropertiesList_t ());
 		void CloseChat (const ICLEntry*);
 		bool IsActiveChat (const ICLEntry*) const;
 		bool IsOpenedChat (const QString&) const;
@@ -56,13 +66,18 @@ namespace Azoth
 		void SetChatEnabled (const QString&, bool);
 		void ChatMadeCurrent (ChatTab*);
 
+		void EnqueueRestoreInfos (const QList<RestoreChatInfo>&);
+
 		QString GetActiveVariant (ICLEntry*) const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
 		void UpdateMUCTab (ICLEntry*);
+		void RestoreChat (const RestoreChatInfo&, QObject*);
 	private slots:
 		void handleNeedToClose (ChatTab*);
+		void handleAddingCLEntryEnd (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
 		void chatWindowStyleChanged ();
 	signals:
 		void addNewTab (const QString&, QWidget*);

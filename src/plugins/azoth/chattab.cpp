@@ -275,6 +275,38 @@ namespace Azoth
 		SetChatPartState (CPSInactive);
 	}
 
+	QByteArray ChatTab::GetTabRecoverData () const
+	{
+		QByteArray result;
+		auto entry = GetEntry<ICLEntry> ();
+		if (entry)
+		{
+			QDataStream stream (&result, QIODevice::WriteOnly);
+			stream << QByteArray ("chattab")
+					<< entry->GetEntryID ()
+					<< GetSelectedVariant ();
+		}
+		return result;
+	}
+
+	QString ChatTab::GetTabRecoverName () const
+	{
+		auto entry = GetEntry<ICLEntry> ();
+		return entry ?
+				tr ("Chat with %1.")
+					.arg (entry->GetEntryName ()) :
+				GetTabClassInfo ().VisibleName_;
+	}
+
+	QIcon ChatTab::GetTabRecoverIcon () const
+	{
+		auto entry = GetEntry<ICLEntry> ();
+		const auto& avatar = entry ? entry->GetAvatar () : QImage ();
+		return avatar.isNull () ?
+				GetTabClassInfo ().Icon_ :
+				QPixmap::fromImage (avatar);
+	}
+
 	void ChatTab::HandleMUCParticipantsChanged ()
 	{
 		IMUCEntry *muc = GetEntry<IMUCEntry> ();

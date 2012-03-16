@@ -346,6 +346,34 @@ namespace Azoth
 		}
 	}
 
+	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		Q_FOREACH (const TabRecoverInfo& recInfo, infos)
+		{
+			QDataStream str (recInfo.Data_);
+			QByteArray context;
+			str >> context;
+
+			qDebug () << Q_FUNC_INFO << context;
+
+			if (context == "chattab")
+			{
+				ChatTabsManager::RestoreChatInfo info;
+				info.Props_ = recInfo.DynProperties_;
+				str >> info.EntryID_
+					>> info.Variant_;
+
+				QList<ChatTabsManager::RestoreChatInfo> infos;
+				infos << info;
+				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos (infos);
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown context"
+						<< context;
+		}
+	}
+
 	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& seqs)
 	{
 		Core::Instance ().GetShortcutManager ()->SetShortcut (id, seqs);
