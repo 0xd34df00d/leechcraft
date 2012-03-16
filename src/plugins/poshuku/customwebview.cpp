@@ -385,8 +385,6 @@ namespace Poshuku
 		menu->addAction (Browser_->NotifyWhenFinished_);
 		menu->addSeparator ();
 		menu->addAction (Browser_->ChangeEncoding_->menuAction ());
-		menu->addSeparator ();
-		menu->addAction (Browser_->RecentlyClosedAction_);
 
 		emit hookWebViewContextMenu (proxy, this, e, r,
 				menu, WVSAfterFinish);
