@@ -72,7 +72,7 @@ namespace Acetamide
 				this, "handleUpdateWhoPeriod");
 		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoRequest",
 				this, "handleSetAutoWho");
-		
+
 		connect (this,
 				SIGNAL (connected (const QString&)),
 				Account_->GetClientConnection ().get (),
@@ -211,11 +211,12 @@ namespace Acetamide
 	void IrcServerHandler::JoinParticipant (const QString& nick,
 			const QString& msg, const QString& user, const QString& host)
 	{
+		if (Nick2Entry_.contains (nick))
+			ClosePrivateChat (nick);
 		ChannelsManager_->AddParticipant (msg.toLower (), nick, user, host);
+
 		IrcParser_->WhoCommand (QStringList (nick));
-		auto& pair = SpyWho_ [msg.toLower ()];
-		pair.first = true;
-		++pair.second;
+		SpyWho_ [nick] = AnswersOnWhoCommand;
 	}
 
 	void IrcServerHandler::CloseChannel (const QString& channel)
@@ -231,13 +232,15 @@ namespace Acetamide
 
 	void IrcServerHandler::SendQuit ()
 	{
-		//TODO quit message
-		IrcParser_->QuitCommand (QStringList ());
+		IrcParser_->QuitCommand (QStringList (Account_->GetClientConnection ()->
+				GetStatusStringForState (SOffline)));
 	}
 
 	void IrcServerHandler::QuitParticipant (const QString& nick, const QString& msg)
 	{
 		ChannelsManager_->QuitParticipant (nick, msg);
+		if (Nick2Entry_.contains (nick))
+			Nick2Entry_.remove (nick);
 	}
 
 	void IrcServerHandler::SendMessage (const QStringList& cmd)
@@ -270,17 +273,27 @@ namespace Acetamide
 			message->SetBody (msg);
 			message->SetDateTime (QDateTime::currentDateTime ());
 
+			bool found = false;
 			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick).values ())
 			{
 				EntryBase *entry = qobject_cast<EntryBase*> (entryObj);
 				if (!entry)
 					continue;
 
+				found = true;
 				entry->HandleMessage (message);
 			}
 
-			if (Nick2Entry_.contains (nick))
-				Nick2Entry_ [nick]->HandleMessage (message);
+			if (!found)
+			{
+				if (Nick2Entry_.contains (nick))
+					Nick2Entry_ [nick]->HandleMessage (message);
+				else
+				{
+					ServerParticipantEntry_ptr entry = GetParticipantEntry (nick);
+					entry->HandleMessage (message);
+				}
+			}
 		}
 	}
 
@@ -483,7 +496,7 @@ namespace Acetamide
 	{
 		QString msg = "[" + cmd.toUpper () + "] " + answer;
 		bool res = ChannelsManager_->ReceiveCmdAnswerMessage (cmd, msg, isEndOf);
-		
+
 		if (!res ||
 				XmlSettingsManager::Instance ()
 						.property ("ServerDuplicateCommandAnswer").toBool ())
@@ -708,29 +721,29 @@ namespace Acetamide
 									msg.IsAway_ ? "true" : "false",
 									msg.RealName_);
 
-		if (SpyWho_ [msg.Channel_.toLower ()].first ||
-				isEndOf)
+		bool contains = false;
+		QString key;
+		if (SpyWho_.contains (msg.Channel_.toLower ()))
 		{
-			const QString& name = (isEndOf ? msg.Nick_ : msg.Channel_).toLower ();
-
-			if (!isEndOf)
-				ChannelsManager_->UpdateEntry (msg);
-			else if (SpyWho_.contains (name) &&
-					!SpyWho_ [name].first)
-				ShowAnswer ("who", message, isEndOf);
-			else if (!SpyWho_.contains (name))
-			{
-				ShowAnswer ("who", message, isEndOf);
-				return;
-			}
-
-			auto& pair = SpyWho_ [name];
-			--pair.second;
-			if (!pair.second)
-				pair.first = false;
+			contains = true;
+			key = msg.Channel_.toLower ();
+		}
+		else if (SpyWho_.contains (msg.Nick_))
+		{
+			contains = true;
+			key = msg.Nick_;
 		}
 		else
 			ShowAnswer ("who", message, isEndOf);
+
+		if (contains)
+		{
+			if (!isEndOf)
+				ChannelsManager_->UpdateEntry (msg);
+			--SpyWho_ [key];
+			if (!SpyWho_ [key])
+				SpyWho_.remove (key);
+		}
 	}
 
 	void IrcServerHandler::ShowLinksReply (const QString& msg, bool isEndOf)
@@ -824,6 +837,7 @@ namespace Acetamide
 					<< msg->GetOtherVariant ()
 					<< str);
 
+		bool found = false;
 		Q_FOREACH (QObject *entryObj, ChannelsManager_->
 				GetParticipantsByNick (msg->GetOtherVariant ()).values ())
 		{
@@ -831,10 +845,12 @@ namespace Acetamide
 			if (!entry)
 				continue;
 
+			found = true;
 			entry->HandleMessage (msg);
 		}
 
-		if (Nick2Entry_.contains (msg->GetOtherVariant ()))
+		if (!found &&
+				Nick2Entry_.contains (msg->GetOtherVariant ()))
 			Nick2Entry_ [msg->GetOtherVariant ()]->HandleMessage (msg);
 	}
 
@@ -979,6 +995,7 @@ namespace Acetamide
 	{
 		ServerParticipantEntry_ptr entry (new ServerParticipantEntry (nick, this, Account_));
 		Account_->handleGotRosterItems (QObjectList () << entry.get ());
+		entry->SetStatus (EntryStatus (SOnline, QString ()));
 		return entry;
 	}
 
@@ -1051,16 +1068,17 @@ namespace Acetamide
 	void IrcServerHandler::ClosePrivateChat (const QString& nick)
 	{
 		if (Nick2Entry_.contains (nick))
-			Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
-		else
-			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick).values ())
-			{
-				IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (entryObj);
-				if (!entry)
-					continue;
+			Account_->handleEntryRemoved (Nick2Entry_.take (nick).get ());
 
-				entry->SetPrivateChat (false);
-			}
+		Q_FOREACH (QObject *entryObj, ChannelsManager_->
+				GetParticipantsByNick (nick).values ())
+		{
+			IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (entryObj);
+			if (!entry)
+				continue;
+
+			entry->SetPrivateChat (false);
+		}
 	}
 
 	void IrcServerHandler::CreateServerParticipantEntry (QString nick)
@@ -1124,9 +1142,8 @@ namespace Acetamide
 			const QString& channelName = channel->GetChannelOptions()
 					.ChannelName_.toLower ();
 			IrcParser_->WhoCommand (QStringList (channelName));
-			auto& pair = SpyWho_ [channelName];
-			pair.first = true;
-			pair.second = ChannelsManager_->GetChannelUsersCount (channelName) + 1;
+			SpyWho_ [channelName] = ChannelsManager_->
+					GetChannelUsersCount (channelName) + 1;
 		}
 	}
 

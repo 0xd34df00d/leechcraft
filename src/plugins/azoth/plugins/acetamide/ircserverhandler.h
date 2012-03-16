@@ -46,6 +46,8 @@ namespace Acetamide
 	class RplISupportParser;
 	class ChannelsManager;
 
+	const int AnswersOnWhoCommand = 2;
+
 	class IrcServerHandler : public QObject
 	{
 		Q_OBJECT
@@ -72,7 +74,7 @@ namespace Acetamide
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QMap<QString, QString> ISupport_;
 
-		QHash<QString, QPair<bool, int>> SpyWho_;
+		QHash<QString, int> SpyWho_;
 		QHash<QString, WhoIsMessage> SpyNick2WhoIsMessage_;
 		QTimer *AutoWhoTimer_;
 	public:
