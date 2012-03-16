@@ -148,6 +148,8 @@ namespace Acetamide
 		void UpdateEntry (const WhoMessage& message);
 
 		int GetChannelUsersCount (const QString& channel);
+
+		void ClosePrivateChat (const QString& nick);
 	};
 }
 }

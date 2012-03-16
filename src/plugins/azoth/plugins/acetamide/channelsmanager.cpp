@@ -551,6 +551,11 @@ namespace Acetamide
 		return ChannelHandlers_ [channel.toLower ()]->GetParticipants ().count ();
 	}
 
+	void ChannelsManager::ClosePrivateChat (const QString& nick)
+	{
+		ISH_->ClosePrivateChat (nick);
+	}
+
 	uint qHash (const ChannelOptions& opts)
 	{
 		return qHash (opts.ChannelName_ + opts.ChannelPassword_ + opts.ServerName_);
