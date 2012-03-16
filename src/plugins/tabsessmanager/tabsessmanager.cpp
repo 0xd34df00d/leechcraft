@@ -42,16 +42,24 @@ namespace TabSessManager
 	{
 		Util::InstallTranslator ("tabsessmanager");
 
+		UncloseMenu_ = new QMenu (tr ("Unclose tabs"));
+
 		Proxy_ = proxy;
 		IsRecovering_ = true;
 
 		const auto& roots = Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IHaveRecoverableTabs*> ();
 		Q_FOREACH (QObject *root, roots)
+		{
 			connect (root,
 					SIGNAL (addNewTab (const QString&, QWidget*)),
 					this,
 					SLOT (handleNewTab (const QString&, QWidget*)));
+			connect (root,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SLOT (handleRemoveTab (QWidget*)));
+		}
 
 		SessMgrMenu_ = new QMenu (tr ("Sessions"));
 		SessMgrMenu_->addAction (tr ("Save current session..."),
@@ -103,7 +111,12 @@ namespace TabSessManager
 	{
 		QList<QAction*> result;
 		if (place == AEPToolsMenu)
+		{
 			result << SessMgrMenu_->menuAction ();
+			result << UncloseMenu_->menuAction ();
+		}
+		else if (place == AEPCommonContextMenu)
+			result << UncloseMenu_->menuAction ();
 		return result;
 	}
 
@@ -123,6 +136,22 @@ namespace TabSessManager
 		}
 
 		return false;
+	}
+
+	namespace
+	{
+		QList<QPair<QByteArray, QVariant>> GetSessionProps (QObject *tab)
+		{
+			QList<QPair<QByteArray, QVariant>> props;
+			Q_FOREACH (const QByteArray& propName, tab->dynamicPropertyNames ())
+			{
+				if (!propName.startsWith ("SessionData/"))
+					continue;
+
+				props << qMakePair (propName, tab->property (propName));
+			}
+			return props;
+		}
 	}
 
 	QByteArray Plugin::GetCurrentSession () const
@@ -147,18 +176,8 @@ namespace TabSessManager
 			str << plugin->GetUniqueID ()
 					<< data
 					<< rec->GetTabRecoverName ()
-					<< rec->GetTabRecoverIcon ();
-
-			QList<QPair<QByteArray, QVariant>> props;
-			Q_FOREACH (const QByteArray& propName, tab->dynamicPropertyNames ())
-			{
-				if (!propName.startsWith ("SessionData/"))
-					continue;
-
-				props << qMakePair (propName, tab->property (propName));
-			}
-
-			str << props;
+					<< rec->GetTabRecoverIcon ()
+					<< GetSessionProps (tab);
 
 			qDebug () << Q_FUNC_INFO << "appended data for"
 					<< plugin->GetUniqueID () << rec->GetTabRecoverName ();
@@ -196,6 +215,38 @@ namespace TabSessManager
 
 		if (!tab->GetTabRecoverData ().isEmpty ())
 			handleTabRecoverDataChanged ();
+	}
+
+	void Plugin::handleRemoveTab (QWidget *widget)
+	{
+		auto tab = qobject_cast<ITabWidget*> (widget);
+		auto recTab = qobject_cast<IRecoverableTab*> (widget);
+		if (!recTab || !tab)
+			return;
+
+		TabUncloseInfo info =
+		{
+			{
+				recTab->GetTabRecoverData (),
+				GetSessionProps (widget)
+			},
+			qobject_cast<IHaveRecoverableTabs*> (tab->ParentMultiTabs ())
+		};
+
+		QAction *action = new QAction (recTab->GetTabRecoverIcon (),
+				recTab->GetTabRecoverName (), this);
+		UncloseAct2Data_ [action] = info;
+
+		connect (action,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleUnclose ()));
+
+		if (UncloseMenu_->defaultAction ())
+			UncloseMenu_->defaultAction ()->setShortcut (QKeySequence ());
+		UncloseMenu_->insertAction (UncloseMenu_->actions ().value (0), action);
+		UncloseMenu_->setDefaultAction (action);
+		action->setShortcut (QString ("Ctrl+Shift+T"));
 	}
 
 	void Plugin::handleTabDestroyed ()
@@ -281,6 +332,35 @@ namespace TabSessManager
 				ihrt->RecoverTabs (datas);
 			}
 		}
+	}
+
+	void Plugin::handleUnclose ()
+	{
+		auto action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not an action:"
+					<< sender ();
+			return;
+		}
+
+		if (!UncloseAct2Data_.contains (action))
+			return;
+
+		auto data = UncloseAct2Data_.take (action);
+		if (UncloseMenu_->defaultAction () == action)
+		{
+			auto nextAct = UncloseMenu_->actions ().value (1);
+			if (nextAct)
+			{
+				UncloseMenu_->setDefaultAction (nextAct);
+				nextAct->setShortcut (QString ("Ctrl+Shift+T"));
+			}
+		}
+		UncloseMenu_->removeAction (action);
+
+		data.Plugin_->RecoverTabs (QList<TabRecoverInfo> () << data.RecInfo_);
 	}
 
 	void Plugin::recover ()

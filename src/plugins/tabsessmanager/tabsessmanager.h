@@ -21,8 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
-
-class IRecoverableTab;
+#include <interfaces/ihaverecoverabletabs.h>
 
 namespace LeechCraft
 {
@@ -40,6 +39,14 @@ namespace TabSessManager
 		bool IsRecovering_;
 
 		QMenu *SessMgrMenu_;
+		struct TabUncloseInfo
+		{
+			TabRecoverInfo RecInfo_;
+			IHaveRecoverableTabs *Plugin_;
+		};
+		QHash<QAction*, TabUncloseInfo> UncloseAct2Data_;
+
+		QMenu *UncloseMenu_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -57,7 +64,9 @@ namespace TabSessManager
 		void AddCustomSession (const QString&);
 	private slots:
 		void handleNewTab (const QString&, QWidget*);
+		void handleRemoveTab (QWidget*);
 		void handleTabDestroyed ();
+		void handleUnclose ();
 		void recover ();
 		void handleTabRecoverDataChanged ();
 		void saveCustomSession ();
