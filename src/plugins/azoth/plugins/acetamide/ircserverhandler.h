@@ -46,6 +46,8 @@ namespace Acetamide
 	class RplISupportParser;
 	class ChannelsManager;
 
+	const int AnswersOnWhoCommand = 2;
+
 	class IrcServerHandler : public QObject
 	{
 		Q_OBJECT

@@ -213,7 +213,7 @@ namespace Acetamide
 	{
 		ChannelsManager_->AddParticipant (msg.toLower (), nick, user, host);
 		IrcParser_->WhoCommand (QStringList (nick));
-		SpyWho_ [nick] = 2;
+		SpyWho_ [nick] = AnswersOnWhoCommand;
 	}
 
 	void IrcServerHandler::CloseChannel (const QString& channel)
