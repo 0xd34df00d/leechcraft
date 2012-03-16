@@ -72,7 +72,7 @@ namespace Acetamide
 				this, "handleUpdateWhoPeriod");
 		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoRequest",
 				this, "handleSetAutoWho");
-		
+
 		connect (this,
 				SIGNAL (connected (const QString&)),
 				Account_->GetClientConnection ().get (),
@@ -213,9 +213,7 @@ namespace Acetamide
 	{
 		ChannelsManager_->AddParticipant (msg.toLower (), nick, user, host);
 		IrcParser_->WhoCommand (QStringList (nick));
-		auto& pair = SpyWho_ [msg.toLower ()];
-		pair.first = true;
-		++pair.second;
+		SpyWho_ [nick] = 2;
 	}
 
 	void IrcServerHandler::CloseChannel (const QString& channel)
@@ -483,7 +481,7 @@ namespace Acetamide
 	{
 		QString msg = "[" + cmd.toUpper () + "] " + answer;
 		bool res = ChannelsManager_->ReceiveCmdAnswerMessage (cmd, msg, isEndOf);
-		
+
 		if (!res ||
 				XmlSettingsManager::Instance ()
 						.property ("ServerDuplicateCommandAnswer").toBool ())
@@ -708,29 +706,30 @@ namespace Acetamide
 									msg.IsAway_ ? "true" : "false",
 									msg.RealName_);
 
-		if (SpyWho_ [msg.Channel_.toLower ()].first ||
-				isEndOf)
+		qDebug () << message << SpyWho_;
+		bool contains = false;
+		QString key;
+		if (SpyWho_.contains (msg.Channel_.toLower ()))
 		{
-			const QString& name = (isEndOf ? msg.Nick_ : msg.Channel_).toLower ();
-
-			if (!isEndOf)
-				ChannelsManager_->UpdateEntry (msg);
-			else if (SpyWho_.contains (name) &&
-					!SpyWho_ [name].first)
-				ShowAnswer ("who", message, isEndOf);
-			else if (!SpyWho_.contains (name))
-			{
-				ShowAnswer ("who", message, isEndOf);
-				return;
-			}
-
-			auto& pair = SpyWho_ [name];
-			--pair.second;
-			if (!pair.second)
-				pair.first = false;
+			contains = true;
+			key = msg.Channel_.toLower ();
+		}
+		else if (SpyWho_.contains (msg.Nick_))
+		{
+			contains = true;
+			key = msg.Nick_;
 		}
 		else
 			ShowAnswer ("who", message, isEndOf);
+
+		if (contains)
+		{
+			if (!isEndOf)
+				ChannelsManager_->UpdateEntry (msg);
+			--SpyWho_ [key];
+			if (!SpyWho_ [key])
+				SpyWho_.remove (key);
+		}
 	}
 
 	void IrcServerHandler::ShowLinksReply (const QString& msg, bool isEndOf)
@@ -1124,9 +1123,8 @@ namespace Acetamide
 			const QString& channelName = channel->GetChannelOptions()
 					.ChannelName_.toLower ();
 			IrcParser_->WhoCommand (QStringList (channelName));
-			auto& pair = SpyWho_ [channelName];
-			pair.first = true;
-			pair.second = ChannelsManager_->GetChannelUsersCount (channelName) + 1;
+			SpyWho_ [channelName] = ChannelsManager_->
+					GetChannelUsersCount (channelName) + 1;
 		}
 	}
 
