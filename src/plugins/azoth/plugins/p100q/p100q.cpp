@@ -27,7 +27,6 @@
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
 #include "xmlsettingsmanager.h"
-#include <qvarlengtharray.h>
 
 namespace LeechCraft
 {
@@ -141,50 +140,93 @@ namespace p100q
 			}
 		}
 		
-		const bool showRecom = XmlSettingsManager::Instance ().property ("ShowRecombtn").toBool ();
+		const bool showRecomendButton = XmlSettingsManager::Instance ().property ("ShowRecomendButton").toBool ();
 		const bool showAvatars = XmlSettingsManager::Instance ().property ("ShowAvatars").toBool ();
-		const bool showA2Bkmrk = XmlSettingsManager::Instance ().property ("ShowA2Bkmrkbtn").toBool ();
+		const bool showAddToBookmarkButton = XmlSettingsManager::Instance ().property ("ShowAddToBookmarkButton").toBool ();
 		const bool showImg = XmlSettingsManager::Instance ().property ("ShowImage").toBool ();
-		const bool showPM = XmlSettingsManager::Instance ().property ("ShowPMbtn").toBool ();
-		const bool showSubscr = XmlSettingsManager::Instance ().property ("ShowSUBSCRbtn").toBool ();
-		const bool showBL = XmlSettingsManager::Instance ().property ("ShowBLbtn").toBool ();
-		const bool showCMMNTS = XmlSettingsManager::Instance ().property ("ShowCMMNTSbtn").toBool ();
+		const bool showPrivateMessageButton = XmlSettingsManager::Instance ().property ("ShowPrivateMessageButton").toBool ();
+		const bool showSubscribeButton = XmlSettingsManager::Instance ().property ("ShowSubscribeButton").toBool ();
+		const bool showBlockButton = XmlSettingsManager::Instance ().property ("ShowBlockButton").toBool ();
+		const bool showCommentsButton = XmlSettingsManager::Instance ().property ("ShowCommentsButton").toBool ();
 		
 		QString ImgRX, PostRX, CommentRX, PostByUserRX, PostAuthorRX, UserRX;
 		
 		CommentRX += "<a href=\"azoth://msgeditreplace/%23\\1/\\2%20\" title=\"" + tr ("Reply") + "\">#\\1/\\2</a> ";
 		PostByUserRX += " <a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" + tr ("View post") + "\">#\\1</a> ";
-		PostAuthorRX, UserRX, PostByUserRX += "<a href=\"azoth://msgeditreplace/@\\1+\" title=\"" + tr ("View user's posts") + "\">@\\1</a> ";
-		PostRX = "<a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> \n";
+		PostAuthorRX += "<a href=\"azoth://msgeditreplace/@\\1+\" title=\"" + tr ("View user's posts") + "\">@\\1</a> ";
+		PostByUserRX += "<a href=\"azoth://msgeditreplace/@\\1+\" title=\"" + tr ("View user's posts") + "\">@\\1</a> ";
+		UserRX += "<a href=\"azoth://msgeditreplace/@\\1+\" title=\"" + tr ("View user's posts") + "\">@\\1</a> ";
+		PostRX = "<a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> ";
 		if (showImg)
+		{
 			ImgRX = "<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>";
+		}
 		if (showAvatars)
+		{
 			PostAuthorRX += "<img style='float:left;margin-right:4px' width='32px' height='32px' src='http://psto.net/img/a/40/\\1.png'>";
-		if (showSubscr || showCMMNTS || showRecom || showA2Bkmrk || showBL || showPM)
-			PostRX, CommentRX, PostAuthorRX += "(";
-		if (showSubscr)
+		}
+		if (showSubscribeButton || showCommentsButton || showRecomendButton || showAddToBookmarkButton)
+		{
+			PostRX += "(";
+			CommentRX += "(";
+		}
+		if (showBlockButton || showPrivateMessageButton)
+		{
+			PostByUserRX += "(";
+			UserRX += "(";
+			PostAuthorRX += "(";
+		}
+		if (showSubscribeButton)
+		{
 			PostRX += "<a href=\"azoth://msgeditreplace/S%20%23\\1\" title=\"" + tr ("Subscribe") + "\">S</a> " +
-			"<a href=\"azoth://msgeditreplace/U%20%23\\1\" title=\"" + tr ("Unsubscribe") + "\">U</a> ";
-			CommentRX += "<a href=\"azoth://msgeditreplace/U%20%23\\1\" title=\"" + tr ("Unsubscribe from post") + "\">U</a> ";
-		if (showCMMNTS)
-			PostAuthorRX,PostRX += "<a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" + tr ("View") + "\">+</a> ";
-		if (showRecom)
-			PostRX,CommentRX += "<a href=\"azoth://msgeditreplace/!%20%23\\1%20\" title=\"" + tr ("Recommend") + "\">!</a> ";
-		if (showA2Bkmrk)
-			PostRX,CommentRX += "<a href=\"azoth://msgeditreplace/~%20%23\\1%20\" title=\"" + tr ("Add to bookmarks") + "\">~</a> ";
-		if (showBL)
-			PostByUserRX,PostAuthorRX,UserRX += " <a href=\"azoth://msgeditreplace/BL%20@\\1\" title=\"" + tr ("Block user") + "\">BL</a>";
-		if (showPM)
-			PostByUserRX,PostAuthorRX,UserRX += " <a href=\"azoth://msgeditreplace/P%20@\\1\" title=\"" + tr ("Send private message to user") + "\">P</a> ";
-		if (showSubscr || showCMMNTS || showRecom || showA2Bkmrk || showBL || showPM)
-			PostRX, CommentRX, PostAuthorRX, UserRX, PostAuthorRX, PostByUserRX += ") ";
+					"<a href=\"azoth://msgeditreplace/U%20%23\\1\" title=\"" + tr ("Unsubscribe") + "\">U</a> ";
+			CommentRX += "<a href=\"azoth://msgeditreplace/U%20%23\\1\" title=\"" + 
+					tr ("Unsubscribe from post") + "\">U</a> ";
+		}
+		if (showCommentsButton)
+		{
+			PostRX += "<a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" + tr ("View") + "\">+</a> ";
+		}
+		if (showRecomendButton)
+		{
+			PostRX += "<a href=\"azoth://msgeditreplace/!%20%23\\1%20\" title=\"" + tr ("Recommend") + "\">!</a> ";
+			CommentRX += "<a href=\"azoth://msgeditreplace/!%20%23\\1%20\" title=\"" + tr ("Recommend") + "\">!</a> ";
+		}
+		if (showAddToBookmarkButton)
+		{
+			PostRX += "<a href=\"azoth://msgeditreplace/~%20%23\\1%20\" title=\"" + tr ("Add to bookmarks") + "\">~</a> ";
+			CommentRX += "<a href=\"azoth://msgeditreplace/~%20%23\\1%20\" title=\"" + tr ("Add to bookmarks") + "\">~</a> ";
+		}
+		if (showBlockButton)
+		{
+			PostByUserRX += " <a href=\"azoth://msgeditreplace/BL%20@\\1\" title=\"" + tr ("Block user") + "\">BL</a>";
+			UserRX += " <a href=\"azoth://msgeditreplace/BL%20@\\1\" title=\"" + tr ("Block user") + "\">BL</a>";
+			PostAuthorRX += " <a href=\"azoth://msgeditreplace/BL%20@\\1\" title=\"" + tr ("Block user") + "\">BL</a>";
+		}
+		if (showPrivateMessageButton)
+		{
+			PostByUserRX += " <a href=\"azoth://msgeditreplace/P%20@\\1\" title=\"" + tr ("Send private message to user") + "\">P</a> ";
+			PostAuthorRX += " <a href=\"azoth://msgeditreplace/P%20@\\1\" title=\"" + tr ("Send private message to user") + "\">P</a> ";
+			UserRX += " <a href=\"azoth://msgeditreplace/P%20@\\1\" title=\"" + tr ("Send private message to user") + "\">P</a> ";
+		}
+		if (showSubscribeButton || showCommentsButton || showRecomendButton || showAddToBookmarkButton)
+		{
+			PostRX += ") ";
+			CommentRX += ") ";
+		}
+		if (showBlockButton || showPrivateMessageButton)
+		{
+			PostByUserRX += ") ";
+			UserRX += ") ";
+			PostAuthorRX += ") ";
+		}
 		
 		body.replace (ImgRX_, ImgRX);
 		body.replace (PostRX_, PostRX);
 		body.replace (CommentRX_, CommentRX);
 		body.replace (PostByUserRX_, PostByUserRX);
 		body.replace (PostAuthorRX_, PostAuthorRX);
-		body.replace(UserRX_, UserRX);
+		body.replace (UserRX_, UserRX);
 		while (body.startsWith ("<br />"))
 			body = body.mid (6);
 		body.prepend ("<div style=\"width:100%;overflow:auto;\">");
