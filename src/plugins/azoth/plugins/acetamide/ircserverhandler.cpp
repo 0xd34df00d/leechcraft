@@ -211,7 +211,10 @@ namespace Acetamide
 	void IrcServerHandler::JoinParticipant (const QString& nick,
 			const QString& msg, const QString& user, const QString& host)
 	{
+		if (Nick2Entry_.contains (nick))
+			ClosePrivateChat (nick);
 		ChannelsManager_->AddParticipant (msg.toLower (), nick, user, host);
+
 		IrcParser_->WhoCommand (QStringList (nick));
 		SpyWho_ [nick] = AnswersOnWhoCommand;
 	}
@@ -1066,15 +1069,16 @@ namespace Acetamide
 	{
 		if (Nick2Entry_.contains (nick))
 			Account_->handleEntryRemoved (Nick2Entry_.take (nick).get ());
-		else
-			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick).values ())
-			{
-				IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (entryObj);
-				if (!entry)
-					continue;
 
-				entry->SetPrivateChat (false);
-			}
+		Q_FOREACH (QObject *entryObj, ChannelsManager_->
+				GetParticipantsByNick (nick).values ())
+		{
+			IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (entryObj);
+			if (!entry)
+				continue;
+
+			entry->SetPrivateChat (false);
+		}
 	}
 
 	void IrcServerHandler::CreateServerParticipantEntry (QString nick)

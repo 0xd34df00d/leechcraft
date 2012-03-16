@@ -199,6 +199,7 @@ namespace Acetamide
 			}
 		}
 
+		CM_->ClosePrivateChat (nickName);
 		ChannelParticipantEntry_ptr entry (GetParticipantEntry (nickName));
 		entry->SetUserName (user);
 		entry->SetHostName (host);
