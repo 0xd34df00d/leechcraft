@@ -706,7 +706,6 @@ namespace Acetamide
 									msg.IsAway_ ? "true" : "false",
 									msg.RealName_);
 
-		qDebug () << message << SpyWho_;
 		bool contains = false;
 		QString key;
 		if (SpyWho_.contains (msg.Channel_.toLower ()))
