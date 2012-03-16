@@ -39,10 +39,11 @@ protected:
 
 namespace LeechCraft
 {
+	typedef QList<QPair<QByteArray, QVariant>> DynPropertiesList_t;
 	struct TabRecoverInfo
 	{
 		QByteArray Data_;
-		QList<QPair<QByteArray, QVariant>> DynProperties_;
+		DynPropertiesList_t DynProperties_;
 	};
 }
 
