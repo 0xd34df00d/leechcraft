@@ -52,8 +52,6 @@ public:
 	virtual ~IHaveRecoverableTabs () {}
 
 	virtual void RecoverTabs (const QList<LeechCraft::TabRecoverInfo>&) = 0;
-protected:
-	virtual void tabRecovered (const QByteArray&, QWidget*) = 0;
 };
 
 Q_DECLARE_INTERFACE (IRecoverableTab, "org.Deviant.LeechCraft.IRecoverableTab/1.0");
