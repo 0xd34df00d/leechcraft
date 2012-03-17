@@ -24,6 +24,7 @@
 #include <QHash>
 #include <QColor>
 #include <interfaces/ichatstyleresourcesource.h>
+#include "plistparser.h"
 
 namespace LeechCraft
 {
@@ -55,6 +56,7 @@ namespace AdiumStyles
 
 		mutable QHash<QWebFrame*, QString> Frame2Pack_;
 		mutable QHash<QString, QList<QColor>> Coloring2Colors_;
+		mutable QHash<QString, PListParser_ptr> PListParsers_;
 		mutable QString LastPack_;
 
 		QHash<QObject*, QWebFrame*> Msg2Frame_;
@@ -76,6 +78,7 @@ namespace AdiumStyles
 		QList<QColor> CreateColors (const QString&);
 		QString GetMessageID (QObject*);
 		QImage GetDefaultAvatar () const;
+		PListParser_ptr GetPListParser (const QString&) const;
 	private slots:
 		void handleMessageDelivered ();
 		void handleMessageDestroyed ();
