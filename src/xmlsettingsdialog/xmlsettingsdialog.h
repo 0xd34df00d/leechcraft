@@ -39,13 +39,15 @@ namespace LeechCraft
 
 	namespace Util
 	{
+		class BaseSettingsManager;
+
 		class XmlSettingsDialog : public QWidget
 		{
 			Q_OBJECT
 
 			QStackedWidget *Pages_;
 			QStringList Titles_;
-			QObject *WorkingObject_;
+			BaseSettingsManager *WorkingObject_;
 			QString DefaultLang_;
 			std::shared_ptr<QDomDocument> Document_;
 			QList<QWidget*> Customs_;
@@ -61,7 +63,9 @@ namespace LeechCraft
 
 			XMLSETTINGSMANAGER_API XmlSettingsDialog ();
 			XMLSETTINGSMANAGER_API virtual ~XmlSettingsDialog ();
-			XMLSETTINGSMANAGER_API void RegisterObject (QObject*, const QString&);
+
+			XMLSETTINGSMANAGER_API void RegisterObject (BaseSettingsManager*, const QString&);
+			XMLSETTINGSMANAGER_API BaseSettingsManager* GetManagerObject () const;
 
 			/** @brief Returns the current XML.
 			 *

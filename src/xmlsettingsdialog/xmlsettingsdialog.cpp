@@ -34,6 +34,7 @@
 #include <QtScript>
 #include <util/util.h>
 #include "itemhandlerfactory.h"
+#include "basesettingsmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -57,7 +58,7 @@ XmlSettingsDialog::~XmlSettingsDialog ()
 {
 }
 
-void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
+void XmlSettingsDialog::RegisterObject (BaseSettingsManager *obj, const QString& basename)
 {
 	Basename_ = QFileInfo (basename).baseName ();
 	WorkingObject_ = obj;
@@ -130,6 +131,11 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 	obj->installEventFilter (this);
 
 	UpdateXml (true);
+}
+
+BaseSettingsManager* XmlSettingsDialog::GetManagerObject () const
+{
+	return WorkingObject_;
 }
 
 QString XmlSettingsDialog::GetXml () const
