@@ -235,25 +235,25 @@ namespace Azoth
 
 	void MsgFormatterWidget::handleBold ()
 	{
-		CharFormatActor ([FormatBold_] (QTextCharFormat *fmt)
+		CharFormatActor ([this] (QTextCharFormat *fmt)
 				{ fmt->setFontWeight (FormatBold_->isChecked () ? QFont::Bold : QFont::Normal); });
 	}
 
 	void MsgFormatterWidget::handleItalic ()
 	{
-		CharFormatActor ([FormatItalic_] (QTextCharFormat *fmt)
+		CharFormatActor ([this] (QTextCharFormat *fmt)
 				{ fmt->setFontItalic (FormatItalic_->isChecked ()); });
 	}
 
 	void MsgFormatterWidget::handleUnderline ()
 	{
-		CharFormatActor ([FormatUnderline_] (QTextCharFormat *fmt)
+		CharFormatActor ([this] (QTextCharFormat *fmt)
 				{ fmt->setFontUnderline (FormatUnderline_->isChecked ()); });
 	}
 
 	void MsgFormatterWidget::handleStrikeThrough ()
 	{
-		CharFormatActor ([FormatStrikeThrough_] (QTextCharFormat *fmt)
+		CharFormatActor ([this] (QTextCharFormat *fmt)
 				{ fmt->setFontStrikeOut (FormatStrikeThrough_->isChecked ()); });
 	}
 
