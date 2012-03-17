@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ADIUMSTYLES_PACKPROXYMODEL_H
-#define PLUGINS_AZOTH_PLUGINS_ADIUMSTYLES_PACKPROXYMODEL_H
+#pragma once
+
 #include <memory>
 #include <QStandardItemModel>
 #include <QHash>
@@ -59,5 +59,3 @@ namespace AdiumStyles
 }
 }
 }
-
-#endif
