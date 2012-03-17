@@ -21,8 +21,6 @@
 
 namespace LeechCraft
 {
-	Util::XmlSettingsDialog *ItemHandlerBase::XSD_ = 0;
-
 	void ItemHandlerBase::SetXmlSettingsDialog (Util::XmlSettingsDialog *xsd)
 	{
 		XSD_ = xsd;

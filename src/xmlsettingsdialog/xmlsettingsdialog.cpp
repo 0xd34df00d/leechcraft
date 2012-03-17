@@ -41,9 +41,8 @@ using namespace LeechCraft::Util;
 
 XmlSettingsDialog::XmlSettingsDialog ()
 : Document_ (new QDomDocument)
-, HandlersManager_ (new ItemHandlerFactory ())
+, HandlersManager_ (new ItemHandlerFactory (this))
 {
-	ItemHandlerBase::SetXmlSettingsDialog (this);
 	Pages_ = new QStackedWidget (this);
 
 	QHBoxLayout *mainLay = new QHBoxLayout (this);
