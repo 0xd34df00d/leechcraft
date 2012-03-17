@@ -18,6 +18,7 @@
 
 #include "itemhandlerbase.h"
 #include <QtDebug>
+#include "../basesettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -46,7 +47,10 @@ namespace LeechCraft
 
 	void ItemHandlerBase::updatePreferences ()
 	{
-		QString propertyName = sender ()->objectName ();
-		ChangedProperties_ [propertyName] = GetValue (sender ());
+		const QString& propertyName = sender ()->objectName ();
+		const QVariant& value = GetValue (sender ());
+		ChangedProperties_ [propertyName] = value;
+
+		XSD_->GetManagerObject ()->OptionSelected (propertyName.toLatin1 (), value);
 	}
-};
+}
