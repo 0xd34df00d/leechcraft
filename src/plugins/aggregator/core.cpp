@@ -422,7 +422,7 @@ namespace Aggregator
 			channels_shorts_t channels;
 			StorageBackend_->GetChannels (channels, feedId);
 			std::for_each (channels.begin (), channels.end (),
-					[ChannelsModel_] (ChannelShort chan)
+					[this] (ChannelShort chan)
 						{ ChannelsModel_->AddChannel (chan); });
 		}
 
