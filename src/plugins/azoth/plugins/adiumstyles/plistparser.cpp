@@ -46,7 +46,7 @@ namespace AdiumStyles
 	{
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
-			throw PListParseError (tr ("Unable to open file: %2.")
+			throw PListParseError (QObject::tr ("Unable to open file: %2.")
 					.arg (file.errorString ()));
 
 		QDomDocument doc;
@@ -55,7 +55,7 @@ namespace AdiumStyles
 		int line = 0;
 		int col = 0;
 		if (!doc.setContent (&file, &error, &line, &col))
-			throw PListParseError (tr ("Parse error: %1 (%2:%3).")
+			throw PListParseError (QObject::tr ("Parse error: %1 (%2:%3).")
 					.arg (error)
 					.arg (line)
 					.arg (col));
@@ -68,7 +68,7 @@ namespace AdiumStyles
 			if (elem.tagName ().toLower () == "key")
 				currentKey = elem.text ();
 			else if (currentKey.isEmpty ())
-				throw PListParseError (tr ("State mismatch: expected key tag."));
+				throw PListParseError (QObject::tr ("State mismatch: expected key tag."));
 			else
 			{
 				KeyVals_ [currentKey] = elem.text ();

@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <stdexcept>
 #include <QString>
 #include <QHash>
@@ -38,13 +39,15 @@ namespace AdiumStyles
 		QString GetStr () const;
 	};
 
-	class PListParser : public QObject
+	class PListParser
 	{
 		QHash<QString, QString> KeyVals_;
 	public:
 		void Parse (const QString&);
 		QString operator[] (const QString&) const;
 	};
+
+	typedef std::shared_ptr<PListParser> PListParser_ptr;
 }
 }
 }
