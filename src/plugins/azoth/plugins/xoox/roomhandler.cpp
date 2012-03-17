@@ -52,7 +52,7 @@ namespace Xoox
 	{
 		const QString& server = jid.split ('@', QString::SkipEmptyParts).value (1);
 		auto sdManager = Account_->GetClientConnection ()->GetSDManager ();
-		sdManager->RequestInfo ([&ServerDisco_] (const QXmppDiscoveryIq& iq)
+		sdManager->RequestInfo ([this] (const QXmppDiscoveryIq& iq)
 					{ ServerDisco_ = iq; },
 				server);
 

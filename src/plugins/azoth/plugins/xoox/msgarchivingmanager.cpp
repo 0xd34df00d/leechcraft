@@ -291,7 +291,7 @@ namespace Xoox
 
 		Prefs_.AutoSave_ = autoSave.attribute ("save") == "true";
 
-		auto handleMeth = [&Prefs_] (const QDomElement& meth)
+		auto handleMeth = [this] (const QDomElement& meth)
 		{
 			Prefs_.MethodPolicies_ [MethodConverter (meth.attribute ("type"))] =
 					MethodPolicyConverter (meth.attribute ("use"));

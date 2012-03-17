@@ -33,7 +33,7 @@ namespace Xoox
 	void SDManager::RequestInfo (ClientConnection::DiscoCallback_t callback,
 			const QString& jid, const QString& node)
 	{
-		auto f = [Conn_] (const QString& jid, ClientConnection::DiscoCallback_t cb, const QString& node)
+		auto f = [this] (const QString& jid, ClientConnection::DiscoCallback_t cb, const QString& node)
 				{ Conn_->RequestInfo (jid, cb, node); };
 		CommonDo (Infos_, f, callback, jid, node);
 	}
@@ -41,7 +41,7 @@ namespace Xoox
 	void SDManager::RequestItems (ClientConnection::DiscoCallback_t callback,
 			const QString& jid, const QString& node)
 	{
-		auto f = [Conn_] (const QString& jid, ClientConnection::DiscoCallback_t cb, const QString& node)
+		auto f = [this] (const QString& jid, ClientConnection::DiscoCallback_t cb, const QString& node)
 				{ Conn_->RequestItems (jid, cb, node); };
 		CommonDo (Items_, f, callback, jid, node);
 	}

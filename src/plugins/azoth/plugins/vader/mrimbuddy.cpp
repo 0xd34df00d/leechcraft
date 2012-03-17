@@ -327,7 +327,7 @@ namespace Vader
 
 	void MRIMBuddy::UpdateClientVersion ()
 	{
-		auto defClient = [&ClientInfo_, this] ()
+		auto defClient = [this] ()
 		{
 			ClientInfo_ ["client_type"] = "mailruagent";
 			ClientInfo_ ["client_name"] = tr ("Mail.Ru Agent");
