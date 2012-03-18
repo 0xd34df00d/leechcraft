@@ -710,7 +710,7 @@ namespace Proto
 		Message msg =
 		{
 			hp.Header_.Seq_,
-			headers ["X-MRIM-Flags"].toInt (0, 16),
+			headers ["X-MRIM-Flags"].toUInt (0, 16),
 			headers ["From"],
 			text,
 			dt

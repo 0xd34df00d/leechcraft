@@ -32,7 +32,7 @@ namespace Proto
 	{
 		qint64 ContactID_;
 
-		int GroupNumber_;
+		quint32 GroupNumber_;
 		quint32 StatusID_;
 		QString Email_;
 		QString Alias_;
