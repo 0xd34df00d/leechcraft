@@ -1158,8 +1158,8 @@ namespace Acetamide
 			return;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "socket error:"
+		qDebug () << "Socket error on server:"
+				<< ServerID_
 				<< error
 				<< socket->errorString ();
 
