@@ -1430,7 +1430,6 @@ namespace Azoth
 
 		int cursorPosition = cursor.position ();
 		int pos = -1;
-		int lastNickLen = -1;
 
 		QString text = Ui_.MsgEdit_->toPlainText ();
 
@@ -1477,6 +1476,7 @@ namespace Azoth
 				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
 					newAvailableNick << item + (pos == -1 ? post : "") + " ";
 
+			int lastNickLen = -1;
 			if ((newAvailableNick != AvailableNickList_) && (!newAvailableNick.isEmpty ()))
 			{
 				int newIndex = newAvailableNick.indexOf (AvailableNickList_ [CurrentNickIndex_ - 1]);
