@@ -353,11 +353,9 @@ Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 #define LC_EXPORT_PLUGIN(name,file) Q_EXPORT_PLUGIN2(name, file) \
 	extern "C"\
 	{\
-		Q_DECL_EXPORT QMap<QByteArray, quint64> GetAPILevels ()\
+		Q_DECL_EXPORT quint64 GetAPILevels ()\
 		{\
-			QMap<QByteArray, quint64> result;\
-			result ["Core"] = CURRENT_API_LEVEL;\
-			return result;\
+			return CURRENT_API_LEVEL;\
 		}\
 	}
 

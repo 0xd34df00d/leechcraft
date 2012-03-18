@@ -661,7 +661,7 @@ namespace LeechCraft
 			}
 
 			bool apiMatches = true;
-			typedef QMap<QByteArray, quint64> (*APIVersion_t) ();
+			typedef quint64 (*APIVersion_t) ();
 			auto getter = reinterpret_cast<APIVersion_t> (library.resolve ("GetAPILevels"));
 			if (!getter)
 			{
@@ -671,7 +671,7 @@ namespace LeechCraft
 						<< file;
 			}
 
-			if (apiMatches && getter () ["Core"] != CURRENT_API_LEVEL)
+			if (apiMatches && getter () != CURRENT_API_LEVEL)
 			{
 				apiMatches = false;
 				qWarning () << Q_FUNC_INFO
