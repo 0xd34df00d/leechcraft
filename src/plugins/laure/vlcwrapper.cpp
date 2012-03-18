@@ -342,8 +342,7 @@ namespace Laure
 
 	void VLCWrapper::play ()
 	{
-		int index = 0;
-		if (IsPlaying () || (index = PlayQueue ()) < 0)
+		if (IsPlaying () || PlayQueue () < 0)
 			libvlc_media_list_player_play (LPlayer_.get ());
 	}
 
