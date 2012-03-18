@@ -26,6 +26,7 @@ namespace LeechCraft
 		{
 			NotificationAction::NotificationAction (QObject *parent) 
 			: QObject (parent)
+			, ActionObject_ (0)
 			{
 			}
 			
