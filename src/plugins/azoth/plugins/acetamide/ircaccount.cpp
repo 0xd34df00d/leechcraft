@@ -317,8 +317,10 @@ namespace Acetamide
 
 	void IrcAccount::ChangeState (const EntryStatus& state)
 	{
-		if (IrcAccountState_ == SOffline &&
-				!ClientConnection_)
+		if ((IrcAccountState_ == SOffline &&
+				!ClientConnection_) ||
+				(IrcAccountState_ == state.State_ &&
+				IrcAccountState_ == SOffline))
 			return;
 
 		IProxyObject *obj = qobject_cast<IProxyObject*> (ParentProtocol_->GetProxyObject ());

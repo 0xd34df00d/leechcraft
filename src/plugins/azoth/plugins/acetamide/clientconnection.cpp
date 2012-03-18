@@ -247,6 +247,7 @@ namespace Acetamide
 
 	void ClientConnection::serverDisconnected (const QString& serverId)
 	{
+		ServerHandlers_ [serverId]->DisconnectFromServer ();
 		Account_->handleEntryRemoved (ServerHandlers_ [serverId]->
 				GetCLEntry ());
 		ServerHandlers_.take (serverId)->deleteLater ();
@@ -270,8 +271,8 @@ namespace Acetamide
 				socket->errorString (),
 				PCritical_);
 		Core::Instance ().SendEntity (e);
-		Account_->ChangeState (EntryStatus (SOffline, QString ()));
-		Account_->SetState (EntryStatus (SOffline, QString ()));
+		Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
+			ish->DisconnectFromServer ();
 	}
 
 	void ClientConnection::handleLog (IMessage::Direction type, const QString& msg)
