@@ -1147,6 +1147,25 @@ namespace Acetamide
 		}
 	}
 
+	void IrcServerHandler::handleSocketError (QAbstractSocket::SocketError error)
+	{
+		QTcpSocket *socket = qobject_cast<QTcpSocket*> (sender ());
+		if (!socket)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "is not an object of TcpSocket"
+					<< sender ();
+			return;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "socket error:"
+				<< error
+				<< socket->errorString ();
+
+		emit gotSocketError (error, socket->errorString ());
+	}
+
 	void IrcServerHandler::handleSetAutoWho ()
 	{
 		if (!XmlSettingsManager::Instance ().property ("AutoWhoRequest").toBool () &&

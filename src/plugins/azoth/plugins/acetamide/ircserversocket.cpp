@@ -30,7 +30,6 @@ namespace Acetamide
 {
 	IrcServerSocket::IrcServerSocket (IrcServerHandler *ish)
 	: QObject (ish)
-	, Account_ (ish->GetAccount ())
 	, ISH_ (ish)
 	, SSL_ (ish->GetServerOptions ().SSL_)
 	{
@@ -97,8 +96,8 @@ namespace Acetamide
 
 		connect (Socket_ptr.get (),
 				SIGNAL (error (QAbstractSocket::SocketError)),
-				Account_->GetClientConnection ().get (),
-				SLOT (handleError (QAbstractSocket::SocketError)));
+				ISH_,
+				SLOT (handleSocketError (QAbstractSocket::SocketError)));
 	}
 
 	void IrcServerSocket::readReply ()

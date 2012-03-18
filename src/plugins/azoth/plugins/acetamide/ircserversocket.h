@@ -39,11 +39,8 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
-		IrcAccount *Account_;
 		IrcServerHandler *ISH_;
-
 		bool SSL_;
-
 		std::shared_ptr<QTcpSocket> Socket_ptr;
 	public:
 		IrcServerSocket (IrcServerHandler*);

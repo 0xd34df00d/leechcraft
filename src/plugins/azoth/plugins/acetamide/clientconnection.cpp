@@ -71,6 +71,11 @@ namespace Acetamide
 
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
 
+		connect (ish,
+				SIGNAL (gotSocketError (QAbstractSocket::SocketError, const QString&)),
+				this,
+				SLOT (handleError(QAbstractSocket::SocketError, const QString&)));
+
 		ish->SetConsoleEnabled (IsConsoleEnabled_);
 		if (IsConsoleEnabled_)
 			connect (ish,
@@ -238,11 +243,11 @@ namespace Acetamide
 	{
 		if (Account_->GetState ().State_ == SOffline)
 		{
+			emit gotRosterItems (QList<QObject*> ()
+					<< ServerHandlers_ [serverId]->GetCLEntry ());
 			Account_->ChangeState (EntryStatus (SOnline, QString ()));
 			Account_->SetState (EntryStatus (SOnline, QString ()));
 		}
-		emit gotRosterItems (QList<QObject*> () <<
-				ServerHandlers_ [serverId]->GetCLEntry ());
 	}
 
 	void ClientConnection::serverDisconnected (const QString& serverId)
@@ -256,23 +261,25 @@ namespace Acetamide
 					QString ()));
 	}
 
-	void ClientConnection::handleError (QAbstractSocket::SocketError)
+	void ClientConnection::handleError (QAbstractSocket::SocketError error,
+			const QString& errorString)
 	{
-		QTcpSocket *socket = qobject_cast<QTcpSocket*> (sender ());
-		if (!socket)
+		IrcServerHandler *ish = qobject_cast<IrcServerHandler*> (sender ());
+		if (!ish)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "is not an object of TcpSocket"
+					<< "is not an IrcServerHandler"
 					<< sender ();
 			return;
 		}
 
 		Entity e = Util::MakeNotification ("Azoth",
-				socket->errorString (),
+				errorString,
 				PCritical_);
 		Core::Instance ().SendEntity (e);
-		Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
-			ish->DisconnectFromServer ();
+		ish->DisconnectFromServer ();
+		ServerHandlers_.remove (ish->GetServerID ());
+		Account_->handleEntryRemoved (ish->GetCLEntry ());
 	}
 
 	void ClientConnection::handleLog (IMessage::Direction type, const QString& msg)
