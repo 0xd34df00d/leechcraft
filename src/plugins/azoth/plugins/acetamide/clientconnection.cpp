@@ -70,7 +70,7 @@ namespace Acetamide
 				QString::number (server.ServerPort_);
 
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
-
+		emit gotRosterItems (QList<QObject*> () << ish->GetCLEntry ());
 		connect (ish,
 				SIGNAL (gotSocketError (QAbstractSocket::SocketError, const QString&)),
 				this,
@@ -243,8 +243,6 @@ namespace Acetamide
 	{
 		if (Account_->GetState ().State_ == SOffline)
 		{
-			emit gotRosterItems (QList<QObject*> ()
-					<< ServerHandlers_ [serverId]->GetCLEntry ());
 			Account_->ChangeState (EntryStatus (SOnline, QString ()));
 			Account_->SetState (EntryStatus (SOnline, QString ()));
 		}
