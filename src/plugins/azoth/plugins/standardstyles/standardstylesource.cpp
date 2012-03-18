@@ -58,7 +58,8 @@ namespace StandardStyles
 		return QUrl ();
 	}
 
-	QString StandardStyleSource::GetHTMLTemplate (const QString& pack, QObject *entryObj, QWebFrame*) const
+	QString StandardStyleSource::GetHTMLTemplate (const QString& pack,
+			const QString&, QObject *entryObj, QWebFrame*) const
 	{
 		if (pack != LastPack_)
 		{
@@ -307,6 +308,11 @@ namespace StandardStyles
 	void StandardStyleSource::FrameFocused (QWebFrame *frame)
 	{
 		HasBeenAppended_ [frame] = false;
+	}
+
+	QStringList StandardStyleSource::GetVariantsForPack (const QString&)
+	{
+		return QStringList ();
 	}
 
 	QList<QColor> StandardStyleSource::CreateColors (const QString& scheme)

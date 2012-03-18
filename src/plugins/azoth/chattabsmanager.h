@@ -37,6 +37,7 @@ namespace Azoth
 	{
 		Q_OBJECT
 
+		QSet<QString> StyleParams_;
 		QHash<QString, ChatTab_ptr> Entry2Tab_;
 		QSet<QString> EverOpened_;
 	public:

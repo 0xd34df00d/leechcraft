@@ -92,12 +92,15 @@ namespace Azoth
 		 *
 		 * @param[in] style The style name for which to return the
 		 * template.
+		 * @param[in] variant The style variant for which to return the
+		 * template.
 		 * @param[in] entry The entry object for which the chat window
 		 * is being set up.
 		 * @param[in] frame The frame that's being set up.
 		 * @return The HTML template.
 		 */
-		virtual QString GetHTMLTemplate (const QString& style, QObject *entry, QWebFrame *frame) const = 0;
+		virtual QString GetHTMLTemplate (const QString& style,
+				const QString& variant, QObject *entry, QWebFrame *frame) const = 0;
 
 		/** @brief Appends a new message to the chat view.
 		 *
@@ -124,6 +127,8 @@ namespace Azoth
 		 * @param[in] frame The frame that received focus.
 		 */
 		virtual void FrameFocused (QWebFrame *frame) = 0;
+
+		virtual QStringList GetVariantsForPack (const QString& style) = 0;
 	};
 }
 }

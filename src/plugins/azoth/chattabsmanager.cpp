@@ -29,12 +29,18 @@ namespace Azoth
 	ChatTabsManager::ChatTabsManager(QObject *parent)
 	: QObject (parent)
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("ChatWindowStyle",
-				this, "chatWindowStyleChanged");
 		XmlSettingsManager::Instance ().RegisterObject ("CustomMUCStyle",
 				this, "chatWindowStyleChanged");
-		XmlSettingsManager::Instance ().RegisterObject ("MUCWindowStyle",
-				this, "chatWindowStyleChanged");
+
+		auto regStyle = [this] (const QByteArray& style)
+		{
+			XmlSettingsManager::Instance ().RegisterObject (style,
+					this, "chatWindowStyleChanged");
+			XmlSettingsManager::Instance ().RegisterObject (style + "Variant",
+					this, "chatWindowStyleChanged");
+		};
+		regStyle ("ChatWindowStyle");
+		regStyle ("MUCWindowStyle");
 	}
 
 	void ChatTabsManager::OpenChat (const QModelIndex& ti)
@@ -308,6 +314,25 @@ namespace Azoth
 
 	void ChatTabsManager::chatWindowStyleChanged ()
 	{
+		QSet<QString> params;
+		auto upSet = [&params] (const QByteArray& style)
+		{
+			params << XmlSettingsManager::Instance ()
+					.property (style).toString ();
+			params << XmlSettingsManager::Instance ()
+					.property (style + "Variant").toString ();
+		};
+		upSet ("ChatWindowStyle");
+		upSet ("MUCWindowStyle");
+
+		const QString& custId = XmlSettingsManager::Instance ()
+					.property ("CustomMUCStyle").toBool () ? "t" : "f";
+		params << custId;
+
+		if (params == StyleParams_)
+			return;
+
+		StyleParams_ = params;
 		Q_FOREACH (ChatTab_ptr tab, Entry2Tab_.values ())
 			tab->PrepareTheme ();
 	}

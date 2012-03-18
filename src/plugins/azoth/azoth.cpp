@@ -45,6 +45,7 @@
 #include "accountslistwidget.h"
 #include "consolewidget.h"
 #include "searchwidget.h"
+#include "chatstyleoptionmanager.h"
 
 namespace LeechCraft
 {
@@ -224,10 +225,15 @@ namespace Azoth
 	{
 		XmlSettingsDialog_->SetDataSource ("SmileIcons",
 				Core::Instance ().GetSmilesOptionsModel ());
-		XmlSettingsDialog_->SetDataSource ("ChatWindowStyle",
-				Core::Instance ().GetChatStylesOptionsModel ());
-		XmlSettingsDialog_->SetDataSource ("MUCWindowStyle",
-				Core::Instance ().GetChatStylesOptionsModel ());
+
+		auto setSOM = [this] (const QByteArray& propName)
+		{
+			auto mgr = Core::Instance ().GetChatStylesOptionsManager (propName);
+			XmlSettingsDialog_->SetDataSource (propName, mgr->GetStyleModel ());
+			XmlSettingsDialog_->SetDataSource (propName + "Variant", mgr->GetVariantModel ());
+		};
+		setSOM ("ChatWindowStyle");
+		setSOM ("MUCWindowStyle");
 
 		Entity e = Util::MakeEntity (QVariant (),
 				QString (),

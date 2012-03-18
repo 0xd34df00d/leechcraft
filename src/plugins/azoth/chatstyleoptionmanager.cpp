@@ -17,15 +17,61 @@
  **********************************************************************/
 
 #include "chatstyleoptionmanager.h"
+#include <QStandardItemModel>
+#include <QtDebug>
+#include "interfaces/ichatstyleresourcesource.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	ChatStyleOptionManager::ChatStyleOptionManager (const QString& optionName, QObject *parent)
+	ChatStyleOptionManager::ChatStyleOptionManager (const QByteArray& optionName, QObject *parent)
 	: QObject (parent)
 	, OptionName_ (optionName)
+	, OptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> (QStringList (tr ("Chat style")), this))
+	, VariantModel_ (new QStandardItemModel (this))
 	{
+		XmlSettingsManager::Instance ().RegisterObject (optionName, this,
+				"handleChatStyleSelected", XmlSettingsManager::EventFlag::Select);
+	}
+
+	QAbstractItemModel* ChatStyleOptionManager::GetStyleModel () const
+	{
+		return OptionsModel_;
+	}
+
+	QAbstractItemModel* ChatStyleOptionManager::GetVariantModel () const
+	{
+		return VariantModel_;
+	}
+
+	void ChatStyleOptionManager::AddChatStyleResourceSource (IChatStyleResourceSource *src)
+	{
+		OptionsModel_->AddSource (src);
+
+		const QString& option = XmlSettingsManager::Instance ()
+				.property (OptionName_).toString ();
+		auto model = src->GetOptionsModel ();
+		for (int i = 0, size = model->rowCount (); i < size; ++i)
+			if (model->data (model->index (i, 0)).toString () == option)
+			{
+				handleChatStyleSelected (option);
+				break;
+			}
+	}
+
+	void ChatStyleOptionManager::handleChatStyleSelected (const QVariant& val)
+	{
+		VariantModel_->clear ();
+
+		const QString& style = val.toString ();
+		auto source = OptionsModel_->GetSourceForOption (style);
+		if (!source)
+			return;
+
+		Q_FOREACH (const QString& var, source->GetVariantsForPack (style))
+			VariantModel_->appendRow (new QStandardItem (var));
 	}
 }
 }

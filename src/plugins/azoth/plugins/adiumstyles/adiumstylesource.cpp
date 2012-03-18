@@ -90,7 +90,7 @@ namespace AdiumStyles
 	}
 
 	QString AdiumStyleSource::GetHTMLTemplate (const QString& srcPack,
-			QObject *entryObj, QWebFrame *frame) const
+			const QString& varCss, QObject *entryObj, QWebFrame *frame) const
 	{
 		if (srcPack != LastPack_)
 		{
@@ -108,7 +108,6 @@ namespace AdiumStyles
 				Qt::UniqueConnection);
 
 		const QString& pack = PackProxyModel_->GetOrigName (srcPack);
-		const QString& varCss = PackProxyModel_->GetVariant (srcPack);
 
 		Frame2Pack_ [frame] = pack;
 
@@ -346,6 +345,27 @@ namespace AdiumStyles
 
 	void AdiumStyleSource::FrameFocused (QWebFrame*)
 	{
+	}
+
+	QStringList AdiumStyleSource::GetVariantsForPack (const QString& pack)
+	{
+		QStringList result;
+
+		const QString& origName = PackProxyModel_->GetOrigName (pack);
+		if (!StylesLoader_->GetPath (QStringList (origName + "/Contents/Resources/main.css")).isEmpty ())
+			result << "";
+
+		const QString& suff = origName + "/Contents/Resources/Variants/";
+		const QString& path = StylesLoader_->GetPath (QStringList (suff));
+		if (!path.isEmpty ())
+			Q_FOREACH (const QString& variant, QDir (path).entryList (QStringList ("*.css")))
+			{
+				QString hrVar = variant;
+				hrVar.chop (4);
+				result << hrVar;
+			}
+
+		return result;
 	}
 
 	void AdiumStyleSource::PercentTemplate (QString& result, const QMap<QString, QString>& map) const

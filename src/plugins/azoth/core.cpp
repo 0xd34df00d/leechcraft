@@ -73,6 +73,7 @@
 #include "servicediscoverywidget.h"
 #include "importmanager.h"
 #include "unreadqueuemanager.h"
+#include "chatstyleoptionmanager.h"
 
 namespace LeechCraft
 {
@@ -167,6 +168,13 @@ namespace Azoth
 	{
 		FillANFields ();
 
+		auto addSOM = [this] (const QByteArray& option)
+		{
+			StyleOptionManagers_ [option].reset (new ChatStyleOptionManager (option, this));
+		};
+		addSOM ("ChatWindowStyle");
+		addSOM ("MUCWindowStyle");
+
 #ifdef ENABLE_CRYPT
 		connect (QCAEventHandler_.get (),
 				SIGNAL (eventReady (int, const QCA::Event&)),
@@ -252,8 +260,8 @@ namespace Azoth
 	void Core::Release ()
 	{
 		ResourceLoaders_.clear ();
-
 		ShortcutManager_.reset ();
+		StyleOptionManagers_.clear ();
 
 #ifdef ENABLE_CRYPT
 		QCAEventHandler_.reset ();
@@ -295,9 +303,9 @@ namespace Azoth
 		return SmilesOptionsModel_->GetSourceForOption (pack);
 	}
 
-	QAbstractItemModel* Core::GetChatStylesOptionsModel () const
+	ChatStyleOptionManager* Core::GetChatStylesOptionsManager (const QByteArray& name) const
 	{
-		return ChatStylesOptionsModel_.get ();
+		return StyleOptionManagers_ [name].get ();
 	}
 
 	Util::ShortcutManager* Core::GetShortcutManager () const
@@ -651,12 +659,11 @@ namespace Azoth
 
 		Q_FOREACH (QObject *object, irp->GetResourceSources ())
 		{
-			IEmoticonResourceSource *smileSrc = qobject_cast<IEmoticonResourceSource*> (object);
+			auto smileSrc = qobject_cast<IEmoticonResourceSource*> (object);
 			if (smileSrc)
 				AddSmileResourceSource (smileSrc);
 
-			IChatStyleResourceSource *chatStyleSrc =
-					qobject_cast<IChatStyleResourceSource*> (object);
+			auto chatStyleSrc = qobject_cast<IChatStyleResourceSource*> (object);
 			if (chatStyleSrc)
 				AddChatStyleResourceSource (chatStyleSrc);
 		}
@@ -670,6 +677,9 @@ namespace Azoth
 	void Core::AddChatStyleResourceSource (IChatStyleResourceSource *src)
 	{
 		ChatStylesOptionsModel_->AddSource (src);
+
+		Q_FOREACH (auto manager, StyleOptionManagers_.values ())
+			manager->AddChatStyleResourceSource (src);
 	}
 
 	QString Core::GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const
@@ -678,9 +688,12 @@ namespace Azoth
 		if (!src)
 			return QString ();
 
+		const QByteArray& optName = GetStyleOptName (entry);
 		const QString& opt = XmlSettingsManager::Instance ()
-				.property (GetStyleOptName (entry)).toString ();
-		return src->GetHTMLTemplate (opt, entry, frame);
+				.property (optName).toString ();
+		const QString& var = XmlSettingsManager::Instance ()
+				.property (optName + "Variant").toString ();
+		return src->GetHTMLTemplate (opt, var, entry, frame);
 	}
 
 	QUrl Core::GetSelectedChatTemplateURL (QObject *entry) const

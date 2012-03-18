@@ -59,9 +59,11 @@ namespace StandardStyles
 
 		QAbstractItemModel* GetOptionsModel () const;
 		QUrl GetBaseURL (const QString&) const;
-		QString GetHTMLTemplate (const QString&, QObject*, QWebFrame*) const;
+		QString GetHTMLTemplate (const QString&,
+				const QString&, QObject*, QWebFrame*) const;
 		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		void FrameFocused (QWebFrame*);
+		QStringList GetVariantsForPack (const QString&);
 	private:
 		QList<QColor> CreateColors (const QString&);
 		QString GetMessageID (QObject*);

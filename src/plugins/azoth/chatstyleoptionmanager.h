@@ -19,18 +19,32 @@
 #pragma once
 
 #include <QObject>
+#include "sourcetrackingmodel.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+	class IChatStyleResourceSource;
+
 	class ChatStyleOptionManager : public QObject
 	{
 		Q_OBJECT
 
-		QString OptionName_;
+		QByteArray OptionName_;
+		SourceTrackingModel<IChatStyleResourceSource> *OptionsModel_;
+		QStandardItemModel *VariantModel_;
 	public:
-		ChatStyleOptionManager (const QString& optionName, QObject* = 0);
+		ChatStyleOptionManager (const QByteArray& optionName, QObject* = 0);
+
+		QAbstractItemModel* GetStyleModel () const;
+		QAbstractItemModel* GetVariantModel () const;
+
+		void AddChatStyleResourceSource (IChatStyleResourceSource*);
+	private slots:
+		void handleChatStyleSelected (const QVariant&);
 	};
 }
 }
