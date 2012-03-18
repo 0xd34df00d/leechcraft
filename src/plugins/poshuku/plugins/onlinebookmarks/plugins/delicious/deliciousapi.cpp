@@ -38,12 +38,18 @@ namespace Delicious
 	{
 		if (at & DeliciousAccount::ATHttpAuth)
 			return "https://%1:%2@api.del.icio.us/v1/posts/update";
+
+		qWarning () << Q_FUNC_INFO << "unknown auth type" << at;
+		return QString ();
 	}
 
 	QString DeliciousApi::GetUploadUrl (const DeliciousAccount::AuthType& at) const
 	{
 		if (at & DeliciousAccount::ATHttpAuth)
 			return "https://%1:%2@api.del.icio.us/v1/posts/add?";
+
+		qWarning () << Q_FUNC_INFO << "unknown auth type" << at;
+		return QString ();
 	}
 
 	QByteArray DeliciousApi::GetUploadPayload (const QVariant& bookmark)
@@ -60,6 +66,9 @@ namespace Delicious
 	{
 		if (at & DeliciousAccount::ATHttpAuth)
 			return "https://%1:%2@api.del.icio.us/v1/posts/all?";
+
+		qWarning () << Q_FUNC_INFO << "unknown auth type" << at;
+		return QString ();
 	}
 
 	QByteArray DeliciousApi::GetDownloadPayload (const QDateTime& from)
