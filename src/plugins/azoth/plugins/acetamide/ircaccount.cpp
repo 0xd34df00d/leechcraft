@@ -275,6 +275,7 @@ namespace Acetamide
 			cm ["AccountID"] = GetAccountID ();
 			cm ["Server"] = channel.ServerName_;
 			cm ["Port"] = channel.ServerPort_;
+			cm ["ServerPassword"] = channel.ServerPassword_;
 			cm ["Encoding"] = channel.ServerEncoding_;
 			cm ["Channel"] = channel.ChannelName_;
 			cm ["Password"] = channel.ChannelPassword_;
@@ -298,6 +299,7 @@ namespace Acetamide
 			bookmark.AutoJoin_  = map.value ("Autojoin").toBool ();
 			bookmark.ServerName_ = map.value ("Server").toString ();
 			bookmark.ServerPort_ = map.value ("Port").toInt ();
+			bookmark.ServerPassword_ = map.value ("ServerPassword").toString ();
 			bookmark.ServerEncoding_ = map.value ("Encoding").toString ();
 			bookmark.ChannelName_ = map.value ("Channel").toString ();
 			bookmark.ChannelPassword_ = map.value ("Password").toString ();
@@ -495,6 +497,7 @@ namespace Acetamide
 				IrcBookmark bookmark;
 				bookmark.ServerName_ = ish->GetServerOptions ().ServerName_;
 				bookmark.ServerPort_ = ish->GetServerOptions ().ServerPort_;
+				bookmark.ServerPassword_ = ish->GetServerOptions ().ServerPassword_;
 				bookmark.ServerEncoding_ = ish->GetServerOptions ().ServerEncoding_;
 				bookmark.NickName_ = ish->GetServerOptions ().ServerNickName_;
 				bookmark.SSL_ = ish->GetServerOptions ().SSL_;
@@ -530,6 +533,7 @@ namespace Acetamide
 				continue;
 			serverOpt.ServerName_ = bookmark.ServerName_;
 			serverOpt.ServerPort_ = bookmark.ServerPort_;
+			serverOpt.ServerPassword_ = bookmark.ServerPassword_;
 			serverOpt.ServerEncoding_ = bookmark.ServerEncoding_;
 			serverOpt.ServerNickName_ = bookmark.NickName_;
 			serverOpt.SSL_ = bookmark.SSL_;

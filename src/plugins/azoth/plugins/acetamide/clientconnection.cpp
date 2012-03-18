@@ -125,6 +125,7 @@ namespace Acetamide
 				ostr << bookmark.Name_
 						<< bookmark.ServerName_
 						<< bookmark.ServerPort_
+						<< bookmark.ServerPassword_
 						<< bookmark.ServerEncoding_
 						<< bookmark.ChannelName_
 						<< bookmark.ChannelPassword_
@@ -152,6 +153,7 @@ namespace Acetamide
 			istr >> bookmark.Name_
 					>> bookmark.ServerName_
 					>> bookmark.ServerPort_
+					>> bookmark.ServerPassword_
 					>> bookmark.ServerEncoding_
 					>> bookmark.ChannelName_
 					>> bookmark.ChannelPassword_
