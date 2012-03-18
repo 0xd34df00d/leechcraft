@@ -547,7 +547,6 @@ namespace Acetamide
 	void IrcServerHandler::ShowWhoIsReply (const WhoIsMessage& msg, bool isEndOf)
 	{
 		QString message;
-		bool spy = false;
 		if (!msg.Nick_.isEmpty () &&
 				!msg.UserName_.isEmpty () &&
 				!msg.Host_.isEmpty ())
