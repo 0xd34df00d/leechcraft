@@ -84,13 +84,16 @@ namespace Zheet
 	void SBManager::SendFile (const QString& file, uint id, const MSNBuddyEntry *entry)
 	{
 		const QFileInfo info (file);
-		MSN::fileTransferInvite ft = { 1,
-				id,
-				ZheetUtil::ToStd (entry->GetHumanReadableID ()),
-				ZheetUtil::ToStd (file),
-				ZheetUtil::ToStd (info.fileName ()),
-				std::string (),
-				info.size () };
+		MSN::fileTransferInvite ft =
+		{
+			1,
+			id,
+			ZheetUtil::ToStd (entry->GetHumanReadableID ()),
+			ZheetUtil::ToStd (file),
+			ZheetUtil::ToStd (info.fileName ()),
+			std::string (),
+			static_cast<decltype (ft.filesize)> (info.size ())
+		};
 		if (Switchboards_.contains (entry))
 		{
 			Switchboards_ [entry]->sendFile (ft);
