@@ -951,25 +951,6 @@ namespace Xoox
 	{
 		if (iq.error ().isValid ())
 			HandleError (iq);
-
-		try
-		{
-			dynamic_cast<const QXmppActivityItem&> (iq);
-			qDebug () << "got activity item" << iq.id ();
-		}
-		catch (...)
-		{
-		}
-
-		try
-		{
-			dynamic_cast<const QXmppPubSubIq&> (iq);
-			qDebug () << "got pubsub item" << iq.id ();
-		}
-		catch (...)
-		{
-		}
-
 		InvokeCallbacks (iq);
 	}
 
