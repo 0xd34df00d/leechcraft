@@ -60,6 +60,12 @@ namespace AdiumStyles
 
 	QUrl AdiumStyleSource::GetBaseURL (const QString& srcPack) const
 	{
+		if (srcPack.contains ('/'))
+		{
+			const auto& split = srcPack.split ('/', QString::SkipEmptyParts);
+			return GetBaseURL (split.value (0));
+		}
+
 		const QString& pack = PackProxyModel_->GetOrigName (srcPack);
 		const QString& prefix = pack + "/Contents/Resources/";
 
@@ -92,6 +98,12 @@ namespace AdiumStyles
 	QString AdiumStyleSource::GetHTMLTemplate (const QString& srcPack,
 			const QString& varCss, QObject *entryObj, QWebFrame *frame) const
 	{
+		if (srcPack.contains ('/'))
+		{
+			const auto& split = srcPack.split ('/', QString::SkipEmptyParts);
+			return GetHTMLTemplate (split.value (0), split.value (1), entryObj, frame);
+		}
+
 		if (srcPack != LastPack_)
 		{
 			Coloring2Colors_.clear ();
@@ -110,7 +122,6 @@ namespace AdiumStyles
 		const QString& pack = PackProxyModel_->GetOrigName (srcPack);
 
 		Frame2Pack_ [frame] = pack;
-
 		Frame2LastContact_.remove (frame);
 
 		const QString& prefix = pack + "/Contents/Resources/";
