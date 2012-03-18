@@ -21,9 +21,9 @@
 
 #include <memory>
 #include <QObject>
+#include <QSslSocket>
 
 class QTcpSocket;
-class QSslSocket;
 
 namespace LeechCraft
 {
@@ -52,6 +52,7 @@ namespace Acetamide
 		void Init ();
 	private slots:
 		void readReply ();
+		void handleSslErrors (const QList<QSslError>& errors);
 	};
 };
 };
