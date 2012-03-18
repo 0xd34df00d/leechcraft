@@ -41,9 +41,6 @@ namespace Aggregator
 				(parent.attribute ("type") == "text/html" &&
 					parent.attribute ("mode") != "escaped"))
 			result = parent.text ();
-		else if (parent.attribute ("type") == "text/html" &&
-				parent.attribute ("mode") == "escaped")
-			result = UnescapeHTML (parent.text ());
 		else
 			result = UnescapeHTML (parent.text ());
 	
