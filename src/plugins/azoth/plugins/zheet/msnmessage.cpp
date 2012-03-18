@@ -50,6 +50,7 @@ namespace Zheet
 	, Body_ (ZheetUtil::FromStd (msg->getBody ()))
 	, DateTime_ (QDateTime::currentDateTime ())
 	, IsDelivered_ (true)
+	, MsgID_ (-1)
 	{
 	}
 
