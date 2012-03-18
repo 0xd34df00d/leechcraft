@@ -252,6 +252,9 @@ namespace Acetamide
 
 	void ClientConnection::serverDisconnected (const QString& serverId)
 	{
+		if (!ServerHandlers_.contains (serverId))
+			return;
+
 		ServerHandlers_ [serverId]->DisconnectFromServer ();
 		Account_->handleEntryRemoved (ServerHandlers_ [serverId]->
 				GetCLEntry ());
