@@ -24,6 +24,9 @@ namespace Azoth
 {
 namespace Xoox
 {
+	PEPEventBase::~PEPEventBase ()
+	{
+	}
 }
 }
 }
