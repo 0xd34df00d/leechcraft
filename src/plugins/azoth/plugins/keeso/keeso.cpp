@@ -82,7 +82,7 @@ namespace Keeso
 				continue;
 
 			text [i] = isUpper ? u : l;
-			isUpper = qrand () % 4 ? !isUpper : isUpper;
+			isUpper = (qrand () % 4) ? !isUpper : isUpper;
 		}
 
 		proxy->SetValue ("text", text);
