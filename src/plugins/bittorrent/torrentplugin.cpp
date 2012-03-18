@@ -747,7 +747,7 @@ namespace LeechCraft
 							std::back_inserter (allTrackers));
 				}
 
-				if (!allTrackers.size ())
+				if (allTrackers.empty ())
 					allTrackers = Core::Instance ()->
 							GetTrackers (Core::Instance ()->
 									GetCurrentTorrent ());
@@ -762,7 +762,7 @@ namespace LeechCraft
 
 				allTrackers.erase (newLast, allTrackers.end ());
 
-				if (!allTrackers.size ())
+				if (allTrackers.empty ())
 					return;
 
 				TrackersChanger changer (Core::Instance ()->

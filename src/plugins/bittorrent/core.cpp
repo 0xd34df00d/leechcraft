@@ -1896,7 +1896,7 @@ namespace LeechCraft
 					std::copy (prioritiesLine.begin (), prioritiesLine.end (),
 							std::back_inserter (priorities));
 
-					if (!priorities.size ())
+					if (priorities.empty ())
 					{
 						priorities.resize (handle.get_torrent_info ().num_files ());
 						std::fill (priorities.begin (), priorities.end (), 1);
@@ -2327,7 +2327,6 @@ namespace LeechCraft
 							break;
 						case libtorrent::torrent_status::downloading:
 							Handles_ [i].State_ = TSDownloading;
-							break;
 							break;
 						case libtorrent::torrent_status::finished:
 						case libtorrent::torrent_status::seeding:
