@@ -550,7 +550,7 @@ namespace LeechCraft
 					{
 						qWarning () << Q_FUNC_INFO
 								<< e.what ();
-						throw e;
+						throw;
 					}
 
 					std::deque<int> selections;
