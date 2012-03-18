@@ -46,7 +46,15 @@ namespace Acetamide
 		result ["Server"] = Ui_.Server_->text ();
 		result ["Port"] = Ui_.Port_->value ();
 		result ["Encoding"] = Ui_.Encoding_->currentText ();
-		result ["Channel"] = Ui_.Channel_->text ();
+
+		QString channel = Ui_.Channel_->text ();
+		if (!channel.startsWith ('#') &&
+				!channel.startsWith ('&') &&
+				!channel.startsWith ('+') &&
+				!channel.startsWith ('!'))
+			channel.prepend ('#');
+		result ["Channel"] = channel;
+
 		result ["Password"] = Ui_.Password_->text ();
 		result ["Nickname"] = Ui_.Nickname_->text ();
 		result ["SSL"] = Ui_.SSL_->checkState () == Qt::Checked;
