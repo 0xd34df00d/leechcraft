@@ -27,6 +27,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "favoritesmodel.h"
 #include "historymodel.h"
 #include "storagebackend.h"
@@ -111,8 +112,7 @@ namespace Poshuku
 		void AddPlugin (QObject*);
 
 		QUrl MakeURL (QString);
-		BrowserWidget* NewURL (const QUrl&, bool = false,
-				const QList<QPair<QByteArray, QVariant>>& = QList<QPair<QByteArray, QVariant>> ());
+		BrowserWidget* NewURL (const QUrl&, bool = false, const DynPropertiesList_t& = DynPropertiesList_t ());
 		BrowserWidget* NewURL (const QString&, bool = false);
 		IWebWidget* GetWidget ();
 		CustomWebView* MakeWebView (bool = false);
