@@ -100,7 +100,7 @@ namespace Aggregator
 		{
 			Core::Instance ().GetStorageBackend ()->
 				GetItems (CurrentItems_, channel);
-			if (CurrentItems_.size ())
+			if (!CurrentItems_.empty ())
 				MayBeRichText_ = Qt::mightBeRichText (CurrentItems_.at (0).Title_);
 		}
 		reset ();
@@ -116,7 +116,7 @@ namespace Aggregator
 		Q_FOREACH (const IDType_t& itemId, items)
 			CurrentItems_.push_back (sb->GetItem (itemId)->ToShort ());
 
-		if (CurrentItems_.size ())
+		if (!CurrentItems_.empty ())
 			MayBeRichText_ = Qt::mightBeRichText (CurrentItems_.at (0).Title_);
 
 		reset ();
