@@ -33,6 +33,8 @@ namespace WYFV
 	class AbstractPlayerCreator
 	{
 	public:
+		virtual ~AbstractPlayerCreator ();
+
 		virtual bool WouldRatherPlay (const QUrl&) const = 0;
 		virtual Player* Create (const QUrl&,
 				const QStringList&,
