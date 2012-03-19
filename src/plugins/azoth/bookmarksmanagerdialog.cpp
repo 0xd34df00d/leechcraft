@@ -316,7 +316,7 @@ namespace Azoth
 		Ui_.BookmarksTree_->setCurrentIndex (BMModel_->indexFromItem (item));
 	}
 
-	void BookmarksManagerDialog::on_ApplyButton__released()
+	void BookmarksManagerDialog::on_ApplyButton__released ()
 	{
 		QStandardItem *selected = GetSelectedItem ();
 		if (!selected ||
@@ -325,6 +325,38 @@ namespace Azoth
 			return;
 
 		selected->setData (CurrentEditor_->GetIdentifyingData ());
+		Save ();
+	}
+
+	void BookmarksManagerDialog::on_MoveUp__released ()
+	{
+		QStandardItem *selected = GetSelectedItem ();
+		if (!selected)
+			return;
+
+		const int row = selected->row ();
+		if (row <= 0)
+			return;
+
+		auto items = BMModel_->takeRow (row);
+		BMModel_->insertRow (row - 1, items);
+
+		Save ();
+	}
+
+	void BookmarksManagerDialog::on_MoveDown__released ()
+	{
+		QStandardItem *selected = GetSelectedItem ();
+		if (!selected)
+			return;
+
+		const int row = selected->row ();
+		if (row >= BMModel_->rowCount () - 1)
+			return;
+
+		auto items = BMModel_->takeRow (row);
+		BMModel_->insertRow (row, items);
+
 		Save ();
 	}
 }

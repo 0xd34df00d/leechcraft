@@ -46,6 +46,30 @@
          </attribute>
         </widget>
        </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QToolButton" name="MoveUp_">
+           <property name="text">
+            <string>Move up</string>
+           </property>
+           <property name="icon">
+            <iconset theme="go-up"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="MoveDown_">
+           <property name="text">
+            <string>Move down</string>
+           </property>
+           <property name="icon">
+            <iconset theme="go-down"/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
       </layout>
      </item>
      <item>
