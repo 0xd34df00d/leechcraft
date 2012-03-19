@@ -92,6 +92,8 @@ namespace Acetamide
 		const QString& channel = data ["Channel"].toString ();
 		const QString& server = data ["Server"].toString ();
 		const QString& encoding = data ["Encoding"].toString ();
+		const QString& serverPass = data ["ServerPassword"].toString ();
+		const QString& channelPass = data ["ChannelPassword"].toString ();
 		const int port = data ["Port"].toInt ();
 		const bool ssl = data ["SSL"].toBool ();
 
@@ -105,6 +107,10 @@ namespace Acetamide
 			Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->findText (encoding));
 		if (port)
 			Ui_.Port_->setValue (port);
+		if (!serverPass.isEmpty ())
+			Ui_.ServerPassword_->setText (serverPass);
+		if (!channelPass.isEmpty ())
+			Ui_.Password_->setText (channelPass);
 		Ui_.SSL_->setChecked (ssl);
 	}
 
@@ -119,8 +125,10 @@ namespace Acetamide
 		result ["AccountID"] = SelectedAccount_->GetAccountID ();
 		result ["Nickname"] = GetNickname ();
 		result ["Channel"] = GetChannel ();
+		result ["ChannelPassword"] = GetChannelPassword ();
 		result ["Server"] = GetServer ();
 		result ["Port"] = GetPort ();
+		result ["ServerPassword"] = GetServerPassword ();
 		result ["Encoding"] = GetEncoding ();
 		result ["SSL"] = GetSSL ();
 
@@ -135,6 +143,11 @@ namespace Acetamide
 	int IrcJoinGroupChat::GetPort () const
 	{
 		return Ui_.Port_->value ();
+	}
+
+	QString IrcJoinGroupChat::GetServerPassword () const
+	{
+		return Ui_.ServerPassword_->text ();
 	}
 
 	QString IrcJoinGroupChat::GetChannel () const
@@ -158,6 +171,11 @@ namespace Acetamide
 		return Ui_.Encoding_->currentText ();
 	}
 
+	QString IrcJoinGroupChat::GetChannelPassword () const
+	{
+		return Ui_.Password_->text ();
+	}
+
 	bool IrcJoinGroupChat::GetSSL () const
 	{
 		return Ui_.SSL_->isChecked ();
@@ -169,7 +187,7 @@ namespace Acetamide
 		so.ServerName_ = GetServer ();
 		so.ServerPort_ = GetPort ();
 		so.ServerEncoding_ = GetEncoding ();
-		so.ServerPassword_ = QString ();
+		so.ServerPassword_ = GetServerPassword ();
 		so.SSL_ = GetSSL ();
 		so.ServerNickName_ = GetNickname ();
 		return so;
@@ -180,7 +198,7 @@ namespace Acetamide
 		ChannelOptions cho;
 		cho.ChannelName_ = GetChannel ();
 		cho.ServerName_ = GetServer ();
-		cho.ChannelPassword_ = QString ();
+		cho.ChannelPassword_ = GetChannelPassword ();
 
 		return cho;
 	}

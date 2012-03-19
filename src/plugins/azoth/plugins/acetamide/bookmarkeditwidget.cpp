@@ -18,6 +18,7 @@
 
 #include "bookmarkeditwidget.h"
 #include <QTextCodec>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -45,13 +46,21 @@ namespace Acetamide
 		result ["StoredName"] = Ui_.Name_->text ();
 		result ["Server"] = Ui_.Server_->text ();
 		result ["Port"] = Ui_.Port_->value ();
+		result ["ServerPassword"] = Ui_.ServerPassword_->text ();
 		result ["Encoding"] = Ui_.Encoding_->currentText ();
-		result ["Channel"] = Ui_.Channel_->text ();
+
+		QString channel = Ui_.Channel_->text ();
+		if (!channel.startsWith ('#') &&
+				!channel.startsWith ('&') &&
+				!channel.startsWith ('+') &&
+				!channel.startsWith ('!'))
+			channel.prepend ('#');
+		result ["Channel"] = channel;
+
 		result ["Password"] = Ui_.Password_->text ();
 		result ["Nickname"] = Ui_.Nickname_->text ();
 		result ["SSL"] = Ui_.SSL_->checkState () == Qt::Checked;
 		result ["Autojoin"] = Ui_.AutoJoin_->checkState () == Qt::Checked;
-
 		return result;
 	}
 
@@ -61,6 +70,7 @@ namespace Acetamide
 		Ui_.Name_->setText (map.value ("StoredName").toString ());
 		Ui_.Server_->setText (map.value ("Server").toString ());
 		Ui_.Port_->setValue (map.value ("Port").toInt ());
+		Ui_.ServerPassword_->setText (map.value ("ServerPassword").toString ());
 		Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->
 				findText (map.value ("Encoding").toString ()));
 		Ui_.Channel_->setText (map.value ("Channel").toString ());

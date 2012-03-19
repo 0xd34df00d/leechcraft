@@ -547,7 +547,6 @@ namespace Acetamide
 	void IrcServerHandler::ShowWhoIsReply (const WhoIsMessage& msg, bool isEndOf)
 	{
 		QString message;
-		bool spy = false;
 		if (!msg.Nick_.isEmpty () &&
 				!msg.UserName_.isEmpty () &&
 				!msg.Host_.isEmpty ())
@@ -1145,6 +1144,25 @@ namespace Acetamide
 			SpyWho_ [channelName] = ChannelsManager_->
 					GetChannelUsersCount (channelName) + 1;
 		}
+	}
+
+	void IrcServerHandler::handleSocketError (QAbstractSocket::SocketError error)
+	{
+		QTcpSocket *socket = qobject_cast<QTcpSocket*> (sender ());
+		if (!socket)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "is not an object of TcpSocket"
+					<< sender ();
+			return;
+		}
+
+		qDebug () << "Socket error on server:"
+				<< ServerID_
+				<< error
+				<< socket->errorString ();
+
+		emit gotSocketError (error, socket->errorString ());
 	}
 
 	void IrcServerHandler::handleSetAutoWho ()
