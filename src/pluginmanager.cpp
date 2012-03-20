@@ -595,10 +595,14 @@ namespace LeechCraft
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
 
-		QDir pluginsDir = QDir (dir);
-		Q_FOREACH (QFileInfo fileinfo,
-				pluginsDir.entryInfoList (QStringList ("*leechcraft_*"),
-					QDir::Files))
+		QStringList nameFilters;
+#ifdef Q_OS_WIN32
+		nameFilters << "*leechcraft_*.dll";
+#else
+		nameFilters << "*leechcraft_*";
+#endif
+		const QDir& pluginsDir = QDir (dir);
+		Q_FOREACH (const auto& fileinfo, pluginsDir.entryInfoList (nameFilters, QDir::Files))
 		{
 			QString name = fileinfo.canonicalFilePath ();
 			settings.beginGroup (name);
