@@ -18,7 +18,6 @@
 
 #include "ircserversocket.h"
 #include <QTcpSocket>
-#include <QSslSocket>
 #include "ircserverhandler.h"
 #include "clientconnection.h"
 
@@ -30,7 +29,6 @@ namespace Acetamide
 {
 	IrcServerSocket::IrcServerSocket (IrcServerHandler *ish)
 	: QObject (ish)
-	, Account_ (ish->GetAccount ())
 	, ISH_ (ish)
 	, SSL_ (ish->GetServerOptions ().SSL_)
 	{
@@ -97,14 +95,26 @@ namespace Acetamide
 
 		connect (Socket_ptr.get (),
 				SIGNAL (error (QAbstractSocket::SocketError)),
-				Account_->GetClientConnection ().get (),
-				SLOT (handleError (QAbstractSocket::SocketError)));
+				ISH_,
+				SLOT (handleSocketError (QAbstractSocket::SocketError)));
+
+		if (SSL_)
+			connect (Socket_ptr.get(),
+					SIGNAL (sslErrors (const QList<QSslError> &)),
+					this,
+					SLOT (handleSslErrors (const QList<QSslError>&)));
 	}
 
 	void IrcServerSocket::readReply ()
 	{
 		while (Socket_ptr->canReadLine ())
 			ISH_->ReadReply (Socket_ptr->readLine ());
+	}
+
+	void IrcServerSocket::handleSslErrors (const QList<QSslError>& errors)
+	{
+		std::shared_ptr<QSslSocket> s = std::dynamic_pointer_cast<QSslSocket> (Socket_ptr);
+		s->ignoreSslErrors (errors);
 	}
 
 };

@@ -460,7 +460,6 @@ namespace Acetamide
 			return;
 
 		const QString& target = QString::fromUtf8 (opts.Parameters_.last ().c_str ());
-		const QString& nick = QString::fromUtf8 (opts.Parameters_.first ().c_str ());
 		ISH_->IncomingMessage (target, target, QString ("[AWAY] %1 :%2")
 				.arg (target, opts.Message_), IMessage::MTStatusMessage);
 	}

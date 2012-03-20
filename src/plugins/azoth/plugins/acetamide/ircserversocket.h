@@ -21,9 +21,9 @@
 
 #include <memory>
 #include <QObject>
+#include <QSslSocket>
 
 class QTcpSocket;
-class QSslSocket;
 
 namespace LeechCraft
 {
@@ -39,11 +39,8 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
-		IrcAccount *Account_;
 		IrcServerHandler *ISH_;
-
 		bool SSL_;
-
 		std::shared_ptr<QTcpSocket> Socket_ptr;
 	public:
 		IrcServerSocket (IrcServerHandler*);
@@ -55,6 +52,7 @@ namespace Acetamide
 		void Init ();
 	private slots:
 		void readReply ();
+		void handleSslErrors (const QList<QSslError>& errors);
 	};
 };
 };

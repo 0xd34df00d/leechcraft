@@ -87,6 +87,7 @@ namespace Acetamide
 	{
 		QString Name_;
 		QString ServerName_;
+		QString ServerPassword_;
 		QString ServerEncoding_;
 		QString NickName_;
 		QString ChannelName_;
