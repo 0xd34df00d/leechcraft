@@ -25,6 +25,7 @@
 #include <QXmppMessage.h>
 #include <QXmppVCardIq.h>
 #include <QXmppVersionIq.h>
+#include <QXmppDiscoveryIq.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/iadvancedclentry.h>
 #include <interfaces/ihavedirectedstatus.h>
@@ -69,6 +70,7 @@ namespace Xoox
 		QList<QAction*> Actions_;
 		QAction *Commands_;
 		QAction *DetectNick_;
+		QAction *StdSep_;
 
 		QMap<QString, GeolocationInfo_t> Location_;
 
@@ -80,6 +82,7 @@ namespace Xoox
 		QMap<QString, QMap<QString, QVariant>> Variant2ClientInfo_;
 		QMap<QString, QByteArray> Variant2VerString_;
 		QMap<QString, QXmppVersionIq> Variant2Version_;
+		QMap<QString, QList<QXmppDiscoveryIq::Identity>> Variant2Identities_;
 
 		bool HasUnreadMsgs_;
 		bool VersionReqsEnabled_;
@@ -127,6 +130,7 @@ namespace Xoox
 		void SetClientInfo (const QString&, const QString&, const QByteArray&);
 		void SetClientInfo (const QString&, const QXmppPresence&);
 		void SetClientVersion (const QString&, const QXmppVersionIq&);
+		void SetDiscoIdentities (const QString&, const QList<QXmppDiscoveryIq::Identity>&);
 
 		GeolocationInfo_t GetGeolocationInfo (const QString&) const;
 

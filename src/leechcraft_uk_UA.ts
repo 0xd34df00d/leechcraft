@@ -53,7 +53,7 @@
     <message>
         <location filename="authenticationdialog.ui" line="13"/>
         <source>Authentication required</source>
-        <translation>Необхідна автентификація</translation>
+        <translation>Необхідно зайти</translation>
     </message>
     <message>
         <location filename="authenticationdialog.ui" line="29"/>
@@ -154,7 +154,7 @@
     <message>
         <location filename="commonjobadder.ui" line="36"/>
         <source>Enter URL or file name or any other thing you believe LeechCraft can handle.</source>
-        <translation>Введіть URL або ім’я файлу, або будь-який інший рядок, який, по-вашому, LeechCraft зможе обробити.</translation>
+        <translation>Введіть URL або ім’я файлу, або будь-який інший рядок, який, на вашу думку, LeechCraft зможе обробити.</translation>
     </message>
     <message>
         <location filename="commonjobadder.ui" line="43"/>
@@ -172,7 +172,7 @@
     <message>
         <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="32"/>
         <source>Modify...</source>
-        <translation>Змінювати...</translation>
+        <translation>Змінити...</translation>
     </message>
     <message>
         <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="39"/>
@@ -195,12 +195,12 @@
     <message>
         <location filename="handlerchoicedialog.ui" line="34"/>
         <source>It could be downloaded by:</source>
-        <translation>Може бути завантажений з допомогою:</translation>
+        <translation>Можна завантажити за допомогою:</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="44"/>
         <source>It could be handled by:</source>
-        <translation>Може бути оброблений з допомогою:</translation>
+        <translation>Можна обробити за допомогою:</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="56"/>
@@ -327,7 +327,7 @@
         <location filename="aboutdialog.cpp" line="77"/>
         <location filename="aboutdialog.cpp" line="104"/>
         <source>Years: %1</source>
-        <translation>Рік: %1</translation>
+        <translation>Роки: %1</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="125"/>
@@ -352,7 +352,7 @@
     <message>
         <location filename="aboutdialog.cpp" line="132"/>
         <source>Chrome-style tabs.</source>
-        <translation>Вкладки у Chrome-стилі.</translation>
+        <translation>Вкладки у стилі Chrome.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="133"/>
@@ -361,7 +361,7 @@
         <location filename="aboutdialog.cpp" line="206"/>
         <location filename="aboutdialog.cpp" line="223"/>
         <source>Various patches.</source>
-        <translation>Різні патчі.</translation>
+        <translation>Різноманітні патчі.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="139"/>
@@ -388,17 +388,17 @@
         <location filename="aboutdialog.cpp" line="156"/>
         <source>Artwork.</source>
         <oldsource>Artwork designer.</oldsource>
-        <translation type="unfinished"/>
+        <translation>Ілюстрації</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="160"/>
         <source>Debian/Ubuntu maintainership.</source>
-        <translation type="unfinished"/>
+        <translation>Підтримка Debian/Ubuntu.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="161"/>
         <source>Small fixes.</source>
-        <translation type="unfinished"/>
+        <translation>Невеликі виправлення</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="165"/>
@@ -418,22 +418,22 @@
     <message>
         <location filename="aboutdialog.cpp" line="171"/>
         <source>Microsoft Windows backend for Liznoo plugin.</source>
-        <translation type="unfinished"/>
+        <translation>Вихідний буфер Microsoft Windows для плагіну Liznoo.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="172"/>
         <source>Microsoft Windows builds.</source>
-        <translation type="unfinished"/>
+        <translation>Білди Microsoft Windows.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="181"/>
         <source>Laure plugin.</source>
-        <translation type="unfinished"/>
+        <translation>Плагін Laure</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="182"/>
         <source>Last.FM Scrobbler plugin.</source>
-        <translation type="unfinished"/>
+        <translation>Плагін Last.FM Scrobbler.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="183"/>
@@ -448,12 +448,12 @@
     <message>
         <location filename="aboutdialog.cpp" line="192"/>
         <source>Extensive and thorough testing.</source>
-        <translation>Велике і ретельне тестування.</translation>
+        <translation>Всестороннє і ретельне тестування.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="201"/>
         <source>FatApe plugin, the GreaseMonkey support layer for Poshuku.</source>
-        <translation>Плагін FatApe, підтримка GreaseMonkey скриптів для Poshuku.</translation>
+        <translation>Плагін FatApe, підтримкакриптів GreaseMonkey для Poshuku.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="210"/>
@@ -463,12 +463,12 @@
     <message>
         <location filename="aboutdialog.cpp" line="214"/>
         <source>Arabic translations.</source>
-        <translation>Арабскі переклади.</translation>
+        <translation>Арабські переклади.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="218"/>
         <source>Esperanto translations</source>
-        <translation>Переклади на мову Есперанто</translation>
+        <translation>Переклади на Есперанто</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="222"/>
@@ -515,12 +515,12 @@
     <message>
         <location filename="core.cpp" line="470"/>
         <source>Do you really want to clear the network cache?</source>
-        <translation>Ви справді хочете очистити мережевий кеш?</translation>
+        <translation>Ви справді бажаєте очистити мережевий кеш?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="482"/>
         <source>Do you really want to clear cookies?</source>
-        <translation>Ви справді хочете очистити кукіси?</translation>
+        <translation>Ви справді бажаєте очистити cookies?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="711"/>
@@ -531,12 +531,12 @@
     <message>
         <location filename="core.cpp" line="712"/>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
-        <translation>Не можу створити задачу для вказаного завантажувача, хочете спробувати інший?</translation>
+        <translation>Не вдається створити задачу для вказаного завантажувача, бажаєте спробувати інший?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="729"/>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
-        <translation>Не можу виконати задачу за допомогою вказаного обробника, хочете спробувати інший?</translation>
+        <translation>Не вдається виконати задачу за допомогою вказаного обробника, бажаєте спробувати інший?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="767"/>
@@ -569,7 +569,7 @@
     <message>
         <location filename="coreinstanceobject.cpp" line="264"/>
         <source>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</source>
-        <translation type="unfinished"/>
+        <translation>У зв’язку з питаннями ліцензування, деякі ілюстрації могли бути вилучені з цього білду. Ви можете встановити плагін LackMan, щоб встановити ці ілюстрації.</translation>
     </message>
 </context>
 <context>
@@ -614,7 +614,7 @@
     <message>
         <location filename="xmlsettingsdialog/fontpicker.cpp" line="54"/>
         <source>, %1 pt</source>
-        <translation>, %1 пт</translation>
+        <translation>, %1 pt</translation>
     </message>
     <message>
         <location filename="xmlsettingsdialog/fontpicker.cpp" line="57"/>
@@ -684,7 +684,7 @@
     <message>
         <location filename="mainwindow.cpp" line="406"/>
         <source>/s	</source>
-        <translation>/c	</translation>
+        <translation>/s»</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="409"/>
@@ -692,7 +692,7 @@
         <location filename="mainwindow.cpp" line="695"/>
         <location filename="mainwindow.cpp" line="696"/>
         <source>/s</source>
-        <translation>/с</translation>
+        <translation>/s</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="510"/>
@@ -707,7 +707,7 @@
     <message>
         <location filename="mainwindow.cpp" line="592"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
-        <translation>Для того, щоб ця зміна вступила в дію, необхідно перезапустити LeechCraft. Хочете зробити це негайно?</translation>
+        <translation>Для того, щоб ця зміна вступила в дію, необхідно перезапустити програму. Бажаєте перезапустити LeechCraft прямо зараз?</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="702"/>
@@ -726,7 +726,7 @@
         <location filename="networkaccessmanager.cpp" line="172"/>
         <location filename="networkaccessmanager.cpp" line="184"/>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;вимагає аутентифікацію.</translation>
+        <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;вимагає аутентифікації.</translation>
     </message>
     <message>
         <location filename="networkaccessmanager.cpp" line="212"/>
@@ -741,7 +741,7 @@
     <message>
         <location filename="networkaccessmanager.cpp" line="259"/>
         <source>Could not save cookies, error opening cookie file.</source>
-        <translation>Помилка відкриття файлу кукісів - збереження кукісів неможливе.</translation>
+        <translation>Помилка відкриття файлу cookies - збереження cookies неможливе.</translation>
     </message>
 </context>
 <context>
@@ -772,12 +772,12 @@
     <message>
         <location filename="pluginmanager.cpp" line="247"/>
         <source>The following plugins would also be disabled as the result:</source>
-        <translation type="unfinished"/>
+        <translation>Як результат, такі плагіни будуть також вимкнені:</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="249"/>
         <source>Are you sure you want to disable this one?</source>
-        <translation>Ви впевнені що хочете відключити це?</translation>
+        <translation>Ви впевнені, що хочете відключити цей плагін?</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="309"/>
@@ -797,12 +797,12 @@
     <message>
         <location filename="pluginmanager.cpp" line="658"/>
         <source>Could not load library %1: %2.</source>
-        <translation type="unfinished"/>
+        <translation>Не вдалося завантажити бібліотеку %1: %2.</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="684"/>
         <source>Could not load plugin from %1: API level mismatch.</source>
-        <translation type="unfinished"/>
+        <translation>Не вдалося завантажити плагін з %1: незбіжність рівня API.</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="697"/>
@@ -812,7 +812,7 @@
     <message>
         <location filename="pluginmanager.cpp" line="717"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
-        <translation>Не вдалося завантажити плагін з %1: під час створення екземпляру сталося виключення %2.</translation>
+        <translation>Не вдалося завантажити плагін з %1: не вдалося створити екземпляр плагіну з винятком %2.</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="728"/>
@@ -822,12 +822,12 @@
     <message>
         <location filename="pluginmanager.cpp" line="738"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
-        <translation>Не вдалося завантажити плагін з %1: неможливо перетворити екземпляр плагіну в Iinfo*.</translation>
+        <translation>Не вдалося завантажити плагін з %1: неможливо перетворити екземпляр плагіну в IInfo*.</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="789"/>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
-        <translation type="unfinished"/>
+        <translation>Плагін з ID %1 уже завантажений з %2; завантаження %3 скасовується.</translation>
     </message>
 </context>
 <context>
@@ -835,7 +835,7 @@
     <message>
         <location filename="pluginmanagerdialog.cpp" line="49"/>
         <source>Configure...</source>
-        <translation type="unfinished"/>
+        <translation>Налаштувати...</translation>
     </message>
 </context>
 <context>
@@ -843,12 +843,12 @@
     <message>
         <location filename="separatetabwidget.cpp" line="52"/>
         <source>Pin tab</source>
-        <translation type="unfinished"/>
+        <translation>Прикріпити вкладку</translation>
     </message>
     <message>
         <location filename="separatetabwidget.cpp" line="53"/>
         <source>Unpin tab</source>
-        <translation type="unfinished"/>
+        <translation>Відкріпити вкладку</translation>
     </message>
 </context>
 <context>
@@ -856,7 +856,7 @@
     <message>
         <location filename="settingstab.cpp" line="35"/>
         <source>Settings bar</source>
-        <translation>Панель установок</translation>
+        <translation>Панель налаштувань</translation>
     </message>
     <message>
         <location filename="settingstab.cpp" line="36"/>
@@ -876,12 +876,12 @@
     <message>
         <location filename="settingstab.cpp" line="84"/>
         <source>Plugins for %1</source>
-        <translation>Плагін для %1</translation>
+        <translation>Плагіни для %1</translation>
     </message>
     <message>
         <location filename="settingstab.cpp" line="90"/>
         <source>General second-level plugins</source>
-        <translation>Загальний плагін другого рівня</translation>
+        <translation>Загальні плагіни другого рівня</translation>
     </message>
     <message>
         <location filename="settingstab.cpp" line="128"/>
@@ -889,7 +889,7 @@
         <location filename="settingstab.cpp" line="156"/>
         <location filename="settingstab.cpp" line="157"/>
         <source>General plugins</source>
-        <translation>Загальний плагін</translation>
+        <translation>Загальні плагіни</translation>
     </message>
     <message>
         <location filename="settingstab.cpp" line="202"/>
@@ -899,12 +899,12 @@
     <message>
         <location filename="settingstab.cpp" line="203"/>
         <source>LeechCraft-wide settings dashboard</source>
-        <translation type="unfinished"/>
+        <translation>Панель налаштувань для усього LeechCraft.</translation>
     </message>
     <message>
         <location filename="settingstab.cpp" line="231"/>
         <source>Settings for %1</source>
-        <translation>Установки для %1</translation>
+        <translation>Налаштування для %1</translation>
     </message>
 </context>
 <context>
@@ -922,7 +922,7 @@
     <message>
         <location filename="sslerrorsdialog.cpp" line="77"/>
         <source>Valid:</source>
-        <translation>Чинний:</translation>
+        <translation>Дійсний:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="78"/>
@@ -937,7 +937,7 @@
     <message>
         <location filename="sslerrorsdialog.cpp" line="79"/>
         <source>Effective date:</source>
-        <translation>Ефективна дата:</translation>
+        <translation>Чинна дата:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="81"/>
@@ -957,12 +957,12 @@
     <message>
         <location filename="sslerrorsdialog.cpp" line="87"/>
         <source>MD5 digest:</source>
-        <translation>MD5 дайджест:</translation>
+        <translation>Дайджест MD5:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="89"/>
         <source>SHA1 digest:</source>
-        <translation>SHA1 дайджест:</translation>
+        <translation>Дайджест SHA1:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="93"/>
@@ -1093,7 +1093,11 @@
 LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That's because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you'll understand us.
 
 If you have read and really understood all these letters, click Cancel button in this dialog so that it won&apos;t pop up again next time you run LeechCraft.</source>
-        <translation type="unfinished"/>
+        <translation>Йой! Здається, у вас стоїть Microsoft Windows.
+
+LeechCraft для Windows поки що досить експериментаьний та нестабільний, деякі білди можуть використовувати нестабільні версії бібліотек від третіх сторін. Більше того: відомо, що у LeechCraft більше помилок і менше можливостей на Windows, ніж на інших, більш здорових системах. Справа в тому, що у нас не так багато розробників з Windows, та і у більшості користувачів стоять інші операційні системи. Вибачте, що так склалося; сподіваємося на розуміння.
+
+Якщо ви прочитали і справді зрозуміли всю цю купу тексту, натисніть на кнопку &quot;Скасувати&quot; у цьому діалозі, щоб він більше не з’являвся наступного разу, коли ви запустите LeechCraft.</translation>
     </message>
 </context>
 <context>
@@ -1183,7 +1187,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="util/socketerrorstrings.cpp" line="31"/>
         <source>connection refused</source>
-        <translation>Відмова у з’єднанні</translation>
+        <translation>відмова у з’єднанні</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="33"/>
@@ -1193,27 +1197,27 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="util/socketerrorstrings.cpp" line="35"/>
         <source>host not found</source>
-        <translation>Хост не знайдено</translation>
+        <translation>хост не знайдено</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="37"/>
         <source>socket access error (lacking required privileges)</source>
-        <translation type="unfinished"/>
+        <translation>помилка доступу до сокету (немає необхідних прав)</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="39"/>
         <source>system ran out of sockets</source>
-        <translation type="unfinished"/>
+        <translation>у системи закінчилися сокети</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="41"/>
         <source>socket operation timed out</source>
-        <translation>операції з сокетом минули</translation>
+        <translation>вийшов час для операції з сокетом</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="43"/>
         <source>datagram too large</source>
-        <translation>датаграми занадто великі</translation>
+        <translation>датаграма занадто велика</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="45"/>
@@ -1223,27 +1227,27 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="util/socketerrorstrings.cpp" line="47"/>
         <source>address already in use</source>
-        <translation>Адреса вже використовується</translation>
+        <translation>адреса вже використовується</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="49"/>
         <source>specified address doesn&apos;t belong to the host</source>
-        <translation type="unfinished"/>
+        <translation>вказана адреса не належить до хосту</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="51"/>
         <source>unsupported socket operation</source>
-        <translation>непідтримувані операції сокета</translation>
+        <translation>непідтримувана операція сокета</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="53"/>
         <source>proxy authentication required</source>
-        <translation>Необхідна перевірка справжності проксі</translation>
+        <translation>необхідна перевірка справжності проксі</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="55"/>
         <source>SSL handshake failed</source>
-        <translation>Помилка підтвердження SSL</translation>
+        <translation>помилка підтвердження SSL</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="57"/>
@@ -1253,32 +1257,32 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="util/socketerrorstrings.cpp" line="59"/>
         <source>proxy connection has been refused</source>
-        <translation type="unfinished"/>
+        <translation>відмова у підключенні до проксі</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="61"/>
         <source>proxy connection was closed unexpectedly</source>
-        <translation>проксі-з&apos;єднання було закрито несподівано</translation>
+        <translation>проксі-з&apos;єднання було несподівано закрито</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="63"/>
         <source>connection to the proxy server timed out</source>
-        <translation type="unfinished"/>
+        <translation>вийшов час з’єднання з проксі-сервером</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="65"/>
         <source>proxy not found</source>
-        <translation>Проксі не знайдено</translation>
+        <translation>проксі не знайдено</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="67"/>
         <source>proxy protocol error</source>
-        <translation>Помилка проксі протоколу</translation>
+        <translation>помилка проксі-протоколу</translation>
     </message>
     <message>
         <location filename="util/socketerrorstrings.cpp" line="70"/>
         <source>unknown error</source>
-        <translation>Невідома помилка</translation>
+        <translation>невідома помилка</translation>
     </message>
 </context>
 <context>
@@ -1334,7 +1338,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="sslerrorsdialog.ui" line="64"/>
         <source>Remember my choice for the whole host</source>
-        <translation>Запам&apos;ятати мій вибір для всього комп&apos;ютера</translation>
+        <translation>Запам&apos;ятати мій вибір для всього хоста</translation>
     </message>
 </context>
 <context>
@@ -1394,12 +1398,12 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Use tab scroll buttons</source>
-        <translation type="unfinished"/>
+        <translation>Використовувати кнопки прокрутки вкладок</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Tool button style:</source>
-        <translation type="unfinished"/>
+        <translation>Стиль кнопки інструментів:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
@@ -1459,12 +1463,12 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="17"/>
         <source>Context-dependent</source>
-        <translation>Контекстно-незалежний</translation>
+        <translation>Контекстно-залежний</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="18"/>
         <source>Maximum log lines:</source>
-        <translation>Максимальна кількість строк логу:</translation>
+        <translation>Максимальна кількість рядків логу:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
@@ -1481,7 +1485,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="23"/>
         <source>Watch clipboard</source>
-        <translation type="unfinished"/>
+        <translation>Спостерігати за буфером копіювання</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="24"/>
@@ -1496,17 +1500,17 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="26"/>
         <source>Manual toolbar visibility control</source>
-        <translation type="unfinished"/>
+        <translation>Ручне налаштування видимості</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
         <source>Open new tab next to current</source>
-        <translation type="unfinished"/>
+        <translation>Відкривати нову вкладку поряд із поточною</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
         <source>Tab selection behavior: </source>
-        <translation type="unfinished"/>
+        <translation>Поведінка при виділенні вкладки:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="29"/>
@@ -1516,47 +1520,47 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="30"/>
         <source>Select the tab to the right of the one being removed</source>
-        <translation type="unfinished"/>
+        <translation>Перейти до вкладки справа від закритої</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="31"/>
         <source>Select the tab to the left of the one being removed</source>
-        <translation type="unfinished"/>
+        <translation>Перейти до вкладки зліва від закритої</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="32"/>
         <source>Automatically accept task when there is only one handler</source>
-        <translation type="unfinished"/>
+        <translation>Автоматично приймати задачу, коли є лише один обробник</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="33"/>
         <source>Watch directory:</source>
-        <translation>Переглянути папку:</translation>
+        <translation>Слідкувати за папкою:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="34"/>
         <source>Show plugin-dependent actions in tab bar context menu</source>
-        <translation type="unfinished"/>
+        <translation>Відображати дії, що залежать від модулів, у контекстному меню панелі вкладок</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="35"/>
         <source>Show as a submenu</source>
-        <translation>Показати як підменю</translation>
+        <translation>Показувати як підменю</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="36"/>
         <source>Show messages in tray</source>
-        <translation>Показати повідомлення у треї</translation>
+        <translation>Показувати повідомлення у треї</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="37"/>
         <source>Message timeout:</source>
-        <translation type="unfinished"/>
+        <translation>Таймаут для повідомлень:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="38"/>
         <source> s</source>
-        <translation type="unfinished"/>
+        <translation>s</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="39"/>
@@ -1601,7 +1605,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="47"/>
         <source>Application-wide proxy</source>
-        <translation>На рівні програми проксі</translation>
+        <translation>Проксі на рівні всієї програми </translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="48"/>

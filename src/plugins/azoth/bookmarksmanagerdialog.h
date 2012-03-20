@@ -57,6 +57,8 @@ namespace Azoth
 		void on_RemoveButton__released ();
 		void on_AddButton__released ();
 		void on_ApplyButton__released ();
+		void on_MoveUp__released ();
+		void on_MoveDown__released ();
 	};
 }
 }

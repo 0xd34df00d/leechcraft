@@ -52,7 +52,7 @@ SET (ZHEET_FORMS
 	manageblacklistdialog.ui
 	)
 SET (ZHEET_RESOURCES azothzheetresources.qrc)
-CreateTrVars ("azoth_zheet" "en;ru_RU" ZHEET_TRANSLATIONS ZHEET_COMPILED_TRANSLATIONS)
+CreateTrVars ("azoth_zheet" "en;ru_RU;uk_UA" ZHEET_TRANSLATIONS ZHEET_COMPILED_TRANSLATIONS)
 
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ZHEET_MOC_SRCS ${ZHEET_HEADERS})

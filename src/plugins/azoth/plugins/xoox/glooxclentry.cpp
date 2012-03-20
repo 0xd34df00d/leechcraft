@@ -321,27 +321,35 @@ namespace Xoox
 	
 	QList<QAction*> GlooxCLEntry::GetActions () const
 	{
-		QList<QAction*> baseActs = EntryBase::GetActions ();
-		const QList<QXmppDiscoveryIq::Identity>& ids = Account_->
-				GetClientConnection ()->GetCapsManager ()->GetIdentities (Variant2VerString_.values ().value (0));
+		auto baseActs = EntryBase::GetActions ();
+		QString gvVar;
 		bool gwFound = false;
-		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, ids)
-			if (id.category () == "gateway")
-			{
-				gwFound = true;
+		Q_FOREACH (const QString& varCand, Variant2Identities_.keys ())
+		{
+			Q_FOREACH (const auto& id, Variant2Identities_ [varCand])
+				if (id.category () == "gateway")
+				{
+					gwFound = true;
+					gvVar = varCand;
+					break;
+				}
+
+			if (gwFound)	
 				break;
-			}
+		}
 			
 		if (gwFound)
 		{
 			if (!GWLogin_ || !GWLogout_)
 			{
 				GWLogin_ = new QAction (tr ("Login"), Account_);
+				GWLogin_->setProperty ("Azoth/Xoox/Variant", gvVar);
 				connect (GWLogin_,
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleGWLogin ()));
 				GWLogout_ = new QAction (tr ("Logout"), Account_);
+				GWLogout_->setProperty ("Azoth/Xoox/Variant", gvVar);
 				connect (GWLogout_,
 						SIGNAL (triggered ()),
 						this,
@@ -417,20 +425,29 @@ namespace Xoox
 		AuthRequested_ = auth;
 		emit statusChanged (GetStatus (QString ()), QString ());
 		emit groupsChanged (Groups ());
-	}	
+	}
+
+	void GlooxCLEntry::SendGWPresence (QXmppPresence::Type type)
+	{
+		const auto& variant = sender ()->
+				property ("Azoth/Xoox/Variant").toString ();
+		QString jid = GetJID ();
+		if (!variant.isEmpty ())
+			jid += '/' + variant;
+
+		QXmppPresence avail (type);
+		avail.setTo (jid);
+		Account_->GetClientConnection ()->GetClient ()->sendPacket (avail);
+	}
 	
 	void GlooxCLEntry::handleGWLogin ()
 	{
-		QXmppPresence avail;
-		avail.setTo (GetJID ());
-		Account_->GetClientConnection ()->GetClient ()->sendPacket (avail);
+		SendGWPresence (QXmppPresence::Available);
 	}
 	
 	void GlooxCLEntry::handleGWLogout ()
 	{
-		QXmppPresence unavail (QXmppPresence::Unavailable);
-		unavail.setTo (GetJID ());
-		Account_->GetClientConnection ()->GetClient ()->sendPacket (unavail);
+		SendGWPresence (QXmppPresence::Unavailable);
 	}
 }
 }

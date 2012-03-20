@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
 <context>
     <name>AffiliationSelectorDialog</name>
     <message>
         <location filename="affiliationselectordialog.ui" line="14"/>
         <source>Select affiliation</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановити приналежність</translation>
     </message>
     <message>
         <location filename="affiliationselectordialog.ui" line="22"/>
@@ -16,12 +14,12 @@
     <message>
         <location filename="affiliationselectordialog.ui" line="32"/>
         <source>Affiliation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Приналежність:</translation>
     </message>
     <message>
         <location filename="affiliationselectordialog.ui" line="41"/>
         <source>Banned</source>
-        <translation type="unfinished"></translation>
+        <translation>Заблоковано</translation>
     </message>
     <message>
         <location filename="affiliationselectordialog.ui" line="48"/>
@@ -31,17 +29,17 @@
     <message>
         <location filename="affiliationselectordialog.ui" line="55"/>
         <source>Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Учасник</translation>
     </message>
     <message>
         <location filename="affiliationselectordialog.ui" line="65"/>
         <source>Admin</source>
-        <translation type="unfinished"></translation>
+        <translation>Адміністратор</translation>
     </message>
     <message>
         <location filename="affiliationselectordialog.ui" line="72"/>
         <source>Owner</source>
-        <translation type="unfinished"></translation>
+        <translation>Власник</translation>
     </message>
 </context>
 <context>
@@ -69,7 +67,7 @@
     <message>
         <location filename="bookmarkeditwidget.ui" line="92"/>
         <source>Autojoin</source>
-        <translation type="unfinished"></translation>
+        <translation>Автопідключення</translation>
     </message>
 </context>
 <context>
@@ -77,7 +75,7 @@
     <message>
         <location filename="commandresultpage.ui" line="17"/>
         <source>Command result</source>
-        <translation type="unfinished"></translation>
+        <translation>Результат команди</translation>
     </message>
 </context>
 <context>
@@ -85,12 +83,12 @@
     <message>
         <location filename="commandslistpage.ui" line="17"/>
         <source>Select command</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати команду</translation>
     </message>
     <message>
         <location filename="commandslistpage.ui" line="25"/>
         <source>Command to execute:</source>
-        <translation type="unfinished"></translation>
+        <translation>Команда для виконання:</translation>
     </message>
 </context>
 <context>
@@ -98,7 +96,7 @@
     <message>
         <location filename="executecommanddialog.ui" line="14"/>
         <source>Contact commands</source>
-        <translation type="unfinished"></translation>
+        <translation>Команди контакту</translation>
     </message>
 </context>
 <context>
@@ -106,7 +104,7 @@
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="14"/>
         <source>Account configuration</source>
-        <translation>Конфігурація аккаунту</translation>
+        <translation>Налаштування акаунту</translation>
     </message>
 </context>
 <context>
@@ -144,7 +142,7 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="113"/>
         <source>Update password...</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити пароль...</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="121"/>
@@ -169,24 +167,24 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="192"/>
         <source>Keep-alive interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>Інтервал підтримки зв’язку:</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="199"/>
         <location filename="glooxaccountconfigurationwidget.ui" line="222"/>
         <source>disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>відключено</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="202"/>
         <location filename="glooxaccountconfigurationwidget.ui" line="225"/>
         <source> s</source>
-        <translation type="unfinished"></translation>
+        <translation>s</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="215"/>
         <source>Keep-alive timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation>Таймаут підтримки зв’язку:</translation>
     </message>
 </context>
 <context>
@@ -194,27 +192,27 @@
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="22"/>
         <source>Please enter the name of the server you wish to register on:</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, введіть назву серверу, на якому бажаєте зареєструватись:</translation>
     </message>
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="41"/>
         <source>draugr.de</source>
-        <translation type="unfinished"></translation>
+        <translation>draugr.de</translation>
     </message>
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="46"/>
         <source>jabber.ru</source>
-        <translation type="unfinished"></translation>
+        <translation>jabber.ru</translation>
     </message>
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="51"/>
         <source>neko.im</source>
-        <translation type="unfinished"></translation>
+        <translation>neko.im</translation>
     </message>
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="56"/>
         <source>xabber.de</source>
-        <translation type="unfinished"></translation>
+        <translation>xabber.de</translation>
     </message>
 </context>
 <context>
@@ -227,7 +225,7 @@
     <message>
         <location filename="joingroupchatwidget.ui" line="48"/>
         <source>View rooms...</source>
-        <translation type="unfinished"></translation>
+        <translation>Перегляд кімнат...</translation>
     </message>
     <message>
         <location filename="joingroupchatwidget.ui" line="57"/>
@@ -238,7 +236,7 @@
         <location filename="joingroupchatwidget.ui" line="74"/>
         <source>Nickname:</source>
         <oldsource>NIckname:</oldsource>
-        <translation type="unfinished">Нік:</translation>
+        <translation>Нік:</translation>
     </message>
 </context>
 <context>
@@ -253,17 +251,17 @@
         <location filename="adhoccommandserver.cpp" line="73"/>
         <location filename="adhoccommandserver.cpp" line="323"/>
         <source>Leave groupchats</source>
-        <translation type="unfinished"></translation>
+        <translation>Вийти з конференцій</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="83"/>
         <source>Forward unread messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Пересилати непрочитані повідомлення:</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="90"/>
         <source>Add download task</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати завантаження</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="232"/>
@@ -278,42 +276,42 @@
     <message>
         <location filename="adhoccommandserver.cpp" line="246"/>
         <source>Status message</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст статусу</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="253"/>
         <source>Choose the new status, priority and status message</source>
-        <translation type="unfinished"></translation>
+        <translation>Оберіть новий статус, пріоритет та текст статусу</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="316"/>
         <source>Groupchats</source>
-        <translation type="unfinished"></translation>
+        <translation>Конференції</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="324"/>
         <source>Select the groupchats to leave</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати конференції, з яких потрібно вийти</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="348"/>
         <source>leaving as the result of the remote command</source>
-        <translation type="unfinished"></translation>
+        <translation>вийти як результат віддаленої команди</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="406"/>
         <source>Destination</source>
-        <translation type="unfinished"></translation>
+        <translation>Кінцевий шлях</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="413"/>
         <source>Add task</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати задачу</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="414"/>
         <source>Enter task parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть параметри задачі</translation>
     </message>
 </context>
 <context>
@@ -327,47 +325,47 @@
         <location filename="clientconnection.cpp" line="690"/>
         <source>This message is encrypted. Please decrypt it to view the original contents.</source>
         <oldsource>This message is encrypted. Please decrypt it to view the original contents</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Це повідомлення зашифроване. Будь ласка, розшифруйте його, щоб побачити оригінальний вміст.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="847"/>
         <source>Data form from %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма даних із %1</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="850"/>
         <source>You have received dataform from %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви отримали dataform від %1:</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="914"/>
         <source>socket error: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>помилка сокету: %1</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="919"/>
         <source>keep-alive error.</source>
-        <translation type="unfinished"></translation>
+        <translation>помилка keep-alive</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="922"/>
         <source>error while connecting: </source>
-        <translation type="unfinished"></translation>
+        <translation>помилка підключення:</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="926"/>
         <source>no error.</source>
-        <translation type="unfinished"></translation>
+        <translation>немає помилок.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="942"/>
         <source>Account %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Акаунт %1:</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="1237"/>
         <source>Enter CAPTCHA</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть капчу</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="1446"/>
@@ -387,7 +385,7 @@
     <message>
         <location filename="clientconnection.cpp" line="1513"/>
         <source>Conflict (possibly, resource conflict).</source>
-        <translation>Конфлікт (напевне, конфлікт ресурсів).</translation>
+        <translation>Конфлікт (можливо, конфлікт ресурсів).</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="1515"/>
@@ -412,7 +410,7 @@
     <message>
         <location filename="clientconnection.cpp" line="1524"/>
         <source>JID is malformed.</source>
-        <translation>JID неправильний.</translation>
+        <translation>JID некоректний.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="1526"/>
@@ -437,7 +435,7 @@
     <message>
         <location filename="clientconnection.cpp" line="1535"/>
         <source>Recipient unavailable.</source>
-        <translation>Отримувач відсутній.</translation>
+        <translation>Отримувач недоступний.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="1537"/>
@@ -447,12 +445,12 @@
     <message>
         <location filename="clientconnection.cpp" line="1539"/>
         <source>Registration required.</source>
-        <translation>Потрібна регістрація.</translation>
+        <translation>Необхідна реєстрація.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="1541"/>
         <source>Remote server not found.</source>
-        <translation>Сервер не знайдено.</translation>
+        <translation>Віддалений сервер не знайдено.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="1543"/>
@@ -485,17 +483,17 @@
     <message>
         <location filename="entrybase.cpp" line="61"/>
         <source>Commands...</source>
-        <translation type="unfinished"></translation>
+        <translation>Команди...</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="62"/>
         <source>Detect nick</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначити нік</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="165"/>
         <source>Can&apos;t view info while offline</source>
-        <translation>Не можна переглядати інформацію з офлайну</translation>
+        <translation>Неможливо переглядати інформацію з офлайну</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="471"/>
@@ -543,12 +541,12 @@
     <message>
         <location filename="entrybase.cpp" line="687"/>
         <source>Select resource</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть джерело</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="688"/>
         <source>Select resource for which to fetch the commands</source>
-        <translation type="unfinished"></translation>
+        <translation>Оберіть ресурс для завантаження команд</translation>
     </message>
 </context>
 <context>
@@ -556,22 +554,22 @@
     <message>
         <location filename="executecommanddialog.cpp" line="155"/>
         <source>Please wait while the selected command is executed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, зачекайте, поки команда виконається.</translation>
     </message>
     <message>
         <location filename="executecommanddialog.cpp" line="165"/>
         <source>Please wait while the list of commands is fetched.</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, зачекайте, поки завантажиться список команд.</translation>
     </message>
     <message>
         <location filename="executecommanddialog.cpp" line="242"/>
         <source>Please wait while command result is fetched.</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, зачекайте, поки завантажиться результат виконання команди.</translation>
     </message>
     <message>
         <location filename="executecommanddialog.cpp" line="259"/>
         <source>Please wait while action is performed</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, зачекайте, поки дія виконається.</translation>
     </message>
 </context>
 <context>
@@ -579,22 +577,22 @@
     <message>
         <location filename="glooxaccount.cpp" line="74"/>
         <source>Privacy lists...</source>
-        <translation type="unfinished"></translation>
+        <translation>Списки приватності...</translation>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="470"/>
         <source>Why would you call yourself?</source>
-        <translation type="unfinished"></translation>
+        <translation>Навіщо вам дзвонити самому собі?</translation>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="635"/>
         <source>Unable to enable encryption for entry %1: no key has been set.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося увімкнути кодування для запису %1: не встановлений ключ.</translation>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="644"/>
         <source>Unable to change encryption state for %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося змінити стан кодування для %1.</translation>
     </message>
 </context>
 <context>
@@ -602,12 +600,12 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.cpp" line="129"/>
         <source>Password update</source>
-        <translation type="unfinished"></translation>
+        <translation>Зміна пароля</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.cpp" line="130"/>
         <source>Enter new password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть новий пароль:</translation>
     </message>
 </context>
 <context>
@@ -620,12 +618,12 @@
     <message>
         <location filename="glooxclentry.cpp" line="339"/>
         <source>Login</source>
-        <translation type="unfinished"></translation>
+        <translation>Логін</translation>
     </message>
     <message>
         <location filename="glooxclentry.cpp" line="344"/>
         <source>Logout</source>
-        <translation type="unfinished"></translation>
+        <translation>Вийти</translation>
     </message>
 </context>
 <context>
@@ -633,12 +631,12 @@
     <message>
         <location filename="glooxprotocol.cpp" line="311"/>
         <source>Unable to import account: malformed import data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося імпортувати акаунт: некоректні ввідні дані.</translation>
     </message>
     <message>
         <location filename="glooxprotocol.cpp" line="320"/>
         <source>Account %1 already exists, cannot import another one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Акаунт %1 вже існує, неможливо імпортувати ще один.</translation>
     </message>
 </context>
 <context>
@@ -646,52 +644,53 @@
     <message>
         <location filename="inbandaccountregsecondpage.cpp" line="143"/>
         <source>Connecting to %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Підключення до %1...</translation>
     </message>
     <message>
         <location filename="inbandaccountregsecondpage.cpp" line="186"/>
         <source>Service unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервіс недоступний</translation>
     </message>
     <message>
         <location filename="inbandaccountregsecondpage.cpp" line="245"/>
         <source>data conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>конфлікт даних</translation>
     </message>
     <message>
         <location filename="inbandaccountregsecondpage.cpp" line="247"/>
         <source>data is not acceptable</source>
-        <translation type="unfinished"></translation>
+        <translation>дані введено не правильно</translation>
     </message>
     <message>
         <location filename="inbandaccountregsecondpage.cpp" line="249"/>
         <source>general error:</source>
-        <translation type="unfinished"></translation>
+        <translation>загальна помилка:</translation>
     </message>
     <message>
         <location filename="inbandaccountregsecondpage.cpp" line="253"/>
         <source>general registration error</source>
-        <translation type="unfinished"></translation>
+        <translation>загальна помилка реєстрації</translation>
     </message>
     <message>
         <location filename="inbandaccountregsecondpage.cpp" line="278"/>
         <source>Socket error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка сокету:</translation>
     </message>
     <message>
         <location filename="inbandaccountregsecondpage.cpp" line="281"/>
         <source>Keep alive error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка keep-alive</translation>
     </message>
     <message>
         <location filename="inbandaccountregsecondpage.cpp" line="284"/>
         <source>XMPP error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка XMPP
+</translation>
     </message>
     <message>
         <location filename="inbandaccountregsecondpage.cpp" line="287"/>
         <source>No error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає помилки.</translation>
     </message>
 </context>
 <context>
@@ -699,17 +698,17 @@
     <message>
         <location filename="inbandaccountregthirdpage.cpp" line="68"/>
         <source>Awaiting registration result...</source>
-        <translation type="unfinished"></translation>
+        <translation>Очікується результат реєстрації...</translation>
     </message>
     <message>
         <location filename="inbandaccountregthirdpage.cpp" line="80"/>
         <source>Registration completed successfully. You may now further configure account properties.</source>
-        <translation type="unfinished"></translation>
+        <translation>Реєстрація завершена успішно. Тепер ви можете продовжити налаштування характеристик акаунту.</translation>
     </message>
     <message>
         <location filename="inbandaccountregthirdpage.cpp" line="90"/>
         <source>Registration failed: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Реєстрація не вдалась: %1.</translation>
     </message>
 </context>
 <context>
@@ -717,57 +716,57 @@
     <message>
         <location filename="jabbersearchsession.cpp" line="87"/>
         <source>(unknown)</source>
-        <translation>(Невідоме)</translation>
+        <translation>(невідомо)</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="145"/>
         <source>search service unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>сервіс пошуку недоступний</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="148"/>
         <source>search feature not implemented</source>
-        <translation type="unfinished"></translation>
+        <translation>можливість пошуку не реалізована</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="151"/>
         <source>search is forbidden</source>
-        <translation type="unfinished"></translation>
+        <translation>пошук заборонений</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="154"/>
         <source>registration is required for performing search</source>
-        <translation type="unfinished"></translation>
+        <translation>для виконання пошуку необхідна реєстрація</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="157"/>
         <source>search not allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>пошук не дозволено</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="160"/>
         <source>search not authorized</source>
-        <translation type="unfinished"></translation>
+        <translation>пошук не дозволено для вас</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="163"/>
         <source>too much search requests</source>
-        <translation type="unfinished"></translation>
+        <translation>забагато пошукових запитів</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="166"/>
         <source>unknown condition %1</source>
-        <translation type="unfinished"></translation>
+        <translation>невідомий стан %1</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="171"/>
         <source>Error searching on server %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка пошуку по серверу %1: %2</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="176"/>
         <source>Original error text: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Оригінальний текст помилки: %1.</translation>
     </message>
 </context>
 <context>
@@ -785,17 +784,17 @@
     <message>
         <location filename="legacyformbuilder.cpp" line="64"/>
         <source>Registered:</source>
-        <translation type="unfinished"></translation>
+        <translation>Зареєстровано:</translation>
     </message>
     <message>
         <location filename="legacyformbuilder.cpp" line="66"/>
         <source>First name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім’я:</translation>
     </message>
     <message>
         <location filename="legacyformbuilder.cpp" line="68"/>
         <source>Last name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Прізвище:</translation>
     </message>
     <message>
         <location filename="legacyformbuilder.cpp" line="70"/>
@@ -805,7 +804,7 @@
     <message>
         <location filename="legacyformbuilder.cpp" line="72"/>
         <source>E-Mail:</source>
-        <translation type="unfinished"></translation>
+        <translation>E-mail:</translation>
     </message>
 </context>
 <context>
@@ -814,7 +813,7 @@
         <location filename="xoox.cpp" line="65"/>
         <source>XMPP (Jabber) protocol module using the QXmpp library.</source>
         <oldsource>XMPP (Jabber) protocol support via Gloox library.</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Плагін для протоколу XMPP (Jabber) module з використанням бібліотеки QXmpp.</translation>
     </message>
 </context>
 <context>
@@ -822,17 +821,17 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="47"/>
         <source>Fetching names of privacy lists...</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантаження назв списків приватності...</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="65"/>
         <source>Fetching list %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантаження списку %1...</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="85"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="86"/>
@@ -842,12 +841,12 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="86"/>
         <source>Action</source>
-        <translation>Екшн</translation>
+        <translation>Дія</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="86"/>
         <source>Stanzas</source>
-        <translation type="unfinished"></translation>
+        <translation>Строфи</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="97"/>
@@ -857,22 +856,22 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="100"/>
         <source>JID</source>
-        <translation type="unfinished"></translation>
+        <translation>JID</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="103"/>
         <source>Subscription</source>
-        <translation type="unfinished"></translation>
+        <translation>Підписка</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="106"/>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Група</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="112"/>
         <source>Allow</source>
-        <translation type="unfinished"></translation>
+        <translation>Дозволити</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="113"/>
@@ -887,37 +886,37 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="123"/>
         <source>Messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Повідомлення</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="125"/>
         <source>Incoming presences</source>
-        <translation type="unfinished"></translation>
+        <translation>Вигляд вхідних повідомлень</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="127"/>
         <source>Outgoing presences</source>
-        <translation type="unfinished"></translation>
+        <translation>Вигляд вихідних повідомлень</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="129"/>
         <source>IQ</source>
-        <translation type="unfinished"></translation>
+        <translation>IQ</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="168"/>
         <source>Please enter the name of the new list</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, введіть назву для нового списку</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="193"/>
         <source>Unable to delete a list that is currently active or selected as default one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося видалити активний список або список за замовчуванням</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="200"/>
         <source>This list would be immediately and permanently deleted. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Цей список буде негайно видалений та не підлягатиме відновленню. Ви впевнені?</translation>
     </message>
 </context>
 <context>
@@ -925,17 +924,17 @@
     <message>
         <location filename="privacylistsitemdialog.cpp" line="128"/>
         <source>Both</source>
-        <translation type="unfinished"></translation>
+        <translation>Обидва</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.cpp" line="129"/>
         <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation>Кому:</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.cpp" line="130"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>Від:</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.cpp" line="131"/>
@@ -948,37 +947,37 @@
     <message>
         <location filename="roomclentry.cpp" line="70"/>
         <source>Role</source>
-        <translation type="unfinished"></translation>
+        <translation>Роль</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="71"/>
         <source>Affiliation</source>
-        <translation type="unfinished"></translation>
+        <translation>Приналежність</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="72"/>
         <source>Kicked</source>
-        <translation type="unfinished"></translation>
+        <translation>Викинутий</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="73"/>
         <source>Visitor</source>
-        <translation type="unfinished"></translation>
+        <translation>Відвідувач</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="74"/>
         <source>Participant</source>
-        <translation type="unfinished"></translation>
+        <translation>Учасник</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="75"/>
         <source>Moderator</source>
-        <translation type="unfinished"></translation>
+        <translation>Модератор</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="76"/>
         <source>Banned</source>
-        <translation type="unfinished"></translation>
+        <translation>Забанено</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="77"/>
@@ -988,17 +987,17 @@
     <message>
         <location filename="roomclentry.cpp" line="78"/>
         <source>Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Учасник</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="79"/>
         <source>Admin</source>
-        <translation type="unfinished"></translation>
+        <translation>Адміністратор</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="80"/>
         <source>Owner</source>
-        <translation type="unfinished"></translation>
+        <translation>Власник</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="129"/>
@@ -1008,12 +1007,12 @@
     <message>
         <location filename="roomclentry.cpp" line="180"/>
         <source>Request voice</source>
-        <translation type="unfinished"></translation>
+        <translation>Запит голосу</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="258"/>
         <source>%1 participants</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 учасників</translation>
     </message>
 </context>
 <context>
@@ -1022,27 +1021,27 @@
         <location filename="roomconfigwidget.cpp" line="68"/>
         <location filename="roomconfigwidget.cpp" line="78"/>
         <source>Reason</source>
-        <translation type="unfinished"></translation>
+        <translation>Причина</translation>
     </message>
     <message>
         <location filename="roomconfigwidget.cpp" line="70"/>
         <source>Banned</source>
-        <translation type="unfinished"></translation>
+        <translation>Забанено</translation>
     </message>
     <message>
         <location filename="roomconfigwidget.cpp" line="71"/>
         <source>Members</source>
-        <translation type="unfinished"></translation>
+        <translation>Користувачі</translation>
     </message>
     <message>
         <location filename="roomconfigwidget.cpp" line="72"/>
         <source>Admins</source>
-        <translation type="unfinished"></translation>
+        <translation>Адміністратори</translation>
     </message>
     <message>
         <location filename="roomconfigwidget.cpp" line="73"/>
         <source>Owners</source>
-        <translation type="unfinished"></translation>
+        <translation>Власники</translation>
     </message>
 </context>
 <context>
@@ -1055,22 +1054,22 @@
     <message>
         <location filename="roomhandler.cpp" line="152"/>
         <source>%1 joined the room as %2 and %3</source>
-        <translation>%1 приєднався до кімнати як %2 і %3</translation>
+        <translation>%1 приєднався(-лась) до кімнати як %2 і %3</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="157"/>
         <source>%1 (%2) joined the room as %3 and %4</source>
-        <translation>%1 (%2) приєднався до кімнати як %3 і %4</translation>
+        <translation>%1 (%2) приєднався(-лась) до кімнати як %3 і %4</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="180"/>
         <source>%1 changed status to %2 (%3)</source>
-        <translation>%1 змінив статус на %2 (%3)</translation>
+        <translation>%1 змінив(-ла) статус на %2 (%3)</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="199"/>
         <source>%1 changed nick to %2</source>
-        <translation>%1 змінив нік на %2</translation>
+        <translation>%1 змінив(-ла) нік на %2</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="216"/>
@@ -1106,67 +1105,67 @@
     <message>
         <location filename="roomhandler.cpp" line="293"/>
         <source>Authorization required</source>
-        <translation type="unfinished"></translation>
+        <translation>Необхідна авторизація</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="294"/>
         <source>This room is password-protected. Please enter the password required to join this room.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ця уімната захищена паролем. Будь ласка, введіть пароль, щоб увійти.</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="317"/>
         <source>nickname already taken</source>
-        <translation type="unfinished"></translation>
+        <translation>нікнейм уже зайнятий</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="321"/>
         <source>access forbidden</source>
-        <translation type="unfinished"></translation>
+        <translation>доступ заборонений</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="324"/>
         <source>password required</source>
-        <translation type="unfinished"></translation>
+        <translation>необхідний пароль</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="327"/>
         <source>malformed JID</source>
-        <translation type="unfinished"></translation>
+        <translation>некоректний JID</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="330"/>
         <source>only registered users can enter this room</source>
-        <translation type="unfinished"></translation>
+        <translation>лише зареєстровані користувачі можуть увійти до цієї кімнати</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="333"/>
         <source>remote server not found (try contacting your server&apos;s administrator)</source>
-        <translation type="unfinished"></translation>
+        <translation>не вдалося знайти віддалений сервер (спробуйте звернутися до адміністратора вашого сервера)</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="336"/>
         <source>timeout connecting to remote server (try contacting your server&apos;s administrator)</source>
-        <translation type="unfinished"></translation>
+        <translation>Вийшов час для підключення до віддаленого сервера (спробуйте звернутися до адміністратора вашого сервера)</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="339"/>
         <source>service unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>сервіс недоступний</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="342"/>
         <source>unknown condition %1 (please report to developers)</source>
-        <translation type="unfinished"></translation>
+        <translation>невідомий стан %1 (будь ласка, повідомте розробникам)</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="346"/>
         <source>Error for %1: %2 (original message: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка для %1: %2 (оригінальне повідомлення: %3)</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="350"/>
         <source>no message</source>
-        <translation type="unfinished"></translation>
+        <translation>немає повідомлення</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="451"/>
@@ -1184,57 +1183,57 @@
     <message>
         <location filename="sdsession.cpp" line="77"/>
         <source>JID</source>
-        <translation type="unfinished"></translation>
+        <translation>JID</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="77"/>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Вузол</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="122"/>
         <source>View VCard...</source>
-        <translation type="unfinished"></translation>
+        <translation>Переглянути VCard...</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="124"/>
         <source>Add to roster...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати до списку контактів...</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="126"/>
         <source>Register...</source>
-        <translation type="unfinished"></translation>
+        <translation>Зареєструватись...</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="139"/>
         <source>Execute...</source>
-        <translation type="unfinished"></translation>
+        <translation>Виконати...</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="142"/>
         <source>Join...</source>
-        <translation type="unfinished"></translation>
+        <translation>Приєднатись...</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="215"/>
         <source>Identities:</source>
-        <translation type="unfinished"></translation>
+        <translation>Особистість...</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="223"/>
         <source>Identity name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім’я особистості:</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="224"/>
         <source>Category:</source>
-        <translation type="unfinished"></translation>
+        <translation>Категорія:</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="225"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип:</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="226"/>
@@ -1244,7 +1243,7 @@
     <message>
         <location filename="sdsession.cpp" line="236"/>
         <source>Capabilities:</source>
-        <translation type="unfinished"></translation>
+        <translation>Можливості:</translation>
     </message>
 </context>
 <context>
@@ -1252,7 +1251,7 @@
     <message>
         <location filename="selfcontact.cpp" line="75"/>
         <source>Self contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Контакт особистості</translation>
     </message>
 </context>
 <context>
@@ -1260,7 +1259,7 @@
     <message>
         <location filename="transferjob.cpp" line="94"/>
         <source>could not open incoming file %1: %2</source>
-        <translation>не можна відкрити отриманий файл %1: %2</translation>
+        <translation>не вдалося відкрити отриманий файл %1: %2</translation>
     </message>
 </context>
 <context>
@@ -1268,7 +1267,7 @@
     <message>
         <location filename="vcarddialog.cpp" line="193"/>
         <source>Capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Можливості</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="81"/>
@@ -1279,24 +1278,24 @@
         <location filename="vcarddialog.cpp" line="97"/>
         <location filename="vcarddialog.cpp" line="116"/>
         <source>preferred</source>
-        <translation type="unfinished"></translation>
+        <translation>перевага надається:</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="99"/>
         <location filename="vcarddialog.cpp" line="118"/>
         <source>home</source>
-        <translation type="unfinished"></translation>
+        <translation>дім</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="101"/>
         <location filename="vcarddialog.cpp" line="120"/>
         <source>work</source>
-        <translation type="unfinished"></translation>
+        <translation>робота</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="103"/>
         <source>cell</source>
-        <translation type="unfinished"></translation>
+        <translation>мобільний</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="142"/>
@@ -1306,27 +1305,27 @@
     <message>
         <location filename="vcarddialog.cpp" line="186"/>
         <source>Name</source>
-        <translation type="unfinished">Назва</translation>
+        <translation>Ім’я</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="187"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Версія</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="188"/>
         <source>OS</source>
-        <translation type="unfinished"></translation>
+        <translation>ОС</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="247"/>
         <source>Choose new photo</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати нове вото</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="249"/>
         <source>Images (*.png *.jpg *.gif);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Зображення (*.png *.jpg *.gif);;Усі файли (*.*)</translation>
     </message>
 </context>
 <context>
@@ -1334,7 +1333,7 @@
     <message>
         <location filename="executecommanddialog.cpp" line="42"/>
         <source>Fetching data...</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантаження даних...</translation>
     </message>
 </context>
 <context>
@@ -1342,32 +1341,32 @@
     <message>
         <location filename="privacylistsconfigdialog.ui" line="14"/>
         <source>Privacy lists</source>
-        <translation type="unfinished"></translation>
+        <translation>Списки приватності</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="20"/>
         <source>Global configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Глобальні налаштування</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="26"/>
         <source>Default list:</source>
-        <translation type="unfinished"></translation>
+        <translation>Список за замовчуванням:</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="39"/>
         <source>Active list:</source>
-        <translation type="unfinished"></translation>
+        <translation>Активний список:</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="55"/>
         <source>List configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування списку:</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="63"/>
         <source>Configure list:</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштувати список:</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="73"/>
@@ -1389,17 +1388,17 @@
     <message>
         <location filename="privacylistsconfigdialog.ui" line="128"/>
         <source>Move up</source>
-        <translation>Вище</translation>
+        <translation>Підняти</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="135"/>
         <source>Move down</source>
-        <translation>Нижче</translation>
+        <translation>Опустити</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="159"/>
         <source>Default policy:</source>
-        <translation type="unfinished"></translation>
+        <translation>Політика за замовчуванням:</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="167"/>
@@ -1417,27 +1416,27 @@
     <message>
         <location filename="privacylistsitemdialog.ui" line="14"/>
         <source>Privacy rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Правила приватності</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="25"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип:</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="33"/>
         <source>JID</source>
-        <translation type="unfinished"></translation>
+        <translation>JID</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="38"/>
         <source>Subscription</source>
-        <translation type="unfinished"></translation>
+        <translation>Підписка</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="43"/>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Група</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="51"/>
@@ -1452,7 +1451,7 @@
     <message>
         <location filename="privacylistsitemdialog.ui" line="75"/>
         <source>Allow</source>
-        <translation type="unfinished"></translation>
+        <translation>Дозволити</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="80"/>
@@ -1462,7 +1461,7 @@
     <message>
         <location filename="privacylistsitemdialog.ui" line="88"/>
         <source>Stanza types</source>
-        <translation type="unfinished"></translation>
+        <translation>Типи stanza</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="94"/>
@@ -1472,17 +1471,17 @@
     <message>
         <location filename="privacylistsitemdialog.ui" line="101"/>
         <source>Incoming presence</source>
-        <translation type="unfinished"></translation>
+        <translation>Вигляд вхідних повідомлень</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="108"/>
         <source>Outgoing presence</source>
-        <translation type="unfinished"></translation>
+        <translation>Вигляд вихідних повідомлень</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="115"/>
         <source>IQ</source>
-        <translation type="unfinished"></translation>
+        <translation>IQ</translation>
     </message>
 </context>
 <context>
@@ -1511,7 +1510,7 @@
         <location filename="util.cpp" line="53"/>
         <location filename="util.cpp" line="72"/>
         <source>unspecified</source>
-        <translation>не встановлений</translation>
+        <translation>невизначений</translation>
     </message>
     <message>
         <location filename="util.cpp" line="62"/>
@@ -1541,7 +1540,7 @@
     <message>
         <location filename="formbuilder.cpp" line="93"/>
         <source>Unable to represent embedded media data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося відобразити медіа.</translation>
     </message>
 </context>
 <context>
@@ -1549,7 +1548,7 @@
     <message>
         <location filename="roomconfigwidget.ui" line="27"/>
         <source>Permissions</source>
-        <translation type="unfinished"></translation>
+        <translation>Права</translation>
     </message>
     <message>
         <location filename="roomconfigwidget.ui" line="41"/>
@@ -1569,7 +1568,7 @@
     <message>
         <location filename="roomconfigwidget.ui" line="78"/>
         <source>Configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування</translation>
     </message>
 </context>
 <context>
@@ -1642,12 +1641,12 @@
     <message>
         <location filename="vcarddialog.ui" line="235"/>
         <source>Organization name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва організації:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="252"/>
         <source>Organization unit:</source>
-        <translation type="unfinished"></translation>
+        <translation>Підрозділ:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="269"/>
@@ -1657,22 +1656,22 @@
     <message>
         <location filename="vcarddialog.ui" line="286"/>
         <source>Role:</source>
-        <translation type="unfinished"></translation>
+        <translation>Посада:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="304"/>
         <source>About self</source>
-        <translation type="unfinished"></translation>
+        <translation>Про себе</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="321"/>
         <source>Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Нотатки:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="334"/>
         <source>Client info</source>
-        <translation type="unfinished"></translation>
+        <translation>Інформація по клієнту</translation>
     </message>
 </context>
 </TS>
