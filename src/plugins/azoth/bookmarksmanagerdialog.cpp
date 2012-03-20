@@ -34,6 +34,8 @@ namespace Azoth
 	, BMModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.MoveDown_->setIcon (QIcon::fromTheme ("go-down"));
+		Ui_.MoveUp_->setIcon (QIcon::fromTheme ("go-up"));
 		Ui_.BookmarksTree_->setModel (BMModel_);
 
 		connect (Ui_.BookmarksTree_->selectionModel (),
