@@ -94,10 +94,6 @@ namespace Laure
 		auto listEventManager = libvlc_media_list_player_event_manager (LPlayer_.get ());
 		libvlc_event_attach (listEventManager, libvlc_MediaListPlayerNextItemSet,
 				ListEventCallback, this);
-		libvlc_event_attach (listEventManager, libvlc_MediaListPlayerStopped,
-				ListEventCallback, this);
-		libvlc_event_attach (listEventManager, libvlc_MediaListPlayerPlayed,
-				ListEventCallback, this);
 		
 		auto playerEventManager = libvlc_media_player_event_manager (Player_.get ());
 		libvlc_event_attach (playerEventManager, libvlc_MediaPlayerPlaying,
@@ -182,11 +178,10 @@ namespace Laure
 		}
 
 		libvlc_media_parse (m);
-
-		meta.Artist_ = libvlc_media_get_meta (m, libvlc_meta_Artist);
-		meta.Album_ = libvlc_media_get_meta (m, libvlc_meta_Album);
-		meta.Title_ = libvlc_media_get_meta (m, libvlc_meta_Title);
-		meta.Genre_ = libvlc_media_get_meta (m, libvlc_meta_Genre);
+		meta.Artist_ = QString::fromUtf8 (libvlc_media_get_meta (m, libvlc_meta_Artist));
+		meta.Album_ = QString::fromUtf8 (libvlc_media_get_meta (m, libvlc_meta_Album));
+		meta.Title_ = QString::fromUtf8 (libvlc_media_get_meta (m, libvlc_meta_Title));
+		meta.Genre_ = QString::fromUtf8 (libvlc_media_get_meta (m, libvlc_meta_Genre));
 		meta.Date_ = libvlc_media_get_meta (m, libvlc_meta_Date);
 		meta.Length_ = libvlc_media_get_duration (m) / 1000;
 		
