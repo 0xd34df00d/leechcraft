@@ -74,7 +74,7 @@ namespace Laure
 	
 	int Player::GetPosition () const
 	{
-		if (!(VLCWrapper_ && VLCWrapper_->IsPlaying ()))
+		if (!VLCWrapper_)
 			return -1;
 
 		return VLCWrapper_->GetMediaPosition () * pos_slider_max;
