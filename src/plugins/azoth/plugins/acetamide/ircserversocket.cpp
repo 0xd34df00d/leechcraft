@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +19,10 @@
 
 #include "ircserversocket.h"
 #include <QTcpSocket>
+#include <QSettings>
 #include "ircserverhandler.h"
 #include "clientconnection.h"
+#include "sslerrorsdialog.h"
 
 namespace LeechCraft
 {
@@ -27,6 +30,8 @@ namespace Azoth
 {
 namespace Acetamide
 {
+	int elideWidth = 300;
+
 	IrcServerSocket::IrcServerSocket (IrcServerHandler *ish)
 	: QObject (ish)
 	, ISH_ (ish)
@@ -114,7 +119,48 @@ namespace Acetamide
 	void IrcServerSocket::handleSslErrors (const QList<QSslError>& errors)
 	{
 		std::shared_ptr<QSslSocket> s = std::dynamic_pointer_cast<QSslSocket> (Socket_ptr);
-		s->ignoreSslErrors (errors);
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Acetamide");
+		settings.beginGroup ("SSL exceptions");
+		QStringList keys = settings.allKeys ();
+		const QString& key = s->peerName () + ":" + s->peerPort ();
+		if (keys.contains (key))
+		{
+			if (settings.value (key).toBool ())
+				s->ignoreSslErrors ();
+		}
+		else if (keys.contains (s->peerName ()))
+		{
+			if (settings.value (s->peerName ()).toBool ())
+				s->ignoreSslErrors ();
+		}
+		else
+		{
+			QString msg = tr ("<code>%1</code><br />has SSL errors."
+					" What do you want to do?")
+						.arg (QApplication::fontMetrics ()
+								.elidedText (key, Qt::ElideMiddle, elideWidth));
+
+			std::unique_ptr<SslErrorsDialog> errDialog (new SslErrorsDialog ());
+			errDialog->Update (msg, errors);
+
+			bool ignore = (errDialog->exec () == QDialog::Accepted);
+
+			SslErrorsDialog::RememberChoice choice = errDialog->GetRememberChoice ();
+
+			if (choice != SslErrorsDialog::RCNot)
+			{
+				if (choice == SslErrorsDialog::RCFile)
+					settings.setValue (key, ignore);
+				else
+					settings.setValue (s->peerName (), ignore);
+			}
+
+			if (ignore)
+				s->ignoreSslErrors (errors);
+		}
+		settings.endGroup ();
 	}
 
 };
