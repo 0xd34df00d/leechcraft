@@ -60,6 +60,7 @@ namespace Xoox
 	, Account_ (parent)
 	, Commands_ (new QAction (tr ("Commands..."), Account_))
 	, DetectNick_ (new QAction (tr ("Detect nick"), Account_))
+	, StdSep_ (LeechCraft::Util::CreateSeparator (this))
 	, HasUnreadMsgs_ (false)
 	, VersionReqsEnabled_ (true)
 	{
@@ -140,9 +141,9 @@ namespace Xoox
 	{
 		QList<QAction*> additional;
 		additional << Commands_;
-
 		if (GetEntryFeatures () & FSupportsRenames)
 			additional << DetectNick_;
+		additional << StdSep_;
 
 		return additional + Actions_;
 	}
@@ -419,14 +420,26 @@ namespace Xoox
 				wasOffline)
 			emit availableVariantsChanged (vars);
 
-		if (VersionReqsEnabled_ &&
-				(!existed || wasOffline) &&
+		if ((!existed || wasOffline) &&
 				status.State_ != SOffline)
 		{
 			const QString& jid = variant.isEmpty () ?
 					GetJID () :
 					GetJID () + '/' + variant;
-			Account_->GetClientConnection ()->FetchVersion (jid);
+			if (VersionReqsEnabled_)
+				Account_->GetClientConnection ()->FetchVersion (jid);
+
+			QPointer<EntryBase> pThis (this);
+			Account_->GetClientConnection ()->RequestInfo (jid,
+					[pThis] (const QXmppDiscoveryIq& iq)
+					{
+						if (pThis)
+						{
+							QString variant;
+							ClientConnection::Split (iq.from (), 0, &variant);
+							pThis->SetDiscoIdentities (variant, iq.identities ());
+						}
+					});
 		}
 
 		if (status.State_ != SOffline)
@@ -580,6 +593,11 @@ namespace Xoox
 		Variant2Version_ [variant] = version;
 
 		emit entryGenerallyChanged ();
+	}
+
+	void EntryBase::SetDiscoIdentities (const QString& variant, const QList<QXmppDiscoveryIq::Identity>& ids)
+	{
+		Variant2Identities_ [variant] = ids;
 	}
 
 	GeolocationInfo_t EntryBase::GetGeolocationInfo (const QString& variant) const
