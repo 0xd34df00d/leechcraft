@@ -778,7 +778,7 @@
     <message>
         <location filename="vcarddialog.cpp" line="40"/>
         <source>VCard for %1</source>
-        <translation type="unfinished"/>
+        <translation>VCard для %1</translation>
     </message>
 </context>
 <context>
@@ -1185,17 +1185,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="vcarddialog.ui" line="24"/>
         <source>General</source>
-        <translation type="unfinished"/>
+        <translation>Загальне</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="38"/>
         <source>Real name:</source>
-        <translation type="unfinished"/>
+        <translation>Справжнє ім&apos;я:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="55"/>
         <source>Nick:</source>
-        <translation type="unfinished"/>
+        <translation>Нік:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="72"/>
@@ -1225,7 +1225,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Behavior</source>
-        <translation type="unfinished"/>
+        <translation>Поведінка</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
@@ -1260,7 +1260,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source> min</source>
-        <translation type="unfinished"/>
+        <translation> хв</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>

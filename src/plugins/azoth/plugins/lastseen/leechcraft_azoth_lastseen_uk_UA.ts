@@ -1,22 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
 <context>
     <name>LeechCraft::Azoth::LastSeen::Plugin</name>
     <message>
         <location filename="lastseen.cpp" line="62"/>
         <source>Azoth LastSeen displays when a contact has been online and available for the list time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Azoth LastSeen дозволяє слідкувати за тим, коли певний контакт востаннє був онлайн і доступний.</translation>
     </message>
     <message>
         <location filename="lastseen.cpp" line="178"/>
         <source>Was available: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Був доступний: %1</translation>
     </message>
     <message>
         <location filename="lastseen.cpp" line="191"/>
         <source>Was online: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Був онлайн: %1</translation>
     </message>
 </context>
 </TS>

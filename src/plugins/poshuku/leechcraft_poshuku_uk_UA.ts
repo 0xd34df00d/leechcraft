@@ -424,7 +424,7 @@
     <message>
         <location filename="browserwidget.cpp" line="1441"/>
         <source>Page load failed: %1</source>
-        <translation>Завантаження сторінки %1 зазнало невдачі</translation>
+        <translation>Не вдалося завантажити сторінку: %1 </translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="1448"/>
@@ -434,7 +434,7 @@
     <message>
         <location filename="browserwidget.cpp" line="1472"/>
         <source>Default</source>
-        <translation>Типово</translation>
+        <translation>За замовчанням</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="1521"/>
@@ -512,7 +512,7 @@
         <location filename="customwebpage.cpp" line="141"/>
         <source>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</source>
         <comment>{host} would be substituded with site's host name.</comment>
-        <translation>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;перевірте&lt;/a&gt; чи сайт&lt;strong&gt;{host}&lt;/strong&gt; не працює у всіх чи лише тільки у вас;</translation>
+        <translation>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;перевірте&lt;/a&gt;, чи сайт&lt;strong&gt;{host}&lt;/strong&gt; не працює у всіх, чи лише у вас;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="144"/>
@@ -677,12 +677,12 @@
     <message>
         <location filename="customwebview.cpp" line="333"/>
         <source>Save pixmap...</source>
-        <translation type="unfinished"/>
+        <translation>Зберегти растрове зображення...</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="335"/>
         <source>Saves the rendered pixmap without redownloading.</source>
-        <translation type="unfinished"/>
+        <translation>Зберігає оброблене растрове зображення без повторного завантаження.</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="339"/>
@@ -753,22 +753,22 @@
     <message>
         <location filename="customwebview.cpp" line="484"/>
         <source>Welcome to LeechCraft, the integrated internet-client.&lt;br /&gt;More info is available on the &lt;a href=&apos;http://leechcraft.org&apos;&gt;project&apos;s site&lt;/a&gt;.</source>
-        <translation>Ласкаво просимо до LeechCraft - інтегрованого Інтернет-клієнту.&lt;br /&gt;Більше інформації можете дізнатись на &lt;a href=&apos;http://leechcraft.org&apos;&gt;сторінці проекту&lt;/a&gt;.</translation>
+        <translation>Ласкаво просимо до LeechCraft - інтегрованого Інтернет-клієнту.&lt;br /&gt;Більше інформації можете отримати на &lt;a href=&apos;http://leechcraft.org&apos;&gt;сторінці проекту&lt;/a&gt;.</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="611"/>
         <source>Save pixmap</source>
-        <translation type="unfinished"/>
+        <translation>Зберегти растрове зображення</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="613"/>
         <source>PNG image (*.png);;JPG image (*.jpg);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>PNG-зображення (*.png);;JPG-зображення (*.jpg);;Усі файли (*.*)</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="631"/>
         <source>Unable to save the image. Unable to open file for writing: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Неможливо зберегти зображення. Не вдалося відкрити файл для читання: %1.</translation>
     </message>
 </context>
 <context>
@@ -923,12 +923,12 @@
     <message>
         <location filename="poshuku.cpp" line="210"/>
         <source>Simple yet functional web browser</source>
-        <translation>Простий але функціональний веб браузер</translation>
+        <translation>Простий, проте функціональний веб-браузер</translation>
     </message>
     <message>
         <location filename="poshuku.cpp" line="535"/>
         <source>Please note that Developer Extras would work correctly only for pages that are loaded after enabling.</source>
-        <translation>Зауважте, що додатки для розробників будуть працювати лише на сторінках, що завантажені після того, як вони були увімкнені.</translation>
+        <translation>Зауважте, що додатки для розробників будуть працювати лише на сторінках, завантажених після увімкнення додатків.</translation>
     </message>
 </context>
 <context>
@@ -1196,22 +1196,22 @@
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Enable XSS auditing</source>
-        <translation type="unfinished"/>
+        <translation>Увімкнути аудит XSS</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
         <source>Specifies whether requests should be monitored for cross-site scripting attempts. Suspicious attempts would be blocked. This feature may have a slight negative impact on performance.</source>
-        <translation type="unfinished"/>
+        <translation>Вказує, чи потрібно відслідковувати спроби cross-site scripting у запитах. Підозрілі спроби будуть заблоковані. Увімкнення цієї опції може спричинити погіршення продуктивності.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Enable hyperlink auditing</source>
-        <translation>Ввімкнути редагування лінків</translation>
+        <translation>Увімкнути аудит посилань</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
         <source>Enable sending hyperlink auditing pings.</source>
-        <translation type="unfinished"/>
+        <translation>Увімкнути пересилання інформації для HTML5-аудиту посилань.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="23"/>
@@ -1256,7 +1256,7 @@
     <message>
         <location filename="dummy.cpp" line="31"/>
         <source>Cookies...</source>
-        <translation>Cookies...</translation>
+        <translation>Куки...</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="32"/>
@@ -1276,7 +1276,7 @@
     <message>
         <location filename="dummy.cpp" line="35"/>
         <source>Offline storage default quota:</source>
-        <translation>Offline storage default quota:</translation>
+        <translation>Квота автономного сховища за замовчуванням:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="36"/>
@@ -1318,7 +1318,7 @@
     <message>
         <location filename="dummy.cpp" line="44"/>
         <source>Total capacity:</source>
-        <translation>Загальний об&apos;єм:</translation>
+        <translation>Загальний обсяг:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="46"/>
