@@ -70,6 +70,11 @@ namespace Acetamide
 				QString::number (server.ServerPort_);
 
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
+		emit gotRosterItems (QList<QObject*> () << ish->GetCLEntry ());
+		connect (ish,
+				SIGNAL (gotSocketError (QAbstractSocket::SocketError, const QString&)),
+				this,
+				SLOT (handleError(QAbstractSocket::SocketError, const QString&)));
 
 		ish->SetConsoleEnabled (IsConsoleEnabled_);
 		if (IsConsoleEnabled_)
@@ -120,6 +125,7 @@ namespace Acetamide
 				ostr << bookmark.Name_
 						<< bookmark.ServerName_
 						<< bookmark.ServerPort_
+						<< bookmark.ServerPassword_
 						<< bookmark.ServerEncoding_
 						<< bookmark.ChannelName_
 						<< bookmark.ChannelPassword_
@@ -147,6 +153,7 @@ namespace Acetamide
 			istr >> bookmark.Name_
 					>> bookmark.ServerName_
 					>> bookmark.ServerPort_
+					>> bookmark.ServerPassword_
 					>> bookmark.ServerEncoding_
 					>> bookmark.ChannelName_
 					>> bookmark.ChannelPassword_
@@ -241,12 +248,14 @@ namespace Acetamide
 			Account_->ChangeState (EntryStatus (SOnline, QString ()));
 			Account_->SetState (EntryStatus (SOnline, QString ()));
 		}
-		emit gotRosterItems (QList<QObject*> () <<
-				ServerHandlers_ [serverId]->GetCLEntry ());
 	}
 
 	void ClientConnection::serverDisconnected (const QString& serverId)
 	{
+		if (!ServerHandlers_.contains (serverId))
+			return;
+
+		ServerHandlers_ [serverId]->DisconnectFromServer ();
 		Account_->handleEntryRemoved (ServerHandlers_ [serverId]->
 				GetCLEntry ());
 		ServerHandlers_.take (serverId)->deleteLater ();
@@ -255,23 +264,25 @@ namespace Acetamide
 					QString ()));
 	}
 
-	void ClientConnection::handleError (QAbstractSocket::SocketError)
+	void ClientConnection::handleError (QAbstractSocket::SocketError error,
+			const QString& errorString)
 	{
-		QTcpSocket *socket = qobject_cast<QTcpSocket*> (sender ());
-		if (!socket)
+		IrcServerHandler *ish = qobject_cast<IrcServerHandler*> (sender ());
+		if (!ish)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "is not an object of TcpSocket"
+					<< "is not an IrcServerHandler"
 					<< sender ();
 			return;
 		}
 
 		Entity e = Util::MakeNotification ("Azoth",
-				socket->errorString (),
+				errorString,
 				PCritical_);
 		Core::Instance ().SendEntity (e);
-		Account_->ChangeState (EntryStatus (SOffline, QString ()));
-		Account_->SetState (EntryStatus (SOffline, QString ()));
+		ish->DisconnectFromServer ();
+		ServerHandlers_.remove (ish->GetServerID ());
+		Account_->handleEntryRemoved (ish->GetCLEntry ());
 	}
 
 	void ClientConnection::handleLog (IMessage::Direction type, const QString& msg)

@@ -205,8 +205,6 @@ namespace Acetamide
 				if (!nick.isEmpty ())
 					ChannelHandlers_ [channel]->SetChannelUser (nick);
 			}
-
-			ISH_->autoWhoRequest ();
 		}
 		else
 			ReceiveCmdAnswerMessage ("names", participants.join (" "), false);
