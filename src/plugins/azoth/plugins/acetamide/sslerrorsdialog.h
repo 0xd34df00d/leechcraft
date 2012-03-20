@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,14 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERSOCKET_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERSOCKET_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SSLERRORSDIALOG_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SSLERRORSDIALOG_H
 
-#include <memory>
-#include <QObject>
-#include <QSslSocket>
-
-class QTcpSocket;
+#include <QDialog>
+#include <QList>
+#include <QSslError>
+#include "ui_sslerrorsdialog.h"
 
 namespace LeechCraft
 {
@@ -31,30 +30,32 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
-	class IrcServerHandler;
-	class IrcAccount;
-
-	class IrcServerSocket : public QObject
+	class SslErrorsDialog : public QDialog
 	{
 		Q_OBJECT
 
-		IrcServerHandler *ISH_;
-		bool SSL_;
-		std::shared_ptr<QTcpSocket> Socket_ptr;
+		Ui::SslErrorsDialog Ui_;
 	public:
-		IrcServerSocket (IrcServerHandler*);
-		void ConnectToHost (const QString&, int);
-		void DisconnectFromHost ();
-		void Send (const QString&);
-		void Close ();
+		enum RememberChoice
+		{
+			RCNot
+			, RCFile
+			, RCHost
+		};
+
+		SslErrorsDialog (QWidget *parent = 0);
+		SslErrorsDialog (const QString& msg,
+				const QList<QSslError>& errors, QWidget *parent = 0);
+		virtual ~SslErrorsDialog ();
+
+		void Update (const QString& msg, const QList<QSslError>& errors);
+
+		RememberChoice GetRememberChoice () const;
 	private:
-		void Init ();
-	private slots:
-		void readReply ();
-		void handleSslErrors (const QList<QSslError>& errors);
+		void PopulateTree (const QSslError& error);
 	};
-};
-};
-};
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERSOCKET_H
+}
+}
+}
+
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SSLERRORSDIALOG_H
