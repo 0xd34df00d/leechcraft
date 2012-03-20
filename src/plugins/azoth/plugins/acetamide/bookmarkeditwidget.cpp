@@ -66,18 +66,18 @@ namespace Acetamide
 
 	void BookmarkEditWidget::SetIdentifyingData (const QVariantMap& map)
 	{
-		Ui_.HumanReadable_->setText (map.value ("HumanReadableName").toString ());
-		Ui_.Name_->setText (map.value ("StoredName").toString ());
-		Ui_.Server_->setText (map.value ("Server").toString ());
-		Ui_.Port_->setValue (map.value ("Port").toInt ());
-		Ui_.ServerPassword_->setText (map.value ("ServerPassword").toString ());
+		Ui_.HumanReadable_->setText (map ["HumanReadableName"].toString ());
+		Ui_.Name_->setText (map ["StoredName"].toString ());
+		Ui_.Server_->setText (map ["Server"].toString ());
+		Ui_.Port_->setValue (map ["Port"].toInt ());
+		Ui_.ServerPassword_->setText (map ["ServerPassword"].toString ());
 		Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->
-				findText (map.value ("Encoding").toString ()));
-		Ui_.Channel_->setText (map.value ("Channel").toString ());
-		Ui_.Password_->setText (map.value ("Password").toString ());
-		Ui_.Nickname_->setText (map.value ("Nickname").toString ());
-		Ui_.SSL_->setCheckState (map.value ("SSL").toBool () ? Qt::Checked : Qt::Unchecked);
-		Ui_.AutoJoin_->setCheckState (map.value ("Autojoin").toBool () ? Qt::Checked : Qt::Unchecked);
+		findText (map ["Encoding"].toString ()));
+		Ui_.Channel_->setText (map ["Channel"].toString ());
+		Ui_.Password_->setText (map ["Password"].toString ());
+		Ui_.Nickname_->setText (map ["Nickname"].toString ());
+		Ui_.SSL_->setCheckState (map ["SSL"].toBool () ? Qt::Checked : Qt::Unchecked);
+		Ui_.AutoJoin_->setCheckState (map ["Autojoin"].toBool () ? Qt::Checked : Qt::Unchecked);
 	}
 }
 }

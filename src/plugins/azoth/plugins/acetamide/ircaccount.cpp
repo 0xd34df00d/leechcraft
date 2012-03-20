@@ -296,16 +296,16 @@ namespace Acetamide
 		{
 			const QVariantMap& map = var.toMap ();
 			IrcBookmark bookmark;
-			bookmark.AutoJoin_  = map.value ("Autojoin").toBool ();
-			bookmark.ServerName_ = map.value ("Server").toString ();
-			bookmark.ServerPort_ = map.value ("Port").toInt ();
-			bookmark.ServerPassword_ = map.value ("ServerPassword").toString ();
-			bookmark.ServerEncoding_ = map.value ("Encoding").toString ();
-			bookmark.ChannelName_ = map.value ("Channel").toString ();
-			bookmark.ChannelPassword_ = map.value ("Password").toString ();
-			bookmark.SSL_ = map.value ("SSL").toBool ();
-			bookmark.NickName_ = map.value ("Nickname").toString ();
-			bookmark.Name_ = map.value ("StoredName").toString ();
+			bookmark.AutoJoin_  = map ["Autojoin"].toBool ();
+			bookmark.ServerName_ = map ["Server"].toString ();
+			bookmark.ServerPort_ = map ["Port"].toInt ();
+			bookmark.ServerPassword_ = map ["ServerPassword"].toString ();
+			bookmark.ServerEncoding_ = map ["Encoding"].toString ();
+			bookmark.ChannelName_ = map ["Channel"].toString ();
+			bookmark.ChannelPassword_ = map ["Password"].toString ();
+			bookmark.SSL_ = map ["SSL"].toBool ();
+			bookmark.NickName_ = map ["Nickname"].toString ();
+			bookmark.Name_ = map ["StoredName"].toString ();
 			channels << bookmark;
 		}
 
@@ -358,7 +358,7 @@ namespace Acetamide
 			ClientConnection_->DisconnectFromAll ();
 			SetState (newStatus);
 		}
-		else 
+		else
 		{
 			if (newStatus.State_ == SOnline)
 			{
