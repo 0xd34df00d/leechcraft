@@ -129,6 +129,7 @@ namespace Laure
 		MediaMeta GetItemMeta (int row, const QString& location = QString ()) const;
 		
 		void HandlePlayed ();
+		void HandleStopped ();
 		
 		/** @brief Is called when the next item is chosen.
 		 */

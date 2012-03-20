@@ -52,6 +52,9 @@ namespace Laure
 			case libvlc_MediaPlayerPlaying:
 				wrapper->HandlePlayed ();
 				break;
+			case libvlc_MediaPlayerEndReached:
+				wrapper->HandleStopped ();
+				break;
 			}
 		}
 	}
@@ -91,9 +94,20 @@ namespace Laure
 		auto listEventManager = libvlc_media_list_player_event_manager (LPlayer_.get ());
 		libvlc_event_attach (listEventManager, libvlc_MediaListPlayerNextItemSet,
 				ListEventCallback, this);
+		libvlc_event_attach (listEventManager, libvlc_MediaListPlayerStopped,
+				ListEventCallback, this);
+		libvlc_event_attach (listEventManager, libvlc_MediaListPlayerPlayed,
+				ListEventCallback, this);
 		
 		auto playerEventManager = libvlc_media_player_event_manager (Player_.get ());
 		libvlc_event_attach (playerEventManager, libvlc_MediaPlayerPlaying,
+				ListEventCallback, this);
+		
+		libvlc_event_attach (playerEventManager, libvlc_MediaPlayerStopped,
+				ListEventCallback, this);
+		libvlc_event_attach (playerEventManager, libvlc_MediaPlayerPaused,
+				ListEventCallback, this);
+		libvlc_event_attach (playerEventManager, libvlc_MediaPlayerEndReached,
 				ListEventCallback, this);
 	}
 
@@ -338,6 +352,11 @@ namespace Laure
 	void VLCWrapper::pause ()
 	{
 		libvlc_media_player_pause (Player_.get ());
+	}
+	
+	void VLCWrapper::HandleStopped ()
+	{
+		emit paused ();
 	}
 
 	void VLCWrapper::play ()
