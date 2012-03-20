@@ -174,6 +174,9 @@ namespace Xoox
 			return;
 
 		EntryBase *entry = qobject_cast<EntryBase*> (Account_->GetClientConnection ()->GetCLEntry (JID_));
+		if (!entry)
+			return;
+
 		CapsManager *mgr = Account_->GetClientConnection ()->GetCapsManager ();
 
 		QString html;
