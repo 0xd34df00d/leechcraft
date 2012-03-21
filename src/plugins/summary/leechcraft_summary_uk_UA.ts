@@ -2,110 +2,115 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="uk_UA">
 <context>
-    <name>LeechCraft::Plugins::Summary::Core</name>
+    <name>LeechCraft::Summary::Core</name>
     <message>
-        <location filename="core.cpp" line="122"/>
-        <location filename="core.cpp" line="345"/>
+        <location filename="core.cpp" line="121"/>
+        <location filename="core.cpp" line="356"/>
         <source>Summary</source>
         <translation>Зведення</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="189"/>
+        <location filename="core.cpp" line="188"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="190"/>
+        <location filename="core.cpp" line="189"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="191"/>
+        <location filename="core.cpp" line="190"/>
         <source>State</source>
         <translation>Стан</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Summary::OperationalModel</name>
+    <name>LeechCraft::Summary::OperationalModel</name>
     <message>
-        <location filename="operationalmodel.cpp" line="30"/>
+        <location filename="operationalmodel.cpp" line="28"/>
         <source>Entity</source>
         <translation>Об&apos;єкт</translation>
     </message>
     <message>
-        <location filename="operationalmodel.cpp" line="31"/>
+        <location filename="operationalmodel.cpp" line="29"/>
         <source>Category</source>
         <translation>Категорія</translation>
     </message>
     <message>
-        <location filename="operationalmodel.cpp" line="32"/>
+        <location filename="operationalmodel.cpp" line="30"/>
         <source>Information</source>
         <translation>Інформація</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Summary::RequestNormalizer</name>
+    <name>LeechCraft::Summary::RequestNormalizer</name>
     <message>
-        <location filename="requestnormalizer.cpp" line="51"/>
+        <location filename="requestnormalizer.cpp" line="49"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="52"/>
+        <location filename="requestnormalizer.cpp" line="50"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="53"/>
+        <location filename="requestnormalizer.cpp" line="51"/>
         <source>State</source>
         <translation>Стан</translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="69"/>
+        <location filename="requestnormalizer.cpp" line="67"/>
         <source>Request validation error: %1</source>
         <translation>Помилка перевірки запиту: %1</translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="85"/>
+        <location filename="requestnormalizer.cpp" line="83"/>
         <source>Request parsing error: %1</source>
         <translation>Помилка обробки запиту: %1</translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="109"/>
+        <location filename="requestnormalizer.cpp" line="107"/>
         <source>Open/close braces mismatch: %1</source>
         <translation>Неспівпадіння кількості відкритих та закритих дужок: %1</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Summary::SearchWidget</name>
+    <name>LeechCraft::Summary::SearchWidget</name>
     <message>
-        <location filename="searchwidget.cpp" line="35"/>
+        <location filename="searchwidget.cpp" line="33"/>
         <source>Search categories</source>
         <translation>Пошук категорій</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Summary::Summary</name>
+    <name>LeechCraft::Summary::Summary</name>
     <message>
-        <location filename="summary.cpp" line="92"/>
+        <location filename="summary.cpp" line="70"/>
+        <source>Summary</source>
+        <translation>Зведення</translation>
+    </message>
+    <message>
+        <location filename="summary.cpp" line="102"/>
         <source>Summary of downloads and recent events</source>
         <translation>Зведення завантажень та недавніх подій</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Summary::SummaryWidget</name>
+    <name>LeechCraft::Summary::SummaryWidget</name>
     <message>
-        <location filename="summarywidget.cpp" line="50"/>
+        <location filename="summarywidget.cpp" line="51"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="510"/>
+        <location filename="summarywidget.cpp" line="518"/>
         <source>S: %1 [%2]</source>
         <translation>С: %1 [%2]</translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="514"/>
+        <location filename="summarywidget.cpp" line="522"/>
         <source>Summary [%1]</source>
         <translation>Зведення [%1]</translation>
     </message>
