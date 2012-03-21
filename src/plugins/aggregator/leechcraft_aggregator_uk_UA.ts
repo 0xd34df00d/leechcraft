@@ -98,7 +98,7 @@
     <message>
         <location filename="export.ui" line="14"/>
         <source>This string is overridden in the source code</source>
-        <translation type="unfinished"/>
+        <translation>Рядок </translation>
     </message>
     <message>
         <location filename="export.ui" line="25"/>
@@ -191,12 +191,12 @@
     <message>
         <location filename="export2fb2dialog.ui" line="104"/>
         <source>Hardware</source>
-        <translation type="unfinished"/>
+        <translation>Залізо</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="115"/>
         <source>Software</source>
-        <translation type="unfinished"/>
+        <translation>Софт</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="126"/>
@@ -316,7 +316,7 @@
     <message>
         <location filename="export2fb2dialog.ui" line="297"/>
         <source>Alternative history</source>
-        <translation type="unfinished"/>
+        <translation>Альтернативна історія</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="305"/>
@@ -327,18 +327,18 @@
     <message>
         <location filename="export2fb2dialog.ui" line="313"/>
         <source>Epic</source>
-        <translation type="unfinished"/>
+        <translation>Епопея</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="321"/>
         <source>Heroic</source>
-        <translation type="unfinished"/>
+        <translation>Героїчні поеми</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="329"/>
         <location filename="export2fb2dialog.ui" line="630"/>
         <source>Detective</source>
-        <translation>Детекитив</translation>
+        <translation>Детекитиви</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="337"/>
@@ -353,12 +353,12 @@
     <message>
         <location filename="export2fb2dialog.ui" line="353"/>
         <source>Social</source>
-        <translation type="unfinished"/>
+        <translation>Соціальне</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="361"/>
         <source>Horror</source>
-        <translation type="unfinished"/>
+        <translation>Жахи</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="369"/>
@@ -395,12 +395,12 @@
     <message>
         <location filename="export2fb2dialog.ui" line="417"/>
         <source>Police</source>
-        <translation>Міліція</translation>
+        <translation>Поліцейські історії</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="433"/>
         <source>Ironic</source>
-        <translation type="unfinished"/>
+        <translation>Іронічні</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="441"/>
@@ -413,7 +413,7 @@
     <message>
         <location filename="export2fb2dialog.ui" line="449"/>
         <source>Espionage</source>
-        <translation type="unfinished"/>
+        <translation>Шпигунство</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="457"/>
@@ -423,215 +423,215 @@
     <message>
         <location filename="export2fb2dialog.ui" line="465"/>
         <source>Political</source>
-        <translation type="unfinished"/>
+        <translation>Політичне</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="473"/>
         <source>Maniac</source>
-        <translation type="unfinished"/>
+        <translation>Маніакальне</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="481"/>
         <source>Hard</source>
-        <translation type="unfinished"/>
+        <translation>Важке</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="489"/>
         <source>Thriller</source>
-        <translation type="unfinished"/>
+        <translation>Трилер</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="497"/>
         <source>Fictional</source>
-        <translation type="unfinished"/>
+        <translation>Вигадка</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="513"/>
         <location filename="export2fb2dialog.ui" line="610"/>
         <source>Love</source>
-        <translation type="unfinished"/>
+        <translation>Кохання</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="530"/>
         <location filename="export2fb2dialog.ui" line="747"/>
         <location filename="export2fb2dialog.ui" line="980"/>
         <source>Prose</source>
-        <translation type="unfinished"/>
+        <translation>Проза</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="553"/>
         <location filename="export2fb2dialog.ui" line="614"/>
         <source>Contemporary</source>
-        <translation type="unfinished"/>
+        <translation>Сучасне</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="561"/>
         <source>Counterculture</source>
-        <translation type="unfinished"/>
+        <translation>Антикультура</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="569"/>
         <source>Russian classic</source>
-        <translation type="unfinished"/>
+        <translation>Російська класика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="577"/>
         <source>USSR classic</source>
-        <translation type="unfinished"/>
+        <translation>Класика СССР</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="638"/>
         <source>Short</source>
-        <translation type="unfinished"/>
+        <translation>Короткі</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="646"/>
         <source>Erotica</source>
-        <translation type="unfinished"/>
+        <translation>Еротика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="663"/>
         <location filename="export2fb2dialog.ui" line="771"/>
         <source>Adventure</source>
-        <translation type="unfinished"/>
+        <translation>Пригоди</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="667"/>
         <source>Western</source>
-        <translation type="unfinished"/>
+        <translation>Вестерн</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="683"/>
         <source>Indian</source>
-        <translation type="unfinished"/>
+        <translation>Індійське</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="691"/>
         <source>Maritime</source>
-        <translation type="unfinished"/>
+        <translation>Морське</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="699"/>
         <source>Travel &amp; geography</source>
-        <translation type="unfinished"/>
+        <translation>Подорожі та географія</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="707"/>
         <source>Animals</source>
-        <translation type="unfinished"/>
+        <translation>Тварини</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="731"/>
         <source>Tales</source>
-        <translation type="unfinished"/>
+        <translation>Казки</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="739"/>
         <location filename="export2fb2dialog.ui" line="988"/>
         <source>Verses</source>
-        <translation type="unfinished"/>
+        <translation>Вірші</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="755"/>
         <source>Science fiction</source>
-        <translation type="unfinished"/>
+        <translation>Наукова фантастика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="779"/>
         <source>Educational</source>
-        <translation type="unfinished"/>
+        <translation>Навчальне</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="796"/>
         <location filename="export2fb2dialog.ui" line="800"/>
         <source>Antique</source>
-        <translation type="unfinished"/>
+        <translation>Старовинне</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="808"/>
         <source>European</source>
-        <translation type="unfinished"/>
+        <translation>Європейське</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="816"/>
         <source>Russian</source>
-        <translation type="unfinished"/>
+        <translation>Російське</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="824"/>
         <source>East</source>
-        <translation type="unfinished"/>
+        <translation>Східне</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="832"/>
         <source>Myths</source>
-        <translation type="unfinished"/>
+        <translation>Міфи</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="849"/>
         <location filename="export2fb2dialog.ui" line="869"/>
         <source>References</source>
-        <translation type="unfinished"/>
+        <translation>Довідники</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="853"/>
         <source>Encyclopedia</source>
-        <translation type="unfinished"/>
+        <translation>Енциклопедії</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="861"/>
         <source>Dictionaries</source>
-        <translation type="unfinished"/>
+        <translation>Словники</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="877"/>
         <source>Guides</source>
-        <translation type="unfinished"/>
+        <translation>Посібники</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="894"/>
         <source>Documentary</source>
-        <translation type="unfinished"/>
+        <translation>Документальне</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="898"/>
         <source>Biography</source>
-        <translation type="unfinished"/>
+        <translation>Біографічне</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="906"/>
         <source>Publicism</source>
-        <translation type="unfinished"/>
+        <translation>Публіцистика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="914"/>
         <source>Criticism</source>
-        <translation type="unfinished"/>
+        <translation>Критика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="943"/>
         <source>Esoterics</source>
-        <translation type="unfinished"/>
+        <translation>Езотерика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="951"/>
         <source>Self-improvement</source>
-        <translation type="unfinished"/>
+        <translation>Самовдосконалення</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="972"/>
         <source>Anecdotes</source>
-        <translation type="unfinished"/>
+        <translation>Анекдоти</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1005"/>
         <source>Home &amp; Family</source>
-        <translation type="unfinished"/>
+        <translation>Дім та сім’я</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1009"/>
         <source>Cooking</source>
-        <translation>Куховаріння</translation>
+        <translation>Кулінарія</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1017"/>
@@ -641,7 +641,7 @@
     <message>
         <location filename="export2fb2dialog.ui" line="1025"/>
         <source>Crafts</source>
-        <translation type="unfinished"/>
+        <translation>Ремесла</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1033"/>
@@ -661,7 +661,7 @@
     <message>
         <location filename="export2fb2dialog.ui" line="1057"/>
         <source>DIY</source>
-        <translation type="unfinished"/>
+        <translation>&quot;Зроби Сам&quot;</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1065"/>
@@ -1008,7 +1008,7 @@
     <message>
         <location filename="aggregator.cpp" line="776"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Файли OPML (*.opml);;Файли XML (*.xml);;Усі файли (*.*)</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="804"/>
@@ -1018,12 +1018,12 @@
     <message>
         <location filename="aggregator.cpp" line="806"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
-        <translation>Файл обміну Aggregator (*.lcae);;Всі файли (*.*)</translation>
+        <translation>Файл обміну Aggregator (*.lcae);;Усі файли (*.*)</translation>
     </message>
     <message numerus="yes">
         <location filename="aggregator.cpp" line="866"/>
         <source>%n unread message(s)</source>
-        <translation><numerusform>%n прочитане повідомлення</numerusform><numerusform>%n прочитаних повідомлень</numerusform><numerusform>%n прочитаних повідомлень</numerusform></translation>
+        <translation><numerusform>%n прочитане повідомлення</numerusform><numerusform>%n прочитаних повідомлення</numerusform><numerusform>%n прочитаних повідомлень</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="aggregator.cpp" line="867"/>
@@ -1160,7 +1160,7 @@
     <message>
         <location filename="core.cpp" line="778"/>
         <source>OPML from file %1 is not valid.</source>
-        <translation type="unfinished"/>
+        <translation>OPML із файлу %1 недійсний.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="833"/>
@@ -1340,12 +1340,12 @@
     <message>
         <location filename="importbinary.cpp" line="146"/>
         <source>Selected file %1 is not a valid LeechCraft::Aggregator exchange file.</source>
-        <translation>Обраний файл %1 не є чинним файлом обміну  LeechCraft::Aggregator.</translation>
+        <translation>Обраний файл %1 не є дійсним файлом обміну  LeechCraft::Aggregator.</translation>
     </message>
     <message>
         <location filename="importbinary.cpp" line="159"/>
         <source>Selected file %1 is a valid LeechCraft::Aggregator exchange file, but its version %2 is unknown</source>
-        <translation>Обраний файл %1 є чинним файлом обміну  LeechCraft::Aggregator, але має невідому версію %2</translation>
+        <translation>Обраний файл %1 є дійсним файлом обміну  LeechCraft::Aggregator, але має невідому версію %2</translation>
     </message>
 </context>
 <context>
@@ -1358,7 +1358,7 @@
     <message>
         <location filename="importopml.cpp" line="91"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Файли OPML (*.opml);;Файли XML (*.xml);;Усі файли (*.*)</translation>
     </message>
     <message>
         <location filename="importopml.cpp" line="117"/>
@@ -1380,7 +1380,7 @@
     <message>
         <location filename="importopml.cpp" line="150"/>
         <source>OPML from file %1 is not valid.</source>
-        <translation type="unfinished"/>
+        <translation>OPML із файлу %1 недійсний.</translation>
     </message>
 </context>
 <context>
@@ -1408,7 +1408,7 @@
     <message numerus="yes">
         <location filename="itemslistmodel.cpp" line="256"/>
         <source>%n comment(s)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation><numerusform>%n коментар</numerusform><numerusform>%n коментарі</numerusform><numerusform>%n коментарів</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="itemslistmodel.cpp" line="261"/>
@@ -1466,7 +1466,7 @@
     <message>
         <location filename="itemswidget.cpp" line="539"/>
         <source>Important</source>
-        <translation type="unfinished"/>
+        <translation>Важливе</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="544"/>
@@ -1893,7 +1893,7 @@
     <message>
         <location filename="startupfirstpage.ui" line="102"/>
         <source> day(s)</source>
-        <translation> дн</translation>
+        <translation> днів</translation>
     </message>
 </context>
 <context>

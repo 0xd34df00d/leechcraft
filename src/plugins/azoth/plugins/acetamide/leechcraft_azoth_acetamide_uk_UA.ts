@@ -52,7 +52,7 @@
         <location filename="bookmarkeditwidget.ui" line="138"/>
         <source>Use SSL:</source>
         <oldsource>Use SSL</oldsource>
-        <translation>SSL:</translation>
+        <translation>Використання SSL:</translation>
     </message>
 </context>
 <context>
@@ -289,57 +289,57 @@
     <message>
         <location filename="channelclentry.cpp" line="56"/>
         <source>Role</source>
-        <translation type="unfinished"/>
+        <translation>Роль</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="57"/>
         <source>Participant</source>
-        <translation type="unfinished"/>
+        <translation>Учасник</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="59"/>
         <source>Kick and Ban</source>
-        <translation type="unfinished"/>
+        <translation>Викинути і забанити</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="60"/>
         <source>Kick</source>
-        <translation type="unfinished"/>
+        <translation>Викинути</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="61"/>
         <source>Ban by nickname</source>
-        <translation type="unfinished"/>
+        <translation>Забанити за нікнеймом</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="62"/>
         <source>Ban by mask (*!*@domain)</source>
-        <translation type="unfinished"/>
+        <translation>Забанити за маскою (*!*@domain)</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="63"/>
         <source>Ban by mask (*!user@domain)</source>
-        <translation type="unfinished"/>
+        <translation>Забанити за маскою (*!user@domain)</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="64"/>
         <source>Kick and ban</source>
-        <translation type="unfinished"/>
+        <translation>Викинути і забанити</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="75"/>
         <source>Voiced</source>
-        <translation type="unfinished"/>
+        <translation>Голосовий</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="81"/>
         <source>HalfOperator</source>
-        <translation type="unfinished"/>
+        <translation>Напівоператор</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="87"/>
         <source>Operator</source>
-        <translation type="unfinished"/>
+        <translation>Оператор</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="93"/>
@@ -404,37 +404,37 @@
     <message>
         <location filename="channelhandler.cpp" line="283"/>
         <source>You have been kicked by %1 %2</source>
-        <translation>Ви були кікнуті %1 %2</translation>
+        <translation>Вас викинув %1 %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="120"/>
         <source>%1 has changed nickname to %2</source>
-        <translation type="unfinished"/>
+        <translation>%1 змінив нік на %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="238"/>
         <source>%1 joined the channel as %2</source>
-        <translation type="unfinished"/>
+        <translation>%1 приєднався до каналу як %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="286"/>
         <source>You kicked %1: %2</source>
-        <translation type="unfinished"/>
+        <translation>Ви викинули %1: %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="289"/>
         <source>%1 has been kicked by %2: %3</source>
-        <translation type="unfinished"/>
+        <translation>%2 викинув %1: %3</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="305"/>
         <source>%1 is now %2</source>
-        <translation type="unfinished"/>
+        <translation>%1 тепер %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="306"/>
         <source>%1 is not %2 anymore</source>
-        <translation type="unfinished"/>
+        <translation>%1 більше не %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="531"/>
@@ -442,97 +442,97 @@
         <location filename="channelhandler.cpp" line="559"/>
         <source>%1 set by %2 on %3</source>
         <oldsource> setted by </oldsource>
-        <translation type="unfinished"/>
+        <translation>%1 виставив %2 на %3</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="577"/>
         <source>Channel mode set to invite only channel (+i)</source>
-        <translation type="unfinished"/>
+        <translation>Режим каналу - лише за запрошенням (+i)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="579"/>
         <source>Channel mode set to non invite only channel (-i)</source>
-        <translation type="unfinished"/>
+        <translation>Режим каналу - не лише за запрошенням (-i)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="590"/>
         <source>Channel mode set to moderate channel (+m)</source>
-        <translation type="unfinished"/>
+        <translation>Режим каналу - модерований (+m)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="592"/>
         <source>Channel mode set to unmoderate channel (-m)</source>
-        <translation type="unfinished"/>
+        <translation>Режим каналу - не модерований (-m)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="603"/>
         <source>Channel mode set to block outside messages (+n)</source>
-        <translation type="unfinished"/>
+        <translation>Режим каналу - блокувати зовнішні повідомлення (+n)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="605"/>
         <source>Channel mode set to not block outside messages (-n)</source>
-        <translation type="unfinished"/>
+        <translation>Режим каналу - не блокувати зовнішні повідомлення (-n)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="616"/>
         <source>Channel mode set to private channel (+p)</source>
-        <translation type="unfinished"/>
+        <translation>Режим каналу - приватний (+p)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="618"/>
         <source>Channel mode set to non private channel (-p)</source>
-        <translation type="unfinished"/>
+        <translation>Режим каналу - не приватний (-p)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="629"/>
         <source>Channel mode set to secret channel (+s)</source>
-        <translation type="unfinished"/>
+        <translation>Режим каналу - секретний (+s)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="631"/>
         <source>Channel mode set to non secret channel (-s)</source>
-        <translation type="unfinished"/>
+        <translation>Режим каналу - не секретний (-s)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="642"/>
         <source>Reop flag is set (+r)</source>
-        <translation type="unfinished"/>
+        <translation>Прапорець Reop встановлений (+r)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="644"/>
         <source>Reop flag is remove (-r)</source>
-        <translation type="unfinished"/>
+        <translation>Прапорець Reop не встановлений (-r)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="655"/>
         <source>Change topic available only for channel operators (+t)</source>
-        <translation type="unfinished"/>
+        <translation>Зміна теми доступна лише операторам (+t)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="657"/>
         <source>Change topic available not only for channel operators (-t)</source>
-        <translation type="unfinished"/>
+        <translation>Зміна теми доступна не лише операторам (-t)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="668"/>
         <source>Limit user set to %1 (+l)</source>
-        <translation type="unfinished"/>
+        <translation>Обмеження на кількість користувачів: %1 (+l)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="670"/>
         <source>Remove limit user (-l)</source>
-        <translation type="unfinished"/>
+        <translation>Зняти обмеження на кількість користувачів (-l)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="681"/>
         <source>Channel key set to %1 (+k)</source>
-        <translation type="unfinished"/>
+        <translation>Ключ каналу: %1 (+k)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="683"/>
         <source>Remove channel key (-k)</source>
-        <translation type="unfinished"/>
+        <translation>Видалити ключ каналу (-k)</translation>
     </message>
 </context>
 <context>
@@ -545,7 +545,7 @@
     <message>
         <location filename="channelparticipantentry.cpp" line="50"/>
         <source>CTCP</source>
-        <translation type="unfinished"/>
+        <translation>CTCP</translation>
     </message>
 </context>
 <context>
@@ -553,17 +553,17 @@
     <message>
         <location filename="channelsmanager.cpp" line="465"/>
         <source>%1 added to your ban list.</source>
-        <translation type="unfinished"/>
+        <translation>%1 доданий до вашого бан-листу.</translation>
     </message>
     <message>
         <location filename="channelsmanager.cpp" line="469"/>
         <source>%1 added to your except list.</source>
-        <translation type="unfinished"/>
+        <translation>%1 доданий до вашого списку винятків.</translation>
     </message>
     <message>
         <location filename="channelsmanager.cpp" line="473"/>
         <source>%1 added to your invite list.</source>
-        <translation type="unfinished"/>
+        <translation>%1 доданий до вашого списку запрошень.</translation>
     </message>
 </context>
 <context>
@@ -572,7 +572,7 @@
         <location filename="clientconnection.cpp" line="102"/>
         <source>This channel is already joined.</source>
         <oldsource>This server is already joined.</oldsource>
-        <translation type="unfinished"/>
+        <translation>Цей канал вже було приєднано.</translation>
     </message>
 </context>
 <context>
@@ -580,32 +580,32 @@
     <message>
         <location filename="invitechannelsdialog.cpp" line="43"/>
         <source>Join</source>
-        <translation>Зайти</translation>
+        <translation>Приєднатись</translation>
     </message>
     <message>
         <location filename="invitechannelsdialog.cpp" line="44"/>
         <source>Channel name</source>
-        <translation type="unfinished"/>
+        <translation>Назва каналу</translation>
     </message>
     <message>
         <location filename="invitechannelsdialog.cpp" line="45"/>
         <source>Nickname</source>
-        <translation type="unfinished"/>
+        <translation>Нік</translation>
     </message>
     <message>
         <location filename="invitechannelsdialog.cpp" line="59"/>
         <source>Always ask</source>
-        <translation type="unfinished"/>
+        <translation>Завжди запитувати</translation>
     </message>
     <message>
         <location filename="invitechannelsdialog.cpp" line="64"/>
         <source>Always join</source>
-        <translation type="unfinished"/>
+        <translation>Завжди приєднуватись</translation>
     </message>
     <message>
         <location filename="invitechannelsdialog.cpp" line="69"/>
         <source>Always ignore</source>
-        <translation type="unfinished"/>
+        <translation>Завжди ігнорувати</translation>
     </message>
 </context>
 <context>
@@ -613,7 +613,7 @@
     <message>
         <location filename="ircprotocol.cpp" line="244"/>
         <source>This channel needs password.</source>
-        <translation type="unfinished"/>
+        <translation>Для входу в цей канал потрібен пароль.</translation>
     </message>
     <message>
         <location filename="ircprotocol.cpp" line="245"/>
@@ -626,7 +626,7 @@
     <message>
         <location filename="ircserverclentry.cpp" line="83"/>
         <source>Servers</source>
-        <translation type="unfinished"/>
+        <translation>Сервери</translation>
     </message>
 </context>
 <context>
@@ -634,57 +634,57 @@
     <message>
         <location filename="ircserverhandler.cpp" line="526"/>
         <source>%1 is a %2</source>
-        <translation type="unfinished"/>
+        <translation>%1 - %2</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="531"/>
         <source>%1 is on server</source>
-        <translation type="unfinished"/>
+        <translation>%1 присутній на сервері</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="551"/>
         <source>%1 is %2</source>
-        <translation type="unfinished"/>
+        <translation>%1 є %2</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="568"/>
         <source>%1&apos;s real name is %2</source>
-        <translation type="unfinished"/>
+        <translation>Справжнє ім’я %1 - %2</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="584"/>
         <source>%1 is on channels: %2</source>
-        <translation type="unfinished"/>
+        <translation>%1 присутній на каналах: %2</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="603"/>
         <source>%1&apos;s server is: %2 - %3</source>
-        <translation type="unfinished"/>
+        <translation>Сервер %1: %2 - %3</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="614"/>
         <source>%1&apos;s idle time: %2</source>
-        <translation type="unfinished"/>
+        <translation>%1 відсутній: %2</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="624"/>
         <source>%1&apos;s auth date: %2</source>
-        <translation type="unfinished"/>
+        <translation>Дата авторизації %1: %2</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="644"/>
         <source>%1 is logged in as %2 </source>
-        <translation type="unfinished"/>
+        <translation>%1 зайшов як %2</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="655"/>
         <source>%1 is using a secure connection</source>
-        <translation type="unfinished"/>
+        <translation>%1 використовує безпечне підключення</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="699"/>
         <source>%1 [%2@%3]: Channel: %4, Server: %5, Hops: %6, Flags: %7, Away: %8, Real Name: %9</source>
-        <translation type="unfinished"/>
+        <translation>%1 [%2@%3]: Канал: %4, Сервер: %5, Хопів: %6, Прапорців: %7, Відсутній: %8, Справжнє ім’я: %9</translation>
     </message>
 </context>
 <context>
@@ -692,27 +692,27 @@
     <message>
         <location filename="nickservidentifywidget.cpp" line="40"/>
         <source>Server</source>
-        <translation type="unfinished"/>
+        <translation>Сервер</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.cpp" line="41"/>
         <source>Nickname</source>
-        <translation type="unfinished"/>
+        <translation>Нік</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.cpp" line="42"/>
         <source>NickServ nickname</source>
-        <translation type="unfinished"/>
+        <translation>Нік NickServ</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.cpp" line="43"/>
         <source>NickServ auth string</source>
-        <translation type="unfinished"/>
+        <translation>Рядок авторизації NickServ</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.cpp" line="44"/>
         <source>Auth message</source>
-        <translation type="unfinished"/>
+        <translation>Повідомдлення авторизації</translation>
     </message>
 </context>
 <context>
@@ -728,7 +728,7 @@
     <message>
         <location filename="serverparticipantentry.cpp" line="60"/>
         <source>Private chats</source>
-        <translation type="unfinished"/>
+        <translation>Приватні чати</translation>
     </message>
 </context>
 <context>
@@ -736,17 +736,17 @@
     <message>
         <location filename="serverresponsemanager.cpp" line="333"/>
         <source> invites you to a channel </source>
-        <translation type="unfinished"/>
+        <translation>запрошує вас до каналу</translation>
     </message>
     <message>
         <location filename="serverresponsemanager.cpp" line="341"/>
         <source>You invite </source>
-        <translation type="unfinished"/>
+        <translation>Ви запрошуєте</translation>
     </message>
     <message>
         <location filename="serverresponsemanager.cpp" line="342"/>
         <source> to a channel </source>
-        <translation type="unfinished"/>
+        <translation>до каналу</translation>
     </message>
     <message>
         <location filename="serverresponsemanager.cpp" line="374"/>
@@ -755,22 +755,22 @@
         <location filename="serverresponsemanager.cpp" line="396"/>
         <location filename="serverresponsemanager.cpp" line="404"/>
         <source>Received request %1 from %2, sending response</source>
-        <translation type="unfinished"/>
+        <translation>Отриманий запит %1 від %2, надсилається відповідь.</translation>
     </message>
     <message>
         <location filename="serverresponsemanager.cpp" line="432"/>
         <source>Received answer CTCP-%1 from %2: %3</source>
-        <translation type="unfinished"/>
+        <translation>Отримана відповідь CTCP-%1 від %2: %3</translation>
     </message>
     <message>
         <location filename="serverresponsemanager.cpp" line="618"/>
         <source> summoning to IRC</source>
-        <translation type="unfinished"/>
+        <translation>кличе до IRC</translation>
     </message>
     <message>
         <location filename="serverresponsemanager.cpp" line="717"/>
         <source>End of USERS</source>
-        <translation type="unfinished"/>
+        <translation>Кінець USERS</translation>
     </message>
 </context>
 <context>
@@ -786,7 +786,7 @@
     <message>
         <location filename="newnickservidentifydialog.ui" line="14"/>
         <source>New NickServ identification</source>
-        <translation type="unfinished"/>
+        <translation>Нове підключення через NickServ</translation>
     </message>
     <message>
         <location filename="newnickservidentifydialog.ui" line="22"/>
@@ -796,23 +796,23 @@
     <message>
         <location filename="newnickservidentifydialog.ui" line="39"/>
         <source>NickServ nickname:</source>
-        <translation type="unfinished"/>
+        <translation>Нік NickServ:</translation>
     </message>
     <message>
         <location filename="newnickservidentifydialog.ui" line="56"/>
         <source>NickServ auth string:</source>
-        <translation type="unfinished"/>
+        <translation>Рядок підключення NickServ:</translation>
     </message>
     <message>
         <location filename="newnickservidentifydialog.ui" line="69"/>
         <source>Auth message:</source>
         <oldsource>Auth message</oldsource>
-        <translation type="unfinished"/>
+        <translation>Повідомдлення авторизації</translation>
     </message>
     <message>
         <location filename="newnickservidentifydialog.ui" line="86"/>
         <source>Server name:</source>
-        <translation type="unfinished"/>
+        <translation>Назва сервера:</translation>
     </message>
 </context>
 <context>
@@ -820,17 +820,17 @@
     <message>
         <location filename="nickservidentifywidget.ui" line="14"/>
         <source>NickServ identifies</source>
-        <translation type="unfinished"/>
+        <translation>NickServ визначає</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.ui" line="28"/>
         <source>Add</source>
-        <translation type="unfinished"/>
+        <translation>Додати</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.ui" line="35"/>
         <source>Edit</source>
-        <translation>Редагування</translation>
+        <translation>Редагувати</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.ui" line="42"/>
@@ -843,22 +843,22 @@
     <message>
         <location filename="serverinfowidget.ui" line="14"/>
         <source>Server information</source>
-        <translation type="unfinished"/>
+        <translation>Інформація про сервер</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="24"/>
         <source>Base parameters</source>
-        <translation type="unfinished"/>
+        <translation>Параметри бази</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="50"/>
         <source>The IRC network name.</source>
-        <translation type="unfinished"/>
+        <translation>Назва мережі IRC.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="53"/>
         <source>NETWORK:</source>
-        <translation type="unfinished"/>
+        <translation>NETWORK:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="63"/>
@@ -868,17 +868,22 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The IRC network name.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: NETWORK=EFnet indicates that the client is connected  to the EFnet IRC network.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The IRC network name.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Приклад: NETWORK=EFnet вказує на те, що клієнт підключений до мережі IRC EFnet.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="78"/>
         <source>Maximum number of channel modes with parameter allowed per MODE command.</source>
-        <translation type="unfinished"/>
+        <translation>Максимальна кількість режимів з параметром, дозволена на одну команду MODE.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="81"/>
         <source>MODES:</source>
-        <translation type="unfinished"/>
+        <translation>MODES:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="94"/>
@@ -888,28 +893,33 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum number of channel modes with parameter allowed per MODE command.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: MODES=3 indicates that 3 modes may be set with a MODE command.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum number of channel modes with parameter allowed per MODE command.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Приклад: MODES=3 вказують на те, що за допомогою команди MODE можна встанновити 3 режими.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="109"/>
         <location filename="serverinfowidget.ui" line="125"/>
         <source>Maximum number of channels allowed to join by channel prefix. </source>
-        <translation type="unfinished"/>
+        <translation>Максимальна кількість каналів, до яких можна приєднатися за допомогою префіксу каналу.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="112"/>
         <source>CHANLIMIT:</source>
-        <translation type="unfinished"/>
+        <translation>CHANLIMIT:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="135"/>
         <source>Maximum nickname length.</source>
-        <translation type="unfinished"/>
+        <translation>Максимальна довжина ніку.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="138"/>
         <source>NICKLEN:</source>
-        <translation type="unfinished"/>
+        <translation>NICKLEN:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="148"/>
@@ -918,17 +928,21 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum nickname length.&lt;br /&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: NICKLEN=9 indicates that clients may have nicknames up to 9 characters in length.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum nickname length.&lt;br /&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Приклад: NICKLEN=9 вказує на те, що у клієнтів можкть бути ніки довжиною до 9 знаків.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="162"/>
         <source>Maximum number entries in the list per mode. </source>
-        <translation type="unfinished"/>
+        <translation>Максимальна кількість записів на режим.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="165"/>
         <source>MAXLIST:</source>
-        <translation type="unfinished"/>
+        <translation>MAXLIST:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="175"/>
@@ -939,7 +953,12 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum number entries in the list per mode. &lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;[Example: Given &amp;quot;b:25,eI:50&amp;quot;, it would be possible to set up to 25 &amp;quot;+b&amp;quot; modes, and up to 50 of a combination of &amp;quot;+e&amp;quot; and &amp;quot;+I&amp;quot;  modes, e.g. 30 &amp;quot;+e&amp;quot; and 20 &amp;quot;+I&amp;quot; modes, making up a total of 50.] &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: MAXLIST=b:25 indicates that 25 bans may be set on a      channel at one time.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;⏎ p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum number entries in the list per mode. &lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: Given &amp;quot;b:25,eI:50&amp;quot;, it would be possible to set up to 25 &amp;quot;+b&amp;quot; modes, and up to 50 of a combination of &amp;quot;+e&amp;quot; and &amp;quot;+I&amp;quot; modes, e.g. 30 &amp;quot;+e&amp;quot; and 20 &amp;quot;+I&amp;quot; modes, making up a total of 50.] &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Приклад: MAXLIST=b:25 вказує на те, що на каналі може бути до 25 банів одночасно.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="191"/>
@@ -953,55 +972,63 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;rfc1459: ascii with additional {}|~ the lowercase of []\^. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;strict-rfc1459: ascii with additional {}| the lowercase of []\. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Note: RFC1459 forgot to mention the ~ and ^ although in all known implementations those are considered equivalent too. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Case mapping used for nick- and channel name comparing. Current possible values: &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ascii: The chars [a-z] are lowercase of [A-Z]. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;rfc1459: ascii with additional {}|~ the lowercase of []\^. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;strict-rfc1459: ascii with additional {}| the lowercase of []\. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Примітка: RFC1459 забув про ~ і ^, хоча у всіх відомих імплементаціях вони також еквівалентні. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="202"/>
         <source>CASEMAPPING:</source>
-        <translation type="unfinished"/>
+        <translation>CASEMAPPING:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="230"/>
         <location filename="serverinfowidget.ui" line="243"/>
         <source>Maximum topic length. </source>
-        <translation type="unfinished"/>
+        <translation>Максимальна довжина теми.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="233"/>
         <source>TOPICLEN:</source>
-        <translation type="unfinished"/>
+        <translation>TOPICLEN:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="253"/>
         <location filename="serverinfowidget.ui" line="266"/>
         <source>Maximum kick comment length. </source>
-        <translation type="unfinished"/>
+        <translation>Максимальна довжина коментарію для викидання.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="256"/>
         <source>KICKLEN:</source>
-        <translation type="unfinished"/>
+        <translation>KICKLEN:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="276"/>
         <location filename="serverinfowidget.ui" line="289"/>
         <source>Maximum channel name length.</source>
-        <translation type="unfinished"/>
+        <translation>Максимальна довжина назви каналу.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="279"/>
         <source>CHANNELLEN:</source>
-        <translation type="unfinished"/>
+        <translation>CHANNELLEN:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="299"/>
         <source>The IDCHAN parameter indicates the existence of &quot;safe&quot; channels as described in RFC 2811, and the length of the &quot;id&quot; portion of those channel names.</source>
-        <translation type="unfinished"/>
+        <translation>Параметр IDCHAN вказує на наявність &quot;безпечних&quot; каналів, описаних у RFC 2811, і довжину частки &quot;id&quot; імен цих каналів.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="302"/>
         <source>IDCHAN:</source>
-        <translation type="unfinished"/>
+        <translation>IDCHAN:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="312"/>
@@ -1011,17 +1038,17 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The IDCHAN parameter indicates the existence of &amp;quot;safe&amp;quot; channels as described in RFC 2811, and the length of the &amp;quot;id&amp;quot; portion of those channel names.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: IDCHAN=!:5 means the client should expect IDs which are 5 characters in length on &amp;quot;!&amp;quot; channels; for example  &amp;quot;!JNB4Sircd&amp;quot;, where &amp;quot;JNB4S&amp;quot; is the ID and &amp;quot;ircd&amp;quot; is the channel&apos;s short name.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;⏎ &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;⏎ p, li { white-space: pre-wrap; }⏎ &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;⏎ &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The IDCHAN parameter indicates the existence of &amp;quot;safe&amp;quot; channels as described in RFC 2811, and the length of the &amp;quot;id&amp;quot; portion of those channel names.&lt;/p&gt;⏎ &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Приклад: IDCHAN=!:5 означає, що клієнт має очікувати ID довжиною 5 символів на каналах &amp;quot;!&amp;quot;; наприклад, &amp;quot;!JNB4Sircd&amp;quot;, де &amp;quot;JNB4S&amp;quot; - ID, а &amp;quot;ircd&amp;quot; коротке ім&apos;я каналу.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="327"/>
         <source>The server supports a method of sending a NOTICE message to only those people on a channel with the specified status.  This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.</source>
-        <translation type="unfinished"/>
+        <translation>Сервер підтримує метод відправки повідомлення NOTICE лише людям з указаним статусом. Це можна реалізувати за допомогою команди NOTICE, встановивши прапорець бажаного статусу на канал.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="330"/>
         <source>STATUSMSG:</source>
-        <translation type="unfinished"/>
+        <translation>STATUSMSG:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="340"/>
@@ -1031,17 +1058,17 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;The server supports a method of sending a NOTICE message to only those people on a channel with the specified status.  This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.&lt;/span&gt;&lt;/pre&gt;
 &lt;pre style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: NOTICE @#channel :Hi there]&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;⏎ &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;⏎ p, li { white-space: pre-wrap; }⏎ &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;⏎ &lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;Сервер підтримує метод відправки повідомлення NOTICE лише людям з указаним статусом. Це можна реалізувати за допомогою команди NOTICE, встановивши прапорець бажаного статусу на канал.&lt;/span&gt;&lt;/pre&gt;⏎ &lt;pre style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: NOTICE @#channel :Hi there]&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="355"/>
         <source>The STD parameter indicates which form(s) of the ISUPPORT numeric are used by the server.  Currently, one only possible value is defined; that is &quot;rfcnnnn&quot;, which refers to this document.</source>
-        <translation type="unfinished"/>
+        <translation>Параметр STD вказує на те, які форми числа ISUPPORT використовуються сервером. На даний момент визначено лише одне можливе значення, &quot;rfcnnnn&quot;, яке вказує на цей документ.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="358"/>
         <source>STD:</source>
-        <translation type="unfinished"/>
+        <translation>STD:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="368"/>
@@ -1050,99 +1077,99 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;The STD parameter indicates which form(s) of the ISUPPORT numeric are used by the server.  Currently, one only possible value is defined; that is &amp;quot;rfcnnnn&amp;quot;, which refers to this document.&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;⏎ &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;⏎ p, li { white-space: pre-wrap; }⏎ &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;⏎ &lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;Параметр STD вказує на те, які форми числа ISUPPORT використовуються сервером. На даний момент визначено лише одне можливе значення, &quot;rfcnnnn&quot;, яке вказує на цей документ.&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="382"/>
         <location filename="serverinfowidget.ui" line="398"/>
         <source>The EXCEPTS parameter indicates that the server supports &quot;ban exceptions&quot; (channel mode +e), as defined in RFC 2811, section 4.3.1</source>
-        <translation type="unfinished"/>
+        <translation>Параметр EXCEPTS вказує на те, що сервер підтримує &quot;винятки банів&quot; (режим каналу +e), визначені в RFC 2811, секція 4.3.1</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="385"/>
         <source>EXCEPTS:</source>
-        <translation type="unfinished"/>
+        <translation>EXCEPTS:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="405"/>
         <location filename="serverinfowidget.ui" line="421"/>
         <source>The SAFELIST parameter indicates that the client may request a &quot;LIST&quot; command from the server, without being disconnected due to the large amount of data generated by the command.</source>
-        <translation type="unfinished"/>
+        <translation>Параметр SAFELIST вказує на те, що клієнт може дати запит на команду &quot;LIST&quot; із сервера, не роз’єднуючись через великий обсяг даних, які ця команда генерує.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="408"/>
         <source>SAFELIST:</source>
-        <translation type="unfinished"/>
+        <translation>SAFELIST:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="428"/>
         <source>INVEX:</source>
-        <translation type="unfinished"/>
+        <translation>INVEX:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="452"/>
         <source>Channel parameters</source>
-        <translation type="unfinished"/>
+        <translation>Параметри каналу</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="463"/>
         <source>Mode that adds or removes a nick or address to a list. Always has a parameter. </source>
-        <translation type="unfinished"/>
+        <translation>Режим, що додає або видаляє нік чи адресу зі списку. Завжди має параметр.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="466"/>
         <source>CHANMODES type A:</source>
-        <translation type="unfinished"/>
+        <translation>CHANMODES тип A:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="483"/>
         <source>Mode that changes a setting and always has a parameter. </source>
-        <translation type="unfinished"/>
+        <translation>Режим, який змінює налаштування та завжди має параметр.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="486"/>
         <source>CHANMODES type B:</source>
-        <translation type="unfinished"/>
+        <translation>CHANMODES тип B:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="503"/>
         <source>Mode that changes a setting and only has a parameter when set. </source>
-        <translation type="unfinished"/>
+        <translation>Режим, який змінює налаштування і має параметр лише коли активний.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="506"/>
         <source>CHANMODES type C:</source>
-        <translation type="unfinished"/>
+        <translation>CHANMODES тип C:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="523"/>
         <source>Mode that changes a setting and never has a parameter. </source>
-        <translation type="unfinished"/>
+        <translation>Режим, який змінює налаштування та та ніколи не має параметрів.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="526"/>
         <source>CHANMODES type D:</source>
-        <translation type="unfinished"/>
+        <translation>CHANMODES тип D:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="554"/>
         <source>The supported channel prefixes. </source>
-        <translation type="unfinished"/>
+        <translation>Підтримувані префікси каналу.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="557"/>
         <source>CHANTYPES:</source>
-        <translation type="unfinished"/>
+        <translation>CHANTYPES:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="581"/>
         <source>A list of channel modes a person can get and the respective prefix a channel or nickname will get in case the person has it. The order of the modes goes from most powerful to least powerful. Those prefixes are shown in the output of the WHOIS, WHO and NAMES command. </source>
-        <translation type="unfinished"/>
+        <translation>Список можливих режимів каналу і відповідний префікс, який отримає канал або нікнейм. Порядок режимів - від найбільш до найменш потужного. Ці префікси відображаються у виводі команд WHOIS, WHO і NAMES. </translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="584"/>
         <source>PREFIX:</source>
-        <translation type="unfinished"/>
+        <translation>PREFIX:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="597"/>
@@ -1152,32 +1179,37 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;[Example: (ab)&amp;amp;* maps the channel mode 'a' to the channel status flag '&amp;amp;', and channel mode 'b' to the channel status flag '*'.]&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: PREFIX=(ohv)@%+ maps channel mode &apos;o&apos; to status &apos;@&apos;, &apos;h&apos; to status &apos;%&apos;, and &apos;v&apos; to status +.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Приклад: (ab)&amp;amp;* прив’язує режим каналу &apos;a&apos; до статусного прапорця &apos;&amp;amp;&apos;, а режим каналу &apos;b&apos; до статусного прапорця &apos;*&apos;.]&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Приклад: PREFIX=(ohv)@%+ прив’язує режим каналу &apos;o&apos; до статусу &apos;@&apos;, &apos;h&apos; до статусу &apos;%&apos;, а &apos;v&apos; - до статусу +.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="609"/>
         <source>Mode</source>
-        <translation type="unfinished"/>
+        <translation>Режим</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="614"/>
         <source>Prefix</source>
-        <translation type="unfinished"/>
+        <translation>Префікс</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="625"/>
         <source>Maximum targets</source>
-        <translation type="unfinished"/>
+        <translation>Максимальна кількість кількість таргетів</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="632"/>
         <source>Target</source>
-        <translation type="unfinished"/>
+        <translation>Таргет</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="637"/>
         <source>Maximum count</source>
-        <translation type="unfinished"/>
+        <translation>Підрахунок максимуму</translation>
     </message>
 </context>
 <context>
@@ -1201,23 +1233,23 @@ p, li { white-space: pre-wrap; }
         <location filename="vcarddialog.ui" line="72"/>
         <source>User name:</source>
         <oldsource>User name</oldsource>
-        <translation type="unfinished"/>
+        <translation>Ім’я користувача:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="89"/>
         <source>Host name:</source>
         <oldsource>Host name</oldsource>
-        <translation type="unfinished"/>
+        <translation>Ім’я хоста:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="106"/>
         <source>Server name:</source>
-        <translation type="unfinished"/>
+        <translation>Ім’я сервера:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="120"/>
         <source>Server dislocation:</source>
-        <translation type="unfinished"/>
+        <translation>Розташування сервера:</translation>
     </message>
 </context>
 <context>
@@ -1230,32 +1262,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Acetamide</source>
-        <translation type="unfinished"/>
+        <translation>Acetamide</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Autodisconnect from server when no channels are active</source>
-        <translation type="unfinished"/>
+        <translation>Автоматично відключатися від серверу, коли всі канали неактивні</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Show invite dialog</source>
-        <translation type="unfinished"/>
+        <translation>Показувати діалог запрошення</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Duplicate command answer in server&apos;s tab</source>
-        <translation type="unfinished"/>
+        <translation>Продублювати відповідь команди у вкладці серверу</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Use WHO request for checking AWAY status</source>
-        <translation type="unfinished"/>
+        <translation>Використовувати запит WHO для перевірки статусу AWAY</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>Period for WHO request:</source>
-        <translation type="unfinished"/>
+        <translation>Період для запиту WHO:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
@@ -1265,12 +1297,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>NickServ</source>
-        <translation type="unfinished"/>
+        <translation>NickServ</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>NickServ identify</source>
-        <translation type="unfinished"/>
+        <translation>Ідентифікація NickServ</translation>
     </message>
 </context>
 </TS>

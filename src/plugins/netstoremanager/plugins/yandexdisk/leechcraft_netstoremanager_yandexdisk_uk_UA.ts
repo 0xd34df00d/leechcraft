@@ -4,7 +4,7 @@
     <message>
         <location filename="account.cpp" line="91"/>
         <source>Enter password for Yandex.Disk account %1 with login %2:</source>
-        <translation type="unfinished"/>
+        <translation>Введіть пароль до вашого акаунту %1 для Яндекс.Диску з логіном %2:</translation>
     </message>
     <message>
         <location filename="account.cpp" line="100"/>
@@ -14,12 +14,12 @@
     <message>
         <location filename="account.cpp" line="101"/>
         <source>Enter account login:</source>
-        <translation type="unfinished"/>
+        <translation>Введіть логін для акаунту:</translation>
     </message>
     <message>
         <location filename="account.cpp" line="178"/>
         <source>File</source>
-        <translation type="unfinished"/>
+        <translation>Файл</translation>
     </message>
     <message>
         <location filename="account.cpp" line="179"/>
@@ -29,12 +29,12 @@
     <message>
         <location filename="account.cpp" line="180"/>
         <source>Valid for</source>
-        <translation type="unfinished"/>
+        <translation>Дійсний</translation>
     </message>
     <message>
         <location filename="account.cpp" line="181"/>
         <source>Password</source>
-        <translation type="unfinished"/>
+        <translation>Пароль</translation>
     </message>
     <message>
         <location filename="account.cpp" line="241"/>
@@ -44,7 +44,7 @@
     <message>
         <location filename="account.cpp" line="241"/>
         <source>no</source>
-        <translation type="unfinished"/>
+        <translation>ні</translation>
     </message>
 </context>
 <context>
@@ -52,12 +52,12 @@
     <message>
         <location filename="actorbase.cpp" line="52"/>
         <source>Authenticating...</source>
-        <translation type="unfinished"/>
+        <translation>Аутентифікація...</translation>
     </message>
     <message>
         <location filename="actorbase.cpp" line="73"/>
         <source>Error: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Помилка: %1.</translation>
     </message>
 </context>
 <context>
@@ -65,7 +65,7 @@
     <message>
         <location filename="authmanager.cpp" line="103"/>
         <source>Unexpected server reply.</source>
-        <translation type="unfinished"/>
+        <translation>Неочікувана відповідь сервера.</translation>
     </message>
 </context>
 <context>
@@ -73,12 +73,12 @@
     <message>
         <location filename="flgetter.cpp" line="41"/>
         <source>Getting filelist...</source>
-        <translation type="unfinished"/>
+        <translation>Отримання списку файлів...</translation>
     </message>
     <message>
         <location filename="flgetter.cpp" line="94"/>
         <source>Filelist downloaded</source>
-        <translation type="unfinished"/>
+        <translation>Список файлів завантажений</translation>
     </message>
 </context>
 <context>
@@ -86,12 +86,12 @@
     <message>
         <location filename="yandexdisk.cpp" line="56"/>
         <source>Support for the Yandex.Disk for NetStoreManager plugin.</source>
-        <translation type="unfinished"/>
+        <translation>Підтримка Яндекс.Диску для плагіну NetStoreManager.</translation>
     </message>
     <message>
         <location filename="yandexdisk.cpp" line="78"/>
         <source>Yandex.Disk</source>
-        <translation type="unfinished"/>
+        <translation>Яндекс.Диск</translation>
     </message>
 </context>
 <context>
@@ -99,7 +99,7 @@
     <message>
         <location filename="simpleactor.cpp" line="43"/>
         <source>Requesting action...</source>
-        <translation type="unfinished"/>
+        <translation>Запит дії...</translation>
     </message>
 </context>
 <context>
@@ -107,57 +107,57 @@
     <message>
         <location filename="uploadmanager.cpp" line="174"/>
         <source>Authenticating...</source>
-        <translation type="unfinished"/>
+        <translation>Аутентифікація...</translation>
     </message>
     <message>
         <location filename="uploadmanager.cpp" line="187"/>
         <source>Getting storage...</source>
-        <translation type="unfinished"/>
+        <translation>Отримання сховища...</translation>
     </message>
     <message>
         <location filename="uploadmanager.cpp" line="197"/>
         <source>Network error while getting storage: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Помилка мережі під час отримання сховища: %1.</translation>
     </message>
     <message>
         <location filename="uploadmanager.cpp" line="208"/>
         <source>Error parsing server reply.</source>
-        <translation type="unfinished"/>
+        <translation>Помилка розбору відповіді сервера.</translation>
     </message>
     <message>
         <location filename="uploadmanager.cpp" line="213"/>
         <source>Uploading file...</source>
-        <translation type="unfinished"/>
+        <translation>Завантаження файлу...</translation>
     </message>
     <message>
         <location filename="uploadmanager.cpp" line="219"/>
         <source>Error opening file.</source>
-        <translation type="unfinished"/>
+        <translation>Помилка відкриття файлу.</translation>
     </message>
     <message>
         <location filename="uploadmanager.cpp" line="254"/>
         <source>Error uploading file: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Помилка завантаження файлу: %1.</translation>
     </message>
     <message>
         <location filename="uploadmanager.cpp" line="261"/>
         <source>Verifying...</source>
-        <translation type="unfinished"/>
+        <translation>Перевірка...</translation>
     </message>
     <message>
         <location filename="uploadmanager.cpp" line="275"/>
         <source>Error verifying upload: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Помилка перевірки завантаження: %1.</translation>
     </message>
     <message>
         <location filename="uploadmanager.cpp" line="286"/>
         <source>Error verifying uploaded file.</source>
-        <translation type="unfinished"/>
+        <translation>Помилка перевірки завантажуваного файлу.</translation>
     </message>
     <message>
         <location filename="uploadmanager.cpp" line="291"/>
         <source>Uploaded successfully</source>
-        <translation type="unfinished"/>
+        <translation>Успішно завантажено</translation>
     </message>
 </context>
 </TS>

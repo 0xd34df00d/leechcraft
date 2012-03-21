@@ -4,27 +4,27 @@
     <message>
         <location filename="autopaste.cpp" line="67"/>
         <source>Detects long messages and suggests pasting them to a pastebin.</source>
-        <translation type="unfinished"/>
+        <translation>Виявляє довгі повідомлення і пропонує відправити їх на pastebin.</translation>
     </message>
     <message>
         <location filename="autopaste.cpp" line="150"/>
         <source>Confirm pasting</source>
-        <translation type="unfinished"/>
+        <translation>Підтвердження відправки</translation>
     </message>
     <message>
         <location filename="autopaste.cpp" line="151"/>
         <source>This message is too long according to current settings. Would you like to paste it on a pastebin?</source>
-        <translation type="unfinished"/>
+        <translation>Це повідомлення надто довге. Бажаєте відправити його на pastebin?</translation>
     </message>
     <message>
         <location filename="autopaste.cpp" line="178"/>
         <source>Text pasted</source>
-        <translation type="unfinished"/>
+        <translation>Текст відправлено.</translation>
     </message>
     <message>
         <location filename="autopaste.cpp" line="179"/>
         <source>Your text has been pasted: %1. The URL has been copied to the clipboard.</source>
-        <translation type="unfinished"/>
+        <translation>Ваш текст відправлено: %1. URL скопійовано до буферу обміну.</translation>
     </message>
 </context>
 <context>
@@ -32,32 +32,32 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Azoth Autopaste</source>
-        <translation type="unfinished"/>
+        <translation>Azoth Autopaste</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Detection</source>
-        <translation type="unfinished"/>
+        <translation>Виявлення</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Enable for normal one-to-one chats</source>
-        <translation type="unfinished"/>
+        <translation>Увімкнути для звичайних чатів (один-на-один)</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Enable for multiuser conferences</source>
-        <translation type="unfinished"/>
+        <translation>Увімкнути для багатокористувацьких конференцій</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Enable for private chats in conferences</source>
-        <translation type="unfinished"/>
+        <translation>Увімкнути для приватних чатів у конференціях</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Number of lines to be detected as paste:</source>
-        <translation type="unfinished"/>
+        <translation>Гранична кількість рядків</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
@@ -67,7 +67,7 @@
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>Confirm pasting</source>
-        <translation type="unfinished"/>
+        <translation>Підтвердження відправки</translation>
     </message>
 </context>
 </TS>
