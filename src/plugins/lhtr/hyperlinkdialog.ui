@@ -65,7 +65,7 @@
        </item>
        <item>
         <property name="text">
-         <string>_blank</string>
+         <string notr="true">_blank</string>
         </property>
        </item>
       </widget>
