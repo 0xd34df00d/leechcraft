@@ -145,12 +145,12 @@ namespace LeechCraft
 		if (!item || item->data (RoleOriginalName).isNull ())
 			return;
 
-		std::auto_ptr<KeySequencer> dia (new KeySequencer (this));
-		if (dia->exec () == QDialog::Rejected)
+		KeySequencer dia (this);
+		if (dia.exec () == QDialog::Rejected)
 			return;
 
 		QKeySequences_t newSeqs;
-		newSeqs << dia->GetResult ();
+		newSeqs << dia.GetResult ();
 		if (item->data (RoleOldSequence).isNull ())
 			item->setData (item->data (RoleSequence), RoleOldSequence);
 		item->setData (QVariant::fromValue<QKeySequences_t> (newSeqs), RoleSequence);
