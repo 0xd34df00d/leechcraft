@@ -89,12 +89,7 @@ namespace LeechCraft
 			// FIXME use all the sequences here, not the first one
 			const auto& sequences = settings.value (name,
 					QVariant::fromValue<QKeySequences_t> (info [name].Seqs_)).value<QKeySequences_t> ();
-
 			const auto& sequence = sequences.value (0);
-
-			QStringList strings;
-			strings << info [name].UserVisibleText_
-				<< sequence.toString ();
 
 			QList<QStandardItem*> itemRow;
 			itemRow << new QStandardItem (info [name].UserVisibleText_);
