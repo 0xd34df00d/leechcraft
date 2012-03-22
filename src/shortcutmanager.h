@@ -33,12 +33,12 @@ namespace LeechCraft
 		Q_INTERFACES (IShortcutProxy);
 
 		Ui::ShortcutManager Ui_;
-		enum
+		enum Roles
 		{
-			RoleObject = 50,
-			RoleOriginalName,
-			RoleSequence,
-			RoleOldSequence
+			Object = Qt::UserRole + 1,
+			OriginalName,
+			Sequence,
+			OldSequence
 		};
 		QStandardItemModel *Model_;
 	public:

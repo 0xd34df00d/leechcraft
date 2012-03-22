@@ -57,7 +57,7 @@ namespace LeechCraft
 		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
 		{
 			auto objectItem = Model_->item (i);
-			QObject *o = objectItem->data (RoleObject).value<QObject*> ();
+			QObject *o = objectItem->data (Roles::Object).value<QObject*> ();
 			if (o == object)
 				return;
 		}
@@ -79,7 +79,7 @@ namespace LeechCraft
 		parentRow << new QStandardItem (objName);
 		parentRow << new QStandardItem (objDescr);
 		parentRow.at (0)->setIcon (objIcon);
-		parentRow.at (0)->setData (	QVariant::fromValue<QObject*> (object), RoleObject);
+		parentRow.at (0)->setData (	QVariant::fromValue<QObject*> (object), Roles::Object);
 
 		const auto& info = ihs->GetActionInfo ();
 
@@ -95,8 +95,8 @@ namespace LeechCraft
 			itemRow << new QStandardItem (info [name].UserVisibleText_);
 			itemRow << new QStandardItem (sequence.toString ());
 			itemRow.at (0)->setIcon (info [name].Icon_);
-			itemRow.at (0)->setData (name, RoleOriginalName);
-			itemRow.at (0)->setData (QVariant::fromValue<QKeySequences_t> (sequences), RoleSequence);
+			itemRow.at (0)->setData (name, Roles::OriginalName);
+			itemRow.at (0)->setData (QVariant::fromValue<QKeySequences_t> (sequences), Roles::Sequence);
 			parentRow.at (0)->appendRow (itemRow);
 
 			if (sequences != info [name].Seqs_)
@@ -118,14 +118,14 @@ namespace LeechCraft
 		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
 		{
 			auto objectItem = Model_->item (i);
-			if (objectItem->data (RoleObject).value<QObject*> () != object)
+			if (objectItem->data (Roles::Object).value<QObject*> () != object)
 				continue;
 
 			for (int j = 0, namesSize = objectItem->rowCount (); j < namesSize; ++j)
 			{
 				auto item = objectItem->child (j);
-				if (item->data (RoleOriginalName).toString () == originalName)
-					return item->data (RoleSequence).value<QKeySequences_t> ();
+				if (item->data (Roles::OriginalName).toString () == originalName)
+					return item->data (Roles::Sequence).value<QKeySequences_t> ();
 			}
 			return QKeySequences_t ();
 		}
@@ -137,7 +137,7 @@ namespace LeechCraft
 	{
 		auto item = Model_->itemFromIndex (index.sibling (index.row (), 0));
 		// Root or something
-		if (!item || item->data (RoleOriginalName).isNull ())
+		if (!item || item->data (Roles::OriginalName).isNull ())
 			return;
 
 		KeySequencer dia (this);
@@ -146,9 +146,9 @@ namespace LeechCraft
 
 		QKeySequences_t newSeqs;
 		newSeqs << dia.GetResult ();
-		if (item->data (RoleOldSequence).isNull ())
-			item->setData (item->data (RoleSequence), RoleOldSequence);
-		item->setData (QVariant::fromValue<QKeySequences_t> (newSeqs), RoleSequence);
+		if (item->data (Roles::OldSequence).isNull ())
+			item->setData (item->data (Roles::Sequence), Roles::OldSequence);
+		item->setData (QVariant::fromValue<QKeySequences_t> (newSeqs), Roles::Sequence);
 
 		Model_->itemFromIndex (index.sibling (index.row (), 1))->
 				setText (newSeqs.value (0).toString ());
@@ -164,19 +164,19 @@ namespace LeechCraft
 
 			for (int j = 0, namesSize = objectItem->rowCount (); j < namesSize; ++j)
 			{
-				QObject *o = objectItem->data (RoleObject).value<QObject*> ();
+				QObject *o = objectItem->data (Roles::Object).value<QObject*> ();
 				IInfo *ii = qobject_cast<IInfo*> (o);
 				IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (o);
 				settings.beginGroup (ii->GetName ());
 
 				auto item = objectItem->child (j);
-				if (!item->data (RoleOldSequence).isNull ())
+				if (!item->data (Roles::OldSequence).isNull ())
 				{
-					QString name = item->data (RoleOriginalName).toString ();
-					const auto& sequences = item->data (RoleSequence).value<QKeySequences_t> ();
+					QString name = item->data (Roles::OriginalName).toString ();
+					const auto& sequences = item->data (Roles::Sequence).value<QKeySequences_t> ();
 
 					settings.setValue (name, QVariant::fromValue<QKeySequences_t> (sequences));
-					item->setData (QVariant (), RoleOldSequence);
+					item->setData (QVariant (), Roles::OldSequence);
 					ihs->SetShortcut (name, sequences);
 				}
 
@@ -194,12 +194,12 @@ namespace LeechCraft
 			for (int j = 0, namesSize = objectItem->rowCount (); j < namesSize; ++j)
 			{
 				auto item = objectItem->child (j);
-				if (item->data (RoleOldSequence).isNull ())
+				if (item->data (Roles::OldSequence).isNull ())
 					continue;
 
-				const auto& seq = item->data (RoleOldSequence).value<QKeySequence> ();
-				item->setData (seq, RoleSequence);
-				item->setData (QVariant (), RoleOldSequence);
+				const auto& seq = item->data (Roles::OldSequence).value<QKeySequence> ();
+				item->setData (seq, Roles::Sequence);
+				item->setData (QVariant (), Roles::OldSequence);
 
 				objectItem->child (j, 1)->setText (seq.toString ());
 			}
