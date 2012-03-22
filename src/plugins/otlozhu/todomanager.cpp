@@ -16,48 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "todotab.h"
-#include <QToolBar>
-#include "core.h"
 #include "todomanager.h"
+#include <QStandardItemModel>
 
 namespace LeechCraft
 {
 namespace Otlozhu
 {
-	TodoTab::TodoTab (const TabClassInfo& tc, QObject *parent)
-	: TC_ (tc)
-	, Plugin_ (parent)
-	, Bar_ (new QToolBar (tc.VisibleName_))
+	TodoManager::TodoManager (const QString& ctx, QObject *parent)
+	: QObject (parent)
+	, Context_ (ctx)
+	, TodoModel_ (new QStandardItemModel (this))
 	{
-		Ui_.setupUi (this);
-		Ui_.TodoTree_->setModel (Core::Instance ().GetTodoManager ()->GetTodoModel ());
 	}
 
-	TodoTab::~TodoTab ()
+	QAbstractItemModel* TodoManager::GetTodoModel () const
 	{
-		delete Bar_;
-	}
-
-	TabClassInfo TodoTab::GetTabClassInfo () const
-	{
-		return TC_;
-	}
-
-	QObject* TodoTab::ParentMultiTabs ()
-	{
-		return Plugin_;
-	}
-
-	void TodoTab::Remove ()
-	{
-		emit removeTab (this);
-		deleteLater ();
-	}
-
-	QToolBar* TodoTab::GetToolBar () const
-	{
-		return Bar_;
+		return TodoModel_;
 	}
 }
 }

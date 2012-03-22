@@ -11,10 +11,14 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	otlozhu.cpp
 	todotab.cpp
+	core.cpp
+	todomanager.cpp
 	)
 SET (HEADERS
 	otlozhu.h
 	todotab.h
+	core.h
+	todomanager.h
 	)
 SET (FORMS
 	todotab.ui
