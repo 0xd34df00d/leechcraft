@@ -19,6 +19,7 @@
 #include "shortcutmanager.h"
 #include <memory>
 #include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 #include <QSettings>
 #include <QtDebug>
 #include <interfaces/iinfo.h>
@@ -27,14 +28,30 @@
 
 namespace LeechCraft
 {
+	class SMFilterProxyModel : public QSortFilterProxyModel
+	{
+	public:
+		SMFilterProxyModel (QObject *parent = 0)
+		: QSortFilterProxyModel (parent)
+		{
+		}
+	protected:
+		bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
+		{
+			return true;
+		}
+	};
+
 	ShortcutManager::ShortcutManager (QWidget *parent)
 	: QWidget (parent)
 	, Model_ (new QStandardItemModel (this))
+	, Filter_ (new SMFilterProxyModel (this))
 	{
 		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("Shortcut"));
+		Filter_->setSourceModel (Model_);
 
 		Ui_.setupUi (this);
-		Ui_.Tree_->setModel (Model_);
+		Ui_.Tree_->setModel (Filter_);
 	}
 
 	void ShortcutManager::AddObject (QObject *object)

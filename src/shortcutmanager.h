@@ -22,6 +22,7 @@
 #include "interfaces/ihaveshortcuts.h"
 #include "ui_shortcutmanager.h"
 
+class QSortFilterProxyModel;
 class QStandardItemModel;
 
 namespace LeechCraft
@@ -33,6 +34,9 @@ namespace LeechCraft
 		Q_INTERFACES (IShortcutProxy);
 
 		Ui::ShortcutManager Ui_;
+		QStandardItemModel *Model_;
+		QSortFilterProxyModel *Filter_;
+	public:
 		enum Roles
 		{
 			Object = Qt::UserRole + 1,
@@ -40,8 +44,7 @@ namespace LeechCraft
 			Sequence,
 			OldSequence
 		};
-		QStandardItemModel *Model_;
-	public:
+
 		ShortcutManager (QWidget* = 0);
 		void AddObject (QObject*);
 		void AddObject (QObject*, const QString&,
