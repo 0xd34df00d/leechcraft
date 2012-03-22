@@ -82,4 +82,4 @@ namespace Otlozhu
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_otlozhu, LeechCraft::Otlozhu::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_otlozhu, LeechCraft::Otlozhu::Plugin);
