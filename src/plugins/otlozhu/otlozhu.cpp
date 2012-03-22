@@ -18,6 +18,7 @@
 
 #include "otlozhu.h"
 #include <QIcon>
+#include "todotab.h"
 
 namespace LeechCraft
 {
@@ -73,6 +74,14 @@ namespace Otlozhu
 	{
 		if (id == TCTodo_.TabClass_)
 		{
+			auto tab = new TodoTab (TCTodo_, this);
+			emit addNewTab (TCTodo_.VisibleName_, tab);
+			emit raiseTab (tab);
+
+			connect (tab,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO
