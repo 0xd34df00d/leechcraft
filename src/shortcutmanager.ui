@@ -15,6 +15,13 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QLineEdit" name="FilterLine_">
+     <property name="placeholderText">
+      <string>Filter...</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QTreeView" name="Tree_"/>
    </item>
   </layout>

@@ -36,9 +36,24 @@ namespace LeechCraft
 		{
 		}
 	protected:
-		bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
+		bool filterAcceptsRow (int row, const QModelIndex& parent) const
 		{
-			return true;
+			if (!parent.isValid ())
+				return true;
+
+			const QString& filter = filterRegExp ().pattern ();
+			if (filter.isEmpty ())
+				return true;
+
+			auto checkStr = [row, parent, &filter, this] (int col)
+			{
+				const QString& content = this->sourceModel ()->
+						index (row, col, parent).data ().toString ();
+				return content.contains (filter, Qt::CaseInsensitive);
+			};
+			if (checkStr (0) || checkStr (1))
+				return true;
+			return false;
 		}
 	};
 
@@ -47,11 +62,20 @@ namespace LeechCraft
 	, Model_ (new QStandardItemModel (this))
 	, Filter_ (new SMFilterProxyModel (this))
 	{
+		Filter_->setDynamicSortFilter (true);
 		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("Shortcut"));
 		Filter_->setSourceModel (Model_);
 
 		Ui_.setupUi (this);
 		Ui_.Tree_->setModel (Filter_);
+		connect (Ui_.FilterLine_,
+				SIGNAL (textChanged (QString)),
+				Filter_,
+				SLOT (setFilterFixedString (QString)));
+		connect (Ui_.FilterLine_,
+				SIGNAL (textChanged (QString)),
+				Ui_.Tree_,
+				SLOT (expandAll ()));
 	}
 
 	void ShortcutManager::AddObject (QObject *object)
