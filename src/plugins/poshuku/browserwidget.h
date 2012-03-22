@@ -146,6 +146,7 @@ namespace Poshuku
 		void updateBookmarksState (bool);
 		void handleShortcutHistory ();
 		void handleShortcutBookmarks ();
+		void loadURL (const QUrl&);
 		QGraphicsWebView* getWebView () const;
 		QLineEdit* getAddressBar () const;
 		QWidget* getSideBar () const;

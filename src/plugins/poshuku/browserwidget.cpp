@@ -1638,6 +1638,11 @@ namespace Poshuku
 
 		SetSplitterSizes (0);
 	}
+	
+	void BrowserWidget::loadURL (const QUrl& url)
+	{
+		WebView_->Load (url);
+	}
 
 	void BrowserWidget::SetSplitterSizes (int currentIndex)
 	{
