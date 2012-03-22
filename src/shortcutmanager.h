@@ -19,8 +19,10 @@
 #ifndef SHORTCUTMANAGER_H
 #define SHORTCUTMANAGER_H
 #include <QDialog>
-#include "ui_shortcutmanager.h"
 #include "interfaces/ihaveshortcuts.h"
+#include "ui_shortcutmanager.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -38,6 +40,7 @@ namespace LeechCraft
 			RoleSequence,
 			RoleOldSequence
 		};
+		QStandardItemModel *Model_;
 	public:
 		ShortcutManager (QWidget* = 0);
 		void AddObject (QObject*);
@@ -45,7 +48,7 @@ namespace LeechCraft
 				const QString&, const QIcon&);
 		QKeySequences_t GetShortcuts (QObject*, const QString&);
 	public slots:
-		void on_Tree__itemActivated (QTreeWidgetItem*);
+		void on_Tree__activated (const QModelIndex&);
 		virtual void accept ();
 		virtual void reject ();
 	};
