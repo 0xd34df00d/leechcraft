@@ -134,7 +134,7 @@ namespace LeechCraft
 			}
 			return QKeySequences_t ();
 		}
-		const_cast<ShortcutManager*> (this)->AddObject (const_cast<QObject*> (object));
+		AddObject (const_cast<QObject*> (object));
 		return GetShortcuts (object, originalName);
 	}
 
