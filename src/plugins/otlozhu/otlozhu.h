@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
@@ -27,9 +28,12 @@ namespace Otlozhu
 {
 	class Plugin : public QObject
 					, public IInfo
+					, public IHaveTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IHaveTabs)
+
+		TabClassInfo TCTodo_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -38,6 +42,16 @@ namespace Otlozhu
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
 	};
 }
 }

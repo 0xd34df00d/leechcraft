@@ -25,6 +25,15 @@ namespace Otlozhu
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		TCTodo_ = TabClassInfo
+		{
+			GetUniqueID () + "_todo",
+			GetName (),
+			GetInfo (),
+			GetIcon (),
+			20,
+			TFOpenableByRequest | TFSingle
+		};
 	}
 
 	void Plugin::SecondInit ()
@@ -53,6 +62,22 @@ namespace Otlozhu
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	TabClasses_t Plugin::GetTabClasses () const
+	{
+		return { TCTodo_ };
+	}
+
+	void Plugin::TabOpenRequested (const QByteArray& id)
+	{
+		if (id == TCTodo_.TabClass_)
+		{
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown id"
+					<< id;
 	}
 }
 }
