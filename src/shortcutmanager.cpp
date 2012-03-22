@@ -65,6 +65,7 @@ namespace LeechCraft
 		Filter_->setDynamicSortFilter (true);
 		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("Shortcut"));
 		Filter_->setSourceModel (Model_);
+		Filter_->sort (0);
 
 		Ui_.setupUi (this);
 		Ui_.Tree_->setModel (Filter_);
