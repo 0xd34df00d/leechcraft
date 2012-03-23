@@ -146,6 +146,7 @@ namespace Acetamide
 				QList<QVariant> ()).toList ();
 
 		QList<IrcBookmark> bookmarks;
+		/*
 		Q_FOREACH (const QVariant& variant, list)
 		{
 			IrcBookmark bookmark;
@@ -163,6 +164,7 @@ namespace Acetamide
 
 			bookmarks << bookmark;
 		}
+		*/
 		return bookmarks;
 	}
 
