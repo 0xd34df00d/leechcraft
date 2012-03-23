@@ -77,6 +77,10 @@ namespace Laure
 				SIGNAL (delegateEntity (Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (Entity, int*, QObject**)));
+		connect (Ui_.PlayListWidget_,
+				SIGNAL (doubleClicked ()),
+				this,
+				SLOT (handlePlayListWidgetDoubleClicked ()));
 		
 		connect (Ui_.Player_,
 				SIGNAL (timeout ()),
@@ -117,6 +121,11 @@ namespace Laure
 		
 		InitToolBar ();
 		InitCommandFrame ();
+	}
+	
+	void LaureWidget::handlePlayListWidgetDoubleClicked ()
+	{
+		ActionPlay_->handleTriggered ();
 	}
 	
 	LaureWidget::~LaureWidget ()
@@ -248,7 +257,7 @@ namespace Laure
 		bar->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		bar->setIconSize (QSize (32, 32));
 		
-		auto actionPlay = new PlayPauseAction (tr ("Play"), Ui_.CommandFrame_);
+		ActionPlay_ = new PlayPauseAction (tr ("Play"), Ui_.CommandFrame_);
 		QAction *actionStop = new QAction (tr ("Stop"), Ui_.CommandFrame_);
 		QAction *actionNext = new QAction (tr ("Next"), Ui_.CommandFrame_);
 		QAction *actionPrev = new QAction (tr ("Previous"), Ui_.CommandFrame_);
@@ -258,22 +267,22 @@ namespace Laure
 		actionPrev->setProperty ("ActionIcon", "media-skip-backward");
 		
 		bar->addAction (actionPrev);
-		bar->addAction (actionPlay);
+		bar->addAction (ActionPlay_);
 		bar->addAction (actionStop);
 		bar->addAction (actionNext);
 		
 		VLCWrapper *wrapper = VLCWrapper_.get ();
 		connect (wrapper,
 				SIGNAL (paused ()),
-				actionPlay,
+				ActionPlay_,
 				SLOT (handlePause ()));
 		connect (wrapper,
 				SIGNAL (itemPlayed (int)),
-				actionPlay,
+				ActionPlay_,
 				SLOT (handlePlay ()));
 		connect (actionStop,
 				SIGNAL (triggered (bool)),
-				actionPlay,
+				ActionPlay_,
 				SLOT (handlePause ()));
 		connect (actionStop,
 				SIGNAL (triggered (bool)),
@@ -287,17 +296,17 @@ namespace Laure
 				SIGNAL (triggered (bool)),
 				wrapper,
 				SLOT (prev ()));
-		connect (actionPlay,
+		connect (ActionPlay_,
 				SIGNAL (play ()),
 				wrapper,
 				SLOT (play ()));
-		connect (actionPlay,
+		connect (ActionPlay_,
 				SIGNAL (pause ()),
 				wrapper,
 				SLOT (pause ()));
 		connect (this,
 				SIGNAL (playPause ()),
-				actionPlay,
+				ActionPlay_,
 				SLOT (handleTriggered ()));
 	}
 	

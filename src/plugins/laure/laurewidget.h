@@ -59,6 +59,7 @@ namespace Laure
 		QAction *PlayListAction_;
 		QAction *SubtitleAction_;
 		QMenu *SubtitleMenu_;
+		PlayPauseAction *ActionPlay_;
 	public:
 		/** @brief Constructs a new LaureWidget tab
 		 * with the given parent and flags.
@@ -113,6 +114,7 @@ namespace Laure
 		void handleSeparatePlayerClosed ();
 		void subtitleDialog ();
 		void showSubtitleMenu ();
+		void handlePlayListWidgetDoubleClicked ();
 	};
 }
 }
