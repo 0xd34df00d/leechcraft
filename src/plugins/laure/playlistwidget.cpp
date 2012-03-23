@@ -96,6 +96,10 @@ namespace Laure
 				SIGNAL (playbackModeChanged (PlaybackMode)),
 				this,
 				SIGNAL (playbackModeChanged (PlaybackMode)));
+		connect (PlayListView_,
+				SIGNAL (doubleClicked (QModelIndex)),
+				this,
+				SIGNAL (doubleClicked ()));
 	}
 	
 	void PlayListWidget::Init (std::shared_ptr<VLCWrapper> wrapper)

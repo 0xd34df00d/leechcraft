@@ -48,7 +48,7 @@ namespace Laure
 		/** @brief Changes to the play state.
 		 */
 		void handlePlay ();
-	private slots:
+		
 		void handleTriggered ();
 	signals:
 		/** @brief Is emitted when the state is changed to the

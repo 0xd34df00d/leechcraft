@@ -106,6 +106,7 @@ namespace Laure
 		 * @sa PlaybackMode
 		 */
 		void playbackModeChanged (PlaybackMode mode);
+		void doubleClicked ();
 	};
 }
 }
