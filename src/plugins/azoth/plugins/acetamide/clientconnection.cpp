@@ -122,7 +122,8 @@ namespace Acetamide
 			QByteArray result;
 			{
 				QDataStream ostr (&result, QIODevice::WriteOnly);
-				ostr << bookmark.Name_
+				ostr << static_cast<quint8> (1)
+						<< bookmark.Name_
 						<< bookmark.ServerName_
 						<< bookmark.ServerPort_
 						<< bookmark.ServerPassword_
@@ -145,12 +146,25 @@ namespace Acetamide
 		QList<QVariant> list = XmlSettingsManager::Instance ().Property ("Bookmarks",
 				QList<QVariant> ()).toList ();
 
+		bool hadUnknownVersions = false;
+
 		QList<IrcBookmark> bookmarks;
-		/*
 		Q_FOREACH (const QVariant& variant, list)
 		{
 			IrcBookmark bookmark;
 			QDataStream istr (variant.toByteArray ());
+
+			quint8 version = 0;
+			istr >> version;
+			if (version != 1)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unknown version"
+						<< version;
+				hadUnknownVersions = true;
+				continue;
+			}
+
 			istr >> bookmark.Name_
 					>> bookmark.ServerName_
 					>> bookmark.ServerPort_
@@ -164,7 +178,12 @@ namespace Acetamide
 
 			bookmarks << bookmark;
 		}
-		*/
+
+		if (hadUnknownVersions)
+			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth Acetamide",
+						tr ("Some bookmarks were lost due to unknown storage version."),
+						PWarning_));
+
 		return bookmarks;
 	}
 
