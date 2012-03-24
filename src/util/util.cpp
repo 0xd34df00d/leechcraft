@@ -200,6 +200,16 @@ QString LeechCraft::Util::GetLocaleName ()
 	return localeName;
 }
 
+QString LeechCraft::Util::GetInternetLocaleName (const QLocale& locale)
+{
+	if (locale.language () == QLocale::AnyLanguage)
+		return "*";
+
+	QString locStr = locale.name ();
+	locStr.replace ('_', '-');
+	return locStr;
+}
+
 QString LeechCraft::Util::GetLanguage ()
 {
 	return GetLocaleName ().left (2);

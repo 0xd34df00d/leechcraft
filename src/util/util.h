@@ -27,6 +27,7 @@
 #include <interfaces/structures.h>
 
 class QTranslator;
+class QLocale;
 
 namespace LeechCraft
 {
@@ -153,6 +154,8 @@ namespace LeechCraft
 		 * @sa GetLanguage()
 		 */
 		UTIL_API QString GetLocaleName ();
+
+		UTIL_API QString GetInternetLocaleName (const QLocale&);
 
 		/** @brief Returns the current language name.
 		 *
