@@ -41,7 +41,11 @@
         <widget class="QComboBox" name="Language_"/>
        </item>
        <item>
-        <widget class="QComboBox" name="Country_"/>
+        <widget class="QComboBox" name="Country_">
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToContents</enum>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="Add_">
