@@ -105,6 +105,15 @@ namespace LeechCraft
 		AddLocale (QLocale (lang, country));
 	}
 
+	void AcceptLangWidget::on_Remove__released ()
+	{
+		const auto& idx = Ui_.LangsTree_->currentIndex ();
+		if (!idx.isValid ())
+			return;
+
+		Model_->removeRow (idx.row ());
+	}
+
 	void AcceptLangWidget::on_Language__currentIndexChanged (int)
 	{
 		Ui_.Country_->clear ();
