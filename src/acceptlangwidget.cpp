@@ -114,6 +114,27 @@ namespace LeechCraft
 		Model_->removeRow (idx.row ());
 	}
 
+	void AcceptLangWidget::on_MoveUp__released ()
+	{
+		QStandardItem *item = Model_->itemFromIndex (Ui_.LangsTree_->currentIndex ());
+		if (!item || !item->row ())
+			return;
+
+		const int row = item->row ();
+		Model_->insertRow (row - 1, Model_->takeRow (row));
+	}
+
+	void AcceptLangWidget::on_MoveDown__released ()
+	{
+		QStandardItem *item = Model_->itemFromIndex (Ui_.LangsTree_->currentIndex ());
+		if (!item || item->row () == Model_->rowCount () - 1)
+			return;
+
+		const int row = item->row ();
+		auto items = Model_->takeRow (row);
+		Model_->insertRow (row + 1, items);
+	}
+
 	void AcceptLangWidget::on_Language__currentIndexChanged (int)
 	{
 		Ui_.Country_->clear ();

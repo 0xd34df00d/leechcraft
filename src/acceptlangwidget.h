@@ -46,6 +46,8 @@ namespace LeechCraft
 	private slots:
 		void on_Add__released ();
 		void on_Remove__released ();
+		void on_MoveUp__released ();
+		void on_MoveDown__released ();
 		void on_Language__currentIndexChanged (int);
 	};
 }
