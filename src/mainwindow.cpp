@@ -57,6 +57,7 @@
 #include "tabmanager.h"
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
+#include "acceptlangwidget.h"
 
 #ifdef Q_OS_WIN32
 #include "winwarndialog.h"
@@ -389,7 +390,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsManager::Instance ()->RegisterObject ("IconSet", this, "updateIconSet");
 
 	ShortcutManager_ = new ShortcutManager (this);
-	Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ()->SetCustomWidget ("ShortcutManager", ShortcutManager_);
+
+	auto xsd = Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ();
+	xsd->SetCustomWidget ("ShortcutManager", ShortcutManager_);
+	xsd->SetCustomWidget ("AcceptLanguages", new AcceptLangWidget);
 
 	SetStatusBar ();
 	ReadSettings ();

@@ -420,6 +420,7 @@ SET (SRCS
 	winwarndialog.cpp
 	coreplugin2manager.cpp
 	dockmanager.cpp
+	acceptlangwidget.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -465,6 +466,7 @@ SET (HEADERS
 	winwarndialog.h
 	coreplugin2manager.h
 	dockmanager.h
+	acceptlangwidget.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h
@@ -483,6 +485,7 @@ SET (FORMS
 	aboutdialog.ui
 	wizardtypechoicepage.ui
 	settingstab.ui
+	acceptlangwidget.ui
 	)
 SET (RESOURCES mainresources.qrc)
 
