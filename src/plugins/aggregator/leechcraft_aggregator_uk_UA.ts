@@ -98,7 +98,7 @@
     <message>
         <location filename="export.ui" line="14"/>
         <source>This string is overridden in the source code</source>
-        <translation>Рядок </translation>
+        <translation>Рядок не використовується у вихідному коді</translation>
     </message>
     <message>
         <location filename="export.ui" line="25"/>
@@ -1988,7 +1988,7 @@
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source> s</source>
-        <translation type="unfinished"/>
+        <translation>s</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
@@ -2044,7 +2044,7 @@
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Show tooltips for news items</source>
-        <translation type="unfinished"/>
+        <translation>Показувати підказки для елементів новин</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
