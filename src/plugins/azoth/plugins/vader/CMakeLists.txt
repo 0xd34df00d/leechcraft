@@ -67,7 +67,7 @@ SET (VADER_FORMS
 	vcarddialog.ui
 	)
 SET (VADER_RESOURCES azothvaderresources.qrc)
-CreateTrVars ("azoth_vader" "en;ru_RU;uk_UA" VADER_TRANSLATIONS VADER_COMPILED_TRANSLATIONS)
+CreateTrVars ("azoth_vader" "en;es;ru_RU;uk_UA" VADER_TRANSLATIONS VADER_COMPILED_TRANSLATIONS)
 
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (VADER_MOC_SRCS ${VADER_HEADERS})
