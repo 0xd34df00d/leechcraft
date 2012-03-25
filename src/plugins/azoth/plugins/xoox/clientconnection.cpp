@@ -1076,7 +1076,7 @@ namespace Xoox
 				return;
 		}
 
-		JID2CLEntry_ [jid]->HandlePresence (pres);
+		JID2CLEntry_ [jid]->HandlePresence (pres, resource);
 		if (SignedPresences_.remove (jid))
 		{
 			qDebug () << "got signed presence" << jid;

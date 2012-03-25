@@ -260,11 +260,8 @@ namespace Xoox
 		conn->GetClient ()->sendPacket (pres);
 	}
 
-	void EntryBase::HandlePresence (const QXmppPresence& pres)
+	void EntryBase::HandlePresence (const QXmppPresence& pres, const QString& resource)
 	{
-		QString resource;
-		ClientConnection::Split (pres.from (), 0, &resource);
-
 		SetClientInfo (resource, pres);
 		SetStatus (XooxUtil::PresenceToStatus (pres), resource);
 	}
