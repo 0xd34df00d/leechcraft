@@ -173,6 +173,12 @@ public:
 	 */
 	virtual void setCurrentWidget (QWidget *widget) = 0;
 
+	/** @brief Returns the previous active widget if it exists.
+	 * 
+	 * @return previous widget.
+	 */
+	virtual QWidget* GetPreviousWidget () const = 0;
+
 	/** @brief This signal is emitted after new tab was inserted.
 	 *
 	 * @param[out] index The index of new tab.

@@ -455,6 +455,11 @@ namespace LeechCraft
 		MainTabBar_->moveTab (from, to);
 	}
 
+	QWidget* SeparateTabWidget::GetPreviousWidget () const
+	{
+		return PreviousWidget_;
+	}
+
 	void SeparateTabWidget::resizeEvent (QResizeEvent *event)
 	{
 		QWidget::resizeEvent (event);

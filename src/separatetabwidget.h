@@ -129,6 +129,8 @@ namespace LeechCraft
 		int TabAt (const QPoint& point);
 
 		void MoveTab (int from, int to);
+
+		QWidget* GetPreviousWidget () const;
 	protected:
 		void resizeEvent (QResizeEvent *event);
 		bool event (QEvent *event);
