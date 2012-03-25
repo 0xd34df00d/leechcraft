@@ -47,8 +47,6 @@ namespace LeechCraft
 		Q_INTERFACES (ICoreTabWidget)
 
 		int LastContextMenuTab_;
-		int PreviousTab_;
-		int CurrentTab_;
 		QMenu *DefaultContextMenu_;
 		QMenu *AddTabButtonContextMenu_;
 		QPointer<QStackedWidget> MainStackedWidget_;
@@ -64,6 +62,8 @@ namespace LeechCraft
 		QAction *DefaultTabAction_;
 		QMap<int, std::shared_ptr<QWidget>> Widgets_;
 		QList<QPointer<QAction>> TabBarActions_;
+		QWidget *CurrentWidget_;
+		QWidget *PreviousWidget_;
 	public:
 		explicit SeparateTabWidget (QWidget *parent = 0);
 
