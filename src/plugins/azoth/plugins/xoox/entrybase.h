@@ -113,6 +113,7 @@ namespace Xoox
 
 		virtual QString GetJID () const = 0;
 
+		void HandlePresence (const QXmppPresence&);
 		void HandleMessage (GlooxMessage*);
 		void HandlePEPEvent (QString, PEPEventBase*);
 		void HandleAttentionMessage (const QXmppMessage&);

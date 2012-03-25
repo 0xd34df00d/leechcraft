@@ -260,6 +260,15 @@ namespace Xoox
 		conn->GetClient ()->sendPacket (pres);
 	}
 
+	void EntryBase::HandlePresence (const QXmppPresence& pres)
+	{
+		QString resource;
+		ClientConnection::Split (pres.from (), 0, &resource);
+
+		SetClientInfo (resource, pres);
+		SetStatus (XooxUtil::PresenceToStatus (pres), resource);
+	}
+
 	void EntryBase::HandleMessage (GlooxMessage *msg)
 	{
 		if (msg->GetMessageType () == IMessage::MTChatMessage)

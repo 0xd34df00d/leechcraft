@@ -821,15 +821,6 @@ namespace Xoox
 		Client_->setLogger (logger);
 	}
 
-	EntryStatus ClientConnection::PresenceToStatus (const QXmppPresence& pres) const
-	{
-		const QXmppPresence::Status& status = pres.status ();
-		EntryStatus st (static_cast<State> (status.type ()), status.statusText ());
-		if (pres.type () == QXmppPresence::Unavailable)
-			st.State_ = SOffline;
-		return st;
-	}
-
 	void ClientConnection::Split (const QString& jid,
 			QString *bare, QString *resource)
 	{
@@ -996,7 +987,7 @@ namespace Xoox
 		{
 			const QXmppPresence& pres = presences [resource];
 			entry->SetClientInfo (resource, pres);
-			entry->SetStatus (PresenceToStatus (pres), resource);
+			entry->SetStatus (XooxUtil::PresenceToStatus (pres), resource);
 		}
 		entry->UpdateRI (rm.getRosterEntry (bareJid));
 	}
@@ -1064,13 +1055,13 @@ namespace Xoox
 		if (jid == OurBareJID_)
 		{
 			if (OurJID_ == pres.from ())
-				emit statusChanged (PresenceToStatus (pres));
+				emit statusChanged (XooxUtil::PresenceToStatus (pres));
 
 			if (pres.type () == QXmppPresence::Available)
 			{
 				SelfContact_->SetClientInfo (resource, pres);
 				SelfContact_->UpdatePriority (resource, pres.status ().priority ());
-				SelfContact_->SetStatus (PresenceToStatus (pres), resource);
+				SelfContact_->SetStatus (XooxUtil::PresenceToStatus (pres), resource);
 			}
 			else
 				SelfContact_->RemoveVariant (resource);
@@ -1085,8 +1076,7 @@ namespace Xoox
 				return;
 		}
 
-		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
-		JID2CLEntry_ [jid]->SetStatus (PresenceToStatus (pres), resource);
+		JID2CLEntry_ [jid]->HandlePresence (pres);
 		if (SignedPresences_.remove (jid))
 		{
 			qDebug () << "got signed presence" << jid;

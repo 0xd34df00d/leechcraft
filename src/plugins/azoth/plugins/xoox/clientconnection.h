@@ -256,7 +256,6 @@ namespace Xoox
 				QString *bare, QString *resource);
 	private:
 		void SetupLogger ();
-		EntryStatus PresenceToStatus (const QXmppPresence&) const;
 		void HandleOtherPresence (const QXmppPresence&);
 		void HandleError (const QXmppIq&);
 		void HandleRIEX (QString, QList<RIEXManager::Item>, QString = QString ());

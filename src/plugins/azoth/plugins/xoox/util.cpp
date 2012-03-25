@@ -25,6 +25,7 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
+#include <QXmppPresence.h>
 #include "entrybase.h"
 #include "core.h"
 #include "capsdatabase.h"
@@ -272,6 +273,15 @@ namespace XooxUtil
 			return true;
 
 		return feats.contains (feature);
+	}
+
+	EntryStatus PresenceToStatus (const QXmppPresence& pres)
+	{
+		const QXmppPresence::Status& status = pres.status ();
+		EntryStatus st (static_cast<State> (status.type ()), status.statusText ());
+		if (pres.type () == QXmppPresence::Unavailable)
+			st.State_ = SOffline;
+		return st;
 	}
 }
 }
