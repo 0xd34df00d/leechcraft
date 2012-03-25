@@ -184,6 +184,13 @@ public:
 	 * @param[out] index The index of new tab.
 	 */
 	virtual void tabInserted (int index) = 0;
+
+	/** @brief This signal is emitted when the tab bar's current tab changes.
+	 * The new current has the given index, or -1 if there isn't a new one.
+	 * 
+	 * @param[out] index The index of current tab.
+	 */
+	virtual void currentChanged (int index) = 0;
 };
 
 Q_DECLARE_INTERFACE (ICoreTabWidget, "org.Deviant.LeechCraft.ICoreTabWidget/1.0");
