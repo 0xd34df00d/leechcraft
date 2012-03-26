@@ -68,6 +68,7 @@ SET (XOOX_SRCS
 	useravatarmetadata.cpp
 	sdmanager.cpp
 	msgarchivingmanager.cpp
+	avatarsstorage.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -128,6 +129,7 @@ SET (XOOX_HEADERS
 	useravatarmetadata.h
 	sdmanager.h
 	msgarchivingmanager.h
+	avatarsstorage.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

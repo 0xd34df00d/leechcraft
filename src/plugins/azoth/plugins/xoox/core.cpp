@@ -29,6 +29,7 @@
 #include "glooxclentry.h"
 #include "glooxaccount.h"
 #include "capsdatabase.h"
+#include "avatarsstorage.h"
 
 namespace LeechCraft
 {
@@ -40,6 +41,7 @@ namespace Xoox
 	: PluginProxy_ (0)
 	, SaveRosterScheduled_ (false)
 	, CapsDB_ (new CapsDatabase (this))
+	, Avatars_ (new AvatarsStorage (this))
 	{
 		QXmppLogger::getLogger ()->setLoggingType (QXmppLogger::FileLogging);
 		QXmppLogger::getLogger ()->setLogFilePath (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
@@ -82,7 +84,7 @@ namespace Xoox
 	{
 		PluginProxy_ = proxy;
 	}
-	
+
 	IProxyObject* Core::GetPluginProxy () const
 	{
 		return qobject_cast<IProxyObject*> (PluginProxy_);
@@ -97,22 +99,27 @@ namespace Xoox
 	{
 		return Proxy_;
 	}
-	
+
 	CapsDatabase* Core::GetCapsDatabase () const
 	{
 		return CapsDB_;
+	}
+
+	AvatarsStorage* Core::GetAvatarsStorage () const
+	{
+		return Avatars_;
 	}
 
 	void Core::SendEntity (const Entity& e)
 	{
 		emit gotEntity (e);
 	}
-	
+
 	void Core::ScheduleSaveRoster (int hint)
 	{
 		if (SaveRosterScheduled_)
 			return;
-		
+
 		SaveRosterScheduled_ = true;
 		QTimer::singleShot (hint,
 				this,
@@ -254,7 +261,7 @@ namespace Xoox
 					if (!entry ||
 							(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
 						continue;
-					
+
 					Save (entry->ToOfflineDataSource (), &w);
 					saveAvatarFor (entry);
 				}

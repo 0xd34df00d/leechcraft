@@ -33,6 +33,7 @@ namespace Xoox
 	class GlooxProtocol;
 	class GlooxCLEntry;
 	class CapsDatabase;
+	class AvatarsStorage;
 
 	class Core : public QObject
 	{
@@ -44,6 +45,7 @@ namespace Xoox
 		bool SaveRosterScheduled_;
 
 		CapsDatabase *CapsDB_;
+		AvatarsStorage *Avatars_;
 
 		Core ();
 	public:
@@ -59,6 +61,7 @@ namespace Xoox
 		ICoreProxy_ptr GetProxy () const;
 
 		CapsDatabase* GetCapsDatabase () const;
+		AvatarsStorage* GetAvatarsStorage () const;
 
 		void SendEntity (const Entity&);
 
