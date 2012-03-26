@@ -70,6 +70,7 @@ namespace Xoox
 		bool isComplete () const;
 		void initializePage ();
 	private:
+		void Clear ();
 		void ShowMessage (const QString&);
 		void SetState (State);
 		void HandleRegForm (const QXmppIq&);
