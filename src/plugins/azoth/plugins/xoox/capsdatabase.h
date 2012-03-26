@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CAPSDATABASE_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_CAPSDATABASE_H
+#pragma once
+
 #include <QObject>
 #include <QHash>
 #include <QStringList>
@@ -38,7 +38,7 @@ namespace Xoox
 		mutable bool SaveScheduled_;
 	public:
 		CapsDatabase (QObject* = 0);
-		
+
 		bool Contains (const QByteArray&) const;
 		QStringList Get (const QByteArray&) const;
 		void Set (const QByteArray&, const QStringList&);
@@ -53,5 +53,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
