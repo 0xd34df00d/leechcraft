@@ -268,29 +268,7 @@ namespace Xoox
 		SetClientInfo (resource, pres);
 		SetStatus (XooxUtil::PresenceToStatus (pres), resource);
 
-		auto fetchVCard = [this] ()
-		{
-			QPointer<EntryBase> ptr (this);
-			Account_->GetClientConnection ()->FetchVCard (GetJID (),
-					[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->SetVCard (iq); });
-		};
-
-		const auto& vcardUpdate = pres.vCardUpdateType ();
-		if (vcardUpdate == QXmppPresence::VCardUpdateNoPhoto)
-		{
-			if (!Avatar_.isNull ())
-			{
-				Avatar_ = QImage ();
-				emit avatarChanged (GetAvatar ());
-			}
-		}
-		else if (vcardUpdate == QXmppPresence::VCardUpdateValidPhoto)
-		{
-			if (pres.photoHash () != VCardPhotoHash_)
-				fetchVCard ();
-		}
-		else if (!HasBlindlyRequestedVCard_)
-			fetchVCard ();
+		CheckVCardUpdate (pres);
 	}
 
 	void EntryBase::HandleMessage (GlooxMessage *msg)
@@ -461,18 +439,6 @@ namespace Xoox
 					GetJID () + '/' + variant;
 			if (VersionReqsEnabled_)
 				Account_->GetClientConnection ()->FetchVersion (jid);
-
-			QPointer<EntryBase> pThis (this);
-			Account_->GetClientConnection ()->RequestInfo (jid,
-					[pThis] (const QXmppDiscoveryIq& iq)
-					{
-						if (pThis)
-						{
-							QString variant;
-							ClientConnection::Split (iq.from (), 0, &variant);
-							pThis->SetDiscoIdentities (variant, iq.identities ());
-						}
-					});
 		}
 
 		if (status.State_ != SOffline)
@@ -614,18 +580,47 @@ namespace Xoox
 		Variant2VerString_ [variant] = ver;
 
 		QString reqJid = GetJID ();
+		QString reqVar = "";
 		if (GetEntryType () == ETChat)
+		{
 			reqJid = variant.isEmpty () ?
 					QString () :
 					reqJid + '/' + variant;
+			reqVar = variant;
+		}
 
 		if (!reqJid.isEmpty ())
 			Account_->GetClientConnection ()->
 					GetCapsManager ()->FetchCaps (reqJid, ver);
+
+		auto capsManager = Account_->GetClientConnection ()->GetCapsManager ();
+		const auto& storedIds = capsManager->GetIdentities (ver);
+
+		qDebug () << "known stored identities for" << ver.toHex () << GetJID () << storedIds.size ();
+		if (!storedIds.isEmpty ())
+			SetDiscoIdentities (reqVar, storedIds);
+		else if (!ver.isEmpty ())
+		{
+			qDebug () << "requesting ids for" << reqJid << reqVar;
+			QPointer<EntryBase> pThis (this);
+			QPointer<CapsManager> pCM (capsManager);
+			Account_->GetClientConnection ()->RequestInfo (reqJid,
+				[ver, reqVar, pThis, pCM] (const QXmppDiscoveryIq& iq)
+				{
+					if (pCM)
+						pCM->SetIdentities (ver, iq.identities ());
+					if (pThis)
+						pThis->SetDiscoIdentities (reqVar, iq.identities ());
+				});
+		}
+		else
+			qDebug () << "too short ver :(" << ver.size ();
 	}
 
 	void EntryBase::SetClientInfo (const QString& variant, const QXmppPresence& pres)
 	{
+		if (pres.type () != QXmppPresence::Available)
+			return;
 		SetClientInfo (variant, pres.capabilityNode (), pres.capabilityVer ());
 	}
 
@@ -659,6 +654,33 @@ namespace Xoox
 	QXmppVersionIq EntryBase::GetClientVersion (const QString& var) const
 	{
 		return Variant2Version_ [var];
+	}
+
+	void EntryBase::CheckVCardUpdate (const QXmppPresence& pres)
+	{
+		auto fetchVCard = [this] ()
+		{
+			QPointer<EntryBase> ptr (this);
+			Account_->GetClientConnection ()->FetchVCard (GetJID (),
+					[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->SetVCard (iq); });
+		};
+
+		const auto& vcardUpdate = pres.vCardUpdateType ();
+		if (vcardUpdate == QXmppPresence::VCardUpdateNoPhoto)
+		{
+			if (!Avatar_.isNull ())
+			{
+				Avatar_ = QImage ();
+				emit avatarChanged (GetAvatar ());
+			}
+		}
+		else if (vcardUpdate == QXmppPresence::VCardUpdateValidPhoto)
+		{
+			if (pres.photoHash () != VCardPhotoHash_)
+				fetchVCard ();
+		}
+		else if (!HasBlindlyRequestedVCard_)
+			fetchVCard ();
 	}
 
 	QString EntryBase::FormatRawInfo (const QXmppVCardIq& vcard)

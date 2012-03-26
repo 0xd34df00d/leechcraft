@@ -143,6 +143,7 @@ namespace Xoox
 		QByteArray GetVariantVerString (const QString&) const;
 		QXmppVersionIq GetClientVersion (const QString&) const;
 	private:
+		void CheckVCardUpdate (const QXmppPresence&);
 		QString FormatRawInfo (const QXmppVCardIq&);
 		void SetNickFromVCard (const QXmppVCardIq&);
 	private slots:
