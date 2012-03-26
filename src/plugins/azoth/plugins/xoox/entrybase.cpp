@@ -415,7 +415,7 @@ namespace Xoox
 				Location_ [highest] = Location_.take (QString ());
 			if (Variant2ClientInfo_.contains (QString ()))
 			{
-				const auto& info = Variant2ClientInfo_.take (QString ());
+				const auto& info = Variant2ClientInfo_ [QString ()];
 				QStringList toCopy;
 				toCopy << "user_tune" << "user_mood" << "user_activity";
 				Q_FOREACH (const QString& key, toCopy)
@@ -619,8 +619,6 @@ namespace Xoox
 
 	void EntryBase::SetClientInfo (const QString& variant, const QXmppPresence& pres)
 	{
-		if (pres.type () != QXmppPresence::Available)
-			return;
 		SetClientInfo (variant, pres.capabilityNode (), pres.capabilityVer ());
 	}
 
