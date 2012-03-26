@@ -115,6 +115,8 @@ namespace Xoox
 		QString Host_;
 		int Port_;
 
+		QByteArray OurPhotoHash_;
+
 		QPair<int, int> KAParams_;
 
 		QIcon AccountIcon_;
@@ -210,6 +212,8 @@ namespace Xoox
 		GlooxCLEntry* CreateFromODS (OfflineDataSource_ptr);
 		QXmppBookmarkSet GetBookmarks () const;
 		void SetBookmarks (const QXmppBookmarkSet&);
+
+		void UpdateOurPhotoHash (const QByteArray&);
 
 		void CreateSDForResource (const QString&);
 

@@ -315,10 +315,16 @@ namespace Xoox
 		QXmppPresence::Type presType = state.State_ == SOffline ?
 				QXmppPresence::Unavailable :
 				QXmppPresence::Available;
+
 		QXmppPresence pres (presType,
 				QXmppPresence::Status (static_cast<QXmppPresence::Status::Type> (state.State_),
 						state.Status_,
 						state.Priority_));
+		if (!OurPhotoHash_.isEmpty ())
+		{
+			pres.setVCardUpdateType (QXmppPresence::VCardUpdateValidPhoto);
+			pres.setPhotoHash (OurPhotoHash_);
+		}
 
 		if (IsConnected_ ||
 				state.State_ == SOffline)
@@ -408,6 +414,11 @@ namespace Xoox
 		Split (jid, &OurBareJID_, &OurResource_);
 
 		SelfContact_->UpdateJID (jid);
+	}
+
+	void ClientConnection::SetOurPhotoHash (const QByteArray& hash)
+	{
+		OurPhotoHash_ = hash;
 	}
 
 	RoomCLEntry* ClientConnection::JoinRoom (const QString& jid, const QString& nick)
