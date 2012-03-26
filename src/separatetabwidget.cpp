@@ -52,7 +52,6 @@ namespace LeechCraft
 	, RightToolBar_ (new QToolBar)
 	, DefaultTabAction_ (new QAction (QString (), this))
 	, CurrentWidget_ (0)
-	, CurrentIndex_ (-1)
 	, PreviousWidget_ (0)
 	{
 		XmlSettingsManager::Instance ()->RegisterObject ("SelectionBehavior",
@@ -376,8 +375,7 @@ namespace LeechCraft
 		MainTabBar_->setTabToolTip (newIndex, text);
 
 		if (MainTabBar_->currentIndex () >= WidgetCount ())
-// 			setCurrentIndex (WidgetCount () - 1);
-			setCurrentTab (WidgetCount () - 1);
+			setCurrentIndex (WidgetCount () - 1);
 
 		return newIndex;
 	}
@@ -570,29 +568,20 @@ namespace LeechCraft
 
 	void SeparateTabWidget::setCurrentIndex (int index)
 	{
-		if (index > WidgetCount () &&
+		if (index >= WidgetCount () &&
 				!AddTabButtonAction_->isVisible ())
-			index = WidgetCount ();
+			--index;
 
+		emit currentChanged (index);
+
+		MainTabBar_->setCurrentIndex (index);
 		MainStackedWidget_->setCurrentIndex (index);
-// 		if (CurrentIndex () != index)
-// 			MainTabBar_->setCurrentIndex (index);
 
-		qDebug () << "WIDGETS" << CurrentWidget_ << PreviousWidget_ << Widget (index);
 		if (CurrentWidget_ != Widget (index))
 		{
-			CurrentIndex_ = IndexOf (CurrentWidget_);
+			PreviousWidget_ = CurrentWidget_;
 			CurrentWidget_ = Widget (index);
-			PreviousWidget_ = Widget (CurrentIndex_);
-			CurrentIndex_ = index;
 		}
-		qDebug () << "WIDGETS 2" << CurrentWidget_ << PreviousWidget_ << Widget (index);
-		emit currentChanged (index);
-	}
-
-	void SeparateTabWidget::setCurrentTab (int tabIndex)
-	{
-		MainTabBar_->setCurrentIndex (tabIndex);
 	}
 
 	void SeparateTabWidget::setCurrentWidget (QWidget *widget)
@@ -601,8 +590,7 @@ namespace LeechCraft
 			return;
 
 		int index = MainStackedWidget_->indexOf (widget);
-// 		setCurrentIndex (index);
-		setCurrentTab (index);
+		setCurrentIndex (index);
 	}
 
 	void SeparateTabWidget::handleNewTabShortcutActivated ()

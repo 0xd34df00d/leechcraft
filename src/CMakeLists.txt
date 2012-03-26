@@ -143,7 +143,6 @@ OPTION (ENABLE_GACTS "Build Global Actions provider plugin" OFF)
 OPTION (ENABLE_CEMENTO "Build Cemento, LeechCraft common persistent storage" OFF)
 OPTION (ENABLE_PINTAB "Build Pintab for pinning important tabs" ${WITH_PLUGINS})
 OPTION (ENABLE_OTLOZHU "Build Otlozhu, a GTD-inspired ToDo manager" OFF)
-OPTION (ENABLE_KEYBOARDCRAFT "Build KeyboardCraft, a keyboard plugin" OFF)
 
 # Defunct
 OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" OFF)
@@ -364,10 +363,6 @@ ENDIF (ENABLE_PINTAB)
 IF (ENABLE_OTLOZHU)
 	ADD_SUBDIRECTORY (plugins/otlozhu)
 ENDIF (ENABLE_OTLOZHU)
-
-IF (ENABLE_KEYBOARDCRAFT)
-	ADD_SUBDIRECTORY (plugins/keyboardcraft)
-ENDIF (ENABLE_KEYBOARDCRAFT)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)

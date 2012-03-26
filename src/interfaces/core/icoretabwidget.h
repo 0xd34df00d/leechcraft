@@ -191,8 +191,6 @@ public:
 	 * @param[out] index The index of current tab.
 	 */
 	virtual void currentChanged (int index) = 0;
-
-	virtual void setCurrentTab (int tabIndex) = 0;
 };
 
 Q_DECLARE_INTERFACE (ICoreTabWidget, "org.Deviant.LeechCraft.ICoreTabWidget/1.0");

@@ -63,7 +63,6 @@ namespace LeechCraft
 		QMap<int, std::shared_ptr<QWidget>> Widgets_;
 		QList<QPointer<QAction>> TabBarActions_;
 		QWidget *CurrentWidget_;
-		int CurrentIndex_;
 		QWidget *PreviousWidget_;
 	public:
 		explicit SeparateTabWidget (QWidget *parent = 0);
@@ -140,7 +139,6 @@ namespace LeechCraft
 		void AddTabButtonInit ();
 	public slots:
 		void setCurrentIndex (int index);
-		void setCurrentTab (int tabIndex);
 		void setCurrentWidget (QWidget *widget);
 		void handleNewTabShortcutActivated ();
 		void setPreviousTab ();
