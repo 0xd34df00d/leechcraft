@@ -107,18 +107,18 @@ void TabManager::rotateLeft ()
 {
 	int index = TabWidget_->CurrentIndex ();
 	if (index)
-		TabWidget_->setCurrentIndex (index - 1);
+		TabWidget_->setCurrentTab (index - 1);
 	else
-		TabWidget_->setCurrentIndex (TabWidget_->WidgetCount () - 1);
+		TabWidget_->setCurrentTab (TabWidget_->WidgetCount () - 1);
 }
 
 void TabManager::rotateRight ()
 {
 	int index = TabWidget_->CurrentIndex ();
 	if (index < TabWidget_->WidgetCount () - 1)
-		TabWidget_->setCurrentIndex (index + 1);
+		TabWidget_->setCurrentTab (index + 1);
 	else
-		TabWidget_->setCurrentIndex (0);
+		TabWidget_->setCurrentTab (0);
 }
 
 void TabManager::navigateToTabNumber ()
@@ -126,7 +126,8 @@ void TabManager::navigateToTabNumber ()
 	int n = sender ()->property ("TabNumber").toInt ();
 	if (n >= TabWidget_->WidgetCount ())
 		return;
-	TabWidget_->setCurrentIndex (n);
+
+	TabWidget_->setCurrentTab (n);
 }
 
 void TabManager::ForwardKeyboard (QKeyEvent *key)
