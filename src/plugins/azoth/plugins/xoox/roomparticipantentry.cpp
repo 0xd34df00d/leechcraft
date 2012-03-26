@@ -19,12 +19,14 @@
 #include "roomparticipantentry.h"
 #include <QAction>
 #include <QtDebug>
+#include <QXmppMucManager.h>
 #include "glooxaccount.h"
 #include "roompublicmessage.h"
 #include "glooxmessage.h"
 #include "roomhandler.h"
 #include "roomclentry.h"
-#include <QXmppMucManager.h>
+#include "core.h"
+#include "avatarsstorage.h"
 
 namespace LeechCraft
 {
@@ -120,6 +122,20 @@ namespace Xoox
 	QString RoomParticipantEntry::GetNick () const
 	{
 		return Nick_;
+	}
+
+	void RoomParticipantEntry::SetPhotoHash (const QByteArray& hash)
+	{
+		VCardPhotoHash_ = hash;
+		if (hash.isEmpty ())
+			Avatar_ = QImage ();
+		else
+		{
+			Avatar_ = Core::Instance ().GetAvatarsStorage ()->GetAvatar (hash.toHex ());
+			if (Avatar_.isNull ())
+				VCardPhotoHash_.clear ();
+		}
+		emit avatarChanged (GetAvatar ());
 	}
 
 	QXmppMucItem::Affiliation RoomParticipantEntry::GetAffiliation () const

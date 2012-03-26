@@ -66,6 +66,8 @@ namespace Xoox
 		QString GetRealJID () const;
 		QString GetNick () const;
 
+		void SetPhotoHash (const QByteArray&);
+
 		QXmppMucItem::Affiliation GetAffiliation () const;
 		void SetAffiliation (QXmppMucItem::Affiliation);
 		QXmppMucItem::Role GetRole () const;

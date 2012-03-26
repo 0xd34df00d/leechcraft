@@ -630,10 +630,8 @@ namespace Xoox
 		entry->SetAffiliation (pres.mucItem ().affiliation ());
 		entry->SetRole (pres.mucItem ().role ());
 
+		entry->SetPhotoHash (pres.photoHash ());
 		entry->HandlePresence (pres, "");
-
-		if (!IsGateway ())
-			Account_->GetClientConnection ()->FetchVCard (jid);
 
 		MakeJoinMessage (pres, nick);
 	}
