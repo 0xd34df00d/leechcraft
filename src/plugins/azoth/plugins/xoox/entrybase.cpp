@@ -21,6 +21,7 @@
 #include <QStringList>
 #include <QInputDialog>
 #include <QtDebug>
+#include <QBuffer>
 #include <QXmppVCardIq.h>
 #include <QXmppPresence.h>
 #include <QXmppClient.h>
@@ -63,6 +64,7 @@ namespace Xoox
 	, StdSep_ (LeechCraft::Util::CreateSeparator (this))
 	, HasUnreadMsgs_ (false)
 	, VersionReqsEnabled_ (true)
+	, HasBlindlyRequestedVCard_ (false)
 	{
 		connect (this,
 				SIGNAL (locationChanged (const QString&, QObject*)),
@@ -264,6 +266,34 @@ namespace Xoox
 	{
 		SetClientInfo (resource, pres);
 		SetStatus (XooxUtil::PresenceToStatus (pres), resource);
+
+		auto fetchVCard = [this] ()
+		{
+			QPointer<EntryBase> ptr (this);
+			Account_->GetClientConnection ()->FetchVCard (GetJID (),
+					[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->SetVCard (iq); });
+		};
+
+		const auto& vcardUpdate = pres.vCardUpdateType ();
+		qDebug () << Q_FUNC_INFO << GetJID () << vcardUpdate;
+		if (vcardUpdate == QXmppPresence::VCardUpdateNoPhoto)
+		{
+			if (!Avatar_.isNull ())
+			{
+				Avatar_ = QImage ();
+				emit avatarChanged (GetAvatar ());
+			}
+		}
+		else if (vcardUpdate == QXmppPresence::VCardUpdateValidPhoto)
+		{
+			const auto& thatHash = pres.photoHash ();
+			const auto& ourHash = QCryptographicHash::hash (VCardIq_.photo (), QCryptographicHash::Sha1);
+
+			if (thatHash != ourHash)
+				fetchVCard ();
+		}
+		else if (!HasBlindlyRequestedVCard_)
+			fetchVCard ();
 	}
 
 	void EntryBase::HandleMessage (GlooxMessage *msg)

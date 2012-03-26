@@ -1596,19 +1596,6 @@ namespace Xoox
 		GlooxCLEntry *entry = ODSEntries_.take (bareJID);
 		entry->UpdateRI (ri);
 		JID2CLEntry_ [bareJID] = entry;
-		if (entry->GetAvatar ().isNull ())
-		{
-			const QXmppVCardIq& vcard = entry->GetVCard ();
-			if (vcard.nickName ().isEmpty () &&
-					vcard.birthday ().isNull () &&
-					vcard.email ().isEmpty () &&
-					vcard.firstName ().isEmpty () &&
-					vcard.lastName ().isEmpty ())
-			{
-				ScheduleFetchVCard (bareJID);
-				FetchVersion (bareJID);
-			}
-		}
 		return entry;
 	}
 }

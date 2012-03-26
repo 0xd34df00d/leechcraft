@@ -86,6 +86,7 @@ namespace Xoox
 
 		bool HasUnreadMsgs_;
 		bool VersionReqsEnabled_;
+		bool HasBlindlyRequestedVCard_;
 	public:
 		EntryBase (GlooxAccount* = 0);
 		virtual ~EntryBase ();
