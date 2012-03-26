@@ -300,7 +300,7 @@ namespace Glance
 
 	void GlanceShower::handleClicked (int idx)
 	{
-		TabWidget_->setCurrentTab (idx);
+		TabWidget_->setCurrentIndex (idx);
 		Finalize ();
 	}
 

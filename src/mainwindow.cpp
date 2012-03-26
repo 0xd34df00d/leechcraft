@@ -913,7 +913,7 @@ void LeechCraft::MainWindow::keyPressEvent (QKeyEvent *e)
 		index = 10;
 	--index;
 	if (index >= 0 && index < std::min (10, Ui_.MainTabWidget_->WidgetCount ()))
-		Ui_.MainTabWidget_->setCurrentTab (index);
+		Ui_.MainTabWidget_->setCurrentIndex (index);
 }
 
 void LeechCraft::MainWindow::keyReleaseEvent (QKeyEvent *e)
