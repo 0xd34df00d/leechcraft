@@ -645,7 +645,7 @@ namespace Xoox
 
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 
-		entry->HandlePresence (pres, "");
+		entry->HandlePresence (pres, QString ());
 		if (XooxUtil::PresenceToStatus (pres) != entry->GetStatus (QString ()))
 			MakeStatusChangedMessage (pres, nick);
 
