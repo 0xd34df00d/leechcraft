@@ -208,7 +208,8 @@ namespace TabsList
 	void Plugin::navigateToTab ()
 	{
 		const int idx = sender ()->property ("TabIndex").toInt ();
-		Proxy_->GetTabWidget ()->setCurrentIndex (idx);
+// 		Proxy_->GetTabWidget ()->setCurrentIndex (idx);
+		Proxy_->GetTabWidget ()->setCurrentTab (idx);
 	}
 }
 }
