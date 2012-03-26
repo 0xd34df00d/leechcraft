@@ -79,6 +79,8 @@ namespace Xoox
 		QXmppVCardIq VCardIq_;
 		QPointer<VCardDialog> VCardDialog_;
 
+		QByteArray VCardPhotoHash_;
+
 		QMap<QString, QMap<QString, QVariant>> Variant2ClientInfo_;
 		QMap<QString, QByteArray> Variant2VerString_;
 		QMap<QString, QXmppVersionIq> Variant2Version_;

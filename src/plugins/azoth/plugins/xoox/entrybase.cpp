@@ -49,6 +49,7 @@
 #include "useravatardata.h"
 #include "useravatarmetadata.h"
 #include "capsdatabase.h"
+#include "avatarsstorage.h"
 
 namespace LeechCraft
 {
@@ -275,7 +276,6 @@ namespace Xoox
 		};
 
 		const auto& vcardUpdate = pres.vCardUpdateType ();
-		qDebug () << Q_FUNC_INFO << GetJID () << vcardUpdate;
 		if (vcardUpdate == QXmppPresence::VCardUpdateNoPhoto)
 		{
 			if (!Avatar_.isNull ())
@@ -286,10 +286,7 @@ namespace Xoox
 		}
 		else if (vcardUpdate == QXmppPresence::VCardUpdateValidPhoto)
 		{
-			const auto& thatHash = pres.photoHash ();
-			const auto& ourHash = QCryptographicHash::hash (VCardIq_.photo (), QCryptographicHash::Sha1);
-
-			if (thatHash != ourHash)
+			if (pres.photoHash () != VCardPhotoHash_)
 				fetchVCard ();
 		}
 		else if (!HasBlindlyRequestedVCard_)
@@ -548,6 +545,7 @@ namespace Xoox
 	void EntryBase::SetVCard (const QXmppVCardIq& vcard)
 	{
 		VCardIq_ = vcard;
+		VCardPhotoHash_ = QCryptographicHash::hash (VCardIq_.photo (), QCryptographicHash::Sha1);
 
 		QString text = FormatRawInfo (vcard);
 		if (!text.isEmpty ())
@@ -555,7 +553,10 @@ namespace Xoox
 		SetRawInfo (text);
 
 		if (!vcard.photo ().isEmpty ())
+		{
 			SetAvatar (vcard.photo ());
+			Core::Instance ().GetAvatarsStorage ()->StoreAvatar (Avatar_, VCardPhotoHash_.toHex ());
+		}
 
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
