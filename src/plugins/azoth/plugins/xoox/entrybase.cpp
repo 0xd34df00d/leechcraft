@@ -584,7 +584,7 @@ namespace Xoox
 		if (GetEntryType () == ETChat)
 		{
 			reqJid = variant.isEmpty () ?
-					QString () :
+					reqJid :
 					reqJid + '/' + variant;
 			reqVar = variant;
 		}
