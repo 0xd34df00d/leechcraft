@@ -240,9 +240,13 @@ namespace Xoox
 			px->save (&buffer, "PNG", 100);
 			buffer.close ();
 			VCard_.setPhoto (buffer.data ());
+			Account_->UpdateOurPhotoHash (QCryptographicHash::hash (buffer.data (), QCryptographicHash::Sha1));
 		}
 		else
+		{
 			VCard_.setPhoto (QByteArray ());
+			Account_->UpdateOurPhotoHash ("");
+		}
 
 		Account_->GetClientConnection ()->GetUserAvatarManager ()->
 					PublishAvatar (px ? px->toImage () : QImage ());
