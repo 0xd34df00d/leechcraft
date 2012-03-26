@@ -141,6 +141,8 @@ namespace Xoox
 		if (idHasCat ("conference"))
 			result << QPair<QByteArray, QString> ("join-conference", tr ("Join..."));
 
+		result << QPair<QByteArray, QString> ("refresh", tr ("Refresh..."));
+
 		return result;
 	}
 
@@ -148,6 +150,17 @@ namespace Xoox
 	{
 		if (!index.isValid ())
 			return;
+
+		if (id == "refresh")
+		{
+			const QModelIndex& sibling = index.sibling (index.row (), CName);
+			QStandardItem *item = Model_->itemFromIndex (sibling);
+			if (item->rowCount ())
+				item->removeRows (0, item->rowCount ());
+			item->setData (false, SDSession::DRFetchedMore);
+			Model_->fetchMore (sibling);
+			return;
+		}
 
 		const QModelIndex& sibling = index.sibling (index.row (), CName);
 		QStandardItem *item = Model_->itemFromIndex (sibling);
