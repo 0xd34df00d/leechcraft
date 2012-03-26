@@ -599,7 +599,7 @@ namespace Xoox
 		qDebug () << "known stored identities for" << ver.toHex () << GetJID () << storedIds.size ();
 		if (!storedIds.isEmpty ())
 			SetDiscoIdentities (reqVar, storedIds);
-		else if (!ver.isEmpty ())
+		else
 		{
 			qDebug () << "requesting ids for" << reqJid << reqVar;
 			QPointer<EntryBase> pThis (this);
@@ -607,14 +607,12 @@ namespace Xoox
 			Account_->GetClientConnection ()->RequestInfo (reqJid,
 				[ver, reqVar, pThis, pCM] (const QXmppDiscoveryIq& iq)
 				{
-					if (pCM)
+					if (!ver.isEmpty () && pCM)
 						pCM->SetIdentities (ver, iq.identities ());
 					if (pThis)
 						pThis->SetDiscoIdentities (reqVar, iq.identities ());
 				});
 		}
-		else
-			qDebug () << "too short ver :(" << ver.size ();
 	}
 
 	void EntryBase::SetClientInfo (const QString& variant, const QXmppPresence& pres)
