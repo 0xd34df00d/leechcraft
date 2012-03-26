@@ -168,6 +168,8 @@ namespace Xoox
 		void locationChanged (const QString&);
 
 		void locationChanged (const QString&, QObject*);
+
+		void vcardUpdated ();
 	};
 }
 }

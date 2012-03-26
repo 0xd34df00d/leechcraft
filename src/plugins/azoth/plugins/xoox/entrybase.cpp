@@ -545,7 +545,9 @@ namespace Xoox
 	void EntryBase::SetVCard (const QXmppVCardIq& vcard)
 	{
 		VCardIq_ = vcard;
-		VCardPhotoHash_ = QCryptographicHash::hash (VCardIq_.photo (), QCryptographicHash::Sha1);
+		VCardPhotoHash_ = VCardIq_.photo ().isEmpty () ?
+				QByteArray () :
+				QCryptographicHash::hash (VCardIq_.photo (), QCryptographicHash::Sha1);
 
 		QString text = FormatRawInfo (vcard);
 		if (!text.isEmpty ())
@@ -562,6 +564,8 @@ namespace Xoox
 			VCardDialog_->UpdateInfo (vcard);
 
 		Core::Instance ().ScheduleSaveRoster (10000);
+
+		emit vcardUpdated ();
 	}
 
 	void EntryBase::SetRawInfo (const QString& rawinfo)
