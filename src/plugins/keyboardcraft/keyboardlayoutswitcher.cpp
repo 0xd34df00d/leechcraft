@@ -41,9 +41,8 @@ namespace KeyboardCraft
 		setSwitchingPolicy ();
 	}
 
-	KeyboardLayoutSwitcher::~KeyboardLayoutSwitcher()
+	KeyboardLayoutSwitcher::~KeyboardLayoutSwitcher ()
 	{
-		qDeleteAll (Widget2KBLayoutIndex_.keys ());
 		Widget2KBLayoutIndex_.clear ();
 		TabClass2KBLayoutIndex_.clear ();
 	}
@@ -126,7 +125,7 @@ namespace KeyboardCraft
 					connect (itw->ParentMultiTabs (),
 							SIGNAL (removeTab (QWidget*)),
 							this,
-							SLOT (removeWidget (QWidget*)),
+							SLOT (handleRemoveWidget (QWidget*)),
 							Qt::UniqueConnection);
 
 					XkbStateRec xkbState;
@@ -175,11 +174,8 @@ namespace KeyboardCraft
 			CurrentSwitchingPloicy_ = SwitchingPolicy::Tab;
 	}
 
-	void KeyboardLayoutSwitcher::removeWidget (QWidget *widget)
+	void KeyboardLayoutSwitcher::handleRemoveWidget (QWidget *widget)
 	{
-		if (!widget)
-			return;
-
 		Widget2KBLayoutIndex_.remove (widget);
 	}
 

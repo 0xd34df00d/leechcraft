@@ -52,7 +52,7 @@ namespace KeyboardCraft
 		void updateKBLayouts (QWidget *current, QWidget *prev);
 	private slots:
 		void setSwitchingPolicy ();
-		void removeWidget (QWidget *widget);
+		void handleRemoveWidget (QWidget *widget);
 	};
 }
 }
