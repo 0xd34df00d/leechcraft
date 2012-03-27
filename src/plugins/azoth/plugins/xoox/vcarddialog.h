@@ -48,6 +48,9 @@ namespace Xoox
 
 		void UpdateInfo (const QXmppVCardIq&);
 	private:
+		void BuildPhones (const QXmppVCardPhoneList&);
+		void BuildEmails (const QXmppVCardEmailList&);
+		void BuildAddresses (const QXmppVCardAddressList&);
 		void InitConnections (EntryBase*);
 		void EnableEditableMode ();
 		void UpdateNote (GlooxAccount*, const QString&);

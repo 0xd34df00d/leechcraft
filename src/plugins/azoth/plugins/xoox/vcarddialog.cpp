@@ -20,7 +20,6 @@
 #include <QPushButton>
 #include <QFileDialog>
 #include <QBuffer>
-#include <QXmppVCardIq.h>
 #include <QXmppVCardManager.h>
 #include "entrybase.h"
 #include "glooxaccount.h"
@@ -91,49 +90,9 @@ namespace Xoox
 			Ui_.EditBirthday_->setDate (date);
 		Ui_.EditBirthday_->setVisible (date.isValid ());
 
-		QStringList phones;
-		Q_FOREACH (const QXmppVCardPhone& phone, vcard.phones ())
-		{
-			if (phone.number.isEmpty ())
-				continue;
-
-			QStringList attrs;
-			if (phone.isPref)
-				attrs << tr ("preferred");
-			if (phone.isHome)
-				attrs << tr ("home");
-			if (phone.isWork)
-				attrs << tr ("work");
-			if (phone.isCell)
-				attrs << tr ("cell");
-
-			phones << (attrs.isEmpty () ?
-						phone.number :
-						(phone.number + " (" + attrs.join (", ") + ")"));
-		}
-		Ui_.EditPhone_->setText (phones.join ("; "));
-
-		QStringList emails;
-		Q_FOREACH (const QXmppVCardEmail& email, vcard.emails ())
-		{
-			if (email.address.isEmpty ())
-				continue;
-
-			QStringList attrs;
-			if (email.isPref)
-				attrs << tr ("preferred");
-			if (email.isHome)
-				attrs << tr ("home");
-			if (email.isWork)
-				attrs << tr ("work");
-			if (email.isX400)
-				attrs << "X400";
-
-			emails << (attrs.isEmpty () ?
-						email.address :
-						(email.address + " (" + attrs.join (", ") + ")"));
-		}
-		Ui_.EditEmail_->setText (emails.join ("; "));
+		BuildPhones (vcard.phones ());
+		BuildEmails (vcard.emails ());
+		BuildAddresses (vcard.addresses ());
 
 		Ui_.EditURL_->setText (vcard.url ());
 
@@ -154,6 +113,106 @@ namespace Xoox
 		Ui_.Title_->setText (vcard.title ());
 		Ui_.Role_->setText (vcard.role ());
 		Ui_.About_->setPlainText (vcard.desc ());
+	}
+
+	void VCardDialog::BuildPhones (const QXmppVCardPhoneList& phonesList)
+	{
+		QStringList phones;
+		Q_FOREACH (const QXmppVCardPhone& phone, phonesList)
+		{
+			if (phone.number.isEmpty ())
+				continue;
+
+			QStringList attrs;
+			if (phone.isPref)
+				attrs << tr ("preferred");
+			if (phone.isHome)
+				attrs << tr ("home");
+			if (phone.isWork)
+				attrs << tr ("work");
+			if (phone.isCell)
+				attrs << tr ("cell");
+
+			phones << (attrs.isEmpty () ?
+						phone.number :
+						(phone.number + " (" + attrs.join (", ") + ")"));
+		}
+		Ui_.EditPhone_->setText (phones.join ("; "));
+	}
+
+	void VCardDialog::BuildEmails (const QXmppVCardEmailList& emailsList)
+	{
+		QStringList emails;
+		Q_FOREACH (const QXmppVCardEmail& email, emailsList)
+		{
+			if (email.address.isEmpty ())
+				continue;
+
+			QStringList attrs;
+			if (email.isPref)
+				attrs << tr ("preferred");
+			if (email.isHome)
+				attrs << tr ("home");
+			if (email.isWork)
+				attrs << tr ("work");
+			if (email.isX400)
+				attrs << "X400";
+
+			emails << (attrs.isEmpty () ?
+						email.address :
+						(email.address + " (" + attrs.join (", ") + ")"));
+		}
+		Ui_.EditEmail_->setText (emails.join ("; "));
+	}
+
+	void VCardDialog::BuildAddresses (const QXmppVCardAddressList& addressList)
+	{
+		QStringList addresses;
+		int addrNum = 1;
+		Q_FOREACH (const QXmppVCardAddress& address, addressList)
+		{
+			if (address.isEmpty ())
+				continue;
+
+			QStringList attrs;
+			if (address.isHome)
+				attrs << tr ("home");
+			if (address.isWork)
+				attrs << tr ("work");
+			if (address.isPostal)
+				attrs << tr ("postal");
+			if (address.isPref)
+				attrs << tr ("preferred");
+
+			QString str;
+			str += "<strong>";
+			str += attrs.isEmpty () ?
+					tr ("Address %1:")
+						.arg (addrNum) :
+					tr ("Address %1 (%2):")
+						.arg (addrNum)
+						.arg (attrs.join (", "));
+			str += "</strong>";
+
+			QStringList fields;
+			auto addField = [&fields] (const QString& label, const QString& val)
+			{
+				if (!val.isEmpty ())
+					fields << label.arg (val);
+			};
+			addField (tr ("Country: %1"), address.country);
+			addField (tr ("Region: %1"), address.region);
+			addField (tr ("Locality: %1", "User's locality"), address.locality);
+			addField (tr ("Street: %1"), address.street);
+			addField (tr ("Additional: %1", "Additional address in user's address"), address.extAdd);
+			addField (tr ("Postal code: %1"), address.pCode);
+			str += "<ul><li>";
+			str += fields.join ("</li><li>");
+			str += "</li></ul>";
+
+			addresses << str;
+		}
+		Ui_.Addresses_->setHtml (addresses.join ("<hr/>"));
 	}
 
 	void VCardDialog::InitConnections (EntryBase *entry)
@@ -240,9 +299,13 @@ namespace Xoox
 			px->save (&buffer, "PNG", 100);
 			buffer.close ();
 			VCard_.setPhoto (buffer.data ());
+			Account_->UpdateOurPhotoHash (QCryptographicHash::hash (buffer.data (), QCryptographicHash::Sha1));
 		}
 		else
+		{
 			VCard_.setPhoto (QByteArray ());
+			Account_->UpdateOurPhotoHash ("");
+		}
 
 		Account_->GetClientConnection ()->GetUserAvatarManager ()->
 					PublishAvatar (px ? px->toImage () : QImage ());

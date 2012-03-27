@@ -118,6 +118,11 @@ namespace Xoox
 		return result;
 	}
 
+	void CapsManager::SetIdentities (const QByteArray& verNode, const QList<QXmppDiscoveryIq::Identity>& ids)
+	{
+		DB_->SetIdentities (verNode, ids);
+	}
+
 	QList<QXmppDiscoveryIq::Identity> CapsManager::GetIdentities (const QByteArray& verNode) const
 	{
 		return DB_->GetIdentities (verNode);

@@ -79,6 +79,8 @@ namespace Xoox
 		QXmppVCardIq VCardIq_;
 		QPointer<VCardDialog> VCardDialog_;
 
+		QByteArray VCardPhotoHash_;
+
 		QMap<QString, QMap<QString, QVariant>> Variant2ClientInfo_;
 		QMap<QString, QByteArray> Variant2VerString_;
 		QMap<QString, QXmppVersionIq> Variant2Version_;
@@ -86,6 +88,7 @@ namespace Xoox
 
 		bool HasUnreadMsgs_;
 		bool VersionReqsEnabled_;
+		bool HasBlindlyRequestedVCard_;
 	public:
 		EntryBase (GlooxAccount* = 0);
 		virtual ~EntryBase ();
@@ -113,6 +116,7 @@ namespace Xoox
 
 		virtual QString GetJID () const = 0;
 
+		void HandlePresence (const QXmppPresence&, const QString&);
 		void HandleMessage (GlooxMessage*);
 		void HandlePEPEvent (QString, PEPEventBase*);
 		void HandleAttentionMessage (const QXmppMessage&);
@@ -139,6 +143,7 @@ namespace Xoox
 		QByteArray GetVariantVerString (const QString&) const;
 		QXmppVersionIq GetClientVersion (const QString&) const;
 	private:
+		void CheckVCardUpdate (const QXmppPresence&);
 		QString FormatRawInfo (const QXmppVCardIq&);
 		void SetNickFromVCard (const QXmppVCardIq&);
 	private slots:
@@ -164,6 +169,8 @@ namespace Xoox
 		void locationChanged (const QString&);
 
 		void locationChanged (const QString&, QObject*);
+
+		void vcardUpdated ();
 	};
 }
 }

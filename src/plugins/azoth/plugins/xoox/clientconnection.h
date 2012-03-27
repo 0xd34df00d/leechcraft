@@ -120,6 +120,8 @@ namespace Xoox
 		QString OurBareJID_;
 		QString OurResource_;
 
+		QByteArray OurPhotoHash_;
+
 		SelfContact *SelfContact_;
 
 		GlooxAccount *Account_;
@@ -189,6 +191,8 @@ namespace Xoox
 		QString GetOurJID () const;
 		void SetOurJID (const QString&);
 
+		void SetOurPhotoHash (const QByteArray&);
+
 		/** Joins the room and returns the contact list
 		 * entry representing that room.
 		 */
@@ -256,7 +260,6 @@ namespace Xoox
 				QString *bare, QString *resource);
 	private:
 		void SetupLogger ();
-		EntryStatus PresenceToStatus (const QXmppPresence&) const;
 		void HandleOtherPresence (const QXmppPresence&);
 		void HandleError (const QXmppIq&);
 		void HandleRIEX (QString, QList<RIEXManager::Item>, QString = QString ());

@@ -173,10 +173,12 @@ namespace TabSessManager
 			if (data.isEmpty ())
 				continue;
 
+			QIcon forRecover = QIcon (rec->GetTabRecoverIcon ().pixmap (32, 32));
+
 			str << plugin->GetUniqueID ()
 					<< data
 					<< rec->GetTabRecoverName ()
-					<< rec->GetTabRecoverIcon ()
+					<< forRecover
 					<< GetSessionProps (tab);
 
 			qDebug () << Q_FUNC_INFO << "appended data for"
@@ -386,9 +388,8 @@ namespace TabSessManager
 		if (IsRecovering_ || Proxy_->IsShuttingDown ())
 			return;
 
-		qDebug () << "saving restore data";
-
 		const auto& result = GetCurrentSession ();
+		qDebug () << "saving restore data" << result.size ();
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_TabSessManager");

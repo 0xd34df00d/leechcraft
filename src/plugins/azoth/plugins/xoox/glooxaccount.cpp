@@ -92,6 +92,10 @@ namespace Xoox
 	{
 		ClientConnection_.reset (new ClientConnection (JID_ + "/" + Resource_,
 						this));
+
+		if (!OurPhotoHash_.isEmpty ())
+			ClientConnection_->SetOurPhotoHash (OurPhotoHash_);
+
 		ClientConnection_->SetKAParams (KAParams_);
 
 		TransferManager_.reset (new TransferManager (ClientConnection_->
@@ -708,6 +712,18 @@ namespace Xoox
 		ClientConnection_->SetBookmarks (set);
 	}
 
+	void GlooxAccount::UpdateOurPhotoHash (const QByteArray& hash)
+	{
+		if (hash == OurPhotoHash_)
+			return;
+
+		OurPhotoHash_ = hash;
+		ClientConnection_->SetOurPhotoHash (hash);
+		ChangeState (GetState ());
+
+		emit accountSettingsChanged ();
+	}
+
 	void GlooxAccount::CreateSDForResource (const QString& resource)
 	{
 		auto sd = new SDSession (this);
@@ -717,7 +733,7 @@ namespace Xoox
 
 	QByteArray GlooxAccount::Serialize () const
 	{
-		quint16 version = 3;
+		quint16 version = 4;
 
 		QByteArray result;
 		{
@@ -730,7 +746,8 @@ namespace Xoox
 				<< AccState_.Priority_
 				<< Host_
 				<< Port_
-				<< KAParams_;
+				<< KAParams_
+				<< OurPhotoHash_;
 		}
 
 		return result;
@@ -743,7 +760,7 @@ namespace Xoox
 		QDataStream in (data);
 		in >> version;
 
-		if (version < 1 || version > 3)
+		if (version < 1 || version > 4)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -763,6 +780,8 @@ namespace Xoox
 				>> result->Port_;
 		if (version >= 3)
 			in >> result->KAParams_;
+		if (version >= 4)
+			in >> result->OurPhotoHash_;
 		result->Init ();
 
 		return result;

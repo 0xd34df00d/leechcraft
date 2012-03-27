@@ -24,15 +24,16 @@
 class QDomElement;
 class QWidget;
 class QXmppDataForm;
+class QXmppPresence;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+struct EntryStatus;
 namespace Xoox
 {
 class EntryBase;
-
 namespace XooxUtil
 {
 	QString RoleToString (const QXmppMucItem::Role&);
@@ -48,6 +49,8 @@ namespace XooxUtil
 
 	bool CheckUserFeature (EntryBase *entry,
 			const QString& variant, const QString& feature);
+
+	EntryStatus PresenceToStatus (const QXmppPresence& pres);
 }
 }
 }

@@ -16,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
+#pragma once
+
 #include <QObject>
-#include <QXmppDiscoveryIq.h>
+#include <QDir>
+
+class QImage;
 
 namespace LeechCraft
 {
@@ -27,32 +29,19 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class ClientConnection;
-	class CapsDatabase;
-
-	class CapsManager : public QObject
+	class AvatarsStorage : public QObject
 	{
 		Q_OBJECT
 
-		ClientConnection *Connection_;
-		CapsDatabase *DB_;
-		QHash<QString, QString> Caps2String_;
+		QDir AvatarsDir_;
 	public:
-		CapsManager (ClientConnection*);
+		AvatarsStorage (QObject* = 0);
 
-		void FetchCaps (const QString&, const QByteArray&);
-		QStringList GetRawCaps (const QByteArray&) const;
-		QStringList GetCaps (const QByteArray&) const;
-		QStringList GetCaps (const QStringList&) const;
-
-		void SetIdentities (const QByteArray&, const QList<QXmppDiscoveryIq::Identity>&);
-		QList<QXmppDiscoveryIq::Identity> GetIdentities (const QByteArray&) const;
-	public slots:
-		void handleInfoReceived (const QXmppDiscoveryIq&);
-		void handleItemsReceived (const QXmppDiscoveryIq&);
+		void StoreAvatar (const QImage&, const QByteArray&);
+		QImage GetAvatar (const QByteArray&) const;
+	private slots:
+		void collectOldAvatars ();
 	};
 }
 }
 }
-
-#endif

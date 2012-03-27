@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
-#include <QObject>
-#include <QXmppDiscoveryIq.h>
+#include "avatarsstorage.h"
+#include <util/util.h>
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -27,32 +26,40 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class ClientConnection;
-	class CapsDatabase;
-
-	class CapsManager : public QObject
+	AvatarsStorage::AvatarsStorage (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
+		AvatarsDir_ = Util::CreateIfNotExists ("azoth/xoox/hashed_avatars");
 
-		ClientConnection *Connection_;
-		CapsDatabase *DB_;
-		QHash<QString, QString> Caps2String_;
-	public:
-		CapsManager (ClientConnection*);
+		QTimer::singleShot (30000, this, SLOT (collectOldAvatars ()));
+	}
 
-		void FetchCaps (const QString&, const QByteArray&);
-		QStringList GetRawCaps (const QByteArray&) const;
-		QStringList GetCaps (const QByteArray&) const;
-		QStringList GetCaps (const QStringList&) const;
+	void AvatarsStorage::StoreAvatar (const QImage& image, const QByteArray& hash)
+	{
+		QFile file (AvatarsDir_.absoluteFilePath (hash));
+		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open file"
+					<< file.fileName ()
+					<< "for writing";
+			return;
+		}
 
-		void SetIdentities (const QByteArray&, const QList<QXmppDiscoveryIq::Identity>&);
-		QList<QXmppDiscoveryIq::Identity> GetIdentities (const QByteArray&) const;
-	public slots:
-		void handleInfoReceived (const QXmppDiscoveryIq&);
-		void handleItemsReceived (const QXmppDiscoveryIq&);
-	};
+		image.save (&file, "PNG");
+	}
+
+	QImage AvatarsStorage::GetAvatar (const QByteArray& hash) const
+	{
+		return QImage (AvatarsDir_.absoluteFilePath (hash));
+	}
+
+	void AvatarsStorage::collectOldAvatars ()
+	{
+		auto list = AvatarsDir_.entryList (QDir::Files, QDir::Time | QDir::Reversed);
+		while (list.size () > 4000)
+			AvatarsDir_.remove (list.takeLast ());
+	}
 }
 }
 }
-
-#endif
