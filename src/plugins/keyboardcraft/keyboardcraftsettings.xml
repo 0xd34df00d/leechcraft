@@ -5,7 +5,7 @@
 		<item type="combobox" property="SwitchingPolicy">
 			<label lang="en" value="Switching keyboard layout policy:" />
 			<option name="global" default="true">
-				<label lang="en" value="Global keyboard layout" />
+				<label lang="en" value="Use system layout" />
 			</option>
 			<option name="plugin">
 				<label lang="en" value="Keyboard layout per plugin" />

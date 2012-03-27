@@ -41,14 +41,21 @@ namespace KeyboardCraft
 		setSwitchingPolicy ();
 	}
 
+	KeyboardLayoutSwitcher::~KeyboardLayoutSwitcher()
+	{
+		qDeleteAll (Widget2KBLayoutIndex_.keys ());
+		Widget2KBLayoutIndex_.clear ();
+		TabClass2KBLayoutIndex_.clear ();
+	}
+
 	bool KeyboardLayoutSwitcher::IsGlobalPolicy () const
 	{
-		return CurrentSwitchingPloicy_ == SwitchingPolicy::GlobalPolicy;
+		return CurrentSwitchingPloicy_ == SwitchingPolicy::Global;
 	}
 
 	void KeyboardLayoutSwitcher::updateKBLayouts (QWidget *current, QWidget *prev)
 	{
-		if (CurrentSwitchingPloicy_ == SwitchingPolicy::GlobalPolicy)
+		if (CurrentSwitchingPloicy_ == SwitchingPolicy::Global)
 			return;
 
 		if (LastCurrentWidget_ == current)
@@ -65,28 +72,7 @@ namespace KeyboardCraft
 				&mnr,
 				&xkbReason);
 
-		if (CurrentSwitchingPloicy_ == SwitchingPolicy::TabPolicy)
-		{
-			if (prev)
-			{
-				XkbStateRec xkbState;
-				XkbGetState (display, XkbUseCoreKbd, &xkbState);
-				Widget2KBLayoutIndex_ [prev] = xkbState.group;
-			}
-
-			if (current)
-			{
-				LastCurrentWidget_ = current;
-				if (Widget2KBLayoutIndex_.contains (current))
-				{
-					int xkbGroup = Widget2KBLayoutIndex_ [current];
-					if (!XkbLockGroup (display, XkbUseCoreKbd, xkbGroup))
-						qWarning () << Q_FUNC_INFO
-								<< "Request to change layout not send";
-				}
-			}
-		}
-		else if (CurrentSwitchingPloicy_ == SwitchingPolicy::PluginPolicy)
+		if (CurrentSwitchingPloicy_ == SwitchingPolicy::Tab)
 		{
 			if (prev)
 			{
@@ -99,6 +85,50 @@ namespace KeyboardCraft
 				}
 				else
 				{
+					connect (itw->ParentMultiTabs (),
+							SIGNAL (removeTab (QWidget*)),
+							this,
+							SLOT (removeWidget (QWidget*)),
+							Qt::UniqueConnection);
+
+					XkbStateRec xkbState;
+					XkbGetState (display, XkbUseCoreKbd, &xkbState);
+					Widget2KBLayoutIndex_ [prev] = xkbState.group;
+
+				}
+			}
+			if (current)
+			{
+				LastCurrentWidget_ = current;
+
+				if (Widget2KBLayoutIndex_.contains (current))
+				{
+					int xkbGroup = Widget2KBLayoutIndex_ [current];
+					if (!XkbLockGroup (display, XkbUseCoreKbd, xkbGroup))
+						qWarning () << Q_FUNC_INFO
+								<< "Request to change layout not send";
+				}
+			}
+		}
+		else if (CurrentSwitchingPloicy_ == SwitchingPolicy::Plugin)
+		{
+			if (prev)
+			{
+				ITabWidget *itw = qobject_cast<ITabWidget*> (prev);
+				if (!itw)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< current
+							<< "is not an ITabWidget class";
+				}
+				else
+				{
+					connect (itw->ParentMultiTabs (),
+							SIGNAL (removeTab (QWidget*)),
+							this,
+							SLOT (removeWidget (QWidget*)),
+							Qt::UniqueConnection);
+
 					XkbStateRec xkbState;
 					XkbGetState (display, XkbUseCoreKbd, &xkbState);
 					TabClass2KBLayoutIndex_ [itw->GetTabClassInfo ().TabClass_] = xkbState.group;
@@ -136,13 +166,22 @@ namespace KeyboardCraft
 	{
 		if (XmlSettingsManager::Instance ()
 				.property ("SwitchingPolicy").toString () == "global")
-			CurrentSwitchingPloicy_ = SwitchingPolicy::GlobalPolicy;
+			CurrentSwitchingPloicy_ = SwitchingPolicy::Global;
 		else if (XmlSettingsManager::Instance ()
 				.property ("SwitchingPolicy").toString () == "plugin")
-			CurrentSwitchingPloicy_ = SwitchingPolicy::PluginPolicy;
+			CurrentSwitchingPloicy_ = SwitchingPolicy::Plugin;
 		else if (XmlSettingsManager::Instance ()
 				.property ("SwitchingPolicy").toString () == "tab")
-			CurrentSwitchingPloicy_ = SwitchingPolicy::TabPolicy;
+			CurrentSwitchingPloicy_ = SwitchingPolicy::Tab;
 	}
+
+	void KeyboardLayoutSwitcher::removeWidget (QWidget *widget)
+	{
+		if (!widget)
+			return;
+
+		Widget2KBLayoutIndex_.remove (widget);
+	}
+
 }
 }

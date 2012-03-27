@@ -32,9 +32,9 @@ namespace KeyboardCraft
 
 		enum class SwitchingPolicy
 		{
-			GlobalPolicy,
-			PluginPolicy,
-			TabPolicy
+			Global,
+			Plugin,
+			Tab
 		};
 
 		SwitchingPolicy CurrentSwitchingPloicy_;
@@ -45,12 +45,14 @@ namespace KeyboardCraft
 		QWidget *LastCurrentWidget_;
 	public:
 		KeyboardLayoutSwitcher (QObject *parent = 0);
+		~KeyboardLayoutSwitcher ();
 
 		bool IsGlobalPolicy () const;
 	public slots:
 		void updateKBLayouts (QWidget *current, QWidget *prev);
 	private slots:
 		void setSwitchingPolicy ();
+		void removeWidget (QWidget *widget);
 	};
 }
 }
