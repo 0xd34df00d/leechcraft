@@ -569,11 +569,12 @@ namespace LeechCraft
 
 	void SeparateTabWidget::setCurrentIndex (int index)
 	{
-		if (index > WidgetCount () &&
+		if (index >= WidgetCount () &&
 				!AddTabButtonAction_->isVisible ())
-			index = WidgetCount ();
+			index = WidgetCount () - 1;
 
 		MainStackedWidget_->setCurrentIndex (index);
+		MainTabBar_->setCurrentIndex (index);
 
 		if (CurrentWidget_ != Widget (index))
 		{
