@@ -62,7 +62,7 @@ namespace KeyboardCraft
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("");
+		return tr ("Provides plugin- or tab-grained keyboard layout control.");
 	}
 
 	QIcon Plugin::GetIcon () const
