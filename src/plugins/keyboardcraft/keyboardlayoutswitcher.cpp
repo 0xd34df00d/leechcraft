@@ -41,12 +41,6 @@ namespace KeyboardCraft
 		setSwitchingPolicy ();
 	}
 
-	KeyboardLayoutSwitcher::~KeyboardLayoutSwitcher ()
-	{
-		Widget2KBLayoutIndex_.clear ();
-		TabClass2KBLayoutIndex_.clear ();
-	}
-
 	bool KeyboardLayoutSwitcher::IsGlobalPolicy () const
 	{
 		return CurrentSwitchingPloicy_ == SwitchingPolicy::Global;

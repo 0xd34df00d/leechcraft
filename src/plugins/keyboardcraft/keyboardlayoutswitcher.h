@@ -45,7 +45,6 @@ namespace KeyboardCraft
 		QWidget *LastCurrentWidget_;
 	public:
 		KeyboardLayoutSwitcher (QObject *parent = 0);
-		~KeyboardLayoutSwitcher ();
 
 		bool IsGlobalPolicy () const;
 	public slots:

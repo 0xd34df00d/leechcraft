@@ -38,8 +38,7 @@ namespace KeyboardCraft
 	QSettings* XmlSettingsManager::BeginSettings () const
 	{
 		return new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () +
-					"_KeyboardCraft");
+				QCoreApplication::applicationName () + "_KeyboardCraft");
 	}
 
 	void XmlSettingsManager::EndSettings (QSettings*) const
