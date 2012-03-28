@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef LEECHCRAFT_KEYBOARDCRAFT_KEYBOARDCRAFT_H
-#define LEECHCRAFT_KEYBOARDCRAFT_KEYBOARDCRAFT_H
+#pragma once
 
 #include <QObject>
 #include <interfaces/iinfo.h>
@@ -56,5 +55,3 @@ namespace KeyboardCraft
 	};
 }
 }
-
-#endif // LEECHCRAFT_KEYBOARDCRAFT_KEYBOARDCRAFT_H

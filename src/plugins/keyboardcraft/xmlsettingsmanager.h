@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_KEYBOARDCRAFT_XMLSETTINGSMANAGER_H
-#define PLUGINS_KEYBOARDCRAFT_XMLSETTINGSMANAGER_H
+#pragma once
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
@@ -39,5 +38,3 @@ namespace KeyboardCraft
 	};
 }
 }
-
-#endif // PLUGINS_KEYBOARDCRAFT_XMLSETTINGSMANAGER_H

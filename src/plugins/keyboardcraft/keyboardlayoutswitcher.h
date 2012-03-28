@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef LEECHCRAFT_KEYBOARDCRAFT_KEYBOARDLAYOUTSWITCHER_H
-#define LEECHCRAFT_KEYBOARDCRAFT_KEYBOARDLAYOUTSWITCHER_H
+#pragma once
 
 #include <QObject>
 #include <QHash>
@@ -55,5 +54,3 @@ namespace KeyboardCraft
 	};
 }
 }
-
-#endif // LEECHCRAFT_KEYBOARDCRAFT_KEYBOARDLAYOUTSWITCHER_H
