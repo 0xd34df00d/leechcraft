@@ -31,11 +31,18 @@ namespace XEP0232Handler
 {
 	struct SoftwareInformation
 	{
+		int IconWidth_;
+		int IconHeight_;
 		QUrl IconURL_;
+		QString IconCID_;
+		QString IconType_;
+
 		QString OS_;
 		QString OSVer_;
 		QString Software_;
 		QString SoftwareVer_;
+
+		bool IsNull () const;
 	};
 
 	SoftwareInformation FromDataForm (const QXmppDataForm&);

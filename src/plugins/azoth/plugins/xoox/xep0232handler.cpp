@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "xep0232handler.h"
+#include <QtDebug>
 #include <QXmppDataForm.h>
 
 namespace LeechCraft
@@ -27,14 +28,87 @@ namespace Xoox
 {
 namespace XEP0232Handler
 {
-	SoftwareInformation FromDataForm (const QXmppDataForm&)
+	const QString SWInfoFormType = "urn:xmpp:dataforms:softwareinfo";
+
+	bool SoftwareInformation::IsNull () const
 	{
-		return SoftwareInformation ();
+		return OS_.isEmpty () && OSVer_.isEmpty () &&
+				Software_.isEmpty () && SoftwareVer_.isEmpty ();
 	}
 
-	QXmppDataForm ToDataForm (const SoftwareInformation&)
+	SoftwareInformation FromDataForm (const QXmppDataForm& form)
 	{
-		return QXmppDataForm ();
+		SoftwareInformation si;
+		Q_FOREACH (const QXmppDataForm::Field& f, form.fields ())
+		{
+			const auto& var = f.key ();
+			if (var == "icon")
+			{
+				const auto& media = f.media ();
+				si.IconWidth_ = media.width ();
+				si.IconHeight_ = media.height ();
+				Q_FOREACH (const auto& pair, media.uris ())
+					if (pair.second.startsWith ("http"))
+					{
+						si.IconURL_ = QUrl::fromEncoded (pair.second.toLatin1 ());
+						si.IconType_ = pair.first;
+					}
+					else if (pair.second.startsWith ("cid"))
+						si.IconCID_ = pair.second;
+			}
+			else if (var == "os")
+				si.OS_ = f.value ().toString ();
+			else if (var == "os_version")
+				si.OSVer_ = f.value ().toString ();
+			else if (var == "software")
+				si.Software_ = f.value ().toString ();
+			else if (var == "software_version")
+				si.SoftwareVer_ = f.value ().toString ();
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown field"
+						<< var
+						<< f.value ();
+		}
+		return si;
+	}
+
+	QXmppDataForm ToDataForm (const SoftwareInformation& si)
+	{
+		QList<QXmppDataForm::Field> fields;
+
+		QXmppDataForm::Field typeField (QXmppDataForm::Field::HiddenField);
+		typeField.setKey ("FORM_TYPE");
+		typeField.setValue (SWInfoFormType);
+		fields << typeField;
+
+		QXmppDataForm::Field iconField;
+		iconField.setKey ("icon");
+		QXmppDataForm::Media media (si.IconHeight_, si.IconWidth_);
+		QList<QPair<QString, QString>> uris;
+		uris << qMakePair<QString, QString> (si.IconType_, si.IconCID_);
+		uris << qMakePair<QString, QString> (si.IconType_, si.IconURL_.toEncoded ());
+		media.setUris (uris);
+		iconField.setMedia (media);
+
+		auto setStr = [&fields] (const QString& key, const QString& val)
+		{
+			if (!val.isEmpty ())
+			{
+				QXmppDataForm::Field field;
+				field.setKey (key);
+				field.setValue (val);
+				fields << field;
+			}
+		};
+		setStr ("os", si.OS_);
+		setStr ("os_version", si.OSVer_);
+		setStr ("software", si.Software_);
+		setStr ("software_version", si.SoftwareVer_);
+
+		QXmppDataForm form (QXmppDataForm::Result);
+		form.setFields (fields);
+		return form;
 	}
 }
 }
