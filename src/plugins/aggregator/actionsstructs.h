@@ -39,6 +39,7 @@ namespace Aggregator
 		QAction *ActionImportBinary_;
 		QAction *ActionExportBinary_;
 		QAction *ActionExportFB2_;
+		QAction *ActionMarkAllAsRead_;
 
 		void SetupActionsStruct (QWidget*);
 	};

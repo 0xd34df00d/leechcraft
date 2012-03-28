@@ -64,6 +64,11 @@ namespace Aggregator
 				parent);
 		ActionExportFB2_->setObjectName ("ActionExportFB2_");
 		ActionExportFB2_->setProperty ("ActionIcon", "application-xml");
+
+		ActionMarkAllAsRead_ = new QAction (tr ("Mark all channels as read"),
+				parent);
+		ActionMarkAllAsRead_->setObjectName ("ActionMarkAllAsRead_");
+		ActionMarkAllAsRead_->setProperty ("ActionIcon", "mail-mark-read");
 	}
 
 	void ChannelActions::SetupActionsStruct (QWidget *parent)
