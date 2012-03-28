@@ -119,6 +119,8 @@ namespace Aggregator
 
 		Impl_->ToolMenu_ = new QMenu (tr ("Aggregator"));
 		Impl_->ToolMenu_->setIcon (GetIcon ());
+		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionMarkAllAsRead_);
+		Impl_->ToolMenu_->addSeparator ();
 		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionImportOPML_);
 		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportOPML_);
 		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionImportBinary_);
@@ -450,11 +452,11 @@ namespace Aggregator
 			result << Impl_->AppWideActions_.ActionRegexpMatcher_;
 			break;
 		case AEPCommonContextMenu:
-			result << Impl_->AppWideActions_.ActionMarkAllAsRead_;
 			result << Impl_->AppWideActions_.ActionAddFeed_;
 			result << Impl_->AppWideActions_.ActionUpdateFeeds_;
 			break;
 		case AEPTrayMenu:
+			result << Impl_->AppWideActions_.ActionMarkAllAsRead_;
 			result << Impl_->AppWideActions_.ActionAddFeed_;
 			result << Impl_->AppWideActions_.ActionUpdateFeeds_;
 			break;
