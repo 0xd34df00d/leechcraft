@@ -45,14 +45,15 @@ namespace LeechCraft
 	SeparateTabWidget::SeparateTabWidget (QWidget *parent)
 	: QWidget (parent)
 	, LastContextMenuTab_ (-1)
-	, PreviousTab_ (-1)
-	, CurrentTab_ (-1)
 	, MainStackedWidget_ (new QStackedWidget)
 	, MainTabBar_ (new SeparateTabBar)
 	, AddTabButton_ (new QToolButton)
 	, LeftToolBar_ (new QToolBar)
 	, RightToolBar_ (new QToolBar)
 	, DefaultTabAction_ (new QAction (QString (), this))
+	, CurrentWidget_ (0)
+	, CurrentIndex_ (-1)
+	, PreviousWidget_ (0)
 	{
 		XmlSettingsManager::Instance ()->RegisterObject ("SelectionBehavior",
 			this, "handleSelectionBehavior");
@@ -153,7 +154,6 @@ namespace LeechCraft
 					<< index;
 			return;
 		}
-
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookTabSetText (proxy, index);
@@ -376,7 +376,7 @@ namespace LeechCraft
 		MainTabBar_->setTabToolTip (newIndex, text);
 
 		if (MainTabBar_->currentIndex () >= WidgetCount ())
-			setCurrentIndex (WidgetCount () - 1);
+			setCurrentTab (WidgetCount () - 1);
 
 		return newIndex;
 	}
@@ -411,6 +411,9 @@ namespace LeechCraft
 					<< index;
 			return;
 		}
+
+		if (MainStackedWidget_->widget (index) == PreviousWidget_)
+			PreviousWidget_ = 0;
 
 		MainStackedWidget_->removeWidget (Widget (index));
 		MainTabBar_->removeTab (index);
@@ -451,6 +454,11 @@ namespace LeechCraft
 	void SeparateTabWidget::MoveTab (int from, int to)
 	{
 		MainTabBar_->moveTab (from, to);
+	}
+
+	QWidget* SeparateTabWidget::GetPreviousWidget () const
+	{
+		return PreviousWidget_;
 	}
 
 	void SeparateTabWidget::resizeEvent (QResizeEvent *event)
@@ -561,26 +569,35 @@ namespace LeechCraft
 
 	void SeparateTabWidget::setCurrentIndex (int index)
 	{
-		if (index >= WidgetCount () &&
+		if (index > WidgetCount () &&
 				!AddTabButtonAction_->isVisible ())
-			--index;
+			index = WidgetCount ();
 
-		emit currentChanged (index);
-
-		MainTabBar_->setCurrentIndex (index);
 		MainStackedWidget_->setCurrentIndex (index);
 
-		if (CurrentTab_ != index)
+		if (CurrentWidget_ != Widget (index))
 		{
-			PreviousTab_ = CurrentTab_;
-			CurrentTab_ = index;
+			CurrentIndex_ = IndexOf (CurrentWidget_);
+			CurrentWidget_ = Widget (index);
+			PreviousWidget_ = Widget (CurrentIndex_);
+			CurrentIndex_ = index;
 		}
+
+		emit currentChanged (index);
+	}
+
+	void SeparateTabWidget::setCurrentTab (int tabIndex)
+	{
+		MainTabBar_->setCurrentIndex (tabIndex);
 	}
 
 	void SeparateTabWidget::setCurrentWidget (QWidget *widget)
 	{
+		if (!widget)
+			return;
+
 		int index = MainStackedWidget_->indexOf (widget);
-		setCurrentIndex (index);
+		setCurrentTab (index);
 	}
 
 	void SeparateTabWidget::handleNewTabShortcutActivated ()
@@ -590,8 +607,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::setPreviousTab ()
 	{
-		if (PreviousTab_ <= WidgetCount () - 1 && WidgetCount () >= 2)
-			setCurrentIndex (PreviousTab_);
+		setCurrentWidget (PreviousWidget_);
 	}
 
 	void SeparateTabWidget::handleTabMoved (int from, int to)
@@ -650,7 +666,7 @@ namespace LeechCraft
 		delete menu;
 	}
 
-	void SeparateTabWidget::handleActionDestroyed()
+	void SeparateTabWidget::handleActionDestroyed ()
 	{
 		Q_FOREACH (QPointer<QAction> act, TabBarActions_)
 			if (!act || act == sender ())

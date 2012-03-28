@@ -165,7 +165,7 @@ public:
 	 *
 	 * @param[in] index new tab index.
 	 */
-	virtual void setCurrentIndex (int index) = 0;
+	virtual void setCurrentTab (int index) = 0;
 
 	/** @brief Sets the current tab index to specified associated widget.
 	 *
@@ -173,11 +173,24 @@ public:
 	 */
 	virtual void setCurrentWidget (QWidget *widget) = 0;
 
+	/** @brief Returns the previous active widget if it exists.
+	 *
+	 * @return previous widget.
+	 */
+	virtual QWidget* GetPreviousWidget () const = 0;
+
 	/** @brief This signal is emitted after new tab was inserted.
 	 *
 	 * @param[out] index The index of new tab.
 	 */
 	virtual void tabInserted (int index) = 0;
+
+	/** @brief This signal is emitted when the tab bar's current tab changes.
+	 * The new current has the given index, or -1 if there isn't a new one.
+	 *
+	 * @param[out] index The index of current tab.
+	 */
+	virtual void currentChanged (int index) = 0;
 };
 
 Q_DECLARE_INTERFACE (ICoreTabWidget, "org.Deviant.LeechCraft.ICoreTabWidget/1.0");

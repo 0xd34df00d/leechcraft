@@ -47,8 +47,6 @@ namespace LeechCraft
 		Q_INTERFACES (ICoreTabWidget)
 
 		int LastContextMenuTab_;
-		int PreviousTab_;
-		int CurrentTab_;
 		QMenu *DefaultContextMenu_;
 		QMenu *AddTabButtonContextMenu_;
 		QPointer<QStackedWidget> MainStackedWidget_;
@@ -64,6 +62,9 @@ namespace LeechCraft
 		QAction *DefaultTabAction_;
 		QMap<int, std::shared_ptr<QWidget>> Widgets_;
 		QList<QPointer<QAction>> TabBarActions_;
+		QWidget *CurrentWidget_;
+		int CurrentIndex_;
+		QWidget *PreviousWidget_;
 	public:
 		explicit SeparateTabWidget (QWidget *parent = 0);
 
@@ -129,6 +130,8 @@ namespace LeechCraft
 		int TabAt (const QPoint& point);
 
 		void MoveTab (int from, int to);
+
+		QWidget* GetPreviousWidget () const;
 	protected:
 		void resizeEvent (QResizeEvent *event);
 		bool event (QEvent *event);
@@ -137,6 +140,7 @@ namespace LeechCraft
 		void AddTabButtonInit ();
 	public slots:
 		void setCurrentIndex (int index);
+		void setCurrentTab (int tabIndex);
 		void setCurrentWidget (QWidget *widget);
 		void handleNewTabShortcutActivated ();
 		void setPreviousTab ();
