@@ -18,7 +18,10 @@
 
 #include "xproxy.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "proxyfactory.h"
+#include "proxiesconfigwidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -26,7 +29,12 @@ namespace XProxy
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		QNetworkProxyFactory::setApplicationProxyFactory(new ProxyFactory);
+		CfgWidget_ = new ProxiesConfigWidget();
+		QNetworkProxyFactory::setApplicationProxyFactory (new ProxyFactory);
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "xproxysettings.xml");
+		XSD_->SetCustomWidget ("Proxies", CfgWidget_);
 	}
 
 	void Plugin::SecondInit ()
@@ -55,6 +63,11 @@ namespace XProxy
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 }
 }

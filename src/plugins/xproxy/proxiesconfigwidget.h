@@ -18,35 +18,20 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
+#include <QWidget>
+#include "ui_proxiesconfigwidget.h"
 
 namespace LeechCraft
 {
 namespace XProxy
 {
-	class ProxiesConfigWidget;
-
-	class Plugin : public QObject
-					, public IInfo
-					, public IHaveSettings
+	class ProxiesConfigWidget : public QWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
 
-		ProxiesConfigWidget *CfgWidget_;
-		Util::XmlSettingsDialog_ptr XSD_;
+		Ui::ProxiesConfigWidget Ui_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		ProxiesConfigWidget (QWidget* = 0);
 	};
 }
 }

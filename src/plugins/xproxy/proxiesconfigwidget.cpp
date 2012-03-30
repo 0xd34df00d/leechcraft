@@ -16,37 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
+#include "proxiesconfigwidget.h"
 
 namespace LeechCraft
 {
 namespace XProxy
 {
-	class ProxiesConfigWidget;
-
-	class Plugin : public QObject
-					, public IInfo
-					, public IHaveSettings
+	ProxiesConfigWidget::ProxiesConfigWidget (QWidget *parent)
+	: QWidget (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
-
-		ProxiesConfigWidget *CfgWidget_;
-		Util::XmlSettingsDialog_ptr XSD_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	};
+		Ui_.setupUi (this);
+	}
 }
 }

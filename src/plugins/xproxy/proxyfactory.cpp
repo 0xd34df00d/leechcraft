@@ -25,7 +25,7 @@ namespace XProxy
 	QList<QNetworkProxy> ProxyFactory::queryProxy (const QNetworkProxyQuery&)
 	{
 		QList<QNetworkProxy> proxies;
-		proxies << QNetworkProxy (QNetworkProxy::DefaultProxy);
+		proxies << QNetworkProxy (QNetworkProxy::NoProxy);
 		return proxies;
 	}
 }
