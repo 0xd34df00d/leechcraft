@@ -18,26 +18,18 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
+#include <QNetworkProxyFactory>
 
 namespace LeechCraft
 {
 namespace XProxy
 {
-	class Plugin : public QObject
-					, public IInfo
+	class ProxyFactory : public QObject
+					   , public QNetworkProxyFactory
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		QList<QNetworkProxy> queryProxy (const QNetworkProxyQuery&);
 	};
 }
 }

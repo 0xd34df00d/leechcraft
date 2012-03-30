@@ -16,28 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
+#include "proxyfactory.h"
 
 namespace LeechCraft
 {
 namespace XProxy
 {
-	class Plugin : public QObject
-					, public IInfo
+	QList<QNetworkProxy> ProxyFactory::queryProxy (const QNetworkProxyQuery&)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo)
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	};
+		QList<QNetworkProxy> proxies;
+		proxies << QNetworkProxy (QNetworkProxy::DefaultProxy);
+		return proxies;
+	}
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 #include "xproxy.h"
 #include <QIcon>
+#include "proxyfactory.h"
 
 namespace LeechCraft
 {
@@ -25,6 +26,7 @@ namespace XProxy
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		QNetworkProxyFactory::setApplicationProxyFactory(new ProxyFactory);
 	}
 
 	void Plugin::SecondInit ()
@@ -58,4 +60,3 @@ namespace XProxy
 }
 
 LC_EXPORT_PLUGIN (leechcraft_xproxy, LeechCraft::XProxy::Plugin);
-
