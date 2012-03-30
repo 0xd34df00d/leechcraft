@@ -24,11 +24,17 @@ namespace LeechCraft
 {
 namespace XProxy
 {
+	class ProxiesConfigWidget;
+
 	class ProxyFactory : public QObject
 					   , public QNetworkProxyFactory
 	{
 		Q_OBJECT
+
+		ProxiesConfigWidget *CfgWidget_;
 	public:
+		ProxyFactory (ProxiesConfigWidget*);
+
 		QList<QNetworkProxy> queryProxy (const QNetworkProxyQuery&);
 	};
 }

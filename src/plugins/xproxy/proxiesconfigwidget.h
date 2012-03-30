@@ -19,19 +19,46 @@
 #pragma once
 
 #include <QWidget>
+#include <QNetworkProxy>
 #include "ui_proxiesconfigwidget.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace XProxy
 {
+	struct ReqTarget
+	{
+		QRegExp Host_;
+		int Port_;
+		QStringList Protocols_;
+	};
+	struct Proxy
+	{
+		QNetworkProxy::ProxyType Type_;
+		QString Host_;
+		int Port_;
+		QString User_;
+		QString Pass_;
+	};
+	typedef QPair<ReqTarget, Proxy> Entry_t;
+
 	class ProxiesConfigWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::ProxiesConfigWidget Ui_;
+		QStandardItemModel *Model_;
+
+		QList<Entry_t> Entries_;
 	public:
 		ProxiesConfigWidget (QWidget* = 0);
+	private:
+		void LoadSettings ();
+		void SaveSettings () const;
+	private slots:
+		void on_AddProxyButton__released ();
 	};
 }
 }

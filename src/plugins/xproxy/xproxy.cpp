@@ -30,7 +30,7 @@ namespace XProxy
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		CfgWidget_ = new ProxiesConfigWidget();
-		QNetworkProxyFactory::setApplicationProxyFactory (new ProxyFactory);
+		QNetworkProxyFactory::setApplicationProxyFactory (new ProxyFactory (CfgWidget_));
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "xproxysettings.xml");

@@ -17,11 +17,17 @@
  **********************************************************************/
 
 #include "proxyfactory.h"
+#include "proxiesconfigwidget.h"
 
 namespace LeechCraft
 {
 namespace XProxy
 {
+	ProxyFactory::ProxyFactory (ProxiesConfigWidget *cfgWidget)
+	: CfgWidget_ (cfgWidget)
+	{
+	}
+
 	QList<QNetworkProxy> ProxyFactory::queryProxy (const QNetworkProxyQuery&)
 	{
 		QList<QNetworkProxy> proxies;
