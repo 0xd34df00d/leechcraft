@@ -35,6 +35,7 @@ namespace XProxy
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
 
+		ICoreProxy_ptr CoreProxy_;
 		ProxiesConfigWidget *CfgWidget_;
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
@@ -47,6 +48,8 @@ namespace XProxy
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	private slots:
+		void handleReenable ();
 	};
 }
 }

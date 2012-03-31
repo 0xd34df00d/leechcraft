@@ -19,10 +19,10 @@
 #include "xproxy.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/icoreproxy.h>
 #include "proxyfactory.h"
 #include "proxiesconfigwidget.h"
 #include "xmlsettingsmanager.h"
-#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -30,18 +30,21 @@ namespace XProxy
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		CoreProxy_ = proxy;
+
 		qRegisterMetaTypeStreamOperators<Proxy> ("LeechCraft::XProxy::Proxy");
 		qRegisterMetaTypeStreamOperators<ReqTarget> ("LeechCraft::XProxy::ReqTarget");
 		qRegisterMetaTypeStreamOperators<QList<LeechCraft::XProxy::Entry_t>> ("QList<LeechCraft::XProxy::Entry_t>");
 
-		CfgWidget_ = new ProxiesConfigWidget ();
-		QNetworkProxyFactory::setApplicationProxyFactory (new ProxyFactory (CfgWidget_));
-
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "xproxysettings.xml");
+
+		CfgWidget_ = new ProxiesConfigWidget ();
 		XSD_->SetCustomWidget ("Proxies", CfgWidget_);
 
-		proxy->GetNetworkAccessManager ()->setProxyFactory (new ProxyFactory (CfgWidget_));
+		XmlSettingsManager::Instance ().RegisterObject ("EnableForNAM", this, "handleReenable");
+		XmlSettingsManager::Instance ().RegisterObject ("EnableForApp", this, "handleReenable");
+		handleReenable ();
 	}
 
 	void Plugin::SecondInit ()
@@ -75,6 +78,15 @@ namespace XProxy
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XSD_;
+	}
+
+	void Plugin::handleReenable ()
+	{
+		const bool app = XmlSettingsManager::Instance ().property ("EnableForApp").toBool ();
+		QNetworkProxyFactory::setApplicationProxyFactory (app ? new ProxyFactory (CfgWidget_) : 0);
+
+		const bool nam = XmlSettingsManager::Instance ().property ("EnableForNAM").toBool ();
+		CoreProxy_->GetNetworkAccessManager ()->setProxyFactory (nam ? new ProxyFactory (CfgWidget_) : 0);
 	}
 }
 }
