@@ -57,6 +57,9 @@ namespace XProxy
 	private:
 		void LoadSettings ();
 		void SaveSettings () const;
+	public slots:
+		void accept ();
+		void reject ();
 	private slots:
 		void on_AddProxyButton__released ();
 	};
