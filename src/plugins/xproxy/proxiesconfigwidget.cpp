@@ -103,7 +103,7 @@ namespace XProxy
 		Q_FOREACH (const auto& pair, Entries_)
 		{
 			const auto& target = pair.first;
-			if (target.Port_ && target.Port_ != reqPort)
+			if (target.Port_ && reqPort > 0 && target.Port_ != reqPort)
 				continue;
 
 			if (!target.Protocols_.isEmpty () && !target.Protocols_.contains (proto))
