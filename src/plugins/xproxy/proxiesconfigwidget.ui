@@ -236,5 +236,70 @@
   <tabstop>ProxiesList_</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>TargetHost_</sender>
+   <signal>returnPressed()</signal>
+   <receiver>AddProxyButton_</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>230</x>
+     <y>392</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>527</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ProxyHost_</sender>
+   <signal>returnPressed()</signal>
+   <receiver>AddProxyButton_</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>428</x>
+     <y>416</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>420</x>
+     <y>527</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ProxyUser_</sender>
+   <signal>returnPressed()</signal>
+   <receiver>AddProxyButton_</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>515</x>
+     <y>473</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>509</x>
+     <y>524</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ProxyPassword_</sender>
+   <signal>returnPressed()</signal>
+   <receiver>AddProxyButton_</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>569</x>
+     <y>495</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>569</x>
+     <y>532</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
