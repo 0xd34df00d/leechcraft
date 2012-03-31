@@ -31,7 +31,8 @@ namespace XProxy
 	QList<QNetworkProxy> ProxyFactory::queryProxy (const QNetworkProxyQuery& query)
 	{
 		QList<QNetworkProxy> proxies;
-		if (query.queryType () == QNetworkProxyQuery::TcpSocket)
+		if (query.queryType () == QNetworkProxyQuery::TcpSocket ||
+				query.queryType () == QNetworkProxyQuery::UrlRequest)
 		{
 			const auto& matches = CfgWidget_->FindMatching (query.peerHostName (),
 					query.peerPort (), query.protocolTag ());
