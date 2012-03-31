@@ -20,15 +20,17 @@ SET (HEADERS
 	keyboardlayoutswitcher.h
 	xmlsettingsmanager.h
 	)
-
+SET (RESOURCES keyboardcraftresources.qrc)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_keyboardcraft SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_keyboardcraft
 	${QT_LIBRARIES}

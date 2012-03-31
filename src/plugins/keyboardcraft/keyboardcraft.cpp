@@ -67,7 +67,7 @@ namespace KeyboardCraft
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/keyboardcraft/resources/images/keyboardcraft.svg");
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
