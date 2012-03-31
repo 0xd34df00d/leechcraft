@@ -675,8 +675,11 @@ namespace Xoox
 			if (pres.photoHash () != VCardPhotoHash_)
 				fetchVCard ();
 		}
-		else if (!HasBlindlyRequestedVCard_)
+		else if (pres.type () == QXmppPresence::Available && !HasBlindlyRequestedVCard_)
+		{
 			fetchVCard ();
+			HasBlindlyRequestedVCard_ = true;
+		}
 	}
 
 	QString EntryBase::FormatRawInfo (const QXmppVCardIq& vcard)
