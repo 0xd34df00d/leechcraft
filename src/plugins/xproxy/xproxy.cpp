@@ -22,6 +22,7 @@
 #include "proxyfactory.h"
 #include "proxiesconfigwidget.h"
 #include "xmlsettingsmanager.h"
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -29,12 +30,18 @@ namespace XProxy
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		CfgWidget_ = new ProxiesConfigWidget();
+		qRegisterMetaTypeStreamOperators<Proxy> ("LeechCraft::XProxy::Proxy");
+		qRegisterMetaTypeStreamOperators<ReqTarget> ("LeechCraft::XProxy::ReqTarget");
+		qRegisterMetaTypeStreamOperators<QList<LeechCraft::XProxy::Entry_t>> ("QList<LeechCraft::XProxy::Entry_t>");
+
+		CfgWidget_ = new ProxiesConfigWidget ();
 		QNetworkProxyFactory::setApplicationProxyFactory (new ProxyFactory (CfgWidget_));
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "xproxysettings.xml");
 		XSD_->SetCustomWidget ("Proxies", CfgWidget_);
+
+		proxy->GetNetworkAccessManager ()->setProxyFactory (new ProxyFactory (CfgWidget_));
 	}
 
 	void Plugin::SecondInit ()

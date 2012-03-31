@@ -26,11 +26,6 @@ namespace LeechCraft
 {
 namespace XProxy
 {
-	QDataStream& operator<< (QDataStream&, const Proxy&);
-	QDataStream& operator>> (QDataStream&, Proxy&);
-	QDataStream& operator<< (QDataStream&, const ReqTarget&);
-	QDataStream& operator>> (QDataStream&, ReqTarget&);
-
 	Proxy::operator QNetworkProxy () const
 	{
 		return QNetworkProxy (Type_, Host_, Port_, User_, Pass_);
@@ -91,11 +86,8 @@ namespace XProxy
 	{
 		Ui_.setupUi (this);
 		Ui_.ProxiesList_->setModel (Model_);
-		reject ();
 
-		qRegisterMetaTypeStreamOperators<Proxy> ("LeechCraft::XProxy::Proxy");
-		qRegisterMetaTypeStreamOperators<ReqTarget> ("LeechCraft::XProxy::ReqTarget");
-		qRegisterMetaTypeStreamOperators<QList<LeechCraft::XProxy::Entry_t>> ("QList<LeechCraft::XProxy::Entry_t>");
+		reject ();
 
 		auto protoModel = Ui_.TargetProto_->model ();
 		for (int i = 0; i < protoModel->rowCount (); ++i)

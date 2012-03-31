@@ -46,6 +46,11 @@ namespace XProxy
 	};
 	typedef QPair<ReqTarget, Proxy> Entry_t;
 
+	QDataStream& operator<< (QDataStream&, const Proxy&);
+	QDataStream& operator>> (QDataStream&, Proxy&);
+	QDataStream& operator<< (QDataStream&, const ReqTarget&);
+	QDataStream& operator>> (QDataStream&, ReqTarget&);
+
 	class ProxiesConfigWidget : public QWidget
 	{
 		Q_OBJECT
