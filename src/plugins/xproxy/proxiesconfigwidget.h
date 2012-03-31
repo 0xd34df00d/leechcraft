@@ -41,6 +41,8 @@ namespace XProxy
 		int Port_;
 		QString User_;
 		QString Pass_;
+
+		operator QNetworkProxy () const;
 	};
 	typedef QPair<ReqTarget, Proxy> Entry_t;
 
@@ -54,6 +56,9 @@ namespace XProxy
 		QList<Entry_t> Entries_;
 	public:
 		ProxiesConfigWidget (QWidget* = 0);
+
+		QList<Proxy> FindMatching (const QString& reqHost, int reqPort,
+				const QString& proto = QString ());
 	private:
 		void LoadSettings ();
 		void SaveSettings () const;

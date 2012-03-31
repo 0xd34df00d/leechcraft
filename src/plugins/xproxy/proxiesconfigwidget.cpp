@@ -31,6 +31,11 @@ namespace XProxy
 	QDataStream& operator<< (QDataStream&, const ReqTarget&);
 	QDataStream& operator>> (QDataStream&, ReqTarget&);
 
+	Proxy::operator QNetworkProxy () const
+	{
+		return QNetworkProxy (Type_, Host_, Port_, User_, Pass_);
+	}
+
 	namespace
 	{
 		QString ProxyType2Str (QNetworkProxy::ProxyType type)
@@ -98,6 +103,26 @@ namespace XProxy
 			const auto& idx = protoModel->index (i, 0);
 			protoModel->setData (idx, Qt::Unchecked, Qt::CheckStateRole);
 		}
+	}
+
+	QList<Proxy> ProxiesConfigWidget::FindMatching (const QString& reqHost, int reqPort, const QString& proto)
+	{
+		QList<Proxy> result;
+		Q_FOREACH (const auto& pair, Entries_)
+		{
+			const auto& target = pair.first;
+			if (target.Port_ && target.Port_ != reqPort)
+				continue;
+
+			if (!target.Protocols_.isEmpty () && !target.Protocols_.contains (proto))
+				continue;
+
+			if (!target.Host_.exactMatch (reqHost))
+				continue;
+
+			result << pair.second;
+		}
+		return result;
 	}
 
 	void ProxiesConfigWidget::LoadSettings ()
