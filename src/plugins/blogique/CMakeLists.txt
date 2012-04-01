@@ -32,7 +32,7 @@ SET (HEADERS
 SET (FORMS blogiquewidget.ui
 	)
 
-SET (RESOURCES)
+SET (RESOURCES blogiqueresources.qrc)
 
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
