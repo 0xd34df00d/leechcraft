@@ -436,7 +436,8 @@ namespace Xoox
 			return;
 		}
 
-		FormBuilder builder;
+		QXmppBobManager *mgr = Account_->GetClientConnection ()->GetBobManager ();
+		FormBuilder builder (QString (), mgr);
 		QWidget *widget = builder.CreateForm (form);
 		if (!XooxUtil::RunFormDialog (widget))
 			return;
