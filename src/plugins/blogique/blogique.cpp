@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include "blogiquewidget.h"
+#include "core.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -32,6 +33,8 @@ namespace Blogique
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquesettings.xml");
+
+		Core::Instance ().SetCoreProxy (proxy);
 
 		BlogiqueWidget::SetParentMultiTabs (this);
 

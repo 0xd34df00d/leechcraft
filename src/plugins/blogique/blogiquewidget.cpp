@@ -17,7 +17,10 @@
  **********************************************************************/
 
 #include "blogiquewidget.h"
+#include <interfaces/itexteditor.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "blogique.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -27,8 +30,32 @@ namespace Blogique
 
 	BlogiqueWidget::BlogiqueWidget (QWidget *parent)
 	: QWidget (parent)
+	, PostEdit_ (0)
+	, PostEditWidget_ (0)
 	{
 		Ui_.setupUi (this);
+		auto plugs = Core::Instance ().GetCoreProxy ()->
+				GetPluginsManager ()->GetAllCastableTo<ITextEditor*> ();
+
+		QVBoxLayout *editFrameLay = new QVBoxLayout ();
+		editFrameLay->setContentsMargins (0, 0, 0, 0);
+		Ui_.PostFrame_->setLayout (editFrameLay);
+		Q_FOREACH (ITextEditor *plug, plugs)
+		{
+			if (!plug->SupportsEditor (ContentType::PlainText))
+				continue;
+
+			QWidget *w = plug->GetTextEditor (ContentType::PlainText);
+			PostEdit_ = qobject_cast<IEditorWidget*> (w);
+			if (!PostEdit_)
+			{
+				delete w;
+				continue;
+			}
+
+			PostEditWidget_ = w;
+			editFrameLay->addWidget (w);
+		}
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()

@@ -20,12 +20,14 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	blogique.cpp
 	blogiquewidget.cpp
+	core.cpp
 	xmlsettingsmanager.cpp
 	)
 
 SET (HEADERS
 	blogique.h
 	blogiquewidget.h
+	core.h
 	xmlsettingsmanager.h
 	)
 

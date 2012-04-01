@@ -23,6 +23,7 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_blogiquewidget.h"
 
+class IEditorWidget;
 class QToolBar;
 
 namespace LeechCraft
@@ -38,6 +39,9 @@ namespace Blogique
 		static QObject *S_ParentMultiTabs_;
 
 		Ui::BlogiqueWidget Ui_;
+
+		IEditorWidget *PostEdit_;
+		QWidget *PostEditWidget_;
 	public:
 		BlogiqueWidget (QWidget *parent = 0);
 
