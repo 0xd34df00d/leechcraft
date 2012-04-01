@@ -760,7 +760,7 @@ namespace LackMan
 		lock.Good ();
 	}
 
-	QMap<int, QList<QString> > Storage::GetPackageLocations (int packageId)
+	QMap<int, QList<QString>> Storage::GetPackageLocations (int packageId)
 	{
 		QueryGetPackageLocations_.bindValue (":package_id", packageId);
 		if (!QueryGetPackageLocations_.exec ())
@@ -769,7 +769,7 @@ namespace LackMan
 			throw std::runtime_error ("Query execution failed");
 		}
 
-		QMap<int, QList<QString> > result;
+		QMap<int, QList<QString>> result;
 		while (QueryGetPackageLocations_.next ())
 		{
 			int repoId = QueryGetPackageLocations_.value (0).toInt ();

@@ -53,15 +53,6 @@ TabManager::TabManager (SeparateTabWidget *tabWidget,
 			this,
 			SLOT (handleMoveHappened (int, int)));
 
-	connect (TabWidget_,
-			SIGNAL (pinTabRequested ()),
-			this,
-			SLOT (handlePinTab ()));
-	connect (TabWidget_,
-			SIGNAL (unpinTabRequested ()),
-			this,
-			SLOT (handleUnpinTab ()));
-
 	XmlSettingsManager::Instance ()->RegisterObject ("UseTabScrollButtons",
 			this, "handleScrollButtons");
 
@@ -116,18 +107,18 @@ void TabManager::rotateLeft ()
 {
 	int index = TabWidget_->CurrentIndex ();
 	if (index)
-		TabWidget_->setCurrentIndex (index - 1);
+		TabWidget_->setCurrentTab (index - 1);
 	else
-		TabWidget_->setCurrentIndex (TabWidget_->WidgetCount () - 1);
+		TabWidget_->setCurrentTab (TabWidget_->WidgetCount () - 1);
 }
 
 void TabManager::rotateRight ()
 {
 	int index = TabWidget_->CurrentIndex ();
 	if (index < TabWidget_->WidgetCount () - 1)
-		TabWidget_->setCurrentIndex (index + 1);
+		TabWidget_->setCurrentTab (index + 1);
 	else
-		TabWidget_->setCurrentIndex (0);
+		TabWidget_->setCurrentTab (0);
 }
 
 void TabManager::navigateToTabNumber ()
@@ -135,41 +126,8 @@ void TabManager::navigateToTabNumber ()
 	int n = sender ()->property ("TabNumber").toInt ();
 	if (n >= TabWidget_->WidgetCount ())
 		return;
-	TabWidget_->setCurrentIndex (n);
-}
 
-void TabManager::handlePinTab ()
-{
-	SeparateTabBar *bar = TabWidget_->TabBar ();
-	const int last = TabWidget_->GetLastContextMenuTab ();
-
-	QStringList names = OriginalTabNames_;
-	names.insert (bar->PinTabsCount (), names.takeAt (last));
-
-	bar->moveTab (last, bar->PinTabsCount ());
-	bar->SetTabData (bar->PinTabsCount ());
-	bar->setPinTab (bar->PinTabsCount ());
-
-	TabWidget_->setCurrentIndex (bar->PinTabsCount () - 1);
-
-	OriginalTabNames_ = names;
-}
-
-void TabManager::handleUnpinTab ()
-{
-	SeparateTabBar *bar = TabWidget_->TabBar ();
-	const int last = TabWidget_->GetLastContextMenuTab ();
-
-	QStringList names = OriginalTabNames_;
-	names.insert (bar->PinTabsCount (), names.at (last));
-	names.removeAt (last);
-
-	bar->moveTab (last, bar->PinTabsCount () - 1);
-	bar->setUnPinTab (bar->PinTabsCount () - 1);
-
-	TabWidget_->setCurrentIndex (bar->PinTabsCount ());
-
-	OriginalTabNames_ = names;
+	TabWidget_->setCurrentTab (n);
 }
 
 void TabManager::ForwardKeyboard (QKeyEvent *key)
@@ -347,7 +305,7 @@ void TabManager::handleCurrentChanged (int index)
 		return;
 	}
 
-	QMap<QString, QList<QAction*> > menus = imtw->GetWindowMenus ();
+	QMap<QString, QList<QAction*>> menus = imtw->GetWindowMenus ();
 	Core::Instance ().GetReallyMainWindow ()->AddMenus (menus);
 	Menus_ = menus;
 

@@ -24,6 +24,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/iactionsexporter.h>
@@ -43,6 +44,7 @@ namespace Azoth
 				 , public IInfo
 				 , public IPluginReady
 				 , public IHaveTabs
+				 , public IHaveRecoverableTabs
 				 , public IHaveSettings
 				 , public IJobHolder
 				 , public IActionsExporter
@@ -54,6 +56,7 @@ namespace Azoth
 		Q_INTERFACES (IInfo
 				IPluginReady
 				IHaveTabs
+				IHaveRecoverableTabs
 				IHaveSettings
 				IJobHolder
 				IActionsExporter
@@ -83,13 +86,15 @@ namespace Azoth
 		QAbstractItemModel* GetRepresentation () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-		QMap<QString, QList<QAction*> > GetMenuActions () const;
+		QMap<QString, QList<QAction*>> GetMenuActions () const;
 
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
+
+		void RecoverTabs (const QList<TabRecoverInfo>&);
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
 		QMap<QString, ActionInfo> GetActionInfo() const;

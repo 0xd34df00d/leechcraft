@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Alexander Konovalov
+ * Copyright (C) 2011-2012  Alexander Konovalov
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
  **********************************************************************/
 
 #include "securestorage.h"
-#include <interfaces/secman/istorageplugin.h>
+#include <exception>
 #include <QSettings>
 #include <QIcon>
 #include <QCoreApplication>
@@ -29,21 +29,13 @@
 #include <QList>
 #include <QMap>
 #include <QDataStream>
-#include <exception>
+#include <interfaces/secman/istorageplugin.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "settingswidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace
 {
-	class PasswordNotEnteredException : std::exception
-	{
-	public:
-		PasswordNotEnteredException () { }
-
-		const char* what () const throw ()
-		{
-			return "PasswordNotEnteredException";
-		}
-	};
-
 	QByteArray Serialize (const QVariant& variant)
 	{
 		QByteArray result;
@@ -71,6 +63,15 @@ namespace StoragePlugins
 {
 namespace SecureStorage
 {
+	
+	QString ReturnIfEqual (const QString& s1, const QString& s2)
+	{
+		if (s1 == s2)
+			return s1;
+		else
+			throw PasswordNotEnteredException ();
+	}
+
 	Plugin::Plugin ()
 	: WindowTitle_ ("SecMan SecureStorage")
 	, CryptoSystem_ (0)
@@ -89,23 +90,35 @@ namespace SecureStorage
 					QCoreApplication::applicationName () + "_SecMan_SecureStorage_Data"));
 
 		ForgetKeyAction_ = new QAction (tr ("Forget master password"), this);
-		ClearSettingsAction_ = new QAction (tr ("Clear SecureStorage data.."), this);
-		ChangePasswordAction_ = new QAction (tr ("Change SecureStorage master password.."), this);
-
 		connect (ForgetKeyAction_, 
 				SIGNAL (triggered ()),
 				this, 
 				SLOT (forgetKey ()));
-		connect (ClearSettingsAction_, 
-				SIGNAL (triggered ()),
-				this, 
-				SLOT (clearSettings ()));
-		connect (ChangePasswordAction_, 
-				SIGNAL (triggered ()),
-				this, 
-				SLOT (changePassword ()));
 
+		InputKeyAction_ = new QAction (tr ("Enter master password..."), this);
+		connect (InputKeyAction_, 
+				SIGNAL (triggered ()),
+				this, 
+				SLOT (inputKey ()));
+
+		SettingsWidget_ = new SettingsWidget;
+		connect (SettingsWidget_,
+				SIGNAL (changePasswordRequested ()),
+				this,
+				SLOT (changePassword ()));
+		connect (SettingsWidget_,
+				SIGNAL (clearSettingsRequested ()),
+				this,
+				SLOT (clearSettings ()));
+
+		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
+		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"securestoragesettings.xml");
+		XmlSettingsDialog_->SetCustomWidget ("SettingsWidget", SettingsWidget_);
 		UpdateActionsStates ();
+
+		InputPasswordDialog_.reset (new QInputDialog);
+		NewPasswordDialog_.reset (new NewPasswordDialog);
 	}
 
 	void Plugin::SecondInit ()
@@ -145,12 +158,8 @@ namespace SecureStorage
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
 		QList<QAction*> result;
-		if (place == AEPCommonContextMenu || place == AEPToolsMenu || place == AEPTrayMenu)
-			result << ForgetKeyAction_;
-		if (place == AEPToolsMenu)
-			result << ChangePasswordAction_;
-		if (place == AEPToolsMenu)
-			result << ClearSettingsAction_;
+		if (place == AEPCommonContextMenu || place == AEPTrayMenu)
+			result << ForgetKeyAction_ << InputKeyAction_;
 		return result;
 	}
 
@@ -161,9 +170,8 @@ namespace SecureStorage
 
 	void Plugin::UpdateActionsStates ()
 	{
-		ForgetKeyAction_->setEnabled (bool (CryptoSystem_));
-		ClearSettingsAction_->setEnabled (IsPasswordSet ());
-		ChangePasswordAction_->setEnabled (IsPasswordSet ());
+		ForgetKeyAction_->setEnabled (CryptoSystem_ && !IsPasswordEmpty ());
+		InputKeyAction_->setEnabled (!CryptoSystem_ && !IsPasswordEmpty ());
 	}
 
 	QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType)
@@ -216,7 +224,7 @@ namespace SecureStorage
 		}
 	}
 
-	void Plugin::Save (const QList<QPair<QByteArray, QVariantList> >& keyValues,
+	void Plugin::Save (const QList<QPair<QByteArray, QVariantList>>& keyValues,
 			IStoragePlugin::StorageType st, bool overwrite)
 	{
 		QPair<QByteArray, QVariantList> keyValue;
@@ -235,6 +243,11 @@ namespace SecureStorage
 	void Plugin::forgetKey ()
 	{
 		SetCryptoSystem (0);
+	}
+
+	void Plugin::inputKey ()
+	{
+		GetCryptoSystem ();
 	}
 
 	void Plugin::clearSettings ()
@@ -263,60 +276,32 @@ namespace SecureStorage
 			return;
 		}
 
-		QInputDialog dialog;
-		dialog.setWindowTitle (WindowTitle_);
-		dialog.setTextEchoMode (QLineEdit::Password);
-
-		QString oldPassword ("");
-		// ask old password
-		if (!IsPasswordEmpty ())
-			while (true)
-			{
-				dialog.setLabelText (tr ("Enter old master password:"));
-				dialog.setTextValue ("");
-				if (dialog.exec () != QInputDialog::Accepted)
-					return;
-
-				oldPassword = dialog.textValue ();
-				CryptoSystem oldCs (oldPassword);
-				if (IsPasswordCorrect (oldCs))
-					break; // normal way
-
-				if (QMessageBox::question (0, WindowTitle_,
-						tr ("Wrong old master password.\nDo you want to try again?"),
-						QMessageBox::Yes | QMessageBox::No,
-						QMessageBox::No) != QMessageBox::Yes)
-					return;
-			}
-
-		QString password;
-		// ask new password
-		while (true)
+		// get old password from a settings
+		QString oldPassword = SettingsWidget_->GetOldPassword ();
+		CryptoSystem oldCs (oldPassword);
+		if (!IsPasswordCorrect (oldCs))
 		{
-			dialog.setLabelText (tr ("Enter new master password:"));
-			dialog.setTextValue ("");
-			if (dialog.exec () != QInputDialog::Accepted)
-				return;
-
-			password = dialog.textValue ();
-			dialog.setLabelText (tr ("Enter the same master password again:"));
-			dialog.setTextValue ("");
-			if (dialog.exec () != QInputDialog::Accepted)
-				return;
-
-			QString password2 = dialog.textValue ();
-			if (password == password2)
-				break; // normal way
-
-			if (QMessageBox::question (0,
-						WindowTitle_,
-						tr ("The passwords are different. Do you want to try again?"),
-						QMessageBox::Yes | QMessageBox::No,
-						QMessageBox::No) != QMessageBox::Yes)
-				return;
+			QMessageBox::critical (0, WindowTitle_,
+						tr ("Wrong old master password"),
+						QMessageBox::Ok);
+			return;
 		}
 
-		ChangePassword (oldPassword, password);
+		// get new password from a settings
+		try
+		{
+			QString password = SettingsWidget_->GetNewPassword ();
+			ChangePassword (oldPassword, password);
+			// clear the password fields of the settings widget
+			SettingsWidget_->ClearPasswordFields ();
+		}
+		catch (const PasswordNotEnteredException&)
+		{
+			QMessageBox::critical (0,
+						WindowTitle_,
+						tr ("The passwords are different."),
+						QMessageBox::Ok);
+		}
 	}
 
 	const CryptoSystem& Plugin::GetCryptoSystem ()
@@ -330,16 +315,41 @@ namespace SecureStorage
 				SetCryptoSystem (new CryptoSystem (""));
 			else
 			{
-				QInputDialog dialog;
-				dialog.setTextEchoMode (QLineEdit::Password);
-				dialog.setWindowTitle (WindowTitle_);
-				dialog.setLabelText (tr ("Enter master password:"));
 				while (true)
 				{
-					if (dialog.exec () != QDialog::Accepted)
+					// This method can be called recursively from loop.exec() below,
+					// but we should display only one password dialog.
+					if (!InputPasswordDialog_->isVisible ())
+					{
+						InputPasswordDialog_->setTextEchoMode (QLineEdit::Password);
+						InputPasswordDialog_->setWindowTitle (WindowTitle_);
+						InputPasswordDialog_->setLabelText (tr ("Enter master password:"));
+						InputPasswordDialog_->setTextValue (QString ());
+						InputPasswordDialog_->setVisible (true);
+					}
+
+					QEventLoop loop;
+					connect (InputPasswordDialog_.get (),
+						SIGNAL (accepted ()),
+						&loop,
+						SLOT (quit ()),
+						Qt::QueuedConnection);
+					connect (InputPasswordDialog_.get (),
+						SIGNAL (rejected ()),
+						&loop,
+						SLOT (quit ()),
+						Qt::QueuedConnection);
+					// qDebug () << Q_FUNC_INFO << "Loop start";
+					loop.exec ();
+					// qDebug () << Q_FUNC_INFO << "Loop exit";
+
+					if (CryptoSystem_)
+						break;
+
+					if (InputPasswordDialog_->result () != QDialog::Accepted)
 						throw PasswordNotEnteredException ();
 
-					QString password = dialog.textValue ();
+					QString password = InputPasswordDialog_->textValue ();
 					CryptoSystem *cs = new CryptoSystem (password);
 					if (IsPasswordCorrect (*cs))
 					{
@@ -347,11 +357,15 @@ namespace SecureStorage
 						break;
 					}
 					else // continue
-						dialog.setLabelText (tr ("Wrong password.\n"
+					{
+						delete cs;
+						InputPasswordDialog_->setLabelText (tr ("Wrong password.\n"
 								"Try enter master password again:"));
+					}
 				}
 			}
 		}
+		// qDebug () << Q_FUNC_INFO << "ok";
 		return *CryptoSystem_;
 	}
 
@@ -359,55 +373,40 @@ namespace SecureStorage
 	{
 		delete CryptoSystem_;
 		CryptoSystem_ = cs;
-		ForgetKeyAction_->setEnabled (static_cast<bool> (cs));
+		UpdateActionsStates ();
 	}
 
 	void Plugin::CreateNewPassword ()
 	{
-		QInputDialog dialog;
-		dialog.setWindowTitle (WindowTitle_);
-		dialog.setTextEchoMode (QLineEdit::Password);
-
-		QString password;
-		while (true)
+		if (!NewPasswordDialog_->isVisible ())
 		{
-			// query password
-			dialog.setTextValue ("");
-			dialog.setLabelText (tr ("Creating master password for SecureStorage.\n"
-					"Enter new master password:"));
-			if (dialog.exec () != QInputDialog::Accepted)
-				break; // use empty password
-
-			password = dialog.textValue ();
-
-			// query password again
-			dialog.setTextValue ("");
-			dialog.setLabelText (tr ("Enter the same master password again:"));
-			if (dialog.exec () != QInputDialog::Accepted)
-				break; // use empty password
-
-			QString password2 = dialog.textValue ();
-			if (password == password2)
-				break; // the "right" way
-
-			else if (QMessageBox::question (0,
-						WindowTitle_,
-						tr ("Two passwords that you entered are not equal.\n"
-							"Do you want to try again?"),
-						QMessageBox::Yes | QMessageBox::No,
-						QMessageBox::Yes) != QMessageBox::Yes)
-				throw PasswordNotEnteredException ();
-			// else continue;
+			NewPasswordDialog_->clear ();
+			NewPasswordDialog_->show ();
 		}
+		QEventLoop loop;
+		connect (NewPasswordDialog_.get (),
+			SIGNAL (dialogFinished ()),
+			&loop,
+			SLOT (quit ()),
+			Qt::QueuedConnection);
+		// qDebug () << Q_FUNC_INFO << "Loop start";
+		loop.exec ();
+		// qDebug () << Q_FUNC_INFO << "Loop exit";
 
-		// clear old settings and data
-		Settings_->clear ();
-		Storage_->clear ();
+		QString password = NewPasswordDialog_->GetPassword ();
 
-		// set up new settings
-		UpdatePasswordSettings (password);
-		UpdateActionsStates ();
-	}
+		// check result of recursive calls of this method through loop.exec().
+		if (!IsPasswordSet ())
+		{
+			// clear old settings and data
+			Settings_->clear ();
+			Storage_->clear ();
+
+			// set up new settings
+			UpdatePasswordSettings (password);
+			UpdateActionsStates ();
+		}	
+}
 
 	bool Plugin::IsPasswordSet ()
 	{
@@ -481,6 +480,11 @@ namespace SecureStorage
 	bool Plugin::IsPasswordEmpty ()
 	{
 		return Settings_->value ("SecureStoragePasswordIsEmpty").toBool ();
+	}
+
+	LeechCraft::Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XmlSettingsDialog_;
 	}
 }
 }

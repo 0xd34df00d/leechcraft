@@ -68,6 +68,7 @@ namespace Acetamide
 				this,
 				SLOT (handleCTCPAction (QAction*)));
 
+		Actions_.append (infoMenu->menuAction ());
 		Actions_.append (ctcpMenu->menuAction ());
 
 		ServerID_ = ICH_->GetParentID ();
@@ -169,7 +170,8 @@ namespace Acetamide
 
 	void ChannelParticipantEntry::handleCTCPAction (QAction *action)
 	{
-		ICH_->handleCTCPRequest (QStringList () << Nick_ << action->property ("ctcp_type").toString ());
+		ICH_->handleCTCPRequest (QStringList () << Nick_
+				<< action->property ("ctcp_type").toString ());
 	}
 
 }

@@ -77,6 +77,7 @@ namespace Xoox
 	class LastActivityManager;
 	class JabberSearchManager;
 	class UserAvatarManager;
+	class MsgArchivingManager;
 	class SDManager;
 
 #ifdef ENABLE_CRYPT
@@ -108,6 +109,7 @@ namespace Xoox
 		JabberSearchManager *JabberSearchManager_;
 		UserAvatarManager *UserAvatarManager_;
 		RIEXManager *RIEXManager_;
+		MsgArchivingManager *MsgArchivingManager_;
 		SDManager *SDManager_;
 
 #ifdef ENABLE_CRYPT
@@ -117,6 +119,8 @@ namespace Xoox
 		QString OurJID_;
 		QString OurBareJID_;
 		QString OurResource_;
+
+		QByteArray OurPhotoHash_;
 
 		SelfContact *SelfContact_;
 
@@ -150,15 +154,15 @@ namespace Xoox
 		int KATimeout_;
 
 		QList<QXmppMessage> OfflineMsgQueue_;
-		QList<QPair<QString, PEPEventBase*> > InitialEventQueue_;
-		QHash<QString, QPointer<GlooxMessage> > UndeliveredMessages_;
+		QList<QPair<QString, PEPEventBase*>> InitialEventQueue_;
+		QHash<QString, QPointer<GlooxMessage>> UndeliveredMessages_;
 
 		QSet<QString> SignedPresences_;
 		QSet<QString> SignedMessages_;
 		QHash<QString, QString> EncryptedMessages_;
 		QSet<QString> Entries2Crypt_;
 
-		QHash<QString, QList<RIEXManager::Item> > AwaitingRIEXItems_;
+		QHash<QString, QList<RIEXManager::Item>> AwaitingRIEXItems_;
 	public:
 		typedef std::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
 		typedef std::function<void (const QXmppVCardIq&)> VCardCallback_t;
@@ -186,6 +190,8 @@ namespace Xoox
 
 		QString GetOurJID () const;
 		void SetOurJID (const QString&);
+
+		void SetOurPhotoHash (const QByteArray&);
 
 		/** Joins the room and returns the contact list
 		 * entry representing that room.
@@ -254,7 +260,6 @@ namespace Xoox
 				QString *bare, QString *resource);
 	private:
 		void SetupLogger ();
-		EntryStatus PresenceToStatus (const QXmppPresence&) const;
 		void HandleOtherPresence (const QXmppPresence&);
 		void HandleError (const QXmppIq&);
 		void HandleRIEX (QString, QList<RIEXManager::Item>, QString = QString ());

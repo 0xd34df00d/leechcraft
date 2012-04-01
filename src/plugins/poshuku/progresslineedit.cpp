@@ -22,6 +22,10 @@
 #include <QAbstractItemView>
 #include <QToolBar>
 #include <QToolButton>
+#include <QMenu>
+#include <QApplication>
+#include <QClipboard>
+#include <QAction>
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
 #include "urlcompletionmodel.h"
@@ -70,10 +74,6 @@ namespace Poshuku
 				SIGNAL (textChanged (const QString&)),
 				this,
 				SLOT (textChanged (const QString&)));
-	}
-
-	ProgressLineEdit::~ProgressLineEdit ()
-	{
 	}
 
 	bool ProgressLineEdit::IsCompleting () const
@@ -184,6 +184,46 @@ namespace Poshuku
 		RepaintButtons ();
 	}
 
+	void ProgressLineEdit::contextMenuEvent (QContextMenuEvent *e)
+	{
+		QString cbText = qApp->clipboard ()->text (QClipboard::Clipboard);
+		if (cbText.isEmpty ())
+			cbText = qApp->clipboard ()->text (QClipboard::Selection);
+		if (cbText.isEmpty ())
+		{
+			QLineEdit::contextMenuEvent (e);
+			return;
+		}
+
+		QMenu *menu = createStandardContextMenu ();
+		const auto& acts = menu->actions ();
+		QAction *before = 0;
+		for (int i = 0; i < acts.size (); ++i)
+			if (acts.at (i)->shortcut () == QKeySequence (QKeySequence::Paste))
+			{
+				before = acts.value (i + 1);
+				break;
+			}
+
+		QAction *pasteGo = new QAction (tr ("Paste and go"), menu);
+		pasteGo->setData (cbText);
+		connect (pasteGo,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (pasteGo ()));
+		if (before)
+			menu->insertAction (before, pasteGo);
+		else
+		{
+			menu->addSeparator ();
+			menu->addAction (pasteGo);
+		}
+
+		menu->exec (e->globalPos ());
+
+		menu->deleteLater ();
+	}
+
 	void ProgressLineEdit::textChanged (const QString& text)
 	{
 		if (text.isEmpty ())
@@ -234,6 +274,14 @@ namespace Poshuku
 	void ProgressLineEdit::handleTriggeredButton (QAction *action)
 	{
 		emit actionTriggered (action, text ());
+	}
+
+	void ProgressLineEdit::pasteGo ()
+	{
+		QAction *act = qobject_cast<QAction*> (sender ());
+		const QString& text = act->data ().toString ();
+		setText (text);
+		emit returnPressed ();
 	}
 }
 }

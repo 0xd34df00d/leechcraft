@@ -41,7 +41,7 @@ namespace Acetamide
 
 		Ui::ServerInfoWidget Ui_;
 		IrcServerCLEntry *ISCLEntry_;
-		QHash<QString, boost::function<void (const QString&)> > Parameter2Command_;
+		QHash<QString, boost::function<void (const QString&)>> Parameter2Command_;
 	public:
 		ServerInfoWidget (IrcServerCLEntry*, QWidget* = 0);
 	private:

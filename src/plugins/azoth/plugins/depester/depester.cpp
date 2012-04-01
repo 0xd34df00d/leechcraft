@@ -106,7 +106,7 @@ namespace Depester
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Depester");
-		IgnoredNicks_ = settings.value ("IgnoredNicks").value<QSet<QString> > ();
+		IgnoredNicks_ = settings.value ("IgnoredNicks").value<QSet<QString>> ();
 	}
 
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,

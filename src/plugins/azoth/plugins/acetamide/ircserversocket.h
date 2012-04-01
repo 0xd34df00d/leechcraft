@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@
 
 #include <memory>
 #include <QObject>
+#include <QSslSocket>
 
 class QTcpSocket;
-class QSslSocket;
 
 namespace LeechCraft
 {
@@ -39,11 +39,8 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
-		IrcAccount *Account_;
 		IrcServerHandler *ISH_;
-
 		bool SSL_;
-
 		std::shared_ptr<QTcpSocket> Socket_ptr;
 	public:
 		IrcServerSocket (IrcServerHandler*);
@@ -55,6 +52,7 @@ namespace Acetamide
 		void Init ();
 	private slots:
 		void readReply ();
+		void handleSslErrors (const QList<QSslError>& errors);
 	};
 };
 };

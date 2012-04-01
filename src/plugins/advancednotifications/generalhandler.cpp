@@ -40,6 +40,11 @@ namespace AdvancedNotifications
 		Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
 			handler->SetGeneralHandler (this);
 
+		connect (Handlers_.first ().get (),
+				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+				this,
+				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
+
 		Cat2IconName_ ["org.LC.AdvNotifications.IM"] = "mail-unread-new";
 	}
 

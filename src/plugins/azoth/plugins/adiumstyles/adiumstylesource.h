@@ -16,14 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ADIUMSTYLES_ADIUMSTYLESOURCE_H
-#define PLUGINS_AZOTH_PLUGINS_ADIUMSTYLES_ADIUMSTYLESOURCE_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QDateTime>
 #include <QHash>
 #include <QColor>
 #include <interfaces/ichatstyleresourcesource.h>
+#include "plistparser.h"
 
 namespace LeechCraft
 {
@@ -54,7 +55,8 @@ namespace AdiumStyles
 		PackProxyModel *PackProxyModel_;
 
 		mutable QHash<QWebFrame*, QString> Frame2Pack_;
-		mutable QHash<QString, QList<QColor> > Coloring2Colors_;
+		mutable QHash<QString, QList<QColor>> Coloring2Colors_;
+		mutable QHash<QString, PListParser_ptr> PListParsers_;
 		mutable QString LastPack_;
 
 		QHash<QObject*, QWebFrame*> Msg2Frame_;
@@ -65,9 +67,11 @@ namespace AdiumStyles
 
 		QAbstractItemModel* GetOptionsModel () const;
 		QUrl GetBaseURL (const QString&) const;
-		QString GetHTMLTemplate (const QString&, QObject*, QWebFrame*) const;
+		QString GetHTMLTemplate (const QString&,
+				const QString&, QObject*, QWebFrame*) const;
 		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		void FrameFocused (QWebFrame*);
+		QStringList GetVariantsForPack (const QString&);
 	private:
 		void PercentTemplate (QString&, const QMap<QString, QString>&) const;
 		void ParseGlobalTemplate (QString& templ, ICLEntry*) const;
@@ -76,6 +80,7 @@ namespace AdiumStyles
 		QList<QColor> CreateColors (const QString&);
 		QString GetMessageID (QObject*);
 		QImage GetDefaultAvatar () const;
+		PListParser_ptr GetPListParser (const QString&) const;
 	private slots:
 		void handleMessageDelivered ();
 		void handleMessageDestroyed ();
@@ -84,5 +89,3 @@ namespace AdiumStyles
 }
 }
 }
-
-#endif

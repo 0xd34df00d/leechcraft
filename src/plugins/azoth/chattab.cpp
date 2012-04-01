@@ -275,6 +275,38 @@ namespace Azoth
 		SetChatPartState (CPSInactive);
 	}
 
+	QByteArray ChatTab::GetTabRecoverData () const
+	{
+		QByteArray result;
+		auto entry = GetEntry<ICLEntry> ();
+		if (entry)
+		{
+			QDataStream stream (&result, QIODevice::WriteOnly);
+			stream << QByteArray ("chattab")
+					<< entry->GetEntryID ()
+					<< GetSelectedVariant ();
+		}
+		return result;
+	}
+
+	QString ChatTab::GetTabRecoverName () const
+	{
+		auto entry = GetEntry<ICLEntry> ();
+		return entry ?
+				tr ("Chat with %1.")
+					.arg (entry->GetEntryName ()) :
+				GetTabClassInfo ().VisibleName_;
+	}
+
+	QIcon ChatTab::GetTabRecoverIcon () const
+	{
+		auto entry = GetEntry<ICLEntry> ();
+		const auto& avatar = entry ? entry->GetAvatar () : QImage ();
+		return avatar.isNull () ?
+				GetTabClassInfo ().Icon_ :
+				QPixmap::fromImage (avatar);
+	}
+
 	void ChatTab::HandleMUCParticipantsChanged ()
 	{
 		IMUCEntry *muc = GetEntry<IMUCEntry> ();
@@ -1398,7 +1430,6 @@ namespace Azoth
 
 		int cursorPosition = cursor.position ();
 		int pos = -1;
-		int lastNickLen = -1;
 
 		QString text = Ui_.MsgEdit_->toPlainText ();
 
@@ -1445,6 +1476,7 @@ namespace Azoth
 				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
 					newAvailableNick << item + (pos == -1 ? post : "") + " ";
 
+			int lastNickLen = -1;
 			if ((newAvailableNick != AvailableNickList_) && (!newAvailableNick.isEmpty ()))
 			{
 				int newIndex = newAvailableNick.indexOf (AvailableNickList_ [CurrentNickIndex_ - 1]);

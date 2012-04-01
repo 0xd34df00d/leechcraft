@@ -31,7 +31,7 @@ namespace LeechCraft
 		class TreeItem
 		{
 			QList<TreeItem*> Children_;
-			QMap<int, QVector<QVariant> > Data_;
+			QMap<int, QVector<QVariant>> Data_;
 			TreeItem *Parent_;
 		public:
 			UTIL_API TreeItem (const QList<QVariant>&, TreeItem *parent = 0);

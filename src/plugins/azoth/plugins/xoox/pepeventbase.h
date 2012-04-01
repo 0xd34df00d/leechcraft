@@ -32,6 +32,8 @@ namespace Xoox
 	class PEPEventBase
 	{
 	public:
+		virtual ~PEPEventBase ();
+
 		virtual QXmppElement ToXML () const = 0;
 		virtual void Parse (const QDomElement&) = 0;
 		virtual QString Node () const = 0;

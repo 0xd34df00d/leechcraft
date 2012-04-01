@@ -33,7 +33,7 @@ namespace LeechCraft
 	public:
 		typedef QMap<QString, QVariant> Prop2NewValue_t;
 
-		static void SetXmlSettingsDialog (Util::XmlSettingsDialog *xsd);
+		void SetXmlSettingsDialog (Util::XmlSettingsDialog *xsd);
 
 		ItemHandlerBase ();
 		virtual ~ItemHandlerBase ();
@@ -124,7 +124,7 @@ namespace LeechCraft
 		virtual QVariant GetValue (QObject *object) const = 0;
 
 		Prop2NewValue_t ChangedProperties_;
-		static Util::XmlSettingsDialog *XSD_;
+		Util::XmlSettingsDialog *XSD_;
 	protected slots:
 		virtual void updatePreferences ();
 	};

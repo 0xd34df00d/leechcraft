@@ -254,3 +254,8 @@ namespace Snails
 	}
 }
 }
+
+uint qHash (const LeechCraft::Snails::Message_ptr msg)
+{
+	return qHash (msg->GetID ());
+}

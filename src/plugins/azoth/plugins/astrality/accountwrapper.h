@@ -92,6 +92,8 @@ namespace Astrality
 		void LoadSettings ();
 		void SaveSettings ();
 	private slots:
+		void handleAccountReady (Tp::PendingOperation* = 0);
+
 		void handleEnabled (Tp::PendingOperation*);
 		void handleRemoved (Tp::PendingOperation*);
 		void handleRenamed (Tp::PendingOperation*);
@@ -102,6 +104,8 @@ namespace Astrality
 		void handlePasswordFixed (Tp::PendingOperation*);
 		void handleRequestedPresenceFinish (Tp::PendingOperation*);
 		void handleCurrentPresence (Tp::Presence);
+
+		void handleAccountAvatar (const Tp::Avatar&);
 
 		void handlePresencePubRequested (Tp::Contacts);
 		void handleCMStateChanged (Tp::ContactListState);

@@ -60,7 +60,7 @@ namespace Azoth
 		 *
 		 * @return The possible permissions for this room.
 		 */
-		virtual QMap<QByteArray, QList<QByteArray> > GetPossiblePerms () const = 0;
+		virtual QMap<QByteArray, QList<QByteArray>> GetPossiblePerms () const = 0;
 
 		/** @brief Returns current permissions for the given participant.
 		 *
@@ -77,7 +77,7 @@ namespace Azoth
 		 * permissions, or NULL to query self.
 		 * @return The current permissions for the given participant.
 		 */
-		virtual QMap<QByteArray, QList<QByteArray> > GetPerms (QObject *participant) const = 0;
+		virtual QMap<QByteArray, QList<QByteArray>> GetPerms (QObject *participant) const = 0;
 
 		/** @brief Returns the name of the affiliation icon.
 		 *

@@ -43,6 +43,7 @@
 #include "storage.h"
 #include "vmimeconversions.h"
 #include "outputiodevadapter.h"
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -233,6 +234,36 @@ namespace Snails
 		return trp;
 	}
 
+	namespace
+	{
+		vmime::net::folder::path Folder2Path (const QStringList& folder)
+		{
+			if (folder.isEmpty ())
+				return vmime::net::folder::path ("INBOX");
+
+			vmime::net::folder::path path;
+			Q_FOREACH (const auto& comp, folder)
+				path.appendComponent (vmime::word (comp.toUtf8 ().constData (), vmime::charsets::UTF_8));
+			return path;
+		}
+	}
+
+	vmime::ref<vmime::net::folder> AccountThreadWorker::GetFolder (const QStringList& path, int mode)
+	{
+		if (!CachedFolders_.contains (path))
+		{
+			auto store = MakeStore ();
+			CachedFolders_ [path] = store->getFolder (Folder2Path (path));
+		}
+
+		auto folder = CachedFolders_ [path];
+		if (folder->isOpen () && folder->getMode () != mode)
+			folder->close (false);
+		if (!folder->isOpen ())
+			folder->open (mode);
+		return folder;
+	}
+
 	Message_ptr AccountThreadWorker::FromHeaders (const vmime::ref<vmime::net::message>& message) const
 	{
 		auto utf8cs = vmime::charset ("utf-8");
@@ -365,31 +396,12 @@ namespace Snails
 		emit gotMsgHeaders (newMessages);
 	}
 
-	namespace
-	{
-		vmime::net::folder::path Folder2Path (const QStringList& folder)
-		{
-			if (folder.isEmpty ())
-				return vmime::net::folder::path ("INBOX");
-
-			vmime::net::folder::path path;
-			Q_FOREACH (const auto& comp, folder)
-				path.appendComponent (vmime::word (comp.toUtf8 ().constData (), vmime::charsets::UTF_8));
-			return path;
-		}
-	}
-
 	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags fetchFlags,
 			const QList<QStringList>& origFolders, vmime::ref<vmime::net::store> store)
 	{
-		FetchMessagesInFolder (QStringList ("INBOX"), store->getDefaultFolder ());
-
 		Q_FOREACH (const auto& folder, origFolders)
 		{
-			if (folder == QStringList ("INBOX"))
-				continue;
-
-			auto netFolder = store->getFolder (Folder2Path (folder));
+			auto netFolder = GetFolder (folder, vmime::net::folder::MODE_READ_WRITE);
 			FetchMessagesInFolder (folder, netFolder);
 		}
 	}
@@ -397,7 +409,6 @@ namespace Snails
 	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
 			vmime::utility::ref<vmime::net::folder> folder)
 	{
-		folder->open (vmime::net::folder::MODE_READ_WRITE);
 		auto messages = folder->getMessages ();
 		if (!messages.size ())
 			return;
@@ -618,11 +629,7 @@ namespace Snails
 		const QByteArray& sid = origMsg->GetID ();
 		vmime::string id (sid.constData ());
 		qDebug () << Q_FUNC_INFO << sid.toHex ();
-
-		auto store = MakeStore ();
-
-		auto folder = store->getFolder (Folder2Path (origMsg->GetFolders ().value (0)));
-		folder->open (vmime::net::folder::MODE_READ_WRITE);
+		auto folder = GetFolder (origMsg->GetFolders ().value (0), vmime::net::folder::MODE_READ_WRITE);
 
 		auto messages = folder->getMessages ();
 		folder->fetchMessages (messages, vmime::net::folder::FETCH_UID);
@@ -818,6 +825,8 @@ namespace Snails
 	{
 		if (!CachedStore_)
 			return;
+
+		CachedFolders_.clear ();
 
 		CachedStore_->disconnect ();
 		CachedStore_ = vmime::ref<vmime::net::store> ();

@@ -130,7 +130,7 @@ namespace Azoth
 				
 		Ui_.Mood_->addItem (tr ("<clear>"));
 		
-		QMap<QString, QPair<QVariant, QIcon> > list;
+		QMap<QString, QPair<QVariant, QIcon>> list;
 		
 		for (uint i = 0; i < sizeof (moodStr) / sizeof (moodStr [0]); ++i)
 		{

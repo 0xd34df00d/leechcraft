@@ -321,11 +321,6 @@ namespace Poshuku
 				this,
 				SLOT (handleChangeEncodingTriggered (QAction*)));
 
-		RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
-		RecentlyClosed_->setEnabled (false);
-		RecentlyClosedAction_ = RecentlyClosed_->menuAction ();
-		RecentlyClosedAction_->setShortcutContext (Qt::WindowShortcut);
-
 		ExternalLinks_ = new QMenu (this);
 		ExternalLinks_->menuAction ()->setText (tr ("External links"));
 
@@ -488,11 +483,6 @@ namespace Poshuku
 				this,
 				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 
-		connect (&Core::Instance (),
-				SIGNAL (newUnclose (QAction*)),
-				this,
-				SLOT (handleNewUnclose (QAction*)));
-
 		connect (HistoryAction_,
 				SIGNAL (triggered (bool)),
 				this,
@@ -567,29 +557,6 @@ namespace Poshuku
 		ZoomIn_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomIn_"));
 		ZoomOut_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomOut_"));
 		ZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomReset_"));
-		RecentlyClosedAction_->setShortcuts (proxy->GetShortcuts (object, "BrowserRecentlyClosedAction_"));
-	}
-
-	void BrowserWidget::SetUnclosers (const QList<QAction*>& unclosers)
-	{
-		RecentlyClosed_->addActions (unclosers);
-		if (unclosers.size ())
-		{
-			RecentlyClosed_->setEnabled (true);
-			RecentlyClosed_->setDefaultAction (unclosers.front ());
-			connect (RecentlyClosedAction_,
-					SIGNAL (triggered ()),
-					unclosers.front (),
-					SLOT (trigger ()));
-
-			foreach (QAction *action, unclosers)
-			{
-				connect (action,
-						SIGNAL (destroyed (QObject*)),
-						this,
-						SLOT (handleUncloseDestroyed ()));
-			}
-		}
 	}
 
 	QGraphicsView* BrowserWidget::GetGraphicsView () const
@@ -727,8 +694,7 @@ namespace Poshuku
 				(Back_)
 				(Forward_)
 				(Reload_)
-				(Stop_)
-				(RecentlyClosedAction_));
+				(Stop_));
 		if (name2act.contains (name))
 			name2act [name]->setShortcuts (sequences);
 	}
@@ -754,7 +720,6 @@ namespace Poshuku
 		_L (Forward_, Qt::ALT + Qt::Key_Right);
 		_L (Reload_, Qt::Key_F5);
 		_L (Stop_, Qt::Key_Escape);
-		_L (RecentlyClosedAction_, tr ("Ctrl+Shift+T"));
 		return result;
 	}
 
@@ -808,7 +773,6 @@ namespace Poshuku
 			result << Reload_
 				<< NotifyWhenFinished_
 				<< Add2Favorites_
-				<< RecentlyClosedAction_
 				<< Print_
 				<< Back_;
 
@@ -819,7 +783,7 @@ namespace Poshuku
 		return result;
 	}
 
-	QMap<QString, QList<QAction*> > BrowserWidget::GetWindowMenus () const
+	QMap<QString, QList<QAction*>> BrowserWidget::GetWindowMenus () const
 	{
 		return WindowMenus_;
 	}
@@ -1195,49 +1159,6 @@ namespace Poshuku
 	QWidget* BrowserWidget::getSideBar () const
 	{
 		return Ui_.Sidebar_;
-	}
-
-	void BrowserWidget::handleNewUnclose (QAction *action)
-	{
-		QList<QAction*> actions = RecentlyClosed_->actions ();
-		if (actions.size ())
-			RecentlyClosed_->insertAction (actions.first (), action);
-		else
-		{
-			RecentlyClosed_->addAction (action);
-		}
-		RecentlyClosed_->setEnabled (true);
-		RecentlyClosed_->setDefaultAction (action);
-		disconnect (RecentlyClosedAction_,
-				SIGNAL (triggered ()),
-				0,
-				0);
-		connect (RecentlyClosedAction_,
-				SIGNAL (triggered ()),
-				action,
-				SLOT (trigger ()));
-		connect (action,
-				SIGNAL (destroyed (QObject*)),
-				this,
-				SLOT (handleUncloseDestroyed ()));
-	}
-
-	void BrowserWidget::handleUncloseDestroyed ()
-	{
-		if (!RecentlyClosed_->actions ().size ())
-			RecentlyClosed_->setEnabled (false);
-		else
-		{
-			disconnect (RecentlyClosedAction_,
-					SIGNAL (triggered ()),
-					0,
-					0);
-			connect (RecentlyClosedAction_,
-					SIGNAL (triggered ()),
-					RecentlyClosed_->actions ().front (),
-					SLOT (trigger ()));
-			RecentlyClosed_->setDefaultAction (RecentlyClosed_->actions ().front ());
-		}
 	}
 
 	void BrowserWidget::updateTooltip ()
@@ -1716,6 +1637,11 @@ namespace Poshuku
 		}
 
 		SetSplitterSizes (0);
+	}
+	
+	void BrowserWidget::loadURL (const QUrl& url)
+	{
+		WebView_->Load (url);
 	}
 
 	void BrowserWidget::SetSplitterSizes (int currentIndex)

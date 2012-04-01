@@ -197,7 +197,7 @@ namespace Rosenthal
 
 		char **wlist = 0;
 		const int ns = Hunspell_->suggest (&wlist, encoded.data ());
-		if (!ns)
+		if (!ns || !wlist)
 			return QStringList ();
 
 		QStringList result;

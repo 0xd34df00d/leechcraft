@@ -29,6 +29,7 @@
 #include "formbuilder.h"
 #include "util.h"
 #include "executecommanddialog.h"
+#include "xep0232handler.h"
 
 namespace LeechCraft
 {
@@ -141,6 +142,8 @@ namespace Xoox
 		if (idHasCat ("conference"))
 			result << QPair<QByteArray, QString> ("join-conference", tr ("Join..."));
 
+		result << QPair<QByteArray, QString> ("refresh", tr ("Refresh..."));
+
 		return result;
 	}
 
@@ -148,6 +151,17 @@ namespace Xoox
 	{
 		if (!index.isValid ())
 			return;
+
+		if (id == "refresh")
+		{
+			const QModelIndex& sibling = index.sibling (index.row (), CName);
+			QStandardItem *item = Model_->itemFromIndex (sibling);
+			if (item->rowCount ())
+				item->removeRows (0, item->rowCount ());
+			item->setData (false, SDSession::DRFetchedMore);
+			Model_->fetchMore (sibling);
+			return;
+		}
 
 		const QModelIndex& sibling = index.sibling (index.row (), CName);
 		QStandardItem *item = Model_->itemFromIndex (sibling);
@@ -212,7 +226,28 @@ namespace Xoox
 				targetItem->setText (text);
 		}
 
-		QString tooltip = "<strong>" + tr ("Identities:") + "</strong><ul>";
+		QString tooltip;
+
+		const auto& verStruct = XEP0232Handler::FromDataForm (iq.form ());
+		if (!verStruct.IsNull ())
+		{
+			QStringList verInfos;
+			auto append = [&verInfos] (const QString& tr, const QString& val)
+			{
+				if (!val.isEmpty ())
+					verInfos << tr.arg (val);
+			};
+			append (tr ("OS: %1."), verStruct.OS_);
+			append (tr ("OS version: %1."), verStruct.OSVer_);
+			append (tr ("Software: %1."), verStruct.Software_);
+			append (tr ("Software version: %1."), verStruct.SoftwareVer_);
+
+			tooltip = "<strong>" + tr ("Version:") + "</strong><ul><li>";
+			tooltip += verInfos.join ("</li><li>");
+			tooltip += "</li></ul>";
+		}
+
+		tooltip += "<strong>" + tr ("Identities:") + "</strong><ul>";
 		Q_FOREACH (const auto& id, iq.identities ())
 		{
 			if (id.name ().isEmpty ())
@@ -295,7 +330,7 @@ namespace Xoox
 		if (jid.isEmpty ())
 			return;
 
-		QPointer<VCardDialog> dia (new VCardDialog);
+		QPointer<VCardDialog> dia (new VCardDialog (Account_));
 		dia->show ();
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		Account_->GetClientConnection ()->FetchVCard (jid,

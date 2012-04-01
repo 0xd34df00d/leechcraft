@@ -19,8 +19,11 @@
 #ifndef SHORTCUTMANAGER_H
 #define SHORTCUTMANAGER_H
 #include <QDialog>
-#include "ui_shortcutmanager.h"
 #include "interfaces/ihaveshortcuts.h"
+#include "ui_shortcutmanager.h"
+
+class QSortFilterProxyModel;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -31,21 +34,24 @@ namespace LeechCraft
 		Q_INTERFACES (IShortcutProxy);
 
 		Ui::ShortcutManager Ui_;
-		enum
-		{
-			RoleObject = 50,
-			RoleOriginalName,
-			RoleSequence,
-			RoleOldSequence
-		};
+		QStandardItemModel *Model_;
+		QSortFilterProxyModel *Filter_;
 	public:
+		enum Roles
+		{
+			Object = Qt::UserRole + 1,
+			OriginalName,
+			Sequence,
+			OldSequence
+		};
+
 		ShortcutManager (QWidget* = 0);
 		void AddObject (QObject*);
 		void AddObject (QObject*, const QString&,
 				const QString&, const QIcon&);
 		QKeySequences_t GetShortcuts (QObject*, const QString&);
 	public slots:
-		void on_Tree__itemActivated (QTreeWidgetItem*);
+		void on_Tree__activated (const QModelIndex&);
 		virtual void accept ();
 		virtual void reject ();
 	};

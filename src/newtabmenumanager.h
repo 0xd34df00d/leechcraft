@@ -38,13 +38,13 @@ namespace LeechCraft
 		QMenu *AdditionalTabMenu_;
 		QList<QObject*> RegisteredMultiTabs_;
 		QSet<QChar> UsedAccelerators_;
-		QMap<QObject*, QMap<QString, QAction*> > HiddenActions_;
+		QMap<QObject*, QMap<QString, QAction*>> HiddenActions_;
 	public:
 		NewTabMenuManager (QObject* = 0);
 
 		void AddObject (QObject*);
 		void HandleEmbedTabRemoved (QObject*);
-		void SetToolbarActions (QList<QList<QAction*> >);
+		void SetToolbarActions (QList<QList<QAction*>>);
 		void SingleRemoved (ITabWidget*);
 
 		QMenu* GetNewTabMenu () const;

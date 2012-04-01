@@ -57,6 +57,7 @@
 #include "tabmanager.h"
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
+#include "acceptlangwidget.h"
 
 #ifdef Q_OS_WIN32
 #include "winwarndialog.h"
@@ -273,7 +274,7 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*>>& men
 	}
 }
 
-void LeechCraft::MainWindow::RemoveMenus (const QMap<QString, QList<QAction*> >& menus)
+void LeechCraft::MainWindow::RemoveMenus (const QMap<QString, QList<QAction*>>& menus)
 {
 	if (IsQuitting_)
 		return;
@@ -389,7 +390,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsManager::Instance ()->RegisterObject ("IconSet", this, "updateIconSet");
 
 	ShortcutManager_ = new ShortcutManager (this);
-	Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ()->SetCustomWidget ("ShortcutManager", ShortcutManager_);
+
+	auto xsd = Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ();
+	xsd->SetCustomWidget ("ShortcutManager", ShortcutManager_);
+	xsd->SetCustomWidget ("AcceptLanguages", new AcceptLangWidget);
 
 	SetStatusBar ();
 	ReadSettings ();
@@ -764,7 +768,7 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 			.GetPluginManager ()->GetAllCastableTo<IActionsExporter*> ();
 	Q_FOREACH (IActionsExporter *exp, exporters)
 	{
-		QMap<QString, QList<QAction*> > map = exp->GetMenuActions ();
+		QMap<QString, QList<QAction*>> map = exp->GetMenuActions ();
 		if (!map.isEmpty ())
 			AddMenus (map);
 	}
@@ -909,7 +913,7 @@ void LeechCraft::MainWindow::keyPressEvent (QKeyEvent *e)
 		index = 10;
 	--index;
 	if (index >= 0 && index < std::min (10, Ui_.MainTabWidget_->WidgetCount ()))
-		Ui_.MainTabWidget_->setCurrentIndex (index);
+		Ui_.MainTabWidget_->setCurrentTab (index);
 }
 
 void LeechCraft::MainWindow::keyReleaseEvent (QKeyEvent *e)

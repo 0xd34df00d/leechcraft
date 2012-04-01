@@ -147,7 +147,7 @@ bpo::variables_map Application::Parse (bpo::command_line_parser& parser,
 	bpo::variables_map vm;
 	bpo::options_description invisible ("Invisible options");
 	invisible.add_options ()
-			("entity,E", bpo::value<std::vector<std::string> > (), "the entity to handle");
+			("entity,E", bpo::value<std::vector<std::string>> (), "the entity to handle");
 
 	desc->add_options ()
 			("help", "show the help message")
@@ -157,7 +157,7 @@ bpo::variables_map Application::Parse (bpo::command_line_parser& parser,
 			("type,T", bpo::value<std::string> (), "the type of the entity: url, url_encoded, file (for file paths) and such")
 			("automatic", "the entity is a result of some automatic stuff, not user's actions")
 			("bt", "print backtraces for warning messages into warning.log")
-			("plugin,P", bpo::value<std::vector<std::string> > (), "load only given plugin and ignore already running instances of LC")
+			("plugin,P", bpo::value<std::vector<std::string>> (), "load only given plugin and ignore already running instances of LC")
 			("nolog", "disable custom file logger and print everything to stdout/stderr")
 			("clrsckt", "clear stalled socket, use if you believe previous LC instance has terminated but failed to close its local socket properly")
 			("no-app-catch", "disable exceptions catch-all in QApplication::notify(), useful for debugging purposes")

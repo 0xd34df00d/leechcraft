@@ -227,7 +227,7 @@
     <message>
         <location filename="replacedialog.ui" line="25"/>
         <source>Find:</source>
-        <translation type="unfinished"/>
+        <translation>Encontrar:</translation>
     </message>
     <message>
         <location filename="replacedialog.ui" line="35"/>

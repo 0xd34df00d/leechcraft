@@ -77,7 +77,7 @@ namespace LeechCraft
 	{
 	}
 
-	void NewTabMenuManager::SetToolbarActions (QList<QList<QAction*> > lists)
+	void NewTabMenuManager::SetToolbarActions (QList<QList<QAction*>> lists)
 	{
 		QList<QAction*> ones;
 		Q_FOREACH (QList<QAction*> list, lists)

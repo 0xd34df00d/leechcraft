@@ -20,6 +20,7 @@
 #define INTERFACES_IHAVERECOVERABLETABS_H
 #include <QList>
 #include <QByteArray>
+#include <QVariant>
 
 class QWidget;
 class QIcon;
@@ -36,14 +37,22 @@ protected:
 	virtual void tabRecoverDataChanged () = 0;
 };
 
+namespace LeechCraft
+{
+	typedef QList<QPair<QByteArray, QVariant>> DynPropertiesList_t;
+	struct TabRecoverInfo
+	{
+		QByteArray Data_;
+		DynPropertiesList_t DynProperties_;
+	};
+}
+
 class IHaveRecoverableTabs
 {
 public:
 	virtual ~IHaveRecoverableTabs () {}
 
-	virtual void RecoverTabs (const QList<QByteArray>&) = 0;
-protected:
-	virtual void tabRecovered (const QByteArray&, QWidget*) = 0;
+	virtual void RecoverTabs (const QList<LeechCraft::TabRecoverInfo>&) = 0;
 };
 
 Q_DECLARE_INTERFACE (IRecoverableTab, "org.Deviant.LeechCraft.IRecoverableTab/1.0");

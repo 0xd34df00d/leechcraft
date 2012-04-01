@@ -51,7 +51,7 @@ namespace Summary
 			TTags
 		} Type_;
 
-		QHash<QString, QHash<QString, QVariant> > Params_;
+		QHash<QString, QHash<QString, QVariant>> Params_;
 	};
 
 	class Core : public QObject
@@ -67,7 +67,7 @@ namespace Summary
 		SummaryWidget *Default_;
 		SummaryWidget *Current_;
 		QList<SummaryWidget*> Others_;
-		mutable QHash<QAbstractItemModel*, QList<IFindProxy_ptr> > KeepProxiesThisWay_;
+		mutable QHash<QAbstractItemModel*, QList<IFindProxy_ptr>> KeepProxiesThisWay_;
 
 		Core ();
 	public:

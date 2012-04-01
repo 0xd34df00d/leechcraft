@@ -595,10 +595,14 @@ namespace LeechCraft
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
 
-		QDir pluginsDir = QDir (dir);
-		Q_FOREACH (QFileInfo fileinfo,
-				pluginsDir.entryInfoList (QStringList ("*leechcraft_*"),
-					QDir::Files))
+		QStringList nameFilters;
+#ifdef Q_OS_WIN32
+		nameFilters << "*leechcraft_*.dll";
+#else
+		nameFilters << "*leechcraft_*";
+#endif
+		const QDir& pluginsDir = QDir (dir);
+		Q_FOREACH (const auto& fileinfo, pluginsDir.entryInfoList (nameFilters, QDir::Files))
 		{
 			QString name = fileinfo.canonicalFilePath ();
 			settings.beginGroup (name);
@@ -661,7 +665,7 @@ namespace LeechCraft
 			}
 
 			bool apiMatches = true;
-			typedef QMap<QByteArray, quint64> (*APIVersion_t) ();
+			typedef quint64 (*APIVersion_t) ();
 			auto getter = reinterpret_cast<APIVersion_t> (library.resolve ("GetAPILevels"));
 			if (!getter)
 			{
@@ -671,7 +675,7 @@ namespace LeechCraft
 						<< file;
 			}
 
-			if (apiMatches && getter () ["Core"] != CURRENT_API_LEVEL)
+			if (apiMatches && getter () != CURRENT_API_LEVEL)
 			{
 				apiMatches = false;
 				qWarning () << Q_FUNC_INFO

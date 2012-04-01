@@ -74,6 +74,8 @@ namespace Vader
 		Proto::ContactInfo GetInfo () const;
 		void UpdateInfo (const Proto::ContactInfo&);
 
+		void HandleWPInfo (const QMap<QString, QString>&);
+
 		qint64 GetID () const;
 
 		// ICLEntry

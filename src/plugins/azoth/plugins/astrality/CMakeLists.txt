@@ -23,6 +23,7 @@ SET (ASTRALITY_SRCS
 	entrywrapper.cpp
 	msgwrapper.cpp
 	astralityutil.cpp
+	vcarddialog.cpp
 	)
 SET (ASTRALITY_HEADERS
 	astrality.h
@@ -33,12 +34,14 @@ SET (ASTRALITY_HEADERS
 	entrywrapper.h
 	msgwrapper.h
 	astralityutil.h
+	vcarddialog.h
 	)
 SET (ASTRALITY_FORMS
 	accountregfirstpage.ui
+	vcarddialog.ui
 	)
 SET (ASTRALITY_RESOURCES azothastralityresources.qrc)
-CreateTrVars ("azoth_astrality" "en;ru_RU" ASTRALITY_TRANSLATIONS ASTRALITY_COMPILED_TRANSLATIONS)
+CreateTrVars ("azoth_astrality" "en;es;ru_RU;uk_UA" ASTRALITY_TRANSLATIONS ASTRALITY_COMPILED_TRANSLATIONS)
 
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ASTRALITY_MOC_SRCS ${ASTRALITY_HEADERS})

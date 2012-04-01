@@ -27,7 +27,7 @@ namespace Importers
 {
 	PsiPlusImporter::PsiPlusImporter (QObject *parent)
 	: Common::IMImporter ("Psi+",
-				QIcon (":/resources/images/apps/psiplus.png"),
+				QIcon (":/resources/images/apps/psi-plus.svg"),
 				new PsiPlusImportPage,
 				parent)
 	{

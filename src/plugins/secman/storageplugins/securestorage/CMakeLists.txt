@@ -6,12 +6,23 @@ SET (SRCS
 	securestorage.cpp
 	cryptosystem.cpp
 	ciphertextformat.cpp
+	settingswidget.cpp
+	xmlsettingsmanager.cpp
+	newpassworddialog.cpp
 	)
 SET (HEADERS
 	securestorage.h
 	cryptosystem.h
 	ciphertextformat.h
+	settingswidget.h
+	xmlsettingsmanager.h
+	newpassworddialog.h
 	)
+SET (FORMS
+	settingswidget.ui
+	newpassworddialog.ui
+	)
+QT4_WRAP_UI (UIS_H ${FORMS})
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
@@ -37,6 +48,7 @@ ADD_LIBRARY (leechcraft_secman_securestorage SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_secman_securestorage
 	${QT_LIBRARIES}
@@ -44,3 +56,4 @@ TARGET_LINK_LIBRARIES (leechcraft_secman_securestorage
 	crypto
 	)
 INSTALL (TARGETS leechcraft_secman_securestorage DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES securestoragesettings.xml DESTINATION ${LC_SETTINGS_DEST})

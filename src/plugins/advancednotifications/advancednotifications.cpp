@@ -53,6 +53,10 @@ namespace AdvancedNotifications
 				Core::Instance ().GetAudioThemeLoader ()->GetSubElemModel ());
 
 		GeneralHandler_.reset (new GeneralHandler (proxy));
+		connect (GeneralHandler_.get (),
+				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+				this,
+				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 
 		EnableSoundMgr_ = new EnableSoundActionManager (this);
 	}

@@ -23,6 +23,7 @@
 #include <QStringList>
 #include <QXmppRosterIq.h>
 #include <QXmppVCardIq.h>
+#include <QXmppPresence.h>
 #include <interfaces/iauthable.h>
 #include "entrybase.h"
 
@@ -112,6 +113,8 @@ namespace Xoox
 		QString GetJID () const;
 
 		void SetAuthRequested (bool);
+	private:
+		void SendGWPresence (QXmppPresence::Type);
 	private slots:
 		void handleGWLogin ();
 		void handleGWLogout ();

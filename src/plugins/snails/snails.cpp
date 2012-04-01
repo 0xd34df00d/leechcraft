@@ -18,6 +18,7 @@
 
 #include "snails.h"
 #include <QIcon>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "mailtab.h"
 #include "xmlsettingsmanager.h"
@@ -32,6 +33,8 @@ namespace Snails
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("snails");
+
 		MailTabClass_ = { "mail", tr ("Mail"),
 				tr ("Mail tab."),
 				GetIcon (), 55, TFOpenableByRequest };

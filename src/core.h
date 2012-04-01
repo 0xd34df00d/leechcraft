@@ -119,7 +119,7 @@ namespace LeechCraft
 		 *
 		 * @return List of actions.
 		 */
-		QList<QList<QAction*> > GetActions2Embed () const;
+		QList<QList<QAction*>> GetActions2Embed () const;
 
 		/** Returns the model which manages the plugins, displays
 		 * various info about them like name, description, icon and

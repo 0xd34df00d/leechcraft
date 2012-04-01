@@ -102,19 +102,6 @@ namespace AdiumStyles
 			item->setData (origName);
 			appendRow (item);
 
-			const QString& path = Loader_->GetPath (QStringList (origName + "/Contents/Resources/Variants/"));
-			if (!path.isEmpty ())
-				Q_FOREACH (const QString& variant, QDir (path).entryList (QStringList ("*.css")))
-				{
-					QString hrVar = variant;
-					hrVar.chop (4);
-					origData.Variants_ << hrVar;
-
-					QStandardItem *item = new QStandardItem (ourName + '/' + hrVar);
-					item->setData (origName);
-					appendRow (item);
-				}
-
 			OrigDatas_ [ourName] = origData;
 		}
 	}
@@ -130,7 +117,7 @@ namespace AdiumStyles
 			QString suf;
 			DeSuf (ourName, suf);
 
-			QList<QStandardItem*> items = findItems (ourName, Qt::MatchStartsWith);
+			auto items = findItems (ourName);
 			Q_FOREACH (QStandardItem *item, items)
 				delete takeItem (item->row ());
 		}

@@ -65,9 +65,9 @@ public:
 	 *
 	 * @return The map of menu name -> list of its actions.
 	 */
-	virtual QMap<QString, QList<QAction*> > GetMenuActions () const
+	virtual QMap<QString, QList<QAction*>> GetMenuActions () const
 	{
-		return QMap<QString, QList<QAction*> > ();
+		return QMap<QString, QList<QAction*>> ();
 	}
 protected:
 	/** @brief Notifies about new actions for the given area.

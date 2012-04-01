@@ -29,7 +29,7 @@ namespace Xoox
 	class SelfContact : public EntryBase
 	{
 		Q_OBJECT
-		
+
 		QString FullJID_;
 		QString BareJID_;
 		QString Resource_;
@@ -37,7 +37,7 @@ namespace Xoox
 		QMap<int, QString> Prio2Status_;
 	public:
 		SelfContact (const QString&, GlooxAccount*);
-		
+
 		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
@@ -57,6 +57,8 @@ namespace Xoox
 		void RemoveVariant (const QString&);
 		QString GetJID () const;
 		void UpdateJID (const QString&);
+	private slots:
+		void handleSelfVCardUpdated ();
 	};
 }
 }

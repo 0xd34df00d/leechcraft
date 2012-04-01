@@ -37,6 +37,7 @@ namespace Azoth
 		SortFilterProxyModel (QObject* = 0);
 
 		void SetMUCMode (bool);
+		bool IsMUCMode () const;
 		void SetMUC (QObject*);
 	public slots:
 		void showOfflineContacts (bool);

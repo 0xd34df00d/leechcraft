@@ -168,7 +168,7 @@ namespace Snails
 
 	void MailTab::handleCurrentTagChanged (const QModelIndex& sidx)
 	{
-		CurrAcc_->Synchronize (sidx);
+		CurrAcc_->ShowFolder (sidx);
 	}
 
 	void MailTab::handleMailSelected (const QModelIndex& sidx)

@@ -32,7 +32,7 @@ namespace Herbicide
 		
 		LoadSettings ();
 		
-		QList<QPair<QString, QStringList> > mathQuests;
+		QList<QPair<QString, QStringList>> mathQuests;
 		mathQuests << qMakePair (QString ("(cos(x))'"), QStringList ("-sin(x)"));
 		mathQuests << qMakePair (QString::fromUtf8 ("e^(iπ)"), QStringList ("-1"));
 		PredefinedQuests_ << mathQuests;

@@ -41,7 +41,7 @@ namespace LeechCraft
 	private:
 		QHash<QString, DataSourceSetter_t> Propname2DataSourceSetter_;
 	public:
-		ItemHandlerFactory ();
+		ItemHandlerFactory (Util::XmlSettingsDialog*);
 		~ItemHandlerFactory ();
 
 		/** @brief Create a visual representation for the given element

@@ -56,6 +56,14 @@ namespace Vader
 				this,
 				SLOT (handleUserStatusChanged (Proto::ContactInfo)));
 		connect (Conn_,
+				SIGNAL (gotUserInfoError (QString, Proto::AnketaInfoStatus)),
+				this,
+				SLOT (handleGotUserInfoError (QString, Proto::AnketaInfoStatus)));
+		connect (Conn_,
+				SIGNAL (gotUserInfoResult (QString, QMap<QString, QString>)),
+				this,
+				SLOT (handleGotUserInfo (QString, QMap<QString, QString>)));
+		connect (Conn_,
 				SIGNAL (gotAuthRequest (QString, QString)),
 				this,
 				SLOT (handleGotAuthRequest (QString, QString)));
@@ -149,6 +157,11 @@ namespace Vader
 	void MRIMAccount::SetTypingState (const QString& to, ChatPartState state)
 	{
 		Conn_->SetTypingState (to, state == CPSComposing);
+	}
+
+	void MRIMAccount::RequestInfo (const QString& email)
+	{
+		Conn_->RequestInfo (email);
 	}
 
 	QObject* MRIMAccount::GetObject ()
@@ -446,6 +459,48 @@ namespace Vader
 		info.ContactID_ = id;
 
 		handleGotContacts (QList<Proto::ContactInfo> () << info);
+	}
+
+	void MRIMAccount::handleGotUserInfoError (const QString& id,
+			Proto::AnketaInfoStatus status)
+	{
+		QString error;
+		switch (status)
+		{
+		case Proto::AnketaInfoStatus::DBErr:
+			error = tr ("database error");
+			break;
+		case Proto::AnketaInfoStatus::NoUser:
+			error = tr ("no such user");
+			break;
+		case Proto::AnketaInfoStatus::RateLimit:
+			error = tr ("rate limit exceeded");
+			break;
+		default:
+			error = tr ("unknown error");
+			break;
+		}
+
+		const Entity& e = Util::MakeNotification ("Azoth",
+				tr ("Error fetching user info for %1: %2.")
+					.arg (id)
+					.arg (error),
+				PCritical_);
+		Core::Instance ().SendEntity (e);
+	}
+
+	void MRIMAccount::handleGotUserInfo (const QString& from,
+			const QMap<QString, QString>& values)
+	{
+		if (!Buddies_.contains (from))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown buddy"
+					<< from;
+			return;
+		}
+
+		Buddies_ [from]->HandleWPInfo (values);
 	}
 
 	void MRIMAccount::handleGotAuthRequest (const QString& from, const QString& msg)

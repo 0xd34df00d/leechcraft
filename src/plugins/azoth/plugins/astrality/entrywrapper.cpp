@@ -18,10 +18,13 @@
 
 #include "entrywrapper.h"
 #include <ContactMessenger>
+#include <PendingContactInfo>
+#include <util/util.h>
 #include <interfaces/azothutil.h>
 #include "accountwrapper.h"
 #include "astralityutil.h"
 #include "msgwrapper.h"
+#include "vcarddialog.h"
 
 namespace LeechCraft
 {
@@ -182,9 +185,13 @@ namespace Astrality
 
 	void EntryWrapper::ShowInfo ()
 	{
+		connect (C_->requestInfo (),
+				SIGNAL (finished (Tp::PendingOperation*)),
+				this,
+				SLOT (handleContactInfo (Tp::PendingOperation*)));
 	}
 
-	QList<QAction*> EntryWrapper::GetActions() const
+	QList<QAction*> EntryWrapper::GetActions () const
 	{
 		return QList<QAction*> ();
 	}
@@ -239,6 +246,35 @@ namespace Astrality
 	void EntryWrapper::handleAvatarDataChanged ()
 	{
 		emit avatarChanged (GetAvatar ());
+	}
+
+	void EntryWrapper::handleContactInfo (Tp::PendingOperation *op)
+	{
+		VCardDialog *dia = new VCardDialog;
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->SetAvatar (GetAvatar ());
+		dia->show ();
+
+		if (op->isError ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< op->errorName ()
+					<< op->errorMessage ();
+			const QString& msg = tr ("Error fetching contact info for %1: %2 (%3)")
+					.arg (GetEntryName ())
+					.arg (op->errorName ())
+					.arg (op->errorMessage ());
+			emit gotEntity (LeechCraft::Util::MakeNotification ("Azoth", msg, PCritical_));
+			return;
+		}
+
+		auto info = qobject_cast<Tp::PendingContactInfo*> (op);
+		auto fields = info->infoFields ();
+		qDebug () << Q_FUNC_INFO << fields.allFields ().size ();
+		Q_FOREACH (Tp::ContactInfoField field, fields.allFields ())
+			qDebug () << field.fieldName << field.fieldValue << field.parameters;
+
+		dia->SetInfoFields (fields.allFields ());
 	}
 
 	void EntryWrapper::handlePublishStateChanged (Tp::Contact::PresenceState state, const QString& msg)

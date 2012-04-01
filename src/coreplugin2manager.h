@@ -23,6 +23,8 @@
 #include "interfaces/core/ihookproxy.h"
 #include "interfaces/iinfo.h"
 
+class QMenu;
+
 namespace LeechCraft
 {
 	class CorePlugin2Manager : public Util::BaseHookInterconnector
@@ -36,6 +38,12 @@ namespace LeechCraft
 					QNetworkAccessManager *manager,
 					QNetworkAccessManager::Operation *op,
 					QIODevice **dev);
+		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
+					QMenu *menu, int index);
+		void hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy,
+				int index);
+		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy,
+				int index);
 	};
 }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-		<label value="Acetamide" />
+		<label value="Behavior" />
 			<groupbox>
 				<label value="Acetamide" />
 				<item type="checkbox" property="AutoDisconnectFromServer" state="off">
@@ -10,7 +10,20 @@
 				<item type="checkbox" property="ShowInviteDialog" state="off">
 						<label value="Show invite dialog" />
 				</item>
+				<item type="checkbox" property="ServerDuplicateCommandAnswer" state="off">
+					<label value="Duplicate command answer in server's tab" />
+				</item>
+				<item type="groupbox" property="AutoWhoRequest" state="on" checkable="true">
+					<label lang="en" value="Use WHO request for checking AWAY status" />
+					<item type="spinbox" property="AutoWhoPeriod" default="1" step="1" minimum="1" maximum="360" >
+						<label lang="en" value="Period for WHO request:" />
+						<suffix value=" min" />
+					</item>
+				</item>
 			</groupbox>
+	</page>
+	<page>
+		<label value="NickServ" />
 			<groupbox>
 				<label value="NickServ identify" />
 				<item type="customwidget" label="own" name="NickServIdentifyWidget" />

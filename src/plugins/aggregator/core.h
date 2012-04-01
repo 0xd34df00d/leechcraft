@@ -120,7 +120,7 @@ namespace Aggregator
 
 		Core ();
 	private:
-		QHash<PoolType, Util::IDPool<IDType_t> > Pools_;
+		QHash<PoolType, Util::IDPool<IDType_t>> Pools_;
 	public:
 		struct ChannelInfo
 		{

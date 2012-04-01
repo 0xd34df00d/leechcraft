@@ -24,6 +24,7 @@
 #include <QDateTime>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "interfaces/azothcommon.h"
 #include "ui_chattab.h"
 
@@ -41,9 +42,10 @@ namespace Azoth
 
 	class ChatTab : public QWidget
 				  , public ITabWidget
+				  , public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		static QObject *S_ParentMultiTabs_;
 
@@ -103,6 +105,10 @@ namespace Azoth
 		void Remove ();
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
+
+		QByteArray GetTabRecoverData () const;
+		QString GetTabRecoverName () const;
+		QIcon GetTabRecoverIcon () const;
 
 		void HandleMUCParticipantsChanged ();
 
@@ -200,6 +206,8 @@ namespace Azoth
 		void changeTabIcon (QWidget*, const QIcon&);
 		void needToClose (ChatTab*);
 		void entryMadeCurrent (QObject*);
+
+		void tabRecoverDataChanged ();
 
 		// Hooks
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,

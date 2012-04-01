@@ -33,7 +33,7 @@ namespace LeechCraft
 				Q_OBJECT
 
 				Ui::FastSpeedControlWidget Ui_;
-				QList<QPair<QSpinBox*, QSpinBox*> > Widgets_;
+				QList<QPair<QSpinBox*, QSpinBox*>> Widgets_;
 			public:
 				FastSpeedControlWidget (QWidget* = 0);
 			private:

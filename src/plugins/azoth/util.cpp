@@ -19,10 +19,12 @@
 #include "util.h"
 #include <QString>
 #include <QWizard>
+#include <util/util.h>
 #include <interfaces/structures.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/iaccount.h"
 #include "addaccountwizardfirstpage.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -74,6 +76,10 @@ namespace Azoth
 		const QString& id = entry->GetHumanReadableID ();
 		account->Authorize (entry->GetObject ());
 		account->RequestAuth (id);
+
+		const auto& e = Util::MakeANCancel ("org.LeechCraft.Azoth",
+				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ());
+		Core::Instance ().SendEntity (e);
 	}
 
 	void DenyAuthForEntry (ICLEntry *entry)
@@ -88,6 +94,10 @@ namespace Azoth
 			return;
 		}
 		account->DenyAuth (entry->GetObject ());
+
+		const auto& e = Util::MakeANCancel ("org.LeechCraft.Azoth",
+				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ());
+		Core::Instance ().SendEntity (e);
 	}
 }
 }

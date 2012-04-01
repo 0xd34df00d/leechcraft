@@ -83,6 +83,7 @@ namespace Astrality
 	private slots:
 		void handlePresenceChanged ();
 		void handleAvatarDataChanged ();
+		void handleContactInfo (Tp::PendingOperation*);
 		void handlePublishStateChanged (Tp::Contact::PresenceState, const QString&);
 		void handleSubStateChanged (Tp::Contact::PresenceState);
 		void handleMessageReceived (const Tp::ReceivedMessage&, Tp::TextChannelPtr);

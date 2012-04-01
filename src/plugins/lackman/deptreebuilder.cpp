@@ -28,13 +28,15 @@ namespace LeechCraft
 namespace LackMan
 {
 	DepTreeBuilder::VertexInfo::VertexInfo ()
-	: IsFulfilled_ (false)
+	: PackageId_ (-1)
+	, IsFulfilled_ (false)
 	, Type_ (TAny)
 	{
 	}
 
 	DepTreeBuilder::VertexInfo::VertexInfo (DepTreeBuilder::VertexInfo::Type type)
-	: IsFulfilled_ (false)
+	: PackageId_ (-1)
+	, IsFulfilled_ (false)
 	, Type_ (type)
 	{
 	}
@@ -47,7 +49,8 @@ namespace LackMan
 	}
 
 	DepTreeBuilder::VertexInfo::VertexInfo (const QString& depName)
-	: Dependency_ (depName)
+	: PackageId_ (-1)
+	, Dependency_ (depName)
 	, IsFulfilled_ (false)
 	, Type_ (TAny)
 	{

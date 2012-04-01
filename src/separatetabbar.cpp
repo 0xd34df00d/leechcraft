@@ -33,6 +33,7 @@ namespace LeechCraft
 	: QTabBar (parent)
 	, Id_ (0)
 	, IsLastTab_ (false)
+	, InMove_ (false)
 	{
 		setObjectName ("org_LeechCraft_MainWindow_CentralTabBar");
 		setExpanding (false);
@@ -40,31 +41,9 @@ namespace LeechCraft
 		setContextMenuPolicy (Qt::CustomContextMenu);
 		setElideMode (Qt::ElideRight);
 
-		CloseSide_ = (QTabBar::ButtonPosition)this->style ()->
-				styleHint (QStyle::SH_TabBar_CloseButtonPosition);
-
 		addTab (QString ());
 
 		IsLastTab_ = true;
-	}
-
-	bool SeparateTabBar::IsPinTab (int index) const
-	{
-		return PinTabsIndex2Name_.contains (tabData (index).toInt ());
-	}
-
-	int SeparateTabBar::PinTabsCount () const
-	{
-		return PinTabsIndex2Name_.count ();
-	}
-
-	QList<int> SeparateTabBar::GetPinTabs () const
-	{
-		QList<int> list;
-		for (int i = 0; i < count (); ++i)
-			if (IsPinTab (tabData (i).toInt ()))
-				list << i;
-		return list;
 	}
 
 	void SeparateTabBar::SetTabData (int index)
@@ -80,9 +59,10 @@ namespace LeechCraft
 		setTabData (index, ++Id_);
 	}
 
-	void SeparateTabBar::SetTabNoClosable (int index)
+	void SeparateTabBar::SetTabClosable (int index, bool closable, QWidget *closeButton)
 	{
-		if (index < 0 || index >= count ())
+		if (index < 0 ||
+				index >= count ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index "
@@ -90,7 +70,7 @@ namespace LeechCraft
 			return;
 		}
 
-		setTabButton (index, CloseSide_, 0);
+		setTabButton (index, GetCloseButtonPosition (), closeButton);
 	}
 
 	void SeparateTabBar::SetLastTab (bool isLast)
@@ -103,9 +83,15 @@ namespace LeechCraft
 		TabWidget_ = widget;
 	}
 
-	QString SeparateTabBar::GetPinTabText (int index) const
+	QTabBar::ButtonPosition SeparateTabBar::GetCloseButtonPosition ()
 	{
-		return PinTabsIndex2Name_ [tabData (index).toInt ()];
+		return static_cast<QTabBar::ButtonPosition> (style ()->
+				styleHint (QStyle::SH_TabBar_CloseButtonPosition));
+	}
+
+	void SeparateTabBar::SetInMove (bool inMove)
+	{
+		InMove_ = inMove;
 	}
 
 	QSize SeparateTabBar::tabSizeHint (int index) const
@@ -132,22 +118,15 @@ namespace LeechCraft
 				event->button () == Qt::LeftButton &&
 				IsLastTab_)
 		{
-			emit addDefaultTab (true);
+			emit addDefaultTab ();
 			return;
 		}
 
-		if (TabWidget_->IsInMoveProcess ())
+		if (InMove_)
 		{
-			int index = currentIndex ();
-			if (IsPinTab (index + 1) && !IsPinTab (index))
-			{
-				SetTabData (index);
-				setPinTab (index);
-			}
-			else if (IsPinTab (index) && index && !IsPinTab (index - 1))
-				setUnPinTab (index);
-
-			TabWidget_->SetInMoveProcess (false);
+			emit releasedMouseAfterMove (currentIndex ());
+			InMove_ = false;
+			emit currentChanged (currentIndex ());
 		}
 		else if (index != -1 &&
 				event->button () == Qt::MidButton &&
@@ -171,7 +150,7 @@ namespace LeechCraft
 	{
 		QWidget::mouseDoubleClickEvent (event);
 		if (tabAt (event->pos ()) == -1)
-			emit addDefaultTab (true);
+			emit addDefaultTab ();
 	}
 
 	void SeparateTabBar::tabInserted (int index)
@@ -206,7 +185,7 @@ namespace LeechCraft
 			IsLastTab_ = true;
 
 			addTab (QString ());
-			SetTabNoClosable (count () - 1);
+			SetTabClosable (count () - 1, false);
 
 			emit showAddTabButton (false);
 		}
@@ -229,39 +208,5 @@ namespace LeechCraft
 			painter.drawItemPixmap (option.rect, Qt::AlignCenter, 
 					icon.pixmap (QSize (15, 15)));
 		}
-	}
-	
-	void SeparateTabBar::setPinTab (int index)
-	{
-		if (index < 0 || index >= count () - 1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid index "
-					<< index;
-			return;
-		}
-
-		PinTabsIndex2Name_ [tabData (index).toInt ()] = tabText (index);
-		PinTabsIndex2CloseWidget_ [tabData (index).toInt ()] = tabButton (index, CloseSide_);
-
-		setTabText (index, QString ());
-		SetTabNoClosable (index);
-	}
-
-	void SeparateTabBar::setUnPinTab (int index)
-	{
-		if (index < 0 || index >= count () - 1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid index "
-					<< index;
-			return;
-		}
-
-		setTabText (index, PinTabsIndex2Name_ [tabData (index).toInt ()]);
-		setTabButton (index, CloseSide_, PinTabsIndex2CloseWidget_ [tabData (index).toInt ()]);
-		PinTabsIndex2Name_.remove (tabData (index).toInt ());
-		PinTabsIndex2CloseWidget_.remove (tabData (index).toInt ());
-		setTabData (index, -1);
 	}
 }

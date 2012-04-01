@@ -18,194 +18,233 @@
 
 #include "shortcutmanager.h"
 #include <memory>
-#include <QtDebug>
+#include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 #include <QSettings>
+#include <QtDebug>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihaveshortcuts.h>
 #include "keysequencer.h"
 
-using namespace LeechCraft;
-
-ShortcutManager::ShortcutManager (QWidget *parent)
-: QWidget (parent)
+namespace LeechCraft
 {
-	Ui_.setupUi (this);
-}
-
-void ShortcutManager::AddObject (QObject *object)
-{
-	IInfo *ii = qobject_cast<IInfo*> (object);
-	if (!ii)
+	class SMFilterProxyModel : public QSortFilterProxyModel
 	{
-		qWarning () << Q_FUNC_INFO
-			<< object
-			<< "couldn't be casted to IInfo";
-		return;
+	public:
+		SMFilterProxyModel (QObject *parent = 0)
+		: QSortFilterProxyModel (parent)
+		{
+		}
+	protected:
+		bool filterAcceptsRow (int row, const QModelIndex& parent) const
+		{
+			if (!parent.isValid ())
+				return true;
+
+			const QString& filter = filterRegExp ().pattern ();
+			if (filter.isEmpty ())
+				return true;
+
+			auto checkStr = [row, parent, &filter, this] (int col)
+			{
+				const QString& content = this->sourceModel ()->
+						index (row, col, parent).data ().toString ();
+				return content.contains (filter, Qt::CaseInsensitive);
+			};
+			if (checkStr (0) || checkStr (1))
+				return true;
+			return false;
+		}
+	};
+
+	ShortcutManager::ShortcutManager (QWidget *parent)
+	: QWidget (parent)
+	, Model_ (new QStandardItemModel (this))
+	, Filter_ (new SMFilterProxyModel (this))
+	{
+		Filter_->setDynamicSortFilter (true);
+		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("Shortcut"));
+		Filter_->setSourceModel (Model_);
+		Filter_->sort (0);
+
+		Ui_.setupUi (this);
+		Ui_.Tree_->setModel (Filter_);
+		connect (Ui_.FilterLine_,
+				SIGNAL (textChanged (QString)),
+				Filter_,
+				SLOT (setFilterFixedString (QString)));
+		connect (Ui_.FilterLine_,
+				SIGNAL (textChanged (QString)),
+				Ui_.Tree_,
+				SLOT (expandAll ()));
 	}
-	AddObject (object, ii->GetName (), ii->GetInfo (), ii->GetIcon ());
-}
 
-void ShortcutManager::AddObject (QObject *object,
-		const QString& objName, const QString& objDescr,
-		const QIcon& objIcon)
-{
-	for (int i = 0, size = Ui_.Tree_->topLevelItemCount ();
-			i < size; ++i)
+	void ShortcutManager::AddObject (QObject *object)
 	{
-		QTreeWidgetItem *objectItem = Ui_.Tree_->topLevelItem (i);
-		QObject *o = objectItem->data (0, RoleObject).value<QObject*> ();
-		if (o == object)
+		IInfo *ii = qobject_cast<IInfo*> (object);
+		if (!ii)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< object
+				<< "couldn't be casted to IInfo";
 			return;
-	}
-
-	IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (object);
-
-	if (!ihs)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< object
-			<< "could not be casted to IHaveShortcuts";
-		return;
-	}
-
-	QSettings settings ("Deviant", "Leechcraft");
-	settings.beginGroup ("Shortcuts");
-
-	QStringList pstrings;
-	pstrings << objName
-		<< objDescr;
-
-	QTreeWidgetItem *parent = new QTreeWidgetItem (Ui_.Tree_, pstrings);
-	parent->setIcon (0, objIcon);
-	parent->setData (0, RoleObject,
-			QVariant::fromValue<QObject*> (object));
-
-	QMap<QString, ActionInfo> info = ihs->GetActionInfo ();
-
-	settings.beginGroup (objName);
-	Q_FOREACH (const QString& name, info.keys ())
-	{
-		// FIXME use all the sequences here, not the first one
-		QKeySequences_t sequences = settings.value (name,
-				QVariant::fromValue<QKeySequences_t> (info [name].Seqs_)).value<QKeySequences_t> ();
-
-		QKeySequence sequence = sequences.value (0);
-
-		QStringList strings;
-		strings << info [name].UserVisibleText_
-			<< sequence.toString ();
-		QTreeWidgetItem *item = new QTreeWidgetItem (parent, strings);
-		item->setIcon (0, info [name].Icon_);
-		item->setData (0, RoleOriginalName, name);
-		item->setData (0, RoleSequence, QVariant::fromValue<QKeySequences_t> (sequences));
-		parent->setExpanded (true);
-
-		if (sequences != info [name].Seqs_)
-			ihs->SetShortcut (name, sequences);
-	}
-
-	settings.endGroup ();
-	settings.endGroup ();
-
-	Ui_.Tree_->resizeColumnToContents (0);
-}
-
-QKeySequences_t ShortcutManager::GetShortcuts (QObject *object,
-		const QString& originalName)
-{
-	for (int i = 0, size = Ui_.Tree_->topLevelItemCount ();
-			i < size; ++i)
-	{
-		QTreeWidgetItem *objectItem = Ui_.Tree_->topLevelItem (i);
-		if (objectItem->data (0, RoleObject).value<QObject*> () != object)
-			continue;
-
-		for (int j = 0, namesSize = objectItem->childCount ();
-				j < namesSize; ++j)
-		{
-			QTreeWidgetItem *item = objectItem->child (j);
-			if (item->data (0, RoleOriginalName).toString () == originalName)
-				return item->data (0, RoleSequence).value<QKeySequences_t> ();
 		}
-		return QKeySequences_t ();
+		AddObject (object, ii->GetName (), ii->GetInfo (), ii->GetIcon ());
 	}
-	const_cast<ShortcutManager*> (this)->AddObject (const_cast<QObject*> (object));
-	return GetShortcuts (object, originalName);
-}
 
-void ShortcutManager::on_Tree__itemActivated (QTreeWidgetItem *item)
-{
-	// Root or something
-	if (item->data (0, RoleOriginalName).isNull ())
-		return;
-
-	std::auto_ptr<KeySequencer> dia (new KeySequencer (this));
-	if (dia->exec () == QDialog::Rejected)
-		return;
-
-	QKeySequences_t newSeqs;
-	newSeqs << dia->GetResult ();
-	if (item->data (0, RoleOldSequence).isNull ())
-		item->setData (0, RoleOldSequence,
-				item->data (0, RoleSequence));
-	item->setData (0, RoleSequence,
-			QVariant::fromValue<QKeySequences_t> (newSeqs));
-	item->setText (1, newSeqs.value (0).toString ());
-}
-
-void ShortcutManager::accept ()
-{
-	QSettings settings ("Deviant", "Leechcraft");
-	settings.beginGroup ("Shortcuts");
-	for (int i = 0, size = Ui_.Tree_->topLevelItemCount ();
-			i < size; ++i)
+	void ShortcutManager::AddObject (QObject *object,
+			const QString& objName, const QString& objDescr,
+			const QIcon& objIcon)
 	{
-		QTreeWidgetItem *objectItem = Ui_.Tree_->topLevelItem (i);
-		for (int j = 0, namesSize = objectItem->childCount ();
-				j < namesSize; ++j)
+		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
 		{
-			QObject *o = objectItem->data (0, RoleObject).value<QObject*> ();
-			IInfo *ii = qobject_cast<IInfo*> (o);
-			IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (o);
-			settings.beginGroup (ii->GetName ());
+			auto objectItem = Model_->item (i);
+			QObject *o = objectItem->data (Roles::Object).value<QObject*> ();
+			if (o == object)
+				return;
+		}
 
-			QTreeWidgetItem *item = objectItem->child (j);
-			if (!item->data (0, RoleOldSequence).isNull ())
-			{
-				QString name = item->data (0, RoleOriginalName).toString ();
-				QKeySequences_t sequences = item->
-						data (0, RoleSequence).value<QKeySequences_t> ();
+		IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (object);
 
-				settings.setValue (name,
-						QVariant::fromValue<QKeySequences_t> (sequences));
-				item->setData (0, RoleOldSequence, QVariant ());
+		if (!ihs)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< object
+				<< "could not be casted to IHaveShortcuts";
+			return;
+		}
+
+		QSettings settings ("Deviant", "Leechcraft");
+		settings.beginGroup ("Shortcuts");
+
+		QList<QStandardItem*> parentRow;
+		parentRow << new QStandardItem (objName);
+		parentRow << new QStandardItem (objDescr);
+		parentRow.at (0)->setIcon (objIcon);
+		parentRow.at (0)->setData (	QVariant::fromValue<QObject*> (object), Roles::Object);
+
+		const auto& info = ihs->GetActionInfo ();
+
+		settings.beginGroup (objName);
+		Q_FOREACH (const QString& name, info.keys ())
+		{
+			// FIXME use all the sequences here, not the first one
+			const auto& sequences = settings.value (name,
+					QVariant::fromValue<QKeySequences_t> (info [name].Seqs_)).value<QKeySequences_t> ();
+			const auto& sequence = sequences.value (0);
+
+			QList<QStandardItem*> itemRow;
+			itemRow << new QStandardItem (info [name].UserVisibleText_);
+			itemRow << new QStandardItem (sequence.toString ());
+			itemRow.at (0)->setIcon (info [name].Icon_);
+			itemRow.at (0)->setData (name, Roles::OriginalName);
+			itemRow.at (0)->setData (QVariant::fromValue<QKeySequences_t> (sequences), Roles::Sequence);
+			parentRow.at (0)->appendRow (itemRow);
+
+			if (sequences != info [name].Seqs_)
 				ihs->SetShortcut (name, sequences);
-			}
-
-			settings.endGroup ();
 		}
-	}
-	settings.endGroup ();
-}
 
-void ShortcutManager::reject ()
-{
-	for (int i = 0, size = Ui_.Tree_->topLevelItemCount ();
-			i < size; ++i)
+		Model_->appendRow (parentRow);
+
+		settings.endGroup ();
+		settings.endGroup ();
+
+		Ui_.Tree_->resizeColumnToContents (0);
+		Ui_.Tree_->expand (parentRow.at (0)->index ());
+	}
+
+	QKeySequences_t ShortcutManager::GetShortcuts (QObject *object,
+			const QString& originalName)
 	{
-		QTreeWidgetItem *objectItem = Ui_.Tree_->topLevelItem (i);
-		for (int j = 0, namesSize = objectItem->childCount ();
-				j < namesSize; ++j)
+		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
 		{
-			QTreeWidgetItem *item = objectItem->child (j);
-			if (!item->data (0, RoleOldSequence).isNull ())
+			auto objectItem = Model_->item (i);
+			if (objectItem->data (Roles::Object).value<QObject*> () != object)
+				continue;
+
+			for (int j = 0, namesSize = objectItem->rowCount (); j < namesSize; ++j)
 			{
-				QKeySequence seq = item->data (0, RoleOldSequence).value<QKeySequence> ();
-				item->setData (0, RoleSequence, seq);
-				item->setData (0, RoleOldSequence, QVariant ());
-				item->setText (1, seq.toString ());
+				auto item = objectItem->child (j);
+				if (item->data (Roles::OriginalName).toString () == originalName)
+					return item->data (Roles::Sequence).value<QKeySequences_t> ();
+			}
+			return QKeySequences_t ();
+		}
+		AddObject (const_cast<QObject*> (object));
+		return GetShortcuts (object, originalName);
+	}
+
+	void ShortcutManager::on_Tree__activated (const QModelIndex& index)
+	{
+		auto item = Model_->itemFromIndex (index.sibling (index.row (), 0));
+		// Root or something
+		if (!item || item->data (Roles::OriginalName).isNull ())
+			return;
+
+		KeySequencer dia (this);
+		if (dia.exec () == QDialog::Rejected)
+			return;
+
+		QKeySequences_t newSeqs;
+		newSeqs << dia.GetResult ();
+		if (item->data (Roles::OldSequence).isNull ())
+			item->setData (item->data (Roles::Sequence), Roles::OldSequence);
+		item->setData (QVariant::fromValue<QKeySequences_t> (newSeqs), Roles::Sequence);
+
+		Model_->itemFromIndex (index.sibling (index.row (), 1))->
+				setText (newSeqs.value (0).toString ());
+	}
+
+	void ShortcutManager::accept ()
+	{
+		QSettings settings ("Deviant", "Leechcraft");
+		settings.beginGroup ("Shortcuts");
+		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
+		{
+			auto objectItem = Model_->item (i);
+
+			for (int j = 0, namesSize = objectItem->rowCount (); j < namesSize; ++j)
+			{
+				QObject *o = objectItem->data (Roles::Object).value<QObject*> ();
+				IInfo *ii = qobject_cast<IInfo*> (o);
+				IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (o);
+				settings.beginGroup (ii->GetName ());
+
+				auto item = objectItem->child (j);
+				if (!item->data (Roles::OldSequence).isNull ())
+				{
+					QString name = item->data (Roles::OriginalName).toString ();
+					const auto& sequences = item->data (Roles::Sequence).value<QKeySequences_t> ();
+
+					settings.setValue (name, QVariant::fromValue<QKeySequences_t> (sequences));
+					item->setData (QVariant (), Roles::OldSequence);
+					ihs->SetShortcut (name, sequences);
+				}
+
+				settings.endGroup ();
+			}
+		}
+		settings.endGroup ();
+	}
+
+	void ShortcutManager::reject ()
+	{
+		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
+		{
+			auto objectItem = Model_->item (i);
+			for (int j = 0, namesSize = objectItem->rowCount (); j < namesSize; ++j)
+			{
+				auto item = objectItem->child (j);
+				if (item->data (Roles::OldSequence).isNull ())
+					continue;
+
+				const auto& seq = item->data (Roles::OldSequence).value<QKeySequence> ();
+				item->setData (seq, Roles::Sequence);
+				item->setData (QVariant (), Roles::OldSequence);
+
+				objectItem->child (j, 1)->setText (seq.toString ());
 			}
 		}
 	}
 }
-

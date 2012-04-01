@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_WIZARDGENERATOR_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_WIZARDGENERATOR_H
+#pragma once
+
 #include <QList>
 
 class QWizardPage;
@@ -36,5 +36,3 @@ namespace CleanWeb
 }
 }
 }
-
-#endif

@@ -42,9 +42,9 @@ namespace LeechCraft
 				update ();
 			}
 			
-			QList<QPair<int, int> > FindTrues (const libtorrent::bitfield& pieces)
+			QList<QPair<int, int>> FindTrues (const libtorrent::bitfield& pieces)
 			{
-				QList<QPair<int, int> > result;
+				QList<QPair<int, int>> result;
 				bool prevVal = pieces [0];
 				int prevPos = 0;
 				int size = static_cast<int> (pieces.size ());
@@ -89,7 +89,7 @@ namespace LeechCraft
 				QPainter tempPainter (&tempPicture);
 				tempPainter.setPen (backgroundColor);
 				tempPainter.drawLine (0, 0, s, 0);
-				QList<QPair<int, int> > trues = FindTrues (Pieces_);
+				QList<QPair<int, int>> trues = FindTrues (Pieces_);
 				for (int i = 0; i < trues.size (); ++i)
 				{
 					QPair<int, int> pair = trues.at (i);

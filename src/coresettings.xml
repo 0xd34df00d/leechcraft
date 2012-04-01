@@ -2,7 +2,7 @@
 <settings>
 	<page>
 		<label lang="en" value="Appearance" />
-		<tab>
+		<groupbox>
 			<label lang="en" value="Appearance" />
 			<item type="checkbox" property="UseTabScrollButtons" state="on">
 				<label lang="en" value="Use tab scroll buttons" />
@@ -49,67 +49,64 @@
 			<item type="spinbox" property="MaxLogLines" default="500" step="250" minimum="10" maximum="50000">
 				<label lang="en" value="Maximum log lines:" />
 			</item>
-		</tab>
-		<tab>
-			<label lang="en" value="Shortcuts" />
-			<item type="customwidget" label="own" name="ShortcutManager" />
-		</tab>
+		</groupbox>
 	</page>
 	<page>
 		<label lang="en" value="Behavior" />
-		<tab>
+		<groupbox>
 			<label lang="en" value="Behavior" />
-			<groupbox>
-				<label lang="en" value="Behavior" />
-				<item type="checkbox" property="WatchClipboard" state="off">
-					<label lang="en" value="Watch clipboard" />
-				</item>
-				<item type="checkbox" property="ConfirmQuit" default="true">
-					<label lang="en" value="Ask quit confirmation" />
-				</item>
-				<item type="checkbox" property="ExitOnClose" default="false">
-					<label lang="en" value="Exit on close" />
-				</item>
-				<item type="checkbox" property="ToolBarVisibilityManipulation" default="false">
-					<label lang="en" value="Manual toolbar visibility control" />
-				</item>
-				<item type="checkbox" property="OpenTabNext" default="false">
-					<label lang="en" value="Open new tab next to current" />
-				</item>
-				<item type="combobox" property="SelectionBehavior">
-					<label lang="en" value="Tab selection behavior: " />
-					<option name="PreviousActive" default="true">
-						<label lang="en" value="Select the previously selected tab" />
-					</option>
-					<option name="NextIndex">
-						<label lang="en" value="Select the tab to the right of the one being removed" />
-					</option>
-					<option name="PreviousIndex">
-						<label lang="en" value="Select the tab to the left of the one being removed" />
-					</option>
-				</item>
-				<item type="checkbox" property="DontAskWhenSingle" default="true">
-					<label lang="en" value="Automatically accept task when there is only one handler" />
-				</item>
-				<item type="path" property="WatchDirectory" onCancel="clear">
-					<label lang="en" value="Watch directory:" />
-				</item>
-			</groupbox>
-			<item type="groupbox" property="ShowPluginMenuInTabs" state="on" checkable="true">
-				<label lang="en" value="Show plugin-dependent actions in tab bar context menu" />
-				<item type="checkbox" property="ShowPluginMenuInTabsAsSubmenu" default="off">
-					<label lang="en" value="Show as a submenu" />
-				</item>
+			<item type="checkbox" property="WatchClipboard" state="off">
+				<label lang="en" value="Watch clipboard" />
 			</item>
-			<item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
-				<label lang="en" value="Show messages in tray" />
-				<item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1">
-					<label value="Message timeout:" />
-					<suffix value=" s" />
-				</item>
+			<item type="checkbox" property="ConfirmQuit" default="true">
+				<label lang="en" value="Ask quit confirmation" />
 			</item>
-		</tab>
+			<item type="checkbox" property="ExitOnClose" default="false">
+				<label lang="en" value="Exit on close" />
+			</item>
+			<item type="checkbox" property="ToolBarVisibilityManipulation" default="false">
+				<label lang="en" value="Manual toolbar visibility control" />
+			</item>
+			<item type="checkbox" property="OpenTabNext" default="false">
+				<label lang="en" value="Open new tab next to current" />
+			</item>
+			<item type="combobox" property="SelectionBehavior">
+				<label lang="en" value="Tab selection behavior: " />
+				<option name="PreviousActive" default="true">
+					<label lang="en" value="Select the previously selected tab" />
+				</option>
+				<option name="NextIndex">
+					<label lang="en" value="Select the tab to the right of the one being removed" />
+				</option>
+				<option name="PreviousIndex">
+					<label lang="en" value="Select the tab to the left of the one being removed" />
+				</option>
+			</item>
+			<item type="checkbox" property="DontAskWhenSingle" default="true">
+				<label lang="en" value="Automatically accept task when there is only one handler" />
+			</item>
+			<item type="path" property="WatchDirectory" onCancel="clear">
+				<label lang="en" value="Watch directory:" />
+			</item>
+		</groupbox>
+		<item type="groupbox" property="ShowPluginMenuInTabs" state="on" checkable="true">
+			<label lang="en" value="Show plugin-dependent actions in tab bar context menu" />
+			<item type="checkbox" property="ShowPluginMenuInTabsAsSubmenu" default="off">
+				<label lang="en" value="Show as a submenu" />
+			</item>
+		</item>
+		<item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
+			<label lang="en" value="Show messages in tray" />
+			<item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1">
+				<label value="Message timeout:" />
+				<suffix value=" s" />
+			</item>
+		</item>
     </page>
+	<page>
+		<label lang="en" value="Shortcuts" />
+		<item type="customwidget" label="own" name="ShortcutManager" />
+	</page>
 	<page>
 		<label lang="en" value="Tags" />
 		<groupbox>
@@ -119,49 +116,56 @@
 	</page>
 	<page>
 		<label lang="en" value="Network" />
-		<item type="spinbox" property="CacheSize" default="200" minimum="0" maximum="1048576">
-			<label value="Cache size:" />
-			<suffix value=" MB" />
-		</item>
-		<item type="checkbox" property="FilterTrackingCookies" default="on">
-			<label lang="en" value="Filter tracking cookies" />
-		</item>
-		<item type="pushbutton" name="ClearCache">
-			<label lang="en" value="Clear cache" />
-		</item>
-		<item type="pushbutton" name="ClearCookies">
-			<label lang="en" value="Clear cookies" />
-		</item>
-		<item type="groupbox" property="ProxyEnabled" checkable="true" state="off">
-			<label lang="en" value="Application-wide proxy" />
-			<item type="lineedit" property="ProxyHost">
-				<label lang="en" value="Host:" />
+		<tab>
+			<label lang="en" value="Network" />
+			<item type="spinbox" property="CacheSize" default="200" minimum="0" maximum="1048576">
+				<label value="Cache size:" />
+				<suffix value=" MB" />
 			</item>
-			<item type="spinbox" property="ProxyPort" default="3128" minimum="1" maximum="65535" step="1">
-				<label lang="en" value="Port:" />
+			<item type="checkbox" property="FilterTrackingCookies" default="on">
+				<label lang="en" value="Filter tracking cookies" />
 			</item>
-			<item type="lineedit" property="ProxyLogin">
-				<label lang="en" value="Login:" />
+			<item type="pushbutton" name="ClearCache">
+				<label lang="en" value="Clear cache" />
 			</item>
-			<item type="lineedit" property="ProxyPassword" password="true">
-				<label lang="en" value="Password:" />
+			<item type="pushbutton" name="ClearCookies">
+				<label lang="en" value="Clear cookies" />
 			</item>
-			<item type="combobox" property="ProxyType">
-				<label lang="en" value="Proxy type:" />
-				<option name="socks5" default="true">
-					<label lang="en" value="SOCKS5" />
-				</option>
-				<option name="tphttp">
-					<label lang="en" value="Transparent HTTP" />
-				</option>
-				<option name="chttp">
-					<label lang="en" value="Caching HTTP" />
-				</option>
-				<option name="cftp">
-					<label lang="en" value="Caching FTP" />
-				</option>
+			<item type="groupbox" property="ProxyEnabled" checkable="true" state="off">
+				<label lang="en" value="Application-wide proxy" />
+				<item type="lineedit" property="ProxyHost">
+					<label lang="en" value="Host:" />
+				</item>
+				<item type="spinbox" property="ProxyPort" default="3128" minimum="1" maximum="65535" step="1">
+					<label lang="en" value="Port:" />
+				</item>
+				<item type="lineedit" property="ProxyLogin">
+					<label lang="en" value="Login:" />
+				</item>
+				<item type="lineedit" property="ProxyPassword" password="true">
+					<label lang="en" value="Password:" />
+				</item>
+				<item type="combobox" property="ProxyType">
+					<label lang="en" value="Proxy type:" />
+					<option name="socks5" default="true">
+						<label lang="en" value="SOCKS5" />
+					</option>
+					<option name="tphttp">
+						<label lang="en" value="Transparent HTTP" />
+					</option>
+					<option name="chttp">
+						<label lang="en" value="Caching HTTP" />
+					</option>
+					<option name="cftp">
+						<label lang="en" value="Caching FTP" />
+					</option>
+				</item>
 			</item>
-		</item>
+		</tab>
+		<tab>
+			<label value="Languages" />
+			<item type="customwidget" label="own" name="AcceptLanguages" />
+		</tab>
 	</page>
 	<page>
 		<label lang="en" value="Plugins" />

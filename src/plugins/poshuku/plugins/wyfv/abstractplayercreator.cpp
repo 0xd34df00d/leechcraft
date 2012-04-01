@@ -17,3 +17,16 @@
  **********************************************************************/
 
 #include "abstractplayercreator.h"
+
+namespace LeechCraft
+{
+namespace Poshuku
+{
+namespace WYFV
+{
+	AbstractPlayerCreator::~AbstractPlayerCreator ()
+	{
+	}
+}
+}
+}

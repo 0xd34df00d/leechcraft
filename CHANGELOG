@@ -5,6 +5,38 @@ Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
 !!! HEAD
+!!! 0.5.60
+! Announce ( http://leechcraft.org/leechcraft-0.5.60-is-released ):
+* New plugin: Azoth Astrality: Telepathy abstraction layer.
+* New plugin: Azoth Keeso.
+* New plugin: Azoth Vader: MRIM protocol support.
+* New plugin: Azoth Zheet: MSN protocol support.
+* New plugin: GActs: global shortcut manager.
+* New plugin: Liznoo: LC power manager.
+* New plugin: NetStoreManager: manager for storages like Yandex.Disk.
+* New plugin: Poshuku Pogooglue: searches selected text in Google.
+* New plugin: Sidebar.
+* Aggregator: update feeds in a separate thread.
+* Aggregator: mark channels as read in a separate thread.
+* Azoth Acetamide: lots of changes in protocol support and behavior.
+* Azoth Acetamide: full CTCP support.
+* Azoth Acetamide: proper roles support.
+* Azoth AdiumStyles: lots of fixes for themes/scripts support.
+* Azoth Xoox: request versions for roster items and MUC participants.
+* Azoth Xoox: add download tasks remotely via Ad-Hoc Commands.
+* Azoth Xoox: support for message forwarding.
+* Azoth Xoox: don't request vCards and versions in MUCs in gateways.
+* Azoth Xoox: support for names and phones in vCards.
+* Azoth Xoox: fixed self-presence-handling and self-PEP-events.
+* Azoth: shortcuts for quoting and clearing chat windows.
+* Azoth: own font configurator.
+* Core: implemented API level checks.
+* Core: caching in Resource Loader framework.
+* Core: use global iconsets.
+* New Life: importers from Psi+, Kopete and Vacuum IM.
+* Migrate to C++11.
+* And hundreds of other changes.
+
 !!! 0.5.0
 ! Announce ( http://leechcraft.org/leechcraft-0.5.0-is-released ):
 * Azoth SS: fixed link colors in Black theme.

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_RULEOPTIONDIALOG_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_RULEOPTIONDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_ruleoptiondialog.h"
 #include "filter.h"
@@ -64,5 +64,3 @@ namespace CleanWeb
 }
 }
 }
-
-#endif

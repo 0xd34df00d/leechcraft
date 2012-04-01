@@ -71,7 +71,7 @@ namespace Proto
 		const int GetMPOPSession = 0x1024;
 		const int MPOPSession = 0x1025;
 		const int WPRequest = 0x1029;
-		const int AnketaInfo = 0x1028;
+		const int WPInfo = 0x1028;
 		const int MailboxStatus = 0x1033;
 		const int ContactList2 = 0x1037;
 		const int Login2 = 0x1038;
@@ -165,7 +165,7 @@ namespace Proto
 		const quint8 Success = 0x01;
 	}
 
-	enum WPParams
+	enum class WPParams
 	{
 		User,
 		Domain,
@@ -186,13 +186,14 @@ namespace Proto
 		MAX
 	};
 
-	namespace AnketaInfoStatus
+	enum class AnketaInfoStatus
 	{
-		const quint8 OK = 0x01;
-		const quint8 NoUser = 0x00;
-		const quint8 DBErr = 0x02;
-		const quint8 RateLimit = 0x03;
-	}
+		NoUser = 0x00,
+		OK = 0x01,
+		DBErr = 0x02,
+		RateLimit = 0x03,
+		Other = 0xff
+	};
 
 	namespace CLResponse
 	{

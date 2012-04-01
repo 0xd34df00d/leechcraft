@@ -17,16 +17,21 @@
  **********************************************************************/
 
 #include "userfiltersmodel.h"
+#include <algorithm>
 #include <QSettings>
 #include <QCoreApplication>
 #include <QString>
 #include <QRegExp>
 #include <QAction>
+#include <QMessageBox>
 #include <qgraphicswebview.h>
 #include <qwebframe.h>
 #include <qwebelement.h>
 #include <QtDebug>
+#include <util/util.h>
 #include "ruleoptiondialog.h"
+#include "lineparser.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -223,6 +228,28 @@ namespace CleanWeb
 			Filter_.FilterStrings_.removeAt (pos);
 		endRemoveRows ();
 		WriteSettings ();
+	}
+
+	void UserFiltersModel::AddMultiFilters (QStringList lines)
+	{
+		std::for_each (lines.begin (), lines.end (),
+				[] (QString& str) { str = str.trimmed (); });
+
+		beginResetModel ();
+		auto p = std::for_each (lines.begin (), lines.end (),
+				LineParser (&Filter_));
+		endResetModel ();
+
+		if (p.GetSuccess () <= 0)
+			return;
+
+		WriteSettings ();
+
+		emit gotEntity (Util::MakeNotification ("Poshuku CleanWeb",
+				tr ("Imported %1 user filters (%2 parsed successfully).")
+					.arg (p.GetSuccess ())
+					.arg (p.GetTotal ()),
+				PInfo_));
 	}
 
 	void UserFiltersModel::SplitRow (int *row, bool *isException) const

@@ -158,7 +158,7 @@ namespace LeechCraft
 				Q_FOREACH (UrlDescription u, D_.URLs_)
 				{
 					QUrl url (u.Template_);
-					QList<QPair<QString, QString> > items = url.queryItems (),
+					QList<QPair<QString, QString>> items = url.queryItems (),
 						newItems;
 					QPair<QString, QString> item;
 					Q_FOREACH (item, items)

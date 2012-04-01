@@ -200,6 +200,18 @@ QString LeechCraft::Util::GetLocaleName ()
 	return localeName;
 }
 
+QString LeechCraft::Util::GetInternetLocaleName (const QLocale& locale)
+{
+#if QT_VERSION >= 0x040800
+	if (locale.language () == QLocale::AnyLanguage)
+		return "*";
+#endif
+
+	QString locStr = locale.name ();
+	locStr.replace ('_', '-');
+	return locStr;
+}
+
 QString LeechCraft::Util::GetLanguage ()
 {
 	return GetLocaleName ().left (2);
@@ -276,6 +288,24 @@ LeechCraft::Entity LeechCraft::Util::MakeNotification (const QString& header,
 	return result;
 }
 
+LeechCraft::Entity LeechCraft::Util::MakeANCancel (const LeechCraft::Entity& event)
+{
+	Entity e = MakeNotification (event.Entity_.toString (), QString (), PInfo_);
+	e.Additional_ ["org.LC.AdvNotifications.SenderID"] = event.Additional_ ["org.LC.AdvNotifications.SenderID"];
+	e.Additional_ ["org.LC.AdvNotifications.EventID"] = event.Additional_ ["org.LC.AdvNotifications.EventID"];
+	e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Cancel";
+	return e;
+}
+
+LeechCraft::Entity LeechCraft::Util::MakeANCancel (const QString& senderId, const QString& eventId)
+{
+	Entity e = MakeNotification (QString (), QString (), PInfo_);
+	e.Additional_ ["org.LC.AdvNotifications.SenderID"] = senderId;
+	e.Additional_ ["org.LC.AdvNotifications.EventID"] = eventId;
+	e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Cancel";
+	return e;
+}
+
 QModelIndexList LeechCraft::Util::GetSummarySelectedRows (QObject *sender)
 {
 	QAction *senderAct = qobject_cast<QAction*> (sender);
@@ -291,7 +321,7 @@ QModelIndexList LeechCraft::Util::GetSummarySelectedRows (QObject *sender)
 	}
 
 	return senderAct->
-			property ("SelectedRows").value<QList<QModelIndex> > ();
+			property ("SelectedRows").value<QList<QModelIndex>> ();
 }
 
 QAction* LeechCraft::Util::CreateSeparator (QObject *parent)

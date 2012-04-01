@@ -42,7 +42,7 @@ namespace LeechCraft
 		QList<QKeyEvent*> Events_;
 		QMap<QWidget*, QObject*> EmbedTabs_;
 		QMenu *NewTabMenu_;
-		QMap<QString, QList<QAction*> > Menus_;
+		QMap<QString, QList<QAction*>> Menus_;
 	public:
 		TabManager (SeparateTabWidget*, QObject* = 0);
 
@@ -53,9 +53,6 @@ namespace LeechCraft
 		void rotateLeft ();
 		void rotateRight ();
 		void navigateToTabNumber ();
-		
-		void handlePinTab ();
-		void handleUnpinTab ();
 
 		void add (const QString&, QWidget*);
 		void add (const QString&, QWidget*,

@@ -19,111 +19,136 @@
 #include "basesettingsmanager.h"
 #include <QtDebug>
 
-using namespace LeechCraft::Util;
-
-BaseSettingsManager::BaseSettingsManager (bool readAllKeys, QObject *parent)
-: QObject (parent)
-, Settings_ (0)
-, ReadAllKeys_ (readAllKeys)
+namespace LeechCraft
 {
-}
-
-void BaseSettingsManager::Init ()
+namespace Util
 {
-	Settings_ = BeginSettings ();
-	QStringList properties = ReadAllKeys_ ?
-			Settings_->allKeys () :
-			Settings_->childKeys ();
-	Initializing_ = true;
-	for (int i = 0; i < properties.size (); ++i)
-		setProperty (PROP2CHAR (properties.at (i)),
-				Settings_->value (properties.at (i)));
-	Initializing_ = false;
-}
-
-void BaseSettingsManager::Release ()
-{
-	if (!Settings_)
+	BaseSettingsManager::BaseSettingsManager (bool readAllKeys, QObject *parent)
+	: QObject (parent)
+	, Settings_ (0)
+	, ReadAllKeys_ (readAllKeys)
 	{
-		qWarning () << Q_FUNC_INFO << "already released";
-		return;
 	}
 
-	QList<QByteArray> dProperties = dynamicPropertyNames ();
-	for (int i = 0; i < dProperties.size (); ++i)
-		Settings_->setValue (dProperties.at (i),
-				property (dProperties.at (i).constData ()));
-	EndSettings (Settings_);
-	delete Settings_;
-	Settings_ = 0;
-}
-
-void BaseSettingsManager::RegisterObject (const QByteArray& propName,
-		QObject* object, const QByteArray& funcName)
-{
-	Properties2Object_.insertMulti (propName,
-			qMakePair (QPointer<QObject> (object), funcName));
-}
-
-void BaseSettingsManager::RegisterObject (const QList<QByteArray>& propNames,
-		QObject* object, const QByteArray& funcName)
-{
-	for (QList<QByteArray>::const_iterator i = propNames.begin (),
-			end = propNames.end (); i != end; ++i)
-		RegisterObject (*i, object, funcName);
-}
-
-QVariant BaseSettingsManager::Property (const QString& propName, const QVariant& def)
-{
-	QVariant result = property (PROP2CHAR (propName));
-	if (!result.isValid ())
+	void BaseSettingsManager::Init ()
 	{
-		result = def;
-		setProperty (PROP2CHAR (propName), def);
+		Settings_ = BeginSettings ();
+		QStringList properties = ReadAllKeys_ ?
+				Settings_->allKeys () :
+				Settings_->childKeys ();
+		Initializing_ = true;
+		for (int i = 0; i < properties.size (); ++i)
+			setProperty (PROP2CHAR (properties.at (i)),
+					Settings_->value (properties.at (i)));
+		Initializing_ = false;
 	}
 
-	return result;
-}
-
-void BaseSettingsManager::SetRawValue (const QString& path, const QVariant& val)
-{
-	Settings_->setValue (path, val);
-}
-
-QVariant BaseSettingsManager::GetRawValue (const QString& path, const QVariant& def) const
-{
-	return Settings_->value (path, def);
-}
-
-bool BaseSettingsManager::event (QEvent *e)
-{
-	if (e->type () != QEvent::DynamicPropertyChange)
-		return false;
-
-	QDynamicPropertyChangeEvent *event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
-
-	const QByteArray& name = event->propertyName ();
-	Settings_->setValue (name, property (name));
-
-	if (Properties2Object_.contains (name))
+	void BaseSettingsManager::Release ()
 	{
-		QList<QPair<QPointer<QObject>, QByteArray> > objects = Properties2Object_.values (name);
-		QPair<QPointer<QObject>, QByteArray> object;
-		Q_FOREACH (object, objects)
+		if (!Settings_)
+		{
+			qWarning () << Q_FUNC_INFO << "already released";
+			return;
+		}
+
+		QList<QByteArray> dProperties = dynamicPropertyNames ();
+		for (int i = 0; i < dProperties.size (); ++i)
+			Settings_->setValue (dProperties.at (i),
+					property (dProperties.at (i).constData ()));
+		EndSettings (Settings_);
+		delete Settings_;
+		Settings_ = 0;
+	}
+
+	void BaseSettingsManager::RegisterObject (const QByteArray& propName,
+			QObject* object, const QByteArray& funcName, EventFlags flags)
+	{
+		if (flags & EventFlag::Apply)
+			ApplyProps_.insertMulti (propName, qMakePair (QPointer<QObject> (object), funcName));
+		if (flags & EventFlag::Select)
+			SelectProps_.insertMulti (propName, qMakePair (QPointer<QObject> (object), funcName));
+	}
+
+	void BaseSettingsManager::RegisterObject (const QList<QByteArray>& propNames,
+			QObject* object, const QByteArray& funcName, EventFlags flags)
+	{
+		for (auto i = propNames.begin (), end = propNames.end (); i != end; ++i)
+			RegisterObject (*i, object, funcName, flags);
+	}
+
+	QVariant BaseSettingsManager::Property (const QString& propName, const QVariant& def)
+	{
+		QVariant result = property (PROP2CHAR (propName));
+		if (!result.isValid ())
+		{
+			result = def;
+			setProperty (PROP2CHAR (propName), def);
+		}
+
+		return result;
+	}
+
+	void BaseSettingsManager::SetRawValue (const QString& path, const QVariant& val)
+	{
+		Settings_->setValue (path, val);
+	}
+
+	QVariant BaseSettingsManager::GetRawValue (const QString& path, const QVariant& def) const
+	{
+		return Settings_->value (path, def);
+	}
+
+	void BaseSettingsManager::OptionSelected (const QByteArray& prop, const QVariant& val)
+	{
+		if (!SelectProps_.contains (prop))
+			return;
+
+		const auto& objects = SelectProps_.values (prop);
+		Q_FOREACH (const ObjectElement_t& object, objects)
 		{
 			if (!object.first)
 				continue;
 
-			if (!object.first->metaObject ()->invokeMethod (object.first, object.second))
+			if (!QMetaObject::invokeMethod (object.first,
+						object.second,
+						Q_ARG (QVariant, val)))
 				qWarning () << Q_FUNC_INFO
 					<< "could not find method in the metaobject"
-					<< name
+					<< prop
 					<< object.first
 					<< object.second;
 		}
 	}
 
-	event->accept ();
-	return true;
-}
+	bool BaseSettingsManager::event (QEvent *e)
+	{
+		if (e->type () != QEvent::DynamicPropertyChange)
+			return false;
 
+		QDynamicPropertyChangeEvent *event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
+
+		const QByteArray& name = event->propertyName ();
+		Settings_->setValue (name, property (name));
+
+		if (ApplyProps_.contains (name))
+		{
+			const auto& objects = ApplyProps_.values (name);
+			Q_FOREACH (const auto& object, objects)
+			{
+				if (!object.first)
+					continue;
+
+				if (!QMetaObject::invokeMethod (object.first, object.second))
+					qWarning () << Q_FUNC_INFO
+						<< "could not find method in the metaobject"
+						<< name
+						<< object.first
+						<< object.second;
+			}
+		}
+
+		event->accept ();
+		return true;
+	}
+}
+}

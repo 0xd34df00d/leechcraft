@@ -52,9 +52,11 @@ namespace Acetamide
 
 		QString GetServer () const;
 		int GetPort () const;
+		QString GetServerPassword () const;
 		QString GetChannel () const;
 		QString GetNickname () const;
 		QString GetEncoding () const;
+		QString GetChannelPassword () const;
 		bool GetSSL () const;
 
 		ServerOptions GetServerOptions () const;

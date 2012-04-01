@@ -25,14 +25,41 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	/** @brief Interface for entries for sending directed statuses.
+	 *
+	 * This interface should be implemented by CL entries that support
+	 * directed statuses — that is, statuses sent only to a given entry.
+	 *
+	 * @sa ICLEntry
+	 */
 	class IHaveDirectedStatus
 	{
 	public:
 		virtual ~IHaveDirectedStatus () {}
 
-		virtual bool CanSendDirectedStatusNow (const QString&) = 0;
+		/** @brief Checks if status can be sent to the given variant.
+		 *
+		 * This function should return false if directed status cannot
+		 * be  sent to variant right now, otherwise it should return
+		 * true (even in doubt). A naive implementation may choose to
+		 * always return true here.
+		 *
+		 * @param[in] variant The variant of the entry to check.
+		 * @return Whether directed status can be sent to the given
+		 * variant.
+		 */
+		virtual bool CanSendDirectedStatusNow (const QString& variant) = 0;
 
-		virtual void SendDirectedStatus (const EntryStatus& status, const QString&) = 0;
+		/** @brief Sends directed status to the given variant.
+		 *
+		 * This function should (try to) send the given status to the
+		 * given variant of the entry.
+		 *
+		 * @param[in] status The status to send.
+		 * @param[in] variant The variant of the entry where to send the
+		 * status.
+		 */
+		virtual void SendDirectedStatus (const EntryStatus& status, const QString& variant) = 0;
 	};
 }
 }

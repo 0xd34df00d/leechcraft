@@ -33,6 +33,7 @@
 #include <interfaces/iprotocol.h>
 #include <interfaces/iextselfinfoaccount.h>
 #include "packproxymodel.h"
+#include "plistparser.h"
 
 namespace LeechCraft
 {
@@ -59,6 +60,12 @@ namespace AdiumStyles
 
 	QUrl AdiumStyleSource::GetBaseURL (const QString& srcPack) const
 	{
+		if (srcPack.contains ('/'))
+		{
+			const auto& split = srcPack.split ('/', QString::SkipEmptyParts);
+			return GetBaseURL (split.value (0));
+		}
+
 		const QString& pack = PackProxyModel_->GetOrigName (srcPack);
 		const QString& prefix = pack + "/Contents/Resources/";
 
@@ -89,8 +96,14 @@ namespace AdiumStyles
 	}
 
 	QString AdiumStyleSource::GetHTMLTemplate (const QString& srcPack,
-			QObject *entryObj, QWebFrame *frame) const
+			const QString& varCss, QObject *entryObj, QWebFrame *frame) const
 	{
+		if (srcPack.contains ('/'))
+		{
+			const auto& split = srcPack.split ('/', QString::SkipEmptyParts);
+			return GetHTMLTemplate (split.value (0), split.value (1), entryObj, frame);
+		}
+
 		if (srcPack != LastPack_)
 		{
 			Coloring2Colors_.clear ();
@@ -107,10 +120,8 @@ namespace AdiumStyles
 				Qt::UniqueConnection);
 
 		const QString& pack = PackProxyModel_->GetOrigName (srcPack);
-		const QString& varCss = PackProxyModel_->GetVariant (srcPack);
 
 		Frame2Pack_ [frame] = pack;
-
 		Frame2LastContact_.remove (frame);
 
 		const QString& prefix = pack + "/Contents/Resources/";
@@ -345,6 +356,27 @@ namespace AdiumStyles
 
 	void AdiumStyleSource::FrameFocused (QWebFrame*)
 	{
+	}
+
+	QStringList AdiumStyleSource::GetVariantsForPack (const QString& pack)
+	{
+		QStringList result;
+
+		const QString& origName = PackProxyModel_->GetOrigName (pack);
+		if (!StylesLoader_->GetPath (QStringList (origName + "/Contents/Resources/main.css")).isEmpty ())
+			result << "";
+
+		const QString& suff = origName + "/Contents/Resources/Variants/";
+		const QString& path = StylesLoader_->GetPath (QStringList (suff));
+		if (!path.isEmpty ())
+			Q_FOREACH (const QString& variant, QDir (path).entryList (QStringList ("*.css")))
+			{
+				QString hrVar = variant;
+				hrVar.chop (4);
+				result << hrVar;
+			}
+
+		return result;
 	}
 
 	void AdiumStyleSource::PercentTemplate (QString& result, const QMap<QString, QString>& map) const
@@ -608,6 +640,30 @@ namespace AdiumStyles
 				property ("SystemIcons").toString () + "/default_avatar";
 		auto sysLdr = Proxy_->GetResourceLoader (IProxyObject::PRLSystemIcons);
 		return sysLdr->LoadPixmap (defAvatarName).toImage ();
+	}
+
+	PListParser_ptr AdiumStyleSource::GetPListParser (const QString& pack) const
+	{
+		if (PListParsers_.contains (pack))
+			return PListParsers_ [pack];
+
+		auto plist = std::make_shared<PListParser> ();
+		try
+		{
+			const QString& name = pack + "/Contents/Info.plist";
+			const auto& path = StylesLoader_->GetPath (QStringList (name));
+			plist->Parse (path);
+		}
+		catch (const PListParseError& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error parsing PList for"
+					<< pack
+					<< e.GetStr ();
+			return PListParser_ptr ();
+		}
+		PListParsers_ [pack] = plist;
+		return plist;
 	}
 
 	void AdiumStyleSource::handleMessageDelivered ()

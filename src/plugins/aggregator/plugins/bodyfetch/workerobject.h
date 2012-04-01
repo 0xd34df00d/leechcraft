@@ -51,7 +51,7 @@ namespace BodyFetch
 
 		QHash<QString, IScript_ptr> CachedScripts_;
 
-		QList<QPair<QUrl, QString> > FetchedQueue_;
+		QList<QPair<QUrl, QString>> FetchedQueue_;
 
 		QDir StorageDir_;
 	public:

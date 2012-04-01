@@ -92,7 +92,7 @@
         <location filename="core.cpp" line="709"/>
         <location filename="core.cpp" line="1049"/>
         <source>Error parsing component</source>
-        <translation type="unfinished"/>
+        <translation>Error de análisis sintáctico de componente</translation>
     </message>
     <message>
         <location filename="core.cpp" line="669"/>
@@ -340,12 +340,12 @@
     <message>
         <location filename="pendingmanager.cpp" line="179"/>
         <source>To be removed</source>
-        <translation type="unfinished"/>
+        <translation>Esperan removimiento</translation>
     </message>
     <message>
         <location filename="pendingmanager.cpp" line="182"/>
         <source>To be updated</source>
-        <translation type="unfinished"/>
+        <translation>Esperan actualizacion</translation>
     </message>
 </context>
 <context>
@@ -358,12 +358,12 @@
     <message>
         <location filename="lackman.cpp" line="160"/>
         <source>LeechCraft Package Manager.</source>
-        <translation type="unfinished"/>
+        <translation>Gestor de paquetes de LeechCraft</translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="259"/>
         <source>Package information: %1</source>
-        <translation type="unfinished"/>
+        <translation>Informacion del paquete: %1</translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="261"/>
@@ -398,12 +398,12 @@
     <message>
         <location filename="lackman.cpp" line="301"/>
         <source>Update all repos</source>
-        <translation type="unfinished"/>
+        <translation>Actualizar todos repositorios</translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="308"/>
         <source>Upgrade all packages</source>
-        <translation type="unfinished"/>
+        <translation>Actualizar todos paquetes</translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="315"/>

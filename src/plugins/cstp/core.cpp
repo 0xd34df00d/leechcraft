@@ -57,7 +57,7 @@ namespace CSTP
 	, Toolbar_ (0)
 	{
 		setObjectName ("CSTP Core");
-		qRegisterMetaType<boost::intrusive_ptr<MorphFile> > ("boost::intrusive_ptr<MorphFile>");
+		qRegisterMetaType<boost::intrusive_ptr<MorphFile>> ("boost::intrusive_ptr<MorphFile>");
 		qRegisterMetaType<QNetworkReply*> ("QNetworkReply*");
 
 		Headers_ << tr ("URL")
@@ -633,7 +633,6 @@ namespace CSTP
 		settings.remove ("");
 		int taskIndex = 0;
 		for (tasks_t::const_iterator i = ActiveTasks_.begin (),
-				begin = ActiveTasks_.begin (),
 				end = ActiveTasks_.end (); i != end; ++i)
 		{
 			if (i->Parameters_ & LeechCraft::NotPersistent)

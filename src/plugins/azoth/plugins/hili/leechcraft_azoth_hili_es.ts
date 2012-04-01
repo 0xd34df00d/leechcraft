@@ -18,7 +18,7 @@
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Regexps triggering highlights:</source>
-        <translation type="unfinished"/>
+        <translation>Expresiones regulares que activan resaltados</translation>
     </message>
 </context>
 </TS>

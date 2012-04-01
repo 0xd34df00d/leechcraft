@@ -73,10 +73,17 @@ namespace Acetamide
 		void SetConsoleEnabled (bool);
 
 		void ClosePrivateChat (const QString& serverID, QString nick);
+
+		void FetchVCard (const QString& serverId, const QString& nick);
+
+		void SetAway (bool away, const QString& message);
+
+		QString GetStatusStringForState (Azoth::State state);
 	public slots:
 		void serverConnected (const QString&);
 		void serverDisconnected (const QString&);
-		void handleError (QAbstractSocket::SocketError);
+		void handleError (QAbstractSocket::SocketError error,
+				const QString& errorString);
 		void handleLog (IMessage::Direction, const QString&);
 	signals:
 		void gotRosterItems (const QList<QObject*>&);

@@ -48,7 +48,7 @@ namespace Metacontacts
 
 		QStringList UnavailableRealEntries_;
 		QList<QObject*> AvailableRealEntries_;
-		QMap<QString, QPair<QObject*, QString> > Variant2RealVariant_;
+		QMap<QString, QPair<QObject*, QString>> Variant2RealVariant_;
 
 		QList<QObject*> Messages_;
 

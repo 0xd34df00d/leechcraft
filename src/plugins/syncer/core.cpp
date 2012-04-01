@@ -33,7 +33,7 @@ namespace Syncer
 	, Settings_ (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Syncer")
 	{
-		qRegisterMetaType<QList<QByteArray> > ("QList<QByteArray>");
+		qRegisterMetaType<QList<QByteArray>> ("QList<QByteArray>");
 
 		connect (DataStorage_,
 				SIGNAL (gotNewDeltas (const Sync::Deltas_t&, const QByteArray&)),

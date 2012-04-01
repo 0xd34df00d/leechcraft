@@ -46,8 +46,8 @@ namespace AdvancedNotifications
 
 		qRegisterMetaType<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
 		qRegisterMetaTypeStreamOperators<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
-		qRegisterMetaType<QList<NotificationRule> > ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
-		qRegisterMetaTypeStreamOperators<QList<NotificationRule> > ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
+		qRegisterMetaType<QList<NotificationRule>> ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
+		qRegisterMetaTypeStreamOperators<QList<NotificationRule>> ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
 	}
 
 	Core& Core::Instance ()

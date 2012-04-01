@@ -24,6 +24,8 @@
 #include "ircprotocol.h"
 #include "ircaccount.h"
 #include "ircmessage.h"
+#include "vcarddialog.h"
+#include "ircparticipantentry.h"
 
 namespace LeechCraft
 {
@@ -34,7 +36,15 @@ namespace Acetamide
 	EntryBase::EntryBase (IrcAccount *account)
 	: QObject (account)
 	, Account_ (account)
+	, VCardDialog_ (0)
 	{
+	}
+
+	EntryBase::~EntryBase ()
+	{
+		qDeleteAll (AllMessages_);
+		qDeleteAll (Actions_);
+		delete VCardDialog_;
 	}
 
 	QObject* EntryBase::GetObject ()
@@ -78,6 +88,21 @@ namespace Acetamide
 
 	void EntryBase::ShowInfo ()
 	{
+		IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (this);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< this
+					<< "is not an IrcParticipantEntry object";
+			return;
+		}
+
+		if (!VCardDialog_)
+			VCardDialog_ = new VCardDialog (this);
+
+		Account_->GetClientConnection ()->FetchVCard (entry->GetServerID (),
+				entry->GetEntryName());
+		VCardDialog_->show ();
 	}
 
 	QMap<QString, QVariant> EntryBase::GetClientInfo (const QString&) const
@@ -118,6 +143,12 @@ namespace Acetamide
 
 	void EntryBase::SetRawInfo (const QString&)
 	{
+	}
+
+	void EntryBase::SetInfo (const WhoIsMessage& msg)
+	{
+		if (VCardDialog_)
+			VCardDialog_->UpdateInfo (msg);
 	}
 
 };

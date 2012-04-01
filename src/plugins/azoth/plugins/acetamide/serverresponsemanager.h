@@ -39,7 +39,7 @@ namespace Acetamide
 		Q_OBJECT
 
 		IrcServerHandler *ISH_;
-		QHash<QString, boost::function<void (const IrcMessageOptions&)> > Command2Action_;
+		QHash<QString, boost::function<void (const IrcMessageOptions&)>> Command2Action_;
 	public:
 				ServerResponseManager (IrcServerHandler*);
         void DoAction (const IrcMessageOptions& opts);
@@ -123,6 +123,10 @@ namespace Acetamide
 		void GotExceptListEnd (const IrcMessageOptions& opts);
 		void GotInviteList (const IrcMessageOptions& opts);
 		void GotInviteListEnd (const IrcMessageOptions& opts);
+
+		//not from rfc
+		void GotWhoIsAccount (const IrcMessageOptions& opts);
+		void GotWhoIsSecure (const IrcMessageOptions& opts);
 	};
 };
 };

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,9 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_PLAYLISTVIEW_H
-#define PLUGINS_LAURE_PLAYLISTVIEW_H
-
+#pragma once
 #include <QTreeView>
 #include "vlcwrapper.h"
 
@@ -38,6 +36,7 @@ namespace Laure
 	
 	enum PlayListColumns
 	{
+		StatusColumn,
 		URLColumn,
 		ArtistColumn,
 		TitleColumn,
@@ -45,6 +44,7 @@ namespace Laure
 		GenreColumn,
 		DateColumn,
 		QueueColumn,
+		LengthColumn,
 		MAX
 	};
 	
@@ -60,6 +60,7 @@ namespace Laure
 		int CurrentItem_;
 		int NotHiddenColumnCount_;
 		std::shared_ptr<VLCWrapper> VLCWrapper_;
+		QMap<PlayListColumns, QByteArray> HeaderProperties_;
 	public:
 		/** @brief Constructs a new PlayListView class
 		 * with the given model and parent.
@@ -101,6 +102,7 @@ namespace Laure
 		void handleHideHeaders ();
 		void handleHeaderMenu (const QPoint& point);
 		void handleMenu (const QPoint& point);
+		void handleSectionResized (int logicalIndex, int oldSize, int newSize);
 	private:
 		void UpdateQueueIndexes ();
 		
@@ -119,4 +121,3 @@ namespace Laure
 	};
 }
 }
-#endif // PLUGINS_LAURE_PLAYLISTVIEW_H

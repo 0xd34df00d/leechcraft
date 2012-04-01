@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
-
-class IRecoverableTab;
+#include <interfaces/ihaverecoverabletabs.h>
 
 namespace LeechCraft
 {
@@ -40,6 +39,14 @@ namespace TabSessManager
 		bool IsRecovering_;
 
 		QMenu *SessMgrMenu_;
+		struct TabUncloseInfo
+		{
+			TabRecoverInfo RecInfo_;
+			IHaveRecoverableTabs *Plugin_;
+		};
+		QHash<QAction*, TabUncloseInfo> UncloseAct2Data_;
+
+		QMenu *UncloseMenu_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -50,12 +57,16 @@ namespace TabSessManager
 		QIcon GetIcon () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+	protected:
+		bool eventFilter (QObject*, QEvent*);
 	private:
 		QByteArray GetCurrentSession () const;
 		void AddCustomSession (const QString&);
 	private slots:
 		void handleNewTab (const QString&, QWidget*);
+		void handleRemoveTab (QWidget*);
 		void handleTabDestroyed ();
+		void handleUnclose ();
 		void recover ();
 		void handleTabRecoverDataChanged ();
 		void saveCustomSession ();

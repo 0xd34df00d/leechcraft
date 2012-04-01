@@ -73,6 +73,7 @@
 #include "servicediscoverywidget.h"
 #include "importmanager.h"
 #include "unreadqueuemanager.h"
+#include "chatstyleoptionmanager.h"
 
 namespace LeechCraft
 {
@@ -167,6 +168,13 @@ namespace Azoth
 	{
 		FillANFields ();
 
+		auto addSOM = [this] (const QByteArray& option)
+		{
+			StyleOptionManagers_ [option].reset (new ChatStyleOptionManager (option, this));
+		};
+		addSOM ("ChatWindowStyle");
+		addSOM ("MUCWindowStyle");
+
 #ifdef ENABLE_CRYPT
 		connect (QCAEventHandler_.get (),
 				SIGNAL (eventReady (int, const QCA::Event&)),
@@ -207,6 +215,10 @@ namespace Azoth
 				SIGNAL (clearUnreadMsgCount (QObject*)),
 				this,
 				SLOT (handleClearUnreadMsgCount (QObject*)));
+		connect (this,
+				SIGNAL (hookAddingCLEntryEnd (LeechCraft::IHookProxy_ptr, QObject*)),
+				ChatTabsManager_,
+				SLOT (handleAddingCLEntryEnd (LeechCraft::IHookProxy_ptr, QObject*)));
 		connect (XferJobManager_.get (),
 				SIGNAL (jobNoLongerOffered (QObject*)),
 				this,
@@ -248,8 +260,8 @@ namespace Azoth
 	void Core::Release ()
 	{
 		ResourceLoaders_.clear ();
-
 		ShortcutManager_.reset ();
+		StyleOptionManagers_.clear ();
 
 #ifdef ENABLE_CRYPT
 		QCAEventHandler_.reset ();
@@ -291,9 +303,9 @@ namespace Azoth
 		return SmilesOptionsModel_->GetSourceForOption (pack);
 	}
 
-	QAbstractItemModel* Core::GetChatStylesOptionsModel () const
+	ChatStyleOptionManager* Core::GetChatStylesOptionsManager (const QByteArray& name) const
 	{
-		return ChatStylesOptionsModel_.get ();
+		return StyleOptionManagers_ [name].get ();
 	}
 
 	Util::ShortcutManager* Core::GetShortcutManager () const
@@ -647,12 +659,11 @@ namespace Azoth
 
 		Q_FOREACH (QObject *object, irp->GetResourceSources ())
 		{
-			IEmoticonResourceSource *smileSrc = qobject_cast<IEmoticonResourceSource*> (object);
+			auto smileSrc = qobject_cast<IEmoticonResourceSource*> (object);
 			if (smileSrc)
 				AddSmileResourceSource (smileSrc);
 
-			IChatStyleResourceSource *chatStyleSrc =
-					qobject_cast<IChatStyleResourceSource*> (object);
+			auto chatStyleSrc = qobject_cast<IChatStyleResourceSource*> (object);
 			if (chatStyleSrc)
 				AddChatStyleResourceSource (chatStyleSrc);
 		}
@@ -666,6 +677,9 @@ namespace Azoth
 	void Core::AddChatStyleResourceSource (IChatStyleResourceSource *src)
 	{
 		ChatStylesOptionsModel_->AddSource (src);
+
+		Q_FOREACH (auto manager, StyleOptionManagers_.values ())
+			manager->AddChatStyleResourceSource (src);
 	}
 
 	QString Core::GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const
@@ -674,9 +688,12 @@ namespace Azoth
 		if (!src)
 			return QString ();
 
+		const QByteArray& optName = GetStyleOptName (entry);
 		const QString& opt = XmlSettingsManager::Instance ()
-				.property (GetStyleOptName (entry)).toString ();
-		return src->GetHTMLTemplate (opt, entry, frame);
+				.property (optName).toString ();
+		const QString& var = XmlSettingsManager::Instance ()
+				.property (optName + "Variant").toString ();
+		return src->GetHTMLTemplate (opt, var, entry, frame);
 	}
 
 	QUrl Core::GetSelectedChatTemplateURL (QObject *entry) const
@@ -1186,7 +1203,7 @@ namespace Azoth
 		if (mucPerms)
 		{
 			tip += "<hr />";
-			const QMap<QByteArray, QList<QByteArray> >& perms =
+			const QMap<QByteArray, QList<QByteArray>>& perms =
 					mucPerms->GetPerms (entry->GetObject ());
 			Q_FOREACH (const QByteArray& permClass, perms.keys ())
 			{
@@ -1669,8 +1686,17 @@ namespace Azoth
 
 	void Core::UpdateInitState (State state)
 	{
+		if (state == SConnecting)
+			return;
+
 		const State prevTop = FindTop (StateCounter_);
-		++StateCounter_ [state];
+
+		StateCounter_.clear ();
+		Q_FOREACH (IAccount *acc, GetAccounts ())
+			++StateCounter_ [acc->GetState ().State_];
+
+		StateCounter_.remove (SOffline);
+
 		const State newTop = FindTop (StateCounter_);
 
 		if (newTop != prevTop)
@@ -1874,9 +1900,9 @@ namespace Azoth
 				QDataStream stream (var.toByteArray ());
 				stream >> s;
 				account->ChangeState (s);
-
-				UpdateInitState (s.State_);
 			}
+			else
+				UpdateInitState (account->GetState ().State_);
 		}
 		else
 			qWarning () << Q_FUNC_INFO
@@ -2039,6 +2065,8 @@ namespace Azoth
 					<< acc->GetParentProtocol ();
 			return;
 		}
+
+		UpdateInitState (status.State_);
 
 		if (status.State_ == SOffline)
 			LastAccountStatusChange_.remove (acc);
@@ -2362,7 +2390,7 @@ namespace Azoth
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open chat"),
-				[parentCL, ChatTabsManager_] () { ChatTabsManager_->OpenChat (parentCL); });
+				[parentCL, this] () { ChatTabsManager_->OpenChat (parentCL); });
 		nh->AddDependentObject (parentCL->GetObject ());
 
 		emit gotEntity (e);
@@ -2442,7 +2470,7 @@ namespace Azoth
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open chat"),
-				[entry, ChatTabsManager_] () { ChatTabsManager_->OpenChat (entry); });
+				[entry, this] () { ChatTabsManager_->OpenChat (entry); });
 		nh->AddDependentObject (entry->GetObject ());
 
 		emit gotEntity (e);
@@ -2683,8 +2711,14 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = reason;
 
+		const auto cancel = Util::MakeANCancel (e);
+
 		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e);
-		nh->AddFunction (tr ("Join"), [this, acc, ident] () { SuggestJoiningMUC (acc, ident); });
+		nh->AddFunction (tr ("Join"), [this, acc, ident, cancel] ()
+				{
+					SuggestJoiningMUC (acc, ident);
+					emit gotEntity (cancel);
+				});
 		nh->AddDependentObject (acc->GetObject ());
 
 		emit gotEntity (e);

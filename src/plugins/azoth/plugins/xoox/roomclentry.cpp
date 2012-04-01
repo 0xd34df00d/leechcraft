@@ -294,17 +294,17 @@ namespace Xoox
 		RH_->GetRoom ()->sendInvitation (id, msg);
 	}
 
-	QMap<QByteArray, QList<QByteArray> > RoomCLEntry::GetPossiblePerms () const
+	QMap<QByteArray, QList<QByteArray>> RoomCLEntry::GetPossiblePerms () const
 	{
 		return Perms_;
 	}
 
-	QMap<QByteArray, QList<QByteArray> > RoomCLEntry::GetPerms (QObject *participant) const
+	QMap<QByteArray, QList<QByteArray>> RoomCLEntry::GetPerms (QObject *participant) const
 	{
 		if (!participant)
 			participant = RH_->GetSelf ();
 
-		QMap<QByteArray, QList<QByteArray> > result;
+		QMap<QByteArray, QList<QByteArray>> result;
 		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
 		if (!entry)
 		{

@@ -54,7 +54,7 @@ namespace Xoox
 		GlooxAccount *Account_;
 		QList<QObject*> AllMessages_;
 		RoomHandler *RH_;
-		QMap<QByteArray, QList<QByteArray> > Perms_;
+		QMap<QByteArray, QList<QByteArray>> Perms_;
 		QMap<QXmppMucItem::Role, QByteArray> Role2Str_;
 		QMap<QXmppMucItem::Affiliation, QByteArray> Aff2Str_;
 		QMap<QByteArray, QString> Translations_;
@@ -105,8 +105,8 @@ namespace Xoox
 		void InviteToMUC (const QString&, const QString&);
 
 		// IMUCPerms
-		QMap<QByteArray, QList<QByteArray> > GetPossiblePerms () const;
-		QMap<QByteArray, QList<QByteArray> > GetPerms (QObject *object) const;
+		QMap<QByteArray, QList<QByteArray>> GetPossiblePerms () const;
+		QMap<QByteArray, QList<QByteArray>> GetPerms (QObject *object) const;
 		QByteArray GetAffName (QObject*) const;
 		bool MayChangePerm (QObject*, const QByteArray&, const QByteArray&) const;
 		void SetPerm (QObject*, const QByteArray&, const QByteArray&, const QString&);

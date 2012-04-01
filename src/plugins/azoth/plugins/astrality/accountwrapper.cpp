@@ -27,6 +27,7 @@
 #include <PendingContacts>
 #include <Connection>
 #include <ContactManager>
+#include <PendingReady>
 #include <util/util.h>
 #include <util/passutils.h>
 #include "astralityutil.h"
@@ -61,6 +62,21 @@ namespace Astrality
 				SIGNAL (connectionChanged (Tp::ConnectionPtr)),
 				this,
 				SLOT (handleConnectionChanged (Tp::ConnectionPtr)));
+		connect (A_.data (),
+				SIGNAL (avatarChanged (Tp::Avatar)),
+				this,
+				SLOT (handleAccountAvatar (Tp::Avatar)));
+
+		auto features = Tp::Account::FeatureAvatar |
+				Tp::Account::FeatureProfile |
+				Tp::Account::FeatureCapabilities;
+		if (!A_->isReady (features))
+			connect (A_->becomeReady (features),
+					SIGNAL (finished (Tp::PendingOperation*)),
+					this,
+					SLOT (handleAccountReady (Tp::PendingOperation*)));
+		else
+			handleAccountReady ();
 
 		LoadSettings ();
 	}
@@ -349,6 +365,26 @@ namespace Astrality
 		settings.endGroup ();
 	}
 
+	void AccountWrapper::handleAccountReady (Tp::PendingOperation *op)
+	{
+		qDebug () << Q_FUNC_INFO << op;
+		if (op && op->isError ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< op->errorName ()
+					<< op->errorMessage ();
+			const QString& msg = tr ("Failed to make account %1 ready: %2 (%3).")
+					.arg (GetAccountName ())
+					.arg (op->errorName ())
+					.arg (op->errorMessage ());
+			emit gotEntity (Util::MakeNotification ("Azoth", msg, PCritical_));
+			return;
+		}
+
+		qDebug () << A_->actualFeatures ().contains (Tp::Account::FeatureAvatar);
+		handleAccountAvatar (A_->avatar ());
+	}
+
 	void AccountWrapper::handleEnabled (Tp::PendingOperation *po)
 	{
 		qDebug () << Q_FUNC_INFO << po->isError ();
@@ -506,9 +542,14 @@ namespace Astrality
 				this,
 				SLOT (handleCMStateChanged (Tp::ContactListState)));
 		connect (cm,
-				SIGNAL (allKnownContactsChanged (Tp::Contacts, Tp::Contacts, Tp::Channel::GroupMemberChangeDetails)),
+				SIGNAL (allKnownContactsChanged (Tp::Contacts,
+						Tp::Contacts, Tp::Channel::GroupMemberChangeDetails)),
 				this,
-				SLOT (handleKnownContactsChanged (Tp::Contacts, Tp::Contacts, Tp::Channel::GroupMemberChangeDetails)));
+				SLOT (handleKnownContactsChanged (Tp::Contacts,
+						Tp::Contacts, Tp::Channel::GroupMemberChangeDetails)));
+		qDebug () << Q_FUNC_INFO << GetAccountName () << cm->supportedFeatures ();
+		qDebug () << "supports FeatureInfo?"
+				<< cm->supportedFeatures ().contains (Tp::Contact::FeatureInfo);
 
 		handleCMStateChanged (cm->state ());
 	}
@@ -556,6 +597,11 @@ namespace Astrality
 	{
 		qDebug () << Q_FUNC_INFO << pres.type ();
 		emit statusChanged (GetState ());
+	}
+
+	void AccountWrapper::handleAccountAvatar (const Tp::Avatar& avatar)
+	{
+		qDebug () << Q_FUNC_INFO << avatar.avatarData.size ();
 	}
 
 	void AccountWrapper::handlePresencePubRequested (Tp::Contacts contacts)

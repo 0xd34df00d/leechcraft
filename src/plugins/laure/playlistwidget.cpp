@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -65,6 +65,7 @@ namespace Laure
 		actionAdd->setProperty ("ActionIcon", "list-add");
 		actionRemove->setProperty ("ActionIcon", "list-remove");
 		actionExport->setProperty ("ActionIcon", "document-save-as");
+		actionPlayback->setProperty ("ActionIcon", "flag-black");
 		
 		actionAdd->setMenu (menuAdd);
 		actionAdd->setMenuRole (QAction::ApplicationSpecificRole);
@@ -95,6 +96,10 @@ namespace Laure
 				SIGNAL (playbackModeChanged (PlaybackMode)),
 				this,
 				SIGNAL (playbackModeChanged (PlaybackMode)));
+		connect (PlayListView_,
+				SIGNAL (doubleClicked (QModelIndex)),
+				this,
+				SIGNAL (doubleClicked ()));
 	}
 	
 	void PlayListWidget::Init (std::shared_ptr<VLCWrapper> wrapper)
@@ -155,8 +160,7 @@ namespace Laure
 			return;
 		
 		emit metaChangedRequest (static_cast<libvlc_meta_t> (type),
-				item->data (Qt::DisplayRole).toString ()
-						.toAscii (),
+				item->data (Qt::DisplayRole).toString ().toUtf8 (),
 				item->row ());
 	}
 	

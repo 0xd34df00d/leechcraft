@@ -18,6 +18,7 @@
 
 #include "networkaccessmanager.h"
 #include <stdexcept>
+#include <algorithm>
 #include <QNetworkRequest>
 #include <QDir>
 #include <QFile>
@@ -99,6 +100,18 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 			this,
 			SLOT (saveCookies ()));
 	CookieSaveTimer_->start (10000);
+
+	QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName ());
+	settings.beginGroup ("NAMLocales");
+	int size = settings.beginReadArray ("Locales");
+	for (int i = 0; i < size; ++i)
+	{
+		settings.setArrayIndex (i);
+		Locales_ << QLocale (settings.value ("LocaleName").toString ());
+	}
+	settings.endArray ();
+	settings.endGroup ();
 }
 
 NetworkAccessManager::~NetworkAccessManager ()
@@ -117,6 +130,35 @@ NetworkAccessManager::~NetworkAccessManager ()
 	}
 }
 
+QList<QLocale> NetworkAccessManager::GetAcceptLangs () const
+{
+	return Locales_;
+}
+
+void NetworkAccessManager::SetAcceptLangs (const QList<QLocale>& locales)
+{
+	Locales_ = locales;
+
+	QStringList localesStrs;
+	std::transform (locales.begin (), locales.end (), std::back_inserter (localesStrs), Util::GetInternetLocaleName);
+	LocaleStr_ = localesStrs.join (", ");
+
+	emit acceptableLanguagesChanged ();
+
+	QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName ());
+	settings.beginGroup ("NAMLocales");
+	settings.beginWriteArray ("Locales");
+	settings.remove ("");
+	for (int i = 0; i < Locales_.size (); ++i)
+	{
+		settings.setArrayIndex (i);
+		settings.setValue ("LocaleName", Locales_.at (i).name ());
+	}
+	settings.endArray ();
+	settings.endGroup ();
+}
+
 QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Operation op,
 		const QNetworkRequest& req, QIODevice *out)
 {
@@ -130,6 +172,9 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 		return proxy->GetReturnValue ().value<QNetworkReply*> ();
 
 	proxy->FillValue ("request", r);
+
+	if (r.url ().scheme () == "http" && !LocaleStr_.isEmpty ())
+		r.setRawHeader ("Accept-Language", LocaleStr_.toUtf8 ());
 
 	QNetworkReply *result = QNetworkAccessManager::createRequest (op, r, out);
 	emit requestCreated (op, r, result);

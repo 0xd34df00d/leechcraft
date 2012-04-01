@@ -211,9 +211,9 @@ public:
 	 * @return The map with keys identifying menus and values containing
 	 * lists of actions to be inserted into corresponding menus.
 	 */
-	virtual QMap<QString, QList<QAction*> > GetWindowMenus () const
+	virtual QMap<QString, QList<QAction*>> GetWindowMenus () const
 	{
-		return QMap<QString, QList<QAction*> > ();
+		return QMap<QString, QList<QAction*>> ();
 	}
 	
 	/** @brief This method is called when this tab becomes active.
@@ -417,6 +417,8 @@ public:
 	 */
 	virtual void raiseTab (QWidget *tabContents) = 0;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TabFeatures);
 
 Q_DECLARE_INTERFACE (ITabWidget, "org.Deviant.LeechCraft.ITabWidget/1.0");
 Q_DECLARE_INTERFACE (IHaveTabs, "org.Deviant.LeechCraft.IHaveTabs/1.0");

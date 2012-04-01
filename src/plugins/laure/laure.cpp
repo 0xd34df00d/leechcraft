@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@
 #include <util/util.h>
 #include "laurewidget.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -31,13 +32,14 @@ namespace Laure
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		qRegisterMetaType<MediaMeta> ("MediaMeta");
 		Util::InstallTranslator ("laure");
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"lauresettings.xml");
 
-		Proxy_ = proxy;
+		Core::Instance ().SetProxy (proxy);
 
 		LaureWidget::SetParentMultiTabs (this);
 
@@ -46,7 +48,7 @@ namespace Laure
 			"Laure",
 			"Laure",
 			GetInfo (),
-			GetIcon (),
+			QIcon (":/plugins/laure/resources/img/laure.svg"),
 			50,
 			TabFeatures (TFOpenableByRequest)
 		};
@@ -78,7 +80,7 @@ namespace Laure
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/laure/resources/img/laure.svg");
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
@@ -132,7 +134,7 @@ namespace Laure
 
 		Others_ << w;
 		emit addNewTab (tr ("Laure"), w);
-		emit changeTabIcon (w, QIcon ());
+		emit changeTabIcon (w, QIcon (":/plugins/laure/resources/img/laure.svg"));
 		emit raiseTab (w);
 		return w;
 	}

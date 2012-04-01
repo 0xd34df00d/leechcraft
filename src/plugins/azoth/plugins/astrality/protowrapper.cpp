@@ -56,6 +56,7 @@ namespace Astrality
 				Tp::Contact::FeatureAvatarData |
 				Tp::Contact::FeatureAvatarToken |
 				Tp::Contact::FeatureCapabilities |
+				Tp::Contact::FeatureLocation |
 				Tp::Contact::FeatureInfo);
 		AM_ = Tp::AccountManager::create (accf, connf, channelf, contactf);
 

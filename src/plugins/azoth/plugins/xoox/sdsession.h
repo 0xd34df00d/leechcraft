@@ -47,7 +47,7 @@ namespace Xoox
 
 		SDModel *Model_;
 		GlooxAccount *Account_;
-		QHash<QString, QHash<QString, QStandardItem*> > JID2Node2Item_;
+		QHash<QString, QHash<QString, QStandardItem*>> JID2Node2Item_;
 
 		struct ItemInfo
 		{
@@ -80,7 +80,7 @@ namespace Xoox
 		void SetQuery (const QString&);
 		QString GetQuery () const;
 		QAbstractItemModel* GetRepresentationModel () const;
-		QList<QPair<QByteArray, QString> > GetActionsFor (const QModelIndex&);
+		QList<QPair<QByteArray, QString>> GetActionsFor (const QModelIndex&);
 		void ExecuteAction (const QModelIndex&, const QByteArray&);
 
 		void HandleInfo (const QXmppDiscoveryIq&);

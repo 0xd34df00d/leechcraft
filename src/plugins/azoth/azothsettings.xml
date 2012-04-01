@@ -56,6 +56,9 @@
 					<label value="Basic" />
 				</option>
 			</item>
+			<item type="combobox" property="ChatWindowStyleVariant" mayHaveDataSource="true">
+				<label value="Chat window style variant:" />
+			</item>
 			<item type="groupbox" property="CustomMUCStyle" checkable="true" default="false">
 				<label value="Custom theme for multiuser chats" />
 				<item type="combobox" property="MUCWindowStyle" mayHaveDataSource="true">
@@ -63,6 +66,9 @@
 					<option name="Basic" default="true">
 						<label value="Basic" />
 					</option>
+				</item>
+				<item type="combobox" property="MUCWindowStyleVariant" mayHaveDataSource="true">
+					<label value="MUC window style variant:" />
 				</item>
 			</item>
 		</tab>

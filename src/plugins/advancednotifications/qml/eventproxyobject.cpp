@@ -50,7 +50,7 @@ namespace AdvancedNotifications
 				this,
 				SLOT (handleDismissEvent ()));
 		
-		ActionsModel_ = QVariant::fromValue<QList<QObject*> > (model);
+		ActionsModel_ = QVariant::fromValue<QList<QObject*>> (model);
 	}
 
 	int EventProxyObject::count () const

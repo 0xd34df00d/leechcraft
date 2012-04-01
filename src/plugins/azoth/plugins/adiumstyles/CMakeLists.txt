@@ -5,11 +5,13 @@ SET (ADIUMSTYLES_SRCS
 	adiumstyles.cpp
 	adiumstylesource.cpp
 	packproxymodel.cpp
+	plistparser.cpp
 	)
 SET (ADIUMSTYLES_HEADERS
 	adiumstyles.h
 	adiumstylesource.h
 	packproxymodel.h
+	plistparser.h
 	)
 SET (ADIUMSTYLES_RESOURCES
 	adiumstyles.qrc

@@ -70,7 +70,7 @@ namespace LeechCraft
 	{
 		if (!value.isValid () ||
 				value.isNull () ||
-				!value.canConvert<QList<QVariant> > ())
+				!value.canConvert<QList<QVariant>> ())
 		{
 			const QStringList& parts = item.attribute ("default").split (":");
 			QList<QVariant> result;

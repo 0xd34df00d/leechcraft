@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_USERFILTERS_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_USERFILTERS_H
+#pragma once
+
 #include <QWidget>
 #include "ui_userfilters.h"
 
@@ -38,9 +38,9 @@ namespace CleanWeb
 		void on_Add__released ();
 		void on_Modify__released ();
 		void on_Remove__released ();
+		void on_Paste__released ();
+		void on_Load__released ();
 	};
 }
 }
 }
-
-#endif

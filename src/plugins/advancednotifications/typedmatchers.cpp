@@ -168,6 +168,7 @@ namespace AdvancedNotifications
 	}
 
 	IntMatcher::IntMatcher ()
+	: Boundary_ (0)
 	{
 		Ops2pos_ [OGreater] = 0;
 		Ops2pos_ [static_cast<Operations> (OEqual | OGreater)] = 1;

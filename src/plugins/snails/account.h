@@ -135,8 +135,9 @@ namespace Snails
 		QAbstractItemModel* GetMailModel () const;
 		QAbstractItemModel* GetFoldersModel () const;
 
+		void ShowFolder (const QModelIndex&);
 		void Synchronize (FetchFlags);
-		void Synchronize (const QModelIndex&);
+		void Synchronize (const QStringList&);
 
 		void FetchWholeMessage (Message_ptr);
 		void SendMessage (Message_ptr);

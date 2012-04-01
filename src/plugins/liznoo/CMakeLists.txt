@@ -63,7 +63,7 @@ SET (FORMS
 	batteryhistorydialog.ui
 	)
 SET (RESOURCES liznooresources.qrc)
-CreateTrVars ("liznoo" "en;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrVars ("liznoo" "en;es;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)

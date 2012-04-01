@@ -43,11 +43,14 @@ namespace Xoox
 
 		QXmppVCardIq VCard_;
 	public:
-		VCardDialog (QWidget* = 0);
+		VCardDialog (GlooxAccount*, QWidget* = 0);
 		VCardDialog (EntryBase*, QWidget* = 0);
 
 		void UpdateInfo (const QXmppVCardIq&);
 	private:
+		void BuildPhones (const QXmppVCardPhoneList&);
+		void BuildEmails (const QXmppVCardEmailList&);
+		void BuildAddresses (const QXmppVCardAddressList&);
 		void InitConnections (EntryBase*);
 		void EnableEditableMode ();
 		void UpdateNote (GlooxAccount*, const QString&);

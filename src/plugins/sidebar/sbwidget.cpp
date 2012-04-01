@@ -19,8 +19,13 @@
 #include "sbwidget.h"
 #include <QToolButton>
 #include <QKeyEvent>
+#include <QMenu>
+#include <QtDebug>
 #include <util/flowlayout.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoretabwidget.h>
+
+Q_DECLARE_METATYPE (QToolButton*);
 
 namespace LeechCraft
 {
@@ -28,11 +33,14 @@ namespace Sidebar
 {
 	const int FoldThreshold = 3;
 
-	SBWidget::SBWidget (QWidget *parent)
+	SBWidget::SBWidget (ICoreProxy_ptr proxy, QWidget *parent)
 	: QWidget (parent)
 	, TrayLay_ (new Util::FlowLayout (1, 0, 1))
+	, Proxy_ (proxy)
 	, IconSize_ (QSize (30, 30))
 	{
+		qRegisterMetaType<QToolButton*> ("QToolButton*");
+
 		Ui_.setupUi (this);
 		static_cast<QVBoxLayout*> (layout ())->addLayout (TrayLay_);
 
@@ -64,11 +72,21 @@ namespace Sidebar
 		ITabWidget *tw = qobject_cast<ITabWidget*> (w);
 		const auto& tabClass = tw->GetTabClassInfo ();
 		TabClass2Action_ [tabClass.TabClass_] << act;
+		TabAction2Tab_ [act] = w;
 
 		if (TabClass2Action_ [tabClass.TabClass_].size () >= FoldThreshold)
 			FoldTabClass (tabClass, act);
 		else
-			CurTab2Button_ [act] = AddTabButton (act, Ui_.TabsLay_);
+		{
+			auto but = AddTabButton (act, Ui_.TabsLay_);
+			CurTab2Button_ [act] = but;
+			but->setProperty ("Sidebar/TabPage", QVariant::fromValue<QWidget*> (w));
+			but->setContextMenuPolicy (Qt::CustomContextMenu);
+			connect (but,
+					SIGNAL (customContextMenuRequested (QPoint)),
+					this,
+					SLOT (handleTabContextMenu (QPoint)));
+		}
 	}
 
 	void SBWidget::RemoveCurTabAction (QAction *act, QWidget *w)
@@ -76,6 +94,7 @@ namespace Sidebar
 		ITabWidget *tw = qobject_cast<ITabWidget*> (w);
 		const auto& tabClass = tw->GetTabClassInfo ();
 		TabClass2Action_ [tabClass.TabClass_].removeAll (act);
+		TabAction2Tab_.remove (act);
 
 		delete CurTab2Button_.take (act);
 
@@ -96,6 +115,7 @@ namespace Sidebar
 		tb->setIconSize (IconSize_);
 		tb->setAutoRaise (true);
 		tb->setDefaultAction (act);
+		tb->setPopupMode (QToolButton::DelayedPopup);
 		TrayAct2Button_ [act] = tb;
 
 		TrayLay_->addWidget (tb);
@@ -204,6 +224,17 @@ namespace Sidebar
 		};
 	}
 
+	void SBWidget::handleTabContextMenu (const QPoint& pos)
+	{
+		QToolButton *but = qobject_cast<QToolButton*> (sender ());
+		QWidget *w = sender ()->property ("Sidebar/TabPage").value<QWidget*> ();
+
+		auto tw = Proxy_->GetTabWidget ();
+		auto menu = tw->GetTabMenu (tw->IndexOf (w));
+		menu->exec (but->mapToGlobal (pos));
+		menu->deleteLater ();
+	}
+
 	void SBWidget::showFolded ()
 	{
 		const auto& tc = sender ()->
@@ -227,6 +258,14 @@ namespace Sidebar
 			tb->setSizePolicy (QSizePolicy::Expanding,
 					tb->sizePolicy ().verticalPolicy ());
 			layout->addWidget (tb);
+
+			QWidget *tabWidget = TabAction2Tab_ [act];
+			tb->setProperty ("Sidebar/TabPage", QVariant::fromValue<QWidget*> (tabWidget));
+			tb->setContextMenuPolicy (Qt::CustomContextMenu);
+			connect (tb,
+					SIGNAL (customContextMenuRequested (QPoint)),
+					this,
+					SLOT (handleTabContextMenu (QPoint)));
 
 			connect (act,
 					SIGNAL (triggered ()),

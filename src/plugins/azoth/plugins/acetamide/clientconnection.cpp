@@ -70,6 +70,11 @@ namespace Acetamide
 				QString::number (server.ServerPort_);
 
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
+		emit gotRosterItems (QList<QObject*> () << ish->GetCLEntry ());
+		connect (ish,
+				SIGNAL (gotSocketError (QAbstractSocket::SocketError, const QString&)),
+				this,
+				SLOT (handleError(QAbstractSocket::SocketError, const QString&)));
 
 		ish->SetConsoleEnabled (IsConsoleEnabled_);
 		if (IsConsoleEnabled_)
@@ -117,9 +122,11 @@ namespace Acetamide
 			QByteArray result;
 			{
 				QDataStream ostr (&result, QIODevice::WriteOnly);
-				ostr << bookmark.Name_
+				ostr << static_cast<quint8> (1)
+						<< bookmark.Name_
 						<< bookmark.ServerName_
 						<< bookmark.ServerPort_
+						<< bookmark.ServerPassword_
 						<< bookmark.ServerEncoding_
 						<< bookmark.ChannelName_
 						<< bookmark.ChannelPassword_
@@ -139,14 +146,29 @@ namespace Acetamide
 		QList<QVariant> list = XmlSettingsManager::Instance ().Property ("Bookmarks",
 				QList<QVariant> ()).toList ();
 
+		bool hadUnknownVersions = false;
+
 		QList<IrcBookmark> bookmarks;
 		Q_FOREACH (const QVariant& variant, list)
 		{
 			IrcBookmark bookmark;
 			QDataStream istr (variant.toByteArray ());
+
+			quint8 version = 0;
+			istr >> version;
+			if (version != 1)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unknown version"
+						<< version;
+				hadUnknownVersions = true;
+				continue;
+			}
+
 			istr >> bookmark.Name_
 					>> bookmark.ServerName_
 					>> bookmark.ServerPort_
+					>> bookmark.ServerPassword_
 					>> bookmark.ServerEncoding_
 					>> bookmark.ChannelName_
 					>> bookmark.ChannelPassword_
@@ -156,6 +178,12 @@ namespace Acetamide
 
 			bookmarks << bookmark;
 		}
+
+		if (hadUnknownVersions)
+			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth Acetamide",
+						tr ("Some bookmarks were lost due to unknown storage version."),
+						PWarning_));
+
 		return bookmarks;
 	}
 
@@ -202,40 +230,80 @@ namespace Acetamide
 			ServerHandlers_ [serverID]->ClosePrivateChat (nick);
 	}
 
+	void ClientConnection::FetchVCard (const QString& serverId, const QString& nick)
+	{
+		if (!ServerHandlers_.contains (serverId))
+			return;
+
+		ServerHandlers_ [serverId]->VCardRequest (nick);
+	}
+
+	void ClientConnection::SetAway (bool away, const QString& message)
+	{
+		QString msg = message;
+		if (msg.isEmpty ())
+			msg = GetStatusStringForState (SAway);
+
+		if (!away)
+			msg.clear ();
+
+		QList<IrcServerHandler*> handlers = ServerHandlers_.values ();
+		std::for_each (handlers.begin (), handlers.end (),
+				[msg] (decltype (handlers.front ()) handler)
+				{
+					handler->SetAway (msg);
+				});
+	}
+
+	QString ClientConnection::GetStatusStringForState (State state)
+	{
+		const QString& statusKey = "DefaultStatus" + QString::number (state);
+		return ProxyObject_->GetSettingsManager ()->
+				property (statusKey.toUtf8 ()).toString ();
+	}
+
 	void ClientConnection::serverConnected (const QString& serverId)
 	{
 		if (Account_->GetState ().State_ == SOffline)
+		{
 			Account_->ChangeState (EntryStatus (SOnline, QString ()));
-		emit gotRosterItems (QList<QObject*> () <<
-				ServerHandlers_ [serverId]->GetCLEntry ());
+			Account_->SetState (EntryStatus (SOnline, QString ()));
+		}
 	}
 
 	void ClientConnection::serverDisconnected (const QString& serverId)
 	{
+		if (!ServerHandlers_.contains (serverId))
+			return;
+
+		ServerHandlers_ [serverId]->DisconnectFromServer ();
 		Account_->handleEntryRemoved (ServerHandlers_ [serverId]->
 				GetCLEntry ());
 		ServerHandlers_.take (serverId)->deleteLater ();
 		if (!ServerHandlers_.count ())
-			Account_->ChangeState (EntryStatus (SOffline,
+			Account_->SetState (EntryStatus (SOffline,
 					QString ()));
 	}
 
-	void ClientConnection::handleError (QAbstractSocket::SocketError)
+	void ClientConnection::handleError (QAbstractSocket::SocketError error,
+			const QString& errorString)
 	{
-		QTcpSocket *socket = qobject_cast<QTcpSocket*> (sender ());
-		if (!socket)
+		IrcServerHandler *ish = qobject_cast<IrcServerHandler*> (sender ());
+		if (!ish)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "is not an object of TcpSocket"
+					<< "is not an IrcServerHandler"
 					<< sender ();
 			return;
 		}
 
 		Entity e = Util::MakeNotification ("Azoth",
-				socket->errorString (),
+				errorString,
 				PCritical_);
 		Core::Instance ().SendEntity (e);
-		Account_->ChangeState (EntryStatus (SOffline, QString ()));
+		ish->DisconnectFromServer ();
+		ServerHandlers_.remove (ish->GetServerID ());
+		Account_->handleEntryRemoved (ish->GetCLEntry ());
 	}
 
 	void ClientConnection::handleLog (IMessage::Direction type, const QString& msg)

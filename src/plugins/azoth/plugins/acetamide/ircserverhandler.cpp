@@ -19,6 +19,7 @@
 #include "ircserverhandler.h"
 #include <boost/bind.hpp>
 #include <QTextCodec>
+#include <QTimer>
 #include <QMessageBox>
 #include <QInputDialog>
 #include <util/util.h>
@@ -65,6 +66,12 @@ namespace Acetamide
 		ServerResponseManager_ = new ServerResponseManager (this);
 		RplISupportParser_ = new RplISupportParser (this);
 		ChannelsManager_ = new ChannelsManager (this);
+		AutoWhoTimer_ = new QTimer (this);
+
+		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoPeriod",
+				this, "handleUpdateWhoPeriod");
+		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoRequest",
+				this, "handleSetAutoWho");
 
 		connect (this,
 				SIGNAL (connected (const QString&)),
@@ -80,6 +87,13 @@ namespace Acetamide
 				SIGNAL (nicknameConflict (const QString&)),
 				ServerCLEntry_,
 				SIGNAL (nicknameConflict (const QString&)));
+
+		connect (AutoWhoTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (autoWhoRequest ()));
+
+		handleSetAutoWho ();
 	}
 
 	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
@@ -183,19 +197,26 @@ namespace Acetamide
 
 	bool IrcServerHandler::JoinedChannel (const ChannelOptions& channel)
 	{
+		QString channelName = channel.ChannelName_.toLower ();
+		bool res = false;
 		if (ServerConnectionState_ == Connected &&
-				!ChannelsManager_->IsChannelExists (channel.ChannelName_.toLower ()))
-			return ChannelsManager_->AddChannel (channel);
+				!ChannelsManager_->IsChannelExists (channelName))
+			res = ChannelsManager_->AddChannel (channel);
 		else
 			Add2ChannelsQueue (channel);
 
-		return true;
+		return res;
 	}
 
 	void IrcServerHandler::JoinParticipant (const QString& nick,
 			const QString& msg, const QString& user, const QString& host)
 	{
+		if (Nick2Entry_.contains (nick))
+			ClosePrivateChat (nick);
 		ChannelsManager_->AddParticipant (msg.toLower (), nick, user, host);
+
+		IrcParser_->WhoCommand (QStringList (nick));
+		SpyWho_ [nick] = AnswersOnWhoCommand;
 	}
 
 	void IrcServerHandler::CloseChannel (const QString& channel)
@@ -211,13 +232,15 @@ namespace Acetamide
 
 	void IrcServerHandler::SendQuit ()
 	{
-		//TODO quit message
-		IrcParser_->QuitCommand (QStringList ());
+		IrcParser_->QuitCommand (QStringList (Account_->GetClientConnection ()->
+				GetStatusStringForState (SOffline)));
 	}
 
 	void IrcServerHandler::QuitParticipant (const QString& nick, const QString& msg)
 	{
 		ChannelsManager_->QuitParticipant (nick, msg);
+		if (Nick2Entry_.contains (nick))
+			Nick2Entry_.remove (nick);
 	}
 
 	void IrcServerHandler::SendMessage (const QStringList& cmd)
@@ -235,14 +258,14 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::IncomingMessage (const QString& nick,
-			const QString& target, const QString& msg)
+			const QString& target, const QString& msg, IMessage::MessageType type)
 	{
 		if (ChannelsManager_->IsChannelExists (target))
 			ChannelsManager_->ReceivePublicMessage (target, nick, msg);
 		else
 		{
 			//TODO Work only for exists entries
-			IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
+			IrcMessage *message = new IrcMessage (type,
 					IMessage::DIn,
 					ServerID_,
 					nick,
@@ -250,17 +273,27 @@ namespace Acetamide
 			message->SetBody (msg);
 			message->SetDateTime (QDateTime::currentDateTime ());
 
+			bool found = false;
 			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick).values ())
 			{
 				EntryBase *entry = qobject_cast<EntryBase*> (entryObj);
 				if (!entry)
 					continue;
 
+				found = true;
 				entry->HandleMessage (message);
 			}
 
-			if (Nick2Entry_.contains (nick))
-				Nick2Entry_ [nick]->HandleMessage (message);
+			if (!found)
+			{
+				if (Nick2Entry_.contains (nick))
+					Nick2Entry_ [nick]->HandleMessage (message);
+				else
+				{
+					ServerParticipantEntry_ptr entry = GetParticipantEntry (nick);
+					entry->HandleMessage (message);
+				}
+			}
 		}
 	}
 
@@ -458,13 +491,16 @@ namespace Acetamide
 		InviteChannelsDialog_->show ();
 	}
 
-	void IrcServerHandler::ShowAnswer (const QString& cmd, const QString& answer, bool isEndOf)
+	void IrcServerHandler::ShowAnswer (const QString& cmd,
+			const QString& answer, bool isEndOf, IMessage::MessageType type)
 	{
 		QString msg = "[" + cmd.toUpper () + "] " + answer;
-		if (!ChannelsManager_->IsCmdQueueEmpty ())
-			ChannelsManager_->ReceiveCmdAnswerMessage (cmd, msg, isEndOf);
-		else
-			ServerCLEntry_->HandleMessage (CreateMessage (IMessage::MTEventMessage,
+		bool res = ChannelsManager_->ReceiveCmdAnswerMessage (cmd, msg, isEndOf);
+
+		if (!res ||
+				XmlSettingsManager::Instance ()
+						.property ("ServerDuplicateCommandAnswer").toBool ())
+			ServerCLEntry_->HandleMessage (CreateMessage (type,
 					ServerID_,
 					msg));
 	}
@@ -508,9 +544,156 @@ namespace Acetamide
 		ShowAnswer ("ison", tr ("%1 is on server").arg (nick));
 	}
 
-	void IrcServerHandler::ShowWhoIsReply (const QString& msg, bool isEndOf)
+	void IrcServerHandler::ShowWhoIsReply (const WhoIsMessage& msg, bool isEndOf)
 	{
-		ShowAnswer ("whois", msg, isEndOf);
+		QString message;
+		if (!msg.Nick_.isEmpty () &&
+				!msg.UserName_.isEmpty () &&
+				!msg.Host_.isEmpty ())
+		{
+			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
+				whois.Nick_ = msg.Nick_;
+				whois.UserName_ = msg.UserName_;
+				whois.Host_ = msg.Host_;
+			}
+			else
+			{
+				message = tr ("%1 is %2")
+						.arg (msg.Nick_, msg.Nick_ + "!" + msg.UserName_ + "@" + msg.Host_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.RealName_.isEmpty ())
+		{
+			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
+				whois.Nick_ = msg.Nick_;
+				whois.RealName_ = msg.RealName_;
+			}
+			else
+			{
+				message = tr ("%1's real name is %2").arg (msg.Nick_, msg.RealName_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.Channels_.isEmpty ())
+		{
+			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
+				whois.Nick_ = msg.Nick_;
+				whois.Channels_ = msg.Channels_;
+			}
+			else
+			{
+				message = tr ("%1 is on channels: %2")
+						.arg (msg.Nick_, msg.Channels_.join (", "));
+				ShowAnswer ("whois", message, isEndOf);
+			}
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.ServerName_.isEmpty () &&
+				!msg.ServerCountry_.isEmpty ())
+		{
+			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				auto& whois = SpyNick2WhoIsMessage_ [msg.Nick_];
+				whois.Nick_ = msg.Nick_;
+				whois.ServerName_ = msg.ServerName_;
+				whois.ServerCountry_ = msg.ServerCountry_;
+			}
+			else
+			{
+				message = tr ("%1's server is: %2 - %3")
+						.arg (msg.Nick_, msg.ServerName_, msg.ServerCountry_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.IdleTime_.isEmpty ())
+		{
+			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				message = tr ("%1's idle time: %2").arg (msg.Nick_, msg.IdleTime_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.AuthTime_.isEmpty ())
+		{
+			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				message = tr ("%1's auth date: %2").arg (msg.Nick_, msg.AuthTime_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.IrcOperator_.isEmpty ())
+		{
+			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				message = msg.Nick_ + ": " + msg.IrcOperator_;
+				ShowAnswer ("whois", message, isEndOf);
+			}
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.LoggedName_.isEmpty ())
+		{
+			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				message = tr ("%1 is logged in as %2 ")
+						.arg (msg.Nick_, msg.LoggedName_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.Secure_.isEmpty ())
+		{
+			if (!SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				message = tr ("%1 is using a secure connection")
+						.arg (msg.Nick_);
+				ShowAnswer ("whois", message, isEndOf);
+			}
+		}
+
+		if (!msg.Nick_.isEmpty () &&
+				!msg.EndString_.isEmpty ())
+		{
+			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
+			{
+				Q_FOREACH (QObject *entryObj,ChannelsManager_->
+						GetParticipantsByNick (msg.Nick_))
+				{
+					ChannelParticipantEntry *entry =
+							qobject_cast<ChannelParticipantEntry*> (entryObj);
+					if (!entry)
+						continue;
+
+					entry->SetInfo (SpyNick2WhoIsMessage_ [msg.Nick_]);
+				}
+
+				SpyNick2WhoIsMessage_.remove (msg.Nick_);
+			}
+			else
+			{
+				message = msg.Nick_ + " " + msg.EndString_;
+				ShowAnswer ("whois", message, isEndOf);
+			}
+		}
 	}
 
 	void IrcServerHandler::ShowWhoWasReply (const QString& msg, bool isEndOf)
@@ -518,9 +701,48 @@ namespace Acetamide
 		ShowAnswer ("whowas", msg, isEndOf);
 	}
 
-	void IrcServerHandler::ShowWhoReply (const QString& msg, bool isEndOf)
+	void IrcServerHandler::ShowWhoReply (const WhoMessage&  msg, bool isEndOf)
 	{
-        ShowAnswer ("who", msg, isEndOf);
+		QString message;
+		if (!msg.Nick_.isEmpty () &&
+				!msg.EndString_.isEmpty ())
+			message = msg.Nick_ + " " + msg.EndString_;
+		else
+			message = tr ("%1 [%2@%3]: Channel: %4, Server: %5, "
+					"Hops: %6, Flags: %7, Away: %8, Real Name: %9")
+							.arg (msg.Nick_,
+									msg.UserName_,
+									msg.Host_,
+									msg.Channel_,
+									msg.ServerName_,
+									QString::number (msg.Jumps_),
+									msg.Flags_,
+									msg.IsAway_ ? "true" : "false",
+									msg.RealName_);
+
+		bool contains = false;
+		QString key;
+		if (SpyWho_.contains (msg.Channel_.toLower ()))
+		{
+			contains = true;
+			key = msg.Channel_.toLower ();
+		}
+		else if (SpyWho_.contains (msg.Nick_))
+		{
+			contains = true;
+			key = msg.Nick_;
+		}
+		else
+			ShowAnswer ("who", message, isEndOf);
+
+		if (contains)
+		{
+			if (!isEndOf)
+				ChannelsManager_->UpdateEntry (msg);
+			--SpyWho_ [key];
+			if (!SpyWho_ [key])
+				SpyWho_.remove (key);
+		}
 	}
 
 	void IrcServerHandler::ShowLinksReply (const QString& msg, bool isEndOf)
@@ -614,6 +836,7 @@ namespace Acetamide
 					<< msg->GetOtherVariant ()
 					<< str);
 
+		bool found = false;
 		Q_FOREACH (QObject *entryObj, ChannelsManager_->
 				GetParticipantsByNick (msg->GetOtherVariant ()).values ())
 		{
@@ -621,10 +844,12 @@ namespace Acetamide
 			if (!entry)
 				continue;
 
+			found = true;
 			entry->HandleMessage (msg);
 		}
 
-		if (Nick2Entry_.contains (msg->GetOtherVariant ()))
+		if (!found &&
+				Nick2Entry_.contains (msg->GetOtherVariant ()))
 			Nick2Entry_ [msg->GetOtherVariant ()]->HandleMessage (msg);
 	}
 
@@ -769,6 +994,7 @@ namespace Acetamide
 	{
 		ServerParticipantEntry_ptr entry (new ServerParticipantEntry (nick, this, Account_));
 		Account_->handleGotRosterItems (QObjectList () << entry.get ());
+		entry->SetStatus (EntryStatus (SOnline, QString ()));
 		return entry;
 	}
 
@@ -841,22 +1067,42 @@ namespace Acetamide
 	void IrcServerHandler::ClosePrivateChat (const QString& nick)
 	{
 		if (Nick2Entry_.contains (nick))
-			Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
-		else
-			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick).values ())
-			{
-				IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (entryObj);
-				if (!entry)
-					continue;
+			Account_->handleEntryRemoved (Nick2Entry_.take (nick).get ());
 
-				entry->SetPrivateChat (false);
-			}
+		Q_FOREACH (QObject *entryObj, ChannelsManager_->
+				GetParticipantsByNick (nick).values ())
+		{
+			IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (entryObj);
+			if (!entry)
+				continue;
+
+			entry->SetPrivateChat (false);
+		}
 	}
 
 	void IrcServerHandler::CreateServerParticipantEntry (QString nick)
 	{
 		ServerParticipantEntry_ptr entry (GetParticipantEntry (nick));
 		entry->SetStatus (EntryStatus (SOnline, ""));
+	}
+
+	void IrcServerHandler::VCardRequest (const QString& nick)
+	{
+		RequestWhoIs (nick);
+		SpyNick2WhoIsMessage_.insert (nick, WhoIsMessage ());
+	}
+
+	void IrcServerHandler::SetAway (const QString& message)
+	{
+		IrcParser_->AwayCommand (QStringList (message));
+	}
+
+	void IrcServerHandler::ChangeAway (bool away, const QString& message)
+	{
+		away ?
+			Account_->SetState (EntryStatus (SAway, message)) :
+			Account_->SetState (EntryStatus (SOnline, QString ()));
+		autoWhoRequest ();
 	}
 
 	void IrcServerHandler::connectionEstablished ()
@@ -888,6 +1134,53 @@ namespace Acetamide
 		}
 	}
 
+	void IrcServerHandler::autoWhoRequest ()
+	{
+		Q_FOREACH (auto channel, ChannelsManager_->GetChannels ())
+		{
+			const QString& channelName = channel->GetChannelOptions()
+					.ChannelName_.toLower ();
+			IrcParser_->WhoCommand (QStringList (channelName));
+			SpyWho_ [channelName] = ChannelsManager_->
+					GetChannelUsersCount (channelName) + 1;
+		}
+	}
+
+	void IrcServerHandler::handleSocketError (QAbstractSocket::SocketError error)
+	{
+		QTcpSocket *socket = qobject_cast<QTcpSocket*> (sender ());
+		if (!socket)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "is not an object of TcpSocket"
+					<< sender ();
+			return;
+		}
+
+		qDebug () << "Socket error on server:"
+				<< ServerID_
+				<< error
+				<< socket->errorString ();
+
+		emit gotSocketError (error, socket->errorString ());
+	}
+
+	void IrcServerHandler::handleSetAutoWho ()
+	{
+		if (!XmlSettingsManager::Instance ().property ("AutoWhoRequest").toBool () &&
+				AutoWhoTimer_->isActive ())
+			AutoWhoTimer_->stop ();
+		else if (XmlSettingsManager::Instance ().property ("AutoWhoRequest").toBool () &&
+				!AutoWhoTimer_->isActive ())
+			AutoWhoTimer_->start (XmlSettingsManager::Instance ()
+					.property ("AutoWhoPeriod").toInt () * 60 * 1000);
+	}
+
+	void IrcServerHandler::handleUpdateWhoPeriod ()
+	{
+		AutoWhoTimer_->setInterval (XmlSettingsManager::Instance ()
+				.property ("AutoWhoPeriod").toInt () * 60 * 1000);
+	}
 };
 };
 };

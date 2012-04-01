@@ -31,6 +31,7 @@
 #include "smsdialog.h"
 #include "core.h"
 #include "selfavatarfetcher.h"
+#include "vcarddialog.h"
 
 namespace LeechCraft
 {
@@ -174,6 +175,15 @@ namespace Vader
 		Info_.GroupNumber_ = info.GroupNumber_;
 	}
 
+	void MRIMBuddy::HandleWPInfo (const QMap<QString, QString>& values)
+	{
+		VCardDialog *dia = new VCardDialog ();
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->SetInfo (values);
+		dia->SetAvatar (GetAvatar ());
+		dia->show ();
+	}
+
 	qint64 MRIMBuddy::GetID () const
 	{
 		return Info_.ContactID_;
@@ -288,6 +298,7 @@ namespace Vader
 
 	void MRIMBuddy::ShowInfo ()
 	{
+		A_->RequestInfo (GetHumanReadableID ());
 	}
 
 	QList<QAction*> MRIMBuddy::GetActions () const
@@ -316,7 +327,7 @@ namespace Vader
 
 	void MRIMBuddy::UpdateClientVersion ()
 	{
-		auto defClient = [&ClientInfo_, this] ()
+		auto defClient = [this] ()
 		{
 			ClientInfo_ ["client_type"] = "mailruagent";
 			ClientInfo_ ["client_name"] = tr ("Mail.Ru Agent");

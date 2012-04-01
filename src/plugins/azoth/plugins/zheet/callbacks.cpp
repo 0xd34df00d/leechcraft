@@ -35,6 +35,7 @@ namespace Zheet
 	Callbacks::Callbacks (MSNAccount *parent)
 	: QObject (parent)
 	, Account_ (parent)
+	, Conn_ (0)
 	{
 	}
 

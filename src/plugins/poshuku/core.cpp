@@ -68,7 +68,6 @@ namespace Poshuku
 	Core::Core ()
 	: NetworkAccessManager_ (0)
 	, WebPluginFactory_ (0)
-	, IsShuttingDown_ (false)
 	, ShortcutProxy_ (0)
 	, FavoritesChecker_ (0)
 	, Initialized_ (false)
@@ -187,7 +186,6 @@ namespace Poshuku
 
 	void Core::Release ()
 	{
-		IsShuttingDown_ = true;
 		while (Widgets_.begin () != Widgets_.end ())
 			delete *Widgets_.begin ();
 
@@ -328,15 +326,18 @@ namespace Poshuku
 		return result;
 	}
 
-	BrowserWidget* Core::NewURL (const QUrl& url, bool raise)
+	BrowserWidget* Core::NewURL (const QUrl& url, bool raise,
+			const QList<QPair<QByteArray, QVariant>>& props)
 	{
 		if (!Initialized_)
 			return 0;
 
 		BrowserWidget *widget = new BrowserWidget ();
 		widget->InitShortcuts ();
-		widget->SetUnclosers (Unclosers_);
 		Widgets_.push_back (widget);
+
+		Q_FOREACH (const auto& pair, props)
+			widget->setProperty (pair.first, pair.second);
 
 		QString tabTitle = "Poshuku";
 		if (url.host ().size ())
@@ -520,45 +521,11 @@ namespace Poshuku
 
 	void Core::Unregister (BrowserWidget *widget)
 	{
-		widgets_t::iterator pos =
-			std::find (Widgets_.begin (), Widgets_.end (), widget);
+		auto pos = std::find (Widgets_.begin (), Widgets_.end (), widget);
 		if (pos == Widgets_.end ())
 		{
 			qWarning () << Q_FUNC_INFO << widget << "not found in the collection";
 			return;
-		}
-
-		QString title = widget->GetView ()->title ();
-		if (title.isEmpty ())
-			title = widget->GetView ()->url ().toString ();
-
-		if (!title.isEmpty ())
-		{
-			if (title.size () > 53)
-				title = title.left (50) + "...";
-			QAction *action = new QAction (widget->GetView ()->icon (),
-					title, this);
-
-			QByteArray ba;
-			QDataStream out (&ba, QIODevice::WriteOnly);
-			out << *widget->GetView ()->page ()->history ();
-
-			UncloseData ud =
-			{
-				widget->GetView ()->url (),
-				widget->GetView ()->page ()->mainFrame ()->scrollPosition (),
-				ba
-			};
-			action->setData (QVariant::fromValue (ud));
-
-			connect (action,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleUnclose ()));
-
-			emit newUnclose (action);
-
-			Unclosers_.push_front (action);
 		}
 
 		Widgets_.erase (pos);
@@ -686,22 +653,6 @@ namespace Poshuku
 		QByteArray data;
 		XbelGenerator g (data);
 		file.write (data);
-	}
-
-	void Core::handleUnclose ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		UncloseData ud = action->data ().value<UncloseData> ();
-		BrowserWidget *bw = NewURL (ud.URL_);
-
-		QDataStream str (ud.History_);
-		str >> *bw->GetView ()->page ()->history ();
-
-		bw->SetOnLoadScrollPoint (ud.SPoint_);
-
-		Unclosers_.removeAll (action);
-
-		action->deleteLater ();
 	}
 
 	void Core::handleTitleChanged (const QString& newTitle)

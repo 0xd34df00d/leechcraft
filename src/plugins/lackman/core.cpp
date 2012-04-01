@@ -615,7 +615,7 @@ namespace LackMan
 
 	void Core::PopulatePluginsModel ()
 	{
-		QMap<QString, QList<ListPackageInfo> > infos;
+		QMap<QString, QList<ListPackageInfo>> infos;
 		try
 		{
 			infos = Storage_->GetListPackageInfos ();
@@ -658,7 +658,7 @@ namespace LackMan
 	void Core::HandleNewPackages (const PackageShortInfoList& shortInfos,
 			int componentId, const QString& component, const QUrl& repoUrl)
 	{
-		QMap<QString, QList<QString> > PackageName2NewVersions_;
+		QMap<QString, QList<QString>> PackageName2NewVersions_;
 
 		Q_FOREACH (const PackageShortInfo& info, shortInfos)
 			Q_FOREACH (const QString& version, info.Versions_)

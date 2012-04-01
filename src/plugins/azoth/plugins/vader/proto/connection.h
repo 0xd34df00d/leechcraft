@@ -56,6 +56,7 @@ namespace Proto
 		PacketFactory PF_;
 		PacketExtractor PE_;
 		QMap<quint16, std::function<void (HalfPacket)>> PacketActors_;
+		QHash<quint32, QString> RequestedInfos_;
 
 		QString Host_;
 		int Port_;
@@ -78,6 +79,7 @@ namespace Proto
 		void Connect ();
 
 		void SetState (const EntryStatus&);
+		void RequestInfo (const QString&);
 		quint32 SendMessage (const QString& to, const QString& message);
 		quint32 SendSMS (const QString& to, const QString& message);
 		quint32 SendSMS2Number (const QString& phone, const QString& message);
@@ -102,6 +104,8 @@ namespace Proto
 		void UserInfo (HalfPacket);
 		void UserStatus (HalfPacket);
 		void ContactList (HalfPacket);
+
+		void HandleWPInfo (HalfPacket, const QString&);
 
 		void IncomingMsg (HalfPacket);
 		void MsgStatus (HalfPacket);
@@ -132,6 +136,9 @@ namespace Proto
 
 		void gotGroups (const QStringList&);
 		void gotContacts (const QList<Proto::ContactInfo>&);
+
+		void gotUserInfoError (const QString& email, Proto::AnketaInfoStatus);
+		void gotUserInfoResult (const QString& email, const QMap<QString, QString>& vals);
 
 		void gotMessage (const Proto::Message&);
 		void gotOfflineMessage (const Proto::Message&);

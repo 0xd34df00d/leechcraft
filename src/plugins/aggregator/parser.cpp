@@ -798,9 +798,9 @@ namespace Aggregator
 	
 	QDateTime Parser::FromRFC3339 (const QString& t) const
 	{
-		int hoursShift = 0, minutesShift = 0;
 		if (t.size () < 19)
 			return QDateTime ();
+
 		QDateTime result = QDateTime::fromString (t.left (19).toUpper (), "yyyy-MM-ddTHH:mm:ss");
 		QRegExp fractionalSeconds ("(\\.)(\\d+)");
 		if (fractionalSeconds.indexIn (t) > -1)
@@ -816,16 +816,19 @@ namespace Aggregator
 				result.addMSecs (fractional);
 			}
 		}
+
 		QRegExp timeZone ("(\\+|\\-)(\\d\\d)(:)(\\d\\d)$");
 		if (timeZone.indexIn (t) > -1)
 		{
 			short int multiplier = -1;
 			if (timeZone.cap (1) == "-")
 				multiplier = 1;
-			hoursShift = timeZone.cap (2).toInt ();
-			minutesShift = timeZone.cap (4).toInt ();
+
+			const int hoursShift = timeZone.cap (2).toInt ();
+			const int minutesShift = timeZone.cap (4).toInt ();
 			result = result.addSecs (hoursShift * 3600 * multiplier + minutesShift * 60 * multiplier);
 		}
+
 		result.setTimeSpec (Qt::UTC);
 		return result.toLocalTime ();
 	}

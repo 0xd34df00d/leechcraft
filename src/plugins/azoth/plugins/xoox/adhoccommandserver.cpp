@@ -208,7 +208,7 @@ namespace Xoox
 
 		const GlooxAccountState& state = Conn_->GetLastState ();
 
-		QList<QPair<State, QString> > rawOpts;
+		QList<QPair<State, QString>> rawOpts;
 		rawOpts << qMakePair<State, QString> (SChat, "chat");
 		rawOpts << qMakePair<State, QString> (SOnline, "online");
 		rawOpts << qMakePair<State, QString> (SAway, "away");
@@ -218,7 +218,7 @@ namespace Xoox
 		rawOpts << qMakePair<State, QString> (SOffline, "offline");
 
 		QString option;
-		QList<QPair<QString, QString> > options;
+		QList<QPair<QString, QString>> options;
 		QPair<State, QString> pair;
 		IProxyObject *proxy = Core::Instance ().GetPluginProxy ();
 		Q_FOREACH (pair, rawOpts)
@@ -299,7 +299,7 @@ namespace Xoox
 		field.setKey ("FORM_TYPE");
 		fields.append (field);
 
-		QList<QPair<QString, QString> > options;
+		QList<QPair<QString, QString>> options;
 		Q_FOREACH (QObject *entryObj, Conn_->GetCLEntries ())
 		{
 			RoomCLEntry *entry = qobject_cast<RoomCLEntry*> (entryObj);

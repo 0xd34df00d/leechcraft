@@ -32,7 +32,7 @@ namespace Herbicide
 		Q_OBJECT
 		
 		Ui::ConfWidget Ui_;
-		QList<QList<QPair<QString, QStringList> > > PredefinedQuests_;
+		QList<QList<QPair<QString, QStringList>>> PredefinedQuests_;
 	public:
 		ConfWidget (QWidget* = 0);
 		

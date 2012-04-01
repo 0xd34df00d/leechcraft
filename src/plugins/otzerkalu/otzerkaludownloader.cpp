@@ -40,20 +40,6 @@ namespace Otzerkalu
 	{
 	}
 
-	namespace
-	{
-		Entity GetEntity (const QUrl& url, const QString& filename)
-		{
-			return Util::MakeEntity (url,
-					filename,
-					LeechCraft::Internal |
-						LeechCraft::DoNotNotifyUser |
-						LeechCraft::DoNotSaveInHistory |
-						LeechCraft::NotPersistent |
-						LeechCraft::DoNotAnnounceEntity);
-		}
-	}
-
 	FileData::FileData ()
 	{
 	}

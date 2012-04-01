@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "mucinvitedialog.h"
+#include <QtDebug>
 #include "interfaces/iaccount.h"
 #include "interfaces/iclentry.h"
 
@@ -26,8 +27,10 @@ namespace Azoth
 {
 	MUCInviteDialog::MUCInviteDialog (IAccount *acc, QWidget *parent)
 	: QDialog (parent)
+	, ManualMode_ (false)
 	{
 		Ui_.setupUi (this);
+		Ui_.Invitee_->setInsertPolicy (QComboBox::NoInsert);
 
 		Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
 		{
@@ -47,7 +50,7 @@ namespace Azoth
 	QString MUCInviteDialog::GetID () const
 	{
 		const int idx = Ui_.Invitee_->currentIndex ();
-		return idx >= 0 ?
+		return (idx >= 0 && !ManualMode_) ?
 				Ui_.Invitee_->itemData (idx).toString () :
 				Ui_.Invitee_->currentText ();
 	}
@@ -55,6 +58,16 @@ namespace Azoth
 	QString MUCInviteDialog::GetMessage () const
 	{
 		return Ui_.Message_->text ();
+	}
+
+	void MUCInviteDialog::on_Invitee__currentIndexChanged ()
+	{
+		ManualMode_ = false;
+	}
+
+	void MUCInviteDialog::on_Invitee__editTextChanged ()
+	{
+		ManualMode_ = true;
 	}
 }
 }

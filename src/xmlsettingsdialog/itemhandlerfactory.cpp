@@ -40,7 +40,7 @@
 
 namespace LeechCraft
 {
-	ItemHandlerFactory::ItemHandlerFactory ()
+	ItemHandlerFactory::ItemHandlerFactory (Util::XmlSettingsDialog *xsd)
 	{
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCheckbox ());
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerLineEdit ());
@@ -59,6 +59,9 @@ namespace LeechCraft
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerDataView (this));
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerListView (this));
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerTreeView (this));
+
+		Q_FOREACH (ItemHandlerBase_ptr handler, Handlers_)
+			handler->SetXmlSettingsDialog (xsd);
 	}
 
 	ItemHandlerFactory::~ItemHandlerFactory ()

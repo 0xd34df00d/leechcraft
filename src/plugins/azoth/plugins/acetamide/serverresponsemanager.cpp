@@ -19,10 +19,12 @@
 #include "serverresponsemanager.h"
 #include <boost/bind.hpp>
 #include <QTextCodec>
+#include <interfaces/core/icoreproxy.h>
+#include <util/util.h>
 #include "ircserverhandler.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
-#include <interfaces/core/icoreproxy.h>
+#include "ircaccount.h"
 
 namespace LeechCraft
 {
@@ -221,6 +223,12 @@ namespace Acetamide
 				 this, _1);
 		Command2Action_ ["324"] = boost::bind (&ServerResponseManager::GotChannelModes,
 				 this, _1);
+
+		//not from rfc
+		Command2Action_ ["330"] = boost::bind (&ServerResponseManager::GotWhoIsAccount,
+				this, _1);
+		Command2Action_ ["671"] = boost::bind (&ServerResponseManager::GotWhoIsSecure,
+				this, _1);
 	}
 
 	bool ServerResponseManager::IsCTCPMessage (const QString& msg)
@@ -451,13 +459,24 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		const QString target = QString::fromUtf8 (opts.Parameters_.last ().c_str ());
-		ISH_->ShowAnswer ("away", target + " " + opts.Message_);
+		const QString& target = QString::fromUtf8 (opts.Parameters_.last ().c_str ());
+		ISH_->IncomingMessage (target, target, QString ("[AWAY] %1 :%2")
+				.arg (target, opts.Message_), IMessage::MTStatusMessage);
 	}
 
 	void ServerResponseManager::GotSetAway (const IrcMessageOptions& opts)
 	{
-		ISH_->ShowAnswer ("away", opts.Message_);
+		switch (opts.Command_.toInt ())
+		{
+		case 305:
+			ISH_->ChangeAway (false);
+			break;
+		case 306:
+			ISH_->ChangeAway (true, opts.Message_);
+			break;
+		}
+
+		ISH_->ShowAnswer ("away", opts.Message_, IMessage::MTStatusMessage);
 	}
 
 	void ServerResponseManager::GotUserHost (const IrcMessageOptions& opts)
@@ -481,11 +500,12 @@ namespace Acetamide
 		if (opts.Parameters_.count () < 4)
 			return;
 
-		const QString& message = QString::fromUtf8 (opts.Parameters_.at (1).c_str ()) +
-				" - " + QString::fromUtf8 (opts.Parameters_.at (2).c_str ()) + "@"
-				+ QString::fromUtf8 (opts.Parameters_.at (3).c_str ()) +
-				" (" + opts.Message_ + ")";
-		ISH_->ShowWhoIsReply (message);
+		WhoIsMessage msg;
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.UserName_ = QString::fromUtf8 (opts.Parameters_.at (2).c_str ());
+		msg.Host_ = QString::fromUtf8 (opts.Parameters_.at (3).c_str ());
+		msg.RealName_ = opts.Message_;
+		ISH_->ShowWhoIsReply (msg);
 	}
 
 	void ServerResponseManager::GotWhoIsServer (const IrcMessageOptions& opts)
@@ -493,11 +513,11 @@ namespace Acetamide
 		if (opts.Parameters_.count () < 3)
 			return;
 
-		const QString& message = QString::fromUtf8 (opts.Parameters_.at (1).c_str ()) +
-				tr (" connected via ") +
-		QString::fromUtf8 (opts.Parameters_.at (2).c_str ()) +
-				" (" + opts.Message_ + ")";
-		ISH_->ShowWhoIsReply (message);
+		WhoIsMessage msg;
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.ServerName_ = QString::fromUtf8 (opts.Parameters_.at (2).c_str ());
+		msg.ServerCountry_ = opts.Message_;
+		ISH_->ShowWhoIsReply (msg);
 	}
 
 	void ServerResponseManager::GotWhoIsOperator (const IrcMessageOptions& opts)
@@ -505,8 +525,10 @@ namespace Acetamide
 		if (opts.Parameters_.count () < 2)
 			return;
 
-		ISH_->ShowWhoIsReply (QString::fromUtf8 (opts.Parameters_.at (1).c_str ()) +
-				" " + opts.Message_);
+		WhoIsMessage msg;
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.IrcOperator_ = opts.Message_;
+		ISH_->ShowWhoIsReply (msg);
 	}
 
 	void ServerResponseManager::GotWhoIsIdle (const IrcMessageOptions& opts)
@@ -514,15 +536,21 @@ namespace Acetamide
 		if (opts.Parameters_.count () < 2)
 			return;
 
-		const QString& message = QString::fromUtf8 (opts.Parameters_.at (0).c_str ()) +
-				" " + QString::fromUtf8 (opts.Parameters_.at (1).c_str ()) +
-				" " + opts.Message_;
-		ISH_->ShowWhoIsReply (message);
+		WhoIsMessage msg;
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.IdleTime_ = Util::MakeTimeFromLong (QString::fromUtf8 (opts
+				.Parameters_.at (2).c_str ()).toULong ());
+		msg.AuthTime_ = QDateTime::fromTime_t (QString::fromUtf8 (opts
+				.Parameters_.at (3).c_str ()).toUInt ()).toString (Qt::TextDate);
+		ISH_->ShowWhoIsReply (msg);
 	}
 
 	void ServerResponseManager::GotEndOfWhoIs (const IrcMessageOptions& opts)
 	{
-		ISH_->ShowWhoIsReply (opts.Message_, true);
+		WhoIsMessage msg;
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.EndString_ = opts.Message_;
+		ISH_->ShowWhoIsReply (msg, true);
 	}
 
 	void ServerResponseManager::GotWhoIsChannels (const IrcMessageOptions& opts)
@@ -530,9 +558,10 @@ namespace Acetamide
 		if (opts.Parameters_.count () < 2)
 			return;
 
-		QString message = QString::fromUtf8 (opts.Parameters_.at (1).c_str ()) +
-				tr (" on the channels : ") + opts.Message_;
-		ISH_->ShowWhoIsReply (message);
+		WhoIsMessage msg;
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.Channels_ = opts.Message_.split (' ', QString::SkipEmptyParts);
+		ISH_->ShowWhoIsReply (msg);
 	}
 
 	void ServerResponseManager::GotWhoWas (const IrcMessageOptions& opts)
@@ -554,17 +583,29 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		const QString message = QString::fromUtf8 (opts.Parameters_
-				.at (opts.Parameters_.count () - 1).c_str ()) +
-				" - " + QString::fromUtf8 (opts.Parameters_.at (2).c_str ()) + "@"
-				+ QString::fromUtf8 (opts.Parameters_.at (3).c_str ()) +
-				" (" + opts.Message_.split (' ').at (1) + ")";
-		ISH_->ShowWhoReply (message);
+		WhoMessage msg;
+		msg.Channel_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.UserName_ = QString::fromUtf8 (opts.Parameters_.at (2).c_str ());
+		msg.Host_ = QString::fromUtf8 (opts.Parameters_.at (3).c_str ());
+		msg.ServerName_ = QString::fromUtf8 (opts.Parameters_.at (4).c_str ());
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (5).c_str ());
+		int index = opts.Message_.indexOf (' ');
+		msg.RealName_ = opts.Message_.mid (index);
+		msg.Jumps_ = opts.Message_.left (index).toInt ();
+		msg.Flags_ = QString::fromUtf8 (opts.Parameters_.at (6).c_str ());
+		if (msg.Flags_.at (0) == 'H')
+			msg.IsAway_ = false;
+		else if (msg.Flags_.at (0) == 'G')
+			msg.IsAway_ = true;
+		ISH_->ShowWhoReply (msg);
 	}
 
 	void ServerResponseManager::GotEndOfWho (const IrcMessageOptions& opts)
 	{
-        ISH_->ShowWhoReply (opts.Message_, true);
+		WhoMessage msg;
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.EndString_ = opts.Message_;
+		ISH_->ShowWhoReply (msg, true);
 	}
 
 	void ServerResponseManager::GotSummoning (const IrcMessageOptions& opts)
@@ -1027,6 +1068,29 @@ namespace Acetamide
 	{
 		ISH_->ShowInviteListEnd (opts.Message_);
 	}
+
+	void ServerResponseManager::GotWhoIsAccount (const IrcMessageOptions& opts)
+	{
+		if (opts.Parameters_.count () < 3)
+			return;
+
+		WhoIsMessage msg;
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.LoggedName_ = QString::fromUtf8 (opts.Parameters_.at (2).c_str ());
+		ISH_->ShowWhoIsReply (msg);
+	}
+
+	void ServerResponseManager::GotWhoIsSecure (const IrcMessageOptions& opts)
+	{
+		if (opts.Parameters_.count () < 2)
+			return;
+
+		WhoIsMessage msg;
+		msg.Nick_ = QString::fromUtf8 (opts.Parameters_.at (1).c_str ());
+		msg.Secure_ = opts.Message_;
+		ISH_->ShowWhoIsReply (msg);
+	}
+
 }
 }
 }

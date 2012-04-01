@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Alexander Konovalov
+ * Copyright (C) 2011-2012  Alexander Konovalov
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,13 +19,17 @@
 
 #ifndef PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_SECURESTORAGE_H
 #define PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_SECURESTORAGE_H
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <QObject>
+#include <QInputDialog>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/secman/istorageplugin.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/ihavesettings.h>
 #include "cryptosystem.h"
+#include "settingswidget.h"
+#include "newpassworddialog.h"
 
 class QSettings;
 
@@ -44,19 +48,25 @@ namespace SecureStorage
 				 , public IPlugin2
 				 , public IActionsExporter
 				 , public IStoragePlugin
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin IActionsExporter)
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin IActionsExporter IHaveSettings)
 
-		std::shared_ptr<QSettings> Storage_;
-		std::shared_ptr<QSettings> Settings_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		SettingsWidget* SettingsWidget_;
+		
+		boost::shared_ptr<QSettings> Storage_;
+		boost::shared_ptr<QSettings> Settings_;
 
 		QString WindowTitle_;
 		CryptoSystem *CryptoSystem_;
 
 		QAction *ForgetKeyAction_;
-		QAction *ChangePasswordAction_;
-		QAction *ClearSettingsAction_;
+		QAction *InputKeyAction_;
+
+		boost::shared_ptr<QInputDialog> InputPasswordDialog_;
+		boost::shared_ptr<NewPasswordDialog> NewPasswordDialog_;
 	public:
 		Plugin ();
 		void Init (ICoreProxy_ptr);
@@ -73,11 +83,14 @@ namespace SecureStorage
 		QList<QByteArray> ListKeys (StorageType);
 		void Save (const QByteArray&, const QVariantList&, StorageType, bool);
 		QVariantList Load (const QByteArray&, StorageType);
-		void Save (const QList<QPair<QByteArray, QVariantList> >&, StorageType, bool);
+		void Save (const QList<QPair<QByteArray, QVariantList>>&, StorageType, bool);
 		QList<QVariantList> Load (const QList<QByteArray>&, StorageType);
 		QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace) const;
+		
+		LeechCraft::Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
 		void forgetKey ();
+		void inputKey ();
 		void changePassword ();
 		void clearSettings ();
 	private:
@@ -94,6 +107,20 @@ namespace SecureStorage
 	signals:
 		void gotActions (QList<QAction*>, ActionsEmbedPlace);
 	};
+	
+	class PasswordNotEnteredException : std::exception
+	{
+	public:
+		PasswordNotEnteredException () { }
+
+		const char* what () const throw ()
+		{
+			return "PasswordNotEnteredException";
+		}
+	};
+
+	/// return s1 if s1==s2, else throw PasswordNotEnteredException.
+	QString ReturnIfEqual (const QString& s1, const QString& s2);
 }
 }
 }

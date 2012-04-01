@@ -29,12 +29,18 @@ namespace Azoth
 	ChatTabsManager::ChatTabsManager(QObject *parent)
 	: QObject (parent)
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("ChatWindowStyle",
-				this, "chatWindowStyleChanged");
 		XmlSettingsManager::Instance ().RegisterObject ("CustomMUCStyle",
 				this, "chatWindowStyleChanged");
-		XmlSettingsManager::Instance ().RegisterObject ("MUCWindowStyle",
-				this, "chatWindowStyleChanged");
+
+		auto regStyle = [this] (const QByteArray& style)
+		{
+			XmlSettingsManager::Instance ().RegisterObject (style,
+					this, "chatWindowStyleChanged");
+			XmlSettingsManager::Instance ().RegisterObject (style + "Variant",
+					this, "chatWindowStyleChanged");
+		};
+		regStyle ("ChatWindowStyle");
+		regStyle ("MUCWindowStyle");
 	}
 
 	void ChatTabsManager::OpenChat (const QModelIndex& ti)
@@ -62,7 +68,7 @@ namespace Azoth
 		OpenChat (entry);
 	}
 
-	QWidget* ChatTabsManager::OpenChat (const ICLEntry *entry)
+	QWidget* ChatTabsManager::OpenChat (const ICLEntry *entry, const DynPropertiesList_t& props)
 	{
 		const QString& id = entry->GetEntryID ();
 		if (Entry2Tab_.contains (id))
@@ -76,6 +82,9 @@ namespace Azoth
 		QPointer<ChatTab> tab (new ChatTab (id));
 		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
+
+		Q_FOREACH (const auto& prop, props)
+			tab->setProperty (prop.first, prop.second);
 
 		connect (tab,
 				SIGNAL (needToClose (ChatTab*)),
@@ -210,6 +219,19 @@ namespace Azoth
 		entry->MarkMsgsRead ();
 	}
 
+	void ChatTabsManager::EnqueueRestoreInfos (const QList<RestoreChatInfo>& infos)
+	{
+		Q_FOREACH (const RestoreChatInfo& info, infos)
+		{
+			auto entryObj = Core::Instance ().GetEntry (info.EntryID_);
+			qDebug () << Q_FUNC_INFO << info.EntryID_ << entryObj;
+			if (entryObj)
+				RestoreChat (info, entryObj);
+			else
+				RestoreInfo_ [info.EntryID_] = info;
+		}
+	}
+
 	QString ChatTabsManager::GetActiveVariant (ICLEntry *entry) const
 	{
 		ChatTab_ptr tab = Entry2Tab_ [entry->GetEntryID ()];
@@ -247,6 +269,20 @@ namespace Azoth
 			Entry2Tab_ [muc->GetEntryID ()]->HandleMUCParticipantsChanged ();
 	}
 
+	void ChatTabsManager::RestoreChat (const ChatTabsManager::RestoreChatInfo& info, QObject *entryObj)
+	{
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null entry for"
+					<< entryObj;
+			return;
+		}
+		auto tab = qobject_cast<ChatTab*> (OpenChat (entry, info.Props_));
+		tab->selectVariant (info.Variant_);
+	}
+
 	void ChatTabsManager::handleNeedToClose (ChatTab *tab)
 	{
 		emit removeTab (tab);
@@ -265,8 +301,38 @@ namespace Azoth
 		}
 	}
 
+	void ChatTabsManager::handleAddingCLEntryEnd (IHookProxy_ptr,
+			QObject *entryObj)
+	{
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto& id = entry->GetHumanReadableID ();
+		if (!RestoreInfo_.contains (id))
+			return;
+
+		RestoreChat (RestoreInfo_.take (id), entryObj);
+	}
+
 	void ChatTabsManager::chatWindowStyleChanged ()
 	{
+		QSet<QString> params;
+		auto upSet = [&params] (const QByteArray& style)
+		{
+			params << XmlSettingsManager::Instance ()
+					.property (style).toString ();
+			params << XmlSettingsManager::Instance ()
+					.property (style + "Variant").toString ();
+		};
+		upSet ("ChatWindowStyle");
+		upSet ("MUCWindowStyle");
+
+		const QString& custId = XmlSettingsManager::Instance ()
+					.property ("CustomMUCStyle").toBool () ? "t" : "f";
+		params << custId;
+
+		if (params == StyleParams_)
+			return;
+
+		StyleParams_ = params;
 		Q_FOREACH (ChatTab_ptr tab, Entry2Tab_.values ())
 			tab->PrepareTheme ();
 	}

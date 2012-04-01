@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_FLASHPLACEHOLDER_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_FLASHPLACEHOLDER_H
+#pragma once
+
 #include <QWidget>
 #include <QUrl>
 #include "ui_flashplaceholder.h"
@@ -48,5 +48,3 @@ namespace CleanWeb
 }
 }
 }
-
-#endif

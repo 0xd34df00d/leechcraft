@@ -20,7 +20,13 @@
 #include <stdexcept>
 #include <QFile>
 #include <QApplication>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 #include <util/util.h>
+#include <util/dblock.h>
 #include "xmlsettingsmanager.h"
 #include "account.h"
 
@@ -28,6 +34,18 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	namespace
+	{
+		template<typename T>
+		QByteArray Serialize (const T& t)
+		{
+			QByteArray result;
+			QDataStream stream (&result, QIODevice::WriteOnly);
+			stream << t;
+			return result;
+		}
+	}
+
 	Storage::Storage (QObject *parent)
 	: QObject (parent)
 	, Settings_ (QCoreApplication::organizationName (),
@@ -36,9 +54,53 @@ namespace Snails
 		SDir_ = Util::CreateIfNotExists ("snails/storage");
 	}
 
+	namespace
+	{
+		QList<Message_ptr> MessageSaverProc (QList<Message_ptr> msgs, const QDir dir)
+		{
+			Q_FOREACH (Message_ptr msg, msgs)
+			{
+				if (msg->GetID ().isEmpty ())
+					continue;
+
+				const QString dirName = msg->GetID ().toHex ().right (3);
+
+				QDir msgDir = dir;
+				if (!dir.exists (dirName))
+					msgDir.mkdir (dirName);
+				if (!msgDir.cd (dirName))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to cd into"
+							<< msgDir.filePath (dirName);
+					continue;
+				}
+
+				QFile file (msgDir.filePath (msg->GetID ().toHex ()));
+				file.open (QIODevice::WriteOnly);
+				file.write (qCompress (msg->Serialize (), 9));
+			}
+
+			return msgs;
+		}
+	}
+
 	void Storage::SaveMessages (Account *acc, const QList<Message_ptr>& msgs)
 	{
 		const QDir& dir = DirForAccount (acc);
+
+		Q_FOREACH (Message_ptr msg, msgs)
+			PendingSaveMessages_ [acc] [msg->GetID ()] = msg;
+
+		auto watcher = new QFutureWatcher<QList<Message_ptr>> ();
+		FutureWatcher2Account_ [watcher] = acc;
+
+		auto future = QtConcurrent::run (MessageSaverProc, msgs, dir);
+		watcher->setFuture (future);
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleMessagesSaved ()));
 
 		Q_FOREACH (Message_ptr msg, msgs)
 		{
@@ -46,33 +108,13 @@ namespace Snails
 				continue;
 
 			AddMsgToFolders (msg, acc);
-
-			const QString dirName = msg->GetID ().toHex ().right (3);
-
-			QDir msgDir = dir;
-			if (!dir.exists (dirName))
-				msgDir.mkdir (dirName);
-			if (!msgDir.cd (dirName))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cd into"
-						<< msgDir.filePath (dirName);
-				continue;
-			}
-
-			QFile file (msgDir.filePath (msg->GetID ().toHex ()));
-			file.open (QIODevice::WriteOnly);
-			file.write (qCompress (msg->Serialize (), 9));
-
-			qApp->processEvents ();
-
 			UpdateCaches (msg);
 		}
 	}
 
-	QList<Message_ptr> Storage::LoadMessages (Account *acc)
+	MessageSet Storage::LoadMessages (Account *acc)
 	{
-		QList<Message_ptr> result;
+		MessageSet result;
 
 		const QDir& dir = DirForAccount (acc);
 		Q_FOREACH (auto str, dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
@@ -102,8 +144,6 @@ namespace Snails
 				try
 				{
 					msg->Deserialize (qUncompress (file.readAll ()));
-					result << msg;
-					UpdateCaches (msg);
 				}
 				catch (const std::exception& e)
 				{
@@ -113,7 +153,15 @@ namespace Snails
 							<< e.what ();
 					continue;
 				}
+				result << msg;
+				UpdateCaches (msg);
 			}
+		}
+
+		Q_FOREACH (auto msg, PendingSaveMessages_ [acc].values ())
+		{
+			result << msg;
+			UpdateCaches (msg);
 		}
 
 		return result;
@@ -121,6 +169,9 @@ namespace Snails
 
 	Message_ptr Storage::LoadMessage (Account *acc, const QByteArray& id)
 	{
+		if (PendingSaveMessages_ [acc].contains (id))
+			return PendingSaveMessages_ [acc] [id];
+
 		QDir dir = DirForAccount (acc);
 		if (!dir.cd (id.toHex ().right (3)))
 		{
@@ -180,6 +231,33 @@ namespace Snails
 				result << QByteArray::fromHex (str.toUtf8 ());
 		}
 
+		result += PendingSaveMessages_ [acc].keys ().toSet ();
+
+		return result;
+	}
+
+	QSet<QByteArray> Storage::LoadIDs (Account *acc, const QStringList& folder)
+	{
+		QSet<QByteArray> result;
+
+		const QByteArray& ba = Serialize (folder.isEmpty () ? QStringList ("INBOX") : folder);
+
+		QSqlQuery query (*BaseForAccount (acc));
+		query.prepare ("SELECT msgId FROM folder2msg WHERE folder = :folder;");
+		query.bindValue (":folder", ba);
+		if (!query.exec ())
+		{
+			Util::DBLock::DumpError (query);
+			throw std::runtime_error ("Query execution failed for fetching IDs.");
+		}
+
+		while (query.next ())
+			result << query.value (0).toByteArray ();
+
+		Q_FOREACH (auto msg, PendingSaveMessages_ [acc].values ())
+			if (msg->GetFolders ().contains (folder))
+				result << msg->GetID ();
+
 		return result;
 	}
 
@@ -236,14 +314,114 @@ namespace Snails
 		return dir;
 	}
 
+	namespace
+	{
+		void InitStorageBase (QSqlDatabase_ptr base)
+		{
+			QHash<QString, QStringList> table2queries;
+			table2queries ["folder2msg"] << "CREATE TABLE folder2msg "
+					"(folder BLOB NOT NULL, msgId BLOB NOT NULL, UNIQUE (folder, msgId) ON CONFLICT IGNORE);";
+			table2queries ["folder2msg"] << "CREATE INDEX folder2msg_idx_folder ON folder2msg (folder);";
+
+			Q_FOREACH (const QString& key, table2queries.keys ())
+				if (!base->tables ().contains (key))
+					Q_FOREACH (const QString& queryStr, table2queries [key])
+					{
+						QSqlQuery query (*base);
+						if (!query.exec (queryStr))
+						{
+							Util::DBLock::DumpError (query);
+							throw std::runtime_error ("Query execution failed for storage creation.");
+						}
+					}
+
+			QSqlQuery pragmas (*base);
+			pragmas.exec ("PRAGMA synchronous = OFF;");
+		}
+	}
+
+	QSqlDatabase_ptr Storage::BaseForAccount (Account *acc)
+	{
+		if (AccountBases_.contains (acc))
+			return AccountBases_ [acc];
+
+		const auto& dir = DirForAccount (acc);
+
+		auto db = QSqlDatabase::addDatabase ("QSQLITE", "SnailsStorage_" + acc->GetID ());
+		QSqlDatabase_ptr base (new QSqlDatabase (db));
+		if (!base->isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "database invalid :(";
+			Util::DBLock::DumpError (base->lastError ());
+			throw std::runtime_error ("Unable to add database connection.");
+		}
+
+		base->setDatabaseName (dir.filePath ("msgs.db"));
+		if (!base->open ())
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (base->lastError ());
+			throw std::runtime_error (qPrintable (QString ("Could not initialize database: %1")
+						.arg (base->lastError ().text ())));
+		}
+
+		InitStorageBase (base);
+		AccountBases_ [acc] = base;
+		return base;
+	}
+
 	void Storage::AddMsgToFolders (Message_ptr msg, Account *acc)
 	{
-		const QString& indexFile = DirForAccount (acc).filePath ("folders.idx");
+		const auto& folders = msg->GetFolders ();
+		const auto& id = msg->GetID ();
+
+		auto base = BaseForAccount (acc);
+
+		QSqlQuery query (*base);
+		QStringList queries;
+		queries << "INSERT INTO folder2msg (folder, msgId) VALUES (:folder, :msgId);";
+		Q_FOREACH (const QString& qStr, queries)
+		{
+			query.prepare (qStr);
+			Q_FOREACH (auto folder, folders)
+			{
+				if (folder.isEmpty ())
+					folder << "INBOX";
+
+				query.bindValue (":folder", Serialize (folder));
+				query.bindValue (":msgId", id);
+				if (!query.exec ())
+					Util::DBLock::DumpError (query);
+			}
+			query.finish ();
+		}
 	}
 
 	void Storage::UpdateCaches (Message_ptr msg)
 	{
 		IsMessageRead_ [msg->GetID ()] = msg->IsRead ();
+	}
+
+	void Storage::handleMessagesSaved ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<QList<Message_ptr>>*> (sender ());
+		watcher->deleteLater ();
+
+		auto acc = FutureWatcher2Account_.take (watcher);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no account for future watcher"
+					<< watcher;
+			return;
+		}
+
+		auto& hash = PendingSaveMessages_ [acc];
+
+		auto messages = watcher->result ();
+		Q_FOREACH (Message_ptr msg, messages)
+			hash.remove (msg->GetID ());
 	}
 }
 }

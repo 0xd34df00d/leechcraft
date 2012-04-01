@@ -141,7 +141,9 @@ OPTION (ENABLE_LASTFMSCROBBLE "Build Last.fm scrobbler" OFF)
 OPTION (ENABLE_LHTR "Build LeechCraft HTML Text editoR" ${WITH_PLUGINS})
 OPTION (ENABLE_GACTS "Build Global Actions provider plugin" OFF)
 OPTION (ENABLE_CEMENTO "Build Cemento, LeechCraft common persistent storage" OFF)
-OPTION (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging plugin" OFF)
+OPTION (ENABLE_PINTAB "Build Pintab for pinning important tabs" ${WITH_PLUGINS})
+OPTION (ENABLE_OTLOZHU "Build Otlozhu, a GTD-inspired ToDo manager" OFF)
+OPTION (ENABLE_KEYBOARDCRAFT "Build KeyboardCraft, a keyboard plugin" OFF)
 
 # Defunct
 OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" OFF)
@@ -355,9 +357,23 @@ IF (ENABLE_GACTS)
 	ADD_SUBDIRECTORY (plugins/gacts)
 ENDIF (ENABLE_GACTS)
 
+<<<<<<< HEAD
 IF (ENABLE_BLOGIQUE)
 	ADD_SUBDIRECTORY (plugins/blogique)
 ENDIF (ENABLE_BLOGIQUE)
+=======
+IF (ENABLE_PINTAB)
+	ADD_SUBDIRECTORY (plugins/pintab)
+ENDIF (ENABLE_PINTAB)
+
+IF (ENABLE_OTLOZHU)
+	ADD_SUBDIRECTORY (plugins/otlozhu)
+ENDIF (ENABLE_OTLOZHU)
+
+IF (ENABLE_KEYBOARDCRAFT)
+	ADD_SUBDIRECTORY (plugins/keyboardcraft)
+ENDIF (ENABLE_KEYBOARDCRAFT)
+>>>>>>> master
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
@@ -415,6 +431,7 @@ SET (SRCS
 	winwarndialog.cpp
 	coreplugin2manager.cpp
 	dockmanager.cpp
+	acceptlangwidget.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -460,6 +477,7 @@ SET (HEADERS
 	winwarndialog.h
 	coreplugin2manager.h
 	dockmanager.h
+	acceptlangwidget.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h
@@ -478,6 +496,7 @@ SET (FORMS
 	aboutdialog.ui
 	wizardtypechoicepage.ui
 	settingstab.ui
+	acceptlangwidget.ui
 	)
 SET (RESOURCES mainresources.qrc)
 
@@ -584,7 +603,7 @@ INSTALL (FILES xmlsettingsdialog/datasourceroles.h DESTINATION include/leechcraf
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
 
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
-INSTALL (FILES InitLCPlugin.cmake DESTINATION /usr/share/cmake/Modules)
+INSTALL (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)

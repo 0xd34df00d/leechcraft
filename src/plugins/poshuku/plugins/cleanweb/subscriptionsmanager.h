@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_SUBSCRIPTIONSMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_SUBSCRIPTIONSMANAGER_H
+#pragma once
+
 #include <QWidget>
 #include "ui_subscriptionsmanager.h"
 
@@ -43,5 +43,3 @@ namespace CleanWeb
 }
 }
 }
-
-#endif

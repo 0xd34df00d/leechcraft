@@ -53,6 +53,7 @@ namespace LeechCraft
 
 		XSD_->SetTooltip (box, item);
 		box->setObjectName (item.attribute ("property"));
+		box->setSizeAdjustPolicy (QComboBox::AdjustToContents);
 		if (item.hasAttribute ("maxVisibleItems"))
 			box->setMaxVisibleItems (item.attribute ("maxVisibleItems").toInt ());
 

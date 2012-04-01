@@ -76,6 +76,7 @@ namespace AdvancedNotifications
 		if (cat != "org.LC.AdvNotifications.Cancel")
 		{
 			PrepareSysTrayIcon (cat);
+			PrepareLCTrayAction (cat);
 			if (!Events_.contains (eventId))
 			{
 				EventData data;
@@ -131,63 +132,105 @@ namespace AdvancedNotifications
 #endif
 	}
 
+	void SystemTrayHandler::PrepareLCTrayAction (const QString& category)
+	{
+		if (Category2Action_.contains (category))
+			return;
+
+		QAction *action = new QAction (GH_->GetIconForCategory (category), category, this);
+		action->setMenu (new QMenu ());
+		Category2Action_ [category] = action;
+
+		connect (action,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleLCAction ()));
+
+		emit gotActions (QList<QAction*> () << action, AEPLCTray);
+
+#ifdef HAVE_QML
+		VisualNotificationsView *vnv = new VisualNotificationsView;
+		connect (vnv,
+				SIGNAL (actionTriggered (const QString&, int)),
+				this,
+				SLOT (handleActionTriggered (const QString&, int)));
+		connect (vnv,
+				SIGNAL (dismissEvent (const QString&)),
+				this,
+				SLOT (dismissNotification (const QString&)));
+		Action2NotificationView_ [action] = vnv;
+#endif
+	}
+
+	void SystemTrayHandler::UpdateMenu (QMenu *menu, const QString& event, const EventData& data)
+	{
+		Q_FOREACH (const QString& pathItem, data.VisualPath_)
+			menu = menu->addMenu (pathItem);
+
+		if (!data.Pixmap_.isNull ())
+			menu->setIcon (data.Pixmap_);
+		menu->setToolTip (data.ExtendedText_);
+
+		int actionIdx = 0;
+		Q_FOREACH (const QString& actionName, data.Actions_)
+		{
+			QAction *action = menu->addAction (actionName);
+			action->setProperty ("Index", actionIdx++);
+			action->setProperty ("EventID", event);
+			connect (action,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleActionTriggered ()), Qt::QueuedConnection);
+		}
+
+		QAction *dismiss = menu->addAction (tr ("Dismiss"));
+		dismiss->setProperty ("EventID", event);
+		connect (dismiss,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (dismissNotification ()), Qt::QueuedConnection);
+
+		menu->addSeparator ();
+		menu->addAction (data.ExtendedText_)->setEnabled (false);
+	}
+
 	void SystemTrayHandler::RebuildState ()
 	{
-		QSet<QSystemTrayIcon*> icons2hide;
-		Q_FOREACH (QSystemTrayIcon *icon, Category2Icon_.values ())
-		{
-			icons2hide << icon;
+		auto icons2hide = Category2Icon_.values ().toSet ();
+		Q_FOREACH (QSystemTrayIcon *icon, icons2hide)
 			icon->contextMenu ()->clear ();
-		}
+
+		auto actsDel = Category2Action_.values ().toSet ();
+		Q_FOREACH (QAction *action, actsDel)
+			action->menu ()->clear ();
 
 #ifdef HAVE_QML
 		EventsForIcon_.clear ();
+		EventsForAction_.clear ();
 #endif
 
 		QSet<QSystemTrayIcon*> visibleIcons;
+		QSet<QAction*> actsUpd;
 
 		Q_FOREACH (const QString& event, Events_.keys ())
 		{
 			const EventData& data = Events_ [event];
+
 			QSystemTrayIcon *icon = Category2Icon_ [data.Category_];
-			if (!icon->isVisible ())
-				icon->show ();
 			icons2hide.remove (icon);
 			visibleIcons << icon;
 
+			QAction *action = Category2Action_ [data.Category_];
+			actsDel.remove (action);
+			actsUpd << action;
+
 #ifdef HAVE_QML
 			EventsForIcon_ [icon] << data;
+			EventsForAction_ [action] << data;
 #endif
 
-			QMenu *menu = icon->contextMenu ();
-			Q_FOREACH (const QString& pathItem, data.VisualPath_)
-				menu = menu->addMenu (pathItem);
-
-			if (!data.Pixmap_.isNull ())
-				menu->setIcon (data.Pixmap_);
-			menu->setToolTip (data.ExtendedText_);
-
-			int actionIdx = 0;
-			Q_FOREACH (const QString& actionName, data.Actions_)
-			{
-				QAction *action = menu->addAction (actionName);
-				action->setProperty ("Index", actionIdx++);
-				action->setProperty ("EventID", event);
-				connect (action,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleActionTriggered ()));
-			}
-
-			QAction *dismiss = menu->addAction (tr ("Dismiss"));
-			dismiss->setProperty ("EventID", event);
-			connect (dismiss,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (dismissNotification ()));
-
-			menu->addSeparator ();
-			menu->addAction (data.ExtendedText_)->setEnabled (false);
+			UpdateMenu (icon->contextMenu (), event, data);
+			UpdateMenu (action->menu (), event, data);
 		}
 
 #ifdef HAVE_QML
@@ -197,7 +240,19 @@ namespace AdvancedNotifications
 			if (!view->isVisible ())
 				continue;
 
-			const QList<EventData>& events = EventsForIcon_ [icon];
+			const auto& events = EventsForIcon_ [icon];
+			view->SetEvents (events);
+			if (events.isEmpty ())
+				view->hide ();
+		}
+
+		Q_FOREACH (QAction *action, Category2Action_.values ())
+		{
+			VisualNotificationsView *view = Action2NotificationView_ [action];
+			if (!view->isVisible ())
+				continue;
+
+			const auto& events = EventsForAction_ [action];
 			view->SetEvents (events);
 			if (events.isEmpty ())
 				view->hide ();
@@ -205,10 +260,21 @@ namespace AdvancedNotifications
 #endif
 
 		Q_FOREACH (QSystemTrayIcon *icon, visibleIcons)
+		{
+			if (!icon->isVisible ())
+				icon->show ();
 			UpdateSysTrayIcon (icon);
+		}
+
+		Q_FOREACH (QAction *action, actsUpd)
+			UpdateTrayAction (action);
 
 		Q_FOREACH (QSystemTrayIcon *icon, icons2hide)
 			icon->hide ();
+
+		Q_FOREACH (QAction *action, actsDel)
+			Category2Action_.remove (Category2Action_.key (action));
+		qDeleteAll (actsDel);
 	}
 
 	namespace
@@ -229,20 +295,18 @@ namespace AdvancedNotifications
 		}
 	}
 
-	void SystemTrayHandler::UpdateSysTrayIcon (QSystemTrayIcon *trayIcon)
+	template<typename T>
+	void SystemTrayHandler::UpdateIcon (T iconable, const QString& category, std::function<QSize (T)> iconSizeGetter)
 	{
-		const QString& category = Category2Icon_.key (trayIcon);
-
 		QIcon icon = GH_->GetIconForCategory (category);
-
 		if (!XmlSettingsManager::Instance ()
 				.property ("EnableCounter." + category.toLatin1 ()).toBool ())
 		{
-			trayIcon->setIcon (icon);
+			iconable->setIcon (icon);
 			return;
 		}
 
-		const QSize& iconSize = trayIcon->geometry ().size ();
+		const QSize& iconSize = iconSizeGetter (iconable);
 		QPixmap px = icon.pixmap (iconSize);
 
 		int eventCount = 0;
@@ -255,12 +319,15 @@ namespace AdvancedNotifications
 		QFont font = qApp->font ();
 		font.setBold (true);
 		font.setItalic (true);
-		auto gFunc = font.pointSize () > 0 ?
-				[] (QFont f) { return f.pointSize (); } :
-				[] (QFont f) { return f.pixelSize (); };
-		auto sFunc = font.pointSize () > 0 ?
-				[] (QFont& f, int size) { f.setPointSize (size); } :
-				[] (QFont& f, int size) { f.setPixelSize (size); };
+
+		// Cause gcc 4.5.x sucks and fails to compile without being such explicit.
+		std::function<int (QFont)> getPointSize = [] (QFont f) { return f.pointSize (); };
+		std::function<int (QFont)> getPixelSize = [] (QFont f) { return f.pixelSize (); };
+		auto gFunc = font.pointSize () > 0 ? getPointSize : getPixelSize;
+
+		std::function<void (QFont&, int)> setPointSize = [] (QFont& f, int size) { f.setPointSize (size); };
+		std::function<void (QFont&, int)> setPixelSize = [] (QFont& f, int size) { f.setPixelSize (size); };
+		auto sFunc = font.pointSize () > 0 ? setPointSize : setPixelSize;
 		FitSize (font, iconSize, countText, gFunc, sFunc);
 
 		const bool tooSmall = gFunc (font) < 5;
@@ -276,7 +343,21 @@ namespace AdvancedNotifications
 				tooSmall ? "#" : countText);
 		p.end ();
 
-		trayIcon->setIcon (QIcon (px));
+		iconable->setIcon (QIcon (px));
+	}
+
+	void SystemTrayHandler::UpdateSysTrayIcon (QSystemTrayIcon *trayIcon)
+	{
+		const QString& category = Category2Icon_.key (trayIcon);
+		UpdateIcon<QSystemTrayIcon*> (trayIcon, category,
+				[] (QSystemTrayIcon *icon) { return icon->geometry ().size (); });
+	}
+
+	void SystemTrayHandler::UpdateTrayAction (QAction *action)
+	{
+		const QString& category = Category2Action_.key (action);
+		UpdateIcon<QAction*> (action, category,
+				[] (QAction*) { return QSize (22, 22); });
 	}
 
 	void SystemTrayHandler::handleActionTriggered ()
@@ -313,6 +394,31 @@ namespace AdvancedNotifications
 			RebuildState ();
 	}
 
+	namespace
+	{
+		void ShowVNV (VisualNotificationsView *view, const QList<EventData>& events)
+		{
+			if (!view->isVisible ())
+			{
+				view->SetEvents (events);
+
+				QPoint pos = QCursor::pos ();
+				const QRect& geometry = qApp->desktop ()->screenGeometry (pos);
+				const QSize& size = view->size ();
+				const bool dropDown = pos.y () < geometry.height () / 2;
+				const bool dropRight = pos.x () + size.width () < geometry.width ();
+
+				if (!dropDown)
+					pos.ry () -= size.height ();
+				if (!dropRight)
+					pos.rx () -= size.width ();
+
+				view->move (pos);
+			}
+			view->setVisible (!view->isVisible ());
+		}
+	}
+
 	void SystemTrayHandler::handleTrayActivated (QSystemTrayIcon::ActivationReason reason)
 	{
 		if (reason != QSystemTrayIcon::Trigger)
@@ -328,25 +434,25 @@ namespace AdvancedNotifications
 			return;
 		}
 
-		VisualNotificationsView *view = Icon2NotificationView_ [trayIcon];
-		if (!view->isVisible ())
+		ShowVNV (Icon2NotificationView_ [trayIcon], EventsForIcon_ [trayIcon]);
+#endif
+	}
+
+	void SystemTrayHandler::handleLCAction ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
 		{
-			view->SetEvents (EventsForIcon_ [trayIcon]);
-
-			QPoint pos = QCursor::pos ();
-			const QRect& geometry = qApp->desktop ()->screenGeometry (pos);
-			const QSize& size = view->size ();
-			const bool dropDown = pos.y () < geometry.height () / 2;
-			const bool dropRight = pos.x () + size.width () < geometry.width ();
-
-			if (!dropDown)
-				pos.ry () -= size.height ();
-			if (!dropRight)
-				pos.rx () -= size.width ();
-
-			view->move (pos);
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a QSystemTrayIcon";
+			return;
 		}
-		view->setVisible (!view->isVisible ());
+
+#ifndef HAVE_QML
+		action->menu ()->show ();
+#else
+		ShowVNV (Action2NotificationView_ [action], EventsForAction_ [action]);
 #endif
 	}
 }

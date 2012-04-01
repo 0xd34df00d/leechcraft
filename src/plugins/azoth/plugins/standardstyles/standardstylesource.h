@@ -50,7 +50,7 @@ namespace StandardStyles
 		QMap<QWebFrame*, bool> HasBeenAppended_;
 		IProxyObject *Proxy_;
 
-		mutable QHash<QString, QList<QColor> > Coloring2Colors_;
+		mutable QHash<QString, QList<QColor>> Coloring2Colors_;
 		mutable QString LastPack_;
 
 		QHash<QObject*, QWebFrame*> Msg2Frame_;
@@ -59,9 +59,11 @@ namespace StandardStyles
 
 		QAbstractItemModel* GetOptionsModel () const;
 		QUrl GetBaseURL (const QString&) const;
-		QString GetHTMLTemplate (const QString&, QObject*, QWebFrame*) const;
+		QString GetHTMLTemplate (const QString&,
+				const QString&, QObject*, QWebFrame*) const;
 		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		void FrameFocused (QWebFrame*);
+		QStringList GetVariantsForPack (const QString&);
 	private:
 		QList<QColor> CreateColors (const QString&);
 		QString GetMessageID (QObject*);

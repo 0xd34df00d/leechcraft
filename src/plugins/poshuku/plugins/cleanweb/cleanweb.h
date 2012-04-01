@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_CLEANWEB_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_CLEANWEB_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QMap>
@@ -101,5 +101,3 @@ namespace CleanWeb
 }
 }
 }
-
-#endif

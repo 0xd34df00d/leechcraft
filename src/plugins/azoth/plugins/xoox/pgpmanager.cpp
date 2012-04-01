@@ -93,7 +93,7 @@ namespace Xoox
 			return msg.read ();
 		else
 		{
-			info (QString ("Error encrypting: " + msg.errorCode ()));
+			info (QString ("Error encrypting: %1").arg (msg.errorCode ()));
 			return QByteArray ();
 		}
 	}
@@ -119,7 +119,7 @@ namespace Xoox
 
 		if (!msg.success ())
 		{
-			warning (QString ("Error signing: " + msg.errorCode ()));
+			warning (QString ("Error signing: %1").arg (msg.errorCode ()));
 			return QByteArray ();
 		}
 		
@@ -172,7 +172,7 @@ namespace Xoox
 			return msg.signature ();
 		else
 		{
-			info (QString ("Error signing: " + msg.errorCode ()));
+			info (QString ("Error signing: %1").arg (msg.errorCode ()));
 			return QByteArray ();
 		}
 	}
@@ -191,7 +191,7 @@ namespace Xoox
 			return msg.read ();
 		else
 		{
-			info (QString ("Error decrypting: " + msg.errorCode ()));
+			info (QString ("Error decrypting: %1").arg (msg.errorCode ()));
 			return QByteArray ();
 		}
 	}
@@ -220,7 +220,7 @@ namespace Xoox
 			return true;
 		else
 		{
-			info (QString ("Invalid signature: " + msg.errorCode ()));
+			info (QString ("Invalid signature: %1").arg (msg.errorCode ()));
 			return false;
 		}
 	}

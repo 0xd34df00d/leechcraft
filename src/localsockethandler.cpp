@@ -127,7 +127,7 @@ namespace LeechCraft
 					<< e.what ();
 		}
 
-		std::vector<std::string> entities = map ["entity"].as<std::vector<std::string> > ();
+		std::vector<std::string> entities = map ["entity"].as<std::vector<std::string>> ();
 		Q_FOREACH (const std::string& entity, entities)
 		{
 			QVariant ve;
