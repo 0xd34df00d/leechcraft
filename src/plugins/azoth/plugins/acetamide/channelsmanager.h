@@ -150,6 +150,10 @@ namespace Acetamide
 		int GetChannelUsersCount (const QString& channel);
 
 		void ClosePrivateChat (const QString& nick);
+
+		void SetChannelUrl (const QString& channel, const QString& url);
+		void SetTopicWhoTime (const QString& channel,
+				const QString& who, quint64 time);
 	};
 }
 }
