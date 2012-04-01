@@ -207,6 +207,7 @@ namespace Xoox
 		AnnotationsManager* GetAnnotationsManager () const;
 		PubSubManager* GetPubSubManager () const;
 		PrivacyListsManager* GetPrivacyListsManager () const;
+		QXmppBobManager* GetBobManager () const;
 #ifdef ENABLE_MEDIACALLS
 		QXmppCallManager* GetCallManager () const;
 #endif

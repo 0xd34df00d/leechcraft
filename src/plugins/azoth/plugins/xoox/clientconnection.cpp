@@ -490,6 +490,11 @@ namespace Xoox
 		return PrivacyListsManager_;
 	}
 
+	QXmppBobManager* ClientConnection::GetBobManager () const
+	{
+		return BobManager_;
+	}
+
 #ifdef ENABLE_MEDIACALLS
 	QXmppCallManager* ClientConnection::GetCallManager () const
 	{
