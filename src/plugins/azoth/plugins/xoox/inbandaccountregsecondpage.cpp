@@ -99,16 +99,21 @@ namespace Xoox
 
 	QString InBandAccountRegSecondPage::GetJID () const
 	{
-		if (FormType_ != FTLegacy)
-			return QString ();
-		return LFB_.GetUsername () + '@' + FirstPage_->GetServerName ();
+		QString res;
+		if (FormType_ == FTNew)
+			res = FB_.GetSavedUsername ();
+		else
+			res = LFB_.GetUsername ();
+		res += '@' + FirstPage_->GetServerName ();
+		return res;
 	}
 
 	QString InBandAccountRegSecondPage::GetPassword () const
 	{
-		if (FormType_ != FTLegacy)
-			return QString ();
-		return LFB_.GetPassword ();
+		if (FormType_ == FTNew)
+			return FB_.GetSavedPass ();
+		else
+			return LFB_.GetPassword ();
 	}
 
 	bool InBandAccountRegSecondPage::isComplete () const
