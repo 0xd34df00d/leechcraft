@@ -49,6 +49,9 @@ namespace Xoox
 
 		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
 		QXmppDataForm GetForm ();
+
+		QString GetSavedUsername () const;
+		QString GetSavedPass () const;
 	};
 }
 }
