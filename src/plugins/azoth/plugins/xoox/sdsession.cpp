@@ -201,6 +201,21 @@ namespace Xoox
 				return Strings_.join ("<br/>");
 			}
 		};
+
+		QString GetMUCDescr (const QXmppDataForm& form)
+		{
+			QString result;
+			Q_FOREACH (const QXmppDataForm::Field& field, form.fields ())
+				if (field.key () == "FORM_TYPE" && field.value () != "http://jabber.org/protocol/muc#roominfo")
+					return QString ();
+				else if (field.key () == "muc#roominfo_description")
+				{
+					result = field.value ().toString ();
+					break;
+				}
+
+			return result;
+		}
 	}
 
 	void SDSession::HandleInfo (const QXmppDiscoveryIq& iq)
@@ -226,7 +241,15 @@ namespace Xoox
 				targetItem->setText (text);
 		}
 
-		QString tooltip;
+		QString tooltip = Qt::escape (targetItem->text ()) + "<br />";
+
+		const QString& mucDescr = GetMUCDescr (iq.form ());
+		if (!mucDescr.isEmpty ())
+		{
+			tooltip += tr ("MUC description: %1.")
+					.arg (mucDescr);
+			tooltip += "<br />";
+		}
 
 		const auto& verStruct = XEP0232Handler::FromDataForm (iq.form ());
 		if (!verStruct.IsNull ())
@@ -413,7 +436,8 @@ namespace Xoox
 			return;
 		}
 
-		FormBuilder builder;
+		QXmppBobManager *mgr = Account_->GetClientConnection ()->GetBobManager ();
+		FormBuilder builder (QString (), mgr);
 		QWidget *widget = builder.CreateForm (form);
 		if (!XooxUtil::RunFormDialog (widget))
 			return;

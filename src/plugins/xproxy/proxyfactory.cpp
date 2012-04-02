@@ -16,45 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
-#include <memory>
-#include <QXmppDataForm.h>
-
-class QXmppDataForm;
-class QXmppBobManager;
-class QWidget;
-class QFormLayout;
+#include "proxyfactory.h"
+#include "proxiesconfigwidget.h"
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace XProxy
 {
-namespace Xoox
-{
-	class FieldHandler;
-	typedef std::shared_ptr<FieldHandler> FieldHandler_ptr;
-
-	class FormBuilder
+	ProxyFactory::ProxyFactory (ProxiesConfigWidget *cfgWidget)
+	: CfgWidget_ (cfgWidget)
 	{
-		QXmppDataForm Form_;
-		QHash<QXmppDataForm::Field::Type, FieldHandler_ptr> Type2Handler_;
-		QString From_;
-		QXmppBobManager *BobManager_;
-	public:
-		FormBuilder (const QString& = QString (), QXmppBobManager* = 0);
+	}
 
-		QString From () const;
-		QXmppBobManager* BobManager () const;
+	QList<QNetworkProxy> ProxyFactory::queryProxy (const QNetworkProxyQuery& query)
+	{
+		QList<QNetworkProxy> proxies;
+		if (query.queryType () == QNetworkProxyQuery::TcpSocket ||
+				query.queryType () == QNetworkProxyQuery::UrlRequest)
+		{
+			const auto& matches = CfgWidget_->FindMatching (query.peerHostName (),
+					query.peerPort (), query.protocolTag ());
+			std::copy (matches.begin (), matches.end (), std::back_inserter (proxies));
+		}
 
-		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
-		QXmppDataForm GetForm ();
+		if (proxies.isEmpty ())
+			proxies << QNetworkProxy (QNetworkProxy::NoProxy);
 
-		QString GetSavedUsername () const;
-		QString GetSavedPass () const;
-	};
+		return proxies;
+	}
 }
 }
-}
-
-#endif

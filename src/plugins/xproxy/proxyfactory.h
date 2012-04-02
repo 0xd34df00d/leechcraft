@@ -16,45 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
-#include <memory>
-#include <QXmppDataForm.h>
+#pragma once
 
-class QXmppDataForm;
-class QXmppBobManager;
-class QWidget;
-class QFormLayout;
+#include <QNetworkProxyFactory>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace XProxy
 {
-namespace Xoox
-{
-	class FieldHandler;
-	typedef std::shared_ptr<FieldHandler> FieldHandler_ptr;
+	class ProxiesConfigWidget;
 
-	class FormBuilder
+	class ProxyFactory : public QObject
+					   , public QNetworkProxyFactory
 	{
-		QXmppDataForm Form_;
-		QHash<QXmppDataForm::Field::Type, FieldHandler_ptr> Type2Handler_;
-		QString From_;
-		QXmppBobManager *BobManager_;
+		Q_OBJECT
+
+		ProxiesConfigWidget *CfgWidget_;
 	public:
-		FormBuilder (const QString& = QString (), QXmppBobManager* = 0);
+		ProxyFactory (ProxiesConfigWidget*);
 
-		QString From () const;
-		QXmppBobManager* BobManager () const;
-
-		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
-		QXmppDataForm GetForm ();
-
-		QString GetSavedUsername () const;
-		QString GetSavedPass () const;
+		QList<QNetworkProxy> queryProxy (const QNetworkProxyQuery&);
 	};
 }
 }
-}
-
-#endif

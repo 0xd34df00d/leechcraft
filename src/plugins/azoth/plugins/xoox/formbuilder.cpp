@@ -374,6 +374,28 @@ namespace Xoox
 			handler->Save ();
 		return Form_;
 	}
+
+	namespace
+	{
+		QString GetFieldVal (const QXmppDataForm& form, const QString& name)
+		{
+			Q_FOREACH (const QXmppDataForm::Field& field, form.fields ())
+				if (field.key () == name)
+					return field.value ().toString ();
+
+			return QString ();
+		}
+	}
+
+	QString FormBuilder::GetSavedUsername () const
+	{
+		return GetFieldVal (Form_, "username");
+	}
+
+	QString FormBuilder::GetSavedPass () const
+	{
+		return GetFieldVal (Form_, "password");
+	}
 }
 }
 }

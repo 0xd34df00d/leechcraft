@@ -16,45 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
-#include <memory>
-#include <QXmppDataForm.h>
+#pragma once
 
-class QXmppDataForm;
-class QXmppBobManager;
-class QWidget;
-class QFormLayout;
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace XProxy
 {
-namespace Xoox
-{
-	class FieldHandler;
-	typedef std::shared_ptr<FieldHandler> FieldHandler_ptr;
-
-	class FormBuilder
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		QXmppDataForm Form_;
-		QHash<QXmppDataForm::Field::Type, FieldHandler_ptr> Type2Handler_;
-		QString From_;
-		QXmppBobManager *BobManager_;
+		Q_OBJECT
+		XmlSettingsManager ();
 	public:
-		FormBuilder (const QString& = QString (), QXmppBobManager* = 0);
-
-		QString From () const;
-		QXmppBobManager* BobManager () const;
-
-		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
-		QXmppDataForm GetForm ();
-
-		QString GetSavedUsername () const;
-		QString GetSavedPass () const;
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }
-}
 
-#endif

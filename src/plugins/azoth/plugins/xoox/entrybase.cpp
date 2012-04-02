@@ -617,7 +617,8 @@ namespace Xoox
 
 	void EntryBase::SetClientInfo (const QString& variant, const QXmppPresence& pres)
 	{
-		SetClientInfo (variant, pres.capabilityNode (), pres.capabilityVer ());
+		if (pres.type () == QXmppPresence::Available)
+			SetClientInfo (variant, pres.capabilityNode (), pres.capabilityVer ());
 	}
 
 	void EntryBase::SetClientVersion (const QString& variant, const QXmppVersionIq& version)
@@ -675,8 +676,11 @@ namespace Xoox
 			if (pres.photoHash () != VCardPhotoHash_)
 				fetchVCard ();
 		}
-		else if (!HasBlindlyRequestedVCard_)
+		else if (pres.type () == QXmppPresence::Available && !HasBlindlyRequestedVCard_)
+		{
 			fetchVCard ();
+			HasBlindlyRequestedVCard_ = true;
+		}
 	}
 
 	QString EntryBase::FormatRawInfo (const QXmppVCardIq& vcard)

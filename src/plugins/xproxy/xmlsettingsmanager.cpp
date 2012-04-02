@@ -16,45 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
-#include <memory>
-#include <QXmppDataForm.h>
-
-class QXmppDataForm;
-class QXmppBobManager;
-class QWidget;
-class QFormLayout;
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace XProxy
 {
-namespace Xoox
-{
-	class FieldHandler;
-	typedef std::shared_ptr<FieldHandler> FieldHandler_ptr;
-
-	class FormBuilder
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		QXmppDataForm Form_;
-		QHash<QXmppDataForm::Field::Type, FieldHandler_ptr> Type2Handler_;
-		QString From_;
-		QXmppBobManager *BobManager_;
-	public:
-		FormBuilder (const QString& = QString (), QXmppBobManager* = 0);
+		Util::BaseSettingsManager::Init ();
+	}
 
-		QString From () const;
-		QXmppBobManager* BobManager () const;
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
 
-		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
-		QXmppDataForm GetForm ();
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_XProxy");
+		return settings;
+	}
 
-		QString GetSavedUsername () const;
-		QString GetSavedPass () const;
-	};
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 }
 }
-}
-
-#endif

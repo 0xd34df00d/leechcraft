@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/keyboardcraft" >
+    <file>resources/images/keyboardcraft.svg</file>
+  </qresource>
+</RCC>
