@@ -561,9 +561,7 @@ namespace Acetamide
 		if (!handler)
 			return;
 
-		QString topic = handler->GetMUCSubject ();
-		topic.append ("\nURL: " + url);
-		handler->SetMUCSubject (topic);
+		handler->SetUrl (url);
 	}
 
 	void ChannelsManager::SetTopicWhoTime (const QString& channel, const QString& who, quint64 time)

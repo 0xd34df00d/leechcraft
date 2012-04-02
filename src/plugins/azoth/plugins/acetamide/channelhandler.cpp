@@ -321,6 +321,8 @@ namespace Acetamide
 			return;
 
 		Subject_ = subject;
+		if (!Url_.isEmpty ())
+			Subject_.append ("\nURL: " + Url_);
 
 		QString subj ("Topic changed to: %1");
 		ChannelPublicMessage *message =
@@ -704,6 +706,13 @@ namespace Acetamide
 					EntryStatus (SAway, QString ()) :
 					EntryStatus (SOnline, QString ()));
 		}
+	}
+
+	void ChannelHandler::SetUrl (const QString& url)
+	{
+		Url_ = url;
+		if (!Url_.isEmpty ())
+			Subject_.append ("\nURL: " + Url_);
 	}
 
 	bool ChannelHandler::RemoveUserFromChannel (const QString& nick)
