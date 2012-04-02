@@ -34,17 +34,17 @@ namespace Auscrie
 	{
 		switch (Ui_.ActionBox_->currentIndex ())
 		{
-			case 0:
-			case 1:
-			case 2:
-				return Action::Upload;
-			case 3:
-				return Action::Save;
-			default:
-				qWarning () << Q_FUNC_INFO
-						<< Ui_.ActionBox_->currentIndex ()
-						<< "unhandled";
-				return Action::Save;
+		case 0:
+		case 1:
+		case 2:
+			return Action::Upload;
+		case 3:
+			return Action::Save;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< Ui_.ActionBox_->currentIndex ()
+					<< "unhandled";
+			return Action::Save;
 		}
 	}
 
@@ -52,17 +52,17 @@ namespace Auscrie
 	{
 		switch (Ui_.ActionBox_->currentIndex ())
 		{
-			case 0:
-				return Poster::DumpBitcheeseNet;
-			case 1:
-				return Poster::SavepicRu;
-			case 2:
-				return Poster::ImagebinCa;
-			default:
-				qWarning () << Q_FUNC_INFO
-						<< Ui_.ActionBox_->currentIndex ()
-						<< "unhandled, defaulting to imagebin.ca";
-				return Poster::ImagebinCa;
+		case 0:
+			return Poster::DumpBitcheeseNet;
+		case 1:
+			return Poster::SavepicRu;
+		case 2:
+			return Poster::ImagebinCa;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< Ui_.ActionBox_->currentIndex ()
+					<< "unhandled, defaulting to imagebin.ca";
+			return Poster::ImagebinCa;
 		}
 	}
 
