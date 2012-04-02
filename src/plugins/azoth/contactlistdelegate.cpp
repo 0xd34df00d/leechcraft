@@ -313,6 +313,9 @@ namespace Azoth
 		QList<QIcon> clientIcons = isMUC || !ShowClientIcons_ ?
 				QList<QIcon> () :
 				Core::Instance ().GetClientIconForEntry (entry).values ();
+		const int iconsLimit = 4;
+		if (clientIcons.size () > iconsLimit)
+			clientIcons = clientIcons.mid (0, iconsLimit);
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
 		{
 			const QByteArray& aff = index.data (Core::CLRAffiliation).toByteArray ();
