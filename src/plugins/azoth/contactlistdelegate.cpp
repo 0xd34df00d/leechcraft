@@ -310,12 +310,16 @@ namespace Azoth
 
 		const int textShift = 2 * CPadding + iconSize + unreadSpace;
 
-		QList<QIcon> clientIcons = isMUC || !ShowClientIcons_ ?
-				QList<QIcon> () :
-				Core::Instance ().GetClientIconForEntry (entry).values ();
-		const int iconsLimit = 4;
-		if (clientIcons.size () > iconsLimit)
-			clientIcons = clientIcons.mid (0, iconsLimit);
+		const QStringList& vars = entry->Variants ();
+
+		QList<QIcon> clientIcons;
+		if (!isMUC && ShowClientIcons_)
+		{
+			const auto& iconsMap = Core::Instance ().GetClientIconForEntry (entry);
+			for (int i = 0; i < std::min (vars.size (), 4); ++i)
+				clientIcons << iconsMap [vars.at (i)];
+		}
+
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
 		{
 			const QByteArray& aff = index.data (Core::CLRAffiliation).toByteArray ();
@@ -324,7 +328,7 @@ namespace Azoth
 			if (!icon.isNull ())
 				clientIcons.prepend (icon);
 		}
-		const QStringList& vars = entry->Variants ();
+
 		if (!vars.isEmpty ())
 		{
 			const QMap<QString, QVariant>& addInfo = entry->GetClientInfo (vars.first ());
