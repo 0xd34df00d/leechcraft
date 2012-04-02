@@ -48,6 +48,26 @@ namespace Auscrie
 		}
 	}
 
+	ShooterDialog::Mode ShooterDialog::GetMode () const
+	{
+		switch (Ui_.ModeBox_->currentIndex ())
+		{
+		case 0:
+			return Mode::LCWindowOverlay;
+		case 1:
+			return Mode::LCWindow;
+		case 2:
+			return Mode::CurrentScreen;
+		case 3:
+			return Mode::WholeDesktop;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< Ui_.ModeBox_->currentIndex ()
+					<< "unhandled";
+			return Mode::LCWindowOverlay;
+		}
+	}
+
 	Poster::HostingService ShooterDialog::GetHostingService () const
 	{
 		switch (Ui_.ActionBox_->currentIndex ())

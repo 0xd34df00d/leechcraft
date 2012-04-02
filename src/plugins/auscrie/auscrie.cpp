@@ -22,6 +22,7 @@
 #include <QBuffer>
 #include <QDir>
 #include <QFileDialog>
+#include <QDesktopWidget>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
@@ -102,52 +103,70 @@ namespace Auscrie
 	{
 		ShotAction_->setEnabled (true);
 
-		QWidget *mw = Proxy_->GetMainWindow ();
-		QPixmap pm = QPixmap::grabWidget (mw);
+		auto mw = Proxy_->GetMainWindow ();
 
+		const QPixmap& pm = GetPixmap ();
 		int quality = Dialog_->GetQuality ();
-
 		switch (Dialog_->GetAction ())
 		{
-			case ShooterDialog::Action::Save:
+		case ShooterDialog::Action::Save:
+			{
+				QString path = Proxy_->GetSettingsManager ()->
+					Property ("PluginsStorage/Auscrie/SavePath",
+							QDir::currentPath () + "01." + Dialog_->GetFormat ())
+					.toString ();
+
+				QString filename = QFileDialog::getSaveFileName (mw,
+						tr ("Save as"),
+						path,
+						tr ("%1 files (*.%1);;All files (*.*)")
+							.arg (Dialog_->GetFormat ()));
+
+				if (!filename.isEmpty ())
 				{
-					QString path = Proxy_->GetSettingsManager ()->
-						Property ("PluginsStorage/Auscrie/SavePath",
-								QDir::currentPath () + "01." + Dialog_->GetFormat ())
-						.toString ();
-
-					QString filename = QFileDialog::getSaveFileName (mw,
-							tr ("Save as"),
-							path,
-							tr ("%1 files (*.%1);;All files (*.*)")
-								.arg (Dialog_->GetFormat ()));
-
-					if (!filename.isEmpty ())
-					{
-						pm.save (filename,
-								qPrintable (Dialog_->GetFormat ()),
-								quality);
-						Proxy_->GetSettingsManager ()->
-							setProperty ("PluginsStorage/Auscrie/SavePath",
-									filename);
-					}
+					pm.save (filename,
+							qPrintable (Dialog_->GetFormat ()),
+							quality);
+					Proxy_->GetSettingsManager ()->
+						setProperty ("PluginsStorage/Auscrie/SavePath",
+								filename);
 				}
+			}
+			break;
+		case ShooterDialog::Action::Upload:
+			{
+				QByteArray bytes;
+				QBuffer buf (&bytes);
+				buf.open (QIODevice::ReadWrite);
+				if (!pm.save (&buf,
+							qPrintable (Dialog_->GetFormat ()),
+							quality))
+					qWarning () << Q_FUNC_INFO
+						<< "save failed"
+						<< qPrintable (Dialog_->GetFormat ())
+						<< quality;
+				Post (bytes);
 				break;
-			case ShooterDialog::Action::Upload:
-				{
-					QByteArray bytes;
-					QBuffer buf (&bytes);
-					buf.open (QIODevice::ReadWrite);
-					if (!pm.save (&buf,
-								qPrintable (Dialog_->GetFormat ()),
-								quality))
-						qWarning () << Q_FUNC_INFO
-							<< "save failed"
-							<< qPrintable (Dialog_->GetFormat ())
-							<< quality;
-					Post (bytes);
-					break;
-				}
+			}
+		}
+	}
+
+	QPixmap Plugin::GetPixmap () const
+	{
+		switch (Dialog_->GetMode ())
+		{
+		case ShooterDialog::Mode::LCWindowOverlay:
+			return QPixmap::grabWindow (Proxy_->GetMainWindow ()->winId ());
+		case ShooterDialog::Mode::LCWindow:
+			return QPixmap::grabWidget (Proxy_->GetMainWindow ());
+		case ShooterDialog::Mode::CurrentScreen:
+		{
+ 			auto desk = qApp->desktop ();
+			auto screen = desk->screen (desk->screenNumber (QCursor::pos ()));
+			return QPixmap::grabWindow (screen->winId ());
+		}
+		case ShooterDialog::Mode::WholeDesktop:
+			return QPixmap::grabWindow (qApp->desktop ()->winId ());
 		}
 	}
 

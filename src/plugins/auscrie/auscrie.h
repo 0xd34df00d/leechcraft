@@ -52,6 +52,7 @@ namespace Auscrie
 		void makeScreenshot ();
 		void shoot ();
 	private:
+		QPixmap GetPixmap () const;
 		void Post (const QByteArray&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);

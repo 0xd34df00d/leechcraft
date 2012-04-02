@@ -38,9 +38,18 @@ namespace Auscrie
 			Save
 		};
 
+		enum class Mode
+		{
+			LCWindowOverlay,
+			LCWindow,
+			CurrentScreen,
+			WholeDesktop
+		};
+
 		ShooterDialog (QWidget* = 0);
 
 		Action GetAction () const;
+		Mode GetMode () const;
 		Poster::HostingService GetHostingService () const;
 		int GetTimeout () const;
 		QString GetFormat () const;
