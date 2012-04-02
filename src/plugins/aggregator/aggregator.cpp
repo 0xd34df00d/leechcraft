@@ -119,6 +119,8 @@ namespace Aggregator
 
 		Impl_->ToolMenu_ = new QMenu (tr ("Aggregator"));
 		Impl_->ToolMenu_->setIcon (GetIcon ());
+		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionMarkAllAsRead_);
+		Impl_->ToolMenu_->addSeparator ();
 		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionImportOPML_);
 		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportOPML_);
 		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionImportBinary_);
@@ -454,6 +456,7 @@ namespace Aggregator
 			result << Impl_->AppWideActions_.ActionUpdateFeeds_;
 			break;
 		case AEPTrayMenu:
+			result << Impl_->AppWideActions_.ActionMarkAllAsRead_;
 			result << Impl_->AppWideActions_.ActionAddFeed_;
 			result << Impl_->AppWideActions_.ActionUpdateFeeds_;
 			break;
@@ -630,6 +633,56 @@ namespace Aggregator
 				<< ID_t ("ActionMarkChannelAsRead_", Impl_->ChannelActions_.ActionMarkChannelAsRead_)
 				<< ID_t ("ActionMarkChannelAsUnread_", Impl_->ChannelActions_.ActionMarkChannelAsUnread_)
 				<< ID_t ("ActionChannelSettings_", Impl_->ChannelActions_.ActionChannelSettings_);
+	}
+
+	void Aggregator::on_ActionMarkAllAsRead__triggered ()
+	{
+		if (XmlSettingsManager::Instance ()->property ("ConfirmMarkAllAsRead").toBool ())
+		{
+			QMessageBox mbox (QMessageBox::Question,
+					"LeechCraft",
+					tr ("Do you really want to mark all channels as read?"),
+					QMessageBox::Yes | QMessageBox::No,
+					this);
+			mbox.setDefaultButton (QMessageBox::No);
+
+			QPushButton always (tr ("Always"));
+			mbox.addButton (&always, QMessageBox::AcceptRole);
+
+			if (mbox.exec () == QMessageBox::No)
+				return;
+			else if (mbox.clickedButton () == &always)
+				XmlSettingsManager::Instance ()->
+						setProperty ("ConfirmMarkAllAsRead", false);
+		}
+
+		QModelIndexList indexes;
+		QAbstractItemModel *model = Impl_->Ui_.Feeds_->model ();
+		for (int i = 0, size = model->rowCount (); i < size; ++i)
+		{
+			auto index = model->index (i, 0);
+			if (Impl_->FlatToFolders_->GetSourceModel ())
+				index = Impl_->FlatToFolders_->MapToSource (index);
+			indexes << Core::Instance ().GetChannelsModel ()->mapToSource (index);
+		}
+
+		int row = 0;
+		Q_FOREACH (QModelIndex index, indexes)
+		{
+			if (index.isValid ())
+				Core::Instance ().MarkChannelAsRead (index);
+			else if (Impl_->FlatToFolders_->GetSourceModel ())
+			{
+				const auto& parentIndex = Impl_->FlatToFolders_->index (row++, 0);
+				for (int i = 0, size = model->rowCount (parentIndex);
+						i < size; ++i)
+				{
+					auto source = Impl_->FlatToFolders_->index (i, 0, parentIndex);
+					source = Impl_->FlatToFolders_->MapToSource (source);
+					Core::Instance ().MarkChannelAsRead (source);
+				}
+			}
+		}
 	}
 
 	void Aggregator::on_ActionAddFeed__triggered ()

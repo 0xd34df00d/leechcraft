@@ -128,6 +128,7 @@ namespace Aggregator
 	public slots:
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
+		void on_ActionMarkAllAsRead__triggered ();
 		void on_ActionAddFeed__triggered ();
 		void on_ActionRemoveFeed__triggered ();
 		void on_ActionRemoveChannel__triggered ();

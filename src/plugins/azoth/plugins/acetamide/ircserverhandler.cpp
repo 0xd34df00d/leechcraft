@@ -1105,6 +1105,17 @@ namespace Acetamide
 		autoWhoRequest ();
 	}
 
+	void IrcServerHandler::GotChannelUrl (const QString& channel, const QString& url)
+	{
+		ChannelsManager_->SetChannelUrl (channel, url);
+	}
+
+	void IrcServerHandler::GotTopicWhoTime (const QString& channel,
+			const QString& who, quint64 time)
+	{
+		ChannelsManager_->SetTopicWhoTime (channel, who, time);
+	}
+
 	void IrcServerHandler::connectionEstablished ()
 	{
 		ServerConnectionState_ = Connected;
