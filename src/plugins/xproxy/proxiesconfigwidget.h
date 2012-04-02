@@ -71,6 +71,7 @@ namespace XProxy
 		void accept ();
 		void reject ();
 	private slots:
+		void handleItemSelected (const QModelIndex&);
 		void on_AddProxyButton__released ();
 	};
 }

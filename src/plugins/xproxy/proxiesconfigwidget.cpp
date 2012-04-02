@@ -87,14 +87,12 @@ namespace XProxy
 		Ui_.setupUi (this);
 		Ui_.ProxiesList_->setModel (Model_);
 
-		reject ();
+		connect (Ui_.ProxiesList_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleItemSelected (QModelIndex)));
 
-		auto protoModel = Ui_.TargetProto_->model ();
-		for (int i = 0; i < protoModel->rowCount (); ++i)
-		{
-			const auto& idx = protoModel->index (i, 0);
-			protoModel->setData (idx, Qt::Unchecked, Qt::CheckStateRole);
-		}
+		reject ();
 	}
 
 	QList<Proxy> ProxiesConfigWidget::FindMatching (const QString& reqHost, int reqPort, const QString& proto)
@@ -158,6 +156,42 @@ namespace XProxy
 		LoadSettings ();
 	}
 
+	void ProxiesConfigWidget::handleItemSelected (const QModelIndex& idx)
+	{
+		Ui_.UpdateProxy_->setEnabled (idx.isValid ());
+		Ui_.RemoveProxy_->setEnabled (idx.isValid ());
+
+		const auto& entry = Entries_.value (idx.row ());
+		Ui_.TargetHost_->setText (entry.first.Host_.pattern ());
+		Ui_.TargetPort_->setValue (entry.first.Port_);
+		Ui_.TargetProto_->setText (entry.first.Protocols_.join (" "));
+
+		Ui_.ProxyHost_->setText (entry.second.Host_);
+		Ui_.ProxyPort_->setValue (entry.second.Port_);
+		Ui_.ProxyUser_->setText (entry.second.User_);
+		Ui_.ProxyPassword_->setText (entry.second.Pass_);
+		switch (entry.second.Type_)
+		{
+		case QNetworkProxy::ProxyType::Socks5Proxy:
+			Ui_.ProxyType_->setCurrentIndex (0);
+			break;
+		case QNetworkProxy::ProxyType::HttpProxy:
+			Ui_.ProxyType_->setCurrentIndex (1);
+			break;
+		case QNetworkProxy::ProxyType::HttpCachingProxy:
+			Ui_.ProxyType_->setCurrentIndex (2);
+			break;
+		case QNetworkProxy::ProxyType::FtpCachingProxy:
+			Ui_.ProxyType_->setCurrentIndex (3);
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown proxy type"
+					<< entry.second.Type_;
+			break;
+		}
+	}
+
 	void ProxiesConfigWidget::on_AddProxyButton__released ()
 	{
 		QString rxPat = Ui_.TargetHost_->text ();
@@ -167,21 +201,11 @@ namespace XProxy
 			rxPat.append (".*");
 		}
 
-		QStringList protos;
-		auto protoModel = Ui_.TargetProto_->model ();
-		for (int i = 0; i < protoModel->rowCount (); ++i)
-		{
-			const auto& idx = protoModel->index (i, 0);
-			if (idx.data (Qt::CheckStateRole).toInt () == Qt::Checked)
-				protos << idx.data (Qt::DisplayRole).toString ();
-		}
-		protos.removeAll (QString ());
-
 		ReqTarget targ =
 		{
 			QRegExp (rxPat, Qt::CaseInsensitive),
 			Ui_.TargetPort_->value (),
-			protos
+			Ui_.TargetProto_->text ().split (' ', QString::SkipEmptyParts)
 		};
 
 		QNetworkProxy::ProxyType type = QNetworkProxy::ProxyType::NoProxy;
