@@ -137,6 +137,10 @@
 				<item type="checkbox" property="SendButtonVisible" default="true">
 					<label value="Display send button" />
 				</item>
+				<item type="spinbox" property="MinLinesHeight" minimum="1" maximum="10" default="3">
+					<label value="Minimal message edit height:" />
+					<suffix value=" lines of text" />
+				</item>
 			</groupbox>
 		</tab>
 		<tab>
