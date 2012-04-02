@@ -155,6 +155,7 @@ namespace Azoth
 		void handleGotLastMessages (QObject*, const QList<QObject*>&);
 
 		void handleSendButtonVisible ();
+		void handleMinLinesHeightChanged ();
 		void handleRichFormatterPosition ();
 		void handleFontSettingsChanged ();
 		void handleFontSizeChanged ();

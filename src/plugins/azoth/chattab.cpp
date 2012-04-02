@@ -943,6 +943,12 @@ namespace Azoth
 					.property ("SendButtonVisible").toBool ());
 	}
 
+	void ChatTab::handleMinLinesHeightChanged ()
+	{
+		PreviousTextHeight_ = 0;
+		UpdateTextHeight ();
+	}
+
 	void ChatTab::handleRichFormatterPosition ()
 	{
 		const QString& posStr = XmlSettingsManager::Instance ()
@@ -1255,6 +1261,9 @@ namespace Azoth
 		XmlSettingsManager::Instance ().RegisterObject ("SendButtonVisible",
 				this, "handleSendButtonVisible");
 		handleSendButtonVisible ();
+
+		XmlSettingsManager::Instance ().RegisterObject ("MinLinesHeight",
+				this, "handleMinLinesHeightChanged");
 	}
 
 	void ChatTab::RequestLogs ()
