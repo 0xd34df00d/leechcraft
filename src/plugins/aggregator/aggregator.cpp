@@ -200,15 +200,9 @@ namespace Aggregator
 		Impl_->FlatToFolders_->SetTagsManager (Core::Instance ().GetProxy ()->GetTagsManager ());
 		handleGroupChannels ();
 		connect (Impl_->FlatToFolders_.get (),
-				SIGNAL (rowsInserted (const QModelIndex&,
-						int, int)),
+				SIGNAL (rowsInserted (QModelIndex, int, int)),
 				Impl_->Ui_.Feeds_,
-				SLOT (expandAll ()));
-		connect (Impl_->FlatToFolders_.get (),
-				SIGNAL (rowsRemoved (const QModelIndex&,
-						int, int)),
-				Impl_->Ui_.Feeds_,
-				SLOT (expandAll ()));
+				SLOT (expand (QModelIndex)));
 		XmlSettingsManager::Instance ()->RegisterObject ("GroupChannelsByTags",
 				this, "handleGroupChannels");
 
