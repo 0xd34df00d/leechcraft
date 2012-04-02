@@ -217,6 +217,10 @@ namespace Acetamide
 
 		void SetAway (const QString& message);
 		void ChangeAway (bool away, const QString& message = QString ());
+
+		void GotChannelUrl (const QString& channel, const QString& url);
+		void GotTopicWhoTime (const QString& channel,
+				const QString& who, quint64 time);
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();

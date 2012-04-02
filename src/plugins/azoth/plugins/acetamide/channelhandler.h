@@ -53,6 +53,7 @@ namespace Acetamide
 		QHash<QString, ChannelParticipantEntry_ptr> Nick2Entry_;
 
 		ChannelModes ChannelMode_;
+		QString Url_;
 	public:
 		ChannelHandler (const ChannelOptions& options, ChannelsManager *manager);
 		QString GetChannelID () const;
@@ -137,6 +138,8 @@ namespace Acetamide
 		void SetNewChannelModes (const ChannelModes&);
 
 		void UpdateEntry (const WhoMessage& message);
+
+		void SetUrl (const QString& url);
 	private:
 		bool RemoveUserFromChannel (const QString&);
 		ChannelParticipantEntry_ptr CreateParticipantEntry (const QString&);

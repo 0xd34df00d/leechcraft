@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "channelsmanager.h"
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "ircserverhandler.h"
 #include "channelhandler.h"
@@ -552,6 +553,29 @@ namespace Acetamide
 	void ChannelsManager::ClosePrivateChat (const QString& nick)
 	{
 		ISH_->ClosePrivateChat (nick);
+	}
+
+	void ChannelsManager::SetChannelUrl (const QString& channel, const QString& url)
+	{
+		const std::shared_ptr<ChannelHandler> handler = ChannelHandlers_ [channel.toLower ()];
+		if (!handler)
+			return;
+
+		handler->SetUrl (url);
+	}
+
+	void ChannelsManager::SetTopicWhoTime (const QString& channel, const QString& who, quint64 time)
+	{
+		const std::shared_ptr<ChannelHandler> handler = ChannelHandlers_ [channel.toLower ()];
+		if (!handler)
+			return;
+
+		QString msg (tr ("Topic was set by %1 at %2")
+				.arg (who)
+				.arg (QDateTime::fromTime_t (time).toString (Qt::TextDate)));
+		handler->HandleServiceMessage (msg,
+				IMessage::MTServiceMessage,
+				IMessage::MSTOther);
 	}
 
 	uint qHash (const ChannelOptions& opts)
