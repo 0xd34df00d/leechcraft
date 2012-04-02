@@ -18,6 +18,7 @@
 
 #include "xproxy.h"
 #include <QIcon>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/icoreproxy.h>
 #include "proxyfactory.h"
@@ -30,6 +31,8 @@ namespace XProxy
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("xproxy");
+
 		CoreProxy_ = proxy;
 
 		qRegisterMetaTypeStreamOperators<Proxy> ("LeechCraft::XProxy::Proxy");
