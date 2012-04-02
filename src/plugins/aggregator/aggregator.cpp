@@ -637,6 +637,25 @@ namespace Aggregator
 
 	void Aggregator::on_ActionMarkAllAsRead__triggered ()
 	{
+		if (XmlSettingsManager::Instance ()->property ("ConfirmMarkAllAsRead").toBool ())
+		{
+			QMessageBox mbox (QMessageBox::Question,
+					"LeechCraft",
+					tr ("Do you really want to mark all channels as read?"),
+					QMessageBox::Yes | QMessageBox::No,
+					this);
+			mbox.setDefaultButton (QMessageBox::No);
+
+			QPushButton always (tr ("Always"));
+			mbox.addButton (&always, QMessageBox::AcceptRole);
+
+			if (mbox.exec () == QMessageBox::No)
+				return;
+			else if (mbox.clickedButton () == &always)
+				XmlSettingsManager::Instance ()->
+						setProperty ("ConfirmMarkAllAsRead", false);
+		}
+
 		QModelIndexList indexes;
 		QAbstractItemModel *model = Impl_->Ui_.Feeds_->model ();
 		for (int i = 0, size = model->rowCount (); i < size; ++i)
