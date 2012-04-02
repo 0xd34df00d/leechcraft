@@ -211,7 +211,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="UpdateProxy_">
+      <widget class="QPushButton" name="UpdateProxyButton_">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -221,7 +221,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="RemoveProxy_">
+      <widget class="QPushButton" name="RemoveProxyButton_">
        <property name="enabled">
         <bool>false</bool>
        </property>

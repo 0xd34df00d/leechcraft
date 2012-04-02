@@ -136,63 +136,7 @@ namespace XProxy
 		settings.endGroup ();
 	}
 
-	void ProxiesConfigWidget::accept ()
-	{
-		SaveSettings ();
-	}
-
-	void ProxiesConfigWidget::reject ()
-	{
-		Model_->clear ();
-
-		QStringList labels;
-		labels << tr ("Protocols")
-				<< tr ("Target")
-				<< tr ("Proxy type")
-				<< tr ("Proxy target")
-				<< tr ("User");
-		Model_->setHorizontalHeaderLabels (labels);
-
-		LoadSettings ();
-	}
-
-	void ProxiesConfigWidget::handleItemSelected (const QModelIndex& idx)
-	{
-		Ui_.UpdateProxy_->setEnabled (idx.isValid ());
-		Ui_.RemoveProxy_->setEnabled (idx.isValid ());
-
-		const auto& entry = Entries_.value (idx.row ());
-		Ui_.TargetHost_->setText (entry.first.Host_.pattern ());
-		Ui_.TargetPort_->setValue (entry.first.Port_);
-		Ui_.TargetProto_->setText (entry.first.Protocols_.join (" "));
-
-		Ui_.ProxyHost_->setText (entry.second.Host_);
-		Ui_.ProxyPort_->setValue (entry.second.Port_);
-		Ui_.ProxyUser_->setText (entry.second.User_);
-		Ui_.ProxyPassword_->setText (entry.second.Pass_);
-		switch (entry.second.Type_)
-		{
-		case QNetworkProxy::ProxyType::Socks5Proxy:
-			Ui_.ProxyType_->setCurrentIndex (0);
-			break;
-		case QNetworkProxy::ProxyType::HttpProxy:
-			Ui_.ProxyType_->setCurrentIndex (1);
-			break;
-		case QNetworkProxy::ProxyType::HttpCachingProxy:
-			Ui_.ProxyType_->setCurrentIndex (2);
-			break;
-		case QNetworkProxy::ProxyType::FtpCachingProxy:
-			Ui_.ProxyType_->setCurrentIndex (3);
-			break;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown proxy type"
-					<< entry.second.Type_;
-			break;
-		}
-	}
-
-	void ProxiesConfigWidget::on_AddProxyButton__released ()
+	Entry_t ProxiesConfigWidget::EntryFromUI () const
 	{
 		QString rxPat = Ui_.TargetHost_->text ();
 		if (!rxPat.contains ("*") && !rxPat.contains ("^") && !rxPat.contains ("$"))
@@ -233,11 +177,92 @@ namespace XProxy
 			Ui_.ProxyPassword_->text ()
 		};
 
-		const auto& entry = qMakePair (targ, proxy);
+		return qMakePair (targ, proxy);
+	}
+
+	void ProxiesConfigWidget::accept ()
+	{
+		SaveSettings ();
+	}
+
+	void ProxiesConfigWidget::reject ()
+	{
+		Model_->clear ();
+
+		QStringList labels;
+		labels << tr ("Protocols")
+				<< tr ("Target")
+				<< tr ("Proxy type")
+				<< tr ("Proxy target")
+				<< tr ("User");
+		Model_->setHorizontalHeaderLabels (labels);
+
+		LoadSettings ();
+	}
+
+	void ProxiesConfigWidget::handleItemSelected (const QModelIndex& idx)
+	{
+		Ui_.UpdateProxyButton_->setEnabled (idx.isValid ());
+		Ui_.RemoveProxyButton_->setEnabled (idx.isValid ());
+
+		const auto& entry = Entries_.value (idx.row ());
+		Ui_.TargetHost_->setText (entry.first.Host_.pattern ());
+		Ui_.TargetPort_->setValue (entry.first.Port_);
+		Ui_.TargetProto_->setText (entry.first.Protocols_.join (" "));
+
+		Ui_.ProxyHost_->setText (entry.second.Host_);
+		Ui_.ProxyPort_->setValue (entry.second.Port_);
+		Ui_.ProxyUser_->setText (entry.second.User_);
+		Ui_.ProxyPassword_->setText (entry.second.Pass_);
+		switch (entry.second.Type_)
+		{
+		case QNetworkProxy::ProxyType::Socks5Proxy:
+			Ui_.ProxyType_->setCurrentIndex (0);
+			break;
+		case QNetworkProxy::ProxyType::HttpProxy:
+			Ui_.ProxyType_->setCurrentIndex (1);
+			break;
+		case QNetworkProxy::ProxyType::HttpCachingProxy:
+			Ui_.ProxyType_->setCurrentIndex (2);
+			break;
+		case QNetworkProxy::ProxyType::FtpCachingProxy:
+			Ui_.ProxyType_->setCurrentIndex (3);
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown proxy type"
+					<< entry.second.Type_;
+			break;
+		}
+	}
+
+	void ProxiesConfigWidget::on_AddProxyButton__released ()
+	{
+		const auto& entry = EntryFromUI ();
 		Entries_ << entry;
 		Model_->appendRow (Entry2Row (entry));
+	}
 
-		SaveSettings ();
+	void ProxiesConfigWidget::on_UpdateProxyButton__released ()
+	{
+		const int row = Ui_.ProxiesList_->currentIndex ().row ();
+		if (row < 0 || row >= Entries_.size ())
+			return;
+
+		const auto& entry = EntryFromUI ();
+		Entries_ [row] = entry;
+		Model_->removeRow (row);
+		Model_->insertRow (row, Entry2Row (entry));
+	}
+
+	void ProxiesConfigWidget::on_RemoveProxyButton__released ()
+	{
+		const int row = Ui_.ProxiesList_->currentIndex ().row ();
+		if (row < 0 || row >= Entries_.size ())
+			return;
+
+		Entries_.removeAt (row);
+		Model_->removeRow (row);
 	}
 
 	QDataStream& operator<< (QDataStream& out, const Proxy& p)

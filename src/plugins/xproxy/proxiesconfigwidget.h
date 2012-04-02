@@ -67,12 +67,15 @@ namespace XProxy
 	private:
 		void LoadSettings ();
 		void SaveSettings () const;
+		Entry_t EntryFromUI () const;
 	public slots:
 		void accept ();
 		void reject ();
 	private slots:
 		void handleItemSelected (const QModelIndex&);
 		void on_AddProxyButton__released ();
+		void on_UpdateProxyButton__released ();
+		void on_RemoveProxyButton__released ();
 	};
 }
 }
