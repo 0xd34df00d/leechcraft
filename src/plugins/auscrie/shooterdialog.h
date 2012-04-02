@@ -50,6 +50,7 @@ namespace Auscrie
 
 		Action GetAction () const;
 		Mode GetMode () const;
+		bool ShouldHide () const;
 		Poster::HostingService GetHostingService () const;
 		int GetTimeout () const;
 		QString GetFormat () const;

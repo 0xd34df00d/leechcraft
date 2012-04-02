@@ -39,15 +39,20 @@ namespace Auscrie
 
 		Util::InstallTranslator ("auscrie");
 
-		Dialog_ = new ShooterDialog (Proxy_->GetMainWindow ());
+		Dialog_ = new ShooterDialog ();
 
 		ShotAction_ = new QAction (GetIcon (),
 				tr ("Make a screenshot"),
 				this);
 		connect (ShotAction_,
 				SIGNAL (triggered ()),
+				Dialog_,
+				SLOT (show ()));
+		connect (Dialog_,
+				SIGNAL (accepted ()),
 				this,
-				SLOT (makeScreenshot ()));
+				SLOT (makeScreenshot ()),
+				Qt::QueuedConnection);
 	}
 
 	void Plugin::SecondInit ()
@@ -90,11 +95,11 @@ namespace Auscrie
 
 	void Plugin::makeScreenshot ()
 	{
-		if (Dialog_->exec () != QDialog::Accepted)
-			return;
+		Dialog_->setVisible (!Dialog_->ShouldHide ());
 
 		ShotAction_->setEnabled (false);
-		QTimer::singleShot (Dialog_->GetTimeout () * 1000,
+		const int add = Dialog_->GetTimeout () ? 0 : 200;
+		QTimer::singleShot (Dialog_->GetTimeout () * 1000 + add,
 				this,
 				SLOT (shoot ()));
 	}
@@ -102,6 +107,8 @@ namespace Auscrie
 	void Plugin::shoot ()
 	{
 		ShotAction_->setEnabled (true);
+
+		qDebug () << Q_FUNC_INFO << Dialog_->isVisible ();
 
 		auto mw = Proxy_->GetMainWindow ();
 
@@ -163,7 +170,9 @@ namespace Auscrie
 		{
  			auto desk = qApp->desktop ();
 			auto screen = desk->screen (desk->screenNumber (QCursor::pos ()));
-			return QPixmap::grabWindow (screen->winId ());
+			auto geom = desk->screenGeometry (QCursor::pos ());
+			return QPixmap::grabWindow (screen->winId (),
+					geom.x (), geom.y (), geom.width (), geom.height ());
 		}
 		case ShooterDialog::Mode::WholeDesktop:
 			return QPixmap::grabWindow (qApp->desktop ()->winId ());

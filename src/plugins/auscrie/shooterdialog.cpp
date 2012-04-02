@@ -68,6 +68,11 @@ namespace Auscrie
 		}
 	}
 
+	bool ShooterDialog::ShouldHide () const
+	{
+		return Ui_.HideThis_->checkState () == Qt::Checked;
+	}
+
 	Poster::HostingService ShooterDialog::GetHostingService () const
 	{
 		switch (Ui_.ActionBox_->currentIndex ())
