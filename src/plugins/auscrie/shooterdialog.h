@@ -32,10 +32,10 @@ namespace Auscrie
 
 		Ui::ShooterDialog Ui_;
 	public:
-		enum Action
+		enum class Action
 		{
-			AUpload,
-			ASave
+			Upload,
+			Save
 		};
 
 		ShooterDialog (QWidget* = 0);

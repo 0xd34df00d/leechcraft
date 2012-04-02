@@ -109,7 +109,7 @@ namespace Auscrie
 
 		switch (Dialog_->GetAction ())
 		{
-			case ShooterDialog::ASave:
+			case ShooterDialog::Action::Save:
 				{
 					QString path = Proxy_->GetSettingsManager ()->
 						Property ("PluginsStorage/Auscrie/SavePath",
@@ -133,7 +133,7 @@ namespace Auscrie
 					}
 				}
 				break;
-			case ShooterDialog::AUpload:
+			case ShooterDialog::Action::Upload:
 				{
 					QByteArray bytes;
 					QBuffer buf (&bytes);

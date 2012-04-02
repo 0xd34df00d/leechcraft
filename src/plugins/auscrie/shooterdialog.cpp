@@ -37,14 +37,14 @@ namespace Auscrie
 			case 0:
 			case 1:
 			case 2:
-				return AUpload;
+				return Action::Upload;
 			case 3:
-				return ASave;
+				return Action::Save;
 			default:
 				qWarning () << Q_FUNC_INFO
 						<< Ui_.ActionBox_->currentIndex ()
 						<< "unhandled";
-				return ASave;
+				return Action::Save;
 		}
 	}
 
