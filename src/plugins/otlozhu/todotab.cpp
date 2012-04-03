@@ -97,6 +97,9 @@ namespace Otlozhu
 	void TodoTab::handleRemoveTodoRequested ()
 	{
 		const QModelIndex& index = Ui_.TodoTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+
 		const QString& title = index.data (StorageModel::Roles::ItemTitle).toString ();
 		if (QMessageBox::question (this,
 					"Otlozhu",
