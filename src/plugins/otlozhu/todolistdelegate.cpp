@@ -63,8 +63,13 @@ namespace Otlozhu
 		}
 	}
 
-	void TodoListDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+	void TodoListDelegate::paint (QPainter *painter, const QStyleOptionViewItem& thatOption, const QModelIndex& index) const
 	{
+		QStyleOptionViewItem option (thatOption);
+
+		if (index.data (StorageModel::Roles::ItemProgress).toInt () == 100)
+			option.font.setStrikeOut (true);
+
 		switch (index.column ())
 		{
 		case StorageModel::Columns::Percentage:
