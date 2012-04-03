@@ -19,6 +19,7 @@
 #include "todotab.h"
 #include <QToolBar>
 #include <QMessageBox>
+#include <util/tagscompleter.h>
 #include "core.h"
 #include "todomanager.h"
 #include "addtododialog.h"
@@ -38,9 +39,28 @@ namespace Otlozhu
 	, Bar_ (new QToolBar (tc.VisibleName_))
 	{
 		Ui_.setupUi (this);
+
+		new Util::TagsCompleter (Ui_.FilterLine_, Ui_.FilterLine_);
+		Ui_.FilterLine_->AddSelector ();
+
 		Ui_.TodoTree_->setItemDelegate (new TodoListDelegate (Ui_.TodoTree_));
+
 		ProxyModel_->setDynamicSortFilter (true);
 		ProxyModel_->setSourceModel (Core::Instance ().GetTodoManager ()->GetTodoModel ());
+		ProxyModel_->setFilterKeyColumn (0);
+		ProxyModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
+		connect (Ui_.FilterLine_,
+				SIGNAL (textChanged (QString)),
+				ProxyModel_,
+				SLOT (setFilterFixedString (QString)));
+		connect (Ui_.FilterLine_,
+				SIGNAL (textChanged (QString)),
+				ProxyModel_,
+				SLOT (disableTagsMode ()));
+		connect (Ui_.FilterLine_,
+				SIGNAL (tagsChosen ()),
+				ProxyModel_,
+				SLOT (enableTagsMode ()));
 		Ui_.TodoTree_->setModel (ProxyModel_);
 
 		QAction *addTodo = new QAction (tr ("Add todo..."), this);
