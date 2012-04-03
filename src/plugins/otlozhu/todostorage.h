@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <QSettings>
 #include "todoitem.h"
 
 namespace LeechCraft
@@ -31,12 +32,17 @@ namespace Otlozhu
 
 		const QString Context_;
 		QList<TodoItem_ptr> Items_;
+
+		QSettings Storage_;
 	public:
 		TodoStorage (const QString&, QObject* = 0);
 
 		int GetNumItems () const;
 		void AddItem (TodoItem_ptr);
 		TodoItem_ptr GetItemAt (int idx) const;
+	private:
+		void Load ();
+		void SaveAt (int);
 	signals:
 		void itemAdded (int);
 		void itemRemoved (int);
