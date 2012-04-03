@@ -35,6 +35,7 @@ namespace Otlozhu
 		TodoStorage (const QString&, QObject* = 0);
 
 		int GetNumItems () const;
+		void AddItem (TodoItem_ptr);
 		TodoItem_ptr GetItemAt (int idx) const;
 	signals:
 		void itemAdded (int);

@@ -33,6 +33,12 @@ namespace Otlozhu
 		return Items_.size ();
 	}
 
+	void TodoStorage::AddItem (TodoItem_ptr item)
+	{
+		Items_ << item;
+		emit itemAdded (Items_.size () - 1);
+	}
+
 	TodoItem_ptr TodoStorage::GetItemAt (int idx) const
 	{
 		return Items_ [idx];

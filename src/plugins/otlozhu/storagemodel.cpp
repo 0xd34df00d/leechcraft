@@ -94,9 +94,36 @@ namespace Otlozhu
 
 	void StorageModel::SetStorage (TodoStorage *storage)
 	{
+		if (Storage_)
+			disconnect (Storage_,
+					0,
+					this,
+					0);
 		Storage_ = storage;
+		if (Storage_)
+		{
+			connect (Storage_,
+					SIGNAL (itemAdded (int)),
+					this,
+					SLOT (handleItemAdded (int)));
+			connect (Storage_,
+					SIGNAL (itemUpdated (int)),
+					this,
+					SLOT (handleItemUpdated (int)));
+		}
 
 		reset ();
+	}
+
+	void StorageModel::handleItemAdded (int idx)
+	{
+		beginInsertRows (QModelIndex (), idx, idx);
+		endInsertRows ();
+	}
+
+	void StorageModel::handleItemUpdated (int idx)
+	{
+		emit dataChanged (index (idx, 0), index (idx, Columns::MAX - 1));
 	}
 }
 }
