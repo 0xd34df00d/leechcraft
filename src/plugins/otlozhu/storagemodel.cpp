@@ -76,10 +76,14 @@ namespace Otlozhu
 		if (!index.isValid ())
 			return QVariant ();
 
-		if (role != Qt::DisplayRole && role != Qt::EditRole)
+		const auto item = Storage_->GetItemAt (index.row ());
+		if (role == Roles::ItemID)
+			return item->GetID ();
+		else if (role == Roles::ItemTitle)
+			return item->GetTitle ();
+		else if (role != Qt::DisplayRole && role != Qt::EditRole)
 			return QVariant ();
 
-		const auto item = Storage_->GetItemAt (index.row ());
 		switch (index.column ())
 		{
 		case Columns::Title:
@@ -161,6 +165,10 @@ namespace Otlozhu
 					SIGNAL (itemUpdated (int)),
 					this,
 					SLOT (handleItemUpdated (int)));
+			connect (Storage_,
+					SIGNAL (itemRemoved (int)),
+					this,
+					SLOT (handleItemRemoved (int)));
 		}
 
 		reset ();
@@ -175,6 +183,12 @@ namespace Otlozhu
 	void StorageModel::handleItemUpdated (int idx)
 	{
 		emit dataChanged (index (idx, 0), index (idx, Columns::MAX - 1));
+	}
+
+	void StorageModel::handleItemRemoved (int idx)
+	{
+		beginRemoveRows (QModelIndex (), idx, idx);
+		endRemoveRows ();
 	}
 }
 }

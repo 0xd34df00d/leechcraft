@@ -72,6 +72,20 @@ namespace Otlozhu
 		SaveAt (pos);
 	}
 
+	void TodoStorage::RemoveItem (const QString& id)
+	{
+		const int pos = FindItem (id);
+		if (pos == -1)
+			return;
+
+		Items_.removeAt (pos);
+		emit itemRemoved (pos);
+		QList<int> indexes;
+		for (int i = pos; i < GetNumItems (); ++i)
+			indexes << i;
+		SaveAt (indexes);
+	}
+
 	void TodoStorage::Load ()
 	{
 		Items_.clear ();
@@ -92,9 +106,22 @@ namespace Otlozhu
 	void TodoStorage::SaveAt (int idx)
 	{
 		Storage_.beginGroup ("Items");
-		Storage_.beginWriteArray ("List");
+		Storage_.beginWriteArray ("List", GetNumItems ());
 		Storage_.setArrayIndex (idx);
 		Storage_.setValue ("Item", GetItemAt (idx)->Serialize ());
+		Storage_.endArray ();
+		Storage_.endGroup ();
+	}
+
+	void TodoStorage::SaveAt (const QList<int>& indexes)
+	{
+		Storage_.beginGroup ("Items");
+		Storage_.beginWriteArray ("List", GetNumItems ());
+		Q_FOREACH (int idx, indexes)
+		{
+			Storage_.setArrayIndex (idx);
+			Storage_.setValue ("Item", GetItemAt (idx)->Serialize ());
+		}
 		Storage_.endArray ();
 		Storage_.endGroup ();
 	}

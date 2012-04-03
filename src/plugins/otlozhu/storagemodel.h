@@ -44,6 +44,12 @@ namespace Otlozhu
 			MAX
 		};
 
+		enum Roles
+		{
+			ItemID = Qt::UserRole + 1,
+			ItemTitle
+		};
+
 		StorageModel (QObject* = 0);
 
 		QVariant headerData (int section, Qt::Orientation orientation, int role) const;
@@ -59,6 +65,7 @@ namespace Otlozhu
 	private slots:
 		void handleItemAdded (int);
 		void handleItemUpdated (int);
+		void handleItemRemoved (int);
 	};
 }
 }
