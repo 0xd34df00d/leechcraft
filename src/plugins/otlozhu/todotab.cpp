@@ -36,6 +36,7 @@ namespace Otlozhu
 		Ui_.TodoTree_->setModel (Core::Instance ().GetTodoManager ()->GetTodoModel ());
 
 		QAction *addTodo = new QAction (tr ("Add todo..."), this);
+		addTodo->setProperty ("ActionIcon", "list-add");
 		addTodo->setShortcut (Qt::Key_Insert);
 		connect (addTodo,
 				SIGNAL (triggered ()),
