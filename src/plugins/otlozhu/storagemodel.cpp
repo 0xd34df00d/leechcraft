@@ -119,32 +119,39 @@ namespace Otlozhu
 
 	bool StorageModel::setData (const QModelIndex& index, const QVariant& value, int role)
 	{
-		if (!index.isValid () || role != Qt::EditRole)
+		if (!index.isValid ())
 			return false;
 
 		auto item = Storage_->GetItemAt (index.row ());
 		bool updated = false;
-		switch (index.column ())
+
+		if (role == Roles::ItemProgress)
 		{
-		case Columns::Title:
-			item->SetTitle (value.toString ());
-			updated = true;
-			break;
-		case Columns::Percentage:
 			item->SetPercentage (value.toInt ());
 			updated = true;
-			break;
-		case Columns::Tags:
-		{
-			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-			item->SetTagIDs (tm->SplitToIDs (value.toString ()));
-			updated = true;
-			break;
 		}
-		default:
-			qDebug () << Q_FUNC_INFO << index.column () << value;
-			break;
-		}
+		else if (role == Qt::EditRole)
+			switch (index.column ())
+			{
+			case Columns::Title:
+				item->SetTitle (value.toString ());
+				updated = true;
+				break;
+			case Columns::Percentage:
+				item->SetPercentage (value.toInt ());
+				updated = true;
+				break;
+			case Columns::Tags:
+			{
+				auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
+				item->SetTagIDs (tm->SplitToIDs (value.toString ()));
+				updated = true;
+				break;
+			}
+			default:
+				qDebug () << Q_FUNC_INFO << index.column () << value;
+				break;
+			}
 
 		if (updated)
 			Storage_->HandleUpdated (item);
