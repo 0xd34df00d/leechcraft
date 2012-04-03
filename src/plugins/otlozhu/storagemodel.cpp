@@ -17,7 +17,9 @@
  **********************************************************************/
 
 #include "storagemodel.h"
+#include "core.h"
 #include "todostorage.h"
+#include <interfaces/core/itagsmanager.h>
 
 namespace LeechCraft
 {
@@ -77,7 +79,12 @@ namespace Otlozhu
 		case Columns::Title:
 			return item->GetTitle ();
 		case Columns::Tags:
-			return QString ();
+		{
+			const auto& ids = item->GetTagIDs ();
+			if (ids.isEmpty ())
+				return QString ();
+			return Core::Instance ().GetProxy ()->GetTagsManager ()->JoinIDs (ids);
+		}
 		case Columns::DueDate:
 		{
 			const auto& date = item->GetDueDate ();
