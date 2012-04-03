@@ -76,6 +76,9 @@
    </item>
    <item>
     <widget class="QTreeView" name="TodoTree_">
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
      <property name="rootIsDecorated">
       <bool>false</bool>
      </property>

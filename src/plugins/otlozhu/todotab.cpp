@@ -18,6 +18,7 @@
 
 #include "todotab.h"
 #include <QToolBar>
+#include <QMenu>
 #include <QMessageBox>
 #include <util/tagscompleter.h>
 #include "core.h"
@@ -36,6 +37,7 @@ namespace Otlozhu
 	: TC_ (tc)
 	, Plugin_ (parent)
 	, ProxyModel_ (new TodoSFProxyModel (this))
+	, ProgressMenu_ (new QMenu (tr ("Set progress")))
 	, Bar_ (new QToolBar (tc.VisibleName_))
 	{
 		Ui_.setupUi (this);
@@ -80,10 +82,27 @@ namespace Otlozhu
 				this,
 				SLOT (handleRemoveTodoRequested ()));
 		Bar_->addAction (removeTodo);
+
+		for (int i = 0; i <= 100; i += 10)
+		{
+			QAction *action = ProgressMenu_->addAction (QString::number (i) + "%");
+			action->setProperty ("Otlozhu/Progress", i);
+			connect (action,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleQuickProgress ()));
+
+			const QString& sc = i == 100 ?
+					QString ("Ctrl+S,D") :
+					QString ("Ctrl+S,%1").arg (i / 10);
+			action->setShortcut (sc);
+		}
+		Ui_.TodoTree_->addAction (ProgressMenu_->menuAction ());
 	}
 
 	TodoTab::~TodoTab ()
 	{
+		delete ProgressMenu_;
 		delete Bar_;
 	}
 
@@ -134,6 +153,16 @@ namespace Otlozhu
 
 		const QString& id = index.data (StorageModel::Roles::ItemID).toString ();
 		Core::Instance ().GetTodoManager ()->GetTodoStorage ()->RemoveItem (id);
+	}
+
+	void TodoTab::handleQuickProgress ()
+	{
+		const QModelIndex& index = Ui_.TodoTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		const int perc = sender ()->property ("Otlozhu/Progress").toInt ();
+		ProxyModel_->setData (index, perc, StorageModel::Roles::ItemProgress);
 	}
 }
 }

@@ -40,6 +40,7 @@ namespace Otlozhu
 
 		TodoSFProxyModel *ProxyModel_;
 
+		QMenu *ProgressMenu_;
 		QToolBar *Bar_;
 	public:
 		TodoTab (const TabClassInfo&, QObject*);
@@ -52,6 +53,7 @@ namespace Otlozhu
 	private slots:
 		void handleAddTodoRequested ();
 		void handleRemoveTodoRequested ();
+		void handleQuickProgress ();
 	signals:
 		void removeTab (QWidget*);
 	};
