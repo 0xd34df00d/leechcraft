@@ -74,6 +74,17 @@ public:
 	 */
 	virtual QStringList Split (const QString& string) const = 0;
 
+	/** @brief Splits the given string with tags and returns tags IDs.
+	 *
+	 * This function is essentially a combination of Split() and GetID().
+	 * First, the given string is split into human-readable tags, and
+	 * then for each tag its ID is obtained.
+	 *
+	 * @param[in] string String with tags.
+	 * @return The list of the tags IDs.
+	 */
+	virtual QStringList SplitToIDs (const QString& string) = 0;
+
 	/** @brief Joins the given tags into one string that's suitable to
 	 * display to the user.
 	 *

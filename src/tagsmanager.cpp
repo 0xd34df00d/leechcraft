@@ -109,6 +109,15 @@ QStringList TagsManager::Split (const QString& string) const
 	return result;
 }
 
+QStringList TagsManager::SplitToIDs (const QString& string)
+{
+	const auto& tags = Split (string);
+	QStringList result;
+	std::transform (tags.begin (), tags.end (), std::back_inserter (result),
+			[this] (const QString& tag) { return GetID (tag.simplified ()); });
+	return result;
+}
+
 QString TagsManager::Join (const QStringList& tags) const
 {
 	return tags.join ("; ");
