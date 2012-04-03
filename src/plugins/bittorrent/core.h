@@ -136,6 +136,8 @@ namespace LeechCraft
 				ICoreProxy_ptr Proxy_;
 				QMenu *Menu_;
 
+				const QIcon TorrentIcon_;
+
 				Core ();
 			public:
 				enum Columns

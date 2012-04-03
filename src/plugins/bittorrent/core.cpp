@@ -135,6 +135,7 @@ namespace LeechCraft
 			, Toolbar_ (0)
 			, TabWidget_ (0)
 			, Menu_ (0)
+			, TorrentIcon_ (":/resources/images/bittorrent.svg")
 			{
 				setObjectName ("BitTorrent Core");
 				ExternalAddress_ = tr ("Unknown");
@@ -574,6 +575,8 @@ namespace LeechCraft
 							result += tr ("Peers/seeds: %1/%2").arg (status.num_peers).arg (status.num_seeds);
 							return result;
 						}
+					case Qt::DecorationRole:
+						return column ? QVariant () : TorrentIcon_;
 					case RoleTags:
 						return Handles_.at (row).Tags_;
 					case CustomDataRoles::RoleJobHolderRow:
