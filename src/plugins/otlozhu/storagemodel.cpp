@@ -83,6 +83,8 @@ namespace Otlozhu
 			return item->GetTitle ();
 		else if (role == Roles::ItemTags)
 			return item->GetTagIDs ();
+		else if (role == Roles::ItemProgress)
+			return item->GetPercentage ();
 		else if (role != Qt::DisplayRole &&
 					role != Qt::EditRole)
 			return QVariant ();
