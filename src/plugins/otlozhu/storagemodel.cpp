@@ -81,7 +81,10 @@ namespace Otlozhu
 			return item->GetID ();
 		else if (role == Roles::ItemTitle)
 			return item->GetTitle ();
-		else if (role != Qt::DisplayRole && role != Qt::EditRole)
+		else if (role == Roles::ItemTags)
+			return item->GetTagIDs ();
+		else if (role != Qt::DisplayRole &&
+					role != Qt::EditRole)
 			return QVariant ();
 
 		switch (index.column ())

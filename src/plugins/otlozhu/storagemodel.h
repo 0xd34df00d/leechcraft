@@ -47,7 +47,8 @@ namespace Otlozhu
 		enum Roles
 		{
 			ItemID = Qt::UserRole + 1,
-			ItemTitle
+			ItemTitle,
+			ItemTags
 		};
 
 		StorageModel (QObject* = 0);
