@@ -51,7 +51,9 @@ namespace Otlozhu
 		QModelIndex parent (const QModelIndex& child) const;
 		int rowCount (const QModelIndex& parent) const;
 		int columnCount (const QModelIndex& parent) const;
+		Qt::ItemFlags flags (const QModelIndex& index) const;
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+		bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
 		void SetStorage (TodoStorage*);
 	private slots:

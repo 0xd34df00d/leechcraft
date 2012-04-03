@@ -17,9 +17,10 @@
  **********************************************************************/
 
 #include "storagemodel.h"
+#include <QtDebug>
+#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "todostorage.h"
-#include <interfaces/core/itagsmanager.h>
 
 namespace LeechCraft
 {
@@ -65,12 +66,17 @@ namespace Otlozhu
 		return parent.isValid () ? 0 : (Storage_ ? Storage_->GetNumItems () : 0);
 	}
 
+	Qt::ItemFlags StorageModel::flags (const QModelIndex& index) const
+	{
+		return QAbstractItemModel::flags (index) | Qt::ItemIsEditable;
+	}
+
 	QVariant StorageModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
 			return QVariant ();
 
-		if (role != Qt::DisplayRole)
+		if (role != Qt::DisplayRole && role != Qt::EditRole)
 			return QVariant ();
 
 		const auto item = Storage_->GetItemAt (index.row ());
@@ -97,6 +103,34 @@ namespace Otlozhu
 		default:
 			return QVariant ();
 		}
+	}
+
+	bool StorageModel::setData (const QModelIndex& index, const QVariant& value, int role)
+	{
+		if (!index.isValid () || role != Qt::EditRole)
+			return false;
+
+		auto item = Storage_->GetItemAt (index.row ());
+		bool updated = false;
+		switch (index.column ())
+		{
+		case Columns::Title:
+			item->SetTitle (value.toString ());
+			updated = true;
+			break;
+		case Columns::Percentage:
+			item->SetPercentage (value.toInt ());
+			updated = true;
+			break;
+		default:
+			qDebug () << Q_FUNC_INFO << index.column () << value;
+			break;
+		}
+
+		if (updated)
+			Storage_->HandleUpdated (item);
+
+		return updated;
 	}
 
 	void StorageModel::SetStorage (TodoStorage *storage)
