@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -30,11 +31,15 @@ namespace Otlozhu
 	{
 		Q_OBJECT
 
+		ICoreProxy_ptr Proxy_;
 		TodoManager *TodoManager_;
 
 		Core ();
 	public:
 		static Core& Instance ();
+
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy () const;
 
 		TodoManager* GetTodoManager () const;
 	};

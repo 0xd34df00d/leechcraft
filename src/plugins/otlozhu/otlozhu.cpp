@@ -19,6 +19,7 @@
 #include "otlozhu.h"
 #include <QIcon>
 #include "todotab.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -26,6 +27,8 @@ namespace Otlozhu
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Core::Instance ().SetProxy (proxy);
+
 		TCTodo_ = TabClassInfo
 		{
 			GetUniqueID () + "_todo",
