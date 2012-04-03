@@ -19,6 +19,7 @@
 #include "addtododialog.h"
 #include <algorithm>
 #include <interfaces/core/itagsmanager.h>
+#include <util/tagscompleter.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -29,6 +30,9 @@ namespace Otlozhu
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+
+		new Util::TagsCompleter (Ui_.Tags_, Ui_.Tags_);
+		Ui_.Tags_->AddSelector ();
 	}
 
 	TodoItem_ptr AddTodoDialog::GetItem () const
@@ -46,9 +50,9 @@ namespace Otlozhu
 
 	QStringList AddTodoDialog::GetTags () const
 	{
-		const auto& tags = Ui_.Tags_->text ().split (';', QString::SkipEmptyParts);
-
 		auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
+		const auto& tags = tm->Split (Ui_.Tags_->text ());
+
 		QStringList result;
 		std::transform (tags.begin (), tags.end (), std::back_inserter (result),
 				[tm] (const QString& tag) { return tm->GetID (tag.simplified ()); });
