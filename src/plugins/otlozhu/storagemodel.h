@@ -16,27 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "todomanager.h"
-#include <QStandardItemModel>
-#include "todostorage.h"
-#include "storagemodel.h"
+#pragma once
+
+#include <QAbstractItemModel>
+#include <QStringList>
 
 namespace LeechCraft
 {
 namespace Otlozhu
 {
-	TodoManager::TodoManager (const QString& ctx, QObject *parent)
-	: QObject (parent)
-	, Context_ (ctx)
-	, Storage_ (new TodoStorage (ctx))
-	, Model_ (new StorageModel (this))
-	{
-		Model_->SetStorage (Storage_);
-	}
+	class TodoStorage;
 
-	QAbstractItemModel* TodoManager::GetTodoModel () const
+	class StorageModel : public QAbstractItemModel
 	{
-		return Model_;
-	}
+		Q_OBJECT
+
+		TodoStorage *Storage_;
+		QStringList Headers_;
+	public:
+		enum Columns
+		{
+			Title,
+			Tags,
+			DueDate,
+			Created,
+			Percentage,
+			MAX
+		};
+
+		StorageModel (QObject* = 0);
+
+		QVariant headerData (int section, Qt::Orientation orientation, int role) const;
+		QModelIndex index (int row, int column, const QModelIndex& parent) const;
+		QModelIndex parent (const QModelIndex& child) const;
+		int rowCount (const QModelIndex& parent) const;
+		int columnCount (const QModelIndex& parent) const;
+		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+
+		void SetStorage (TodoStorage*);
+	};
 }
 }

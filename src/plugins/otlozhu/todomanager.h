@@ -21,18 +21,21 @@
 #include <QObject>
 
 class QAbstractItemModel;
-class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Otlozhu
 {
+	class TodoStorage;
+	class StorageModel;
+
 	class TodoManager : public QObject
 	{
 		Q_OBJECT
 
 		const QString Context_;
-		QStandardItemModel *TodoModel_;
+		TodoStorage *Storage_;
+		StorageModel *Model_;
 	public:
 		TodoManager (const QString&, QObject* = 0);
 
