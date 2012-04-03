@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "todostorage.h"
+#include <algorithm>
 #include <QCoreApplication>
 
 namespace LeechCraft
@@ -39,6 +40,15 @@ namespace Otlozhu
 		return Items_.size ();
 	}
 
+	int TodoStorage::FindItem (const QString& id) const
+	{
+		const auto pos = std::find_if (Items_.begin (), Items_.end (),
+				[&id] (decltype (Items_.front ()) item) { return item->GetID () == id; });
+		return pos == Items_.end () ?
+				-1 :
+				std::distance (Items_.begin (), pos);
+	}
+
 	void TodoStorage::AddItem (TodoItem_ptr item)
 	{
 		Items_ << item;
@@ -49,6 +59,17 @@ namespace Otlozhu
 	TodoItem_ptr TodoStorage::GetItemAt (int idx) const
 	{
 		return Items_ [idx];
+	}
+
+	void TodoStorage::HandleUpdated (TodoItem_ptr item)
+	{
+		const int pos = FindItem (item->GetID ());
+		if (pos == -1)
+			return;
+
+		Items_ [pos] = item;
+		emit itemUpdated (pos);
+		SaveAt (pos);
 	}
 
 	void TodoStorage::Load ()

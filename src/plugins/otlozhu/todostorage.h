@@ -38,8 +38,11 @@ namespace Otlozhu
 		TodoStorage (const QString&, QObject* = 0);
 
 		int GetNumItems () const;
+		int FindItem (const QString&) const;
+
 		void AddItem (TodoItem_ptr);
 		TodoItem_ptr GetItemAt (int idx) const;
+		void HandleUpdated (TodoItem_ptr);
 	private:
 		void Load ();
 		void SaveAt (int);
