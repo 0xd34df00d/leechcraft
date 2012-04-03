@@ -29,10 +29,12 @@ namespace Otlozhu
 	{
 		Q_OBJECT
 
+		const QString Context_;
 		QList<TodoItem_ptr> Items_;
 	public:
-		TodoStorage (QObject* = 0);
+		TodoStorage (const QString&, QObject* = 0);
 
+		int GetNumItems () const;
 		TodoItem_ptr GetItemAt (int idx) const;
 	signals:
 		void itemAdded (int);

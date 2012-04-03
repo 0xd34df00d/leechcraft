@@ -22,9 +22,15 @@ namespace LeechCraft
 {
 namespace Otlozhu
 {
-	TodoStorage::TodoStorage (QObject *parent)
+	TodoStorage::TodoStorage (const QString& ctx, QObject *parent)
 	: QObject (parent)
+	, Context_ (ctx)
 	{
+	}
+
+	int TodoStorage::GetNumItems () const
+	{
+		return Items_.size ();
 	}
 
 	TodoItem_ptr TodoStorage::GetItemAt (int idx) const
