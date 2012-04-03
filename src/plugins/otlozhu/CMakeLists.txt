@@ -2,6 +2,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_otlozhu)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -13,12 +14,14 @@ SET (SRCS
 	todotab.cpp
 	core.cpp
 	todomanager.cpp
+	todoitem.cpp
 	)
 SET (HEADERS
 	otlozhu.h
 	todotab.h
 	core.h
 	todomanager.h
+	todoitem.h
 	)
 SET (FORMS
 	todotab.ui
