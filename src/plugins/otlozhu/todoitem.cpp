@@ -26,6 +26,7 @@ namespace Otlozhu
 	TodoItem::TodoItem ()
 	: ID_ (QUuid::createUuid ().toString ())
 	, Created_ (QDateTime::currentDateTime ())
+	, Percentage_ (0)
 	{
 	}
 
@@ -37,6 +38,8 @@ namespace Otlozhu
 		clone->TagIDs_ = TagIDs_;
 		clone->Created_ = Created_;
 		clone->Due_ = Due_;
+		clone->Percentage_ = Percentage_;
+		clone->Deps_ = Deps_;
 		return clone;
 	}
 
@@ -92,6 +95,31 @@ namespace Otlozhu
 	void TodoItem::SetDueDate (const QDateTime& due)
 	{
 		Due_ = due;
+	}
+
+	int TodoItem::GetPercentage () const
+	{
+		return Percentage_;
+	}
+
+	void TodoItem::SetPercentage (int p)
+	{
+		Percentage_ = p;
+	}
+
+	QStringList TodoItem::GetDeps () const
+	{
+		return Deps_;
+	}
+
+	void TodoItem::SetDeps (const QStringList& deps)
+	{
+		Deps_ = deps;
+	}
+
+	void TodoItem::AddDep (const QString& dep)
+	{
+		Deps_ << dep;
 	}
 }
 }

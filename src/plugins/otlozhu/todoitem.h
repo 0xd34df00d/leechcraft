@@ -38,6 +38,9 @@ namespace Otlozhu
 		QStringList TagIDs_;
 		QDateTime Created_;
 		QDateTime Due_;
+
+		int Percentage_;
+		QStringList Deps_;
 	public:
 		TodoItem ();
 		TodoItem (const TodoItem&) = delete;
@@ -61,6 +64,13 @@ namespace Otlozhu
 
 		QDateTime GetDueDate () const;
 		void SetDueDate (const QDateTime&);
+
+		int GetPercentage () const;
+		void SetPercentage (int);
+
+		QStringList GetDeps () const;
+		void SetDeps (const QStringList&);
+		void AddDep (const QString&);
 	};
 }
 }
