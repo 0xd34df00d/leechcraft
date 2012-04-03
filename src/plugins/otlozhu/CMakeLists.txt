@@ -17,6 +17,7 @@ SET (SRCS
 	todoitem.cpp
 	todostorage.cpp
 	storagemodel.cpp
+	addtododialog.cpp
 	)
 SET (HEADERS
 	otlozhu.h
@@ -26,9 +27,11 @@ SET (HEADERS
 	todoitem.h
 	todostorage.h
 	storagemodel.h
+	addtododialog.h
 	)
 SET (FORMS
 	todotab.ui
+	addtododialog.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
