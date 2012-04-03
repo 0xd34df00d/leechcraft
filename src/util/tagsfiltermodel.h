@@ -34,6 +34,8 @@ namespace LeechCraft
 			TagsFilterModel (QObject *parent = 0);
 		public slots:
 			void setTagsMode (bool);
+			void enableTagsMode ();
+			void disableTagsMode ();
 		protected:
 			virtual bool filterAcceptsRow (int, const QModelIndex&) const;
 			virtual QStringList GetTagsForIndex (int) const = 0;
