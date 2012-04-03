@@ -25,6 +25,7 @@
 #include "todostorage.h"
 #include "todolistdelegate.h"
 #include "storagemodel.h"
+#include "todosfproxymodel.h"
 
 namespace LeechCraft
 {
@@ -33,11 +34,14 @@ namespace Otlozhu
 	TodoTab::TodoTab (const TabClassInfo& tc, QObject *parent)
 	: TC_ (tc)
 	, Plugin_ (parent)
+	, ProxyModel_ (new TodoSFProxyModel (this))
 	, Bar_ (new QToolBar (tc.VisibleName_))
 	{
 		Ui_.setupUi (this);
 		Ui_.TodoTree_->setItemDelegate (new TodoListDelegate (Ui_.TodoTree_));
-		Ui_.TodoTree_->setModel (Core::Instance ().GetTodoManager ()->GetTodoModel ());
+		ProxyModel_->setDynamicSortFilter (true);
+		ProxyModel_->setSourceModel (Core::Instance ().GetTodoManager ()->GetTodoModel ());
+		Ui_.TodoTree_->setModel (ProxyModel_);
 
 		QAction *addTodo = new QAction (tr ("Add todo..."), this);
 		addTodo->setProperty ("ActionIcon", "list-add");

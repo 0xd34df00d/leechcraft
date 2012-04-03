@@ -18,42 +18,18 @@
 
 #pragma once
 
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "ui_todotab.h"
+#include <util/tagsfiltermodel.h>
 
 namespace LeechCraft
 {
 namespace Otlozhu
 {
-	class TodoSFProxyModel;
-
-	class TodoTab : public QWidget
-				  , public ITabWidget
+	class TodoSFProxyModel : public Util::TagsFilterModel
 	{
-		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
-
-		Ui::TodoTab Ui_;
-		const TabClassInfo TC_;
-		QObject *Plugin_;
-
-		TodoSFProxyModel *ProxyModel_;
-
-		QToolBar *Bar_;
 	public:
-		TodoTab (const TabClassInfo&, QObject*);
-		~TodoTab ();
-
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
-	private slots:
-		void handleAddTodoRequested ();
-		void handleRemoveTodoRequested ();
-	signals:
-		void removeTab (QWidget*);
+		TodoSFProxyModel (QObject* = 0);
+	protected:
+		QStringList GetTagsForIndex (int) const;
 	};
 }
 }

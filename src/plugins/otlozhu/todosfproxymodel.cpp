@@ -16,44 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "ui_todotab.h"
+#include "todosfproxymodel.h"
+#include <algorithm>
+#include <interfaces/core/itagsmanager.h>
+#include "core.h"
+#include "storagemodel.h"
 
 namespace LeechCraft
 {
 namespace Otlozhu
 {
-	class TodoSFProxyModel;
-
-	class TodoTab : public QWidget
-				  , public ITabWidget
+	TodoSFProxyModel::TodoSFProxyModel (QObject *parent)
+	: Util::TagsFilterModel (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+	}
 
-		Ui::TodoTab Ui_;
-		const TabClassInfo TC_;
-		QObject *Plugin_;
+	QStringList TodoSFProxyModel::GetTagsForIndex (int row) const
+	{
+		if (!sourceModel ())
+			return QStringList ();
 
-		TodoSFProxyModel *ProxyModel_;
-
-		QToolBar *Bar_;
-	public:
-		TodoTab (const TabClassInfo&, QObject*);
-		~TodoTab ();
-
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
-	private slots:
-		void handleAddTodoRequested ();
-		void handleRemoveTodoRequested ();
-	signals:
-		void removeTab (QWidget*);
-	};
+		const auto& ids = sourceModel ()->index (row, 0)
+				.data (StorageModel::Roles::ItemTags).toStringList ();
+		const auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
+		QStringList result;
+		std::transform (ids.begin (), ids.end (), std::back_inserter (result),
+				[tm] (const QString& id) { return tm->GetTag (id); });
+		return result;
+	}
 }
 }

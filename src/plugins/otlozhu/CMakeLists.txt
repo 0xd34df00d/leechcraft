@@ -19,6 +19,7 @@ SET (SRCS
 	storagemodel.cpp
 	addtododialog.cpp
 	todolistdelegate.cpp
+	todosfproxymodel.cpp
 	)
 SET (HEADERS
 	otlozhu.h
@@ -30,6 +31,7 @@ SET (HEADERS
 	storagemodel.h
 	addtododialog.h
 	todolistdelegate.h
+	todosfproxymodel.h
 	)
 SET (FORMS
 	todotab.ui
