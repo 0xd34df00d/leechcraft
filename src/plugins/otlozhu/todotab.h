@@ -45,6 +45,8 @@ namespace Otlozhu
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private slots:
+		void handleAddTodoRequested ();
 	signals:
 		void removeTab (QWidget*);
 	};

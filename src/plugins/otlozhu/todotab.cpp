@@ -20,6 +20,8 @@
 #include <QToolBar>
 #include "core.h"
 #include "todomanager.h"
+#include "addtododialog.h"
+#include "todostorage.h"
 
 namespace LeechCraft
 {
@@ -32,6 +34,14 @@ namespace Otlozhu
 	{
 		Ui_.setupUi (this);
 		Ui_.TodoTree_->setModel (Core::Instance ().GetTodoManager ()->GetTodoModel ());
+
+		QAction *addTodo = new QAction (tr ("Add todo..."), this);
+		addTodo->setShortcut (Qt::Key_Insert);
+		connect (addTodo,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAddTodoRequested ()));
+		Bar_->addAction (addTodo);
 	}
 
 	TodoTab::~TodoTab ()
@@ -58,6 +68,16 @@ namespace Otlozhu
 	QToolBar* TodoTab::GetToolBar () const
 	{
 		return Bar_;
+	}
+
+	void TodoTab::handleAddTodoRequested ()
+	{
+		AddTodoDialog dia;
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		auto item = dia.GetItem ();
+		Core::Instance ().GetTodoManager ()->GetTodoStorage ()->AddItem (item);
 	}
 }
 }
