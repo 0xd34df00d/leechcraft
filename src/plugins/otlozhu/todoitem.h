@@ -48,6 +48,9 @@ namespace Otlozhu
 
 		TodoItem_ptr Clone () const;
 
+		static TodoItem_ptr Deserialize (const QByteArray&);
+		QByteArray Serialize () const;
+
 		void GetID () const;
 
 		QString GetTitle () const;

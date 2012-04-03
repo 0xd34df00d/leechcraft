@@ -18,6 +18,8 @@
 
 #include "todoitem.h"
 #include <QUuid>
+#include <QDataStream>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -41,6 +43,49 @@ namespace Otlozhu
 		clone->Percentage_ = Percentage_;
 		clone->Deps_ = Deps_;
 		return clone;
+	}
+
+	TodoItem_ptr TodoItem::Deserialize (const QByteArray& data)
+	{
+		QDataStream str (data);
+		quint8 version = 0;
+		str >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return TodoItem_ptr ();
+		}
+
+		TodoItem_ptr item (new TodoItem);
+		str >> item->ID_
+			>> item->Title_
+			>> item->Comment_
+			>> item->TagIDs_
+			>> item->Created_
+			>> item->Due_
+			>> item->Percentage_
+			>> item->Deps_;
+		return item;
+	}
+
+	QByteArray TodoItem::Serialize () const
+	{
+		QByteArray res;
+		QDataStream out (&res, QIODevice::WriteOnly);
+
+		out << static_cast<quint8> (1)
+			<< ID_
+			<< Title_
+			<< Comment_
+			<< TagIDs_
+			<< Created_
+			<< Due_
+			<< Percentage_
+			<< Deps_;
+
+		return res;
 	}
 
 	void TodoItem::GetID () const
