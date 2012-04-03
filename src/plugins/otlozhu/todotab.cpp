@@ -22,6 +22,7 @@
 #include "todomanager.h"
 #include "addtododialog.h"
 #include "todostorage.h"
+#include "todolistdelegate.h"
 
 namespace LeechCraft
 {
@@ -33,6 +34,7 @@ namespace Otlozhu
 	, Bar_ (new QToolBar (tc.VisibleName_))
 	{
 		Ui_.setupUi (this);
+		Ui_.TodoTree_->setItemDelegate (new TodoListDelegate (Ui_.TodoTree_));
 		Ui_.TodoTree_->setModel (Core::Instance ().GetTodoManager ()->GetTodoModel ());
 
 		QAction *addTodo = new QAction (tr ("Add todo..."), this);
