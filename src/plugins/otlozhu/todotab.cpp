@@ -18,11 +18,13 @@
 
 #include "todotab.h"
 #include <QToolBar>
+#include <QMessageBox>
 #include "core.h"
 #include "todomanager.h"
 #include "addtododialog.h"
 #include "todostorage.h"
 #include "todolistdelegate.h"
+#include "storagemodel.h"
 
 namespace LeechCraft
 {
@@ -45,6 +47,15 @@ namespace Otlozhu
 				this,
 				SLOT (handleAddTodoRequested ()));
 		Bar_->addAction (addTodo);
+
+		QAction *removeTodo = new QAction (tr ("Remove"), this);
+		removeTodo->setProperty ("ActionIcon", "list-remove");
+		removeTodo->setShortcut (Qt::Key_Delete);
+		connect (removeTodo,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleRemoveTodoRequested ()));
+		Bar_->addAction (removeTodo);
 	}
 
 	TodoTab::~TodoTab ()
@@ -81,6 +92,21 @@ namespace Otlozhu
 
 		auto item = dia.GetItem ();
 		Core::Instance ().GetTodoManager ()->GetTodoStorage ()->AddItem (item);
+	}
+
+	void TodoTab::handleRemoveTodoRequested ()
+	{
+		const QModelIndex& index = Ui_.TodoTree_->currentIndex ();
+		const QString& title = index.data (StorageModel::Roles::ItemTitle).toString ();
+		if (QMessageBox::question (this,
+					"Otlozhu",
+					tr ("Are you sure you want to remove <em>%1</em>?")
+						.arg (title),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
+		const QString& id = index.data (StorageModel::Roles::ItemID).toString ();
+		Core::Instance ().GetTodoManager ()->GetTodoStorage ()->RemoveItem (id);
 	}
 }
 }

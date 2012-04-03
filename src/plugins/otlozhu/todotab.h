@@ -47,6 +47,7 @@ namespace Otlozhu
 		QToolBar* GetToolBar () const;
 	private slots:
 		void handleAddTodoRequested ();
+		void handleRemoveTodoRequested ();
 	signals:
 		void removeTab (QWidget*);
 	};
