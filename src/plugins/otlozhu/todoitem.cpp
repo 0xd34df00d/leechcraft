@@ -88,8 +88,9 @@ namespace Otlozhu
 		return res;
 	}
 
-	void TodoItem::GetID () const
+	QString TodoItem::GetID () const
 	{
+		return ID_;
 	}
 
 	QString TodoItem::GetTitle () const
