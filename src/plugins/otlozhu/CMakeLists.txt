@@ -15,6 +15,7 @@ SET (SRCS
 	core.cpp
 	todomanager.cpp
 	todoitem.cpp
+	todostorage.cpp
 	)
 SET (HEADERS
 	otlozhu.h
@@ -22,6 +23,7 @@ SET (HEADERS
 	core.h
 	todomanager.h
 	todoitem.h
+	todostorage.h
 	)
 SET (FORMS
 	todotab.ui
