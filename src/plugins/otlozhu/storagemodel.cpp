@@ -38,7 +38,7 @@ namespace Otlozhu
 	{
 		if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
 			return QVariant ();
-		return Headers_ [role];
+		return Headers_ [section];
 	}
 
 	QModelIndex StorageModel::index (int row, int column, const QModelIndex& parent) const
