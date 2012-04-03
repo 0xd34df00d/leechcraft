@@ -82,6 +82,18 @@ public:
 	 */
 	virtual QString Join (const QStringList& tags) const = 0;
 
+	/** @brief Joins the given tag IDs into one human-readable string.
+	 *
+	 * This function is essentially a combination of GetTag() and Join().
+	 * First, it converts all given tagIDs into tag names using GetTag()
+	 * and then joins them using Join(). This function is provided for
+	 * convenience.
+	 *
+	 * @param[in] tagIDs List of tag IDs.
+	 * @return The joined string with tags.
+	 */
+	virtual QString JoinIDs (const QStringList& tagIDs) const = 0;
+
 	/** @brief Returns the completion model for this.
 	 */
 	virtual QAbstractItemModel* GetModel () = 0;

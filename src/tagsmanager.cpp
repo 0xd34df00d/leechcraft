@@ -18,6 +18,7 @@
 
 #include "tagsmanager.h"
 #include <stdexcept>
+#include <algorithm>
 #include <QStringList>
 #include <QSettings>
 #include <QCoreApplication>
@@ -80,7 +81,7 @@ int TagsManager::rowCount (const QModelIndex& index) const
 
 ITagsManager::tag_id TagsManager::GetID (const QString& tag)
 {
-	QList<QUuid> keys = Tags_.keys (tag);
+	const auto& keys = Tags_.keys (tag);
 	if (keys.isEmpty ())
 		return InsertTag (tag);
 	else if (keys.size () > 1)
@@ -96,24 +97,29 @@ QString TagsManager::GetTag (ITagsManager::tag_id id) const
 
 QStringList TagsManager::GetAllTags () const
 {
-	QStringList result;
-	std::copy (Tags_.begin (), Tags_.end (),
-			std::back_inserter (result));
-	return result;
+	return Tags_.values ();
 }
 
 QStringList TagsManager::Split (const QString& string) const
 {
-	QStringList splitted = string.split (";", QString::SkipEmptyParts);
+	const auto& splitted = string.split (";", QString::SkipEmptyParts);
 	QStringList result;
-	Q_FOREACH (QString s, splitted)
-		result << s.trimmed ();
+	std::transform (splitted.begin (), splitted.end (), std::back_inserter (result),
+			[] (const QString& s) { return s.trimmed (); });
 	return result;
 }
 
 QString TagsManager::Join (const QStringList& tags) const
 {
 	return tags.join ("; ");
+}
+
+QString TagsManager::JoinIDs (const QStringList& tagIDs) const
+{
+	QStringList hr;
+	std::transform (tagIDs.begin (), tagIDs.end (), std::back_inserter (hr),
+			[this] (const QString& id) { return GetTag (id); });
+	return Join (hr);
 }
 
 ITagsManager::tag_id TagsManager::InsertTag (const QString& tag)
