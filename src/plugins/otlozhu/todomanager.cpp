@@ -34,6 +34,11 @@ namespace Otlozhu
 		Model_->SetStorage (Storage_);
 	}
 
+	TodoStorage* TodoManager::GetTodoStorage () const
+	{
+		return Storage_;
+	}
+
 	QAbstractItemModel* TodoManager::GetTodoModel () const
 	{
 		return Model_;

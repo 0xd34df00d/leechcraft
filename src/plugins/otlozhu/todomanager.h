@@ -39,6 +39,7 @@ namespace Otlozhu
 	public:
 		TodoManager (const QString&, QObject* = 0);
 
+		TodoStorage* GetTodoStorage () const;
 		QAbstractItemModel* GetTodoModel () const;
 	};
 }
