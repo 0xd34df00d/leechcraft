@@ -94,7 +94,10 @@ namespace Otlozhu
 		case Columns::DueDate:
 		{
 			const auto& date = item->GetDueDate ();
-			return date.isNull () ? tr ("not set") : date.toString ();
+			if (role == Qt::DisplayRole)
+				return date.isNull () ? QVariant (tr ("not set")) : QVariant (date);
+			else
+				return date.isNull () ? QDateTime::currentDateTime () : date;
 		}
 		case Columns::Created:
 			return item->GetCreatedDate ();
@@ -122,6 +125,13 @@ namespace Otlozhu
 			item->SetPercentage (value.toInt ());
 			updated = true;
 			break;
+		case Columns::Tags:
+		{
+			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
+			item->SetTagIDs (tm->SplitToIDs (value.toString ()));
+			updated = true;
+			break;
+		}
 		default:
 			qDebug () << Q_FUNC_INFO << index.column () << value;
 			break;

@@ -19,6 +19,8 @@
 #include "todolistdelegate.h"
 #include <QAbstractItemView>
 #include <QStyle>
+#include <util/tagslineedit.h>
+#include <util/tagscompleter.h>
 #include "storagemodel.h"
 
 namespace LeechCraft
@@ -29,6 +31,36 @@ namespace Otlozhu
 	: QStyledItemDelegate (parent)
 	, View_ (parent)
 	{
+	}
+
+	QWidget* TodoListDelegate::createEditor (QWidget *parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
+	{
+		switch (index.column ())
+		{
+		case StorageModel::Columns::Tags:
+		{
+			auto edit = new Util::TagsLineEdit (parent);
+			new Util::TagsCompleter (edit, edit);
+			edit->AddSelector ();
+			edit->setText (index.data (Qt::EditRole).toString ());
+			return edit;
+		}
+		default:
+			return QStyledItemDelegate::createEditor (parent, option, index);
+		}
+	}
+
+	void TodoListDelegate::updateEditorGeometry (QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const
+	{
+		switch (index.column ())
+		{
+		case StorageModel::Columns::Tags:
+			editor->setGeometry (option.rect);
+			break;
+		default:
+			QStyledItemDelegate::updateEditorGeometry (editor, option, index);
+			break;
+		}
 	}
 
 	void TodoListDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const

@@ -50,13 +50,8 @@ namespace Otlozhu
 
 	QStringList AddTodoDialog::GetTags () const
 	{
-		auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-		const auto& tags = tm->Split (Ui_.Tags_->text ());
-
-		QStringList result;
-		std::transform (tags.begin (), tags.end (), std::back_inserter (result),
-				[tm] (const QString& tag) { return tm->GetID (tag.simplified ()); });
-		return result;
+		return Core::Instance ().GetProxy ()->
+				GetTagsManager ()->SplitToIDs (Ui_.Tags_->text ());
 	}
 }
 }

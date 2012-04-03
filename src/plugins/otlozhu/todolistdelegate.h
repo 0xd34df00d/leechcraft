@@ -30,6 +30,11 @@ namespace Otlozhu
 	public:
 		TodoListDelegate (QAbstractItemView*);
 
+		QWidget* createEditor (QWidget*,
+				const QStyleOptionViewItem&, const QModelIndex&) const;
+		void updateEditorGeometry (QWidget*,
+				const QStyleOptionViewItem&, const QModelIndex&) const;
+
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 	};
 }
