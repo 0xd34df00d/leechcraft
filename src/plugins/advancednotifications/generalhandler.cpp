@@ -46,6 +46,7 @@ namespace AdvancedNotifications
 				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 
 		Cat2IconName_ ["org.LC.AdvNotifications.IM"] = "mail-unread-new";
+		Cat2IconName_ ["org.LC.AdvNotifications.Organizer"] = "view-calendar";
 	}
 
 	void GeneralHandler::Handle (const Entity& e)

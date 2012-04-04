@@ -51,7 +51,7 @@ namespace AdvancedNotifications
 		QList<NotificationRule> GetRules () const;
 		void SetRuleEnabled (const NotificationRule&, bool);
 	private:
-		void LoadDefaultRules ();
+		void LoadDefaultRules (int = -1);
 		void LoadSettings ();
 		void ResetModel ();
 		void ResetMatchesModel ();

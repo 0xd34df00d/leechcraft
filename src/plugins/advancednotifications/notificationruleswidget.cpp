@@ -51,13 +51,15 @@ namespace AdvancedNotifications
 	const QString TypeIMSubscrSub = "org.LC.AdvNotifications.IM.Subscr.Subscribed";
 	const QString TypeIMSubscrUnsub = "org.LC.AdvNotifications.IM.Subscr.Unsubscribed";
 
+	const QString CatOrganizer = "org.LC.AdvNotifications.Organizer";
+	const QString TypeOrganizerEventDue = "org.LC.AdvNotifications.Organizer.EventDue";
+
 	NotificationRulesWidget::NotificationRulesWidget (QWidget *parent)
 	: QWidget (parent)
 	, RulesModel_ (new QStandardItemModel (this))
 	, MatchesModel_ (new QStandardItemModel (this))
 	{
 		Cat2HR_ [CatIM] = tr ("Instant messaging");
-
 		Type2HR_ [TypeIMAttention] = tr ("Attention request");
 		Type2HR_ [TypeIMIncFile] = tr ("Incoming file transfer request");
 		Type2HR_ [TypeIMIncMsg] = tr ("Incoming chat message");
@@ -70,7 +72,6 @@ namespace AdvancedNotifications
 		Type2HR_ [TypeIMSubscrRequest] = tr ("Authorization requested");
 		Type2HR_ [TypeIMSubscrSub] = tr ("Contact subscribed");
 		Type2HR_ [TypeIMSubscrUnsub] = tr ("Contact unsubscribed");
-
 		Cat2Types_ [CatIM] << TypeIMAttention
 				<< TypeIMIncFile
 				<< TypeIMIncMsg
@@ -83,6 +84,10 @@ namespace AdvancedNotifications
 				<< TypeIMSubscrRevoke
 				<< TypeIMSubscrSub
 				<< TypeIMSubscrUnsub;
+
+		Cat2HR_ [CatOrganizer] = tr ("Organizer");
+		Type2HR_ [TypeOrganizerEventDue] = tr ("Event is due");
+		Cat2Types_ [CatOrganizer] << TypeOrganizerEventDue;
 
 		Ui_.setupUi (this);
 		Ui_.RulesTree_->setModel (RulesModel_);
@@ -126,50 +131,61 @@ namespace AdvancedNotifications
 			item->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
 	}
 
-	void NotificationRulesWidget::LoadDefaultRules ()
+	void NotificationRulesWidget::LoadDefaultRules (int version)
 	{
-		NotificationRule chatMsg (tr ("Incoming chat messages"), CatIM,
-				QStringList (TypeIMIncMsg));
-		chatMsg.SetMethods (NMVisual | NMTray | NMAudio);
-		chatMsg.SetAudioParams (AudioParams ("im-incoming-message"));
-		Rules_ << chatMsg;
+		if (version <= 0)
+		{
+			NotificationRule chatMsg (tr ("Incoming chat messages"), CatIM,
+					QStringList (TypeIMIncMsg));
+			chatMsg.SetMethods (NMVisual | NMTray | NMAudio);
+			chatMsg.SetAudioParams (AudioParams ("im-incoming-message"));
+			Rules_ << chatMsg;
 
-		NotificationRule mucHigh (tr ("MUC highlights"), CatIM,
-				QStringList (TypeIMMUCHighlight));
-		mucHigh.SetMethods (NMVisual | NMTray | NMAudio);
-		mucHigh.SetAudioParams (AudioParams ("im-muc-highlight"));
-		Rules_ << mucHigh;
+			NotificationRule mucHigh (tr ("MUC highlights"), CatIM,
+					QStringList (TypeIMMUCHighlight));
+			mucHigh.SetMethods (NMVisual | NMTray | NMAudio);
+			mucHigh.SetAudioParams (AudioParams ("im-muc-highlight"));
+			Rules_ << mucHigh;
 
-		NotificationRule mucInv (tr ("MUC invitations"), CatIM,
-				QStringList (TypeIMMUCInvite));
-		mucInv.SetMethods (NMVisual | NMTray | NMAudio);
-		mucInv.SetAudioParams (AudioParams ("im-attention"));
-		Rules_ << mucInv;
+			NotificationRule mucInv (tr ("MUC invitations"), CatIM,
+					QStringList (TypeIMMUCInvite));
+			mucInv.SetMethods (NMVisual | NMTray | NMAudio);
+			mucInv.SetAudioParams (AudioParams ("im-attention"));
+			Rules_ << mucInv;
 
-		NotificationRule incFile (tr ("Incoming file transfers"), CatIM,
-				QStringList (TypeIMIncFile));
-		incFile.SetMethods (NMVisual | NMTray | NMAudio);
-		Rules_ << incFile;
+			NotificationRule incFile (tr ("Incoming file transfers"), CatIM,
+					QStringList (TypeIMIncFile));
+			incFile.SetMethods (NMVisual | NMTray | NMAudio);
+			Rules_ << incFile;
 
-		NotificationRule subscrReq (tr ("Subscription requests"), CatIM,
-				QStringList (TypeIMSubscrRequest));
-		subscrReq.SetMethods (NMVisual | NMTray | NMAudio);
-		subscrReq.SetAudioParams (AudioParams ("im-auth-requested"));
-		Rules_ << subscrReq;
+			NotificationRule subscrReq (tr ("Subscription requests"), CatIM,
+					QStringList (TypeIMSubscrRequest));
+			subscrReq.SetMethods (NMVisual | NMTray | NMAudio);
+			subscrReq.SetAudioParams (AudioParams ("im-auth-requested"));
+			Rules_ << subscrReq;
 
-		NotificationRule subscrChanges (tr ("Subscription changes"), CatIM,
-				QStringList (TypeIMSubscrRevoke)
-					<< TypeIMSubscrGrant
-					<< TypeIMSubscrSub
-					<< TypeIMSubscrUnsub);
-		subscrChanges.SetMethods (NMVisual | NMTray);
-		Rules_ << subscrChanges;
+			NotificationRule subscrChanges (tr ("Subscription changes"), CatIM,
+					QStringList (TypeIMSubscrRevoke)
+						<< TypeIMSubscrGrant
+						<< TypeIMSubscrSub
+						<< TypeIMSubscrUnsub);
+			subscrChanges.SetMethods (NMVisual | NMTray);
+			Rules_ << subscrChanges;
 
-		NotificationRule attentionDrawn (tr ("Attention requests"), CatIM,
-				QStringList (TypeIMAttention));
-		attentionDrawn.SetMethods (NMVisual | NMTray | NMAudio);
-		attentionDrawn.SetAudioParams (AudioParams ("im-attention"));
-		Rules_ << attentionDrawn;
+			NotificationRule attentionDrawn (tr ("Attention requests"), CatIM,
+					QStringList (TypeIMAttention));
+			attentionDrawn.SetMethods (NMVisual | NMTray | NMAudio);
+			attentionDrawn.SetAudioParams (AudioParams ("im-attention"));
+			Rules_ << attentionDrawn;
+		}
+		else if (version == -1 || version == 1)
+		{
+			NotificationRule eventDue (tr ("Event is due"), CatOrganizer,
+					QStringList (TypeOrganizerEventDue));
+			eventDue.SetMethods (NMVisual | NMTray | NMAudio);
+			eventDue.SetAudioParams (AudioParams ("org-event-due"));
+			Rules_ << eventDue;
+		}
 	}
 
 	void NotificationRulesWidget::LoadSettings ()
@@ -178,10 +194,20 @@ namespace AdvancedNotifications
 				QCoreApplication::applicationName () + "_AdvancedNotifications");
 		settings.beginGroup ("rules");
 		Rules_ = settings.value ("RulesList").value<QList<NotificationRule>> ();
-		settings.endGroup ();
+		int rulesVersion = settings.value ("DefaultRulesVersion", 1).toInt ();
 
+		const int currentDefVersion = 2;
 		if (Rules_.isEmpty ())
-			LoadDefaultRules ();
+			LoadDefaultRules (0);
+
+		const bool shouldSave = rulesVersion < currentDefVersion;
+		while (rulesVersion < currentDefVersion)
+			LoadDefaultRules (rulesVersion++);
+		if (shouldSave)
+			SaveSettings ();
+
+		settings.setValue ("DefaultRulesVersion", currentDefVersion);
+		settings.endGroup ();
 
 		ResetModel ();
 	}
