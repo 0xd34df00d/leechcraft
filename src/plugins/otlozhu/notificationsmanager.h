@@ -16,46 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "core.h"
-#include "todomanager.h"
+#pragma once
+
+#include <QObject>
+#include "todoitem.h"
+
+class QTimer;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Otlozhu
 {
-	Core::Core ()
-	: TodoManager_ (new TodoManager ("Default", this))
-	{
-		connect (TodoManager_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-	}
+	class TodoStorage;
 
-	Core& Core::Instance ()
+	class NotificationsManager : public QObject
 	{
-		static Core c;
-		return c;
-	}
+		Q_OBJECT
 
-	ICoreProxy_ptr Core::GetProxy () const
-	{
-		return Proxy_;
-	}
-
-	void Core::SetProxy (ICoreProxy_ptr proxy)
-	{
-		Proxy_ = proxy;
-	}
-
-	void Core::SendEntity (const Entity& e)
-	{
-		emit gotEntity (e);
-	}
-
-	TodoManager* Core::GetTodoManager () const
-	{
-		return TodoManager_;
-	}
+		TodoStorage *Storage_;
+		QTimer *NextEventTimer_;
+		TodoItem_ptr NextEvent_;
+	public:
+		NotificationsManager (TodoStorage*);
+	private slots:
+		void handleTimer ();
+		void readjustTimer ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+	};
 }
 }

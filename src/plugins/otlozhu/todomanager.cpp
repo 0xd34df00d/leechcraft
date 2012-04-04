@@ -20,6 +20,8 @@
 #include <QStandardItemModel>
 #include "todostorage.h"
 #include "storagemodel.h"
+#include "notificationsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -28,10 +30,16 @@ namespace Otlozhu
 	TodoManager::TodoManager (const QString& ctx, QObject *parent)
 	: QObject (parent)
 	, Context_ (ctx)
-	, Storage_ (new TodoStorage (ctx))
+	, Storage_ (new TodoStorage (ctx, this))
 	, Model_ (new StorageModel (this))
+	, NotifMgr_ (new NotificationsManager (Storage_))
 	{
 		Model_->SetStorage (Storage_);
+
+		connect (NotifMgr_,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 
 	TodoStorage* TodoManager::GetTodoStorage () const

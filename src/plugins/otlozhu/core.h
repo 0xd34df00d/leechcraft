@@ -23,6 +23,8 @@
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Otlozhu
 {
 	class TodoManager;
@@ -41,7 +43,11 @@ namespace Otlozhu
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
 
+		void SendEntity (const LeechCraft::Entity&);
+
 		TodoManager* GetTodoManager () const;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

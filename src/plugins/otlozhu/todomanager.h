@@ -24,10 +24,13 @@ class QAbstractItemModel;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Otlozhu
 {
 	class TodoStorage;
 	class StorageModel;
+	class NotificationsManager;
 
 	class TodoManager : public QObject
 	{
@@ -36,11 +39,14 @@ namespace Otlozhu
 		const QString Context_;
 		TodoStorage *Storage_;
 		StorageModel *Model_;
+		NotificationsManager *NotifMgr_;
 	public:
 		TodoManager (const QString&, QObject* = 0);
 
 		TodoStorage* GetTodoStorage () const;
 		QAbstractItemModel* GetTodoModel () const;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
