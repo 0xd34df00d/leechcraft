@@ -104,6 +104,8 @@ namespace Otlozhu
 			return item->GetTagIDs ();
 		else if (role == Roles::ItemProgress)
 			return item->GetPercentage ();
+		else if (role == Roles::ItemComment)
+			return item->GetComment ();
 		else if (role == Qt::ToolTipRole)
 			return MakeTooltip (item);
 		else if (role != Qt::DisplayRole &&
@@ -149,6 +151,11 @@ namespace Otlozhu
 		if (role == Roles::ItemProgress)
 		{
 			item->SetPercentage (value.toInt ());
+			updated = true;
+		}
+		else if (role == Roles::ItemComment)
+		{
+			item->SetComment (value.toString ());
 			updated = true;
 		}
 		else if (role == Qt::EditRole)

@@ -49,7 +49,8 @@ namespace Otlozhu
 			ItemID = Qt::UserRole + 1,
 			ItemTitle,
 			ItemTags,
-			ItemProgress
+			ItemProgress,
+			ItemComment
 		};
 
 		StorageModel (QObject* = 0);

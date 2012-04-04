@@ -53,6 +53,7 @@ namespace Otlozhu
 	private slots:
 		void handleAddTodoRequested ();
 		void handleRemoveTodoRequested ();
+		void handleEditCommentRequested ();
 		void handleQuickProgress ();
 	signals:
 		void removeTab (QWidget*);

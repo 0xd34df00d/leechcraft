@@ -20,6 +20,8 @@
 #include <QToolBar>
 #include <QMenu>
 #include <QMessageBox>
+#include <QInputDialog>
+#include <util/util.h>
 #include <util/tagscompleter.h>
 #include "core.h"
 #include "todomanager.h"
@@ -82,6 +84,8 @@ namespace Otlozhu
 				this,
 				SLOT (handleRemoveTodoRequested ()));
 		Bar_->addAction (removeTodo);
+		Ui_.TodoTree_->addAction (removeTodo);
+		Ui_.TodoTree_->addAction (Util::CreateSeparator (Ui_.TodoTree_));
 
 		for (int i = 0; i <= 100; i += 10)
 		{
@@ -98,6 +102,14 @@ namespace Otlozhu
 			action->setShortcut (sc);
 		}
 		Ui_.TodoTree_->addAction (ProgressMenu_->menuAction ());
+
+		QAction *editComment = new QAction (tr ("Edit comment..."), this);
+		editComment->setProperty ("ActionIcon", "document-edit");
+		connect (editComment,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleEditCommentRequested ()));
+		Ui_.TodoTree_->addAction (editComment);
 	}
 
 	TodoTab::~TodoTab ()
@@ -153,6 +165,23 @@ namespace Otlozhu
 
 		const QString& id = index.data (StorageModel::Roles::ItemID).toString ();
 		Core::Instance ().GetTodoManager ()->GetTodoStorage ()->RemoveItem (id);
+	}
+
+	void TodoTab::handleEditCommentRequested ()
+	{
+		const QModelIndex& index = Ui_.TodoTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		const auto& title = ProxyModel_->data (index, StorageModel::Roles::ItemTitle).toString ();
+		auto comment = ProxyModel_->data (index, StorageModel::Roles::ItemComment).toString ();
+		comment = QInputDialog::getText (this,
+				"Otlozhu",
+				tr ("Enter new comment for item %1:")
+					.arg (title),
+				QLineEdit::Normal,
+				comment);
+		ProxyModel_->setData (index, comment, StorageModel::Roles::ItemComment);
 	}
 
 	void TodoTab::handleQuickProgress ()
