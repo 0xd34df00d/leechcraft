@@ -54,7 +54,19 @@ namespace Otlozhu
 	void NotificationsManager::handleTimer ()
 	{
 		const QString& notify = tr ("%1 is due now!").arg (NextEvent_->GetTitle ());
-		emit gotEntity (Util::MakeNotification ("Otlozhu", notify, PInfo_));
+		auto e = Util::MakeNotification ("Otlozhu", notify, PInfo_);
+
+		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Otlozhu";
+		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Organizer";
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.Plugins.Otlozhu.EventDue/" + NextEvent_->GetID ();
+		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (NextEvent_->GetTitle ());
+
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = "org.LC.AdvNotifications.Organizer.EventDue";
+		e.Additional_ ["org.LC.AdvNotifications.FullText"] = notify;
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = notify;
+		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+
+		emit gotEntity (e);
 
 		QTimer::singleShot (1100,
 				this,
