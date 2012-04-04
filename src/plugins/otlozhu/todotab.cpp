@@ -40,6 +40,7 @@ namespace Otlozhu
 	, Plugin_ (parent)
 	, ProxyModel_ (new TodoSFProxyModel (this))
 	, ProgressMenu_ (new QMenu (tr ("Set progress")))
+	, DueDateMenu_ (new QMenu (tr ("Set due date")))
 	, Bar_ (new QToolBar (tc.VisibleName_))
 	{
 		Ui_.setupUi (this);
@@ -110,11 +111,37 @@ namespace Otlozhu
 				this,
 				SLOT (handleEditCommentRequested ()));
 		Ui_.TodoTree_->addAction (editComment);
+
+		DueDateMenu_->setProperty ("ActionIcon", "view-calendar");
+		const QList<int> delays = { 0, 1, 3, 6, 12, 24, 48, 168 };
+		const QStringList labels = { tr ("Clear"), tr ("Hour"), tr ("3 hours"), tr ("6 hours"),
+				tr ("12 hours"), tr ("Day"), tr ("2 days"), tr ("Week") };
+		for (int i = 0; i < delays.size (); ++i)
+		{
+			QAction *delay = new QAction (labels.at (i), this);
+			connect (delay,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleSetDueDateRequested ()));
+			delay->setProperty ("Otlozhu/Delay", delays.at (i));
+			DueDateMenu_->addAction (delay);
+		}
+
+		QAction *customDueDate = new QAction (tr ("Custom..."), this);
+		customDueDate->setProperty ("ActionIcon", "view-calendar");
+		connect (customDueDate,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleSetCustomDueDateRequested ()));
+		DueDateMenu_->addSeparator ();
+		DueDateMenu_->addAction (customDueDate);
+		Ui_.TodoTree_->addAction (DueDateMenu_->menuAction ());
 	}
 
 	TodoTab::~TodoTab ()
 	{
 		delete ProgressMenu_;
+		delete DueDateMenu_;
 		delete Bar_;
 	}
 
@@ -182,6 +209,53 @@ namespace Otlozhu
 				QLineEdit::Normal,
 				comment);
 		ProxyModel_->setData (index, comment, StorageModel::Roles::ItemComment);
+	}
+
+	void TodoTab::handleSetDueDateRequested ()
+	{
+		const QModelIndex& index = Ui_.TodoTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		const int delay = sender ()->property ("Otlozhu/Delay").toInt ();
+		QDateTime dt;
+		if (delay)
+			dt = QDateTime::currentDateTime ().addSecs (delay * 60 * 60);
+
+		ProxyModel_->setData (index, dt, StorageModel::Roles::ItemDueDate);
+	}
+
+	void TodoTab::handleSetCustomDueDateRequested ()
+	{
+		const QModelIndex& index = Ui_.TodoTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		QDateTime dt = index.data (StorageModel::Roles::ItemDueDate).toDateTime ();
+
+		QDialog dia (this);
+		dia.setWindowTitle (tr ("Select due date"));
+		dia.setLayout (new QVBoxLayout);
+		QCalendarWidget *w = new QCalendarWidget;
+		QDialogButtonBox *box = new QDialogButtonBox;
+		dia.layout ()->addWidget (w);
+		dia.layout ()->addWidget (box);
+		connect (box,
+				SIGNAL (accepted ()),
+				&dia,
+				SLOT (accept ()));
+		connect (box,
+				SIGNAL (rejected ()),
+				&dia,
+				SLOT (reject ()));
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		dt.setDate (w->selectedDate ());
+		if (QDateTime::currentDateTime ().daysTo (dt) > 1)
+			dt.setTime (QTime ());
+
+		ProxyModel_->setData (index, dt, StorageModel::Roles::ItemDueDate);
 	}
 
 	void TodoTab::handleQuickProgress ()

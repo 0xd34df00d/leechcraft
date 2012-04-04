@@ -41,6 +41,7 @@ namespace Otlozhu
 		TodoSFProxyModel *ProxyModel_;
 
 		QMenu *ProgressMenu_;
+		QMenu *DueDateMenu_;
 		QToolBar *Bar_;
 	public:
 		TodoTab (const TabClassInfo&, QObject*);
@@ -54,6 +55,8 @@ namespace Otlozhu
 		void handleAddTodoRequested ();
 		void handleRemoveTodoRequested ();
 		void handleEditCommentRequested ();
+		void handleSetDueDateRequested ();
+		void handleSetCustomDueDateRequested ();
 		void handleQuickProgress ();
 	signals:
 		void removeTab (QWidget*);
