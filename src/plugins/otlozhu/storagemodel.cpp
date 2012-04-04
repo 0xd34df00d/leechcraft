@@ -71,6 +71,25 @@ namespace Otlozhu
 		return QAbstractItemModel::flags (index) | Qt::ItemIsEditable;
 	}
 
+	namespace
+	{
+		QString MakeTooltip (const TodoItem_ptr item)
+		{
+			QString result = "<strong>" + item->GetTitle () + "</strong><br />";
+			result += StorageModel::tr ("%1% done").arg (item->GetPercentage ()) + "<br />";
+			const auto& ids = item->GetTagIDs ();
+			if (!ids.isEmpty ())
+				result += Core::Instance ().GetProxy ()->
+						GetTagsManager ()->JoinIDs (ids) + "<br />";
+
+			const QString& comment = item->GetComment ();
+			if (!comment.isEmpty ())
+				result += comment;
+
+			return result;
+		}
+	}
+
 	QVariant StorageModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
@@ -85,6 +104,8 @@ namespace Otlozhu
 			return item->GetTagIDs ();
 		else if (role == Roles::ItemProgress)
 			return item->GetPercentage ();
+		else if (role == Qt::ToolTipRole)
+			return MakeTooltip (item);
 		else if (role != Qt::DisplayRole &&
 					role != Qt::EditRole)
 			return QVariant ();
