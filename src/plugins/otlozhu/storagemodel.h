@@ -50,7 +50,8 @@ namespace Otlozhu
 			ItemTitle,
 			ItemTags,
 			ItemProgress,
-			ItemComment
+			ItemComment,
+			ItemDueDate
 		};
 
 		StorageModel (QObject* = 0);

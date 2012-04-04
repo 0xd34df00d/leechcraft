@@ -106,6 +106,8 @@ namespace Otlozhu
 			return item->GetPercentage ();
 		else if (role == Roles::ItemComment)
 			return item->GetComment ();
+		else if (role == Roles::ItemDueDate)
+			return item->GetDueDate ();
 		else if (role == Qt::ToolTipRole)
 			return MakeTooltip (item);
 		else if (role != Qt::DisplayRole &&
@@ -156,6 +158,11 @@ namespace Otlozhu
 		else if (role == Roles::ItemComment)
 		{
 			item->SetComment (value.toString ());
+			updated = true;
+		}
+		else if (role == Roles::ItemDueDate)
+		{
+			item->SetDueDate (value.toDateTime ());
 			updated = true;
 		}
 		else if (role == Qt::EditRole)
