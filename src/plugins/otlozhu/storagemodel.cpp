@@ -162,6 +162,10 @@ namespace Otlozhu
 				item->SetPercentage (value.toInt ());
 				updated = true;
 				break;
+			case Columns::DueDate:
+				item->SetDueDate (value.toDateTime ());
+				updated = true;
+				break;
 			case Columns::Tags:
 			{
 				auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
