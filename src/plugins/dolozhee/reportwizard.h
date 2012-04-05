@@ -18,36 +18,21 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iactionsexporter.h>
+#include <QWizard>
 
 namespace LeechCraft
 {
 namespace Dolozhee
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IActionsExporter
+	class ChooseUserPage;
+
+	class ReportWizard : public QWizard
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
 
-		QAction *Report_;
+		ChooseUserPage *ChooseUser_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace area) const;
-	private slots:
-		void initiateReporting ();
-	signals:
-		void gotActions (QList<QAction*>, ActionsEmbedPlace);
+		ReportWizard (QWidget* = 0);
 	};
 }
 }

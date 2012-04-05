@@ -16,38 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iactionsexporter.h>
+#include "reportwizard.h"
+#include "chooseuserpage.h"
 
 namespace LeechCraft
 {
 namespace Dolozhee
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IActionsExporter
+	ReportWizard::ReportWizard (QWidget *parent)
+	: QWizard (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
-
-		QAction *Report_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace area) const;
-	private slots:
-		void initiateReporting ();
-	signals:
-		void gotActions (QList<QAction*>, ActionsEmbedPlace);
-	};
+		ChooseUser_ = new ChooseUserPage ();
+		addPage (ChooseUser_);
+	}
 }
 }

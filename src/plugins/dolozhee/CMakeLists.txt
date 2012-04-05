@@ -10,18 +10,27 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	dolozhee.cpp
+	reportwizard.cpp
+	chooseuserpage.cpp
 	)
 SET (HEADERS
 	dolozhee.h
+	reportwizard.h
+	chooseuserpage.h
+	)
+SET (FORMS
+	chooseuserpage.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_dolozhee SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_dolozhee
 	${QT_LIBRARIES}

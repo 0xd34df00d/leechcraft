@@ -16,38 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iactionsexporter.h>
+#include "chooseuserpage.h"
 
 namespace LeechCraft
 {
 namespace Dolozhee
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IActionsExporter
+	ChooseUserPage::ChooseUserPage (QWidget *parent)
+	: QWizardPage (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
+		Ui_.setupUi (this);
+	}
 
-		QAction *Report_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	ChooseUserPage::User ChooseUserPage::GetUser () const
+	{
+		if (Ui_.New_->isChecked ())
+			return User::New;
+		else if (Ui_.Existing_->isChecked ())
+			return User::Existing;
+		else
+			return User::Anonymous;
+	}
 
-		QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace area) const;
-	private slots:
-		void initiateReporting ();
-	signals:
-		void gotActions (QList<QAction*>, ActionsEmbedPlace);
-	};
+	QString ChooseUserPage::GetLogin () const
+	{
+		return Ui_.Login_->text ();
+	}
+
+	QString ChooseUserPage::GetPassword () const
+	{
+		return Ui_.Password_->text ();
+	}
 }
 }

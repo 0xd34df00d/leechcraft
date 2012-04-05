@@ -18,6 +18,8 @@
 
 #include "dolozhee.h"
 #include <QIcon>
+#include <QAction>
+#include "reportwizard.h"
 
 namespace LeechCraft
 {
@@ -25,6 +27,12 @@ namespace Dolozhee
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Report_ = new QAction (tr ("Report an issue..."), this);
+		Report_->setProperty ("ActionIcon", "tools-report-bug");
+		connect (Report_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (initiateReporting ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -53,6 +61,20 @@ namespace Dolozhee
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace area) const
+	{
+		QList<QAction*> result;
+		if (area == AEPToolsMenu)
+			result << Report_;
+		return result;
+	}
+
+	void Plugin::initiateReporting ()
+	{
+		ReportWizard *wizard = new ReportWizard ();
+		wizard->show ();
 	}
 }
 }
