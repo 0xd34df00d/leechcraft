@@ -159,10 +159,10 @@ SET (HEADERS
 	chatstyleoptionmanager.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
-	interfaces/iprotocolplugin.h
-	interfaces/iaccount.h
-	interfaces/iprotocol.h
-	interfaces/iclentry.h
+	interfaces/azoth/iprotocolplugin.h
+	interfaces/azoth/iaccount.h
+	interfaces/azoth/iprotocol.h
+	interfaces/azoth/iclentry.h
 	)
 SET (FORMS
 	mainwidget.ui
