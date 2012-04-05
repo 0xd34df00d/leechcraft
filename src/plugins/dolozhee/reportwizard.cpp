@@ -24,6 +24,10 @@
 #include <QMessageBox>
 #include "chooseuserpage.h"
 #include "userstatuspage.h"
+#include "reporttypepage.h"
+#include "bugreportpage.h"
+#include "featurerequestpage.h"
+#include "finalpage.h"
 
 namespace LeechCraft
 {
@@ -32,11 +36,18 @@ namespace Dolozhee
 	ReportWizard::ReportWizard (QWidget *parent)
 	: QWizard (parent)
 	, NAM_ (new QNetworkAccessManager (this))
+	, ChooseUser_ (new ChooseUserPage)
+	, ReportType_ (new ReportTypePage)
+	, BugReportPage_ (new BugReportPage)
+	, FRPage_ (new FeatureRequestPage)
 	, FirstAuth_ (true)
 	{
-		ChooseUser_ = new ChooseUserPage ();
 		setPage (PageID::ChooseUser, ChooseUser_);
 		setPage (PageID::UserStatus, new UserStatusPage ());
+		setPage (PageID::ReportType, ReportType_);
+		setPage (PageID::BugDetails, BugReportPage_);
+		setPage (PageID::FeatureDetails, FRPage_);
+		setPage (PageID::Final, new FinalPage);
 
 		connect (NAM_,
 				SIGNAL (authenticationRequired (QNetworkReply*, QAuthenticator*)),
@@ -60,6 +71,21 @@ namespace Dolozhee
 	ChooseUserPage* ReportWizard::GetChooseUserPage () const
 	{
 		return ChooseUser_;
+	}
+
+	ReportTypePage* ReportWizard::GetReportTypePage () const
+	{
+		return ReportType_;
+	}
+
+	BugReportPage* ReportWizard::GetBugReportPage () const
+	{
+		return BugReportPage_;
+	}
+
+	FeatureRequestPage* ReportWizard::GetFRPage () const
+	{
+		return FRPage_;
 	}
 
 	void ReportWizard::handleAuthenticationRequired (QNetworkReply*, QAuthenticator *auth)

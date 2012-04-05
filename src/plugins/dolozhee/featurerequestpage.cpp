@@ -16,55 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QWizard>
-
-class QAuthenticator;
-class QNetworkReply;
-class QNetworkAccessManager;
+#include "featurerequestpage.h"
+#include "reportwizard.h"
 
 namespace LeechCraft
 {
 namespace Dolozhee
 {
-	class ChooseUserPage;
-	class ReportTypePage;
-	class BugReportPage;
-	class FeatureRequestPage;
-
-	class ReportWizard : public QWizard
+	FeatureRequestPage::FeatureRequestPage (QWidget *parent)
+	: QWizardPage (parent)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
+	}
 
-		QNetworkAccessManager *NAM_;
-		ChooseUserPage *ChooseUser_;
-		ReportTypePage *ReportType_;
-		BugReportPage *BugReportPage_;
-		FeatureRequestPage *FRPage_;
-		bool FirstAuth_;
-	public:
-		enum PageID
-		{
-			ChooseUser,
-			UserStatus,
-			ReportType,
-			BugDetails,
-			FeatureDetails,
-			Final
-		};
+	int FeatureRequestPage::nextId () const
+	{
+		return ReportWizard::PageID::Final;
+	}
 
-		ReportWizard (QWidget* = 0);
+	QString FeatureRequestPage::GetTitle () const
+	{
+		return Ui_.Title_->text ();
+	}
 
-		QNetworkAccessManager* GetNAM () const;
-		QNetworkReply* PostRequest (const QString&, const QByteArray&);
-
-		ChooseUserPage* GetChooseUserPage () const;
-		ReportTypePage* GetReportTypePage () const;
-		BugReportPage* GetBugReportPage () const;
-		FeatureRequestPage* GetFRPage () const;
-	private slots:
-		void handleAuthenticationRequired (QNetworkReply*, QAuthenticator*);
-	};
+	QString FeatureRequestPage::GetText () const
+	{
+		return Ui_.Description_->toPlainText ();
+	}
 }
 }

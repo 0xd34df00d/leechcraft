@@ -40,5 +40,21 @@ namespace Dolozhee
 
 		return result;
 	}
+
+	QByteArray XMLGenerator::CreateIssue (const QString& title, const QString& desc) const
+	{
+		QByteArray result;
+
+		QXmlStreamWriter w (&result);
+		w.writeStartDocument ();
+		w.writeStartElement ("issue");
+		w.writeTextElement ("subject", title);
+		w.writeTextElement ("description", desc);
+		w.writeTextElement ("project_id", "1");
+		w.writeTextElement ("priority_id", "4");
+		w.writeEndDocument ();
+
+		return result;
+	}
 }
 }

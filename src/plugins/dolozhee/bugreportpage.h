@@ -18,53 +18,25 @@
 
 #pragma once
 
-#include <QWizard>
-
-class QAuthenticator;
-class QNetworkReply;
-class QNetworkAccessManager;
+#include <QWizardPage>
+#include "ui_bugreportpage.h"
 
 namespace LeechCraft
 {
 namespace Dolozhee
 {
-	class ChooseUserPage;
-	class ReportTypePage;
-	class BugReportPage;
-	class FeatureRequestPage;
-
-	class ReportWizard : public QWizard
+	class BugReportPage : public QWizardPage
 	{
 		Q_OBJECT
 
-		QNetworkAccessManager *NAM_;
-		ChooseUserPage *ChooseUser_;
-		ReportTypePage *ReportType_;
-		BugReportPage *BugReportPage_;
-		FeatureRequestPage *FRPage_;
-		bool FirstAuth_;
+		Ui::BugReportPage Ui_;
 	public:
-		enum PageID
-		{
-			ChooseUser,
-			UserStatus,
-			ReportType,
-			BugDetails,
-			FeatureDetails,
-			Final
-		};
+		BugReportPage (QWidget* = 0);
 
-		ReportWizard (QWidget* = 0);
+		int nextId () const;
 
-		QNetworkAccessManager* GetNAM () const;
-		QNetworkReply* PostRequest (const QString&, const QByteArray&);
-
-		ChooseUserPage* GetChooseUserPage () const;
-		ReportTypePage* GetReportTypePage () const;
-		BugReportPage* GetBugReportPage () const;
-		FeatureRequestPage* GetFRPage () const;
-	private slots:
-		void handleAuthenticationRequired (QNetworkReply*, QAuthenticator*);
+		QString GetTitle () const;
+		QString GetText () const;
 	};
 }
 }

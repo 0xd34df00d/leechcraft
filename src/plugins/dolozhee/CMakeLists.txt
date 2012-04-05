@@ -16,6 +16,10 @@ SET (SRCS
 	reportwizard.cpp
 	chooseuserpage.cpp
 	userstatuspage.cpp
+	reporttypepage.cpp
+	bugreportpage.cpp
+	featurerequestpage.cpp
+	finalpage.cpp
 	)
 SET (HEADERS
 	dolozhee.h
@@ -23,10 +27,17 @@ SET (HEADERS
 	reportwizard.h
 	chooseuserpage.h
 	userstatuspage.h
+	reporttypepage.h
+	featurerequestpage.h
+	finalpage.h
 	)
 SET (FORMS
 	chooseuserpage.ui
 	userstatuspage.ui
+	reporttypepage.ui
+	bugreportpage.ui
+	featurerequestpage.ui
+	finalpage.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

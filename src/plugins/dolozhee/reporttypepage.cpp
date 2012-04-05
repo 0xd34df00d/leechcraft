@@ -16,55 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QWizard>
-
-class QAuthenticator;
-class QNetworkReply;
-class QNetworkAccessManager;
+#include "reporttypepage.h"
+#include "reportwizard.h"
 
 namespace LeechCraft
 {
 namespace Dolozhee
 {
-	class ChooseUserPage;
-	class ReportTypePage;
-	class BugReportPage;
-	class FeatureRequestPage;
-
-	class ReportWizard : public QWizard
+	ReportTypePage::ReportTypePage (QWidget *parent)
+	: QWizardPage (parent)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
+	}
 
-		QNetworkAccessManager *NAM_;
-		ChooseUserPage *ChooseUser_;
-		ReportTypePage *ReportType_;
-		BugReportPage *BugReportPage_;
-		FeatureRequestPage *FRPage_;
-		bool FirstAuth_;
-	public:
-		enum PageID
+	int ReportTypePage::nextId () const
+	{
+		switch (GetReportType ())
 		{
-			ChooseUser,
-			UserStatus,
-			ReportType,
-			BugDetails,
-			FeatureDetails,
-			Final
-		};
+		case Type::Feature:
+			return ReportWizard::PageID::FeatureDetails;
+		case Type::Bug:
+			return ReportWizard::PageID::BugDetails;
+		}
+	}
 
-		ReportWizard (QWidget* = 0);
-
-		QNetworkAccessManager* GetNAM () const;
-		QNetworkReply* PostRequest (const QString&, const QByteArray&);
-
-		ChooseUserPage* GetChooseUserPage () const;
-		ReportTypePage* GetReportTypePage () const;
-		BugReportPage* GetBugReportPage () const;
-		FeatureRequestPage* GetFRPage () const;
-	private slots:
-		void handleAuthenticationRequired (QNetworkReply*, QAuthenticator*);
-	};
+	ReportTypePage::Type ReportTypePage::GetReportType () const
+	{
+		return Ui_.TypeCombo_->currentIndex () == 1 ? Type::Feature : Type::Bug;
+	}
 }
 }

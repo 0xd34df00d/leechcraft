@@ -49,14 +49,14 @@ namespace Dolozhee
 	QString ChooseUserPage::GetLogin () const
 	{
 		return GetUser () == User::Anonymous ?
-				"Dolozhee" :
+				"7b034124da8534c8e3464afd4dd59abc244bd271" :
 				Ui_.Login_->text ();
 	}
 
 	QString ChooseUserPage::GetPassword () const
 	{
 		return GetUser () == User::Anonymous ?
-				"dolozheeclient" :
+				"somepass" :
 				Ui_.Password_->text ();
 	}
 
