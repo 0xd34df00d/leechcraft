@@ -41,7 +41,8 @@ namespace Dolozhee
 		return result;
 	}
 
-	QByteArray XMLGenerator::CreateIssue (const QString& title, const QString& desc) const
+	QByteArray XMLGenerator::CreateIssue (const QString& title,
+			const QString& desc, ReportTypePage::Type type) const
 	{
 		QByteArray result;
 
@@ -52,6 +53,15 @@ namespace Dolozhee
 		w.writeTextElement ("description", desc);
 		w.writeTextElement ("project_id", "1");
 		w.writeTextElement ("priority_id", "4");
+		switch (type)
+		{
+		case ReportTypePage::Type::Bug:
+			w.writeTextElement ("tracker_id", "1");
+			break;
+		case ReportTypePage::Type::Feature:
+			w.writeTextElement ("tracker_id", "2");
+			break;
+		}
 		w.writeEndDocument ();
 
 		return result;

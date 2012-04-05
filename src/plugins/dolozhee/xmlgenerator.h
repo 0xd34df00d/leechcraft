@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QString>
+#include "reporttypepage.h"
 
 namespace LeechCraft
 {
@@ -29,7 +30,7 @@ namespace Dolozhee
 	public:
 		QByteArray RegisterUser (const QString&, const QString&,
 				const QString&, const QString&, const QString&) const;
-		QByteArray CreateIssue (const QString&, const QString&) const;
+		QByteArray CreateIssue (const QString&, const QString&, ReportTypePage::Type) const;
 	};
 }
 }
