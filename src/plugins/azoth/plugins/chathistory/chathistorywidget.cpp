@@ -226,6 +226,8 @@ namespace ChatHistory
 		Amount_ = 0;
 		Ui_.HistView_->clear ();
 
+		const auto& defFormat = Ui_.HistView_->currentCharFormat ();
+
 		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ()->
 					GetPluginProxy ()->GetEntry (entryId, accountId));
 		const QString& name = entry ?
@@ -253,12 +255,7 @@ namespace ChatHistory
 
 			const bool isChat = map ["Type"] == "CHAT";
 
-			QString html;
-			if (SearchResultPosition_ == Amount - Amount_)
-				html = QString ("<div style='background-color: %1'>")
-					.arg (palette ().color (QPalette::AlternateBase).name ());
-
-			html += "[" + map ["Date"].toDateTime ().toString () + "] " + preNick;
+			QString html = "[" + map ["Date"].toDateTime ().toString () + "] " + preNick;
 			const QString& var = map ["Variant"].toString ();
 			if (isChat)
 			{
@@ -293,21 +290,28 @@ namespace ChatHistory
 					.replace ('<', "&lt;")
 					.replace ('\n', "<br/>");
 
-			if (isChat)
+			const bool isSearchRes = SearchResultPosition_ == Amount - Amount_;
+			if (isChat && !isSearchRes)
 			{
 				html.prepend (QString ("<font color=\"#") +
 						(map ["Direction"] == "IN" ? "0000dd" : "dd0000") +
 						"\">");
 				html += "</font>";
 			}
-
-			if (SearchResultPosition_ == Amount - Amount_++)
+			else if (isSearchRes)
 			{
-				html += "</div>";
+				QTextCharFormat fmt = defFormat;
 				scrollPos = Ui_.HistView_->document ()->characterCount ();
+
+				html.prepend ("<font color='#FF7E00'>");
+				html += "</font>";
 			}
+			++Amount_;
 
 			Ui_.HistView_->append (html);
+
+			if (isSearchRes)
+				Ui_.HistView_->setCurrentCharFormat (defFormat);
 		}
 
 		if (scrollPos >= 0)
