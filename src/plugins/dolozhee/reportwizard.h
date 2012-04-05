@@ -20,6 +20,10 @@
 
 #include <QWizard>
 
+class QAuthenticator;
+class QNetworkReply;
+class QNetworkAccessManager;
+
 namespace LeechCraft
 {
 namespace Dolozhee
@@ -30,9 +34,26 @@ namespace Dolozhee
 	{
 		Q_OBJECT
 
+		QNetworkAccessManager *NAM_;
 		ChooseUserPage *ChooseUser_;
 	public:
+		enum PageID
+		{
+			ChooseUser,
+			UserStatus,
+			ReportType,
+			BugDetails,
+			FeatureDetails
+		};
+
 		ReportWizard (QWidget* = 0);
+
+		QNetworkAccessManager* GetNAM () const;
+		QNetworkReply* PostRequest (const QString&, const QByteArray&);
+
+		ChooseUserPage* GetChooseUserPage () const;
+	private slots:
+		void handleAuthenticationRequired (QNetworkReply*, QAuthenticator*);
 	};
 }
 }

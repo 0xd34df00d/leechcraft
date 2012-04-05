@@ -16,59 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "chooseuserpage.h"
-#include "reportwizard.h"
+#include "xmlgenerator.h"
+#include <QXmlStreamWriter>
 
 namespace LeechCraft
 {
 namespace Dolozhee
 {
-	ChooseUserPage::ChooseUserPage (QWidget *parent)
-	: QWizardPage (parent)
+	QByteArray XMLGenerator::RegisterUser (const QString& login, const QString& pass,
+			const QString& email, const QString& firstname, const QString& lastname) const
 	{
-		Ui_.setupUi (this);
-	}
+		QByteArray result;
 
-	int ChooseUserPage::nextId () const
-	{
-		return GetUser () == User::Anonymous ?
-				ReportWizard::PageID::ReportType :
-				ReportWizard::PageID::UserStatus;
-	}
+		QXmlStreamWriter w (&result);
+		w.writeStartDocument ();
+		w.writeStartElement ("user");
+		w.writeTextElement ("login", login);
+		w.writeTextElement ("password", pass);
+		w.writeTextElement ("mail", email);
+		w.writeTextElement ("firstname", firstname);
+		w.writeTextElement ("lastname", lastname);
+		w.writeEndDocument ();
 
-	ChooseUserPage::User ChooseUserPage::GetUser () const
-	{
-		if (Ui_.New_->isChecked ())
-			return User::New;
-		else if (Ui_.Existing_->isChecked ())
-			return User::Existing;
-		else
-			return User::Anonymous;
-	}
-
-	QString ChooseUserPage::GetLogin () const
-	{
-		return Ui_.Login_->text ();
-	}
-
-	QString ChooseUserPage::GetPassword () const
-	{
-		return Ui_.Password_->text ();
-	}
-
-	QString ChooseUserPage::GetEmail () const
-	{
-		return Ui_.EMail_->text ();
-	}
-
-	QString ChooseUserPage::GetFirstName () const
-	{
-		return Ui_.FirstName_->text ();
-	}
-
-	QString ChooseUserPage::GetLastName () const
-	{
-		return Ui_.LastName_->text ();
+		return result;
 	}
 }
 }

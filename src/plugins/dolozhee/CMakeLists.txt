@@ -2,6 +2,8 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_dolozhee)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (QT_USE_QTNETWORK TRUE)
+SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -10,16 +12,21 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	dolozhee.cpp
+	xmlgenerator.cpp
 	reportwizard.cpp
 	chooseuserpage.cpp
+	userstatuspage.cpp
 	)
 SET (HEADERS
 	dolozhee.h
+	xmlgenerator.h
 	reportwizard.h
 	chooseuserpage.h
+	userstatuspage.h
 	)
 SET (FORMS
 	chooseuserpage.ui
+	userstatuspage.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

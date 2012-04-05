@@ -17,7 +17,11 @@
  **********************************************************************/
 
 #include "reportwizard.h"
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QtDebug>
 #include "chooseuserpage.h"
+#include "userstatuspage.h"
 
 namespace LeechCraft
 {
@@ -25,9 +29,39 @@ namespace Dolozhee
 {
 	ReportWizard::ReportWizard (QWidget *parent)
 	: QWizard (parent)
+	, NAM_ (new QNetworkAccessManager (this))
 	{
 		ChooseUser_ = new ChooseUserPage ();
-		addPage (ChooseUser_);
+		setPage (PageID::ChooseUser, ChooseUser_);
+		setPage (PageID::UserStatus, new UserStatusPage ());
+
+		connect (NAM_,
+				SIGNAL (authenticationRequired (QNetworkReply*, QAuthenticator*)),
+				this,
+				SLOT (handleAuthenticationRequired (QNetworkReply*, QAuthenticator*)));
+	}
+
+	QNetworkAccessManager* ReportWizard::GetNAM () const
+	{
+		return NAM_;
+	}
+
+	QNetworkReply* ReportWizard::PostRequest (const QString& address,
+			const QByteArray& data)
+	{
+		QNetworkRequest req ("http://dev.leechcraft.org" + address);
+		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/xml");
+		return NAM_->post (req, data);
+	}
+
+	ChooseUserPage* ReportWizard::GetChooseUserPage () const
+	{
+		return ChooseUser_;
+	}
+
+	void ReportWizard::handleAuthenticationRequired (QNetworkReply*, QAuthenticator *auth)
+	{
+		qDebug () << Q_FUNC_INFO;
 	}
 }
 }

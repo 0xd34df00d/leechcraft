@@ -40,9 +40,14 @@ namespace Dolozhee
 
 		ChooseUserPage (QWidget* = 0);
 
+		int nextId () const;
+
 		User GetUser () const;
 		QString GetLogin () const;
 		QString GetPassword () const;
+		QString GetEmail () const;
+		QString GetFirstName () const;
+		QString GetLastName () const;
 	};
 }
 }

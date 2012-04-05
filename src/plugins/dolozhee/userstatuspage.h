@@ -16,59 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "chooseuserpage.h"
-#include "reportwizard.h"
+#pragma once
+
+#include <QWizardPage>
+#include "ui_userstatuspage.h"
 
 namespace LeechCraft
 {
 namespace Dolozhee
 {
-	ChooseUserPage::ChooseUserPage (QWidget *parent)
-	: QWizardPage (parent)
-	{
-		Ui_.setupUi (this);
-	}
+	class ChooseUserPage;
 
-	int ChooseUserPage::nextId () const
+	class UserStatusPage : public QWizardPage
 	{
-		return GetUser () == User::Anonymous ?
-				ReportWizard::PageID::ReportType :
-				ReportWizard::PageID::UserStatus;
-	}
+		Q_OBJECT
 
-	ChooseUserPage::User ChooseUserPage::GetUser () const
-	{
-		if (Ui_.New_->isChecked ())
-			return User::New;
-		else if (Ui_.Existing_->isChecked ())
-			return User::Existing;
-		else
-			return User::Anonymous;
-	}
+		Ui::UserStatusPage Ui_;
+	public:
+		UserStatusPage (QWidget* = 0);
 
-	QString ChooseUserPage::GetLogin () const
-	{
-		return Ui_.Login_->text ();
-	}
-
-	QString ChooseUserPage::GetPassword () const
-	{
-		return Ui_.Password_->text ();
-	}
-
-	QString ChooseUserPage::GetEmail () const
-	{
-		return Ui_.EMail_->text ();
-	}
-
-	QString ChooseUserPage::GetFirstName () const
-	{
-		return Ui_.FirstName_->text ();
-	}
-
-	QString ChooseUserPage::GetLastName () const
-	{
-		return Ui_.LastName_->text ();
-	}
+		void initializePage ();
+	private:
+		void CheckUser (const QString&, const QString&);
+		void RegisterUser (const QString&, const QString&, ChooseUserPage*);
+	};
 }
 }

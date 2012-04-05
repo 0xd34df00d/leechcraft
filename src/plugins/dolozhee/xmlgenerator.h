@@ -16,59 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "chooseuserpage.h"
-#include "reportwizard.h"
+#pragma once
+
+#include <QString>
 
 namespace LeechCraft
 {
 namespace Dolozhee
 {
-	ChooseUserPage::ChooseUserPage (QWidget *parent)
-	: QWizardPage (parent)
+	class XMLGenerator
 	{
-		Ui_.setupUi (this);
-	}
-
-	int ChooseUserPage::nextId () const
-	{
-		return GetUser () == User::Anonymous ?
-				ReportWizard::PageID::ReportType :
-				ReportWizard::PageID::UserStatus;
-	}
-
-	ChooseUserPage::User ChooseUserPage::GetUser () const
-	{
-		if (Ui_.New_->isChecked ())
-			return User::New;
-		else if (Ui_.Existing_->isChecked ())
-			return User::Existing;
-		else
-			return User::Anonymous;
-	}
-
-	QString ChooseUserPage::GetLogin () const
-	{
-		return Ui_.Login_->text ();
-	}
-
-	QString ChooseUserPage::GetPassword () const
-	{
-		return Ui_.Password_->text ();
-	}
-
-	QString ChooseUserPage::GetEmail () const
-	{
-		return Ui_.EMail_->text ();
-	}
-
-	QString ChooseUserPage::GetFirstName () const
-	{
-		return Ui_.FirstName_->text ();
-	}
-
-	QString ChooseUserPage::GetLastName () const
-	{
-		return Ui_.LastName_->text ();
-	}
+	public:
+		QByteArray RegisterUser (const QString&, const QString&,
+				const QString&, const QString&, const QString&) const;
+	};
 }
 }
