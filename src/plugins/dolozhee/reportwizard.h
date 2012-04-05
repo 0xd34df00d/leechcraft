@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QWizard>
+#include <interfaces/core/icoreproxy.h>
 
 class QAuthenticator;
 class QNetworkReply;
@@ -37,6 +38,8 @@ namespace Dolozhee
 	{
 		Q_OBJECT
 
+		ICoreProxy_ptr Proxy_;
+
 		QNetworkAccessManager *NAM_;
 		ChooseUserPage *ChooseUser_;
 		ReportTypePage *ReportType_;
@@ -54,7 +57,7 @@ namespace Dolozhee
 			Final
 		};
 
-		ReportWizard (QWidget* = 0);
+		ReportWizard (ICoreProxy_ptr, QWidget* = 0);
 
 		QNetworkAccessManager* GetNAM () const;
 		QNetworkReply* PostRequest (const QString&, const QByteArray&);

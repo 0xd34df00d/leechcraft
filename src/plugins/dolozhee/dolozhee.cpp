@@ -27,6 +27,8 @@ namespace Dolozhee
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		Report_ = new QAction (tr ("Report an issue..."), this);
 		Report_->setProperty ("ActionIcon", "tools-report-bug");
 		connect (Report_,
@@ -73,7 +75,7 @@ namespace Dolozhee
 
 	void Plugin::initiateReporting ()
 	{
-		ReportWizard *wizard = new ReportWizard ();
+		ReportWizard *wizard = new ReportWizard (Proxy_);
 		wizard->show ();
 	}
 }

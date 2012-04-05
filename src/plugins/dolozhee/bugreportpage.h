@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QWizardPage>
+#include <interfaces/core/icoreproxy.h>
 #include "ui_bugreportpage.h"
 
 namespace LeechCraft
@@ -30,8 +31,9 @@ namespace Dolozhee
 		Q_OBJECT
 
 		Ui::BugReportPage Ui_;
+		ICoreProxy_ptr Proxy_;
 	public:
-		BugReportPage (QWidget* = 0);
+		BugReportPage (ICoreProxy_ptr, QWidget* = 0);
 
 		int nextId () const;
 

@@ -33,12 +33,13 @@ namespace LeechCraft
 {
 namespace Dolozhee
 {
-	ReportWizard::ReportWizard (QWidget *parent)
+	ReportWizard::ReportWizard (ICoreProxy_ptr proxy, QWidget *parent)
 	: QWizard (parent)
+	, Proxy_ (proxy)
 	, NAM_ (new QNetworkAccessManager (this))
 	, ChooseUser_ (new ChooseUserPage)
 	, ReportType_ (new ReportTypePage)
-	, BugReportPage_ (new BugReportPage)
+	, BugReportPage_ (new BugReportPage (proxy))
 	, FRPage_ (new FeatureRequestPage)
 	, FirstAuth_ (true)
 	{

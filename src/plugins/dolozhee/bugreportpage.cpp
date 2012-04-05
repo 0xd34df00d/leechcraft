@@ -17,14 +17,16 @@
  **********************************************************************/
 
 #include "bugreportpage.h"
+#include <util/sysinfo.h>
 #include "reportwizard.h"
 
 namespace LeechCraft
 {
 namespace Dolozhee
 {
-	BugReportPage::BugReportPage (QWidget *parent)
+	BugReportPage::BugReportPage (ICoreProxy_ptr proxy, QWidget *parent)
 	: QWizardPage (parent)
+	, Proxy_ (proxy)
 	{
 		Ui_.setupUi (this);
 	}
@@ -45,6 +47,14 @@ namespace Dolozhee
 		result += "*Expected result:*\n" + Ui_.ER_->toPlainText () + "\n\n";
 		result += "*Actual result:*\n" + Ui_.AR_->toPlainText () + "\n\n";
 		result += "*STR:*\n" + Ui_.STR_->toPlainText () + "\n\n";
+
+		result += "*System information:*\n";
+		result += QString ("LeechCraft ") + Proxy_->GetVersion () + "\n";
+		result += QString ("Built with Qt %1, running with Qt %2\n")
+				.arg (QT_VERSION_STR)
+				.arg (qVersion ());
+		result += QString ("Running on: %1\n").arg (Util::SysInfo::GetOSName ());
+
 		return result;
 	}
 }

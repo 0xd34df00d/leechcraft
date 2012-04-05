@@ -33,6 +33,7 @@ namespace Dolozhee
 		Q_OBJECT
 		Q_INTERFACES (IInfo IActionsExporter)
 
+		ICoreProxy_ptr Proxy_;
 		QAction *Report_;
 	public:
 		void Init (ICoreProxy_ptr);
