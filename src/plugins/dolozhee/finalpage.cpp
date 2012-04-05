@@ -19,6 +19,7 @@
 #include "finalpage.h"
 #include <QNetworkReply>
 #include <QtDebug>
+#include <QDomDocument>
 #include "reportwizard.h"
 #include "reporttypepage.h"
 #include "bugreportpage.h"
@@ -65,7 +66,27 @@ namespace Dolozhee
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
-		Ui_.Status_->setText (tr ("Report has been sent successfully. Thanks for your time!"));
+		QString text;
+
+		QDomDocument doc;
+		if (!doc.setContent (reply->readAll ()))
+		{
+			text = tr ("I'm very sorry to say that, but seems like "
+					"we're unable to handle your report at the time :(");
+			Ui_.Status_->setText (text);
+			return;
+		}
+
+		auto root = doc.documentElement ();
+		const auto& id = root.firstChildElement ("id").text ();
+		text = tr ("Report has been sent successfully. Thanks for your time!");
+		if (!id.isEmpty ())
+		{
+			text += "<br />";
+			text += (tr ("Your issue number is %1. You can view it here:") +
+						" <a href='http://dev.leechcraft.org/issues/%1'>#%1</a>").arg (id);
+		}
+		Ui_.Status_->setText (text);
 	}
 }
 }
