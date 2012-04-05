@@ -145,6 +145,7 @@ OPTION (ENABLE_PINTAB "Build Pintab for pinning important tabs" ${WITH_PLUGINS})
 OPTION (ENABLE_OTLOZHU "Build Otlozhu, a GTD-inspired ToDo manager" OFF)
 OPTION (ENABLE_KEYBOARDCRAFT "Build KeyboardCraft, a keyboard plugin" OFF)
 OPTION (ENABLE_XPROXY "Build XProxy, the advanced proxy manager" ${WITH_PLUGINS})
+OPTION (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
 
 # Defunct
 OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" OFF)
@@ -373,6 +374,10 @@ ENDIF (ENABLE_KEYBOARDCRAFT)
 IF (ENABLE_XPROXY)
 	ADD_SUBDIRECTORY (plugins/xproxy)
 ENDIF (ENABLE_XPROXY)
+
+IF (ENABLE_DOLOZHEE)
+	ADD_SUBDIRECTORY (plugins/dolozhee)
+ENDIF (ENABLE_DOLOZHEE)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
