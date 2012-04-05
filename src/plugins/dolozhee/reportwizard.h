@@ -36,6 +36,7 @@ namespace Dolozhee
 
 		QNetworkAccessManager *NAM_;
 		ChooseUserPage *ChooseUser_;
+		bool FirstAuth_;
 	public:
 		enum PageID
 		{

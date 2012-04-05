@@ -31,7 +31,7 @@ namespace Dolozhee
 
 	int ChooseUserPage::nextId () const
 	{
-		return GetUser () == User::Anonymous ?
+		return GetUser () != User::New ?
 				ReportWizard::PageID::ReportType :
 				ReportWizard::PageID::UserStatus;
 	}
@@ -48,12 +48,16 @@ namespace Dolozhee
 
 	QString ChooseUserPage::GetLogin () const
 	{
-		return Ui_.Login_->text ();
+		return GetUser () == User::Anonymous ?
+				"Dolozhee" :
+				Ui_.Login_->text ();
 	}
 
 	QString ChooseUserPage::GetPassword () const
 	{
-		return Ui_.Password_->text ();
+		return GetUser () == User::Anonymous ?
+				"dolozheeclient" :
+				Ui_.Password_->text ();
 	}
 
 	QString ChooseUserPage::GetEmail () const

@@ -19,7 +19,9 @@
 #include "reportwizard.h"
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
+#include <QAuthenticator>
 #include <QtDebug>
+#include <QMessageBox>
 #include "chooseuserpage.h"
 #include "userstatuspage.h"
 
@@ -30,6 +32,7 @@ namespace Dolozhee
 	ReportWizard::ReportWizard (QWidget *parent)
 	: QWizard (parent)
 	, NAM_ (new QNetworkAccessManager (this))
+	, FirstAuth_ (true)
 	{
 		ChooseUser_ = new ChooseUserPage ();
 		setPage (PageID::ChooseUser, ChooseUser_);
@@ -61,7 +64,19 @@ namespace Dolozhee
 
 	void ReportWizard::handleAuthenticationRequired (QNetworkReply*, QAuthenticator *auth)
 	{
-		qDebug () << Q_FUNC_INFO;
+		qDebug () << Q_FUNC_INFO << FirstAuth_;
+		if (FirstAuth_)
+		{
+			auth->setUser (ChooseUser_->GetLogin ());
+			auth->setPassword (ChooseUser_->GetPassword ());
+			FirstAuth_ = false;
+		}
+		else
+		{
+			QMessageBox::warning (this, "Dolozhee", tr ("Invalid credentials"));
+			FirstAuth_ = true;
+			restart ();
+		}
 	}
 }
 }

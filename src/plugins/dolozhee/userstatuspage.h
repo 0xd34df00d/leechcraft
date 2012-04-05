@@ -37,7 +37,6 @@ namespace Dolozhee
 
 		void initializePage ();
 	private:
-		void CheckUser (const QString&, const QString&);
 		void RegisterUser (const QString&, const QString&, ChooseUserPage*);
 	};
 }

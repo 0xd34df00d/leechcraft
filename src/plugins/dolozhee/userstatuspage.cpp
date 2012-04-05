@@ -39,22 +39,8 @@ namespace Dolozhee
 		const auto& login = cup->GetLogin ();
 		const auto& pass = cup->GetPassword ();
 
-		switch (cup->GetUser ())
-		{
-		case ChooseUserPage::User::Anonymous:
-			return;
-		case ChooseUserPage::User::New:
+		if (cup->GetUser () == ChooseUserPage::User::New)
 			RegisterUser (login, pass, cup);
-			break;
-		case ChooseUserPage::User::Existing:
-			CheckUser (login, pass);
-			break;
-		}
-	}
-
-	void UserStatusPage::CheckUser (const QString& login, const QString& pass)
-	{
-		Ui_.Info_->setText (tr ("Checking credentials for %1...").arg (login));
 	}
 
 	void UserStatusPage::RegisterUser (const QString& login,
