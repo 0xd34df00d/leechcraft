@@ -23,7 +23,7 @@
 #include <QIcon>
 #include <QColor>
 #include <QDateTime>
-#include "interfaces/iproxyobject.h"
+#include "interfaces/azoth/iproxyobject.h"
 
 namespace LeechCraft
 {

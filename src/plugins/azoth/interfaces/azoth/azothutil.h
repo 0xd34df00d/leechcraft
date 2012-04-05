@@ -21,7 +21,7 @@
 #include <QList>
 #include <QDateTime>
 #include <QtDebug>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/imessage.h>
 
 namespace LeechCraft
 {

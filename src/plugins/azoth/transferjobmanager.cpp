@@ -27,7 +27,7 @@
 #include <interfaces/ijobholder.h>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
-#include "interfaces/iclentry.h"
+#include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"

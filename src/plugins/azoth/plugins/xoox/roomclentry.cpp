@@ -20,8 +20,8 @@
 #include <QImage>
 #include <QtDebug>
 #include <QXmppMucManager.h>
-#include <interfaces/iproxyobject.h>
-#include <interfaces/azothutil.h>
+#include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/azothutil.h>
 #include "glooxaccount.h"
 #include "glooxprotocol.h"
 #include "roompublicmessage.h"

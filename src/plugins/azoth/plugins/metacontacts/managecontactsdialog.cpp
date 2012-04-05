@@ -20,9 +20,9 @@
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include <QtDebug>
-#include <interfaces/iclentry.h>
-#include <interfaces/iaccount.h>
-#include <interfaces/iprotocol.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/iprotocol.h>
 
 namespace LeechCraft
 {

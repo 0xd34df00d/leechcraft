@@ -20,7 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_MEDIACALL_H
 #include <QObject>
 #include <QXmppCallManager.h>
-#include <interfaces/imediacall.h>
+#include <interfaces/azoth/imediacall.h>
 
 #ifndef ENABLE_MEDIACALLS
 #error Dont include this if media calls are disabled.

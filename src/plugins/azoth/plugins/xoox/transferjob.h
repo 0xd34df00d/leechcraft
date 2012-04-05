@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_TRANSFERJOB_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_TRANSFERJOB_H
-#include <interfaces/itransfermanager.h>
+#include <interfaces/azoth/itransfermanager.h>
 #include <QXmppTransferManager.h>
 
 class QXmppTransferJob;

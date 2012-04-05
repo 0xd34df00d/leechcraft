@@ -31,7 +31,7 @@
 
 #include <QXmppClient.h>
 #include <QXmppMucIq.h>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/imessage.h>
 #include "glooxclentry.h"
 #include "glooxaccount.h"
 #include "riexmanager.h"

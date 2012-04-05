@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_LOCATIONDIALOG_H
 #define PLUGINS_AZOTH_LOCATIONDIALOG_H
 #include <QDialog>
-#include "interfaces/isupportgeolocation.h"
+#include "interfaces/azoth/isupportgeolocation.h"
 #include "ui_locationdialog.h"
 
 namespace LeechCraft

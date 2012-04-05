@@ -20,7 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_TRANSFERMANAGER_H
 #include <QObject>
 #include <msn/util.h>
-#include <interfaces/itransfermanager.h>
+#include <interfaces/azoth/itransfermanager.h>
 
 namespace LeechCraft
 {

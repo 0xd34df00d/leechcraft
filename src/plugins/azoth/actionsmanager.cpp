@@ -27,18 +27,18 @@
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
-#include "interfaces/iclentry.h"
-#include "interfaces/imucperms.h"
-#include "interfaces/iadvancedclentry.h"
-#include "interfaces/imucentry.h"
-#include "interfaces/iauthable.h"
-#include "interfaces/iaccount.h"
-#include "interfaces/itransfermanager.h"
-#include "interfaces/iconfigurablemuc.h"
-#include "interfaces/ihavedirectedstatus.h"
+#include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/imucperms.h"
+#include "interfaces/azoth/iadvancedclentry.h"
+#include "interfaces/azoth/imucentry.h"
+#include "interfaces/azoth/iauthable.h"
+#include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/itransfermanager.h"
+#include "interfaces/azoth/iconfigurablemuc.h"
+#include "interfaces/azoth/ihavedirectedstatus.h"
 
 #ifdef ENABLE_CRYPT
-#include "interfaces/isupportpgp.h"
+#include "interfaces/azoth/isupportpgp.h"
 #include "pgpkeyselectiondialog.h"
 #endif
 

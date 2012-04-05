@@ -20,8 +20,8 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPUBLICMESSAGE_H
 #include <QObject>
 #include <QPointer>
-#include <interfaces/imessage.h>
-#include <interfaces/irichtextmessage.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/irichtextmessage.h>
 #include "roomparticipantentry.h"
 
 class QXmppMessage;

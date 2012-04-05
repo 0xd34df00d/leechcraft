@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <QHash>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/imessage.h>
 #include "localtypes.h"
 #include "channelparticipantentry.h"
 

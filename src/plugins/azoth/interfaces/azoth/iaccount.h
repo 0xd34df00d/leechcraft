@@ -22,7 +22,7 @@
 #include <QMetaType>
 #include <QVariant>
 #include <QStringList>
-#include <interfaces/azothcommon.h>
+#include <interfaces/azoth/azothcommon.h>
 #include "iclentry.h"
 
 namespace LeechCraft

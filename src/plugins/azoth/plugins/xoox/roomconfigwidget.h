@@ -22,7 +22,7 @@
 #include <QWidget>
 #include <QXmppDataForm.h>
 #include <QXmppMucIq.h>
-#include <interfaces/iconfigurablemuc.h>
+#include <interfaces/azoth/iconfigurablemuc.h>
 #include "ui_roomconfigwidget.h"
 
 class QStandardItemModel;

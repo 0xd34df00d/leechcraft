@@ -22,7 +22,7 @@
 
 #include <QWidget>
 #include <QDateTime>
-#include <interfaces/iconfigurablemuc.h>
+#include <interfaces/azoth/iconfigurablemuc.h>
 #include "ui_channelconfigwidget.h"
 #include "localtypes.h"
 

@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <QPoint>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/imessage.h>
 #include "channelparticipantentry.h"
 
 namespace LeechCraft

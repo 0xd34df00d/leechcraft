@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <interfaces/azothcommon.h>
+#include <interfaces/azoth/azothcommon.h>
 
 namespace LeechCraft
 {

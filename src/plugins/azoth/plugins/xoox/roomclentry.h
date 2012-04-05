@@ -22,10 +22,10 @@
 #include <QObject>
 #include <QStringList>
 #include <QXmppMucIq.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/imucentry.h>
-#include <interfaces/imucperms.h>
-#include <interfaces/iconfigurablemuc.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/imucentry.h>
+#include <interfaces/azoth/imucperms.h>
+#include <interfaces/azoth/iconfigurablemuc.h>
 
 namespace LeechCraft
 {

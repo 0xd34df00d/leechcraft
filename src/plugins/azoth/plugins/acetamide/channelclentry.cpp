@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "channelclentry.h"
-#include <interfaces/azothutil.h>
+#include <interfaces/azoth/azothutil.h>
 #include "channelhandler.h"
 #include "channelpublicmessage.h"
 #include "ircmessage.h"

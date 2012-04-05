@@ -19,9 +19,9 @@
 #include "lastactivitymanager.h"
 #include <QDomElement>
 #include <QXmppClient.h>
-#include <interfaces/ilastactivityprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/azoth/ilastactivityprovider.h>
 #include "core.h"
 
 namespace LeechCraft

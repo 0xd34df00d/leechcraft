@@ -20,7 +20,7 @@
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/imessage.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

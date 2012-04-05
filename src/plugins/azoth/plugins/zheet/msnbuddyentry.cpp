@@ -20,8 +20,8 @@
 #include <algorithm>
 #include <QImage>
 #include <msn/notificationserver.h>
-#include <interfaces/iproxyobject.h>
-#include <interfaces/azothutil.h>
+#include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/azothutil.h>
 #include "msnaccount.h"
 #include "msnmessage.h"
 #include "zheetutil.h"

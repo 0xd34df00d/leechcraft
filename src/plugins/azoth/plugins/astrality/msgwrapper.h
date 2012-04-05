@@ -22,7 +22,7 @@
 #include <ContactMessenger>
 #include <Types>
 #include <interfaces/structures.h>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/imessage.h>
 
 namespace LeechCraft
 {

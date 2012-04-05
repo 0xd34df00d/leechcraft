@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_ACCEPTRIEXDIALOG_H
 #define PLUGINS_AZOTH_ACCEPTRIEXDIALOG_H
 #include <QDialog>
-#include "interfaces/isupportriex.h"
+#include "interfaces/azoth/isupportriex.h"
 #include "ui_acceptriexdialog.h"
 
 class QStandardItemModel;

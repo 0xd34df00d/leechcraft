@@ -23,8 +23,8 @@
 #include <QSqlError>
 #include <util/util.h>
 #include <util/dblock.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/iaccount.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iaccount.h>
 
 namespace LeechCraft
 {

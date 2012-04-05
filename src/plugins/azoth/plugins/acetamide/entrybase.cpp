@@ -18,8 +18,8 @@
 
 #include "entrybase.h"
 #include <QAction>
-#include <interfaces/iproxyobject.h>
-#include <interfaces/azothutil.h>
+#include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/azothutil.h>
 #include "clientconnection.h"
 #include "ircprotocol.h"
 #include "ircaccount.h"

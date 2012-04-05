@@ -19,9 +19,9 @@
 #include "searchwidget.h"
 #include <QTimer>
 #include <util/resourceloader.h>
-#include "interfaces/iaccount.h"
-#include "interfaces/ihavesearch.h"
-#include "interfaces/iextselfinfoaccount.h"
+#include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/ihavesearch.h"
+#include "interfaces/azoth/iextselfinfoaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 

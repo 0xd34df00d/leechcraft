@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_MAINWIDGET_H
 #define PLUGINS_AZOTH_MAINWIDGET_H
 #include <QWidget>
-#include "interfaces/iaccount.h"
+#include "interfaces/azoth/iaccount.h"
 #include "ui_mainwidget.h"
 
 class QToolButton;

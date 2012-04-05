@@ -30,7 +30,7 @@
 #include <QGridLayout>
 #include <QToolButton>
 #include <QtDebug>
-#include "interfaces/iresourceplugin.h"
+#include "interfaces/azoth/iresourceplugin.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
 

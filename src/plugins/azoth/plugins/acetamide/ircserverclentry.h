@@ -20,9 +20,9 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERCLENTRY_H
 
 #include <QObject>
-#include <interfaces/iclentry.h>
-#include <interfaces/imucentry.h>
-#include <interfaces/iconfigurablemuc.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/imucentry.h>
+#include <interfaces/azoth/iconfigurablemuc.h>
 #include "entrybase.h"
 
 namespace LeechCraft

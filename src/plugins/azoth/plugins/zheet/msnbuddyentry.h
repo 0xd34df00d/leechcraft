@@ -21,8 +21,8 @@
 #include <QObject>
 #include <QStringList>
 #include <msn/buddy.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/iadvancedclentry.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iadvancedclentry.h>
 
 namespace MSN
 {

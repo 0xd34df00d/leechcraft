@@ -20,7 +20,7 @@
 #include <ContactMessenger>
 #include <PendingContactInfo>
 #include <util/util.h>
-#include <interfaces/azothutil.h>
+#include <interfaces/azoth/azothutil.h>
 #include "accountwrapper.h"
 #include "astralityutil.h"
 #include "msgwrapper.h"

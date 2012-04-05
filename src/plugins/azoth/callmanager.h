@@ -20,8 +20,8 @@
 #define PLUGINS_AZOTH_CALLMANAGER_H
 #include <QObject>
 #include <QHash>
-#include "interfaces/imediacall.h"
-#include "interfaces/isupportmediacalls.h"
+#include "interfaces/azoth/imediacall.h"
+#include "interfaces/azoth/isupportmediacalls.h"
 
 namespace LeechCraft
 {

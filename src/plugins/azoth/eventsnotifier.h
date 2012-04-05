@@ -20,7 +20,7 @@
 #define PLUGINS_AZOTH_EVENTSNOTIFIER_H
 #include <QObject>
 #include <interfaces/structures.h>
-#include <interfaces/iclentry.h>
+#include <interfaces/azoth/iclentry.h>
 
 namespace LeechCraft
 {

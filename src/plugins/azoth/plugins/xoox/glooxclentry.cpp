@@ -23,9 +23,9 @@
 #include <QtDebug>
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
-#include <interfaces/iaccount.h>
-#include <interfaces/azothcommon.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/azothcommon.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
 #include "core.h"
 #include "clientconnection.h"

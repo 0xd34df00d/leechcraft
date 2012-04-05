@@ -19,9 +19,9 @@
 #include "importmanager.h"
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include "interfaces/iaccount.h"
-#include "interfaces/isupportimport.h"
-#include "interfaces/ihistoryplugin.h"
+#include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/isupportimport.h"
+#include "interfaces/azoth/ihistoryplugin.h"
 #include "core.h"
 #include "accounthandlerchooserdialog.h"
 

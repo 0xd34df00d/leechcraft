@@ -23,7 +23,7 @@
 #include <QHash>
 #include <QStringList>
 #include <QXmppDiscoveryIq.h>
-#include <interfaces/ihaveservicediscovery.h>
+#include <interfaces/azoth/ihaveservicediscovery.h>
 
 class QStandardItemModel;
 class QStandardItem;

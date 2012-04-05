@@ -19,8 +19,8 @@
 #include "clientconnection.h"
 #include <QTextCodec>
 #include <util/util.h>
-#include <interfaces/iprotocol.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "channelclentry.h"
 #include "channelhandler.h"
 #include "core.h"

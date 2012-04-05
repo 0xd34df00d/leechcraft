@@ -19,7 +19,7 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iprotocol.h>
+#include <interfaces/azoth/iprotocol.h>
 
 namespace LeechCraft
 {

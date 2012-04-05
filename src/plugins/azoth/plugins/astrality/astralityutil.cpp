@@ -18,7 +18,7 @@
 
 #include "astralityutil.h"
 #include <Presence>
-#include <interfaces/iclentry.h>
+#include <interfaces/azoth/iclentry.h>
 
 namespace LeechCraft
 {

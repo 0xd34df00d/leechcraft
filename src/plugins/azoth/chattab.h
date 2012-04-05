@@ -25,7 +25,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
-#include "interfaces/azothcommon.h"
+#include "interfaces/azoth/azothcommon.h"
 #include "ui_chattab.h"
 
 namespace LeechCraft

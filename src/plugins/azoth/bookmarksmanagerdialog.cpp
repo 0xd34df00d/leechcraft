@@ -19,11 +19,11 @@
 #include "bookmarksmanagerdialog.h"
 #include <QStandardItemModel>
 #include <QMessageBox>
-#include "interfaces/imucjoinwidget.h"
-#include "interfaces/imucbookmarkeditorwidget.h"
-#include "interfaces/iaccount.h"
+#include "interfaces/azoth/imucjoinwidget.h"
+#include "interfaces/azoth/imucbookmarkeditorwidget.h"
+#include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/isupportbookmarks.h"
 #include "core.h"
-#include "interfaces/isupportbookmarks.h"
 
 namespace LeechCraft
 {

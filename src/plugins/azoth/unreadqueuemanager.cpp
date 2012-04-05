@@ -19,7 +19,7 @@
 #include "unreadqueuemanager.h"
 #include <QMainWindow>
 #include <interfaces/core/icoreproxy.h>
-#include "interfaces/iclentry.h"
+#include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "chattabsmanager.h"
 

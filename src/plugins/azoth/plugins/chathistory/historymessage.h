@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_HISTORYMESSAGE_H
 #define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_HISTORYMESSAGE_H
 #include <QObject>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/imessage.h>
 
 namespace LeechCraft
 {

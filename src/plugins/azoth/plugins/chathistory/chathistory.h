@@ -24,9 +24,9 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
-#include <interfaces/imessage.h>
-#include <interfaces/ihistoryplugin.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/ihistoryplugin.h>
 #include "core.h"
 
 class QTranslator;

@@ -19,8 +19,8 @@
 #include "groupsenddialog.h"
 #include <functional>
 #include <QStandardItemModel>
-#include "interfaces/iclentry.h"
-#include "interfaces/imessage.h"
+#include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/imessage.h"
 #include "core.h"
 
 namespace LeechCraft

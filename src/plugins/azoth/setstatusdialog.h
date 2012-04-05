@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_SETSTATUSDIALOG_H
 #define PLUGINS_AZOTH_SETSTATUSDIALOG_H
 #include <QDialog>
-#include "interfaces/azothcommon.h"
+#include "interfaces/azoth/azothcommon.h"
 #include "ui_setstatusdialog.h"
 
 namespace LeechCraft

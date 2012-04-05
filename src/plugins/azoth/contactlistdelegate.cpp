@@ -23,10 +23,10 @@
 #include <QAbstractProxyModel>
 #include <QTreeView>
 #include <util/resourceloader.h>
-#include "interfaces/iclentry.h"
-#include "interfaces/isupportgeolocation.h"
-#include "interfaces/iaccount.h"
-#include "interfaces/iextselfinfoaccount.h"
+#include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/isupportgeolocation.h"
+#include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/iextselfinfoaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"

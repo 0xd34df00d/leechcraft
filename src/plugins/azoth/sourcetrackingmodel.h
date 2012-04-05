@@ -19,8 +19,8 @@
 #ifndef PLUGINS_AZOTH_SOURCETRACKINGMODEL_H
 #define PLUGINS_AZOTH_SOURCETRACKINGMODEL_H
 #include <util/mergemodel.h>
-#include <interfaces/iresourceplugin.h>
-#include <interfaces/ichatstyleresourcesource.h>
+#include <interfaces/azoth/iresourceplugin.h>
+#include <interfaces/azoth/ichatstyleresourcesource.h>
 
 namespace LeechCraft
 {

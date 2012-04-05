@@ -23,7 +23,7 @@
 #include <QIcon>
 #include <QTranslator>
 #include <util/util.h>
-#include <interfaces/iclentry.h>
+#include <interfaces/azoth/iclentry.h>
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::LastSeen::LastHash_t);
 

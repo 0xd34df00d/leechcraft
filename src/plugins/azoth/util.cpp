@@ -21,8 +21,8 @@
 #include <QWizard>
 #include <util/util.h>
 #include <interfaces/structures.h>
-#include "interfaces/iclentry.h"
-#include "interfaces/iaccount.h"
+#include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/iaccount.h"
 #include "addaccountwizardfirstpage.h"
 #include "core.h"
 

@@ -26,7 +26,7 @@
 #include <msn/connection.h>
 #include <msn/notificationserver.h>
 #include <msn/externals.h>
-#include <interfaces/azothcommon.h>
+#include <interfaces/azoth/azothcommon.h>
 
 class QTcpSocket;
 

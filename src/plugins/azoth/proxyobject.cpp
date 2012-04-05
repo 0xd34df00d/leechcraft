@@ -21,7 +21,7 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sysinfo.h>
-#include "interfaces/iaccount.h"
+#include "interfaces/azoth/iaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "chattabsmanager.h"

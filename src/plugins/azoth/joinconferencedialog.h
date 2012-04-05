@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_JOINCONFERENCEDIALOG_H
 #define PLUGINS_AZOTH_JOINCONFERENCEDIALOG_H
 #include <QDialog>
-#include "interfaces/iaccount.h"
+#include "interfaces/azoth/iaccount.h"
 #include "ui_joinconferencedialog.h"
 
 namespace LeechCraft

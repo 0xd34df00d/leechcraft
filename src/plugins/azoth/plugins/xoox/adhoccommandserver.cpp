@@ -21,7 +21,7 @@
 #include <QUrl>
 #include <QXmppDiscoveryManager.h>
 #include <util/util.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "clientconnection.h"
 #include "util.h"
 #include "roomclentry.h"

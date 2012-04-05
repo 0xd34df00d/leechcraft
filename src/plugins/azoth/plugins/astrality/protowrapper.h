@@ -22,8 +22,8 @@
 #include <Types>
 #include <ConnectionManager>
 #include <AccountManager>
-#include <interfaces/iprotocol.h>
 #include <interfaces/structures.h>
+#include <interfaces/azoth/iprotocol.h>
 #include "accountwrapper.h"
 
 namespace LeechCraft

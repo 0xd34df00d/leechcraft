@@ -20,7 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCJOINGROUPCHAT_H
 
 #include <QWidget>
-#include <interfaces/imucjoinwidget.h>
+#include <interfaces/azoth/imucjoinwidget.h>
 #include "ui_ircjoingroupchat.h"
 #include "core.h"
 #include "localtypes.h"

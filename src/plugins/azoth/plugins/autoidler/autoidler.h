@@ -24,8 +24,8 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/ilastactivityprovider.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/ilastactivityprovider.h>
 
 class QTranslator;
 

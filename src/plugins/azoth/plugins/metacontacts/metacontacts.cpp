@@ -20,7 +20,7 @@
 #include <QIcon>
 #include <QAction>
 #include <util/util.h>
-#include <interfaces/iclentry.h>
+#include <interfaces/azoth/iclentry.h>
 #include "metaprotocol.h"
 #include "core.h"
 

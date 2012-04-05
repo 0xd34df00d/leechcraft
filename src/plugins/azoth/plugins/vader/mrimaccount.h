@@ -20,9 +20,9 @@
 
 #include <QObject>
 #include <QImage>
-#include <interfaces/iaccount.h>
-#include <interfaces/isupporttune.h>
-#include <interfaces/iextselfinfoaccount.h>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/isupporttune.h>
+#include <interfaces/azoth/iextselfinfoaccount.h>
 #include "proto/contactinfo.h"
 #include "proto/headers.h"
 

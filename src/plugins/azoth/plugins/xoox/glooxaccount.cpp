@@ -22,8 +22,8 @@
 #include <QtDebug>
 #include <QXmppCallManager.h>
 #include <util/util.h>
-#include <interfaces/iprotocol.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "glooxprotocol.h"
 #include "glooxaccountconfigurationdialog.h"
 #include "core.h"

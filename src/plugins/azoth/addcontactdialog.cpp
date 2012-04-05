@@ -19,8 +19,8 @@
 #include "addcontactdialog.h"
 #include <QStringListModel>
 #include <util/tagscompleter.h>
-#include "interfaces/iprotocol.h"
-#include "interfaces/iaccount.h"
+#include "interfaces/azoth/iprotocol.h"
+#include "interfaces/azoth/iaccount.h"
 #include "core.h"
 
 namespace LeechCraft

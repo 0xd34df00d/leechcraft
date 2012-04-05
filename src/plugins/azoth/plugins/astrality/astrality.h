@@ -20,7 +20,7 @@
 
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/iprotocolplugin.h>
+#include <interfaces/azoth/iprotocolplugin.h>
 
 namespace Tp
 {

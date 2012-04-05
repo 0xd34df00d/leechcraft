@@ -19,8 +19,8 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/imessage.h>
-#include <interfaces/iadvancedmessage.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iadvancedmessage.h>
 
 namespace LeechCraft
 {

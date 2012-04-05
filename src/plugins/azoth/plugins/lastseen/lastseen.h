@@ -22,8 +22,8 @@
 #include <QDateTime>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/azothcommon.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/azoth/azothcommon.h>
 
 class QTranslator;
 

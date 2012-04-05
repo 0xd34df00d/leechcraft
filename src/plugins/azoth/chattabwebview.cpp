@@ -23,7 +23,7 @@
 #include <QMenu>
 #include <QDesktopServices>
 #include <util/util.h>
-#include "interfaces/iclentry.h"
+#include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "actionsmanager.h"
 

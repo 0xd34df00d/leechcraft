@@ -21,7 +21,7 @@
 #include <QImage>
 #include <QAction>
 #include <util/util.h>
-#include <interfaces/azothutil.h>
+#include <interfaces/azoth/azothutil.h>
 #include "proto/headers.h"
 #include "proto/connection.h"
 #include "mrimaccount.h"

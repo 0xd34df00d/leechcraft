@@ -23,8 +23,8 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <util/util.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/imessage.h>
 
 Q_DECLARE_METATYPE (QSet<QString>);
 

@@ -21,7 +21,7 @@
 #include <memory>
 #include <QObject>
 #include <QSet>
-#include <interfaces/iresourceplugin.h>
+#include <interfaces/azoth/iresourceplugin.h>
 
 namespace LeechCraft
 {

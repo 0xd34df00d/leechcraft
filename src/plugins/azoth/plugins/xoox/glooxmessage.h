@@ -20,9 +20,9 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXMESSAGE_H
 #include <QObject>
 #include <QXmppMessage.h>
-#include <interfaces/imessage.h>
-#include <interfaces/iadvancedmessage.h>
-#include <interfaces/irichtextmessage.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iadvancedmessage.h>
+#include <interfaces/azoth/irichtextmessage.h>
 
 namespace LeechCraft
 {

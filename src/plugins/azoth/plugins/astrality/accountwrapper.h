@@ -22,8 +22,8 @@
 #include <Account>
 #include <ContactMessenger>
 #include <interfaces/structures.h>
-#include <interfaces/iaccount.h>
-#include <interfaces/iextselfinfoaccount.h>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/iextselfinfoaccount.h>
 
 namespace LeechCraft
 {

@@ -22,10 +22,10 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
-#include <interfaces/imessage.h>
-#include <interfaces/iproxyobject.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/iaccount.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iaccount.h>
 #include "storage.h"
 #include "storagethread.h"
 

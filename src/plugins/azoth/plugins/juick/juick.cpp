@@ -23,8 +23,8 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
-#include <interfaces/imessage.h>
-#include <interfaces/iclentry.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iclentry.h>
 
 namespace LeechCraft
 {

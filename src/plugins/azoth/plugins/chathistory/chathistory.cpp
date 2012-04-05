@@ -22,10 +22,10 @@
 #include <QAction>
 #include <QTranslator>
 #include <util/util.h>
-#include <interfaces/imessage.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/iaccount.h>
-#include <interfaces/azothcommon.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/azothcommon.h>
 #include "core.h"
 #include "chathistorywidget.h"
 #include "historymessage.h"

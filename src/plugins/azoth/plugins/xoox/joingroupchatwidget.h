@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATWIDGET_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATWIDGET_H
 #include <QDialog>
-#include <interfaces/imucjoinwidget.h>
+#include <interfaces/azoth/imucjoinwidget.h>
 #include "ui_joingroupchatwidget.h"
 
 namespace LeechCraft

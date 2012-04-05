@@ -18,7 +18,7 @@
 
 #include "accounthandlerchooserdialog.h"
 #include <QtDebug>
-#include "interfaces/iaccount.h"
+#include "interfaces/azoth/iaccount.h"
 
 namespace LeechCraft
 {

@@ -20,7 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCMESSAGE_H
 
 #include <QObject>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/imessage.h>
 
 namespace LeechCraft
 {

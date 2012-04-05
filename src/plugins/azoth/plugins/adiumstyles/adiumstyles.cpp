@@ -18,7 +18,7 @@
 
 #include "adiumstyles.h"
 #include <QIcon>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "adiumstylesource.h"
 
 namespace LeechCraft

@@ -25,7 +25,7 @@
 #include <QInputDialog>
 #include <QMainWindow>
 #include <QSettings>
-#include <interfaces/iprotocolplugin.h>
+#include <interfaces/azoth/iprotocolplugin.h>
 #include "core.h"
 #include "ircaccount.h"
 #include "ircaccountconfigurationwidget.h"

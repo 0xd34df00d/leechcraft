@@ -24,7 +24,7 @@
 #include <QXmppMucManager.h>
 #include <QXmppClient.h>
 #include <QXmppConstants.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
 #include "roomclentry.h"
 #include "roompublicmessage.h"

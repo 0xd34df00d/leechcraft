@@ -20,9 +20,9 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
-#include <interfaces/iaccount.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "chathistory.h"
 
 namespace LeechCraft

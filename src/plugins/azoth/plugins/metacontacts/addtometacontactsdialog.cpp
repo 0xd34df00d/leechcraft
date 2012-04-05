@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "addtometacontactsdialog.h"
-#include <interfaces/iclentry.h>
+#include <interfaces/azoth/iclentry.h>
 #include "metaentry.h"
 
 namespace LeechCraft

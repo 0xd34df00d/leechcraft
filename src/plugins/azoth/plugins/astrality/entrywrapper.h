@@ -23,8 +23,8 @@
 #include <Message>
 #include <TextChannel>
 #include <interfaces/structures.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/iauthable.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iauthable.h>
 
 namespace LeechCraft
 {

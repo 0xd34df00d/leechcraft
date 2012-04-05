@@ -20,7 +20,7 @@
 #include <QDataStream>
 #include <QUrl>
 #include <util/util.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "proto/connection.h"
 #include "proto/message.h"
 #include "mrimprotocol.h"

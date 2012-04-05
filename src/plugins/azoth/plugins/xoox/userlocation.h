@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_USERLOCATION_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_USERLOCATION_H
 #include <QString>
-#include <interfaces/isupportgeolocation.h>
+#include <interfaces/azoth/isupportgeolocation.h>
 #include "pepeventbase.h"
 
 namespace LeechCraft

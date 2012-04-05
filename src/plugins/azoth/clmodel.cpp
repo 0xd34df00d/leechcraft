@@ -21,11 +21,11 @@
 #include <QUrl>
 #include <QFileInfo>
 #include <QMessageBox>
-#include "interfaces/iclentry.h"
-#include "interfaces/iaccount.h"
+#include <util/defaulthookproxy.h>
+#include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/iaccount.h"
 #include "core.h"
 #include "transferjobmanager.h"
-#include <util/defaulthookproxy.h>
 
 namespace LeechCraft
 {

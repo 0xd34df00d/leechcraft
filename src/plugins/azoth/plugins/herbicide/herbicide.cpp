@@ -23,8 +23,8 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <util/util.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/imessage.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "confwidget.h"

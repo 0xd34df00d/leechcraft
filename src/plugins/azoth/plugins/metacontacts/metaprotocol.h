@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAPROTOCOL_H
 #define PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAPROTOCOL_H
 #include <QObject>
-#include <interfaces/iprotocol.h>
+#include <interfaces/azoth/iprotocol.h>
 
 namespace LeechCraft
 {

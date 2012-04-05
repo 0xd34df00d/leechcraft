@@ -21,10 +21,10 @@
 #include <QWizard>
 #include <QMessageBox>
 #include <QStandardItemModel>
-#include "interfaces/iaccount.h"
-#include "interfaces/iprotocol.h"
+#include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/iprotocol.h"
 #ifdef ENABLE_CRYPT
-#include "interfaces/isupportpgp.h"
+#include "interfaces/azoth/isupportpgp.h"
 #include "pgpkeyselectiondialog.h"
 #endif
 #include "core.h"

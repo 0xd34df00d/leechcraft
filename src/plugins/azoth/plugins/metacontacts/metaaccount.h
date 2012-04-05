@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAACCOUNT_H
 #define PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAACCOUNT_H
 #include <QObject>
-#include <interfaces/iaccount.h>
+#include <interfaces/azoth/iaccount.h>
 
 namespace LeechCraft
 {

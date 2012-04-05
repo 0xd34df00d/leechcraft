@@ -21,10 +21,10 @@
 
 #include <memory>
 #include <QObject>
-#include <interfaces/iaccount.h>
-#include <interfaces/imessage.h>
-#include <interfaces/ihaveconsole.h>
-#include <interfaces/isupportbookmarks.h>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/ihaveconsole.h>
+#include <interfaces/azoth/isupportbookmarks.h>
 #include "core.h"
 #include "localtypes.h"
 

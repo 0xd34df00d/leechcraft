@@ -23,7 +23,7 @@
 #include <QMap>
 #include <QAbstractSocket>
 #include <QStringList>
-#include <interfaces/iclentry.h>
+#include <interfaces/azoth/iclentry.h>
 #include "packetfactory.h"
 #include "packetextractor.h"
 #include "contactinfo.h"

@@ -18,10 +18,10 @@
 
 #include "shareriexdialog.h"
 #include <QStandardItemModel>
-#include "interfaces/iclentry.h"
-#include "interfaces/iaccount.h"
-#include "interfaces/iprotocol.h"
 #include <QSortFilterProxyModel>
+#include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/iprotocol.h"
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::ICLEntry*);
 

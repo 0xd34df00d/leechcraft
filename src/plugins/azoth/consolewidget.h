@@ -20,7 +20,7 @@
 #define PLUGINS_AZOTH_CONSOLEWIDGET_H
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
-#include "interfaces/ihaveconsole.h"
+#include "interfaces/azoth/ihaveconsole.h"
 #include "ui_consolewidget.h"
 
 namespace LeechCraft

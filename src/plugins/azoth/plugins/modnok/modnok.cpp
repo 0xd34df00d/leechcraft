@@ -21,8 +21,8 @@
 #include <QTextDocument>
 #include <QProcess>
 #include <QTranslator>
-#include <interfaces/imessage.h>
-#include <interfaces/irichtextmessage.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/irichtextmessage.h>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"

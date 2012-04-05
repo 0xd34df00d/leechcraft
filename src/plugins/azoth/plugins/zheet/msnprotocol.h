@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ZHEET_MSNPROTOCOL_H
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_MSNPROTOCOL_H
 #include <QObject>
-#include <interfaces/iprotocol.h>
+#include <interfaces/azoth/iprotocol.h>
 
 namespace LeechCraft
 {

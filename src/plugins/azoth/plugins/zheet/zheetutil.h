@@ -21,7 +21,7 @@
 #include <string>
 #include <QString>
 #include <msn/buddy.h>
-#include <interfaces/azothcommon.h>
+#include <interfaces/azoth/azothcommon.h>
 
 namespace LeechCraft
 {

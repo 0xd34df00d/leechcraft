@@ -26,9 +26,9 @@
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include <interfaces/imessage.h>
-#include <interfaces/iclentry.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iclentry.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

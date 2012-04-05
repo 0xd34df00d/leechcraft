@@ -27,8 +27,8 @@
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
 #include <util/util.h>
-#include <interfaces/iproxyobject.h>
-#include <interfaces/azothutil.h>
+#include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/azothutil.h>
 #include "glooxmessage.h"
 #include "glooxclentry.h"
 #include "glooxprotocol.h"

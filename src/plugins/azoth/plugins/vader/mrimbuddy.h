@@ -21,8 +21,8 @@
 #include <QObject>
 #include <QSet>
 #include <QImage>
-#include <interfaces/iclentry.h>
-#include <interfaces/iadvancedclentry.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iadvancedclentry.h>
 #include "proto/contactinfo.h"
 
 namespace LeechCraft

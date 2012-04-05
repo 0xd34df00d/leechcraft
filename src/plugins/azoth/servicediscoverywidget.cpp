@@ -22,8 +22,8 @@
 #include <QLineEdit>
 #include <QTimer>
 #include <QMenu>
-#include "interfaces/iaccount.h"
-#include "interfaces/ihaveservicediscovery.h"
+#include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/ihaveservicediscovery.h"
 #include "core.h"
 
 namespace LeechCraft

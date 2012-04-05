@@ -20,7 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMHANDLER_H
 #include <QObject>
 #include <QHash>
-#include <interfaces/imucentry.h>
+#include <interfaces/azoth/imucentry.h>
 #include "clientconnection.h"
 #include "roomparticipantentry.h"
 

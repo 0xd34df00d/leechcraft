@@ -31,13 +31,13 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ianemitter.h>
 #include <interfaces/iinfo.h>
-#include "interfaces/iclentry.h"
-#include "interfaces/azothcommon.h"
-#include "interfaces/imucentry.h"
-#include "interfaces/iprotocol.h"
-#include "interfaces/iauthable.h"
-#include "interfaces/ichatstyleresourcesource.h"
-#include "interfaces/isupportriex.h"
+#include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/azothcommon.h"
+#include "interfaces/azoth/imucentry.h"
+#include "interfaces/azoth/iprotocol.h"
+#include "interfaces/azoth/iauthable.h"
+#include "interfaces/azoth/ichatstyleresourcesource.h"
+#include "interfaces/azoth/isupportriex.h"
 #include "sourcetrackingmodel.h"
 #include "animatediconmanager.h"
 

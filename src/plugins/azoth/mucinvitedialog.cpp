@@ -18,8 +18,8 @@
 
 #include "mucinvitedialog.h"
 #include <QtDebug>
-#include "interfaces/iaccount.h"
-#include "interfaces/iclentry.h"
+#include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/iclentry.h"
 
 namespace LeechCraft
 {

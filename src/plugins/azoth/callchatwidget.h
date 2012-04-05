@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_CALLCHATWIDGET_H
 #define PLUGINS_AZOTH_CALLCHATWIDGET_H
 #include <QWidget>
-#include "interfaces/imediacall.h"
+#include "interfaces/azoth/imediacall.h"
 #include "ui_callchatwidget.h"
 
 namespace LeechCraft

@@ -19,7 +19,7 @@
 #include "msnaccount.h"
 #include <msn/notificationserver.h>
 #include <util/util.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "msnprotocol.h"
 #include "callbacks.h"
 #include "core.h"

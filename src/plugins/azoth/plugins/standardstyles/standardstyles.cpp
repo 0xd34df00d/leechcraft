@@ -18,7 +18,7 @@
 
 #include "standardstyles.h"
 #include <QIcon>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "standardstylesource.h"
 
 namespace LeechCraft

@@ -24,8 +24,8 @@
 #include <ConnectionManager>
 #include <PendingStringList>
 #include <util/util.h>
-#include <interfaces/iprotocol.h>
-#include <interfaces/iaccount.h>
+#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/iaccount.h>
 #include "cmwrapper.h"
 #include "accountwrapper.h"
 

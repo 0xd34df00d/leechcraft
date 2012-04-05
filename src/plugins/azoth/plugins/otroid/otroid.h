@@ -29,8 +29,8 @@ extern "C"
 
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/iproxyobject.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/azoth/iproxyobject.h>
 
 class QTranslator;
 

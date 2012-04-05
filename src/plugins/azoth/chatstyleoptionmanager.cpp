@@ -19,7 +19,7 @@
 #include "chatstyleoptionmanager.h"
 #include <QStandardItemModel>
 #include <QtDebug>
-#include "interfaces/ichatstyleresourcesource.h"
+#include "interfaces/azoth/ichatstyleresourcesource.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

@@ -19,8 +19,8 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ZHEET_MSNMESSAGE_H
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_MSNMESSAGE_H
 #include <QObject>
-#include <interfaces/imessage.h>
-#include <interfaces/iadvancedmessage.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iadvancedmessage.h>
 
 namespace MSN
 {

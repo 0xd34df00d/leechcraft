@@ -23,8 +23,8 @@
 #include <QCoreApplication>
 #include <QtDebug>
 #include <util/util.h>
-#include <interfaces/iprotocolplugin.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iprotocolplugin.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
 #include "core.h"
 #include "joingroupchatwidget.h"

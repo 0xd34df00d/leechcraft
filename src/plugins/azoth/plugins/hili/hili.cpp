@@ -23,9 +23,9 @@
 #include <QPushButton>
 #include <QSettings>
 #include <QTranslator>
-#include <interfaces/imessage.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <interfaces/azoth/imessage.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

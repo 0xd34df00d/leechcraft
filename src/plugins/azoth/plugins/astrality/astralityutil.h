@@ -19,7 +19,7 @@
 #pragma once
 
 #include <Constants>
-#include <interfaces/azothcommon.h>
+#include <interfaces/azoth/azothcommon.h>
 
 namespace Tp
 {

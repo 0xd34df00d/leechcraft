@@ -23,7 +23,7 @@
 #include <QDateTime>
 #include <QHash>
 #include <QColor>
-#include <interfaces/ichatstyleresourcesource.h>
+#include <interfaces/azoth/ichatstyleresourcesource.h>
 
 namespace LeechCraft
 {

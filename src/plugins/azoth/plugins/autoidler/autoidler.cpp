@@ -21,8 +21,8 @@
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include <interfaces/iproxyobject.h>
-#include <interfaces/iaccount.h>
+#include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/iaccount.h>
 #include "xmlsettingsmanager.h"
 #include "3dparty/idle.h"
 

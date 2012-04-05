@@ -26,10 +26,10 @@
 #include <QXmppVCardIq.h>
 #include <QXmppVersionIq.h>
 #include <QXmppDiscoveryIq.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/iadvancedclentry.h>
-#include <interfaces/ihavedirectedstatus.h>
-#include <interfaces/isupportgeolocation.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iadvancedclentry.h>
+#include <interfaces/azoth/ihavedirectedstatus.h>
+#include <interfaces/azoth/isupportgeolocation.h>
 
 class QXmppPresence;
 class QXmppVersionIq;

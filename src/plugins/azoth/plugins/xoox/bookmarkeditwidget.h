@@ -20,7 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_BOOKMARKEDITWIDGET_H
 #include <QWidget>
 #include <QVariant>
-#include <interfaces/imucbookmarkeditorwidget.h>
+#include <interfaces/azoth/imucbookmarkeditorwidget.h>
 #include "ui_bookmarkeditwidget.h"
 
 namespace LeechCraft

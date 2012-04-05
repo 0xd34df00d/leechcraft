@@ -26,7 +26,7 @@
 #include <QTimer>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
-#include "interfaces/iclentry.h"
+#include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "setstatusdialog.h"

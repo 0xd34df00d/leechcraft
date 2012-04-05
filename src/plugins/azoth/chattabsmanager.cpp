@@ -18,7 +18,7 @@
 
 #include "chattabsmanager.h"
 #include <QtDebug>
-#include "interfaces/iclentry.h"
+#include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 

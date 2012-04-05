@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "msnprotocol.h"
 
 namespace LeechCraft

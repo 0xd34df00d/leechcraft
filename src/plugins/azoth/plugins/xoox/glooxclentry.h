@@ -24,7 +24,7 @@
 #include <QXmppRosterIq.h>
 #include <QXmppVCardIq.h>
 #include <QXmppPresence.h>
-#include <interfaces/iauthable.h>
+#include <interfaces/azoth/iauthable.h>
 #include "entrybase.h"
 
 namespace LeechCraft

@@ -22,7 +22,7 @@
 #include <QObject>
 #include <QImage>
 #include <QVariant>
-#include <interfaces/iclentry.h>
+#include <interfaces/azoth/iclentry.h>
 #include "localtypes.h"
 
 namespace LeechCraft

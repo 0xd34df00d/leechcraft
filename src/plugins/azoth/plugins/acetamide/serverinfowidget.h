@@ -21,7 +21,7 @@
 
 #include <QWidget>
 #include <boost/function.hpp>
-#include <interfaces/iconfigurablemuc.h>
+#include <interfaces/azoth/iconfigurablemuc.h>
 #include "ui_serverinfowidget.h"
 
 namespace LeechCraft

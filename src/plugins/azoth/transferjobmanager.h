@@ -18,10 +18,10 @@
 
 #ifndef PLUGINS_AZOTH_TRANSFERJOBMANAGER_H
 #define PLUGINS_AZOTH_TRANSFERJOBMANAGER_H
-#include "interfaces/itransfermanager.h"
 #include <QObject>
 #include <QHash>
 #include <QModelIndex>
+#include "interfaces/azoth/itransfermanager.h"
 
 class QStandardItemModel;
 class QStandardItem;

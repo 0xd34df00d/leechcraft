@@ -19,8 +19,8 @@
 #include "sortfilterproxymodel.h"
 #include <QTimer>
 #include "core.h"
-#include "interfaces/iclentry.h"
-#include "interfaces/imucperms.h"
+#include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/imucperms.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

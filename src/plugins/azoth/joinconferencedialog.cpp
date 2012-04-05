@@ -20,9 +20,9 @@
 #include <QSet>
 #include <QPushButton>
 #include <QtDebug>
-#include "interfaces/iprotocol.h"
-#include "interfaces/imucjoinwidget.h"
-#include "interfaces/isupportbookmarks.h"
+#include "interfaces/azoth/iprotocol.h"
+#include "interfaces/azoth/imucjoinwidget.h"
+#include "interfaces/azoth/isupportbookmarks.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

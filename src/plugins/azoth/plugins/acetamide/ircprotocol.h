@@ -20,8 +20,8 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPROTOCOL_H
 
 #include <QObject>
-#include <interfaces/iprotocol.h>
-#include <interfaces/iurihandler.h>
+#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/iurihandler.h>
 
 namespace LeechCraft
 {

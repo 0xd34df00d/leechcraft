@@ -24,12 +24,12 @@
 #include <QtDebug>
 #include <util/resourceloader.h>
 #include <util/util.h>
-#include <interfaces/imessage.h>
-#include <interfaces/iadvancedmessage.h>
-#include <interfaces/irichtextmessage.h>
-#include <interfaces/iaccount.h>
-#include <interfaces/imucentry.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iadvancedmessage.h>
+#include <interfaces/azoth/irichtextmessage.h>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/imucentry.h>
+#include <interfaces/azoth/iproxyobject.h>
 
 namespace LeechCraft
 {

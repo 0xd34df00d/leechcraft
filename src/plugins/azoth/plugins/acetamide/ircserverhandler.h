@@ -22,7 +22,7 @@
 #include <boost/function.hpp>
 #include <QObject>
 #include <QTcpSocket>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/imessage.h>
 #include "localtypes.h"
 #include "serverparticipantentry.h"
 #include "invitechannelsdialog.h"

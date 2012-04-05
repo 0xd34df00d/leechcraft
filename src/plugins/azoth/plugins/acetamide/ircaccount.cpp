@@ -21,8 +21,8 @@
 #include <QInputDialog>
 #include <QSettings>
 #include <QTimer>
-#include <interfaces/iprotocol.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "channelclentry.h"
 #include "clientconnection.h"
 #include "core.h"

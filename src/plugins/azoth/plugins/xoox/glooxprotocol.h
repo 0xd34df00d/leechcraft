@@ -19,9 +19,9 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
 #include <QObject>
-#include <interfaces/iprotocol.h>
-#include <interfaces/iurihandler.h>
-#include <interfaces/isupportimport.h>
+#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/iurihandler.h>
+#include <interfaces/azoth/isupportimport.h>
 
 namespace LeechCraft
 {
