@@ -43,6 +43,8 @@ namespace Dolozhee
 	, FRPage_ (new FeatureRequestPage)
 	, FirstAuth_ (true)
 	{
+		setWindowTitle (tr ("Issue reporter"));
+
 		setPage (PageID::ChooseUser, ChooseUser_);
 		setPage (PageID::UserStatus, new UserStatusPage ());
 		setPage (PageID::ReportType, ReportType_);
