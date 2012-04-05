@@ -20,7 +20,7 @@
 
 #include <vector>
 #include <memory>
-#include <util/mergemodel.h>
+#include <util/models/mergemodel.h>
 #include <interfaces/ifinder.h>
 #include "filtermodel.h"
 

@@ -33,7 +33,7 @@
 #include <util/resourceloader.h>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
-#include <util/categoryselector.h>
+#include <util/tags/categoryselector.h>
 #include <util/notificationactionhandler.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iplugin2.h>

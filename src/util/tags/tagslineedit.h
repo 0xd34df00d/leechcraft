@@ -20,7 +20,7 @@
 #define UTIL_TAGSLINEEDIT_H
 #include <memory>
 #include <QLineEdit>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 #include "categoryselector.h"
 
 namespace LeechCraft

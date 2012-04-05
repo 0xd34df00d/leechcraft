@@ -18,7 +18,7 @@
 
 #include "searcherslist.h"
 #include <QInputDialog>
-#include <util/tagscompleter.h>
+#include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"

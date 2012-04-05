@@ -18,7 +18,7 @@
 
 #include "categorymodifier.h"
 #include <QPushButton>
-#include <util/tagscompleter.h>
+#include <util/tags/tagscompleter.h>
 
 namespace LeechCraft
 {

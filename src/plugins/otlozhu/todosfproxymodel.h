@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <util/tagsfiltermodel.h>
+#include <util/tags/tagsfiltermodel.h>
 
 namespace LeechCraft
 {

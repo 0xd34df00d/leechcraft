@@ -20,7 +20,7 @@
 #define UTIL_FLOWLAYOUT_H
 #include <QLayout>
 #include <QStyle>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {

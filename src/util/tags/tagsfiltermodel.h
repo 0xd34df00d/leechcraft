@@ -16,35 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef UTIL_SELECTABLEBROWSER_H
-#define UTIL_SELECTABLEBROWSER_H
-#include <memory>
-#include <QWidget>
-#include <QTextBrowser>
-#include <interfaces/iwebbrowser.h>
-#include "utilconfig.h"
+#ifndef UTIL_TAGSFILTERMODEL_H
+#define UTIL_TAGSFILTERMODEL_H
+#include <QSortFilterProxyModel>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
 	namespace Util
 	{
-		class UTIL_API SelectableBrowser : public QWidget
+		class UTIL_API TagsFilterModel : public QSortFilterProxyModel
 		{
 			Q_OBJECT
 
-			bool Internal_;
-			std::auto_ptr<QTextBrowser> InternalBrowser_;
-			std::auto_ptr<IWebWidget> ExternalBrowser_;
+			bool NormalMode_;
 		public:
-			SelectableBrowser (QWidget* = 0);
-			void Construct (IWebBrowser*);
-
-			void SetHtml (const QString&, const QUrl& = QString ());
-
-			void SetNavBarVisible (bool);
-			void SetEverythingElseVisible (bool);
-		private:
-			void PrepareInternal ();
+			TagsFilterModel (QObject *parent = 0);
+		public slots:
+			void setTagsMode (bool);
+			void enableTagsMode ();
+			void disableTagsMode ();
+		protected:
+			virtual bool filterAcceptsRow (int, const QModelIndex&) const;
+			virtual QStringList GetTagsForIndex (int) const = 0;
 		};
 	};
 };

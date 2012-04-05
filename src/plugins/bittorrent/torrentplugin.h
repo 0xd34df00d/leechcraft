@@ -33,7 +33,7 @@
 #include <interfaces/istartupwizard.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavediaginfo.h>
-#include <util/tagscompleter.h>
+#include <util/tags/tagscompleter.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "tabwidget.h"
 #include "torrentinfo.h"

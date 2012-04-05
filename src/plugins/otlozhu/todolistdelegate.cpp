@@ -19,8 +19,8 @@
 #include "todolistdelegate.h"
 #include <QAbstractItemView>
 #include <QStyle>
-#include <util/tagslineedit.h>
-#include <util/tagscompleter.h>
+#include <util/tags/tagslineedit.h>
+#include <util/tags/tagscompleter.h>
 #include "storagemodel.h"
 
 namespace LeechCraft

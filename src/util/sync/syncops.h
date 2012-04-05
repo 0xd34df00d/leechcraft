@@ -16,32 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef UTIL_TAGSFILTERMODEL_H
-#define UTIL_TAGSFILTERMODEL_H
-#include <QSortFilterProxyModel>
-#include "utilconfig.h"
+#ifndef UTIL_SYNCOPS_H
+#define UTIL_SYNCOPS_H
+#include <QDataStream>
+#include <QByteArray>
+#include <interfaces/isyncable.h>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-	namespace Util
+	namespace Sync
 	{
-		class UTIL_API TagsFilterModel : public QSortFilterProxyModel
-		{
-			Q_OBJECT
+		UTIL_API bool operator== (const Payload&, const Payload&);
 
-			bool NormalMode_;
-		public:
-			TagsFilterModel (QObject *parent = 0);
-		public slots:
-			void setTagsMode (bool);
-			void enableTagsMode ();
-			void disableTagsMode ();
-		protected:
-			virtual bool filterAcceptsRow (int, const QModelIndex&) const;
-			virtual QStringList GetTagsForIndex (int) const = 0;
-		};
-	};
-};
+		UTIL_API QDataStream& operator<< (QDataStream&, const Payload&);
+		UTIL_API QDataStream& operator>> (QDataStream&, Payload&);
+		UTIL_API QByteArray Serialize (const Payload&);
+		UTIL_API Payload Deserialize (const QByteArray&);
+
+		UTIL_API Payload CreatePayload (const QByteArray&);
+
+		UTIL_API QDataStream& operator<< (QDataStream&, const Delta&);
+		UTIL_API QDataStream& operator>> (QDataStream&, Delta&);
+	}
+}
 
 #endif
-

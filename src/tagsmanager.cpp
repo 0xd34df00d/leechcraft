@@ -24,7 +24,7 @@
 #include <QCoreApplication>
 #include <QtDebug>
 #include <util/util.h>
-#include <util/tagscompleter.h>
+#include <util/tags/tagscompleter.h>
 
 using namespace LeechCraft;
 

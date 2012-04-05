@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <util/mergemodel.h>
+#include <util/models/mergemodel.h>
 
 namespace LeechCraft
 {

@@ -23,7 +23,7 @@
 #include <QTreeView>
 #include <QtDebug>
 #include <util/util.h>
-#include <util/treeitem.h>
+#include <util/models/treeitem.h>
 #include "filesviewdelegate.h"
 #include "torrentfilesmodel.h"
 

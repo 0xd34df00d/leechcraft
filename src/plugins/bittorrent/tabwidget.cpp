@@ -20,7 +20,7 @@
 #include <QSortFilterProxyModel>
 #include <QUrl>
 #include <util/util.h>
-#include <util/treeitem.h>
+#include <util/models/treeitem.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"

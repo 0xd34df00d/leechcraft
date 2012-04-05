@@ -16,29 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef UTIL_SYNCOPS_H
-#define UTIL_SYNCOPS_H
-#include <QDataStream>
-#include <QByteArray>
-#include <interfaces/isyncable.h>
-#include "utilconfig.h"
+#ifndef UTIL_TAGSCOMPLETIONMODEL_H
+#define UTIL_TAGSCOMPLETIONMODEL_H
+#include <QStringListModel>
+#include <QStringList>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-	namespace Sync
+	namespace Util
 	{
-		UTIL_API bool operator== (const Payload&, const Payload&);
+		class UTIL_API TagsCompletionModel : public QStringListModel
+		{
+			Q_OBJECT
+		public:
+			TagsCompletionModel (QObject *parent = 0);
 
-		UTIL_API QDataStream& operator<< (QDataStream&, const Payload&);
-		UTIL_API QDataStream& operator>> (QDataStream&, Payload&);
-		UTIL_API QByteArray Serialize (const Payload&);
-		UTIL_API Payload Deserialize (const QByteArray&);
-
-		UTIL_API Payload CreatePayload (const QByteArray&);
-
-		UTIL_API QDataStream& operator<< (QDataStream&, const Delta&);
-		UTIL_API QDataStream& operator>> (QDataStream&, Delta&);
-	}
-}
+			void UpdateTags (const QStringList&);
+		signals:
+			void tagsUpdated (const QStringList&);
+		};
+	};
+};
 
 #endif
+

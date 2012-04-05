@@ -20,7 +20,7 @@
 
 #include <QObject>
 #include <QHash>
-#include <util/mergemodel.h>
+#include <util/models/mergemodel.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
 

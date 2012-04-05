@@ -8,63 +8,63 @@ INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 	..)
 
 SET (SRCS
-	tagscompleter.cpp
-	tagscompletionmodel.cpp
-	treeitem.cpp
-	tagslineedit.cpp
-	tagsfiltermodel.cpp
+	gui/flowlayout.cpp
+	gui/selectablebrowser.cpp
+	models/flattofoldersproxymodel.cpp
+	models/listmodel.cpp
+	models/mergemodel.cpp
+	models/treeitem.cpp
+	sync/syncdeltamanager.cpp
+	sync/syncops.cpp
+	tags/categoryselector.cpp
+	tags/tagscompleter.cpp
+	tags/tagscompletionmodel.cpp
+	tags/tagslineedit.cpp
+	tags/tagsfiltermodel.cpp
 	util.cpp
-	categoryselector.cpp
-	mergemodel.cpp
 	dblock.cpp
 	customcookiejar.cpp
 	backendselector.cpp
 	structuresops.cpp
-	listmodel.cpp
-	selectablebrowser.cpp
-	flattofoldersproxymodel.cpp
 	defaulthookproxy.cpp
 	basehookinterconnector.cpp
 	fileremoveguard.cpp
 	exceptions.cpp
-	syncops.cpp
 	customnetworkreply.cpp
 	resourceloader.cpp
 	notificationactionhandler.cpp
-	flowlayout.cpp
 	socketerrorstrings.cpp
-	syncdeltamanager.cpp
 	sysinfo.cpp
 	passutils.cpp
 	shortcuts/shortcutmanager.cpp
 	)
 SET (HEADERS
-	tagscompleter.h
-	tagscompletionmodel.h
-	treeitem.h
-	tagslineedit.h
-	tagsfiltermodel.h
+	gui/flowlayout.h
+	gui/selectablebrowser.h
+	models/flattofoldersproxymodel.h
+	models/listmodel.h
+	models/mergemodel.h
+	models/treeitem.h
+	sync/syncdeltamanager.h
+	sync/syncops.h
+	tags/categoryselector.h
+	tags/tagscompleter.h
+	tags/tagscompletionmodel.h
+	tags/tagslineedit.h
+	tags/tagsfiltermodel.h
 	util.h
-	categoryselector.h
-	mergemodel.h
 	dblock.h
 	customcookiejar.h
 	backendselector.h
 	structuresops.h
-	listmodel.h
-	selectablebrowser.h
-	flattofoldersproxymodel.h
 	defaulthookproxy.h
 	basehookinterconnector.h
 	fileremoveguard.h
 	exceptions.h
-	syncops.h
 	customnetworkreply.h
 	resourceloader.h
 	notificationactionhandler.h
-	flowlayout.h
 	socketerrorstrings.h
-	syncdeltamanager.h
 	sysinfo.h
 	passutils.h
 	shortcuts/shortcutmanager.h

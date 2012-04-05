@@ -16,28 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef UTIL_TAGSCOMPLETIONMODEL_H
-#define UTIL_TAGSCOMPLETIONMODEL_H
-#include <QStringListModel>
-#include <QStringList>
-#include "utilconfig.h"
+#ifndef UTIL_SYNCDELTAMANAGER_H
+#define UTIL_SYNCDELTAMANAGER_H
+#include <QObject>
+#include <QDir>
+#include <QSettings>
+#include <interfaces/isyncable.h>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
 	namespace Util
 	{
-		class UTIL_API TagsCompletionModel : public QStringListModel
+		class UTIL_API SyncDeltaManager : public QObject
 		{
 			Q_OBJECT
-		public:
-			TagsCompletionModel (QObject *parent = 0);
 
-			void UpdateTags (const QStringList&);
-		signals:
-			void tagsUpdated (const QStringList&);
+			QString ID_;
+			QSettings Settings_;
+		public:
+			SyncDeltaManager (const QString&, QObject* = 0);
+			virtual ~SyncDeltaManager ();
+
+			void Store (const Sync::ChainID_t&, const Sync::Payload&);
+			void Store (const Sync::ChainID_t&, const Sync::Payloads_t&);
+
+			Sync::Payloads_t Get (const Sync::ChainID_t&);
+			void Purge (const Sync::ChainID_t&, quint32 num);
+
+			void DeltasRequested (const Sync::ChainID_t&);
+		private:
+			QDir GetDir (const Sync::ChainID_t&) const;
+			int GetLastFileNum (const Sync::ChainID_t&);
+			void SetLastFileNum (const Sync::ChainID_t&, int);
+			void StoreImpl (const QString&, const Sync::Payload&);
 		};
-	};
-};
+	}
+}
 
 #endif
 

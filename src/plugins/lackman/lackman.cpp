@@ -21,8 +21,8 @@
 #include <QStringListModel>
 #include <QIcon>
 #include <util/util.h>
-#include <util/tagscompleter.h>
-#include <util/categoryselector.h>
+#include <util/tags/tagscompleter.h>
+#include <util/tags/categoryselector.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>

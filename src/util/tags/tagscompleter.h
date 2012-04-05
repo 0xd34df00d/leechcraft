@@ -19,7 +19,7 @@
 #ifndef UTIL_TAGSCOMPLETER_H
 #define UTIL_TAGSCOMPLETER_H
 #include <QCompleter>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {

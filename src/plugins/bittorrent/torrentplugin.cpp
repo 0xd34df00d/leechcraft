@@ -36,7 +36,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include <util/tagscompletionmodel.h>
+#include <util/tags/tagscompletionmodel.h>
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "core.h"

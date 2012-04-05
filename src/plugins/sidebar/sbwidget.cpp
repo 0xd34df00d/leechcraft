@@ -21,7 +21,7 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QtDebug>
-#include <util/flowlayout.h>
+#include <util/gui/flowlayout.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoretabwidget.h>
 

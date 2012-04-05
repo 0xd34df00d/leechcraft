@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include <util/tagscompleter.h>
-#include <util/tagscompletionmodel.h>
+#include <util/tags/tagscompleter.h>
+#include <util/tags/tagscompletionmodel.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"

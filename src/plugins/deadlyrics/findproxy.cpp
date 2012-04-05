@@ -21,7 +21,7 @@
 #include <QUrl>
 #include <QtDebug>
 #include <interfaces/structures.h>
-#include <util/selectablebrowser.h>
+#include <util/gui/selectablebrowser.h>
 #include "searcher.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"

@@ -31,7 +31,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <util/util.h>
-#include <util/syncops.h>
+#include <util/sync/syncops.h>
 #include "findproxy.h"
 #include "tagsasker.h"
 

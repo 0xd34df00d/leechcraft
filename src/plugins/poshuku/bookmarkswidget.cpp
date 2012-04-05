@@ -19,7 +19,7 @@
 #include "bookmarkswidget.h"
 #include <QInputDialog>
 #include <QMessageBox>
-#include <util/flattofoldersproxymodel.h>
+#include <util/models/flattofoldersproxymodel.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"

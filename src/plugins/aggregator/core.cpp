@@ -31,7 +31,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include <util/mergemodel.h>
+#include <util/models/mergemodel.h>
 #include <util/util.h>
 #include <util/fileremoveguard.h>
 #include <util/defaulthookproxy.h>

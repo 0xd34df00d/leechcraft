@@ -20,7 +20,7 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QToolButton>
-#include "util/flowlayout.h"
+#include "util/gui/flowlayout.h"
 #include "xmlsettingsdialog/xmlsettingsdialog.h"
 #include "interfaces/ihavesettings.h"
 #include "interfaces/iplugin2.h"

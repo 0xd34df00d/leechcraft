@@ -34,7 +34,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
-#include <util/tagscompletionmodel.h>
+#include <util/tags/tagscompletionmodel.h>
 #include <util/backendselector.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"

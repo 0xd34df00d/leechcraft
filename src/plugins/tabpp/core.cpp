@@ -23,7 +23,7 @@
 #include <QSortFilterProxyModel>
 #include <QDynamicPropertyChangeEvent>
 #include <QtDebug>
-#include <util/treeitem.h>
+#include <util/models/treeitem.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoretabwidget.h>
 

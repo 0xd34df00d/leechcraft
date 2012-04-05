@@ -20,9 +20,9 @@
 
 #include <QObject>
 #include <QHash>
+#include <util/utilconfig.h>
 #include "interfaces/ihaveshortcuts.h"
 #include "interfaces/core/icoreproxy.h"
-#include "../utilconfig.h"
 
 class QAction;
 class IShortcutProxy;

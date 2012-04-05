@@ -61,7 +61,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/ijobholder.h>
-#include <util/tagscompletionmodel.h>
+#include <util/tags/tagscompletionmodel.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"

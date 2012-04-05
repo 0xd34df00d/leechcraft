@@ -20,7 +20,7 @@
 #include <QFinalState>
 #include <QtDebug>
 #include <interfaces/isyncable.h>
-#include <util/syncops.h>
+#include <util/sync/syncops.h>
 #include "serverconnection.h"
 #include "core.h"
 

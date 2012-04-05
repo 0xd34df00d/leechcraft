@@ -19,7 +19,7 @@
 #include "addtododialog.h"
 #include <algorithm>
 #include <interfaces/core/itagsmanager.h>
-#include <util/tagscompleter.h>
+#include <util/tags/tagscompleter.h>
 #include "core.h"
 
 namespace LeechCraft

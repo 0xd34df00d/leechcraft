@@ -26,7 +26,7 @@
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <util/util.h>
-#include <util/selectablebrowser.h>
+#include <util/gui/selectablebrowser.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 

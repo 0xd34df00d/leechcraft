@@ -19,7 +19,7 @@
 #ifndef UTIL_CATEGORYSELECTOR_H
 #define UTIL_CATEGORYSELECTOR_H
 #include <QTreeWidget>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 class QStringList;
 class QString;

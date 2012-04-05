@@ -22,7 +22,7 @@
 #include <QVector>
 #include <QMap>
 #include <QVariant>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {

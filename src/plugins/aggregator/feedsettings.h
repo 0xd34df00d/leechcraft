@@ -21,7 +21,7 @@
 #include <memory>
 #include <QDialog>
 #include <QModelIndex>
-#include <util/tagscompleter.h>
+#include <util/tags/tagscompleter.h>
 #include "ui_feedsettings.h"
 #include "common.h"
 

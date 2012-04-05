@@ -32,12 +32,12 @@
 #include <QKeyEvent>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
-#include <util/tagscompletionmodel.h>
+#include <util/tags/tagscompletionmodel.h>
 #include <util/util.h>
-#include <util/categoryselector.h>
-#include <util/tagscompleter.h>
+#include <util/tags/categoryselector.h>
+#include <util/tags/tagscompleter.h>
 #include <util/backendselector.h>
-#include <util/flattofoldersproxymodel.h>
+#include <util/models/flattofoldersproxymodel.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "ui_mainwidget.h"

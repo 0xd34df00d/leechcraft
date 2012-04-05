@@ -22,12 +22,12 @@
 #include <QVariant>
 #include <QAction>
 #include <QtDebug>
-#include <util/treeitem.h>
+#include <util/models/treeitem.h>
 #include <util/defaulthookproxy.h>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "poshuku.h"
-#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {

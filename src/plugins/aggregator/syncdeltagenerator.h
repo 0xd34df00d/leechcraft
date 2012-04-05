@@ -20,7 +20,7 @@
 #define PLUGINS_AGGREGATOR_SYNCDELTAGENERATOR_H
 #include <QMap>
 #include <interfaces/isyncable.h>
-#include <util/syncops.h>
+#include <util/sync/syncops.h>
 #include "feed.h"
 #include "channel.h"
 #include "item.h"

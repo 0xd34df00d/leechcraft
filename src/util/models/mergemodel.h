@@ -22,7 +22,7 @@
 #include <QPointer>
 #include <QAbstractProxyModel>
 #include <QStringList>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {

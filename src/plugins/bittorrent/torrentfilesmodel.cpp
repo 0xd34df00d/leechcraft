@@ -21,7 +21,7 @@
 #include <boost/functional/hash.hpp>
 #include <QUrl>
 #include <QtDebug>
-#include <util/treeitem.h>
+#include <util/models/treeitem.h>
 #include <util/util.h>
 #include "core.h"
 

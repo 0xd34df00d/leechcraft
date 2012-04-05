@@ -23,7 +23,7 @@
 #include <QVector>
 #include <QCoreApplication>
 #include <util/util.h>
-#include <util/syncops.h>
+#include <util/sync/syncops.h>
 
 namespace LeechCraft
 {

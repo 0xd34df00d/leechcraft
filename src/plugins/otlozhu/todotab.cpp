@@ -22,7 +22,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <util/util.h>
-#include <util/tagscompleter.h>
+#include <util/tags/tagscompleter.h>
 #include "core.h"
 #include "todomanager.h"
 #include "addtododialog.h"

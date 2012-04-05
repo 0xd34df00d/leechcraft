@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "searchwidget.h"
-#include <util/categoryselector.h>
+#include <util/tags/categoryselector.h>
 
 namespace LeechCraft
 {

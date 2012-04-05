@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "findproxy.h"
-#include <util/mergemodel.h>
+#include <util/models/mergemodel.h>
 #include "core.h"
 
 namespace LeechCraft

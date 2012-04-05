@@ -16,43 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef UTIL_SYNCDELTAMANAGER_H
-#define UTIL_SYNCDELTAMANAGER_H
-#include <QObject>
-#include <QDir>
-#include <QSettings>
-#include <interfaces/isyncable.h>
-#include "utilconfig.h"
+#ifndef UTIL_SELECTABLEBROWSER_H
+#define UTIL_SELECTABLEBROWSER_H
+#include <memory>
+#include <QWidget>
+#include <QTextBrowser>
+#include <interfaces/iwebbrowser.h>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
 	namespace Util
 	{
-		class UTIL_API SyncDeltaManager : public QObject
+		class UTIL_API SelectableBrowser : public QWidget
 		{
 			Q_OBJECT
 
-			QString ID_;
-			QSettings Settings_;
+			bool Internal_;
+			std::auto_ptr<QTextBrowser> InternalBrowser_;
+			std::auto_ptr<IWebWidget> ExternalBrowser_;
 		public:
-			SyncDeltaManager (const QString&, QObject* = 0);
-			virtual ~SyncDeltaManager ();
+			SelectableBrowser (QWidget* = 0);
+			void Construct (IWebBrowser*);
 
-			void Store (const Sync::ChainID_t&, const Sync::Payload&);
-			void Store (const Sync::ChainID_t&, const Sync::Payloads_t&);
+			void SetHtml (const QString&, const QUrl& = QString ());
 
-			Sync::Payloads_t Get (const Sync::ChainID_t&);
-			void Purge (const Sync::ChainID_t&, quint32 num);
-
-			void DeltasRequested (const Sync::ChainID_t&);
+			void SetNavBarVisible (bool);
+			void SetEverythingElseVisible (bool);
 		private:
-			QDir GetDir (const Sync::ChainID_t&) const;
-			int GetLastFileNum (const Sync::ChainID_t&);
-			void SetLastFileNum (const Sync::ChainID_t&, int);
-			void StoreImpl (const QString&, const Sync::Payload&);
+			void PrepareInternal ();
 		};
-	}
-}
+	};
+};
 
 #endif
 
