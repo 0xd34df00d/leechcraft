@@ -154,38 +154,37 @@ namespace LeechCraft
 			}
 		}
 
-		QDialog *dia = new QDialog (XSD_);
+		QDialog dia (XSD_);
 		QGridLayout *lay = new QGridLayout ();
-		dia->setLayout (lay);
+		dia.setLayout (lay);
 		for (int i = 0, size = types.size (); i < size; ++i)
 		{
 			QLabel *name = new QLabel (names.at (i));
 			DataSources::DataFieldType type = types.at (i);
 			QWidget *w = GetEditor (type);
-			int row = lay->rowCount ();
+			const int row = lay->rowCount ();
 			lay->addWidget (name, row, 0, Qt::AlignRight);
 			lay->addWidget (w, row, 1);
 		}
 		QDialogButtonBox *buttons = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
-				Qt::Horizontal, dia);
+				Qt::Horizontal, &dia);
 		connect (buttons,
 				SIGNAL (accepted ()),
-				dia,
+				&dia,
 				SLOT (accept ()));
 		connect (buttons,
 				SIGNAL (rejected ()),
-				dia,
+				&dia,
 				SLOT (reject ()));
-		lay->addWidget (buttons, lay->rowCount (), 0, 1, 2);
+		lay->addWidget (buttons, lay->rowCount (), 0, 1, -1);
 
-		if (dia->exec () == QDialog::Accepted)
+		if (dia.exec () == QDialog::Accepted)
 		{
 			QVariantList datas;
 			for (int i = 0, size = types.size (); i < size; ++i)
 			{
-				QWidget *w = lay->itemAt (i)->widget ();
-				QVariant data = GetData (w, types.at (i));
-				datas << data;
+				QWidget *w = lay->itemAt (2 * i + 1)->widget ();
+				datas << GetData (w, types.at (i));
 			}
 			if (!QMetaObject::invokeMethod (model->parent (),
 						"addRequested",
