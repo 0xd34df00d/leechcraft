@@ -29,11 +29,29 @@ namespace Dolozhee
 	, Proxy_ (proxy)
 	{
 		Ui_.setupUi (this);
+
+		connect (Ui_.Title_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SIGNAL (completeChanged ()));
+		Q_FOREACH (QTextEdit *edit, findChildren<QTextEdit*> ())
+			connect (edit,
+					SIGNAL (textChanged ()),
+					this,
+					SIGNAL (completeChanged ()));
 	}
 
 	int BugReportPage::nextId () const
 	{
 		return ReportWizard::PageID::Final;
+	}
+
+	bool BugReportPage::isComplete () const
+	{
+		return !GetTitle ().isEmpty () &&
+			!Ui_.ShortDesc_->toPlainText ().isEmpty () &&
+			!Ui_.AR_->toPlainText ().isEmpty () &&
+			!Ui_.STR_->toPlainText ().isEmpty ();
 	}
 
 	QString BugReportPage::GetTitle () const

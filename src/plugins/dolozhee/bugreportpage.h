@@ -36,6 +36,7 @@ namespace Dolozhee
 		BugReportPage (ICoreProxy_ptr, QWidget* = 0);
 
 		int nextId () const;
+		bool isComplete () const;
 
 		QString GetTitle () const;
 		QString GetText () const;
