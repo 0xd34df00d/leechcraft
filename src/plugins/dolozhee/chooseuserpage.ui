@@ -29,6 +29,9 @@
    </item>
    <item>
     <widget class="QRadioButton" name="New_">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="text">
       <string>New user</string>
      </property>
