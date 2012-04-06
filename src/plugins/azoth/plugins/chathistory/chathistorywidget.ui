@@ -34,6 +34,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="placeholderText">
+        <string>Filter contacts...</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -54,7 +57,11 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QLineEdit" name="HistorySearch_"/>
+      <widget class="QLineEdit" name="HistorySearch_">
+       <property name="placeholderText">
+        <string>History search...</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QTextBrowser" name="HistView_"/>
