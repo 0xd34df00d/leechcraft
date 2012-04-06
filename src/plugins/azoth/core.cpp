@@ -621,7 +621,7 @@ namespace Azoth
 		if (!mucEntry)
 			return false;
 
-		return msg->GetBody ().contains (mucEntry->GetNick ());
+		return msg->GetBody ().contains (mucEntry->GetNick (), Qt::CaseInsensitive);
 	}
 
 	void Core::AddProtocolPlugin (QObject *plugin)
