@@ -5,6 +5,35 @@ Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
 !!! HEAD
+! Devel digest #21 ( http://leechcraft.org/devel-digest-21 ):
+
+
+! Devel digest #20 ( http://leechcraft.org/devel-digest-20 ):
+* Azoth: support tab session management.
+* Azoth: separate theme and theme variant settings.
+* Azoth: allow one to reorder bookmarks.
+* Azoth Acetamide: fixed answer on Spy commands.
+* Azoth Acetamide: disconnect on socket error.
+* Azoth Acetamide: proper WHO request after channel joining.
+* Azoth Acetamide: support for server password in bookmarks.
+* Azoth Acetamide: proper SSL errors handling.
+* Azoth AdiumStyles: parse PLists for more info.
+* Azoth Xoox: fixed segfault on going offline.
+* Azoth Xoox: proper gateway login/logout logic.
+* Azoth Xoox: better caching for disco#info.
+* Azoth Xoox: proper support for vcard-update.
+* Azoth Xoox: caching for avatars in MUCs.
+* Azoth Xoox: support refreshing branches in service discovery.
+* Azoth Xoox: support showing physical addresses in vCards.
+* Azoth Xoox: fixed several rare segfaults.
+* Poshuku CleanWeb: better control for user filters.
+* Poshuku CleanWeb: support pasting/loading user filters from file.
+* TabSessManager: implement a global tabs uncloser.
+* Core: name/shortcut filter in ShortcutManager widget.
+* Core: support setting accept-language.
+* XSD: support for selection event notifications.
+* Overall: some code fixes thanks to static analysis!
+
 !!! 0.5.60
 ! Announce ( http://leechcraft.org/leechcraft-0.5.60-is-released ):
 * New plugin: Azoth Astrality: Telepathy abstraction layer.
