@@ -283,6 +283,7 @@ namespace AdvancedNotifications
 				std::function<int (QFont)> g, std::function<void (QFont&, int)> s)
 		{
 			s (font, ((iconSize.height () + 2 * g (font)) / 3));
+			int numIters = 0;
 			while (true)
 			{
 				const int width = QFontMetrics (font).width (countText);
@@ -290,6 +291,9 @@ namespace AdvancedNotifications
 						g (font) >= iconSize.height ())
 					s (font, g (font) - 1);
 				else
+					break;
+
+				if (++numIters >= 12)
 					break;
 			}
 		}
@@ -323,11 +327,11 @@ namespace AdvancedNotifications
 		// Cause gcc 4.5.x sucks and fails to compile without being such explicit.
 		std::function<int (QFont)> getPointSize = [] (QFont f) { return f.pointSize (); };
 		std::function<int (QFont)> getPixelSize = [] (QFont f) { return f.pixelSize (); };
-		auto gFunc = font.pointSize () > 0 ? getPointSize : getPixelSize;
+		auto gFunc = font.pointSize () > 1 ? getPointSize : getPixelSize;
 
 		std::function<void (QFont&, int)> setPointSize = [] (QFont& f, int size) { f.setPointSize (size); };
 		std::function<void (QFont&, int)> setPixelSize = [] (QFont& f, int size) { f.setPixelSize (size); };
-		auto sFunc = font.pointSize () > 0 ? setPointSize : setPixelSize;
+		auto sFunc = font.pointSize () > 1 ? setPointSize : setPixelSize;
 		FitSize (font, iconSize, countText, gFunc, sFunc);
 
 		const bool tooSmall = gFunc (font) < 5;
