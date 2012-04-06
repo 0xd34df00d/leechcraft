@@ -3,6 +3,7 @@
     <file>resources/html/viewcontents.html</file>
     <file>resources/images/azoth.svg</file>
 	<file>resources/images/chattabclass.svg</file>
+	<file>resources/images/console.svg</file>
 	<file>resources/images/searchtab.svg</file>
 	<file>resources/images/sdtab.svg</file>
 	<file>resources/scripts/scrollers.js</file>
