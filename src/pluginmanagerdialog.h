@@ -21,6 +21,8 @@
 #include <QWidget>
 #include "ui_pluginmanagerdialog.h"
 
+class QSortFilterProxyModel;
+
 namespace LeechCraft
 {
 	class PluginManagerDialog : public QWidget
@@ -28,6 +30,7 @@ namespace LeechCraft
 		Q_OBJECT
 
 		Ui::PluginManagerDialog Ui_;
+		QSortFilterProxyModel *FilterProxy_;
 	public:
 		PluginManagerDialog (QWidget* = 0);
 	public slots:
