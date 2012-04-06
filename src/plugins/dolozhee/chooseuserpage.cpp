@@ -27,6 +27,17 @@ namespace Dolozhee
 	: QWizardPage (parent)
 	{
 		Ui_.setupUi (this);
+
+		Q_FOREACH (QRadioButton *but, findChildren<QRadioButton*> ())
+			connect (but,
+					SIGNAL (toggled (bool)),
+					this,
+					SIGNAL (completeChanged ()));
+		Q_FOREACH (QLineEdit *edit, findChildren<QLineEdit*> ())
+			connect (edit,
+					SIGNAL (textChanged (QString)),
+					this,
+					SIGNAL (completeChanged ()));
 	}
 
 	int ChooseUserPage::nextId () const
@@ -34,6 +45,19 @@ namespace Dolozhee
 		return GetUser () != User::New ?
 				ReportWizard::PageID::ReportType :
 				ReportWizard::PageID::UserStatus;
+	}
+
+	bool ChooseUserPage::isComplete () const
+	{
+		switch (GetUser ())
+		{
+		case User::Anonymous:
+			return true;
+		case User::Existing:
+			return !GetLogin ().isEmpty () && !GetPassword ().isEmpty ();
+		default:
+			return false;
+		}
 	}
 
 	ChooseUserPage::User ChooseUserPage::GetUser () const

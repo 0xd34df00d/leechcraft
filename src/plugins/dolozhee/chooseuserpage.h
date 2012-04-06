@@ -41,6 +41,7 @@ namespace Dolozhee
 		ChooseUserPage (QWidget* = 0);
 
 		int nextId () const;
+		bool isComplete () const;
 
 		User GetUser () const;
 		QString GetLogin () const;
