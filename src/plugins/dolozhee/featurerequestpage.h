@@ -34,6 +34,7 @@ namespace Dolozhee
 		FeatureRequestPage (QWidget* = 0);
 
 		int nextId () const;
+		bool isComplete () const;
 
 		QString GetTitle () const;
 		QString GetText () const;

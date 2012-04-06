@@ -27,11 +27,25 @@ namespace Dolozhee
 	: QWizardPage (parent)
 	{
 		Ui_.setupUi (this);
+
+		connect (Ui_.Title_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SIGNAL (completeChanged ()));
+		connect (Ui_.Description_,
+				SIGNAL (textChanged ()),
+				this,
+				SIGNAL (completeChanged ()));
 	}
 
 	int FeatureRequestPage::nextId () const
 	{
 		return ReportWizard::PageID::Final;
+	}
+
+	bool FeatureRequestPage::isComplete () const
+	{
+		return !GetTitle ().isEmpty () && !GetText ().isEmpty ();
 	}
 
 	QString FeatureRequestPage::GetTitle () const
