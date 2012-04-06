@@ -84,6 +84,22 @@ namespace LeechCraft
 
 			return QVariant::fromValue<QObject*> (loader->instance ());
 		}
+		else if (role == Roles::PluginID)
+		{
+			auto loader = AvailablePlugins_ [index.row ()];
+			if (!loader || !loader->isLoaded ())
+				return QVariant ();
+
+			return qobject_cast<IInfo*> (loader->instance ())->GetUniqueID ();
+		}
+		else if (role == Roles::PluginFilename)
+		{
+			auto loader = AvailablePlugins_ [index.row ()];
+			if (!loader)
+				return QVariant ();
+
+			return loader->fileName ();
+		}
 
 		switch (index.column ())
 		{

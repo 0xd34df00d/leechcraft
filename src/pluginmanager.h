@@ -63,7 +63,9 @@ namespace LeechCraft
 	public:
 		enum Roles
 		{
-			PluginObject = Qt::UserRole + 100
+			PluginObject = Qt::UserRole + 100,
+			PluginID,
+			PluginFilename
 		};
 
 		typedef PluginsContainer_t::size_type Size_t;
