@@ -30,6 +30,8 @@ namespace Otlozhu
 		TodoSFProxyModel (QObject* = 0);
 	protected:
 		QStringList GetTagsForIndex (int) const;
+
+		bool lessThan (const QModelIndex& left, const QModelIndex& right) const;
 	};
 }
 }

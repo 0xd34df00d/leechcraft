@@ -44,5 +44,17 @@ namespace Otlozhu
 				[tm] (const QString& id) { return tm->GetTag (id); });
 		return result;
 	}
+
+	bool TodoSFProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
+	{
+		const int leftProg = left.data (StorageModel::Roles::ItemProgress).toInt ();
+		const int rightProg = right.data (StorageModel::Roles::ItemProgress).toInt ();
+		if (leftProg == 100 && rightProg != 100)
+			return true;
+		else if (rightProg == 100 && leftProg != 100)
+			return false;
+		
+		return QSortFilterProxyModel::lessThan (left, right);
+	}
 }
 }
