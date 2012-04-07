@@ -226,7 +226,7 @@ namespace TabSessManager
 		if (!recTab || !tab)
 			return;
 
-		TabUncloseInfo info =
+		const TabUncloseInfo& info =
 		{
 			{
 				recTab->GetTabRecoverData (),
@@ -234,6 +234,16 @@ namespace TabSessManager
 			},
 			qobject_cast<IHaveRecoverableTabs*> (tab->ParentMultiTabs ())
 		};
+
+		const auto pos = std::find_if (UncloseAct2Data_.begin (), UncloseAct2Data_.end (),
+				[&info] (const TabUncloseInfo& that) { return that.RecInfo_.Data_ == info.RecInfo_.Data_; });
+		if (pos != UncloseAct2Data_.end ())
+		{
+			auto act = pos.key ();
+			UncloseMenu_->removeAction (act);
+			UncloseAct2Data_.erase (pos);
+			delete act;
+		}
 
 		QAction *action = new QAction (recTab->GetTabRecoverIcon (),
 				recTab->GetTabRecoverName (), this);
@@ -349,6 +359,8 @@ namespace TabSessManager
 
 		if (!UncloseAct2Data_.contains (action))
 			return;
+
+		action->deleteLater ();
 
 		auto data = UncloseAct2Data_.take (action);
 		if (UncloseMenu_->defaultAction () == action)
