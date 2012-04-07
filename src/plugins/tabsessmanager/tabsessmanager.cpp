@@ -245,8 +245,9 @@ namespace TabSessManager
 			delete act;
 		}
 
-		QAction *action = new QAction (recTab->GetTabRecoverIcon (),
-				recTab->GetTabRecoverName (), this);
+		const auto& fm = qApp->fontMetrics ();
+		const QString& elided = fm.elidedText (recTab->GetTabRecoverName (), Qt::ElideMiddle, 300);
+		QAction *action = new QAction (recTab->GetTabRecoverIcon (), elided, this);
 		UncloseAct2Data_ [action] = info;
 
 		connect (action,
