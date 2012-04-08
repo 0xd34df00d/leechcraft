@@ -19,6 +19,7 @@
 #include "dolozhee.h"
 #include <QIcon>
 #include <QAction>
+#include <util/util.h>
 #include "reportwizard.h"
 
 namespace LeechCraft
@@ -27,6 +28,7 @@ namespace Dolozhee
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("dolozhee");
 		Proxy_ = proxy;
 
 		Report_ = new QAction (tr ("Report an issue..."), this);
