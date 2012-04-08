@@ -134,7 +134,7 @@ namespace Auscrie
 			RequestBuilder builder;
 			builder.AddFile (format, "file", data);
 
-			const QByteArray& formed = builder.Build ();
+			const QByteArray& formed = builder.Build () + "\r\n";
 
 			QNetworkRequest request (url);
 			request.setHeader (QNetworkRequest::ContentTypeHeader,
