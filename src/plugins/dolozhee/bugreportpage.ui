@@ -65,7 +65,7 @@
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="QTextEdit" name="AR_"/>
+    <widget class="QPlainTextEdit" name="AR_"/>
    </item>
   </layout>
  </widget>

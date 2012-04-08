@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "bugreportpage.h"
+#include <QtDebug>
 #include <util/sysinfo.h>
 #include "reportwizard.h"
 
@@ -34,7 +35,9 @@ namespace Dolozhee
 				SIGNAL (textChanged (QString)),
 				this,
 				SIGNAL (completeChanged ()));
-		Q_FOREACH (QTextEdit *edit, findChildren<QTextEdit*> ())
+
+		auto list = { Ui_.ShortDesc_, Ui_.AR_, Ui_.STR_ };
+		Q_FOREACH (auto edit, list)
 			connect (edit,
 					SIGNAL (textChanged ()),
 					this,
