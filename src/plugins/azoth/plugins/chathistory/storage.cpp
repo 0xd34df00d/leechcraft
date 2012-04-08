@@ -33,6 +33,8 @@ namespace Azoth
 namespace ChatHistory
 {
 	Storage::RawSearchResult::RawSearchResult ()
+	: EntryID_ (0)
+	, AccountID_ (0)
 	{
 	}
 
@@ -102,6 +104,15 @@ namespace ChatHistory
 				"AND Date = (SELECT Date FROM azoth_history "
 				"	WHERE Id = :inner_entry_id "
 				"	AND AccountID = :inner_account_id "
+				"	AND Message LIKE :text "
+				"	ORDER BY Date DESC "
+				"	LIMIT 1 OFFSET :offset);");
+
+		LogsSearcherWOContact_ = QSqlQuery (*DB_);
+		LogsSearcherWOContact_.prepare ("SELECT Date, Id FROM azoth_history "
+				"WHERE AccountID = :account_id "
+				"AND Date = (SELECT Date FROM azoth_history "
+				"	WHERE AccountID = :inner_account_id "
 				"	AND Message LIKE :text "
 				"	ORDER BY Date DESC "
 				"	LIMIT 1 OFFSET :offset);");
@@ -376,7 +387,39 @@ namespace ChatHistory
 
 	Storage::RawSearchResult Storage::Search (const QString& accountId, const QString& text, int shift)
 	{
-		return RawSearchResult ();
+		if (!Accounts_.contains (accountId))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "Accounts_ doesn't contain"
+					<< accountId
+					<< "; raw contents"
+					<< Accounts_;
+			return RawSearchResult ();
+		}
+
+		const qint32 intAccId = Accounts_ [accountId];
+		LogsSearcherWOContact_.bindValue (":account_id", intAccId);
+		LogsSearcherWOContact_.bindValue (":inner_account_id", intAccId);
+		LogsSearcherWOContact_.bindValue (":text", '%' + text + '%');
+		LogsSearcherWOContact_.bindValue (":offset", shift);
+		if (!LogsSearcherWOContact_.exec ())
+		{
+			Util::DBLock::DumpError (LogsSearcherWOContact_);
+			return RawSearchResult ();
+		}
+
+		if (!LogsSearcherWOContact_.next ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to move to the next entry";
+			return RawSearchResult ();
+		}
+
+		auto guard = CleanupQueryGuard (LogsSearcherWOContact_);
+
+		return RawSearchResult (LogsSearcherWOContact_.value (1).toInt (),
+				intAccId,
+				LogsSearcherWOContact_.value (0).toDateTime ());
 	}
 
 	Storage::RawSearchResult Storage::Search (const QString& text, int shift)
@@ -395,6 +438,8 @@ namespace ChatHistory
 					<< "unable to move to the next entry";
 			return RawSearchResult ();
 		}
+
+		auto guard = CleanupQueryGuard (LogsSearcherWOContactAccount_);
 
 		return RawSearchResult (LogsSearcherWOContactAccount_.value (1).toInt (),
 				LogsSearcherWOContactAccount_.value (2).toInt (),

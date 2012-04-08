@@ -49,6 +49,7 @@ namespace ChatHistory
 		QSqlQuery UsersForAccountGetter_;
 		QSqlQuery Date2Pos_;
 		QSqlQuery LogsSearcher_;
+		QSqlQuery LogsSearcherWOContact_;
 		QSqlQuery LogsSearcherWOContactAccount_;
 		QSqlQuery HistoryGetter_;
 		QSqlQuery HistoryClearer_;
