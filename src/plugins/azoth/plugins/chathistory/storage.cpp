@@ -630,7 +630,6 @@ namespace ChatHistory
 	void Storage::search (const QString& accountId,
 			const QString& entryId, const QString& text, int shift)
 	{
-		qDebug () << Q_FUNC_INFO << !accountId.isEmpty () << !entryId.isEmpty ();
 		RawSearchResult res;
 		if (!accountId.isEmpty () && !entryId.isEmpty ())
 			res = Search (accountId, entryId, text, shift);
@@ -638,8 +637,6 @@ namespace ChatHistory
 			res = Search (accountId, text, shift);
 		else
 			res = Search (text, shift);
-
-		qDebug () << res.AccountID_ << res.EntryID_ << res.Date_;
 
 		if (res.Date_.isNull ())
 		{
@@ -668,7 +665,6 @@ namespace ChatHistory
 
 		const int index = Date2Pos_.value (0).toInt ();
 		Date2Pos_.finish ();
-		qDebug () << index;
 
 		emit gotSearchPosition (Accounts_.key (res.AccountID_), Users_.key (res.EntryID_), index);
 	}
