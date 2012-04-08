@@ -40,7 +40,7 @@ namespace Azoth
 					<< "we definitely gonna segfault soon";
 
 		Ui_.setupUi (this);
-		
+
 		TabClassInfo temp =
 		{
 			"ConsoleTab",
@@ -52,54 +52,57 @@ namespace Azoth
 			TFEmpty
 		};
 		TabClass_ = temp;
-		
+
 		connect (obj,
 				SIGNAL (gotConsolePacket (QByteArray, int, QString)),
 				this,
 				SLOT (handleConsolePacket (QByteArray, int, QString)));
-		
+
 		AsConsole_->SetConsoleEnabled (true);
 	}
-	
+
 	TabClassInfo ConsoleWidget::GetTabClassInfo () const
 	{
 		return TabClass_;
 	}
-	
+
 	QObject* ConsoleWidget::ParentMultiTabs ()
 	{
 		return ParentMultiTabs_;
 	}
-	
+
 	void ConsoleWidget::Remove ()
 	{
 		AsConsole_->SetConsoleEnabled (false);
 		emit removeTab (this);
 		deleteLater ();
 	}
-	
+
 	QToolBar* ConsoleWidget::GetToolBar () const
 	{
 		return 0;
 	}
-	
+
 	void ConsoleWidget::SetParentMultiTabs (QObject *obj)
 	{
 		ParentMultiTabs_ = obj;
 	}
-	
+
 	QString ConsoleWidget::GetTitle () const
 	{
 		return tr ("%1: console").arg (AsAccount_->GetAccountName ());
 	}
-	
+
 	void ConsoleWidget::handleConsolePacket (QByteArray data, int direction, const QString& entryId)
 	{
-		qDebug () << Q_FUNC_INFO << entryId;
+		const QString& filter = Ui_.EntryIDFilter_->text ();
+		if (!filter.isEmpty () && !entryId.contains (filter, Qt::CaseInsensitive))
+			return;
+
 		const QString& color = direction == IHaveConsole::PDOut ?
 				"#56ED56" :			// rather green
 				"#ED55ED";			// violet or something
-		
+
 		QString html = "<font color=\"" + color + "\">";
 		switch (Format_)
 		{
@@ -110,7 +113,7 @@ namespace Azoth
 		case IHaveConsole::PFXML:
 		{
 			QDomDocument doc;
-			if (doc.setContent (data))			
+			if (doc.setContent (data))
 				data = doc.toByteArray (2);
 		}
 		case IHaveConsole::PFPlainText:
