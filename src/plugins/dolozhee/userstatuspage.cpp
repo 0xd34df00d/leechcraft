@@ -52,6 +52,7 @@ namespace Dolozhee
 				page->GetEmail (), page->GetFirstName (), page->GetLastName ());
 		auto wiz = qobject_cast<ReportWizard*> (wizard ());
 		auto reply = wiz->PostRequest ("/users.xml", data);
+		Q_UNUSED (reply);
 	}
 }
 }

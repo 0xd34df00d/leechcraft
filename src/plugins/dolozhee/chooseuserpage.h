@@ -23,6 +23,8 @@
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Dolozhee
 {
 	class ChooseUserPage : public QWizardPage
@@ -40,6 +42,7 @@ namespace Dolozhee
 
 		ChooseUserPage (QWidget* = 0);
 
+		void initializePage ();
 		int nextId () const;
 		bool isComplete () const;
 
@@ -49,6 +52,13 @@ namespace Dolozhee
 		QString GetEmail () const;
 		QString GetFirstName () const;
 		QString GetLastName () const;
+	private:
+		QString GetPassKey () const;
+	private slots:
+		void saveCredentials ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

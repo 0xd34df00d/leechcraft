@@ -51,6 +51,7 @@ namespace Dolozhee
 		void gotActions (QList<QAction*>, ActionsEmbedPlace);
 
 		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

@@ -17,6 +17,9 @@
  **********************************************************************/
 
 #include "chooseuserpage.h"
+#include <QSettings>
+#include <QtDebug>
+#include <util/passutils.h>
 #include "reportwizard.h"
 
 namespace LeechCraft
@@ -38,6 +41,31 @@ namespace Dolozhee
 					SIGNAL (textChanged (QString)),
 					this,
 					SIGNAL (completeChanged ()));
+	}
+
+	void ChooseUserPage::initializePage ()
+	{
+		connect (wizard (),
+				SIGNAL (accepted ()),
+				this,
+				SLOT (saveCredentials ()));
+
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Dolozhee");
+		settings.beginGroup ("Credentials");
+		const QString& login = settings.value ("Login").toString ();
+		settings.endGroup ();
+
+		if (login.isEmpty ())
+			return;
+
+		Ui_.Login_->setText (login);
+
+		const QString& text = tr ("Please enter password for user %1:")
+				.arg (login);
+		qDebug () << Q_FUNC_INFO << GetPassKey ();
+		const QString& pass = Util::GetPassword (GetPassKey (), text, this);
+		Ui_.Password_->setText (pass);
 	}
 
 	int ChooseUserPage::nextId () const
@@ -97,6 +125,22 @@ namespace Dolozhee
 	QString ChooseUserPage::GetLastName () const
 	{
 		return Ui_.LastName_->text ();
+	}
+
+	QString ChooseUserPage::GetPassKey () const
+	{
+		return "org.LeechCraft.Dolozhee.Username_" + Ui_.Login_->text ();
+	}
+
+	void ChooseUserPage::saveCredentials ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Dolozhee");
+		settings.beginGroup ("Credentials");
+		settings.setValue ("Login", GetLogin ());
+		settings.endGroup ();
+
+		Util::SavePassword (GetPassword (), GetPassKey (), this);
 	}
 }
 }

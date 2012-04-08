@@ -82,6 +82,10 @@ namespace Dolozhee
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (wizard,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 		wizard->show ();
 	}
 }

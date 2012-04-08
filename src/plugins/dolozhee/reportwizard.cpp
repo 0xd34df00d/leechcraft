@@ -45,6 +45,15 @@ namespace Dolozhee
 	{
 		setWindowTitle (tr ("Issue reporter"));
 
+		connect (ChooseUser_,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+		connect (ChooseUser_,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+
 		setPage (PageID::ChooseUser, ChooseUser_);
 		setPage (PageID::UserStatus, new UserStatusPage ());
 		setPage (PageID::ReportType, ReportType_);
