@@ -48,6 +48,7 @@ namespace ChatHistory
 	, Amount_ (0)
 	, SearchShift_ (0)
 	, SearchResultPosition_ (-1)
+	, ContactSelectedAsGlobSearch_ (false)
 	, Toolbar_ (new QToolBar (tr ("Chat history")))
 	, EntryToFocus_ (entry)
 	{
@@ -142,6 +143,8 @@ namespace ChatHistory
 				continue;
 			}
 			Ui_.AccountBox_->addItem (account->GetAccountName (), accountID);
+			if (CurrentAccount_.isEmpty ())
+				CurrentAccount_ = accountID;
 		}
 
 		disconnect (Core::Instance ().get (),
@@ -183,7 +186,8 @@ namespace ChatHistory
 		QStandardItem *ourFocus = 0;
 		const QString& focusId = EntryToFocus_ ?
 				EntryToFocus_->GetEntryID () :
-				0;
+				CurrentEntry_;
+		EntryToFocus_ = 0;
 		for (int i = 0; i < users.size (); ++i)
 		{
 			const QString& user = users.at (i);
@@ -326,9 +330,13 @@ namespace ChatHistory
 	void ChatHistoryWidget::handleGotSearchPosition (const QString& accountId,
 			const QString& entryId, int position)
 	{
-		if (accountId != CurrentAccount_ ||
-				entryId != CurrentEntry_)
-			return;
+		const bool wideSearch = Ui_.SearchType_->currentIndex ();
+		if (!wideSearch)
+		{
+			if (accountId != CurrentAccount_ ||
+					entryId != CurrentEntry_)
+				return;
+		}
 
 		if (!position)
 		{
@@ -337,6 +345,34 @@ namespace ChatHistory
 					tr ("No more search results for %1.")
 						.arg (PreviousSearchText_));
 			return;
+		}
+
+		if (CurrentEntry_ != entryId)
+		{
+			ContactSelectedAsGlobSearch_ = true;
+			CurrentEntry_ = entryId;
+			if (CurrentAccount_ == accountId)
+				for (int i = 0; i < ContactsModel_->rowCount (); ++i)
+				{
+					auto item = ContactsModel_->item (i);
+					if (item->data (MRIDRole) == CurrentEntry_)
+					{
+						Ui_.Contacts_->setCurrentIndex (item->index ());
+						break;
+					}
+				}
+		}
+		if (CurrentAccount_ != accountId)
+		{
+			ContactSelectedAsGlobSearch_ = true;
+			CurrentAccount_ = accountId;
+			for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
+				if (accountId == Ui_.AccountBox_->itemData (i).toString ())
+				{
+					Ui_.AccountBox_->setCurrentIndex (i);
+					CurrentEntry_ = entryId;
+					break;
+				}
 		}
 
 		Backpages_ = position / Amount;
@@ -348,8 +384,7 @@ namespace ChatHistory
 	{
 		const QString& id = Ui_.AccountBox_->itemData (idx).toString ();
 		Core::Instance ()->GetUsersForAccount (id);
-
-		Ui_.HistorySearch_->clear ();
+		CurrentEntry_.clear ();
 	}
 
 	void ChatHistoryWidget::handleContactSelected (const QModelIndex& index)
@@ -357,10 +392,14 @@ namespace ChatHistory
 		CurrentAccount_ = Ui_.AccountBox_->
 				itemData (Ui_.AccountBox_->currentIndex ()).toString ();
 		CurrentEntry_ = index.data (MRIDRole).toString ();
-		Backpages_ = 0;
-		SearchResultPosition_ = -1;
-
-		Ui_.HistorySearch_->clear ();
+		if (!ContactSelectedAsGlobSearch_)
+		{
+			SearchShift_ = 0;
+			PreviousSearchText_.clear ();
+			Backpages_ = 0;
+			SearchResultPosition_ = -1;
+		}
+		ContactSelectedAsGlobSearch_ = false;
 
 		RequestLogs ();
 	}
@@ -386,6 +425,16 @@ namespace ChatHistory
 		}
 
 		RequestSearch ();
+	}
+
+	void ChatHistoryWidget::on_SearchType__currentIndexChanged ()
+	{
+		if (!Ui_.HistorySearch_->text ().isEmpty ())
+		{
+			SearchShift_ = 0;
+			PreviousSearchText_.clear ();
+			on_HistorySearch__returnPressed ();
+		}
 	}
 
 	void ChatHistoryWidget::previousHistory ()
@@ -431,10 +480,15 @@ namespace ChatHistory
 				CurrentEntry_, Backpages_, Amount);
 	}
 
-	void ChatHistoryWidget::RequestSearch()
+	void ChatHistoryWidget::RequestSearch ()
 	{
-		Core::Instance ()->Search (CurrentAccount_,
-				CurrentEntry_, PreviousSearchText_, SearchShift_);
+		const QString& entryStr = Ui_.SearchType_->currentIndex () > 0 ?
+				QString () :
+				CurrentEntry_;
+		const QString& accStr = Ui_.SearchType_->currentIndex () > 1 ?
+				QString () :
+				CurrentAccount_;
+		Core::Instance ()->Search (accStr, entryStr, PreviousSearchText_, SearchShift_);
 	}
 }
 }

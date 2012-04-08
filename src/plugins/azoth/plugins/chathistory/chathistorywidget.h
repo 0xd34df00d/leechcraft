@@ -47,6 +47,7 @@ namespace ChatHistory
 		int Amount_;
 		int SearchShift_;
 		int SearchResultPosition_;
+		bool ContactSelectedAsGlobSearch_;
 		QString CurrentAccount_;
 		QString CurrentEntry_;
 		QString PreviousSearchText_;
@@ -80,6 +81,7 @@ namespace ChatHistory
 		void on_AccountBox__currentIndexChanged (int);
 		void handleContactSelected (const QModelIndex&);
 		void on_HistorySearch__returnPressed ();
+		void on_SearchType__currentIndexChanged ();
 		void previousHistory ();
 		void nextHistory ();
 		void clearHistory ();
