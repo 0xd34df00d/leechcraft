@@ -76,6 +76,10 @@ namespace Dolozhee
 	void Plugin::initiateReporting ()
 	{
 		ReportWizard *wizard = new ReportWizard (Proxy_);
+		connect (wizard,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 		wizard->show ();
 	}
 }

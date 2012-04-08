@@ -50,7 +50,12 @@ namespace Dolozhee
 		setPage (PageID::ReportType, ReportType_);
 		setPage (PageID::BugDetails, BugReportPage_);
 		setPage (PageID::FeatureDetails, FRPage_);
-		setPage (PageID::Final, new FinalPage);
+		auto final = new FinalPage;
+		setPage (PageID::Final, final);
+		connect (final,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 
 		connect (NAM_,
 				SIGNAL (authenticationRequired (QNetworkReply*, QAuthenticator*)),

@@ -20,6 +20,7 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <QDomDocument>
+#include <util/util.h>
 #include "reportwizard.h"
 #include "reporttypepage.h"
 #include "bugreportpage.h"
@@ -88,6 +89,13 @@ namespace Dolozhee
 						" <a href='http://dev.leechcraft.org/issues/%1'>#%1</a>").arg (id);
 		}
 		Ui_.Status_->setText (text);
+	}
+
+	void FinalPage::on_Status__linkActivated (const QString& linkStr)
+	{
+		emit gotEntity (Util::MakeEntity (QUrl (linkStr),
+					QString (),
+					OnlyHandle | FromUserInitiated));
 	}
 }
 }

@@ -23,6 +23,8 @@
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Dolozhee
 {
 	class FinalPage : public QWizardPage
@@ -36,6 +38,9 @@ namespace Dolozhee
 		void initializePage ();
 	private slots:
 		void handleReplyFinished ();
+		void on_Status__linkActivated (const QString&);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

@@ -49,6 +49,8 @@ namespace Dolozhee
 		void initiateReporting ();
 	signals:
 		void gotActions (QList<QAction*>, ActionsEmbedPlace);
+
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
