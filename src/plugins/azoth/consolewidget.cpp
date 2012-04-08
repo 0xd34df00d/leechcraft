@@ -103,7 +103,9 @@ namespace Azoth
 				"#56ED56" :			// rather green
 				"#ED55ED";			// violet or something
 
-		QString html = "<font color=\"" + color + "\">";
+		QString html = QString::fromUtf8 ("—————— [%1] ——————")
+				.arg (QTime::currentTime ().toString ("HH:mm:ss.zzz"));
+		html += "<br /><font color=\"" + color + "\">";
 		switch (Format_)
 		{
 		case IHaveConsole::PFBinary:
@@ -124,16 +126,16 @@ namespace Azoth
 					.constData ());
 			break;
 		}
-		html += "</font><br />" + QString::fromUtf8 ("—————————————");
-		
+		html += "</font><br />";
+
 		Ui_.PacketsBrowser_->append (html);
 	}
-	
+
 	void ConsoleWidget::on_ClearButton__released ()
 	{
 		Ui_.PacketsBrowser_->clear ();
 	}
-	
+
 	void ConsoleWidget::on_EnabledBox__toggled (bool enable)
 	{
 		AsConsole_->SetConsoleEnabled (enable);
