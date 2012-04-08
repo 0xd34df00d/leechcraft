@@ -76,9 +76,9 @@ namespace Acetamide
 				SIGNAL (removedCLItems (const QList<QObject*>&)));
 
 		connect (ClientConnection_.get (),
-				SIGNAL (gotConsoleLog (const QByteArray&, int)),
+				SIGNAL (gotConsoleLog (QByteArray, int, QString)),
 				this,
-				SIGNAL (gotConsolePacket (const QByteArray&, int)));
+				SIGNAL (gotConsolePacket (QByteArray, int, QString)));
 	}
 
 	QObject* IrcAccount::GetObject ()

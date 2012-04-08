@@ -311,10 +311,10 @@ namespace Acetamide
 		switch (type)
 		{
 		case IMessage::DOut:
-			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDOut);
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDOut, QString ());
 			break;
 		case IMessage::DIn:
-			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDIn);
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDIn, QString ());
 			break;
 		default:
 			break;

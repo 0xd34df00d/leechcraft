@@ -54,7 +54,7 @@ namespace Azoth
 		void SetParentMultiTabs (QObject*);
 		QString GetTitle () const;
 	private slots:
-		void handleConsolePacket (QByteArray, int);
+		void handleConsolePacket (QByteArray, int, const QString&);
 		void on_ClearButton__released ();
 		void on_EnabledBox__toggled (bool);
 	signals:

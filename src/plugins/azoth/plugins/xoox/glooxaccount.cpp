@@ -103,9 +103,9 @@ namespace Xoox
 					this));
 
 		connect (ClientConnection_.get (),
-				SIGNAL (gotConsoleLog (const QByteArray&, int)),
+				SIGNAL (gotConsoleLog (QByteArray, int, QString)),
 				this,
-				SIGNAL (gotConsolePacket (const QByteArray&, int)));
+				SIGNAL (gotConsolePacket (QByteArray, int, QString)));
 
 		connect (ClientConnection_.get (),
 				SIGNAL (serverAuthFailed ()),

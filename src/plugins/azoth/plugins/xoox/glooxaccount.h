@@ -258,7 +258,7 @@ namespace Xoox
 		void riexItemsSuggested (QList<LeechCraft::Azoth::RIEXItem> items,
 				QObject*, QString);
 
-		void gotConsolePacket (const QByteArray&, int);
+		void gotConsolePacket (const QByteArray&, int, const QString&);
 
 		void geolocationInfoChanged (const QString&, QObject*);
 

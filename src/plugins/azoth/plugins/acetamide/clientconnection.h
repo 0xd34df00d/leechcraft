@@ -90,7 +90,7 @@ namespace Acetamide
 		void rosterItemRemoved (QObject*);
 		void rosterItemsRemoved (const QList<QObject*>&);
 		void gotCLItems (const QList<QObject*>&);
-		void gotConsoleLog (const QByteArray&, int);
+		void gotConsoleLog (const QByteArray&, int, const QString&);
 	};
 };
 };

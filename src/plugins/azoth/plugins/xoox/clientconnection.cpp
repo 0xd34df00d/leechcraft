@@ -1351,13 +1351,23 @@ namespace Xoox
 
 	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)
 	{
+		QString entryId;
+		QDomDocument doc;
+		if (doc.setContent (msg))
+		{
+			const auto& elem = doc.documentElement ();
+			if (type == QXmppLogger::ReceivedMessage)
+				entryId = elem.attribute ("from");
+			else if (type == QXmppLogger::SentMessage)
+				entryId = elem.attribute ("to");
+		}
 		switch (type)
 		{
 		case QXmppLogger::SentMessage:
-			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDOut);
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDOut, entryId);
 			break;
 		case QXmppLogger::ReceivedMessage:
-			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDIn);
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDIn, entryId);
 			break;
 		default:
 			break;

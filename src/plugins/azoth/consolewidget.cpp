@@ -54,9 +54,9 @@ namespace Azoth
 		TabClass_ = temp;
 		
 		connect (obj,
-				SIGNAL (gotConsolePacket (const QByteArray&, int)),
+				SIGNAL (gotConsolePacket (QByteArray, int, QString)),
 				this,
-				SLOT (handleConsolePacket (QByteArray, int)));
+				SLOT (handleConsolePacket (QByteArray, int, QString)));
 		
 		AsConsole_->SetConsoleEnabled (true);
 	}
@@ -93,8 +93,9 @@ namespace Azoth
 		return tr ("%1: console").arg (AsAccount_->GetAccountName ());
 	}
 	
-	void ConsoleWidget::handleConsolePacket (QByteArray data, int direction)
+	void ConsoleWidget::handleConsolePacket (QByteArray data, int direction, const QString& entryId)
 	{
+		qDebug () << Q_FUNC_INFO << entryId;
 		const QString& color = direction == IHaveConsole::PDOut ?
 				"#56ED56" :			// rather green
 				"#ED55ED";			// violet or something

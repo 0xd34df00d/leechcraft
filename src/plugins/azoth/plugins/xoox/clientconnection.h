@@ -321,7 +321,7 @@ namespace Xoox
 		void gotSubscriptionRequest (QObject*, const QString&);
 		void gotMUCInvitation (const QVariantMap&, const QString&, const QString&);
 
-		void gotConsoleLog (const QByteArray&, int);
+		void gotConsoleLog (const QByteArray&, int, const QString&);
 
 		void serverAuthFailed ();
 		void needPassword ();

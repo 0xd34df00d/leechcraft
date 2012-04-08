@@ -117,8 +117,11 @@ namespace Azoth
 		 * @param[out] packet The packet data.
 		 * @param[out] direction The direction of the packet, member of
 		 * the PacketDirection enum.
+		 * @param[out] hrEntryId The human-readable ID of the related
+		 * entry, or null string if not applicable.
 		 */
-		virtual void gotConsolePacket (const QByteArray& packet, int direction) = 0;
+		virtual void gotConsolePacket (const QByteArray& packet,
+				int direction, const QString& hrEntryId) = 0;
 	};
 }
 }
