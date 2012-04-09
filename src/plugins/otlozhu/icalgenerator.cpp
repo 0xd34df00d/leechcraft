@@ -53,7 +53,7 @@ namespace Otlozhu
 			lines << ("SUMMARY:" + item->GetTitle ().toUtf8 ().trimmed ());
 			if (!item->GetComment ().isEmpty ())
 				lines << ("COMMENT:" + item->GetComment ().toUtf8 ().trimmed ());
-			lines << ("PERCENT:" + QByteArray::number (item->GetPercentage ()));
+			lines << ("PERCENT-COMPLETE:" + QByteArray::number (item->GetPercentage ()));
 
 			QStringList cats;
 			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
