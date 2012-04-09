@@ -32,6 +32,13 @@ namespace Otlozhu
 	{
 	}
 
+	TodoItem::TodoItem (const QString& id)
+	: ID_ (id)
+	, Created_ (QDateTime::currentDateTime ())
+	, Percentage_ (0)
+	{
+	}
+
 	TodoItem_ptr TodoItem::Clone () const
 	{
 		TodoItem_ptr clone (new TodoItem);
