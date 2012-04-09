@@ -61,6 +61,7 @@ namespace Otlozhu
 		void handleSetCustomDueDateRequested ();
 		void handleQuickProgress ();
 
+		void handleImport ();
 		void handleExport ();
 	signals:
 		void removeTab (QWidget*);

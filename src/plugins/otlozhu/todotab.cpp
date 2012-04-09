@@ -32,6 +32,7 @@
 #include "storagemodel.h"
 #include "todosfproxymodel.h"
 #include "icalgenerator.h"
+#include "icalparser.h"
 
 namespace LeechCraft
 {
@@ -140,6 +141,14 @@ namespace Otlozhu
 		Ui_.TodoTree_->addAction (DueDateMenu_->menuAction ());
 
 		Bar_->addSeparator ();
+
+		QAction *importTodos = new QAction (tr ("Import"), this);
+		importTodos->setProperty ("ActionIcon", "document-import");
+		connect (importTodos,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleImport ()));
+		Bar_->addAction (importTodos);
 
 		QAction *exportTodos = new QAction (tr ("Export"), this);
 		exportTodos->setProperty ("ActionIcon", "document-export");
@@ -278,6 +287,20 @@ namespace Otlozhu
 
 		const int perc = sender ()->property ("Otlozhu/Progress").toInt ();
 		ProxyModel_->setData (index, perc, StorageModel::Roles::ItemProgress);
+	}
+
+	void TodoTab::handleImport ()
+	{
+		const QString& filename = QFileDialog::getOpenFileName (this,
+				tr ("Import todos"),
+				QDir::homePath (),
+				tr ("iCalendar files (*.ics)"));
+
+		QFile file (filename);
+		file.open (QIODevice::ReadOnly);
+
+		ICalParser parser;
+		parser.Parse (file.readAll ());
 	}
 
 	void TodoTab::handleExport ()
