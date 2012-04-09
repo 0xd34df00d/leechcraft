@@ -21,6 +21,7 @@ SET (SRCS
 	todolistdelegate.cpp
 	todosfproxymodel.cpp
 	notificationsmanager.cpp
+	icalgenerator.cpp
 	)
 SET (HEADERS
 	otlozhu.h
@@ -34,6 +35,7 @@ SET (HEADERS
 	todolistdelegate.h
 	todosfproxymodel.h
 	notificationsmanager.h
+	icalgenerator.h
 	)
 SET (FORMS
 	todotab.ui
