@@ -22,6 +22,7 @@ SET (SRCS
 	todosfproxymodel.cpp
 	notificationsmanager.cpp
 	icalgenerator.cpp
+	icalparser.cpp
 	)
 SET (HEADERS
 	otlozhu.h
@@ -36,6 +37,7 @@ SET (HEADERS
 	todosfproxymodel.h
 	notificationsmanager.h
 	icalgenerator.h
+	icalparser.h
 	)
 SET (FORMS
 	todotab.ui
