@@ -29,6 +29,7 @@ namespace Otlozhu
 	namespace
 	{
 		typedef boost::variant<std::string> FieldVal_t;
+		typedef boost::optional<FieldVal_t> MaybeFieldVal_t;
 		struct Field
 		{
 			std::string Name_;
@@ -40,6 +41,16 @@ namespace Otlozhu
 		{
 			std::string Name_;
 			Fields_t Fields_;
+
+			boost::optional<FieldVal_t> operator[] (const std::string& fName) const
+			{
+				auto pos = std::find_if (Fields_.begin (), Fields_.end (),
+						[&fName] (decltype (Fields_.front ())& field) { return field.Name_ == fName; });
+				if (pos == Fields_.end ())
+					return boost::optional<FieldVal_t> ();
+				else
+					return boost::optional<FieldVal_t> (pos->Val_);
+			}
 		};
 		typedef std::vector<Item> Items_t;
 
@@ -110,36 +121,84 @@ namespace Otlozhu
 						*Field_ >>
 						*Item_ >>
 						qi::lit ("END:VCALENDAR");
+				qi::on_error<qi::fail> (Start_,
+						std::cout << phoenix::val ("Error! Expecting") << qi::_4
+								<< phoenix::val (" here: \"") << phoenix::construct<std::string> (qi::_3, qi::_2)
+								<< phoenix::val ("\"") << std::endl);
 			}
 		};
 
 		template<typename Iter>
-		bool ParseImpl (Iter first, Iter last)
+		ICal ParseImpl (Iter first, Iter last)
 		{
 			ICal ical;
+			qi::parse (first, last, WICalParser<Iter> (), ical);
+			return ical;
+		}
 
-			auto before = first;
-			bool r = qi::parse (first, last, WICalParser<Iter> (), ical);
+		QString AsQString (const MaybeFieldVal_t& val)
+		{
+			if (!val)
+				return QString ();
+			return QString::fromUtf8 (boost::get<std::string> (*val).c_str ());
+		}
 
-			qDebug () << "parsed" << r << std::distance (before, first) << "bytes";
-			qDebug () << "ICAL:" << ical.Items_.size () << ical.Fields_.size ();
-			Q_FOREACH (auto field, ical.Fields_)
-				qDebug () << field.Name_.c_str ();
-			Q_FOREACH (auto item, ical.Items_)
+		QString AsQStrings (const std::vector<MaybeFieldVal_t>& vals)
+		{
+			QString res;
+			for (auto i = vals.begin (), end = vals.end (); i != end; ++i)
 			{
-				qDebug () << "ITEM:" << item.Name_.c_str ();
-				Q_FOREACH (auto field, item.Fields_)
-					qDebug () << field.Name_.c_str ();
+				res = AsQString (*i);
+				if (!res.isEmpty ())
+					break;
 			}
+			return res;
+		}
 
-			return true;
+		QDateTime AsQDateTime (const MaybeFieldVal_t& val)
+		{
+			const QString& fmtStr = "yyyyMMddTHHmmss";
+			const auto& str = AsQString (val).left (fmtStr.size ());
+			return QDateTime::fromString (str, fmtStr);
+		}
+
+		int AsInt (const MaybeFieldVal_t& val)
+		{
+			return AsQString (val).toInt ();
 		}
 	}
 
 	QList<TodoItem_ptr> ICalParser::Parse (QByteArray data)
 	{
-		ParseImpl (data.begin (), data.end ());
+		const auto& ical = ParseImpl (data.begin (), data.end ());
+
 		QList<TodoItem_ptr> result;
+
+		Q_FOREACH (const Item& item, ical.Items_)
+		{
+			if (item.Name_ != "VTODO")
+				continue;
+
+			const auto& id = item ["UID"];
+			if (!id)
+			{
+				qWarning () << Q_FUNC_INFO << "no UID";
+				continue;
+			}
+
+			TodoItem_ptr todo (new TodoItem (AsQString (id)));
+			todo->SetCreatedDate (AsQDateTime (item ["DTSTAMP"]));
+			todo->SetDueDate (AsQDateTime (item ["DUE"]));
+			todo->SetTitle (AsQStrings ({ item ["SUMMARY"], item ["DESCRIPTION"] }));
+			todo->SetComment (AsQStrings ({ item ["COMMENT"], item ["DESCRIPTION"] }));
+			todo->SetPercentage (AsInt (item ["PERCENT-COMPLETE"]));
+			result << todo;
+		}
+
+		qDebug () << Q_FUNC_INFO << result.size ();
+		Q_FOREACH (auto item, result)
+			qDebug () << item->GetTitle () << item->GetCreatedDate ();
+
 		return result;
 	}
 }
