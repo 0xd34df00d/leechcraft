@@ -24,6 +24,8 @@
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Otlozhu
 {
 	class TodoSFProxyModel;
@@ -58,8 +60,11 @@ namespace Otlozhu
 		void handleSetDueDateRequested ();
 		void handleSetCustomDueDateRequested ();
 		void handleQuickProgress ();
+
+		void handleExport ();
 	signals:
 		void removeTab (QWidget*);
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

@@ -90,6 +90,11 @@ namespace Otlozhu
 					SIGNAL (removeTab (QWidget*)),
 					this,
 					SIGNAL (removeTab (QWidget*)));
+
+			connect (tab,
+					SIGNAL (gotEntity (LeechCraft::Entity)),
+					this,
+					SIGNAL (gotEntity (LeechCraft::Entity)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO

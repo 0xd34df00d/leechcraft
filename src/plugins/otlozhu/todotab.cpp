@@ -21,6 +21,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QFileDialog>
 #include <util/util.h>
 #include <util/tags/tagscompleter.h>
 #include "core.h"
@@ -30,6 +31,7 @@
 #include "todolistdelegate.h"
 #include "storagemodel.h"
 #include "todosfproxymodel.h"
+#include "icalgenerator.h"
 
 namespace LeechCraft
 {
@@ -136,6 +138,16 @@ namespace Otlozhu
 		DueDateMenu_->addSeparator ();
 		DueDateMenu_->addAction (customDueDate);
 		Ui_.TodoTree_->addAction (DueDateMenu_->menuAction ());
+
+		Bar_->addSeparator ();
+
+		QAction *exportTodos = new QAction (tr ("Export"), this);
+		exportTodos->setProperty ("ActionIcon", "document-export");
+		connect (exportTodos,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleExport ()));
+		Bar_->addAction (exportTodos);
 	}
 
 	TodoTab::~TodoTab ()
@@ -266,6 +278,41 @@ namespace Otlozhu
 
 		const int perc = sender ()->property ("Otlozhu/Progress").toInt ();
 		ProxyModel_->setData (index, perc, StorageModel::Roles::ItemProgress);
+	}
+
+	void TodoTab::handleExport ()
+	{
+		const QString& filename = QFileDialog::getSaveFileName (this,
+				tr ("Todos export"),
+				QDir::homePath (),
+				tr ("iCalendar files (*.ics)"));
+
+		QFile file (filename);
+		if (!file.open (QIODevice::WriteOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open file"
+					<< filename
+					<< file.errorString ();
+			emit gotEntity (Util::MakeNotification ("Otlozhu",
+						tr ("Unable to export to %1: %2.")
+							.arg (filename)
+							.arg (file.errorString ()),
+						PCritical_));
+			return;
+		}
+
+		ICalGenerator gen;
+		auto storage = Core::Instance ().GetTodoManager ()->GetTodoStorage ();
+		for (int i = 0; i < storage->GetNumItems (); ++i)
+			gen << storage->GetItemAt (i);
+
+		file.write (gen ());
+
+		emit gotEntity (Util::MakeNotification ("Otlozhu",
+					tr ("Todo items were successfully exported to %1.")
+						.arg (QFileInfo (filename).fileName ()),
+					PInfo_));
 	}
 }
 }
