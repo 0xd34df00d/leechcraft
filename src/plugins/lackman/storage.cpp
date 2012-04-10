@@ -1038,7 +1038,10 @@ namespace LackMan
 		QueryRemoveFromInstalled_.finish ();
 
 		if (GetPackageLocations (packageId).isEmpty ())
+		{
+			emit packageRemoved (packageId);
 			RemovePackage (packageId);
+		}
 	}
 
 	void Storage::InitTables ()
