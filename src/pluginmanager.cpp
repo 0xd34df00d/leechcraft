@@ -46,6 +46,7 @@ namespace LeechCraft
 	PluginManager::PluginManager (const QStringList& pluginPaths, QObject *parent)
 	: QAbstractItemModel (parent)
 	, DefaultPluginIcon_ (QIcon (":/resources/images/defaultpluginicon.svg"))
+	, IconsDir_ (Util::CreateIfNotExists ("core/pluginicons"))
 	, PluginTreeBuilder_ (new PluginTreeBuilder)
 	{
 		Headers_ << tr ("Name")
@@ -119,17 +120,10 @@ namespace LeechCraft
 						}
 					case Qt::DecorationRole:
 						{
-							QSettings settings (QCoreApplication::organizationName (),
-									QCoreApplication::applicationName () + "-pg");
-							settings.beginGroup ("Plugins");
-							settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
-							QVariant result = settings.value ("Icon");
-							settings.endGroup ();
-							settings.endGroup ();
-							if (result.value<QIcon> ().isNull () &&
-									result.value<QPixmap> ().isNull ())
-								result = DefaultPluginIcon_;
-							return result;
+							const auto& path = AvailablePlugins_.at (index.row ())->fileName ();
+							const auto& fName = path.toUtf8 ().toBase64 ().replace ('/', '_');
+							const auto& res = QPixmap (QString (IconsDir_.absoluteFilePath (fName)));
+							return res.isNull () ? DefaultPluginIcon_ : res;
 						}
 					case Qt::CheckStateRole:
 						{
@@ -844,8 +838,11 @@ namespace LeechCraft
 			settings.beginGroup (loader->fileName ());
 			settings.setValue ("Name", name);
 			settings.setValue ("Info", pinfo);
-			settings.setValue ("Icon", icon.pixmap (48, 48));
+			settings.remove ("Icon");
 			settings.endGroup ();
+
+			const auto& path = loader->fileName ().toUtf8 ().toBase64 ().replace ('/', '_');
+			icon.pixmap (48, 48).save (IconsDir_.absoluteFilePath (path), "PNG", 100);
 		}
 
 		settings.endGroup ();
