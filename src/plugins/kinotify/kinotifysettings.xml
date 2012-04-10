@@ -6,8 +6,8 @@
 			<label value="Style" />
 			<item type="combobox" property="NotificatorStyle" mayHaveDataSource="true">
 				<label value="Notificator style:" />
-				<option name="Adaptive" default="true">
-					<label value="Adaptive" />
+				<option name="Commie" default="true">
+					<label value="Commie" />
 				</option>
 			</item>
 		</groupbox>
