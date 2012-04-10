@@ -631,6 +631,15 @@ namespace Xoox
 	void EntryBase::SetDiscoIdentities (const QString& variant, const QList<QXmppDiscoveryIq::Identity>& ids)
 	{
 		Variant2Identities_ [variant] = ids;
+
+		const QString& name = ids.value (0).name ();
+		if (name.contains ("Kopete"))
+		{
+			Variant2ClientInfo_ [variant] ["client_type"] = "kopete";
+			Variant2ClientInfo_ [variant] ["client_name"] = "Kopete";
+			Variant2ClientInfo_ [variant] ["raw_client_name"] = "kopete";
+			emit statusChanged (GetStatus (variant), variant);
+		}
 	}
 
 	GeolocationInfo_t EntryBase::GetGeolocationInfo (const QString& variant) const
