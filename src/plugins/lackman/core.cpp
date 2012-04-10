@@ -1155,24 +1155,21 @@ namespace LackMan
 
 			QStringList versions = pInfo.Versions_;
 			std::sort (versions.begin (), versions.end (), IsVersionLess);
-			QString greatest = versions.last ();
+			const auto& greatest = versions.last ();
 
-			Q_FOREACH (const QString& version, pInfo.Versions_)
+			Q_FOREACH (const auto& version, pInfo.Versions_)
 			{
-				int packageId =
-						Storage_->FindPackage (pInfo.Name_, version);
+				const int packageId = Storage_->FindPackage (pInfo.Name_, version);
 				Storage_->AddLocation (packageId, componentId);
 
 				if (version == greatest)
 				{
-					QString existing = PackagesModel_->
-							FindPackage (pInfo.Name_).Version_;
+					const auto& existing = PackagesModel_->FindPackage (pInfo.Name_).Version_;
 					if (existing.isEmpty ())
-						PackagesModel_->AddRow (Storage_->
-								GetSingleListPackageInfo (packageId));
+						PackagesModel_->AddRow (Storage_->GetSingleListPackageInfo (packageId));
 					else if (IsVersionLess (existing, greatest))
 					{
-						ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
+						auto info = Storage_->GetSingleListPackageInfo (packageId);
 						info.HasNewVersion_ = info.IsInstalled_;
 						PackagesModel_->UpdateRow (info);
 					}
