@@ -52,6 +52,17 @@ namespace Otlozhu
 		return clone;
 	}
 
+	void TodoItem::CopyFrom (const TodoItem_ptr item)
+	{
+		Title_ = item->Title_;
+		Comment_ = item->Comment_;
+		TagIDs_ = item->TagIDs_;
+		Created_ = item->Created_;
+		Due_ = item->Due_;
+		Percentage_ = item->Percentage_;
+		Deps_ = item->Deps_;
+	}
+
 	TodoItem_ptr TodoItem::Deserialize (const QByteArray& data)
 	{
 		QDataStream str (data);
