@@ -727,15 +727,15 @@ namespace LackMan
 				}
 			}
 
-		Q_FOREACH (QString packageName, PackageName2NewVersions_.keys ())
+		Q_FOREACH (const QString& packageName, PackageName2NewVersions_.keys ())
 		{
-			QUrl packageUrl = repoUrl;
-			QString normalized = NormalizePackageName (packageName);
+			auto packageUrl = repoUrl;
+			const QString& normalized = NormalizePackageName (packageName);
 			packageUrl.setPath (packageUrl.path () +
 					"/dists/" + component + "/all" +
 					'/' + normalized +
 					'/');
-			RepoInfoFetcher_->FetchPackageInfo (packageUrl,
+			RepoInfoFetcher_->ScheduleFetchPackageInfo (packageUrl,
 					packageName,
 					PackageName2NewVersions_ [packageName],
 					componentId);

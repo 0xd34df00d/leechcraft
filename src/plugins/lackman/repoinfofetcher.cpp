@@ -20,6 +20,7 @@
 #include <util/util.h>
 #include "core.h"
 #include "xmlparsers.h"
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -141,6 +142,27 @@ namespace LackMan
 				Qt::UniqueConnection);
 	}
 
+	void RepoInfoFetcher::ScheduleFetchPackageInfo (const QUrl& url,
+			const QString& name,
+			const QList<QString>& newVers,
+			int componentId)
+	{
+		ScheduledPackageFetch f =
+		{
+			url,
+			name,
+			newVers,
+			componentId
+		};
+
+		if (ScheduledPackages_.isEmpty ())
+			QTimer::singleShot (0,
+					this,
+					SLOT (rotatePackageFetchQueue ()));
+
+		ScheduledPackages_ << f;
+	}
+
 	void RepoInfoFetcher::FetchPackageInfo (const QUrl& baseUrl,
 			const QString& packageName,
 			const QList<QString>& newVersions,
@@ -197,6 +219,18 @@ namespace LackMan
 				this,
 				SLOT (handlePackageError (int, IDownload::Error)),
 				Qt::UniqueConnection);
+	}
+
+	void RepoInfoFetcher::rotatePackageFetchQueue ()
+	{
+		if (ScheduledPackages_.isEmpty ())
+			return;
+
+		const auto& f = ScheduledPackages_.takeFirst ();
+		FetchPackageInfo (f.BaseUrl_, f.PackageName_, f.NewVersions_, f.ComponentId_);
+
+		if (!ScheduledPackages_.isEmpty ())
+			QTimer::singleShot (50, this, SLOT (rotatePackageFetchQueue ()));
 	}
 
 	void RepoInfoFetcher::handleRIFinished (int id)
