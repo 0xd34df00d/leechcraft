@@ -1210,25 +1210,6 @@ namespace LackMan
 						PCritical_));
 			}
 		}
-
-		Q_FOREACH (const Image& image, pInfo.Images_)
-			try
-			{
-				ExternalResourceManager_->
-						GetResourceData (QUrl::fromEncoded (image.URL_.toUtf8 ()));
-			}
-			catch (const std::runtime_error& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "error fetching"
-						<< image.URL_
-						<< e.what ();
-				emit gotEntity (Util::MakeNotification (tr ("Error retrieving image"),
-						tr ("Unable to retrieve image for package %1 from %2.")
-							.arg (pInfo.Name_)
-							.arg (image.URL_),
-						PCritical_));
-			}
 	}
 
 	void Core::handlePackageInstallError (int packageId, const QString& error)
