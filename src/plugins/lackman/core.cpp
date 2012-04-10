@@ -1109,12 +1109,12 @@ namespace LackMan
 				return;
 			}
 
+			const QString& ourVersion = psi.Versions_.at (0);
 			bool found = false;
 			Q_FOREACH (const PackageShortInfo& candidate, shortInfos)
 			{
-				if (candidate.Name_ != psi.Name_)
-					continue;
-				if (candidate.Versions_.contains (psi.Versions_.at (0)))
+				if (candidate.Name_ == psi.Name_ &&
+						candidate.Versions_.contains (ourVersion))
 				{
 					found = true;
 					break;
