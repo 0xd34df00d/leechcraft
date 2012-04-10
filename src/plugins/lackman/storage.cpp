@@ -362,30 +362,10 @@ namespace LackMan
 			throw std::runtime_error ("Requested component not found");
 		}
 
-		QSqlQuery idsSelector (DB_);
-		idsSelector.prepare ("SELECT DISTINCT package_id "
-				"FROM locations WHERE component_id = :component_id");
-		idsSelector.bindValue (":component_id", compId);
-		if (!idsSelector.exec ())
-		{
-			Util::DBLock::DumpError (idsSelector);
-			throw std::runtime_error ("Fetching of possibly affected packages failed.");
-		}
-
-		QList<int> possiblyAffected;
-		while (idsSelector.next ())
-			possiblyAffected << idsSelector.value (0).toInt ();
-
-		idsSelector.finish ();
+		const auto& packs = QSet<int>::fromList (GetPackagesInComponent (compId));
+		const auto& toRemove = packs - GetInstalledPackagesIDs ();
 
 		QSqlQuery remover (DB_);
-		remover.prepare ("DELETE FROM locations WHERE component_id = :component_id;");
-		remover.bindValue (":component_id", compId);
-		if (!remover.exec ())
-		{
-			Util::DBLock::DumpError (remover);
-			throw std::runtime_error ("Unable to remove component from locations.");
-		}
 		remover.prepare ("DELETE FROM components WHERE component_id = :component_id;");
 		remover.bindValue (":component_id", compId);
 		if (!remover.exec ())
@@ -393,32 +373,10 @@ namespace LackMan
 			Util::DBLock::DumpError (remover);
 			throw std::runtime_error ("Unable to remove component from components.");
 		}
-
 		remover.finish ();
 
-		QSqlQuery checker (DB_);
-		checker.prepare ("SELECT COUNT (package_id) FROM locations WHERE package_id = :package_id;");
-		Q_FOREACH (int packageId, possiblyAffected)
+		Q_FOREACH (int packageId, toRemove)
 		{
-			checker.bindValue (":package_id", packageId);
-			if (!checker.exec ())
-			{
-				Util::DBLock::DumpError (checker);
-				throw std::runtime_error ("Unable to remove check affected.");
-			}
-
-			if (!checker.next ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "zarroo rows";
-				throw std::runtime_error ("Unable to move to the next row");
-			}
-
-			if (checker.value (0).toInt ())
-				continue;
-
-			checker.finish ();
-
 			emit packageRemoved (packageId);
 
 			remover.prepare ("DELETE FROM packages WHERE package_id = :package_id;");
