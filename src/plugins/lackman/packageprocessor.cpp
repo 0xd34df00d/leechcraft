@@ -349,8 +349,8 @@ namespace LackMan
 			<< "-ttar"
 			<< "-si";
 
-		QString outDirArg("-o");
-		outDirArg.append(dirname);
+		QString outDirArg ("-o");
+		outDirArg.append (dirname);
 		args << outDirArg;
 
 		QProcess *firstStep = new QProcess (unarch);
