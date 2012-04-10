@@ -597,7 +597,7 @@ namespace LackMan
 		QueryClearPackageInfos_.bindValue (":name", pInfo.Name_);
 		if (!QueryClearPackageInfos_.exec ())
 		{
-			Util::DBLock::DumpError (QueryAddPackage_);
+			Util::DBLock::DumpError (QueryClearPackageInfos_);
 			throw std::runtime_error ("Query execution failed");
 		}
 		QueryClearPackageInfos_.finish ();
