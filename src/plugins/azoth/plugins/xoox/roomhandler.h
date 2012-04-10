@@ -51,6 +51,7 @@ namespace Xoox
 		QString Subject_;
 		// contains new nicks
 		QSet<QString> PendingNickChanges_;
+		bool HadRequestedPassword_;
 
 		QXmppDiscoveryIq ServerDisco_;
 	public:
@@ -118,6 +119,7 @@ namespace Xoox
 				const QString&);
 		void HandleNickConflict ();
 		void HandlePasswordRequired ();
+		QString GetPassKey () const;
 
 		void RemoveEntry (RoomParticipantEntry*);
 
