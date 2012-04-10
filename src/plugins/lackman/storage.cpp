@@ -566,19 +566,8 @@ namespace LackMan
 				throw std::runtime_error ("Query execution failed");
 			}
 
-			const qint64 size = pInfo.PackageSizes_.value (version, -1);
-			if (size == -1)
-				continue;
-
 			const int packageId = FindPackage (pInfo.Name_, version);
-
-			QueryAddPackageSize_.bindValue (":package_id", packageId);
-			QueryAddPackageSize_.bindValue (":size", size);
-			if (!QueryAddPackageSize_.exec ())
-			{
-				Util::DBLock::DumpError (QueryAddPackageSize_);
-				throw std::runtime_error ("Query execution failed");
-			}
+			qDebug () << Q_FUNC_INFO << pInfo.Name_ << version << packageId;
 
 			QueryAddPackageArchiver_.bindValue (":package_id", packageId);
 			QueryAddPackageArchiver_.bindValue (":archiver",
@@ -586,6 +575,18 @@ namespace LackMan
 			if (!QueryAddPackageArchiver_.exec ())
 			{
 				Util::DBLock::DumpError (QueryAddPackageArchiver_);
+				throw std::runtime_error ("Query execution failed");
+			}
+
+			const qint64 size = pInfo.PackageSizes_.value (version, -1);
+			if (size == -1)
+				continue;
+
+			QueryAddPackageSize_.bindValue (":package_id", packageId);
+			QueryAddPackageSize_.bindValue (":size", size);
+			if (!QueryAddPackageSize_.exec ())
+			{
+				Util::DBLock::DumpError (QueryAddPackageSize_);
 				throw std::runtime_error ("Query execution failed");
 			}
 		}
