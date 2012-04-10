@@ -61,6 +61,11 @@ namespace Otlozhu
 		return Items_ [idx];
 	}
 
+	const QList<TodoItem_ptr>& TodoStorage::GetAllItems () const
+	{
+		return Items_;
+	}
+
 	void TodoStorage::HandleUpdated (TodoItem_ptr item)
 	{
 		const int pos = FindItem (item->GetID ());

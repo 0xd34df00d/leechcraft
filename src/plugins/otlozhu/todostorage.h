@@ -42,6 +42,8 @@ namespace Otlozhu
 
 		void AddItem (TodoItem_ptr);
 		TodoItem_ptr GetItemAt (int idx) const;
+		const QList<TodoItem_ptr>& GetAllItems () const;
+
 		void HandleUpdated (TodoItem_ptr);
 		void RemoveItem (const QString&);
 	private:
