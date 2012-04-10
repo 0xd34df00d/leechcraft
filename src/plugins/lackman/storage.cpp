@@ -378,16 +378,7 @@ namespace LackMan
 		Q_FOREACH (int packageId, toRemove)
 		{
 			emit packageRemoved (packageId);
-
-			remover.prepare ("DELETE FROM packages WHERE package_id = :package_id;");
-			remover.bindValue (":package_id", packageId);
-			if (!remover.exec ())
-			{
-				Util::DBLock::DumpError (remover);
-				throw std::runtime_error ("Unable to remove orphaned package.");
-			}
-
-			remover.finish ();
+			RemovePackage (packageId);
 		}
 
 		lock.Good ();
