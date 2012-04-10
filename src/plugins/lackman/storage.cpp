@@ -121,7 +121,7 @@ namespace LackMan
 		return value;
 	}
 
-	InstalledDependencyInfoList Storage::GetInstalledPackages ()
+	QSet<int> Storage::GetInstalledPackagesIDs ()
 	{
 		if (!QueryGetInstalledPackages_.exec ())
 		{
@@ -129,20 +129,28 @@ namespace LackMan
 			throw std::runtime_error ("Query execution failed.");
 		}
 
+		QSet<int> result;
+		while (QueryGetInstalledPackages_.next ())
+			result << QueryGetInstalledPackages_.value (0).toInt ();
+		return result;
+	}
+
+	InstalledDependencyInfoList Storage::GetInstalledPackages ()
+	{
 		InstalledDependencyInfoList result;
 
-		while (QueryGetInstalledPackages_.next ())
+		Q_FOREACH (int id, GetInstalledPackagesIDs ())
 		{
 			PackageShortInfo psi;
 			try
 			{
-				psi = GetPackage (QueryGetInstalledPackages_.value (0).toInt ());
+				psi = GetPackage (id);
 			}
 			catch (const std::exception& e)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "unable to get installed package info"
-						<< QueryGetInstalledPackages_.value (0).toInt ()
+						<< id
 						<< e.what ();
 				continue;
 			}

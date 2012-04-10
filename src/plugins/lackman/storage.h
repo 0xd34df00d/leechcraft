@@ -84,6 +84,7 @@ namespace LackMan
 
 		int CountPackages (const QUrl& repoUrl);
 
+		QSet<int> GetInstalledPackagesIDs ();
 		InstalledDependencyInfoList GetInstalledPackages ();
 
 		int FindRepo (const QUrl& repoUrl);
