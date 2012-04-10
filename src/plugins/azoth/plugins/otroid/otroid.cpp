@@ -90,7 +90,7 @@ namespace OTRoid
 
 		OTRL_INIT;
 
-		OtrDir_ = Util::CreateIfNotExists (".leechcraft/azoth/otr/");
+		OtrDir_ = Util::CreateIfNotExists ("azoth/otr/");
 
 		UserState_ = otrl_userstate_create ();
 
