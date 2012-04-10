@@ -147,6 +147,10 @@ OPTION (ENABLE_KEYBOARDCRAFT "Build KeyboardCraft, a keyboard plugin" OFF)
 OPTION (ENABLE_XPROXY "Build XProxy, the advanced proxy manager" ${WITH_PLUGINS})
 OPTION (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
 
+IF (WIN32)
+	OPTION (ENABLE_Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS})
+ENDIF (WIN32)
+
 # Defunct
 OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" OFF)
 OPTION (ENABLE_FTP "Build LCFTP, the FTP client" OFF)
@@ -378,6 +382,12 @@ ENDIF (ENABLE_XPROXY)
 IF (ENABLE_DOLOZHEE)
 	ADD_SUBDIRECTORY (plugins/dolozhee)
 ENDIF (ENABLE_DOLOZHEE)
+
+IF (WIN32)
+	IF (ENABLE_Y7)
+		ADD_SUBDIRECTORY (plugins/y7)
+	ENDIF (ENABLE_Y7)
+ENDIF (WIN32)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
