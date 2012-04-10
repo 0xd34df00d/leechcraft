@@ -92,6 +92,9 @@ namespace LackMan
 						.arg (DB_.lastError ().text ())));
 		}
 
+		QSqlQuery query (DB_);
+		query.exec ("PRAGMA foreign_keys = ON;");
+
 		InitTables ();
 		InitQueries ();
 	}
@@ -1221,7 +1224,7 @@ namespace LackMan
 				"VALUES (:package_id, :name, :version, :type);");
 
 		QueryGetPackagesInComponent_ = QSqlQuery (DB_);
-		QueryGetPackagesInComponent_.prepare ("SELECT package_id FROM locations WHERE component_id = :component_id;");
+		QueryGetPackagesInComponent_.prepare ("SELECT DISTINCT package_id FROM locations WHERE component_id = :component_id;");
 
 		QueryGetListPackageInfos_ = QSqlQuery (DB_);
 		QueryGetListPackageInfos_.prepare ("SELECT DISTINCT packages.package_id, packages.name, packages.version, "
