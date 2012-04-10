@@ -502,7 +502,7 @@ namespace LackMan
 			throw;
 		}
 
-		QString name = GetPackage (packageId).Name_;
+		const auto& name = GetPackage (packageId).Name_;
 
 		QueryClearTags_.bindValue (":name", name);
 		if (!QueryClearTags_.exec ())
@@ -522,13 +522,6 @@ namespace LackMan
 		if (!QueryClearImages_.exec ())
 		{
 			Util::DBLock::DumpError (QueryClearImages_);
-			throw std::runtime_error ("Query execution failed");
-		}
-
-		QueryRemovePackageFromLocations_.bindValue (":package_id", packageId);
-		if (!QueryRemovePackageFromLocations_.exec ())
-		{
-			Util::DBLock::DumpError (QueryRemovePackageFromLocations_);
 			throw std::runtime_error ("Query execution failed");
 		}
 
