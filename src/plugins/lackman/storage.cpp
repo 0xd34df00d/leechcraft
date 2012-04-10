@@ -94,6 +94,7 @@ namespace LackMan
 
 		QSqlQuery query (DB_);
 		query.exec ("PRAGMA foreign_keys = ON;");
+		query.exec ("PRAGMA synchronous = OFF;");
 
 		InitTables ();
 		InitQueries ();
