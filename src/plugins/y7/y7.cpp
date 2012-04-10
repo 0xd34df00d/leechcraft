@@ -57,5 +57,5 @@ namespace Y7
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_y7, LeechCraft::Y7::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_y7, LeechCraft::Y7::Plugin);
 
