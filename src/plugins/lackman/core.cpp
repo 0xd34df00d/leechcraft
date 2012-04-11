@@ -727,6 +727,13 @@ namespace LackMan
 					PackageName2NewVersions_ [packageName],
 					componentId);
 		}
+
+		if (newPackages)
+			emit gotEntity (Util::MakeNotification (tr ("Repositories updated"),
+					tr ("Got %n new or updated packages, "
+						"open LackMan tab to view them.",
+						0, newPackages),
+					PInfo_));
 	}
 
 	void Core::PerformRemoval (int packageId)
