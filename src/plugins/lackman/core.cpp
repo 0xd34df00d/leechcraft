@@ -1074,14 +1074,16 @@ namespace LackMan
 		}
 
 		QList<int> presentPackages;
+		QSet<int> installedPackages;
 		try
 		{
 			presentPackages = Storage_->GetPackagesInComponent (componentId);
+			installedPackages = Storage_->GetInstalledPackagesIDs ();
 		}
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to get present packages in component:"
+					<< "unable to get installed or present packages in component:"
 					<< e.what ();
 			emit gotEntity (Util::MakeNotification (tr ("Error handling component"),
 					tr ("Unable to load packages already present in the component %1.")
@@ -1125,7 +1127,10 @@ namespace LackMan
 			{
 				try
 				{
-					Storage_->RemovePackage (presentPId);
+					Storage_->RemoveLocation (presentPId, componentId);
+
+					if (!installedPackages.contains (presentPId))
+						Storage_->RemovePackage (presentPId);
 				}
 				catch (const std::exception& e)
 				{
