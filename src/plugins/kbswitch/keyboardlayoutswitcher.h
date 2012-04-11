@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2011  Oleg Linkin
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,23 +18,39 @@
 
 #pragma once
 
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include <QObject>
+#include <QHash>
 
 namespace LeechCraft
 {
-namespace KeyboardCraft
+namespace KBSwitch
 {
-	class XmlSettingsManager : public
-			LeechCraft::Util::BaseSettingsManager
+	class KeyboardLayoutSwitcher : public QObject
 	{
 		Q_OBJECT
 
-		XmlSettingsManager ();
+		enum class SwitchingPolicy
+		{
+			Global,
+			Plugin,
+			Tab
+		};
+
+		SwitchingPolicy CurrentSwitchingPloicy_;
+
+		QHash<QWidget*, int> Widget2KBLayoutIndex_;
+		QHash<QByteArray, int> TabClass2KBLayoutIndex_;
+
+		QWidget *LastCurrentWidget_;
 	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		KeyboardLayoutSwitcher (QObject *parent = 0);
+
+		bool IsGlobalPolicy () const;
+	public slots:
+		void updateKBLayouts (QWidget *current, QWidget *prev);
+	private slots:
+		void setSwitchingPolicy ();
+		void handleRemoveWidget (QWidget *widget);
 	};
 }
 }

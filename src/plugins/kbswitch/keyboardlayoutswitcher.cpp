@@ -30,7 +30,7 @@
 
 namespace LeechCraft
 {
-namespace KeyboardCraft
+namespace KBSwitch
 {
 	KeyboardLayoutSwitcher::KeyboardLayoutSwitcher (QObject *parent)
 	: QObject (parent)
