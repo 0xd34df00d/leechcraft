@@ -465,9 +465,9 @@ namespace LackMan
 
 	void Core::acceptPending ()
 	{
-		QSet<int> toInstall = PendingManager_->GetPendingInstall ();
-		QSet<int> toRemove = PendingManager_->GetPendingRemove ();
-		QSet<int> toUpdate = PendingManager_->GetPendingUpdate ();
+		const auto& toInstall = PendingManager_->GetPendingInstall ();
+		const auto& toRemove = PendingManager_->GetPendingRemove ();
+		const auto& toUpdate = PendingManager_->GetPendingUpdate ();
 
 		Q_FOREACH (int packageId, toRemove)
 			PerformRemoval (packageId);
@@ -770,7 +770,7 @@ namespace LackMan
 	{
 		try
 		{
-			ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
+			const auto& info = Storage_->GetSingleListPackageInfo (packageId);
 			PackagesModel_->UpdateRow (info);
 		}
 		catch (const std::exception& e)
