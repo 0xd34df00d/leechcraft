@@ -1258,7 +1258,7 @@ namespace LackMan
 
 		emit gotEntity (Util::MakeNotification (tr ("Package installed"),
 					tr ("Package %1 installed successfully.")
-						.arg (packageName),
+						.arg ("<em>" + packageName + "</em>"),
 					PInfo_));
 
 		emit packageRowActionFinished (GetPackageRow (packageId));
@@ -1289,7 +1289,7 @@ namespace LackMan
 
 		emit gotEntity (Util::MakeNotification (tr ("Package updated"),
 					tr ("Package %1 updated successfully.")
-						.arg (packageName),
+						.arg ("<em>" + packageName + "</em>"),
 					PInfo_));
 
 		emit packageRowActionFinished (GetPackageRow (packageId));
