@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Keyboard layout" />
+		<item type="combobox" property="SwitchingPolicy">
+			<label lang="en" value="Switching keyboard layout policy:" />
+			<option name="global" default="true">
+				<label lang="en" value="Use system layout" />
+			</option>
+			<option name="plugin">
+				<label lang="en" value="Keyboard layout per plugin" />
+			</option>
+			<option name="tab">
+				<label lang="en" value="Keyboard layout per tab" />
+			</option>
+		</item>
+	</page>
+</settings>
