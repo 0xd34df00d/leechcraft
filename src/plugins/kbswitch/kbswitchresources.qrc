@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/kbswitch" >
+    <file>resources/images/kbswitch.svg</file>
+  </qresource>
+</RCC>

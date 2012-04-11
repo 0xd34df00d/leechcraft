@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "keyboardcraft.h"
+#include "kbswitch.h"
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -25,13 +25,13 @@
 
 namespace LeechCraft
 {
-namespace KeyboardCraft
+namespace KBSwitch
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-				"keyboardcraftsettings.xml");
+				"kbswitchsettings.xml");
 
 		KBLayoutSwitcher_ = new KeyboardLayoutSwitcher (this);
 
@@ -48,7 +48,7 @@ namespace KeyboardCraft
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.KeyboardCraft";
+		return "org.LeechCraft.KBSwitch";
 	}
 
 	void Plugin::Release ()
@@ -57,7 +57,7 @@ namespace KeyboardCraft
 
 	QString Plugin::GetName () const
 	{
-		return "KeyboardCraft";
+		return "KBSwitch";
 	}
 
 	QString Plugin::GetInfo () const
@@ -67,7 +67,7 @@ namespace KeyboardCraft
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/keyboardcraft/resources/images/keyboardcraft.svg");
+		return QIcon (":/kbswitch/resources/images/kbswitch.svg");
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
@@ -87,4 +87,4 @@ namespace KeyboardCraft
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_keyboardcraft, LeechCraft::KeyboardCraft::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_kbswitch, LeechCraft::KBSwitch::Plugin);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2011  Oleg Linkin
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,33 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QCoreApplication>
+#pragma once
+
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/core/icoretabwidget.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
-namespace KeyboardCraft
+namespace KBSwitch
 {
-	XmlSettingsManager::XmlSettingsManager ()
-	: Util::BaseSettingsManager (true)
-	{
-		Util::BaseSettingsManager::Init ();
-	}
+	class KeyboardLayoutSwitcher;
 
-	XmlSettingsManager& XmlSettingsManager::Instance ()
+	class Plugin : public QObject
+				, public IInfo
+				, public IHaveSettings
 	{
-		static XmlSettingsManager xsm;
-		return xsm;
-	}
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveSettings)
 
-	QSettings* XmlSettingsManager::BeginSettings () const
-	{
-		return new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_KeyboardCraft");
-	}
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		ICoreTabWidget *MainTabWidget_;
 
-	void XmlSettingsManager::EndSettings (QSettings*) const
-	{
-	}
+		KeyboardLayoutSwitcher *KBLayoutSwitcher_;
+	public:
+		void Init (ICoreProxy_ptr proxy);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	private slots:
+		void handleCurrentChanged (int index);
+	};
 }
 }

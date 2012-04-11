@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_keyboardcraft)
+PROJECT (leechcraft_kbswitch)
 INCLUDE (InitLCPlugin OPTIONAL)
 
 SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -11,30 +11,30 @@ INCLUDE_DIRECTORIES (
 	)
 
 SET (SRCS
-	keyboardcraft.cpp
+	kbswitch.cpp
 	keyboardlayoutswitcher.cpp
 	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
-	keyboardcraft.h
+	kbswitch.h
 	keyboardlayoutswitcher.h
 	xmlsettingsmanager.h
 	)
-SET (RESOURCES keyboardcraftresources.qrc)
+SET (RESOURCES kbswitchresources.qrc)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_keyboardcraft SHARED
+ADD_LIBRARY (leechcraft_kbswitch SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_keyboardcraft
+TARGET_LINK_LIBRARIES (leechcraft_kbswitch
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_keyboardcraft DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES keyboardcraftsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+INSTALL (TARGETS leechcraft_kbswitch DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES kbswitchsettings.xml DESTINATION ${LC_SETTINGS_DEST})
