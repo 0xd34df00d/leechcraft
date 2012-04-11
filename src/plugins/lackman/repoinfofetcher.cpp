@@ -252,7 +252,11 @@ namespace LackMan
 				SIGNAL (error (QProcess::ProcessError)),
 				this,
 				SLOT (handleUnarchError (QProcess::ProcessError)));
+#ifdef Q_OS_WIN32
+		unarch->start ("7za", QStringList ("e") << "-so" << name);
+#else
 		unarch->start ("gunzip", QStringList ("-c") << name);
+#endif
 	}
 
 	void RepoInfoFetcher::handleRIRemoved (int id)
@@ -298,7 +302,11 @@ namespace LackMan
 				SIGNAL (error (QProcess::ProcessError)),
 				this,
 				SLOT (handleUnarchError (QProcess::ProcessError)));
+#ifdef Q_OS_WIN32
+		unarch->start ("7za", QStringList ("e") << "-so" << pc.Location_);
+#else
 		unarch->start ("gunzip", QStringList ("-c") << pc.Location_);
+#endif
 	}
 
 	void RepoInfoFetcher::handleComponentRemoved (int id)
@@ -343,7 +351,11 @@ namespace LackMan
 				SIGNAL (error (QProcess::ProcessError)),
 				this,
 				SLOT (handleUnarchError (QProcess::ProcessError)));
+#ifdef Q_OS_WIN32
+		unarch->start ("7za", QStringList ("e") << "-so" << pp.Location_);
+#else
 		unarch->start ("gunzip", QStringList ("-c") << pp.Location_);
+#endif
 	}
 
 	void RepoInfoFetcher::handlePackageRemoved (int id)
@@ -500,6 +512,12 @@ namespace LackMan
 				<< "with"
 				<< error
 				<< qobject_cast<QProcess*> (sender ())->readAllStandardError ();
+		emit gotEntity (Util::MakeNotification (tr ("Component unpack error"),
+					tr ("Unable to unpack file. Exit code: %1. "
+						"Problematic file is at %2.")
+						.arg (error)
+						.arg (sender ()->property ("Filename").toString ()),
+					PCritical_));
 	}
 }
 }
