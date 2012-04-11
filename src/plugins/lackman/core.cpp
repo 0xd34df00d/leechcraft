@@ -660,6 +660,7 @@ namespace LackMan
 	{
 		QMap<QString, QList<QString>> PackageName2NewVersions_;
 
+		int newPackages = 0;
 		Q_FOREACH (const PackageShortInfo& info, shortInfos)
 			Q_FOREACH (const QString& version, info.Versions_)
 			{
@@ -683,24 +684,10 @@ namespace LackMan
 					return;
 				}
 
-				try
+				if (packageId == -1)
 				{
-					if (packageId == -1)
-						PackageName2NewVersions_ [info.Name_] << version;
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to get save package"
-							<< info.Name_
-							<< version
-							<< e.what ();
-					emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
-							tr ("Unable to save package `%1`-%2")
-								.arg (info.Name_)
-								.arg (version),
-							PCritical_));
-					return;
+					PackageName2NewVersions_ [info.Name_] << version;
+					++newPackages;
 				}
 
 				try
