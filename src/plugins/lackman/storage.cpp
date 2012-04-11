@@ -1016,6 +1016,19 @@ namespace LackMan
 		QueryAddLocation_.finish ();
 	}
 
+	void Storage::RemoveLocation (int packageId, int componentId)
+	{
+		QueryRemovePackageFromLocation_.bindValue (":package_id", packageId);
+		QueryRemovePackageFromLocation_.bindValue (":component_id", componentId);
+		if (!QueryRemovePackageFromLocation_.exec ())
+		{
+			Util::DBLock::DumpError (QueryRemovePackageFromLocation_);
+			throw std::runtime_error ("Query execution failed");
+		}
+
+		QueryRemovePackageFromLocation_.finish ();
+	}
+
 	void Storage::AddToInstalled (int packageId)
 	{
 		QueryAddToInstalled_.bindValue (":package_id", packageId);
@@ -1149,8 +1162,8 @@ namespace LackMan
 		QueryAddLocation_.prepare ("INSERT INTO locations (package_id, component_id) "
 				"VALUES (:package_id, :component_id);");
 
-		QueryRemovePackageFromLocations_ = QSqlQuery (DB_);
-		QueryRemovePackageFromLocations_.prepare ("DELETE FROM locations WHERE package_id = :package_id;");
+		QueryRemovePackageFromLocation_ = QSqlQuery (DB_);
+		QueryRemovePackageFromLocation_.prepare ("DELETE FROM locations WHERE package_id = :package_id AND component_id = :component_id;");
 
 		QueryClearTags_ = QSqlQuery (DB_);
 		QueryClearTags_.prepare ("DELETE FROM tags WHERE name = :name;");
