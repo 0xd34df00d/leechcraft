@@ -381,6 +381,7 @@ namespace Xoox
 				ODSEntries_ [jid] = entry;
 				entry->Convert2ODS ();
 			}
+			SelfContact_->RemoveVariant (OurResource_);
 		}
 	}
 
