@@ -200,7 +200,12 @@
 				<label value="Notify remote participant when you've ended conversation" />
 			</item>
 			<item type="checkbox" property="UseAltNick" default="true">
-				<label value="Use alternative nickname" />
+				<label value="Modify nick on conflicts in chat rooms" />
+				<tooltip>If enabled, the a string would be appended to your nick according to the next option. If disabled, nothing would happen.</tooltip>
+			</item>
+			<item type="lineedit" property="AlternativeNickname" default="_azoth">
+				<label value="Nick suffix to append on nick conflict in chat rooms:" />
+				<tooltip>This string would be appended to the nick you've chosen if another chat room participant already uses your nick.</tooltip>
 			</item>
 			<item type="combobox" property="EntryActivationType">
 				<label value="Entry activates on:" />
@@ -228,9 +233,6 @@
 			</item>
 			<item type="spinbox" property="ShowLastNMessages" default="10" minimum="0" maximum="50">
 				<label value="Load at most messages from history:" />
-			</item>
-			<item type="lineedit" property="AlternativeNickname">
-				<label value="Alternative nickname for chat rooms:" />
 			</item>
 			<item type="path" property="DefaultXferSavePath" default="{DOCUMENTS}/Downloads">
 				<label value="Default file transfers save path:" />

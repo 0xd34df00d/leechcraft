@@ -2491,10 +2491,11 @@ namespace Azoth
 		QString altNick;
 		if (XmlSettingsManager::Instance ().property ("UseAltNick").toBool ())
 		{
-			altNick = XmlSettingsManager::Instance ()
+			QString append = XmlSettingsManager::Instance ()
 				.property ("AlternativeNickname").toString ();
-			if (altNick.isEmpty ())
-				altNick = usedNick + "_azoth";
+			if (append.isEmpty ())
+				append = "_azoth";
+			altNick = usedNick + append;
 		}
 
 		if ((altNick.isEmpty () || altNick == usedNick) &&
