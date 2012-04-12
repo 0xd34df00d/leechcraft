@@ -326,6 +326,7 @@ namespace Xoox
 		void serverAuthFailed ();
 		void needPassword ();
 		void statusChanged (const EntryStatus&);
+		void resetClientConnection ();
 	};
 }
 }
