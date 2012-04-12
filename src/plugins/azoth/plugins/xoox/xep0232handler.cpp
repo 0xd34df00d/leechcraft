@@ -82,14 +82,20 @@ namespace XEP0232Handler
 		typeField.setValue (SWInfoFormType);
 		fields << typeField;
 
-		QXmppDataForm::Field iconField;
-		iconField.setKey ("icon");
-		QXmppDataForm::Media media (si.IconHeight_, si.IconWidth_);
-		QList<QPair<QString, QString>> uris;
-		uris << qMakePair<QString, QString> (si.IconType_, si.IconCID_);
-		uris << qMakePair<QString, QString> (si.IconType_, si.IconURL_.toEncoded ());
-		media.setUris (uris);
-		iconField.setMedia (media);
+		if (si.IconURL_.isValid ())
+		{
+			QXmppDataForm::Field iconField;
+			iconField.setKey ("icon");
+			QXmppDataForm::Media media (si.IconHeight_, si.IconWidth_);
+			QList<QPair<QString, QString>> uris;
+			if (!si.IconCID_.isEmpty ())
+				uris << qMakePair (si.IconType_, si.IconCID_);
+			uris << qMakePair (si.IconType_, QString (si.IconURL_.toEncoded ()));
+			media.setUris (uris);
+			iconField.setMedia (media);
+
+			fields << iconField;
+		}
 
 		auto setStr = [&fields] (const QString& key, const QString& val)
 		{
