@@ -1189,6 +1189,11 @@ namespace Xoox
 		}
 		else
 		{
+			Q_FOREACH (const auto& extension, msg.extensions ())
+				if (extension.tagName () == "x" &&
+						extension.attribute ("xmlns") == "jabber:x:conference")
+					return;
+
 			qWarning () << Q_FUNC_INFO
 					<< "could not find source for"
 					<< msg.from ()
