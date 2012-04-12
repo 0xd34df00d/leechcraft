@@ -38,6 +38,7 @@
 #include <QXmppCallManager.h>
 #include <util/util.h>
 #include <util/socketerrorstrings.h>
+#include <util/sysinfo.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -72,6 +73,7 @@
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
+#include "xep0232handler.h"
 #endif
 
 namespace LeechCraft
@@ -189,10 +191,25 @@ namespace Xoox
 
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
 
-		Client_->versionManager ().setClientName ("LeechCraft Azoth");
-		Client_->versionManager ().setClientVersion (Core::Instance ()
-					.GetProxy ()->GetVersion ());
-		Client_->versionManager ().setClientOs (ProxyObject_->GetOSName ());
+		const auto& sysInfo = Util::SysInfo::GetOSNameSplit ();
+		auto& vm = Client_->versionManager ();
+		vm.setClientName ("LeechCraft Azoth");
+		vm.setClientVersion (Core::Instance ().GetProxy ()->GetVersion ());
+		vm.setClientOs (sysInfo.first + ' ' + sysInfo.second);
+
+		XEP0232Handler::SoftwareInformation si =
+		{
+			64,
+			64,
+			QUrl ("http://leechcraft.org/leechcraft.png"),
+			QString (),
+			"image/png",
+			sysInfo.first,
+			sysInfo.second,
+			vm.clientName (),
+			vm.clientVersion ()
+		};
+		DiscoveryManager_->setInfoForm (XEP0232Handler::ToDataForm (si));
 
 		connect (Client_,
 				SIGNAL (connected ()),
