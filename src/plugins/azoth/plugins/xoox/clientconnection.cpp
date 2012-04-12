@@ -330,6 +330,15 @@ namespace Xoox
 				state.State_ == SOffline)
 			Client_->setClientPresence (pres);
 
+		if (state.State_ == SOffline &&
+				!IsConnected_ &&
+				!FirstTimeConnect_)
+		{
+			emit statusChanged (EntryStatus (SOffline, state.Status_));
+			emit resetClientConnection ();
+			return;
+		}
+
 		if (presType != QXmppPresence::Unavailable)
 			Q_FOREACH (RoomHandler *rh, RoomHandlers_)
 				rh->SetState (state);
