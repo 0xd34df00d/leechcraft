@@ -19,6 +19,7 @@
 #ifndef UTIL_SYSINFO_H
 #define UTIL_SYSINFO_H
 #include "utilconfig.h"
+#include <QPair>
 
 class QString;
 
@@ -29,6 +30,7 @@ namespace Util
 namespace SysInfo
 {
 	UTIL_API QString GetOSName ();
+	UTIL_API QPair<QString, QString> GetOSNameSplit ();
 }
 }
 }

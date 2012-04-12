@@ -34,43 +34,51 @@ namespace SysInfo
 {
 	QString GetOSName ()
 	{
+		const auto& pair = GetOSNameSplit ();
+		return pair.first + ' ' + pair.second;
+	}
+
+	QPair<QString, QString> GetOSNameSplit ()
+	{
 #if defined(Q_OS_MAC)
 		QSysInfo::MacVersion v = QSysInfo::MacintoshVersion;
 		if (v == QSysInfo::MV_10_3)
-			return "Mac OS X 10.3";
+			return qMakePair ("Mac OS X", "10.3");
 		else if(v == QSysInfo::MV_10_4)
-			return "Mac OS X 10.4";
+			return qMakePair ("Mac OS X", "10.4");
 		else if(v == QSysInfo::MV_10_5)
-			return "Mac OS X 10.5";
+			return qMakePair ("Mac OS X", "10.5");
 		else if(v == QSysInfo::MV_10_6)
-			return "Mac OS X 10.6";
+			return qMakePair ("Mac OS X", "10.6");
 		else
-			return "Mac OS X";
+			return qMakePair ("Mac OS X", "Unknown version");
 #elif defined(Q_OS_WIN32)
 		QSysInfo::WinVersion v = QSysInfo::WindowsVersion;
 		if (v == QSysInfo::WV_95)
-			return "Windows 95";
+			return qMakePair ("Windows", "95");
 		else if (v == QSysInfo::WV_98)
-			return "Windows 98";
+			return qMakePair ("Windows", "98");
 		else if (v == QSysInfo::WV_Me)
-			return "Windows Me";
+			return qMakePair ("Windows", "Me");
 		else if (v == QSysInfo::WV_DOS_based)
-			return "Windows 9x/Me";
+			return qMakePair ("Windows", "9x/Me");
 		else if (v == QSysInfo::WV_NT)
-			return "Windows NT 4.x";
+			return qMakePair ("Windows", "NT 4.x");
 		else if (v == QSysInfo::WV_2000)
-			return "Windows 2000";
+			return qMakePair ("Windows", "2000");
 		else if (v == QSysInfo::WV_XP)
-			return "Windows XP";
+			return qMakePair ("Windows", "XP");
 		else if (v == QSysInfo::WV_2003)
-			return "Windows Server 2003";
+			return qMakePair ("Windows", "2003");
 		else if (v == QSysInfo::WV_VISTA)
-			return "Windows Vista";
+			return qMakePair ("Windows", "Vista");
 		else if (v == QSysInfo::WV_WINDOWS7)
-			return "Windows 7";
+			return qMakePair ("Windows", "7");
 		else if (v == QSysInfo::WV_NT_based)
-			return "Windows NT";
+			return qMakePair ("Windows", "NT-based");
 #else
+		QString osName;
+
 		QProcess proc;
 		proc.start (QString ("/bin/sh"),
 					QStringList ("-c") << "lsb_release -ds", QIODevice::ReadOnly);
@@ -82,57 +90,60 @@ namespace SysInfo
 				ret += stream.readAll ();
 			proc.close ();
 			if (!ret.isEmpty ())
-				return ret.remove ('"').trimmed ();
+				osName = ret.remove ('"').trimmed ();
 		}
 
-		struct OsInfo_t
+		if (osName.isEmpty ())
 		{
-			QString path;
-			QString name;
-		} OsInfo [] =
-		{
-			{ "/etc/mandrake-release", "Mandrake Linux" },
-			{ "/etc/debian_version", "Debian GNU/Linux" },
-			{ "/etc/gentoo-release", "Gentoo Linux" },
-			{ "/etc/exherbo-release", "Exherbo" },
-			{ "/etc/arch-release", "Arch Linux" },
-			{ "/etc/slackware-version", "Slackware Linux" },
-			{ "/etc/pld-release", "" },
-			{ "/etc/lfs-release", "LFS" },
-			{ "/etc/SuSE-release", "SuSE linux" },
-			{ "/etc/conectiva-release", "Connectiva" },
-			{ "/etc/.installed", "" },
-			{ "/etc/redhat-release", "" },
-			{ "", "" }
-		};
-		OsInfo_t *osptr = OsInfo;
-		while (!osptr->path.isEmpty ())
-		{
-			QFileInfo fi (osptr->path);
-			if (fi.exists ())
+			struct OsInfo_t
 			{
-				QFile f (osptr->path);
-				f.open (QIODevice::ReadOnly);
-				QString data = QString (f.read (1024)).trimmed ();
-				if (osptr->name.isEmpty ())
-					return data;
-				else
-					return QString ("%1 (%2)")
-							.arg (osptr->name)
-							.arg (data);
+				QString path;
+				QString name;
+			} OsInfo [] =
+			{
+				{ "/etc/mandrake-release", "Mandrake Linux" },
+				{ "/etc/debian_version", "Debian GNU/Linux" },
+				{ "/etc/gentoo-release", "Gentoo Linux" },
+				{ "/etc/exherbo-release", "Exherbo" },
+				{ "/etc/arch-release", "Arch Linux" },
+				{ "/etc/slackware-version", "Slackware Linux" },
+				{ "/etc/pld-release", "" },
+				{ "/etc/lfs-release", "LFS" },
+				{ "/etc/SuSE-release", "SuSE linux" },
+				{ "/etc/conectiva-release", "Connectiva" },
+				{ "/etc/.installed", "" },
+				{ "/etc/redhat-release", "" },
+				{ "", "" }
+			};
+			OsInfo_t *osptr = OsInfo;
+			while (!osptr->path.isEmpty ())
+			{
+				QFileInfo fi (osptr->path);
+				if (fi.exists ())
+				{
+					QFile f (osptr->path);
+					f.open (QIODevice::ReadOnly);
+					QString data = QString (f.read (1024)).trimmed ();
+					if (osptr->name.isEmpty ())
+						osName = data;
+					else
+						osName = QString ("%1 (%2)")
+								.arg (osptr->name)
+								.arg (data);
+					break;
+				}
+				++osptr;
 			}
-			++osptr;
 		}
+
 		utsname u;
 		uname (&u);
-		return QString ("%1 %2 %3 %4")
-			.arg (u.sysname)
-			.arg (u.machine)
-			.arg (u.release)
-			.arg (u.version);
+
+		return qMakePair (osName.isEmpty () ? QString (u.sysname) : osName,
+				QString ("%1 %2 %3").arg (u.machine, u.release, u.version));
 #endif
 
-		return "Unknown OS";
+		return qMakePair (QString ("Unknown OS"), QString ("Unknown version"));
 	}
 }
 }
