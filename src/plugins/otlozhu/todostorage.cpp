@@ -75,6 +75,7 @@ namespace Otlozhu
 		if (pos == -1)
 			return;
 
+		emit itemDiffGenerated (item->GetID (), item->DiffWith (Items_ [pos]));
 		Items_ [pos] = item;
 		emit itemUpdated (pos);
 		SaveAt (pos);

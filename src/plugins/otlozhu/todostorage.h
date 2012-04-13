@@ -54,6 +54,7 @@ namespace Otlozhu
 		void itemAdded (int);
 		void itemRemoved (int);
 		void itemUpdated (int);
+		void itemDiffGenerated (const QString&, const QVariantMap&);
 	};
 }
 }
