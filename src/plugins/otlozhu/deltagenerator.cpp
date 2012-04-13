@@ -184,10 +184,13 @@ namespace Otlozhu
 			switch (action)
 			{
 			case DeltaType::TodoCreated:
+				ApplyCreated (str);
 				break;
 			case DeltaType::TodoRemoved:
+				ApplyRemoved (str);
 				break;
 			case DeltaType::TodoUpdated:
+				ApplyUpdated (str);
 				break;
 			default:
 				qWarning () << Q_FUNC_INFO
