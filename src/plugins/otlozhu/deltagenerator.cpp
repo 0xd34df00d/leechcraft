@@ -206,8 +206,52 @@ namespace Otlozhu
 		Core::Instance ().GetTodoManager ()->GetTodoStorage ()->AddItem (item);
 	}
 
-	void DeltaGenerator::ApplyUpdated (QDataStream&)
+	void DeltaGenerator::ApplyUpdated (QDataStream& str)
 	{
+		QString id;
+		QVariantMap thatDiff;
+		str >> id >> thatDiff;
+
+		auto storage = Core::Instance ().GetTodoManager ()->GetTodoStorage ();
+		const int ourItemId = storage->FindItem (id);
+		if (ourItemId == -1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown item"
+					<< ourItemId;
+			return;
+		}
+		auto ourItem = storage->GetItemAt (ourItemId);
+
+		if (!Diffs_.contains (id) ||
+				Diffs_ [id] == thatDiff)
+		{
+			ourItem->ApplyDiff (thatDiff);
+			storage->HandleUpdated (ourItem);
+			Diffs_.remove (id);
+			return;
+		}
+
+		auto thatVersion = ourItem->Clone ();
+		thatVersion->ApplyDiff (thatDiff);
+
+		auto ourDiff = Diffs_ [id];
+		const auto& ourDate = ourDiff ["DiffGenerationDate"].toDateTime ();
+		const auto& thatDate = thatDiff ["DiffGenerationDate"].toDateTime ();
+		if (ourDate > thatDate)
+		{
+			MergeDiffs (thatDiff, ourDiff);
+			ourItem->ApplyDiff (thatDiff);
+		}
+		else
+		{
+			MergeDiffs (ourDiff, thatDiff);
+			ourItem->ApplyDiff (ourDiff);
+		}
+		auto newDiff = ourItem->DiffWith (thatVersion);
+		newDiff ["DiffGenerationDate"] = QDateTime::currentDateTimeUtc ();
+		Diffs_ [id] = newDiff;
+		storage->HandleUpdated (ourItem);
 	}
 
 	void DeltaGenerator::ApplyRemoved (QDataStream& str)
