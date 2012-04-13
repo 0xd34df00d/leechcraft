@@ -44,7 +44,7 @@ namespace Otlozhu
 		QStringList Deps_;
 	public:
 		TodoItem ();
-		TodoItem (const QString&);
+		explicit TodoItem (const QString&);
 		TodoItem (const TodoItem&) = delete;
 		TodoItem& operator= (const TodoItem&) = delete;
 
