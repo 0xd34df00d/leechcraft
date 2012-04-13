@@ -41,7 +41,7 @@ namespace Otlozhu
 
 	TodoItem_ptr TodoItem::Clone () const
 	{
-		TodoItem_ptr clone (new TodoItem);
+		TodoItem_ptr clone (new TodoItem (GetID ()));
 		clone->Title_ = Title_;
 		clone->Comment_ = Comment_;
 		clone->TagIDs_ = TagIDs_;
