@@ -30,6 +30,19 @@ namespace LeechCraft
 {
 namespace Otlozhu
 {
+	namespace
+	{
+		/** @brief Merges to diffs into one.
+		 *
+		 * Values from the source diff take precedence over into.
+		 */
+		void MergeDiffs (QVariantMap& into, const QVariantMap& source)
+		{
+			Q_FOREACH (const QString& key, source.keys ())
+				into [key] = source [key];
+		}
+	}
+
 	DeltaGenerator::DeltaGenerator (QObject *parent)
 	: QObject (parent)
 	, Settings_ (QSettings::IniFormat,
@@ -37,6 +50,7 @@ namespace Otlozhu
 			QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Otlozhu_Deltas")
 	, IsEnabled_ (Settings_.value ("Enabled", false).toBool ())
+	, IsMerging_ (false)
 	{
 		NewItems_ = Settings_.value ("NewItems").value<decltype (NewItems_)> ();
 		RemovedItems_ = Settings_.value ("RemovedItems").value<decltype (RemovedItems_)> ();
@@ -150,6 +164,7 @@ namespace Otlozhu
 
 	void DeltaGenerator::Apply (const Sync::Payloads_t& deltas)
 	{
+		IsMerging_ = true;
 		Q_FOREACH (const auto& delta, deltas)
 		{
 			QDataStream str (delta.Data_);
@@ -180,22 +195,33 @@ namespace Otlozhu
 				break;
 			}
 		}
+		IsMerging_ = false;
 	}
 
-	void DeltaGenerator::ApplyCreated (QDataStream&)
+	void DeltaGenerator::ApplyCreated (QDataStream& str)
 	{
+		QByteArray data;
+		str >> data;
+		auto item = TodoItem::Deserialize (data);
+		Core::Instance ().GetTodoManager ()->GetTodoStorage ()->AddItem (item);
 	}
 
 	void DeltaGenerator::ApplyUpdated (QDataStream&)
 	{
 	}
 
-	void DeltaGenerator::ApplyRemoved (QDataStream&)
+	void DeltaGenerator::ApplyRemoved (QDataStream& str)
 	{
+		QString id;
+		str >> id;
+		Core::Instance ().GetTodoManager ()->GetTodoStorage ()->RemoveItem (id);
 	}
 
 	void DeltaGenerator::handleItemAdded (int pos)
 	{
+		if (IsMerging_)
+			return;
+
 		NewItems_ << Core::Instance ().GetTodoManager ()->
 				GetTodoStorage ()->GetItemAt (pos)->GetID ();
 
@@ -204,6 +230,9 @@ namespace Otlozhu
 
 	void DeltaGenerator::handleItemRemoved (int pos)
 	{
+		if (IsMerging_)
+			return;
+
 		const auto& id = Core::Instance ().GetTodoManager ()->
 				GetTodoStorage ()->GetItemAt (pos)->GetID ();
 		if (NewItems_.removeAll (id))
@@ -221,17 +250,16 @@ namespace Otlozhu
 
 	void DeltaGenerator::handleItemDiffGenerated (const QString& id, const QVariantMap& diff)
 	{
+		if (IsMerging_)
+			return;
+
 		if (NewItems_.contains (id))
 			return;
 
 		if (!Diffs_.contains (id))
 			Diffs_ [id] = diff;
 		else
-		{
-			QVariantMap& present = Diffs_ [id];
-			Q_FOREACH (const QString& key, diff.keys ())
-				present [key] = diff [key];
-		}
+			MergeDiffs (Diffs_ [id], diff);
 
 		Diffs_ [id] ["DiffGenerationDate"] = QDateTime::currentDateTimeUtc ();
 		Settings_.setValue ("Diffs", QVariant::fromValue (Diffs_));

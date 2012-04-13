@@ -33,6 +33,7 @@ namespace Otlozhu
 
 		QSettings Settings_;
 		bool IsEnabled_;
+		bool IsMerging_;
 
 		QStringList NewItems_;
 		QHash<QString, QVariantMap> Diffs_;
