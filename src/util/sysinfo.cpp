@@ -38,44 +38,46 @@ namespace SysInfo
 		return pair.first + ' ' + pair.second;
 	}
 
+	typedef QPair<QString, QString> SplitInfo_t;
+
 	QPair<QString, QString> GetOSNameSplit ()
 	{
 #if defined(Q_OS_MAC)
 		QSysInfo::MacVersion v = QSysInfo::MacintoshVersion;
 		if (v == QSysInfo::MV_10_3)
-			return qMakePair ("Mac OS X", "10.3");
+			return SplitInfo_t ("Mac OS X", "10.3");
 		else if(v == QSysInfo::MV_10_4)
-			return qMakePair ("Mac OS X", "10.4");
+			return SplitInfo_t ("Mac OS X", "10.4");
 		else if(v == QSysInfo::MV_10_5)
-			return qMakePair ("Mac OS X", "10.5");
+			return SplitInfo_t ("Mac OS X", "10.5");
 		else if(v == QSysInfo::MV_10_6)
-			return qMakePair ("Mac OS X", "10.6");
+			return SplitInfo_t ("Mac OS X", "10.6");
 		else
-			return qMakePair ("Mac OS X", "Unknown version");
+			return SplitInfo_t ("Mac OS X", "Unknown version");
 #elif defined(Q_OS_WIN32)
 		QSysInfo::WinVersion v = QSysInfo::WindowsVersion;
 		if (v == QSysInfo::WV_95)
-			return qMakePair ("Windows", "95");
+			return SplitInfo_t ("Windows", "95");
 		else if (v == QSysInfo::WV_98)
-			return qMakePair ("Windows", "98");
+			return SplitInfo_t ("Windows", "98");
 		else if (v == QSysInfo::WV_Me)
-			return qMakePair ("Windows", "Me");
+			return SplitInfo_t ("Windows", "Me");
 		else if (v == QSysInfo::WV_DOS_based)
-			return qMakePair ("Windows", "9x/Me");
+			return SplitInfo_t ("Windows", "9x/Me");
 		else if (v == QSysInfo::WV_NT)
-			return qMakePair ("Windows", "NT 4.x");
+			return SplitInfo_t ("Windows", "NT 4.x");
 		else if (v == QSysInfo::WV_2000)
-			return qMakePair ("Windows", "2000");
+			return SplitInfo_t ("Windows", "2000");
 		else if (v == QSysInfo::WV_XP)
-			return qMakePair ("Windows", "XP");
+			return SplitInfo_t ("Windows", "XP");
 		else if (v == QSysInfo::WV_2003)
-			return qMakePair ("Windows", "2003");
+			return SplitInfo_t ("Windows", "2003");
 		else if (v == QSysInfo::WV_VISTA)
-			return qMakePair ("Windows", "Vista");
+			return SplitInfo_t ("Windows", "Vista");
 		else if (v == QSysInfo::WV_WINDOWS7)
-			return qMakePair ("Windows", "7");
+			return SplitInfo_t ("Windows", "7");
 		else if (v == QSysInfo::WV_NT_based)
-			return qMakePair ("Windows", "NT-based");
+			return SplitInfo_t ("Windows", "NT-based");
 #else
 		QString osName;
 
