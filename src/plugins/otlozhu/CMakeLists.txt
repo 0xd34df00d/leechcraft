@@ -24,6 +24,7 @@ SET (SRCS
 	icalgenerator.cpp
 	icalparser.cpp
 	itemsmergedialog.cpp
+	deltagenerator.cpp
 	)
 SET (HEADERS
 	otlozhu.h
@@ -40,6 +41,7 @@ SET (HEADERS
 	icalgenerator.h
 	icalparser.h
 	itemsmergedialog.h
+	deltagenerator.h
 	)
 SET (FORMS
 	todotab.ui
