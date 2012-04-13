@@ -58,12 +58,15 @@ namespace Otlozhu
 
 	TodoItem_ptr TodoStorage::GetItemAt (int idx) const
 	{
-		return Items_ [idx];
+		return Items_ [idx]->Clone ();
 	}
 
-	const QList<TodoItem_ptr>& TodoStorage::GetAllItems () const
+	QList<TodoItem_ptr> TodoStorage::GetAllItems () const
 	{
-		return Items_;
+		QList<TodoItem_ptr> result;
+		std::transform (Items_.begin (), Items_.end (), std::back_inserter (result),
+				[] (decltype (Items_.front ()) item) { return item->Clone (); });
+		return result;
 	}
 
 	void TodoStorage::HandleUpdated (TodoItem_ptr item)
