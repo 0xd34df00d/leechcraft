@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/isyncable.h>
 
 namespace LeechCraft
 {
@@ -29,6 +30,7 @@ namespace Otlozhu
 	class Plugin : public QObject
 					, public IInfo
 					, public IHaveTabs
+					, public ISyncable
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs)
@@ -45,6 +47,12 @@ namespace Otlozhu
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
+
+		Sync::ChainIDs_t AvailableChains () const;
+		Sync::Payloads_t GetAllDeltas (const Sync::ChainID_t&) const;
+		Sync::Payloads_t GetNewDeltas (const Sync::ChainID_t&) const;
+		void PurgeNewDeltas (const Sync::ChainID_t&, quint32);
+		void ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
@@ -52,6 +60,8 @@ namespace Otlozhu
 		void changeTabIcon (QWidget*, const QIcon&);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+
+		void newDeltasAvailable (const LeechCraft::Sync::ChainID_t&);
 
 		void gotEntity (const LeechCraft::Entity&);
 	};
