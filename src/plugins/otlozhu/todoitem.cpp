@@ -63,6 +63,48 @@ namespace Otlozhu
 		Deps_ = item->Deps_;
 	}
 
+	namespace
+	{
+		class Checker
+		{
+			const TodoItem *This_;
+			const TodoItem *That_;
+
+			QVariantMap Result_;
+		public:
+			Checker (const TodoItem *our, const TodoItem *that)
+			: This_ (our)
+			, That_ (that)
+			{
+			}
+
+			template<typename T>
+			Checker& operator() (const QString& name, T TodoItem::* g)
+			{
+				if (This_->*g != That_->*g)
+					Result_ [name] = This_->*g;
+				return *this;
+			}
+
+			operator QVariantMap () const
+			{
+				return Result_;
+			}
+		};
+	}
+
+	QVariantMap TodoItem::DiffWith (const TodoItem_ptr item) const
+	{
+		return Checker (this, item.get ())
+				("Title", &TodoItem::Title_)
+				("Comment", &TodoItem::Comment_)
+				("Tags", &TodoItem::TagIDs_)
+				("Deps", &TodoItem::Deps_)
+				("Created", &TodoItem::Created_)
+				("Due", &TodoItem::Due_)
+				("Percentage", &TodoItem::Percentage_);
+	}
+
 	TodoItem_ptr TodoItem::Deserialize (const QByteArray& data)
 	{
 		QDataStream str (data);
