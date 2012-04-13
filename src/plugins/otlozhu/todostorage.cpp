@@ -87,8 +87,8 @@ namespace Otlozhu
 		if (pos == -1)
 			return;
 
-		Items_.removeAt (pos);
 		emit itemRemoved (pos);
+		Items_.removeAt (pos);
 		QList<int> indexes;
 		for (int i = pos; i < GetNumItems (); ++i)
 			indexes << i;
