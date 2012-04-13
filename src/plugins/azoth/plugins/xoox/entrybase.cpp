@@ -640,6 +640,14 @@ namespace Xoox
 			Variant2ClientInfo_ [variant] ["raw_client_name"] = "kopete";
 			emit statusChanged (GetStatus (variant), variant);
 		}
+		else if (name.contains ("emacs", Qt::CaseInsensitive) ||
+				name.contains ("jabber.el", Qt::CaseInsensitive))
+		{
+			Variant2ClientInfo_ [variant] ["client_type"] = "jabber.el";
+			Variant2ClientInfo_ [variant] ["client_name"] = "Emacs Jabber.El";
+			Variant2ClientInfo_ [variant] ["raw_client_name"] = "jabber.el";
+			emit statusChanged (GetStatus (variant), variant);
+		}
 	}
 
 	GeolocationInfo_t EntryBase::GetGeolocationInfo (const QString& variant) const
