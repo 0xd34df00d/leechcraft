@@ -51,6 +51,7 @@ namespace Otlozhu
 		TodoItem_ptr Clone () const;
 		void CopyFrom (const TodoItem_ptr);
 		QVariantMap DiffWith (const TodoItem_ptr) const;
+		void ApplyDiff (const QVariantMap&);
 
 		static TodoItem_ptr Deserialize (const QByteArray&);
 		QByteArray Serialize () const;

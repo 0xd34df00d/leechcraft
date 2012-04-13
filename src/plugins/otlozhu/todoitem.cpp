@@ -105,6 +105,42 @@ namespace Otlozhu
 				("Percentage", &TodoItem::Percentage_);
 	}
 
+	namespace
+	{
+		class Applier
+		{
+			TodoItem *Item_;
+
+			const QVariantMap& Map_;
+		public:
+			Applier (TodoItem *item, const QVariantMap& map)
+			: Item_ (item)
+			, Map_ (map)
+			{
+			}
+
+			template<typename T>
+			Applier& operator() (const QString& name, T TodoItem::* g)
+			{
+				if (Map_.contains (name))
+					Item_->*g = Map_ [name].value<T> ();
+				return *this;
+			}
+		};
+	}
+
+	void TodoItem::ApplyDiff (const QVariantMap& map)
+	{
+		Applier (this, map)
+				("Title", &TodoItem::Title_)
+				("Comment", &TodoItem::Comment_)
+				("Tags", &TodoItem::TagIDs_)
+				("Deps", &TodoItem::Deps_)
+				("Created", &TodoItem::Created_)
+				("Due", &TodoItem::Due_)
+				("Percentage", &TodoItem::Percentage_);
+	}
+
 	TodoItem_ptr TodoItem::Deserialize (const QByteArray& data)
 	{
 		QDataStream str (data);
