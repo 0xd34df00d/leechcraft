@@ -814,6 +814,8 @@ namespace Xoox
 		else if (JID_.contains ("facebook") ||
 				JID_.contains ("fb.com"))
 			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/facebook.svg");
+		else if (JID_.contains ("vk.com"))
+			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/vk.svg");
 	}
 
 	void GlooxAccount::handleEntryRemoved (QObject *entry)
