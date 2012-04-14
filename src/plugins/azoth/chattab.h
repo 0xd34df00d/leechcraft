@@ -69,6 +69,7 @@ namespace Azoth
 		QString NickFirstPart_;
 
 		int NumUnreadMsgs_;
+		int ScrollbackPos_;
 
 		QList<IMessage*> HistoryMessages_;
 
@@ -129,6 +130,7 @@ namespace Azoth
 		void on_SubjChange__released ();
 		void on_View__loadFinished (bool);
 		void handleClearChat ();
+		void handleHistoryBack ();
 		void handleRichTextToggled ();
 		void handleQuoteSelection ();
 #ifdef ENABLE_MEDIACALLS
@@ -170,7 +172,7 @@ namespace Azoth
 		void InitMsgEdit ();
 		void RegisterSettings ();
 
-		void RequestLogs ();
+		void RequestLogs (int);
 
 		QStringList GetMUCParticipants () const;
 
