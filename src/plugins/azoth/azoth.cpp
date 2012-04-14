@@ -414,6 +414,11 @@ namespace Azoth
 				ActionInfo (tr ("Quote selected in chat tab"),
 						QString ("Ctrl+Q"),
 						proxy->GetIcon ("mail-reply-sender")));
+
+		sm->RegisterActionInfo ("org.LeechCraft.Azoth.LeaveMUC",
+				ActionInfo (tr ("Leave"),
+						QString (),
+						proxy->GetIcon ("irc-close-channel")));
 	}
 
 	void Plugin::handleSDWidget (ServiceDiscoveryWidget *sd)
