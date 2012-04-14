@@ -1017,10 +1017,12 @@ namespace Azoth
 	void ChatTab::BuildBasicActions ()
 	{
 		auto sm = Core::Instance ().GetShortcutManager ();
+		const auto& infos = sm->GetActionInfo ();
 
-		QAction *clearAction = new QAction (tr ("Clear chat window"), this);
+		const auto& clearInfo = infos ["org.LeechCraft.Azoth.ClearChat"];
+		QAction *clearAction = new QAction (clearInfo.UserVisibleText_, this);
 		clearAction->setProperty ("ActionIcon", "edit-clear-history");
-		clearAction->setShortcut (QString ("Ctrl+L"));
+		clearAction->setShortcuts (clearInfo.Seqs_);
 		connect (clearAction,
 				SIGNAL (triggered ()),
 				this,
@@ -1028,14 +1030,16 @@ namespace Azoth
 		TabToolbar_->addAction (clearAction);
 		sm->RegisterAction ("org.LeechCraft.Azoth.ClearChat", clearAction, true);
 
-		QAction *historyBack = new QAction (tr ("Prepend messages from history"), this);
+		const auto& backInfo = infos ["org.LeechCraft.Azoth.ScrollHistoryBack"];
+		QAction *historyBack = new QAction (backInfo.UserVisibleText_, this);
 		historyBack->setProperty ("ActionIcon", "go-previous");
-		historyBack->setShortcut (QKeySequence::StandardKey::Back);
+		historyBack->setShortcuts (backInfo.Seqs_);
 		connect (historyBack,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleHistoryBack ()));
 		TabToolbar_->addAction (historyBack);
+		sm->RegisterAction ("org.LeechCraft.Azoth.ScrollHistoryBack", historyBack, true);
 
 		TabToolbar_->addSeparator ();
 
@@ -1051,9 +1055,10 @@ namespace Azoth
 		TabToolbar_->addAction (ToggleRichText_);
 		TabToolbar_->addSeparator ();
 
+		const auto& quoteInfo = infos ["org.LeechCraft.Azoth.QuoteSelected"];
 		QAction *quoteSelection = new QAction (tr ("Quote selection"), this);
 		quoteSelection->setProperty ("ActionIcon", "mail-reply-sender");
-		quoteSelection->setShortcut (QString ("Ctrl+Q"));
+		quoteSelection->setShortcuts (quoteInfo.Seqs_);
 		connect (quoteSelection,
 				SIGNAL (triggered ()),
 				this,
