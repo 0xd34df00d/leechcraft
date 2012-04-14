@@ -70,10 +70,10 @@
 #include "useravatarmanager.h"
 #include "msgarchivingmanager.h"
 #include "sdmanager.h"
+#include "xep0232handler.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
-#include "xep0232handler.h"
 #endif
 
 namespace LeechCraft
