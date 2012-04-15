@@ -73,18 +73,6 @@ namespace LeechCraft
 			 */
 			void SetCaption (const QString& caption);
 
-			/** @brief Sets possible selections.
-			 *
-			 * Clears previous selections list, sets new possible selections
-			 * according to selections parameter. By default, no items are
-			 * selected.
-			 *
-			 * @param[in] selections Possible selections.
-			 *
-			 * @sa GetSelections
-			 */
-			void SetPossibleSelections (const QStringList& selections);
-
 			/** @brief Gets selected items.
 			 *
 			 * Returns the selected items - a subset of selection variants
@@ -118,6 +106,17 @@ namespace LeechCraft
 			/** @brief Deselects all variants.
 			 */
 			void selectNone ();
+			/** @brief Sets possible selections.
+			 *
+			 * Clears previous selections list, sets new possible selections
+			 * according to selections parameter. By default, no items are
+			 * selected.
+			 *
+			 * @param[in] selections Possible selections.
+			 *
+			 * @sa GetSelections
+			 */
+			void setPossibleSelections (QStringList selections);
 			/** @brief Notifies CategorySelector about logical selection
 			 * changes.
 			 *
