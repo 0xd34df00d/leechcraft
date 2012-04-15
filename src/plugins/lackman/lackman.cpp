@@ -75,7 +75,9 @@ namespace LackMan
 				selector,
 				SLOT (lineTextChanged (QString)));
 		selector->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
-		Ui_.SearchLayout_->insertWidget (Ui_.SearchLayout_->count () - 1, selector, 1);
+		Ui_.SearchLayout_->addWidget (selector);
+		Ui_.SearchSplitter_->setStretchFactor (0, 2);
+		Ui_.SearchSplitter_->setStretchFactor (1, 9);
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
