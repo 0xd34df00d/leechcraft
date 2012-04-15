@@ -335,6 +335,9 @@ namespace LackMan
 				Util::MakePrettySize (size) :
 				tr ("unknown");
 		Ui_.SizeLabel_->setText (sizeText);
+
+		const auto& tags = index.data (PackagesModel::PMRTags).toStringList ();
+		Ui_.TagsLabel_->setText (tags.join ("; "));
 	}
 
 	void Plugin::handleFetchListUpdated (const QList<int>& ids)
