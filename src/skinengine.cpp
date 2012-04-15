@@ -72,6 +72,7 @@ QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconO
 			Q_FOREACH (const QSize& size, off.availableSizes ())
 				result.addPixmap (off.pixmap (size, QIcon::Normal, QIcon::On));
 		}
+		IconCache_ [namePair] = result;
 		return result;
 	}
 
