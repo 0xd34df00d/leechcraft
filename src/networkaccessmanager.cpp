@@ -173,7 +173,7 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 
 	proxy->FillValue ("request", r);
 
-	if (r.url ().scheme () == "http" && !LocaleStr_.isEmpty ())
+	if (r.url ().scheme ().startsWith ("http") && !LocaleStr_.isEmpty ())
 		r.setRawHeader ("Accept-Language", LocaleStr_.toUtf8 ());
 
 	QNetworkReply *result = QNetworkAccessManager::createRequest (op, r, out);
