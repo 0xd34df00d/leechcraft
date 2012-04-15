@@ -113,10 +113,13 @@ namespace LackMan
 		TypeFilter_ = new TypeFilterProxyModel (this);
 		TypeFilter_->setDynamicSortFilter (true);
 		TypeFilter_->setSourceModel (Core::Instance ().GetPluginsModel ());
+		TypeFilter_->setSortCaseSensitivity (Qt::CaseInsensitive);
 		FilterString_ = new StringFilterModel (this);
 		FilterString_->setDynamicSortFilter (true);
 		FilterString_->setFilterCaseSensitivity (Qt::CaseInsensitive);
+		FilterString_->setSortCaseSensitivity (Qt::CaseInsensitive);
 		FilterString_->setSourceModel (TypeFilter_);
+		FilterString_->sort (0);
 
 		Ui_.PackagesTree_->setModel (FilterString_);
 		Ui_.PackagesTree_->setItemDelegate (new PackagesDelegate (Ui_.PackagesTree_));
