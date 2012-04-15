@@ -55,10 +55,6 @@ SkinEngine& SkinEngine::Instance ()
 	return e;
 }
 
-SkinEngine::~SkinEngine ()
-{
-}
-
 QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconOff) const
 {
 	const QPair<QString, QString>& namePair = qMakePair (actionIcon, actionIconOff);
