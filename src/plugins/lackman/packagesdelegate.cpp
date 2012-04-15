@@ -316,14 +316,6 @@ namespace LackMan
 		return Row2Layout_ [index.row ()];
 	}
 
-	void PackagesDelegate::handleRowChanged (const QModelIndex& current, const QModelIndex& previous)
-	{
-		CurrentSelection_ = current;
-
-		emit sizeHintChanged (previous);
-		emit sizeHintChanged (current);
-	}
-
 	void PackagesDelegate::invalidateWidgetPositions ()
 	{
 		QTreeView *view = qobject_cast<QTreeView*> (parent ());

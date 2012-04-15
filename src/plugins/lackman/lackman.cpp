@@ -117,17 +117,11 @@ namespace LackMan
 		FilterString_->setSourceModel (TypeFilter_);
 
 		Ui_.PackagesTree_->setModel (FilterString_);
-		PackagesDelegate *pd = new PackagesDelegate (Ui_.PackagesTree_);
-		Ui_.PackagesTree_->setItemDelegate (pd);
+		Ui_.PackagesTree_->setItemDelegate (new PackagesDelegate (Ui_.PackagesTree_));
 
 		Ui_.PendingTree_->setModel (Core::Instance ()
 				.GetPendingManager ()->GetPendingModel ());
 
-		connect (Ui_.PackagesTree_->selectionModel (),
-				SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
-				pd,
-				SLOT (handleRowChanged (const QModelIndex&, const QModelIndex&)),
-				Qt::QueuedConnection);
 		connect (Ui_.PackagesTree_->selectionModel (),
 				SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
 				this,
