@@ -25,9 +25,10 @@
 #include <QFile>
 #include <QFileInfoList>
 #include <QApplication>
+#include <QTimer>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
-#include <QTimer>
+#include "util/util.h"
 
 using namespace LeechCraft;
 
@@ -45,6 +46,9 @@ SkinEngine::SkinEngine ()
 #ifdef Q_OS_WIN32
 	QIcon::setThemeSearchPaths (QStringList (qApp->applicationDirPath () + "/icons/"));
 #endif
+
+	const QDir& dir = Util::CreateIfNotExists ("/icons/");
+	QIcon::setThemeSearchPaths (QStringList (dir.absolutePath ()) + QIcon::themeSearchPaths ());
 
 	FindIconSets ();
 }
