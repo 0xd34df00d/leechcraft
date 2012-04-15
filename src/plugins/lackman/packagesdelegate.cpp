@@ -49,7 +49,6 @@ namespace LackMan
 	, Viewport_ (parent->viewport ())
 	, Model_ (parent->model ())
 	{
-		qDebug () << Q_FUNC_INFO << parent->model ();
 		connect (parent->verticalScrollBar (),
 				SIGNAL (valueChanged (int)),
 				this,
