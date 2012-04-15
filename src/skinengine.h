@@ -23,6 +23,7 @@
 #include <QString>
 #include <QDir>
 #include <QHash>
+#include <QIcon>
 
 class QIcon;
 class QAction;
