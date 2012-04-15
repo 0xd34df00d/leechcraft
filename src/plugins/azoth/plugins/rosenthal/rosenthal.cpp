@@ -132,6 +132,7 @@ namespace Rosenthal
 						this,
 						SLOT (handleCorrectionTriggered ()));
 				act->setProperty ("TextEdit", QVariant::fromValue<QObject*> (edit));
+				act->setProperty ("CursorPos", eventPos);
 			}
 
 			QAction *before = menu->actions ().first ();
@@ -233,7 +234,8 @@ namespace Rosenthal
 			return;
 
 		QTextEdit *edit = qobject_cast<QTextEdit*> (action->property ("TextEdit").value<QObject*> ());
-		QTextCursor cur = edit->textCursor ();
+		const QPoint& pos = action->property ("CursorPos").toPoint ();
+		QTextCursor cur = edit->cursorForPosition (pos);
 		cur.select (QTextCursor::WordUnderCursor);
 		cur.deleteChar ();
 		cur.insertText (action->text ());
