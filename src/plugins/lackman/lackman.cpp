@@ -47,7 +47,7 @@ namespace LackMan
 		Translator_.reset (Util::InstallTranslator ("lackman"));
 
 		TabClass_.TabClass_ = "Lackman";
-		TabClass_.VisibleName_ = tr ("LackMan");
+		TabClass_.VisibleName_ = "LackMan";
 		TabClass_.Description_ = GetInfo ();
 		TabClass_.Icon_ = GetIcon ();
 		TabClass_.Priority_ = 0;
@@ -62,6 +62,21 @@ namespace LackMan
 		tc->OverrideModel (TagsModel_);
 		Ui_.SearchLine_->AddSelector ();
 
+		auto selector = new Util::CategorySelector ();
+		selector->setWindowFlags (0);
+		selector->setMinimumHeight (0);
+		selector->SetCaption (tr ("Package tags"));
+		connect (selector,
+				SIGNAL (selectionChanged (QStringList)),
+				Ui_.SearchLine_,
+				SLOT (handleSelectionChanged (QStringList)));
+		connect (Ui_.SearchLine_,
+				SIGNAL (textChanged (QString)),
+				selector,
+				SLOT (lineTextChanged (QString)));
+		selector->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
+		Ui_.SearchLayout_->insertWidget (Ui_.SearchLayout_->count () - 1, selector, 1);
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"lackmansettings.xml");
@@ -73,23 +88,25 @@ namespace LackMan
 				Core::Instance ().GetRepositoryModel ());
 
 		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
 				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)));
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 		connect (&Core::Instance (),
-				SIGNAL (tagsUpdated (const QStringList&)),
+				SIGNAL (tagsUpdated (QStringList)),
 				this,
-				SLOT (handleTagsUpdated (const QStringList&)));
+				SLOT (handleTagsUpdated (QStringList)));
 		connect (&Core::Instance (),
-				SIGNAL (tagsUpdated (const QStringList&)),
+				SIGNAL (tagsUpdated (QStringList)),
 				Ui_.SearchLine_,
-				SLOT (handleTagsUpdated (const QStringList&)));
+				SLOT (handleTagsUpdated (QStringList)));
+		connect (&Core::Instance (),
+				SIGNAL (tagsUpdated (QStringList)),
+				selector,
+				SLOT (setPossibleSelections (QStringList)));
 
 		TypeFilter_ = new TypeFilterProxyModel (this);
 		TypeFilter_->setDynamicSortFilter (true);
@@ -130,6 +147,7 @@ namespace LackMan
 		const QStringList& tags = Core::Instance ().GetAllTags ();
 		handleTagsUpdated (tags);
 		Ui_.SearchLine_->handleTagsUpdated (tags);
+		selector->setPossibleSelections (tags);
 		handleFetchListUpdated (QList<int> ());
 	}
 
