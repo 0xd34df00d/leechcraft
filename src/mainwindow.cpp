@@ -38,7 +38,6 @@
 #include <util/defaulthookproxy.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
-#include "view.h"
 #include "core.h"
 #include "commonjobadder.h"
 #include "xmlsettingsmanager.h"
