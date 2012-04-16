@@ -309,6 +309,8 @@ namespace Astrality
 
 	void EntryWrapper::handleMessageReceived (const Tp::ReceivedMessage& tpMsg, Tp::TextChannelPtr)
 	{
+		qDebug () << Q_FUNC_INFO << GetHumanReadableID ()
+				<< tpMsg.isScrollback () << tpMsg.isDeliveryReport ();
 		if (tpMsg.isScrollback ())
 			return;
 
