@@ -189,6 +189,7 @@ namespace LeechCraft
 				butt->setIcon (icon);
 				butt->setProperty ("SettableObject", QVariant::fromValue<QObject*> (obj));
 				butt->setFixedWidth (ButtonWidth);
+				butt->setAutoRaise (true);
 
 				connect (butt,
 						SIGNAL (released ()),
