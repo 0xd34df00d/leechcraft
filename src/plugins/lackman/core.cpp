@@ -50,6 +50,7 @@ namespace LackMan
 	, PendingManager_ (new PendingManager (this))
 	, PackageProcessor_ (new PackageProcessor (this))
 	, ReposModel_ (new QStandardItemModel (this))
+	, UpdatesEnabled_ (true)
 	{
 		Relation2comparator [Dependency::L] = IsVersionLess;
 		Relation2comparator [Dependency::G] = [] (QString l, QString r) { return Relation2comparator [Dependency::L] (r, l); };
@@ -111,6 +112,8 @@ namespace LackMan
 		QTimer::singleShot (20000,
 				this,
 				SLOT (timeredUpdateAllRequested ()));
+		XmlSettingsManager::Instance ()->RegisterObject ("UpdatesCheckInterval",
+				this, "handleUpdatesIntervalChanged");
 	}
 
 	Core& Core::Instance ()
@@ -913,15 +916,27 @@ namespace LackMan
 		}
 	}
 
+	void Core::handleUpdatesIntervalChanged ()
+	{
+		const int hours = XmlSettingsManager::Instance ()->
+				property ("UpdatesCheckInterval").toInt ();
+		if (hours && !UpdatesEnabled_)
+			timeredUpdateAllRequested ();
+		UpdatesEnabled_ = hours;
+	}
+
 	void Core::timeredUpdateAllRequested ()
 	{
 		updateAllRequested ();
 
 		const int hours = XmlSettingsManager::Instance ()->
 				property ("UpdatesCheckInterval").toInt ();
-		QTimer::singleShot (hours * 3600 * 1000,
-				this,
-				SLOT (timeredUpdateAllRequested ()));
+		if (hours)
+			QTimer::singleShot (hours * 3600 * 1000,
+					this,
+					SLOT (timeredUpdateAllRequested ()));
+		else
+			UpdatesEnabled_ = false;
 	}
 
 	void Core::upgradeAllRequested ()
