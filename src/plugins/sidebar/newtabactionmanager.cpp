@@ -69,7 +69,8 @@ namespace Sidebar
 				this,
 				SLOT (openNewTab ()));
 
-		if (CfgDialog_->CheckAction (tc.TabClass_, act))
+		const bool showByDefault = tc.Features_ & TFSuggestOpening;
+		if (CfgDialog_->CheckAction (tc.TabClass_, act, showByDefault))
 			Bar_->AddTabOpenAction (act);
 	}
 

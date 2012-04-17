@@ -47,7 +47,7 @@ namespace Sidebar
 	public:
 		ShowConfigDialog (const QString& context, QWidget* = 0);
 
-		bool CheckAction (const QString&, QAction*);
+		bool CheckAction (const QString&, QAction*, bool = true);
 	private slots:
 		void saveSettings ();
 		void reloadSettings ();
