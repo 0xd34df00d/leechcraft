@@ -200,8 +200,11 @@ void TabManager::remove (QWidget *contents)
 				<< "doesn't implement ITabWidget";
 		return;
 	}
-	if (itw->GetTabClassInfo ().Features_ & TFSingle)
+	const auto& features = itw->GetTabClassInfo ().Features_;
+	if (features & TFSingle)
 		Core::Instance ().GetNewTabMenuManager ()->SingleRemoved (itw);
+	if (features & TFByDefault)
+		Core::Instance ().GetNewTabMenuManager ()->ToggleHide (itw, true);
 }
 
 void TabManager::remove (int index)
