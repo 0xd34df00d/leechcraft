@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "newtabmenumanager.h"
+#include <algorithm>
 #include <QMenu>
 #include <QtDebug>
 #include "interfaces/iinfo.h"
