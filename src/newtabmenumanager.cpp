@@ -73,10 +73,6 @@ namespace LeechCraft
 		}
 	}
 
-	void NewTabMenuManager::HandleEmbedTabRemoved (QObject *obj)
-	{
-	}
-
 	void NewTabMenuManager::SetToolbarActions (QList<QList<QAction*>> lists)
 	{
 		QList<QAction*> ones;

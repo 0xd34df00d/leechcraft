@@ -43,7 +43,6 @@ namespace LeechCraft
 		NewTabMenuManager (QObject* = 0);
 
 		void AddObject (QObject*);
-		void HandleEmbedTabRemoved (QObject*);
 		void SetToolbarActions (QList<QList<QAction*>>);
 		void SingleRemoved (ITabWidget*);
 
