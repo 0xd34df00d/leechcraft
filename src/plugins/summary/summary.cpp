@@ -71,7 +71,7 @@ namespace Summary
 			GetInfo (),
 			GetIcon (),
 			50,
-			TabFeatures (TFOpenableByRequest | TFByDefault)
+			TabFeatures (TFOpenableByRequest | TFByDefault | TFSuggestOpening)
 		};
 		TabClasses_ << tabClass;
 	}
