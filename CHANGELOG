@@ -6,7 +6,31 @@ relevant blocks of changes, so one could easily lookup
 
 !!! HEAD
 ! Devel digest #21 ( http://leechcraft.org/devel-digest-21 ):
-
+* Core: filter proxy model for plugin manager widget.
+* Advanced Notifications: support for Organizer event type.
+* Advanced Notifications: possibly fixed fonts generation (once more).
+* Aggregator: added Mark All As Read action.
+* Aggregator: proper indexes are expanded on feed addition, fixes #211.
+* Auscrie: support for making overlay and whole desktop screenshots.
+* Auscrie: fixed dump.bitcheese.net uploader.
+* Auscrie: support hiding the dialog.
+* Azoth: plugins now support split build.
+* Azoth: hardlimit for 4 variant icons, fixes #440.
+* Azoth: client icons are properly sorted by priority.
+* Azoth Acetamide: commands 323 and 338 are now supported.
+* Azoth ChatHistory: more clear search match highlights.
+* Azoth Xoox: support for XEP-0232 parsing/generation.
+* Azoth Xoox: handling/displaying XEP-0232 info in Service Discovery.
+* Azoth Xoox: text from muc#roominfo_description is used in SD now.
+* Azoth Xoox: even more efficient vCard requests.
+* Azoth Xoox: remember entered JID/password on in-band account reg.
+* Azoth Xoox: fixed several segfaults.
+* Azoth Xoox: configurable minimum height of message edit field.
+* BitTorrent: torrent icon for items in Summary.
+* Dolozhee: new plugin, bug/featurerequest reporter.
+* KBCraft: new keyboard layout manager plugin.
+* Otlozhu: new plugin, a GTD-style organizer.
+* XProxy: new plugin for advanced proxy management.
 
 ! Devel digest #20 ( http://leechcraft.org/devel-digest-20 ):
 * Azoth: support tab session management.
