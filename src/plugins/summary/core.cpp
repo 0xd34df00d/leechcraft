@@ -35,7 +35,6 @@ namespace Summary
 	: MergeModel_ (new Util::MergeModel (QStringList (QString ())
 				<< QString ()
 				<< QString ()))
-	, Default_ (0)
 	, Current_ (0)
 	{
 		MergeModel_->setObjectName ("Core MergeModel");
@@ -52,8 +51,6 @@ namespace Summary
 	{
 		while (Others_.size ())
 			delete Others_.takeFirst ();
-
-		delete Default_;
 
 		KeepProxiesThisWay_.clear ();
 	}
@@ -82,14 +79,6 @@ namespace Summary
 			GetPluginsManager ()->GetAllCastableTo<IJobHolder*> ();
 		Q_FOREACH (IJobHolder *plugin, plugins)
 			MergeModel_->AddModel (plugin->GetRepresentation ());
-
-		Default_ = CreateSummaryWidget ();
-		Default_->setProperty ("IsUnremoveable", true);
-	}
-
-	SummaryWidget* Core::GetDefaultTab () const
-	{
-		return Default_;
 	}
 
 	QTreeView* Core::GetCurrentView () const
@@ -313,7 +302,7 @@ namespace Summary
 
 	void Core::MadeCurrent (SummaryWidget *tc)
 	{
-		Q_FOREACH (SummaryWidget *w, Others_ + (QList<SummaryWidget*> () << Default_))
+		Q_FOREACH (SummaryWidget *w, Others_)
 			w->SmartDeselect (tc);
 	}
 
@@ -396,10 +385,8 @@ namespace Summary
 			MergeModel_->AddModel (ijh->GetRepresentation ());
 
 		IFinder *finder = qobject_cast<IFinder*> (object);
-		QList<SummaryWidget*> allsw = Others_;
-		allsw << Default_;
 		if (finder)
-			Q_FOREACH (SummaryWidget *sw, allsw)
+			Q_FOREACH (SummaryWidget *sw, Others_)
 			{
 				sw->handleCategoriesChanged ();
 

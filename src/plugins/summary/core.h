@@ -64,7 +64,6 @@ namespace Summary
 			* all the downloaders and such stuff.
 			*/
 		std::shared_ptr<Util::MergeModel> MergeModel_;
-		SummaryWidget *Default_;
 		SummaryWidget *Current_;
 		QList<SummaryWidget*> Others_;
 		mutable QHash<QAbstractItemModel*, QList<IFindProxy_ptr>> KeepProxiesThisWay_;
@@ -78,7 +77,6 @@ namespace Summary
 
 		void SecondInit ();
 
-		SummaryWidget* GetDefaultTab () const;
 		QTreeView* GetCurrentView () const;
 
 		bool CouldHandle (const LeechCraft::Entity&) const;
