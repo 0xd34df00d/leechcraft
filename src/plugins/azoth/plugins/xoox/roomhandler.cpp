@@ -125,7 +125,9 @@ namespace Xoox
 		pres.setStatus (QXmppPresence::Status (static_cast<QXmppPresence::Status::Type> (state.State_),
 				state.Status_,
 				state.Priority_));
-		Account_->GetClientConnection ()->GetClient ()->sendPacket (pres);
+		auto client = Account_->GetClientConnection ()->GetClient ();
+		client->addProperCapability (pres);
+		client->sendPacket (pres);
 	}
 
 	/** @todo Detect kicks, bans and the respective actor.
