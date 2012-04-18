@@ -111,6 +111,7 @@ namespace LeechCraft
 			return;
 		}
 		InsertAction (act);
+		ToggleHide (itw, true);
 	}
 
 	QMenu* NewTabMenuManager::GetNewTabMenu () const
