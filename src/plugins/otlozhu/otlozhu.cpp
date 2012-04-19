@@ -18,6 +18,7 @@
 
 #include "otlozhu.h"
 #include <QIcon>
+#include <util/util.h>
 #include "todotab.h"
 #include "core.h"
 #include "deltagenerator.h"
@@ -28,6 +29,7 @@ namespace Otlozhu
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("otlozhu");
 		Core::Instance ().SetProxy (proxy);
 
 		connect (&Core::Instance (),
