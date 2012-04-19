@@ -1518,11 +1518,13 @@ namespace Xoox
 		if (!AwaitingPacketCallbacks_.contains (iq.from ()))
 			return;
 
-		const PacketID2Callback_t& cbs = AwaitingPacketCallbacks_ [iq.from ()];
+		PacketID2Callback_t& cbs = AwaitingPacketCallbacks_ [iq.from ()];
 		if (!cbs.contains (iq.id ()))
 			return;
 
-		const PacketCallback_t& cb = cbs [iq.id ()];
+		const PacketCallback_t& cb = cbs.take (iq.id ());
+		if (cbs.isEmpty ())
+			AwaitingPacketCallbacks_.remove (iq.from ());
 		if (!cb.first)
 			return;
 
