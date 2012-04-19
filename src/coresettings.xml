@@ -55,6 +55,9 @@
 		<label lang="en" value="Behavior" />
 		<groupbox>
 			<label lang="en" value="Behavior" />
+			<item type="checkbox" property="ShowTrayIcon" default="true">
+				<label value="Show icon in tray" />
+			</item>
 			<item type="checkbox" property="WatchClipboard" state="off">
 				<label lang="en" value="Watch clipboard" />
 			</item>

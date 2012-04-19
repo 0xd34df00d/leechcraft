@@ -679,6 +679,13 @@ void MainWindow::handleToolBarManipulationChanged ()
 		MenuView_->removeAction (Ui_.ActionShowToolBar_);
 }
 
+void MainWindow::handleShowTrayIconChanged()
+{
+	const bool isVisible = XmlSettingsManager::Instance ()->
+			property ("ShowTrayIcon").toBool ();
+	TrayIcon_->setVisible (isVisible);
+}
+
 void LeechCraft::MainWindow::handleNewTabMenuRequested ()
 {
 	QMenu *ntmenu = Core::Instance ()
@@ -813,13 +820,15 @@ void LeechCraft::MainWindow::FillTray ()
 	iconMenu->addAction (Ui_.ActionQuit_);
 
 	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.svg"), this);
-	TrayIcon_->show ();
+	handleShowTrayIconChanged ();
 	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
 	TrayIcon_->setContextMenu (iconMenu);
 	connect (TrayIcon_,
 			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
 			this,
 			SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
+	XmlSettingsManager::Instance ()->RegisterObject ("ShowTrayIcon",
+			this, "handleShowTrayIconChanged");
 }
 
 void LeechCraft::MainWindow::FillToolMenu ()

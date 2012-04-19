@@ -130,6 +130,7 @@ namespace LeechCraft
 		void handleShortcutFullscreenMode ();
 		void handleToolButtonStyleChanged ();
 		void handleToolBarManipulationChanged ();
+		void handleShowTrayIconChanged ();
 		void handleNewTabMenuRequested ();
 		void handleRestoreActionAdded (QAction*);
 		void updateSpeedIndicators ();
