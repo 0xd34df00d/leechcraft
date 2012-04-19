@@ -1464,7 +1464,8 @@ namespace Xoox
 	void ClientConnection::HandleError (const QXmppIq& iq)
 	{
 		const QXmppStanza::Error& error = iq.error ();
-		if (error.condition () == QXmppStanza::Error::FeatureNotImplemented)
+		if (error.condition () == QXmppStanza::Error::FeatureNotImplemented ||
+				error.condition () == QXmppStanza::Error::ItemNotFound)
 		{
 			// Whatever it is, it just keeps appearing, hz.
 			return;
