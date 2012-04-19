@@ -30,6 +30,7 @@
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/session_status.hpp>
+#include <libtorrent/session.hpp>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include <util/tags/tagscompletionmodel.h>
