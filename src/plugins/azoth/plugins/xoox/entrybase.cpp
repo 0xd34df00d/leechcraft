@@ -589,10 +589,6 @@ namespace Xoox
 			reqVar = variant;
 		}
 
-		if (!reqJid.isEmpty ())
-			Account_->GetClientConnection ()->
-					GetCapsManager ()->FetchCaps (reqJid, ver);
-
 		auto capsManager = Account_->GetClientConnection ()->GetCapsManager ();
 		const auto& storedIds = capsManager->GetIdentities (ver);
 
