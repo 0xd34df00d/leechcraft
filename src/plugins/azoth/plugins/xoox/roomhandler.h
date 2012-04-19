@@ -61,7 +61,7 @@ namespace Xoox
 		RoomCLEntry* GetCLEntry ();
 		void HandleVCard (const QXmppVCardIq&, const QString&);
 
-		void SetState (const GlooxAccountState&);
+		void SetPresence (QXmppPresence);
 
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);

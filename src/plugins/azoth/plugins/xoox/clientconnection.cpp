@@ -356,12 +356,8 @@ namespace Xoox
 			return;
 		}
 
-		if (presType != QXmppPresence::Unavailable)
-			Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-				rh->SetState (state);
-		else
-			Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-				rh->Leave (QString (), false);
+		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+			rh->SetPresence (pres);
 
 		if (!IsConnected_ &&
 				state.State_ != SOffline)
