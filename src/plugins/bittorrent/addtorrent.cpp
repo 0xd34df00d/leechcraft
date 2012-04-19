@@ -254,7 +254,7 @@ namespace LeechCraft
 #if LIBTORRENT_VERSION_NUM >= 1600
 					date = QDateTime::fromTime_t (*maybeDate).toString ();
 #else
-					date = QString::fromStdString (boost::posix_time::to_simple_string (*get_ptr));
+					date = QString::fromStdString (boost::posix_time::to_simple_string (*maybeDate));
 #endif
 
 				if (!creator.isEmpty () && !creator.isNull ())
