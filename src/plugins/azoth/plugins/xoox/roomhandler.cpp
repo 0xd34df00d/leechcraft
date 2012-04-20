@@ -762,6 +762,7 @@ namespace Xoox
 	{
 		Account_->handleEntryRemoved (CLEntry_);
 		Account_->GetClientConnection ()->Unregister (this);
+		delete Room_;
 		deleteLater ();
 	}
 }
