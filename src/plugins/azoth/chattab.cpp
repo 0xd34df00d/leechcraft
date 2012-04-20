@@ -194,6 +194,8 @@ namespace Azoth
 		SetChatPartState (CPSGone);
 
 		qDeleteAll (HistoryMessages_);
+
+		delete Ui_.MsgEdit_->document ();
 	}
 
 	void ChatTab::PrepareTheme ()
