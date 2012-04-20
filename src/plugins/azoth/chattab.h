@@ -50,7 +50,7 @@ namespace Azoth
 		static QObject *S_ParentMultiTabs_;
 
 		Ui::ChatTab Ui_;
-		QToolBar *TabToolbar_;
+		std::unique_ptr<QToolBar> TabToolbar_;
 		QAction *ToggleRichText_;
 		QAction *Call_;
 #ifdef ENABLE_CRYPT
