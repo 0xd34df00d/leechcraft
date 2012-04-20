@@ -187,7 +187,9 @@ namespace Sidebar
 		if (!TabClass2Folder_.contains (tc.TabClass_))
 			return;
 
-		delete TabClass2Folder_.take (tc.TabClass_);
+		auto button = TabClass2Folder_.take (tc.TabClass_);
+		delete button->defaultAction ();
+		delete button;
 
 		Q_FOREACH (QAction *act, TabClass2Action_ [tc.TabClass_])
 			CurTab2Button_ [act] = AddTabButton (act, Ui_.TabsLay_);
