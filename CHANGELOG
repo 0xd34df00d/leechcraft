@@ -8,6 +8,7 @@ relevant blocks of changes, so one could easily lookup
 ! Devel digest #22 ( http://leechcraft.org/devel-digest-22 ):
 * Core: store plugin icons on-disk, not in QSettings.
 * Core: support for searching icons in ~/.leechcraft/icons.
+* Core: optional hiding of the tray icon.
 * Core: much nicer settings tab.
 * Core: saner tab recovery policy.
 * Util: better SysInfo data.
@@ -19,6 +20,7 @@ relevant blocks of changes, so one could easily lookup
 * Azoth: console now shows timings.
 * Azoth: changed alternative nick semantics.
 * Azoth: fixed occasional segfault when hiding offline users.
+* Azoth AdiumStyles: minor theme compatibility issues fixed.
 * Azoth ChatHistory: support per-account and global searching.
 * Azoth Rosenthal: fixed context menu corrections.
 * Azoth Xoox: advertise XEP-0232 info about self.
@@ -26,6 +28,9 @@ relevant blocks of changes, so one could easily lookup
 * Azoth Xoox: kludges for Kopete and Jabber.El detection.
 * Azoth Xoox: self-offline handling fixes.
 * Azoth Xoox: a bunch of other small fixes.
+* Azoth Xoox: caps generation fixes.
+* Azoth Xoox: fixed a couple of logical leaks.
+* BitTorrent: compatibility with libtorrent 0.16.
 * DBusManager: disable notifications by default.
 * Dolozhee: bug link now works.
 * Dolozhee: proper completion method for bug page.
