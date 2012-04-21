@@ -10,9 +10,11 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	nacheku.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	nacheku.h
+	xmlsettingsmanager.h
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
@@ -28,3 +30,4 @@ TARGET_LINK_LIBRARIES (leechcraft_nacheku
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_nacheku DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES nachekusettings.xml DESTINATION ${LC_SETTINGS_DEST})

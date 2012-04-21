@@ -16,55 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "nacheku.h"
-#include <QIcon>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
 namespace Nacheku
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		XSD_.reset (new Util::XmlSettingsDialog ());
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "nachekusettings.xml");
+		Util::BaseSettingsManager::Init ();
 	}
 
-	void Plugin::SecondInit ()
+	XmlSettingsManager& XmlSettingsManager::Instance ()
 	{
+		static XmlSettingsManager xsm;
+		return xsm;
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		return "org.LeechCraft.Nacheku";
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Nacheku");
+		return settings;
 	}
 
-	void Plugin::Release ()
+	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Nacheku";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("This plugin watches clipboard for links and a directory for files.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return XSD_;
 	}
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_nacheku, LeechCraft::Nacheku::Plugin);
-
