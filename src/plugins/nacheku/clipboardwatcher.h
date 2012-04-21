@@ -16,13 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef CLIPBOARDWATCHER_H
-#define CLIPBOARDWATCHER_H
+#pragma once
+
 #include <QObject>
 #include <QString>
 #include <interfaces/structures.h>
 
 namespace LeechCraft
+{
+namespace Nacheku
 {
 	/** @brief Watches clipboard for downloadable contents.
 	 *
@@ -54,7 +56,6 @@ namespace LeechCraft
 		 */
 		void gotEntity (const LeechCraft::Entity&);
 	};
-};
-
-#endif
+}
+}
 

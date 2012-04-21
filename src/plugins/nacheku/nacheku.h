@@ -44,6 +44,8 @@ namespace Nacheku
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

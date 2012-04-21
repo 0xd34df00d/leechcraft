@@ -11,10 +11,14 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	nacheku.cpp
 	xmlsettingsmanager.cpp
+	clipboardwatcher.cpp
+	directorywatcher.cpp
 	)
 SET (HEADERS
 	nacheku.h
 	xmlsettingsmanager.h
+	clipboardwatcher.h
+	directorywatcher.h
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

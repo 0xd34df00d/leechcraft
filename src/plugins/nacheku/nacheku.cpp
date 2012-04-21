@@ -20,6 +20,8 @@
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
+#include "clipboardwatcher.h"
+#include "directorywatcher.h"
 
 namespace LeechCraft
 {
@@ -29,6 +31,18 @@ namespace Nacheku
 	{
 		XSD_.reset (new Util::XmlSettingsDialog ());
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "nachekusettings.xml");
+
+		auto dirW = new DirectoryWatcher (this);
+		connect (dirW,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+
+		auto clipW = new ClipboardWatcher (this);
+		connect (clipW,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 
 	void Plugin::SecondInit ()

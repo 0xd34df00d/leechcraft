@@ -25,6 +25,8 @@
 
 namespace LeechCraft
 {
+namespace Nacheku
+{
 	ClipboardWatcher::ClipboardWatcher (QObject *parent)
 	: QObject (parent)
 	{
@@ -54,9 +56,10 @@ namespace LeechCraft
 				QString (),
 				FromUserInitiated);
 
-		if (XmlSettingsManager::Instance ()->
-				property ("WatchClipboard").toBool ())
+		if (XmlSettingsManager::Instance ()
+				.property ("WatchClipboard").toBool ())
 			emit gotEntity (e);
 	}
-};
+}
+}
 

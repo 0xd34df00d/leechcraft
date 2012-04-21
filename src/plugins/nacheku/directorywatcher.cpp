@@ -25,11 +25,13 @@
 
 namespace LeechCraft
 {
+namespace Nacheku
+{
 	DirectoryWatcher::DirectoryWatcher (QObject *parent)
 	: QObject (parent)
 	, Watcher_ (new QFileSystemWatcher)
 	{
-		XmlSettingsManager::Instance ()->RegisterObject ("WatchDirectory",
+		XmlSettingsManager::Instance ().RegisterObject ("WatchDirectory",
 				this,
 				"settingsChanged");
 
@@ -46,8 +48,8 @@ namespace LeechCraft
 
 	void DirectoryWatcher::settingsChanged ()
 	{
-		const QString& path = XmlSettingsManager::Instance ()->
-			property ("WatchDirectory").toString ();
+		const QString& path = XmlSettingsManager::Instance ()
+				.property ("WatchDirectory").toString ();
 		const QStringList& dirs = Watcher_->directories ();
 		if (dirs.size () == 1 &&
 				dirs.at (0) == path)
@@ -69,8 +71,8 @@ namespace LeechCraft
 	void DirectoryWatcher::handleDirectoryChanged (const QString& path)
 	{
 		QDir dir (path);
-		const QList<QFileInfo>& cur = dir.entryInfoList (QDir::Files);
-		QList<QFileInfo> nl = cur;
+		const auto& cur = dir.entryInfoList (QDir::Files);
+		auto nl = cur;
 
 		Q_FOREACH (const QFileInfo& oldFi, Olds_)
 		{
@@ -90,5 +92,6 @@ namespace LeechCraft
 						path,
 						FromUserInitiated));
 	}
-};
+}
+}
 

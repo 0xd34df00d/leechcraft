@@ -432,12 +432,10 @@ SET (SRCS
 	coreproxy.cpp
 	tagsmanager.cpp
 	tagsviewer.cpp
-	directorywatcher.cpp
 	aboutdialog.cpp
 	startupwizard.cpp
 	localsockethandler.cpp
 	toolbarguard.cpp
-	clipboardwatcher.cpp
 	wizardtypechoicepage.cpp
 	3dparty/qxttooltip.cpp
 	newtabmenumanager.cpp
@@ -479,12 +477,10 @@ SET (HEADERS
 	coreproxy.h
 	tagsmanager.h
 	tagsviewer.h
-	directorywatcher.h
 	aboutdialog.h
 	startupwizard.h
 	localsockethandler.h
 	toolbarguard.h
-	clipboardwatcher.h
 	newtabmenumanager.h
 	wizardtypechoicepage.h
 	plugintreebuilder.h

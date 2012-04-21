@@ -16,16 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef DIRECTORYWATCHER_H
-#define DIRECTORYWATCHER_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QList>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
-#include "interfaces/structures.h"
+#include <interfaces/structures.h>
 
 namespace LeechCraft
+{
+namespace Nacheku
 {
 	/** Watches a given directory for files which could be handled.
 	 */
@@ -33,7 +35,7 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 
-		std::auto_ptr<QFileSystemWatcher> Watcher_;
+		std::unique_ptr<QFileSystemWatcher> Watcher_;
 		QList<QFileInfo> Olds_;
 	public:
 		/** Constructs the watcher, registers it as a client for
@@ -63,7 +65,6 @@ namespace LeechCraft
 		 */
 		void gotEntity (const LeechCraft::Entity& entity);
 	};
-};
-
-#endif
+}
+}
 

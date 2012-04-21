@@ -3,6 +3,16 @@
 	<page>
 		<label value="Nacheku" />
 		<groupbox>
+			<label value="Clipboard" />
+			<item type="checkbox" property="WatchClipboard" default="false">
+				<label value="Watch clipboard" />
+			</item>
+		</groupbox>
+		<groupbox>
+			<label value="Directory" />
+			<item type="path" property="WatchDirectory" onCancel="clear">
+				<label value="Watch directory:" />
+			</item>
 		</groupbox>
 	</page>
 </settings>
