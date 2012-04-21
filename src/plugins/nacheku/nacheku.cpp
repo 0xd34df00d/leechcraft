@@ -51,7 +51,7 @@ namespace Nacheku
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("This plugin watches clipboard for links and a directory for files.");
+		return tr ("Nacheku watches clipboard for links and a directory for files.");
 	}
 
 	QIcon Plugin::GetIcon () const
