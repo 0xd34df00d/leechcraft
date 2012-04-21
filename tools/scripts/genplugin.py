@@ -104,7 +104,7 @@ $interfaces_defs
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_${plug_lower}, LeechCraft::$plug::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_${plug_lower}, LeechCraft::$plug::Plugin);
 
 """
 
@@ -192,7 +192,7 @@ hfile.write (header.substitute (d))
 
 source = Template (source_str)
 sfile = open ('%s.cpp' % p.plugin.lower (), 'w')
-sfile.write (source.substitute (d))
+sfile.write (Template (source.substitute (d)).substitute (d))
 
 cmake = Template (cmake_str)
 sfile = open ('CMakeLists.txt', 'w')
