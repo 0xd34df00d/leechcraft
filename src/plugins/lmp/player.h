@@ -39,7 +39,7 @@ namespace LMP
 	{
 		Q_OBJECT
 
-		QStandardItemModel *PlaybackModel_;
+		QStandardItemModel *PlaylistModel_;
 		Phonon::MediaObject *Source_;
 		Phonon::Path Path_;
 
@@ -54,8 +54,10 @@ namespace LMP
 
 		Player (QObject* = 0);
 
-		QAbstractItemModel* GetPlaybackModel () const;
+		QAbstractItemModel* GetPlaylistModel () const;
 		void Enqueue (const QList<Phonon::MediaSource>&);
+	public slots:
+		void clear ();
 	private slots:
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
 	};

@@ -59,7 +59,7 @@ namespace LMP
 {
 	Player::Player (QObject *parent)
 	: QObject (parent)
-	, PlaybackModel_ (new QStandardItemModel (this))
+	, PlaylistModel_ (new QStandardItemModel (this))
 	, Source_ (new Phonon::MediaObject (this))
 	, Path_ (Phonon::createPath (Source_, new Phonon::AudioOutput (Phonon::MusicCategory, this)))
 	{
@@ -69,15 +69,16 @@ namespace LMP
 				SLOT (handleCurrentSourceChanged (Phonon::MediaSource)));
 	}
 
-	QAbstractItemModel* Player::GetPlaybackModel () const
+	QAbstractItemModel* Player::GetPlaylistModel () const
 	{
-		return PlaybackModel_;
+		return PlaylistModel_;
 	}
 
 	namespace
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
 		{
+			item->setText ("some media");
 		}
 	}
 
@@ -106,10 +107,17 @@ namespace LMP
 				item->setText ("unknown");
 				break;
 			}
-			PlaybackModel_->appendRow (item);
+			PlaylistModel_->appendRow (item);
 
 			Items_ [source] = item;
 		}
+	}
+
+	void Player::clear ()
+	{
+		PlaylistModel_->clear ();
+		Items_.clear ();
+		Source_->clearQueue ();
 	}
 
 	void Player::handleCurrentSourceChanged (const Phonon::MediaSource& source)
