@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "pepeventbase.h"
+#include <QString>
 
 namespace LeechCraft
 {
@@ -26,6 +27,11 @@ namespace Xoox
 {
 	PEPEventBase::~PEPEventBase ()
 	{
+	}
+
+	QString PEPEventBase::GetEventID () const
+	{
+		return QString ();
 	}
 }
 }

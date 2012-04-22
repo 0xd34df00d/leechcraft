@@ -37,10 +37,12 @@ namespace Xoox
 		virtual QXmppElement ToXML () const = 0;
 		virtual void Parse (const QDomElement&) = 0;
 		virtual QString Node () const = 0;
-		
+
 		virtual PEPEventBase* Clone () const = 0;
+
+		virtual QString GetEventID () const;
 	};
-	
+
 	template<typename T>
 	PEPEventBase* StandardCreator ()
 	{
