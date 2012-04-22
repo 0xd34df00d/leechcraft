@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "player.h"
+#include <algorithm>
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
