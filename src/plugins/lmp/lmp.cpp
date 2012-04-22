@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "lmp.h"
+#include "playertab.h"
 #include <QIcon>
 
 namespace LeechCraft
@@ -25,6 +26,24 @@ namespace LMP
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		PlayerTC_ =
+		{
+			GetUniqueID () + "_player",
+			"LMP",
+			GetInfo (),
+			GetIcon (),
+			40,
+			TFSingle | TFOpenableByRequest
+		};
+		PlayerTab_ = new PlayerTab (PlayerTC_, this);
+		connect (PlayerTab_,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		connect (PlayerTab_,
+				SIGNAL (changeTabName (QWidget*, QString)),
+				this,
+				SIGNAL (changeTabName (QWidget*, QString)));
 	}
 
 	void Plugin::SecondInit ()
@@ -53,6 +72,26 @@ namespace LMP
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	TabClasses_t Plugin::GetTabClasses () const
+	{
+		TabClasses_t tcs;
+		tcs << PlayerTC_;
+		return tcs;
+	}
+
+	void Plugin::TabOpenRequested (const QByteArray& tc)
+	{
+		if (tc == PlayerTC_.TabClass_)
+		{
+			emit addNewTab ("LMP", PlayerTab_);
+			emit raiseTab (PlayerTab_);
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tc;
 	}
 }
 }

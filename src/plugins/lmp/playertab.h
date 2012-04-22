@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,43 +18,34 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
+#include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "ui_playertab.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class PlayerTab;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
+	class PlayerTab : public QWidget
+					, public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
+		Q_INTERFACES (ITabWidget);
 
-		TabClassInfo PlayerTC_;
-		PlayerTab *PlayerTab_;
+		Ui::PlayerTab Ui_;
+
+		QObject *Plugin_;
+		const TabClassInfo TC_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
 		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
+		void removeTab (QWidget*);
 	};
 }
 }

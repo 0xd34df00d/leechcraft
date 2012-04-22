@@ -10,18 +10,25 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	lmp.cpp
+	playertab.cpp
 	)
 SET (HEADERS
 	lmp.h
+	playertab.h
+	)
+SET (FORMS
+	playertab.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_lmp SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_lmp
 	${QT_LIBRARIES}
