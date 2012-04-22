@@ -74,6 +74,7 @@
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
+#include "pepmicroblog.h"
 #endif
 
 namespace LeechCraft
@@ -150,10 +151,12 @@ namespace Xoox
 		PubSubManager_->RegisterCreator<UserMood> ();
 		PubSubManager_->RegisterCreator<UserTune> ();
 		PubSubManager_->RegisterCreator<UserLocation> ();
+		PubSubManager_->RegisterCreator<PEPMicroblog> ();
 		PubSubManager_->SetAutosubscribe<UserActivity> (true);
 		PubSubManager_->SetAutosubscribe<UserMood> (true);
 		PubSubManager_->SetAutosubscribe<UserTune> (true);
 		PubSubManager_->SetAutosubscribe<UserLocation> (true);
+		PubSubManager_->SetAutosubscribe<PEPMicroblog> (true);
 
 		connect (PubSubManager_,
 				SIGNAL (gotEvent (const QString&, PEPEventBase*)),
