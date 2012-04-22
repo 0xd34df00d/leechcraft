@@ -85,7 +85,34 @@ namespace LMP
 
 	void Player::Enqueue (const QList<Phonon::MediaSource>& sources)
 	{
-		Source_->enqueue (sources);
+		AddToPlaylistModel (sources);
+
+		const auto& current = Source_->currentSource ();
+		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
+		if (pos == CurrentQueue_.end ())
+			pos = CurrentQueue_.begin ();
+
+		QList<Phonon::MediaSource> toPath;
+		std::copy (pos, CurrentQueue_.end (), std::back_inserter (toPath));
+		Source_->enqueue (toPath);
+	}
+
+	void Player::AddToPlaylistModel (QList<Phonon::MediaSource> sources)
+	{
+		if (!CurrentQueue_.isEmpty ())
+		{
+			PlaylistModel_->clear ();
+			Items_.clear ();
+			AlbumRoots_.clear ();
+
+			auto newList = CurrentQueue_ + sources;
+			CurrentQueue_.clear ();
+			AddToPlaylistModel (newList);
+			return;
+		}
+
+		ApplyOrdering (sources);
+		CurrentQueue_ = sources;
 
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
 
@@ -145,6 +172,31 @@ namespace LMP
 		}
 	}
 
+	void Player::ApplyOrdering (QList<Phonon::MediaSource>& sources)
+	{
+		auto resolver = Core::Instance ().GetLocalFileResolver ();
+		std::sort (sources.begin (), sources.end (),
+				[resolver] (const Phonon::MediaSource& s1, const Phonon::MediaSource& s2)
+				{
+					qDebug () << s1.type () << s2.type ();
+					if (s1.type () != Phonon::MediaSource::LocalFile ||
+						s2.type () != Phonon::MediaSource::LocalFile)
+						return qHash (s1) < qHash (s2);
+
+					const auto& left = resolver->ResolveInfo (s1.fileName ());
+					const auto& right = resolver->ResolveInfo (s2.fileName ());
+					if (left.Artist_ != right.Artist_)
+						return left.Artist_ < right.Artist_;
+					if (left.Year_ != right.Year_)
+						return left.Year_ < right.Year_;
+					if (left.Album_ != right.Album_)
+						return left.Album_ < right.Album_;
+					if (left.TrackNumber_ != right.TrackNumber_)
+						return left.TrackNumber_ < right.TrackNumber_;
+					return left.Title_ < right.Title_;
+				});
+	}
+
 	void Player::play (const QModelIndex& index)
 	{
 		if (index.data (Role::IsAlbum).toBool ())
@@ -171,6 +223,7 @@ namespace LMP
 	{
 		PlaylistModel_->clear ();
 		Items_.clear ();
+		AlbumRoots_.clear ();
 		Source_->clearQueue ();
 	}
 

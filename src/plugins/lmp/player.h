@@ -44,6 +44,7 @@ namespace LMP
 		Phonon::MediaObject *Source_;
 		Phonon::Path Path_;
 
+		QList<Phonon::MediaSource> CurrentQueue_;
 		QHash<Phonon::MediaSource, QStandardItem*> Items_;
 		QHash<QPair<QString, QString>, QStandardItem*> AlbumRoots_;
 	public:
@@ -59,6 +60,9 @@ namespace LMP
 
 		QAbstractItemModel* GetPlaylistModel () const;
 		void Enqueue (const QList<Phonon::MediaSource>&);
+	private:
+		void AddToPlaylistModel (QList<Phonon::MediaSource>);
+		void ApplyOrdering (QList<Phonon::MediaSource>&);
 	public slots:
 		void play (const QModelIndex&);
 		void clear ();
