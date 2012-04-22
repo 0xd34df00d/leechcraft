@@ -27,7 +27,7 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="CollectionTab_">
        <attribute name="title">
@@ -39,6 +39,23 @@
         </property>
         <item>
          <widget class="QTreeView" name="CollectionTree_"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="FSTab_">
+       <attribute name="title">
+        <string>Filesystem</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="margin">
+         <number>1</number>
+        </property>
+        <item>
+         <widget class="QTreeView" name="FSTree_">
+          <property name="contextMenuPolicy">
+           <enum>Qt::ActionsContextMenu</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

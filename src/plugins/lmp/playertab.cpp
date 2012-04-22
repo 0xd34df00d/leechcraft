@@ -19,6 +19,7 @@
 #include "playertab.h"
 #include <QToolBar>
 #include <QFileDialog>
+#include <QFileSystemModel>
 #include "player.h"
 #include "playlistdelegate.h"
 
@@ -30,11 +31,12 @@ namespace LMP
 	: QWidget (parent)
 	, Plugin_ (plugin)
 	, TC_ (info)
+	, FSModel_ (new QFileSystemModel (this))
 	, Player_ (new Player (this))
 	, PlaylistToolbar_ (new QToolBar ())
 	{
 		Ui_.setupUi (this);
-
+		SetupFSBrowser ();
 		SetupPlaylist ();
 	}
 
@@ -56,6 +58,21 @@ namespace LMP
 	QToolBar* PlayerTab::GetToolBar () const
 	{
 		return 0;
+	}
+
+	void PlayerTab::SetupFSBrowser ()
+	{
+		FSModel_->setReadOnly (true);
+		FSModel_->setRootPath (QDir::rootPath ());
+		Ui_.FSTree_->setModel (FSModel_);
+
+		QAction *addToPlaylist = new QAction (tr ("Add to playlist"), this);
+		addToPlaylist->setProperty ("ActionIcon", "list-add");
+		connect (addToPlaylist,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (loadFromFSBrowser ()));
+		Ui_.FSTree_->addAction (addToPlaylist);
 	}
 
 	void PlayerTab::SetupPlaylist ()
@@ -88,6 +105,51 @@ namespace LMP
 				this,
 				SLOT (loadFromDisk ()));
 		PlaylistToolbar_->addAction (loadFiles);
+	}
+
+	namespace
+	{
+		QStringList RecIterate (const QString& dirPath)
+		{
+			QStringList result;
+			QStringList nameFilters;
+			nameFilters << ".ogg"
+					<< ".flac"
+					<< ".mp3"
+					<< ".wav";
+			QDirIterator iterator (dirPath, QDirIterator::Subdirectories);
+			while (iterator.hasNext ())
+			{
+				const QString& path = iterator.next ();
+				Q_FOREACH (const QString& name, nameFilters)
+					if (path.endsWith (name, Qt::CaseInsensitive))
+					{
+						result << path;
+						break;
+					}
+			}
+			return result;
+		}
+	}
+
+	void PlayerTab::loadFromFSBrowser ()
+	{
+		const QModelIndex& index = Ui_.FSTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		const QFileInfo& fi = FSModel_->fileInfo (index);
+
+		QList<Phonon::MediaSource> queue;
+		if (fi.isDir ())
+		{
+			const auto& paths = RecIterate (fi.absoluteFilePath ());
+			std::transform (paths.begin (), paths.end (), std::back_inserter (queue),
+					[] (const QString& path) { return Phonon::MediaSource (path); });
+		}
+		else
+			queue << fi.absoluteFilePath ();
+		Player_->Enqueue (queue);
 	}
 
 	void PlayerTab::loadFromDisk ()

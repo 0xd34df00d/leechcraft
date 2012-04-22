@@ -22,6 +22,8 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_playertab.h"
 
+class QFileSystemModel;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -39,8 +41,9 @@ namespace LMP
 		QObject *Plugin_;
 		const TabClassInfo TC_;
 
-		Player *Player_;
+		QFileSystemModel *FSModel_;
 
+		Player *Player_;
 		QToolBar *PlaylistToolbar_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
@@ -50,8 +53,10 @@ namespace LMP
 		void Remove ();
 		QToolBar* GetToolBar () const;
 	private:
+		void SetupFSBrowser ();
 		void SetupPlaylist ();
 	private slots:
+		void loadFromFSBrowser ();
 		void loadFromDisk ();
 	signals:
 		void changeTabName (QWidget*, const QString&);
