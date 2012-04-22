@@ -60,6 +60,10 @@ namespace LMP
 	void PlayerTab::SetupPlaylist ()
 	{
 		Ui_.Playlist_->setModel (Player_->GetPlaylistModel ());
+		connect (Ui_.Playlist_,
+				SIGNAL (doubleClicked (QModelIndex)),
+				Player_,
+				SLOT (play (QModelIndex)));
 
 		Ui_.PlaylistLayout_->addWidget (PlaylistToolbar_);
 

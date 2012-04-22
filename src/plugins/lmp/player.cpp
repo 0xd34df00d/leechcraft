@@ -78,7 +78,8 @@ namespace LMP
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
 		{
-			item->setText ("some media");
+			item->setText (QString ("%1 - %2 - %3").arg (info.Artist_).arg (info.Album_).arg (info.Title_));
+			item->setData (QVariant::fromValue (info), Player::Role::MediaInfo);
 		}
 	}
 
@@ -111,6 +112,14 @@ namespace LMP
 
 			Items_ [source] = item;
 		}
+	}
+
+	void Player::play (const QModelIndex& index)
+	{
+		Source_->stop ();
+		const auto& source = index.data (Role::MediaSource).value<Phonon::MediaSource> ();
+		Source_->setCurrentSource (source);
+		Source_->play ();
 	}
 
 	void Player::clear ()

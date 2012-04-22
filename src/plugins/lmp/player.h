@@ -22,6 +22,7 @@
 #include <phonon/mediasource.h>
 #include <phonon/path.h>
 
+class QModelIndex;
 class QStandardItem;
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -57,6 +58,7 @@ namespace LMP
 		QAbstractItemModel* GetPlaylistModel () const;
 		void Enqueue (const QList<Phonon::MediaSource>&);
 	public slots:
+		void play (const QModelIndex&);
 		void clear ();
 	private slots:
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
