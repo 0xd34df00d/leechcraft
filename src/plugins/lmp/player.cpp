@@ -18,6 +18,8 @@
 
 #include "player.h"
 #include <QStandardItemModel>
+#include <QFileInfo>
+#include <QDir>
 #include <phonon/mediaobject.h>
 #include <phonon/audiooutput.h>
 #include "core.h"
@@ -74,15 +76,6 @@ namespace LMP
 		return PlaylistModel_;
 	}
 
-	namespace
-	{
-		void FillItem (QStandardItem *item, const MediaInfo& info)
-		{
-			item->setText (QString ("%1 - %2 - %3").arg (info.Artist_).arg (info.Album_).arg (info.Title_));
-			item->setData (QVariant::fromValue (info), Player::Role::MediaInfo);
-		}
-	}
-
 	void Player::Enqueue (const QList<Phonon::MediaSource>& sources)
 	{
 		AddToPlaylistModel (sources);
@@ -95,6 +88,47 @@ namespace LMP
 		QList<Phonon::MediaSource> toPath;
 		std::copy (pos, CurrentQueue_.end (), std::back_inserter (toPath));
 		Source_->enqueue (toPath);
+	}
+
+	namespace
+	{
+		void FillItem (QStandardItem *item, const MediaInfo& info)
+		{
+			item->setText (QString ("%1 - %2 - %3").arg (info.Artist_).arg (info.Album_).arg (info.Title_));
+			item->setData (QVariant::fromValue (info), Player::Role::MediaInfo);
+		}
+
+		QPixmap FindAlbumArt (const QString& near)
+		{
+			QStringList possibleBases;
+			possibleBases << "cover" << "folder" << "front";
+
+			const QDir& dir = QFileInfo (near).absoluteDir ();
+			const QStringList& entryList = dir.entryList (QStringList ("*.jpg") << "*.png");
+			auto pos = std::find_if (entryList.begin (), entryList.end (),
+					[&possibleBases] (const QString& name)
+					{
+						Q_FOREACH (const QString& pBase, possibleBases)
+							if (name.startsWith (pBase, Qt::CaseInsensitive))
+								return true;
+						return false;
+					});
+			if (pos == entryList.end ())
+				return QPixmap ();
+
+			return QPixmap (dir.filePath (*pos));
+		}
+
+		QStandardItem* MakeAlbumItem (const MediaInfo& info)
+		{
+			auto albumItem = new QStandardItem (QString ("%1 - %2")
+							.arg (info.Artist_, info.Album_));
+			albumItem->setEditable (false);
+			albumItem->setData (true, Player::Role::IsAlbum);
+			albumItem->setData (QVariant::fromValue (info), Player::Role::MediaInfo);
+			albumItem->setData (FindAlbumArt (info.LocalPath_), Player::Role::AlbumArt);
+			return albumItem;
+		}
 	}
 
 	void Player::AddToPlaylistModel (QList<Phonon::MediaSource> sources)
@@ -145,11 +179,7 @@ namespace LMP
 					AlbumRoots_ [albumID]->appendRow (item);
 				else
 				{
-					auto albumItem = new QStandardItem (QString ("%1 - %2")
-							.arg (albumID.first, albumID.second));
-					albumItem->setEditable (false);
-					albumItem->setData (true, Role::IsAlbum);
-					albumItem->setData (QVariant::fromValue (info), Player::Role::MediaInfo);
+					auto albumItem = MakeAlbumItem (info);
 
 					const int row = AlbumRoots_ [albumID]->row ();
 					albumItem->appendRow (PlaylistModel_->takeRow (row));

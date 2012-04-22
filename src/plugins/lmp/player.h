@@ -53,7 +53,8 @@ namespace LMP
 			IsCurrent = Qt::UserRole + 1,
 			IsAlbum,
 			MediaSource,
-			MediaInfo
+			MediaInfo,
+			AlbumArt
 		};
 
 		Player (QObject* = 0);
