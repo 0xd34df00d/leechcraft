@@ -122,6 +122,7 @@ namespace LMP
 							.arg (albumID.first, albumID.second));
 					albumItem->setEditable (false);
 					albumItem->setData (true, Role::IsAlbum);
+					albumItem->setData (QVariant::fromValue (info), Player::Role::MediaInfo);
 
 					const int row = AlbumRoots_ [albumID]->row ();
 					albumItem->appendRow (PlaylistModel_->takeRow (row));
@@ -177,6 +178,7 @@ namespace LMP
 	{
 		auto curItem = Items_ [source];
 		curItem->setData (true, Role::IsCurrent);
+
 		Q_FOREACH (auto item, Items_.values ())
 		{
 			if (item == curItem)
