@@ -3004,6 +3004,8 @@ namespace Azoth
 		}
 
 		FilterRIEXItems (items, clEntries);
+		if (items.isEmpty ())
+			return;
 
 		AcceptRIEXDialog dia (items, from, message);
 		if (dia.exec () != QDialog::Accepted)
