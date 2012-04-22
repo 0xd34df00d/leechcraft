@@ -80,6 +80,15 @@ namespace LMP
 			append (info.Artist_, boldItalic);
 			append (info.Genre_, italic);
 			append (QString::number (info.Year_), font);
+
+			const int length = index.data (Player::Role::AlbumLength).toInt ();
+			auto lengthStr = Util::MakeTimeFromLong (length);
+			if (lengthStr.startsWith ("00:"))
+				lengthStr = lengthStr.mid (3);
+			painter->drawText (option.rect.adjusted (Padding, Padding, -Padding, -Padding), Qt::AlignRight, lengthStr);
+
+			painter->restore ();
+
 			return;
 		}
 
