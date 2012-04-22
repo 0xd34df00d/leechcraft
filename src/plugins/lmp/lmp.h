@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
 {
@@ -31,9 +32,10 @@ namespace LMP
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
+				 , public IEntityHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
+		Q_INTERFACES (IInfo IHaveTabs IEntityHandler)
 
 		TabClassInfo PlayerTC_;
 		PlayerTab *PlayerTab_;
@@ -48,6 +50,9 @@ namespace LMP
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
+
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

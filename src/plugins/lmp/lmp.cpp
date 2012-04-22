@@ -17,8 +17,13 @@
  **********************************************************************/
 
 #include "lmp.h"
-#include "playertab.h"
 #include <QIcon>
+#include <QFileInfo>
+#include <QUrl>
+#include <phonon/mediaobject.h>
+#include <interfaces/entitytesthandleresult.h>
+#include "playertab.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -92,6 +97,50 @@ namespace LMP
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
 					<< tc;
+	}
+
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
+	{
+		QString path = e.Entity_.toString ();
+		const QUrl& url = e.Entity_.toUrl ();
+		if (path.isEmpty () &&
+					url.isValid () &&
+					url.isLocalFile ())
+			path = url.toLocalFile ();
+
+		if (!path.isEmpty ())
+		{
+			const auto& goodExt = XmlSettingsManager::Instance ()
+					.property ("TestExtensions").toString ()
+					.split (' ', QString::SkipEmptyParts);
+			const QFileInfo fi = QFileInfo (path);
+			if (fi.exists () && goodExt.contains (fi.suffix ()))
+				return EntityTestHandleResult (EntityTestHandleResult::PHigh);
+			else
+				return EntityTestHandleResult ();
+		}
+
+		return EntityTestHandleResult ();
+	}
+
+	void Plugin::Handle (Entity e)
+	{
+		QString path = e.Entity_.toString ();
+		const QUrl& url = e.Entity_.toUrl ();
+		if (path.isEmpty () &&
+					url.isValid () &&
+					url.isLocalFile ())
+			path = url.toLocalFile ();
+
+		if (e.Parameters_ & Internal)
+		{
+			auto obj = Phonon::createPlayer (Phonon::NotificationCategory, path);
+			obj->play ();
+			connect (obj,
+					SIGNAL (finished ()),
+					obj,
+					SLOT (deleteLater ()));
+		}
 	}
 }
 }
