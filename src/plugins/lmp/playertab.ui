@@ -55,6 +55,9 @@
       <layout class="QVBoxLayout" name="PlaylistLayout_">
        <item>
         <widget class="QTreeView" name="Playlist_">
+         <property name="indentation">
+          <number>0</number>
+         </property>
          <property name="rootIsDecorated">
           <bool>false</bool>
          </property>

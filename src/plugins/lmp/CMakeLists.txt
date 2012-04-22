@@ -43,6 +43,7 @@ SET (SRCS
 	player.cpp
 	core.cpp
 	localfileresolver.cpp
+	playlistdelegate.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -50,6 +51,7 @@ SET (HEADERS
 	player.h
 	core.h
 	localfileresolver.h
+	playlistdelegate.h
 	)
 SET (FORMS
 	playertab.ui
