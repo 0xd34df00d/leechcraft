@@ -127,7 +127,14 @@ namespace LMP
 			albumItem->setData (true, Player::Role::IsAlbum);
 			albumItem->setData (QVariant::fromValue (info), Player::Role::MediaInfo);
 			albumItem->setData (FindAlbumArt (info.LocalPath_), Player::Role::AlbumArt);
+			albumItem->setData (0, Player::Role::AlbumLength);
 			return albumItem;
+		}
+
+		void IncAlbumLength (QStandardItem *albumItem, int length)
+		{
+			const int prevLength = albumItem->data (Player::Role::AlbumLength).toInt ();
+			albumItem->setData (length + prevLength, Player::Role::AlbumLength);
 		}
 	}
 
@@ -176,15 +183,23 @@ namespace LMP
 					AlbumRoots_ [albumID] = item;
 				}
 				else if (AlbumRoots_ [albumID]->data (Role::IsAlbum).toBool ())
+				{
+					IncAlbumLength (AlbumRoots_ [albumID], info.Length_);
 					AlbumRoots_ [albumID]->appendRow (item);
+				}
 				else
 				{
 					auto albumItem = MakeAlbumItem (info);
 
 					const int row = AlbumRoots_ [albumID]->row ();
-					albumItem->appendRow (PlaylistModel_->takeRow (row));
+					const auto& existing = PlaylistModel_->takeRow (row);
+					albumItem->appendRow (existing);
 					albumItem->appendRow (item);
 					PlaylistModel_->insertRow (row, albumItem);
+
+					const auto& existingInfo = existing.at (0)->data (Role::MediaInfo).value<LMP::MediaInfo> ();
+					albumItem->setData (existingInfo.Length_, Role::AlbumLength);
+					IncAlbumLength (albumItem, info.Length_);
 
 					emit insertedAlbum (albumItem->index ());
 

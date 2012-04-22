@@ -54,7 +54,8 @@ namespace LMP
 			IsAlbum,
 			MediaSource,
 			MediaInfo,
-			AlbumArt
+			AlbumArt,
+			AlbumLength
 		};
 
 		Player (QObject* = 0);
