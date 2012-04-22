@@ -115,7 +115,7 @@ namespace LMP
 		const QUrl& url = e.Entity_.toUrl ();
 		if (path.isEmpty () &&
 					url.isValid () &&
-					url.isLocalFile ())
+					url.scheme () == "file")
 			path = url.toLocalFile ();
 
 		if (!path.isEmpty ())
@@ -139,7 +139,7 @@ namespace LMP
 		const QUrl& url = e.Entity_.toUrl ();
 		if (path.isEmpty () &&
 					url.isValid () &&
-					url.isLocalFile ())
+					url.scheme () == "file")
 			path = url.toLocalFile ();
 
 		if (e.Parameters_ & Internal)
