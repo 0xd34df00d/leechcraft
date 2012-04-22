@@ -76,6 +76,11 @@ namespace LMP
 		return PlaylistModel_;
 	}
 
+	Phonon::MediaObject* Player::GetSourceObject () const
+	{
+		return Source_;
+	}
+
 	void Player::Enqueue (const QList<Phonon::MediaSource>& sources)
 	{
 		AddToPlaylistModel (sources);
