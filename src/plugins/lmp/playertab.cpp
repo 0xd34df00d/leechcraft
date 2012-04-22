@@ -39,6 +39,8 @@ namespace LMP
 	, TabToolbar_ (new QToolBar ())
 	{
 		Ui_.setupUi (this);
+		Ui_.MainSplitter_->setStretchFactor (0, 2);
+		Ui_.MainSplitter_->setStretchFactor (1, 1);
 
 		SetupToolbar ();
 		SetupFSBrowser ();

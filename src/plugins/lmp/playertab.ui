@@ -18,7 +18,7 @@
     <number>1</number>
    </property>
    <item>
-    <widget class="QSplitter" name="splitter">
+    <widget class="QSplitter" name="MainSplitter_">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -27,7 +27,7 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="CollectionTab_">
        <attribute name="title">
@@ -59,14 +59,6 @@
         </item>
        </layout>
       </widget>
-     </widget>
-     <widget class="QFrame" name="frame">
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
      </widget>
      <widget class="QWidget" name="verticalLayoutWidget">
       <layout class="QVBoxLayout" name="PlaylistLayout_">
