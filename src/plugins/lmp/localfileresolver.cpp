@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "localfileresolver.h"
+#include <taglib/fileref.h>
+#include <taglib/tag.h>
 
 namespace LeechCraft
 {
@@ -32,7 +34,23 @@ namespace LMP
 		if (Cache_.contains (file))
 			return Cache_ [file];
 
-		MediaInfo info;
+		TagLib::FileRef r (file.toUtf8 ().constData ());
+		auto tag = r.tag ();
+		auto audio = r.audioProperties ();
+
+		auto ftl = [] (const TagLib::String& str) { return QString::fromUtf8 (str.toCString (true)); };
+
+		MediaInfo info =
+		{
+			ftl (tag->artist ()),
+			ftl (tag->album ()),
+			ftl (tag->title ()),
+			ftl (tag->genre ()),
+			audio ? audio->length () : 0,
+			tag->year (),
+			tag->track ()
+		};
+		Cache_ [file] = info;
 		return info;
 	}
 }

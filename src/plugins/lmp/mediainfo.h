@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QString>
+#include <QMetaType>
 
 namespace LeechCraft
 {
@@ -26,7 +27,7 @@ namespace LMP
 {
 	struct MediaInfo
 	{
-		QString Author_;
+		QString Artist_;
 		QString Album_;
 		QString Title_;
 
@@ -38,3 +39,5 @@ namespace LMP
 	};
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);
