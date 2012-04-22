@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,65 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LMP_LMP_H
-#define PLUGINS_LMP_LMP_H
-#include <memory>
-#include <QObject>
-#include <QTranslator>
-#include <QAction>
-#include <interfaces/iinfo.h>
-#include <interfaces/imediaplayer.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ientityhandler.h>
-#include <interfaces/iactionsexporter.h>
+#pragma once
 
-class QToolBar;
+#include <QObject>
+#include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class LMP : public QObject
-			  , public IInfo
-			  , public IMediaPlayer
-			  , public IHaveSettings
-			  , public IEntityHandler
-			  , public IActionsExporter
+	class Plugin : public QObject
+				 , public IInfo
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IMediaPlayer IHaveSettings IEntityHandler IActionsExporter)
-
-		std::auto_ptr<QTranslator> Translator_;
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		Q_INTERFACES (IInfo)
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
-		void Release ();
 		QByteArray GetUniqueID () const;
+		void Release ();
 		QString GetName () const;
 		QString GetInfo () const;
-		QStringList Provides () const;
-		QStringList Needs () const;
-		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
 		QIcon GetIcon () const;
-
-		IVideoWidget* CreateWidget () const;
-		IVideoWidget* GetDefaultWidget () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	signals:
-		void bringToFront ();
-		void gotEntity (const LeechCraft::Entity&);
-
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }
-
-#endif

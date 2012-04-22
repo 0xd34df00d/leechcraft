@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LMP_XMLSETTINGSMANAGER_H
-#define PLUGINS_LMP_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
@@ -30,12 +30,10 @@ namespace LMP
 
 		XmlSettingsManager ();
 	public:
-		static XmlSettingsManager* Instance ();
+		static XmlSettingsManager& Instance ();
 	protected:
 		virtual QSettings* BeginSettings () const;
 		virtual void EndSettings (QSettings*) const;
 	};
 }
 }
-
-#endif

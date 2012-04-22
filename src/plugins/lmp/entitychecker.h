@@ -20,7 +20,6 @@
 #define PLUGINS_LMP_ENTITYCHECKER_H
 #include <memory>
 #include <QObject>
-#include "phonon.h"
 
 namespace LeechCraft
 {
@@ -37,8 +36,6 @@ namespace LMP
 	public:
 		EntityChecker (const LeechCraft::Entity&);
 		bool Can () const;
-	private slots:
-		void stateChanged (Phonon::State);
 	};
 }
 }
