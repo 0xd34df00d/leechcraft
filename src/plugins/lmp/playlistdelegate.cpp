@@ -20,6 +20,7 @@
 #include <QTreeView>
 #include <QPainter>
 #include <QApplication>
+#include <util/util.h>
 #include "player.h"
 #include "mediainfo.h"
 
@@ -100,7 +101,15 @@ namespace LMP
 			painter->setPen (bgOpt.palette.color (QPalette::HighlightedText));
 		}
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &bgOpt, painter, option.widget);
-		style->drawItemText (painter, option.rect, 0, option.palette, true,
+		QString lengthText = Util::MakeTimeFromLong (info.Length_);
+		if (lengthText.startsWith ("00:"))
+			lengthText = lengthText.mid (3);
+
+		const int width = option.fontMetrics.width (lengthText);
+		style->drawItemText (painter, option.rect,
+				Qt::AlignRight, option.palette, true, lengthText);
+		style->drawItemText (painter, option.rect.adjusted (0, 0, -width, 0),
+				0, option.palette, true,
 				isSubAlbum ?
 					QString::fromUtf8 ("%1 — %2").arg (info.TrackNumber_).arg (info.Title_) :
 					index.data ().toString ());
