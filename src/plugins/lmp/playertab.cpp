@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "playertab.h"
+#include <algorithm>
 #include <QToolBar>
 #include <QFileDialog>
 #include <QFileSystemModel>
