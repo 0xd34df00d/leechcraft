@@ -39,6 +39,7 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	lmp.cpp
+	xmlsettingsmanager.cpp
 	playertab.cpp
 	player.cpp
 	core.cpp
@@ -47,6 +48,7 @@ SET (SRCS
 	)
 SET (HEADERS
 	lmp.h
+	xmlsettingsmanager.h
 	playertab.h
 	player.h
 	core.h
