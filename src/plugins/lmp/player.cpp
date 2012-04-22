@@ -87,6 +87,8 @@ namespace LMP
 	{
 		Source_->enqueue (sources);
 
+		auto resolver = Core::Instance ().GetLocalFileResolver ();
+
 		Q_FOREACH (const auto& source, sources)
 		{
 			auto item = new QStandardItem ();
@@ -96,19 +98,47 @@ namespace LMP
 			{
 			case Phonon::MediaSource::Stream:
 				item->setText (tr ("Stream"));
+				PlaylistModel_->appendRow (item);
 				break;
 			case Phonon::MediaSource::Url:
 				item->setText ("URL");
+				PlaylistModel_->appendRow (item);
 				break;
 			case Phonon::MediaSource::LocalFile:
-				FillItem (item, Core::Instance ().GetLocalFileResolver ()->
-							ResolveInfo (source.fileName ()));
-				break;
-			default:
-				item->setText ("unknown");
+			{
+				const auto& info = resolver->ResolveInfo (source.fileName ());
+				const auto& albumID = qMakePair (info.Artist_, info.Album_);
+				FillItem (item, info);
+				if (!AlbumRoots_.contains (albumID))
+				{
+					PlaylistModel_->appendRow (item);
+					AlbumRoots_ [albumID] = item;
+				}
+				else if (AlbumRoots_ [albumID]->data (Role::IsAlbum).toBool ())
+					AlbumRoots_ [albumID]->appendRow (item);
+				else
+				{
+					auto albumItem = new QStandardItem (QString ("%1 - %2")
+							.arg (albumID.first, albumID.second));
+					albumItem->setEditable (false);
+					albumItem->setData (true, Role::IsAlbum);
+
+					const int row = AlbumRoots_ [albumID]->row ();
+					albumItem->appendRow (PlaylistModel_->takeRow (row));
+					albumItem->appendRow (item);
+					PlaylistModel_->insertRow (row, albumItem);
+
+					emit insertedAlbum (albumItem->index ());
+
+					AlbumRoots_ [albumID] = albumItem;
+				}
 				break;
 			}
-			PlaylistModel_->appendRow (item);
+			default:
+				item->setText ("unknown");
+				PlaylistModel_->appendRow (item);
+				break;
+			}
 
 			Items_ [source] = item;
 		}
@@ -116,6 +146,20 @@ namespace LMP
 
 	void Player::play (const QModelIndex& index)
 	{
+		if (index.data (Role::IsAlbum).toBool ())
+		{
+			play (index.child (0, 0));
+			return;
+		}
+
+		if (!index.isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid index"
+					<< index;
+			return;
+		}
+
 		Source_->stop ();
 		const auto& source = index.data (Role::MediaSource).value<Phonon::MediaSource> ();
 		Source_->setCurrentSource (source);

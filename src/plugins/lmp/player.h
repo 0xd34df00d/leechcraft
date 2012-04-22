@@ -45,10 +45,12 @@ namespace LMP
 		Phonon::Path Path_;
 
 		QHash<Phonon::MediaSource, QStandardItem*> Items_;
+		QHash<QPair<QString, QString>, QStandardItem*> AlbumRoots_;
 	public:
 		enum Role
 		{
 			IsCurrent = Qt::UserRole + 1,
+			IsAlbum,
 			MediaSource,
 			MediaInfo
 		};
@@ -62,6 +64,8 @@ namespace LMP
 		void clear ();
 	private slots:
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
+	signals:
+		void insertedAlbum (const QModelIndex&);
 	};
 }
 }

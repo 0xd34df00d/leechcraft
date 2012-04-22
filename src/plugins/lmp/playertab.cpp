@@ -64,6 +64,10 @@ namespace LMP
 				SIGNAL (doubleClicked (QModelIndex)),
 				Player_,
 				SLOT (play (QModelIndex)));
+		connect (Player_,
+				SIGNAL (insertedAlbum (QModelIndex)),
+				Ui_.Playlist_,
+				SLOT (expand (QModelIndex)));
 
 		Ui_.PlaylistLayout_->addWidget (PlaylistToolbar_);
 
