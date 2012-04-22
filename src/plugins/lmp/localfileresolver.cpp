@@ -42,6 +42,7 @@ namespace LMP
 
 		MediaInfo info =
 		{
+			file,
 			ftl (tag->artist ()),
 			ftl (tag->album ()),
 			ftl (tag->title ()),

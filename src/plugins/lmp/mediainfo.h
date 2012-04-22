@@ -27,6 +27,8 @@ namespace LMP
 {
 	struct MediaInfo
 	{
+		QString LocalPath_;
+
 		QString Artist_;
 		QString Album_;
 		QString Title_;
