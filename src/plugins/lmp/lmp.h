@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
@@ -32,13 +33,16 @@ namespace LMP
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
+				 , public IHaveSettings
 				 , public IEntityHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IEntityHandler)
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IEntityHandler)
 
 		TabClassInfo PlayerTC_;
 		PlayerTab *PlayerTab_;
+
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -50,6 +54,8 @@ namespace LMP
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);

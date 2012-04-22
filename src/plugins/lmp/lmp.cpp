@@ -21,6 +21,7 @@
 #include <QFileInfo>
 #include <QUrl>
 #include <phonon/mediaobject.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "playertab.h"
 #include "xmlsettingsmanager.h"
@@ -31,6 +32,9 @@ namespace LMP
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");
+
 		PlayerTC_ =
 		{
 			GetUniqueID () + "_player",
@@ -40,6 +44,7 @@ namespace LMP
 			40,
 			TFSingle | TFOpenableByRequest
 		};
+
 		PlayerTab_ = new PlayerTab (PlayerTC_, this);
 		connect (PlayerTab_,
 				SIGNAL (removeTab (QWidget*)),
@@ -97,6 +102,11 @@ namespace LMP
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
 					<< tc;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
