@@ -26,6 +26,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class Player;
+
 	class PlayerTab : public QWidget
 					, public ITabWidget
 	{
@@ -36,6 +38,10 @@ namespace LMP
 
 		QObject *Plugin_;
 		const TabClassInfo TC_;
+
+		Player *Player_;
+
+		QToolBar *PlaylistToolbar_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
@@ -43,6 +49,10 @@ namespace LMP
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private:
+		void SetupPlaylist ();
+	private slots:
+		void loadFromDisk ();
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);

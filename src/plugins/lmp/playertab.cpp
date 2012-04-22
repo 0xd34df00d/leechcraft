@@ -17,6 +17,9 @@
  **********************************************************************/
 
 #include "playertab.h"
+#include <QToolBar>
+#include <QFileDialog>
+#include "player.h"
 
 namespace LeechCraft
 {
@@ -26,7 +29,12 @@ namespace LMP
 	: QWidget (parent)
 	, Plugin_ (plugin)
 	, TC_ (info)
+	, Player_ (new Player (this))
+	, PlaylistToolbar_ (new QToolBar ())
 	{
+		Ui_.setupUi (this);
+
+		SetupPlaylist ();
 	}
 
 	TabClassInfo PlayerTab::GetTabClassInfo () const
@@ -47,6 +55,41 @@ namespace LMP
 	QToolBar* PlayerTab::GetToolBar () const
 	{
 		return 0;
+	}
+
+	void PlayerTab::SetupPlaylist ()
+	{
+		Ui_.Playlist_->setModel (Player_->GetPlaylistModel ());
+
+		Ui_.PlaylistLayout_->addWidget (PlaylistToolbar_);
+
+		QAction *clearPlaylist = new QAction (tr ("Clear..."), this);
+		clearPlaylist->setProperty ("ActionIcon", "edit-clear-list");
+		connect (clearPlaylist,
+				SIGNAL (triggered ()),
+				Player_,
+				SLOT (clear ()));
+		PlaylistToolbar_->addAction (clearPlaylist);
+
+		QAction *loadFiles = new QAction (tr ("Load from disk..."), this);
+		loadFiles->setProperty ("ActionIcon", "document-open");
+		connect (loadFiles,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (loadFromDisk ()));
+		PlaylistToolbar_->addAction (loadFiles);
+	}
+
+	void PlayerTab::loadFromDisk ()
+	{
+		QStringList files = QFileDialog::getOpenFileNames (this,
+				tr ("Load files"),
+				QDir::homePath (),
+				tr ("Music files (*.ogg *.flac *.mp3 *.wav);;All files (*.*)"));
+		QList<Phonon::MediaSource> queue;
+		Q_FOREACH (const QString& file, files)
+			queue << file;
+		Player_->Enqueue (queue);
 	}
 }
 }
