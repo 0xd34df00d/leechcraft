@@ -45,6 +45,8 @@ namespace LMP
 
 		Player *Player_;
 		QToolBar *PlaylistToolbar_;
+
+		QToolBar *TabToolbar_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
@@ -53,6 +55,7 @@ namespace LMP
 		void Remove ();
 		QToolBar* GetToolBar () const;
 	private:
+		void SetupToolbar ();
 		void SetupFSBrowser ();
 		void SetupPlaylist ();
 	private slots:

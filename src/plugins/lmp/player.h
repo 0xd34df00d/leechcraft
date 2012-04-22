@@ -68,6 +68,10 @@ namespace LMP
 		void ApplyOrdering (QList<Phonon::MediaSource>&);
 	public slots:
 		void play (const QModelIndex&);
+		void previousTrack ();
+		void nextTrack ();
+		void togglePause ();
+		void stop ();
 		void clear ();
 	private slots:
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);

@@ -20,6 +20,7 @@
 #include <QToolBar>
 #include <QFileDialog>
 #include <QFileSystemModel>
+#include <phonon/seekslider.h>
 #include "player.h"
 #include "playlistdelegate.h"
 
@@ -34,8 +35,11 @@ namespace LMP
 	, FSModel_ (new QFileSystemModel (this))
 	, Player_ (new Player (this))
 	, PlaylistToolbar_ (new QToolBar ())
+	, TabToolbar_ (new QToolBar ())
 	{
 		Ui_.setupUi (this);
+
+		SetupToolbar ();
 		SetupFSBrowser ();
 		SetupPlaylist ();
 	}
@@ -57,7 +61,45 @@ namespace LMP
 
 	QToolBar* PlayerTab::GetToolBar () const
 	{
-		return 0;
+		return TabToolbar_;
+	}
+
+	void PlayerTab::SetupToolbar ()
+	{
+		QAction *previous = new QAction (tr ("Previous track"), this);
+		previous->setProperty ("ActionIcon", "media-skip-backward");
+		connect (previous,
+				SIGNAL (triggered ()),
+				Player_,
+				SLOT (previousTrack ()));
+		TabToolbar_->addAction (previous);
+
+		QAction *pause= new QAction (tr ("Play/pause"), this);
+		pause->setProperty ("ActionIcon", "media-playback-pause");
+		connect (pause,
+				SIGNAL (triggered ()),
+				Player_,
+				SLOT (togglePause ()));
+		TabToolbar_->addAction (pause);
+
+		QAction *stop = new QAction (tr ("Stop"), this);
+		stop->setProperty ("ActionIcon", "media-playback-stop");
+		connect (stop,
+				SIGNAL (triggered ()),
+				Player_,
+				SLOT (stop ()));
+		TabToolbar_->addAction (stop);
+
+		QAction *next = new QAction (tr ("Next track"), this);
+		next->setProperty ("ActionIcon", "media-skip-forward");
+		connect (next,
+				SIGNAL (triggered ()),
+				Player_,
+				SLOT (nextTrack ()));
+		TabToolbar_->addAction (next);
+
+		auto seekSlider = new Phonon::SeekSlider (Player_->GetSourceObject ());
+		TabToolbar_->addWidget (seekSlider);
 	}
 
 	void PlayerTab::SetupFSBrowser ()

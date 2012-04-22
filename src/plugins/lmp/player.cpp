@@ -269,6 +269,43 @@ namespace LMP
 		Source_->play ();
 	}
 
+	void Player::previousTrack ()
+	{
+		const auto& current = Source_->currentSource ();
+		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
+		if (pos == CurrentQueue_.end () || pos == CurrentQueue_.begin ())
+			return;
+
+		Source_->stop ();
+		Source_->setCurrentSource (*(--pos));
+		Source_->play ();
+	}
+
+	void Player::nextTrack()
+	{
+		const auto& current = Source_->currentSource ();
+		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
+		if (pos == CurrentQueue_.end () || pos == CurrentQueue_.end () - 1)
+			return;
+
+		Source_->stop ();
+		Source_->setCurrentSource (*(++pos));
+		Source_->play ();
+	}
+
+	void Player::togglePause ()
+	{
+		if (Source_->state () == Phonon::PlayingState)
+			Source_->pause ();
+		else
+			Source_->play ();
+	}
+
+	void Player::stop ()
+	{
+		Source_->stop ();
+	}
+
 	void Player::clear ()
 	{
 		PlaylistModel_->clear ();
