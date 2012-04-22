@@ -2894,6 +2894,10 @@ namespace Azoth
 					if (!found)
 						items.removeAll (item);
 				}
+
+				if (item.Action_ == RIEXItem::AAdd &&
+						entry)
+					items.removeAll (item);
 			}
 		}
 
@@ -2975,8 +2979,7 @@ namespace Azoth
 
 	void Core::handleRIEXItemsSuggested (QList<RIEXItem> items, QObject *from, QString message)
 	{
-		if (items.isEmpty () ||
-				!from)
+		if (items.isEmpty () || !from)
 			return;
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (from);
