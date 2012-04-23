@@ -27,8 +27,13 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Current song</string>
+       </attribute>
+      </widget>
       <widget class="QWidget" name="CollectionTab_">
        <attribute name="title">
         <string>Collection</string>
@@ -38,7 +43,11 @@
          <number>1</number>
         </property>
         <item>
-         <widget class="QTreeView" name="CollectionTree_"/>
+         <widget class="QTreeView" name="CollectionTree_">
+          <property name="contextMenuPolicy">
+           <enum>Qt::ActionsContextMenu</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

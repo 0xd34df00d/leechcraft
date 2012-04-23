@@ -25,6 +25,8 @@
 #include "player.h"
 #include "playlistdelegate.h"
 #include "util.h"
+#include "core.h"
+#include "localcollection.h"
 
 namespace LeechCraft
 {
@@ -44,6 +46,7 @@ namespace LMP
 		Ui_.MainSplitter_->setStretchFactor (1, 1);
 
 		SetupToolbar ();
+		SetupCollection ();
 		SetupFSBrowser ();
 		SetupPlaylist ();
 	}
@@ -106,6 +109,20 @@ namespace LMP
 		TabToolbar_->addWidget (seekSlider);
 	}
 
+	void PlayerTab::SetupCollection ()
+	{
+		auto collection = Core::Instance ().GetLocalCollection ();
+		Ui_.CollectionTree_->setModel (collection->GetCollectionModel ());
+
+		QAction *addToPlaylist = new QAction (tr ("Add to playlist"), this);
+		addToPlaylist->setProperty ("ActionIcon", "list-add");
+		connect (addToPlaylist,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (loadFromCollection ()));
+		Ui_.CollectionTree_->addAction (addToPlaylist);
+	}
+
 	void PlayerTab::SetupFSBrowser ()
 	{
 		FSModel_->setReadOnly (true);
@@ -151,6 +168,16 @@ namespace LMP
 				this,
 				SLOT (loadFromDisk ()));
 		PlaylistToolbar_->addAction (loadFiles);
+	}
+
+	void PlayerTab::loadFromCollection ()
+	{
+		const QModelIndex& index = Ui_.CollectionTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		auto collection = Core::Instance ().GetLocalCollection ();
+		//collection->Enqueue (index, Player_);
 	}
 
 	void PlayerTab::loadFromFSBrowser ()

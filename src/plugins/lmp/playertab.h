@@ -56,9 +56,11 @@ namespace LMP
 		QToolBar* GetToolBar () const;
 	private:
 		void SetupToolbar ();
+		void SetupCollection ();
 		void SetupFSBrowser ();
 		void SetupPlaylist ();
 	private slots:
+		void loadFromCollection ();
 		void loadFromFSBrowser ();
 		void loadFromDisk ();
 	signals:
