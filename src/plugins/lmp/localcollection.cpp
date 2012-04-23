@@ -123,6 +123,15 @@ namespace LMP
 		return Sorter_;
 	}
 
+	void LocalCollection::Enqueue (const QModelIndex& index, Player *player)
+	{
+		const auto& paths = CollectPaths (Sorter_->mapToSource (index));
+		QList<Phonon::MediaSource> sources;
+		std::transform (paths.begin (), paths.end (), std::back_inserter (sources),
+				[] (decltype (paths.front ()) path) { return Phonon::MediaSource (path); });
+		player->Enqueue (sources);
+	}
+
 	void LocalCollection::Scan (const QString& path)
 	{
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
@@ -137,6 +146,18 @@ namespace LMP
 		PresentPaths_ += paths;
 
 		AppendToModel (newArts);
+	}
+
+	QStringList LocalCollection::CollectPaths (const QModelIndex& index)
+	{
+		const auto type = index.data (Role::Node).toInt ();
+		if (type == NodeType::Track)
+			return QStringList (index.data (Role::TrackPath).toString ());
+
+		QStringList paths;
+		for (int i = 0; i < CollectionModel_->rowCount (index); ++i)
+			paths += CollectPaths (CollectionModel_->index (i, 0, index));
+		return paths;
 	}
 
 	namespace

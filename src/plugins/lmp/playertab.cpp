@@ -177,7 +177,7 @@ namespace LMP
 			return;
 
 		auto collection = Core::Instance ().GetLocalCollection ();
-		//collection->Enqueue (index, Player_);
+		collection->Enqueue (index, Player_);
 	}
 
 	void PlayerTab::loadFromFSBrowser ()

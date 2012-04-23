@@ -70,9 +70,11 @@ namespace LMP
 		LocalCollection (QObject* = 0);
 
 		QAbstractItemModel* GetCollectionModel () const;
+		void Enqueue (const QModelIndex&, Player*);
 
 		void Scan (const QString&);
 	private:
+		QStringList CollectPaths (const QModelIndex&);
 		void AppendToModel (const Collection::Artists_t&);
 	};
 }
