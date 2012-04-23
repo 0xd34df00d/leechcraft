@@ -48,6 +48,7 @@ SET (SRCS
 	playlistdelegate.cpp
 	localcollection.cpp
 	localcollectionstorage.cpp
+	util.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -59,6 +60,7 @@ SET (HEADERS
 	playlistdelegate.h
 	localcollection.h
 	localcollectionstorage.h
+	util.h
 	)
 SET (FORMS
 	playertab.ui

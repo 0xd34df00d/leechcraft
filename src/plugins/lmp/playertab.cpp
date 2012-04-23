@@ -24,6 +24,7 @@
 #include <phonon/seekslider.h>
 #include "player.h"
 #include "playlistdelegate.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -150,31 +151,6 @@ namespace LMP
 				this,
 				SLOT (loadFromDisk ()));
 		PlaylistToolbar_->addAction (loadFiles);
-	}
-
-	namespace
-	{
-		QStringList RecIterate (const QString& dirPath)
-		{
-			QStringList result;
-			QStringList nameFilters;
-			nameFilters << ".ogg"
-					<< ".flac"
-					<< ".mp3"
-					<< ".wav";
-			QDirIterator iterator (dirPath, QDirIterator::Subdirectories);
-			while (iterator.hasNext ())
-			{
-				const QString& path = iterator.next ();
-				Q_FOREACH (const QString& name, nameFilters)
-					if (path.endsWith (name, Qt::CaseInsensitive))
-					{
-						result << path;
-						break;
-					}
-			}
-			return result;
-		}
 	}
 
 	void PlayerTab::loadFromFSBrowser ()
