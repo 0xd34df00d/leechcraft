@@ -19,6 +19,7 @@
 #include "core.h"
 #include "localfileresolver.h"
 #include "localcollection.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -32,6 +33,8 @@ namespace LMP
 
 	void Core::PostInit ()
 	{
+		XmlSettingsManager::Instance ().RegisterObject ("CollectionDir",
+				this, "handleCollectionDirChanged");
 	}
 
 	Core& Core::Instance ()
@@ -48,6 +51,15 @@ namespace LMP
 	LocalCollection* Core::GetLocalCollection () const
 	{
 		return Collection_;
+	}
+
+	void Core::handleCollectionDirChanged ()
+	{
+		Collection_->Clear ();
+		const auto& dir = XmlSettingsManager::Instance ()
+				.property ("CollectionDir").toString ();
+		if (!dir.isEmpty ())
+			Collection_->Scan (dir);
 	}
 }
 }

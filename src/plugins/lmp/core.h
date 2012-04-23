@@ -42,6 +42,8 @@ namespace LMP
 
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;
+	private slots:
+		void handleCollectionDirChanged ();
 	};
 }
 }
