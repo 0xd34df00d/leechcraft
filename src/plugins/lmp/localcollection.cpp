@@ -23,6 +23,7 @@
 #include "core.h"
 #include "util.h"
 #include "localfileresolver.h"
+#include "player.h"
 
 namespace LeechCraft
 {
@@ -38,6 +39,8 @@ namespace LMP
 			Q_FOREACH (auto album, artist.Albums_)
 				Q_FOREACH (const auto& track, album->Tracks_)
 					PresentPaths_ << track.FilePath_;
+
+		AppendToModel (Artists_);
 	}
 
 	QAbstractItemModel* LocalCollection::GetCollectionModel () const
@@ -55,8 +58,51 @@ namespace LMP
 		std::transform (paths.begin (), paths.end (), std::back_inserter (infos),
 				[resolver] (const QString& path) { return resolver->ResolveInfo (path); });
 
-		Storage_->AddToCollection (infos);
+		auto newArts = Storage_->AddToCollection (infos);
 		PresentPaths_ += paths;
+
+		AppendToModel (newArts);
+	}
+
+	namespace
+	{
+		template<typename T, typename U, typename Parent>
+		QStandardItem* GetItem (T& c, U idx, const QString& name, Parent parent)
+		{
+			if (c.contains (idx))
+				return c [idx];
+
+			auto item = new QStandardItem (name);
+			parent->appendRow (item);
+			c [idx] = item;
+			return item;
+		}
+	}
+
+	void LocalCollection::AppendToModel (const Collection::Artists_t& artists)
+	{
+		Q_FOREACH (const auto& artist, artists)
+		{
+			auto artistItem = GetItem (Artist2Item_, artist.ID_, artist.Name_, CollectionModel_);
+			Q_FOREACH (auto album, artist.Albums_)
+			{
+				auto albumItem = GetItem (Album2Item_,
+						album->ID_,
+						QString ("%1 - %2")
+							.arg (album->Year_)
+							.arg (album->Name_),
+						artistItem);
+
+				Q_FOREACH (const auto& track, album->Tracks_)
+				{
+					const QString& name = QString ("%1 - %2")
+							.arg (track.Number_)
+							.arg (track.Name_);
+					auto item = new QStandardItem (name);
+					albumItem->appendRow (item);
+				}
+			}
+		}
 	}
 }
 }

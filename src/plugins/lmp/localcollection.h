@@ -19,16 +19,21 @@
 #pragma once
 
 #include <QObject>
-#include "localcollectionstorage.h"
+#include <QHash>
+#include <QSet>
+#include "collectiontypes.h"
 
 class QStandardItemModel;
+class QStandardItem;
 class QAbstractItemModel;
+class QModelIndex;
 
 namespace LeechCraft
 {
 namespace LMP
 {
 	class LocalCollectionStorage;
+	class Player;
 
 	class LocalCollection : public QObject
 	{
@@ -39,11 +44,17 @@ namespace LMP
 
 		Collection::Artists_t Artists_;
 		QSet<QString> PresentPaths_;
+
+		QHash<int, QStandardItem*> Artist2Item_;
+		QHash<int, QStandardItem*> Album2Item_;
 	public:
 		LocalCollection (QObject* = 0);
 
 		QAbstractItemModel* GetCollectionModel () const;
+
 		void Scan (const QString&);
+	private:
+		void AppendToModel (const Collection::Artists_t&);
 	};
 }
 }
