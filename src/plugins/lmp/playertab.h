@@ -28,6 +28,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class MediaInfo;
 	class Player;
 
 	class PlayerTab : public QWidget
@@ -60,6 +61,7 @@ namespace LMP
 		void SetupFSBrowser ();
 		void SetupPlaylist ();
 	private slots:
+		void handleSongChanged (const MediaInfo&);
 		void loadFromCollection ();
 		void loadFromFSBrowser ();
 		void loadFromDisk ();

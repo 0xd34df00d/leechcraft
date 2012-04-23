@@ -46,6 +46,12 @@ namespace LMP
 		Ui_.MainSplitter_->setStretchFactor (0, 2);
 		Ui_.MainSplitter_->setStretchFactor (1, 1);
 
+		connect (Player_,
+				SIGNAL (songChanged (MediaInfo)),
+				this,
+				SLOT (handleSongChanged (MediaInfo)));
+		handleSongChanged (MediaInfo ());
+
 		SetupToolbar ();
 		SetupCollection ();
 		SetupFSBrowser ();
@@ -105,6 +111,8 @@ namespace LMP
 				Player_,
 				SLOT (nextTrack ()));
 		TabToolbar_->addAction (next);
+
+		TabToolbar_->addSeparator ();
 
 		auto seekSlider = new Phonon::SeekSlider (Player_->GetSourceObject ());
 		TabToolbar_->addWidget (seekSlider);
@@ -170,6 +178,35 @@ namespace LMP
 				this,
 				SLOT (loadFromDisk ()));
 		PlaylistToolbar_->addAction (loadFiles);
+	}
+
+	void PlayerTab::handleSongChanged (const MediaInfo& info)
+	{
+		QPixmap px;
+		if (info.LocalPath_.isEmpty ())
+			px = QIcon::fromTheme ("media-optical").pixmap (64, 64);
+		else
+		{
+			px = FindAlbumArt (info.LocalPath_);
+			if (px.isNull ())
+				px = QIcon::fromTheme ("media-optical").pixmap (64, 64);
+		}
+		px = px.scaled (Ui_.NPArt_->minimumSize (),
+				Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		Ui_.NPArt_->setPixmap (px);
+
+		Ui_.NowPlaying_->clear ();
+
+		if (!info.Title_.isEmpty () || !info.Artist_.isEmpty ())
+		{
+			const auto& title = info.Title_.isEmpty () ? tr ("unknown song") : info.Title_;
+			const auto& album = info.Album_.isEmpty () ? tr ("unknown album") : info.Album_;
+			const auto& track = info.Artist_.isEmpty () ? tr ("unknown artist") : info.Artist_;
+			Ui_.NowPlaying_->setText (tr ("Now playing: %1 from %2 by %3")
+						.arg ("<em>" + title + "</em>")
+						.arg ("<em>" + album + "</em>")
+						.arg ("<em>" + track + "</em>"));
+		}
 	}
 
 	void PlayerTab::loadFromCollection ()
