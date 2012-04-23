@@ -61,7 +61,7 @@ namespace LMP
 							return true;
 					return false;
 				});
-		return pos == entryList.end () ? QString () : *pos;
+		return pos == entryList.end () ? QString () : dir.filePath (*pos);
 	}
 
 	QPixmap FindAlbumArt (const QString& near)
