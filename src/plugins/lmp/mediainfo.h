@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QString>
+#include <QStringList>
 #include <QMetaType>
 
 namespace LeechCraft
@@ -33,7 +33,7 @@ namespace LMP
 		QString Album_;
 		QString Title_;
 
-		QString Genre_;
+		QStringList Genres_;
 
 		qint32 Length_;
 		qint32 Year_;

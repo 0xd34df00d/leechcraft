@@ -78,7 +78,7 @@ namespace LMP
 			};
 			append (info.Album_, bold);
 			append (info.Artist_, boldItalic);
-			append (info.Genre_, italic);
+			append (info.Genres_.join (" / "), italic);
 			append (QString::number (info.Year_), font);
 
 			const int length = index.data (Player::Role::AlbumLength).toInt ();
@@ -147,7 +147,7 @@ namespace LMP
 		const int height = Padding * 2 +
 				boldFM.boundingRect (info.Album_).height () +
 				boldItalicFM.boundingRect (info.Artist_).height () +
-				italicFM.boundingRect (info.Genre_).height () +
+				italicFM.boundingRect (info.Genres_.join (" / ")).height () +
 				option.fontMetrics.boundingRect (QString::number (info.Year_)).height ();
 
 		return QSize (width, std::max (height, 32));

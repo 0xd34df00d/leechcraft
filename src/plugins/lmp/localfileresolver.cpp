@@ -40,13 +40,17 @@ namespace LMP
 
 		auto ftl = [] (const TagLib::String& str) { return QString::fromUtf8 (str.toCString (true)); };
 
+		auto genres = ftl (tag->genre ()).split ('/', QString::SkipEmptyParts);
+		std::for_each (genres.begin (), genres.end (),
+				[] (QString& genre) { genre = genre.trimmed (); });
+
 		MediaInfo info =
 		{
 			file,
 			ftl (tag->artist ()),
 			ftl (tag->album ()),
 			ftl (tag->title ()),
-			ftl (tag->genre ()),
+			genres,
 			audio ? audio->length () : 0,
 			tag->year (),
 			tag->track ()
