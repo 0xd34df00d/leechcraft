@@ -18,6 +18,7 @@
 
 #include "util.h"
 #include <QDirIterator>
+#include <QPixmap>
 
 namespace LeechCraft
 {
@@ -43,6 +44,29 @@ namespace LMP
 				}
 		}
 		return result;
+	}
+
+	QString FindAlbumArtPath (const QString& near)
+	{
+		QStringList possibleBases;
+		possibleBases << "cover" << "folder" << "front";
+
+		const QDir& dir = QFileInfo (near).absoluteDir ();
+		const QStringList& entryList = dir.entryList (QStringList ("*.jpg") << "*.png" << "*.bmp");
+		auto pos = std::find_if (entryList.begin (), entryList.end (),
+				[&possibleBases] (const QString& name)
+				{
+					Q_FOREACH (const QString& pBase, possibleBases)
+						if (name.startsWith (pBase, Qt::CaseInsensitive))
+							return true;
+					return false;
+				});
+		return pos == entryList.end () ? QString () : *pos;
+	}
+
+	QPixmap FindAlbumArt (const QString& near)
+	{
+		return QPixmap (FindAlbumArtPath (near));
 	}
 }
 }

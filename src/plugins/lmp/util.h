@@ -20,10 +20,14 @@
 
 #include <QStringList>
 
+class QPixmap;
+
 namespace LeechCraft
 {
 namespace LMP
 {
 	QStringList RecIterate (const QString& dirPath);
+	QString FindAlbumArtPath (const QString& near);
+	QPixmap FindAlbumArt (const QString& near);
 }
 }

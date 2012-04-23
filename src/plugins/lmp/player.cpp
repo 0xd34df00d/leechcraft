@@ -27,6 +27,7 @@
 #include "core.h"
 #include "mediainfo.h"
 #include "localfileresolver.h"
+#include "util.h"
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);
 
@@ -111,27 +112,6 @@ namespace LMP
 		{
 			item->setText (QString ("%1 - %2 - %3").arg (info.Artist_).arg (info.Album_).arg (info.Title_));
 			item->setData (QVariant::fromValue (info), Player::Role::MediaInfo);
-		}
-
-		QPixmap FindAlbumArt (const QString& near)
-		{
-			QStringList possibleBases;
-			possibleBases << "cover" << "folder" << "front";
-
-			const QDir& dir = QFileInfo (near).absoluteDir ();
-			const QStringList& entryList = dir.entryList (QStringList ("*.jpg") << "*.png");
-			auto pos = std::find_if (entryList.begin (), entryList.end (),
-					[&possibleBases] (const QString& name)
-					{
-						Q_FOREACH (const QString& pBase, possibleBases)
-							if (name.startsWith (pBase, Qt::CaseInsensitive))
-								return true;
-						return false;
-					});
-			if (pos == entryList.end ())
-				return QPixmap ();
-
-			return QPixmap (dir.filePath (*pos));
 		}
 
 		QStandardItem* MakeAlbumItem (const MediaInfo& info)
