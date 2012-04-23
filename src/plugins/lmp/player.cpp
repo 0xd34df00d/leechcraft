@@ -21,6 +21,7 @@
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
+#include <QUrl>
 #include <phonon/mediaobject.h>
 #include <phonon/audiooutput.h>
 #include "core.h"
