@@ -63,8 +63,8 @@ namespace LMP
 			QFont boldItalic = bold;
 			boldItalic.setItalic (true);
 
-			int x = maxIconHeight + 2 * Padding;
-			int y = option.rect.top () + Padding;
+			int x = option.rect.left () + maxIconHeight + 3 * Padding;
+			int y = option.rect.top ();
 			painter->save ();
 
 			auto append = [&x, &y, painter] (const QString& text, const QFont& font)
