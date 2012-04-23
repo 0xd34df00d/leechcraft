@@ -25,6 +25,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include "playertab.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -44,6 +45,8 @@ namespace LMP
 			40,
 			TFSingle | TFOpenableByRequest
 		};
+
+		Core::Instance ().PostInit ();
 
 		PlayerTab_ = new PlayerTab (PlayerTC_, this);
 		connect (PlayerTab_,

@@ -30,6 +30,10 @@ namespace LMP
 	{
 	}
 
+	void Core::PostInit ()
+	{
+	}
+
 	Core& Core::Instance ()
 	{
 		static Core c;

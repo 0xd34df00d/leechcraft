@@ -38,6 +38,8 @@ namespace LMP
 	public:
 		static Core& Instance ();
 
+		void PostInit ();
+
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;
 	};
