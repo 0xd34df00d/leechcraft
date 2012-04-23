@@ -21,7 +21,9 @@
 #include <QObject>
 #include <QHash>
 #include <QSet>
+#include <QFutureWatcher>
 #include "collectiontypes.h"
+#include "mediainfo.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -49,6 +51,8 @@ namespace LMP
 
 		QHash<int, QStandardItem*> Artist2Item_;
 		QHash<int, QStandardItem*> Album2Item_;
+
+		QFutureWatcher<MediaInfo> *Watcher_;
 	public:
 		enum NodeType
 		{
@@ -76,6 +80,8 @@ namespace LMP
 	private:
 		QStringList CollectPaths (const QModelIndex&);
 		void AppendToModel (const Collection::Artists_t&);
+	private slots:
+		void handleScanFinished ();
 	};
 }
 }

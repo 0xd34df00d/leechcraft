@@ -17,8 +17,10 @@
  **********************************************************************/
 
 #include "localcollection.h"
+#include <functional>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QtConcurrentMap>
 #include <QtDebug>
 #include "localcollectionstorage.h"
 #include "core.h"
@@ -104,7 +106,13 @@ namespace LMP
 	, Storage_ (new LocalCollectionStorage (this))
 	, CollectionModel_ (new QStandardItemModel (this))
 	, Sorter_ (new CollectionSorter (this))
+	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
 	{
+		connect (Watcher_,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleScanFinished ()));
+
 		Artists_ = Storage_->Load ();
 		Q_FOREACH (const auto& artist, Artists_)
 			Q_FOREACH (auto album, artist.Albums_)
@@ -133,15 +141,14 @@ namespace LMP
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
 		auto paths = QSet<QString>::fromList (RecIterate (path));
 		paths.subtract (PresentPaths_);
+		if (paths.isEmpty ())
+			return;
 
-		QList<MediaInfo> infos;
-		std::transform (paths.begin (), paths.end (), std::back_inserter (infos),
-				[resolver] (const QString& path) { return resolver->ResolveInfo (path); });
-
-		auto newArts = Storage_->AddToCollection (infos);
 		PresentPaths_ += paths;
-
-		AppendToModel (newArts);
+		auto worker = [resolver] (const QString& path) { return resolver->ResolveInfo (path); };
+		QFuture<MediaInfo> future = QtConcurrent::mapped (paths,
+				std::function<MediaInfo (const QString&)> (worker));
+		Watcher_->setFuture (future);
 	}
 
 	QStringList LocalCollection::CollectPaths (const QModelIndex& index)
@@ -214,6 +221,16 @@ namespace LMP
 				}
 			}
 		}
+	}
+
+	void LocalCollection::handleScanFinished ()
+	{
+		auto future = Watcher_->future ();
+		QList<MediaInfo> infos;
+		std::copy (future.begin (), future.end (), std::back_inserter (infos));
+
+		auto newArts = Storage_->AddToCollection (infos);
+		AppendToModel (newArts);
 	}
 }
 }
