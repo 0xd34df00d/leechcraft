@@ -26,6 +26,7 @@ ENDIF (WIN32)
 FIND_PACKAGE (Taglib REQUIRED)
 ADD_DEFINITIONS (${TAGLIB_CFLAGS})
 
+SET (QT_USE_QTSQL TRUE)
 INCLUDE (${QT_USE_FILE})
 IF (NOT PHONON_FOUND)
 	MESSAGE (FATAL_ERROR "No Phonon is found, LMP cannot be built")
@@ -45,6 +46,8 @@ SET (SRCS
 	core.cpp
 	localfileresolver.cpp
 	playlistdelegate.cpp
+	localcollection.cpp
+	localcollectionstorage.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -54,6 +57,8 @@ SET (HEADERS
 	core.h
 	localfileresolver.h
 	playlistdelegate.h
+	localcollection.h
+	localcollectionstorage.h
 	)
 SET (FORMS
 	playertab.ui
