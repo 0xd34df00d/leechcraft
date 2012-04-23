@@ -18,6 +18,7 @@
 
 #include "core.h"
 #include "localfileresolver.h"
+#include "localcollection.h"
 
 namespace LeechCraft
 {
@@ -25,6 +26,7 @@ namespace LMP
 {
 	Core::Core ()
 	: Resolver_ (new LocalFileResolver)
+	, Collection_ (new LocalCollection)
 	{
 	}
 
@@ -34,9 +36,14 @@ namespace LMP
 		return c;
 	}
 
-	LocalFileResolver* Core::GetLocalFileResolver ()
+	LocalFileResolver* Core::GetLocalFileResolver () const
 	{
 		return Resolver_;
+	}
+
+	LocalCollection* Core::GetLocalCollection () const
+	{
+		return Collection_;
 	}
 }
 }

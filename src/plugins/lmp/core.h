@@ -24,6 +24,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class LocalCollection;
 	class LocalFileResolver;
 
 	class Core : public QObject
@@ -31,12 +32,14 @@ namespace LMP
 		Q_OBJECT
 
 		LocalFileResolver *Resolver_;
+		LocalCollection *Collection_;
 
 		Core ();
 	public:
 		static Core& Instance ();
 
-		LocalFileResolver* GetLocalFileResolver ();
+		LocalFileResolver* GetLocalFileResolver () const;
+		LocalCollection* GetLocalCollection () const;
 	};
 }
 }
