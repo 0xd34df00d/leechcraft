@@ -188,16 +188,10 @@ namespace LMP
 
 		const QFileInfo& fi = FSModel_->fileInfo (index);
 
-		QList<Phonon::MediaSource> queue;
 		if (fi.isDir ())
-		{
-			const auto& paths = RecIterate (fi.absoluteFilePath ());
-			std::transform (paths.begin (), paths.end (), std::back_inserter (queue),
-					[] (const QString& path) { return Phonon::MediaSource (path); });
-		}
+			Player_->Enqueue (RecIterate (fi.absoluteFilePath ()));
 		else
-			queue << fi.absoluteFilePath ();
-		Player_->Enqueue (queue);
+			Player_->Enqueue (QStringList (fi.absoluteFilePath ()));
 	}
 
 	void PlayerTab::loadFromDisk ()
@@ -206,10 +200,7 @@ namespace LMP
 				tr ("Load files"),
 				QDir::homePath (),
 				tr ("Music files (*.ogg *.flac *.mp3 *.wav);;All files (*.*)"));
-		QList<Phonon::MediaSource> queue;
-		Q_FOREACH (const QString& file, files)
-			queue << file;
-		Player_->Enqueue (queue);
+		Player_->Enqueue (files);
 	}
 }
 }

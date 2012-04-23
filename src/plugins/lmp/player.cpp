@@ -83,6 +83,14 @@ namespace LMP
 		return Source_;
 	}
 
+	void Player::Enqueue (const QStringList& paths)
+	{
+		QList<Phonon::MediaSource> sources;
+		std::transform (paths.begin (), paths.end (), std::back_inserter (sources),
+				[] (decltype (paths.front ()) path) { return Phonon::MediaSource (path); });
+		Enqueue (sources);
+	}
+
 	void Player::Enqueue (const QList<Phonon::MediaSource>& sources)
 	{
 		AddToPlaylistModel (sources);

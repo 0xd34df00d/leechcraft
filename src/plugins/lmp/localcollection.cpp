@@ -125,11 +125,7 @@ namespace LMP
 
 	void LocalCollection::Enqueue (const QModelIndex& index, Player *player)
 	{
-		const auto& paths = CollectPaths (Sorter_->mapToSource (index));
-		QList<Phonon::MediaSource> sources;
-		std::transform (paths.begin (), paths.end (), std::back_inserter (sources),
-				[] (decltype (paths.front ()) path) { return Phonon::MediaSource (path); });
-		player->Enqueue (sources);
+		player->Enqueue (CollectPaths (Sorter_->mapToSource (index)));
 	}
 
 	void LocalCollection::Scan (const QString& path)
