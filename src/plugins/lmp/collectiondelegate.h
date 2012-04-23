@@ -19,6 +19,8 @@
 #pragma once
 
 #include <QStyledItemDelegate>
+#include <QPixmapCache>
+#include <QCache>
 
 namespace LeechCraft
 {
@@ -26,6 +28,8 @@ namespace LMP
 {
 	class CollectionDelegate : public QStyledItemDelegate
 	{
+		const QPixmap DefaultAlbum_;
+		mutable QCache<QString, QPixmap> PXCache_;
 	public:
 		CollectionDelegate (QObject* = 0);
 

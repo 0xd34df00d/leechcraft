@@ -30,6 +30,8 @@ namespace LMP
 
 	CollectionDelegate::CollectionDelegate (QObject *parent)
 	: QStyledItemDelegate (parent)
+	, DefaultAlbum_ (QIcon::fromTheme ("media-optical").pixmap (64, 64))
+	, PXCache_ (100000)
 	{
 	}
 
@@ -52,8 +54,17 @@ namespace LMP
 
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
 		const int maxIconHeight = option.rect.height () - Padding * 2;
-		QPixmap px = index.data (LocalCollection::Role::AlbumArt).value<QPixmap> ();
+
+		const QString& path = index.data (LocalCollection::Role::AlbumArt).value<QString> ();
+		QPixmap *cached = PXCache_ [path];
+		QPixmap px = cached ? *cached : QPixmap (path);
+		const bool special = !px.isNull ();
+		if (!special)
+			px = DefaultAlbum_;
 		px = px.scaled (maxIconHeight, maxIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		if (!cached && special)
+			PXCache_.insert (path, new QPixmap (px), px.size ().width () * px.size ().height ());
+
 		painter->drawPixmap (option.rect.left () + Padding, option.rect.top () + Padding, px);
 
 		const auto& text = index.data ().toString ();

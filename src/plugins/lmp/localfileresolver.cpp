@@ -60,6 +60,8 @@ namespace LMP
 		};
 		{
 			QWriteLocker locker (&CacheLock_);
+			if (Cache_.size () > 200)
+				Cache_.clear ();
 			Cache_ [file] = info;
 		}
 		return info;

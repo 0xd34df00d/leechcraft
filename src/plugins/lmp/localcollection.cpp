@@ -196,7 +196,6 @@ namespace LMP
 
 	void LocalCollection::AppendToModel (const Collection::Artists_t& artists)
 	{
-		const auto& defAlbumArt = QIcon::fromTheme ("media-optical").pixmap (64, 64);
 		Q_FOREACH (const auto& artist, artists)
 		{
 			auto artistItem = GetItem (Artist2Item_,
@@ -212,7 +211,7 @@ namespace LMP
 			{
 				auto albumItem = GetItem (Album2Item_,
 						album->ID_,
-						[&defAlbumArt, album] (QStandardItem *item)
+						[album] (QStandardItem *item)
 						{
 							item->setText (QString::fromUtf8 ("%1 — %2")
 									.arg (album->Year_)
@@ -221,9 +220,7 @@ namespace LMP
 							item->setData (album->Name_, Role::AlbumName);
 							item->setData (NodeType::Album, Role::Node);
 							if (!album->CoverPath_.isEmpty ())
-								item->setData (QPixmap (album->CoverPath_), Role::AlbumArt);
-							else
-								item->setData (defAlbumArt, Role::AlbumArt);
+								item->setData (album->CoverPath_, Role::AlbumArt);
 						},
 						artistItem);
 
