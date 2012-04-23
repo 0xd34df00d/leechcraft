@@ -136,6 +136,15 @@ namespace LMP
 		player->Enqueue (CollectPaths (Sorter_->mapToSource (index)));
 	}
 
+	void LocalCollection::Clear ()
+	{
+		Storage_->Clear ();
+		CollectionModel_->clear ();
+		PresentPaths_.clear ();
+		Artist2Item_.clear ();
+		Album2Item_.clear ();
+	}
+
 	void LocalCollection::Scan (const QString& path)
 	{
 		auto resolver = Core::Instance ().GetLocalFileResolver ();

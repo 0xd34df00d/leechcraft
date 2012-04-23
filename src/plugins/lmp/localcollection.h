@@ -77,6 +77,7 @@ namespace LMP
 		QAbstractItemModel* GetCollectionModel () const;
 		void Enqueue (const QModelIndex&, Player*);
 
+		void Clear ();
 		void Scan (const QString&);
 	private:
 		QStringList CollectPaths (const QModelIndex&);

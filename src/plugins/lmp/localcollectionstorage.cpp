@@ -61,6 +61,23 @@ namespace LMP
 		PrepareQueries ();
 	}
 
+	void LocalCollectionStorage::Clear ()
+	{
+		Util::DBLock lock (DB_);
+		lock.Init ();
+		QSqlQuery query (DB_);
+		if (!query.exec ("DELETE FROM artists;") ||
+			!query.exec ("DELETE FROM albums;"))
+		{
+			Util::DBLock::DumpError (query);
+			throw std::runtime_error ("unable to clear database");
+		}
+		lock.Good ();
+
+		PresentAlbums_.clear ();
+		PresentArtists_.clear ();
+	}
+
 	Collection::Artists_t LocalCollectionStorage::AddToCollection (const QList<MediaInfo>& infos)
 	{
 		QMap<int, Collection::Artist> artists;

@@ -52,6 +52,7 @@ namespace LMP
 	public:
 		LocalCollectionStorage (QObject* = 0);
 
+		void Clear ();
 		Collection::Artists_t AddToCollection (const QList<MediaInfo>&);
 		Collection::Artists_t Load ();
 	private:
