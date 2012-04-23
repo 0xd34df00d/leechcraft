@@ -50,6 +50,7 @@ SET (SRCS
 	localcollectionstorage.cpp
 	util.cpp
 	collectiontypes.cpp
+	collectiondelegate.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -63,6 +64,7 @@ SET (HEADERS
 	localcollectionstorage.h
 	util.h
 	collectiontypes.h
+	collectiondelegate.h
 	)
 SET (FORMS
 	playertab.ui

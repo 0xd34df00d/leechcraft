@@ -27,6 +27,7 @@
 #include "util.h"
 #include "core.h"
 #include "localcollection.h"
+#include "collectiondelegate.h"
 
 namespace LeechCraft
 {
@@ -111,6 +112,7 @@ namespace LMP
 
 	void PlayerTab::SetupCollection ()
 	{
+		Ui_.CollectionTree_->setItemDelegate (new CollectionDelegate (Ui_.CollectionTree_));
 		auto collection = Core::Instance ().GetLocalCollection ();
 		Ui_.CollectionTree_->setModel (collection->GetCollectionModel ());
 
@@ -140,7 +142,7 @@ namespace LMP
 
 	void PlayerTab::SetupPlaylist ()
 	{
-		Ui_.Playlist_->setItemDelegate (new PlaylistDelegate (Ui_.Playlist_));
+		Ui_.Playlist_->setItemDelegate (new PlaylistDelegate (Ui_.Playlist_, Ui_.Playlist_));
 		Ui_.Playlist_->setModel (Player_->GetPlaylistModel ());
 		connect (Ui_.Playlist_,
 				SIGNAL (doubleClicked (QModelIndex)),
