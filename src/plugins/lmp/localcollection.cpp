@@ -204,6 +204,8 @@ namespace LMP
 							item->setData (album->Year_, Role::AlbumYear);
 							item->setData (album->Name_, Role::AlbumName);
 							item->setData (NodeType::Album, Role::Node);
+							if (!album->CoverPath_.isEmpty ())
+								item->setData (QPixmap (album->CoverPath_), Role::AlbumArt);
 						},
 						artistItem);
 

@@ -66,6 +66,7 @@ namespace LMP
 			ArtistName,
 			AlbumYear,
 			AlbumName,
+			AlbumArt,
 			TrackNumber,
 			TrackTitle,
 			TrackPath
