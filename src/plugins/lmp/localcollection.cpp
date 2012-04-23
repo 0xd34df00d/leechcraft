@@ -34,6 +34,10 @@ namespace LMP
 	, CollectionModel_ (new QStandardItemModel (this))
 	{
 		Artists_ = Storage_->Load ();
+		Q_FOREACH (const auto& artist, Artists_)
+			Q_FOREACH (auto album, artist.Albums_)
+				Q_FOREACH (const auto& track, album->Tracks_)
+					PresentPaths_ << track.FilePath_;
 	}
 
 	QAbstractItemModel* LocalCollection::GetCollectionModel () const
@@ -44,13 +48,15 @@ namespace LMP
 	void LocalCollection::Scan (const QString& path)
 	{
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
-		const auto& paths = RecIterate (path);
+		auto paths = QSet<QString>::fromList (RecIterate (path));
+		paths.subtract (PresentPaths_);
 
 		QList<MediaInfo> infos;
 		std::transform (paths.begin (), paths.end (), std::back_inserter (infos),
 				[resolver] (const QString& path) { return resolver->ResolveInfo (path); });
 
 		Storage_->AddToCollection (infos);
+		PresentPaths_ += paths;
 	}
 }
 }

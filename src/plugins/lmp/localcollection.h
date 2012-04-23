@@ -38,6 +38,7 @@ namespace LMP
 		QStandardItemModel *CollectionModel_;
 
 		Collection::Artists_t Artists_;
+		QSet<QString> PresentPaths_;
 	public:
 		LocalCollection (QObject* = 0);
 
