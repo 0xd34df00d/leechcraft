@@ -47,7 +47,15 @@ namespace LMP
 			query.exec ("PRAGMA synchronous = OFF;");
 		}
 
-		CreateTables ();
+		try
+		{
+			CreateTables ();
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
 	void LocalCollectionStorage::CreateTables ()
@@ -100,7 +108,7 @@ namespace LMP
 		Q_FOREACH (const QString& key, table2query.keys ())
 			if (!tables.contains (key))
 			{
-				QSqlQuery q;
+				QSqlQuery q (DB_);
 				if (!q.exec (table2query [key]))
 				{
 					Util::DBLock::DumpError (q);
