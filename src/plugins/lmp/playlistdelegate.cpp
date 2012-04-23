@@ -52,9 +52,6 @@ namespace LMP
 			style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
 			const int maxIconHeight = option.rect.height () - Padding * 2;
 			QPixmap px = index.data (Player::Role::AlbumArt).value<QPixmap> ();
-			if (px.isNull ())
-				px = QIcon::fromTheme ("media-optical")
-						.pixmap (maxIconHeight, maxIconHeight);
 			px = px.scaled (maxIconHeight, maxIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 			painter->drawPixmap (option.rect.left () + Padding, option.rect.top () + Padding, px);
 

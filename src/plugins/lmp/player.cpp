@@ -121,7 +121,10 @@ namespace LMP
 			albumItem->setEditable (false);
 			albumItem->setData (true, Player::Role::IsAlbum);
 			albumItem->setData (QVariant::fromValue (info), Player::Role::MediaInfo);
-			albumItem->setData (FindAlbumArt (info.LocalPath_), Player::Role::AlbumArt);
+			auto art = FindAlbumArt (info.LocalPath_);
+			if (art.isNull ())
+				art = QIcon::fromTheme ("media-optical").pixmap (64, 64);
+			albumItem->setData (art, Player::Role::AlbumArt);
 			albumItem->setData (0, Player::Role::AlbumLength);
 			return albumItem;
 		}
