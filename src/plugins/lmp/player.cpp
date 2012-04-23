@@ -150,6 +150,8 @@ namespace LMP
 			return;
 		}
 
+		PlaylistModel_->setHorizontalHeaderLabels (QStringList (tr ("Playlist")));
+
 		ApplyOrdering (sources);
 		CurrentQueue_ = sources;
 
