@@ -31,8 +31,11 @@ namespace LMP
 
 	MediaInfo LocalFileResolver::ResolveInfo (const QString& file)
 	{
-		if (Cache_.contains (file))
-			return Cache_ [file];
+		{
+			QReadLocker locker (&CacheLock_);
+			if (Cache_.contains (file))
+				return Cache_ [file];
+		}
 
 		TagLib::FileRef r (file.toUtf8 ().constData ());
 		auto tag = r.tag ();
@@ -55,7 +58,10 @@ namespace LMP
 			tag->year (),
 			tag->track ()
 		};
-		Cache_ [file] = info;
+		{
+			QWriteLocker locker (&CacheLock_);
+			Cache_ [file] = info;
+		}
 		return info;
 	}
 }

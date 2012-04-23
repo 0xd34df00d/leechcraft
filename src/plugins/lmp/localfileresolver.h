@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QReadWriteLock>
 #include "mediainfo.h"
 
 namespace LeechCraft
@@ -30,6 +31,7 @@ namespace LMP
 	{
 		Q_OBJECT
 
+		QReadWriteLock CacheLock_;
 		QHash<QString, MediaInfo> Cache_;
 	public:
 		LocalFileResolver (QObject* = 0);
