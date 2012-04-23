@@ -18,54 +18,17 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
-#include <QSet>
 #include <QHash>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include "mediainfo.h"
+#include "collectiontypes.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	namespace Collection
-	{
-		struct Track
-		{
-			int ID_;
-
-			int Number_;
-			QString Name_;
-			int Length_;
-			QStringList Genres_;
-
-			QString FilePath_;
-		};
-
-		struct Album
-		{
-			int ID_;
-
-			QString Name_;
-			int Year_;
-			QString CoverPath_;
-
-			QList<Track> Tracks_;
-		};
-		typedef std::shared_ptr<Album> Album_ptr;
-
-		struct Artist
-		{
-			int ID_;
-
-			QString Name_;
-			QList<Album_ptr> Albums_;
-		};
-		typedef QList<Artist> Artists_t;
-	}
-
 	class LocalCollectionStorage : public QObject
 	{
 		Q_OBJECT
