@@ -22,6 +22,7 @@
 #include <QSqlQuery>
 #include <util/util.h>
 #include <util/dblock.h>
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -86,11 +87,12 @@ namespace LMP
 				0,
 				info.Album_,
 				info.Year_,
-				QString (),				// TODO find covers
+				QString (),
 				QList<Collection::Track> ()
 			};
 			if (!IsPresent (artist, album, album.ID_))
 			{
+				album.CoverPath_ = FindAlbumArtPath (info.LocalPath_);
 				AddAlbum (artist, album);
 				artists [artist.ID_].Albums_ << Collection::Album_ptr (new Collection::Album (album));
 			}
