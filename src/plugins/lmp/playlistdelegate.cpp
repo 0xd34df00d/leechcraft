@@ -40,7 +40,7 @@ namespace LMP
 			const QStyleOptionViewItem& optionOld, const QModelIndex& index) const
 	{
 		QStyleOptionViewItemV4 option = optionOld;
-		const auto& info = index.data (Player::Role::MediaInfo).value<MediaInfo> ();
+		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
 
 		QStyle *style = option.widget ?
 				option.widget->style () :
@@ -127,7 +127,7 @@ namespace LMP
 		if (!index.data (Player::Role::IsAlbum).toBool ())
 			return QStyledItemDelegate::sizeHint (option, index);
 
-		const auto& info = index.data (Player::Role::MediaInfo).value<MediaInfo> ();
+		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
 		const int width = View_->viewport ()->size ().width () - 4;
 
 		const QFont& font = option.font;

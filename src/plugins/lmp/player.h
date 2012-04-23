@@ -52,8 +52,8 @@ namespace LMP
 		{
 			IsCurrent = Qt::UserRole + 1,
 			IsAlbum,
-			MediaSource,
-			MediaInfo,
+			Source,
+			Info,
 			AlbumArt,
 			AlbumLength
 		};

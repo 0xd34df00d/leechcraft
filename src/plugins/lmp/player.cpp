@@ -111,7 +111,7 @@ namespace LMP
 		void FillItem (QStandardItem *item, const MediaInfo& info)
 		{
 			item->setText (QString ("%1 - %2 - %3").arg (info.Artist_).arg (info.Album_).arg (info.Title_));
-			item->setData (QVariant::fromValue (info), Player::Role::MediaInfo);
+			item->setData (QVariant::fromValue (info), Player::Role::Info);
 		}
 
 		QStandardItem* MakeAlbumItem (const MediaInfo& info)
@@ -120,7 +120,7 @@ namespace LMP
 							.arg (info.Artist_, info.Album_));
 			albumItem->setEditable (false);
 			albumItem->setData (true, Player::Role::IsAlbum);
-			albumItem->setData (QVariant::fromValue (info), Player::Role::MediaInfo);
+			albumItem->setData (QVariant::fromValue (info), Player::Role::Info);
 			auto art = FindAlbumArt (info.LocalPath_);
 			if (art.isNull ())
 				art = QIcon::fromTheme ("media-optical").pixmap (64, 64);
@@ -161,7 +161,7 @@ namespace LMP
 		{
 			auto item = new QStandardItem ();
 			item->setEditable (false);
-			item->setData (QVariant::fromValue (source), Role::MediaSource);
+			item->setData (QVariant::fromValue (source), Role::Source);
 			switch (source.type ())
 			{
 			case Phonon::MediaSource::Stream:
@@ -197,7 +197,7 @@ namespace LMP
 					albumItem->appendRow (item);
 					PlaylistModel_->insertRow (row, albumItem);
 
-					const auto& existingInfo = existing.at (0)->data (Role::MediaInfo).value<LMP::MediaInfo> ();
+					const auto& existingInfo = existing.at (0)->data (Role::Info).value<MediaInfo> ();
 					albumItem->setData (existingInfo.Length_, Role::AlbumLength);
 					IncAlbumLength (albumItem, info.Length_);
 
@@ -258,7 +258,7 @@ namespace LMP
 		}
 
 		Source_->stop ();
-		const auto& source = index.data (Role::MediaSource).value<Phonon::MediaSource> ();
+		const auto& source = index.data (Role::Source).value<Phonon::MediaSource> ();
 		Source_->setCurrentSource (source);
 		Source_->play ();
 	}
@@ -312,6 +312,8 @@ namespace LMP
 	{
 		auto curItem = Items_ [source];
 		curItem->setData (true, Role::IsCurrent);
+
+		emit songChanged (curItem->data (Role::Info).value<MediaInfo> ());
 
 		Q_FOREACH (auto item, Items_.values ())
 		{
