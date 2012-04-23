@@ -36,6 +36,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	struct MediaInfo;
+
 	class Player : public QObject
 	{
 		Q_OBJECT
@@ -77,6 +79,7 @@ namespace LMP
 	private slots:
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
 	signals:
+		void songChanged (const MediaInfo&);
 		void insertedAlbum (const QModelIndex&);
 	};
 }

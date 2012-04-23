@@ -298,6 +298,7 @@ namespace LMP
 	void Player::stop ()
 	{
 		Source_->stop ();
+		emit songChanged (MediaInfo ());
 	}
 
 	void Player::clear ()
