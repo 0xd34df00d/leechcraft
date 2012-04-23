@@ -306,6 +306,7 @@ namespace LMP
 		PlaylistModel_->clear ();
 		Items_.clear ();
 		AlbumRoots_.clear ();
+		CurrentQueue_.clear ();
 		Source_->clearQueue ();
 	}
 
