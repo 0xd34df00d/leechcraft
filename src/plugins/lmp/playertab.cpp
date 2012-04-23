@@ -50,6 +50,15 @@ namespace LMP
 				SIGNAL (songChanged (MediaInfo)),
 				this,
 				SLOT (handleSongChanged (MediaInfo)));
+		connect (Core::Instance ().GetLocalCollection (),
+				SIGNAL (scanStarted (int)),
+				Ui_.ScanProgress_,
+				SLOT (setMaximum (int)));
+		connect (Core::Instance ().GetLocalCollection (),
+				SIGNAL (scanProgressChanged (int)),
+				this,
+				SLOT (handleScanProgress (int)));
+		Ui_.ScanProgress_->hide ();
 		handleSongChanged (MediaInfo ());
 
 		SetupToolbar ();
@@ -207,6 +216,19 @@ namespace LMP
 						.arg ("<em>" + album + "</em>")
 						.arg ("<em>" + track + "</em>"));
 		}
+	}
+
+	void PlayerTab::handleScanProgress (int progress)
+	{
+		if (progress >= Ui_.ScanProgress_->maximum ())
+		{
+			Ui_.ScanProgress_->hide ();
+			return;
+		}
+
+		if (!Ui_.ScanProgress_->isVisible ())
+			Ui_.ScanProgress_->show ();
+		Ui_.ScanProgress_->setValue (progress);
 	}
 
 	void PlayerTab::loadFromCollection ()

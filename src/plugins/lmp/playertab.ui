@@ -94,6 +94,16 @@
           </attribute>
          </widget>
         </item>
+        <item>
+         <widget class="QProgressBar" name="ScanProgress_">
+          <property name="value">
+           <number>24</number>
+          </property>
+          <property name="format">
+           <string notr="true">%p%</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="FSTab_">

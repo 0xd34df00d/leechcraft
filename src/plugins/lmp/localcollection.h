@@ -84,6 +84,9 @@ namespace LMP
 		void AppendToModel (const Collection::Artists_t&);
 	private slots:
 		void handleScanFinished ();
+	signals:
+		void scanStarted (int);
+		void scanProgressChanged (int);
 	};
 }
 }

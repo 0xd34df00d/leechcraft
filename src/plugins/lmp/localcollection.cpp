@@ -112,6 +112,10 @@ namespace LMP
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleScanFinished ()));
+		connect (Watcher_,
+				SIGNAL (progressValueChanged (int)),
+				this,
+				SIGNAL (scanProgressChanged (int)));
 
 		Artists_ = Storage_->Load ();
 		Q_FOREACH (const auto& artist, Artists_)
@@ -154,6 +158,7 @@ namespace LMP
 			return;
 
 		PresentPaths_ += paths;
+		emit scanStarted (paths.size ());
 		auto worker = [resolver] (const QString& path) { return resolver->ResolveInfo (path); };
 		QFuture<MediaInfo> future = QtConcurrent::mapped (paths,
 				std::function<MediaInfo (const QString&)> (worker));
@@ -244,6 +249,8 @@ namespace LMP
 		auto future = Watcher_->future ();
 		QList<MediaInfo> infos;
 		std::copy (future.begin (), future.end (), std::back_inserter (infos));
+
+		emit scanProgressChanged (infos.size ());
 
 		auto newArts = Storage_->AddToCollection (infos);
 		AppendToModel (newArts);

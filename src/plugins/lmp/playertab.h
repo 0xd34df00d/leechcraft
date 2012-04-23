@@ -62,6 +62,7 @@ namespace LMP
 		void SetupPlaylist ();
 	private slots:
 		void handleSongChanged (const MediaInfo&);
+		void handleScanProgress (int);
 		void loadFromCollection ();
 		void loadFromFSBrowser ();
 		void loadFromDisk ();
