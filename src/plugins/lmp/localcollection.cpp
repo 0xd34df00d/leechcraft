@@ -18,6 +18,7 @@
 
 #include "localcollection.h"
 #include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 #include <QtDebug>
 #include "localcollectionstorage.h"
 #include "core.h"
@@ -29,10 +30,80 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		template<LocalCollection::Role T>
+		struct Role2Type;
+
+		template<>
+		struct Role2Type<LocalCollection::Role::ArtistName> { typedef QString ValueType; };
+
+		template<>
+		struct Role2Type<LocalCollection::Role::AlbumName> { typedef QString ValueType; };
+
+		template<>
+		struct Role2Type<LocalCollection::Role::AlbumYear> { typedef int ValueType; };
+
+		template<>
+		struct Role2Type<LocalCollection::Role::TrackNumber> { typedef int ValueType; };
+
+		template<>
+		struct Role2Type<LocalCollection::Role::TrackTitle> { typedef QString ValueType; };
+
+		template<>
+		struct Role2Type<LocalCollection::Role::TrackPath> { typedef QString ValueType; };
+
+		template<>
+		struct Role2Type<LocalCollection::Role::Node> { typedef int ValueType; };
+
+		template<LocalCollection::Role Role = LocalCollection::Role::Node, LocalCollection::Role... Rest>
+		bool RoleCompare (const QModelIndex& left, const QModelIndex& right)
+		{
+			if (Role == LocalCollection::Role::Node)
+				return false;
+
+			const auto& lData = left.data (Role).value<typename Role2Type<Role>::ValueType> ();
+			const auto& rData = right.data (Role).value<typename Role2Type<Role>::ValueType> ();
+			if (lData != rData)
+				return lData < rData;
+			else
+				return RoleCompare<Rest...> (left, right);
+		}
+
+		class CollectionSorter : public QSortFilterProxyModel
+		{
+		public:
+			CollectionSorter (QObject *parent)
+			: QSortFilterProxyModel (parent)
+			{
+			}
+		protected:
+			bool lessThan (const QModelIndex& left, const QModelIndex& right) const
+			{
+				const auto type = left.data (LocalCollection::Role::Node).toInt ();
+				switch (type)
+				{
+				case LocalCollection::NodeType::Artist:
+					return RoleCompare<LocalCollection::Role::ArtistName> (left, right);
+				case LocalCollection::NodeType::Album:
+					return RoleCompare<LocalCollection::Role::AlbumYear,
+								LocalCollection::Role::AlbumName> (left, right);
+				case LocalCollection::NodeType::Track:
+					return RoleCompare<LocalCollection::Role::TrackNumber,
+								LocalCollection::Role::TrackTitle,
+								LocalCollection::Role::TrackPath> (left, right);
+				default:
+					return QSortFilterProxyModel::lessThan (left, right);
+				}
+			}
+		};
+	}
+
 	LocalCollection::LocalCollection (QObject *parent)
 	: QObject (parent)
 	, Storage_ (new LocalCollectionStorage (this))
 	, CollectionModel_ (new QStandardItemModel (this))
+	, Sorter_ (new CollectionSorter (this))
 	{
 		Artists_ = Storage_->Load ();
 		Q_FOREACH (const auto& artist, Artists_)
@@ -41,11 +112,15 @@ namespace LMP
 					PresentPaths_ << track.FilePath_;
 
 		AppendToModel (Artists_);
+
+		Sorter_->setSourceModel (CollectionModel_);
+		Sorter_->setDynamicSortFilter (true);
+		Sorter_->sort (0);
 	}
 
 	QAbstractItemModel* LocalCollection::GetCollectionModel () const
 	{
-		return CollectionModel_;
+		return Sorter_;
 	}
 
 	void LocalCollection::Scan (const QString& path)
@@ -66,13 +141,14 @@ namespace LMP
 
 	namespace
 	{
-		template<typename T, typename U, typename Parent>
-		QStandardItem* GetItem (T& c, U idx, const QString& name, Parent parent)
+		template<typename T, typename U, typename Init, typename Parent>
+		QStandardItem* GetItem (T& c, U idx, Init f, Parent parent)
 		{
 			if (c.contains (idx))
 				return c [idx];
 
-			auto item = new QStandardItem (name);
+			auto item = new QStandardItem ();
+			f (item);
 			parent->appendRow (item);
 			c [idx] = item;
 			return item;
@@ -83,14 +159,28 @@ namespace LMP
 	{
 		Q_FOREACH (const auto& artist, artists)
 		{
-			auto artistItem = GetItem (Artist2Item_, artist.ID_, artist.Name_, CollectionModel_);
+			auto artistItem = GetItem (Artist2Item_,
+					artist.ID_,
+					[&artist] (QStandardItem *item)
+					{
+						item->setText (artist.Name_);
+						item->setData (artist.Name_, Role::ArtistName);
+						item->setData (NodeType::Artist, Role::Node);
+					},
+					CollectionModel_);
 			Q_FOREACH (auto album, artist.Albums_)
 			{
 				auto albumItem = GetItem (Album2Item_,
 						album->ID_,
-						QString ("%1 - %2")
-							.arg (album->Year_)
-							.arg (album->Name_),
+						[album] (QStandardItem *item)
+						{
+							item->setText (QString ("%1 - %2")
+									.arg (album->Year_)
+									.arg (album->Name_));
+							item->setData (album->Year_, Role::AlbumYear);
+							item->setData (album->Name_, Role::AlbumName);
+							item->setData (NodeType::Album, Role::Node);
+						},
 						artistItem);
 
 				Q_FOREACH (const auto& track, album->Tracks_)
@@ -99,6 +189,10 @@ namespace LMP
 							.arg (track.Number_)
 							.arg (track.Name_);
 					auto item = new QStandardItem (name);
+					item->setData (track.Number_, Role::TrackNumber);
+					item->setData (track.Name_, Role::TrackTitle);
+					item->setData (track.FilePath_, Role::TrackPath);
+					item->setData (NodeType::Track, Role::Node);
 					albumItem->appendRow (item);
 				}
 			}

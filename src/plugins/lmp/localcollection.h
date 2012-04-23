@@ -27,6 +27,7 @@ class QStandardItemModel;
 class QStandardItem;
 class QAbstractItemModel;
 class QModelIndex;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -41,6 +42,7 @@ namespace LMP
 
 		LocalCollectionStorage *Storage_;
 		QStandardItemModel *CollectionModel_;
+		QSortFilterProxyModel *Sorter_;
 
 		Collection::Artists_t Artists_;
 		QSet<QString> PresentPaths_;
@@ -48,6 +50,23 @@ namespace LMP
 		QHash<int, QStandardItem*> Artist2Item_;
 		QHash<int, QStandardItem*> Album2Item_;
 	public:
+		enum NodeType
+		{
+			Artist,
+			Album,
+			Track
+		};
+		enum Role
+		{
+			Node = Qt::UserRole + 1,
+			ArtistName,
+			AlbumYear,
+			AlbumName,
+			TrackNumber,
+			TrackTitle,
+			TrackPath
+		};
+
 		LocalCollection (QObject* = 0);
 
 		QAbstractItemModel* GetCollectionModel () const;
