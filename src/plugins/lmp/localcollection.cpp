@@ -172,6 +172,7 @@ namespace LMP
 				return c [idx];
 
 			auto item = new QStandardItem ();
+			item->setEditable (false);
 			f (item);
 			parent->appendRow (item);
 			c [idx] = item;
@@ -181,6 +182,7 @@ namespace LMP
 
 	void LocalCollection::AppendToModel (const Collection::Artists_t& artists)
 	{
+		const auto& defAlbumArt = QIcon::fromTheme ("media-optical").pixmap (64, 64);
 		Q_FOREACH (const auto& artist, artists)
 		{
 			auto artistItem = GetItem (Artist2Item_,
@@ -196,9 +198,9 @@ namespace LMP
 			{
 				auto albumItem = GetItem (Album2Item_,
 						album->ID_,
-						[album] (QStandardItem *item)
+						[&defAlbumArt, album] (QStandardItem *item)
 						{
-							item->setText (QString ("%1 - %2")
+							item->setText (QString::fromUtf8 ("%1 — %2")
 									.arg (album->Year_)
 									.arg (album->Name_));
 							item->setData (album->Year_, Role::AlbumYear);
@@ -206,15 +208,18 @@ namespace LMP
 							item->setData (NodeType::Album, Role::Node);
 							if (!album->CoverPath_.isEmpty ())
 								item->setData (QPixmap (album->CoverPath_), Role::AlbumArt);
+							else
+								item->setData (defAlbumArt, Role::AlbumArt);
 						},
 						artistItem);
 
 				Q_FOREACH (const auto& track, album->Tracks_)
 				{
-					const QString& name = QString ("%1 - %2")
+					const QString& name = QString::fromUtf8 ("%1 — %2")
 							.arg (track.Number_)
 							.arg (track.Name_);
 					auto item = new QStandardItem (name);
+					item->setEditable (false);
 					item->setData (track.Number_, Role::TrackNumber);
 					item->setData (track.Name_, Role::TrackTitle);
 					item->setData (track.FilePath_, Role::TrackPath);
