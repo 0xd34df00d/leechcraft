@@ -18,25 +18,95 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
+#include <QSet>
+#include <QHash>
 #include <QSqlDatabase>
+#include <QSqlQuery>
 #include "mediainfo.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
+	namespace Collection
+	{
+		struct Track
+		{
+			int ID_;
+
+			int Number_;
+			QString Name_;
+			int Length_;
+			QStringList Genres_;
+
+			QString FilePath_;
+		};
+
+		struct Album
+		{
+			int ID_;
+
+			QString Name_;
+			int Year_;
+			QString CoverPath_;
+
+			QList<Track> Tracks_;
+		};
+		typedef std::shared_ptr<Album> Album_ptr;
+
+		struct Artist
+		{
+			int ID_;
+
+			QString Name_;
+			QList<Album_ptr> Albums_;
+		};
+		typedef QList<Artist> Artists_t;
+	}
+
 	class LocalCollectionStorage : public QObject
 	{
 		Q_OBJECT
 
+		QHash<QString, int> PresentArtists_;
+		QHash<QString, int> PresentAlbums_;
+
 		QSqlDatabase DB_;
+
+		QSqlQuery GetArtists_;
+		QSqlQuery GetAlbums_;
+		QSqlQuery GetArtistAlbums_;
+		QSqlQuery GetAlbumTracks_;
+		QSqlQuery GetTrackGenres_;
+
+		QSqlQuery AddArtist_;
+		QSqlQuery AddAlbum_;
+		QSqlQuery LinkArtistAlbum_;
+		QSqlQuery AddTrack_;
+		QSqlQuery AddGenre_;
 	public:
 		LocalCollectionStorage (QObject* = 0);
 
-		void AddToCollection (const QList<MediaInfo>&);
-
+		Collection::Artists_t AddToCollection (const QList<MediaInfo>&);
+		Collection::Artists_t Load ();
 	private:
+		Collection::Artists_t GetAllArtists ();
+		QHash<int, Collection::Album_ptr> GetAllAlbums ();
+		QList<Collection::Track> GetAlbumTracks (int);
+		QStringList GetTrackGenres (int);
+
+		void AddArtist (Collection::Artist&);
+		void AddAlbum (const Collection::Artist&, Collection::Album&);
+		void AddTrack (Collection::Track&, int, int);
+
+		void AddToPresent (const Collection::Artist&);
+		bool IsPresent (const Collection::Artist&, int&) const;
+		void AddToPresent (const Collection::Artist&, const Collection::Album&);
+		bool IsPresent (const Collection::Artist&, const Collection::Album&, int&) const;
+
+		void PrepareQueries ();
 		void CreateTables ();
 	};
 }

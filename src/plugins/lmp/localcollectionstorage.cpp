@@ -56,6 +56,326 @@ namespace LMP
 			qWarning () << Q_FUNC_INFO
 					<< e.what ();
 		}
+
+		PrepareQueries ();
+	}
+
+	Collection::Artists_t LocalCollectionStorage::AddToCollection (const QList<MediaInfo>& infos)
+	{
+		QMap<int, Collection::Artist> artists;
+
+		Util::DBLock lock (DB_);
+
+		lock.Init ();
+		Q_FOREACH (const MediaInfo& info, infos)
+		{
+			Collection::Artist artist =
+			{
+				0,
+				info.Artist_,
+				QList<Collection::Album_ptr> ()
+			};
+			if (!IsPresent (artist, artist.ID_))
+			{
+				AddArtist (artist);
+				artists [artist.ID_] = artist;
+			}
+
+			Collection::Album album =
+			{
+				0,
+				info.Album_,
+				info.Year_,
+				QString (),				// TODO find covers
+				QList<Collection::Track> ()
+			};
+			if (!IsPresent (artist, album, album.ID_))
+			{
+				AddAlbum (artist, album);
+				artists [artist.ID_].Albums_ << Collection::Album_ptr (new Collection::Album (album));
+			}
+
+			Collection::Track track =
+			{
+				0,
+				info.TrackNumber_,
+				info.Title_,
+				info.Length_,
+				info.Genres_,
+				info.LocalPath_
+			};
+			AddTrack (track, artist.ID_, album.ID_);
+
+			auto& trackArtist = artists [artist.ID_];
+			for (auto i = trackArtist.Albums_.begin (), end = trackArtist.Albums_.end (); i != end; ++i)
+				if ((*i)->ID_ == album.ID_)
+				{
+					(*i)->Tracks_ << track;
+					break;
+				}
+		}
+		lock.Good ();
+
+		return artists.values ();
+	}
+
+	Collection::Artists_t LocalCollectionStorage::Load ()
+	{
+		Collection::Artists_t artists = GetAllArtists ();
+		const auto& albums = GetAllAlbums ();
+
+		for (auto i = artists.begin (), end = artists.end (); i != end; ++i)
+		{
+			AddToPresent (*i);
+
+			GetArtistAlbums_.bindValue (":artist_id", i->ID_);
+			if (!GetArtistAlbums_.exec ())
+			{
+				Util::DBLock::DumpError (GetArtists_);
+				throw std::runtime_error ("cannot fetch artists");
+			}
+			while (GetArtistAlbums_.next ())
+			{
+				const int albumID = GetArtistAlbums_.value (0).toInt ();
+				auto album = albums [albumID];
+				i->Albums_ << album;
+				AddToPresent (*i, *album);
+			}
+		}
+		GetArtistAlbums_.finish ();
+
+		return artists;
+	}
+
+	Collection::Artists_t LocalCollectionStorage::GetAllArtists ()
+	{
+		Collection::Artists_t artists;
+
+		if (!GetArtists_.exec ())
+		{
+			Util::DBLock::DumpError (GetArtists_);
+			throw std::runtime_error ("cannot fetch artists");
+		}
+		while (GetArtists_.next ())
+		{
+			Collection::Artist a =
+			{
+				GetArtists_.value (0).toInt (),
+				GetArtists_.value (1).toString (),
+				QList<Collection::Album_ptr> ()
+			};
+
+			artists << a;
+		}
+		GetArtists_.finish ();
+
+		return artists;
+	}
+
+	QHash<int, Collection::Album_ptr> LocalCollectionStorage::GetAllAlbums ()
+	{
+		QHash<int, Collection::Album_ptr> albums;
+
+		if (!GetAlbums_.exec ())
+		{
+			Util::DBLock::DumpError (GetAlbums_);
+			throw std::runtime_error ("cannot fetch albums");
+		}
+		while (GetAlbums_.next ())
+		{
+			const int albumID = GetAlbums_.value (0).toInt ();
+			Collection::Album a =
+			{
+				albumID,
+				GetAlbums_.value (1).toString (),
+				GetAlbums_.value (2).toInt (),
+				GetAlbums_.value (3).toString (),
+				GetAlbumTracks (albumID)
+			};
+
+			albums [albumID] = Collection::Album_ptr (new Collection::Album (a));
+		}
+		GetAlbums_.finish ();
+
+		return albums;
+	}
+
+	QList<Collection::Track> LocalCollectionStorage::GetAlbumTracks (int albumId)
+	{
+		QList<Collection::Track> tracks;
+
+		GetAlbumTracks_.bindValue (":album_id", albumId);
+		if (!GetAlbumTracks_.exec ())
+		{
+			Util::DBLock::DumpError (GetAlbumTracks_);
+			throw std::runtime_error ("cannot fetch album tracks");
+		}
+		while (GetAlbumTracks_.next ())
+		{
+			const int trackId = GetAlbumTracks_.value (0).toInt ();
+			Collection::Track t =
+			{
+				trackId,
+				GetAlbumTracks_.value (1).toInt (),
+				GetAlbumTracks_.value (2).toString (),
+				GetAlbumTracks_.value (3).toInt (),
+				GetTrackGenres (trackId),
+				GetAlbumTracks_.value (4).toString ()
+			};
+			tracks << t;
+		}
+		GetAlbumTracks_.finish ();
+
+		return tracks;
+	}
+
+	QStringList LocalCollectionStorage::GetTrackGenres (int trackId)
+	{
+		QStringList genres;
+
+		GetTrackGenres_.bindValue (":track_id", trackId);
+		if (!GetTrackGenres_.exec ())
+		{
+			Util::DBLock::DumpError (GetTrackGenres_);
+			throw std::runtime_error ("cannot fetch track genres");
+		}
+		while (GetTrackGenres_.next ())
+			genres << GetTrackGenres_.value (0).toString ();
+		GetTrackGenres_.finish ();
+
+		return genres;
+	}
+
+	void LocalCollectionStorage::AddArtist (Collection::Artist& artist)
+	{
+		AddArtist_.bindValue (":name", artist.Name_);
+		if (!AddArtist_.exec ())
+		{
+			Util::DBLock::DumpError (AddArtist_);
+			throw std::runtime_error ("cannot add artist");
+		}
+		artist.ID_ = AddArtist_.lastInsertId ().toInt ();
+
+		AddToPresent (artist);
+	}
+
+	void LocalCollectionStorage::AddAlbum (const Collection::Artist& artist, Collection::Album& album)
+	{
+		AddAlbum_.bindValue (":name", album.Name_);
+		AddAlbum_.bindValue (":year", album.Year_);
+		AddAlbum_.bindValue (":cover_path", album.CoverPath_);
+		if (!AddAlbum_.exec ())
+		{
+			Util::DBLock::DumpError (AddAlbum_);
+			throw std::runtime_error ("cannot add album");
+		}
+		const int id = AddAlbum_.lastInsertId ().toInt ();
+		album.ID_ = id;
+
+		LinkArtistAlbum_.bindValue (":artist_id", artist.ID_);
+		LinkArtistAlbum_.bindValue (":album_id", album.ID_);
+		if (!LinkArtistAlbum_.exec ())
+		{
+			Util::DBLock::DumpError (LinkArtistAlbum_);
+			throw std::runtime_error ("cannot link artist/album");
+		}
+
+		AddToPresent (artist, album);
+	}
+
+	void LocalCollectionStorage::AddTrack (Collection::Track& track, int artistId, int albumID)
+	{
+		AddTrack_.bindValue (":artist_id", artistId);
+		AddTrack_.bindValue (":album_id", albumID);
+		AddTrack_.bindValue (":path", track.FilePath_);
+		AddTrack_.bindValue (":name", track.Name_);
+		AddTrack_.bindValue (":track_number", track.Number_);
+		AddTrack_.bindValue (":length", track.Length_);
+		if (!AddTrack_.exec ())
+		{
+			Util::DBLock::DumpError (AddTrack_);
+			throw std::runtime_error ("unable to add track");
+		}
+		const int id = AddTrack_.lastInsertId ().toInt ();
+		track.ID_ = id;
+
+		Q_FOREACH (const QString& genre, track.Genres_)
+		{
+			AddGenre_.bindValue (":track_id", id);
+			AddGenre_.bindValue (":name", genre);
+			if (!AddGenre_.exec ())
+			{
+				Util::DBLock::DumpError (AddGenre_);
+				throw std::runtime_error ("unable to add genre");
+			}
+		}
+	}
+
+	void LocalCollectionStorage::AddToPresent (const Collection::Artist& artist)
+	{
+		PresentArtists_ [artist.Name_] = artist.ID_;
+	}
+
+	bool LocalCollectionStorage::IsPresent (const Collection::Artist& artist, int& id) const
+	{
+		if (PresentArtists_.contains (artist.Name_))
+		{
+			id = PresentArtists_ [artist.Name_];
+			return true;
+		}
+		else
+			return false;
+	}
+
+	void LocalCollectionStorage::AddToPresent (const Collection::Artist& artist, const Collection::Album& album)
+	{
+		PresentAlbums_ [artist.Name_ + '_' + album.Name_ + '_' + QString::number (album.Year_)] = album.ID_;
+	}
+
+	bool LocalCollectionStorage::IsPresent (const Collection::Artist& artist, const Collection::Album& album, int& id) const
+	{
+		const QString& str = artist.Name_ + '_' + album.Name_ + '_' + QString::number (album.Year_);
+		if (PresentAlbums_.contains (str))
+		{
+			id = PresentAlbums_ [str];
+			return true;
+		}
+		else
+			return false;
+	}
+
+	void LocalCollectionStorage::PrepareQueries ()
+	{
+		GetArtists_ = QSqlQuery (DB_);
+		GetArtists_.prepare ("SELECT Id, Name FROM artists;");
+
+		GetAlbums_ = QSqlQuery (DB_);
+		GetAlbums_.prepare ("SELECT Id, Name, Year, CoverPath FROM albums;");
+
+		GetArtistAlbums_ = QSqlQuery (DB_);
+		GetArtistAlbums_.prepare ("SELECT albums.Id FROM albums INNER JOIN artists2albums ON albums.Id = artists2albums.AlbumId WHERE artists2albums.ArtistId = :artist_id;");
+
+		GetAlbumTracks_ = QSqlQuery (DB_);
+		GetAlbumTracks_.prepare ("SELECT Id, TrackNumber, Name, Length, Path FROM tracks WHERE AlbumId = :album_id;");
+
+		GetTrackGenres_ = QSqlQuery (DB_);
+		GetTrackGenres_.prepare ("SELECT Name FROM genres WHERE TrackId = :track_id;");
+
+		AddArtist_ = QSqlQuery (DB_);
+		AddArtist_.prepare ("INSERT INTO artists (Name) VALUES (:name);");
+
+		AddAlbum_ = QSqlQuery (DB_);
+		AddAlbum_.prepare ("INSERT INTO albums (Name, Year, CoverPath) VALUES (:name, :year, :cover_path);");
+
+		LinkArtistAlbum_ = QSqlQuery (DB_);
+		LinkArtistAlbum_.prepare ("INSERT INTO artists2albums (ArtistID, AlbumID) VALUES (:artist_id, :album_id);");
+
+		AddTrack_ = QSqlQuery (DB_);
+		AddTrack_.prepare ("INSERT INTO tracks (ArtistID, AlbumID, Path, Name, TrackNumber, Length) "
+				"VALUES (:artist_id, :album_id, :path, :name, :track_number, :length);");
+
+		AddGenre_ = QSqlQuery (DB_);
+		AddGenre_.prepare ("INSERT INTO genres (TrackId, Name) VALUES (:track_id, :name);");
 	}
 
 	void LocalCollectionStorage::CreateTables ()
@@ -69,7 +389,7 @@ namespace LMP
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"Name TEXT, "
 				"Year INTEGER, "
-				"CoverImage TEXT "
+				"CoverPath TEXT "
 				");";
 		table2query ["artists2albums"] = "CREATE TABLE artists2albums ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -112,7 +432,7 @@ namespace LMP
 				if (!q.exec (table2query [key]))
 				{
 					Util::DBLock::DumpError (q);
-					throw std::runtime_error ("LMP: cannot create required tables");
+					throw std::runtime_error ("cannot create required tables");
 				}
 			}
 

@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include "localcollectionstorage.h"
 
 class QStandardItemModel;
 class QAbstractItemModel;
@@ -35,10 +36,13 @@ namespace LMP
 
 		LocalCollectionStorage *Storage_;
 		QStandardItemModel *CollectionModel_;
+
+		Collection::Artists_t Artists_;
 	public:
 		LocalCollection (QObject* = 0);
 
 		QAbstractItemModel* GetCollectionModel () const;
+		void Scan (const QString&);
 	};
 }
 }

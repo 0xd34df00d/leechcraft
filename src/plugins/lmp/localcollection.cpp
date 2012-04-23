@@ -18,7 +18,11 @@
 
 #include "localcollection.h"
 #include <QStandardItemModel>
+#include <QtDebug>
 #include "localcollectionstorage.h"
+#include "core.h"
+#include "util.h"
+#include "localfileresolver.h"
 
 namespace LeechCraft
 {
@@ -29,11 +33,24 @@ namespace LMP
 	, Storage_ (new LocalCollectionStorage (this))
 	, CollectionModel_ (new QStandardItemModel (this))
 	{
+		Artists_ = Storage_->Load ();
 	}
 
 	QAbstractItemModel* LocalCollection::GetCollectionModel () const
 	{
 		return CollectionModel_;
+	}
+
+	void LocalCollection::Scan (const QString& path)
+	{
+		auto resolver = Core::Instance ().GetLocalFileResolver ();
+		const auto& paths = RecIterate (path);
+
+		QList<MediaInfo> infos;
+		std::transform (paths.begin (), paths.end (), std::back_inserter (infos),
+				[resolver] (const QString& path) { return resolver->ResolveInfo (path); });
+
+		Storage_->AddToCollection (infos);
 	}
 }
 }
