@@ -33,6 +33,7 @@ IF (NOT PHONON_FOUND)
 ENDIF (NOT PHONON_FOUND)
 
 INCLUDE_DIRECTORIES (
+	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${QT_PHONON_INCLUDES}
@@ -51,6 +52,7 @@ SET (SRCS
 	util.cpp
 	collectiontypes.cpp
 	collectiondelegate.cpp
+	nowplayingwidget.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -65,9 +67,11 @@ SET (HEADERS
 	util.h
 	collectiontypes.h
 	collectiondelegate.h
+	nowplayingwidget.h
 	)
 SET (FORMS
 	playertab.ui
+	nowplayingwidget.ui
 	)
 SET (RESOURCES resources.qrc)
 IF (NOT LC_NO_MOC)
