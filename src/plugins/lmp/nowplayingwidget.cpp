@@ -42,7 +42,12 @@ namespace LMP
 		const QString& unknown = isNull ?
 				QString () :
 				tr ("unknown");
-		auto str = [&unknown] (const QString& str) { return str.isNull () ? unknown : str; };
+		auto str = [&unknown] (const QString& str)
+		{
+			return str.isNull () ?
+					unknown :
+					("<strong>") + str + ("</strong>");
+		};
 		Ui_.ArtistName_->setText (str (info.Artist_));
 		Ui_.AlbumName_->setText (str (info.Album_));
 		Ui_.TrackName_->setText (str (info.Title_));
