@@ -63,6 +63,8 @@ namespace AdvancedNotifications
 			return;
 		}
 
+		qDebug () << Q_FUNC_INFO << "created";
+
 		Location_ = QUrl::fromLocalFile (fileLocation);
 	}
 
