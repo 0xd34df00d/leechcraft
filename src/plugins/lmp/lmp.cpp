@@ -57,6 +57,10 @@ namespace LMP
 				SIGNAL (changeTabName (QWidget*, QString)),
 				this,
 				SIGNAL (changeTabName (QWidget*, QString)));
+		connect (PlayerTab_,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 
 	void Plugin::SecondInit ()

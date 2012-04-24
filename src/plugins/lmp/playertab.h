@@ -26,6 +26,8 @@ class QFileSystemModel;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace LMP
 {
 	class MediaInfo;
@@ -69,6 +71,8 @@ namespace LMP
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);
+
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

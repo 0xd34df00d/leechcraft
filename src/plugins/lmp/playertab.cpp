@@ -28,6 +28,7 @@
 #include "core.h"
 #include "localcollection.h"
 #include "collectiondelegate.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -201,23 +202,28 @@ namespace LMP
 				px = QIcon::fromTheme ("media-optical").pixmap (128, 128);
 		}
 		Ui_.NPWidget_->SetAlbumArt (px);
-		px = px.scaled (Ui_.NPArt_->minimumSize (),
+		const QPixmap& scaled = px.scaled (Ui_.NPArt_->minimumSize (),
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
-		Ui_.NPArt_->setPixmap (px);
+		Ui_.NPArt_->setPixmap (scaled);
 
 		Ui_.NPWidget_->SetTrackInfo (info);
 
 		Ui_.NowPlaying_->clear ();
-
 		if (!info.Title_.isEmpty () || !info.Artist_.isEmpty ())
 		{
 			const auto& title = info.Title_.isEmpty () ? tr ("unknown song") : info.Title_;
 			const auto& album = info.Album_.isEmpty () ? tr ("unknown album") : info.Album_;
 			const auto& track = info.Artist_.isEmpty () ? tr ("unknown artist") : info.Artist_;
-			Ui_.NowPlaying_->setText (tr ("Now playing: %1 from %2 by %3")
-						.arg ("<em>" + title + "</em>")
-						.arg ("<em>" + album + "</em>")
-						.arg ("<em>" + track + "</em>"));
+
+			const QString& text = tr ("Now playing: %1 from %2 by %3")
+					.arg ("<em>" + title + "</em>")
+					.arg ("<em>" + album + "</em>")
+					.arg ("<em>" + track + "</em>");
+			Ui_.NowPlaying_->setText (text);
+
+			Entity e = Util::MakeNotification ("LMP", text, PInfo_);
+			e.Additional_ ["NotificationPixmap"] = px;
+			emit gotEntity (e);
 		}
 	}
 
