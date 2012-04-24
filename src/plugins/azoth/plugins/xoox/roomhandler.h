@@ -45,6 +45,7 @@ namespace Xoox
 
 		GlooxAccount *Account_;
 		QXmppMucManager *MUCManager_;
+		const QString RoomJID_;
 		QXmppMucRoom *Room_;
 		RoomCLEntry *CLEntry_;
 		QHash<QString, RoomParticipantEntry_ptr> Nick2Entry_;

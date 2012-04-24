@@ -49,6 +49,7 @@ namespace Xoox
 			GlooxAccount* account)
 	: Account_ (account)
 	, MUCManager_ (Account_->GetClientConnection ()->GetMUCManager ())
+	, RoomJID_ (jid)
 	, Room_ (MUCManager_->addRoom (jid))
 	, CLEntry_ (new RoomCLEntry (this, Account_))
 	, HadRequestedPassword_ (false)
@@ -87,7 +88,7 @@ namespace Xoox
 
 	QString RoomHandler::GetRoomJID () const
 	{
-		return Room_->jid ();
+		return RoomJID_;
 	}
 
 	RoomCLEntry* RoomHandler::GetCLEntry ()
