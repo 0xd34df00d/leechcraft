@@ -30,7 +30,7 @@ namespace LMP
 {
 	LocalCollectionStorage::LocalCollectionStorage (QObject *parent)
 	: QObject (parent)
-	, DB_ (QSqlDatabase::addDatabase ("QSQLITE", "LMP_LocalCollection"))
+	, DB_ (QSqlDatabase::addDatabase ("QSQLITE", QString ("LMP_LocalCollection_%1").arg (qrand ())))
 	{
 		DB_.setDatabaseName (Util::CreateIfNotExists ("lmp").filePath ("localcollection.db"));
 
