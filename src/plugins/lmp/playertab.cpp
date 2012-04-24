@@ -193,16 +193,19 @@ namespace LMP
 	{
 		QPixmap px;
 		if (info.LocalPath_.isEmpty ())
-			px = QIcon::fromTheme ("media-optical").pixmap (64, 64);
+			px = QIcon::fromTheme ("media-optical").pixmap (128, 128);
 		else
 		{
 			px = FindAlbumArt (info.LocalPath_);
 			if (px.isNull ())
-				px = QIcon::fromTheme ("media-optical").pixmap (64, 64);
+				px = QIcon::fromTheme ("media-optical").pixmap (128, 128);
 		}
+		Ui_.NPWidget_->SetAlbumArt (px);
 		px = px.scaled (Ui_.NPArt_->minimumSize (),
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
 		Ui_.NPArt_->setPixmap (px);
+
+		Ui_.NPWidget_->SetTrackInfo (info);
 
 		Ui_.NowPlaying_->clear ();
 
