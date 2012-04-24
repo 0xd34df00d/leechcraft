@@ -83,6 +83,7 @@ namespace LMP
 		QStringList CollectPaths (const QModelIndex&);
 		void AppendToModel (const Collection::Artists_t&);
 	private slots:
+		void handleLoadFinished ();
 		void handleScanFinished ();
 	signals:
 		void scanStarted (int);

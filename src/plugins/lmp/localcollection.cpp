@@ -22,6 +22,7 @@
 #include <QSortFilterProxyModel>
 #include <QtConcurrentMap>
 #include <QtDebug>
+#include <QtConcurrentRun>
 #include "localcollectionstorage.h"
 #include "core.h"
 #include "util.h"
@@ -117,13 +118,14 @@ namespace LMP
 				this,
 				SIGNAL (scanProgressChanged (int)));
 
-		Artists_ = Storage_->Load ();
-		Q_FOREACH (const auto& artist, Artists_)
-			Q_FOREACH (auto album, artist.Albums_)
-				Q_FOREACH (const auto& track, album->Tracks_)
-					PresentPaths_ << track.FilePath_;
-
-		AppendToModel (Artists_);
+		auto loadWatcher = new QFutureWatcher<Collection::Artists_t> ();
+		connect (loadWatcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleLoadFinished ()));
+		auto worker = [] () { return LocalCollectionStorage ().Load (); };
+		auto future = QtConcurrent::run (std::function<Collection::Artists_t ()> (worker));
+		loadWatcher->setFuture (future);
 
 		Sorter_->setSourceModel (CollectionModel_);
 		Sorter_->setDynamicSortFilter (true);
@@ -239,6 +241,20 @@ namespace LMP
 				}
 			}
 		}
+	}
+
+	void LocalCollection::handleLoadFinished ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<Collection::Artists_t>*> (sender ());
+		watcher->deleteLater ();
+		Artists_ = watcher->result ();
+
+		Q_FOREACH (const auto& artist, Artists_)
+			Q_FOREACH (auto album, artist.Albums_)
+				Q_FOREACH (const auto& track, album->Tracks_)
+					PresentPaths_ << track.FilePath_;
+
+		AppendToModel (Artists_);
 	}
 
 	void LocalCollection::handleScanFinished ()
