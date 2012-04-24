@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "util.h"
+#include <algorithm>
 #include <QDirIterator>
 #include <QPixmap>
 
