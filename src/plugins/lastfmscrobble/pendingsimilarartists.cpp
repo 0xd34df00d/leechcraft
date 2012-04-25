@@ -26,8 +26,9 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	PendingSimilarArtists::PendingSimilarArtists (const QString& name, QObject *parent)
+	PendingSimilarArtists::PendingSimilarArtists (const QString& name, int num, QObject *parent)
 	: QObject (parent)
+	, NumGet_ (num)
 	, InfosWaiting_ (0)
 	{
 		auto reply = lastfm::Artist (name).getSimilar ();
@@ -35,6 +36,10 @@ namespace Lastfmscrobble
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleReplyError ()));
 	}
 
 	QObject* PendingSimilarArtists::GetObject ()
@@ -50,6 +55,7 @@ namespace Lastfmscrobble
 	void PendingSimilarArtists::DecrementWaiting ()
 	{
 		--InfosWaiting_;
+		qDebug () << Q_FUNC_INFO << InfosWaiting_ << Similar_.size ();
 
 		if (!InfosWaiting_)
 			emit ready ();
@@ -67,7 +73,15 @@ namespace Lastfmscrobble
 			return;
 		}
 
-		for (auto i = similar.begin (), end = similar.end (); i != end; ++i)
+		auto begin = similar.begin ();
+		auto end = similar.end ();
+		const int distance = std::distance (begin, end);
+		if (distance > NumGet_)
+			std::advance (begin, distance - NumGet_);
+
+		InfosWaiting_ = std::distance (begin, end);
+
+		for (auto i = begin; i != end; ++i)
 		{
 			auto infoReply = lastfm::Artist (i.value ()).getInfo ();
 			infoReply->setProperty ("Similarity", i.key ());
@@ -76,7 +90,7 @@ namespace Lastfmscrobble
 					this,
 					SLOT (handleInfoReplyFinished ()));
 			connect (infoReply,
-					SIGNAL (finished ()),
+					SIGNAL (error (QNetworkReply::NetworkError)),
 					this,
 					SLOT (handleInfoReplyError ()));
 		}
@@ -117,7 +131,7 @@ namespace Lastfmscrobble
 				this,
 				SLOT (handleTagsReplyFinished ()));
 		connect (tagsReply,
-				SIGNAL (finished ()),
+				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
 				SLOT (handleTagsReplyError ()));
 	}

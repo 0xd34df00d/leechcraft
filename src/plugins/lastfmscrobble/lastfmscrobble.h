@@ -62,7 +62,7 @@ namespace Lastfmscrobble
 		QString GetServiceName () const;
 		void NowPlaying (const Media::AudioInfo&);
 		void PlaybackStopped ();
-		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&);
+		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&, int);
 	private slots:
 		void handleSubmitterInit ();
 	signals:

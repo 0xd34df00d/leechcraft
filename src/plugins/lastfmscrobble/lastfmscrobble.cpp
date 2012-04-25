@@ -110,9 +110,9 @@ namespace Lastfmscrobble
 		LFSubmitter_->Clear ();
 	}
 
-	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name)
+	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)
 	{
-		return new PendingSimilarArtists (name, this);
+		return new PendingSimilarArtists (name, num, this);
 	}
 
 	void Plugin::handleSubmitterInit ()

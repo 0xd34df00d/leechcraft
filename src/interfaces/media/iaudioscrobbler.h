@@ -43,7 +43,7 @@ namespace Media
 		virtual void NowPlaying (const AudioInfo& audio) = 0;
 		virtual void PlaybackStopped () = 0;
 
-		virtual IPendingSimilarArtists* GetSimilarArtists (const QString& artistName) = 0;
+		virtual IPendingSimilarArtists* GetSimilarArtists (const QString& artistName, int num) = 0;
 	};
 }
 
