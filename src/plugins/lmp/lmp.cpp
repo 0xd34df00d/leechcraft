@@ -46,6 +46,8 @@ namespace LMP
 			TFSingle | TFOpenableByRequest
 		};
 
+		Core::Instance ().SetProxy (proxy);
+
 		Core::Instance ().PostInit ();
 
 		PlayerTab_ = new PlayerTab (PlayerTC_, this);

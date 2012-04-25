@@ -31,16 +31,26 @@ namespace LMP
 	{
 	}
 
-	void Core::PostInit ()
-	{
-		XmlSettingsManager::Instance ().RegisterObject ("CollectionDir",
-				this, "handleCollectionDirChanged");
-	}
-
 	Core& Core::Instance ()
 	{
 		static Core c;
 		return c;
+	}
+
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
+
+	ICoreProxy_ptr Core::GetProxy ()
+	{
+		return Proxy_;
+	}
+
+	void Core::PostInit ()
+	{
+		XmlSettingsManager::Instance ().RegisterObject ("CollectionDir",
+				this, "handleCollectionDirChanged");
 	}
 
 	LocalFileResolver* Core::GetLocalFileResolver () const

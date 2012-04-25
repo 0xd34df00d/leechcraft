@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -31,12 +32,17 @@ namespace LMP
 	{
 		Q_OBJECT
 
+		ICoreProxy_ptr Proxy_;
+
 		LocalFileResolver *Resolver_;
 		LocalCollection *Collection_;
 
 		Core ();
 	public:
 		static Core& Instance ();
+
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy ();
 
 		void PostInit ();
 
