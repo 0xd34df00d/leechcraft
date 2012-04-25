@@ -21,6 +21,7 @@
 #include <QCryptographicHash>
 #include <QByteArray>
 #include <QNetworkAccessManager>
+#include <QTimer>
 #include <lastfm/Track>
 #include <lastfm.h>
 #include <interfaces/media/audiostructs.h>
@@ -30,6 +31,12 @@ namespace LeechCraft
 namespace Lastfmscrobble
 {
 	const QString ScrobblingSite_ = "http://ws.audioscrobbler.com/2.0/";
+
+	MediaMeta::MediaMeta ()
+	: TrackNumber_ (0)
+	, Length_ (0)
+	{
+	}
 
 	MediaMeta::MediaMeta (const QMap<QString, QVariant>& tagMap)
 	: Artist_ (tagMap ["Artist"].toString ())
@@ -80,9 +87,12 @@ namespace Lastfmscrobble
 
 	LastFMSubmitter::LastFMSubmitter (QObject *parent)
 	: QObject (parent)
+	, SubmitTimer_ (new QTimer (this))
 	{
 		lastfm::ws::ApiKey = "be076efd1c241366f27fde6fd024e567";
 		lastfm::ws::SharedSecret = "8352aead3be59ab319cd4e578d374843";
+
+		SubmitTimer_->setSingleShot (true);
 	}
 
 	void LastFMSubmitter::Init (QNetworkAccessManager *manager)
@@ -120,7 +130,49 @@ namespace Lastfmscrobble
 
 	bool LastFMSubmitter::IsConnected () const
 	{
-		return static_cast<bool> (Scrobbler_);
+		return Scrobbler_ ? true : false;
+	}
+
+	namespace
+	{
+		lastfm::MutableTrack ToLastFMTrack (const MediaMeta& info)
+		{
+			lastfm::MutableTrack mutableTrack;
+			mutableTrack.setTitle (info.Title_);
+			mutableTrack.setAlbum (info.Album_);
+			mutableTrack.setArtist (info.Artist_);
+			mutableTrack.stamp ();
+			mutableTrack.setSource (lastfm::Track::Player);
+			mutableTrack.setDuration (info.Length_);
+			mutableTrack.setTrackNumber (info.TrackNumber_);
+			return mutableTrack;
+		}
+	}
+
+	void LastFMSubmitter::Prepare (const MediaMeta& info)
+	{
+		if (!Scrobbler_)
+			return;
+
+		SubmitTimer_->stop ();
+
+		const auto& lfmTrack = ToLastFMTrack (info);
+		Scrobbler_->nowPlaying (lfmTrack);
+		if (info.Length_ < 30)
+			return;
+
+		Scrobbler_->cache (lfmTrack);
+		SubmitTimer_->start (std::min (info.Length_ / 2, 240));
+	}
+
+	void LastFMSubmitter::Clear ()
+	{
+		SubmitTimer_->stop ();
+	}
+
+	void LastFMSubmitter::checkFlushQueue (int code)
+	{
+		// TODO
 	}
 
 	void LastFMSubmitter::getSessionKey ()
@@ -146,6 +198,15 @@ namespace Lastfmscrobble
 				SIGNAL (status (int)),
 				this,
 				SIGNAL (status (int)));
+		connect (Scrobbler_.get (),
+				SIGNAL (status (int)),
+				this,
+				SLOT (checkFlushQueue (int)));
+
+		connect (SubmitTimer_,
+				SIGNAL (timeout ()),
+				Scrobbler_.get (),
+				SLOT (submit ()));
 	}
 
 	void LastFMSubmitter::sendTrack (const MediaMeta& info)
@@ -154,15 +215,7 @@ namespace Lastfmscrobble
 			return;
 
 		Scrobbler_->submit ();
-		lastfm::Track track;
-		lastfm::MutableTrack mutableTrack (track);
-		mutableTrack.setTitle (info.Title_);
-		mutableTrack.setAlbum (info.Album_);
-		mutableTrack.setArtist (info.Artist_);
-		mutableTrack.stamp ();
-		mutableTrack.setSource (lastfm::Track::Player);
-		mutableTrack.setDuration (info.Length_);
-		mutableTrack.setTrackNumber (info.TrackNumber_);
+		const auto& track = ToLastFMTrack (info);
 		Scrobbler_->nowPlaying (track);
 		Scrobbler_->cache (track);
 	}
