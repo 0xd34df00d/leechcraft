@@ -21,6 +21,8 @@
 #include <QToolBar>
 #include <QFileDialog>
 #include <QFileSystemModel>
+#include <QMenu>
+#include <QToolButton>
 #include <phonon/seekslider.h>
 #include "player.h"
 #include "playlistdelegate.h"
@@ -126,6 +128,7 @@ namespace LMP
 		TabToolbar_->addSeparator ();
 
 		auto seekSlider = new Phonon::SeekSlider (Player_->GetSourceObject ());
+		seekSlider->setTracking (false);
 		TabToolbar_->addWidget (seekSlider);
 	}
 
@@ -189,6 +192,38 @@ namespace LMP
 				this,
 				SLOT (loadFromDisk ()));
 		PlaylistToolbar_->addAction (loadFiles);
+
+		PlaylistToolbar_->addSeparator ();
+
+		auto playButton = new QToolButton;
+		playButton->setIcon (Core::Instance ().GetProxy ()->GetIcon ("view-media-playlist"));
+		playButton->setPopupMode (QToolButton::InstantPopup);
+		QMenu *playMode = new QMenu (tr ("Play mode"));
+		playButton->setMenu (playMode);
+
+		const std::vector<Player::PlayMode> modes = { Player::PlayMode::Sequential,
+				Player::PlayMode::Shuffle, Player::PlayMode::RepeatTrack,
+				Player::PlayMode::RepeatAlbum, Player::PlayMode::RepeatWhole };
+		const std::vector<QString> names = { tr ("Sequential"),
+				tr ("Shuffle"), tr ("Repeat track"),
+				tr ("Repeat album"), tr ("Repeat whole") };
+		auto playGroup = new QActionGroup (this);
+		for (size_t i = 0; i < modes.size (); ++i)
+		{
+			QAction *action = new QAction (names [i], this);
+			action->setProperty ("PlayMode", static_cast<int> (modes.at (i)));
+			action->setCheckable (true);
+			action->setChecked (modes.at (i) == Player::PlayMode::Sequential);
+			action->setActionGroup (playGroup);
+			playMode->addAction (action);
+
+			connect (action,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleChangePlayMode ()));
+		}
+
+		PlaylistToolbar_->addWidget (playButton);
 	}
 
 	void PlayerTab::handleSongChanged (const MediaInfo& info)
@@ -242,6 +277,12 @@ namespace LMP
 		if (!Ui_.ScanProgress_->isVisible ())
 			Ui_.ScanProgress_->show ();
 		Ui_.ScanProgress_->setValue (progress);
+	}
+
+	void PlayerTab::handleChangePlayMode ()
+	{
+		auto mode = sender ()->property ("PlayMode").toInt ();
+		Player_->SetPlayMode (static_cast<Player::PlayMode> (mode));
 	}
 
 	void PlayerTab::loadFromCollection ()
