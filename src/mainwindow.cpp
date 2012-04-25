@@ -722,7 +722,14 @@ void LeechCraft::MainWindow::updateClock ()
 void LeechCraft::MainWindow::showHideMain ()
 {
 	IsShown_ = 1 - IsShown_;
-	IsShown_ ? show () : hide ();
+	if (IsShown_)
+	{
+		show ();
+		activateWindow ();
+		raise ();
+	}
+	else
+		hide ();
 }
 
 void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
