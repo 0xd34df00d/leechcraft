@@ -18,8 +18,9 @@
 
 #pragma once
 
-#include <QString>
+#include <QStringList>
 #include <QVariantMap>
+#include <QUrl>
 
 namespace Media
 {
@@ -37,4 +38,24 @@ namespace Media
 
 		QVariantMap Other_;
 	};
+
+	struct TagInfo
+	{
+		QString Name_;
+		QUrl Page_;
+	};
+	typedef QList<TagInfo> TagInfos_t;
+
+	struct ArtistInfo
+	{
+		QString Name_;
+
+		QUrl Image_;
+		QUrl Page_;
+
+		TagInfos_t Tags_;
+	};
+
+	typedef QPair<ArtistInfo, int> SimilarityInfo_t;
+	typedef QList<SimilarityInfo_t> SimilarityInfos_t;
 }
