@@ -26,6 +26,7 @@
 #include <util/passutils.h>
 #include "lastfmsubmitter.h"
 #include "xmlsettingsmanager.h"
+#include "pendingsimilarartists.h"
 
 namespace LeechCraft
 {
@@ -107,6 +108,11 @@ namespace Lastfmscrobble
 	void Plugin::PlaybackStopped ()
 	{
 		LFSubmitter_->Clear ();
+	}
+
+	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name)
+	{
+		return new PendingSimilarArtists (name, this);
 	}
 
 	void Plugin::handleSubmitterInit ()
