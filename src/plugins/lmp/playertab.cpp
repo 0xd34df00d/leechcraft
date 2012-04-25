@@ -28,6 +28,7 @@
 #include "core.h"
 #include "localcollection.h"
 #include "collectiondelegate.h"
+#include "xmlsettingsmanager.h"
 #include <util/util.h>
 
 namespace LeechCraft
@@ -221,9 +222,12 @@ namespace LMP
 					.arg ("<em>" + track + "</em>");
 			Ui_.NowPlaying_->setText (text);
 
-			Entity e = Util::MakeNotification ("LMP", text, PInfo_);
-			e.Additional_ ["NotificationPixmap"] = px;
-			emit gotEntity (e);
+			if (XmlSettingsManager::Instance ().property ("EnableNotifications").toBool ())
+			{
+				Entity e = Util::MakeNotification ("LMP", text, PInfo_);
+				e.Additional_ ["NotificationPixmap"] = px;
+				emit gotEntity (e);
+			}
 		}
 	}
 
