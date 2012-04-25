@@ -78,21 +78,6 @@ namespace Lastfmscrobble
 		}
 	}
 
-	bool LastFMSubmitter::IsConnected () const
-	{
-		return static_cast<bool> (Scrobbler_);
-	}
-
-	void LastFMSubmitter::SetPassword (const QString& password)
-	{
-		Password_ = password;
-	}
-
-	void LastFMSubmitter::SetUsername (const QString& username)
-	{
-		lastfm::ws::Username = username;
-	}
-
 	LastFMSubmitter::LastFMSubmitter (QObject *parent)
 	: QObject (parent)
 	{
@@ -121,6 +106,21 @@ namespace Lastfmscrobble
 				SIGNAL (finished ()),
 				this,
 				SLOT (getSessionKey ()));
+	}
+
+	void LastFMSubmitter::SetUsername (const QString& username)
+	{
+		lastfm::ws::Username = username;
+	}
+
+	void LastFMSubmitter::SetPassword (const QString& password)
+	{
+		Password_ = password;
+	}
+
+	bool LastFMSubmitter::IsConnected () const
+	{
+		return static_cast<bool> (Scrobbler_);
 	}
 
 	void LastFMSubmitter::getSessionKey ()
