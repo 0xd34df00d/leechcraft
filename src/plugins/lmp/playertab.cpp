@@ -32,6 +32,8 @@
 #include "collectiondelegate.h"
 #include "xmlsettingsmanager.h"
 #include <util/util.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/media/iaudioscrobbler.h>
 
 namespace LeechCraft
 {
@@ -264,6 +266,39 @@ namespace LMP
 				emit gotEntity (e);
 			}
 		}
+
+		if (!Similars_.contains (info.Artist_))
+		{
+			auto scrobblers = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
+			qDebug () << Q_FUNC_INFO << scrobblers.size ();
+			Q_FOREACH (Media::IAudioScrobbler *scrobbler, scrobblers)
+			{
+				auto obj = scrobbler->GetSimilarArtists (info.Artist_, 15);
+				connect (obj->GetObject (),
+						SIGNAL (error ()),
+						this,
+						SLOT (handleSimilarError ()));
+				connect (obj->GetObject (),
+						SIGNAL (ready ()),
+						this,
+						SLOT (handleSimilarReady ()));
+			}
+		}
+	}
+
+	void PlayerTab::handleSimilarError ()
+	{
+		qWarning () << Q_FUNC_INFO;
+		sender ()->deleteLater ();
+	}
+
+	void PlayerTab::handleSimilarReady ()
+	{
+		sender ()->deleteLater ();
+		auto obj = qobject_cast<Media::IPendingSimilarArtists*> (sender ());
+
+		Similars_ [obj->GetSourceArtistName ()] = obj->GetSimilar ();
 	}
 
 	void PlayerTab::handleScanProgress (int progress)

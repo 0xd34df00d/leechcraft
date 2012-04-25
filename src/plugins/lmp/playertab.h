@@ -20,6 +20,7 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/media/audiostructs.h>
 #include "ui_playertab.h"
 
 class QFileSystemModel;
@@ -50,6 +51,8 @@ namespace LMP
 		QToolBar *PlaylistToolbar_;
 
 		QToolBar *TabToolbar_;
+
+		QHash<QString, Media::SimilarityInfos_t> Similars_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
@@ -64,6 +67,8 @@ namespace LMP
 		void SetupPlaylist ();
 	private slots:
 		void handleSongChanged (const MediaInfo&);
+		void handleSimilarError ();
+		void handleSimilarReady ();
 		void handleScanProgress (int);
 		void handleChangePlayMode ();
 		void loadFromCollection ();
