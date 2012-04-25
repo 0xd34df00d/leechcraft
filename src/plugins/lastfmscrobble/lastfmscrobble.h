@@ -22,6 +22,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/media/iaudioscrobbler.h>
 
 namespace LeechCraft
 {
@@ -33,11 +34,13 @@ namespace Lastfmscrobble
 				, public IInfo
 				, public IEntityHandler
 				, public IHaveSettings
+				, public Media::IAudioScrobbler
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IEntityHandler
-				IHaveSettings)
+				IHaveSettings
+				Media::IAudioScrobbler)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		LastFMSubmitter *LFSubmitter_;
@@ -55,6 +58,10 @@ namespace Lastfmscrobble
 		void Handle (Entity entity);
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QString GetServiceName () const;
+		void NowPlaying (const Media::AudioInfo&);
+		void PlaybackStopped ();
 	private slots:
 		void handleSubmitterInit ();
 	signals:

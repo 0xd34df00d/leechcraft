@@ -94,6 +94,21 @@ namespace Lastfmscrobble
 		return XmlSettingsDialog_;
 	}
 
+	QString Plugin::GetServiceName () const
+	{
+		return "Last.FM";
+	}
+
+	void Plugin::NowPlaying (const Media::AudioInfo& info)
+	{
+		LFSubmitter_->Prepare (MediaMeta (info));
+	}
+
+	void Plugin::PlaybackStopped ()
+	{
+		LFSubmitter_->Clear ();
+	}
+
 	void Plugin::handleSubmitterInit ()
 	{
 		const QString& login = XmlSettingsManager::Instance ()
