@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "nowplayingwidget.h"
+#include <QDeclarativeContext>
 #include "mediainfo.h"
 
 namespace LeechCraft
@@ -27,6 +28,12 @@ namespace LMP
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
+	}
+
+	void NowPlayingWidget::SetSimilarModel (QAbstractItemModel *model)
+	{
+		Ui_.SimilarView_->rootContext ()->setContextProperty ("similarModel", model);
+		Ui_.SimilarView_->setSource (QUrl ("qrc:/lmp/resources/qml/SimilarView.qml"));
 	}
 
 	void NowPlayingWidget::SetAlbumArt (const QPixmap& px)

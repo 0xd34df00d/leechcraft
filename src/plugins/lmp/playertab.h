@@ -23,6 +23,7 @@
 #include <interfaces/media/audiostructs.h>
 #include "ui_playertab.h"
 
+class QStandardItemModel;
 class QFileSystemModel;
 
 namespace LeechCraft
@@ -53,6 +54,7 @@ namespace LMP
 		QToolBar *TabToolbar_;
 
 		QHash<QString, Media::SimilarityInfos_t> Similars_;
+		QStandardItemModel *SimilarsModel_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
@@ -65,6 +67,7 @@ namespace LMP
 		void SetupCollection ();
 		void SetupFSBrowser ();
 		void SetupPlaylist ();
+		void FillSimilar (Media::SimilarityInfos_t);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
 		void handleSimilarError ();

@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/lmp">
 	<file>resources/images/lmp.svg</file>
+	<file>resources/qml/SimilarView.qml</file>
   </qresource>
 </RCC>

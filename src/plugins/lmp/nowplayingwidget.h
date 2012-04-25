@@ -35,6 +35,8 @@ namespace LMP
 	public:
 		NowPlayingWidget (QWidget* = 0);
 
+		void SetSimilarModel (QAbstractItemModel*);
+
 		void SetAlbumArt (const QPixmap&);
 		void SetTrackInfo (const MediaInfo&);
 	};

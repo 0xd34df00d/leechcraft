@@ -21,9 +21,13 @@
 #include <QToolBar>
 #include <QFileDialog>
 #include <QFileSystemModel>
-#include <QMenu>
+#include <QStandardItemModel>
 #include <QToolButton>
+#include <QMenu>
 #include <phonon/seekslider.h>
+#include <util/util.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/media/iaudioscrobbler.h>
 #include "player.h"
 #include "playlistdelegate.h"
 #include "util.h"
@@ -31,14 +35,41 @@
 #include "localcollection.h"
 #include "collectiondelegate.h"
 #include "xmlsettingsmanager.h"
-#include <util/util.h>
-#include <interfaces/core/ipluginsmanager.h>
-#include <interfaces/media/iaudioscrobbler.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		class SimilarModel : public QStandardItemModel
+		{
+		public:
+			enum Role
+			{
+				ArtistName = Qt::UserRole + 1,
+				Similarity,
+				ArtistImageURL,
+				ArtistBigImageURL,
+				ArtistPageURL,
+				ArtistTags,
+			};
+
+			SimilarModel (QObject *parent = 0)
+			: QStandardItemModel (parent)
+			{
+				QHash<int, QByteArray> names;
+				names [ArtistName] = "artistName";
+				names [Similarity] = "similarity";
+				names [ArtistImageURL] = "artistImageURL";
+				names [ArtistBigImageURL] = "artistBigImageURL";
+				names [ArtistPageURL] = "artistPageURL";
+				names [ArtistTags] = "artistTags";
+				setRoleNames (names);
+			}
+		};
+	}
+
 	PlayerTab::PlayerTab (const TabClassInfo& info, QObject *plugin, QWidget *parent)
 	: QWidget (parent)
 	, Plugin_ (plugin)
@@ -47,6 +78,7 @@ namespace LMP
 	, Player_ (new Player (this))
 	, PlaylistToolbar_ (new QToolBar ())
 	, TabToolbar_ (new QToolBar ())
+	, SimilarsModel_ (new SimilarModel (this))
 	{
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->setStretchFactor (0, 2);
@@ -66,6 +98,8 @@ namespace LMP
 				SLOT (handleScanProgress (int)));
 		Ui_.ScanProgress_->hide ();
 		handleSongChanged (MediaInfo ());
+
+		Ui_.NPWidget_->SetSimilarModel (SimilarsModel_);
 
 		SetupToolbar ();
 		SetupCollection ();
@@ -228,6 +262,36 @@ namespace LMP
 		PlaylistToolbar_->addWidget (playButton);
 	}
 
+	void PlayerTab::FillSimilar (Media::SimilarityInfos_t infos)
+	{
+		SimilarsModel_->clear ();
+
+		std::sort (infos.begin (), infos.end (),
+				[] (const Media::SimilarityInfo_t& left, const Media::SimilarityInfo_t& right) { return left.second > right.second; });
+
+		Q_FOREACH (const Media::SimilarityInfo_t& info, infos)
+		{
+			auto item = new QStandardItem ();
+
+			const auto& artist = info.first;
+			item->setData (artist.Name_, SimilarModel::Role::ArtistName);
+			item->setData (artist.Image_, SimilarModel::Role::ArtistImageURL);
+			item->setData (tr ("Similarity: %1%").arg (info.second), SimilarModel::Role::Similarity);
+
+			QStringList tags;
+			const int diff = artist.Tags_.size () - 5;
+			auto begin = artist.Tags_.begin ();
+			if (diff > 0)
+				std::advance (begin, diff);
+			std::transform (begin, artist.Tags_.end (), std::back_inserter (tags),
+					[] (decltype (artist.Tags_.front ()) tag) { return tag.Name_; });
+			std::reverse (tags.begin (), tags.end ());
+			item->setData (tr ("Tags: %1").arg (tags.join ("; ")), SimilarModel::Role::ArtistTags);
+
+			SimilarsModel_->appendRow (item);
+		}
+	}
+
 	void PlayerTab::handleSongChanged (const MediaInfo& info)
 	{
 		QPixmap px;
@@ -285,6 +349,8 @@ namespace LMP
 						SLOT (handleSimilarReady ()));
 			}
 		}
+		else
+			FillSimilar (Similars_ [info.Artist_]);
 	}
 
 	void PlayerTab::handleSimilarError ()
@@ -298,7 +364,9 @@ namespace LMP
 		sender ()->deleteLater ();
 		auto obj = qobject_cast<Media::IPendingSimilarArtists*> (sender ());
 
-		Similars_ [obj->GetSourceArtistName ()] = obj->GetSimilar ();
+		const auto& similar = obj->GetSimilar ();
+		Similars_ [obj->GetSourceArtistName ()] = similar;
+		FillSimilar (similar);
 	}
 
 	void PlayerTab::handleScanProgress (int progress)
