@@ -28,6 +28,7 @@ namespace Media
 		virtual ~IPendingSimilarArtists () {}
 
 		virtual QObject* GetObject () = 0;
+		virtual QString GetSourceArtistName () const = 0;
 		virtual SimilarityInfos_t GetSimilar () const = 0;
 	protected:
 		virtual void ready () = 0;

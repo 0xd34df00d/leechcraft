@@ -28,6 +28,7 @@ namespace Lastfmscrobble
 {
 	PendingSimilarArtists::PendingSimilarArtists (const QString& name, int num, QObject *parent)
 	: QObject (parent)
+	, SourceName_ (name)
 	, NumGet_ (num)
 	, InfosWaiting_ (0)
 	{
@@ -45,6 +46,11 @@ namespace Lastfmscrobble
 	QObject* PendingSimilarArtists::GetObject ()
 	{
 		return this;
+	}
+
+	QString PendingSimilarArtists::GetSourceArtistName () const
+	{
+		return SourceName_;
 	}
 
 	Media::SimilarityInfos_t PendingSimilarArtists::GetSimilar () const

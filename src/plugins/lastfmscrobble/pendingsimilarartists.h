@@ -32,14 +32,16 @@ namespace Lastfmscrobble
 		Q_OBJECT
 		Q_INTERFACES (Media::IPendingSimilarArtists)
 
+		const QString SourceName_;
 		int NumGet_;
 		Media::SimilarityInfos_t Similar_;
 		int InfosWaiting_;
 	public:
 		PendingSimilarArtists (const QString&, int num, QObject* = 0);
 
-		virtual QObject* GetObject ();
-		virtual Media::SimilarityInfos_t GetSimilar () const;
+		QObject* GetObject ();
+		QString GetSourceArtistName () const;
+		Media::SimilarityInfos_t GetSimilar () const;
 	private:
 		void DecrementWaiting ();
 	private slots:
