@@ -71,10 +71,10 @@
 #include "msgarchivingmanager.h"
 #include "sdmanager.h"
 #include "xep0232handler.h"
+#include "pepmicroblog.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
-#include "pepmicroblog.h"
 #endif
 
 namespace LeechCraft
