@@ -30,6 +30,11 @@ namespace lastfm
 	class Audioscrobbler;
 }
 
+namespace Media
+{
+	struct AudioInfo;
+}
+
 class QNetworkAccessManager;
 
 namespace LeechCraft
@@ -38,10 +43,12 @@ namespace Lastfmscrobble
 {
 	struct MediaMeta
 	{
-		explicit MediaMeta (const QMap<QString, QVariant>& tagMap);
 		QString Artist_, Album_, Title_, Genre_, Date_;
 		int TrackNumber_;
 		int Length_;
+
+		explicit MediaMeta (const QMap<QString, QVariant>& tagMap);
+		explicit MediaMeta (const Media::AudioInfo& tagMap);
 	};
 
 	class LastFMSubmitter : public QObject

@@ -23,13 +23,14 @@
 #include <QNetworkAccessManager>
 #include <lastfm/Track>
 #include <lastfm.h>
+#include <interfaces/media/audiostructs.h>
 
 namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
 	const QString ScrobblingSite_ = "http://ws.audioscrobbler.com/2.0/";
-	
+
 	MediaMeta::MediaMeta (const QMap<QString, QVariant>& tagMap)
 	: Artist_ (tagMap ["Artist"].toString ())
 	, Album_ (tagMap ["Album"].toString ())
@@ -40,7 +41,18 @@ namespace Lastfmscrobble
 	, Length_ (tagMap ["Length"].toInt ())
 	{
 	}
-	
+
+	MediaMeta::MediaMeta (const Media::AudioInfo& info)
+	: Artist_ (info.Artist_)
+	, Album_ (info.Album_)
+	, Title_ (info.Title_)
+	, Genre_ (info.Genres_.join (" / "))
+	, Date_ (QString::number (info.Year_))
+	, TrackNumber_ (info.TrackNumber_)
+	, Length_ (info.Length_)
+	{
+	}
+
 	namespace
 	{
 		QString AuthToken (const QString& username, const QString& password)
@@ -50,7 +62,7 @@ namespace Lastfmscrobble
 			return QCryptographicHash::hash ((username + passHash).toAscii (),
 					QCryptographicHash::Md5).toHex ();
 		}
-		
+
 		QString ApiSig (const QString& api_key, const QString& authToken,
 				const QString& method, const QString& username,
 				const QString& secret)
@@ -70,12 +82,12 @@ namespace Lastfmscrobble
 	{
 		return static_cast<bool> (Scrobbler_);
 	}
-	
+
 	void LastFMSubmitter::SetPassword (const QString& password)
 	{
 		Password_ = password;
 	}
-	
+
 	void LastFMSubmitter::SetUsername (const QString& username)
 	{
 		lastfm::ws::Username = username;
@@ -87,12 +99,12 @@ namespace Lastfmscrobble
 		lastfm::ws::ApiKey = "be076efd1c241366f27fde6fd024e567";
 		lastfm::ws::SharedSecret = "8352aead3be59ab319cd4e578d374843";
 	}
-	
+
 	void LastFMSubmitter::Init (QNetworkAccessManager *manager)
 	{
 		const QString& authToken = AuthToken (lastfm::ws::Username,
 				Password_);
-		
+
 		const QString& api_sig = ApiSig (lastfm::ws::ApiKey, authToken,
 				"auth.getMobileSession", lastfm::ws::Username,
 				lastfm::ws::SharedSecret);
@@ -110,14 +122,14 @@ namespace Lastfmscrobble
 				this,
 				SLOT (getSessionKey ()));
 	}
-		
+
 	void LastFMSubmitter::getSessionKey ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		
+
 		if (!reply)
 			return;
-		
+
 		QDomDocument doc;
 		doc.setContent (QString::fromUtf8 (reply->readAll ()));
 		reply->deleteLater ();
@@ -125,22 +137,22 @@ namespace Lastfmscrobble
 				.elementsByTagName ("key");
 		if (!domList.size ())
 			return;
-		
+
 		lastfm::ws::SessionKey = domList.at (0).toElement ().text ();
-			
+
 		Scrobbler_.reset (new lastfm::Audioscrobbler ("tst"));
-		
+
 		connect (Scrobbler_.get (),
 				SIGNAL (status (int)),
 				this,
 				SIGNAL (status (int)));
 	}
-		
+
 	void LastFMSubmitter::sendTrack (const MediaMeta& info)
 	{
 		if (!IsConnected ())
 			return;
-		
+
 		Scrobbler_->submit ();
 		lastfm::Track track;
 		lastfm::MutableTrack mutableTrack (track);
@@ -154,12 +166,12 @@ namespace Lastfmscrobble
 		Scrobbler_->nowPlaying (track);
 		Scrobbler_->cache (track);
 	}
-	
+
 	void LastFMSubmitter::submit ()
 	{
 		if (!IsConnected ())
 			return;
-		
+
 		Scrobbler_->submit ();
 	}
 }
