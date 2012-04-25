@@ -42,7 +42,6 @@ namespace Media
 	struct TagInfo
 	{
 		QString Name_;
-		QUrl Page_;
 	};
 	typedef QList<TagInfo> TagInfos_t;
 
@@ -51,6 +50,7 @@ namespace Media
 		QString Name_;
 
 		QUrl Image_;
+		QUrl LargeImage_;
 		QUrl Page_;
 
 		TagInfos_t Tags_;
