@@ -67,11 +67,16 @@ namespace LMP
 	, PlaylistModel_ (new QStandardItemModel (this))
 	, Source_ (new Phonon::MediaObject (this))
 	, Path_ (Phonon::createPath (Source_, new Phonon::AudioOutput (Phonon::MusicCategory, this)))
+	, PlayMode_ (PlayMode::Sequential)
 	{
 		connect (Source_,
 				SIGNAL (currentSourceChanged (Phonon::MediaSource)),
 				this,
 				SLOT (handleCurrentSourceChanged (Phonon::MediaSource)));
+		connect (Source_,
+				SIGNAL (aboutToFinish ()),
+				this,
+				SLOT (handleSourceAboutToFinish ()));
 	}
 
 	QAbstractItemModel* Player::GetPlaylistModel () const
@@ -82,6 +87,11 @@ namespace LMP
 	Phonon::MediaObject* Player::GetSourceObject () const
 	{
 		return Source_;
+	}
+
+	void Player::SetPlayMode (Player::PlayMode playMode)
+	{
+		PlayMode_ = playMode;
 	}
 
 	void Player::Enqueue (const QStringList& paths)
@@ -95,15 +105,6 @@ namespace LMP
 	void Player::Enqueue (const QList<Phonon::MediaSource>& sources)
 	{
 		AddToPlaylistModel (sources);
-
-		const auto& current = Source_->currentSource ();
-		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
-		if (pos == CurrentQueue_.end ())
-			pos = CurrentQueue_.begin ();
-
-		QList<Phonon::MediaSource> toPath;
-		std::copy (pos, CurrentQueue_.end (), std::back_inserter (toPath));
-		Source_->enqueue (toPath);
 	}
 
 	namespace
@@ -134,6 +135,13 @@ namespace LMP
 			const int prevLength = albumItem->data (Player::Role::AlbumLength).toInt ();
 			albumItem->setData (length + prevLength, Player::Role::AlbumLength);
 		}
+	}
+
+	MediaInfo Player::GetMediaInfo (const Phonon::MediaSource& source) const
+	{
+		return Items_.contains (source) ?
+				Items_ [source]->data (Role::Info).value<MediaInfo> () :
+				MediaInfo ();
 	}
 
 	void Player::AddToPlaylistModel (QList<Phonon::MediaSource> sources)
@@ -308,6 +316,43 @@ namespace LMP
 		AlbumRoots_.clear ();
 		CurrentQueue_.clear ();
 		Source_->clearQueue ();
+	}
+
+	void Player::handleSourceAboutToFinish ()
+	{
+		const auto& current = Source_->currentSource ();
+		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
+		switch (PlayMode_)
+		{
+		case PlayMode::Sequential:
+			if (pos != CurrentQueue_.end () && ++pos != CurrentQueue_.end ())
+				Source_->enqueue (*pos);
+			break;
+		case PlayMode::Shuffle:
+			Source_->enqueue (CurrentQueue_.at (qrand () % CurrentQueue_.size ()));
+			break;
+		case PlayMode::RepeatTrack:
+			Source_->enqueue (current);
+			break;
+		case PlayMode::RepeatAlbum:
+		{
+			if (pos == CurrentQueue_.end ())
+				return;
+			const auto& curAlbum = GetMediaInfo (*pos).Album_;
+			if (++pos == CurrentQueue_.end () ||
+					GetMediaInfo (*pos).Album_ != curAlbum)
+				while (pos >= CurrentQueue_.begin () &&
+						GetMediaInfo (*pos).Album_ == curAlbum)
+					--pos;
+			Source_->enqueue (*pos);
+			break;
+		}
+		case PlayMode::RepeatWhole:
+			if (pos == CurrentQueue_.end () || ++pos == CurrentQueue_.end ())
+				pos = CurrentQueue_.begin ();
+			Source_->enqueue (*pos);
+			break;
+		}
 	}
 
 	void Player::handleCurrentSourceChanged (const Phonon::MediaSource& source)

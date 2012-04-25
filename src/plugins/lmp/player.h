@@ -50,6 +50,17 @@ namespace LMP
 		QHash<Phonon::MediaSource, QStandardItem*> Items_;
 		QHash<QPair<QString, QString>, QStandardItem*> AlbumRoots_;
 	public:
+		enum class PlayMode
+		{
+			Sequential,
+			Shuffle,
+			RepeatTrack,
+			RepeatAlbum,
+			RepeatWhole
+		};
+	private:
+		PlayMode PlayMode_;
+	public:
 		enum Role
 		{
 			IsCurrent = Qt::UserRole + 1,
@@ -64,9 +75,13 @@ namespace LMP
 
 		QAbstractItemModel* GetPlaylistModel () const;
 		Phonon::MediaObject* GetSourceObject () const;
+
+		void SetPlayMode (PlayMode);
+
 		void Enqueue (const QStringList&);
 		void Enqueue (const QList<Phonon::MediaSource>&);
 	private:
+		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
 		void AddToPlaylistModel (QList<Phonon::MediaSource>);
 		void ApplyOrdering (QList<Phonon::MediaSource>&);
 	public slots:
@@ -77,6 +92,7 @@ namespace LMP
 		void stop ();
 		void clear ();
 	private slots:
+		void handleSourceAboutToFinish ();
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
 	signals:
 		void songChanged (const MediaInfo&);
