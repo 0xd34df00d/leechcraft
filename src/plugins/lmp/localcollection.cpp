@@ -132,6 +132,11 @@ namespace LMP
 		Sorter_->sort (0);
 	}
 
+	void LocalCollection::FinalizeInit ()
+	{
+		ArtistIcon_ = Core::Instance ().GetProxy ()->GetIcon ("view-media-artist");
+	}
+
 	QAbstractItemModel* LocalCollection::GetCollectionModel () const
 	{
 		return Sorter_;
@@ -202,8 +207,9 @@ namespace LMP
 		{
 			auto artistItem = GetItem (Artist2Item_,
 					artist.ID_,
-					[&artist] (QStandardItem *item)
+					[&ArtistIcon_, &artist] (QStandardItem *item)
 					{
+						item->setIcon (ArtistIcon_);
 						item->setText (artist.Name_);
 						item->setData (artist.Name_, Role::ArtistName);
 						item->setData (NodeType::Artist, Role::Node);

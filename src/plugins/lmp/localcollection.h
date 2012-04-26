@@ -22,6 +22,7 @@
 #include <QHash>
 #include <QSet>
 #include <QFutureWatcher>
+#include <QIcon>
 #include "collectiontypes.h"
 #include "mediainfo.h"
 
@@ -42,6 +43,7 @@ namespace LMP
 	{
 		Q_OBJECT
 
+		QIcon ArtistIcon_;
 		LocalCollectionStorage *Storage_;
 		QStandardItemModel *CollectionModel_;
 		QSortFilterProxyModel *Sorter_;
@@ -73,6 +75,8 @@ namespace LMP
 		};
 
 		LocalCollection (QObject* = 0);
+
+		void FinalizeInit ();
 
 		QAbstractItemModel* GetCollectionModel () const;
 		void Enqueue (const QModelIndex&, Player*);

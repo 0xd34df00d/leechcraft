@@ -51,6 +51,7 @@ namespace LMP
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("CollectionDir",
 				this, "handleCollectionDirChanged");
+		Collection_->FinalizeInit ();
 	}
 
 	LocalFileResolver* Core::GetLocalFileResolver () const
