@@ -67,5 +67,18 @@ ListView {
             anchors.topMargin: 0
             font.pointSize: 8
         }
+
+        Text {
+            id: shortDescLabel
+            text: shortDesc
+            width: parent.width - artistImageThumb.width - 10
+            clip: true
+            wrapMode: Text.WordWrap
+            anchors.leftMargin: 5
+            anchors.left: artistImageThumb.right
+            anchors.top: artistTagsLabel.bottom
+            anchors.topMargin: 0
+            anchors.bottom: parent.bottom
+        }
     }
 }

@@ -53,6 +53,8 @@ namespace LMP
 				ArtistBigImageURL,
 				ArtistPageURL,
 				ArtistTags,
+				ShortDesc,
+				FullDesc
 			};
 
 			SimilarModel (QObject *parent = 0)
@@ -65,6 +67,8 @@ namespace LMP
 				names [ArtistBigImageURL] = "artistBigImageURL";
 				names [ArtistPageURL] = "artistPageURL";
 				names [ArtistTags] = "artistTags";
+				names [ShortDesc] = "shortDesc";
+				names [FullDesc] = "fullDesc";
 				setRoleNames (names);
 			}
 		};
@@ -267,7 +271,8 @@ namespace LMP
 		SimilarsModel_->clear ();
 
 		std::sort (infos.begin (), infos.end (),
-				[] (const Media::SimilarityInfo_t& left, const Media::SimilarityInfo_t& right) { return left.second > right.second; });
+				[] (const Media::SimilarityInfo_t& left, const Media::SimilarityInfo_t& right)
+					{ return left.second > right.second; });
 
 		Q_FOREACH (const Media::SimilarityInfo_t& info, infos)
 		{
@@ -276,6 +281,8 @@ namespace LMP
 			const auto& artist = info.first;
 			item->setData (artist.Name_, SimilarModel::Role::ArtistName);
 			item->setData (artist.Image_, SimilarModel::Role::ArtistImageURL);
+			item->setData (artist.ShortDesc_, SimilarModel::Role::ShortDesc);
+			item->setData (artist.FullDesc_, SimilarModel::Role::FullDesc);
 			item->setData (tr ("Similarity: %1%").arg (info.second), SimilarModel::Role::Similarity);
 
 			QStringList tags;
