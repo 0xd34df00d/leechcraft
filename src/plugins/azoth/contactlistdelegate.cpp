@@ -393,7 +393,7 @@ namespace Azoth
 		 * them: there are N-1 paddings inbetween if there are N icons.
 		 */
 		const int textWidth = r.width () - textShift -
-				(isMUC || !ShowAvatars_ ? 0 : (clientIconSize + 2 * CPadding)) -
+				(isMUC || !ShowAvatars_ ? 0 : (iconSize + 2 * CPadding)) -
 				clientsIconsWidth;
 
 		QPixmap pixmap (r.size ());
