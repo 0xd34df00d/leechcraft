@@ -13,6 +13,31 @@
 			<item type="checkbox" property="BindLastID" default="true">
 				<label value="Bind Ctrl+L hotkey to insert last post ID" />
 			</item>
+			<label value="User actions" />
+			<groupbox>
+				<label value="User Actions" />
+				<item type="checkbox" property="ShowPrivateMessageButton" default="true">
+					<label value="Show `Private Message` button" />
+				</item>
+				<item type="checkbox" property="ShowBlockButton" default="true">
+					<label value="Show `Block User` button" />
+				</item>
+			</groupbox>
+			<groupbox>
+				<label value="Psto Actions" />
+				<item type="checkbox" property="ShowSubscribeButton" default="true">
+					<label value="Show `Subscribe` and `Unsubscribe` button" />
+				</item>
+				<item type="checkbox" property="ShowCommentsButton" default="true">
+					<label value="Show `Request Comments` button" />
+				</item>
+				<item type="checkbox" property="ShowRecomendButton" default="true">
+					<label value="Show `Recomend this psto` button" />
+				</item>
+				<item type="checkbox" property="ShowAddToBookmarkButton" default="true">
+					<label value="Show `Request Comments` button" />
+				</item>
+			</groupbox>
 		</groupbox>
 	</page>
 </settings>
