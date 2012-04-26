@@ -80,7 +80,7 @@ namespace p100q
 	QString Plugin::GetInfo () const
 	{
 		return tr ("Azoth p100q enhances experience with the psto.net microblogging service.");
-}
+	}
 
 	QIcon Plugin::GetIcon () const
 	{
@@ -113,7 +113,6 @@ namespace p100q
 		return result;
 	}
 	
-
 	QString Plugin::FormatBody (QString body)
 	{
 		if (body.indexOf (PstoCommentRX_, 0) != PstoCommentPos)
@@ -132,8 +131,7 @@ namespace p100q
 				Q_FOREACH (const QString& tagval, tagslist)
 				{
 					QString t = QString (QUrl::toPercentEncoding (tagval)).replace ("%2F", "/");
-					if (showTags)
-						tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\" title=\"" 
+					tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\" title=\"" 
 							+ tr ("Subscribe to tag") + "\">%2</a> ")
 								.arg (t)
 								.arg (tagval);
