@@ -358,8 +358,11 @@ namespace LMP
 						SLOT (handleSimilarReady ()));
 			}
 		}
-		else
+		else if (info.Artist_ != LastSimilar_)
+		{
+			LastSimilar_ = info.Artist_;
 			FillSimilar (Similars_ [info.Artist_]);
+		}
 	}
 
 	void PlayerTab::handleSimilarError ()
@@ -374,7 +377,8 @@ namespace LMP
 		auto obj = qobject_cast<Media::IPendingSimilarArtists*> (sender ());
 
 		const auto& similar = obj->GetSimilar ();
-		Similars_ [obj->GetSourceArtistName ()] = similar;
+		LastSimilar_ = obj->GetSourceArtistName ();
+		Similars_ [LastSimilar_] = similar;
 		FillSimilar (similar);
 	}
 

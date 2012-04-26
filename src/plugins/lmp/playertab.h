@@ -55,6 +55,7 @@ namespace LMP
 
 		QHash<QString, Media::SimilarityInfos_t> Similars_;
 		QStandardItemModel *SimilarsModel_;
+		QString LastSimilar_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
