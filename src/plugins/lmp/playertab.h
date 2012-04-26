@@ -25,6 +25,7 @@
 
 class QStandardItemModel;
 class QFileSystemModel;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -47,6 +48,7 @@ namespace LMP
 		const TabClassInfo TC_;
 
 		QFileSystemModel *FSModel_;
+		QSortFilterProxyModel *CollectionFilterModel_;
 
 		Player *Player_;
 		QToolBar *PlaylistToolbar_;

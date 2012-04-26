@@ -22,6 +22,7 @@
 #include <QFileDialog>
 #include <QFileSystemModel>
 #include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 #include <QToolButton>
 #include <QMenu>
 #include <phonon/seekslider.h>
@@ -72,6 +73,32 @@ namespace LMP
 				setRoleNames (names);
 			}
 		};
+
+		class CollectionFilterModel : public QSortFilterProxyModel
+		{
+		public:
+			CollectionFilterModel (QObject *parent = 0)
+			: QSortFilterProxyModel (parent)
+			{
+				setDynamicSortFilter (true);
+			}
+		protected:
+			bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
+			{
+				const auto& source = sourceModel ()->index (sourceRow, 0, sourceParent);
+				const auto type = source.data (LocalCollection::Role::Node).toInt ();
+
+				const auto& pattern = filterRegExp ().pattern ();
+
+				if (type == LocalCollection::NodeType::Artist ||
+					type == LocalCollection::NodeType::Album)
+					for (int i = 0, rc = sourceModel ()->rowCount (source); i < rc; ++i)
+						if (filterAcceptsRow (i, source))
+							return true;
+
+				return source.data ().toString ().contains (pattern, Qt::CaseInsensitive);
+			}
+		};
 	}
 
 	PlayerTab::PlayerTab (const TabClassInfo& info, QObject *plugin, QWidget *parent)
@@ -79,6 +106,7 @@ namespace LMP
 	, Plugin_ (plugin)
 	, TC_ (info)
 	, FSModel_ (new QFileSystemModel (this))
+	, CollectionFilterModel_ (new CollectionFilterModel (this))
 	, Player_ (new Player (this))
 	, PlaylistToolbar_ (new QToolBar ())
 	, TabToolbar_ (new QToolBar ())
@@ -176,7 +204,8 @@ namespace LMP
 	{
 		Ui_.CollectionTree_->setItemDelegate (new CollectionDelegate (Ui_.CollectionTree_));
 		auto collection = Core::Instance ().GetLocalCollection ();
-		Ui_.CollectionTree_->setModel (collection->GetCollectionModel ());
+		CollectionFilterModel_->setSourceModel (collection->GetCollectionModel ());
+		Ui_.CollectionTree_->setModel (CollectionFilterModel_);
 
 		QAction *addToPlaylist = new QAction (tr ("Add to playlist"), this);
 		addToPlaylist->setProperty ("ActionIcon", "list-add");
@@ -185,6 +214,11 @@ namespace LMP
 				this,
 				SLOT (loadFromCollection ()));
 		Ui_.CollectionTree_->addAction (addToPlaylist);
+
+		connect (Ui_.CollectionFilter_,
+				SIGNAL (textChanged (QString)),
+				CollectionFilterModel_,
+				SLOT (setFilterFixedString (QString)));
 	}
 
 	void PlayerTab::SetupFSBrowser ()
@@ -403,7 +437,8 @@ namespace LMP
 
 	void PlayerTab::loadFromCollection ()
 	{
-		const QModelIndex& index = Ui_.CollectionTree_->currentIndex ();
+		const QModelIndex& index = CollectionFilterModel_->
+				mapToSource (Ui_.CollectionTree_->currentIndex ());
 		if (!index.isValid ())
 			return;
 

@@ -90,6 +90,13 @@
          <number>1</number>
         </property>
         <item>
+         <widget class="QLineEdit" name="CollectionFilter_">
+          <property name="placeholderText">
+           <string>Search collection</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QTreeView" name="CollectionTree_">
           <property name="contextMenuPolicy">
            <enum>Qt::ActionsContextMenu</enum>
