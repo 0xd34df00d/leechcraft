@@ -346,6 +346,8 @@ namespace LMP
 			Q_FOREACH (Media::IAudioScrobbler *scrobbler, scrobblers)
 			{
 				auto obj = scrobbler->GetSimilarArtists (info.Artist_, 15);
+				if (!obj)
+					continue;
 				connect (obj->GetObject (),
 						SIGNAL (error ()),
 						this,
