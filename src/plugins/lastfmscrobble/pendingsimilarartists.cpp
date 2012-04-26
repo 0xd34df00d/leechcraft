@@ -19,6 +19,7 @@
 
 #include "pendingsimilarartists.h"
 #include <QNetworkReply>
+#include <QDomDocument>
 #include <lastfm/Artist>
 #include <lastfm/Tag>
 
@@ -112,6 +113,34 @@ namespace Lastfmscrobble
 		emit error ();
 	}
 
+	namespace
+	{
+		Media::ArtistInfo GetAdditional (const QByteArray& raw)
+		{
+			Media::ArtistInfo result;
+
+			QDomDocument doc;
+			if (!doc.setContent (raw))
+				return result;
+
+			auto text = [&doc] (const QString& elemName)
+			{
+				auto items = doc.elementsByTagName (elemName);
+				if (items.isEmpty ())
+					return QString ();
+				auto str = items.at (0).toElement ().text ();
+				str.replace ('\r', '\n');
+				str.remove ("\n\n");
+				str.replace ("&quot;", "\"");
+				return str;
+			};
+
+			result.ShortDesc_ = text ("summary");
+			result.FullDesc_ = text ("content");
+			return result;
+		}
+	}
+
 	void PendingSimilarArtists::handleInfoReplyFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -119,10 +148,14 @@ namespace Lastfmscrobble
 
 		const int similarity = reply->property ("Similarity").toInt ();
 
+		const auto& augment = GetAdditional (reply->peek (reply->bytesAvailable ()));
+
 		const auto& artist = lastfm::Artist::getInfo (reply);
 		Media::ArtistInfo info =
 		{
 			artist.name (),
+			augment.ShortDesc_,
+			augment.FullDesc_,
 			artist.imageUrl (lastfm::Large),
 			artist.imageUrl (lastfm::ExtraLarge),
 			artist.www (),

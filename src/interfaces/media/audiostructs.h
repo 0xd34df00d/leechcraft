@@ -49,6 +49,9 @@ namespace Media
 	{
 		QString Name_;
 
+		QString ShortDesc_;
+		QString FullDesc_;
+
 		QUrl Image_;
 		QUrl LargeImage_;
 		QUrl Page_;
