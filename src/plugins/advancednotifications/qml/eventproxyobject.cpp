@@ -48,7 +48,8 @@ namespace AdvancedNotifications
 		connect (this,
 				SIGNAL (dismissEvent ()),
 				this,
-				SLOT (handleDismissEvent ()));
+				SLOT (handleDismissEvent ()),
+				Qt::QueuedConnection);
 
 		ActionsModel_ = QVariant::fromValue<QList<QObject*>> (model);
 	}
