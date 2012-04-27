@@ -46,6 +46,7 @@
 #include "interfaces/azoth/ihistoryplugin.h"
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
+#include "interfaces/azoth/imucperms.h"
 #endif
 #include "core.h"
 #include "textedit.h"
@@ -1391,12 +1392,44 @@ namespace Azoth
 					<< "unhandled append message :(";
 	}
 
+	namespace
+	{
+		void PerformRoleAction (const QPair<QByteArray, QByteArray>& role,
+				QObject *mucEntryObj, QString str)
+		{
+			if (role.first.isEmpty () && role.second.isEmpty ())
+				return;
+
+			str = str.trimmed ();
+			const int pos = str.indexOf ('|');
+			const auto& nick = pos > 0 ? str.left (pos) : str;
+			const auto& reason = pos > 0 ? str.mid (pos + 1) : QString ();
+
+			auto mucEntry = qobject_cast<IMUCEntry*> (mucEntryObj);
+			auto mucPerms = qobject_cast<IMUCPerms*> (mucEntryObj);
+
+			const auto& parts = mucEntry->GetParticipants ();
+			auto partPos = std::find_if (parts.begin (), parts.end (),
+					[&nick] (QObject *entryObj)
+					{
+						auto entry = qobject_cast<ICLEntry*> (entryObj);
+						return entry && entry->GetEntryName () == nick;
+					});
+			if (partPos == parts.end ())
+				return;
+
+			mucPerms->SetPerm (*partPos, role.first, role.second, reason);
+		}
+	}
+
 	bool ChatTab::ProcessOutgoingMsg (ICLEntry *entry, QString& text)
 	{
 		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetObject ());
 		if (entry->GetEntryType () != ICLEntry::ETMUC ||
 				!mucEntry)
 			return false;
+
+		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetObject ());
 
 		if (text.startsWith ("/nick "))
 		{
@@ -1410,6 +1443,16 @@ namespace Azoth
 					text.mid (idx + 1)
 					: QString ();
 			mucEntry->Leave (reason);
+			return true;
+		}
+		else if (text.startsWith ("/kick ") && mucPerms)
+		{
+			PerformRoleAction (mucPerms->GetKickPerm (), entry->GetObject (), text.mid (6));
+			return true;
+		}
+		else if (text.startsWith ("/ban ") && mucPerms)
+		{
+			PerformRoleAction (mucPerms->GetBanPerm (), entry->GetObject (), text.mid (5));
 			return true;
 		}
 		else if (text == "/names")
