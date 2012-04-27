@@ -107,6 +107,8 @@ namespace Xoox
 		// IMUCPerms
 		QMap<QByteArray, QList<QByteArray>> GetPossiblePerms () const;
 		QMap<QByteArray, QList<QByteArray>> GetPerms (QObject *object) const;
+		QPair<QByteArray, QByteArray> GetKickPerm () const;
+		QPair<QByteArray, QByteArray> GetBanPerm () const;
 		QByteArray GetAffName (QObject*) const;
 		bool MayChangePerm (QObject*, const QByteArray&, const QByteArray&) const;
 		void SetPerm (QObject*, const QByteArray&, const QByteArray&, const QString&);

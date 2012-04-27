@@ -110,6 +110,8 @@ namespace Acetamide
 		// IMUCPerms
 		QByteArray GetAffName (QObject*) const;
 		QMap<QByteArray, QList<QByteArray>> GetPerms (QObject*) const;
+		QPair<QByteArray, QByteArray> GetKickPerm () const;
+		QPair<QByteArray, QByteArray> GetBanPerm () const;
 		void SetPerm (QObject*, const QByteArray&, const QByteArray&,
 					  const QString&);
 		QMap<QByteArray, QList<QByteArray>> GetPossiblePerms () const;

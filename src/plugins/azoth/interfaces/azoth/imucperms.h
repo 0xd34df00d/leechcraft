@@ -22,6 +22,7 @@
 #include <QMetaType>
 #include <QMap>
 #include <QByteArray>
+#include <QPair>
 
 namespace LeechCraft
 {
@@ -78,6 +79,9 @@ namespace Azoth
 		 * @return The current permissions for the given participant.
 		 */
 		virtual QMap<QByteArray, QList<QByteArray>> GetPerms (QObject *participant) const = 0;
+
+		virtual QPair<QByteArray, QByteArray> GetKickPerm () const = 0;
+		virtual QPair<QByteArray, QByteArray> GetBanPerm () const = 0;
 
 		/** @brief Returns the name of the affiliation icon.
 		 *
