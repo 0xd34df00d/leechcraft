@@ -16,29 +16,26 @@
 			<label value="User actions" />
 			<groupbox>
 				<label value="User Actions" />
-				<item type="checkbox" property="ShowPrivateMessageButton" default="true">
-					<label value="Show `Private Message` button" />
+				<item type="checkbox" property="PrivateMessageButton" default="true">
+					<label value="Private Message" />
 				</item>
-				<item type="checkbox" property="ShowBlockButton" default="true">
-					<label value="Show `Block User` button" />
+				<item type="checkbox" property="BlockButton" default="true">
+					<label value="Block User" />
 				</item>
 			</groupbox>
 			<groupbox>
 				<label value="Psto Actions" />
-				<item type="checkbox" property="ShowSubscribeButton" default="true">
-					<label value="Show `Subscribe` and `Unsubscribe` button" />
+				<item type="checkbox" property="SubscribeButton" default="true">
+					<label value="Subscribe and Unsubscribe" />
 				</item>
-				<item type="checkbox" property="ShowCommentsButton" default="true">
-					<label value="Show `Request Comments` button" />
+				<item type="checkbox" property="CommentsButton" default="true">
+					<label value="Request Comments" />
 				</item>
-				<item type="checkbox" property="ShowRecomendButton" default="true">
-					<label value="Show `Recomend this psto` button" />
+				<item type="checkbox" property="RecomendButton" default="true">
+					<label value="Recomend this psto" />
 				</item>
-				<item type="checkbox" property="ShowAddToBookmarkButton" default="true">
-					<label value="Show `Request Comments` button" />
-				</item>
-				<item type="checkbox" property="ShowTags" default="true">
-					<label value="Show 'Tags' buttons" />
+				<item type="checkbox" property="AddToBookmarkButton" default="true">
+					<label value="Request Comments" />
 				</item>
 			</groupbox>
 		</groupbox>
