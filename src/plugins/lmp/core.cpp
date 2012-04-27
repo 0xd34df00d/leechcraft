@@ -64,6 +64,11 @@ namespace LMP
 		return Collection_;
 	}
 
+	void Core::rescan ()
+	{
+		handleCollectionDirChanged ();
+	}
+
 	void Core::handleCollectionDirChanged ()
 	{
 		Collection_->Clear ();

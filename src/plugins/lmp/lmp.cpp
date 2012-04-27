@@ -47,7 +47,6 @@ namespace LMP
 		};
 
 		Core::Instance ().SetProxy (proxy);
-
 		Core::Instance ().PostInit ();
 
 		PlayerTab_ = new PlayerTab (PlayerTC_, this);
@@ -63,6 +62,13 @@ namespace LMP
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+
+		ActionRescan_ = new QAction (tr ("Rescan collection"), this);
+		ActionRescan_->setProperty ("ActionIcon", "view-refresh");
+		connect (ActionRescan_,
+				SIGNAL (triggered ()),
+				&Core::Instance (),
+				SLOT (rescan ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -160,6 +166,18 @@ namespace LMP
 					obj,
 					SLOT (deleteLater ()));
 		}
+	}
+
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace area) const
+	{
+		return QList<QAction*> ();
+	}
+
+	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
+	{
+		decltype(GetMenuActions ()) result;
+		result [GetName ()] << ActionRescan_;
+		return result;
 	}
 }
 }

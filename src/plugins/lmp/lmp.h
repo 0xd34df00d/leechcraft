@@ -23,6 +23,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
 {
@@ -35,14 +36,17 @@ namespace LMP
 				 , public IHaveTabs
 				 , public IHaveSettings
 				 , public IEntityHandler
+				 , public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IEntityHandler)
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IEntityHandler IActionsExporter)
 
 		TabClassInfo PlayerTC_;
 		PlayerTab *PlayerTab_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		QAction *ActionRescan_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -59,6 +63,9 @@ namespace LMP
 
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
+
+		QList<QAction*> GetActions (ActionsEmbedPlace area) const;
+		QMap<QString, QList<QAction*>> GetMenuActions () const;
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
@@ -66,6 +73,8 @@ namespace LMP
 		void changeTabIcon (QWidget*, const QIcon&);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+
+		void gotActions (QList<QAction*>, ActionsEmbedPlace);
 
 		void gotEntity (const LeechCraft::Entity&);
 	};
