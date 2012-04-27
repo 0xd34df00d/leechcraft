@@ -166,7 +166,21 @@ namespace LMP
 
 		PresentPaths_ += paths;
 		emit scanStarted (paths.size ());
-		auto worker = [resolver] (const QString& path) { return resolver->ResolveInfo (path); };
+		auto worker = [resolver] (const QString& path)
+		{
+			try
+			{
+				return resolver->ResolveInfo (path);
+			}
+			catch (const ResolveError& error)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error resolving media info for"
+						<< error.GetPath ()
+						<< error.what ();
+				return MediaInfo ();
+			}
+		};
 		QFuture<MediaInfo> future = QtConcurrent::mapped (paths,
 				std::function<MediaInfo (const QString&)> (worker));
 		Watcher_->setFuture (future);
@@ -267,7 +281,8 @@ namespace LMP
 	{
 		auto future = Watcher_->future ();
 		QList<MediaInfo> infos;
-		std::copy (future.begin (), future.end (), std::back_inserter (infos));
+		std::copy_if (future.begin (), future.end (), std::back_inserter (infos),
+				[] (const MediaInfo& info) { return !info.LocalPath_.isEmpty (); });
 
 		emit scanProgressChanged (infos.size ());
 

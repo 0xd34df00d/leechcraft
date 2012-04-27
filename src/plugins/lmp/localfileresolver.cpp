@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "localfileresolver.h"
+#include <QtDebug>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 
@@ -24,6 +25,21 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	ResolveError::ResolveError (const QString& path, const std::string& what)
+	: runtime_error (what)
+	, Path_ (path)
+	{
+	}
+
+	ResolveError::~ResolveError () throw ()
+	{
+	}
+
+	QString ResolveError::GetPath () const
+	{
+		return Path_;
+	}
+
 	LocalFileResolver::LocalFileResolver (QObject *parent)
 	: QObject (parent)
 	{
@@ -39,10 +55,12 @@ namespace LMP
 
 		TagLib::FileRef r (file.toUtf8 ().constData ());
 		auto tag = r.tag ();
+		if (!tag)
+			throw ResolveError (file, "failed to get file tags");
+
 		auto audio = r.audioProperties ();
 
 		auto ftl = [] (const TagLib::String& str) { return QString::fromUtf8 (str.toCString (true)); };
-
 		auto genres = ftl (tag->genre ()).split ('/', QString::SkipEmptyParts);
 		std::for_each (genres.begin (), genres.end (),
 				[] (QString& genre) { genre = genre.trimmed (); });

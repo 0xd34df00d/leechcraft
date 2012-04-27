@@ -182,7 +182,20 @@ namespace LMP
 				break;
 			case Phonon::MediaSource::LocalFile:
 			{
-				const auto& info = resolver->ResolveInfo (source.fileName ());
+				MediaInfo info;
+				try
+				{
+					info = resolver->ResolveInfo (source.fileName ());
+				}
+				catch (const ResolveError& error)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "error resolving info for"
+							<< error.GetPath ()
+							<< error.what ();
+					continue;
+				}
+
 				const auto& albumID = qMakePair (info.Artist_, info.Album_);
 				FillItem (item, info);
 				if (!AlbumRoots_.contains (albumID))
@@ -235,17 +248,24 @@ namespace LMP
 						s2.type () != Phonon::MediaSource::LocalFile)
 						return qHash (s1) < qHash (s2);
 
-					const auto& left = resolver->ResolveInfo (s1.fileName ());
-					const auto& right = resolver->ResolveInfo (s2.fileName ());
-					if (left.Artist_ != right.Artist_)
-						return left.Artist_ < right.Artist_;
-					if (left.Year_ != right.Year_)
-						return left.Year_ < right.Year_;
-					if (left.Album_ != right.Album_)
-						return left.Album_ < right.Album_;
-					if (left.TrackNumber_ != right.TrackNumber_)
-						return left.TrackNumber_ < right.TrackNumber_;
-					return left.Title_ < right.Title_;
+					try
+					{
+						const auto& left = resolver->ResolveInfo (s1.fileName ());
+						const auto& right = resolver->ResolveInfo (s2.fileName ());
+						if (left.Artist_ != right.Artist_)
+							return left.Artist_ < right.Artist_;
+						if (left.Year_ != right.Year_)
+							return left.Year_ < right.Year_;
+						if (left.Album_ != right.Album_)
+							return left.Album_ < right.Album_;
+						if (left.TrackNumber_ != right.TrackNumber_)
+							return left.TrackNumber_ < right.TrackNumber_;
+						return left.Title_ < right.Title_;
+					}
+					catch (...)
+					{
+						return s1.fileName () < s2.fileName ();
+					}
 				});
 	}
 

@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <stdexcept>
 #include <QObject>
 #include <QHash>
 #include <QReadWriteLock>
@@ -27,6 +28,16 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class ResolveError : public std::runtime_error
+	{
+		QString Path_;
+	public:
+		ResolveError (const QString&, const std::string&);
+		~ResolveError () throw ();
+
+		QString GetPath () const;
+	};
+
 	class LocalFileResolver : public QObject
 	{
 		Q_OBJECT
