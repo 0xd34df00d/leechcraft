@@ -1401,7 +1401,7 @@ namespace Azoth
 				return;
 
 			str = str.trimmed ();
-			const int pos = str.indexOf ('|');
+			const int pos = str.lastIndexOf ('|');
 			const auto& nick = pos > 0 ? str.left (pos) : str;
 			const auto& reason = pos > 0 ? str.mid (pos + 1) : QString ();
 
