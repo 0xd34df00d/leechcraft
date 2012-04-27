@@ -102,10 +102,16 @@ namespace Azoth
 		QList<ANFieldData> GetANFields () const;
 	private :
 		void InitShortcuts ();
+		void InitSettings ();
+		void InitMW ();
+		void InitSignals ();
+		void InitTabClasses ();
 	public slots:
 		void handleSDWidget (ServiceDiscoveryWidget*);
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
+		void handleMWLocation (Qt::DockWidgetArea);
+		void handleMWFloating (bool);
 		void handleMoreThisStuff (const QString&);
 		void handleConsoleWidget (ConsoleWidget*);
 	signals:
