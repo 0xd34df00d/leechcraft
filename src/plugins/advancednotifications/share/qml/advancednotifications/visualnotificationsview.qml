@@ -56,8 +56,7 @@ Rectangle {
             TextButton {
                 id: dismissButton
 
-                text: "x"
-                //onClicked: { console.log(model.modelData) }//model.modelData.dismissEvent() }
+                text: "×"
                 onClicked: { model.modelData.dismissEvent() }
 
                 anchors.top: parent.top
