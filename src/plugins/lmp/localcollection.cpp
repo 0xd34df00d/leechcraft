@@ -18,6 +18,7 @@
 
 #include "localcollection.h"
 #include <functional>
+#include <algorithm>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QtConcurrentMap>
