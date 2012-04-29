@@ -266,6 +266,23 @@ namespace LMP
 		}
 	}
 
+	void LocalCollection::recordPlayedTrack (const QString& path)
+	{
+		if (!Path2Track_.contains (path))
+			return;
+
+		try
+		{
+			Storage_->RecordTrackPlayed (Path2Track_ [path]);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error recording played info for track"
+					<< e.what ();
+		}
+	}
+
 	void LocalCollection::handleLoadFinished ()
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<Collection::Artists_t>*> (sender ());

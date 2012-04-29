@@ -87,6 +87,8 @@ namespace LMP
 	private:
 		QStringList CollectPaths (const QModelIndex&);
 		void HandleNewArtists (const Collection::Artists_t&);
+	public slots:
+		void recordPlayedTrack (const QString&);
 	private slots:
 		void handleLoadFinished ();
 		void handleScanFinished ();

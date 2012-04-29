@@ -28,6 +28,7 @@
 #include "mediainfo.h"
 #include "localfileresolver.h"
 #include "util.h"
+#include "localcollection.h"
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);
 
@@ -341,6 +342,13 @@ namespace LMP
 	void Player::handleSourceAboutToFinish ()
 	{
 		const auto& current = Source_->currentSource ();
+		const auto& path = current.fileName ();
+		if (!path.isEmpty ())
+			QMetaObject::invokeMethod (Core::Instance ().GetLocalCollection (),
+					"recordPlayedTrack",
+					Qt::QueuedConnection,
+					Q_ARG (QString, path));
+
 		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
 		switch (PlayMode_)
 		{
