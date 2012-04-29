@@ -80,8 +80,11 @@ namespace M3U
 		Q_FOREACH (QString src, Read (path))
 		{
 			QUrl url (src);
-			if (url.isValid ())
-				result << Phonon::MediaSource (url);
+			if (!url.scheme ().isEmpty ())
+			{
+				result << (url.scheme () == "file" ? url.toLocalFile () : url);
+				continue;
+			}
 
 			src.replace ('\\', '/');
 
