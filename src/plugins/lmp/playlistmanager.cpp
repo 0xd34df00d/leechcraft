@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "playlistmanager.h"
+#include <algorithm>
 #include <QStandardItemModel>
 #include <QTimer>
 #include "core.h"
