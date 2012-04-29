@@ -69,6 +69,7 @@ namespace LMP
 		QStringList result = PlaylistsDir_.entryList (QStringList ("*.m3u"));
 		for (auto i = result.begin (), end = result.end (); i != end; ++i)
 			i->chop (4);
+		result.sort ();
 		return result;
 	}
 
