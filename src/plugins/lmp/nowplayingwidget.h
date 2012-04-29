@@ -39,6 +39,8 @@ namespace LMP
 
 		void SetAlbumArt (const QPixmap&);
 		void SetTrackInfo (const MediaInfo&);
+	private:
+		void SetStatistics (const QString&);
 	};
 }
 }

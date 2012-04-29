@@ -106,6 +106,34 @@
          </property>
         </widget>
        </item>
+       <item row="4" column="1">
+        <widget class="QLabel" name="StatsCount_">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="LabelPlaybacks_">
+         <property name="text">
+          <string>Playbacks:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="LabelLastPlay_">
+         <property name="text">
+          <string>Last play:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLabel" name="LastPlay_">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>

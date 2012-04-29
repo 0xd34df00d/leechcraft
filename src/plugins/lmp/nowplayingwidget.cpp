@@ -19,6 +19,8 @@
 #include "nowplayingwidget.h"
 #include <QDeclarativeContext>
 #include "mediainfo.h"
+#include "core.h"
+#include "localcollection.h"
 
 namespace LeechCraft
 {
@@ -61,6 +63,41 @@ namespace LMP
 
 		const auto& genres = info.Genres_.join (" / ");
 		Ui_.Genres_->setText ("<em>" + genres + "</em>");
+
+		SetStatistics (info.LocalPath_);
+	}
+
+	namespace
+	{
+		QString FormatDateTime (const QDateTime& datetime)
+		{
+			const QDateTime& current = QDateTime::currentDateTime ();
+			const int days = datetime.daysTo (current);
+			if (days > 30)
+				return datetime.toString ("MMMM yyyy");
+			else if (days >= 7)
+				return NowPlayingWidget::tr ("%n day(s) ago", 0, days);
+			else if (days >= 1)
+				return datetime.toString ("dddd");
+			else
+				return datetime.time ().toString ();
+		}
+	}
+
+	void NowPlayingWidget::SetStatistics (const QString& path)
+	{
+		auto stats = Core::Instance ().GetLocalCollection ()->GetTrackStats (path);
+		const bool valid = stats.Added_.isValid ();
+		Ui_.LastPlay_->setVisible (valid);
+		Ui_.LabelLastPlay_->setVisible (valid);
+		Ui_.StatsCount_->setVisible (valid);
+		Ui_.LabelPlaybacks_->setVisible (valid);
+		if (!valid)
+			return;
+
+		Ui_.LastPlay_->setText (FormatDateTime (stats.LastPlay_));
+		Ui_.StatsCount_->setText (tr ("%n play(s) since %1", 0, stats.Playcount_)
+					.arg (FormatDateTime (stats.Added_)));
 	}
 }
 }
