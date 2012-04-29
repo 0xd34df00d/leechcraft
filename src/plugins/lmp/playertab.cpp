@@ -469,7 +469,7 @@ namespace LMP
 		if (sources.isEmpty ())
 			return;
 
-		Player_->Enqueue (sources);
+		Player_->Enqueue (sources, false);
 	}
 
 	void PlayerTab::loadFromCollection ()
