@@ -216,7 +216,7 @@ namespace LMP
 		}
 	}
 
-	void LocalCollection::AppendToModel (const Collection::Artists_t& artists)
+	void LocalCollection::HandleNewArtists (const Collection::Artists_t& artists)
 	{
 		Q_FOREACH (const auto& artist, artists)
 		{
@@ -259,6 +259,8 @@ namespace LMP
 					item->setData (track.FilePath_, Role::TrackPath);
 					item->setData (NodeType::Track, Role::Node);
 					albumItem->appendRow (item);
+
+					Path2Track_ [track.FilePath_] = track.ID_;
 				}
 			}
 		}
@@ -275,7 +277,7 @@ namespace LMP
 				Q_FOREACH (const auto& track, album->Tracks_)
 					PresentPaths_ << track.FilePath_;
 
-		AppendToModel (Artists_);
+		HandleNewArtists (Artists_);
 	}
 
 	void LocalCollection::handleScanFinished ()
@@ -288,7 +290,7 @@ namespace LMP
 		emit scanProgressChanged (infos.size ());
 
 		auto newArts = Storage_->AddToCollection (infos);
-		AppendToModel (newArts);
+		HandleNewArtists (newArts);
 	}
 }
 }

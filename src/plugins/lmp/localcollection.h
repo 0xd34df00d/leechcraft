@@ -50,6 +50,7 @@ namespace LMP
 
 		Collection::Artists_t Artists_;
 		QSet<QString> PresentPaths_;
+		QHash<QString, int> Path2Track_;
 
 		QHash<int, QStandardItem*> Artist2Item_;
 		QHash<int, QStandardItem*> Album2Item_;
@@ -85,7 +86,7 @@ namespace LMP
 		void Scan (const QString&);
 	private:
 		QStringList CollectPaths (const QModelIndex&);
-		void AppendToModel (const Collection::Artists_t&);
+		void HandleNewArtists (const Collection::Artists_t&);
 	private slots:
 		void handleLoadFinished ();
 		void handleScanFinished ();
