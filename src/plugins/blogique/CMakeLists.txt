@@ -19,6 +19,7 @@ INCLUDE_DIRECTORIES (
 
 SET (SRCS
 	accountslistwidget.cpp
+	addaccountwizardfirstpage.cpp
 	blogique.cpp
 	blogiquewidget.cpp
 	core.cpp
@@ -27,6 +28,7 @@ SET (SRCS
 
 SET (HEADERS
 	accountslistwidget.h
+	addaccountwizardfirstpage.h
 	blogique.h
 	blogiquewidget.h
 	core.h
@@ -34,6 +36,7 @@ SET (HEADERS
 	)
 
 SET (FORMS accountslistwidget.ui
+	addaccountwizardfirstpage.ui
 	blogiquewidget.ui
 	)
 
