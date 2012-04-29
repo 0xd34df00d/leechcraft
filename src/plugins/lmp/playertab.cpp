@@ -138,6 +138,7 @@ namespace LMP
 
 		SetupToolbar ();
 		SetupCollection ();
+		SetupPlaylistsTab ();
 		SetupFSBrowser ();
 		SetupPlaylist ();
 	}
@@ -226,6 +227,17 @@ namespace LMP
 				SIGNAL (textChanged (QString)),
 				CollectionFilterModel_,
 				SLOT (setFilterFixedString (QString)));
+	}
+
+	void PlayerTab::SetupPlaylistsTab ()
+	{
+		auto mgr = Core::Instance ().GetPlaylistManager ();
+		Ui_.PlaylistsTree_->setModel (mgr->GetPlaylistsModel ());
+
+		connect (Ui_.PlaylistsTree_,
+				SIGNAL (doubleClicked (QModelIndex)),
+				this,
+				SLOT (handlePlaylistSelected (QModelIndex)));
 	}
 
 	void PlayerTab::SetupFSBrowser ()
@@ -448,6 +460,16 @@ namespace LMP
 	{
 		auto mode = sender ()->property ("PlayMode").toInt ();
 		Player_->SetPlayMode (static_cast<Player::PlayMode> (mode));
+	}
+
+	void PlayerTab::handlePlaylistSelected (const QModelIndex& index)
+	{
+		auto mgr = Core::Instance ().GetPlaylistManager ();
+		const auto& sources = mgr->GetSources (index);
+		if (sources.isEmpty ())
+			return;
+
+		Player_->Enqueue (sources);
 	}
 
 	void PlayerTab::loadFromCollection ()

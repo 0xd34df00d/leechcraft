@@ -68,6 +68,7 @@ namespace LMP
 	private:
 		void SetupToolbar ();
 		void SetupCollection ();
+		void SetupPlaylistsTab ();
 		void SetupFSBrowser ();
 		void SetupPlaylist ();
 		void FillSimilar (Media::SimilarityInfos_t);
@@ -77,6 +78,7 @@ namespace LMP
 		void handleSimilarReady ();
 		void handleScanProgress (int);
 		void handleChangePlayMode ();
+		void handlePlaylistSelected (const QModelIndex&);
 		void loadFromCollection ();
 		void loadFromFSBrowser ();
 		void handleSavePlaylist ();
