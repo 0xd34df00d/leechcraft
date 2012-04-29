@@ -95,17 +95,17 @@ namespace LMP
 		PlayMode_ = playMode;
 	}
 
-	void Player::Enqueue (const QStringList& paths)
+	void Player::Enqueue (const QStringList& paths, bool sort)
 	{
 		QList<Phonon::MediaSource> sources;
 		std::transform (paths.begin (), paths.end (), std::back_inserter (sources),
 				[] (decltype (paths.front ()) path) { return Phonon::MediaSource (path); });
-		Enqueue (sources);
+		Enqueue (sources, sort);
 	}
 
-	void Player::Enqueue (const QList<Phonon::MediaSource>& sources)
+	void Player::Enqueue (const QList<Phonon::MediaSource>& sources, bool sort)
 	{
-		AddToPlaylistModel (sources);
+		AddToPlaylistModel (sources, sort);
 	}
 
 	QList<Phonon::MediaSource> Player::GetQueue () const
@@ -150,7 +150,7 @@ namespace LMP
 				MediaInfo ();
 	}
 
-	void Player::AddToPlaylistModel (QList<Phonon::MediaSource> sources)
+	void Player::AddToPlaylistModel (QList<Phonon::MediaSource> sources, bool sort)
 	{
 		if (!CurrentQueue_.isEmpty ())
 		{
@@ -160,13 +160,14 @@ namespace LMP
 
 			auto newList = CurrentQueue_ + sources;
 			CurrentQueue_.clear ();
-			AddToPlaylistModel (newList);
+			AddToPlaylistModel (newList, sort);
 			return;
 		}
 
 		PlaylistModel_->setHorizontalHeaderLabels (QStringList (tr ("Playlist")));
 
-		ApplyOrdering (sources);
+		if (sort)
+			ApplyOrdering (sources);
 		CurrentQueue_ = sources;
 
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
