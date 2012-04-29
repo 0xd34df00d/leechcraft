@@ -19,6 +19,7 @@
 #include "blogique.h"
 #include <QIcon>
 #include <util/util.h>
+#include "accountslistwidget.h"
 #include "blogiquewidget.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -33,6 +34,7 @@ namespace Blogique
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquesettings.xml");
+		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
 
 		Core::Instance ().SetCoreProxy (proxy);
 
