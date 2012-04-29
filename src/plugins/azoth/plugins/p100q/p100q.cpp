@@ -184,47 +184,47 @@ namespace p100q
 		}
 		if (showSubscribeButton)
 		{
-			postRX += "<a href=\"azoth://msgeditreplace/S%20%23\\1\" title=\""
-				+ tr ("Subscribe") + "\">S</a> "
-				+ "<a href=\"azoth://msgeditreplace/U%20%23\\1\" title=\""
-				+ tr ("Unsubscribe") + "\">U</a> ";
+			postRX += "<a href=\"azoth://msgeditreplace/S%20%23\\1\" title=\"" +
+				tr ("Subscribe") + "\">S</a> " +
+				"<a href=\"azoth://msgeditreplace/U%20%23\\1\" title=\"" +
+				tr ("Unsubscribe") + "\">U</a> ";
 			commentRX += "<a href=\"azoth://msgeditreplace/U%20%23\\1\" title=\"" + 
 					tr ("Unsubscribe from post") + "\">U</a> ";
 		}
 		if (showCommentsButton)
-			postRX += "<a href=\"azoth://msgeditreplace/%23\\1+\" title=\""
-				+ tr ("View") + "\">+</a> ";
+			postRX += "<a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" +
+				tr ("View") + "\">+</a> ";
 		if (showRecommendButton)
 		{
-			postRX += "<a href=\"azoth://msgeditreplace/!%20%23\\1%20\" title=\""
-				+ tr ("Recommend") + "\">!</a> ";
-			commentRX += "<a href=\"azoth://msgeditreplace/!%20%23\\1%20\" title=\""
-				+ tr ("Recommend") + "\">!</a> ";
+			postRX += "<a href=\"azoth://msgeditreplace/!%20%23\\1%20\" title=\"" +
+				tr ("Recommend") + "\">!</a> ";
+			commentRX += "<a href=\"azoth://msgeditreplace/!%20%23\\1%20\" title=\"" +
+				tr ("Recommend") + "\">!</a> ";
 		}
 		if (showAddToBookmarkButton)
 		{
-			postRX += "<a href=\"azoth://msgeditreplace/~%20%23\\1%20\" title=\""
-				+ tr ("Add to bookmarks") + "\">~</a> ";
-			commentRX += "<a href=\"azoth://msgeditreplace/~%20%23\\1%20\" title=\""
-				+ tr ("Add to bookmarks") + "\">~</a> ";
+			postRX += "<a href=\"azoth://msgeditreplace/~%20%23\\1%20\" title=\"" +
+				tr ("Add to bookmarks") + "\">~</a> ";
+			commentRX += "<a href=\"azoth://msgeditreplace/~%20%23\\1%20\" title=\"" +
+				tr ("Add to bookmarks") + "\">~</a> ";
 		}
 		if (showBlockButton)
 		{
-			userRX += " <a href=\"azoth://msgeditreplace/BL%20@\\1\" title=\""
-				+ tr ("Block user") + "\">BL</a>";
-			postAuthorRX += " <a href=\"azoth://msgeditreplace/BL%20@\\1\" title=\""
-				+ tr ("Block user") + "\">BL</a>";
-			postByUserRX += " <a href=\"azoth://msgeditreplace/BL%20@\\1\" title=\""
-				+ tr ("Block user") + "\">BL</a>";
+			userRX += " <a href=\"azoth://msgeditreplace/BL%20@\\1\" title=\"" +
+				tr ("Block user") + "\">BL</a>";
+			postAuthorRX += " <a href=\"azoth://msgeditreplace/BL%20@\\1\" title=\"" +
+				tr ("Block user") + "\">BL</a>";
+			postByUserRX += " <a href=\"azoth://msgeditreplace/BL%20@\\1\" title=\"" +
+				tr ("Block user") + "\">BL</a>";
 		}
 		if (showPrivateMessageButton)
 		{
-			postAuthorRX += " <a href=\"azoth://msgeditreplace/P%20@\\1\" title=\""
-				+ tr ("Send private message to user") + "\">P</a> ";
-			userRX += " <a href=\"azoth://msgeditreplace/P%20@\\1\" title=\""
-				+ tr ("Send private message to user") + "\">P</a> ";
-			postByUserRX += " <a href=\"azoth://msgeditreplace/P%20@\\1\" title=\""
-				+ tr ("Send private message to user") + "\">P</a> ";
+			postAuthorRX += " <a href=\"azoth://msgeditreplace/P%20@\\1\" title=\"" +
+				tr ("Send private message to user") + "\">P</a> ";
+			userRX += " <a href=\"azoth://msgeditreplace/P%20@\\1\" title=\"" +
+				tr ("Send private message to user") + "\">P</a> ";
+			postByUserRX += " <a href=\"azoth://msgeditreplace/P%20@\\1\" title=\"" +
+				tr ("Send private message to user") + "\">P</a> ";
 		}
 		if (showSubscribeButton || showCommentsButton || showRecommendButton || showAddToBookmarkButton)
 		{

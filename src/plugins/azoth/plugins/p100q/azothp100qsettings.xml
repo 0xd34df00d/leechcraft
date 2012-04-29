@@ -31,8 +31,8 @@
 				<item type="checkbox" property="CommentsButton" default="true">
 					<label value="Request Comments" />
 				</item>
-				<item type="checkbox" property="RecomendButton" default="true">
-					<label value="Recomend this psto" />
+				<item type="checkbox" property="RecommendButton" default="true">
+					<label value="Recommend this psto" />
 				</item>
 				<item type="checkbox" property="AddToBookmarkButton" default="true">
 					<label value="Request Comments" />
