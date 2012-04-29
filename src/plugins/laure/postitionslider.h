@@ -24,14 +24,13 @@ namespace LeechCraft
 {
 namespace Laure
 {
-class PostitionSlider : public QSlider
-{
-	Q_OBJECT
-public:
-	PostitionSlider (QWidget *parent = 0);
-protected:
-	void mouseReleaseEvent (QMouseEvent *event);
-};
-
+	class PostitionSlider : public QSlider
+	{
+		Q_OBJECT
+	public:
+		PostitionSlider (QWidget *parent = 0);
+	protected:
+		void mouseReleaseEvent (QMouseEvent *event);
+	};
 }
 }

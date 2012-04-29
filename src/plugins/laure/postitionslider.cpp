@@ -25,19 +25,17 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	
-PostitionSlider::PostitionSlider (QWidget *parent)
-: QSlider (parent)
-{
-}
+	PostitionSlider::PostitionSlider (QWidget *parent)
+	: QSlider (parent)
+	{
+	}
 
-void PostitionSlider::mouseReleaseEvent (QMouseEvent *event)
-{
-	const int val = QStyle::sliderValueFromPosition (minimum (), maximum (),
-			event->x (), width (), false);
-	setValue (val);
-	emit sliderMoved (val);
-}
-
+	void PostitionSlider::mouseReleaseEvent (QMouseEvent *event)
+	{
+		const int val = QStyle::sliderValueFromPosition (minimum (), maximum (),
+				event->x (), width (), false);
+		setValue (val);
+		emit sliderMoved (val);
+	}
 }
 }
