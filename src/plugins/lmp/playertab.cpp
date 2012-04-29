@@ -46,37 +46,6 @@ namespace LMP
 {
 	namespace
 	{
-		class SimilarModel : public QStandardItemModel
-		{
-		public:
-			enum Role
-			{
-				ArtistName = Qt::UserRole + 1,
-				Similarity,
-				ArtistImageURL,
-				ArtistBigImageURL,
-				ArtistPageURL,
-				ArtistTags,
-				ShortDesc,
-				FullDesc
-			};
-
-			SimilarModel (QObject *parent = 0)
-			: QStandardItemModel (parent)
-			{
-				QHash<int, QByteArray> names;
-				names [ArtistName] = "artistName";
-				names [Similarity] = "similarity";
-				names [ArtistImageURL] = "artistImageURL";
-				names [ArtistBigImageURL] = "artistBigImageURL";
-				names [ArtistPageURL] = "artistPageURL";
-				names [ArtistTags] = "artistTags";
-				names [ShortDesc] = "shortDesc";
-				names [FullDesc] = "fullDesc";
-				setRoleNames (names);
-			}
-		};
-
 		class CollectionFilterModel : public QSortFilterProxyModel
 		{
 		public:
@@ -113,7 +82,6 @@ namespace LMP
 	, Player_ (new Player (this))
 	, PlaylistToolbar_ (new QToolBar ())
 	, TabToolbar_ (new QToolBar ())
-	, SimilarsModel_ (new SimilarModel (this))
 	{
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->setStretchFactor (0, 2);
@@ -133,8 +101,6 @@ namespace LMP
 				SLOT (handleScanProgress (int)));
 		Ui_.ScanProgress_->hide ();
 		handleSongChanged (MediaInfo ());
-
-		Ui_.NPWidget_->SetSimilarModel (SimilarsModel_);
 
 		SetupToolbar ();
 		SetupCollection ();
@@ -338,37 +304,9 @@ namespace LMP
 		Ui_.Playlist_->addAction (removeSelected);
 	}
 
-	void PlayerTab::FillSimilar (Media::SimilarityInfos_t infos)
+	void PlayerTab::FillSimilar (const Media::SimilarityInfos_t& infos)
 	{
-		SimilarsModel_->clear ();
-
-		std::sort (infos.begin (), infos.end (),
-				[] (const Media::SimilarityInfo_t& left, const Media::SimilarityInfo_t& right)
-					{ return left.second > right.second; });
-
-		Q_FOREACH (const Media::SimilarityInfo_t& info, infos)
-		{
-			auto item = new QStandardItem ();
-
-			const auto& artist = info.first;
-			item->setData (artist.Name_, SimilarModel::Role::ArtistName);
-			item->setData (artist.Image_, SimilarModel::Role::ArtistImageURL);
-			item->setData (artist.ShortDesc_, SimilarModel::Role::ShortDesc);
-			item->setData (artist.FullDesc_, SimilarModel::Role::FullDesc);
-			item->setData (tr ("Similarity: %1%").arg (info.second), SimilarModel::Role::Similarity);
-
-			QStringList tags;
-			const int diff = artist.Tags_.size () - 5;
-			auto begin = artist.Tags_.begin ();
-			if (diff > 0)
-				std::advance (begin, diff);
-			std::transform (begin, artist.Tags_.end (), std::back_inserter (tags),
-					[] (decltype (artist.Tags_.front ()) tag) { return tag.Name_; });
-			std::reverse (tags.begin (), tags.end ());
-			item->setData (tr ("Tags: %1").arg (tags.join ("; ")), SimilarModel::Role::ArtistTags);
-
-			SimilarsModel_->appendRow (item);
-		}
+		Ui_.NPWidget_->GetArtistsDisplay ()->SetSimilarArtists (infos);
 	}
 
 	void PlayerTab::handleSongChanged (const MediaInfo& info)

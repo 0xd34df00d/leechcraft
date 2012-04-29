@@ -56,7 +56,6 @@ namespace LMP
 		QToolBar *TabToolbar_;
 
 		QHash<QString, Media::SimilarityInfos_t> Similars_;
-		QStandardItemModel *SimilarsModel_;
 		QString LastSimilar_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
@@ -71,7 +70,7 @@ namespace LMP
 		void SetupPlaylistsTab ();
 		void SetupFSBrowser ();
 		void SetupPlaylist ();
-		void FillSimilar (Media::SimilarityInfos_t);
+		void FillSimilar (const Media::SimilarityInfos_t&);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
 		void handleSimilarError ();

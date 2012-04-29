@@ -18,30 +18,24 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_nowplayingwidget.h"
+#include <QDeclarativeView>
+#include <interfaces/media/audiostructs.h>
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
-
-	class NowPlayingWidget : public QWidget
+	class ArtistsInfoDisplay : public QDeclarativeView
 	{
 		Q_OBJECT
 
-		Ui::NowPlayingWidget Ui_;
+		QStandardItemModel *Model_;
 	public:
-		NowPlayingWidget (QWidget* = 0);
+		ArtistsInfoDisplay (QWidget* = 0);
 
-		ArtistsInfoDisplay* GetArtistsDisplay () const;
-
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
-	private:
-		void SetStatistics (const QString&);
+		void SetSimilarArtists (Media::SimilarityInfos_t);
 	};
 }
 }

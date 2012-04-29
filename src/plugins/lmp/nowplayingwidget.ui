@@ -152,7 +152,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QDeclarativeView" name="SimilarView_">
+    <widget class="LeechCraft::LMP::ArtistsInfoDisplay" name="SimilarView_">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -187,6 +187,12 @@
    <class>QDeclarativeView</class>
    <extends>QGraphicsView</extends>
    <header>QtDeclarative/QDeclarativeView</header>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::ArtistsInfoDisplay</class>
+   <extends>QDeclarativeView</extends>
+   <header>artistsinfodisplay.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

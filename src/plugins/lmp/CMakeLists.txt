@@ -57,6 +57,7 @@ SET (SRCS
 	staticplaylistmanager.cpp
 	m3ustuff.cpp
 	playlistmanager.cpp
+	artistsinfodisplay.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -75,6 +76,7 @@ SET (HEADERS
 	staticplaylistmanager.h
 	m3ustuff.h
 	playlistmanager.h
+	artistsinfodisplay.h
 	)
 SET (FORMS
 	playertab.ui
