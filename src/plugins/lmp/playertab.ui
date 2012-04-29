@@ -156,8 +156,14 @@
       <layout class="QVBoxLayout" name="PlaylistLayout_">
        <item>
         <widget class="QTreeView" name="Playlist_">
+         <property name="contextMenuPolicy">
+          <enum>Qt::ActionsContextMenu</enum>
+         </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
          </property>
          <property name="indentation">
           <number>0</number>

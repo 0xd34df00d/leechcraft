@@ -79,6 +79,7 @@ namespace LMP
 		void handleScanProgress (int);
 		void handleChangePlayMode ();
 		void handlePlaylistSelected (const QModelIndex&);
+		void removeSelectedSongs ();
 		void loadFromCollection ();
 		void loadFromFSBrowser ();
 		void handleSavePlaylist ();

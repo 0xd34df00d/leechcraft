@@ -327,6 +327,15 @@ namespace LMP
 		}
 
 		PlaylistToolbar_->addWidget (playButton);
+
+		QAction *removeSelected = new QAction (tr ("Delete from playlist"), Ui_.Playlist_);
+		removeSelected->setProperty ("ActionIcon", "list-remove");
+		removeSelected->setShortcut (Qt::Key_Delete);
+		connect (removeSelected,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (removeSelectedSongs ()));
+		Ui_.Playlist_->addAction (removeSelected);
 	}
 
 	void PlayerTab::FillSimilar (Media::SimilarityInfos_t infos)
@@ -472,6 +481,24 @@ namespace LMP
 			return;
 
 		Player_->Enqueue (sources, false);
+	}
+
+	void PlayerTab::removeSelectedSongs ()
+	{
+		auto selModel = Ui_.Playlist_->selectionModel ();
+		if (!selModel)
+			return;
+
+		auto indexes = selModel->selectedRows ();
+		if (indexes.isEmpty ())
+			indexes << Ui_.Playlist_->currentIndex ();
+		indexes.removeAll (QModelIndex ());
+
+		QList<QPersistentModelIndex> persistent;
+		std::copy (indexes.begin (), indexes.end (), std::back_inserter (persistent));
+		Q_FOREACH (const auto& idx, persistent)
+			if (idx.isValid ())
+				Player_->Dequeue (idx);
 	}
 
 	void PlayerTab::loadFromCollection ()
