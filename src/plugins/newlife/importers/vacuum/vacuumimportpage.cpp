@@ -41,15 +41,15 @@ namespace Importers
 			QStringList (".vacuum") << "profiles",
 			"options.xml",
 			[] (const QDomElement&) { return "xmpp"; },
-			[tfd] (const QDomElement& acc) { return tfd (acc, "name"); },
-			[tfd] (const QDomElement& acc) { return tfd (acc, "active") == "true"; },
-			[tfd] (const QDomElement& acc)
+			[=] (const QDomElement& acc) { return tfd (acc, "name"); },
+			[=] (const QDomElement& acc) { return tfd (acc, "active") == "true"; },
+			[=] (const QDomElement& acc)
 			{
 				const auto& sjid = tfd (acc, "streamJid");
 				const int pos = sjid.indexOf ('/');
 				return pos < 0 ? sjid : sjid.left (pos);
 			},
-			[tfd] (const QDomElement& acc, QVariantMap& accountData)
+			[=] (const QDomElement& acc, QVariantMap& accountData)
 			{
 				const QDomElement& conn = acc.firstChildElement ("connection");
 

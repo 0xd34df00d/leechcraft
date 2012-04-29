@@ -44,10 +44,10 @@ namespace Importers
 			QStringList (".config") << "Psi+" << "profiles",
 			"accounts.xml",
 			[] (const QDomElement&) { return "xmpp"; },
-			[tfd] (const QDomElement& acc) { return tfd (acc, "name"); },
-			[tfd] (const QDomElement& acc) { return tfd (acc, "enabled") == "true"; },
-			[tfd] (const QDomElement& acc) { return tfd (acc, "jid"); },
-			[tfd] (const QDomElement& acc, QVariantMap& accountData)
+			[=] (const QDomElement& acc) { return tfd (acc, "name"); },
+			[=] (const QDomElement& acc) { return tfd (acc, "enabled") == "true"; },
+			[=] (const QDomElement& acc) { return tfd (acc, "jid"); },
+			[=] (const QDomElement& acc, QVariantMap& accountData)
 			{
 				accountData ["Port"] = tfd (acc, "port").toInt ();
 				accountData ["Host"] = tfd (acc, "use-host") == "true" ?
