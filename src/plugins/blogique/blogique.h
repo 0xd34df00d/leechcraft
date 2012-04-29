@@ -23,6 +23,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ipluginready.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LeechCraft
@@ -33,9 +34,10 @@ namespace Blogique
 				, public IInfo
 				, public IHaveTabs
 				, public IHaveSettings
+				, public IPluginReady
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IPluginReady)
 
 		TabClasses_t TabClasses_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
@@ -52,6 +54,9 @@ namespace Blogique
 		void TabOpenRequested (const QByteArray& tabClass);
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject* plugin);
 	private:
 		void CreateTab ();
 	signals:

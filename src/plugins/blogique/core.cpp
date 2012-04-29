@@ -17,6 +17,9 @@
  **********************************************************************/
 
 #include "core.h"
+#include <QtDebug>
+#include <interfaces/iplugin2.h>
+#include "interfaces/blogique/iblogplatformplugin.h"
 
 namespace LeechCraft
 {
@@ -42,6 +45,40 @@ namespace Blogique
 		return Proxy_;
 	}
 
+	QSet<QByteArray> Core::GetExpectedPluginClasses () const
+	{
+		QSet<QByteArray> classes;
+		classes << "org.LeechCraft.Plugins.Blogique.Plugins.IBlogPlatformPlugin";
+		return classes;
+	}
+
+	void Core::AddPlugin (QObject *plugin)
+	{
+		IPlugin2 *plugin2 = qobject_cast<IPlugin2*> (plugin);
+		if (!plugin2)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< plugin
+					<< "isn't a IPlugin2";
+			return;
+		}
+
+		QSet<QByteArray> classes = plugin2->GetPluginClasses ();
+		if (classes.contains ("org.LeechCraft.Plugins.Azoth.Plugins.IBlogPlatformPlugin"))
+			AddBlogPlatformPlugin (plugin);
+	}
+
+	void Core::AddBlogPlatformPlugin (QObject *plugin)
+	{
+		IBlogPlatformPlugin *ibpp = qobject_cast<IBlogPlatformPlugin*> (plugin);
+		if (!ibpp)
+			qWarning () << Q_FUNC_INFO
+					<< "plugin"
+					<< plugin
+					<< "tells it implements the IBlogPlatformPlugin but cast failed";
+		else
+			BlogPlatformPlugins_ << plugin;
+	}
 }
 }
 

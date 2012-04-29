@@ -20,6 +20,7 @@
 #define LEECHCRAFT_BLOGIQUE_CORE_H
 
 #include <QObject>
+#include <QSet>
 #include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
@@ -29,6 +30,7 @@ namespace Blogique
 	class Core : public QObject
 	{
 		ICoreProxy_ptr Proxy_;
+		QObjectList BlogPlatformPlugins_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
@@ -37,6 +39,12 @@ namespace Blogique
 
 		void SetCoreProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetCoreProxy ();
+
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject *plugin);
+
+	private:
+		void AddBlogPlatformPlugin (QObject *plugin);
 	};
 }
 }

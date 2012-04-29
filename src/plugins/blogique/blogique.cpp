@@ -100,6 +100,16 @@ namespace Blogique
 		return XmlSettingsDialog_;
 	}
 
+	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
+	{
+		return Core::Instance ().GetExpectedPluginClasses ();
+	}
+
+	void Plugin::AddPlugin (QObject* plugin)
+	{
+		Core::Instance ().AddPlugin (plugin);
+	}
+
 	void Plugin::CreateTab ()
 	{
 		BlogiqueWidget *blogPage = new BlogiqueWidget ();
