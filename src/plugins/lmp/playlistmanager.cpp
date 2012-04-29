@@ -16,45 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/core/icoreproxy.h>
+#include "playlistmanager.h"
+#include "staticplaylistmanager.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class LocalCollection;
-	class LocalFileResolver;
-	class PlaylistManager;
-
-	class Core : public QObject
+	PlaylistManager::PlaylistManager (QObject *parent)
+	: QObject (parent)
+	, Static_ (new StaticPlaylistManager (this))
 	{
-		Q_OBJECT
+	}
 
-		ICoreProxy_ptr Proxy_;
-
-		LocalFileResolver *Resolver_;
-		LocalCollection *Collection_;
-		PlaylistManager *PLManager_;
-
-		Core ();
-	public:
-		static Core& Instance ();
-
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy ();
-
-		void PostInit ();
-
-		LocalFileResolver* GetLocalFileResolver () const;
-		LocalCollection* GetLocalCollection () const;
-		PlaylistManager* GetPlaylistManager () const;
-	public slots:
-		void rescan ();
-	private slots:
-		void handleCollectionDirChanged ();
-	};
+	StaticPlaylistManager* PlaylistManager::GetStaticManager () const
+	{
+		return Static_;
+	}
 }
 }

@@ -56,6 +56,7 @@ SET (SRCS
 	nowplayingwidget.cpp
 	staticplaylistmanager.cpp
 	m3ustuff.cpp
+	playlistmanager.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -73,6 +74,7 @@ SET (HEADERS
 	nowplayingwidget.h
 	staticplaylistmanager.h
 	m3ustuff.h
+	playlistmanager.h
 	)
 SET (FORMS
 	playertab.ui

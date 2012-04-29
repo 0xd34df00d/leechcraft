@@ -19,42 +19,22 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class LocalCollection;
-	class LocalFileResolver;
-	class PlaylistManager;
+	class StaticPlaylistManager;
 
-	class Core : public QObject
+	class PlaylistManager : public QObject
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
-
-		LocalFileResolver *Resolver_;
-		LocalCollection *Collection_;
-		PlaylistManager *PLManager_;
-
-		Core ();
+		StaticPlaylistManager *Static_;
 	public:
-		static Core& Instance ();
+		PlaylistManager (QObject* = 0);
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy ();
-
-		void PostInit ();
-
-		LocalFileResolver* GetLocalFileResolver () const;
-		LocalCollection* GetLocalCollection () const;
-		PlaylistManager* GetPlaylistManager () const;
-	public slots:
-		void rescan ();
-	private slots:
-		void handleCollectionDirChanged ();
+		StaticPlaylistManager* GetStaticManager () const;
 	};
 }
 }
