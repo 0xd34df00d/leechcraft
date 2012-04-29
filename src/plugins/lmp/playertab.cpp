@@ -217,6 +217,10 @@ namespace LMP
 				this,
 				SLOT (loadFromCollection ()));
 		Ui_.CollectionTree_->addAction (addToPlaylist);
+		connect (Ui_.CollectionTree_,
+				SIGNAL (doubleClicked (QModelIndex)),
+				this,
+				SLOT (loadFromCollection ()));
 
 		connect (Ui_.CollectionFilter_,
 				SIGNAL (textChanged (QString)),
