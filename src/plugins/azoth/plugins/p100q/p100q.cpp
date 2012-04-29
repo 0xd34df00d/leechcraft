@@ -118,8 +118,6 @@ namespace p100q
 		if (body.indexOf (PstoCommentRX_, 0) != PstoCommentPos)
 		{
 			QString tags, tag;
-			const bool showTags = XmlSettingsManager::Instance ()
-				.property ("ShowTags").toBool ();
 			int pos = 0;
 			int delta = 0;
 			while ((pos = TagRX_.indexIn (body, pos)) != -1)
