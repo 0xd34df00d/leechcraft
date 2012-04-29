@@ -187,6 +187,29 @@ namespace LMP
 		Watcher_->setFuture (future);
 	}
 
+	QList<int> LocalCollection::GetDynamicPlaylist (DynamicPlaylist type) const
+	{
+		QList<int> result;
+		const auto& keys = Track2Path_.keys ();
+		switch (type)
+		{
+		case DynamicPlaylist::Random50:
+			for (int i = 0; i < 50; ++i)
+				result << keys [qrand () % keys.size ()];
+			break;
+		}
+		return result;
+	}
+
+	QStringList LocalCollection::TrackList2PathList (const QList<int>& tracks) const
+	{
+		QStringList result;
+		std::transform (tracks.begin (), tracks.end (), std::back_inserter (result),
+				[&Track2Path_] (int id) { return Track2Path_ [id]; });
+		result.removeAll (QString ());
+		return result;
+	}
+
 	Collection::TrackStats LocalCollection::GetTrackStats (const QString& path)
 	{
 		if (!Path2Track_.contains (path))

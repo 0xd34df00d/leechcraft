@@ -75,6 +75,10 @@ namespace LMP
 			TrackTitle,
 			TrackPath
 		};
+		enum class DynamicPlaylist
+		{
+			Random50
+		};
 
 		LocalCollection (QObject* = 0);
 
@@ -85,6 +89,9 @@ namespace LMP
 
 		void Clear ();
 		void Scan (const QString&);
+
+		QList<int> GetDynamicPlaylist (DynamicPlaylist) const;
+		QStringList TrackList2PathList (const QList<int>&) const;
 
 		Collection::TrackStats GetTrackStats (const QString&);
 	private:
