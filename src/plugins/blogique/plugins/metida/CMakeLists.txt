@@ -14,19 +14,21 @@ INCLUDE_DIRECTORIES (${BLOGIQUE_INCLUDE_DIR}
 	)
 
 SET (METIDA_SRCS
+	livejournalbloggingplatform.cpp
 	metida.cpp
 	core.cpp
 	xmlsettingsmanager.cpp
 	)
 
 SET (METIDA_HEADERS
+	livejournalbloggingplatform.h
 	metida.h
 	core.h
 	xmlsettingsmanager.h
 	)
 
 SET (METIDA_FORMS)
-SET (METIDA_RESOURCES)
+SET (METIDA_RESOURCES blogiquemetidaresources.qrc)
 
 # CreateTrVars ("blogique_metida" "de;en;es;fr;it;ru_RU;uk_UA" METIDA_TRANSLATIONS METIDA_COMPILED_TRANSLATIONS)
 
