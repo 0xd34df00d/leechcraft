@@ -29,6 +29,8 @@
 #include "localfileresolver.h"
 #include "util.h"
 #include "localcollection.h"
+#include "playlistmanager.h"
+#include "staticplaylistmanager.h"
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);
 
@@ -78,6 +80,9 @@ namespace LMP
 				SIGNAL (aboutToFinish ()),
 				this,
 				SLOT (handleSourceAboutToFinish ()));
+
+		auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
+		Enqueue (staticMgr->GetOnLoadPlaylist ());
 	}
 
 	QAbstractItemModel* Player::GetPlaylistModel () const
@@ -169,6 +174,9 @@ namespace LMP
 		if (sort)
 			ApplyOrdering (sources);
 		CurrentQueue_ = sources;
+
+		Core::Instance ().GetPlaylistManager ()->
+				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
 
@@ -343,6 +351,9 @@ namespace LMP
 		AlbumRoots_.clear ();
 		CurrentQueue_.clear ();
 		Source_->clearQueue ();
+
+		Core::Instance ().GetPlaylistManager ()->
+				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 	}
 
 	void Player::handleSourceAboutToFinish ()
