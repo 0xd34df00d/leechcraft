@@ -145,6 +145,7 @@ namespace Laure
 
 	void VLCWrapper::HandlePlayed ()
 	{
+		emit itemPlayed (CurrentItem_);
 		Entity scrobbleEntity;
 		scrobbleEntity.Additional_ = CurrentItemMeta_.ToVariantMap ();
 		scrobbleEntity.Mime_ = "x-leechcraft/now-playing-track-info";

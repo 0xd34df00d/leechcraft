@@ -90,6 +90,7 @@ namespace Laure
 				SIGNAL (sliderMoved (int)),
 				Ui_.Player_,
 				SLOT (setPosition (int)));
+
 		connect (Ui_.VolumeSlider_,
 				SIGNAL (valueChanged (int)),
 				wrapper,
