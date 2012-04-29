@@ -24,8 +24,9 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	SeparatePlayer::SeparatePlayer (QWidget *parent, Qt::WindowFlags f)
-	: QWidget (parent, f)
+	SeparatePlayer::SeparatePlayer (QWidget *parent)
+	: QWidget (parent)
+	, FullScreenMode_ (false)
 	{
 		setPalette (QPalette (Qt::black));
 	}
@@ -34,6 +35,20 @@ namespace Laure
 	{
 		emit closed ();
 		event->accept ();
+	}
+	
+	void SeparatePlayer::keyPressEvent (QKeyEvent *event)
+	{
+		switch (event->key ())
+		{
+		case Qt::Key_F11:
+      FullScreenMode_ = !FullScreenMode_;
+			if (FullScreenMode_)
+				showFullScreen ();
+			else
+				showNormal ();
+			break;
+		}
 	}
 }
 }
