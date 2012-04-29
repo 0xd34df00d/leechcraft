@@ -19,7 +19,7 @@
 #include "core.h"
 #include <QtDebug>
 #include <interfaces/iplugin2.h>
-#include "interfaces/blogique/iblogplatformplugin.h"
+#include "interfaces/blogique/ibloggingplatformplugin.h"
 
 namespace LeechCraft
 {
@@ -70,7 +70,7 @@ namespace Blogique
 
 	void Core::AddBlogPlatformPlugin (QObject *plugin)
 	{
-		IBlogPlatformPlugin *ibpp = qobject_cast<IBlogPlatformPlugin*> (plugin);
+		IBloggingPlatformPlugin *ibpp = qobject_cast<IBloggingPlatformPlugin*> (plugin);
 		if (!ibpp)
 			qWarning () << Q_FUNC_INFO
 					<< "plugin"
