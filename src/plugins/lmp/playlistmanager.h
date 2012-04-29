@@ -43,7 +43,8 @@ namespace LMP
 
 		enum PlaylistTypes
 		{
-			Static
+			Static,
+			Random50
 		};
 		enum Roles
 		{
