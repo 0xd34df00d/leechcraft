@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "artistsinfodisplay.h"
+#include <algorithm>
 #include <QStandardItemModel>
 #include <QDeclarativeContext>
 
