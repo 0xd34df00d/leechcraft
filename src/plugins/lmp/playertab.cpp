@@ -25,6 +25,7 @@
 #include <QSortFilterProxyModel>
 #include <QToolButton>
 #include <QMenu>
+#include <QInputDialog>
 #include <phonon/seekslider.h>
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -36,6 +37,8 @@
 #include "localcollection.h"
 #include "collectiondelegate.h"
 #include "xmlsettingsmanager.h"
+#include "playlistmanager.h"
+#include "staticplaylistmanager.h"
 
 namespace LeechCraft
 {
@@ -259,6 +262,14 @@ namespace LMP
 				SLOT (clear ()));
 		PlaylistToolbar_->addAction (clearPlaylist);
 
+		QAction *savePlaylist = new QAction (tr ("Save playlist..."), this);
+		savePlaylist->setProperty ("ActionIcon", "document-save");
+		connect (savePlaylist,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleSavePlaylist ()));
+		PlaylistToolbar_->addAction (savePlaylist);
+
 		QAction *loadFiles = new QAction (tr ("Load from disk..."), this);
 		loadFiles->setProperty ("ActionIcon", "document-open");
 		connect (loadFiles,
@@ -458,6 +469,18 @@ namespace LMP
 			Player_->Enqueue (RecIterate (fi.absoluteFilePath ()));
 		else
 			Player_->Enqueue (QStringList (fi.absoluteFilePath ()));
+	}
+
+	void PlayerTab::handleSavePlaylist ()
+	{
+		const auto& name = QInputDialog::getText (this,
+				tr ("Save playlist"),
+				tr ("Enter name for the playlist:"));
+		if (name.isEmpty ())
+			return;
+
+		auto mgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
+		mgr->SaveCustomPlaylist (name, Player_->GetQueue ());
 	}
 
 	void PlayerTab::loadFromDisk ()

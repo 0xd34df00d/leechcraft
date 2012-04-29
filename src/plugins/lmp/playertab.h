@@ -79,6 +79,7 @@ namespace LMP
 		void handleChangePlayMode ();
 		void loadFromCollection ();
 		void loadFromFSBrowser ();
+		void handleSavePlaylist ();
 		void loadFromDisk ();
 	signals:
 		void changeTabName (QWidget*, const QString&);
