@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef LEECHCRAFT_BLOGIQUE_CORE_H
-#define LEECHCRAFT_BLOGIQUE_CORE_H
+#pragma once
 
 #include <QObject>
 #include <QSet>
@@ -48,5 +47,3 @@ namespace Blogique
 	};
 }
 }
-
-#endif // LEECHCRAFT_BLOGIQUE_CORE_H

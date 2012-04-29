@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BLOGIQUE_XMLSETTINGSMANAGER_H
-#define PLUGINS_BLOGIQUE_XMLSETTINGSMANAGER_H
+#pragma once
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
@@ -38,5 +37,3 @@ namespace Blogique
 	};
 }
 }
-
-#endif // PLUGINS_BLOGIQUE_XMLSETTINGSMANAGER_H

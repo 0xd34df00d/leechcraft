@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef LEECHCRAFT_BLOGIQUE_BLOGIQUEWIDGET_H
-#define LEECHCRAFT_BLOGIQUE_BLOGIQUEWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
@@ -56,5 +55,3 @@ namespace Blogique
 	};
 }
 }
-
-#endif // LEECHCRAFT_BLOGIQUE_BLOGIQUEWIDGET_H
