@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include <interfaces/iplugin2.h>
 #include "interfaces/blogique/ibloggingplatformplugin.h"
+#include "interfaces/blogique/ibloggingplatform.h"
 
 namespace LeechCraft
 {
@@ -64,8 +65,24 @@ namespace Blogique
 		}
 
 		QSet<QByteArray> classes = plugin2->GetPluginClasses ();
-		if (classes.contains ("org.LeechCraft.Plugins.Azoth.Plugins.IBlogPlatformPlugin"))
+		if (classes.contains ("org.LeechCraft.Plugins.Blogique.Plugins.IBlogPlatformPlugin"))
 			AddBlogPlatformPlugin (plugin);
+	}
+
+	QList<IBloggingPlatform*> Core::GetBloggingPlatforms () const
+	{
+		QList<IBloggingPlatform*> result;
+		std::for_each (BlogPlatformPlugins_.begin (), BlogPlatformPlugins_.end (),
+				[&result] (decltype (BlogPlatformPlugins_.front ()) bpp)
+				{
+					QObjectList protos = qobject_cast<IBloggingPlatformPlugin*> (bpp)->
+							GetBloggingPlatforms ();
+					Q_FOREACH (QObject *obj, protos)
+						result << qobject_cast<IBloggingPlatform*> (obj);
+				});
+
+		result.removeAll (0);
+		return result;
 	}
 
 	void Core::AddBlogPlatformPlugin (QObject *plugin)

@@ -26,6 +26,8 @@ namespace LeechCraft
 {
 namespace Blogique
 {
+	class IBloggingPlatform;
+
 	class Core : public QObject
 	{
 		ICoreProxy_ptr Proxy_;
@@ -42,6 +44,7 @@ namespace Blogique
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject *plugin);
 
+		QList<IBloggingPlatform*> GetBloggingPlatforms () const;
 	private:
 		void AddBlogPlatformPlugin (QObject *plugin);
 	};
