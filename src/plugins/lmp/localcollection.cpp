@@ -187,6 +187,26 @@ namespace LMP
 		Watcher_->setFuture (future);
 	}
 
+	Collection::TrackStats LocalCollection::GetTrackStats (const QString& path)
+	{
+		if (!Path2Track_.contains (path))
+			return Collection::TrackStats ();
+
+		try
+		{
+			return Storage_->GetTrackStats (Path2Track_ [path]);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error fetching stats for track"
+					<< path
+					<< Path2Track_ [path]
+					<< e.what ();
+			return Collection::TrackStats ();
+		}
+	}
+
 	QStringList LocalCollection::CollectPaths (const QModelIndex& index)
 	{
 		const auto type = index.data (Role::Node).toInt ();

@@ -84,6 +84,8 @@ namespace LMP
 
 		void Clear ();
 		void Scan (const QString&);
+
+		Collection::TrackStats GetTrackStats (const QString&);
 	private:
 		QStringList CollectPaths (const QModelIndex&);
 		void HandleNewArtists (const Collection::Artists_t&);
