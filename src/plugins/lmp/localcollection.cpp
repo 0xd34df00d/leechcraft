@@ -281,6 +281,7 @@ namespace LMP
 					albumItem->appendRow (item);
 
 					Path2Track_ [track.FilePath_] = track.ID_;
+					Track2Path_ [track.ID_] = track.FilePath_;
 				}
 			}
 		}

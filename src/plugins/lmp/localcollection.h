@@ -51,6 +51,7 @@ namespace LMP
 		Collection::Artists_t Artists_;
 		QSet<QString> PresentPaths_;
 		QHash<QString, int> Path2Track_;
+		QHash<int, QString> Track2Path_;
 
 		QHash<int, QStandardItem*> Artist2Item_;
 		QHash<int, QStandardItem*> Album2Item_;
