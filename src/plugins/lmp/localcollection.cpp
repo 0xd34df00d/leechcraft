@@ -205,7 +205,7 @@ namespace LMP
 	{
 		QStringList result;
 		std::transform (tracks.begin (), tracks.end (), std::back_inserter (result),
-				[&Track2Path_] (int id) { return Track2Path_ [id]; });
+				[this] (int id) { return Track2Path_ [id]; });
 		result.removeAll (QString ());
 		return result;
 	}
