@@ -18,7 +18,6 @@ Rectangle
     ListView {
         anchors.fill: parent
         id: similarView
-        boundsBehavior: Flickable.StopAtBounds
 
         model: similarModel
         spacing: 5
