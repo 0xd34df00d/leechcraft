@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <QStringList>
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -59,6 +60,17 @@ namespace Collection
 		QList<Album_ptr> Albums_;
 	};
 	typedef QList<Artist> Artists_t;
+
+	struct TrackStats
+	{
+		int TrackID_;
+
+		int Playcount_;
+		QDateTime Added_;
+		QDateTime LastPlay_;
+		int Score_;
+		int Rating_;
+	};
 }
 }
 }

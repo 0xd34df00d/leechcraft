@@ -49,12 +49,18 @@ namespace LMP
 		QSqlQuery LinkArtistAlbum_;
 		QSqlQuery AddTrack_;
 		QSqlQuery AddGenre_;
+
+		QSqlQuery GetTrackStats_;
+		QSqlQuery UpdateTrackStats_;
 	public:
 		LocalCollectionStorage (QObject* = 0);
 
 		void Clear ();
 		Collection::Artists_t AddToCollection (const QList<MediaInfo>&);
 		Collection::Artists_t Load ();
+
+		Collection::TrackStats GetTrackStats (int);
+		void RecordTrackPlayed (int);
 	private:
 		Collection::Artists_t GetAllArtists ();
 		QHash<int, Collection::Album_ptr> GetAllAlbums ();

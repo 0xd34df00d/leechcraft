@@ -166,6 +166,48 @@ namespace LMP
 		return artists;
 	}
 
+	Collection::TrackStats LocalCollectionStorage::GetTrackStats (int trackId)
+	{
+		GetTrackStats_.bindValue (":track_id", trackId);
+		if (!GetTrackStats_.exec ())
+		{
+			Util::DBLock::DumpError (GetTrackStats_);
+			throw std::runtime_error ("cannot fetch track statistics");
+		}
+
+		if (!GetTrackStats_.next ())
+			return Collection::TrackStats ();
+
+		Collection::TrackStats result =
+		{
+			trackId,
+			GetTrackStats_.value (0).toInt (),
+			GetTrackStats_.value (1).toDateTime (),
+			GetTrackStats_.value (2).toDateTime (),
+			GetTrackStats_.value (3).toInt (),
+			GetTrackStats_.value (4).toInt ()
+		};
+		GetTrackStats_.finish ();
+
+		return result;
+	}
+
+	void LocalCollectionStorage::RecordTrackPlayed (int trackId)
+	{
+		UpdateTrackStats_.bindValue (":track_id", trackId);
+		UpdateTrackStats_.bindValue (":track_id_pc", trackId);
+		UpdateTrackStats_.bindValue (":track_id_add", trackId);
+		const auto& date = QDateTime::currentDateTime ();
+		UpdateTrackStats_.bindValue (":add_date", date);
+		UpdateTrackStats_.bindValue (":play_date", date);
+
+		if (!UpdateTrackStats_.exec ())
+		{
+			Util::DBLock::DumpError (UpdateTrackStats_);
+			throw std::runtime_error ("cannot update track statistics");
+		}
+	}
+
 	Collection::Artists_t LocalCollectionStorage::GetAllArtists ()
 	{
 		Collection::Artists_t artists;
@@ -395,6 +437,17 @@ namespace LMP
 
 		AddGenre_ = QSqlQuery (DB_);
 		AddGenre_.prepare ("INSERT INTO genres (TrackId, Name) VALUES (:track_id, :name);");
+
+		GetTrackStats_ = QSqlQuery (DB_);
+		GetTrackStats_.prepare ("SELECT Playcount, Added, LastPlay, Score, Rating FROM statistics WHERE TrackId = :track_id;");
+
+		UpdateTrackStats_ = QSqlQuery (DB_);
+		UpdateTrackStats_.prepare ("INSERT OR REPLACE INTO statistics (TrackId, Playcount, Added, LastPlay) "
+				"VALUES (:track_id, "
+				"		coalesce ((SELECT Playcount FROM statistics WHERE TrackId = :track_id_pc), 0) + 1,"
+				"		coalesce ((SELECT Added FROM statistics WHERE TrackId = :track_id_add), :add_date),"
+				"		:play_date"
+				");");
 	}
 
 	void LocalCollectionStorage::CreateTables ()
@@ -431,7 +484,7 @@ namespace LMP
 				");";
 		table2query ["statistics"] = "CREATE TABLE statistics ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
-				"TrackId NOT NULL REFERENCES tracks (Id) ON DELETE CASCADE, "
+				"TrackId NOT NULL UNIQUE REFERENCES tracks (Id) ON DELETE CASCADE, "
 				"Playcount INTEGER, "
 				"Added TIMESTAMP, "
 				"LastPlay TIMESTAMP, "
