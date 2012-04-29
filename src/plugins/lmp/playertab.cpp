@@ -233,6 +233,7 @@ namespace LMP
 	{
 		auto mgr = Core::Instance ().GetPlaylistManager ();
 		Ui_.PlaylistsTree_->setModel (mgr->GetPlaylistsModel ());
+		Ui_.PlaylistsTree_->expandAll ();
 
 		connect (Ui_.PlaylistsTree_,
 				SIGNAL (doubleClicked (QModelIndex)),
