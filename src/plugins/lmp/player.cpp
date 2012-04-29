@@ -108,6 +108,11 @@ namespace LMP
 		AddToPlaylistModel (sources);
 	}
 
+	QList<Phonon::MediaSource> Player::GetQueue () const
+	{
+		return CurrentQueue_;
+	}
+
 	namespace
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)

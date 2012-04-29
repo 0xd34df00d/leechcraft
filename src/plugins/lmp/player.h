@@ -80,6 +80,7 @@ namespace LMP
 
 		void Enqueue (const QStringList&);
 		void Enqueue (const QList<Phonon::MediaSource>&);
+		QList<Phonon::MediaSource> GetQueue () const;
 	private:
 		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
 		void AddToPlaylistModel (QList<Phonon::MediaSource>);
