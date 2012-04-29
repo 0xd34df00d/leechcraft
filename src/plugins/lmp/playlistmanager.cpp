@@ -17,6 +17,9 @@
  **********************************************************************/
 
 #include "playlistmanager.h"
+#include <QStandardItemModel>
+#include <QTimer>
+#include "core.h"
 #include "staticplaylistmanager.h"
 
 namespace LeechCraft
@@ -25,13 +28,56 @@ namespace LMP
 {
 	PlaylistManager::PlaylistManager (QObject *parent)
 	: QObject (parent)
+	, Model_ (new QStandardItemModel (this))
+	, StaticRoot_ (new QStandardItem (tr ("Static playlists")))
 	, Static_ (new StaticPlaylistManager (this))
 	{
+		StaticRoot_->setEditable (false);
+		Model_->appendRow (StaticRoot_);
+
+		connect (Static_,
+				SIGNAL (customPlaylistsChanged ()),
+				this,
+				SLOT (handleStaticPlaylistsChanged ()));
+		QTimer::singleShot (100,
+				this,
+				SLOT (handleStaticPlaylistsChanged ()));
+	}
+
+	QAbstractItemModel* PlaylistManager::GetPlaylistsModel () const
+	{
+		return Model_;
 	}
 
 	StaticPlaylistManager* PlaylistManager::GetStaticManager () const
 	{
 		return Static_;
+	}
+
+	QList<Phonon::MediaSource> PlaylistManager::GetSources (const QModelIndex& index) const
+	{
+		switch (index.data (Roles::PlaylistType).toInt ())
+		{
+		case PlaylistTypes::Static:
+			return Static_->GetCustomPlaylist (index.data ().toString ());
+		default:
+			return QList<Phonon::MediaSource> ();
+		}
+	}
+
+	void PlaylistManager::handleStaticPlaylistsChanged ()
+	{
+		while (StaticRoot_->rowCount ())
+			StaticRoot_->removeRow (0);
+
+		const auto& icon = Core::Instance ().GetProxy ()->GetIcon ("view-media-playlist");
+		Q_FOREACH (const auto& name, Static_->EnumerateCustomPlaylists ())
+		{
+			auto item = new QStandardItem (icon, name);
+			item->setData (PlaylistTypes::Static, Roles::PlaylistType);
+			item->setEditable (false);
+			StaticRoot_->appendRow (item);
+		}
 	}
 }
 }

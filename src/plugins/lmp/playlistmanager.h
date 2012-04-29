@@ -19,6 +19,12 @@
 #pragma once
 
 #include <QObject>
+#include <phonon/mediasource.h>
+
+class QAbstractItemModel;
+class QStandardItemModel;
+class QStandardItem;
+class QModelIndex;
 
 namespace LeechCraft
 {
@@ -30,11 +36,28 @@ namespace LMP
 	{
 		Q_OBJECT
 
+		QStandardItemModel *Model_;
+		QStandardItem *StaticRoot_;
+
 		StaticPlaylistManager *Static_;
+
+		enum PlaylistTypes
+		{
+			Static
+		};
+		enum Roles
+		{
+			PlaylistType = Qt::UserRole + 1
+		};
 	public:
 		PlaylistManager (QObject* = 0);
 
+		QAbstractItemModel* GetPlaylistsModel () const;
 		StaticPlaylistManager* GetStaticManager () const;
+
+		QList<Phonon::MediaSource> GetSources (const QModelIndex&) const;
+	private slots:
+		void handleStaticPlaylistsChanged ();
 	};
 }
 }
