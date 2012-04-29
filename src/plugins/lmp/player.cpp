@@ -118,6 +118,35 @@ namespace LMP
 		return CurrentQueue_;
 	}
 
+	void Player::Dequeue (const QModelIndex& index)
+	{
+		if (!index.isValid ())
+			return;
+
+		QList<Phonon::MediaSource> sources;
+		if (index.data (Role::IsAlbum).toBool ())
+			for (int i = 0; i < PlaylistModel_->rowCount (index); ++i)
+				sources << PlaylistModel_->index (i, 0, index).data (Role::Source).value<Phonon::MediaSource> ();
+		else
+			sources << index.data (Role::Source).value<Phonon::MediaSource> ();
+
+		Q_FOREACH (const auto& source, sources)
+		{
+			CurrentQueue_.removeAll (source);
+			auto item = Items_.take (source);
+			auto parent = item->parent ();
+			parent->removeRow (item->row ());
+			if (!parent->rowCount ())
+			{
+				AlbumRoots_.remove (AlbumRoots_.key (parent));
+				PlaylistModel_->removeRow (parent->row ());
+			}
+		}
+
+		Core::Instance ().GetPlaylistManager ()->
+				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+	}
+
 	namespace
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
