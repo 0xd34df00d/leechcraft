@@ -19,6 +19,7 @@
 
 #pragma once
 #include <QWidget>
+#include <QtOpenGL>
 
 namespace LeechCraft
 {
@@ -28,16 +29,24 @@ namespace Laure
 	 *
 	 * @author Minh Ngo <nlminhtl@gmail.com>
 	 */
-	class SeparatePlayer : public QWidget
+	class SeparatePlayer : public QGLWidget
 	{
 		Q_OBJECT
+		
+		bool FullScreenMode_;
 	public:
 		/** @brief Constructs a new SeparatePlayer tab
 		 * with the given parent and flags.
 		 */
-		SeparatePlayer (QWidget *parent = 0, Qt::WindowFlags f = 0);
+		SeparatePlayer (QWidget *parent = 0);
 	protected:
 		void closeEvent (QCloseEvent*);
+		void keyPressEvent (QKeyEvent*);
+		void initializeGL ();
+		void paintEvent (QPaintEvent *event);
+		void resizeGL (int width, int height);
+	private:
+		void SetupViewport (int width, int height);
 	signals:
 		void closed ();
 	};
