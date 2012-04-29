@@ -260,6 +260,7 @@ namespace LMP
 	{
 		Ui_.Playlist_->setItemDelegate (new PlaylistDelegate (Ui_.Playlist_, Ui_.Playlist_));
 		Ui_.Playlist_->setModel (Player_->GetPlaylistModel ());
+		Ui_.Playlist_->expandAll ();
 		connect (Ui_.Playlist_,
 				SIGNAL (doubleClicked (QModelIndex)),
 				Player_,
