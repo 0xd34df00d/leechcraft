@@ -265,7 +265,7 @@ namespace LMP
 		{
 			auto artistItem = GetItem (Artist2Item_,
 					artist.ID_,
-					[&ArtistIcon_, &artist] (QStandardItem *item)
+					[this, &artist] (QStandardItem *item)
 					{
 						item->setIcon (ArtistIcon_);
 						item->setText (artist.Name_);
