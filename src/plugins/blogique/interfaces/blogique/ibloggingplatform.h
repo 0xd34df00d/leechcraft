@@ -45,11 +45,31 @@ namespace Blogique
 	public:
 		virtual ~IBloggingPlatform () {}
 
+		/** This enum describes the features that may be supported by a
+		 * blogging platform.
+		 */
+		enum BlogginPlatfromFeature
+		{
+			/** None of these features are supported by the blogging platform.
+			 */
+			BPFNone = 0x0,
+
+			/** This blogging platform doesn't provide API for supporting
+			 * registering new accounts.
+			 */
+			BPFNoAccountRegistration = 0x08
+		};
+		
+		Q_DECLARE_FLAGS (BlogginPlatfromFeatures, BlogginPlatfromFeature);
 		/** @brief Returns the protocol object as a QObject.
 		 *
 		 * @return Blogging platform object as QObject.
 		 */
 		virtual QObject* GetObject () = 0;
+
+		/** Returns the list of features supported by this blogging platform.
+		 */
+		virtual BlogginPlatfromFeatures GetFeatures () const = 0;
 
 		/** @brief Returns the accounts within this blogging platform.
 		 *
@@ -174,6 +194,8 @@ namespace Blogique
 		 */
 		virtual void accountRemoved (QObject *account) = 0;
 	};
+
+	Q_DECLARE_OPERATORS_FOR_FLAGS (IBloggingPlatform::BlogginPlatfromFeatures);
 }
 }
 

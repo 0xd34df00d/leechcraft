@@ -36,6 +36,11 @@ namespace Metida
 		return this;
 	}
 
+	IBloggingPlatform::BlogginPlatfromFeatures LiveJournalBloggingPlatform::GetFeatures () const
+	{
+		return 0;
+	}
+
 	QObjectList LiveJournalBloggingPlatform::GetRegisteredAccounts ()
 	{
 		return QObjectList ();
