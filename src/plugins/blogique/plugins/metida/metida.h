@@ -24,7 +24,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <interfaces/blogique/iblogplatformplugin.h>
+#include <interfaces/blogique/ibloggingplatformplugin.h>
 
 namespace LeechCraft
 {
@@ -36,11 +36,11 @@ namespace Metida
 				, public IInfo
 				, public IHaveSettings
 				, public IPlugin2
-				, public IBlogPlatformPlugin
+				, public IBloggingPlatformPlugin
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IPlugin2
-				LeechCraft::Blogique::IBlogPlatformPlugin)
+				LeechCraft::Blogique::IBloggingPlatformPlugin)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	public:
@@ -57,6 +57,7 @@ namespace Metida
 		QSet<QByteArray> GetPluginClasses () const;
 
 		QObject* GetObject ();
+		QList<QObject*> GetBloggingPlatforms () const;
 	};
 }
 }

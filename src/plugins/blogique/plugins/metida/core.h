@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QSet>
 #include <interfaces/core/icoreproxy.h>
@@ -28,18 +29,24 @@ namespace Blogique
 {
 namespace Metida
 {
+	class LiveJournalBloggingPlatform;
+
 	class Core : public QObject
 	{
 		ICoreProxy_ptr Proxy_;
 		QObjectList BlogPlatformPlugins_;
+		std::shared_ptr<LiveJournalBloggingPlatform> LJPlatform_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
 	public:
 		static Core& Instance ();
 
+		void CreateBloggingPlatfroms (QObject *parentPlatform);
 		void SetCoreProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetCoreProxy ();
+
+		QObjectList GetBloggingPlatforms () const;
 	};
 }
 }

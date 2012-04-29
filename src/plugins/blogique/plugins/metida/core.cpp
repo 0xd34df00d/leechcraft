@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include "livejournalbloggingplatform.h"
 
 namespace LeechCraft
 {
@@ -34,6 +35,11 @@ namespace Metida
 		return c;
 	}
 
+	void Core::CreateBloggingPlatfroms (QObject* parentPlatform)
+	{
+		LJPlatform_ = std::make_shared<LiveJournalBloggingPlatform> (parentPlatform);
+	}
+
 	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
@@ -42,6 +48,11 @@ namespace Metida
 	ICoreProxy_ptr Core::GetCoreProxy ()
 	{
 		return Proxy_;
+	}
+
+	QObjectList Core::GetBloggingPlatforms () const
+	{
+		return QObjectList ();
 	}
 }
 }

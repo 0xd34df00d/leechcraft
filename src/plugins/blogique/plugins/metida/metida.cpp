@@ -35,6 +35,7 @@ namespace Metida
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquemetidasettings.xml");
 
+		Core::Instance ().CreateBloggingPlatfroms (this);
 		Core::Instance ().SetCoreProxy (proxy);
 	}
 
@@ -63,7 +64,7 @@ namespace Metida
 
 	QIcon Plugin::GetIcon () const
 	{
-        return QIcon ();
+		return QIcon ();
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
@@ -82,6 +83,12 @@ namespace Metida
 	{
 		return this;
 	}
+
+	QList<QObject*> Plugin::GetBloggingPlatforms () const
+	{
+		return Core::Instance ().GetBloggingPlatforms ();
+	}
+
 }
 }
 }
