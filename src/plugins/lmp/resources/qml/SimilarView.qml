@@ -97,7 +97,7 @@ Rectangle
                 anchors.leftMargin: 5
                 anchors.left: artistImageThumb.right
                 anchors.top: artistTagsLabel.bottom
-                anchors.topMargin: 0
+                anchors.topMargin: 5
                 anchors.bottom: parent.bottom
             }
         }
