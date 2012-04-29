@@ -35,7 +35,7 @@ namespace Metida
 		return c;
 	}
 
-	void Core::CreateBloggingPlatfroms (QObject* parentPlatform)
+	void Core::CreateBloggingPlatfroms (QObject *parentPlatform)
 	{
 		LJPlatform_ = std::make_shared<LiveJournalBloggingPlatform> (parentPlatform);
 	}
@@ -52,7 +52,7 @@ namespace Metida
 
 	QObjectList Core::GetBloggingPlatforms () const
 	{
-		return QObjectList ();
+		return LJPlatform_ ? QObjectList () << LJPlatform_.get () : QObjectList ();
 	}
 }
 }
