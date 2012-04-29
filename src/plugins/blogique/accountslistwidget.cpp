@@ -18,6 +18,8 @@
 
 #include "accountslistwidget.h"
 #include <QStandardItemModel>
+#include <QWizard>
+#include "addaccountwizardfirstpage.h"
 
 namespace LeechCraft
 {
@@ -28,11 +30,18 @@ namespace Blogique
 	, AccountsModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+
 		Ui_.Accounts_->setModel (AccountsModel_);
 	}
 
 	void AccountsListWidget::on_Add__released ()
 	{
+		QWizard *wizard = new QWizard (this);
+		wizard->setAttribute (Qt::WA_DeleteOnClose);
+		wizard->setWindowTitle (QObject::tr ("Add account"));
+		wizard->addPage (new AddAccountWizardFirstPage (wizard));
+
+		wizard->show ();
 	}
 
 	void AccountsListWidget::on_Modify__released ()
