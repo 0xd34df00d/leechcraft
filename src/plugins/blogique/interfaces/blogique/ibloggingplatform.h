@@ -27,8 +27,6 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-	class IBloggingPlatformPlugin;
-
 	/** @brief Represents a protocol.
 	 *
 	 * IBloggingPlatform class represents a single blogging platform with its own set of
@@ -59,7 +57,7 @@ namespace Blogique
 		 *
 		 * @return The list of accounts of this blogging platform.
 		 */
-		virtual QList<QObject*> GetRegisteredAccounts () = 0;
+		virtual QObjectList GetRegisteredAccounts () = 0;
 
 		/** @brief Returns the pointer to the parent blogging platform plugin
 		 * that this blogging platform belongs to.
@@ -67,14 +65,14 @@ namespace Blogique
 		 * @return The parent blogging platform plugin of this blogging platform, which
 		 * must implement IBloggingPlatformPlugin.
 		 */
-		virtual QObject* GetParentProtocolPlugin () const = 0;
+		virtual QObject* GetParentBloggingPlatformPlugin () const = 0;
 
 		/** @brief Returns the human-readable name of this blogging platform,
 		 * like "LiveJournal" or "Blogger".
 		 *
 		 * @return Human-readable name of the blogging platform.
 		 */
-		virtual QString GetProtocolName () const = 0;
+		virtual QString GetBloggingPlatformName () const = 0;
 
 		/** @brief Returns the icon of this blogging platform.
 		 *
