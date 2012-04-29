@@ -47,6 +47,7 @@ namespace LMP
 	{
 		const bool isNull = info.Title_.isEmpty () && info.Artist_.isEmpty ();
 		Ui_.TrackInfoLayout_->setEnabled (!isNull);
+		Ui_.SimilarView_->setVisible (!isNull);
 
 		const QString& unknown = isNull ?
 				QString () :
