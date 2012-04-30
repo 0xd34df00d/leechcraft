@@ -45,9 +45,9 @@ namespace p100q
 				"azothp100qsettings.xml");
 
 		PstoCommentRX_ =  QRegExp ("#[a-z]+/[0-9]+[:]", Qt::CaseInsensitive);
-		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)([^a-zA-Z0-9+\"<]|<br)", Qt::CaseInsensitive);
-		PostAuthorRX_ = QRegExp ("<br />@([\\w\\-]+)([^a-zA-Z0-9+\"<]|<br)", Qt::CaseInsensitive);
-		PostRX_ = QRegExp ("#([a-zA-Z0-9]+)([^a-zA-Z0-9/+\"<]|<br)", Qt::CaseInsensitive);
+		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)([^a-zA-Z0-9+\\-\"<]|<br)", Qt::CaseInsensitive);
+		PostAuthorRX_ = QRegExp ("<br />@([\\w\\-]+)([^a-zA-Z0-9+\\-\"<]|<br)", Qt::CaseInsensitive);
+		PostRX_ = QRegExp ("#([a-zA-Z0-9]+)([^a-zA-Z0-9/+\\-\"<]|<br)", Qt::CaseInsensitive);
 		PostByUserRX_ = QRegExp ("\\s#([a-zA-Z0-9]+)", Qt::CaseInsensitive);
 		CommentRX_ = QRegExp ("#([a-zA-Z0-9]+)/([0-9]+)", Qt::CaseInsensitive);
 		TagRX_ = QRegExp ("<br />[*] ([^*,<]+(, [^*,<]+)*)");
