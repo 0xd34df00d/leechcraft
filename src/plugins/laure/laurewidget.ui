@@ -72,7 +72,7 @@
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="QSlider" name="PositionSlider_">
+        <widget class="LeechCraft::Laure::PostitionSlider" name="PositionSlider_">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -81,6 +81,22 @@
          </property>
          <property name="acceptDrops">
           <bool>true</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QSlider::sub-page:horizontal {
+     border: 1px solid #999999;
+     height: 8px;
+     background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #1957f4);
+     margin: 2px 0;
+}
+
+ QSlider::groove:horizontal {
+     border: 1px solid #999999;
+     height: 8px;
+     background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4);
+     margin: 2px 0;
+ }
+</string>
          </property>
          <property name="maximum">
           <number>10000</number>
@@ -156,6 +172,11 @@
    <class>LeechCraft::Laure::VolumeSlider</class>
    <extends>QSlider</extends>
    <header>volumeslider.h</header>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::Laure::PostitionSlider</class>
+   <extends>QSlider</extends>
+   <header>postitionslider.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
