@@ -81,6 +81,13 @@ namespace GActs
 			return;
 		}
 
+		const QKeySequence& seq = e.Additional_ ["Shortcut"].value<QKeySequence> ();
+		if (RegisteredShortcuts_.contains (id))
+		{
+			RegisteredShortcuts_ [id]->setShortcut (seq);
+			return;
+		}
+
 		QObject *receiver = e.Additional_ ["Receiver"].value<QObject*> ();
 		if (!receiver)
 			return;
@@ -88,8 +95,6 @@ namespace GActs
 		const QByteArray& method = e.Additional_ ["Method"].toByteArray ();
 		if (method.isEmpty ())
 			return;
-
-		const QKeySequence& seq = e.Additional_ ["Shortcut"].value<QKeySequence> ();
 
 		connect (receiver,
 				SIGNAL (destroyed (QObject*)),
