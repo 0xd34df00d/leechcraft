@@ -202,7 +202,11 @@ QString Application::GetSocketName ()
 	GetUserName (buffer.get (), &size);
 	buffer.reset (new TCHAR [size]);
 	if (GetUserName (buffer.get (), &size))
+#ifdef _UNICODE
+		return templ.arg (QString::fromWCharArray (buffer.get ()));
+#else
 		return templ.arg (buffer.get ());
+#endif
 	else
 		return templ.arg ("unknown");
 #else

@@ -273,7 +273,11 @@ namespace AdvancedNotifications
 			icon->hide ();
 
 		Q_FOREACH (QAction *action, actsDel)
+		{
 			Category2Action_.remove (Category2Action_.key (action));
+			EventsForAction_.remove (action);
+			delete Action2NotificationView_.take (action);
+		}
 		qDeleteAll (actsDel);
 	}
 

@@ -17,9 +17,10 @@
  **********************************************************************/
 
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <QHeaderView>
 #include <QFileDialog>
-#include <boost/filesystem/path.hpp>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -247,10 +248,14 @@ namespace LeechCraft
 				QString creator = QString::fromUtf8 (info.creator ().c_str ()),
 						comment = QString::fromUtf8 (info.comment ().c_str ());
 
-				boost::optional<boost::posix_time::ptime> maybeDate = info.creation_date ();
 				QString date;
+				auto maybeDate = info.creation_date ();
 				if (maybeDate)
-					date = QString::fromStdString (boost::posix_time::to_simple_string (*maybeDate.get_ptr ()));
+#if LIBTORRENT_VERSION_NUM >= 1600
+					date = QDateTime::fromTime_t (*maybeDate).toString ();
+#else
+					date = QString::fromStdString (boost::posix_time::to_simple_string (*maybeDate));
+#endif
 
 				if (!creator.isEmpty () && !creator.isNull ())
 					Creator_->setText (creator);
@@ -264,7 +269,7 @@ namespace LeechCraft
 					Date_->setText (date);
 				else
 					Date_->setText ("<>");
-				FilesModel_->ResetFiles (info.begin_files (), info.end_files ());
+				FilesModel_->ResetFiles (info.begin_files (), info.end_files (), info.files ());
 				FilesView_->expandAll ();
 			}
 

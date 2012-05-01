@@ -175,8 +175,9 @@ namespace LeechCraft
 		return GetShortcuts (object, originalName);
 	}
 
-	void ShortcutManager::on_Tree__activated (const QModelIndex& index)
+	void ShortcutManager::on_Tree__activated (const QModelIndex& prIndex)
 	{
+		const auto& index = Filter_->mapToSource (prIndex);
 		auto item = Model_->itemFromIndex (index.sibling (index.row (), 0));
 		// Root or something
 		if (!item || item->data (Roles::OriginalName).isNull ())

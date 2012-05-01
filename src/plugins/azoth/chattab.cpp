@@ -46,6 +46,7 @@
 #include "interfaces/azoth/ihistoryplugin.h"
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
+#include "interfaces/azoth/imucperms.h"
 #endif
 #include "core.h"
 #include "textedit.h"
@@ -114,6 +115,7 @@ namespace Azoth
 	, CurrentNickIndex_ (0)
 	, LastSpacePosition_(-1)
 	, NumUnreadMsgs_ (0)
+	, ScrollbackPos_ (0)
 	, IsMUC_ (false)
 	, PreviousTextHeight_ (0)
 	, MsgFormatter_ (0)
@@ -163,7 +165,15 @@ namespace Azoth
 				SLOT (typeTimeout ()));
 
 		PrepareTheme ();
-		RequestLogs ();
+
+		auto entry = GetEntry<ICLEntry> ();
+		const int autoNum = XmlSettingsManager::Instance ()
+				.property ("ShowLastNMessages").toInt ();
+		if (entry->GetAllMessages ().size () <= 100 &&
+				entry->GetEntryType () == ICLEntry::ETChat &&
+				autoNum)
+			RequestLogs (autoNum);
+
 		InitEntry ();
 		CheckMUC ();
 		InitExtraActions ();
@@ -185,6 +195,7 @@ namespace Azoth
 		SetChatPartState (CPSGone);
 
 		qDeleteAll (HistoryMessages_);
+		delete Ui_.MsgEdit_->document ();
 	}
 
 	void ChatTab::PrepareTheme ()
@@ -243,7 +254,7 @@ namespace Azoth
 
 	QToolBar* ChatTab::GetToolBar () const
 	{
-		return TabToolbar_;
+		return TabToolbar_.get ();
 	}
 
 	void ChatTab::Remove ()
@@ -539,10 +550,19 @@ namespace Azoth
 		if (!entry)
 			return;
 
+		ScrollbackPos_ = 0;
 		entry->PurgeMessages (QDateTime ());
 		qDeleteAll (HistoryMessages_);
 		HistoryMessages_.clear ();
 		PrepareTheme ();
+	}
+
+	void ChatTab::handleHistoryBack ()
+	{
+		ScrollbackPos_ += 50;
+		qDeleteAll (HistoryMessages_);
+		HistoryMessages_.clear ();
+		RequestLogs (ScrollbackPos_);
 	}
 
 	void ChatTab::handleRichTextToggled ()
@@ -998,18 +1018,32 @@ namespace Azoth
 
 	void ChatTab::BuildBasicActions ()
 	{
-		QAction *clearAction = new QAction (tr ("Clear chat window"), this);
+		auto sm = Core::Instance ().GetShortcutManager ();
+		const auto& infos = sm->GetActionInfo ();
+
+		const auto& clearInfo = infos ["org.LeechCraft.Azoth.ClearChat"];
+		QAction *clearAction = new QAction (clearInfo.UserVisibleText_, this);
 		clearAction->setProperty ("ActionIcon", "edit-clear-history");
-		clearAction->setShortcut (QString ("Ctrl+L"));
+		clearAction->setShortcuts (clearInfo.Seqs_);
 		connect (clearAction,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleClearChat ()));
 		TabToolbar_->addAction (clearAction);
+		sm->RegisterAction ("org.LeechCraft.Azoth.ClearChat", clearAction, true);
 
-		Core::Instance ().GetShortcutManager ()->
-				RegisterAction ("org.LeechCraft.Azoth.ClearChat",
-						clearAction, true);
+		const auto& backInfo = infos ["org.LeechCraft.Azoth.ScrollHistoryBack"];
+		QAction *historyBack = new QAction (backInfo.UserVisibleText_, this);
+		historyBack->setProperty ("ActionIcon", "go-previous");
+		historyBack->setShortcuts (backInfo.Seqs_);
+		connect (historyBack,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleHistoryBack ()));
+		TabToolbar_->addAction (historyBack);
+		sm->RegisterAction ("org.LeechCraft.Azoth.ScrollHistoryBack", historyBack, true);
+
+		TabToolbar_->addSeparator ();
 
 		ToggleRichText_ = new QAction (tr ("Enable rich text"), this);
 		ToggleRichText_->setProperty ("ActionIcon", "text-enriched");
@@ -1023,19 +1057,17 @@ namespace Azoth
 		TabToolbar_->addAction (ToggleRichText_);
 		TabToolbar_->addSeparator ();
 
+		const auto& quoteInfo = infos ["org.LeechCraft.Azoth.QuoteSelected"];
 		QAction *quoteSelection = new QAction (tr ("Quote selection"), this);
 		quoteSelection->setProperty ("ActionIcon", "mail-reply-sender");
-		quoteSelection->setShortcut (QString ("Ctrl+Q"));
+		quoteSelection->setShortcuts (quoteInfo.Seqs_);
 		connect (quoteSelection,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleQuoteSelection ()));
 		TabToolbar_->addAction (quoteSelection);
 		TabToolbar_->addSeparator ();
-
-		Core::Instance ().GetShortcutManager ()->
-				RegisterAction ("org.LeechCraft.Azoth.QuoteSelected",
-						quoteSelection, true);
+		sm->RegisterAction ("org.LeechCraft.Azoth.QuoteSelected", quoteSelection, true);
 
 		Ui_.View_->SetQuoteAction (quoteSelection);
 	}
@@ -1266,7 +1298,7 @@ namespace Azoth
 				this, "handleMinLinesHeightChanged");
 	}
 
-	void ChatTab::RequestLogs ()
+	void ChatTab::RequestLogs (int num)
 	{
 		ICLEntry *entry = GetEntry<ICLEntry> ();
 		if (!entry)
@@ -1276,15 +1308,6 @@ namespace Azoth
 					<< EntryID_;
 			return;
 		}
-
-		if (entry->GetAllMessages ().size () > 100 ||
-				entry->GetEntryType () != ICLEntry::ETChat)
-			return;
-
-		const int num = XmlSettingsManager::Instance ()
-				.property ("ShowLastNMessages").toInt ();
-		if (!num)
-			return;
 
 		QObject *entryObj = entry->GetObject ();
 
@@ -1369,12 +1392,44 @@ namespace Azoth
 					<< "unhandled append message :(";
 	}
 
+	namespace
+	{
+		void PerformRoleAction (const QPair<QByteArray, QByteArray>& role,
+				QObject *mucEntryObj, QString str)
+		{
+			if (role.first.isEmpty () && role.second.isEmpty ())
+				return;
+
+			str = str.trimmed ();
+			const int pos = str.lastIndexOf ('|');
+			const auto& nick = pos > 0 ? str.left (pos) : str;
+			const auto& reason = pos > 0 ? str.mid (pos + 1) : QString ();
+
+			auto mucEntry = qobject_cast<IMUCEntry*> (mucEntryObj);
+			auto mucPerms = qobject_cast<IMUCPerms*> (mucEntryObj);
+
+			const auto& parts = mucEntry->GetParticipants ();
+			auto partPos = std::find_if (parts.begin (), parts.end (),
+					[&nick] (QObject *entryObj)
+					{
+						auto entry = qobject_cast<ICLEntry*> (entryObj);
+						return entry && entry->GetEntryName () == nick;
+					});
+			if (partPos == parts.end ())
+				return;
+
+			mucPerms->SetPerm (*partPos, role.first, role.second, reason);
+		}
+	}
+
 	bool ChatTab::ProcessOutgoingMsg (ICLEntry *entry, QString& text)
 	{
 		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetObject ());
 		if (entry->GetEntryType () != ICLEntry::ETMUC ||
 				!mucEntry)
 			return false;
+
+		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetObject ());
 
 		if (text.startsWith ("/nick "))
 		{
@@ -1388,6 +1443,16 @@ namespace Azoth
 					text.mid (idx + 1)
 					: QString ();
 			mucEntry->Leave (reason);
+			return true;
+		}
+		else if (text.startsWith ("/kick ") && mucPerms)
+		{
+			PerformRoleAction (mucPerms->GetKickPerm (), entry->GetObject (), text.mid (6));
+			return true;
+		}
+		else if (text.startsWith ("/ban ") && mucPerms)
+		{
+			PerformRoleAction (mucPerms->GetBanPerm (), entry->GetObject (), text.mid (5));
 			return true;
 		}
 		else if (text == "/names")

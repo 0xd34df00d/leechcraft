@@ -2491,10 +2491,11 @@ namespace Azoth
 		QString altNick;
 		if (XmlSettingsManager::Instance ().property ("UseAltNick").toBool ())
 		{
-			altNick = XmlSettingsManager::Instance ()
+			QString append = XmlSettingsManager::Instance ()
 				.property ("AlternativeNickname").toString ();
-			if (altNick.isEmpty ())
-				altNick = usedNick + "_azoth";
+			if (append.isEmpty ())
+				append = "_azoth";
+			altNick = usedNick + append;
 		}
 
 		if ((altNick.isEmpty () || altNick == usedNick) &&
@@ -2893,6 +2894,10 @@ namespace Azoth
 					if (!found)
 						items.removeAll (item);
 				}
+
+				if (item.Action_ == RIEXItem::AAdd &&
+						entry)
+					items.removeAll (item);
 			}
 		}
 
@@ -2974,8 +2979,7 @@ namespace Azoth
 
 	void Core::handleRIEXItemsSuggested (QList<RIEXItem> items, QObject *from, QString message)
 	{
-		if (items.isEmpty () ||
-				!from)
+		if (items.isEmpty () || !from)
 			return;
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (from);
@@ -3000,6 +3004,8 @@ namespace Azoth
 		}
 
 		FilterRIEXItems (items, clEntries);
+		if (items.isEmpty ())
+			return;
 
 		AcceptRIEXDialog dia (items, from, message);
 		if (dia.exec () != QDialog::Accepted)

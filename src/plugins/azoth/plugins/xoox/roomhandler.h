@@ -45,12 +45,14 @@ namespace Xoox
 
 		GlooxAccount *Account_;
 		QXmppMucManager *MUCManager_;
+		const QString RoomJID_;
 		QXmppMucRoom *Room_;
 		RoomCLEntry *CLEntry_;
 		QHash<QString, RoomParticipantEntry_ptr> Nick2Entry_;
 		QString Subject_;
 		// contains new nicks
 		QSet<QString> PendingNickChanges_;
+		bool HadRequestedPassword_;
 
 		QXmppDiscoveryIq ServerDisco_;
 	public:
@@ -60,7 +62,7 @@ namespace Xoox
 		RoomCLEntry* GetCLEntry ();
 		void HandleVCard (const QXmppVCardIq&, const QString&);
 
-		void SetState (const GlooxAccountState&);
+		void SetPresence (QXmppPresence);
 
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
@@ -118,6 +120,7 @@ namespace Xoox
 				const QString&);
 		void HandleNickConflict ();
 		void HandlePasswordRequired ();
+		QString GetPassKey () const;
 
 		void RemoveEntry (RoomParticipantEntry*);
 

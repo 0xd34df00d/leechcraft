@@ -21,6 +21,7 @@
 #include <memory>
 #include <QStringList>
 #include <QDateTime>
+#include <QVariantMap>
 
 namespace LeechCraft
 {
@@ -43,11 +44,14 @@ namespace Otlozhu
 		QStringList Deps_;
 	public:
 		TodoItem ();
-		TodoItem (const QString&);
+		explicit TodoItem (const QString&);
 		TodoItem (const TodoItem&) = delete;
 		TodoItem& operator= (const TodoItem&) = delete;
 
 		TodoItem_ptr Clone () const;
+		void CopyFrom (const TodoItem_ptr);
+		QVariantMap DiffWith (const TodoItem_ptr) const;
+		void ApplyDiff (const QVariantMap&);
 
 		static TodoItem_ptr Deserialize (const QByteArray&);
 		QByteArray Serialize () const;

@@ -32,7 +32,7 @@ namespace LeechCraft
 				TabClass_.Description_ = tr ("The Popishu text editor");
 				TabClass_.Icon_ = QIcon (":/resources/images/popishu.svg");
 				TabClass_.Priority_ = 70;
-				TabClass_.Features_ = TFOpenableByRequest;
+				TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
 			}
 
 			Core& Core::Instance ()
@@ -40,7 +40,7 @@ namespace LeechCraft
 				static Core c;
 				return c;
 			}
-			
+
 			TabClassInfo Core::GetTabClass () const
 			{
 				return TabClass_;

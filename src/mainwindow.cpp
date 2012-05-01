@@ -38,7 +38,6 @@
 #include <util/defaulthookproxy.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
-#include "view.h"
 #include "core.h"
 #include "commonjobadder.h"
 #include "xmlsettingsmanager.h"
@@ -680,6 +679,13 @@ void MainWindow::handleToolBarManipulationChanged ()
 		MenuView_->removeAction (Ui_.ActionShowToolBar_);
 }
 
+void MainWindow::handleShowTrayIconChanged()
+{
+	const bool isVisible = XmlSettingsManager::Instance ()->
+			property ("ShowTrayIcon").toBool ();
+	TrayIcon_->setVisible (isVisible);
+}
+
 void LeechCraft::MainWindow::handleNewTabMenuRequested ()
 {
 	QMenu *ntmenu = Core::Instance ()
@@ -716,7 +722,14 @@ void LeechCraft::MainWindow::updateClock ()
 void LeechCraft::MainWindow::showHideMain ()
 {
 	IsShown_ = 1 - IsShown_;
-	IsShown_ ? show () : hide ();
+	if (IsShown_)
+	{
+		show ();
+		activateWindow ();
+		raise ();
+	}
+	else
+		hide ();
 }
 
 void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
@@ -814,13 +827,15 @@ void LeechCraft::MainWindow::FillTray ()
 	iconMenu->addAction (Ui_.ActionQuit_);
 
 	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.svg"), this);
-	TrayIcon_->show ();
+	handleShowTrayIconChanged ();
 	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
 	TrayIcon_->setContextMenu (iconMenu);
 	connect (TrayIcon_,
 			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
 			this,
 			SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
+	XmlSettingsManager::Instance ()->RegisterObject ("ShowTrayIcon",
+			this, "handleShowTrayIconChanged");
 }
 
 void LeechCraft::MainWindow::FillToolMenu ()

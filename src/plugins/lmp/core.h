@@ -16,61 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LMP_CORE_H
-#define PLUGINS_LMP_CORE_H
-#include <memory>
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/structures.h>
-#include "phonon.h"
-#include "player.h"
+#pragma once
 
-namespace Phonon
-{
-	class VideoWidget;
-	class SeekSlider;
-	class VolumeSlider;
-};
+#include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class DefaultWidget;
+	class LocalCollection;
+	class LocalFileResolver;
+	class PlaylistManager;
 
 	class Core : public QObject
 	{
 		Q_OBJECT
 
-		std::auto_ptr<Player> Player_;
 		ICoreProxy_ptr Proxy_;
-		QAction *ShowAction_;
-		mutable DefaultWidget *DefaultWidget_;
+
+		LocalFileResolver *Resolver_;
+		LocalCollection *Collection_;
+		PlaylistManager *PLManager_;
 
 		Core ();
 	public:
 		static Core& Instance ();
-		void Release ();
-		void SetCoreProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetCoreProxy () const;
 
-		PlayerWidget* CreateWidget () const;
-		IVideoWidget* GetDefaultWidget () const;
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy ();
 
-		void Reinitialize ();
-		void Play ();
-		void Pause ();
-		void Stop ();
-		void Clear ();
-		void Enqueue (const QUrl&);
-		void Enqueue (QIODevice*);
-		QAction* GetShowAction () const;
-		void Handle (const Entity&);
-	signals:
-		void bringToFront ();
-		void gotEntity (const LeechCraft::Entity&);
+		void PostInit ();
+
+		LocalFileResolver* GetLocalFileResolver () const;
+		LocalCollection* GetLocalCollection () const;
+		PlaylistManager* GetPlaylistManager () const;
+	public slots:
+		void rescan ();
+	private slots:
+		void handleCollectionDirChanged ();
 	};
 }
 }
-
-#endif

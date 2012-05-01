@@ -50,7 +50,7 @@ namespace Summary
 		ActionSearch_->setProperty ("ActionIcon", "edit-find");
 		ActionSearch_->setShortcut (tr ("Ctrl+F"));
 		Toolbar_->setWindowTitle ("Summary");
-		connect (Toolbar_,
+		connect (Toolbar_.get (),
 				SIGNAL (actionTriggered (QAction*)),
 				this,
 				SLOT (handleActionTriggered (QAction*)));
@@ -171,7 +171,7 @@ namespace Summary
 
 	QToolBar* SummaryWidget::GetToolBar () const
 	{
-		return Toolbar_;
+		return Toolbar_.get ();
 	}
 
 	QList<QAction*> SummaryWidget::GetTabBarContextMenuActions () const
@@ -316,7 +316,7 @@ namespace Summary
 		Q_FOREACH (QAction *action, actions)
 		{
 			QAction *pa = new QAction (action->icon (),
-					action->text (), Toolbar_);
+					action->text (), Toolbar_.get ());
 			if (action->isSeparator ())
 				pa->setSeparator (true);
 			else if (qobject_cast<QWidgetAction*> (action))

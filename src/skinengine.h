@@ -23,6 +23,7 @@
 #include <QString>
 #include <QDir>
 #include <QHash>
+#include <QIcon>
 
 class QIcon;
 class QAction;
@@ -43,7 +44,6 @@ namespace LeechCraft
 		SkinEngine ();
 	public:
 		static SkinEngine& Instance ();
-		virtual ~SkinEngine ();
 
 		QIcon GetIcon (const QString&, const QString&) const;
 		void UpdateIconSet (const QList<QAction*>&);

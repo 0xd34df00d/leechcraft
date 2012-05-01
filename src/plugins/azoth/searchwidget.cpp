@@ -118,6 +118,12 @@ namespace Azoth
 	void SearchWidget::search ()
 	{
 		IHaveSearch *search = GetCurrentSearch ();
+		if (!search)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no current search object";
+			return;
+		}
 
 		QObject *sessObj = search->CreateSearchSession ();
 		ISearchSession *sess = qobject_cast<ISearchSession*> (sessObj);

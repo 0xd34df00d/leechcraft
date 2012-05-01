@@ -39,18 +39,16 @@ namespace LeechCraft
 {
 namespace LackMan
 {
-	const int PackagesDelegate::CPadding = 7;
+	const int PackagesDelegate::CPadding = 5;
 	const int PackagesDelegate::CIconSize = 32;
 	const int PackagesDelegate::CActionsSize = 32;
 	const int PackagesDelegate::CTitleSizeDelta = 2;
-	const int PackagesDelegate::CNumLines = 3;
 
 	PackagesDelegate::PackagesDelegate (QTreeView *parent)
 	: QStyledItemDelegate (parent)
 	, Viewport_ (parent->viewport ())
 	, Model_ (parent->model ())
 	{
-		qDebug () << Q_FUNC_INFO << parent->model ();
 		connect (parent->verticalScrollBar (),
 				SIGNAL (valueChanged (int)),
 				this,
@@ -80,27 +78,25 @@ namespace LackMan
 		QStyle *style = opt.widget ?
 				opt.widget->style () :
 				QApplication::style ();
-		QFontMetrics fontMetrics = opt.widget ?
+		const auto& fontMetrics = opt.widget ?
 				opt.widget->fontMetrics () :
 				QApplication::fontMetrics ();
 
 		const QRect& r = option.rect;
-		bool ltr = (painter->layoutDirection () == Qt::LeftToRight);
-		bool selected = option.state & QStyle::State_Selected;
+		const bool ltr = (painter->layoutDirection () == Qt::LeftToRight);
+		const bool selected = option.state & QStyle::State_Selected;
 
-		QString title = index.data (Qt::DisplayRole).toString ();
-		QString shortDescr = index.data (PackagesModel::PMRShortDescription).toString ();
-		QString version = index.data (PackagesModel::PMRVersion).toString ();
-		QStringList tags = index.data (PackagesModel::PMRTags).toStringList ();
-		QColor fgColor = selected ?
+		const auto& title = index.data (Qt::DisplayRole).toString ();
+		const auto& shortDescr = index.data (PackagesModel::PMRShortDescription).toString ();
+		const auto& version = index.data (PackagesModel::PMRVersion).toString ();
+		const auto& fgColor = selected ?
 				option.palette.color (QPalette::HighlightedText) :
 				option.palette.color (QPalette::Text);
 
-		QIcon icon = index.data (Qt::DecorationRole).value<QIcon> ();
+		const auto& icon = index.data (Qt::DecorationRole).value<QIcon> ();
 
 		QStyleOptionViewItem titleOption (option);
 		titleOption.font.setBold (true);
-		titleOption.font.setPointSize (titleOption.font.pointSize () + CTitleSizeDelta);
 
 		QPixmap pixmap (option.rect.size ());
 		pixmap.fill (Qt::transparent);
@@ -133,23 +129,14 @@ namespace LackMan
 				Qt::AlignBottom | Qt::AlignLeft, version);
 		titleWidth += QFontMetrics (titleOption.font).width (version) + CPadding;
 
-		const QString& tagsString =
-				QFontMetrics (tagsFont).elidedText (tags.join ("; "),
-						Qt::ElideMiddle, textWidth - titleWidth);
-
-		p.setFont (tagsFont);
-		p.drawText (leftPos + titleWidth, shiftFromTop,
-				textWidth - titleWidth, textHeight,
-				Qt::AlignBottom | Qt::AlignRight, tagsString);
-
 		shiftFromTop += TitleHeight (option);
 
 		p.setFont (option.font);
-		shortDescr = fontMetrics.elidedText (shortDescr,
-				option.textElideMode, textWidth);
 		p.drawText (leftPos, shiftFromTop,
 				textWidth, textHeight,
-				Qt::AlignTop | Qt::AlignLeft, shortDescr);
+				Qt::AlignTop | Qt::AlignLeft,
+				fontMetrics.elidedText (shortDescr,
+						option.textElideMode, textWidth));
 
 		shiftFromTop += textHeight;
 
@@ -169,7 +156,7 @@ namespace LackMan
 
 		QWidget *layoutWidget = GetLayout (index);
 		QPoint actionPos (r.width () - layoutWidget->width () - CPadding,
-				r.top () + CPadding + TextHeight (option));
+				r.top () + CPadding);
 		if (layoutWidget->pos () != actionPos)
 			layoutWidget->move (actionPos);
 		if (!layoutWidget->isVisible ())
@@ -184,8 +171,7 @@ namespace LackMan
 		// One padding from the top, one from the bottom, and
 		// one between webview and install/remove actions (if
 		// selected).
-		result.rheight () = TitleHeight (option) +
-				std::max (TextHeight (option), CActionsSize) +
+		result.rheight () = std::max (TitleHeight (option) + TextHeight (option), CActionsSize) +
 				CPadding * 2;
 
 		return result;
@@ -194,10 +180,7 @@ namespace LackMan
 	int PackagesDelegate::TitleHeight (const QStyleOptionViewItem& option) const
 	{
 		QFont boldFont = option.font;
-
 		boldFont.setBold (true);
-		boldFont.setPointSize (boldFont.pointSize () + CTitleSizeDelta);
-
 		return QFontInfo (boldFont).pixelSize () + CPadding;
 	}
 
@@ -314,14 +297,6 @@ namespace LackMan
 		}
 
 		return Row2Layout_ [index.row ()];
-	}
-
-	void PackagesDelegate::handleRowChanged (const QModelIndex& current, const QModelIndex& previous)
-	{
-		CurrentSelection_ = current;
-
-		emit sizeHintChanged (previous);
-		emit sizeHintChanged (current);
 	}
 
 	void PackagesDelegate::invalidateWidgetPositions ()

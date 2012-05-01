@@ -589,10 +589,6 @@ namespace Xoox
 			reqVar = variant;
 		}
 
-		if (!reqJid.isEmpty ())
-			Account_->GetClientConnection ()->
-					GetCapsManager ()->FetchCaps (reqJid, ver);
-
 		auto capsManager = Account_->GetClientConnection ()->GetCapsManager ();
 		const auto& storedIds = capsManager->GetIdentities (ver);
 
@@ -631,6 +627,23 @@ namespace Xoox
 	void EntryBase::SetDiscoIdentities (const QString& variant, const QList<QXmppDiscoveryIq::Identity>& ids)
 	{
 		Variant2Identities_ [variant] = ids;
+
+		const QString& name = ids.value (0).name ();
+		if (name.contains ("Kopete"))
+		{
+			Variant2ClientInfo_ [variant] ["client_type"] = "kopete";
+			Variant2ClientInfo_ [variant] ["client_name"] = "Kopete";
+			Variant2ClientInfo_ [variant] ["raw_client_name"] = "kopete";
+			emit statusChanged (GetStatus (variant), variant);
+		}
+		else if (name.contains ("emacs", Qt::CaseInsensitive) ||
+				name.contains ("jabber.el", Qt::CaseInsensitive))
+		{
+			Variant2ClientInfo_ [variant] ["client_type"] = "jabber.el";
+			Variant2ClientInfo_ [variant] ["client_name"] = "Emacs Jabber.El";
+			Variant2ClientInfo_ [variant] ["raw_client_name"] = "jabber.el";
+			emit statusChanged (GetStatus (variant), variant);
+		}
 	}
 
 	GeolocationInfo_t EntryBase::GetGeolocationInfo (const QString& variant) const

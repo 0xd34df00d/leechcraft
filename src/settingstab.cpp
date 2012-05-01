@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "settingstab.h"
+#include <algorithm>
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QToolButton>
@@ -30,6 +31,8 @@
 
 namespace LeechCraft
 {
+	const int ButtonWidth = 96;
+
 	SettingsTab::SettingsTab (QWidget *parent)
 	: QWidget (parent)
 	, Toolbar_ (new QToolBar (tr ("Settings bar")))
@@ -96,9 +99,6 @@ namespace LeechCraft
 			QStringList origSplit = origName.split (' ', QString::SkipEmptyParts);
 			QStringList groupSplit = group.split (' ', QString::SkipEmptyParts);
 
-			if (origSplit.value (0) != groupSplit.value (0))
-				return origName;
-
 			while (origSplit.value (0) == groupSplit.value (0) &&
 					origSplit.size () > 1)
 			{
@@ -107,7 +107,13 @@ namespace LeechCraft
 					groupSplit.removeFirst ();
 			}
 
-			return origSplit.join (" ");
+			const auto& fm = QApplication::fontMetrics ();
+			const int pad = 3;
+			for (auto i = origSplit.begin (), end = origSplit.end (); i != end; ++i)
+				if (fm.width (*i) > ButtonWidth - 2 * pad)
+					*i = fm.elidedText (*i, Qt::ElideRight, ButtonWidth - 2 * pad);
+
+			return origSplit.join ("\n");
 		}
 
 		QMap<QObject*, QList<QPair<QString, QString>>> BuildGroups (const QObjectList& settables)
@@ -163,6 +169,7 @@ namespace LeechCraft
 		Q_FOREACH (const QString& key, keys)
 			Ui_.ListContents_->layout ()->addWidget (group2box [key]);
 
+		QMap<QString, QList<QToolButton*>> group2buttons;
 		Q_FOREACH (QObject *obj, settables)
 		{
 			IInfo *ii = qobject_cast<IInfo*> (obj);
@@ -174,24 +181,35 @@ namespace LeechCraft
 				QToolButton *butt = new QToolButton;
 				butt->setToolButtonStyle (Qt::ToolButtonTextUnderIcon);
 
-				butt->setText (NameForGroup (ii->GetName (),
-						pair.second));
+				const QString& name = NameForGroup (ii->GetName (), pair.second);
+				butt->setText (name);
 
 				butt->setToolTip (ii->GetInfo ());
-				butt->setIconSize (QSize (64, 64));
+				butt->setIconSize (QSize (72, 72));
 				butt->setIcon (icon);
-				butt->setProperty ("SettableObject",
-						QVariant::fromValue<QObject*> (obj));
+				butt->setProperty ("SettableObject", QVariant::fromValue<QObject*> (obj));
+				butt->setFixedWidth (ButtonWidth);
+				butt->setAutoRaise (true);
 
 				connect (butt,
 						SIGNAL (released ()),
 						this,
 						SLOT (handleSettingsCalled ()));
 				group2box [pair.first]->layout ()->addWidget (butt);
+				group2buttons [pair.first] << butt;
 			}
 		}
 
 		qobject_cast<QBoxLayout*> (Ui_.ListContents_->layout ())->addStretch ();
+
+		Q_FOREACH (const QString& group, group2buttons.keys ())
+		{
+			const auto& buttons = group2buttons [group];
+			const auto height = std::accumulate (buttons.begin (), buttons.end (), 0,
+					[] (int height, QToolButton *button) { return std::max (height, button->sizeHint ().height ()); });
+			std::for_each (buttons.begin (), buttons.end (),
+					[height] (QToolButton *button) { button->setFixedHeight (height); });
+		}
 	}
 
 	TabClassInfo SettingsTab::GetTabClassInfo () const

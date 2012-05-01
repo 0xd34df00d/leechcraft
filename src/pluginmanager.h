@@ -24,6 +24,7 @@
 #include <QMultiMap>
 #include <QStringList>
 #include <QPluginLoader>
+#include <QDir>
 #include <QIcon>
 #include "interfaces/iinfo.h"
 #include "interfaces/core/ipluginsmanager.h"
@@ -58,6 +59,8 @@ namespace LeechCraft
 		QIcon DefaultPluginIcon_;
 		QStringList PluginLoadErrors_;
 		mutable QMap<QByteArray, QObject*> PluginID2PluginCache_;
+
+		QDir IconsDir_;
 
 		std::shared_ptr<PluginTreeBuilder> PluginTreeBuilder_;
 	public:

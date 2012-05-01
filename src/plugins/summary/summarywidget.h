@@ -44,7 +44,7 @@ namespace Summary
 		Ui::SummaryWidget Ui_;
 		QTimer *FilterTimer_;
 		QList<QComboBox*> AdditionalBoxes_;
-		QToolBar *Toolbar_;
+		std::unique_ptr<QToolBar> Toolbar_;
 		QAction *ActionSearch_;
 		SearchWidget *SearchWidget_;
 		static QObject *S_ParentMultiTabs_;

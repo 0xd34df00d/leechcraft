@@ -126,14 +126,14 @@ namespace AdiumStyles
 
 		const QString& prefix = pack + "/Contents/Resources/";
 
-		Util::QIODevice_ptr header = StylesLoader_->
-				Load (QStringList (prefix + "Header.html"));
-		Util::QIODevice_ptr footer = StylesLoader_->
-				Load (QStringList (prefix + "Footer.html"));
-		Util::QIODevice_ptr css = StylesLoader_->
-				Load (QStringList (prefix + "main.css"));
-		Util::QIODevice_ptr tmpl = StylesLoader_->
-				Load (QStringList (prefix + "Template.html"));
+		auto insensitive = [&prefix] (const QString& name)
+		{
+			return QStringList (prefix + name) << (prefix + name.toLower ());
+		};
+		Util::QIODevice_ptr header = StylesLoader_->Load (insensitive ("Header.html"));
+		Util::QIODevice_ptr footer = StylesLoader_->Load (insensitive ("Footer.html"));
+		Util::QIODevice_ptr css = StylesLoader_->Load (QStringList (prefix + "main.css"));
+		Util::QIODevice_ptr tmpl = StylesLoader_->Load (insensitive ("Template.html"));
 
 		if ((header && !header->open (QIODevice::ReadOnly)) ||
 				(footer && !footer->open (QIODevice::ReadOnly)) ||
@@ -235,15 +235,15 @@ namespace AdiumStyles
 
 		QObject *kindaSender = in ? msg->OtherPart () : reinterpret_cast<QObject*> (42);
 
-		const bool isSlashMe = msg->GetBody ()
-				.trimmed ().startsWith ("/me ");
+		const bool isSlashMe = msg->GetBody ().trimmed ().startsWith ("/me ");
 		const bool alwaysNotNext = isSlashMe ||
 				!(msg->GetMessageType () == IMessage::MTChatMessage || msg->GetMessageType () == IMessage::MTMUCMessage);
 		const bool isNextMsg = !alwaysNotNext &&
 				Frame2LastContact_.contains (frame) &&
 				kindaSender == Frame2LastContact_ [frame];
 
-		const QString& prefix = pack + "/Contents/Resources/" +
+		const QString& root = pack + "/Contents/Resources/";
+		const QString& prefix = root +
 				(in || isSlashMe ? "Incoming" : "Outgoing") +
 				'/';
 
@@ -265,11 +265,20 @@ namespace AdiumStyles
 		else if (alwaysNotNext)
 			Frame2LastContact_.remove (frame);
 
-		Util::QIODevice_ptr content = StylesLoader_->
-				Load (QStringList (prefix + filename));
-		if (!content && filename == "Action.html")
-			content = StylesLoader_->
-					Load (QStringList (prefix + "../Status.html"));
+		QStringList templCands;
+		templCands << (prefix + filename);
+		if (filename == "Action.html")
+		{
+			templCands << (root + "Status.html");
+			templCands << (root + "status.html");
+		}
+		if (isNextMsg)
+			templCands << (root + "NextContent.html");
+		templCands << (root + "Content.html");
+
+		Util::QIODevice_ptr content;
+		while (!content && !templCands.isEmpty ())
+			content = StylesLoader_->Load (templCands.takeFirst ());
 		if (!content)
 		{
 			qWarning () << Q_FUNC_INFO

@@ -55,8 +55,8 @@
 		<label lang="en" value="Behavior" />
 		<groupbox>
 			<label lang="en" value="Behavior" />
-			<item type="checkbox" property="WatchClipboard" state="off">
-				<label lang="en" value="Watch clipboard" />
+			<item type="checkbox" property="ShowTrayIcon" default="true">
+				<label value="Show icon in tray" />
 			</item>
 			<item type="checkbox" property="ConfirmQuit" default="true">
 				<label lang="en" value="Ask quit confirmation" />
@@ -84,9 +84,6 @@
 			</item>
 			<item type="checkbox" property="DontAskWhenSingle" default="true">
 				<label lang="en" value="Automatically accept task when there is only one handler" />
-			</item>
-			<item type="path" property="WatchDirectory" onCancel="clear">
-				<label lang="en" value="Watch directory:" />
 			</item>
 		</groupbox>
 		<item type="groupbox" property="ShowPluginMenuInTabs" state="on" checkable="true">

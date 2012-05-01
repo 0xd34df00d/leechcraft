@@ -5,8 +5,73 @@ Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
 !!! HEAD
-! Devel digest #21 ( http://leechcraft.org/devel-digest-21 ):
+! Devel digest #22 ( http://leechcraft.org/devel-digest-22 ):
+* Core: store plugin icons on-disk, not in QSettings.
+* Core: support for searching icons in ~/.leechcraft/icons.
+* Core: optional hiding of the tray icon.
+* Core: much nicer settings tab.
+* Core: saner tab recovery policy.
+* Util: better SysInfo data.
+* XSD: fixed segfault when adding LackMan packages.
+* XSD: fixed first start segfault on Windows.
+* Azoth: history scrollback.
+* Azoth: case-insensitive highlight.
+* Azoth: filter by entry ID in console.
+* Azoth: console now shows timings.
+* Azoth: changed alternative nick semantics.
+* Azoth: fixed occasional segfault when hiding offline users.
+* Azoth AdiumStyles: minor theme compatibility issues fixed.
+* Azoth ChatHistory: support per-account and global searching.
+* Azoth Rosenthal: fixed context menu corrections.
+* Azoth Xoox: advertise XEP-0232 info about self.
+* Azoth Xoox: store passwords for MUCs.
+* Azoth Xoox: kludges for Kopete and Jabber.El detection.
+* Azoth Xoox: self-offline handling fixes.
+* Azoth Xoox: a bunch of other small fixes.
+* Azoth Xoox: caps generation fixes.
+* Azoth Xoox: fixed a couple of logical leaks.
+* BitTorrent: compatibility with libtorrent 0.16.
+* DBusManager: disable notifications by default.
+* Dolozhee: bug link now works.
+* Dolozhee: proper completion method for bug page.
+* Dolozhee: passwords are saved now.
+* LackMan: revamped UI.
+* LackMan: lots of Storage fixes, particularly on package removal.
+* LackMan: async Storage, speeds things up by two orders of magnitude.
+* LackMan: don't request all images on package retrieval.
+* LackMan: keep package if it's removed from repo but is installed.
+* LackMan: fixed Windows codepath (hell yeah, we work on Win now!).
+* LackMan: notifications about number of new/updated packages.
+* Otlozhu: added iCal import/export.
+* TabSessManager: remove duplicate unclose actions.
+* TabSessManager: elided text for actions.
 
+! Devel digest #21 ( http://leechcraft.org/devel-digest-21 ):
+* Core: filter proxy model for plugin manager widget.
+* Advanced Notifications: support for Organizer event type.
+* Advanced Notifications: possibly fixed fonts generation (once more).
+* Aggregator: added Mark All As Read action.
+* Aggregator: proper indexes are expanded on feed addition, fixes #211.
+* Auscrie: support for making overlay and whole desktop screenshots.
+* Auscrie: fixed dump.bitcheese.net uploader.
+* Auscrie: support hiding the dialog.
+* Azoth: plugins now support split build.
+* Azoth: hardlimit for 4 variant icons, fixes #440.
+* Azoth: client icons are properly sorted by priority.
+* Azoth Acetamide: commands 323 and 338 are now supported.
+* Azoth ChatHistory: more clear search match highlights.
+* Azoth Xoox: support for XEP-0232 parsing/generation.
+* Azoth Xoox: handling/displaying XEP-0232 info in Service Discovery.
+* Azoth Xoox: text from muc#roominfo_description is used in SD now.
+* Azoth Xoox: even more efficient vCard requests.
+* Azoth Xoox: remember entered JID/password on in-band account reg.
+* Azoth Xoox: fixed several segfaults.
+* Azoth Xoox: configurable minimum height of message edit field.
+* BitTorrent: torrent icon for items in Summary.
+* Dolozhee: new plugin, bug/featurerequest reporter.
+* KBCraft: new keyboard layout manager plugin.
+* Otlozhu: new plugin, a GTD-style organizer.
+* XProxy: new plugin for advanced proxy management.
 
 ! Devel digest #20 ( http://leechcraft.org/devel-digest-20 ):
 * Azoth: support tab session management.

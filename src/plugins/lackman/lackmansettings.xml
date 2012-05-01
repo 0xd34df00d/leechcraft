@@ -22,8 +22,17 @@
 				<option name="48">
 					<label value="2 days" />
 				</option>
+				<option name="96">
+					<label value="4 days" />
+				</option>
 				<option name="168">
 					<label value="1 week" />
+				</option>
+				<option name="336">
+					<label value="2 weeks" />
+				</option>
+				<option name="0">
+					<label value="Never" />
 				</option>
 			</item>
 		</tab>

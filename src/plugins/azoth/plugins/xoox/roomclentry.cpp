@@ -322,6 +322,18 @@ namespace Xoox
 		return result;
 	}
 
+	QPair<QByteArray, QByteArray> RoomCLEntry::GetKickPerm () const
+	{
+		return qMakePair<QByteArray, QByteArray> ("permclass_role",
+				Role2Str_ [QXmppMucItem::Role::NoRole]);
+	}
+
+	QPair<QByteArray, QByteArray> RoomCLEntry::GetBanPerm () const
+	{
+		return qMakePair<QByteArray, QByteArray> ("permclass_aff",
+				Aff2Str_ [QXmppMucItem::Affiliation::OutcastAffiliation]);
+	}
+
 	QByteArray RoomCLEntry::GetAffName (QObject *participant) const
 	{
 		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);

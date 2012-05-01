@@ -42,7 +42,7 @@ namespace Aggregator
 
 		Selector_ = new Util::CategorySelector (this);
 		Selector_->setWindowFlags (Qt::Widget);
-		Selector_->SetPossibleSelections (QStringList ());
+		Selector_->setPossibleSelections (QStringList ());
 		Ui_.VLayout_->addWidget (Selector_);
 
 		connect (Ui_.ChannelsTree_->selectionModel (),
@@ -51,7 +51,7 @@ namespace Aggregator
 				this,
 				SLOT (handleChannelsSelectionChanged (const QItemSelection&,
 						const QItemSelection&)));
-		
+
 		for (int i = 0; i < Ui_.Genres_->topLevelItemCount (); ++i)
 		{
 			QTreeWidgetItem *item = Ui_.Genres_->topLevelItem (i);
@@ -87,7 +87,7 @@ namespace Aggregator
 	{
 		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (name.size ());
 	}
-	
+
 	void Export2FB2Dialog::on_Name__textEdited ()
 	{
 		HasBeenTextModified_ = true;
@@ -110,9 +110,9 @@ namespace Aggregator
 
 		CurrentCategories_.removeDuplicates ();
 
-		Selector_->SetPossibleSelections (CurrentCategories_);
+		Selector_->setPossibleSelections (CurrentCategories_);
 		Selector_->selectAll ();
-		
+
 		if (!HasBeenTextModified_ &&
 				Ui_.ChannelsTree_->selectionModel ()->selectedRows ().size () <= 1)
 		{
@@ -121,7 +121,7 @@ namespace Aggregator
 				Ui_.Name_->setText (index.sibling (index.row (), 0).data ().toString ());
 		}
 	}
-	
+
 	namespace
 	{
 		QString FixContents (QString descr)
@@ -129,13 +129,13 @@ namespace Aggregator
 			descr.replace (QRegExp ("</p>\\s*<p>"), "<br/>");
 			descr.remove ("<p>");
 			descr.remove ("</p>");
-			
+
 			// Remove images, links and frames
 			QRegExp imgRx ("<img *>", Qt::CaseSensitive, QRegExp::Wildcard);
 			imgRx.setMinimal (true);
 			descr.remove (imgRx);
 			descr.remove ("</img>");
-			
+
 			// Remove tables
 			if (descr.contains ("<table", Qt::CaseInsensitive))
 			{
@@ -143,7 +143,7 @@ namespace Aggregator
 				tableRx.setMinimal (true);
 				descr.remove (tableRx);
 			}
-			
+
 			// Objects
 			if (descr.contains ("<object", Qt::CaseInsensitive))
 			{
@@ -151,12 +151,12 @@ namespace Aggregator
 				objRx.setMinimal (true);
 				descr.remove (objRx);
 			}
-			
+
 			QRegExp linkRx ("<a.*>");
 			linkRx.setMinimal (true);
 			descr.remove (linkRx);
 			descr.remove ("</a>");
-			
+
 			QRegExp iframeRx ("<iframe .*/iframe>");
 			iframeRx.setMinimal (true);
 			descr.remove (iframeRx);
@@ -166,12 +166,12 @@ namespace Aggregator
 			descr.replace ("&emdash;", QString::fromUtf8 ("—"));
 			descr.replace ("&mdash;", QString::fromUtf8 ("—"));
 			descr.replace ("&ndash;", "-");
-			
+
 			// Remove the rest
 			descr.replace ("&amp;", "&&");
 			descr.remove (QRegExp ("&\\w*;"));
 			descr.replace ("&&", "&amp;");
-			
+
 			// Fix some common errors
 			descr.replace ("<br>", "<br/>");
 			descr.replace (QRegExp ("<br\\s+/>"), "<br/>");
@@ -179,7 +179,7 @@ namespace Aggregator
 			// Replace multilines
 			while (descr.contains ("<br/><br/>"))
 				descr.replace ("<br/><br/>", "<br/>");
-			
+
 			// Replace HTML tags with their fb2 analogues
 			descr.replace ("<em>", "<emphasis>", Qt::CaseInsensitive);
 			descr.replace ("</em>", "</emphasis>", Qt::CaseInsensitive);
@@ -189,7 +189,7 @@ namespace Aggregator
 			descr.replace ("</b>", "</strong>", Qt::CaseInsensitive);
 			descr.replace ("<ss>", "<strikethrough>", Qt::CaseInsensitive);
 			descr.replace ("</ss>", "</strikethrough>", Qt::CaseInsensitive);
-			
+
 			if (descr.endsWith ("<br/>"))
 				descr.chop (5);
 
@@ -207,16 +207,16 @@ namespace Aggregator
 				}
 				descr.remove (pos, unclosedRx.matchedLength ());
 			}
-			
+
 			// Normalize empty lines - needs to be done after removing
 			// unclosed, otherwise last <p> would get dropped.
 			descr.replace (QRegExp ("<br/>\\s*</p>"), "</p>");
 			descr.replace ("<br/>", "</p><p>");
-			
+
 			descr.remove ("\r");
 			descr.remove ("\n");
 			descr = descr.simplified ();
-			
+
 			return descr;
 		}
 	}
@@ -378,7 +378,7 @@ namespace Aggregator
 
 		if (!authors.size ())
 			authors << "LeechCraft";
-		
+
 		QStringList genres;
 		for (int i = 0; i < Ui_.Genres_->topLevelItemCount (); ++i)
 		{

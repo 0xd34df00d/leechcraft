@@ -5,27 +5,29 @@
 # QXMPP_LIBRARIES
 # QXMPP_FOUND
 
-# Copyright (c) 2010 Georg Rudoy <0xd34df00d@gmail.com>
+# Copyright (c) 2010-2012 Georg Rudoy <0xd34df00d@gmail.com>
 # Copyright (c) 2012 Minh Ngo <nlminhtl@gmail.com>
 # Win32 additions by Eugene Mamin <TheDZhon@gmail.com>
 
 FIND_PATH(QXMPP_INCLUDE_DIR
 	NAMES
-	qxmpp/QXmppClient.h
+	qxmpp-lc/QXmppClient.h
 	qxmpp-dev/QXmppClient.h
+	qxmpp/QXmppClient.h
 	PATH
 	ENV
 )
 FIND_LIBRARY(QXMPP_LIBRARIES
 	NAMES
-	qxmpp
+	qxmpp-lc
 	qxmpp-dev
+	qxmpp
 )
 
 IF(QXMPP_LOCAL)
 	FIND_PATH(QXMPP_INCLUDE_DIR QXmppClient.h "${QXMPP_LOCAL}/src")
 	IF(QXMPP_INCLUDE_DIR)
-		IF(WIN32)		
+		IF(WIN32)
 			SET(QXMPP_LIBRARY_RELEASE "${QXMPP_LOCAL}/lib/qxmpp.lib")
 			SET(QXMPP_LIBRARY_DEBUG "${QXMPP_LOCAL}/lib/qxmpp_d.lib")
 			win32_tune_libs_names (QXMPP)
@@ -38,8 +40,9 @@ ENDIF(QXMPP_LOCAL)
 IF(QXMPP_LIBRARIES AND QXMPP_INCLUDE_DIR)
 	IF(NOT QXMPP_LOCAL)
 		SET(QXMPP_INCLUDE_DIR
-			${QXMPP_INCLUDE_DIR}/qxmpp
+			${QXMPP_INCLUDE_DIR}/qxmpp-lc
 			${QXMPP_INCLUDE_DIR}/qxmpp-dev
+			${QXMPP_INCLUDE_DIR}/qxmpp
 		)
 	ENDIF(NOT QXMPP_LOCAL)
 	SET(QXMPP_FOUND 1)

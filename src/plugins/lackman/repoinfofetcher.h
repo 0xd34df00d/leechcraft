@@ -49,6 +49,15 @@ namespace LackMan
 		};
 		QHash<int, PendingComponent> PendingComponents_;
 
+		struct ScheduledPackageFetch
+		{
+			QUrl BaseUrl_;
+			QString PackageName_;
+			QList<QString> NewVersions_;
+			int ComponentId_;
+		};
+		QList<ScheduledPackageFetch> ScheduledPackages_;
+
 		struct PendingPackage
 		{
 			QUrl URL_;
@@ -64,11 +73,18 @@ namespace LackMan
 
 		void FetchFor (QUrl);
 		void FetchComponent (QUrl, int, const QString& component);
+		void ScheduleFetchPackageInfo (const QUrl& url,
+				const QString& name,
+				const QList<QString>& newVers,
+				int componentId);
+	private:
 		void FetchPackageInfo (const QUrl& url,
 				const QString& name,
 				const QList<QString>& newVers,
 				int componentId);
 	private slots:
+		void rotatePackageFetchQueue ();
+
 		void handleRIFinished (int);
 		void handleRIRemoved (int);
 		void handleRIError (int, IDownload::Error);

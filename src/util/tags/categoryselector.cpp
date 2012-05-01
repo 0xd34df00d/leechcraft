@@ -75,7 +75,7 @@ void CategorySelector::SetCaption (const QString& caption)
 	Caption_ = caption;
 }
 
-void CategorySelector::SetPossibleSelections (const QStringList& tags)
+void CategorySelector::setPossibleSelections (QStringList mytags)
 {
 	disconnect (this,
 			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
@@ -84,16 +84,14 @@ void CategorySelector::SetPossibleSelections (const QStringList& tags)
 
 	clear ();
 
-	QStringList mytags = tags;
-	qSort (mytags);
+	mytags.sort ();
 	QList<QTreeWidgetItem*> items;
-	for (QStringList::const_iterator i = mytags.begin (),
-			end = mytags.end (); i != end; ++i)
+	for (auto i = mytags.begin (), end = mytags.end (); i != end; ++i)
 	{
 		if (i->isEmpty ())
 			continue;
 
-		QTreeWidgetItem *item = new QTreeWidgetItem (QStringList (*i));
+		auto item = new QTreeWidgetItem (QStringList (*i));
 		item->setCheckState (0, Qt::Unchecked);
 		item->setData (0, RoleTag, *i);
 		items << item;
@@ -107,7 +105,7 @@ void CategorySelector::SetPossibleSelections (const QStringList& tags)
 			this,
 			SLOT (buttonToggled ()));
 
-	emit selectionChanged (tags);
+	emit selectionChanged (QStringList ());
 }
 
 QStringList CategorySelector::GetSelections ()

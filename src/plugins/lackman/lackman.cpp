@@ -47,7 +47,7 @@ namespace LackMan
 		Translator_.reset (Util::InstallTranslator ("lackman"));
 
 		TabClass_.TabClass_ = "Lackman";
-		TabClass_.VisibleName_ = tr ("LackMan");
+		TabClass_.VisibleName_ = "LackMan";
 		TabClass_.Description_ = GetInfo ();
 		TabClass_.Icon_ = GetIcon ();
 		TabClass_.Priority_ = 0;
@@ -62,6 +62,23 @@ namespace LackMan
 		tc->OverrideModel (TagsModel_);
 		Ui_.SearchLine_->AddSelector ();
 
+		auto selector = new Util::CategorySelector ();
+		selector->setWindowFlags (0);
+		selector->setMinimumHeight (0);
+		selector->SetCaption (tr ("Package tags"));
+		connect (selector,
+				SIGNAL (selectionChanged (QStringList)),
+				Ui_.SearchLine_,
+				SLOT (handleSelectionChanged (QStringList)));
+		connect (Ui_.SearchLine_,
+				SIGNAL (textChanged (QString)),
+				selector,
+				SLOT (lineTextChanged (QString)));
+		selector->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
+		Ui_.SearchLayout_->addWidget (selector);
+		Ui_.SearchSplitter_->setStretchFactor (0, 2);
+		Ui_.SearchSplitter_->setStretchFactor (1, 9);
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"lackmansettings.xml");
@@ -73,44 +90,43 @@ namespace LackMan
 				Core::Instance ().GetRepositoryModel ());
 
 		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
 				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)));
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 		connect (&Core::Instance (),
-				SIGNAL (tagsUpdated (const QStringList&)),
+				SIGNAL (tagsUpdated (QStringList)),
 				this,
-				SLOT (handleTagsUpdated (const QStringList&)));
+				SLOT (handleTagsUpdated (QStringList)));
 		connect (&Core::Instance (),
-				SIGNAL (tagsUpdated (const QStringList&)),
+				SIGNAL (tagsUpdated (QStringList)),
 				Ui_.SearchLine_,
-				SLOT (handleTagsUpdated (const QStringList&)));
+				SLOT (handleTagsUpdated (QStringList)));
+		connect (&Core::Instance (),
+				SIGNAL (tagsUpdated (QStringList)),
+				selector,
+				SLOT (setPossibleSelections (QStringList)));
 
 		TypeFilter_ = new TypeFilterProxyModel (this);
 		TypeFilter_->setDynamicSortFilter (true);
 		TypeFilter_->setSourceModel (Core::Instance ().GetPluginsModel ());
+		TypeFilter_->setSortCaseSensitivity (Qt::CaseInsensitive);
 		FilterString_ = new StringFilterModel (this);
 		FilterString_->setDynamicSortFilter (true);
 		FilterString_->setFilterCaseSensitivity (Qt::CaseInsensitive);
+		FilterString_->setSortCaseSensitivity (Qt::CaseInsensitive);
 		FilterString_->setSourceModel (TypeFilter_);
+		FilterString_->sort (0);
 
 		Ui_.PackagesTree_->setModel (FilterString_);
-		PackagesDelegate *pd = new PackagesDelegate (Ui_.PackagesTree_);
-		Ui_.PackagesTree_->setItemDelegate (pd);
+		Ui_.PackagesTree_->setItemDelegate (new PackagesDelegate (Ui_.PackagesTree_));
 
 		Ui_.PendingTree_->setModel (Core::Instance ()
 				.GetPendingManager ()->GetPendingModel ());
 
-		connect (Ui_.PackagesTree_->selectionModel (),
-				SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
-				pd,
-				SLOT (handleRowChanged (const QModelIndex&, const QModelIndex&)),
-				Qt::QueuedConnection);
 		connect (Ui_.PackagesTree_->selectionModel (),
 				SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
 				this,
@@ -130,6 +146,7 @@ namespace LackMan
 		const QStringList& tags = Core::Instance ().GetAllTags ();
 		handleTagsUpdated (tags);
 		Ui_.SearchLine_->handleTagsUpdated (tags);
+		selector->setPossibleSelections (tags);
 		handleFetchListUpdated (QList<int> ());
 	}
 
@@ -323,6 +340,9 @@ namespace LackMan
 				Util::MakePrettySize (size) :
 				tr ("unknown");
 		Ui_.SizeLabel_->setText (sizeText);
+
+		const auto& tags = index.data (PackagesModel::PMRTags).toStringList ();
+		Ui_.TagsLabel_->setText (tags.join ("; "));
 	}
 
 	void Plugin::handleFetchListUpdated (const QList<int>& ids)

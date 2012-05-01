@@ -1,3 +1,3 @@
 CREATE TABLE installed (
-	package_id INTEREGER REFERENCES packages
+	package_id INTEGER REFERENCES packages
 );

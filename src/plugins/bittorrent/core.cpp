@@ -56,6 +56,7 @@
 #include <libtorrent/storage.hpp>
 #include <libtorrent/file.hpp>
 #include <libtorrent/magnet_uri.hpp>
+#include <libtorrent/ip_filter.hpp>
 #include <libtorrent/version.hpp>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
@@ -560,7 +561,11 @@ namespace LeechCraft
 							QString result;
 							result += tr ("Name:") + " " + QString::fromUtf8 (h.name ().c_str ()) + "\n";
 							result += tr ("Destination:") + " " +
+#if LIBTORRENT_VERSION_NUM >= 1600
+								QString::fromUtf8 (h.save_path ().c_str ()) + "\n";
+#else
 								QString::fromUtf8 (h.save_path ().directory_string ().c_str ()) + "\n";
+#endif
 							result += tr ("Progress:") + " " +
 								QString (tr ("%1% (%2 of %3)")
 										.arg (status.progress * 100, 0, 'f', 2)
@@ -681,7 +686,11 @@ namespace LeechCraft
 				std::unique_ptr<TorrentInfo> result (new TorrentInfo);
 				result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));
 				result->Status_ = handle.status ();
+#if LIBTORRENT_VERSION_NUM >= 1600
+				result->Destination_ = QString::fromUtf8 (handle.save_path ().c_str ());
+#else
 				result->Destination_ = QString::fromUtf8 (handle.save_path ().directory_string ().c_str ());
+#endif
 				result->State_ = result->Status_.paused ? tr ("Idle") : GetStringForState (result->Status_.state);
 				return result;
 			}
@@ -788,7 +797,11 @@ namespace LeechCraft
 					atp.auto_managed = true;
 					atp.storage_mode = GetCurrentStorageMode ();
 					atp.paused = (params & NoAutostart);
+#if LIBTORRENT_VERSION_NUM >= 1600
+					atp.save_path = std::string (path.toUtf8 ().constData ());
+#else
 					atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
+#endif
 					atp.duplicate_is_error = true;
 
 					handle = libtorrent::add_magnet_uri (*Session_,
@@ -847,7 +860,11 @@ namespace LeechCraft
 					atp.auto_managed = autoManaged;
 					atp.storage_mode = GetCurrentStorageMode ();
 					atp.paused = tryLive || (params & NoAutostart);
+#if LIBTORRENT_VERSION_NUM >= 1600
+					atp.save_path = std::string (path.toUtf8 ().constData ());
+#else
 					atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
+#endif
 					atp.duplicate_is_error = true;
 					handle = Session_->add_torrent (atp);
 				}
@@ -1204,7 +1221,12 @@ namespace LeechCraft
 				if (!CheckValidity (CurrentTorrent_))
 					return QString ();
 
-				return QString::fromUtf8 (Handles_.at (CurrentTorrent_).Handle_.save_path ().string ().c_str ());
+				const auto& path = Handles_.at (CurrentTorrent_).Handle_.save_path ();
+#if LIBTORRENT_VERSION_NUM >= 1600
+				return QString::fromUtf8 (path.c_str ());
+#else
+				return QString::fromUtf8 (path.string ().c_str ());
+#endif
 			}
 
 			bool Core::MoveTorrentFiles (const QString& newDir)
@@ -1582,10 +1604,16 @@ namespace LeechCraft
 				libtorrent::torrent_info::file_iterator fit = info.begin_files ();
 				std::advance (fit, fi);
 
-				QString name = QTextCodec::codecForLocale ()->
-					toUnicode ((torrent.Handle_.save_path () / fit->path).string ().c_str ());
+				auto codec = QTextCodec::codecForLocale ();
+				const auto& torrentPath = torrent.Handle_.save_path ();
+#if LIBTORRENT_VERSION_NUM >= 1600
+				const auto& pathStr = torrentPath + '/' + info.files ().at (fit).path;
+#else
+				const auto& pathStr = (torrentPath / fit->path).string ();
+#endif
+				QString name = codec->toUnicode (pathStr.c_str ());
 
-				QString string = tr ("File finished: %1").arg (name);
+				const auto& string = tr ("File finished: %1").arg (name);
 				emit gotEntity (Util::MakeNotification ("BitTorrent", string, PInfo_));
 
 				Entity e;
@@ -1766,8 +1794,8 @@ namespace LeechCraft
 					return QList<FileInfo> ();
 
 				QList<FileInfo> result;
-				const libtorrent::torrent_handle& handle = Handles_.at (CurrentTorrent_).Handle_;
-				libtorrent::torrent_info info = handle.get_torrent_info ();
+				const auto& handle = Handles_.at (CurrentTorrent_).Handle_;
+				const auto& info = handle.get_torrent_info ();
 				std::vector<libtorrent::size_type> prbytes;
 
 				int flags = 0;
@@ -1775,10 +1803,15 @@ namespace LeechCraft
 						property ("AccurateFileProgress").toBool ())
 					flags |= libtorrent::torrent_handle::piece_granularity;
 				handle.file_progress (prbytes, flags);
-				for (libtorrent::torrent_info::file_iterator i = info.begin_files (); i != info.end_files (); ++i)
+				const auto& storage = info.files ();
+				for (auto i = info.begin_files (); i != info.end_files (); ++i)
 				{
 					FileInfo fi;
+#if LIBTORRENT_VERSION_NUM >= 1600
+					fi.Path_ = boost::filesystem::path (storage.at (i).path);
+#else
 					fi.Path_ = i->path;
+#endif
 					fi.Size_ = i->size;
 					fi.Priority_ = Handles_.at (CurrentTorrent_).FilePriorities_.at (i - info.begin_files ());
 					fi.Progress_ = static_cast<float> (prbytes.at (i - info.begin_files ())) /
@@ -1849,7 +1882,8 @@ namespace LeechCraft
 				for (int i = 0; i < torrents; ++i)
 				{
 					settings.setArrayIndex (i);
-					boost::filesystem::path path = settings.value ("SavePath").toString ().toStdString ();
+					const auto& pathStr = settings.value ("SavePath").toString ();
+					const auto& path = std::string (pathStr.toUtf8 ().constData ());
 					QString filename = settings.value ("Filename").toString ();
 					QFile torrent (QDir::homePath () + "/.leechcraft/bittorrent/" + filename);
 					if (!torrent.open (QIODevice::ReadOnly))
@@ -1880,12 +1914,11 @@ namespace LeechCraft
 					TaskParameters taskParameters = static_cast<TaskParameters> (settings
 								.value ("Parameters").toInt ());
 
-					libtorrent::torrent_handle handle =
-						RestoreSingleTorrent (data,
-								resumed,
-								path,
-								automanaged,
-								taskParameters & NoAutostart);
+					auto handle = RestoreSingleTorrent (data,
+							resumed,
+							path,
+							automanaged,
+							taskParameters & NoAutostart);
 					if (!handle.is_valid ())
 					{
 						qWarning () << Q_FUNC_INFO
@@ -1961,7 +1994,11 @@ namespace LeechCraft
 					libtorrent::add_torrent_params atp;
 					atp.ti = new libtorrent::torrent_info (e);
 					atp.storage_mode = GetCurrentStorageMode ();
+#if LIBTORRENT_VERSION_NUM >= 1600
+					atp.save_path = path.string ();
+#else
 					atp.save_path = path;
+#endif
 					atp.auto_managed = automanaged;
 					atp.paused = pause;
 					atp.resume_data = new std::vector<char>;
@@ -1984,8 +2021,7 @@ namespace LeechCraft
 			void Core::HandleSingleFinished (int i)
 			{
 				TorrentStruct torrent = Handles_.at (i);
-				libtorrent::torrent_info info = torrent.Handle_
-					.get_torrent_info ();
+				const auto& info = torrent.Handle_.get_torrent_info ();
 
 				if (LiveStreamManager_->IsEnabledOn (torrent.Handle_) &&
 						torrent.Handle_.status ().num_pieces !=
@@ -1997,13 +2033,18 @@ namespace LeechCraft
 				emit gotEntity (Util::MakeNotification ("BitTorrent",
 						tr ("Torrent finished: %1").arg (name), PInfo_));
 
-				for (libtorrent::torrent_info::file_iterator i = info.begin_files (),
-						end = info.end_files (); i != end; ++i)
+				const auto& savePath = torrent.Handle_.save_path ();
+
+				auto localeCodec = QTextCodec::codecForLocale ();
+				for (auto i = info.begin_files (), end = info.end_files (); i != end; ++i)
 				{
+#if LIBTORRENT_VERSION_NUM >= 1600
+					const auto& path = QByteArray ((savePath + '/' + info.files ().at (i).path).c_str ());
+#else
+					const auto& path = QByteArray ((savePath / i->path).string ().c_str ());
+#endif
 					Entity e;
-					e.Entity_ = QUrl::fromLocalFile (QTextCodec::codecForLocale ()->
-							toUnicode ((torrent.Handle_.save_path () / i->path)
-							.string ().c_str ()).toUtf8 ());
+					e.Entity_ = QUrl::fromLocalFile (localeCodec->toUnicode (path));
 					e.Parameters_ = LeechCraft::IsDownloaded |
 						LeechCraft::ShouldQuerySource;
 					e.Location_ = torrent.TorrentFileName_;
@@ -2239,8 +2280,13 @@ namespace LeechCraft
 							Handles_.at (i).Handle_.save_resume_data ();
 
 							settings.setValue ("SavePath",
-									QString::fromStdString (Handles_.at (i)
-										.Handle_.save_path ().string ()));
+#if LIBTORRENT_VERSION_NUM >= 1600
+									QString::fromUtf8 (Handles_.at (i)
+										.Handle_.save_path ().c_str ()));
+#else
+									QString::fromUtf8 (Handles_.at (i)
+										.Handle_.save_path ().string ().c_str ()));
+#endif
 							settings.setValue ("Filename",
 									Handles_.at (i).TorrentFileName_);
 							settings.setValue ("Tags",
@@ -2267,7 +2313,6 @@ namespace LeechCraft
 					{
 						qWarning () << Q_FUNC_INFO << "unknown exception";
 					}
-					qDebug () << Q_FUNC_INFO << "saved torrent" << Handles_.at (i).TorrentFileName_ << Handles_.at (i).Handle_.has_metadata ();
 					CurrentTorrent_ = oldCurrent;
 				}
 				settings.endArray ();
@@ -2582,7 +2627,7 @@ namespace LeechCraft
 				}
 				else
 					peerProxySettings.type = libtorrent::proxy_settings::none;
-#if (LIBTORRENT_VERSION_MINOR == 15 && LIBTORRENT_VERSION_TINY > 4) || LIBTORRENT_VERSION_MINOR > 15
+#if LIBTORRENT_VERSION_NUM >= 1504
 				Session_->set_proxy (peerProxySettings);
 #else
 				Session_->set_peer_proxy (peerProxySettings);
@@ -2651,10 +2696,16 @@ namespace LeechCraft
 					property ("OptimisticUnchokeMultiplier").toInt ();
 				try
 				{
-					if (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ().isEmpty ())
+					const auto& announceIP = XmlSettingsManager::Instance ()->
+							property ("AnnounceIP").toString ();
+#if LIBTORRENT_VERSION_NUM >= 1600
+					settings.announce_ip = announceIP.toStdString ();
+#else
+					if (announceIP.isEmpty ())
 						settings.announce_ip = boost::asio::ip::address ();
 					else
-						settings.announce_ip = boost::asio::ip::address::from_string (XmlSettingsManager::Instance ()->property ("AnnounceIP").toString ().toStdString ());
+						settings.announce_ip = boost::asio::ip::address::from_string (announceIP.toStdString ());
+#endif
 				}
 				catch (...)
 				{

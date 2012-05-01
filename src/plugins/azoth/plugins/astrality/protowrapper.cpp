@@ -242,6 +242,10 @@ namespace Astrality
 		if (ProtoName_ != acc->protocolName ())
 			return 0;
 
+		Q_FOREACH (AccountWrapper *w, Accounts_)
+			if (w->GetOurID () == acc->uniqueIdentifier ())
+				return w;
+
 		qDebug () << Q_FUNC_INFO << ProtoName_ << acc->nickname () << acc->iconName ();
 		auto w = new AccountWrapper (acc, this);
 		connect (w,

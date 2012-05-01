@@ -50,6 +50,7 @@ namespace LackMan
 		PendingManager *PendingManager_;
 		PackageProcessor *PackageProcessor_;
 		QStandardItemModel *ReposModel_;
+		bool UpdatesEnabled_;
 
 		enum ReposColumns
 		{
@@ -103,6 +104,7 @@ namespace LackMan
 		void WriteSettings ();
 	public slots:
 		void updateAllRequested ();
+		void handleUpdatesIntervalChanged ();
 		void timeredUpdateAllRequested ();
 		void upgradeAllRequested ();
 		void cancelPending ();

@@ -35,11 +35,12 @@ namespace Qrosp
 	{
 		Qross::Manager::self ().registerMetaTypeHandler ("LeechCraft::Entity", EntityHandler);
 
+		const auto& interpreters = Qross::Manager::self ().interpreters ();
 		qDebug () << Q_FUNC_INFO
 				<< "interpreters:"
-				<< Qross::Manager::self ().interpreters ();
+				<< interpreters;
 
-		QMap<QString, QStringList> plugins = FindPlugins ();
+		const auto& plugins = FindPlugins ();
 		qDebug () << Q_FUNC_INFO
 				<< "found"
 				<< plugins;
@@ -51,9 +52,13 @@ namespace Qrosp
 		//qScriptRegisterMetaType (Priority, ToScriptValue, FromScriptValue);
 #endif
 
-		Q_FOREACH (QString type, plugins.keys ())
-			Q_FOREACH (QString path, plugins [type])
+		Q_FOREACH (const auto& type, plugins.keys ())
+		{
+			if (!interpreters.contains (type))
+				continue;
+			Q_FOREACH (const auto& path, plugins [type])
 				Wrappers_ << new WrapperObject (type, path);
+		}
 	}
 
 	PluginManager& PluginManager::Instance ()

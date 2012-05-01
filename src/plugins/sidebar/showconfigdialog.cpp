@@ -46,7 +46,7 @@ namespace Sidebar
 		reloadSettings ();
 	}
 
-	bool ShowConfigDialog::CheckAction (const QString& id, QAction *act)
+	bool ShowConfigDialog::CheckAction (const QString& id, QAction *act, bool def)
 	{
 		AllActions_ [id] << act;
 		connect (act,
@@ -67,14 +67,14 @@ namespace Sidebar
 		}
 
 		QStandardItem *item = new QStandardItem (act->icon (), act->text ());
-		item->setCheckState (Qt::Checked);
+		item->setCheckState (def ? Qt::Checked : Qt::Unchecked);
 		item->setToolTip (act->toolTip ());
 		item->setData (id, Roles::ActionID);
 		item->setCheckable (true);
 		item->setEditable (false);
 		Model_->appendRow (item);
 
-		return true;
+		return def;
 	}
 
 	void ShowConfigDialog::saveSettings ()

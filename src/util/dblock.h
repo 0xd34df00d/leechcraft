@@ -19,6 +19,9 @@
 #ifndef UTIL_DBLOCK_H
 #define UTIL_DBLOCK_H
 #include "utilconfig.h"
+#include <QMutex>
+#include <QString>
+#include <QSet>
 
 class QSqlError;
 class QSqlQuery;
@@ -50,9 +53,12 @@ namespace LeechCraft
 			bool Good_;
 			bool Initialized_;
 
-			DBLock (const DBLock&);
-			DBLock& operator= (const DBLock&);
+			static QMutex LockedMutex_;
+			static QSet<QString> LockedBases_;
 		public:
+			DBLock (const DBLock&) = delete;
+			DBLock& operator= (const DBLock&) = delete;
+
 			/** @brief Constructor.
 			 *
 			 * Constructs the lock and prepares it to work with the database.

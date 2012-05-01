@@ -61,164 +61,10 @@ namespace Azoth
 
 		Core::Instance ().SetProxy (proxy);
 		InitShortcuts ();
-
-		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
-		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-				"azothsettings.xml");
-
-		connect (XmlSettingsDialog_.get (),
-				SIGNAL (moreThisStuffRequested (const QString&)),
-				this,
-				SLOT (handleMoreThisStuff (const QString&)));
-
-		XmlSettingsDialog_->SetDataSource ("StatusIcons",
-				Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader)->
-					GetSubElemModel ());
-		XmlSettingsDialog_->SetDataSource ("ClientIcons",
-				Core::Instance ().GetResourceLoader (Core::RLTClientIconLoader)->
-					GetSubElemModel ());
-		XmlSettingsDialog_->SetDataSource ("AffIcons",
-				Core::Instance ().GetResourceLoader (Core::RLTAffIconLoader)->
-					GetSubElemModel ());
-		XmlSettingsDialog_->SetDataSource ("MoodIcons",
-				Core::Instance ().GetResourceLoader (Core::RLTMoodIconLoader)->
-					GetSubElemModel ());
-		XmlSettingsDialog_->SetDataSource ("ActivityIcons",
-				Core::Instance ().GetResourceLoader (Core::RLTActivityIconLoader)->
-					GetSubElemModel ());
-		XmlSettingsDialog_->SetDataSource ("SystemIcons",
-				Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader)->
-					GetSubElemModel ());
-
-		QList<QByteArray> iconsPropList;
-		iconsPropList << "StatusIcons"
-				<< "ClientIcon"
-				<< "AffIcons"
-				<< "MoodIcons"
-				<< "ActivityIcons"
-				<< "SystemIcons";
-		XmlSettingsManager::Instance ().RegisterObject (iconsPropList,
-				&Core::Instance (),
-				"flushIconCaches");
-
-#ifdef ENABLE_MEDIACALLS
-		QStringList audioIns (tr ("Default input device"));
-		Q_FOREACH (const QAudioDeviceInfo& info,
-				QAudioDeviceInfo::availableDevices (QAudio::AudioInput))
-			audioIns << info.deviceName ();
-		XmlSettingsDialog_->SetDataSource ("InputAudioDevice", new QStringListModel (audioIns));
-
-		QStringList audioOuts (tr ("Default output device"));
-		Q_FOREACH (const QAudioDeviceInfo& info,
-				QAudioDeviceInfo::availableDevices (QAudio::AudioOutput))
-			audioOuts << info.deviceName ();
-		XmlSettingsDialog_->SetDataSource ("OutputAudioDevice", new QStringListModel (audioOuts));
-#endif
-
-		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
-
-		QDockWidget *dw = new QDockWidget ();
-		MW_ = new MainWidget ();
-		dw->setWidget (MW_);
-		dw->setWindowTitle ("Azoth");
-		proxy->GetMWProxy ()->AddDockWidget (Qt::RightDockWidgetArea, dw);
-		proxy->GetMWProxy ()->SetViewActionShortcut (dw, QString ("Ctrl+J,A"));
-
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-		connect (&Core::Instance (),
-				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
-				this,
-				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
-
-		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (addNewTab (const QString&, QWidget*)),
-				this,
-				SIGNAL (addNewTab (const QString&, QWidget*)));
-		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (changeTabName (QWidget*, const QString&)),
-				this,
-				SIGNAL (changeTabName (QWidget*, const QString&)));
-		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-				this,
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
-		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (raiseTab (QWidget*)),
-				this,
-				SIGNAL (raiseTab (QWidget*)));
-		connect (MW_,
-				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
-				this,
-				SLOT (handleConsoleWidget (ConsoleWidget*)));
-		connect (MW_,
-				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
-				this,
-				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
-
-		TabClassInfo chatTab =
-		{
-			"ChatTab",
-			tr ("Chat"),
-			tr ("A tab with a chat session"),
-			QIcon (":/plugins/azoth/resources/images/chattabclass.svg"),
-			0,
-			TFEmpty
-		};
-		TabClassInfo mucTab =
-		{
-			"MUCTab",
-			tr ("MUC"),
-			tr ("A multiuser conference"),
-			QIcon (),
-			50,
-			TFOpenableByRequest
-		};
-		TabClassInfo searchTab =
-		{
-			"Search",
-			tr ("Search"),
-			tr ("A search tab allows one to search within IM services"),
-			QIcon (":/plugins/azoth/resources/images/searchtab.svg"),
-			55,
-			TFOpenableByRequest
-		};
-		TabClassInfo sdTab =
-		{
-			"SD",
-			tr ("Service discovery"),
-			tr ("A service discovery tab that allows one to discover "
-				"capabilities of remote entries"),
-			QIcon (":/plugins/azoth/resources/images/sdtab.svg"),
-			55,
-			TFOpenableByRequest
-		};
-		TabClassInfo consoleTab =
-		{
-			"ConsoleTab",
-			tr ("IM console"),
-			tr ("Protocol console, for example, XML console for a XMPP "
-				"client protocol"),
-			QIcon (":/plugins/azoth/resources/images/console.svg"),
-			0,
-			TFEmpty
-		};
-
-		TabClasses_ << chatTab;
-		TabClasses_ << mucTab;
-		TabClasses_ << searchTab;
-		TabClasses_ << sdTab;
-		TabClasses_ << consoleTab;
+		InitSettings ();
+		InitMW ();
+		InitSignals ();
+		InitTabClasses ();
 	}
 
 	void Plugin::SecondInit ()
@@ -406,10 +252,206 @@ namespace Azoth
 				ActionInfo (tr ("Clear chat window"),
 						QString ("Ctrl+L"),
 						proxy->GetIcon ("edit-clear-history")));
+		sm->RegisterActionInfo ("org.LeechCraft.Azoth.ScrollHistoryBack",
+				ActionInfo (tr ("Prepend messages from history"),
+						QKeySequence::StandardKey::Back,
+						proxy->GetIcon ("go-previous")));
 		sm->RegisterActionInfo ("org.LeechCraft.Azoth.QuoteSelected",
 				ActionInfo (tr ("Quote selected in chat tab"),
 						QString ("Ctrl+Q"),
 						proxy->GetIcon ("mail-reply-sender")));
+
+		sm->RegisterActionInfo ("org.LeechCraft.Azoth.LeaveMUC",
+				ActionInfo (tr ("Leave"),
+						QString (),
+						proxy->GetIcon ("irc-close-channel")));
+	}
+
+	void Plugin::InitSettings ()
+	{
+		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+				"azothsettings.xml");
+
+		connect (XmlSettingsDialog_.get (),
+				SIGNAL (moreThisStuffRequested (const QString&)),
+				this,
+				SLOT (handleMoreThisStuff (const QString&)));
+
+		XmlSettingsDialog_->SetDataSource ("StatusIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader)->
+					GetSubElemModel ());
+		XmlSettingsDialog_->SetDataSource ("ClientIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTClientIconLoader)->
+					GetSubElemModel ());
+		XmlSettingsDialog_->SetDataSource ("AffIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTAffIconLoader)->
+					GetSubElemModel ());
+		XmlSettingsDialog_->SetDataSource ("MoodIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTMoodIconLoader)->
+					GetSubElemModel ());
+		XmlSettingsDialog_->SetDataSource ("ActivityIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTActivityIconLoader)->
+					GetSubElemModel ());
+		XmlSettingsDialog_->SetDataSource ("SystemIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader)->
+					GetSubElemModel ());
+
+		QList<QByteArray> iconsPropList;
+		iconsPropList << "StatusIcons"
+				<< "ClientIcon"
+				<< "AffIcons"
+				<< "MoodIcons"
+				<< "ActivityIcons"
+				<< "SystemIcons";
+		XmlSettingsManager::Instance ().RegisterObject (iconsPropList,
+				&Core::Instance (),
+				"flushIconCaches");
+
+#ifdef ENABLE_MEDIACALLS
+		QStringList audioIns (tr ("Default input device"));
+		Q_FOREACH (const QAudioDeviceInfo& info,
+				QAudioDeviceInfo::availableDevices (QAudio::AudioInput))
+			audioIns << info.deviceName ();
+		XmlSettingsDialog_->SetDataSource ("InputAudioDevice", new QStringListModel (audioIns));
+
+		QStringList audioOuts (tr ("Default output device"));
+		Q_FOREACH (const QAudioDeviceInfo& info,
+				QAudioDeviceInfo::availableDevices (QAudio::AudioOutput))
+			audioOuts << info.deviceName ();
+		XmlSettingsDialog_->SetDataSource ("OutputAudioDevice", new QStringListModel (audioOuts));
+#endif
+
+		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
+	}
+
+	void Plugin::InitMW ()
+	{
+		QDockWidget *dw = new QDockWidget ();
+		MW_ = new MainWidget ();
+		dw->setWidget (MW_);
+		dw->setWindowTitle ("Azoth");
+
+		const int dockArea = XmlSettingsManager::Instance ()
+				.Property ("MWDockArea", Qt::RightDockWidgetArea).toInt ();
+		const bool floating = XmlSettingsManager::Instance ()
+				.Property ("MWFloating", false).toBool ();
+
+		auto proxy = Core::Instance ().GetProxy ();
+		proxy->GetMWProxy ()->AddDockWidget (static_cast<Qt::DockWidgetArea> (dockArea), dw);
+		proxy->GetMWProxy ()->SetViewActionShortcut (dw, QString ("Ctrl+J,A"));
+
+		dw->setFloating (floating);
+		connect (dw,
+				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
+				this,
+				SLOT (handleMWLocation (Qt::DockWidgetArea)));
+		connect (dw,
+				SIGNAL (topLevelChanged (bool)),
+				this,
+				SLOT (handleMWFloating (bool)));
+	}
+
+	void Plugin::InitSignals ()
+	{
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		connect (&Core::Instance (),
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+		connect (&Core::Instance (),
+				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
+				this,
+				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
+
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (addNewTab (const QString&, QWidget*)),
+				this,
+				SIGNAL (addNewTab (const QString&, QWidget*)));
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (changeTabName (QWidget*, const QString&)),
+				this,
+				SIGNAL (changeTabName (QWidget*, const QString&)));
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+				this,
+				SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (raiseTab (QWidget*)),
+				this,
+				SIGNAL (raiseTab (QWidget*)));
+		connect (MW_,
+				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
+				this,
+				SLOT (handleConsoleWidget (ConsoleWidget*)));
+		connect (MW_,
+				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
+				this,
+				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
+	}
+
+	void Plugin::InitTabClasses ()
+	{
+		TabClassInfo chatTab =
+		{
+			"ChatTab",
+			tr ("Chat"),
+			tr ("A tab with a chat session"),
+			QIcon (":/plugins/azoth/resources/images/chattabclass.svg"),
+			0,
+			TFEmpty
+		};
+		TabClassInfo mucTab =
+		{
+			"MUCTab",
+			tr ("MUC"),
+			tr ("A multiuser conference"),
+			QIcon (),
+			50,
+			TFOpenableByRequest
+		};
+		TabClassInfo searchTab =
+		{
+			"Search",
+			tr ("Search"),
+			tr ("A search tab allows one to search within IM services"),
+			QIcon (":/plugins/azoth/resources/images/searchtab.svg"),
+			55,
+			TFOpenableByRequest
+		};
+		TabClassInfo sdTab =
+		{
+			"SD",
+			tr ("Service discovery"),
+			tr ("A service discovery tab that allows one to discover "
+				"capabilities of remote entries"),
+			QIcon (":/plugins/azoth/resources/images/sdtab.svg"),
+			55,
+			TFOpenableByRequest
+		};
+		TabClassInfo consoleTab =
+		{
+			"ConsoleTab",
+			tr ("IM console"),
+			tr ("Protocol console, for example, XML console for a XMPP "
+				"client protocol"),
+			QIcon (":/plugins/azoth/resources/images/console.svg"),
+			0,
+			TFEmpty
+		};
+
+		TabClasses_ << chatTab;
+		TabClasses_ << mucTab;
+		TabClasses_ << searchTab;
+		TabClasses_ << sdTab;
+		TabClasses_ << consoleTab;
 	}
 
 	void Plugin::handleSDWidget (ServiceDiscoveryWidget *sd)
@@ -427,6 +469,16 @@ namespace Azoth
 		QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
 		TransferJobManager *mgr = Core::Instance ().GetTransferJobManager ();
 		mgr->SelectionChanged (si.model () == mgr->GetSummaryModel () ? si : QModelIndex ());
+	}
+
+	void Plugin::handleMWLocation (Qt::DockWidgetArea area)
+	{
+		XmlSettingsManager::Instance ().setProperty ("MWDockArea", area);
+	}
+
+	void Plugin::handleMWFloating (bool floating)
+	{
+		XmlSettingsManager::Instance ().setProperty ("MWFloating", floating);
 	}
 
 	void Plugin::handleMoreThisStuff (const QString& id)

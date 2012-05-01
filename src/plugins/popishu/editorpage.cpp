@@ -260,7 +260,7 @@ namespace LeechCraft
 
 			QToolBar* EditorPage::GetToolBar () const
 			{
-				return Toolbar_;
+				return Toolbar_.get ();
 			}
 
 			QObject* EditorPage::ParentMultiTabs ()

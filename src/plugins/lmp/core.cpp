@@ -17,164 +17,72 @@
  **********************************************************************/
 
 #include "core.h"
-#include <QUrl>
-#include <QTextCodec>
-#include <QMainWindow>
-#include <QNetworkReply>
-#include <interfaces/core/icoreproxy.h>
+#include "localfileresolver.h"
+#include "localcollection.h"
 #include "xmlsettingsmanager.h"
-#include "defaultwidget.h"
-#include "keyinterceptor.h"
-
-using namespace Phonon;
+#include "playlistmanager.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
 	Core::Core ()
-	: ShowAction_ (new QAction (QIcon (":/plugins/lmp/resources/images/lmp.svg"),
-				tr ("Show LMP"), this))
-	, DefaultWidget_ (0)
+	: Resolver_ (new LocalFileResolver)
+	, Collection_ (new LocalCollection)
+	, PLManager_ (new PlaylistManager)
 	{
-		ShowAction_->setEnabled (false);
 	}
 
 	Core& Core::Instance ()
 	{
-		static Core core;
-		return core;
+		static Core c;
+		return c;
 	}
 
-	void Core::Release ()
-	{
-		delete DefaultWidget_;
-		Player_.reset ();
-	}
-
-	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
+	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
 	}
 
-	ICoreProxy_ptr Core::GetCoreProxy () const
+	ICoreProxy_ptr Core::GetProxy ()
 	{
 		return Proxy_;
 	}
 
-	PlayerWidget* Core::CreateWidget () const
+	void Core::PostInit ()
 	{
-		PlayerWidget *result = new PlayerWidget;
-		connect (result,
-			SIGNAL (gotEntity (const LeechCraft::Entity&)),
-			this,
-			SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		KeyInterceptor *ki = new KeyInterceptor (result, result);
-		QList<QWidget*> children = result->findChildren<QWidget*> ();
-		children << result;
-		for (QList<QWidget*>::iterator i = children.begin (),
-				end = children.end (); i != end; ++i)
-			(*i)->installEventFilter (ki);
-		return result;
+		XmlSettingsManager::Instance ().RegisterObject ("CollectionDir",
+				this, "handleCollectionDirChanged");
+		Collection_->FinalizeInit ();
 	}
 
-	IVideoWidget* Core::GetDefaultWidget () const
+	LocalFileResolver* Core::GetLocalFileResolver () const
 	{
-		if (!DefaultWidget_)
-			DefaultWidget_ = new DefaultWidget;
-		return DefaultWidget_;
+		return Resolver_;
 	}
 
-	void Core::Reinitialize ()
+	LocalCollection* Core::GetLocalCollection () const
 	{
+		return Collection_;
 	}
 
-	void Core::Play ()
+	PlaylistManager* Core::GetPlaylistManager () const
 	{
-		Player_->Play ();
+		return PLManager_;
 	}
 
-	void Core::Pause ()
+	void Core::rescan ()
 	{
-		Player_->Pause ();
+		handleCollectionDirChanged ();
 	}
 
-	void Core::Stop ()
+	void Core::handleCollectionDirChanged ()
 	{
-		Player_->Stop ();
-	}
-
-	void Core::Clear ()
-	{
-		Player_->Clear ();
-	}
-
-	void Core::Enqueue (const QUrl& url)
-	{
-		Player_->Enqueue (new MediaSource (url));
-	}
-
-	void Core::Enqueue (QIODevice *data)
-	{
-		Player_->Enqueue (new MediaSource (data));
-	}
-
-	QAction* Core::GetShowAction () const
-	{
-		return ShowAction_;
-	}
-
-	void Core::Handle (const Entity& e)
-	{
-		MediaSource *source = 0;
-		if (e.Entity_.canConvert<QNetworkReply*> ())
-			source = new MediaSource (e.Entity_.value<QNetworkReply*> ());
-		else if (e.Entity_.canConvert<QIODevice*> ())
-			source = new MediaSource (e.Entity_.value<QIODevice*> ());
-		else if (e.Entity_.canConvert<QUrl> ())
-		{
-			QUrl url = e.Entity_.toUrl ();
-			if (url.scheme () == "file")
-				source = new MediaSource (url.toLocalFile ());
-			else
-				source = new MediaSource (url);
-		}
-		else
-			return;
-
-		if (!(e.Parameters_ & FromUserInitiated) &&
-				e.Parameters_ & Internal)
-		{
-			MediaObject *music = createPlayer (NotificationCategory, *source);
-			delete source;
-			music->play ();
-			connect (music,
-					SIGNAL (finished ()),
-					music,
-					SLOT (deleteLater ()),
-					Qt::QueuedConnection);
-			return;
-		}
-
-		if (!Player_.get ())
-		{
-			Player_.reset (new Player (Proxy_->GetMainWindow ()));
-			ShowAction_->setEnabled (true);
-			connect (ShowAction_,
-					SIGNAL (triggered ()),
-					Player_.get (),
-					SLOT (show ()));
-			connect (Player_.get (),
-					SIGNAL (gotEntity (const LeechCraft::Entity&)),
-					this,
-					SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		}
-		Player_->Enqueue (source);
-		if (e.Parameters_ & FromUserInitiated)
-		{
-			Player_->show ();
-			Player_->Play ();
-		}
+		Collection_->Clear ();
+		const auto& dir = XmlSettingsManager::Instance ()
+				.property ("CollectionDir").toString ();
+		if (!dir.isEmpty ())
+			Collection_->Scan (dir);
 	}
 }
 }

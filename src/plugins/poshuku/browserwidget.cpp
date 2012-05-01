@@ -524,6 +524,8 @@ namespace Poshuku
 	{
 		if (Own_)
 			Core::Instance ().Unregister (this);
+
+		delete ToolBar_;
 	}
 
 	void BrowserWidget::SetParentMultiTabs (QObject *parent)
@@ -1638,7 +1640,7 @@ namespace Poshuku
 
 		SetSplitterSizes (0);
 	}
-	
+
 	void BrowserWidget::loadURL (const QUrl& url)
 	{
 		WebView_->Load (url);

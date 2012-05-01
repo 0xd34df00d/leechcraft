@@ -58,7 +58,15 @@ namespace Otlozhu
 
 	TodoItem_ptr TodoStorage::GetItemAt (int idx) const
 	{
-		return Items_ [idx];
+		return Items_ [idx]->Clone ();
+	}
+
+	QList<TodoItem_ptr> TodoStorage::GetAllItems () const
+	{
+		QList<TodoItem_ptr> result;
+		std::transform (Items_.begin (), Items_.end (), std::back_inserter (result),
+				[] (decltype (Items_.front ()) item) { return item->Clone (); });
+		return result;
 	}
 
 	void TodoStorage::HandleUpdated (TodoItem_ptr item)
@@ -67,6 +75,7 @@ namespace Otlozhu
 		if (pos == -1)
 			return;
 
+		emit itemDiffGenerated (item->GetID (), item->DiffWith (Items_ [pos]));
 		Items_ [pos] = item;
 		emit itemUpdated (pos);
 		SaveAt (pos);
@@ -78,8 +87,8 @@ namespace Otlozhu
 		if (pos == -1)
 			return;
 
-		Items_.removeAt (pos);
 		emit itemRemoved (pos);
+		Items_.removeAt (pos);
 		QList<int> indexes;
 		for (int i = pos; i < GetNumItems (); ++i)
 			indexes << i;

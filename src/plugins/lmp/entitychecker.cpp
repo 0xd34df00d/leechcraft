@@ -79,18 +79,5 @@ namespace LMP
 	{
 		return Result_;
 	}
-
-	void EntityChecker::stateChanged (Phonon::State st)
-	{
-		switch (st)
-		{
-			case Phonon::PlayingState:
-				Result_ = true;
-			case Phonon::ErrorState:
-				Break_ = true;
-			default:
-				break;
-		}
-	}
 }
 }

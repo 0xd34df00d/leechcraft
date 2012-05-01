@@ -82,7 +82,7 @@ namespace Azoth
 	void SortFilterProxyModel::showOfflineContacts (bool show)
 	{
 		ShowOffline_ = show;
-		invalidateFilter ();
+		invalidate ();
 	}
 
 	void SortFilterProxyModel::handleStatusOrderingChanged ()

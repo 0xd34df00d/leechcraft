@@ -18,7 +18,7 @@ endif(TELEPATHY_QT4_INCLUDE_DIR AND TELEPATHY_QT4_LIBRARIES)
 
 find_package(PkgConfig)
 if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_TELEPATHY_QT4 QUIET TelepathyQt4>=0.2.0)
+    pkg_check_modules(PC_TELEPATHY_QT4 QUIET TelepathyQt4)
 endif(PKG_CONFIG_FOUND)
 
 find_path(TELEPATHY_QT4_INCLUDE_DIR
@@ -36,7 +36,5 @@ find_library(TELEPATHY_QT4_LIBRARIES
              ${PC_TELEPATHY_QT4_LIBRARY_DIRS}
 )
 
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(TelepathyQt4 DEFAULT_MSG
-                                  TELEPATHY_QT4_LIBRARIES TELEPATHY_QT4_INCLUDE_DIR)
-
+MESSAGE(STATUS "Found Telepathy-Qt4 libraries at ${TELEPATHY_QT4_INCLUDE_DIR}")
+MESSAGE(STATUS "Found Telepathy-Qt4 headers at ${TELEPATHY_QT4_LIBRARIES}")

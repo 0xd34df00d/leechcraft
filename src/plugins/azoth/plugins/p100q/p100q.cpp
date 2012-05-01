@@ -178,8 +178,6 @@ namespace p100q
 				" <a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" + tr ("View post") + "\">#\\1</a> ");
 		while (body.startsWith ("<br />"))
 			body = body.mid (6);
-		body.prepend ("<div style=\"width:100%;overflow:auto;\">");
-		body += "</div>";
 		return body;
 	}
 

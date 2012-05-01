@@ -143,9 +143,14 @@ OPTION (ENABLE_GACTS "Build Global Actions provider plugin" OFF)
 OPTION (ENABLE_CEMENTO "Build Cemento, LeechCraft common persistent storage" OFF)
 OPTION (ENABLE_PINTAB "Build Pintab for pinning important tabs" ${WITH_PLUGINS})
 OPTION (ENABLE_OTLOZHU "Build Otlozhu, a GTD-inspired ToDo manager" OFF)
-OPTION (ENABLE_KEYBOARDCRAFT "Build KeyboardCraft, a keyboard plugin" OFF)
+OPTION (ENABLE_KBSWITCH "Build KBSwitch, a keyboard plugin" OFF)
 OPTION (ENABLE_XPROXY "Build XProxy, the advanced proxy manager" ${WITH_PLUGINS})
 OPTION (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
+OPTION (ENABLE_NACHEKU "Build Nacheku, clipboard/download dir watcher" ${WITH_PLUGINS})
+
+IF (WIN32)
+	OPTION (ENABLE_Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS})
+ENDIF (WIN32)
 
 # Defunct
 OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" OFF)
@@ -367,9 +372,9 @@ IF (ENABLE_OTLOZHU)
 	ADD_SUBDIRECTORY (plugins/otlozhu)
 ENDIF (ENABLE_OTLOZHU)
 
-IF (ENABLE_KEYBOARDCRAFT)
-	ADD_SUBDIRECTORY (plugins/keyboardcraft)
-ENDIF (ENABLE_KEYBOARDCRAFT)
+IF (ENABLE_KBSWITCH)
+	ADD_SUBDIRECTORY (plugins/kbswitch)
+ENDIF (ENABLE_KBSWITCH)
 
 IF (ENABLE_XPROXY)
 	ADD_SUBDIRECTORY (plugins/xproxy)
@@ -378,6 +383,16 @@ ENDIF (ENABLE_XPROXY)
 IF (ENABLE_DOLOZHEE)
 	ADD_SUBDIRECTORY (plugins/dolozhee)
 ENDIF (ENABLE_DOLOZHEE)
+
+IF (ENABLE_NACHEKU)
+	ADD_SUBDIRECTORY (plugins/nacheku)
+ENDIF (ENABLE_NACHEKU)
+
+IF (WIN32)
+	IF (ENABLE_Y7)
+		ADD_SUBDIRECTORY (plugins/y7)
+	ENDIF (ENABLE_Y7)
+ENDIF (WIN32)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
@@ -417,12 +432,10 @@ SET (SRCS
 	coreproxy.cpp
 	tagsmanager.cpp
 	tagsviewer.cpp
-	directorywatcher.cpp
 	aboutdialog.cpp
 	startupwizard.cpp
 	localsockethandler.cpp
 	toolbarguard.cpp
-	clipboardwatcher.cpp
 	wizardtypechoicepage.cpp
 	3dparty/qxttooltip.cpp
 	newtabmenumanager.cpp
@@ -464,12 +477,10 @@ SET (HEADERS
 	coreproxy.h
 	tagsmanager.h
 	tagsviewer.h
-	directorywatcher.h
 	aboutdialog.h
 	startupwizard.h
 	localsockethandler.h
 	toolbarguard.h
-	clipboardwatcher.h
 	newtabmenumanager.h
 	wizardtypechoicepage.h
 	plugintreebuilder.h

@@ -85,15 +85,7 @@ void TagsLineEdit::insertTag (const QString& completion)
 
 void TagsLineEdit::handleTagsUpdated (const QStringList& tags)
 {
-	disconnect (CategorySelector_.get (),
-			SIGNAL (selectionChanged (const QStringList&)),
-			this,
-			SLOT (handleSelectionChanged (const QStringList&)));
-	CategorySelector_->SetPossibleSelections (tags);
-	connect (CategorySelector_.get (),
-			SIGNAL (selectionChanged (const QStringList&)),
-			this,
-			SLOT (handleSelectionChanged (const QStringList&)));
+	CategorySelector_->setPossibleSelections (tags);
 }
 
 void TagsLineEdit::setTags (const QStringList& tags)

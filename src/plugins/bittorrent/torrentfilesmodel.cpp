@@ -271,7 +271,8 @@ namespace LeechCraft
 			}
 
 			void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begin,
-					const libtorrent::torrent_info::file_iterator& end)
+					libtorrent::torrent_info::file_iterator end,
+					const libtorrent::file_storage& storage)
 			{
 				Clear ();
 
@@ -287,11 +288,16 @@ namespace LeechCraft
 
 				for (int pos = 0; begin != end; ++begin, ++pos)
 				{
-					Path2TreeItem_t::key_type parentPath = begin->path.branch_path ();
-					MkParentIfDoesntExist (begin->path);
+#if LIBTORRENT_VERSION_NUM >= 1600
+					const auto& path = boost::filesystem::path (storage.at (begin).path);
+#else
+					const auto& path = begin->path;
+#endif
+					auto parentPath = path.branch_path ();
+					MkParentIfDoesntExist (path);
 
 					QList<QVariant> displayData;
-					displayData << QString::fromUtf8 (begin->path.leaf ().c_str ())
+					displayData << QString::fromUtf8 (path.leaf ().c_str ())
 						<< Util::MakePrettySize (begin->size);
 
 					TreeItem *parentItem = Path2TreeItem_ [parentPath],
@@ -300,8 +306,8 @@ namespace LeechCraft
 					item->ModifyData (1, static_cast<int> (std::distance (orig, begin)), RolePath);
 					item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
 					parentItem->AppendChild (item);
-					Path2TreeItem_ [begin->path] = item;
-					Path2OriginalPosition_ [begin->path] = pos;
+					Path2TreeItem_ [path] = item;
+					Path2OriginalPosition_ [path] = pos;
 				}
 
 				for (int i = 0; i < RootItem_->ChildCount (); ++i)

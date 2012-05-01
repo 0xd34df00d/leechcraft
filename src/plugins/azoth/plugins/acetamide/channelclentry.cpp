@@ -351,6 +351,16 @@ namespace Acetamide
 		return result;
 	}
 
+	QPair<QByteArray, QByteArray> ChannelCLEntry::GetKickPerm () const
+	{
+		return QPair<QByteArray, QByteArray> ();
+	}
+
+	QPair<QByteArray, QByteArray> ChannelCLEntry::GetBanPerm () const
+	{
+		return QPair<QByteArray, QByteArray> ();
+	}
+
 	void ChannelCLEntry::SetPerm (QObject *participant,
 			const QByteArray& permClass,
 			const QByteArray& perm,

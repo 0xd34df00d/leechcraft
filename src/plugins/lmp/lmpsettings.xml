@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<declare defaultlang="en" />
+	<declare />
 	<page>
-		<label lang="en" value="General" />
-		<tab>
-			<label lang="en" value="Plugin communication" />
-			<item type="groupbox" property="TestOnly" state="on" checkable="true">
-				<label lang="en" value="Test only these extensions" />
-				<item type="lineedit" property="TestExtensions" default="avi flac flv mkv mp3 mp4 ogg">
-					<label lang="en" value="Extenstions list:" />
-				</item>
+		<label value="Behavior" />
+		<item type="checkbox" property="EnableNotifications" default="true">
+			<label value="Enable notifications" />
+		</item>
+		<item type="checkbox" property="EnableScrobbling" default="true">
+			<label value="Enable scrobbling" />
+			<tooltip>This option requires at least one other scrobbler plugin, like LastFMScrobble, for example.</tooltip>
+		</item>
+	</page>
+	<page>
+		<label value="Collection" />
+		<groupbox>
+			<label value="Collection" />
+			<item type="path" property="CollectionDir" onCancel="clear">
+				<label value="Music collection directory:" />
 			</item>
-		</tab>
+		</groupbox>
+	</page>
+	<page>
+		<label value="Plugin communication" />
+		<item type="groupbox" property="TestOnly" state="on" checkable="true">
+			<label value="Test only these extensions" />
+			<item type="lineedit" property="TestExtensions" default="avi flac flv mkv mp3 mp4 ogg">
+				<label value="Extenstions list:" />
+			</item>
+		</item>
 	</page>
 </settings>

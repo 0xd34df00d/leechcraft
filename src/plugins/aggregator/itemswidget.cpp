@@ -1063,7 +1063,7 @@ namespace Aggregator
 
 		if (allCategories.size ())
 		{
-			Impl_->ItemCategorySelector_->SetPossibleSelections (allCategories);
+			Impl_->ItemCategorySelector_->setPossibleSelections (allCategories);
 			Impl_->ItemCategorySelector_->selectAll ();
 			if (XmlSettingsManager::Instance ()->
 					property ("ShowCategorySelector").toBool ())
@@ -1072,7 +1072,7 @@ namespace Aggregator
 		}
 		else
 		{
-			Impl_->ItemCategorySelector_->SetPossibleSelections (QStringList ());
+			Impl_->ItemCategorySelector_->setPossibleSelections (QStringList ());
 			Impl_->ItemCategorySelector_->hide ();
 		}
 	}

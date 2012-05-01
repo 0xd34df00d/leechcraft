@@ -21,7 +21,11 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QMutexLocker>
 #include <QtDebug>
+
+QSet<QString> LeechCraft::Util::DBLock::LockedBases_;
+QMutex LeechCraft::Util::DBLock::LockedMutex_;
 
 LeechCraft::Util::DBLock::DBLock (QSqlDatabase& database)
 : Database_ (database)
@@ -37,10 +41,23 @@ LeechCraft::Util::DBLock::~DBLock ()
 
 	if (Good_ ? !Database_.commit () : !Database_.rollback ())
 		DumpError (Database_.lastError ());
+
+	{
+		QMutexLocker locker (&LockedMutex_);
+		LockedBases_.remove (Database_.connectionName ());
+	}
 }
 
 void LeechCraft::Util::DBLock::Init ()
 {
+	{
+		QMutexLocker locker (&LockedMutex_);
+		const auto& conn = Database_.connectionName ();
+		if (LockedBases_.contains (conn))
+			return;
+		LockedBases_ << conn;
+	}
+
 	if (!Database_.transaction ())
 	{
 		DumpError (Database_.lastError ());

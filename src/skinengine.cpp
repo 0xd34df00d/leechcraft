@@ -25,9 +25,10 @@
 #include <QFile>
 #include <QFileInfoList>
 #include <QApplication>
+#include <QTimer>
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
-#include <QTimer>
+#include "util/util.h"
 
 using namespace LeechCraft;
 
@@ -46,6 +47,9 @@ SkinEngine::SkinEngine ()
 	QIcon::setThemeSearchPaths (QStringList (qApp->applicationDirPath () + "/icons/"));
 #endif
 
+	const QDir& dir = Util::CreateIfNotExists ("/icons/");
+	QIcon::setThemeSearchPaths (QStringList (dir.absolutePath ()) + QIcon::themeSearchPaths ());
+
 	FindIconSets ();
 }
 
@@ -53,10 +57,6 @@ SkinEngine& SkinEngine::Instance ()
 {
 	static SkinEngine e;
 	return e;
-}
-
-SkinEngine::~SkinEngine ()
-{
 }
 
 QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconOff) const
@@ -76,6 +76,7 @@ QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconO
 			Q_FOREACH (const QSize& size, off.availableSizes ())
 				result.addPixmap (off.pixmap (size, QIcon::Normal, QIcon::On));
 		}
+		IconCache_ [namePair] = result;
 		return result;
 	}
 

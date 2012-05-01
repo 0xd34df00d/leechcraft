@@ -25,9 +25,16 @@
 #include <QVariant>
 #include <QMap>
 
+class QTimer;
+
 namespace lastfm
 {
 	class Audioscrobbler;
+}
+
+namespace Media
+{
+	struct AudioInfo;
 }
 
 class QNetworkAccessManager;
@@ -38,10 +45,13 @@ namespace Lastfmscrobble
 {
 	struct MediaMeta
 	{
-		explicit MediaMeta (const QMap<QString, QVariant>& tagMap);
 		QString Artist_, Album_, Title_, Genre_, Date_;
 		int TrackNumber_;
 		int Length_;
+
+		MediaMeta ();
+		explicit MediaMeta (const QMap<QString, QVariant>& tagMap);
+		explicit MediaMeta (const Media::AudioInfo& tagMap);
 	};
 
 	class LastFMSubmitter : public QObject
@@ -50,6 +60,8 @@ namespace Lastfmscrobble
 
 		std::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
 		QString Password_;
+
+		QTimer *SubmitTimer_;
 	public:
 		LastFMSubmitter (QObject *parent = 0);
 
@@ -57,10 +69,14 @@ namespace Lastfmscrobble
 		void SetUsername (const QString& username);
 		void SetPassword (const QString& password);
 		bool IsConnected () const;
+
+		void Prepare (const MediaMeta&);
+		void Clear ();
 	public slots:
 		void sendTrack (const MediaMeta& info);
 		void submit ();
 	private slots:
+		void checkFlushQueue (int);
 		void getSessionKey ();
 	signals:
 		void status (int code);

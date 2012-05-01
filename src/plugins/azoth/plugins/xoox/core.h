@@ -75,6 +75,7 @@ namespace Xoox
 		void handleItemsAdded (const QList<QObject*>&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

@@ -20,6 +20,7 @@
 #include <util/util.h>
 #include "core.h"
 #include "xmlparsers.h"
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -141,6 +142,27 @@ namespace LackMan
 				Qt::UniqueConnection);
 	}
 
+	void RepoInfoFetcher::ScheduleFetchPackageInfo (const QUrl& url,
+			const QString& name,
+			const QList<QString>& newVers,
+			int componentId)
+	{
+		ScheduledPackageFetch f =
+		{
+			url,
+			name,
+			newVers,
+			componentId
+		};
+
+		if (ScheduledPackages_.isEmpty ())
+			QTimer::singleShot (0,
+					this,
+					SLOT (rotatePackageFetchQueue ()));
+
+		ScheduledPackages_ << f;
+	}
+
 	void RepoInfoFetcher::FetchPackageInfo (const QUrl& baseUrl,
 			const QString& packageName,
 			const QList<QString>& newVersions,
@@ -199,6 +221,18 @@ namespace LackMan
 				Qt::UniqueConnection);
 	}
 
+	void RepoInfoFetcher::rotatePackageFetchQueue ()
+	{
+		if (ScheduledPackages_.isEmpty ())
+			return;
+
+		const auto& f = ScheduledPackages_.takeFirst ();
+		FetchPackageInfo (f.BaseUrl_, f.PackageName_, f.NewVersions_, f.ComponentId_);
+
+		if (!ScheduledPackages_.isEmpty ())
+			QTimer::singleShot (50, this, SLOT (rotatePackageFetchQueue ()));
+	}
+
 	void RepoInfoFetcher::handleRIFinished (int id)
 	{
 		if (!PendingRIs_.contains (id))
@@ -218,7 +252,11 @@ namespace LackMan
 				SIGNAL (error (QProcess::ProcessError)),
 				this,
 				SLOT (handleUnarchError (QProcess::ProcessError)));
+#ifdef Q_OS_WIN32
+		unarch->start ("7za", QStringList ("e") << "-so" << name);
+#else
 		unarch->start ("gunzip", QStringList ("-c") << name);
+#endif
 	}
 
 	void RepoInfoFetcher::handleRIRemoved (int id)
@@ -264,7 +302,11 @@ namespace LackMan
 				SIGNAL (error (QProcess::ProcessError)),
 				this,
 				SLOT (handleUnarchError (QProcess::ProcessError)));
+#ifdef Q_OS_WIN32
+		unarch->start ("7za", QStringList ("e") << "-so" << pc.Location_);
+#else
 		unarch->start ("gunzip", QStringList ("-c") << pc.Location_);
+#endif
 	}
 
 	void RepoInfoFetcher::handleComponentRemoved (int id)
@@ -309,7 +351,11 @@ namespace LackMan
 				SIGNAL (error (QProcess::ProcessError)),
 				this,
 				SLOT (handleUnarchError (QProcess::ProcessError)));
+#ifdef Q_OS_WIN32
+		unarch->start ("7za", QStringList ("e") << "-so" << pp.Location_);
+#else
 		unarch->start ("gunzip", QStringList ("-c") << pp.Location_);
+#endif
 	}
 
 	void RepoInfoFetcher::handlePackageRemoved (int id)
@@ -466,6 +512,12 @@ namespace LackMan
 				<< "with"
 				<< error
 				<< qobject_cast<QProcess*> (sender ())->readAllStandardError ();
+		emit gotEntity (Util::MakeNotification (tr ("Component unpack error"),
+					tr ("Unable to unpack file. Exit code: %1. "
+						"Problematic file is at %2.")
+						.arg (error)
+						.arg (sender ()->property ("Filename").toString ()),
+					PCritical_));
 	}
 }
 }

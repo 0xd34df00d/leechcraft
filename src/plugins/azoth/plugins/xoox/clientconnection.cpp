@@ -38,6 +38,7 @@
 #include <QXmppCallManager.h>
 #include <util/util.h>
 #include <util/socketerrorstrings.h>
+#include <util/sysinfo.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -69,6 +70,8 @@
 #include "useravatarmanager.h"
 #include "msgarchivingmanager.h"
 #include "sdmanager.h"
+#include "xep0232handler.h"
+#include "pepmicroblog.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -148,10 +151,12 @@ namespace Xoox
 		PubSubManager_->RegisterCreator<UserMood> ();
 		PubSubManager_->RegisterCreator<UserTune> ();
 		PubSubManager_->RegisterCreator<UserLocation> ();
+		PubSubManager_->RegisterCreator<PEPMicroblog> ();
 		PubSubManager_->SetAutosubscribe<UserActivity> (true);
 		PubSubManager_->SetAutosubscribe<UserMood> (true);
 		PubSubManager_->SetAutosubscribe<UserTune> (true);
 		PubSubManager_->SetAutosubscribe<UserLocation> (true);
+		PubSubManager_->SetAutosubscribe<PEPMicroblog> (true);
 
 		connect (PubSubManager_,
 				SIGNAL (gotEvent (const QString&, PEPEventBase*)),
@@ -189,10 +194,25 @@ namespace Xoox
 
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
 
-		Client_->versionManager ().setClientName ("LeechCraft Azoth");
-		Client_->versionManager ().setClientVersion (Core::Instance ()
-					.GetProxy ()->GetVersion ());
-		Client_->versionManager ().setClientOs (ProxyObject_->GetOSName ());
+		const auto& sysInfo = Util::SysInfo::GetOSNameSplit ();
+		auto& vm = Client_->versionManager ();
+		vm.setClientName ("LeechCraft Azoth");
+		vm.setClientVersion (Core::Instance ().GetProxy ()->GetVersion ());
+		vm.setClientOs (sysInfo.first + ' ' + sysInfo.second);
+
+		XEP0232Handler::SoftwareInformation si =
+		{
+			64,
+			64,
+			QUrl ("http://leechcraft.org/leechcraft.png"),
+			QString (),
+			"image/png",
+			sysInfo.first,
+			sysInfo.second,
+			vm.clientName (),
+			vm.clientVersion ()
+		};
+		DiscoveryManager_->setInfoForm (XEP0232Handler::ToDataForm (si));
 
 		connect (Client_,
 				SIGNAL (connected ()),
@@ -330,12 +350,17 @@ namespace Xoox
 				state.State_ == SOffline)
 			Client_->setClientPresence (pres);
 
-		if (presType != QXmppPresence::Unavailable)
-			Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-				rh->SetState (state);
-		else
-			Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-				rh->Leave (QString (), false);
+		if (state.State_ == SOffline &&
+				!IsConnected_ &&
+				!FirstTimeConnect_)
+		{
+			emit statusChanged (EntryStatus (SOffline, state.Status_));
+			emit resetClientConnection ();
+			return;
+		}
+
+		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+			rh->SetPresence (pres);
 
 		if (!IsConnected_ &&
 				state.State_ != SOffline)
@@ -372,6 +397,7 @@ namespace Xoox
 				ODSEntries_ [jid] = entry;
 				entry->Convert2ODS ();
 			}
+			SelfContact_->RemoveVariant (OurResource_);
 		}
 	}
 
@@ -1162,6 +1188,11 @@ namespace Xoox
 		}
 		else
 		{
+			Q_FOREACH (const auto& extension, msg.extensions ())
+				if (extension.tagName () == "x" &&
+						extension.attribute ("xmlns") == "jabber:x:conference")
+					return;
+
 			qWarning () << Q_FUNC_INFO
 					<< "could not find source for"
 					<< msg.from ()
@@ -1191,7 +1222,8 @@ namespace Xoox
 				qWarning () << Q_FUNC_INFO
 						<< "unknown PEP event source"
 						<< from
-						<< JID2CLEntry_.keys ();
+						<< "; known entries:"
+						<< JID2CLEntry_.keys ().size ();
 		}
 		else
 			JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
@@ -1435,7 +1467,8 @@ namespace Xoox
 	void ClientConnection::HandleError (const QXmppIq& iq)
 	{
 		const QXmppStanza::Error& error = iq.error ();
-		if (error.condition () == QXmppStanza::Error::FeatureNotImplemented)
+		if (error.condition () == QXmppStanza::Error::FeatureNotImplemented ||
+				error.condition () == QXmppStanza::Error::ItemNotFound)
 		{
 			// Whatever it is, it just keeps appearing, hz.
 			return;
@@ -1489,11 +1522,13 @@ namespace Xoox
 		if (!AwaitingPacketCallbacks_.contains (iq.from ()))
 			return;
 
-		const PacketID2Callback_t& cbs = AwaitingPacketCallbacks_ [iq.from ()];
+		PacketID2Callback_t& cbs = AwaitingPacketCallbacks_ [iq.from ()];
 		if (!cbs.contains (iq.id ()))
 			return;
 
-		const PacketCallback_t& cb = cbs [iq.id ()];
+		const PacketCallback_t& cb = cbs.take (iq.id ());
+		if (cbs.isEmpty ())
+			AwaitingPacketCallbacks_.remove (iq.from ());
 		if (!cb.first)
 			return;
 

@@ -59,7 +59,7 @@ namespace LackMan
 		QSqlQuery QueryRemovePackageArchiver_;
 		QSqlQuery QueryHasLocation_;
 		QSqlQuery QueryAddLocation_;
-		QSqlQuery QueryRemovePackageFromLocations_;
+		QSqlQuery QueryRemovePackageFromLocation_;
 		QSqlQuery QueryClearTags_;
 		QSqlQuery QueryAddTag_;
 		QSqlQuery QueryClearPackageInfos_;
@@ -84,6 +84,7 @@ namespace LackMan
 
 		int CountPackages (const QUrl& repoUrl);
 
+		QSet<int> GetInstalledPackagesIDs ();
 		InstalledDependencyInfoList GetInstalledPackages ();
 
 		int FindRepo (const QUrl& repoUrl);
@@ -116,6 +117,7 @@ namespace LackMan
 
 		bool HasLocation (int packageId, int componentId);
 		void AddLocation (int packageId, int componentId);
+		void RemoveLocation (int packageId, int componentId);
 
 		void AddToInstalled (int);
 		void RemoveFromInstalled (int);

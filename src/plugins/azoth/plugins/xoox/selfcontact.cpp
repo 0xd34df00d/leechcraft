@@ -122,7 +122,8 @@ namespace Xoox
 	{
 		Prio2Status_.remove (Prio2Status_.key (resource));
 		CurrentStatus_.remove (resource);
-		emit availableVariantsChanged (Variants ());
+
+		EntryBase::SetStatus (EntryStatus (SOffline, QString ()), resource);
 	}
 
 	QString SelfContact::GetJID () const

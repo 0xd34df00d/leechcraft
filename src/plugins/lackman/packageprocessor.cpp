@@ -345,13 +345,20 @@ namespace LackMan
 		QString dirname = Util::GetTemporaryName ("lackman_stagingarea");
 		QStringList args;
 #ifdef Q_OS_WIN32
-		args << "x";
+		args << "x"
+			<< "-ttar"
+			<< "-si";
 
-		QString outDirArg("-o");
-		outDirArg.append(dirname);
+		QString outDirArg ("-o");
+		outDirArg.append (dirname);
 		args << outDirArg;
 
-		args << path;
+		QProcess *firstStep = new QProcess (unarch);
+		firstStep->setStandardOutputProcess (unarch);
+		QStringList firstStepArgs;
+		firstStepArgs << "x"
+			<< "-so"
+			<< path;
 #else
 		if (archiver == "lzma")
 			args << "--lzma";
@@ -385,6 +392,7 @@ namespace LackMan
 
 #ifdef Q_OS_WIN32
 		QString command = "7za";
+		firstStep->start (command, firstStepArgs);
 #else
 		QString command = "tar";
 #endif

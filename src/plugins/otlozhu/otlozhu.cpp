@@ -18,8 +18,10 @@
 
 #include "otlozhu.h"
 #include <QIcon>
+#include <util/util.h>
 #include "todotab.h"
 #include "core.h"
+#include "deltagenerator.h"
 
 namespace LeechCraft
 {
@@ -27,6 +29,7 @@ namespace Otlozhu
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("otlozhu");
 		Core::Instance ().SetProxy (proxy);
 
 		connect (&Core::Instance (),
@@ -100,6 +103,33 @@ namespace Otlozhu
 			qWarning () << Q_FUNC_INFO
 					<< "unknown id"
 					<< id;
+	}
+
+	Sync::ChainIDs_t Plugin::AvailableChains () const
+	{
+		Sync::ChainIDs_t result;
+		result << GetUniqueID () + "_todos";
+		return result;
+	}
+
+	Sync::Payloads_t Plugin::GetAllDeltas (const Sync::ChainID_t&) const
+	{
+		return Core::Instance ().GetDeltaGenerator ()->GetAllDeltas ();
+	}
+
+	Sync::Payloads_t Plugin::GetNewDeltas (const Sync::ChainID_t&) const
+	{
+		return Core::Instance ().GetDeltaGenerator ()->GetNewDeltas ();
+	}
+
+	void Plugin::PurgeNewDeltas (const Sync::ChainID_t&, quint32 num)
+	{
+		Core::Instance ().GetDeltaGenerator ()->PurgeDeltas (num);
+	}
+
+	void Plugin::ApplyDeltas (const Sync::Payloads_t& deltas, const Sync::ChainID_t&)
+	{
+		Core::Instance ().GetDeltaGenerator ()->Apply (deltas);
 	}
 }
 }

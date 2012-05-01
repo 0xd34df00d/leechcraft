@@ -21,6 +21,8 @@
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/fusion/adapted.hpp>
 #include <QtDebug>
+#include "core.h"
+#include <interfaces/core/itagsmanager.h>
 
 namespace LeechCraft
 {
@@ -192,12 +194,17 @@ namespace Otlozhu
 			todo->SetTitle (AsQStrings ({ item ["SUMMARY"], item ["DESCRIPTION"] }));
 			todo->SetComment (AsQStrings ({ item ["COMMENT"], item ["DESCRIPTION"] }));
 			todo->SetPercentage (AsInt (item ["PERCENT-COMPLETE"]));
+
+			const QStringList& tags = AsQString (item ["CATEGORIES"])
+					.split (',', QString::SkipEmptyParts);
+			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
+			QStringList ids;
+			std::transform (tags.begin (), tags.end (), std::back_inserter (ids),
+					[tm] (const QString& tag) { return tm->GetID (tag); });
+			todo->SetTagIDs (ids);
+
 			result << todo;
 		}
-
-		qDebug () << Q_FUNC_INFO << result.size ();
-		Q_FOREACH (auto item, result)
-			qDebug () << item->GetTitle () << item->GetCreatedDate ();
 
 		return result;
 	}

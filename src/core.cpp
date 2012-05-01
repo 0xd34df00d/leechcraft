@@ -64,8 +64,6 @@
 #include "newtabmenumanager.h"
 #include "networkaccessmanager.h"
 #include "tabmanager.h"
-#include "directorywatcher.h"
-#include "clipboardwatcher.h"
 #include "localsockethandler.h"
 #include "storagebackend.h"
 #include "coreinstanceobject.h"
@@ -82,8 +80,6 @@ namespace LeechCraft
 	, DM_ (0)
 	, NetworkAccessManager_ (new NetworkAccessManager)
 	, StorageBackend_ (new SQLStorageBackend)
-	, DirectoryWatcher_ (new DirectoryWatcher)
-	, ClipboardWatcher_ (new ClipboardWatcher)
 	, LocalSocketHandler_ (new LocalSocketHandler)
 	, NewTabMenuManager_ (new NewTabMenuManager)
 	, CoreInstanceObject_ (new CoreInstanceObject)
@@ -104,15 +100,6 @@ namespace LeechCraft
 				SIGNAL (error (const QString&)),
 				this,
 				SIGNAL (error (const QString&)));
-
-		connect (DirectoryWatcher_.get (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SLOT (handleGotEntity (LeechCraft::Entity)));
-		connect (ClipboardWatcher_.get (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SLOT (handleGotEntity (LeechCraft::Entity)));
 
 		StorageBackend_->Prepare ();
 
@@ -154,8 +141,6 @@ namespace LeechCraft
 		IsShuttingDown_ = true;
 		LocalSocketHandler_.reset ();
 		XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
-		ClipboardWatcher_.reset ();
-		DirectoryWatcher_.reset ();
 
 		PluginManager_->Release ();
 		delete PluginManager_;

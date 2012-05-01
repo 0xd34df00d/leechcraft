@@ -80,6 +80,7 @@ SET (XOOX_SRCS
 	msgarchivingmanager.cpp
 	avatarsstorage.cpp
 	xep0232handler.cpp
+	pepmicroblog.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -142,6 +143,7 @@ SET (XOOX_HEADERS
 	msgarchivingmanager.h
 	avatarsstorage.h
 	xep0232handler.h
+	pepmicroblog.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

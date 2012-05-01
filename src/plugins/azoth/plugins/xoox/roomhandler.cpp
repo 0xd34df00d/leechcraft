@@ -24,6 +24,7 @@
 #include <QXmppMucManager.h>
 #include <QXmppClient.h>
 #include <QXmppConstants.h>
+#include <util/passutils.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
 #include "roomclentry.h"
@@ -35,6 +36,7 @@
 #include "glooxprotocol.h"
 #include "formbuilder.h"
 #include "sdmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -47,8 +49,10 @@ namespace Xoox
 			GlooxAccount* account)
 	: Account_ (account)
 	, MUCManager_ (Account_->GetClientConnection ()->GetMUCManager ())
+	, RoomJID_ (jid)
 	, Room_ (MUCManager_->addRoom (jid))
 	, CLEntry_ (new RoomCLEntry (this, Account_))
+	, HadRequestedPassword_ (false)
 	{
 		const QString& server = jid.split ('@', QString::SkipEmptyParts).value (1);
 		auto sdManager = Account_->GetClientConnection ()->GetSDManager ();
@@ -84,7 +88,7 @@ namespace Xoox
 
 	QString RoomHandler::GetRoomJID () const
 	{
-		return Room_->jid ();
+		return RoomJID_;
 	}
 
 	RoomCLEntry* RoomHandler::GetCLEntry ()
@@ -108,21 +112,10 @@ namespace Xoox
 		Nick2Entry_ [nick]->SetVCard (card);
 	}
 
-	void RoomHandler::SetState (const GlooxAccountState& state)
+	void RoomHandler::SetPresence (QXmppPresence pres)
 	{
-		if (state.State_ == SOffline)
-		{
-			Leave (state.Status_);
-			return;
-		}
-
-		QXmppPresence pres;
-		pres.setTo (GetRoomJID ());
-		pres.setType (QXmppPresence::Available);
-		pres.setStatus (QXmppPresence::Status (static_cast<QXmppPresence::Status::Type> (state.State_),
-				state.Status_,
-				state.Priority_));
-		Account_->GetClientConnection ()->GetClient ()->sendPacket (pres);
+		if (pres.type () == QXmppPresence::Unavailable)
+			Leave (pres.status ().statusText ());
 	}
 
 	/** @todo Detect kicks, bans and the respective actor.
@@ -290,23 +283,25 @@ namespace Xoox
 
 	void RoomHandler::HandlePasswordRequired ()
 	{
-		bool ok = false;
-		const QString& pass = QInputDialog::getText (0,
-				tr ("Authorization required"),
-				tr ("This room is password-protected. Please enter the "
-					"password required to join this room."),
-				QLineEdit::Normal,
-				QString (),
-				&ok);
-		if (!ok ||
-			pass.isEmpty ())
+		const auto& text = tr ("This room is password-protected. Please enter the "
+				"password required to join this room.");
+		const QString& pass = Util::GetPassword (GetPassKey (),
+				text, &Core::Instance (), !HadRequestedPassword_);
+		if (pass.isEmpty ())
 		{
 			Leave (QString ());
 			return;
 		}
 
+		HadRequestedPassword_ = true;
+
 		Room_->setPassword (pass);
 		Join ();
+	}
+
+	QString RoomHandler::GetPassKey () const
+	{
+		return "org.LeechCraft.Azoth.Xoox.MUCpass_" + CLEntry_->GetHumanReadableID ();
 	}
 
 	void RoomHandler::HandleErrorPresence (const QXmppPresence& pres, const QString& nick)
@@ -768,6 +763,8 @@ namespace Xoox
 	{
 		Account_->handleEntryRemoved (CLEntry_);
 		Account_->GetClientConnection ()->Unregister (this);
+		delete Room_;
+		Room_ = 0;
 		deleteLater ();
 	}
 }

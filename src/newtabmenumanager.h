@@ -43,12 +43,13 @@ namespace LeechCraft
 		NewTabMenuManager (QObject* = 0);
 
 		void AddObject (QObject*);
-		void HandleEmbedTabRemoved (QObject*);
 		void SetToolbarActions (QList<QList<QAction*>>);
 		void SingleRemoved (ITabWidget*);
 
 		QMenu* GetNewTabMenu () const;
 		QMenu* GetAdditionalMenu ();
+
+		void ToggleHide (ITabWidget*, bool hide);
 	private:
 		QString AccelerateName (QString);
 		void ToggleHide (QObject*, const QByteArray&, bool);

@@ -41,7 +41,7 @@ namespace Otlozhu
 
 	TodoItem_ptr TodoItem::Clone () const
 	{
-		TodoItem_ptr clone (new TodoItem);
+		TodoItem_ptr clone (new TodoItem (GetID ()));
 		clone->Title_ = Title_;
 		clone->Comment_ = Comment_;
 		clone->TagIDs_ = TagIDs_;
@@ -50,6 +50,95 @@ namespace Otlozhu
 		clone->Percentage_ = Percentage_;
 		clone->Deps_ = Deps_;
 		return clone;
+	}
+
+	void TodoItem::CopyFrom (const TodoItem_ptr item)
+	{
+		Title_ = item->Title_;
+		Comment_ = item->Comment_;
+		TagIDs_ = item->TagIDs_;
+		Created_ = item->Created_;
+		Due_ = item->Due_;
+		Percentage_ = item->Percentage_;
+		Deps_ = item->Deps_;
+	}
+
+	namespace
+	{
+		class Checker
+		{
+			const TodoItem *This_;
+			const TodoItem *That_;
+
+			QVariantMap Result_;
+		public:
+			Checker (const TodoItem *our, const TodoItem *that)
+			: This_ (our)
+			, That_ (that)
+			{
+			}
+
+			template<typename T>
+			Checker& operator() (const QString& name, T TodoItem::* g)
+			{
+				if (This_->*g != That_->*g)
+					Result_ [name] = This_->*g;
+				return *this;
+			}
+
+			operator QVariantMap () const
+			{
+				return Result_;
+			}
+		};
+	}
+
+	QVariantMap TodoItem::DiffWith (const TodoItem_ptr item) const
+	{
+		return Checker (this, item.get ())
+				("Title", &TodoItem::Title_)
+				("Comment", &TodoItem::Comment_)
+				("Tags", &TodoItem::TagIDs_)
+				("Deps", &TodoItem::Deps_)
+				("Created", &TodoItem::Created_)
+				("Due", &TodoItem::Due_)
+				("Percentage", &TodoItem::Percentage_);
+	}
+
+	namespace
+	{
+		class Applier
+		{
+			TodoItem *Item_;
+
+			const QVariantMap& Map_;
+		public:
+			Applier (TodoItem *item, const QVariantMap& map)
+			: Item_ (item)
+			, Map_ (map)
+			{
+			}
+
+			template<typename T>
+			Applier& operator() (const QString& name, T TodoItem::* g)
+			{
+				if (Map_.contains (name))
+					Item_->*g = Map_ [name].value<T> ();
+				return *this;
+			}
+		};
+	}
+
+	void TodoItem::ApplyDiff (const QVariantMap& map)
+	{
+		Applier (this, map)
+				("Title", &TodoItem::Title_)
+				("Comment", &TodoItem::Comment_)
+				("Tags", &TodoItem::TagIDs_)
+				("Deps", &TodoItem::Deps_)
+				("Created", &TodoItem::Created_)
+				("Due", &TodoItem::Due_)
+				("Percentage", &TodoItem::Percentage_);
 	}
 
 	TodoItem_ptr TodoItem::Deserialize (const QByteArray& data)

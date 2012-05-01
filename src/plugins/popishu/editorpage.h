@@ -42,7 +42,7 @@ namespace LeechCraft
 
 				static QObject* S_MultiTabsParent_;
 
-				QToolBar *Toolbar_;
+				std::unique_ptr<QToolBar> Toolbar_;
 				QMenu *DoctypeMenu_;
 				QMenu *RecentFilesMenu_;
 				QString Filename_;
@@ -68,7 +68,7 @@ namespace LeechCraft
 
 				void SetText (const QString&);
 				void SetLanguage (const QString&);
-				
+
 				void SetTemporaryDocument (bool);
 				QsciScintilla* GetTextEditor () const;
 			private slots:
