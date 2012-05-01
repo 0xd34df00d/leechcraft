@@ -64,6 +64,8 @@ namespace LMP
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+
+		Player* GetPlayer () const;
 	private:
 		void SetupToolbar ();
 		void SetupCollection ();
