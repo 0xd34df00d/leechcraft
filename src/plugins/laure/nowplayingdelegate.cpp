@@ -35,7 +35,7 @@ namespace Laure
 	{
 		const bool played = id.sibling (id.row (), PlayListColumns::StatusColumn)
 				.data (IsPlayingRole).toBool ();
-				
+
 		if (played)
 			painter->fillRect (opt.rect, Qt::gray);
 		

@@ -93,7 +93,7 @@ QSlider::groove:horizontal {
 				border: 1px solid #999999;
 				height: 8px;
 				background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-					stop:0 #B1B1B1, stop:1 #c4c4c4);
+					stop:0 palette(midlight), stop:1 palette(button));
 				margin: 2px 0;
 			}</string>
          </property>
@@ -156,15 +156,11 @@ QSlider::groove:horizontal {
 }
 
 QTreeView::item:hover {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e7effd, stop: 1 #cbdaf1);
+	background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 palette(highlight));
 }
 
-QTreeView::item:selected:active{
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6ea1f1, stop: 1 #567dbc);
-}
-
-QTreeView::item:selected:!active {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6b9be8, stop: 1 #577fbf);
+QTreeView::item:selected{
+background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 palette(highlight));
 }</string>
       </property>
      </widget>
