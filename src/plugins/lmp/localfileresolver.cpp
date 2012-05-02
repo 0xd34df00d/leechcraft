@@ -73,8 +73,8 @@ namespace LMP
 			ftl (tag->title ()),
 			genres,
 			audio ? audio->length () : 0,
-			tag->year (),
-			tag->track ()
+			static_cast<qint32> (tag->year ()),
+			static_cast<qint32> (tag->track ())
 		};
 		{
 			QWriteLocker locker (&CacheLock_);
