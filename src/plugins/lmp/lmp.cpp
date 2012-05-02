@@ -23,7 +23,9 @@
 #include <phonon/mediaobject.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <util/util.h>
 #include "playertab.h"
+#include "player.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -73,6 +75,22 @@ namespace LMP
 
 	void Plugin::SecondInit ()
 	{
+		Entity e = Util::MakeEntity (QVariant (), QString (), 0,
+				"x-leechcraft/global-action-register");
+		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_->GetPlayer ());
+
+		auto initShortcut = [&e, this] (const QByteArray& method, const QKeySequence& seq)
+		{
+			Entity thisE = e;
+			thisE.Additional_ ["ActionID"] = "LMP_Global_" + method;
+			thisE.Additional_ ["Method"] = method;
+			thisE.Additional_ ["Shortcut"] = QVariant::fromValue (seq);
+			emit gotEntity (thisE);
+		};
+		initShortcut (SLOT (togglePause ()), QString ("Meta+C"));
+		initShortcut (SLOT (previousTrack ()), QString ("Meta+V"));
+		initShortcut (SLOT (nextTrack ()), QString ("Meta+B"));
+		initShortcut (SLOT (stop ()), QString ("Meta+X"));
 	}
 
 	QByteArray Plugin::GetUniqueID () const

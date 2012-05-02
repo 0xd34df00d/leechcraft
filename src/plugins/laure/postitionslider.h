@@ -18,31 +18,19 @@
  **********************************************************************/
 
 #pragma once
-#include <QWidget>
+#include <QSlider>
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	/** @brief Provides a separate video frame widget.
-	 *
-	 * @author Minh Ngo <nlminhtl@gmail.com>
-	 */
-	class SeparatePlayer : public QWidget
+	class PostitionSlider : public QSlider
 	{
 		Q_OBJECT
-		
-		bool FullScreenMode_;
 	public:
-		/** @brief Constructs a new SeparatePlayer tab
-		 * with the given parent and flags.
-		 */
-		SeparatePlayer (QWidget *parent = 0);
+		PostitionSlider (QWidget *parent = 0);
 	protected:
-		void closeEvent (QCloseEvent*);
-		void keyPressEvent (QKeyEvent*);
-	signals:
-		void closed ();
+		void mouseReleaseEvent (QMouseEvent *event);
 	};
 }
 }

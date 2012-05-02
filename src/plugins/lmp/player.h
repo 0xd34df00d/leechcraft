@@ -78,11 +78,14 @@ namespace LMP
 
 		void SetPlayMode (PlayMode);
 
-		void Enqueue (const QStringList&);
-		void Enqueue (const QList<Phonon::MediaSource>&);
+		void Enqueue (const QStringList&, bool = true);
+		void Enqueue (const QList<Phonon::MediaSource>&, bool = true);
+		QList<Phonon::MediaSource> GetQueue () const;
+
+		void Dequeue (const QModelIndex&);
 	private:
 		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
-		void AddToPlaylistModel (QList<Phonon::MediaSource>);
+		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
 		void ApplyOrdering (QList<Phonon::MediaSource>&);
 	public slots:
 		void play (const QModelIndex&);

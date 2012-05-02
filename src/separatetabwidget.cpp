@@ -39,6 +39,7 @@
 #include "util/defaulthookproxy.h"
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
+#include "tabmanager.h"
 
 namespace LeechCraft
 {
@@ -489,6 +490,21 @@ namespace LeechCraft
 				MainTabBar_->SetTabClosable (index, false);
 			}
 		}
+	}
+
+	void SeparateTabWidget::mousePressEvent (QMouseEvent *event)
+	{
+		const bool mBack = event->button () == Qt::XButton1;
+		const bool mForward = event->button () == Qt::XButton2;
+		if (mBack || mForward)
+		{
+			mBack ? Core::Instance ().GetTabManager ()->rotateLeft () :
+					Core::Instance ().GetTabManager ()->rotateRight ();
+			event->accept ();
+			return;
+		}
+
+		QWidget::mousePressEvent (event);
 	}
 
 	bool SeparateTabWidget::event (QEvent *e)

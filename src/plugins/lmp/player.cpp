@@ -28,6 +28,9 @@
 #include "mediainfo.h"
 #include "localfileresolver.h"
 #include "util.h"
+#include "localcollection.h"
+#include "playlistmanager.h"
+#include "staticplaylistmanager.h"
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);
 
@@ -77,6 +80,9 @@ namespace LMP
 				SIGNAL (aboutToFinish ()),
 				this,
 				SLOT (handleSourceAboutToFinish ()));
+
+		auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
+		Enqueue (staticMgr->GetOnLoadPlaylist ());
 	}
 
 	QAbstractItemModel* Player::GetPlaylistModel () const
@@ -94,17 +100,56 @@ namespace LMP
 		PlayMode_ = playMode;
 	}
 
-	void Player::Enqueue (const QStringList& paths)
+	void Player::Enqueue (const QStringList& paths, bool sort)
 	{
 		QList<Phonon::MediaSource> sources;
 		std::transform (paths.begin (), paths.end (), std::back_inserter (sources),
 				[] (decltype (paths.front ()) path) { return Phonon::MediaSource (path); });
-		Enqueue (sources);
+		Enqueue (sources, sort);
 	}
 
-	void Player::Enqueue (const QList<Phonon::MediaSource>& sources)
+	void Player::Enqueue (const QList<Phonon::MediaSource>& sources, bool sort)
 	{
-		AddToPlaylistModel (sources);
+		AddToPlaylistModel (sources, sort);
+	}
+
+	QList<Phonon::MediaSource> Player::GetQueue () const
+	{
+		return CurrentQueue_;
+	}
+
+	void Player::Dequeue (const QModelIndex& index)
+	{
+		if (!index.isValid ())
+			return;
+
+		QList<Phonon::MediaSource> sources;
+		if (index.data (Role::IsAlbum).toBool ())
+			for (int i = 0; i < PlaylistModel_->rowCount (index); ++i)
+				sources << PlaylistModel_->index (i, 0, index).data (Role::Source).value<Phonon::MediaSource> ();
+		else
+			sources << index.data (Role::Source).value<Phonon::MediaSource> ();
+
+		Q_FOREACH (const auto& source, sources)
+		{
+			CurrentQueue_.removeAll (source);
+			auto item = Items_.take (source);
+			auto parent = item->parent ();
+			if (parent)
+			{
+				parent->removeRow (item->row ());
+				if (!parent->rowCount ())
+				{
+					AlbumRoots_.remove (AlbumRoots_.key (parent));
+					PlaylistModel_->removeRow (parent->row ());
+				}
+			}
+			else
+				PlaylistModel_->removeRow (item->row ());
+		}
+
+		Core::Instance ().GetPlaylistManager ()->
+				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 	}
 
 	namespace
@@ -144,7 +189,7 @@ namespace LMP
 				MediaInfo ();
 	}
 
-	void Player::AddToPlaylistModel (QList<Phonon::MediaSource> sources)
+	void Player::AddToPlaylistModel (QList<Phonon::MediaSource> sources, bool sort)
 	{
 		if (!CurrentQueue_.isEmpty ())
 		{
@@ -154,14 +199,18 @@ namespace LMP
 
 			auto newList = CurrentQueue_ + sources;
 			CurrentQueue_.clear ();
-			AddToPlaylistModel (newList);
+			AddToPlaylistModel (newList, sort);
 			return;
 		}
 
 		PlaylistModel_->setHorizontalHeaderLabels (QStringList (tr ("Playlist")));
 
-		ApplyOrdering (sources);
+		if (sort)
+			ApplyOrdering (sources);
 		CurrentQueue_ = sources;
+
+		Core::Instance ().GetPlaylistManager ()->
+				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
 
@@ -336,11 +385,21 @@ namespace LMP
 		AlbumRoots_.clear ();
 		CurrentQueue_.clear ();
 		Source_->clearQueue ();
+
+		Core::Instance ().GetPlaylistManager ()->
+				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 	}
 
 	void Player::handleSourceAboutToFinish ()
 	{
 		const auto& current = Source_->currentSource ();
+		const auto& path = current.fileName ();
+		if (!path.isEmpty ())
+			QMetaObject::invokeMethod (Core::Instance ().GetLocalCollection (),
+					"recordPlayedTrack",
+					Qt::QueuedConnection,
+					Q_ARG (QString, path));
+
 		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
 		switch (PlayMode_)
 		{

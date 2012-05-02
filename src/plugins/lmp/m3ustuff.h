@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,31 +17,21 @@
  **********************************************************************/
 
 #pragma once
-#include <QWidget>
+
+#include <QStringList>
+#include <phonon/mediasource.h>
 
 namespace LeechCraft
 {
-namespace Laure
+namespace LMP
 {
-	/** @brief Provides a separate video frame widget.
-	 *
-	 * @author Minh Ngo <nlminhtl@gmail.com>
-	 */
-	class SeparatePlayer : public QWidget
-	{
-		Q_OBJECT
-		
-		bool FullScreenMode_;
-	public:
-		/** @brief Constructs a new SeparatePlayer tab
-		 * with the given parent and flags.
-		 */
-		SeparatePlayer (QWidget *parent = 0);
-	protected:
-		void closeEvent (QCloseEvent*);
-		void keyPressEvent (QKeyEvent*);
-	signals:
-		void closed ();
-	};
+namespace M3U
+{
+	QStringList Read (const QString&);
+	void Write (const QString&, const QStringList&);
+
+	QList<Phonon::MediaSource> Read2Sources (const QString&);
+	void Write (const QString&, const QList<Phonon::MediaSource>&);
+}
 }
 }

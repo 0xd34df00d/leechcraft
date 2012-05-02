@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2011-2012  Minh Ngo
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2012 Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,32 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-#include <QWidget>
+#include "postitionslider.h"
+#include <QMouseEvent>
+#include <QStyle>
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	/** @brief Provides a separate video frame widget.
-	 *
-	 * @author Minh Ngo <nlminhtl@gmail.com>
-	 */
-	class SeparatePlayer : public QWidget
+	PostitionSlider::PostitionSlider (QWidget *parent)
+	: QSlider (parent)
 	{
-		Q_OBJECT
-		
-		bool FullScreenMode_;
-	public:
-		/** @brief Constructs a new SeparatePlayer tab
-		 * with the given parent and flags.
-		 */
-		SeparatePlayer (QWidget *parent = 0);
-	protected:
-		void closeEvent (QCloseEvent*);
-		void keyPressEvent (QKeyEvent*);
-	signals:
-		void closed ();
-	};
+	}
+
+	void PostitionSlider::mouseReleaseEvent (QMouseEvent *event)
+	{
+		const int val = QStyle::sliderValueFromPosition (minimum (), maximum (),
+				event->x (), width (), false);
+		setValue (val);
+		emit sliderMoved (val);
+	}
 }
 }

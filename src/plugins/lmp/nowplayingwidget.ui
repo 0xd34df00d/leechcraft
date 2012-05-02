@@ -106,6 +106,34 @@
          </property>
         </widget>
        </item>
+       <item row="4" column="1">
+        <widget class="QLabel" name="StatsCount_">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="LabelPlaybacks_">
+         <property name="text">
+          <string>Playbacks:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="LabelLastPlay_">
+         <property name="text">
+          <string>Last play:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLabel" name="LastPlay_">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>
@@ -124,7 +152,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QDeclarativeView" name="SimilarView_">
+    <widget class="LeechCraft::LMP::ArtistsInfoDisplay" name="SimilarView_">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -139,6 +167,19 @@
      </property>
     </widget>
    </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -146,6 +187,12 @@
    <class>QDeclarativeView</class>
    <extends>QGraphicsView</extends>
    <header>QtDeclarative/QDeclarativeView</header>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::ArtistsInfoDisplay</class>
+   <extends>QDeclarativeView</extends>
+   <header>artistsinfodisplay.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

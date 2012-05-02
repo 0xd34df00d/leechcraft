@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,31 +17,35 @@
  **********************************************************************/
 
 #pragma once
-#include <QWidget>
+
+#include <QObject>
+#include <QDir>
+#include <phonon/mediasource.h>
 
 namespace LeechCraft
 {
-namespace Laure
+namespace LMP
 {
-	/** @brief Provides a separate video frame widget.
-	 *
-	 * @author Minh Ngo <nlminhtl@gmail.com>
-	 */
-	class SeparatePlayer : public QWidget
+	class StaticPlaylistManager : public QObject
 	{
 		Q_OBJECT
-		
-		bool FullScreenMode_;
+
+		QDir PlaylistsDir_;
 	public:
-		/** @brief Constructs a new SeparatePlayer tab
-		 * with the given parent and flags.
-		 */
-		SeparatePlayer (QWidget *parent = 0);
-	protected:
-		void closeEvent (QCloseEvent*);
-		void keyPressEvent (QKeyEvent*);
+		StaticPlaylistManager (QObject* = 0);
+
+		void SetOnLoadPlaylist (const QList<Phonon::MediaSource>&);
+		QList<Phonon::MediaSource> GetOnLoadPlaylist () const;
+
+		void SaveCustomPlaylist (QString, const QList<Phonon::MediaSource>&);
+		QStringList EnumerateCustomPlaylists () const;
+		QList<Phonon::MediaSource> GetCustomPlaylist (const QString&) const;
+		void DeleteCustomPlaylist (const QString&);
+	private:
+		void WritePlaylist (const QString&, const QList<Phonon::MediaSource>&);
+		QList<Phonon::MediaSource> ReadPlaylist (const QString&) const;
 	signals:
-		void closed ();
+		void customPlaylistsChanged ();
 	};
 }
 }

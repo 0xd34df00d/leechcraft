@@ -138,8 +138,6 @@ namespace LackMan
 				fontMetrics.elidedText (shortDescr,
 						option.textElideMode, textWidth));
 
-		shiftFromTop += textHeight;
-
 		style->drawPrimitive (QStyle::PE_FrameGroupBox, &option, &p);
 
 		p.end ();

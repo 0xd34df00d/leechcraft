@@ -27,6 +27,7 @@ namespace LMP
 {
 	class LocalCollection;
 	class LocalFileResolver;
+	class PlaylistManager;
 
 	class Core : public QObject
 	{
@@ -36,6 +37,7 @@ namespace LMP
 
 		LocalFileResolver *Resolver_;
 		LocalCollection *Collection_;
+		PlaylistManager *PLManager_;
 
 		Core ();
 	public:
@@ -48,6 +50,7 @@ namespace LMP
 
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;
+		PlaylistManager* GetPlaylistManager () const;
 	public slots:
 		void rescan ();
 	private slots:

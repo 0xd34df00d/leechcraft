@@ -1176,8 +1176,6 @@ namespace Poshuku
 		QSize contentsSize = WebView_->page ()->mainFrame ()->contentsSize ();
 		if (contentsSize.width () < 800)
 			contentsSize.scale (800, 1, Qt::KeepAspectRatioByExpanding);
-		int maxHeight = 0.8 * QApplication::desktop ()->
-			screenGeometry (this).height () * static_cast<double> (contentsSize.width ()) / previewWidth;
 		contentsSize.setHeight (std::min (contentsSize.height (), 3000));
 		QPoint scroll = WebView_->page ()->mainFrame ()->scrollPosition ();
 		QSize oldSize = WebView_->page ()->viewportSize ();
@@ -1202,7 +1200,7 @@ namespace Poshuku
 			pixmap = pixmap.copy (0, 0, pixmap.width (), 3000);
 
 		pixmap = pixmap.scaledToWidth (previewWidth, Qt::SmoothTransformation);
-		maxHeight = 0.8 * QApplication::desktop ()->screenGeometry (this).height ();
+		int maxHeight = 0.8 * QApplication::desktop ()->screenGeometry (this).height ();
 		if (pixmap.height () > maxHeight)
 			pixmap = pixmap.copy (0, 0, previewWidth, maxHeight);
 		widget->setPixmap (pixmap);

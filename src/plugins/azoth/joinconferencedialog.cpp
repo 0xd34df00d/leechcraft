@@ -44,10 +44,9 @@ namespace Azoth
 			IProtocol *proto =
 					qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
-			QWidget *joiner = 0;
 			if (!Proto2Joiner_.contains (proto))
 			{
-				joiner = proto->GetMUCJoinWidget ();
+				QWidget *joiner = proto->GetMUCJoinWidget ();
 				if (!qobject_cast<IMUCJoinWidget*> (joiner))
 				{
 					qWarning () << Q_FUNC_INFO
@@ -59,8 +58,6 @@ namespace Azoth
 				}
 				Proto2Joiner_ [proto] = joiner;
 			}
-			else
-				joiner = Proto2Joiner_ [proto];
 
 			Q_FOREACH (const QVariant& item, supBms->GetBookmarkedMUCs ())
 			{

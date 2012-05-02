@@ -13,6 +13,7 @@ OPTION (TESTS_LAURE "Enable Laure tests" OFF)
 SET (QT_USE_QTGUI TRUE)
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
+
 IF (TESTS_LAURE)
 	ENABLE_TESTING ()
 	SET (QT_USE_QTTEST TRUE)
@@ -38,6 +39,7 @@ INCLUDE_DIRECTORIES (
 	)
 
 SET (SRCS
+	postitionslider.cpp
 	core.cpp
 	playliststatusdelegate.cpp
 	separateplayer.cpp
@@ -56,6 +58,7 @@ SET (SRCS
 	laure.cpp
 	)
 SET (HEADERS
+	postitionslider.h
 	core.h
 	playliststatusdelegate.h
 	separateplayer.h
