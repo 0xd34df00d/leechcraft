@@ -107,7 +107,7 @@ OPTION (ENABLE_DEADLYRICS "Build DeadLyrics, the client for the lyricwiki.org si
 OPTION (ENABLE_HISTORYHOLDER "Build HistoryHolder, the keeper of the history" ${WITH_PLUGINS})
 OPTION (ENABLE_HTTP "Build CSTP, the HTTP implementation" ${WITH_PLUGINS})
 OPTION (ENABLE_KINOTIFY "Build Kinotify, fancy kinetic notifications" ${WITH_PLUGINS})
-OPTION (ENABLE_LMP "Build LMP, the LeechCraft Media Previewer" ${WITH_PLUGINS})
+OPTION (ENABLE_LMP "Build LMP, the LeechCraft Music Player" ${WITH_PLUGINS})
 OPTION (ENABLE_NETWORKMONITOR "Build NetworkMonitor, the monitor for HTTP requests" ${WITH_PLUGINS})
 OPTION (ENABLE_NEWLIFE "Build NewLife, the settings importer" ${WITH_PLUGINS})
 OPTION (ENABLE_POSHUKU "Build Poshuku, the WWW Browser" ${WITH_PLUGINS})
