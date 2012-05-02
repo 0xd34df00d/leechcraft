@@ -72,7 +72,7 @@
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="LeechCraft::Laure::PostitionSlider" name="PositionSlider_">
+        <widget class="LeechCraft::Laure::PositionSlider" name="PositionSlider_">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -84,19 +84,18 @@
          </property>
          <property name="styleSheet">
           <string notr="true">QSlider::sub-page:horizontal {
-     border: 1px solid #999999;
-     height: 8px;
-     background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #1957f4);
-     margin: 2px 0;
-}
-
- QSlider::groove:horizontal {
-     border: 1px solid #999999;
-     height: 8px;
-     background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4);
-     margin: 2px 0;
- }
-</string>
+				border: 1px solid #999999;
+				height: 8px;
+				background: palette(highlight);
+				margin: 2px 0;
+			}
+QSlider::groove:horizontal {
+				border: 1px solid #999999;
+				height: 8px;
+				background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+					stop:0 #B1B1B1, stop:1 #c4c4c4);
+				margin: 2px 0;
+			}</string>
          </property>
          <property name="maximum">
           <number>10000</number>
@@ -150,6 +149,24 @@
         <height>0</height>
        </size>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QTreeView::item {
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+}
+
+QTreeView::item:hover {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e7effd, stop: 1 #cbdaf1);
+}
+
+QTreeView::item:selected:active{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6ea1f1, stop: 1 #567dbc);
+}
+
+QTreeView::item:selected:!active {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6b9be8, stop: 1 #577fbf);
+}</string>
+      </property>
      </widget>
     </widget>
    </item>
@@ -174,9 +191,9 @@
    <header>volumeslider.h</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Laure::PostitionSlider</class>
+   <class>LeechCraft::Laure::PositionSlider</class>
    <extends>QSlider</extends>
-   <header>postitionslider.h</header>
+   <header>positionslider.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

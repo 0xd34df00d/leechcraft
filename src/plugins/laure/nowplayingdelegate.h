@@ -18,7 +18,7 @@
  **********************************************************************/
 
 #pragma once
-#include <QItemDelegate>
+#include <QStyledItemDelegate>
 
 class QPainter;
 
@@ -33,7 +33,7 @@ namespace Laure
 	 * 
 	 * @author Minh Ngo <nlminhtl@gmail.com>
 	 */
-	class NowPlayingDelegate : public QItemDelegate
+	class NowPlayingDelegate : public QStyledItemDelegate
 	{
 		Q_OBJECT
 	public:
@@ -45,7 +45,7 @@ namespace Laure
 		/** @brief Renders the delegate using the given painter and
 		 * style option for the item specified by index.
 		 */
-		void paint (QPainter *painter, const QStyleOptionViewItem& option,
+		void paint (QPainter *painter, const QStyleOptionViewItem& opt,
 				const QModelIndex& id) const;
 	};
 }
