@@ -209,6 +209,16 @@ namespace Poshuku
 	{
 		qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());
 		qobject_cast<CustomWebPage*> (page ())->SetModifiers (e->modifiers ());
+
+		const bool mBack = e->button () == Qt::XButton1;
+		const bool mForward = e->button () == Qt::XButton2;
+		if (mBack || mForward)
+		{
+			pageAction (mBack ? QWebPage::Back : QWebPage::Forward)->trigger ();
+			e->accept ();
+			return;
+		}
+
 		QGraphicsWebView::mousePressEvent (e);
 	}
 
