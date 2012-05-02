@@ -34,7 +34,7 @@ namespace LMP
 	{
 		QString GetOnLoadPath ()
 		{
-			return Util::CreateIfNotExists ("lmp").filePath ("onload.m3u");
+			return Util::CreateIfNotExists ("lmp").filePath ("onload.m3u8");
 		}
 	}
 
@@ -53,7 +53,7 @@ namespace LMP
 		QString GetFileName (QString playlist)
 		{
 			playlist.remove ("../").remove ("./").remove ('/');
-			return playlist + ".m3u";
+			return playlist + ".m3u8";
 		}
 	}
 
@@ -66,7 +66,7 @@ namespace LMP
 
 	QStringList StaticPlaylistManager::EnumerateCustomPlaylists () const
 	{
-		QStringList result = PlaylistsDir_.entryList (QStringList ("*.m3u"));
+		QStringList result = PlaylistsDir_.entryList (QStringList ("*.m3u8"));
 		for (auto i = result.begin (), end = result.end (); i != end; ++i)
 			i->chop (4);
 		result.sort ();

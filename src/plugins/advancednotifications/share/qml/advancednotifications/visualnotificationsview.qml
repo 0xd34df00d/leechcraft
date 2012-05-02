@@ -69,10 +69,13 @@ Rectangle {
                 id: actionsListView
 
                 height: 20
+                width: parent.width
                 anchors.left: parent.left
                 anchors.leftMargin: eventPic.anchors.leftMargin
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 5
+
+                spacing: 5
 
                 orientation: ListView.Horizontal
 
@@ -87,7 +90,7 @@ Rectangle {
 
         Rectangle {
             height: actionsListView.height
-            width: actionText.width + 5
+            width: actionText.width
             smooth: true
             radius: 3
             color: "transparent"
@@ -97,6 +100,8 @@ Rectangle {
 
                 text: model.modelData.actionText
                 onClicked: { model.modelData.actionSelected() }
+
+                anchors.fill: parent
             }
         }
     }

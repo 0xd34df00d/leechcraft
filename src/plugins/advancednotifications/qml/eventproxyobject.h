@@ -33,17 +33,17 @@ namespace AdvancedNotifications
 		Q_PROPERTY (QUrl image READ image NOTIFY imageChanged);
 		Q_PROPERTY (QString extendedText READ extendedText NOTIFY extendedTextChanged);
 		Q_PROPERTY (QVariant eventActionsModel READ eventActionsModel NOTIFY eventActionsModelChanged);
-		
+
 		EventData E_;
 		QUrl CachedImage_;
 		QVariant ActionsModel_;
 	public:
 		EventProxyObject (const EventData&, QObject* = 0);
-		
+
 		int count () const;
 		QUrl image () const;
 		QString extendedText () const;
-		
+
 		QVariant eventActionsModel () const;
 	private slots:
 		void handleActionSelected ();
@@ -52,11 +52,11 @@ namespace AdvancedNotifications
 		void countChanged ();
 		void imageChanged ();
 		void extendedTextChanged ();
-		
+
 		void eventActionsModelChanged ();
-		
+
 		void dismissEvent ();
-		
+
 		void actionTriggered (const QString&, int);
 		void dismissEventRequested (const QString&);
 	};

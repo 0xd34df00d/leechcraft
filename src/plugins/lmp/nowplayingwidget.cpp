@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "nowplayingwidget.h"
-#include <QDeclarativeContext>
 #include "mediainfo.h"
 #include "core.h"
 #include "localcollection.h"
@@ -32,10 +31,9 @@ namespace LMP
 		Ui_.setupUi (this);
 	}
 
-	void NowPlayingWidget::SetSimilarModel (QAbstractItemModel *model)
+	ArtistsInfoDisplay* NowPlayingWidget::GetArtistsDisplay () const
 	{
-		Ui_.SimilarView_->rootContext ()->setContextProperty ("similarModel", model);
-		Ui_.SimilarView_->setSource (QUrl ("qrc:/lmp/resources/qml/SimilarView.qml"));
+		return Ui_.SimilarView_;
 	}
 
 	void NowPlayingWidget::SetAlbumArt (const QPixmap& px)

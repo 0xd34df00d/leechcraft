@@ -160,6 +160,11 @@ namespace LeechCraft
 				QStringList (tr ("Debian/Ubuntu maintainership."))
 					<< tr ("Small fixes."),
 				QList<int> () << 2011 << 2012);
+		contribs << ContributorInfo ("Dimitriy Ryazantcev", "DJm00n",
+				"djm00n@jabber.ru", "dimitriy.ryazantcev@gmail.com",
+				QStringList (tr ("Windows maintainership."))
+					<< tr ("Windows fixes."),
+				QList<int> () << 2011 << 2012);
 		contribs << ContributorInfo ("Elena Belova", "Zereal",
 				"elena.zereal@neko.im", "zereal25@gmail.com",
 				QStringList (tr ("French translations."))

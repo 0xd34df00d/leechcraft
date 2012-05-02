@@ -134,6 +134,7 @@ namespace LeechCraft
 		QWidget* GetPreviousWidget () const;
 	protected:
 		void resizeEvent (QResizeEvent *event);
+		void mousePressEvent (QMouseEvent *event);
 		bool event (QEvent *event);
 	private:
 		void Init ();
