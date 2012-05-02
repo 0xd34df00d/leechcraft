@@ -42,25 +42,33 @@ namespace LMP
 			return left.value<T> () < right.value<T> ();
 		}
 
+		struct Comparators
+		{
+			typedef std::function<bool (const QVariant&, const QVariant&)> Comparator_t;
+			QHash<LocalCollection::Role, Comparator_t> Role2Cmp_;
+
+			Comparators ()
+			{
+				Role2Cmp_ [LocalCollection::Role::ArtistName] = VarCompare<QString>;
+				Role2Cmp_ [LocalCollection::Role::AlbumName] = VarCompare<QString>;
+				Role2Cmp_ [LocalCollection::Role::AlbumYear] = VarCompare<int>;
+				Role2Cmp_ [LocalCollection::Role::TrackNumber] = VarCompare<int>;
+				Role2Cmp_ [LocalCollection::Role::TrackTitle] = VarCompare<QString>;
+				Role2Cmp_ [LocalCollection::Role::TrackPath] = VarCompare<QString>;
+			}
+		};
+
 		bool RoleCompare (const QModelIndex& left, const QModelIndex& right,
 				QList<LocalCollection::Role> roles)
 		{
-			typedef std::function<bool (const QVariant&, const QVariant&)> Comparator_t;
-			QHash<LocalCollection::Role, Comparator_t> role2cmp;
-			role2cmp [LocalCollection::Role::ArtistName] = VarCompare<QString>;
-			role2cmp [LocalCollection::Role::AlbumName] = VarCompare<QString>;
-			role2cmp [LocalCollection::Role::AlbumYear] = VarCompare<int>;
-			role2cmp [LocalCollection::Role::TrackNumber] = VarCompare<int>;
-			role2cmp [LocalCollection::Role::TrackTitle] = VarCompare<QString>;
-			role2cmp [LocalCollection::Role::TrackPath] = VarCompare<QString>;
-
+			static Comparators comparators;
 			while (!roles.isEmpty ())
 			{
 				auto role = roles.takeFirst ();
 				const auto& lData = left.data (role);
 				const auto& rData = right.data (role);
 				if (lData != rData)
-					return role2cmp [role] (lData, rData);
+					return comparators.Role2Cmp_ [role] (lData, rData);
 			}
 			return false;
 		}
