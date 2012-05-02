@@ -129,6 +129,11 @@ namespace LMP
 		return TabToolbar_;
 	}
 
+	Player* PlayerTab::GetPlayer () const
+	{
+		return Player_;
+	}
+
 	void PlayerTab::SetupToolbar ()
 	{
 		QAction *previous = new QAction (tr ("Previous track"), this);

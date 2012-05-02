@@ -44,9 +44,9 @@
 #include "interfaces/azoth/isupportmediacalls.h"
 #include "interfaces/azoth/imediacall.h"
 #include "interfaces/azoth/ihistoryplugin.h"
+#include "interfaces/azoth/imucperms.h"
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
-#include "interfaces/azoth/imucperms.h"
 #endif
 #include "core.h"
 #include "textedit.h"

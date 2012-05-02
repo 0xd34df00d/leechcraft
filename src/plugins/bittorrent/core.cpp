@@ -1803,7 +1803,9 @@ namespace LeechCraft
 						property ("AccurateFileProgress").toBool ())
 					flags |= libtorrent::torrent_handle::piece_granularity;
 				handle.file_progress (prbytes, flags);
+#if LIBTORRENT_VERSION_NUM >= 1600
 				const auto& storage = info.files ();
+#endif
 				for (auto i = info.begin_files (); i != info.end_files (); ++i)
 				{
 					FileInfo fi;

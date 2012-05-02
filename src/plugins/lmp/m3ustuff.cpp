@@ -18,7 +18,6 @@
 
 #include "m3ustuff.h"
 #include <QFile>
-#include <QTextCodec>
 #include <QFileInfo>
 #include <QDir>
 #include <QtDebug>
@@ -41,8 +40,6 @@ namespace M3U
 			return QStringList ();
 		}
 
-		auto codec = QTextCodec::codecForName ("Windows-1252");
-
 		QStringList result;
 		while (!file.atEnd ())
 		{
@@ -50,7 +47,7 @@ namespace M3U
 			if (line.startsWith ('#'))
 				continue;
 
-			result << codec->toUnicode (line);
+			result << QString::fromUtf8 (line.constData ());
 		}
 		return result;
 	}
@@ -67,9 +64,7 @@ namespace M3U
 			return;
 		}
 
-		auto codec = QTextCodec::codecForName ("Windows-1252");
-
-		file.write (codec->fromUnicode (lines.join ("\n")));
+		file.write (lines.join ("\n").toUtf8 ());
 	}
 
 	QList<Phonon::MediaSource> Read2Sources (const QString& path)
@@ -88,8 +83,8 @@ namespace M3U
 
 			src.replace ('\\', '/');
 
-			QFileInfo fi (src);
-			if (fi.suffix () == "m3u")
+			const QFileInfo fi (src);
+			if (fi.suffix () == "m3u" || fi.suffix () == "m3u8")
 				result += Read2Sources (m3uDir.absoluteFilePath (src));
 			else if (fi.isRelative ())
 				result << m3uDir.absoluteFilePath (src);

@@ -145,7 +145,7 @@ namespace p100q
 			return XmlSettingsManager::Instance ().property (name).toBool ();
 		};
 		const bool showRecommendButton = getProp ("RecommendButton");
-		const bool showAvatars = getProp ("Avatars");
+		const bool showAvatars = getProp ("ShowAvatars");
 		const bool showAddToBookmarkButton = getProp ("AddToBookmarkButton");
 		const bool showImg = getProp ("ShowImage");
 		const bool showPrivateMessageButton = getProp ("PrivateMessageButton");

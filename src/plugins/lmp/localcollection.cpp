@@ -36,42 +36,41 @@ namespace LMP
 {
 	namespace
 	{
-		template<LocalCollection::Role T>
-		struct Role2Type;
-
-		template<>
-		struct Role2Type<LocalCollection::Role::ArtistName> { typedef QString ValueType; };
-
-		template<>
-		struct Role2Type<LocalCollection::Role::AlbumName> { typedef QString ValueType; };
-
-		template<>
-		struct Role2Type<LocalCollection::Role::AlbumYear> { typedef int ValueType; };
-
-		template<>
-		struct Role2Type<LocalCollection::Role::TrackNumber> { typedef int ValueType; };
-
-		template<>
-		struct Role2Type<LocalCollection::Role::TrackTitle> { typedef QString ValueType; };
-
-		template<>
-		struct Role2Type<LocalCollection::Role::TrackPath> { typedef QString ValueType; };
-
-		template<>
-		struct Role2Type<LocalCollection::Role::Node> { typedef int ValueType; };
-
-		template<LocalCollection::Role Role = LocalCollection::Role::Node, LocalCollection::Role... Rest>
-		bool RoleCompare (const QModelIndex& left, const QModelIndex& right)
+		template<typename T>
+		bool VarCompare (const QVariant& left, const QVariant& right)
 		{
-			if (Role == LocalCollection::Role::Node)
-				return false;
+			return left.value<T> () < right.value<T> ();
+		}
 
-			const auto& lData = left.data (Role).value<typename Role2Type<Role>::ValueType> ();
-			const auto& rData = right.data (Role).value<typename Role2Type<Role>::ValueType> ();
-			if (lData != rData)
-				return lData < rData;
-			else
-				return RoleCompare<Rest...> (left, right);
+		struct Comparators
+		{
+			typedef std::function<bool (const QVariant&, const QVariant&)> Comparator_t;
+			QHash<LocalCollection::Role, Comparator_t> Role2Cmp_;
+
+			Comparators ()
+			{
+				Role2Cmp_ [LocalCollection::Role::ArtistName] = VarCompare<QString>;
+				Role2Cmp_ [LocalCollection::Role::AlbumName] = VarCompare<QString>;
+				Role2Cmp_ [LocalCollection::Role::AlbumYear] = VarCompare<int>;
+				Role2Cmp_ [LocalCollection::Role::TrackNumber] = VarCompare<int>;
+				Role2Cmp_ [LocalCollection::Role::TrackTitle] = VarCompare<QString>;
+				Role2Cmp_ [LocalCollection::Role::TrackPath] = VarCompare<QString>;
+			}
+		};
+
+		bool RoleCompare (const QModelIndex& left, const QModelIndex& right,
+				QList<LocalCollection::Role> roles)
+		{
+			static Comparators comparators;
+			while (!roles.isEmpty ())
+			{
+				auto role = roles.takeFirst ();
+				const auto& lData = left.data (role);
+				const auto& rData = right.data (role);
+				if (lData != rData)
+					return comparators.Role2Cmp_ [role] (lData, rData);
+			}
+			return false;
 		}
 
 		class CollectionSorter : public QSortFilterProxyModel
@@ -85,20 +84,25 @@ namespace LMP
 			bool lessThan (const QModelIndex& left, const QModelIndex& right) const
 			{
 				const auto type = left.data (LocalCollection::Role::Node).toInt ();
+				QList<LocalCollection::Role> roles;
 				switch (type)
 				{
 				case LocalCollection::NodeType::Artist:
-					return RoleCompare<LocalCollection::Role::ArtistName> (left, right);
+					roles << LocalCollection::Role::ArtistName;
+					break;
 				case LocalCollection::NodeType::Album:
-					return RoleCompare<LocalCollection::Role::AlbumYear,
-								LocalCollection::Role::AlbumName> (left, right);
+					roles << LocalCollection::Role::AlbumYear
+							<< LocalCollection::Role::AlbumName;
+					break;
 				case LocalCollection::NodeType::Track:
-					return RoleCompare<LocalCollection::Role::TrackNumber,
-								LocalCollection::Role::TrackTitle,
-								LocalCollection::Role::TrackPath> (left, right);
+					roles << LocalCollection::Role::TrackNumber
+							<< LocalCollection::Role::TrackTitle
+							<< LocalCollection::Role::TrackPath;
+					break;
 				default:
 					return QSortFilterProxyModel::lessThan (left, right);
 				}
+				return RoleCompare (left, right, roles);
 			}
 		};
 	}
