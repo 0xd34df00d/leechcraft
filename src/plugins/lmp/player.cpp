@@ -135,12 +135,17 @@ namespace LMP
 			CurrentQueue_.removeAll (source);
 			auto item = Items_.take (source);
 			auto parent = item->parent ();
-			parent->removeRow (item->row ());
-			if (!parent->rowCount ())
+			if (parent)
 			{
-				AlbumRoots_.remove (AlbumRoots_.key (parent));
-				PlaylistModel_->removeRow (parent->row ());
+				parent->removeRow (item->row ());
+				if (!parent->rowCount ())
+				{
+					AlbumRoots_.remove (AlbumRoots_.key (parent));
+					PlaylistModel_->removeRow (parent->row ());
+				}
 			}
+			else
+				PlaylistModel_->removeRow (item->row ());
 		}
 
 		Core::Instance ().GetPlaylistManager ()->
