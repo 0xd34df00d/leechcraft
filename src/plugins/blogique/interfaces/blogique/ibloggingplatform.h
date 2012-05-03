@@ -54,13 +54,30 @@ namespace Blogique
 			 */
 			BPFNone = 0x0,
 
-			/** This blogging platform doesn't provide API for supporting
-			 * registering new accounts.
+			/** This blogging platform provides API for supporting
+			 * registering new accounts from client.
 			 */
-			BPFNoAccountRegistration = 0x08
+			BPFSupportsRegistration = 0x1
 		};
-		
 		Q_DECLARE_FLAGS (BlogginPlatfromFeatures, BlogginPlatfromFeature);
+
+		/** This enum describes the options that may be selected by the
+		 * user when adding a new account.
+		 */
+		enum AccountAddOption
+		{
+			/** No custom options.
+			 */
+			AAONoOptions = 0,
+
+			/** User has chosen to register a new account (if the
+			 * protocol advertises BPFSupportsRegistration
+			 * feature).
+			 */
+			AAORegisterNewAccount = 0x01
+		};
+
+		Q_DECLARE_FLAGS (AccountAddOptions, AccountAddOption);
 		/** @brief Returns the protocol object as a QObject.
 		 *
 		 * @return Blogging platform object as QObject.
@@ -126,7 +143,7 @@ namespace Blogique
 		 *
 		 * @sa RegisterAccount()
 		 */
-		virtual QList<QWidget*> GetAccountRegistrationWidgets () = 0;
+		virtual QList<QWidget*> GetAccountRegistrationWidgets (IBloggingPlatform::AccountAddOptions) = 0;
 
 		/** @brief Adds an account with the given name and widgets.
 		 *
