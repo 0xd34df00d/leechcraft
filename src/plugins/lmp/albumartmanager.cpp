@@ -55,6 +55,7 @@ namespace LMP
 	{
 		auto provs = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<Media::IAlbumArtProvider*> ();
+		const auto& album = Queue_.takeFirst ();
 		Q_FOREACH (auto provObj, provs)
 		{
 			auto prov = qobject_cast<Media::IAlbumArtProvider*> (provObj);
@@ -63,7 +64,7 @@ namespace LMP
 					this,
 					SLOT (handleGotAlbumArt (Media::AlbumInfo, QList<QImage>)),
 					Qt::UniqueConnection);
-			prov->RequestAlbumArt (Queue_.takeFirst ());
+			prov->RequestAlbumArt (album);
 		}
 
 		if (!Queue_.isEmpty ())
