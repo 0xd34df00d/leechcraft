@@ -39,8 +39,9 @@ namespace LMP
 
 	void AlbumArtManager::CheckAlbumArt (const Collection::Artist& artist, Collection::Album_ptr album)
 	{
-		if (!album->CoverPath_.isEmpty () &&
-				QPixmap (album->CoverPath_).isNull ())
+		if ((!album->CoverPath_.isEmpty () &&
+				!QPixmap (album->CoverPath_).isNull ()) ||
+				album->CoverPath_ == "NOTFOUND")
 			return;
 
 		if (Queue_.isEmpty ())
@@ -66,6 +67,8 @@ namespace LMP
 					Qt::UniqueConnection);
 			prov->RequestAlbumArt (album);
 		}
+		if (!provs.isEmpty ())
+			NumRequests_ [album] = provs.size ();
 
 		if (!Queue_.isEmpty ())
 			QTimer::singleShot (500,
@@ -75,17 +78,20 @@ namespace LMP
 
 	void AlbumArtManager::handleGotAlbumArt (const Media::AlbumInfo& info, const QList<QImage>& images)
 	{
-		if (images.isEmpty ())
-			return;
-
-		auto image = images.first ();
-		if (image.isNull ())
-			return;
-
 		auto collection = Core::Instance ().GetLocalCollection ();
 		const auto id = collection->FindAlbum (info.Artist_, info.Album_);
 		if (id < 0)
 			return;
+
+		--NumRequests_ [info];
+
+		const auto& image = images.value (0);
+		if (image.isNull ())
+		{
+			if (!NumRequests_ [info])
+				collection->SetAlbumArt (id, "NOTFOUND");
+			return;
+		}
 
 		auto joined = info.Artist_ + "_-_" + info.Album_;
 		joined.replace (' ', '_');

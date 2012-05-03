@@ -33,6 +33,7 @@ namespace LMP
 
 		QDir AADir_;
 		QList<Media::AlbumInfo> Queue_;
+		QHash<Media::AlbumInfo, int> NumRequests_;
 	public:
 		AlbumArtManager (QObject* = 0);
 
