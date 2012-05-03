@@ -26,15 +26,19 @@ namespace LeechCraft
 {
 namespace Blogique
 {
+	class IAccount;
 	class IBloggingPlatform;
 
 	class Core : public QObject
 	{
+		Q_OBJECT
+
 		ICoreProxy_ptr Proxy_;
 		QObjectList BlogPlatformPlugins_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
+
 	public:
 		static Core& Instance ();
 
@@ -45,8 +49,14 @@ namespace Blogique
 		void AddPlugin (QObject *plugin);
 
 		QList<IBloggingPlatform*> GetBloggingPlatforms () const;
+		QList<IAccount*> GetAccounts () const;
+
 	private:
 		void AddBlogPlatformPlugin (QObject *plugin);
+
+	signals:
+		void accountAdded (IAccount *account);
+		void accountRemoved (IAccount *account);
 	};
 }
 }

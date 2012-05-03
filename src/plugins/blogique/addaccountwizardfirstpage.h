@@ -31,10 +31,11 @@ namespace Blogique
 		
 		Ui::AddAccountWizardFirstPage Ui_;
 		QList<QWidget*> Widgets_;
+
 	public:
 		AddAccountWizardFirstPage (QWidget* = 0);
-		
 		void initializePage ();
+
 	private slots:
 		void readdWidgets ();
 		void handleAccepted ();

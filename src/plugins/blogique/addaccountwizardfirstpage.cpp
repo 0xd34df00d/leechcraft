@@ -30,46 +30,49 @@ namespace Blogique
 	{
 		Ui_.setupUi (this);
 
-		connect (Ui_.ProtoBox_,
+		connect (Ui_.BloggingPlatformBox_,
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (readdWidgets ()));
+
 		connect (Ui_.RegisterAccount_,
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (readdWidgets ()));
 	}
-	
+
 	void AddAccountWizardFirstPage::initializePage ()
 	{
 		registerField ("AccountName*", Ui_.NameEdit_);
-		registerField ("AccountProto", Ui_.ProtoBox_);
+		registerField ("AccountBloggingPlatform", Ui_.BloggingPlatformBox_);
 		registerField ("RegisterNewAccount", Ui_.RegisterAccount_);
 
-		const QList<IBloggingPlatform*>& platforms = Core::Instance ().GetBloggingPlatforms ();
+		const QList<IBloggingPlatform*>& platforms = Core::Instance ()
+				.GetBloggingPlatforms ();
 		Q_FOREACH (IBloggingPlatform *platform, platforms)
 		{
-			if (platform->GetFeatures () & IBloggingPlatform::BPFNoAccountRegistration)
+			if (platform->GetFeatures () &
+					IBloggingPlatform::BPFNoAccountRegistration)
 				continue;
 
-			Ui_.ProtoBox_->addItem (platform->GetBloggingPlatformIcon (),
+			Ui_.BloggingPlatformBox_->addItem (platform->GetBloggingPlatformIcon (),
 					platform->GetBloggingPlatformName (),
 					QVariant::fromValue<QObject*> (platform->GetObject ()));
 		}
-			
+
 		connect (wizard (),
 				SIGNAL (accepted ()),
 				this,
 				SLOT (handleAccepted ()));
 	}
-	
+
 	void AddAccountWizardFirstPage::readdWidgets ()
 	{
-		const int idx = Ui_.ProtoBox_->currentIndex ();
+		const int idx = Ui_.BloggingPlatformBox_->currentIndex ();
 		if (idx == -1)
 			return;
 
-		QObject *obj = Ui_.ProtoBox_->itemData (idx).value<QObject*> ();
+		QObject *obj = Ui_.BloggingPlatformBox_->itemData (idx).value<QObject*> ();
 		IBloggingPlatform *platform = qobject_cast<IBloggingPlatform*> (obj);
 		if (!platform)
 		{
@@ -80,7 +83,8 @@ namespace Blogique
 			return;
 		}
 
-		Ui_.RegisterAccount_->setEnabled (!(platform->GetFeatures () & IBloggingPlatform::BPFNoAccountRegistration));
+		Ui_.RegisterAccount_->setEnabled (!(platform->GetFeatures () &
+				IBloggingPlatform::BPFNoAccountRegistration));
 
 		const int currentId = wizard ()->currentId ();
 		Q_FOREACH (const int id, wizard ()->pageIds ())
@@ -106,12 +110,26 @@ namespace Blogique
 			}
 			wizard ()->addPage (page);
 		}
-		
+
 		setFinalPage (false);
 	}
-	
+
 	void AddAccountWizardFirstPage::handleAccepted ()
 	{
+		QObject *obj = Ui_.BloggingPlatformBox_->
+				itemData (field ("AccountBloggingPlatform")
+						.toInt ()).value<QObject*> ();
+		IBloggingPlatform *ibp = qobject_cast<IBloggingPlatform*> (obj);
+		if (!ibp)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cast"
+					<< obj
+					<< "to IBloggingPlatform";
+			return;
+		}
+
+		ibp->RegisterAccount (Ui_.NameEdit_->text (), Widgets_);
 	}
 }
 }

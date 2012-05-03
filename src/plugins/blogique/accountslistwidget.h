@@ -29,14 +29,22 @@ namespace LeechCraft
 {
 namespace Blogique
 {
+	class IAccount;
 	class AccountsListWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::AccountsListWidget Ui_;
 		QStandardItemModel *AccountsModel_;
+		QHash<QStandardItem*, IAccount*> Item2Account_;
+		QHash<IAccount*, QStandardItem*> Account2Item_;
 	public:
 		AccountsListWidget (QWidget* = 0);
+
+	public slots:
+		void addAccount (IAccount *acc);
+		void handleAccountRemoved (IAccount *acc);
+
 	private slots:
 		void on_Add__released ();
 		void on_Modify__released ();

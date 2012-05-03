@@ -85,6 +85,11 @@ namespace Blogique
 		return result;
 	}
 
+	QList<IAccount*> Core::GetAccounts () const
+	{
+		return QList<IAccount*> ();
+	}
+
 	void Core::AddBlogPlatformPlugin (QObject *plugin)
 	{
 		IBloggingPlatformPlugin *ibpp = qobject_cast<IBloggingPlatformPlugin*> (plugin);

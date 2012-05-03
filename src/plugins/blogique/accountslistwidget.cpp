@@ -17,9 +17,14 @@
  **********************************************************************/
 
 #include "accountslistwidget.h"
+#include <QMessageBox>
 #include <QStandardItemModel>
+#include <QtDebug>
 #include <QWizard>
+#include "interfaces/blogique/ibloggingplatform.h"
+#include "interfaces/blogique/iaccount.h"
 #include "addaccountwizardfirstpage.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -31,7 +36,53 @@ namespace Blogique
 	{
 		Ui_.setupUi (this);
 
+		connect (&Core::Instance (),
+				SIGNAL (accountAdded (IAccount*)),
+				this,
+				SLOT (addAccount (IAccount*)));
+		connect (&Core::Instance (),
+				SIGNAL (accountRemoved (IAccount*)),
+				this,
+				SLOT (handleAccountRemoved (IAccount*)));
+
+		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+			addAccount (acc);
+
 		Ui_.Accounts_->setModel (AccountsModel_);
+	}
+
+	void AccountsListWidget::addAccount (IAccount *acc)
+	{
+		IBloggingPlatform *ibp = qobject_cast<IBloggingPlatform*> (acc->
+				GetParentBloggingPlatform ());
+
+		QStandardItem *item = new QStandardItem (acc->GetAccountName ());
+		item->setIcon (ibp ? ibp->GetBloggingPlatformIcon () : QIcon ());
+		item->setEditable (false);
+		AccountsModel_->appendRow (item);
+
+		Item2Account_ [item] = acc;
+		Account2Item_ [acc] = item;
+	}
+
+	void AccountsListWidget::handleAccountRemoved (IAccount *acc)
+	{
+		if (!Account2Item_.contains (acc))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "account"
+					<< acc->GetAccountName ()
+					<< acc->GetObject ()
+					<< "from"
+					<< sender ()
+					<< "not found here";
+			return;
+		}
+
+		QStandardItem *item = Account2Item_ [acc];
+		Item2Account_.remove (item);
+		AccountsModel_->removeRow (item->row ());
+		Account2Item_.remove (acc);
 	}
 
 	void AccountsListWidget::on_Add__released ()
@@ -46,10 +97,48 @@ namespace Blogique
 
 	void AccountsListWidget::on_Modify__released ()
 	{
+		QModelIndex index = Ui_.Accounts_->selectionModel ()->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		QStandardItem *item = AccountsModel_->itemFromIndex (index);
+		if (item &&
+				Item2Account_.contains (item))
+			Item2Account_ [item]->OpenConfigurationDialog ();
 	}
 
-	void AccountsListWidget::on_Delete__released()
+	void AccountsListWidget::on_Delete__released ()
 	{
+		QModelIndex index = Ui_.Accounts_->selectionModel ()->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		QStandardItem *item = AccountsModel_->itemFromIndex (index);
+		IAccount *acc = 0;
+		if (item &&
+				Item2Account_.contains (item))
+			acc = Item2Account_ [item];
+		else
+			return;
+
+		if (QMessageBox::question (this,
+				"LeechCraft",
+				tr ("Are you sure you want to remove the account %1?")
+						.arg (acc->GetAccountName ()),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
+		QObject *bpObj = acc->GetParentBloggingPlatform ();
+		IBloggingPlatform *ibp = qobject_cast<IBloggingPlatform*> (bpObj);
+		if (!ibp)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "parent blogging platform for"
+					<< acc->GetAccountID ()
+					<< "doesn't implement IBloggingPlatform";
+			return;
+		}
+		ibp->RemoveAccount (acc->GetObject ());
 	}
 }
 }
