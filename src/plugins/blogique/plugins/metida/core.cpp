@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
-#include "livejournalbloggingplatform.h"
+#include "ljbloggingplatform.h"
 
 namespace LeechCraft
 {
@@ -37,7 +37,7 @@ namespace Metida
 
 	void Core::CreateBloggingPlatfroms (QObject *parentPlatform)
 	{
-		LJPlatform_ = std::make_shared<LiveJournalBloggingPlatform> (parentPlatform);
+		LJPlatform_ = std::make_shared<LJBloggingPlatform> (parentPlatform);
 	}
 
 	void Core::SetCoreProxy (ICoreProxy_ptr proxy)

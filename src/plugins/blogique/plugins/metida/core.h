@@ -29,13 +29,13 @@ namespace Blogique
 {
 namespace Metida
 {
-	class LiveJournalBloggingPlatform;
+	class LJBloggingPlatform;
 
 	class Core : public QObject
 	{
 		ICoreProxy_ptr Proxy_;
 		QObjectList BlogPlatformPlugins_;
-		std::shared_ptr<LiveJournalBloggingPlatform> LJPlatform_;
+		std::shared_ptr<LJBloggingPlatform> LJPlatform_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
