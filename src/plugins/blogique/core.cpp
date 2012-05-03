@@ -19,6 +19,7 @@
 #include "core.h"
 #include <QtDebug>
 #include <interfaces/iplugin2.h>
+#include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
 
@@ -87,7 +88,21 @@ namespace Blogique
 
 	QList<IAccount*> Core::GetAccounts () const
 	{
-		return QList<IAccount*> ();
+		auto bloggingPlatforms = GetBloggingPlatforms ();
+		QList<IAccount*> result;
+		std::for_each (bloggingPlatforms.begin (), bloggingPlatforms.end (),
+				[&result] (decltype (bloggingPlatforms.front ()) bp)
+				{
+					const auto& accountsObjList = bp->GetRegisteredAccounts ();
+					std::transform (accountsObjList.begin (), accountsObjList.end (),
+							std::back_inserter (result),
+							[] (decltype (accountsObjList.front ()) accountObj)
+							{
+								return qobject_cast<IAccount*> (accountObj);
+							});
+				});
+		result.removeAll (0);
+		return result;
 	}
 
 	void Core::AddBlogPlatformPlugin (QObject *plugin)
