@@ -28,7 +28,7 @@ namespace Blogique
 	class AddAccountWizardFirstPage : public QWizardPage
 	{
 		Q_OBJECT
-		
+
 		Ui::AddAccountWizardFirstPage Ui_;
 		QList<QWidget*> Widgets_;
 

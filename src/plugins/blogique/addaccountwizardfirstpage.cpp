@@ -49,16 +49,11 @@ namespace Blogique
 
 		const QList<IBloggingPlatform*>& platforms = Core::Instance ()
 				.GetBloggingPlatforms ();
-		Q_FOREACH (IBloggingPlatform *platform, platforms)
-		{
-			if (platform->GetFeatures () &
-					IBloggingPlatform::BPFNoAccountRegistration)
-				continue;
 
+		Q_FOREACH (IBloggingPlatform *platform, platforms)
 			Ui_.BloggingPlatformBox_->addItem (platform->GetBloggingPlatformIcon (),
 					platform->GetBloggingPlatformName (),
 					QVariant::fromValue<QObject*> (platform->GetObject ()));
-		}
 
 		connect (wizard (),
 				SIGNAL (accepted ()),
@@ -83,8 +78,8 @@ namespace Blogique
 			return;
 		}
 
-		Ui_.RegisterAccount_->setEnabled (!(platform->GetFeatures () &
-				IBloggingPlatform::BPFNoAccountRegistration));
+		Ui_.RegisterAccount_->setEnabled (platform->GetFeatures () &
+				IBloggingPlatform::BPFSupportsRegistration);
 
 		const int currentId = wizard ()->currentId ();
 		Q_FOREACH (const int id, wizard ()->pageIds ())
@@ -92,7 +87,11 @@ namespace Blogique
 				wizard ()->removePage (id);
 		qDeleteAll (Widgets_);
 
-		Widgets_ = platform->GetAccountRegistrationWidgets ();
+		IBloggingPlatform::AccountAddOptions opts = IBloggingPlatform::AAONoOptions;
+		if (Ui_.RegisterAccount_->isChecked ())
+			opts |= IBloggingPlatform::AAORegisterNewAccount;
+
+		Widgets_ = platform->GetAccountRegistrationWidgets (opts);
 		if (!Widgets_.size ())
 			return;
 
