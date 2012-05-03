@@ -46,9 +46,11 @@ namespace Lastfmscrobble
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
+		const auto& albumInfo = reply->property ("AlbumInfo").value<Media::AlbumInfo> ();
 		QDomDocument doc;
 		if (!doc.setContent (reply->readAll ()))
 		{
+			emit gotAlbumArt (albumInfo, QList<QImage> ());
 			deleteLater ();
 			return;
 		}
@@ -70,6 +72,10 @@ namespace Lastfmscrobble
 				if (elem.attribute ("size") != size)
 					continue;
 
+				const auto& text = elem.text ();
+				if (text.isEmpty ())
+					continue;
+
 				QNetworkRequest req (QUrl (elem.text ()));
 				req.setPriority (QNetworkRequest::LowPriority);
 				auto imageReply = Proxy_->GetNetworkAccessManager ()->get (req);
@@ -82,6 +88,7 @@ namespace Lastfmscrobble
 			}
 		}
 
+		emit gotAlbumArt (albumInfo, QList<QImage> ());
 		deleteLater ();
 	}
 
