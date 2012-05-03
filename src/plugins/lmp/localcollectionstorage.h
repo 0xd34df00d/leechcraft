@@ -50,6 +50,8 @@ namespace LMP
 		QSqlQuery AddTrack_;
 		QSqlQuery AddGenre_;
 
+		QSqlQuery SetAlbumArt_;
+
 		QSqlQuery GetTrackStats_;
 		QSqlQuery UpdateTrackStats_;
 	public:
@@ -58,6 +60,8 @@ namespace LMP
 		void Clear ();
 		Collection::Artists_t AddToCollection (const QList<MediaInfo>&);
 		Collection::Artists_t Load ();
+
+		void SetAlbumArt (int, const QString&);
 
 		Collection::TrackStats GetTrackStats (int);
 		void RecordTrackPlayed (int);
