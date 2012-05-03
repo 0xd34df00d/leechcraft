@@ -71,6 +71,8 @@ namespace LMP
 	{
 		Model_->clear ();
 
+		setVisible (!infos.isEmpty ());
+
 		std::sort (infos.begin (), infos.end (),
 				[] (const Media::SimilarityInfo_t& left, const Media::SimilarityInfo_t& right)
 					{ return left.second > right.second; });

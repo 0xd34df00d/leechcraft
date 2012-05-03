@@ -353,7 +353,12 @@ namespace LMP
 			}
 		}
 
-		if (!Similars_.contains (info.Artist_))
+		if (info.Artist_.isEmpty ())
+		{
+			LastSimilar_.clear ();
+			FillSimilar (Media::SimilarityInfos_t ());
+		}
+		else if (!Similars_.contains (info.Artist_))
 		{
 			auto scrobblers = Core::Instance ().GetProxy ()->
 					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
