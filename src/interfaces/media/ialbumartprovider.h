@@ -21,6 +21,7 @@
 #include <QString>
 #include <QList>
 #include <QImage>
+#include <QHash>
 #include <QMetaType>
 
 namespace Media
@@ -30,6 +31,17 @@ namespace Media
 		QString Artist_;
 		QString Album_;
 	};
+
+	inline bool operator== (const AlbumInfo& a1, const AlbumInfo& a2)
+	{
+		return a1.Artist_ == a2.Artist_ &&
+			a1.Album_ == a2.Album_;
+	}
+
+	inline uint qHash (const AlbumInfo& info)
+	{
+		return qHash (info.Album_.toUtf8 () + '\0' + info.Artist_.toUtf8 ());
+	}
 
 	class IAlbumArtProvider
 	{
