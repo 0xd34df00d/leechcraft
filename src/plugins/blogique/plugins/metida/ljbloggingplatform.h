@@ -27,15 +27,18 @@ namespace Blogique
 {
 namespace Metida
 {
-	class LiveJournalBloggingPlatform: public QObject
-									, public IBloggingPlatform
+	class LJAccount;
+
+	class LJBloggingPlatform: public QObject
+							, public IBloggingPlatform
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Blogique::IBloggingPlatform)
 
 		QObject *ParentBlogginPlatfromPlugin_;
+		QList<LJAccount*> LJAccounts_;
 	public:
-		LiveJournalBloggingPlatform (QObject *parent = 0);
+		LJBloggingPlatform (QObject *parent = 0);
 		QObject* GetObject ();
 		BlogginPlatfromFeatures GetFeatures () const;
 		QObjectList GetRegisteredAccounts ();
@@ -44,9 +47,13 @@ namespace Metida
 		QIcon GetBloggingPlatformIcon () const;
 		QByteArray GetBloggingPlatformID () const;
 
-		QList<QWidget*> GetAccountRegistrationWidgets ();
+		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
 		void RemoveAccount (QObject *account);
+
+	private:
+		void saveAccounts ();
+
 	signals:
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);
