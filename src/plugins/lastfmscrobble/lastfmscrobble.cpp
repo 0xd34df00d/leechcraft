@@ -41,14 +41,13 @@ namespace Lastfmscrobble
 				"lastfmscrobblesettings.xml");
 
 		LFSubmitter_ = new LastFMSubmitter (this);
-
-		XmlSettingsManager::Instance ().RegisterObject ("lastfm.login",
-				this, "handleSubmitterInit");
-		handleSubmitterInit ();
 	}
 
 	void Plugin::SecondInit ()
 	{
+		XmlSettingsManager::Instance ().RegisterObject ("lastfm.login",
+				this, "handleSubmitterInit");
+		handleSubmitterInit ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
