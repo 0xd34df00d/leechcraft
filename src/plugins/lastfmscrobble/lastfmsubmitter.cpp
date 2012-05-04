@@ -149,7 +149,7 @@ namespace Lastfmscrobble
 		}
 	}
 
-	void LastFMSubmitter::Prepare (const MediaMeta& info)
+	void LastFMSubmitter::NowPlaying (const MediaMeta& info)
 	{
 		if (!Scrobbler_)
 			return;

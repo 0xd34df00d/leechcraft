@@ -70,7 +70,7 @@ namespace Lastfmscrobble
 		void SetPassword (const QString& password);
 		bool IsConnected () const;
 
-		void Prepare (const MediaMeta&);
+		void NowPlaying (const MediaMeta&);
 		void Clear ();
 	public slots:
 		void sendTrack (const MediaMeta& info);

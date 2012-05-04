@@ -102,7 +102,7 @@ namespace Lastfmscrobble
 
 	void Plugin::NowPlaying (const Media::AudioInfo& info)
 	{
-		LFSubmitter_->Prepare (MediaMeta (info));
+		LFSubmitter_->NowPlaying (MediaMeta (info));
 	}
 
 	void Plugin::PlaybackStopped ()
