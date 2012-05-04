@@ -24,6 +24,7 @@
 #include <QString>
 #include <QVariant>
 #include <QMap>
+#include <lastfm/Track>
 
 class QTimer;
 
@@ -62,6 +63,9 @@ namespace Lastfmscrobble
 		QString Password_;
 
 		QTimer *SubmitTimer_;
+
+		QList<lastfm::Track> SubmitQueue_;
+		lastfm::Track NextSubmit_;
 	public:
 		LastFMSubmitter (QObject *parent = 0);
 
@@ -72,6 +76,9 @@ namespace Lastfmscrobble
 
 		void NowPlaying (const MediaMeta&);
 		void Clear ();
+	private:
+		void LoadQueue ();
+		void SaveQueue () const;
 	public slots:
 		void sendTrack (const MediaMeta& info);
 		void submit ();
