@@ -72,6 +72,8 @@ namespace LMP
 		void SetupPlaylistsTab ();
 		void SetupFSBrowser ();
 		void SetupPlaylist ();
+		void SetNowPlaying (const MediaInfo&, const QPixmap&);
+		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
 	private slots:
 		void handleSongChanged (const MediaInfo&);

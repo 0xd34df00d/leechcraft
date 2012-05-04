@@ -27,6 +27,7 @@
 #include "lastfmsubmitter.h"
 #include "xmlsettingsmanager.h"
 #include "pendingsimilarartists.h"
+#include "albumartfetcher.h"
 
 namespace LeechCraft
 {
@@ -40,14 +41,13 @@ namespace Lastfmscrobble
 				"lastfmscrobblesettings.xml");
 
 		LFSubmitter_ = new LastFMSubmitter (this);
-
-		XmlSettingsManager::Instance ().RegisterObject ("lastfm.login",
-				this, "handleSubmitterInit");
-		handleSubmitterInit ();
 	}
 
 	void Plugin::SecondInit ()
 	{
+		XmlSettingsManager::Instance ().RegisterObject ("lastfm.login",
+				this, "handleSubmitterInit");
+		handleSubmitterInit ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -102,7 +102,7 @@ namespace Lastfmscrobble
 
 	void Plugin::NowPlaying (const Media::AudioInfo& info)
 	{
-		LFSubmitter_->Prepare (MediaMeta (info));
+		LFSubmitter_->NowPlaying (MediaMeta (info));
 	}
 
 	void Plugin::PlaybackStopped ()
@@ -113,6 +113,20 @@ namespace Lastfmscrobble
 	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)
 	{
 		return new PendingSimilarArtists (name, num, this);
+	}
+
+	QString Plugin::GetAlbumArtProviderName () const
+	{
+		return GetServiceName ();
+	}
+
+	void Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
+	{
+		auto fetcher = new AlbumArtFetcher (album, Proxy_);
+		connect (fetcher,
+				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
+				this,
+				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)));
 	}
 
 	void Plugin::handleSubmitterInit ()
@@ -128,7 +142,8 @@ namespace Lastfmscrobble
 					tr ("Enter password for Last.fm account with login %1:")
 						.arg (login),
 					this);
-			return;
+			if (password.isEmpty ())
+				return;
 		}
 
 		LFSubmitter_->SetPassword (password);

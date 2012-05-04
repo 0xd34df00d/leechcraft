@@ -23,6 +23,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/media/iaudioscrobbler.h>
+#include <interfaces/media/ialbumartprovider.h>
 
 namespace LeechCraft
 {
@@ -35,12 +36,14 @@ namespace Lastfmscrobble
 				, public IEntityHandler
 				, public IHaveSettings
 				, public Media::IAudioScrobbler
+				, public Media::IAlbumArtProvider
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IEntityHandler
 				IHaveSettings
-				Media::IAudioScrobbler)
+				Media::IAudioScrobbler
+				Media::IAlbumArtProvider)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		LastFMSubmitter *LFSubmitter_;
@@ -63,11 +66,16 @@ namespace Lastfmscrobble
 		void NowPlaying (const Media::AudioInfo&);
 		void PlaybackStopped ();
 		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&, int);
+
+		QString GetAlbumArtProviderName () const;
+		void RequestAlbumArt (const Media::AlbumInfo& album) const;
 	private slots:
 		void handleSubmitterInit ();
 	signals:
-		void gotEntity (const Entity&);
-		void delegateEntity (const Entity&, int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+
+		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 	};
 }
 }
