@@ -17,12 +17,14 @@ SET (XTAZY_SRCS
 	tunesourcebase.cpp
 	filesource.cpp
 	xmlsettingsmanager.cpp
+	lcsource.cpp
 	)
 SET (XTAZY_HEADERS
 	xtazy.h
 	tunesourcebase.h
 	filesource.h
 	xmlsettingsmanager.h
+	lcsource.h
 	)
 SET (XTAZY_RESOURCES azothxtazyresources.qrc)
 CreateTrVars ("azoth_xtazy" "en;es;ru_RU;uk_UA" XTAZY_TRANSLATIONS XTAZY_COMPILED_TRANSLATIONS)
