@@ -45,11 +45,11 @@ namespace p100q
 				"azothp100qsettings.xml");
 
 		PstoCommentRX_ =  QRegExp ("#[a-z]+/[0-9]+[:]", Qt::CaseInsensitive);
-		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)([^a-zA-Z0-9+\\-\"<]|<br)", Qt::CaseInsensitive);
-		PostAuthorRX_ = QRegExp ("<br />@([\\w\\-]+)([^a-zA-Z0-9+\\-\"<]|<br)", Qt::CaseInsensitive);
-		PostRX_ = QRegExp ("#([a-zA-Z0-9]+)([^a-zA-Z0-9/+\\-\"<]|<br)", Qt::CaseInsensitive);
-		PostByUserRX_ = QRegExp ("\\s#([a-zA-Z0-9]+)", Qt::CaseInsensitive);
-		CommentRX_ = QRegExp ("#([a-zA-Z0-9]+)/([0-9]+)", Qt::CaseInsensitive);
+		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)", Qt::CaseInsensitive);
+		PostAuthorRX_ = QRegExp ("<br />@([\\w\\-]+)", Qt::CaseInsensitive);
+		PostRX_ = QRegExp ("#([a-zA-Z]+)[\\+ :]", Qt::CaseInsensitive);
+		PostByUserRX_ = QRegExp ("\\s#([a-zA-Z]+)", Qt::CaseInsensitive);
+		CommentRX_ = QRegExp ("#([a-zA-Z]+)/([0-9]+)", Qt::CaseInsensitive);
 		TagRX_ = QRegExp ("<br />[*] ([^*,<]+(, [^*,<]+)*)");
 		ImgRX_ = QRegExp ("<br /><a href=\"(http://[^\"]+[.](png|gif|jpe?g))\">[^<]*</a>", Qt::CaseInsensitive);
 	}
@@ -162,10 +162,8 @@ namespace p100q
 			tr ("Reply") + "\">#\\1/\\2</a> ";
 		QString postByUserRX = " <a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" +
 			tr ("View post") + "\">#\\1</a> ";
-		QString imgRX;
-		if (showImg)
-			imgRX =
-				"<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>";
+		QString imgRX =
+			"<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>";
 		if (showSubscribeButton || showCommentsButton || showRecommendButton || showAddToBookmarkButton)
 		{
 			postRX += "(";
@@ -208,20 +206,20 @@ namespace p100q
 		}
 		if (showBlockButton)
 		{
-			userRX += " <a href=\"azoth://msgeditreplace/BL%20@\\1\" title=\"" +
+			userRX += " <a href=\"azoth://msgeditreplace/BL%20%40\\1\" title=\"" +
 				tr ("Block user") + "\">BL</a>";
-			postAuthorRX += " <a href=\"azoth://msgeditreplace/BL%20@\\1\" title=\"" +
+			postAuthorRX += " <a href=\"azoth://msgeditreplace/BL%20%40\\1\" title=\"" +
 				tr ("Block user") + "\">BL</a>";
-			postByUserRX += " <a href=\"azoth://msgeditreplace/BL%20@\\1\" title=\"" +
+			postByUserRX += " <a href=\"azoth://msgeditreplace/BL%20%40\\1\" title=\"" +
 				tr ("Block user") + "\">BL</a>";
 		}
 		if (showPrivateMessageButton)
 		{
-			postAuthorRX += " <a href=\"azoth://msgeditreplace/P%20@\\1\" title=\"" +
+			postAuthorRX += " <a href=\"azoth://msgeditreplace/P%20%40\\1\" title=\"" +
 				tr ("Send private message to user") + "\">P</a> ";
-			userRX += " <a href=\"azoth://msgeditreplace/P%20@\\1\" title=\"" +
+			userRX += " <a href=\"azoth://msgeditreplace/P%20%40\\1\" title=\"" +
 				tr ("Send private message to user") + "\">P</a> ";
-			postByUserRX += " <a href=\"azoth://msgeditreplace/P%20@\\1\" title=\"" +
+			postByUserRX += " <a href=\"azoth://msgeditreplace/P%20%40\\1\" title=\"" +
 				tr ("Send private message to user") + "\">P</a> ";
 		}
 		if (showSubscribeButton || showCommentsButton || showRecommendButton || showAddToBookmarkButton)
@@ -236,11 +234,8 @@ namespace p100q
 			postByUserRX += ") ";
 		}
 
-		userRX += "\\2";
-		postRX += "\\2";
-		postAuthorRX += "\\2";
-
-		body.replace (ImgRX_, imgRX);
+		if (showImg)
+			body.replace (ImgRX_, imgRX);
 		body.replace (PostRX_, postRX);
 		body.replace (PostAuthorRX_, postAuthorRX);
 		body.replace (UserRX_, userRX);
