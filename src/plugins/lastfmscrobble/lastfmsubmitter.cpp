@@ -162,7 +162,7 @@ namespace Lastfmscrobble
 			return;
 
 		Scrobbler_->cache (lfmTrack);
-		SubmitTimer_->start (std::min (info.Length_ / 2, 240));
+		SubmitTimer_->start (std::min (info.Length_ / 2, 240) * 1000);
 	}
 
 	void LastFMSubmitter::Clear ()
