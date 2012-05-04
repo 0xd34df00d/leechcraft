@@ -30,6 +30,7 @@
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
+#include <interfaces/media/isimilarartists.h>
 #include "player.h"
 #include "playlistdelegate.h"
 #include "util.h"
@@ -344,17 +345,7 @@ namespace LMP
 			return;
 		}
 
-		const Media::AudioInfo aInfo =
-		{
-			info.Artist_,
-			info.Album_,
-			info.Title_,
-			info.Genres_,
-			info.Length_,
-			info.Year_,
-			info.TrackNumber_,
-			QVariantMap ()
-		};
+		const Media::AudioInfo aInfo = info;
 		std::for_each (scrobblers.begin (), scrobblers.end (),
 					[&aInfo] (decltype (scrobblers.front ()) s) { s->NowPlaying (aInfo); });
 	}
@@ -393,12 +384,12 @@ namespace LMP
 		}
 		else if (!Similars_.contains (info.Artist_))
 		{
-			auto scrobblers = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
-			qDebug () << Q_FUNC_INFO << scrobblers.size ();
-			Q_FOREACH (Media::IAudioScrobbler *scrobbler, scrobblers)
+			auto similars = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableTo<Media::ISimilarArtists*> ();
+			qDebug () << Q_FUNC_INFO << similars.size ();
+			Q_FOREACH (auto *similar, similars)
 			{
-				auto obj = scrobbler->GetSimilarArtists (info.Artist_, 15);
+				auto obj = similar->GetSimilarArtists (info.Artist_, 15);
 				if (!obj)
 					continue;
 				connect (obj->GetObject (),

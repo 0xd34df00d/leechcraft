@@ -18,19 +18,32 @@
 
 #pragma once
 
+#include <QString>
 #include "audiostructs.h"
 
 namespace Media
 {
-	class IAudioScrobbler
+	class IPendingSimilarArtists
 	{
 	public:
-		virtual ~IAudioScrobbler () {}
+		virtual ~IPendingSimilarArtists () {}
 
-		virtual QString GetServiceName () const = 0;
-		virtual void NowPlaying (const AudioInfo& audio) = 0;
-		virtual void PlaybackStopped () = 0;
+		virtual QObject* GetObject () = 0;
+		virtual QString GetSourceArtistName () const = 0;
+		virtual SimilarityInfos_t GetSimilar () const = 0;
+	protected:
+		virtual void ready () = 0;
+		virtual void error () = 0;
+	};
+
+	class ISimilarArtists
+	{
+	public:
+		virtual ~ISimilarArtists () {}
+
+		virtual IPendingSimilarArtists* GetSimilarArtists (const QString& artistName, int num) = 0;
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::IAudioScrobbler, "org.LeechCraft.Media.IAudioScrobbler/1.0");
+Q_DECLARE_INTERFACE (Media::IPendingSimilarArtists, "org.LeechCraft.Media.IPendingSimilarArtists/1.0");
+Q_DECLARE_INTERFACE (Media::ISimilarArtists, "org.LeechCraft.Media.ISimilarArtists/1.0");

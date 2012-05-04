@@ -46,6 +46,7 @@ SET (SRCS
 	playertab.cpp
 	player.cpp
 	core.cpp
+	mediainfo.cpp
 	localfileresolver.cpp
 	playlistdelegate.cpp
 	localcollection.cpp
@@ -66,6 +67,7 @@ SET (HEADERS
 	playertab.h
 	player.h
 	core.h
+	mediainfo.h
 	localfileresolver.h
 	playlistdelegate.h
 	localcollection.h

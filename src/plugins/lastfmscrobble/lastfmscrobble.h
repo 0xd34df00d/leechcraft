@@ -23,6 +23,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/ialbumartprovider.h>
+#include <interfaces/media/isimilarartists.h>
 
 namespace LeechCraft
 {
@@ -35,12 +36,14 @@ namespace Lastfmscrobble
 				, public IHaveSettings
 				, public Media::IAudioScrobbler
 				, public Media::IAlbumArtProvider
+				, public Media::ISimilarArtists
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IHaveSettings
 				Media::IAudioScrobbler
-				Media::IAlbumArtProvider)
+				Media::IAlbumArtProvider
+				Media::ISimilarArtists)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		LastFMSubmitter *LFSubmitter_;
