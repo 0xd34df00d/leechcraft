@@ -142,7 +142,8 @@ namespace Lastfmscrobble
 					tr ("Enter password for Last.fm account with login %1:")
 						.arg (login),
 					this);
-			return;
+			if (password.isEmpty ())
+				return;
 		}
 
 		LFSubmitter_->SetPassword (password);
