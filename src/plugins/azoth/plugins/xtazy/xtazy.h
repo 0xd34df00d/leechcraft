@@ -53,6 +53,8 @@ namespace Xtazy
 		QList<TuneSourceBase*> TuneSources_;
 
 		LCSource *LCSource_;
+
+		QMap<QString, QVariant> Previous_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
