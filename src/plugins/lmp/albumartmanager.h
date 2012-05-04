@@ -18,35 +18,30 @@
 
 #pragma once
 
-#include "audiostructs.h"
+#include <QObject>
+#include <QDir>
+#include <interfaces/media/ialbumartprovider.h>
+#include "localcollection.h"
 
-namespace Media
+namespace LeechCraft
 {
-	class IPendingSimilarArtists
+namespace LMP
+{
+	class AlbumArtManager : public QObject
 	{
+		Q_OBJECT
+
+		QDir AADir_;
+		QList<Media::AlbumInfo> Queue_;
+		QHash<Media::AlbumInfo, int> NumRequests_;
 	public:
-		virtual ~IPendingSimilarArtists () {}
+		AlbumArtManager (QObject* = 0);
 
-		virtual QObject* GetObject () = 0;
-		virtual QString GetSourceArtistName () const = 0;
-		virtual SimilarityInfos_t GetSimilar () const = 0;
-	protected:
-		virtual void ready () = 0;
-		virtual void error () = 0;
-	};
-
-	class IAudioScrobbler
-	{
-	public:
-		virtual ~IAudioScrobbler () {}
-
-		virtual QString GetServiceName () const = 0;
-		virtual void NowPlaying (const AudioInfo& audio) = 0;
-		virtual void PlaybackStopped () = 0;
-
-		virtual IPendingSimilarArtists* GetSimilarArtists (const QString& artistName, int num) = 0;
+		void CheckAlbumArt (const Collection::Artist&, Collection::Album_ptr);
+	private slots:
+		void rotateQueue ();
+		void handleGotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
+		void handleSaved ();
 	};
 }
-
-Q_DECLARE_INTERFACE (Media::IPendingSimilarArtists, "org.LeechCraft.Media.IPendingSimilarArtists/1.0");
-Q_DECLARE_INTERFACE (Media::IAudioScrobbler, "org.LeechCraft.Media.IAudioScrobbler/1.0");
+}

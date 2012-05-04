@@ -369,7 +369,12 @@ namespace LMP
 		if (Source_->state () == Phonon::PlayingState)
 			Source_->pause ();
 		else
+		{
+			if (Source_->currentSource ().type () == Phonon::MediaSource::Invalid ||
+				Source_->currentSource ().type () == Phonon::MediaSource::Empty)
+				Source_->setCurrentSource (CurrentQueue_.value (0));
 			Source_->play ();
+		}
 	}
 
 	void Player::stop ()

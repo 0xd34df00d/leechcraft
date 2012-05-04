@@ -74,7 +74,7 @@ namespace Astrality
 	{
 		QVariantMap params;
 		auto fpg = qobject_cast<AccountRegFirstPage*> (widgets.value (0));
-		auto chSet = [&params, &ProtoInfo_] (QString param, QVariant value)
+		auto chSet = [&params, this] (QString param, QVariant value)
 		{
 			if (ProtoInfo_.hasParameter (param))
 				params [param] = value;

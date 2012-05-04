@@ -58,6 +58,7 @@ SET (SRCS
 	m3ustuff.cpp
 	playlistmanager.cpp
 	artistsinfodisplay.cpp
+	albumartmanager.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -77,6 +78,7 @@ SET (HEADERS
 	m3ustuff.h
 	playlistmanager.h
 	artistsinfodisplay.h
+	albumartmanager.h
 	)
 SET (FORMS
 	playertab.ui

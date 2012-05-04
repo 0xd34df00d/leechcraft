@@ -18,35 +18,42 @@
 
 #pragma once
 
-#include "audiostructs.h"
+#include <QString>
+#include <QList>
+#include <QImage>
+#include <QHash>
+#include <QMetaType>
 
 namespace Media
 {
-	class IPendingSimilarArtists
+	struct AlbumInfo
 	{
-	public:
-		virtual ~IPendingSimilarArtists () {}
-
-		virtual QObject* GetObject () = 0;
-		virtual QString GetSourceArtistName () const = 0;
-		virtual SimilarityInfos_t GetSimilar () const = 0;
-	protected:
-		virtual void ready () = 0;
-		virtual void error () = 0;
+		QString Artist_;
+		QString Album_;
 	};
 
-	class IAudioScrobbler
+	inline bool operator== (const AlbumInfo& a1, const AlbumInfo& a2)
+	{
+		return a1.Artist_ == a2.Artist_ &&
+			a1.Album_ == a2.Album_;
+	}
+
+	inline uint qHash (const AlbumInfo& info)
+	{
+		return qHash (info.Album_.toUtf8 () + '\0' + info.Artist_.toUtf8 ());
+	}
+
+	class IAlbumArtProvider
 	{
 	public:
-		virtual ~IAudioScrobbler () {}
+		virtual ~IAlbumArtProvider () {}
 
-		virtual QString GetServiceName () const = 0;
-		virtual void NowPlaying (const AudioInfo& audio) = 0;
-		virtual void PlaybackStopped () = 0;
-
-		virtual IPendingSimilarArtists* GetSimilarArtists (const QString& artistName, int num) = 0;
+		virtual QString GetAlbumArtProviderName () const = 0;
+		virtual void RequestAlbumArt (const AlbumInfo& album) const = 0;
+	protected:
+		virtual void gotAlbumArt (const AlbumInfo& album, const QList<QImage>& arts) = 0;
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::IPendingSimilarArtists, "org.LeechCraft.Media.IPendingSimilarArtists/1.0");
-Q_DECLARE_INTERFACE (Media::IAudioScrobbler, "org.LeechCraft.Media.IAudioScrobbler/1.0");
+Q_DECLARE_METATYPE (Media::AlbumInfo);
+Q_DECLARE_INTERFACE (Media::IAlbumArtProvider, "org.LeechCraft.Media.IAlbumArtProvider/1.0");

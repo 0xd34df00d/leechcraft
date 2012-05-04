@@ -36,6 +36,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class AlbumArtManager;
 	class LocalCollectionStorage;
 	class Player;
 
@@ -47,6 +48,8 @@ namespace LMP
 		LocalCollectionStorage *Storage_;
 		QStandardItemModel *CollectionModel_;
 		QSortFilterProxyModel *Sorter_;
+
+		AlbumArtManager *AlbumArtMgr_;
 
 		Collection::Artists_t Artists_;
 		QSet<QString> PresentPaths_;
@@ -81,14 +84,15 @@ namespace LMP
 		};
 
 		LocalCollection (QObject* = 0);
-
 		void FinalizeInit ();
 
 		QAbstractItemModel* GetCollectionModel () const;
 		void Enqueue (const QModelIndex&, Player*);
-
 		void Clear ();
 		void Scan (const QString&);
+
+		int FindAlbum (const QString&, const QString&) const;
+		void SetAlbumArt (int, const QString&);
 
 		QList<int> GetDynamicPlaylist (DynamicPlaylist) const;
 		QStringList TrackList2PathList (const QList<int>&) const;

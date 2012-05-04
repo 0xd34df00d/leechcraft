@@ -29,6 +29,7 @@
 #include "util.h"
 #include "localfileresolver.h"
 #include "player.h"
+#include "albumartmanager.h"
 
 namespace LeechCraft
 {
@@ -112,6 +113,7 @@ namespace LMP
 	, Storage_ (new LocalCollectionStorage (this))
 	, CollectionModel_ (new QStandardItemModel (this))
 	, Sorter_ (new CollectionSorter (this))
+	, AlbumArtMgr_ (new AlbumArtManager (this))
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
 	{
 		connect (Watcher_,
@@ -189,6 +191,27 @@ namespace LMP
 		QFuture<MediaInfo> future = QtConcurrent::mapped (paths,
 				std::function<MediaInfo (const QString&)> (worker));
 		Watcher_->setFuture (future);
+	}
+
+	int LocalCollection::FindAlbum (const QString& artist, const QString& album) const
+	{
+		auto artistPos = std::find_if (Artists_.begin (), Artists_.end (),
+				[&artist] (decltype (Artists_.front ()) item) { return item.Name_ == artist; });
+		if (artistPos == Artists_.end ())
+			return -1;
+
+		auto albumPos = std::find_if (artistPos->Albums_.begin (), artistPos->Albums_.end (),
+				[&album] (decltype (artistPos->Albums_.front ()) item) { return item->Name_ == album; });
+		if (albumPos == artistPos->Albums_.end ())
+			return -1;
+
+		return (*albumPos)->ID_;
+	}
+
+	void LocalCollection::SetAlbumArt (int id, const QString& path)
+	{
+		Album2Item_ [id]->setData (path, Role::AlbumArt);
+		Storage_->SetAlbumArt (id, path);
 	}
 
 	QList<int> LocalCollection::GetDynamicPlaylist (DynamicPlaylist type) const
@@ -279,6 +302,8 @@ namespace LMP
 					CollectionModel_);
 			Q_FOREACH (auto album, artist.Albums_)
 			{
+				AlbumArtMgr_->CheckAlbumArt (artist, album);
+
 				auto albumItem = GetItem (Album2Item_,
 						album->ID_,
 						[album] (QStandardItem *item)

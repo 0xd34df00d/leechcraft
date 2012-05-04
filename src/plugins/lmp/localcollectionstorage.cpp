@@ -166,6 +166,17 @@ namespace LMP
 		return artists;
 	}
 
+	void LocalCollectionStorage::SetAlbumArt (int id, const QString& path)
+	{
+		SetAlbumArt_.bindValue (":album_id", id);
+		SetAlbumArt_.bindValue (":cover_path", path);
+		if (!SetAlbumArt_.exec ())
+		{
+			Util::DBLock::DumpError (SetAlbumArt_);
+			throw std::runtime_error ("cannot update album art");
+		}
+	}
+
 	Collection::TrackStats LocalCollectionStorage::GetTrackStats (int trackId)
 	{
 		GetTrackStats_.bindValue (":track_id", trackId);
@@ -437,6 +448,9 @@ namespace LMP
 
 		AddGenre_ = QSqlQuery (DB_);
 		AddGenre_.prepare ("INSERT INTO genres (TrackId, Name) VALUES (:track_id, :name);");
+
+		SetAlbumArt_ = QSqlQuery (DB_);
+		SetAlbumArt_.prepare ("UPDATE albums SET CoverPath = :cover_path WHERE Id = :album_id");
 
 		GetTrackStats_ = QSqlQuery (DB_);
 		GetTrackStats_.prepare ("SELECT Playcount, Added, LastPlay, Score, Rating FROM statistics WHERE TrackId = :track_id;");

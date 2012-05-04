@@ -27,6 +27,7 @@
 #include "lastfmsubmitter.h"
 #include "xmlsettingsmanager.h"
 #include "pendingsimilarartists.h"
+#include "albumartfetcher.h"
 
 namespace LeechCraft
 {
@@ -113,6 +114,20 @@ namespace Lastfmscrobble
 	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)
 	{
 		return new PendingSimilarArtists (name, num, this);
+	}
+
+	QString Plugin::GetAlbumArtProviderName () const
+	{
+		return GetServiceName ();
+	}
+
+	void Plugin::RequestAlbumArt (const Media::AlbumInfo& album) const
+	{
+		auto fetcher = new AlbumArtFetcher (album, Proxy_);
+		connect (fetcher,
+				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
+				this,
+				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)));
 	}
 
 	void Plugin::handleSubmitterInit ()

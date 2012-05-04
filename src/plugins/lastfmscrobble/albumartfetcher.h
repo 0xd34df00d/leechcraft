@@ -18,35 +18,26 @@
 
 #pragma once
 
-#include "audiostructs.h"
+#include <QObject>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/media/ialbumartprovider.h>
 
-namespace Media
+namespace LeechCraft
 {
-	class IPendingSimilarArtists
+namespace Lastfmscrobble
+{
+	class AlbumArtFetcher : public QObject
 	{
+		Q_OBJECT
+
+		ICoreProxy_ptr Proxy_;
 	public:
-		virtual ~IPendingSimilarArtists () {}
-
-		virtual QObject* GetObject () = 0;
-		virtual QString GetSourceArtistName () const = 0;
-		virtual SimilarityInfos_t GetSimilar () const = 0;
-	protected:
-		virtual void ready () = 0;
-		virtual void error () = 0;
-	};
-
-	class IAudioScrobbler
-	{
-	public:
-		virtual ~IAudioScrobbler () {}
-
-		virtual QString GetServiceName () const = 0;
-		virtual void NowPlaying (const AudioInfo& audio) = 0;
-		virtual void PlaybackStopped () = 0;
-
-		virtual IPendingSimilarArtists* GetSimilarArtists (const QString& artistName, int num) = 0;
+		AlbumArtFetcher (const Media::AlbumInfo&, ICoreProxy_ptr, QObject* = 0);
+	private slots:
+		void handleReplyFinished ();
+		void handleImageReplyFinished ();
+	signals:
+		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 	};
 }
-
-Q_DECLARE_INTERFACE (Media::IPendingSimilarArtists, "org.LeechCraft.Media.IPendingSimilarArtists/1.0");
-Q_DECLARE_INTERFACE (Media::IAudioScrobbler, "org.LeechCraft.Media.IAudioScrobbler/1.0");
+}
