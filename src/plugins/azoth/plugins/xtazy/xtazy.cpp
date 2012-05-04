@@ -44,16 +44,16 @@ namespace Xtazy
 
 		AzothProxy_ = 0;
 		Proxy_ = proxy;
-		
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothxtazysettings.xml");
-		
+
 #ifdef HAVE_DBUS
 		TuneSources_ << new MPRISSource (this);
 #endif
 		TuneSources_ << new FileSource (this);
-		
+
 		Q_FOREACH (TuneSourceBase *base, TuneSources_)
 			connect (base,
 					SIGNAL (tuneInfoChanged (const QMap<QString, QVariant>&)),
@@ -96,21 +96,21 @@ namespace Xtazy
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
 	}
-	
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
 	}
-	
+
 	void Plugin::publish (const QMap<QString, QVariant>& info)
 	{
 		const QByteArray& objName = sender ()->objectName ().toLatin1 ();
-		
+
 		if (!XmlSettingsManager::Instance ()
 				.property ("Enable" + objName).toBool ())
 			return;

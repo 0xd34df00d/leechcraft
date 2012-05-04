@@ -58,7 +58,7 @@ namespace Xtazy
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
-		
+
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
 		void initPlugin (QObject*);
