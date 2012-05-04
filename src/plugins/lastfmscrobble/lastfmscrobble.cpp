@@ -21,7 +21,6 @@
 #include <QIcon>
 #include <QByteArray>
 #include <interfaces/core/icoreproxy.h>
-#include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/passutils.h>
 #include "lastfmsubmitter.h"
@@ -72,22 +71,6 @@ namespace Lastfmscrobble
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon (":/resources/images/lastfmscrobble.svg");
-	}
-
-	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
-	{
-		return entity.Mime_ == "x-leechcraft/now-playing-track-info" ?
-				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
-				EntityTestHandleResult ();
-	}
-
-	void Plugin::Handle (Entity entity)
-	{
-		LFSubmitter_->submit ();
-
-		MediaMeta meta (entity.Additional_);
-
-		LFSubmitter_->sendTrack (meta);
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const

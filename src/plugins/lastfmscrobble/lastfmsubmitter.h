@@ -80,7 +80,6 @@ namespace Lastfmscrobble
 		void LoadQueue ();
 		void SaveQueue () const;
 	public slots:
-		void sendTrack (const MediaMeta& info);
 		void submit ();
 	private slots:
 		void checkFlushQueue (int);

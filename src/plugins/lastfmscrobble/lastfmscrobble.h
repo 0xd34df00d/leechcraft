@@ -20,7 +20,6 @@
 #pragma once
 
 #include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/ialbumartprovider.h>
@@ -33,14 +32,12 @@ namespace Lastfmscrobble
 
 	class Plugin : public QObject
 				, public IInfo
-				, public IEntityHandler
 				, public IHaveSettings
 				, public Media::IAudioScrobbler
 				, public Media::IAlbumArtProvider
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
-				IEntityHandler
 				IHaveSettings
 				Media::IAudioScrobbler
 				Media::IAlbumArtProvider)
@@ -56,9 +53,6 @@ namespace Lastfmscrobble
 		QString GetInfo () const;
 		void Release ();
 		QIcon GetIcon () const;
-
-		EntityTestHandleResult CouldHandle (const Entity& entity) const;
-		void Handle (Entity entity);
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 

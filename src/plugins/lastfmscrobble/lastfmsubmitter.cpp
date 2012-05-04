@@ -239,17 +239,6 @@ namespace Lastfmscrobble
 		}
 	}
 
-	void LastFMSubmitter::sendTrack (const MediaMeta& info)
-	{
-		if (!IsConnected ())
-			return;
-
-		Scrobbler_->submit ();
-		const auto& track = ToLastFMTrack (info);
-		Scrobbler_->nowPlaying (track);
-		Scrobbler_->cache (track);
-	}
-
 	void LastFMSubmitter::submit ()
 	{
 		SubmitQueue_ << NextSubmit_;
