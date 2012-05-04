@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XTAZY_XTAZY_H
-#define PLUGINS_AZOTH_PLUGINS_XTAZY_XTAZY_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -68,5 +68,3 @@ namespace Xtazy
 }
 }
 }
-
-#endif
