@@ -72,8 +72,8 @@ namespace Lastfmscrobble
 	private slots:
 		void handleSubmitterInit ();
 	signals:
-		void gotEntity (const Entity&);
-		void delegateEntity (const Entity&, int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 
 		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 	};
