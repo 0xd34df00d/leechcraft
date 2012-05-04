@@ -309,6 +309,56 @@ namespace LMP
 		Ui_.Playlist_->addAction (removeSelected);
 	}
 
+	void PlayerTab::SetNowPlaying (const MediaInfo& info, const QPixmap& px)
+	{
+		Ui_.NowPlaying_->clear ();
+		if (!info.Title_.isEmpty () || !info.Artist_.isEmpty ())
+		{
+			const auto& title = info.Title_.isEmpty () ? tr ("unknown song") : info.Title_;
+			const auto& album = info.Album_.isEmpty () ? tr ("unknown album") : info.Album_;
+			const auto& track = info.Artist_.isEmpty () ? tr ("unknown artist") : info.Artist_;
+
+			const QString& text = tr ("Now playing: %1 from %2 by %3")
+					.arg ("<em>" + title + "</em>")
+					.arg ("<em>" + album + "</em>")
+					.arg ("<em>" + track + "</em>");
+			Ui_.NowPlaying_->setText (text);
+
+			if (XmlSettingsManager::Instance ().property ("EnableNotifications").toBool ())
+			{
+				Entity e = Util::MakeNotification ("LMP", text, PInfo_);
+				e.Additional_ ["NotificationPixmap"] = px;
+				emit gotEntity (e);
+			}
+		}
+	}
+
+	void PlayerTab::Scrobble (const MediaInfo& info)
+	{
+		auto scrobblers = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
+		if (info.Title_.isEmpty () && info.Artist_.isEmpty ())
+		{
+			std::for_each (scrobblers.begin (), scrobblers.end (),
+					[] (decltype (scrobblers.front ()) s) { s->PlaybackStopped (); });
+			return;
+		}
+
+		const Media::AudioInfo aInfo =
+		{
+			info.Artist_,
+			info.Album_,
+			info.Title_,
+			info.Genres_,
+			info.Length_,
+			info.Year_,
+			info.TrackNumber_,
+			QVariantMap ()
+		};
+		std::for_each (scrobblers.begin (), scrobblers.end (),
+					[&aInfo] (decltype (scrobblers.front ()) s) { s->NowPlaying (aInfo); });
+	}
+
 	void PlayerTab::FillSimilar (const Media::SimilarityInfos_t& infos)
 	{
 		Ui_.NPWidget_->GetArtistsDisplay ()->SetSimilarArtists (infos);
@@ -332,26 +382,9 @@ namespace LMP
 
 		Ui_.NPWidget_->SetTrackInfo (info);
 
-		Ui_.NowPlaying_->clear ();
-		if (!info.Title_.isEmpty () || !info.Artist_.isEmpty ())
-		{
-			const auto& title = info.Title_.isEmpty () ? tr ("unknown song") : info.Title_;
-			const auto& album = info.Album_.isEmpty () ? tr ("unknown album") : info.Album_;
-			const auto& track = info.Artist_.isEmpty () ? tr ("unknown artist") : info.Artist_;
+		SetNowPlaying (info, px);
 
-			const QString& text = tr ("Now playing: %1 from %2 by %3")
-					.arg ("<em>" + title + "</em>")
-					.arg ("<em>" + album + "</em>")
-					.arg ("<em>" + track + "</em>");
-			Ui_.NowPlaying_->setText (text);
-
-			if (XmlSettingsManager::Instance ().property ("EnableNotifications").toBool ())
-			{
-				Entity e = Util::MakeNotification ("LMP", text, PInfo_);
-				e.Additional_ ["NotificationPixmap"] = px;
-				emit gotEntity (e);
-			}
-		}
+		Scrobble (info);
 
 		if (info.Artist_.isEmpty ())
 		{
