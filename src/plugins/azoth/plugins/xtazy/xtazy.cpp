@@ -27,6 +27,7 @@
 #include "tunesourcebase.h"
 #include "xmlsettingsmanager.h"
 #include "filesource.h"
+#include "lcsource.h"
 
 #ifdef HAVE_DBUS
 #include "mprissource.h"
@@ -49,20 +50,22 @@ namespace Xtazy
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothxtazysettings.xml");
 
+		LCSource_ = new LCSource (this);
+
 #ifdef HAVE_DBUS
 		TuneSources_ << new MPRISSource (this);
 #endif
 		TuneSources_ << new FileSource (this);
+		TuneSources_ << LCSource_;
+	}
 
+	void Plugin::SecondInit ()
+	{
 		Q_FOREACH (TuneSourceBase *base, TuneSources_)
 			connect (base,
 					SIGNAL (tuneInfoChanged (const QMap<QString, QVariant>&)),
 					this,
 					SLOT (publish (const QMap<QString, QVariant>&)));
-	}
-
-	void Plugin::SecondInit ()
-	{
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -100,6 +103,21 @@ namespace Xtazy
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
+	}
+
+	QString Plugin::GetServiceName () const
+	{
+		return GetName ();
+	}
+
+	void Plugin::NowPlaying (const Media::AudioInfo& audio)
+	{
+		LCSource_->NowPlaying (audio);
+	}
+
+	void Plugin::PlaybackStopped ()
+	{
+		LCSource_->Stopped ();
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
