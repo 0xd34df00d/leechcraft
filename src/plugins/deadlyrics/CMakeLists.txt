@@ -14,7 +14,6 @@ SET (SRCS
 	deadlyrics.cpp
 	core.cpp
 	searcher.cpp
-	lyricwikisearcher.cpp
 	lyricscache.cpp
 	xmlsettingsmanager.cpp
 	)
@@ -22,7 +21,6 @@ SET (HEADERS
 	deadlyrics.h
 	core.h
 	searcher.h
-	lyricwikisearcher.h
 	lyricscache.h
 	xmlsettingsmanager.h
 	)

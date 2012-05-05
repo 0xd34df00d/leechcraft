@@ -22,7 +22,6 @@
 #include <QUrl>
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
-#include "lyricwikisearcher.h"
 
 namespace LeechCraft
 {
