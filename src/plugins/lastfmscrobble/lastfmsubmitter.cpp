@@ -31,7 +31,7 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	const QString ScrobblingSite_ = "http://ws.audioscrobbler.com/2.0/";
+	const QString ScrobblingSite = "http://ws.audioscrobbler.com/2.0/";
 
 	MediaMeta::MediaMeta ()
 	: TrackNumber_ (0)
@@ -112,7 +112,7 @@ namespace Lastfmscrobble
 				"auth.getMobileSession", lastfm::ws::Username,
 				lastfm::ws::SharedSecret);
 		const QString& url = QString ("%1?method=%2&username=%3&authToken=%4&api_key=%5&api_sig=%6")
-				.arg (ScrobblingSite_)
+				.arg (ScrobblingSite)
 				.arg ("auth.getMobileSession")
 				.arg (lastfm::ws::Username)
 				.arg (authToken)
