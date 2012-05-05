@@ -27,6 +27,7 @@
 #include <QMenu>
 #include <QInputDialog>
 #include <phonon/seekslider.h>
+#include <phonon/volumeslider.h>
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
@@ -174,6 +175,12 @@ namespace LMP
 		auto seekSlider = new Phonon::SeekSlider (Player_->GetSourceObject ());
 		seekSlider->setTracking (false);
 		TabToolbar_->addWidget (seekSlider);
+		TabToolbar_->addSeparator ();
+
+		auto volumeSlider = new Phonon::VolumeSlider (Player_->GetAudioOutput ());
+		volumeSlider->setMinimumWidth (100);
+		volumeSlider->setMaximumWidth (160);
+		TabToolbar_->addWidget (volumeSlider);
 	}
 
 	void PlayerTab::SetupCollection ()
