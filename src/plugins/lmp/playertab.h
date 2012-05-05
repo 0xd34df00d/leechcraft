@@ -80,6 +80,7 @@ namespace LMP
 	private slots:
 		void handleSongChanged (const MediaInfo&);
 		void handleCurrentPlayTime (qint64);
+		void handleLoveTrack ();
 		void handleSimilarError ();
 		void handleSimilarReady ();
 		void handleScanProgress (int);

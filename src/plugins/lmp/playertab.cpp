@@ -173,6 +173,17 @@ namespace LMP
 
 		TabToolbar_->addSeparator ();
 
+		QAction *love = new QAction (tr ("Love"), this);
+		love->setProperty ("ActionIcon", "emblem-favorite");
+		love->setShortcut (QString ("Ctrl+L"));
+		connect (love,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleLoveTrack ()));
+		TabToolbar_->addAction (love);
+
+		TabToolbar_->addSeparator ();
+
 		PlayedTime_ = new QLabel ();
 		RemainingTime_ = new QLabel ();
 		auto seekSlider = new Phonon::SeekSlider (Player_->GetSourceObject ());
@@ -441,6 +452,14 @@ namespace LMP
 
 		const auto total = Player_->GetSourceObject ()->totalTime ();
 		RemainingTime_->setText (total < 0 ? tr ("unknown") : niceTime (total - time));
+	}
+
+	void PlayerTab::handleLoveTrack ()
+	{
+		auto scrobblers = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
+		std::for_each (scrobblers.begin (), scrobblers.end (),
+				[] (decltype (scrobblers.front ()) s) { s->LoveCurrentTrack (); });
 	}
 
 	void PlayerTab::handleSimilarError ()
