@@ -81,6 +81,7 @@ namespace LMP
 				SIGNAL (aboutToFinish ()),
 				this,
 				SLOT (handleSourceAboutToFinish ()));
+		Source_->setTickInterval (1000);
 
 		auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
 		Enqueue (staticMgr->GetOnLoadPlaylist ());
