@@ -19,27 +19,30 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-using namespace LeechCraft::Plugins::DeadLyrics;
-
-XmlSettingsManager::XmlSettingsManager ()
+namespace LeechCraft
 {
-	LeechCraft::Util::BaseSettingsManager::Init ();
-}
-
-XmlSettingsManager* XmlSettingsManager::Instance ()
+namespace DeadLyrics
 {
-	static XmlSettingsManager manager;
-	return &manager;
-}
+	XmlSettingsManager::XmlSettingsManager ()
+	{
+		LeechCraft::Util::BaseSettingsManager::Init ();
+	}
 
-QSettings* XmlSettingsManager::BeginSettings () const
-{
-	QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_DeadLyrics");
-	return settings;
-}
+	XmlSettingsManager* XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return &manager;
+	}
 
-void XmlSettingsManager::EndSettings (QSettings*) const
-{
-}
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_DeadLyrics");
+		return settings;
+	}
 
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
+}

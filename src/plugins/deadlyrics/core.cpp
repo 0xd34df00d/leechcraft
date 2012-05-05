@@ -28,60 +28,56 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DeadLyrics
+{
+	Core::Core ()
 	{
-		namespace DeadLyrics
-		{
-			Core::Core ()
-			{
-				qRegisterMetaType<Lyrics> ("LeechCraft::Plugins::DeadLyrics::Lyrics");
-				qRegisterMetaTypeStreamOperators<Lyrics> ("LeechCraft::Plugins::DeadLyrics::Lyrics");
-				Searchers_.push_back (searcher_ptr (new LyricWikiSearcher));
-			}
+		qRegisterMetaType<Lyrics> ("LeechCraft::Plugins::DeadLyrics::Lyrics");
+		qRegisterMetaTypeStreamOperators<Lyrics> ("LeechCraft::Plugins::DeadLyrics::Lyrics");
+		Searchers_.push_back (searcher_ptr (new LyricWikiSearcher));
+	}
 
-			Core& Core::Instance ()
-			{
-				static Core core;
-				return core;
-			}
+	Core& Core::Instance ()
+	{
+		static Core core;
+		return core;
+	}
 
-			void Core::Release ()
-			{
-				Searchers_.clear ();
-			}
+	void Core::Release ()
+	{
+		Searchers_.clear ();
+	}
 
-			void Core::SetProxy (ICoreProxy_ptr proxy)
-			{
-				Proxy_ = proxy;
-			}
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
 
-			QNetworkAccessManager* Core::GetNetworkAccessManager () const
-			{
-				return Proxy_->GetNetworkAccessManager ();
-			}
+	QNetworkAccessManager* Core::GetNetworkAccessManager () const
+	{
+		return Proxy_->GetNetworkAccessManager ();
+	}
 
-			IWebBrowser* Core::GetWebBrowser () const
-			{
-				IPluginsManager *pm = Proxy_->GetPluginsManager ();
-				QObjectList browsers = pm->Filter<IWebBrowser*> (pm->GetAllPlugins ());
-				return browsers.size () ?
-					qobject_cast<IWebBrowser*> (browsers.at (0)) :
-					0;
-			}
+	IWebBrowser* Core::GetWebBrowser () const
+	{
+		IPluginsManager *pm = Proxy_->GetPluginsManager ();
+		QObjectList browsers = pm->Filter<IWebBrowser*> (pm->GetAllPlugins ());
+		return browsers.size () ?
+			qobject_cast<IWebBrowser*> (browsers.at (0)) :
+			0;
+	}
 
-			QStringList Core::GetCategories () const
-			{
-				return QStringList (tr ("lyrics"));
-			}
+	QStringList Core::GetCategories () const
+	{
+		return QStringList (tr ("lyrics"));
+	}
 
-			searchers_t Core::GetSearchers (const QString& category) const
-			{
-				if (category == tr ("lyrics"))
-					return Searchers_;
-				else
-					return searchers_t ();
-			}
-		};
-	};
-};
-
+	searchers_t Core::GetSearchers (const QString& category) const
+	{
+		if (category == tr ("lyrics"))
+			return Searchers_;
+		else
+			return searchers_t ();
+	}
+}
+}

@@ -26,88 +26,84 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DeadLyrics
+{
+	void DeadLyRicS::Init (ICoreProxy_ptr proxy)
 	{
-		namespace DeadLyrics
-		{
-			void DeadLyRicS::Init (ICoreProxy_ptr proxy)
-			{
-				Translator_.reset (Util::InstallTranslator ("deadlyrics"));
+		Translator_.reset (Util::InstallTranslator ("deadlyrics"));
 
-				Core::Instance ().SetProxy (proxy);
+		Core::Instance ().SetProxy (proxy);
 
-				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
-				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-						"deadlyricssettings.xml");
-			}
+		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"deadlyricssettings.xml");
+	}
 
-			void DeadLyRicS::SecondInit ()
-			{
-			}
+	void DeadLyRicS::SecondInit ()
+	{
+	}
 
-			void DeadLyRicS::Release ()
-			{
-			}
+	void DeadLyRicS::Release ()
+	{
+	}
 
-			QByteArray DeadLyRicS::GetUniqueID () const
-			{
-				return "org.LeechCraft.DeadLyrics";
-			}
+	QByteArray DeadLyRicS::GetUniqueID () const
+	{
+		return "org.LeechCraft.DeadLyrics";
+	}
 
-			QString DeadLyRicS::GetName () const
-			{
-				return "DeadLyRicS";
-			}
+	QString DeadLyRicS::GetName () const
+	{
+		return "DeadLyRicS";
+	}
 
-			QString DeadLyRicS::GetInfo () const
-			{
-				return tr ("Lyrics Searcher");
-			}
+	QString DeadLyRicS::GetInfo () const
+	{
+		return tr ("Lyrics Searcher");
+	}
 
-			QIcon DeadLyRicS::GetIcon () const
-			{
-				return QIcon (":/resources/images/deadlyrics.svg");
-			}
+	QIcon DeadLyRicS::GetIcon () const
+	{
+		return QIcon (":/resources/images/deadlyrics.svg");
+	}
 
-			QStringList DeadLyRicS::Provides () const
-			{
-				return QStringList ("search::lyrics");
-			}
+	QStringList DeadLyRicS::Provides () const
+	{
+		return QStringList ("search::lyrics");
+	}
 
-			QStringList DeadLyRicS::Needs () const
-			{
-				return QStringList ();
-			}
+	QStringList DeadLyRicS::Needs () const
+	{
+		return QStringList ();
+	}
 
-			QStringList DeadLyRicS::Uses () const
-			{
-				return QStringList ();
-			}
+	QStringList DeadLyRicS::Uses () const
+	{
+		return QStringList ();
+	}
 
-			void DeadLyRicS::SetProvider (QObject*, const QString&)
-			{
-			}
+	void DeadLyRicS::SetProvider (QObject*, const QString&)
+	{
+	}
 
-			QStringList DeadLyRicS::GetCategories () const
-			{
-				return Core::Instance ().GetCategories ();
-			}
+	QStringList DeadLyRicS::GetCategories () const
+	{
+		return Core::Instance ().GetCategories ();
+	}
 
-			QList<IFindProxy_ptr> DeadLyRicS::GetProxy (const LeechCraft::Request& req)
-			{
-				QList<IFindProxy_ptr> result;
-				result << IFindProxy_ptr (new FindProxy (req));
-				return result;
-			}
+	QList<IFindProxy_ptr> DeadLyRicS::GetProxy (const LeechCraft::Request& req)
+	{
+		QList<IFindProxy_ptr> result;
+		result << IFindProxy_ptr (new FindProxy (req));
+		return result;
+	}
 
-			std::shared_ptr<Util::XmlSettingsDialog> DeadLyRicS::GetSettingsDialog () const
-			{
-				return SettingsDialog_;
-			}
+	std::shared_ptr<Util::XmlSettingsDialog> DeadLyRicS::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
 
-		};
-	};
-};
+}
+}
 
-LC_EXPORT_PLUGIN (leechcraft_deadlyrics, LeechCraft::Plugins::DeadLyrics::DeadLyRicS);
-
+LC_EXPORT_PLUGIN (leechcraft_deadlyrics, LeechCraft::DeadLyrics::DeadLyRicS);

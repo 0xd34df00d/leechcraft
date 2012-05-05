@@ -26,74 +26,70 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DeadLyrics
+{
+	LyricWikiSearcher::LyricWikiSearcher ()
 	{
-		namespace DeadLyrics
-		{
-			LyricWikiSearcher::LyricWikiSearcher ()
-			{
-				setObjectName ("lyricwiki");
-			}
-			
-			void LyricWikiSearcher::Start (const QStringList& asa, QByteArray& hash)
-			{
-				hash = QCryptographicHash::hash (asa.join ("").toUtf8 (),
-						QCryptographicHash::Sha1);
-				try
-				{
-					Lyrics result = LyricsCache::Instance ().GetLyrics (hash);
-					emit textFetched (result, hash);
-					return;
-				}
-				catch (...)
-				{
-				}
-			
-				QHttp *http = new QHttp ("www.lyricsplugin.com", 80, this);
-				QUrl url ("http://www.lyricsplugin.com/winamp03/plugin/");
-				url.addQueryItem ("artist", asa.at (0));
-				url.addQueryItem ("title", asa.at (1));
-				http->get (url.toEncoded ());
-			
-				connect (http,
-						SIGNAL (done (bool)),
-						this,
-						SLOT (handleFinished ()));
-			
-				http->setObjectName (hash);
-				http->setProperty ("IDHash", hash);
-				http->setProperty ("Artist", asa.at (0));
-				http->setProperty ("Title", asa.at (1));
-				http->setProperty ("URL", url);
-			}
-			
-			void LyricWikiSearcher::Stop (const QByteArray& hash)
-			{
-				qDeleteAll (findChildren<QHttp*> (hash));
-			}
-			
-			void LyricWikiSearcher::handleFinished ()
-			{
-				QHttp *http = qobject_cast<QHttp*> (sender ());
-				QByteArray response = http->readAll ();
-				http->deleteLater ();
-			
-				QByteArray hash = http->property ("IDHash").toByteArray ();
-			
-				Lyrics result =
-				{
-					http->property ("Artist").toString (),
-					"",
-					http->property ("Title").toString (),
-					QString::fromUtf8 (response),
-					http->property ("URL").value<QUrl> ().toString ()
-				};
-			
-				LyricsCache::Instance ().SetLyrics (hash, result);
-			
-				emit textFetched (result, hash);
-			}
-		};
-	};
-};
+		setObjectName ("lyricwiki");
+	}
 
+	void LyricWikiSearcher::Start (const QStringList& asa, QByteArray& hash)
+	{
+		hash = QCryptographicHash::hash (asa.join ("").toUtf8 (),
+				QCryptographicHash::Sha1);
+		try
+		{
+			Lyrics result = LyricsCache::Instance ().GetLyrics (hash);
+			emit textFetched (result, hash);
+			return;
+		}
+		catch (...)
+		{
+		}
+
+		QHttp *http = new QHttp ("www.lyricsplugin.com", 80, this);
+		QUrl url ("http://www.lyricsplugin.com/winamp03/plugin/");
+		url.addQueryItem ("artist", asa.at (0));
+		url.addQueryItem ("title", asa.at (1));
+		http->get (url.toEncoded ());
+
+		connect (http,
+				SIGNAL (done (bool)),
+				this,
+				SLOT (handleFinished ()));
+
+		http->setObjectName (hash);
+		http->setProperty ("IDHash", hash);
+		http->setProperty ("Artist", asa.at (0));
+		http->setProperty ("Title", asa.at (1));
+		http->setProperty ("URL", url);
+	}
+
+	void LyricWikiSearcher::Stop (const QByteArray& hash)
+	{
+		qDeleteAll (findChildren<QHttp*> (hash));
+	}
+
+	void LyricWikiSearcher::handleFinished ()
+	{
+		QHttp *http = qobject_cast<QHttp*> (sender ());
+		QByteArray response = http->readAll ();
+		http->deleteLater ();
+
+		QByteArray hash = http->property ("IDHash").toByteArray ();
+
+		Lyrics result =
+		{
+			http->property ("Artist").toString (),
+			"",
+			http->property ("Title").toString (),
+			QString::fromUtf8 (response),
+			http->property ("URL").value<QUrl> ().toString ()
+		};
+
+		LyricsCache::Instance ().SetLyrics (hash, result);
+
+		emit textFetched (result, hash);
+	}
+}
+}

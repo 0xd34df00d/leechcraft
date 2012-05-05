@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DEADLYRICS_FINDPROXY_H
-#define PLUGINS_DEADLYRICS_FINDPROXY_H
+#pragma once
+
 #include <vector>
 #include <QAbstractItemModel>
 #include <interfaces/ifinder.h>
@@ -25,50 +25,44 @@
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class SelectableBrowser;
-	};
-
-	namespace Plugins
-	{
-		namespace DeadLyrics
-		{
-			class FindProxy : public QAbstractItemModel
-							, public IFindProxy
-			{
-				Q_OBJECT
-				Q_INTERFACES (IFindProxy);
-
-				LeechCraft::Request Request_;
-				std::vector<QByteArray> Hashes_;
-				lyrics_t Lyrics_;
-				Util::SelectableBrowser *LyricsHolder_;
-				QString ErrorString_;
-				bool FetchedSomething_;
-
-				FindProxy (const FindProxy&);
-				FindProxy& operator= (const FindProxy&);
-			public:
-				FindProxy (const LeechCraft::Request&, QObject* = 0);
-				virtual ~FindProxy ();
-
-				QAbstractItemModel* GetModel ();
-				QByteArray GetUniqueSearchID () const;
-				QStringList GetCategories () const;
-
-				int columnCount (const QModelIndex&) const;
-				QVariant data (const QModelIndex&, int) const;
-				QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-				QModelIndex parent (const QModelIndex&) const;
-				int rowCount (const QModelIndex&) const;
-			private slots:
-				void handleTextFetched (const LeechCraft::Plugins::DeadLyrics::Lyrics&, const QByteArray&);
-				void handleError (const QString&);
-			};
-		};
-	};
+namespace Util
+{
+	class SelectableBrowser;
 };
 
-#endif
+namespace DeadLyrics
+{
+	class FindProxy : public QAbstractItemModel
+					, public IFindProxy
+	{
+		Q_OBJECT
+		Q_INTERFACES (IFindProxy);
 
+		LeechCraft::Request Request_;
+		std::vector<QByteArray> Hashes_;
+		lyrics_t Lyrics_;
+		Util::SelectableBrowser *LyricsHolder_;
+		QString ErrorString_;
+		bool FetchedSomething_;
+
+		FindProxy (const FindProxy&);
+		FindProxy& operator= (const FindProxy&);
+	public:
+		FindProxy (const LeechCraft::Request&, QObject* = 0);
+		virtual ~FindProxy ();
+
+		QAbstractItemModel* GetModel ();
+		QByteArray GetUniqueSearchID () const;
+		QStringList GetCategories () const;
+
+		int columnCount (const QModelIndex&) const;
+		QVariant data (const QModelIndex&, int) const;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
+		QModelIndex parent (const QModelIndex&) const;
+		int rowCount (const QModelIndex&) const;
+	private slots:
+		void handleTextFetched (const LeechCraft::DeadLyrics::Lyrics&, const QByteArray&);
+		void handleError (const QString&);
+	};
+}
+}
