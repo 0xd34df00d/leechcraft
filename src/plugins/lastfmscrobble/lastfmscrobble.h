@@ -62,6 +62,8 @@ namespace Lastfmscrobble
 		QString GetServiceName () const;
 		void NowPlaying (const Media::AudioInfo&);
 		void PlaybackStopped ();
+		void LoveCurrentTrack ();
+
 		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&, int);
 
 		QString GetAlbumArtProviderName () const;

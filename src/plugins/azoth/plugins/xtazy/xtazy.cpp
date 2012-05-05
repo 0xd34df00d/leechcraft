@@ -120,6 +120,10 @@ namespace Xtazy
 		LCSource_->Stopped ();
 	}
 
+	void Plugin::LoveCurrentTrack ()
+	{
+	}
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);

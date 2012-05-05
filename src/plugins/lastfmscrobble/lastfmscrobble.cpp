@@ -93,6 +93,11 @@ namespace Lastfmscrobble
 		LFSubmitter_->Clear ();
 	}
 
+	void Plugin::LoveCurrentTrack ()
+	{
+		LFSubmitter_->Love ();
+	}
+
 	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)
 	{
 		return new PendingSimilarArtists (name, num, this);

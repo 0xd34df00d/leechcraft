@@ -71,6 +71,7 @@ namespace Xtazy
 		QString GetServiceName () const;
 		void NowPlaying (const Media::AudioInfo& audio);
 		void PlaybackStopped ();
+		void LoveCurrentTrack ();
 	public slots:
 		void initPlugin (QObject*);
 	private slots:

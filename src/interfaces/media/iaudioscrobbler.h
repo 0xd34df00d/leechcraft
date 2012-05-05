@@ -30,6 +30,8 @@ namespace Media
 		virtual QString GetServiceName () const = 0;
 		virtual void NowPlaying (const AudioInfo& audio) = 0;
 		virtual void PlaybackStopped () = 0;
+
+		virtual void LoveCurrentTrack () = 0;
 	};
 }
 
