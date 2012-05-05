@@ -95,8 +95,8 @@ namespace Lastfmscrobble
 	: QObject (parent)
 	, SubmitTimer_ (new QTimer (this))
 	{
-		lastfm::ws::ApiKey = "be076efd1c241366f27fde6fd024e567";
-		lastfm::ws::SharedSecret = "8352aead3be59ab319cd4e578d374843";
+		lastfm::ws::ApiKey = "a5ca8821e39cdb5efd2e5667070084b2";
+		lastfm::ws::SharedSecret = "50fb8b6f35fc55b7ddf6bb033dfc6fbe";
 
 		SubmitTimer_->setSingleShot (true);
 
