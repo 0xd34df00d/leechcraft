@@ -62,10 +62,12 @@ namespace Lastfmscrobble
 		std::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
 		QString Password_;
 
+		QNetworkAccessManager *NAM_;
+
 		QTimer *SubmitTimer_;
 
 		QList<lastfm::Track> SubmitQueue_;
-		lastfm::Track NextSubmit_;
+		lastfm::MutableTrack NextSubmit_;
 	public:
 		LastFMSubmitter (QObject *parent = 0);
 
@@ -75,6 +77,7 @@ namespace Lastfmscrobble
 		bool IsConnected () const;
 
 		void NowPlaying (const MediaMeta&);
+		void Love ();
 		void Clear ();
 	private:
 		void LoadQueue ();

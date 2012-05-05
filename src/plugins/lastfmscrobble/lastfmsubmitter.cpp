@@ -85,6 +85,25 @@ namespace Lastfmscrobble
 					QCryptographicHash::Md5).toHex ();
 		}
 
+		QByteArray MakeCall (QList<QPair<QString, QString>> params)
+		{
+			std::sort (params.begin (), params.end (),
+					[] (decltype (*params.constEnd ()) left, decltype (*params.constEnd ()) right)
+						{ return left.first < right.first; });
+			auto str = std::accumulate (params.begin (), params.end (), QString (),
+					[] (const QString& str, decltype (params.front ()) pair)
+						{ return str + pair.first + pair.second; });
+			str += lastfm::ws::SharedSecret;
+			const auto& sig = QCryptographicHash::hash (str.toUtf8 (), QCryptographicHash::Md5).toHex ();
+
+			params << QPair<QString, QString> ("api_sig", sig);
+
+			QUrl url;
+			std::for_each (params.begin (), params.end (),
+					[&url] (decltype (params.front ()) pair) { url.addQueryItem (pair.first, pair.second); });
+			return url.encodedQuery ();
+		}
+
 		QString GetQueueFilename ()
 		{
 			return Util::CreateIfNotExists ("lastfmscrobble").absoluteFilePath ("queue.xml");
@@ -105,6 +124,7 @@ namespace Lastfmscrobble
 
 	void LastFMSubmitter::Init (QNetworkAccessManager *manager)
 	{
+		NAM_ = manager;
 		const QString& authToken = AuthToken (lastfm::ws::Username,
 				Password_);
 
@@ -178,8 +198,36 @@ namespace Lastfmscrobble
 		SubmitTimer_->start (std::min (info.Length_ / 2, 240) * 1000);
 	}
 
+	void LastFMSubmitter::Love ()
+	{
+		if (NextSubmit_.isNull ())
+			return;
+
+		QNetworkRequest req (QUrl ("http://ws.audioscrobbler.com/2.0/"));
+		const QString method = "track.love";
+		QList<QPair<QString, QString>> params;
+		params << QPair<QString, QString> ("method", method);
+		params << QPair<QString, QString> ("track", NextSubmit_.title ());
+		params << QPair<QString, QString> ("artist", NextSubmit_.artist ());
+		params << QPair<QString, QString> ("api_key", lastfm::ws::ApiKey);
+		params << QPair<QString, QString> ("sk", lastfm::ws::SessionKey);
+		const auto& data = MakeCall (params);
+		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
+		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+		QNetworkReply *reply = NAM_->post (req, data);
+		connect (reply,
+				SIGNAL (finished ()),
+				reply,
+				SLOT (deleteLater ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				reply,
+				SLOT (deleteLater ()));
+	}
+
 	void LastFMSubmitter::Clear ()
 	{
+		NextSubmit_ = lastfm::MutableTrack ();
 		SubmitTimer_->stop ();
 	}
 
@@ -247,7 +295,6 @@ namespace Lastfmscrobble
 		if (!IsConnected ())
 			return;
 
-		NextSubmit_ = lastfm::Track ();
 		Scrobbler_->submit ();
 	}
 
