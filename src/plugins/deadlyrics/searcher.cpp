@@ -18,6 +18,7 @@
 
 #include "searcher.h"
 #include <stdexcept>
+#include <QDataStream>
 
 namespace LeechCraft
 {
@@ -55,7 +56,7 @@ namespace DeadLyrics
 				>> lyrics.URL_;
 		}
 		else
-			throw std::runtime_error (qPrintable (QObject::tr ("Unknown %1 %2")
+			throw std::runtime_error (qPrintable (QString ("Unknown %1 %2")
 					.arg (version)
 					.arg (Q_FUNC_INFO)));
 

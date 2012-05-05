@@ -31,14 +31,12 @@ namespace DeadLyrics
 {
 	class DeadLyRicS : public QObject
 						, public IInfo
-						, public IFinder
 						, public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IFinder IHaveSettings)
+		Q_INTERFACES (IInfo IHaveSettings)
 
-		std::auto_ptr<QTranslator> Translator_;
-		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -53,12 +51,7 @@ namespace DeadLyrics
 
 		void SetProvider (QObject*, const QString&);
 
-		QStringList GetCategories () const;
-		QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
-
-		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-	signals:
-		void categoriesChanged (const QStringList&, const QStringList&);
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	};
 }
 }

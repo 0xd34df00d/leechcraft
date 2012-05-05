@@ -15,7 +15,6 @@ SET (SRCS
 	core.cpp
 	searcher.cpp
 	lyricwikisearcher.cpp
-	findproxy.cpp
 	lyricscache.cpp
 	xmlsettingsmanager.cpp
 	)
@@ -24,7 +23,6 @@ SET (HEADERS
 	core.h
 	searcher.h
 	lyricwikisearcher.h
-	findproxy.h
 	lyricscache.h
 	xmlsettingsmanager.h
 	)

@@ -23,7 +23,6 @@
 #include "searcher.h"
 
 class QNetworkAccessManager;
-class IWebBrowser;
 
 namespace LeechCraft
 {
@@ -33,7 +32,6 @@ namespace DeadLyrics
 	{
 		Q_OBJECT
 
-		searchers_t Searchers_;
 		ICoreProxy_ptr Proxy_;
 
 		Core ();
@@ -43,19 +41,6 @@ namespace DeadLyrics
 
 		void SetProxy (ICoreProxy_ptr);
 		QNetworkAccessManager* GetNetworkAccessManager () const;
-		IWebBrowser* GetWebBrowser () const;
-
-		QStringList GetCategories () const;
-
-		/** Returns all the searches for the given category. It's assumed
-			* that different calls to this function with the same category
-			* return the same searchers in the same order.
-			*
-			* @param[in] category The category for which one wants to get the
-			* searchers.
-			* @return The searchers for the passed category.
-			*/
-		searchers_t GetSearchers (const QString& category) const;
 	};
 }
 }

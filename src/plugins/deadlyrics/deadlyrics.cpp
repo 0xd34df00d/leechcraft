@@ -21,7 +21,6 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include "core.h"
-#include "findproxy.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -30,7 +29,7 @@ namespace DeadLyrics
 {
 	void DeadLyRicS::Init (ICoreProxy_ptr proxy)
 	{
-		Translator_.reset (Util::InstallTranslator ("deadlyrics"));
+		Util::InstallTranslator ("deadlyrics");
 
 		Core::Instance ().SetProxy (proxy);
 
@@ -86,23 +85,10 @@ namespace DeadLyrics
 	{
 	}
 
-	QStringList DeadLyRicS::GetCategories () const
-	{
-		return Core::Instance ().GetCategories ();
-	}
-
-	QList<IFindProxy_ptr> DeadLyRicS::GetProxy (const LeechCraft::Request& req)
-	{
-		QList<IFindProxy_ptr> result;
-		result << IFindProxy_ptr (new FindProxy (req));
-		return result;
-	}
-
-	std::shared_ptr<Util::XmlSettingsDialog> DeadLyRicS::GetSettingsDialog () const
+	Util::XmlSettingsDialog_ptr DeadLyRicS::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
 	}
-
 }
 }
 

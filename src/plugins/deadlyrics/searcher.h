@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <vector>
+#include <memory>
 #include <QObject>
-#include <interfaces/ifinder.h>
+#include <QList>
 
 class QDataStream;
 
@@ -40,7 +40,7 @@ namespace DeadLyrics
 	bool operator== (const Lyrics&, const Lyrics&);
 	QDataStream& operator<< (QDataStream&, const Lyrics&);
 	QDataStream& operator>> (QDataStream&, Lyrics&);
-	typedef std::vector<Lyrics> lyrics_t;
+	typedef QList<Lyrics> LyricsList_t;
 
 	class Searcher : public QObject
 	{
@@ -54,7 +54,7 @@ namespace DeadLyrics
 		void error (const QString&);
 	};
 
-	typedef std::shared_ptr<Searcher> searcher_ptr;
-	typedef std::vector<searcher_ptr> searchers_t;
+	typedef std::shared_ptr<Searcher> Searcher_ptr;
+	typedef QList<Searcher_ptr> Searchers_t;
 }
 }
