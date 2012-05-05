@@ -28,6 +28,7 @@
 #include <QInputDialog>
 #include <phonon/seekslider.h>
 #include <phonon/volumeslider.h>
+#include <phonon/mediaobject.h>
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
@@ -172,10 +173,18 @@ namespace LMP
 
 		TabToolbar_->addSeparator ();
 
+		PlayedTime_ = new QLabel ();
+		RemainingTime_ = new QLabel ();
 		auto seekSlider = new Phonon::SeekSlider (Player_->GetSourceObject ());
 		seekSlider->setTracking (false);
+		TabToolbar_->addWidget (PlayedTime_);
 		TabToolbar_->addWidget (seekSlider);
+		TabToolbar_->addWidget (RemainingTime_);
 		TabToolbar_->addSeparator ();
+		connect (Player_->GetSourceObject (),
+				SIGNAL (tick (qint64)),
+				this,
+				SLOT (handleCurrentPlayTime (qint64)));
 
 		auto volumeSlider = new Phonon::VolumeSlider (Player_->GetAudioOutput ());
 		volumeSlider->setMinimumWidth (100);
@@ -414,6 +423,24 @@ namespace LMP
 			LastSimilar_ = info.Artist_;
 			FillSimilar (Similars_ [info.Artist_]);
 		}
+	}
+
+	void PlayerTab::handleCurrentPlayTime (qint64 time)
+	{
+		auto niceTime = [] (qint64 time)
+		{
+			if (!time)
+				return QString ();
+
+			QString played = Util::MakeTimeFromLong (time / 1000);
+			if (played.startsWith ("00:"))
+				played = played.mid (3);
+			return played;
+		};
+		PlayedTime_->setText (niceTime (time));
+
+		const auto total = Player_->GetSourceObject ()->totalTime ();
+		RemainingTime_->setText (total < 0 ? tr ("unknown") : niceTime (total - time));
 	}
 
 	void PlayerTab::handleSimilarError ()
