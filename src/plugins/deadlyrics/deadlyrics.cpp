@@ -66,25 +66,6 @@ namespace DeadLyrics
 		return QIcon (":/resources/images/deadlyrics.svg");
 	}
 
-	QStringList DeadLyRicS::Provides () const
-	{
-		return QStringList ("search::lyrics");
-	}
-
-	QStringList DeadLyRicS::Needs () const
-	{
-		return QStringList ();
-	}
-
-	QStringList DeadLyRicS::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void DeadLyRicS::SetProvider (QObject*, const QString&)
-	{
-	}
-
 	Util::XmlSettingsDialog_ptr DeadLyRicS::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
