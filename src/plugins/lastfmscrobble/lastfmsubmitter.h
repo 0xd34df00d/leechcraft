@@ -82,6 +82,7 @@ namespace Lastfmscrobble
 	private:
 		void LoadQueue ();
 		void SaveQueue () const;
+		bool CheckError (const QDomDocument&);
 	public slots:
 		void submit ();
 	private slots:
@@ -89,6 +90,7 @@ namespace Lastfmscrobble
 		void getSessionKey ();
 	signals:
 		void status (int code);
+		void authFailure ();
 	};
 }
 }

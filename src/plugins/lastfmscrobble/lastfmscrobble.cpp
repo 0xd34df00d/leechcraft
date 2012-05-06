@@ -117,7 +117,7 @@ namespace Lastfmscrobble
 				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)));
 	}
 
-	void Plugin::handleSubmitterInit ()
+	void Plugin::FeedPassword (bool authFailure)
 	{
 		const QString& login = XmlSettingsManager::Instance ()
 				.property ("lastfm.login").toString ();
@@ -126,16 +126,34 @@ namespace Lastfmscrobble
 		QString password;
 		if (!login.isEmpty ())
 		{
+			const auto& text = tr ("Enter password for Last.fm account with login %1:")
+						.arg (login);
 			password = Util::GetPassword ("org.LeechCraft.Lastfmscrobble/" + login,
-					tr ("Enter password for Last.fm account with login %1:")
-						.arg (login),
-					this);
+					text,
+					this,
+					!authFailure);
 			if (password.isEmpty ())
 				return;
 		}
 
 		LFSubmitter_->SetPassword (password);
 		LFSubmitter_->Init (Proxy_->GetNetworkAccessManager ());
+	}
+
+	void Plugin::handleSubmitterInit ()
+	{
+		connect (LFSubmitter_,
+				SIGNAL (authFailure ()),
+				this,
+				SLOT (handleAuthFailure ()),
+				Qt::UniqueConnection);
+
+		FeedPassword (false);
+	}
+
+	void Plugin::handleAuthFailure ()
+	{
+		FeedPassword (true);
 	}
 }
 }

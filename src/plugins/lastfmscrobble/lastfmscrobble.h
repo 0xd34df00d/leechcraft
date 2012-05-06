@@ -68,8 +68,11 @@ namespace Lastfmscrobble
 
 		QString GetAlbumArtProviderName () const;
 		void RequestAlbumArt (const Media::AlbumInfo& album) const;
+	private:
+		void FeedPassword (bool);
 	private slots:
 		void handleSubmitterInit ();
+		void handleAuthFailure ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

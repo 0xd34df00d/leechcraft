@@ -18,6 +18,7 @@
  **********************************************************************/
 
 #include "lastfmsubmitter.h"
+#include "codes.h"
 #include <QCryptographicHash>
 #include <QByteArray>
 #include <QNetworkAccessManager>
@@ -276,6 +277,28 @@ namespace Lastfmscrobble
 		file.write (doc.toByteArray ());
 	}
 
+	bool LastFMSubmitter::CheckError (const QDomDocument& doc)
+	{
+		auto sub = doc.documentElement ().firstChildElement ("error");
+		if (sub.isNull ())
+			return false;
+
+		const int code = sub.attribute ("code").toInt ();
+		switch (code)
+		{
+		case ErrorCodes::AuthError:
+			emit authFailure ();
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown error code"
+					<< code;
+			break;
+		}
+
+		return true;
+	}
+
 	void LastFMSubmitter::checkFlushQueue (int code)
 	{
 		qDebug () << Q_FUNC_INFO << code;
@@ -304,11 +327,13 @@ namespace Lastfmscrobble
 		if (!reply)
 			return;
 
+		reply->deleteLater ();
 		QDomDocument doc;
 		doc.setContent (QString::fromUtf8 (reply->readAll ()));
-		reply->deleteLater ();
-		const auto& domList = doc.documentElement ()
-				.elementsByTagName ("key");
+		if (CheckError (doc))
+			return;
+
+		const auto& domList = doc.documentElement ().elementsByTagName ("key");
 		if (!domList.size ())
 			return;
 
