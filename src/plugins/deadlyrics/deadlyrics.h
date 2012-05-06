@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DEADLYRICS_DEADLYRICS_H
-#define PLUGINS_DEADLYRICS_DEADLYRICS_H
+#pragma once
+
 #include <QObject>
 #include <QStringList>
 #include <QTranslator>
@@ -27,44 +27,26 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DeadLyrics
+{
+	class DeadLyRicS : public QObject
+						, public IInfo
+						, public IHaveSettings
 	{
-		namespace DeadLyrics
-		{
-			class DeadLyRicS : public QObject
-							 , public IInfo
-							 , public IFinder
-							 , public IHaveSettings
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IFinder IHaveSettings)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveSettings)
 
-				std::auto_ptr<QTranslator> Translator_;
-				std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-				void SetProvider (QObject*, const QString&);
-
-				QStringList GetCategories () const;
-				QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
-
-				std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-			signals:
-				void categoriesChanged (const QStringList&, const QStringList&);
-			};
-		};
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	};
-};
-
-#endif
-
+}
+}

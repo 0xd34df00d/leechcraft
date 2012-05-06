@@ -14,19 +14,19 @@ SET (SRCS
 	deadlyrics.cpp
 	core.cpp
 	searcher.cpp
-	lyricwikisearcher.cpp
-	findproxy.cpp
 	lyricscache.cpp
 	xmlsettingsmanager.cpp
+	sitessearcher.cpp
+	concretesite.cpp
 	)
 SET (HEADERS
 	deadlyrics.h
 	core.h
 	searcher.h
-	lyricwikisearcher.h
-	findproxy.h
 	lyricscache.h
 	xmlsettingsmanager.h
+	sitessearcher.h
+	concretesite.h
 	)
 CreateTrVars ("deadlyrics" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 SET (RESOURCES deadlyricsresources.qrc)

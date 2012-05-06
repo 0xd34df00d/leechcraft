@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "albumartmanager.h"
+#include <functional>
 #include <QTimer>
 #include <QUrl>
 #include <QtConcurrentRun>
@@ -105,7 +106,7 @@ namespace LMP
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleSaved ()));
-		watcher->setFuture (QtConcurrent::run ([image, fullPath] () { image.save (fullPath, "PNG", 100); }));
+		watcher->setFuture (QtConcurrent::run (std::function<void (void)> ([image, fullPath] () { image.save (fullPath, "PNG", 100); })));
 	}
 
 	void AlbumArtManager::handleSaved ()

@@ -20,7 +20,7 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/media/iaudioscrobbler.h>
+#include <interfaces/media/isimilarartists.h>
 
 namespace LeechCraft
 {

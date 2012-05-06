@@ -21,67 +21,39 @@
 #include <QCryptographicHash>
 #include <QUrl>
 #include <QtDebug>
-#include <interfaces/iwebbrowser.h>
 #include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ipluginsmanager.h>
-#include "lyricwikisearcher.h"
+#include "sitessearcher.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DeadLyrics
+{
+	Core::Core ()
 	{
-		namespace DeadLyrics
-		{
-			Core::Core ()
-			{
-				qRegisterMetaType<Lyrics> ("LeechCraft::Plugins::DeadLyrics::Lyrics");
-				qRegisterMetaTypeStreamOperators<Lyrics> ("LeechCraft::Plugins::DeadLyrics::Lyrics");
-				Searchers_.push_back (searcher_ptr (new LyricWikiSearcher));
-			}
+		qRegisterMetaType<Lyrics> ("LeechCraft::DeadLyrics::Lyrics");
+		qRegisterMetaTypeStreamOperators<Lyrics> ("LeechCraft::DeadLyrics::Lyrics");
 
-			Core& Core::Instance ()
-			{
-				static Core core;
-				return core;
-			}
+		Searchers_ << Searcher_ptr (new SitesSearcher (":/deadlyrics/resources/sites.xml"));
+	}
 
-			void Core::Release ()
-			{
-				Searchers_.clear ();
-			}
+	Core& Core::Instance ()
+	{
+		static Core core;
+		return core;
+	}
 
-			void Core::SetProxy (ICoreProxy_ptr proxy)
-			{
-				Proxy_ = proxy;
-			}
+	void Core::Release ()
+	{
+	}
 
-			QNetworkAccessManager* Core::GetNetworkAccessManager () const
-			{
-				return Proxy_->GetNetworkAccessManager ();
-			}
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
 
-			IWebBrowser* Core::GetWebBrowser () const
-			{
-				IPluginsManager *pm = Proxy_->GetPluginsManager ();
-				QObjectList browsers = pm->Filter<IWebBrowser*> (pm->GetAllPlugins ());
-				return browsers.size () ?
-					qobject_cast<IWebBrowser*> (browsers.at (0)) :
-					0;
-			}
-
-			QStringList Core::GetCategories () const
-			{
-				return QStringList (tr ("lyrics"));
-			}
-
-			searchers_t Core::GetSearchers (const QString& category) const
-			{
-				if (category == tr ("lyrics"))
-					return Searchers_;
-				else
-					return searchers_t ();
-			}
-		};
-	};
-};
-
+	QNetworkAccessManager* Core::GetNetworkAccessManager () const
+	{
+		return Proxy_->GetNetworkAccessManager ();
+	}
+}
+}

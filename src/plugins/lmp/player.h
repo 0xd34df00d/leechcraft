@@ -30,6 +30,7 @@ class QStandardItemModel;
 namespace Phonon
 {
 	class MediaObject;
+	class AudioOutput;
 }
 
 namespace LeechCraft
@@ -44,6 +45,7 @@ namespace LMP
 
 		QStandardItemModel *PlaylistModel_;
 		Phonon::MediaObject *Source_;
+		Phonon::AudioOutput *Output_;
 		Phonon::Path Path_;
 
 		QList<Phonon::MediaSource> CurrentQueue_;
@@ -75,6 +77,7 @@ namespace LMP
 
 		QAbstractItemModel* GetPlaylistModel () const;
 		Phonon::MediaObject* GetSourceObject () const;
+		Phonon::AudioOutput* GetAudioOutput () const;
 
 		void SetPlayMode (PlayMode);
 

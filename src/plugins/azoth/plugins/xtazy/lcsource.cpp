@@ -16,9 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include "lcsource.h"
+#include <interfaces/media/audiostructs.h>
 
 namespace LeechCraft
 {
@@ -26,17 +25,27 @@ namespace Azoth
 {
 namespace Xtazy
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
+	LCSource::LCSource (QObject *parent)
+	: TuneSourceBase (parent)
 	{
-		Q_OBJECT
+		setObjectName ("LCSource");
+	}
 
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
-	};
+	void LCSource::NowPlaying (const Media::AudioInfo& audio)
+	{
+		TuneInfo_t tune;
+		tune ["title"] = audio.Title_;
+		tune ["artist"] = audio.Artist_;
+		tune ["source"] = audio.Album_;
+		tune ["track"] = audio.TrackNumber_;
+		tune ["length"] = audio.Length_;
+		emit tuneInfoChanged (tune);
+	}
+
+	void LCSource::Stopped ()
+	{
+		emit tuneInfoChanged (TuneInfo_t ());
+	}
 }
 }
 }

@@ -18,25 +18,32 @@
 
 #pragma once
 
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include <QString>
+#include "audiostructs.h"
 
-namespace LeechCraft
+namespace Media
 {
-namespace Azoth
-{
-namespace Xtazy
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
+	class IPendingSimilarArtists
 	{
-		Q_OBJECT
-
-		XmlSettingsManager ();
 	public:
-		static XmlSettingsManager& Instance ();
+		virtual ~IPendingSimilarArtists () {}
+
+		virtual QObject* GetObject () = 0;
+		virtual QString GetSourceArtistName () const = 0;
+		virtual SimilarityInfos_t GetSimilar () const = 0;
 	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		virtual void ready () = 0;
+		virtual void error () = 0;
+	};
+
+	class ISimilarArtists
+	{
+	public:
+		virtual ~ISimilarArtists () {}
+
+		virtual IPendingSimilarArtists* GetSimilarArtists (const QString& artistName, int num) = 0;
 	};
 }
-}
-}
+
+Q_DECLARE_INTERFACE (Media::IPendingSimilarArtists, "org.LeechCraft.Media.IPendingSimilarArtists/1.0");
+Q_DECLARE_INTERFACE (Media::ISimilarArtists, "org.LeechCraft.Media.ISimilarArtists/1.0");

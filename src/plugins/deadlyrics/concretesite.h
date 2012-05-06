@@ -18,25 +18,33 @@
 
 #pragma once
 
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include <memory>
+#include <QObject>
+#include <QHash>
+
+class QDomElement;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace DeadLyrics
 {
-namespace Xtazy
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
+	class MatcherBase;
+	typedef std::shared_ptr<MatcherBase> MatcherBase_ptr;
+
+	class ConcreteSite : public QObject
 	{
 		Q_OBJECT
 
-		XmlSettingsManager ();
+		const QString Name_;
+		const QString Charset_;
+		const QString URLTemplate_;
+
+		QHash<QChar, QString> Replacements_;
+
+		QList<MatcherBase_ptr> Extractors_;
+		QList<MatcherBase_ptr> Excluders_;
 	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		ConcreteSite (const QDomElement&, QObject* = 0);
 	};
-}
 }
 }

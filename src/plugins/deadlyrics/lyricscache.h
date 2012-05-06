@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DEADLYRICS_LYRICSCACHE_H
-#define PLUGINS_DEADLYRICS_LYRICSCACHE_H
+#pragma once
+
 #include <QObject>
 #include <QString>
 #include <QDir>
@@ -25,24 +25,18 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DeadLyrics
+{
+	class LyricsCache : public QObject
 	{
-		namespace DeadLyrics
-		{
-			class LyricsCache : public QObject
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				QDir Dir_;
-				LyricsCache ();
-			public:
-				static LyricsCache& Instance ();
-				Lyrics GetLyrics (const QByteArray&) const;
-				void SetLyrics (const QByteArray&, const Lyrics&);
-			};
-		};
+		QDir Dir_;
+		LyricsCache ();
+	public:
+		static LyricsCache& Instance ();
+		Lyrics GetLyrics (const QByteArray&) const;
+		void SetLyrics (const QByteArray&, const Lyrics&);
 	};
-};
-
-#endif
-
+}
+}
