@@ -34,6 +34,8 @@ namespace DeadLyrics
 
 		ICoreProxy_ptr Proxy_;
 
+		Searchers_t Searchers_;
+
 		Core ();
 	public:
 		static Core& Instance ();

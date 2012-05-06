@@ -16,6 +16,8 @@ SET (SRCS
 	searcher.cpp
 	lyricscache.cpp
 	xmlsettingsmanager.cpp
+	sitessearcher.cpp
+	concretesite.cpp
 	)
 SET (HEADERS
 	deadlyrics.h
@@ -23,6 +25,8 @@ SET (HEADERS
 	searcher.h
 	lyricscache.h
 	xmlsettingsmanager.h
+	sitessearcher.h
+	concretesite.h
 	)
 CreateTrVars ("deadlyrics" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 SET (RESOURCES deadlyricsresources.qrc)

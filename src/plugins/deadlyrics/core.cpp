@@ -22,6 +22,7 @@
 #include <QUrl>
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
+#include "sitessearcher.h"
 
 namespace LeechCraft
 {
@@ -31,6 +32,8 @@ namespace DeadLyrics
 	{
 		qRegisterMetaType<Lyrics> ("LeechCraft::DeadLyrics::Lyrics");
 		qRegisterMetaTypeStreamOperators<Lyrics> ("LeechCraft::DeadLyrics::Lyrics");
+
+		Searchers_ << Searcher_ptr (new SitesSearcher (":/deadlyrics/resources/sites.xml"));
 	}
 
 	Core& Core::Instance ()

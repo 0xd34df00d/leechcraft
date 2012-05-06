@@ -63,7 +63,7 @@ namespace DeadLyrics
 
 	QIcon DeadLyRicS::GetIcon () const
 	{
-		return QIcon (":/resources/images/deadlyrics.svg");
+		return QIcon (":/deadlyrics/resources/images/deadlyrics.svg");
 	}
 
 	Util::XmlSettingsDialog_ptr DeadLyRicS::GetSettingsDialog () const
