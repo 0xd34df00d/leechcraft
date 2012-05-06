@@ -28,6 +28,7 @@ namespace Blogique
 {
 	class IAccount;
 	class IBloggingPlatform;
+	class PluginProxy;
 
 	class Core : public QObject
 	{
@@ -35,6 +36,7 @@ namespace Blogique
 
 		ICoreProxy_ptr Proxy_;
 		QObjectList BlogPlatformPlugins_;
+		std::shared_ptr<PluginProxy> PluginProxy_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)

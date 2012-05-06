@@ -22,12 +22,14 @@
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
+#include "pluginproxy.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
 	Core::Core ()
+	: PluginProxy_ (std::make_shared<PluginProxy> ())
 	{
 	}
 
@@ -64,6 +66,12 @@ namespace Blogique
 					<< "isn't a IPlugin2";
 			return;
 		}
+
+		QByteArray sig = QMetaObject::normalizedSignature ("initPlugin (QObject*)");
+		if (plugin->metaObject ()->indexOfMethod (sig) != -1)
+			QMetaObject::invokeMethod (plugin,
+					"initPlugin",
+					Q_ARG (QObject*, PluginProxy_.get ()));
 
 		QSet<QByteArray> classes = plugin2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.Plugins.Blogique.Plugins.IBlogPlatformPlugin"))
