@@ -89,6 +89,11 @@ namespace Metida
 		return Core::Instance ().GetBloggingPlatforms ();
 	}
 
+	void Plugin::initPlugin (QObject *proxy)
+	{
+		Core::Instance ().SetPluginProxy (proxy);
+	}
+
 }
 }
 }

@@ -26,6 +26,7 @@ namespace Blogique
 namespace Metida
 {
 	Core::Core ()
+	: PluginProxy_ (0)
 	{
 	}
 
@@ -54,6 +55,12 @@ namespace Metida
 	{
 		return LJPlatform_ ? QObjectList () << LJPlatform_.get () : QObjectList ();
 	}
+
+	void Core::SetPluginProxy (QObject *pluginProxy)
+	{
+		PluginProxy_ = pluginProxy;
+	}
+
 }
 }
 }

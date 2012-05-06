@@ -36,6 +36,7 @@ namespace Metida
 		ICoreProxy_ptr Proxy_;
 		QObjectList BlogPlatformPlugins_;
 		std::shared_ptr<LJBloggingPlatform> LJPlatform_;
+		QObject *PluginProxy_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
@@ -47,6 +48,8 @@ namespace Metida
 		ICoreProxy_ptr GetCoreProxy ();
 
 		QObjectList GetBloggingPlatforms () const;
+
+		void SetPluginProxy (QObject *pluginProxy);
 	};
 }
 }
