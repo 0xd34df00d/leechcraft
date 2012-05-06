@@ -23,6 +23,7 @@ SET (SRCS
 	blogique.cpp
 	blogiquewidget.cpp
 	core.cpp
+	pluginproxy.cpp
 	xmlsettingsmanager.cpp
 	)
 
@@ -32,6 +33,7 @@ SET (HEADERS
 	blogique.h
 	blogiquewidget.h
 	core.h
+	pluginproxy.h
 	xmlsettingsmanager.h
 	)
 

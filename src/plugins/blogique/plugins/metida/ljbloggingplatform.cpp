@@ -92,6 +92,8 @@ namespace Metida
 		}
 
 		LJAccount *account = new LJAccount (name, this);
+		const QString& loging = w->GetLogin ();
+		const QString& pass = w->GetPassword ();
 		LJAccounts_ << account;
 		saveAccounts ();
 		emit accountAdded (account);
