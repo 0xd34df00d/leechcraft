@@ -32,9 +32,6 @@ namespace Blogique
 		Q_INTERFACES (LeechCraft::Blogique::IPluginProxy)
 	public:
 		PluginProxy (QObject* = 0);
-
-		void SetPassword (const QString& password, QObject *account);
-		QString GetPassword (QObject *account);
 	};
 }
 }
