@@ -24,6 +24,7 @@
 #include <QString>
 #include <QVariant>
 #include <QMap>
+#include <lastfm/Track>
 
 class QTimer;
 
@@ -61,7 +62,12 @@ namespace Lastfmscrobble
 		std::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
 		QString Password_;
 
+		QNetworkAccessManager *NAM_;
+
 		QTimer *SubmitTimer_;
+
+		QList<lastfm::Track> SubmitQueue_;
+		lastfm::MutableTrack NextSubmit_;
 	public:
 		LastFMSubmitter (QObject *parent = 0);
 
@@ -70,16 +76,21 @@ namespace Lastfmscrobble
 		void SetPassword (const QString& password);
 		bool IsConnected () const;
 
-		void Prepare (const MediaMeta&);
+		void NowPlaying (const MediaMeta&);
+		void Love ();
 		void Clear ();
+	private:
+		void LoadQueue ();
+		void SaveQueue () const;
+		bool CheckError (const QDomDocument&);
 	public slots:
-		void sendTrack (const MediaMeta& info);
 		void submit ();
 	private slots:
 		void checkFlushQueue (int);
 		void getSessionKey ();
 	signals:
 		void status (int code);
+		void authFailure ();
 	};
 }
 }

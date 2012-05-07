@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XTAZY_FILESOURCE_H
-#define PLUGINS_AZOTH_PLUGINS_XTAZY_FILESOURCE_H
+#pragma once
+
 #include "tunesourcebase.h"
 #include <QFileSystemWatcher>
 
@@ -30,7 +30,7 @@ namespace Xtazy
 	class FileSource : public TuneSourceBase
 	{
 		Q_OBJECT
-		
+
 		QFileSystemWatcher Watcher_;
 	public:
 		FileSource (QObject* = 0);
@@ -41,5 +41,3 @@ namespace Xtazy
 }
 }
 }
-
-#endif

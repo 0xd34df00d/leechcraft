@@ -16,12 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XTAZY_XTAZY_H
-#define PLUGINS_AZOTH_PLUGINS_XTAZY_XTAZY_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/media/iaudioscrobbler.h>
 
 class QTranslator;
 
@@ -34,20 +35,26 @@ class IProxyObject;
 namespace Xtazy
 {
 	class TuneSourceBase;
+	class LCSource;
 
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
 				 , public IHaveSettings
+				 , public Media::IAudioScrobbler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings Media::IAudioScrobbler)
 
 		std::shared_ptr<QTranslator> Translator_;
 		ICoreProxy_ptr Proxy_;
 		IProxyObject *AzothProxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		QList<TuneSourceBase*> TuneSources_;
+
+		LCSource *LCSource_;
+
+		QMap<QString, QVariant> Previous_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -58,8 +65,13 @@ namespace Xtazy
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
-		
+
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QString GetServiceName () const;
+		void NowPlaying (const Media::AudioInfo& audio);
+		void PlaybackStopped ();
+		void LoveCurrentTrack ();
 	public slots:
 		void initPlugin (QObject*);
 	private slots:
@@ -68,5 +80,3 @@ namespace Xtazy
 }
 }
 }
-
-#endif

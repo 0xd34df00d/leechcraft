@@ -21,7 +21,6 @@
 #include <QIcon>
 #include <QByteArray>
 #include <interfaces/core/icoreproxy.h>
-#include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/passutils.h>
 #include "lastfmsubmitter.h"
@@ -41,14 +40,13 @@ namespace Lastfmscrobble
 				"lastfmscrobblesettings.xml");
 
 		LFSubmitter_ = new LastFMSubmitter (this);
-
-		XmlSettingsManager::Instance ().RegisterObject ("lastfm.login",
-				this, "handleSubmitterInit");
-		handleSubmitterInit ();
 	}
 
 	void Plugin::SecondInit ()
 	{
+		XmlSettingsManager::Instance ().RegisterObject ("lastfm.login",
+				this, "handleSubmitterInit");
+		handleSubmitterInit ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -75,22 +73,6 @@ namespace Lastfmscrobble
 		return QIcon (":/resources/images/lastfmscrobble.svg");
 	}
 
-	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
-	{
-		return entity.Mime_ == "x-leechcraft/now-playing-track-info" ?
-				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
-				EntityTestHandleResult ();
-	}
-
-	void Plugin::Handle (Entity entity)
-	{
-		LFSubmitter_->submit ();
-
-		MediaMeta meta (entity.Additional_);
-
-		LFSubmitter_->sendTrack (meta);
-	}
-
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
@@ -103,12 +85,17 @@ namespace Lastfmscrobble
 
 	void Plugin::NowPlaying (const Media::AudioInfo& info)
 	{
-		LFSubmitter_->Prepare (MediaMeta (info));
+		LFSubmitter_->NowPlaying (MediaMeta (info));
 	}
 
 	void Plugin::PlaybackStopped ()
 	{
 		LFSubmitter_->Clear ();
+	}
+
+	void Plugin::LoveCurrentTrack ()
+	{
+		LFSubmitter_->Love ();
 	}
 
 	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)
@@ -130,7 +117,7 @@ namespace Lastfmscrobble
 				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)));
 	}
 
-	void Plugin::handleSubmitterInit ()
+	void Plugin::FeedPassword (bool authFailure)
 	{
 		const QString& login = XmlSettingsManager::Instance ()
 				.property ("lastfm.login").toString ();
@@ -139,15 +126,34 @@ namespace Lastfmscrobble
 		QString password;
 		if (!login.isEmpty ())
 		{
+			const auto& text = tr ("Enter password for Last.fm account with login %1:")
+						.arg (login);
 			password = Util::GetPassword ("org.LeechCraft.Lastfmscrobble/" + login,
-					tr ("Enter password for Last.fm account with login %1:")
-						.arg (login),
-					this);
-			return;
+					text,
+					this,
+					!authFailure);
+			if (password.isEmpty ())
+				return;
 		}
 
 		LFSubmitter_->SetPassword (password);
 		LFSubmitter_->Init (Proxy_->GetNetworkAccessManager ());
+	}
+
+	void Plugin::handleSubmitterInit ()
+	{
+		connect (LFSubmitter_,
+				SIGNAL (authFailure ()),
+				this,
+				SLOT (handleAuthFailure ()),
+				Qt::UniqueConnection);
+
+		FeedPassword (false);
+	}
+
+	void Plugin::handleAuthFailure ()
+	{
+		FeedPassword (true);
 	}
 }
 }

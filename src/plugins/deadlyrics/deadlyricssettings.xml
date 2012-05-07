@@ -3,11 +3,5 @@
 	<declare defaultlang="en" />
 	<page>
 		<label lang="en" value="Appearance" />
-		<groupbox>
-			<label lang="en" value="Lyrics view" />
-			<item type="checkbox" property="UseBrowser" state="on">
-				<label lang="en" value="Use a web browser (if available)" />
-			</item>
-		</groupbox>
 	</page>
 </settings>

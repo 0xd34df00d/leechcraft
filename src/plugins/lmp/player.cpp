@@ -69,7 +69,8 @@ namespace LMP
 	: QObject (parent)
 	, PlaylistModel_ (new QStandardItemModel (this))
 	, Source_ (new Phonon::MediaObject (this))
-	, Path_ (Phonon::createPath (Source_, new Phonon::AudioOutput (Phonon::MusicCategory, this)))
+	, Output_ (new Phonon::AudioOutput (Phonon::MusicCategory, this))
+	, Path_ (Phonon::createPath (Source_, Output_))
 	, PlayMode_ (PlayMode::Sequential)
 	{
 		connect (Source_,
@@ -80,6 +81,7 @@ namespace LMP
 				SIGNAL (aboutToFinish ()),
 				this,
 				SLOT (handleSourceAboutToFinish ()));
+		Source_->setTickInterval (1000);
 
 		auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
 		Enqueue (staticMgr->GetOnLoadPlaylist ());
@@ -93,6 +95,11 @@ namespace LMP
 	Phonon::MediaObject* Player::GetSourceObject () const
 	{
 		return Source_;
+	}
+
+	Phonon::AudioOutput* Player::GetAudioOutput () const
+	{
+		return Output_;
 	}
 
 	void Player::SetPlayMode (Player::PlayMode playMode)

@@ -16,32 +16,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QCoreApplication>
+#include "sitessearcher.h"
+#include <QDomDocument>
+#include <QFile>
+#include <QtDebug>
+#include "concretesite.h"
 
 namespace LeechCraft
 {
 namespace DeadLyrics
 {
-	XmlSettingsManager::XmlSettingsManager ()
+	SitesSearcher::SitesSearcher (const QString& configPath)
 	{
-		LeechCraft::Util::BaseSettingsManager::Init ();
+		QFile file (configPath);
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open"
+					<< configPath;
+			return;
+		}
+
+		QDomDocument doc;
+		if (!doc.setContent (&file))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse"
+					<< configPath;
+			return;
+		}
+
+		auto provider = doc.documentElement ().firstChildElement ("provider");
+		while (!provider.isNull ())
+		{
+			try
+			{
+				Sites_ << ConcreteSite_ptr (new ConcreteSite (provider));
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error adding a provider:"
+						<< e.what ();
+			}
+			provider = provider.nextSiblingElement ("provider");
+		}
 	}
 
-	XmlSettingsManager* XmlSettingsManager::Instance ()
+	void SitesSearcher::Start (const QStringList& , QByteArray&)
 	{
-		static XmlSettingsManager manager;
-		return &manager;
 	}
 
-	QSettings* XmlSettingsManager::BeginSettings () const
-	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_DeadLyrics");
-		return settings;
-	}
-
-	void XmlSettingsManager::EndSettings (QSettings*) const
+	void SitesSearcher::Stop (const QByteArray&)
 	{
 	}
 }

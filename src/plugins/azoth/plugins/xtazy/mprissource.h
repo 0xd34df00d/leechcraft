@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XTAZY_MPRISSOURCE_H
-#define PLUGINS_AZOTH_PLUGINS_XTAZY_MPRISSOURCE_H
+#pragma once
+
 #include "tunesourcebase.h"
 #include <QStringList>
 #include <QDBusConnection>
@@ -39,7 +39,7 @@ namespace Xtazy
 	class MPRISSource : public TuneSourceBase
 	{
 		Q_OBJECT
-		
+
 		QStringList Players_;
 		QDBusConnection SB_;
 		TuneInfo_t Tune_;
@@ -61,5 +61,3 @@ namespace Xtazy
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::Xtazy::PlayerStatus);
-
-#endif

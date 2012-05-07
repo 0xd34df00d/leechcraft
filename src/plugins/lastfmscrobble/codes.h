@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2011  Minh Ngo
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,25 +19,13 @@
 
 #pragma once
 
-#include <xmlsettingsdialog/basesettingsmanager.h>
-
 namespace LeechCraft
 {
-namespace Azoth
+namespace Lastfmscrobble
 {
-namespace Xtazy
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
+	enum ErrorCodes
 	{
-		Q_OBJECT
-
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		AuthError = 4
 	};
-}
 }
 }

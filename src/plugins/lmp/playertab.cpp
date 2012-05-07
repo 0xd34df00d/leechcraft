@@ -27,9 +27,12 @@
 #include <QMenu>
 #include <QInputDialog>
 #include <phonon/seekslider.h>
+#include <phonon/volumeslider.h>
+#include <phonon/mediaobject.h>
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
+#include <interfaces/media/isimilarartists.h>
 #include "player.h"
 #include "playlistdelegate.h"
 #include "util.h"
@@ -170,9 +173,34 @@ namespace LMP
 
 		TabToolbar_->addSeparator ();
 
+		QAction *love = new QAction (tr ("Love"), this);
+		love->setProperty ("ActionIcon", "emblem-favorite");
+		love->setShortcut (QString ("Ctrl+L"));
+		connect (love,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleLoveTrack ()));
+		TabToolbar_->addAction (love);
+
+		TabToolbar_->addSeparator ();
+
+		PlayedTime_ = new QLabel ();
+		RemainingTime_ = new QLabel ();
 		auto seekSlider = new Phonon::SeekSlider (Player_->GetSourceObject ());
 		seekSlider->setTracking (false);
+		TabToolbar_->addWidget (PlayedTime_);
 		TabToolbar_->addWidget (seekSlider);
+		TabToolbar_->addWidget (RemainingTime_);
+		TabToolbar_->addSeparator ();
+		connect (Player_->GetSourceObject (),
+				SIGNAL (tick (qint64)),
+				this,
+				SLOT (handleCurrentPlayTime (qint64)));
+
+		auto volumeSlider = new Phonon::VolumeSlider (Player_->GetAudioOutput ());
+		volumeSlider->setMinimumWidth (100);
+		volumeSlider->setMaximumWidth (160);
+		TabToolbar_->addWidget (volumeSlider);
 	}
 
 	void PlayerTab::SetupCollection ()
@@ -309,6 +337,46 @@ namespace LMP
 		Ui_.Playlist_->addAction (removeSelected);
 	}
 
+	void PlayerTab::SetNowPlaying (const MediaInfo& info, const QPixmap& px)
+	{
+		Ui_.NowPlaying_->clear ();
+		if (!info.Title_.isEmpty () || !info.Artist_.isEmpty ())
+		{
+			const auto& title = info.Title_.isEmpty () ? tr ("unknown song") : info.Title_;
+			const auto& album = info.Album_.isEmpty () ? tr ("unknown album") : info.Album_;
+			const auto& track = info.Artist_.isEmpty () ? tr ("unknown artist") : info.Artist_;
+
+			const QString& text = tr ("Now playing: %1 from %2 by %3")
+					.arg ("<em>" + title + "</em>")
+					.arg ("<em>" + album + "</em>")
+					.arg ("<em>" + track + "</em>");
+			Ui_.NowPlaying_->setText (text);
+
+			if (XmlSettingsManager::Instance ().property ("EnableNotifications").toBool ())
+			{
+				Entity e = Util::MakeNotification ("LMP", text, PInfo_);
+				e.Additional_ ["NotificationPixmap"] = px;
+				emit gotEntity (e);
+			}
+		}
+	}
+
+	void PlayerTab::Scrobble (const MediaInfo& info)
+	{
+		auto scrobblers = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
+		if (info.Title_.isEmpty () && info.Artist_.isEmpty ())
+		{
+			std::for_each (scrobblers.begin (), scrobblers.end (),
+					[] (decltype (scrobblers.front ()) s) { s->PlaybackStopped (); });
+			return;
+		}
+
+		const Media::AudioInfo aInfo = info;
+		std::for_each (scrobblers.begin (), scrobblers.end (),
+					[&aInfo] (decltype (scrobblers.front ()) s) { s->NowPlaying (aInfo); });
+	}
+
 	void PlayerTab::FillSimilar (const Media::SimilarityInfos_t& infos)
 	{
 		Ui_.NPWidget_->GetArtistsDisplay ()->SetSimilarArtists (infos);
@@ -332,26 +400,9 @@ namespace LMP
 
 		Ui_.NPWidget_->SetTrackInfo (info);
 
-		Ui_.NowPlaying_->clear ();
-		if (!info.Title_.isEmpty () || !info.Artist_.isEmpty ())
-		{
-			const auto& title = info.Title_.isEmpty () ? tr ("unknown song") : info.Title_;
-			const auto& album = info.Album_.isEmpty () ? tr ("unknown album") : info.Album_;
-			const auto& track = info.Artist_.isEmpty () ? tr ("unknown artist") : info.Artist_;
+		SetNowPlaying (info, px);
 
-			const QString& text = tr ("Now playing: %1 from %2 by %3")
-					.arg ("<em>" + title + "</em>")
-					.arg ("<em>" + album + "</em>")
-					.arg ("<em>" + track + "</em>");
-			Ui_.NowPlaying_->setText (text);
-
-			if (XmlSettingsManager::Instance ().property ("EnableNotifications").toBool ())
-			{
-				Entity e = Util::MakeNotification ("LMP", text, PInfo_);
-				e.Additional_ ["NotificationPixmap"] = px;
-				emit gotEntity (e);
-			}
-		}
+		Scrobble (info);
 
 		if (info.Artist_.isEmpty ())
 		{
@@ -360,12 +411,12 @@ namespace LMP
 		}
 		else if (!Similars_.contains (info.Artist_))
 		{
-			auto scrobblers = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
-			qDebug () << Q_FUNC_INFO << scrobblers.size ();
-			Q_FOREACH (Media::IAudioScrobbler *scrobbler, scrobblers)
+			auto similars = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableTo<Media::ISimilarArtists*> ();
+			qDebug () << Q_FUNC_INFO << similars.size ();
+			Q_FOREACH (auto *similar, similars)
 			{
-				auto obj = scrobbler->GetSimilarArtists (info.Artist_, 15);
+				auto obj = similar->GetSimilarArtists (info.Artist_, 15);
 				if (!obj)
 					continue;
 				connect (obj->GetObject (),
@@ -383,6 +434,32 @@ namespace LMP
 			LastSimilar_ = info.Artist_;
 			FillSimilar (Similars_ [info.Artist_]);
 		}
+	}
+
+	void PlayerTab::handleCurrentPlayTime (qint64 time)
+	{
+		auto niceTime = [] (qint64 time)
+		{
+			if (!time)
+				return QString ();
+
+			QString played = Util::MakeTimeFromLong (time / 1000);
+			if (played.startsWith ("00:"))
+				played = played.mid (3);
+			return played;
+		};
+		PlayedTime_->setText (niceTime (time));
+
+		const auto total = Player_->GetSourceObject ()->totalTime ();
+		RemainingTime_->setText (total < 0 ? tr ("unknown") : niceTime (total - time));
+	}
+
+	void PlayerTab::handleLoveTrack ()
+	{
+		auto scrobblers = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
+		std::for_each (scrobblers.begin (), scrobblers.end (),
+				[] (decltype (scrobblers.front ()) s) { s->LoveCurrentTrack (); });
 	}
 
 	void PlayerTab::handleSimilarError ()

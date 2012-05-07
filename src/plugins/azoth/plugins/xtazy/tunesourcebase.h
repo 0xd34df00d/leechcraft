@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XTAZY_TUNESOURCEBASE_H
-#define PLUGINS_AZOTH_PLUGINS_XTAZY_TUNESOURCEBASE_H
+#pragma once
+
 #include <QObject>
 #include <QMap>
 
@@ -40,5 +40,3 @@ namespace Xtazy
 }
 }
 }
-
-#endif

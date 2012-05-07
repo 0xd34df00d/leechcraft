@@ -52,8 +52,10 @@ namespace LMP
 
 		Player *Player_;
 		QToolBar *PlaylistToolbar_;
-
 		QToolBar *TabToolbar_;
+
+		QLabel *PlayedTime_;
+		QLabel *RemainingTime_;
 
 		QHash<QString, Media::SimilarityInfos_t> Similars_;
 		QString LastSimilar_;
@@ -72,9 +74,13 @@ namespace LMP
 		void SetupPlaylistsTab ();
 		void SetupFSBrowser ();
 		void SetupPlaylist ();
+		void SetNowPlaying (const MediaInfo&, const QPixmap&);
+		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
+		void handleCurrentPlayTime (qint64);
+		void handleLoveTrack ();
 		void handleSimilarError ();
 		void handleSimilarReady ();
 		void handleScanProgress (int);

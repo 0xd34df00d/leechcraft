@@ -210,7 +210,8 @@ namespace LMP
 
 	void LocalCollection::SetAlbumArt (int id, const QString& path)
 	{
-		Album2Item_ [id]->setData (path, Role::AlbumArt);
+		if (Album2Item_.contains (id))
+			Album2Item_ [id]->setData (path, Role::AlbumArt);
 		Storage_->SetAlbumArt (id, path);
 	}
 

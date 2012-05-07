@@ -18,7 +18,12 @@
 
 #pragma once
 
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include "tunesourcebase.h"
+
+namespace Media
+{
+	struct AudioInfo;
+}
 
 namespace LeechCraft
 {
@@ -26,16 +31,14 @@ namespace Azoth
 {
 namespace Xtazy
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
+	class LCSource : public TuneSourceBase
 	{
 		Q_OBJECT
-
-		XmlSettingsManager ();
 	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		LCSource (QObject* = 0);
+
+		void NowPlaying (const Media::AudioInfo& audio);
+		void Stopped ();
 	};
 }
 }

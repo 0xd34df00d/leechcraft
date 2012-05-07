@@ -27,6 +27,7 @@
 #include "tunesourcebase.h"
 #include "xmlsettingsmanager.h"
 #include "filesource.h"
+#include "lcsource.h"
 
 #ifdef HAVE_DBUS
 #include "mprissource.h"
@@ -44,25 +45,27 @@ namespace Xtazy
 
 		AzothProxy_ = 0;
 		Proxy_ = proxy;
-		
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothxtazysettings.xml");
-		
+
+		LCSource_ = new LCSource (this);
+
 #ifdef HAVE_DBUS
 		TuneSources_ << new MPRISSource (this);
 #endif
 		TuneSources_ << new FileSource (this);
-		
+		TuneSources_ << LCSource_;
+	}
+
+	void Plugin::SecondInit ()
+	{
 		Q_FOREACH (TuneSourceBase *base, TuneSources_)
 			connect (base,
 					SIGNAL (tuneInfoChanged (const QMap<QString, QVariant>&)),
 					this,
 					SLOT (publish (const QMap<QString, QVariant>&)));
-	}
-
-	void Plugin::SecondInit ()
-	{
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -96,24 +99,48 @@ namespace Xtazy
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
 	}
-	
+
+	QString Plugin::GetServiceName () const
+	{
+		return GetName ();
+	}
+
+	void Plugin::NowPlaying (const Media::AudioInfo& audio)
+	{
+		LCSource_->NowPlaying (audio);
+	}
+
+	void Plugin::PlaybackStopped ()
+	{
+		LCSource_->Stopped ();
+	}
+
+	void Plugin::LoveCurrentTrack ()
+	{
+	}
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
 	}
-	
+
 	void Plugin::publish (const QMap<QString, QVariant>& info)
 	{
+		if (info == Previous_)
+			return;
+
 		const QByteArray& objName = sender ()->objectName ().toLatin1 ();
-		
+
 		if (!XmlSettingsManager::Instance ()
 				.property ("Enable" + objName).toBool ())
 			return;
+
+		Previous_ = info;
 
 		Q_FOREACH (QObject *accObj, AzothProxy_->GetAllAccounts ())
 		{

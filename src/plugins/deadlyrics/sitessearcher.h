@@ -16,32 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DEADLYRICS_LYRICWIKISEARCHER_H
-#define PLUGINS_DEADLYRICS_LYRICWIKISEARCHER_H
-#include "searcher.h"
-#include <vector>
+#pragma once
 
-class QHttp;
+#include "searcher.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DeadLyrics
+{
+	class ConcreteSite;
+	typedef std::shared_ptr<ConcreteSite> ConcreteSite_ptr;
+
+	class SitesSearcher : public Searcher
 	{
-		namespace DeadLyrics
-		{
-			class LyricWikiSearcher : public Searcher
-			{
-				Q_OBJECT
-			public:
-				LyricWikiSearcher ();
-				void Start (const QStringList&, QByteArray&);
-				void Stop (const QByteArray&);
-			private slots:
-				void handleFinished ();
-			};
-		};
+		Q_OBJECT
+
+		QList<ConcreteSite_ptr> Sites_;
+	public:
+		SitesSearcher (const QString&);
+
+		void Start (const QStringList& , QByteArray&);
+		void Stop (const QByteArray&);
 	};
-};
-
-#endif
-
+}
+}
