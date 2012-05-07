@@ -30,6 +30,7 @@ namespace LeechCraft
 namespace Blogique
 {
 	class IAccount;
+
 	class AccountsListWidget : public QWidget
 	{
 		Q_OBJECT
@@ -42,9 +43,8 @@ namespace Blogique
 		AccountsListWidget (QWidget* = 0);
 
 	public slots:
-		void addAccount (IAccount *acc);
-		void handleAccountRemoved (IAccount *acc);
-
+		void addAccount (QObject *accObj);
+		void handleAccountRemoved (QObject *accObj);
 	private slots:
 		void on_Add__released ();
 		void on_Modify__released ();

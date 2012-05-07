@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
-#include "interfaces/blogique/ipluginproxy.h"
+#include <interfaces/blogique/ipluginproxy.h>
 #include "ljbloggingplatform.h"
 
 namespace LeechCraft

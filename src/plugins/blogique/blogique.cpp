@@ -59,7 +59,6 @@ namespace Blogique
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
-
 	}
 
 	void Plugin::SecondInit ()
@@ -130,6 +129,7 @@ namespace Blogique
 				SIGNAL (removeTab (QWidget*)));
 
 		emit addNewTab ("Blogique", blogPage);
+		emit changeTabIcon (blogPage, GetIcon ());
 		emit raiseTab (blogPage);
 	}
 }

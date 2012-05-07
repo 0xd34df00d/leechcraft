@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkine
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-	/** @brief Represents a protocol.
+	/** @brief Represents a blogging platform.
 	 *
 	 * IBloggingPlatform class represents a single blogging platform with its own set of
 	 * accounts.
@@ -48,7 +48,7 @@ namespace Blogique
 		/** This enum describes the features that may be supported by a
 		 * blogging platform.
 		 */
-		enum BlogginPlatfromFeature
+		enum BloggingPlatfromFeature
 		{
 			/** None of these features are supported by the blogging platform.
 			 */
@@ -59,7 +59,7 @@ namespace Blogique
 			 */
 			BPFSupportsRegistration = 0x1
 		};
-		Q_DECLARE_FLAGS (BlogginPlatfromFeatures, BlogginPlatfromFeature);
+		Q_DECLARE_FLAGS (BloggingPlatfromFeatures, BloggingPlatfromFeature);
 
 		/** This enum describes the options that may be selected by the
 		 * user when adding a new account.
@@ -86,7 +86,7 @@ namespace Blogique
 
 		/** Returns the list of features supported by this blogging platform.
 		 */
-		virtual BlogginPlatfromFeatures GetFeatures () const = 0;
+		virtual BloggingPlatfromFeatures GetFeatures () const = 0;
 
 		/** @brief Returns the accounts within this blogging platform.
 		 *
@@ -143,7 +143,7 @@ namespace Blogique
 		 *
 		 * @sa RegisterAccount()
 		 */
-		virtual QList<QWidget*> GetAccountRegistrationWidgets (IBloggingPlatform::AccountAddOptions) = 0;
+		virtual QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions) = 0;
 
 		/** @brief Adds an account with the given name and widgets.
 		 *
@@ -212,7 +212,7 @@ namespace Blogique
 		virtual void accountRemoved (QObject *account) = 0;
 	};
 
-	Q_DECLARE_OPERATORS_FOR_FLAGS (IBloggingPlatform::BlogginPlatfromFeatures);
+	Q_DECLARE_OPERATORS_FOR_FLAGS (IBloggingPlatform::BloggingPlatfromFeatures);
 }
 }
 

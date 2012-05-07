@@ -2,12 +2,6 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_blogique)
 INCLUDE (InitLCPlugin OPTIONAL)
 
-IF (WIN32 AND NOT MSVC)
-	SET (CMAKE_CXX_FLAGS "-std=gnu++0x")
-ENDIF (WIN32 AND NOT MSVC)
-
-SET (QT_USE_QTGUI TRUE)
-
 INCLUDE (${QT_USE_FILE})
 
 INCLUDE_DIRECTORIES (
@@ -69,7 +63,7 @@ INSTALL (FILES blogiquesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 SET (BLOGIQUE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-OPTION (ENABLE_BLOGIQUE_METIDA "Build Metida, LiveJournal blogging platform support for Blogique" OFF)
+OPTION (ENABLE_BLOGIQUE_METIDA "Build Metida, LiveJournal blogging platform support for Blogique" ON)
 
 IF (ENABLE_BLOGIQUE_METIDA)
 	ADD_SUBDIRECTORY (plugins/metida)

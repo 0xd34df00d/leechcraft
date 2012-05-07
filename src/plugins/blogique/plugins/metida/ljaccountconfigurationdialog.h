@@ -33,7 +33,7 @@ namespace Metida
 	{
 		Ui::LJAccountConfigurationDialog Ui_;
 	public:
-		LJAccountConfigurationDialog (QWidget* parent = 0);
+		LJAccountConfigurationDialog (QWidget *parent = 0);
 		LJAccountConfigurationWidget* ConfWidget ();
 	};
 }

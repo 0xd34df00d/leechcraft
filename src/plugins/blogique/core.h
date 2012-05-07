@@ -64,8 +64,8 @@ namespace Blogique
 		void addAccount (QObject *accObj);
 		void handleAccountRemoved (QObject *accObj);
 	signals:
-		void accountAdded (IAccount *account);
-		void accountRemoved (IAccount *account);
+		void accountAdded (QObject *account);
+		void accountRemoved (QObject *account);
 
 		void gotEntity (LeechCraft::Entity e);
 		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);

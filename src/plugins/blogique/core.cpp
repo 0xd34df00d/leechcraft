@@ -84,7 +84,7 @@ namespace Blogique
 		std::for_each (BlogPlatformPlugins_.begin (), BlogPlatformPlugins_.end (),
 				[&result] (decltype (BlogPlatformPlugins_.front ()) bpp)
 				{
-					QObjectList protos = qobject_cast<IBloggingPlatformPlugin*> (bpp)->
+					const auto& protos = qobject_cast<IBloggingPlatformPlugin*> (bpp)->
 							GetBloggingPlatforms ();
 					Q_FOREACH (QObject *obj, protos)
 						result << qobject_cast<IBloggingPlatform*> (obj);
@@ -167,7 +167,7 @@ namespace Blogique
 			return;
 		}
 
-		emit accountAdded (account);
+		emit accountAdded (accObj);
 	}
 
 	void Core::handleAccountRemoved (QObject *accObj)
@@ -182,7 +182,7 @@ namespace Blogique
 			return;
 		}
 
-		emit accountRemoved (acc);
+		emit accountRemoved (accObj);
 	}
 
 }

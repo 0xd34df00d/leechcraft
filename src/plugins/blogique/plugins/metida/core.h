@@ -21,13 +21,14 @@
 #include <memory>
 #include <QObject>
 #include <QSet>
+#include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	class IPluginProxy;
+class IPluginProxy;
 
 namespace Metida
 {
@@ -35,6 +36,8 @@ namespace Metida
 
 	class Core : public QObject
 	{
+		Q_OBJECT
+
 		ICoreProxy_ptr Proxy_;
 		QObjectList BlogPlatformPlugins_;
 		std::shared_ptr<LJBloggingPlatform> LJPlatform_;
@@ -55,6 +58,10 @@ namespace Metida
 
 		void SetPluginProxy (QObject *pluginProxy);
 		IPluginProxy* GetPluginProxy ();
+
+	signals:
+		void gotEntity (LeechCraft::Entity e);
+		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
 	};
 }
 }

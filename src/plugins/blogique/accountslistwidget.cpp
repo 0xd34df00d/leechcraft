@@ -30,29 +30,38 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-	AccountsListWidget::AccountsListWidget (QWidget* parent)
+	AccountsListWidget::AccountsListWidget (QWidget *parent)
 	: QWidget (parent)
 	, AccountsModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
 
 		connect (&Core::Instance (),
-				SIGNAL (accountAdded (IAccount*)),
+				SIGNAL (accountAdded (QObject*)),
 				this,
-				SLOT (addAccount (IAccount*)));
+				SLOT (addAccount (QObject*)));
 		connect (&Core::Instance (),
-				SIGNAL (accountRemoved (IAccount*)),
+				SIGNAL (accountRemoved (QObject*)),
 				this,
-				SLOT (handleAccountRemoved (IAccount*)));
+				SLOT (handleAccountRemoved (QObject*)));
 
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
-			addAccount (acc);
+			addAccount (acc->GetObject ());
 
 		Ui_.Accounts_->setModel (AccountsModel_);
 	}
 
-	void AccountsListWidget::addAccount (IAccount *acc)
+	void AccountsListWidget::addAccount (QObject *accObj)
 	{
+		IAccount *acc = qobject_cast<IAccount*> (accObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< accObj
+					<< "is not an IAccount";
+			return;
+		}
+
 		IBloggingPlatform *ibp = qobject_cast<IBloggingPlatform*> (acc->
 				GetParentBloggingPlatform ());
 
@@ -65,8 +74,17 @@ namespace Blogique
 		Account2Item_ [acc] = item;
 	}
 
-	void AccountsListWidget::handleAccountRemoved (IAccount *acc)
+	void AccountsListWidget::handleAccountRemoved (QObject *accObj)
 	{
+		IAccount *acc = qobject_cast<IAccount*> (accObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+			<< accObj
+			<< "is not an IAccount";
+			return;
+		}
+
 		if (!Account2Item_.contains (acc))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -89,7 +107,7 @@ namespace Blogique
 	{
 		QWizard *wizard = new QWizard (this);
 		wizard->setAttribute (Qt::WA_DeleteOnClose);
-		wizard->setWindowTitle (QObject::tr ("Add account"));
+		wizard->setWindowTitle (tr ("Add account"));
 		wizard->addPage (new AddAccountWizardFirstPage (wizard));
 
 		wizard->show ();
@@ -123,7 +141,7 @@ namespace Blogique
 
 		if (QMessageBox::question (this,
 				"LeechCraft",
-				tr ("Are you sure you want to remove the account %1?")
+				tr ("Are you sure you want to remove the account <em>%1</em>?")
 						.arg (acc->GetAccountName ()),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;

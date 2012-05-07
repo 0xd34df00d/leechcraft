@@ -33,7 +33,7 @@ namespace Metida
 
 		Ui::LJAccountConfigurationWidget Ui_;
 	public:
-		LJAccountConfigurationWidget (QWidget* parent = 0);
+		LJAccountConfigurationWidget (QWidget *parent = 0);
 
 		QString GetLogin () const;
 		void SetLogin (const QString& login);

@@ -19,6 +19,7 @@
 #include "metida.h"
 #include <QIcon>
 #include <util/util.h>
+#include <interfaces/structures.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -37,6 +38,15 @@ namespace Metida
 
 		Core::Instance ().CreateBloggingPlatfroms (this);
 		Core::Instance ().SetCoreProxy (proxy);
+
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (&Core::Instance (),
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 	}
 
 	void Plugin::SecondInit ()

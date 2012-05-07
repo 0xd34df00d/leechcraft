@@ -55,6 +55,7 @@ namespace Blogique
 
 			PostEditWidget_ = w;
 			editFrameLay->addWidget (w);
+			break;
 		}
 	}
 
