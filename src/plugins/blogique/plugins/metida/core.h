@@ -27,6 +27,8 @@ namespace LeechCraft
 {
 namespace Blogique
 {
+	class IPluginProxy;
+
 namespace Metida
 {
 	class LJBloggingPlatform;
@@ -52,6 +54,7 @@ namespace Metida
 		QObjectList GetBloggingPlatforms () const;
 
 		void SetPluginProxy (QObject *pluginProxy);
+		IPluginProxy* GetPluginProxy ();
 	};
 }
 }

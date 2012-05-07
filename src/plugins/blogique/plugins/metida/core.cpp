@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include "interfaces/blogique/ipluginproxy.h"
 #include "ljbloggingplatform.h"
 
 namespace LeechCraft
@@ -68,6 +69,11 @@ namespace Metida
 	void Core::SetPluginProxy (QObject *pluginProxy)
 	{
 		PluginProxy_ = pluginProxy;
+	}
+
+	IPluginProxy* Core::GetPluginProxy ()
+	{
+		return qobject_cast<IPluginProxy*> (PluginProxy_);
 	}
 
 }
