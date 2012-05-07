@@ -41,6 +41,7 @@ namespace Metida
 
 	void Plugin::SecondInit ()
 	{
+		Core::Instance ().SecondInit ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -87,6 +88,11 @@ namespace Metida
 	QList<QObject*> Plugin::GetBloggingPlatforms () const
 	{
 		return Core::Instance ().GetBloggingPlatforms ();
+	}
+
+	void Plugin::initPlugin (QObject *proxy)
+	{
+		Core::Instance ().SetPluginProxy (proxy);
 	}
 
 }

@@ -50,6 +50,11 @@ namespace Blogique
 			TabFeatures (TFOpenableByRequest)
 		};
 		TabClasses_ << tabClass;
+
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (const Entity&)),
+				this,
+				SIGNAL (gotEntity (const Entity&)));
 	}
 
 	void Plugin::SecondInit ()

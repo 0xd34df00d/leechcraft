@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QSet>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
@@ -28,6 +29,7 @@ namespace Blogique
 {
 	class IAccount;
 	class IBloggingPlatform;
+	class PluginProxy;
 
 	class Core : public QObject
 	{
@@ -35,6 +37,7 @@ namespace Blogique
 
 		ICoreProxy_ptr Proxy_;
 		QObjectList BlogPlatformPlugins_;
+		std::shared_ptr<PluginProxy> PluginProxy_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
@@ -51,12 +54,19 @@ namespace Blogique
 		QList<IBloggingPlatform*> GetBloggingPlatforms () const;
 		QList<IAccount*> GetAccounts () const;
 
+		void SendEntity (const Entity& e);
+
 	private:
 		void AddBlogPlatformPlugin (QObject *plugin);
 
+	private slots:
+		void handleNewBloggingPlatforms (const QObjectList& platforms);
+		void addAccount (QObject *accObj);
+		void handleAccountRemoved (QObject *accObj);
 	signals:
 		void accountAdded (IAccount *account);
 		void accountRemoved (IAccount *account);
+		void gotEntity (const Entity& e);
 	};
 }
 }

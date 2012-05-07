@@ -27,6 +27,8 @@ namespace Blogique
 {
 namespace Metida
 {
+	class LJAccountConfigurationWidget;
+
 	class LJAccount : public QObject
 							, public IAccount
 	{
@@ -35,6 +37,7 @@ namespace Metida
 
 		QObject *ParentBloggingPlatform_;
 		QString Name_;
+		QString Login_;
 	public:
 		LJAccount (const QString& name, QObject *parent = 0);
 		QObject* GetObject ();
@@ -44,8 +47,14 @@ namespace Metida
 		void RenameAccount (const QString& name);
 		QByteArray GetAccountID () const;
 		void OpenConfigurationDialog ();
+
+		void FillSettings (LJAccountConfigurationWidget *widget);
+
+		QByteArray Serialize () const;
+		static LJAccount* Deserialize (const QByteArray& data, QObject *parent);
 	signals:
 		void accountRenamed (const QString& newName);
+		void accountSettingsChanged ();
 	};
 }
 }

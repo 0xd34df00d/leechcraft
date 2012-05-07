@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "ljaccount.h"
+#include <QtDebug>
+#include "ljaccountconfigurationwidget.h"
 
 namespace LeechCraft
 {
@@ -67,6 +69,49 @@ namespace Metida
 	{
 
 	}
+
+	void LJAccount::FillSettings (LJAccountConfigurationWidget *widget)
+	{
+		Login_ = widget->GetLogin ();
+		emit accountSettingsChanged ();
+	}
+
+	QByteArray LJAccount::Serialize () const
+	{
+		quint16 ver = 1;
+		QByteArray result;
+		{
+			QDataStream ostr (&result, QIODevice::WriteOnly);
+			ostr << ver
+					<< Name_
+					<< Login_;
+		}
+
+		return result;
+	}
+
+	LJAccount* LJAccount::Deserialize (const QByteArray& data, QObject *parent)
+	{
+		quint16 ver = 0;
+		QDataStream in (data);
+		in >> ver;
+
+		if (ver != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< ver;
+			return 0;
+		}
+
+		QString name;
+		in >> name;
+		LJAccount *result = new LJAccount (name, parent);
+		in >> result->Login_;
+
+		return result;
+	}
+
 }
 }
 }

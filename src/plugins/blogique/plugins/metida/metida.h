@@ -43,6 +43,7 @@ namespace Metida
 				LeechCraft::Blogique::IBloggingPlatformPlugin)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -58,6 +59,9 @@ namespace Metida
 
 		QObject* GetObject ();
 		QList<QObject*> GetBloggingPlatforms () const;
+
+	public slots:
+		void initPlugin (QObject *proxy);
 	};
 }
 }

@@ -16,60 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "core.h"
-#include "ljbloggingplatform.h"
+#pragma once
+
+#include <QObject>
+#include "interfaces/blogique/ipluginproxy.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Metida
-{
-	Core::Core ()
-	: PluginProxy_ (0)
+	class PluginProxy : public QObject
+					, public IPluginProxy
 	{
-	}
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Blogique::IPluginProxy)
+	public:
+		PluginProxy (QObject* = 0);
 
-	Core& Core::Instance ()
-	{
-		static Core c;
-		return c;
-	}
-
-	void Core::SecondInit ()
-	{
-		if (LJPlatform_)
-		{
-			LJPlatform_->SetPluginProxy (PluginProxy_);
-			LJPlatform_->Prepare ();
-		}
-	}
-
-	void Core::CreateBloggingPlatfroms (QObject *parentPlatform)
-	{
-		LJPlatform_ = std::make_shared<LJBloggingPlatform> (parentPlatform);
-	}
-
-	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
-	{
-		Proxy_ = proxy;
-	}
-
-	ICoreProxy_ptr Core::GetCoreProxy ()
-	{
-		return Proxy_;
-	}
-
-	QObjectList Core::GetBloggingPlatforms () const
-	{
-		return LJPlatform_ ? QObjectList () << LJPlatform_.get () : QObjectList ();
-	}
-
-	void Core::SetPluginProxy (QObject *pluginProxy)
-	{
-		PluginProxy_ = pluginProxy;
-	}
-
-}
+		void SetPassword (const QString& password, QObject *account);
+		QString GetPassword (QObject *account);
+	};
 }
 }
