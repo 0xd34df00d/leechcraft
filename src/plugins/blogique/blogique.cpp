@@ -52,9 +52,14 @@ namespace Blogique
 		TabClasses_ << tabClass;
 
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const Entity&)),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
-				SIGNAL (gotEntity (const Entity&)));
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (&Core::Instance (),
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+
 	}
 
 	void Plugin::SecondInit ()

@@ -66,7 +66,9 @@ namespace Blogique
 	signals:
 		void accountAdded (IAccount *account);
 		void accountRemoved (IAccount *account);
-		void gotEntity (const Entity& e);
+
+		void gotEntity (LeechCraft::Entity e);
+		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
 	};
 }
 }
