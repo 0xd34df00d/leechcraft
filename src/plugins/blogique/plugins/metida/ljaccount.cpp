@@ -16,9 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
+#include <memory>
 #include "ljaccount.h"
 #include <QtDebug>
+#include "interfaces/blogique/ipluginproxy.h"
 #include "ljaccountconfigurationwidget.h"
+#include "ljaccountconfigurationdialog.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -67,12 +71,32 @@ namespace Metida
 
 	void LJAccount::OpenConfigurationDialog ()
 	{
+		std::unique_ptr<LJAccountConfigurationDialog> dia (new LJAccountConfigurationDialog (0));
 
+		if (!Login_.isEmpty ())
+			dia->ConfWidget ()->SetLogin (Login_);
+
+		IPluginProxy *proxy = Core::Instance ().GetPluginProxy ();
+		if (proxy)
+			dia->ConfWidget ()->SetPassword (proxy->GetPassword (this));
+
+		if (dia->exec () == QDialog::Rejected)
+			return;
+
+		FillSettings (dia->ConfWidget ());
 	}
 
 	void LJAccount::FillSettings (LJAccountConfigurationWidget *widget)
 	{
 		Login_ = widget->GetLogin ();
+		const QString& pass = widget->GetPassword ();
+		if (!pass.isNull ())
+		{
+			IPluginProxy *proxy = Core::Instance ().GetPluginProxy ();
+			if (proxy)
+				proxy->SetPassword (pass, this);
+		}
+
 		emit accountSettingsChanged ();
 	}
 
