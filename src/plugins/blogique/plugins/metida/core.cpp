@@ -36,6 +36,15 @@ namespace Metida
 		return c;
 	}
 
+	void Core::SecondInit ()
+	{
+		if (LJPlatform_)
+		{
+			LJPlatform_->SetPluginProxy (PluginProxy_);
+			LJPlatform_->Prepare ();
+		}
+	}
+
 	void Core::CreateBloggingPlatfroms (QObject *parentPlatform)
 	{
 		LJPlatform_ = std::make_shared<LJBloggingPlatform> (parentPlatform);

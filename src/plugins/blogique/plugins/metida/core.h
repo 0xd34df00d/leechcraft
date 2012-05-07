@@ -43,6 +43,8 @@ namespace Metida
 	public:
 		static Core& Instance ();
 
+		void SecondInit ();
+
 		void CreateBloggingPlatfroms (QObject *parentPlatform);
 		void SetCoreProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetCoreProxy ();

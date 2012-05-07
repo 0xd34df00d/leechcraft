@@ -36,6 +36,7 @@ namespace Metida
 		Q_INTERFACES (LeechCraft::Blogique::IBloggingPlatform)
 
 		QObject *ParentBlogginPlatfromPlugin_;
+		QObject *PluginProxy_;
 		QList<LJAccount*> LJAccounts_;
 	public:
 		LJBloggingPlatform (QObject *parent = 0);
@@ -51,7 +52,12 @@ namespace Metida
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
 		void RemoveAccount (QObject *account);
 
+		void SetPluginProxy (QObject *proxy);
+		void Prepare ();
 	private:
+		void RestoreAccounts ();
+
+	private slots:
 		void saveAccounts ();
 
 	signals:

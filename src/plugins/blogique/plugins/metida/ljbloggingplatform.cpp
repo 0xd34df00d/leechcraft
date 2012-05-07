@@ -18,7 +18,9 @@
 
 #include "ljbloggingplatform.h"
 #include <QIcon>
+#include <QSettings>
 #include <QtDebug>
+#include "interfaces/blogique/ipluginproxy.h"
 #include "ljaccount.h"
 #include "ljaccountconfigurationwidget.h"
 
@@ -31,6 +33,7 @@ namespace Metida
 	LJBloggingPlatform::LJBloggingPlatform (QObject *parent)
 	: QObject (parent)
 	, ParentBlogginPlatfromPlugin_ (parent)
+	, PluginProxy_ (0)
 	{
 	}
 
@@ -92,8 +95,12 @@ namespace Metida
 		}
 
 		LJAccount *account = new LJAccount (name, this);
-		const QString& loging = w->GetLogin ();
+		account->FillSettings (w);
 		const QString& pass = w->GetPassword ();
+		if (!pass.isEmpty ())
+			qobject_cast<IPluginProxy*> (PluginProxy_)->
+					SetPassword (pass, account);
+
 		LJAccounts_ << account;
 		saveAccounts ();
 		emit accountAdded (account);
@@ -110,9 +117,63 @@ namespace Metida
 		}
 	}
 
+	void LJBloggingPlatform::SetPluginProxy (QObject *proxy)
+	{
+		PluginProxy_ = proxy;
+	}
+
+	void LJBloggingPlatform::Prepare ()
+	{
+		RestoreAccounts ();
+	}
+
+	void LJBloggingPlatform::RestoreAccounts ()
+	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () +
+						"_Blogique_Metida_Accounts");
+		int size = settings.beginReadArray ("Accounts");
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			QByteArray data = settings.value ("SerializedData").toByteArray ();
+			LJAccount *acc = LJAccount::Deserialize (data, this);
+			if (!acc)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unserializable acount"
+						<< i;
+				continue;
+			}
+
+			connect (acc,
+					SIGNAL (accountSettingsChanged ()),
+					this,
+					SLOT (saveAccounts ()));
+
+			LJAccounts_ << acc;
+
+			emit accountAdded (acc);
+		}
+		settings.endArray ();
+	}
+
 	void LJBloggingPlatform::saveAccounts ()
 	{
-
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () +
+						"_Blogique_Metida_Accounts");
+		settings.beginWriteArray ("Accounts");
+		for (int i = 0, size = LJAccounts_.size (); i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			settings.setValue ("SerializedData",
+					LJAccounts_.at (i)->Serialize ());
+		}
+		settings.endArray ();
+		settings.sync ();
 	}
 
 }

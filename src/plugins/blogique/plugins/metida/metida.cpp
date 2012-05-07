@@ -41,6 +41,7 @@ namespace Metida
 
 	void Plugin::SecondInit ()
 	{
+		Core::Instance ().SecondInit ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
