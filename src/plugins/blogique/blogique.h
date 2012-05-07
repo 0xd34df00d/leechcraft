@@ -65,6 +65,8 @@ namespace Blogique
 		void changeTabIcon (QWidget *tabContents, const QIcon& icon);
 		void statusBarChanged (QWidget *tabContents, const QString& text);
 		void raiseTab (QWidget *tabContents);
+
+		void gotEntity (const Entity& e);
 	};
 }
 }

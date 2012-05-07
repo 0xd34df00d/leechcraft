@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QSet>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
@@ -53,12 +54,14 @@ namespace Blogique
 		QList<IBloggingPlatform*> GetBloggingPlatforms () const;
 		QList<IAccount*> GetAccounts () const;
 
+		void SendEntity (const Entity& e);
 	private:
 		void AddBlogPlatformPlugin (QObject *plugin);
 
 	signals:
 		void accountAdded (IAccount *account);
 		void accountRemoved (IAccount *account);
+		void gotEntity (const Entity& e);
 	};
 }
 }

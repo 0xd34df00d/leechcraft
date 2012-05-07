@@ -113,6 +113,11 @@ namespace Blogique
 		return result;
 	}
 
+	void Core::SendEntity (const Entity& e)
+	{
+		emit gotEntity (e);
+	}
+
 	void Core::AddBlogPlatformPlugin (QObject *plugin)
 	{
 		IBloggingPlatformPlugin *ibpp = qobject_cast<IBloggingPlatformPlugin*> (plugin);
