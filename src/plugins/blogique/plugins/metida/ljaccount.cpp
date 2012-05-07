@@ -19,9 +19,10 @@
 #include <memory>
 #include "ljaccount.h"
 #include <QtDebug>
-#include "interfaces/blogique/ipluginproxy.h"
+#include <util/passutils.h>
 #include "ljaccountconfigurationwidget.h"
 #include "ljaccountconfigurationdialog.h"
+#include "ljbloggingplatform.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -32,7 +33,7 @@ namespace Metida
 {
 	LJAccount::LJAccount (const QString& name, QObject *parent)
 	: QObject (parent)
-	, ParentBloggingPlatform_ (parent)
+	, ParentBloggingPlatform_ (qobject_cast<LJBloggingPlatform*> (parent))
 	, Name_ (name)
 	{
 	}
@@ -65,8 +66,8 @@ namespace Metida
 
 	QByteArray LJAccount::GetAccountID () const
 	{
-		//TODO
-		return QByteArray ();
+		return ParentBloggingPlatform_->GetBloggingPlatformID () + "_" +
+				Login_.toUtf8();
 	}
 
 	void LJAccount::OpenConfigurationDialog ()
@@ -76,9 +77,10 @@ namespace Metida
 		if (!Login_.isEmpty ())
 			dia->ConfWidget ()->SetLogin (Login_);
 
-		IPluginProxy *proxy = Core::Instance ().GetPluginProxy ();
-		if (proxy)
-			dia->ConfWidget ()->SetPassword (proxy->GetPassword (this));
+		QString key ("org.LeechCraft.Blogique.PassForAccount/" + GetAccountID ());
+		dia->ConfWidget ()->SetPassword (Util::GetPassword (key,
+				QString (),
+				&Core::Instance ()));
 
 		if (dia->exec () == QDialog::Rejected)
 			return;
@@ -91,11 +93,9 @@ namespace Metida
 		Login_ = widget->GetLogin ();
 		const QString& pass = widget->GetPassword ();
 		if (!pass.isNull ())
-		{
-			IPluginProxy *proxy = Core::Instance ().GetPluginProxy ();
-			if (proxy)
-				proxy->SetPassword (pass, this);
-		}
+			Util::SavePassword (pass,
+					"org.LeechCraft.Blogique.PassForAccount/" + GetAccountID (),
+					&Core::Instance ());
 
 		emit accountSettingsChanged ();
 	}

@@ -40,8 +40,9 @@ namespace Metida
 		QList<LJAccount*> LJAccounts_;
 	public:
 		LJBloggingPlatform (QObject *parent = 0);
+
 		QObject* GetObject ();
-		BlogginPlatfromFeatures GetFeatures () const;
+		BloggingPlatfromFeatures GetFeatures () const;
 		QObjectList GetRegisteredAccounts ();
 		QObject* GetParentBloggingPlatformPlugin () const;
 		QString GetBloggingPlatformName () const;

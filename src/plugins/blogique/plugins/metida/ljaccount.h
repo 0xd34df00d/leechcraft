@@ -27,7 +27,9 @@ namespace Blogique
 {
 namespace Metida
 {
+
 	class LJAccountConfigurationWidget;
+	class LJBloggingPlatform;
 
 	class LJAccount : public QObject
 							, public IAccount
@@ -35,7 +37,7 @@ namespace Metida
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Blogique::IAccount)
 
-		QObject *ParentBloggingPlatform_;
+		LJBloggingPlatform *ParentBloggingPlatform_;
 		QString Name_;
 		QString Login_;
 	public:

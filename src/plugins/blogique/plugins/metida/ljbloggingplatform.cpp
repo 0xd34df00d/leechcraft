@@ -20,7 +20,8 @@
 #include <QIcon>
 #include <QSettings>
 #include <QtDebug>
-#include "interfaces/blogique/ipluginproxy.h"
+#include <util/passutils.h>
+#include "core.h"
 #include "ljaccount.h"
 #include "ljaccountconfigurationwidget.h"
 
@@ -42,7 +43,7 @@ namespace Metida
 		return this;
 	}
 
-	IBloggingPlatform::BlogginPlatfromFeatures LJBloggingPlatform::GetFeatures () const
+	IBloggingPlatform::BloggingPlatfromFeatures LJBloggingPlatform::GetFeatures () const
 	{
 		return BPFNone;
 	}
@@ -98,8 +99,9 @@ namespace Metida
 		account->FillSettings (w);
 		const QString& pass = w->GetPassword ();
 		if (!pass.isEmpty ())
-			qobject_cast<IPluginProxy*> (PluginProxy_)->
-					SetPassword (pass, account);
+			Util::SavePassword(pass,
+					"org.LeechCraft.Blogique.PassForAccount/" + account->GetAccountID (),
+					&Core::Instance ());
 
 		LJAccounts_ << account;
 		saveAccounts ();
