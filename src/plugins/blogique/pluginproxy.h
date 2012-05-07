@@ -19,16 +19,22 @@
 #pragma once
 
 #include <QObject>
+#include "interfaces/blogique/ipluginproxy.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
 	class PluginProxy : public QObject
+					, public IPluginProxy
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Blogique::IPluginProxy)
 	public:
 		PluginProxy (QObject* = 0);
+
+		void SetPassword (const QString& password, QObject *account);
+		QString GetPassword (QObject *account);
 	};
 }
 }
