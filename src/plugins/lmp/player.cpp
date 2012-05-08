@@ -31,6 +31,7 @@
 #include "localcollection.h"
 #include "playlistmanager.h"
 #include "staticplaylistmanager.h"
+#include "xmlsettingsmanager.h"
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);
 
@@ -85,6 +86,15 @@ namespace LMP
 
 		auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
 		Enqueue (staticMgr->GetOnLoadPlaylist ());
+
+		const auto& song = XmlSettingsManager::Instance ().property ("LastSong").toString ();
+		if (!song.isEmpty ())
+		{
+			const auto pos = std::find_if (CurrentQueue_.begin (), CurrentQueue_.end (),
+					[&song] (decltype (CurrentQueue_.front ()) item) { return song == item.fileName (); });
+			if (pos != CurrentQueue_.end ())
+				Source_->setCurrentSource (*pos);
+		}
 	}
 
 	QAbstractItemModel* Player::GetPlaylistModel () const
@@ -448,6 +458,8 @@ namespace LMP
 
 	void Player::handleCurrentSourceChanged (const Phonon::MediaSource& source)
 	{
+		XmlSettingsManager::Instance ().setProperty ("LastSong", source.fileName ());
+
 		auto curItem = Items_ [source];
 		curItem->setData (true, Role::IsCurrent);
 
