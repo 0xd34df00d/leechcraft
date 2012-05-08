@@ -21,6 +21,7 @@
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/media/audiostructs.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "ui_playertab.h"
 
 class QStandardItemModel;
@@ -38,9 +39,10 @@ namespace LMP
 
 	class PlayerTab : public QWidget
 					, public ITabWidget
+					, public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget);
+		Q_INTERFACES (ITabWidget IRecoverableTab);
 
 		Ui::PlayerTab Ui_;
 
@@ -68,6 +70,10 @@ namespace LMP
 		QToolBar* GetToolBar () const;
 
 		Player* GetPlayer () const;
+
+		QByteArray GetTabRecoverData () const;
+		QIcon GetTabRecoverIcon () const;
+		QString GetTabRecoverName () const;
 	private:
 		void SetupToolbar ();
 		void SetupCollection ();
@@ -96,6 +102,8 @@ namespace LMP
 		void removeTab (QWidget*);
 
 		void gotEntity (const LeechCraft::Entity&);
+
+		void tabRecoverDataChanged ();
 	};
 }
 }
