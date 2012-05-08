@@ -502,6 +502,41 @@ namespace Aggregator
 	{
 	}
 
+	void Aggregator::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		Q_FOREACH (const TabRecoverInfo& recInfo, infos)
+		{
+			qDebug () << Q_FUNC_INFO << recInfo.Data_;
+
+			if (recInfo.Data_ == "aggregatortab")
+			{
+				Q_FOREACH (auto pair, recInfo.DynProperties_)
+					setProperty (pair.first, pair.second);
+
+				TabOpenRequested (Impl_->TabInfo_.TabClass_);
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown context"
+						<< recInfo.Data_;
+		}
+	}
+
+	QByteArray Aggregator::Aggregator::GetTabRecoverData () const
+	{
+		return "aggregatortab";
+	}
+
+	QIcon Aggregator::Aggregator::GetTabRecoverIcon () const
+	{
+		return GetIcon ();
+	}
+
+	QString Aggregator::Aggregator::GetTabRecoverName () const
+	{
+		return GetName ();
+	}
+
 	void Aggregator::keyPressEvent (QKeyEvent *e)
 	{
 		if (e->modifiers () & Qt::ControlModifier)

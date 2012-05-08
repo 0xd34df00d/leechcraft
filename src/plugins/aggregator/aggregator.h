@@ -33,6 +33,7 @@
 #include <interfaces/istartupwizard.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/isyncable.h>
+#include <interfaces/ihaverecoverabletabs.h>
 
 class QSystemTrayIcon;
 class QTranslator;
@@ -59,6 +60,8 @@ namespace Aggregator
 					 , public IStartupWizard
 					 , public IPluginReady
 					 , public ISyncable
+					 , public IHaveRecoverableTabs
+					 , public IRecoverableTab
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
@@ -71,7 +74,9 @@ namespace Aggregator
 				IStartupWizard
 				IActionsExporter
 				IPluginReady
-				ISyncable)
+				ISyncable
+				IHaveRecoverableTabs
+				IRecoverableTab)
 
 		Aggregator_Impl *Impl_;
 	public:
@@ -117,6 +122,12 @@ namespace Aggregator
 		Sync::Payloads_t GetNewDeltas (const Sync::ChainID_t&) const;
 		void PurgeNewDeltas (const Sync::ChainID_t&, quint32);
 		void ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&);
+
+		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+
+		QByteArray GetTabRecoverData () const;
+		QIcon GetTabRecoverIcon () const;
+		QString GetTabRecoverName () const;
 	protected:
 		virtual void keyPressEvent (QKeyEvent*);
 	private:
@@ -163,6 +174,8 @@ namespace Aggregator
 		void newDeltasAvailable (const LeechCraft::Sync::ChainID_t&);
 
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+
+		void tabRecoverDataChanged ();
 	};
 }
 }
