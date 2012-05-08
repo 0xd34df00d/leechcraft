@@ -62,8 +62,7 @@ namespace LeechCraft
 
 			InsertAction (newAct);
 
-			if (info.Features_ & TFSingle ||
-					info.Features_ & TFByDefault)
+			if (info.Features_ & TFByDefault)
 			{
 				const QByteArray& id = ii->GetUniqueID () + '|' + info.TabClass_;
 				const bool hide = XmlSettingsManager::Instance ()->
