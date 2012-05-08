@@ -141,8 +141,8 @@ namespace Blogique
 
 		if (QMessageBox::question (this,
 				"LeechCraft",
-				tr ("Are you sure you want to remove the account <em>%1</em>?")
-						.arg (acc->GetAccountName ()),
+				tr ("Are you sure you want to remove the account %1?")
+						.arg ("<em>" + acc->GetAccountName () + "</em>"),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
