@@ -10,6 +10,9 @@
 			<label value="Enable scrobbling" />
 			<tooltip>This option requires at least one other scrobbler plugin, like LastFMScrobble, for example.</tooltip>
 		</item>
+		<item type="checkbox" property="RequestLyrics" default="true">
+			<label value="Request lyrics" />
+		</item>
 	</page>
 	<page>
 		<label value="Collection" />

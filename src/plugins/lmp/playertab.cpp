@@ -386,6 +386,10 @@ namespace LMP
 	void PlayerTab::RequestLyrics (const MediaInfo& info)
 	{
 		Ui_.LyricsBrowser_->clear ();
+
+		if (!XmlSettingsManager::Instance ().property ("RequestLyrics").toBool ())
+			return;
+
 		auto finders = Core::Instance ().GetProxy ()->
 					GetPluginsManager ()->GetAllCastableRoots<Media::ILyricsFinder*> ();
 		Q_FOREACH (auto finderObj, finders)
