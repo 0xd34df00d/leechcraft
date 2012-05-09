@@ -18,22 +18,20 @@
 
 #pragma once
 
-#include "searcher.h"
 #include <interfaces/core/icoreproxy.h>
+#include "searcher.h"
+#include "concretesite.h"
 
 namespace LeechCraft
 {
 namespace DeadLyrics
 {
-	class ConcreteSite;
-	typedef std::shared_ptr<ConcreteSite> ConcreteSite_ptr;
-
 	class SitesSearcher : public Searcher
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		QList<ConcreteSite_ptr> Sites_;
+		QList<ConcreteSiteDesc> Descs_;
 	public:
 		SitesSearcher (const QString&, ICoreProxy_ptr proxy);
 

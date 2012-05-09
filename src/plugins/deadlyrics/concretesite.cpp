@@ -17,7 +17,13 @@
  **********************************************************************/
 
 #include "concretesite.h"
+#include <stdexcept>
 #include <QDomElement>
+#include <QUrl>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -110,9 +116,8 @@ namespace DeadLyrics
 			return MatcherBase_ptr ();
 	}
 
-	ConcreteSite::ConcreteSite (const QDomElement& elem, QObject *parent)
-	: QObject (parent)
-	, Name_ (elem.attribute ("name"))
+	ConcreteSiteDesc::ConcreteSiteDesc (const QDomElement& elem)
+	: Name_ (elem.attribute ("name"))
 	, Charset_ (elem.attribute ("charset", "utf-8"))
 	, URLTemplate_ (elem.attribute ("url"))
 	{
@@ -147,8 +152,67 @@ namespace DeadLyrics
 			return result;
 		};
 
-		Extractors_ = fillMatchers ("extract", MatcherBase::Mode::Return);
-		Excluders_ = fillMatchers ("exclude", MatcherBase::Mode::Exclude);
+		Matchers_ += fillMatchers ("exclude", MatcherBase::Mode::Exclude);
+		Matchers_ += fillMatchers ("extract", MatcherBase::Mode::Return);
+	}
+
+	ConcreteSite::ConcreteSite (const Media::LyricsQuery& query,
+			const ConcreteSiteDesc& desc, ICoreProxy_ptr proxy, QObject *parent)
+	: QObject (parent)
+	, Query_ (query)
+	, Desc_ (desc)
+	{
+		auto replace = [this] (QString str)
+		{
+			Q_FOREACH (const QChar c, Desc_.Replacements_.keys ())
+				str.replace (c, Desc_.Replacements_ [c]);
+			return str;
+		};
+
+		const auto& artist = replace (query.Artist_.toLower ());
+		const auto& album = replace (query.Album_.toLower ());
+		const auto& title = replace (query.Title_.toLower ());
+
+		auto url = Desc_.URLTemplate_;
+		url.replace ("{artist}", artist);
+		url.replace ("{album}", album);
+		url.replace ("{title}", title);
+
+		auto cap = [] (QString str)
+		{
+			if (!str.isEmpty ())
+				str [0] = str [0].toUpper ();
+			return str;
+		};
+		url.replace ("{Artist}", cap (artist));
+		url.replace ("{Album}", cap (album));
+		url.replace ("{Title}", cap (title));
+
+		qDebug () << Q_FUNC_INFO << url;
+
+		auto nam = proxy->GetNetworkAccessManager ();
+		auto reply = nam->get (QNetworkRequest (QUrl (url)));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (deleteLater ()));
+	}
+
+	void ConcreteSite::handleReplyFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+		deleteLater ();
+
+		const auto& data = reply->readAll ();
+		auto str = QString::fromUtf8 (data.constData ());
+
+		Q_FOREACH (auto excluder, Desc_.Matchers_)
+			str = (*excluder) (str);
 	}
 }
 }

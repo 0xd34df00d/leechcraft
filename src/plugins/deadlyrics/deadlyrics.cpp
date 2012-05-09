@@ -34,6 +34,11 @@ namespace DeadLyrics
 		Proxy_ = proxy;
 
 		Searchers_ << Searcher_ptr (new SitesSearcher (":/deadlyrics/resources/sites.xml", proxy));
+		Q_FOREACH (auto searcher, Searchers_)
+			connect (searcher.get (),
+					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)),
+					this,
+					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)));
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),

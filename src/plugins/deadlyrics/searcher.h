@@ -36,6 +36,8 @@ namespace DeadLyrics
 		virtual ~Searcher ();
 
 		virtual void Search (const Media::LyricsQuery&, Media::QueryOptions) = 0;
+	signals:
+		void gotLyrics (const Media::LyricsQuery&, const QStringList&);
 	};
 
 	typedef std::shared_ptr<Searcher> Searcher_ptr;

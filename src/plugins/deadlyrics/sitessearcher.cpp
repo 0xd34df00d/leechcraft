@@ -52,7 +52,7 @@ namespace DeadLyrics
 		{
 			try
 			{
-				Sites_ << ConcreteSite_ptr (new ConcreteSite (provider));
+				Descs_ << ConcreteSiteDesc (provider);
 			}
 			catch (const std::exception& e)
 			{
@@ -64,8 +64,12 @@ namespace DeadLyrics
 		}
 	}
 
-	void SitesSearcher::Search (const Media::LyricsQuery&, Media::QueryOptions)
+	void SitesSearcher::Search (const Media::LyricsQuery& query, Media::QueryOptions)
 	{
+		Q_FOREACH (const auto& desc, Descs_)
+		{
+			auto site = new ConcreteSite (query, desc, Proxy_, this);
+		}
 	}
 }
 }
