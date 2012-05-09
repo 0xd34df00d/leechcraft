@@ -152,8 +152,8 @@ namespace DeadLyrics
 			return result;
 		};
 
-		Matchers_ += fillMatchers ("exclude", MatcherBase::Mode::Exclude);
 		Matchers_ += fillMatchers ("extract", MatcherBase::Mode::Return);
+		Matchers_ += fillMatchers ("exclude", MatcherBase::Mode::Exclude);
 	}
 
 	ConcreteSite::ConcreteSite (const Media::LyricsQuery& query,
@@ -187,8 +187,6 @@ namespace DeadLyrics
 		url.replace ("{Artist}", cap (artist));
 		url.replace ("{Album}", cap (album));
 		url.replace ("{Title}", cap (title));
-
-		qDebug () << Q_FUNC_INFO << url;
 
 		auto nam = proxy->GetNetworkAccessManager ();
 		auto reply = nam->get (QNetworkRequest (QUrl (url)));
