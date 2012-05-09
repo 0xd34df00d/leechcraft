@@ -18,6 +18,7 @@
 
 #include "settingstab.h"
 #include <algorithm>
+#include <numeric>
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QToolButton>
