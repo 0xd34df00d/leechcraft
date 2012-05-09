@@ -61,7 +61,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="LyricsPage_">
       <property name="tabPosition">
        <enum>QTabWidget::West</enum>
       </property>
@@ -78,6 +78,19 @@
         </property>
         <item>
          <widget class="LeechCraft::LMP::NowPlayingWidget" name="NPWidget_" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="LyricsTab_">
+       <attribute name="title">
+        <string>Lyrics</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <property name="margin">
+         <number>1</number>
+        </property>
+        <item>
+         <widget class="QTextBrowser" name="LyricsBrowser_"/>
         </item>
        </layout>
       </widget>

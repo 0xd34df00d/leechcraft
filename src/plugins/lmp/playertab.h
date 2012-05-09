@@ -23,6 +23,11 @@
 #include <interfaces/media/audiostructs.h>
 #include "ui_playertab.h"
 
+namespace Media
+{
+	struct LyricsQuery;
+}
+
 class QStandardItemModel;
 class QFileSystemModel;
 class QSortFilterProxyModel;
@@ -77,12 +82,17 @@ namespace LMP
 		void SetNowPlaying (const MediaInfo&, const QPixmap&);
 		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
+		void RequestLyrics (const MediaInfo&);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
 		void handleCurrentPlayTime (qint64);
 		void handleLoveTrack ();
+
 		void handleSimilarError ();
 		void handleSimilarReady ();
+
+		void handleGotLyrics (const Media::LyricsQuery&, const QStringList&);
+
 		void handleScanProgress (int);
 		void handleChangePlayMode ();
 		void handlePlaylistSelected (const QModelIndex&);

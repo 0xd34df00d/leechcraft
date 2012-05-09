@@ -33,6 +33,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/isimilarartists.h>
+#include <interfaces/media/ilyricsfinder.h>
 #include "player.h"
 #include "playlistdelegate.h"
 #include "util.h"
@@ -382,6 +383,24 @@ namespace LMP
 		Ui_.NPWidget_->GetArtistsDisplay ()->SetSimilarArtists (infos);
 	}
 
+	void PlayerTab::RequestLyrics (const MediaInfo& info)
+	{
+		Ui_.LyricsBrowser_->clear ();
+		auto finders = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableRoots<Media::ILyricsFinder*> ();
+		Q_FOREACH (auto finderObj, finders)
+		{
+			connect (finderObj,
+					SIGNAL (gotLyrics (const Media::LyricsQuery&, const QStringList&)),
+					this,
+					SLOT (handleGotLyrics (const Media::LyricsQuery&, const QStringList&)),
+					Qt::UniqueConnection);
+			auto finder = qobject_cast<Media::ILyricsFinder*> (finderObj);
+			finder->RequestLyrics ({ info.Artist_, info.Album_, info.Title_ },
+					Media::QueryOption::NoOption);
+		}
+	}
+
 	void PlayerTab::handleSongChanged (const MediaInfo& info)
 	{
 		QPixmap px;
@@ -401,8 +420,8 @@ namespace LMP
 		Ui_.NPWidget_->SetTrackInfo (info);
 
 		SetNowPlaying (info, px);
-
 		Scrobble (info);
+		RequestLyrics (info);
 
 		if (info.Artist_.isEmpty ())
 		{
@@ -477,6 +496,14 @@ namespace LMP
 		LastSimilar_ = obj->GetSourceArtistName ();
 		Similars_ [LastSimilar_] = similar;
 		FillSimilar (similar);
+	}
+
+	void PlayerTab::handleGotLyrics (const Media::LyricsQuery&, const QStringList& lyrics)
+	{
+		if (lyrics.isEmpty ())
+			return;
+
+		Ui_.LyricsBrowser_->setHtml (lyrics.value (0));
 	}
 
 	void PlayerTab::handleScanProgress (int progress)
