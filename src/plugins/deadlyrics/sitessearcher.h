@@ -19,6 +19,7 @@
 #pragma once
 
 #include "searcher.h"
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -31,9 +32,10 @@ namespace DeadLyrics
 	{
 		Q_OBJECT
 
+		ICoreProxy_ptr Proxy_;
 		QList<ConcreteSite_ptr> Sites_;
 	public:
-		SitesSearcher (const QString&);
+		SitesSearcher (const QString&, ICoreProxy_ptr proxy);
 
 		void Start (const QStringList& , QByteArray&);
 		void Stop (const QByteArray&);

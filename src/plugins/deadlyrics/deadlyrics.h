@@ -24,6 +24,8 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/media/ilyricsfinder.h>
+#include "searcher.h"
 
 namespace LeechCraft
 {
@@ -32,11 +34,14 @@ namespace DeadLyrics
 	class DeadLyRicS : public QObject
 						, public IInfo
 						, public IHaveSettings
+						, public Media::ILyricsFinder
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
+		Q_INTERFACES (IInfo IHaveSettings Media::ILyricsFinder)
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		ICoreProxy_ptr Proxy_;
+		Searchers_t Searchers_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -47,6 +52,10 @@ namespace DeadLyrics
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		void RequestLyrics (const Media::LyricsQuery&, Media::QueryOptions);
+	signals:
+		void gotLyrics (const Media::LyricsQuery&, const QStringList&);
 	};
 }
 }

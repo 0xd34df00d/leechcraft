@@ -26,7 +26,8 @@ namespace LeechCraft
 {
 namespace DeadLyrics
 {
-	SitesSearcher::SitesSearcher (const QString& configPath)
+	SitesSearcher::SitesSearcher (const QString& configPath, ICoreProxy_ptr proxy)
+	: Proxy_ (proxy)
 	{
 		QFile file (configPath);
 		if (!file.open (QIODevice::ReadOnly))

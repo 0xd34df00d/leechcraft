@@ -47,8 +47,8 @@ namespace DeadLyrics
 		Q_OBJECT
 	public:
 		virtual ~Searcher ();
+
 		virtual void Start (const QStringList&, QByteArray&) = 0;
-		virtual void Stop (const QByteArray&) = 0;
 	signals:
 		void textFetched (const LeechCraft::DeadLyrics::Lyrics&, const QByteArray&);
 		void error (const QString&);
