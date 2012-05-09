@@ -21,9 +21,10 @@
 #include <algorithm>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QMimeData>
 #include <QtConcurrentMap>
-#include <QtDebug>
 #include <QtConcurrentRun>
+#include <QtDebug>
 #include "localcollectionstorage.h"
 #include "core.h"
 #include "util.h"
@@ -106,12 +107,46 @@ namespace LMP
 				return RoleCompare (left, right, roles);
 			}
 		};
+
+		class CollectionModel : public QStandardItemModel
+		{
+			LocalCollection *Collection_;
+		public:
+			CollectionModel (LocalCollection *parent)
+			: QStandardItemModel (parent)
+			, Collection_ (parent)
+			{
+				setSupportedDragActions (Qt::CopyAction);
+			}
+
+			QStringList mimeTypes () const
+			{
+				return QStringList ("text/uri-list");
+			}
+
+			QMimeData* mimeData (const QModelIndexList& indexes) const
+			{
+				QMimeData *result = new QMimeData;
+
+				QList<QUrl> urls;
+				Q_FOREACH (const auto& index, indexes)
+				{
+					const auto& paths = Collection_->CollectPaths (index);
+					std::transform (paths.begin (), paths.end (), std::back_inserter (urls),
+							[] (const QString& path) { return QUrl::fromLocalFile (path); });
+				}
+
+				result->setUrls (urls);
+
+				return result;
+			}
+		};
 	}
 
 	LocalCollection::LocalCollection (QObject *parent)
 	: QObject (parent)
 	, Storage_ (new LocalCollectionStorage (this))
-	, CollectionModel_ (new QStandardItemModel (this))
+	, CollectionModel_ (new CollectionModel (this))
 	, Sorter_ (new CollectionSorter (this))
 	, AlbumArtMgr_ (new AlbumArtManager (this))
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
