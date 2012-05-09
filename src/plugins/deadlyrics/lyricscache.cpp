@@ -30,16 +30,12 @@ namespace DeadLyrics
 	{
 		try
 		{
-			LeechCraft::Util::CreateIfNotExists ("deadlyrics/cache");
+			Dir_ = Util::CreateIfNotExists ("deadlyrics/cache");
 		}
 		catch (const std::runtime_error& e)
 		{
 			qWarning () << Q_FUNC_INFO << e.what ();
-			return;
 		}
-
-		Dir_ = QDir::homePath ();
-		Dir_.cd (".leechcraft/deadlyrics/cache");
 	}
 
 	LyricsCache& LyricsCache::Instance ()
