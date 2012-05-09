@@ -81,6 +81,9 @@ namespace DeadLyrics
 
 	void DeadLyRicS::RequestLyrics (const Media::LyricsQuery& query, Media::QueryOptions options)
 	{
+		if (query.Artist_.isEmpty () || query.Title_.isEmpty ())
+			return;
+
 		Q_FOREACH (auto searcher, Searchers_)
 			searcher->Search (query, options);
 	}
