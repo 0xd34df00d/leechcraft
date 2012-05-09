@@ -28,6 +28,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "ui_lackman.h"
 
 class QSortFilterProxyModel;
@@ -52,9 +53,12 @@ namespace LackMan
 				 , public IActionsExporter
 				 , public IEntityHandler
 				 , public IHaveShortcuts
+				 , public IHaveRecoverableTabs
+				 , public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings IActionsExporter IEntityHandler IHaveShortcuts)
+		Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings IActionsExporter
+				IEntityHandler IHaveShortcuts IHaveRecoverableTabs IRecoverableTab)
 
 		Ui::LackMan Ui_;
 		std::auto_ptr<QTranslator> Translator_;
@@ -97,6 +101,12 @@ namespace LackMan
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
 		QMap<QString, ActionInfo> GetActionInfo () const;
+
+		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+
+		QByteArray GetTabRecoverData () const;
+		QIcon GetTabRecoverIcon () const;
+		QString GetTabRecoverName () const;
 	private slots:
 		void handleTagsUpdated (const QStringList&);
 		void on_PackageStatus__currentIndexChanged (int);
@@ -116,6 +126,8 @@ namespace LackMan
 		void raiseTab (QWidget*);
 
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+
+		void tabRecoverDataChanged ();
 	};
 }
 }
