@@ -555,13 +555,15 @@ namespace LMP
 
 	void PlayerTab::loadFromCollection ()
 	{
-		const QModelIndex& index = CollectionFilterModel_->
-				mapToSource (Ui_.CollectionTree_->currentIndex ());
-		if (!index.isValid ())
-			return;
-
+		const auto& idxs = Ui_.CollectionTree_->selectionModel ()->selectedRows ();
 		auto collection = Core::Instance ().GetLocalCollection ();
-		collection->Enqueue (index, Player_);
+		Q_FOREACH (const auto& src, idxs)
+		{
+			const QModelIndex& index = CollectionFilterModel_->mapToSource (src);
+			if (!index.isValid ())
+				continue;
+			collection->Enqueue (index, Player_);
+		}
 	}
 
 	void PlayerTab::loadFromFSBrowser ()
