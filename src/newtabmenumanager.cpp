@@ -136,10 +136,10 @@ namespace LeechCraft
 
 	void NewTabMenuManager::HideAction (ITabWidget *itw, bool hide)
 	{
+		QObject *pObj = itw->ParentMultiTabs ();
+		const auto& tabClass = itw->GetTabClassInfo ().TabClass_;
 		Q_FOREACH (auto action, NewTabMenu_->actions ())
 		{
-			QObject *pObj = itw->ParentMultiTabs ();
-			const auto& tabClass = itw->GetTabClassInfo ().TabClass_;
 			if (action->property ("TabClass").toByteArray () == tabClass &&
 					action->property ("PluginObj").value<QObject*> () == pObj)
 			{
