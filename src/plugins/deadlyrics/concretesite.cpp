@@ -200,30 +200,6 @@ namespace DeadLyrics
 				SLOT (deleteLater ()));
 	}
 
-	namespace
-	{
-		void FixEntities (QString& str)
-		{
-			int pos = 0;
-			while ((pos = str.indexOf ("&#", pos)) != -1)
-			{
-				const int ePos = str.indexOf (';', pos + 2);
-				if (ePos == -1 || ePos - pos > 5)
-				{
-					pos = ePos;
-					continue;
-				}
-
-				const char val = static_cast<char> (str.mid (pos + 2, ePos - pos - 2).toShort ());
-				if (val > 0)
-				{
-					str.replace (pos, ePos - pos + 1, QChar (val));
-					++pos;
-				}
-			}
-		}
-	}
-
 	void ConcreteSite::handleReplyFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -232,7 +208,6 @@ namespace DeadLyrics
 
 		const auto& data = reply->readAll ();
 		auto str = QString::fromUtf8 (data.constData ());
-		FixEntities (str);
 
 		Q_FOREACH (auto excluder, Desc_.Matchers_)
 			str = (*excluder) (str);
