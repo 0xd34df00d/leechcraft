@@ -103,7 +103,7 @@ namespace DeadLyrics
 	MatcherBase_ptr MatcherBase::MakeMatcher (Mode mode, const QDomElement& item)
 	{
 		if (item.hasAttribute ("begin") && item.hasAttribute ("end"))
-			return MatcherBase_ptr (new RangeMatcher (item.attribute ("from"), item.attribute ("to"), mode));
+			return MatcherBase_ptr (new RangeMatcher (item.attribute ("begin"), item.attribute ("end"), mode));
 		else if (item.hasAttribute ("tag"))
 			return MatcherBase_ptr (new TagMatcher (item.attribute ("tag"), mode));
 		else
