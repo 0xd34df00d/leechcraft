@@ -43,24 +43,7 @@ namespace DeadLyrics
 
 		static std::shared_ptr<MatcherBase> MakeMatcher (Mode mode, const QDomElement& item);
 
-		virtual QString Match (const QString&) const = 0;
-	};
-
-	class TagMatcher : public MatcherBase
-	{
-		const QString Tag_;
-	public:
-		TagMatcher (const QString& tag, Mode mode)
-		: MatcherBase (mode)
-		, Tag_ (tag)
-		{
-		}
-
-		QString Match (const QString& str) const
-		{
-			// TODO
-			return str;
-		}
+		virtual QString operator() (const QString&) const = 0;
 	};
 
 	class RangeMatcher : public MatcherBase
@@ -75,7 +58,7 @@ namespace DeadLyrics
 		{
 		}
 
-		QString Match (const QString& string) const
+		QString operator() (const QString& string) const
 		{
 			int fromPos = string.indexOf (From_);
 			const int toPos = string.indexOf (To_, fromPos + From_.size ());
@@ -89,6 +72,31 @@ namespace DeadLyrics
 			}
 			else
 				return string.left (fromPos) + string.right (toPos + To_.size ());
+		}
+	};
+
+	class TagMatcher : public MatcherBase
+	{
+		const QString Tag_;
+		QString Name_;
+	public:
+		TagMatcher (const QString& tag, Mode mode)
+		: MatcherBase (mode)
+		, Tag_ (tag)
+		{
+			const int space = tag.indexOf (' ');
+			if (space == -1)
+				Name_ = tag;
+			else
+				Name_ = tag.left (space);
+			Name_.remove ('<');
+			Name_.remove ('>');
+		}
+
+		QString operator() (const QString& str) const
+		{
+			RangeMatcher rm (Tag_, "</" + Name_ + ">", Mode_);
+			return rm (str);
 		}
 	};
 
