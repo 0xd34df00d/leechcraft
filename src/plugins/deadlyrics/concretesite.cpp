@@ -77,7 +77,7 @@ namespace DeadLyrics
 				return string.mid (fromPos, toPos - fromPos);
 			}
 			else
-				return string.left (fromPos) + string.right (toPos + To_.size ());
+				return string.left (fromPos) + string.mid (toPos + To_.size ());
 		}
 	};
 
