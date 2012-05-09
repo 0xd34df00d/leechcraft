@@ -57,6 +57,8 @@ namespace DeadLyrics
 				const ConcreteSiteDesc&, ICoreProxy_ptr proxy, QObject* = 0);
 	private slots:
 		void handleReplyFinished ();
+	signals:
+		void gotLyrics (const Media::LyricsQuery&, const QStringList&);
 	};
 }
 }

@@ -213,6 +213,8 @@ namespace DeadLyrics
 
 		Q_FOREACH (auto excluder, Desc_.Matchers_)
 			str = (*excluder) (str);
+
+		emit gotLyrics (Query_, QStringList (str.trimmed ()));
 	}
 }
 }

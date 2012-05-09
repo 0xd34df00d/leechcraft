@@ -67,9 +67,10 @@ namespace DeadLyrics
 	void SitesSearcher::Search (const Media::LyricsQuery& query, Media::QueryOptions)
 	{
 		Q_FOREACH (const auto& desc, Descs_)
-		{
-			auto site = new ConcreteSite (query, desc, Proxy_, this);
-		}
+			connect (new ConcreteSite (query, desc, Proxy_, this),
+					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)),
+					this,
+					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)));
 	}
 }
 }
