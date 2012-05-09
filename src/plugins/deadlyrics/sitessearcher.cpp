@@ -64,11 +64,7 @@ namespace DeadLyrics
 		}
 	}
 
-	void SitesSearcher::Start (const QStringList& , QByteArray&)
-	{
-	}
-
-	void SitesSearcher::Stop (const QByteArray&)
+	void SitesSearcher::Search (const Media::LyricsQuery&, Media::QueryOptions)
 	{
 	}
 }

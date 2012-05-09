@@ -21,7 +21,7 @@
 #include <QObject>
 #include <QString>
 #include <QDir>
-#include "searcher.h"
+#include <interfaces/media/ilyricsfinder.h>
 
 namespace LeechCraft
 {
@@ -35,8 +35,9 @@ namespace DeadLyrics
 		LyricsCache ();
 	public:
 		static LyricsCache& Instance ();
-		Lyrics GetLyrics (const QByteArray&) const;
-		void SetLyrics (const QByteArray&, const Lyrics&);
+
+		QStringList GetLyrics (const Media::LyricsQuery&) const;
+		void AddLyrics (const Media::LyricsQuery&, const QStringList&);
 	};
 }
 }

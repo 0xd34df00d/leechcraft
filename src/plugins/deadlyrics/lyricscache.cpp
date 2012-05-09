@@ -48,45 +48,13 @@ namespace DeadLyrics
 		return lc;
 	}
 
-	Lyrics LyricsCache::GetLyrics (const QByteArray& hash) const
+	QStringList LyricsCache::GetLyrics (const Media::LyricsQuery&) const
 	{
-		if (Dir_.exists (hash.toHex ()))
-		{
-			QFile file (Dir_.filePath (hash.toHex ()));
-			if (file.open (QIODevice::ReadOnly))
-			{
-				QByteArray raw = file.readAll ();
-				QDataStream in (raw);
-				Lyrics lyrics;
-				in >> lyrics;
-				return lyrics;
-			}
-			else
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not open (read) file"
-					<< file.fileName ();
-				throw std::runtime_error ("Could not open file");
-			}
-		}
-		else
-			throw std::runtime_error ("No such lyrics");
+		return QStringList ();
 	}
 
-	void LyricsCache::SetLyrics (const QByteArray& hash, const Lyrics& lyrics)
+	void LyricsCache::AddLyrics (const Media::LyricsQuery& , const QStringList&)
 	{
-		QFile file (Dir_.filePath (hash.toHex ()));
-		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not open (write|truncate) file"
-				<< file.fileName ();
-			return;
-		}
-		QByteArray data;
-		QDataStream out (&data, QIODevice::WriteOnly);
-		out << lyrics;
-		file.write (data);
 	}
 }
 }

@@ -74,8 +74,10 @@ namespace DeadLyrics
 		return SettingsDialog_;
 	}
 
-	void DeadLyRicS::RequestLyrics (const Media::LyricsQuery& query, Media::QueryOptions)
+	void DeadLyRicS::RequestLyrics (const Media::LyricsQuery& query, Media::QueryOptions options)
 	{
+		Q_FOREACH (auto searcher, Searchers_)
+			searcher->Search (query, options);
 	}
 }
 }

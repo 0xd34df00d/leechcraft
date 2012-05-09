@@ -21,6 +21,7 @@
 #include <memory>
 #include <QObject>
 #include <QList>
+#include <interfaces/media/ilyricsfinder.h>
 
 class QDataStream;
 
@@ -28,30 +29,13 @@ namespace LeechCraft
 {
 namespace DeadLyrics
 {
-	struct Lyrics
-	{
-		QString Author_;
-		QString Album_;
-		QString Title_;
-		QString Text_;
-		QString URL_;
-	};
-
-	bool operator== (const Lyrics&, const Lyrics&);
-	QDataStream& operator<< (QDataStream&, const Lyrics&);
-	QDataStream& operator>> (QDataStream&, Lyrics&);
-	typedef QList<Lyrics> LyricsList_t;
-
 	class Searcher : public QObject
 	{
 		Q_OBJECT
 	public:
 		virtual ~Searcher ();
 
-		virtual void Start (const QStringList&, QByteArray&) = 0;
-	signals:
-		void textFetched (const LeechCraft::DeadLyrics::Lyrics&, const QByteArray&);
-		void error (const QString&);
+		virtual void Search (const Media::LyricsQuery&, Media::QueryOptions) = 0;
 	};
 
 	typedef std::shared_ptr<Searcher> Searcher_ptr;
