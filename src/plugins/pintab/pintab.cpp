@@ -139,6 +139,12 @@ namespace PinTab
 			proxy->CancelDefault ();
 	}
 
+	void Plugin::hookTabRemoveRequested (IHookProxy_ptr proxy, int index)
+	{
+		MainTabWidget_->Widget (index)->
+				setProperty ("SessionData/org.LeechCraft.PinTab.PinState", false);
+	}
+
 	void Plugin::pinTab (int index)
 	{
 		if (index == -1)
