@@ -44,6 +44,8 @@ namespace LeechCraft
 				int index);
 		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy,
 				int index);
+		void hookTabRemoveRequested (LeechCraft::IHookProxy_ptr proxy,
+				int index);
 	};
 }
 

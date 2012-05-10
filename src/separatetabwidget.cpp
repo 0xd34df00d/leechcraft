@@ -413,6 +413,11 @@ namespace LeechCraft
 			return;
 		}
 
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookTabRemoveRequested (proxy, index);
+		if (proxy->IsCancelled ())
+			return;
+
 		if (MainStackedWidget_->widget (index) == PreviousWidget_)
 			PreviousWidget_ = 0;
 
