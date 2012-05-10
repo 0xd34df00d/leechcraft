@@ -18,7 +18,10 @@
 
 #pragma once
 
+#include <memory>
 #include <QWidget>
+#include <Phonon/MediaObject>
+#include <Phonon/VolumeSlider>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/ihaverecoverabletabs.h>
@@ -36,6 +39,7 @@ namespace LMP
 {
 	class MediaInfo;
 	class Player;
+	class LMPSystemTrayIcon;
 
 	class PlayerTab : public QWidget
 					, public ITabWidget
@@ -61,6 +65,12 @@ namespace LMP
 
 		QHash<QString, Media::SimilarityInfos_t> Similars_;
 		QString LastSimilar_;
+
+		std::shared_ptr<LMPSystemTrayIcon> TrayIcon_;
+		QAction *PlayPause_;
+		bool LMPOpened_;
+		QMenu *TrayMenu_;
+		Phonon::VolumeSlider *VolumeSlider_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
@@ -83,6 +93,11 @@ namespace LMP
 		void SetNowPlaying (const MediaInfo&, const QPixmap&);
 		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
+		template<typename T>
+		void UpdateIcon (T iconable, Phonon::State state, std::function<QSize (T)>);
+		QIcon GetIconFromState (Phonon::State state) const;
+	public slots:
+		void handleShowTray (bool show);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
 		void handleCurrentPlayTime (qint64);
@@ -97,6 +112,11 @@ namespace LMP
 		void loadFromFSBrowser ();
 		void handleSavePlaylist ();
 		void loadFromDisk ();
+
+		void closeLMP ();
+		void handleStateChanged (Phonon::State newState, Phonon::State oldState);
+		void handleShowTrayIcon ();
+		void handleChangedVolume (qreal delta);
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);
