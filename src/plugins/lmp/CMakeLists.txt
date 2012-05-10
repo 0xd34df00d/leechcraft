@@ -60,6 +60,7 @@ SET (SRCS
 	playlistmanager.cpp
 	artistsinfodisplay.cpp
 	albumartmanager.cpp
+	lmpsystemtrayicon.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -81,6 +82,7 @@ SET (HEADERS
 	playlistmanager.h
 	artistsinfodisplay.h
 	albumartmanager.h
+	lmpsystemtrayicon.h
 	)
 SET (FORMS
 	playertab.ui
