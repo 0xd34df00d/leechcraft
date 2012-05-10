@@ -20,6 +20,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
+#include <QUrl>
 #include <QtDebug>
 
 namespace LeechCraft
