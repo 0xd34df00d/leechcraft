@@ -33,6 +33,7 @@
 #include "playlistmanager.h"
 #include "staticplaylistmanager.h"
 #include "xmlsettingsmanager.h"
+#include "playlistparsers/playlistfactory.h"
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);
 
@@ -163,11 +164,24 @@ namespace LMP
 		PlayMode_ = playMode;
 	}
 
+	namespace
+	{
+		QList<Phonon::MediaSource> FileToSource (const QString& file)
+		{
+			auto parser = MakePlaylistParser (file);
+			if (parser)
+				return parser (file);
+
+			return { Phonon::MediaSource (file) };
+		}
+	}
+
 	void Player::Enqueue (const QStringList& paths, bool sort)
 	{
 		QList<Phonon::MediaSource> sources;
-		std::transform (paths.begin (), paths.end (), std::back_inserter (sources),
-				[] (decltype (paths.front ()) path) { return Phonon::MediaSource (path); });
+		std::for_each (paths.begin (), paths.end (),
+				[&sources] (decltype (paths.front ()) path)
+					{ sources += FileToSource (path); });
 		Enqueue (sources, sort);
 	}
 
