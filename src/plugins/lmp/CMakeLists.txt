@@ -56,10 +56,10 @@ SET (SRCS
 	collectiondelegate.cpp
 	nowplayingwidget.cpp
 	staticplaylistmanager.cpp
-	m3ustuff.cpp
 	playlistmanager.cpp
 	artistsinfodisplay.cpp
 	albumartmanager.cpp
+	playlistparsers/m3u.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -77,10 +77,10 @@ SET (HEADERS
 	collectiondelegate.h
 	nowplayingwidget.h
 	staticplaylistmanager.h
-	m3ustuff.h
 	playlistmanager.h
 	artistsinfodisplay.h
 	albumartmanager.h
+	playlistparsers/m3u.h
 	)
 SET (FORMS
 	playertab.ui

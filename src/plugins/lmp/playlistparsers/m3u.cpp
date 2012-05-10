@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "m3ustuff.h"
+#include "m3u.h"
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
