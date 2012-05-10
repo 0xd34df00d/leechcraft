@@ -28,6 +28,7 @@ ADD_DEFINITIONS (${TAGLIB_CFLAGS})
 
 SET (QT_USE_QTDECLARATIVE TRUE)
 SET (QT_USE_QTSQL TRUE)
+SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
 IF (NOT PHONON_FOUND)
 	MESSAGE (FATAL_ERROR "No Phonon is found, LMP cannot be built")
@@ -60,6 +61,7 @@ SET (SRCS
 	artistsinfodisplay.cpp
 	albumartmanager.cpp
 	playlistparsers/m3u.cpp
+	playlistparsers/xspf.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -81,6 +83,7 @@ SET (HEADERS
 	artistsinfodisplay.h
 	albumartmanager.h
 	playlistparsers/m3u.h
+	playlistparsers/xspf.h
 	)
 SET (FORMS
 	playertab.ui
