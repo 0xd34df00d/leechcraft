@@ -138,6 +138,21 @@ namespace LMP
 		return Player_;
 	}
 
+	QByteArray PlayerTab::GetTabRecoverData () const
+	{
+		return "playertab";
+	}
+
+	QIcon PlayerTab::GetTabRecoverIcon () const
+	{
+		return QIcon (":/lmp/resources/images/lmp.svg");
+	}
+
+	QString PlayerTab::GetTabRecoverName () const
+	{
+		return "LMP";
+	}
+
 	void PlayerTab::SetupToolbar ()
 	{
 		QAction *previous = new QAction (tr ("Previous track"), this);

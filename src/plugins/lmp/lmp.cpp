@@ -197,6 +197,27 @@ namespace LMP
 		result [GetName ()] << ActionRescan_;
 		return result;
 	}
+
+	void Plugin::RecoverTabs (const QList<LeechCraft::TabRecoverInfo>& infos)
+	{
+		Q_FOREACH (const auto& recInfo, infos)
+		{
+			qDebug () << Q_FUNC_INFO << recInfo.Data_;
+
+			if (recInfo.Data_ == "playertab")
+			{
+				Q_FOREACH (const auto& pair, recInfo.DynProperties_)
+					PlayerTab_->setProperty (pair.first, pair.second);
+
+				TabOpenRequested (PlayerTC_.TabClass_);
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown context"
+						<< recInfo.Data_;
+		}
+	}
+
 }
 }
 

@@ -62,8 +62,7 @@ namespace LeechCraft
 
 			InsertAction (newAct);
 
-			if (info.Features_ & TFSingle ||
-					info.Features_ & TFByDefault)
+			if (info.Features_ & TFByDefault)
 			{
 				const QByteArray& id = ii->GetUniqueID () + '|' + info.TabClass_;
 				const bool hide = XmlSettingsManager::Instance ()->
@@ -133,6 +132,21 @@ namespace LeechCraft
 	void NewTabMenuManager::ToggleHide (ITabWidget *itw, bool hide)
 	{
 		ToggleHide (itw->ParentMultiTabs (), itw->GetTabClassInfo ().TabClass_, hide);
+	}
+
+	void NewTabMenuManager::HideAction (ITabWidget *itw, bool hide)
+	{
+		QObject *pObj = itw->ParentMultiTabs ();
+		const auto& tabClass = itw->GetTabClassInfo ().TabClass_;
+		Q_FOREACH (auto action, NewTabMenu_->actions ())
+		{
+			if (action->property ("TabClass").toByteArray () == tabClass &&
+					action->property ("PluginObj").value<QObject*> () == pObj)
+			{
+				NewTabMenu_->removeAction (action);
+				HiddenActions_ [pObj] [tabClass] = action;
+			}
+		}
 	}
 
 	QString NewTabMenuManager::AccelerateName (QString name)

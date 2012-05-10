@@ -288,6 +288,41 @@ namespace LackMan
 		return ShortcutMgr_->GetActionInfo ();
 	}
 
+	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		Q_FOREACH (const auto& recInfo, infos)
+		{
+			qDebug () << Q_FUNC_INFO << recInfo.Data_;
+
+			if (recInfo.Data_ == "lackmantab")
+			{
+				Q_FOREACH (const auto& pair, recInfo.DynProperties_)
+					setProperty (pair.first, pair.second);
+
+				TabOpenRequested (TabClass_.TabClass_);
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown context"
+						<< recInfo.Data_;
+		}
+	}
+
+	QByteArray Plugin::GetTabRecoverData () const
+	{
+		return "lackmantab";
+	}
+
+	QIcon Plugin::GetTabRecoverIcon () const
+	{
+		return GetIcon ();
+	}
+
+	QString Plugin::GetTabRecoverName () const
+	{
+		return GetName ();
+	}
+
 	void Plugin::handleTagsUpdated (const QStringList& tags)
 	{
 		TagsModel_->setStringList (tags);
