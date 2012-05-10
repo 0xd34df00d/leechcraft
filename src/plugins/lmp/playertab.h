@@ -25,6 +25,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include "lmpsystemtrayicon.h"
 #include "ui_playertab.h"
 
 class QStandardItemModel;
@@ -39,7 +40,6 @@ namespace LMP
 {
 	class MediaInfo;
 	class Player;
-	class LMPSystemTrayIcon;
 
 	class PlayerTab : public QWidget
 					, public ITabWidget
@@ -117,6 +117,7 @@ namespace LMP
 		void handleStateChanged (Phonon::State newState, Phonon::State oldState);
 		void handleShowTrayIcon ();
 		void handleChangedVolume (qreal delta);
+		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason);
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);

@@ -42,7 +42,6 @@
 #include "xmlsettingsmanager.h"
 #include "playlistmanager.h"
 #include "staticplaylistmanager.h"
-#include "lmpsystemtrayicon.h"
 
 namespace LeechCraft
 {
@@ -235,6 +234,10 @@ namespace LMP
 				SIGNAL (changedVolume (qreal)),
 				this,
 				SLOT (handleChangedVolume (qreal)));
+		connect (TrayIcon_.get (),
+				SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
+				this,
+				SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
 
 		PlayPause_ = new QAction (tr ("Play/Pause"), TrayIcon_.get ());
 		PlayPause_->setProperty ("ActionIcon", "media-playback-start");
@@ -712,5 +715,18 @@ namespace LMP
 				volume + dl :
 				volume - dl);
 	}
+
+	void PlayerTab::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
+	{
+		switch (reason)
+		{
+			case QSystemTrayIcon::MiddleClick:
+				Player_->togglePause ();
+				break;
+			default:
+				break;
+		}
+	}
+
 }
 }
