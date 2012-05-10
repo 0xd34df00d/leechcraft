@@ -60,6 +60,7 @@ SET (SRCS
 	playlistmanager.cpp
 	artistsinfodisplay.cpp
 	albumartmanager.cpp
+	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/xspf.cpp
 	)
@@ -82,6 +83,7 @@ SET (HEADERS
 	playlistmanager.h
 	artistsinfodisplay.h
 	albumartmanager.h
+	playlistparsers/playlistfactory.h
 	playlistparsers/m3u.h
 	playlistparsers/xspf.h
 	)
