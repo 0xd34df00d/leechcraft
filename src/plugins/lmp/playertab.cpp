@@ -87,7 +87,6 @@ namespace LMP
 	, TabToolbar_ (new QToolBar ())
 	, PlayPause_ (0)
 	, TrayMenu_ (new QMenu ("LMP", this))
-	, VolumeSlider_ (0)
 	{
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->setStretchFactor (0, 2);
@@ -164,11 +163,6 @@ namespace LMP
 		return "LMP";
 	}
 
-	Phonon::AudioOutput* PlayerTab::GetAudioOutput ()
-	{
-		return VolumeSlider_->audioOutput ();
-	}
-
 	void PlayerTab::SetupToolbar ()
 	{
 		QAction *previous = new QAction (tr ("Previous track"), this);
@@ -229,10 +223,10 @@ namespace LMP
 				this,
 				SLOT (handleCurrentPlayTime (qint64)));
 
-		VolumeSlider_ = new Phonon::VolumeSlider (Player_->GetAudioOutput ());
-		VolumeSlider_->setMinimumWidth (100);
-		VolumeSlider_->setMaximumWidth (160);
-		TabToolbar_->addWidget (VolumeSlider_);
+		auto volumeSlider = new Phonon::VolumeSlider (Player_->GetAudioOutput ());
+		volumeSlider->setMinimumWidth (100);
+		volumeSlider->setMaximumWidth (160);
+		TabToolbar_->addWidget (volumeSlider);
 
 		// fill tray menu
 		connect (TrayIcon_,
@@ -741,14 +735,18 @@ namespace LMP
 
 	void PlayerTab::handleChangedVolume (qreal delta)
 	{
-		qreal volume = VolumeSlider_->audioOutput ()->volume ();
-		qreal dl = VolumeSlider_->maximumVolume () * 0.05;
+		qreal volume = Player_->GetAudioOutput ()->volume ();
+		qreal dl = delta > 0 ? 0.05 : -0.05;
 		if (volume != volume)
 			volume = 0.0;
 
-		VolumeSlider_->audioOutput ()->setVolume (delta > 0 ?
-				volume + dl :
-				volume - dl);
+		volume += dl;
+		if (volume < 0)
+			volume = 0;
+		else if (volume > 1)
+			volume = 1;
+
+		Player_->GetAudioOutput ()->setVolume (volume);
 	}
 
 	void PlayerTab::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)

@@ -75,7 +75,6 @@ namespace LMP
 		LMPSystemTrayIcon *TrayIcon_;
 		QAction *PlayPause_;
 		QMenu *TrayMenu_;
-		Phonon::VolumeSlider *VolumeSlider_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
@@ -89,8 +88,6 @@ namespace LMP
 		QByteArray GetTabRecoverData () const;
 		QIcon GetTabRecoverIcon () const;
 		QString GetTabRecoverName () const;
-
-		Phonon::AudioOutput* GetAudioOutput ();
 	private:
 		void SetupToolbar ();
 		void SetupCollection ();
