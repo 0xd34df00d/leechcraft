@@ -86,7 +86,6 @@ namespace LMP
 	, PlaylistToolbar_ (new QToolBar ())
 	, TabToolbar_ (new QToolBar ())
 	, PlayPause_ (0)
-	, LMPOpened_ (false)
 	, TrayMenu_ (new QMenu ("LMP", this))
 	, VolumeSlider_ (0)
 	{
@@ -137,7 +136,6 @@ namespace LMP
 
 	void PlayerTab::Remove ()
 	{
-		LMPOpened_ = false;
 		emit removeTab (this);
 	}
 
@@ -516,12 +514,6 @@ namespace LMP
 		}
 	}
 
-	void PlayerTab::handleShowTray (bool show)
-	{
-		LMPOpened_ = true;
-		handleShowTrayIcon ();
-	}
-
 	void PlayerTab::handleSongChanged (const MediaInfo& info)
 	{
 		QPixmap px;
@@ -744,10 +736,7 @@ namespace LMP
 
 	void PlayerTab::handleShowTrayIcon ()
 	{
-		if (XmlSettingsManager::Instance ().Property ("ShowTrayIcon", false).toBool ())
-			TrayIcon_->setVisible (LMPOpened_);
-		else if (TrayIcon_)
-			TrayIcon_->hide ();
+		TrayIcon_->setVisible (XmlSettingsManager::Instance ().property ("ShowTrayIcon").toBool ());
 	}
 
 	void PlayerTab::handleChangedVolume (qreal delta)

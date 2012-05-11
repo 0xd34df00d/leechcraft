@@ -82,8 +82,6 @@ namespace LMP
 		void gotActions (QList<QAction*>, ActionsEmbedPlace);
 
 		void gotEntity (const LeechCraft::Entity&);
-
-		void showTray (bool show);
 	};
 }
 }

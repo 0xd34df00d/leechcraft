@@ -74,7 +74,6 @@ namespace LMP
 
 		LMPSystemTrayIcon *TrayIcon_;
 		QAction *PlayPause_;
-		bool LMPOpened_;
 		QMenu *TrayMenu_;
 		Phonon::VolumeSlider *VolumeSlider_;
 	public:
@@ -102,8 +101,6 @@ namespace LMP
 		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
 		void RequestLyrics (const MediaInfo&);
-	public slots:
-		void handleShowTray (bool show);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
 		void handleCurrentPlayTime (qint64);

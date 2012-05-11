@@ -66,10 +66,6 @@ namespace LMP
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
-		connect (this,
-				SIGNAL (showTray (bool)),
-				PlayerTab_,
-				SLOT (handleShowTray (bool)));
 
 		ActionRescan_ = new QAction (tr ("Rescan collection"), this);
 		ActionRescan_->setProperty ("ActionIcon", "view-refresh");
@@ -136,7 +132,6 @@ namespace LMP
 		{
 			emit addNewTab ("LMP", PlayerTab_);
 			emit raiseTab (PlayerTab_);
-			emit showTray (true);
 		}
 		else
 			qWarning () << Q_FUNC_INFO
