@@ -20,8 +20,8 @@
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include "core.h"
 #include "xmlsettingsmanager.h"
+#include "sitessearcher.h"
 
 namespace LeechCraft
 {
@@ -31,7 +31,14 @@ namespace DeadLyrics
 	{
 		Util::InstallTranslator ("deadlyrics");
 
-		Core::Instance ().SetProxy (proxy);
+		Proxy_ = proxy;
+
+		Searchers_ << Searcher_ptr (new SitesSearcher (":/deadlyrics/resources/sites.xml", proxy));
+		Q_FOREACH (auto searcher, Searchers_)
+			connect (searcher.get (),
+					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)),
+					this,
+					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)));
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -44,6 +51,7 @@ namespace DeadLyrics
 
 	void DeadLyRicS::Release ()
 	{
+		Searchers_.clear ();
 	}
 
 	QByteArray DeadLyRicS::GetUniqueID () const
@@ -69,6 +77,15 @@ namespace DeadLyrics
 	Util::XmlSettingsDialog_ptr DeadLyRicS::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
+	}
+
+	void DeadLyRicS::RequestLyrics (const Media::LyricsQuery& query, Media::QueryOptions options)
+	{
+		if (query.Artist_.isEmpty () || query.Title_.isEmpty ())
+			return;
+
+		Q_FOREACH (auto searcher, Searchers_)
+			searcher->Search (query, options);
 	}
 }
 }

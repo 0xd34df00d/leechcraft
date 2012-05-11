@@ -16,44 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "core.h"
-#include <algorithm>
-#include <QCryptographicHash>
-#include <QUrl>
-#include <QtDebug>
-#include <interfaces/core/icoreproxy.h>
-#include "sitessearcher.h"
+#pragma once
+
+#include <QStringList>
+#include <phonon/mediasource.h>
 
 namespace LeechCraft
 {
-namespace DeadLyrics
+namespace LMP
 {
-	Core::Core ()
-	{
-		qRegisterMetaType<Lyrics> ("LeechCraft::DeadLyrics::Lyrics");
-		qRegisterMetaTypeStreamOperators<Lyrics> ("LeechCraft::DeadLyrics::Lyrics");
-
-		Searchers_ << Searcher_ptr (new SitesSearcher (":/deadlyrics/resources/sites.xml"));
-	}
-
-	Core& Core::Instance ()
-	{
-		static Core core;
-		return core;
-	}
-
-	void Core::Release ()
-	{
-	}
-
-	void Core::SetProxy (ICoreProxy_ptr proxy)
-	{
-		Proxy_ = proxy;
-	}
-
-	QNetworkAccessManager* Core::GetNetworkAccessManager () const
-	{
-		return Proxy_->GetNetworkAccessManager ();
-	}
+namespace XSPF
+{
+	QStringList Read (const QString&);
+	QList<Phonon::MediaSource> Read2Sources (const QString&);
+}
 }
 }

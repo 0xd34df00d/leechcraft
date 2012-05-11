@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2011  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,31 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "notificationaction.h"
+#pragma once
+
+#include <QObject>
 
 namespace LeechCraft
 {
 namespace Kinotify
 {
-	NotificationAction::NotificationAction (QObject *parent)
-	: QObject (parent)
-	, ActionObject_ (0)
+	class FSWinWatcher : public QObject
 	{
-	}
+	public:
+		FSWinWatcher (QObject* = 0);
 
-	void NotificationAction::SetActionObject (QObject* obj)
-	{
-		ActionObject_ = obj;
-	}
-
-	void NotificationAction::sendActionOnClick (const QString& idx)
-	{
-		QMetaObject::invokeMethod (ActionObject_,
-				"notificationActionTriggered",
-				Qt::QueuedConnection,
-				Q_ARG (int, idx.toInt ()));
-
-		emit actionPressed ();
-	}
+		bool IsCurrentFS ();
+	};
 }
 }

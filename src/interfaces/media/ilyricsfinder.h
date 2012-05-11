@@ -25,14 +25,16 @@ namespace Media
 	struct LyricsQuery
 	{
 		QString Artist_;
+		QString Album_;
 		QString Title_;
 
 		LyricsQuery ()
 		{
 		}
 
-		LyricsQuery (const QString& artist, const QString& title)
+		LyricsQuery (const QString& artist, const QString& album, const QString& title)
 		: Artist_ (artist)
+		, Album_ (album)
 		, Title_ (title)
 		{
 		}

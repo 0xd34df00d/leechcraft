@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_KINOTIFY_KINOTIFY_H
-#define PLUGINS_KINOTIFY_KINOTIFY_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
@@ -26,53 +26,48 @@
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Util
+{
+	class ResourceLoader;
+}
+
+namespace Kinotify
+{
+	class FSWinWatcher;
+	class KinotifyWidget;
+
+	class Plugin : public QObject
+					, public IInfo
+					, public IEntityHandler
+					, public IHaveSettings
 	{
-		class ResourceLoader;
-	}
+		Q_OBJECT
+		Q_INTERFACES (IInfo IEntityHandler IHaveSettings)
 
-	namespace Plugins
-	{
-		namespace Kinotify
-		{
+		ICoreProxy_ptr Proxy_;
+		QList<KinotifyWidget*> ActiveNotifications_;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		std::shared_ptr<Util::ResourceLoader> ThemeLoader_;
+		std::shared_ptr<FSWinWatcher> FSWinWatcher_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-			class KinotifyWidget;
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IEntityHandler
-						 , public IHaveSettings
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IEntityHandler IHaveSettings)
-
-				ICoreProxy_ptr Proxy_;
-				QList<KinotifyWidget*> ActiveNotifications_;
-				Util::XmlSettingsDialog_ptr SettingsDialog_;
-				std::shared_ptr<Util::ResourceLoader> ThemeLoader_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-
-				EntityTestHandleResult CouldHandle (const Entity&) const;
-				void Handle (Entity);
-
-				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-			public slots:
-				void pushNotification ();
-			private slots:
-				void handleWatchedDirsChanged ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	public slots:
+		void pushNotification ();
+	private slots:
+		void handleWatchedDirsChanged ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
-
-#endif
-
+}
+}

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2011  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,31 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "notificationaction.h"
+#include "pls.h"
+#include <algorithm>
+#include <QSettings>
 
 namespace LeechCraft
 {
-namespace Kinotify
+namespace LMP
 {
-	NotificationAction::NotificationAction (QObject *parent)
-	: QObject (parent)
-	, ActionObject_ (0)
+namespace PLS
+{
+	QStringList Read (const QString& path)
 	{
+		QStringList result;
+
+		QSettings settings (path, QSettings::IniFormat);
+		settings.beginGroup ("playlist");
+
+		const int numFiles = settings.value ("NumberOfEntries").toInt ();
+		for (int i = 1; i <= numFiles; ++i)
+		{
+			const auto& str = settings.value ("File" + QString::number (i)).toString ();
+			if (!str.isEmpty ())
+				result << str;
+		}
+
+		settings.endGroup ();
+
+		return result;
 	}
 
-	void NotificationAction::SetActionObject (QObject* obj)
+	QList<Phonon::MediaSource> Read2Sources (const QString& path)
 	{
-		ActionObject_ = obj;
+		QList<Phonon::MediaSource> result;
+		const auto& paths = Read (path);
+		std::copy (paths.begin (), paths.end (), std::back_inserter (result));
+		return result;
 	}
-
-	void NotificationAction::sendActionOnClick (const QString& idx)
-	{
-		QMetaObject::invokeMethod (ActionObject_,
-				"notificationActionTriggered",
-				Qt::QueuedConnection,
-				Q_ARG (int, idx.toInt ()));
-
-		emit actionPressed ();
-	}
+}
 }
 }

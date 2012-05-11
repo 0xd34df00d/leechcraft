@@ -12,7 +12,6 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	deadlyrics.cpp
-	core.cpp
 	searcher.cpp
 	lyricscache.cpp
 	xmlsettingsmanager.cpp
@@ -21,7 +20,6 @@ SET (SRCS
 	)
 SET (HEADERS
 	deadlyrics.h
-	core.h
 	searcher.h
 	lyricscache.h
 	xmlsettingsmanager.h

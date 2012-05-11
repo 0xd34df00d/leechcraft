@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2011  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,31 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "notificationaction.h"
+#include "playlistfactory.h"
+#include "m3u.h"
+#include "xspf.h"
+#include "pls.h"
 
 namespace LeechCraft
 {
-namespace Kinotify
+namespace LMP
 {
-	NotificationAction::NotificationAction (QObject *parent)
-	: QObject (parent)
-	, ActionObject_ (0)
+	PlaylistParser_f MakePlaylistParser (const QString& file)
 	{
-	}
+		if (file.endsWith ("m3u") || file.endsWith ("m3u8"))
+			return M3U::Read2Sources;
+		else if (file.endsWith ("xspf"))
+			return XSPF::Read2Sources;
+		else if (file.endsWith ("pls"))
+			return PLS::Read2Sources;
 
-	void NotificationAction::SetActionObject (QObject* obj)
-	{
-		ActionObject_ = obj;
-	}
-
-	void NotificationAction::sendActionOnClick (const QString& idx)
-	{
-		QMetaObject::invokeMethod (ActionObject_,
-				"notificationActionTriggered",
-				Qt::QueuedConnection,
-				Q_ARG (int, idx.toInt ()));
-
-		emit actionPressed ();
+		return PlaylistParser_f ();
 	}
 }
 }

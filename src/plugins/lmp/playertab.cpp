@@ -32,6 +32,7 @@
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/isimilarartists.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/media/ilyricsfinder.h>
 #include "player.h"
 #include "playlistdelegate.h"
 #include "util.h"
@@ -499,6 +500,28 @@ namespace LMP
 		handleShowTrayIcon ();
 	}
 
+	void PlayerTab::RequestLyrics (const MediaInfo& info)
+	{
+		Ui_.LyricsBrowser_->clear ();
+
+		if (!XmlSettingsManager::Instance ().property ("RequestLyrics").toBool ())
+			return;
+
+		auto finders = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableRoots<Media::ILyricsFinder*> ();
+		Q_FOREACH (auto finderObj, finders)
+		{
+			connect (finderObj,
+					SIGNAL (gotLyrics (const Media::LyricsQuery&, const QStringList&)),
+					this,
+					SLOT (handleGotLyrics (const Media::LyricsQuery&, const QStringList&)),
+					Qt::UniqueConnection);
+			auto finder = qobject_cast<Media::ILyricsFinder*> (finderObj);
+			finder->RequestLyrics ({ info.Artist_, info.Album_, info.Title_ },
+					Media::QueryOption::NoOption);
+		}
+	}
+
 	void PlayerTab::handleSongChanged (const MediaInfo& info)
 	{
 		QPixmap px;
@@ -518,8 +541,8 @@ namespace LMP
 		Ui_.NPWidget_->SetTrackInfo (info);
 
 		SetNowPlaying (info, px);
-
 		Scrobble (info);
+		RequestLyrics (info);
 
 		if (info.Artist_.isEmpty ())
 		{
@@ -596,6 +619,14 @@ namespace LMP
 		FillSimilar (similar);
 	}
 
+	void PlayerTab::handleGotLyrics (const Media::LyricsQuery&, const QStringList& lyrics)
+	{
+		if (lyrics.isEmpty ())
+			return;
+
+		Ui_.LyricsBrowser_->setHtml (lyrics.value (0));
+	}
+
 	void PlayerTab::handleScanProgress (int progress)
 	{
 		if (progress >= Ui_.ScanProgress_->maximum ())
@@ -645,13 +676,15 @@ namespace LMP
 
 	void PlayerTab::loadFromCollection ()
 	{
-		const QModelIndex& index = CollectionFilterModel_->
-				mapToSource (Ui_.CollectionTree_->currentIndex ());
-		if (!index.isValid ())
-			return;
-
+		const auto& idxs = Ui_.CollectionTree_->selectionModel ()->selectedRows ();
 		auto collection = Core::Instance ().GetLocalCollection ();
-		collection->Enqueue (index, Player_);
+		Q_FOREACH (const auto& src, idxs)
+		{
+			const QModelIndex& index = CollectionFilterModel_->mapToSource (src);
+			if (!index.isValid ())
+				continue;
+			collection->Enqueue (index, Player_);
+		}
 	}
 
 	void PlayerTab::loadFromFSBrowser ()

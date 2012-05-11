@@ -21,6 +21,7 @@
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
+#include <QMimeData>
 #include <QUrl>
 #include <phonon/mediaobject.h>
 #include <phonon/audiooutput.h>
@@ -31,6 +32,8 @@
 #include "localcollection.h"
 #include "playlistmanager.h"
 #include "staticplaylistmanager.h"
+#include "xmlsettingsmanager.h"
+#include "playlistparsers/playlistfactory.h"
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);
 
@@ -65,9 +68,54 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		class PlaylistModel : public QStandardItemModel
+		{
+			Player *Player_;
+		public:
+			PlaylistModel (Player *parent)
+			: QStandardItemModel (parent)
+			, Player_ (parent)
+			{
+			}
+
+			QStringList mimeTypes () const
+			{
+				return QStringList ("text/uri-list");
+			}
+
+			bool dropMimeData (const QMimeData *data, Qt::DropAction action, int, int, const QModelIndex&)
+			{
+				if (action == Qt::IgnoreAction)
+					return true;
+
+				if (!data->hasUrls ())
+					return false;
+
+				const auto& urls = data->urls ();
+				QList<Phonon::MediaSource> sources;
+				std::transform (urls.begin (), urls.end (), std::back_inserter (sources),
+						[] (decltype (urls.front ()) url)
+						{
+							return url.scheme () == "file" ?
+									Phonon::MediaSource (url.toLocalFile ()) :
+									Phonon::MediaSource (url);
+						});
+				Player_->Enqueue (sources);
+				return true;
+			}
+
+			Qt::DropActions supportedDropActions () const
+			{
+				return Qt::CopyAction;
+			}
+		};
+	}
+
 	Player::Player (QObject *parent)
 	: QObject (parent)
-	, PlaylistModel_ (new QStandardItemModel (this))
+	, PlaylistModel_ (new PlaylistModel (this))
 	, Source_ (new Phonon::MediaObject (this))
 	, Output_ (new Phonon::AudioOutput (Phonon::MusicCategory, this))
 	, Path_ (Phonon::createPath (Source_, Output_))
@@ -85,6 +133,15 @@ namespace LMP
 
 		auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
 		Enqueue (staticMgr->GetOnLoadPlaylist ());
+
+		const auto& song = XmlSettingsManager::Instance ().property ("LastSong").toString ();
+		if (!song.isEmpty ())
+		{
+			const auto pos = std::find_if (CurrentQueue_.begin (), CurrentQueue_.end (),
+					[&song] (decltype (CurrentQueue_.front ()) item) { return song == item.fileName (); });
+			if (pos != CurrentQueue_.end ())
+				Source_->setCurrentSource (*pos);
+		}
 	}
 
 	QAbstractItemModel* Player::GetPlaylistModel () const
@@ -107,11 +164,24 @@ namespace LMP
 		PlayMode_ = playMode;
 	}
 
+	namespace
+	{
+		QList<Phonon::MediaSource> FileToSource (const QString& file)
+		{
+			auto parser = MakePlaylistParser (file);
+			if (parser)
+				return parser (file);
+
+			return { Phonon::MediaSource (file) };
+		}
+	}
+
 	void Player::Enqueue (const QStringList& paths, bool sort)
 	{
 		QList<Phonon::MediaSource> sources;
-		std::transform (paths.begin (), paths.end (), std::back_inserter (sources),
-				[] (decltype (paths.front ()) path) { return Phonon::MediaSource (path); });
+		std::for_each (paths.begin (), paths.end (),
+				[&sources] (decltype (paths.front ()) path)
+					{ sources += FileToSource (path); });
 		Enqueue (sources, sort);
 	}
 
@@ -448,6 +518,8 @@ namespace LMP
 
 	void Player::handleCurrentSourceChanged (const Phonon::MediaSource& source)
 	{
+		XmlSettingsManager::Instance ().setProperty ("LastSong", source.fileName ());
+
 		auto curItem = Items_ [source];
 		curItem->setData (true, Role::IsCurrent);
 

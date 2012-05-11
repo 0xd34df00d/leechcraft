@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-		<label value="Appearance" />
+		<label value="Kinotify" />
 		<groupbox>
 			<label value="Style" />
 			<item type="combobox" property="NotificatorStyle" mayHaveDataSource="true">
@@ -9,6 +9,12 @@
 				<option name="Commie" default="true">
 					<label value="Commie" />
 				</option>
+			</item>
+		</groupbox>
+		<groupbox>
+			<label value="Behavior" />
+			<item type="checkbox" property="RespectFullscreen" default="true">
+				<label value="Don't show notifications when there is a fullscreen application" />
 			</item>
 		</groupbox>
 	</page>

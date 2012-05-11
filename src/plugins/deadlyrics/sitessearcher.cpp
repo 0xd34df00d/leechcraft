@@ -26,7 +26,8 @@ namespace LeechCraft
 {
 namespace DeadLyrics
 {
-	SitesSearcher::SitesSearcher (const QString& configPath)
+	SitesSearcher::SitesSearcher (const QString& configPath, ICoreProxy_ptr proxy)
+	: Proxy_ (proxy)
 	{
 		QFile file (configPath);
 		if (!file.open (QIODevice::ReadOnly))
@@ -51,7 +52,7 @@ namespace DeadLyrics
 		{
 			try
 			{
-				Sites_ << ConcreteSite_ptr (new ConcreteSite (provider));
+				Descs_ << ConcreteSiteDesc (provider);
 			}
 			catch (const std::exception& e)
 			{
@@ -63,12 +64,13 @@ namespace DeadLyrics
 		}
 	}
 
-	void SitesSearcher::Start (const QStringList& , QByteArray&)
+	void SitesSearcher::Search (const Media::LyricsQuery& query, Media::QueryOptions)
 	{
-	}
-
-	void SitesSearcher::Stop (const QByteArray&)
-	{
+		Q_FOREACH (const auto& desc, Descs_)
+			connect (new ConcreteSite (query, desc, Proxy_, this),
+					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)),
+					this,
+					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)));
 	}
 }
 }

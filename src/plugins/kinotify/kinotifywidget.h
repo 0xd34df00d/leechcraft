@@ -17,8 +17,8 @@
  **********************************************************************/
 
 
-#ifndef PLUGINS_KINOTIFY_KINOTIFYWIDGET_H
-#define PLUGINS_KINOTIFY_KINOTIFYWIDGET_H
+#pragma once
+
 #include "kinotify.h"
 #include <QWebView>
 #include <QStateMachine>
@@ -26,78 +26,73 @@
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class ResourceLoader;
-	}
-
-	namespace Plugins
-	{
-		namespace Kinotify
-		{
-			class NotificationAction;
-
-			class KinotifyWidget : public QWebView
-			{
-				Q_OBJECT
-				Q_PROPERTY (qreal opacity READ windowOpacity WRITE setWindowOpacity);
-
-				QString Title_;
-				QString Body_;
-				QString ImagePath_;
-				QString Theme_;
-				QSize DefaultSize_;
-				int Timeout_;
-				int AnimationTime_;
-				QTimer *CloseTimer_;
-				QTimer *CheckTimer_;
-				QStateMachine Machine_;
-				QStringList ActionsNames_;
-				NotificationAction *Action_;
-				std::shared_ptr<Util::ResourceLoader> ThemeLoader_;
-				QPixmap OverridePixmap_;
-				QObject_ptr HandlerGuard_;
-
-				static QMap<QString, QString> ThemeCache_;
-
-				Entity E_;
-			public:
-				KinotifyWidget (int timeout = 0, QWidget *widget = 0, int animationTimeout = 300);
-				void SetThemeLoader (std::shared_ptr<Util::ResourceLoader>);
-
-				static void ClearThemeCache ();
-
-				void SetEntity (const Entity&);
-
-				void SetContent (const QString&, const QString&,
-						const QString&, const QSize& size = QSize (350, 70));
-				void OverrideImage (const QPixmap&);
-				void PrepareNotification ();
-				void SetActions (const QStringList&, QObject_ptr);
-			protected:
-				virtual void mousePressEvent (QMouseEvent*);
-				virtual void showEvent (QShowEvent*);
-			private:
-				const QByteArray MakeImage (const QString& imgPath = QString ());
-				const QByteArray MakeImage (const QPixmap&);
-				void CreateWidget ();
-				void LoadTheme (const QString&);
-				void SetData ();
-				void SetWidgetPlace ();
-				void ShowNotification ();
-			public slots:
-				void stateMachinePause ();
-				void closeNotification ();
-				void closeNotificationWidget ();
-				void initJavaScript ();
-				void handleLinkClicked (const QUrl&);
-			signals:
-				void initiateCloseNotification ();
-				void checkNotificationQueue ();
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		}
-	}
+namespace Util
+{
+	class ResourceLoader;
 }
 
-#endif // PLUGINS_KINOTIFY_KINOTIFYWIDGET_H
+namespace Kinotify
+{
+	class NotificationAction;
+
+	class KinotifyWidget : public QWebView
+	{
+		Q_OBJECT
+		Q_PROPERTY (qreal opacity READ windowOpacity WRITE setWindowOpacity);
+
+		QString Title_;
+		QString Body_;
+		QString ImagePath_;
+		QString Theme_;
+		QSize DefaultSize_;
+		int Timeout_;
+		int AnimationTime_;
+		QTimer *CloseTimer_;
+		QTimer *CheckTimer_;
+		QStateMachine Machine_;
+		QStringList ActionsNames_;
+		NotificationAction *Action_;
+		std::shared_ptr<Util::ResourceLoader> ThemeLoader_;
+		QPixmap OverridePixmap_;
+		QObject_ptr HandlerGuard_;
+
+		static QMap<QString, QString> ThemeCache_;
+
+		Entity E_;
+	public:
+		KinotifyWidget (int timeout = 0, QWidget *widget = 0, int animationTimeout = 300);
+		void SetThemeLoader (std::shared_ptr<Util::ResourceLoader>);
+
+		static void ClearThemeCache ();
+
+		void SetEntity (const Entity&);
+
+		void SetContent (const QString&, const QString&,
+				const QString&, const QSize& size = QSize (350, 70));
+		void OverrideImage (const QPixmap&);
+		void PrepareNotification ();
+		void SetActions (const QStringList&, QObject_ptr);
+	protected:
+		virtual void mousePressEvent (QMouseEvent*);
+		virtual void showEvent (QShowEvent*);
+	private:
+		const QByteArray MakeImage (const QString& imgPath = QString ());
+		const QByteArray MakeImage (const QPixmap&);
+		void CreateWidget ();
+		void LoadTheme (const QString&);
+		void SetData ();
+		void SetWidgetPlace ();
+		void ShowNotification ();
+	public slots:
+		void stateMachinePause ();
+		void closeNotification ();
+		void closeNotificationWidget ();
+		void initJavaScript ();
+		void handleLinkClicked (const QUrl&);
+	signals:
+		void initiateCloseNotification ();
+		void checkNotificationQueue ();
+		void gotEntity (const LeechCraft::Entity&);
+	};
+}
+}

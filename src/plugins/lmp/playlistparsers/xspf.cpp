@@ -16,17 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "m3ustuff.h"
+#include "xspf.h"
 #include <QFile>
+#include <QDomDocument>
 #include <QFileInfo>
 #include <QDir>
-#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace M3U
+namespace XSPF
 {
 	QStringList Read (const QString& path)
 	{
@@ -40,39 +40,36 @@ namespace M3U
 			return QStringList ();
 		}
 
-		QStringList result;
-		while (!file.atEnd ())
+		QDomDocument doc;
+		if (!doc.setContent (file.readAll ()))
 		{
-			const auto& line = file.readLine ().trimmed ();
-			if (line.startsWith ('#'))
-				continue;
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse"
+					<< path;
+			return QStringList ();
+		}
 
-			result << QString::fromUtf8 (line.constData ());
+		QStringList result;
+		auto track = doc.documentElement ()
+				.firstChildElement ("trackList")
+				.firstChildElement ("track");
+		while (!track.isNull ())
+		{
+			const auto& loc = track.firstChildElement ("location").text ();
+			if (!loc.isEmpty ())
+				result << loc;
+
+			track = track.nextSiblingElement ("track");
 		}
 		return result;
 	}
 
-	void Write (const QString& path, const QStringList& lines)
-	{
-		QFile file (path);
-		if (!file.open (QIODevice::WriteOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open"
-					<< path
-					<< file.errorString ();
-			return;
-		}
-
-		file.write (lines.join ("\n").toUtf8 ());
-	}
-
 	QList<Phonon::MediaSource> Read2Sources (const QString& path)
 	{
-		const auto& m3uDir = QFileInfo (path).absoluteDir ();
+		const auto& plDir = QFileInfo (path).absoluteDir ();
 
 		QList<Phonon::MediaSource> result;
-		Q_FOREACH (QString src, Read (path))
+		Q_FOREACH (const auto& src, Read (path))
 		{
 			QUrl url (src);
 			if (!url.scheme ().isEmpty ())
@@ -81,37 +78,16 @@ namespace M3U
 				continue;
 			}
 
-			src.replace ('\\', '/');
-
 			const QFileInfo fi (src);
-			if (fi.suffix () == "m3u" || fi.suffix () == "m3u8")
-				result += Read2Sources (m3uDir.absoluteFilePath (src));
+			if (fi.suffix () == "xspf")
+				result += Read2Sources (plDir.absoluteFilePath (src));
 			else if (fi.isRelative ())
-				result << m3uDir.absoluteFilePath (src);
+				result << plDir.absoluteFilePath (src);
 			else
 				result << src;
 		}
-		return result;
-	}
 
-	void Write (const QString& path, const QList<Phonon::MediaSource>& sources)
-	{
-		QStringList strings;
-		Q_FOREACH (const Phonon::MediaSource& source, sources)
-		{
-			switch (source.type ())
-			{
-			case Phonon::MediaSource::LocalFile:
-				strings << source.fileName ();
-				break;
-			case Phonon::MediaSource::Url:
-				strings << source.url ().toString ();
-				break;
-			default:
-				break;
-			}
-		}
-		Write (path, strings);
+		return result;
 	}
 }
 }

@@ -18,31 +18,16 @@
 
 #pragma once
 
-#include <QAbstractItemModel>
-#include <interfaces/iinfo.h>
-#include "searcher.h"
-
-class QNetworkAccessManager;
+#include <functional>
+#include <QString>
+#include <phonon/mediasource.h>
 
 namespace LeechCraft
 {
-namespace DeadLyrics
+namespace LMP
 {
-	class Core : public QObject
-	{
-		Q_OBJECT
+	typedef std::function<QList<Phonon::MediaSource> (const QString&)> PlaylistParser_f;
 
-		ICoreProxy_ptr Proxy_;
-
-		Searchers_t Searchers_;
-
-		Core ();
-	public:
-		static Core& Instance ();
-		void Release ();
-
-		void SetProxy (ICoreProxy_ptr);
-		QNetworkAccessManager* GetNetworkAccessManager () const;
-	};
+	PlaylistParser_f MakePlaylistParser (const QString&);
 }
 }

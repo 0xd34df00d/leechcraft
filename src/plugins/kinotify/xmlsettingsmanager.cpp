@@ -21,31 +21,28 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Kinotify
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		namespace Kinotify
-		{
-			XmlSettingsManager::XmlSettingsManager ()
-			{
-				Util::BaseSettingsManager::Init ();
-			}
-
-			XmlSettingsManager* XmlSettingsManager::Instance ()
-			{
-				static XmlSettingsManager manager;
-				return &manager;
-			}
-
-			QSettings* XmlSettingsManager::BeginSettings () const
-			{
-				QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_Kinotify");
-				return settings;
-			}
-
-			void XmlSettingsManager::EndSettings (QSettings*) const
-			{
-			}
-		}
+		Util::BaseSettingsManager::Init ();
 	}
+
+	XmlSettingsManager* XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return &manager;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Kinotify");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
 }

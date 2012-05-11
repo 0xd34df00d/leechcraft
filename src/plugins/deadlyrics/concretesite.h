@@ -21,6 +21,8 @@
 #include <memory>
 #include <QObject>
 #include <QHash>
+#include <interfaces/media/ilyricsfinder.h>
+#include <interfaces/core/icoreproxy.h>
 
 class QDomElement;
 
@@ -31,20 +33,32 @@ namespace DeadLyrics
 	class MatcherBase;
 	typedef std::shared_ptr<MatcherBase> MatcherBase_ptr;
 
-	class ConcreteSite : public QObject
+	struct ConcreteSiteDesc
 	{
-		Q_OBJECT
-
 		const QString Name_;
 		const QString Charset_;
 		const QString URLTemplate_;
 
 		QHash<QChar, QString> Replacements_;
 
-		QList<MatcherBase_ptr> Extractors_;
-		QList<MatcherBase_ptr> Excluders_;
+		QList<MatcherBase_ptr> Matchers_;
+
+		ConcreteSiteDesc (const QDomElement&);
+	};
+
+	class ConcreteSite : public QObject
+	{
+		Q_OBJECT
+
+		const Media::LyricsQuery Query_;
+		const ConcreteSiteDesc Desc_;
 	public:
-		ConcreteSite (const QDomElement&, QObject* = 0);
+		ConcreteSite (const Media::LyricsQuery&,
+				const ConcreteSiteDesc&, ICoreProxy_ptr proxy, QObject* = 0);
+	private slots:
+		void handleReplyFinished ();
+	signals:
+		void gotLyrics (const Media::LyricsQuery&, const QStringList&);
 	};
 }
 }

@@ -15,7 +15,15 @@ SET (SRCS
 	notificationaction.cpp
 	xmlsettingsmanager.cpp
 	)
+
+IF (UNIX)
+	SET (SRCS fswinwatcher_x11.cpp ${SRCS})
+ELSE (UNIX)
+	SET (SRCS fswinwatcher.cpp ${SRCS})
+ENDIF (UNIX)
+
 SET (HEADERS
+	fswinwatcher.h
 	kinotify.h
 	kinotifywidget.h
 	notificationaction.h
