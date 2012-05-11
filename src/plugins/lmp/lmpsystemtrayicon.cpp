@@ -20,7 +20,7 @@
 #include <QWheelEvent>
 #include <QHelpEvent>
 #include <QToolTip>
-#include <Phonon/AudioOutput>
+#include <phonon/audiooutput.h>
 #include "core.h"
 #include "playertab.h"
 #include "util.h"
@@ -41,6 +41,8 @@ namespace LMP
 		{
 			QWheelEvent *wheel = static_cast<QWheelEvent*> (event);
 			emit changedVolume (wheel->delta ());
+
+			return true;
 		}
 		else if (event->type () == QEvent::ToolTip)
 		{
@@ -53,13 +55,12 @@ namespace LMP
 				const QString& trackText = tr ("%1 (%2)")
 						.arg ("<b>" + CurrentSong_.Title_ + "</b>")
 						.arg ("<b>" + QTime ().addSecs (CurrentSong_.Length_).toString ("mm:ss") + "</b>");
-				Phonon::VolumeSlider* volSlider = PlayerTab_->GetVolumeSlider ();
+				Phonon::AudioOutput *ao = PlayerTab_->GetAudioOutput ();
 				int vol = 0;
-				if (volSlider)
+				if (ao)
 				{
-					qreal volume = volSlider->audioOutput ()->volume ();
-					qreal dl = volSlider->maximumVolume ();
-					vol = volume / dl * 100;
+					qreal volume = ao->volume ();
+					vol = volume * 100;
 				}
 				const QString& volumeText = tr ("Volume: %1%")
 						.arg (vol);
@@ -91,7 +92,10 @@ namespace LMP
 						.arg (tr ("No track playing"));
 
 			QToolTip::showText (help->globalPos (), text);
+
+			return true;
 		}
+
 		return QSystemTrayIcon::event (event);
 	}
 

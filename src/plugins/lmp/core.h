@@ -25,7 +25,6 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	class PlayerTab;
 	class LocalCollection;
 	class LocalFileResolver;
 	class PlaylistManager;
@@ -52,7 +51,6 @@ namespace LMP
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;
 		PlaylistManager* GetPlaylistManager () const;
-
 	public slots:
 		void rescan ();
 	private slots:

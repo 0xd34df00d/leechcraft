@@ -20,8 +20,9 @@
 
 #include <memory>
 #include <QWidget>
-#include <Phonon/MediaObject>
-#include <Phonon/VolumeSlider>
+#include <phonon/mediaobject.h>
+#include <phonon/audiooutput.h>
+#include <phonon/volumeslider.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/ihaverecoverabletabs.h>
@@ -85,7 +86,7 @@ namespace LMP
 		QIcon GetTabRecoverIcon () const;
 		QString GetTabRecoverName () const;
 
-		Phonon::VolumeSlider* GetVolumeSlider () const;
+		Phonon::AudioOutput* GetAudioOutput ();
 	private:
 		void SetupToolbar ();
 		void SetupCollection ();
@@ -95,9 +96,6 @@ namespace LMP
 		void SetNowPlaying (const MediaInfo&, const QPixmap&);
 		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
-		template<typename T>
-		void UpdateIcon (T iconable, Phonon::State state, std::function<QSize (T)>);
-		QIcon GetIconFromState (Phonon::State state) const;
 	public slots:
 		void handleShowTray (bool show);
 	private slots:

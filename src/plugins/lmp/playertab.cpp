@@ -27,7 +27,6 @@
 #include <QMenu>
 #include <QInputDialog>
 #include <phonon/seekslider.h>
-#include <Phonon/AudioOutput>
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
@@ -138,8 +137,6 @@ namespace LMP
 	void PlayerTab::Remove ()
 	{
 		LMPOpened_ = false;
-		if (TrayIcon_)
-			TrayIcon_->hide ();
 		emit removeTab (this);
 	}
 
@@ -168,9 +165,9 @@ namespace LMP
 		return "LMP";
 	}
 
-	Phonon::VolumeSlider* PlayerTab::GetVolumeSlider () const
+	Phonon::AudioOutput* PlayerTab::GetAudioOutput ()
 	{
-		return VolumeSlider_;
+		return VolumeSlider_->audioOutput ();
 	}
 
 	void PlayerTab::SetupToolbar ()
@@ -451,45 +448,48 @@ namespace LMP
 		Ui_.NPWidget_->GetArtistsDisplay ()->SetSimilarArtists (infos);
 	}
 
-	template<typename T>
-	void PlayerTab::UpdateIcon (T iconable, Phonon::State state,
-			std::function<QSize (T)> iconSizeGetter)
+	namespace
 	{
-		QIcon icon = GetIconFromState (state);
-		QIcon baseIcon = icon.isNull() ?
-			QIcon (":/lmp/resources/images/lmp.svg") :
-			iconable->icon ();
-
-		const QSize& iconSize = iconSizeGetter (iconable);
-
-		QPixmap px = baseIcon.pixmap (iconSize);
-
-		if (!icon.isNull ())
+		QIcon GetIconFromState (Phonon::State state)
 		{
-			QPixmap statePx = icon.pixmap (iconSize);
-
-			QPainter p (&px);
-			p.drawPixmap (0 + iconSize.width () / 2,
-					0 + iconSize.height () / 2 ,
-					iconSize.width () / 2,
-					iconSize.height () / 2,
-					statePx);
-			p.end ();
+			switch (state)
+			{
+				case Phonon::PlayingState:
+					return Core::Instance ().GetProxy ()->GetIcon ("media-playback-start");
+				case Phonon::PausedState:
+					return Core::Instance ().GetProxy ()->GetIcon ("media-playback-pause");
+				default:
+					return QIcon ();
+			}
 		}
 
-		iconable->setIcon (QIcon (px));
-	}
-
-	QIcon PlayerTab::GetIconFromState (Phonon::State state) const
-	{
-		switch (state)
+		template<typename T>
+		void UpdateIcon (T iconable, Phonon::State state,
+				std::function<QSize (T)> iconSizeGetter)
 		{
-			case Phonon::PlayingState:
-				return Core::Instance ().GetProxy ()->GetIcon ("media-playback-start");
-			case Phonon::PausedState:
-				return Core::Instance ().GetProxy ()->GetIcon ("media-playback-pause");
-			default:
-				return QIcon ();
+			QIcon icon = GetIconFromState (state);
+			QIcon baseIcon = icon.isNull() ?
+				QIcon (":/lmp/resources/images/lmp.svg") :
+				iconable->icon ();
+
+			const QSize& iconSize = iconSizeGetter (iconable);
+
+			QPixmap px = baseIcon.pixmap (iconSize);
+
+			if (!icon.isNull ())
+			{
+				QPixmap statePx = icon.pixmap (iconSize);
+
+				QPainter p (&px);
+				p.drawPixmap (0 + iconSize.width () / 2,
+						0 + iconSize.height () / 2 ,
+						iconSize.width () / 2,
+						iconSize.height () / 2,
+						statePx);
+				p.end ();
+			}
+
+			iconable->setIcon (QIcon (px));
 		}
 	}
 
@@ -706,6 +706,7 @@ namespace LMP
 		}
 		UpdateIcon<LMPSystemTrayIcon*> (TrayIcon_, newState,
 				[] (QSystemTrayIcon *icon) { return icon->geometry ().size (); });
+
 	}
 
 	void PlayerTab::handleShowTrayIcon ()
