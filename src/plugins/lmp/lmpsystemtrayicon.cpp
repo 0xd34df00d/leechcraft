@@ -31,6 +31,7 @@ namespace LMP
 {
 	LMPSystemTrayIcon::LMPSystemTrayIcon (const QIcon& icon, QObject *parent)
 	: QSystemTrayIcon (icon, parent)
+	, PlayerTab_ (qobject_cast<PlayerTab*> (parent))
 	{
 	}
 
@@ -43,17 +44,16 @@ namespace LMP
 		}
 		else if (event->type () == QEvent::ToolTip)
 		{
-			PlayerTab *player = Core::Instance ().GetPlayerTab ();
 			QHelpEvent *help = static_cast<QHelpEvent*> (event);
 			QString text;
 
-			if (player &&
+			if (PlayerTab_ &&
 					!CurrentSong_.Title_.isEmpty ())
 			{
 				const QString& trackText = tr ("%1 (%2)")
 						.arg ("<b>" + CurrentSong_.Title_ + "</b>")
 						.arg ("<b>" + QTime ().addSecs (CurrentSong_.Length_).toString ("mm:ss") + "</b>");
-				Phonon::VolumeSlider* volSlider = player->GetVolumeSlider ();
+				Phonon::VolumeSlider* volSlider = PlayerTab_->GetVolumeSlider ();
 				int vol = 0;
 				if (volSlider)
 				{

@@ -25,11 +25,14 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class PlayerTab;
+
 	class LMPSystemTrayIcon : public QSystemTrayIcon
 	{
 		Q_OBJECT
 
 		MediaInfo CurrentSong_;
+		PlayerTab *PlayerTab_;
 	public:
 		LMPSystemTrayIcon (const QIcon& icon, QObject *parent = 0);
 	protected:

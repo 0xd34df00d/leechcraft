@@ -66,7 +66,7 @@ namespace LMP
 		QHash<QString, Media::SimilarityInfos_t> Similars_;
 		QString LastSimilar_;
 
-		std::shared_ptr<LMPSystemTrayIcon> TrayIcon_;
+		LMPSystemTrayIcon *TrayIcon_;
 		QAction *PlayPause_;
 		bool LMPOpened_;
 		QMenu *TrayMenu_;

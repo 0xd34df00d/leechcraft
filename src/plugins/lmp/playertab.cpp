@@ -109,10 +109,10 @@ namespace LMP
 		Ui_.ScanProgress_->hide ();
 		handleSongChanged (MediaInfo ());
 
-		TrayIcon_ = std::make_shared<LMPSystemTrayIcon> (QIcon (":/lmp/resources/images/lmp.svg"), this);
+		TrayIcon_ = new LMPSystemTrayIcon (QIcon (":/lmp/resources/images/lmp.svg"), this);
 		connect (Player_,
 				SIGNAL (songChanged (const MediaInfo&)),
-				TrayIcon_.get (),
+				TrayIcon_,
 				SLOT (handleSongChanged (const MediaInfo&)));
 		SetupToolbar ();
 		SetupCollection ();
@@ -239,16 +239,16 @@ namespace LMP
 		TabToolbar_->addWidget (VolumeSlider_);
 
 		// fill tray menu
-		connect (TrayIcon_.get (),
+		connect (TrayIcon_,
 				SIGNAL (changedVolume (qreal)),
 				this,
 				SLOT (handleChangedVolume (qreal)));
-		connect (TrayIcon_.get (),
+		connect (TrayIcon_,
 				SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
 				this,
 				SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
 
-		PlayPause_ = new QAction (tr ("Play/Pause"), TrayIcon_.get ());
+		PlayPause_ = new QAction (tr ("Play/Pause"), TrayIcon_);
 		PlayPause_->setProperty ("ActionIcon", "media-playback-start");
 		PlayPause_->setProperty ("WatchActionIconChange", true);
 		connect (PlayPause_,
@@ -256,7 +256,7 @@ namespace LMP
 				Player_,
 				SLOT (togglePause ()));
 
-		QAction *closeLMP = new QAction (tr ("Close LMP"), TrayIcon_.get ());
+		QAction *closeLMP = new QAction (tr ("Close LMP"), TrayIcon_);
 		closeLMP->setProperty ("ActionIcon", "edit-delete");
 		connect (closeLMP,
 				SIGNAL (triggered ()),
@@ -704,7 +704,7 @@ namespace LMP
 				TrayIcon_->handleSongChanged (MediaInfo ());
 			PlayPause_->setProperty ("ActionIcon", "media-playback-start");
 		}
-		UpdateIcon<LMPSystemTrayIcon*> (TrayIcon_.get (), newState,
+		UpdateIcon<LMPSystemTrayIcon*> (TrayIcon_, newState,
 				[] (QSystemTrayIcon *icon) { return icon->geometry ().size (); });
 	}
 

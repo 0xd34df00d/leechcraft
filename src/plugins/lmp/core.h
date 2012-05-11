@@ -39,7 +39,6 @@ namespace LMP
 		LocalFileResolver *Resolver_;
 		LocalCollection *Collection_;
 		PlaylistManager *PLManager_;
-		PlayerTab *PlayerTab_;
 
 		Core ();
 	public:
@@ -54,8 +53,6 @@ namespace LMP
 		LocalCollection* GetLocalCollection () const;
 		PlaylistManager* GetPlaylistManager () const;
 
-		void SetPlayerTab (PlayerTab *playerTab);
-		PlayerTab* GetPlayerTab () const;
 	public slots:
 		void rescan ();
 	private slots:
