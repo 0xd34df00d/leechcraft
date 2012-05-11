@@ -85,10 +85,11 @@ namespace M3U
 			src.replace ('\\', '/');
 
 			const QFileInfo fi (src);
+			if (fi.isRelative ())
+				src = m3uDir.absoluteFilePath (src);
+
 			if (fi.suffix () == "m3u" || fi.suffix () == "m3u8")
-				result += Read2Sources (m3uDir.absoluteFilePath (src));
-			else if (fi.isRelative ())
-				result << m3uDir.absoluteFilePath (src);
+				result += Read2Sources (src);
 			else
 				result << src;
 		}
