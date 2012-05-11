@@ -161,7 +161,7 @@ void TabManager::add (const QString& name, QWidget *contents,
 		}
 		icon = itw->GetTabClassInfo ().Icon_;
 
-		if(itw->GetTabClassInfo ().Features_ & TFSingle)
+		if (itw->GetTabClassInfo ().Features_ & TFSingle)
 			Core::Instance ().GetNewTabMenuManager ()->HideAction (itw, true);
 	}
 
