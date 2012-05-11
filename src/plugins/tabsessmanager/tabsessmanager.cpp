@@ -208,10 +208,6 @@ namespace TabSessManager
 				SIGNAL (tabRecoverDataChanged ()),
 				this,
 				SLOT (handleTabRecoverDataChanged ()));
-		connect (widget,
-				SIGNAL (destroyed (QObject*)),
-				this,
-				SLOT (handleTabDestroyed ()));
 
 		widget->installEventFilter (this);
 
@@ -260,12 +256,8 @@ namespace TabSessManager
 		UncloseMenu_->insertAction (UncloseMenu_->actions ().value (0), action);
 		UncloseMenu_->setDefaultAction (action);
 		action->setShortcut (QString ("Ctrl+Shift+T"));
-	}
 
-	void Plugin::handleTabDestroyed ()
-	{
-		Tabs_.remove (sender ());
-
+		Tabs_.remove (widget);
 		handleTabRecoverDataChanged ();
 	}
 
