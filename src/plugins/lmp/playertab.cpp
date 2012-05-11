@@ -27,13 +27,12 @@
 #include <QMenu>
 #include <QInputDialog>
 #include <phonon/seekslider.h>
-#include <phonon/volumeslider.h>
-#include <phonon/mediaobject.h>
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/isimilarartists.h>
 #include <interfaces/media/ilyricsfinder.h>
+#include <interfaces/core/icoreproxy.h>
 #include "player.h"
 #include "playlistdelegate.h"
 #include "util.h"
@@ -86,6 +85,10 @@ namespace LMP
 	, Player_ (new Player (this))
 	, PlaylistToolbar_ (new QToolBar ())
 	, TabToolbar_ (new QToolBar ())
+	, PlayPause_ (0)
+	, LMPOpened_ (false)
+	, TrayMenu_ (new QMenu ("LMP", this))
+	, VolumeSlider_ (0)
 	{
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->setStretchFactor (0, 2);
@@ -106,11 +109,20 @@ namespace LMP
 		Ui_.ScanProgress_->hide ();
 		handleSongChanged (MediaInfo ());
 
+		TrayIcon_ = new LMPSystemTrayIcon (QIcon (":/lmp/resources/images/lmp.svg"), this);
+		connect (Player_,
+				SIGNAL (songChanged (const MediaInfo&)),
+				TrayIcon_,
+				SLOT (handleSongChanged (const MediaInfo&)));
 		SetupToolbar ();
 		SetupCollection ();
 		SetupPlaylistsTab ();
 		SetupFSBrowser ();
 		SetupPlaylist ();
+
+		XmlSettingsManager::Instance ().RegisterObject ("ShowTrayIcon",
+				this, "handleShowTrayIcon");
+		handleShowTrayIcon ();
 	}
 
 	TabClassInfo PlayerTab::GetTabClassInfo () const
@@ -125,6 +137,7 @@ namespace LMP
 
 	void PlayerTab::Remove ()
 	{
+		LMPOpened_ = false;
 		emit removeTab (this);
 	}
 
@@ -136,6 +149,26 @@ namespace LMP
 	Player* PlayerTab::GetPlayer () const
 	{
 		return Player_;
+	}
+
+	QByteArray PlayerTab::GetTabRecoverData () const
+	{
+		return "playertab";
+	}
+
+	QIcon PlayerTab::GetTabRecoverIcon () const
+	{
+		return QIcon (":/lmp/resources/images/lmp.svg");
+	}
+
+	QString PlayerTab::GetTabRecoverName () const
+	{
+		return "LMP";
+	}
+
+	Phonon::AudioOutput* PlayerTab::GetAudioOutput ()
+	{
+		return VolumeSlider_->audioOutput ();
 	}
 
 	void PlayerTab::SetupToolbar ()
@@ -198,10 +231,43 @@ namespace LMP
 				this,
 				SLOT (handleCurrentPlayTime (qint64)));
 
-		auto volumeSlider = new Phonon::VolumeSlider (Player_->GetAudioOutput ());
-		volumeSlider->setMinimumWidth (100);
-		volumeSlider->setMaximumWidth (160);
-		TabToolbar_->addWidget (volumeSlider);
+		VolumeSlider_ = new Phonon::VolumeSlider (Player_->GetAudioOutput ());
+		VolumeSlider_->setMinimumWidth (100);
+		VolumeSlider_->setMaximumWidth (160);
+		TabToolbar_->addWidget (VolumeSlider_);
+
+		// fill tray menu
+		connect (TrayIcon_,
+				SIGNAL (changedVolume (qreal)),
+				this,
+				SLOT (handleChangedVolume (qreal)));
+		connect (TrayIcon_,
+				SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
+				this,
+				SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
+
+		PlayPause_ = new QAction (tr ("Play/Pause"), TrayIcon_);
+		PlayPause_->setProperty ("ActionIcon", "media-playback-start");
+		PlayPause_->setProperty ("WatchActionIconChange", true);
+		connect (PlayPause_,
+				SIGNAL (triggered ()),
+				Player_,
+				SLOT (togglePause ()));
+
+		QAction *closeLMP = new QAction (tr ("Close LMP"), TrayIcon_);
+		closeLMP->setProperty ("ActionIcon", "edit-delete");
+		connect (closeLMP,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (closeLMP ()));
+
+		connect (Player_->GetSourceObject (),
+				SIGNAL (stateChanged (Phonon::State, Phonon::State)),
+				this,
+				SLOT (handleStateChanged (Phonon::State, Phonon::State)));
+		TrayMenu_->addActions ({previous, PlayPause_, stop, next,
+				TrayMenu_->addSeparator (), closeLMP});
+		TrayIcon_->setContextMenu (TrayMenu_);
 	}
 
 	void PlayerTab::SetupCollection ()
@@ -405,6 +471,57 @@ namespace LMP
 		}
 	}
 
+	namespace
+	{
+		QIcon GetIconFromState (Phonon::State state)
+		{
+			switch (state)
+			{
+				case Phonon::PlayingState:
+					return Core::Instance ().GetProxy ()->GetIcon ("media-playback-start");
+				case Phonon::PausedState:
+					return Core::Instance ().GetProxy ()->GetIcon ("media-playback-pause");
+				default:
+					return QIcon ();
+			}
+		}
+
+		template<typename T>
+		void UpdateIcon (T iconable, Phonon::State state,
+				std::function<QSize (T)> iconSizeGetter)
+		{
+			QIcon icon = GetIconFromState (state);
+			QIcon baseIcon = icon.isNull() ?
+				QIcon (":/lmp/resources/images/lmp.svg") :
+				iconable->icon ();
+
+			const QSize& iconSize = iconSizeGetter (iconable);
+
+			QPixmap px = baseIcon.pixmap (iconSize);
+
+			if (!icon.isNull ())
+			{
+				QPixmap statePx = icon.pixmap (iconSize);
+
+				QPainter p (&px);
+				p.drawPixmap (0 + iconSize.width () / 2,
+						0 + iconSize.height () / 2 ,
+						iconSize.width () / 2,
+						iconSize.height () / 2,
+						statePx);
+				p.end ();
+			}
+
+			iconable->setIcon (QIcon (px));
+		}
+	}
+
+	void PlayerTab::handleShowTray (bool show)
+	{
+		LMPOpened_ = true;
+		handleShowTrayIcon ();
+	}
+
 	void PlayerTab::handleSongChanged (const MediaInfo& info)
 	{
 		QPixmap px;
@@ -604,5 +721,58 @@ namespace LMP
 				tr ("Music files (*.ogg *.flac *.mp3 *.wav);;All files (*.*)"));
 		Player_->Enqueue (files);
 	}
+
+	void PlayerTab::closeLMP ()
+	{
+		Remove ();
+	}
+
+	void PlayerTab::handleStateChanged (Phonon::State newState, Phonon::State)
+	{
+		if (newState == Phonon::PlayingState)
+			PlayPause_->setProperty ("ActionIcon", "media-playback-pause");
+		else
+		{
+			if (newState == Phonon::StoppedState)
+				TrayIcon_->handleSongChanged (MediaInfo ());
+			PlayPause_->setProperty ("ActionIcon", "media-playback-start");
+		}
+		UpdateIcon<LMPSystemTrayIcon*> (TrayIcon_, newState,
+				[] (QSystemTrayIcon *icon) { return icon->geometry ().size (); });
+
+	}
+
+	void PlayerTab::handleShowTrayIcon ()
+	{
+		if (XmlSettingsManager::Instance ().Property ("ShowTrayIcon", false).toBool ())
+			TrayIcon_->setVisible (LMPOpened_);
+		else if (TrayIcon_)
+			TrayIcon_->hide ();
+	}
+
+	void PlayerTab::handleChangedVolume (qreal delta)
+	{
+		qreal volume = VolumeSlider_->audioOutput ()->volume ();
+		qreal dl = VolumeSlider_->maximumVolume () * 0.05;
+		if (volume != volume)
+			volume = 0.0;
+
+		VolumeSlider_->audioOutput ()->setVolume (delta > 0 ?
+				volume + dl :
+				volume - dl);
+	}
+
+	void PlayerTab::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
+	{
+		switch (reason)
+		{
+			case QSystemTrayIcon::MiddleClick:
+				Player_->togglePause ();
+				break;
+			default:
+				break;
+		}
+	}
+
 }
 }

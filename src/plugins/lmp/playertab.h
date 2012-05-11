@@ -18,9 +18,15 @@
 
 #pragma once
 
+#include <memory>
 #include <QWidget>
+#include <phonon/mediaobject.h>
+#include <phonon/audiooutput.h>
+#include <phonon/volumeslider.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/media/audiostructs.h>
+#include <interfaces/ihaverecoverabletabs.h>
+#include "lmpsystemtrayicon.h"
 #include "ui_playertab.h"
 
 namespace Media
@@ -43,9 +49,10 @@ namespace LMP
 
 	class PlayerTab : public QWidget
 					, public ITabWidget
+					, public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget);
+		Q_INTERFACES (ITabWidget IRecoverableTab);
 
 		Ui::PlayerTab Ui_;
 
@@ -64,6 +71,12 @@ namespace LMP
 
 		QHash<QString, Media::SimilarityInfos_t> Similars_;
 		QString LastSimilar_;
+
+		LMPSystemTrayIcon *TrayIcon_;
+		QAction *PlayPause_;
+		bool LMPOpened_;
+		QMenu *TrayMenu_;
+		Phonon::VolumeSlider *VolumeSlider_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
@@ -73,6 +86,12 @@ namespace LMP
 		QToolBar* GetToolBar () const;
 
 		Player* GetPlayer () const;
+
+		QByteArray GetTabRecoverData () const;
+		QIcon GetTabRecoverIcon () const;
+		QString GetTabRecoverName () const;
+
+		Phonon::AudioOutput* GetAudioOutput ();
 	private:
 		void SetupToolbar ();
 		void SetupCollection ();
@@ -83,6 +102,8 @@ namespace LMP
 		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
 		void RequestLyrics (const MediaInfo&);
+	public slots:
+		void handleShowTray (bool show);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
 		void handleCurrentPlayTime (qint64);
@@ -101,11 +122,19 @@ namespace LMP
 		void loadFromFSBrowser ();
 		void handleSavePlaylist ();
 		void loadFromDisk ();
+
+		void closeLMP ();
+		void handleStateChanged (Phonon::State newState, Phonon::State oldState);
+		void handleShowTrayIcon ();
+		void handleChangedVolume (qreal delta);
+		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason);
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);
 
 		void gotEntity (const LeechCraft::Entity&);
+
+		void tabRecoverDataChanged ();
 	};
 }
 }

@@ -24,6 +24,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/ihaverecoverabletabs.h>
 
 namespace LeechCraft
 {
@@ -37,9 +38,11 @@ namespace LMP
 				 , public IHaveSettings
 				 , public IEntityHandler
 				 , public IActionsExporter
+				 , public IHaveRecoverableTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IEntityHandler IActionsExporter)
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IEntityHandler IActionsExporter
+				IHaveRecoverableTabs)
 
 		TabClassInfo PlayerTC_;
 		PlayerTab *PlayerTab_;
@@ -66,6 +69,8 @@ namespace LMP
 
 		QList<QAction*> GetActions (ActionsEmbedPlace area) const;
 		QMap<QString, QList<QAction*>> GetMenuActions () const;
+
+		void RecoverTabs (const QList<TabRecoverInfo>& infos);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
@@ -77,6 +82,8 @@ namespace LMP
 		void gotActions (QList<QAction*>, ActionsEmbedPlace);
 
 		void gotEntity (const LeechCraft::Entity&);
+
+		void showTray (bool show);
 	};
 }
 }

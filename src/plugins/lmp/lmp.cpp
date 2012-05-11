@@ -19,6 +19,7 @@
 #include "lmp.h"
 #include <QIcon>
 #include <QFileInfo>
+#include <QSystemTrayIcon>
 #include <QUrl>
 #include <phonon/mediaobject.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -52,6 +53,7 @@ namespace LMP
 		Core::Instance ().PostInit ();
 
 		PlayerTab_ = new PlayerTab (PlayerTC_, this);
+
 		connect (PlayerTab_,
 				SIGNAL (removeTab (QWidget*)),
 				this,
@@ -64,6 +66,10 @@ namespace LMP
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (this,
+				SIGNAL (showTray (bool)),
+				PlayerTab_,
+				SLOT (handleShowTray (bool)));
 
 		ActionRescan_ = new QAction (tr ("Rescan collection"), this);
 		ActionRescan_->setProperty ("ActionIcon", "view-refresh");
@@ -130,6 +136,7 @@ namespace LMP
 		{
 			emit addNewTab ("LMP", PlayerTab_);
 			emit raiseTab (PlayerTab_);
+			emit showTray (true);
 		}
 		else
 			qWarning () << Q_FUNC_INFO
@@ -197,6 +204,27 @@ namespace LMP
 		result [GetName ()] << ActionRescan_;
 		return result;
 	}
+
+	void Plugin::RecoverTabs (const QList<LeechCraft::TabRecoverInfo>& infos)
+	{
+		Q_FOREACH (const auto& recInfo, infos)
+		{
+			qDebug () << Q_FUNC_INFO << recInfo.Data_;
+
+			if (recInfo.Data_ == "playertab")
+			{
+				Q_FOREACH (const auto& pair, recInfo.DynProperties_)
+					PlayerTab_->setProperty (pair.first, pair.second);
+
+				TabOpenRequested (PlayerTC_.TabClass_);
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown context"
+						<< recInfo.Data_;
+		}
+	}
+
 }
 }
 

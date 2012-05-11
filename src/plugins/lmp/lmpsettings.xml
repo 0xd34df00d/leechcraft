@@ -13,6 +13,9 @@
 		<item type="checkbox" property="RequestLyrics" default="true">
 			<label value="Request lyrics" />
 		</item>
+		<item type="checkbox" property="ShowTrayIcon" default="false">
+			<label value="Show tray icon" />
+		</item>
 	</page>
 	<page>
 		<label value="Collection" />
