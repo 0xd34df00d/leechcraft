@@ -16,25 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "playlistfactory.h"
-#include "m3u.h"
-#include "xspf.h"
-#include "pls.h"
+#pragma once
+
+#include <QStringList>
+#include <phonon/mediasource.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	PlaylistParser_f MakePlaylistParser (const QString& file)
-	{
-		if (file.endsWith ("m3u") || file.endsWith ("m3u8"))
-			return M3U::Read2Sources;
-		else if (file.endsWith ("xspf"))
-			return XSPF::Read2Sources;
-		else if (file.endsWith ("pls"))
-			return PLS::Read2Sources;
-
-		return PlaylistParser_f ();
-	}
+namespace PLS
+{
+	QStringList Read (const QString&);
+	QList<Phonon::MediaSource> Read2Sources (const QString&);
+}
 }
 }

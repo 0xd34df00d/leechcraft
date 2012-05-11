@@ -62,6 +62,7 @@ SET (SRCS
 	albumartmanager.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
+	playlistparsers/pls.cpp
 	playlistparsers/xspf.cpp
 	)
 SET (HEADERS
@@ -85,6 +86,7 @@ SET (HEADERS
 	albumartmanager.h
 	playlistparsers/playlistfactory.h
 	playlistparsers/m3u.h
+	playlistparsers/pls.h
 	playlistparsers/xspf.h
 	)
 SET (FORMS
