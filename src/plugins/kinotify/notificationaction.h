@@ -16,31 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_KINOTIFY_NOTIFICATIONACTION_H
-#define PLUGINS_KINOTIFY_NOTIFICATIONACTION_H
+#pragma once
 
 #include <QObject>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Kinotify
+{
+	class NotificationAction : public QObject
 	{
-		namespace Kinotify
-		{
-			class NotificationAction : public QObject
-			{
-				Q_OBJECT
-				
-				QObject *ActionObject_;
-			public:
-				NotificationAction (QObject *);
-				void SetActionObject (QObject*);
-			public slots:
-				void sendActionOnClick (const QString&);
-			signals:
-				void actionPressed ();
-			};
-		};
+		Q_OBJECT
+
+		QObject *ActionObject_;
+	public:
+		NotificationAction (QObject *);
+		void SetActionObject (QObject*);
+	public slots:
+		void sendActionOnClick (const QString&);
+	signals:
+		void actionPressed ();
 	};
-};
-#endif // PLUGINS_KINOTIFY_NOTIFICATIONACTION_H
+}
+}
