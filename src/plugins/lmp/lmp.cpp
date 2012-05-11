@@ -53,6 +53,7 @@ namespace LMP
 		Core::Instance ().PostInit ();
 
 		PlayerTab_ = new PlayerTab (PlayerTC_, this);
+		Core::Instance ().SetPlayerTab (PlayerTab_);
 		connect (PlayerTab_,
 				SIGNAL (removeTab (QWidget*)),
 				this,

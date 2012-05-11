@@ -88,6 +88,7 @@ namespace LMP
 	, PlayPause_ (0)
 	, LMPOpened_ (false)
 	, TrayMenu_ (new QMenu ("LMP", this))
+	, VolumeSlider_ (0)
 	{
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->setStretchFactor (0, 2);
@@ -109,7 +110,10 @@ namespace LMP
 		handleSongChanged (MediaInfo ());
 
 		TrayIcon_ = std::make_shared<LMPSystemTrayIcon> (QIcon (":/lmp/resources/images/lmp.svg"), this);
-
+		connect (Player_,
+				SIGNAL (songChanged (const MediaInfo&)),
+				TrayIcon_.get (),
+				SLOT (handleSongChanged (const MediaInfo&)));
 		SetupToolbar ();
 		SetupCollection ();
 		SetupPlaylistsTab ();
@@ -162,6 +166,11 @@ namespace LMP
 	QString PlayerTab::GetTabRecoverName () const
 	{
 		return "LMP";
+	}
+
+	Phonon::VolumeSlider* PlayerTab::GetVolumeSlider () const
+	{
+		return VolumeSlider_;
 	}
 
 	void PlayerTab::SetupToolbar ()
@@ -690,8 +699,11 @@ namespace LMP
 		if (newState == Phonon::PlayingState)
 			PlayPause_->setProperty ("ActionIcon", "media-playback-pause");
 		else
+		{
+			if (newState == Phonon::StoppedState)
+				TrayIcon_->handleSongChanged (MediaInfo ());
 			PlayPause_->setProperty ("ActionIcon", "media-playback-start");
-
+		}
 		UpdateIcon<LMPSystemTrayIcon*> (TrayIcon_.get (), newState,
 				[] (QSystemTrayIcon *icon) { return icon->geometry ().size (); });
 	}

@@ -30,6 +30,7 @@ namespace LMP
 	: Resolver_ (new LocalFileResolver)
 	, Collection_ (new LocalCollection)
 	, PLManager_ (new PlaylistManager)
+	, PlayerTab_ (0)
 	{
 	}
 
@@ -69,6 +70,16 @@ namespace LMP
 	PlaylistManager* Core::GetPlaylistManager () const
 	{
 		return PLManager_;
+	}
+
+	void Core::SetPlayerTab (PlayerTab* playerTab)
+	{
+		PlayerTab_ = playerTab;
+	}
+
+	PlayerTab* Core::GetPlayerTab () const
+	{
+		return PlayerTab_;
 	}
 
 	void Core::rescan ()

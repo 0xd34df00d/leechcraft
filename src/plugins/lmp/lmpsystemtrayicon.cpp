@@ -18,7 +18,12 @@
 
 #include "lmpsystemtrayicon.h"
 #include <QWheelEvent>
-#include <QtDebug>
+#include <QHelpEvent>
+#include <QToolTip>
+#include <Phonon/AudioOutput>
+#include "core.h"
+#include "playertab.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -36,8 +41,64 @@ namespace LMP
 			QWheelEvent *wheel = static_cast<QWheelEvent*> (event);
 			emit changedVolume (wheel->delta ());
 		}
+		else if (event->type () == QEvent::ToolTip)
+		{
+			PlayerTab *player = Core::Instance ().GetPlayerTab ();
+			QHelpEvent *help = static_cast<QHelpEvent*> (event);
+			QString text;
 
+			if (player &&
+					!CurrentSong_.Title_.isEmpty ())
+			{
+				const QString& trackText = tr ("%1 (%2)")
+						.arg ("<b>" + CurrentSong_.Title_ + "</b>")
+						.arg ("<b>" + QTime ().addSecs (CurrentSong_.Length_).toString ("mm:ss") + "</b>");
+				Phonon::VolumeSlider* volSlider = player->GetVolumeSlider ();
+				int vol = 0;
+				if (volSlider)
+				{
+					qreal volume = volSlider->audioOutput ()->volume ();
+					qreal dl = volSlider->maximumVolume ();
+					vol = volume / dl * 100;
+				}
+				const QString& volumeText = tr ("Volume: %1%")
+						.arg (vol);
+
+				text = QString ("<table border='0'>"
+						"<tr><td align='center' valign='top' rowspan='5'><img src='%1' width='%2' height='%3'></td></tr>"
+						"<tr><td><p style='white-space:pre;'>%4</p></td></tr>"
+						"<tr><td><p style='white-space:pre;'>%5</p></td></tr>"
+						"<tr><td><p style='white-space:pre;'>%6</p></td></tr>"
+						"<tr><td><p style='white-space:pre;'>%7</p></td></tr>"
+						"</table>")
+						.arg (FindAlbumArtPath (CurrentSong_.LocalPath_))
+						.arg (130)
+						.arg (130)
+						.arg (trackText)
+						.arg ("<b>" + CurrentSong_.Album_ + "</b>")
+						.arg ("<b>" + CurrentSong_.Artist_ + "</b>")
+						.arg ("<em>" + volumeText + "</em>");
+			}
+			else if (CurrentSong_.Title_.isEmpty ())
+				text = QString ("<table border='0'><tr>"
+						"<td align='center' valign='middle'><img src='%1' width='%2' height='%3'></td>"
+						"<td align='center' valign='middle'><b>%4</b><br>%5</td>"
+						"</tr></table>")
+						.arg (":/lmp/resources/images/lmp.svg")
+						.arg (48)
+						.arg (48)
+						.arg ("LMP")
+						.arg (tr ("No track playing"));
+
+			QToolTip::showText (help->globalPos (), text);
+		}
 		return QSystemTrayIcon::event (event);
 	}
+
+	void LMPSystemTrayIcon::handleSongChanged (const MediaInfo& song)
+	{
+		CurrentSong_ = song;
+	}
+
 }
 }

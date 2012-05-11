@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QSystemTrayIcon>
+#include "mediainfo.h"
 
 namespace LeechCraft
 {
@@ -27,10 +28,15 @@ namespace LMP
 	class LMPSystemTrayIcon : public QSystemTrayIcon
 	{
 		Q_OBJECT
+
+		MediaInfo CurrentSong_;
 	public:
 		LMPSystemTrayIcon (const QIcon& icon, QObject *parent = 0);
 	protected:
 		bool event (QEvent *event);
+
+	public slots:
+		void handleSongChanged (const MediaInfo& song);
 
 	signals:
 		void changedVolume (qreal delta);

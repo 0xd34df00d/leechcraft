@@ -84,6 +84,8 @@ namespace LMP
 		QByteArray GetTabRecoverData () const;
 		QIcon GetTabRecoverIcon () const;
 		QString GetTabRecoverName () const;
+
+		Phonon::VolumeSlider* GetVolumeSlider () const;
 	private:
 		void SetupToolbar ();
 		void SetupCollection ();
