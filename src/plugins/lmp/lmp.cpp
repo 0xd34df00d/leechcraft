@@ -46,7 +46,7 @@ namespace LMP
 			GetInfo (),
 			GetIcon (),
 			40,
-			TFSingle | TFOpenableByRequest
+			TFSingle | TFByDefault | TFOpenableByRequest
 		};
 
 		Core::Instance ().SetProxy (proxy);
