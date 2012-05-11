@@ -26,6 +26,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "kinotifywidget.h"
 #include "xmlsettingsmanager.h"
+#include "fswinwatcher.h"
 
 namespace LeechCraft
 {
@@ -50,6 +51,8 @@ namespace Kinotify
 
 		SettingsDialog_->SetDataSource ("NotificatorStyle",
 				ThemeLoader_->GetSubElemModel ());
+
+		FSWinWatcher_.reset (new FSWinWatcher);
 	}
 
 	void Plugin::SecondInit ()
@@ -92,6 +95,11 @@ namespace Kinotify
 
 	void Plugin::Handle (Entity e)
 	{
+		if (XmlSettingsManager::Instance ()->
+					property ("RespectFullscreen").toBool () &&
+				FSWinWatcher_->IsCurrentFS ())
+			return;
+
 		Priority prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
 		if (prio == PLog_)
 			return;
