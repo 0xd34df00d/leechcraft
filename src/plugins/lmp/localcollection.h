@@ -44,6 +44,8 @@ namespace LMP
 	{
 		Q_OBJECT
 
+		bool IsReady_;
+
 		QIcon ArtistIcon_;
 		LocalCollectionStorage *Storage_;
 		QStandardItemModel *CollectionModel_;
@@ -90,6 +92,8 @@ namespace LMP
 		LocalCollection (QObject* = 0);
 		void FinalizeInit ();
 
+		bool IsReady () const;
+
 		QAbstractItemModel* GetCollectionModel () const;
 		void Enqueue (const QModelIndex&, Player*);
 		void Clear ();
@@ -116,6 +120,8 @@ namespace LMP
 	signals:
 		void scanStarted (int);
 		void scanProgressChanged (int);
+
+		void collectionReady ();
 	};
 }
 }

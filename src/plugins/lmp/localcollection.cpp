@@ -145,6 +145,7 @@ namespace LMP
 
 	LocalCollection::LocalCollection (QObject *parent)
 	: QObject (parent)
+	, IsReady_ (false)
 	, Storage_ (new LocalCollectionStorage (this))
 	, CollectionModel_ (new CollectionModel (this))
 	, Sorter_ (new CollectionSorter (this))
@@ -177,6 +178,11 @@ namespace LMP
 	void LocalCollection::FinalizeInit ()
 	{
 		ArtistIcon_ = Core::Instance ().GetProxy ()->GetIcon ("view-media-artist");
+	}
+
+	bool LocalCollection::IsReady () const
+	{
+		return IsReady_;
 	}
 
 	QAbstractItemModel* LocalCollection::GetCollectionModel () const
@@ -422,6 +428,10 @@ namespace LMP
 					PresentPaths_ << track.FilePath_;
 
 		HandleNewArtists (Artists_);
+
+		IsReady_ = true;
+
+		emit collectionReady ();
 	}
 
 	void LocalCollection::handleScanFinished ()
