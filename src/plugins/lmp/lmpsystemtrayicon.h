@@ -37,10 +37,8 @@ namespace LMP
 		LMPSystemTrayIcon (const QIcon& icon, QObject *parent = 0);
 	protected:
 		bool event (QEvent *event);
-
 	public slots:
 		void handleSongChanged (const MediaInfo& song);
-
 	signals:
 		void changedVolume (qreal delta);
 	};
