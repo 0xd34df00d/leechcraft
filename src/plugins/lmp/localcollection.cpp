@@ -406,6 +406,8 @@ namespace LMP
 					Track2Path_ [track.ID_] = track.FilePath_;
 
 					Track2Album_ [track.ID_] = album->ID_;
+
+					Track2Item_ [track.ID_] = item;
 				}
 			}
 		}
