@@ -283,6 +283,14 @@ namespace Azoth
 				PInfo_);
 
 		ICLEntry *entry = GetContact (id);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown contact for"
+					<< id;
+			return;
+		}
+
 		BuildNotification (e, entry);
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + job->GetName ();
