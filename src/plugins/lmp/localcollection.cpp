@@ -234,6 +234,18 @@ namespace LMP
 		Watcher_->setFuture (future);
 	}
 
+	void LocalCollection::Unscan (const QString& path)
+	{
+		QStringList toRemove;
+		auto pred = [&path] (const QString& subPath) { return subPath.startsWith (path); };
+		std::copy_if (PresentPaths_.begin (), PresentPaths_.end (),
+				std::back_inserter (toRemove), pred);
+		PresentPaths_.subtract (QSet<QString>::fromList (toRemove));
+
+		std::for_each (toRemove.begin (), toRemove.end (),
+				[this] (const QString& path) { RemoveTrack (path); });
+	}
+
 	int LocalCollection::FindAlbum (const QString& artist, const QString& album) const
 	{
 		auto artistPos = std::find_if (Artists_.begin (), Artists_.end (),
@@ -397,6 +409,98 @@ namespace LMP
 				}
 			}
 		}
+	}
+
+	void LocalCollection::RemoveTrack (const QString& path)
+	{
+		const int id = FindTrack (path);
+		auto album = GetTrackAlbum (id);
+		try
+		{
+			Storage_->RemoveTrack (id);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error removing track:"
+					<< e.what ();
+			return;
+		}
+
+		auto item = Track2Item_.take (id);
+		item->parent ()->removeRow (item->row ());
+
+		Path2Track_.remove (path);
+		Track2Path_.remove (id);
+		Track2Album_.remove (id);
+
+		if (!album)
+			return;
+
+		auto pos = std::remove_if (album->Tracks_.begin (), album->Tracks_.end (),
+				[id] (decltype (album->Tracks_.front ()) item) { return item.ID_ == id; });
+		album->Tracks_.erase (pos, album->Tracks_.end ());
+
+		if (album->Tracks_.isEmpty ())
+			RemoveAlbum (album->ID_);
+	}
+
+	void LocalCollection::RemoveAlbum (int id)
+	{
+		try
+		{
+			Storage_->RemoveAlbum (id);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error removing album:"
+					<< e.what ();
+			return;
+		}
+
+		AlbumID2Album_.remove (id);
+
+		auto item = Album2Item_.take (id);
+		item->parent ()->removeRow (item->row ());
+
+		for (auto i = Artists_.begin (); i != Artists_.end (); )
+		{
+			auto& artist = *i;
+
+			auto pos = std::find_if (artist.Albums_.begin (), artist.Albums_.end (),
+					[id] (decltype (artist.Albums_.front ()) album) { return album->ID_ == id; });
+			if (pos == artist.Albums_.end ())
+			{
+				++i;
+				continue;
+			}
+
+			artist.Albums_.erase (pos);
+			if (artist.Albums_.isEmpty ())
+				i = RemoveArtist (i);
+			else
+				++i;
+		}
+	}
+
+	Collection::Artists_t::iterator LocalCollection::RemoveArtist (Collection::Artists_t::iterator pos)
+	{
+		const int id = pos->ID_;
+		try
+		{
+			Storage_->RemoveArtist (id);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error removing artist:"
+					<< e.what ();
+			return ++pos;
+		}
+
+		CollectionModel_->removeRow (Artist2Item_.take (id)->row ());
+		return Artists_.erase (pos);
 	}
 
 	void LocalCollection::recordPlayedTrack (const QString& path)

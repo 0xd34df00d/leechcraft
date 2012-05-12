@@ -64,6 +64,7 @@ namespace LMP
 
 		QHash<int, QStandardItem*> Artist2Item_;
 		QHash<int, QStandardItem*> Album2Item_;
+		QHash<int, QStandardItem*> Track2Item_;
 
 		QFutureWatcher<MediaInfo> *Watcher_;
 	public:
@@ -97,7 +98,9 @@ namespace LMP
 		QAbstractItemModel* GetCollectionModel () const;
 		void Enqueue (const QModelIndex&, Player*);
 		void Clear ();
+
 		void Scan (const QString&);
+		void Unscan (const QString&);
 
 		int FindAlbum (const QString&, const QString&) const;
 		void SetAlbumArt (int, const QString&);
@@ -112,6 +115,9 @@ namespace LMP
 		QStringList CollectPaths (const QModelIndex&);
 	private:
 		void HandleNewArtists (const Collection::Artists_t&);
+		void RemoveTrack (const QString&);
+		void RemoveAlbum (int);
+		Collection::Artists_t::iterator RemoveArtist (Collection::Artists_t::iterator);
 	public slots:
 		void recordPlayedTrack (const QString&);
 	private slots:
