@@ -40,9 +40,7 @@ namespace LMP
 
 	void AlbumArtManager::CheckAlbumArt (const Collection::Artist& artist, Collection::Album_ptr album)
 	{
-		if ((!album->CoverPath_.isEmpty () &&
-				!QPixmap (album->CoverPath_).isNull ()) ||
-				album->CoverPath_ == "NOTFOUND")
+		if (!album->CoverPath_.isEmpty ())
 			return;
 
 		if (Queue_.isEmpty ())
