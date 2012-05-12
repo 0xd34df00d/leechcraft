@@ -476,6 +476,13 @@ namespace Xoox
 		RoomHandlers_.remove (rh->GetRoomJID ());
 	}
 
+	void ClientConnection::CreateEntry (const QString& jid)
+	{
+		GlooxCLEntry *entry = new GlooxCLEntry (jid, Account_);
+		JID2CLEntry_ [jid] = entry;
+		emit gotRosterItems (QList<QObject*> () << entry);
+	}
+
 	QXmppMucManager* ClientConnection::GetMUCManager () const
 	{
 		return MUCManager_;
@@ -1198,10 +1205,7 @@ namespace Xoox
 					<< msg.from ()
 					<< "; creating new item";
 
-			GlooxCLEntry *entry = new GlooxCLEntry (jid, Account_);
-			JID2CLEntry_ [jid] = entry;
-			emit gotRosterItems (QList<QObject*> () << entry);
-
+			CreateEntry (jid);
 			handleMessageReceived (msg);
 		}
 	}
