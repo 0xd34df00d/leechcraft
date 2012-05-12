@@ -940,6 +940,7 @@ namespace Azoth
 			if (body.startsWith (escaped))
 				body.replace (0, escaped.size (), smileStr);
 			body.replace (' ' + escaped, ' ' + smileStr);
+			body.replace ('\n' + escaped, '\n' + smileStr);
 		}
 
 		return body;
