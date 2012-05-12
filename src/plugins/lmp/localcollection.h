@@ -52,9 +52,13 @@ namespace LMP
 		AlbumArtManager *AlbumArtMgr_;
 
 		Collection::Artists_t Artists_;
+
 		QSet<QString> PresentPaths_;
 		QHash<QString, int> Path2Track_;
 		QHash<int, QString> Track2Path_;
+
+		QHash<int, int> Track2Album_;
+		QHash<int, Collection::Album_ptr> AlbumID2Album_;
 
 		QHash<int, QStandardItem*> Artist2Item_;
 		QHash<int, QStandardItem*> Album2Item_;
@@ -93,6 +97,9 @@ namespace LMP
 
 		int FindAlbum (const QString&, const QString&) const;
 		void SetAlbumArt (int, const QString&);
+
+		int FindTrack (const QString&) const;
+		Collection::Album_ptr GetTrackAlbum (int) const;
 
 		QList<int> GetDynamicPlaylist (DynamicPlaylist) const;
 		QStringList TrackList2PathList (const QList<int>&) const;
