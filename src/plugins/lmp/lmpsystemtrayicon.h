@@ -32,6 +32,7 @@ namespace LMP
 		Q_OBJECT
 
 		MediaInfo CurrentSong_;
+		QString CurrentAlbumArt_;
 		PlayerTab *PlayerTab_;
 	public:
 		LMPSystemTrayIcon (const QIcon& icon, QObject *parent = 0);
