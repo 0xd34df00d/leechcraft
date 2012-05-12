@@ -937,7 +937,9 @@ namespace Azoth
 			const QString& smileStr = img
 					.arg (str)
 					.arg (QString ("data:image/png;base64," + rawData));
-			body.replace (escaped, smileStr);
+			if (body.startsWith (escaped))
+				body.replace (0, escaped.size (), smileStr);
+			body.replace (' ' + escaped, ' ' + smileStr);
 		}
 
 		return body;
