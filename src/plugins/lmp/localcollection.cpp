@@ -342,10 +342,11 @@ namespace LMP
 		template<typename T, typename U, typename Init, typename Parent>
 		QStandardItem* GetItem (T& c, U idx, Init f, Parent parent)
 		{
-			if (c.contains (idx))
-				return c [idx];
+			auto item = c [idx];
+			if (item)
+				return item;
 
-			auto item = new QStandardItem ();
+			item = new QStandardItem ();
 			item->setEditable (false);
 			f (item);
 			parent->appendRow (item);
