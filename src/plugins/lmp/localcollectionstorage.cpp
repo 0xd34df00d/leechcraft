@@ -166,6 +166,36 @@ namespace LMP
 		return artists;
 	}
 
+	void LocalCollectionStorage::RemoveTrack (int id)
+	{
+		RemoveTrack_.bindValue (":track_id", id);
+		if (!RemoveTrack_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveTrack_);
+			throw std::runtime_error ("cannot remove track");
+		}
+	}
+
+	void LocalCollectionStorage::RemoveAlbum (int id)
+	{
+		RemoveAlbum_.bindValue (":album_id", id);
+		if (!RemoveAlbum_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveAlbum_);
+			throw std::runtime_error ("cannot remove album");
+		}
+	}
+
+	void LocalCollectionStorage::RemoveArtist (int id)
+	{
+		RemoveArtist_.bindValue (":artist_id", id);
+		if (!RemoveArtist_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveArtist_);
+			throw std::runtime_error ("cannot remove artist");
+		}
+	}
+
 	void LocalCollectionStorage::SetAlbumArt (int id, const QString& path)
 	{
 		SetAlbumArt_.bindValue (":album_id", id);
@@ -448,6 +478,15 @@ namespace LMP
 
 		AddGenre_ = QSqlQuery (DB_);
 		AddGenre_.prepare ("INSERT INTO genres (TrackId, Name) VALUES (:track_id, :name);");
+
+		RemoveTrack_ = QSqlQuery (DB_);
+		RemoveTrack_.prepare ("DELETE FROM tracks WHERE TrackId = :track_id;");
+
+		RemoveAlbum_ = QSqlQuery (DB_);
+		RemoveAlbum_.prepare ("DELETE FROM albums WHERE Id = :album_id;");
+
+		RemoveArtist_ = QSqlQuery (DB_);
+		RemoveArtist_.prepare ("DELETE FROM artists WHERE Id = :artist_id;");
 
 		SetAlbumArt_ = QSqlQuery (DB_);
 		SetAlbumArt_.prepare ("UPDATE albums SET CoverPath = :cover_path WHERE Id = :album_id");
