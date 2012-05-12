@@ -276,6 +276,7 @@ namespace LeechCraft
 			Q_FOREACH (const QString& entry,
 					QDir (path).entryList (NameFilters_, AttrFilters_))
 			{
+				Entry2Paths_ [entry] << path;
 				if (SubElemModel_->findItems (entry).size ())
 					continue;
 
@@ -287,11 +288,28 @@ namespace LeechCraft
 		{
 			emit watchedDirectoriesChanged ();
 
+			for (auto i = Entry2Paths_.begin (), end = Entry2Paths_.end (); i != end; ++i)
+				i->removeAll (path);
+
 			QFileInfo fi (path);
 			if (fi.exists () &&
 					fi.isDir () &&
 					fi.isReadable ())
 				ScanPath (path);
+
+			QStringList toRemove;
+			for (auto i = Entry2Paths_.begin (), end = Entry2Paths_.end (); i != end; ++i)
+				if (i->isEmpty ())
+					toRemove << i.key ();
+
+			Q_FOREACH (const auto& entry, toRemove)
+			{
+				Entry2Paths_.remove (entry);
+
+				auto items = SubElemModel_->findItems (entry);
+				Q_FOREACH (auto item, SubElemModel_->findItems (entry))
+					SubElemModel_->removeRow (item->row ());
+			}
 		}
 
 		void ResourceLoader::handleFlushCaches ()
