@@ -24,6 +24,7 @@
 #include "core.h"
 #include "playertab.h"
 #include "util.h"
+#include "player.h"
 
 namespace LeechCraft
 {
@@ -55,7 +56,7 @@ namespace LMP
 				const QString& trackText = tr ("%1 (%2)")
 						.arg ("<b>" + CurrentSong_.Title_ + "</b>")
 						.arg ("<b>" + QTime ().addSecs (CurrentSong_.Length_).toString ("mm:ss") + "</b>");
-				Phonon::AudioOutput *ao = PlayerTab_->GetAudioOutput ();
+				auto ao = PlayerTab_->GetPlayer ()->GetAudioOutput ();
 				int vol = 0;
 				if (ao)
 				{

@@ -65,7 +65,6 @@ namespace TabSessManager
 	private slots:
 		void handleNewTab (const QString&, QWidget*);
 		void handleRemoveTab (QWidget*);
-		void handleTabDestroyed ();
 		void handleUnclose ();
 		void recover ();
 		void handleTabRecoverDataChanged ();

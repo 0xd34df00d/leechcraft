@@ -65,10 +65,12 @@ namespace LeechCraft
 			if (info.Features_ & TFByDefault)
 			{
 				const QByteArray& id = ii->GetUniqueID () + '|' + info.TabClass_;
-				const bool hide = XmlSettingsManager::Instance ()->
-						Property ("Hide" + id, static_cast<bool> (info.Features_ & TFByDefault)).toBool ();
+				const bool hide = XmlSettingsManager::Instance ()->Property ("Hide" + id, false).toBool ();
 				if (!hide)
+				{
 					OpenTab (newAct);
+					XmlSettingsManager::Instance ()->setProperty ("Hide" + id, true);
+				}
 			}
 		}
 	}
@@ -168,6 +170,9 @@ namespace LeechCraft
 	void NewTabMenuManager::ToggleHide (QObject *obj,
 			const QByteArray& tabClass, bool hide)
 	{
+		if (!hide)
+			return;
+
 		IInfo *ii = qobject_cast<IInfo*> (obj);
 		if (!ii)
 		{

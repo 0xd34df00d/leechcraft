@@ -31,8 +31,8 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/isimilarartists.h>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/media/ilyricsfinder.h>
+#include <interfaces/core/icoreproxy.h>
 #include "player.h"
 #include "playlistdelegate.h"
 #include "util.h"
@@ -86,9 +86,7 @@ namespace LMP
 	, PlaylistToolbar_ (new QToolBar ())
 	, TabToolbar_ (new QToolBar ())
 	, PlayPause_ (0)
-	, LMPOpened_ (false)
 	, TrayMenu_ (new QMenu ("LMP", this))
-	, VolumeSlider_ (0)
 	{
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->setStretchFactor (0, 2);
@@ -137,7 +135,6 @@ namespace LMP
 
 	void PlayerTab::Remove ()
 	{
-		LMPOpened_ = false;
 		emit removeTab (this);
 	}
 
@@ -164,11 +161,6 @@ namespace LMP
 	QString PlayerTab::GetTabRecoverName () const
 	{
 		return "LMP";
-	}
-
-	Phonon::AudioOutput* PlayerTab::GetAudioOutput ()
-	{
-		return VolumeSlider_->audioOutput ();
 	}
 
 	void PlayerTab::SetupToolbar ()
@@ -231,10 +223,10 @@ namespace LMP
 				this,
 				SLOT (handleCurrentPlayTime (qint64)));
 
-		VolumeSlider_ = new Phonon::VolumeSlider (Player_->GetAudioOutput ());
-		VolumeSlider_->setMinimumWidth (100);
-		VolumeSlider_->setMaximumWidth (160);
-		TabToolbar_->addWidget (VolumeSlider_);
+		auto volumeSlider = new Phonon::VolumeSlider (Player_->GetAudioOutput ());
+		volumeSlider->setMinimumWidth (100);
+		volumeSlider->setMaximumWidth (160);
+		TabToolbar_->addWidget (volumeSlider);
 
 		// fill tray menu
 		connect (TrayIcon_,
@@ -449,6 +441,28 @@ namespace LMP
 		Ui_.NPWidget_->GetArtistsDisplay ()->SetSimilarArtists (infos);
 	}
 
+	void PlayerTab::RequestLyrics (const MediaInfo& info)
+	{
+		Ui_.LyricsBrowser_->clear ();
+
+		if (!XmlSettingsManager::Instance ().property ("RequestLyrics").toBool ())
+			return;
+
+		auto finders = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableRoots<Media::ILyricsFinder*> ();
+		Q_FOREACH (auto finderObj, finders)
+		{
+			connect (finderObj,
+					SIGNAL (gotLyrics (const Media::LyricsQuery&, const QStringList&)),
+					this,
+					SLOT (handleGotLyrics (const Media::LyricsQuery&, const QStringList&)),
+					Qt::UniqueConnection);
+			auto finder = qobject_cast<Media::ILyricsFinder*> (finderObj);
+			finder->RequestLyrics ({ info.Artist_, info.Album_, info.Title_ },
+					Media::QueryOption::NoOption);
+		}
+	}
+
 	namespace
 	{
 		QIcon GetIconFromState (Phonon::State state)
@@ -491,34 +505,6 @@ namespace LMP
 			}
 
 			iconable->setIcon (QIcon (px));
-		}
-	}
-
-	void PlayerTab::handleShowTray (bool show)
-	{
-		LMPOpened_ = true;
-		handleShowTrayIcon ();
-	}
-
-	void PlayerTab::RequestLyrics (const MediaInfo& info)
-	{
-		Ui_.LyricsBrowser_->clear ();
-
-		if (!XmlSettingsManager::Instance ().property ("RequestLyrics").toBool ())
-			return;
-
-		auto finders = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetAllCastableRoots<Media::ILyricsFinder*> ();
-		Q_FOREACH (auto finderObj, finders)
-		{
-			connect (finderObj,
-					SIGNAL (gotLyrics (const Media::LyricsQuery&, const QStringList&)),
-					this,
-					SLOT (handleGotLyrics (const Media::LyricsQuery&, const QStringList&)),
-					Qt::UniqueConnection);
-			auto finder = qobject_cast<Media::ILyricsFinder*> (finderObj);
-			finder->RequestLyrics ({ info.Artist_, info.Album_, info.Title_ },
-					Media::QueryOption::NoOption);
 		}
 	}
 
@@ -744,22 +730,23 @@ namespace LMP
 
 	void PlayerTab::handleShowTrayIcon ()
 	{
-		if (XmlSettingsManager::Instance ().Property ("ShowTrayIcon", false).toBool ())
-			TrayIcon_->setVisible (LMPOpened_);
-		else if (TrayIcon_)
-			TrayIcon_->hide ();
+		TrayIcon_->setVisible (XmlSettingsManager::Instance ().property ("ShowTrayIcon").toBool ());
 	}
 
 	void PlayerTab::handleChangedVolume (qreal delta)
 	{
-		qreal volume = VolumeSlider_->audioOutput ()->volume ();
-		qreal dl = VolumeSlider_->maximumVolume () * 0.05;
+		qreal volume = Player_->GetAudioOutput ()->volume ();
+		qreal dl = delta > 0 ? 0.05 : -0.05;
 		if (volume != volume)
 			volume = 0.0;
 
-		VolumeSlider_->audioOutput ()->setVolume (delta > 0 ?
-				volume + dl :
-				volume - dl);
+		volume += dl;
+		if (volume < 0)
+			volume = 0;
+		else if (volume > 1)
+			volume = 1;
+
+		Player_->GetAudioOutput ()->setVolume (volume);
 	}
 
 	void PlayerTab::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)

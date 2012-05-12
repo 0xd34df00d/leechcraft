@@ -51,7 +51,7 @@ namespace LackMan
 		TabClass_.Description_ = GetInfo ();
 		TabClass_.Icon_ = GetIcon ();
 		TabClass_.Priority_ = 0;
-		TabClass_.Features_ = TabFeatures (TFSingle | TFOpenableByRequest);
+		TabClass_.Features_ = TabFeatures (TFSingle | TFByDefault | TFOpenableByRequest);
 
 		Ui_.setupUi (this);
 
