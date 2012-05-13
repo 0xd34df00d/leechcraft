@@ -174,6 +174,10 @@ namespace LMP
 		auto& xsd = XmlSettingsManager::Instance ();
 		const QStringList oldDefault (xsd.property ("CollectionDir").toString ());
 		RootPaths_ = xsd.Property ("RootCollectionPaths", oldDefault).toStringList ();
+		connect (this,
+				SIGNAL (rootPathsChanged (QStringList)),
+				this,
+				SLOT (saveRootPaths ()));
 
 		Sorter_->setSourceModel (CollectionModel_);
 		Sorter_->setDynamicSortFilter (true);
@@ -589,6 +593,11 @@ namespace LMP
 
 		auto newArts = Storage_->AddToCollection (infos);
 		HandleNewArtists (newArts);
+	}
+
+	void LocalCollection::saveRootPaths ()
+	{
+		XmlSettingsManager::Instance ().setProperty ("RootCollectionPaths", RootPaths_);
 	}
 }
 }

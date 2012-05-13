@@ -134,6 +134,7 @@ namespace LMP
 	private slots:
 		void handleLoadFinished ();
 		void handleScanFinished ();
+		void saveRootPaths ();
 	signals:
 		void scanStarted (int);
 		void scanProgressChanged (int);
