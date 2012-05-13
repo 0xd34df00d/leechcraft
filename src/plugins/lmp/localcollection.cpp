@@ -276,6 +276,15 @@ namespace LMP
 		emit rootPathsChanged (RootPaths_);
 	}
 
+	void LocalCollection::Rescan ()
+	{
+		const auto& paths = RootPaths_;
+		Clear ();
+
+		Q_FOREACH (const auto& path, paths)
+			Scan (path);
+	}
+
 	LocalCollection::DirStatus LocalCollection::GetDirStatus (const QString& dir) const
 	{
 		if (RootPaths_.contains (dir))

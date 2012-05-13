@@ -110,6 +110,7 @@ namespace LMP
 
 		void Scan (const QString&);
 		void Unscan (const QString&);
+		void Rescan ();
 
 		DirStatus GetDirStatus (const QString&) const;
 
