@@ -242,8 +242,19 @@ namespace LMP
 				std::back_inserter (toRemove), pred);
 		PresentPaths_.subtract (QSet<QString>::fromList (toRemove));
 
-		std::for_each (toRemove.begin (), toRemove.end (),
-				[this] (const QString& path) { RemoveTrack (path); });
+		try
+		{
+			std::for_each (toRemove.begin (), toRemove.end (),
+					[this] (const QString& path) { RemoveTrack (path); });
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error unscanning"
+					<< path
+					<< e.what ();
+			return;
+		}
 	}
 
 	int LocalCollection::FindAlbum (const QString& artist, const QString& album) const
@@ -427,7 +438,7 @@ namespace LMP
 			qWarning () << Q_FUNC_INFO
 					<< "error removing track:"
 					<< e.what ();
-			return;
+			throw;
 		}
 
 		auto item = Track2Item_.take (id);
@@ -459,7 +470,7 @@ namespace LMP
 			qWarning () << Q_FUNC_INFO
 					<< "error removing album:"
 					<< e.what ();
-			return;
+			throw;
 		}
 
 		AlbumID2Album_.remove (id);
@@ -499,7 +510,7 @@ namespace LMP
 			qWarning () << Q_FUNC_INFO
 					<< "error removing artist:"
 					<< e.what ();
-			return ++pos;
+			throw;
 		}
 
 		CollectionModel_->removeRow (Artist2Item_.take (id)->row ());
