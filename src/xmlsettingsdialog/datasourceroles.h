@@ -35,6 +35,7 @@ namespace LeechCraft
 			None,
 			String,
 			Url,
+			LocalPath,
 			Integer,
 			Enum
 		};
