@@ -169,7 +169,7 @@ namespace LMP
 			if (parser)
 				return parser (file);
 
-			return { Phonon::MediaSource (file) };
+			return QList<Phonon::MediaSource> () << Phonon::MediaSource (file);
 		}
 	}
 

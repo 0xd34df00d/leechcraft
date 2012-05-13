@@ -256,8 +256,12 @@ namespace LMP
 				SIGNAL (stateChanged (Phonon::State, Phonon::State)),
 				this,
 				SLOT (handleStateChanged (Phonon::State, Phonon::State)));
-		TrayMenu_->addActions ({previous, PlayPause_, stop, next,
-				TrayMenu_->addSeparator (), closeLMP});
+		TrayMenu_->addAction (previous);
+		TrayMenu_->addAction (PlayPause_);
+		TrayMenu_->addAction (stop);
+		TrayMenu_->addAction (next);
+		TrayMenu_->addSeparator ();
+		TrayMenu_->addAction (closeLMP);
 		TrayIcon_->setContextMenu (TrayMenu_);
 	}
 
