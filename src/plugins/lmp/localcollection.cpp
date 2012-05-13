@@ -31,6 +31,7 @@
 #include "localfileresolver.h"
 #include "player.h"
 #include "albumartmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -170,6 +171,10 @@ namespace LMP
 		auto future = QtConcurrent::run (std::function<Collection::Artists_t ()> (worker));
 		loadWatcher->setFuture (future);
 
+		auto& xsd = XmlSettingsManager::Instance ();
+		const QStringList oldDefault (xsd.property ("CollectionDir").toString ());
+		RootPaths_ = xsd.Property ("RootCollectionPaths", oldDefault).toStringList ();
+
 		Sorter_->setSourceModel (CollectionModel_);
 		Sorter_->setDynamicSortFilter (true);
 		Sorter_->sort (0);
@@ -212,6 +217,9 @@ namespace LMP
 		if (paths.isEmpty ())
 			return;
 
+		RootPaths_ << path;
+		emit rootPathsChanged (RootPaths_);
+
 		PresentPaths_ += paths;
 		emit scanStarted (paths.size ());
 		auto worker = [resolver] (const QString& path)
@@ -236,6 +244,9 @@ namespace LMP
 
 	void LocalCollection::Unscan (const QString& path)
 	{
+		if (!RootPaths_.contains (path))
+			return;
+
 		QStringList toRemove;
 		auto pred = [&path] (const QString& subPath) { return subPath.startsWith (path); };
 		std::copy_if (PresentPaths_.begin (), PresentPaths_.end (),
@@ -255,6 +266,21 @@ namespace LMP
 					<< e.what ();
 			return;
 		}
+
+		RootPaths_.removeAll (path);
+		emit rootPathsChanged (RootPaths_);
+	}
+
+	LocalCollection::DirStatus LocalCollection::GetDirStatus (const QString& dir) const
+	{
+		if (RootPaths_.contains (dir))
+			return DirStatus::RootPath;
+
+		auto pos = std::find_if (RootPaths_.begin (), RootPaths_.end (),
+				[&dir] (decltype (RootPaths_.front ()) root) { return dir.startsWith (root); });
+		return pos == RootPaths_.end () ?
+				DirStatus::None :
+				DirStatus::SubPath;
 	}
 
 	int LocalCollection::FindAlbum (const QString& artist, const QString& album) const

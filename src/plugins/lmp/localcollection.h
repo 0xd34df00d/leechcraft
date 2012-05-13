@@ -46,6 +46,8 @@ namespace LMP
 
 		bool IsReady_;
 
+		QStringList RootPaths_;
+
 		QIcon ArtistIcon_;
 		LocalCollectionStorage *Storage_;
 		QStandardItemModel *CollectionModel_;
@@ -90,6 +92,13 @@ namespace LMP
 			Random50
 		};
 
+		enum class DirStatus
+		{
+			RootPath,
+			SubPath,
+			None
+		};
+
 		LocalCollection (QObject* = 0);
 		void FinalizeInit ();
 
@@ -101,6 +110,8 @@ namespace LMP
 
 		void Scan (const QString&);
 		void Unscan (const QString&);
+
+		DirStatus GetDirStatus (const QString&) const;
 
 		int FindAlbum (const QString&, const QString&) const;
 		void SetAlbumArt (int, const QString&);
@@ -128,6 +139,8 @@ namespace LMP
 		void scanProgressChanged (int);
 
 		void collectionReady ();
+
+		void rootPathsChanged (const QStringList&);
 	};
 }
 }
