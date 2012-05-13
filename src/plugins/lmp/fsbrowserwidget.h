@@ -21,13 +21,12 @@
 #include <QWidget>
 #include "ui_fsbrowserwidget.h"
 
-class QFileSystemModel;
-
 namespace LeechCraft
 {
 namespace LMP
 {
 	class Player;
+	class FSModel;
 
 	class FSBrowserWidget : public QWidget
 	{
@@ -36,13 +35,16 @@ namespace LMP
 		Ui::FSBrowserWidget Ui_;
 
 		Player *Player_;
-
-		QFileSystemModel *FSModel_;
+		FSModel *FSModel_;
+		QAction *DirCollection_;
 	public:
 		FSBrowserWidget (QWidget* = 0);
 
 		void AssociatePlayer (Player*);
 	private slots:
+		void handleItemSelected (const QModelIndex&);
+		void handleAddToCollection ();
+		void handleRemoveFromCollection ();
 		void loadFromFSBrowser ();
 	};
 }

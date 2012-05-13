@@ -17,9 +17,12 @@
  **********************************************************************/
 
 #include "fsbrowserwidget.h"
-#include <QFileSystemModel>
+#include <QDir>
+#include "fsmodel.h"
 #include "util.h"
 #include "player.h"
+#include "core.h"
+#include "localcollection.h"
 
 namespace LeechCraft
 {
@@ -28,7 +31,7 @@ namespace LMP
 	FSBrowserWidget::FSBrowserWidget (QWidget *parent)
 	: QWidget (parent)
 	, Player_ (0)
-	, FSModel_ (new QFileSystemModel (this))
+	, FSModel_ (new FSModel (this))
 	{
 		Ui_.setupUi (this);
 
@@ -43,11 +46,70 @@ namespace LMP
 				this,
 				SLOT (loadFromFSBrowser ()));
 		Ui_.FSTree_->addAction (addToPlaylist);
+
+		DirCollection_ = new QAction (QString (), this);
+		DirCollection_->setProperty ("WatchActionIconChange", true);
+		Ui_.FSTree_->addAction (DirCollection_);
+
+		connect (Ui_.FSTree_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleItemSelected (QModelIndex)));
 	}
 
 	void FSBrowserWidget::AssociatePlayer (Player *player)
 	{
 		Player_ = player;
+	}
+
+	void FSBrowserWidget::handleItemSelected (const QModelIndex& index)
+	{
+		const auto& path = FSModel_->fileInfo (index).absoluteFilePath ();
+
+		disconnect (DirCollection_,
+				0,
+				this,
+				0);
+
+		switch (Core::Instance ().GetLocalCollection ()->GetDirStatus (path))
+		{
+		case LocalCollection::DirStatus::None:
+			DirCollection_->setText (tr ("Add to collection..."));
+			DirCollection_->setEnabled (true);
+			connect (DirCollection_,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleAddToCollection ()));
+			break;
+		case LocalCollection::DirStatus::RootPath:
+			DirCollection_->setText (tr ("Remove from collection..."));
+			DirCollection_->setEnabled (true);
+			connect (DirCollection_,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleRemoveFromCollection ()));
+			break;
+		case LocalCollection::DirStatus::SubPath:
+			DirCollection_->setText (tr ("Already in collection"));
+			DirCollection_->setEnabled (false);
+			break;
+		}
+	}
+
+	void FSBrowserWidget::handleAddToCollection ()
+	{
+		const auto& index = Ui_.FSTree_->currentIndex ();
+		const auto& path = FSModel_->fileInfo (index).absoluteFilePath ();
+
+		Core::Instance ().GetLocalCollection ()->Scan (path);
+	}
+
+	void FSBrowserWidget::handleRemoveFromCollection ()
+	{
+		const auto& index = Ui_.FSTree_->currentIndex ();
+		const auto& path = FSModel_->fileInfo (index).absoluteFilePath ();
+
+		Core::Instance ().GetLocalCollection ()->Unscan (path);
 	}
 
 	void FSBrowserWidget::loadFromFSBrowser ()
