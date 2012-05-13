@@ -211,6 +211,7 @@ namespace LMP
 		PresentPaths_.clear ();
 		Artist2Item_.clear ();
 		Album2Item_.clear ();
+		RootPaths_.clear ();
 	}
 
 	void LocalCollection::Scan (const QString& path)
