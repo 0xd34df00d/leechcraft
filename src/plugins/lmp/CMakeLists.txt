@@ -62,6 +62,7 @@ SET (SRCS
 	albumartmanager.cpp
 	lmpsystemtrayicon.cpp
 	fsbrowserwidget.cpp
+	fsmodel.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
@@ -88,6 +89,7 @@ SET (HEADERS
 	albumartmanager.h
 	lmpsystemtrayicon.h
 	fsbrowserwidget.h
+	fsmodel.h
 	playlistparsers/playlistfactory.h
 	playlistparsers/m3u.h
 	playlistparsers/pls.h
