@@ -55,6 +55,11 @@ namespace LMP
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleItemSelected (QModelIndex)));
+
+		connect (Core::Instance ().GetLocalCollection (),
+				SIGNAL (rootPathsChanged (QStringList)),
+				this,
+				SLOT (handleCollectionChanged ()));
 	}
 
 	void FSBrowserWidget::AssociatePlayer (Player *player)
@@ -94,6 +99,11 @@ namespace LMP
 			DirCollection_->setEnabled (false);
 			break;
 		}
+	}
+
+	void FSBrowserWidget::handleCollectionChanged ()
+	{
+		handleItemSelected (Ui_.FSTree_->currentIndex ());
 	}
 
 	void FSBrowserWidget::handleAddToCollection ()

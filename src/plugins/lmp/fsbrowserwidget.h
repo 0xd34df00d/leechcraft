@@ -43,6 +43,7 @@ namespace LMP
 		void AssociatePlayer (Player*);
 	private slots:
 		void handleItemSelected (const QModelIndex&);
+		void handleCollectionChanged ();
 		void handleAddToCollection ();
 		void handleRemoveFromCollection ();
 		void loadFromFSBrowser ();
