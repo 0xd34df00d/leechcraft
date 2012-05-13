@@ -51,8 +51,6 @@ namespace LMP
 
 	void Core::PostInit ()
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("CollectionDir",
-				this, "handleCollectionDirChanged");
 		Collection_->FinalizeInit ();
 	}
 
@@ -73,16 +71,6 @@ namespace LMP
 
 	void Core::rescan ()
 	{
-		handleCollectionDirChanged ();
-	}
-
-	void Core::handleCollectionDirChanged ()
-	{
-		Collection_->Clear ();
-		const auto& dir = XmlSettingsManager::Instance ()
-				.property ("CollectionDir").toString ();
-		if (!dir.isEmpty ())
-			Collection_->Scan (dir);
 	}
 }
 }

@@ -21,9 +21,6 @@
 		<label value="Collection" />
 		<groupbox>
 			<label value="Collection" />
-			<item type="path" property="CollectionDir" onCancel="clear">
-				<label value="Music collection directory:" />
-			</item>
 		</groupbox>
 	</page>
 	<page>
