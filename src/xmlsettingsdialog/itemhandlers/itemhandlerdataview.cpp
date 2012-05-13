@@ -104,10 +104,10 @@ namespace LeechCraft
 		{
 			switch (type)
 			{
-			case DataSources::DFTInteger:
+			case DataSources::DataFieldType::Integer:
 				return new QSpinBox ();
-			case DataSources::DFTString:
-			case DataSources::DFTUrl:
+			case DataSources::DataFieldType::String:
+			case DataSources::DataFieldType::Url:
 				return new QLineEdit ();
 			default:
 				return 0;
@@ -118,10 +118,10 @@ namespace LeechCraft
 		{
 			switch (type)
 			{
-			case DataSources::DFTInteger:
+			case DataSources::DataFieldType::Integer:
 				return qobject_cast<QSpinBox*> (editor)->value ();
-			case DataSources::DFTString:
-			case DataSources::DFTUrl:
+			case DataSources::DataFieldType::String:
+			case DataSources::DataFieldType::Url:
 				return qobject_cast<QLineEdit*> (editor)->text ();
 			default:
 				return QVariant ();
@@ -146,8 +146,8 @@ namespace LeechCraft
 		for (int i = 0, size = model->columnCount (); i < size; ++i)
 		{
 			DataSources::DataFieldType type = static_cast<DataSources::DataFieldType> (model->
-						headerData (i, Qt::Horizontal, DataSources::DSRFieldType).value<int> ());
-			if (type != DataSources::DFTNone)
+						headerData (i, Qt::Horizontal, DataSources::DataSourceRole::FieldType).value<int> ());
+			if (type != DataSources::DataFieldType::None)
 			{
 				types << type;
 				names << model->headerData (i, Qt::Horizontal, Qt::DisplayRole).toString ();
