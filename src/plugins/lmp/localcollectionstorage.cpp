@@ -480,7 +480,7 @@ namespace LMP
 		AddGenre_.prepare ("INSERT INTO genres (TrackId, Name) VALUES (:track_id, :name);");
 
 		RemoveTrack_ = QSqlQuery (DB_);
-		RemoveTrack_.prepare ("DELETE FROM tracks WHERE TrackId = :track_id;");
+		RemoveTrack_.prepare ("DELETE FROM tracks WHERE Id = :track_id;");
 
 		RemoveAlbum_ = QSqlQuery (DB_);
 		RemoveAlbum_.prepare ("DELETE FROM albums WHERE Id = :album_id;");
