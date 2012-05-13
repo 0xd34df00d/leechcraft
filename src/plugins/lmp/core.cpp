@@ -71,6 +71,7 @@ namespace LMP
 
 	void Core::rescan ()
 	{
+		Collection_->Rescan ();
 	}
 }
 }
