@@ -108,6 +108,7 @@ namespace LeechCraft
 				return new QSpinBox ();
 			case DataSources::DataFieldType::String:
 			case DataSources::DataFieldType::Url:
+			case DataSources::DataFieldType::LocalPath:
 				return new QLineEdit ();
 			default:
 				return 0;
@@ -122,6 +123,7 @@ namespace LeechCraft
 				return qobject_cast<QSpinBox*> (editor)->value ();
 			case DataSources::DataFieldType::String:
 			case DataSources::DataFieldType::Url:
+			case DataSources::DataFieldType::LocalPath:
 				return qobject_cast<QLineEdit*> (editor)->text ();
 			default:
 				return QVariant ();
@@ -145,8 +147,9 @@ namespace LeechCraft
 		QStringList names;
 		for (int i = 0, size = model->columnCount (); i < size; ++i)
 		{
-			DataSources::DataFieldType type = static_cast<DataSources::DataFieldType> (model->
-						headerData (i, Qt::Horizontal, DataSources::DataSourceRole::FieldType).value<int> ());
+			const auto& hData = model->headerData (i, Qt::Horizontal,
+					DataSources::DataSourceRole::FieldType);
+			auto type = static_cast<DataSources::DataFieldType> (hData.value<int> ());
 			if (type != DataSources::DataFieldType::None)
 			{
 				types << type;
