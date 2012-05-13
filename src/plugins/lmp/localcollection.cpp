@@ -297,6 +297,11 @@ namespace LMP
 				DirStatus::SubPath;
 	}
 
+	QStringList LocalCollection::GetDirs () const
+	{
+		return RootPaths_;
+	}
+
 	int LocalCollection::FindAlbum (const QString& artist, const QString& album) const
 	{
 		auto artistPos = std::find_if (Artists_.begin (), Artists_.end (),

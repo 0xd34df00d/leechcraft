@@ -20,7 +20,8 @@
 	<page>
 		<label value="Collection" />
 		<groupbox>
-			<label value="Collection" />
+			<label value="Root paths" />
+			<item type="dataview" property="RootPathsView" />
 		</groupbox>
 	</page>
 	<page>
