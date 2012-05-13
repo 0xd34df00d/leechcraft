@@ -25,6 +25,7 @@
 #include <QDialogButtonBox>
 #include <QtDebug>
 #include "../widgets/dataviewwidget.h"
+#include "../filepicker.h"
 #include "../itemhandlerfactory.h"
 #include "../datasourceroles.h"
 
@@ -108,8 +109,9 @@ namespace LeechCraft
 				return new QSpinBox ();
 			case DataSources::DataFieldType::String:
 			case DataSources::DataFieldType::Url:
-			case DataSources::DataFieldType::LocalPath:
 				return new QLineEdit ();
+			case DataSources::DataFieldType::LocalPath:
+				return new FilePicker (FilePicker::Type::ExistingDirectory);
 			default:
 				return 0;
 			}
@@ -123,8 +125,9 @@ namespace LeechCraft
 				return qobject_cast<QSpinBox*> (editor)->value ();
 			case DataSources::DataFieldType::String:
 			case DataSources::DataFieldType::Url:
-			case DataSources::DataFieldType::LocalPath:
 				return qobject_cast<QLineEdit*> (editor)->text ();
+			case DataSources::DataFieldType::LocalPath:
+				return qobject_cast<FilePicker*> (editor)->GetText ();
 			default:
 				return QVariant ();
 			}
