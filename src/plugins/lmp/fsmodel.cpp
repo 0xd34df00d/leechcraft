@@ -17,14 +17,36 @@
  **********************************************************************/
 
 #include "fsmodel.h"
+#include <QFileIconProvider>
+#include <interfaces/core/icoreproxy.h>
+#include "core.h"
+#include "localcollection.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
+	class FSIconProvider : public QFileIconProvider
+	{
+	public:
+		QIcon icon (const QFileInfo& info) const
+		{
+			if (!info.isDir ())
+				return QFileIconProvider::icon (info);
+
+			const auto& path = info.absoluteFilePath ();
+			const auto status = Core::Instance ().GetLocalCollection ()->GetDirStatus (path);
+			if (status != LocalCollection::DirStatus::None)
+				return Core::Instance ().GetProxy ()->GetIcon ("folder-bookmark");
+
+			return QFileIconProvider::icon (info);
+		}
+	};
+
 	FSModel::FSModel (QObject *parent)
 	: QFileSystemModel (parent)
 	{
+		setIconProvider (new FSIconProvider);
 	}
 }
 }
