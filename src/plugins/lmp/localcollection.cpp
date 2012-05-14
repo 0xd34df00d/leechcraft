@@ -32,6 +32,7 @@
 #include "player.h"
 #include "albumartmanager.h"
 #include "xmlsettingsmanager.h"
+#include "localcollectionwatcher.h"
 
 namespace LeechCraft
 {
@@ -150,6 +151,7 @@ namespace LMP
 	, Storage_ (new LocalCollectionStorage (this))
 	, CollectionModel_ (new CollectionModel (this))
 	, Sorter_ (new CollectionSorter (this))
+	, FilesWatcher_ (new LocalCollectionWatcher (this))
 	, AlbumArtMgr_ (new AlbumArtManager (this))
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
 	{
@@ -566,13 +568,19 @@ namespace LMP
 	{
 		RootPaths_ << paths;
 		emit rootPathsChanged (RootPaths_);
+
+		std::for_each (paths.begin (), paths.end (),
+				[this] (decltype (paths.front ()) item) { FilesWatcher_->AddPath (item); });
 	}
 
 	void LocalCollection::RemoveRootPaths (const QStringList& paths)
 	{
 		int removed = 0;
 		Q_FOREACH (const auto& str, paths)
+		{
 			removed += RootPaths_.removeAll (str);
+			FilesWatcher_->RemovePath (str);
+		}
 
 		if (removed)
 			emit rootPathsChanged (RootPaths_);

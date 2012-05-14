@@ -39,6 +39,7 @@ namespace LMP
 	class AlbumArtManager;
 	class LocalCollectionStorage;
 	class Player;
+	class LocalCollectionWatcher;
 
 	class LocalCollection : public QObject
 	{
@@ -52,6 +53,7 @@ namespace LMP
 		LocalCollectionStorage *Storage_;
 		QStandardItemModel *CollectionModel_;
 		QSortFilterProxyModel *Sorter_;
+		LocalCollectionWatcher *FilesWatcher_;
 
 		AlbumArtManager *AlbumArtMgr_;
 

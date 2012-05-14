@@ -64,6 +64,7 @@ SET (SRCS
 	fsbrowserwidget.cpp
 	fsmodel.cpp
 	rootpathsettingsmanager.cpp
+	localcollectionwatcher.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
@@ -92,6 +93,7 @@ SET (HEADERS
 	fsbrowserwidget.h
 	fsmodel.h
 	rootpathsettingsmanager.h
+	localcollectionwatcher.h
 	playlistparsers/playlistfactory.h
 	playlistparsers/m3u.h
 	playlistparsers/pls.h
