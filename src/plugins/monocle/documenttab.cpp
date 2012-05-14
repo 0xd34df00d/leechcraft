@@ -29,6 +29,8 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	const int Margin = 10;
+
 	DocumentTab::DocumentTab (const TabClassInfo& tc, QObject* parent)
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
@@ -122,14 +124,14 @@ namespace Monocle
 		const auto& rect = Ui_.PagesView_->viewport ()->contentsRect ();
 		auto item = Ui_.PagesView_->itemAt (QPoint (rect.width (), rect.height ()) / 2);
 		if (!item)
-			item = Ui_.PagesView_->itemAt (QPoint (rect.width (), rect.height () - 20) / 2);
+			item = Ui_.PagesView_->itemAt (QPoint (rect.width (), rect.height () - 2 * Margin) / 2);
 		return Pages_.indexOf (static_cast<PageGraphicsItem*> (item));
 	}
 
 	void DocumentTab::SetCurrentPage (int pos)
 	{
 		if (pos >= 0 && pos < Pages_.size ())
-			Ui_.PagesView_->ensureVisible (Pages_.at (pos), 0, 0);
+			Ui_.PagesView_->ensureVisible (Pages_.at (pos), Margin, Margin);
 	}
 
 	void DocumentTab::Relayout (double scale)
@@ -140,7 +142,7 @@ namespace Monocle
 		for (int i = 0, size = Pages_.size (); i < size; ++i)
 		{
 			const auto& size = CurrentDoc_->GetPageSize (i) * scale;
-			Pages_ [i]->setPos (0, (size.height () + 10) * i);
+			Pages_ [i]->setPos (0, Margin + (size.height () + Margin) * i);
 		}
 	}
 
@@ -163,7 +165,7 @@ namespace Monocle
 			Pages_ << item;
 		}
 
-		Ui_.PagesView_->ensureVisible (Pages_.value (0), 0, 0);
+		Ui_.PagesView_->ensureVisible (Pages_.value (0), Margin, Margin);
 
 		Relayout (1);
 
