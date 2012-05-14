@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QStringList>
 
 class QFileSystemWatcher;
 
