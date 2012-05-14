@@ -38,6 +38,10 @@ namespace Metida
 	, LJXmlRpc_ (new LJXmlRPC (this))
 	, Name_ (name)
 	{
+		connect (LJXmlRpc_,
+				SIGNAL (validatingFinished (bool)),
+				this,
+				SLOT (handleValidatingFinished (bool)));
 	}
 
 	QObject* LJAccount::GetObject ()
@@ -146,6 +150,12 @@ namespace Metida
 				&Core::Instance ());
 
 		LJXmlRpc_->Validate (Login_, pass);
+	}
+
+	void LJAccount::handleValidatingFinished (bool success)
+	{
+		qDebug () << Q_FUNC_INFO << success;
+		emit accountChecked (success ? this : 0);
 	}
 
 }

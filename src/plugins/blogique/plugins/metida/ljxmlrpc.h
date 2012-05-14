@@ -49,9 +49,13 @@ namespace Metida
 		QDomElement GetMemberElement (const QString& name,
 				const QString& type, const QString& value, QDomDocument doc);
 		QNetworkRequest CreateNetworkRequest () const;
+
 	private slots:
 		void handleChallengeReplyFinished ();
 		void handleValidateReplyFinished ();
+
+	signals:
+		void validatingFinished (bool success);
 	};
 }
 }
