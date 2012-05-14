@@ -30,9 +30,14 @@ namespace Monocle
 		IDocument_ptr Doc_;
 		const int PageNum_;
 
+		double XScale_;
+		double YScale_;
+
 		bool Invalid_;
 	public:
 		PageGraphicsItem (IDocument_ptr, int, QGraphicsItem* = 0);
+
+		void SetScale (double, double);
 	protected:
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*);
 	};

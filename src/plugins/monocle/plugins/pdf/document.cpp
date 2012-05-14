@@ -56,13 +56,13 @@ namespace PDF
 		return page->pageSize ();
 	}
 
-	QImage Document::RenderPage (int num, double xRes, double yRes)
+	QImage Document::RenderPage (int num, double xScale, double yScale)
 	{
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
 		if (!page)
 			return QImage ();
 
-		return page->renderToImage (xRes, yRes);
+		return page->renderToImage (72 * xScale, 72 * yScale);
 	}
 }
 }

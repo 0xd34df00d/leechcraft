@@ -27,9 +27,21 @@ namespace Monocle
 	: QGraphicsPixmapItem (parent)
 	, Doc_ (doc)
 	, PageNum_ (page)
+	, XScale_ (1)
+	, YScale_ (1)
 	, Invalid_ (true)
 	{
 		setPixmap (QPixmap (Doc_->GetPageSize (page)));
+	}
+
+	void PageGraphicsItem::SetScale (double xs, double ys)
+	{
+		XScale_ = xs;
+		YScale_ = ys;
+
+		Invalid_ = true;
+
+		update ();
 	}
 
 	void PageGraphicsItem::paint (QPainter *painter,
@@ -37,7 +49,7 @@ namespace Monocle
 	{
 		if (Invalid_)
 		{
-			const auto& img = Doc_->RenderPage (PageNum_, 72, 72);
+			const auto& img = Doc_->RenderPage (PageNum_, XScale_, YScale_);
 			setPixmap (QPixmap::fromImage (img));
 			Invalid_ = false;
 		}
