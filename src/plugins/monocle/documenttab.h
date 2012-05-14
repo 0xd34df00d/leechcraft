@@ -50,6 +50,12 @@ namespace Monocle
 
 		IDocument_ptr CurrentDoc_;
 		QList<PageGraphicsItem*> Pages_;
+
+		enum class LayoutMode
+		{
+			OnePage,
+			TwoPages
+		} LayMode_;
 	public:
 		DocumentTab (const TabClassInfo&, QObject*);
 
@@ -59,6 +65,8 @@ namespace Monocle
 		QToolBar* GetToolBar () const;
 	private:
 		void SetupToolbar ();
+
+		double GetCurrentScale () const;
 
 		int GetCurrentPage () const;
 		void SetCurrentPage (int);
@@ -70,6 +78,9 @@ namespace Monocle
 		void handleGoNext ();
 		void navigateNumLabel ();
 		void updateNumLabel ();
+
+		void showOnePage ();
+		void showTwoPages ();
 
 		void handleScaleChosen (int);
 	signals:

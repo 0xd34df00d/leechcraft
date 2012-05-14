@@ -22,6 +22,8 @@
 #include <QFileDialog>
 #include <QScrollBar>
 #include <QLineEdit>
+#include <QMenu>
+#include <QToolButton>
 #include "core.h"
 #include "pagegraphicsitem.h"
 
@@ -85,7 +87,7 @@ namespace Monocle
 				SLOT (handleGoPrev ()));
 		Toolbar_->addAction (prev);
 
-		PageNumLabel_ = new QLineEdit;
+		PageNumLabel_ = new QLineEdit ();
 		PageNumLabel_->setMaximumWidth (fontMetrics ().width (" 1500 / 1500 "));
 		PageNumLabel_->setAlignment (Qt::AlignCenter);
 		connect (PageNumLabel_,
@@ -108,7 +110,7 @@ namespace Monocle
 
 		Toolbar_->addSeparator ();
 
-		ScalesBox_ = new QComboBox;
+		ScalesBox_ = new QComboBox ();
 		std::vector<double> scales = { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2 };
 		Q_FOREACH (double scale, scales)
 			ScalesBox_->addItem (QString::number (scale * 100) + '%', scale);
@@ -119,6 +121,33 @@ namespace Monocle
 				this,
 				SLOT (handleScaleChosen (int)));
 		Toolbar_->addWidget (ScalesBox_);
+
+		auto viewGroup = new QActionGroup (this);
+		auto onePage = new QAction (tr ("One page"), this);
+		onePage->setProperty ("ActionIcon", "page-simple");
+		onePage->setCheckable (true);
+		onePage->setChecked (true);
+		onePage->setActionGroup (viewGroup);
+		connect (onePage,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showOnePage ()));
+		Toolbar_->addAction (onePage);
+
+		auto twoPages = new QAction (tr ("Two pages"), this);
+		twoPages->setProperty ("ActionIcon", "page-2sides");
+		twoPages->setCheckable (true);
+		twoPages->setActionGroup (viewGroup);
+		connect (twoPages,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showTwoPages ()));
+		Toolbar_->addAction (twoPages);
+	}
+
+	double DocumentTab::GetCurrentScale () const
+	{
+		return ScalesBox_->itemData (ScalesBox_->currentIndex ()).toDouble ();
 	}
 
 	int DocumentTab::GetCurrentPage () const
@@ -141,11 +170,25 @@ namespace Monocle
 		if (!CurrentDoc_)
 			return;
 
+		Q_FOREACH (auto item, Pages_)
+			item->SetScale (scale, scale);
+
 		for (int i = 0, size = Pages_.size (); i < size; ++i)
 		{
 			const auto& size = CurrentDoc_->GetPageSize (i) * scale;
-			Pages_ [i]->setPos (0, Margin + (size.height () + Margin) * i);
+			auto page = Pages_ [i];
+			switch (LayMode_)
+			{
+			case LayoutMode::OnePage:
+				page->setPos (0, Margin + (size.height () + Margin) * i);
+				break;
+			case LayoutMode::TwoPages:
+				page->setPos ((i % 2) * (Margin / 3 + size.width ()), Margin + (size.height () + Margin) * (i / 2));
+				break;
+			}
 		}
+
+		Scene_.setSceneRect (Scene_.itemsBoundingRect ());
 	}
 
 	void DocumentTab::selectFile ()
@@ -211,14 +254,21 @@ namespace Monocle
 		PageNumLabel_->setText (str);
 	}
 
-	void DocumentTab::handleScaleChosen (int index)
+	void DocumentTab::showOnePage ()
 	{
-		double scale = ScalesBox_->itemData (index).toDouble ();
+		LayMode_ = LayoutMode::OnePage;
+		Relayout (GetCurrentScale ());
+	}
 
-		Q_FOREACH (auto item, Pages_)
-			item->SetScale (scale, scale);
+	void DocumentTab::showTwoPages ()
+	{
+		LayMode_ = LayoutMode::TwoPages;
+		Relayout (GetCurrentScale ());
+	}
 
-		Relayout (scale);
+	void DocumentTab::handleScaleChosen (int)
+	{
+		Relayout (GetCurrentScale ());
 	}
 }
 }
