@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "pdf.h"
+#include "document.h"
 #include <QIcon>
 
 namespace LeechCraft
@@ -66,7 +67,12 @@ namespace PDF
 
 	bool Plugin::CanReadFile (const QString& file)
 	{
-		return false;
+		return file.toLower ().endsWith (".pdf");
+	}
+
+	IDocument_ptr Plugin::LoadDocument (const QString& file)
+	{
+		return IDocument_ptr (new Document (file));
 	}
 }
 }

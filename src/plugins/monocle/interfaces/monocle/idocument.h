@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QImage>
 #include <QMetaType>
 
@@ -38,6 +39,8 @@ namespace Monocle
 
 		virtual QImage RenderPage (int, double xRes, double yRes) = 0;
 	};
+
+	typedef std::shared_ptr<IDocument> IDocument_ptr;
 }
 }
 

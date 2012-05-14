@@ -20,6 +20,7 @@
 
 #include <QString>
 #include <QMetaType>
+#include "idocument.h"
 
 namespace LeechCraft
 {
@@ -31,6 +32,8 @@ namespace Monocle
 		virtual ~IBackendPlugin () {}
 
 		virtual bool CanReadFile (const QString& filename) = 0;
+
+		virtual IDocument_ptr LoadDocument (const QString& filename) = 0;
 	};
 }
 }
