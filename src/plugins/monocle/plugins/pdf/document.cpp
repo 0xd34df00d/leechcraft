@@ -29,6 +29,12 @@ namespace PDF
 	: QObject (parent)
 	, PDocument_ (Poppler::Document::load (path))
 	{
+		if (!PDocument_)
+			return;
+
+		PDocument_->setRenderHint (Poppler::Document::Antialiasing);
+		PDocument_->setRenderHint (Poppler::Document::TextAntialiasing);
+		PDocument_->setRenderHint (Poppler::Document::TextHinting);
 	}
 
 	bool Document::IsValid () const
