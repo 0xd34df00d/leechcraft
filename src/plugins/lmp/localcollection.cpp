@@ -173,7 +173,7 @@ namespace LMP
 
 		auto& xsd = XmlSettingsManager::Instance ();
 		const QStringList oldDefault (xsd.property ("CollectionDir").toString ());
-		RootPaths_ = xsd.Property ("RootCollectionPaths", oldDefault).toStringList ();
+		AddRootPaths (xsd.Property ("RootCollectionPaths", oldDefault).toStringList ());
 		connect (this,
 				SIGNAL (rootPathsChanged (QStringList)),
 				this,
@@ -211,7 +211,8 @@ namespace LMP
 		PresentPaths_.clear ();
 		Artist2Item_.clear ();
 		Album2Item_.clear ();
-		RootPaths_.clear ();
+
+		RemoveRootPaths (RootPaths_);
 	}
 
 	void LocalCollection::Scan (const QString& path)
@@ -222,8 +223,7 @@ namespace LMP
 		if (paths.isEmpty ())
 			return;
 
-		RootPaths_ << path;
-		emit rootPathsChanged (RootPaths_);
+		AddRootPaths (QStringList (path));
 
 		PresentPaths_ += paths;
 		emit scanStarted (paths.size ());
@@ -272,8 +272,7 @@ namespace LMP
 			return;
 		}
 
-		RootPaths_.removeAll (path);
-		emit rootPathsChanged (RootPaths_);
+		RemoveRootPaths (QStringList (path));
 	}
 
 	void LocalCollection::Rescan ()
@@ -560,6 +559,22 @@ namespace LMP
 
 		CollectionModel_->removeRow (Artist2Item_.take (id)->row ());
 		return Artists_.erase (pos);
+	}
+
+	void LocalCollection::AddRootPaths (const QStringList& paths)
+	{
+		RootPaths_ << paths;
+		emit rootPathsChanged (RootPaths_);
+	}
+
+	void LocalCollection::RemoveRootPaths (const QStringList& paths)
+	{
+		int removed = 0;
+		Q_FOREACH (const auto& str, paths)
+			removed += RootPaths_.removeAll (str);
+
+		if (removed)
+			emit rootPathsChanged (RootPaths_);
 	}
 
 	void LocalCollection::recordPlayedTrack (const QString& path)
