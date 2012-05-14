@@ -4,6 +4,7 @@ INCLUDE (InitLCPlugin OPTIONAL)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
+SET (QT_USE_QTXMLPATTERNS TRUE)
 INCLUDE (${QT_USE_FILE})
 
 INCLUDE_DIRECTORIES (${BLOGIQUE_INCLUDE_DIR}
@@ -18,6 +19,7 @@ SET (METIDA_SRCS
 	ljaccountconfigurationdialog.cpp
 	ljaccountconfigurationwidget.cpp
 	ljbloggingplatform.cpp
+	ljxmlrpc.cpp
 	metida.cpp
 	core.cpp
 	xmlsettingsmanager.cpp
@@ -28,6 +30,7 @@ SET (METIDA_HEADERS
 	ljaccountconfigurationdialog.h
 	ljaccountconfigurationwidget.h
 	ljbloggingplatform.h
+	ljxmlrpc.h
 	metida.h
 	core.h
 	xmlsettingsmanager.h

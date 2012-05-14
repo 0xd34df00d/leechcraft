@@ -60,6 +60,8 @@ namespace Metida
 
 	private slots:
 		void saveAccounts ();
+	public slots:
+		void addAccount (QObject *acc);
 
 	signals:
 		void accountAdded (QObject *account);

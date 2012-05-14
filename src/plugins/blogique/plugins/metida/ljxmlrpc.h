@@ -18,8 +18,12 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
-#include "interfaces/blogique/iaccount.h"
+#include <QQueue>
+#include <QPair>
+#include <QDomElement>
+#include <QNetworkRequest>
 
 namespace LeechCraft
 {
@@ -27,41 +31,27 @@ namespace Blogique
 {
 namespace Metida
 {
-
-	class LJAccountConfigurationWidget;
-	class LJBloggingPlatform;
-	class LJXmlRPC;
-
-	class LJAccount : public QObject
-							, public IAccount
+	class LJXmlRPC : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IAccount)
 
-		LJBloggingPlatform *ParentBloggingPlatform_;
-		LJXmlRPC *LJXmlRpc_;
-		QString Name_;
-		QString Login_;
+		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
 	public:
-		LJAccount (const QString& name, QObject *parent = 0);
-		QObject* GetObject ();
-		QObject* GetParentBloggingPlatform () const;
-		QString GetAccountName () const;
-		QString GetOurLogin () const;
-		void RenameAccount (const QString& name);
-		QByteArray GetAccountID () const;
-		void OpenConfigurationDialog ();
+		LJXmlRPC (QObject *parent = 0);
 
-		void FillSettings (LJAccountConfigurationWidget *widget);
+		void Validate (const QString& login, const QString& pass);
+	private:
+		void GenerateChallenge () const;
+		void ValidateAccountData (const QString& login,
+				const QString& pass, const QString& challenge);
 
-		QByteArray Serialize () const;
-		static LJAccount* Deserialize (const QByteArray& data, QObject *parent);
-
-		void Validate ();
-	signals:
-		void accountRenamed (const QString& newName);
-		void accountSettingsChanged ();
-		void accountChecked (QObject *accObj);
+		QPair<QDomElement, QDomElement> GetStartPart (const QString& name, QDomDocument doc);
+		QDomElement GetMemberElement (const QString& name,
+				const QString& type, const QString& value, QDomDocument doc);
+		QNetworkRequest CreateNetworkRequest () const;
+	private slots:
+		void handleChallengeReplyFinished ();
+		void handleValidateReplyFinished ();
 	};
 }
 }
