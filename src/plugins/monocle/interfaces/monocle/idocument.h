@@ -26,12 +26,21 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	struct DocumentInfo
+	{
+		QString Title_;
+		QString Subject_;
+		QString Author_;
+	};
+
 	class IDocument
 	{
 	public:
 		virtual ~IDocument () {}
 
 		virtual bool IsValid () const = 0;
+
+		virtual DocumentInfo GetDocumentInfo () const = 0;
 
 		virtual int GetNumPages () const = 0;
 

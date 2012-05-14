@@ -42,6 +42,18 @@ namespace PDF
 		return PDocument_ && !PDocument_->isLocked ();
 	}
 
+	DocumentInfo Document::GetDocumentInfo () const
+	{
+		DocumentInfo info;
+		if (!PDocument_)
+			return info;
+
+		info.Title_ = PDocument_->info ("Title");
+		info.Subject_ = PDocument_->info ("Subject");
+		info.Author_ = PDocument_->info ("Author");
+		return info;
+	}
+
 	int Document::GetNumPages () const
 	{
 		return PDocument_->numPages ();

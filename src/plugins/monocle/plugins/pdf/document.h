@@ -46,6 +46,7 @@ namespace PDF
 		Document (const QString&, QObject* = 0);
 
 		bool IsValid () const;
+		DocumentInfo GetDocumentInfo () const;
 		int GetNumPages () const;
 		QSize GetPageSize (int) const;
 		QImage RenderPage (int, double, double);
