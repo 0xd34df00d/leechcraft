@@ -18,9 +18,10 @@
 
 #include "sortfilterproxymodel.h"
 #include <QTimer>
-#include "core.h"
+#include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imucperms.h"
+#include "core.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -158,7 +159,9 @@ namespace Azoth
 			if (idx.data (Core::CLRUnreadMsgCount).toInt ())
 				return true;
 
-			if (GetType (idx) == Core::CLETContact)
+			const auto type = GetType (idx);
+
+			if (type == Core::CLETContact)
 			{
 				ICLEntry *entry = GetEntry (idx);
 				const State state = entry->GetStatus ().State_;
@@ -172,7 +175,7 @@ namespace Azoth
 						entry->GetEntryType () == ICLEntry::ETPrivateChat)
 					return false;
 			}
-			else if (GetType (idx) == Core::CLETCategory)
+			else if (type == Core::CLETCategory)
 			{
 				if (!sourceModel ()->rowCount (idx))
 					return false;
@@ -180,6 +183,12 @@ namespace Azoth
 				if (!ShowOffline_ &&
 						!idx.data (Core::CLRNumOnline).toInt ())
 					return false;
+			}
+			else if (type == Core::CLETAccount)
+			{
+				const auto& accObj = idx.data (Core::CLRAccountObject).value<QObject*> ();
+				auto acc = qobject_cast<IAccount*> (accObj);
+				return acc->IsShownInRoster ();
 			}
 		}
 
