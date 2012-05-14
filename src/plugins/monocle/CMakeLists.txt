@@ -13,11 +13,13 @@ SET (SRCS
 	monocle.cpp
 	documenttab.cpp
 	core.cpp
+	pagegraphicsitem.cpp
 	)
 SET (HEADERS
 	monocle.h
 	documenttab.h
 	core.h
+	pagegraphicsitem.h
 	)
 SET (FORMS
 	documenttab.ui
