@@ -65,7 +65,7 @@ namespace PDF
 		return result;
 	}
 
-	bool Plugin::CanReadFile (const QString& file)
+	bool Plugin::CanLoadDocument (const QString& file)
 	{
 		return file.toLower ().endsWith (".pdf");
 	}

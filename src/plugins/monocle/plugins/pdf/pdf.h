@@ -47,7 +47,7 @@ namespace PDF
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		bool CanReadFile (const QString&);
+		bool CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
 	};
 }
