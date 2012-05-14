@@ -61,6 +61,7 @@ namespace Monocle
 
 		void Relayout (double);
 	private slots:
+		void selectFile ();
 		void handleScaleChosen (int);
 	signals:
 		void removeTab (QWidget*);

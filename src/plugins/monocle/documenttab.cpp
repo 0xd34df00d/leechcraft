@@ -20,6 +20,7 @@
 #include <array>
 #include <QToolBar>
 #include <QComboBox>
+#include <QFileDialog>
 #include "core.h"
 #include "pagegraphicsitem.h"
 
@@ -37,16 +38,6 @@ namespace Monocle
 		Ui_.PagesView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
 
 		SetupToolbar ();
-
-		CurrentDoc_ = Core::Instance ().LoadDocument ("/home/d34df00d/Programming/Generating/docs/Rudoy2012Generation.pdf");
-		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
-		{
-			auto item = new PageGraphicsItem (CurrentDoc_, i);
-			Scene_.addItem (item);
-			Pages_ << item;
-		}
-
-		Relayout (1);
 	}
 
 	TabClassInfo DocumentTab::GetTabClassInfo () const
@@ -72,6 +63,15 @@ namespace Monocle
 
 	void DocumentTab::SetupToolbar ()
 	{
+		auto open = new QAction (tr ("Open..."), this);
+		open->setProperty ("ActionIcon", "document-open");
+		open->setShortcut (QString ("Ctrl+O"));
+		connect (open,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (selectFile ()));
+		Toolbar_->addAction (open);
+
 		ScalesBox_ = new QComboBox;
 		std::vector<double> scales = { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2 };
 		Q_FOREACH (double scale, scales)
@@ -85,11 +85,38 @@ namespace Monocle
 
 	void DocumentTab::Relayout (double scale)
 	{
+		if (!CurrentDoc_)
+			return;
+
 		for (int i = 0, size = Pages_.size (); i < size; ++i)
 		{
 			const auto& size = CurrentDoc_->GetPageSize (i) * scale;
 			Pages_ [i]->setPos (0, (size.height () + 10) * i);
 		}
+	}
+
+	void DocumentTab::selectFile ()
+	{
+		const auto& path = QFileDialog::getOpenFileName (this,
+					tr ("Select file"),
+					QDir::homePath ());
+		if (path.isEmpty ())
+			return;
+
+		Scene_.clear ();
+		Pages_.clear ();
+
+		CurrentDoc_ = Core::Instance ().LoadDocument (path);
+		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
+		{
+			auto item = new PageGraphicsItem (CurrentDoc_, i);
+			Scene_.addItem (item);
+			Pages_ << item;
+		}
+
+		Ui_.PagesView_->ensureVisible (Pages_.value (0), 0, 0);
+
+		Relayout (1);
 	}
 
 	void DocumentTab::handleScaleChosen (int index)
