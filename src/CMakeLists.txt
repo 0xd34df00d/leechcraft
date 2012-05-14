@@ -148,6 +148,7 @@ OPTION (ENABLE_XPROXY "Build XProxy, the advanced proxy manager" ${WITH_PLUGINS}
 OPTION (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
 OPTION (ENABLE_NACHEKU "Build Nacheku, clipboard/download dir watcher" ${WITH_PLUGINS})
 OPTION (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging client" OFF)
+OPTION (ENABLE_MONOCLE "Build Monocle, modular document viewer for LeechCraft" ${WITH_PLUGINS})
 
 IF (WIN32)
 	OPTION (ENABLE_Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS})
@@ -368,6 +369,10 @@ ENDIF (ENABLE_GACTS)
 IF (ENABLE_BLOGIQUE)
 	ADD_SUBDIRECTORY (plugins/blogique)
 ENDIF (ENABLE_BLOGIQUE)
+
+IF (ENABLE_MONOCLE)
+	ADD_SUBDIRECTORY (plugins/monocle)
+ENDIF (ENABLE_MONOCLE)
 
 IF (ENABLE_PINTAB)
 	ADD_SUBDIRECTORY (plugins/pintab)
