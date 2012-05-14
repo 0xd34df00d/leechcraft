@@ -410,6 +410,8 @@ namespace Azoth
 		void handleMucJoinRequested ();
 
 		void handleShowNextUnread ();
+
+		void saveAccountVisibility (IAccount*);
 	private slots:
 		void handleNewProtocols (const QList<QObject*>&);
 

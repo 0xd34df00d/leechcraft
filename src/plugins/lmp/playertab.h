@@ -35,7 +35,6 @@ namespace Media
 }
 
 class QStandardItemModel;
-class QFileSystemModel;
 class QSortFilterProxyModel;
 
 namespace LeechCraft
@@ -59,7 +58,6 @@ namespace LMP
 		QObject *Plugin_;
 		const TabClassInfo TC_;
 
-		QFileSystemModel *FSModel_;
 		QSortFilterProxyModel *CollectionFilterModel_;
 
 		Player *Player_;
@@ -92,7 +90,6 @@ namespace LMP
 		void SetupToolbar ();
 		void SetupCollection ();
 		void SetupPlaylistsTab ();
-		void SetupFSBrowser ();
 		void SetupPlaylist ();
 		void SetNowPlaying (const MediaInfo&, const QPixmap&);
 		void Scrobble (const MediaInfo&);
@@ -113,7 +110,6 @@ namespace LMP
 		void handlePlaylistSelected (const QModelIndex&);
 		void removeSelectedSongs ();
 		void loadFromCollection ();
-		void loadFromFSBrowser ();
 		void handleSavePlaylist ();
 		void loadFromDisk ();
 

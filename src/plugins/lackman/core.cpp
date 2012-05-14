@@ -106,7 +106,7 @@ namespace LackMan
 				SLOT (handlePackageUpdated (int, int)));
 
 		QStandardItem *item = new QStandardItem (tr ("URL"));
-		item->setData (DataSources::DFTUrl, DataSources::DSRFieldType);
+		item->setData (DataSources::DataFieldType::Url, DataSources::DataSourceRole::FieldType);
 		ReposModel_->setHorizontalHeaderItem (0, item);
 
 		QTimer::singleShot (20000,

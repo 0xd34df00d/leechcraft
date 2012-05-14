@@ -86,6 +86,8 @@ namespace LeechCraft
 			QStringList GlobalPrefixesChain_;
 			QString RelativePath_;
 
+			QHash<QString, QStringList> Entry2Paths_;
+
 			QStandardItemModel *SubElemModel_;
 			QStringList NameFilters_;
 			QDir::Filters AttrFilters_;

@@ -76,7 +76,11 @@ namespace M3U
 		Q_FOREACH (QString src, Read (path))
 		{
 			QUrl url (src);
+#ifdef Q_OS_WIN32
+			if (url.scheme ().size () > 1)
+#else
 			if (!url.scheme ().isEmpty ())
+#endif
 			{
 				result << (url.scheme () == "file" ? url.toLocalFile () : url);
 				continue;

@@ -61,6 +61,9 @@ namespace Azoth
 
 		Core::Instance ().SetProxy (proxy);
 		InitShortcuts ();
+
+		MW_ = new MainWidget ();
+
 		InitSettings ();
 		InitMW ();
 		InitSignals ();
@@ -322,13 +325,21 @@ namespace Azoth
 		XmlSettingsDialog_->SetDataSource ("OutputAudioDevice", new QStringListModel (audioOuts));
 #endif
 
-		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
+		auto accountsList = new AccountsListWidget;
+		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", accountsList);
+		connect (accountsList,
+				SIGNAL (accountVisibilityChanged (IAccount*)),
+				MW_,
+				SLOT (handleAccountVisibilityChanged ()));
+		connect (accountsList,
+				SIGNAL (accountVisibilityChanged (IAccount*)),
+				&Core::Instance (),
+				SLOT (saveAccountVisibility (IAccount*)));
 	}
 
 	void Plugin::InitMW ()
 	{
 		QDockWidget *dw = new QDockWidget ();
-		MW_ = new MainWidget ();
 		dw->setWidget (MW_);
 		dw->setWindowTitle ("Azoth");
 

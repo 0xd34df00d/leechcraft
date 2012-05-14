@@ -66,6 +66,10 @@ namespace Xoox
 
 	void TransferManager::handleFileReceived (QXmppTransferJob *job)
 	{
+		auto cc = Account_->GetClientConnection ();
+		if (!cc->GetCLEntry (job->jid ()))
+			cc->CreateEntry (job->jid ());
+
 		emit fileOffered (new TransferJob (job, this));
 	}
 }

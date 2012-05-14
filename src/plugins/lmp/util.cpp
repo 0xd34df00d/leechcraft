@@ -20,6 +20,8 @@
 #include <algorithm>
 #include <QDirIterator>
 #include <QPixmap>
+#include "core.h"
+#include "localcollection.h"
 
 namespace LeechCraft
 {
@@ -47,8 +49,20 @@ namespace LMP
 		return result;
 	}
 
-	QString FindAlbumArtPath (const QString& near)
+	QString FindAlbumArtPath (const QString& near, bool ignoreCollection)
 	{
+		if (!ignoreCollection)
+		{
+			auto collection = Core::Instance ().GetLocalCollection ();
+			const int trackId = collection->FindTrack (near);
+			if (trackId >= 0)
+			{
+				auto album = collection->GetTrackAlbum (trackId);
+				if (!album->CoverPath_.isEmpty ())
+					return album->CoverPath_;
+			}
+		}
+
 		QStringList possibleBases;
 		possibleBases << "cover" << "folder" << "front";
 
@@ -65,9 +79,9 @@ namespace LMP
 		return pos == entryList.end () ? QString () : dir.filePath (*pos);
 	}
 
-	QPixmap FindAlbumArt (const QString& near)
+	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection)
 	{
-		return QPixmap (FindAlbumArtPath (near));
+		return QPixmap (FindAlbumArtPath (near, ignoreCollection));
 	}
 }
 }

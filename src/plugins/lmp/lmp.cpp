@@ -29,6 +29,7 @@
 #include "player.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
+#include "rootpathsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -51,6 +52,9 @@ namespace LMP
 
 		Core::Instance ().SetProxy (proxy);
 		Core::Instance ().PostInit ();
+
+		auto mgr = new RootPathSettingsManager (this);
+		XSD_->SetDataSource ("RootPathsView", mgr->GetModel ());
 
 		PlayerTab_ = new PlayerTab (PlayerTC_, this);
 

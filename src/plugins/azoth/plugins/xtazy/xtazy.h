@@ -72,10 +72,13 @@ namespace Xtazy
 		void NowPlaying (const Media::AudioInfo& audio);
 		void PlaybackStopped ();
 		void LoveCurrentTrack ();
+		void RerequestRecommendations ();
 	public slots:
 		void initPlugin (QObject*);
 	private slots:
 		void publish (const QMap<QString, QVariant>&);
+	signals:
+		void gotRecommendations (const Media::SimilarityInfos_t&);
 	};
 }
 }

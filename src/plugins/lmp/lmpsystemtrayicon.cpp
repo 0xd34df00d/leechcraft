@@ -73,7 +73,7 @@ namespace LMP
 						"<tr><td><p style='white-space:pre;'>%6</p></td></tr>"
 						"<tr><td><p style='white-space:pre;'>%7</p></td></tr>"
 						"</table>")
-						.arg (FindAlbumArtPath (CurrentSong_.LocalPath_))
+						.arg (CurrentAlbumArt_)
 						.arg (130)
 						.arg (130)
 						.arg (trackText)
@@ -103,6 +103,7 @@ namespace LMP
 	void LMPSystemTrayIcon::handleSongChanged (const MediaInfo& song)
 	{
 		CurrentSong_ = song;
+		CurrentAlbumArt_ = FindAlbumArtPath (song.LocalPath_);
 	}
 
 }

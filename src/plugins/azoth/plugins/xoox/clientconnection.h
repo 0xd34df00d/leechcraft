@@ -199,6 +199,8 @@ namespace Xoox
 		RoomCLEntry* JoinRoom (const QString& room, const QString& user);
 		void Unregister (RoomHandler*);
 
+		void CreateEntry (const QString&);
+
 		QXmppMucManager* GetMUCManager () const;
 		QXmppDiscoveryManager* GetDiscoveryManager () const;
 		QXmppVersionManager* GetVersionManager () const;

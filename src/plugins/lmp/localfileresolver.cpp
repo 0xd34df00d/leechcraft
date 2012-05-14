@@ -53,7 +53,13 @@ namespace LMP
 				return Cache_ [file];
 		}
 
+		QMutexLocker tlLocker (&TaglibMutex_);
+
+#ifdef Q_OS_WIN32
+		TagLib::FileRef r (file.toStdWString ().c_str ());
+#else
 		TagLib::FileRef r (file.toUtf8 ().constData ());
+#endif
 		auto tag = r.tag ();
 		if (!tag)
 			throw ResolveError (file, "failed to get file tags");

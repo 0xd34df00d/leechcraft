@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,30 +18,31 @@
 
 #pragma once
 
-#include <QSystemTrayIcon>
-#include "mediainfo.h"
+#include <QObject>
+#include <QModelIndex>
+#include <QVariant>
+
+class QStandardItemModel;
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class PlayerTab;
-
-	class LMPSystemTrayIcon : public QSystemTrayIcon
+	class RootPathSettingsManager : public QObject
 	{
 		Q_OBJECT
 
-		MediaInfo CurrentSong_;
-		QString CurrentAlbumArt_;
-		PlayerTab *PlayerTab_;
+		QStandardItemModel *Model_;
 	public:
-		LMPSystemTrayIcon (const QIcon& icon, QObject *parent = 0);
-	protected:
-		bool event (QEvent *event);
+		RootPathSettingsManager (QObject* = 0);
+
+		QAbstractItemModel* GetModel () const;
 	public slots:
-		void handleSongChanged (const MediaInfo& song);
-	signals:
-		void changedVolume (qreal delta);
+		void addRequested (const QString&, const QVariantList&);
+		void removeRequested (const QString&, const QModelIndexList&);
+	private slots:
+		void handleRootPathsChanged ();
 	};
 }
 }

@@ -34,16 +34,16 @@ namespace LeechCraft
 		bool ClearOnCancel_;
 		QString Filter_;
 	public:
-		enum Type
+		enum class Type
 		{
-			TExistingDirectory,
-			TOpenFileName,
-			TSaveFileName
+			ExistingDirectory,
+			OpenFileName,
+			SaveFileName
 		};
 	private:
 		Type Type_;
 	public:
-		FilePicker (Type = TExistingDirectory, QWidget* = 0);
+		FilePicker (Type = Type::ExistingDirectory, QWidget* = 0);
 		void SetText (QString);
 		QString GetText () const;
 		void SetClearOnCancel (bool);

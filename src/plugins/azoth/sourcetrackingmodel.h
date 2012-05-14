@@ -56,10 +56,10 @@ namespace Azoth
 			MergeModel::handleRowsInserted (idx, from, to);
 		}
 
-		virtual void handleRowsRemoved (const QModelIndex& idx, int from, int to)
+		virtual void handleRowsAboutToBeRemoved (const QModelIndex& idx, int from, int to)
 		{
 			HandleItems (idx.model (), from, to, false);
-			MergeModel::handleRowsRemoved (idx, from, to);
+			MergeModel::handleRowsAboutToBeRemoved (idx, from, to);
 		}
 	private:
 		void HandleItems (const QAbstractItemModel *model,

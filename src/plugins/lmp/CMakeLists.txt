@@ -61,6 +61,10 @@ SET (SRCS
 	artistsinfodisplay.cpp
 	albumartmanager.cpp
 	lmpsystemtrayicon.cpp
+	fsbrowserwidget.cpp
+	fsmodel.cpp
+	rootpathsettingsmanager.cpp
+	localcollectionwatcher.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
@@ -86,6 +90,10 @@ SET (HEADERS
 	artistsinfodisplay.h
 	albumartmanager.h
 	lmpsystemtrayicon.h
+	fsbrowserwidget.h
+	fsmodel.h
+	rootpathsettingsmanager.h
+	localcollectionwatcher.h
 	playlistparsers/playlistfactory.h
 	playlistparsers/m3u.h
 	playlistparsers/pls.h
@@ -94,6 +102,7 @@ SET (HEADERS
 SET (FORMS
 	playertab.ui
 	nowplayingwidget.ui
+	fsbrowserwidget.ui
 	)
 SET (RESOURCES resources.qrc)
 IF (NOT LC_NO_MOC)

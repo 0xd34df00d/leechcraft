@@ -41,7 +41,14 @@ namespace Azoth
 
 		enum Roles
 		{
-			RAccObj = Qt::UserRole + 1
+			RAccObj = Qt::UserRole + 1,
+			RItemType
+		};
+
+		enum ItemTypes
+		{
+			ShowInRoster,
+			Name
 		};
 	public:
 		AccountsListWidget (QWidget* = 0);
@@ -52,7 +59,11 @@ namespace Azoth
 		void on_PGP__released ();
 		void on_Delete__released ();
 
+		void handleItemChanged (QStandardItem*);
+
 		void handleAccountRemoved (IAccount*);
+	signals:
+		void accountVisibilityChanged (IAccount*);
 	};
 }
 }
