@@ -44,6 +44,7 @@ namespace Monocle
 
 		QToolBar *Toolbar_;
 		QComboBox *ScalesBox_;
+		QLineEdit *PageNumLabel_;
 
 		QGraphicsScene Scene_;
 
@@ -59,9 +60,17 @@ namespace Monocle
 	private:
 		void SetupToolbar ();
 
+		int GetCurrentPage () const;
+		void SetCurrentPage (int);
 		void Relayout (double);
 	private slots:
 		void selectFile ();
+
+		void handleGoPrev ();
+		void handleGoNext ();
+		void navigateNumLabel ();
+		void updateNumLabel ();
+
 		void handleScaleChosen (int);
 	signals:
 		void removeTab (QWidget*);

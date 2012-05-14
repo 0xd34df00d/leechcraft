@@ -17,10 +17,11 @@
  **********************************************************************/
 
 #include "documenttab.h"
-#include <array>
 #include <QToolBar>
 #include <QComboBox>
 #include <QFileDialog>
+#include <QScrollBar>
+#include <QLineEdit>
 #include "core.h"
 #include "pagegraphicsitem.h"
 
@@ -72,6 +73,39 @@ namespace Monocle
 				SLOT (selectFile ()));
 		Toolbar_->addAction (open);
 
+		Toolbar_->addSeparator ();
+
+		auto prev = new QAction (tr ("Previous page"), this);
+		prev->setProperty ("ActionIcon", "go-previous-view-page");
+		connect (prev,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleGoPrev ()));
+		Toolbar_->addAction (prev);
+
+		PageNumLabel_ = new QLineEdit;
+		PageNumLabel_->setMaximumWidth (fontMetrics ().width (" 1500 / 1500 "));
+		PageNumLabel_->setAlignment (Qt::AlignCenter);
+		connect (PageNumLabel_,
+				SIGNAL (returnPressed ()),
+				this,
+				SLOT (navigateNumLabel ()));
+		connect (Ui_.PagesView_->verticalScrollBar (),
+				SIGNAL (valueChanged (int)),
+				this,
+				SLOT (updateNumLabel ()));
+		Toolbar_->addWidget (PageNumLabel_);
+
+		auto next = new QAction (tr ("Next page"), this);
+		next->setProperty ("ActionIcon", "go-next-view-page");
+		connect (next,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleGoNext ()));
+		Toolbar_->addAction (next);
+
+		Toolbar_->addSeparator ();
+
 		ScalesBox_ = new QComboBox;
 		std::vector<double> scales = { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2 };
 		Q_FOREACH (double scale, scales)
@@ -81,6 +115,21 @@ namespace Monocle
 				this,
 				SLOT (handleScaleChosen (int)));
 		Toolbar_->addWidget (ScalesBox_);
+	}
+
+	int DocumentTab::GetCurrentPage () const
+	{
+		const auto& rect = Ui_.PagesView_->viewport ()->contentsRect ();
+		auto item = Ui_.PagesView_->itemAt (QPoint (rect.width (), rect.height ()) / 2);
+		if (!item)
+			item = Ui_.PagesView_->itemAt (QPoint (rect.width (), rect.height () - 20) / 2);
+		return Pages_.indexOf (static_cast<PageGraphicsItem*> (item));
+	}
+
+	void DocumentTab::SetCurrentPage (int pos)
+	{
+		if (pos >= 0 && pos < Pages_.size ())
+			Ui_.PagesView_->ensureVisible (Pages_.at (pos), 0, 0);
 	}
 
 	void DocumentTab::Relayout (double scale)
@@ -117,6 +166,34 @@ namespace Monocle
 		Ui_.PagesView_->ensureVisible (Pages_.value (0), 0, 0);
 
 		Relayout (1);
+	}
+
+	void DocumentTab::handleGoPrev ()
+	{
+		SetCurrentPage (GetCurrentPage () - 1);
+	}
+
+	void DocumentTab::handleGoNext ()
+	{
+		SetCurrentPage (GetCurrentPage () + 1);
+	}
+
+	void DocumentTab::navigateNumLabel ()
+	{
+		auto text = PageNumLabel_->text ();
+		const int pos = text.indexOf ('/');
+		if (pos >= 0)
+			text = text.left (pos - 1);
+
+		SetCurrentPage (text.trimmed ().toInt () - 1);
+	}
+
+	void DocumentTab::updateNumLabel ()
+	{
+		const auto& str = QString::number (GetCurrentPage () + 1) +
+				" / " +
+				QString::number (CurrentDoc_->GetNumPages ());
+		PageNumLabel_->setText (str);
 	}
 
 	void DocumentTab::handleScaleChosen (int index)
