@@ -12,19 +12,26 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	monocle.cpp
 	documenttab.cpp
+	core.cpp
 	)
 SET (HEADERS
 	monocle.h
 	documenttab.h
+	core.h
+	)
+SET (FORMS
+	documenttab.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_monocle SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_monocle
 	${QT_LIBRARIES}

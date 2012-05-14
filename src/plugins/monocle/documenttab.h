@@ -20,6 +20,8 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "interfaces/monocle/idocument.h"
+#include "ui_documenttab.h"
 
 namespace LeechCraft
 {
@@ -31,8 +33,12 @@ namespace Monocle
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
+		Ui::DocumentTab Ui_;
+
 		TabClassInfo TC_;
 		QObject *ParentPlugin_;
+
+		IDocument_ptr CurrentDoc_;
 	public:
 		DocumentTab (const TabClassInfo&, QObject*);
 

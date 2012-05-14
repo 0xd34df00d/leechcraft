@@ -16,41 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "documenttab.h"
 #include "core.h"
+#include <interfaces/iplugin2.h>
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	DocumentTab::DocumentTab (const TabClassInfo& tc, QObject* parent)
-	: TC_ (tc)
-	, ParentPlugin_ (parent)
+	Core::Core ()
 	{
-		Ui_.setupUi (this);
-
-		CurrentDoc_ = Core::Instance ().LoadDocument ("/home/d34df00d/Programming/Generating/docs/Rudoy2012Generation.pdf");
 	}
 
-	TabClassInfo DocumentTab::GetTabClassInfo () const
+	Core& Core::Instance ()
 	{
-		return TC_;
+		static Core c;
+		return c;
 	}
 
-	QObject* DocumentTab::ParentMultiTabs ()
+	void Core::AddPlugin (QObject *pluginObj)
 	{
-		return ParentPlugin_;
+		auto plugin2 = qobject_cast<IPlugin2*> (pluginObj);
+		const auto& classes = plugin2->GetPluginClasses ();
+		if (classes.contains ("org.LeechCraft.Monocle.IBackendPlugin"))
+			Backends_ << qobject_cast<IBackendPlugin*> (pluginObj);
 	}
 
-	void DocumentTab::Remove ()
+	IDocument_ptr Core::LoadDocument (const QString& path)
 	{
-		emit removeTab (this);
-		deleteLater ();
-	}
+		Q_FOREACH (auto backend, Backends_)
+			if (backend->CanLoadDocument (path))
+				return backend->LoadDocument (path);
 
-	QToolBar* DocumentTab::GetToolBar () const
-	{
-		return 0;
+		return IDocument_ptr ();
 	}
 }
 }

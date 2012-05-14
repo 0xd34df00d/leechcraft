@@ -18,6 +18,7 @@
 
 #include "monocle.h"
 #include <QIcon>
+#include "core.h"
 #include "documenttab.h"
 
 namespace LeechCraft
@@ -99,6 +100,7 @@ namespace Monocle
 
 	void Plugin::AddPlugin (QObject *pluginObj)
 	{
+		Core::Instance ().AddPlugin (pluginObj);
 	}
 }
 }
