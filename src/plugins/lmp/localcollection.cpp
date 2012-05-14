@@ -162,13 +162,13 @@ namespace LMP
 				this,
 				SIGNAL (scanProgressChanged (int)));
 
-		auto loadWatcher = new QFutureWatcher<Collection::Artists_t> ();
+		auto loadWatcher = new QFutureWatcher<LocalCollectionStorage::LoadResult> ();
 		connect (loadWatcher,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleLoadFinished ()));
 		auto worker = [] () { return LocalCollectionStorage ().Load (); };
-		auto future = QtConcurrent::run (std::function<Collection::Artists_t ()> (worker));
+		auto future = QtConcurrent::run (std::function<LocalCollectionStorage::LoadResult ()> (worker));
 		loadWatcher->setFuture (future);
 
 		auto& xsd = XmlSettingsManager::Instance ();
@@ -215,7 +215,7 @@ namespace LMP
 		RemoveRootPaths (RootPaths_);
 	}
 
-	void LocalCollection::Scan (const QString& path)
+	void LocalCollection::Scan (const QString& path, bool root)
 	{
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
 		auto paths = QSet<QString>::fromList (RecIterate (path));
@@ -223,7 +223,8 @@ namespace LMP
 		if (paths.isEmpty ())
 			return;
 
-		AddRootPaths (QStringList (path));
+		if (root)
+			AddRootPaths (QStringList (path));
 
 		PresentPaths_ += paths;
 		emit scanStarted (paths.size ());
@@ -596,9 +597,11 @@ namespace LMP
 
 	void LocalCollection::handleLoadFinished ()
 	{
-		auto watcher = dynamic_cast<QFutureWatcher<Collection::Artists_t>*> (sender ());
+		auto watcher = dynamic_cast<QFutureWatcher<LocalCollectionStorage::LoadResult>*> (sender ());
 		watcher->deleteLater ();
-		Artists_ = watcher->result ();
+		const auto& result = watcher->result ();
+		Artists_ = result.Artists_;
+		Storage_->Load (result);
 
 		Q_FOREACH (const auto& artist, Artists_)
 			Q_FOREACH (auto album, artist.Albums_)

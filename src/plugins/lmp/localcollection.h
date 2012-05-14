@@ -108,7 +108,7 @@ namespace LMP
 		void Enqueue (const QModelIndex&, Player*);
 		void Clear ();
 
-		void Scan (const QString&);
+		void Scan (const QString&, bool root = true);
 		void Unscan (const QString&);
 		void Rescan ();
 

@@ -137,7 +137,7 @@ namespace LMP
 		return artists.values ();
 	}
 
-	Collection::Artists_t LocalCollectionStorage::Load ()
+	LocalCollectionStorage::LoadResult LocalCollectionStorage::Load ()
 	{
 		Collection::Artists_t artists = GetAllArtists ();
 		const auto& albums = GetAllAlbums ();
@@ -162,7 +162,19 @@ namespace LMP
 		}
 		GetArtistAlbums_.finish ();
 
-		return artists;
+		LoadResult result =
+		{
+			artists,
+			PresentArtists_,
+			PresentAlbums_
+		};
+		return result;
+	}
+
+	void LocalCollectionStorage::Load (const LoadResult& result)
+	{
+		PresentAlbums_ = result.PresentAlbums_;
+		PresentArtists_ = result.PresentArtists_;
 	}
 
 	void LocalCollectionStorage::RemoveTrack (int id)
