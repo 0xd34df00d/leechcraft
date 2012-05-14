@@ -78,21 +78,20 @@ namespace Metida
 		QDomDocument document ("ValidateRequest");
 		auto result = GetStartPart ("LJ.XMLRPC.login", document);
 		document.appendChild (result.first);
-		const QByteArray passwordHash = QCryptographicHash::hash (password.toUtf8 ().toHex (),
-				QCryptographicHash::Md5);
+		const QByteArray passwordHash = QCryptographicHash::hash (password.toUtf8 (),
+				QCryptographicHash::Md5).toHex ();
 
-		QString hpassword = QCryptographicHash::hash ((challenge + passwordHash).toUtf8 ().toHex (),
-				QCryptographicHash::Md5);
+		QString hpassword = QCryptographicHash::hash ((challenge + passwordHash).toUtf8 (),
+				QCryptographicHash::Md5).toHex ();
 		result.second.appendChild (GetMemberElement ("auth_method", "string",
 				"challenge", document));
 		result.second.appendChild (GetMemberElement ("auth_challenge", "string",
 				challenge, document));
 		result.second.appendChild (GetMemberElement ("username", "string",
 				login, document));
-		result.second.appendChild (GetMemberElement ("hpassword", "string",
+		result.second.appendChild (GetMemberElement ("auth_response", "string",
 				hpassword, document));
 
-		qDebug () << Q_FUNC_INFO << document.toByteArray ();
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
 						document.toByteArray ());
@@ -178,11 +177,12 @@ namespace Metida
 		if (!reply)
 			return;
 
-// 		QDomDocument document;
-// 		document.setContent (reply->readAll ());
-
-		qDebug () << Q_FUNC_INFO << reply->readAll ();
-
+		QDomDocument document;
+		document.setContent (reply->readAll ());
+		if (document.elementsByTagName ("fault").isEmpty ())
+			emit validatingFinished (true);
+		else
+			emit validatingFinished (false);
 		reply->deleteLater ();
 	}
 

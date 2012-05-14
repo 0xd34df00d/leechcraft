@@ -58,6 +58,10 @@ namespace Metida
 		static LJAccount* Deserialize (const QByteArray& data, QObject *parent);
 
 		void Validate ();
+
+	public slots:
+		void handleValidatingFinished (bool success);
+
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
