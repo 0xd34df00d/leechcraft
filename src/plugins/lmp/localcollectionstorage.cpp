@@ -94,10 +94,9 @@ namespace LMP
 				QList<Collection::Album_ptr> ()
 			};
 			if (!IsPresent (artist, artist.ID_))
-			{
 				AddArtist (artist);
+			if (!artists.contains (artist.ID_))
 				artists [artist.ID_] = artist;
-			}
 
 			Collection::Album album =
 			{
