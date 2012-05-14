@@ -23,6 +23,7 @@
 #include "ljaccountconfigurationwidget.h"
 #include "ljaccountconfigurationdialog.h"
 #include "ljbloggingplatform.h"
+#include "ljxmlrpc.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -34,6 +35,7 @@ namespace Metida
 	LJAccount::LJAccount (const QString& name, QObject *parent)
 	: QObject (parent)
 	, ParentBloggingPlatform_ (qobject_cast<LJBloggingPlatform*> (parent))
+	, LJXmlRpc_ (new LJXmlRPC (this))
 	, Name_ (name)
 	{
 	}
@@ -134,6 +136,16 @@ namespace Metida
 		in >> result->Login_;
 
 		return result;
+	}
+
+	void LJAccount::Validate ()
+	{
+		QString key ("org.LeechCraft.Blogique.PassForAccount/" + GetAccountID ());
+		QString pass = Util::GetPassword (key,
+				QString (),
+				&Core::Instance ());
+
+		LJXmlRpc_->Validate (Login_, pass);
 	}
 
 }

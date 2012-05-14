@@ -30,6 +30,7 @@ namespace Metida
 
 	class LJAccountConfigurationWidget;
 	class LJBloggingPlatform;
+	class LJXmlRPC;
 
 	class LJAccount : public QObject
 							, public IAccount
@@ -38,6 +39,7 @@ namespace Metida
 		Q_INTERFACES (LeechCraft::Blogique::IAccount)
 
 		LJBloggingPlatform *ParentBloggingPlatform_;
+		LJXmlRPC *LJXmlRpc_;
 		QString Name_;
 		QString Login_;
 	public:
@@ -54,9 +56,12 @@ namespace Metida
 
 		QByteArray Serialize () const;
 		static LJAccount* Deserialize (const QByteArray& data, QObject *parent);
+
+		void Validate ();
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
+		void accountChecked (QObject *accObj);
 	};
 }
 }

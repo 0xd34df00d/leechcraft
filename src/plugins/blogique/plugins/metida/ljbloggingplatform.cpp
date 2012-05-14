@@ -96,16 +96,17 @@ namespace Metida
 		}
 
 		LJAccount *account = new LJAccount (name, this);
+		connect (account,
+				SIGNAL (accountChecked (QObject*)),
+				this,
+				SLOT (addAccount (QObject*)));
 		account->FillSettings (w);
 		const QString& pass = w->GetPassword ();
 		if (!pass.isEmpty ())
 			Util::SavePassword(pass,
 					"org.LeechCraft.Blogique.PassForAccount/" + account->GetAccountID (),
 					&Core::Instance ());
-
-		LJAccounts_ << account;
-		saveAccounts ();
-		emit accountAdded (account);
+		account->Validate ();
 	}
 
 	void LJBloggingPlatform::RemoveAccount (QObject *account)
@@ -176,6 +177,20 @@ namespace Metida
 		}
 		settings.endArray ();
 		settings.sync ();
+	}
+
+	void LJBloggingPlatform::addAccount (QObject *accObj)
+	{
+		if (!accObj)
+			sender ()->deleteLater ();
+
+		LJAccount *acc = qobject_cast<LJAccount*> (accObj);
+		if (!acc)
+			return;
+
+		LJAccounts_ << acc;
+		saveAccounts ();
+		emit accountAdded (accObj);
 	}
 
 }
