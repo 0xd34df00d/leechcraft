@@ -23,6 +23,8 @@
 #include "interfaces/monocle/idocument.h"
 #include "ui_documenttab.h"
 
+#include <QComboBox>
+
 namespace LeechCraft
 {
 namespace Monocle
@@ -40,6 +42,9 @@ namespace Monocle
 		TabClassInfo TC_;
 		QObject *ParentPlugin_;
 
+		QToolBar *Toolbar_;
+		QComboBox *ScalesBox_;
+
 		QGraphicsScene Scene_;
 
 		IDocument_ptr CurrentDoc_;
@@ -47,10 +52,16 @@ namespace Monocle
 	public:
 		DocumentTab (const TabClassInfo&, QObject*);
 
-		virtual TabClassInfo GetTabClassInfo () const;
-		virtual QObject* ParentMultiTabs ();
-		virtual void Remove ();
-		virtual QToolBar* GetToolBar () const;
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
+	private:
+		void SetupToolbar ();
+
+		void Relayout (double);
+	private slots:
+		void handleScaleChosen (int);
 	signals:
 		void removeTab (QWidget*);
 	};
