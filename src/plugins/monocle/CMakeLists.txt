@@ -10,9 +10,11 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	monocle.cpp
+	documenttab.cpp
 	)
 SET (HEADERS
 	monocle.h
+	documenttab.h
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

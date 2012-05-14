@@ -16,48 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/ipluginready.h>
+#include "documenttab.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	class Plugin : public QObject
-					, public IInfo
-					, public IHaveTabs
-					, public IPluginReady
+	DocumentTab::DocumentTab (const TabClassInfo& tc, QObject* parent)
+	: TC_ (tc)
+	, ParentPlugin_ (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IPluginReady)
+	}
 
-		TabClassInfo DocTabInfo_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	TabClassInfo DocumentTab::GetTabClassInfo () const
+	{
+		return TC_;
+	}
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+	QObject* DocumentTab::ParentMultiTabs ()
+	{
+		return ParentPlugin_;
+	}
 
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-	};
+	void DocumentTab::Remove ()
+	{
+		emit removeTab (this);
+		deleteLater ();
+	}
+
+	QToolBar* DocumentTab::GetToolBar () const
+	{
+		return 0;
+	}
 }
 }
-

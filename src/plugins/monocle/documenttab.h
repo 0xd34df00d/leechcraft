@@ -18,46 +18,30 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
+#include <QWidget>
 #include <interfaces/ihavetabs.h>
-#include <interfaces/ipluginready.h>
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	class Plugin : public QObject
-					, public IInfo
-					, public IHaveTabs
-					, public IPluginReady
+	class DocumentTab : public QWidget
+					  , public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IPluginReady)
+		Q_INTERFACES (ITabWidget)
 
-		TabClassInfo DocTabInfo_;
+		TabClassInfo TC_;
+		QObject *ParentPlugin_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		DocumentTab (const TabClassInfo&, QObject*);
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
-
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
+		virtual TabClassInfo GetTabClassInfo () const;
+		virtual QObject* ParentMultiTabs ();
+		virtual void Remove ();
+		virtual QToolBar* GetToolBar () const;
 	signals:
-		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
 	};
 }
 }
-

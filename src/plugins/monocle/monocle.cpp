@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 #include "monocle.h"
 #include <QIcon>
+#include "documenttab.h"
 
 namespace LeechCraft
 {
@@ -73,6 +74,15 @@ namespace Monocle
 	{
 		if (id == DocTabInfo_.TabClass_)
 		{
+			auto tab = new DocumentTab (DocTabInfo_, this);
+			emit addNewTab (DocTabInfo_.VisibleName_, tab);
+			emit changeTabIcon (tab, DocTabInfo_.Icon_);
+			emit raiseTab (tab);
+
+			connect (tab,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO
