@@ -53,7 +53,13 @@ namespace Azoth
 	 */
 	class IAccount
 	{
+		bool IsShown_;
 	public:
+		IAccount ()
+		: IsShown_ (true)
+		{
+		}
+
 		virtual ~IAccount () {}
 
 		/** Represents the features that may be supported by an acoount.
@@ -259,6 +265,16 @@ namespace Azoth
 		 * @return The file transfer manager, or NULL if not supported.
 		 */
 		virtual QObject* GetTransferManager () const = 0;
+
+		virtual bool IsShownInRoster () const
+		{
+			return IsShown_;
+		}
+
+		virtual void SetShownInRoster (bool shown)
+		{
+			IsShown_ = shown;
+		}
 
 		/** @brief This signal should be emitted when account is renamed.
 		 *
