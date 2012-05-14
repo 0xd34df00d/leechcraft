@@ -84,6 +84,10 @@ namespace Monocle
 					SIGNAL (removeTab (QWidget*)),
 					this,
 					SIGNAL (removeTab (QWidget*)));
+			connect (tab,
+					SIGNAL (changeTabName (QWidget*, QString)),
+					this,
+					SIGNAL (changeTabName (QWidget*, QString)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO

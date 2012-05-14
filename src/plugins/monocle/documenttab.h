@@ -73,6 +73,7 @@ namespace Monocle
 
 		void handleScaleChosen (int);
 	signals:
+		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);
 	};
 }

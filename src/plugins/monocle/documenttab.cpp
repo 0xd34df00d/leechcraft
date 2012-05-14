@@ -158,6 +158,15 @@ namespace Monocle
 		Pages_.clear ();
 
 		CurrentDoc_ = Core::Instance ().LoadDocument (path);
+		if (!CurrentDoc_)
+		{
+			emit changeTabName (this, TC_.VisibleName_);
+			return;
+		}
+
+		const auto& title = QFileInfo (path).fileName ();
+		emit changeTabName (this, title);
+
 		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
 		{
 			auto item = new PageGraphicsItem (CurrentDoc_, i);
