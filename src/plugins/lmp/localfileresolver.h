@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QHash>
 #include <QReadWriteLock>
+#include <QMutex>
 #include "mediainfo.h"
 
 namespace LeechCraft
@@ -42,6 +43,7 @@ namespace LMP
 	{
 		Q_OBJECT
 
+		QMutex TaglibMutex_;
 		QReadWriteLock CacheLock_;
 		QHash<QString, MediaInfo> Cache_;
 	public:

@@ -53,6 +53,8 @@ namespace LMP
 				return Cache_ [file];
 		}
 
+		QMutexLocker tlLocker (&TaglibMutex_);
+
 #ifdef Q_OS_WIN32
 		TagLib::FileRef r (file.toStdWString ().c_str ());
 #else
