@@ -65,6 +65,8 @@ namespace Azoth
 	private:
 		void CreateMenu ();
 		QMenu* CreateStatusChangeMenu (const char*, bool withCustom = false);
+	public slots:
+		void handleAccountVisibilityChanged ();
 	private slots:
 		void updateFastStatusButton (LeechCraft::Azoth::State);
 		void treeActivated (const QModelIndex&);

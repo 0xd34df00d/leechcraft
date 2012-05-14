@@ -1770,6 +1770,12 @@ namespace Azoth
 		UnreadQueueManager_->ShowNext ();
 	}
 
+	void Core::saveAccountVisibility (IAccount *account)
+	{
+		const auto& id = "ShowAccount_" + account->GetAccountID ();
+		XmlSettingsManager::Instance ().setProperty (id, account->IsShownInRoster ());
+	}
+
 	void Core::handleNewProtocols (const QList<QObject*>& protocols)
 	{
 		Q_FOREACH (QObject *protoObj, protocols)
@@ -1793,8 +1799,7 @@ namespace Azoth
 
 	void Core::addAccount (QObject *accObject)
 	{
-		IAccount *account =
-				qobject_cast<IAccount*> (accObject);
+		IAccount *account = qobject_cast<IAccount*> (accObject);
 		if (!account)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1803,6 +1808,10 @@ namespace Azoth
 					<< sender ();
 			return;
 		}
+
+		const bool show = XmlSettingsManager::Instance ()
+				.Property ("ShowAccount_" + account->GetAccountID (), true).toBool ();
+		account->SetShownInRoster (show);
 
 		emit accountAdded (account);
 

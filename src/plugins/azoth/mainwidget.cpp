@@ -324,6 +324,11 @@ namespace Azoth
 		return result;
 	}
 
+	void MainWidget::handleAccountVisibilityChanged ()
+	{
+		ProxyModel_->invalidate ();
+	}
+
 	void MainWidget::updateFastStatusButton (State state)
 	{
 		FastStatusButton_->defaultAction ()->setIcon (Core::Instance ().GetIconForState (state));
