@@ -166,6 +166,8 @@ namespace Monocle
 		Ui_.PagesView_->ensureVisible (Pages_.value (0), 0, 0);
 
 		Relayout (1);
+
+		updateNumLabel ();
 	}
 
 	void DocumentTab::handleGoPrev ()
