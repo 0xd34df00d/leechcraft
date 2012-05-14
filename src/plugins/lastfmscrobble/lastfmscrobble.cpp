@@ -98,6 +98,10 @@ namespace Lastfmscrobble
 		LFSubmitter_->Love ();
 	}
 
+	void Plugin::RerequestRecommendations ()
+	{
+	}
+
 	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)
 	{
 		return new PendingSimilarArtists (name, num, this);
