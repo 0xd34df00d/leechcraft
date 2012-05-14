@@ -25,6 +25,15 @@ namespace Monocle
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		DocTabInfo_ =
+		{
+			GetUniqueID () + "_Document",
+			"Monocle",
+			GetInfo (),
+			GetIcon (),
+			55,
+			TFOpenableByRequest | TFSuggestOpening
+		};
 	}
 
 	void Plugin::SecondInit ()
@@ -53,6 +62,33 @@ namespace Monocle
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	TabClasses_t Plugin::GetTabClasses () const
+	{
+		return { DocTabInfo_ };
+	}
+
+	void Plugin::TabOpenRequested (const QByteArray& id)
+	{
+		if (id == DocTabInfo_.TabClass_)
+		{
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< id;
+	}
+
+	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Monocle.IBackendPlugin";
+		return result;
+	}
+
+	void Plugin::AddPlugin (QObject *pluginObj)
+	{
 	}
 }
 }

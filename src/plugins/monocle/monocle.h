@@ -20,6 +20,8 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavetabs.h>
+#include <interfaces/ipluginready.h>
 
 namespace LeechCraft
 {
@@ -27,9 +29,13 @@ namespace Monocle
 {
 	class Plugin : public QObject
 					, public IInfo
+					, public IHaveTabs
+					, public IPluginReady
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IHaveTabs IPluginReady)
+
+		TabClassInfo DocTabInfo_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -38,6 +44,19 @@ namespace Monocle
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
+
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
 	};
 }
 }
