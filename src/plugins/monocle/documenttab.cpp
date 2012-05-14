@@ -18,6 +18,7 @@
 
 #include "documenttab.h"
 #include "core.h"
+#include "pagegraphicsitem.h"
 
 namespace LeechCraft
 {
@@ -28,8 +29,20 @@ namespace Monocle
 	, ParentPlugin_ (parent)
 	{
 		Ui_.setupUi (this);
+		Ui_.PagesView_->setScene (&Scene_);
+		Ui_.PagesView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
 
 		CurrentDoc_ = Core::Instance ().LoadDocument ("/home/d34df00d/Programming/Generating/docs/Rudoy2012Generation.pdf");
+		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
+		{
+			auto item = new PageGraphicsItem (CurrentDoc_, i);
+			Scene_.addItem (item);
+
+			const auto& size = CurrentDoc_->GetPageSize (i);
+			item->moveBy (0, (size.height () + 10) * i);
+
+			Pages_ << item;
+		}
 	}
 
 	TabClassInfo DocumentTab::GetTabClassInfo () const

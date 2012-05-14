@@ -18,7 +18,14 @@
     <number>1</number>
    </property>
    <item>
-    <widget class="QGraphicsView" name="PagesView_"/>
+    <widget class="QGraphicsView" name="PagesView_">
+     <property name="renderHints">
+      <set>QPainter::Antialiasing|QPainter::HighQualityAntialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing</set>
+     </property>
+     <property name="dragMode">
+      <enum>QGraphicsView::ScrollHandDrag</enum>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

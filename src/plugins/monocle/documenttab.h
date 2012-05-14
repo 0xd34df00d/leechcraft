@@ -27,6 +27,8 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	class PageGraphicsItem;
+
 	class DocumentTab : public QWidget
 					  , public ITabWidget
 	{
@@ -38,7 +40,10 @@ namespace Monocle
 		TabClassInfo TC_;
 		QObject *ParentPlugin_;
 
+		QGraphicsScene Scene_;
+
 		IDocument_ptr CurrentDoc_;
+		QList<PageGraphicsItem*> Pages_;
 	public:
 		DocumentTab (const TabClassInfo&, QObject*);
 
