@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <interfaces/monocle/ibackendplugin.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -29,14 +30,17 @@ namespace Monocle
 	{
 		Q_OBJECT
 
+		ICoreProxy_ptr Proxy_;
 		QList<IBackendPlugin*> Backends_;
 
 		Core ();
 	public:
 		static Core& Instance ();
 
-		void AddPlugin (QObject*);
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy () const;
 
+		void AddPlugin (QObject*);
 		IDocument_ptr LoadDocument (const QString&);
 	};
 }

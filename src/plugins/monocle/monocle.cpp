@@ -27,6 +27,8 @@ namespace Monocle
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Core::Instance ().SetProxy (proxy);
+
 		DocTabInfo_ =
 		{
 			GetUniqueID () + "_Document",

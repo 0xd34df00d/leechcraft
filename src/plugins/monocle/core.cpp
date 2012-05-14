@@ -33,6 +33,16 @@ namespace Monocle
 		return c;
 	}
 
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
+
+	ICoreProxy_ptr Core::GetProxy () const
+	{
+		return Proxy_;
+	}
+
 	void Core::AddPlugin (QObject *pluginObj)
 	{
 		auto plugin2 = qobject_cast<IPlugin2*> (pluginObj);
