@@ -124,6 +124,10 @@ namespace Xtazy
 	{
 	}
 
+	void Plugin::RerequestRecommendations ()
+	{
+	}
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
