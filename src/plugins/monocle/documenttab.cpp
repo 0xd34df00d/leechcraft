@@ -249,6 +249,9 @@ namespace Monocle
 
 	void DocumentTab::updateNumLabel ()
 	{
+		if (!CurrentDoc_)
+			return;
+
 		const auto& str = QString::number (GetCurrentPage () + 1) +
 				" / " +
 				QString::number (CurrentDoc_->GetNumPages ());

@@ -46,10 +46,9 @@ namespace Monocle
 		QComboBox *ScalesBox_;
 		QLineEdit *PageNumLabel_;
 
-		QGraphicsScene Scene_;
-
 		IDocument_ptr CurrentDoc_;
 		QList<PageGraphicsItem*> Pages_;
+		QGraphicsScene Scene_;
 
 		enum class LayoutMode
 		{
