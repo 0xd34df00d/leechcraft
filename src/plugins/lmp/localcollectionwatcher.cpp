@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "localcollectionwatcher.h"
+#include <algorithm>
 #include <QFileSystemWatcher>
 #include <QtDebug>
 #include <QDir>
