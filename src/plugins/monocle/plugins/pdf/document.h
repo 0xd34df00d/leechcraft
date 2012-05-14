@@ -16,8 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "pdf.h"
-#include <QIcon>
+#pragma once
+
+#include <memory>
+#include <QObject>
+#include <interfaces/monocle/idocument.h>
+
+namespace Poppler
+{
+	class Document;
+}
 
 namespace LeechCraft
 {
@@ -25,51 +33,23 @@ namespace Monocle
 {
 namespace PDF
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
-	{
-	}
+	typedef std::shared_ptr<Poppler::Document> PDocument_ptr;
 
-	void Plugin::SecondInit ()
+	class Document : public QObject
+				   , public IDocument
 	{
-	}
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Monocle::IDocument)
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Monocle.PDF";
-	}
+		PDocument_ptr PDocument_;
+	public:
+		Document (const QString&, QObject* = 0);
 
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Monocle PDF";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("PDF backend for Monocle.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
-	}
-
-	bool Plugin::CanReadFile (const QString& file)
-	{
-		return false;
-	}
+		bool IsValid () const;
+		int GetNumPages () const;
+		QSize GetPageSize (int) const;
+		QImage RenderPage (int, double, double);
+	};
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_monocle_pdf, LeechCraft::Monocle::PDF::Plugin);

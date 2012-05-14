@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/monocle/ibackendplugin.h>
 
 namespace LeechCraft
 {
@@ -28,10 +30,12 @@ namespace Monocle
 namespace PDF
 {
 	class Plugin : public QObject
-					, public IInfo
+				 , public IInfo
+				 , public IPlugin2
+				 , public IBackendPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -40,6 +44,10 @@ namespace PDF
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QSet<QByteArray> GetPluginClasses () const;
+
+		bool CanReadFile (const QString&);
 	};
 }
 }

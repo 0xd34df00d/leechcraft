@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "pdf.h"
-#include <QIcon>
+#include "document.h"
+#include <poppler-qt4.h>
 
 namespace LeechCraft
 {
@@ -25,51 +25,39 @@ namespace Monocle
 {
 namespace PDF
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	Document::Document (const QString& path, QObject *parent)
+	: QObject (parent)
+	, PDocument_ (Poppler::Document::load (path))
 	{
 	}
 
-	void Plugin::SecondInit ()
+	bool Document::IsValid () const
 	{
+		return PDocument_ && !PDocument_->isLocked ();
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	int Document::GetNumPages () const
 	{
-		return "org.LeechCraft.Monocle.PDF";
+		return PDocument_->numPages ();
 	}
 
-	void Plugin::Release ()
+	QSize Document::GetPageSize (int num) const
 	{
+		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
+		if (!page)
+			return QSize ();
+
+		return page->pageSize ();
 	}
 
-	QString Plugin::GetName () const
+	QImage Document::RenderPage (int num, double xRes, double yRes)
 	{
-		return "Monocle PDF";
-	}
+		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
+		if (!page)
+			return QImage ();
 
-	QString Plugin::GetInfo () const
-	{
-		return tr ("PDF backend for Monocle.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
-	}
-
-	bool Plugin::CanReadFile (const QString& file)
-	{
-		return false;
+		return page->renderToImage (xRes, yRes);
 	}
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_monocle_pdf, LeechCraft::Monocle::PDF::Plugin);
