@@ -155,7 +155,7 @@ namespace Monocle
 		const auto& rect = Ui_.PagesView_->viewport ()->contentsRect ();
 		auto item = Ui_.PagesView_->itemAt (QPoint (rect.width (), rect.height ()) / 2);
 		if (!item)
-			item = Ui_.PagesView_->itemAt (QPoint (rect.width (), rect.height () - 2 * Margin) / 2);
+			item = Ui_.PagesView_->itemAt (QPoint (rect.width () - 2 * Margin, rect.height () - 2 * Margin) / 2);
 		return Pages_.indexOf (static_cast<PageGraphicsItem*> (item));
 	}
 
@@ -189,6 +189,7 @@ namespace Monocle
 		}
 
 		Scene_.setSceneRect (Scene_.itemsBoundingRect ());
+		updateNumLabel ();
 	}
 
 	void DocumentTab::selectFile ()
