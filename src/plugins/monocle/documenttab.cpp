@@ -112,6 +112,8 @@ namespace Monocle
 		std::vector<double> scales = { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2 };
 		Q_FOREACH (double scale, scales)
 			ScalesBox_->addItem (QString::number (scale * 100) + '%', scale);
+		ScalesBox_->setCurrentIndex (std::distance (scales.begin (),
+					std::find (scales.begin (), scales.end (), 1)));
 		connect (ScalesBox_,
 				SIGNAL (currentIndexChanged (int)),
 				this,
