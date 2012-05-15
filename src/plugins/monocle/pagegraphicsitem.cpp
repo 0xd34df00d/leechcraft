@@ -39,6 +39,11 @@ namespace Monocle
 		XScale_ = xs;
 		YScale_ = ys;
 
+		auto size = Doc_->GetPageSize (PageNum_);
+		size.rwidth () *= xs;
+		size.rheight () *= ys;
+		setPixmap (QPixmap (size));
+
 		Invalid_ = true;
 
 		update ();
