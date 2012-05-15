@@ -164,6 +164,12 @@ namespace Metida
 	void LJAccount::handleValidatingFinished (bool success)
 	{
 		IsValidated_ = success;
+		qDebug () << Q_FUNC_INFO
+				<< "account"
+				<< GetAccountID ()
+				<< "validating result is"
+				<< IsValidated_;
+
 		emit accountValidated (IsValidated_);
 	}
 }

@@ -153,8 +153,23 @@ namespace Metida
 		if (!reply)
 			return;
 
+		QByteArray content = reply->readAll ();
+		QDomDocument document;
+		QString errorMsg;
+		int errorLine = -1, errorColumn = -1;
+		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< errorMsg
+					<< "in line:"
+					<< errorLine
+					<< "column:"
+					<< errorColumn;
+			return;
+		}
+
 		QXmlQuery query;
-		query.setFocus (reply->readAll ());
+		query.setFocus (content);
 
 		QString challenge;
 		query.setQuery ("/methodResponse/params/param/value/struct/member[name='challenge']/value/string/text()");
@@ -172,7 +187,20 @@ namespace Metida
 			return;
 
 		QByteArray content = reply->readAll ();
-		QDomDocument document (content);
+		QDomDocument document;
+		QString errorMsg;
+		int errorLine = -1, errorColumn = -1;
+		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< errorMsg
+					<< "in line:"
+					<< errorLine
+					<< "column:"
+					<< errorColumn;
+			return;
+		}
+
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			emit validatingFinished (true);
