@@ -45,11 +45,6 @@ namespace Metida
 		void ValidateAccountData (const QString& login,
 				const QString& pass, const QString& challenge);
 
-		QPair<QDomElement, QDomElement> GetStartPart (const QString& name, QDomDocument doc);
-		QDomElement GetMemberElement (const QString& name,
-				const QString& type, const QString& value, QDomDocument doc);
-		QNetworkRequest CreateNetworkRequest () const;
-
 	private slots:
 		void handleChallengeReplyFinished ();
 		void handleValidateReplyFinished ();

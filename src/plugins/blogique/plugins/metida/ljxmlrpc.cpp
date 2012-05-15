@@ -17,12 +17,12 @@
  **********************************************************************/
 
 #include "ljxmlrpc.h"
-#include "core.h"
 #include <QDomDocument>
 #include <QtDebug>
 #include <QCryptographicHash>
 #include <QNetworkReply>
 #include <QXmlQuery>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -38,13 +38,66 @@ namespace Metida
 	void LJXmlRPC::Validate (const QString& login, const QString& password)
 	{
 		ApiCallQueue_ << [login, password, this] (const QString& challenge)
-				{ValidateAccountData (login, password, challenge);};
+				{ ValidateAccountData (login, password, challenge); };
 		GenerateChallenge ();
+	}
+
+	namespace
+	{
+		QPair<QDomElement, QDomElement> GetStartPart (const QString& name,
+				QDomDocument doc)
+		{
+			QDomElement methodCall = doc.createElement ("methodCall");
+			doc.appendChild (methodCall);
+			QDomElement methodName = doc.createElement ("methodName");
+			methodCall.appendChild (methodName);
+			QDomText methodNameText = doc.createTextNode (name);
+			methodName.appendChild (methodNameText);
+			QDomElement params = doc.createElement ("params");
+			methodCall.appendChild (params);
+			QDomElement param = doc.createElement ("param");
+			params.appendChild (param);
+			QDomElement value = doc.createElement ("value");
+			param.appendChild (value);
+			QDomElement structElem = doc.createElement ("struct");
+			value.appendChild (structElem);
+
+			return {methodCall, structElem};
+		}
+
+		QDomElement GetMemberElement (const QString& nameVal,
+				const QString& typeVal, const QString& value, QDomDocument doc)
+		{
+			QDomElement member = doc.createElement ("member");
+			QDomElement name = doc.createElement ("name");
+			member.appendChild (name);
+			QDomText nameText = doc.createTextNode (nameVal);
+			name.appendChild (nameText);
+			QDomElement valueType = doc.createElement ("value");
+			member.appendChild (valueType);
+			QDomElement type = doc.createElement (typeVal);
+			valueType.appendChild (type);
+			QDomText text = doc.createTextNode (value);
+			type.appendChild (text);
+
+			return member;
+		}
+
+		QNetworkRequest CreateNetworkRequest ()
+		{
+			QNetworkRequest request;
+			auto userAgent = "LeechCraft Blogique " +
+					Core::Instance ().GetCoreProxy ()->GetVersion ().toUtf8 ();
+			request.setUrl (QUrl ("http://www.livejournal.com/interface/xmlrpc"));
+			request.setRawHeader ("User-Agent", userAgent);
+			request.setHeader (QNetworkRequest::ContentTypeHeader, "text/xml");
+
+			return request;
+		}
 	}
 
 	void LJXmlRPC::GenerateChallenge () const
 	{
-		QByteArray output;
 		QDomDocument document ("GenerateChallenge");
 		QDomElement methodCall = document.createElement ("methodCall");
 		document.appendChild (methodCall);
@@ -95,65 +148,14 @@ namespace Metida
 				SLOT (handleValidateReplyFinished ()));
 	}
 
-	QPair<QDomElement, QDomElement>LJXmlRPC::GetStartPart (const QString& name, QDomDocument doc)
-	{
-		QDomElement methodCall = doc.createElement ("methodCall");
-		doc.appendChild (methodCall);
-		QDomElement methodName = doc.createElement ("methodName");
-		methodCall.appendChild (methodName);
-		QDomText methodNameText = doc.createTextNode (name);
-		methodName.appendChild (methodNameText);
-		QDomElement params = doc.createElement ("params");
-		methodCall.appendChild (params);
-		QDomElement param = doc.createElement ("param");
-		params.appendChild (param);
-		QDomElement value = doc.createElement ("value");
-		param.appendChild (value);
-		QDomElement structElem = doc.createElement ("struct");
-		value.appendChild (structElem);
-
-		return {methodCall, structElem};
-	}
-
-	QDomElement LJXmlRPC::GetMemberElement (const QString& nameVal,
-			const QString& typeVal, const QString& value, QDomDocument doc)
-	{
-		QDomElement member = doc.createElement ("member");
-		QDomElement name = doc.createElement ("name");
-		member.appendChild (name);
-		QDomText nameText = doc.createTextNode (nameVal);
-		name.appendChild (nameText);
-		QDomElement valueType = doc.createElement ("value");
-		member.appendChild (valueType);
-		QDomElement type = doc.createElement (typeVal);
-		valueType.appendChild (type);
-		QDomText text = doc.createTextNode (value);
-		type.appendChild (text);
-
-		return member;
-	}
-
-	QNetworkRequest LJXmlRPC::CreateNetworkRequest () const
-	{
-		QNetworkRequest request;
-		QByteArray userAgent;
-		QTextStream in (&userAgent);
-		in << "LeechCraft Blogique " +
-				Core::Instance ().GetCoreProxy ()->GetVersion ();
-		request.setUrl (QUrl ("http://www.livejournal.com/interface/xmlrpc"));
-		request.setRawHeader ("User-Agent", userAgent);
-		request.setHeader (QNetworkRequest::ContentTypeHeader, "text/xml");
-
-		return request;
-	}
-
 	void LJXmlRPC::handleChallengeReplyFinished ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
 			return;
 
-		QByteArray content = reply->readAll ();
+		const auto& content = reply->readAll ();
+		reply->deleteLater ();
 		QDomDocument document;
 		QString errorMsg;
 		int errorLine = -1, errorColumn = -1;
@@ -177,7 +179,6 @@ namespace Metida
 			return;
 
 		ApiCallQueue_.dequeue () (challenge.simplified ());
-		reply->deleteLater ();
 	}
 
 	void LJXmlRPC::handleValidateReplyFinished ()
@@ -186,7 +187,8 @@ namespace Metida
 		if (!reply)
 			return;
 
-		QByteArray content = reply->readAll ();
+		const auto& content = reply->readAll ();
+		reply->deleteLater ();
 		QDomDocument document;
 		QString errorMsg;
 		int errorLine = -1, errorColumn = -1;
@@ -221,8 +223,6 @@ namespace Metida
 		if (!query.evaluateTo (&errorString))
 			return;
 		emit error (errorCode.toInt (), errorString);
-
-		reply->deleteLater ();
 	}
 
 }
