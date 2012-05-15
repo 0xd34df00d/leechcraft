@@ -63,9 +63,11 @@ namespace Blogique
 		void handleNewBloggingPlatforms (const QObjectList& platforms);
 		void addAccount (QObject *accObj);
 		void handleAccountRemoved (QObject *accObj);
+		void handleAccountValidated (QObject *accObj, bool validated);
 	signals:
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);
+		void accountValidated (QObject *account, bool validated);
 
 		void gotEntity (LeechCraft::Entity e);
 		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
