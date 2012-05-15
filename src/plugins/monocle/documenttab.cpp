@@ -258,12 +258,12 @@ namespace Monocle
 
 	void DocumentTab::handleGoPrev ()
 	{
-		SetCurrentPage (GetCurrentPage () - 1);
+		SetCurrentPage (GetCurrentPage () - (LayMode_ == LayoutMode::OnePage ? 1 : 2));
 	}
 
 	void DocumentTab::handleGoNext ()
 	{
-		SetCurrentPage (GetCurrentPage () + 1);
+		SetCurrentPage (GetCurrentPage () + (LayMode_ == LayoutMode::OnePage ? 1 : 2));
 	}
 
 	void DocumentTab::navigateNumLabel ()
