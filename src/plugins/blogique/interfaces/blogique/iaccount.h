@@ -85,6 +85,8 @@ namespace Blogique
 		 */
 		virtual void OpenConfigurationDialog () = 0;
 
+		virtual bool IsValidated () const = 0;
+
 		/** @brief This signal should be emitted when account is renamed.
 		 *
 		 * This signal should be emitted even after an explicit call to
