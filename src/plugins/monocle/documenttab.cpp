@@ -112,10 +112,11 @@ namespace Monocle
 		Toolbar_->addSeparator ();
 
 		ScalesBox_ = new QComboBox ();
+		ScalesBox_->addItem (tr ("Fit width"));
 		std::vector<double> scales = { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2 };
 		Q_FOREACH (double scale, scales)
 			ScalesBox_->addItem (QString::number (scale * 100) + '%', scale);
-		ScalesBox_->setCurrentIndex (std::distance (scales.begin (),
+		ScalesBox_->setCurrentIndex (1 + std::distance (scales.begin (),
 					std::find (scales.begin (), scales.end (), 1)));
 		connect (ScalesBox_,
 				SIGNAL (currentIndexChanged (int)),
@@ -148,7 +149,24 @@ namespace Monocle
 
 	double DocumentTab::GetCurrentScale () const
 	{
-		return ScalesBox_->itemData (ScalesBox_->currentIndex ()).toDouble ();
+		const int idx = ScalesBox_->currentIndex ();
+		switch (idx)
+		{
+		case 0:
+		{
+			const int pageIdx = GetCurrentPage ();
+			if (!CurrentDoc_ || pageIdx < 0)
+				return 1;
+
+			double width = CurrentDoc_->GetPageSize (pageIdx).width ();
+			double ratio = Ui_.PagesView_->viewport ()->contentsRect ().width () / (width + 2 * Margin);
+			if (LayMode_ != LayoutMode::OnePage)
+				ratio /= 2;
+			return ratio;
+		}
+		default:
+			return ScalesBox_->itemData (idx).toDouble ();
+		}
 	}
 
 	int DocumentTab::GetCurrentPage () const
