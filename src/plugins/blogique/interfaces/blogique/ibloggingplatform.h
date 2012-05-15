@@ -210,6 +210,8 @@ namespace Blogique
 		 * implement IAccount.
 		 */
 		virtual void accountRemoved (QObject *account) = 0;
+
+		virtual void accountValidated (QObject *account, bool validated) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IBloggingPlatform::BloggingPlatfromFeatures);
