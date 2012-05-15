@@ -37,8 +37,8 @@ namespace Blogique
 
 		enum Columns
 		{
-			Name_,
-			IsValidated_
+			Name,
+			IsValidated
 		};
 
 		Ui::AccountsListWidget Ui_;

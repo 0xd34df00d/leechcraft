@@ -138,7 +138,7 @@ namespace Blogique
 		}
 
 		QStandardItem *item = Account2Item_ [acc];
-		AccountsModel_->item (item->row (), Columns::IsValidated_)->setText (validated ?
+		AccountsModel_->item (item->row (), Columns::IsValidated)->setText (validated ?
 				tr ("Validated") :
 				tr ("Not validated"));
 		Ui_.Accounts_->header ()->setResizeMode (QHeaderView::ResizeToContents);
