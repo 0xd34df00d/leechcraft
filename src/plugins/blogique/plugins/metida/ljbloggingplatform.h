@@ -60,10 +60,13 @@ namespace Metida
 
 	private slots:
 		void saveAccounts ();
+	public slots:
+		void handleAccountValidated (bool validated);
 
 	signals:
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);
+		void accountValidated (QObject *account, bool validated);
 	};
 }
 }

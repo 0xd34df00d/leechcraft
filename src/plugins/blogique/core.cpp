@@ -152,6 +152,10 @@ namespace Blogique
 					SIGNAL (accountRemoved (QObject*)),
 					this,
 					SLOT (handleAccountRemoved (QObject*)));
+			connect (platform->GetObject (),
+					SIGNAL (accountValidated (QObject*, bool)),
+					this,
+					SLOT (handleAccountValidated (QObject*, bool)));
 		}
 	}
 
@@ -183,6 +187,21 @@ namespace Blogique
 		}
 
 		emit accountRemoved (accObj);
+	}
+
+	void Core::handleAccountValidated (QObject *accObj, bool validated)
+	{
+		IAccount *acc = qobject_cast<IAccount*> (accObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "account doesn't implement IAccount*"
+					<< accObj
+					<< sender ();
+			return;
+		}
+		
+		emit accountValidated (accObj, validated);
 	}
 
 }

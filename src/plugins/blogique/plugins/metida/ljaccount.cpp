@@ -23,6 +23,7 @@
 #include "ljaccountconfigurationwidget.h"
 #include "ljaccountconfigurationdialog.h"
 #include "ljbloggingplatform.h"
+#include "ljxmlrpc.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -34,8 +35,14 @@ namespace Metida
 	LJAccount::LJAccount (const QString& name, QObject *parent)
 	: QObject (parent)
 	, ParentBloggingPlatform_ (qobject_cast<LJBloggingPlatform*> (parent))
+	, LJXmlRpc_ (new LJXmlRPC (this))
 	, Name_ (name)
+	, IsValidated_ (false)
 	{
+		connect (LJXmlRpc_,
+				SIGNAL (validatingFinished (bool)),
+				this,
+				SLOT (handleValidatingFinished (bool)));
 	}
 
 	QObject* LJAccount::GetObject ()
@@ -88,6 +95,11 @@ namespace Metida
 		FillSettings (dia->ConfWidget ());
 	}
 
+	bool LJAccount::IsValidated () const
+	{
+		return IsValidated_;
+	}
+
 	void LJAccount::FillSettings (LJAccountConfigurationWidget *widget)
 	{
 		Login_ = widget->GetLogin ();
@@ -98,6 +110,7 @@ namespace Metida
 					&Core::Instance ());
 
 		emit accountSettingsChanged ();
+		Validate ();
 	}
 
 	QByteArray LJAccount::Serialize () const
@@ -108,7 +121,8 @@ namespace Metida
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << ver
 					<< Name_
-					<< Login_;
+					<< Login_
+					<< IsValidated_;
 		}
 
 		return result;
@@ -131,11 +145,33 @@ namespace Metida
 		QString name;
 		in >> name;
 		LJAccount *result = new LJAccount (name, parent);
-		in >> result->Login_;
+		in >> result->Login_
+				>> result->IsValidated_;
 
 		return result;
 	}
 
+	void LJAccount::Validate ()
+	{
+		QString key ("org.LeechCraft.Blogique.PassForAccount/" + GetAccountID ());
+		const QString& pass = Util::GetPassword (key,
+				QString (),
+				&Core::Instance ());
+
+		LJXmlRpc_->Validate (Login_, pass);
+	}
+
+	void LJAccount::handleValidatingFinished (bool success)
+	{
+		IsValidated_ = success;
+		qDebug () << Q_FUNC_INFO
+				<< "account"
+				<< GetAccountID ()
+				<< "validating result is"
+				<< IsValidated_;
+
+		emit accountValidated (IsValidated_);
+	}
 }
 }
 }
