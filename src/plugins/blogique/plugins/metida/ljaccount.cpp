@@ -20,11 +20,12 @@
 #include "ljaccount.h"
 #include <QtDebug>
 #include <util/passutils.h>
+#include <util/util.h>
+#include "core.h"
 #include "ljaccountconfigurationwidget.h"
 #include "ljaccountconfigurationdialog.h"
 #include "ljbloggingplatform.h"
 #include "ljxmlrpc.h"
-#include "core.h"
 
 namespace LeechCraft
 {
@@ -43,6 +44,10 @@ namespace Metida
 				SIGNAL (validatingFinished (bool)),
 				this,
 				SLOT (handleValidatingFinished (bool)));
+		connect (LJXmlRpc_,
+				SIGNAL (error (int, const QString&)),
+				this,
+				SLOT (handleXmlRpcError (int, const QString&)));
 	}
 
 	QObject* LJAccount::GetObject ()
@@ -172,6 +177,23 @@ namespace Metida
 
 		emit accountValidated (IsValidated_);
 	}
+
+	void LJAccount::handleXmlRpcError (int errorCode, const QString& msgInEng)
+	{
+		LeechCraft::Entity e = Util::MakeNotification ("Blogique",
+				tr ("Error: %1 (original message: %2)")
+						.arg (Core::Instance ().GetLocalizedErrorMessage (errorCode), msgInEng),
+				PWarning_);
+
+		qWarning () << Q_FUNC_INFO
+				<< "error code:"
+				<< errorCode
+				<< "error text:"
+				<< msgInEng;
+
+		Core::Instance ().SendEntity (e);
+	}
+
 }
 }
 }

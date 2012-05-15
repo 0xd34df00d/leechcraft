@@ -64,6 +64,7 @@ namespace Metida
 
 	public slots:
 		void handleValidatingFinished (bool success);
+		void handleXmlRpcError (int errorCode, const QString& msgInEng);
 
 	signals:
 		void accountRenamed (const QString& newName);
