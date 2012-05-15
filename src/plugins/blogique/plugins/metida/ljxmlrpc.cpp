@@ -22,6 +22,7 @@
 #include <QCryptographicHash>
 #include <QNetworkReply>
 #include <QXmlQuery>
+#include <util/sysinfo.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -138,6 +139,23 @@ namespace Metida
 				hpassword, document));
 		result.second.appendChild (GetMemberElement ("ver", "int",
 				"1", document));
+		//TODO
+// 		result.second.appendChild (GetMemberElement ("clientversion", "string",
+// 				Util::SysInfo::GetOSName () +
+// 						"-LeechCraft Blogique " +
+// 						Core::Instance ().GetCoreProxy ()->GetVersion (),
+// 				document));
+		result.second.appendChild (GetMemberElement ("getmoods", "int",
+				"0", document));
+		result.second.appendChild (GetMemberElement ("getmenus", "int",
+				"1", document));
+		result.second.appendChild (GetMemberElement ("getpickws", "int",
+				"1", document));
+		result.second.appendChild (GetMemberElement ("getpickwurls", "int",
+				"1", document));
+		result.second.appendChild (GetMemberElement ("getcaps", "int",
+				"1", document));
+		
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
 						document.toByteArray ());
