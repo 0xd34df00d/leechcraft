@@ -80,6 +80,8 @@ namespace Blogique
 		itemValidated->setEditable (false);
 		AccountsModel_->appendRow ({item, itemValidated});
 
+		Ui_.Accounts_->header ()->setResizeMode (QHeaderView::ResizeToContents);
+
 		Item2Account_ [item] = acc;
 		Account2Item_ [acc] = item;
 	}
@@ -123,7 +125,7 @@ namespace Blogique
 					<< "is not an IAccount";
 			return;
 		}
-		
+
 		if (!Account2Item_.contains (acc))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -140,6 +142,7 @@ namespace Blogique
 		AccountsModel_->item (item->row (), 1)->setText (validated ?
 				tr ("Validated") :
 				tr ("Not validated"));
+		Ui_.Accounts_->header ()->setResizeMode (QHeaderView::ResizeToContents);
 	}
 
 	void AccountsListWidget::on_Add__released ()
