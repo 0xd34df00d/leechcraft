@@ -42,8 +42,10 @@ namespace Metida
 		LJXmlRPC *LJXmlRpc_;
 		QString Name_;
 		QString Login_;
+		bool IsValidated_;
 	public:
 		LJAccount (const QString& name, QObject *parent = 0);
+
 		QObject* GetObject ();
 		QObject* GetParentBloggingPlatform () const;
 		QString GetAccountName () const;
@@ -51,6 +53,7 @@ namespace Metida
 		void RenameAccount (const QString& name);
 		QByteArray GetAccountID () const;
 		void OpenConfigurationDialog ();
+		bool IsValidated () const;
 
 		void FillSettings (LJAccountConfigurationWidget *widget);
 
@@ -65,7 +68,7 @@ namespace Metida
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
-		void accountChecked (QObject *accObj);
+		void accountValidated (bool validated);
 	};
 }
 }

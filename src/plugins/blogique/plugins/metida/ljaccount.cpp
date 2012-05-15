@@ -37,6 +37,7 @@ namespace Metida
 	, ParentBloggingPlatform_ (qobject_cast<LJBloggingPlatform*> (parent))
 	, LJXmlRpc_ (new LJXmlRPC (this))
 	, Name_ (name)
+	, IsValidated_ (false)
 	{
 		connect (LJXmlRpc_,
 				SIGNAL (validatingFinished (bool)),
@@ -94,6 +95,11 @@ namespace Metida
 		FillSettings (dia->ConfWidget ());
 	}
 
+	bool LJAccount::IsValidated () const
+	{
+		return IsValidated_;
+	}
+
 	void LJAccount::FillSettings (LJAccountConfigurationWidget *widget)
 	{
 		Login_ = widget->GetLogin ();
@@ -104,6 +110,7 @@ namespace Metida
 					&Core::Instance ());
 
 		emit accountSettingsChanged ();
+		Validate ();
 	}
 
 	QByteArray LJAccount::Serialize () const
@@ -114,7 +121,8 @@ namespace Metida
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << ver
 					<< Name_
-					<< Login_;
+					<< Login_
+					<< IsValidated_;
 		}
 
 		return result;
@@ -137,7 +145,8 @@ namespace Metida
 		QString name;
 		in >> name;
 		LJAccount *result = new LJAccount (name, parent);
-		in >> result->Login_;
+		in >> result->Login_
+				>> result->IsValidated_;
 
 		return result;
 	}
@@ -154,10 +163,9 @@ namespace Metida
 
 	void LJAccount::handleValidatingFinished (bool success)
 	{
-		qDebug () << Q_FUNC_INFO << success;
-		emit accountChecked (success ? this : 0);
+		IsValidated_ = success;
+		emit accountValidated (IsValidated_);
 	}
-
 }
 }
 }

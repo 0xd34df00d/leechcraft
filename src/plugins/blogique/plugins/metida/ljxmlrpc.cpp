@@ -53,14 +53,6 @@ namespace Metida
 		methodCall.appendChild (methodName);
 		QDomText methodNameText = document.createTextNode ("LJ.XMLRPC.getchallenge");
 		methodName.appendChild (methodNameText);
-		QDomElement params = document.createElement ("params");
-		methodCall.appendChild (params);
-		QDomElement param = document.createElement ("param");
-		params.appendChild (param);
-		QDomElement value = document.createElement ("value");
-		param.appendChild (value);
-		QDomElement structElem = document.createElement ("struct");
-		value.appendChild (structElem);
 
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
@@ -91,7 +83,8 @@ namespace Metida
 				login, document));
 		result.second.appendChild (GetMemberElement ("auth_response", "string",
 				hpassword, document));
-
+		result.second.appendChild (GetMemberElement ("ver", "int",
+				"1", document));
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
 						document.toByteArray ());
@@ -149,6 +142,7 @@ namespace Metida
 				Core::Instance ().GetCoreProxy ()->GetVersion ();
 		request.setUrl (QUrl ("http://www.livejournal.com/interface/xmlrpc"));
 		request.setRawHeader ("User-Agent", userAgent);
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "text/xml");
 
 		return request;
 	}
@@ -177,12 +171,29 @@ namespace Metida
 		if (!reply)
 			return;
 
-		QDomDocument document;
-		document.setContent (reply->readAll ());
+		QByteArray content = reply->readAll ();
+		QDomDocument document (content);
 		if (document.elementsByTagName ("fault").isEmpty ())
+		{
 			emit validatingFinished (true);
+			return;
+		}
 		else
 			emit validatingFinished (false);
+
+		QXmlQuery query;
+		query.setFocus (content);
+		QString errorCode;
+		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultCode']/value/int/text()");
+		if (!query.evaluateTo (&errorCode))
+			return;
+
+		QString errorString;
+		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultString']/value/string/text()");
+		if (!query.evaluateTo (&errorString))
+			return;
+		emit error (errorCode.toInt (), errorString);
+
 		reply->deleteLater ();
 	}
 

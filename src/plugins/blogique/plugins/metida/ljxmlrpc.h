@@ -56,6 +56,7 @@ namespace Metida
 
 	signals:
 		void validatingFinished (bool success);
+		void error (int code, const QString& msg);
 	};
 }
 }
