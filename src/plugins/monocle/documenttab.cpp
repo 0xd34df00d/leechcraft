@@ -153,7 +153,7 @@ namespace Monocle
 	int DocumentTab::GetCurrentPage () const
 	{
 		const auto& rect = Ui_.PagesView_->viewport ()->contentsRect ();
-		auto item = Ui_.PagesView_->itemAt (QPoint (rect.width (), rect.height ()) / 2);
+		auto item = Ui_.PagesView_->itemAt (QPoint (rect.width () - 1, rect.height () - 1) / 2);
 		if (!item)
 			item = Ui_.PagesView_->itemAt (QPoint (rect.width () - 2 * Margin, rect.height () - 2 * Margin) / 2);
 		return Pages_.indexOf (static_cast<PageGraphicsItem*> (item));
