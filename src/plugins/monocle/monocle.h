@@ -19,28 +19,45 @@
 #pragma once
 
 #include <QObject>
-#include <QHash>
-#include <QStringList>
-
-class QFileSystemWatcher;
+#include <interfaces/iinfo.h>
+#include <interfaces/ihavetabs.h>
+#include <interfaces/ipluginready.h>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Monocle
 {
-	class LocalCollectionWatcher : public QObject
+	class Plugin : public QObject
+					, public IInfo
+					, public IHaveTabs
+					, public IPluginReady
 	{
 		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveTabs IPluginReady)
 
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
+		TabClassInfo DocTabInfo_;
 	public:
-		LocalCollectionWatcher (QObject* = 0);
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private slots:
-		void handleDirectoryChanged (const QString&);
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
+
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
 	};
 }
 }
+

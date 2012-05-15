@@ -16,31 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QHash>
-#include <QStringList>
-
-class QFileSystemWatcher;
+#include "pagegraphicsitem.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Monocle
 {
-	class LocalCollectionWatcher : public QObject
+	PageGraphicsItem::PageGraphicsItem (IDocument_ptr doc, int page, QGraphicsItem *parent)
+	: QGraphicsPixmapItem (parent)
+	, Doc_ (doc)
+	, PageNum_ (page)
+	, XScale_ (1)
+	, YScale_ (1)
+	, Invalid_ (true)
 	{
-		Q_OBJECT
+		setPixmap (QPixmap (Doc_->GetPageSize (page)));
+	}
 
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
-	public:
-		LocalCollectionWatcher (QObject* = 0);
+	void PageGraphicsItem::SetScale (double xs, double ys)
+	{
+		XScale_ = xs;
+		YScale_ = ys;
 
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private slots:
-		void handleDirectoryChanged (const QString&);
-	};
+		Invalid_ = true;
+
+		update ();
+	}
+
+	void PageGraphicsItem::paint (QPainter *painter,
+			const QStyleOptionGraphicsItem *option, QWidget *w)
+	{
+		if (Invalid_)
+		{
+			const auto& img = Doc_->RenderPage (PageNum_, XScale_, YScale_);
+			setPixmap (QPixmap::fromImage (img));
+			Invalid_ = false;
+		}
+		QGraphicsPixmapItem::paint (painter, option, w);
+	}
 }
 }

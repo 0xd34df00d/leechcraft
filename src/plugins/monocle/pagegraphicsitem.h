@@ -18,29 +18,28 @@
 
 #pragma once
 
-#include <QObject>
-#include <QHash>
-#include <QStringList>
-
-class QFileSystemWatcher;
+#include <QGraphicsPixmapItem>
+#include "interfaces/monocle/idocument.h"
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Monocle
 {
-	class LocalCollectionWatcher : public QObject
+	class PageGraphicsItem : public QGraphicsPixmapItem
 	{
-		Q_OBJECT
+		IDocument_ptr Doc_;
+		const int PageNum_;
 
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
+		double XScale_;
+		double YScale_;
+
+		bool Invalid_;
 	public:
-		LocalCollectionWatcher (QObject* = 0);
+		PageGraphicsItem (IDocument_ptr, int, QGraphicsItem* = 0);
 
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private slots:
-		void handleDirectoryChanged (const QString&);
+		void SetScale (double, double);
+	protected:
+		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*);
 	};
 }
 }

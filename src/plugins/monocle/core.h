@@ -19,28 +19,29 @@
 #pragma once
 
 #include <QObject>
-#include <QHash>
-#include <QStringList>
-
-class QFileSystemWatcher;
+#include <interfaces/monocle/ibackendplugin.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Monocle
 {
-	class LocalCollectionWatcher : public QObject
+	class Core : public QObject
 	{
 		Q_OBJECT
 
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
-	public:
-		LocalCollectionWatcher (QObject* = 0);
+		ICoreProxy_ptr Proxy_;
+		QList<IBackendPlugin*> Backends_;
 
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private slots:
-		void handleDirectoryChanged (const QString&);
+		Core ();
+	public:
+		static Core& Instance ();
+
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy () const;
+
+		void AddPlugin (QObject*);
+		IDocument_ptr LoadDocument (const QString&);
 	};
 }
 }

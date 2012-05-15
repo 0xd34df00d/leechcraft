@@ -18,29 +18,39 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <QHash>
-#include <QStringList>
+#include <interfaces/monocle/idocument.h>
 
-class QFileSystemWatcher;
+namespace Poppler
+{
+	class Document;
+}
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Monocle
 {
-	class LocalCollectionWatcher : public QObject
+namespace PDF
+{
+	typedef std::shared_ptr<Poppler::Document> PDocument_ptr;
+
+	class Document : public QObject
+				   , public IDocument
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Monocle::IDocument)
 
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
+		PDocument_ptr PDocument_;
 	public:
-		LocalCollectionWatcher (QObject* = 0);
+		Document (const QString&, QObject* = 0);
 
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private slots:
-		void handleDirectoryChanged (const QString&);
+		bool IsValid () const;
+		DocumentInfo GetDocumentInfo () const;
+		int GetNumPages () const;
+		QSize GetPageSize (int) const;
+		QImage RenderPage (int, double, double);
 	};
+}
 }
 }

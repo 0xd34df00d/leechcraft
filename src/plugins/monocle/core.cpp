@@ -16,31 +16,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QHash>
-#include <QStringList>
-
-class QFileSystemWatcher;
+#include "core.h"
+#include <interfaces/iplugin2.h>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Monocle
 {
-	class LocalCollectionWatcher : public QObject
+	Core::Core ()
 	{
-		Q_OBJECT
+	}
 
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
-	public:
-		LocalCollectionWatcher (QObject* = 0);
+	Core& Core::Instance ()
+	{
+		static Core c;
+		return c;
+	}
 
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private slots:
-		void handleDirectoryChanged (const QString&);
-	};
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
+
+	ICoreProxy_ptr Core::GetProxy () const
+	{
+		return Proxy_;
+	}
+
+	void Core::AddPlugin (QObject *pluginObj)
+	{
+		auto plugin2 = qobject_cast<IPlugin2*> (pluginObj);
+		const auto& classes = plugin2->GetPluginClasses ();
+		if (classes.contains ("org.LeechCraft.Monocle.IBackendPlugin"))
+			Backends_ << qobject_cast<IBackendPlugin*> (pluginObj);
+	}
+
+	IDocument_ptr Core::LoadDocument (const QString& path)
+	{
+		Q_FOREACH (auto backend, Backends_)
+			if (backend->CanLoadDocument (path))
+				return backend->LoadDocument (path);
+
+		return IDocument_ptr ();
+	}
 }
 }

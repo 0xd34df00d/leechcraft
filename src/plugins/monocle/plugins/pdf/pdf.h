@@ -19,28 +19,37 @@
 #pragma once
 
 #include <QObject>
-#include <QHash>
-#include <QStringList>
-
-class QFileSystemWatcher;
+#include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/monocle/ibackendplugin.h>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Monocle
 {
-	class LocalCollectionWatcher : public QObject
+namespace PDF
+{
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
+				 , public IBackendPlugin
 	{
 		Q_OBJECT
-
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
 	public:
-		LocalCollectionWatcher (QObject* = 0);
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private slots:
-		void handleDirectoryChanged (const QString&);
+		QSet<QByteArray> GetPluginClasses () const;
+
+		bool CanLoadDocument (const QString&);
+		IDocument_ptr LoadDocument (const QString&);
 	};
+}
 }
 }

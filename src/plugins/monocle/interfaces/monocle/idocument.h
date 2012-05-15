@@ -18,29 +18,40 @@
 
 #pragma once
 
-#include <QObject>
-#include <QHash>
-#include <QStringList>
-
-class QFileSystemWatcher;
+#include <memory>
+#include <QImage>
+#include <QMetaType>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Monocle
 {
-	class LocalCollectionWatcher : public QObject
+	struct DocumentInfo
 	{
-		Q_OBJECT
-
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
-	public:
-		LocalCollectionWatcher (QObject* = 0);
-
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private slots:
-		void handleDirectoryChanged (const QString&);
+		QString Title_;
+		QString Subject_;
+		QString Author_;
 	};
+
+	class IDocument
+	{
+	public:
+		virtual ~IDocument () {}
+
+		virtual bool IsValid () const = 0;
+
+		virtual DocumentInfo GetDocumentInfo () const = 0;
+
+		virtual int GetNumPages () const = 0;
+
+		virtual QSize GetPageSize (int) const = 0;
+
+		virtual QImage RenderPage (int, double xRes, double yRes) = 0;
+	};
+
+	typedef std::shared_ptr<IDocument> IDocument_ptr;
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::IDocument,
+		"org.LeechCraft.Monocle.IDocument/1.0");

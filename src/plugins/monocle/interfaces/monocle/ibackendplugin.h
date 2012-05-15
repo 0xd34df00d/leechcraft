@@ -18,29 +18,25 @@
 
 #pragma once
 
-#include <QObject>
-#include <QHash>
-#include <QStringList>
-
-class QFileSystemWatcher;
+#include <QString>
+#include <QMetaType>
+#include "idocument.h"
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Monocle
 {
-	class LocalCollectionWatcher : public QObject
+	class IBackendPlugin
 	{
-		Q_OBJECT
-
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
 	public:
-		LocalCollectionWatcher (QObject* = 0);
+		virtual ~IBackendPlugin () {}
 
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private slots:
-		void handleDirectoryChanged (const QString&);
+		virtual bool CanLoadDocument (const QString& filename) = 0;
+
+		virtual IDocument_ptr LoadDocument (const QString& filename) = 0;
 	};
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::IBackendPlugin,
+		"org.LeechCraft.Monocle.IBackendPlugin/1.0");
