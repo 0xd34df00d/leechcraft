@@ -166,6 +166,19 @@ namespace Metida
 		LJXmlRpc_->Validate (Login_, pass);
 	}
 
+	void LJAccount::Init ()
+	{
+		connect (this,
+				SIGNAL (accountValidated (bool)),
+				ParentBloggingPlatform_,
+				SLOT (handleAccountValidated (bool)));
+
+		connect (this,
+				SIGNAL (accountSettingsChanged ()),
+				ParentBloggingPlatform_,
+				SLOT (saveAccounts ()));
+	}
+
 	void LJAccount::handleValidatingFinished (bool success)
 	{
 		IsValidated_ = success;
@@ -176,6 +189,7 @@ namespace Metida
 				<< IsValidated_;
 
 		emit accountValidated (IsValidated_);
+		emit accountSettingsChanged ();
 	}
 
 	void LJAccount::handleXmlRpcError (int errorCode, const QString& msgInEng)

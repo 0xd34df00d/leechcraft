@@ -61,6 +61,7 @@ namespace Metida
 		static LJAccount* Deserialize (const QByteArray& data, QObject *parent);
 
 		void Validate ();
+		void Init ();
 
 	public slots:
 		void handleValidatingFinished (bool success);
