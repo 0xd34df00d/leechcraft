@@ -18,44 +18,41 @@
 
 #pragma once
 
-#include <QWidget>
-#include <QHash>
-#include "ui_accountslistwidget.h"
-
-class QStandardItemModel;
-class QStandardItem;
+#include <functional>
+#include <QObject>
+#include <QQueue>
+#include <QPair>
+#include <QDomElement>
+#include <QNetworkRequest>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	class IAccount;
-
-	class AccountsListWidget : public QWidget
+namespace Metida
+{
+	class LJXmlRPC : public QObject
 	{
 		Q_OBJECT
 
-		enum Columns
-		{
-			Name,
-			IsValidated
-		};
-
-		Ui::AccountsListWidget Ui_;
-		QStandardItemModel *AccountsModel_;
-		QHash<QStandardItem*, IAccount*> Item2Account_;
-		QHash<IAccount*, QStandardItem*> Account2Item_;
+		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
 	public:
-		AccountsListWidget (QWidget* = 0);
+		LJXmlRPC (QObject *parent = 0);
 
-	public slots:
-		void addAccount (QObject *accObj);
-		void handleAccountRemoved (QObject *accObj);
-		void handleAccountValidated (QObject *accObj, bool validated);
+		void Validate (const QString& login, const QString& pass);
+	private:
+		void GenerateChallenge () const;
+		void ValidateAccountData (const QString& login,
+				const QString& pass, const QString& challenge);
+
 	private slots:
-		void on_Add__released ();
-		void on_Modify__released ();
-		void on_Delete__released ();
+		void handleChallengeReplyFinished ();
+		void handleValidateReplyFinished ();
+
+	signals:
+		void validatingFinished (bool success);
+		void error (int code, const QString& msg);
 	};
+}
 }
 }

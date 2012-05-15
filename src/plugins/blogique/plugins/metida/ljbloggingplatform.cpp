@@ -96,7 +96,12 @@ namespace Metida
 		}
 
 		LJAccount *account = new LJAccount (name, this);
+		connect (account,
+				SIGNAL (accountValidated (bool)),
+				this,
+				SLOT (handleAccountValidated (bool)));
 		account->FillSettings (w);
+
 		const QString& pass = w->GetPassword ();
 		if (!pass.isEmpty ())
 			Util::SavePassword(pass,
@@ -176,6 +181,20 @@ namespace Metida
 		}
 		settings.endArray ();
 		settings.sync ();
+	}
+
+	void LJBloggingPlatform::handleAccountValidated (bool validated)
+	{
+		IAccount *acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not an IAccount";;
+			return;
+		}
+
+		emit accountValidated (acc->GetObject (), validated);
 	}
 
 }
