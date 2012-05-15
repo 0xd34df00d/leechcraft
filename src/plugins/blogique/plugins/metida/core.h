@@ -42,6 +42,7 @@ namespace Metida
 		QObjectList BlogPlatformPlugins_;
 		std::shared_ptr<LJBloggingPlatform> LJPlatform_;
 		QObject *PluginProxy_;
+		QMap<int, QString> ErrorCode2Message_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
@@ -58,6 +59,12 @@ namespace Metida
 
 		void SetPluginProxy (QObject *pluginProxy);
 		IPluginProxy* GetPluginProxy ();
+
+		void SendEntity (const LeechCraft::Entity& e);
+
+		QString GetLocalizedErrorMessage (int errorCode);
+	private:
+		void InitErrorMessages ();
 
 	signals:
 		void gotEntity (LeechCraft::Entity e);
