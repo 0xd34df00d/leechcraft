@@ -24,6 +24,7 @@
 #include <QLineEdit>
 #include <QMenu>
 #include <QToolButton>
+#include <QtDebug>
 #include "core.h"
 #include "pagegraphicsitem.h"
 
@@ -111,10 +112,11 @@ namespace Monocle
 		Toolbar_->addSeparator ();
 
 		ScalesBox_ = new QComboBox ();
+		ScalesBox_->addItem (tr ("Fit width"));
 		std::vector<double> scales = { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2 };
 		Q_FOREACH (double scale, scales)
 			ScalesBox_->addItem (QString::number (scale * 100) + '%', scale);
-		ScalesBox_->setCurrentIndex (std::distance (scales.begin (),
+		ScalesBox_->setCurrentIndex (1 + std::distance (scales.begin (),
 					std::find (scales.begin (), scales.end (), 1)));
 		connect (ScalesBox_,
 				SIGNAL (currentIndexChanged (int)),
@@ -147,22 +149,48 @@ namespace Monocle
 
 	double DocumentTab::GetCurrentScale () const
 	{
-		return ScalesBox_->itemData (ScalesBox_->currentIndex ()).toDouble ();
+		const int idx = ScalesBox_->currentIndex ();
+		switch (idx)
+		{
+		case 0:
+		{
+			const int pageIdx = GetCurrentPage ();
+			if (!CurrentDoc_ || pageIdx < 0)
+				return 1;
+
+			double width = CurrentDoc_->GetPageSize (pageIdx).width ();
+			double ratio = Ui_.PagesView_->viewport ()->contentsRect ().width () / (width + 2 * Margin);
+			if (LayMode_ != LayoutMode::OnePage)
+				ratio /= 2;
+			return ratio;
+		}
+		default:
+			return ScalesBox_->itemData (idx).toDouble ();
+		}
 	}
 
 	int DocumentTab::GetCurrentPage () const
 	{
 		const auto& rect = Ui_.PagesView_->viewport ()->contentsRect ();
-		auto item = Ui_.PagesView_->itemAt (QPoint (rect.width (), rect.height ()) / 2);
+		auto item = Ui_.PagesView_->itemAt (QPoint (rect.width () - 1, rect.height () - 1) / 2);
 		if (!item)
 			item = Ui_.PagesView_->itemAt (QPoint (rect.width () - 2 * Margin, rect.height () - 2 * Margin) / 2);
-		return Pages_.indexOf (static_cast<PageGraphicsItem*> (item));
+		auto pos = std::find_if (Pages_.begin (), Pages_.end (),
+				[item] (decltype (Pages_.front ()) e) { return e == item; });
+		return pos == Pages_.end () ? -1 : std::distance (Pages_.begin (), pos);
 	}
 
-	void DocumentTab::SetCurrentPage (int pos)
+	void DocumentTab::SetCurrentPage (int idx)
 	{
-		if (pos >= 0 && pos < Pages_.size ())
-			Ui_.PagesView_->ensureVisible (Pages_.at (pos), Margin, Margin);
+		if (idx < 0 || idx >= Pages_.size ())
+			return;
+
+		auto page = Pages_.at (idx);
+		const auto& rect = page->boundingRect ();
+		const auto& pos = page->scenePos ();
+		int xCenter = pos.x () + rect.width () / 2;
+		int yCenter = pos.y () + Ui_.PagesView_->viewport ()->contentsRect ().height () / 2;
+		Ui_.PagesView_->centerOn (xCenter, yCenter);
 	}
 
 	void DocumentTab::Relayout (double scale)
@@ -189,6 +217,7 @@ namespace Monocle
 		}
 
 		Scene_.setSceneRect (Scene_.itemsBoundingRect ());
+		SetCurrentPage (std::max (GetCurrentPage (), 0));
 		updateNumLabel ();
 	}
 
@@ -229,12 +258,12 @@ namespace Monocle
 
 	void DocumentTab::handleGoPrev ()
 	{
-		SetCurrentPage (GetCurrentPage () - 1);
+		SetCurrentPage (GetCurrentPage () - (LayMode_ == LayoutMode::OnePage ? 1 : 2));
 	}
 
 	void DocumentTab::handleGoNext ()
 	{
-		SetCurrentPage (GetCurrentPage () + 1);
+		SetCurrentPage (GetCurrentPage () + (LayMode_ == LayoutMode::OnePage ? 1 : 2));
 	}
 
 	void DocumentTab::navigateNumLabel ()
