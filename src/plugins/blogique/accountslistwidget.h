@@ -45,6 +45,7 @@ namespace Blogique
 	public slots:
 		void addAccount (QObject *accObj);
 		void handleAccountRemoved (QObject *accObj);
+		void handleAccountValidated (QObject *accObj, bool validated);
 	private slots:
 		void on_Add__released ();
 		void on_Modify__released ();
