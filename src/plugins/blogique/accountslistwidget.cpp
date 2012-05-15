@@ -52,7 +52,6 @@ namespace Blogique
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 			addAccount (acc->GetObject ());
 
-		AccountsModel_->setColumnCount (2);
 		AccountsModel_->setHorizontalHeaderLabels ({tr ("Account"), tr ("Validated")});
 		Ui_.Accounts_->setModel (AccountsModel_);
 	}
@@ -139,7 +138,7 @@ namespace Blogique
 		}
 
 		QStandardItem *item = Account2Item_ [acc];
-		AccountsModel_->item (item->row (), 1)->setText (validated ?
+		AccountsModel_->item (item->row (), Columns::IsValidated_)->setText (validated ?
 				tr ("Validated") :
 				tr ("Not validated"));
 		Ui_.Accounts_->header ()->setResizeMode (QHeaderView::ResizeToContents);
@@ -157,11 +156,12 @@ namespace Blogique
 
 	void AccountsListWidget::on_Modify__released ()
 	{
-		QModelIndexList indexLists = Ui_.Accounts_->selectionModel ()->selectedRows ();
-		if (indexLists.isEmpty ())
+		auto index = Ui_.Accounts_->selectionModel ()->currentIndex ();
+		index = index.sibling (index.row (), 0);
+		if (!index.isValid ())
 			return;
 
-		QStandardItem *item = AccountsModel_->itemFromIndex (indexLists.at (0));
+		QStandardItem *item = AccountsModel_->itemFromIndex (index);
 		if (item &&
 				Item2Account_.contains (item))
 			Item2Account_ [item]->OpenConfigurationDialog ();
@@ -169,11 +169,12 @@ namespace Blogique
 
 	void AccountsListWidget::on_Delete__released ()
 	{
-		QModelIndexList indexLists = Ui_.Accounts_->selectionModel ()->selectedRows ();
-		if (indexLists.isEmpty ())
+		auto index = Ui_.Accounts_->selectionModel ()->currentIndex ();
+		index = index.sibling (index.row (), 0);
+		if (!index.isValid ())
 			return;
 
-		QStandardItem *item = AccountsModel_->itemFromIndex (indexLists.at (0));
+		QStandardItem *item = AccountsModel_->itemFromIndex (index);
 		IAccount *acc = 0;
 		if (item &&
 				Item2Account_.contains (item))

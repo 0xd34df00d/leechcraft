@@ -35,6 +35,12 @@ namespace Blogique
 	{
 		Q_OBJECT
 
+		enum Columns
+		{
+			Name_,
+			IsValidated_
+		};
+
 		Ui::AccountsListWidget Ui_;
 		QStandardItemModel *AccountsModel_;
 		QHash<QStandardItem*, IAccount*> Item2Account_;
