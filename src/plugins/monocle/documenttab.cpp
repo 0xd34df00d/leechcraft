@@ -24,6 +24,7 @@
 #include <QLineEdit>
 #include <QMenu>
 #include <QToolButton>
+#include <QtDebug>
 #include "core.h"
 #include "pagegraphicsitem.h"
 
@@ -156,13 +157,22 @@ namespace Monocle
 		auto item = Ui_.PagesView_->itemAt (QPoint (rect.width () - 1, rect.height () - 1) / 2);
 		if (!item)
 			item = Ui_.PagesView_->itemAt (QPoint (rect.width () - 2 * Margin, rect.height () - 2 * Margin) / 2);
-		return Pages_.indexOf (static_cast<PageGraphicsItem*> (item));
+		auto pos = std::find_if (Pages_.begin (), Pages_.end (),
+				[item] (decltype (Pages_.front ()) e) { return e == item; });
+		return pos == Pages_.end () ? -1 : std::distance (Pages_.begin (), pos);
 	}
 
-	void DocumentTab::SetCurrentPage (int pos)
+	void DocumentTab::SetCurrentPage (int idx)
 	{
-		if (pos >= 0 && pos < Pages_.size ())
-			Ui_.PagesView_->ensureVisible (Pages_.at (pos), Margin, Margin);
+		if (idx < 0 || idx >= Pages_.size ())
+			return;
+
+		auto page = Pages_.at (idx);
+		const auto& rect = page->boundingRect ();
+		const auto& pos = page->scenePos ();
+		int xCenter = pos.x () + rect.width () / 2;
+		int yCenter = pos.y () + Ui_.PagesView_->viewport ()->contentsRect ().height () / 2;
+		Ui_.PagesView_->centerOn (xCenter, yCenter);
 	}
 
 	void DocumentTab::Relayout (double scale)
@@ -189,6 +199,7 @@ namespace Monocle
 		}
 
 		Scene_.setSceneRect (Scene_.itemsBoundingRect ());
+		SetCurrentPage (std::max (GetCurrentPage (), 0));
 		updateNumLabel ();
 	}
 
