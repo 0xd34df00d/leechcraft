@@ -154,7 +154,7 @@ namespace Metida
 	void LJAccount::Validate ()
 	{
 		QString key ("org.LeechCraft.Blogique.PassForAccount/" + GetAccountID ());
-		QString pass = Util::GetPassword (key,
+		const QString& pass = Util::GetPassword (key,
 				QString (),
 				&Core::Instance ());
 
