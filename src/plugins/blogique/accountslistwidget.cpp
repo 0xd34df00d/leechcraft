@@ -25,6 +25,7 @@
 #include "interfaces/blogique/iaccount.h"
 #include "addaccountwizardfirstpage.h"
 #include "core.h"
+#include "profiledialog.h"
 
 namespace LeechCraft
 {
@@ -50,7 +51,7 @@ namespace Blogique
 				SLOT (handleAccountValidated (QObject*, bool)));
 
 		connect (Ui_.Accounts_,
-				SIGNAL (activated(QModelIndex&)),
+				SIGNAL (clicked (const QModelIndex&)),
 				this,
 				SLOT (handleAccountClicked (const QModelIndex&)));
 
@@ -220,6 +221,9 @@ namespace Blogique
 		if (item &&
 				Item2Account_.contains (item))
 		{
+			ProfileDialog *pd = new ProfileDialog (Item2Account_ [item], this);
+			pd->setAttribute (Qt::WA_DeleteOnClose);
+			pd->show ();
 		}
 	}
 

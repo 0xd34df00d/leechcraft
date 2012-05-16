@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include "interfaces/blogique/iaccount.h"
 
@@ -31,6 +32,7 @@ namespace Metida
 	class LJAccountConfigurationWidget;
 	class LJBloggingPlatform;
 	class LJXmlRPC;
+	class LJProfile;
 
 	class LJAccount : public QObject
 							, public IAccount
@@ -43,6 +45,7 @@ namespace Metida
 		QString Name_;
 		QString Login_;
 		bool IsValidated_;
+		std::shared_ptr<LJProfile> LJProfile_;
 	public:
 		LJAccount (const QString& name, QObject *parent = 0);
 
@@ -54,6 +57,7 @@ namespace Metida
 		QByteArray GetAccountID () const;
 		void OpenConfigurationDialog ();
 		bool IsValidated () const;
+		QObject* GetProfile ();
 
 		void FillSettings (LJAccountConfigurationWidget *widget);
 

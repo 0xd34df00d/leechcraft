@@ -24,6 +24,7 @@
 #include <QPair>
 #include <QDomElement>
 #include <QNetworkRequest>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -44,6 +45,7 @@ namespace Metida
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
 				const QString& pass, const QString& challenge);
+		LJProfileData ParseProfileInfo (QDomDocument document) const;
 
 	private slots:
 		void handleChallengeReplyFinished ();
