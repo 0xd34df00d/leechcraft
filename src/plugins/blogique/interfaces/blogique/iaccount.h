@@ -85,6 +85,12 @@ namespace Blogique
 		 */
 		virtual void OpenConfigurationDialog () = 0;
 
+		/** @brief Returns validation state of account.
+		 *
+		 * If account not validated it can't be used for blogging.
+		 *
+		 * @return Validation state of the account.
+		 */
 		virtual bool IsValidated () const = 0;
 
 		/** @brief This signal should be emitted when account is renamed.
