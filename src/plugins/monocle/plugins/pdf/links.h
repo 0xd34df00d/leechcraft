@@ -18,14 +18,9 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
-#include <interfaces/monocle/idocument.h>
-
-namespace Poppler
-{
-	class Document;
-}
+#include <poppler-link.h>
+#include <interfaces/monocle/ilink.h>
 
 namespace LeechCraft
 {
@@ -33,24 +28,42 @@ namespace Monocle
 {
 namespace PDF
 {
-	typedef std::shared_ptr<Poppler::Document> PDocument_ptr;
-
-	class Document : public QObject
-				   , public IDocument
+	class Link : public QObject
+			   , public ILink
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument)
+		Q_INTERFACES (LeechCraft::Monocle::ILink)
 
-		PDocument_ptr PDocument_;
+	protected:
+		std::shared_ptr<Poppler::Link> Link_;
 	public:
-		Document (const QString&, QObject* = 0);
+		explicit Link (Poppler::Link*);
 
-		bool IsValid () const;
-		DocumentInfo GetDocumentInfo () const;
-		int GetNumPages () const;
-		QSize GetPageSize (int) const;
-		QImage RenderPage (int, double, double);
-		QList<ILink_ptr> GetPageLinks (int);
+		LinkType GetLinkType () const;
+		QRectF GetArea () const;
+
+		void Execute () const;
+	};
+
+	class PageLink : public Link
+				   , public IPageLink
+	{
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Monocle::IPageLink)
+
+		std::shared_ptr<Poppler::LinkGoto> LinkGoto_;
+
+		double X_;
+		double Y_;
+		double Zoom_;
+	public:
+		explicit PageLink (Poppler::LinkGoto*);
+
+		QString GetDocumentFilename () const;
+		int GetPageNumber () const;
+		double NewX () const;
+		double NewY () const;
+		double NewZoom () const;
 	};
 }
 }

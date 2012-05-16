@@ -21,6 +21,7 @@
 #include <memory>
 #include <QImage>
 #include <QMetaType>
+#include "ilink.h"
 
 namespace LeechCraft
 {
@@ -47,6 +48,8 @@ namespace Monocle
 		virtual QSize GetPageSize (int) const = 0;
 
 		virtual QImage RenderPage (int, double xRes, double yRes) = 0;
+
+		virtual QList<ILink_ptr> GetPageLinks (int) = 0;
 	};
 
 	typedef std::shared_ptr<IDocument> IDocument_ptr;

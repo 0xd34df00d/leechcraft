@@ -19,39 +19,49 @@
 #pragma once
 
 #include <memory>
-#include <QObject>
-#include <interfaces/monocle/idocument.h>
-
-namespace Poppler
-{
-	class Document;
-}
+#include <QRectF>
+#include <QMetaType>
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-namespace PDF
-{
-	typedef std::shared_ptr<Poppler::Document> PDocument_ptr;
-
-	class Document : public QObject
-				   , public IDocument
+	enum class LinkType
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument)
+		PageLink,
+		URL,
+		Command,
+		OtherLink
+	};
 
-		PDocument_ptr PDocument_;
+	class ILink
+	{
 	public:
-		Document (const QString&, QObject* = 0);
+		virtual ~ILink () {}
 
-		bool IsValid () const;
-		DocumentInfo GetDocumentInfo () const;
-		int GetNumPages () const;
-		QSize GetPageSize (int) const;
-		QImage RenderPage (int, double, double);
-		QList<ILink_ptr> GetPageLinks (int);
+		virtual LinkType GetLinkType () const = 0;
+
+		virtual QRectF GetArea () const = 0;
+
+		virtual void Execute () const = 0;
+	};
+	typedef std::shared_ptr<ILink> ILink_ptr;
+
+	class IPageLink
+	{
+	public:
+		virtual ~IPageLink () {}
+
+		virtual QString GetDocumentFilename () const = 0;
+
+		virtual int GetPageNumber () const = 0;
+
+		virtual double NewX () const = 0;
+		virtual double NewY () const = 0;
+		virtual double NewZoom () const = 0;
 	};
 }
 }
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::ILink, "org.LeechCraft.Monocle.ILink/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::IPageLink, "org.LeechCraft.Monocle.IPageLink/1.0");
