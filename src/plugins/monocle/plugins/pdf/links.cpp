@@ -74,7 +74,6 @@ namespace PDF
 				link->fileName () :
 				QString ();
 		const auto& dest = link->destination ();
-		qDebug () << Q_FUNC_INFO << dest.pageNumber () << dest.left () << dest.top ();
 		Doc_->RequestNavigation (filename, dest.pageNumber () - 1, dest.left (), dest.top ());
 	}
 }
