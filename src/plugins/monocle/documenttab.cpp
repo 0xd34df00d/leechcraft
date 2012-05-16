@@ -277,10 +277,9 @@ namespace Monocle
 
 		if (x > 0 && y > 0)
 		{
-			auto size = page->boundingRect ().size ();
-			size.rwidth () *= x;
-			size.rheight () *= y;
-			Ui_.PagesView_->centerOn (page->mapToScene (size.width (), size.height ()));
+			const auto& size = page->boundingRect ().size ();
+			const auto& mapped = page->mapToScene (size.width () * x, size.height () * y);
+			Ui_.PagesView_->ensureVisible (mapped.x (), mapped.y (), 0, 0);
 		}
 	}
 
