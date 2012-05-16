@@ -221,6 +221,23 @@ namespace Monocle
 		updateNumLabel ();
 	}
 
+	void DocumentTab::handleNavigateRequested (const QString&, int num, double x, double y)
+	{
+		SetCurrentPage (num);
+
+		auto page = Pages_.value (num);
+		if (!page)
+			return;
+
+		if (x > 0 && y > 0)
+		{
+			auto size = page->boundingRect ().size ();
+			size.rwidth () *= x;
+			size.rheight () *= y;
+			Ui_.PagesView_->centerOn (page->mapToScene (size.width (), size.height ()));
+		}
+	}
+
 	void DocumentTab::selectFile ()
 	{
 		const auto& path = QFileDialog::getOpenFileName (this,
@@ -248,12 +265,15 @@ namespace Monocle
 			Scene_.addItem (item);
 			Pages_ << item;
 		}
-
 		Ui_.PagesView_->ensureVisible (Pages_.value (0), Margin, Margin);
-
 		Relayout (1);
 
 		updateNumLabel ();
+
+		connect (CurrentDoc_->GetObject (),
+				SIGNAL (navigateRequested (QString, int, double, double)),
+				this,
+				SLOT (handleNavigateRequested (QString, int, double, double)));
 	}
 
 	void DocumentTab::handleGoPrev ()

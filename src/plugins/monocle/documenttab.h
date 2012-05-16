@@ -71,6 +71,8 @@ namespace Monocle
 		void SetCurrentPage (int);
 		void Relayout (double);
 	private slots:
+		void handleNavigateRequested (const QString&, int, double, double);
+
 		void selectFile ();
 
 		void handleGoPrev ();
