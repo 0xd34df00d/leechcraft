@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "links.h"
+#include <QtDebug>
+#include "document.h"
 
 namespace LeechCraft
 {
@@ -24,8 +26,9 @@ namespace Monocle
 {
 namespace PDF
 {
-	Link::Link (Poppler::Link *link)
-	: Link_ (link)
+	Link::Link (Document *doc, Poppler::Link *link)
+	: Doc_ (doc)
+	, Link_ (link)
 	{
 	}
 
@@ -49,52 +52,30 @@ namespace PDF
 		return Link_->linkArea ();
 	}
 
-	void Link::Execute () const
+	void Link::Execute ()
 	{
-	}
-
-	PageLink::PageLink (Poppler::LinkGoto *link)
-	: Link (link)
-	, X_ (0)
-	, Y_ (0)
-	, Zoom_ (0)
-	{
-		LinkGoto_ = std::dynamic_pointer_cast<Poppler::LinkGoto> (Link_);
-
-		const auto& dest = LinkGoto_->destination ();
-		if (dest.kind () == Poppler::LinkDestination::destXYZ)
+		switch (GetLinkType ())
 		{
-			X_ = dest.left ();
-			Y_ = dest.top ();
-			Zoom_ = dest.zoom ();
+		case LinkType::PageLink:
+			ExecutePageLink ();
+			return;
+		default:
+			return;
 		}
 	}
 
-	QString PageLink::GetDocumentFilename () const
+	void Link::ExecutePageLink ()
 	{
-		return LinkGoto_->isExternal () ?
-				LinkGoto_->destination ().destinationName () :
+		auto link = std::dynamic_pointer_cast<Poppler::LinkGoto> (Link_);
+		if (link->isExternal ())
+			return;
+
+		const QString& filename = link->isExternal () ?
+				link->fileName () :
 				QString ();
-	}
-
-	int PageLink::GetPageNumber () const
-	{
-		return LinkGoto_->destination ().pageNumber ();
-	}
-
-	double PageLink::NewX () const
-	{
-		return X_;
-	}
-
-	double PageLink::NewY () const
-	{
-		return Y_;
-	}
-
-	double PageLink::NewZoom () const
-	{
-		return Zoom_;
+		const auto& dest = link->destination ();
+		qDebug () << Q_FUNC_INFO << dest.pageNumber () << dest.left () << dest.top ();
+		Doc_->RequestNavigation (filename, dest.pageNumber () - 1, dest.left (), dest.top ());
 	}
 }
 }

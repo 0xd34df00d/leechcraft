@@ -45,12 +45,17 @@ namespace PDF
 	public:
 		Document (const QString&, QObject* = 0);
 
+		QObject* GetObject ();
 		bool IsValid () const;
 		DocumentInfo GetDocumentInfo () const;
 		int GetNumPages () const;
 		QSize GetPageSize (int) const;
 		QImage RenderPage (int, double, double);
 		QList<ILink_ptr> GetPageLinks (int);
+
+		void RequestNavigation (const QString&, int, double, double);
+	signals:
+		void navigateRequested (const QString&, int, double, double);
 	};
 }
 }
