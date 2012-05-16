@@ -67,6 +67,7 @@ namespace Monocle
 
 		double GetCurrentScale () const;
 
+		bool SetDoc (const QString&);
 		int GetCurrentPage () const;
 		void SetCurrentPage (int);
 		void Relayout (double);
