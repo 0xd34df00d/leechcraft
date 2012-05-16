@@ -49,11 +49,18 @@ namespace Blogique
 				this,
 				SLOT (handleAccountValidated (QObject*, bool)));
 
+		connect (Ui_.Accounts_,
+				SIGNAL (activated(QModelIndex&)),
+				this,
+				SLOT (handleAccountClicked (const QModelIndex&)));
+
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 			addAccount (acc->GetObject ());
 
 		AccountsModel_->setHorizontalHeaderLabels ({tr ("Account"), tr ("Validated")});
 		Ui_.Accounts_->setModel (AccountsModel_);
+
+		Ui_.Profile_->setEnabled (false);
 	}
 
 	void AccountsListWidget::addAccount (QObject *accObj)
@@ -157,7 +164,7 @@ namespace Blogique
 	void AccountsListWidget::on_Modify__released ()
 	{
 		auto index = Ui_.Accounts_->selectionModel ()->currentIndex ();
-		index = index.sibling (index.row (), 0);
+		index = index.sibling (index.row (), Columns::Name);
 		if (!index.isValid ())
 			return;
 
@@ -170,7 +177,7 @@ namespace Blogique
 	void AccountsListWidget::on_Delete__released ()
 	{
 		auto index = Ui_.Accounts_->selectionModel ()->currentIndex ();
-		index = index.sibling (index.row (), 0);
+		index = index.sibling (index.row (), Columns::Name);
 		if (!index.isValid ())
 			return;
 
@@ -201,5 +208,49 @@ namespace Blogique
 		}
 		ibp->RemoveAccount (acc->GetObject ());
 	}
+
+	void AccountsListWidget::on_Profile__released ()
+	{
+		auto index = Ui_.Accounts_->selectionModel ()->currentIndex ();
+		index = index.sibling (index.row (), Columns::Name);
+		if (!index.isValid ())
+			return;
+
+		QStandardItem *item = AccountsModel_->itemFromIndex (index);
+		if (item &&
+				Item2Account_.contains (item))
+		{
+		}
+	}
+
+	void AccountsListWidget::handleAccountClicked (const QModelIndex& idx)
+	{
+		QModelIndex index = idx.sibling (idx.row (), Columns::Name);
+		if (!index.isValid ())
+			return;
+
+		QStandardItem *item = AccountsModel_->itemFromIndex (index);
+		IAccount *acc = 0;
+		if (item &&
+				Item2Account_.contains (item))
+		{
+			acc = Item2Account_ [item];
+			auto ibp = qobject_cast<IBloggingPlatform*> (acc->GetParentBloggingPlatform ());
+			if (!ibp)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "account"
+						<< acc->GetAccountID ()
+						<< "hasn't valid parent blogging platform"
+						<< acc->GetParentBloggingPlatform ();
+				return;
+			}
+
+			Ui_.Profile_->setEnabled ((ibp->GetFeatures () &
+					IBloggingPlatform::BPFSupportsProfiles) &&
+					acc->IsValidated ());
+		}
+	}
+
 }
 }
