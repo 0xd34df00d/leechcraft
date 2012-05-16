@@ -45,7 +45,7 @@ namespace Metida
 
 	IBloggingPlatform::BloggingPlatfromFeatures LJBloggingPlatform::GetFeatures () const
 	{
-		return BPFNone;
+		return BPFSupportsProfiles;
 	}
 
 	QObjectList LJBloggingPlatform::GetRegisteredAccounts ()
