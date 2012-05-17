@@ -294,8 +294,7 @@ namespace Xoox
 				(!vars.contains (variant) || variant.isEmpty ()))
 			variant = vars.first ();
 
-		UserActivity *activity = dynamic_cast<UserActivity*> (event);
-		if (activity)
+		if (UserActivity *activity = dynamic_cast<UserActivity*> (event))
 		{
 			if (activity->GetGeneral () == UserActivity::GeneralEmpty)
 				Variant2ClientInfo_ [variant].remove ("user_activity");
@@ -312,8 +311,7 @@ namespace Xoox
 			return;
 		}
 
-		UserMood *mood = dynamic_cast<UserMood*> (event);
-		if (mood)
+		if (UserMood *mood = dynamic_cast<UserMood*> (event))
 		{
 			if (mood->GetMood () == UserMood::MoodEmpty)
 				Variant2ClientInfo_ [variant].remove ("user_mood");
@@ -329,8 +327,7 @@ namespace Xoox
 			return;
 		}
 
-		UserTune *tune = dynamic_cast<UserTune*> (event);
-		if (tune)
+		if (UserTune *tune = dynamic_cast<UserTune*> (event))
 		{
 			if (tune->IsNull ())
 				Variant2ClientInfo_ [variant].remove ("user_tune");
@@ -351,8 +348,7 @@ namespace Xoox
 			return;
 		}
 
-		UserLocation *location = dynamic_cast<UserLocation*> (event);
-		if (location)
+		if (UserLocation *location = dynamic_cast<UserLocation*> (event))
 		{
 			Location_ [variant] = location->GetInfo ();
 			emit locationChanged (variant, this);
