@@ -23,6 +23,7 @@
 #include <QDateTime>
 #include <QPair>
 #include <QMap>
+#include <interfaces/azoth/isupportmicroblogs.h>
 
 namespace LeechCraft
 {
@@ -64,12 +65,15 @@ namespace Xoox
 		static QString GetNodeString ();
 
 		PEPMicroblog ();
+		PEPMicroblog (const Post&);
 
 		QXmppElement ToXML () const;
 		void Parse (const QDomElement&);
 		QString Node () const;
 
 		PEPEventBase* Clone () const;
+
+		operator Post () const;
 
 		QString GetEventID () const;
 

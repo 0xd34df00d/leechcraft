@@ -42,6 +42,7 @@
 #include "usermood.h"
 #include "usertune.h"
 #include "userlocation.h"
+#include "pepmicroblog.h"
 #include "adhoccommandmanager.h"
 #include "executecommanddialog.h"
 #include "roomclentry.h"
@@ -263,6 +264,10 @@ namespace Xoox
 		conn->GetClient ()->sendPacket (pres);
 	}
 
+	void EntryBase::RequestLastPosts (int maxNum)
+	{
+	}
+
 	void EntryBase::HandlePresence (const QXmppPresence& pres, const QString& resource)
 	{
 		SetClientInfo (resource, pres);
@@ -353,6 +358,12 @@ namespace Xoox
 			Location_ [variant] = location->GetInfo ();
 			emit locationChanged (variant, this);
 			emit locationChanged (variant);
+			return;
+		}
+
+		if (PEPMicroblog *microblog = dynamic_cast<PEPMicroblog*> (event))
+		{
+			emit gotNewPost (*microblog);
 			return;
 		}
 
