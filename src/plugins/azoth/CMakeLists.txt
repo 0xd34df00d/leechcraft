@@ -111,6 +111,7 @@ SET (SRCS
 	unreadqueuemanager.cpp
 	chatstyleoptionmanager.cpp
 	microblogstab.cpp
+	riexhandler.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -159,6 +160,7 @@ SET (HEADERS
 	unreadqueuemanager.h
 	chatstyleoptionmanager.h
 	microblogstab.h
+	riexhandler.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	)
