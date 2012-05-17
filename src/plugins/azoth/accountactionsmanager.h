@@ -31,6 +31,7 @@ namespace Azoth
 	class IAccount;
 	class ConsoleWidget;
 	class ServiceDiscoveryWidget;
+	class MicroblogsTab;
 
 	class AccountActionsManager : public QObject
 	{
@@ -43,6 +44,7 @@ namespace Azoth
 		QAction *AccountJoinConference_;
 		QAction *AccountManageBookmarks_;
 		QAction *AccountAddContact_;
+		QAction *AccountViewMicroblogs_;
 		QAction *AccountSetActivity_;
 		QAction *AccountSetMood_;
 		QAction *AccountSetLocation_;
@@ -59,6 +61,7 @@ namespace Azoth
 		void joinAccountConfFromBM ();
 		void manageAccountBookmarks ();
 		void addAccountContact ();
+		void handleAccountMicroblogs ();
 		void handleAccountSetActivity ();
 		void handleAccountSetMood ();
 		void handleAccountSetLocation ();
@@ -71,6 +74,7 @@ namespace Azoth
 	signals:
 		void gotConsoleWidget (ConsoleWidget*);
 		void gotSDWidget (ServiceDiscoveryWidget*);
+		void gotMicroblogsTab (MicroblogsTab*);
 	};
 }
 }

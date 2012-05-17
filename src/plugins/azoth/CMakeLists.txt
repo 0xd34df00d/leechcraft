@@ -110,6 +110,7 @@ SET (SRCS
 	accountactionsmanager.cpp
 	unreadqueuemanager.cpp
 	chatstyleoptionmanager.cpp
+	microblogstab.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -157,12 +158,9 @@ SET (HEADERS
 	accountactionsmanager.h
 	unreadqueuemanager.h
 	chatstyleoptionmanager.h
+	microblogstab.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
-	interfaces/azoth/iprotocolplugin.h
-	interfaces/azoth/iaccount.h
-	interfaces/azoth/iprotocol.h
-	interfaces/azoth/iclentry.h
 	)
 SET (FORMS
 	mainwidget.ui
@@ -188,6 +186,7 @@ SET (FORMS
 	searchwidget.ui
 	mucinvitedialog.ui
 	groupsenddialog.ui
+	microblogstab.ui
 	)
 SET (RESOURCES azothresources.qrc)
 
