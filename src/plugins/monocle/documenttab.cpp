@@ -39,6 +39,7 @@ namespace Monocle
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
+	, LayMode_ (LayoutMode::OnePage)
 	{
 		Ui_.setupUi (this);
 		Ui_.PagesView_->setScene (&Scene_);
