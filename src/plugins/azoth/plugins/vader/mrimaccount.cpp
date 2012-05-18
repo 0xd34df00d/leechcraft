@@ -282,11 +282,10 @@ namespace Vader
 	void MRIMAccount::RequestAuth (const QString& email,
 			const QString& msg, const QString& name, const QStringList& groups)
 	{
-		qDebug () << Q_FUNC_INFO << GetAccountName () << email;
 		if (!Buddies_.contains (email))
 		{
 			const quint32 group = 0;
-			const quint32 seqId = Conn_->AddContact (group, email, name);
+			const quint32 seqId = Conn_->AddContact (group, email, name.isEmpty () ? email : name);
 			PendingAdditions_ [seqId] = { -1, group, Proto::UserState::Offline,
 					email, name, QString (), QString (), 0, QString () };
 			Conn_->Authorize (email);
