@@ -533,8 +533,7 @@ namespace Vader
 
 	void MRIMAccount::handleGotMessage (const Proto::Message& msg)
 	{
-		auto buddy = Buddies_ [msg.From_];
-		if (!buddy)
+		if (!Buddies_.contains (msg.From_))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "incoming message from unknown buddy"
@@ -544,6 +543,7 @@ namespace Vader
 			return;
 		}
 
+		auto buddy = Buddies_ [msg.From_];
 		MRIMMessage *obj = new MRIMMessage (IMessage::DIn, IMessage::MTChatMessage, buddy);
 		obj->SetBody (msg.Text_);
 		obj->SetDateTime (msg.DT_);
@@ -552,8 +552,7 @@ namespace Vader
 
 	void MRIMAccount::handleGotAttentionRequest (const QString& from, const QString& msg)
 	{
-		auto buddy = Buddies_ [from];
-		if (!buddy)
+		if (!Buddies_.contains (from))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "from unknown buddy"
@@ -561,7 +560,7 @@ namespace Vader
 			return;
 		}
 
-		buddy->HandleAttention (msg);
+		Buddies_ [from]->HandleAttention (msg);
 	}
 
 	void MRIMAccount::handleOurStatusChanged (const EntryStatus& status)
@@ -572,8 +571,7 @@ namespace Vader
 
 	void MRIMAccount::handleGotUserTune (const QString& from, const QString& tune)
 	{
-		auto buddy = Buddies_ [from];
-		if (!buddy)
+		if (!Buddies_.contains (from))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "from unknown buddy"
@@ -581,13 +579,12 @@ namespace Vader
 			return;
 		}
 
-		buddy->HandleTune (tune);
+		Buddies_ [from]->HandleTune (tune);
 	}
 
 	void MRIMAccount::handleUserStartedTyping (const QString& from)
 	{
-		auto buddy = Buddies_ [from];
-		if (!buddy)
+		if (!Buddies_.contains (from))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "from unknown buddy"
@@ -595,13 +592,12 @@ namespace Vader
 			return;
 		}
 
-		buddy->HandleCPS (CPSComposing);
+		Buddies_ [from]->HandleCPS (CPSComposing);
 	}
 
 	void MRIMAccount::handleUserStoppedTyping (const QString& from)
 	{
-		auto buddy = Buddies_ [from];
-		if (!buddy)
+		if (!Buddies_.contains (from))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "from unknown buddy"
@@ -609,7 +605,7 @@ namespace Vader
 			return;
 		}
 
-		buddy->HandleCPS (CPSPaused);
+		Buddies_ [from]->HandleCPS (CPSPaused);
 	}
 
 	void MRIMAccount::handleGotNewMail (const QString& from, const QString& subj)
