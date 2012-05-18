@@ -117,6 +117,10 @@ namespace Azoth
 				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
 				this,
 				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)));
+		connect (AccountActsMgr_,
+				SIGNAL (gotMicroblogsTab (MicroblogsTab*)),
+				this,
+				SIGNAL (gotMicroblogsTab (MicroblogsTab*)));
 
 		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
 

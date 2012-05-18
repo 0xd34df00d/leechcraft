@@ -39,6 +39,8 @@ namespace Monocle
 	public:
 		virtual ~IDocument () {}
 
+		virtual QObject* GetObject () = 0;
+
 		virtual bool IsValid () const = 0;
 
 		virtual DocumentInfo GetDocumentInfo () const = 0;
@@ -50,6 +52,8 @@ namespace Monocle
 		virtual QImage RenderPage (int, double xRes, double yRes) = 0;
 
 		virtual QList<ILink_ptr> GetPageLinks (int) = 0;
+	protected:
+		virtual void navigateRequested (const QString&, int pageNum, double x, double y) = 0;
 	};
 
 	typedef std::shared_ptr<IDocument> IDocument_ptr;

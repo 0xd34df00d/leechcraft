@@ -18,45 +18,39 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <interfaces/monocle/idocument.h>
-
-namespace Poppler
-{
-	class Document;
-}
+#include <QWidget>
+#include <interfaces/ihavetabs.h>
+#include "ui_microblogstab.h"
 
 namespace LeechCraft
 {
-namespace Monocle
+namespace Azoth
 {
-namespace PDF
-{
-	typedef std::shared_ptr<Poppler::Document> PDocument_ptr;
+	class IAccount;
 
-	class Document : public QObject
-				   , public IDocument
+	class MicroblogsTab : public QWidget
+						, public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument)
+		Q_INTERFACES (ITabWidget);
 
-		PDocument_ptr PDocument_;
+		static QObject* S_ParentMultiTabs_;
+		static TabClassInfo S_TC_;
+
+		Ui::MicroblogsTab Ui_;
+
+		IAccount *Account_;
 	public:
-		Document (const QString&, QObject* = 0);
+		static void SetTabData (QObject*, const TabClassInfo&);
 
-		QObject* GetObject ();
-		bool IsValid () const;
-		DocumentInfo GetDocumentInfo () const;
-		int GetNumPages () const;
-		QSize GetPageSize (int) const;
-		QImage RenderPage (int, double, double);
-		QList<ILink_ptr> GetPageLinks (int);
+		MicroblogsTab (IAccount*);
 
-		void RequestNavigation (const QString&, int, double, double);
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
 	signals:
-		void navigateRequested (const QString&, int, double, double);
+		void removeTab (QWidget*);
 	};
-}
 }
 }

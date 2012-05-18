@@ -30,6 +30,11 @@ namespace Monocle
 		IDocument_ptr Doc_;
 		const int PageNum_;
 
+		bool IsHoverLink_;
+		QList<ILink_ptr> Links_;
+		QList<QPair<QRect, ILink_ptr>> Rect2Link_;
+		ILink_ptr PressedLink_;
+
 		double XScale_;
 		double YScale_;
 
@@ -40,6 +45,13 @@ namespace Monocle
 		void SetScale (double, double);
 	protected:
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*);
+		void hoverMoveEvent (QGraphicsSceneHoverEvent*);
+		void hoverLeaveEvent (QGraphicsSceneHoverEvent*);
+		void mousePressEvent (QGraphicsSceneMouseEvent*);
+		void mouseReleaseEvent (QGraphicsSceneMouseEvent*);
+	private:
+		void LayoutLinks ();
+		ILink_ptr FindLink (const QPointF&);
 	};
 }
 }

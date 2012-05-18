@@ -42,6 +42,7 @@
 #include "usermood.h"
 #include "usertune.h"
 #include "userlocation.h"
+#include "pepmicroblog.h"
 #include "adhoccommandmanager.h"
 #include "executecommanddialog.h"
 #include "roomclentry.h"
@@ -263,6 +264,10 @@ namespace Xoox
 		conn->GetClient ()->sendPacket (pres);
 	}
 
+	void EntryBase::RequestLastPosts (int maxNum)
+	{
+	}
+
 	void EntryBase::HandlePresence (const QXmppPresence& pres, const QString& resource)
 	{
 		SetClientInfo (resource, pres);
@@ -294,8 +299,7 @@ namespace Xoox
 				(!vars.contains (variant) || variant.isEmpty ()))
 			variant = vars.first ();
 
-		UserActivity *activity = dynamic_cast<UserActivity*> (event);
-		if (activity)
+		if (UserActivity *activity = dynamic_cast<UserActivity*> (event))
 		{
 			if (activity->GetGeneral () == UserActivity::GeneralEmpty)
 				Variant2ClientInfo_ [variant].remove ("user_activity");
@@ -312,8 +316,7 @@ namespace Xoox
 			return;
 		}
 
-		UserMood *mood = dynamic_cast<UserMood*> (event);
-		if (mood)
+		if (UserMood *mood = dynamic_cast<UserMood*> (event))
 		{
 			if (mood->GetMood () == UserMood::MoodEmpty)
 				Variant2ClientInfo_ [variant].remove ("user_mood");
@@ -329,8 +332,7 @@ namespace Xoox
 			return;
 		}
 
-		UserTune *tune = dynamic_cast<UserTune*> (event);
-		if (tune)
+		if (UserTune *tune = dynamic_cast<UserTune*> (event))
 		{
 			if (tune->IsNull ())
 				Variant2ClientInfo_ [variant].remove ("user_tune");
@@ -351,12 +353,17 @@ namespace Xoox
 			return;
 		}
 
-		UserLocation *location = dynamic_cast<UserLocation*> (event);
-		if (location)
+		if (UserLocation *location = dynamic_cast<UserLocation*> (event))
 		{
 			Location_ [variant] = location->GetInfo ();
 			emit locationChanged (variant, this);
 			emit locationChanged (variant);
+			return;
+		}
+
+		if (PEPMicroblog *microblog = dynamic_cast<PEPMicroblog*> (event))
+		{
+			emit gotNewPost (*microblog);
 			return;
 		}
 

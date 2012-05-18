@@ -28,6 +28,8 @@ namespace Monocle
 {
 namespace PDF
 {
+	class Document;
+
 	class Link : public QObject
 			   , public ILink
 	{
@@ -35,35 +37,17 @@ namespace PDF
 		Q_INTERFACES (LeechCraft::Monocle::ILink)
 
 	protected:
+		Document *Doc_;
 		std::shared_ptr<Poppler::Link> Link_;
 	public:
-		explicit Link (Poppler::Link*);
+		explicit Link (Document*, Poppler::Link*);
 
 		LinkType GetLinkType () const;
 		QRectF GetArea () const;
 
-		void Execute () const;
-	};
-
-	class PageLink : public Link
-				   , public IPageLink
-	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IPageLink)
-
-		std::shared_ptr<Poppler::LinkGoto> LinkGoto_;
-
-		double X_;
-		double Y_;
-		double Zoom_;
-	public:
-		explicit PageLink (Poppler::LinkGoto*);
-
-		QString GetDocumentFilename () const;
-		int GetPageNumber () const;
-		double NewX () const;
-		double NewY () const;
-		double NewZoom () const;
+		void Execute ();
+	private:
+		void ExecutePageLink ();
 	};
 }
 }

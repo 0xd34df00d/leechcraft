@@ -18,45 +18,18 @@
 
 #pragma once
 
-#include <memory>
+#include <QList>
+#include <QString>
 #include <QObject>
-#include <interfaces/monocle/idocument.h>
-
-namespace Poppler
-{
-	class Document;
-}
+#include "interfaces/azoth/isupportriex.h"
 
 namespace LeechCraft
 {
-namespace Monocle
+namespace Azoth
 {
-namespace PDF
+namespace RIEX
 {
-	typedef std::shared_ptr<Poppler::Document> PDocument_ptr;
-
-	class Document : public QObject
-				   , public IDocument
-	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument)
-
-		PDocument_ptr PDocument_;
-	public:
-		Document (const QString&, QObject* = 0);
-
-		QObject* GetObject ();
-		bool IsValid () const;
-		DocumentInfo GetDocumentInfo () const;
-		int GetNumPages () const;
-		QSize GetPageSize (int) const;
-		QImage RenderPage (int, double, double);
-		QList<ILink_ptr> GetPageLinks (int);
-
-		void RequestNavigation (const QString&, int, double, double);
-	signals:
-		void navigateRequested (const QString&, int, double, double);
-	};
+	void HandleRIEXItemsSuggested (QList<RIEXItem> items, QObject *from, QString message);
 }
 }
 }

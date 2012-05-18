@@ -38,6 +38,11 @@ namespace PDF
 		PDocument_->setRenderHint (Poppler::Document::TextHinting);
 	}
 
+	QObject* Document::GetObject ()
+	{
+		return this;
+	}
+
 	bool Document::IsValid () const
 	{
 		return PDocument_ && !PDocument_->isLocked ();
@@ -86,12 +91,15 @@ namespace PDF
 			return result;
 
 		Q_FOREACH (auto link, page->links ())
-		{
-			if (auto gl = dynamic_cast<Poppler::LinkGoto*> (link))
-				result << ILink_ptr (new PageLink (gl));
-		}
+			result << ILink_ptr (new Link (this, link));
 
 		return result;
+	}
+
+	void Document::RequestNavigation (const QString& filename,
+			int page, double x, double y)
+	{
+		emit navigateRequested (filename, page, x, y);
 	}
 }
 }

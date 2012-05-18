@@ -33,6 +33,7 @@ namespace Azoth
 	class SortFilterProxyModel;
 	class ConsoleWidget;
 	class ServiceDiscoveryWidget;
+	class MicroblogsTab;
 	class AccountActionsManager;
 
 	class MainWidget : public QWidget
@@ -100,6 +101,7 @@ namespace Azoth
 	signals:
 		void gotConsoleWidget (ConsoleWidget*);
 		void gotSDWidget (ServiceDiscoveryWidget*);
+		void gotMicroblogsTab (MicroblogsTab*);
 	};
 }
 }

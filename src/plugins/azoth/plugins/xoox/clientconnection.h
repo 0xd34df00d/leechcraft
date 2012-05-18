@@ -325,6 +325,9 @@ namespace Xoox
 
 		void gotConsoleLog (const QByteArray&, int, const QString&);
 
+		void gotRequestedPosts (const QList<LeechCraft::Azoth::Post>&, const QString&);
+		void gotNewPost (const LeechCraft::Azoth::Post&);
+
 		void serverAuthFailed ();
 		void needPassword ();
 		void statusChanged (const EntryStatus&);

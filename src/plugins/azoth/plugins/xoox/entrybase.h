@@ -30,6 +30,7 @@
 #include <interfaces/azoth/iadvancedclentry.h>
 #include <interfaces/azoth/ihavedirectedstatus.h>
 #include <interfaces/azoth/isupportgeolocation.h>
+#include <interfaces/azoth/isupportmicroblogs.h>
 
 class QXmppPresence;
 class QXmppVersionIq;
@@ -56,11 +57,13 @@ namespace Xoox
 					, public ICLEntry
 					, public IAdvancedCLEntry
 					, public IHaveDirectedStatus
+					, public ISupportMicroblogs
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
 				LeechCraft::Azoth::IAdvancedCLEntry
-				LeechCraft::Azoth::IHaveDirectedStatus)
+				LeechCraft::Azoth::IHaveDirectedStatus
+				LeechCraft::Azoth::ISupportMicroblogs)
 	protected:
 		GlooxAccount *Account_;
 
@@ -113,6 +116,9 @@ namespace Xoox
 		// IHaveDirectedStatus
 		bool CanSendDirectedStatusNow (const QString&);
 		void SendDirectedStatus (const EntryStatus&, const QString&);
+
+		// ISupportMicroblogs
+		void RequestLastPosts (int);
 
 		virtual QString GetJID () const = 0;
 
@@ -167,6 +173,9 @@ namespace Xoox
 		void activityChanged (const QString&);
 		void tuneChanged (const QString&);
 		void locationChanged (const QString&);
+
+		void gotRecentPosts (const QList<LeechCraft::Azoth::Post>&);
+		void gotNewPost (const LeechCraft::Azoth::Post&);
 
 		void locationChanged (const QString&, QObject*);
 

@@ -31,6 +31,7 @@
 #include "interfaces/azoth/isupportgeolocation.h"
 #include "interfaces/azoth/ihaveservicediscovery.h"
 #include "interfaces/azoth/ihaveconsole.h"
+#include "interfaces/azoth/ihavemicroblogs.h"
 #include "core.h"
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
@@ -40,6 +41,7 @@
 #include "locationdialog.h"
 #include "consolewidget.h"
 #include "servicediscoverywidget.h"
+#include "microblogstab.h"
 
 namespace LeechCraft
 {
@@ -51,6 +53,7 @@ namespace Azoth
 	, AccountJoinConference_ (new QAction (tr ("Join conference..."), this))
 	, AccountManageBookmarks_ (new QAction (tr ("Manage bookmarks..."), this))
 	, AccountAddContact_ (new QAction (tr ("Add contact..."), this))
+	, AccountViewMicroblogs_ (new QAction (tr ("View microblogs..."), this))
 	, AccountSetActivity_ (new QAction (tr ("Set activity..."), this))
 	, AccountSetMood_ (new QAction (tr ("Set mood..."), this))
 	, AccountSetLocation_ (new QAction (tr ("Set location..."), this))
@@ -78,6 +81,10 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (addAccountContact ()));
+		connect (AccountViewMicroblogs_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountMicroblogs ()));
 		connect (AccountSetActivity_,
 				SIGNAL (triggered ()),
 				this,
@@ -158,6 +165,12 @@ namespace Azoth
 
 		actions << AccountAddContact_;
 		actions << Util::CreateSeparator (menu);
+
+		if (qobject_cast<IHaveMicroblogs*> (accObj))
+		{
+			actions << AccountViewMicroblogs_;
+			actions << Util::CreateSeparator (menu);
+		}
 
 		if (qobject_cast<ISupportActivity*> (accObj))
 			actions << AccountSetActivity_;
@@ -278,6 +291,15 @@ namespace Azoth
 
 		dia.GetSelectedAccount ()->RequestAuth (dia.GetContactID (),
 				dia.GetReason (), dia.GetNick (), dia.GetGroups ());
+	}
+
+	void AccountActionsManager::handleAccountMicroblogs ()
+	{
+		IAccount *account = GetAccountFromSender (sender (), Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		emit gotMicroblogsTab (new MicroblogsTab (account));
 	}
 
 	void AccountActionsManager::handleAccountSetActivity ()

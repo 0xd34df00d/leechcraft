@@ -43,7 +43,7 @@ namespace Monocle
 
 		virtual QRectF GetArea () const = 0;
 
-		virtual void Execute () const = 0;
+		virtual void Execute () = 0;
 	};
 	typedef std::shared_ptr<ILink> ILink_ptr;
 

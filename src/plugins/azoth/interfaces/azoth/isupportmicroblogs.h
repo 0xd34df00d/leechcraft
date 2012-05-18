@@ -18,45 +18,45 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <interfaces/monocle/idocument.h>
-
-namespace Poppler
-{
-	class Document;
-}
+#include <QString>
+#include <QList>
+#include <QMap>
+#include <QDateTime>
 
 namespace LeechCraft
 {
-namespace Monocle
+namespace Azoth
 {
-namespace PDF
-{
-	typedef std::shared_ptr<Poppler::Document> PDocument_ptr;
-
-	class Document : public QObject
-				   , public IDocument
+	struct PostAuthor
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument)
+		QString Name_;
+		QString URI_;
+	};
 
-		PDocument_ptr PDocument_;
+	struct Post
+	{
+		QString ID_;
+		QMap<QString, QString> Contents_;
+
+		QDateTime Published_;
+		QDateTime Updated_;
+
+		PostAuthor Author_;
+	};
+
+	class ISupportMicroblogs
+	{
 	public:
-		Document (const QString&, QObject* = 0);
+		virtual ~ISupportMicroblogs () {}
 
-		QObject* GetObject ();
-		bool IsValid () const;
-		DocumentInfo GetDocumentInfo () const;
-		int GetNumPages () const;
-		QSize GetPageSize (int) const;
-		QImage RenderPage (int, double, double);
-		QList<ILink_ptr> GetPageLinks (int);
+		virtual void RequestLastPosts (int) = 0;
+	protected:
+		virtual void gotNewPost (const Post&) = 0;
 
-		void RequestNavigation (const QString&, int, double, double);
-	signals:
-		void navigateRequested (const QString&, int, double, double);
+		virtual void gotRecentPosts (const QList<Post>&) = 0;
 	};
 }
 }
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportMicroblogs,
+		"org.Deviant.LeechCraft.Azoth.ISupportMicroblogs/1.0");

@@ -520,78 +520,99 @@ namespace LeechCraft
 				if (!CheckValidity (row))
 					return QVariant ();
 
-				const libtorrent::torrent_handle& h = Handles_.at (row).Handle_;
-				libtorrent::torrent_status status = h.status ();
+				const auto& h = Handles_.at (row).Handle_;
+				const auto& status = h.status ();
 
 				switch (role)
 				{
-					case Qt::DisplayRole:
-						switch (column)
+				case Qt::DisplayRole:
+					switch (column)
+					{
+					case ColumnName:
+						return QString::fromUtf8 (h.name ().c_str ());
+					case ColumnState:
+					{
+						const auto& stateStr = GetStringForState (status.state);
+						if (status.state == libtorrent::torrent_status::downloading)
 						{
-							case ColumnName:
-								return QString::fromUtf8 (h.name ().c_str ());
-							case ColumnState:
-								{
-									QString result = status.paused ?
-										tr ("Idle") : GetStringForState (status.state);
-									if (status.state == libtorrent::torrent_status::downloading)
-									{
-										result = QString ("%1 (ETA: %2)")
-											.arg (result)
-											.arg (Util::MakeTimeFromLong
-													(
-													 static_cast<double> (status.total_wanted - status.total_wanted_done) /
-													 status.download_rate
-													));
-									}
-									return result;
-								}
-							case ColumnProgress:
-								return QString (tr ("%1% (%2 of %3 at %4)")
-										.arg (status.progress * 100, 0, 'f', 2)
-										.arg (Util::MakePrettySize (status.total_wanted_done))
-										.arg (Util::MakePrettySize (status.total_wanted)))
-										.arg (Util::MakePrettySize (status.download_payload_rate) +
-												tr ("/s"));
-							default:
-								return QVariant ();
+							const auto remaining = status.total_wanted - status.total_wanted_done;
+							const auto time = static_cast<double> (remaining) / status.download_rate;
+							return QString ("%1 (ETA: %2)")
+								.arg (stateStr)
+								.arg (Util::MakeTimeFromLong (time));
 						}
-					case Qt::ToolTipRole:
+						else if (status.paused)
+							return tr ("idle");
+						else
+							return stateStr;
+					}
+					case ColumnProgress:
+						if (status.state == libtorrent::torrent_status::downloading)
+							return tr ("%1% (%2 of %3 at %4 from %5 peers)")
+									.arg (status.progress * 100, 0, 'f', 2)
+									.arg (Util::MakePrettySize (status.total_wanted_done))
+									.arg (Util::MakePrettySize (status.total_wanted))
+									.arg (Util::MakePrettySize (status.download_payload_rate) +
+											tr ("/s"))
+									.arg (status.num_peers);
+						else if (!status.paused &&
+									(status.state == libtorrent::torrent_status::finished ||
+									 status.state == libtorrent::torrent_status::seeding))
 						{
-							QString result;
-							result += tr ("Name:") + " " + QString::fromUtf8 (h.name ().c_str ()) + "\n";
-							result += tr ("Destination:") + " " +
-#if LIBTORRENT_VERSION_NUM >= 1600
-								QString::fromUtf8 (h.save_path ().c_str ()) + "\n";
-#else
-								QString::fromUtf8 (h.save_path ().directory_string ().c_str ()) + "\n";
-#endif
-							result += tr ("Progress:") + " " +
-								QString (tr ("%1% (%2 of %3)")
-										.arg (status.progress * 100, 0, 'f', 2)
-										.arg (Util::MakePrettySize (status.total_wanted_done))
-										.arg (Util::MakePrettySize (status.total_wanted))) +
-								tr ("; status:") + " " +
-								(status.paused ? tr ("Idle") : GetStringForState (status.state)) + "\n";
-							result += tr ("Downloading speed:") + " " +
-								Util::MakePrettySize (status.download_payload_rate) + tr ("/s") +
-								tr ("; uploading speed:") + " " +
-								Util::MakePrettySize (status.upload_payload_rate) + tr ("/s") + "\n";
-							result += tr ("Peers/seeds: %1/%2").arg (status.num_peers).arg (status.num_seeds);
-							return result;
+							auto total = status.num_incomplete;
+							if (total <= 0)
+								total = status.list_peers - status.list_seeds;
+							return tr ("%1, seeding at %2 to %3 leechers (of around %4)")
+									.arg (Util::MakePrettySize (status.total_wanted))
+									.arg (Util::MakePrettySize (status.upload_payload_rate) +
+											tr ("/s"))
+									.arg (status.num_peers - status.num_seeds)
+									.arg (total);
 						}
-					case Qt::DecorationRole:
-						return column ? QVariant () : TorrentIcon_;
-					case RoleTags:
-						return Handles_.at (row).Tags_;
-					case CustomDataRoles::RoleJobHolderRow:
-						return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
-					case ProcessState::Done:
-						return static_cast<qlonglong> (status.total_wanted_done);
-					case ProcessState::Total:
-						return static_cast<qlonglong> (status.total_wanted);
+						else
+							return tr ("%1% (%2 of %3)")
+									.arg (status.progress * 100, 0, 'f', 2)
+									.arg (Util::MakePrettySize (status.total_wanted_done))
+									.arg (Util::MakePrettySize (status.total_wanted));
 					default:
 						return QVariant ();
+					}
+				case Qt::ToolTipRole:
+				{
+					QString result;
+					result += tr ("Name:") + " " + QString::fromUtf8 (h.name ().c_str ()) + "\n";
+					result += tr ("Destination:") + " " +
+#if LIBTORRENT_VERSION_NUM >= 1600
+						QString::fromUtf8 (h.save_path ().c_str ()) + "\n";
+#else
+						QString::fromUtf8 (h.save_path ().directory_string ().c_str ()) + "\n";
+#endif
+					result += tr ("Progress:") + " " +
+						QString (tr ("%1% (%2 of %3)")
+								.arg (status.progress * 100, 0, 'f', 2)
+								.arg (Util::MakePrettySize (status.total_wanted_done))
+								.arg (Util::MakePrettySize (status.total_wanted))) +
+						tr ("; status:") + " " +
+						(status.paused ? tr ("Idle") : GetStringForState (status.state)) + "\n";
+					result += tr ("Downloading speed:") + " " +
+						Util::MakePrettySize (status.download_payload_rate) + tr ("/s") +
+						tr ("; uploading speed:") + " " +
+						Util::MakePrettySize (status.upload_payload_rate) + tr ("/s") + "\n";
+					result += tr ("Peers/seeds: %1/%2").arg (status.num_peers).arg (status.num_seeds);
+					return result;
+				}
+				case Qt::DecorationRole:
+					return column ? QVariant () : TorrentIcon_;
+				case RoleTags:
+					return Handles_.at (row).Tags_;
+				case CustomDataRoles::RoleJobHolderRow:
+					return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
+				case ProcessState::Done:
+					return static_cast<qlonglong> (status.total_wanted_done);
+				case ProcessState::Total:
+					return static_cast<qlonglong> (status.total_wanted);
+				default:
+					return QVariant ();
 				}
 			}
 

@@ -16,47 +16,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
-#include <interfaces/monocle/idocument.h>
-
-namespace Poppler
-{
-	class Document;
-}
+#include "microblogstab.h"
+#include <interfaces/azoth/iaccount.h>
 
 namespace LeechCraft
 {
-namespace Monocle
+namespace Azoth
 {
-namespace PDF
-{
-	typedef std::shared_ptr<Poppler::Document> PDocument_ptr;
+	QObject* MicroblogsTab::S_ParentMultiTabs_ = 0;
+	TabClassInfo MicroblogsTab::S_TC_ = TabClassInfo ();
 
-	class Document : public QObject
-				   , public IDocument
+	void MicroblogsTab::SetTabData (QObject *obj, const TabClassInfo& tc)
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument)
+		S_ParentMultiTabs_ = obj;
+		S_TC_ = tc;
+	}
 
-		PDocument_ptr PDocument_;
-	public:
-		Document (const QString&, QObject* = 0);
+	MicroblogsTab::MicroblogsTab (IAccount *acc)
+	: Account_ (acc)
+	{
+		Ui_.setupUi (this);
+	}
 
-		QObject* GetObject ();
-		bool IsValid () const;
-		DocumentInfo GetDocumentInfo () const;
-		int GetNumPages () const;
-		QSize GetPageSize (int) const;
-		QImage RenderPage (int, double, double);
-		QList<ILink_ptr> GetPageLinks (int);
+	TabClassInfo MicroblogsTab::GetTabClassInfo () const
+	{
+		return S_TC_;
+	}
 
-		void RequestNavigation (const QString&, int, double, double);
-	signals:
-		void navigateRequested (const QString&, int, double, double);
-	};
-}
+	QObject* MicroblogsTab::ParentMultiTabs ()
+	{
+		return S_ParentMultiTabs_;
+	}
+
+	void MicroblogsTab::Remove ()
+	{
+		emit removeTab (this);
+		deleteLater ();
+	}
+
+	QToolBar* MicroblogsTab::GetToolBar () const
+	{
+		return 0;
+	}
 }
 }
