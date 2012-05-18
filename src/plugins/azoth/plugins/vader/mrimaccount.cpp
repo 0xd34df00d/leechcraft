@@ -256,9 +256,11 @@ namespace Vader
 		buddy->SetAuthorized (true);
 
 		if (!Buddies_.contains (id))
-		{
 			Buddies_ [id] = buddy;
-			Conn_->AddContact (0, id, buddy->GetEntryName ());
+		if (buddy->GetID () < 0)
+		{
+			const auto seq = Conn_->AddContact (0, id, buddy->GetEntryName ());
+			PendingAdditions_ [seq] = buddy->GetInfo ();
 		}
 	}
 
@@ -419,6 +421,10 @@ namespace Vader
 		{
 			qDebug () << Q_FUNC_INFO << GetAccountName () << contact.Email_ << contact.Alias_ << contact.ContactID_ << contact.UA_ << contact.Features_;
 			MRIMBuddy *buddy = GetBuddy (contact);
+
+			if (buddy->GetID () != contact.ContactID_)
+				buddy->UpdateID (contact.ContactID_);
+
 			buddy->SetGroup (GM_->GetGroup (contact.GroupNumber_));
 			Buddies_ [contact.Email_] = buddy;
 		}
