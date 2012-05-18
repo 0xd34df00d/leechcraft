@@ -50,6 +50,7 @@ namespace Vader
 		EntryStatus Status_;
 		QList<MRIMMessage*> AllMessages_;
 		bool IsAuthorized_;
+		bool GaveSubscription_;
 
 		QVariantMap ClientInfo_;
 
@@ -68,8 +69,24 @@ namespace Vader
 		void HandleCPS (ChatPartState);
 		void SetGroup (const QString&);
 
+		/** @brief Sets whether this buddy is authorized by us.
+		 *
+		 * Toggles whether this buddy can see our presence.
+		 *
+		 * @sa IsAuthorized()
+		 */
 		void SetAuthorized (bool);
+		/** @brief Whether this buddy is authorized by us.
+		 *
+		 * Returns true if we allowed this buddy to subscribe to our
+		 * presence, false otherwise.
+		 *
+		 * @sa SetAuthorized()
+		 */
 		bool IsAuthorized () const;
+
+		void SetGaveSubscription (bool);
+		bool GaveSubscription () const;
 
 		Proto::ContactInfo GetInfo () const;
 		void UpdateInfo (const Proto::ContactInfo&);

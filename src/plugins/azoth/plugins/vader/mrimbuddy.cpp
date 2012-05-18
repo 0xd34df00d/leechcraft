@@ -44,6 +44,7 @@ namespace Vader
 	, A_ (acc)
 	, Info_ (info)
 	, IsAuthorized_ (true)
+	, GaveSubscription_ (true)
 	, SendSMS_ (new QAction (tr ("Send SMS..."), this))
 	, AvatarFetcher_ (new SelfAvatarFetcher (this))
 	{
@@ -110,6 +111,16 @@ namespace Vader
 	bool MRIMBuddy::IsAuthorized () const
 	{
 		return IsAuthorized_;
+	}
+
+	void MRIMBuddy::SetGaveSubscription (bool gave)
+	{
+		GaveSubscription_ = gave;
+	}
+
+	bool MRIMBuddy::GaveSubscription () const
+	{
+		return GaveSubscription_;
 	}
 
 	Proto::ContactInfo MRIMBuddy::GetInfo () const
