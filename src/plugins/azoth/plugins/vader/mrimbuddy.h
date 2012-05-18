@@ -94,6 +94,7 @@ namespace Vader
 		void HandleWPInfo (const QMap<QString, QString>&);
 
 		qint64 GetID () const;
+		void UpdateID (qint64);
 
 		// ICLEntry
 		QObject* GetObject ();

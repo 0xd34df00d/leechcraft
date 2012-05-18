@@ -200,6 +200,11 @@ namespace Vader
 		return Info_.ContactID_;
 	}
 
+	void MRIMBuddy::UpdateID (qint64 id)
+	{
+		Info_.ContactID_ = id;
+	}
+
 	QObject* MRIMBuddy::GetObject ()
 	{
 		return this;
