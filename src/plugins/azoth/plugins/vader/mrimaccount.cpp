@@ -259,7 +259,6 @@ namespace Vader
 		{
 			Buddies_ [id] = buddy;
 			Conn_->AddContact (0, id, buddy->GetEntryName ());
-			Conn_->RequestAuth (id, QString ());
 		}
 	}
 
