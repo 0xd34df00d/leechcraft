@@ -292,7 +292,7 @@ namespace Vader
 					email, name, QString (), QString (), 0, QString () };
 			Conn_->Authorize (email);
 		}
-		else
+		else if (!Buddies_ [email]->GaveSubscription ())
 			Conn_->RequestAuth (email, msg);
 	}
 
@@ -459,10 +459,14 @@ namespace Vader
 		if (!PendingAdditions_.contains (seq))
 			return;
 
-		Proto::ContactInfo info = PendingAdditions_.take (seq);
+		auto info = PendingAdditions_.take (seq);
 		info.ContactID_ = id;
 
+		const bool existed = Buddies_.contains (info.Email_);
 		handleGotContacts (QList<Proto::ContactInfo> () << info);
+
+		if (!existed)
+			Buddies_ [info.Email_]->SetGaveSubscription (false);
 	}
 
 	void MRIMAccount::handleGotUserInfoError (const QString& id,
@@ -510,16 +514,19 @@ namespace Vader
 	void MRIMAccount::handleGotAuthRequest (const QString& from, const QString& msg)
 	{
 		qDebug () << Q_FUNC_INFO << GetAccountName () << from;
-		if (Buddies_.contains (from) &&
-				Buddies_ [from]->IsAuthorized ())
-			return;
+		MRIMBuddy *buddy = 0;
+		if (Buddies_.contains (from))
+			buddy = Buddies_ [from];
+		else
+		{
+			const Proto::ContactInfo info = {-1, 0, Proto::UserState::Online,
+					from, from, QString (), QString (), 0, QString () };
+			buddy = new MRIMBuddy (info, this);
+			emit gotCLItems (QList<QObject*> () << buddy);
+			Buddies_ [from] = buddy;
+		}
 
-		Proto::ContactInfo info = {-1, 0, Proto::UserState::Online,
-				from, from, QString (), QString (), 0, QString () };
-
-		MRIMBuddy *buddy = new MRIMBuddy (info, this);
 		buddy->SetAuthorized (false);
-		emit gotCLItems (QList<QObject*> () << buddy);
 		emit authorizationRequested (buddy, msg);
 	}
 
@@ -534,7 +541,10 @@ namespace Vader
 			return;
 		}
 
-		emit itemGrantedSubscription (Buddies_ [from], QString ());
+		auto buddy = Buddies_ [from];
+		buddy->SetGaveSubscription (true);
+
+		emit itemGrantedSubscription (buddy, QString ());
 	}
 
 	void MRIMAccount::handleGotMessage (const Proto::Message& msg)
