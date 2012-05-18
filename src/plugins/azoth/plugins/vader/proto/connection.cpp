@@ -266,11 +266,15 @@ namespace Proto
 		return p.Seq_;
 	}
 
-	void Connection::ModifyContact (quint32 contactId,
-			quint32 groupId, const QString& email, const QString& name)
+	void Connection::ModifyContact (quint32 contactId, quint32 groupId,
+			const QString& email, const QString& name, const QString& phone)
 	{
 		const auto& p = PF_.ModifyContact (contactId,
-				ContactOpFlag::None, groupId, email, name);
+				ContactOpFlag::None,
+				groupId,
+				email,
+				name,
+				phone.isEmpty () ? " " : phone);
 		Write (p.Packet_);
 	}
 
@@ -391,7 +395,7 @@ namespace Proto
 #endif
 
 		emit userStatusChanged ({-1, 0, statusId, email,
-				QString (), title, desc, features, ua});
+				QString (), QString (), title, desc, features, ua});
 	}
 
 	void Connection::ContactList (HalfPacket hp)
@@ -497,7 +501,7 @@ namespace Proto
 						<< statusTitle << statusDesc << comSupport << ua;
 #endif
 
-				contacts << ContactInfo { contactId++, group, status, email, alias, statusTitle, statusDesc, comSupport, ua };
+				contacts << ContactInfo { contactId++, group, status, email, phones, alias, statusTitle, statusDesc, comSupport, ua };
 
 				try
 				{

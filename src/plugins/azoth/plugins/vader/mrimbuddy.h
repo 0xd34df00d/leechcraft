@@ -56,6 +56,7 @@ namespace Vader
 
 		QHash<quint32, QString> SentSMS_;
 
+		QAction *UpdateNumber_;
 		QAction *SendSMS_;
 
 		SelfAvatarFetcher *AvatarFetcher_;
@@ -128,6 +129,7 @@ namespace Vader
 	private slots:
 		void updateAvatar (const QImage&);
 
+		void handleUpdateNumber ();
 		void handleSendSMS ();
 
 		void handleSMSDelivered (quint32);

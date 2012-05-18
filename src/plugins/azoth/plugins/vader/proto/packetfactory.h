@@ -57,7 +57,7 @@ namespace Proto
 		Packet AddContact (ContactOpFlags flags, quint32 group,
 				const QString& email, const QString& name);
 		Packet ModifyContact (quint32 cid, ContactOpFlags flags,
-				quint32 group, const QString& email, const QString& name);
+				quint32 group, const QString& email, const QString& name, const QString& phone);
 		Packet RemoveContact (quint32 id,
 				const QString& email, const QString& name);
 

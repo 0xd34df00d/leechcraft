@@ -289,7 +289,7 @@ namespace Vader
 			const quint32 group = 0;
 			const quint32 seqId = Conn_->AddContact (group, email, name.isEmpty () ? email : name);
 			PendingAdditions_ [seqId] = { -1, group, Proto::UserState::Offline,
-					email, name, QString (), QString (), 0, QString () };
+					email, QString (), name, QString (), QString (), 0, QString () };
 			Conn_->Authorize (email);
 		}
 		else if (!Buddies_ [email]->GaveSubscription ())
@@ -419,7 +419,14 @@ namespace Vader
 	{
 		Q_FOREACH (const Proto::ContactInfo& contact, contacts)
 		{
-			qDebug () << Q_FUNC_INFO << GetAccountName () << contact.Email_ << contact.Alias_ << contact.ContactID_ << contact.UA_ << contact.Features_;
+			qDebug () << Q_FUNC_INFO
+					<< GetAccountName ()
+					<< contact.Email_
+					<< contact.Phone_
+					<< contact.Alias_
+					<< contact.ContactID_
+					<< contact.UA_
+					<< contact.Features_;
 			MRIMBuddy *buddy = GetBuddy (contact);
 
 			if (buddy->GetID () != contact.ContactID_)
@@ -520,7 +527,7 @@ namespace Vader
 		else
 		{
 			const Proto::ContactInfo info = {-1, 0, Proto::UserState::Online,
-					from, from, QString (), QString (), 0, QString () };
+					from, from, QString (), QString (), QString (), 0, QString () };
 			buddy = new MRIMBuddy (info, this);
 			emit gotCLItems (QList<QObject*> () << buddy);
 			Buddies_ [from] = buddy;
