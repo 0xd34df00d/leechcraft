@@ -27,6 +27,7 @@
 #include "capsmanager.h"
 #include "annotationsmanager.h"
 #include "useravatarmanager.h"
+#include "vcardlisteditdialog.h"
 
 namespace LeechCraft
 {
@@ -65,6 +66,8 @@ namespace Xoox
 		{
 			Ui_.PhotoBrowse_->hide ();
 			Ui_.PhotoClear_->hide ();
+			Ui_.PhoneButton_->hide ();
+			Ui_.EmailButton_->hide ();
 		}
 
 		Ui_.EditBirthday_->setVisible (false);
@@ -314,6 +317,55 @@ namespace Xoox
 		QXmppVCardManager& mgr = Account_->GetClientConnection ()->
 				GetClient ()->vCardManager ();
 		mgr.setClientVCard (VCard_);
+	}
+
+	void VCardDialog::on_PhoneButton__released ()
+	{
+		QStringList options;
+		options << tr ("preferred")
+				<< tr ("home")
+				<< tr ("work")
+				<< tr ("cell");
+
+		VCardListEditDialog dia (options, this);
+		Q_FOREACH (const QXmppVCardPhone& phone, VCard_.phones ())
+		{
+			if (phone.number.isEmpty ())
+				continue;
+
+			QPair<QString, QStringList> pair;
+			pair.first = phone.number;
+			if (phone.isPref)
+				pair.second << options.at (0);
+			if (phone.isHome)
+				pair.second << options.at (1);
+			if (phone.isWork)
+				pair.second << options.at (2);
+			if (phone.isCell)
+				pair.second << options.at (3);
+			dia.AddItems (QList<decltype (pair)> () << pair);
+		}
+
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		QXmppVCardPhoneList list;
+		Q_FOREACH (const auto& item, dia.GetItems ())
+		{
+			QXmppVCardPhone phone;
+			phone.number = item.first;
+			phone.isPref = item.second.contains (options.at (0));
+			phone.isHome = item.second.contains (options.at (1));
+			phone.isWork = item.second.contains (options.at (2));
+			phone.isCell = item.second.contains (options.at (3));
+			list << phone;
+		}
+		VCard_.setPhones (list);
+		BuildPhones (list);
+	}
+
+	void VCardDialog::on_EmailButton__released ()
+	{
 	}
 
 	void VCardDialog::on_PhotoBrowse__released ()

@@ -58,6 +58,8 @@ namespace Xoox
 		void rebuildClientInfo ();
 		void setNote ();
 		void publishVCard ();
+		void on_PhoneButton__released ();
+		void on_EmailButton__released ();
 		void on_PhotoBrowse__released ();
 		void on_PhotoClear__released ();
 	};
