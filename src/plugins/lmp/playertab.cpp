@@ -343,6 +343,8 @@ namespace LMP
 		QMenu *playMode = new QMenu (tr ("Play mode"));
 		playButton->setMenu (playMode);
 
+		const int resumeMode = XmlSettingsManager::Instance ()
+				.Property ("PlayMode", static_cast<int> (Player::PlayMode::Sequential)).toInt ();
 		const std::vector<Player::PlayMode> modes = { Player::PlayMode::Sequential,
 				Player::PlayMode::Shuffle, Player::PlayMode::RepeatTrack,
 				Player::PlayMode::RepeatAlbum, Player::PlayMode::RepeatWhole };
@@ -355,7 +357,7 @@ namespace LMP
 			QAction *action = new QAction (names [i], this);
 			action->setProperty ("PlayMode", static_cast<int> (modes.at (i)));
 			action->setCheckable (true);
-			action->setChecked (modes.at (i) == Player::PlayMode::Sequential);
+			action->setChecked (static_cast<int> (modes.at (i)) == resumeMode);
 			action->setActionGroup (playGroup);
 			playMode->addAction (action);
 
@@ -364,6 +366,7 @@ namespace LMP
 					this,
 					SLOT (handleChangePlayMode ()));
 		}
+		Player_->SetPlayMode (static_cast<Player::PlayMode> (resumeMode));
 
 		PlaylistToolbar_->addWidget (playButton);
 
@@ -611,6 +614,7 @@ namespace LMP
 	{
 		auto mode = sender ()->property ("PlayMode").toInt ();
 		Player_->SetPlayMode (static_cast<Player::PlayMode> (mode));
+		XmlSettingsManager::Instance ().setProperty ("PlayMode", mode);
 	}
 
 	void PlayerTab::handlePlaylistSelected (const QModelIndex& index)
