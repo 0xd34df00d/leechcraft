@@ -350,7 +350,10 @@ namespace Xoox
 				this,
 				SLOT (publishVCard ()));
 
-		Q_FOREACH (QLineEdit *edit, findChildren<QLineEdit*> ())
+		auto toEnable = findChildren<QLineEdit*> ();
+		toEnable.removeAll (Ui_.EditPhone_);
+		toEnable.removeAll (Ui_.EditEmail_);
+		Q_FOREACH (QLineEdit *edit, toEnable)
 			edit->setReadOnly (false);
 
 		Ui_.About_->setReadOnly (false);
