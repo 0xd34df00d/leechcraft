@@ -290,6 +290,7 @@ namespace Xoox
 		VCard_.setTitle (Ui_.Title_->text ());
 		VCard_.setRole (Ui_.Role_->text ());
 		VCard_.setDesc (Ui_.About_->toPlainText ());
+		VCard_.setEmail (QString ());
 
 		const QPixmap *px = Ui_.LabelPhoto_->pixmap ();
 		if (px)
