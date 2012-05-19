@@ -38,6 +38,7 @@ namespace Xoox
 	VCardDialog::VCardDialog (GlooxAccount *acc, QWidget *parent)
 	: QDialog (parent)
 	, Account_ (acc)
+	, PhotoChanged_ (false)
 	{
 		Ui_.setupUi (this);
 		connect (this,
@@ -50,6 +51,7 @@ namespace Xoox
 
 	VCardDialog::VCardDialog (EntryBase *entry, QWidget *parent)
 	: QDialog (parent)
+	, PhotoChanged_ (false)
 	{
 		Ui_.setupUi (this);
 		connect (this,
@@ -303,16 +305,20 @@ namespace Xoox
 			px->save (&buffer, "PNG", 100);
 			buffer.close ();
 			VCard_.setPhoto (buffer.data ());
-			Account_->UpdateOurPhotoHash (QCryptographicHash::hash (buffer.data (), QCryptographicHash::Sha1));
+			if (PhotoChanged_)
+				Account_->UpdateOurPhotoHash (QCryptographicHash::hash (buffer.data (), QCryptographicHash::Sha1));
 		}
 		else
 		{
 			VCard_.setPhoto (QByteArray ());
-			Account_->UpdateOurPhotoHash ("");
+			if (PhotoChanged_)
+				Account_->UpdateOurPhotoHash ("");
 		}
 
-		Account_->GetClientConnection ()->GetUserAvatarManager ()->
-					PublishAvatar (px ? px->toImage () : QImage ());
+		if (PhotoChanged_)
+			Account_->GetClientConnection ()->GetUserAvatarManager ()->
+						PublishAvatar (px ? px->toImage () : QImage ());
+		PhotoChanged_ = false;
 
 		QXmppVCardManager& mgr = Account_->GetClientConnection ()->
 				GetClient ()->vCardManager ();
@@ -424,6 +430,8 @@ namespace Xoox
 		if (px.isNull ())
 			return;
 
+		PhotoChanged_ = true;
+
 		const int size = 150;
 		if (std::max (px.size ().width (), px.size ().height ()) > size)
 			px = px.scaled (size, size,
@@ -435,6 +443,7 @@ namespace Xoox
 	void VCardDialog::on_PhotoClear__released ()
 	{
 		Ui_.LabelPhoto_->clear ();
+		PhotoChanged_ = true;
 	}
 
 	void VCardDialog::EnableEditableMode ()

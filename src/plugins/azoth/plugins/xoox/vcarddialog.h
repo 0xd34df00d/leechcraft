@@ -42,6 +42,8 @@ namespace Xoox
 		QXmppAnnotationsIq::NoteItem Note_;
 
 		QXmppVCardIq VCard_;
+
+		bool PhotoChanged_;
 	public:
 		VCardDialog (GlooxAccount*, QWidget* = 0);
 		VCardDialog (EntryBase*, QWidget* = 0);
