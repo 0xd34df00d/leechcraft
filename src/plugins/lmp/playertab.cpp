@@ -172,13 +172,14 @@ namespace LMP
 				SLOT (previousTrack ()));
 		TabToolbar_->addAction (previous);
 
-		QAction *pause= new QAction (tr ("Play/pause"), this);
-		pause->setProperty ("ActionIcon", "media-playback-pause");
-		connect (pause,
+		PlayPause_ = new QAction (tr ("Play/Pause"), this);
+		PlayPause_->setProperty ("ActionIcon", "media-playback-start");
+		PlayPause_->setProperty ("WatchActionIconChange", true);
+		connect (PlayPause_,
 				SIGNAL (triggered ()),
 				Player_,
 				SLOT (togglePause ()));
-		TabToolbar_->addAction (pause);
+		TabToolbar_->addAction (PlayPause_);
 
 		QAction *stop = new QAction (tr ("Stop"), this);
 		stop->setProperty ("ActionIcon", "media-playback-stop");
@@ -236,14 +237,6 @@ namespace LMP
 				SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
 				this,
 				SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
-
-		PlayPause_ = new QAction (tr ("Play/Pause"), TrayIcon_);
-		PlayPause_->setProperty ("ActionIcon", "media-playback-start");
-		PlayPause_->setProperty ("WatchActionIconChange", true);
-		connect (PlayPause_,
-				SIGNAL (triggered ()),
-				Player_,
-				SLOT (togglePause ()));
 
 		QAction *closeLMP = new QAction (tr ("Close LMP"), TrayIcon_);
 		closeLMP->setProperty ("ActionIcon", "edit-delete");
@@ -699,7 +692,6 @@ namespace LMP
 		}
 		UpdateIcon<LMPSystemTrayIcon*> (TrayIcon_, newState,
 				[] (QSystemTrayIcon *icon) { return icon->geometry ().size (); });
-
 	}
 
 	void PlayerTab::handleShowTrayIcon ()
