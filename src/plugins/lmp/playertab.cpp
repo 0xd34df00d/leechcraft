@@ -422,12 +422,12 @@ namespace LMP
 
 	void PlayerTab::FillSimilar (const Media::SimilarityInfos_t& infos)
 	{
-		Ui_.NPWidget_->GetArtistsDisplay ()->SetSimilarArtists (infos);
+		Ui_.NPWidget_->SetSimilarArtists (infos);
 	}
 
 	void PlayerTab::RequestLyrics (const MediaInfo& info)
 	{
-		Ui_.LyricsBrowser_->clear ();
+		Ui_.NPWidget_->SetLyrics (QString ());
 
 		if (!XmlSettingsManager::Instance ().property ("RequestLyrics").toBool ())
 			return;
@@ -594,7 +594,7 @@ namespace LMP
 		if (lyrics.isEmpty ())
 			return;
 
-		Ui_.LyricsBrowser_->setHtml (lyrics.value (0));
+		Ui_.NPWidget_->SetLyrics (lyrics.value (0));
 	}
 
 	void PlayerTab::handleScanProgress (int progress)
