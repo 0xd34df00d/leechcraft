@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
+
 #include <windows.h>
 #include "fswinwatcher.h"
 
@@ -35,7 +36,7 @@ namespace Kinotify
 		{
 			HMONITOR monitor = MonitorFromWindow (hWnd, MONITOR_DEFAULTTONULL);
 			MONITORINFO lpmi;
-			lpmi.cbSize = sizeof(lpmi);
+			lpmi.cbSize = sizeof (lpmi);
 			if (GetMonitorInfo (monitor, &lpmi))
 			{
 				RECT monitorRect = lpmi.rcMonitor;
