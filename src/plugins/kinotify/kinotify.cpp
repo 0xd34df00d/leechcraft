@@ -52,7 +52,7 @@ namespace Kinotify
 		SettingsDialog_->SetDataSource ("NotificatorStyle",
 				ThemeLoader_->GetSubElemModel ());
 
-		FSWinWatcher_.reset (new FSWinWatcher);
+		FSWinWatcher_.reset (new FSWinWatcher (Proxy_));
 	}
 
 	void Plugin::SecondInit ()

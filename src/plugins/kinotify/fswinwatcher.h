@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -26,8 +27,9 @@ namespace Kinotify
 {
 	class FSWinWatcher : public QObject
 	{
+		ICoreProxy_ptr Proxy_;
 	public:
-		FSWinWatcher (QObject* = 0);
+		FSWinWatcher (ICoreProxy_ptr, QObject* = 0);
 
 		bool IsCurrentFS ();
 	};

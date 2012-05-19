@@ -17,15 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include <windows.h>
 #include "fswinwatcher.h"
+#include <QMainWindow>
+#include <windows.h>
 
 namespace LeechCraft
 {
 namespace Kinotify
 {
-	FSWinWatcher::FSWinWatcher (QObject *parent)
+	FSWinWatcher::FSWinWatcher (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	{
 	}
 
@@ -34,16 +36,22 @@ namespace Kinotify
 		HWND hWnd = GetForegroundWindow ();
 		if (hWnd)
 		{
-			HMONITOR monitor = MonitorFromWindow (hWnd, MONITOR_DEFAULTTONULL);
-			MONITORINFO lpmi;
-			lpmi.cbSize = sizeof (lpmi);
-			if (GetMonitorInfo (monitor, &lpmi))
+ 			HMONITOR monitor = MonitorFromWindow (hWnd, MONITOR_DEFAULTTONULL);
+			if (monitor)
 			{
-				RECT monitorRect = lpmi.rcMonitor;
-				RECT windowRect;
-				GetWindowRect (hWnd, &windowRect);
-				if (EqualRect (&windowRect, &monitorRect))
-					return true;
+				MONITORINFO lpmi;
+				lpmi.cbSize = sizeof (lpmi);
+				if (GetMonitorInfo (monitor, &lpmi))
+				{
+					RECT monitorRect = lpmi.rcMonitor;
+					RECT windowRect;
+					GetWindowRect (hWnd, &windowRect);
+					if (EqualRect (&windowRect, &monitorRect))
+					{
+						if(Proxy_->GetMainWindow ()->effectiveWinId () != hWnd)
+							return true;
+					}
+				}
 			}
 		}
 		return false;
