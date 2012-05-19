@@ -328,6 +328,7 @@ namespace Xoox
 				<< tr ("cell");
 
 		VCardListEditDialog dia (options, this);
+		dia.setWindowTitle (tr ("VCard phones"));
 		Q_FOREACH (const QXmppVCardPhone& phone, VCard_.phones ())
 		{
 			if (phone.number.isEmpty ())
@@ -366,6 +367,48 @@ namespace Xoox
 
 	void VCardDialog::on_EmailButton__released ()
 	{
+		QStringList options;
+		options << tr ("preferred")
+				<< tr ("home")
+				<< tr ("work")
+				<< "X400";
+
+		VCardListEditDialog dia (options, this);
+		dia.setWindowTitle (tr ("VCard emails"));
+		Q_FOREACH (const QXmppVCardEmail& email, VCard_.emails ())
+		{
+			if (email.address.isEmpty ())
+				continue;
+
+			QPair<QString, QStringList> pair;
+			pair.first = email.address;
+			if (email.isPref)
+				pair.second << options.at (0);
+			if (email.isHome)
+				pair.second << options.at (1);
+			if (email.isWork)
+				pair.second << options.at (2);
+			if (email.isX400)
+				pair.second << options.at (3);
+			dia.AddItems (QList<decltype (pair)> () << pair);
+		}
+
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		QXmppVCardEmailList list;
+		Q_FOREACH (const auto& item, dia.GetItems ())
+		{
+			QXmppVCardEmail email;
+			email.address = item.first;
+			email.isPref = item.second.contains (options.at (0));
+			email.isHome = item.second.contains (options.at (1));
+			email.isWork = item.second.contains (options.at (2));
+			email.isX400 = item.second.contains (options.at (3));
+			list << email;
+		}
+		VCard_.setEmails (list);
+		BuildEmails (list);
 	}
 
 	void VCardDialog::on_PhotoBrowse__released ()
