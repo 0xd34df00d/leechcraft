@@ -244,7 +244,7 @@ namespace Monocle
 		Q_FOREACH (auto item, Pages_)
 			item->SetScale (scale, scale);
 
-		for (int i = 0, size = Pages_.size (); i < size; ++i)
+		for (int i = 0, pagesCount = Pages_.size (); i < pagesCount; ++i)
 		{
 			const auto& size = CurrentDoc_->GetPageSize (i) * scale;
 			auto page = Pages_ [i];
