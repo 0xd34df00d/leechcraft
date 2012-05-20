@@ -34,27 +34,23 @@ namespace Kinotify
 	bool FSWinWatcher::IsCurrentFS ()
 	{
 		HWND hWnd = GetForegroundWindow ();
-		if (hWnd)
-		{
- 			HMONITOR monitor = MonitorFromWindow (hWnd, MONITOR_DEFAULTTONULL);
-			if (monitor)
-			{
-				MONITORINFO lpmi;
-				lpmi.cbSize = sizeof (lpmi);
-				if (GetMonitorInfo (monitor, &lpmi))
-				{
-					RECT monitorRect = lpmi.rcMonitor;
-					RECT windowRect;
-					GetWindowRect (hWnd, &windowRect);
-					if (EqualRect (&windowRect, &monitorRect))
-					{
-						if(Proxy_->GetMainWindow ()->effectiveWinId () != hWnd)
-							return true;
-					}
-				}
-			}
-		}
-		return false;
+		if (!hWnd)
+			return false;
+
+		HMONITOR monitor = MonitorFromWindow (hWnd, MONITOR_DEFAULTTONULL);
+		if (!monitor)
+			return false;
+
+		MONITORINFO lpmi;
+		lpmi.cbSize = sizeof (lpmi);
+		if (!GetMonitorInfo (monitor, &lpmi))
+			return false;
+
+		RECT monitorRect = lpmi.rcMonitor;
+		RECT windowRect;
+		GetWindowRect (hWnd, &windowRect);
+		return EqualRect (&windowRect, &monitorRect) &&
+				Proxy_->GetMainWindow ()->effectiveWinId () != hWnd;
 	}
 }
 }
