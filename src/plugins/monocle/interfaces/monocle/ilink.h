@@ -18,31 +18,50 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_nowplayingwidget.h"
+#include <memory>
+#include <QRectF>
+#include <QMetaType>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Monocle
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
-
-	class NowPlayingWidget : public QWidget
+	enum class LinkType
 	{
-		Q_OBJECT
+		PageLink,
+		URL,
+		Command,
+		OtherLink
+	};
 
-		Ui::NowPlayingWidget Ui_;
+	class ILink
+	{
 	public:
-		NowPlayingWidget (QWidget* = 0);
+		virtual ~ILink () {}
 
-		void SetSimilarArtists (const Media::SimilarityInfos_t&);
-		void SetLyrics (const QString&);
+		virtual LinkType GetLinkType () const = 0;
 
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
-	private:
-		void SetStatistics (const QString&);
+		virtual QRectF GetArea () const = 0;
+
+		virtual void Execute () = 0;
+	};
+	typedef std::shared_ptr<ILink> ILink_ptr;
+
+	class IPageLink
+	{
+	public:
+		virtual ~IPageLink () {}
+
+		virtual QString GetDocumentFilename () const = 0;
+
+		virtual int GetPageNumber () const = 0;
+
+		virtual double NewX () const = 0;
+		virtual double NewY () const = 0;
+		virtual double NewZoom () const = 0;
 	};
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::ILink, "org.LeechCraft.Monocle.ILink/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::IPageLink, "org.LeechCraft.Monocle.IPageLink/1.0");

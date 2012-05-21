@@ -81,6 +81,7 @@ SET (XOOX_SRCS
 	avatarsstorage.cpp
 	xep0232handler.cpp
 	pepmicroblog.cpp
+	vcardlisteditdialog.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -144,6 +145,7 @@ SET (XOOX_HEADERS
 	avatarsstorage.h
 	xep0232handler.h
 	pepmicroblog.h
+	vcardlisteditdialog.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -159,6 +161,7 @@ SET (XOOX_FORMS
 	executecommanddialog.ui
 	commandslistpage.ui
 	commandresultpage.ui
+	vcardlisteditdialog.ui
 	)
 SET (XOOX_RESOURCES azothxooxresources.qrc)
 

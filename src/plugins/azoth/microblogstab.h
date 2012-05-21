@@ -19,30 +19,38 @@
 #pragma once
 
 #include <QWidget>
-#include "ui_nowplayingwidget.h"
+#include <interfaces/ihavetabs.h>
+#include "ui_microblogstab.h"
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Azoth
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
+	class IAccount;
 
-	class NowPlayingWidget : public QWidget
+	class MicroblogsTab : public QWidget
+						, public ITabWidget
 	{
 		Q_OBJECT
+		Q_INTERFACES (ITabWidget);
 
-		Ui::NowPlayingWidget Ui_;
+		static QObject* S_ParentMultiTabs_;
+		static TabClassInfo S_TC_;
+
+		Ui::MicroblogsTab Ui_;
+
+		IAccount *Account_;
 	public:
-		NowPlayingWidget (QWidget* = 0);
+		static void SetTabData (QObject*, const TabClassInfo&);
 
-		void SetSimilarArtists (const Media::SimilarityInfos_t&);
-		void SetLyrics (const QString&);
+		MicroblogsTab (IAccount*);
 
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
-	private:
-		void SetStatistics (const QString&);
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
+	signals:
+		void removeTab (QWidget*);
 	};
 }
 }

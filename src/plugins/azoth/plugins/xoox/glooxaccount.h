@@ -37,6 +37,7 @@
 #include <interfaces/azoth/isupportmediacalls.h>
 #include <interfaces/azoth/isupportriex.h>
 #include <interfaces/azoth/isupportbookmarks.h>
+#include <interfaces/azoth/ihavemicroblogs.h>
 #ifdef ENABLE_CRYPT
 #include <interfaces/azoth/isupportpgp.h>
 #endif
@@ -73,6 +74,7 @@ namespace Xoox
 					   , public IHaveServiceDiscovery
 					   , public IHaveSearch
 					   , public IHaveConsole
+					   , public IHaveMicroblogs
 					   , public ISupportTune
 					   , public ISupportMood
 					   , public ISupportActivity
@@ -92,6 +94,7 @@ namespace Xoox
 				LeechCraft::Azoth::IHaveServiceDiscovery
 				LeechCraft::Azoth::IHaveSearch
 				LeechCraft::Azoth::IHaveConsole
+				LeechCraft::Azoth::IHaveMicroblogs
 				LeechCraft::Azoth::ISupportTune
 				LeechCraft::Azoth::ISupportMood
 				LeechCraft::Azoth::ISupportActivity
@@ -172,6 +175,9 @@ namespace Xoox
 		// IHaveConsole
 		PacketFormat GetPacketFormat () const;
 		void SetConsoleEnabled (bool);
+
+		// IHaveMicroblogs
+		void SubmitPost (const Post&);
 
 		// ISupportTune, ISupportMood, ISupportActivity
 		void PublishTune (const QMap<QString, QVariant>&);

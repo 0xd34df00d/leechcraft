@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "document.h"
+#include "links.h"
 #include <poppler-qt4.h>
 
 namespace LeechCraft
@@ -35,6 +36,11 @@ namespace PDF
 		PDocument_->setRenderHint (Poppler::Document::Antialiasing);
 		PDocument_->setRenderHint (Poppler::Document::TextAntialiasing);
 		PDocument_->setRenderHint (Poppler::Document::TextHinting);
+	}
+
+	QObject* Document::GetObject ()
+	{
+		return this;
 	}
 
 	bool Document::IsValid () const
@@ -75,6 +81,25 @@ namespace PDF
 			return QImage ();
 
 		return page->renderToImage (72 * xScale, 72 * yScale);
+	}
+
+	QList<ILink_ptr> Document::GetPageLinks (int num)
+	{
+		QList<ILink_ptr> result;
+		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
+		if (!page)
+			return result;
+
+		Q_FOREACH (auto link, page->links ())
+			result << ILink_ptr (new Link (this, link));
+
+		return result;
+	}
+
+	void Document::RequestNavigation (const QString& filename,
+			int page, double x, double y)
+	{
+		emit navigateRequested (filename, page, x, y);
 	}
 }
 }

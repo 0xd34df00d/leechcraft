@@ -18,31 +18,37 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_nowplayingwidget.h"
+#include <QObject>
+#include <poppler-link.h>
+#include <interfaces/monocle/ilink.h>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Monocle
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
+namespace PDF
+{
+	class Document;
 
-	class NowPlayingWidget : public QWidget
+	class Link : public QObject
+			   , public ILink
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Monocle::ILink)
 
-		Ui::NowPlayingWidget Ui_;
+	protected:
+		Document *Doc_;
+		std::shared_ptr<Poppler::Link> Link_;
 	public:
-		NowPlayingWidget (QWidget* = 0);
+		explicit Link (Document*, Poppler::Link*);
 
-		void SetSimilarArtists (const Media::SimilarityInfos_t&);
-		void SetLyrics (const QString&);
+		LinkType GetLinkType () const;
+		QRectF GetArea () const;
 
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
+		void Execute ();
 	private:
-		void SetStatistics (const QString&);
+		void ExecutePageLink ();
 	};
+}
 }
 }

@@ -67,10 +67,13 @@ namespace Monocle
 
 		double GetCurrentScale () const;
 
+		bool SetDoc (const QString&);
 		int GetCurrentPage () const;
 		void SetCurrentPage (int);
 		void Relayout (double);
 	private slots:
+		void handleNavigateRequested (const QString&, int, double, double);
+
 		void selectFile ();
 
 		void handleGoPrev ();

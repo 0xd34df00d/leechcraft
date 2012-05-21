@@ -18,31 +18,45 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_nowplayingwidget.h"
+#include <QString>
+#include <QList>
+#include <QMap>
+#include <QDateTime>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Azoth
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
-
-	class NowPlayingWidget : public QWidget
+	struct PostAuthor
 	{
-		Q_OBJECT
+		QString Name_;
+		QString URI_;
+	};
 
-		Ui::NowPlayingWidget Ui_;
+	struct Post
+	{
+		QString ID_;
+		QMap<QString, QString> Contents_;
+
+		QDateTime Published_;
+		QDateTime Updated_;
+
+		PostAuthor Author_;
+	};
+
+	class ISupportMicroblogs
+	{
 	public:
-		NowPlayingWidget (QWidget* = 0);
+		virtual ~ISupportMicroblogs () {}
 
-		void SetSimilarArtists (const Media::SimilarityInfos_t&);
-		void SetLyrics (const QString&);
+		virtual void RequestLastPosts (int) = 0;
+	protected:
+		virtual void gotNewPost (const Post&) = 0;
 
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
-	private:
-		void SetStatistics (const QString&);
+		virtual void gotRecentPosts (const QList<Post>&) = 0;
 	};
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportMicroblogs,
+		"org.Deviant.LeechCraft.Azoth.ISupportMicroblogs/1.0");

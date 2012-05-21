@@ -20,6 +20,7 @@
 #include <functional>
 #include <QImage>
 #include <QAction>
+#include <QInputDialog>
 #include <util/util.h>
 #include <interfaces/azoth/azothutil.h>
 #include "proto/headers.h"
@@ -44,12 +45,18 @@ namespace Vader
 	, A_ (acc)
 	, Info_ (info)
 	, IsAuthorized_ (true)
+	, GaveSubscription_ (true)
+	, UpdateNumber_ (new QAction (tr ("Update phone number..."), this))
 	, SendSMS_ (new QAction (tr ("Send SMS..."), this))
 	, AvatarFetcher_ (new SelfAvatarFetcher (this))
 	{
 		Status_.State_ = VaderUtil::StatusID2State (info.StatusID_);
 
 		SendSMS_->setProperty ("ActionIcon", "phone");
+		connect (UpdateNumber_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleUpdateNumber ()));
 		connect (SendSMS_,
 				SIGNAL (triggered ()),
 				this,
@@ -110,6 +117,16 @@ namespace Vader
 	bool MRIMBuddy::IsAuthorized () const
 	{
 		return IsAuthorized_;
+	}
+
+	void MRIMBuddy::SetGaveSubscription (bool gave)
+	{
+		GaveSubscription_ = gave;
+	}
+
+	bool MRIMBuddy::GaveSubscription () const
+	{
+		return GaveSubscription_;
 	}
 
 	Proto::ContactInfo MRIMBuddy::GetInfo () const
@@ -189,6 +206,11 @@ namespace Vader
 		return Info_.ContactID_;
 	}
 
+	void MRIMBuddy::UpdateID (qint64 id)
+	{
+		Info_.ContactID_ = id;
+	}
+
 	QObject* MRIMBuddy::GetObject ()
 	{
 		return this;
@@ -221,7 +243,7 @@ namespace Vader
 		Info_.Alias_ = name;
 
 		A_->GetConnection ()->ModifyContact (GetID (),
-				Info_.GroupNumber_, Info_.Email_, name);
+				Info_.GroupNumber_, Info_.Email_, name, Info_.Phone_);
 		emit nameChanged (name);
 	}
 
@@ -303,7 +325,7 @@ namespace Vader
 
 	QList<QAction*> MRIMBuddy::GetActions () const
 	{
-		return QList<QAction*> () << SendSMS_;
+		return QList<QAction*> () << UpdateNumber_ << SendSMS_;
 	}
 
 	QMap<QString, QVariant> MRIMBuddy::GetClientInfo (const QString&) const
@@ -359,9 +381,24 @@ namespace Vader
 		emit avatarChanged (Avatar_);
 	}
 
+	void MRIMBuddy::handleUpdateNumber ()
+	{
+		const auto& num = QInputDialog::getText (0,
+				tr ("Update number"),
+				tr ("Enter new number in international format:"),
+				QLineEdit::Normal,
+				Info_.Phone_);
+		if (num.isEmpty () || num == Info_.Phone_)
+			return;
+
+		Info_.Phone_ = num;
+		A_->GetConnection ()->ModifyContact (GetID (),
+				Info_.GroupNumber_, Info_.Email_, Info_.Alias_, Info_.Phone_);
+	}
+
 	void MRIMBuddy::handleSendSMS ()
 	{
-		SMSDialog dia;
+		SMSDialog dia (Info_.Phone_);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 

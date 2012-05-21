@@ -172,13 +172,14 @@ namespace LMP
 				SLOT (previousTrack ()));
 		TabToolbar_->addAction (previous);
 
-		QAction *pause= new QAction (tr ("Play/pause"), this);
-		pause->setProperty ("ActionIcon", "media-playback-pause");
-		connect (pause,
+		PlayPause_ = new QAction (tr ("Play/Pause"), this);
+		PlayPause_->setProperty ("ActionIcon", "media-playback-start");
+		PlayPause_->setProperty ("WatchActionIconChange", true);
+		connect (PlayPause_,
 				SIGNAL (triggered ()),
 				Player_,
 				SLOT (togglePause ()));
-		TabToolbar_->addAction (pause);
+		TabToolbar_->addAction (PlayPause_);
 
 		QAction *stop = new QAction (tr ("Stop"), this);
 		stop->setProperty ("ActionIcon", "media-playback-stop");
@@ -236,14 +237,6 @@ namespace LMP
 				SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
 				this,
 				SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
-
-		PlayPause_ = new QAction (tr ("Play/Pause"), TrayIcon_);
-		PlayPause_->setProperty ("ActionIcon", "media-playback-start");
-		PlayPause_->setProperty ("WatchActionIconChange", true);
-		connect (PlayPause_,
-				SIGNAL (triggered ()),
-				Player_,
-				SLOT (togglePause ()));
 
 		QAction *closeLMP = new QAction (tr ("Close LMP"), TrayIcon_);
 		closeLMP->setProperty ("ActionIcon", "edit-delete");
@@ -350,6 +343,8 @@ namespace LMP
 		QMenu *playMode = new QMenu (tr ("Play mode"));
 		playButton->setMenu (playMode);
 
+		const int resumeMode = XmlSettingsManager::Instance ()
+				.Property ("PlayMode", static_cast<int> (Player::PlayMode::Sequential)).toInt ();
 		const std::vector<Player::PlayMode> modes = { Player::PlayMode::Sequential,
 				Player::PlayMode::Shuffle, Player::PlayMode::RepeatTrack,
 				Player::PlayMode::RepeatAlbum, Player::PlayMode::RepeatWhole };
@@ -362,7 +357,7 @@ namespace LMP
 			QAction *action = new QAction (names [i], this);
 			action->setProperty ("PlayMode", static_cast<int> (modes.at (i)));
 			action->setCheckable (true);
-			action->setChecked (modes.at (i) == Player::PlayMode::Sequential);
+			action->setChecked (static_cast<int> (modes.at (i)) == resumeMode);
 			action->setActionGroup (playGroup);
 			playMode->addAction (action);
 
@@ -371,6 +366,7 @@ namespace LMP
 					this,
 					SLOT (handleChangePlayMode ()));
 		}
+		Player_->SetPlayMode (static_cast<Player::PlayMode> (resumeMode));
 
 		PlaylistToolbar_->addWidget (playButton);
 
@@ -426,12 +422,12 @@ namespace LMP
 
 	void PlayerTab::FillSimilar (const Media::SimilarityInfos_t& infos)
 	{
-		Ui_.NPWidget_->GetArtistsDisplay ()->SetSimilarArtists (infos);
+		Ui_.NPWidget_->SetSimilarArtists (infos);
 	}
 
 	void PlayerTab::RequestLyrics (const MediaInfo& info)
 	{
-		Ui_.LyricsBrowser_->clear ();
+		Ui_.NPWidget_->SetLyrics (QString ());
 
 		if (!XmlSettingsManager::Instance ().property ("RequestLyrics").toBool ())
 			return;
@@ -598,7 +594,7 @@ namespace LMP
 		if (lyrics.isEmpty ())
 			return;
 
-		Ui_.LyricsBrowser_->setHtml (lyrics.value (0));
+		Ui_.NPWidget_->SetLyrics (lyrics.value (0));
 	}
 
 	void PlayerTab::handleScanProgress (int progress)
@@ -618,6 +614,7 @@ namespace LMP
 	{
 		auto mode = sender ()->property ("PlayMode").toInt ();
 		Player_->SetPlayMode (static_cast<Player::PlayMode> (mode));
+		XmlSettingsManager::Instance ().setProperty ("PlayMode", mode);
 	}
 
 	void PlayerTab::handlePlaylistSelected (const QModelIndex& index)
@@ -699,7 +696,6 @@ namespace LMP
 		}
 		UpdateIcon<LMPSystemTrayIcon*> (TrayIcon_, newState,
 				[] (QSystemTrayIcon *icon) { return icon->geometry ().size (); });
-
 	}
 
 	void PlayerTab::handleShowTrayIcon ()

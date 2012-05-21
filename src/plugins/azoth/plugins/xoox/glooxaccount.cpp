@@ -49,6 +49,7 @@
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
+#include "pepmicroblog.h"
 #endif
 
 namespace LeechCraft
@@ -414,6 +415,12 @@ namespace Xoox
 	void GlooxAccount::SetConsoleEnabled (bool enabled)
 	{
 		ClientConnection_->SetSignaledLog (enabled);
+	}
+
+	void GlooxAccount::SubmitPost (const Post& post)
+	{
+		PEPMicroblog micro (post);
+		ClientConnection_->GetPubSubManager ()->PublishEvent (&micro);
 	}
 
 	void GlooxAccount::PublishTune (const QMap<QString, QVariant>& tuneInfo)

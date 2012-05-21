@@ -15,10 +15,12 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	pdf.cpp
 	document.cpp
+	links.cpp
 	)
 SET (HEADERS
 	pdf.h
 	document.h
+	links.h
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

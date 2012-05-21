@@ -18,6 +18,9 @@
 
 #include "pagegraphicsitem.h"
 #include <QtDebug>
+#include <QGraphicsSceneMouseEvent>
+#include <QCursor>
+#include <QApplication>
 
 namespace LeechCraft
 {
@@ -27,11 +30,16 @@ namespace Monocle
 	: QGraphicsPixmapItem (parent)
 	, Doc_ (doc)
 	, PageNum_ (page)
+	, IsHoverLink_ (false)
+	, Links_ (Doc_->GetPageLinks (PageNum_))
 	, XScale_ (1)
 	, YScale_ (1)
 	, Invalid_ (true)
 	{
 		setPixmap (QPixmap (Doc_->GetPageSize (page)));
+
+		if (!Links_.isEmpty ())
+			setAcceptHoverEvents (true);
 	}
 
 	void PageGraphicsItem::SetScale (double xs, double ys)
@@ -56,9 +64,81 @@ namespace Monocle
 		{
 			const auto& img = Doc_->RenderPage (PageNum_, XScale_, YScale_);
 			setPixmap (QPixmap::fromImage (img));
+			LayoutLinks ();
 			Invalid_ = false;
 		}
 		QGraphicsPixmapItem::paint (painter, option, w);
+	}
+
+	void PageGraphicsItem::hoverMoveEvent (QGraphicsSceneHoverEvent *event)
+	{
+		if (!IsHoverLink_ && FindLink (event->pos ()))
+		{
+			QApplication::setOverrideCursor (QCursor (Qt::PointingHandCursor));
+			IsHoverLink_ = true;
+		}
+		else if (IsHoverLink_ && !FindLink (event->pos ()))
+		{
+			QApplication::restoreOverrideCursor ();
+			IsHoverLink_ = false;
+		}
+
+		QGraphicsItem::hoverMoveEvent (event);
+	}
+
+	void PageGraphicsItem::hoverLeaveEvent (QGraphicsSceneHoverEvent *event)
+	{
+		if (IsHoverLink_)
+			QApplication::restoreOverrideCursor ();
+
+		QGraphicsItem::hoverLeaveEvent (event);
+	}
+
+	void PageGraphicsItem::mousePressEvent (QGraphicsSceneMouseEvent *event)
+	{
+		PressedLink_ = FindLink (event->pos ());
+		if (PressedLink_)
+			return;
+
+		QGraphicsItem::mousePressEvent (event);
+	}
+
+	void PageGraphicsItem::mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
+	{
+		auto relLink = FindLink (event->pos ());
+		const bool handle = relLink && relLink == PressedLink_;
+		PressedLink_ = ILink_ptr ();
+		if (!handle)
+		{
+			QGraphicsItem::mouseReleaseEvent (event);
+			return;
+		}
+
+		relLink->Execute ();
+	}
+
+	void PageGraphicsItem::LayoutLinks ()
+	{
+		Rect2Link_.clear ();
+
+		const auto& rect = boundingRect ();
+		const auto width = rect.width ();
+		const auto height = rect.height ();
+		Q_FOREACH (ILink_ptr link, Links_)
+		{
+			const auto& area = link->GetArea ();
+			const QRect linkRect (width * area.left (), height * area.top (),
+					width * area.width (), height * area.height ());
+			Rect2Link_ << qMakePair (linkRect, link);
+		}
+	}
+
+	ILink_ptr PageGraphicsItem::FindLink (const QPointF& point)
+	{
+		Q_FOREACH (const auto& pair, Rect2Link_)
+			if (pair.first.contains (point.toPoint ()))
+				return pair.second;
+		return ILink_ptr ();
 	}
 }
 }

@@ -16,33 +16,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include "ui_nowplayingwidget.h"
+#include "microblogstab.h"
+#include <interfaces/azoth/iaccount.h>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Azoth
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
+	QObject* MicroblogsTab::S_ParentMultiTabs_ = 0;
+	TabClassInfo MicroblogsTab::S_TC_ = TabClassInfo ();
 
-	class NowPlayingWidget : public QWidget
+	void MicroblogsTab::SetTabData (QObject *obj, const TabClassInfo& tc)
 	{
-		Q_OBJECT
+		S_ParentMultiTabs_ = obj;
+		S_TC_ = tc;
+	}
 
-		Ui::NowPlayingWidget Ui_;
-	public:
-		NowPlayingWidget (QWidget* = 0);
+	MicroblogsTab::MicroblogsTab (IAccount *acc)
+	: Account_ (acc)
+	{
+		Ui_.setupUi (this);
+	}
 
-		void SetSimilarArtists (const Media::SimilarityInfos_t&);
-		void SetLyrics (const QString&);
+	TabClassInfo MicroblogsTab::GetTabClassInfo () const
+	{
+		return S_TC_;
+	}
 
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
-	private:
-		void SetStatistics (const QString&);
-	};
+	QObject* MicroblogsTab::ParentMultiTabs ()
+	{
+		return S_ParentMultiTabs_;
+	}
+
+	void MicroblogsTab::Remove ()
+	{
+		emit removeTab (this);
+		deleteLater ();
+	}
+
+	QToolBar* MicroblogsTab::GetToolBar () const
+	{
+		return 0;
+	}
 }
 }

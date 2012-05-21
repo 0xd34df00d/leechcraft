@@ -18,31 +18,18 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_nowplayingwidget.h"
+#include <QList>
+#include <QString>
+#include <QObject>
+#include "interfaces/azoth/isupportriex.h"
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Azoth
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
-
-	class NowPlayingWidget : public QWidget
-	{
-		Q_OBJECT
-
-		Ui::NowPlayingWidget Ui_;
-	public:
-		NowPlayingWidget (QWidget* = 0);
-
-		void SetSimilarArtists (const Media::SimilarityInfos_t&);
-		void SetLyrics (const QString&);
-
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
-	private:
-		void SetStatistics (const QString&);
-	};
+namespace RIEX
+{
+	void HandleRIEXItemsSuggested (QList<RIEXItem> items, QObject *from, QString message);
+}
 }
 }

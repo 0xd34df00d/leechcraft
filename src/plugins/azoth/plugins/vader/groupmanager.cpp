@@ -60,7 +60,7 @@ namespace Vader
 					0 :
 					Group2ID_ [groups.at (0)];
 			Conn_->ModifyContact (buddy->GetID (), gid,
-					buddy->GetHumanReadableID (), buddy->GetEntryName ());
+					buddy->GetHumanReadableID (), buddy->GetEntryName (), buddy->GetInfo ().Phone_);
 			buddy->SetGroup (groups.value (0));
 			return;
 		}

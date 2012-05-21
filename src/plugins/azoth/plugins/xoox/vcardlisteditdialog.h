@@ -16,12 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef VCARDDIALOG_H
-#define VCARDDIALOG_H
+#pragma once
+
 #include <QDialog>
-#include <QXmppAnnotationsIq.h>
-#include <QXmppVCardIq.h>
-#include "ui_vcarddialog.h"
+#include "ui_vcardlisteditdialog.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -29,44 +29,22 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class EntryBase;
-	class GlooxAccount;
-
-	class VCardDialog : public QDialog
+	class VCardListEditDialog : public QDialog
 	{
 		Q_OBJECT
 
-		Ui::VCardDialog Ui_;
-		GlooxAccount *Account_;
-		QString JID_;
-		QXmppAnnotationsIq::NoteItem Note_;
+		Ui::VCardListEditDialog Ui_;
 
-		QXmppVCardIq VCard_;
-
-		bool PhotoChanged_;
+		QStandardItemModel *Model_;
 	public:
-		VCardDialog (GlooxAccount*, QWidget* = 0);
-		VCardDialog (EntryBase*, QWidget* = 0);
+		VCardListEditDialog (const QStringList& options, QWidget* = 0);
 
-		void UpdateInfo (const QXmppVCardIq&);
-	private:
-		void BuildPhones (const QXmppVCardPhoneList&);
-		void BuildEmails (const QXmppVCardEmailList&);
-		void BuildAddresses (const QXmppVCardAddressList&);
-		void InitConnections (EntryBase*);
-		void EnableEditableMode ();
-		void UpdateNote (GlooxAccount*, const QString&);
+		void AddItems (const QList<QPair<QString, QStringList>>&);
+		QList<QPair<QString, QStringList>> GetItems () const;
 	private slots:
-		void rebuildClientInfo ();
-		void setNote ();
-		void publishVCard ();
-		void on_PhoneButton__released ();
-		void on_EmailButton__released ();
-		void on_PhotoBrowse__released ();
-		void on_PhotoClear__released ();
+		void on_Add__released ();
+		void on_Remove__released ();
 	};
 }
 }
 }
-
-#endif

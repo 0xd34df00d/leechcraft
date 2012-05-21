@@ -134,10 +134,10 @@ namespace Proto
 	}
 
 	Packet PacketFactory::ModifyContact (quint32 cid, ContactOpFlags flags,
-			quint32 group, const QString& email, const QString& name)
+			quint32 group, const QString& email, const QString& name, const QString& phone)
 	{
 		const QByteArray& data = ToMRIM (cid, static_cast<quint32> (flags),
-				group, email, ToMRIM16 (name), QString (" "));
+				group, email, ToMRIM16 (name), phone);
 		return HalfPacket { { Packets::ModifyContact, Seq_++ }, data };
 	}
 
