@@ -18,44 +18,25 @@
 
 #pragma once
 
-#include <functional>
-#include <QObject>
-#include <QQueue>
-#include <QPair>
-#include <QDomElement>
-#include <QNetworkRequest>
-#include "core.h"
+#include <QMetaType>
+#include <QVariant>
+#include <QStringList>
 
 namespace LeechCraft
 {
-namespace Blogique
-{
-namespace Metida
-{
-	class LJXmlRPC : public QObject
+	namespace Blogique
 	{
-		Q_OBJECT
-
-		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
-	public:
-		LJXmlRPC (QObject *parent = 0);
-
-		void Validate (const QString& login, const QString& pass);
-	private:
-		void GenerateChallenge () const;
-		void ValidateAccountData (const QString& login,
-				const QString& pass, const QString& challenge);
-		LJProfileData ParseProfileInfo (QDomDocument document) const;
-
-	private slots:
-		void handleChallengeReplyFinished ();
-		void handleValidateReplyFinished ();
-
-	signals:
-		void validatingFinished (bool success);
-		void profileDataReceived ();
-		void error (int code, const QString& msg);
-	};
+		/** @brief Interface representing an account's profile.
+		 *
+		 * This interface represents an account's profile.
+		 **/
+		class IProfile
+		{
+		public:
+			virtual ~IProfile () {}
+		};
+	}
 }
-}
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::Blogique::IProfile,
+		"org.Deviant.LeechCraft.Blogique.IProfile/1.0");

@@ -18,62 +18,24 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
-#include <QSet>
-#include <interfaces/structures.h>
-#include <interfaces/core/icoreproxy.h>
+#include <interfaces/blogique/iprofile.h>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-class IPluginProxy;
-
 namespace Metida
 {
-	struct LJProfileData
-	{
-
-	};
-
-	class LJBloggingPlatform;
-
-	class Core : public QObject
+	class LJProfile : public QObject
+					, public IProfile
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Blogique::IProfile);
 
-		ICoreProxy_ptr Proxy_;
-		QObjectList BlogPlatformPlugins_;
-		std::shared_ptr<LJBloggingPlatform> LJPlatform_;
-		QObject *PluginProxy_;
-		QMap<int, QString> ErrorCode2Message_;
-
-		Core ();
-		Q_DISABLE_COPY (Core)
+		QObject *ParentAccount_;
 	public:
-		static Core& Instance ();
-
-		void SecondInit ();
-
-		void CreateBloggingPlatfroms (QObject *parentPlatform);
-		void SetCoreProxy (ICoreProxy_ptr proxy);
-		ICoreProxy_ptr GetCoreProxy ();
-
-		QObjectList GetBloggingPlatforms () const;
-
-		void SetPluginProxy (QObject *pluginProxy);
-		IPluginProxy* GetPluginProxy ();
-
-		void SendEntity (const LeechCraft::Entity& e);
-
-		QString GetLocalizedErrorMessage (int errorCode);
-	private:
-		void InitErrorMessages ();
-
-	signals:
-		void gotEntity (LeechCraft::Entity e);
-		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
+		LJProfile (QObject *parentAccount);
 	};
 }
 }

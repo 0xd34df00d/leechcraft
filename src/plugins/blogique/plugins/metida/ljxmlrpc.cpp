@@ -23,7 +23,6 @@
 #include <QNetworkReply>
 #include <QXmlQuery>
 #include <util/sysinfo.h>
-#include "core.h"
 
 namespace LeechCraft
 {
@@ -155,7 +154,7 @@ namespace Metida
 				"1", document));
 		result.second.appendChild (GetMemberElement ("getcaps", "int",
 				"1", document));
-		
+
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
 						document.toByteArray ());
@@ -164,6 +163,16 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleValidateReplyFinished ()));
+	}
+
+	LJProfileData LJXmlRPC::ParseProfileInfo (QDomDocument document) const
+	{
+		auto paramElements = document.elementsByTagName ("param");
+		for (int i = 0, count = paramElements.count (); i < count; ++i)
+		{
+			auto valueList = paramElements.at (i).toElement ().elementsByTagName ("value");
+
+		}
 	}
 
 	void LJXmlRPC::handleChallengeReplyFinished ()
@@ -223,6 +232,8 @@ namespace Metida
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
+			LJProfileData data = ParseProfileInfo (document);
+
 			emit validatingFinished (true);
 			return;
 		}

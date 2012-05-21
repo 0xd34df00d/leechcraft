@@ -18,6 +18,7 @@ SET (SRCS
 	blogiquewidget.cpp
 	core.cpp
 	pluginproxy.cpp
+	profiledialog.cpp
 	xmlsettingsmanager.cpp
 	)
 
@@ -28,12 +29,14 @@ SET (HEADERS
 	blogiquewidget.h
 	core.h
 	pluginproxy.h
+	profiledialog.h
 	xmlsettingsmanager.h
 	)
 
 SET (FORMS accountslistwidget.ui
 	addaccountwizardfirstpage.ui
 	blogiquewidget.ui
+	profiledialog.ui
 	)
 
 SET (RESOURCES blogiqueresources.qrc)

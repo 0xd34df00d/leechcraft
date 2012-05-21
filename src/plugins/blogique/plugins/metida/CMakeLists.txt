@@ -19,6 +19,7 @@ SET (METIDA_SRCS
 	ljaccountconfigurationdialog.cpp
 	ljaccountconfigurationwidget.cpp
 	ljbloggingplatform.cpp
+	ljprofile.cpp
 	ljxmlrpc.cpp
 	metida.cpp
 	core.cpp
@@ -30,6 +31,7 @@ SET (METIDA_HEADERS
 	ljaccountconfigurationdialog.h
 	ljaccountconfigurationwidget.h
 	ljbloggingplatform.h
+	ljprofile.h
 	ljxmlrpc.h
 	metida.h
 	core.h

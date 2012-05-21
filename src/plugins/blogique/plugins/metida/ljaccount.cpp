@@ -25,6 +25,7 @@
 #include "ljaccountconfigurationwidget.h"
 #include "ljaccountconfigurationdialog.h"
 #include "ljbloggingplatform.h"
+#include "ljprofile.h"
 #include "ljxmlrpc.h"
 
 namespace LeechCraft
@@ -39,6 +40,7 @@ namespace Metida
 	, LJXmlRpc_ (new LJXmlRPC (this))
 	, Name_ (name)
 	, IsValidated_ (false)
+	, LJProfile_ (std::make_shared<LJProfile> (this))
 	{
 		connect (LJXmlRpc_,
 				SIGNAL (validatingFinished (bool)),
@@ -103,6 +105,12 @@ namespace Metida
 	bool LJAccount::IsValidated () const
 	{
 		return IsValidated_;
+	}
+
+	QObject* LJAccount::GetProfile ()
+	{
+		//TODO
+		return 0;
 	}
 
 	void LJAccount::FillSettings (LJAccountConfigurationWidget *widget)

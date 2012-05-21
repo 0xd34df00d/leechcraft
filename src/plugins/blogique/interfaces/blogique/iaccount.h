@@ -93,6 +93,12 @@ namespace Blogique
 		 */
 		virtual bool IsValidated () const = 0;
 
+		/** @brief Returns the pointer to account's profile.
+		 *
+		 * @return The account's profile.
+		 */
+		virtual QObject* GetProfile () = 0;
+
 		/** @brief This signal should be emitted when account is renamed.
 		 *
 		 * This signal should be emitted even after an explicit call to
@@ -107,6 +113,5 @@ namespace Blogique
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Blogique::IAccount*);
 Q_DECLARE_INTERFACE (LeechCraft::Blogique::IAccount,
 		"org.Deviant.LeechCraft.Blogique.IAccount/1.0");

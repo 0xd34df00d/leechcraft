@@ -18,44 +18,24 @@
 
 #pragma once
 
-#include <functional>
-#include <QObject>
-#include <QQueue>
-#include <QPair>
-#include <QDomElement>
-#include <QNetworkRequest>
-#include "core.h"
+#include <QDialog>
+#include "ui_profiledialog.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Metida
-{
-	class LJXmlRPC : public QObject
+	class IAccount;
+
+	class ProfileDialog : public QDialog
 	{
 		Q_OBJECT
 
-		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
+		IAccount *Account_;
+
+		Ui::ProfileDialog Ui_;
 	public:
-		LJXmlRPC (QObject *parent = 0);
-
-		void Validate (const QString& login, const QString& pass);
-	private:
-		void GenerateChallenge () const;
-		void ValidateAccountData (const QString& login,
-				const QString& pass, const QString& challenge);
-		LJProfileData ParseProfileInfo (QDomDocument document) const;
-
-	private slots:
-		void handleChallengeReplyFinished ();
-		void handleValidateReplyFinished ();
-
-	signals:
-		void validatingFinished (bool success);
-		void profileDataReceived ();
-		void error (int code, const QString& msg);
+		ProfileDialog (IAccount *acc, QWidget *parent = 0);
 	};
-}
 }
 }

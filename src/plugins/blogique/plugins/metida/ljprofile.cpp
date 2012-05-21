@@ -16,15 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <functional>
-#include <QObject>
-#include <QQueue>
-#include <QPair>
-#include <QDomElement>
-#include <QNetworkRequest>
-#include "core.h"
+#include "ljprofile.h"
 
 namespace LeechCraft
 {
@@ -32,30 +24,12 @@ namespace Blogique
 {
 namespace Metida
 {
-	class LJXmlRPC : public QObject
+	LJProfile::LJProfile (QObject *parentAccount)
+	: ParentAccount_ (parentAccount)
 	{
-		Q_OBJECT
-
-		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
-	public:
-		LJXmlRPC (QObject *parent = 0);
-
-		void Validate (const QString& login, const QString& pass);
-	private:
-		void GenerateChallenge () const;
-		void ValidateAccountData (const QString& login,
-				const QString& pass, const QString& challenge);
-		LJProfileData ParseProfileInfo (QDomDocument document) const;
-
-	private slots:
-		void handleChallengeReplyFinished ();
-		void handleValidateReplyFinished ();
-
-	signals:
-		void validatingFinished (bool success);
-		void profileDataReceived ();
-		void error (int code, const QString& msg);
-	};
+	}
 }
 }
 }
+
+
