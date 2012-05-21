@@ -39,6 +39,7 @@
 #include "useractivity.h"
 #include "userlocation.h"
 #include "privacylistsconfigdialog.h"
+#include "pepmicroblog.h"
 
 #ifdef ENABLE_MEDIACALLS
 #include "mediacall.h"
@@ -49,7 +50,6 @@
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
-#include "pepmicroblog.h"
 #endif
 
 namespace LeechCraft
