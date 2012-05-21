@@ -31,7 +31,9 @@ namespace Proto
 {
 	bool PacketExtractor::MayGetPacket () const
 	{
+#ifdef PROTOCOL_LOGGING
 		qDebug () << Q_FUNC_INFO;
+#endif
 		if (Buffer_.isEmpty ())
 			return false;
 
@@ -39,7 +41,9 @@ namespace Proto
 		{
 			QByteArray tmp (Buffer_);
 			Header h (tmp);
+#ifdef PROTOCOL_LOGGING
 			qDebug () << h.DataLength_ << tmp.size ();
+#endif
 			if (h.DataLength_ > static_cast<quint32> (tmp.size ()))
 				return false;
 		}
@@ -49,7 +53,9 @@ namespace Proto
 			return false;
 		}
 
+#ifdef PROTOCOL_LOGGING
 		qDebug () << "may get packet";
+#endif
 
 		return true;
 	}

@@ -35,6 +35,7 @@ namespace Proto
 		quint32 GroupNumber_;
 		quint32 StatusID_;
 		QString Email_;
+		QString Phone_;
 		QString Alias_;
 
 		QString StatusTitle_;

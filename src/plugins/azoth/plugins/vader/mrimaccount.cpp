@@ -256,10 +256,11 @@ namespace Vader
 		buddy->SetAuthorized (true);
 
 		if (!Buddies_.contains (id))
-		{
 			Buddies_ [id] = buddy;
-			Conn_->AddContact (0, id, buddy->GetEntryName ());
-			Conn_->RequestAuth (id, QString ());
+		if (buddy->GetID () < 0)
+		{
+			const auto seq = Conn_->AddContact (0, id, buddy->GetEntryName ());
+			PendingAdditions_ [seq] = buddy->GetInfo ();
 		}
 	}
 
@@ -283,16 +284,15 @@ namespace Vader
 	void MRIMAccount::RequestAuth (const QString& email,
 			const QString& msg, const QString& name, const QStringList& groups)
 	{
-		qDebug () << Q_FUNC_INFO << GetAccountName () << email;
 		if (!Buddies_.contains (email))
 		{
 			const quint32 group = 0;
-			const quint32 seqId = Conn_->AddContact (group, email, name);
+			const quint32 seqId = Conn_->AddContact (group, email, name.isEmpty () ? email : name);
 			PendingAdditions_ [seqId] = { -1, group, Proto::UserState::Offline,
-					email, name, QString (), QString (), 0, QString () };
+					email, QString (), name, QString (), QString (), 0, QString () };
 			Conn_->Authorize (email);
 		}
-		else
+		else if (!Buddies_ [email]->GaveSubscription ())
 			Conn_->RequestAuth (email, msg);
 	}
 
@@ -419,8 +419,19 @@ namespace Vader
 	{
 		Q_FOREACH (const Proto::ContactInfo& contact, contacts)
 		{
-			qDebug () << Q_FUNC_INFO << GetAccountName () << contact.Email_ << contact.Alias_ << contact.ContactID_ << contact.UA_ << contact.Features_;
+			qDebug () << Q_FUNC_INFO
+					<< GetAccountName ()
+					<< contact.Email_
+					<< contact.Phone_
+					<< contact.Alias_
+					<< contact.ContactID_
+					<< contact.UA_
+					<< contact.Features_;
 			MRIMBuddy *buddy = GetBuddy (contact);
+
+			if (buddy->GetID () != contact.ContactID_)
+				buddy->UpdateID (contact.ContactID_);
+
 			buddy->SetGroup (GM_->GetGroup (contact.GroupNumber_));
 			Buddies_ [contact.Email_] = buddy;
 		}
@@ -455,10 +466,14 @@ namespace Vader
 		if (!PendingAdditions_.contains (seq))
 			return;
 
-		Proto::ContactInfo info = PendingAdditions_.take (seq);
+		auto info = PendingAdditions_.take (seq);
 		info.ContactID_ = id;
 
+		const bool existed = Buddies_.contains (info.Email_);
 		handleGotContacts (QList<Proto::ContactInfo> () << info);
+
+		if (!existed)
+			Buddies_ [info.Email_]->SetGaveSubscription (false);
 	}
 
 	void MRIMAccount::handleGotUserInfoError (const QString& id,
@@ -506,16 +521,19 @@ namespace Vader
 	void MRIMAccount::handleGotAuthRequest (const QString& from, const QString& msg)
 	{
 		qDebug () << Q_FUNC_INFO << GetAccountName () << from;
-		if (Buddies_.contains (from) &&
-				Buddies_ [from]->IsAuthorized ())
-			return;
+		MRIMBuddy *buddy = 0;
+		if (Buddies_.contains (from))
+			buddy = Buddies_ [from];
+		else
+		{
+			const Proto::ContactInfo info = {-1, 0, Proto::UserState::Online,
+					from, from, QString (), QString (), QString (), 0, QString () };
+			buddy = new MRIMBuddy (info, this);
+			emit gotCLItems (QList<QObject*> () << buddy);
+			Buddies_ [from] = buddy;
+		}
 
-		Proto::ContactInfo info = {-1, 0, Proto::UserState::Online,
-				from, from, QString (), QString (), 0, QString () };
-
-		MRIMBuddy *buddy = new MRIMBuddy (info, this);
 		buddy->SetAuthorized (false);
-		emit gotCLItems (QList<QObject*> () << buddy);
 		emit authorizationRequested (buddy, msg);
 	}
 
@@ -530,13 +548,15 @@ namespace Vader
 			return;
 		}
 
-		emit itemGrantedSubscription (Buddies_ [from], QString ());
+		auto buddy = Buddies_ [from];
+		buddy->SetGaveSubscription (true);
+
+		emit itemGrantedSubscription (buddy, QString ());
 	}
 
 	void MRIMAccount::handleGotMessage (const Proto::Message& msg)
 	{
-		auto buddy = Buddies_ [msg.From_];
-		if (!buddy)
+		if (!Buddies_.contains (msg.From_))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "incoming message from unknown buddy"
@@ -546,6 +566,7 @@ namespace Vader
 			return;
 		}
 
+		auto buddy = Buddies_ [msg.From_];
 		MRIMMessage *obj = new MRIMMessage (IMessage::DIn, IMessage::MTChatMessage, buddy);
 		obj->SetBody (msg.Text_);
 		obj->SetDateTime (msg.DT_);
@@ -554,8 +575,7 @@ namespace Vader
 
 	void MRIMAccount::handleGotAttentionRequest (const QString& from, const QString& msg)
 	{
-		auto buddy = Buddies_ [from];
-		if (!buddy)
+		if (!Buddies_.contains (from))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "from unknown buddy"
@@ -563,7 +583,7 @@ namespace Vader
 			return;
 		}
 
-		buddy->HandleAttention (msg);
+		Buddies_ [from]->HandleAttention (msg);
 	}
 
 	void MRIMAccount::handleOurStatusChanged (const EntryStatus& status)
@@ -574,8 +594,7 @@ namespace Vader
 
 	void MRIMAccount::handleGotUserTune (const QString& from, const QString& tune)
 	{
-		auto buddy = Buddies_ [from];
-		if (!buddy)
+		if (!Buddies_.contains (from))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "from unknown buddy"
@@ -583,13 +602,12 @@ namespace Vader
 			return;
 		}
 
-		buddy->HandleTune (tune);
+		Buddies_ [from]->HandleTune (tune);
 	}
 
 	void MRIMAccount::handleUserStartedTyping (const QString& from)
 	{
-		auto buddy = Buddies_ [from];
-		if (!buddy)
+		if (!Buddies_.contains (from))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "from unknown buddy"
@@ -597,13 +615,12 @@ namespace Vader
 			return;
 		}
 
-		buddy->HandleCPS (CPSComposing);
+		Buddies_ [from]->HandleCPS (CPSComposing);
 	}
 
 	void MRIMAccount::handleUserStoppedTyping (const QString& from)
 	{
-		auto buddy = Buddies_ [from];
-		if (!buddy)
+		if (!Buddies_.contains (from))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "from unknown buddy"
@@ -611,7 +628,7 @@ namespace Vader
 			return;
 		}
 
-		buddy->HandleCPS (CPSPaused);
+		Buddies_ [from]->HandleCPS (CPSPaused);
 	}
 
 	void MRIMAccount::handleGotNewMail (const QString& from, const QString& subj)

@@ -18,6 +18,8 @@ SET (SRCS
 
 IF (UNIX)
 	SET (SRCS fswinwatcher_x11.cpp ${SRCS})
+ELSEIF (WIN32)
+	SET (SRCS fswinwatcher_win.cpp ${SRCS})
 ELSE (UNIX)
 	SET (SRCS fswinwatcher.cpp ${SRCS})
 ENDIF (UNIX)

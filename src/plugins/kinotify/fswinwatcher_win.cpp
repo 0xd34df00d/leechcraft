@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012 Dimitriy Ryazantcev
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,33 +17,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include "ui_nowplayingwidget.h"
+#include "fswinwatcher.h"
+#include <QMainWindow>
+#include <windows.h>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Kinotify
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
-
-	class NowPlayingWidget : public QWidget
+	FSWinWatcher::FSWinWatcher (ICoreProxy_ptr proxy, QObject *parent)
+	: QObject (parent)
+	, Proxy_ (proxy)
 	{
-		Q_OBJECT
+	}
 
-		Ui::NowPlayingWidget Ui_;
-	public:
-		NowPlayingWidget (QWidget* = 0);
+	bool FSWinWatcher::IsCurrentFS ()
+	{
+		HWND hWnd = GetForegroundWindow ();
+		if (!hWnd)
+			return false;
 
-		void SetSimilarArtists (const Media::SimilarityInfos_t&);
-		void SetLyrics (const QString&);
+		HMONITOR monitor = MonitorFromWindow (hWnd, MONITOR_DEFAULTTONULL);
+		if (!monitor)
+			return false;
 
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
-	private:
-		void SetStatistics (const QString&);
-	};
+		MONITORINFO lpmi;
+		lpmi.cbSize = sizeof (lpmi);
+		if (!GetMonitorInfo (monitor, &lpmi))
+			return false;
+
+		RECT monitorRect = lpmi.rcMonitor;
+		RECT windowRect;
+		GetWindowRect (hWnd, &windowRect);
+		return EqualRect (&windowRect, &monitorRect) &&
+				Proxy_->GetMainWindow ()->effectiveWinId () != hWnd;
+	}
 }
 }
