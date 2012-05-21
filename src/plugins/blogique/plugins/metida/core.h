@@ -21,6 +21,7 @@
 #include <memory>
 #include <QObject>
 #include <QSet>
+#include <QUrl>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 
@@ -34,7 +35,7 @@ namespace Metida
 {
 	struct LJProfileData
 	{
-
+		QUrl AvatarUrl_;
 	};
 
 	class LJBloggingPlatform;
