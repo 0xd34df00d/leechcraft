@@ -20,6 +20,7 @@
 #include <QDomDocument>
 #include <QtDebug>
 #include <QCryptographicHash>
+#include <QDateTime>
 #include <QNetworkReply>
 #include <QXmlQuery>
 #include <util/sysinfo.h>
@@ -167,12 +168,80 @@ namespace Metida
 
 	LJProfileData LJXmlRPC::ParseProfileInfo (QDomDocument document) const
 	{
-		auto paramElements = document.elementsByTagName ("param");
-		for (int i = 0, count = paramElements.count (); i < count; ++i)
-		{
-			auto valueList = paramElements.at (i).toElement ().elementsByTagName ("value");
+		auto firstStructElement = document.elementsByTagName ("struct");
+		LJProfileData profile;
+		if (firstStructElement.at (0).isNull ())
+			return LJProfileData ();
 
+		auto members = firstStructElement.at (0).childNodes ();
+		for (int i = 0, count = members.count (); i < count; ++i)
+		{
+			const QDomNode& member = members.at (i);
+			if (!member.isElement () ||
+					member.toElement ().tagName () != "member")
+				continue;
+
+			ParseMember (member);
 		}
+
+		return profile;
+	}
+
+	pair LJXmlRPC::ParseMember (QDomNode node) const
+	{
+		auto memberFields = node.childNodes ();
+		auto memberNameField = memberFields.at (0);
+		auto memberValueField = memberFields.at (1);
+		QString memberName;
+		QVariantList memberValue;
+		if (memberNameField.isElement () &&
+			memberNameField.toElement ().tagName () == "name")
+			memberName = memberNameField.toElement ().text ();
+
+		if (memberValueField.isElement ())
+			memberValue = ParseValue (memberValueField);
+
+		Q_FOREACH (auto var, memberValue)
+			qDebug () << Q_FUNC_INFO
+					<< var.value<pair> ();
+				
+
+		return pair (memberName, memberValue);
+	}
+
+	QVariantList LJXmlRPC::ParseValue (QDomNode node) const
+	{
+		QVariantList result;
+		auto valueNode = node.firstChild ();
+		auto valueElement = valueNode.toElement ();
+		QString type = valueElement.tagName ();
+		if (type == "string" ||
+				type == "int" ||
+				type == "i4" ||
+				type == "double" ||
+				type == "boolean")
+			result << valueElement.text ();
+		else if (type == "dateTime.iso8601")
+			result << QDateTime::fromString (valueElement.text (), Qt::ISODate);
+		else if (type == "base64")
+			result << QString::fromUtf8 (QByteArray::fromBase64 (valueElement.text ().toUtf8 ()));
+		else if (type == "array")
+		{
+			auto arrayElements = valueNode.firstChild ().childNodes ();
+			QVariantList array;
+			for (int i = 0, count = arrayElements.count (); i < count; ++i)
+				array << ParseValue (arrayElements.at (i));
+
+			result << array;
+		}
+		else if (type == "struct")
+		{
+			auto structMembers = valueNode.childNodes ();
+			for (int i = 0, count = structMembers.count (); i < count; ++i)
+				result << QVariant::fromValue<pair>  (ParseMember (structMembers.at (i)));
+		}
+
+		return result;
 	}
 
 	void LJXmlRPC::handleChallengeReplyFinished ()

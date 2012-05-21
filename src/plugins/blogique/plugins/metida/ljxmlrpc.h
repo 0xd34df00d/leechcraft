@@ -26,6 +26,9 @@
 #include <QNetworkRequest>
 #include "core.h"
 
+typedef QPair<QString, QVariantList> pair;
+Q_DECLARE_METATYPE (pair)
+
 namespace LeechCraft
 {
 namespace Blogique
@@ -46,6 +49,8 @@ namespace Metida
 		void ValidateAccountData (const QString& login,
 				const QString& pass, const QString& challenge);
 		LJProfileData ParseProfileInfo (QDomDocument document) const;
+		pair ParseMember (QDomNode node) const;
+		QVariantList ParseValue (QDomNode node) const;
 
 	private slots:
 		void handleChallengeReplyFinished ();
