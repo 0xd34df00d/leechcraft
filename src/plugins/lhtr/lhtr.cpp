@@ -67,10 +67,6 @@ namespace LHTR
 		case ContentType::HTML:
 		case ContentType::PlainText:
 			return true;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown enum value";
-			return false;
 		}
 	}
 

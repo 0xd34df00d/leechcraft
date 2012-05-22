@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "reporttypepage.h"
-#include <QtDebug>
 #include "reportwizard.h"
 
 namespace LeechCraft
@@ -38,11 +37,6 @@ namespace Dolozhee
 			return ReportWizard::PageID::FeatureDetails;
 		case Type::Bug:
 			return ReportWizard::PageID::BugDetails;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown report type"
-					<< Ui_.TypeCombo_->currentIndex ();
-			return -1;
 		}
 	}
 
