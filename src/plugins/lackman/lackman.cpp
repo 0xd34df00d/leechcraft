@@ -67,7 +67,7 @@ namespace LackMan
 		selector->setMinimumHeight (0);
 		selector->SetCaption (tr ("Package tags"));
 		connect (selector,
-				SIGNAL (selectionChanged (QStringList)),
+				SIGNAL (tagsSelectionChanged (QStringList)),
 				Ui_.SearchLine_,
 				SLOT (handleSelectionChanged (QStringList)));
 		connect (Ui_.SearchLine_,

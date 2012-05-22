@@ -105,7 +105,7 @@ void CategorySelector::setPossibleSelections (QStringList mytags)
 			this,
 			SLOT (buttonToggled ()));
 
-	emit selectionChanged (QStringList ());
+	emit tagsSelectionChanged (QStringList ());
 }
 
 QStringList CategorySelector::GetSelections ()
@@ -174,7 +174,7 @@ void CategorySelector::selectAll ()
 			this,
 			SLOT (buttonToggled ()));
 
-	emit selectionChanged (tags);
+	emit tagsSelectionChanged (tags);
 }
 
 void CategorySelector::selectNone ()
@@ -192,7 +192,7 @@ void CategorySelector::selectNone ()
 			this,
 			SLOT (buttonToggled ()));
 
-	emit selectionChanged (QStringList ());
+	emit tagsSelectionChanged (QStringList ());
 }
 
 void CategorySelector::lineTextChanged (const QString& text)
@@ -203,6 +203,6 @@ void CategorySelector::lineTextChanged (const QString& text)
 
 void CategorySelector::buttonToggled ()
 {
-	emit selectionChanged (GetSelections ());
+	emit tagsSelectionChanged (GetSelections ());
 }
 
