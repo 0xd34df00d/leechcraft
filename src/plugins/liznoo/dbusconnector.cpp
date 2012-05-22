@@ -77,6 +77,10 @@ namespace Liznoo
 				return "Suspend";
 			case PlatformLayer::PowerState::Hibernate:
 				return "Hibernate";
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unknown enum value";
+				return "";
 			}
 		};
 

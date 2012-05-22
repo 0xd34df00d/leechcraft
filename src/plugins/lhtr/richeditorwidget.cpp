@@ -69,6 +69,10 @@ namespace LHTR
 					return Menu_->addAction (text, receiver, member);
 				case Type::Bar:
 					return Bar_->addAction (text, receiver, member);
+				default:
+					qWarning () << Q_FUNC_INFO
+							<< "unknown enum value";
+					return 0;
 				}
 			}
 		};
@@ -230,6 +234,10 @@ namespace LHTR
 		}
 		case ContentType::PlainText:
 			return Ui_.View_->page ()->mainFrame ()->toPlainText ();
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown enum value";
+			return QString ();
 		}
 	}
 
