@@ -74,6 +74,11 @@ namespace Xoox
 			return TDOut;
 		case QXmppTransferJob::IncomingDirection:
 			return TDIn;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown direction"
+					<< Job_->direction ();
+			return TDIn;
 		}
 	}
 

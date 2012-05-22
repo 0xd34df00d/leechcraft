@@ -130,6 +130,11 @@ namespace Xoox
 			return ParticipantEntry_.get ();
 		case DOut:
 			return ParentEntry_;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown direction"
+					<< Direction_;
+			return ParentEntry_;
 		}
 	}
 
