@@ -37,12 +37,14 @@ namespace Azoth
 
 		Q_FOREACH (IAccount *acc, accounts)
 		{
+			if (!acc->IsShownInRoster ())
+				continue;
+
 			ISupportBookmarks *supBms = qobject_cast<ISupportBookmarks*> (acc->GetObject ());
 			if (!supBms)
 				continue;
 
-			IProtocol *proto =
-					qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+			auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 			if (!Proto2Joiner_.contains (proto))
 			{

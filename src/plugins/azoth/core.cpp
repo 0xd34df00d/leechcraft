@@ -1902,7 +1902,7 @@ namespace Azoth
 					SLOT (handleGotSDSession (QObject*)));
 
 		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
-		if (proto)
+		if (proto && account->IsShownInRoster ())
 		{
 			const QByteArray& id = proto->GetProtocolID () + account->GetAccountID ();
 			const QVariant& var = XmlSettingsManager::Instance ().property (id);
@@ -1916,7 +1916,7 @@ namespace Azoth
 			else
 				UpdateInitState (account->GetState ().State_);
 		}
-		else
+		else if (!proto)
 			qWarning () << Q_FUNC_INFO
 					<< "account's parent proto isn't IProtocol"
 					<< account->GetParentProtocol ();

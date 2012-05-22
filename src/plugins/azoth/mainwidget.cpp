@@ -499,7 +499,8 @@ namespace Azoth
 
 		EntryStatus status (state, QString ());
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
-			acc->ChangeState (status);
+			if (acc->IsShownInRoster ())
+				acc->ChangeState (status);
 	}
 
 	void MainWidget::handleEntryActivationType ()

@@ -111,6 +111,9 @@ namespace Azoth
 				continue;
 			}
 
+			if (!acc->IsShownInRoster ())
+				continue;
+
 			if (acc->GetState ().State_ == SOffline &&
 					!(acc->GetAccountFeatures () & IAccount::FCanAddContactsInOffline))
 				continue;
