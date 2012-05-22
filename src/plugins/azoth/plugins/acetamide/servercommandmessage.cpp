@@ -101,12 +101,7 @@ namespace Acetamide
 
 	QObject* ServerCommandMessage::OtherPart () const
 	{
-		switch (Direction_)
-		{
-		case DIn:
-		case DOut:
-			return ParentEntry_;
-		}
+		return ParentEntry_;
 	}
 
 	QObject* ServerCommandMessage::ParentCLEntry () const
