@@ -39,6 +39,7 @@
 #include "useractivity.h"
 #include "userlocation.h"
 #include "privacylistsconfigdialog.h"
+#include "pepmicroblog.h"
 
 #ifdef ENABLE_MEDIACALLS
 #include "mediacall.h"
@@ -414,6 +415,12 @@ namespace Xoox
 	void GlooxAccount::SetConsoleEnabled (bool enabled)
 	{
 		ClientConnection_->SetSignaledLog (enabled);
+	}
+
+	void GlooxAccount::SubmitPost (const Post& post)
+	{
+		PEPMicroblog micro (post);
+		ClientConnection_->GetPubSubManager ()->PublishEvent (&micro);
 	}
 
 	void GlooxAccount::PublishTune (const QMap<QString, QVariant>& tuneInfo)

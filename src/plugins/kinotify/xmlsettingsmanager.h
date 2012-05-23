@@ -16,30 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_KINOTIFY_XMLSETTINGSMANAGER_H
-#define PLUGINS_KINOTIFY_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Kinotify
+{
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		namespace Kinotify
-		{
-			class XmlSettingsManager : public Util::BaseSettingsManager
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				XmlSettingsManager ();
-			public:
-				static XmlSettingsManager* Instance ();
-			protected:
-				virtual QSettings* BeginSettings () const;
-				virtual void EndSettings (QSettings*) const;
-			};
-		};
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager* Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
-};
-
-#endif
-
+}
+}

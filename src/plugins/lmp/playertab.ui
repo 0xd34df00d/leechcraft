@@ -61,7 +61,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="LyricsPage_">
       <property name="tabPosition">
        <enum>QTabWidget::West</enum>
       </property>
@@ -101,8 +101,14 @@
           <property name="contextMenuPolicy">
            <enum>Qt::ActionsContextMenu</enum>
           </property>
+          <property name="dragEnabled">
+           <bool>true</bool>
+          </property>
           <property name="alternatingRowColors">
            <bool>true</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::ExtendedSelection</enum>
           </property>
           <attribute name="headerVisible">
            <bool>false</bool>
@@ -130,7 +136,14 @@
          <number>1</number>
         </property>
         <item>
-         <widget class="QTreeView" name="PlaylistsTree_"/>
+         <widget class="QTreeView" name="PlaylistsTree_">
+          <property name="dragEnabled">
+           <bool>true</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::ExtendedSelection</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -143,11 +156,7 @@
          <number>1</number>
         </property>
         <item>
-         <widget class="QTreeView" name="FSTree_">
-          <property name="contextMenuPolicy">
-           <enum>Qt::ActionsContextMenu</enum>
-          </property>
-         </widget>
+         <widget class="LeechCraft::LMP::FSBrowserWidget" name="FSBrowser_" native="true"/>
         </item>
        </layout>
       </widget>
@@ -158,6 +167,12 @@
         <widget class="QTreeView" name="Playlist_">
          <property name="contextMenuPolicy">
           <enum>Qt::ActionsContextMenu</enum>
+         </property>
+         <property name="acceptDrops">
+          <bool>true</bool>
+         </property>
+         <property name="defaultDropAction">
+          <enum>Qt::CopyAction</enum>
          </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
@@ -187,6 +202,12 @@
    <class>LeechCraft::LMP::NowPlayingWidget</class>
    <extends>QWidget</extends>
    <header>nowplayingwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::FSBrowserWidget</class>
+   <extends>QWidget</extends>
+   <header>fsbrowserwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

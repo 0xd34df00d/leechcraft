@@ -90,16 +90,17 @@ namespace Autopaste
 
 	void Plugin::Paste (const QString& text, QObject *entry)
 	{
-		QNetworkRequest req (QUrl ("http://paste.pocoo.org/"));
+		QNetworkRequest req (QUrl ("http://codepad.org"));
 		req.setHeader (QNetworkRequest::ContentTypeHeader,
 				"application/x-www-form-urlencoded");
-		req.setRawHeader ("Referer", "http://paste.pocoo.org/");
-
-		QByteArray data = "code=";
+		req.setRawHeader ("Referer", "http://codepad.org");
+		
+		QByteArray data = "lang=Plain+Text&code=";
 		data += text.toUtf8 ().toPercentEncoding ();
-		data += "&language=text&webpage=";
-		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
+		data += "&private=True&submit=Submit";
 
+		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
+		
 		QNetworkReply *reply = Proxy_->GetNetworkAccessManager ()->post (req, data);
 		connect (reply,
 				SIGNAL (metaDataChanged ()),

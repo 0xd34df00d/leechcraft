@@ -42,6 +42,8 @@ namespace Xoox
 		QXmppAnnotationsIq::NoteItem Note_;
 
 		QXmppVCardIq VCard_;
+
+		bool PhotoChanged_;
 	public:
 		VCardDialog (GlooxAccount*, QWidget* = 0);
 		VCardDialog (EntryBase*, QWidget* = 0);
@@ -58,6 +60,8 @@ namespace Xoox
 		void rebuildClientInfo ();
 		void setNote ();
 		void publishVCard ();
+		void on_PhoneButton__released ();
+		void on_EmailButton__released ();
 		void on_PhotoBrowse__released ();
 		void on_PhotoClear__released ();
 	};

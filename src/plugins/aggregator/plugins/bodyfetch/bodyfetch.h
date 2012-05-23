@@ -30,7 +30,7 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-class Item;
+struct Item;
 
 namespace BodyFetch
 {

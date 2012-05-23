@@ -20,6 +20,7 @@
 
 #include <QStringList>
 #include <QMetaType>
+#include <interfaces/media/audiostructs.h>
 
 namespace LeechCraft
 {
@@ -38,6 +39,8 @@ namespace LMP
 		qint32 Length_;
 		qint32 Year_;
 		qint32 TrackNumber_;
+
+		operator Media::AudioInfo () const;
 	};
 }
 }

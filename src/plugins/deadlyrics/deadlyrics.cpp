@@ -20,94 +20,74 @@
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include "core.h"
-#include "findproxy.h"
 #include "xmlsettingsmanager.h"
+#include "sitessearcher.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DeadLyrics
+{
+	void DeadLyRicS::Init (ICoreProxy_ptr proxy)
 	{
-		namespace DeadLyrics
-		{
-			void DeadLyRicS::Init (ICoreProxy_ptr proxy)
-			{
-				Translator_.reset (Util::InstallTranslator ("deadlyrics"));
+		Util::InstallTranslator ("deadlyrics");
 
-				Core::Instance ().SetProxy (proxy);
+		Proxy_ = proxy;
 
-				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
-				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-						"deadlyricssettings.xml");
-			}
+		Searchers_ << Searcher_ptr (new SitesSearcher (":/deadlyrics/resources/sites.xml", proxy));
+		Q_FOREACH (auto searcher, Searchers_)
+			connect (searcher.get (),
+					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)),
+					this,
+					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)));
 
-			void DeadLyRicS::SecondInit ()
-			{
-			}
+		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"deadlyricssettings.xml");
+	}
 
-			void DeadLyRicS::Release ()
-			{
-			}
+	void DeadLyRicS::SecondInit ()
+	{
+	}
 
-			QByteArray DeadLyRicS::GetUniqueID () const
-			{
-				return "org.LeechCraft.DeadLyrics";
-			}
+	void DeadLyRicS::Release ()
+	{
+		Searchers_.clear ();
+	}
 
-			QString DeadLyRicS::GetName () const
-			{
-				return "DeadLyRicS";
-			}
+	QByteArray DeadLyRicS::GetUniqueID () const
+	{
+		return "org.LeechCraft.DeadLyrics";
+	}
 
-			QString DeadLyRicS::GetInfo () const
-			{
-				return tr ("Lyrics Searcher");
-			}
+	QString DeadLyRicS::GetName () const
+	{
+		return "DeadLyRicS";
+	}
 
-			QIcon DeadLyRicS::GetIcon () const
-			{
-				return QIcon (":/resources/images/deadlyrics.svg");
-			}
+	QString DeadLyRicS::GetInfo () const
+	{
+		return tr ("Lyrics Searcher");
+	}
 
-			QStringList DeadLyRicS::Provides () const
-			{
-				return QStringList ("search::lyrics");
-			}
+	QIcon DeadLyRicS::GetIcon () const
+	{
+		return QIcon (":/deadlyrics/resources/images/deadlyrics.svg");
+	}
 
-			QStringList DeadLyRicS::Needs () const
-			{
-				return QStringList ();
-			}
+	Util::XmlSettingsDialog_ptr DeadLyRicS::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
 
-			QStringList DeadLyRicS::Uses () const
-			{
-				return QStringList ();
-			}
+	void DeadLyRicS::RequestLyrics (const Media::LyricsQuery& query, Media::QueryOptions options)
+	{
+		if (query.Artist_.isEmpty () || query.Title_.isEmpty ())
+			return;
 
-			void DeadLyRicS::SetProvider (QObject*, const QString&)
-			{
-			}
+		Q_FOREACH (auto searcher, Searchers_)
+			searcher->Search (query, options);
+	}
+}
+}
 
-			QStringList DeadLyRicS::GetCategories () const
-			{
-				return Core::Instance ().GetCategories ();
-			}
-
-			QList<IFindProxy_ptr> DeadLyRicS::GetProxy (const LeechCraft::Request& req)
-			{
-				QList<IFindProxy_ptr> result;
-				result << IFindProxy_ptr (new FindProxy (req));
-				return result;
-			}
-
-			std::shared_ptr<Util::XmlSettingsDialog> DeadLyRicS::GetSettingsDialog () const
-			{
-				return SettingsDialog_;
-			}
-
-		};
-	};
-};
-
-LC_EXPORT_PLUGIN (leechcraft_deadlyrics, LeechCraft::Plugins::DeadLyrics::DeadLyRicS);
-
+LC_EXPORT_PLUGIN (leechcraft_deadlyrics, LeechCraft::DeadLyrics::DeadLyRicS);

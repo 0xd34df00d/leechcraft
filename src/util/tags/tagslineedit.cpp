@@ -32,7 +32,6 @@ TagsLineEdit::TagsLineEdit (QWidget *parent)
 : QLineEdit (parent)
 , Completer_ (0)
 {
-
 }
 
 void TagsLineEdit::AddSelector ()
@@ -53,7 +52,7 @@ void TagsLineEdit::AddSelector ()
 	handleTagsUpdated (initialTags);
 
 	connect (CategorySelector_.get (),
-			SIGNAL (selectionChanged (const QStringList&)),
+			SIGNAL (tagsSelectionChanged (const QStringList&)),
 			this,
 			SLOT (handleSelectionChanged (const QStringList&)));
 

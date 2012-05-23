@@ -89,7 +89,7 @@ namespace Proto
 		void Authorize (const QString& email);
 		quint32 AddContact (quint32 group, const QString& email, const QString& name);
 		void ModifyContact (quint32 contactId, quint32 groupId,
-				const QString& email, const QString& name);
+				const QString& email, const QString& name, const QString& phone);
 		void RemoveContact (quint32 id, const QString& email, const QString& name);
 		void RequestAuth (const QString& email, const QString& msg);
 		quint32 AddGroup (const QString& group, int groupNum);

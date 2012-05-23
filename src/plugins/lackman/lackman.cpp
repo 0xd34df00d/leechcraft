@@ -51,7 +51,7 @@ namespace LackMan
 		TabClass_.Description_ = GetInfo ();
 		TabClass_.Icon_ = GetIcon ();
 		TabClass_.Priority_ = 0;
-		TabClass_.Features_ = TabFeatures (TFSingle | TFOpenableByRequest);
+		TabClass_.Features_ = TabFeatures (TFSingle | TFByDefault | TFOpenableByRequest);
 
 		Ui_.setupUi (this);
 
@@ -67,7 +67,7 @@ namespace LackMan
 		selector->setMinimumHeight (0);
 		selector->SetCaption (tr ("Package tags"));
 		connect (selector,
-				SIGNAL (selectionChanged (QStringList)),
+				SIGNAL (tagsSelectionChanged (QStringList)),
 				Ui_.SearchLine_,
 				SLOT (handleSelectionChanged (QStringList)));
 		connect (Ui_.SearchLine_,
@@ -286,6 +286,41 @@ namespace LackMan
 	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
 	{
 		return ShortcutMgr_->GetActionInfo ();
+	}
+
+	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		Q_FOREACH (const auto& recInfo, infos)
+		{
+			qDebug () << Q_FUNC_INFO << recInfo.Data_;
+
+			if (recInfo.Data_ == "lackmantab")
+			{
+				Q_FOREACH (const auto& pair, recInfo.DynProperties_)
+					setProperty (pair.first, pair.second);
+
+				TabOpenRequested (TabClass_.TabClass_);
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown context"
+						<< recInfo.Data_;
+		}
+	}
+
+	QByteArray Plugin::GetTabRecoverData () const
+	{
+		return "lackmantab";
+	}
+
+	QIcon Plugin::GetTabRecoverIcon () const
+	{
+		return GetIcon ();
+	}
+
+	QString Plugin::GetTabRecoverName () const
+	{
+		return GetName ();
 	}
 
 	void Plugin::handleTagsUpdated (const QStringList& tags)

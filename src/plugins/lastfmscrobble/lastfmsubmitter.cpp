@@ -18,6 +18,7 @@
  **********************************************************************/
 
 #include "lastfmsubmitter.h"
+#include "codes.h"
 #include <QCryptographicHash>
 #include <QByteArray>
 #include <QNetworkAccessManager>
@@ -25,12 +26,13 @@
 #include <lastfm/Track>
 #include <lastfm.h>
 #include <interfaces/media/audiostructs.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	const QString ScrobblingSite_ = "http://ws.audioscrobbler.com/2.0/";
+	const QString ScrobblingSite = "http://ws.audioscrobbler.com/2.0/";
 
 	MediaMeta::MediaMeta ()
 	: TrackNumber_ (0)
@@ -83,20 +85,47 @@ namespace Lastfmscrobble
 			return QCryptographicHash::hash (str.toAscii (),
 					QCryptographicHash::Md5).toHex ();
 		}
+
+		QByteArray MakeCall (QList<QPair<QString, QString>> params)
+		{
+			std::sort (params.begin (), params.end (),
+					[] (decltype (*params.constEnd ()) left, decltype (*params.constEnd ()) right)
+						{ return left.first < right.first; });
+			auto str = std::accumulate (params.begin (), params.end (), QString (),
+					[] (const QString& str, decltype (params.front ()) pair)
+						{ return str + pair.first + pair.second; });
+			str += lastfm::ws::SharedSecret;
+			const auto& sig = QCryptographicHash::hash (str.toUtf8 (), QCryptographicHash::Md5).toHex ();
+
+			params << QPair<QString, QString> ("api_sig", sig);
+
+			QUrl url;
+			std::for_each (params.begin (), params.end (),
+					[&url] (decltype (params.front ()) pair) { url.addQueryItem (pair.first, pair.second); });
+			return url.encodedQuery ();
+		}
+
+		QString GetQueueFilename ()
+		{
+			return Util::CreateIfNotExists ("lastfmscrobble").absoluteFilePath ("queue.xml");
+		}
 	}
 
 	LastFMSubmitter::LastFMSubmitter (QObject *parent)
 	: QObject (parent)
 	, SubmitTimer_ (new QTimer (this))
 	{
-		lastfm::ws::ApiKey = "be076efd1c241366f27fde6fd024e567";
-		lastfm::ws::SharedSecret = "8352aead3be59ab319cd4e578d374843";
+		lastfm::ws::ApiKey = "a5ca8821e39cdb5efd2e5667070084b2";
+		lastfm::ws::SharedSecret = "50fb8b6f35fc55b7ddf6bb033dfc6fbe";
 
 		SubmitTimer_->setSingleShot (true);
+
+		LoadQueue ();
 	}
 
 	void LastFMSubmitter::Init (QNetworkAccessManager *manager)
 	{
+		NAM_ = manager;
 		const QString& authToken = AuthToken (lastfm::ws::Username,
 				Password_);
 
@@ -104,7 +133,7 @@ namespace Lastfmscrobble
 				"auth.getMobileSession", lastfm::ws::Username,
 				lastfm::ws::SharedSecret);
 		const QString& url = QString ("%1?method=%2&username=%3&authToken=%4&api_key=%5&api_sig=%6")
-				.arg (ScrobblingSite_)
+				.arg (ScrobblingSite)
 				.arg ("auth.getMobileSession")
 				.arg (lastfm::ws::Username)
 				.arg (authToken)
@@ -149,44 +178,162 @@ namespace Lastfmscrobble
 		}
 	}
 
-	void LastFMSubmitter::Prepare (const MediaMeta& info)
+	void LastFMSubmitter::NowPlaying (const MediaMeta& info)
 	{
-		if (!Scrobbler_)
-			return;
-
 		SubmitTimer_->stop ();
 
+		NextSubmit_ = lastfm::Track ();
+
 		const auto& lfmTrack = ToLastFMTrack (info);
-		Scrobbler_->nowPlaying (lfmTrack);
 		if (info.Length_ < 30)
 			return;
+		if (!Scrobbler_)
+		{
+			SubmitQueue_ << lfmTrack;
+			return;
+		}
+		Scrobbler_->nowPlaying (lfmTrack);
 
+		NextSubmit_ = lfmTrack;
 		Scrobbler_->cache (lfmTrack);
-		SubmitTimer_->start (std::min (info.Length_ / 2, 240));
+		SubmitTimer_->start (std::min (info.Length_ / 2, 240) * 1000);
+	}
+
+	void LastFMSubmitter::Love ()
+	{
+		if (NextSubmit_.isNull ())
+			return;
+
+		QNetworkRequest req (QUrl ("http://ws.audioscrobbler.com/2.0/"));
+		const QString method = "track.love";
+		QList<QPair<QString, QString>> params;
+		params << QPair<QString, QString> ("method", method);
+		params << QPair<QString, QString> ("track", NextSubmit_.title ());
+		params << QPair<QString, QString> ("artist", NextSubmit_.artist ());
+		params << QPair<QString, QString> ("api_key", lastfm::ws::ApiKey);
+		params << QPair<QString, QString> ("sk", lastfm::ws::SessionKey);
+		const auto& data = MakeCall (params);
+		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
+		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+		QNetworkReply *reply = NAM_->post (req, data);
+		connect (reply,
+				SIGNAL (finished ()),
+				reply,
+				SLOT (deleteLater ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				reply,
+				SLOT (deleteLater ()));
 	}
 
 	void LastFMSubmitter::Clear ()
 	{
+		NextSubmit_ = lastfm::MutableTrack ();
 		SubmitTimer_->stop ();
+	}
+
+	void LastFMSubmitter::LoadQueue ()
+	{
+		QFile file (GetQueueFilename ());
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< file.errorString ();
+			return;
+		}
+
+		QDomDocument doc;
+		doc.setContent (file.readAll ());
+		auto elem = doc.documentElement ().firstChildElement ();
+		while (!elem.isNull ())
+		{
+			lastfm::Track track (elem);
+			if (!track.isNull ())
+				SubmitQueue_ << track;
+			elem = elem.nextSiblingElement ();
+		}
+	}
+
+	void LastFMSubmitter::SaveQueue () const
+	{
+		QDomDocument doc ("queue");
+		auto root = doc.createElement ("queue");
+		doc.appendChild (root);
+
+		std::for_each (SubmitQueue_.begin (), SubmitQueue_.end (),
+				[&doc, &root] (decltype (SubmitQueue_.front ()) item)
+				{
+					root.appendChild (item.toDomElement (doc));
+				});
+
+		QFile file (GetQueueFilename ());
+		if (!file.open (QIODevice::WriteOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< file.errorString ();
+			return;
+		}
+
+		file.write (doc.toByteArray ());
+	}
+
+	bool LastFMSubmitter::CheckError (const QDomDocument& doc)
+	{
+		auto sub = doc.documentElement ().firstChildElement ("error");
+		if (sub.isNull ())
+			return false;
+
+		const int code = sub.attribute ("code").toInt ();
+		switch (code)
+		{
+		case ErrorCodes::AuthError:
+			emit authFailure ();
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown error code"
+					<< code;
+			break;
+		}
+
+		return true;
 	}
 
 	void LastFMSubmitter::checkFlushQueue (int code)
 	{
-		// TODO
+		qDebug () << Q_FUNC_INFO << code;
+		if (code == lastfm::Audioscrobbler::TracksScrobbled)
+		{
+			qDebug () << "tracks scrobbled, clearing queue";
+			SubmitQueue_.clear ();
+			SaveQueue ();
+		}
+	}
+
+	void LastFMSubmitter::submit ()
+	{
+		SubmitQueue_ << NextSubmit_;
+		SaveQueue ();
+
+		if (!IsConnected ())
+			return;
+
+		Scrobbler_->submit ();
 	}
 
 	void LastFMSubmitter::getSessionKey ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-
 		if (!reply)
 			return;
 
+		reply->deleteLater ();
 		QDomDocument doc;
 		doc.setContent (QString::fromUtf8 (reply->readAll ()));
-		reply->deleteLater ();
-		const auto& domList = doc.documentElement ()
-				.elementsByTagName ("key");
+		if (CheckError (doc))
+			return;
+
+		const auto& domList = doc.documentElement ().elementsByTagName ("key");
 		if (!domList.size ())
 			return;
 
@@ -207,25 +354,12 @@ namespace Lastfmscrobble
 				SIGNAL (timeout ()),
 				Scrobbler_.get (),
 				SLOT (submit ()));
-	}
 
-	void LastFMSubmitter::sendTrack (const MediaMeta& info)
-	{
-		if (!IsConnected ())
-			return;
-
-		Scrobbler_->submit ();
-		const auto& track = ToLastFMTrack (info);
-		Scrobbler_->nowPlaying (track);
-		Scrobbler_->cache (track);
-	}
-
-	void LastFMSubmitter::submit ()
-	{
-		if (!IsConnected ())
-			return;
-
-		Scrobbler_->submit ();
+		if (!SubmitQueue_.isEmpty ())
+		{
+			Scrobbler_->cache (SubmitQueue_);
+			submit ();
+		}
 	}
 }
 }

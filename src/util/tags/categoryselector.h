@@ -136,7 +136,7 @@ namespace LeechCraft
 			 *
 			 * @param[out] newSelections Selected items.
 			 */
-			void selectionChanged (const QStringList& newSelections);
+			void tagsSelectionChanged (const QStringList& newSelections);
 		};
 	};
 };

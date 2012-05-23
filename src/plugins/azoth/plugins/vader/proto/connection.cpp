@@ -266,11 +266,15 @@ namespace Proto
 		return p.Seq_;
 	}
 
-	void Connection::ModifyContact (quint32 contactId,
-			quint32 groupId, const QString& email, const QString& name)
+	void Connection::ModifyContact (quint32 contactId, quint32 groupId,
+			const QString& email, const QString& name, const QString& phone)
 	{
 		const auto& p = PF_.ModifyContact (contactId,
-				ContactOpFlag::None, groupId, email, name);
+				ContactOpFlag::None,
+				groupId,
+				email,
+				name,
+				phone.isEmpty () ? " " : phone);
 		Write (p.Packet_);
 	}
 
@@ -298,7 +302,9 @@ namespace Proto
 
 	void Connection::HandleHello (HalfPacket hp)
 	{
+#ifdef PROTOCOL_LOGGING
 		qDebug () << Q_FUNC_INFO;
+#endif
 		quint32 timeout;
 		FromMRIM (hp.Data_, timeout);
 
@@ -317,7 +323,9 @@ namespace Proto
 
 	void Connection::CorrectAuth (HalfPacket)
 	{
+#ifdef PROTOCOL_LOGGING
 		qDebug () << Q_FUNC_INFO;
+#endif
 		emit statusChanged (PendingStatus_);
 	}
 
@@ -335,7 +343,9 @@ namespace Proto
 
 	void Connection::ConnParams (HalfPacket hp)
 	{
+#ifdef PROTOCOL_LOGGING
 		qDebug () << Q_FUNC_INFO;
+#endif
 		quint32 timeout;
 		FromMRIM (hp.Data_, timeout);
 
@@ -345,7 +355,9 @@ namespace Proto
 
 	void Connection::UserInfo (HalfPacket hp)
 	{
+#ifdef PROTOCOL_LOGGING
 		qDebug () << Q_FUNC_INFO << hp.Data_.size ();
+#endif
 
 		QMap<QString, QString> info;
 		while (!hp.Data_.isEmpty ())
@@ -362,8 +374,9 @@ namespace Proto
 				break;
 			}
 		}
-
+#ifdef PROTOCOL_LOGGING
 		qDebug () << info;
+#endif
 	}
 
 	void Connection::UserStatus (HalfPacket hp)
@@ -377,15 +390,19 @@ namespace Proto
 
 		FromMRIM (hp.Data_, statusId, uri, title, desc, email, features, ua);
 
+#ifdef PROTOCOL_LOGGING
 		qDebug () << Q_FUNC_INFO << statusId << email << uri << title << desc << ua;
+#endif
 
 		emit userStatusChanged ({-1, 0, statusId, email,
-				QString (), title, desc, features, ua});
+				QString (), QString (), title, desc, features, ua});
 	}
 
 	void Connection::ContactList (HalfPacket hp)
 	{
+#ifdef PROTOCOL_LOGGING
 		qDebug () << Q_FUNC_INFO << hp.Data_.size ();
+#endif
 		quint32 result = 0;
 		FromMRIM (hp.Data_, result);
 
@@ -412,7 +429,9 @@ namespace Proto
 		QByteArray gMask, cMask;
 		FromMRIM (hp.Data_, groupsNum, gMask, cMask);
 
+#ifdef PROTOCOL_LOGGING
 		qDebug () << groupsNum << "groups; masks:" << gMask << cMask;
+#endif
 
 		auto skip = [&hp] (const QByteArray& mask)
 		{
@@ -443,7 +462,9 @@ namespace Proto
 			FromMRIM (hp.Data_, flags, name);
 			groups << name;
 
+#ifdef PROTOCOL_LOGGING
 			qDebug () << "got group" << name << flags;
+#endif
 			try
 			{
 				skip (gMask);
@@ -474,11 +495,13 @@ namespace Proto
 				FromMRIM (hp.Data_, flags, group, email, alias, serverFlags,
 						status, phones, statusURI, statusTitle, statusDesc, comSupport, ua);
 
+#ifdef PROTOCOL_LOGGING
 				qDebug () << "got buddy" << flags << group << email << alias
 						<< serverFlags << status << phones << statusURI
 						<< statusTitle << statusDesc << comSupport << ua;
+#endif
 
-				contacts << ContactInfo { contactId++, group, status, email, alias, statusTitle, statusDesc, comSupport, ua };
+				contacts << ContactInfo { contactId++, group, status, email, phones, alias, statusTitle, statusDesc, comSupport, ua };
 
 				try
 				{
@@ -502,7 +525,9 @@ namespace Proto
 		quint32 status = 0;
 		FromMRIM (hp.Data_, status);
 
+#ifdef PROTOCOL_LOGGING
 		qDebug () << Q_FUNC_INFO << status;
+#endif
 		if (status != static_cast<quint32> (AnketaInfoStatus::OK))
 		{
 			if (status == static_cast<quint32> (AnketaInfoStatus::NoUser) ||
@@ -518,7 +543,9 @@ namespace Proto
 		quint32 rowsNum = 0;
 		quint32 date = 0;
 		FromMRIM (hp.Data_, colsNum, rowsNum, date);
+#ifdef PROTOCOL_LOGGING
 		qDebug () << colsNum << rowsNum << date;
+#endif
 		if (rowsNum > 1)
 			rowsNum = 1;
 
@@ -537,7 +564,9 @@ namespace Proto
 				unicodes [i] = true;
 		}
 
+#ifdef PROTOCOL_LOGGING
 		qDebug () << "got columns:" << colsHeaders;
+#endif
 
 		QList<QStringList> rows;
 		for (quint32 i = 0; i < rowsNum; ++i)
@@ -558,7 +587,9 @@ namespace Proto
 					row << str;
 				}
 			}
+#ifdef PROTOCOL_LOGGING
 			qDebug () << "got row:" << row;
+#endif
 			rows << row;
 		}
 
@@ -692,7 +723,9 @@ namespace Proto
 		Str1251 message;
 		FromMRIM (hp.Data_, id, message);
 
+#ifdef PROTOCOL_LOGGING
 		qDebug () << "got offline message";
+#endif
 
 		QMap<QString, QString> headers;
 		QString rawText;
@@ -746,7 +779,9 @@ namespace Proto
 		quint32 status = 0, contactId = 0;
 		FromMRIM (hp.Data_, status, contactId);
 
+#ifdef PROTOCOL_LOGGING
 		qDebug () << Q_FUNC_INFO << hp.Header_.Seq_ << status << contactId;
+#endif
 
 		if (status == Proto::ContactAck::Success)
 			emit contactAdded (hp.Header_.Seq_, contactId);
@@ -764,7 +799,9 @@ namespace Proto
 		Str1251 from;
 		Str1251 subj;
 		FromMRIM (hp.Data_, from, subj);
+#ifdef PROTOCOL_LOGGING
 		qDebug () << from << subj;
+#endif
 
 		emit gotNewMail (from, subj);
 	}
@@ -792,13 +829,17 @@ namespace Proto
 	QByteArray Connection::Read ()
 	{
 		QByteArray res = Socket_->readAll ();
+#ifdef PROTOCOL_LOGGING
 		qDebug () << "MRIM READ" << res.toBase64 ();
+#endif
 		return res;
 	}
 
 	void Connection::Write (const QByteArray& ba)
 	{
+#ifdef PROTOCOL_LOGGING
 		qDebug () << "MRIM WRITE" << ba.toBase64 ();
+#endif
 		Socket_->write (ba);
 		Socket_->flush ();
 	}

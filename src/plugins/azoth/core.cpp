@@ -67,13 +67,13 @@
 #include "mooddialog.h"
 #include "callmanager.h"
 #include "addcontactdialog.h"
-#include "acceptriexdialog.h"
 #include "clmodel.h"
 #include "actionsmanager.h"
 #include "servicediscoverywidget.h"
 #include "importmanager.h"
 #include "unreadqueuemanager.h"
 #include "chatstyleoptionmanager.h"
+#include "riexhandler.h"
 
 namespace LeechCraft
 {
@@ -937,7 +937,10 @@ namespace Azoth
 			const QString& smileStr = img
 					.arg (str)
 					.arg (QString ("data:image/png;base64," + rawData));
-			body.replace (escaped, smileStr);
+			if (body.startsWith (escaped))
+				body.replace (0, escaped.size (), smileStr);
+			body.replace (' ' + escaped, ' ' + smileStr);
+			body.replace ('\n' + escaped, '\n' + smileStr);
 		}
 
 		return body;
@@ -1767,6 +1770,12 @@ namespace Azoth
 		UnreadQueueManager_->ShowNext ();
 	}
 
+	void Core::saveAccountVisibility (IAccount *account)
+	{
+		const auto& id = "ShowAccount_" + account->GetAccountID ();
+		XmlSettingsManager::Instance ().setProperty (id, account->IsShownInRoster ());
+	}
+
 	void Core::handleNewProtocols (const QList<QObject*>& protocols)
 	{
 		Q_FOREACH (QObject *protoObj, protocols)
@@ -1790,8 +1799,7 @@ namespace Azoth
 
 	void Core::addAccount (QObject *accObject)
 	{
-		IAccount *account =
-				qobject_cast<IAccount*> (accObject);
+		IAccount *account = qobject_cast<IAccount*> (accObject);
 		if (!account)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1800,6 +1808,10 @@ namespace Azoth
 					<< sender ();
 			return;
 		}
+
+		const bool show = XmlSettingsManager::Instance ()
+				.Property ("ShowAccount_" + account->GetAccountID (), true).toBool ();
+		account->SetShownInRoster (show);
 
 		emit accountAdded (account);
 
@@ -1890,7 +1902,7 @@ namespace Azoth
 					SLOT (handleGotSDSession (QObject*)));
 
 		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
-		if (proto)
+		if (proto && account->IsShownInRoster ())
 		{
 			const QByteArray& id = proto->GetProtocolID () + account->GetAccountID ();
 			const QVariant& var = XmlSettingsManager::Instance ().property (id);
@@ -1904,7 +1916,7 @@ namespace Azoth
 			else
 				UpdateInitState (account->GetState ().State_);
 		}
-		else
+		else if (!proto)
 			qWarning () << Q_FUNC_INFO
 					<< "account's parent proto isn't IProtocol"
 					<< account->GetParentProtocol ();
@@ -2860,181 +2872,9 @@ namespace Azoth
 		CheckFileIcon (id);
 	}
 
-	namespace
-	{
-		void FilterRIEXItems (QList<RIEXItem>& items, const QHash<QString, ICLEntry*>& clEntries)
-		{
-			Q_FOREACH (const RIEXItem& item, items)
-			{
-				ICLEntry *entry = clEntries.value (item.ID_);
-				if (!entry &&
-						(item.Action_ == RIEXItem::AModify ||
-						item.Action_ == RIEXItem::ADelete))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "skipping non-existent"
-							<< item.ID_;
-					items.removeAll (item);
-					continue;
-				}
-
-				if (item.Action_ == RIEXItem::ADelete &&
-						entry &&
-						!item.Groups_.isEmpty ())
-				{
-					bool found = false;
-					const QStringList& origGroups = entry->Groups ();
-					Q_FOREACH (const QString& group, item.Groups_)
-						if (origGroups.contains (group))
-						{
-							found = true;
-							break;
-						}
-
-					if (!found)
-						items.removeAll (item);
-				}
-
-				if (item.Action_ == RIEXItem::AAdd &&
-						entry)
-					items.removeAll (item);
-			}
-		}
-
-		void AddRIEX (const RIEXItem& item, const QHash<QString, ICLEntry*> entries, IAccount *acc)
-		{
-			if (!entries.contains (item.ID_))
-			{
-				acc->RequestAuth (item.ID_, QString (), item.Nick_, item.Groups_);
-				return;
-			}
-
-			ICLEntry *entry = entries [item.ID_];
-
-			bool allGroups = true;
-			Q_FOREACH (const QString& group, item.Groups_)
-				if (!entry->Groups ().contains (group))
-				{
-					allGroups = false;
-					break;
-				}
-
-			if (!allGroups)
-			{
-				QStringList newGroups = item.Groups_ + entry->Groups ();
-				newGroups.removeDuplicates ();
-				entry->SetGroups (newGroups);
-			}
-			else
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "skipping already-existing"
-						<< item.ID_;
-				return;
-			}
-		}
-
-		void ModifyRIEX (const RIEXItem& item, const QHash<QString, ICLEntry*> entries, IAccount *acc)
-		{
-			if (!entries.contains (item.ID_))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "skipping non-existent"
-						<< item.ID_;
-				return;
-			}
-
-			ICLEntry *entry = entries [item.ID_];
-
-			if (!item.Groups_.isEmpty ())
-				entry->SetGroups (item.Groups_);
-
-			if (!item.Nick_.isEmpty ())
-				entry->SetEntryName (item.Nick_);
-		}
-
-		void DeleteRIEX (const RIEXItem& item, const QHash<QString, ICLEntry*> entries, IAccount *acc)
-		{
-			if (!entries.contains (item.ID_))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "skipping non-existent"
-						<< item.ID_;
-				return;
-			}
-
-			ICLEntry *entry = entries [item.ID_];
-			if (item.Groups_.isEmpty ())
-				acc->RemoveEntry (entry->GetObject ());
-			else
-			{
-				QStringList newGroups = entry->Groups ();
-				Q_FOREACH (const QString& group, item.Groups_)
-					newGroups.removeAll (group);
-
-				entry->SetGroups (newGroups);
-			}
-		}
-	}
-
 	void Core::handleRIEXItemsSuggested (QList<RIEXItem> items, QObject *from, QString message)
 	{
-		if (items.isEmpty () || !from)
-			return;
-
-		ICLEntry *entry = qobject_cast<ICLEntry*> (from);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< from
-					<< "doesn't implement ICLEntry";
-			return;
-		}
-
-		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		QHash<QString, ICLEntry*> clEntries;
-		Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
-		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-			if (!entry ||
-					(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
-				continue;
-
-			clEntries [entry->GetHumanReadableID ()] = entry;
-		}
-
-		FilterRIEXItems (items, clEntries);
-		if (items.isEmpty ())
-			return;
-
-		AcceptRIEXDialog dia (items, from, message);
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		Q_FOREACH (const RIEXItem& item, dia.GetSelectedItems ())
-		{
-			switch (item.Action_)
-			{
-			case RIEXItem::AAdd:
-				AddRIEX (item, clEntries, acc);
-				break;
-			case RIEXItem::AModify:
-				ModifyRIEX (item, clEntries, acc);
-				break;
-			case RIEXItem::ADelete:
-				DeleteRIEX (item, clEntries, acc);
-				break;
-			default:
-				qWarning () << Q_FUNC_INFO
-						<< "unknown action"
-						<< item.Action_
-						<< "for item"
-						<< item.ID_
-						<< item.Nick_
-						<< item.Groups_;
-				break;
-			}
-		}
+		RIEX::HandleRIEXItemsSuggested (items, from, message);
 	}
 
 	void Core::invalidateClientsIconCache (QObject *passedObj)

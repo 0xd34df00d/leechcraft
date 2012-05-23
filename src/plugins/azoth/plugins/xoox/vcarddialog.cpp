@@ -27,6 +27,7 @@
 #include "capsmanager.h"
 #include "annotationsmanager.h"
 #include "useravatarmanager.h"
+#include "vcardlisteditdialog.h"
 
 namespace LeechCraft
 {
@@ -37,6 +38,7 @@ namespace Xoox
 	VCardDialog::VCardDialog (GlooxAccount *acc, QWidget *parent)
 	: QDialog (parent)
 	, Account_ (acc)
+	, PhotoChanged_ (false)
 	{
 		Ui_.setupUi (this);
 		connect (this,
@@ -49,6 +51,7 @@ namespace Xoox
 
 	VCardDialog::VCardDialog (EntryBase *entry, QWidget *parent)
 	: QDialog (parent)
+	, PhotoChanged_ (false)
 	{
 		Ui_.setupUi (this);
 		connect (this,
@@ -65,6 +68,8 @@ namespace Xoox
 		{
 			Ui_.PhotoBrowse_->hide ();
 			Ui_.PhotoClear_->hide ();
+			Ui_.PhoneButton_->hide ();
+			Ui_.EmailButton_->hide ();
 		}
 
 		Ui_.EditBirthday_->setVisible (false);
@@ -290,6 +295,7 @@ namespace Xoox
 		VCard_.setTitle (Ui_.Title_->text ());
 		VCard_.setRole (Ui_.Role_->text ());
 		VCard_.setDesc (Ui_.About_->toPlainText ());
+		VCard_.setEmail (QString ());
 
 		const QPixmap *px = Ui_.LabelPhoto_->pixmap ();
 		if (px)
@@ -299,20 +305,116 @@ namespace Xoox
 			px->save (&buffer, "PNG", 100);
 			buffer.close ();
 			VCard_.setPhoto (buffer.data ());
-			Account_->UpdateOurPhotoHash (QCryptographicHash::hash (buffer.data (), QCryptographicHash::Sha1));
+			if (PhotoChanged_)
+				Account_->UpdateOurPhotoHash (QCryptographicHash::hash (buffer.data (), QCryptographicHash::Sha1));
 		}
 		else
 		{
 			VCard_.setPhoto (QByteArray ());
-			Account_->UpdateOurPhotoHash ("");
+			if (PhotoChanged_)
+				Account_->UpdateOurPhotoHash ("");
 		}
 
-		Account_->GetClientConnection ()->GetUserAvatarManager ()->
-					PublishAvatar (px ? px->toImage () : QImage ());
+		if (PhotoChanged_)
+			Account_->GetClientConnection ()->GetUserAvatarManager ()->
+						PublishAvatar (px ? px->toImage () : QImage ());
+		PhotoChanged_ = false;
 
 		QXmppVCardManager& mgr = Account_->GetClientConnection ()->
 				GetClient ()->vCardManager ();
 		mgr.setClientVCard (VCard_);
+	}
+
+	void VCardDialog::on_PhoneButton__released ()
+	{
+		QStringList options;
+		options << tr ("preferred")
+				<< tr ("home")
+				<< tr ("work")
+				<< tr ("cell");
+
+		VCardListEditDialog dia (options, this);
+		dia.setWindowTitle (tr ("VCard phones"));
+		Q_FOREACH (const QXmppVCardPhone& phone, VCard_.phones ())
+		{
+			if (phone.number.isEmpty ())
+				continue;
+
+			QPair<QString, QStringList> pair;
+			pair.first = phone.number;
+			if (phone.isPref)
+				pair.second << options.at (0);
+			if (phone.isHome)
+				pair.second << options.at (1);
+			if (phone.isWork)
+				pair.second << options.at (2);
+			if (phone.isCell)
+				pair.second << options.at (3);
+			dia.AddItems (QList<decltype (pair)> () << pair);
+		}
+
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		QXmppVCardPhoneList list;
+		Q_FOREACH (const auto& item, dia.GetItems ())
+		{
+			QXmppVCardPhone phone;
+			phone.number = item.first;
+			phone.isPref = item.second.contains (options.at (0));
+			phone.isHome = item.second.contains (options.at (1));
+			phone.isWork = item.second.contains (options.at (2));
+			phone.isCell = item.second.contains (options.at (3));
+			list << phone;
+		}
+		VCard_.setPhones (list);
+		BuildPhones (list);
+	}
+
+	void VCardDialog::on_EmailButton__released ()
+	{
+		QStringList options;
+		options << tr ("preferred")
+				<< tr ("home")
+				<< tr ("work")
+				<< "X400";
+
+		VCardListEditDialog dia (options, this);
+		dia.setWindowTitle (tr ("VCard emails"));
+		Q_FOREACH (const QXmppVCardEmail& email, VCard_.emails ())
+		{
+			if (email.address.isEmpty ())
+				continue;
+
+			QPair<QString, QStringList> pair;
+			pair.first = email.address;
+			if (email.isPref)
+				pair.second << options.at (0);
+			if (email.isHome)
+				pair.second << options.at (1);
+			if (email.isWork)
+				pair.second << options.at (2);
+			if (email.isX400)
+				pair.second << options.at (3);
+			dia.AddItems (QList<decltype (pair)> () << pair);
+		}
+
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		QXmppVCardEmailList list;
+		Q_FOREACH (const auto& item, dia.GetItems ())
+		{
+			QXmppVCardEmail email;
+			email.address = item.first;
+			email.isPref = item.second.contains (options.at (0));
+			email.isHome = item.second.contains (options.at (1));
+			email.isWork = item.second.contains (options.at (2));
+			email.isX400 = item.second.contains (options.at (3));
+			list << email;
+		}
+		VCard_.setEmails (list);
+		BuildEmails (list);
 	}
 
 	void VCardDialog::on_PhotoBrowse__released ()
@@ -328,6 +430,8 @@ namespace Xoox
 		if (px.isNull ())
 			return;
 
+		PhotoChanged_ = true;
+
 		const int size = 150;
 		if (std::max (px.size ().width (), px.size ().height ()) > size)
 			px = px.scaled (size, size,
@@ -339,6 +443,7 @@ namespace Xoox
 	void VCardDialog::on_PhotoClear__released ()
 	{
 		Ui_.LabelPhoto_->clear ();
+		PhotoChanged_ = true;
 	}
 
 	void VCardDialog::EnableEditableMode ()
@@ -350,7 +455,10 @@ namespace Xoox
 				this,
 				SLOT (publishVCard ()));
 
-		Q_FOREACH (QLineEdit *edit, findChildren<QLineEdit*> ())
+		auto toEnable = findChildren<QLineEdit*> ();
+		toEnable.removeAll (Ui_.EditPhone_);
+		toEnable.removeAll (Ui_.EditEmail_);
+		Q_FOREACH (QLineEdit *edit, toEnable)
 			edit->setReadOnly (false);
 
 		Ui_.About_->setReadOnly (false);

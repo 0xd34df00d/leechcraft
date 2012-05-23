@@ -115,7 +115,9 @@ namespace Xoox
 	void RoomHandler::SetPresence (QXmppPresence pres)
 	{
 		if (pres.type () == QXmppPresence::Unavailable)
-			Leave (pres.status ().statusText ());
+			Leave (pres.status ().statusText (), false);
+		else if (!Room_->isJoined ())
+			Join ();
 	}
 
 	/** @todo Detect kicks, bans and the respective actor.

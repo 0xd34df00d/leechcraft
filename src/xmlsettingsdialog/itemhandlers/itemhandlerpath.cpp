@@ -46,11 +46,11 @@ namespace LeechCraft
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
 
-		FilePicker::Type type = FilePicker::TExistingDirectory;
+		FilePicker::Type type = FilePicker::Type::ExistingDirectory;
 		if (item.attribute ("pickerType") == "openFileName")
-			type = FilePicker::TOpenFileName;
+			type = FilePicker::Type::OpenFileName;
 		else if (item.attribute ("pickerType") == "saveFileName")
-			type = FilePicker::TSaveFileName;
+			type = FilePicker::Type::SaveFileName;
 
 		FilePicker *picker = new FilePicker (type, XSD_);
 		const QVariant& value = XSD_->GetValue (item);

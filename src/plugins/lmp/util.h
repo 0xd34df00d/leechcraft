@@ -27,7 +27,7 @@ namespace LeechCraft
 namespace LMP
 {
 	QStringList RecIterate (const QString& dirPath);
-	QString FindAlbumArtPath (const QString& near);
-	QPixmap FindAlbumArt (const QString& near);
+	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
+	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection = false);
 }
 }

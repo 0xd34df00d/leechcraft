@@ -62,14 +62,15 @@ namespace LeechCraft
 
 			InsertAction (newAct);
 
-			if (info.Features_ & TFSingle ||
-					info.Features_ & TFByDefault)
+			if (info.Features_ & TFByDefault)
 			{
 				const QByteArray& id = ii->GetUniqueID () + '|' + info.TabClass_;
-				const bool hide = XmlSettingsManager::Instance ()->
-						Property ("Hide" + id, static_cast<bool> (info.Features_ & TFByDefault)).toBool ();
+				const bool hide = XmlSettingsManager::Instance ()->Property ("Hide" + id, false).toBool ();
 				if (!hide)
+				{
 					OpenTab (newAct);
+					XmlSettingsManager::Instance ()->setProperty ("Hide" + id, true);
+				}
 			}
 		}
 	}
@@ -135,6 +136,21 @@ namespace LeechCraft
 		ToggleHide (itw->ParentMultiTabs (), itw->GetTabClassInfo ().TabClass_, hide);
 	}
 
+	void NewTabMenuManager::HideAction (ITabWidget *itw, bool hide)
+	{
+		QObject *pObj = itw->ParentMultiTabs ();
+		const auto& tabClass = itw->GetTabClassInfo ().TabClass_;
+		Q_FOREACH (auto action, NewTabMenu_->actions ())
+		{
+			if (action->property ("TabClass").toByteArray () == tabClass &&
+					action->property ("PluginObj").value<QObject*> () == pObj)
+			{
+				NewTabMenu_->removeAction (action);
+				HiddenActions_ [pObj] [tabClass] = action;
+			}
+		}
+	}
+
 	QString NewTabMenuManager::AccelerateName (QString name)
 	{
 		for (int i = 0, length = name.length ();
@@ -154,6 +170,9 @@ namespace LeechCraft
 	void NewTabMenuManager::ToggleHide (QObject *obj,
 			const QByteArray& tabClass, bool hide)
 	{
+		if (!hide)
+			return;
+
 		IInfo *ii = qobject_cast<IInfo*> (obj);
 		if (!ii)
 		{

@@ -53,8 +53,6 @@ namespace LMP
 		PlaylistManager* GetPlaylistManager () const;
 	public slots:
 		void rescan ();
-	private slots:
-		void handleCollectionDirChanged ();
 	};
 }
 }

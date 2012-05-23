@@ -34,7 +34,7 @@ namespace Azoth
 		Ui::AddContactDialog Ui_;
 	public:
 		AddContactDialog (IAccount *focusAcc = 0, QWidget* = 0);
-		
+
 		void SetContactID (const QString&);
 		void SetNick (const QString&);
 

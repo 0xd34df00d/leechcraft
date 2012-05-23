@@ -59,7 +59,7 @@ namespace Azoth
 				GetTagsManager ()->Split (text);
 	}
 
-	void GroupEditorDialog::on_GroupsSelector__selectionChanged (const QStringList& groups)
+	void GroupEditorDialog::on_GroupsSelector__tagsSelectionChanged (const QStringList& groups)
 	{
 		const QString& text = Core::Instance ()
 				.GetProxy ()->GetTagsManager ()->Join (groups);

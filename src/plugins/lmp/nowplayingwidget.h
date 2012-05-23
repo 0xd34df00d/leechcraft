@@ -36,7 +36,8 @@ namespace LMP
 	public:
 		NowPlayingWidget (QWidget* = 0);
 
-		ArtistsInfoDisplay* GetArtistsDisplay () const;
+		void SetSimilarArtists (const Media::SimilarityInfos_t&);
+		void SetLyrics (const QString&);
 
 		void SetAlbumArt (const QPixmap&);
 		void SetTrackInfo (const MediaInfo&);

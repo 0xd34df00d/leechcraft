@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <QStandardItemModel>
 #include <QTimer>
+#include <QMimeData>
 #include "core.h"
 #include "staticplaylistmanager.h"
 #include "localcollection.h"
@@ -28,9 +29,59 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		class PlaylistModel : public QStandardItemModel
+		{
+			PlaylistManager *Manager_;
+		public:
+			PlaylistModel (PlaylistManager *parent)
+			: QStandardItemModel (parent)
+			, Manager_ (parent)
+			{
+				setSupportedDragActions (Qt::CopyAction);
+			}
+
+			QStringList mimeTypes () const
+			{
+				return QStringList ("text/uri-list");
+			}
+
+			QMimeData* mimeData (const QModelIndexList& indexes) const
+			{
+				QMimeData *result = new QMimeData;
+
+				QList<QUrl> urls;
+				Q_FOREACH (const auto& idx, indexes)
+				{
+					const auto& sources = Manager_->GetSources (idx);
+					std::transform (sources.begin (), sources.end (), std::back_inserter (urls),
+							[] (decltype (sources.front ()) src)
+							{
+								switch (src.type ())
+								{
+								case Phonon::MediaSource::LocalFile:
+									return QUrl::fromLocalFile (src.fileName ());
+								case Phonon::MediaSource::Url:
+									return src.url ();
+								default:
+									return QUrl ();
+								}
+							});
+				}
+
+				urls.removeAll (QUrl ());
+
+				result->setUrls (urls);
+
+				return result;
+			}
+		};
+	}
+
 	PlaylistManager::PlaylistManager (QObject *parent)
 	: QObject (parent)
-	, Model_ (new QStandardItemModel (this))
+	, Model_ (new PlaylistModel (this))
 	, StaticRoot_ (new QStandardItem (tr ("Static playlists")))
 	, Static_ (new StaticPlaylistManager (this))
 	{

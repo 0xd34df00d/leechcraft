@@ -20,9 +20,10 @@
 #pragma once
 
 #include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/media/iaudioscrobbler.h>
+#include <interfaces/media/ialbumartprovider.h>
+#include <interfaces/media/isimilarartists.h>
 
 namespace LeechCraft
 {
@@ -32,15 +33,17 @@ namespace Lastfmscrobble
 
 	class Plugin : public QObject
 				, public IInfo
-				, public IEntityHandler
 				, public IHaveSettings
 				, public Media::IAudioScrobbler
+				, public Media::IAlbumArtProvider
+				, public Media::ISimilarArtists
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
-				IEntityHandler
 				IHaveSettings
-				Media::IAudioScrobbler)
+				Media::IAudioScrobbler
+				Media::IAlbumArtProvider
+				Media::ISimilarArtists)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		LastFMSubmitter *LFSubmitter_;
@@ -54,20 +57,30 @@ namespace Lastfmscrobble
 		void Release ();
 		QIcon GetIcon () const;
 
-		EntityTestHandleResult CouldHandle (const Entity& entity) const;
-		void Handle (Entity entity);
-
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QString GetServiceName () const;
 		void NowPlaying (const Media::AudioInfo&);
 		void PlaybackStopped ();
+		void LoveCurrentTrack ();
+		void RerequestRecommendations ();
+
 		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&, int);
+
+		QString GetAlbumArtProviderName () const;
+		void RequestAlbumArt (const Media::AlbumInfo& album) const;
+	private:
+		void FeedPassword (bool);
 	private slots:
 		void handleSubmitterInit ();
+		void handleAuthFailure ();
 	signals:
-		void gotEntity (const Entity&);
-		void delegateEntity (const Entity&, int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+
+		void gotRecommendations (const Media::SimilarityInfos_t&);
+
+		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 	};
 }
 }

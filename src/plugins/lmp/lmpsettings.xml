@@ -10,14 +10,18 @@
 			<label value="Enable scrobbling" />
 			<tooltip>This option requires at least one other scrobbler plugin, like LastFMScrobble, for example.</tooltip>
 		</item>
+		<item type="checkbox" property="RequestLyrics" default="true">
+			<label value="Request lyrics" />
+		</item>
+		<item type="checkbox" property="ShowTrayIcon" default="false">
+			<label value="Show tray icon" />
+		</item>
 	</page>
 	<page>
 		<label value="Collection" />
 		<groupbox>
-			<label value="Collection" />
-			<item type="path" property="CollectionDir" onCancel="clear">
-				<label value="Music collection directory:" />
-			</item>
+			<label value="Root paths" />
+			<item type="dataview" property="RootPathsView" />
 		</groupbox>
 	</page>
 	<page>

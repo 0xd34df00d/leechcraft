@@ -22,19 +22,6 @@
 
 namespace Media
 {
-	class IPendingSimilarArtists
-	{
-	public:
-		virtual ~IPendingSimilarArtists () {}
-
-		virtual QObject* GetObject () = 0;
-		virtual QString GetSourceArtistName () const = 0;
-		virtual SimilarityInfos_t GetSimilar () const = 0;
-	protected:
-		virtual void ready () = 0;
-		virtual void error () = 0;
-	};
-
 	class IAudioScrobbler
 	{
 	public:
@@ -44,9 +31,12 @@ namespace Media
 		virtual void NowPlaying (const AudioInfo& audio) = 0;
 		virtual void PlaybackStopped () = 0;
 
-		virtual IPendingSimilarArtists* GetSimilarArtists (const QString& artistName, int num) = 0;
+		virtual void LoveCurrentTrack () = 0;
+
+		virtual void RerequestRecommendations () = 0;
+	protected:
+		virtual void gotRecommendations (const SimilarityInfos_t&) = 0;
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::IPendingSimilarArtists, "org.Deviant.LeechCraft.Media.IPendingSimilarArtists/1.0");
-Q_DECLARE_INTERFACE (Media::IAudioScrobbler, "org.Deviant.LeechCraft.Media.IAudioScrobbler/1.0");
+Q_DECLARE_INTERFACE (Media::IAudioScrobbler, "org.LeechCraft.Media.IAudioScrobbler/1.0");

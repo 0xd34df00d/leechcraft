@@ -33,7 +33,7 @@ namespace Summary
 		CategorySelector_->SetCaption (tr ("Search categories"));
 
 		connect (CategorySelector_,
-				SIGNAL (selectionChanged (const QStringList&)),
+				SIGNAL (tagsSelectionChanged (QStringList)),
 				this,
 				SIGNAL (paramsChanged ()));
 

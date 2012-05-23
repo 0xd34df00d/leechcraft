@@ -31,9 +31,16 @@ namespace LMP
 		Ui_.setupUi (this);
 	}
 
-	ArtistsInfoDisplay* NowPlayingWidget::GetArtistsDisplay () const
+	void NowPlayingWidget::SetSimilarArtists (const Media::SimilarityInfos_t& infos)
 	{
-		return Ui_.SimilarView_;
+		Ui_.SimilarView_->SetSimilarArtists (infos);
+
+		Ui_.SimilarView_->setVisible (!infos.isEmpty ());
+	}
+
+	void NowPlayingWidget::SetLyrics (const QString& lyrics)
+	{
+		Ui_.LyricsBrowser_->setHtml (lyrics);
 	}
 
 	void NowPlayingWidget::SetAlbumArt (const QPixmap& px)
@@ -45,7 +52,6 @@ namespace LMP
 	{
 		const bool isNull = info.Title_.isEmpty () && info.Artist_.isEmpty ();
 		Ui_.TrackInfoLayout_->setEnabled (!isNull);
-		Ui_.SimilarView_->setVisible (!isNull);
 
 		const QString& unknown = isNull ?
 				QString () :

@@ -42,6 +42,7 @@
 #include "xmlsettingsmanager.h"
 #include "transferjobmanager.h"
 #include "servicediscoverywidget.h"
+#include "microblogstab.h"
 #include "accountslistwidget.h"
 #include "consolewidget.h"
 #include "searchwidget.h"
@@ -61,6 +62,9 @@ namespace Azoth
 
 		Core::Instance ().SetProxy (proxy);
 		InitShortcuts ();
+
+		MW_ = new MainWidget ();
+
 		InitSettings ();
 		InitMW ();
 		InitSignals ();
@@ -322,13 +326,21 @@ namespace Azoth
 		XmlSettingsDialog_->SetDataSource ("OutputAudioDevice", new QStringListModel (audioOuts));
 #endif
 
-		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
+		auto accountsList = new AccountsListWidget;
+		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", accountsList);
+		connect (accountsList,
+				SIGNAL (accountVisibilityChanged (IAccount*)),
+				MW_,
+				SLOT (handleAccountVisibilityChanged ()));
+		connect (accountsList,
+				SIGNAL (accountVisibilityChanged (IAccount*)),
+				&Core::Instance (),
+				SLOT (saveAccountVisibility (IAccount*)));
 	}
 
 	void Plugin::InitMW ()
 	{
 		QDockWidget *dw = new QDockWidget ();
-		MW_ = new MainWidget ();
 		dw->setWidget (MW_);
 		dw->setWindowTitle ("Azoth");
 
@@ -395,6 +407,10 @@ namespace Azoth
 				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
 				this,
 				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
+		connect (MW_,
+				SIGNAL (gotMicroblogsTab (MicroblogsTab*)),
+				this,
+				SLOT (handleMicroblogsTab (MicroblogsTab*)));
 	}
 
 	void Plugin::InitTabClasses ()
@@ -446,12 +462,24 @@ namespace Azoth
 			0,
 			TFEmpty
 		};
+		TabClassInfo microblogsTab =
+		{
+			"MicroblogsTab",
+			tr ("Microblogs"),
+			tr ("Microblogs where protocol/account supports that"),
+			QIcon (),
+			0,
+			TFEmpty
+		};
 
 		TabClasses_ << chatTab;
 		TabClasses_ << mucTab;
 		TabClasses_ << searchTab;
 		TabClasses_ << sdTab;
 		TabClasses_ << consoleTab;
+		TabClasses_ << microblogsTab;
+
+		MicroblogsTab::SetTabData (this, microblogsTab);
 	}
 
 	void Plugin::handleSDWidget (ServiceDiscoveryWidget *sd)
@@ -462,6 +490,16 @@ namespace Azoth
 				SIGNAL (removeTab (QWidget*)));
 		emit addNewTab (tr ("Service discovery"), sd);
 		emit raiseTab (sd);
+	}
+
+	void Plugin::handleMicroblogsTab (MicroblogsTab *tab)
+	{
+		connect (tab,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		emit addNewTab (tr ("Microblogs"), tab);
+		emit raiseTab (tab);
 	}
 
 	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)

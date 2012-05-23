@@ -199,6 +199,8 @@ namespace Xoox
 		RoomCLEntry* JoinRoom (const QString& room, const QString& user);
 		void Unregister (RoomHandler*);
 
+		void CreateEntry (const QString&);
+
 		QXmppMucManager* GetMUCManager () const;
 		QXmppDiscoveryManager* GetDiscoveryManager () const;
 		QXmppVersionManager* GetVersionManager () const;
@@ -322,6 +324,9 @@ namespace Xoox
 		void gotMUCInvitation (const QVariantMap&, const QString&, const QString&);
 
 		void gotConsoleLog (const QByteArray&, int, const QString&);
+
+		void gotRequestedPosts (const QList<LeechCraft::Azoth::Post>&, const QString&);
+		void gotNewPost (const LeechCraft::Azoth::Post&);
 
 		void serverAuthFailed ();
 		void needPassword ();

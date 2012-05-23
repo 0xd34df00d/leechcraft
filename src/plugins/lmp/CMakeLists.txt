@@ -28,6 +28,7 @@ ADD_DEFINITIONS (${TAGLIB_CFLAGS})
 
 SET (QT_USE_QTDECLARATIVE TRUE)
 SET (QT_USE_QTSQL TRUE)
+SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
 IF (NOT PHONON_FOUND)
 	MESSAGE (FATAL_ERROR "No Phonon is found, LMP cannot be built")
@@ -46,6 +47,7 @@ SET (SRCS
 	playertab.cpp
 	player.cpp
 	core.cpp
+	mediainfo.cpp
 	localfileresolver.cpp
 	playlistdelegate.cpp
 	localcollection.cpp
@@ -55,9 +57,18 @@ SET (SRCS
 	collectiondelegate.cpp
 	nowplayingwidget.cpp
 	staticplaylistmanager.cpp
-	m3ustuff.cpp
 	playlistmanager.cpp
 	artistsinfodisplay.cpp
+	albumartmanager.cpp
+	lmpsystemtrayicon.cpp
+	fsbrowserwidget.cpp
+	fsmodel.cpp
+	rootpathsettingsmanager.cpp
+	localcollectionwatcher.cpp
+	playlistparsers/playlistfactory.cpp
+	playlistparsers/m3u.cpp
+	playlistparsers/pls.cpp
+	playlistparsers/xspf.cpp
 	)
 SET (HEADERS
 	lmp.h
@@ -65,6 +76,7 @@ SET (HEADERS
 	playertab.h
 	player.h
 	core.h
+	mediainfo.h
 	localfileresolver.h
 	playlistdelegate.h
 	localcollection.h
@@ -74,21 +86,38 @@ SET (HEADERS
 	collectiondelegate.h
 	nowplayingwidget.h
 	staticplaylistmanager.h
-	m3ustuff.h
 	playlistmanager.h
 	artistsinfodisplay.h
+	albumartmanager.h
+	lmpsystemtrayicon.h
+	fsbrowserwidget.h
+	fsmodel.h
+	rootpathsettingsmanager.h
+	localcollectionwatcher.h
+	playlistparsers/playlistfactory.h
+	playlistparsers/m3u.h
+	playlistparsers/pls.h
+	playlistparsers/xspf.h
 	)
 SET (FORMS
 	playertab.ui
 	nowplayingwidget.ui
+	fsbrowserwidget.ui
 	)
 SET (RESOURCES resources.qrc)
+CreateTrVars ("lmp" "en;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
+ADD_CUSTOM_COMMAND (OUTPUT
+	${COMPILED_TRANSLATIONS}
+	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
+	DEPENDS ${TRANSLATIONS}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
 ADD_LIBRARY (leechcraft_lmp SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
@@ -103,4 +132,5 @@ TARGET_LINK_LIBRARIES (leechcraft_lmp
 	${TAGLIB_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES lmpsettings.xml DESTINATION ${LC_SETTINGS_DEST})

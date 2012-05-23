@@ -4,6 +4,9 @@
 		<label value="Azoth Xtazy" />
 		<groupbox>
 			<label value="Tune fetching" />
+			<item type="checkbox" property="EnableLCSource" default="on">
+				<label value="Fetch from LeechCraft players like LMP" />
+			</item>
 			<item type="checkbox" property="EnableMPRISSource" default="on">
 				<label value="Fetch from MPRIS-compatible players" />
 			</item>

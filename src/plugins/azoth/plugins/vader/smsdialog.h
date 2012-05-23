@@ -33,7 +33,7 @@ namespace Vader
 
 		Ui::SMSDialog Ui_;
 	public:
-		SMSDialog (QWidget* = 0);
+		SMSDialog (QString, QWidget* = 0);
 
 		QString GetPhone () const;
 		QString GetText () const;

@@ -39,6 +39,7 @@ namespace Azoth
 	class ServiceDiscoveryWidget;
 	class MainWidget;
 	class ConsoleWidget;
+	class MicroblogsTab;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -108,6 +109,7 @@ namespace Azoth
 		void InitTabClasses ();
 	public slots:
 		void handleSDWidget (ServiceDiscoveryWidget*);
+		void handleMicroblogsTab (MicroblogsTab*);
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
 		void handleMWLocation (Qt::DockWidgetArea);

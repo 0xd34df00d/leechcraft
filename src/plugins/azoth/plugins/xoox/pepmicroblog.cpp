@@ -41,6 +41,16 @@ namespace Xoox
 	{
 	}
 
+	PEPMicroblog::PEPMicroblog (const Post& post)
+	: EventID_ (QUuid::createUuid ().toString ().remove ('{').remove ('}'))
+	, AuthorName_ (post.Author_.Name_)
+	, AuthorURI_ (post.Author_.URI_)
+	, Contents_ (post.Contents_)
+	, Published_ (post.Published_)
+	, Updated_ (post.Updated_)
+	{
+	}
+
 	namespace
 	{
 		QXmppElement GetAuthorElem (const QString& name, const QString& uri)
@@ -196,6 +206,19 @@ namespace Xoox
 	PEPEventBase* PEPMicroblog::Clone () const
 	{
 		return new PEPMicroblog (*this);
+	}
+
+	PEPMicroblog::operator Post () const
+	{
+		const Post p =
+		{
+			GetEventID (),
+			Contents_,
+			Published_,
+			Updated_,
+			{ AuthorName_, AuthorURI_ }
+		};
+		return p;
 	}
 
 	QString PEPMicroblog::GetEventID () const

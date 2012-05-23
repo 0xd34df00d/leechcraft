@@ -75,19 +75,19 @@ void FilePicker::chooseFile ()
 	QString name;
 	switch (Type_)
 	{
-		case TExistingDirectory:
+		case Type::ExistingDirectory:
 			name = QFileDialog::getExistingDirectory (this,
 					tr ("Select directory"),
 					LineEdit_->text (),
 					0);
 			break;
-		case TOpenFileName:
+		case Type::OpenFileName:
 			name = QFileDialog::getOpenFileName (this,
 					tr ("Select file"),
 					LineEdit_->text (),
 					Filter_);
 			break;
-		case TSaveFileName:
+		case Type::SaveFileName:
 			name = QFileDialog::getSaveFileName (this,
 					tr ("Select file"),
 					LineEdit_->text (),

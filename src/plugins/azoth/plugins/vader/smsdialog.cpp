@@ -24,10 +24,14 @@ namespace Azoth
 {
 namespace Vader
 {
-	SMSDialog::SMSDialog (QWidget *parent)
+	SMSDialog::SMSDialog (QString phone, QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+
+		if (!phone.startsWith ('+'))
+			phone.prepend ('+');
+		Ui_.Phone_->setText (phone);
 	}
 
 	QString SMSDialog::GetPhone () const

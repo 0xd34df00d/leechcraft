@@ -38,7 +38,7 @@ namespace AdiumStyles
 				SLOT (handleRowsInserted (QModelIndex, int, int)));
 
 		connect (model,
-				SIGNAL (rowsRemoved (QModelIndex, int, int)),
+				SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsRemoved (QModelIndex, int, int)));
 
@@ -119,7 +119,7 @@ namespace AdiumStyles
 
 			auto items = findItems (ourName);
 			Q_FOREACH (QStandardItem *item, items)
-				delete takeItem (item->row ());
+				removeRow (item->row ());
 		}
 	}
 
