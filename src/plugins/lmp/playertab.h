@@ -43,7 +43,7 @@ struct Entity;
 
 namespace LMP
 {
-	class MediaInfo;
+	struct MediaInfo;
 	class Player;
 
 	class PlayerTab : public QWidget

@@ -174,6 +174,8 @@ namespace Azoth
 
 		IAccount *acc = item->data (Roles::RAccObj).value<IAccount*> ();
 		acc->SetShownInRoster (item->checkState () == Qt::Checked);
+		if (!acc->IsShownInRoster () && acc->GetState ().State_ != SOffline)
+			acc->ChangeState (EntryStatus (SOffline, QString ()));
 		emit accountVisibilityChanged (acc);
 	}
 

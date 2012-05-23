@@ -163,7 +163,7 @@ namespace Aggregator
 		Impl_->ItemCategorySelector_->hide ();
 		Impl_->ItemCategorySelector_->setMinimumHeight (0);
 		connect (Impl_->ItemCategorySelector_.get (),
-				SIGNAL (selectionChanged (const QStringList&)),
+				SIGNAL (tagsSelectionChanged (const QStringList&)),
 				Impl_->ItemsFilterModel_.get (),
 				SLOT (categorySelectionChanged (const QStringList&)));
 

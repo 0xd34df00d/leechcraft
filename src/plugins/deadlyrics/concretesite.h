@@ -35,9 +35,9 @@ namespace DeadLyrics
 
 	struct ConcreteSiteDesc
 	{
-		const QString Name_;
-		const QString Charset_;
-		const QString URLTemplate_;
+		QString Name_;
+		QString Charset_;
+		QString URLTemplate_;
 
 		QHash<QChar, QString> Replacements_;
 

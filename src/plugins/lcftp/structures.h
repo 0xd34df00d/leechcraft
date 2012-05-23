@@ -57,7 +57,7 @@ namespace LeechCraft
 			struct FetchedEntry
 			{
 				QUrl URL_;
-				quint64 Size_;
+				qint64 Size_;
 				QDateTime DateTime_;
 				bool IsDir_;
 				QString Name_;
