@@ -117,11 +117,18 @@ namespace LeechCraft
 		QSettings settings ("Deviant", "Leechcraft");
 		settings.beginGroup ("Shortcuts");
 
+		auto deEdit = [] (const QList<QStandardItem*>& items)
+		{
+			std::for_each (items.begin (), items.end (),
+				[] (decltype (items.front ()) item) { item->setEditable (false); });
+		};
+
 		QList<QStandardItem*> parentRow;
 		parentRow << new QStandardItem (objName);
 		parentRow << new QStandardItem (objDescr);
 		parentRow.at (0)->setIcon (objIcon);
-		parentRow.at (0)->setData (	QVariant::fromValue<QObject*> (object), Roles::Object);
+		parentRow.at (0)->setData (QVariant::fromValue<QObject*> (object), Roles::Object);
+		deEdit (parentRow);
 
 		const auto& info = ihs->GetActionInfo ();
 
@@ -139,6 +146,7 @@ namespace LeechCraft
 			itemRow.at (0)->setIcon (info [name].Icon_);
 			itemRow.at (0)->setData (name, Roles::OriginalName);
 			itemRow.at (0)->setData (QVariant::fromValue<QKeySequences_t> (sequences), Roles::Sequence);
+			deEdit (itemRow);
 			parentRow.at (0)->appendRow (itemRow);
 
 			if (sequences != info [name].Seqs_)
