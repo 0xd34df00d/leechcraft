@@ -22,6 +22,11 @@
 
 class QPixmap;
 
+namespace Phonon
+{
+	class MediaSource;
+}
+
 namespace LeechCraft
 {
 namespace LMP
@@ -29,5 +34,7 @@ namespace LMP
 	QStringList RecIterate (const QString& dirPath);
 	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
 	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection = false);
+
+	bool operator!= (const Phonon::MediaSource&, const Phonon::MediaSource&);
 }
 }

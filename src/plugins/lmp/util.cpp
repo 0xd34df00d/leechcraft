@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <QDirIterator>
 #include <QPixmap>
+#include <phonon/mediasource.h>
 #include "core.h"
 #include "localcollection.h"
 
@@ -82,6 +83,11 @@ namespace LMP
 	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection)
 	{
 		return QPixmap (FindAlbumArtPath (near, ignoreCollection));
+	}
+
+	bool operator!= (const Phonon::MediaSource& left, const Phonon::MediaSource& right)
+	{
+		return !(left == right);
 	}
 }
 }
