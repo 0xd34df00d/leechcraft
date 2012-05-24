@@ -66,6 +66,12 @@
        </property>
        <item row="0" column="1">
         <widget class="QLabel" name="TrackName_">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -162,7 +168,7 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="SimilarPage_" native="true">
+     <widget class="QWidget" name="SimilarPage_">
       <attribute name="title">
        <string>Similar artists</string>
       </attribute>
@@ -188,7 +194,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="LyricsPage_" native="true">
+     <widget class="QWidget" name="LyricsPage_">
       <attribute name="title">
        <string>Lyrics</string>
       </attribute>
