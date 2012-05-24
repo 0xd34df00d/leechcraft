@@ -128,7 +128,7 @@ namespace LMP
 		connect (Source_,
 				SIGNAL (aboutToFinish ()),
 				this,
-				SLOT (handleSourceAboutToFinish ()));
+				SLOT (handleUpdateSourceQueue ()));
 		Source_->setTickInterval (1000);
 
 		auto collection = Core::Instance ().GetLocalCollection ();
@@ -484,7 +484,7 @@ namespace LMP
 		}
 	}
 
-	void Player::handleSourceAboutToFinish ()
+	void Player::handleUpdateSourceQueue ()
 	{
 		const auto& current = Source_->currentSource ();
 		const auto& path = current.fileName ();

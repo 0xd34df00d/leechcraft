@@ -100,7 +100,7 @@ namespace LMP
 		void clear ();
 	private slots:
 		void restorePlaylist ();
-		void handleSourceAboutToFinish ();
+		void handleUpdateSourceQueue ();
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
 	signals:
 		void songChanged (const MediaInfo&);
