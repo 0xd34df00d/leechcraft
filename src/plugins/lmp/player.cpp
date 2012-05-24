@@ -131,6 +131,11 @@ namespace LMP
 				SLOT (handleUpdateSourceQueue ()));
 		Source_->setTickInterval (1000);
 
+		connect (Source_,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePlaybackFinished ()));
+
 		auto collection = Core::Instance ().GetLocalCollection ();
 		if (collection->IsReady ())
 			restorePlaylist ();
@@ -566,6 +571,11 @@ namespace LMP
 		qDebug () << Q_FUNC_INFO
 				<< current.fileName ()
 				<< (pos == CurrentQueue_.end () ? "" : pos->fileName ());
+	}
+
+	void Player::handlePlaybackFinished ()
+	{
+		emit songChanged (MediaInfo ());
 	}
 
 	void Player::handleCurrentSourceChanged (const Phonon::MediaSource& source)
