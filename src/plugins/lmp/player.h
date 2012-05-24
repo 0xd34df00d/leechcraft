@@ -66,6 +66,7 @@ namespace LMP
 		enum Role
 		{
 			IsCurrent = Qt::UserRole + 1,
+			IsStop,
 			IsAlbum,
 			Source,
 			Info,
