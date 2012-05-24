@@ -426,7 +426,7 @@ namespace LMP
 		Source_->play ();
 	}
 
-	void Player::nextTrack()
+	void Player::nextTrack ()
 	{
 		const auto& current = Source_->currentSource ();
 		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
