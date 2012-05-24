@@ -51,6 +51,8 @@ namespace LMP
 		QList<Phonon::MediaSource> CurrentQueue_;
 		QHash<Phonon::MediaSource, QStandardItem*> Items_;
 		QHash<QPair<QString, QString>, QStandardItem*> AlbumRoots_;
+
+		Phonon::MediaSource CurrentStopSource_;
 	public:
 		enum class PlayMode
 		{
@@ -87,10 +89,14 @@ namespace LMP
 		QList<Phonon::MediaSource> GetQueue () const;
 
 		void Dequeue (const QModelIndex&);
+
+		void SetStopAfter (const QModelIndex&);
 	private:
 		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
 		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
 		void ApplyOrdering (QList<Phonon::MediaSource>&);
+
+		bool HandleCurrentStop (const Phonon::MediaSource&);
 	public slots:
 		void play (const QModelIndex&);
 		void previousTrack ();

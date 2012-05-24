@@ -226,6 +226,29 @@ namespace LMP
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 	}
 
+	void Player::SetStopAfter (const QModelIndex& index)
+	{
+		if (!index.isValid ())
+			return;
+
+		Phonon::MediaSource stopSource;
+		if (index.data (Role::IsAlbum).toBool ())
+			stopSource = PlaylistModel_->index (0, 0, index).data (Role::Source).value<Phonon::MediaSource> ();
+		else
+			stopSource = index.data (Role::Source).value<Phonon::MediaSource> ();
+
+		if (CurrentStopSource_.type () != Phonon::MediaSource::Empty)
+			Items_ [CurrentStopSource_]->setData (false, Role::IsStop);
+
+		if (CurrentStopSource_ == stopSource)
+			CurrentStopSource_ = Phonon::MediaSource ();
+		else
+		{
+			CurrentStopSource_ = stopSource;
+			Items_ [stopSource]->setData (true, Role::IsStop);
+		}
+	}
+
 	namespace
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
@@ -392,6 +415,17 @@ namespace LMP
 				});
 	}
 
+	bool Player::HandleCurrentStop (const Phonon::MediaSource& source)
+	{
+		if (source != CurrentStopSource_)
+			return false;
+
+		CurrentStopSource_ = Phonon::MediaSource ();
+		Items_ [source]->setData (false, Role::IsStop);
+
+		return true;
+	}
+
 	void Player::play (const QModelIndex& index)
 	{
 		if (index.data (Role::IsAlbum).toBool ())
@@ -487,6 +521,9 @@ namespace LMP
 	void Player::handleUpdateSourceQueue ()
 	{
 		const auto& current = Source_->currentSource ();
+		if (HandleCurrentStop (current))
+			return;
+
 		const auto& path = current.fileName ();
 		if (!path.isEmpty ())
 			QMetaObject::invokeMethod (Core::Instance ().GetLocalCollection (),
@@ -526,6 +563,9 @@ namespace LMP
 			Source_->enqueue (*pos);
 			break;
 		}
+		qDebug () << Q_FUNC_INFO
+				<< current.fileName ()
+				<< (pos == CurrentQueue_.end () ? "" : pos->fileName ());
 	}
 
 	void Player::handleCurrentSourceChanged (const Phonon::MediaSource& source)
