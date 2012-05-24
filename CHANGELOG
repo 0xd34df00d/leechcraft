@@ -5,6 +5,64 @@ Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
 !!! HEAD
+! Devel digest #24 ( http://leechcraft.org/devel-digest-24 ):
+* Core: shortcut items shouldn't be editable.
+* Overall: changed tabs system to delegate tabs recovering to TSM.
+* Azoth: properly handle removal of styles.
+* Azoth: don't replace smiles in the middle of words.
+* Azoth: support showing/hiding accounts.
+* Azoth Vader: support assigning phones.
+* Azoth Vader: protocol logging is now optional.
+* Azoth Vader: removed excessive auth requests.
+* Azoth Vader: fixed a rare segfault on giving authentication.
+* Azoth Vader: better buddy handling on authentication operations.
+* Azoth Xoox: enable to add/edit/remove phones and emails in VCards.
+* BitTorrent: show more information in Summary.
+* DeadLyrics: rewritten to provide texts to LMP by Amarok descriptions.
+* Kinotify: disable notifications on fullscreen apps (Win32 only yet).
+* LMP: request lyrics.
+* LMP: manipulate collection via the FS tree.
+* LMP: save last played song and play mode.
+* LMP: support for DnD here or there.
+* LMP: added system tray icon.
+* LMP: support for XSPF and PLS playlists.
+* LMP: automatically request album art for collection.
+* LMP: support "unscanning" from collection.
+* LMP: support rescanning collection.
+* LMP: mark items in collection in the FS tree.
+* LMP: fixed issues with TagLib reentrancy.
+* LMP: fixed fast-loading storage state.
+* XmlSettingsDialog: data handler for local paths.
+
+! Devel digest #23 ( http://leechcraft.org/devel-digest-23 ):
+* Core: handle back/forward mouse buttons on tabs.
+* Core: added some Media interfaces for scrobbling & similar stuff.
+* Core: always bring to front the main window on tray icon click.
+* Advanced Notifications: fixed QML file for the notification.
+* Advanced Notifications: fixed leaking of some objects and views.
+* Azoth: don't suggest already existing items in RIEX.
+* Azoth: handle /kick and /ban commands.
+* Azoth: fixed avatars cropping.
+* Azoth: fixed a rare segfault in search.
+* Azoth Autopaste: migrate to codepad.org.
+* Azoth p100q: working addition and configuration buttons.
+* Azoth p100q: fixed compatibility with some Adium themes.
+* Azoth Xoox: stubs for microblogging support according to XEP-0277.
+* Azoth Xoox: proper conferences rejoining.
+* Azoth Xoox: rejoin to conferences on disconnect.
+* Azoth Xoox: updated VK icon.
+* LastFMScrobble: refactored a bit.
+* LastFMScrobble: scrobbler now obeys official guidelines.
+* LastFMScrobble: save scrobbling queue between runs.
+* LastFMScrobble: support requesting similar artists.
+* LastFMScrobble: support searching for album arts.
+* LastFMScrobble: support marking tracks as loved.
+* LastFMScrobble: handle auth errors.
+* LMP: rewritten from scratch. It's a music-only audio player now.
+* Nacheku: moved directory/clipboard watcher to a separate plugin.
+* Poshuku: handle back/forward mouse buttons.
+
+!!! 0.5.65
 ! Devel digest #22 ( http://leechcraft.org/devel-digest-22 ):
 * Core: store plugin icons on-disk, not in QSettings.
 * Core: support for searching icons in ~/.leechcraft/icons.
