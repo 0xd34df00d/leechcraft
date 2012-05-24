@@ -370,7 +370,7 @@ namespace LMP
 
 		PlaylistToolbar_->addWidget (playButton);
 
-		QAction *removeSelected = new QAction (tr ("Delete from playlist"), Ui_.Playlist_);
+		auto removeSelected = new QAction (tr ("Delete from playlist"), Ui_.Playlist_);
 		removeSelected->setProperty ("ActionIcon", "list-remove");
 		removeSelected->setShortcut (Qt::Key_Delete);
 		connect (removeSelected,
@@ -378,6 +378,16 @@ namespace LMP
 				this,
 				SLOT (removeSelectedSongs ()));
 		Ui_.Playlist_->addAction (removeSelected);
+
+		Ui_.Playlist_->addAction (Util::CreateSeparator (this));
+
+		auto stopAfterSelected = new QAction (tr ("Stop after this track"), Ui_.Playlist_);
+		stopAfterSelected->setProperty ("ActionIcon", "media-playback-stop");
+		connect (stopAfterSelected,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (setStopAfterSelected ()));
+		Ui_.Playlist_->addAction (stopAfterSelected);
 	}
 
 	void PlayerTab::SetNowPlaying (const MediaInfo& info, const QPixmap& px)
@@ -560,8 +570,8 @@ namespace LMP
 		};
 		PlayedTime_->setText (niceTime (time));
 
-		const auto total = Player_->GetSourceObject ()->totalTime ();
-		RemainingTime_->setText (total < 0 ? tr ("unknown") : niceTime (total - time));
+		const auto remaining = Player_->GetSourceObject ()->remainingTime ();
+		RemainingTime_->setText (remaining < 0 ? tr ("unknown") : niceTime (remaining));
 	}
 
 	void PlayerTab::handleLoveTrack ()
@@ -643,6 +653,15 @@ namespace LMP
 		Q_FOREACH (const auto& idx, persistent)
 			if (idx.isValid ())
 				Player_->Dequeue (idx);
+	}
+
+	void PlayerTab::setStopAfterSelected ()
+	{
+		auto index = Ui_.Playlist_->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		Player_->SetStopAfter (index);
 	}
 
 	void PlayerTab::loadFromCollection ()
