@@ -18,6 +18,7 @@
 
 #include "shortcutmanager.h"
 #include <memory>
+#include <algorithm>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QSettings>
