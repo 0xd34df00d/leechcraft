@@ -23,6 +23,7 @@
 #include <QMap>
 #include <QStringList>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "ui_summarywidget.h"
 #include "core.h"
 
@@ -37,9 +38,10 @@ namespace Summary
 
 	class SummaryWidget : public QWidget
 						, public ITabWidget
+						, public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		Ui::SummaryWidget Ui_;
 		QTimer *FilterTimer_;
@@ -58,6 +60,12 @@ namespace Summary
 		QList<QAction*> GetTabBarContextMenuActions () const;
 		QObject* ParentMultiTabs ();
 		TabClassInfo GetTabClassInfo () const;
+
+		QByteArray GetTabRecoverData () const;
+		QString GetTabRecoverName () const;
+		QIcon GetTabRecoverIcon () const;
+
+		void RestoreState (const QByteArray&);
 
 		void SmartDeselect (SummaryWidget*);
 		Ui::SummaryWidget GetUi () const;
@@ -90,6 +98,8 @@ namespace Summary
 		void queryUpdated (const LeechCraft::Summary::Query2&);
 		void raiseTab (QWidget*);
 		void needToClose ();
+
+		void tabRecoverDataChanged ();
 	};
 }
 }

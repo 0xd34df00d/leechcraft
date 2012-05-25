@@ -26,6 +26,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/isummaryrepresentation.h>
+#include <interfaces/ihaverecoverabletabs.h>
 
 namespace LeechCraft
 {
@@ -36,9 +37,10 @@ namespace Summary
 					, public IHaveTabs
 					, public IEntityHandler
 					, public ISummaryRepresentation
+					, public IHaveRecoverableTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IEntityHandler ISummaryRepresentation)
+		Q_INTERFACES (IInfo IHaveTabs IEntityHandler ISummaryRepresentation IHaveRecoverableTabs)
 
 		std::auto_ptr<QTranslator> Translator_;
 		TabClasses_t TabClasses_;
@@ -63,6 +65,8 @@ namespace Summary
 
 		QModelIndex MapToSource (const QModelIndex&) const;
 		QTreeView* GetCurrentView () const;
+
+		void RecoverTabs (const QList<TabRecoverInfo>&);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

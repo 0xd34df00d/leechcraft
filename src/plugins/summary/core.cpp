@@ -336,6 +336,24 @@ namespace Summary
 		MadeCurrent (Current_);
 	}
 
+	void Core::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		Q_FOREACH (const auto& info, infos)
+		{
+			auto newTab = CreateSummaryWidget ();
+
+			Q_FOREACH (const auto& pair, info.DynProperties_)
+				newTab->setProperty (pair.first, pair.second);
+
+			newTab->RestoreState (info.Data_);
+
+			Others_ << newTab;
+
+			emit addNewTab (tr ("Summary"), newTab);
+			emit changeTabIcon (newTab, QIcon (":/plugins/summary/resources/images/summary.svg"));
+		}
+	}
+
 	void Core::handleNewTabRequested ()
 	{
 		SummaryWidget *newTab = CreateSummaryWidget ();
