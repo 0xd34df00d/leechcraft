@@ -130,6 +130,8 @@ namespace LMP
 				this,
 				SLOT (handleUpdateSourceQueue ()));
 		Source_->setTickInterval (1000);
+		Source_->setPrefinishMark (2000);
+		Source_->setTransitionTime (0);
 
 		connect (Source_,
 				SIGNAL (finished ()),
