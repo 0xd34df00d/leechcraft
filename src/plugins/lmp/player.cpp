@@ -137,6 +137,10 @@ namespace LMP
 				SIGNAL (finished ()),
 				this,
 				SLOT (handlePlaybackFinished ()));
+		connect (Source_,
+				SIGNAL (stateChanged (Phonon::State, Phonon::State)),
+				this,
+				SLOT (handleStateChanged (Phonon::State)));
 
 		auto collection = Core::Instance ().GetLocalCollection ();
 		if (collection->IsReady ())
@@ -570,14 +574,18 @@ namespace LMP
 			Source_->enqueue (*pos);
 			break;
 		}
-		qDebug () << Q_FUNC_INFO
-				<< current.fileName ()
-				<< (pos == CurrentQueue_.end () ? "" : pos->fileName ());
 	}
 
 	void Player::handlePlaybackFinished ()
 	{
 		emit songChanged (MediaInfo ());
+	}
+
+	void Player::handleStateChanged (Phonon::State state)
+	{
+		qDebug () << Q_FUNC_INFO << state;
+		if (state == Phonon::ErrorState)
+			qDebug () << Source_->errorType () << Source_->errorString ();
 	}
 
 	void Player::handleCurrentSourceChanged (const Phonon::MediaSource& source)

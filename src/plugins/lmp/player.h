@@ -108,6 +108,7 @@ namespace LMP
 		void restorePlaylist ();
 		void handleUpdateSourceQueue ();
 		void handlePlaybackFinished ();
+		void handleStateChanged (Phonon::State);
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
 	signals:
 		void songChanged (const MediaInfo&);
