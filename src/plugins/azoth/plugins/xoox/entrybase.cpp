@@ -636,6 +636,7 @@ namespace Xoox
 		Variant2Identities_ [variant] = ids;
 
 		const QString& name = ids.value (0).name ();
+		const QString& type = ids.value (0).type ();
 		if (name.contains ("Kopete"))
 		{
 			Variant2ClientInfo_ [variant] ["client_type"] = "kopete";
@@ -649,6 +650,13 @@ namespace Xoox
 			Variant2ClientInfo_ [variant] ["client_type"] = "jabber.el";
 			Variant2ClientInfo_ [variant] ["client_name"] = "Emacs Jabber.El";
 			Variant2ClientInfo_ [variant] ["raw_client_name"] = "jabber.el";
+			emit statusChanged (GetStatus (variant), variant);
+		}
+		else if (type == "mrim")
+		{
+			Variant2ClientInfo_ [variant] ["client_type"] = "mailruagent";
+			Variant2ClientInfo_ [variant] ["client_name"] = "Mail.Ru Agent Gateway";
+			Variant2ClientInfo_ [variant] ["raw_client_name"] = "mailruagent";
 			emit statusChanged (GetStatus (variant), variant);
 		}
 	}
