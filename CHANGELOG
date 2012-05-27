@@ -4,13 +4,14 @@ the rest.
 Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
-!!! HEAD
+!!! 0.5.70
 ! Devel digest #24 ( http://leechcraft.org/devel-digest-24 ):
 * Core: shortcut items shouldn't be editable.
 * Overall: changed tabs system to delegate tabs recovering to TSM.
 * Azoth: properly handle removal of styles.
 * Azoth: don't replace smiles in the middle of words.
 * Azoth: support showing/hiding accounts.
+* Azoth Rosenthal: get rid of bundled Hunspell.
 * Azoth Vader: support assigning phones.
 * Azoth Vader: protocol logging is now optional.
 * Azoth Vader: removed excessive auth requests.
@@ -22,6 +23,7 @@ relevant blocks of changes, so one could easily lookup
 * Kinotify: disable notifications on fullscreen apps (Win32 only yet).
 * LMP: request lyrics.
 * LMP: manipulate collection via the FS tree.
+* LMP: allow one to stop after a given track.
 * LMP: save last played song and play mode.
 * LMP: support for DnD here or there.
 * LMP: added system tray icon.
