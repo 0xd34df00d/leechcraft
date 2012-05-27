@@ -17,8 +17,9 @@
  **********************************************************************/
 
 #include "document.h"
-#include "links.h"
+#include <QtDebug>
 #include <poppler-qt4.h>
+#include "links.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,8 @@ namespace PDF
 		PDocument_->setRenderHint (Poppler::Document::Antialiasing);
 		PDocument_->setRenderHint (Poppler::Document::TextAntialiasing);
 		PDocument_->setRenderHint (Poppler::Document::TextHinting);
+
+		BuildTOC ();
 	}
 
 	QObject* Document::GetObject ()
@@ -96,10 +99,65 @@ namespace PDF
 		return result;
 	}
 
+	TOCEntryLevel_t Document::GetTOC ()
+	{
+		return TOC_;
+	}
+
 	void Document::RequestNavigation (const QString& filename,
 			int page, double x, double y)
 	{
 		emit navigateRequested (filename, page, x, y);
+	}
+
+	namespace
+	{
+		template<typename T>
+		TOCEntryLevel_t BuildTOCLevel (Document *doc, PDocument_ptr pDoc, const T& levelRoot)
+		{
+			TOCEntryLevel_t result;
+
+			QDomElement elem = levelRoot.firstChildElement ();
+			auto nextGuard = [&elem] (void*) { elem = elem.nextSiblingElement (); };
+			while (!elem.isNull ())
+			{
+				std::shared_ptr<void> guard (static_cast<void*> (0), nextGuard);
+
+				const auto& name = elem.tagName ();
+				const QString& dest = elem.attribute ("Destination");
+				if (!dest.isEmpty ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "non-empty destination, dunno how to handle that:"
+							<< dest;
+					continue;
+				}
+
+				const auto& destName = elem.attribute ("DestinationName");
+				if (destName.isEmpty ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "empty destination name, dunno how to handle that";
+					continue;
+				}
+
+				TOCEntry entry =
+				{
+					ILink_ptr (new TOCLink (doc, pDoc->linkDestination (destName))),
+					name,
+					BuildTOCLevel (doc, pDoc, elem)
+				};
+				result << entry;
+			}
+
+			return result;
+		}
+	}
+
+	void Document::BuildTOC ()
+	{
+		std::unique_ptr<QDomDocument> doc (PDocument_->toc ());
+		TOC_ = BuildTOCLevel (this, PDocument_, *doc);
 	}
 }
 }
