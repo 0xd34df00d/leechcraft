@@ -14,12 +14,14 @@ SET (SRCS
 	documenttab.cpp
 	core.cpp
 	pagegraphicsitem.cpp
+	filewatcher.cpp
 	)
 SET (HEADERS
 	monocle.h
 	documenttab.h
 	core.h
 	pagegraphicsitem.h
+	filewatcher.h
 	)
 SET (FORMS
 	documenttab.ui

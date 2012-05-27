@@ -62,6 +62,8 @@ namespace Monocle
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+
+		void ReloadDoc (const QString&);
 	private:
 		void SetupToolbar ();
 
@@ -89,6 +91,8 @@ namespace Monocle
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);
+
+		void fileLoaded (const QString&);
 	};
 }
 }

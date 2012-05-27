@@ -30,6 +30,7 @@
 #include <QtDebug>
 #include "core.h"
 #include "pagegraphicsitem.h"
+#include "filewatcher.h"
 
 namespace LeechCraft
 {
@@ -48,6 +49,8 @@ namespace Monocle
 		Ui_.PagesView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
 
 		SetupToolbar ();
+
+		new FileWatcher (this);
 	}
 
 	TabClassInfo DocumentTab::GetTabClassInfo () const
@@ -69,6 +72,15 @@ namespace Monocle
 	QToolBar* DocumentTab::GetToolBar () const
 	{
 		return Toolbar_;
+	}
+
+	void DocumentTab::ReloadDoc (const QString& doc)
+	{
+		Scene_.clear ();
+		Pages_.clear ();
+		CurrentDoc_ = IDocument_ptr ();
+
+		SetDoc (doc);
 	}
 
 	void DocumentTab::SetupToolbar ()
@@ -235,6 +247,9 @@ namespace Monocle
 				this,
 				SLOT (handleNavigateRequested (QString, int, double, double)),
 				Qt::UniqueConnection);
+
+		emit fileLoaded (path);
+
 		return true;
 	}
 
