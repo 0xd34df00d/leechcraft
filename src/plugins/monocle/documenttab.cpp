@@ -178,9 +178,11 @@ namespace Monocle
 
 		auto calcRatio = [this] (std::function<double (const QSize&)> dimGetter)
 		{
-			const int pageIdx = GetCurrentPage ();
-			if (pageIdx < 0)
+			if (Pages_.isEmpty ())
 				return 1.0;
+			int pageIdx = GetCurrentPage ();
+			if (pageIdx < 0)
+				pageIdx = 0;
 
 			double dim = dimGetter (CurrentDoc_->GetPageSize (pageIdx));
 			return dimGetter (Ui_.PagesView_->viewport ()->contentsRect ().size ()) / dim;
