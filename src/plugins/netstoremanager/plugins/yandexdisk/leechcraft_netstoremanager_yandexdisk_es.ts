@@ -4,7 +4,7 @@
     <message>
         <location filename="account.cpp" line="91"/>
         <source>Enter password for Yandex.Disk account %1 with login %2:</source>
-        <translation type="unfinished"/>
+        <translation>Escriba contraseña para la cuenta en Yandex.Disk %1 con login %2:</translation>
     </message>
     <message>
         <location filename="account.cpp" line="100"/>
@@ -14,7 +14,7 @@
     <message>
         <location filename="account.cpp" line="101"/>
         <source>Enter account login:</source>
-        <translation type="unfinished"/>
+        <translation>Escriba login de cuenta:</translation>
     </message>
     <message>
         <location filename="account.cpp" line="178"/>
@@ -29,7 +29,7 @@
     <message>
         <location filename="account.cpp" line="180"/>
         <source>Valid for</source>
-        <translation type="unfinished"/>
+        <translation>Valido para</translation>
     </message>
     <message>
         <location filename="account.cpp" line="181"/>
@@ -65,7 +65,7 @@
     <message>
         <location filename="authmanager.cpp" line="103"/>
         <source>Unexpected server reply.</source>
-        <translation type="unfinished"/>
+        <translation>Respuesta del servidor inesperada.</translation>
     </message>
 </context>
 <context>
@@ -73,12 +73,12 @@
     <message>
         <location filename="flgetter.cpp" line="41"/>
         <source>Getting filelist...</source>
-        <translation type="unfinished"/>
+        <translation>Obtenemos la lista de archivos...</translation>
     </message>
     <message>
         <location filename="flgetter.cpp" line="94"/>
         <source>Filelist downloaded</source>
-        <translation type="unfinished"/>
+        <translation>Lista de archivos descargada</translation>
     </message>
 </context>
 <context>
@@ -99,7 +99,7 @@
     <message>
         <location filename="simpleactor.cpp" line="43"/>
         <source>Requesting action...</source>
-        <translation type="unfinished"/>
+        <translation>Solicitando la acción...</translation>
     </message>
 </context>
 <context>
@@ -112,7 +112,7 @@
     <message>
         <location filename="uploadmanager.cpp" line="187"/>
         <source>Getting storage...</source>
-        <translation type="unfinished"/>
+        <translation>Obteniendo almacenamiento...</translation>
     </message>
     <message>
         <location filename="uploadmanager.cpp" line="197"/>

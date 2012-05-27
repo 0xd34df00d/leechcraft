@@ -57,12 +57,12 @@
     <message>
         <location filename="imagedialog.ui" line="70"/>
         <source>Alt:</source>
-        <translation type="unfinished"/>
+        <translation>Alt:</translation>
     </message>
     <message>
         <location filename="imagedialog.ui" line="80"/>
         <source>Width:</source>
-        <translation type="unfinished"/>
+        <translation>Anchura:</translation>
     </message>
     <message>
         <location filename="imagedialog.ui" line="87"/>
@@ -79,7 +79,7 @@
     <message>
         <location filename="imagedialog.ui" line="100"/>
         <source>Height:</source>
-        <translation type="unfinished"/>
+        <translation>Altura:</translation>
     </message>
     <message>
         <location filename="imagedialog.ui" line="120"/>
@@ -94,12 +94,12 @@
     <message>
         <location filename="imagedialog.ui" line="133"/>
         <source>left</source>
-        <translation type="unfinished"/>
+        <translation>izquierda</translation>
     </message>
     <message>
         <location filename="imagedialog.ui" line="138"/>
         <source>right</source>
-        <translation type="unfinished"/>
+        <translation>derecha</translation>
     </message>
 </context>
 <context>
@@ -107,7 +107,7 @@
     <message>
         <location filename="imagedialog.cpp" line="75"/>
         <source>Select image</source>
-        <translation type="unfinished"/>
+        <translation>Seleccionar el imágen</translation>
     </message>
 </context>
 <context>
@@ -115,7 +115,7 @@
     <message>
         <location filename="lhtr.cpp" line="55"/>
         <source>LeechCraft HTML Text editoR.</source>
-        <translation type="unfinished"/>
+        <translation>LeechCraft HTML Text editoR.</translation>
     </message>
 </context>
 <context>
@@ -188,7 +188,7 @@
     <message>
         <location filename="richeditorwidget.cpp" line="169"/>
         <source>Paragraph</source>
-        <translation type="unfinished"/>
+        <translation>Párrafo</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="174"/>
@@ -228,7 +228,7 @@
     <message>
         <location filename="richeditorwidget.cpp" line="199"/>
         <source>Insert link...</source>
-        <translation type="unfinished"/>
+        <translation>Insertar enlace...</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="204"/>

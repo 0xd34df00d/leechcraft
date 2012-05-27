@@ -57,12 +57,12 @@
     <message>
         <location filename="mrimbuddy.cpp" line="333"/>
         <source>Mail.Ru Agent</source>
-        <translation type="unfinished"/>
+        <translation>Mail.Ru Agente</translation>
     </message>
     <message>
         <location filename="mrimbuddy.cpp" line="395"/>
         <source>SMS has been sent to %1.</source>
-        <translation type="unfinished"/>
+        <translation>SMS ha sido enviada a %1.</translation>
     </message>
     <message>
         <location filename="mrimbuddy.cpp" line="406"/>
@@ -88,52 +88,52 @@
     <message>
         <location filename="vcarddialog.cpp" line="51"/>
         <source>Nickname: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Apodo: %1.</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="52"/>
         <source>First name: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Nombre: %1.</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="53"/>
         <source>Last name: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Apellido: %1.</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="56"/>
         <source>male</source>
-        <translation type="unfinished"/>
+        <translation>hombre</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="56"/>
         <source>female</source>
-        <translation type="unfinished"/>
+        <translation>mujer</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="57"/>
         <source>Gender: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Genero: %1.</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="59"/>
         <source>Birthday: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Cumpleaños: %1.</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="60"/>
         <source>Zodiac sign: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Signo del zodiaco: %1.</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="61"/>
         <source>Location: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Locación: %1.</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="62"/>
         <source>Phone number: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Número de teléfono: %1.</translation>
     </message>
 </context>
 <context>
@@ -141,7 +141,7 @@
     <message>
         <location filename="mrimaccountconfigwidget.ui" line="20"/>
         <source>E-Mail:</source>
-        <translation type="unfinished"/>
+        <translation>Correo electrónico:</translation>
     </message>
     <message>
         <location filename="mrimaccountconfigwidget.ui" line="30"/>
@@ -164,12 +164,12 @@
     <message>
         <location filename="vaderutil.cpp" line="58"/>
         <source>Video@Mail.ru</source>
-        <translation type="unfinished"/>
+        <translation>Video@Mail.ru</translation>
     </message>
     <message>
         <location filename="vaderutil.cpp" line="65"/>
         <source>Blogs@Mail.ru</source>
-        <translation type="unfinished"/>
+        <translation>Blogs@Mail.ru</translation>
     </message>
 </context>
 <context>
@@ -177,7 +177,7 @@
     <message>
         <location filename="smsdialog.ui" line="14"/>
         <source>Send SMS</source>
-        <translation type="unfinished"/>
+        <translation>Enviar SMS</translation>
     </message>
     <message>
         <location filename="smsdialog.ui" line="22"/>
@@ -195,12 +195,12 @@
     <message>
         <location filename="vcarddialog.ui" line="14"/>
         <source>vCard</source>
-        <translation type="unfinished"/>
+        <translation>vCard</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="25"/>
         <source>No avatar</source>
-        <translation type="unfinished"/>
+        <translation>Sin avatar</translation>
     </message>
 </context>
 <context>
@@ -208,7 +208,7 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Vader</source>
-        <translation type="unfinished"/>
+        <translation>Vader</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
@@ -218,7 +218,7 @@
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Show Technical Support contact</source>
-        <translation type="unfinished"/>
+        <translation>Mostrar el contacto del Soporte Técnico</translation>
     </message>
 </context>
 </TS>

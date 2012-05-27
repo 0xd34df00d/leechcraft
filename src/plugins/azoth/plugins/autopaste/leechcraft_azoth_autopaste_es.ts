@@ -9,7 +9,7 @@
     <message>
         <location filename="autopaste.cpp" line="150"/>
         <source>Confirm pasting</source>
-        <translation type="unfinished"/>
+        <translation>Confirmar la pega</translation>
     </message>
     <message>
         <location filename="autopaste.cpp" line="151"/>
@@ -24,7 +24,7 @@
     <message>
         <location filename="autopaste.cpp" line="179"/>
         <source>Your text has been pasted: %1. The URL has been copied to the clipboard.</source>
-        <translation type="unfinished"/>
+        <translation>Su texto ha sido pegado: %1. URL ha sido copiado en el portapapeles.</translation>
     </message>
 </context>
 <context>
@@ -47,7 +47,7 @@
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Enable for multiuser conferences</source>
-        <translation type="unfinished"/>
+        <translation>Activar para las conferencias</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
@@ -57,7 +57,7 @@
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Number of lines to be detected as paste:</source>
-        <translation type="unfinished"/>
+        <translation>Numero de líneas para detectar como pega:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
@@ -67,7 +67,7 @@
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>Confirm pasting</source>
-        <translation type="unfinished"/>
+        <translation>Confirmar la pega</translation>
     </message>
 </context>
 </TS>
