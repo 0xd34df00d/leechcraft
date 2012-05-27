@@ -105,7 +105,7 @@ SET (FORMS
 	fsbrowserwidget.ui
 	)
 SET (RESOURCES resources.qrc)
-CreateTrVars ("lmp" "en;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrVars ("lmp" "en;es;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
