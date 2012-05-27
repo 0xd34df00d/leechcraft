@@ -80,7 +80,13 @@ namespace Monocle
 		Pages_.clear ();
 		CurrentDoc_ = IDocument_ptr ();
 
+		const auto& rectSize = Ui_.PagesView_->viewport ()->contentsRect ().size () / 2;
+		const auto& pos = Ui_.PagesView_->mapToScene (QPoint (rectSize.width (), rectSize.height ()));
+
 		SetDoc (doc);
+
+		if (Scene_.itemsBoundingRect ().contains (pos))
+			Ui_.PagesView_->centerOn (pos);
 	}
 
 	void DocumentTab::SetupToolbar ()
