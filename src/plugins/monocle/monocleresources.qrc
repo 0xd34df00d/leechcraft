@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/monocle" >
+    <file>resources/images/monocle.svg</file>
+  </qresource>
+</RCC>

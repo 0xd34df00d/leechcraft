@@ -65,7 +65,7 @@ namespace Monocle
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/monocle/resources/images/monocle.svg");
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
