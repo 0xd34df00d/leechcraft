@@ -75,6 +75,7 @@ namespace Monocle
 		void handleNavigateRequested (const QString&, int, double, double);
 
 		void selectFile ();
+		void handlePrint ();
 
 		void handleGoPrev ();
 		void handleGoNext ();

@@ -24,6 +24,8 @@
 #include <QLineEdit>
 #include <QMenu>
 #include <QToolButton>
+#include <QPrinter>
+#include <QPrintDialog>
 #include <QMessageBox>
 #include <QtDebug>
 #include "core.h"
@@ -79,6 +81,14 @@ namespace Monocle
 				this,
 				SLOT (selectFile ()));
 		Toolbar_->addAction (open);
+
+		auto print = new QAction (tr ("Print..."), this);
+		print->setProperty ("ActionIcon", "document-print");
+		connect (print,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handlePrint ()));
+		Toolbar_->addAction (print);
 
 		Toolbar_->addSeparator ();
 
@@ -309,6 +319,64 @@ namespace Monocle
 			return;
 
 		SetDoc (path);
+	}
+
+	void DocumentTab::handlePrint ()
+	{
+		if (!CurrentDoc_)
+			return;
+
+		const int numPages = CurrentDoc_->GetNumPages ();
+
+		QPrinter printer;
+		QPrintDialog dia (&printer, this);
+		dia.setMinMax (1, numPages);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& pageRect = printer.pageRect (QPrinter::Point);
+		const auto& pageSize = pageRect.size ();
+		const auto resScale = printer.resolution () / 72.0;
+
+		const auto& range = dia.printRange ();
+		int start = 0, end = 0;
+		switch (range)
+		{
+		case QAbstractPrintDialog::AllPages:
+			start = 0;
+			end = numPages;
+			break;
+		case QAbstractPrintDialog::Selection:
+			return;
+		case QAbstractPrintDialog::PageRange:
+			start = printer.fromPage () - 1;
+			end = printer.toPage ();
+			break;
+		case QAbstractPrintDialog::CurrentPage:
+			start = GetCurrentPage ();
+			end = start + 1;
+			if (start < 0)
+				return;
+			break;
+		}
+
+		QPainter painter (&printer);
+		painter.setRenderHint (QPainter::Antialiasing);
+		painter.setRenderHint (QPainter::HighQualityAntialiasing);
+		painter.setRenderHint (QPainter::SmoothPixmapTransform);
+		for (int i = start; i < end; ++i)
+		{
+			const auto& size = CurrentDoc_->GetPageSize (i);
+			const auto scale = std::min (static_cast<double> (pageSize.width ()) / size.width (),
+					static_cast<double> (pageSize.height ()) / size.height ());
+
+			const auto& img = CurrentDoc_->RenderPage (i, resScale * scale, resScale * scale);
+			painter.drawImage (0, 0, img);
+
+			if (i != end - 1)
+				printer.newPage ();
+		}
+		painter.end ();
 	}
 
 	void DocumentTab::handleGoPrev ()
