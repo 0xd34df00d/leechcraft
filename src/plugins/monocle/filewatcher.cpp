@@ -17,8 +17,8 @@
  **********************************************************************/
 
 #include "filewatcher.h"
-#include "documenttab.h"
 #include <QTimer>
+#include "documenttab.h"
 
 namespace LeechCraft
 {
