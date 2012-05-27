@@ -217,7 +217,7 @@ namespace Monocle
 			Pages_ << item;
 		}
 		Ui_.PagesView_->ensureVisible (Pages_.value (0), Margin, Margin);
-		Relayout (1);
+		Relayout (GetCurrentScale ());
 
 		updateNumLabel ();
 
