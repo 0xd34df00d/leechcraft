@@ -124,12 +124,12 @@ namespace PDF
 				std::shared_ptr<void> guard (static_cast<void*> (0), nextGuard);
 
 				const auto& name = elem.tagName ();
-				const QString& dest = elem.attribute ("Destination");
-				if (!dest.isEmpty ())
+				const QString& destStr = elem.attribute ("Destination");
+				if (!destStr.isEmpty ())
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "non-empty destination, dunno how to handle that:"
-							<< dest;
+							<< destStr;
 					continue;
 				}
 
@@ -141,9 +141,18 @@ namespace PDF
 					continue;
 				}
 
+				const auto dest = pDoc->linkDestination (destName);
+				if (!dest)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "empty destination for"
+							<< destName;
+					continue;
+				}
+
 				TOCEntry entry =
 				{
-					ILink_ptr (new TOCLink (doc, pDoc->linkDestination (destName))),
+					ILink_ptr (new TOCLink (doc, dest)),
 					name,
 					BuildTOCLevel (doc, pDoc, elem)
 				};
