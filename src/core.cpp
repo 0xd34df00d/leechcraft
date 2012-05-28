@@ -262,6 +262,11 @@ namespace LeechCraft
 		TabManager_.reset (new TabManager (ReallyMainWindow_->GetTabWidget (),
 					ReallyMainWindow_->GetTabWidget ()));
 
+		connect (TabManager_.get (),
+				SIGNAL (currentTabChanged (QWidget*)),
+				DM_,
+				SLOT (handleTabChanged (QWidget*)));
+
 		PluginManager_->Init ();
 
 		NewTabMenuManager_->SetToolbarActions (GetActions2Embed ());

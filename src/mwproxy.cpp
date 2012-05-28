@@ -35,6 +35,11 @@ namespace LeechCraft
 		ToggleViewActionVisiblity (w, true);
 	}
 
+	void MWProxy::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
+	{
+		Core::Instance ().GetDockManager ()->AssociateDockWidget (dock, tab);
+	}
+
 	void MWProxy::ToggleViewActionVisiblity (QDockWidget *w, bool visible)
 	{
 		Core::Instance ().GetReallyMainWindow ()->ToggleViewActionVisiblity (w, visible);

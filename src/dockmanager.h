@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QHash>
 
 class QDockWidget;
 
@@ -33,14 +34,18 @@ namespace LeechCraft
 
 		MainWindow *MW_;
 		QMap<Qt::DockWidgetArea, QList<QDockWidget*>> Area2Widgets_;
+
+		QHash<QDockWidget*, QWidget*> TabAssociations_;
 	public:
 		DockManager (MainWindow*, QObject* = 0);
 
 		void AddDockWidget (QDockWidget*, Qt::DockWidgetArea);
+		void AssociateDockWidget (QDockWidget*, QWidget*);
 	private:
 		void UnmanageFrom (QDockWidget*, QWidget*);
 		void ManageInto (QDockWidget*, QWidget*);
 	private slots:
 		void handleDockLocationChanged (Qt::DockWidgetArea);
+		void handleTabChanged (QWidget*);
 	};
 }

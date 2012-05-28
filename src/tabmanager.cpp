@@ -68,6 +68,11 @@ TabManager::TabManager (SeparateTabWidget *tabWidget,
 	TabWidget_->AddAction2TabBar (closeAllButCurrent);
 }
 
+QWidget* TabManager::GetCurrentWidget () const
+{
+	return TabWidget_->CurrentWidget ();
+}
+
 QWidget* TabManager::GetWidget (int position) const
 {
 	return TabWidget_->Widget (position);
@@ -302,7 +307,8 @@ void TabManager::handleCurrentChanged (int index)
 	if (TabWidget_->WidgetCount () != 1)
 		Core::Instance ().GetReallyMainWindow ()->RemoveMenus (Menus_);
 
-	ITabWidget *imtw = qobject_cast<ITabWidget*> (TabWidget_->Widget (index));
+	auto tab = TabWidget_->Widget (index);
+	auto imtw = qobject_cast<ITabWidget*> (tab);
 	if (!imtw)
 	{
 		qWarning () << Q_FUNC_INFO
@@ -314,6 +320,8 @@ void TabManager::handleCurrentChanged (int index)
 	QMap<QString, QList<QAction*>> menus = imtw->GetWindowMenus ();
 	Core::Instance ().GetReallyMainWindow ()->AddMenus (menus);
 	Menus_ = menus;
+
+	emit currentTabChanged (tab);
 
 	imtw->TabMadeCurrent ();
 }

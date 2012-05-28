@@ -32,6 +32,7 @@ namespace LeechCraft
 		MWProxy (QObject* = 0);
 
 		void AddDockWidget (Qt::DockWidgetArea, QDockWidget*);
+		void AssociateDockWidget (QDockWidget*, QWidget*);
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
 		void SetViewActionShortcut (QDockWidget*, const QKeySequence&);
 		void AddToolbar (QToolBar*, Qt::ToolBarArea);

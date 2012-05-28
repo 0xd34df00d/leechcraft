@@ -20,6 +20,8 @@
 #include <QDockWidget>
 #include <QToolButton>
 #include "mainwindow.h"
+#include "tabmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -40,6 +42,13 @@ namespace LeechCraft
 				SLOT (handleDockLocationChanged (Qt::DockWidgetArea)));
 
 		ManageInto (dw, MW_->GetDockListWidget (area));
+	}
+
+	void DockManager::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
+	{
+		TabAssociations_ [dock] = tab;
+
+		handleTabChanged (Core::Instance ().GetTabManager ()->GetCurrentWidget ());
 	}
 
 	void DockManager::UnmanageFrom (QDockWidget *dw, QWidget *w)
@@ -92,5 +101,11 @@ namespace LeechCraft
 
 		UnmanageFrom (dw, MW_->GetDockListWidget (from));
 		ManageInto (dw, MW_->GetDockListWidget (area));
+	}
+
+	void DockManager::handleTabChanged (QWidget *tabWidget)
+	{
+		Q_FOREACH (QDockWidget *dock, TabAssociations_.keys ())
+			dock->setVisible (TabAssociations_ [dock] == tabWidget);
 	}
 }
