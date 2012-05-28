@@ -55,11 +55,26 @@ namespace Monocle
 
 	void PresenterWidget::keyPressEvent (QKeyEvent *event)
 	{
-		auto key = event->key ();
-		if (key == Qt::Key_Escape)
+		switch (event->key ())
 		{
+		case Qt::Key_Escape:
+		case Qt::Key_Enter:
 			deleteLater ();
 			return;
+		case Qt::Key_Backspace:
+		case Qt::Key_PageUp:
+			NavigateTo (CurrentPage_ - 1);
+			break;
+		case Qt::Key_PageDown:
+		case Qt::Key_Space:
+			NavigateTo (CurrentPage_ + 1);
+			break;
+		case Qt::Key_Home:
+			NavigateTo (0);
+			break;
+		case Qt::Key_End:
+			NavigateTo (Doc_->GetNumPages () - 1);
+			break;
 		}
 
 		QWidget::keyPressEvent (event);
