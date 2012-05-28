@@ -47,6 +47,12 @@ namespace Monocle
 				SLOT (delayedShowInit ()));
 	}
 
+	void PresenterWidget::closeEvent (QCloseEvent *event)
+	{
+		deleteLater ();
+		QWidget::closeEvent (event);
+	}
+
 	void PresenterWidget::keyPressEvent (QKeyEvent *event)
 	{
 		auto key = event->key ();

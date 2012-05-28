@@ -37,6 +37,7 @@ namespace Monocle
 	public:
 		PresenterWidget (IDocument_ptr);
 	protected:
+		void closeEvent (QCloseEvent*);
 		void keyPressEvent (QKeyEvent*);
 	private:
 		void NavigateTo (int);
