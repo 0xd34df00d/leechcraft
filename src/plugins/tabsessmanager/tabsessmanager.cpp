@@ -222,6 +222,9 @@ namespace TabSessManager
 		if (!recTab || !tab)
 			return;
 
+		auto removeGuard = [this, widget] (void*) { Tabs_.remove (widget); };
+		std::shared_ptr<void> guard (static_cast<void*> (0), removeGuard);
+
 		const auto& recoverData = recTab->GetTabRecoverData ();
 		if (recoverData.isEmpty ())
 			return;
@@ -261,7 +264,6 @@ namespace TabSessManager
 		UncloseMenu_->setDefaultAction (action);
 		action->setShortcut (QString ("Ctrl+Shift+T"));
 
-		Tabs_.remove (widget);
 		handleTabRecoverDataChanged ();
 	}
 
