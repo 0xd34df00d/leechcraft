@@ -42,6 +42,11 @@ namespace LeechCraft
 				SLOT (handleDockLocationChanged (Qt::DockWidgetArea)));
 
 		ManageInto (dw, MW_->GetDockListWidget (area));
+
+		connect (dw,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleDockDestroyed ()));
 	}
 
 	void DockManager::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
@@ -104,6 +109,14 @@ namespace LeechCraft
 		if (!w->isVisible ())
 			w->show ();
 		*/
+	}
+
+	void DockManager::handleDockDestroyed ()
+	{
+		auto dock = static_cast<QDockWidget*> (sender ());
+		TabAssociations_.remove (dock);
+		ToggleAct2Dock_.remove (ToggleAct2Dock_.key (dock));
+		ForcefullyClosed_.remove (dock);
 	}
 
 	void DockManager::handleDockLocationChanged (Qt::DockWidgetArea area)

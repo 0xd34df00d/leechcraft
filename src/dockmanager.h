@@ -51,6 +51,7 @@ namespace LeechCraft
 		void UnmanageFrom (QDockWidget*, QWidget*);
 		void ManageInto (QDockWidget*, QWidget*);
 	private slots:
+		void handleDockDestroyed ();
 		void handleDockLocationChanged (Qt::DockWidgetArea);
 		void handleDockToggled (bool);
 		void handleTabChanged (QWidget*);
