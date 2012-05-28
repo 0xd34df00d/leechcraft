@@ -21,6 +21,7 @@
 #include <QWidget>
 #include <QComboBox>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "interfaces/monocle/idocument.h"
 #include "ui_documenttab.h"
 
@@ -35,9 +36,10 @@ namespace Monocle
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
+					  , public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		Ui::DocumentTab Ui_;
 
@@ -52,6 +54,7 @@ namespace Monocle
 		TOCWidget *TOCWidget_;
 
 		IDocument_ptr CurrentDoc_;
+		QString CurrentDocPath_;
 		QList<PageGraphicsItem*> Pages_;
 		QGraphicsScene Scene_;
 
@@ -68,6 +71,12 @@ namespace Monocle
 		void Remove ();
 		QToolBar* GetToolBar () const;
 
+		QString GetTabRecoverName () const;
+		QIcon GetTabRecoverIcon () const;
+		QByteArray GetTabRecoverData () const;
+
+		void RecoverState (const QByteArray&);
+
 		void ReloadDoc (const QString&);
 	private:
 		void SetupToolbar ();
@@ -75,7 +84,7 @@ namespace Monocle
 		double GetCurrentScale () const;
 
 		bool SetDoc (const QString&);
-		QPoint GetCurrentCenter () const;
+		QPoint GetViewportCenter () const;
 		int GetCurrentPage () const;
 		void SetCurrentPage (int);
 		void Relayout (double);
@@ -94,10 +103,14 @@ namespace Monocle
 		void showOnePage ();
 		void showTwoPages ();
 
+		void delayedCenterOn (const QPoint&);
+
 		void handleScaleChosen (int);
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);
+
+		void tabRecoverDataChanged ();
 
 		void fileLoaded (const QString&);
 	};

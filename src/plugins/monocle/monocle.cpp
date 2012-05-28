@@ -76,21 +76,7 @@ namespace Monocle
 	void Plugin::TabOpenRequested (const QByteArray& id)
 	{
 		if (id == DocTabInfo_.TabClass_)
-		{
-			auto tab = new DocumentTab (DocTabInfo_, this);
-			emit addNewTab (DocTabInfo_.VisibleName_, tab);
-			emit changeTabIcon (tab, DocTabInfo_.Icon_);
-			emit raiseTab (tab);
-
-			connect (tab,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
-			connect (tab,
-					SIGNAL (changeTabName (QWidget*, QString)),
-					this,
-					SIGNAL (changeTabName (QWidget*, QString)));
-		}
+			EmitTab (new DocumentTab (DocTabInfo_, this));
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
@@ -107,6 +93,36 @@ namespace Monocle
 	void Plugin::AddPlugin (QObject *pluginObj)
 	{
 		Core::Instance ().AddPlugin (pluginObj);
+	}
+
+	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		Q_FOREACH (const auto& info, infos)
+		{
+			auto tab = new DocumentTab (DocTabInfo_, this);
+			Q_FOREACH (const auto& pair, info.DynProperties_)
+				tab->setProperty (pair.first, pair.second);
+
+			EmitTab (tab);
+
+			tab->RecoverState (info.Data_);
+		}
+	}
+
+	void Plugin::EmitTab (DocumentTab *tab)
+	{
+		emit addNewTab (DocTabInfo_.VisibleName_, tab);
+		emit changeTabIcon (tab, DocTabInfo_.Icon_);
+		emit raiseTab (tab);
+
+		connect (tab,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		connect (tab,
+				SIGNAL (changeTabName (QWidget*, QString)),
+				this,
+				SIGNAL (changeTabName (QWidget*, QString)));
 	}
 }
 }

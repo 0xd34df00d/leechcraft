@@ -43,7 +43,7 @@ namespace Monocle
 {
 	const int Margin = 10;
 
-	DocumentTab::DocumentTab (const TabClassInfo& tc, QObject* parent)
+	DocumentTab::DocumentTab (const TabClassInfo& tc, QObject *parent)
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
@@ -94,11 +94,84 @@ namespace Monocle
 		return Toolbar_;
 	}
 
+	QString DocumentTab::GetTabRecoverName () const
+	{
+		return CurrentDocPath_.isEmpty () ?
+				QString () :
+				"Monocle: " + QFileInfo (CurrentDocPath_).fileName ();
+	}
+
+	QIcon DocumentTab::GetTabRecoverIcon () const
+	{
+		return TC_.Icon_;
+	}
+
+	QByteArray DocumentTab::GetTabRecoverData () const
+	{
+		if (CurrentDocPath_.isEmpty ())
+			return QByteArray ();
+
+		QByteArray result;
+		QDataStream out (&result, QIODevice::WriteOnly);
+		out << static_cast<quint8> (1)
+			<< CurrentDocPath_
+			<< GetCurrentScale ()
+			<< Ui_.PagesView_->mapToScene (GetViewportCenter ()).toPoint ();
+
+		switch (LayMode_)
+		{
+		case LayoutMode::OnePage:
+			out << QByteArray ("one");
+			break;
+		case LayoutMode::TwoPages:
+			out << QByteArray ("two");
+			break;
+		}
+
+		return result;
+	}
+
+	void DocumentTab::RecoverState (const QByteArray& data)
+	{
+		QDataStream in (data);
+		quint8 version = 0;
+		in >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown state version"
+					<< version;
+			return;
+		}
+
+		QString path;
+		double scale = 0;
+		QPoint point;
+		QByteArray modeStr;
+		in >> path
+			>> scale
+			>> point
+			>> modeStr;
+
+		if (modeStr == "one")
+			LayMode_ = LayoutMode::OnePage;
+		else if (modeStr == "two")
+			LayMode_ = LayoutMode::TwoPages;
+
+		SetDoc (path);
+		Relayout (scale);
+		QMetaObject::invokeMethod (this,
+				"delayedCenterOn",
+				Qt::QueuedConnection,
+				Q_ARG (QPoint, point));
+	}
+
 	void DocumentTab::ReloadDoc (const QString& doc)
 	{
 		Scene_.clear ();
 		Pages_.clear ();
 		CurrentDoc_ = IDocument_ptr ();
+		CurrentDocPath_.clear ();
 
 		const auto& rectSize = Ui_.PagesView_->viewport ()->contentsRect ().size () / 2;
 		const auto& pos = Ui_.PagesView_->mapToScene (QPoint (rectSize.width (), rectSize.height ()));
@@ -157,6 +230,10 @@ namespace Monocle
 				SIGNAL (valueChanged (int)),
 				this,
 				SLOT (updateNumLabel ()));
+		connect (Ui_.PagesView_->verticalScrollBar (),
+				SIGNAL (valueChanged (int)),
+				this,
+				SIGNAL (tabRecoverDataChanged ()));
 		Toolbar_->addWidget (PageNumLabel_);
 
 		auto next = new QAction (tr ("Next page"), this);
@@ -264,6 +341,7 @@ namespace Monocle
 		Pages_.clear ();
 
 		CurrentDoc_ = document;
+		CurrentDocPath_ = path;
 		const auto& title = QFileInfo (path).fileName ();
 		emit changeTabName (this, title);
 
@@ -292,10 +370,12 @@ namespace Monocle
 
 		emit fileLoaded (path);
 
+		emit tabRecoverDataChanged ();
+
 		return true;
 	}
 
-	QPoint DocumentTab::GetCurrentCenter () const
+	QPoint DocumentTab::GetViewportCenter () const
 	{
 		const auto& rect = Ui_.PagesView_->viewport ()->contentsRect ();
 		return QPoint (rect.width (), rect.height ()) / 2;
@@ -303,7 +383,7 @@ namespace Monocle
 
 	int DocumentTab::GetCurrentPage () const
 	{
-		const auto& center = GetCurrentCenter ();
+		const auto& center = GetViewportCenter ();
 		auto item = Ui_.PagesView_->itemAt (center - QPoint (1, 1));
 		if (!item)
 			item = Ui_.PagesView_->itemAt (center - QPoint (Margin, Margin));
@@ -486,17 +566,28 @@ namespace Monocle
 	{
 		LayMode_ = LayoutMode::OnePage;
 		Relayout (GetCurrentScale ());
+
+		emit tabRecoverDataChanged ();
 	}
 
 	void DocumentTab::showTwoPages ()
 	{
 		LayMode_ = LayoutMode::TwoPages;
 		Relayout (GetCurrentScale ());
+
+		emit tabRecoverDataChanged ();
+	}
+
+	void DocumentTab::delayedCenterOn (const QPoint& point)
+	{
+		Ui_.PagesView_->centerOn (point);
 	}
 
 	void DocumentTab::handleScaleChosen (int)
 	{
 		Relayout (GetCurrentScale ());
+
+		emit tabRecoverDataChanged ();
 	}
 }
 }
