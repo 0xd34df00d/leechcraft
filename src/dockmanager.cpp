@@ -46,9 +46,32 @@ namespace LeechCraft
 
 	void DockManager::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
 	{
+		dock->installEventFilter (this);
+
 		TabAssociations_ [dock] = tab;
 
 		handleTabChanged (Core::Instance ().GetTabManager ()->GetCurrentWidget ());
+
+		auto toggleAct = dock->toggleViewAction ();
+		ToggleAct2Dock_ [toggleAct] = dock;
+		connect (toggleAct,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (handleDockToggled (bool)));
+	}
+
+	bool DockManager::eventFilter (QObject *obj, QEvent *event)
+	{
+		if (event->type () != QEvent::Close)
+			return false;
+
+		auto dock = qobject_cast<QDockWidget*> (obj);
+		if (!dock)
+			return false;
+
+		ForcefullyClosed_ << dock;
+
+		return false;
 	}
 
 	void DockManager::UnmanageFrom (QDockWidget *dw, QWidget *w)
@@ -103,9 +126,31 @@ namespace LeechCraft
 		ManageInto (dw, MW_->GetDockListWidget (area));
 	}
 
+	void DockManager::handleDockToggled (bool isVisible)
+	{
+		auto dock = ToggleAct2Dock_ [static_cast<QAction*> (sender ())];
+		if (!dock)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown toggler"
+					<< sender ();
+			return;
+		}
+
+		if (isVisible)
+			ForcefullyClosed_.remove (dock);
+		else
+			ForcefullyClosed_ << dock;
+	}
+
 	void DockManager::handleTabChanged (QWidget *tabWidget)
 	{
 		Q_FOREACH (QDockWidget *dock, TabAssociations_.keys ())
-			dock->setVisible (TabAssociations_ [dock] == tabWidget);
+		{
+			if (TabAssociations_ [dock] != tabWidget)
+				dock->setVisible (false);
+			else if (!ForcefullyClosed_.contains (dock))
+				dock->setVisible (true);
+		}
 	}
 }
