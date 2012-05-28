@@ -15,6 +15,7 @@ SET (SRCS
 	core.cpp
 	pagegraphicsitem.cpp
 	filewatcher.cpp
+	tocwidget.cpp
 	)
 SET (HEADERS
 	monocle.h
@@ -22,9 +23,11 @@ SET (HEADERS
 	core.h
 	pagegraphicsitem.h
 	filewatcher.h
+	tocwidget.h
 	)
 SET (FORMS
 	documenttab.ui
+	tocwidget.ui
 	)
 SET (RESOURCES monocleresources.qrc)
 IF (NOT LC_NO_MOC)
