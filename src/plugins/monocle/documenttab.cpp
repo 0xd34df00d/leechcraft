@@ -329,7 +329,7 @@ namespace Monocle
 		{
 			const auto& size = page->boundingRect ().size ();
 			const auto& mapped = page->mapToScene (size.width () * x, size.height () * y);
-			Ui_.PagesView_->ensureVisible (mapped.x (), mapped.y (), 0, 0);
+			Ui_.PagesView_->centerOn (mapped.x (), mapped.y ());
 		}
 	}
 
