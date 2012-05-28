@@ -295,12 +295,18 @@ namespace Monocle
 		return true;
 	}
 
-	int DocumentTab::GetCurrentPage () const
+	QPoint DocumentTab::GetCurrentCenter () const
 	{
 		const auto& rect = Ui_.PagesView_->viewport ()->contentsRect ();
-		auto item = Ui_.PagesView_->itemAt (QPoint (rect.width () - 1, rect.height () - 1) / 2);
+		return QPoint (rect.width (), rect.height ()) / 2;
+	}
+
+	int DocumentTab::GetCurrentPage () const
+	{
+		const auto& center = GetCurrentCenter ();
+		auto item = Ui_.PagesView_->itemAt (center - QPoint (1, 1));
 		if (!item)
-			item = Ui_.PagesView_->itemAt (QPoint (rect.width () - 2 * Margin, rect.height () - 2 * Margin) / 2);
+			item = Ui_.PagesView_->itemAt (center - QPoint (Margin, Margin));
 		auto pos = std::find_if (Pages_.begin (), Pages_.end (),
 				[item] (decltype (Pages_.front ()) e) { return e == item; });
 		return pos == Pages_.end () ? -1 : std::distance (Pages_.begin (), pos);
