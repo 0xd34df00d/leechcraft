@@ -35,6 +35,8 @@ namespace Monocle
 		setStyleSheet ("background-color: black;");
 
 		auto lay = new QHBoxLayout ();
+		lay->setSpacing (0);
+		lay->setContentsMargins (0, 0, 0, 0);
 		lay->addWidget (PixmapLabel_, 0, Qt::AlignVCenter | Qt::AlignHCenter);
 		setLayout (lay);
 
