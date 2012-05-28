@@ -35,6 +35,7 @@
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
 #include "tocwidget.h"
+#include "presenterwidget.h"
 
 namespace LeechCraft
 {
@@ -126,6 +127,14 @@ namespace Monocle
 				this,
 				SLOT (handlePrint ()));
 		Toolbar_->addAction (print);
+
+		auto presentation = new QAction (tr ("Presentation..."), this);
+		presentation->setProperty ("ActionIcon", "view-presentation");
+		connect (presentation,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handlePresentation ()));
+		Toolbar_->addAction (presentation);
 
 		Toolbar_->addSeparator ();
 
@@ -426,6 +435,14 @@ namespace Monocle
 				printer.newPage ();
 		}
 		painter.end ();
+	}
+
+	void DocumentTab::handlePresentation ()
+	{
+		if (!CurrentDoc_)
+			return;
+
+		new PresenterWidget (CurrentDoc_);
 	}
 
 	void DocumentTab::handleGoPrev ()

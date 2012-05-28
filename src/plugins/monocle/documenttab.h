@@ -83,6 +83,7 @@ namespace Monocle
 
 		void selectFile ();
 		void handlePrint ();
+		void handlePresentation ();
 
 		void handleGoPrev ();
 		void handleGoNext ();
