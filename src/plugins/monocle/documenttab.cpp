@@ -27,10 +27,14 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QMessageBox>
+#include <QDockWidget>
 #include <QtDebug>
+#include <interfaces/imwproxy.h>
+#include "interfaces/monocle/ihavetoc.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
+#include "tocwidget.h"
 
 namespace LeechCraft
 {
@@ -42,6 +46,10 @@ namespace Monocle
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
+	, ScalesBox_ (0)
+	, PageNumLabel_ (0)
+	, DockTOC_ (0)
+	, TOCWidget_ (new TOCWidget ())
 	, LayMode_ (LayoutMode::OnePage)
 	{
 		Ui_.setupUi (this);
@@ -51,6 +59,16 @@ namespace Monocle
 		SetupToolbar ();
 
 		new FileWatcher (this);
+
+		auto mw = Core::Instance ().GetProxy ()->GetMWProxy ();
+
+		DockTOC_ = new QDockWidget (tr ("Table of contents"));
+		DockTOC_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+		DockTOC_->setWidget (TOCWidget_);
+
+		mw->AddDockWidget (Qt::LeftDockWidgetArea, DockTOC_);
+		mw->AssociateDockWidget (DockTOC_, this);
+		mw->ToggleViewActionVisiblity (DockTOC_, false);
 	}
 
 	TabClassInfo DocumentTab::GetTabClassInfo () const
@@ -65,6 +83,7 @@ namespace Monocle
 
 	void DocumentTab::Remove ()
 	{
+		delete DockTOC_;
 		emit removeTab (this);
 		deleteLater ();
 	}
@@ -249,6 +268,12 @@ namespace Monocle
 		Relayout (GetCurrentScale ());
 
 		updateNumLabel ();
+
+		TOCEntryLevel_t topLevel;
+		if (auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetObject ()))
+			topLevel = toc->GetTOC ();
+		TOCWidget_->SetTOC (topLevel);
+		DockTOC_->setEnabled (!topLevel.isEmpty ());
 
 		connect (CurrentDoc_->GetObject (),
 				SIGNAL (navigateRequested (QString, int, double, double)),

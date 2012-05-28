@@ -19,17 +19,19 @@
 #pragma once
 
 #include <QWidget>
+#include <QComboBox>
 #include <interfaces/ihavetabs.h>
 #include "interfaces/monocle/idocument.h"
 #include "ui_documenttab.h"
 
-#include <QComboBox>
+class QDockWidget;
 
 namespace LeechCraft
 {
 namespace Monocle
 {
 	class PageGraphicsItem;
+	class TOCWidget;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -45,6 +47,9 @@ namespace Monocle
 		QToolBar *Toolbar_;
 		QComboBox *ScalesBox_;
 		QLineEdit *PageNumLabel_;
+
+		QDockWidget *DockTOC_;
+		TOCWidget *TOCWidget_;
 
 		IDocument_ptr CurrentDoc_;
 		QList<PageGraphicsItem*> Pages_;
