@@ -42,6 +42,7 @@ namespace TabSessManager
 	{
 		Util::InstallTranslator ("tabsessmanager");
 
+		IsScheduled_ = false;
 		UncloseMenu_ = new QMenu (tr ("Unclose tabs"));
 
 		Proxy_ = proxy;
@@ -395,12 +396,23 @@ namespace TabSessManager
 
 	void Plugin::handleTabRecoverDataChanged ()
 	{
-		qDebug () << Q_FUNC_INFO << IsRecovering_ << Proxy_->IsShuttingDown ();
 		if (IsRecovering_ || Proxy_->IsShuttingDown ())
 			return;
 
+		if (IsScheduled_)
+			return;
+
+		IsScheduled_ = true;
+		QTimer::singleShot (500,
+				this,
+				SLOT (saveDefaultSession ()));
+	}
+
+	void Plugin::saveDefaultSession ()
+	{
+		IsScheduled_ = false;
+
 		const auto& result = GetCurrentSession ();
-		qDebug () << "saving restore data" << result.size ();
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_TabSessManager");

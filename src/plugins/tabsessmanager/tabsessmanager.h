@@ -38,6 +38,8 @@ namespace TabSessManager
 		QSet<QObject*> Tabs_;
 		bool IsRecovering_;
 
+		bool IsScheduled_;
+
 		QMenu *SessMgrMenu_;
 		struct TabUncloseInfo
 		{
@@ -68,6 +70,7 @@ namespace TabSessManager
 		void handleUnclose ();
 		void recover ();
 		void handleTabRecoverDataChanged ();
+		void saveDefaultSession ();
 		void saveCustomSession ();
 		void loadCustomSession ();
 	signals:
