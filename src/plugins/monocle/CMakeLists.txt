@@ -16,6 +16,7 @@ SET (SRCS
 	pagegraphicsitem.cpp
 	filewatcher.cpp
 	tocwidget.cpp
+	presenterwidget.cpp
 	)
 SET (HEADERS
 	monocle.h
@@ -24,6 +25,7 @@ SET (HEADERS
 	pagegraphicsitem.h
 	filewatcher.h
 	tocwidget.h
+	presenterwidget.h
 	)
 SET (FORMS
 	documenttab.ui
