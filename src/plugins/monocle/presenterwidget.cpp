@@ -61,6 +61,11 @@ namespace Monocle
 
 	void PresenterWidget::NavigateTo (int page)
 	{
+		if (page < 0 || page >= Doc_->GetNumPages ())
+			return;
+
+		CurrentPage_ = page;
+
 		const auto& pageSize = Doc_->GetPageSize (page);
 
 		auto scale = std::min (static_cast<double> (width ()) / pageSize.width (),
