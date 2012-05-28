@@ -22,11 +22,11 @@
 #include <QByteArray>
 #include <interfaces/core/icoreproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <util/passutils.h>
 #include "lastfmsubmitter.h"
 #include "xmlsettingsmanager.h"
 #include "pendingsimilarartists.h"
 #include "albumartfetcher.h"
+#include "authenticator.h"
 
 namespace LeechCraft
 {
@@ -39,14 +39,28 @@ namespace Lastfmscrobble
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"lastfmscrobblesettings.xml");
 
+		Auth_ = new Authenticator (proxy->GetNetworkAccessManager (), this);
+		connect (Auth_,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (Auth_,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+
 		LFSubmitter_ = new LastFMSubmitter (this);
+		LFSubmitter_->Init (Proxy_->GetNetworkAccessManager ());
+
+		connect (Auth_,
+				SIGNAL (authenticated ()),
+				LFSubmitter_,
+				SLOT (handleAuthenticated ()));
 	}
 
 	void Plugin::SecondInit ()
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("lastfm.login",
-				this, "handleSubmitterInit");
-		handleSubmitterInit ();
+		Auth_->Init ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -119,45 +133,6 @@ namespace Lastfmscrobble
 				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
 				this,
 				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)));
-	}
-
-	void Plugin::FeedPassword (bool authFailure)
-	{
-		const QString& login = XmlSettingsManager::Instance ()
-				.property ("lastfm.login").toString ();
-		LFSubmitter_->SetUsername (login);
-
-		QString password;
-		if (!login.isEmpty ())
-		{
-			const auto& text = tr ("Enter password for Last.fm account with login %1:")
-						.arg (login);
-			password = Util::GetPassword ("org.LeechCraft.Lastfmscrobble/" + login,
-					text,
-					this,
-					!authFailure);
-			if (password.isEmpty ())
-				return;
-		}
-
-		LFSubmitter_->SetPassword (password);
-		LFSubmitter_->Init (Proxy_->GetNetworkAccessManager ());
-	}
-
-	void Plugin::handleSubmitterInit ()
-	{
-		connect (LFSubmitter_,
-				SIGNAL (authFailure ()),
-				this,
-				SLOT (handleAuthFailure ()),
-				Qt::UniqueConnection);
-
-		FeedPassword (false);
-	}
-
-	void Plugin::handleAuthFailure ()
-	{
-		FeedPassword (true);
 	}
 }
 }

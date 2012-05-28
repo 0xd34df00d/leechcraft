@@ -60,7 +60,6 @@ namespace Lastfmscrobble
 		Q_OBJECT
 
 		std::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
-		QString Password_;
 
 		QNetworkAccessManager *NAM_;
 
@@ -72,8 +71,6 @@ namespace Lastfmscrobble
 		LastFMSubmitter (QObject *parent = 0);
 
 		void Init (QNetworkAccessManager *manager);
-		void SetUsername (const QString& username);
-		void SetPassword (const QString& password);
 		bool IsConnected () const;
 
 		void NowPlaying (const MediaMeta&);
@@ -82,12 +79,11 @@ namespace Lastfmscrobble
 	private:
 		void LoadQueue ();
 		void SaveQueue () const;
-		bool CheckError (const QDomDocument&);
 	public slots:
 		void submit ();
+		void handleAuthenticated ();
 	private slots:
 		void checkFlushQueue (int);
-		void getSessionKey ();
 	signals:
 		void status (int code);
 		void authFailure ();

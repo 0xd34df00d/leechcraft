@@ -29,6 +29,7 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
+	class Authenticator;
 	class LastFMSubmitter;
 
 	class Plugin : public QObject
@@ -46,7 +47,10 @@ namespace Lastfmscrobble
 				Media::ISimilarArtists)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+
+		Authenticator *Auth_;
 		LastFMSubmitter *LFSubmitter_;
+
 		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
@@ -69,11 +73,6 @@ namespace Lastfmscrobble
 
 		QString GetAlbumArtProviderName () const;
 		void RequestAlbumArt (const Media::AlbumInfo& album) const;
-	private:
-		void FeedPassword (bool);
-	private slots:
-		void handleSubmitterInit ();
-		void handleAuthFailure ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

@@ -32,8 +32,6 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	const QString ScrobblingSite = "http://ws.audioscrobbler.com/2.0/";
-
 	MediaMeta::MediaMeta ()
 	: TrackNumber_ (0)
 	, Length_ (0)
@@ -64,28 +62,6 @@ namespace Lastfmscrobble
 
 	namespace
 	{
-		QString AuthToken (const QString& username, const QString& password)
-		{
-			const QString& passHash = QCryptographicHash::hash (password.toAscii (),
-					QCryptographicHash::Md5).toHex ();
-			return QCryptographicHash::hash ((username + passHash).toAscii (),
-					QCryptographicHash::Md5).toHex ();
-		}
-
-		QString ApiSig (const QString& api_key, const QString& authToken,
-				const QString& method, const QString& username,
-				const QString& secret)
-		{
-			const QString& str = QString ("api_key%1authToken%2method%3username%4%5")
-					.arg (api_key)
-					.arg (authToken)
-					.arg (method)
-					.arg (username)
-					.arg (secret);
-			return QCryptographicHash::hash (str.toAscii (),
-					QCryptographicHash::Md5).toHex ();
-		}
-
 		QByteArray MakeCall (QList<QPair<QString, QString>> params)
 		{
 			std::sort (params.begin (), params.end (),
@@ -126,35 +102,6 @@ namespace Lastfmscrobble
 	void LastFMSubmitter::Init (QNetworkAccessManager *manager)
 	{
 		NAM_ = manager;
-		const QString& authToken = AuthToken (lastfm::ws::Username,
-				Password_);
-
-		const QString& api_sig = ApiSig (lastfm::ws::ApiKey, authToken,
-				"auth.getMobileSession", lastfm::ws::Username,
-				lastfm::ws::SharedSecret);
-		const QString& url = QString ("%1?method=%2&username=%3&authToken=%4&api_key=%5&api_sig=%6")
-				.arg (ScrobblingSite)
-				.arg ("auth.getMobileSession")
-				.arg (lastfm::ws::Username)
-				.arg (authToken)
-				.arg (lastfm::ws::ApiKey)
-				.arg (api_sig);
-
-		QNetworkReply *reply = manager->get (QNetworkRequest (QUrl (url)));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (getSessionKey ()));
-	}
-
-	void LastFMSubmitter::SetUsername (const QString& username)
-	{
-		lastfm::ws::Username = username;
-	}
-
-	void LastFMSubmitter::SetPassword (const QString& password)
-	{
-		Password_ = password;
 	}
 
 	bool LastFMSubmitter::IsConnected () const
@@ -277,26 +224,29 @@ namespace Lastfmscrobble
 		file.write (doc.toByteArray ());
 	}
 
-	bool LastFMSubmitter::CheckError (const QDomDocument& doc)
+	void LastFMSubmitter::handleAuthenticated ()
 	{
-		auto sub = doc.documentElement ().firstChildElement ("error");
-		if (sub.isNull ())
-			return false;
+		Scrobbler_.reset (new lastfm::Audioscrobbler ("tst"));
 
-		const int code = sub.attribute ("code").toInt ();
-		switch (code)
+		connect (Scrobbler_.get (),
+				SIGNAL (status (int)),
+				this,
+				SIGNAL (status (int)));
+		connect (Scrobbler_.get (),
+				SIGNAL (status (int)),
+				this,
+				SLOT (checkFlushQueue (int)));
+
+		connect (SubmitTimer_,
+				SIGNAL (timeout ()),
+				Scrobbler_.get (),
+				SLOT (submit ()));
+
+		if (!SubmitQueue_.isEmpty ())
 		{
-		case ErrorCodes::AuthError:
-			emit authFailure ();
-			break;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown error code"
-					<< code;
-			break;
+			Scrobbler_->cache (SubmitQueue_);
+			submit ();
 		}
-
-		return true;
 	}
 
 	void LastFMSubmitter::checkFlushQueue (int code)
@@ -319,47 +269,6 @@ namespace Lastfmscrobble
 			return;
 
 		Scrobbler_->submit ();
-	}
-
-	void LastFMSubmitter::getSessionKey ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-		QDomDocument doc;
-		doc.setContent (QString::fromUtf8 (reply->readAll ()));
-		if (CheckError (doc))
-			return;
-
-		const auto& domList = doc.documentElement ().elementsByTagName ("key");
-		if (!domList.size ())
-			return;
-
-		lastfm::ws::SessionKey = domList.at (0).toElement ().text ();
-
-		Scrobbler_.reset (new lastfm::Audioscrobbler ("tst"));
-
-		connect (Scrobbler_.get (),
-				SIGNAL (status (int)),
-				this,
-				SIGNAL (status (int)));
-		connect (Scrobbler_.get (),
-				SIGNAL (status (int)),
-				this,
-				SLOT (checkFlushQueue (int)));
-
-		connect (SubmitTimer_,
-				SIGNAL (timeout ()),
-				Scrobbler_.get (),
-				SLOT (submit ()));
-
-		if (!SubmitQueue_.isEmpty ())
-		{
-			Scrobbler_->cache (SubmitQueue_);
-			submit ();
-		}
 	}
 }
 }

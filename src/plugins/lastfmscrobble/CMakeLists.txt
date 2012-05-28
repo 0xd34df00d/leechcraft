@@ -24,6 +24,7 @@ SET (SRCS
 	lastfmscrobble.cpp
 	pendingsimilarartists.cpp
 	albumartfetcher.cpp
+	authenticator.cpp
 	)
 SET (HEADERS
 	lastfmsubmitter.h
@@ -31,6 +32,7 @@ SET (HEADERS
 	lastfmscrobble.h
 	pendingsimilarartists.h
 	albumartfetcher.h
+	authenticator.h
 	)
 SET (RESOURCES lastfmscrobbleresources.qrc)
 IF (NOT LC_NO_MOC)
