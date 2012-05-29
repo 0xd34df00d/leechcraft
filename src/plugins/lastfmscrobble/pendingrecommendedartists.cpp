@@ -83,9 +83,18 @@ namespace Lastfmscrobble
 			if (name.isEmpty ())
 				continue;
 
+			QStringList similarTo;
+			auto similarElem = artistElem.firstChildElement ("context").firstChildElement ("artist");
+			while (!similarElem.isNull ())
+			{
+				similarTo << similarElem.firstChildElement ("name").text ();
+				similarElem = similarElem.nextSiblingElement ("artist");
+			}
+
 			++InfosWaiting_;
 
 			auto infoReply = lastfm::Artist (name).getInfo ();
+			infoReply->setProperty ("SimilarTo", similarTo);
 			connect (infoReply,
 					SIGNAL (finished ()),
 					this,

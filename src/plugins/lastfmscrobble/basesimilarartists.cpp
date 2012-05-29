@@ -92,6 +92,7 @@ namespace Lastfmscrobble
 		reply->deleteLater ();
 
 		const int similarity = reply->property ("Similarity").toInt ();
+		const auto& similarTo = reply->property ("SimilarTo").toStringList ();
 
 		const auto& augment = GetAdditional (reply->peek (reply->bytesAvailable ()));
 
@@ -106,7 +107,7 @@ namespace Lastfmscrobble
 			artist.www (),
 			Media::TagInfos_t ()
 		};
-		Similar_ << Media::SimilarityInfo { info, similarity, QStringList () };
+		Similar_ << Media::SimilarityInfo { info, similarity, similarTo };
 
 		auto tagsReply = artist.getTopTags ();
 		tagsReply->setProperty ("Position", Similar_.size () - 1);
