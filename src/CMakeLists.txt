@@ -149,7 +149,7 @@ OPTION (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" $
 OPTION (ENABLE_NACHEKU "Build Nacheku, clipboard/download dir watcher" ${WITH_PLUGINS})
 OPTION (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging client" OFF)
 OPTION (ENABLE_MONOCLE "Build Monocle, modular document viewer for LeechCraft" ${WITH_PLUGINS})
-
+OPTION (ENABLE_LADS "Build Lads, Ubuntu Unity integration layer" ${WITH_PLUGINS})
 IF (WIN32)
 	OPTION (ENABLE_Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS})
 ENDIF (WIN32)
@@ -397,6 +397,10 @@ ENDIF (ENABLE_DOLOZHEE)
 IF (ENABLE_NACHEKU)
 	ADD_SUBDIRECTORY (plugins/nacheku)
 ENDIF (ENABLE_NACHEKU)
+
+IF (ENABLE_LADS)
+	ADD_SUBDIRECTORY (plugins/lads)
+ENDIF (ENABLE_LADS)
 
 IF (WIN32)
 	IF (ENABLE_Y7)
