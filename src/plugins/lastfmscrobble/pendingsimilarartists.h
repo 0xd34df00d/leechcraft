@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <interfaces/media/isimilarartists.h>
+#include <interfaces/media/ipendingsimilarartists.h>
 
 namespace LeechCraft
 {

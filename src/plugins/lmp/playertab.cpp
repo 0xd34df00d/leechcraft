@@ -30,6 +30,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/isimilarartists.h>
+#include <interfaces/media/ipendingsimilarartists.h>
 #include <interfaces/media/ilyricsfinder.h>
 #include <interfaces/core/icoreproxy.h>
 #include "player.h"
