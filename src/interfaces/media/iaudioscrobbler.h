@@ -32,10 +32,6 @@ namespace Media
 		virtual void PlaybackStopped () = 0;
 
 		virtual void LoveCurrentTrack () = 0;
-
-		virtual void RerequestRecommendations () = 0;
-	protected:
-		virtual void gotRecommendations (const SimilarityInfos_t&) = 0;
 	};
 }
 

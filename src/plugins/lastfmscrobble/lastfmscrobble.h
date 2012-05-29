@@ -67,7 +67,6 @@ namespace Lastfmscrobble
 		void NowPlaying (const Media::AudioInfo&);
 		void PlaybackStopped ();
 		void LoveCurrentTrack ();
-		void RerequestRecommendations ();
 
 		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&, int);
 
@@ -76,8 +75,6 @@ namespace Lastfmscrobble
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-
-		void gotRecommendations (const Media::SimilarityInfos_t&);
 
 		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 	};
