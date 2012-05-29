@@ -34,10 +34,12 @@ namespace Lastfmscrobble
 		Q_OBJECT
 
 		QNetworkAccessManager *NAM_;
+		bool IsAuthenticated_;
 	public:
 		Authenticator (QNetworkAccessManager*, QObject* = 0);
 
 		void Init ();
+		bool IsAuthenticated () const;
 	private:
 		void FeedPassword (bool);
 		bool CheckError (const QDomDocument&);

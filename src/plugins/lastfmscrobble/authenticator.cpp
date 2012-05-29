@@ -59,6 +59,7 @@ namespace Lastfmscrobble
 	Authenticator::Authenticator (QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
+	, IsAuthenticated_ (false)
 	{
 	}
 
@@ -67,6 +68,11 @@ namespace Lastfmscrobble
 		XmlSettingsManager::Instance ().RegisterObject ("lastfm.login",
 				this, "handleAuth");
 		handleAuth ();
+	}
+
+	bool Authenticator::IsAuthenticated () const
+	{
+		return IsAuthenticated_;
 	}
 
 	void Authenticator::FeedPassword (bool authFailure)
@@ -144,6 +150,8 @@ namespace Lastfmscrobble
 		const auto& domList = doc.documentElement ().elementsByTagName ("key");
 		if (!domList.size ())
 			return;
+
+		IsAuthenticated_ = false;
 
 		lastfm::ws::SessionKey = domList.at (0).toElement ().text ();
 		emit authenticated ();
