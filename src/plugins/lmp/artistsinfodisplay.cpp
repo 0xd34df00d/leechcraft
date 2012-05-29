@@ -84,7 +84,16 @@ namespace LMP
 			item->setData (artist.Image_, SimilarModel::Role::ArtistImageURL);
 			item->setData (artist.ShortDesc_, SimilarModel::Role::ShortDesc);
 			item->setData (artist.FullDesc_, SimilarModel::Role::FullDesc);
-			item->setData (tr ("Similarity: %1%").arg (info.Similarity_), SimilarModel::Role::Similarity);
+
+			QString simStr;
+			if (info.Similarity_ > 0)
+				simStr = tr ("Similarity: %1%")
+					.arg (info.Similarity_);
+			else if (!info.SimilarTo_.isEmpty ())
+				simStr = tr ("Similar to: %1")
+					.arg (info.SimilarTo_.join ("; "));
+			if (!simStr.isEmpty ())
+				item->setData (simStr, SimilarModel::Role::Similarity);
 
 			QStringList tags;
 			const int diff = artist.Tags_.size () - 5;
