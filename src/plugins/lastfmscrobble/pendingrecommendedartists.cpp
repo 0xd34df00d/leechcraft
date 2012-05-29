@@ -17,16 +17,21 @@
  **********************************************************************/
 
 #include "pendingrecommendedartists.h"
+#include <memory>
+#include <QDomDocument>
 #include <lastfm/AuthenticatedUser>
 #include <lastfm/Artist>
 #include "authenticator.h"
+#include "util.h"
 
 namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	PendingRecommendedArtists::PendingRecommendedArtists (Authenticator *auth, int num, QObject *obj)
+	PendingRecommendedArtists::PendingRecommendedArtists (Authenticator *auth,
+			QNetworkAccessManager *nam, int num, QObject *obj)
 	: BaseSimilarArtists (QString (), num, obj)
+	, NAM_ (nam)
 	{
 		if (auth)
 			request ();
@@ -39,7 +44,9 @@ namespace Lastfmscrobble
 
 	void PendingRecommendedArtists::request ()
 	{
-		auto reply = lastfm::AuthenticatedUser ().getRecommendedArtists ();
+		QList<QPair<QString, QString>> params;
+		params << QPair<QString, QString> ("limit", QString::number (NumGet_));
+		auto reply = Request ("user.getRecommendedArtists", NAM_, params);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -55,10 +62,30 @@ namespace Lastfmscrobble
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
-		const auto& artists = lastfm::Artist::list (reply);
-		Q_FOREACH (const auto& artist, artists)
+		QDomDocument doc;
+		if (!doc.setContent (reply->readAll ()))
 		{
-			auto infoReply = artist.getInfo ();
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse reply";
+			emit error ();
+			return;
+		}
+
+		auto artistElem = doc.documentElement ()
+				.firstChildElement ("recommendations")
+				.firstChildElement ("artist");
+		auto elemGuard = [&artistElem] (void*) { artistElem = artistElem.nextSiblingElement ("artist"); };
+		while (!artistElem.isNull ())
+		{
+			std::shared_ptr<void> guard (static_cast<void*> (0), elemGuard);
+
+			const auto& name = artistElem.firstChildElement ("name").text ();
+			if (name.isEmpty ())
+				continue;
+
+			++InfosWaiting_;
+
+			auto infoReply = lastfm::Artist (name).getInfo ();
 			connect (infoReply,
 					SIGNAL (finished ()),
 					this,

@@ -134,7 +134,8 @@ namespace Lastfmscrobble
 
 	Media::IPendingSimilarArtists* Plugin::RequestRecommended (int num)
 	{
-		return new PendingRecommendedArtists (Auth_, num, this);
+		return new PendingRecommendedArtists (Auth_,
+				Proxy_->GetNetworkAccessManager (), num, this);
 	}
 }
 }
