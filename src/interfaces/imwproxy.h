@@ -111,6 +111,10 @@ public:
 	 * @param[in] area The area where the widget should be added.
 	 */
 	virtual void AddSideWidget (QWidget *widget, WidgetArea area = WALeft) = 0;
+
+	/** @brief Toggles the visibility of the main window.
+	 */
+	virtual void ToggleVisibility () = 0;
 };
 
 Q_DECLARE_INTERFACE (IMWProxy, "org.Deviant.LeechCraft.IMWProxy/1.0");

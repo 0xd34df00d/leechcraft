@@ -76,4 +76,9 @@ namespace LeechCraft
 			break;
 		}
 	}
+
+	void MWProxy::ToggleVisibility ()
+	{
+		Core::Instance ().GetReallyMainWindow ()->showHideMain ();
+	}
 }
