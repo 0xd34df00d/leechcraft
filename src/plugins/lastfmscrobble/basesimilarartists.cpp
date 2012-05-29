@@ -106,7 +106,7 @@ namespace Lastfmscrobble
 			artist.www (),
 			Media::TagInfos_t ()
 		};
-		Similar_ << Media::SimilarityInfo_t (info, similarity);
+		Similar_ << Media::SimilarityInfo { info, similarity, QStringList () };
 
 		auto tagsReply = artist.getTopTags ();
 		tagsReply->setProperty ("Position", Similar_.size () - 1);
@@ -143,7 +143,7 @@ namespace Lastfmscrobble
 
 		const int pos = reply->property ("Position").toInt ();
 		if (Similar_.size () > pos && pos >= 0)
-			Similar_ [pos].first.Tags_ = infos;
+			Similar_ [pos].Artist_.Tags_ = infos;
 
 		DecrementWaiting ();
 	}
