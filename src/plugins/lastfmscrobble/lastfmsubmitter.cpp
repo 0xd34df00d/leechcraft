@@ -18,7 +18,6 @@
  **********************************************************************/
 
 #include "lastfmsubmitter.h"
-#include "codes.h"
 #include <QCryptographicHash>
 #include <QByteArray>
 #include <QNetworkAccessManager>
@@ -27,6 +26,8 @@
 #include <lastfm.h>
 #include <interfaces/media/audiostructs.h>
 #include <util/util.h>
+#include "util.h"
+#include "codes.h"
 
 namespace LeechCraft
 {
@@ -62,25 +63,6 @@ namespace Lastfmscrobble
 
 	namespace
 	{
-		QByteArray MakeCall (QList<QPair<QString, QString>> params)
-		{
-			std::sort (params.begin (), params.end (),
-					[] (decltype (*params.constEnd ()) left, decltype (*params.constEnd ()) right)
-						{ return left.first < right.first; });
-			auto str = std::accumulate (params.begin (), params.end (), QString (),
-					[] (const QString& str, decltype (params.front ()) pair)
-						{ return str + pair.first + pair.second; });
-			str += lastfm::ws::SharedSecret;
-			const auto& sig = QCryptographicHash::hash (str.toUtf8 (), QCryptographicHash::Md5).toHex ();
-
-			params << QPair<QString, QString> ("api_sig", sig);
-
-			QUrl url;
-			std::for_each (params.begin (), params.end (),
-					[&url] (decltype (params.front ()) pair) { url.addQueryItem (pair.first, pair.second); });
-			return url.encodedQuery ();
-		}
-
 		QString GetQueueFilename ()
 		{
 			return Util::CreateIfNotExists ("lastfmscrobble").absoluteFilePath ("queue.xml");
@@ -151,18 +133,10 @@ namespace Lastfmscrobble
 		if (NextSubmit_.isNull ())
 			return;
 
-		QNetworkRequest req (QUrl ("http://ws.audioscrobbler.com/2.0/"));
-		const QString method = "track.love";
 		QList<QPair<QString, QString>> params;
-		params << QPair<QString, QString> ("method", method);
 		params << QPair<QString, QString> ("track", NextSubmit_.title ());
 		params << QPair<QString, QString> ("artist", NextSubmit_.artist ());
-		params << QPair<QString, QString> ("api_key", lastfm::ws::ApiKey);
-		params << QPair<QString, QString> ("sk", lastfm::ws::SessionKey);
-		const auto& data = MakeCall (params);
-		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
-		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-		QNetworkReply *reply = NAM_->post (req, data);
+		QNetworkReply *reply = Request ("track.love", NAM_, params);
 		connect (reply,
 				SIGNAL (finished ()),
 				reply,
