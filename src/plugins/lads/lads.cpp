@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2011-2012  Azer Abdullaev
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "lads.h"
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/imwproxy.h>
 #include <QIcon>
 #include <QDBusConnection>
 #include <QDBusReply>
@@ -32,10 +34,14 @@ namespace Lads
 		auto sb = QDBusConnection::sessionBus ();
 		const auto& services = sb.interface ()->registeredServiceNames ().value ();
 		Action_ = 0;
-		if (services.contains ("com.canonical.Unity", Qt::CaseSensitive))
+		Proxy_ = proxy;
+		if (services.contains ("com.canonical.Unity"))
 		{
 			Action_ = new QAction (tr ("Show/hide LeechCraft window"), this);
-			connect (Action_, SIGNAL (triggered ()), this, SLOT (showHideMain ()));
+			connect (Action_, 
+				SIGNAL (triggered ()), 
+				this, 
+				SLOT (showHideMain ()));
 		}
 	}
 
@@ -77,7 +83,7 @@ namespace Lads
 	
 	void Plugin::showHideMain () const
 	{
-		
+		Proxy_->GetMWProxy ()->ToggleVisibility ();
 	}
 }
 }
