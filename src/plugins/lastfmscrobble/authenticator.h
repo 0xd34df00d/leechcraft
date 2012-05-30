@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,10 +34,12 @@ namespace Lastfmscrobble
 		Q_OBJECT
 
 		QNetworkAccessManager *NAM_;
+		bool IsAuthenticated_;
 	public:
 		Authenticator (QNetworkAccessManager*, QObject* = 0);
 
 		void Init ();
+		bool IsAuthenticated () const;
 	private:
 		void FeedPassword (bool);
 		bool CheckError (const QDomDocument&);

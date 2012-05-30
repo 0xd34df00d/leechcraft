@@ -59,6 +59,11 @@ namespace Media
 		TagInfos_t Tags_;
 	};
 
-	typedef QPair<ArtistInfo, int> SimilarityInfo_t;
-	typedef QList<SimilarityInfo_t> SimilarityInfos_t;
+	struct SimilarityInfo
+	{
+		ArtistInfo Artist_;
+		int Similarity_;
+		QStringList SimilarTo_;
+	};
+	typedef QList<SimilarityInfo> SimilarityInfos_t;
 }

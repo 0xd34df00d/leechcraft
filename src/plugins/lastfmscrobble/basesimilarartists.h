@@ -18,19 +18,43 @@
 
 #pragma once
 
-#include "basesimilarartists.h"
+#include <QObject>
+#include <interfaces/media/ipendingsimilarartists.h>
 
 namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	class PendingSimilarArtists : public BaseSimilarArtists
+	class BaseSimilarArtists : public QObject
+							 , public Media::IPendingSimilarArtists
 	{
 		Q_OBJECT
+		Q_INTERFACES (Media::IPendingSimilarArtists)
+
+		Media::SimilarityInfos_t Similar_;
+	protected:
+		QString SourceName_;
+		int NumGet_;
+		int InfosWaiting_;
 	public:
-		PendingSimilarArtists (const QString&, int num, QObject* = 0);
-	private slots:
-		void handleReplyFinished ();
+		BaseSimilarArtists (const QString&, int, QObject* = 0);
+
+		QObject* GetObject ();
+		QString GetSourceArtistName () const;
+		Media::SimilarityInfos_t GetSimilar () const;
+	private:
+		void DecrementWaiting ();
+	protected slots:
+		void handleInfoReplyFinished ();
+		void handleInfoReplyError ();
+
+		void handleTagsReplyFinished ();
+		void handleTagsReplyError ();
+
+		void handleReplyError ();
+	signals:
+		void ready ();
+		void error ();
 	};
 }
 }

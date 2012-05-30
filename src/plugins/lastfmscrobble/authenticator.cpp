@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -60,6 +59,7 @@ namespace Lastfmscrobble
 	Authenticator::Authenticator (QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
+	, IsAuthenticated_ (false)
 	{
 	}
 
@@ -68,6 +68,11 @@ namespace Lastfmscrobble
 		XmlSettingsManager::Instance ().RegisterObject ("lastfm.login",
 				this, "handleAuth");
 		handleAuth ();
+	}
+
+	bool Authenticator::IsAuthenticated () const
+	{
+		return IsAuthenticated_;
 	}
 
 	void Authenticator::FeedPassword (bool authFailure)
@@ -145,6 +150,8 @@ namespace Lastfmscrobble
 		const auto& domList = doc.documentElement ().elementsByTagName ("key");
 		if (!domList.size ())
 			return;
+
+		IsAuthenticated_ = false;
 
 		lastfm::ws::SessionKey = domList.at (0).toElement ().text ();
 		emit authenticated ();

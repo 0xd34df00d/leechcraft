@@ -1,5 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,19 +19,19 @@
 
 #pragma once
 
-#include "basesimilarartists.h"
+#include <QList>
+#include <QPair>
+#include <QString>
+
+class QNetworkAccessManager;
+class QNetworkReply;
 
 namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	class PendingSimilarArtists : public BaseSimilarArtists
-	{
-		Q_OBJECT
-	public:
-		PendingSimilarArtists (const QString&, int num, QObject* = 0);
-	private slots:
-		void handleReplyFinished ();
-	};
+	QByteArray MakeCall (QList<QPair<QString, QString>>);
+
+	QNetworkReply* Request (const QString&, QNetworkAccessManager*, QList<QPair<QString, QString>> = QList<QPair<QString, QString>> ());
 }
 }

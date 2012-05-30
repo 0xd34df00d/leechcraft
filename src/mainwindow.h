@@ -102,6 +102,7 @@ namespace LeechCraft
 		void RemoveMenus (const QMap<QString, QList<QAction*>>&);
 	public slots:
 		void catchError (QString);
+		void showHideMain ();
 	protected:
 		virtual void closeEvent (QCloseEvent*);
 		virtual void keyPressEvent (QKeyEvent*);
@@ -135,7 +136,6 @@ namespace LeechCraft
 		void handleRestoreActionAdded (QAction*);
 		void updateSpeedIndicators ();
 		void updateClock ();
-		void showHideMain ();
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void updateIconSet ();
 		void doDelayedInit ();

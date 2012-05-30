@@ -72,19 +72,28 @@ namespace LMP
 		Model_->clear ();
 
 		std::sort (infos.begin (), infos.end (),
-				[] (const Media::SimilarityInfo_t& left, const Media::SimilarityInfo_t& right)
-					{ return left.second > right.second; });
+				[] (const Media::SimilarityInfo& left, const Media::SimilarityInfo& right)
+					{ return left.Similarity_ > right.Similarity_; });
 
-		Q_FOREACH (const Media::SimilarityInfo_t& info, infos)
+		Q_FOREACH (const Media::SimilarityInfo& info, infos)
 		{
 			auto item = new QStandardItem ();
 
-			const auto& artist = info.first;
+			const auto& artist = info.Artist_;
 			item->setData (artist.Name_, SimilarModel::Role::ArtistName);
 			item->setData (artist.Image_, SimilarModel::Role::ArtistImageURL);
 			item->setData (artist.ShortDesc_, SimilarModel::Role::ShortDesc);
 			item->setData (artist.FullDesc_, SimilarModel::Role::FullDesc);
-			item->setData (tr ("Similarity: %1%").arg (info.second), SimilarModel::Role::Similarity);
+
+			QString simStr;
+			if (info.Similarity_ > 0)
+				simStr = tr ("Similarity: %1%")
+					.arg (info.Similarity_);
+			else if (!info.SimilarTo_.isEmpty ())
+				simStr = tr ("Similar to: %1")
+					.arg (info.SimilarTo_.join ("; "));
+			if (!simStr.isEmpty ())
+				item->setData (simStr, SimilarModel::Role::Similarity);
 
 			QStringList tags;
 			const int diff = artist.Tags_.size () - 5;

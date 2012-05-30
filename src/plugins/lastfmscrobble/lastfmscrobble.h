@@ -24,6 +24,7 @@
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/media/isimilarartists.h>
+#include <interfaces/media/irecommendedartists.h>
 
 namespace LeechCraft
 {
@@ -38,13 +39,15 @@ namespace Lastfmscrobble
 				, public Media::IAudioScrobbler
 				, public Media::IAlbumArtProvider
 				, public Media::ISimilarArtists
+				, public Media::IRecommendedArtists
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IHaveSettings
 				Media::IAudioScrobbler
 				Media::IAlbumArtProvider
-				Media::ISimilarArtists)
+				Media::ISimilarArtists
+				Media::IRecommendedArtists)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
@@ -67,17 +70,16 @@ namespace Lastfmscrobble
 		void NowPlaying (const Media::AudioInfo&);
 		void PlaybackStopped ();
 		void LoveCurrentTrack ();
-		void RerequestRecommendations ();
-
-		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&, int);
 
 		QString GetAlbumArtProviderName () const;
 		void RequestAlbumArt (const Media::AlbumInfo& album) const;
+
+		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&, int);
+
+		Media::IPendingSimilarArtists* RequestRecommended (int);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-
-		void gotRecommendations (const Media::SimilarityInfos_t&);
 
 		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 	};

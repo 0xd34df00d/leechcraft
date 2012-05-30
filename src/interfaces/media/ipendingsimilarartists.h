@@ -18,19 +18,24 @@
 
 #pragma once
 
-#include "basesimilarartists.h"
+#include <QtPlugin>
+#include "audiostructs.h"
 
-namespace LeechCraft
+namespace Media
 {
-namespace Lastfmscrobble
-{
-	class PendingSimilarArtists : public BaseSimilarArtists
+	class IPendingSimilarArtists
 	{
-		Q_OBJECT
 	public:
-		PendingSimilarArtists (const QString&, int num, QObject* = 0);
-	private slots:
-		void handleReplyFinished ();
+		virtual ~IPendingSimilarArtists () {}
+
+		virtual QObject* GetObject () = 0;
+		virtual QString GetSourceArtistName () const = 0;
+		virtual SimilarityInfos_t GetSimilar () const = 0;
+	protected:
+		virtual void ready () = 0;
+		virtual void error () = 0;
 	};
 }
-}
+
+Q_DECLARE_INTERFACE (Media::IPendingSimilarArtists, "org.LeechCraft.Media.IPendingSimilarArtists/1.0");
+

@@ -20,16 +20,23 @@
 
 #include "basesimilarartists.h"
 
+class QNetworkAccessManager;
+
 namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	class PendingSimilarArtists : public BaseSimilarArtists
+	class Authenticator;
+
+	class PendingRecommendedArtists : public BaseSimilarArtists
 	{
 		Q_OBJECT
+
+		QNetworkAccessManager *NAM_;
 	public:
-		PendingSimilarArtists (const QString&, int num, QObject* = 0);
+		PendingRecommendedArtists (Authenticator*, QNetworkAccessManager*, int, QObject* = 0);
 	private slots:
+		void request ();
 		void handleReplyFinished ();
 	};
 }

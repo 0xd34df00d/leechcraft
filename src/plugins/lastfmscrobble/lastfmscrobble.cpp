@@ -27,6 +27,7 @@
 #include "pendingsimilarartists.h"
 #include "albumartfetcher.h"
 #include "authenticator.h"
+#include "pendingrecommendedartists.h"
 
 namespace LeechCraft
 {
@@ -112,15 +113,6 @@ namespace Lastfmscrobble
 		LFSubmitter_->Love ();
 	}
 
-	void Plugin::RerequestRecommendations ()
-	{
-	}
-
-	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)
-	{
-		return new PendingSimilarArtists (name, num, this);
-	}
-
 	QString Plugin::GetAlbumArtProviderName () const
 	{
 		return GetServiceName ();
@@ -133,6 +125,17 @@ namespace Lastfmscrobble
 				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
 				this,
 				SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)));
+	}
+
+	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)
+	{
+		return new PendingSimilarArtists (name, num, this);
+	}
+
+	Media::IPendingSimilarArtists* Plugin::RequestRecommended (int num)
+	{
+		return new PendingRecommendedArtists (Auth_,
+				Proxy_->GetNetworkAccessManager (), num, this);
 	}
 }
 }

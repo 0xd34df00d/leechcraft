@@ -18,19 +18,19 @@
 
 #pragma once
 
-#include "basesimilarartists.h"
+#include <QtPlugin>
 
-namespace LeechCraft
+namespace Media
 {
-namespace Lastfmscrobble
-{
-	class PendingSimilarArtists : public BaseSimilarArtists
+	class IPendingSimilarArtists;
+
+	class IRecommendedArtists
 	{
-		Q_OBJECT
 	public:
-		PendingSimilarArtists (const QString&, int num, QObject* = 0);
-	private slots:
-		void handleReplyFinished ();
+		virtual ~IRecommendedArtists () {}
+
+		virtual IPendingSimilarArtists* RequestRecommended (int) = 0;
 	};
 }
-}
+
+Q_DECLARE_INTERFACE (Media::IRecommendedArtists, "org.LeechCraft.Media.IRecommendedArtists/1.0");

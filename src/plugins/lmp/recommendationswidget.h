@@ -18,19 +18,30 @@
 
 #pragma once
 
-#include "basesimilarartists.h"
+#include <QWidget>
+#include "ui_recommendationswidget.h"
+
+namespace Media
+{
+	class IRecommendedArtists;
+}
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace LMP
 {
-	class PendingSimilarArtists : public BaseSimilarArtists
+	class RecommendationsWidget : public QWidget
 	{
 		Q_OBJECT
+
+		Ui::RecommendationsWidget Ui_;
+
+		QList<Media::IRecommendedArtists*> Providers_;
 	public:
-		PendingSimilarArtists (const QString&, int num, QObject* = 0);
+		RecommendationsWidget (QWidget* = 0);
 	private slots:
-		void handleReplyFinished ();
+		void handleGotRecs ();
+		void on_RecProvider__activated (int);
 	};
 }
 }
