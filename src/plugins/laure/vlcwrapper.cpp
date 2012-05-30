@@ -27,7 +27,6 @@
 #include <QFile>
 #include <QUrl>
 #include <util/util.h>
-#include <iostream>
 
 namespace LeechCraft
 {
@@ -384,7 +383,6 @@ namespace Laure
 
 	void VLCWrapper::setVolume (int vol)
 	{
-		std::cout << "VOLUMNE : " << vol << std::endl;
 		libvlc_audio_set_volume (Player_.get (), vol);
 	}
 
