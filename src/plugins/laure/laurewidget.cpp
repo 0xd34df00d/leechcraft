@@ -119,7 +119,7 @@ namespace Laure
 		connect (Ui_.Splitter_,
 			 	SIGNAL (splitterMoved (int, int)),
 			 	this,
-	   			SLOT(handleSplitterMoved ()));
+	 			SLOT(handleSplitterMoved ()));
 		
 		const int playlistWidth = XmlSettingsManager::Instance ()
 				.property ("PlayListWidgetWidth").toInt ();

@@ -25,7 +25,7 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	const QString UnFocusedStyle_ =
+	const QString UnFocusedStyle =
 			"QSlider::sub-page:horizontal {"
 				"border: 1px solid #999999;"
 				"height: 8px;"
@@ -40,7 +40,7 @@ namespace Laure
 				"margin: 2px 0;"
 			"}";
 			
-	const QString FocusedStyle_ = UnFocusedStyle_ +
+	const QString FocusedStyle = UnFocusedStyle +
 			"QSlider::handle:horizontal {"
 				"background: qlineargradient(x1:0, y1:0, x2:1, y2:1,"
 					"stop:0 palette(button), stop:1 palette(midlight));"
@@ -58,15 +58,15 @@ namespace Laure
 		setMouseTracking (true);
 	}
 	
-	bool PositionSlider::event (QEvent* e)
+	bool PositionSlider::event (QEvent *e)
 	{
 		switch (e->type ())
 		{
 		case QEvent::HoverLeave:
-			setStyleSheet (UnFocusedStyle_);
+			setStyleSheet (UnFocusedStyle);
 			break;
 		case QEvent::HoverEnter:
-			setStyleSheet (FocusedStyle_);
+			setStyleSheet (FocusedStyle);
 			break;
 		}
 		return QSlider::event (e);
