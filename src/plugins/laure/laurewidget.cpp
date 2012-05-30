@@ -116,6 +116,11 @@ namespace Laure
 				wrapper,
 				SLOT (addRow (QString)));
 		
+		connect (Ui_.Splitter_,
+			 	SIGNAL (splitterMoved (int, int)),
+			 	this,
+	   			SLOT(handleSplitterMoved ()));
+		
 		const int playlistWidth = XmlSettingsManager::Instance ()
 				.property ("PlayListWidgetWidth").toInt ();
 		
@@ -125,6 +130,12 @@ namespace Laure
 		InitCommandFrame ();
 	}
 	
+	void LaureWidget::handleSplitterMoved ()
+	{
+		XmlSettingsManager::Instance ().setProperty ("PlayListWidgetWidth",
+				Ui_.PlayListWidget_->size ().width ());
+	}
+	
 	void LaureWidget::handlePlayListWidgetDoubleClicked ()
 	{
 		ActionPlay_->handleTriggered ();
@@ -132,8 +143,6 @@ namespace Laure
 	
 	LaureWidget::~LaureWidget ()
 	{
-		XmlSettingsManager::Instance ().setProperty ("PlayListWidgetWidth",
-				Ui_.PlayListWidget_->size ().width ());
 	}
 	
 	void LaureWidget::InitToolBar ()
@@ -386,11 +395,7 @@ namespace Laure
 			Ui_.Splitter_->setSizes (QList<int> () << size ().width () << playlistWidth);
 		}
 		else
-		{
-			XmlSettingsManager::Instance ().setProperty ("PlayListWidgetWidth",
-					Ui_.PlayListWidget_->size ().width ());
 			Ui_.GlobalGridLayout_->addWidget (Ui_.PlayListWidget_, 0, 1, 1, 4);
-		}
 		
 		PlayListAction_->setEnabled (checked);
 		Ui_.Player_->setVisible (checked);
