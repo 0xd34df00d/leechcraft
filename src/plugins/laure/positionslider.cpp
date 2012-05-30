@@ -72,5 +72,10 @@ namespace Laure
 		return QSlider::event (e);
 	}
 	
+	void PositionSlider::mousePressEvent (QMouseEvent *ev)
+	{
+		emit sliderMoved (QStyle::sliderValueFromPosition (minimum (),
+				maximum (), ev->pos ().x (), width ()));
+	}
 }
 }

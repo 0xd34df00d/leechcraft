@@ -32,6 +32,7 @@ namespace Laure
 		PositionSlider (QWidget *parent = 0);
 	protected:
 		bool event (QEvent *e);
+		void mousePressEvent (QMouseEvent *ev);
 	};
 }
 }

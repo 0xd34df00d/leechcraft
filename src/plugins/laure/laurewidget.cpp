@@ -61,6 +61,7 @@ namespace Laure
 		
 		Ui_.PlayListWidget_->Init (VLCWrapper_);
 		Ui_.Player_->SetVLCWrapper (VLCWrapper_);
+		Ui_.VolumeSlider_->setValue (VLCWrapper_->GetVolume ());
 		
 		connect (SeparatePlayer_.get (),
 				SIGNAL (closed ()),
@@ -313,7 +314,7 @@ namespace Laure
 	
 	void LaureWidget::updateInterface ()
 	{
-		Ui_.VolumeSlider_->setValue (VLCWrapper_->GetVolume ());
+		//Ui_.VolumeSlider_->setValue (VLCWrapper_->GetVolume ());
 		Ui_.PositionSlider_->setValue (Ui_.Player_->GetPosition ());
 		const QTime& currTime = Ui_.Player_->GetTime ();
 		const QTime& length = Ui_.Player_->GetLength ();
