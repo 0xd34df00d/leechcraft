@@ -26,20 +26,20 @@ namespace LeechCraft
 namespace Laure
 {
 	NowPlayingDelegate::NowPlayingDelegate (QObject *parent)
-	: QItemDelegate (parent)
+	: QStyledItemDelegate (parent)
 	{
 	}
 	
-	void NowPlayingDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option,
-				const QModelIndex& id) const
+	void NowPlayingDelegate::paint (QPainter *painter, const QStyleOptionViewItem& opt,
+			const QModelIndex& id) const
 	{
 		const bool played = id.sibling (id.row (), PlayListColumns::StatusColumn)
 				.data (IsPlayingRole).toBool ();
-				
+
 		if (played)
-			painter->fillRect (option.rect, Qt::gray);
+			painter->fillRect (opt.rect, Qt::gray);
 		
-		QItemDelegate::paint (painter, option, id);
+		QStyledItemDelegate::paint (painter, opt, id);
 	}
 }
 }

@@ -115,6 +115,7 @@ namespace Laure
 		void subtitleDialog ();
 		void showSubtitleMenu ();
 		void handlePlayListWidgetDoubleClicked ();
+		void handleSplitterMoved ();
 	};
 }
 }

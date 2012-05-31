@@ -152,6 +152,14 @@ namespace Laure
 
 		emit gotEntity (scrobbleEntity);
 		emit currentItemMeta (CurrentItemMeta_);
+		
+		const QString& text = tr ("Now playing: %1 from %2 by %3")
+				.arg ("<em>" + CurrentItemMeta_.Title_ + "</em>")
+				.arg ("<em>" + CurrentItemMeta_.Album_ + "</em>")
+				.arg ("<em>" + CurrentItemMeta_.Artist_ + "</em>");
+		
+		Entity e = Util::MakeNotification ("Laure", text, PInfo_);
+		emit gotEntity (e);
 	}
 	
 	void VLCWrapper::addToQueue (int index)
