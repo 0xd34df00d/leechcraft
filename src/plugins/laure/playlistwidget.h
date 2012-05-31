@@ -96,8 +96,8 @@ namespace Laure
 		void metaChangedRequest (libvlc_meta_t type, const QString& value,
 				int index);
 
-		void gotEntity (const Entity&);
-		void delegateEntity (const Entity&, int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		
 		/** @brief Is emitted when the playback mode is changed.
 		 * 
