@@ -46,12 +46,14 @@ namespace Lastfmscrobble
 
 		QObject* GetObject ();
 		void RequestNewStream ();
+	private:
+		void EmitTrack (const lastfm::Track&);
 	private slots:
 		void handleTitle (const QString&);
 		void handleError (const QString&);
 		void handleNextTrack ();
 	signals:
-		void gotNewStream (const QUrl&);
+		void gotNewStream (const QUrl&, const Media::AudioInfo&);
 		void gotError (const QString&);
 	};
 }

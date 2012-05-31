@@ -23,6 +23,7 @@
 #include <QDir>
 #include <QMimeData>
 #include <QUrl>
+#include <QApplication>
 #include <phonon/mediaobject.h>
 #include <phonon/audiooutput.h>
 #include <util/util.h>
@@ -264,12 +265,6 @@ namespace LMP
 
 	void Player::SetRadioStation (Media::IRadioStation_ptr station)
 	{
-		if (CurrentStation_)
-			disconnect (CurrentStation_->GetObject (),
-					0,
-					this,
-					0);
-
 		clear ();
 
 		CurrentStation_ = station;
@@ -279,19 +274,14 @@ namespace LMP
 				this,
 				SLOT (handleStationError (const QString&)));
 		connect (CurrentStation_->GetObject (),
-				SIGNAL (gotNewStream (QUrl)),
+				SIGNAL (gotNewStream (QUrl, Media::AudioInfo)),
 				this,
-				SLOT (handleRadioStream (QUrl)));
+				SLOT (handleRadioStream (QUrl, Media::AudioInfo)));
 		CurrentStation_->RequestNewStream ();
 
 		RadioItem_ = new QStandardItem (tr ("Radio"));
 		RadioItem_->setEditable (false);
 		PlaylistModel_->appendRow (RadioItem_);
-		connect (Source_,
-				SIGNAL (metaDataChanged ()),
-				this,
-				SLOT (updateRadioMetadata ()),
-				Qt::UniqueConnection);
 	}
 
 	namespace
@@ -480,10 +470,6 @@ namespace LMP
 		RadioItem_ = 0;
 
 		CurrentStation_.reset ();
-		disconnect (Source_,
-				SIGNAL (metaDataChanged ()),
-				this,
-				SLOT (updateRadioMetadata ()));
 	}
 
 	void Player::play (const QModelIndex& index)
@@ -531,6 +517,14 @@ namespace LMP
 
 	void Player::nextTrack ()
 	{
+		if (CurrentStation_)
+		{
+			Source_->clear ();
+			qApp->processEvents ();
+			CurrentStation_->RequestNewStream ();
+			return;
+		}
+
 		const auto& current = Source_->currentSource ();
 		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
 		if (pos == CurrentQueue_.end () || pos == CurrentQueue_.end () - 1)
@@ -601,26 +595,14 @@ namespace LMP
 		Core::Instance ().SendEntity (e);
 	}
 
-	void Player::handleRadioStream (const QUrl& url)
+	void Player::handleRadioStream (const QUrl& url, const Media::AudioInfo& info)
 	{
+		Url2Info_ [url] = info;
 		Source_->enqueue (url);
 
+		qDebug () << Q_FUNC_INFO << Source_->state ();
 		if (Source_->state () == Phonon::StoppedState)
 			Source_->play ();
-	}
-
-	void Player::updateRadioMetadata ()
-	{
-		if (!CurrentStation_)
-			return;
-
-		MediaInfo info;
-		info.Artist_ = Source_->metaData (Phonon::ArtistMetaData).value (0);
-		info.Album_ = Source_->metaData (Phonon::AlbumMetaData).value (0);
-		info.Title_ = Source_->metaData (Phonon::TitleMetaData).value (0);
-		info.Genres_ = Source_->metaData (Phonon::GenreMetaData);
-
-		emit songChanged (info);
 	}
 
 	void Player::handleUpdateSourceQueue ()
@@ -692,10 +674,16 @@ namespace LMP
 	{
 		XmlSettingsManager::Instance ().setProperty ("LastSong", source.fileName ());
 
-		auto curItem = Items_ [source];
+		auto curItem = CurrentStation_ ? RadioItem_ : Items_ [source];
 		curItem->setData (true, Role::IsCurrent);
 
-		emit songChanged (curItem->data (Role::Info).value<MediaInfo> ());
+		if (CurrentStation_)
+		{
+			const auto& info = Url2Info_.take (source.url ());
+			emit songChanged (info);
+		}
+		else
+			emit songChanged (curItem->data (Role::Info).value<MediaInfo> ());
 
 		Q_FOREACH (auto item, Items_.values ())
 		{

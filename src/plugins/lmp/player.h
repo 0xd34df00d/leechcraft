@@ -57,6 +57,7 @@ namespace LMP
 
 		Media::IRadioStation_ptr CurrentStation_;
 		QStandardItem *RadioItem_;
+		QHash<QUrl, MediaInfo> Url2Info_;
 	public:
 		enum class PlayMode
 		{
@@ -115,8 +116,7 @@ namespace LMP
 	private slots:
 		void restorePlaylist ();
 		void handleStationError (const QString&);
-		void handleRadioStream (const QUrl&);
-		void updateRadioMetadata ();
+		void handleRadioStream (const QUrl&, const Media::AudioInfo&);
 		void handleUpdateSourceQueue ();
 		void handlePlaybackFinished ();
 		void handleStateChanged (Phonon::State);

@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include <lastfm/RadioStation>
 #include "radiotuner.h"
+#include <interfaces/media/audiostructs.h>
 
 namespace LeechCraft
 {
@@ -66,8 +67,7 @@ namespace Lastfmscrobble
 		auto track = Tuner_->GetNextTrack ();
 		if (!track.isNull ())
 		{
-			qDebug () << Q_FUNC_INFO << track.url ();
-			emit gotNewStream (track.url ());
+			EmitTrack (track);
 			return;
 		}
 
@@ -75,6 +75,22 @@ namespace Lastfmscrobble
 				SIGNAL (trackAvailable ()),
 				this,
 				SLOT (handleNextTrack ()));
+	}
+
+	void RadioStation::EmitTrack (const lastfm::Track& track)
+	{
+		qDebug () << Q_FUNC_INFO << track.url ();
+		const Media::AudioInfo info =
+		{
+			track.artist (),
+			track.album (),
+			track.title (),
+			QStringList (),
+			track.duration () / 1000,
+			0,
+			track.trackNumber ()
+		};
+		emit gotNewStream (track.url (), info);
 	}
 
 	void RadioStation::handleTitle (const QString& title)
@@ -90,9 +106,7 @@ namespace Lastfmscrobble
 
 	void RadioStation::handleNextTrack ()
 	{
-		auto track = Tuner_->GetNextTrack ();
-		qDebug () << Q_FUNC_INFO << track.url ();
-		emit gotNewStream (track.url ());
+		EmitTrack (Tuner_->GetNextTrack ());
 
 		disconnect (Tuner_.get (),
 				SIGNAL (trackAvailable ()),

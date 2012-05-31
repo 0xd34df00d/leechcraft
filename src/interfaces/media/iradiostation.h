@@ -25,6 +25,8 @@ class QUrl;
 
 namespace Media
 {
+	struct AudioInfo;
+
 	class IRadioStation
 	{
 	public:
@@ -34,7 +36,7 @@ namespace Media
 
 		virtual void RequestNewStream () = 0;
 	protected:
-		virtual void gotNewStream (const QUrl&) = 0;
+		virtual void gotNewStream (const QUrl&, const AudioInfo&) = 0;
 
 		virtual void gotError (const QString&) = 0;
 	};

@@ -81,6 +81,7 @@ namespace Lastfmscrobble
 		reply->deleteLater ();
 
 		const auto& data = reply->readAll ();
+		qDebug () << data;
 		QDomDocument doc;
 		if (!doc.setContent (data))
 		{
@@ -105,7 +106,10 @@ namespace Lastfmscrobble
 			auto tracks = xspf.tracks ();
 
 			if (tracks.isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO << "no tracks";
 				throw lastfm::ws::TryAgainLater;
+			}
 
 			NumTries_ = 0;
 
@@ -113,6 +117,7 @@ namespace Lastfmscrobble
 				lastfm::MutableTrack (track).setSource (lastfm::Track::LastFmRadio);
 
 			Queue_ += tracks;
+			emit trackAvailable ();
 		}
 		catch (const lastfm::ws::ParseError& e)
 		{
