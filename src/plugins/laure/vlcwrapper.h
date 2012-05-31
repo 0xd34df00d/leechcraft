@@ -254,8 +254,8 @@ namespace Laure
 		 */
 		void paused ();
 
-		void gotEntity (const Entity&);
-		void delegateEntity (const Entity&, int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

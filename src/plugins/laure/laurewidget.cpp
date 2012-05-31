@@ -98,14 +98,14 @@ namespace Laure
 				SLOT (setVolume (int)));
 				
 		connect (wrapper,
-				SIGNAL (gotEntity (Entity)),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
-				SIGNAL (gotEntity (Entity)));
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 		
 		connect (wrapper,
-				SIGNAL (delegateEntity (Entity, int*, QObject**)),
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
 				this,
-				SIGNAL (delegateEntity (Entity, int*, QObject**)));
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 		connect (wrapper,
 				SIGNAL (currentItemMeta (MediaMeta)),
 				this,
