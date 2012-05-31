@@ -73,8 +73,6 @@ namespace Lastfmscrobble
 	void RadioTuner::handleTuned ()
 	{
 		sender ()->deleteLater ();
-
-		FetchMoreTracks ();
 	}
 
 	void RadioTuner::handleGotPlaylist ()
