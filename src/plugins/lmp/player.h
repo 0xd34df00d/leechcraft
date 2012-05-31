@@ -22,6 +22,7 @@
 #include <phonon/mediasource.h>
 #include <phonon/path.h>
 #include <interfaces/media/iradiostation.h>
+#include "mediainfo.h"
 
 class QModelIndex;
 class QStandardItem;
