@@ -173,6 +173,19 @@
             </item>
            </layout>
           </widget>
+          <widget class="QWidget" name="RadioTab_">
+           <attribute name="title">
+            <string>Radio</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <property name="margin">
+             <number>1</number>
+            </property>
+            <item>
+             <widget class="LeechCraft::LMP::RadioWidget" name="RadioWidget_" native="true"/>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -247,6 +260,12 @@
    <class>LeechCraft::LMP::RecommendationsWidget</class>
    <extends>QWidget</extends>
    <header>recommendationswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::RadioWidget</class>
+   <extends>QWidget</extends>
+   <header>radiowidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
