@@ -72,6 +72,10 @@ namespace LMP
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 
 		ActionRescan_ = new QAction (tr ("Rescan collection"), this);
 		ActionRescan_->setProperty ("ActionIcon", "view-refresh");
