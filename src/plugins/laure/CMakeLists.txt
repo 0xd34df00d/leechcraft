@@ -39,7 +39,7 @@ INCLUDE_DIRECTORIES (
 	)
 
 SET (SRCS
-	postitionslider.cpp
+	positionslider.cpp
 	core.cpp
 	playliststatusdelegate.cpp
 	separateplayer.cpp
@@ -58,7 +58,7 @@ SET (SRCS
 	laure.cpp
 	)
 SET (HEADERS
-	postitionslider.h
+	positionslider.h
 	core.h
 	playliststatusdelegate.h
 	separateplayer.h
