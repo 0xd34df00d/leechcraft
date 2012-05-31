@@ -68,6 +68,8 @@ namespace Laure
 		case QEvent::HoverEnter:
 			setStyleSheet (FocusedStyle);
 			break;
+		default:
+			break;
 		}
 		return QSlider::event (e);
 	}
