@@ -40,6 +40,8 @@ namespace LMP
 		qint32 Year_;
 		qint32 TrackNumber_;
 
+		MediaInfo& operator= (const Media::AudioInfo&);
+
 		operator Media::AudioInfo () const;
 	};
 }
