@@ -19,8 +19,8 @@
 #include "radiowidget.h"
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iradiostationprovider.h>
-#include <util/util.h>
 #include "core.h"
+#include "player.h"
 
 namespace LeechCraft
 {
@@ -28,6 +28,7 @@ namespace LMP
 {
 	RadioWidget::RadioWidget (QWidget *parent)
 	: QWidget (parent)
+	, Player_ (0)
 	{
 		Ui_.setupUi (this);
 
@@ -42,6 +43,11 @@ namespace LMP
 		Ui_.StationType_->addItem (tr ("Tag"));
 	}
 
+	void RadioWidget::SetPlayer (Player *player)
+	{
+		Player_ = player;
+	}
+
 	void RadioWidget::on_PlayButton__released ()
 	{
 		const int idx = Ui_.ProviderBox_->currentIndex ();
@@ -49,21 +55,8 @@ namespace LMP
 			return;
 
 		auto prov = Providers_.at (idx);
-		CurrentStation_ = prov->GetRadioStation (static_cast<Media::IRadioStationProvider::Type> (idx), Ui_.Param_->text ());
-		connect (CurrentStation_->GetObject (),
-				SIGNAL (gotError (const QString&)),
-				this,
-				SLOT (handleStationError (const QString&)));
-		CurrentStation_->RequestNewStream ();
-	}
-
-	void RadioWidget::handleStationError (const QString& error)
-	{
-		const auto& e = Util::MakeNotification ("LMP",
-				tr ("Radio station error: %1.")
-					.arg (error),
-				PCritical_);
-		Core::Instance ().SendEntity (e);
+		auto station = prov->GetRadioStation (static_cast<Media::IRadioStationProvider::Type> (idx), Ui_.Param_->text ());
+		Player_->SetRadioStation (station);
 	}
 }
 }

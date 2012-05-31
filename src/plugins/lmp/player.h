@@ -21,6 +21,7 @@
 #include <QObject>
 #include <phonon/mediasource.h>
 #include <phonon/path.h>
+#include <interfaces/media/iradiostation.h>
 
 class QModelIndex;
 class QStandardItem;
@@ -53,6 +54,9 @@ namespace LMP
 		QHash<QPair<QString, QString>, QStandardItem*> AlbumRoots_;
 
 		Phonon::MediaSource CurrentStopSource_;
+
+		Media::IRadioStation_ptr CurrentStation_;
+		QStandardItem *RadioItem_;
 	public:
 		enum class PlayMode
 		{
@@ -91,12 +95,16 @@ namespace LMP
 		void Dequeue (const QModelIndex&);
 
 		void SetStopAfter (const QModelIndex&);
+
+		void SetRadioStation (Media::IRadioStation_ptr);
 	private:
 		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
 		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
 		void ApplyOrdering (QList<Phonon::MediaSource>&);
 
 		bool HandleCurrentStop (const Phonon::MediaSource&);
+
+		void UnsetRadio ();
 	public slots:
 		void play (const QModelIndex&);
 		void previousTrack ();
@@ -106,6 +114,9 @@ namespace LMP
 		void clear ();
 	private slots:
 		void restorePlaylist ();
+		void handleStationError (const QString&);
+		void handleRadioStream (const QUrl&);
+		void updateRadioMetadata ();
 		void handleUpdateSourceQueue ();
 		void handlePlaybackFinished ();
 		void handleStateChanged (Phonon::State);

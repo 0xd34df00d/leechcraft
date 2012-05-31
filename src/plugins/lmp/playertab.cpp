@@ -90,6 +90,7 @@ namespace LMP
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->setStretchFactor (0, 2);
 		Ui_.MainSplitter_->setStretchFactor (1, 1);
+		Ui_.RadioWidget_->SetPlayer (Player_);
 
 		Ui_.FSBrowser_->AssociatePlayer (Player_);
 

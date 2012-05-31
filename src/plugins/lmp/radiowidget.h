@@ -19,7 +19,6 @@
 #pragma once
 
 #include <QWidget>
-#include <interfaces/media/iradiostation.h>
 #include "ui_radiowidget.h"
 
 namespace Media
@@ -31,6 +30,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class Player;
+
 	class RadioWidget : public QWidget
 	{
 		Q_OBJECT
@@ -38,12 +39,13 @@ namespace LMP
 		Ui::RadioWidget Ui_;
 
 		QList<Media::IRadioStationProvider*> Providers_;
-		Media::IRadioStation_ptr CurrentStation_;
+		Player *Player_;
 	public:
 		RadioWidget (QWidget* = 0);
+
+		void SetPlayer (Player*);
 	private slots:
 		void on_PlayButton__released ();
-		void handleStationError (const QString&);
 	};
 }
 }

@@ -25,6 +25,7 @@
 #include <QUrl>
 #include <phonon/mediaobject.h>
 #include <phonon/audiooutput.h>
+#include <util/util.h>
 #include "core.h"
 #include "mediainfo.h"
 #include "localfileresolver.h"
@@ -119,6 +120,7 @@ namespace LMP
 	, Source_ (new Phonon::MediaObject (this))
 	, Output_ (new Phonon::AudioOutput (Phonon::MusicCategory, this))
 	, Path_ (Phonon::createPath (Source_, Output_))
+	, RadioItem_ (0)
 	, PlayMode_ (PlayMode::Sequential)
 	{
 		connect (Source_,
@@ -258,6 +260,38 @@ namespace LMP
 			CurrentStopSource_ = stopSource;
 			Items_ [stopSource]->setData (true, Role::IsStop);
 		}
+	}
+
+	void Player::SetRadioStation (Media::IRadioStation_ptr station)
+	{
+		if (CurrentStation_)
+			disconnect (CurrentStation_->GetObject (),
+					0,
+					this,
+					0);
+
+		clear ();
+
+		CurrentStation_ = station;
+
+		connect (CurrentStation_->GetObject (),
+				SIGNAL (gotError (const QString&)),
+				this,
+				SLOT (handleStationError (const QString&)));
+		connect (CurrentStation_->GetObject (),
+				SIGNAL (gotNewStream (QUrl)),
+				this,
+				SLOT (handleRadioStream (QUrl)));
+		CurrentStation_->RequestNewStream ();
+
+		RadioItem_ = new QStandardItem (tr ("Radio"));
+		RadioItem_->setEditable (false);
+		PlaylistModel_->appendRow (RadioItem_);
+		connect (Source_,
+				SIGNAL (metaDataChanged ()),
+				this,
+				SLOT (updateRadioMetadata ()),
+				Qt::UniqueConnection);
 	}
 
 	namespace
@@ -437,8 +471,32 @@ namespace LMP
 		return true;
 	}
 
+	void Player::UnsetRadio ()
+	{
+		if (!CurrentStation_)
+			return;
+
+		PlaylistModel_->removeRow (RadioItem_->row ());
+		RadioItem_ = 0;
+
+		CurrentStation_.reset ();
+		disconnect (Source_,
+				SIGNAL (metaDataChanged ()),
+				this,
+				SLOT (updateRadioMetadata ()));
+	}
+
 	void Player::play (const QModelIndex& index)
 	{
+		if (CurrentStation_)
+		{
+			auto item = PlaylistModel_->itemFromIndex (index);
+			if (item == RadioItem_)
+				return;
+			else
+				UnsetRadio ();
+		}
+
 		if (index.data (Role::IsAlbum).toBool ())
 		{
 			play (index.child (0, 0));
@@ -500,10 +558,15 @@ namespace LMP
 	{
 		Source_->stop ();
 		emit songChanged (MediaInfo ());
+
+		if (CurrentStation_)
+			UnsetRadio ();
 	}
 
 	void Player::clear ()
 	{
+		UnsetRadio ();
+
 		PlaylistModel_->clear ();
 		Items_.clear ();
 		AlbumRoots_.clear ();
@@ -529,8 +592,45 @@ namespace LMP
 		}
 	}
 
+	void Player::handleStationError (const QString& error)
+	{
+		const auto& e = Util::MakeNotification ("LMP",
+				tr ("Radio station error: %1.")
+					.arg (error),
+				PCritical_);
+		Core::Instance ().SendEntity (e);
+	}
+
+	void Player::handleRadioStream (const QUrl& url)
+	{
+		Source_->enqueue (url);
+
+		if (Source_->state () == Phonon::StoppedState)
+			Source_->play ();
+	}
+
+	void Player::updateRadioMetadata ()
+	{
+		if (!CurrentStation_)
+			return;
+
+		MediaInfo info;
+		info.Artist_ = Source_->metaData (Phonon::ArtistMetaData).value (0);
+		info.Album_ = Source_->metaData (Phonon::AlbumMetaData).value (0);
+		info.Title_ = Source_->metaData (Phonon::TitleMetaData).value (0);
+		info.Genres_ = Source_->metaData (Phonon::GenreMetaData);
+
+		emit songChanged (info);
+	}
+
 	void Player::handleUpdateSourceQueue ()
 	{
+		if (CurrentStation_)
+		{
+			CurrentStation_->RequestNewStream ();
+			return;
+		}
+
 		const auto& current = Source_->currentSource ();
 		if (HandleCurrentStop (current))
 			return;
