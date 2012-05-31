@@ -28,6 +28,7 @@
 #include "albumartfetcher.h"
 #include "authenticator.h"
 #include "pendingrecommendedartists.h"
+#include "radiostation.h"
 
 namespace LeechCraft
 {
@@ -136,6 +137,24 @@ namespace Lastfmscrobble
 	{
 		return new PendingRecommendedArtists (Auth_,
 				Proxy_->GetNetworkAccessManager (), num, this);
+	}
+
+	QString Plugin::GetRadioName () const
+	{
+		return "Last.FM";
+	}
+
+	Media::IRadioStation_ptr Plugin::GetRadioStation (Type type, const QString& name)
+	{
+		try
+		{
+			auto nam = Proxy_->GetNetworkAccessManager ();
+			return Media::IRadioStation_ptr (new RadioStation (nam, type, name));
+		}
+		catch (const RadioStation::UnsupportedType&)
+		{
+			return Media::IRadioStation_ptr ();
+		}
 	}
 }
 }
