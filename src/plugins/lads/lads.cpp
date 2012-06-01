@@ -17,13 +17,13 @@
  **********************************************************************/
 
 #include "lads.h"
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/imwproxy.h>
 #include <QIcon>
 #include <QDBusConnection>
 #include <QDBusReply>
 #include <QDBusConnectionInterface>
 #include <QAction>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/imwproxy.h>
 
 namespace LeechCraft
 {
