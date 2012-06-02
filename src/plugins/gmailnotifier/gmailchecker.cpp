@@ -76,12 +76,21 @@ namespace GmailNotifier
 		if (!XmlSettingsManager::Instance ()->property ("CheckingEnabled").toBool ())
 			return;
 
-		QString error = tr ("Error");
-		error.prepend ("Gmail Notifier: ");
-
-		if (Username_.isEmpty () || Password_.isEmpty ())
+		const bool isFirstRun = XmlSettingsManager::Instance ()->
+				Property ("FirstRun", true).toBool ();
+		XmlSettingsManager::Instance ()->setProperty ("FirstRun", false);
+		if (Username_.isEmpty ())
 		{
-			emit anErrorOccupied (error, tr ("Username or password not set"));
+			if (isFirstRun)
+				emit anErrorOccupied ("Gmail Notifier",
+						tr ("Username for the GMail checker isn't set. "
+							"You can enable it in GMail Notifier settings."));
+			return;
+		}
+
+		if (Password_.isEmpty ())
+		{
+			emit anErrorOccupied ("Gmail Notifier", tr ("Password isn't set"));
 			return;
 		}
 
