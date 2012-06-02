@@ -42,6 +42,7 @@
 #include "lineparser.h"
 
 Q_DECLARE_METATYPE (QWebFrame*);
+Q_DECLARE_METATYPE (QPointer<QWebFrame>);
 
 namespace LeechCraft
 {
@@ -310,7 +311,7 @@ namespace CleanWeb
 			QMetaObject::invokeMethod (this,
 					"delayedRemoveElements",
 					Qt::QueuedConnection,
-					Q_ARG (QWebFrame*, frame),
+					Q_ARG (QPointer<QWebFrame>, frame),
 					Q_ARG (QString, req.url ().toString ()));
 #else
 		Blocked_ << req.url ().toString ();
@@ -354,7 +355,7 @@ namespace CleanWeb
 		QMetaObject::invokeMethod (this,
 				"delayedRemoveElements",
 				Qt::QueuedConnection,
-				Q_ARG (QWebFrame*, page->mainFrame ()),
+				Q_ARG (QPointer<QWebFrame>, page->mainFrame ()),
 				Q_ARG (QString, url));
 	}
 
@@ -811,10 +812,12 @@ namespace CleanWeb
 		PendingJobs_.remove (id);
 	}
 
-	void Core::delayedRemoveElements (QWebFrame *frame, const QString& url)
+	void Core::delayedRemoveElements (QPointer<QWebFrame> frame, const QString& url)
 	{
-		QWebElementCollection elems =
-				frame->findAllElements ("*[src=\"" + url + "\"]");
+		if (!frame)
+			return;
+
+		const auto& elems = frame->findAllElements ("*[src=\"" + url + "\"]");
 		if (elems.count ())
 			Q_FOREACH (QWebElement elem, elems)
 				elem.removeFromDocument ();
