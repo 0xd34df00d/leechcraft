@@ -29,6 +29,7 @@
 #include "authenticator.h"
 #include "pendingrecommendedartists.h"
 #include "radiostation.h"
+#include "recentreleasesfetcher.h"
 
 namespace LeechCraft
 {
@@ -155,6 +156,15 @@ namespace Lastfmscrobble
 		{
 			return Media::IRadioStation_ptr ();
 		}
+	}
+
+	void Plugin::RequestRecentReleases (int num, bool withRecs)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		connect (new RecentReleasesFetcher (withRecs, num, nam, this),
+				SIGNAL (gotRecentReleases (QList<Media::AlbumRelease>)),
+				this,
+				SIGNAL (gotRecentReleases (QList<Media::AlbumRelease>)));
 	}
 }
 }
