@@ -17,6 +17,9 @@
  **********************************************************************/
 
 #include "releaseswidget.h"
+#include <QDeclarativeContext>
+#include <QStandardItemModel>
+#include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecentreleases.h>
@@ -26,10 +29,43 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		class ReleasesModel : public QStandardItemModel
+		{
+		public:
+			enum Role
+			{
+				AlbumName = Qt::UserRole + 1,
+				ArtistName,
+				AlbumImageThumb,
+				AlbumImageFull,
+				ReleaseDate,
+				ReleaseURL
+			};
+
+			ReleasesModel (QObject *parent = 0)
+			: QStandardItemModel (parent)
+			{
+				QHash<int, QByteArray> names;
+				names [AlbumName] = "albumName";
+				names [ArtistName] = "artistName";
+				names [AlbumImageThumb] = "albumThumbImage";
+				names [AlbumImageFull] = "albumFullImage";
+				names [ReleaseDate] = "releaseDate";
+				names [ReleaseURL] = "releaseURL";
+				setRoleNames (names);
+			}
+		};
+	}
+
 	ReleasesWidget::ReleasesWidget (QWidget *parent)
 	: QWidget (parent)
+	, ReleasesModel_ (new ReleasesModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.ReleasesView_->rootContext ()->setContextProperty ("releasesModel", ReleasesModel_);
+		Ui_.ReleasesView_->setSource (QUrl ("qrc:/lmp/resources/qml/ReleasesView.qml"));
 
 		Providers_ = Core::Instance ().GetProxy ()->GetPluginsManager ()->
 				GetAllCastableTo<Media::IRecentReleases*> ();
@@ -50,12 +86,41 @@ namespace LMP
 
 	void ReleasesWidget::request ()
 	{
+		ReleasesModel_->clear ();
+
 		const auto idx = Ui_.InfoProvider_->currentIndex ();
 		if (idx < 0)
 			return;
 
+		for (auto prov : Providers_)
+			disconnect (dynamic_cast<QObject*> (prov),
+					0,
+					this,
+					0);
+
 		const bool withRecs = Ui_.WithRecs_->checkState () == Qt::Checked;
-		Providers_.at (idx)->RequestRecentReleases (15, withRecs);
+		auto prov = Providers_.at (idx);
+		connect (dynamic_cast<QObject*> (prov),
+				SIGNAL (gotRecentReleases (QList<Media::AlbumRelease>)),
+				this,
+				SLOT (handleRecentReleases (const QList<Media::AlbumRelease>&)));
+		prov->RequestRecentReleases (15, withRecs);
+	}
+
+	void ReleasesWidget::handleRecentReleases (const QList<Media::AlbumRelease>& releases)
+	{
+		for (const auto& release : releases)
+		{
+			auto item = new QStandardItem ();
+			item->setData (release.Title_, ReleasesModel::Role::AlbumName);
+			item->setData (release.Artist_, ReleasesModel::Role::ArtistName);
+			item->setData (release.ThumbImage_, ReleasesModel::Role::AlbumImageThumb);
+			item->setData (release.FullImage_, ReleasesModel::Role::AlbumImageFull);
+			item->setData (release.Date_.date ().toString (Qt::DefaultLocaleLongDate),
+						ReleasesModel::Role::ReleaseDate);
+			item->setData (release.ReleaseURL_, ReleasesModel::Role::ReleaseURL);
+			ReleasesModel_->appendRow (item);
+		}
 	}
 }
 }

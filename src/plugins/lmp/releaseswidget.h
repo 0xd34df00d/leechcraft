@@ -21,9 +21,12 @@
 #include <QWidget>
 #include "ui_releaseswidget.h"
 
+class QStandardItemModel;
+
 namespace Media
 {
 	class IRecentReleases;
+	class AlbumRelease;
 }
 
 namespace LeechCraft
@@ -36,9 +39,12 @@ namespace LMP
 
 		Ui::ReleasesWidget Ui_;
 		QList<Media::IRecentReleases*> Providers_;
+
+		QStandardItemModel *ReleasesModel_;
 	public:
 		ReleasesWidget (QWidget* = 0);
 	private slots:
+		void handleRecentReleases (const QList<Media::AlbumRelease>&);
 		void request ();
 	};
 }
