@@ -122,6 +122,7 @@ namespace LMP
 		void handlePlaybackFinished ();
 		void handleStateChanged (Phonon::State);
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
+		void setTransitionTime ();
 	signals:
 		void songChanged (const MediaInfo&);
 		void insertedAlbum (const QModelIndex&);

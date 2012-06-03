@@ -134,7 +134,10 @@ namespace LMP
 				SLOT (handleUpdateSourceQueue ()));
 		Source_->setTickInterval (1000);
 		Source_->setPrefinishMark (2000);
-		Source_->setTransitionTime (0);
+
+		XmlSettingsManager::Instance ().RegisterObject ("TransitionTime",
+				this, "setTransitionTime");
+		setTransitionTime ();
 
 		connect (Source_,
 				SIGNAL (finished ()),
@@ -705,6 +708,13 @@ namespace LMP
 				break;
 			}
 		}
+	}
+
+	void Player::setTransitionTime ()
+	{
+		const int time = XmlSettingsManager::Instance ()
+				.property ("TransitionTime").toInt ();
+		Source_->setTransitionTime (time);
 	}
 }
 }
