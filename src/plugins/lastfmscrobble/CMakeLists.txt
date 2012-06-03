@@ -30,6 +30,7 @@ SET (SRCS
 	util.cpp
 	radiostation.cpp
 	radiotuner.cpp
+	recentreleasesfetcher.cpp
 	)
 SET (HEADERS
 	lastfmsubmitter.h
@@ -43,6 +44,7 @@ SET (HEADERS
 	util.h
 	radiostation.h
 	radiotuner.h
+	recentreleasesfetcher.h
 	)
 SET (RESOURCES lastfmscrobbleresources.qrc)
 IF (NOT LC_NO_MOC)

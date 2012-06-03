@@ -18,19 +18,31 @@
 
 #pragma once
 
-#include <QList>
-#include <QPair>
-#include <QString>
+#include <QObject>
+
+namespace Media
+{
+	struct AlbumRelease;
+}
 
 class QNetworkAccessManager;
-class QNetworkReply;
 
 namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	QByteArray MakeCall (QList<QPair<QString, QString>>);
+	class RecentReleasesFetcher : public QObject
+	{
+		Q_OBJECT
 
-	QNetworkReply* Request (const QString&, QNetworkAccessManager*, QList<QPair<QString, QString>> = QList<QPair<QString, QString>> ());
+		int MaxNum_;
+	public:
+		RecentReleasesFetcher (bool, int, QNetworkAccessManager*, QObject* = 0);
+	private slots:
+		void handleReplyFinished ();
+		void handleReplyError ();
+	signals:
+		void gotRecentReleases (const QList<Media::AlbumRelease>&);
+	};
 }
 }
