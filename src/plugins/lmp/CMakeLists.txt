@@ -67,6 +67,7 @@ SET (SRCS
 	localcollectionwatcher.cpp
 	recommendationswidget.cpp
 	radiowidget.cpp
+	releaseswidget.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
@@ -98,6 +99,7 @@ SET (HEADERS
 	localcollectionwatcher.h
 	recommendationswidget.h
 	radiowidget.h
+	releaseswidget.h
 	playlistparsers/playlistfactory.h
 	playlistparsers/m3u.h
 	playlistparsers/pls.h
@@ -109,6 +111,7 @@ SET (FORMS
 	fsbrowserwidget.ui
 	recommendationswidget.ui
 	radiowidget.ui
+	releaseswidget.ui
 	)
 SET (RESOURCES resources.qrc)
 CreateTrVars ("lmp" "en;es;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
