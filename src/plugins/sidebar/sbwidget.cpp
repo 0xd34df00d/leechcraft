@@ -24,6 +24,7 @@
 #include <util/gui/flowlayout.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoretabwidget.h>
+#include <interfaces/imwproxy.h>
 
 Q_DECLARE_METATYPE (QToolButton*);
 
@@ -45,6 +46,16 @@ namespace Sidebar
 		static_cast<QVBoxLayout*> (layout ())->addLayout (TrayLay_);
 
 		setMaximumWidth (IconSize_.width () + 2);
+
+		auto mw = proxy->GetMWProxy ();
+		auto menuButton = new QToolButton ();
+		menuButton->setIconSize (IconSize_);
+		menuButton->setIcon (QIcon (":/resources/images/leechcraft.svg"));
+		menuButton->setPopupMode (QToolButton::InstantPopup);
+		menuButton->setArrowType (Qt::NoArrow);
+		menuButton->setMenu (mw->GetMainMenu ());
+		Ui_.MainMenuLay_->addWidget (menuButton);
+		mw->HideMainMenu ();
 	}
 
 	void SBWidget::AddTabOpenAction (QAction *act)
