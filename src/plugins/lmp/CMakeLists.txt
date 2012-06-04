@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_lmp)
 INCLUDE (InitLCPlugin OPTIONAL)
 
-SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 IF (NOT WIN32)
 	FIND_PACKAGE (Phonon)
@@ -65,6 +65,9 @@ SET (SRCS
 	fsmodel.cpp
 	rootpathsettingsmanager.cpp
 	localcollectionwatcher.cpp
+	recommendationswidget.cpp
+	radiowidget.cpp
+	releaseswidget.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
@@ -94,6 +97,9 @@ SET (HEADERS
 	fsmodel.h
 	rootpathsettingsmanager.h
 	localcollectionwatcher.h
+	recommendationswidget.h
+	radiowidget.h
+	releaseswidget.h
 	playlistparsers/playlistfactory.h
 	playlistparsers/m3u.h
 	playlistparsers/pls.h
@@ -103,9 +109,12 @@ SET (FORMS
 	playertab.ui
 	nowplayingwidget.ui
 	fsbrowserwidget.ui
+	recommendationswidget.ui
+	radiowidget.ui
+	releaseswidget.ui
 	)
 SET (RESOURCES resources.qrc)
-CreateTrVars ("lmp" "en;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrVars ("lmp" "en;es;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)

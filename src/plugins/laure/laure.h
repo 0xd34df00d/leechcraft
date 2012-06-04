@@ -79,8 +79,8 @@ namespace Laure
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
-		void gotEntity (const Entity&);
-		void delegateEntity (const Entity&, int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	private slots:
 		void handleNeedToClose ();
 #ifdef HAVE_LASTFM

@@ -23,6 +23,7 @@
 #include <util/util.h>
 #include "player.h"
 #include "mediainfo.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -39,87 +40,11 @@ namespace LMP
 	void PlaylistDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& optionOld, const QModelIndex& index) const
 	{
-		QStyleOptionViewItemV4 option = optionOld;
-		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
-
-		QStyle *style = option.widget ?
-				option.widget->style () :
-				QApplication::style ();
-
 		const bool isAlbum = index.data (Player::Role::IsAlbum).toBool ();
 		if (isAlbum)
-		{
-			style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
-			const int maxIconHeight = option.rect.height () - Padding * 2;
-			QPixmap px = index.data (Player::Role::AlbumArt).value<QPixmap> ();
-			px = px.scaled (maxIconHeight, maxIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-			painter->drawPixmap (option.rect.left () + Padding, option.rect.top () + Padding, px);
-
-			const QFont& font = option.font;
-			QFont bold = font;
-			bold.setBold (true);
-			QFont italic = font;
-			italic.setItalic (true);
-			QFont boldItalic = bold;
-			boldItalic.setItalic (true);
-
-			int x = option.rect.left () + maxIconHeight + 3 * Padding;
-			int y = option.rect.top ();
-			painter->save ();
-
-			auto append = [&x, &y, painter] (const QString& text, const QFont& font)
-			{
-				painter->setFont (font);
-				y += QFontMetrics (font).boundingRect (text).height ();
-				painter->drawText (x, y, text);
-			};
-			append (info.Album_, bold);
-			append (info.Artist_, boldItalic);
-			append (info.Genres_.join (" / "), italic);
-			append (QString::number (info.Year_), font);
-
-			const int length = index.data (Player::Role::AlbumLength).toInt ();
-			auto lengthStr = Util::MakeTimeFromLong (length);
-			if (lengthStr.startsWith ("00:"))
-				lengthStr = lengthStr.mid (3);
-			painter->drawText (option.rect.adjusted (Padding, Padding, -Padding, -Padding), Qt::AlignRight, lengthStr);
-
-			painter->restore ();
-
-			return;
-		}
-
-		const bool isSubAlbum = index.parent ().isValid ();
-
-		QStyleOptionViewItemV4 bgOpt = option;
-		painter->save ();
-		if (index.data (Player::Role::IsCurrent).toBool ())
-		{
-			const QColor& highlight = bgOpt.palette.color (QPalette::Highlight);
-			QLinearGradient grad (0, 0, 0, bgOpt.rect.height ());
-			grad.setColorAt (0, highlight.lighter (100));
-			grad.setColorAt (1, highlight.darker (200));
-			bgOpt.backgroundBrush = QBrush (grad);
-
-			QFont font = option.font;
-			font.setItalic (true);
-			painter->setFont (font);
-			painter->setPen (bgOpt.palette.color (QPalette::HighlightedText));
-		}
-		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &bgOpt, painter, option.widget);
-		QString lengthText = Util::MakeTimeFromLong (info.Length_);
-		if (lengthText.startsWith ("00:"))
-			lengthText = lengthText.mid (3);
-
-		const int width = option.fontMetrics.width (lengthText);
-		style->drawItemText (painter, option.rect,
-				Qt::AlignRight, option.palette, true, lengthText);
-		style->drawItemText (painter, option.rect.adjusted (0, 0, -width, 0),
-				0, option.palette, true,
-				isSubAlbum ?
-					QString::fromUtf8 ("%1 — %2").arg (info.TrackNumber_).arg (info.Title_) :
-					index.data ().toString ());
-		painter->restore ();
+			PaintAlbum (painter, optionOld, index);
+		else
+			PaintTrack (painter, optionOld, index);
 	}
 
 	QSize PlaylistDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -148,6 +73,109 @@ namespace LMP
 				option.fontMetrics.boundingRect (QString::number (info.Year_)).height ();
 
 		return QSize (width, std::max (height, 32));
+	}
+
+	void PlaylistDelegate::PaintTrack (QPainter *painter,
+			const QStyleOptionViewItem& optionOld, const QModelIndex& index) const
+	{
+		QStyleOptionViewItemV4 option = optionOld;
+		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
+
+		QStyle *style = option.widget ?
+				option.widget->style () :
+				QApplication::style ();
+
+		const bool isSubAlbum = index.parent ().isValid ();
+
+		QStyleOptionViewItemV4 bgOpt = option;
+
+		painter->save ();
+
+		if (index.data (Player::Role::IsCurrent).toBool ())
+		{
+			const QColor& highlight = bgOpt.palette.color (QPalette::Highlight);
+			QLinearGradient grad (0, 0, 0, bgOpt.rect.height ());
+			grad.setColorAt (0, highlight.lighter (100));
+			grad.setColorAt (1, highlight.darker (200));
+			bgOpt.backgroundBrush = QBrush (grad);
+
+			QFont font = option.font;
+			font.setItalic (true);
+			painter->setFont (font);
+			painter->setPen (bgOpt.palette.color (QPalette::HighlightedText));
+		}
+
+		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &bgOpt, painter, option.widget);
+		QString lengthText = Util::MakeTimeFromLong (info.Length_);
+		if (lengthText.startsWith ("00:"))
+			lengthText = lengthText.mid (3);
+
+		if (index.data (Player::Role::IsStop).toBool ())
+		{
+			const auto& icon = Core::Instance ().GetProxy ()->GetIcon ("media-playback-stop");
+			const auto& px = icon.pixmap (option.rect.size ());
+			style->drawItemPixmap (painter, option.rect, Qt::AlignLeft | Qt::AlignVCenter, px);
+
+			option.rect.adjust (px.width () + Padding, 0, 0, 0);
+		}
+
+		const int width = option.fontMetrics.width (lengthText);
+		style->drawItemText (painter, option.rect,
+				Qt::AlignRight, option.palette, true, lengthText);
+		style->drawItemText (painter, option.rect.adjusted (0, 0, -width, 0),
+				0, option.palette, true,
+				isSubAlbum ?
+					QString::fromUtf8 ("%1 — %2").arg (info.TrackNumber_).arg (info.Title_) :
+					index.data ().toString ());
+		painter->restore ();
+	}
+
+	void PlaylistDelegate::PaintAlbum (QPainter *painter,
+			const QStyleOptionViewItem& optionOld, const QModelIndex& index) const
+	{
+		QStyleOptionViewItemV4 option = optionOld;
+		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
+
+		QStyle *style = option.widget ?
+				option.widget->style () :
+				QApplication::style ();
+
+		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
+		const int maxIconHeight = option.rect.height () - Padding * 2;
+		QPixmap px = index.data (Player::Role::AlbumArt).value<QPixmap> ();
+		px = px.scaled (maxIconHeight, maxIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		painter->drawPixmap (option.rect.left () + Padding, option.rect.top () + Padding, px);
+
+		const QFont& font = option.font;
+		QFont bold = font;
+		bold.setBold (true);
+		QFont italic = font;
+		italic.setItalic (true);
+		QFont boldItalic = bold;
+		boldItalic.setItalic (true);
+
+		int x = option.rect.left () + maxIconHeight + 3 * Padding;
+		int y = option.rect.top ();
+		painter->save ();
+
+		auto append = [&x, &y, painter] (const QString& text, const QFont& font)
+		{
+			painter->setFont (font);
+			y += QFontMetrics (font).boundingRect (text).height ();
+			painter->drawText (x, y, text);
+		};
+		append (info.Album_, bold);
+		append (info.Artist_, boldItalic);
+		append (info.Genres_.join (" / "), italic);
+		append (QString::number (info.Year_), font);
+
+		const int length = index.data (Player::Role::AlbumLength).toInt ();
+		auto lengthStr = Util::MakeTimeFromLong (length);
+		if (lengthStr.startsWith ("00:"))
+			lengthStr = lengthStr.mid (3);
+		painter->drawText (option.rect.adjusted (Padding, Padding, -Padding, -Padding), Qt::AlignRight, lengthStr);
+
+		painter->restore ();
 	}
 }
 }

@@ -23,8 +23,10 @@
 #include <QDir>
 #include <QMimeData>
 #include <QUrl>
+#include <QApplication>
 #include <phonon/mediaobject.h>
 #include <phonon/audiooutput.h>
+#include <util/util.h>
 #include "core.h"
 #include "mediainfo.h"
 #include "localfileresolver.h"
@@ -119,6 +121,7 @@ namespace LMP
 	, Source_ (new Phonon::MediaObject (this))
 	, Output_ (new Phonon::AudioOutput (Phonon::MusicCategory, this))
 	, Path_ (Phonon::createPath (Source_, Output_))
+	, RadioItem_ (0)
 	, PlayMode_ (PlayMode::Sequential)
 	{
 		connect (Source_,
@@ -128,8 +131,22 @@ namespace LMP
 		connect (Source_,
 				SIGNAL (aboutToFinish ()),
 				this,
-				SLOT (handleSourceAboutToFinish ()));
+				SLOT (handleUpdateSourceQueue ()));
 		Source_->setTickInterval (1000);
+		Source_->setPrefinishMark (2000);
+
+		XmlSettingsManager::Instance ().RegisterObject ("TransitionTime",
+				this, "setTransitionTime");
+		setTransitionTime ();
+
+		connect (Source_,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePlaybackFinished ()));
+		connect (Source_,
+				SIGNAL (stateChanged (Phonon::State, Phonon::State)),
+				this,
+				SLOT (handleStateChanged (Phonon::State)));
 
 		auto collection = Core::Instance ().GetLocalCollection ();
 		if (collection->IsReady ())
@@ -226,6 +243,50 @@ namespace LMP
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 	}
 
+	void Player::SetStopAfter (const QModelIndex& index)
+	{
+		if (!index.isValid ())
+			return;
+
+		Phonon::MediaSource stopSource;
+		if (index.data (Role::IsAlbum).toBool ())
+			stopSource = PlaylistModel_->index (0, 0, index).data (Role::Source).value<Phonon::MediaSource> ();
+		else
+			stopSource = index.data (Role::Source).value<Phonon::MediaSource> ();
+
+		if (CurrentStopSource_.type () != Phonon::MediaSource::Empty)
+			Items_ [CurrentStopSource_]->setData (false, Role::IsStop);
+
+		if (CurrentStopSource_ == stopSource)
+			CurrentStopSource_ = Phonon::MediaSource ();
+		else
+		{
+			CurrentStopSource_ = stopSource;
+			Items_ [stopSource]->setData (true, Role::IsStop);
+		}
+	}
+
+	void Player::SetRadioStation (Media::IRadioStation_ptr station)
+	{
+		clear ();
+
+		CurrentStation_ = station;
+
+		connect (CurrentStation_->GetObject (),
+				SIGNAL (gotError (const QString&)),
+				this,
+				SLOT (handleStationError (const QString&)));
+		connect (CurrentStation_->GetObject (),
+				SIGNAL (gotNewStream (QUrl, Media::AudioInfo)),
+				this,
+				SLOT (handleRadioStream (QUrl, Media::AudioInfo)));
+		CurrentStation_->RequestNewStream ();
+
+		RadioItem_ = new QStandardItem (tr ("Radio"));
+		RadioItem_->setEditable (false);
+		PlaylistModel_->appendRow (RadioItem_);
+	}
+
 	namespace
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
@@ -267,6 +328,13 @@ namespace LMP
 	{
 		if (!CurrentQueue_.isEmpty ())
 		{
+			auto vals = Items_.values ();
+			auto curSrcPos = std::find_if (vals.begin (), vals.end (),
+					[] (decltype (vals.front ()) item) { return item->data (Role::IsCurrent).toBool (); });
+			const auto& currentSource = curSrcPos != vals.end () ?
+					(*curSrcPos)->data (Role::Source).value<Phonon::MediaSource> () :
+					Phonon::MediaSource ();
+
 			PlaylistModel_->clear ();
 			Items_.clear ();
 			AlbumRoots_.clear ();
@@ -274,6 +342,9 @@ namespace LMP
 			auto newList = CurrentQueue_ + sources;
 			CurrentQueue_.clear ();
 			AddToPlaylistModel (newList, sort);
+
+			if (Items_.contains (currentSource))
+				Items_ [currentSource]->setData (true, Role::IsCurrent);
 			return;
 		}
 
@@ -392,8 +463,39 @@ namespace LMP
 				});
 	}
 
+	bool Player::HandleCurrentStop (const Phonon::MediaSource& source)
+	{
+		if (source != CurrentStopSource_)
+			return false;
+
+		CurrentStopSource_ = Phonon::MediaSource ();
+		Items_ [source]->setData (false, Role::IsStop);
+
+		return true;
+	}
+
+	void Player::UnsetRadio ()
+	{
+		if (!CurrentStation_)
+			return;
+
+		PlaylistModel_->removeRow (RadioItem_->row ());
+		RadioItem_ = 0;
+
+		CurrentStation_.reset ();
+	}
+
 	void Player::play (const QModelIndex& index)
 	{
+		if (CurrentStation_)
+		{
+			auto item = PlaylistModel_->itemFromIndex (index);
+			if (item == RadioItem_)
+				return;
+			else
+				UnsetRadio ();
+		}
+
 		if (index.data (Role::IsAlbum).toBool ())
 		{
 			play (index.child (0, 0));
@@ -426,8 +528,16 @@ namespace LMP
 		Source_->play ();
 	}
 
-	void Player::nextTrack()
+	void Player::nextTrack ()
 	{
+		if (CurrentStation_)
+		{
+			Source_->clear ();
+			qApp->processEvents ();
+			CurrentStation_->RequestNewStream ();
+			return;
+		}
+
 		const auto& current = Source_->currentSource ();
 		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
 		if (pos == CurrentQueue_.end () || pos == CurrentQueue_.end () - 1)
@@ -455,10 +565,15 @@ namespace LMP
 	{
 		Source_->stop ();
 		emit songChanged (MediaInfo ());
+
+		if (CurrentStation_)
+			UnsetRadio ();
 	}
 
 	void Player::clear ()
 	{
+		UnsetRadio ();
+
 		PlaylistModel_->clear ();
 		Items_.clear ();
 		AlbumRoots_.clear ();
@@ -484,9 +599,37 @@ namespace LMP
 		}
 	}
 
-	void Player::handleSourceAboutToFinish ()
+	void Player::handleStationError (const QString& error)
 	{
+		const auto& e = Util::MakeNotification ("LMP",
+				tr ("Radio station error: %1.")
+					.arg (error),
+				PCritical_);
+		Core::Instance ().SendEntity (e);
+	}
+
+	void Player::handleRadioStream (const QUrl& url, const Media::AudioInfo& info)
+	{
+		Url2Info_ [url] = info;
+		Source_->enqueue (url);
+
+		qDebug () << Q_FUNC_INFO << Source_->state ();
+		if (Source_->state () == Phonon::StoppedState)
+			Source_->play ();
+	}
+
+	void Player::handleUpdateSourceQueue ()
+	{
+		if (CurrentStation_)
+		{
+			CurrentStation_->RequestNewStream ();
+			return;
+		}
+
 		const auto& current = Source_->currentSource ();
+		if (HandleCurrentStop (current))
+			return;
+
 		const auto& path = current.fileName ();
 		if (!path.isEmpty ())
 			QMetaObject::invokeMethod (Core::Instance ().GetLocalCollection (),
@@ -528,14 +671,32 @@ namespace LMP
 		}
 	}
 
+	void Player::handlePlaybackFinished ()
+	{
+		emit songChanged (MediaInfo ());
+	}
+
+	void Player::handleStateChanged (Phonon::State state)
+	{
+		qDebug () << Q_FUNC_INFO << state;
+		if (state == Phonon::ErrorState)
+			qDebug () << Source_->errorType () << Source_->errorString ();
+	}
+
 	void Player::handleCurrentSourceChanged (const Phonon::MediaSource& source)
 	{
 		XmlSettingsManager::Instance ().setProperty ("LastSong", source.fileName ());
 
-		auto curItem = Items_ [source];
+		auto curItem = CurrentStation_ ? RadioItem_ : Items_ [source];
 		curItem->setData (true, Role::IsCurrent);
 
-		emit songChanged (curItem->data (Role::Info).value<MediaInfo> ());
+		if (CurrentStation_)
+		{
+			const auto& info = Url2Info_.take (source.url ());
+			emit songChanged (info);
+		}
+		else
+			emit songChanged (curItem->data (Role::Info).value<MediaInfo> ());
 
 		Q_FOREACH (auto item, Items_.values ())
 		{
@@ -547,6 +708,13 @@ namespace LMP
 				break;
 			}
 		}
+	}
+
+	void Player::setTransitionTime ()
+	{
+		const int time = XmlSettingsManager::Instance ()
+				.property ("TransitionTime").toInt ();
+		Source_->setTransitionTime (time);
 	}
 }
 }

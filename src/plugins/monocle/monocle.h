@@ -22,18 +22,22 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ipluginready.h>
+#include <interfaces/ihaverecoverabletabs.h>
 
 namespace LeechCraft
 {
 namespace Monocle
 {
+	class DocumentTab;
+
 	class Plugin : public QObject
 					, public IInfo
 					, public IHaveTabs
 					, public IPluginReady
+					, public IHaveRecoverableTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IPluginReady)
+		Q_INTERFACES (IInfo IHaveTabs IPluginReady IHaveRecoverableTabs)
 
 		TabClassInfo DocTabInfo_;
 	public:
@@ -50,6 +54,10 @@ namespace Monocle
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
+
+		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+	private:
+		void EmitTab (DocumentTab*);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

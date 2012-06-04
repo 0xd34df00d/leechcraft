@@ -24,11 +24,15 @@
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/media/isimilarartists.h>
+#include <interfaces/media/irecommendedartists.h>
+#include <interfaces/media/iradiostationprovider.h>
+#include <interfaces/media/irecentreleases.h>
 
 namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
+	class Authenticator;
 	class LastFMSubmitter;
 
 	class Plugin : public QObject
@@ -37,16 +41,25 @@ namespace Lastfmscrobble
 				, public Media::IAudioScrobbler
 				, public Media::IAlbumArtProvider
 				, public Media::ISimilarArtists
+				, public Media::IRecommendedArtists
+				, public Media::IRadioStationProvider
+				, public Media::IRecentReleases
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IHaveSettings
 				Media::IAudioScrobbler
 				Media::IAlbumArtProvider
-				Media::ISimilarArtists)
+				Media::ISimilarArtists
+				Media::IRecommendedArtists
+				Media::IRadioStationProvider
+				Media::IRecentReleases)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+
+		Authenticator *Auth_;
 		LastFMSubmitter *LFSubmitter_;
+
 		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
@@ -63,24 +76,25 @@ namespace Lastfmscrobble
 		void NowPlaying (const Media::AudioInfo&);
 		void PlaybackStopped ();
 		void LoveCurrentTrack ();
-		void RerequestRecommendations ();
-
-		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&, int);
 
 		QString GetAlbumArtProviderName () const;
 		void RequestAlbumArt (const Media::AlbumInfo& album) const;
-	private:
-		void FeedPassword (bool);
-	private slots:
-		void handleSubmitterInit ();
-		void handleAuthFailure ();
+
+		Media::IPendingSimilarArtists* GetSimilarArtists (const QString&, int);
+
+		Media::IPendingSimilarArtists* RequestRecommended (int);
+
+		QString GetRadioName () const;
+		Media::IRadioStation_ptr GetRadioStation (Type, const QString&);
+
+		void RequestRecentReleases (int, bool);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 
-		void gotRecommendations (const Media::SimilarityInfos_t&);
-
 		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
+
+		void gotRecentReleases (const QList<Media::AlbumRelease>&);
 	};
 }
 }

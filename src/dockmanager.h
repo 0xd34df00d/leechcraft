@@ -20,8 +20,11 @@
 
 #include <QObject>
 #include <QMap>
+#include <QHash>
+#include <QSet>
 
 class QDockWidget;
+class QAction;
 
 namespace LeechCraft
 {
@@ -33,14 +36,24 @@ namespace LeechCraft
 
 		MainWindow *MW_;
 		QMap<Qt::DockWidgetArea, QList<QDockWidget*>> Area2Widgets_;
+
+		QHash<QDockWidget*, QWidget*> TabAssociations_;
+		QHash<QAction*, QDockWidget*> ToggleAct2Dock_;
+		QSet<QDockWidget*> ForcefullyClosed_;
 	public:
 		DockManager (MainWindow*, QObject* = 0);
 
 		void AddDockWidget (QDockWidget*, Qt::DockWidgetArea);
+		void AssociateDockWidget (QDockWidget*, QWidget*);
+	protected:
+		bool eventFilter (QObject*, QEvent*);
 	private:
 		void UnmanageFrom (QDockWidget*, QWidget*);
 		void ManageInto (QDockWidget*, QWidget*);
 	private slots:
+		void handleDockDestroyed ();
 		void handleDockLocationChanged (Qt::DockWidgetArea);
+		void handleDockToggled (bool);
+		void handleTabChanged (QWidget*);
 	};
 }

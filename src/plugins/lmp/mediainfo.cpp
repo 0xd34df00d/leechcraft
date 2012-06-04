@@ -22,6 +22,19 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	MediaInfo& MediaInfo::operator= (const Media::AudioInfo& info)
+	{
+		Artist_ = info.Artist_;
+		Album_ = info.Album_;
+		Title_ = info.Title_;
+		Genres_ = info.Genres_;
+		Length_ = info.Length_;
+		Year_ = info.Year_;
+		TrackNumber_ = info.TrackNumber_;
+
+		return *this;
+	}
+
 	MediaInfo::operator Media::AudioInfo () const
 	{
 		const Media::AudioInfo aInfo =

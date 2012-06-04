@@ -16,6 +16,11 @@
 		<item type="checkbox" property="ShowTrayIcon" default="false">
 			<label value="Show tray icon" />
 		</item>
+		<item type="spinbox" property="TransitionTime" default="0" step="100" minimum="-10000" maximum="10000">
+			<label value="Transition time between tracks:" />
+			<suffix value=" ms" />
+			<tooltip value="Setting this to positive values introduces a gap between tracks. Negative values enable crossfade. Zero requests gapless playback." />
+		</item>
 	</page>
 	<page>
 		<label value="Collection" />

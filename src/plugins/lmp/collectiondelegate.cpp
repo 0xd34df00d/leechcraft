@@ -40,11 +40,22 @@ namespace LMP
 	{
 		const int type = index.data (LocalCollection::Role::Node).toInt ();
 		if (type != LocalCollection::NodeType::Album)
-		{
 			QStyledItemDelegate::paint (painter, optionOld, index);
-			return;
-		}
+		else
+			PaintAlbum (painter, optionOld, index);
+	}
 
+	QSize CollectionDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
+	{
+		QSize result = QStyledItemDelegate::sizeHint (option, index);
+		if (index.data (LocalCollection::Role::Node).toInt () == LocalCollection::NodeType::Album)
+			result.setHeight (std::max (result.height (), IconSize));
+		return result;
+	}
+
+	void CollectionDelegate::PaintAlbum (QPainter *painter,
+			const QStyleOptionViewItem& optionOld, const QModelIndex& index) const
+	{
 		const QStyleOptionViewItemV4 option = optionOld;
 		QStyle *style = option.widget ?
 				option.widget->style () :
@@ -73,14 +84,6 @@ namespace LMP
 				Qt::AlignVCenter, text);
 
 		painter->restore ();
-	}
-
-	QSize CollectionDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
-	{
-		QSize result = QStyledItemDelegate::sizeHint (option, index);
-		if (index.data (LocalCollection::Role::Node).toInt () == LocalCollection::NodeType::Album)
-			result.setHeight (std::max (result.height (), IconSize));
-		return result;
 	}
 }
 }

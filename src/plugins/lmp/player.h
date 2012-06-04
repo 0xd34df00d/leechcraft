@@ -21,6 +21,8 @@
 #include <QObject>
 #include <phonon/mediasource.h>
 #include <phonon/path.h>
+#include <interfaces/media/iradiostation.h>
+#include "mediainfo.h"
 
 class QModelIndex;
 class QStandardItem;
@@ -51,6 +53,12 @@ namespace LMP
 		QList<Phonon::MediaSource> CurrentQueue_;
 		QHash<Phonon::MediaSource, QStandardItem*> Items_;
 		QHash<QPair<QString, QString>, QStandardItem*> AlbumRoots_;
+
+		Phonon::MediaSource CurrentStopSource_;
+
+		Media::IRadioStation_ptr CurrentStation_;
+		QStandardItem *RadioItem_;
+		QHash<QUrl, MediaInfo> Url2Info_;
 	public:
 		enum class PlayMode
 		{
@@ -66,6 +74,7 @@ namespace LMP
 		enum Role
 		{
 			IsCurrent = Qt::UserRole + 1,
+			IsStop,
 			IsAlbum,
 			Source,
 			Info,
@@ -86,10 +95,18 @@ namespace LMP
 		QList<Phonon::MediaSource> GetQueue () const;
 
 		void Dequeue (const QModelIndex&);
+
+		void SetStopAfter (const QModelIndex&);
+
+		void SetRadioStation (Media::IRadioStation_ptr);
 	private:
 		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
 		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
 		void ApplyOrdering (QList<Phonon::MediaSource>&);
+
+		bool HandleCurrentStop (const Phonon::MediaSource&);
+
+		void UnsetRadio ();
 	public slots:
 		void play (const QModelIndex&);
 		void previousTrack ();
@@ -99,8 +116,13 @@ namespace LMP
 		void clear ();
 	private slots:
 		void restorePlaylist ();
-		void handleSourceAboutToFinish ();
+		void handleStationError (const QString&);
+		void handleRadioStream (const QUrl&, const Media::AudioInfo&);
+		void handleUpdateSourceQueue ();
+		void handlePlaybackFinished ();
+		void handleStateChanged (Phonon::State);
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
+		void setTransitionTime ();
 	signals:
 		void songChanged (const MediaInfo&);
 		void insertedAlbum (const QModelIndex&);

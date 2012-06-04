@@ -14,26 +14,36 @@ SET (SRCS
 	documenttab.cpp
 	core.cpp
 	pagegraphicsitem.cpp
+	filewatcher.cpp
+	tocwidget.cpp
+	presenterwidget.cpp
 	)
 SET (HEADERS
 	monocle.h
 	documenttab.h
 	core.h
 	pagegraphicsitem.h
+	filewatcher.h
+	tocwidget.h
+	presenterwidget.h
 	)
 SET (FORMS
 	documenttab.ui
+	tocwidget.ui
 	)
+SET (RESOURCES monocleresources.qrc)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_monocle SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_monocle
 	${QT_LIBRARIES}

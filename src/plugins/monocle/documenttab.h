@@ -19,23 +19,27 @@
 #pragma once
 
 #include <QWidget>
+#include <QComboBox>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "interfaces/monocle/idocument.h"
 #include "ui_documenttab.h"
 
-#include <QComboBox>
+class QDockWidget;
 
 namespace LeechCraft
 {
 namespace Monocle
 {
 	class PageGraphicsItem;
+	class TOCWidget;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
+					  , public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		Ui::DocumentTab Ui_;
 
@@ -46,7 +50,11 @@ namespace Monocle
 		QComboBox *ScalesBox_;
 		QLineEdit *PageNumLabel_;
 
+		QDockWidget *DockTOC_;
+		TOCWidget *TOCWidget_;
+
 		IDocument_ptr CurrentDoc_;
+		QString CurrentDocPath_;
 		QList<PageGraphicsItem*> Pages_;
 		QGraphicsScene Scene_;
 
@@ -62,12 +70,21 @@ namespace Monocle
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+
+		QString GetTabRecoverName () const;
+		QIcon GetTabRecoverIcon () const;
+		QByteArray GetTabRecoverData () const;
+
+		void RecoverState (const QByteArray&);
+
+		void ReloadDoc (const QString&);
 	private:
 		void SetupToolbar ();
 
 		double GetCurrentScale () const;
 
 		bool SetDoc (const QString&);
+		QPoint GetViewportCenter () const;
 		int GetCurrentPage () const;
 		void SetCurrentPage (int);
 		void Relayout (double);
@@ -75,6 +92,8 @@ namespace Monocle
 		void handleNavigateRequested (const QString&, int, double, double);
 
 		void selectFile ();
+		void handlePrint ();
+		void handlePresentation ();
 
 		void handleGoPrev ();
 		void handleGoNext ();
@@ -84,10 +103,16 @@ namespace Monocle
 		void showOnePage ();
 		void showTwoPages ();
 
+		void delayedCenterOn (const QPoint&);
+
 		void handleScaleChosen (int);
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);
+
+		void tabRecoverDataChanged ();
+
+		void fileLoaded (const QString&);
 	};
 }
 }

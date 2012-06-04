@@ -17,6 +17,10 @@
  **********************************************************************/
 
 #include "fswinwatcher.h"
+#include <QX11Info>
+#include <QMainWindow>
+#include <X11/Xlib.h>
+#include <X11/extensions/randr.h>
 
 namespace LeechCraft
 {
@@ -28,9 +32,41 @@ namespace Kinotify
 	{
 	}
 
+	namespace
+	{
+		bool getSize (Display *dpy, Window win, int *width,int *height)
+		{
+			XWindowAttributes windowattr;
+			if (XGetWindowAttributes (dpy, win, &windowattr) == 0)
+				return false;
+
+			*width = windowattr.width;
+			*height = windowattr.height;
+			return true;
+		}
+	}
+
 	bool FSWinWatcher::IsCurrentFS ()
 	{
-		return false;
+		Display *display = QX11Info::display ();
+		Window focusWin;
+		int reverToReturn;
+		int screen = QX11Info::appScreen ();
+		int screenWidth, screenHeight, width, height;
+		if (!display)
+			return false;
+
+		XGetInputFocus (display, &focusWin, &reverToReturn);
+
+		if (Proxy_->GetMainWindow ()->effectiveWinId () == focusWin)
+			return false;
+
+		if (!(getSize (display, RootWindow (display, screen), &screenWidth, &screenHeight) &&
+				getSize (display, focusWin, &width, &height)))
+			return false;
+
+		return screenWidth == width && screenHeight == height;
 	}
+
 }
 }

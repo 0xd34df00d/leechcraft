@@ -49,6 +49,23 @@ namespace PDF
 	private:
 		void ExecutePageLink ();
 	};
+
+	class TOCLink : public QObject
+				  , public ILink
+	{
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Monocle::ILink)
+	protected:
+		Document *Doc_;
+		Poppler::LinkDestination *Dest_;
+	public:
+		TOCLink (Document*, Poppler::LinkDestination*);
+
+		LinkType GetLinkType () const;
+		QRectF GetArea () const;
+
+		void Execute ();
+	};
 }
 }
 }

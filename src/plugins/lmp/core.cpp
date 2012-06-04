@@ -49,6 +49,11 @@ namespace LMP
 		return Proxy_;
 	}
 
+	void Core::SendEntity (const Entity& e)
+	{
+		emit gotEntity (e);
+	}
+
 	void Core::PostInit ()
 	{
 		Collection_->FinalizeInit ();

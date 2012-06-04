@@ -61,6 +61,7 @@ namespace Laure
 		
 		Ui_.PlayListWidget_->Init (VLCWrapper_);
 		Ui_.Player_->SetVLCWrapper (VLCWrapper_);
+		Ui_.VolumeSlider_->setValue (VLCWrapper_->GetVolume ());
 		
 		connect (SeparatePlayer_.get (),
 				SIGNAL (closed ()),
@@ -97,14 +98,14 @@ namespace Laure
 				SLOT (setVolume (int)));
 				
 		connect (wrapper,
-				SIGNAL (gotEntity (Entity)),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
-				SIGNAL (gotEntity (Entity)));
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 		
 		connect (wrapper,
-				SIGNAL (delegateEntity (Entity, int*, QObject**)),
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
 				this,
-				SIGNAL (delegateEntity (Entity, int*, QObject**)));
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 		connect (wrapper,
 				SIGNAL (currentItemMeta (MediaMeta)),
 				this,
@@ -115,6 +116,11 @@ namespace Laure
 				wrapper,
 				SLOT (addRow (QString)));
 		
+		connect (Ui_.Splitter_,
+			 	SIGNAL (splitterMoved (int, int)),
+			 	this,
+	 			SLOT (handleSplitterMoved ()));
+		
 		const int playlistWidth = XmlSettingsManager::Instance ()
 				.property ("PlayListWidgetWidth").toInt ();
 		
@@ -124,6 +130,12 @@ namespace Laure
 		InitCommandFrame ();
 	}
 	
+	void LaureWidget::handleSplitterMoved ()
+	{
+		XmlSettingsManager::Instance ().setProperty ("PlayListWidgetWidth",
+				Ui_.PlayListWidget_->size ().width ());
+	}
+	
 	void LaureWidget::handlePlayListWidgetDoubleClicked ()
 	{
 		ActionPlay_->handleTriggered ();
@@ -131,8 +143,6 @@ namespace Laure
 	
 	LaureWidget::~LaureWidget ()
 	{
-		XmlSettingsManager::Instance ().setProperty ("PlayListWidgetWidth",
-				Ui_.PlayListWidget_->size ().width ());
 	}
 	
 	void LaureWidget::InitToolBar ()
@@ -313,7 +323,7 @@ namespace Laure
 	
 	void LaureWidget::updateInterface ()
 	{
-		Ui_.VolumeSlider_->setValue (VLCWrapper_->GetVolume ());
+		//Ui_.VolumeSlider_->setValue (VLCWrapper_->GetVolume ());
 		Ui_.PositionSlider_->setValue (Ui_.Player_->GetPosition ());
 		const QTime& currTime = Ui_.Player_->GetTime ();
 		const QTime& length = Ui_.Player_->GetLength ();
@@ -385,11 +395,7 @@ namespace Laure
 			Ui_.Splitter_->setSizes (QList<int> () << size ().width () << playlistWidth);
 		}
 		else
-		{
-			XmlSettingsManager::Instance ().setProperty ("PlayListWidgetWidth",
-					Ui_.PlayListWidget_->size ().width ());
 			Ui_.GlobalGridLayout_->addWidget (Ui_.PlayListWidget_, 0, 1, 1, 4);
-		}
 		
 		PlayListAction_->setEnabled (checked);
 		Ui_.Player_->setVisible (checked);

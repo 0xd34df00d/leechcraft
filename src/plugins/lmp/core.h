@@ -23,6 +23,8 @@
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace LMP
 {
 	class LocalCollection;
@@ -46,6 +48,8 @@ namespace LMP
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy ();
 
+		void SendEntity (const Entity&);
+
 		void PostInit ();
 
 		LocalFileResolver* GetLocalFileResolver () const;
@@ -53,6 +57,8 @@ namespace LMP
 		PlaylistManager* GetPlaylistManager () const;
 	public slots:
 		void rescan ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

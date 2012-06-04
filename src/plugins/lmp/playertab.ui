@@ -147,6 +147,62 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="SocialTab_">
+       <attribute name="title">
+        <string>Social</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <property name="margin">
+         <number>1</number>
+        </property>
+        <item>
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="RecTab_">
+           <attribute name="title">
+            <string>Recommendations</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <property name="margin">
+             <number>1</number>
+            </property>
+            <item>
+             <widget class="LeechCraft::LMP::RecommendationsWidget" name="RecommendationsWidget_" native="true"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="RadioTab_">
+           <attribute name="title">
+            <string>Radio</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <property name="margin">
+             <number>1</number>
+            </property>
+            <item>
+             <widget class="LeechCraft::LMP::RadioWidget" name="RadioWidget_" native="true"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="ReleasesTab_">
+           <attribute name="title">
+            <string>Releases</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_9">
+            <property name="margin">
+             <number>1</number>
+            </property>
+            <item>
+             <widget class="LeechCraft::LMP::ReleasesWidget" name="ReleasesWidget_" native="true"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="FSTab_">
        <attribute name="title">
         <string>Filesystem</string>
@@ -180,6 +236,9 @@
          <property name="selectionMode">
           <enum>QAbstractItemView::ExtendedSelection</enum>
          </property>
+         <property name="verticalScrollMode">
+          <enum>QAbstractItemView::ScrollPerPixel</enum>
+         </property>
          <property name="indentation">
           <number>0</number>
          </property>
@@ -208,6 +267,24 @@
    <class>LeechCraft::LMP::FSBrowserWidget</class>
    <extends>QWidget</extends>
    <header>fsbrowserwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::RecommendationsWidget</class>
+   <extends>QWidget</extends>
+   <header>recommendationswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::RadioWidget</class>
+   <extends>QWidget</extends>
+   <header>radiowidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::ReleasesWidget</class>
+   <extends>QWidget</extends>
+   <header>releaseswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -23,6 +23,7 @@
 #include <util/models/mergemodel.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
+#include <interfaces/ihaverecoverabletabs.h>
 
 class QTreeView;
 
@@ -157,6 +158,8 @@ namespace Summary
 			* could not be found.
 			*/
 		QModelIndex MapToSourceRecursively (QModelIndex index) const;
+
+		void RecoverTabs (const QList<TabRecoverInfo>&);
 	public slots:
 		void handleNewTabRequested ();
 	private:

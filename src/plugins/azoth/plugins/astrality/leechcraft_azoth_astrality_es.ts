@@ -4,12 +4,12 @@
     <message>
         <location filename="accountregfirstpage.ui" line="14"/>
         <source>General account settings</source>
-        <translation type="unfinished"/>
+        <translation>Opciónes generales de la cuenta</translation>
     </message>
     <message>
         <location filename="accountregfirstpage.ui" line="25"/>
         <source>Account ID:</source>
-        <translation type="unfinished"/>
+        <translation>ID de la cuenta:</translation>
     </message>
     <message>
         <location filename="accountregfirstpage.ui" line="35"/>
@@ -44,7 +44,7 @@
     <message>
         <location filename="accountregfirstpage.ui" line="91"/>
         <source>Autodisconnect</source>
-        <translation type="unfinished"/>
+        <translation>Desconectarse automaticamente</translation>
     </message>
 </context>
 <context>
@@ -72,7 +72,7 @@
     <message>
         <location filename="accountwrapper.cpp" line="412"/>
         <source>network error</source>
-        <translation type="unfinished"/>
+        <translation>error de conexión</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="415"/>
@@ -82,12 +82,12 @@
     <message>
         <location filename="accountwrapper.cpp" line="418"/>
         <source>encryption error</source>
-        <translation type="unfinished"/>
+        <translation>error de encriptación</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="421"/>
         <source>resource or name is already in use</source>
-        <translation type="unfinished"/>
+        <translation>resurso o nombre ya esta usado</translation>
     </message>
     <message>
         <location filename="accountwrapper.cpp" line="424"/>

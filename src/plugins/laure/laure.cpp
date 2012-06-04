@@ -124,13 +124,13 @@ namespace Laure
 				this,
 				SLOT (handleNeedToClose ()));
 		connect (w,
-				SIGNAL (gotEntity (Entity)),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
-				SIGNAL (gotEntity (Entity)));
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 		connect (w,
-				SIGNAL (delegateEntity (Entity, int*, QObject**)),
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
 				this,
-				SIGNAL (delegateEntity (Entity, int*, QObject**)));
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 
 		Others_ << w;
 		emit addNewTab (tr ("Laure"), w);

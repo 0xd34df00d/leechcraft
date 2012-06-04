@@ -76,6 +76,27 @@ namespace PDF
 		const auto& dest = link->destination ();
 		Doc_->RequestNavigation (filename, dest.pageNumber () - 1, dest.left (), dest.top ());
 	}
+
+	TOCLink::TOCLink (Document *doc, Poppler::LinkDestination *dest)
+	: Doc_ (doc)
+	, Dest_ (dest)
+	{
+	}
+
+	LinkType TOCLink::GetLinkType () const
+	{
+		return LinkType::PageLink;
+	}
+
+	QRectF TOCLink::GetArea () const
+	{
+		return QRectF ();
+	}
+
+	void TOCLink::Execute ()
+	{
+		Doc_->RequestNavigation (QString (), Dest_->pageNumber () - 1, Dest_->left (), Dest_->top ());
+	}
 }
 }
 }

@@ -48,7 +48,7 @@
     <message>
         <location filename="addpeerdialog.ui" line="14"/>
         <source>Add a peer</source>
-        <translation type="unfinished"/>
+        <translation>Añadir un pare</translation>
     </message>
     <message>
         <location filename="addpeerdialog.ui" line="22"/>
@@ -179,7 +179,7 @@
     <message>
         <location filename="addtorrent.ui" line="239"/>
         <source>Tracker URL:</source>
-        <translation type="unfinished"/>
+        <translation>URL del tracker:</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="246"/>
@@ -208,7 +208,7 @@
     <message>
         <location filename="addtorrent.ui" line="295"/>
         <source>Date:</source>
-        <translation type="unfinished"/>
+        <translation>Fecha:</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="327"/>
@@ -226,7 +226,7 @@
     <message>
         <location filename="addwebseeddialog.ui" line="14"/>
         <source>Add a web seed</source>
-        <translation type="unfinished"/>
+        <translation>Añadir semilla web</translation>
     </message>
     <message>
         <location filename="addwebseeddialog.ui" line="22"/>
@@ -236,12 +236,12 @@
     <message>
         <location filename="addwebseeddialog.ui" line="34"/>
         <source>The server is smart (BEP 17)</source>
-        <translation type="unfinished"/>
+        <translation>Este servidor es inteligente (BEP 17)</translation>
     </message>
     <message>
         <location filename="addwebseeddialog.ui" line="44"/>
         <source>The client is smart (BEP 19)</source>
-        <translation type="unfinished"/>
+        <translation>Este cliente es inteligente (BEP 19)</translation>
     </message>
 </context>
 <context>
@@ -249,7 +249,7 @@
     <message>
         <location filename="banpeersdialog.ui" line="14"/>
         <source>Ban peers</source>
-        <translation type="unfinished"/>
+        <translation>Banear pares</translation>
     </message>
     <message>
         <location filename="banpeersdialog.ui" line="25"/>
@@ -404,7 +404,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="addtorrent.cpp" line="244"/>
         <source>&lt;no trackers&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;no trackers&gt;</translation>
     </message>
 </context>
 <context>
@@ -422,7 +422,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="140"/>
         <source>Standard</source>
-        <translation type="unfinished"/>
+        <translation>Estándar</translation>
     </message>
     <message>
         <location filename="core.cpp" line="249"/>
@@ -501,7 +501,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="573"/>
         <source>Peers/seeds: %1/%2</source>
-        <translation type="unfinished"/>
+        <translation>Pares/semillas: %1/%2</translation>
     </message>
     <message>
         <location filename="core.cpp" line="630"/>
@@ -890,7 +890,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="speedselectoraction.cpp" line="93"/>
         <source>%1 KiB/s</source>
-        <translation type="unfinished"/>
+        <translation>%1 KiB/s</translation>
     </message>
 </context>
 <context>
@@ -898,7 +898,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="startupfirstpage.cpp" line="35"/>
         <source>Set basic options</source>
-        <translation type="unfinished"/>
+        <translation>Establecer las opciónes básicas</translation>
     </message>
 </context>
 <context>
@@ -906,22 +906,22 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.cpp" line="167"/>
         <source>Add peer...</source>
-        <translation type="unfinished"/>
+        <translation>Añadir pare...</translation>
     </message>
     <message>
         <location filename="tabwidget.cpp" line="177"/>
         <source>Ban peer...</source>
-        <translation type="unfinished"/>
+        <translation>Banear pare...</translation>
     </message>
     <message>
         <location filename="tabwidget.cpp" line="188"/>
         <source>Add web seed...</source>
-        <translation type="unfinished"/>
+        <translation>Añadir la semilla web...</translation>
     </message>
     <message>
         <location filename="tabwidget.cpp" line="197"/>
         <source>Remove web seed</source>
-        <translation type="unfinished"/>
+        <translation>Remover la semilla web</translation>
     </message>
     <message>
         <location filename="tabwidget.cpp" line="308"/>
@@ -1035,18 +1035,18 @@ IPv6 input mask</extracomment>
     <message numerus="yes">
         <location filename="torrentplugin.cpp" line="483"/>
         <source>Do you really want to delete %n torrent(s)?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation><numerusform>¿Realmente quiere borrar %n torrent?</numerusform><numerusform>¿Realmente quiere borrar %n torrents?</numerusform></translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="487"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Delete</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="490"/>
         <source>Delete with &amp;files</source>
         <oldsource>Delete torrent(s) and their &amp;files</oldsource>
-        <translation type="unfinished"/>
+        <translation>Delete with &amp;files</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="808"/>
@@ -1061,7 +1061,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="torrentplugin.cpp" line="977"/>
         <source>Open torrent...</source>
-        <translation type="unfinished"/>
+        <translation>Abrir torrent...</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="986"/>
@@ -1156,7 +1156,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="torrentplugin.cpp" line="1099"/>
         <source>Change trackers...</source>
-        <translation type="unfinished"/>
+        <translation>Cambiar trackers...</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="1101"/>
@@ -1714,7 +1714,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="574"/>
         <source>Tracker</source>
-        <translation type="unfinished"/>
+        <translation>Tracker</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="579"/>
@@ -1901,7 +1901,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="1240"/>
         <source>Tracker:</source>
-        <translation type="unfinished"/>
+        <translation>Tracker:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1259"/>
@@ -1931,12 +1931,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="1330"/>
         <source>Downloaded pieces:</source>
-        <translation type="unfinished"/>
+        <translation>Partes descargadas:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1344"/>
         <source>Total pieces:</source>
-        <translation type="unfinished"/>
+        <translation>Todas partes:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1358"/>
@@ -2007,12 +2007,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="1538"/>
         <source>Connected seeds:</source>
-        <translation type="unfinished"/>
+        <translation>Semillas conectados:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1552"/>
         <source>Seeds in list:</source>
-        <translation type="unfinished"/>
+        <translation>Semillas en la lista:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1566"/>
@@ -2022,7 +2022,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="1580"/>
         <source>Download queue:</source>
-        <translation type="unfinished"/>
+        <translation>Descargar la cola:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1615"/>
@@ -2057,12 +2057,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="1767"/>
         <source>Peer type:</source>
-        <translation type="unfinished"/>
+        <translation>Tipo de pare:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1781"/>
         <source>DL/UL speeds:</source>
-        <translation type="unfinished"/>
+        <translation>Velocidades de carga y descarga:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1795"/>
@@ -2092,12 +2092,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="1879"/>
         <source>Last request:</source>
-        <translation type="unfinished"/>
+        <translation>Solicitud reciente:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1893"/>
         <source>Last active:</source>
-        <translation type="unfinished"/>
+        <translation>Actividad reciente:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1907"/>
@@ -2112,12 +2112,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="1935"/>
         <source>Corrupt pieces:</source>
-        <translation type="unfinished"/>
+        <translation>Parte corrupta:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1949"/>
         <source>Download/upload queue:</source>
-        <translation type="unfinished"/>
+        <translation>Cola de carga/descarga:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1963"/>
@@ -2137,12 +2137,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="2014"/>
         <source>Web seeds</source>
-        <translation type="unfinished"/>
+        <translation>Semillas web</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="2032"/>
         <source>Pieces</source>
-        <translation type="unfinished"/>
+        <translation>Partes</translation>
     </message>
 </context>
 <context>
@@ -2150,7 +2150,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="trackerschanger.ui" line="20"/>
         <source>Change trackers</source>
-        <translation type="unfinished"/>
+        <translation>Cambiar trackers</translation>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="36"/>
@@ -2275,7 +2275,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>Proxy</source>
-        <translation type="unfinished"/>
+        <translation>Proxy</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
@@ -2298,7 +2298,7 @@ IPv6 input mask</extracomment>
         <location filename="dummy.cpp" line="14"/>
         <location filename="dummy.cpp" line="22"/>
         <source>Login@Password:</source>
-        <translation type="unfinished"/>
+        <translation>Apodo@Contraseña:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
@@ -2316,7 +2316,7 @@ IPv6 input mask</extracomment>
         <location filename="dummy.cpp" line="17"/>
         <location filename="dummy.cpp" line="25"/>
         <source>SOCKS4</source>
-        <translation type="unfinished"/>
+        <translation>SOCK54</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="18"/>
@@ -2327,7 +2327,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Peer proxy:</source>
-        <translation type="unfinished"/>
+        <translation>Proxy de pare:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
@@ -2423,7 +2423,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="46"/>
         <source>Trackers</source>
-        <translation type="unfinished"/>
+        <translation>Rastreadores</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="47"/>
@@ -2444,7 +2444,7 @@ IPv6 input mask</extracomment>
         <location filename="dummy.cpp" line="50"/>
         <location filename="dummy.cpp" line="139"/>
         <source>Advanced</source>
-        <translation type="unfinished"/>
+        <translation>Avanzado</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="51"/>
@@ -2485,7 +2485,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="54"/>
         <source>Advanced settings</source>
-        <translation type="unfinished"/>
+        <translation>Opciónes avanzadas</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="55"/>
@@ -2875,7 +2875,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="159"/>
         <source>Peer events</source>
-        <translation type="unfinished"/>
+        <translation>Eventos de pares</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="160"/>
@@ -2890,7 +2890,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="162"/>
         <source>Tracker events</source>
-        <translation type="unfinished"/>
+        <translation>Eventos del tracker</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="163"/>
@@ -2970,7 +2970,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="178"/>
         <source>Peers</source>
-        <translation type="unfinished"/>
+        <translation>Pares</translation>
     </message>
 </context>
 </TS>

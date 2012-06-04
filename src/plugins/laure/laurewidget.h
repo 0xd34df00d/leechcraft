@@ -95,8 +95,8 @@ namespace Laure
 		 */
 		void addItem (const QString& location);
 
-		void gotEntity (const Entity&);
-		void delegateEntity (const Entity&, int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	public slots:
 		/** @brief Is called for adding media files to the playlist.
 		 *
@@ -115,6 +115,7 @@ namespace Laure
 		void subtitleDialog ();
 		void showSubtitleMenu ();
 		void handlePlayListWidgetDoubleClicked ();
+		void handleSplitterMoved ();
 	};
 }
 }

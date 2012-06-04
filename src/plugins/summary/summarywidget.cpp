@@ -200,6 +200,8 @@ namespace Summary
 			SearchWidget_->SelectCategories (query);
 
 		feedFilterParameters ();
+
+		emit tabRecoverDataChanged ();
 	}
 
 	QStringList SummaryWidget::GetUniqueCategories () const
@@ -347,6 +349,48 @@ namespace Summary
 		}
 
 		return proxies;
+	}
+
+	QByteArray SummaryWidget::GetTabRecoverData () const
+	{
+		QByteArray result;
+		QDataStream out (&result, QIODevice::WriteOnly);
+		out << static_cast<quint8> (1);
+
+		const auto& query = GetQuery2 ();
+		out << (QStringList (query.Query_) + query.Categories_);
+		return result;
+	}
+
+	QString SummaryWidget::GetTabRecoverName () const
+	{
+		const auto& query = GetQuery2 ();
+		return query.Query_.isEmpty () ?
+				GetTabClassInfo ().VisibleName_ :
+				GetTabClassInfo ().VisibleName_ + ": " + query.Query_;
+	}
+
+	QIcon SummaryWidget::GetTabRecoverIcon () const
+	{
+		return GetTabClassInfo ().Icon_;
+	}
+
+	void SummaryWidget::RestoreState (const QByteArray& data)
+	{
+		QDataStream in (data);
+		quint8 version = 0;
+		in >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version";
+			return;
+		}
+
+		QStringList query;
+		in >> query;
+		if (!query.isEmpty ())
+			SetQuery (query);
 	}
 
 	void SummaryWidget::SmartDeselect (SummaryWidget *newFocus)

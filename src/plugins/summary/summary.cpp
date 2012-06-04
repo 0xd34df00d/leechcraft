@@ -162,6 +162,11 @@ namespace Summary
 	{
 		return Core::Instance ().GetCurrentView ();
 	}
+
+	void Summary::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		Core::Instance ().RecoverTabs (infos);
+	}
 }
 }
 
