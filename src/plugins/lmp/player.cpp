@@ -209,6 +209,15 @@ namespace LMP
 		return CurrentQueue_;
 	}
 
+	namespace
+	{
+		void IncAlbumLength (QStandardItem *albumItem, int length)
+		{
+			const int prevLength = albumItem->data (Player::Role::AlbumLength).toInt ();
+			albumItem->setData (length + prevLength, Player::Role::AlbumLength);
+		}
+	}
+
 	void Player::Dequeue (const QModelIndex& index)
 	{
 		if (!index.isValid ())
@@ -228,11 +237,17 @@ namespace LMP
 			auto parent = item->parent ();
 			if (parent)
 			{
-				parent->removeRow (item->row ());
-				if (!parent->rowCount ())
+				if (parent->rowCount () == 1)
 				{
 					AlbumRoots_.remove (AlbumRoots_.key (parent));
 					PlaylistModel_->removeRow (parent->row ());
+				}
+				else
+				{
+					const auto& info = item->data (Role::Info).value<MediaInfo> ();
+					if (!info.LocalPath_.isEmpty ())
+						IncAlbumLength (parent, -info.Length_);
+					parent->removeRow (item->row ());
 				}
 			}
 			else
@@ -308,12 +323,6 @@ namespace LMP
 			albumItem->setData (art, Player::Role::AlbumArt);
 			albumItem->setData (0, Player::Role::AlbumLength);
 			return albumItem;
-		}
-
-		void IncAlbumLength (QStandardItem *albumItem, int length)
-		{
-			const int prevLength = albumItem->data (Player::Role::AlbumLength).toInt ();
-			albumItem->setData (length + prevLength, Player::Role::AlbumLength);
 		}
 	}
 
