@@ -250,6 +250,15 @@ namespace LeechCraft
 			RightToolBar_->addAction (action);
 	}
 
+	void SeparateTabWidget::RemoveActionFromTabBarLayout (QTabBar::ButtonPosition pos,
+			QAction *action)
+	{
+		if (pos == QTabBar::LeftSide)
+			LeftToolBar_->removeAction (action);
+		else
+			RightToolBar_->removeAction (action);
+	}
+
 	void SeparateTabWidget::AddAction2TabBar (QAction *act)
 	{
 		TabBarActions_ << act;

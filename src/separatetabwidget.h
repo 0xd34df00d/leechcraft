@@ -101,6 +101,7 @@ namespace LeechCraft
 
 		void AddWidget2TabBarLayout (QTabBar::ButtonPosition pos, QWidget *action);
 		void AddAction2TabBarLayout (QTabBar::ButtonPosition pos, QAction *action);
+		void RemoveActionFromTabBarLayout (QTabBar::ButtonPosition pos, QAction *action);
 
 		int CurrentIndex () const;
 		QWidget* CurrentWidget () const;
