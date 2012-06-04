@@ -81,4 +81,14 @@ namespace LeechCraft
 	{
 		Core::Instance ().GetReallyMainWindow ()->showHideMain ();
 	}
+
+	QMenu* MWProxy::GetMainMenu ()
+	{
+		return Core::Instance ().GetReallyMainWindow ()->GetMainMenu ();
+	}
+
+	void MWProxy::HideMainMenu ()
+	{
+		Core::Instance ().GetReallyMainWindow ()->HideMainMenu ();
+	}
 }

@@ -24,6 +24,7 @@ class QDockWidget;
 class QToolBar;
 class QWidget;
 class QKeySequence;
+class QMenu;
 
 /** @brief This interface is used for manipulating the main window.
  *
@@ -115,6 +116,10 @@ public:
 	/** @brief Toggles the visibility of the main window.
 	 */
 	virtual void ToggleVisibility () = 0;
+
+	virtual QMenu* GetMainMenu () = 0;
+
+	virtual void HideMainMenu () = 0;
 };
 
 Q_DECLARE_INTERFACE (IMWProxy, "org.Deviant.LeechCraft.IMWProxy/1.0");

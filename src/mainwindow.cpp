@@ -22,13 +22,9 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QModelIndex>
-#include <QChildEvent>
-#include <QToolButton>
 #include <QStandardItemModel>
 #include <QCursor>
-#include <QCheckBox>
 #include <QShortcut>
-#include <QClipboard>
 #include <QMenu>
 #include <QSplashScreen>
 #include <QBitmap>
@@ -213,6 +209,16 @@ LeechCraft::ToolbarGuard* LeechCraft::MainWindow::GetGuard () const
 LeechCraft::FancyPopupManager* LeechCraft::MainWindow::GetFancyPopupManager () const
 {
 	return FancyPopupManager_;
+}
+
+QMenu* LeechCraft::MainWindow::GetMainMenu () const
+{
+	return Ui_.ActionMenu_->menu ();
+}
+
+void LeechCraft::MainWindow::HideMainMenu ()
+{
+	Ui_.MainTabWidget_->RemoveActionFromTabBarLayout (QTabBar::LeftSide, Ui_.ActionMenu_);
 }
 
 QWidget* LeechCraft::MainWindow::GetDockListWidget (Qt::DockWidgetArea area) const
@@ -401,7 +407,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	Ui_.MainTabWidget_->AddAction2TabBarLayout (QTabBar::LeftSide, Ui_.ActionMenu_);
 }
-
 
 void LeechCraft::MainWindow::SetStatusBar ()
 {
