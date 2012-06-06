@@ -176,6 +176,13 @@ namespace Lastfmscrobble
 
 	void LastFMSubmitter::SaveQueue () const
 	{
+		QFile file (GetQueueFilename ());
+		if (SubmitQueue_.isEmpty ())
+		{
+			file.remove ();
+			return;
+		}
+
 		QDomDocument doc ("queue");
 		auto root = doc.createElement ("queue");
 		doc.appendChild (root);
@@ -186,7 +193,6 @@ namespace Lastfmscrobble
 					root.appendChild (item.toDomElement (doc));
 				});
 
-		QFile file (GetQueueFilename ());
 		if (!file.open (QIODevice::WriteOnly))
 		{
 			qWarning () << Q_FUNC_INFO
