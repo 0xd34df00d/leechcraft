@@ -124,7 +124,6 @@ namespace Lastfmscrobble
 		Scrobbler_->nowPlaying (lfmTrack);
 
 		NextSubmit_ = lfmTrack;
-		Scrobbler_->cache (lfmTrack);
 		SubmitTimer_->start (std::min (info.Length_ / 2, 240) * 1000);
 	}
 
@@ -213,14 +212,20 @@ namespace Lastfmscrobble
 
 		connect (SubmitTimer_,
 				SIGNAL (timeout ()),
-				Scrobbler_.get (),
-				SLOT (submit ()));
+				this,
+				SLOT (cacheAndSubmit ()));
 
 		if (!SubmitQueue_.isEmpty ())
 		{
 			Scrobbler_->cache (SubmitQueue_);
 			submit ();
 		}
+	}
+
+	void LastFMSubmitter::cacheAndSubmit ()
+	{
+		Scrobbler_->cache (NextSubmit_);
+		submit ();
 	}
 
 	void LastFMSubmitter::checkFlushQueue (int code)

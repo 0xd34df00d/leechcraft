@@ -83,6 +83,7 @@ namespace Lastfmscrobble
 		void submit ();
 		void handleAuthenticated ();
 	private slots:
+		void cacheAndSubmit ();
 		void checkFlushQueue (int);
 	signals:
 		void status (int code);
