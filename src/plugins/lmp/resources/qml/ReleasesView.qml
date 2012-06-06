@@ -1,7 +1,6 @@
 import QtQuick 1.0
 
-Rectangle
-{
+Rectangle {
     gradient: Gradient {
         GradientStop {
             position: 0
@@ -14,6 +13,40 @@ Rectangle
         }
     }
     anchors.fill: parent
+
+    Image {
+        id: fullSizeAA
+        state: "hidden"
+
+        anchors.centerIn: parent
+        width: parent.width - 60
+        height: parent.height - 60
+        z: 2
+        smooth: true
+        fillMode: Image.PreserveAspectFit
+
+        visible: opacity != 0
+
+        states: [
+            State {
+                name: "hidden"
+                PropertyChanges { target: fullSizeAA; opacity: 0 }
+            },
+            State {
+                name: "visible"
+                PropertyChanges { target: fullSizeAA; opacity: 1 }
+            }
+        ]
+
+        transitions: Transition {
+            PropertyAnimation { property: "opacity"; duration: 300; easing: Easing.OutSine }
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: fullSizeAA.state = "hidden"
+        }
+    }
 
     GridView {
         anchors.fill: parent
@@ -61,6 +94,15 @@ Rectangle
                         fillMode: Image.PreserveAspectFit
                         anchors.horizontalCenter: parent.horizontalCenter
                         source: albumThumbImage
+
+                        MouseArea {
+                            anchors.fill: parent
+
+                            onClicked: {
+                                fullSizeAA.source = albumFullImage
+                                fullSizeAA.state = "visible"
+                            }
+                        }
                     }
 
                     Text {
