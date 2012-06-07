@@ -140,6 +140,7 @@ namespace LMP
 		void recordPlayedTrack (const QString&);
 	private slots:
 		void handleLoadFinished ();
+		void handleIterateFinished ();
 		void handleScanFinished ();
 		void saveRootPaths ();
 	signals:

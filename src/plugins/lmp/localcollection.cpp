@@ -219,35 +219,14 @@ namespace LMP
 
 	void LocalCollection::Scan (const QString& path, bool root)
 	{
-		auto resolver = Core::Instance ().GetLocalFileResolver ();
-		auto paths = QSet<QString>::fromList (RecIterate (path));
-		paths.subtract (PresentPaths_);
-		if (paths.isEmpty ())
-			return;
-
-		if (root)
-			AddRootPaths (QStringList (path));
-
-		PresentPaths_ += paths;
-		emit scanStarted (paths.size ());
-		auto worker = [resolver] (const QString& path)
-		{
-			try
-			{
-				return resolver->ResolveInfo (path);
-			}
-			catch (const ResolveError& error)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "error resolving media info for"
-						<< error.GetPath ()
-						<< error.what ();
-				return MediaInfo ();
-			}
-		};
-		QFuture<MediaInfo> future = QtConcurrent::mapped (paths,
-				std::function<MediaInfo (const QString&)> (worker));
-		Watcher_->setFuture (future);
+		auto watcher = new QFutureWatcher<QStringList> ();
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleIterateFinished ()));
+		watcher->setProperty ("Path", path);
+		watcher->setProperty ("IsRoot", root);
+		watcher->setFuture (QtConcurrent::run (RecIterate, path));
 	}
 
 	void LocalCollection::Unscan (const QString& path)
@@ -621,6 +600,43 @@ namespace LMP
 		IsReady_ = true;
 
 		emit collectionReady ();
+	}
+
+	void LocalCollection::handleIterateFinished ()
+	{
+		sender ()->deleteLater ();
+		const bool root = sender ()->property ("IsRoot").toBool ();
+		const auto& path = sender ()->property ("Path").toString ();
+		auto watcher = dynamic_cast<QFutureWatcher<QStringList>*> (sender ());
+		auto paths = QSet<QString>::fromList (watcher->result ());
+		auto resolver = Core::Instance ().GetLocalFileResolver ();
+		paths.subtract (PresentPaths_);
+		if (paths.isEmpty ())
+			return;
+
+		if (root)
+			AddRootPaths (QStringList (path));
+
+		PresentPaths_ += paths;
+		emit scanStarted (paths.size ());
+		auto worker = [resolver] (const QString& path)
+		{
+			try
+			{
+				return resolver->ResolveInfo (path);
+			}
+			catch (const ResolveError& error)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error resolving media info for"
+						<< error.GetPath ()
+						<< error.what ();
+				return MediaInfo ();
+			}
+		};
+		QFuture<MediaInfo> future = QtConcurrent::mapped (paths,
+				std::function<MediaInfo (const QString&)> (worker));
+		Watcher_->setFuture (future);
 	}
 
 	void LocalCollection::handleScanFinished ()
