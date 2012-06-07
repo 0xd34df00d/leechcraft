@@ -395,6 +395,12 @@ namespace LMP
 
 	void LocalCollection::HandleNewArtists (const Collection::Artists_t& artists)
 	{
+		Artists_ += artists;
+		Q_FOREACH (const auto& artist, artists)
+			Q_FOREACH (auto album, artist.Albums_)
+				Q_FOREACH (const auto& track, album->Tracks_)
+					PresentPaths_ << track.FilePath_;
+
 		Q_FOREACH (const auto& artist, artists)
 		{
 			auto artistItem = GetItem (Artist2Item_,
@@ -599,15 +605,9 @@ namespace LMP
 		auto watcher = dynamic_cast<QFutureWatcher<LocalCollectionStorage::LoadResult>*> (sender ());
 		watcher->deleteLater ();
 		const auto& result = watcher->result ();
-		Artists_ = result.Artists_;
 		Storage_->Load (result);
 
-		Q_FOREACH (const auto& artist, Artists_)
-			Q_FOREACH (auto album, artist.Albums_)
-				Q_FOREACH (const auto& track, album->Tracks_)
-					PresentPaths_ << track.FilePath_;
-
-		HandleNewArtists (Artists_);
+		HandleNewArtists (result.Artists_);
 
 		IsReady_ = true;
 
