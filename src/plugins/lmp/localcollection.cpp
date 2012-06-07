@@ -605,6 +605,9 @@ namespace LMP
 		IsReady_ = true;
 
 		emit collectionReady ();
+
+		for (const auto& rootPath : RootPaths_)
+			Scan (rootPath, true);
 	}
 
 	void LocalCollection::handleIterateFinished ()
