@@ -543,8 +543,13 @@ namespace LMP
 		return Artists_.erase (pos);
 	}
 
-	void LocalCollection::AddRootPaths (const QStringList& paths)
+	void LocalCollection::AddRootPaths (QStringList paths)
 	{
+		for (const auto& path : RootPaths_)
+			paths.removeAll (path);
+		if (paths.isEmpty ())
+			return;
+
 		RootPaths_ << paths;
 		emit rootPathsChanged (RootPaths_);
 

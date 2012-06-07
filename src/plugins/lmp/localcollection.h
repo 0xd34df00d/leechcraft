@@ -134,7 +134,7 @@ namespace LMP
 		void RemoveAlbum (int);
 		Collection::Artists_t::iterator RemoveArtist (Collection::Artists_t::iterator);
 
-		void AddRootPaths (const QStringList&);
+		void AddRootPaths (QStringList);
 		void RemoveRootPaths (const QStringList&);
 	public slots:
 		void recordPlayedTrack (const QString&);
