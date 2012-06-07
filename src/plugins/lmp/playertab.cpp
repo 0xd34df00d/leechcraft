@@ -25,6 +25,7 @@
 #include <QToolButton>
 #include <QMenu>
 #include <QInputDialog>
+#include <QUndoStack>
 #include <phonon/seekslider.h>
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -42,6 +43,9 @@
 #include "xmlsettingsmanager.h"
 #include "playlistmanager.h"
 #include "staticplaylistmanager.h"
+#include "playlistundocommand.h"
+
+Q_DECLARE_METATYPE (Phonon::MediaSource);
 
 namespace LeechCraft
 {
@@ -86,6 +90,7 @@ namespace LMP
 	, TabToolbar_ (new QToolBar ())
 	, PlayPause_ (0)
 	, TrayMenu_ (new QMenu ("LMP", this))
+	, UndoStack_ (new QUndoStack (this))
 	{
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->setStretchFactor (0, 2);
@@ -372,6 +377,15 @@ namespace LMP
 
 		PlaylistToolbar_->addWidget (playButton);
 
+		PlaylistToolbar_->addAction (Util::CreateSeparator (this));
+		auto undo = UndoStack_->createUndoAction (this);
+		undo->setProperty ("ActionIcon", "edit-undo");
+		undo->setShortcut (QKeySequence ("Ctrl+Z"));
+		PlaylistToolbar_->addAction (undo);
+		auto redo = UndoStack_->createRedoAction (this);
+		redo->setProperty ("ActionIcon", "edit-redo");
+		PlaylistToolbar_->addAction (redo);
+
 		auto removeSelected = new QAction (tr ("Delete from playlist"), Ui_.Playlist_);
 		removeSelected->setProperty ("ActionIcon", "list-remove");
 		removeSelected->setShortcut (Qt::Key_Delete);
@@ -650,11 +664,16 @@ namespace LMP
 			indexes << Ui_.Playlist_->currentIndex ();
 		indexes.removeAll (QModelIndex ());
 
-		QList<QPersistentModelIndex> persistent;
-		std::copy (indexes.begin (), indexes.end (), std::back_inserter (persistent));
-		Q_FOREACH (const auto& idx, persistent)
-			if (idx.isValid ())
-				Player_->Dequeue (idx);
+		QList<Phonon::MediaSource> removedSources;
+		const QString& title = indexes.size () == 1 ?
+				tr ("Remove %1").arg (indexes.at (0).data ().toString ()) :
+				tr ("Remove %n song(s)", 0, indexes.size ());
+
+		for (const auto& idx : indexes)
+			removedSources << Player_->GetIndexSources (idx);
+
+		auto cmd = new PlaylistUndoCommand (title, removedSources, Player_);
+		UndoStack_->push (cmd);
 	}
 
 	void PlayerTab::setStopAfterSelected ()
