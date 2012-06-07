@@ -96,6 +96,7 @@ namespace LMP
 		QList<Phonon::MediaSource> GetIndexSources (const QModelIndex&) const;
 
 		void Dequeue (const QModelIndex&);
+		void Dequeue (const QList<Phonon::MediaSource>&);
 
 		void SetStopAfter (const QModelIndex&);
 

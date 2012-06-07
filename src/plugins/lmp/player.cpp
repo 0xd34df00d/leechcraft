@@ -234,12 +234,16 @@ namespace LMP
 		if (!index.isValid ())
 			return;
 
-		const auto& sources = GetIndexSources (index);
+		Dequeue (GetIndexSources (index));
+	}
 
+	void Player::Dequeue (const QList<Phonon::MediaSource>& sources)
+	{
 		for (const auto& source : sources)
 		{
-			qDebug () << Q_FUNC_INFO << source.fileName ();
-			CurrentQueue_.removeAll (source);
+			if (!CurrentQueue_.removeAll (source))
+				continue;
+
 			auto item = Items_.take (source);
 			auto parent = item->parent ();
 			if (parent)
