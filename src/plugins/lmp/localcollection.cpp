@@ -24,6 +24,7 @@
 #include <QMimeData>
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
+#include <QTimer>
 #include <QtDebug>
 #include "localcollectionstorage.h"
 #include "core.h"
@@ -587,6 +588,12 @@ namespace LMP
 		}
 	}
 
+	void LocalCollection::rescanOnLoad ()
+	{
+		for (const auto& rootPath : RootPaths_)
+			Scan (rootPath, true);
+	}
+
 	void LocalCollection::handleLoadFinished ()
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<LocalCollectionStorage::LoadResult>*> (sender ());
@@ -606,8 +613,9 @@ namespace LMP
 
 		emit collectionReady ();
 
-		for (const auto& rootPath : RootPaths_)
-			Scan (rootPath, true);
+		QTimer::singleShot (5000,
+				this,
+				SLOT (rescanOnLoad ()));
 	}
 
 	void LocalCollection::handleIterateFinished ()

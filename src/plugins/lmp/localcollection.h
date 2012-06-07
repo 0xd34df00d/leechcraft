@@ -139,6 +139,7 @@ namespace LMP
 	public slots:
 		void recordPlayedTrack (const QString&);
 	private slots:
+		void rescanOnLoad ();
 		void handleLoadFinished ();
 		void handleIterateFinished ();
 		void handleScanFinished ();
