@@ -209,6 +209,17 @@ namespace LMP
 		return CurrentQueue_;
 	}
 
+	QList<Phonon::MediaSource> Player::GetIndexSources (const QModelIndex& index) const
+	{
+		QList<Phonon::MediaSource> sources;
+		if (index.data (Role::IsAlbum).toBool ())
+			for (int i = 0; i < PlaylistModel_->rowCount (index); ++i)
+				sources << PlaylistModel_->index (i, 0, index).data (Role::Source).value<Phonon::MediaSource> ();
+		else
+			sources << index.data (Role::Source).value<Phonon::MediaSource> ();
+		return sources;
+	}
+
 	namespace
 	{
 		void IncAlbumLength (QStandardItem *albumItem, int length)
@@ -223,15 +234,11 @@ namespace LMP
 		if (!index.isValid ())
 			return;
 
-		QList<Phonon::MediaSource> sources;
-		if (index.data (Role::IsAlbum).toBool ())
-			for (int i = 0; i < PlaylistModel_->rowCount (index); ++i)
-				sources << PlaylistModel_->index (i, 0, index).data (Role::Source).value<Phonon::MediaSource> ();
-		else
-			sources << index.data (Role::Source).value<Phonon::MediaSource> ();
+		const auto& sources = GetIndexSources (index);
 
-		Q_FOREACH (const auto& source, sources)
+		for (const auto& source : sources)
 		{
+			qDebug () << Q_FUNC_INFO << source.fileName ();
 			CurrentQueue_.removeAll (source);
 			auto item = Items_.take (source);
 			auto parent = item->parent ();
