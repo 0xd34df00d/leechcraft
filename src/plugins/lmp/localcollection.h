@@ -117,6 +117,8 @@ namespace LMP
 		DirStatus GetDirStatus (const QString&) const;
 		QStringList GetDirs () const;
 
+		int FindArtist (const QString&) const;
+
 		int FindAlbum (const QString&, const QString&) const;
 		void SetAlbumArt (int, const QString&);
 

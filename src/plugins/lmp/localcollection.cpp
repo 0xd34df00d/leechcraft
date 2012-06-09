@@ -284,6 +284,15 @@ namespace LMP
 		return RootPaths_;
 	}
 
+	int LocalCollection::FindArtist (const QString& artist) const
+	{
+		auto artistPos = std::find_if (Artists_.begin (), Artists_.end (),
+				[&artist] (decltype (Artists_.front ()) item) { return item.Name_ == artist; });
+		return artistPos == Artists_.end () ?
+			-1 :
+			artistPos->ID_;
+	}
+
 	int LocalCollection::FindAlbum (const QString& artist, const QString& album) const
 	{
 		auto artistPos = std::find_if (Artists_.begin (), Artists_.end (),
