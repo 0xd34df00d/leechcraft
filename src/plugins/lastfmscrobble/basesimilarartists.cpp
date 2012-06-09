@@ -19,8 +19,10 @@
 #include "basesimilarartists.h"
 #include <QNetworkReply>
 #include <QDomDocument>
+#include <QtDebug>
 #include <lastfm/Tag>
 #include <lastfm/Artist>
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -82,6 +84,11 @@ namespace Lastfmscrobble
 
 			result.ShortDesc_ = text ("summary");
 			result.FullDesc_ = text ("content");
+
+			const auto& artist = doc.documentElement ().firstChildElement ("artist");
+			result.Image_ = GetImage (artist, "extralarge");
+			result.LargeImage_ = GetImage (artist, "mega");
+
 			return result;
 		}
 	}
@@ -102,8 +109,8 @@ namespace Lastfmscrobble
 			artist.name (),
 			augment.ShortDesc_,
 			augment.FullDesc_,
-			artist.imageUrl (lastfm::Large),
-			artist.imageUrl (lastfm::ExtraLarge),
+			augment.Image_,
+			augment.LargeImage_,
 			artist.www (),
 			Media::TagInfos_t ()
 		};
