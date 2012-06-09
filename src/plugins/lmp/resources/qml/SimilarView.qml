@@ -90,6 +90,7 @@ Rectangle
             Text {
                 id: shortDescLabel
                 text: shortDesc
+                textFormat: Text.RichText
                 width: parent.width - artistImageThumb.width - 10
                 clip: true
                 color: "#aaaaaa"
