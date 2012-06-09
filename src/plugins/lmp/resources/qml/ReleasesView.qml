@@ -39,7 +39,7 @@ Rectangle {
         ]
 
         transitions: Transition {
-            PropertyAnimation { property: "opacity"; duration: 300; easing: Easing.OutSine }
+            PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
         }
 
         MouseArea {
