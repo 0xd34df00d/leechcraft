@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_VGRABBER_FINDPROXY_H
-#define PLUGINS_VGRABBER_FINDPROXY_H
+#pragma once
+
 #include <boost/optional.hpp>
 #include <QAbstractItemModel>
 #include <QList>
@@ -30,77 +30,71 @@ class QAction;
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace vGrabber
+{
+	class CategoriesSelector;
+
+	class FindProxy : public QAbstractItemModel
+					, public IFindProxy
 	{
-		namespace vGrabber
+		Q_OBJECT
+		Q_INTERFACES (IFindProxy);
+
+		QList<QObject*> Downloaders_;
+	protected:
+		QAction *ActionDownload_;
+		QAction *ActionHandle_;
+		QAction *ActionCopyToClipboard_;
+		QToolBar *Toolbar_;
+		Request R_;
+		QMap<int, QString> Jobs_;
+		boost::optional<QString> Error_;
+		QMenu *ContextMenu_;
+	public:
+		enum FindProxyType
 		{
-			class CategoriesSelector;
-
-			class FindProxy : public QAbstractItemModel
-							, public IFindProxy
-			{
-				Q_OBJECT
-				Q_INTERFACES (IFindProxy);
-
-				QList<QObject*> Downloaders_;
-			protected:
-				QAction *ActionDownload_;
-				QAction *ActionHandle_;
-				QAction *ActionCopyToClipboard_;
-				QToolBar *Toolbar_;
-				Request R_;
-				QMap<int, QString> Jobs_;
-				boost::optional<QString> Error_;
-				QMenu *ContextMenu_;
-			public:
-				enum FindProxyType
-				{
-					FPTAudio,
-					FPTVideo
-				};
-			protected:
-				FindProxyType FindProxyType_;
-				CategoriesSelector *CategoriesSelector_;
-			public:
-				FindProxy (const Request&, CategoriesSelector*, FindProxyType);
-				virtual ~FindProxy ();
-
-				void Start ();
-				QAbstractItemModel* GetModel ();
-				QByteArray GetUniqueSearchID () const;
-				QStringList GetCategories () const;
-
-				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-				virtual Qt::ItemFlags flags (const QModelIndex&) const;
-				virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-				virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-				virtual QModelIndex parent (const QModelIndex&) const;
-			protected:
-				void SetError (const QString&);
-				virtual QUrl GetURL () const = 0;
-				virtual void Handle (const QString&) = 0;
-				void EmitWith (TaskParameter, const QUrl&);
-				void HandleProvider (QObject*);
-			protected slots:
-				virtual void handleDownload () = 0;
-				virtual void handleHandle () = 0;
-				virtual void handleCopyToClipboard ();
-			private slots:
-				void handleJobFinished (int);
-				void handleJobError (int);
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-				void delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**);
-				void error (const QString&);
-			};
-
-			typedef std::shared_ptr<FindProxy> FindProxy_ptr;
+			FPTAudio,
+			FPTVideo
 		};
+	protected:
+		FindProxyType FindProxyType_;
+		CategoriesSelector *CategoriesSelector_;
+	public:
+		FindProxy (const Request&, CategoriesSelector*, FindProxyType);
+		virtual ~FindProxy ();
+
+		void Start ();
+		QAbstractItemModel* GetModel ();
+		QByteArray GetUniqueSearchID () const;
+		QStringList GetCategories () const;
+
+		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
+		virtual Qt::ItemFlags flags (const QModelIndex&) const;
+		virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
+		virtual QModelIndex parent (const QModelIndex&) const;
+	protected:
+		void SetError (const QString&);
+		virtual QUrl GetURL () const = 0;
+		virtual void Handle (const QString&) = 0;
+		void EmitWith (TaskParameter, const QUrl&);
+		void HandleProvider (QObject*);
+	protected slots:
+		virtual void handleDownload () = 0;
+		virtual void handleHandle () = 0;
+		virtual void handleCopyToClipboard ();
+	private slots:
+		void handleJobFinished (int);
+		void handleJobError (int);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&,
+				int*, QObject**);
+		void error (const QString&);
 	};
-};
 
-#endif
-
+	typedef std::shared_ptr<FindProxy> FindProxy_ptr;
+}
+}

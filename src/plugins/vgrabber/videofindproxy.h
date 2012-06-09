@@ -16,61 +16,55 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_VGRABBER_VIDEOFINDPROXY_H
-#define PLUGINS_VGRABBER_VIDEOFINDPROXY_H
+#pragma once
+
 #include "findproxy.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace vGrabber
+{
+	class VideoFindProxy : public FindProxy
 	{
-		namespace vGrabber
+		Q_OBJECT
+
+		struct VideoResult
 		{
-			class VideoFindProxy : public FindProxy
-			{
-				Q_OBJECT
-
-				struct VideoResult
-				{
-					QUrl URL_;
-					QString Title_;
-					/*
-					QString Length_;
-					QString Date_;
-					QString Description_;
-					*/
-				};
-				QList<VideoResult> VideoResults_;
-
-				enum ProcessingType
-				{
-					PTInvalid,
-					PTDownload,
-					PTHandle
-				};
-				ProcessingType Type_;
-
-				QMap<int, QString> VideoJobs_;
-			public:
-				VideoFindProxy (const Request&, CategoriesSelector*);
-
-				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
-			protected:
-				void UpdateURLActionsData (int) const;
-				virtual QUrl GetURL () const;
-				virtual void Handle (const QString&);
-			private:
-				void HandleSearchResults (const QString&);
-				void HandleVideoPage (const QString&);
-				void HandleAction ();
-			protected slots:
-				virtual void handleDownload ();
-				virtual void handleHandle ();
-			};
+			QUrl URL_;
+			QString Title_;
+			/*
+			QString Length_;
+			QString Date_;
+			QString Description_;
+			*/
 		};
+		QList<VideoResult> VideoResults_;
+
+		enum ProcessingType
+		{
+			PTInvalid,
+			PTDownload,
+			PTHandle
+		};
+		ProcessingType Type_;
+
+		QMap<int, QString> VideoJobs_;
+	public:
+		VideoFindProxy (const Request&, CategoriesSelector*);
+
+		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+	protected:
+		void UpdateURLActionsData (int) const;
+		virtual QUrl GetURL () const;
+		virtual void Handle (const QString&);
+	private:
+		void HandleSearchResults (const QString&);
+		void HandleVideoPage (const QString&);
+		void HandleAction ();
+	protected slots:
+		virtual void handleDownload ();
+		virtual void handleHandle ();
 	};
-};
-
-#endif
-
+}
+}

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_VGRABBER_VGRABBER_H
-#define PLUGINS_VGRABBER_VGRABBER_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QStringList>
@@ -28,55 +28,49 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace vGrabber
+{
+	class CategoriesSelector;
+
+	class vGrabber : public QObject
+					, public IInfo
+					, public IFinder
+					, public IHaveSettings
 	{
-		namespace vGrabber
-		{
-			class CategoriesSelector;
+		Q_OBJECT
+		Q_INTERFACES (IInfo IFinder IHaveSettings)
 
-			class vGrabber : public QObject
-						   , public IInfo
-						   , public IFinder
-						   , public IHaveSettings
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IFinder IHaveSettings)
+		std::auto_ptr<QTranslator> Translator_;
+		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+		ICoreProxy_ptr Proxy_;
 
-				std::auto_ptr<QTranslator> Translator_;
-				std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
-				ICoreProxy_ptr Proxy_;
+		CategoriesSelector *Audio_;
+		CategoriesSelector *Video_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Needs () const;
 
-				CategoriesSelector *Audio_;
-				CategoriesSelector *Video_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Needs () const;
+		QStringList GetCategories () const;
+		QList<IFindProxy_ptr> GetProxy (const Request&);
 
-				QStringList GetCategories () const;
-				QList<IFindProxy_ptr> GetProxy (const Request&);
+		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-				std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-
-				ICoreProxy_ptr GetProxy () const;
-			private slots:
-				void handleError (const QString&);
-				void handleCategoriesGoingToChange (const QStringList&,
-						const QStringList&);
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-				void delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**);
-				void categoriesChanged (const QStringList&, const QStringList&);
-			};
-		};
+		ICoreProxy_ptr GetProxy () const;
+	private slots:
+		void handleError (const QString&);
+		void handleCategoriesGoingToChange (const QStringList&,
+				const QStringList&);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&,
+				int*, QObject**);
+		void categoriesChanged (const QStringList&, const QStringList&);
 	};
-};
-
-#endif
-
+}
+}

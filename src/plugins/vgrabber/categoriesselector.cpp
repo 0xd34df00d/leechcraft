@@ -26,194 +26,190 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace vGrabber
+{
+	CategoriesSelector::CategoriesSelector (FindProxy::FindProxyType type,
+			vGrabber *vgr, QWidget *parent)
+	: QWidget (parent)
+	, Parent_ (vgr)
+	, Type_ (type)
 	{
-		namespace vGrabber
+		Ui_.setupUi (this);
+
+		ReadSettings ();
+	}
+
+	QStringList CategoriesSelector::GetCategories () const
+	{
+		QStringList categories;
+		for (int i = 0, size = Ui_.CategoriesTree_->topLevelItemCount ();
+				i < size; ++i)
 		{
-			CategoriesSelector::CategoriesSelector (FindProxy::FindProxyType type,
-					vGrabber *vgr, QWidget *parent)
-			: QWidget (parent)
-			, Parent_ (vgr)
-			, Type_ (type)
+			QTreeWidgetItem *item = Ui_.CategoriesTree_->topLevelItem (i);
+			categories << item->data (0, Qt::UserRole).toString ();
+		}
+		return categories;
+	}
+
+	QStringList CategoriesSelector::GetHRCategories () const
+	{
+		QStringList result;
+		Q_FOREACH (QString id, GetCategories ())
+			result << Parent_->GetProxy ()->
+				GetTagsManager ()->GetTag (id);
+		return result;
+	}
+
+	void CategoriesSelector::ReadSettings ()
+	{
+		Ui_.CategoriesTree_->clear ();
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_vGrabber");
+		settings.beginGroup ("Categories");
+
+		int size = settings.beginReadArray (QString::number (Type_));
+		QList<QTreeWidgetItem*> items;
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			QString id = settings.value ("ID").toString ();
+			QString name = Parent_->GetProxy ()->
+				GetTagsManager ()->GetTag (id);
+
+			QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.CategoriesTree_,
+					QStringList (name));
+			item->setData (0, Qt::UserRole, id);
+			items << item;
+		}
+
+		if (items.size ())
+			Ui_.CategoriesTree_->addTopLevelItems (items);
+		else
+		{
+			switch (Type_)
 			{
-				Ui_.setupUi (this);
-
-				ReadSettings ();
+				case FindProxy::FPTAudio:
+					AddItem ("music");
+					WriteSettings ();
+					Deleted_.clear ();
+					Added_.clear ();
+					break;
+				case FindProxy::FPTVideo:
+					AddItem ("videos");
+					WriteSettings ();
+					Deleted_.clear ();
+					Added_.clear ();
+					break;
 			}
+		}
 
-			QStringList CategoriesSelector::GetCategories () const
-			{
-				QStringList categories;
-				for (int i = 0, size = Ui_.CategoriesTree_->topLevelItemCount ();
-						i < size; ++i)
-				{
-					QTreeWidgetItem *item = Ui_.CategoriesTree_->topLevelItem (i);
-					categories << item->data (0, Qt::UserRole).toString ();
-				}
-				return categories;
-			}
+		settings.endArray ();
+		settings.endGroup ();
+	}
 
-			QStringList CategoriesSelector::GetHRCategories () const
-			{
-				QStringList result;
-				Q_FOREACH (QString id, GetCategories ())
-					result << Parent_->GetProxy ()->
-						GetTagsManager ()->GetTag (id);
-				return result;
-			}
+	void CategoriesSelector::WriteSettings ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_vGrabber");
+		settings.beginGroup ("Categories");
+		settings.beginWriteArray (QString::number (Type_));
+		for (int i = 0, size = Ui_.CategoriesTree_->topLevelItemCount ();
+				i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			QTreeWidgetItem *item = Ui_.CategoriesTree_->topLevelItem (i);
+			settings.setValue ("ID",
+					item->data (0, Qt::UserRole).toString ());
+		}
+		settings.endArray ();
+		settings.endGroup ();
+	}
 
-			void CategoriesSelector::ReadSettings ()
-			{
-				Ui_.CategoriesTree_->clear ();
+	void CategoriesSelector::AddItem (const QString& name)
+	{
+		QString id = Parent_->GetProxy ()->
+			GetTagsManager ()->GetID (name);
 
-				QSettings settings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_vGrabber");
-				settings.beginGroup ("Categories");
+		QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.CategoriesTree_,
+				QStringList (name));
+		item->setData (0, Qt::UserRole, id);
+		Ui_.CategoriesTree_->addTopLevelItem (item);
 
-				int size = settings.beginReadArray (QString::number (Type_));
-				QList<QTreeWidgetItem*> items;
-				for (int i = 0; i < size; ++i)
-				{
-					settings.setArrayIndex (i);
-					QString id = settings.value ("ID").toString ();
-					QString name = Parent_->GetProxy ()->
-						GetTagsManager ()->GetTag (id);
+		if (Deleted_.contains (id))
+			Deleted_.removeAll (id);
+		else
+			Added_ << id;
+	}
 
-					QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.CategoriesTree_,
-							QStringList (name));
-					item->setData (0, Qt::UserRole, id);
-					items << item;
-				}
+	void CategoriesSelector::accept ()
+	{
+		WriteSettings ();
 
-				if (items.size ())
-					Ui_.CategoriesTree_->addTopLevelItems (items);
-				else
-				{
-					switch (Type_)
-					{
-						case FindProxy::FPTAudio:
-							AddItem ("music");
-							WriteSettings ();
-							Deleted_.clear ();
-							Added_.clear ();
-							break;
-						case FindProxy::FPTVideo:
-							AddItem ("videos");
-							WriteSettings ();
-							Deleted_.clear ();
-							Added_.clear ();
-							break;
-					}
-				}
+		emit goingToAccept (Added_, Deleted_);
 
-				settings.endArray ();
-				settings.endGroup ();
-			}
+		Deleted_.clear ();
+		Added_.clear ();
+	}
 
-			void CategoriesSelector::WriteSettings ()
-			{
-				QSettings settings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_vGrabber");
-				settings.beginGroup ("Categories");
-				settings.beginWriteArray (QString::number (Type_));
-				for (int i = 0, size = Ui_.CategoriesTree_->topLevelItemCount ();
-						i < size; ++i)
-				{
-					settings.setArrayIndex (i);
-					QTreeWidgetItem *item = Ui_.CategoriesTree_->topLevelItem (i);
-					settings.setValue ("ID",
-							item->data (0, Qt::UserRole).toString ());
-				}
-				settings.endArray ();
-				settings.endGroup ();
-			}
+	void CategoriesSelector::reject ()
+	{
+		ReadSettings ();
 
-			void CategoriesSelector::AddItem (const QString& name)
-			{
-				QString id = Parent_->GetProxy ()->
-					GetTagsManager ()->GetID (name);
+		Deleted_.clear ();
+		Added_.clear ();
+	}
 
-				QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.CategoriesTree_,
-						QStringList (name));
-				item->setData (0, Qt::UserRole, id);
-				Ui_.CategoriesTree_->addTopLevelItem (item);
+	void CategoriesSelector::on_Add__released ()
+	{
+		CategoryModifier cm (QString (), this);
+		cm.setWindowTitle (tr ("Add category"));
+		if (cm.exec () != QDialog::Accepted)
+			return;
 
-				if (Deleted_.contains (id))
-					Deleted_.removeAll (id);
-				else
-					Added_ << id;
-			}
+		QStringList splitted = Parent_->GetProxy ()->
+			GetTagsManager ()->Split (cm.GetText ());
+		Q_FOREACH (QString cat, splitted)
+			AddItem (cat);
+	}
 
-			void CategoriesSelector::accept ()
-			{
-				WriteSettings ();
+	void CategoriesSelector::on_Modify__released ()
+	{
+		QTreeWidgetItem *item = Ui_.CategoriesTree_->currentItem ();
+		if (!item)
+			return;
 
-				emit goingToAccept (Added_, Deleted_);
+		CategoryModifier cm (QString (item->text (0)));
+		cm.setWindowTitle (tr ("Modify category"));
+		if (cm.exec () != QDialog::Accepted)
+			return;
 
-				Deleted_.clear ();
-				Added_.clear ();
-			}
+		QStringList splitted = Parent_->GetProxy ()->
+			GetTagsManager ()->Split (cm.GetText ());
+		Q_FOREACH (QString cat, splitted)
+			AddItem (cat);
 
-			void CategoriesSelector::reject ()
-			{
-				ReadSettings ();
+		QString id = item->data (0, Qt::UserRole).toString ();
+		if (Added_.contains (id))
+			Added_.removeAll (id);
+		else
+			Deleted_ << id;
+		delete item;
+	}
 
-				Deleted_.clear ();
-				Added_.clear ();
-			}
-
-			void CategoriesSelector::on_Add__released ()
-			{
-				CategoryModifier cm (QString (), this);
-				cm.setWindowTitle (tr ("Add category"));
-				if (cm.exec () != QDialog::Accepted)
-					return;
-
-				QStringList splitted = Parent_->GetProxy ()->
-					GetTagsManager ()->Split (cm.GetText ());
-				Q_FOREACH (QString cat, splitted)
-					AddItem (cat);
-			}
-
-			void CategoriesSelector::on_Modify__released ()
-			{
-				QTreeWidgetItem *item = Ui_.CategoriesTree_->currentItem ();
-				if (!item)
-					return;
-
-				CategoryModifier cm (QString (item->text (0)));
-				cm.setWindowTitle (tr ("Modify category"));
-				if (cm.exec () != QDialog::Accepted)
-					return;
-
-				QStringList splitted = Parent_->GetProxy ()->
-					GetTagsManager ()->Split (cm.GetText ());
-				Q_FOREACH (QString cat, splitted)
-					AddItem (cat);
-
-				QString id = item->data (0, Qt::UserRole).toString ();
-				if (Added_.contains (id))
-					Added_.removeAll (id);
-				else
-					Deleted_ << id;
-				delete item;
-			}
-
-			void CategoriesSelector::on_Remove__released ()
-			{
-				QTreeWidgetItem *item = Ui_.CategoriesTree_->currentItem ();
-				if (item &&
-						Ui_.CategoriesTree_->topLevelItemCount () > 1)
-				{
-					QString id = item->data (0, Qt::UserRole).toString ();
-					if (Added_.contains (id))
-						Added_.removeAll (id);
-					else
-						Deleted_ << id;
-					delete item;
-				}
-			}
-		};
-	};
-};
-
+	void CategoriesSelector::on_Remove__released ()
+	{
+		QTreeWidgetItem *item = Ui_.CategoriesTree_->currentItem ();
+		if (item &&
+				Ui_.CategoriesTree_->topLevelItemCount () > 1)
+		{
+			QString id = item->data (0, Qt::UserRole).toString ();
+			if (Added_.contains (id))
+				Added_.removeAll (id);
+			else
+				Deleted_ << id;
+			delete item;
+		}
+	}
+}
+}
