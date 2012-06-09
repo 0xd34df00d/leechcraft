@@ -24,6 +24,8 @@
 
 class QNetworkAccessManager;
 class QNetworkReply;
+class QDomElement;
+class QUrl;
 
 namespace LeechCraft
 {
@@ -32,5 +34,7 @@ namespace Lastfmscrobble
 	QByteArray MakeCall (QList<QPair<QString, QString>>);
 
 	QNetworkReply* Request (const QString&, QNetworkAccessManager*, QList<QPair<QString, QString>> = QList<QPair<QString, QString>> ());
+
+	QUrl GetImage (const QDomElement&, const QString&);
 }
 }

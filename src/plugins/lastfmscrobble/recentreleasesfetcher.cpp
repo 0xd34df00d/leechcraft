@@ -88,17 +88,8 @@ namespace Lastfmscrobble
 						std::find (std::begin (months), std::end (months), strs.value (2))) + 1;
 			const int year = strs.value (3).toInt ();
 
-			QUrl thumb;
-			QUrl full;
-			auto image = album.firstChildElement ("image");
-			while (!image.isNull ())
-			{
-				if (image.attribute ("size") == "large")
-					thumb = QUrl (image.text ());
-				else if (image.attribute ("size") == "extralarge")
-					full = QUrl (image.text ());
-				image = image.nextSiblingElement ("image");
-			}
+			const QUrl& thumb = GetImage (album, "large");
+			const QUrl& full = GetImage (album, "extralarge");
 
 			Media::AlbumRelease release =
 			{

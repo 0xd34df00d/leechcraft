@@ -19,6 +19,8 @@
 #include "util.h"
 #include <algorithm>
 #include <QCryptographicHash>
+#include <QUrl>
+#include <QDomElement>
 #include <lastfm/ws.h>
 
 namespace LeechCraft
@@ -55,6 +57,18 @@ namespace Lastfmscrobble
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		return nam->post (req, data);
+	}
+
+	QUrl GetImage (const QDomElement& parent, const QString& size)
+	{
+		auto image = parent.firstChildElement ("image");
+		while (!image.isNull ())
+		{
+			if (image.attribute ("size") == size)
+				return image.text ();
+			image = image.nextSiblingElement ("image");
+		}
+		return QUrl ();
 	}
 }
 }
