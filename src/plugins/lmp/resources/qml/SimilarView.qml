@@ -46,6 +46,8 @@ Rectangle {
             anchors.fill: parent
             onClicked: fullSizeArtistImg.state = "hidden"
         }
+
+        onStatusChanged: if (fullSizeArtistImg.status == Image.Ready) fullSizeArtistImg.state = "visible"
     }
 
     ListView {
@@ -103,7 +105,7 @@ Rectangle {
 
                     onClicked: {
                         fullSizeArtistImg.source = artistBigImageURL
-                        fullSizeArtistImg.state = "visible"
+                        if (fullSizeArtistImg.status == Image.Ready) fullSizeArtistImg.state = "visible"
                     }
                 }
             }

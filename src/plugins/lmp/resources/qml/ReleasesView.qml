@@ -46,6 +46,8 @@ Rectangle {
             anchors.fill: parent
             onClicked: fullSizeAA.state = "hidden"
         }
+
+        onStatusChanged: if (fullSizeAA.status == Image.Ready) fullSizeAA.state = "visible"
     }
 
     GridView {
@@ -100,7 +102,7 @@ Rectangle {
 
                             onClicked: {
                                 fullSizeAA.source = albumFullImage
-                                fullSizeAA.state = "visible"
+                                if (fullSizeAA.status == Image.Ready) fullSizeAA.state = "visible"
                             }
                         }
                     }
