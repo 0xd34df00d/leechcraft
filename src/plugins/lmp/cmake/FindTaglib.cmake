@@ -48,7 +48,6 @@ if(TAGLIBCONFIG_EXECUTABLE)
 
 else(TAGLIBCONFIG_EXECUTABLE)
 
-  include(FindLibraryWithDebug)
   include(FindPackageHandleStandardArgs)
 
   find_path(TAGLIB_INCLUDES
