@@ -209,7 +209,7 @@ namespace Aggregator
 						if (rxs.isEmpty () || ib.indexIn (i->URL_) != -1)
 							Links_ << i->URL_;
 				}
-				else if ((!link && ib.indexIn (Item_->Description_) != -1))
+				else if (!link && ib.indexIn (Item_->Description_) != -1)
 					Links_ << ib.cap (0);
 			}
 
