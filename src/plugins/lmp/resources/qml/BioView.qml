@@ -4,17 +4,7 @@ Rectangle {
     anchors.fill: parent
     smooth: true
 
-    gradient: Gradient {
-        GradientStop {
-            position: 1
-            color: "#42394b"
-        }
-
-        GradientStop {
-            position: 0
-            color: "#000000"
-        }
-    }
+    color: "black"
 
     Text {
         id: artistNameLabel
@@ -30,8 +20,8 @@ Rectangle {
 
     Image {
         id: artistImageThumb
-        width: 100
-        height: 100
+        width: 170
+        height: 170
         smooth: true
         fillMode: Image.PreserveAspectFit
         anchors.left: parent.left
@@ -63,19 +53,75 @@ Rectangle {
         font.pointSize: 8
     }
 
-    Text {
-        id: shortDescLabel
-        text: artistInfo
-        textFormat: Text.RichText
-        clip: true
-        color: "#aaaaaa"
-        wrapMode: Text.WordWrap
+    Rectangle {
+        id: upTextShade
+        z: 2
+        height: 10
+
+        anchors.top: artistImageThumb.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+        gradient: Gradient {
+            GradientStop {
+                position: 1
+                color: "#00000000"
+            }
+
+            GradientStop {
+                position: 0
+                color: "#ff000000"
+            }
+        }
+    }
+
+    Flickable {
         anchors.leftMargin: 5
         anchors.left: parent.left
         anchors.rightMargin: 5
         anchors.right: parent.right
         anchors.top: artistImageThumb.bottom
-        anchors.topMargin: 5
         anchors.bottom: parent.bottom
+
+        contentWidth: width
+        contentHeight: shortDescLabel.height + 16
+
+        clip: true
+
+        Text {
+            id: shortDescLabel
+            text: artistInfo
+            textFormat: Text.RichText
+            clip: true
+            color: "#aaaaaa"
+            wrapMode: Text.WordWrap
+
+            anchors.top: parent.top
+            anchors.topMargin: 8
+            anchors.left: parent.left
+            anchors.right: parent.right
+        }
+    }
+
+    Rectangle {
+        id: downTextShade
+        z: 2
+        height: 10
+
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: "#00000000"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#ff000000"
+            }
+        }
     }
 }
