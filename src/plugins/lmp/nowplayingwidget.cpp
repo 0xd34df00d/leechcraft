@@ -84,6 +84,8 @@ namespace LMP
 		Ui_.Genres_->setText ("<em>" + genres + "</em>");
 
 		SetStatistics (info.LocalPath_);
+
+		Ui_.BioWidget_->SetCurrentArtist (info.Artist_);
 	}
 
 	namespace

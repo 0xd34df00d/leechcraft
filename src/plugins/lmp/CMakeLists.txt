@@ -69,6 +69,8 @@ SET (SRCS
 	radiowidget.cpp
 	releaseswidget.cpp
 	playlistundocommand.cpp
+	biowidget.cpp
+	biopropproxy.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
@@ -102,6 +104,8 @@ SET (HEADERS
 	radiowidget.h
 	releaseswidget.h
 	playlistundocommand.h
+	biowidget.h
+	biopropproxy.h
 	playlistparsers/playlistfactory.h
 	playlistparsers/m3u.h
 	playlistparsers/pls.h
@@ -114,6 +118,7 @@ SET (FORMS
 	recommendationswidget.ui
 	radiowidget.ui
 	releaseswidget.ui
+	biowidget.ui
 	)
 SET (RESOURCES resources.qrc)
 CreateTrVars ("lmp" "en;es;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)

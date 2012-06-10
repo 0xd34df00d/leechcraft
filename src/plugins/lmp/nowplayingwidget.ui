@@ -168,6 +168,19 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <widget class="QWidget" name="BioPage_">
+      <attribute name="title">
+       <string>Bio</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="LeechCraft::LMP::BioWidget" name="BioWidget_" native="true"/>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="SimilarPage_">
       <attribute name="title">
        <string>Similar artists</string>
@@ -245,6 +258,12 @@
    <class>LeechCraft::LMP::ArtistsInfoDisplay</class>
    <extends>QDeclarativeView</extends>
    <header>artistsinfodisplay.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::BioWidget</class>
+   <extends>QWidget</extends>
+   <header>biowidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
