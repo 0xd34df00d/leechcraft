@@ -117,15 +117,15 @@ namespace Azoth
 	void ContactListDelegate::DrawAccount (QPainter *painter,
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
+		QStyle *style = o.widget ?
+				o.widget->style () :
+				QApplication::style ();
+
 		painter->save ();
 		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
 
-		QPainterPath rectPath;
-		rectPath.addRoundedRect (o.rect, 6, 6);
-
-		painter->fillPath (rectPath, o.palette.color (QPalette::Window));
-		painter->setPen (o.palette.color (QPalette::WindowText));
-		painter->drawPath (rectPath);
+		style->drawPrimitive (QStyle::PE_PanelButtonCommand,
+				&o, painter, o.widget);
 
 		painter->restore ();
 
@@ -142,8 +142,7 @@ namespace Azoth
 			accIcon = qobject_cast<IProtocol*> (acc->GetParentProtocol ())->GetProtocolIcon ();
 
 		const QRect& r = o.rect;
-		const int sHeight = r.height ();
-		const int iconSize = sHeight;
+		const int iconSize = r.height () - 2 * CPadding;
 
 		QImage avatarImg;
 		if (extAcc)
