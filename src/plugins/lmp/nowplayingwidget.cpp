@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "nowplayingwidget.h"
+#include <algorithm>
 #include "mediainfo.h"
 #include "core.h"
 #include "localcollection.h"
