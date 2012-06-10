@@ -18,6 +18,7 @@
 
 #include "customwebview.h"
 #include <cmath>
+#include <limits>
 #include <qwebframe.h>
 #include <QGraphicsSceneMouseEvent>
 #include <QMenu>
