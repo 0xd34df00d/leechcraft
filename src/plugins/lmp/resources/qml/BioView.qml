@@ -3,11 +3,13 @@ import QtQuick 1.0
 Rectangle {
     anchors.fill: parent
     smooth: true
+    z: 0
 
     color: "black"
 
     Text {
         id: artistNameLabel
+        z: 2
         text: artistName
         font.bold: true
         font.pointSize: 12
@@ -20,6 +22,7 @@ Rectangle {
 
     Image {
         id: artistImageThumb
+        z: 2
         width: 170
         height: 170
         smooth: true
@@ -44,6 +47,7 @@ Rectangle {
 
     Text {
         id: artistTagsLabel
+        z: 2
         text: artistTags
         color: "#999999"
         anchors.leftMargin: 5
@@ -55,7 +59,7 @@ Rectangle {
 
     Rectangle {
         id: upTextShade
-        z: 2
+        z: 3
         height: 10
 
         anchors.top: artistImageThumb.bottom
@@ -76,6 +80,8 @@ Rectangle {
     }
 
     Flickable {
+        z: 2
+
         anchors.leftMargin: 5
         anchors.left: parent.left
         anchors.rightMargin: 5
@@ -104,8 +110,28 @@ Rectangle {
     }
 
     Rectangle {
+        z: 1
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: artistImageThumb.bottom
+        anchors.bottom: parent.bottom
+
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: "#000000"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#42394b"
+            }
+        }
+    }
+
+    Rectangle {
         id: downTextShade
-        z: 2
+        z: 3
         height: 10
 
         anchors.bottom: parent.bottom
@@ -115,12 +141,12 @@ Rectangle {
         gradient: Gradient {
             GradientStop {
                 position: 0
-                color: "#00000000"
+                color: "#0042394b"
             }
 
             GradientStop {
                 position: 1
-                color: "#ff000000"
+                color: "#ff42394b"
             }
         }
     }
