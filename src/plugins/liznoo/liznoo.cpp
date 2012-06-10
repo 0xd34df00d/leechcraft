@@ -18,6 +18,7 @@
 
 #include "liznoo.h"
 #include <cmath>
+#include <limits>
 #include <QIcon>
 #include <QAction>
 #include <QTimer>
