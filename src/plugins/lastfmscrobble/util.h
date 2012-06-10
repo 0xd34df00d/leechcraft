@@ -22,6 +22,7 @@
 #include <QPair>
 #include <QString>
 #include <QMap>
+#include <interfaces/media/audiostructs.h>
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -34,9 +35,13 @@ namespace Lastfmscrobble
 {
 	QByteArray MakeCall (QList<QPair<QString, QString>>);
 
-	QNetworkReply* Request (const QString&, QNetworkAccessManager*, const QMap<QString, QString>&);
-	QNetworkReply* Request (const QString&, QNetworkAccessManager*, QList<QPair<QString, QString>> = QList<QPair<QString, QString>> ());
+	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam,
+			const QMap<QString, QString>& params);
+	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam,
+			QList<QPair<QString, QString>> params = QList<QPair<QString, QString>> ());
 
-	QUrl GetImage (const QDomElement&, const QString&);
+	Media::ArtistInfo GetArtistInfo (const QDomElement& artist);
+
+	QUrl GetImage (const QDomElement& parent, const QString& imageSize);
 }
 }

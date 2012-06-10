@@ -48,9 +48,6 @@ namespace Lastfmscrobble
 		void handleInfoReplyFinished ();
 		void handleInfoReplyError ();
 
-		void handleTagsReplyFinished ();
-		void handleTagsReplyError ();
-
 		void handleReplyError ();
 	signals:
 		void ready ();

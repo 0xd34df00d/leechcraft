@@ -20,8 +20,6 @@
 #include <QNetworkReply>
 #include <QDomDocument>
 #include <QtDebug>
-#include <lastfm/Tag>
-#include <lastfm/Artist>
 #include "util.h"
 
 namespace LeechCraft
@@ -101,62 +99,22 @@ namespace Lastfmscrobble
 		const int similarity = reply->property ("Similarity").toInt ();
 		const auto& similarTo = reply->property ("SimilarTo").toStringList ();
 
-		const auto& augment = GetAdditional (reply->peek (reply->bytesAvailable ()));
-
-		const auto& artist = lastfm::Artist::getInfo (reply);
-		Media::ArtistInfo info =
+		QDomDocument doc;
+		if (!doc.setContent (reply->readAll ()))
 		{
-			artist.name (),
-			augment.ShortDesc_,
-			augment.FullDesc_,
-			augment.Image_,
-			augment.LargeImage_,
-			artist.www (),
-			Media::TagInfos_t ()
-		};
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse response";
+			DecrementWaiting ();
+			return;
+		}
+
+		const auto& info = GetArtistInfo (doc.documentElement ().firstChildElement ("artist"));
 		Similar_ << Media::SimilarityInfo { info, similarity, similarTo };
 
-		auto tagsReply = artist.getTopTags ();
-		tagsReply->setProperty ("Position", Similar_.size () - 1);
-		connect (tagsReply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleTagsReplyFinished ()));
-		connect (tagsReply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleTagsReplyError ()));
+		DecrementWaiting ();
 	}
 
 	void BaseSimilarArtists::handleInfoReplyError ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		qWarning () << Q_FUNC_INFO
-				<< reply->errorString ();
-
-		DecrementWaiting ();
-	}
-
-	void BaseSimilarArtists::handleTagsReplyFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& tags = lastfm::Tag::list (reply).values ();
-		Media::TagInfos_t infos;
-		std::transform (tags.begin (), tags.end (), std::back_inserter (infos),
-				[] (const QString& name) { Media::TagInfo info = { name }; return info; });
-
-		const int pos = reply->property ("Position").toInt ();
-		if (Similar_.size () > pos && pos >= 0)
-			Similar_ [pos].Artist_.Tags_ = infos;
-
-		DecrementWaiting ();
-	}
-
-	void BaseSimilarArtists::handleTagsReplyError ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
