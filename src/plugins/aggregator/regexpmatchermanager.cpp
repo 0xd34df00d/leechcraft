@@ -229,7 +229,7 @@ namespace Aggregator
 	{
 		std::deque<RegexpItem> matchingTitles;
 
-		Util::copy_if (Items_.begin (), Items_.end (),
+		std::copy_if (Items_.begin (), Items_.end (),
 				std::back_inserter (matchingTitles),
 				[item] (const RegexpItem& ri)
 					{ return QRegExp (ri.Title_).exactMatch (item->Title_); });
