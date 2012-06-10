@@ -186,19 +186,20 @@ namespace Liznoo
 		tooltip += tr ("Battery technology: %1")
 				.arg (info.Technology_);
 		tooltip += "<br />";
-		if (info.EnergyRate_)
+		auto isNotNull = [] (double val) { return std::fabs (val) > std::numeric_limits<double>::epsilon (); };
+		if (isNotNull (info.EnergyRate_))
 		{
 			tooltip += tr ("Energy rate: %1 W")
 					.arg (std::abs (info.EnergyRate_));
 			tooltip += "<br />";
 		}
-		if (info.Energy_)
+		if (isNotNull (info.Energy_))
 		{
 			tooltip += tr ("Remaining energy: %1 Wh")
 					.arg (info.Energy_);
 			tooltip += "<br />";
 		}
-		if (info.EnergyFull_)
+		if (isNotNull (info.EnergyFull_))
 		{
 			tooltip += tr ("Full energy capacity: %1 Wh")
 					.arg (info.EnergyFull_);
