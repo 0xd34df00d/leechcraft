@@ -21,6 +21,7 @@
 #include <QList>
 #include <QPair>
 #include <QString>
+#include <QMap>
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -33,6 +34,7 @@ namespace Lastfmscrobble
 {
 	QByteArray MakeCall (QList<QPair<QString, QString>>);
 
+	QNetworkReply* Request (const QString&, QNetworkAccessManager*, const QMap<QString, QString>&);
 	QNetworkReply* Request (const QString&, QNetworkAccessManager*, QList<QPair<QString, QString>> = QList<QPair<QString, QString>> ());
 
 	QUrl GetImage (const QDomElement&, const QString&);

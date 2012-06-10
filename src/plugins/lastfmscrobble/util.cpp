@@ -46,6 +46,14 @@ namespace Lastfmscrobble
 		return url.encodedQuery ();
 	}
 
+	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, const QMap<QString, QString>& map)
+	{
+		QList<QPair<QString, QString>> params;
+		Q_FOREACH (const auto& key, map.keys ())
+			params << qMakePair (key, map [key]);
+		return Request (method, nam, params);
+	}
+
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, QList<QPair<QString, QString>> params)
 	{
 		QNetworkRequest req (QUrl ("http://ws.audioscrobbler.com/2.0/"));
