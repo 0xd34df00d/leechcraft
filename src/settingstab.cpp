@@ -251,10 +251,11 @@ namespace LeechCraft
 				.arg (ii->GetName ()));
 
 		IHaveSettings *ihs = qobject_cast<IHaveSettings*> (obj);
-		Ui_.DialogContents_->layout ()->addWidget (ihs->GetSettingsDialog ().get ());
-		ihs->GetSettingsDialog ()->show ();
+		auto sd = ihs->GetSettingsDialog ();
+		Ui_.DialogContents_->layout ()->addWidget (sd.get ());
+		sd->show ();
 
-		const QStringList& pages = ihs->GetSettingsDialog ()->GetPages ();
+		const QStringList& pages = sd->GetPages ();
 		Q_FOREACH (const QString& page, pages)
 			Ui_.Cats_->addTopLevelItem (new QTreeWidgetItem (QStringList (page)));
 

@@ -722,11 +722,11 @@ namespace LeechCraft
 
 	void SeparateTabWidget::handleAddDefaultTab ()
 	{
-		QByteArray combined = XmlSettingsManager::Instance ()->
+		const auto& combined = XmlSettingsManager::Instance ()->
 				property ("DefaultNewTab").toString ().toLatin1 ();
 		if (combined != "contextdependent")
 		{
-			QList<QByteArray> parts = combined.split ('|');
+			const auto& parts = combined.split ('|');
 			if (parts.size () != 2)
 				qWarning () << Q_FUNC_INFO
 						<< "incorrect split"
