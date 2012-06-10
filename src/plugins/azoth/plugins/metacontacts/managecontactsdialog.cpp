@@ -56,7 +56,9 @@ namespace Metacontacts
 			}
 
 			IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
-			IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+			IProtocol *proto = account ?
+					qobject_cast<IProtocol*> (account->GetParentProtocol ()) :
+					0;
 
 			if (!account || !proto)
 			{
