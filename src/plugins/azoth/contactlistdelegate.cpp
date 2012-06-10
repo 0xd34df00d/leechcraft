@@ -243,21 +243,9 @@ namespace Azoth
 			QFont font = painter->font ();
 			font.setItalic (true);
 			painter->setFont (font);
-
 			const QRect numRect (r.left () + textWidth - 1, r.top () + CPadding,
 					rem - 1, r.height () - 2 * CPadding);
-
-			const QRect& br = painter->boundingRect (numRect,
-					Qt::AlignVCenter | Qt::AlignRight, str).adjusted (0, 0, 1, 0);
-			QPainterPath rectPath;
-			rectPath.addRoundedRect (br, 4, 4);
-
-			painter->fillPath (rectPath, o.palette.color (QPalette::Background));
-
 			painter->drawText (numRect, Qt::AlignVCenter | Qt::AlignRight, str);
-
-			painter->setPen (o.palette.color (QPalette::WindowText));
-			painter->drawPath (rectPath);
 		}
 
 		painter->restore ();
