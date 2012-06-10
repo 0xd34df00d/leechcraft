@@ -22,6 +22,8 @@
 #include <idna.h>
 #endif
 
+#include <limits>
+#include <cmath>
 #include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
