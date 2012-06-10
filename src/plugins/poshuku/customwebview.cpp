@@ -706,7 +706,7 @@ namespace Poshuku
 
 	void CustomWebView::handleAutoscroll ()
 	{
-		if (!ScrollDelta_)
+		if (std::fabs (ScrollDelta_) < std::numeric_limits<decltype (ScrollDelta_)>::epsilon ())
 			return;
 
 		AccumulatedScrollShift_ += ScrollDelta_;
