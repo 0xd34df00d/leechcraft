@@ -27,6 +27,7 @@
 #include <interfaces/media/irecommendedartists.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/irecentreleases.h>
+#include <interfaces/media/iartistbiofetcher.h>
 
 namespace LeechCraft
 {
@@ -44,6 +45,7 @@ namespace Lastfmscrobble
 				, public Media::IRecommendedArtists
 				, public Media::IRadioStationProvider
 				, public Media::IRecentReleases
+				, public Media::IArtistBioFetcher
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
@@ -53,7 +55,8 @@ namespace Lastfmscrobble
 				Media::ISimilarArtists
 				Media::IRecommendedArtists
 				Media::IRadioStationProvider
-				Media::IRecentReleases)
+				Media::IRecentReleases
+				Media::IArtistBioFetcher)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
@@ -88,6 +91,8 @@ namespace Lastfmscrobble
 		Media::IRadioStation_ptr GetRadioStation (Type, const QString&);
 
 		void RequestRecentReleases (int, bool);
+
+		Media::IPendingArtistBio* RequestArtistBio (const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
