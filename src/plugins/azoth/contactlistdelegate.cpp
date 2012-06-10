@@ -183,7 +183,7 @@ namespace Azoth
 				o.widget->style () :
 				QApplication::style ();
 
-		style->drawPrimitive (QStyle::PE_PanelButtonCommand,
+		style->drawPrimitive (QStyle::PE_PanelItemViewRow,
 				&o, painter, o.widget);
 
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
