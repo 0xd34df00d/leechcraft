@@ -26,6 +26,7 @@
 #include <QtConcurrentRun>
 #include <QTimer>
 #include <QtDebug>
+#include <util/util.h>
 #include "localcollectionstorage.h"
 #include "core.h"
 #include "util.h"
@@ -404,6 +405,9 @@ namespace LMP
 
 	void LocalCollection::HandleNewArtists (const Collection::Artists_t& artists)
 	{
+		int albumCount = 0;
+		int trackCount = 0;
+
 		Artists_ += artists;
 		Q_FOREACH (const auto& artist, artists)
 			Q_FOREACH (auto album, artist.Albums_)
@@ -412,6 +416,8 @@ namespace LMP
 
 		Q_FOREACH (const auto& artist, artists)
 		{
+			albumCount += artist.Albums_.size ();
+
 			auto artistItem = GetItem (Artist2Item_,
 					artist.ID_,
 					[this, &artist] (QStandardItem *item)
@@ -424,6 +430,8 @@ namespace LMP
 					CollectionModel_);
 			Q_FOREACH (auto album, artist.Albums_)
 			{
+				trackCount += album->Tracks_.size ();
+
 				AlbumArtMgr_->CheckAlbumArt (artist, album);
 
 				auto albumItem = GetItem (Album2Item_,
@@ -464,6 +472,18 @@ namespace LMP
 					Track2Item_ [track.ID_] = item;
 				}
 			}
+		}
+
+		if (artists.size () && albumCount && trackCount)
+		{
+			const auto& artistsMsg = tr ("%n new artist(s)", 0, artists.size ());
+			const auto& albumsMsg = tr ("%n new album(s)", 0, albumCount);
+			const auto& tracksMsg = tr ("%n new track(s)", 0, trackCount);
+			const auto& msg = tr ("Local collection updated: %1, %2, %3.")
+					.arg (artistsMsg)
+					.arg (albumsMsg)
+					.arg (tracksMsg);
+			Core::Instance ().SendEntity (Util::MakeNotification ("LMP", msg, PInfo_));
 		}
 	}
 
