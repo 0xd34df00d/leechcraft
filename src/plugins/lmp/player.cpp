@@ -647,15 +647,15 @@ namespace LMP
 		}
 
 		const auto& current = Source_->currentSource ();
-		if (HandleCurrentStop (current))
-			return;
-
 		const auto& path = current.fileName ();
 		if (!path.isEmpty ())
 			QMetaObject::invokeMethod (Core::Instance ().GetLocalCollection (),
 					"recordPlayedTrack",
 					Qt::QueuedConnection,
 					Q_ARG (QString, path));
+
+		if (HandleCurrentStop (current))
+			return;
 
 		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
 		switch (PlayMode_)
