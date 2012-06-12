@@ -237,7 +237,7 @@ namespace Lastfmscrobble
 	void LastFMSubmitter::checkFlushQueue (int code)
 	{
 		qDebug () << Q_FUNC_INFO << code;
-		if (code == lastfm::Audioscrobbler::TracksScrobbled)
+		if (code == lastfm::Audioscrobbler::TracksScrobbled || code == lastfm::Audioscrobbler::Scrobbling)
 		{
 			qDebug () << "tracks scrobbled, clearing queue";
 			SubmitQueue_.clear ();
