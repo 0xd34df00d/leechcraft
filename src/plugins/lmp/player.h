@@ -109,6 +109,8 @@ namespace LMP
 		bool HandleCurrentStop (const Phonon::MediaSource&);
 
 		void UnsetRadio ();
+
+		Phonon::MediaSource GetNextSource (const Phonon::MediaSource&) const;
 	public slots:
 		void play (const QModelIndex&);
 		void previousTrack ();

@@ -26,6 +26,7 @@
 #include <QApplication>
 #include <phonon/mediaobject.h>
 #include <phonon/audiooutput.h>
+#include <boost-1_49/boost/concept_check.hpp>
 #include <util/util.h>
 #include "core.h"
 #include "mediainfo.h"
@@ -505,6 +506,42 @@ namespace LMP
 		CurrentStation_.reset ();
 	}
 
+	Phonon::MediaSource Player::GetNextSource (const Phonon::MediaSource& current) const
+	{
+		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
+		switch (PlayMode_)
+		{
+		case PlayMode::Sequential:
+			if (pos != CurrentQueue_.end () && ++pos != CurrentQueue_.end ())
+				return *pos;
+			else
+				return Phonon::MediaSource ();
+		case PlayMode::Shuffle:
+			return CurrentQueue_.at (qrand () % CurrentQueue_.size ());
+		case PlayMode::RepeatTrack:
+			return current;
+		case PlayMode::RepeatAlbum:
+		{
+			if (pos == CurrentQueue_.end ())
+				return Phonon::MediaSource ();
+
+			const auto& curAlbum = GetMediaInfo (*pos).Album_;
+			if (++pos == CurrentQueue_.end () ||
+					GetMediaInfo (*pos).Album_ != curAlbum)
+				while (pos >= CurrentQueue_.begin () &&
+						GetMediaInfo (*pos).Album_ == curAlbum)
+					--pos;
+			return *pos;
+		}
+		case PlayMode::RepeatWhole:
+			if (pos == CurrentQueue_.end () || ++pos == CurrentQueue_.end ())
+				pos = CurrentQueue_.begin ();
+			return *pos;
+		}
+
+		return Phonon::MediaSource ();
+	}
+
 	void Player::play (const QModelIndex& index)
 	{
 		if (CurrentStation_)
@@ -657,38 +694,9 @@ namespace LMP
 		if (HandleCurrentStop (current))
 			return;
 
-		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
-		switch (PlayMode_)
-		{
-		case PlayMode::Sequential:
-			if (pos != CurrentQueue_.end () && ++pos != CurrentQueue_.end ())
-				Source_->enqueue (*pos);
-			break;
-		case PlayMode::Shuffle:
-			Source_->enqueue (CurrentQueue_.at (qrand () % CurrentQueue_.size ()));
-			break;
-		case PlayMode::RepeatTrack:
-			Source_->enqueue (current);
-			break;
-		case PlayMode::RepeatAlbum:
-		{
-			if (pos == CurrentQueue_.end ())
-				return;
-			const auto& curAlbum = GetMediaInfo (*pos).Album_;
-			if (++pos == CurrentQueue_.end () ||
-					GetMediaInfo (*pos).Album_ != curAlbum)
-				while (pos >= CurrentQueue_.begin () &&
-						GetMediaInfo (*pos).Album_ == curAlbum)
-					--pos;
-			Source_->enqueue (*pos);
-			break;
-		}
-		case PlayMode::RepeatWhole:
-			if (pos == CurrentQueue_.end () || ++pos == CurrentQueue_.end ())
-				pos = CurrentQueue_.begin ();
-			Source_->enqueue (*pos);
-			break;
-		}
+		const auto& next = GetNextSource (current);
+		if (next.type () != Phonon::MediaSource::Empty)
+			Source_->enqueue (next);
 	}
 
 	void Player::handlePlaybackFinished ()
