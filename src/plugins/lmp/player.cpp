@@ -26,7 +26,6 @@
 #include <QApplication>
 #include <phonon/mediaobject.h>
 #include <phonon/audiooutput.h>
-#include <boost-1_49/boost/concept_check.hpp>
 #include <util/util.h>
 #include "core.h"
 #include "mediainfo.h"
