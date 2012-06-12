@@ -195,7 +195,8 @@ namespace Lastfmscrobble
 		std::for_each (SubmitQueue_.begin (), SubmitQueue_.end (),
 				[&doc, &root] (decltype (SubmitQueue_.front ()) item)
 				{
-					root.appendChild (item.toDomElement (doc));
+					if (item.duration ())
+						root.appendChild (item.toDomElement (doc));
 				});
 
 		if (!file.open (QIODevice::WriteOnly))
