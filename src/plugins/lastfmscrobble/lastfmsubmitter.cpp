@@ -77,6 +77,11 @@ namespace Lastfmscrobble
 		lastfm::ws::SharedSecret = "50fb8b6f35fc55b7ddf6bb033dfc6fbe";
 
 		SubmitTimer_->setSingleShot (true);
+		connect (SubmitTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (cacheAndSubmit ()),
+				Qt::UniqueConnection);
 
 		LoadQueue ();
 	}
@@ -215,11 +220,6 @@ namespace Lastfmscrobble
 				SIGNAL (status (int)),
 				this,
 				SLOT (checkFlushQueue (int)));
-
-		connect (SubmitTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (cacheAndSubmit ()));
 
 		if (!SubmitQueue_.isEmpty ())
 		{
