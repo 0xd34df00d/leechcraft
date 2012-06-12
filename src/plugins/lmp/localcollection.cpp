@@ -407,6 +407,7 @@ namespace LMP
 	{
 		int albumCount = 0;
 		int trackCount = 0;
+		const bool shouldEmit = !Artists_.isEmpty ();
 
 		Artists_ += artists;
 		Q_FOREACH (const auto& artist, artists)
@@ -474,7 +475,10 @@ namespace LMP
 			}
 		}
 
-		if (artists.size () && albumCount && trackCount)
+		if (shouldEmit &&
+				artists.size () &&
+				albumCount &&
+				trackCount)
 		{
 			const auto& artistsMsg = tr ("%n new artist(s)", 0, artists.size ());
 			const auto& albumsMsg = tr ("%n new album(s)", 0, albumCount);
