@@ -117,10 +117,10 @@ namespace Lastfmscrobble
 		SubmitTimer_->stop ();
 
 		NextSubmit_ = lastfm::Track ();
-
-		const auto& lfmTrack = ToLastFMTrack (info);
 		if (info.Length_ < 30)
 			return;
+
+		const auto& lfmTrack = ToLastFMTrack (info);
 		if (!Scrobbler_)
 		{
 			SubmitQueue_ << lfmTrack;
@@ -140,6 +140,7 @@ namespace Lastfmscrobble
 		QList<QPair<QString, QString>> params;
 		params << QPair<QString, QString> ("track", NextSubmit_.title ());
 		params << QPair<QString, QString> ("artist", NextSubmit_.artist ());
+		qDebug () << Q_FUNC_INFO << "loving" << NextSubmit_.artist () << NextSubmit_.title ();
 		QNetworkReply *reply = Request ("track.love", NAM_, params);
 		connect (reply,
 				SIGNAL (finished ()),
