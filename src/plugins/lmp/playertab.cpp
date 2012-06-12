@@ -432,6 +432,10 @@ namespace LMP
 
 	void PlayerTab::Scrobble (const MediaInfo& info)
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("EnableScrobbling").toBool ())
+			return;
+
 		auto scrobblers = Core::Instance ().GetProxy ()->
 					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
 		if (info.Title_.isEmpty () && info.Artist_.isEmpty ())
@@ -592,6 +596,10 @@ namespace LMP
 
 	void PlayerTab::handleLoveTrack ()
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("EnableScrobbling").toBool ())
+			return;
+
 		auto scrobblers = Core::Instance ().GetProxy ()->
 					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
 		std::for_each (scrobblers.begin (), scrobblers.end (),
