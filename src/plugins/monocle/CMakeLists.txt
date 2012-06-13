@@ -51,7 +51,12 @@ TARGET_LINK_LIBRARIES (leechcraft_monocle
 	)
 INSTALL (TARGETS leechcraft_monocle DESTINATION ${LC_PLUGINS_DEST})
 
+OPTION (ENABLE_MONOCLE_FXB "Enable FictionBook backend for Monocle" ON)
 OPTION (ENABLE_MONOCLE_PDF "Enable PDF backend for Monocle" ON)
+
+IF (ENABLE_MONOCLE_FXB)
+	ADD_SUBDIRECTORY (plugins/fxb)
+ENDIF (ENABLE_MONOCLE_FXB)
 
 IF (ENABLE_MONOCLE_PDF)
 	ADD_SUBDIRECTORY (plugins/pdf)
