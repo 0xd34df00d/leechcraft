@@ -82,8 +82,6 @@ namespace Lastfmscrobble
 				this,
 				SLOT (cacheAndSubmit ()),
 				Qt::UniqueConnection);
-
-		LoadQueue ();
 	}
 
 	void LastFMSubmitter::Init (QNetworkAccessManager *manager)
@@ -122,10 +120,7 @@ namespace Lastfmscrobble
 
 		const auto& lfmTrack = ToLastFMTrack (info);
 		if (!Scrobbler_)
-		{
-			SubmitQueue_ << lfmTrack;
 			return;
-		}
 		Scrobbler_->nowPlaying (lfmTrack);
 
 		NextSubmit_ = lfmTrack;
@@ -158,58 +153,6 @@ namespace Lastfmscrobble
 		SubmitTimer_->stop ();
 	}
 
-	void LastFMSubmitter::LoadQueue ()
-	{
-		QFile file (GetQueueFilename ());
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< file.errorString ();
-			return;
-		}
-
-		QDomDocument doc;
-		doc.setContent (file.readAll ());
-		auto elem = doc.documentElement ().firstChildElement ();
-		while (!elem.isNull ())
-		{
-			lastfm::Track track (elem);
-			if (!track.isNull ())
-				SubmitQueue_ << track;
-			elem = elem.nextSiblingElement ();
-		}
-	}
-
-	void LastFMSubmitter::SaveQueue () const
-	{
-		QFile file (GetQueueFilename ());
-		if (SubmitQueue_.isEmpty ())
-		{
-			file.remove ();
-			return;
-		}
-
-		QDomDocument doc ("queue");
-		auto root = doc.createElement ("queue");
-		doc.appendChild (root);
-
-		std::for_each (SubmitQueue_.begin (), SubmitQueue_.end (),
-				[&doc, &root] (decltype (SubmitQueue_.front ()) item)
-				{
-					if (item.duration ())
-						root.appendChild (item.toDomElement (doc));
-				});
-
-		if (!file.open (QIODevice::WriteOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< file.errorString ();
-			return;
-		}
-
-		file.write (doc.toByteArray ());
-	}
-
 	void LastFMSubmitter::handleAuthenticated ()
 	{
 		Scrobbler_.reset (new lastfm::Audioscrobbler ("tst"));
@@ -222,12 +165,6 @@ namespace Lastfmscrobble
 				SIGNAL (status (int)),
 				this,
 				SLOT (checkFlushQueue (int)));
-
-		if (!SubmitQueue_.isEmpty ())
-		{
-			Scrobbler_->cache (SubmitQueue_);
-			submit ();
-		}
 	}
 
 	void LastFMSubmitter::cacheAndSubmit ()
@@ -240,18 +177,11 @@ namespace Lastfmscrobble
 	{
 		qDebug () << Q_FUNC_INFO << code;
 		if (code == lastfm::Audioscrobbler::TracksScrobbled || code == lastfm::Audioscrobbler::Scrobbling)
-		{
 			qDebug () << "tracks scrobbled, clearing queue";
-			SubmitQueue_.clear ();
-			SaveQueue ();
-		}
 	}
 
 	void LastFMSubmitter::submit ()
 	{
-		SubmitQueue_ << NextSubmit_;
-		SaveQueue ();
-
 		if (!IsConnected ())
 			return;
 

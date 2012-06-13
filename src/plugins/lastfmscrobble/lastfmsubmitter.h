@@ -65,7 +65,6 @@ namespace Lastfmscrobble
 
 		QTimer *SubmitTimer_;
 
-		QList<lastfm::Track> SubmitQueue_;
 		lastfm::MutableTrack NextSubmit_;
 	public:
 		LastFMSubmitter (QObject *parent = 0);
@@ -76,9 +75,6 @@ namespace Lastfmscrobble
 		void NowPlaying (const MediaMeta&);
 		void Love ();
 		void Clear ();
-	private:
-		void LoadQueue ();
-		void SaveQueue () const;
 	public slots:
 		void submit ();
 		void handleAuthenticated ();
