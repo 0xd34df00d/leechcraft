@@ -33,11 +33,6 @@ class IPluginProxy;
 
 namespace Metida
 {
-	struct LJProfileData
-	{
-		QUrl AvatarUrl_;
-	};
-
 	class LJBloggingPlatform;
 
 	class Core : public QObject

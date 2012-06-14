@@ -15,6 +15,7 @@ INCLUDE_DIRECTORIES (${BLOGIQUE_INCLUDE_DIR}
 	)
 
 SET (METIDA_SRCS
+	core.cpp
 	ljaccount.cpp
 	ljaccountconfigurationdialog.cpp
 	ljaccountconfigurationwidget.cpp
@@ -22,11 +23,11 @@ SET (METIDA_SRCS
 	ljprofile.cpp
 	ljxmlrpc.cpp
 	metida.cpp
-	core.cpp
 	xmlsettingsmanager.cpp
 	)
 
 SET (METIDA_HEADERS
+	core.h
 	ljaccount.h
 	ljaccountconfigurationdialog.h
 	ljaccountconfigurationwidget.h
@@ -34,7 +35,7 @@ SET (METIDA_HEADERS
 	ljprofile.h
 	ljxmlrpc.h
 	metida.h
-	core.h
+	profiletypes.h
 	xmlsettingsmanager.h
 	)
 

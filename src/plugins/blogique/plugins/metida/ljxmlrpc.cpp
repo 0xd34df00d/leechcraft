@@ -24,6 +24,7 @@
 #include <QNetworkReply>
 #include <QXmlQuery>
 #include <util/sysinfo.h>
+#include "profiletypes.h"
 
 namespace LeechCraft
 {
@@ -181,13 +182,48 @@ namespace Metida
 					member.toElement ().tagName () != "member")
 				continue;
 
-			ParseMember (member);
+			auto res = ParseMember (member);
+			if (res.first == "defaultpicurl")
+				profile.AvatarUrl_ = res.second [0].toUrl ();
+			else if (res.first == "friendgroups")
+			{
+				LJFriendGroup friendGroup;
+				int i = 0;
+				Q_FOREACH (auto var, res.second)
+				{
+					LjPairEntry entry = var.value<LjPairEntry> ();
+
+// 					qDebug () << i++;
+// 					if (entry.first == "public")
+// 						friendGroup.Public_ = entry.second.value (0).toBool ();
+// 					else if (entry.first == "name")
+// 						friendGroup.Name_ = entry.second.value (0).toString ();
+// 					else if (entry.first == "id")
+// 						friendGroup.Id_ = entry.second.value (0).toUInt ();
+// 					else if (entry.first == "sortorder")
+// 						friendGroup.Id_ = entry.second.value (0).toUInt ();
+				}
+// 				profile.FriendGroups_ << friendGroup;
+			}
 		}
+
+// 		qDebug () << Q_FUNC_INFO
+// 				<< profile.AvatarUrl_;
+// 				int id = 0;
+// 		Q_FOREACH (auto group, profile.FriendGroups_)
+// 		{
+// 			qDebug () << Q_FUNC_INFO
+// 				<< id++
+// 				<< group.Public_
+// 				<< group.Name_
+// 				<< group.Id_
+// 				<< group.SortOrder_;
+// 		}
 
 		return profile;
 	}
 
-	pair LJXmlRPC::ParseMember (QDomNode node) const
+	LjPairEntry LJXmlRPC::ParseMember (QDomNode node) const
 	{
 		auto memberFields = node.childNodes ();
 		auto memberNameField = memberFields.at (0);
@@ -195,18 +231,17 @@ namespace Metida
 		QString memberName;
 		QVariantList memberValue;
 		if (memberNameField.isElement () &&
-			memberNameField.toElement ().tagName () == "name")
+				memberNameField.toElement ().tagName () == "name")
 			memberName = memberNameField.toElement ().text ();
 
 		if (memberValueField.isElement ())
 			memberValue = ParseValue (memberValueField);
 
-		Q_FOREACH (auto var, memberValue)
-			qDebug () << Q_FUNC_INFO
-					<< var.value<pair> ();
-				
+// 		Q_FOREACH (auto var, memberValue)
+// 			qDebug () << Q_FUNC_INFO
+// 					<< var.value<pair> ();
 
-		return pair (memberName, memberValue);
+		return LjPairEntry (memberName, memberValue);
 	}
 
 	QVariantList LJXmlRPC::ParseValue (QDomNode node) const
@@ -238,7 +273,7 @@ namespace Metida
 		{
 			auto structMembers = valueNode.childNodes ();
 			for (int i = 0, count = structMembers.count (); i < count; ++i)
-				result << QVariant::fromValue<pair>  (ParseMember (structMembers.at (i)));
+				result << QVariant::fromValue<LjPairEntry>  (ParseMember (structMembers.at (i)));
 		}
 
 		return result;

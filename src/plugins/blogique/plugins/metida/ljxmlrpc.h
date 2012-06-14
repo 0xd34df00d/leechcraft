@@ -25,9 +25,10 @@
 #include <QDomElement>
 #include <QNetworkRequest>
 #include "core.h"
+#include "profiletypes.h"
 
-typedef QPair<QString, QVariantList> pair;
-Q_DECLARE_METATYPE (pair)
+typedef QPair<QString, QVariantList> LjPairEntry;
+Q_DECLARE_METATYPE (LjPairEntry)
 
 namespace LeechCraft
 {
@@ -49,7 +50,7 @@ namespace Metida
 		void ValidateAccountData (const QString& login,
 				const QString& pass, const QString& challenge);
 		LJProfileData ParseProfileInfo (QDomDocument document) const;
-		pair ParseMember (QDomNode node) const;
+		LjPairEntry ParseMember (QDomNode node) const;
 		QVariantList ParseValue (QDomNode node) const;
 
 	private slots:
