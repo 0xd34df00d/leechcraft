@@ -407,9 +407,9 @@ namespace LeechCraft
 
 		void FlatToFoldersProxyModel::handleModelReset ()
 		{
-			if (Root_->C_.size ())
+			if (const int size = Root_->C_.size ())
 			{
-				beginRemoveRows (QModelIndex (), 0, Root_->C_.size () - 1);
+				beginRemoveRows (QModelIndex (), 0, size - 1);
 				Root_->C_.clear ();
 				Items_.clear ();
 				endRemoveRows ();

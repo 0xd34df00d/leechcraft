@@ -1,7 +1,6 @@
 import QtQuick 1.0
 
-Rectangle
-{
+Rectangle {
     gradient: Gradient {
         GradientStop {
             position: 0
@@ -14,6 +13,42 @@ Rectangle
         }
     }
     anchors.fill: parent
+
+    Image {
+        id: fullSizeArtistImg
+        state: "hidden"
+
+        anchors.centerIn: parent
+        width: parent.width - 60
+        height: parent.height - 60
+        z: 2
+        smooth: true
+        fillMode: Image.PreserveAspectFit
+
+        visible: opacity != 0
+
+        states: [
+            State {
+                name: "hidden"
+                PropertyChanges { target: fullSizeArtistImg; opacity: 0 }
+            },
+            State {
+                name: "visible"
+                PropertyChanges { target: fullSizeArtistImg; opacity: 1 }
+            }
+        ]
+
+        transitions: Transition {
+            PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: fullSizeArtistImg.state = "hidden"
+        }
+
+        onStatusChanged: if (fullSizeArtistImg.status == Image.Ready) fullSizeArtistImg.state = "visible"
+    }
 
     ListView {
         anchors.fill: parent
@@ -64,6 +99,15 @@ Rectangle
                 anchors.top: parent.top
                 anchors.topMargin: 2
                 source: artistImageURL
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        fullSizeArtistImg.source = artistBigImageURL
+                        if (fullSizeArtistImg.status == Image.Ready) fullSizeArtistImg.state = "visible"
+                    }
+                }
             }
 
             Text {
@@ -90,6 +134,7 @@ Rectangle
             Text {
                 id: shortDescLabel
                 text: shortDesc
+                textFormat: Text.RichText
                 width: parent.width - artistImageThumb.width - 10
                 clip: true
                 color: "#aaaaaa"

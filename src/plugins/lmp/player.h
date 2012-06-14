@@ -93,8 +93,10 @@ namespace LMP
 		void Enqueue (const QStringList&, bool = true);
 		void Enqueue (const QList<Phonon::MediaSource>&, bool = true);
 		QList<Phonon::MediaSource> GetQueue () const;
+		QList<Phonon::MediaSource> GetIndexSources (const QModelIndex&) const;
 
 		void Dequeue (const QModelIndex&);
+		void Dequeue (const QList<Phonon::MediaSource>&);
 
 		void SetStopAfter (const QModelIndex&);
 
@@ -107,6 +109,8 @@ namespace LMP
 		bool HandleCurrentStop (const Phonon::MediaSource&);
 
 		void UnsetRadio ();
+
+		Phonon::MediaSource GetNextSource (const Phonon::MediaSource&) const;
 	public slots:
 		void play (const QModelIndex&);
 		void previousTrack ();

@@ -117,15 +117,15 @@ namespace Azoth
 	void ContactListDelegate::DrawAccount (QPainter *painter,
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
+		QStyle *style = o.widget ?
+				o.widget->style () :
+				QApplication::style ();
+
 		painter->save ();
 		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
 
-		QPainterPath rectPath;
-		rectPath.addRoundedRect (o.rect, 6, 6);
-
-		painter->fillPath (rectPath, o.palette.color (QPalette::Window));
-		painter->setPen (o.palette.color (QPalette::WindowText));
-		painter->drawPath (rectPath);
+		style->drawPrimitive (QStyle::PE_PanelButtonCommand,
+				&o, painter, o.widget);
 
 		painter->restore ();
 
@@ -142,8 +142,7 @@ namespace Azoth
 			accIcon = qobject_cast<IProtocol*> (acc->GetParentProtocol ())->GetProtocolIcon ();
 
 		const QRect& r = o.rect;
-		const int sHeight = r.height ();
-		const int iconSize = sHeight;
+		const int iconSize = r.height () - 2 * CPadding;
 
 		QImage avatarImg;
 		if (extAcc)
@@ -184,7 +183,7 @@ namespace Azoth
 				o.widget->style () :
 				QApplication::style ();
 
-		style->drawPrimitive (QStyle::PE_PanelButtonCommand,
+		style->drawPrimitive (QStyle::PE_PanelItemViewRow,
 				&o, painter, o.widget);
 
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
@@ -243,21 +242,9 @@ namespace Azoth
 			QFont font = painter->font ();
 			font.setItalic (true);
 			painter->setFont (font);
-
 			const QRect numRect (r.left () + textWidth - 1, r.top () + CPadding,
 					rem - 1, r.height () - 2 * CPadding);
-
-			const QRect& br = painter->boundingRect (numRect,
-					Qt::AlignVCenter | Qt::AlignRight, str).adjusted (0, 0, 1, 0);
-			QPainterPath rectPath;
-			rectPath.addRoundedRect (br, 4, 4);
-
-			painter->fillPath (rectPath, o.palette.color (QPalette::Background));
-
 			painter->drawText (numRect, Qt::AlignVCenter | Qt::AlignRight, str);
-
-			painter->setPen (o.palette.color (QPalette::WindowText));
-			painter->drawPath (rectPath);
 		}
 
 		painter->restore ();

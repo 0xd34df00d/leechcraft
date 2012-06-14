@@ -209,30 +209,56 @@ namespace LMP
 		return CurrentQueue_;
 	}
 
-	void Player::Dequeue (const QModelIndex& index)
+	QList<Phonon::MediaSource> Player::GetIndexSources (const QModelIndex& index) const
 	{
-		if (!index.isValid ())
-			return;
-
 		QList<Phonon::MediaSource> sources;
 		if (index.data (Role::IsAlbum).toBool ())
 			for (int i = 0; i < PlaylistModel_->rowCount (index); ++i)
 				sources << PlaylistModel_->index (i, 0, index).data (Role::Source).value<Phonon::MediaSource> ();
 		else
 			sources << index.data (Role::Source).value<Phonon::MediaSource> ();
+		return sources;
+	}
 
-		Q_FOREACH (const auto& source, sources)
+	namespace
+	{
+		void IncAlbumLength (QStandardItem *albumItem, int length)
 		{
-			CurrentQueue_.removeAll (source);
+			const int prevLength = albumItem->data (Player::Role::AlbumLength).toInt ();
+			albumItem->setData (length + prevLength, Player::Role::AlbumLength);
+		}
+	}
+
+	void Player::Dequeue (const QModelIndex& index)
+	{
+		if (!index.isValid ())
+			return;
+
+		Dequeue (GetIndexSources (index));
+	}
+
+	void Player::Dequeue (const QList<Phonon::MediaSource>& sources)
+	{
+		for (const auto& source : sources)
+		{
+			if (!CurrentQueue_.removeAll (source))
+				continue;
+
 			auto item = Items_.take (source);
 			auto parent = item->parent ();
 			if (parent)
 			{
-				parent->removeRow (item->row ());
-				if (!parent->rowCount ())
+				if (parent->rowCount () == 1)
 				{
 					AlbumRoots_.remove (AlbumRoots_.key (parent));
 					PlaylistModel_->removeRow (parent->row ());
+				}
+				else
+				{
+					const auto& info = item->data (Role::Info).value<MediaInfo> ();
+					if (!info.LocalPath_.isEmpty ())
+						IncAlbumLength (parent, -info.Length_);
+					parent->removeRow (item->row ());
 				}
 			}
 			else
@@ -308,12 +334,6 @@ namespace LMP
 			albumItem->setData (art, Player::Role::AlbumArt);
 			albumItem->setData (0, Player::Role::AlbumLength);
 			return albumItem;
-		}
-
-		void IncAlbumLength (QStandardItem *albumItem, int length)
-		{
-			const int prevLength = albumItem->data (Player::Role::AlbumLength).toInt ();
-			albumItem->setData (length + prevLength, Player::Role::AlbumLength);
 		}
 	}
 
@@ -485,6 +505,42 @@ namespace LMP
 		CurrentStation_.reset ();
 	}
 
+	Phonon::MediaSource Player::GetNextSource (const Phonon::MediaSource& current) const
+	{
+		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
+		switch (PlayMode_)
+		{
+		case PlayMode::Sequential:
+			if (pos != CurrentQueue_.end () && ++pos != CurrentQueue_.end ())
+				return *pos;
+			else
+				return Phonon::MediaSource ();
+		case PlayMode::Shuffle:
+			return CurrentQueue_.at (qrand () % CurrentQueue_.size ());
+		case PlayMode::RepeatTrack:
+			return current;
+		case PlayMode::RepeatAlbum:
+		{
+			if (pos == CurrentQueue_.end ())
+				return Phonon::MediaSource ();
+
+			const auto& curAlbum = GetMediaInfo (*pos).Album_;
+			if (++pos == CurrentQueue_.end () ||
+					GetMediaInfo (*pos).Album_ != curAlbum)
+				while (pos >= CurrentQueue_.begin () &&
+						GetMediaInfo (*pos).Album_ == curAlbum)
+					--pos;
+			return *pos;
+		}
+		case PlayMode::RepeatWhole:
+			if (pos == CurrentQueue_.end () || ++pos == CurrentQueue_.end ())
+				pos = CurrentQueue_.begin ();
+			return *pos;
+		}
+
+		return Phonon::MediaSource ();
+	}
+
 	void Player::play (const QModelIndex& index)
 	{
 		if (CurrentStation_)
@@ -627,9 +683,6 @@ namespace LMP
 		}
 
 		const auto& current = Source_->currentSource ();
-		if (HandleCurrentStop (current))
-			return;
-
 		const auto& path = current.fileName ();
 		if (!path.isEmpty ())
 			QMetaObject::invokeMethod (Core::Instance ().GetLocalCollection (),
@@ -637,38 +690,12 @@ namespace LMP
 					Qt::QueuedConnection,
 					Q_ARG (QString, path));
 
-		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
-		switch (PlayMode_)
-		{
-		case PlayMode::Sequential:
-			if (pos != CurrentQueue_.end () && ++pos != CurrentQueue_.end ())
-				Source_->enqueue (*pos);
-			break;
-		case PlayMode::Shuffle:
-			Source_->enqueue (CurrentQueue_.at (qrand () % CurrentQueue_.size ()));
-			break;
-		case PlayMode::RepeatTrack:
-			Source_->enqueue (current);
-			break;
-		case PlayMode::RepeatAlbum:
-		{
-			if (pos == CurrentQueue_.end ())
-				return;
-			const auto& curAlbum = GetMediaInfo (*pos).Album_;
-			if (++pos == CurrentQueue_.end () ||
-					GetMediaInfo (*pos).Album_ != curAlbum)
-				while (pos >= CurrentQueue_.begin () &&
-						GetMediaInfo (*pos).Album_ == curAlbum)
-					--pos;
-			Source_->enqueue (*pos);
-			break;
-		}
-		case PlayMode::RepeatWhole:
-			if (pos == CurrentQueue_.end () || ++pos == CurrentQueue_.end ())
-				pos = CurrentQueue_.begin ();
-			Source_->enqueue (*pos);
-			break;
-		}
+		if (HandleCurrentStop (current))
+			return;
+
+		const auto& next = GetNextSource (current);
+		if (next.type () != Phonon::MediaSource::Empty)
+			Source_->enqueue (next);
 	}
 
 	void Player::handlePlaybackFinished ()

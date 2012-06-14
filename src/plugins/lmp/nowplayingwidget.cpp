@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "nowplayingwidget.h"
+#include <algorithm>
 #include "mediainfo.h"
 #include "core.h"
 #include "localcollection.h"
@@ -29,12 +30,26 @@ namespace LMP
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
+		connect (Ui_.SimilarIncludeCollection_,
+				SIGNAL (stateChanged (int)),
+				this,
+				SLOT (resetSimilarArtists ()));
 	}
 
-	void NowPlayingWidget::SetSimilarArtists (const Media::SimilarityInfos_t& infos)
+	void NowPlayingWidget::SetSimilarArtists (Media::SimilarityInfos_t infos)
 	{
-		Ui_.SimilarView_->SetSimilarArtists (infos);
+		LastInfos_ = infos;
 
+		if (Ui_.SimilarIncludeCollection_->checkState () != Qt::Checked)
+		{
+			auto col = Core::Instance ().GetLocalCollection ();
+			auto pos = std::remove_if (infos.begin (), infos.end (),
+					[col] (decltype (infos.front ()) item)
+						{ return col->FindArtist (item.Artist_.Name_) >= 0; });
+			infos.erase (pos, infos.end ());
+		}
+
+		Ui_.SimilarView_->SetSimilarArtists (infos);
 		Ui_.SimilarView_->setVisible (!infos.isEmpty ());
 	}
 
@@ -70,6 +85,8 @@ namespace LMP
 		Ui_.Genres_->setText ("<em>" + genres + "</em>");
 
 		SetStatistics (info.LocalPath_);
+
+		Ui_.BioWidget_->SetCurrentArtist (info.Artist_);
 	}
 
 	namespace
@@ -103,6 +120,11 @@ namespace LMP
 		Ui_.LastPlay_->setText (FormatDateTime (stats.LastPlay_));
 		Ui_.StatsCount_->setText (tr ("%n play(s) since %1", 0, stats.Playcount_)
 					.arg (FormatDateTime (stats.Added_)));
+	}
+
+	void NowPlayingWidget::resetSimilarArtists ()
+	{
+		SetSimilarArtists (LastInfos_);
 	}
 }
 }

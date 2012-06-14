@@ -77,8 +77,11 @@ namespace Lastfmscrobble
 		lastfm::ws::SharedSecret = "50fb8b6f35fc55b7ddf6bb033dfc6fbe";
 
 		SubmitTimer_->setSingleShot (true);
-
-		LoadQueue ();
+		connect (SubmitTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (cacheAndSubmit ()),
+				Qt::UniqueConnection);
 	}
 
 	void LastFMSubmitter::Init (QNetworkAccessManager *manager)
@@ -112,19 +115,15 @@ namespace Lastfmscrobble
 		SubmitTimer_->stop ();
 
 		NextSubmit_ = lastfm::Track ();
-
-		const auto& lfmTrack = ToLastFMTrack (info);
 		if (info.Length_ < 30)
 			return;
+
+		const auto& lfmTrack = ToLastFMTrack (info);
 		if (!Scrobbler_)
-		{
-			SubmitQueue_ << lfmTrack;
 			return;
-		}
 		Scrobbler_->nowPlaying (lfmTrack);
 
 		NextSubmit_ = lfmTrack;
-		Scrobbler_->cache (lfmTrack);
 		SubmitTimer_->start (std::min (info.Length_ / 2, 240) * 1000);
 	}
 
@@ -136,6 +135,7 @@ namespace Lastfmscrobble
 		QList<QPair<QString, QString>> params;
 		params << QPair<QString, QString> ("track", NextSubmit_.title ());
 		params << QPair<QString, QString> ("artist", NextSubmit_.artist ());
+		qDebug () << Q_FUNC_INFO << "loving" << NextSubmit_.artist () << NextSubmit_.title ();
 		QNetworkReply *reply = Request ("track.love", NAM_, params);
 		connect (reply,
 				SIGNAL (finished ()),
@@ -153,51 +153,6 @@ namespace Lastfmscrobble
 		SubmitTimer_->stop ();
 	}
 
-	void LastFMSubmitter::LoadQueue ()
-	{
-		QFile file (GetQueueFilename ());
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< file.errorString ();
-			return;
-		}
-
-		QDomDocument doc;
-		doc.setContent (file.readAll ());
-		auto elem = doc.documentElement ().firstChildElement ();
-		while (!elem.isNull ())
-		{
-			lastfm::Track track (elem);
-			if (!track.isNull ())
-				SubmitQueue_ << track;
-			elem = elem.nextSiblingElement ();
-		}
-	}
-
-	void LastFMSubmitter::SaveQueue () const
-	{
-		QDomDocument doc ("queue");
-		auto root = doc.createElement ("queue");
-		doc.appendChild (root);
-
-		std::for_each (SubmitQueue_.begin (), SubmitQueue_.end (),
-				[&doc, &root] (decltype (SubmitQueue_.front ()) item)
-				{
-					root.appendChild (item.toDomElement (doc));
-				});
-
-		QFile file (GetQueueFilename ());
-		if (!file.open (QIODevice::WriteOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< file.errorString ();
-			return;
-		}
-
-		file.write (doc.toByteArray ());
-	}
-
 	void LastFMSubmitter::handleAuthenticated ()
 	{
 		Scrobbler_.reset (new lastfm::Audioscrobbler ("tst"));
@@ -210,35 +165,23 @@ namespace Lastfmscrobble
 				SIGNAL (status (int)),
 				this,
 				SLOT (checkFlushQueue (int)));
+	}
 
-		connect (SubmitTimer_,
-				SIGNAL (timeout ()),
-				Scrobbler_.get (),
-				SLOT (submit ()));
-
-		if (!SubmitQueue_.isEmpty ())
-		{
-			Scrobbler_->cache (SubmitQueue_);
-			submit ();
-		}
+	void LastFMSubmitter::cacheAndSubmit ()
+	{
+		Scrobbler_->cache (NextSubmit_);
+		submit ();
 	}
 
 	void LastFMSubmitter::checkFlushQueue (int code)
 	{
 		qDebug () << Q_FUNC_INFO << code;
-		if (code == lastfm::Audioscrobbler::TracksScrobbled)
-		{
+		if (code == lastfm::Audioscrobbler::TracksScrobbled || code == lastfm::Audioscrobbler::Scrobbling)
 			qDebug () << "tracks scrobbled, clearing queue";
-			SubmitQueue_.clear ();
-			SaveQueue ();
-		}
 	}
 
 	void LastFMSubmitter::submit ()
 	{
-		SubmitQueue_ << NextSubmit_;
-		SaveQueue ();
-
 		if (!IsConnected ())
 			return;
 

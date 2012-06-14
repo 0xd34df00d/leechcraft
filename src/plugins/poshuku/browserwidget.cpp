@@ -22,6 +22,8 @@
 #include <idna.h>
 #endif
 
+#include <limits>
+#include <cmath>
 #include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
@@ -594,7 +596,8 @@ namespace Poshuku
 
 	void BrowserWidget::SetWidgetSettings (const BrowserWidgetSettings& settings)
 	{
-		if (settings.ZoomFactor_ != 1)
+		if (std::fabs (settings.ZoomFactor_ - 1) <
+				std::numeric_limits<decltype (settings.ZoomFactor_)>::epsilon ())
 		{
 			qDebug () << Q_FUNC_INFO
 				<< "setting zoomfactor to"

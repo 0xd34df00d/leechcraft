@@ -239,24 +239,27 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 	QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName ());
 	settings.beginGroup ("SSL exceptions");
-	QStringList keys = settings.allKeys ();
-	if (keys.contains (reply->url ().toString ()))
+	const auto& keys = settings.allKeys ();
+	const auto& url = reply->url ();
+	const auto& urlString = url.toString ();
+	const auto& host = url.host ();
+
+	if (keys.contains (urlString))
 	{
-		if (settings.value (reply->url ().toString ()).toBool ())
+		if (settings.value (urlString).toBool ())
 			reply->ignoreSslErrors ();
 	}
-	else if (keys.contains (reply->url ().host ()))
+	else if (keys.contains (host))
 	{
-		if (settings.value (reply->url ().host ()).toBool ())
+		if (settings.value (host).toBool ())
 			reply->ignoreSslErrors ();
 	}
 	else
 	{
-		QUrl url = reply->url ();
 		QPointer<QNetworkReply> repGuarded (reply);
 		QString msg = tr ("<code>%1</code><br />has SSL errors."
 				" What do you want to do?")
-			.arg (QApplication::fontMetrics ().elidedText(url.toString (), Qt::ElideMiddle, ELIDED_URL_WIDTH));
+			.arg (QApplication::fontMetrics ().elidedText (urlString, Qt::ElideMiddle, ELIDED_URL_WIDTH));
 
 		std::auto_ptr<SslErrorsDialog> errDialog (new SslErrorsDialog ());
 		errDialog->Update (msg, errors);
@@ -267,11 +270,9 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 		if (choice != SslErrorsDialog::RCNot)
 		{
 			if (choice == SslErrorsDialog::RCFile)
-				settings.setValue (url.toString (),
-						ignore);
+				settings.setValue (urlString, ignore);
 			else
-				settings.setValue (url.host (),
-						ignore);
+				settings.setValue (host, ignore);
 		}
 
 		if (ignore)

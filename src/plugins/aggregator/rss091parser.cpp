@@ -26,17 +26,17 @@ namespace Aggregator
 	RSS091Parser::RSS091Parser ()
 	{
 	}
-	
+
 	RSS091Parser::~RSS091Parser ()
 	{
 	}
-	
+
 	RSS091Parser& RSS091Parser::Instance ()
 	{
 		static RSS091Parser inst;
 		return inst;
 	}
-	
+
 	bool RSS091Parser::CouldParse (const QDomDocument& doc) const
 	{
 		QDomElement root = doc.documentElement ();
@@ -44,7 +44,7 @@ namespace Aggregator
 			(root.attribute ("version") == "0.91" ||
 				root.attribute ("version") == "0.92");
 	}
-	
+
 	channels_container_t RSS091Parser::Parse (const QDomDocument& doc,
 			const IDType_t& feedId) const
 	{
@@ -54,32 +54,34 @@ namespace Aggregator
 		while (!channel.isNull ())
 		{
 			Channel_ptr chan (new Channel (feedId));
-	
+
 			chan->Title_ = channel.firstChildElement ("title").text ().trimmed ();
 			chan->Description_ = channel.firstChildElement ("description").text ();
 			chan->Link_ = channel.firstChildElement ("link").text ();
-	
+
+			auto& itemsList = chan->Items_;
+			itemsList.reserve (20);
+
 			QDomElement item = channel.firstChildElement ("item");
 			while (!item.isNull ())
 			{
-				chan->Items_.push_back (Item_ptr (ParseItem (item,
-						chan->ChannelID_)));
+				itemsList.push_back (Item_ptr (ParseItem (item, chan->ChannelID_)));
 				item = item.nextSiblingElement ("item");
 			}
 			if (!chan->LastBuild_.isValid () || chan->LastBuild_.isNull ())
 			{
-				if (chan->Items_.size ())
-					chan->LastBuild_ = chan->Items_.at (0)->PubDate_;
+				if (!itemsList.empty ())
+					chan->LastBuild_ = itemsList.at (0)->PubDate_;
 				else
 					chan->LastBuild_ = QDateTime::currentDateTime ();
 			}
-	
+
 			channels.push_back (chan);
 			channel = channel.nextSiblingElement ("channel");
 		}
 		return channels;
 	}
-	
+
 	Item* RSS091Parser::ParseItem (const QDomElement& item,
 			const IDType_t& channelId) const
 	{

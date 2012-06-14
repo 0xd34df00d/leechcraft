@@ -296,12 +296,15 @@ void LeechCraft::MainWindow::RemoveMenus (const QMap<QString, QList<QAction*>>& 
 			Q_FOREACH (QAction *action, menus [menuName])
 				toRemove->removeAction (action);
 		else
-			Q_FOREACH (QAction *action, Ui_.ActionMenu_->menu ()->actions ())
+		{
+			auto menu = Ui_.ActionMenu_->menu ();
+			Q_FOREACH (QAction *action, menu->actions ())
 				if (action->text () == menuName)
 				{
-					Ui_.ActionMenu_->menu ()->removeAction (action);
+					menu->removeAction (action);
 					break;
 				}
+		}
 	}
 }
 

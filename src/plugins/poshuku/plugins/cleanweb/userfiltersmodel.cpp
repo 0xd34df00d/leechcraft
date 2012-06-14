@@ -74,7 +74,7 @@ namespace CleanWeb
 			Filter_.ExceptionStrings_ :
 			Filter_.FilterStrings_;
 
-		QString str = list.at (row);
+		const auto& str = list.at (row);
 
 		switch (index.column ())
 		{
@@ -99,10 +99,12 @@ namespace CleanWeb
 					tr ("False");
 			case 4:
 				{
+					const auto& options = Filter_.Options_ [str];
+
 					QStringList result;
-					Q_FOREACH (QString domain, Filter_.Options_ [str].Domains_)
+					Q_FOREACH (QString domain, options.Domains_)
 						result += domain.prepend ("+");
-					Q_FOREACH (QString domain, Filter_.Options_ [str].NotDomains_)
+					Q_FOREACH (QString domain, options.NotDomains_)
 						result += domain.prepend ("-");
 					return result.join ("; ");
 				}
@@ -177,10 +179,11 @@ namespace CleanWeb
 		if (dia.GetType () == FilterOption::MTRegexp)
 			Filter_.RegExps_ [rule] = QRegExp (rule,
 					dia.GetCase (), QRegExp::RegExp);
-		Filter_.Options_ [rule].MatchType_ = dia.GetType ();
-		Filter_.Options_ [rule].Case_ = dia.GetCase ();
-		Filter_.Options_ [rule].Domains_ = dia.GetDomains ();
-		Filter_.Options_ [rule].NotDomains_ = dia.GetNotDomains ();
+		auto& options = Filter_.Options_ [rule];
+		options.MatchType_ = dia.GetType ();
+		options.Case_ = dia.GetCase ();
+		options.Domains_ = dia.GetDomains ();
+		options.NotDomains_ = dia.GetNotDomains ();
 		endInsertRows ();
 
 		WriteSettings ();
@@ -203,10 +206,11 @@ namespace CleanWeb
 		RuleOptionDialog dia;
 		dia.SetException (isException);
 		dia.SetString (rule);
-		dia.SetType (Filter_.Options_ [rule].MatchType_);
-		dia.SetCase (Filter_.Options_ [rule].Case_);
-		dia.SetDomains (Filter_.Options_ [rule].Domains_);
-		dia.SetNotDomains (Filter_.Options_ [rule].NotDomains_);
+		const auto& options = Filter_.Options_ [rule];
+		dia.SetType (options.MatchType_);
+		dia.SetCase (options.Case_);
+		dia.SetDomains (options.Domains_);
+		dia.SetNotDomains (options.NotDomains_);
 
 		dia.setWindowTitle (tr ("Modify filter"));
 		if (dia.exec () != QDialog::Accepted)

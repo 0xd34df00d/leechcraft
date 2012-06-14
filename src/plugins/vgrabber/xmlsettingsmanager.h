@@ -16,30 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_VGRABBER_XMLSETTINGSMANAGER_H
-#define PLUGINS_VGRABBER_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace vGrabber
+{
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		namespace vGrabber
-		{
-			class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
-			{
-				Q_OBJECT
-
-				XmlSettingsManager ();
-			public:
-				static XmlSettingsManager* Instance ();
-			protected:
-				virtual QSettings* BeginSettings () const;
-				virtual void EndSettings (QSettings*) const;
-			};
-		};
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager* Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
-};
-
-#endif
-
+}
+}

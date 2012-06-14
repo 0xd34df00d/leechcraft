@@ -381,10 +381,10 @@ namespace LeechCraft
 			{
 				QDragEnterEvent *event = static_cast<QDragEnterEvent*> (e);
 
-				Q_FOREACH (const QString& format, event->mimeData ()->formats ())
+				auto mimeData = event->mimeData ();
+				Q_FOREACH (const QString& format, mimeData->formats ())
 				{
-					const Entity& e = Util::MakeEntity (event->
-								mimeData ()->data (format),
+					const Entity& e = Util::MakeEntity (mimeData->data (format),
 							QString (),
 							FromUserInitiated,
 							format);
@@ -402,10 +402,10 @@ namespace LeechCraft
 			{
 				QDropEvent *event = static_cast<QDropEvent*> (e);
 
-				Q_FOREACH (const QString& format, event->mimeData ()->formats ())
+				auto mimeData = event->mimeData ();
+				Q_FOREACH (const QString& format, mimeData->formats ())
 				{
-					const Entity& e = Util::MakeEntity (event->
-								mimeData ()->data (format),
+					const Entity& e = Util::MakeEntity (mimeData->data (format),
 							QString (),
 							FromUserInitiated,
 							format);

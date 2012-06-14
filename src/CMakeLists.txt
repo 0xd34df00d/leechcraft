@@ -536,7 +536,7 @@ SOURCE_GROUP ("core\\sources" FILES ${SRCS})
 SOURCE_GROUP ("core\\forms" FILES ${FORMS})
 SOURCE_GROUP ("core\\resources" FILES ${RESOURCES})
 
-CreateTrVars ("" "ru_RU;de;uk_UA;it;ar;eo;es;tr;en;be;fr;pl" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrVars ("" "ru_RU;de;uk_UA;it;ar;eo;es;tr;tt;en;be;fr;pl" TRANSLATIONS COMPILED_TRANSLATIONS)
 
 ADD_DEFINITIONS (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
 ADD_DEFINITIONS (${QT_DEFINITIONS})

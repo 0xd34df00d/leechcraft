@@ -80,7 +80,13 @@ namespace LMP
 		auto collection = Core::Instance ().GetLocalCollection ();
 		const auto id = collection->FindAlbum (info.Artist_, info.Album_);
 		if (id < 0)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "album not found"
+					<< info.Artist_
+					<< info.Album_;
 			return;
+		}
 
 		--NumRequests_ [info];
 

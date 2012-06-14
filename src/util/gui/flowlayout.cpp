@@ -142,21 +142,23 @@ namespace Util
 				spaceY = widget->style ()->layoutSpacing (QSizePolicy::PushButton,
 						QSizePolicy::PushButton, Qt::Vertical);
 
-			int nextX = x + item->sizeHint ().width () + spaceX;
+			const auto& sizeHint = item->sizeHint ();
+			const int hintWidth = sizeHint.width ();
+			int nextX = x + hintWidth + spaceX;
 			if (nextX - spaceX > effectiveRect.right () &&
 					lineHeight > 0)
 			{
 				x = effectiveRect.x ();
 				y += lineHeight + spaceY;
-				nextX = x + item->sizeHint ().width () + spaceX;
+				nextX = x + hintWidth + spaceX;
 				lineHeight = 0;
 			}
 
 			if (!testOnly)
-				item->setGeometry (QRect (QPoint (x, y), item->sizeHint ()));
+				item->setGeometry (QRect (QPoint (x, y), sizeHint));
 
 			x = nextX;
-			lineHeight = std::max (lineHeight, item->sizeHint ().height ());
+			lineHeight = std::max (lineHeight, sizeHint.height ());
 		}
 
 		return y + lineHeight - rect.y () + bottom;

@@ -29,149 +29,145 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace vGrabber
+{
+	void vGrabber::Init (ICoreProxy_ptr proxy)
 	{
-		namespace vGrabber
+		Proxy_ = proxy;
+
+		Translator_.reset (Util::InstallTranslator ("vgrabber"));
+
+		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"vgrabbersettings.xml");
+
+		Audio_ = new CategoriesSelector (FindProxy::FPTAudio,
+				this);
+		Video_ = new CategoriesSelector (FindProxy::FPTVideo,
+				this);
+		connect (Audio_,
+				SIGNAL (goingToAccept (const QStringList&,
+						const QStringList&)),
+				this,
+				SLOT (handleCategoriesGoingToChange (const QStringList&,
+						const QStringList&)));
+		connect (Video_,
+				SIGNAL (goingToAccept (const QStringList&,
+						const QStringList&)),
+				this,
+				SLOT (handleCategoriesGoingToChange (const QStringList&,
+						const QStringList&)));
+
+		SettingsDialog_->SetCustomWidget ("AudioCategoriesToUse", Audio_);
+		SettingsDialog_->SetCustomWidget ("VideoCategoriesToUse", Video_);
+	}
+
+	void vGrabber::SecondInit ()
+	{
+	}
+
+	void vGrabber::Release ()
+	{
+		delete Audio_;
+		delete Video_;
+		Translator_.reset ();
+	}
+
+	QByteArray vGrabber::GetUniqueID () const
+	{
+		return "org.LeechCraft.vGrabber";
+	}
+
+	QString vGrabber::GetName () const
+	{
+		return "vGrabber";
+	}
+
+	QString vGrabber::GetInfo () const
+	{
+		return tr ("vkontakte.ru audio/video grabber.");
+	}
+
+	QIcon vGrabber::GetIcon () const
+	{
+		return QIcon (":/resources/images/vgrabber.svg");
+	}
+
+	QStringList vGrabber::Needs () const
+	{
+		return QStringList ("http");
+	}
+
+	QStringList vGrabber::GetCategories () const
+	{
+		QStringList result;
+		result += Audio_->GetHRCategories ();
+		result += Video_->GetHRCategories ();
+		return result;
+	}
+
+	QList<IFindProxy_ptr> vGrabber::GetProxy (const Request& req)
+	{
+		QList<FindProxy_ptr> preresult;
+		if (Audio_->GetHRCategories ().contains (req.Category_))
+			preresult << FindProxy_ptr (new AudioFindProxy (req, Audio_));
+
+		if (Video_->GetHRCategories ().contains (req.Category_))
+			preresult << FindProxy_ptr (new VideoFindProxy (req, Video_));
+
+		QList<IFindProxy_ptr> result;
+		Q_FOREACH (FindProxy_ptr fp, preresult)
 		{
-			void vGrabber::Init (ICoreProxy_ptr proxy)
-			{
-				Proxy_ = proxy;
+			connect (fp.get (),
+					SIGNAL (delegateEntity (const LeechCraft::Entity&,
+							int*, QObject**)),
+					this,
+					SIGNAL (delegateEntity (const LeechCraft::Entity&,
+							int*, QObject**)));
+			connect (fp.get (),
+					SIGNAL (gotEntity (const LeechCraft::Entity&)),
+					this,
+					SIGNAL (gotEntity (const LeechCraft::Entity&)));
+			connect (fp.get (),
+					SIGNAL (error (const QString&)),
+					this,
+					SLOT (handleError (const QString&)));
 
-				Translator_.reset (Util::InstallTranslator ("vgrabber"));
+			fp->Start ();
 
-				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
-				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-						"vgrabbersettings.xml");
+			result << IFindProxy_ptr (fp);
+		}
+		return result;
+	}
 
-				Audio_ = new CategoriesSelector (FindProxy::FPTAudio,
-						this);
-				Video_ = new CategoriesSelector (FindProxy::FPTVideo,
-						this);
-				connect (Audio_,
-						SIGNAL (goingToAccept (const QStringList&,
-								const QStringList&)),
-						this,
-						SLOT (handleCategoriesGoingToChange (const QStringList&,
-								const QStringList&)));
-				connect (Video_,
-						SIGNAL (goingToAccept (const QStringList&,
-								const QStringList&)),
-						this,
-						SLOT (handleCategoriesGoingToChange (const QStringList&,
-								const QStringList&)));
+	ICoreProxy_ptr vGrabber::GetProxy () const
+	{
+		return Proxy_;
+	}
 
-				SettingsDialog_->SetCustomWidget ("AudioCategoriesToUse", Audio_);
-				SettingsDialog_->SetCustomWidget ("VideoCategoriesToUse", Video_);
-			}
+	std::shared_ptr<Util::XmlSettingsDialog> vGrabber::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
 
-			void vGrabber::SecondInit ()
-			{
-			}
+	void vGrabber::handleError (const QString& msg)
+	{
+		qWarning () << Q_FUNC_INFO << sender () << msg;
+		emit gotEntity (Util::MakeNotification ("vGrabber", msg, PWarning_));
+	}
 
-			void vGrabber::Release ()
-			{
-				delete Audio_;
-				delete Video_;
-				Translator_.reset ();
-			}
+	void vGrabber::handleCategoriesGoingToChange (const QStringList& added,
+			const QStringList& removed)
+	{
+		QStringList hrAdded, hrRemoved;
+		Q_FOREACH (QString a, added)
+			hrAdded << Proxy_->GetTagsManager ()->GetTag (a);
+		Q_FOREACH (QString r, removed)
+			hrRemoved << Proxy_->GetTagsManager ()->GetTag (r);
 
-			QByteArray vGrabber::GetUniqueID () const
-			{
-				return "org.LeechCraft.vGrabber";
-			}
+		emit categoriesChanged (hrAdded, hrRemoved);
+	}
+}
+}
 
-			QString vGrabber::GetName () const
-			{
-				return "vGrabber";
-			}
-
-			QString vGrabber::GetInfo () const
-			{
-				return tr ("vkontakte.ru audio/video grabber.");
-			}
-
-			QIcon vGrabber::GetIcon () const
-			{
-				return QIcon (":/resources/images/vgrabber.svg");
-			}
-
-			QStringList vGrabber::Needs () const
-			{
-				return QStringList ("http");
-			}
-
-			QStringList vGrabber::GetCategories () const
-			{
-				QStringList result;
-				result += Audio_->GetHRCategories ();
-				result += Video_->GetHRCategories ();
-				return result;
-			}
-
-			QList<IFindProxy_ptr> vGrabber::GetProxy (const Request& req)
-			{
-				QList<FindProxy_ptr> preresult;
-				if (Audio_->GetHRCategories ().contains (req.Category_))
-					preresult << FindProxy_ptr (new AudioFindProxy (req, Audio_));
-
-				if (Video_->GetHRCategories ().contains (req.Category_))
-					preresult << FindProxy_ptr (new VideoFindProxy (req, Video_));
-
-				QList<IFindProxy_ptr> result;
-				Q_FOREACH (FindProxy_ptr fp, preresult)
-				{
-					connect (fp.get (),
-							SIGNAL (delegateEntity (const LeechCraft::Entity&,
-									int*, QObject**)),
-							this,
-							SIGNAL (delegateEntity (const LeechCraft::Entity&,
-									int*, QObject**)));
-					connect (fp.get (),
-							SIGNAL (gotEntity (const LeechCraft::Entity&)),
-							this,
-							SIGNAL (gotEntity (const LeechCraft::Entity&)));
-					connect (fp.get (),
-							SIGNAL (error (const QString&)),
-							this,
-							SLOT (handleError (const QString&)));
-
-					fp->Start ();
-
-					result << IFindProxy_ptr (fp);
-				}
-				return result;
-			}
-
-			ICoreProxy_ptr vGrabber::GetProxy () const
-			{
-				return Proxy_;
-			}
-
-			std::shared_ptr<Util::XmlSettingsDialog> vGrabber::GetSettingsDialog () const
-			{
-				return SettingsDialog_;
-			}
-
-			void vGrabber::handleError (const QString& msg)
-			{
-				qWarning () << Q_FUNC_INFO << sender () << msg;
-				emit gotEntity (Util::MakeNotification ("vGrabber", msg, PWarning_));
-			}
-
-			void vGrabber::handleCategoriesGoingToChange (const QStringList& added,
-					const QStringList& removed)
-			{
-				QStringList hrAdded, hrRemoved;
-				Q_FOREACH (QString a, added)
-					hrAdded << Proxy_->GetTagsManager ()->GetTag (a);
-				Q_FOREACH (QString r, removed)
-					hrRemoved << Proxy_->GetTagsManager ()->GetTag (r);
-
-				emit categoriesChanged (hrAdded, hrRemoved);
-			}
-		};
-	};
-};
-
-LC_EXPORT_PLUGIN (leechcraft_vgrabber, LeechCraft::Plugins::vGrabber::vGrabber);
-
+LC_EXPORT_PLUGIN (leechcraft_vgrabber, LeechCraft::vGrabber::vGrabber);

@@ -128,13 +128,7 @@ namespace TabSessManager
 
 		auto propEvent = static_cast<QDynamicPropertyChangeEvent*> (e);
 		if (propEvent->propertyName ().startsWith ("SessionData/"))
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "changed"
-					<< propEvent->propertyName ()
-					<< obj->property (propEvent->propertyName ());
 			handleTabRecoverDataChanged ();
-		}
 
 		return false;
 	}
@@ -181,9 +175,6 @@ namespace TabSessManager
 					<< rec->GetTabRecoverName ()
 					<< forRecover
 					<< GetSessionProps (tab);
-
-			qDebug () << Q_FUNC_INFO << "appended data for"
-					<< plugin->GetUniqueID () << rec->GetTabRecoverName ();
 		}
 
 		return result;

@@ -166,6 +166,8 @@ namespace PDF
 	void Document::BuildTOC ()
 	{
 		std::unique_ptr<QDomDocument> doc (PDocument_->toc ());
+		if (!doc)
+			return;
 		TOC_ = BuildTOCLevel (this, PDocument_, *doc);
 	}
 }

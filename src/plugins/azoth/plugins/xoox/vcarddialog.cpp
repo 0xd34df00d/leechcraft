@@ -54,6 +54,7 @@ namespace Xoox
 	, PhotoChanged_ (false)
 	{
 		Ui_.setupUi (this);
+		Ui_.EditJID_->setText (entry->GetJID ());
 		connect (this,
 				SIGNAL (accepted ()),
 				this,

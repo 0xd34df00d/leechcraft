@@ -16,37 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_VGRABBER_CATEGORYMODIFIER_H
-#define PLUGINS_VGRABBER_CATEGORYMODIFIER_H
+#pragma once
+
 #include <QDialog>
 #include "ui_categorymodifier.h"
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Util
+{
+class TagsCompleter;
+}
+
+namespace vGrabber
+{
+	class CategoryModifier : public QDialog
 	{
-		class TagsCompleter;
+		Q_OBJECT
+
+		Ui::CategoryModifier Ui_;
+		Util::TagsCompleter *Completer_;
+	public:
+		CategoryModifier (const QString&, QWidget* = 0);
+		QString GetText () const;
+	private slots:
+		void on_Line__textChanged (const QString&);
 	};
-
-	namespace Plugins
-	{
-		namespace vGrabber
-		{
-			class CategoryModifier : public QDialog
-			{
-				Q_OBJECT
-
-				Ui::CategoryModifier Ui_;
-				Util::TagsCompleter *Completer_;
-			public:
-				CategoryModifier (const QString&, QWidget* = 0);
-				QString GetText () const;
-			private slots:
-				void on_Line__textChanged (const QString&);
-			};
-		};
-	};
-};
-
-#endif
-
+}
+}

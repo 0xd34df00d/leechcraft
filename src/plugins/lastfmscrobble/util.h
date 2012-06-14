@@ -21,9 +21,13 @@
 #include <QList>
 #include <QPair>
 #include <QString>
+#include <QMap>
+#include <interfaces/media/audiostructs.h>
 
 class QNetworkAccessManager;
 class QNetworkReply;
+class QDomElement;
+class QUrl;
 
 namespace LeechCraft
 {
@@ -31,6 +35,13 @@ namespace Lastfmscrobble
 {
 	QByteArray MakeCall (QList<QPair<QString, QString>>);
 
-	QNetworkReply* Request (const QString&, QNetworkAccessManager*, QList<QPair<QString, QString>> = QList<QPair<QString, QString>> ());
+	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam,
+			const QMap<QString, QString>& params);
+	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam,
+			QList<QPair<QString, QString>> params = QList<QPair<QString, QString>> ());
+
+	Media::ArtistInfo GetArtistInfo (const QDomElement& artist);
+
+	QUrl GetImage (const QDomElement& parent, const QString& imageSize);
 }
 }

@@ -54,6 +54,7 @@ namespace Sidebar
 		menuButton->setPopupMode (QToolButton::InstantPopup);
 		menuButton->setArrowType (Qt::NoArrow);
 		menuButton->setMenu (mw->GetMainMenu ());
+		menuButton->setAutoRaise (true);
 		Ui_.MainMenuLay_->addWidget (menuButton);
 		mw->HideMainMenu ();
 	}
@@ -142,6 +143,7 @@ namespace Sidebar
 		auto tb = new QToolButton;
 		tb->setIconSize (IconSize_);
 		tb->setDefaultAction (act);
+		tb->setAutoRaise (true);
 
 		lay->addWidget (tb);
 
@@ -178,6 +180,7 @@ namespace Sidebar
 			auto tb = new QToolButton;
 			tb->setIconSize (IconSize_);
 			tb->setDefaultAction (foldAct);
+			tb->setAutoRaise (true);
 			TabClass2Folder_ [tc.TabClass_] = tb;
 			Ui_.TabsLay_->insertWidget (0, tb);
 

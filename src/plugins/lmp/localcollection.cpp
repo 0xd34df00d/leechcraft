@@ -24,7 +24,9 @@
 #include <QMimeData>
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
+#include <QTimer>
 #include <QtDebug>
+#include <util/util.h>
 #include "localcollectionstorage.h"
 #include "core.h"
 #include "util.h"
@@ -219,35 +221,14 @@ namespace LMP
 
 	void LocalCollection::Scan (const QString& path, bool root)
 	{
-		auto resolver = Core::Instance ().GetLocalFileResolver ();
-		auto paths = QSet<QString>::fromList (RecIterate (path));
-		paths.subtract (PresentPaths_);
-		if (paths.isEmpty ())
-			return;
-
-		if (root)
-			AddRootPaths (QStringList (path));
-
-		PresentPaths_ += paths;
-		emit scanStarted (paths.size ());
-		auto worker = [resolver] (const QString& path)
-		{
-			try
-			{
-				return resolver->ResolveInfo (path);
-			}
-			catch (const ResolveError& error)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "error resolving media info for"
-						<< error.GetPath ()
-						<< error.what ();
-				return MediaInfo ();
-			}
-		};
-		QFuture<MediaInfo> future = QtConcurrent::mapped (paths,
-				std::function<MediaInfo (const QString&)> (worker));
-		Watcher_->setFuture (future);
+		auto watcher = new QFutureWatcher<QStringList> ();
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleIterateFinished ()));
+		watcher->setProperty ("Path", path);
+		watcher->setProperty ("IsRoot", root);
+		watcher->setFuture (QtConcurrent::run (RecIterate, path));
 	}
 
 	void LocalCollection::Unscan (const QString& path)
@@ -302,6 +283,15 @@ namespace LMP
 	QStringList LocalCollection::GetDirs () const
 	{
 		return RootPaths_;
+	}
+
+	int LocalCollection::FindArtist (const QString& artist) const
+	{
+		auto artistPos = std::find_if (Artists_.begin (), Artists_.end (),
+				[&artist] (decltype (Artists_.front ()) item) { return item.Name_ == artist; });
+		return artistPos == Artists_.end () ?
+			-1 :
+			artistPos->ID_;
 	}
 
 	int LocalCollection::FindAlbum (const QString& artist, const QString& album) const
@@ -415,8 +405,20 @@ namespace LMP
 
 	void LocalCollection::HandleNewArtists (const Collection::Artists_t& artists)
 	{
+		int albumCount = 0;
+		int trackCount = 0;
+		const bool shouldEmit = !Artists_.isEmpty ();
+
+		Artists_ += artists;
+		Q_FOREACH (const auto& artist, artists)
+			Q_FOREACH (auto album, artist.Albums_)
+				Q_FOREACH (const auto& track, album->Tracks_)
+					PresentPaths_ << track.FilePath_;
+
 		Q_FOREACH (const auto& artist, artists)
 		{
+			albumCount += artist.Albums_.size ();
+
 			auto artistItem = GetItem (Artist2Item_,
 					artist.ID_,
 					[this, &artist] (QStandardItem *item)
@@ -429,6 +431,8 @@ namespace LMP
 					CollectionModel_);
 			Q_FOREACH (auto album, artist.Albums_)
 			{
+				trackCount += album->Tracks_.size ();
+
 				AlbumArtMgr_->CheckAlbumArt (artist, album);
 
 				auto albumItem = GetItem (Album2Item_,
@@ -469,6 +473,21 @@ namespace LMP
 					Track2Item_ [track.ID_] = item;
 				}
 			}
+		}
+
+		if (shouldEmit &&
+				artists.size () &&
+				albumCount &&
+				trackCount)
+		{
+			const auto& artistsMsg = tr ("%n new artist(s)", 0, artists.size ());
+			const auto& albumsMsg = tr ("%n new album(s)", 0, albumCount);
+			const auto& tracksMsg = tr ("%n new track(s)", 0, trackCount);
+			const auto& msg = tr ("Local collection updated: %1, %2, %3.")
+					.arg (artistsMsg)
+					.arg (albumsMsg)
+					.arg (tracksMsg);
+			Core::Instance ().SendEntity (Util::MakeNotification ("LMP", msg, PInfo_));
 		}
 	}
 
@@ -564,8 +583,13 @@ namespace LMP
 		return Artists_.erase (pos);
 	}
 
-	void LocalCollection::AddRootPaths (const QStringList& paths)
+	void LocalCollection::AddRootPaths (QStringList paths)
 	{
+		for (const auto& path : RootPaths_)
+			paths.removeAll (path);
+		if (paths.isEmpty ())
+			return;
+
 		RootPaths_ << paths;
 		emit rootPathsChanged (RootPaths_);
 
@@ -603,24 +627,65 @@ namespace LMP
 		}
 	}
 
+	void LocalCollection::rescanOnLoad ()
+	{
+		for (const auto& rootPath : RootPaths_)
+			Scan (rootPath, true);
+	}
+
 	void LocalCollection::handleLoadFinished ()
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<LocalCollectionStorage::LoadResult>*> (sender ());
 		watcher->deleteLater ();
 		const auto& result = watcher->result ();
-		Artists_ = result.Artists_;
 		Storage_->Load (result);
 
-		Q_FOREACH (const auto& artist, Artists_)
-			Q_FOREACH (auto album, artist.Albums_)
-				Q_FOREACH (const auto& track, album->Tracks_)
-					PresentPaths_ << track.FilePath_;
-
-		HandleNewArtists (Artists_);
+		HandleNewArtists (result.Artists_);
 
 		IsReady_ = true;
 
 		emit collectionReady ();
+
+		QTimer::singleShot (5000,
+				this,
+				SLOT (rescanOnLoad ()));
+	}
+
+	void LocalCollection::handleIterateFinished ()
+	{
+		sender ()->deleteLater ();
+		const bool root = sender ()->property ("IsRoot").toBool ();
+		const auto& path = sender ()->property ("Path").toString ();
+		auto watcher = dynamic_cast<QFutureWatcher<QStringList>*> (sender ());
+		auto paths = QSet<QString>::fromList (watcher->result ());
+		auto resolver = Core::Instance ().GetLocalFileResolver ();
+		paths.subtract (PresentPaths_);
+		if (paths.isEmpty ())
+			return;
+
+		if (root)
+			AddRootPaths (QStringList (path));
+
+		PresentPaths_ += paths;
+		emit scanStarted (paths.size ());
+		auto worker = [resolver] (const QString& path)
+		{
+			try
+			{
+				return resolver->ResolveInfo (path);
+			}
+			catch (const ResolveError& error)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error resolving media info for"
+						<< error.GetPath ()
+						<< error.what ();
+				return MediaInfo ();
+			}
+		};
+		QFuture<MediaInfo> future = QtConcurrent::mapped (paths,
+				std::function<MediaInfo (const QString&)> (worker));
+		Watcher_->setFuture (future);
 	}
 
 	void LocalCollection::handleScanFinished ()

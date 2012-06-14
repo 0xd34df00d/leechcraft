@@ -29,13 +29,14 @@
 #include "lmpsystemtrayicon.h"
 #include "ui_playertab.h"
 
+class QUndoStack;
+class QStandardItemModel;
+class QSortFilterProxyModel;
+
 namespace Media
 {
 	struct LyricsQuery;
 }
-
-class QStandardItemModel;
-class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -73,6 +74,8 @@ namespace LMP
 		LMPSystemTrayIcon *TrayIcon_;
 		QAction *PlayPause_;
 		QMenu *TrayMenu_;
+
+		QUndoStack *UndoStack_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
 

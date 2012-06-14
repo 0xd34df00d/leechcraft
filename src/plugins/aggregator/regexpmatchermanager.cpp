@@ -209,7 +209,7 @@ namespace Aggregator
 						if (rxs.isEmpty () || ib.indexIn (i->URL_) != -1)
 							Links_ << i->URL_;
 				}
-				else if ((!link && ib.indexIn (Item_->Description_) != -1))
+				else if (!link && ib.indexIn (Item_->Description_) != -1)
 					Links_ << ib.cap (0);
 			}
 
@@ -229,7 +229,7 @@ namespace Aggregator
 	{
 		std::deque<RegexpItem> matchingTitles;
 
-		Util::copy_if (Items_.begin (), Items_.end (),
+		std::copy_if (Items_.begin (), Items_.end (),
 				std::back_inserter (matchingTitles),
 				[item] (const RegexpItem& ri)
 					{ return QRegExp (ri.Title_).exactMatch (item->Title_); });

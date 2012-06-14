@@ -33,16 +33,19 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::NowPlayingWidget Ui_;
+		Media::SimilarityInfos_t LastInfos_;
 	public:
 		NowPlayingWidget (QWidget* = 0);
 
-		void SetSimilarArtists (const Media::SimilarityInfos_t&);
+		void SetSimilarArtists (Media::SimilarityInfos_t);
 		void SetLyrics (const QString&);
 
 		void SetAlbumArt (const QPixmap&);
 		void SetTrackInfo (const MediaInfo&);
 	private:
 		void SetStatistics (const QString&);
+	private slots:
+		void resetSimilarArtists ();
 	};
 }
 }

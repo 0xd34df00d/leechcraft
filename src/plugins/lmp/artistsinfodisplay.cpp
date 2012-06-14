@@ -82,6 +82,7 @@ namespace LMP
 			const auto& artist = info.Artist_;
 			item->setData (artist.Name_, SimilarModel::Role::ArtistName);
 			item->setData (artist.Image_, SimilarModel::Role::ArtistImageURL);
+			item->setData (artist.LargeImage_, SimilarModel::Role::ArtistBigImageURL);
 			item->setData (artist.ShortDesc_, SimilarModel::Role::ShortDesc);
 			item->setData (artist.FullDesc_, SimilarModel::Role::FullDesc);
 

@@ -1800,7 +1800,8 @@ namespace Aggregator
 	bool SQLStorageBackend::InitializeTables ()
 	{
 		QSqlQuery query (DB_);
-		if (!DB_.tables ().contains ("feeds"))
+		const auto& tables = DB_.tables ();
+		if (!tables.contains ("feeds"))
 		{
 			if (!query.exec ("CREATE TABLE feeds ("
 					"feed_id BIGINT PRIMARY KEY, "
@@ -1813,7 +1814,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("feeds_settings"))
+		if (!tables.contains ("feeds_settings"))
 		{
 			if (!query.exec (QString ("CREATE TABLE feeds_settings ("
 							"settings_id BIGINT PRIMARY KEY, "
@@ -1850,7 +1851,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("channels"))
+		if (!tables.contains ("channels"))
 		{
 			if (!query.exec (QString ("CREATE TABLE channels ("
 					"channel_id BIGINT PRIMARY KEY, "
@@ -1872,7 +1873,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("items"))
+		if (!tables.contains ("items"))
 		{
 			if (!query.exec (QString ("CREATE TABLE items ("
 					"item_id BIGINT PRIMARY KEY, "
@@ -1904,7 +1905,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("enclosures"))
+		if (!tables.contains ("enclosures"))
 		{
 			if (!query.exec ("CREATE TABLE enclosures ("
 						"enclosure_id BIGINT PRIMARY KEY, "
@@ -1939,7 +1940,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("mrss"))
+		if (!tables.contains ("mrss"))
 		{
 			if (!query.exec (QString ("CREATE TABLE mrss ("
 							"mrss_id BIGINT PRIMARY KEY, "
@@ -2027,7 +2028,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("mrss_thumbnails"))
+		if (!tables.contains ("mrss_thumbnails"))
 		{
 			if (!query.exec ("CREATE TABLE mrss_thumbnails ("
 						"mrss_thumb_id BIGINT PRIMARY KEY, "
@@ -2062,7 +2063,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("mrss_credits"))
+		if (!tables.contains ("mrss_credits"))
 		{
 			if (!query.exec ("CREATE TABLE mrss_credits ("
 						"mrss_credits_id BIGINT PRIMARY KEY, "
@@ -2094,7 +2095,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("mrss_comments"))
+		if (!tables.contains ("mrss_comments"))
 		{
 			if (!query.exec ("CREATE TABLE mrss_comments ("
 						"mrss_comment_id BIGINT PRIMARY KEY, "
@@ -2126,7 +2127,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("mrss_peerlinks"))
+		if (!tables.contains ("mrss_peerlinks"))
 		{
 			if (!query.exec ("CREATE TABLE mrss_peerlinks ("
 						"mrss_peerlink_id BIGINT PRIMARY KEY, "
@@ -2158,7 +2159,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("mrss_scenes"))
+		if (!tables.contains ("mrss_scenes"))
 		{
 			if (!query.exec ("CREATE TABLE mrss_scenes ("
 						"mrss_scene_id BIGINT PRIMARY KEY, "
@@ -2194,7 +2195,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("items2tags"))
+		if (!tables.contains ("items2tags"))
 		{
 			if (!query.exec ("CREATE TABLE items2tags ("
 						"item_id BIGINT NOT NULL, "

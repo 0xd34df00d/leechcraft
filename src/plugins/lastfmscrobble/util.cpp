@@ -19,6 +19,8 @@
 #include "util.h"
 #include <algorithm>
 #include <QCryptographicHash>
+#include <QUrl>
+#include <QDomElement>
 #include <lastfm/ws.h>
 
 namespace LeechCraft
@@ -44,6 +46,14 @@ namespace Lastfmscrobble
 		return url.encodedQuery ();
 	}
 
+	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, const QMap<QString, QString>& map)
+	{
+		QList<QPair<QString, QString>> params;
+		Q_FOREACH (const auto& key, map.keys ())
+			params << qMakePair (key, map [key]);
+		return Request (method, nam, params);
+	}
+
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, QList<QPair<QString, QString>> params)
 	{
 		QNetworkRequest req (QUrl ("http://ws.audioscrobbler.com/2.0/"));
@@ -55,6 +65,54 @@ namespace Lastfmscrobble
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		return nam->post (req, data);
+	}
+
+	Media::ArtistInfo GetArtistInfo (const QDomElement& artist)
+	{
+		Media::ArtistInfo result;
+
+		auto text = [&artist] (const QString& elemName)
+		{
+			const auto& items = artist.elementsByTagName (elemName);
+			if (items.isEmpty ())
+				return QString ();
+			auto str = items.at (0).toElement ().text ();
+			str.replace ('\r', '\n');
+			str.remove ("\n\n");
+			str.replace ("&quot;", "\"");
+			return str;
+		};
+
+		result.Name_ = artist.firstChildElement ("name").text ();
+		result.Page_ = artist.firstChildElement ("url").text ();
+		result.ShortDesc_ = text ("summary");
+		result.FullDesc_ = text ("content");
+		result.Image_ = GetImage (artist, "extralarge");
+		result.LargeImage_ = GetImage (artist, "mega");
+
+		const auto& tags = artist.elementsByTagName ("tag");
+		for (int i = 0; i < tags.size (); ++i)
+		{
+			const Media::TagInfo tagInfo =
+			{
+				tags.at (i).firstChildElement ("name").text ()
+			};
+			result.Tags_.prepend (tagInfo);
+		}
+
+		return result;
+	}
+
+	QUrl GetImage (const QDomElement& parent, const QString& size)
+	{
+		auto image = parent.firstChildElement ("image");
+		while (!image.isNull ())
+		{
+			if (image.attribute ("size") == size)
+				return image.text ();
+			image = image.nextSiblingElement ("image");
+		}
+		return QUrl ();
 	}
 }
 }
