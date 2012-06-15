@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "recentreleasesfetcher.h"
-#include <iterator>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QtDebug>
@@ -80,13 +79,15 @@ namespace Lastfmscrobble
 				"Apr", "May", "Jun",
 				"Jul", "Aug", "Sep",
 				"Oct", "Nov", "Dec" };
+		const auto monthsBegin = months.begin ();
+		const auto monthsEnd = months.end ();
 		auto album = docElem.firstChildElement ("albums").firstChildElement ("album");
 		while (!album.isNull ())
 		{
 			const auto& strs = album.attribute ("releasedate").split (' ', QString::SkipEmptyParts);
 			const int day = strs.value (1).toInt ();
-			const int month = std::distance (std::begin (months),
-						std::find (std::begin (months), std::end (months), strs.value (2))) + 1;
+			const int month = std::distance (monthsBegin,
+						std::find (monthsBegin, monthsEnd, strs.value (2))) + 1;
 			const int year = strs.value (3).toInt ();
 
 			const QUrl& thumb = GetImage (album, "large");
