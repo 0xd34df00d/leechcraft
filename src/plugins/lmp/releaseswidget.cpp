@@ -92,7 +92,7 @@ namespace LMP
 		if (idx < 0)
 			return;
 
-		for (auto prov : Providers_)
+		Q_FOREACH (auto prov, Providers_)
 			disconnect (dynamic_cast<QObject*> (prov),
 					0,
 					this,
@@ -109,7 +109,7 @@ namespace LMP
 
 	void ReleasesWidget::handleRecentReleases (const QList<Media::AlbumRelease>& releases)
 	{
-		for (const auto& release : releases)
+		Q_FOREACH (const auto& release, releases)
 		{
 			auto item = new QStandardItem ();
 			item->setData (release.Title_, ReleasesModel::Role::AlbumName);

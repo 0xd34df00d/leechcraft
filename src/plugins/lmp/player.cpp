@@ -239,7 +239,7 @@ namespace LMP
 
 	void Player::Dequeue (const QList<Phonon::MediaSource>& sources)
 	{
-		for (const auto& source : sources)
+		Q_FOREACH (const auto& source, sources)
 		{
 			if (!CurrentQueue_.removeAll (source))
 				continue;

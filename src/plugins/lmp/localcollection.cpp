@@ -585,7 +585,7 @@ namespace LMP
 
 	void LocalCollection::AddRootPaths (QStringList paths)
 	{
-		for (const auto& path : RootPaths_)
+		Q_FOREACH (const auto& path, RootPaths_)
 			paths.removeAll (path);
 		if (paths.isEmpty ())
 			return;
@@ -629,7 +629,7 @@ namespace LMP
 
 	void LocalCollection::rescanOnLoad ()
 	{
-		for (const auto& rootPath : RootPaths_)
+		Q_FOREACH (const auto& rootPath, RootPaths_)
 			Scan (rootPath, true);
 	}
 
