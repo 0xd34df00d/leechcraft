@@ -437,6 +437,16 @@ namespace ChatHistory
 		}
 	}
 
+	void ChatHistoryWidget::on_Calendar__activated (const QDate& date)
+	{
+		if (CurrentEntry_.isEmpty ())
+			return;
+
+		PreviousSearchText_.clear ();
+		Ui_.HistorySearch_->clear ();
+		Core::Instance ()->Search (CurrentAccount_, CurrentEntry_, QDateTime (date));
+	}
+
 	void ChatHistoryWidget::previousHistory ()
 	{
 		if (Amount_ < Amount)

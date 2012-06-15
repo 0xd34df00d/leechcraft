@@ -52,9 +52,9 @@ namespace ChatHistory
 		QString CurrentEntry_;
 		QString PreviousSearchText_;
 		QToolBar *Toolbar_;
-		
+
 		QHash<QString, QString> EntryID2NameCache_;
-		
+
 		ICLEntry *EntryToFocus_;
 
 		static Plugin *S_ParentMultiTabs_;
@@ -67,7 +67,7 @@ namespace ChatHistory
 		static void SetParentMultiTabs (Plugin*);
 
 		ChatHistoryWidget (ICLEntry* = 0, QWidget* = 0);
-		
+
 		void Remove ();
 		QToolBar* GetToolBar () const;
 		QObject* ParentMultiTabs ();
@@ -82,6 +82,7 @@ namespace ChatHistory
 		void handleContactSelected (const QModelIndex&);
 		void on_HistorySearch__returnPressed ();
 		void on_SearchType__currentIndexChanged ();
+		void on_Calendar__activated (const QDate&);
 		void previousHistory ();
 		void nextHistory ();
 		void clearHistory ();
