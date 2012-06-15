@@ -49,6 +49,7 @@ namespace Azoth
 		handleMoodIconsetChanged ();
 		handleSystemIconsetChanged ();
 		handleShowStatusesChanged ();
+		handleHighlightGroupsChanged ();
 		handleContactHeightChanged ();
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowAvatars",
@@ -63,6 +64,8 @@ namespace Azoth
 				this, "handleSystemIconsetChanged");
 		XmlSettingsManager::Instance ().RegisterObject ("ShowStatuses",
 				this, "handleShowStatusesChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("HighlightGroups",
+				this, "handleHighlightGroupsChanged");
 		XmlSettingsManager::Instance ().RegisterObject ("RosterContactHeight",
 				this, "handleContactHeightChanged");
 	}
@@ -183,7 +186,7 @@ namespace Azoth
 				o.widget->style () :
 				QApplication::style ();
 
-		style->drawPrimitive (QStyle::PE_PanelItemViewRow,
+		style->drawPrimitive (HighlightGroups_ ? QStyle::PE_PanelButtonCommand : QStyle::PE_PanelItemViewRow,
 				&o, painter, o.widget);
 
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
@@ -501,6 +504,15 @@ namespace Azoth
 	{
 		ShowStatuses_ = XmlSettingsManager::Instance ()
 				.property ("ShowStatuses").toBool ();
+
+		View_->viewport ()->update ();
+		View_->update ();
+	}
+
+	void ContactListDelegate::handleHighlightGroupsChanged ()
+	{
+		HighlightGroups_ = XmlSettingsManager::Instance ()
+				.property ("HighlightGroups").toBool ();
 
 		View_->viewport ()->update ();
 		View_->update ();

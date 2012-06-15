@@ -94,6 +94,9 @@
 				<label value="Group contacts by status" />
 				<tooltip>If this option is enabled, contacts are ordered by status and then by name. Otherwise, they are ordered by name only.</tooltip>
 			</item>
+			<item type="checkbox" property="HighlightGroups" default="false">
+				<label value="Highlight groups" />
+			</item>
 			<item type="spinbox" property="RosterContactHeight" default="20" minimum="8" maximum="96">
 				<label value="Distance between contacts in roster:" />
 				<suffix value=" px" />

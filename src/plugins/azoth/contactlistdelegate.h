@@ -34,6 +34,7 @@ namespace Azoth
 		bool ShowAvatars_;
 		bool ShowClientIcons_;
 		bool ShowStatuses_;
+		bool HighlightGroups_;
 		int ContactHeight_;
 		QString ActivityIconset_;
 		QString MoodIconset_;
@@ -64,6 +65,7 @@ namespace Azoth
 		void handleMoodIconsetChanged ();
 		void handleSystemIconsetChanged ();
 		void handleShowStatusesChanged ();
+		void handleHighlightGroupsChanged ();
 		void handleContactHeightChanged ();
 	};
 }
