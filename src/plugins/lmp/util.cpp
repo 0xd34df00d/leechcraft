@@ -28,25 +28,42 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	QStringList RecIterate (const QString& dirPath)
+	QStringList RecIterate (const QString& dirPath, bool followSymlinks)
 	{
 		QStringList result;
 		QStringList nameFilters;
-		nameFilters << ".ogg"
-				<< ".flac"
-				<< ".mp3"
-				<< ".wav";
-		QDirIterator iterator (dirPath, QDirIterator::Subdirectories);
-		while (iterator.hasNext ())
+		nameFilters << "*.ogg"
+				<< "*.flac"
+				<< "*.mp3"
+				<< "*.wav";
+
+		if (QFileInfo (dirPath).isFile ())
 		{
-			const QString& path = iterator.next ();
-			Q_FOREACH (const QString& name, nameFilters)
-				if (path.endsWith (name, Qt::CaseInsensitive))
-				{
-					result << path;
-					break;
-				}
+			Q_FOREACH (const auto& filter, nameFilters)
+				if (dirPath.endsWith (filter.mid (1)))
+					return QStringList (dirPath);
+			return QStringList ();
 		}
+
+		auto filters = QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot;
+		if (!followSymlinks)
+			filters |= QDir::NoSymLinks;
+
+		const auto& list = QDir (dirPath).entryInfoList (nameFilters, filters);
+		qDebug () << Q_FUNC_INFO << dirPath << list.size ();
+		Q_FOREACH (const QFileInfo& entryInfo, list)
+		{
+			const auto& path = entryInfo.absoluteFilePath ();
+			if (entryInfo.isSymLink () &&
+					entryInfo.symLinkTarget () == path)
+				continue;
+
+			if (entryInfo.isDir ())
+				result += RecIterate (path, followSymlinks);
+			else if (entryInfo.isFile ())
+				result += path;
+		}
+
 		return result;
 	}
 

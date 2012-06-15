@@ -228,7 +228,7 @@ namespace LMP
 				SLOT (handleIterateFinished ()));
 		watcher->setProperty ("Path", path);
 		watcher->setProperty ("IsRoot", root);
-		watcher->setFuture (QtConcurrent::run (RecIterate, path));
+		watcher->setFuture (QtConcurrent::run (RecIterate, path, false));
 	}
 
 	void LocalCollection::Unscan (const QString& path)
