@@ -16,31 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_VISUALHANDLER_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_VISUALHANDLER_H
-#include <QObject>
+#include "wmurgenthandler.h"
+#include <QMainWindow>
+#include <QApplication>
 #include <interfaces/structures.h>
-#include "concretehandlerbase.h"
-#include "eventdata.h"
+#include <interfaces/core/icoreproxy.h>
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class VisualHandler : public ConcreteHandlerBase
+	WMUrgentHandler::WMUrgentHandler ()
 	{
-		Q_OBJECT
+	}
 
-		QSet<QString> ActiveEvents_;
-	public:
-		VisualHandler ();
+	NotificationMethod WMUrgentHandler::GetHandlerMethod () const
+	{
+		return NMUrgentHint;
+	}
 
-		NotificationMethod GetHandlerMethod () const;
-		void Handle (const Entity&, const NotificationRule&);
-	private slots:
-		void handleProbeDestroyed ();
-	};
+	void WMUrgentHandler::Handle (const Entity& e, const NotificationRule&)
+	{
+		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString () == "org.LC.AdvNotifications.Cancel")
+			return;
+
+		QApplication::alert (Core::Instance ().GetProxy ()->GetMainWindow ());
+	}
 }
 }
-
-#endif

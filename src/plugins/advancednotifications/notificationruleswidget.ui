@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>711</width>
-    <height>625</height>
+    <height>658</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -206,6 +206,13 @@
                <widget class="QCheckBox" name="NotifyCmd_">
                 <property name="text">
                  <string>Command</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="NotifyUrgent_">
+                <property name="text">
+                 <string>Draw attention to the window</string>
                 </property>
                </widget>
               </item>

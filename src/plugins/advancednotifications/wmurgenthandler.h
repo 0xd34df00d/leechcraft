@@ -16,31 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_VISUALHANDLER_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_VISUALHANDLER_H
-#include <QObject>
-#include <interfaces/structures.h>
+#pragma once
+
 #include "concretehandlerbase.h"
-#include "eventdata.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class VisualHandler : public ConcreteHandlerBase
+	class WMUrgentHandler : public ConcreteHandlerBase
 	{
 		Q_OBJECT
-
-		QSet<QString> ActiveEvents_;
 	public:
-		VisualHandler ();
+		WMUrgentHandler ();
 
 		NotificationMethod GetHandlerMethod () const;
 		void Handle (const Entity&, const NotificationRule&);
-	private slots:
-		void handleProbeDestroyed ();
 	};
 }
 }
-
-#endif

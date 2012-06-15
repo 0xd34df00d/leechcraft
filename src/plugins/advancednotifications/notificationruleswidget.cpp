@@ -137,30 +137,30 @@ namespace AdvancedNotifications
 		{
 			NotificationRule chatMsg (tr ("Incoming chat messages"), CatIM,
 					QStringList (TypeIMIncMsg));
-			chatMsg.SetMethods (NMVisual | NMTray | NMAudio);
+			chatMsg.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
 			chatMsg.SetAudioParams (AudioParams ("im-incoming-message"));
 			Rules_ << chatMsg;
 
 			NotificationRule mucHigh (tr ("MUC highlights"), CatIM,
 					QStringList (TypeIMMUCHighlight));
-			mucHigh.SetMethods (NMVisual | NMTray | NMAudio);
+			mucHigh.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
 			mucHigh.SetAudioParams (AudioParams ("im-muc-highlight"));
 			Rules_ << mucHigh;
 
 			NotificationRule mucInv (tr ("MUC invitations"), CatIM,
 					QStringList (TypeIMMUCInvite));
-			mucInv.SetMethods (NMVisual | NMTray | NMAudio);
+			mucInv.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
 			mucInv.SetAudioParams (AudioParams ("im-attention"));
 			Rules_ << mucInv;
 
 			NotificationRule incFile (tr ("Incoming file transfers"), CatIM,
 					QStringList (TypeIMIncFile));
-			incFile.SetMethods (NMVisual | NMTray | NMAudio);
+			incFile.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
 			Rules_ << incFile;
 
 			NotificationRule subscrReq (tr ("Subscription requests"), CatIM,
 					QStringList (TypeIMSubscrRequest));
-			subscrReq.SetMethods (NMVisual | NMTray | NMAudio);
+			subscrReq.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
 			subscrReq.SetAudioParams (AudioParams ("im-auth-requested"));
 			Rules_ << subscrReq;
 
@@ -174,7 +174,7 @@ namespace AdvancedNotifications
 
 			NotificationRule attentionDrawn (tr ("Attention requests"), CatIM,
 					QStringList (TypeIMAttention));
-			attentionDrawn.SetMethods (NMVisual | NMTray | NMAudio);
+			attentionDrawn.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
 			attentionDrawn.SetAudioParams (AudioParams ("im-attention"));
 			Rules_ << attentionDrawn;
 		}
@@ -263,6 +263,8 @@ namespace AdvancedNotifications
 			methods |= NMAudio;
 		if (Ui_.NotifyCmd_->checkState () == Qt::Checked)
 			methods |= NMCommand;
+		if (Ui_.NotifyUrgent_->checkState () == Qt::Checked)
+			methods |= NMUrgentHint;
 		rule.SetMethods (methods);
 
 		rule.SetFieldMatches (Matches_);
@@ -374,6 +376,8 @@ namespace AdvancedNotifications
 		Ui_.NotifyAudio_->setCheckState ((methods & NMAudio) ?
 				Qt::Checked : Qt::Unchecked);
 		Ui_.NotifyCmd_->setCheckState ((methods & NMCommand) ?
+				Qt::Checked : Qt::Unchecked);
+		Ui_.NotifyUrgent_->setCheckState ((methods & NMUrgentHint) ?
 				Qt::Checked : Qt::Unchecked);
 
 		ResetMatchesModel ();

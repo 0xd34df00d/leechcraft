@@ -24,6 +24,7 @@
 #include "audiohandler.h"
 #include "cmdrunhandler.h"
 #include "core.h"
+#include "wmurgenthandler.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,7 @@ namespace AdvancedNotifications
 		Handlers_ << ConcreteHandlerBase_ptr (new VisualHandler);
 		Handlers_ << ConcreteHandlerBase_ptr (new AudioHandler);
 		Handlers_ << ConcreteHandlerBase_ptr (new CmdRunHandler);
+		Handlers_ << ConcreteHandlerBase_ptr (new WMUrgentHandler);
 
 		Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
 			handler->SetGeneralHandler (this);
