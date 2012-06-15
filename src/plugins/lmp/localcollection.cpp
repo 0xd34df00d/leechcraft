@@ -176,7 +176,8 @@ namespace LMP
 		loadWatcher->setFuture (future);
 
 		auto& xsd = XmlSettingsManager::Instance ();
-		const QStringList oldDefault (xsd.property ("CollectionDir").toString ());
+		QStringList oldDefault (xsd.property ("CollectionDir").toString ());
+		oldDefault.removeAll (QString ());
 		AddRootPaths (xsd.Property ("RootCollectionPaths", oldDefault).toStringList ());
 		connect (this,
 				SIGNAL (rootPathsChanged (QStringList)),
