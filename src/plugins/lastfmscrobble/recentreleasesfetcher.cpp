@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "recentreleasesfetcher.h"
+#include <iterator>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QtDebug>
