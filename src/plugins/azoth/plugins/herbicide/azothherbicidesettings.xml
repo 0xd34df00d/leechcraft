@@ -2,9 +2,28 @@
 <settings>
 	<page>
 		<label value="Azoth Herbicide" />
-		<item type="groupbox" property="EnableQuest" checkable="true" default="off">
-			<label value="Enable quest" />
-			<item type="customwidget" label="own" name="ConfWidget" />
-		</item>
+		<tab>
+			<label value="Quest" />
+			<item type="groupbox" property="EnableQuest" checkable="true" default="off">
+				<label value="Enable quest" />
+				<item type="customwidget" label="own" name="ConfWidget" />
+			</item>
+		</tab>
+		<tab>
+			<label value="Blacklist" />
+			<item type="checkbox" property="AskOnlyBL" default="false">
+				<label value="Ask only those in the black list" />
+				<tooltip>Otherwise, everyone who isn't present in the contact list will be asked with the challenge.</tooltip>
+			</item>
+			<item type="multiline" property="BlacklistRegexps">
+				<label value="Entry ID regexps:" />
+			</item>
+		</tab>
+		<tab>
+			<label value="Whitelist" />
+			<item type="multiline" property="WhitelistRegexps">
+				<label value="Entry ID regexps:" />
+			</item>
+		</tab>
 	</page>
 </settings>
