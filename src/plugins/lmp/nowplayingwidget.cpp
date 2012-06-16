@@ -18,9 +18,14 @@
 
 #include "nowplayingwidget.h"
 #include <algorithm>
+#include <QStandardItemModel>
+#include <QMutexLocker>
+#include <taglib/fileref.h>
+#include <taglib/tag.h>
 #include "mediainfo.h"
 #include "core.h"
 #include "localcollection.h"
+#include "localfileresolver.h"
 
 namespace LeechCraft
 {
@@ -28,8 +33,10 @@ namespace LMP
 {
 	NowPlayingWidget::NowPlayingWidget (QWidget *parent)
 	: QWidget (parent)
+	, PropsModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.PropsView_->setModel (PropsModel_);
 		connect (Ui_.SimilarIncludeCollection_,
 				SIGNAL (stateChanged (int)),
 				this,
@@ -87,6 +94,8 @@ namespace LMP
 		SetStatistics (info.LocalPath_);
 
 		Ui_.BioWidget_->SetCurrentArtist (info.Artist_);
+
+		SetProps (info);
 	}
 
 	namespace
@@ -120,6 +129,67 @@ namespace LMP
 		Ui_.LastPlay_->setText (FormatDateTime (stats.LastPlay_));
 		Ui_.StatsCount_->setText (tr ("%n play(s) since %1", 0, stats.Playcount_)
 					.arg (FormatDateTime (stats.Added_)));
+	}
+
+	namespace
+	{
+		QMap<QString, QString> GetGenericProps (TagLib::AudioProperties *props)
+		{
+			QMap<QString, QString> result;
+			result [NowPlayingWidget::tr ("Bitrate")] = QString::number (props->bitrate ());
+			result [NowPlayingWidget::tr ("Channels")] = QString::number (props->channels ());
+			result [NowPlayingWidget::tr ("SampleRate")] = QString::number (props->sampleRate ());
+			return result;
+		}
+	}
+
+	void NowPlayingWidget::SetProps (const MediaInfo& info)
+	{
+		PropsModel_->clear ();
+
+		auto append = [this] (const QString& name, const QString& val)
+		{
+			auto nameItem = new QStandardItem (name);
+			nameItem->setEditable (false);
+			auto valItem = new QStandardItem (val);
+			valItem->setEditable (false);
+			QList<QStandardItem*> items;
+			items << nameItem << valItem;
+			PropsModel_->appendRow (items);
+		};
+
+		append (tr ("Artist"), info.Artist_);
+		append (tr ("Title"), info.Title_);
+		append (tr ("Album"), info.Album_);
+		append (tr ("Track number"), QString::number (info.TrackNumber_));
+		append (tr ("Year"), QString::number (info.Year_));
+		append (tr ("Genres"), info.Genres_.join ("; "));
+		append (tr ("Length"), QString::number (info.Length_));
+		append (tr ("Local path"), info.LocalPath_.isEmpty () ? tr ("unknown") : info.LocalPath_);
+
+		if (info.LocalPath_.isEmpty ())
+			return;
+
+		QMutexLocker tlLocker (&Core::Instance ().GetLocalFileResolver ()->GetMutex ());
+
+		auto r = Core::Instance ().GetLocalFileResolver ()->GetFileRef (info.LocalPath_);
+		auto tag = r.tag ();
+		if (!tag)
+			return;
+
+		append (tr ("Comment"), QString::fromUtf8 (tag->comment ().toCString (true)));
+
+		auto props = r.audioProperties ();
+		if (!props)
+			return;
+
+		auto addMap = [append] (const QMap<QString, QString>& map)
+		{
+			Q_FOREACH (const auto& key, map.keys ())
+				append (key, map [key]);
+		};
+
+		addMap (GetGenericProps (props));
 	}
 
 	void NowPlayingWidget::resetSimilarArtists ()

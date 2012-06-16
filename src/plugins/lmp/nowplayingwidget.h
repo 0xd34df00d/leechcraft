@@ -21,6 +21,8 @@
 #include <QWidget>
 #include "ui_nowplayingwidget.h"
 
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -34,6 +36,8 @@ namespace LMP
 
 		Ui::NowPlayingWidget Ui_;
 		Media::SimilarityInfos_t LastInfos_;
+
+		QStandardItemModel *PropsModel_;
 	public:
 		NowPlayingWidget (QWidget* = 0);
 
@@ -44,6 +48,7 @@ namespace LMP
 		void SetTrackInfo (const MediaInfo&);
 	private:
 		void SetStatistics (const QString&);
+		void SetProps (const MediaInfo&);
 	private slots:
 		void resetSimilarArtists ();
 	};
