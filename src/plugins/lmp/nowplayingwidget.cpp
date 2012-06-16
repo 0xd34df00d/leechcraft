@@ -169,7 +169,7 @@ namespace LMP
 			: F_ (app)
 			, Props_ (props)
 			{
-				IF_ = [this] (const QString& name, int val) { F_ (name, QString::number (val)); };
+				IF_ = [app] (const QString& name, int val) { app (name, QString::number (val)); };
 			}
 
 			template<typename T>
