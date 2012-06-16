@@ -112,7 +112,11 @@
       </layout>
      </item>
      <item>
-      <widget class="QTextBrowser" name="HistView_"/>
+      <widget class="QTextBrowser" name="HistView_">
+       <property name="openLinks">
+        <bool>false</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

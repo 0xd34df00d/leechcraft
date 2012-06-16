@@ -27,9 +27,12 @@ class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Azoth
 {
 class ICLEntry;
+
 namespace ChatHistory
 {
 	class Plugin;
@@ -86,11 +89,14 @@ namespace ChatHistory
 		void previousHistory ();
 		void nextHistory ();
 		void clearHistory ();
+		void on_HistView__anchorClicked (const QUrl&);
 	private:
 		void RequestLogs ();
 		void RequestSearch ();
 	signals:
 		void removeSelf (QWidget*);
+
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

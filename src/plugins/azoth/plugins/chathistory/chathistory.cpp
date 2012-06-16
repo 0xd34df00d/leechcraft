@@ -277,6 +277,10 @@ namespace ChatHistory
 				SIGNAL (removeSelf (QWidget*)),
 				this,
 				SIGNAL (removeTab (QWidget*)));
+		connect (wh,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 		emit addNewTab (tr ("Chat history"), wh);
 	}
 
