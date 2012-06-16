@@ -667,7 +667,6 @@ namespace LMP
 		if (root)
 			AddRootPaths (QStringList (path));
 
-		PresentPaths_ += paths;
 		emit scanStarted (paths.size ());
 		auto worker = [resolver] (const QString& path)
 		{
@@ -695,6 +694,8 @@ namespace LMP
 		QList<MediaInfo> infos;
 		std::copy_if (future.begin (), future.end (), std::back_inserter (infos),
 				[] (const MediaInfo& info) { return !info.LocalPath_.isEmpty (); });
+		Q_FOREACH (const auto& info, infos)
+			PresentPaths_ += info.LocalPath_;
 
 		emit scanProgressChanged (infos.size ());
 
