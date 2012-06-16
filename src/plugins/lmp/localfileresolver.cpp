@@ -45,6 +45,15 @@ namespace LMP
 	{
 	}
 
+	TagLib::FileRef LocalFileResolver::GetFileRef (const QString& file) const
+	{
+#ifdef Q_OS_WIN32
+		return TagLib::FileRef (file.toStdWString ().c_str ());
+#else
+		return TagLib::FileRef (file.toUtf8 ().constData ());
+#endif
+	}
+
 	MediaInfo LocalFileResolver::ResolveInfo (const QString& file)
 	{
 		{
@@ -55,11 +64,7 @@ namespace LMP
 
 		QMutexLocker tlLocker (&TaglibMutex_);
 
-#ifdef Q_OS_WIN32
-		TagLib::FileRef r (file.toStdWString ().c_str ());
-#else
-		TagLib::FileRef r (file.toUtf8 ().constData ());
-#endif
+		auto r = GetFileRef (file);
 		auto tag = r.tag ();
 		if (!tag)
 			throw ResolveError (file, "failed to get file tags");
@@ -89,6 +94,11 @@ namespace LMP
 			Cache_ [file] = info;
 		}
 		return info;
+	}
+
+	QMutex& LocalFileResolver::GetMutex ()
+	{
+		return TaglibMutex_;
 	}
 }
 }
