@@ -26,6 +26,7 @@
 #include <QMenu>
 #include <QInputDialog>
 #include <QUndoStack>
+#include <QDialogButtonBox>
 #include <phonon/seekslider.h>
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -395,8 +396,6 @@ namespace LMP
 				SLOT (removeSelectedSongs ()));
 		Ui_.Playlist_->addAction (removeSelected);
 
-		Ui_.Playlist_->addAction (Util::CreateSeparator (this));
-
 		auto stopAfterSelected = new QAction (tr ("Stop after this track"), Ui_.Playlist_);
 		stopAfterSelected->setProperty ("ActionIcon", "media-playback-stop");
 		connect (stopAfterSelected,
@@ -404,6 +403,16 @@ namespace LMP
 				this,
 				SLOT (setStopAfterSelected ()));
 		Ui_.Playlist_->addAction (stopAfterSelected);
+
+		Ui_.Playlist_->addAction (Util::CreateSeparator (this));
+
+		auto showTrackProps = new QAction (tr ("Show track properties"), Ui_.Playlist_);
+		showTrackProps->setProperty ("ActionIcon", "document-properties");
+		connect (showTrackProps,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showTrackProps ()));
+		Ui_.Playlist_->addAction (showTrackProps);
 	}
 
 	void PlayerTab::SetNowPlaying (const MediaInfo& info, const QPixmap& px)
@@ -691,6 +700,16 @@ namespace LMP
 			return;
 
 		Player_->SetStopAfter (index);
+	}
+
+	void PlayerTab::showTrackProps ()
+	{
+		const auto& index = Ui_.Playlist_->currentIndex ();
+		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
+		if (info.LocalPath_.isEmpty ())
+			return;
+
+		AudioPropsWidget::MakeDialog ()->SetProps (info);
 	}
 
 	void PlayerTab::loadFromCollection ()
