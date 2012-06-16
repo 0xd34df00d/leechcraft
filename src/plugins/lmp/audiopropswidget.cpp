@@ -23,7 +23,10 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QStandardItemModel>
+#include <QMessageBox>
 #include <QMutexLocker>
+#include <QFileInfo>
+#include <QtDebug>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <taglib/apeproperties.h>
@@ -84,8 +87,17 @@ namespace LMP
 			const auto& info = Core::Instance ().GetLocalFileResolver ()->ResolveInfo (path);
 			SetProps (info);
 		}
-		catch (const ResolveError&)
+		catch (const ResolveError& e)
 		{
+			qWarning () << Q_FUNC_INFO
+					<< path
+					<< e.what ();
+
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("Error showing properties for %1: %2.")
+						.arg (QFileInfo (path).fileName ())
+						.arg (e.what ()));
 		}
 	}
 
