@@ -32,6 +32,8 @@ namespace Azoth
 {
 	ProxyObject::ProxyObject (QObject* parent)
 	: QObject (parent)
+	, LinkRegexp_ ("((?:(?:\\w+://)|(?:xmpp:|mailto:|www\\.|magnet:|irc:))\\S+)",
+			Qt::CaseInsensitive, QRegExp::RegExp2)
 	{
 		SerializedStr2AuthStatus_ ["None"] = ASNone;
 		SerializedStr2AuthStatus_ ["To"] = ASTo;
@@ -320,6 +322,27 @@ namespace Azoth
 	QIcon ProxyObject::GetIconForState (State state) const
 	{
 		return Core::Instance ().GetIconForState (state);
+	}
+
+	void ProxyObject::FormatLinks (QString& body)
+	{
+		int pos = 0;
+		while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
+		{
+			const auto& link = LinkRegexp_.cap (1);
+			if (pos > 0 &&
+					(body.at (pos - 1) == '"' || body.at (pos - 1) == '='))
+			{
+				pos += link.size ();
+				continue;
+			}
+
+			const auto& str = QString ("<a href=\"%1\">%1</a>")
+					.arg (link.trimmed ());
+			body.replace (pos, link.length (), str);
+
+			pos += str.length ();
+		}
 	}
 }
 }

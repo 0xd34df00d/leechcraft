@@ -81,7 +81,6 @@ namespace Azoth
 		ICoreProxy_ptr Proxy_;
 		QList<ANFieldData> ANFields_;
 
-		QRegExp LinkRegexp_;
 		QRegExp ImageRegexp_;
 
 #ifdef ENABLE_CRYPT
