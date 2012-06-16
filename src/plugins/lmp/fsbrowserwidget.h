@@ -47,6 +47,7 @@ namespace LMP
 		void handleAddToCollection ();
 		void handleRemoveFromCollection ();
 		void loadFromFSBrowser ();
+		void viewProps ();
 	};
 }
 }

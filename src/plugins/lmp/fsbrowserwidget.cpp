@@ -18,11 +18,13 @@
 
 #include "fsbrowserwidget.h"
 #include <QDir>
+#include <util/util.h>
 #include "fsmodel.h"
 #include "util.h"
 #include "player.h"
 #include "core.h"
 #include "localcollection.h"
+#include "audiopropswidget.h"
 
 namespace LeechCraft
 {
@@ -39,7 +41,7 @@ namespace LMP
 		FSModel_->setRootPath (QDir::rootPath ());
 		Ui_.FSTree_->setModel (FSModel_);
 
-		QAction *addToPlaylist = new QAction (tr ("Add to playlist"), this);
+		auto addToPlaylist = new QAction (tr ("Add to playlist"), this);
 		addToPlaylist->setProperty ("ActionIcon", "list-add");
 		connect (addToPlaylist,
 				SIGNAL (triggered ()),
@@ -50,6 +52,16 @@ namespace LMP
 		DirCollection_ = new QAction (QString (), this);
 		DirCollection_->setProperty ("WatchActionIconChange", true);
 		Ui_.FSTree_->addAction (DirCollection_);
+
+		Ui_.FSTree_->addAction (Util::CreateSeparator (this));
+
+		auto viewProps = new QAction (tr ("Show track properties"), this);
+		viewProps->setProperty ("ActionIcon", "document-properties");
+		connect (viewProps,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (viewProps ()));
+		Ui_.FSTree_->addAction (viewProps);
 
 		connect (Ui_.FSTree_->selectionModel (),
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
@@ -137,6 +149,17 @@ namespace LMP
 			Player_->Enqueue (RecIterate (fi.absoluteFilePath ()));
 		else
 			Player_->Enqueue (QStringList (fi.absoluteFilePath ()));
+	}
+
+	void FSBrowserWidget::viewProps ()
+	{
+		const QModelIndex& index = Ui_.FSTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		const QFileInfo& fi = FSModel_->fileInfo (index);
+
+		AudioPropsWidget::MakeDialog ()->SetProps (fi.absoluteFilePath ());
 	}
 }
 }
