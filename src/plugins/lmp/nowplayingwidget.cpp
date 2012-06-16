@@ -18,6 +18,7 @@
 
 #include "nowplayingwidget.h"
 #include <algorithm>
+#include <functional>
 #include <boost/mpl/vector.hpp>
 #include <boost/mpl/for_each.hpp>
 #include <QStandardItemModel>
