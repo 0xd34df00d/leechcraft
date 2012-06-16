@@ -262,7 +262,7 @@ namespace LMP
 
 	void LocalCollection::Rescan ()
 	{
-		const auto& paths = RootPaths_;
+		auto paths = RootPaths_;
 		Clear ();
 
 		Q_FOREACH (const auto& path, paths)
