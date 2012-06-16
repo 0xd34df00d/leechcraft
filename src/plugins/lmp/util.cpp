@@ -50,7 +50,6 @@ namespace LMP
 			filters |= QDir::NoSymLinks;
 
 		const auto& list = QDir (dirPath).entryInfoList (nameFilters, filters);
-		qDebug () << Q_FUNC_INFO << dirPath << list.size ();
 		Q_FOREACH (const QFileInfo& entryInfo, list)
 		{
 			const auto& path = entryInfo.absoluteFilePath ();
