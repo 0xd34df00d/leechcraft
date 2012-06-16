@@ -38,6 +38,8 @@ namespace LMP
 	public:
 		AudioPropsWidget (QWidget* = 0);
 
+		static AudioPropsWidget* MakeDialog ();
+
 		void SetProps (const QString&);
 		void SetProps (const MediaInfo&);
 	};

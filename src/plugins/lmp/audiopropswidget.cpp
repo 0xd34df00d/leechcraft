@@ -20,6 +20,8 @@
 #include <functional>
 #include <boost/mpl/vector.hpp>
 #include <boost/mpl/for_each.hpp>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QStandardItemModel>
 #include <QMutexLocker>
 #include <taglib/fileref.h>
@@ -49,6 +51,30 @@ namespace LMP
 	{
 		Ui_.setupUi (this);
 		Ui_.PropsView_->setModel (PropsModel_);
+	}
+
+	AudioPropsWidget* AudioPropsWidget::MakeDialog ()
+	{
+		auto dia = new QDialog ();
+		dia->setWindowTitle (tr ("Track properties"));
+		dia->resize (800, 600);
+		dia->setLayout (new QVBoxLayout);
+
+		auto props = new AudioPropsWidget;
+
+		auto box = new QDialogButtonBox (QDialogButtonBox::Close);
+		connect (box,
+				SIGNAL (rejected ()),
+				dia,
+				SLOT (close ()));
+
+		dia->layout ()->addWidget (props);
+		dia->layout ()->addWidget (box);
+
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
+
+		return props;
 	}
 
 	void AudioPropsWidget::SetProps (const QString& path)
