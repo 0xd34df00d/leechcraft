@@ -195,6 +195,8 @@ namespace LMP
 			Util::DBLock::DumpError (RemoveAlbum_);
 			throw std::runtime_error ("cannot remove album");
 		}
+
+		PresentAlbums_.remove (PresentAlbums_.key (id));
 	}
 
 	void LocalCollectionStorage::RemoveArtist (int id)
@@ -205,6 +207,8 @@ namespace LMP
 			Util::DBLock::DumpError (RemoveArtist_);
 			throw std::runtime_error ("cannot remove artist");
 		}
+
+		PresentArtists_.remove (PresentArtists_.key (id));
 	}
 
 	void LocalCollectionStorage::SetAlbumArt (int id, const QString& path)
