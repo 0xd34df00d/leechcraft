@@ -51,6 +51,7 @@ namespace Azoth
 		QDataStream stream (&encoded, QIODevice::WriteOnly);
 
 		QStringList names;
+		QList<QUrl> urls;
 
 		Q_FOREACH (const QModelIndex& index, indexes)
 		{
@@ -60,20 +61,22 @@ namespace Azoth
 			QObject *entryObj = index
 					.data (Core::CLREntryObject).value<QObject*> ();
 			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-			if (!entry ||
-					entry->GetEntryType () != ICLEntry::ETChat)
+			if (!entry)
 				continue;
 
 			const QString& thisGroup = index.parent ()
 					.data (Core::CLREntryCategory).toString ();
 
-			stream << entry->GetEntryID () << thisGroup;
+			if (entry->GetEntryType () == ICLEntry::ETChat)
+				stream << entry->GetEntryID () << thisGroup;
 
 			names << entry->GetEntryName ();
+			urls << QUrl (entry->GetHumanReadableID ());
 		}
 
 		result->setData (CLEntryFormat, encoded);
 		result->setText (names.join ("; "));
+		result->setUrls (urls);
 
 		return result;
 	}
