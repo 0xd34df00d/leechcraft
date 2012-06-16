@@ -19,33 +19,27 @@
 #pragma once
 
 #include <QWidget>
-#include "ui_nowplayingwidget.h"
+#include "ui_audiopropswidget.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
+	class MediaInfo;
 
-	class NowPlayingWidget : public QWidget
+	class AudioPropsWidget : public QWidget
 	{
 		Q_OBJECT
 
-		Ui::NowPlayingWidget Ui_;
-		Media::SimilarityInfos_t LastInfos_;
+		Ui::AudioPropsWidget Ui_;
+		QStandardItemModel *PropsModel_;
 	public:
-		NowPlayingWidget (QWidget* = 0);
+		AudioPropsWidget (QWidget* = 0);
 
-		void SetSimilarArtists (Media::SimilarityInfos_t);
-		void SetLyrics (const QString&);
-
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
-	private:
-		void SetStatistics (const QString&);
-	private slots:
-		void resetSimilarArtists ();
+		void SetProps (const QString&);
+		void SetProps (const MediaInfo&);
 	};
 }
 }
