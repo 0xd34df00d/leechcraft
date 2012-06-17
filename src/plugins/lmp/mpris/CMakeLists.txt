@@ -7,11 +7,13 @@ SET (SRCS
 	instance.cpp
 	mediaplayer2adaptor.cpp
 	playeradaptor.cpp
+	fdopropsadaptor.cpp
 	)
 SET (HEADERS
 	instance.h
 	mediaplayer2adaptor.h
 	playeradaptor.h
+	fdopropsadaptor.h
 	)
 
 IF (NOT LC_NO_MOC)
