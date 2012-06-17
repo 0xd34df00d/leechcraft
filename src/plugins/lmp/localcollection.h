@@ -119,11 +119,12 @@ namespace LMP
 
 		int FindArtist (const QString&) const;
 
-		int FindAlbum (const QString&, const QString&) const;
+		int FindAlbum (const QString& artist, const QString& album) const;
 		void SetAlbumArt (int, const QString&);
+		Collection::Album_ptr GetAlbum (int albumId) const;
 
 		int FindTrack (const QString&) const;
-		Collection::Album_ptr GetTrackAlbum (int) const;
+		Collection::Album_ptr GetTrackAlbum (int trackId) const;
 
 		QList<int> GetDynamicPlaylist (DynamicPlaylist) const;
 		QStringList TrackList2PathList (const QList<int>&) const;

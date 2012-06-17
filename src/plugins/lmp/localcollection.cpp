@@ -321,6 +321,11 @@ namespace LMP
 		Storage_->SetAlbumArt (id, path);
 	}
 
+	Collection::Album_ptr LocalCollection::GetAlbum (int albumId) const
+	{
+		return AlbumID2Album_ [albumId];
+	}
+
 	int LocalCollection::FindTrack (const QString& path) const
 	{
 		return Path2Track_.value (path, -1);
