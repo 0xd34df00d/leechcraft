@@ -41,20 +41,20 @@ namespace MPRIS
 	{
 		Q_OBJECT
 		Q_CLASSINFO("D-Bus Interface", "org.mpris.MediaPlayer2")
-// 		Q_CLASSINFO("D-Bus Introspection", ""
-// 	"  <interface name=\"org.mpris.MediaPlayer2\">\n"
-// 	"    <method name=\"Raise\"/>\n"
-// 	"    <method name=\"Quit\"/>\n"
-// 	"    <property access=\"read\" type=\"b\" name=\"CanQuit\"/>\n"
-// 	"    <property access=\"read\" type=\"b\" name=\"CanSetFullscreen\"/>\n"
-// 	"    <property access=\"read\" type=\"b\" name=\"CanQuit\"/>\n"
-// 	"    <property access=\"read\" type=\"b\" name=\"HasTrackList\"/>\n"
-// 	"    <property access=\"read\" type=\"s\" name=\"Identity\"/>\n"
-// 	"    <property access=\"read\" type=\"s\" name=\"DesktopEntry\"/>\n"
-// 	"    <property access=\"read\" type=\"as\" name=\"SupportedUriSchemes\"/>\n"
-// 	"    <property access=\"read\" type=\"as\" name=\"SupportedMimeTypes\"/>\n"
-// 	"  </interface>\n"
-// 			"")
+		Q_CLASSINFO("D-Bus Introspection", ""
+	"  <interface name=\"org.mpris.MediaPlayer2\">\n"
+	"    <method name=\"Raise\"/>\n"
+	"    <method name=\"Quit\"/>\n"
+	"    <property access=\"read\" type=\"b\" name=\"CanQuit\"/>\n"
+	"    <property access=\"read\" type=\"b\" name=\"CanSetFullscreen\"/>\n"
+	"    <property access=\"read\" type=\"b\" name=\"CanQuit\"/>\n"
+	"    <property access=\"read\" type=\"b\" name=\"HasTrackList\"/>\n"
+	"    <property access=\"read\" type=\"s\" name=\"Identity\"/>\n"
+	"    <property access=\"read\" type=\"s\" name=\"DesktopEntry\"/>\n"
+	"    <property access=\"read\" type=\"as\" name=\"SupportedUriSchemes\"/>\n"
+	"    <property access=\"read\" type=\"as\" name=\"SupportedMimeTypes\"/>\n"
+	"  </interface>\n"
+			"")
 
 		PlayerTab *Tab_;
 	public:
