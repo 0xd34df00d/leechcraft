@@ -25,6 +25,8 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/core/ihookproxy.h>
 
+class QDockWidget;
+
 namespace LeechCraft
 {
 namespace Sidebar
@@ -58,6 +60,7 @@ namespace Sidebar
 
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
+		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QDockWidget*, bool);
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
 	};
 }
