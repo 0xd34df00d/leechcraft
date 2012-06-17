@@ -67,13 +67,14 @@ namespace Azoth
 		MW_ = new MainWidget ();
 
 		InitSettings ();
-		InitMW ();
 		InitSignals ();
 		InitTabClasses ();
 	}
 
 	void Plugin::SecondInit ()
 	{
+		InitMW ();
+
 		XmlSettingsDialog_->SetDataSource ("SmileIcons",
 				Core::Instance ().GetSmilesOptionsModel ());
 
