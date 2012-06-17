@@ -236,6 +236,11 @@ QWidget* LeechCraft::MainWindow::GetDockListWidget (Qt::DockWidgetArea area) con
 
 void LeechCraft::MainWindow::ToggleViewActionVisiblity (QDockWidget *widget, bool visible)
 {
+	Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+	emit hookDockWidgetActionVisToggled (proxy, widget, visible);
+	if (proxy->IsCancelled ())
+		return;
+
 	QAction *act = widget->toggleViewAction ();
 
 	if (!visible)

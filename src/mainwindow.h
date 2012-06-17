@@ -150,6 +150,7 @@ namespace LeechCraft
 		void InitializeShortcuts ();
 		void ShowMenuAndBar (bool);
 	signals:
+		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QDockWidget*, bool);
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
 	};
 };
