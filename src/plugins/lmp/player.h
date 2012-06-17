@@ -102,6 +102,9 @@ namespace LMP
 		void SetStopAfter (const QModelIndex&);
 
 		void SetRadioStation (Media::IRadioStation_ptr);
+
+		MediaInfo GetCurrentMediaInfo () const;
+		QString GetCurrentAAPath () const;
 	private:
 		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
 		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
