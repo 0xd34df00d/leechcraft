@@ -281,6 +281,7 @@ namespace Azoth
 		}
 		auto tab = qobject_cast<ChatTab*> (OpenChat (entry, info.Props_));
 		tab->selectVariant (info.Variant_);
+		tab->prepareMessageText (info.MsgText_);
 	}
 
 	void ChatTabsManager::handleNeedToClose (ChatTab *tab)

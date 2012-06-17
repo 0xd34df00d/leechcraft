@@ -504,6 +504,19 @@ namespace Azoth
 		return result;
 	}
 
+	IAccount* Core::GetAccount (const QByteArray& id) const
+	{
+		Q_FOREACH (IProtocol *proto, GetProtocols ())
+			Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
+			{
+				auto acc = qobject_cast<IAccount*> (accObj);
+				if (acc && acc->GetAccountID () == id)
+					return acc;
+			}
+
+		return 0;
+	}
+
 #ifdef ENABLE_CRYPT
 	QList<QCA::PGPKey> Core::GetPublicKeys () const
 	{

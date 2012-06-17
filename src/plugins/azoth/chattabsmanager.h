@@ -45,6 +45,7 @@ namespace Azoth
 		{
 			QString EntryID_;
 			QString Variant_;
+			QString MsgText_;
 			DynPropertiesList_t Props_;
 		};
 	private:
