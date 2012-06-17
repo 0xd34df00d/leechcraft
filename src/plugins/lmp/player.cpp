@@ -173,9 +173,18 @@ namespace LMP
 		return Output_;
 	}
 
+	Player::PlayMode Player::GetPlayMode () const
+	{
+		return PlayMode_;
+	}
+
 	void Player::SetPlayMode (Player::PlayMode playMode)
 	{
+		if (PlayMode_ == playMode)
+			return;
+
 		PlayMode_ = playMode;
+		emit playModeChanged (PlayMode_);
 	}
 
 	namespace

@@ -88,6 +88,7 @@ namespace LMP
 		Phonon::MediaObject* GetSourceObject () const;
 		Phonon::AudioOutput* GetAudioOutput () const;
 
+		PlayMode GetPlayMode () const;
 		void SetPlayMode (PlayMode);
 
 		void Enqueue (const QStringList&, bool = true);
@@ -130,6 +131,8 @@ namespace LMP
 	signals:
 		void songChanged (const MediaInfo&);
 		void insertedAlbum (const QModelIndex&);
+
+		void playModeChanged (Player::PlayMode);
 	};
 }
 }
