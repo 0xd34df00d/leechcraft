@@ -225,13 +225,17 @@ namespace LMP
 
 			QString Parse (TagLib::RIFF::AIFF::Properties *props)
 			{
+#if TAGLIB_MAJOR_VERSION > 1 || TAGLIB_MINOR_VERSION > 6
 				IF_ ("Sample width", props->sampleWidth ());
+#endif
 				return "AIFF";
 			}
 
 			QString Parse (TagLib::RIFF::WAV::Properties *props)
 			{
+#if TAGLIB_MAJOR_VERSION > 1 || TAGLIB_MINOR_VERSION > 6
 				IF_ ("Sample width", props->sampleWidth ());
+#endif
 				return "WAV";
 			}
 
