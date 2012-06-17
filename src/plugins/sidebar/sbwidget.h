@@ -61,6 +61,9 @@ namespace Sidebar
 		void AddQLAction (QAction*);
 		void RemoveQLAction (QAction*);
 
+		void AddDockAction (QAction*);
+		void RemoveDockAction (QAction*);
+
 		void AddCurTabAction (QAction*, QWidget*);
 		void RemoveCurTabAction (QAction*, QWidget*);
 
