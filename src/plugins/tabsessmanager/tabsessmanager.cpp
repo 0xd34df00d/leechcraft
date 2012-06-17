@@ -396,7 +396,7 @@ namespace TabSessManager
 			return;
 
 		IsScheduled_ = true;
-		QTimer::singleShot (500,
+		QTimer::singleShot (2000,
 				this,
 				SLOT (saveDefaultSession ()));
 	}
