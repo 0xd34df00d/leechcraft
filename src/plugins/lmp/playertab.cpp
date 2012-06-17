@@ -46,6 +46,10 @@
 #include "staticplaylistmanager.h"
 #include "playlistundocommand.h"
 
+#ifdef ENABLE_MPRIS
+#include "mpris/instance.h"
+#endif
+
 Q_DECLARE_METATYPE (Phonon::MediaSource);
 
 namespace LeechCraft
@@ -128,6 +132,10 @@ namespace LMP
 		XmlSettingsManager::Instance ().RegisterObject ("ShowTrayIcon",
 				this, "handleShowTrayIcon");
 		handleShowTrayIcon ();
+
+#ifdef ENABLE_MPRIS
+		new MPRIS::Instance (this);
+#endif
 	}
 
 	TabClassInfo PlayerTab::GetTabClassInfo () const
