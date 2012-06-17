@@ -6,10 +6,12 @@ SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 SET (SRCS
 	instance.cpp
 	mediaplayer2adaptor.cpp
+	playeradaptor.cpp
 	)
 SET (HEADERS
 	instance.h
 	mediaplayer2adaptor.h
+	playeradaptor.h
 	)
 
 IF (NOT LC_NO_MOC)

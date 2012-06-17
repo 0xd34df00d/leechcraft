@@ -59,28 +59,28 @@ namespace MPRIS
 		PlayerTab *Tab_;
 	public:
 		MediaPlayer2Adaptor (PlayerTab*);
-		virtual ~MediaPlayer2Adaptor();
+		virtual ~MediaPlayer2Adaptor ();
 
-	public: // PROPERTIES
-		Q_PROPERTY(bool CanQuit READ GetCanQuit)
+	public:
+		Q_PROPERTY (bool CanQuit READ GetCanQuit)
 		bool GetCanQuit () const;
 
-		Q_PROPERTY(bool CanSetFullscreen READ GetCanSetFullscreen)
+		Q_PROPERTY (bool CanSetFullscreen READ GetCanSetFullscreen)
 		bool GetCanSetFullscreen () const;
 
-		Q_PROPERTY(QString DesktopEntry READ GetDesktopEntry)
+		Q_PROPERTY (QString DesktopEntry READ GetDesktopEntry)
 		QString GetDesktopEntry () const;
 
-		Q_PROPERTY(bool HasTrackList READ GetHasTrackList)
+		Q_PROPERTY (bool HasTrackList READ GetHasTrackList)
 		bool GetHasTrackList () const;
 
-		Q_PROPERTY(QString Identity READ GetIdentity)
+		Q_PROPERTY (QString Identity READ GetIdentity)
 		QString GetIdentity () const;
 
-		Q_PROPERTY(QStringList SupportedMimeTypes READ GetSupportedMimeTypes)
+		Q_PROPERTY (QStringList SupportedMimeTypes READ GetSupportedMimeTypes)
 		QStringList GetSupportedMimeTypes () const;
 
-		Q_PROPERTY(QStringList SupportedUriSchemes READ GetSupportedUriSchemes)
+		Q_PROPERTY (QStringList SupportedUriSchemes READ GetSupportedUriSchemes)
 		QStringList GetSupportedUriSchemes () const;
 	public slots:
 		void Quit ();

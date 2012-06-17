@@ -20,6 +20,7 @@
 #include <QDBusConnection>
 #include "../playertab.h"
 #include "mediaplayer2adaptor.h"
+#include "playeradaptor.h"
 
 namespace LeechCraft
 {
@@ -32,6 +33,7 @@ namespace MPRIS
 	, Tab_ (tab)
 	{
 		new MediaPlayer2Adaptor (tab);
+		new PlayerAdaptor (tab);
 
 		QDBusConnection::sessionBus ().registerService ("org.mpris.MediaPlayer2.LMP_" + QString::number (reinterpret_cast<quint64> (tab)));
 		QDBusConnection::sessionBus ().registerObject ("/org/mpris/MediaPlayer2", tab);
