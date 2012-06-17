@@ -72,7 +72,22 @@ namespace MPRIS
 
 	QStringList MediaPlayer2Adaptor::GetSupportedMimeTypes () const
 	{
-		return { "application/ogg", "audio/mpeg" };
+		return
+		{
+			"application/ogg",
+			"audio/mp4",
+			"audio/mpeg",
+			"audio/ogg",
+			"audio/vorbis",
+			"audio/x-ms-wma",
+			"audio/vnd.rn-realaudio",
+			"audio/vnd.wave",
+			"audio/wav",
+			"audio/webm",
+			"audio/x-aiff",
+			"audio/x-mpegurl",
+			"audio/x-wav"
+		};
 	}
 
 	QStringList MediaPlayer2Adaptor::GetSupportedUriSchemes () const
