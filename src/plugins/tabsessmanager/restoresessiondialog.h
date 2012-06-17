@@ -36,6 +36,11 @@ namespace TabSessManager
 
 		void SetPages (const QHash<QObject*, QList<RecInfo>>&);
 		QHash<QObject*, QList<RecInfo>> GetPages () const;
+	private:
+		void CheckAll (Qt::CheckState);
+	private slots:
+		void on_SelectAll__released ();
+		void on_SelectNone__released ();
 	};
 }
 }

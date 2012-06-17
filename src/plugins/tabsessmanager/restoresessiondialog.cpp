@@ -82,5 +82,26 @@ namespace TabSessManager
 
 		return result;
 	}
+
+	void RestoreSessionDialog::CheckAll (Qt::CheckState state)
+	{
+		for (int i = 0, size = Ui_.Tabs_->topLevelItemCount ();
+				i < size; ++i)
+		{
+			auto parent = Ui_.Tabs_->topLevelItem (i);
+			for (int j = 0, jsize = parent->childCount (); j < jsize; ++j)
+				parent->child (j)->setCheckState (0, state);
+		}
+	}
+
+	void RestoreSessionDialog::on_SelectAll__released ()
+	{
+		CheckAll (Qt::Checked);
+	}
+
+	void RestoreSessionDialog::on_SelectNone__released ()
+	{
+		CheckAll (Qt::Unchecked);
+	}
 }
 }
