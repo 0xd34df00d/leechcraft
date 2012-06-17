@@ -126,6 +126,9 @@ namespace LMP
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);
+		void raiseTab (QWidget*);
+
+		void fullRaiseRequested ();
 
 		void gotEntity (const LeechCraft::Entity&);
 
