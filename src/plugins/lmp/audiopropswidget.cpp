@@ -27,9 +27,14 @@
 #include <QMutexLocker>
 #include <QFileInfo>
 #include <QtDebug>
+#include <taglib/taglib_config.h>
+#include <taglib/taglib.h>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
+#define HAS_APE TAGLIB_MAJOR_VERSION > 1 || TAGLIB_MINOR_VERSION > 6
+#if HAS_APE
 #include <taglib/apeproperties.h>
+#endif
 #include <taglib/asfproperties.h>
 #include <taglib/flacproperties.h>
 #include <taglib/mp4properties.h>
@@ -132,13 +137,14 @@ namespace LMP
 				if ((t = dynamic_cast<T*> (Props_)))
 					F_ (AudioPropsWidget::tr ("File type"), Parse (t));
 			}
-
+#if HAS_APE
 			QString Parse (TagLib::APE::Properties *props)
 			{
 				IF_ ("APE version", props->version ());
 				IF_ ("Bits per sample", props->bitsPerSample ());
 				return "APE";
 			}
+#endif
 
 			QString Parse (TagLib::ASF::Properties*)
 			{
@@ -299,7 +305,10 @@ namespace LMP
 
 		addMap (GetGenericProps (props));
 
-		boost::mpl::vector<TagLib::APE::Properties*,
+		boost::mpl::vector<
+#if HAS_APE
+				TagLib::APE::Properties*,
+#endif
 				TagLib::ASF::Properties*,
 				TagLib::FLAC::Properties*,
 				TagLib::MP4::Properties*,
@@ -310,7 +319,8 @@ namespace LMP
 				TagLib::RIFF::AIFF::Properties*,
 				TagLib::RIFF::WAV::Properties*,
 				TagLib::TrueAudio::Properties*,
-				TagLib::WavPack::Properties*> propsTypes;
+				TagLib::WavPack::Properties*
+				> propsTypes;
 		boost::mpl::for_each (MakeGetter (append, props), &propsTypes);
 	}
 }
