@@ -36,6 +36,8 @@ class PlayerTab;
 
 namespace MPRIS
 {
+	class FDOPropsAdaptor;
+
 	class PlayerAdaptor: public QDBusAbstractAdaptor
 	{
 		Q_OBJECT
@@ -81,11 +83,11 @@ namespace MPRIS
 	"  </interface>\n"
 			"")
 
+		FDOPropsAdaptor *Props_;
 		PlayerTab *Tab_;
 	public:
-		PlayerAdaptor (PlayerTab *tab);
+		PlayerAdaptor (FDOPropsAdaptor *fdo, PlayerTab *tab);
 		virtual ~PlayerAdaptor ();
-
 	public: // PROPERTIES
 		Q_PROPERTY (bool CanControl READ GetCanControl)
 		bool GetCanControl () const;
@@ -135,7 +137,8 @@ namespace MPRIS
 		Q_PROPERTY (double Volume READ GetVolume WRITE SetVolume)
 		double GetVolume () const;
 		void SetVolume (double value);
-
+	private:
+		void Notify (const QString&);
 	public slots:
 		void Next ();
 		void OpenUri (const QString& Uri);
@@ -146,6 +149,11 @@ namespace MPRIS
 		void Seek (qlonglong Offset);
 		void SetPosition (const QDBusObjectPath& TrackId, qlonglong Position);
 		void Stop ();
+	private slots:
+		void handleSongChanged ();
+		void handlePlayModeChanged ();
+		void handleStateChanged ();
+		void handleVolumeChanged ();
 	signals:
 		void Seeked (qlonglong Position);
 	};

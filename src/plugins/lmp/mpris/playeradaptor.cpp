@@ -26,6 +26,7 @@
 #include <QVariant>
 #include "../playertab.h"
 #include "../player.h"
+#include "fdopropsadaptor.h"
 
 namespace LeechCraft
 {
@@ -33,11 +34,29 @@ namespace LMP
 {
 namespace MPRIS
 {
-	PlayerAdaptor::PlayerAdaptor (PlayerTab *tab)
+	PlayerAdaptor::PlayerAdaptor (FDOPropsAdaptor *fdo, PlayerTab *tab)
 	: QDBusAbstractAdaptor (tab)
+	, Props_ (fdo)
 	, Tab_ (tab)
 	{
 		setAutoRelaySignals (true);
+
+		connect (Tab_->GetPlayer (),
+				SIGNAL (songChanged (MediaInfo)),
+				this,
+				SLOT (handleSongChanged ()));
+		connect (Tab_->GetPlayer (),
+				SIGNAL (playModeChanged (Player::PlayMode)),
+				this,
+				SLOT (handlePlayModeChanged ()));
+		connect (Tab_->GetPlayer ()->GetSourceObject (),
+				SIGNAL (stateChanged (Phonon::State, Phonon::State)),
+				this,
+				SLOT (handleStateChanged ()));
+		connect (Tab_->GetPlayer ()->GetAudioOutput (),
+				SIGNAL (volumeChanged (qreal)),
+				this,
+				SLOT (handleVolumeChanged ()));
 	}
 
 	PlayerAdaptor::~PlayerAdaptor ()
@@ -185,6 +204,12 @@ namespace MPRIS
 		Tab_->GetPlayer ()->GetAudioOutput ()->setVolume (value);
 	}
 
+	void PlayerAdaptor::Notify (const QString& propName)
+	{
+		Props_->Notify ("org.mpris.MediaPlayer2.Player",
+				propName, property (propName.toUtf8 ()));
+	}
+
 	void PlayerAdaptor::Next ()
 	{
 		Tab_->GetPlayer ()->nextTrack ();
@@ -234,6 +259,27 @@ namespace MPRIS
 	void PlayerAdaptor::Stop ()
 	{
 		Tab_->GetPlayer ()->stop ();
+	}
+
+	void PlayerAdaptor::handleSongChanged ()
+	{
+		Notify ("Metadata");
+	}
+
+	void PlayerAdaptor::handlePlayModeChanged ()
+	{
+		Notify ("LoopStatus");
+		Notify ("Shuffle");
+	}
+
+	void PlayerAdaptor::handleStateChanged ()
+	{
+		Notify ("PlaybackStatus");
+	}
+
+	void PlayerAdaptor::handleVolumeChanged ()
+	{
+		Notify ("Volume");
 	}
 }
 }

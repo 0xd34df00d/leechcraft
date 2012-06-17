@@ -21,6 +21,7 @@
 #include "../playertab.h"
 #include "mediaplayer2adaptor.h"
 #include "playeradaptor.h"
+#include "fdopropsadaptor.h"
 
 namespace LeechCraft
 {
@@ -32,8 +33,9 @@ namespace MPRIS
 	: QObject (tab)
 	, Tab_ (tab)
 	{
+		auto fdo = new FDOPropsAdaptor (tab);
 		new MediaPlayer2Adaptor (tab);
-		new PlayerAdaptor (tab);
+		new PlayerAdaptor (fdo, tab);
 
 		QDBusConnection::sessionBus ().registerService ("org.mpris.MediaPlayer2.LMP_" + QString::number (reinterpret_cast<quint64> (tab)));
 		QDBusConnection::sessionBus ().registerObject ("/org/mpris/MediaPlayer2", tab);
