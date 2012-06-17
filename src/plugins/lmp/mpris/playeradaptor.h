@@ -32,7 +32,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-class PlayerTab;
+class Player;
 
 namespace MPRIS
 {
@@ -84,9 +84,9 @@ namespace MPRIS
 			"")
 
 		FDOPropsAdaptor *Props_;
-		PlayerTab *Tab_;
+		Player *Player_;
 	public:
-		PlayerAdaptor (FDOPropsAdaptor *fdo, PlayerTab *tab);
+		PlayerAdaptor (FDOPropsAdaptor *fdo, Player*);
 		virtual ~PlayerAdaptor ();
 	public: // PROPERTIES
 		Q_PROPERTY (bool CanControl READ GetCanControl)

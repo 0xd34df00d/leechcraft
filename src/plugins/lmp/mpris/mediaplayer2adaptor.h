@@ -33,7 +33,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-class PlayerTab;
+class Player;
 
 namespace MPRIS
 {
@@ -56,9 +56,10 @@ namespace MPRIS
 	"  </interface>\n"
 			"")
 
-		PlayerTab *Tab_;
+		QObject *Tab_;
+		Player *Player_;
 	public:
-		MediaPlayer2Adaptor (PlayerTab*);
+		MediaPlayer2Adaptor (QObject*, Player*);
 		virtual ~MediaPlayer2Adaptor ();
 
 	public:

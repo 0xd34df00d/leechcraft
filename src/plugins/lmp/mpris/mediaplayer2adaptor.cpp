@@ -26,7 +26,7 @@
 #include <QVariant>
 #include <interfaces/imwproxy.h>
 #include "../core.h"
-#include "../playertab.h"
+#include "../player.h"
 
 namespace LeechCraft
 {
@@ -34,8 +34,8 @@ namespace LMP
 {
 namespace MPRIS
 {
-	MediaPlayer2Adaptor::MediaPlayer2Adaptor (PlayerTab *tab)
-	: QDBusAbstractAdaptor (tab)
+	MediaPlayer2Adaptor::MediaPlayer2Adaptor (QObject *tab, Player *player)
+	: QDBusAbstractAdaptor (player)
 	, Tab_ (tab)
 	{
 		setAutoRelaySignals (true);

@@ -134,7 +134,7 @@ namespace LMP
 		handleShowTrayIcon ();
 
 #ifdef ENABLE_MPRIS
-		new MPRIS::Instance (this);
+		new MPRIS::Instance (this, Player_);
 #endif
 	}
 

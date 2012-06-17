@@ -24,7 +24,8 @@
 #include <QString>
 #include <QStringList>
 #include <QVariant>
-#include "../playertab.h"
+#include <phonon/mediaobject.h>
+#include <phonon/audiooutput.h>
 #include "../player.h"
 #include "fdopropsadaptor.h"
 
@@ -34,26 +35,26 @@ namespace LMP
 {
 namespace MPRIS
 {
-	PlayerAdaptor::PlayerAdaptor (FDOPropsAdaptor *fdo, PlayerTab *tab)
-	: QDBusAbstractAdaptor (tab)
+	PlayerAdaptor::PlayerAdaptor (FDOPropsAdaptor *fdo, Player *player)
+	: QDBusAbstractAdaptor (player)
 	, Props_ (fdo)
-	, Tab_ (tab)
+	, Player_ (player)
 	{
 		setAutoRelaySignals (true);
 
-		connect (Tab_->GetPlayer (),
+		connect (Player_,
 				SIGNAL (songChanged (MediaInfo)),
 				this,
 				SLOT (handleSongChanged ()));
-		connect (Tab_->GetPlayer (),
+		connect (Player_,
 				SIGNAL (playModeChanged (Player::PlayMode)),
 				this,
 				SLOT (handlePlayModeChanged ()));
-		connect (Tab_->GetPlayer ()->GetSourceObject (),
+		connect (Player_->GetSourceObject (),
 				SIGNAL (stateChanged (Phonon::State, Phonon::State)),
 				this,
 				SLOT (handleStateChanged ()));
-		connect (Tab_->GetPlayer ()->GetAudioOutput (),
+		connect (Player_->GetAudioOutput (),
 				SIGNAL (volumeChanged (qreal)),
 				this,
 				SLOT (handleVolumeChanged ()));
@@ -90,12 +91,12 @@ namespace MPRIS
 
 	bool PlayerAdaptor::GetCanSeek () const
 	{
-		return Tab_->GetPlayer ()->GetSourceObject ()->isSeekable ();
+		return Player_->GetSourceObject ()->isSeekable ();
 	}
 
 	QString PlayerAdaptor::GetLoopStatus () const
 	{
-		switch (Tab_->GetPlayer ()->GetPlayMode ())
+		switch (Player_->GetPlayMode ())
 		{
 		case Player::PlayMode::RepeatTrack:
 			return "Track";
@@ -112,11 +113,11 @@ namespace MPRIS
 	void PlayerAdaptor::SetLoopStatus (const QString& value)
 	{
 		if (value == "Track")
-			Tab_->GetPlayer ()->SetPlayMode (Player::PlayMode::RepeatTrack);
+			Player_->SetPlayMode (Player::PlayMode::RepeatTrack);
 		else if (value == "Playlist")
-			Tab_->GetPlayer ()->SetPlayMode (Player::PlayMode::RepeatWhole);
+			Player_->SetPlayMode (Player::PlayMode::RepeatWhole);
 		else
-			Tab_->GetPlayer ()->SetPlayMode (Player::PlayMode::Sequential);
+			Player_->SetPlayMode (Player::PlayMode::Sequential);
 	}
 
 	double PlayerAdaptor::GetMaximumRate () const
@@ -126,7 +127,7 @@ namespace MPRIS
 
 	QVariantMap PlayerAdaptor::GetMetadata () const
 	{
-		auto info = Tab_->GetPlayer ()->GetCurrentMediaInfo ();
+		auto info = Player_->GetCurrentMediaInfo ();
 		if (info.LocalPath_.isEmpty () && info.Title_.isEmpty ())
 			return QVariantMap ();
 
@@ -140,7 +141,7 @@ namespace MPRIS
 					QString ("/local/%1")
 						.arg (info.LocalPath_);
 		result ["mpris:length"] = info.Length_ * 1000;
-		result ["mpris:artUrl"] = QUrl (Tab_->GetPlayer ()->GetCurrentAAPath ()).toLocalFile ();
+		result ["mpris:artUrl"] = QUrl (Player_->GetCurrentAAPath ()).toLocalFile ();
 		result ["xesam:album"] = info.Album_;
 		result ["xesam:artist"] = info.Artist_;
 		result ["xesam:genre"] = info.Genres_.join (" / ");
@@ -156,7 +157,7 @@ namespace MPRIS
 
 	QString PlayerAdaptor::GetPlaybackStatus () const
 	{
-		switch (Tab_->GetPlayer ()->GetSourceObject ()->state ())
+		switch (Player_->GetSourceObject ()->state ())
 		{
 		case Phonon::PausedState:
 			return "Paused";
@@ -170,7 +171,7 @@ namespace MPRIS
 
 	qlonglong PlayerAdaptor::GetPosition () const
 	{
-		return Tab_->GetPlayer ()->GetSourceObject ()->currentTime () * 1000;
+		return Player_->GetSourceObject ()->currentTime () * 1000;
 	}
 
 	double PlayerAdaptor::GetRate () const
@@ -184,24 +185,24 @@ namespace MPRIS
 
 	bool PlayerAdaptor::GetShuffle () const
 	{
-		return Tab_->GetPlayer ()->GetPlayMode () == Player::PlayMode::Shuffle;
+		return Player_->GetPlayMode () == Player::PlayMode::Shuffle;
 	}
 
 	void PlayerAdaptor::SetShuffle (bool value)
 	{
-		Tab_->GetPlayer ()->SetPlayMode (value ?
+		Player_->SetPlayMode (value ?
 				Player::PlayMode::Shuffle :
 				Player::PlayMode::Sequential);
 	}
 
 	double PlayerAdaptor::GetVolume () const
 	{
-		return Tab_->GetPlayer ()->GetAudioOutput ()->volume ();
+		return Player_->GetAudioOutput ()->volume ();
 	}
 
 	void PlayerAdaptor::SetVolume (double value)
 	{
-		Tab_->GetPlayer ()->GetAudioOutput ()->setVolume (value);
+		Player_->GetAudioOutput ()->setVolume (value);
 	}
 
 	void PlayerAdaptor::Notify (const QString& propName)
@@ -212,21 +213,21 @@ namespace MPRIS
 
 	void PlayerAdaptor::Next ()
 	{
-		Tab_->GetPlayer ()->nextTrack ();
+		Player_->nextTrack ();
 	}
 
 	void PlayerAdaptor::OpenUri (const QString& uri)
 	{
 		const auto& url = QUrl (uri);
 		if (url.scheme () == "file")
-			Tab_->GetPlayer ()->Enqueue (QStringList (uri));
+			Player_->Enqueue (QStringList (uri));
 		else
-			Tab_->GetPlayer ()->Enqueue ({ url });
+			Player_->Enqueue ({ url });
 	}
 
 	void PlayerAdaptor::Pause ()
 	{
-		Tab_->GetPlayer ()->setPause ();
+		Player_->setPause ();
 	}
 
 	void PlayerAdaptor::Play ()
@@ -234,22 +235,22 @@ namespace MPRIS
 		if (GetPlaybackStatus () == "Playing")
 			return;
 
-		Tab_->GetPlayer ()->togglePause ();
+		Player_->togglePause ();
 	}
 
 	void PlayerAdaptor::PlayPause ()
 	{
-		Tab_->GetPlayer ()->togglePause ();
+		Player_->togglePause ();
 	}
 
 	void PlayerAdaptor::Previous ()
 	{
-		Tab_->GetPlayer ()->previousTrack ();
+		Player_->previousTrack ();
 	}
 
 	void PlayerAdaptor::Seek (qlonglong offset)
 	{
-		Tab_->GetPlayer ()->GetSourceObject ()->seek (offset / 1000);
+		Player_->GetSourceObject ()->seek (offset / 1000);
 	}
 
 	void PlayerAdaptor::SetPosition (const QDBusObjectPath& TrackId, qlonglong Position)
@@ -258,7 +259,7 @@ namespace MPRIS
 
 	void PlayerAdaptor::Stop ()
 	{
-		Tab_->GetPlayer ()->stop ();
+		Player_->stop ();
 	}
 
 	void PlayerAdaptor::handleSongChanged ()

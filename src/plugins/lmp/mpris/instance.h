@@ -24,17 +24,15 @@ namespace LeechCraft
 {
 namespace LMP
 {
-class PlayerTab;
+class Player;
 
 namespace MPRIS
 {
 	class Instance : public QObject
 	{
 		Q_OBJECT
-
-		PlayerTab *Tab_;
 	public:
-		Instance (PlayerTab*);
+		Instance (QObject*, Player*);
 	};
 }
 }

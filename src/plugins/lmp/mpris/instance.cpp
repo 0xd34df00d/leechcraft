@@ -18,7 +18,7 @@
 
 #include "instance.h"
 #include <QDBusConnection>
-#include "../playertab.h"
+#include "../player.h"
 #include "mediaplayer2adaptor.h"
 #include "playeradaptor.h"
 #include "fdopropsadaptor.h"
@@ -29,16 +29,15 @@ namespace LMP
 {
 namespace MPRIS
 {
-	Instance::Instance (PlayerTab *tab)
+	Instance::Instance (QObject *tab, Player *player)
 	: QObject (tab)
-	, Tab_ (tab)
 	{
-		auto fdo = new FDOPropsAdaptor (tab);
-		new MediaPlayer2Adaptor (tab);
-		new PlayerAdaptor (fdo, tab);
+		auto fdo = new FDOPropsAdaptor (player);
+		new MediaPlayer2Adaptor (tab, player);
+		new PlayerAdaptor (fdo, player);
 
-		QDBusConnection::sessionBus ().registerService ("org.mpris.MediaPlayer2.LMP_" + QString::number (reinterpret_cast<quint64> (tab)));
-		QDBusConnection::sessionBus ().registerObject ("/org/mpris/MediaPlayer2", tab);
+		QDBusConnection::sessionBus ().registerService ("org.mpris.MediaPlayer2.LMP_" + QString::number (reinterpret_cast<quint64> (player)));
+		QDBusConnection::sessionBus ().registerObject ("/org/mpris/MediaPlayer2", player);
 	}
 }
 }
