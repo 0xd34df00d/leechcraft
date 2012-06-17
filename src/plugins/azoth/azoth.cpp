@@ -374,6 +374,8 @@ namespace Azoth
 		QDockWidget *dw = new QDockWidget ();
 		dw->setWidget (MW_);
 		dw->setWindowTitle ("Azoth");
+		dw->setWindowIcon (GetIcon ());
+		dw->toggleViewAction ()->setIcon (GetIcon ());
 
 		const int dockArea = XmlSettingsManager::Instance ()
 				.Property ("MWDockArea", Qt::RightDockWidgetArea).toInt ();
