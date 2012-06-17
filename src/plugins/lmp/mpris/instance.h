@@ -28,14 +28,11 @@ class PlayerTab;
 
 namespace MPRIS
 {
-	class MediaPlayer2Adaptor;
-
 	class Instance : public QObject
 	{
 		Q_OBJECT
 
 		PlayerTab *Tab_;
-		MediaPlayer2Adaptor *MP_;
 	public:
 		Instance (PlayerTab*);
 	};

@@ -30,8 +30,9 @@ namespace MPRIS
 	Instance::Instance (PlayerTab *tab)
 	: QObject (tab)
 	, Tab_ (tab)
-	, MP_ (new MediaPlayer2Adaptor (tab))
 	{
+		new MediaPlayer2Adaptor (tab);
+
 		QDBusConnection::sessionBus ().registerService ("org.mpris.MediaPlayer2.LMP_" + QString::number (reinterpret_cast<quint64> (tab)));
 		QDBusConnection::sessionBus ().registerObject ("/org/mpris/MediaPlayer2", tab);
 	}
