@@ -117,6 +117,7 @@ namespace LMP
 		void previousTrack ();
 		void nextTrack ();
 		void togglePause ();
+		void setPause ();
 		void stop ();
 		void clear ();
 	private slots:

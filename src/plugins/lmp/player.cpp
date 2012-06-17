@@ -626,6 +626,11 @@ namespace LMP
 		}
 	}
 
+	void Player::setPause ()
+	{
+		Source_->pause ();
+	}
+
 	void Player::stop ()
 	{
 		Source_->stop ();
