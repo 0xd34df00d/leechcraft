@@ -359,22 +359,20 @@ namespace LMP
 		QMenu *playMode = new QMenu (tr ("Play mode"));
 		playButton->setMenu (playMode);
 
-		const int resumeMode = XmlSettingsManager::Instance ()
-				.Property ("PlayMode", static_cast<int> (Player::PlayMode::Sequential)).toInt ();
 		const std::vector<Player::PlayMode> modes = { Player::PlayMode::Sequential,
 				Player::PlayMode::Shuffle, Player::PlayMode::RepeatTrack,
 				Player::PlayMode::RepeatAlbum, Player::PlayMode::RepeatWhole };
 		const std::vector<QString> names = { tr ("Sequential"),
 				tr ("Shuffle"), tr ("Repeat track"),
 				tr ("Repeat album"), tr ("Repeat whole") };
-		auto playGroup = new QActionGroup (this);
+		PlayModesGroup_ = new QActionGroup (this);
 		for (size_t i = 0; i < modes.size (); ++i)
 		{
 			QAction *action = new QAction (names [i], this);
 			action->setProperty ("PlayMode", static_cast<int> (modes.at (i)));
 			action->setCheckable (true);
-			action->setChecked (static_cast<int> (modes.at (i)) == resumeMode);
-			action->setActionGroup (playGroup);
+			action->setChecked (!i);
+			action->setActionGroup (PlayModesGroup_);
 			playMode->addAction (action);
 
 			connect (action,
@@ -382,6 +380,12 @@ namespace LMP
 					this,
 					SLOT (handleChangePlayMode ()));
 		}
+		connect (Player_,
+				SIGNAL (playModeChanged (Player::PlayMode)),
+				this,
+				SLOT (handlePlayModeChanged (Player::PlayMode)));
+		const int resumeMode = XmlSettingsManager::Instance ()
+				.Property ("PlayMode", static_cast<int> (Player::PlayMode::Sequential)).toInt ();
 		Player_->SetPlayMode (static_cast<Player::PlayMode> (resumeMode));
 
 		PlaylistToolbar_->addWidget (playButton);
@@ -666,6 +670,16 @@ namespace LMP
 		auto mode = sender ()->property ("PlayMode").toInt ();
 		Player_->SetPlayMode (static_cast<Player::PlayMode> (mode));
 		XmlSettingsManager::Instance ().setProperty ("PlayMode", mode);
+	}
+
+	void PlayerTab::handlePlayModeChanged (Player::PlayMode mode)
+	{
+		Q_FOREACH (QAction *action, PlayModesGroup_->actions ())
+			if (action->property ("PlayMode").toInt () == static_cast<int> (mode))
+			{
+				action->setChecked (true);
+				return;
+			}
 	}
 
 	void PlayerTab::handlePlaylistSelected (const QModelIndex& index)
