@@ -55,13 +55,13 @@ namespace LMP
 
 		Ui_.FSTree_->addAction (Util::CreateSeparator (this));
 
-		auto viewProps = new QAction (tr ("Show track properties"), this);
-		viewProps->setProperty ("ActionIcon", "document-properties");
-		connect (viewProps,
+		ViewProps_ = new QAction (tr ("Show track properties"), this);
+		ViewProps_->setProperty ("ActionIcon", "document-properties");
+		connect (ViewProps_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (viewProps ()));
-		Ui_.FSTree_->addAction (viewProps);
+		Ui_.FSTree_->addAction (ViewProps_);
 
 		connect (Ui_.FSTree_->selectionModel (),
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
@@ -81,7 +81,10 @@ namespace LMP
 
 	void FSBrowserWidget::handleItemSelected (const QModelIndex& index)
 	{
-		const auto& path = FSModel_->fileInfo (index).absoluteFilePath ();
+		const auto& fi = FSModel_->fileInfo (index);
+		ViewProps_->setEnabled (fi.isFile ());
+
+		const auto& path = fi.absoluteFilePath ();
 
 		disconnect (DirCollection_,
 				0,
