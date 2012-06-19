@@ -115,6 +115,10 @@ namespace LeechCraft
 	{
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"coresettings.xml");
+		connect (XmlSettingsDialog_.get (),
+				SIGNAL (pushButtonClicked (QString)),
+				this,
+				SLOT (handleSettingsButton (QString)));
 
 		connect (SettingsTab_,
 				SIGNAL (remove (QWidget*)),
@@ -252,6 +256,15 @@ namespace LeechCraft
 
 		Core::Instance ().GetCoreInstanceObject ()->
 				GetSettingsDialog ()->SetDataSource ("DefaultNewTab", newTabsModel);
+	}
+
+	void CoreInstanceObject::handleSettingsButton (const QString& name)
+	{
+		auto pm = Core::Instance ().GetPluginManager ();
+		if (name == "EnableAllPlugins")
+			pm->SetAllPlugins (Qt::Checked);
+		else if (name == "DisableAllPlugins")
+			pm->SetAllPlugins (Qt::Unchecked);
 	}
 
 #ifdef STRICT_LICENSING
