@@ -205,8 +205,12 @@ namespace Metida
 					profile.FriendGroups_ << group;
 				}
 			}
+			else if (res.first == "usejournals")
+			{
+				for (auto val : res.second)
+					profile.Communities_ << val.toList ().value (0).toString ();
+			}
 		}
-
 		return profile;
 	}
 

@@ -20,6 +20,7 @@
 
 #include <QUrl>
 #include <QMap>
+#include <QStringList>
 
 namespace LeechCraft
 {
@@ -50,6 +51,7 @@ namespace Metida
 		QMap<QString, QUrl> MenuList_;
 		QList<LJFriendGroup> FriendGroups_;
 		QList<LJMood> Moods_;
+		QStringList Communities_;
 	};
 }
 }
