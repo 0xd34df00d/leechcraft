@@ -20,6 +20,7 @@
 #include <stdexcept>
 #include <list>
 #include <functional>
+#include <iostream>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QtDebug>
