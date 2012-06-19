@@ -288,6 +288,15 @@ namespace LMP
 				this,
 				SLOT (loadFromCollection ()));
 		Ui_.CollectionTree_->addAction (addToPlaylist);
+
+		auto showTrackProps = new QAction (tr ("Show track properties"), Ui_.Playlist_);
+		showTrackProps->setProperty ("ActionIcon", "document-properties");
+		connect (showTrackProps,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showCollectionTrackProps ()));
+		Ui_.CollectionTree_->addAction (showTrackProps);
+
 		connect (Ui_.CollectionTree_,
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,
@@ -722,6 +731,16 @@ namespace LMP
 			return;
 
 		Player_->SetStopAfter (index);
+	}
+
+	void PlayerTab::showCollectionTrackProps ()
+	{
+		const auto& index = Ui_.CollectionTree_->currentIndex ();
+		const auto& info = index.data (LocalCollection::Role::TrackPath).value<QString > ();
+		if (info.isEmpty ())
+			return;
+
+		AudioPropsWidget::MakeDialog ()->SetProps (info);
 	}
 
 	void PlayerTab::showTrackProps ()

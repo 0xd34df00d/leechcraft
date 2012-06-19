@@ -118,6 +118,7 @@ namespace LMP
 		void handlePlaylistSelected (const QModelIndex&);
 		void removeSelectedSongs ();
 		void setStopAfterSelected ();
+		void showCollectionTrackProps ();
 		void showTrackProps ();
 		void loadFromCollection ();
 		void handleSavePlaylist ();
