@@ -20,6 +20,8 @@
 
 #include "basesimilarartists.h"
 
+class QNetworkAccessManager;
+
 namespace LeechCraft
 {
 namespace Lastfmscrobble
@@ -27,8 +29,10 @@ namespace Lastfmscrobble
 	class PendingSimilarArtists : public BaseSimilarArtists
 	{
 		Q_OBJECT
+
+		QNetworkAccessManager *NAM_;
 	public:
-		PendingSimilarArtists (const QString&, int num, QObject* = 0);
+		PendingSimilarArtists (const QString&, int num, QNetworkAccessManager*, QObject* = 0);
 	private slots:
 		void handleReplyFinished ();
 	};

@@ -18,14 +18,18 @@
 
 #include "pendingsimilarartists.h"
 #include <QNetworkReply>
+#include <QNetworkAccessManager>
 #include <lastfm/Artist>
+#include "util.h"
 
 namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	PendingSimilarArtists::PendingSimilarArtists (const QString& name, int num, QObject *parent)
+	PendingSimilarArtists::PendingSimilarArtists (const QString& name,
+			int num, QNetworkAccessManager *nam, QObject *parent)
 	: BaseSimilarArtists (name, num, parent)
+	, NAM_ (nam)
 	{
 		auto reply = lastfm::Artist (name).getSimilar ();
 		connect (reply,
@@ -60,7 +64,11 @@ namespace Lastfmscrobble
 
 		for (auto i = begin; i != end; ++i)
 		{
-			auto infoReply = lastfm::Artist (i.value ()).getInfo ();
+			QMap<QString, QString> params;
+			params ["artist"] = i.value ();
+			AddLanguageParam (params);
+			auto infoReply = Request ("artist.getInfo", NAM_, params);
+
 			infoReply->setProperty ("Similarity", i.key ());
 			connect (infoReply,
 					SIGNAL (finished ()),

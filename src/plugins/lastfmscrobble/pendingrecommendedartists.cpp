@@ -19,8 +19,8 @@
 #include "pendingrecommendedartists.h"
 #include <memory>
 #include <QDomDocument>
-#include <lastfm/AuthenticatedUser>
-#include <lastfm/Artist>
+#include <QNetworkReply>
+#include <QtDebug>
 #include "authenticator.h"
 #include "util.h"
 
@@ -93,7 +93,11 @@ namespace Lastfmscrobble
 
 			++InfosWaiting_;
 
-			auto infoReply = lastfm::Artist (name).getInfo ();
+			QMap<QString, QString> params;
+			params ["artist"] = name;
+			AddLanguageParam (params);
+			auto infoReply = Request ("artist.getInfo", NAM_, params);
+
 			infoReply->setProperty ("SimilarTo", similarTo);
 			connect (infoReply,
 					SIGNAL (finished ()),

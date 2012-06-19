@@ -18,7 +18,8 @@
 
 #include "pendingartistbio.h"
 #include <QNetworkReply>
-#include <util/util.h>
+#include <QDomDocument>
+#include <QtDebug>
 #include "util.h"
 
 namespace LeechCraft
@@ -32,7 +33,7 @@ namespace Lastfmscrobble
 		QMap<QString, QString> params;
 		params ["artist"] = name;
 		params ["autocorrect"] = "1";
-		params ["lang"] = Util::GetLanguage ();
+		AddLanguageParam (params);
 		auto reply = Request ("artist.getInfo", nam, params);
 		connect (reply,
 				SIGNAL (finished ()),

@@ -132,7 +132,7 @@ namespace Lastfmscrobble
 
 	Media::IPendingSimilarArtists* Plugin::GetSimilarArtists (const QString& name, int num)
 	{
-		return new PendingSimilarArtists (name, num, this);
+		return new PendingSimilarArtists (name, num, Proxy_->GetNetworkAccessManager (), this);
 	}
 
 	Media::IPendingSimilarArtists* Plugin::RequestRecommended (int num)
