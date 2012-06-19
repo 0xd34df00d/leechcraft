@@ -16,12 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QUrl>
-#include <QMap>
-#include <QStringList>
-#include <QVariant>
+#include "profiletypes.h"
 
 namespace LeechCraft
 {
@@ -29,55 +24,54 @@ namespace Blogique
 {
 namespace Metida
 {
-	struct LJFriendGroup
+namespace LJParserTypes
+{
+	LJParseProfileEntry::LJParseProfileEntry ()
 	{
-		bool Public_;
-		QString Name_;
-		uint Id_;
-		uint SortOrder_;
-	};
-
-	struct LJMood
-	{
-		qint64 Parent_;
-		qint64 Id_;
-		QString Name_;
-	};
-
-	struct LJProfileData
-	{
-		QUrl AvatarUrl_;
-		qint64 UserId_;
-		qint64 Caps_;
-		QList<LJFriendGroup> FriendGroups_;
-		QList<LJMood> Moods_;
-		QStringList Communities_;
-		QString FullName_;
-	};
-
-	namespace LJParserTypes
-	{
-		class LJParseProfileEntry
-		{
-			QString Name_;
-			QVariantList ValueList_;
-
-		public:
-			LJParseProfileEntry ();
-			LJParseProfileEntry (const QString& name,
-					const QVariantList& value);
-			QString Name () const;
-			QVariantList Value () const;
-
-			bool ValueToBool () const;
-			QString ValueToString () const;
-			qint64 ValueToLongLong () const;
-			int ValueToInt () const;
-			QUrl ValueToUrl () const;
-		};
 	}
 
+	LJParseProfileEntry::LJParseProfileEntry (const QString& name,
+			const QVariantList& value)
+	: Name_ (name)
+	, ValueList_ (value)
+	{
+	}
+
+	QString LJParseProfileEntry::Name () const
+	{
+		return Name_;
+	}
+
+	QVariantList LJParseProfileEntry::Value () const
+	{
+		return ValueList_;
+	}
+
+	bool LJParseProfileEntry::ValueToBool () const
+	{
+		return ValueList_.value (0).toBool ();
+	}
+
+	QString LJParseProfileEntry::ValueToString () const
+	{
+		return ValueList_.value (0).toString ();
+	}
+
+	qint64 LJParseProfileEntry::ValueToLongLong () const
+	{
+		return ValueList_.value (0).toLongLong ();
+	}
+
+	int LJParseProfileEntry::ValueToInt () const
+	{
+		return ValueList_.value (0).toInt ();
+	}
+
+	QUrl LJParseProfileEntry::ValueToUrl () const
+	{
+		return ValueList_.value (0).toUrl ();
+	}
 }
 }
 }
-Q_DECLARE_METATYPE (LeechCraft::Blogique::Metida::LJParserTypes::LJParseProfileEntry)
+}

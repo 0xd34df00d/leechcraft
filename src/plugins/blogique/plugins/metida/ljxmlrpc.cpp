@@ -35,6 +35,74 @@ namespace Metida
 	LJXmlRPC::LJXmlRPC (QObject *parent)
 	: QObject (parent)
 	{
+		Id2ProfileField_ ["defaultpicurl"] = [] (LJProfileData& profile,
+				const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					profile.AvatarUrl_ = entry.ValueToUrl ();
+				};
+		Id2ProfileField_ ["friendgroups"] = [] (LJProfileData& profile,
+				const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					for (const auto& friendGroupEntry : entry.Value ())
+					{
+						LJFriendGroup group;
+						for (const auto& field : friendGroupEntry.toList ())
+						{
+							LJParserTypes::LJParseProfileEntry fieldEntry =
+									field.value<LJParserTypes::LJParseProfileEntry> ();
+							if (fieldEntry.Name () == "public")
+								group.Public_ = fieldEntry.ValueToBool ();
+							else if (fieldEntry.Name () == "name")
+								group.Name_ = fieldEntry.ValueToString ();
+							else if (fieldEntry.Name () == "id")
+								group.Id_ = fieldEntry.ValueToInt ();
+							else if (fieldEntry.Name () == "sortorder")
+								group.SortOrder_ = fieldEntry.ValueToInt ();
+						}
+						profile.FriendGroups_ << group;
+					}
+				};
+		Id2ProfileField_ ["usejournals"] = [] (LJProfileData& profile,
+				const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					for (const auto& val : entry.Value ())
+						profile.Communities_ << val.toList ().value (0).toString ();
+				};
+		Id2ProfileField_ ["fullname"] = [] (LJProfileData& profile,
+				const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					profile.FullName_ = entry.ValueToString ();
+				};
+		Id2ProfileField_ ["moods"] = [] (LJProfileData& profile,
+				const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					for (const auto& moodEntry : entry.Value ())
+					{
+						LJMood mood;
+						for (const auto& field : moodEntry.toList ())
+						{
+							LJParserTypes::LJParseProfileEntry fieldEntry =
+									field.value<LJParserTypes::LJParseProfileEntry> ();
+							if (fieldEntry.Name () == "parent")
+								mood.Parent_ = fieldEntry.ValueToLongLong ();
+							else if (fieldEntry.Name () == "name")
+								mood.Name_ = fieldEntry.ValueToString ();
+							else if (fieldEntry.Name () == "id")
+								mood.Id_ = fieldEntry.ValueToLongLong ();
+						}
+						profile.Moods_ << mood;
+					}
+				};
+		Id2ProfileField_ ["userid"] = [] (LJProfileData& profile,
+				const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					profile.UserId_ = entry.ValueToLongLong ();
+				};
+		Id2ProfileField_ ["caps"] = [] (LJProfileData& profile,
+				const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					profile.Caps_ = entry.ValueToLongLong ();
+				};
 	}
 
 	void LJXmlRPC::Validate (const QString& login, const QString& password)
@@ -149,7 +217,7 @@ namespace Metida
 		result.second.appendChild (GetMemberElement ("getmoods", "int",
 				"0", document));
 		result.second.appendChild (GetMemberElement ("getmenus", "int",
-				"1", document));
+				"0", document));
 		result.second.appendChild (GetMemberElement ("getpickws", "int",
 				"1", document));
 		result.second.appendChild (GetMemberElement ("getpickwurls", "int",
@@ -183,38 +251,13 @@ namespace Metida
 				continue;
 
 			auto res = ParseMember (member);
-			if (res.first == "defaultpicurl")
-				profile.AvatarUrl_ = res.second [0].toUrl ();
-			else if (res.first == "friendgroups")
-			{
-				for (auto friendGroupEntry : res.second)
-				{
-					LJFriendGroup group;
-					for (auto field : friendGroupEntry.toList ())
-					{
-						LjPairEntry entry = field.value<LjPairEntry> ();
-						if (entry.first == "public")
-							group.Public_ = entry.second.value (0).toBool ();
-						else if (entry.first == "name")
-							group.Name_ = entry.second.value (0).toString ();
-						else if (entry.first == "id")
-							group.Id_ = entry.second.value (0).toInt ();
-						else if (entry.first == "sortorder")
-							group.SortOrder_ = entry.second.value (0).toInt ();
-					}
-					profile.FriendGroups_ << group;
-				}
-			}
-			else if (res.first == "usejournals")
-			{
-				for (auto val : res.second)
-					profile.Communities_ << val.toList ().value (0).toString ();
-			}
+			if (Id2ProfileField_.contains (res.Name ()))
+				Id2ProfileField_ [res.Name ()] (profile, res);
 		}
 		return profile;
 	}
 
-	LjPairEntry LJXmlRPC::ParseMember (QDomNode node) const
+	LJParserTypes::LJParseProfileEntry LJXmlRPC::ParseMember (QDomNode node) const
 	{
 		auto memberFields = node.childNodes ();
 		auto memberNameField = memberFields.at (0);
@@ -228,11 +271,7 @@ namespace Metida
 		if (memberValueField.isElement ())
 			memberValue = ParseValue (memberValueField);
 
-// 		Q_FOREACH (auto var, memberValue)
-// 			qDebug () << Q_FUNC_INFO
-// 					<< var.value<pair> ();
-
-		return LjPairEntry (memberName, memberValue);
+		return LJParserTypes::LJParseProfileEntry (memberName, memberValue);
 	}
 
 	QVariantList LJXmlRPC::ParseValue (QDomNode node) const
@@ -264,7 +303,7 @@ namespace Metida
 		{
 			auto structMembers = valueNode.childNodes ();
 			for (int i = 0, count = structMembers.count (); i < count; ++i)
-				result << QVariant::fromValue<LjPairEntry>  (ParseMember (structMembers.at (i)));
+				result << QVariant::fromValue<LJParserTypes::LJParseProfileEntry> (ParseMember (structMembers.at (i)));
 		}
 
 		return result;

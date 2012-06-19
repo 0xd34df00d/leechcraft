@@ -23,6 +23,7 @@ SET (METIDA_SRCS
 	ljprofile.cpp
 	ljxmlrpc.cpp
 	metida.cpp
+	profiletypes.cpp
 	xmlsettingsmanager.cpp
 	)
 

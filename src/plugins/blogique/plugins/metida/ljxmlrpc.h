@@ -27,9 +27,6 @@
 #include "core.h"
 #include "profiletypes.h"
 
-typedef QPair<QString, QVariantList> LjPairEntry;
-Q_DECLARE_METATYPE (LjPairEntry)
-
 namespace LeechCraft
 {
 namespace Blogique
@@ -41,6 +38,8 @@ namespace Metida
 		Q_OBJECT
 
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
+		QHash<QString, std::function<void (LJProfileData&,
+				const LJParserTypes::LJParseProfileEntry&)>> Id2ProfileField_;
 	public:
 		LJXmlRPC (QObject *parent = 0);
 
@@ -50,7 +49,7 @@ namespace Metida
 		void ValidateAccountData (const QString& login,
 				const QString& pass, const QString& challenge);
 		LJProfileData ParseProfileInfo (QDomDocument document) const;
-		LjPairEntry ParseMember (QDomNode node) const;
+		LJParserTypes::LJParseProfileEntry ParseMember (QDomNode node) const;
 		QVariantList ParseValue (QDomNode node) const;
 
 	private slots:
