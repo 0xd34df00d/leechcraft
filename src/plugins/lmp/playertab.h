@@ -79,6 +79,8 @@ namespace LMP
 		QAction *PlayPause_;
 		QMenu *TrayMenu_;
 
+		QAction *CollectionShowTrackProps_;
+
 		QUndoStack *UndoStack_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
@@ -121,6 +123,7 @@ namespace LMP
 		void showCollectionTrackProps ();
 		void showTrackProps ();
 		void loadFromCollection ();
+		void handleCollectionItemSelected (const QModelIndex&);
 		void handleSavePlaylist ();
 		void loadFromDisk ();
 

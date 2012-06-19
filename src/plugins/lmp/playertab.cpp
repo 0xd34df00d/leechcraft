@@ -289,18 +289,23 @@ namespace LMP
 				SLOT (loadFromCollection ()));
 		Ui_.CollectionTree_->addAction (addToPlaylist);
 
-		auto showTrackProps = new QAction (tr ("Show track properties"), Ui_.Playlist_);
-		showTrackProps->setProperty ("ActionIcon", "document-properties");
-		connect (showTrackProps,
+		CollectionShowTrackProps_ = new QAction (tr ("Show track properties"), Ui_.Playlist_);
+		CollectionShowTrackProps_->setProperty ("ActionIcon", "document-properties");
+		connect (CollectionShowTrackProps_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showCollectionTrackProps ()));
-		Ui_.CollectionTree_->addAction (showTrackProps);
+		Ui_.CollectionTree_->addAction (CollectionShowTrackProps_);
 
 		connect (Ui_.CollectionTree_,
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,
 				SLOT (loadFromCollection ()));
+
+		connect (Ui_.CollectionTree_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleCollectionItemSelected (QModelIndex)));
 
 		connect (Ui_.CollectionFilter_,
 				SIGNAL (textChanged (QString)),
@@ -764,6 +769,12 @@ namespace LMP
 				continue;
 			collection->Enqueue (index, Player_);
 		}
+	}
+
+	void PlayerTab::handleCollectionItemSelected (const QModelIndex& index)
+	{
+		const int nodeType = index.data (LocalCollection::Role::Node).value<int> ();
+		CollectionShowTrackProps_->setEnabled (nodeType == LocalCollection::NodeType::Track);
 	}
 
 	void PlayerTab::handleSavePlaylist ()
