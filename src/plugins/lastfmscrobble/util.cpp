@@ -22,6 +22,8 @@
 #include <QUrl>
 #include <QDomElement>
 #include <lastfm/ws.h>
+#include <util/util.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -44,6 +46,13 @@ namespace Lastfmscrobble
 		std::for_each (params.begin (), params.end (),
 				[&url] (decltype (params.front ()) pair) { url.addQueryItem (pair.first, pair.second); });
 		return url.encodedQuery ();
+	}
+
+	void AddLanguageParam (QMap<QString, QString>& params)
+	{
+		const auto& ourLang = XmlSettingsManager::Instance ()
+				.property ("Language").toString ().trimmed ().left (2);
+		params ["lang"] = ourLang.isEmpty () ? Util::GetLanguage () : ourLang;
 	}
 
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, const QMap<QString, QString>& map)

@@ -35,6 +35,8 @@ namespace Lastfmscrobble
 {
 	QByteArray MakeCall (QList<QPair<QString, QString>>);
 
+	void AddLanguageParam (QMap<QString, QString>& params);
+
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam,
 			const QMap<QString, QString>& params);
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam,
