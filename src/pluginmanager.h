@@ -84,7 +84,7 @@ namespace LeechCraft
 		bool setData (const QModelIndex&, const QVariant&, int);
 
 		Size_t GetSize () const;
-		void Init ();
+		void Init (bool safeMode);
 		void Release ();
 		QString Name (const Size_t& pos) const;
 		QString Info (const Size_t& pos) const;

@@ -275,7 +275,7 @@ namespace LeechCraft
 				DM_,
 				SLOT (handleTabChanged (QWidget*)));
 
-		PluginManager_->Init ();
+		PluginManager_->Init (map.count ("safe-mode"));
 
 		NewTabMenuManager_->SetToolbarActions (GetActions2Embed ());
 

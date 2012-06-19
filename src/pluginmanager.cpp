@@ -370,10 +370,13 @@ namespace LeechCraft
 		}
 	}
 
-	void PluginManager::Init ()
+	void PluginManager::Init (bool safeMode)
 	{
 		CheckPlugins ();
 		FillInstances ();
+
+		if (safeMode)
+			Plugins_.clear ();
 
 		Plugins_.prepend (Core::Instance ().GetCoreInstanceObject ());
 
