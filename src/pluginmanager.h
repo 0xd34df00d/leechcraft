@@ -98,6 +98,8 @@ namespace LeechCraft
 		void InjectPlugin (QObject *object);
 		void ReleasePlugin (QObject *object);
 
+		void SetAllPlugins (Qt::CheckState);
+
 		QObject* GetObject ();
 
 		QObject* GetProvider (const QString&) const;

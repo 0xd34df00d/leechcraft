@@ -570,6 +570,25 @@ namespace LeechCraft
 		}
 	}
 
+	void PluginManager::SetAllPlugins (Qt::CheckState state)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "-pg");
+		settings.beginGroup ("Plugins");
+
+		for (int i = 0; i < AvailablePlugins_.size (); ++i)
+		{
+			QPluginLoader_ptr dl = AvailablePlugins_.at (i);
+			settings.beginGroup (dl->fileName ());
+			settings.setValue ("AllowLoad", state == Qt::Checked);
+			settings.endGroup ();
+			const QModelIndex& dIdx = createIndex (i, 0);
+			emit dataChanged (dIdx, dIdx);
+		}
+
+		settings.endGroup ();
+	}
+
 	QObject* PluginManager::GetObject ()
 	{
 		return this;
