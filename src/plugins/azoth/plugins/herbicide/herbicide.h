@@ -47,6 +47,9 @@ namespace Herbicide
 		QSet<QObject*> AskedEntries_;
 		QSet<QObject*> AllowedEntries_;
 		QSet<QObject*> OurMessages_;
+
+		QSet<QRegExp> Whitelist_;
+		QSet<QRegExp> Blacklist_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -65,6 +68,9 @@ namespace Herbicide
 	public slots:
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
+	private slots:
+		void handleWhitelistChanged ();
+		void handleBlacklistChanged ();
 	};
 }
 }

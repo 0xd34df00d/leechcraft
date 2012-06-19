@@ -285,6 +285,8 @@ namespace Azoth
 		virtual Util::ResourceLoader* GetResourceLoader (PublicResourceLoader loader) const = 0;
 
 		virtual QIcon GetIconForState (State state) const = 0;
+
+		virtual void FormatLinks (QString& body) = 0;
 	};
 }
 }

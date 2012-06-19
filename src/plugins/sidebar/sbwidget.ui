@@ -81,6 +81,16 @@
     </spacer>
    </item>
    <item>
+    <layout class="QVBoxLayout" name="DockLay_"/>
+   </item>
+   <item>
+    <widget class="Line" name="line_4">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QGridLayout" name="QLLay_">
      <property name="spacing">
       <number>0</number>

@@ -142,9 +142,7 @@ namespace Azoth
 	}
 
 	Core::Core ()
-	: LinkRegexp_ ("((?:(?:\\w+://)|(?:xmpp:|mailto:|www\\.|magnet:|irc:))\\S+)",
-			Qt::CaseInsensitive, QRegExp::RegExp2)
-	, ImageRegexp_ ("(\\b(?:data:image/)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
+	: ImageRegexp_ ("(\\b(?:data:image/)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
 			Qt::CaseInsensitive, QRegExp::RegExp2)
 #ifdef ENABLE_CRYPT
 	, QCAInit_ (new QCA::Initializer)
@@ -506,6 +504,19 @@ namespace Azoth
 		return result;
 	}
 
+	IAccount* Core::GetAccount (const QByteArray& id) const
+	{
+		Q_FOREACH (IProtocol *proto, GetProtocols ())
+			Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
+			{
+				auto acc = qobject_cast<IAccount*> (accObj);
+				if (acc && acc->GetAccountID () == id)
+					return acc;
+			}
+
+		return 0;
+	}
+
 #ifdef ENABLE_CRYPT
 	QList<QCA::PGPKey> Core::GetPublicKeys () const
 	{
@@ -859,24 +870,7 @@ namespace Azoth
 
 			if (!isRich)
 			{
-				int pos = 0;
-				while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
-				{
-					QString link = LinkRegexp_.cap (1);
-					if (pos > 0 &&
-							(body.at (pos - 1) == '"' || body.at (pos - 1) == '='))
-					{
-						pos += link.size ();
-						continue;
-					}
-
-					QString str = QString ("<a href=\"%1\">%1</a>")
-							.arg (link);
-					body.replace (pos, link.length (), str);
-
-					pos += str.length ();
-				}
-
+				PluginProxyObject_->FormatLinks (body);
 				body.replace ('\n', "<br />");
 				body.replace ("  ", "&nbsp; ");
 			}

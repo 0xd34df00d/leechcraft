@@ -176,7 +176,8 @@ namespace LMP
 		loadWatcher->setFuture (future);
 
 		auto& xsd = XmlSettingsManager::Instance ();
-		const QStringList oldDefault (xsd.property ("CollectionDir").toString ());
+		QStringList oldDefault (xsd.property ("CollectionDir").toString ());
+		oldDefault.removeAll (QString ());
 		AddRootPaths (xsd.Property ("RootCollectionPaths", oldDefault).toStringList ());
 		connect (this,
 				SIGNAL (rootPathsChanged (QStringList)),
@@ -228,7 +229,7 @@ namespace LMP
 				SLOT (handleIterateFinished ()));
 		watcher->setProperty ("Path", path);
 		watcher->setProperty ("IsRoot", root);
-		watcher->setFuture (QtConcurrent::run (RecIterate, path));
+		watcher->setFuture (QtConcurrent::run (RecIterate, path, false));
 	}
 
 	void LocalCollection::Unscan (const QString& path)
@@ -261,7 +262,7 @@ namespace LMP
 
 	void LocalCollection::Rescan ()
 	{
-		const auto& paths = RootPaths_;
+		auto paths = RootPaths_;
 		Clear ();
 
 		Q_FOREACH (const auto& path, paths)
@@ -318,6 +319,11 @@ namespace LMP
 			AlbumID2Album_ [id]->CoverPath_ = path;
 
 		Storage_->SetAlbumArt (id, path);
+	}
+
+	Collection::Album_ptr LocalCollection::GetAlbum (int albumId) const
+	{
+		return AlbumID2Album_ [albumId];
 	}
 
 	int LocalCollection::FindTrack (const QString& path) const
@@ -585,7 +591,7 @@ namespace LMP
 
 	void LocalCollection::AddRootPaths (QStringList paths)
 	{
-		for (const auto& path : RootPaths_)
+		Q_FOREACH (const auto& path, RootPaths_)
 			paths.removeAll (path);
 		if (paths.isEmpty ())
 			return;
@@ -629,7 +635,7 @@ namespace LMP
 
 	void LocalCollection::rescanOnLoad ()
 	{
-		for (const auto& rootPath : RootPaths_)
+		Q_FOREACH (const auto& rootPath, RootPaths_)
 			Scan (rootPath, true);
 	}
 
@@ -666,7 +672,6 @@ namespace LMP
 		if (root)
 			AddRootPaths (QStringList (path));
 
-		PresentPaths_ += paths;
 		emit scanStarted (paths.size ());
 		auto worker = [resolver] (const QString& path)
 		{
@@ -694,6 +699,8 @@ namespace LMP
 		QList<MediaInfo> infos;
 		std::copy_if (future.begin (), future.end (), std::back_inserter (infos),
 				[] (const MediaInfo& info) { return !info.LocalPath_.isEmpty (); });
+		Q_FOREACH (const auto& info, infos)
+			PresentPaths_ += info.LocalPath_;
 
 		emit scanProgressChanged (infos.size ());
 

@@ -18,6 +18,7 @@
 
 #include "textedit.h"
 #include <QKeyEvent>
+#include <QtDebug>
 #include "chattab.h"
 #include "xmlsettingsmanager.h"
 
@@ -40,9 +41,13 @@ namespace Azoth
 		else if (modOption == "ShiftEnter")
 			sendMod = Qt::ShiftModifier;
 
-		bool sendMsgButton = event->key () == Qt::Key_Return ||
-				event->key () == Qt::Key_Enter;
-		if (sendMsgButton && event->modifiers () == sendMod)
+		const bool kpEnter = XmlSettingsManager::Instance ()
+				.property ("KPEnterAlias").toBool ();
+		const bool sendMsgButton = event->key () == Qt::Key_Return ||
+				(kpEnter && event->key () == Qt::Key_Enter);
+		const bool modifiersOk = event->modifiers () == sendMod ||
+				(kpEnter && event->modifiers () == (sendMod | Qt::KeypadModifier));
+		if (sendMsgButton && modifiersOk)
 			emit keyReturnPressed ();
 		else if (event->key () == Qt::Key_Tab)
 		{

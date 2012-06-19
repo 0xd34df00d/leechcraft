@@ -85,6 +85,7 @@ namespace ChatHistory
 				const QString& text, int shift);
 		RawSearchResult Search (const QString& accountId, const QString& text, int shift);
 		RawSearchResult Search (const QString& text, int shift);
+		void SearchDate (qint32, qint32, const QDateTime&);
 	public slots:
 		void addMessage (const QVariantMap&);
 		void getOurAccounts ();
@@ -93,6 +94,7 @@ namespace ChatHistory
 				const QString& entryId, int backpages, int amount);
 		void search (const QString& accountId, const QString& entryId,
 				const QString& text, int shift);
+		void searchDate (const QString& accountId, const QString& entryId, const QDateTime& dt);
 		void clearHistory (const QString& accountId, const QString& entryId);
 	signals:
 		void gotOurAccounts (const QStringList&);

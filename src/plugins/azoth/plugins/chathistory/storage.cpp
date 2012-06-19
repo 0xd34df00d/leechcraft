@@ -446,6 +446,30 @@ namespace ChatHistory
 				LogsSearcherWOContactAccount_.value (0).toDateTime ());
 	}
 
+	void Storage::SearchDate (qint32 accountId, qint32 entryId, const QDateTime& dt)
+	{
+		Date2Pos_.bindValue (":date", dt);
+		Date2Pos_.bindValue (":account_id", accountId);
+		Date2Pos_.bindValue (":entry_id", entryId);
+		if (!Date2Pos_.exec ())
+		{
+			Util::DBLock::DumpError (Date2Pos_);
+			return;
+		}
+
+		if (!Date2Pos_.next ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to navigate to next record";
+			return;
+		}
+
+		const int index = Date2Pos_.value (0).toInt ();
+		Date2Pos_.finish ();
+
+		emit gotSearchPosition (Accounts_.key (accountId), Users_.key (entryId), index);
+	}
+
 	void Storage::addMessage (const QVariantMap& data)
 	{
 		Util::DBLock lock (*DB_);
@@ -647,26 +671,33 @@ namespace ChatHistory
 		if (res.IsEmpty ())
 			return;
 
-		Date2Pos_.bindValue (":date", res.Date_);
-		Date2Pos_.bindValue (":account_id", res.AccountID_);
-		Date2Pos_.bindValue (":entry_id", res.EntryID_);
-		if (!Date2Pos_.exec ())
-		{
-			Util::DBLock::DumpError (Date2Pos_);
-			return;
-		}
+		SearchDate (res.AccountID_, res.EntryID_, res.Date_);
+	}
 
-		if (!Date2Pos_.next ())
+	void Storage::searchDate (const QString& account, const QString& entry, const QDateTime& dt)
+	{
+		if (!Accounts_.contains (account))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to navigate to next record";
+					<< "Accounts_ doesn't contain"
+					<< account
+					<< "; raw contents"
+					<< Accounts_;
+			return;
+		}
+		if (!Users_.contains (entry))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "Users_ doesn't contain"
+					<< entry
+					<< "; raw contents"
+					<< Users_;
 			return;
 		}
 
-		const int index = Date2Pos_.value (0).toInt ();
-		Date2Pos_.finish ();
-
-		emit gotSearchPosition (Accounts_.key (res.AccountID_), Users_.key (res.EntryID_), index);
+		const qint32 entryId = Users_ [entry];
+		const qint32 accId = Accounts_ [account];
+		SearchDate (accId, entryId, dt);
 	}
 
 	void Storage::clearHistory (const QString& accountId, const QString& entryId)

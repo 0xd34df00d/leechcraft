@@ -88,6 +88,7 @@ namespace LMP
 		Phonon::MediaObject* GetSourceObject () const;
 		Phonon::AudioOutput* GetAudioOutput () const;
 
+		PlayMode GetPlayMode () const;
 		void SetPlayMode (PlayMode);
 
 		void Enqueue (const QStringList&, bool = true);
@@ -101,6 +102,9 @@ namespace LMP
 		void SetStopAfter (const QModelIndex&);
 
 		void SetRadioStation (Media::IRadioStation_ptr);
+
+		MediaInfo GetCurrentMediaInfo () const;
+		QString GetCurrentAAPath () const;
 	private:
 		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
 		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
@@ -116,6 +120,7 @@ namespace LMP
 		void previousTrack ();
 		void nextTrack ();
 		void togglePause ();
+		void setPause ();
 		void stop ();
 		void clear ();
 	private slots:
@@ -130,6 +135,8 @@ namespace LMP
 	signals:
 		void songChanged (const MediaInfo&);
 		void insertedAlbum (const QModelIndex&);
+
+		void playModeChanged (Player::PlayMode);
 	};
 }
 }

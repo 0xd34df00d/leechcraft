@@ -26,6 +26,7 @@
 #include <QMenu>
 #include <QInputDialog>
 #include <QUndoStack>
+#include <QDialogButtonBox>
 #include <phonon/seekslider.h>
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -44,6 +45,10 @@
 #include "playlistmanager.h"
 #include "staticplaylistmanager.h"
 #include "playlistundocommand.h"
+
+#ifdef ENABLE_MPRIS
+#include "mpris/instance.h"
+#endif
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);
 
@@ -127,6 +132,10 @@ namespace LMP
 		XmlSettingsManager::Instance ().RegisterObject ("ShowTrayIcon",
 				this, "handleShowTrayIcon");
 		handleShowTrayIcon ();
+
+#ifdef ENABLE_MPRIS
+		new MPRIS::Instance (this, Player_);
+#endif
 	}
 
 	TabClassInfo PlayerTab::GetTabClassInfo () const
@@ -350,22 +359,20 @@ namespace LMP
 		QMenu *playMode = new QMenu (tr ("Play mode"));
 		playButton->setMenu (playMode);
 
-		const int resumeMode = XmlSettingsManager::Instance ()
-				.Property ("PlayMode", static_cast<int> (Player::PlayMode::Sequential)).toInt ();
 		const std::vector<Player::PlayMode> modes = { Player::PlayMode::Sequential,
 				Player::PlayMode::Shuffle, Player::PlayMode::RepeatTrack,
 				Player::PlayMode::RepeatAlbum, Player::PlayMode::RepeatWhole };
 		const std::vector<QString> names = { tr ("Sequential"),
 				tr ("Shuffle"), tr ("Repeat track"),
 				tr ("Repeat album"), tr ("Repeat whole") };
-		auto playGroup = new QActionGroup (this);
+		PlayModesGroup_ = new QActionGroup (this);
 		for (size_t i = 0; i < modes.size (); ++i)
 		{
 			QAction *action = new QAction (names [i], this);
 			action->setProperty ("PlayMode", static_cast<int> (modes.at (i)));
 			action->setCheckable (true);
-			action->setChecked (static_cast<int> (modes.at (i)) == resumeMode);
-			action->setActionGroup (playGroup);
+			action->setChecked (!i);
+			action->setActionGroup (PlayModesGroup_);
 			playMode->addAction (action);
 
 			connect (action,
@@ -373,6 +380,12 @@ namespace LMP
 					this,
 					SLOT (handleChangePlayMode ()));
 		}
+		connect (Player_,
+				SIGNAL (playModeChanged (Player::PlayMode)),
+				this,
+				SLOT (handlePlayModeChanged (Player::PlayMode)));
+		const int resumeMode = XmlSettingsManager::Instance ()
+				.Property ("PlayMode", static_cast<int> (Player::PlayMode::Sequential)).toInt ();
 		Player_->SetPlayMode (static_cast<Player::PlayMode> (resumeMode));
 
 		PlaylistToolbar_->addWidget (playButton);
@@ -395,8 +408,6 @@ namespace LMP
 				SLOT (removeSelectedSongs ()));
 		Ui_.Playlist_->addAction (removeSelected);
 
-		Ui_.Playlist_->addAction (Util::CreateSeparator (this));
-
 		auto stopAfterSelected = new QAction (tr ("Stop after this track"), Ui_.Playlist_);
 		stopAfterSelected->setProperty ("ActionIcon", "media-playback-stop");
 		connect (stopAfterSelected,
@@ -404,6 +415,16 @@ namespace LMP
 				this,
 				SLOT (setStopAfterSelected ()));
 		Ui_.Playlist_->addAction (stopAfterSelected);
+
+		Ui_.Playlist_->addAction (Util::CreateSeparator (this));
+
+		auto showTrackProps = new QAction (tr ("Show track properties"), Ui_.Playlist_);
+		showTrackProps->setProperty ("ActionIcon", "document-properties");
+		connect (showTrackProps,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showTrackProps ()));
+		Ui_.Playlist_->addAction (showTrackProps);
 	}
 
 	void PlayerTab::SetNowPlaying (const MediaInfo& info, const QPixmap& px)
@@ -651,6 +672,16 @@ namespace LMP
 		XmlSettingsManager::Instance ().setProperty ("PlayMode", mode);
 	}
 
+	void PlayerTab::handlePlayModeChanged (Player::PlayMode mode)
+	{
+		Q_FOREACH (QAction *action, PlayModesGroup_->actions ())
+			if (action->property ("PlayMode").toInt () == static_cast<int> (mode))
+			{
+				action->setChecked (true);
+				return;
+			}
+	}
+
 	void PlayerTab::handlePlaylistSelected (const QModelIndex& index)
 	{
 		auto mgr = Core::Instance ().GetPlaylistManager ();
@@ -677,7 +708,7 @@ namespace LMP
 				tr ("Remove %1").arg (indexes.at (0).data ().toString ()) :
 				tr ("Remove %n song(s)", 0, indexes.size ());
 
-		for (const auto& idx : indexes)
+		Q_FOREACH (const auto& idx, indexes)
 			removedSources << Player_->GetIndexSources (idx);
 
 		auto cmd = new PlaylistUndoCommand (title, removedSources, Player_);
@@ -691,6 +722,16 @@ namespace LMP
 			return;
 
 		Player_->SetStopAfter (index);
+	}
+
+	void PlayerTab::showTrackProps ()
+	{
+		const auto& index = Ui_.Playlist_->currentIndex ();
+		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
+		if (info.LocalPath_.isEmpty ())
+			return;
+
+		AudioPropsWidget::MakeDialog ()->SetProps (info);
 	}
 
 	void PlayerTab::loadFromCollection ()

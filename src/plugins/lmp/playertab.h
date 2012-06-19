@@ -27,11 +27,13 @@
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include "lmpsystemtrayicon.h"
+#include "player.h"
 #include "ui_playertab.h"
 
 class QUndoStack;
 class QStandardItemModel;
 class QSortFilterProxyModel;
+class QActionGroup;
 
 namespace Media
 {
@@ -64,6 +66,8 @@ namespace LMP
 		Player *Player_;
 		QToolBar *PlaylistToolbar_;
 		QToolBar *TabToolbar_;
+
+		QActionGroup *PlayModesGroup_;
 
 		QLabel *PlayedTime_;
 		QLabel *RemainingTime_;
@@ -110,9 +114,11 @@ namespace LMP
 
 		void handleScanProgress (int);
 		void handleChangePlayMode ();
+		void handlePlayModeChanged (Player::PlayMode);
 		void handlePlaylistSelected (const QModelIndex&);
 		void removeSelectedSongs ();
 		void setStopAfterSelected ();
+		void showTrackProps ();
 		void loadFromCollection ();
 		void handleSavePlaylist ();
 		void loadFromDisk ();
@@ -125,6 +131,9 @@ namespace LMP
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);
+		void raiseTab (QWidget*);
+
+		void fullRaiseRequested ();
 
 		void gotEntity (const LeechCraft::Entity&);
 

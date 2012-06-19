@@ -20,6 +20,7 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
+#include <util/util.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -290,9 +291,11 @@ namespace ChatHistory
 				html += "<font color=\"" + color + "\">" + var + "</font>";
 			}
 
-			html += postNick + ' ' + map ["Message"].toString ()
-					.replace ('<', "&lt;")
-					.replace ('\n', "<br/>");
+			auto msgText = map ["Message"].toString ();
+			msgText.replace ('<', "&lt;");
+			Core::Instance ()->GetPluginProxy ()->FormatLinks (msgText);
+			msgText.replace ('\n', "<br/>");
+			html += postNick + ' ' + msgText;
 
 			const bool isSearchRes = SearchResultPosition_ == Amount - Amount_;
 			if (isChat && !isSearchRes)
@@ -437,6 +440,16 @@ namespace ChatHistory
 		}
 	}
 
+	void ChatHistoryWidget::on_Calendar__activated (const QDate& date)
+	{
+		if (CurrentEntry_.isEmpty ())
+			return;
+
+		PreviousSearchText_.clear ();
+		Ui_.HistorySearch_->clear ();
+		Core::Instance ()->Search (CurrentAccount_, CurrentEntry_, QDateTime (date));
+	}
+
 	void ChatHistoryWidget::previousHistory ()
 	{
 		if (Amount_ < Amount)
@@ -472,6 +485,13 @@ namespace ChatHistory
 
 		Backpages_ = 0;
 		RequestLogs ();
+	}
+
+	void ChatHistoryWidget::on_HistView__anchorClicked (const QUrl& url)
+	{
+		emit gotEntity (Util::MakeEntity (url,
+				QString (),
+				static_cast<TaskParameters> (FromUserInitiated | OnlyHandle)));
 	}
 
 	void ChatHistoryWidget::RequestLogs ()

@@ -299,7 +299,11 @@ namespace Liznoo
 				property ("Liznoo/BatteryID").toString ();
 		if (!Battery2History_.contains (id) ||
 				Battery2Dialog_.contains (id))
+		{
+			auto dia = static_cast<BatteryHistoryDialog*> (Battery2Dialog_.value (id));
+			dia->close ();
 			return;
+		}
 
 		auto dialog = new BatteryHistoryDialog (HistSize);
 		dialog->UpdateHistory (Battery2History_ [id]);
@@ -310,6 +314,8 @@ namespace Liznoo
 				this,
 				SLOT (handleBatteryDialogDestroyed ()));
 		dialog->show ();
+		dialog->activateWindow ();
+		dialog->raise ();
 	}
 
 	void Plugin::handleBatteryDialogDestroyed ()

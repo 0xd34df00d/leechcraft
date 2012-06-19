@@ -290,13 +290,22 @@ namespace Azoth
 	{
 		QByteArray result;
 		auto entry = GetEntry<ICLEntry> ();
-		if (entry)
-		{
-			QDataStream stream (&result, QIODevice::WriteOnly);
-			stream << QByteArray ("chattab")
+		if (!entry)
+			return result;
+
+		QDataStream stream (&result, QIODevice::WriteOnly);
+		if (entry->GetEntryType () == ICLEntry::ETMUC &&
+				GetEntry<IMUCEntry> ())
+			stream << QByteArray ("muctab2")
 					<< entry->GetEntryID ()
-					<< GetSelectedVariant ();
-		}
+					<< GetEntry<IMUCEntry> ()->GetIdentifyingData ()
+					<< qobject_cast<IAccount*> (entry->GetParentAccount ())->GetAccountID ();
+		else
+			stream << QByteArray ("chattab2")
+					<< entry->GetEntryID ()
+					<< GetSelectedVariant ()
+					<< Ui_.MsgEdit_->toPlainText ();
+
 		return result;
 	}
 
@@ -423,6 +432,8 @@ namespace Azoth
 			TypeTimer_->stop ();
 			TypeTimer_->start ();
 		}
+
+		emit tabRecoverDataChanged ();
 	}
 
 	void ChatTab::on_SubjectButton__toggled (bool show)

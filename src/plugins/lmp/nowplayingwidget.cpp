@@ -87,6 +87,8 @@ namespace LMP
 		SetStatistics (info.LocalPath_);
 
 		Ui_.BioWidget_->SetCurrentArtist (info.Artist_);
+
+		Ui_.AudioProps_->SetProps (info);
 	}
 
 	namespace

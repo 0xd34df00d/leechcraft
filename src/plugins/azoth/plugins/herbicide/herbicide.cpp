@@ -29,6 +29,11 @@
 #include "xmlsettingsmanager.h"
 #include "confwidget.h"
 
+uint qHash (const QRegExp& rx)
+{
+	return qHash (rx.pattern ());
+}
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -45,6 +50,9 @@ namespace Herbicide
 
 		ConfWidget_ = new ConfWidget ();
 		SettingsDialog_->SetCustomWidget ("ConfWidget", ConfWidget_);
+
+		handleWhitelistChanged ();
+		handleBlacklistChanged ();
 	}
 
 	void Plugin::SecondInit ()
@@ -111,6 +119,21 @@ namespace Herbicide
 
 		if (AllowedEntries_.contains (entryObj))
 			return true;
+
+		const auto& id = entry->GetHumanReadableID ();
+
+		Q_FOREACH (const auto& rx, Whitelist_)
+			if (rx.exactMatch (id))
+				return true;
+
+		if (XmlSettingsManager::Instance ().property ("AskOnlyBL").toBool ())
+		{
+			Q_FOREACH (const auto& rx, Blacklist_)
+				if (rx.exactMatch (id))
+					return false;
+
+			return true;
+		}
 
 		return false;
 	}
@@ -179,6 +202,35 @@ namespace Herbicide
 
 			proxy->CancelDefault ();
 		}
+	}
+
+	namespace
+	{
+		QSet<QRegExp> GetRegexps (const QByteArray& prop)
+		{
+			QSet<QRegExp> result;
+
+			const auto& strings = XmlSettingsManager::Instance ().property (prop).toStringList ();
+			Q_FOREACH (auto string, strings)
+			{
+				string = string.trimmed ();
+				if (string.isEmpty ())
+					continue;
+				result << QRegExp (string);
+			}
+
+			return result;
+		}
+	}
+
+	void Plugin::handleWhitelistChanged ()
+	{
+		Whitelist_ = GetRegexps ("WhitelistRegexps");
+	}
+
+	void Plugin::handleBlacklistChanged ()
+	{
+		Blacklist_ = GetRegexps ("BlacklistRegexps");
 	}
 }
 }

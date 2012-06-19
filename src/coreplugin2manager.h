@@ -24,6 +24,7 @@
 #include "interfaces/iinfo.h"
 
 class QMenu;
+class QDockWidget;
 
 namespace LeechCraft
 {
@@ -33,13 +34,16 @@ namespace LeechCraft
 	public:
 		CorePlugin2Manager (QObject* = 0);
 	signals:
+		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr proxy,
+				QDockWidget *dock,
+				bool toggleActionVisible);
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr proxy);
 		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
-					QNetworkAccessManager *manager,
-					QNetworkAccessManager::Operation *op,
-					QIODevice **dev);
+				QNetworkAccessManager *manager,
+				QNetworkAccessManager::Operation *op,
+				QIODevice **dev);
 		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
-					QMenu *menu, int index);
+				QMenu *menu, int index);
 		void hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy,
 				int index);
 		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy,

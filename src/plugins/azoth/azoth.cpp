@@ -35,6 +35,7 @@
 #include <util/resourceloader.h>
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include "interfaces/azoth/imucjoinwidget.h"
 #include "core.h"
 #include "mainwidget.h"
 #include "chattabsmanager.h"
@@ -66,13 +67,14 @@ namespace Azoth
 		MW_ = new MainWidget ();
 
 		InitSettings ();
-		InitMW ();
 		InitSignals ();
 		InitTabClasses ();
 	}
 
 	void Plugin::SecondInit ()
 	{
+		InitMW ();
+
 		XmlSettingsDialog_->SetDataSource ("SmileIcons",
 				Core::Instance ().GetSmilesOptionsModel ());
 
@@ -212,16 +214,45 @@ namespace Azoth
 
 			qDebug () << Q_FUNC_INFO << context;
 
-			if (context == "chattab")
+			if (context == "chattab" || context == "chattab2")
 			{
 				ChatTabsManager::RestoreChatInfo info;
 				info.Props_ = recInfo.DynProperties_;
 				str >> info.EntryID_
 					>> info.Variant_;
 
+				if (context == "chattab2")
+					str >> info.MsgText_;
+
 				QList<ChatTabsManager::RestoreChatInfo> infos;
 				infos << info;
 				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos (infos);
+			}
+			else if (context == "muctab2")
+			{
+				QString entryId;
+				QVariantMap data;
+				QByteArray accountId;
+				str >> entryId
+					>> data
+					>> accountId;
+
+				if (auto entry = Core::Instance ().GetEntry (entryId))
+				{
+					auto mgr = Core::Instance ().GetChatTabsManager ();
+					mgr->OpenChat (qobject_cast<ICLEntry*> (entry), recInfo.DynProperties_);
+				}
+				else
+				{
+					auto acc = Core::Instance ().GetAccount (accountId);
+					auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+					auto widget = qobject_cast<IMUCJoinWidget*> (proto->GetMUCJoinWidget ());
+					if (!widget)
+						return;
+
+					widget->SetIdentifyingData (data);
+					widget->Join (acc->GetObject ());
+				}
 			}
 			else
 				qWarning () << Q_FUNC_INFO
@@ -343,6 +374,8 @@ namespace Azoth
 		QDockWidget *dw = new QDockWidget ();
 		dw->setWidget (MW_);
 		dw->setWindowTitle ("Azoth");
+		dw->setWindowIcon (GetIcon ());
+		dw->toggleViewAction ()->setIcon (GetIcon ());
 
 		const int dockArea = XmlSettingsManager::Instance ()
 				.Property ("MWDockArea", Qt::RightDockWidgetArea).toInt ();

@@ -81,7 +81,6 @@ namespace Azoth
 		ICoreProxy_ptr Proxy_;
 		QList<ANFieldData> ANFields_;
 
-		QRegExp LinkRegexp_;
 		QRegExp ImageRegexp_;
 
 #ifdef ENABLE_CRYPT
@@ -201,6 +200,7 @@ namespace Azoth
 		ChatTabsManager* GetChatTabsManager () const;
 		QList<IAccount*> GetAccounts (std::function<bool (IProtocol*)> = [] (IProtocol*) { return true; }) const;
 		QList<IProtocol*> GetProtocols () const;
+		IAccount* GetAccount (const QByteArray&) const;
 
 #ifdef ENABLE_CRYPT
 		QList<QCA::PGPKey> GetPublicKeys () const;

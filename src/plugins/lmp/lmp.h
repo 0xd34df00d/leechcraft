@@ -71,6 +71,8 @@ namespace LMP
 		QMap<QString, QList<QAction*>> GetMenuActions () const;
 
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+	private slots:
+		void handleFullRaiseRequested ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

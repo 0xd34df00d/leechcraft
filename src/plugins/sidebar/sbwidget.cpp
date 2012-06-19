@@ -79,6 +79,16 @@ namespace Sidebar
 		RemoveTabButton (act, Ui_.QLLay_);
 	}
 
+	void SBWidget::AddDockAction (QAction *act)
+	{
+		AddTabButton (act, Ui_.DockLay_);
+	}
+
+	void SBWidget::RemoveDockAction (QAction *act)
+	{
+		RemoveTabButton (act, Ui_.DockLay_);
+	}
+
 	void SBWidget::AddCurTabAction (QAction *act, QWidget *w)
 	{
 		ITabWidget *tw = qobject_cast<ITabWidget*> (w);

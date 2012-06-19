@@ -113,6 +113,8 @@ namespace ChatHistory
 		void gotLastMessages (QObject*, const QList<QObject*>&);
 
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

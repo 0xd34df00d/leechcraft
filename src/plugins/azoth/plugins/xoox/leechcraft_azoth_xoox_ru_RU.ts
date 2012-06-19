@@ -319,163 +319,163 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="452"/>
+        <location filename="clientconnection.cpp" line="455"/>
         <source>This room is already joined.</source>
         <translation>Вы уже в этой комнате.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="731"/>
+        <location filename="clientconnection.cpp" line="741"/>
         <source>This message is encrypted. Please decrypt it to view the original contents.</source>
         <oldsource>This message is encrypted. Please decrypt it to view the original contents</oldsource>
         <translation>Это сообщение зашифровано. Пожалуйста, расшифруйте его для просмотра исходного содержимого.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="879"/>
+        <location filename="clientconnection.cpp" line="889"/>
         <source>Data form from %1</source>
         <translation>Форма от %1</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="882"/>
+        <location filename="clientconnection.cpp" line="892"/>
         <source>You have received dataform from %1:</source>
         <translation>Вы получили форму от %1:</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="946"/>
+        <location filename="clientconnection.cpp" line="956"/>
         <source>socket error: %1.</source>
         <translation>ошибка сокета: %1.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="951"/>
+        <location filename="clientconnection.cpp" line="961"/>
         <source>keep-alive error.</source>
         <translation>ошибка keep-alive.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="954"/>
+        <location filename="clientconnection.cpp" line="964"/>
         <source>error while connecting: </source>
         <translation>ошибка при соединении: </translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="958"/>
+        <location filename="clientconnection.cpp" line="968"/>
         <source>no error.</source>
         <translation>нет ошибки.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="974"/>
+        <location filename="clientconnection.cpp" line="984"/>
         <source>Account %1:</source>
         <translation>Аккаунт %1:</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1255"/>
+        <location filename="clientconnection.cpp" line="1262"/>
         <source>Enter CAPTCHA</source>
         <translation>Введите капчу</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1475"/>
+        <location filename="clientconnection.cpp" line="1482"/>
         <source>Error from %1: </source>
         <translation>Ошибка от %1: </translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1480"/>
+        <location filename="clientconnection.cpp" line="1487"/>
         <source>Error text: %1.</source>
         <translation>Текст ошибки: %1.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1542"/>
+        <location filename="clientconnection.cpp" line="1549"/>
         <source>Bad request.</source>
         <translation>Плохой запрос.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1544"/>
+        <location filename="clientconnection.cpp" line="1551"/>
         <source>Conflict (possibly, resource conflict).</source>
         <translation>Конфликт (возможно, конфликт ресурсов).</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1546"/>
+        <location filename="clientconnection.cpp" line="1553"/>
         <source>Feature not implemented.</source>
         <translation>Функция не реализована.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1548"/>
+        <location filename="clientconnection.cpp" line="1555"/>
         <source>Forbidden.</source>
         <translation>Запрещено.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1551"/>
+        <location filename="clientconnection.cpp" line="1558"/>
         <source>Internal server error.</source>
         <translation>Внутренняя ошибка сервера.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1553"/>
+        <location filename="clientconnection.cpp" line="1560"/>
         <source>Item not found.</source>
         <translation>Запись не найдена.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1555"/>
+        <location filename="clientconnection.cpp" line="1562"/>
         <source>JID is malformed.</source>
         <translation>JID неправильный.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1557"/>
+        <location filename="clientconnection.cpp" line="1564"/>
         <source>Data is not acceptable.</source>
         <translation>Неприемлемые данные.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1559"/>
+        <location filename="clientconnection.cpp" line="1566"/>
         <source>Action is not allowed.</source>
         <translation>Непозволительные действия.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1562"/>
+        <location filename="clientconnection.cpp" line="1569"/>
         <source>Not authorized.</source>
         <translation>Не авторизован.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1564"/>
+        <location filename="clientconnection.cpp" line="1571"/>
         <source>Payment required.</source>
         <translation>Требуется оплата.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1566"/>
+        <location filename="clientconnection.cpp" line="1573"/>
         <source>Recipient unavailable.</source>
         <translation>Получатель недоступен.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1568"/>
+        <location filename="clientconnection.cpp" line="1575"/>
         <source>Got redirect.</source>
         <translation>Получено перенаправление.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1570"/>
+        <location filename="clientconnection.cpp" line="1577"/>
         <source>Registration required.</source>
         <translation>Требуется регистрация.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1572"/>
+        <location filename="clientconnection.cpp" line="1579"/>
         <source>Remote server not found.</source>
         <translation>Удалённый сервер не найден.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1574"/>
+        <location filename="clientconnection.cpp" line="1581"/>
         <source>Timeout contacting remote server.</source>
         <translation>Превышено время ожидания подключения к серверу.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1576"/>
+        <location filename="clientconnection.cpp" line="1583"/>
         <source>Error due to resource constraint.</source>
         <translation>Ошибка из-за превышения ограничения ресурсов.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1578"/>
+        <location filename="clientconnection.cpp" line="1585"/>
         <source>Service is unavailable at the moment.</source>
         <translation>Сервис недоступен в данный момент.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1580"/>
+        <location filename="clientconnection.cpp" line="1587"/>
         <source>Subscription is required to perform this action.</source>
         <translation>Требуется подписка для произведения этого действия.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1584"/>
+        <location filename="clientconnection.cpp" line="1591"/>
         <source>Other error.</source>
         <translation>Другая ошибка.</translation>
     </message>
@@ -483,70 +483,70 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::EntryBase</name>
     <message>
-        <location filename="entrybase.cpp" line="63"/>
+        <location filename="entrybase.cpp" line="64"/>
         <source>Commands...</source>
         <translation>Команды...</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="64"/>
+        <location filename="entrybase.cpp" line="65"/>
         <source>Detect nick</source>
         <translation>Определить ник</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="169"/>
+        <location filename="entrybase.cpp" line="170"/>
         <source>Can&apos;t view info while offline</source>
         <translation>Невозможно просматривать информацию в оффлайне</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="483"/>
+        <location filename="entrybase.cpp" line="490"/>
         <source>%1 is now %2 (%3)</source>
         <translation>%1 теперь %2 (%3)</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="702"/>
+        <location filename="entrybase.cpp" line="717"/>
         <source>Name: %1</source>
         <translation>Имя: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="707"/>
+        <location filename="entrybase.cpp" line="722"/>
         <source>Nickname: %1
 </source>
         <translation>Ник: %1
 </translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="710"/>
+        <location filename="entrybase.cpp" line="725"/>
         <source>URL: %1
 </source>
         <translation>URL: %1
 </translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="713"/>
+        <location filename="entrybase.cpp" line="728"/>
         <source>Birthday: %1
 </source>
         <translation>День рожденья: %1
 </translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="716"/>
+        <location filename="entrybase.cpp" line="731"/>
         <source>Email: %1
 </source>
         <translation>Email: %1
 </translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="721"/>
+        <location filename="entrybase.cpp" line="736"/>
         <source>Photo:</source>
         <translation>Фото:</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="781"/>
+        <location filename="entrybase.cpp" line="796"/>
         <source>Select resource</source>
         <translation>Выберите ресурс</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="782"/>
+        <location filename="entrybase.cpp" line="797"/>
         <source>Select resource for which to fetch the commands</source>
         <translation>Выберите ресурс, которым хотите командовать</translation>
     </message>
@@ -577,22 +577,22 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::GlooxAccount</name>
     <message>
-        <location filename="glooxaccount.cpp" line="74"/>
+        <location filename="glooxaccount.cpp" line="75"/>
         <source>Privacy lists...</source>
         <translation>Списки приватности...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="478"/>
+        <location filename="glooxaccount.cpp" line="485"/>
         <source>Why would you call yourself?</source>
         <translation>Почему вы хотите позвонить себе?</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="643"/>
+        <location filename="glooxaccount.cpp" line="650"/>
         <source>Unable to enable encryption for entry %1: no key has been set.</source>
         <translation>Невозможно включить шифрование для контакта %1: не задан ключ.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="652"/>
+        <location filename="glooxaccount.cpp" line="659"/>
         <source>Unable to change encryption state for %1.</source>
         <translation>Невозможно изменить состояние шифрования для %1.</translation>
     </message>
@@ -697,17 +697,17 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::InBandAccountRegThirdPage</name>
     <message>
-        <location filename="inbandaccountregthirdpage.cpp" line="68"/>
+        <location filename="inbandaccountregthirdpage.cpp" line="74"/>
         <source>Awaiting registration result...</source>
         <translation>Ожидание результата регистрации...</translation>
     </message>
     <message>
-        <location filename="inbandaccountregthirdpage.cpp" line="80"/>
+        <location filename="inbandaccountregthirdpage.cpp" line="86"/>
         <source>Registration completed successfully. You may now further configure account properties.</source>
         <translation>Регистрация успешно завершена. Вы теперь можете сконфигурировать свойства учётной записи.</translation>
     </message>
     <message>
-        <location filename="inbandaccountregthirdpage.cpp" line="90"/>
+        <location filename="inbandaccountregthirdpage.cpp" line="96"/>
         <source>Registration failed: %1.</source>
         <translation>Регистрация не удалась: %1.</translation>
     </message>
@@ -1048,123 +1048,123 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::RoomHandler</name>
     <message>
-        <location filename="roomhandler.cpp" line="124"/>
+        <location filename="roomhandler.cpp" line="127"/>
         <source>%1 has left the room</source>
         <translation>%1 покинул комнату</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="146"/>
+        <location filename="roomhandler.cpp" line="149"/>
         <source>%1 joined the room as %2 and %3</source>
         <translation>%1 вошёл в комнату как %2 и %3</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="151"/>
+        <location filename="roomhandler.cpp" line="154"/>
         <source>%1 (%2) joined the room as %3 and %4</source>
         <translation>%1 (%2) вошёл в комнату как %3 и %4</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="174"/>
+        <location filename="roomhandler.cpp" line="177"/>
         <source>%1 changed status to %2 (%3)</source>
         <translation>%1 теперь %2 (%3)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="193"/>
+        <location filename="roomhandler.cpp" line="196"/>
         <source>%1 changed nick to %2</source>
         <translation>%1 сменил ник на %2</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="210"/>
+        <location filename="roomhandler.cpp" line="213"/>
         <source>%1 has been kicked</source>
         <translation>%1 был кикнут</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="213"/>
+        <location filename="roomhandler.cpp" line="216"/>
         <source>%1 has been kicked: %2</source>
         <translation>%1 был кикнут: %2</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="230"/>
+        <location filename="roomhandler.cpp" line="233"/>
         <source>%1 has been banned</source>
         <translation>%1 был забанен</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="233"/>
+        <location filename="roomhandler.cpp" line="236"/>
         <source>%1 has been banned: %2</source>
         <translation>%1 был забанен: %2</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="254"/>
+        <location filename="roomhandler.cpp" line="257"/>
         <source>%1 is now %2 and %3</source>
         <translation>%1 теперь %2 и %3</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="259"/>
+        <location filename="roomhandler.cpp" line="262"/>
         <source>%1 is now %2 and %3: %4</source>
         <oldsource>%1 is now %2 and %3: %2</oldsource>
         <translation>%1 теперь %2 и %3: %4</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="285"/>
+        <location filename="roomhandler.cpp" line="288"/>
         <source>This room is password-protected. Please enter the password required to join this room.</source>
         <translation>Эта комната защищена паролем. Пожалуйста, введите пароль, требуемый для входа в эту комнату.</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="313"/>
+        <location filename="roomhandler.cpp" line="316"/>
         <source>nickname already taken</source>
         <translation>ник уже занят</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="317"/>
+        <location filename="roomhandler.cpp" line="320"/>
         <source>access forbidden</source>
         <translation>доступ запрещён</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="320"/>
+        <location filename="roomhandler.cpp" line="323"/>
         <source>password required</source>
         <translation>требуется пароль</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="323"/>
+        <location filename="roomhandler.cpp" line="326"/>
         <source>malformed JID</source>
         <translation>плохой JID</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="326"/>
+        <location filename="roomhandler.cpp" line="329"/>
         <source>only registered users can enter this room</source>
         <translation>только зарегистрированные пользователи могут заходить в эту комнату</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="329"/>
+        <location filename="roomhandler.cpp" line="332"/>
         <source>remote server not found (try contacting your server&apos;s administrator)</source>
         <translation>удаленный сервер не найден (попробуйте связаться с администратором вашего сервера)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="332"/>
+        <location filename="roomhandler.cpp" line="335"/>
         <source>timeout connecting to remote server (try contacting your server&apos;s administrator)</source>
         <translation>истекло время ожидания подключения к удаленному серверу (попробуйте связаться с администратором вашего сервера)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="335"/>
+        <location filename="roomhandler.cpp" line="338"/>
         <source>service unavailable</source>
         <translation>сервис недоступен</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="338"/>
+        <location filename="roomhandler.cpp" line="341"/>
         <source>unknown condition %1 (please report to developers)</source>
         <translation>неизвестное условие %1 (пожалуйста, сообщите разработчикам)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="342"/>
+        <location filename="roomhandler.cpp" line="345"/>
         <source>Error for %1: %2 (original message: %3)</source>
         <translation>Ошибка для %1: %2 (оригинальное сообщение: %3)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="346"/>
+        <location filename="roomhandler.cpp" line="349"/>
         <source>no message</source>
         <translation>нет сообщения</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="447"/>
+        <location filename="roomhandler.cpp" line="450"/>
         <source>%1 changed subject to %2</source>
         <translation>%1 изменил тему на %2</translation>
     </message>
@@ -1288,7 +1288,7 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::TransferJob</name>
     <message>
-        <location filename="transferjob.cpp" line="94"/>
+        <location filename="transferjob.cpp" line="99"/>
         <source>could not open incoming file %1: %2</source>
         <translation></translation>
     </message>
@@ -1296,117 +1296,147 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::VCardDialog</name>
     <message>
-        <location filename="vcarddialog.cpp" line="263"/>
+        <location filename="vcarddialog.cpp" line="269"/>
         <source>Capabilities</source>
         <translation>Возможности</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="83"/>
+        <location filename="vcarddialog.cpp" line="89"/>
         <source>VCard for %1</source>
         <translation>VCard для %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="128"/>
-        <location filename="vcarddialog.cpp" line="153"/>
-        <location filename="vcarddialog.cpp" line="185"/>
+        <location filename="vcarddialog.cpp" line="134"/>
+        <location filename="vcarddialog.cpp" line="159"/>
+        <location filename="vcarddialog.cpp" line="191"/>
+        <location filename="vcarddialog.cpp" line="332"/>
+        <location filename="vcarddialog.cpp" line="378"/>
         <source>preferred</source>
         <translation>предпочтительно</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="130"/>
-        <location filename="vcarddialog.cpp" line="155"/>
-        <location filename="vcarddialog.cpp" line="179"/>
+        <location filename="vcarddialog.cpp" line="136"/>
+        <location filename="vcarddialog.cpp" line="161"/>
+        <location filename="vcarddialog.cpp" line="185"/>
+        <location filename="vcarddialog.cpp" line="333"/>
+        <location filename="vcarddialog.cpp" line="379"/>
         <source>home</source>
         <translation>домашний</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="132"/>
-        <location filename="vcarddialog.cpp" line="157"/>
-        <location filename="vcarddialog.cpp" line="181"/>
+        <location filename="vcarddialog.cpp" line="138"/>
+        <location filename="vcarddialog.cpp" line="163"/>
+        <location filename="vcarddialog.cpp" line="187"/>
+        <location filename="vcarddialog.cpp" line="334"/>
+        <location filename="vcarddialog.cpp" line="380"/>
         <source>work</source>
         <translation>рабочий</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="134"/>
+        <location filename="vcarddialog.cpp" line="140"/>
+        <location filename="vcarddialog.cpp" line="335"/>
         <source>cell</source>
         <translation>мобильный</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="109"/>
+        <location filename="vcarddialog.cpp" line="115"/>
         <source>No photo</source>
         <translation>Нет фото</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="183"/>
+        <location filename="vcarddialog.cpp" line="189"/>
         <source>postal</source>
         <translation>почтовый код</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="190"/>
+        <location filename="vcarddialog.cpp" line="196"/>
         <source>Address %1:</source>
         <translation>Адрес %1:</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="192"/>
+        <location filename="vcarddialog.cpp" line="198"/>
         <source>Address %1 (%2):</source>
         <translation>Адрес %1 (%2):</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="203"/>
+        <location filename="vcarddialog.cpp" line="209"/>
         <source>Country: %1</source>
         <translation>Страна: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="204"/>
+        <location filename="vcarddialog.cpp" line="210"/>
         <source>Region: %1</source>
         <translation>Регион: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="205"/>
+        <location filename="vcarddialog.cpp" line="211"/>
         <source>Locality: %1</source>
         <comment>User&apos;s locality</comment>
         <translation>Местоположение: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="206"/>
+        <location filename="vcarddialog.cpp" line="212"/>
         <source>Street: %1</source>
         <translation>Улица: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="207"/>
+        <location filename="vcarddialog.cpp" line="213"/>
         <source>Additional: %1</source>
         <comment>Additional address in user&apos;s address</comment>
         <translation>Добавочный: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="208"/>
+        <location filename="vcarddialog.cpp" line="214"/>
         <source>Postal code: %1</source>
         <translation>Почтовый код: %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="256"/>
+        <location filename="vcarddialog.cpp" line="262"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="257"/>
+        <location filename="vcarddialog.cpp" line="263"/>
         <source>Version</source>
         <translation>Версия</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="258"/>
+        <location filename="vcarddialog.cpp" line="264"/>
         <source>OS</source>
         <translation>ОС</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="321"/>
+        <location filename="vcarddialog.cpp" line="338"/>
+        <source>VCard phones</source>
+        <translation>Телефоны VCard</translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.cpp" line="384"/>
+        <source>VCard emails</source>
+        <translation>Адреса электронной почты VCard</translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.cpp" line="424"/>
         <source>Choose new photo</source>
         <translation>Выбор нового фото</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="323"/>
+        <location filename="vcarddialog.cpp" line="426"/>
         <source>Images (*.png *.jpg *.gif);;All files (*.*)</source>
         <translation>Картинки (*.png *.jpg *.gif);;Все файлы (*.*)</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Xoox::VCardListEditDialog</name>
+    <message>
+        <location filename="vcardlisteditdialog.cpp" line="34"/>
+        <source>Item</source>
+        <translation>Запись</translation>
+    </message>
+    <message>
+        <location filename="vcardlisteditdialog.cpp" line="88"/>
+        <source>Enter the new item:</source>
+        <translation>Введите новую запись:</translation>
     </message>
 </context>
 <context>
@@ -1680,84 +1710,103 @@
         <translation>Телефон:</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="99"/>
+        <location filename="vcarddialog.ui" line="89"/>
         <source>E-mail:</source>
         <translation>E-mail:</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="119"/>
+        <location filename="vcarddialog.ui" line="99"/>
         <source>dd MMMM yyyy</source>
         <translation>dd MMMM yyyy</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="129"/>
+        <location filename="vcarddialog.ui" line="109"/>
         <source>URL:</source>
         <translation>URL:</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="146"/>
+        <location filename="vcarddialog.ui" line="126"/>
         <source>JID:</source>
         <translation>JID:</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="186"/>
+        <location filename="vcarddialog.ui" line="148"/>
+        <location filename="vcarddialog.ui" line="162"/>
+        <source>Edit...</source>
+        <translation>Редактировать...</translation>
+    </message>
+    <message>
+        <location filename="vcarddialog.ui" line="194"/>
         <source>No photo</source>
         <translation>Нет фото</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="206"/>
+        <location filename="vcarddialog.ui" line="214"/>
         <source>Browse...</source>
         <translation>Обзор...</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="213"/>
+        <location filename="vcarddialog.ui" line="221"/>
         <source>Clear</source>
         <translation>Очистить</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="223"/>
+        <location filename="vcarddialog.ui" line="231"/>
         <source>Work</source>
         <translation>Работа</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="235"/>
+        <location filename="vcarddialog.ui" line="243"/>
         <source>Organization name:</source>
         <translation>Имя организации:</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="252"/>
+        <location filename="vcarddialog.ui" line="260"/>
         <source>Organization unit:</source>
         <translation>Подразделение:</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="269"/>
+        <location filename="vcarddialog.ui" line="277"/>
         <source>Title:</source>
         <translation>Звание:</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="286"/>
+        <location filename="vcarddialog.ui" line="294"/>
         <source>Role:</source>
         <translation>Роль:</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="304"/>
+        <location filename="vcarddialog.ui" line="312"/>
         <source>Addresses</source>
         <translation>Адреса</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="317"/>
+        <location filename="vcarddialog.ui" line="325"/>
         <source>About self</source>
         <translation>О себе</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="334"/>
+        <location filename="vcarddialog.ui" line="342"/>
         <source>Notes</source>
         <translation>Заметки</translation>
     </message>
     <message>
-        <location filename="vcarddialog.ui" line="347"/>
+        <location filename="vcarddialog.ui" line="355"/>
         <source>Client info</source>
         <translation>Информация о клиенте</translation>
+    </message>
+</context>
+<context>
+    <name>VCardListEditDialog</name>
+    <message>
+        <location filename="vcardlisteditdialog.ui" line="27"/>
+        <source>Add...</source>
+        <translation>Добавить...</translation>
+    </message>
+    <message>
+        <location filename="vcardlisteditdialog.ui" line="34"/>
+        <source>Remove</source>
+        <translation>Удалить</translation>
     </message>
 </context>
 </TS>

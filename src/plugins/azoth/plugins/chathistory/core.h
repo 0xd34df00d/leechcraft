@@ -78,6 +78,7 @@ namespace ChatHistory
 				int backpages, int amount);
 		void Search (const QString& accountId, const QString& entryId,
 				const QString& text, int shift);
+		void Search (const QString& accountId, const QString& entryId, const QDateTime& dt);
 		void ClearHistory (const QString& accountId, const QString& entryId);
 	private:
 		void LoadDisabled ();

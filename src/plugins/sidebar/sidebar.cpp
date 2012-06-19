@@ -21,6 +21,7 @@
 #include <QAction>
 #include <QMainWindow>
 #include <QStatusBar>
+#include <QDockWidget>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -112,6 +113,14 @@ namespace Sidebar
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Core.Plugins/1.0";
 		return result;
+	}
+
+	void Plugin::hookDockWidgetActionVisToggled (IHookProxy_ptr proxy,
+			QDockWidget *dw, bool visible)
+	{
+		QAction *act = dw->toggleViewAction ();
+		visible ? Bar_->AddDockAction (act) : Bar_->RemoveDockAction (act);
+		proxy->CancelDefault ();
 	}
 
 	void Plugin::hookGonnaFillQuickLaunch (IHookProxy_ptr proxy)

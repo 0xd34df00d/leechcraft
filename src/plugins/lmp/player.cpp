@@ -173,9 +173,18 @@ namespace LMP
 		return Output_;
 	}
 
+	Player::PlayMode Player::GetPlayMode () const
+	{
+		return PlayMode_;
+	}
+
 	void Player::SetPlayMode (Player::PlayMode playMode)
 	{
+		if (PlayMode_ == playMode)
+			return;
+
 		PlayMode_ = playMode;
+		emit playModeChanged (PlayMode_);
 	}
 
 	namespace
@@ -239,7 +248,7 @@ namespace LMP
 
 	void Player::Dequeue (const QList<Phonon::MediaSource>& sources)
 	{
-		for (const auto& source : sources)
+		Q_FOREACH (const auto& source, sources)
 		{
 			if (!CurrentQueue_.removeAll (source))
 				continue;
@@ -313,6 +322,40 @@ namespace LMP
 		PlaylistModel_->appendRow (RadioItem_);
 	}
 
+	MediaInfo Player::GetCurrentMediaInfo () const
+	{
+		const auto& source = Source_->currentSource ();
+		if (source.type () == Phonon::MediaSource::Empty)
+			return MediaInfo ();
+
+		auto info = GetMediaInfo (source);
+		if (!info.LocalPath_.isEmpty ())
+			return info;
+
+		info.Artist_ = Source_->metaData (Phonon::ArtistMetaData).value (0);
+		info.Album_ = Source_->metaData (Phonon::AlbumMetaData).value (0);
+		info.Title_ = Source_->metaData (Phonon::TitleMetaData).value (0);
+		info.Genres_ = Source_->metaData (Phonon::GenreMetaData);
+		info.TrackNumber_ = Source_->metaData (Phonon::TracknumberMetaData).value (0).toInt ();
+		info.Length_ = Source_->totalTime ();
+		return info;
+	}
+
+	QString Player::GetCurrentAAPath () const
+	{
+		const auto& info = GetCurrentMediaInfo ();
+		auto coll = Core::Instance ().GetLocalCollection ();
+		auto album = coll->GetAlbum (coll->FindAlbum (info.Artist_, info.Album_));
+		return album ? album->CoverPath_ : QString ();;
+	}
+
+	MediaInfo Player::GetMediaInfo (const Phonon::MediaSource& source) const
+	{
+		return Items_.contains (source) ?
+				Items_ [source]->data (Role::Info).value<MediaInfo> () :
+				MediaInfo ();
+	}
+
 	namespace
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
@@ -335,13 +378,6 @@ namespace LMP
 			albumItem->setData (0, Player::Role::AlbumLength);
 			return albumItem;
 		}
-	}
-
-	MediaInfo Player::GetMediaInfo (const Phonon::MediaSource& source) const
-	{
-		return Items_.contains (source) ?
-				Items_ [source]->data (Role::Info).value<MediaInfo> () :
-				MediaInfo ();
 	}
 
 	void Player::AddToPlaylistModel (QList<Phonon::MediaSource> sources, bool sort)
@@ -615,6 +651,11 @@ namespace LMP
 				Source_->setCurrentSource (CurrentQueue_.value (0));
 			Source_->play ();
 		}
+	}
+
+	void Player::setPause ()
+	{
+		Source_->pause ();
 	}
 
 	void Player::stop ()
