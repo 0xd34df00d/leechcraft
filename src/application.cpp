@@ -161,6 +161,8 @@ bpo::variables_map Application::Parse (bpo::command_line_parser& parser,
 			("nolog", "disable custom file logger and print everything to stdout/stderr")
 			("clrsckt", "clear stalled socket, use if you believe previous LC instance has terminated but failed to close its local socket properly")
 			("no-app-catch", "disable exceptions catch-all in QApplication::notify(), useful for debugging purposes")
+			("safe-mode", "disable all plugins so that you can manually enable them in Settings later")
+			("list-plugins", "list all non-adapted plugins that were found and exit (this one doesn't check if plugins are valid and loadable)")
 			("autorestart", "automatically restart LC if it's closed (not guaranteed to work everywhere, especially on Windows and Mac OS X)")
 			("minimized", "start LC minimized to tray")
 			("restart", "restart the LC");

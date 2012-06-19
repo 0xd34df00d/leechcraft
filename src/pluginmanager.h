@@ -89,6 +89,7 @@ namespace LeechCraft
 		QString Name (const Size_t& pos) const;
 		QString Info (const Size_t& pos) const;
 
+		QList<QPluginLoader_ptr> GetAllAvailable () const;
 		QObjectList GetAllPlugins () const;
 		QString GetPluginLibraryPath (const QObject*) const;
 

@@ -104,7 +104,7 @@ namespace LeechCraft
 		StorageBackend_->Prepare ();
 
 		QStringList paths;
-		boost::program_options::variables_map map = qobject_cast<Application*> (qApp)->GetVarMap ();
+		const auto& map = qobject_cast<Application*> (qApp)->GetVarMap ();
 		if (map.count ("plugin"))
 		{
 			const std::vector<std::string>& plugins = map ["plugin"].as<std::vector<std::string>> ();
@@ -254,6 +254,14 @@ namespace LeechCraft
 
 	void Core::DelayedInit ()
 	{
+		const auto& map = qobject_cast<Application*> (qApp)->GetVarMap ();
+		if (map.count ("list-plugins"))
+		{
+			Q_FOREACH (QPluginLoader_ptr loader, PluginManager_->GetAllAvailable ())
+				std::cout << "Found plugin: " << loader->fileName ().toUtf8 ().constData () << std::endl;
+			std::exit (0);
+		}
+
 		connect (this,
 				SIGNAL (error (QString)),
 				ReallyMainWindow_,

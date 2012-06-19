@@ -467,6 +467,11 @@ namespace LeechCraft
 		return qobject_cast<IInfo*> (Plugins_ [pos])->GetInfo ();
 	}
 
+	QList<QPluginLoader_ptr> PluginManager::GetAllAvailable () const
+	{
+		return AvailablePlugins_;
+	}
+
 	QObjectList PluginManager::GetAllPlugins () const
 	{
 		QObjectList result = PluginTreeBuilder_->GetResult ();
