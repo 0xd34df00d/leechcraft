@@ -20,16 +20,22 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iremovabledevmanager.h>
 
 namespace LeechCraft
 {
 namespace Vrooby
 {
+	class DevBackend;
+
 	class Plugin : public QObject
 				, public IInfo
+				, public IRemovableDevManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IRemovableDevManager)
+
+		DevBackend *Backend_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -38,6 +44,8 @@ namespace Vrooby
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QAbstractItemModel* GetDevicesModel () const;
 	};
 }
 }

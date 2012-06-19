@@ -16,57 +16,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "vrooby.h"
-#include <QIcon>
+#pragma once
 
-#ifdef ENABLE_UDISKS
-#include "backends/udisks/udisksbackend.h"
-#endif
+#include <QList>
+#include <QString>
+#include <QtPlugin>
+
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
-namespace Vrooby
+	enum class DeviceType
+	{
+		Generic,
+		MediaPlayer,
+		MassStorage
+	};
+
+	enum PartitionType
+	{
+		NonPartition = -1,
+		Empty = 0x00,
+		Win95FAT32 = 0x0b
+	};
+
+	enum DeviceRoles
+	{
+		DevType = Qt::UserRole + 1,
+		PartitionType,
+		IsRemovable,
+		IsPartition,
+		DevID,
+		VisibleName,
+		Size
+	};
+}
+
+class IRemovableDevManager
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
-	{
-#ifdef ENABLE_UDISKS
-		Backend_ = new UDisks::Backend (this);
-#endif
-	}
+public:
+	virtual ~IRemovableDevManager () {}
 
-	void Plugin::SecondInit ()
-	{
-	}
+	virtual QAbstractItemModel* GetDevicesModel () const = 0;
+};
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Vrooby";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Vrooby";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Removable storage devices manager for LeechCraft.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QAbstractItemModel* Plugin::GetDevicesModel () const
-	{
-		return Backend_ ? Backend_->GetDevicesModel () : 0;
-	}
-}
-}
-
-LC_EXPORT_PLUGIN (leechcraft_vrooby, LeechCraft::Vrooby::Plugin);
+Q_DECLARE_INTERFACE (IRemovableDevManager, "org.Deviant.LeechCraft.IRemovableDevManager/1.0");

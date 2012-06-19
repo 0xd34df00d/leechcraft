@@ -16,57 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "vrooby.h"
-#include <QIcon>
+#pragma once
 
-#ifdef ENABLE_UDISKS
-#include "backends/udisks/udisksbackend.h"
-#endif
+#include <QObject>
+#include <interfaces/iremovabledevmanager.h>
 
 namespace LeechCraft
 {
+struct DeviceInfo;
+
 namespace Vrooby
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class DevBackend : public QObject
+					, public IRemovableDevManager
 	{
-#ifdef ENABLE_UDISKS
-		Backend_ = new UDisks::Backend (this);
-#endif
-	}
+		Q_OBJECT
+		Q_INTERFACES (IRemovableDevManager)
+	public:
+		DevBackend (QObject* = 0);
 
-	void Plugin::SecondInit ()
-	{
-	}
+		virtual bool IsValid () const = 0;
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Vrooby";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Vrooby";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Removable storage devices manager for LeechCraft.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QAbstractItemModel* Plugin::GetDevicesModel () const
-	{
-		return Backend_ ? Backend_->GetDevicesModel () : 0;
-	}
+		virtual void Mount (const QString&) = 0;
+		virtual void Umount (const QString&) = 0;
+	};
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_vrooby, LeechCraft::Vrooby::Plugin);
