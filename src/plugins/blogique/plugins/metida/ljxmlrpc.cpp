@@ -187,38 +187,25 @@ namespace Metida
 				profile.AvatarUrl_ = res.second [0].toUrl ();
 			else if (res.first == "friendgroups")
 			{
-				LJFriendGroup friendGroup;
-				int i = 0;
-				Q_FOREACH (auto var, res.second)
+				for (auto friendGroupEntry : res.second)
 				{
-					LjPairEntry entry = var.value<LjPairEntry> ();
-
-// 					qDebug () << i++;
-// 					if (entry.first == "public")
-// 						friendGroup.Public_ = entry.second.value (0).toBool ();
-// 					else if (entry.first == "name")
-// 						friendGroup.Name_ = entry.second.value (0).toString ();
-// 					else if (entry.first == "id")
-// 						friendGroup.Id_ = entry.second.value (0).toUInt ();
-// 					else if (entry.first == "sortorder")
-// 						friendGroup.Id_ = entry.second.value (0).toUInt ();
+					LJFriendGroup group;
+					for (auto field : friendGroupEntry.toList ())
+					{
+						LjPairEntry entry = field.value<LjPairEntry> ();
+						if (entry.first == "public")
+							group.Public_ = entry.second.value (0).toBool ();
+						else if (entry.first == "name")
+							group.Name_ = entry.second.value (0).toString ();
+						else if (entry.first == "id")
+							group.Id_ = entry.second.value (0).toInt ();
+						else if (entry.first == "sortorder")
+							group.SortOrder_ = entry.second.value (0).toInt ();
+					}
+					profile.FriendGroups_ << group;
 				}
-// 				profile.FriendGroups_ << friendGroup;
 			}
 		}
-
-// 		qDebug () << Q_FUNC_INFO
-// 				<< profile.AvatarUrl_;
-// 				int id = 0;
-// 		Q_FOREACH (auto group, profile.FriendGroups_)
-// 		{
-// 			qDebug () << Q_FUNC_INFO
-// 				<< id++
-// 				<< group.Public_
-// 				<< group.Name_
-// 				<< group.Id_
-// 				<< group.SortOrder_;
-// 		}
 
 		return profile;
 	}
@@ -265,7 +252,7 @@ namespace Metida
 			auto arrayElements = valueNode.firstChild ().childNodes ();
 			QVariantList array;
 			for (int i = 0, count = arrayElements.count (); i < count; ++i)
-				array << ParseValue (arrayElements.at (i));
+				array << QVariant::fromValue<QVariantList> (ParseValue (arrayElements.at (i)));
 
 			result << array;
 		}
