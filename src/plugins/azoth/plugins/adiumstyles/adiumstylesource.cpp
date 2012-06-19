@@ -186,6 +186,11 @@ namespace AdiumStyles
 		ParseGlobalTemplate (result, entry);
 		FixSelfClosing (result);
 
+		auto colors = StylesLoader_->Load (insensitive ("Incoming/SenderColors.txt"));
+		if (colors && colors->open (QIODevice::ReadOnly))
+			Q_FOREACH (const auto& colorName, QString::fromUtf8 (colors->readAll ()).split (":"))
+				Coloring2Colors_ ["hash"] << QColor (colorName);
+
 		return result;
 	}
 
@@ -588,8 +593,7 @@ namespace AdiumStyles
 			Coloring2Colors_ ["hash"] = Proxy_->GenerateColors ("hash");
 
 		// %senderColor%
-		const QString& nickColor = Proxy_->
-				GetNickColor (senderNick, Coloring2Colors_ ["hash"]);
+		const QString& nickColor = Proxy_->GetNickColor (senderNick, Coloring2Colors_ ["hash"]);
 		templ.replace ("%senderColor%", nickColor);
 
 		// %senderColor{N}%
