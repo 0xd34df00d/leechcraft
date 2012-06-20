@@ -25,59 +25,33 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	const QString UnFocusedStyle =
-			"QSlider::sub-page:horizontal {"
-				"border: 1px solid #999999;"
-				"height: 8px;"
-				"background: palette(highlight);"
-				"margin: 2px 0;"
-			"}"
-			"QSlider::groove:horizontal {"
-				"border: 1px solid #999999;"
-				"height: 8px;"
-				"background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
-					"stop:0 palette(midlight), stop:1 palette(button));"
-				"margin: 2px 0;"
-			"}";
-			
-	const QString FocusedStyle = UnFocusedStyle +
-			"QSlider::handle:horizontal {"
-				"background: qlineargradient(x1:0, y1:0, x2:1, y2:1,"
-					"stop:0 palette(button), stop:1 palette(midlight));"
-				"border: 1px solid #777;"
-				"width: 10px;"
-				"height: 11px;"
-				"margin-top: -2px;"
-				"margin-bottom: -2px;"
-				"border-radius: 4px;"
-			"}";
-	
 	PositionSlider::PositionSlider (QWidget *parent)
 	: QSlider (parent)
 	{
+		connect (this,
+				SIGNAL (sliderMoved (int)),
+				this,
+				SLOT (handleSliderMoved (int)));
+
 		setMouseTracking (true);
 	}
-	
-	bool PositionSlider::event (QEvent *e)
+
+	void PositionSlider::mouseReleaseEvent (QMouseEvent *ev)
 	{
-		switch (e->type ())
+		if (ev->button () == Qt::LeftButton)
 		{
-		case QEvent::HoverLeave:
-			setStyleSheet (UnFocusedStyle);
-			break;
-		case QEvent::HoverEnter:
-			setStyleSheet (FocusedStyle);
-			break;
-		default:
-			break;
+			int pos = QStyle::sliderValueFromPosition (minimum (),
+					maximum (), ev->x (), width ());
+			setValue (pos);
+			emit sliderWasReleased ();
 		}
-		return QSlider::event (e);
+		QSlider::mouseReleaseEvent (ev);
 	}
-	
-	void PositionSlider::mousePressEvent (QMouseEvent *ev)
+
+	void PositionSlider::handleSliderMoved (int pos)
 	{
-		emit sliderMoved (QStyle::sliderValueFromPosition (minimum (),
-				maximum (), ev->pos ().x (), width ()));
+		setValue (pos);
 	}
+
 }
 }

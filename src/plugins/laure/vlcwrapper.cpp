@@ -73,7 +73,7 @@ namespace Laure
 		map ["Location"] = Location_;
 		return map;
 	}
-	
+
 	VLCWrapper::VLCWrapper (QObject *parent)
 	: QObject (parent)
 	, CurrentItem_ (-1)
@@ -94,11 +94,11 @@ namespace Laure
 		auto listEventManager = libvlc_media_list_player_event_manager (LPlayer_.get ());
 		libvlc_event_attach (listEventManager, libvlc_MediaListPlayerNextItemSet,
 				ListEventCallback, this);
-		
+
 		auto playerEventManager = libvlc_media_player_event_manager (Player_.get ());
 		libvlc_event_attach (playerEventManager, libvlc_MediaPlayerPlaying,
 				ListEventCallback, this);
-		
+
 		libvlc_event_attach (playerEventManager, libvlc_MediaPlayerStopped,
 				ListEventCallback, this);
 		libvlc_event_attach (playerEventManager, libvlc_MediaPlayerPaused,
@@ -120,10 +120,10 @@ namespace Laure
 			CurrentItemMeta_ = GetItemMeta (index);
 			return index;
 		}
-		
+
 		return -1;
 	}
-	
+
 	void VLCWrapper::HandleNextItemSet ()
 	{
 		int index = PlayQueue ();
@@ -134,7 +134,7 @@ namespace Laure
 					libvlc_media_player_get_media (Player_.get ()));
 			CurrentItemMeta_ = GetItemMeta (index);
 		}
-			
+
 		emit gotEntity (Util::MakeNotification ("Laure",
 				tr ("%1 - %2").arg (CurrentItemMeta_.Artist_).arg (CurrentItemMeta_.Title_),
 					PInfo_));
@@ -152,21 +152,21 @@ namespace Laure
 
 		emit gotEntity (scrobbleEntity);
 		emit currentItemMeta (CurrentItemMeta_);
-		
+
 		const QString& text = tr ("Now playing: %1 from %2 by %3")
 				.arg ("<em>" + CurrentItemMeta_.Title_ + "</em>")
 				.arg ("<em>" + CurrentItemMeta_.Album_ + "</em>")
 				.arg ("<em>" + CurrentItemMeta_.Artist_ + "</em>");
-		
+
 		Entity e = Util::MakeNotification ("Laure", text, PInfo_);
 		emit gotEntity (e);
 	}
-	
+
 	void VLCWrapper::addToQueue (int index)
 	{
 		QueueListIndex_ << index;
 	}
-		
+
 	void VLCWrapper::removeFromQueue (int index)
 	{
 		QueueListIndex_.removeOne (index);
@@ -193,15 +193,15 @@ namespace Laure
 		meta.Genre_ = QString::fromUtf8 (libvlc_media_get_meta (m, libvlc_meta_Genre));
 		meta.Date_ = libvlc_media_get_meta (m, libvlc_meta_Date);
 		meta.Length_ = libvlc_media_get_duration (m) / 1000;
-		
+
 		if (location.isNull ())
 			meta.Location_ = QUrl (libvlc_media_get_mrl (m));
 		else
 			meta.Location_ = QUrl (location);
-		
+
 		libvlc_media_track_info_t *pTrackInfo;
 		int numOfStream = libvlc_media_get_tracks_info (m, &pTrackInfo);
-		
+
 		if (numOfStream >= 1)
 			meta.Type_ = pTrackInfo->i_type;
 
@@ -266,15 +266,15 @@ namespace Laure
 	{
 		const bool res = !libvlc_media_list_remove_index (List_.get (), pos);
 		QueueListIndex_.removeOne (pos);
-		
+
 		auto itr = QueueListIndex_.begin ();
 		for (; itr != QueueListIndex_.end (); ++itr)
 			if (*itr > pos)
 				--(*itr);
-		
+
 		return res;
 	}
-	
+
 	void VLCWrapper::setSubtitle (const QString& location) const
 	{
 		if (location.isEmpty ())
@@ -282,7 +282,7 @@ namespace Laure
 			QAction *senderAction = qobject_cast<QAction*> (sender ());
 			if (!senderAction)
 				return;
-		
+
 			libvlc_video_set_subtitle_file (Player_.get (),
 					senderAction->data ().toString ().toUtf8 ().constData ());
 		}
@@ -290,7 +290,12 @@ namespace Laure
 			libvlc_video_set_subtitle_file (Player_.get (),
 					location.toUtf8 ().constData ());
 	}
-	
+
+	void VLCWrapper::setTime (qint64 time)
+	{
+		libvlc_media_player_set_time (Player_.get (), time);
+	}
+
 	QList<int> VLCWrapper::GetQueueListIndexes () const
 	{
 		return QueueListIndex_;
@@ -357,7 +362,7 @@ namespace Laure
 	{
 		libvlc_media_player_pause (Player_.get ());
 	}
-	
+
 	void VLCWrapper::HandleStopped ()
 	{
 		emit paused ();

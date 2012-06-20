@@ -16,15 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <functional>
-#include <QObject>
-#include <QQueue>
-#include <QPair>
-#include <QDomElement>
-#include <QNetworkRequest>
-#include "core.h"
 #include "profiletypes.h"
 
 namespace LeechCraft
@@ -33,29 +24,54 @@ namespace Blogique
 {
 namespace Metida
 {
-	class LJXmlRPC : public QObject
+namespace LJParserTypes
+{
+	LJParseProfileEntry::LJParseProfileEntry ()
 	{
-		Q_OBJECT
+	}
 
-		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
-	public:
-		LJXmlRPC (QObject *parent = 0);
+	LJParseProfileEntry::LJParseProfileEntry (const QString& name,
+			const QVariantList& value)
+	: Name_ (name)
+	, ValueList_ (value)
+	{
+	}
 
-		void Validate (const QString& login, const QString& pass);
-	private:
-		void GenerateChallenge () const;
-		void ValidateAccountData (const QString& login,
-				const QString& pass, const QString& challenge);
+	QString LJParseProfileEntry::Name () const
+	{
+		return Name_;
+	}
 
-	private slots:
-		void handleChallengeReplyFinished ();
-		void handleValidateReplyFinished ();
+	QVariantList LJParseProfileEntry::Value () const
+	{
+		return ValueList_;
+	}
 
-	signals:
-		void validatingFinished (bool success);
-		void profileDataReceived ();
-		void error (int code, const QString& msg);
-	};
+	bool LJParseProfileEntry::ValueToBool () const
+	{
+		return ValueList_.value (0).toBool ();
+	}
+
+	QString LJParseProfileEntry::ValueToString () const
+	{
+		return ValueList_.value (0).toString ();
+	}
+
+	qint64 LJParseProfileEntry::ValueToLongLong () const
+	{
+		return ValueList_.value (0).toLongLong ();
+	}
+
+	int LJParseProfileEntry::ValueToInt () const
+	{
+		return ValueList_.value (0).toInt ();
+	}
+
+	QUrl LJParseProfileEntry::ValueToUrl () const
+	{
+		return ValueList_.value (0).toUrl ();
+	}
+}
 }
 }
 }

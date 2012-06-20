@@ -896,6 +896,7 @@ namespace Acetamide
 
 	void IrcServerHandler::DisconnectFromServer ()
 	{
+		Account_->ChangeState (EntryStatus (SOffline, QString ()));
 		ChannelsManager_->CloseAllChannels ();
 
 		Q_FOREACH (ServerParticipantEntry_ptr entry, Nick2Entry_.values ())

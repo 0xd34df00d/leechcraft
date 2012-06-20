@@ -48,7 +48,7 @@
           <string notr="true">padding: 25px; background: black;</string>
          </property>
          <property name="frameShape">
-          <enum>QFrame::Box</enum>
+          <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Sunken</enum>
@@ -83,19 +83,7 @@
           <bool>true</bool>
          </property>
          <property name="styleSheet">
-          <string notr="true">QSlider::sub-page:horizontal {
-				border: 1px solid #999999;
-				height: 8px;
-				background: palette(highlight);
-				margin: 2px 0;
-			}
-QSlider::groove:horizontal {
-				border: 1px solid #999999;
-				height: 8px;
-				background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-					stop:0 palette(midlight), stop:1 palette(button));
-				margin: 2px 0;
-			}</string>
+          <string notr="true"/>
          </property>
          <property name="maximum">
           <number>10000</number>

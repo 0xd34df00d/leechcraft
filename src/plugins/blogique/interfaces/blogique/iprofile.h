@@ -1,7 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011-2012  Minh Ngo
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,24 +17,26 @@
  **********************************************************************/
 
 #pragma once
-#include <QEvent>
-#include <QSlider>
+
+#include <QMetaType>
+#include <QVariant>
+#include <QStringList>
 
 namespace LeechCraft
 {
-namespace Laure
-{
-	class PositionSlider : public QSlider
+	namespace Blogique
 	{
-		Q_OBJECT
-	public:
-		PositionSlider (QWidget *parent = 0);
-	protected:
-		void mouseReleaseEvent (QMouseEvent *ev);
-	private slots:
-		void handleSliderMoved (int pos);
-	signals:
-		void sliderWasReleased ();
-	};
+		/** @brief Interface representing an account's profile.
+		 *
+		 * This interface represents an account's profile.
+		 **/
+		class IProfile
+		{
+		public:
+			virtual ~IProfile () {}
+		};
+	}
 }
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::Blogique::IProfile,
+		"org.Deviant.LeechCraft.Blogique.IProfile/1.0");

@@ -18,14 +18,10 @@
 
 #pragma once
 
-#include <functional>
-#include <QObject>
-#include <QQueue>
-#include <QPair>
-#include <QDomElement>
-#include <QNetworkRequest>
-#include "core.h"
-#include "profiletypes.h"
+#include <QUrl>
+#include <QMap>
+#include <QStringList>
+#include <QVariant>
 
 namespace LeechCraft
 {
@@ -33,29 +29,55 @@ namespace Blogique
 {
 namespace Metida
 {
-	class LJXmlRPC : public QObject
+	struct LJFriendGroup
 	{
-		Q_OBJECT
-
-		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
-	public:
-		LJXmlRPC (QObject *parent = 0);
-
-		void Validate (const QString& login, const QString& pass);
-	private:
-		void GenerateChallenge () const;
-		void ValidateAccountData (const QString& login,
-				const QString& pass, const QString& challenge);
-
-	private slots:
-		void handleChallengeReplyFinished ();
-		void handleValidateReplyFinished ();
-
-	signals:
-		void validatingFinished (bool success);
-		void profileDataReceived ();
-		void error (int code, const QString& msg);
+		bool Public_;
+		QString Name_;
+		uint Id_;
+		uint SortOrder_;
 	};
+
+	struct LJMood
+	{
+		qint64 Parent_;
+		qint64 Id_;
+		QString Name_;
+	};
+
+	struct LJProfileData
+	{
+		QUrl AvatarUrl_;
+		qint64 UserId_;
+		qint64 Caps_;
+		QList<LJFriendGroup> FriendGroups_;
+		QList<LJMood> Moods_;
+		QStringList Communities_;
+		QString FullName_;
+	};
+
+	namespace LJParserTypes
+	{
+		class LJParseProfileEntry
+		{
+			QString Name_;
+			QVariantList ValueList_;
+
+		public:
+			LJParseProfileEntry ();
+			LJParseProfileEntry (const QString& name,
+					const QVariantList& value);
+			QString Name () const;
+			QVariantList Value () const;
+
+			bool ValueToBool () const;
+			QString ValueToString () const;
+			qint64 ValueToLongLong () const;
+			int ValueToInt () const;
+			QUrl ValueToUrl () const;
+		};
+	}
+
 }
 }
 }
+Q_DECLARE_METATYPE (LeechCraft::Blogique::Metida::LJParserTypes::LJParseProfileEntry)

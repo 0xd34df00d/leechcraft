@@ -57,7 +57,12 @@ namespace Blogique
 			/** This blogging platform provides API for supporting
 			 * registering new accounts from client.
 			 */
-			BPFSupportsRegistration = 0x1
+			BPFSupportsRegistration = 0x1,
+
+			/** This blogging platform support account profilest with extended
+			 * information.
+			 */
+			BPFSupportsProfiles = 0x2
 		};
 		Q_DECLARE_FLAGS (BloggingPlatfromFeatures, BloggingPlatfromFeature);
 
@@ -210,6 +215,16 @@ namespace Blogique
 		 * implement IAccount.
 		 */
 		virtual void accountRemoved (QObject *account) = 0;
+
+		/** @brief Notifies about an account have finished validating data.
+		 *
+		 * This signal should be emitted whenever an account
+		 * finished validation.
+		 *
+		 * @note This function is expected to be a signal.
+		 *
+		 * @param[out] account The account, which must implement IAccount.
+		 */
 
 		virtual void accountValidated (QObject *account, bool validated) = 0;
 	};

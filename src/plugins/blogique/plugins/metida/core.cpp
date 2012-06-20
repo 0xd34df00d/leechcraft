@@ -76,6 +76,11 @@ namespace Metida
 		return qobject_cast<IPluginProxy*> (PluginProxy_);
 	}
 
+	void Core::SendEntity (const Entity& e)
+	{
+		emit gotEntity (e);
+	}
+
 }
 }
 }

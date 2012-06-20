@@ -19,6 +19,7 @@
 
 #include "separateplayer.h"
 #include <QCloseEvent>
+#include <QShortcut>
 
 namespace LeechCraft
 {
@@ -29,20 +30,26 @@ namespace Laure
 	, FullScreenMode_ (false)
 	{
 		setPalette (QPalette (Qt::black));
+		InitShortcuts ();
 	}
-	
+
+	void SeparatePlayer::InitShortcuts ()
+	{
+		new QShortcut (QKeySequence (Qt::Key_F), this, SLOT (close ()));
+	}
+
 	void SeparatePlayer::closeEvent (QCloseEvent *event)
 	{
 		emit closed ();
 		event->accept ();
 	}
-	
+
 	void SeparatePlayer::keyPressEvent (QKeyEvent *event)
 	{
 		switch (event->key ())
 		{
 		case Qt::Key_F11:
-      FullScreenMode_ = !FullScreenMode_;
+			FullScreenMode_ = !FullScreenMode_;
 			if (FullScreenMode_)
 				showFullScreen ();
 			else

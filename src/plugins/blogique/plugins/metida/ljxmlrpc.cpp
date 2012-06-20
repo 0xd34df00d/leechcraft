@@ -20,9 +20,11 @@
 #include <QDomDocument>
 #include <QtDebug>
 #include <QCryptographicHash>
+#include <QDateTime>
 #include <QNetworkReply>
 #include <QXmlQuery>
-#include "core.h"
+#include <util/sysinfo.h>
+#include "profiletypes.h"
 
 namespace LeechCraft
 {
@@ -138,6 +140,23 @@ namespace Metida
 				hpassword, document));
 		result.second.appendChild (GetMemberElement ("ver", "int",
 				"1", document));
+		//TODO
+// 		result.second.appendChild (GetMemberElement ("clientversion", "string",
+// 				Util::SysInfo::GetOSName () +
+// 						"-LeechCraft Blogique " +
+// 						Core::Instance ().GetCoreProxy ()->GetVersion (),
+// 				document));
+		result.second.appendChild (GetMemberElement ("getmoods", "int",
+				"0", document));
+		result.second.appendChild (GetMemberElement ("getmenus", "int",
+				"0", document));
+		result.second.appendChild (GetMemberElement ("getpickws", "int",
+				"1", document));
+		result.second.appendChild (GetMemberElement ("getpickwurls", "int",
+				"1", document));
+		result.second.appendChild (GetMemberElement ("getcaps", "int",
+				"1", document));
+
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
 						document.toByteArray ());
@@ -146,6 +165,165 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleValidateReplyFinished ()));
+	}
+
+	namespace
+	{
+		QVariantList ParseValue (const QDomNode& node);
+
+		LJParserTypes::LJParseProfileEntry ParseMember (const QDomNode& node)
+		{
+			const auto& memberFields = node.childNodes ();
+			const auto& memberNameField = memberFields.at (0);
+			const auto& memberValueField = memberFields.at (1);
+			QString memberName;
+			QVariantList memberValue;
+			if (memberNameField.isElement () &&
+					memberNameField.toElement ().tagName () == "name")
+				memberName = memberNameField.toElement ().text ();
+
+			if (memberValueField.isElement ())
+				memberValue = ParseValue (memberValueField);
+
+			return LJParserTypes::LJParseProfileEntry (memberName, memberValue);
+		}
+
+		QVariantList ParseValue (const QDomNode& node)
+		{
+			QVariantList result;
+			const auto& valueNode = node.firstChild ();
+			const auto& valueElement = valueNode.toElement ();
+			QString type = valueElement.tagName ();
+			if (type == "string" ||
+					type == "int" ||
+					type == "i4" ||
+					type == "double" ||
+					type == "boolean")
+				result << valueElement.text ();
+			else if (type == "dateTime.iso8601")
+				result << QDateTime::fromString (valueElement.text (), Qt::ISODate);
+			else if (type == "base64")
+				result << QString::fromUtf8 (QByteArray::fromBase64 (valueElement.text ().toUtf8 ()));
+			else if (type == "array")
+			{
+				const auto& arrayElements = valueNode.firstChild ().childNodes ();
+				QVariantList array;
+				for (int i = 0, count = arrayElements.count (); i < count; ++i)
+					array << QVariant::fromValue<QVariantList> (ParseValue (arrayElements.at (i)));
+
+				result << array;
+			}
+			else if (type == "struct")
+			{
+				const auto& structMembers = valueNode.childNodes ();
+				for (int i = 0, count = structMembers.count (); i < count; ++i)
+					result << QVariant::fromValue<LJParserTypes::LJParseProfileEntry> (ParseMember (structMembers.at (i)));
+			}
+
+			return result;
+		}
+
+		struct Id2ProfileField
+		{
+			QHash<QString, std::function<void (LJProfileData&,
+					const LJParserTypes::LJParseProfileEntry&)>> Id2ProfileField_;
+
+			Id2ProfileField ()
+			{
+				Id2ProfileField_ ["defaultpicurl"] = [] (LJProfileData& profile,
+						const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					profile.AvatarUrl_ = entry.ValueToUrl ();
+				};
+				Id2ProfileField_ ["friendgroups"] = [] (LJProfileData& profile,
+						const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					for (const auto& friendGroupEntry : entry.Value ())
+					{
+						LJFriendGroup group;
+						for (const auto& field : friendGroupEntry.toList ())
+						{
+							LJParserTypes::LJParseProfileEntry fieldEntry =
+							field.value<LJParserTypes::LJParseProfileEntry> ();
+							if (fieldEntry.Name () == "public")
+								group.Public_ = fieldEntry.ValueToBool ();
+							else if (fieldEntry.Name () == "name")
+								group.Name_ = fieldEntry.ValueToString ();
+							else if (fieldEntry.Name () == "id")
+								group.Id_ = fieldEntry.ValueToInt ();
+							else if (fieldEntry.Name () == "sortorder")
+								group.SortOrder_ = fieldEntry.ValueToInt ();
+						}
+						profile.FriendGroups_ << group;
+					}
+				};
+				Id2ProfileField_ ["usejournals"] = [] (LJProfileData& profile,
+						const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					for (const auto& val : entry.Value ())
+						profile.Communities_ << val.toList ().value (0).toString ();
+				};
+				Id2ProfileField_ ["fullname"] = [] (LJProfileData& profile,
+						const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					profile.FullName_ = entry.ValueToString ();
+				};
+				Id2ProfileField_ ["moods"] = [] (LJProfileData& profile,
+						const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					for (const auto& moodEntry : entry.Value ())
+					{
+						LJMood mood;
+						for (const auto& field : moodEntry.toList ())
+						{
+							LJParserTypes::LJParseProfileEntry fieldEntry =
+							field.value<LJParserTypes::LJParseProfileEntry> ();
+							if (fieldEntry.Name () == "parent")
+								mood.Parent_ = fieldEntry.ValueToLongLong ();
+							else if (fieldEntry.Name () == "name")
+								mood.Name_ = fieldEntry.ValueToString ();
+							else if (fieldEntry.Name () == "id")
+								mood.Id_ = fieldEntry.ValueToLongLong ();
+						}
+						profile.Moods_ << mood;
+					}
+				};
+				Id2ProfileField_ ["userid"] = [] (LJProfileData& profile,
+						const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					profile.UserId_ = entry.ValueToLongLong ();
+				};
+				Id2ProfileField_ ["caps"] = [] (LJProfileData& profile,
+						const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					profile.Caps_ = entry.ValueToLongLong ();
+				};
+			}
+		};
+
+		LJProfileData ParseProfileInfo (const QDomDocument& document)
+		{
+			static Id2ProfileField id2field;
+			const auto& firstStructElement = document.elementsByTagName ("struct");
+			LJProfileData profile;
+			if (firstStructElement.at (0).isNull ())
+				return LJProfileData ();
+
+			const auto& members = firstStructElement.at (0).childNodes ();
+			for (int i = 0, count = members.count (); i < count; ++i)
+			{
+				const QDomNode& member = members.at (i);
+				if (!member.isElement () ||
+						member.toElement ().tagName () != "member")
+					continue;
+
+				auto res = ParseMember (member);
+				if (id2field.Id2ProfileField_.contains (res.Name ()))
+					id2field.Id2ProfileField_ [res.Name ()] (profile, res);
+			}
+
+			return profile;
+		}
 	}
 
 	void LJXmlRPC::handleChallengeReplyFinished ()
@@ -205,6 +383,8 @@ namespace Metida
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
+			LJProfileData data = ParseProfileInfo (document);
+
 			emit validatingFinished (true);
 			return;
 		}
