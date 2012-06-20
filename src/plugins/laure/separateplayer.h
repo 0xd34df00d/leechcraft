@@ -31,13 +31,15 @@ namespace Laure
 	class SeparatePlayer : public QWidget
 	{
 		Q_OBJECT
-		
+
 		bool FullScreenMode_;
 	public:
 		/** @brief Constructs a new SeparatePlayer tab
 		 * with the given parent and flags.
 		 */
 		SeparatePlayer (QWidget *parent = 0);
+	private:
+		void InitShortcuts ();
 	protected:
 		void closeEvent (QCloseEvent*);
 		void keyPressEvent (QKeyEvent*);

@@ -80,6 +80,7 @@ namespace Laure
 	private:
 		void InitCommandFrame ();
 		void InitToolBar ();
+		void InitShortcuts ();
 	signals:
 		/** @brief Is emitted to notify the Core that this tab needs to
 		 * be closed.
@@ -121,6 +122,7 @@ namespace Laure
 
 		void handleSliderReleased ();
 		void handleSliderMoved (int pos);
+		void handleDetachPlayer ();
 	};
 }
 }

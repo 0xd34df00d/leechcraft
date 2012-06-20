@@ -30,6 +30,7 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include <QMenu>
+#include <QShortcut>
 #include <interfaces/core/icoreproxy.h>
 #include "laure.h"
 #include "playpauseaction.h"
@@ -135,6 +136,7 @@ namespace Laure
 
 		InitToolBar ();
 		InitCommandFrame ();
+		InitShortcuts ();
 	}
 
 	void LaureWidget::handleSplitterMoved ()
@@ -152,6 +154,11 @@ namespace Laure
 	void LaureWidget::handleSliderMoved (int pos)
 	{
 		InMove_ = true;
+	}
+
+	void LaureWidget::handleDetachPlayer ()
+	{
+		handleDetachPlayer (!SeparatePlayer_->isVisible ());
 	}
 
 	void LaureWidget::handlePlayListWidgetDoubleClicked ()
@@ -220,6 +227,19 @@ namespace Laure
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (showSubtitleMenu ()));
+	}
+
+	void LaureWidget::InitShortcuts ()
+	{
+		new QShortcut (QKeySequence (Qt::Key_F), this, SLOT (handleDetachPlayer ()));
+		new QShortcut (QKeySequence (Qt::Key_Right), this, SLOT (next10Seconds ()));
+		new QShortcut (QKeySequence (Qt::Key_Left), this, SLOT (prev10Seconds ()));
+		new QShortcut (QKeySequence (Qt::Key_PageUp), this, SLOT (next60Seconds ()));
+		new QShortcut (QKeySequence (Qt::Key_PageDown), this, SLOT (prev60Seconds ()));
+		new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_Right), this, SLOT (next300Seconds ()));
+		new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_Left), this, SLOT (prev300Seconds ()));
+		new QShortcut (QKeySequence (Qt::Key_Up), this, SLOT (volumeUp ()));
+		new QShortcut (QKeySequence (Qt::Key_Down), this, SLOT (volumeDown ()));
 	}
 
 	void LaureWidget::showSubtitleMenu ()
