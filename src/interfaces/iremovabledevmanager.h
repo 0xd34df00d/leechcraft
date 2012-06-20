@@ -26,9 +26,9 @@ class QAbstractItemModel;
 
 namespace LeechCraft
 {
-	enum class DeviceType
+	enum DeviceType
 	{
-		Generic,
+		GenericDevice,
 		MediaPlayer,
 		MassStorage
 	};
@@ -37,18 +37,21 @@ namespace LeechCraft
 	{
 		NonPartition = -1,
 		Empty = 0x00,
-		Win95FAT32 = 0x0b
+		Win95FAT32 = 0x0b,
+		Win95FAT32LBA = 0x0c
 	};
 
 	enum DeviceRoles
 	{
 		DevType = Qt::UserRole + 1,
-		PartitionType,
+		PartType,
 		IsRemovable,
 		IsPartition,
+		IsMountable,
 		DevID,
 		VisibleName,
-		Size
+		TotalSize,
+		MountPoints
 	};
 }
 

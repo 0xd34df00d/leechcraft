@@ -116,6 +116,15 @@ namespace UDisks
 						iface->property ("DriveModel").toString ());
 		QStandardItem *item = new QStandardItem (name);
 		Object2Item_ [str] = item;
+		item->setData (DeviceType::GenericDevice, DeviceRoles::DevType);
+		item->setData (iface->property ("PartitionType").toInt (), DeviceRoles::PartType);
+		item->setData (isRemovable, DeviceRoles::IsRemovable);
+		item->setData (isPartition, DeviceRoles::IsPartition);
+		item->setData (isPartition && isRemovable, DeviceRoles::IsMountable);
+		item->setData (str, DeviceRoles::DevID);
+		item->setData (name, DeviceRoles::VisibleName);
+		item->setData (iface->property ("PartitionSize").toLongLong (), DeviceRoles::TotalSize);
+		item->setData (iface->property ("DeviceMountPaths").toStringList (), DeviceRoles::MountPoints);
 		if (!isSlave)
 			DevicesModel_->appendRow (item);
 		else
