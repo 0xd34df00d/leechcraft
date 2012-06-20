@@ -30,7 +30,7 @@ namespace LeechCraft
 namespace Laure
 {
 	const int pos_slider_max = 10000;
-		
+
 	Player::Player (QWidget *parent)
 	: QFrame (parent)
 	, Poller_ (new QTimer (this))
@@ -41,13 +41,13 @@ namespace Laure
 				SIGNAL (timeout ()));
 		Poller_->start (300);
 	}
-	
+
 	void Player::SetVLCWrapper (std::shared_ptr<VLCWrapper> core)
 	{
 		VLCWrapper_ = core;
 		VLCWrapper_->setWindow (winId ());
 	}
-	
+
 	namespace
 	{
 		QTime IntToQTime (int val)
@@ -55,23 +55,23 @@ namespace Laure
 			return val < 0 ? QTime () : QTime (0, 0).addMSecs (val);
 		}
 	}
-	
+
 	QTime Player::GetTime () const
 	{
 		if (!VLCWrapper_)
 			return QTime ();
-		
+
 		return IntToQTime (VLCWrapper_->GetTime ());
 	}
-	
+
 	QTime Player::GetLength () const
 	{
 		if (!VLCWrapper_)
 			return QTime ();
-		
+
 		return IntToQTime (VLCWrapper_->GetLength ());
 	}
-	
+
 	int Player::GetPosition () const
 	{
 		if (!VLCWrapper_)
@@ -84,7 +84,7 @@ namespace Laure
 	{
 		if (!VLCWrapper_)
 			return;
-		
+
 		VLCWrapper_->setPosition (static_cast<float> (pos) / pos_slider_max);
 	}
 }

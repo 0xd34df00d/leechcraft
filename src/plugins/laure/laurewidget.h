@@ -60,6 +60,8 @@ namespace Laure
 		QAction *SubtitleAction_;
 		QMenu *SubtitleMenu_;
 		PlayPauseAction *ActionPlay_;
+
+		bool InMove_;
 	public:
 		/** @brief Constructs a new LaureWidget tab
 		 * with the given parent and flags.
@@ -103,7 +105,7 @@ namespace Laure
 		 * @param[in] location Media file location.
 		 */
 		void handleOpenMediaContent (const QString& location);
-		
+
 		void updateSubtitleMenu (const MediaMeta& meta);
 	private slots:
 		void handleOpenFile ();
@@ -116,6 +118,9 @@ namespace Laure
 		void showSubtitleMenu ();
 		void handlePlayListWidgetDoubleClicked ();
 		void handleSplitterMoved ();
+
+		void handleSliderReleased ();
+		void handleSliderMoved (int pos);
 	};
 }
 }
