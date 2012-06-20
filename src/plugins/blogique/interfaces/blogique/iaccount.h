@@ -28,7 +28,6 @@ namespace Blogique
 {
 	/** @brief Interface representing a single account.
 	 *
-	 * This interface represents an account.
 	 **/
 	class IAccount
 	{

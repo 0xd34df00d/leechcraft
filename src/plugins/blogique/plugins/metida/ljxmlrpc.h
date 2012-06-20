@@ -38,8 +38,6 @@ namespace Metida
 		Q_OBJECT
 
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
-		QHash<QString, std::function<void (LJProfileData&,
-				const LJParserTypes::LJParseProfileEntry&)>> Id2ProfileField_;
 	public:
 		LJXmlRPC (QObject *parent = 0);
 
@@ -48,9 +46,6 @@ namespace Metida
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
 				const QString& pass, const QString& challenge);
-		LJProfileData ParseProfileInfo (QDomDocument document) const;
-		LJParserTypes::LJParseProfileEntry ParseMember (QDomNode node) const;
-		QVariantList ParseValue (QDomNode node) const;
 
 	private slots:
 		void handleChallengeReplyFinished ();

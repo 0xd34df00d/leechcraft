@@ -60,7 +60,7 @@ namespace Blogique
 			BPFSupportsRegistration = 0x1,
 
 			/** This blogging platform support account profilest with extended
-			 * information
+			 * information.
 			 */
 			BPFSupportsProfiles = 0x2
 		};
@@ -217,7 +217,7 @@ namespace Blogique
 		virtual void accountRemoved (QObject *account) = 0;
 
 		/** @brief Notifies about an account have finished validating data.
-		 * 
+		 *
 		 * This signal should be emitted whenever an account
 		 * finished validation.
 		 *
@@ -225,7 +225,7 @@ namespace Blogique
 		 *
 		 * @param[out] account The account, which must implement IAccount.
 		 */
-		
+
 		virtual void accountValidated (QObject *account, bool validated) = 0;
 	};
 

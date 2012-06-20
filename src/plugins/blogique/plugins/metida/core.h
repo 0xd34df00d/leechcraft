@@ -60,7 +60,7 @@ namespace Metida
 		void SetPluginProxy (QObject *pluginProxy);
 		IPluginProxy* GetPluginProxy ();
 
-		void SendEntity (const LeechCraft::Entity& e);
+		void SendEntity (const Entity& e);
 	private:
 		void InitErrorMessages ();
 

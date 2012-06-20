@@ -203,7 +203,7 @@ namespace Metida
 
 	void LJAccount::handleXmlRpcError (int errorCode, const QString& msgInEng)
 	{
-		LeechCraft::Entity e = Util::MakeNotification ("Blogique",
+		Entity e = Util::MakeNotification ("Blogique",
 				tr ("%1 (original message: %2)")
 						.arg (MetidaUtils::GetLocalizedErrorMessage (errorCode), msgInEng),
 				PWarning_);
