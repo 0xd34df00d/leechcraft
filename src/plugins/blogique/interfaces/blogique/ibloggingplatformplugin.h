@@ -45,7 +45,7 @@ namespace Blogique
 		virtual QObject* GetObject () = 0;
 
 		/** @brief Returns the blogging platforms list provided by this plugin.
-		 * 
+		 *
 		 * Each object in this list must implement the IBloggingPlatform
 		 * interface.
 		 *

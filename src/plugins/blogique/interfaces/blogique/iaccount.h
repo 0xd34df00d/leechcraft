@@ -28,7 +28,6 @@ namespace Blogique
 {
 	/** @brief Interface representing a single account.
 	 *
-	 * This interface represents an account.
 	 **/
 	class IAccount
 	{
@@ -85,7 +84,19 @@ namespace Blogique
 		 */
 		virtual void OpenConfigurationDialog () = 0;
 
+		/** @brief Returns validation state of account.
+		 *
+		 * If account not validated it can't be used for blogging.
+		 *
+		 * @return Validation state of the account.
+		 */
 		virtual bool IsValidated () const = 0;
+
+		/** @brief Returns the pointer to account's profile.
+		 *
+		 * @return The account's profile.
+		 */
+		virtual QObject* GetProfile () = 0;
 
 		/** @brief This signal should be emitted when account is renamed.
 		 *
@@ -101,6 +112,5 @@ namespace Blogique
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Blogique::IAccount*);
 Q_DECLARE_INTERFACE (LeechCraft::Blogique::IAccount,
 		"org.Deviant.LeechCraft.Blogique.IAccount/1.0");

@@ -74,7 +74,7 @@ namespace Laure
 		libvlc_media_player_ptr Player_;
 		QList<int> QueueListIndex_;
 		bool IsPlayedFromQueue_;
-		
+
 		MediaMeta CurrentItemMeta_;
 	public:
 		/** @brief Constructs a new VLCWrapper class
@@ -127,17 +127,17 @@ namespace Laure
 		 * @return Media meta info.
 		 */
 		MediaMeta GetItemMeta (int row, const QString& location = QString ()) const;
-		
+
 		void HandlePlayed ();
 		void HandleStopped ();
-		
+
 		/** @brief Is called when the next item is chosen.
 		 */
 		void HandleNextItemSet ();
 	public slots:
 		void addToQueue (int index);
 		void removeFromQueue (int index);
-		
+
 		/** @brief Adds media file to the libvlc media list.
 		 *
 		 * @param[in] location Media file location.
@@ -226,10 +226,12 @@ namespace Laure
 		 * @param[in] index Playlist item index.
 		 */
 		void setMeta (libvlc_meta_t type, const QString& value, int index);
-		
+
 		QList<int> GetQueueListIndexes () const;
-		
+
 		void setSubtitle (const QString& location = QString ()) const;
+
+		void setTime (qint64 time);
 	private:
 		int PlayQueue ();
 
@@ -239,7 +241,7 @@ namespace Laure
 		 * @param[out] index Item index.
 		 */
 		void itemPlayed (int index);
-		
+
 		void currentItemMeta (const MediaMeta& meta);
 
 		/** @brief Is emitted when the media file is added to

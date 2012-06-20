@@ -45,7 +45,7 @@ namespace Metida
 
 	IBloggingPlatform::BloggingPlatfromFeatures LJBloggingPlatform::GetFeatures () const
 	{
-		return BPFNone;
+		return BPFSupportsProfiles;
 	}
 
 	QObjectList LJBloggingPlatform::GetRegisteredAccounts ()
@@ -96,10 +96,6 @@ namespace Metida
 		}
 
 		LJAccount *account = new LJAccount (name, this);
-		connect (account,
-				SIGNAL (accountValidated (bool)),
-				this,
-				SLOT (handleAccountValidated (bool)));
 		account->FillSettings (w);
 
 		const QString& pass = w->GetPassword ();
@@ -111,6 +107,7 @@ namespace Metida
 		LJAccounts_ << account;
 		saveAccounts ();
 		emit accountAdded (account);
+		account->Init ();
 	}
 
 	void LJBloggingPlatform::RemoveAccount (QObject *account)
@@ -153,15 +150,10 @@ namespace Metida
 						<< i;
 				continue;
 			}
-
-			connect (acc,
-					SIGNAL (accountSettingsChanged ()),
-					this,
-					SLOT (saveAccounts ()));
-
 			LJAccounts_ << acc;
-
 			emit accountAdded (acc);
+
+			acc->Init ();
 		}
 		settings.endArray ();
 	}

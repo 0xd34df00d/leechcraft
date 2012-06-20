@@ -20,11 +20,14 @@
 #include "ljaccount.h"
 #include <QtDebug>
 #include <util/passutils.h>
+#include <util/util.h>
+#include "core.h"
 #include "ljaccountconfigurationwidget.h"
 #include "ljaccountconfigurationdialog.h"
 #include "ljbloggingplatform.h"
+#include "ljprofile.h"
 #include "ljxmlrpc.h"
-#include "core.h"
+#include "utils.h"
 
 namespace LeechCraft
 {
@@ -38,11 +41,16 @@ namespace Metida
 	, LJXmlRpc_ (new LJXmlRPC (this))
 	, Name_ (name)
 	, IsValidated_ (false)
+	, LJProfile_ (std::make_shared<LJProfile> (this))
 	{
 		connect (LJXmlRpc_,
 				SIGNAL (validatingFinished (bool)),
 				this,
 				SLOT (handleValidatingFinished (bool)));
+		connect (LJXmlRpc_,
+				SIGNAL (error (int, const QString&)),
+				this,
+				SLOT (handleXmlRpcError (int, const QString&)));
 	}
 
 	QObject* LJAccount::GetObject ()
@@ -98,6 +106,12 @@ namespace Metida
 	bool LJAccount::IsValidated () const
 	{
 		return IsValidated_;
+	}
+
+	QObject* LJAccount::GetProfile ()
+	{
+		//TODO
+		return 0;
 	}
 
 	void LJAccount::FillSettings (LJAccountConfigurationWidget *widget)
@@ -161,6 +175,19 @@ namespace Metida
 		LJXmlRpc_->Validate (Login_, pass);
 	}
 
+	void LJAccount::Init ()
+	{
+		connect (this,
+				SIGNAL (accountValidated (bool)),
+				ParentBloggingPlatform_,
+				SLOT (handleAccountValidated (bool)));
+
+		connect (this,
+				SIGNAL (accountSettingsChanged ()),
+				ParentBloggingPlatform_,
+				SLOT (saveAccounts ()));
+	}
+
 	void LJAccount::handleValidatingFinished (bool success)
 	{
 		IsValidated_ = success;
@@ -171,7 +198,25 @@ namespace Metida
 				<< IsValidated_;
 
 		emit accountValidated (IsValidated_);
+		emit accountSettingsChanged ();
 	}
+
+	void LJAccount::handleXmlRpcError (int errorCode, const QString& msgInEng)
+	{
+		Entity e = Util::MakeNotification ("Blogique",
+				tr ("%1 (original message: %2)")
+						.arg (MetidaUtils::GetLocalizedErrorMessage (errorCode), msgInEng),
+				PWarning_);
+
+		qWarning () << Q_FUNC_INFO
+				<< "error code:"
+				<< errorCode
+				<< "error text:"
+				<< msgInEng;
+
+		Core::Instance ().SendEntity (e);
+	}
+
 }
 }
 }
