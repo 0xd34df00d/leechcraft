@@ -234,11 +234,10 @@ namespace Blogique
 			return;
 
 		QStandardItem *item = AccountsModel_->itemFromIndex (index);
-		IAccount *acc = 0;
 		if (item &&
 				Item2Account_.contains (item))
 		{
-			acc = Item2Account_ [item];
+			IAccount *acc = Item2Account_ [item];
 			auto ibp = qobject_cast<IBloggingPlatform*> (acc->GetParentBloggingPlatform ());
 			if (!ibp)
 			{

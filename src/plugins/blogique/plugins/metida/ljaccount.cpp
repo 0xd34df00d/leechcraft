@@ -27,6 +27,7 @@
 #include "ljbloggingplatform.h"
 #include "ljprofile.h"
 #include "ljxmlrpc.h"
+#include "utils.h"
 
 namespace LeechCraft
 {
@@ -203,8 +204,8 @@ namespace Metida
 	void LJAccount::handleXmlRpcError (int errorCode, const QString& msgInEng)
 	{
 		LeechCraft::Entity e = Util::MakeNotification ("Blogique",
-				tr ("Error: %1 (original message: %2)")
-						.arg (Core::Instance ().GetLocalizedErrorMessage (errorCode), msgInEng),
+				tr ("%1 (original message: %2)")
+						.arg (MetidaUtils::GetLocalizedErrorMessage (errorCode), msgInEng),
 				PWarning_);
 
 		qWarning () << Q_FUNC_INFO

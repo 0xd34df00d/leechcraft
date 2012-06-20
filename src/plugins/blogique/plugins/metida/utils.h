@@ -18,56 +18,19 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <QSet>
-#include <QUrl>
-#include <interfaces/structures.h>
-#include <interfaces/core/icoreproxy.h>
+#include <QString>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-class IPluginProxy;
-
 namespace Metida
 {
-	class LJBloggingPlatform;
-
-	class Core : public QObject
-	{
-		Q_OBJECT
-
-		ICoreProxy_ptr Proxy_;
-		QObjectList BlogPlatformPlugins_;
-		std::shared_ptr<LJBloggingPlatform> LJPlatform_;
-		QObject *PluginProxy_;
-
-		Core ();
-		Q_DISABLE_COPY (Core)
-	public:
-		static Core& Instance ();
-
-		void SecondInit ();
-
-		void CreateBloggingPlatfroms (QObject *parentPlatform);
-		void SetCoreProxy (ICoreProxy_ptr proxy);
-		ICoreProxy_ptr GetCoreProxy ();
-
-		QObjectList GetBloggingPlatforms () const;
-
-		void SetPluginProxy (QObject *pluginProxy);
-		IPluginProxy* GetPluginProxy ();
-
-		void SendEntity (const LeechCraft::Entity& e);
-	private:
-		void InitErrorMessages ();
-
-	signals:
-		void gotEntity (LeechCraft::Entity e);
-		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
-	};
+namespace MetidaUtils
+{
+	QString GetLocalizedErrorMessage (int errorCode);
 }
 }
 }
+}
+

@@ -24,6 +24,7 @@ SET (METIDA_SRCS
 	ljxmlrpc.cpp
 	metida.cpp
 	profiletypes.cpp
+	utils.cpp
 	xmlsettingsmanager.cpp
 	)
 
@@ -37,6 +38,7 @@ SET (METIDA_HEADERS
 	ljxmlrpc.h
 	metida.h
 	profiletypes.h
+	utils.h
 	xmlsettingsmanager.h
 	)
 
