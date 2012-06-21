@@ -31,6 +31,7 @@
 #include <QUrl>
 #include <QAction>
 #include <QBuffer>
+#include <QDesktopWidget>
 #include <QtDebug>
 
 Q_DECLARE_METATYPE (QList<QModelIndex>);
@@ -348,4 +349,18 @@ QVariantList LeechCraft::Util::GetPersistentData (const QList<QVariant>& keys,
 			Q_ARG (QObject**, 0));
 
 	return values;
+}
+
+QPoint LeechCraft::Util::FitRectScreen (QPoint pos, const QSize& size)
+{
+	const QRect& geometry = QApplication::desktop ()->screenGeometry (pos);
+	const bool dropDown = pos.y () < geometry.height () / 2;
+	const bool dropRight = pos.x () + size.width () < geometry.width ();
+
+	if (!dropDown)
+		pos.ry () -= size.height ();
+	if (!dropRight)
+		pos.rx () -= size.width ();
+
+	return pos;
 }
