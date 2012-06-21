@@ -111,20 +111,10 @@ namespace Azoth
 		 */
 		CPSPaused
 	};
-
-	/** Represents Azoth-specific action embed places.
-	 *
-	 * To be used with IActionsExporter.
-	 */
-	enum AzothActionsEmbedPlace
-	{
-		AAEPContactListCtxtMenu = AEPMax + 1
-	};
 }
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::State);
 Q_DECLARE_METATYPE (LeechCraft::Azoth::ChatPartState);
-Q_DECLARE_METATYPE (LeechCraft::Azoth::AzothActionsEmbedPlace);
 
 #endif

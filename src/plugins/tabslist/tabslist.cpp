@@ -81,7 +81,7 @@ namespace TabsList
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
 	{
 		QList<QAction*> actions;
-		if (aep == AEPQuickLaunch)
+		if (aep == ActionsEmbedPlace::QuickLaunch)
 			actions << ShowList_;
 		return actions;
 	}

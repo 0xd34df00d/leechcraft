@@ -26,14 +26,13 @@ class QAction;
 
 namespace LeechCraft
 {
-	enum ActionsEmbedPlace
+	enum class ActionsEmbedPlace
 	{
-		AEPToolsMenu,
-		AEPCommonContextMenu,
-		AEPQuickLaunch,
-		AEPTrayMenu,
-		AEPLCTray,
-		AEPMax = 100
+		ToolsMenu,
+		CommonContextMenu,
+		QuickLaunch,
+		TrayMenu,
+		LCTray
 	};
 }
 

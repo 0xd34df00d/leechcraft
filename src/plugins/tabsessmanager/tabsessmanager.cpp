@@ -111,12 +111,12 @@ namespace TabSessManager
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
 		QList<QAction*> result;
-		if (place == AEPToolsMenu)
+		if (place == ActionsEmbedPlace::ToolsMenu)
 		{
 			result << SessMgrMenu_->menuAction ();
 			result << UncloseMenu_->menuAction ();
 		}
-		else if (place == AEPCommonContextMenu)
+		else if (place == ActionsEmbedPlace::CommonContextMenu)
 			result << UncloseMenu_->menuAction ();
 		return result;
 	}

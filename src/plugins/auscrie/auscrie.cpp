@@ -87,7 +87,7 @@ namespace Auscrie
 	{
 		QList<QAction*> result;
 
-		if (place == AEPCommonContextMenu)
+		if (place == ActionsEmbedPlace::CommonContextMenu)
 			result << ShotAction_;
 
 		return result;

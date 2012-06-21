@@ -806,7 +806,7 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 
 	Q_FOREACH (IActionsExporter *exp, exporters)
 	{
-		QList<QAction*> actions = exp->GetActions (AEPQuickLaunch);
+		QList<QAction*> actions = exp->GetActions (ActionsEmbedPlace::QuickLaunch);
 		if (actions.isEmpty ())
 			continue;
 
@@ -830,7 +830,7 @@ void LeechCraft::MainWindow::FillTray ()
 			GetAllCastableTo<IActionsExporter*> ();
 	Q_FOREACH (IActionsExporter *o, trayMenus)
 	{
-		const auto& actions = o->GetActions (AEPTrayMenu);
+		const auto& actions = o->GetActions (ActionsEmbedPlace::TrayMenu);
 		SkinEngine::Instance ().UpdateIconSet (actions);
 		iconMenu->addActions (actions);
 		if (actions.size ())
@@ -857,7 +857,7 @@ void LeechCraft::MainWindow::FillToolMenu ()
 			Core::Instance ().GetPluginManager ()->
 				GetAllCastableTo<IActionsExporter*> ())
 	{
-		const auto& acts = e->GetActions (AEPToolsMenu);
+		const auto& acts = e->GetActions (ActionsEmbedPlace::ToolsMenu);
 		SkinEngine::Instance ().UpdateIconSet (acts);
 
 		Q_FOREACH (QAction *action, acts)

@@ -153,7 +153,7 @@ namespace Azoth
 		QList<QAction*> result;
 		switch (aep)
 		{
-		case AEPTrayMenu:
+		case ActionsEmbedPlace::TrayMenu:
 			result << MW_->GetChangeStatusMenu ()->menuAction ();
 			break;
 		default:

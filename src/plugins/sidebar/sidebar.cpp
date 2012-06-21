@@ -78,7 +78,7 @@ namespace Sidebar
 				GetAllCastableTo<IActionsExporter*> ();
 		Q_FOREACH (IActionsExporter *exp, hasActions)
 		{
-			const auto& acts = exp->GetActions (AEPLCTray);
+			const auto& acts = exp->GetActions (ActionsEmbedPlace::LCTray);
 			if (!acts.isEmpty ())
 				QLMgr_->AddToLCTray (acts);
 		}
@@ -132,7 +132,7 @@ namespace Sidebar
 
 		Q_FOREACH (IActionsExporter *exp, exporters)
 		{
-			const auto& actions = exp->GetActions (AEPQuickLaunch);
+			const auto& actions = exp->GetActions (ActionsEmbedPlace::QuickLaunch);
 			if (actions.isEmpty ())
 				continue;
 

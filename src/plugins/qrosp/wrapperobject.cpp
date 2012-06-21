@@ -372,22 +372,25 @@ namespace Qrosp
 		QVariantList args;
 		switch (place)
 		{
-		case AEPCommonContextMenu:
+		case ActionsEmbedPlace::CommonContextMenu:
 			args << "AEPCommonContextMenu";
 			break;
-		case AEPQuickLaunch:
+		case ActionsEmbedPlace::QuickLaunch:
 			args << "AEPQuickLaunch";
 			break;
-		case AEPToolsMenu:
+		case ActionsEmbedPlace::ToolsMenu:
 			args << "AEPToolsMenu";
 			break;
-		case AEPTrayMenu:
+		case ActionsEmbedPlace::TrayMenu:
 			args << "AEPTrayMenu";
 			break;
-		case AEPLCTray:
+		case ActionsEmbedPlace::LCTray:
 			args << "AEPLCTray";
 			break;
-		case AEPMax:
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unhandled place"
+					<< static_cast<int> (place);
 			break;
 		}
 		return SCALL (QList<QAction*>) ("GetActions", args);

@@ -70,7 +70,7 @@ namespace Dolozhee
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace area) const
 	{
 		QList<QAction*> result;
-		if (area == AEPToolsMenu)
+		if (area == ActionsEmbedPlace::ToolsMenu)
 			result << Report_;
 		return result;
 	}
