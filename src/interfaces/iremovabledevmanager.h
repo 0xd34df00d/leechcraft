@@ -48,6 +48,7 @@ namespace LeechCraft
 		IsRemovable,
 		IsPartition,
 		IsMountable,
+		IsMediaAvailable,
 		DevID,
 		VisibleName,
 		TotalSize,

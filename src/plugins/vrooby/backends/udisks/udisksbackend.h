@@ -56,8 +56,12 @@ namespace UDisks
 	private:
 		void InitialEnumerate ();
 		void AddPath (const QDBusObjectPath&);
+		void RemovePath (const QDBusObjectPath&);
 	private slots:
 		void handleEnumerationFinished (QDBusPendingCallWatcher*);
+		void handleDeviceAdded (const QDBusObjectPath&);
+		void handleDeviceRemoved (const QDBusObjectPath&);
+		void handleDeviceChanged (const QDBusObjectPath&);
 	};
 }
 }
