@@ -81,3 +81,4 @@ namespace Metida
 }
 }
 Q_DECLARE_METATYPE (LeechCraft::Blogique::Metida::LJParserTypes::LJParseProfileEntry)
+Q_DECLARE_METATYPE (LeechCraft::Blogique::Metida::LJProfileData)

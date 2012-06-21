@@ -21,6 +21,7 @@
 #include <memory>
 #include <QObject>
 #include "interfaces/blogique/iaccount.h"
+#include "profiletypes.h"
 
 namespace LeechCraft
 {
@@ -57,7 +58,8 @@ namespace Metida
 		QByteArray GetAccountID () const;
 		void OpenConfigurationDialog ();
 		bool IsValidated () const;
-		QObject* GetProfile ();
+
+		QWidget* GetProfileWidget ();
 
 		void FillSettings (LJAccountConfigurationWidget *widget);
 

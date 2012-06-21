@@ -27,6 +27,7 @@
 #include "ljbloggingplatform.h"
 #include "ljprofile.h"
 #include "ljxmlrpc.h"
+#include "profilewidget.h"
 #include "utils.h"
 
 namespace LeechCraft
@@ -43,6 +44,7 @@ namespace Metida
 	, IsValidated_ (false)
 	, LJProfile_ (std::make_shared<LJProfile> (this))
 	{
+		qRegisterMetaType<LJProfileData> ("LJProfileData");
 		connect (LJXmlRpc_,
 				SIGNAL (validatingFinished (bool)),
 				this,
@@ -51,6 +53,10 @@ namespace Metida
 				SIGNAL (error (int, const QString&)),
 				this,
 				SLOT (handleXmlRpcError (int, const QString&)));
+		connect (LJXmlRpc_,
+				SIGNAL (profileUpdated (const LJProfileData&)),
+				LJProfile_.get (),
+				SLOT (handleProfileUpdate (const LJProfileData&)));
 	}
 
 	QObject* LJAccount::GetObject ()
@@ -108,10 +114,9 @@ namespace Metida
 		return IsValidated_;
 	}
 
-	QObject* LJAccount::GetProfile ()
+	QWidget* LJAccount::GetProfileWidget ()
 	{
-		//TODO
-		return 0;
+		return LJProfile_->GetProfileWidget ();
 	}
 
 	void LJAccount::FillSettings (LJAccountConfigurationWidget *widget)

@@ -18,6 +18,8 @@
 
 #include "profiledialog.h"
 #include <interfaces/blogique/iaccount.h>
+#include <QtDebug>
+#include <QGridLayout>
 
 namespace LeechCraft
 {

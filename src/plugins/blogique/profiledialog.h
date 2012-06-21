@@ -36,6 +36,7 @@ namespace Blogique
 		Ui::ProfileDialog Ui_;
 	public:
 		ProfileDialog (IAccount *acc, QWidget *parent = 0);
+		~ProfileDialog ();
 	};
 }
 }

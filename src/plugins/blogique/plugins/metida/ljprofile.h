@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <interfaces/blogique/iprofile.h>
+#include "profiletypes.h"
 
 namespace LeechCraft
 {
@@ -27,6 +28,8 @@ namespace Blogique
 {
 namespace Metida
 {
+	class ProfileWidget;
+
 	class LJProfile : public QObject
 					, public IProfile
 	{
@@ -34,8 +37,13 @@ namespace Metida
 		Q_INTERFACES (LeechCraft::Blogique::IProfile);
 
 		QObject *ParentAccount_;
+		LJProfileData ProfileData_;
+		ProfileWidget *ProfileWidget_;
 	public:
-		LJProfile (QObject *parentAccount);
+		LJProfile (QObject *parentAccount, QObject *parent = 0);
+		ProfileWidget* GetProfileWidget ();
+	public slots:
+		void handleProfileUpdate (const LJProfileData& profile);
 	};
 }
 }

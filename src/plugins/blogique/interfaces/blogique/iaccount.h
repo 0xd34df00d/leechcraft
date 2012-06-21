@@ -22,6 +22,7 @@
 #include <QVariant>
 #include <QStringList>
 
+class QWidget;
 namespace LeechCraft
 {
 namespace Blogique
@@ -92,11 +93,11 @@ namespace Blogique
 		 */
 		virtual bool IsValidated () const = 0;
 
-		/** @brief Returns the pointer to account's profile.
+		/** @brief Returns the pointer to account's profile widget.
 		 *
-		 * @return The account's profile.
+		 * @return The account's profile widget.
 		 */
-		virtual QObject* GetProfile () = 0;
+		virtual QWidget* GetProfileWidget () = 0;
 
 		/** @brief This signal should be emitted when account is renamed.
 		 *

@@ -383,8 +383,8 @@ namespace Metida
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
-			LJProfileData data = ParseProfileInfo (document);
-
+			const LJProfileData& data = ParseProfileInfo (document);
+			emit profileUpdated (data);
 			emit validatingFinished (true);
 			return;
 		}

@@ -18,14 +18,8 @@
 
 #pragma once
 
-#include <functional>
-#include <QObject>
-#include <QQueue>
-#include <QPair>
-#include <QDomElement>
-#include <QNetworkRequest>
-#include "core.h"
-#include "profiletypes.h"
+#include <QWidget>
+#include "ui_profilewidget.h"
 
 namespace LeechCraft
 {
@@ -33,28 +27,13 @@ namespace Blogique
 {
 namespace Metida
 {
-	class LJXmlRPC : public QObject
+	class ProfileWidget : public QWidget
 	{
 		Q_OBJECT
 
-		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
+		Ui::ProfileWidget Ui_;
 	public:
-		LJXmlRPC (QObject *parent = 0);
-
-		void Validate (const QString& login, const QString& pass);
-	private:
-		void GenerateChallenge () const;
-		void ValidateAccountData (const QString& login,
-				const QString& pass, const QString& challenge);
-
-	private slots:
-		void handleChallengeReplyFinished ();
-		void handleValidateReplyFinished ();
-
-	signals:
-		void validatingFinished (bool success);
-		void profileUpdated (const LJProfileData& profile);
-		void error (int code, const QString& msg);
+		ProfileWidget (QWidget *parent = 0);
 	};
 }
 }

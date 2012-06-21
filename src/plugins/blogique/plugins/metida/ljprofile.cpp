@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "ljprofile.h"
+#include "profilewidget.h"
 
 namespace LeechCraft
 {
@@ -24,10 +25,23 @@ namespace Blogique
 {
 namespace Metida
 {
-	LJProfile::LJProfile (QObject *parentAccount)
-	: ParentAccount_ (parentAccount)
+	LJProfile::LJProfile (QObject *parentAccount, QObject *parent)
+	: QObject (parent)
+	, ParentAccount_ (parentAccount)
+	, ProfileWidget_ (new ProfileWidget)
 	{
 	}
+
+	ProfileWidget* LJProfile::GetProfileWidget ()
+	{
+		return ProfileWidget_;
+	}
+
+	void LJProfile::handleProfileUpdate (const LJProfileData& profile)
+	{
+		ProfileData_ = profile;
+	}
+
 }
 }
 }
