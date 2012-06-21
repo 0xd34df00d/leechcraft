@@ -18,10 +18,14 @@
 
 #include "vrooby.h"
 #include <QIcon>
+#include <QAction>
+#include <util/util.h>
 
 #ifdef ENABLE_UDISKS
 #include "backends/udisks/udisksbackend.h"
 #endif
+
+#include "trayview.h"
 
 namespace LeechCraft
 {
@@ -29,9 +33,24 @@ namespace Vrooby
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Backend_ = 0;
+		TrayView_ = new TrayView;
+
 #ifdef ENABLE_UDISKS
 		Backend_ = new UDisks::Backend (this);
 #endif
+
+		ActionDevices_ = new QAction (tr ("Removable devices..."), this);
+		ActionDevices_->setProperty ("ActionIcon", "drive-removable-media-usb");
+
+		ActionDevices_->setCheckable (true);
+		connect (ActionDevices_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (showTrayView (bool)));
+
+		if (Backend_)
+			TrayView_->SetDevModel (Backend_->GetDevicesModel ());
 	}
 
 	void Plugin::SecondInit ()
@@ -65,6 +84,21 @@ namespace Vrooby
 	QAbstractItemModel* Plugin::GetDevicesModel () const
 	{
 		return Backend_ ? Backend_->GetDevicesModel () : 0;
+	}
+
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
+	{
+		QList<QAction*> result;
+		if (aep == ActionsEmbedPlace::LCTray)
+			result << ActionDevices_;
+		return result;
+	}
+
+	void Plugin::showTrayView (bool show)
+	{
+		if (show && !TrayView_->isVisible ())
+			TrayView_->move (Util::FitRectScreen (QCursor::pos (), TrayView_->size ()));
+		TrayView_->setVisible (show);
 	}
 }
 }

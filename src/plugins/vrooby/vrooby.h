@@ -21,21 +21,26 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iremovabledevmanager.h>
+#include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
 {
 namespace Vrooby
 {
 	class DevBackend;
+	class TrayView;
 
 	class Plugin : public QObject
 				, public IInfo
 				, public IRemovableDevManager
+				, public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IRemovableDevManager)
+		Q_INTERFACES (IInfo IRemovableDevManager IActionsExporter)
 
 		DevBackend *Backend_;
+		QAction *ActionDevices_;
+		TrayView *TrayView_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -46,6 +51,11 @@ namespace Vrooby
 		QIcon GetIcon () const;
 
 		QAbstractItemModel* GetDevicesModel () const;
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+	private slots:
+		void showTrayView (bool);
+	signals:
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

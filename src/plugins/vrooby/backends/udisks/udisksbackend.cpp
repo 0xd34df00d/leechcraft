@@ -32,10 +32,29 @@ namespace Vrooby
 {
 namespace UDisks
 {
+	namespace
+	{
+		class DevModel : public QStandardItemModel
+		{
+		public:
+			DevModel (QObject* parent = 0)
+			: QStandardItemModel (parent)
+			{
+				QHash<int, QByteArray> names;
+				names [DeviceRoles::VisibleName] = "devName";
+				names [DeviceRoles::DevFile] = "devFile";
+				names [DeviceRoles::IsRemovable] = "isRemovable";
+				names [DeviceRoles::IsPartition] = "isPartition";
+				names [DeviceRoles::IsMountable] = "isMountable";
+				names [DeviceRoles::DevID] = "devID";
+				setRoleNames (names);
+			}
+		};
+	}
 	Backend::Backend (QObject *parent)
 	: DevBackend (parent)
 	, Valid_ (false)
-	, DevicesModel_ (new QStandardItemModel (this))
+	, DevicesModel_ (new DevModel (this))
 	, UDisksObj_ (0)
 	{
 		InitialEnumerate ();
@@ -119,10 +138,12 @@ namespace UDisks
 						iface->property ("DriveModel").toString ());
 
 			item->setData (DeviceType::GenericDevice, DeviceRoles::DevType);
+			item->setData (iface->property ("DeviceFile").toString (), DeviceRoles::DevFile);
 			item->setData (iface->property ("PartitionType").toInt (), DeviceRoles::PartType);
 			item->setData (isRemovable, DeviceRoles::IsRemovable);
 			item->setData (isPartition, DeviceRoles::IsPartition);
 			item->setData (isPartition && isRemovable, DeviceRoles::IsMountable);
+			item->setData (iface->property ("DeviceIsMediaAvailable"), DeviceRoles::IsMediaAvailable);
 			item->setData (iface->path (), DeviceRoles::DevID);
 			item->setData (name, DeviceRoles::VisibleName);
 			item->setData (iface->property ("PartitionSize").toLongLong (), DeviceRoles::TotalSize);
@@ -165,7 +186,9 @@ namespace UDisks
 	{
 		const auto& path = pathObj.path ();
 		auto item = Object2Item_.take (path);
-		if (item->parent ())
+		if (!item)
+			return;
+		else if (item->parent ())
 			item->parent ()->removeRow (item->row ());
 		else
 			DevicesModel_->removeRow (item->row ());

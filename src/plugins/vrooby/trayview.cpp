@@ -16,53 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QList>
-#include <QString>
-#include <QtPlugin>
-
-class QAbstractItemModel;
+#include "trayview.h"
+#include <QSortFilterProxyModel>
+#include <QDeclarativeContext>
+#include <interfaces/iremovabledevmanager.h>
 
 namespace LeechCraft
 {
-	enum DeviceType
-	{
-		GenericDevice,
-		MediaPlayer,
-		MassStorage
-	};
-
-	enum PartitionType
-	{
-		NonPartition = -1,
-		Empty = 0x00,
-		Win95FAT32 = 0x0b,
-		Win95FAT32LBA = 0x0c
-	};
-
-	enum DeviceRoles
-	{
-		DevType = Qt::UserRole + 1,
-		DevFile,
-		PartType,
-		IsRemovable,
-		IsPartition,
-		IsMountable,
-		IsMediaAvailable,
-		DevID,
-		VisibleName,
-		TotalSize,
-		MountPoints
-	};
-}
-
-class IRemovableDevManager
+namespace Vrooby
 {
-public:
-	virtual ~IRemovableDevManager () {}
+	TrayView::TrayView (QWidget *parent)
+	: QDeclarativeView (parent)
+	, Proxy_ (new QSortFilterProxyModel (this))
+	{
+		setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+		setAttribute (Qt::WA_TranslucentBackground);
 
-	virtual QAbstractItemModel* GetDevicesModel () const = 0;
-};
+		setResizeMode (SizeRootObjectToView);
+		setFixedSize (250, 300);
 
-Q_DECLARE_INTERFACE (IRemovableDevManager, "org.Deviant.LeechCraft.IRemovableDevManager/1.0");
+		rootContext ()->setContextProperty ("devModel", Proxy_);
+		setSource (QUrl ("qrc:/vrooby/resources/qml/DevicesTrayView.qml"));
+	}
+
+	void TrayView::SetDevModel (QAbstractItemModel *model)
+	{
+		Proxy_->setSourceModel (model);
+	}
+}
+}

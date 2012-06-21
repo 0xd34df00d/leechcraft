@@ -18,51 +18,24 @@
 
 #pragma once
 
-#include <QList>
-#include <QString>
-#include <QtPlugin>
+#include <QDeclarativeView>
 
 class QAbstractItemModel;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
-	enum DeviceType
+namespace Vrooby
+{
+	class TrayView : public QDeclarativeView
 	{
-		GenericDevice,
-		MediaPlayer,
-		MassStorage
-	};
+		Q_OBJECT
 
-	enum PartitionType
-	{
-		NonPartition = -1,
-		Empty = 0x00,
-		Win95FAT32 = 0x0b,
-		Win95FAT32LBA = 0x0c
-	};
+		QSortFilterProxyModel *Proxy_;
+	public:
+		TrayView (QWidget* = 0);
 
-	enum DeviceRoles
-	{
-		DevType = Qt::UserRole + 1,
-		DevFile,
-		PartType,
-		IsRemovable,
-		IsPartition,
-		IsMountable,
-		IsMediaAvailable,
-		DevID,
-		VisibleName,
-		TotalSize,
-		MountPoints
+		void SetDevModel (QAbstractItemModel*);
 	};
 }
-
-class IRemovableDevManager
-{
-public:
-	virtual ~IRemovableDevManager () {}
-
-	virtual QAbstractItemModel* GetDevicesModel () const = 0;
-};
-
-Q_DECLARE_INTERFACE (IRemovableDevManager, "org.Deviant.LeechCraft.IRemovableDevManager/1.0");
+}
