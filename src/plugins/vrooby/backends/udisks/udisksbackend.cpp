@@ -152,12 +152,18 @@ namespace UDisks
 		const bool isRemovable = iface->property ("DeviceIsRemovable").toBool ();
 		const bool isPartition = iface->property ("DeviceIsPartition").toBool ();
 
-		const QString& name = isPartition ?
-			tr ("Partition %1")
-				.arg (iface->property ("PartitionNumber").toInt ()) :
-			(iface->property ("DriveVendor").toString () +
-					" " +
-					iface->property ("DriveModel").toString ());
+		const auto& vendor = iface->property ("DriveVendor").toString () +
+				" " +
+				iface->property ("DriveModel").toString ();
+		const auto& partLabel = iface->property ("PartitionLabel").toString ().trimmed ();
+		const auto& partName = partLabel.isEmpty () ?
+				tr ("Partition %1")
+						.arg (iface->property ("PartitionNumber").toInt ()) :
+				partLabel;
+		const auto& name = isPartition ? partName : vendor;
+		const auto& fullName = isPartition ?
+				QString ("%1: %2").arg (vendor, partName) :
+				vendor;
 
 		auto parentIface = iface;
 		bool hasRemovableParent = isRemovable;
@@ -171,6 +177,7 @@ namespace UDisks
 			hasRemovableParent = parentIface->property ("DeviceIsRemovable").toBool ();
 		}
 
+		item->setText (name);
 		item->setData (DeviceType::GenericDevice, DeviceRoles::DevType);
 		item->setData (iface->property ("DeviceFile").toString (), DeviceRoles::DevFile);
 		item->setData (iface->property ("PartitionType").toInt (), DeviceRoles::PartType);
@@ -179,7 +186,7 @@ namespace UDisks
 		item->setData (isPartition && hasRemovableParent, DeviceRoles::IsMountable);
 		item->setData (iface->property ("DeviceIsMediaAvailable"), DeviceRoles::IsMediaAvailable);
 		item->setData (iface->path (), DeviceRoles::DevID);
-		item->setData (name, DeviceRoles::VisibleName);
+		item->setData (fullName, DeviceRoles::VisibleName);
 		item->setData (iface->property ("PartitionSize").toLongLong (), DeviceRoles::TotalSize);
 		item->setData (iface->property ("DeviceMountPaths").toStringList (), DeviceRoles::MountPoints);
 	}
