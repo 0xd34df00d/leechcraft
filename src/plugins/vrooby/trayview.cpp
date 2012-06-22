@@ -46,8 +46,8 @@ namespace Vrooby
 			{
 				const auto& icon = Proxy_->GetIcon (id);
 				if (size)
-					*size = icon.actualSize (requestedSize);
-				return icon.pixmap (requestedSize);
+					*size = icon.actualSize (QSize (32, 32));
+				return icon.pixmap (QSize (32, 32));
 			}
 		};
 	}
@@ -69,6 +69,7 @@ namespace Vrooby
 		engine ()->addImageProvider ("mountIcons", new MountIconProvider (proxy));
 
 		rootContext ()->setContextProperty ("devModel", Flattened_);
+		rootContext ()->setContextProperty ("devicesLabelText", tr ("Removable devices"));
 		setSource (QUrl ("qrc:/vrooby/resources/qml/DevicesTrayView.qml"));
 	}
 

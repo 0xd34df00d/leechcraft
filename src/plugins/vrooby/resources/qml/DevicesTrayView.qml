@@ -10,12 +10,32 @@ Rectangle {
 
     signal toggleMountRequested(string id)
 
+    Text {
+        id: topLabel
+
+        text: devicesLabelText
+        horizontalAlignment: Text.AlignHCenter
+        font.pointSize: 12
+        color: "#eeeeee"
+
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.topMargin: 5
+    }
+
     ListView {
         id: devicesView
 
-        anchors.fill: parent
-        model: devModel
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: topLabel.bottom
+        anchors.topMargin: 3
+        anchors.bottom: parent.bottom
 
+        clip: true
+
+        model: devModel
         spacing: 20
 
         delegate: Rectangle {
@@ -23,6 +43,18 @@ Rectangle {
 
             width: devicesView.width
             height: devNameLabel.height + totalSizeLabel.height + mountedAtLabel.height
+
+            Rectangle {
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.leftMargin: 5
+                anchors.right: parent.right
+                anchors.rightMargin: 5
+
+                height: 1
+
+                color: "#777777"
+            }
 
             Text {
                 id: devNameLabel
@@ -91,9 +123,24 @@ Rectangle {
                 MouseArea {
                     id: mountButtonArea
                     anchors.fill: parent
+                    anchors.margins: -2
                     acceptedButtons: Qt.LeftButton
+                    hoverEnabled: true
 
                     onClicked: rootRect.toggleMountRequested(devID)
+                }
+
+                Rectangle {
+                    id: mountButtonHover
+                    anchors.fill: parent
+                    anchors.margins: -1
+                    radius: 2
+
+                    visible: mountButtonArea.containsMouse
+
+                    color: "#00000000"
+                    border.width: 1
+                    border.color: "#888888"
                 }
             }
         }
