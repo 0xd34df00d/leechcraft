@@ -210,6 +210,22 @@ namespace UDisks
 		}
 	}
 
+	namespace
+	{
+		QString GetErrorText (const QString& errorCode)
+		{
+			QMap<QString, QString> texts;
+			texts ["org.freedesktop.UDisks.Error.PermissionDenied"] = Backend::tr ("permission denied");
+			texts ["org.freedesktop.PolicyKit.Error.NotAuthorized"] = Backend::tr ("not authorized");
+			texts ["org.freedesktop.PolicyKit.Error.Busy"] = Backend::tr ("the device is busy");
+			texts ["org.freedesktop.PolicyKit.Error.Failed"] = Backend::tr ("the operation has failed");
+			texts ["org.freedesktop.PolicyKit.Error.Cancelled"] = Backend::tr ("the operation has been cancelled");
+			texts ["org.freedesktop.PolicyKit.Error.InvalidOption"] = Backend::tr ("invalid mount options were given");
+			texts ["org.freedesktop.PolicyKit.Error.FilesystemDriverMissing"] = Backend::tr ("unsupported filesystem");
+			return texts.value (errorCode, Backend::tr ("unknown error"));
+		}
+	}
+
 	void Backend::mountCallFinished (QDBusPendingCallWatcher *watcher)
 	{
 		qDebug () << Q_FUNC_INFO;
@@ -229,6 +245,11 @@ namespace UDisks
 		qWarning () << Q_FUNC_INFO
 				<< error.name ()
 				<< error.message ();
+		emit gotEntity (Util::MakeNotification ("Vrooby",
+					tr ("Failed to mount the device: %1 (%2).")
+						.arg (GetErrorText (error.name ()))
+						.arg (error.message ()),
+					PCritical_));
 	}
 
 	void Backend::umountCallFinished (QDBusPendingCallWatcher *watcher)
@@ -244,6 +265,16 @@ namespace UDisks
 						PInfo_));
 			return;
 		}
+
+		const auto& error = reply.error ();
+		qWarning () << Q_FUNC_INFO
+				<< error.name ()
+				<< error.message ();
+		emit gotEntity (Util::MakeNotification ("Vrooby",
+					tr ("Failed to unmount the device: %1 (%2).")
+						.arg (GetErrorText (error.name ()))
+						.arg (error.message ()),
+					PCritical_));
 	}
 
 	void Backend::handleEnumerationFinished (QDBusPendingCallWatcher *watcher)

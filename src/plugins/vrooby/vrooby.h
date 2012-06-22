@@ -56,6 +56,7 @@ namespace Vrooby
 		void showTrayView (bool);
 	signals:
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

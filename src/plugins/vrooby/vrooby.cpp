@@ -38,6 +38,10 @@ namespace Vrooby
 
 #ifdef ENABLE_UDISKS
 		Backend_ = new UDisks::Backend (this);
+		connect (Backend_,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 #endif
 
 		ActionDevices_ = new QAction (tr ("Removable devices..."), this);
