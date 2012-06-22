@@ -34,7 +34,7 @@ namespace Vrooby
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Backend_ = 0;
-		TrayView_ = new TrayView;
+		TrayView_ = new TrayView (proxy);
 
 #ifdef ENABLE_UDISKS
 		Backend_ = new UDisks::Backend (this);

@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QDeclarativeView>
+#include <interfaces/core/icoreproxy.h>
 
 class QAbstractItemModel;
 
@@ -32,9 +33,10 @@ namespace Vrooby
 	{
 		Q_OBJECT
 
-		FlatMountableItems *Proxy_;
+		ICoreProxy_ptr CoreProxy_;
+		FlatMountableItems *Flattened_;
 	public:
-		TrayView (QWidget* = 0);
+		TrayView (ICoreProxy_ptr, QWidget* = 0);
 
 		void SetDevModel (QAbstractItemModel*);
 	};

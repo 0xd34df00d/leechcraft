@@ -18,30 +18,58 @@
 
 #include "trayview.h"
 #include <QSortFilterProxyModel>
+#include <QIcon>
 #include <QDeclarativeContext>
+#include <QDeclarativeEngine>
+#include <QDeclarativeImageProvider>
 #include "flatmountableitems.h"
 
 namespace LeechCraft
 {
 namespace Vrooby
 {
-	TrayView::TrayView (QWidget *parent)
+	namespace
+	{
+		class MountIconProvider : public QDeclarativeImageProvider
+		{
+			ICoreProxy_ptr Proxy_;
+		public:
+			MountIconProvider (ICoreProxy_ptr proxy)
+			: QDeclarativeImageProvider (Pixmap)
+			, Proxy_ (proxy)
+			{
+			}
+
+			QPixmap requestPixmap (const QString& id, QSize *size, const QSize& requestedSize)
+			{
+				const auto& icon = Proxy_->GetIcon (id);
+				if (size)
+					*size = icon.actualSize (requestedSize);
+				return icon.pixmap (requestedSize);
+			}
+		};
+	}
+
+	TrayView::TrayView (ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (parent)
-	, Proxy_ (new FlatMountableItems (this))
+	, CoreProxy_ (proxy)
+	, Flattened_ (new FlatMountableItems (this))
 	{
 		setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
 		setAttribute (Qt::WA_TranslucentBackground);
 
 		setResizeMode (SizeRootObjectToView);
-		setFixedSize (250, 300);
+		setFixedSize (500, 250);
 
-		rootContext ()->setContextProperty ("devModel", Proxy_);
+		engine ()->addImageProvider ("mountIcons", new MountIconProvider (proxy));
+
+		rootContext ()->setContextProperty ("devModel", Flattened_);
 		setSource (QUrl ("qrc:/vrooby/resources/qml/DevicesTrayView.qml"));
 	}
 
 	void TrayView::SetDevModel (QAbstractItemModel *model)
 	{
-		Proxy_->SetSource (model);
+		Flattened_->SetSource (model);
 	}
 }
 }
