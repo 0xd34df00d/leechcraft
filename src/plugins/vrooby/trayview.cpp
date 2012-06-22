@@ -58,8 +58,10 @@ namespace Vrooby
 	, Flattened_ (new FlatMountableItems (this))
 	, Backend_ (0)
 	{
-		setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+		setStyleSheet ("background: transparent");
+		setWindowFlags (Qt::ToolTip | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
 		setAttribute (Qt::WA_TranslucentBackground);
+		setAttribute (Qt::WA_OpaquePaintEvent, false);
 
 		setResizeMode (SizeRootObjectToView);
 		setFixedSize (500, 250);

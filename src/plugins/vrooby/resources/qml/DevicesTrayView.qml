@@ -6,7 +6,7 @@ Rectangle {
     smooth: true
     radius: 10
 
-    color: "#dd000000"
+    color: "#ee000000"
 
     signal toggleMountRequested(string id)
 
@@ -16,13 +16,13 @@ Rectangle {
         anchors.fill: parent
         model: devModel
 
-        spacing: 10
+        spacing: 20
 
         delegate: Rectangle {
             color: "#00000000"
 
             width: devicesView.width
-            height: 40
+            height: devNameLabel.height + totalSizeLabel.height + mountedAtLabel.height
 
             Text {
                 id: devNameLabel
@@ -60,8 +60,6 @@ Rectangle {
                 anchors.topMargin: 2
                 anchors.left: parent.left
                 anchors.leftMargin: 5
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 5
             }
 
             Text {
