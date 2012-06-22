@@ -19,29 +19,23 @@
 #pragma once
 
 #include <QMetaType>
-#include <QVariant>
-#include <QStringList>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	/** @brief Interface representing an account's profile.
-		*
-		* This interface represents an account's profile.
-		**/
-	class IProfile
+	/** @brief Interface representing a profile widget.
+	*
+	**/
+	class IProfileWidget
 	{
 	public:
-		virtual ~IProfile () {}
+		virtual ~IProfileWidget () {}
 
-		virtual QWidget* GetProfileWidget () = 0;
-
-		virtual void profileUpdated () = 0;
-
+		virtual void updateProfile () = 0;
 	};
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blogique::IProfile,
-		"org.Deviant.LeechCraft.Blogique.IProfile/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Blogique::IProfileWidget,
+		"org.Deviant.LeechCraft.Blogique.IProfileWidget/1.0");

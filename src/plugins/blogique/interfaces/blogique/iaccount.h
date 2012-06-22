@@ -93,11 +93,11 @@ namespace Blogique
 		 */
 		virtual bool IsValidated () const = 0;
 
-		/** @brief Returns the pointer to account's profile widget.
+		/** @brief Returns the pointer to account's profile.
 		 *
-		 * @return The account's profile widget.
+		 * @return The account's profile.
 		 */
-		virtual QWidget* GetProfileWidget () = 0;
+		virtual QObject* GetProfile () = 0;
 
 		/** @brief This signal should be emitted when account is renamed.
 		 *
