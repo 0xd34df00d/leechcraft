@@ -81,7 +81,12 @@ namespace Vrooby
 					"image://mountIcons/emblem-unmounted" :
 					"image://mountIcons/emblem-mounted";
 		case CustomRoles::MountedAt:
-			return index.data (DeviceRoles::MountPoints).toStringList ().join ("; ");
+		{
+			const auto& mounts = index.data (DeviceRoles::MountPoints).toStringList ();
+			return mounts.isEmpty () ?
+					QVariant () :
+					tr ("Mounted at %1").arg (mounts.join ("; "));
+		}
 		default:
 			return SourceIndexes_.value (index.row ()).data (role);
 		}

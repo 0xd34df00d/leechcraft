@@ -57,6 +57,7 @@ Rectangle {
                 font.italic: true
 
                 anchors.top: devNameLabel.bottom
+                anchors.topMargin: 2
                 anchors.left: parent.left
                 anchors.leftMargin: 5
                 anchors.bottom: parent.bottom
@@ -72,7 +73,7 @@ Rectangle {
                 visible: text.length != 0
 
                 anchors.top: totalSizeLabel.bottom
-                anchors.topMargin: 5
+                anchors.topMargin: 2
                 anchors.left: parent.left
                 anchors.leftMargin: 5
             }
