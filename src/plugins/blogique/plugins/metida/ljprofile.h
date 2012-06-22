@@ -38,12 +38,21 @@ namespace Metida
 
 		QObject *ParentAccount_;
 		LJProfileData ProfileData_;
-		ProfileWidget *ProfileWidget_;
 	public:
 		LJProfile (QObject *parentAccount, QObject *parent = 0);
-		ProfileWidget* GetProfileWidget ();
+		QWidget* GetProfileWidget ();
+		LJProfileData GetProfileData () const;
+		QObject* GetParentAccount () const;
+	private:
+		void SaveAvatar (QUrl url = QUrl ());
+
 	public slots:
 		void handleProfileUpdate (const LJProfileData& profile);
+	private slots:
+		void handleAvatarDownloadFinished ();
+
+	signals:
+		void profileUpdated ();
 	};
 }
 }

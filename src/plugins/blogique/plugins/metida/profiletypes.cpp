@@ -24,54 +24,128 @@ namespace Blogique
 {
 namespace Metida
 {
-namespace LJParserTypes
-{
-	LJParseProfileEntry::LJParseProfileEntry ()
+	QDataStream& operator<< (QDataStream& out, const LJFriendGroup& group)
 	{
+		out << static_cast<qint8> (1)
+				<< group.Public_
+				<< group.Name_
+				<< group.Id_
+				<< group.SortOrder_;
+		return out;
 	}
 
-	LJParseProfileEntry::LJParseProfileEntry (const QString& name,
-			const QVariantList& value)
-	: Name_ (name)
-	, ValueList_ (value)
+	QDataStream& operator>> (QDataStream& in, LJFriendGroup& group)
 	{
+		qint8 version;
+		in >> version;
+		if (version == 1)
+			in >> group.Public_
+					>> group.Name_
+					>> group.Id_
+					>> group.SortOrder_;
+
+		return in;
 	}
 
-	QString LJParseProfileEntry::Name () const
+
+	QDataStream& operator<< (QDataStream& out, const LJMood& mood)
 	{
-		return Name_;
+		out << static_cast<qint8> (1)
+				<< mood.Id_
+				<< mood.Name_
+				<< mood.Parent_;
+		return out;
 	}
 
-	QVariantList LJParseProfileEntry::Value () const
+	QDataStream& operator>> (QDataStream& in, LJMood& mood)
 	{
-		return ValueList_;
+		qint8 version;
+		in >> version;
+		if (version == 1)
+			in >> mood.Id_
+					>> mood.Name_
+					>> mood.Parent_;
+		return in;
 	}
 
-	bool LJParseProfileEntry::ValueToBool () const
+	QDataStream& operator<< (QDataStream& out, const LJProfileData& data)
 	{
-		return ValueList_.value (0).toBool ();
+		out << static_cast<qint8> (1)
+				<< data.AvatarUrl_
+				<< data.Caps_
+				<< data.Communities_
+				<< data.FullName_
+				<< data.UserId_
+				<< data.FriendGroups_
+				<< data.Moods_;
+
+		return out;
 	}
 
-	QString LJParseProfileEntry::ValueToString () const
+	QDataStream& operator>> (QDataStream& in, LJProfileData& data)
 	{
-		return ValueList_.value (0).toString ();
+		qint8 version;
+		in >> version;
+		if (version == 1)
+			in >> data.AvatarUrl_
+					>> data.Caps_
+					>> data.Communities_
+					>> data.FullName_
+					>> data.UserId_
+					>> data.FriendGroups_
+					>> data.Moods_;
+
+		return in;
 	}
 
-	qint64 LJParseProfileEntry::ValueToLongLong () const
+	namespace LJParserTypes
 	{
-		return ValueList_.value (0).toLongLong ();
-	}
+		LJParseProfileEntry::LJParseProfileEntry ()
+		{
+		}
 
-	int LJParseProfileEntry::ValueToInt () const
-	{
-		return ValueList_.value (0).toInt ();
-	}
+		LJParseProfileEntry::LJParseProfileEntry (const QString& name,
+				const QVariantList& value)
+		: Name_ (name)
+		, ValueList_ (value)
+		{
+		}
 
-	QUrl LJParseProfileEntry::ValueToUrl () const
-	{
-		return ValueList_.value (0).toUrl ();
+		QString LJParseProfileEntry::Name () const
+		{
+			return Name_;
+		}
+
+		QVariantList LJParseProfileEntry::Value () const
+		{
+			return ValueList_;
+		}
+
+		bool LJParseProfileEntry::ValueToBool () const
+		{
+			return ValueList_.value (0).toBool ();
+		}
+
+		QString LJParseProfileEntry::ValueToString () const
+		{
+			return ValueList_.value (0).toString ();
+		}
+
+		qint64 LJParseProfileEntry::ValueToLongLong () const
+		{
+			return ValueList_.value (0).toLongLong ();
+		}
+
+		int LJParseProfileEntry::ValueToInt () const
+		{
+			return ValueList_.value (0).toInt ();
+		}
+
+		QUrl LJParseProfileEntry::ValueToUrl () const
+		{
+			return ValueList_.value (0).toUrl ();
+		}
 	}
-}
 }
 }
 }

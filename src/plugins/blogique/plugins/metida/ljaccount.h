@@ -36,7 +36,7 @@ namespace Metida
 	class LJProfile;
 
 	class LJAccount : public QObject
-							, public IAccount
+					, public IAccount
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Blogique::IAccount)
@@ -59,7 +59,7 @@ namespace Metida
 		void OpenConfigurationDialog ();
 		bool IsValidated () const;
 
-		QWidget* GetProfileWidget ();
+		QObject* GetProfile ();
 
 		void FillSettings (LJAccountConfigurationWidget *widget);
 

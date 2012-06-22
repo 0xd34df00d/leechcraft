@@ -77,8 +77,15 @@ namespace Metida
 		};
 	}
 
+	QDataStream& operator<< (QDataStream& out, const LJFriendGroup& group);
+	QDataStream& operator>> (QDataStream& in, LJFriendGroup& group);
+	QDataStream& operator<< (QDataStream& out, const LJMood& mood);
+	QDataStream& operator>> (QDataStream& in, LJMood& mood);
+	QDataStream& operator<< (QDataStream& out, const LJProfileData& data);
+	QDataStream& operator>> (QDataStream& in, LJProfileData& data);
 }
 }
 }
+
 Q_DECLARE_METATYPE (LeechCraft::Blogique::Metida::LJParserTypes::LJParseProfileEntry)
 Q_DECLARE_METATYPE (LeechCraft::Blogique::Metida::LJProfileData)

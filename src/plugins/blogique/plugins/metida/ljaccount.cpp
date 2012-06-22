@@ -45,6 +45,9 @@ namespace Metida
 	, LJProfile_ (std::make_shared<LJProfile> (this))
 	{
 		qRegisterMetaType<LJProfileData> ("LJProfileData");
+		qRegisterMetaTypeStreamOperators<QList<LJFriendGroup>> ("QList<LJFriendGroup>");
+		qRegisterMetaTypeStreamOperators<QList<LJMood>> ("QList<LJMood>");
+
 		connect (LJXmlRpc_,
 				SIGNAL (validatingFinished (bool)),
 				this,
@@ -114,9 +117,9 @@ namespace Metida
 		return IsValidated_;
 	}
 
-	QWidget* LJAccount::GetProfileWidget ()
+	QObject* LJAccount::GetProfile ()
 	{
-		return LJProfile_->GetProfileWidget ();
+		return LJProfile_.get ();
 	}
 
 	void LJAccount::FillSettings (LJAccountConfigurationWidget *widget)
@@ -134,14 +137,15 @@ namespace Metida
 
 	QByteArray LJAccount::Serialize () const
 	{
-		quint16 ver = 1;
+		quint16 ver = 2;
 		QByteArray result;
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << ver
 					<< Name_
 					<< Login_
-					<< IsValidated_;
+					<< IsValidated_
+					<< LJProfile_->GetProfileData ();
 		}
 
 		return result;
@@ -153,7 +157,8 @@ namespace Metida
 		QDataStream in (data);
 		in >> ver;
 
-		if (ver != 1)
+		if (ver > 2 ||
+				ver < 1)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -166,6 +171,13 @@ namespace Metida
 		LJAccount *result = new LJAccount (name, parent);
 		in >> result->Login_
 				>> result->IsValidated_;
+
+		if (ver == 2)
+		{
+			LJProfileData profile;
+			in >> profile;
+			result->LJProfile_->handleProfileUpdate (profile);
+		}
 
 		return result;
 	}
