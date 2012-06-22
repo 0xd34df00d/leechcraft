@@ -101,37 +101,6 @@ namespace UDisks
 				SLOT (handleDeviceChanged (QDBusObjectPath)));
 	}
 
-	namespace
-	{
-		void SetItemData (QDBusInterface_ptr iface, QStandardItem *item)
-		{
-			if (!item)
-				return;
-
-			const bool isRemovable = iface->property ("DeviceIsRemovable").toBool ();
-			const bool isPartition = iface->property ("DeviceIsPartition").toBool ();
-
-			const QString& name = isPartition ?
-				Backend::tr ("Partition %1")
-					.arg (iface->property ("PartitionNumber").toInt ()) :
-				(iface->property ("DriveVendor").toString () +
-						" " +
-						iface->property ("DriveModel").toString ());
-
-			item->setData (DeviceType::GenericDevice, DeviceRoles::DevType);
-			item->setData (iface->property ("DeviceFile").toString (), DeviceRoles::DevFile);
-			item->setData (iface->property ("PartitionType").toInt (), DeviceRoles::PartType);
-			item->setData (isRemovable, DeviceRoles::IsRemovable);
-			item->setData (isPartition, DeviceRoles::IsPartition);
-			item->setData (isPartition && isRemovable, DeviceRoles::IsMountable);
-			item->setData (iface->property ("DeviceIsMediaAvailable"), DeviceRoles::IsMediaAvailable);
-			item->setData (iface->path (), DeviceRoles::DevID);
-			item->setData (name, DeviceRoles::VisibleName);
-			item->setData (iface->property ("PartitionSize").toLongLong (), DeviceRoles::TotalSize);
-			item->setData (iface->property ("DeviceMountPaths").toStringList (), DeviceRoles::MountPoints);
-		}
-	}
-
 	void Backend::AddPath (const QDBusObjectPath& path)
 	{
 		const auto& str = path.path ();
@@ -173,6 +142,46 @@ namespace UDisks
 			item->parent ()->removeRow (item->row ());
 		else
 			DevicesModel_->removeRow (item->row ());
+	}
+
+	void Backend::SetItemData (QDBusInterface_ptr iface, QStandardItem *item)
+	{
+		if (!item)
+			return;
+
+		const bool isRemovable = iface->property ("DeviceIsRemovable").toBool ();
+		const bool isPartition = iface->property ("DeviceIsPartition").toBool ();
+
+		const QString& name = isPartition ?
+			tr ("Partition %1")
+				.arg (iface->property ("PartitionNumber").toInt ()) :
+			(iface->property ("DriveVendor").toString () +
+					" " +
+					iface->property ("DriveModel").toString ());
+
+		auto parentIface = iface;
+		bool hasRemovableParent = isRemovable;
+		while (!hasRemovableParent)
+		{
+			const auto& slaveTo = parentIface->property ("PartitionSlave").value<QDBusObjectPath> ();
+			if (slaveTo.path () == "/")
+				break;
+
+			parentIface = GetDeviceInterface (slaveTo.path ());
+			hasRemovableParent = parentIface->property ("DeviceIsRemovable").toBool ();
+		}
+
+		item->setData (DeviceType::GenericDevice, DeviceRoles::DevType);
+		item->setData (iface->property ("DeviceFile").toString (), DeviceRoles::DevFile);
+		item->setData (iface->property ("PartitionType").toInt (), DeviceRoles::PartType);
+		item->setData (isRemovable, DeviceRoles::IsRemovable);
+		item->setData (isPartition, DeviceRoles::IsPartition);
+		item->setData (isPartition && hasRemovableParent, DeviceRoles::IsMountable);
+		item->setData (iface->property ("DeviceIsMediaAvailable"), DeviceRoles::IsMediaAvailable);
+		item->setData (iface->path (), DeviceRoles::DevID);
+		item->setData (name, DeviceRoles::VisibleName);
+		item->setData (iface->property ("PartitionSize").toLongLong (), DeviceRoles::TotalSize);
+		item->setData (iface->property ("DeviceMountPaths").toStringList (), DeviceRoles::MountPoints);
 	}
 
 	void Backend::handleEnumerationFinished (QDBusPendingCallWatcher *watcher)
