@@ -23,6 +23,7 @@
 #include <QDBusConnectionInterface>
 #include <QDBusInterface>
 #include <QtDebug>
+#include <util/util.h>
 
 typedef std::shared_ptr<QDBusInterface> QDBusInterface_ptr;
 
@@ -60,14 +61,6 @@ namespace UDisks
 						"org.freedesktop.UDisks.Device",
 						QDBusConnection::systemBus ()));
 		}
-	}
-
-	void Backend::Mount (const QString&)
-	{
-	}
-
-	void Backend::Umount (const QString&)
-	{
 	}
 
 	void Backend::InitialEnumerate ()
@@ -184,11 +177,73 @@ namespace UDisks
 		item->setData (isRemovable, DeviceRoles::IsRemovable);
 		item->setData (isPartition, DeviceRoles::IsPartition);
 		item->setData (isPartition && hasRemovableParent, DeviceRoles::IsMountable);
+		item->setData (iface->property ("DeviceIsMounted").toBool (), DeviceRoles::IsMounted);
 		item->setData (iface->property ("DeviceIsMediaAvailable"), DeviceRoles::IsMediaAvailable);
 		item->setData (iface->path (), DeviceRoles::DevID);
 		item->setData (fullName, DeviceRoles::VisibleName);
 		item->setData (iface->property ("PartitionSize").toLongLong (), DeviceRoles::TotalSize);
 		item->setData (iface->property ("DeviceMountPaths").toStringList (), DeviceRoles::MountPoints);
+	}
+
+	void Backend::toggleMount (const QString& id)
+	{
+		auto iface = GetDeviceInterface (id);
+		if (!iface)
+			return;
+
+		const bool isMounted = iface->property ("DeviceIsMounted").toBool ();
+		if (isMounted)
+		{
+			auto async = iface->asyncCall ("FilesystemUmount");
+			connect (new QDBusPendingCallWatcher (async, this),
+					SIGNAL (finished (QDBusPendingCallWatcher*)),
+					this,
+					SLOT (umountCallFinished (QDBusPendingCallWatcher*)));
+		}
+		else
+		{
+			auto async = iface->asyncCall ("FilesystemMount", QString (), QStringList ());
+			connect (new QDBusPendingCallWatcher (async, this),
+					SIGNAL (finished (QDBusPendingCallWatcher*)),
+					this,
+					SLOT (mountCallFinished (QDBusPendingCallWatcher*)));
+		}
+	}
+
+	void Backend::mountCallFinished (QDBusPendingCallWatcher *watcher)
+	{
+		qDebug () << Q_FUNC_INFO;
+		watcher->deleteLater ();
+		QDBusPendingReply<QString> reply = *watcher;
+
+		if (!reply.isError ())
+		{
+			emit gotEntity (Util::MakeNotification ("Vrooby",
+						tr ("Device has been successfully mounted at %1.")
+							.arg (reply.value ()),
+						PInfo_));
+			return;
+		}
+
+		const auto& error = reply.error ();
+		qWarning () << Q_FUNC_INFO
+				<< error.name ()
+				<< error.message ();
+	}
+
+	void Backend::umountCallFinished (QDBusPendingCallWatcher *watcher)
+	{
+		qDebug () << Q_FUNC_INFO;
+		watcher->deleteLater ();
+		QDBusPendingReply<void> reply = *watcher;
+
+		if (!reply.isError ())
+		{
+			emit gotEntity (Util::MakeNotification ("Vrooby",
+						tr ("Device has been successfully unmounted."),
+						PInfo_));
+			return;
+		}
 	}
 
 	void Backend::handleEnumerationFinished (QDBusPendingCallWatcher *watcher)

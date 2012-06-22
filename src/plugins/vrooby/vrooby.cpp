@@ -50,7 +50,7 @@ namespace Vrooby
 				SLOT (showTrayView (bool)));
 
 		if (Backend_)
-			TrayView_->SetDevModel (Backend_->GetDevicesModel ());
+			TrayView_->SetBackend (Backend_);
 	}
 
 	void Plugin::SecondInit ()

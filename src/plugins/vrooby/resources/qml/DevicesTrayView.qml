@@ -1,11 +1,14 @@
 import QtQuick 1.0
 
 Rectangle {
+    id: rootRect
     anchors.fill: parent
     smooth: true
     radius: 10
 
     color: "#dd000000"
+
+    signal toggleMountRequested(string id)
 
     ListView {
         id: devicesView
@@ -85,6 +88,14 @@ Rectangle {
                 anchors.topMargin: 5
                 anchors.right: parent.right
                 anchors.rightMargin: 5
+
+                MouseArea {
+                    id: mountButtonArea
+                    anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton
+
+                    onClicked: rootRect.toggleMountRequested(devID)
+                }
             }
         }
     }

@@ -22,7 +22,9 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QDeclarativeImageProvider>
+#include <QGraphicsObject>
 #include "flatmountableitems.h"
+#include "devbackend.h"
 
 namespace LeechCraft
 {
@@ -54,6 +56,7 @@ namespace Vrooby
 	: QDeclarativeView (parent)
 	, CoreProxy_ (proxy)
 	, Flattened_ (new FlatMountableItems (this))
+	, Backend_ (0)
 	{
 		setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
 		setAttribute (Qt::WA_TranslucentBackground);
@@ -67,9 +70,21 @@ namespace Vrooby
 		setSource (QUrl ("qrc:/vrooby/resources/qml/DevicesTrayView.qml"));
 	}
 
-	void TrayView::SetDevModel (QAbstractItemModel *model)
+	void TrayView::SetBackend (DevBackend *backend)
 	{
-		Flattened_->SetSource (model);
+		if (Backend_)
+			disconnect (rootObject (),
+					SIGNAL (toggleMountRequested (const QString&)),
+					Backend_,
+					SLOT (toggleMount (QString)));
+
+		Backend_ = backend;
+		connect (rootObject (),
+				SIGNAL (toggleMountRequested (const QString&)),
+				Backend_,
+				SLOT (toggleMount (QString)));
+
+		Flattened_->SetSource (Backend_->GetDevicesModel ());
 	}
 }
 }

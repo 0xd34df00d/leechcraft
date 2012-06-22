@@ -23,6 +23,7 @@
 
 namespace LeechCraft
 {
+struct Entity;
 struct DeviceInfo;
 
 namespace Vrooby
@@ -36,9 +37,10 @@ namespace Vrooby
 		DevBackend (QObject* = 0);
 
 		virtual bool IsValid () const = 0;
-
-		virtual void Mount (const QString&) = 0;
-		virtual void Umount (const QString&) = 0;
+	public slots:
+		virtual void toggleMount (const QString&) = 0;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

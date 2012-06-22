@@ -27,6 +27,7 @@ namespace LeechCraft
 {
 namespace Vrooby
 {
+	class DevBackend;
 	class FlatMountableItems;
 
 	class TrayView : public QDeclarativeView
@@ -35,10 +36,12 @@ namespace Vrooby
 
 		ICoreProxy_ptr CoreProxy_;
 		FlatMountableItems *Flattened_;
+
+		DevBackend *Backend_;
 	public:
 		TrayView (ICoreProxy_ptr, QWidget* = 0);
 
-		void SetDevModel (QAbstractItemModel*);
+		void SetBackend (DevBackend*);
 	};
 }
 }
