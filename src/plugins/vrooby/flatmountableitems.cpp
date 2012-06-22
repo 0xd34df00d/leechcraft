@@ -84,7 +84,7 @@ namespace Vrooby
 		{
 			const auto& mounts = index.data (DeviceRoles::MountPoints).toStringList ();
 			return mounts.isEmpty () ?
-					QVariant () :
+					"" :
 					tr ("Mounted at %1").arg (mounts.join ("; "));
 		}
 		default:
@@ -104,6 +104,10 @@ namespace Vrooby
 					SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
 					this,
 					SLOT (handleRowsAboutRemoved (QModelIndex, int, int)));
+			disconnect (Source_,
+					SIGNAL (dataChanged (QModelIndex, QModelIndex)),
+					this,
+					SLOT (handleDataChanged (QModelIndex, QModelIndex)));
 		}
 
 		SourceIndexes_.clear ();
@@ -117,6 +121,10 @@ namespace Vrooby
 				SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
 				this,
 				SLOT (handleRowsAboutRemoved (QModelIndex, int, int)));
+		connect (Source_,
+				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleDataChanged (QModelIndex, QModelIndex)));
 	}
 
 	void FlatMountableItems::handleDataChanged (const QModelIndex& top, const QModelIndex& bottom)
