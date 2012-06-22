@@ -49,11 +49,14 @@ namespace LeechCraft
 		IsRemovable,
 		IsPartition,
 		IsMountable,
+		IsMounted,
 		IsMediaAvailable,
 		DevID,
 		VisibleName,
 		TotalSize,
-		MountPoints
+		MountPoints,
+
+		DeviceRoleMax
 	};
 }
 
