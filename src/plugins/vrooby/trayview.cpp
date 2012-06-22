@@ -19,7 +19,7 @@
 #include "trayview.h"
 #include <QSortFilterProxyModel>
 #include <QDeclarativeContext>
-#include <interfaces/iremovabledevmanager.h>
+#include "flatmountableitems.h"
 
 namespace LeechCraft
 {
@@ -27,7 +27,7 @@ namespace Vrooby
 {
 	TrayView::TrayView (QWidget *parent)
 	: QDeclarativeView (parent)
-	, Proxy_ (new QSortFilterProxyModel (this))
+	, Proxy_ (new FlatMountableItems (this))
 	{
 		setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
 		setAttribute (Qt::WA_TranslucentBackground);
@@ -41,7 +41,7 @@ namespace Vrooby
 
 	void TrayView::SetDevModel (QAbstractItemModel *model)
 	{
-		Proxy_->setSourceModel (model);
+		Proxy_->SetSource (model);
 	}
 }
 }

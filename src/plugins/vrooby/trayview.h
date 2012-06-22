@@ -21,17 +21,18 @@
 #include <QDeclarativeView>
 
 class QAbstractItemModel;
-class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
 namespace Vrooby
 {
+	class FlatMountableItems;
+
 	class TrayView : public QDeclarativeView
 	{
 		Q_OBJECT
 
-		QSortFilterProxyModel *Proxy_;
+		FlatMountableItems *Proxy_;
 	public:
 		TrayView (QWidget* = 0);
 
