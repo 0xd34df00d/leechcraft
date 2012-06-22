@@ -194,7 +194,7 @@ namespace UDisks
 		const bool isMounted = iface->property ("DeviceIsMounted").toBool ();
 		if (isMounted)
 		{
-			auto async = iface->asyncCall ("FilesystemUmount");
+			auto async = iface->asyncCall ("FilesystemUnmount", QStringList ());
 			connect (new QDBusPendingCallWatcher (async, this),
 					SIGNAL (finished (QDBusPendingCallWatcher*)),
 					this,
