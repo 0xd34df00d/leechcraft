@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QAbstractItemModel>
+#include <interfaces/iremovabledevmanager.h>
 
 class QStandardItemModel;
 class QStandardItem;
@@ -34,6 +35,12 @@ namespace Vrooby
 
 		QAbstractItemModel *Source_;
 		QList<QPersistentModelIndex> SourceIndexes_;
+		enum CustomRoles
+		{
+			FormattedTotalSize = DeviceRoles::DeviceRoleMax + 1,
+			MountButtonIcon,
+			MountedAt
+		};
 	public:
 		FlatMountableItems (QObject* = 0);
 

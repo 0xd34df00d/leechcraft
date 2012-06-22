@@ -20,6 +20,7 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <interfaces/iremovabledevmanager.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -36,6 +37,9 @@ namespace Vrooby
 		names [DeviceRoles::IsPartition] = "isPartition";
 		names [DeviceRoles::IsMountable] = "isMountable";
 		names [DeviceRoles::DevID] = "devID";
+		names [CustomRoles::FormattedTotalSize] = "formattedTotalSize";
+		names [CustomRoles::MountButtonIcon] = "mountButtonIcon";
+		names [CustomRoles::MountedAt] = "mountedAt";
 		setRoleNames (names);
 	}
 
@@ -64,7 +68,23 @@ namespace Vrooby
 
 	QVariant FlatMountableItems::data (const QModelIndex& index, int role) const
 	{
-		return SourceIndexes_.value (index.row ()).data (role);
+		switch (role)
+		{
+		case CustomRoles::FormattedTotalSize:
+		{
+			const auto size = index.data (DeviceRoles::TotalSize).toLongLong ();
+			return tr ("total size: %1")
+				.arg (Util::MakePrettySize (size));
+		}
+		case CustomRoles::MountButtonIcon:
+			return index.data (DeviceRoles::IsMounted).toBool () ?
+					"image://mountIcons/emblem-unmounted" :
+					"image://mountIcons/emblem-mounted";
+		case CustomRoles::MountedAt:
+			return index.data (DeviceRoles::MountPoints).toStringList ().join ("; ");
+		default:
+			return SourceIndexes_.value (index.row ()).data (role);
+		}
 	}
 
 	void FlatMountableItems::SetSource (QAbstractItemModel *model)
@@ -114,6 +134,8 @@ namespace Vrooby
 		for (int i = start; i <= end; ++i)
 		{
 			const auto& child = Source_->index (i, 0, parent);
+			if (!child.data (DeviceRoles::IsMountable).toBool ())
+				continue;
 
 			beginInsertRows (QModelIndex (), SourceIndexes_.size (), SourceIndexes_.size ());
 			SourceIndexes_ << child;
