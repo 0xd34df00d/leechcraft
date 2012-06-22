@@ -13,6 +13,7 @@ SET (SRCS
 	vrooby.cpp
 	devbackend.cpp
 	trayview.cpp
+	flatmountableitems.cpp
 	)
 SET (RESOURCES vroobyresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})

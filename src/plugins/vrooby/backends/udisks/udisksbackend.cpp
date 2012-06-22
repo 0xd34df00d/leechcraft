@@ -32,29 +32,10 @@ namespace Vrooby
 {
 namespace UDisks
 {
-	namespace
-	{
-		class DevModel : public QStandardItemModel
-		{
-		public:
-			DevModel (QObject* parent = 0)
-			: QStandardItemModel (parent)
-			{
-				QHash<int, QByteArray> names;
-				names [DeviceRoles::VisibleName] = "devName";
-				names [DeviceRoles::DevFile] = "devFile";
-				names [DeviceRoles::IsRemovable] = "isRemovable";
-				names [DeviceRoles::IsPartition] = "isPartition";
-				names [DeviceRoles::IsMountable] = "isMountable";
-				names [DeviceRoles::DevID] = "devID";
-				setRoleNames (names);
-			}
-		};
-	}
 	Backend::Backend (QObject *parent)
 	: DevBackend (parent)
 	, Valid_ (false)
-	, DevicesModel_ (new DevModel (this))
+	, DevicesModel_ (new QStandardItemModel (this))
 	, UDisksObj_ (0)
 	{
 		InitialEnumerate ();
