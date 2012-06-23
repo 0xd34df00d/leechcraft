@@ -58,11 +58,12 @@ namespace FXB
 		image.fill (Qt::white);
 
 		QRectF rect (QPointF (0, 0), size);
-		rect.setTop (rect.height () * page);
+		rect.moveTop (rect.height () * page);
 
 		QPainter painter;
 		painter.begin (&image);
 		painter.scale (xScale, yScale);
+		painter.translate (0, rect.height () * (-page));
 		Doc_->drawContents (&painter, rect);
 		painter.end ();
 
