@@ -57,6 +57,7 @@ namespace FXB
 
 		Handlers_ ["section"] = [this] (const HandlerParams& p) { HandleSection (p); };
 		Handlers_ ["title"] = [this] (const HandlerParams& p) { HandleTitle (p); };
+		Handlers_ ["subtitle"] = [this] (const HandlerParams& p) { HandleTitle (p, 1); };
 		Handlers_ ["epigraph"] = [this] (const HandlerParams& p) { HandleEpigraph (p); };
 		Handlers_ ["image"] = [this] (const HandlerParams& p) { HandleImage (p); };
 
@@ -193,7 +194,7 @@ namespace FXB
 		--SectionLevel_;
 	}
 
-	void FB2Converter::HandleTitle (const HandlerParams& params)
+	void FB2Converter::HandleTitle (const HandlerParams& params, int level)
 	{
 		auto topFrame = Cursor_->currentFrame ();
 
@@ -215,7 +216,7 @@ namespace FXB
 				const auto origFmt = Cursor_->charFormat ();
 
 				auto titleFmt = origFmt;
-				titleFmt.setFontPointSize (18 - SectionLevel_);
+				titleFmt.setFontPointSize (18 - 2 * level - SectionLevel_);
 				Cursor_->setCharFormat (titleFmt);
 
 				Handlers_ ["p"] ({ child });
@@ -231,6 +232,19 @@ namespace FXB
 
 	void FB2Converter::HandleEpigraph (const HandlerParams& params)
 	{
+		auto child = params.Elem_.firstChildElement ();
+		while (!child.isNull ())
+		{
+			const auto& tagName = child.tagName ();
+			Handlers_.value (tagName, [&tagName] (const HandlerParams&)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unhandled tag"
+								<< tagName;
+					}) ({ child });
+
+			child = child.nextSiblingElement ();
+		}
 	}
 
 	void FB2Converter::HandleImage (const HandlerParams& params)

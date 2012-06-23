@@ -65,7 +65,7 @@ namespace FXB
 		void HandleBody (const QDomElement&);
 
 		void HandleSection (const HandlerParams&);
-		void HandleTitle (const HandlerParams&);
+		void HandleTitle (const HandlerParams&, int = 0);
 		void HandleEpigraph (const HandlerParams&);
 		void HandleImage (const HandlerParams&);
 
