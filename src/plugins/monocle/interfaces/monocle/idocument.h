@@ -21,6 +21,8 @@
 #include <memory>
 #include <QImage>
 #include <QMetaType>
+#include <QStringList>
+#include <QDateTime>
 #include "ilink.h"
 
 namespace LeechCraft
@@ -32,6 +34,11 @@ namespace Monocle
 		QString Title_;
 		QString Subject_;
 		QString Author_;
+
+		QStringList Genres_;
+		QStringList Keywords_;
+
+		QDateTime Date_;
 	};
 
 	class IDocument
