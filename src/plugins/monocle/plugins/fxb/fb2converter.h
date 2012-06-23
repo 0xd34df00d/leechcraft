@@ -18,10 +18,13 @@
 
 #pragma once
 
+#include <functional>
 #include <QString>
 #include <QObject>
+#include <QHash>
 #include <interfaces/monocle/idocument.h>
 
+class QTextCharFormat;
 class QTextCursor;
 class QDomElement;
 class QDomDocument;
@@ -33,6 +36,8 @@ namespace Monocle
 {
 namespace FXB
 {
+	struct HandlerParams;
+
 	class FB2Converter : public QObject
 	{
 		const QDomDocument& FB2_;
@@ -41,6 +46,11 @@ namespace FXB
 		DocumentInfo DocInfo_;
 
 		QTextCursor *Cursor_;
+
+		int SectionLevel_;
+
+		typedef std::function<void (HandlerParams)> Handler_f;
+		QHash<QString, Handler_f> Handlers_;
 
 		QString Error_;
 	public:
@@ -53,7 +63,21 @@ namespace FXB
 	private:
 		void HandleDescription (const QDomElement&);
 		void HandleBody (const QDomElement&);
+
+		void HandleSection (const HandlerParams&);
+		void HandleTitle (const HandlerParams&);
+		void HandleEpigraph (const HandlerParams&);
+		void HandleImage (const HandlerParams&);
+
+		void HandlePara (const HandlerParams&);
+		void HandleParaWONL (const HandlerParams&);
+		void HandleEmptyLine (const HandlerParams&);
+
+		void HandleMangleCharFormat (const HandlerParams&,
+				std::function<void (QTextCharFormat&)>, Handler_f);
+
 		void FillPreamble ();
+
 		void AddImage (const QDomElement&);
 	};
 }

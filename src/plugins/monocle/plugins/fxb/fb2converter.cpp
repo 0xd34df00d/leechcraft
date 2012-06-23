@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "fb2converter.h"
+#include <functional>
+#include <memory>
 #include <QDomDocument>
 #include <QTextDocument>
 #include <QTextCursor>
@@ -25,7 +27,7 @@
 #include <QImage>
 #include <QVariant>
 #include <QStringList>
-#include <boost-1_49/boost/concept_check.hpp>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -37,6 +39,7 @@ namespace FXB
 	: FB2_ (fb2)
 	, Result_ (new QTextDocument)
 	, Cursor_ (new QTextCursor (Result_))
+	, SectionLevel_ (0)
 	{
 		const auto& docElem = FB2_.documentElement ();
 		if (docElem.tagName () != "FictionBook")
@@ -51,6 +54,33 @@ namespace FXB
 			const auto& elem = elems.at (i).toElement ();
 			AddImage (elem);
 		}
+
+		Handlers_ ["section"] = [this] (const HandlerParams& p) { HandleSection (p); };
+		Handlers_ ["title"] = [this] (const HandlerParams& p) { HandleTitle (p); };
+		Handlers_ ["epigraph"] = [this] (const HandlerParams& p) { HandleEpigraph (p); };
+		Handlers_ ["image"] = [this] (const HandlerParams& p) { HandleImage (p); };
+
+		Handlers_ ["p"] = [this] (const HandlerParams& p) { HandlePara (p); };
+		Handlers_ ["empty-line"] = [this] (const HandlerParams& p) { HandleEmptyLine (p); };
+
+		Handlers_ ["emphasis"] = [this] (const HandlerParams& p)
+		{
+			HandleMangleCharFormat (p,
+					[] (QTextCharFormat& fmt) { fmt.setFontItalic (true); },
+					[this] (const HandlerParams& p) { HandleParaWONL (p); });
+		};
+		Handlers_ ["strong"] = [this] (const HandlerParams& p)
+		{
+			HandleMangleCharFormat (p,
+					[] (QTextCharFormat& fmt) { fmt.setFontWeight (QFont::Bold); },
+					[this] (const HandlerParams& p) { HandleParaWONL (p); });
+		};
+		Handlers_ ["strikethrough"] = [this] (const HandlerParams& p)
+		{
+			HandleMangleCharFormat (p,
+					[] (QTextCharFormat& fmt) { fmt.setFontStrikeOut (true); },
+					[this] (const HandlerParams& p) { HandleParaWONL (p); });
+		};
 
 		auto elem = docElem.firstChildElement ();
 		while (!elem.isNull ())
@@ -118,9 +148,152 @@ namespace FXB
 				.simplified ();
 	}
 
-	void FB2Converter::HandleBody (const QDomElement& elem)
+	struct HandlerParams
+	{
+		const QDomElement& Elem_;
+	};
+
+	void FB2Converter::HandleBody (const QDomElement& bodyElem)
 	{
 		FillPreamble ();
+
+		auto elem = bodyElem.firstChildElement ();
+		while (!elem.isNull ())
+		{
+			const auto& tagName = elem.tagName ();
+			Handlers_.value (tagName, [&tagName] (const HandlerParams&)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unhandled tag"
+								<< tagName;
+					}) ({ elem });
+			elem = elem.nextSiblingElement ();
+		}
+	}
+
+	void FB2Converter::HandleSection (const HandlerParams& params)
+	{
+		++SectionLevel_;
+
+		auto child = params.Elem_.firstChildElement ();
+		while (!child.isNull ())
+		{
+			const auto& tagName = child.tagName ();
+			Handlers_.value (tagName,
+					[&tagName] (const HandlerParams&)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unhandled tag"
+								<< tagName;
+					}) ({ child });
+
+			child = child.nextSiblingElement ();
+		}
+
+		--SectionLevel_;
+	}
+
+	void FB2Converter::HandleTitle (const HandlerParams& params)
+	{
+		auto topFrame = Cursor_->currentFrame ();
+
+		QTextFrameFormat frameFmt;
+		frameFmt.setBorder (1);
+		frameFmt.setPadding (10);
+		frameFmt.setBackground (QColor ("#A4C0E4"));
+		Cursor_->insertFrame (frameFmt);
+
+		auto child = params.Elem_.firstChildElement ();
+		while (!child.isNull ())
+		{
+			const auto& tagName = child.tagName ();
+
+			if (tagName == "empty-line")
+				Handlers_ [tagName] ({ child });
+			else if (tagName == "p")
+			{
+				const auto origFmt = Cursor_->charFormat ();
+
+				auto titleFmt = origFmt;
+				titleFmt.setFontPointSize (18 - SectionLevel_);
+				Cursor_->setCharFormat (titleFmt);
+
+				Handlers_ ["p"] ({ child });
+
+				Cursor_->setCharFormat (origFmt);
+			}
+
+			child = child.nextSiblingElement ();
+		}
+
+		Cursor_->setPosition (topFrame->lastPosition ());
+	}
+
+	void FB2Converter::HandleEpigraph (const HandlerParams& params)
+	{
+	}
+
+	void FB2Converter::HandleImage (const HandlerParams& params)
+	{
+	}
+
+	void FB2Converter::HandlePara (const HandlerParams& params)
+	{
+		auto fmt = Cursor_->blockFormat ();
+		fmt.setTextIndent (10);
+		Cursor_->setBlockFormat (fmt);
+
+		HandleParaWONL (params);
+
+		Cursor_->insertBlock ();
+	}
+
+	void FB2Converter::HandleParaWONL (const HandlerParams& params)
+	{
+		auto child = params.Elem_.firstChild ();
+		while (!child.isNull ())
+		{
+			std::shared_ptr<void> guard (static_cast<void*> (0),
+					[&child] (void*) { child = child.nextSibling (); });
+
+			if (child.isText ())
+			{
+				Cursor_->insertText (child.toText ().data ());
+				continue;
+			}
+
+			if (!child.isElement ())
+				continue;
+
+			const auto& asElem = child.toElement ();
+			const auto& tagName = asElem.tagName ();
+
+			Handlers_.value (tagName, [&tagName] (const HandlerParams&)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unhandled tag"
+								<< tagName;
+					}) ({ asElem });
+		}
+	}
+
+	void FB2Converter::HandleEmptyLine (const HandlerParams&)
+	{
+		Cursor_->insertText ("\n\n");
+	}
+
+	void FB2Converter::HandleMangleCharFormat (const HandlerParams& params,
+			std::function<void (QTextCharFormat&)> mangler, Handler_f next)
+	{
+		const auto origFmt = Cursor_->charFormat ();
+
+		auto mangledFmt = origFmt;
+		mangler (mangledFmt);
+		Cursor_->setCharFormat (mangledFmt);
+
+		next ({ params.Elem_ });
+
+		Cursor_->setCharFormat (origFmt);
 	}
 
 	void FB2Converter::FillPreamble ()
@@ -130,7 +303,7 @@ namespace FXB
 		QTextFrameFormat format;
 		format.setBorder (2);
 		format.setPadding (8);
-		format.setBackground (QColor ("#A4C0E4"));
+		format.setBackground (QColor ("#6193CF"));
 
 		if (!DocInfo_.Title_.isEmpty ())
 		{
