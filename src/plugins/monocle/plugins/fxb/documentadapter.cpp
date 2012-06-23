@@ -1,0 +1,79 @@
+/**********************************************************************
+ * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2006-2012  Georg Rudoy
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **********************************************************************/
+
+#include "documentadapter.h"
+#include <QTextDocument>
+#include <QPainter>
+
+namespace LeechCraft
+{
+namespace Monocle
+{
+namespace FXB
+{
+	DocumentAdapter::DocumentAdapter (QTextDocument *doc)
+	{
+		SetDocument (doc);
+	}
+
+	bool DocumentAdapter::IsValid () const
+	{
+		return Doc_;
+	}
+
+	int DocumentAdapter::GetNumPages () const
+	{
+		return Doc_->pageCount ();
+	}
+
+	QSize DocumentAdapter::GetPageSize (int) const
+	{
+		return Doc_->pageSize ().toSize ();
+	}
+
+	QImage DocumentAdapter::RenderPage (int page, double xRes, double yRes)
+	{
+		const auto& size = Doc_->pageSize ();
+		QImage image (size.toSize (), QImage::Format_ARGB32);
+		image.fill (Qt::white);
+
+		QRectF rect (QPointF (0, 0), size);
+		rect.setTop (rect.height () * page);
+
+		{
+			QPainter painter (&image);
+			Doc_->drawContents (&painter, rect);
+		}
+
+		return image;
+	}
+
+	QList<ILink_ptr> DocumentAdapter::GetPageLinks (int)
+	{
+		return QList<ILink_ptr> ();
+	}
+
+	void DocumentAdapter::SetDocument (QTextDocument *doc)
+	{
+		Doc_ = doc;
+		if (Doc_)
+			Doc_->setPageSize (QSize (600, 800));
+	}
+}
+}
+}
