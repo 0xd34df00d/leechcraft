@@ -120,7 +120,8 @@ namespace Azoth
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/resources/images/azoth.svg");
+		static QIcon icon (":/plugins/azoth/resources/images/azoth.svg");
+		return icon;
 	}
 
 	QStringList Plugin::Provides () const
