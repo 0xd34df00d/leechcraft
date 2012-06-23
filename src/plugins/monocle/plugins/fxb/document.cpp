@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "fxb.h"
 #include "document.h"
-#include <QIcon>
+#include <QFile>
+#include <QDomDocument>
+#include <QtDebug>
+#include "fb2converter.h"
 
 namespace LeechCraft
 {
@@ -26,56 +28,43 @@ namespace Monocle
 {
 namespace FXB
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	Document::Document (const QString& filename, QObject *parent)
+	: QObject (parent)
 	{
+		QFile file (filename);
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open file"
+					<< file.fileName ()
+					<< file.errorString ();
+			return;
+		}
+
+		QDomDocument doc;
+		if (!doc.setContent (file.readAll (), true))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "malformed XML in"
+					<< filename;
+			return;
+		}
+
+		FB2Converter conv (doc);
+		auto textDoc = conv.GetResult ();
+		SetDocument (textDoc);
+		Info_ = conv.GetDocumentInfo ();
 	}
 
-	void Plugin::SecondInit ()
+	QObject* Document::GetObject ()
 	{
+		return this;
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	DocumentInfo Document::GetDocumentInfo () const
 	{
-		return "org.LeechCraft.Monocle.FXB";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Monocle FXB";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("FictionBook (fb2) backend for Monocle.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
-	}
-
-	bool Plugin::CanLoadDocument (const QString& file)
-	{
-		return file.toLower ().endsWith (".fb2");
-	}
-
-	IDocument_ptr Plugin::LoadDocument (const QString& file)
-	{
-		return IDocument_ptr (new Document (file));
+		return Info_;
 	}
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_monocle_fxb, LeechCraft::Monocle::FXB::Plugin);

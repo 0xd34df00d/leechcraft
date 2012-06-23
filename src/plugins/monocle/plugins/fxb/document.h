@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "fxb.h"
-#include "document.h"
-#include <QIcon>
+#pragma once
+
+#include <QObject>
+#include <interfaces/monocle/ihavetoc.h>
+#include "documentadapter.h"
 
 namespace LeechCraft
 {
@@ -26,56 +28,22 @@ namespace Monocle
 {
 namespace FXB
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class Document : public QObject
+				  , public DocumentAdapter
 	{
-	}
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Monocle::IDocument)
 
-	void Plugin::SecondInit ()
-	{
-	}
+		DocumentInfo Info_;
+	public:
+		Document (const QString&, QObject* = 0);
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Monocle.FXB";
-	}
+		QObject* GetObject ();
 
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Monocle FXB";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("FictionBook (fb2) backend for Monocle.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
-	}
-
-	bool Plugin::CanLoadDocument (const QString& file)
-	{
-		return file.toLower ().endsWith (".fb2");
-	}
-
-	IDocument_ptr Plugin::LoadDocument (const QString& file)
-	{
-		return IDocument_ptr (new Document (file));
-	}
+		DocumentInfo GetDocumentInfo () const;
+	signals:
+		void navigateRequested (const QString&, int pageNum, double x, double y);
+	};
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_monocle_fxb, LeechCraft::Monocle::FXB::Plugin);
