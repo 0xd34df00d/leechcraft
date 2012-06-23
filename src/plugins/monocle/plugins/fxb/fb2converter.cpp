@@ -55,6 +55,10 @@ namespace FXB
 			AddImage (elem);
 		}
 
+		auto frameFmt = Result_->rootFrame ()->frameFormat ();
+		frameFmt.setMargin (20);
+		Result_->rootFrame ()->setFrameFormat (frameFmt);
+
 		Handlers_ ["section"] = [this] (const QDomElement& p) { HandleSection (p); };
 		Handlers_ ["title"] = [this] (const QDomElement& p) { HandleTitle (p); };
 		Handlers_ ["subtitle"] = [this] (const QDomElement& p) { HandleTitle (p, 1); };
