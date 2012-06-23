@@ -98,7 +98,8 @@ namespace Acetamide
 
 	QIcon IrcProtocol::GetProtocolIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/acetamide/resources/images/ircicon.svg");
+		static QIcon icon (":/plugins/azoth/plugins/acetamide/resources/images/ircicon.svg");
+		return icon;
 	}
 
 	QByteArray IrcProtocol::GetProtocolID () const

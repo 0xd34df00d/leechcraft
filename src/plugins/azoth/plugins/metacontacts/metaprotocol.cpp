@@ -32,29 +32,29 @@ namespace Metacontacts
 	{
 		Account_ = new MetaAccount (this);
 	}
-	
+
 	QObject* MetaProtocol::GetObject ()
 	{
 		return this;
 	}
-	
+
 	IProtocol::ProtocolFeatures MetaProtocol::GetFeatures () const
 	{
 		return PFNoAccountRegistration;
 	}
-	
+
 	QList<QObject*> MetaProtocol::GetRegisteredAccounts ()
 	{
 		QList<QObject*> result;
 		result << Account_;
 		return result;
 	}
-	
+
 	QObject* MetaProtocol::GetParentProtocolPlugin () const
 	{
 		return ParentPlugin_;
 	}
-	
+
 	QString MetaProtocol::GetProtocolName () const
 	{
 		return tr ("Metacontacts");
@@ -69,21 +69,21 @@ namespace Metacontacts
 	{
 		return "org.LeechCraft.Azoth.Protocols.MetaProtocol";
 	}
-	
+
 	QList<QWidget*> MetaProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
 	{
 		return QList<QWidget*> ();
 	}
-	
+
 	void MetaProtocol::RegisterAccount (const QString&, const QList<QWidget*>&)
 	{
 	}
-	
+
 	QWidget* MetaProtocol::GetMUCJoinWidget ()
 	{
 		return 0;
 	}
-	
+
 	QWidget* MetaProtocol::GetMUCBookmarkEditorWidget ()
 	{
 		return 0;
