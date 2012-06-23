@@ -459,10 +459,6 @@ namespace Poshuku
 		connect (WebView_,
 				SIGNAL (loadFinished (bool)),
 				this,
-				SLOT (updateTooltip ()));
-		connect (WebView_,
-				SIGNAL (loadFinished (bool)),
-				this,
 				SLOT (notifyLoadFinished (bool)));
 		connect (WebView_,
 				SIGNAL (loadFinished (bool)),
@@ -1164,52 +1160,6 @@ namespace Poshuku
 	QWidget* BrowserWidget::getSideBar () const
 	{
 		return Ui_.Sidebar_;
-	}
-
-	void BrowserWidget::updateTooltip ()
-	{
-		if (!XmlSettingsManager::Instance ()->
-				property ("GenerateTooltips").toBool ())
-			return;
-
-		const int previewWidth = 400;
-		if (!WebView_->size ().isValid ())
-			return;
-
-		QSize contentsSize = WebView_->page ()->mainFrame ()->contentsSize ();
-		if (contentsSize.width () < 800)
-			contentsSize.scale (800, 1, Qt::KeepAspectRatioByExpanding);
-		contentsSize.setHeight (std::min (contentsSize.height (), 3000));
-		QPoint scroll = WebView_->page ()->mainFrame ()->scrollPosition ();
-		QSize oldSize = WebView_->page ()->viewportSize ();
-		QRegion clip (0, 0, contentsSize.width (), contentsSize.height ());
-
-		QPixmap pixmap (contentsSize);
-		if (pixmap.isNull ())
-			return;
-
-		pixmap.fill (QColor (0, 0, 0, 0));
-
-		QPainter painter (&pixmap);
-		WebView_->page ()->setViewportSize (contentsSize);
-		WebView_->page ()->mainFrame ()->render (&painter, clip);
-		WebView_->page ()->setViewportSize (oldSize);
-		WebView_->page ()->mainFrame ()->setScrollPosition (scroll);
-		painter.end ();
-
-		QLabel *widget = new QLabel;
-
-		if (pixmap.height () > 3000)
-			pixmap = pixmap.copy (0, 0, pixmap.width (), 3000);
-
-		pixmap = pixmap.scaledToWidth (previewWidth, Qt::SmoothTransformation);
-		int maxHeight = 0.8 * QApplication::desktop ()->screenGeometry (this).height ();
-		if (pixmap.height () > maxHeight)
-			pixmap = pixmap.copy (0, 0, previewWidth, maxHeight);
-		widget->setPixmap (pixmap);
-		widget->setFixedSize (pixmap.width (), pixmap.height ());
-
-		emit tooltipChanged (widget);
 	}
 
 	void BrowserWidget::enableActions ()

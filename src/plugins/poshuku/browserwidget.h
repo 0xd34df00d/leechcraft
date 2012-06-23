@@ -165,7 +165,6 @@ namespace Poshuku
 		void handleScreenSave ();
 		void handleViewSources ();
 		void handleSavePage ();
-		void updateTooltip ();
 		void enableActions ();
 		void handleEntityAction ();
 		void checkLinkRels ();
