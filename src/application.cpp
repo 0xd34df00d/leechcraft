@@ -228,6 +228,9 @@ void Application::InitiateRestart ()
 
 bool Application::notify (QObject *obj, QEvent *event)
 {
+	if (event->type () == QEvent::LanguageChange)
+		return true;
+
 	if (CatchExceptions_)
 	{
 		try
