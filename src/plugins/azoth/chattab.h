@@ -48,6 +48,7 @@ namespace Azoth
 		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		static QObject *S_ParentMultiTabs_;
+		static TabClassInfo S_TabClass_;
 
 		Ui::ChatTab Ui_;
 		std::unique_ptr<QToolBar> TabToolbar_;
@@ -86,6 +87,7 @@ namespace Azoth
 		ChatPartState PreviousState_;
 	public:
 		static void SetParentMultiTabs (QObject*);
+		static void SetTabClassInfo (const TabClassInfo&);
 
 		ChatTab (const QString&, QWidget* = 0);
 		~ChatTab ();

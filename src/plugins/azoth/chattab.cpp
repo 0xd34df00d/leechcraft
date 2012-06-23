@@ -67,10 +67,16 @@ namespace LeechCraft
 namespace Azoth
 {
 	QObject *ChatTab::S_ParentMultiTabs_ = 0;
+	TabClassInfo ChatTab::S_TabClass_;
 
 	void ChatTab::SetParentMultiTabs (QObject *obj)
 	{
 		S_ParentMultiTabs_ = obj;
+	}
+
+	void ChatTab::SetTabClassInfo (const TabClassInfo& tc)
+	{
+		S_TabClass_ = tc;
 	}
 
 	class CopyFilter : public QObject
@@ -219,16 +225,7 @@ namespace Azoth
 
 	TabClassInfo ChatTab::GetTabClassInfo () const
 	{
-		TabClassInfo chatTab =
-		{
-			"ChatTab",
-			tr ("Chat"),
-			tr ("A tab with a chat session"),
-			QIcon (":/plugins/azoth/resources/images/chattabclass.svg"),
-			0,
-			TFEmpty
-		};
-		return chatTab;
+		return S_TabClass_;
 	}
 
 	QList<QAction*> ChatTab::GetTabBarContextMenuActions () const

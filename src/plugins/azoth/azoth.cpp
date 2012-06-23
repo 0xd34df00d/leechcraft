@@ -457,6 +457,8 @@ namespace Azoth
 			0,
 			TFEmpty
 		};
+		ChatTab::SetTabClassInfo (chatTab);
+
 		TabClassInfo mucTab =
 		{
 			"MUCTab",
