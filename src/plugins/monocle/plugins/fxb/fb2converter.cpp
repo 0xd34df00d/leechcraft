@@ -55,33 +55,44 @@ namespace FXB
 			AddImage (elem);
 		}
 
-		Handlers_ ["section"] = [this] (const HandlerParams& p) { HandleSection (p); };
-		Handlers_ ["title"] = [this] (const HandlerParams& p) { HandleTitle (p); };
-		Handlers_ ["subtitle"] = [this] (const HandlerParams& p) { HandleTitle (p, 1); };
-		Handlers_ ["epigraph"] = [this] (const HandlerParams& p) { HandleEpigraph (p); };
-		Handlers_ ["image"] = [this] (const HandlerParams& p) { HandleImage (p); };
+		Handlers_ ["section"] = [this] (const QDomElement& p) { HandleSection (p); };
+		Handlers_ ["title"] = [this] (const QDomElement& p) { HandleTitle (p); };
+		Handlers_ ["subtitle"] = [this] (const QDomElement& p) { HandleTitle (p, 1); };
+		Handlers_ ["epigraph"] = [this] (const QDomElement& p) { HandleEpigraph (p); };
+		Handlers_ ["image"] = [this] (const QDomElement& p) { HandleImage (p); };
 
-		Handlers_ ["p"] = [this] (const HandlerParams& p) { HandlePara (p); };
-		Handlers_ ["empty-line"] = [this] (const HandlerParams& p) { HandleEmptyLine (p); };
+		Handlers_ ["p"] = [this] (const QDomElement& p) { HandlePara (p); };
+		Handlers_ ["poem"] = [this] (const QDomElement& p) { HandlePoem (p); };
+		Handlers_ ["empty-line"] = [this] (const QDomElement& p) { HandleEmptyLine (p); };
+		Handlers_ ["stanza"] = [this] (const QDomElement& p) { HandleStanza (p); };
+		Handlers_ ["v"] = [this] (const QDomElement& p)
+		{
+			auto fmt = Cursor_->blockFormat ();
+			fmt.setTextIndent (50);
+			Cursor_->insertBlock (fmt);
+			HandleParaWONL (p);
+		};
 
-		Handlers_ ["emphasis"] = [this] (const HandlerParams& p)
+		Handlers_ ["emphasis"] = [this] (const QDomElement& p)
 		{
 			HandleMangleCharFormat (p,
 					[] (QTextCharFormat& fmt) { fmt.setFontItalic (true); },
-					[this] (const HandlerParams& p) { HandleParaWONL (p); });
+					[this] (const QDomElement& p) { HandleParaWONL (p); });
 		};
-		Handlers_ ["strong"] = [this] (const HandlerParams& p)
+		Handlers_ ["strong"] = [this] (const QDomElement& p)
 		{
 			HandleMangleCharFormat (p,
 					[] (QTextCharFormat& fmt) { fmt.setFontWeight (QFont::Bold); },
-					[this] (const HandlerParams& p) { HandleParaWONL (p); });
+					[this] (const QDomElement& p) { HandleParaWONL (p); });
 		};
-		Handlers_ ["strikethrough"] = [this] (const HandlerParams& p)
+		Handlers_ ["strikethrough"] = [this] (const QDomElement& p)
 		{
 			HandleMangleCharFormat (p,
 					[] (QTextCharFormat& fmt) { fmt.setFontStrikeOut (true); },
-					[this] (const HandlerParams& p) { HandleParaWONL (p); });
+					[this] (const QDomElement& p) { HandleParaWONL (p); });
 		};
+
+		Handlers_ ["style"] = [this] (const QDomElement& p) { HandleParaWONL (p); };
 
 		auto elem = docElem.firstChildElement ();
 		while (!elem.isNull ())
@@ -149,11 +160,6 @@ namespace FXB
 				.simplified ();
 	}
 
-	struct HandlerParams
-	{
-		const QDomElement& Elem_;
-	};
-
 	void FB2Converter::HandleBody (const QDomElement& bodyElem)
 	{
 		FillPreamble ();
@@ -161,40 +167,26 @@ namespace FXB
 		auto elem = bodyElem.firstChildElement ();
 		while (!elem.isNull ())
 		{
-			const auto& tagName = elem.tagName ();
-			Handlers_.value (tagName, [&tagName] (const HandlerParams&)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unhandled tag"
-								<< tagName;
-					}) ({ elem });
+			Handle (elem);
 			elem = elem.nextSiblingElement ();
 		}
 	}
 
-	void FB2Converter::HandleSection (const HandlerParams& params)
+	void FB2Converter::HandleSection (const QDomElement& tagElem)
 	{
 		++SectionLevel_;
 
-		auto child = params.Elem_.firstChildElement ();
+		auto child = tagElem.firstChildElement ();
 		while (!child.isNull ())
 		{
-			const auto& tagName = child.tagName ();
-			Handlers_.value (tagName,
-					[&tagName] (const HandlerParams&)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unhandled tag"
-								<< tagName;
-					}) ({ child });
-
+			Handle (child);
 			child = child.nextSiblingElement ();
 		}
 
 		--SectionLevel_;
 	}
 
-	void FB2Converter::HandleTitle (const HandlerParams& params, int level)
+	void FB2Converter::HandleTitle (const QDomElement& tagElem, int level)
 	{
 		auto topFrame = Cursor_->currentFrame ();
 
@@ -204,7 +196,7 @@ namespace FXB
 		frameFmt.setBackground (QColor ("#A4C0E4"));
 		Cursor_->insertFrame (frameFmt);
 
-		auto child = params.Elem_.firstChildElement ();
+		auto child = tagElem.firstChildElement ();
 		while (!child.isNull ())
 		{
 			const auto& tagName = child.tagName ();
@@ -230,41 +222,34 @@ namespace FXB
 		Cursor_->setPosition (topFrame->lastPosition ());
 	}
 
-	void FB2Converter::HandleEpigraph (const HandlerParams& params)
+	void FB2Converter::HandleEpigraph (const QDomElement& tagElem)
 	{
-		auto child = params.Elem_.firstChildElement ();
+		auto child = tagElem.firstChildElement ();
 		while (!child.isNull ())
 		{
-			const auto& tagName = child.tagName ();
-			Handlers_.value (tagName, [&tagName] (const HandlerParams&)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unhandled tag"
-								<< tagName;
-					}) ({ child });
-
+			Handle (child);
 			child = child.nextSiblingElement ();
 		}
 	}
 
-	void FB2Converter::HandleImage (const HandlerParams& params)
+	void FB2Converter::HandleImage (const QDomElement& tagElem)
 	{
 	}
 
-	void FB2Converter::HandlePara (const HandlerParams& params)
+	void FB2Converter::HandlePara (const QDomElement& tagElem)
 	{
 		auto fmt = Cursor_->blockFormat ();
 		fmt.setTextIndent (10);
 		Cursor_->setBlockFormat (fmt);
 
-		HandleParaWONL (params);
+		HandleParaWONL (tagElem);
 
 		Cursor_->insertBlock ();
 	}
 
-	void FB2Converter::HandleParaWONL (const HandlerParams& params)
+	void FB2Converter::HandleParaWONL (const QDomElement& tagElem)
 	{
-		auto child = params.Elem_.firstChild ();
+		auto child = tagElem.firstChild ();
 		while (!child.isNull ())
 		{
 			std::shared_ptr<void> guard (static_cast<void*> (0),
@@ -279,24 +264,47 @@ namespace FXB
 			if (!child.isElement ())
 				continue;
 
-			const auto& asElem = child.toElement ();
-			const auto& tagName = asElem.tagName ();
-
-			Handlers_.value (tagName, [&tagName] (const HandlerParams&)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unhandled tag"
-								<< tagName;
-					}) ({ asElem });
+			Handle (child.toElement ());
 		}
 	}
 
-	void FB2Converter::HandleEmptyLine (const HandlerParams&)
+	void FB2Converter::HandlePoem (const QDomElement& tagElem)
+	{
+		auto child = tagElem.firstChildElement ();
+		while (!child.isNull ())
+		{
+			Handle (child);
+			child = child.nextSiblingElement ();
+		}
+	}
+
+	void FB2Converter::HandleStanza (const QDomElement& tagElem)
+	{
+		auto child = tagElem.firstChildElement ();
+		while (!child.isNull ())
+		{
+			Handle (child);
+			child = child.nextSiblingElement ();
+		}
+	}
+
+	void FB2Converter::HandleEmptyLine (const QDomElement&)
 	{
 		Cursor_->insertText ("\n\n");
 	}
 
-	void FB2Converter::HandleMangleCharFormat (const HandlerParams& params,
+	void FB2Converter::Handle (const QDomElement& child)
+	{
+		const auto& tagName = child.tagName ();
+		Handlers_.value (tagName, [&tagName] (const QDomElement&)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unhandled tag"
+								<< tagName;
+					}) (child);
+	}
+
+	void FB2Converter::HandleMangleCharFormat (const QDomElement& tagElem,
 			std::function<void (QTextCharFormat&)> mangler, Handler_f next)
 	{
 		const auto origFmt = Cursor_->charFormat ();
@@ -305,7 +313,7 @@ namespace FXB
 		mangler (mangledFmt);
 		Cursor_->setCharFormat (mangledFmt);
 
-		next ({ params.Elem_ });
+		next ({ tagElem });
 
 		Cursor_->setCharFormat (origFmt);
 	}

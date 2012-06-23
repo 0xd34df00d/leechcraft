@@ -36,8 +36,6 @@ namespace Monocle
 {
 namespace FXB
 {
-	struct HandlerParams;
-
 	class FB2Converter : public QObject
 	{
 		const QDomDocument& FB2_;
@@ -49,7 +47,7 @@ namespace FXB
 
 		int SectionLevel_;
 
-		typedef std::function<void (HandlerParams)> Handler_f;
+		typedef std::function<void (QDomElement)> Handler_f;
 		QHash<QString, Handler_f> Handlers_;
 
 		QString Error_;
@@ -64,16 +62,20 @@ namespace FXB
 		void HandleDescription (const QDomElement&);
 		void HandleBody (const QDomElement&);
 
-		void HandleSection (const HandlerParams&);
-		void HandleTitle (const HandlerParams&, int = 0);
-		void HandleEpigraph (const HandlerParams&);
-		void HandleImage (const HandlerParams&);
+		void HandleSection (const QDomElement&);
+		void HandleTitle (const QDomElement&, int = 0);
+		void HandleEpigraph (const QDomElement&);
+		void HandleImage (const QDomElement&);
 
-		void HandlePara (const HandlerParams&);
-		void HandleParaWONL (const HandlerParams&);
-		void HandleEmptyLine (const HandlerParams&);
+		void HandlePara (const QDomElement&);
+		void HandleParaWONL (const QDomElement&);
+		void HandlePoem (const QDomElement&);
+		void HandleStanza (const QDomElement&);
+		void HandleEmptyLine (const QDomElement&);
 
-		void HandleMangleCharFormat (const HandlerParams&,
+		void Handle (const QDomElement&);
+
+		void HandleMangleCharFormat (const QDomElement&,
 				std::function<void (QTextCharFormat&)>, Handler_f);
 
 		void FillPreamble ();
