@@ -63,6 +63,9 @@ namespace LeechCraft
 		QDir IconsDir_;
 
 		std::shared_ptr<PluginTreeBuilder> PluginTreeBuilder_;
+
+		mutable bool CacheValid_;
+		mutable QObjectList SortedCache_;
 	public:
 		enum Roles
 		{

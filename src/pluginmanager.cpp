@@ -48,6 +48,7 @@ namespace LeechCraft
 	, DefaultPluginIcon_ (QIcon (":/resources/images/defaultpluginicon.svg"))
 	, IconsDir_ (Util::CreateIfNotExists ("core/pluginicons"))
 	, PluginTreeBuilder_ (new PluginTreeBuilder)
+	, CacheValid_ (false)
 	{
 		Headers_ << tr ("Name")
 			<< tr ("Description");
@@ -477,11 +478,15 @@ namespace LeechCraft
 
 	QObjectList PluginManager::GetAllPlugins () const
 	{
-		QObjectList result = PluginTreeBuilder_->GetResult ();
-		std::sort (result.begin (), result.end (),
-				[] (QObject *p1, QObject *p2)
-					{ return qobject_cast<IInfo*> (p1)->GetName () < qobject_cast<IInfo*> (p2)->GetName (); });
-		return result;
+		if (!CacheValid_)
+		{
+			CacheValid_ = true;
+			SortedCache_ = PluginTreeBuilder_->GetResult ();
+			std::sort (SortedCache_.begin (), SortedCache_.end (),
+					[] (QObject *p1, QObject *p2)
+						{ return qobject_cast<IInfo*> (p1)->GetName () < qobject_cast<IInfo*> (p2)->GetName (); });
+		}
+		return SortedCache_;
 	}
 
 	QString PluginManager::GetPluginLibraryPath (const QObject *object) const
