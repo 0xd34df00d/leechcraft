@@ -44,7 +44,9 @@ namespace FXB
 
 	QSize DocumentAdapter::GetPageSize (int) const
 	{
-		return Doc_->pageSize ().toSize ();
+		auto size = Doc_->pageSize ();
+		size.setWidth (std::ceil (size.width ()));
+		return size.toSize ();
 	}
 
 	QImage DocumentAdapter::RenderPage (int page, double xScale, double yScale)
