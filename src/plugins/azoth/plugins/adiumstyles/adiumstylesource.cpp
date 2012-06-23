@@ -46,6 +46,7 @@ namespace AdiumStyles
 	, StylesLoader_ (new Util::ResourceLoader ("azoth/styles/adium/", this))
 	, Proxy_ (proxy)
 	, PackProxyModel_ (new PackProxyModel (StylesLoader_, this))
+	, AvatarsCache_ (10 * 1024)
 	{
 		StylesLoader_->AddGlobalPrefix ();
 		StylesLoader_->AddLocalPrefix ();
@@ -525,27 +526,43 @@ namespace AdiumStyles
 		// %messageDirection%
 		templ.replace ("%messageDirection%", "ltr");
 
-		// TODO show our avatar
 		// %userIconPath%
-		QImage image;
-		if (in)
-			image = other->GetAvatar ();
-		else if (acc)
+		if (templ.contains ("%userIconPath%"))
 		{
-			IExtSelfInfoAccount *self = qobject_cast<IExtSelfInfoAccount*> (acc->GetObject ());
-			if (self)
-				image = self->GetSelfAvatar ();
-		}
+			QString base64;
+			if (in && AvatarsCache_.contains (other))
+				base64 = *AvatarsCache_ [other];
+			else if (OurAvatarsCache_.contains (acc))
+				base64 = *OurAvatarsCache_ [acc];
+			else
+			{
+				QImage image;
+				if (in)
+					image = other->GetAvatar ();
+				else if (acc)
+				{
+					IExtSelfInfoAccount *self = qobject_cast<IExtSelfInfoAccount*> (acc->GetObject ());
+					if (self)
+						image = self->GetSelfAvatar ();
+				}
 
-		if (image.isNull ())
-			image = QImage (StylesLoader_->GetPath (QStringList (base + "buddy_icon.png")));
-		if (image.isNull ())
-			image = GetDefaultAvatar ();
-		if (image.isNull ())
-			qWarning () << Q_FUNC_INFO
-					<< "image is still null, though tried"
-					<< base + "buddy_icon.png";
-		templ.replace ("%userIconPath%", Util::GetAsBase64Src (image));
+				if (image.isNull ())
+					image = QImage (StylesLoader_->GetPath (QStringList (base + "buddy_icon.png")));
+				if (image.isNull ())
+					image = GetDefaultAvatar ();
+				if (image.isNull ())
+					qWarning () << Q_FUNC_INFO
+							<< "image is still null, though tried"
+							<< base + "buddy_icon.png";
+
+				base64 = Util::GetAsBase64Src (image);
+				if (in)
+					AvatarsCache_.insert (other, new QString (base64), base64.size ());
+				else if (acc && !image.isNull ())
+					OurAvatarsCache_.insert (acc, new QString (base64), base64.size ());
+			}
+			templ.replace ("%userIconPath%", base64);
+		}
 
 		// %senderScreenName%
 		templ.replace ("%senderScreenName%",
@@ -731,6 +748,9 @@ namespace AdiumStyles
 
 		Frame2LastContact_.remove (static_cast<QWebFrame*> (sender ()));
 		Frame2Pack_.remove (static_cast<QWebFrame*> (sender ()));
+
+		AvatarsCache_.clear ();
+		OurAvatarsCache_.clear ();
 	}
 }
 }
