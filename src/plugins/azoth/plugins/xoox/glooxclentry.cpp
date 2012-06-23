@@ -50,7 +50,7 @@ namespace Xoox
 			Q_FOREACH (const QString& group, ods->Groups_)
 				w->writeTextElement ("group", group);
 			w->writeEndElement ();
-			
+
 			QByteArray vcardData;
 			{
 				QXmlStreamWriter vcardWriter (&vcardData);
@@ -59,13 +59,13 @@ namespace Xoox
 			w->writeTextElement ("vcard", vcardData.toBase64 ());
 		w->writeEndElement ();
 	}
-	
+
 	void Load (OfflineDataSource_ptr ods, const QDomElement& entry)
 	{
 		const QByteArray& entryID = QByteArray::fromPercentEncoding (entry
 					.firstChildElement ("id").text ().toLatin1 ());
 		const QString& name = entry.firstChildElement ("name").text ();
-				
+
 		QByteArray vcardData = entry.firstChildElement ("vcard").text ().toAscii ();
 		QDomDocument vcardDoc;
 		vcardDoc.setContent (QByteArray::fromBase64 (vcardData));
@@ -81,7 +81,7 @@ namespace Xoox
 				groups << text;
 			group = group.nextSiblingElement ("group");
 		}
-		
+
 		ods->Name_ = name;
 		ods->ID_ = QString::fromUtf8 (entryID.constData ());
 		ods->Groups_ = groups;
@@ -117,7 +117,7 @@ namespace Xoox
 					<< ods->ID_;
 			BareJID_ = ods->ID_;
 		}
-		
+
 		SetVCard (ods->VCardIq_);
 	}
 
@@ -143,7 +143,7 @@ namespace Xoox
 		emit availableVariantsChanged (QStringList ());
 		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
 	}
-	
+
 	QString GlooxCLEntry::JIDFromID (GlooxAccount *acc, const QString& id)
 	{
 		const QString& pre = acc->GetAccountID () + '_';
@@ -219,7 +219,7 @@ namespace Xoox
 
 		return Account_->GetAccountID () + '_' + BareJID_;
 	}
-	
+
 	QString GlooxCLEntry::GetHumanReadableID() const
 	{
 		return BareJID_;
@@ -271,12 +271,12 @@ namespace Xoox
 
 		return result;
 	}
-	
+
 	EntryStatus GlooxCLEntry::GetStatus (const QString& variant) const
 	{
 		if (ODS_)
 			return EntryStatus ();
-		
+
 		if (AuthRequested_)
 			return EntryStatus (SOnline, QString ());
 
@@ -318,7 +318,7 @@ namespace Xoox
 		AllMessages_ << msg;
 		return msg;
 	}
-	
+
 	QList<QAction*> GlooxCLEntry::GetActions () const
 	{
 		auto baseActs = EntryBase::GetActions ();
@@ -334,10 +334,10 @@ namespace Xoox
 					break;
 				}
 
-			if (gwFound)	
+			if (gwFound)
 				break;
 		}
-			
+
 		if (gwFound)
 		{
 			if (!GWLogin_ || !GWLogout_)
@@ -365,7 +365,7 @@ namespace Xoox
 			delete GWLogout_;
 			GWLogout_ = 0;
 		}
-		
+
 		return baseActs;
 	}
 
@@ -376,7 +376,7 @@ namespace Xoox
 
 		return static_cast<AuthStatus> (GetRI ().subscriptionType ());
 	}
-	
+
 	void GlooxCLEntry::ResendAuth (const QString& reason)
 	{
 		if (ODS_)
@@ -419,7 +419,7 @@ namespace Xoox
 	{
 		return BareJID_;
 	}
-	
+
 	void GlooxCLEntry::SetAuthRequested (bool auth)
 	{
 		AuthRequested_ = auth;
@@ -439,12 +439,12 @@ namespace Xoox
 		avail.setTo (jid);
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (avail);
 	}
-	
+
 	void GlooxCLEntry::handleGWLogin ()
 	{
 		SendGWPresence (QXmppPresence::Available);
 	}
-	
+
 	void GlooxCLEntry::handleGWLogout ()
 	{
 		SendGWPresence (QXmppPresence::Unavailable);

@@ -515,7 +515,7 @@ namespace Xoox
 		return VCardIq_;
 	}
 
-	void EntryBase::SetVCard (const QXmppVCardIq& vcard)
+	void EntryBase::SetVCard (const QXmppVCardIq& vcard, bool initial)
 	{
 		VCardIq_ = vcard;
 		VCardPhotoHash_ = VCardIq_.photo ().isEmpty () ?
@@ -536,7 +536,8 @@ namespace Xoox
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
 
-		Core::Instance ().ScheduleSaveRoster (10000);
+		if (!initial)
+			Core::Instance ().ScheduleSaveRoster (10000);
 
 		emit vcardUpdated ();
 	}
