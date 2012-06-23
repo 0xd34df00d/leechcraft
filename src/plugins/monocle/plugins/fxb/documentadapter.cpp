@@ -19,6 +19,7 @@
 #include "documentadapter.h"
 #include <QTextDocument>
 #include <QPainter>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -46,19 +47,24 @@ namespace FXB
 		return Doc_->pageSize ().toSize ();
 	}
 
-	QImage DocumentAdapter::RenderPage (int page, double xRes, double yRes)
+	QImage DocumentAdapter::RenderPage (int page, double xScale, double yScale)
 	{
 		const auto& size = Doc_->pageSize ();
-		QImage image (size.toSize (), QImage::Format_ARGB32);
+
+		auto imgSize = size.toSize ();
+		imgSize.rwidth () *= xScale;
+		imgSize.rheight () *= yScale;
+		QImage image (imgSize, QImage::Format_ARGB32);
 		image.fill (Qt::white);
 
 		QRectF rect (QPointF (0, 0), size);
 		rect.setTop (rect.height () * page);
 
-		{
-			QPainter painter (&image);
-			Doc_->drawContents (&painter, rect);
-		}
+		QPainter painter;
+		painter.begin (&image);
+		painter.scale (xScale, yScale);
+		Doc_->drawContents (&painter, rect);
+		painter.end ();
 
 		return image;
 	}
