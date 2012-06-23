@@ -130,17 +130,13 @@ namespace FXB
 		QTextFrameFormat format;
 		format.setBorder (2);
 		format.setPadding (8);
-		format.setBackground (Qt::lightGray);
+		format.setBackground (QColor ("#A4C0E4"));
 
 		if (!DocInfo_.Title_.isEmpty ())
 		{
-			auto blockFmt = Cursor_->blockFormat ();
-			blockFmt.setAlignment (Qt::AlignCenter);
-			Cursor_->insertBlock (blockFmt);
-
 			Cursor_->insertFrame (format);
 			QTextCharFormat charFmt;
-			charFmt.setFontPointSize (20);
+			charFmt.setFontPointSize (18);
 			charFmt.setFontWeight (QFont::Bold);
 			Cursor_->insertText (DocInfo_.Title_, charFmt);
 
@@ -149,15 +145,11 @@ namespace FXB
 
 		if (!DocInfo_.Author_.isEmpty ())
 		{
-			auto blockFmt = Cursor_->blockFormat ();
-			blockFmt.setAlignment (Qt::AlignRight);
-			Cursor_->insertBlock (blockFmt);
-
 			format.setBorder (1);
 			Cursor_->insertFrame (format);
 
 			QTextCharFormat charFmt;
-			charFmt.setFontPointSize (16);
+			charFmt.setFontPointSize (12);
 			charFmt.setFontItalic (true);
 			Cursor_->insertText (DocInfo_.Author_, charFmt);
 
