@@ -40,6 +40,7 @@ namespace LeechCraft
 		, Watcher_ (new QFileSystemWatcher (this))
 		, CacheFlushTimer_ (new QTimer (this))
 		, CachePathContents_ (0)
+		, CachePixmaps_ (0)
 		{
 			if (RelativePath_.startsWith ('/'))
 				RelativePath_ = RelativePath_.mid (1);
@@ -124,6 +125,9 @@ namespace LeechCraft
 
 		void ResourceLoader::SetCacheParams (int size, int timeout)
 		{
+			if (qApp->property ("no-resource-caching").toBool ())
+				return;
+
 			if (size <= 0)
 			{
 				CacheFlushTimer_->stop ();
