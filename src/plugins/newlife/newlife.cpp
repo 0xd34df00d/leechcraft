@@ -94,7 +94,7 @@ namespace NewLife
 	{
 		QList<QAction*> result;
 
-		if (place == AEPToolsMenu)
+		if (place == ActionsEmbedPlace::ToolsMenu)
 			result << ImporterAction_;
 
 		return result;

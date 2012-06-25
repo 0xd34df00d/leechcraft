@@ -19,44 +19,31 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iremovabledevmanager.h>
-#include <interfaces/iactionsexporter.h>
+#include <interfaces/monocle/ihavetoc.h>
+#include "documentadapter.h"
 
 namespace LeechCraft
 {
-namespace Vrooby
+namespace Monocle
 {
-	class DevBackend;
-	class TrayView;
-
-	class Plugin : public QObject
-				, public IInfo
-				, public IRemovableDevManager
-				, public IActionsExporter
+namespace FXB
+{
+	class Document : public QObject
+				  , public DocumentAdapter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IRemovableDevManager IActionsExporter)
+		Q_INTERFACES (LeechCraft::Monocle::IDocument)
 
-		DevBackend *Backend_;
-		QAction *ActionDevices_;
-		TrayView *TrayView_;
+		DocumentInfo Info_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		Document (const QString&, QObject* = 0);
 
-		QAbstractItemModel* GetDevicesModel () const;
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	private slots:
-		void showTrayView (bool);
+		QObject* GetObject ();
+
+		DocumentInfo GetDocumentInfo () const;
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-		void gotEntity (const LeechCraft::Entity&);
+		void navigateRequested (const QString&, int pageNum, double x, double y);
 	};
+}
 }
 }

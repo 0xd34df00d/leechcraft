@@ -97,6 +97,7 @@ namespace LeechCraft
 
 			QTimer *CacheFlushTimer_;
 			mutable QCache<QString, QByteArray> CachePathContents_;
+			mutable QCache<QString, QPixmap> CachePixmaps_;
 		public:
 			/** @brief Initializes the loader with the given path.
 			 *

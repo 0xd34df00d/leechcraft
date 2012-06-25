@@ -120,7 +120,8 @@ namespace Azoth
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/resources/images/azoth.svg");
+		static QIcon icon (":/plugins/azoth/resources/images/azoth.svg");
+		return icon;
 	}
 
 	QStringList Plugin::Provides () const
@@ -153,7 +154,7 @@ namespace Azoth
 		QList<QAction*> result;
 		switch (aep)
 		{
-		case AEPTrayMenu:
+		case ActionsEmbedPlace::TrayMenu:
 			result << MW_->GetChangeStatusMenu ()->menuAction ();
 			break;
 		default:
@@ -457,6 +458,8 @@ namespace Azoth
 			0,
 			TFEmpty
 		};
+		ChatTab::SetTabClassInfo (chatTab);
+
 		TabClassInfo mucTab =
 		{
 			"MUCTab",

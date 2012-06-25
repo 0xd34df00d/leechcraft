@@ -19,6 +19,7 @@
 #pragma once
 
 #include "../../devbackend.h"
+#include <memory>
 #include <QHash>
 #include <QSet>
 
@@ -27,6 +28,8 @@ class QStandardItemModel;
 class QStandardItem;
 class QDBusInterface;
 class QDBusPendingCallWatcher;
+
+typedef std::shared_ptr<QDBusInterface> QDBusInterface_ptr;
 
 namespace LeechCraft
 {
@@ -50,14 +53,20 @@ namespace UDisks
 		bool IsValid () const;
 
 		QAbstractItemModel* GetDevicesModel () const;
-
-		void Mount (const QString&);
-		void Umount (const QString&);
 	private:
 		void InitialEnumerate ();
 		void AddPath (const QDBusObjectPath&);
+		void RemovePath (const QDBusObjectPath&);
+		void SetItemData (QDBusInterface_ptr, QStandardItem*);
+	public slots:
+		void toggleMount (const QString&);
 	private slots:
+		void mountCallFinished (QDBusPendingCallWatcher*);
+		void umountCallFinished (QDBusPendingCallWatcher*);
 		void handleEnumerationFinished (QDBusPendingCallWatcher*);
+		void handleDeviceAdded (const QDBusObjectPath&);
+		void handleDeviceRemoved (const QDBusObjectPath&);
+		void handleDeviceChanged (const QDBusObjectPath&);
 	};
 }
 }

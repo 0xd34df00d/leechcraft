@@ -18,45 +18,30 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iremovabledevmanager.h>
-#include <interfaces/iactionsexporter.h>
+#include <interfaces/monocle/idocument.h>
+
+class QTextDocument;
 
 namespace LeechCraft
 {
-namespace Vrooby
+namespace Monocle
 {
-	class DevBackend;
-	class TrayView;
-
-	class Plugin : public QObject
-				, public IInfo
-				, public IRemovableDevManager
-				, public IActionsExporter
+namespace FXB
+{
+	class DocumentAdapter : public IDocument
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IRemovableDevManager IActionsExporter)
-
-		DevBackend *Backend_;
-		QAction *ActionDevices_;
-		TrayView *TrayView_;
+		QTextDocument *Doc_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		DocumentAdapter (QTextDocument* = 0);
 
-		QAbstractItemModel* GetDevicesModel () const;
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	private slots:
-		void showTrayView (bool);
-	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-		void gotEntity (const LeechCraft::Entity&);
+		bool IsValid () const;
+		int GetNumPages () const;
+		QSize GetPageSize (int) const;
+		QImage RenderPage (int , double xRes, double yRes);
+		QList<ILink_ptr> GetPageLinks (int);
+	protected:
+		void SetDocument (QTextDocument*);
 	};
+}
 }
 }

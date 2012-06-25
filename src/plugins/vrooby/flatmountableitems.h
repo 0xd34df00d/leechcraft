@@ -19,44 +19,42 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
+#include <QAbstractItemModel>
 #include <interfaces/iremovabledevmanager.h>
-#include <interfaces/iactionsexporter.h>
+
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
 namespace Vrooby
 {
-	class DevBackend;
-	class TrayView;
-
-	class Plugin : public QObject
-				, public IInfo
-				, public IRemovableDevManager
-				, public IActionsExporter
+	class FlatMountableItems : public QAbstractItemModel
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IRemovableDevManager IActionsExporter)
 
-		DevBackend *Backend_;
-		QAction *ActionDevices_;
-		TrayView *TrayView_;
+		QAbstractItemModel *Source_;
+		QList<QPersistentModelIndex> SourceIndexes_;
+		enum CustomRoles
+		{
+			FormattedTotalSize = DeviceRoles::DeviceRoleMax + 1,
+			MountButtonIcon,
+			MountedAt
+		};
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		FlatMountableItems (QObject* = 0);
 
-		QAbstractItemModel* GetDevicesModel () const;
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
+		QModelIndex parent (const QModelIndex&) const;
+		int rowCount (const QModelIndex& parent = QModelIndex()) const;
+		int columnCount (const QModelIndex& parent = QModelIndex()) const;
+		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+
+		void SetSource (QAbstractItemModel*);
 	private slots:
-		void showTrayView (bool);
-	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-		void gotEntity (const LeechCraft::Entity&);
+		void handleDataChanged (const QModelIndex&, const QModelIndex&);
+		void handleRowsInserted (const QModelIndex&, int, int);
+		void handleRowsAboutRemoved (const QModelIndex&, int, int);
 	};
 }
 }

@@ -98,7 +98,8 @@ namespace Xoox
 
 	QIcon GlooxProtocol::GetProtocolIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/xoox/resources/images/jabbericon.svg");
+		static QIcon icon (":/plugins/azoth/plugins/xoox/resources/images/jabbericon.svg");
+		return icon;
 	}
 
 	QByteArray GlooxProtocol::GetProtocolID () const

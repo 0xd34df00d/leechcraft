@@ -119,7 +119,7 @@ namespace LeechCraft
 
 			QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 			{
-				if (place == AEPToolsMenu)
+				if (place == ActionsEmbedPlace::ToolsMenu)
 					return Actions_;
 
 				return QList<QAction*> ();

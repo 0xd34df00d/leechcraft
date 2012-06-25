@@ -441,25 +441,21 @@ namespace Aggregator
 
 		switch (place)
 		{
-		case AEPToolsMenu:
+		case ActionsEmbedPlace::ToolsMenu:
 			result << Impl_->ToolMenu_->menuAction ();
 			result << Impl_->AppWideActions_.ActionRegexpMatcher_;
 			break;
-		case AEPCommonContextMenu:
+		case ActionsEmbedPlace::CommonContextMenu:
 			result << Impl_->AppWideActions_.ActionAddFeed_;
 			result << Impl_->AppWideActions_.ActionUpdateFeeds_;
 			break;
-		case AEPTrayMenu:
+		case ActionsEmbedPlace::TrayMenu:
 			result << Impl_->AppWideActions_.ActionMarkAllAsRead_;
 			result << Impl_->AppWideActions_.ActionAddFeed_;
 			result << Impl_->AppWideActions_.ActionUpdateFeeds_;
 			break;
-		case AEPQuickLaunch:
-			break;
 		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown place"
-					<< place;
+			break;
 		}
 
 		return result;

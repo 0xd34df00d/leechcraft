@@ -146,7 +146,7 @@ namespace AdvancedNotifications
 				this,
 				SLOT (handleLCAction ()));
 
-		emit gotActions (QList<QAction*> () << action, AEPLCTray);
+		emit gotActions (QList<QAction*> () << action, ActionsEmbedPlace::LCTray);
 
 #ifdef HAVE_QML
 		VisualNotificationsView *vnv = new VisualNotificationsView;

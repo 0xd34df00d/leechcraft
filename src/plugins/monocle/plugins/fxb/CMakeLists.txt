@@ -13,18 +13,14 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	fxb.cpp
+	document.cpp
+	documentadapter.cpp
+	fb2converter.cpp
 	)
-SET (HEADERS
-	fxb.h
-	)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
 
 ADD_LIBRARY (leechcraft_monocle_fxb SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_monocle_fxb
 	${QT_LIBRARIES}

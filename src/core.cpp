@@ -201,7 +201,7 @@ namespace LeechCraft
 		QList<QList<QAction*>> actions;
 		Q_FOREACH (const IActionsExporter *plugin, plugins)
 		{
-			const QList<QAction*>& list = plugin->GetActions (AEPCommonContextMenu);
+			const QList<QAction*>& list = plugin->GetActions (ActionsEmbedPlace::CommonContextMenu);
 			if (!list.size ())
 				continue;
 			actions << list;

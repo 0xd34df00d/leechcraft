@@ -38,9 +38,9 @@ namespace Lads
 		if (services.contains ("com.canonical.Unity"))
 		{
 			Action_ = new QAction (tr ("Show/hide LeechCraft window"), this);
-			connect (Action_, 
-				SIGNAL (triggered ()), 
-				this, 
+			connect (Action_,
+				SIGNAL (triggered ()),
+				this,
 				SLOT (showHideMain ()));
 		}
 	}
@@ -76,11 +76,11 @@ namespace Lads
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
 	{
 		QList<QAction*> result;
-		if (aep == AEPTrayMenu && Action_)
+		if (aep == ActionsEmbedPlace::TrayMenu && Action_)
 			result << Action_;
-		return result; 
+		return result;
 	}
-	
+
 	void Plugin::showHideMain () const
 	{
 		Proxy_->GetMWProxy ()->ToggleVisibility ();

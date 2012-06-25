@@ -127,7 +127,8 @@ namespace LeechCraft
 			if (size <= 0)
 			{
 				CacheFlushTimer_->stop ();
-				CachePathContents_.clear ();
+
+				handleFlushCaches ();
 			}
 			else
 			{
@@ -135,12 +136,13 @@ namespace LeechCraft
 					CacheFlushTimer_->start (timeout);
 
 				CachePathContents_.setMaxCost (size * 1024);
+				CachePixmaps_.setMaxCost (size * 1024);
 			}
 		}
 
 		void ResourceLoader::FlushCache ()
 		{
-			CachePathContents_.clear ();
+			handleFlushCaches ();
 		}
 
 		QFileInfoList ResourceLoader::List (const QString& option,
@@ -247,13 +249,18 @@ namespace LeechCraft
 
 		QPixmap ResourceLoader::LoadPixmap (const QString& basename) const
 		{
+			if (CachePixmaps_.contains (basename))
+				return *CachePixmaps_ [basename];
+
 			auto dev = LoadIcon (basename, true);
 			if (!dev)
 				return QPixmap ();
 
-			QPixmap px;
-			px.loadFromData (dev->readAll ());
-			return px;
+			const auto& data = dev->readAll ();
+			auto px = new QPixmap;
+			px->loadFromData (data);
+			CachePixmaps_.insert (basename, px, data.size ());
+			return *px;
 		}
 
 		QAbstractItemModel* ResourceLoader::GetSubElemModel () const
@@ -315,6 +322,7 @@ namespace LeechCraft
 		void ResourceLoader::handleFlushCaches ()
 		{
 			CachePathContents_.clear ();
+			CachePixmaps_.clear ();
 		}
 	}
 }

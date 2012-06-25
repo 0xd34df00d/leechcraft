@@ -235,7 +235,7 @@ namespace LackMan
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
 		QList<QAction*> result;
-		if (place == AEPToolsMenu)
+		if (place == ActionsEmbedPlace::ToolsMenu)
 		{
 			result << UpdateAll_;
 			result << UpgradeAll_;

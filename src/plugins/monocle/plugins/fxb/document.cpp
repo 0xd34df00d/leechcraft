@@ -16,47 +16,55 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iremovabledevmanager.h>
-#include <interfaces/iactionsexporter.h>
+#include "document.h"
+#include <QFile>
+#include <QDomDocument>
+#include <QtDebug>
+#include "fb2converter.h"
 
 namespace LeechCraft
 {
-namespace Vrooby
+namespace Monocle
 {
-	class DevBackend;
-	class TrayView;
-
-	class Plugin : public QObject
-				, public IInfo
-				, public IRemovableDevManager
-				, public IActionsExporter
+namespace FXB
+{
+	Document::Document (const QString& filename, QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IRemovableDevManager IActionsExporter)
+		QFile file (filename);
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open file"
+					<< file.fileName ()
+					<< file.errorString ();
+			return;
+		}
 
-		DevBackend *Backend_;
-		QAction *ActionDevices_;
-		TrayView *TrayView_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		QDomDocument doc;
+		if (!doc.setContent (file.readAll (), true))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "malformed XML in"
+					<< filename;
+			return;
+		}
 
-		QAbstractItemModel* GetDevicesModel () const;
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	private slots:
-		void showTrayView (bool);
-	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-		void gotEntity (const LeechCraft::Entity&);
-	};
+		FB2Converter conv (doc);
+		auto textDoc = conv.GetResult ();
+		SetDocument (textDoc);
+		Info_ = conv.GetDocumentInfo ();
+	}
+
+	QObject* Document::GetObject ()
+	{
+		return this;
+	}
+
+	DocumentInfo Document::GetDocumentInfo () const
+	{
+		return Info_;
+	}
+}
 }
 }

@@ -34,9 +34,18 @@ namespace Xoox
 		QTimer::singleShot (30000, this, SLOT (collectOldAvatars ()));
 	}
 
+	/** The clients are free to not call this function if they know the avatar is
+	 * already stored. That means that we should be beware of this when implementing
+	 * caching, if we'd ever do.
+	 *
+	 * See EntryBase::SetVCard() for example.
+	 */
 	void AvatarsStorage::StoreAvatar (const QImage& image, const QByteArray& hash)
 	{
 		QFile file (AvatarsDir_.absoluteFilePath (hash));
+		if (file.exists () && file.size ())
+			return;
+
 		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 		{
 			qWarning () << Q_FUNC_INFO

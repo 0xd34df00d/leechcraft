@@ -18,45 +18,30 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iremovabledevmanager.h>
-#include <interfaces/iactionsexporter.h>
+#include <QDeclarativeView>
+#include <interfaces/core/icoreproxy.h>
+
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
 namespace Vrooby
 {
 	class DevBackend;
-	class TrayView;
+	class FlatMountableItems;
 
-	class Plugin : public QObject
-				, public IInfo
-				, public IRemovableDevManager
-				, public IActionsExporter
+	class TrayView : public QDeclarativeView
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IRemovableDevManager IActionsExporter)
+
+		ICoreProxy_ptr CoreProxy_;
+		FlatMountableItems *Flattened_;
 
 		DevBackend *Backend_;
-		QAction *ActionDevices_;
-		TrayView *TrayView_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		TrayView (ICoreProxy_ptr, QWidget* = 0);
 
-		QAbstractItemModel* GetDevicesModel () const;
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	private slots:
-		void showTrayView (bool);
-	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-		void gotEntity (const LeechCraft::Entity&);
+		void SetBackend (DevBackend*);
 	};
 }
 }

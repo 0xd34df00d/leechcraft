@@ -44,14 +44,19 @@ namespace LeechCraft
 	enum DeviceRoles
 	{
 		DevType = Qt::UserRole + 1,
+		DevFile,
 		PartType,
 		IsRemovable,
 		IsPartition,
 		IsMountable,
+		IsMounted,
+		IsMediaAvailable,
 		DevID,
 		VisibleName,
 		TotalSize,
-		MountPoints
+		MountPoints,
+
+		DeviceRoleMax
 	};
 }
 

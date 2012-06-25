@@ -131,7 +131,7 @@ namespace Xoox
 		void SetAvatar (const QByteArray&);
 		void SetAvatar (const QImage&);
 		QXmppVCardIq GetVCard () const;
-		void SetVCard (const QXmppVCardIq&);
+		void SetVCard (const QXmppVCardIq&, bool initial = false);
 		void SetRawInfo (const QString&);
 
 		bool HasUnreadMsgs () const;

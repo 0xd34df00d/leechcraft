@@ -77,9 +77,9 @@ namespace Sidebar
 
 	void QLActionManager::handleGotActions (const QList<QAction*>& actions, ActionsEmbedPlace aep)
 	{
-		if (aep == AEPQuickLaunch)
+		if (aep == ActionsEmbedPlace::QuickLaunch)
 			AddToQuickLaunch (actions);
-		else if (aep == AEPLCTray)
+		else if (aep == ActionsEmbedPlace::LCTray)
 			AddToLCTray (actions);
 	}
 

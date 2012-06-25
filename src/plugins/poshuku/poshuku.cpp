@@ -340,11 +340,11 @@ namespace Poshuku
 
 		switch (place)
 		{
-		case AEPToolsMenu:
+		case ActionsEmbedPlace::ToolsMenu:
 			result << CheckFavorites_;
 			result << ToolMenu_->menuAction ();
 			break;
-		case AEPCommonContextMenu:
+		case ActionsEmbedPlace::CommonContextMenu:
 			result << ReloadAll_;
 			break;
 		default:

@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "fxb.h"
+#include "document.h"
 #include <QIcon>
 
 namespace LeechCraft
@@ -71,7 +72,7 @@ namespace FXB
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)
 	{
-		return IDocument_ptr ();
+		return IDocument_ptr (new Document (file));
 	}
 }
 }

@@ -29,7 +29,8 @@ namespace Sidebar
 	{
 		QIcon GetDefIcon ()
 		{
-			return QIcon (":/resources/images/defaultpluginicon.svg");
+			static QIcon icon (":/resources/images/defaultpluginicon.svg");
+			return icon;
 		}
 	}
 

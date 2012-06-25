@@ -23,6 +23,7 @@
 #include <QDateTime>
 #include <QHash>
 #include <QColor>
+#include <QCache>
 #include <interfaces/azoth/ichatstyleresourcesource.h>
 #include "plistparser.h"
 
@@ -37,6 +38,7 @@ namespace Azoth
 {
 class IMessage;
 class ICLEntry;
+class IAccount;
 class IProxyObject;
 
 namespace AdiumStyles
@@ -62,6 +64,9 @@ namespace AdiumStyles
 		QHash<QObject*, QWebFrame*> Msg2Frame_;
 
 		mutable QHash<QWebFrame*, QObject*> Frame2LastContact_;
+
+		mutable QCache<ICLEntry*, QString> AvatarsCache_;
+		mutable QCache<IAccount*, QString> OurAvatarsCache_;
 	public:
 		AdiumStyleSource (IProxyObject*, QObject* = 0);
 

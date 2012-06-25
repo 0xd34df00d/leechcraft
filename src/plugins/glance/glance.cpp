@@ -97,7 +97,7 @@ namespace Glance
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
 	{
 		QList<QAction*> result;
-		if (aep == AEPQuickLaunch)
+		if (aep == ActionsEmbedPlace::QuickLaunch)
 			result << ActionGlance_;
 		return result;
 	}

@@ -23,8 +23,9 @@
 #include <QDBusConnectionInterface>
 #include <QDBusInterface>
 #include <QtDebug>
+#include <util/util.h>
 
-typedef std::unique_ptr<QDBusInterface> QDBusInterface_ptr;
+typedef std::shared_ptr<QDBusInterface> QDBusInterface_ptr;
 
 namespace LeechCraft
 {
@@ -62,14 +63,6 @@ namespace UDisks
 		}
 	}
 
-	void Backend::Mount (const QString&)
-	{
-	}
-
-	void Backend::Umount (const QString&)
-	{
-	}
-
 	void Backend::InitialEnumerate ()
 	{
 		auto sb = QDBusConnection::systemBus ();
@@ -86,6 +79,19 @@ namespace UDisks
 				SIGNAL (finished (QDBusPendingCallWatcher*)),
 				this,
 				SLOT (handleEnumerationFinished (QDBusPendingCallWatcher*)));
+
+		connect (UDisksObj_,
+				SIGNAL (DeviceAdded (QDBusObjectPath)),
+				this,
+				SLOT (handleDeviceAdded (QDBusObjectPath)));
+		connect (UDisksObj_,
+				SIGNAL (DeviceRemoved (QDBusObjectPath)),
+				this,
+				SLOT (handleDeviceRemoved (QDBusObjectPath)));
+		connect (UDisksObj_,
+				SIGNAL (DeviceChanged (QDBusObjectPath)),
+				this,
+				SLOT (handleDeviceChanged (QDBusObjectPath)));
 	}
 
 	void Backend::AddPath (const QDBusObjectPath& path)
@@ -106,25 +112,9 @@ namespace UDisks
 			return;
 		}
 
-		const bool isPartition = iface->property ("DeviceIsPartition").toBool ();
-
-		const QString& name = isPartition ?
-				tr ("Partition %1")
-					.arg (iface->property ("PartitionNumber").toInt ()) :
-				(iface->property ("DriveVendor").toString () +
-						" " +
-						iface->property ("DriveModel").toString ());
-		QStandardItem *item = new QStandardItem (name);
+		auto item = new QStandardItem;
 		Object2Item_ [str] = item;
-		item->setData (DeviceType::GenericDevice, DeviceRoles::DevType);
-		item->setData (iface->property ("PartitionType").toInt (), DeviceRoles::PartType);
-		item->setData (isRemovable, DeviceRoles::IsRemovable);
-		item->setData (isPartition, DeviceRoles::IsPartition);
-		item->setData (isPartition && isRemovable, DeviceRoles::IsMountable);
-		item->setData (str, DeviceRoles::DevID);
-		item->setData (name, DeviceRoles::VisibleName);
-		item->setData (iface->property ("PartitionSize").toLongLong (), DeviceRoles::TotalSize);
-		item->setData (iface->property ("DeviceMountPaths").toStringList (), DeviceRoles::MountPoints);
+		SetItemData (iface, item);
 		if (!isSlave)
 			DevicesModel_->appendRow (item);
 		else
@@ -133,6 +123,158 @@ namespace UDisks
 				AddPath (slaveTo);
 			Object2Item_ [slaveTo.path ()]->appendRow (item);
 		}
+	}
+
+	void Backend::RemovePath (const QDBusObjectPath& pathObj)
+	{
+		const auto& path = pathObj.path ();
+		auto item = Object2Item_.take (path);
+		if (!item)
+			return;
+		else if (item->parent ())
+			item->parent ()->removeRow (item->row ());
+		else
+			DevicesModel_->removeRow (item->row ());
+	}
+
+	void Backend::SetItemData (QDBusInterface_ptr iface, QStandardItem *item)
+	{
+		if (!item)
+			return;
+
+		const bool isRemovable = iface->property ("DeviceIsRemovable").toBool ();
+		const bool isPartition = iface->property ("DeviceIsPartition").toBool ();
+
+		const auto& vendor = iface->property ("DriveVendor").toString () +
+				" " +
+				iface->property ("DriveModel").toString ();
+		const auto& partLabel = iface->property ("PartitionLabel").toString ().trimmed ();
+		const auto& partName = partLabel.isEmpty () ?
+				tr ("Partition %1")
+						.arg (iface->property ("PartitionNumber").toInt ()) :
+				partLabel;
+		const auto& name = isPartition ? partName : vendor;
+		const auto& fullName = isPartition ?
+				QString ("%1: %2").arg (vendor, partName) :
+				vendor;
+
+		auto parentIface = iface;
+		bool hasRemovableParent = isRemovable;
+		while (!hasRemovableParent)
+		{
+			const auto& slaveTo = parentIface->property ("PartitionSlave").value<QDBusObjectPath> ();
+			if (slaveTo.path () == "/")
+				break;
+
+			parentIface = GetDeviceInterface (slaveTo.path ());
+			hasRemovableParent = parentIface->property ("DeviceIsRemovable").toBool ();
+		}
+
+		item->setText (name);
+		item->setData (DeviceType::GenericDevice, DeviceRoles::DevType);
+		item->setData (iface->property ("DeviceFile").toString (), DeviceRoles::DevFile);
+		item->setData (iface->property ("PartitionType").toInt (), DeviceRoles::PartType);
+		item->setData (isRemovable, DeviceRoles::IsRemovable);
+		item->setData (isPartition, DeviceRoles::IsPartition);
+		item->setData (isPartition && hasRemovableParent, DeviceRoles::IsMountable);
+		item->setData (iface->property ("DeviceIsMounted").toBool (), DeviceRoles::IsMounted);
+		item->setData (iface->property ("DeviceIsMediaAvailable"), DeviceRoles::IsMediaAvailable);
+		item->setData (iface->path (), DeviceRoles::DevID);
+		item->setData (fullName, DeviceRoles::VisibleName);
+		item->setData (iface->property ("PartitionSize").toLongLong (), DeviceRoles::TotalSize);
+		item->setData (iface->property ("DeviceMountPaths").toStringList (), DeviceRoles::MountPoints);
+	}
+
+	void Backend::toggleMount (const QString& id)
+	{
+		auto iface = GetDeviceInterface (id);
+		if (!iface)
+			return;
+
+		const bool isMounted = iface->property ("DeviceIsMounted").toBool ();
+		if (isMounted)
+		{
+			auto async = iface->asyncCall ("FilesystemUnmount", QStringList ());
+			connect (new QDBusPendingCallWatcher (async, this),
+					SIGNAL (finished (QDBusPendingCallWatcher*)),
+					this,
+					SLOT (umountCallFinished (QDBusPendingCallWatcher*)));
+		}
+		else
+		{
+			auto async = iface->asyncCall ("FilesystemMount", QString (), QStringList ());
+			connect (new QDBusPendingCallWatcher (async, this),
+					SIGNAL (finished (QDBusPendingCallWatcher*)),
+					this,
+					SLOT (mountCallFinished (QDBusPendingCallWatcher*)));
+		}
+	}
+
+	namespace
+	{
+		QString GetErrorText (const QString& errorCode)
+		{
+			QMap<QString, QString> texts;
+			texts ["org.freedesktop.UDisks.Error.PermissionDenied"] = Backend::tr ("permission denied");
+			texts ["org.freedesktop.PolicyKit.Error.NotAuthorized"] = Backend::tr ("not authorized");
+			texts ["org.freedesktop.PolicyKit.Error.Busy"] = Backend::tr ("the device is busy");
+			texts ["org.freedesktop.PolicyKit.Error.Failed"] = Backend::tr ("the operation has failed");
+			texts ["org.freedesktop.PolicyKit.Error.Cancelled"] = Backend::tr ("the operation has been cancelled");
+			texts ["org.freedesktop.PolicyKit.Error.InvalidOption"] = Backend::tr ("invalid mount options were given");
+			texts ["org.freedesktop.PolicyKit.Error.FilesystemDriverMissing"] = Backend::tr ("unsupported filesystem");
+			return texts.value (errorCode, Backend::tr ("unknown error"));
+		}
+	}
+
+	void Backend::mountCallFinished (QDBusPendingCallWatcher *watcher)
+	{
+		qDebug () << Q_FUNC_INFO;
+		watcher->deleteLater ();
+		QDBusPendingReply<QString> reply = *watcher;
+
+		if (!reply.isError ())
+		{
+			emit gotEntity (Util::MakeNotification ("Vrooby",
+						tr ("Device has been successfully mounted at %1.")
+							.arg (reply.value ()),
+						PInfo_));
+			return;
+		}
+
+		const auto& error = reply.error ();
+		qWarning () << Q_FUNC_INFO
+				<< error.name ()
+				<< error.message ();
+		emit gotEntity (Util::MakeNotification ("Vrooby",
+					tr ("Failed to mount the device: %1 (%2).")
+						.arg (GetErrorText (error.name ()))
+						.arg (error.message ()),
+					PCritical_));
+	}
+
+	void Backend::umountCallFinished (QDBusPendingCallWatcher *watcher)
+	{
+		qDebug () << Q_FUNC_INFO;
+		watcher->deleteLater ();
+		QDBusPendingReply<void> reply = *watcher;
+
+		if (!reply.isError ())
+		{
+			emit gotEntity (Util::MakeNotification ("Vrooby",
+						tr ("Device has been successfully unmounted."),
+						PInfo_));
+			return;
+		}
+
+		const auto& error = reply.error ();
+		qWarning () << Q_FUNC_INFO
+				<< error.name ()
+				<< error.message ();
+		emit gotEntity (Util::MakeNotification ("Vrooby",
+					tr ("Failed to unmount the device: %1 (%2).")
+						.arg (GetErrorText (error.name ()))
+						.arg (error.message ()),
+					PCritical_));
 	}
 
 	void Backend::handleEnumerationFinished (QDBusPendingCallWatcher *watcher)
@@ -146,10 +288,24 @@ namespace UDisks
 			return;
 		}
 
-		qDebug () << "begin enumeration";
 		for (const QDBusObjectPath& path : reply.value ())
 			AddPath (path);
-		qDebug () << "end";
+	}
+
+	void Backend::handleDeviceAdded (const QDBusObjectPath& path)
+	{
+		AddPath (path);
+	}
+
+	void Backend::handleDeviceRemoved (const QDBusObjectPath& path)
+	{
+		RemovePath (path);
+	}
+
+	void Backend::handleDeviceChanged (const QDBusObjectPath& pathObj)
+	{
+		const auto& path = pathObj.path ();
+		SetItemData (GetDeviceInterface (path), Object2Item_ [path]);
 	}
 }
 }

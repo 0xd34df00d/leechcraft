@@ -348,10 +348,10 @@ namespace LeechCraft
 
 				switch (place)
 				{
-				case AEPCommonContextMenu:
+				case ActionsEmbedPlace::CommonContextMenu:
 					result += CreateTorrent_.get ();
 					break;
-				case AEPToolsMenu:
+				case ActionsEmbedPlace::ToolsMenu:
 					result += OpenMultipleTorrents_.get ();
 					result += IPFilter_.get ();
 					break;

@@ -48,8 +48,8 @@ namespace AdvancedNotifications
 
 		switch (aep)
 		{
-		case AEPQuickLaunch:
-		case AEPTrayMenu:
+		case ActionsEmbedPlace::QuickLaunch:
+		case ActionsEmbedPlace::TrayMenu:
 			result << EnableAction_;
 		default:
 			break;

@@ -264,7 +264,7 @@ namespace Liznoo
 			act->setProperty ("Action/Class", GetUniqueID () + "/BatteryAction");
 			act->setProperty ("Action/ID", GetUniqueID () + "/" + info.ID_);
 
-			emit gotActions (QList<QAction*> () << act, AEPLCTray);
+			emit gotActions (QList<QAction*> () << act, ActionsEmbedPlace::LCTray);
 			Battery2Action_ [info.ID_] = act;
 
 			connect (act,
