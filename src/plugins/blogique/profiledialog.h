@@ -26,16 +26,21 @@ namespace LeechCraft
 namespace Blogique
 {
 	class IAccount;
+	class IProfileWidget;
 
 	class ProfileDialog : public QDialog
 	{
 		Q_OBJECT
 
-		IAccount *Account_;
-
 		Ui::ProfileDialog Ui_;
+
+		IAccount *Account_;
+		IProfileWidget *ProfileWidget_;
 	public:
 		ProfileDialog (IAccount *acc, QWidget *parent = 0);
+
+	private slots:
+		void handleProfileUpdated ();
 	};
 }
 }

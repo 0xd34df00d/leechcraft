@@ -22,6 +22,7 @@
 #include <QVariant>
 #include <QStringList>
 
+class QWidget;
 namespace LeechCraft
 {
 namespace Blogique
@@ -98,6 +99,7 @@ namespace Blogique
 		 */
 		virtual QObject* GetProfile () = 0;
 
+	protected:
 		/** @brief This signal should be emitted when account is renamed.
 		 *
 		 * This signal should be emitted even after an explicit call to

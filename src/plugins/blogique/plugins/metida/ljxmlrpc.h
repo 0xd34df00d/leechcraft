@@ -53,7 +53,7 @@ namespace Metida
 
 	signals:
 		void validatingFinished (bool success);
-		void profileDataReceived ();
+		void profileUpdated (const LJProfileData& profile);
 		void error (int code, const QString& msg);
 	};
 }

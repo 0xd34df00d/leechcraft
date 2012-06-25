@@ -191,6 +191,7 @@ namespace Blogique
 		 */
 		virtual void RemoveAccount (QObject *account) = 0;
 
+	protected:
 		/** @brief Notifies about new account.
 		 *
 		 * This signal should be emitted whenever a new account appears

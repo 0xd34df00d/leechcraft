@@ -24,6 +24,7 @@ SET (METIDA_SRCS
 	ljxmlrpc.cpp
 	metida.cpp
 	profiletypes.cpp
+	profilewidget.cpp
 	utils.cpp
 	xmlsettingsmanager.cpp
 	)
@@ -38,6 +39,7 @@ SET (METIDA_HEADERS
 	ljxmlrpc.h
 	metida.h
 	profiletypes.h
+	profilewidget.h
 	utils.h
 	xmlsettingsmanager.h
 	)
@@ -45,6 +47,7 @@ SET (METIDA_HEADERS
 SET (METIDA_FORMS
 	ljaccountconfigurationdialog.ui
 	ljaccountconfigurationwidget.ui
+	profilewidget.ui
 	)
 
 SET (METIDA_RESOURCES blogiquemetidaresources.qrc)
