@@ -64,8 +64,14 @@ namespace Monocle
 		auto mw = Core::Instance ().GetProxy ()->GetMWProxy ();
 
 		DockTOC_ = new QDockWidget (tr ("Table of contents"));
-		DockTOC_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+		DockTOC_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
 		DockTOC_->setWidget (TOCWidget_);
+
+		const auto& icon = Core::Instance ().GetProxy ()->GetIcon ("view-table-of-contents-ltr");
+		DockTOC_->setWindowIcon (icon);
+		DockTOC_->toggleViewAction ()->setIcon (icon);
+		Toolbar_->addSeparator ();
+		Toolbar_->addAction (DockTOC_->toggleViewAction ());
 
 		mw->AddDockWidget (Qt::LeftDockWidgetArea, DockTOC_);
 		mw->AssociateDockWidget (DockTOC_, this);
