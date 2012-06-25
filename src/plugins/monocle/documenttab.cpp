@@ -73,7 +73,7 @@ namespace Monocle
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (DockTOC_->toggleViewAction ());
 
-		mw->AddDockWidget (Qt::LeftDockWidgetArea, DockTOC_);
+		mw->AddDockWidget (Qt::RightDockWidgetArea, DockTOC_);
 		mw->AssociateDockWidget (DockTOC_, this);
 		mw->ToggleViewActionVisiblity (DockTOC_, false);
 	}
