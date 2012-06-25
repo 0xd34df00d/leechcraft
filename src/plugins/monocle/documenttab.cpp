@@ -367,6 +367,8 @@ namespace Monocle
 			topLevel = toc->GetTOC ();
 		TOCWidget_->SetTOC (topLevel);
 		DockTOC_->setEnabled (!topLevel.isEmpty ());
+		if (DockTOC_->toggleViewAction ()->isChecked () == topLevel.isEmpty ())
+			DockTOC_->toggleViewAction ()->trigger ();
 
 		connect (CurrentDoc_->GetObject (),
 				SIGNAL (navigateRequested (QString, int, double, double)),
