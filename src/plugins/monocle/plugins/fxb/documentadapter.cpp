@@ -34,7 +34,7 @@ namespace FXB
 
 	bool DocumentAdapter::IsValid () const
 	{
-		return Doc_;
+		return static_cast<bool> (Doc_);
 	}
 
 	int DocumentAdapter::GetNumPages () const
@@ -79,7 +79,7 @@ namespace FXB
 
 	void DocumentAdapter::SetDocument (QTextDocument *doc)
 	{
-		Doc_ = doc;
+		Doc_.reset (doc);
 		if (Doc_)
 			Doc_->setPageSize (QSize (600, 800));
 	}

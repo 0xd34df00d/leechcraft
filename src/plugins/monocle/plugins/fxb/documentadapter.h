@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <interfaces/monocle/idocument.h>
 
 class QTextDocument;
@@ -30,7 +31,7 @@ namespace FXB
 {
 	class DocumentAdapter : public IDocument
 	{
-		QTextDocument *Doc_;
+		std::shared_ptr<QTextDocument> Doc_;
 	public:
 		DocumentAdapter (QTextDocument* = 0);
 
