@@ -63,7 +63,7 @@ namespace StoragePlugins
 {
 namespace SecureStorage
 {
-	
+
 	QString ReturnIfEqual (const QString& s1, const QString& s2)
 	{
 		if (s1 == s2)
@@ -90,15 +90,15 @@ namespace SecureStorage
 					QCoreApplication::applicationName () + "_SecMan_SecureStorage_Data"));
 
 		ForgetKeyAction_ = new QAction (tr ("Forget master password"), this);
-		connect (ForgetKeyAction_, 
+		connect (ForgetKeyAction_,
 				SIGNAL (triggered ()),
-				this, 
+				this,
 				SLOT (forgetKey ()));
 
 		InputKeyAction_ = new QAction (tr ("Enter master password..."), this);
-		connect (InputKeyAction_, 
+		connect (InputKeyAction_,
 				SIGNAL (triggered ()),
-				this, 
+				this,
 				SLOT (inputKey ()));
 
 		SettingsWidget_ = new SettingsWidget;
@@ -158,7 +158,8 @@ namespace SecureStorage
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
 		QList<QAction*> result;
-		if (place == AEPCommonContextMenu || place == AEPTrayMenu)
+		if (place == ActionsEmbedPlace::CommonContextMenu
+				|| place == ActionsEmbedPlace::TrayMenu)
 			result << ForgetKeyAction_ << InputKeyAction_;
 		return result;
 	}
@@ -405,7 +406,7 @@ namespace SecureStorage
 			// set up new settings
 			UpdatePasswordSettings (password);
 			UpdateActionsStates ();
-		}	
+		}
 }
 
 	bool Plugin::IsPasswordSet ()
