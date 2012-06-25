@@ -19,8 +19,7 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/monocle/ihavetoc.h>
-#include "documentadapter.h"
+#include <interfaces/monocle/ilink.h>
 
 namespace LeechCraft
 {
@@ -28,26 +27,22 @@ namespace Monocle
 {
 namespace FXB
 {
-	class Document : public QObject
-				  , public DocumentAdapter
-				  , public IHaveTOC
+	class Document;
+
+	class TOCLink : public QObject
+				 , public ILink
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument LeechCraft::Monocle::IHaveTOC)
 
-		DocumentInfo Info_;
-		TOCEntryLevel_t TOC_;
+		Document *Doc_;
+		int Page_;
 	public:
-		Document (const QString&, QObject* = 0);
+		TOCLink (Document*, int);
 
-		QObject* GetObject ();
-		DocumentInfo GetDocumentInfo () const;
+		LinkType GetLinkType () const;
+		QRectF GetArea () const;
 
-		TOCEntryLevel_t GetTOC ();
-
-		void RequestNavigation (int);
-	signals:
-		void navigateRequested (const QString&, int pageNum, double x, double y);
+		void Execute ();
 	};
 }
 }

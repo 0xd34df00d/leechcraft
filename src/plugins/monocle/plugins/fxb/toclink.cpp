@@ -16,11 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/monocle/ihavetoc.h>
-#include "documentadapter.h"
+#include "toclink.h"
+#include "document.h"
 
 namespace LeechCraft
 {
@@ -28,27 +25,26 @@ namespace Monocle
 {
 namespace FXB
 {
-	class Document : public QObject
-				  , public DocumentAdapter
-				  , public IHaveTOC
+	TOCLink::TOCLink (Document *doc, int page)
+	: Doc_ (doc)
+	, Page_ (page)
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument LeechCraft::Monocle::IHaveTOC)
+	}
 
-		DocumentInfo Info_;
-		TOCEntryLevel_t TOC_;
-	public:
-		Document (const QString&, QObject* = 0);
+	LinkType TOCLink::GetLinkType () const
+	{
+		return LinkType::PageLink;
+	}
 
-		QObject* GetObject ();
-		DocumentInfo GetDocumentInfo () const;
+	QRectF TOCLink::GetArea () const
+	{
+		return QRectF ();
+	}
 
-		TOCEntryLevel_t GetTOC ();
-
-		void RequestNavigation (int);
-	signals:
-		void navigateRequested (const QString&, int pageNum, double x, double y);
-	};
+	void TOCLink::Execute ()
+	{
+		Doc_->RequestNavigation (Page_);
+	}
 }
 }
 }
