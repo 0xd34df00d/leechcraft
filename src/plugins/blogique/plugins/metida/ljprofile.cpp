@@ -87,7 +87,7 @@ namespace Metida
 		IAccount *acc = qobject_cast<IAccount*> (ParentAccount_);
 		if (!acc)
 			return;
-		const QByteArray& filename = acc->GetAccountID ().toBase64 ().replace ('/', '_');
+		const QByteArray filename = acc->GetAccountID ().toBase64 ().replace ('/', '_');
 		const QDir& avatarDir = Util::CreateIfNotExists ("blogique/metida/avatars");
 
 		const QString& path = avatarDir.absoluteFilePath (filename);
