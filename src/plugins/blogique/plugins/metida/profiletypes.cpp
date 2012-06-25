@@ -36,7 +36,7 @@ namespace Metida
 
 	QDataStream& operator>> (QDataStream& in, LJFriendGroup& group)
 	{
-		qint8 version;
+		qint8 version = 0;
 		in >> version;
 		if (version == 1)
 			in >> group.Public_
@@ -59,7 +59,7 @@ namespace Metida
 
 	QDataStream& operator>> (QDataStream& in, LJMood& mood)
 	{
-		qint8 version;
+		qint8 version = 0;
 		in >> version;
 		if (version == 1)
 			in >> mood.Id_
@@ -84,7 +84,7 @@ namespace Metida
 
 	QDataStream& operator>> (QDataStream& in, LJProfileData& data)
 	{
-		qint8 version;
+		qint8 version = 0;
 		in >> version;
 		if (version == 1)
 			in >> data.AvatarUrl_

@@ -47,9 +47,9 @@ namespace Metida
 		const LJProfileData& data = Profile_->GetProfileData ();
 
 		Ui_.JournalName_->setText (data.FullName_);
-		IAccount* acc = qobject_cast<LeechCraft::Blogique::IAccount*> (Profile_->GetParentAccount ());
+		IAccount *acc = qobject_cast<IAccount*> (Profile_->GetParentAccount ());
 		const QString& path = Util::CreateIfNotExists ("blogique/metida/avatars")
-				.absoluteFilePath (acc->GetAccountID ().toBase64 ());
+				.absoluteFilePath (acc->GetAccountID ().toBase64 ().replace ('/', '_'));
 		Ui_.JournalPic_->setPixmap (QPixmap (path));
 
 		FillFriends (data.FriendGroups_);

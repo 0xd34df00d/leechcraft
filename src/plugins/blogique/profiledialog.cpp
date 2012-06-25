@@ -17,11 +17,11 @@
  **********************************************************************/
 
 #include "profiledialog.h"
-#include <interfaces/blogique/iaccount.h>
-#include "interfaces/blogique/iprofile.h"
-#include "interfaces/blogique/iprofilewidget.h"
 #include <QtDebug>
 #include <QGridLayout>
+#include <interfaces/blogique/iaccount.h>
+#include <interfaces/blogique/iprofile.h>
+#include <interfaces/blogique/iprofilewidget.h>
 
 namespace LeechCraft
 {
@@ -35,30 +35,28 @@ namespace Blogique
 		Ui_.setupUi (this);
 
 		QObject *profileObj = acc->GetProfile ();
-		IProfile *profile = qobject_cast<LeechCraft::Blogique::IProfile*> (profileObj);
-		if (profile)
+		IProfile *profile = qobject_cast<IProfile*> (profileObj);
+		if (!profile)
 		{
-			connect (profileObj,
-					SIGNAL (profileUpdated ()),
-					this,
-					SLOT (handleProfileUpdated ()));
-			QWidget* w = profile->GetProfileWidget ();
-			ProfileWidget_ = qobject_cast<LeechCraft::Blogique::IProfileWidget*> (w);
-			if (ProfileWidget_)
-			{
-				Ui_.gridLayout_2->addWidget (w);
-			}
-			else
-				qWarning () << Q_FUNC_INFO
-						<< "widget"
-						<< w
-						<< "doesn't implement IProfileWidget";
-		}
-		else
 			qWarning () << Q_FUNC_INFO
 					<< "account profile"
 					<< profileObj
 					<< "doesn't implement IProfile";
+			return;
+		}
+		connect (profileObj,
+				SIGNAL (profileUpdated ()),
+				this,
+				SLOT (handleProfileUpdated ()));
+		QWidget* w = profile->GetProfileWidget ();
+		ProfileWidget_ = qobject_cast<IProfileWidget*> (w);
+		if (ProfileWidget_)
+			Ui_.gridLayout_2->addWidget (w);
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "widget"
+					<< w
+					<< "doesn't implement IProfileWidget";
 	}
 
 	void ProfileDialog::handleProfileUpdated ()

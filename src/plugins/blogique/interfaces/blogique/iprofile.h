@@ -37,6 +37,7 @@ namespace Blogique
 
 		virtual QWidget* GetProfileWidget () = 0;
 
+	protected:
 		virtual void profileUpdated () = 0;
 
 	};

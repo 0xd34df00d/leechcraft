@@ -20,7 +20,7 @@
 
 #include <memory>
 #include <QObject>
-#include "interfaces/blogique/iaccount.h"
+#include <interfaces/blogique/iaccount.h>
 #include "profiletypes.h"
 
 namespace LeechCraft

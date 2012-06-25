@@ -56,15 +56,12 @@ namespace Metida
 
 	void LJProfile::SaveAvatar (QUrl avatarUrl)
 	{
-		if (avatarUrl.isEmpty () &&
-				ProfileData_.AvatarUrl_.isEmpty ())
+		if (avatarUrl.isEmpty ())
+			avatarUrl = ProfileData_.AvatarUrl_;
+		if (avatarUrl.isEmpty ())
 			return;
 
-		QUrl url = avatarUrl;
-		if (url.isEmpty ())
-			url = ProfileData_.AvatarUrl_;
-
-		QNetworkRequest request (url);
+		QNetworkRequest request (avatarUrl);
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->get (request);
 		connect (reply,
@@ -87,10 +84,10 @@ namespace Metida
 
 		reply->deleteLater ();
 
-		IAccount *acc = qobject_cast<LeechCraft::Blogique::IAccount*> (ParentAccount_);
+		IAccount *acc = qobject_cast<IAccount*> (ParentAccount_);
 		if (!acc)
 			return;
-		const QByteArray& filename = acc->GetAccountID ().toBase64 ();
+		const QByteArray& filename = acc->GetAccountID ().toBase64 ().replace ('/', '_');
 		const QDir& avatarDir = Util::CreateIfNotExists ("blogique/metida/avatars");
 
 		const QString& path = avatarDir.absoluteFilePath (filename);
