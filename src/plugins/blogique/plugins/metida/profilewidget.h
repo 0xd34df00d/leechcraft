@@ -18,31 +18,42 @@
 
 #pragma once
 
-#include <QMetaType>
-#include <QVariant>
-#include <QStringList>
+#include <QWidget>
+#include <interfaces/blogique/iprofilewidget.h>
+#include "profiletypes.h"
+#include "ui_profilewidget.h"
+
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	/** @brief Interface representing an account's profile.
-		*
-		* This interface represents an account's profile.
-		**/
-	class IProfile
+namespace Metida
+{
+	class LJProfile;
+
+	class ProfileWidget : public QWidget
+						, public IProfileWidget
 	{
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Blogique::IProfileWidget)
+
+		Ui::ProfileWidget Ui_;
+		LJProfile *Profile_;
+		QStandardItemModel *FriendsModel_;
+		QStandardItemModel *CommunitiesModel_;
+		QHash<QStandardItem*, LJFriendGroup> ItemToFriendGroup_;
 	public:
-		virtual ~IProfile () {}
-
-		virtual QWidget* GetProfileWidget () = 0;
-
-	protected:
-		virtual void profileUpdated () = 0;
-
+		ProfileWidget (LJProfile *profile, QWidget *parent = 0);
+	private:
+		void RereadProfileData ();
+		void FillFriends (const QList<LJFriendGroup>& groups);
+		void FillCommunities (const QStringList& communities);
+	public slots:
+		void updateProfile ();
 	};
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Blogique::IProfile,
-		"org.Deviant.LeechCraft.Blogique.IProfile/1.0");
+}

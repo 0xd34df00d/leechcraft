@@ -17,6 +17,15 @@
  **********************************************************************/
 
 #include "ljprofile.h"
+#include <QtDebug>
+#include <QFile>
+#include <QDir>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <util/util.h>
+#include <interfaces/blogique/iaccount.h>
+#include "core.h"
+#include "profilewidget.h"
 
 namespace LeechCraft
 {
@@ -24,12 +33,72 @@ namespace Blogique
 {
 namespace Metida
 {
-	LJProfile::LJProfile (QObject *parentAccount)
-	: ParentAccount_ (parentAccount)
+	LJProfile::LJProfile (QObject *parentAccount, QObject *parent)
+	: QObject (parent)
+	, ParentAccount_ (parentAccount)
 	{
 	}
+
+	QWidget* LJProfile::GetProfileWidget ()
+	{
+		return new ProfileWidget (this);
+	}
+
+	LJProfileData LJProfile::GetProfileData () const
+	{
+		return ProfileData_;
+	}
+
+	QObject* LJProfile::GetParentAccount () const
+	{
+		return ParentAccount_;
+	}
+
+	void LJProfile::SaveAvatar (QUrl avatarUrl)
+	{
+		if (avatarUrl.isEmpty ())
+			avatarUrl = ProfileData_.AvatarUrl_;
+		if (avatarUrl.isEmpty ())
+			return;
+
+		QNetworkRequest request (avatarUrl);
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->get (request);
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleAvatarDownloadFinished ()));
+	}
+
+	void LJProfile::handleProfileUpdate (const LJProfileData& profile)
+	{
+		ProfileData_ = profile;
+		SaveAvatar ();
+	}
+
+	void LJProfile::handleAvatarDownloadFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		IAccount *acc = qobject_cast<IAccount*> (ParentAccount_);
+		if (!acc)
+			return;
+		const QByteArray filename = acc->GetAccountID ().toBase64 ().replace ('/', '_');
+		const QDir& avatarDir = Util::CreateIfNotExists ("blogique/metida/avatars");
+
+		const QString& path = avatarDir.absoluteFilePath (filename);
+		QFile file (path);
+		if (file.open (QIODevice::WriteOnly))
+			file.write (reply->readAll ());
+	}
+
 }
 }
 }
+
 
 
