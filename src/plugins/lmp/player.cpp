@@ -756,15 +756,18 @@ namespace LMP
 		XmlSettingsManager::Instance ().setProperty ("LastSong", source.fileName ());
 
 		auto curItem = CurrentStation_ ? RadioItem_ : Items_ [source];
-		curItem->setData (true, Role::IsCurrent);
+		if (curItem)
+			curItem->setData (true, Role::IsCurrent);
 
 		if (CurrentStation_)
 		{
 			const auto& info = Url2Info_.take (source.url ());
 			emit songChanged (info);
 		}
-		else
+		else if (curItem)
 			emit songChanged (curItem->data (Role::Info).value<MediaInfo> ());
+		else
+			emit songChanged (MediaInfo ());
 
 		Q_FOREACH (auto item, Items_.values ())
 		{
