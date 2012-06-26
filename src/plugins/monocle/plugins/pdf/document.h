@@ -23,6 +23,7 @@
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/ihavetoc.h>
 #include <interfaces/monocle/ihavetextcontent.h>
+#include <interfaces/monocle/isupportannotations.h>
 
 namespace Poppler
 {
@@ -41,11 +42,13 @@ namespace PDF
 				   , public IDocument
 				   , public IHaveTOC
 				   , public IHaveTextContent
+				   , public ISupportAnnotations
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::IDocument
 				LeechCraft::Monocle::IHaveTOC
-				LeechCraft::Monocle::IHaveTextContent)
+				LeechCraft::Monocle::IHaveTextContent
+				LeechCraft::Monocle::ISupportAnnotations)
 
 		PDocument_ptr PDocument_;
 		TOCEntryLevel_t TOC_;
@@ -63,6 +66,8 @@ namespace PDF
 		TOCEntryLevel_t GetTOC ();
 
 		QString GetTextContent (int, const QRect&);
+
+		QList<IAnnotation_ptr> GetAnnotations (int) const;
 
 		void RequestNavigation (const QString&, int, double, double);
 	private:

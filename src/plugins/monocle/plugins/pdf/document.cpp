@@ -113,6 +113,15 @@ namespace PDF
 		return page->text (rect);
 	}
 
+	QList<IAnnotation_ptr> Document::GetAnnotations (int pageNum) const
+	{
+		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
+		if (!page)
+			return QList<IAnnotation_ptr> ();
+
+		return QList<IAnnotation_ptr> ();
+	}
+
 	void Document::RequestNavigation (const QString& filename,
 			int page, double x, double y)
 	{

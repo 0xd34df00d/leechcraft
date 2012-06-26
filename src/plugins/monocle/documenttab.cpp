@@ -33,6 +33,7 @@
 #include <interfaces/imwproxy.h>
 #include "interfaces/monocle/ihavetoc.h"
 #include "interfaces/monocle/ihavetextcontent.h"
+#include "interfaces/monocle/isupportannotations.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
@@ -378,11 +379,16 @@ namespace Monocle
 		const auto& title = QFileInfo (path).fileName ();
 		emit changeTabName (this, title);
 
+		auto isa = qobject_cast<ISupportAnnotations*> (CurrentDoc_->GetObject ());
+
 		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
 		{
 			auto item = new PageGraphicsItem (CurrentDoc_, i);
 			Scene_.addItem (item);
 			Pages_ << item;
+
+			if (isa)
+				isa->GetAnnotations (i);
 		}
 		Ui_.PagesView_->ensureVisible (Pages_.value (0), Margin, Margin);
 		Relayout (GetCurrentScale ());
