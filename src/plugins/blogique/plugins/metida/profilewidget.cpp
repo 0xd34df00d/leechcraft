@@ -38,6 +38,9 @@ namespace Metida
 		Ui_.setupUi (this);
 		Ui_.FriendsView_->setModel (FriendsModel_);
 		Ui_.CommunitiesView_->setModel (CommunitiesModel_);
+		FriendsModel_->setHorizontalHeaderLabels ({tr ("Nick")});
+		CommunitiesModel_->setHorizontalHeaderLabels ({tr ("Name")});
+
 		updateProfile ();
 	}
 
