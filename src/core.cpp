@@ -16,10 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include <limits>
 #include <stdexcept>
-#include <list>
-#include <functional>
+#include <algorithm>
 #include <iostream>
 #include <QMainWindow>
 #include <QMessageBox>
@@ -29,13 +27,11 @@
 #include <QApplication>
 #include <QAction>
 #include <QToolBar>
-#include <QKeyEvent>
 #include <QDir>
-#include <QTextCodec>
 #include <QDesktopServices>
-#include <QNetworkReply>
 #include <QAbstractNetworkCache>
-#include <QClipboard>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 #include <util/util.h>
 #include <util/customcookiejar.h>
 #include <util/defaulthookproxy.h>
@@ -47,7 +43,6 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
-#include <interfaces/iwindow.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/isummaryrepresentation.h>
 #include <interfaces/structures.h>
@@ -637,6 +632,22 @@ namespace LeechCraft
 		return result;
 	}
 
+	namespace
+	{
+		bool HandleNoHandlers (const Entity& p)
+		{
+			if (p.Entity_.toUrl ().isValid () &&
+					(p.Parameters_ & FromUserInitiated) &&
+					!(p.Parameters_ & OnlyDownload))
+			{
+				QDesktopServices::openUrl (p.Entity_.toUrl ());
+				return true;
+			}
+			else
+				return false;
+		}
+	}
+
 	bool Core::handleGotEntity (Entity p, int *id, QObject **pr)
 	{
 		const QString& string = Util::GetUserText (p);
@@ -657,17 +668,7 @@ namespace LeechCraft
 					dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IEntityHandler*> (plugin));
 
 		if (!(numHandlers + numDownloaders))
-		{
-			if (p.Entity_.toUrl ().isValid () &&
-					(p.Parameters_ & FromUserInitiated) &&
-					!(p.Parameters_ & OnlyDownload))
-			{
-				QDesktopServices::openUrl (p.Entity_.toUrl ());
-				return true;
-			}
-			else
-				return false;
-		}
+			HandleNoHandlers (p);
 
 		const bool bcastCandidate = !id && !pr && numHandlers;
 
