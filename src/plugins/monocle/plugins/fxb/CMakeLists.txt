@@ -20,7 +20,6 @@ SET (SRCS
 	)
 
 ADD_LIBRARY (leechcraft_monocle_fxb SHARED
-	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_monocle_fxb
