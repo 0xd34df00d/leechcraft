@@ -192,6 +192,66 @@ namespace Monocle
 			Ui_.PagesView_->centerOn (pos);
 	}
 
+	bool DocumentTab::SetDoc (const QString& path)
+	{
+		auto document = Core::Instance ().LoadDocument (path);
+		if (!document)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to navigate to"
+					<< path;
+			QMessageBox::warning (this,
+					"LeechCraft",
+					tr ("Unable to open document %1.")
+						.arg ("<em>" + path + "</em>"));
+			return false;
+		}
+
+		Scene_.clear ();
+		Pages_.clear ();
+
+		CurrentDoc_ = document;
+		CurrentDocPath_ = path;
+		const auto& title = QFileInfo (path).fileName ();
+		emit changeTabName (this, title);
+
+		auto isa = qobject_cast<ISupportAnnotations*> (CurrentDoc_->GetObject ());
+
+		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
+		{
+			auto item = new PageGraphicsItem (CurrentDoc_, i);
+			Scene_.addItem (item);
+			Pages_ << item;
+
+			if (isa)
+				isa->GetAnnotations (i);
+		}
+		Ui_.PagesView_->ensureVisible (Pages_.value (0), Margin, Margin);
+		Relayout (GetCurrentScale ());
+
+		updateNumLabel ();
+
+		TOCEntryLevel_t topLevel;
+		if (auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetObject ()))
+			topLevel = toc->GetTOC ();
+		TOCWidget_->SetTOC (topLevel);
+		DockTOC_->setEnabled (!topLevel.isEmpty ());
+		if (DockTOC_->toggleViewAction ()->isChecked () == topLevel.isEmpty ())
+			DockTOC_->toggleViewAction ()->trigger ();
+
+		connect (CurrentDoc_->GetObject (),
+				SIGNAL (navigateRequested (QString, int, double, double)),
+				this,
+				SLOT (handleNavigateRequested (QString, int, double, double)),
+				Qt::UniqueConnection);
+
+		emit fileLoaded (path);
+
+		emit tabRecoverDataChanged ();
+
+		return true;
+	}
+
 	void DocumentTab::SetupToolbar ()
 	{
 		auto open = new QAction (tr ("Open..."), this);
@@ -356,66 +416,6 @@ namespace Monocle
 		}
 	}
 
-	bool DocumentTab::SetDoc (const QString& path)
-	{
-		auto document = Core::Instance ().LoadDocument (path);
-		if (!document)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to navigate to"
-					<< path;
-			QMessageBox::warning (this,
-					"LeechCraft",
-					tr ("Unable to open document %1.")
-						.arg ("<em>" + path + "</em>"));
-			return false;
-		}
-
-		Scene_.clear ();
-		Pages_.clear ();
-
-		CurrentDoc_ = document;
-		CurrentDocPath_ = path;
-		const auto& title = QFileInfo (path).fileName ();
-		emit changeTabName (this, title);
-
-		auto isa = qobject_cast<ISupportAnnotations*> (CurrentDoc_->GetObject ());
-
-		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
-		{
-			auto item = new PageGraphicsItem (CurrentDoc_, i);
-			Scene_.addItem (item);
-			Pages_ << item;
-
-			if (isa)
-				isa->GetAnnotations (i);
-		}
-		Ui_.PagesView_->ensureVisible (Pages_.value (0), Margin, Margin);
-		Relayout (GetCurrentScale ());
-
-		updateNumLabel ();
-
-		TOCEntryLevel_t topLevel;
-		if (auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetObject ()))
-			topLevel = toc->GetTOC ();
-		TOCWidget_->SetTOC (topLevel);
-		DockTOC_->setEnabled (!topLevel.isEmpty ());
-		if (DockTOC_->toggleViewAction ()->isChecked () == topLevel.isEmpty ())
-			DockTOC_->toggleViewAction ()->trigger ();
-
-		connect (CurrentDoc_->GetObject (),
-				SIGNAL (navigateRequested (QString, int, double, double)),
-				this,
-				SLOT (handleNavigateRequested (QString, int, double, double)),
-				Qt::UniqueConnection);
-
-		emit fileLoaded (path);
-
-		emit tabRecoverDataChanged ();
-
-		return true;
-	}
-
 	QPoint DocumentTab::GetViewportCenter () const
 	{
 		const auto& rect = Ui_.PagesView_->viewport ()->contentsRect ();
@@ -482,26 +482,6 @@ namespace Monocle
 			act->deleteLater ();
 		}
 	}
-
-	/*
-	bool DocumentTab::eventFilter (QObject*, QEvent *event)
-	{
-		qDebug () << (event->type () == QEvent::MouseButtonRelease) << event->type () << dynamic_cast<QGraphicsSceneMouseEvent*> (event);
-		if (MouseMode_ != MouseMode::Select ||
-				event->type () != QEvent::MouseButtonRelease)
-			return false;
-
-		auto mouseEvent = static_cast<QMouseEvent*> (event);
-		if (mouseEvent->button () != Qt::LeftButton)
-			return false;
-
-		auto menu = new QMenu;
-		menu->addActions (Ui_.PagesView_->actions ());
-		menu->popup (mouseEvent->globalPos ());
-		menu->setAttribute (Qt::WA_DeleteOnClose);
-		return false;
-	}
-	*/
 
 	void DocumentTab::handleNavigateRequested (const QString& path, int num, double x, double y)
 	{

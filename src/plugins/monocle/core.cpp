@@ -51,6 +51,15 @@ namespace Monocle
 			Backends_ << qobject_cast<IBackendPlugin*> (pluginObj);
 	}
 
+	bool Core::CanLoadDocument (const QString& path)
+	{
+		Q_FOREACH (auto backend, Backends_)
+			if (backend->CanLoadDocument (path))
+				return true;
+
+		return false;
+	}
+
 	IDocument_ptr Core::LoadDocument (const QString& path)
 	{
 		Q_FOREACH (auto backend, Backends_)

@@ -84,12 +84,13 @@ namespace Monocle
 		void RecoverState (const QByteArray&);
 
 		void ReloadDoc (const QString&);
+
+		bool SetDoc (const QString&);
 	private:
 		void SetupToolbar ();
 
 		double GetCurrentScale () const;
 
-		bool SetDoc (const QString&);
 		QPoint GetViewportCenter () const;
 		int GetCurrentPage () const;
 		void SetCurrentPage (int);
