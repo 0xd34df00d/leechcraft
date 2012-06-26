@@ -27,8 +27,16 @@ namespace Monocle
 	class PagesView : public QGraphicsView
 	{
 		Q_OBJECT
+
+		bool ShowReleaseMenu_;
+		bool ShowOnNextRelease_;
 	public:
 		PagesView (QWidget* = 0);
+
+		void SetShowReleaseMenu (bool);
+	protected:
+		void mouseMoveEvent (QMouseEvent*);
+		void mouseReleaseEvent (QMouseEvent*);
 	};
 }
 }

@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "pagesview.h"
+#include <QMenu>
+#include <QMouseEvent>
 
 namespace LeechCraft
 {
@@ -24,7 +26,39 @@ namespace Monocle
 {
 	PagesView::PagesView (QWidget *parent)
 	: QGraphicsView (parent)
+	, ShowReleaseMenu_ (false)
+	, ShowOnNextRelease_ (false)
 	{
+	}
+
+	void PagesView::SetShowReleaseMenu (bool show)
+	{
+		ShowReleaseMenu_ = show;
+		ShowOnNextRelease_ = false;
+	}
+
+	void PagesView::mouseMoveEvent (QMouseEvent *event)
+	{
+		if (ShowReleaseMenu_)
+			ShowOnNextRelease_ = true;
+
+		QGraphicsView::mouseMoveEvent (event);
+	}
+
+	void PagesView::mouseReleaseEvent (QMouseEvent *event)
+	{
+		QGraphicsView::mouseReleaseEvent (event);
+
+		if (ShowOnNextRelease_)
+		{
+			auto menu = new QMenu;
+			menu->addActions (actions ());
+			menu->popup (event->globalPos ());
+			menu->setAttribute (Qt::WA_DeleteOnClose);
+			menu->show ();
+
+			ShowOnNextRelease_ = false;
+		}
 	}
 }
 }

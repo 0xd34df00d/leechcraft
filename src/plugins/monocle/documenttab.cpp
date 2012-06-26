@@ -28,6 +28,7 @@
 #include <QPrintDialog>
 #include <QMessageBox>
 #include <QDockWidget>
+#include <QClipboard>
 #include <QtDebug>
 #include <interfaces/imwproxy.h>
 #include "interfaces/monocle/ihavetoc.h"
@@ -52,6 +53,7 @@ namespace Monocle
 	, DockTOC_ (0)
 	, TOCWidget_ (new TOCWidget ())
 	, LayMode_ (LayoutMode::OnePage)
+	, MouseMode_ (MouseMode::Move)
 	{
 		Ui_.setupUi (this);
 		Ui_.PagesView_->setScene (&Scene_);
@@ -286,6 +288,30 @@ namespace Monocle
 				this,
 				SLOT (showTwoPages ()));
 		Toolbar_->addAction (twoPages);
+
+		Toolbar_->addSeparator ();
+
+		auto mouseModeGroup = new QActionGroup (this);
+		auto moveModeAction = new QAction (tr ("Move mode"), this);
+		moveModeAction->setProperty ("ActionIcon", "transform-move");
+		moveModeAction->setCheckable (true);
+		moveModeAction->setChecked (true);
+		moveModeAction->setActionGroup (mouseModeGroup);
+		connect (moveModeAction,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (setMoveMode (bool)));
+		Toolbar_->addAction (moveModeAction);
+
+		auto selectModeAction = new QAction (tr ("Selection mode"), this);
+		selectModeAction->setProperty ("ActionIcon", "edit-select");
+		selectModeAction->setCheckable (true);
+		selectModeAction->setActionGroup (mouseModeGroup);
+		connect (selectModeAction,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (setSelectionMode (bool)));
+		Toolbar_->addAction (selectModeAction);
 	}
 
 	double DocumentTab::GetCurrentScale () const
@@ -441,6 +467,35 @@ namespace Monocle
 		updateNumLabel ();
 	}
 
+	void DocumentTab::ClearViewActions ()
+	{
+		Q_FOREACH (auto act, Ui_.PagesView_->actions ())
+		{
+			Ui_.PagesView_->removeAction (act);
+			act->deleteLater ();
+		}
+	}
+
+	/*
+	bool DocumentTab::eventFilter (QObject*, QEvent *event)
+	{
+		qDebug () << (event->type () == QEvent::MouseButtonRelease) << event->type () << dynamic_cast<QGraphicsSceneMouseEvent*> (event);
+		if (MouseMode_ != MouseMode::Select ||
+				event->type () != QEvent::MouseButtonRelease)
+			return false;
+
+		auto mouseEvent = static_cast<QMouseEvent*> (event);
+		if (mouseEvent->button () != Qt::LeftButton)
+			return false;
+
+		auto menu = new QMenu;
+		menu->addActions (Ui_.PagesView_->actions ());
+		menu->popup (mouseEvent->globalPos ());
+		menu->setAttribute (Qt::WA_DeleteOnClose);
+		return false;
+	}
+	*/
+
 	void DocumentTab::handleNavigateRequested (const QString& path, int num, double x, double y)
 	{
 		if (!path.isEmpty ())
@@ -584,6 +639,53 @@ namespace Monocle
 		Relayout (GetCurrentScale ());
 
 		emit tabRecoverDataChanged ();
+	}
+
+	void DocumentTab::setMoveMode (bool enable)
+	{
+		if (!enable)
+			return;
+
+		MouseMode_ = MouseMode::Move;
+		Ui_.PagesView_->SetShowReleaseMenu (false);
+
+		ClearViewActions ();
+		Ui_.PagesView_->setDragMode (QGraphicsView::ScrollHandDrag);
+	}
+
+	void DocumentTab::setSelectionMode (bool enable)
+	{
+		if (!enable)
+			return;
+
+		MouseMode_ = MouseMode::Select;
+		Ui_.PagesView_->SetShowReleaseMenu (true);
+
+		ClearViewActions ();
+		Ui_.PagesView_->setDragMode (QGraphicsView::RubberBandDrag);
+
+		auto copyAsImage = new QAction (tr ("Copy selection as image"), this);
+		connect (copyAsImage,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleCopyAsImage ()));
+		Ui_.PagesView_->addAction (copyAsImage);
+	}
+
+	void DocumentTab::handleCopyAsImage ()
+	{
+		const auto& bounding = Scene_.selectionArea ().boundingRect ();
+		if (bounding.isEmpty ())
+			return;
+
+		QImage image (bounding.size ().toSize (), QImage::Format_ARGB32);
+		QPainter painter (&image);
+		Scene_.render (&painter, QRectF (), bounding);
+		painter.end ();
+
+		QApplication::clipboard ()->setImage (image);
+
+		Ui_.PagesView_->SetShowReleaseMenu (false);
 	}
 
 	void DocumentTab::delayedCenterOn (const QPoint& point)
