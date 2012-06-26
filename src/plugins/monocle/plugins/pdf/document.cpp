@@ -104,6 +104,15 @@ namespace PDF
 		return TOC_;
 	}
 
+	QString Document::GetTextContent (int pageNum, const QRect& rect)
+	{
+		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
+		if (!page)
+			return QString ();
+
+		return page->text (rect);
+	}
+
 	void Document::RequestNavigation (const QString& filename,
 			int page, double x, double y)
 	{

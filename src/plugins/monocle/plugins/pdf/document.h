@@ -22,6 +22,7 @@
 #include <QObject>
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/ihavetoc.h>
+#include <interfaces/monocle/ihavetextcontent.h>
 
 namespace Poppler
 {
@@ -39,9 +40,12 @@ namespace PDF
 	class Document : public QObject
 				   , public IDocument
 				   , public IHaveTOC
+				   , public IHaveTextContent
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument LeechCraft::Monocle::IHaveTOC)
+		Q_INTERFACES (LeechCraft::Monocle::IDocument
+				LeechCraft::Monocle::IHaveTOC
+				LeechCraft::Monocle::IHaveTextContent)
 
 		PDocument_ptr PDocument_;
 		TOCEntryLevel_t TOC_;
@@ -57,6 +61,8 @@ namespace PDF
 		QList<ILink_ptr> GetPageLinks (int);
 
 		TOCEntryLevel_t GetTOC ();
+
+		QString GetTextContent (int, const QRect&);
 
 		void RequestNavigation (const QString&, int, double, double);
 	private:
