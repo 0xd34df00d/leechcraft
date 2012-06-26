@@ -115,6 +115,7 @@ namespace Monocle
 		void setSelectionMode (bool);
 
 		void handleCopyAsImage ();
+		void handleCopyAsText ();
 
 		void delayedCenterOn (const QPoint&);
 

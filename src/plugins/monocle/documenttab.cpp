@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include <interfaces/imwproxy.h>
 #include "interfaces/monocle/ihavetoc.h"
+#include "interfaces/monocle/ihavetextcontent.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
@@ -670,6 +671,16 @@ namespace Monocle
 				this,
 				SLOT (handleCopyAsImage ()));
 		Ui_.PagesView_->addAction (copyAsImage);
+
+		if (qobject_cast<IHaveTextContent*> (CurrentDoc_->GetObject ()))
+		{
+			auto copyAsText = new QAction (tr ("Copy selection as text"), this);
+			connect (copyAsText,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleCopyAsText ()));
+			Ui_.PagesView_->addAction (copyAsText);
+		}
 	}
 
 	void DocumentTab::handleCopyAsImage ()
@@ -686,6 +697,44 @@ namespace Monocle
 		QApplication::clipboard ()->setImage (image);
 
 		Ui_.PagesView_->SetShowReleaseMenu (false);
+	}
+
+	void DocumentTab::handleCopyAsText ()
+	{
+		auto ihtc = qobject_cast<IHaveTextContent*> (CurrentDoc_->GetObject ());
+		if (!ihtc)
+			return;
+
+		const auto& selectionBound = Scene_.selectionArea ().boundingRect ();
+
+		auto bounding = Ui_.PagesView_->mapFromScene (selectionBound).boundingRect ();
+		if (bounding.isEmpty () ||
+				bounding.width () < 4 ||
+				bounding.height () < 4)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "selection area is empty";
+			return;
+		}
+
+		auto item = Ui_.PagesView_->itemAt (bounding.topLeft ());
+		auto pageItem = dynamic_cast<PageGraphicsItem*> (item);
+		if (!pageItem)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "page item is null for"
+					<< bounding.topLeft ();
+			return;
+		}
+
+		bounding = item->mapFromScene (selectionBound).boundingRect ().toRect ();
+
+		const auto scale = GetCurrentScale ();
+		bounding.moveTopLeft (bounding.topLeft () / scale);
+		bounding.setSize (bounding.size () / scale);
+
+		const auto& text = ihtc->GetTextContent (pageItem->GetPageNum (), bounding);
+		QApplication::clipboard ()->setText (text);
 	}
 
 	void DocumentTab::delayedCenterOn (const QPoint& point)
