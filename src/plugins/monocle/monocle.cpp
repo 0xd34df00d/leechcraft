@@ -18,6 +18,7 @@
 
 #include "monocle.h"
 #include <QIcon>
+#include <util/util.h>
 #include "core.h"
 #include "documenttab.h"
 
@@ -27,6 +28,8 @@ namespace Monocle
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("monocle");
+
 		Core::Instance ().SetProxy (proxy);
 
 		DocTabInfo_ =
