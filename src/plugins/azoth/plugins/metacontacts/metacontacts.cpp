@@ -68,7 +68,8 @@ namespace Metacontacts
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/metacontacts/resources/images/metacontacts.svg");
+		static QIcon icon (":/plugins/azoth/plugins/metacontacts/resources/images/metacontacts.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

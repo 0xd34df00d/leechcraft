@@ -70,7 +70,8 @@ namespace Monocle
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/monocle/resources/images/monocle.svg");
+		static QIcon icon (":/monocle/resources/images/monocle.svg");
+		return icon;
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const

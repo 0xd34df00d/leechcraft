@@ -71,7 +71,8 @@ namespace Xoox
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/xoox/resources/images/xoox.svg");
+		static QIcon icon (":/plugins/azoth/plugins/xoox/resources/images/xoox.svg");
+		return icon;
 	}
 
 	QStringList Plugin::Provides () const

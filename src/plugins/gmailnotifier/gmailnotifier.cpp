@@ -99,7 +99,8 @@ namespace GmailNotifier
 
 	QIcon GmailNotifier::GetIcon () const
 	{
-		return QIcon (":/gmailnotifier.svg");
+		static QIcon icon (":/gmailnotifier.svg");
+		return icon;
 	}
 
 	Util::XmlSettingsDialog_ptr GmailNotifier::GetSettingsDialog () const

@@ -184,7 +184,8 @@ namespace LackMan
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/resources/images/lackman.svg");
+		static QIcon icon (":/resources/images/lackman.svg");
+		return icon;
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const

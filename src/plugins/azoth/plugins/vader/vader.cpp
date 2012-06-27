@@ -76,7 +76,8 @@ namespace Vader
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/vader/resources/images/vader.svg");
+		static QIcon icon (":/plugins/azoth/plugins/vader/resources/images/vader.svg");
+		return icon;
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const

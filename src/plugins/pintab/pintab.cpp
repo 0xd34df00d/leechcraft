@@ -81,7 +81,8 @@ namespace PinTab
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/pintab/resources/images/pintab.svg");
+		static QIcon icon (":/pintab/resources/images/pintab.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

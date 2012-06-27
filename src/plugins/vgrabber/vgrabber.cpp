@@ -90,7 +90,8 @@ namespace vGrabber
 
 	QIcon vGrabber::GetIcon () const
 	{
-		return QIcon (":/resources/images/vgrabber.svg");
+		static QIcon icon (":/resources/images/vgrabber.svg");
+		return icon;
 	}
 
 	QStringList vGrabber::Needs () const

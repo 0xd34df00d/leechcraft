@@ -23,7 +23,7 @@
 #include <QLineEdit>
 #include <QUrl>
 #include <util/util.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h> 
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "keywordsmanagerwidget.h"
 #include "xmlsettingsmanager.h"
 
@@ -37,18 +37,18 @@ namespace Keywords
 	{
 		CoreProxy_ = proxy;
 		Model_.reset (new QStandardItemModel);
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Keyword")) 
+		Model_->setHorizontalHeaderLabels (QStringList (tr ("Keyword"))
 			<< tr ("Url"));
 
 		QSettings keywords (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Poshuku_Keywords");
 
-		Q_FOREACH (const QString& keyword, keywords.allKeys ()) 
+		Q_FOREACH (const QString& keyword, keywords.allKeys ())
 		{
 			const QString& url = keywords.value (keyword).toString ();
 			QStandardItem *keywordItem = new QStandardItem (keyword);
 			QStandardItem *urlItem = new QStandardItem (url);
-			QList<QStandardItem*> items; 
+			QList<QStandardItem*> items;
 
 			items << keywordItem << urlItem;
 			Model_->appendRow (items);
@@ -59,13 +59,13 @@ namespace Keywords
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			"poshukukeywordssettings.xml");
 		SettingsDialog_->SetCustomWidget ("KeywordsManagerWidget",
-			new KeywordsManagerWidget (Model_.get (), this)); 
+			new KeywordsManagerWidget (Model_.get (), this));
 	}
-	
+
 	void Plugin::SecondInit ()
 	{
 	}
-	
+
 	void Plugin::Release ()
 	{
 	}
@@ -74,7 +74,7 @@ namespace Keywords
 	{
 		return "org.LeechCraft.Poshuku.Keywords";
 	}
-	
+
 	QString Plugin::GetName () const
 	{
 		return "Poshuku Keywords";
@@ -87,7 +87,8 @@ namespace Keywords
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/poshuku/plugins/keywords/resources/images/keywords.svg");
+		static QIcon icon (":/plugins/poshuku/plugins/keywords/resources/images/keywords.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -112,7 +113,7 @@ namespace Keywords
 		Keywords2Urls_.remove (keyword);
 	}
 
-	void Plugin::hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy, 
+	void Plugin::hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
 			QObject *browserWidget)
 	{
 		QLineEdit *urlEdit;
@@ -121,7 +122,7 @@ namespace Keywords
 			"getAddressBar",
 			Q_RETURN_ARG (QLineEdit*, urlEdit));
 
-		if (!urlEdit) 
+		if (!urlEdit)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable get url edit"
@@ -145,7 +146,7 @@ namespace Keywords
 
 		while (!keywords.isEmpty ())
 			redirect = redirect.arg (keywords.takeFirst ());
-			
+
 		urlEdit->setText (redirect);
 		QMetaObject::invokeMethod (urlEdit, "returnPressed", Qt::QueuedConnection);
 		proxy->CancelDefault ();

@@ -81,7 +81,8 @@ namespace ChatHistory
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/azoth/chathistory/resources/images/chathistory.svg");
+		static QIcon icon (":/azoth/chathistory/resources/images/chathistory.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

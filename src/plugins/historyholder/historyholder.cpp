@@ -59,7 +59,8 @@ QString Plugin::GetInfo () const
 
 QIcon Plugin::GetIcon () const
 {
-	return QIcon (":/resources/images/historyholder.svg");
+	static QIcon icon (":/resources/images/historyholder.svg");
+	return icon;
 }
 
 QStringList Plugin::Provides () const

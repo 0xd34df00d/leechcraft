@@ -61,7 +61,8 @@ namespace YandexDisk
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/netstoremanager/yandexdisk/resources/images/netstoremanager_yandexdisk.svg");
+		static QIcon icon (":/netstoremanager/yandexdisk/resources/images/netstoremanager_yandexdisk.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

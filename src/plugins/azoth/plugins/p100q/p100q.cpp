@@ -84,7 +84,8 @@ namespace p100q
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/p100q/resources/images/p100q.svg");
+		static QIcon icon (":/plugins/azoth/plugins/p100q/resources/images/p100q.svg");
+		return icon;
 	}
 
 	QStringList Plugin::Provides () const

@@ -135,7 +135,8 @@ namespace LMP
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/lmp/resources/images/lmp.svg");
+		static QIcon icon (":/lmp/resources/images/lmp.svg");
+		return icon;
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const

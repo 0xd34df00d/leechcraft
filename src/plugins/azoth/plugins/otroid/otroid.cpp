@@ -133,7 +133,8 @@ namespace OTRoid
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/otroid/resources/images/otroid.svg");
+		static QIcon icon (":/plugins/azoth/plugins/otroid/resources/images/otroid.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
