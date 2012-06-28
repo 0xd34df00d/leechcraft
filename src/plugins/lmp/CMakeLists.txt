@@ -73,6 +73,7 @@ SET (SRCS
 	biopropproxy.cpp
 	audiopropswidget.cpp
 	devicesbrowserwidget.cpp
+	devicesuploadmodel.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
@@ -110,6 +111,7 @@ SET (HEADERS
 	biopropproxy.h
 	audiopropswidget.h
 	devicesbrowserwidget.h
+	devicesuploadmodel.h
 	playlistparsers/playlistfactory.h
 	playlistparsers/m3u.h
 	playlistparsers/pls.h

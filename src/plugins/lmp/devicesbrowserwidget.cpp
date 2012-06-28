@@ -25,6 +25,8 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/isyncplugin.h>
 #include "core.h"
+#include "devicesuploadmodel.h"
+#include "localcollection.h"
 
 namespace LeechCraft
 {
@@ -72,6 +74,10 @@ namespace LMP
 	{
 		Ui_.setupUi (this);
 		Ui_.UploadButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("svn-commit"));
+
+		auto model = new DevicesUploadModel (this);
+		model->setSourceModel (Core::Instance ().GetLocalCollection ()->GetCollectionModel ());
+		Ui_.OurCollection_->setModel (model);
 	}
 
 	void DevicesBrowserWidget::InitializeDevices ()
