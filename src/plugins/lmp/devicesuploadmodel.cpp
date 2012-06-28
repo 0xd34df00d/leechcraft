@@ -28,6 +28,11 @@ namespace LMP
 	{
 	}
 
+	QSet<QPersistentModelIndex> DevicesUploadModel::GetSelectedIndexes () const
+	{
+		return SourceIndexes_;
+	}
+
 	Qt::ItemFlags DevicesUploadModel::flags (const QModelIndex& idx) const
 	{
 		return QSortFilterProxyModel::flags (idx) | Qt::ItemIsUserCheckable;

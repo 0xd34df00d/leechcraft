@@ -28,6 +28,7 @@ namespace LeechCraft
 namespace LMP
 {
 	class ISyncPlugin;
+	class DevicesUploadModel;
 
 	class DevicesBrowserWidget : public QWidget
 	{
@@ -35,6 +36,7 @@ namespace LMP
 
 		Ui::DevicesBrowserWidget Ui_;
 		IRemovableDevManager *DevMgr_;
+		DevicesUploadModel *DevUploadModel_;
 
 		ISyncPlugin *CurrentSyncer_;
 	public:

@@ -33,6 +33,8 @@ namespace LMP
 	public:
 		DevicesUploadModel (QObject* = 0);
 
+		QSet<QPersistentModelIndex> GetSelectedIndexes () const;
+
 		Qt::ItemFlags flags (const QModelIndex&) const;
 		QVariant data (const QModelIndex&, int) const;
 		bool setData (const QModelIndex&, const QVariant&, int);

@@ -70,14 +70,14 @@ namespace LMP
 	DevicesBrowserWidget::DevicesBrowserWidget (QWidget *parent)
 	: QWidget (parent)
 	, DevMgr_ (0)
+	, DevUploadModel_ (new DevicesUploadModel (this))
 	, CurrentSyncer_ (0)
 	{
 		Ui_.setupUi (this);
 		Ui_.UploadButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("svn-commit"));
 
-		auto model = new DevicesUploadModel (this);
-		model->setSourceModel (Core::Instance ().GetLocalCollection ()->GetCollectionModel ());
-		Ui_.OurCollection_->setModel (model);
+		DevUploadModel_->setSourceModel (Core::Instance ().GetLocalCollection ()->GetCollectionModel ());
+		Ui_.OurCollection_->setModel (DevUploadModel_);
 	}
 
 	void DevicesBrowserWidget::InitializeDevices ()
@@ -113,7 +113,16 @@ namespace LMP
 
 	void DevicesBrowserWidget::on_UploadButton__released ()
 	{
+		if (!CurrentSyncer_)
+			return;
 
+		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
+		QStringList paths;
+		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
+				[] (const QModelIndex& idx) { return idx.data (LocalCollection::Role::TrackPath).toString (); });
+		paths.removeAll (QString ());
+
+		CurrentSyncer_->Upload (paths, Ui_.UpOptsTab_->layout ()->itemAt (0)->widget ());
 	}
 
 	void DevicesBrowserWidget::on_DevicesSelector__activated (int idx)
