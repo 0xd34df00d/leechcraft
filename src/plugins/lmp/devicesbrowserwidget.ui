@@ -36,6 +36,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="MountButton_">
+       <property name="text">
+        <string>Mount</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

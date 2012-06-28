@@ -64,6 +64,7 @@ namespace LMP
 
 	DevicesBrowserWidget::DevicesBrowserWidget (QWidget *parent)
 	: QWidget (parent)
+	, DevMgr_ (0)
 	{
 		Ui_.setupUi (this);
 	}
@@ -78,11 +79,47 @@ namespace LMP
 			return;
 		}
 
+		DevMgr_ = mgrs.at (0);
+
 		auto flattener = new MountableFlattener (this);
-		flattener->SetSource (mgrs.at (0)->GetDevicesModel ());
+		flattener->SetSource (DevMgr_->GetDevicesModel ());
 		Ui_.DevicesSelector_->setModel (flattener);
 
 		Ui_.DevicesSelector_->setCurrentIndex (-1);
+
+		connect (flattener,
+				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleDevDataChanged (QModelIndex, QModelIndex)));
+	}
+
+	void DevicesBrowserWidget::handleDevDataChanged (const QModelIndex& from, const QModelIndex& to)
+	{
+		const int idx = Ui_.DevicesSelector_->currentIndex ();
+		if (idx >= from.row () && idx <= to.row ())
+			on_DevicesSelector__activated (idx);
+	}
+
+	void DevicesBrowserWidget::on_DevicesSelector__activated (int idx)
+	{
+		if (idx < 0)
+		{
+			Ui_.MountButton_->setEnabled (false);
+			return;
+		}
+
+		auto isMounted = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::IsMounted).toBool ();
+		Ui_.MountButton_->setEnabled (!isMounted);
+	}
+
+	void DevicesBrowserWidget::on_MountButton__released ()
+	{
+		const int idx = Ui_.DevicesSelector_->currentIndex ();
+		if (idx < 0)
+			return;
+
+		const auto& id = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::DevID).toString ();
+		DevMgr_->MountDevice (id);
 	}
 }
 }

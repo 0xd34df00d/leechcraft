@@ -21,6 +21,8 @@
 #include <QWidget>
 #include "ui_devicesbrowserwidget.h"
 
+class IRemovableDevManager;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -30,10 +32,15 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::DevicesBrowserWidget Ui_;
+		IRemovableDevManager *DevMgr_;
 	public:
 		DevicesBrowserWidget (QWidget* = 0);
 
 		void InitializeDevices ();
+	private slots:
+		void handleDevDataChanged (const QModelIndex&, const QModelIndex&);
+		void on_DevicesSelector__activated (int);
+		void on_MountButton__released ();
 	};
 }
 }
