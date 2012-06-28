@@ -18,47 +18,31 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/lmp/ilmpplugin.h>
-#include <interfaces/lmp/isyncplugin.h>
+#include <QtPlugin>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public ILMPPlugin
-				 , public ISyncPlugin
+	enum class SyncConfLevel
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo
-				IPlugin2
-				LeechCraft::LMP::ILMPPlugin
-				LeechCraft::LMP::ISyncPlugin)
+		None,
+		Medium,
+		High
+	};
+
+	class ISyncPlugin
+	{
 	public:
-		void Init (ICoreProxy_ptr proxy);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
+		virtual ~ISyncPlugin () {}
 
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		virtual QString GetSyncSystemName () const = 0;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		virtual SyncConfLevel CouldSync (const QString& path) = 0;
 
-		void SetLMPProxy (ILMPProxy*);
-
-		QString GetSyncSystemName () const;
-		SyncConfLevel CouldSync (const QString&);
-		QWidget* MakeSyncParamsWidget ();
+		virtual QWidget* MakeSyncParamsWidget () = 0;
 	};
 }
 }
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::LMP::ISyncPlugin, "org.LeechCraft.LMP.ISyncPlugin/1.0");

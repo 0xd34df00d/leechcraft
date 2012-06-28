@@ -18,6 +18,9 @@
 
 #include "dumbsync.h"
 #include <QIcon>
+#include <QFileInfo>
+#include <QDir>
+#include "dumbsyncparamswidget.h"
 
 namespace LeechCraft
 {
@@ -67,6 +70,29 @@ namespace DumbSync
 
 	void Plugin::SetLMPProxy (ILMPProxy*)
 	{
+	}
+
+	QString Plugin::GetSyncSystemName () const
+	{
+		return tr ("dumb copying");
+	}
+
+	SyncConfLevel Plugin::CouldSync (const QString& path)
+	{
+		QFileInfo fi (path);
+		if (!fi.isDir () || !fi.isWritable ())
+			return SyncConfLevel::None;
+
+		if (fi.dir ().entryList (QDir::Dirs).contains (".rockbox", Qt::CaseInsensitive) ||
+			fi.dir ().entryList (QDir::Dirs).contains ("music", Qt::CaseInsensitive))
+			return SyncConfLevel::High;
+
+		return SyncConfLevel::Medium;
+	}
+
+	QWidget* Plugin::MakeSyncParamsWidget ()
+	{
+		return new DumbSyncParamsWidget ();
 	}
 }
 }
