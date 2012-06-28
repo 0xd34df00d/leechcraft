@@ -94,6 +94,18 @@ namespace DumbSync
 	{
 		return new DumbSyncParamsWidget ();
 	}
+
+	void Plugin::Upload (const QStringList& paths, QWidget *w)
+	{
+		auto paramsWidget = qobject_cast<DumbSyncParamsWidget*> (w);
+		if (!paramsWidget)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "incorrect widget passed"
+					<< w;
+			return;
+		}
+	}
 }
 }
 }

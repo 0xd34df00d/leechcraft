@@ -41,6 +41,8 @@ namespace LMP
 		virtual SyncConfLevel CouldSync (const QString& path) = 0;
 
 		virtual QWidget* MakeSyncParamsWidget () = 0;
+
+		virtual void Upload (const QStringList&, QWidget*) = 0;
 	};
 }
 }

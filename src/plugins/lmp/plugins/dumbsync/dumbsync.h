@@ -58,6 +58,7 @@ namespace DumbSync
 		QString GetSyncSystemName () const;
 		SyncConfLevel CouldSync (const QString&);
 		QWidget* MakeSyncParamsWidget ();
+		void Upload (const QStringList&, QWidget*);
 	};
 }
 }
