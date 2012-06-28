@@ -112,6 +112,8 @@ namespace LMP
 		initShortcut (SLOT (previousTrack ()), QString ("Meta+V"));
 		initShortcut (SLOT (nextTrack ()), QString ("Meta+B"));
 		initShortcut (SLOT (stop ()), QString ("Meta+X"));
+
+		PlayerTab_->InitWithOtherPlugins ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const

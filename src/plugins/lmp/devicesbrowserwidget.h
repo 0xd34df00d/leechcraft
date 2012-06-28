@@ -32,6 +32,8 @@ namespace LMP
 		Ui::DevicesBrowserWidget Ui_;
 	public:
 		DevicesBrowserWidget (QWidget* = 0);
+
+		void InitializeDevices ();
 	};
 }
 }

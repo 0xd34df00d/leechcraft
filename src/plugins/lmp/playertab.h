@@ -95,6 +95,8 @@ namespace LMP
 		QByteArray GetTabRecoverData () const;
 		QIcon GetTabRecoverIcon () const;
 		QString GetTabRecoverName () const;
+
+		void InitWithOtherPlugins ();
 	private:
 		void SetupToolbar ();
 		void SetupCollection ();
