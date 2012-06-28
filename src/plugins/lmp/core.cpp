@@ -17,10 +17,12 @@
  **********************************************************************/
 
 #include "core.h"
+#include <interfaces/iplugin2.h>
 #include "localfileresolver.h"
 #include "localcollection.h"
 #include "xmlsettingsmanager.h"
 #include "playlistmanager.h"
+#include "interfaces/lmp/ilmpplugin.h"
 
 namespace LeechCraft
 {
@@ -57,6 +59,25 @@ namespace LMP
 	void Core::PostInit ()
 	{
 		Collection_->FinalizeInit ();
+	}
+
+	void Core::AddPlugin (QObject *pluginObj)
+	{
+		auto ip2 = qobject_cast<IPlugin2*> (pluginObj);
+		auto ilmpPlug = qobject_cast<ILMPPlugin*> (pluginObj);
+
+		if (!ilmpPlug)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< pluginObj
+					<< "doesn't implement ILMPPlugin";
+			return;
+		}
+
+		const auto& classes = ip2->GetPluginClasses ();
+		if (classes.contains ("org.LeechCraft.LMP.CollectionSync"))
+		{
+		}
 	}
 
 	LocalFileResolver* Core::GetLocalFileResolver () const

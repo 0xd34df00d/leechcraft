@@ -240,6 +240,19 @@ namespace LMP
 		}
 	}
 
+	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.LMP.General";
+		result << "org.LeechCraft.LMP.CollectionSync";
+		return result;
+	}
+
+	void Plugin::AddPlugin (QObject *plugin)
+	{
+		Core::Instance ().AddPlugin (plugin);
+	}
+
 	void Plugin::handleFullRaiseRequested ()
 	{
 		TabOpenRequested (PlayerTC_.TabClass_);

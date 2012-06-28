@@ -18,49 +18,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/core/icoreproxy.h>
+#include <QtPlugin>
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace LMP
 {
-	class LocalCollection;
-	class LocalFileResolver;
-	class PlaylistManager;
+	class ILMPProxy;
 
-	class Core : public QObject
+	class ILMPPlugin
 	{
-		Q_OBJECT
-
-		ICoreProxy_ptr Proxy_;
-
-		LocalFileResolver *Resolver_;
-		LocalCollection *Collection_;
-		PlaylistManager *PLManager_;
-
-		Core ();
 	public:
-		static Core& Instance ();
+		virtual ~ILMPPlugin () {}
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy ();
-
-		void SendEntity (const Entity&);
-
-		void PostInit ();
-
-		void AddPlugin (QObject*);
-
-		LocalFileResolver* GetLocalFileResolver () const;
-		LocalCollection* GetLocalCollection () const;
-		PlaylistManager* GetPlaylistManager () const;
-	public slots:
-		void rescan ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		virtual void SetLMPProxy (ILMPProxy*) = 0;
 	};
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::LMP::ILMPPlugin, "org.LeechCraft.LMP.ILMPPlugin/1.0");
