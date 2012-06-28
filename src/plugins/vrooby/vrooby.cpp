@@ -90,6 +90,12 @@ namespace Vrooby
 		return Backend_ ? Backend_->GetDevicesModel () : 0;
 	}
 
+	void Plugin::MountDevice (const QString& id)
+	{
+		if (Backend_)
+			Backend_->MountDevice (id);
+	}
+
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
 	{
 		QList<QAction*> result;

@@ -51,6 +51,8 @@ namespace Vrooby
 		QIcon GetIcon () const;
 
 		QAbstractItemModel* GetDevicesModel () const;
+		void MountDevice (const QString&);
+
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	private slots:
 		void showTrayView (bool);

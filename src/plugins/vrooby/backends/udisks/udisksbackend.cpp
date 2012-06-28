@@ -63,6 +63,22 @@ namespace UDisks
 		}
 	}
 
+	void Backend::MountDevice (const QString& id)
+	{
+		auto iface = GetDeviceInterface (id);
+		if (!iface)
+			return;
+
+		if (!iface->property ("DeviceIsMounted").toBool ())
+		{
+			auto async = iface->asyncCall ("FilesystemMount", QString (), QStringList ());
+			connect (new QDBusPendingCallWatcher (async, this),
+					SIGNAL (finished (QDBusPendingCallWatcher*)),
+					this,
+					SLOT (mountCallFinished (QDBusPendingCallWatcher*)));
+		}
+	}
+
 	void Backend::InitialEnumerate ()
 	{
 		auto sb = QDBusConnection::systemBus ();
