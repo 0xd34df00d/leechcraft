@@ -186,6 +186,7 @@ namespace UDisks
 			hasRemovableParent = parentIface->property ("DeviceIsRemovable").toBool ();
 		}
 
+		DevicesModel_->blockSignals (true);
 		item->setText (name);
 		item->setData (DeviceType::GenericDevice, DeviceRoles::DevType);
 		item->setData (iface->property ("DeviceFile").toString (), DeviceRoles::DevFile);
@@ -198,6 +199,7 @@ namespace UDisks
 		item->setData (iface->path (), DeviceRoles::DevID);
 		item->setData (fullName, DeviceRoles::VisibleName);
 		item->setData (iface->property ("PartitionSize").toLongLong (), DeviceRoles::TotalSize);
+		DevicesModel_->blockSignals (false);
 		item->setData (iface->property ("DeviceMountPaths").toStringList (), DeviceRoles::MountPoints);
 	}
 
@@ -321,7 +323,9 @@ namespace UDisks
 	void Backend::handleDeviceChanged (const QDBusObjectPath& pathObj)
 	{
 		const auto& path = pathObj.path ();
-		SetItemData (GetDeviceInterface (path), Object2Item_ [path]);
+
+		auto item = Object2Item_ [path];
+		SetItemData (GetDeviceInterface (path), item);
 	}
 }
 }
