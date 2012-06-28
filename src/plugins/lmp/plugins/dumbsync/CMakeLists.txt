@@ -10,11 +10,17 @@ INCLUDE_DIRECTORIES (${LMP_INCLUDE_DIR}
 
 SET (DUMBSYNC_SRCS
 	dumbsync.cpp
+	dumbsyncparamswidget.cpp
 	)
+SET (FORMS
+	dumbsyncparamswidget.ui
+	)
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_lmp_dumbsync SHARED
 	${DUMBSYNC_COMPILED_TRANSLATIONS}
 	${DUMBSYNC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_lmp_dumbsync
 	${QT_LIBRARIES}
