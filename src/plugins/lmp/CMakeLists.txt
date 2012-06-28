@@ -72,6 +72,7 @@ SET (SRCS
 	biowidget.cpp
 	biopropproxy.cpp
 	audiopropswidget.cpp
+	devicesbrowserwidget.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
@@ -108,6 +109,7 @@ SET (HEADERS
 	biowidget.h
 	biopropproxy.h
 	audiopropswidget.h
+	devicesbrowserwidget.h
 	playlistparsers/playlistfactory.h
 	playlistparsers/m3u.h
 	playlistparsers/pls.h
@@ -122,6 +124,7 @@ SET (FORMS
 	releaseswidget.ui
 	biowidget.ui
 	audiopropswidget.ui
+	devicesbrowserwidget.ui
 	)
 SET (RESOURCES resources.qrc)
 CreateTrVars ("lmp" "en;es;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
