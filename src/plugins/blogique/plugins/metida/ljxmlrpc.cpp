@@ -25,6 +25,8 @@
 #include <QXmlQuery>
 #include <util/sysinfo.h>
 #include "profiletypes.h"
+#include "ljfriendentry.h"
+#include "ljaccount.h"
 
 namespace LeechCraft
 {
@@ -296,6 +298,37 @@ namespace Metida
 				continue;
 
 			auto res = ParseMember (member);
+			if (res.Name () == "friends")
+			{
+				QSet<std::shared_ptr<LJFriendEntry>> frList;
+				for (const auto& moodEntry : res.Value ())
+				{
+					std::shared_ptr<LJFriendEntry> fr = std::make_shared<LJFriendEntry> ();
+					bool isCommunity = false;
+					for (const auto& field : moodEntry.toList ())
+					{
+						LJParserTypes::LJParseProfileEntry fieldEntry =
+								field.value<LJParserTypes::LJParseProfileEntry> ();
+						if (fieldEntry.Name () == "defaultpicurl")
+							fr->SetAvatarUrl (fieldEntry.ValueToUrl ());
+						else if (fieldEntry.Name () == "bgcolor")
+							fr->SetBGColor (fieldEntry.ValueToString ());
+						else if (fieldEntry.Name () == "fgcolor")
+							fr->SetFGColor (fieldEntry.ValueToString ());
+						else if (fieldEntry.Name () == "groupmask")
+							fr->SetGroupMask (fieldEntry.ValueToInt ());
+						else if (fieldEntry.Name () == "fullname")
+							fr->SetFullName (fieldEntry.ValueToString ());
+						else if (fieldEntry.Name () == "username")
+							fr->SetUserName (fieldEntry.ValueToString ());
+						else if (fieldEntry.Name () == "type")
+							isCommunity = (fieldEntry.ValueToString () == "community");
+					}
+					if (!isCommunity)
+						frList << fr;
+				}
+				Account_->AddFriends (frList);
+			}
 		}
 	}
 
@@ -366,7 +399,7 @@ namespace Metida
 							else if (fieldEntry.Name () == "id")
 							{
 								group.Id_ = fieldEntry.ValueToInt ();
-								group.RealId_ = (group.Id_ << 8) + 1;
+								group.RealId_ = (1 << group.Id_) + 1;
 							}
 							else if (fieldEntry.Name () == "sortorder")
 								group.SortOrder_ = fieldEntry.ValueToInt ();
@@ -512,4 +545,3 @@ namespace Metida
 }
 }
 }
-

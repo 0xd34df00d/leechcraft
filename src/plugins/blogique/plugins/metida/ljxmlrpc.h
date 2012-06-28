@@ -33,6 +33,7 @@ namespace Blogique
 {
 namespace Metida
 {
+	class LJFriendEntry;
 	class LJAccount;
 
 	class LJXmlRPC : public QObject

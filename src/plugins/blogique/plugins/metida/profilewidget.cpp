@@ -22,6 +22,7 @@
 #include <util/util.h>
 #include "ljprofile.h"
 #include "ljaccount.h"
+#include "ljfriendentry.h"
 
 namespace LeechCraft
 {
@@ -67,6 +68,25 @@ namespace Metida
 			ItemToFriendGroup_ [item] = group;
 			item->setEditable (false);
 			FriendsModel_->appendRow (item);
+		}
+
+		for (const std::shared_ptr<LJFriendEntry>& fr : Profile_->GetFriends ())
+		{
+			QStandardItem *item = new QStandardItem (fr->GetUserName ());
+			item->setEditable (false);
+			item->setBackground (QBrush (fr->GetBGColor ()));
+			item->setForeground (QBrush (fr->GetFGColor ()));
+			for (int i = 0; i < FriendsModel_->rowCount (); ++i)
+			{
+				QStandardItem *parentItem = FriendsModel_->item (i);
+				qDebug () << Q_FUNC_INFO << parentItem->text ()
+						<< ItemToFriendGroup_ [parentItem].Id_
+						<< ItemToFriendGroup_ [parentItem].RealId_
+						<< item->text ()
+						<< fr->GetGroupMask ();
+				if (ItemToFriendGroup_ [parentItem].RealId_ == fr->GetGroupMask ())
+					parentItem->appendRow (item);
+			}
 		}
 	}
 

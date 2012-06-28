@@ -18,7 +18,10 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
+#include <QUrl>
+#include <QColor>
 
 namespace LeechCraft
 {
@@ -29,9 +32,31 @@ namespace Metida
 	class LJFriendEntry : public QObject
 	{
 		Q_OBJECT
+
+		QUrl AvatarUrl_;
+		QString FullName_;
+		QString UserName_;
+		int GroupMask_;
+		QColor BGColor_;
+		QColor FGColor_;
 	public:
 		LJFriendEntry (QObject *parent = 0);
+
+		void SetAvatarUrl (const QUrl& url);
+		QUrl GetAvatarurl () const;
+		void SetFullName (const QString& fullName);
+		QString GetFullName () const;
+		void SetUserName (const QString& userName);
+		QString GetUserName () const;
+		void SetGroupMask (int groupmask);
+		int GetGroupMask () const;
+		void SetBGColor (const QString& name);
+		QColor GetBGColor () const;
+		void SetFGColor (const QString& name);
+		QColor GetFGColor () const;
 	};
+
+	uint qHash (const std::shared_ptr<LJFriendEntry>& fr);
 }
 }
 }

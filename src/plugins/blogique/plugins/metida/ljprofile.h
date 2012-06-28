@@ -18,7 +18,9 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
+#include <QSet>
 #include <interfaces/blogique/iprofile.h>
 #include "profiletypes.h"
 
@@ -28,6 +30,7 @@ namespace Blogique
 {
 namespace Metida
 {
+	class LJFriendEntry;
 	class ProfileWidget;
 
 	class LJProfile : public QObject
@@ -38,11 +41,15 @@ namespace Metida
 
 		QObject *ParentAccount_;
 		LJProfileData ProfileData_;
+		QSet<std::shared_ptr<LJFriendEntry>> Friends_;
 	public:
 		LJProfile (QObject *parentAccount, QObject *parent = 0);
 		QWidget* GetProfileWidget ();
 		LJProfileData GetProfileData () const;
 		QObject* GetParentAccount () const;
+
+		void AddFriends (const QSet<std::shared_ptr<LJFriendEntry>>& friends);
+		QSet<std::shared_ptr<LJFriendEntry>> GetFriends () const;
 	private:
 		void SaveAvatar (QUrl url = QUrl ());
 

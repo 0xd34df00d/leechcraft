@@ -29,6 +29,71 @@ namespace Metida
 	{
 	}
 
+	void LJFriendEntry::SetAvatarUrl (const QUrl& url)
+	{
+		AvatarUrl_ = url;
+	}
+
+	QUrl LJFriendEntry::GetAvatarurl () const
+	{
+		return AvatarUrl_;
+	}
+
+	void LJFriendEntry::SetFullName (const QString& fullName)
+	{
+		FullName_ = fullName;
+	}
+
+	QString LJFriendEntry::GetFullName () const
+	{
+		return FullName_;
+	}
+
+	void LJFriendEntry::SetUserName (const QString& userName)
+	{
+		UserName_ = userName;
+	}
+
+	QString LJFriendEntry::GetUserName () const
+	{
+		return UserName_;
+	}
+
+	void LJFriendEntry::SetGroupMask (int groupmask)
+	{
+		GroupMask_ = groupmask;
+	}
+
+	int LJFriendEntry::GetGroupMask () const
+	{
+		return GroupMask_;
+	}
+
+	void LJFriendEntry::SetBGColor (const QString& name)
+	{
+		BGColor_.setNamedColor (name);
+	}
+
+	QColor LJFriendEntry::GetBGColor () const
+	{
+		return BGColor_;
+	}
+
+	void LJFriendEntry::SetFGColor (const QString& name)
+	{
+		FGColor_.setNamedColor (name);
+	}
+
+	QColor LJFriendEntry::GetFGColor () const
+	{
+		return FGColor_;
+	}
+
+
+	uint qHash (const std::shared_ptr<LJFriendEntry>& fr)
+	{
+		return qHash (fr->GetFullName () + fr->GetUserName ());
+	}
 }
 }
 }
