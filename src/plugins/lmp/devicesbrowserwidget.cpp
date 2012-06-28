@@ -17,10 +17,13 @@
  **********************************************************************/
 
 #include "devicesbrowserwidget.h"
+#include <QMessageBox>
+#include <QInputDialog>
 #include <util/models/flattenfiltermodel.h>
 #include <util/util.h>
 #include <interfaces/iremovabledevmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/lmp/isyncplugin.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -65,8 +68,10 @@ namespace LMP
 	DevicesBrowserWidget::DevicesBrowserWidget (QWidget *parent)
 	: QWidget (parent)
 	, DevMgr_ (0)
+	, CurrentSyncer_ (0)
 	{
 		Ui_.setupUi (this);
+		Ui_.UploadButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("svn-commit"));
 	}
 
 	void DevicesBrowserWidget::InitializeDevices ()
@@ -100,8 +105,15 @@ namespace LMP
 			on_DevicesSelector__activated (idx);
 	}
 
+	void DevicesBrowserWidget::on_UploadButton__released ()
+	{
+
+	}
+
 	void DevicesBrowserWidget::on_DevicesSelector__activated (int idx)
 	{
+		CurrentSyncer_ = 0;
+
 		if (idx < 0)
 		{
 			Ui_.MountButton_->setEnabled (false);
@@ -110,6 +122,65 @@ namespace LMP
 
 		auto isMounted = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::IsMounted).toBool ();
 		Ui_.MountButton_->setEnabled (!isMounted);
+
+		if (!isMounted)
+			return;
+
+		const auto& mountPath = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
+		if (mountPath.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "device seems to be mounted, but no mount points available:"
+					<< Ui_.DevicesSelector_->itemData (idx, DeviceRoles::DevID).toString ();
+			return;
+		}
+
+		QList<ISyncPlugin*> suitables;
+
+		auto syncers = Core::Instance ().GetSyncPlugins ();
+		Q_FOREACH (auto syncer, syncers)
+		{
+			auto isp = qobject_cast<ISyncPlugin*> (syncer);
+			if (isp->CouldSync (mountPath) != SyncConfLevel::None)
+				suitables << isp;
+		}
+
+		if (suitables.isEmpty ())
+		{
+			QMessageBox::warning (this,
+					"LeechCraft",
+					tr ("No plugins are able to sync this device."));
+			return;
+		}
+
+		if (suitables.size () == 1)
+			CurrentSyncer_ = suitables.value (0);
+		else
+		{
+			QStringList items;
+			Q_FOREACH (ISyncPlugin *plugin, suitables)
+				items << plugin->GetSyncSystemName ();
+
+			const auto& name = QInputDialog::getItem (this,
+					tr ("Select syncer"),
+					tr ("Multiple different syncers can handle the device %1, what do you want to use?")
+						.arg (Ui_.DevicesSelector_->itemText (idx)),
+					items);
+			if (name.isEmpty ())
+				return;
+
+			CurrentSyncer_ = suitables.value (items.indexOf (name));
+		}
+
+		if (!CurrentSyncer_)
+			return;
+
+		auto lay = Ui_.UpOptsTab_->layout ();
+		while (lay->count ())
+			lay->removeItem (lay->itemAt (0));
+
+		if (QWidget *w = CurrentSyncer_->MakeSyncParamsWidget ())
+			lay->addWidget (w);
 	}
 
 	void DevicesBrowserWidget::on_MountButton__released ()

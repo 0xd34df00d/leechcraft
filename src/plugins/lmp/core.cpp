@@ -23,6 +23,7 @@
 #include "xmlsettingsmanager.h"
 #include "playlistmanager.h"
 #include "interfaces/lmp/ilmpplugin.h"
+#include "interfaces/lmp/isyncplugin.h"
 
 namespace LeechCraft
 {
@@ -75,9 +76,14 @@ namespace LMP
 		}
 
 		const auto& classes = ip2->GetPluginClasses ();
-		if (classes.contains ("org.LeechCraft.LMP.CollectionSync"))
-		{
-		}
+		if (classes.contains ("org.LeechCraft.LMP.CollectionSync") &&
+			qobject_cast<ISyncPlugin*> (pluginObj))
+			SyncPlugins_ << pluginObj;
+	}
+
+	QList<QObject*> Core::GetSyncPlugins () const
+	{
+		return SyncPlugins_;
 	}
 
 	LocalFileResolver* Core::GetLocalFileResolver () const

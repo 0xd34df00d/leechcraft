@@ -41,6 +41,8 @@ namespace LMP
 		LocalCollection *Collection_;
 		PlaylistManager *PLManager_;
 
+		QObjectList SyncPlugins_;
+
 		Core ();
 	public:
 		static Core& Instance ();
@@ -53,6 +55,7 @@ namespace LMP
 		void PostInit ();
 
 		void AddPlugin (QObject*);
+		QList<QObject*> GetSyncPlugins () const;
 
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;
