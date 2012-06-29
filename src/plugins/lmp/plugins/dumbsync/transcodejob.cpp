@@ -24,6 +24,11 @@
 #include <QtDebug>
 #include "transcodingparams.h"
 
+#ifdef Q_OS_UNIX
+#include <sys/time.h>
+#include <sys/resource.h>
+#endif
+
 namespace LeechCraft
 {
 namespace LMP
@@ -69,6 +74,10 @@ namespace DumbSync
 				this,
 				SLOT (handleReadyRead ()));
 		Process_->start ("ffmpeg", args);
+
+#ifdef Q_OS_UNIX
+		setpriority (PRIO_PROCESS, Process_->pid (), 19);
+#endif
 	}
 
 	void TranscodeJob::handleFinished (int code, QProcess::ExitStatus status)
