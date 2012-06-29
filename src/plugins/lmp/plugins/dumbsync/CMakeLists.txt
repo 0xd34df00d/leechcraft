@@ -10,7 +10,10 @@ INCLUDE_DIRECTORIES (${LMP_INCLUDE_DIR}
 
 SET (DUMBSYNC_SRCS
 	dumbsync.cpp
+	copymanager.cpp
 	dumbsyncparamswidget.cpp
+	syncmanager.cpp
+	transcodemanager.cpp
 	)
 SET (DUMBSYNC_FORMS
 	dumbsyncparamswidget.ui
