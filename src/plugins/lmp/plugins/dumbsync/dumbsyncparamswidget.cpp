@@ -18,6 +18,7 @@
 
 #include "dumbsyncparamswidget.h"
 #include <QThread>
+#include "transcodingparams.h"
 
 namespace LeechCraft
 {
@@ -38,6 +39,17 @@ namespace DumbSync
 		}
 		else
 			Ui_.ThreadsSlider_->setMaximum (4);
+	}
+
+	TranscodingParams DumbSyncParamsWidget::GetParams () const
+	{
+		return
+		{
+			Ui_.FilenameMask_->text (),
+			Ui_.TranscodingFormat_->currentText (),
+			Ui_.QualitySlider_->value (),
+			Ui_.ThreadsSlider_->value ()
+		};
 	}
 }
 }

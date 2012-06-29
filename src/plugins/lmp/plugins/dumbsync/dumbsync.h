@@ -30,6 +30,8 @@ namespace LMP
 {
 namespace DumbSync
 {
+	class SyncManager;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -41,6 +43,8 @@ namespace DumbSync
 				IPlugin2
 				LeechCraft::LMP::ILMPPlugin
 				LeechCraft::LMP::ISyncPlugin)
+
+		SyncManager *SyncMgr_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();

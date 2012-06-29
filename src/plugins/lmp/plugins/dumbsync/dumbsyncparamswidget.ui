@@ -18,7 +18,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QLineEdit" name="lineEdit">
+    <widget class="QLineEdit" name="FilenameMask_">
      <property name="toolTip">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The following variables are allowed in the track filename: $artist, $year, $album, $trackNumber, $title.&lt;/p&gt;&lt;p&gt;Directories are separated by the '/' symbol. File extension is omitted.&lt;/p&gt;&lt;p&gt;For example, a filename could look like this:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;music/$artist/$year - $album/$trackNumber - $artist - $title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>

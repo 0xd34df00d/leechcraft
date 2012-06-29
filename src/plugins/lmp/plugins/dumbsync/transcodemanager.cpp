@@ -17,6 +17,9 @@
  **********************************************************************/
 
 #include "transcodemanager.h"
+#include <QStringList>
+#include <QtDebug>
+#include "transcodejob.h"
 
 namespace LeechCraft
 {
@@ -27,6 +30,35 @@ namespace DumbSync
 	TranscodeManager::TranscodeManager (QObject *parent)
 	: QObject (parent)
 	{
+	}
+
+	void TranscodeManager::Enqueue (const QStringList& files, const TranscodingParams& params)
+	{
+		std::transform (files.begin (), files.end (), std::back_inserter (Queue_),
+				[&params] (decltype (files.front ()) file) { return qMakePair (file, params); });
+
+		while (RunningJobs_.size () < params.NumThreads_ && !Queue_.isEmpty ())
+			EnqueueJob (Queue_.takeFirst ());
+	}
+
+	void TranscodeManager::EnqueueJob (const QPair<QString, TranscodingParams>& pair)
+	{
+		auto job = new TranscodeJob (pair.first, pair.second, this);
+		RunningJobs_ << job;
+		connect (job,
+				SIGNAL (done (bool)),
+				this,
+				SLOT (handleDone (bool)));
+	}
+
+	void TranscodeManager::handleDone (bool done)
+	{
+		qDebug () << Q_FUNC_INFO << done;
+		if (!Queue_.isEmpty ())
+		{
+			const auto& pair = Queue_.takeFirst ();
+			EnqueueJob (pair);
+		}
 	}
 }
 }

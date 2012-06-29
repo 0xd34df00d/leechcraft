@@ -21,6 +21,8 @@
 #include <QFileInfo>
 #include <QDir>
 #include "dumbsyncparamswidget.h"
+#include "syncmanager.h"
+#include "transcodingparams.h"
 
 namespace LeechCraft
 {
@@ -30,6 +32,7 @@ namespace DumbSync
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		SyncMgr_ = new SyncManager;
 	}
 
 	void Plugin::SecondInit ()
@@ -105,6 +108,8 @@ namespace DumbSync
 					<< w;
 			return;
 		}
+
+		SyncMgr_->AddFiles (paths, paramsWidget->GetParams ());
 	}
 }
 }

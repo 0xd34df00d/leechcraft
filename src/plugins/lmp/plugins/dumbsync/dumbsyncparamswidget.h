@@ -27,6 +27,8 @@ namespace LMP
 {
 namespace DumbSync
 {
+	struct TranscodingParams;
+
 	class DumbSyncParamsWidget : public QWidget
 	{
 		Q_OBJECT
@@ -34,6 +36,8 @@ namespace DumbSync
 		Ui::DumbSyncParamsWidget Ui_;
 	public:
 		DumbSyncParamsWidget (QWidget* = 0);
+
+		TranscodingParams GetParams () const;
 	};
 }
 }

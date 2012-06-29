@@ -28,9 +28,14 @@ namespace DumbSync
 {
 	SyncManager::SyncManager (QObject *parent)
 	: QObject (parent)
-	, Transocder_ (new TranscodeManager (this))
+	, Transcoder_ (new TranscodeManager (this))
 	, Copier_ (new CopyManager (this))
 	{
+	}
+
+	void SyncManager::AddFiles (const QStringList& files, const TranscodingParams& params)
+	{
+		Transcoder_->Enqueue (files, params);
 	}
 }
 }

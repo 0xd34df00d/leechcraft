@@ -28,17 +28,18 @@ namespace DumbSync
 {
 	class TranscodeManager;
 	class CopyManager;
+	struct TranscodingParams;
 
 	class SyncManager : public QObject
 	{
 		Q_OBJECT
 
-		TranscodeManager *Transocder_;
+		TranscodeManager *Transcoder_;
 		CopyManager *Copier_;
 	public:
 		SyncManager (QObject* = 0);
 
-		void AddFiles (const QStringList&);
+		void AddFiles (const QStringList&, const TranscodingParams&);
 	};
 }
 }
