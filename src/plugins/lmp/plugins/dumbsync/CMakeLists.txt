@@ -14,6 +14,7 @@ SET (DUMBSYNC_SRCS
 	dumbsyncparamswidget.cpp
 	syncmanager.cpp
 	transcodemanager.cpp
+	transcodejob.cpp
 	)
 SET (DUMBSYNC_FORMS
 	dumbsyncparamswidget.ui
