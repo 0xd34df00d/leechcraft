@@ -20,6 +20,7 @@
 #define PLUGINS_GMAILNOTIFIER_GMAILCHECKER_H
 #include <QObject>
 #include <QString>
+#include <interfaces/core/icoreproxy.h>
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -34,7 +35,6 @@ namespace GmailNotifier
 	{
 		Q_OBJECT
 
-		QNetworkAccessManager *QNAM_;
 		QNetworkReply *Reply_;
 		QTimer *TimeOutTimer_;
 
@@ -43,11 +43,12 @@ namespace GmailNotifier
 
 		bool Failed_;
 		QString Data_;
+
+		ICoreProxy_ptr Proxy_;
 	public:
-		GmailChecker(QObject* = 0);
+		GmailChecker (ICoreProxy_ptr proxy, QObject* = 0);
 		void SetAuthSettings (const QString& login, const QString& passwd);
 
-		void Init ();
 		void ReInit ();
 	private:
 		void ParseData ();
