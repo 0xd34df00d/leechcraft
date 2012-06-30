@@ -35,6 +35,7 @@ namespace Metida
 		QString Name_;
 		uint Id_;
 		uint SortOrder_;
+		uint RealId_;
 	};
 
 	struct LJMood
