@@ -19,6 +19,7 @@
 #include "transcodemanager.h"
 #include <QStringList>
 #include <QtDebug>
+#include <QFileInfo>
 #include "transcodejob.h"
 
 namespace LeechCraft
@@ -47,6 +48,7 @@ namespace LMP
 				SIGNAL (done (TranscodeJob*, bool)),
 				this,
 				SLOT (handleDone (TranscodeJob*, bool)));
+		emit fileStartedTranscoding (QFileInfo (pair.first).fileName ());
 	}
 
 	void TranscodeManager::handleDone (TranscodeJob *job, bool success)

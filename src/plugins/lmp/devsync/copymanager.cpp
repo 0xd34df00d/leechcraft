@@ -56,13 +56,20 @@ namespace LMP
 				Qt::UniqueConnection);
 
 		job.Syncer_->Upload (job.From_, job.MountPoint_, job.Filename_);
+
+		emit startedCopying (job.Filename_);
 	}
 
 	void CopyManager::handleUploadFinished (const QString& localPath, QFile::FileError error, const QString& errorStr)
 	{
+		emit finishedCopying ();
+
 		IsRunning_ = false;
 		if (!Queue_.isEmpty ())
 			StartJob (Queue_.takeFirst ());
+
+		if (error == QFile::NoError)
+			QFile::remove (localPath);
 	}
 }
 }

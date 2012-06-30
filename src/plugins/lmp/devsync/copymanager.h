@@ -50,6 +50,9 @@ namespace LMP
 	private slots:
 		void handleUploadFinished (const QString& localPath,
 				QFile::FileError error, const QString& errorStr);
+	signals:
+		void startedCopying (const QString&);
+		void finishedCopying ();
 	};
 }
 }

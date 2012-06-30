@@ -47,8 +47,15 @@ namespace LMP
 		SyncManager (QObject* = 0);
 
 		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
+	private:
+		void CreateSyncer (const QString&);
 	private slots:
+		void handleStartedTranscoding (const QString&);
 		void handleFileTranscoded (const QString& from, const QString&, QString);
+		void handleStartedCopying (const QString&);
+		void handleFinishedCopying ();
+	signals:
+		void uploadLog (const QString&);
 	};
 }
 }
