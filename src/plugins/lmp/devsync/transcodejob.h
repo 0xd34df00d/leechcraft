@@ -25,8 +25,6 @@ namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
 	struct TranscodingParams;
 
 	class TranscodeJob : public QObject
@@ -34,14 +32,21 @@ namespace DumbSync
 		Q_OBJECT
 
 		QProcess *Process_;
+
+		const QString OriginalPath_;
+		QString TranscodedPath_;
+		const QString TargetPattern_;
 	public:
 		TranscodeJob (const QString& path, const TranscodingParams& params, QObject* parent = 0);
+
+		QString GetOrigPath () const;
+		QString GetTranscodedPath () const;
+		QString GetTargetPattern () const;
 	private slots:
 		void handleFinished (int, QProcess::ExitStatus);
 		void handleReadyRead ();
 	signals:
-		void done (bool);
+		void done (TranscodeJob*, bool);
 	};
-}
 }
 }

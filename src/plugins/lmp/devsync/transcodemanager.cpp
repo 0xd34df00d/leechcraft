@@ -25,8 +25,6 @@ namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
 	TranscodeManager::TranscodeManager (QObject *parent)
 	: QObject (parent)
 	{
@@ -46,20 +44,21 @@ namespace DumbSync
 		auto job = new TranscodeJob (pair.first, pair.second, this);
 		RunningJobs_ << job;
 		connect (job,
-				SIGNAL (done (bool)),
+				SIGNAL (done (TranscodeJob*, bool)),
 				this,
-				SLOT (handleDone (bool)));
+				SLOT (handleDone (TranscodeJob*, bool)));
 	}
 
-	void TranscodeManager::handleDone (bool done)
+	void TranscodeManager::handleDone (TranscodeJob *job, bool success)
 	{
-		qDebug () << Q_FUNC_INFO << done;
 		if (!Queue_.isEmpty ())
 		{
 			const auto& pair = Queue_.takeFirst ();
 			EnqueueJob (pair);
 		}
+
+		if (success)
+			emit fileReady (job->GetOrigPath (), job->GetTranscodedPath (), job->GetTargetPattern ());
 	}
-}
 }
 }

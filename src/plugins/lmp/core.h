@@ -30,6 +30,7 @@ namespace LMP
 	class LocalCollection;
 	class LocalFileResolver;
 	class PlaylistManager;
+	class SyncManager;
 
 	class Core : public QObject
 	{
@@ -40,6 +41,7 @@ namespace LMP
 		LocalFileResolver *Resolver_;
 		LocalCollection *Collection_;
 		PlaylistManager *PLManager_;
+		SyncManager *SyncManager_;
 
 		QObjectList SyncPlugins_;
 
@@ -60,6 +62,7 @@ namespace LMP
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;
 		PlaylistManager* GetPlaylistManager () const;
+		SyncManager* GetSyncManager () const;
 	public slots:
 		void rescan ();
 	signals:

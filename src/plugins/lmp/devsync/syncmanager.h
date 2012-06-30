@@ -19,19 +19,36 @@
 #pragma once
 
 #include <QObject>
+#include <QMap>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
-	class CopyManager : public QObject
+	class ISyncPlugin;
+	class TranscodeManager;
+	class CopyManager;
+	struct TranscodingParams;
+
+	class SyncManager : public QObject
 	{
 		Q_OBJECT
+
+		TranscodeManager *Transcoder_;
+		QMap<QString, CopyManager*> Mount2Copiers_;
+
+		struct SyncTo
+		{
+			ISyncPlugin *Syncer_;
+			QString MountPath_;
+		};
+		QMap<QString, SyncTo> Source2Params_;
 	public:
-		CopyManager (QObject* = 0);
+		SyncManager (QObject* = 0);
+
+		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
+	private slots:
+		void handleFileTranscoded (const QString& from, const QString&, QString);
 	};
-}
 }
 }

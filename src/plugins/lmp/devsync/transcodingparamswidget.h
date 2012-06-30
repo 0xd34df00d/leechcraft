@@ -18,23 +18,24 @@
 
 #pragma once
 
-#include <QString>
+#include <QWidget>
+#include "ui_transcodingparamswidget.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
-	struct TranscodingParams
+	struct TranscodingParams;
+
+	class TranscodingParamsWidget : public QWidget
 	{
-		QString FileMask_;
+		Q_OBJECT
 
-		QString Format_;
-		int Quality_;
+		Ui::TranscodingParamsWidget Ui_;
+	public:
+		TranscodingParamsWidget (QWidget* = 0);
 
-		int NumThreads_;
+		TranscodingParams GetParams () const;
 	};
-}
 }
 }

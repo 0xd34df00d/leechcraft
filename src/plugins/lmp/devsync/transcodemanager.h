@@ -16,18 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "copymanager.h"
+#pragma once
+
+#include <QObject>
+#include <QPair>
+#include "transcodingparams.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
-	CopyManager::CopyManager (QObject *parent)
-	: QObject (parent)
+	class TranscodeJob;
+
+	class TranscodeManager : public QObject
 	{
-	}
-}
+		Q_OBJECT
+
+		QList<QPair<QString, TranscodingParams>> Queue_;
+
+		QList<TranscodeJob*> RunningJobs_;
+	public:
+		TranscodeManager (QObject* = 0);
+
+		void Enqueue (const QStringList&, const TranscodingParams&);
+	private:
+		void EnqueueJob (const QPair<QString, TranscodingParams>&);
+	private slots:
+		void handleDone (TranscodeJob*, bool);
+	signals:
+		void fileReady (const QString& origPath,
+				const QString& transcodedPath, const QString& pattern);
+	};
 }
 }

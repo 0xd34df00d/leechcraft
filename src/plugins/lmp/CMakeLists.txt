@@ -73,49 +73,16 @@ SET (SRCS
 	biopropproxy.cpp
 	audiopropswidget.cpp
 	devicesbrowserwidget.cpp
-	devicesuploadmodel.cpp
+	devsync/copymanager.cpp
+	devsync/devicesuploadmodel.cpp
+	devsync/syncmanager.cpp
+	devsync/transcodejob.cpp
+	devsync/transcodemanager.cpp
+	devsync/transcodingparamswidget.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
 	playlistparsers/xspf.cpp
-	)
-SET (HEADERS
-	lmp.h
-	xmlsettingsmanager.h
-	playertab.h
-	player.h
-	core.h
-	mediainfo.h
-	localfileresolver.h
-	playlistdelegate.h
-	localcollection.h
-	localcollectionstorage.h
-	util.h
-	collectiontypes.h
-	collectiondelegate.h
-	nowplayingwidget.h
-	staticplaylistmanager.h
-	playlistmanager.h
-	artistsinfodisplay.h
-	albumartmanager.h
-	lmpsystemtrayicon.h
-	fsbrowserwidget.h
-	fsmodel.h
-	rootpathsettingsmanager.h
-	localcollectionwatcher.h
-	recommendationswidget.h
-	radiowidget.h
-	releaseswidget.h
-	playlistundocommand.h
-	biowidget.h
-	biopropproxy.h
-	audiopropswidget.h
-	devicesbrowserwidget.h
-	devicesuploadmodel.h
-	playlistparsers/playlistfactory.h
-	playlistparsers/m3u.h
-	playlistparsers/pls.h
-	playlistparsers/xspf.h
 	)
 SET (FORMS
 	playertab.ui
@@ -127,12 +94,10 @@ SET (FORMS
 	biowidget.ui
 	audiopropswidget.ui
 	devicesbrowserwidget.ui
+	devsync/transcodingparamswidget.ui
 	)
 SET (RESOURCES resources.qrc)
 CreateTrVars ("lmp" "en;es;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
@@ -147,7 +112,6 @@ ADD_CUSTOM_COMMAND (OUTPUT
 ADD_LIBRARY (leechcraft_lmp SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)

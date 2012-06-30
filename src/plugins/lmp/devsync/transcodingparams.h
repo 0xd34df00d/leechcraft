@@ -16,27 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "syncmanager.h"
-#include "copymanager.h"
-#include "transcodemanager.h"
+#pragma once
+
+#include <QString>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
-	SyncManager::SyncManager (QObject *parent)
-	: QObject (parent)
-	, Transcoder_ (new TranscodeManager (this))
-	, Copier_ (new CopyManager (this))
+	struct TranscodingParams
 	{
-	}
+		QString FilePattern_;
 
-	void SyncManager::AddFiles (const QStringList& files, const TranscodingParams& params)
-	{
-		Transcoder_->Enqueue (files, params);
-	}
-}
+		QString Format_;
+		int Quality_;
+
+		int NumThreads_;
+	};
 }
 }

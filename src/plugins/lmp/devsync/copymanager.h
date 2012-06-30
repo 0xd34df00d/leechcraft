@@ -18,27 +18,38 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_dumbsyncparamswidget.h"
+#include <QObject>
+#include <QFile>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
-	struct TranscodingParams;
+	class ISyncPlugin;
 
-	class DumbSyncParamsWidget : public QWidget
+	class CopyManager : public QObject
 	{
 		Q_OBJECT
-
-		Ui::DumbSyncParamsWidget Ui_;
 	public:
-		DumbSyncParamsWidget (QWidget* = 0);
+		struct CopyJob
+		{
+			ISyncPlugin *Syncer_;
+			QString From_;
+			QString MountPoint_;
+			QString Filename_;
+		};
+	private:
+		QList<CopyJob> Queue_;
+		bool IsRunning_;
+	public:
+		CopyManager (QObject* = 0);
 
-		TranscodingParams GetParams () const;
+		void Copy (const CopyJob&);
+	private:
+		void StartJob (const CopyJob&);
+	private slots:
+		void handleUploadFinished (const QString& localPath,
+				QFile::FileError error, const QString& errorStr);
 	};
-}
 }
 }

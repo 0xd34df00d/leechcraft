@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QtPlugin>
+#include <QFile>
 
 namespace LeechCraft
 {
@@ -36,13 +37,17 @@ namespace LMP
 	public:
 		virtual ~ISyncPlugin () {}
 
+		virtual QObject* GetObject () = 0;
+
 		virtual QString GetSyncSystemName () const = 0;
 
 		virtual SyncConfLevel CouldSync (const QString& path) = 0;
 
-		virtual QWidget* MakeSyncParamsWidget () = 0;
-
-		virtual void Upload (const QStringList&, QWidget*) = 0;
+		virtual void Upload (const QString& localPath,
+				const QString& to, const QString& relPath) = 0;
+	protected:
+		virtual void uploadFinished (const QString& localPath,
+				QFile::FileError error, const QString& errorStr) = 0;
 	};
 }
 }

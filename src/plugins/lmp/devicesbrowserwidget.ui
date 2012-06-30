@@ -72,9 +72,16 @@
      </widget>
      <widget class="QWidget" name="UpOptsTab_">
       <attribute name="title">
-       <string>Upload options</string>
+       <string>Transcoding options</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3"/>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="margin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="LeechCraft::LMP::TranscodingParamsWidget" name="TranscodingOpts_" native="true"/>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
@@ -93,6 +100,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LeechCraft::LMP::TranscodingParamsWidget</class>
+   <extends>QWidget</extends>
+   <header>devsync/transcodingparamswidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -43,8 +43,6 @@ namespace DumbSync
 				IPlugin2
 				LeechCraft::LMP::ILMPPlugin
 				LeechCraft::LMP::ISyncPlugin)
-
-		SyncManager *SyncMgr_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -59,10 +57,14 @@ namespace DumbSync
 
 		void SetLMPProxy (ILMPProxy*);
 
+		QObject* GetObject ();
 		QString GetSyncSystemName () const;
 		SyncConfLevel CouldSync (const QString&);
-		QWidget* MakeSyncParamsWidget ();
-		void Upload (const QStringList&, QWidget*);
+		void Upload (const QString& localPath, const QString& to, const QString& relPath);
+	private slots:
+		void handleCopyFinished ();
+	signals:
+		void uploadFinished (const QString&, QFile::FileError, const QString&);
 	};
 }
 }

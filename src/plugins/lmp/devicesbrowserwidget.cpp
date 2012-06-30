@@ -25,8 +25,10 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/isyncplugin.h>
 #include "core.h"
-#include "devicesuploadmodel.h"
 #include "localcollection.h"
+#include "devsync/devicesuploadmodel.h"
+#include "devsync/syncmanager.h"
+#include "devsync/transcodingparams.h"
 
 namespace LeechCraft
 {
@@ -116,13 +118,21 @@ namespace LMP
 		if (!CurrentSyncer_)
 			return;
 
+		const int idx = Ui_.DevicesSelector_->currentIndex ();
+		if (idx < 0)
+			return;
+
+		const auto& to = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
+		if (to.isEmpty ())
+			return;
+
 		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
 		QStringList paths;
 		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
 				[] (const QModelIndex& idx) { return idx.data (LocalCollection::Role::TrackPath).toString (); });
 		paths.removeAll (QString ());
 
-		CurrentSyncer_->Upload (paths, Ui_.UpOptsTab_->layout ()->itemAt (0)->widget ());
+		Core::Instance ().GetSyncManager ()->AddFiles (CurrentSyncer_, to, paths, Ui_.TranscodingOpts_->GetParams ());
 	}
 
 	void DevicesBrowserWidget::on_DevicesSelector__activated (int idx)
@@ -186,16 +196,6 @@ namespace LMP
 
 			CurrentSyncer_ = suitables.value (items.indexOf (name));
 		}
-
-		if (!CurrentSyncer_)
-			return;
-
-		auto lay = Ui_.UpOptsTab_->layout ();
-		while (lay->count ())
-			lay->removeItem (lay->itemAt (0));
-
-		if (QWidget *w = CurrentSyncer_->MakeSyncParamsWidget ())
-			lay->addWidget (w);
 	}
 
 	void DevicesBrowserWidget::on_MountButton__released ()

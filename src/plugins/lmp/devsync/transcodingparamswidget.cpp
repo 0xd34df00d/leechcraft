@@ -16,31 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
+#include "transcodingparamswidget.h"
+#include <QThread>
+#include "transcodingparams.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
-	class TranscodeManager;
-	class CopyManager;
-	struct TranscodingParams;
-
-	class SyncManager : public QObject
+	TranscodingParamsWidget::TranscodingParamsWidget (QWidget *parent)
+	: QWidget (parent)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
 
-		TranscodeManager *Transcoder_;
-		CopyManager *Copier_;
-	public:
-		SyncManager (QObject* = 0);
+		const int idealThreads = QThread::idealThreadCount ();
+		if (idealThreads > 0)
+		{
+			Ui_.ThreadsSlider_->setMaximum (idealThreads * 2);
+			Ui_.ThreadsSlider_->setValue (idealThreads > 1 ? idealThreads - 1 : 1);
+		}
+		else
+			Ui_.ThreadsSlider_->setMaximum (4);
+	}
 
-		void AddFiles (const QStringList&, const TranscodingParams&);
-	};
-}
+	TranscodingParams TranscodingParamsWidget::GetParams () const
+	{
+		return
+		{
+			Ui_.FilenameMask_->text (),
+			Ui_.TranscodingFormat_->currentText (),
+			Ui_.QualitySlider_->value (),
+			Ui_.ThreadsSlider_->value ()
+		};
+	}
 }
 }

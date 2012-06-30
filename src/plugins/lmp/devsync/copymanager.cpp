@@ -16,41 +16,53 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "dumbsyncparamswidget.h"
-#include <QThread>
-#include "transcodingparams.h"
+#include "copymanager.h"
+#include <QtDebug>
+#include "interfaces/lmp/isyncplugin.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
-	DumbSyncParamsWidget::DumbSyncParamsWidget (QWidget *parent)
-	: QWidget (parent)
+	CopyManager::CopyManager (QObject *parent)
+	: QObject (parent)
+	, IsRunning_ (false)
 	{
-		Ui_.setupUi (this);
+	}
 
-		const int idealThreads = QThread::idealThreadCount ();
-		if (idealThreads > 0)
-		{
-			Ui_.ThreadsSlider_->setMaximum (idealThreads * 2);
-			Ui_.ThreadsSlider_->setValue (idealThreads > 1 ? idealThreads - 1 : 1);
-		}
+	void CopyManager::Copy (const CopyJob& job)
+	{
+		if (IsRunning_)
+			Queue_ << job;
 		else
-			Ui_.ThreadsSlider_->setMaximum (4);
+			StartJob (job);
 	}
 
-	TranscodingParams DumbSyncParamsWidget::GetParams () const
+	void CopyManager::StartJob (const CopyManager::CopyJob& job)
 	{
-		return
-		{
-			Ui_.FilenameMask_->text (),
-			Ui_.TranscodingFormat_->currentText (),
-			Ui_.QualitySlider_->value (),
-			Ui_.ThreadsSlider_->value ()
-		};
+		qDebug () << Q_FUNC_INFO
+				<< "copying"
+				<< job.From_
+				<< "to"
+				<< job.MountPoint_
+				<< job.Filename_;
+
+		IsRunning_ = true;
+
+		connect (job.Syncer_->GetObject (),
+				SIGNAL (uploadFinished (QString, QFile::FileError, QString)),
+				this,
+				SLOT (handleUploadFinished (QString, QFile::FileError, QString)),
+				Qt::UniqueConnection);
+
+		job.Syncer_->Upload (job.From_, job.MountPoint_, job.Filename_);
 	}
-}
+
+	void CopyManager::handleUploadFinished (const QString& localPath, QFile::FileError error, const QString& errorStr)
+	{
+		IsRunning_ = false;
+		if (!Queue_.isEmpty ())
+			StartJob (Queue_.takeFirst ());
+	}
 }
 }

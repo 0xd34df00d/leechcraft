@@ -22,6 +22,7 @@
 #include "localcollection.h"
 #include "xmlsettingsmanager.h"
 #include "playlistmanager.h"
+#include "devsync/syncmanager.h"
 #include "interfaces/lmp/ilmpplugin.h"
 #include "interfaces/lmp/isyncplugin.h"
 
@@ -33,6 +34,7 @@ namespace LMP
 	: Resolver_ (new LocalFileResolver)
 	, Collection_ (new LocalCollection)
 	, PLManager_ (new PlaylistManager)
+	, SyncManager_ (new SyncManager)
 	{
 	}
 
@@ -99,6 +101,11 @@ namespace LMP
 	PlaylistManager* Core::GetPlaylistManager () const
 	{
 		return PLManager_;
+	}
+
+	SyncManager* Core::GetSyncManager () const
+	{
+		return SyncManager_;
 	}
 
 	void Core::rescan ()
