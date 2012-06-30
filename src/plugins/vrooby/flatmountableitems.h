@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QAbstractItemModel>
+#include <util/models/flattenfiltermodel.h>
 #include <interfaces/iremovabledevmanager.h>
 
 class QStandardItemModel;
@@ -29,7 +30,7 @@ namespace LeechCraft
 {
 namespace Vrooby
 {
-	class FlatMountableItems : public QAbstractItemModel
+	class FlatMountableItems : public Util::FlattenFilterModel
 	{
 		Q_OBJECT
 
@@ -44,17 +45,9 @@ namespace Vrooby
 	public:
 		FlatMountableItems (QObject* = 0);
 
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex& parent = QModelIndex()) const;
-		int columnCount (const QModelIndex& parent = QModelIndex()) const;
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
-
-		void SetSource (QAbstractItemModel*);
-	private slots:
-		void handleDataChanged (const QModelIndex&, const QModelIndex&);
-		void handleRowsInserted (const QModelIndex&, int, int);
-		void handleRowsAboutRemoved (const QModelIndex&, int, int);
+	protected:
+		bool IsIndexAccepted (const QModelIndex&) const;
 	};
 }
 }

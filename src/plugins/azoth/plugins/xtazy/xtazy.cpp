@@ -90,7 +90,8 @@ namespace Xtazy
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/xtazy/resources/images/xtazy.svg");
+		static QIcon icon (":/plugins/azoth/plugins/xtazy/resources/images/xtazy.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

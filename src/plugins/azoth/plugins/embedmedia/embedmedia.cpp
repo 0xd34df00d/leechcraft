@@ -45,15 +45,15 @@ namespace EmbedMedia
 			return;
 		}
 
-		QTextStream content (&embedderJS); 
+		QTextStream content (&embedderJS);
 
-		content.setCodec (QTextCodec::codecForName ("UTF-8")); 
+		content.setCodec (QTextCodec::codecForName ("UTF-8"));
 		ScriptContent_ = content.readAll ();
 	}
 
 	void Plugin::SecondInit ()
 	{
-	}	
+	}
 
 	QByteArray Plugin::GetUniqueID () const
 	{
@@ -86,7 +86,7 @@ namespace EmbedMedia
 		return result;
 	}
 
-	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr, 
+	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr,
 			QObject*, QObject*, QWebView *webView)
 	{
 		webView->page ()->mainFrame ()->evaluateJavaScript (ScriptContent_);

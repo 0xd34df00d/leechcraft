@@ -30,17 +30,22 @@ namespace FXB
 {
 	class Document : public QObject
 				  , public DocumentAdapter
+				  , public IHaveTOC
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument)
+		Q_INTERFACES (LeechCraft::Monocle::IDocument LeechCraft::Monocle::IHaveTOC)
 
 		DocumentInfo Info_;
+		TOCEntryLevel_t TOC_;
 	public:
 		Document (const QString&, QObject* = 0);
 
 		QObject* GetObject ();
-
 		DocumentInfo GetDocumentInfo () const;
+
+		TOCEntryLevel_t GetTOC ();
+
+		void RequestNavigation (int);
 	signals:
 		void navigateRequested (const QString&, int pageNum, double x, double y);
 	};

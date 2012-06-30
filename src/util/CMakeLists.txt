@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 SET (SRCS
 	gui/flowlayout.cpp
 	gui/selectablebrowser.cpp
+	models/flattenfiltermodel.cpp
 	models/flattofoldersproxymodel.cpp
 	models/listmodel.cpp
 	models/mergemodel.cpp
@@ -41,6 +42,7 @@ SET (SRCS
 SET (HEADERS
 	gui/flowlayout.h
 	gui/selectablebrowser.h
+	models/flattenfiltermodel.h
 	models/flattofoldersproxymodel.h
 	models/listmodel.h
 	models/mergemodel.h

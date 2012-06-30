@@ -67,7 +67,8 @@ namespace KBSwitch
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/kbswitch/resources/images/kbswitch.svg");
+		static QIcon icon (":/kbswitch/resources/images/kbswitch.svg");
+		return icon;
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const

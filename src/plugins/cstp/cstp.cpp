@@ -131,7 +131,8 @@ namespace CSTP
 
 	QIcon CSTP::GetIcon () const
 	{
-		return QIcon (":/plugins/cstp/resources/images/cstp.svg");
+		static QIcon icon (":/plugins/cstp/resources/images/cstp.svg");
+		return icon;
 	}
 
 	qint64 CSTP::GetDownloadSpeed () const

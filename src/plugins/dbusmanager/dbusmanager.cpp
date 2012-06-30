@@ -86,7 +86,8 @@ namespace LeechCraft
 
 			QIcon DBusManager::GetIcon () const
 			{
-				return QIcon (":/resources/images/dbusmanager.svg");
+				static QIcon icon (":/resources/images/dbusmanager.svg");
+				return icon;
 			}
 
 			std::shared_ptr<Util::XmlSettingsDialog> DBusManager::GetSettingsDialog () const

@@ -27,8 +27,7 @@ namespace LeechCraft
 namespace Vrooby
 {
 	FlatMountableItems::FlatMountableItems (QObject *parent)
-	: QAbstractItemModel (parent)
-	, Source_ (0)
+	: Util::FlattenFilterModel (parent)
 	{
 		QHash<int, QByteArray> names;
 		names [DeviceRoles::VisibleName] = "devName";
@@ -41,29 +40,6 @@ namespace Vrooby
 		names [CustomRoles::MountButtonIcon] = "mountButtonIcon";
 		names [CustomRoles::MountedAt] = "mountedAt";
 		setRoleNames (names);
-	}
-
-	QModelIndex FlatMountableItems::index (int row, int column, const QModelIndex& parent) const
-	{
-		if (parent.isValid ())
-			return QModelIndex ();
-
-		return createIndex (row, column);
-	}
-
-	QModelIndex FlatMountableItems::parent (const QModelIndex&) const
-	{
-		return QModelIndex ();
-	}
-
-	int FlatMountableItems::rowCount (const QModelIndex& parent) const
-	{
-		return parent.isValid () ? 0 : SourceIndexes_.size ();
-	}
-
-	int FlatMountableItems::columnCount (const QModelIndex& parent) const
-	{
-		return parent.isValid () ? 0 : 1;
 	}
 
 	QVariant FlatMountableItems::data (const QModelIndex& index, int role) const
@@ -88,94 +64,13 @@ namespace Vrooby
 					tr ("Mounted at %1").arg (mounts.join ("; "));
 		}
 		default:
-			return SourceIndexes_.value (index.row ()).data (role);
+			return Util::FlattenFilterModel::data (index, role);
 		}
 	}
 
-	void FlatMountableItems::SetSource (QAbstractItemModel *model)
+	bool FlatMountableItems::IsIndexAccepted (const QModelIndex& child) const
 	{
-		if (Source_)
-		{
-			disconnect (Source_,
-					SIGNAL (rowsInserted (QModelIndex, int, int)),
-					this,
-					SLOT (handleRowsInserted (QModelIndex, int, int)));
-			disconnect (Source_,
-					SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
-					this,
-					SLOT (handleRowsAboutRemoved (QModelIndex, int, int)));
-			disconnect (Source_,
-					SIGNAL (dataChanged (QModelIndex, QModelIndex)),
-					this,
-					SLOT (handleDataChanged (QModelIndex, QModelIndex)));
-		}
-
-		SourceIndexes_.clear ();
-		Source_ = model;
-		reset ();
-		connect (Source_,
-				SIGNAL (rowsInserted (QModelIndex, int, int)),
-				this,
-				SLOT (handleRowsInserted (QModelIndex, int, int)));
-		connect (Source_,
-				SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
-				this,
-				SLOT (handleRowsAboutRemoved (QModelIndex, int, int)));
-		connect (Source_,
-				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (handleDataChanged (QModelIndex, QModelIndex)));
-	}
-
-	void FlatMountableItems::handleDataChanged (const QModelIndex& top, const QModelIndex& bottom)
-	{
-		const auto& parent = top.parent ();
-		for (int i = top.row (); i <= bottom.row (); ++i)
-		{
-			const auto& child = Source_->index (i, 0, parent);
-			const int pos = SourceIndexes_.indexOf (child);
-			if (pos < 0)
-				continue;
-
-			const auto& ourIdx = index (pos, 0);
-			emit dataChanged (ourIdx, ourIdx);
-		}
-	}
-
-	void FlatMountableItems::handleRowsInserted (const QModelIndex& parent, int start, int end)
-	{
-		for (int i = start; i <= end; ++i)
-		{
-			const auto& child = Source_->index (i, 0, parent);
-			if (!child.data (DeviceRoles::IsMountable).toBool ())
-				continue;
-
-			beginInsertRows (QModelIndex (), SourceIndexes_.size (), SourceIndexes_.size ());
-			SourceIndexes_ << child;
-			endInsertRows ();
-
-			if (int rc = Source_->rowCount (child))
-				handleRowsInserted (child, 0, rc - 1);
-		}
-	}
-
-	void FlatMountableItems::handleRowsAboutRemoved (const QModelIndex& parent, int start, int end)
-	{
-		for (int i = start; i <= end; ++i)
-		{
-			const auto& child = Source_->index (i, 0, parent);
-			const int pos = SourceIndexes_.indexOf (child);
-
-			if (pos >= 0)
-			{
-				beginRemoveRows (QModelIndex (), pos, pos);
-				SourceIndexes_.removeAt (pos);
-				endRemoveRows ();
-			}
-
-			if (int rc = Source_->rowCount (child))
-				handleRowsAboutRemoved (child, 0, rc - 1);
-		}
+		return child.data (DeviceRoles::IsMountable).toBool ();
 	}
 }
 }

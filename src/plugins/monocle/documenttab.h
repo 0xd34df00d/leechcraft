@@ -63,6 +63,12 @@ namespace Monocle
 			OnePage,
 			TwoPages
 		} LayMode_;
+
+		enum class MouseMode
+		{
+			Move,
+			Select
+		} MouseMode_;
 	public:
 		DocumentTab (const TabClassInfo&, QObject*);
 
@@ -78,16 +84,19 @@ namespace Monocle
 		void RecoverState (const QByteArray&);
 
 		void ReloadDoc (const QString&);
+
+		bool SetDoc (const QString&);
 	private:
 		void SetupToolbar ();
 
 		double GetCurrentScale () const;
 
-		bool SetDoc (const QString&);
 		QPoint GetViewportCenter () const;
 		int GetCurrentPage () const;
 		void SetCurrentPage (int);
 		void Relayout (double);
+
+		void ClearViewActions ();
 	private slots:
 		void handleNavigateRequested (const QString&, int, double, double);
 
@@ -102,6 +111,12 @@ namespace Monocle
 
 		void showOnePage ();
 		void showTwoPages ();
+
+		void setMoveMode (bool);
+		void setSelectionMode (bool);
+
+		void handleCopyAsImage ();
+		void handleCopyAsText ();
 
 		void delayedCenterOn (const QPoint&);
 

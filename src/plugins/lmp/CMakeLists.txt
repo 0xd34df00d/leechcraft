@@ -72,6 +72,8 @@ SET (SRCS
 	biowidget.cpp
 	biopropproxy.cpp
 	audiopropswidget.cpp
+	devicesbrowserwidget.cpp
+	devicesuploadmodel.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
@@ -108,6 +110,8 @@ SET (HEADERS
 	biowidget.h
 	biopropproxy.h
 	audiopropswidget.h
+	devicesbrowserwidget.h
+	devicesuploadmodel.h
 	playlistparsers/playlistfactory.h
 	playlistparsers/m3u.h
 	playlistparsers/pls.h
@@ -122,6 +126,7 @@ SET (FORMS
 	releaseswidget.ui
 	biowidget.ui
 	audiopropswidget.ui
+	devicesbrowserwidget.ui
 	)
 SET (RESOURCES resources.qrc)
 CreateTrVars ("lmp" "en;es;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
@@ -161,3 +166,10 @@ TARGET_LINK_LIBRARIES (leechcraft_lmp
 INSTALL (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES lmpsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+INSTALL (DIRECTORY interfaces DESTINATION include/leechcraft)
+
+OPTION (ENABLE_LMP_DUMBSYNC "Enable DumbSync, plugin for syncing with Flash-like media players" ON)
+
+IF (ENABLE_LMP_DUMBSYNC)
+	ADD_SUBDIRECTORY (plugins/dumbsync)
+ENDIF (ENABLE_LMP_DUMBSYNC)

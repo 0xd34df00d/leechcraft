@@ -346,7 +346,8 @@ namespace Aggregator
 
 	QIcon Aggregator::GetIcon () const
 	{
-		return QIcon (":/resources/images/aggregator.svg");
+		static QIcon icon (":/resources/images/aggregator.svg");
+		return icon;
 	}
 
 	TabClasses_t Aggregator::GetTabClasses () const

@@ -50,10 +50,11 @@ namespace FXB
 			return;
 		}
 
-		FB2Converter conv (doc);
+		FB2Converter conv (this, doc);
 		auto textDoc = conv.GetResult ();
 		SetDocument (textDoc);
 		Info_ = conv.GetDocumentInfo ();
+		TOC_ = conv.GetTOC ();
 	}
 
 	QObject* Document::GetObject ()
@@ -64,6 +65,16 @@ namespace FXB
 	DocumentInfo Document::GetDocumentInfo () const
 	{
 		return Info_;
+	}
+
+	TOCEntryLevel_t Document::GetTOC ()
+	{
+		return TOC_;
+	}
+
+	void Document::RequestNavigation (int page)
+	{
+		emit navigateRequested (QString (), page, 0, 0.4);
 	}
 }
 }

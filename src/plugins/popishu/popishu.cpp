@@ -105,16 +105,17 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon (":/resources/images/popishu.svg");
+				static QIcon icon (":/resources/images/popishu.svg");
+				return icon;
 			}
-			
+
 			TabClasses_t Plugin::GetTabClasses () const
 			{
 				TabClasses_t result;
 				result << Core::Instance ().GetTabClass ();
 				return result;
 			}
-			
+
 			void Plugin::TabOpenRequested (const QByteArray& tabClass)
 			{
 				if (tabClass == "Popishu")

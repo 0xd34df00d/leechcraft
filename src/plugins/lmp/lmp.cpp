@@ -112,6 +112,8 @@ namespace LMP
 		initShortcut (SLOT (previousTrack ()), QString ("Meta+V"));
 		initShortcut (SLOT (nextTrack ()), QString ("Meta+B"));
 		initShortcut (SLOT (stop ()), QString ("Meta+X"));
+
+		PlayerTab_->InitWithOtherPlugins ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -135,7 +137,8 @@ namespace LMP
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/lmp/resources/images/lmp.svg");
+		static QIcon icon (":/lmp/resources/images/lmp.svg");
+		return icon;
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
@@ -237,6 +240,19 @@ namespace LMP
 						<< "unknown context"
 						<< recInfo.Data_;
 		}
+	}
+
+	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.LMP.General";
+		result << "org.LeechCraft.LMP.CollectionSync";
+		return result;
+	}
+
+	void Plugin::AddPlugin (QObject *plugin)
+	{
+		Core::Instance ().AddPlugin (plugin);
 	}
 
 	void Plugin::handleFullRaiseRequested ()

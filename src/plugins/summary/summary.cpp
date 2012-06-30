@@ -104,7 +104,8 @@ namespace Summary
 
 	QIcon Summary::GetIcon () const
 	{
-		return QIcon (":/plugins/summary/resources/images/summary.svg");
+		static QIcon icon (":/plugins/summary/resources/images/summary.svg");
+		return icon;
 	}
 
 	QStringList Summary::Provides () const

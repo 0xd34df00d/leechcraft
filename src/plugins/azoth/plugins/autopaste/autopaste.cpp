@@ -73,7 +73,8 @@ namespace Autopaste
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/autopaste/resources/images/autopaste.svg");
+		static QIcon icon (":/plugins/azoth/plugins/autopaste/resources/images/autopaste.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -94,13 +95,13 @@ namespace Autopaste
 		req.setHeader (QNetworkRequest::ContentTypeHeader,
 				"application/x-www-form-urlencoded");
 		req.setRawHeader ("Referer", "http://codepad.org");
-		
+
 		QByteArray data = "lang=Plain+Text&code=";
 		data += text.toUtf8 ().toPercentEncoding ();
 		data += "&private=True&submit=Submit";
 
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
-		
+
 		QNetworkReply *reply = Proxy_->GetNetworkAccessManager ()->post (req, data);
 		connect (reply,
 				SIGNAL (metaDataChanged ()),

@@ -41,7 +41,7 @@ namespace HiLi
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothhilisettings.xml");
-		
+
 		XmlSettingsManager::Instance ().RegisterObject ("HighlightRegexps",
 				this, "handleRegexpsChanged");
 		handleRegexpsChanged ();
@@ -49,7 +49,7 @@ namespace HiLi
 
 	void Plugin::SecondInit ()
 	{
-	}	
+	}
 
 	QByteArray Plugin::GetUniqueID () const
 	{
@@ -72,7 +72,8 @@ namespace HiLi
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/hili/resources/images/hili.svg");
+		static QIcon icon (":/plugins/azoth/plugins/hili/resources/images/hili.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -81,12 +82,12 @@ namespace HiLi
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
 	}
-	
+
 	void Plugin::hookIsHighlightMessage (IHookProxy_ptr proxy, QObject *msgObj)
 	{
 		if (RegexpsCache_.isEmpty ())
@@ -95,7 +96,7 @@ namespace HiLi
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (msg->GetMessageType () != IMessage::MTMUCMessage)
 			return;
-		
+
 		bool isHighlight = false;
 		const QString& body = msg->GetBody ();
 		if (body.size () > 1024)
@@ -119,7 +120,7 @@ namespace HiLi
 			proxy->SetReturnValue (true);
 		}
 	}
-	
+
 	void Plugin::handleRegexpsChanged ()
 	{
 		RegexpsCache_.clear ();

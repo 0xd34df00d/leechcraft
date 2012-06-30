@@ -68,7 +68,8 @@ namespace NewLife
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/resources/images/newlife.svg");
+		static QIcon icon (":/resources/images/newlife.svg");
+		return icon;
 	}
 
 	QStringList Plugin::Provides () const

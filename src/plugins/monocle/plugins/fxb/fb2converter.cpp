@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "fb2converter.h"
+#include "toclink.h"
 #include <functional>
 #include <memory>
 #include <QDomDocument>
@@ -35,12 +36,15 @@ namespace Monocle
 {
 namespace FXB
 {
-	FB2Converter::FB2Converter (const QDomDocument& fb2)
-	: FB2_ (fb2)
+	FB2Converter::FB2Converter (Document *doc, const QDomDocument& fb2)
+	: ParentDoc_ (doc)
+	, FB2_ (fb2)
 	, Result_ (new QTextDocument)
 	, Cursor_ (new QTextCursor (Result_))
 	, SectionLevel_ (0)
 	{
+		Result_->setPageSize (QSize (600, 800));
+
 		const auto& docElem = FB2_.documentElement ();
 		if (docElem.tagName () != "FictionBook")
 		{
@@ -98,6 +102,14 @@ namespace FXB
 
 		Handlers_ ["style"] = [this] (const QDomElement& p) { HandleParaWONL (p); };
 
+		TOCEntry entry =
+		{
+			ILink_ptr (),
+			"root",
+			TOCEntryLevel_t ()
+		};
+		CurrentTOCStack_.push (&entry);
+
 		auto elem = docElem.firstChildElement ();
 		while (!elem.isNull ())
 		{
@@ -109,6 +121,8 @@ namespace FXB
 
 			elem = elem.nextSiblingElement ();
 		}
+
+		TOC_ = entry.ChildLevel_;
 	}
 
 	FB2Converter::~FB2Converter ()
@@ -129,6 +143,11 @@ namespace FXB
 	DocumentInfo FB2Converter::GetDocumentInfo () const
 	{
 		return DocInfo_;
+	}
+
+	TOCEntryLevel_t FB2Converter::GetTOC () const
+	{
+		return TOC_;
 	}
 
 	void FB2Converter::HandleDescription (const QDomElement& elem)
@@ -180,12 +199,17 @@ namespace FXB
 	{
 		++SectionLevel_;
 
+		CurrentTOCStack_.top ()->ChildLevel_.append (TOCEntry ());
+		CurrentTOCStack_.push (&CurrentTOCStack_.top ()->ChildLevel_.last ());
+
 		auto child = tagElem.firstChildElement ();
 		while (!child.isNull ())
 		{
 			Handle (child);
 			child = child.nextSiblingElement ();
 		}
+
+		CurrentTOCStack_.pop ();
 
 		--SectionLevel_;
 	}
@@ -218,6 +242,15 @@ namespace FXB
 				Handlers_ ["p"] ({ child });
 
 				Cursor_->setCharFormat (origFmt);
+
+				const TOCEntry entry =
+				{
+					ILink_ptr (new TOCLink (ParentDoc_, Result_->pageCount () - 1)),
+					child.text (),
+					TOCEntryLevel_t ()
+				};
+				if (CurrentTOCStack_.top ()->Name_.isEmpty ())
+					*CurrentTOCStack_.top () = entry;
 			}
 
 			child = child.nextSiblingElement ();

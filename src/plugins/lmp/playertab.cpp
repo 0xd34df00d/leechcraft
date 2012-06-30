@@ -178,6 +178,11 @@ namespace LMP
 		return "LMP";
 	}
 
+	void PlayerTab::InitWithOtherPlugins ()
+	{
+		Ui_.DevicesBrowser_->InitializeDevices ();
+	}
+
 	void PlayerTab::SetupToolbar ()
 	{
 		QAction *previous = new QAction (tr ("Previous track"), this);

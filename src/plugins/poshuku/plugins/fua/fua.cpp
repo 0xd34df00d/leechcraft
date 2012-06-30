@@ -114,7 +114,8 @@ namespace Fua
 
 	QIcon FUA::GetIcon () const
 	{
-		return QIcon (":/resources/images/poshuku_fua.svg");
+		static QIcon icon (":/resources/images/poshuku_fua.svg");
+		return icon;
 	}
 
 	QStringList FUA::Provides () const

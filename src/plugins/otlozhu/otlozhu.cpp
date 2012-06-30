@@ -73,7 +73,8 @@ namespace Otlozhu
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/otlozhu/resources/images/otlozhu.svg");
+		static QIcon icon (":/otlozhu/resources/images/otlozhu.svg");
+		return icon;
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const

@@ -57,6 +57,11 @@ namespace Monocle
 		update ();
 	}
 
+	int PageGraphicsItem::GetPageNum () const
+	{
+		return PageNum_;
+	}
+
 	void PageGraphicsItem::paint (QPainter *painter,
 			const QStyleOptionGraphicsItem *option, QWidget *w)
 	{

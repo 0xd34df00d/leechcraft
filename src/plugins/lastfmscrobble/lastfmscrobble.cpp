@@ -88,7 +88,8 @@ namespace Lastfmscrobble
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/resources/images/lastfmscrobble.svg");
+		static QIcon icon (":/resources/images/lastfmscrobble.svg");
+		return icon;
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const

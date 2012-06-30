@@ -230,7 +230,8 @@ namespace Poshuku
 
 	QIcon Poshuku::GetIcon () const
 	{
-		return QIcon (":/resources/images/poshuku.svg");
+		static QIcon icon (":/resources/images/poshuku.svg");
+		return icon;
 	}
 
 	TabClasses_t Poshuku::GetTabClasses () const
