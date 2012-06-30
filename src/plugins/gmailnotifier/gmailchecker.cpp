@@ -30,24 +30,20 @@ namespace LeechCraft
 {
 namespace GmailNotifier
 {
-	GmailChecker::GmailChecker (ICoreProxy_ptr proxy, QObject *parent)
+	GmailChecker::GmailChecker (QObject *parent)
 	: QObject (parent)
 	, Reply_ (0)
 	, TimeOutTimer_ (new QTimer (this))
 	, Failed_ (false)
-	, Proxy_ (proxy)
 	{
+		Init ();
+
 		TimeOutTimer_->setInterval (60000);
 		TimeOutTimer_->setSingleShot (true);
 		connect (TimeOutTimer_,
 				SIGNAL (timeout ()),
 				this,
 				SLOT (timeOut ()));
-
-		connect (Proxy_->GetNetworkAccessManager (),
-				SIGNAL (authenticationRequired (QNetworkReply*, QAuthenticator*)),
-				this,
-				SLOT (httpAuthenticationRequired (QNetworkReply*, QAuthenticator*)));
 	}
 
 	void GmailChecker::SetAuthSettings (const QString& login, const QString& passwd)
@@ -58,9 +54,21 @@ namespace GmailNotifier
 		ReInit ();
 	}
 
+	void GmailChecker::Init ()
+	{
+		QNAM_ = new QNetworkAccessManager (this);
+		connect (QNAM_,
+				SIGNAL (authenticationRequired (QNetworkReply*, QAuthenticator*)),
+				this,
+				SLOT (httpAuthenticationRequired (QNetworkReply*, QAuthenticator*)));
+	}
+
 	void GmailChecker::ReInit ()
 	{
 		timeOut ();
+		QNAM_->deleteLater ();
+		QNAM_ = 0;
+		Init ();
 	}
 
 	void GmailChecker::checkNow ()
@@ -89,8 +97,7 @@ namespace GmailNotifier
 		Failed_ = false;
 		Data_.clear ();
 
-		Reply_ = Proxy_->GetNetworkAccessManager ()->
-				get (QNetworkRequest (QUrl ("https://mail.google.com/mail/feed/atom")));
+		Reply_ = QNAM_->get (QNetworkRequest (QUrl ("https://mail.google.com/mail/feed/atom")));
 		connect (Reply_,
 				SIGNAL (finished ()),
 				this,
