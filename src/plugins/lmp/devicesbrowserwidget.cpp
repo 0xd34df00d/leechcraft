@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "devicesbrowserwidget.h"
+#include <algorithm>
 #include <QMessageBox>
 #include <QInputDialog>
 #include <util/models/flattenfiltermodel.h>
