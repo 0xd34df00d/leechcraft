@@ -48,6 +48,8 @@ namespace LMP
 		void on_UploadButton__released ();
 		void on_DevicesSelector__activated (int);
 		void on_MountButton__released ();
+
+		void appendUpLog (QString);
 	};
 }
 }

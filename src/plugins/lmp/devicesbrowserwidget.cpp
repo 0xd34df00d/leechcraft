@@ -80,6 +80,11 @@ namespace LMP
 
 		DevUploadModel_->setSourceModel (Core::Instance ().GetLocalCollection ()->GetCollectionModel ());
 		Ui_.OurCollection_->setModel (DevUploadModel_);
+
+		connect (Core::Instance ().GetSyncManager (),
+				SIGNAL (uploadLog (QString)),
+				this,
+				SLOT (appendUpLog (QString)));
 	}
 
 	void DevicesBrowserWidget::InitializeDevices ()
@@ -132,6 +137,7 @@ namespace LMP
 				[] (const QModelIndex& idx) { return idx.data (LocalCollection::Role::TrackPath).toString (); });
 		paths.removeAll (QString ());
 
+		Ui_.UploadLog_->clear ();
 		Core::Instance ().GetSyncManager ()->AddFiles (CurrentSyncer_, to, paths, Ui_.TranscodingOpts_->GetParams ());
 	}
 
@@ -206,6 +212,12 @@ namespace LMP
 
 		const auto& id = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::DevID).toString ();
 		DevMgr_->MountDevice (id);
+	}
+
+	void DevicesBrowserWidget::appendUpLog (QString text)
+	{
+		text.prepend (QTime::currentTime ().toString ("[HH:mm:ss.zzz] "));
+		Ui_.UploadLog_->append ("<code>" + text + "</code>");
 	}
 }
 }
