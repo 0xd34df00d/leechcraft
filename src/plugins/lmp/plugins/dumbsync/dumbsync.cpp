@@ -18,6 +18,7 @@
 
 #include "dumbsync.h"
 #include <memory>
+#include <functional>
 #include <QIcon>
 #include <QFileInfo>
 #include <QDir>
@@ -123,12 +124,13 @@ namespace DumbSync
 				this,
 				SLOT (handleCopyFinished ()));
 
-		const auto& future = QtConcurrent::run ([target, localPath] ()
+		std::function<QFile_ptr (void)> copier = [target, localPath] ()
 				{
 					QFile_ptr file (new QFile (localPath));
 					file->copy (target);
 					return file;
-				});
+				};
+		const auto& future = QtConcurrent::run (copier);
 		watcher->setFuture (future);
 	}
 
