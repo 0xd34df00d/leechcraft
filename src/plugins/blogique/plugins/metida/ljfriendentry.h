@@ -20,9 +20,8 @@
 
 #include <memory>
 #include <QObject>
-#include <QSet>
-#include <interfaces/blogique/iprofile.h>
-#include "profiletypes.h"
+#include <QUrl>
+#include <QColor>
 
 namespace LeechCraft
 {
@@ -30,37 +29,34 @@ namespace Blogique
 {
 namespace Metida
 {
-	class LJFriendEntry;
-	class ProfileWidget;
-
-	class LJProfile : public QObject
-					, public IProfile
+	class LJFriendEntry : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IProfile);
 
-		QObject *ParentAccount_;
-		LJProfileData ProfileData_;
-		QSet<std::shared_ptr<LJFriendEntry>> Friends_;
+		QUrl AvatarUrl_;
+		QString FullName_;
+		QString UserName_;
+		int GroupMask_;
+		QColor BGColor_;
+		QColor FGColor_;
 	public:
-		LJProfile (QObject *parentAccount, QObject *parent = 0);
-		QWidget* GetProfileWidget ();
-		LJProfileData GetProfileData () const;
-		QObject* GetParentAccount () const;
+		LJFriendEntry (QObject *parent = 0);
 
-		void AddFriends (const QSet<std::shared_ptr<LJFriendEntry>>& friends);
-		QSet<std::shared_ptr<LJFriendEntry>> GetFriends () const;
-	private:
-		void SaveAvatar (QUrl url = QUrl ());
-
-	public slots:
-		void handleProfileUpdate (const LJProfileData& profile);
-	private slots:
-		void handleAvatarDownloadFinished ();
-
-	signals:
-		void profileUpdated ();
+		void SetAvatarUrl (const QUrl& url);
+		QUrl GetAvatarurl () const;
+		void SetFullName (const QString& fullName);
+		QString GetFullName () const;
+		void SetUserName (const QString& userName);
+		QString GetUserName () const;
+		void SetGroupMask (int groupmask);
+		int GetGroupMask () const;
+		void SetBGColor (const QString& name);
+		QColor GetBGColor () const;
+		void SetFGColor (const QString& name);
+		QColor GetFGColor () const;
 	};
+
+	uint qHash (const std::shared_ptr<LJFriendEntry>& fr);
 }
 }
 }

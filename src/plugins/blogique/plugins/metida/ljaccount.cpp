@@ -29,6 +29,7 @@
 #include "ljxmlrpc.h"
 #include "profilewidget.h"
 #include "utils.h"
+#include "ljfriendentry.h"
 
 namespace LeechCraft
 {
@@ -39,7 +40,7 @@ namespace Metida
 	LJAccount::LJAccount (const QString& name, QObject *parent)
 	: QObject (parent)
 	, ParentBloggingPlatform_ (qobject_cast<LJBloggingPlatform*> (parent))
-	, LJXmlRpc_ (new LJXmlRPC (this))
+	, LJXmlRpc_ (new LJXmlRPC (this, this))
 	, Name_ (name)
 	, IsValidated_ (false)
 	, LJProfile_ (std::make_shared<LJProfile> (this))
@@ -203,6 +204,11 @@ namespace Metida
 				SIGNAL (accountSettingsChanged ()),
 				ParentBloggingPlatform_,
 				SLOT (saveAccounts ()));
+	}
+
+	void LJAccount::AddFriends (const QSet<std::shared_ptr<LJFriendEntry>>& friends)
+	{
+		LJProfile_->AddFriends (friends);
 	}
 
 	void LJAccount::handleValidatingFinished (bool success)

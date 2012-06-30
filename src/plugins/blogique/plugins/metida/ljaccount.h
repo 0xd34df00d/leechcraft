@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <QObject>
+#include <QSet>
 #include <interfaces/blogique/iaccount.h>
 #include "profiletypes.h"
 
@@ -29,7 +30,7 @@ namespace Blogique
 {
 namespace Metida
 {
-
+	class LJFriendEntry;
 	class LJAccountConfigurationWidget;
 	class LJBloggingPlatform;
 	class LJXmlRPC;
@@ -69,10 +70,10 @@ namespace Metida
 		void Validate ();
 		void Init ();
 
+		void AddFriends (const QSet<std::shared_ptr<LJFriendEntry>>& friends);
 	public slots:
 		void handleValidatingFinished (bool success);
 		void handleXmlRpcError (int errorCode, const QString& msgInEng);
-
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();

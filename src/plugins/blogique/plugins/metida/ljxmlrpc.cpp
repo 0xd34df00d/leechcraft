@@ -25,6 +25,8 @@
 #include <QXmlQuery>
 #include <util/sysinfo.h>
 #include "profiletypes.h"
+#include "ljfriendentry.h"
+#include "ljaccount.h"
 
 namespace LeechCraft
 {
@@ -32,8 +34,9 @@ namespace Blogique
 {
 namespace Metida
 {
-	LJXmlRPC::LJXmlRPC (QObject *parent)
+	LJXmlRPC::LJXmlRPC (LJAccount *acc, QObject *parent)
 	: QObject (parent)
+	, Account_ (acc)
 	{
 	}
 
@@ -41,6 +44,9 @@ namespace Metida
 	{
 		ApiCallQueue_ << [login, password, this] (const QString& challenge)
 				{ ValidateAccountData (login, password, challenge); };
+		ApiCallQueue_ << [login, password, this] (const QString& challenge)
+				{ RequestFriendsInfo (login, password, challenge); };
+		//TODO get communities info via parsing page
 		GenerateChallenge ();
 	}
 
@@ -119,17 +125,23 @@ namespace Metida
 				SLOT (handleChallengeReplyFinished ()));
 	}
 
+	namespace
+	{
+		QString GetPassword (const QString& password, const QString& challenge)
+		{
+			const QByteArray passwordHash = QCryptographicHash::hash (password.toUtf8 (),
+					QCryptographicHash::Md5).toHex ();
+			return QCryptographicHash::hash ((challenge + passwordHash).toUtf8 (),
+				QCryptographicHash::Md5).toHex ();
+		}
+	}
+
 	void LJXmlRPC::ValidateAccountData (const QString& login,
 			const QString& password, const QString& challenge)
 	{
 		QDomDocument document ("ValidateRequest");
 		auto result = GetStartPart ("LJ.XMLRPC.login", document);
 		document.appendChild (result.first);
-		const QByteArray passwordHash = QCryptographicHash::hash (password.toUtf8 (),
-				QCryptographicHash::Md5).toHex ();
-
-		QString hpassword = QCryptographicHash::hash ((challenge + passwordHash).toUtf8 (),
-				QCryptographicHash::Md5).toHex ();
 		result.second.appendChild (GetMemberElement ("auth_method", "string",
 				"challenge", document));
 		result.second.appendChild (GetMemberElement ("auth_challenge", "string",
@@ -137,7 +149,7 @@ namespace Metida
 		result.second.appendChild (GetMemberElement ("username", "string",
 				login, document));
 		result.second.appendChild (GetMemberElement ("auth_response", "string",
-				hpassword, document));
+				GetPassword (password, challenge), document));
 		result.second.appendChild (GetMemberElement ("ver", "int",
 				"1", document));
 		//TODO
@@ -165,6 +177,52 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleValidateReplyFinished ()));
+	}
+
+	void LJXmlRPC::RequestFriendsInfo (const QString& login,
+			const QString& password, const QString& challenge)
+	{
+		QDomDocument document ("GetFriendsInfo");
+		auto result = GetStartPart ("LJ.XMLRPC.getfriends", document);
+		document.appendChild (result.first);
+
+		result.second.appendChild (GetMemberElement ("auth_method", "string",
+				"challenge", document));
+		result.second.appendChild (GetMemberElement ("auth_challenge", "string",
+				challenge, document));
+		result.second.appendChild (GetMemberElement ("username", "string",
+				login, document));
+		result.second.appendChild (GetMemberElement ("auth_response", "string",
+				GetPassword (password, challenge), document));
+		result.second.appendChild (GetMemberElement ("ver", "int",
+				"1", document));
+		result.second.appendChild (GetMemberElement ("includebdays", "boolean",
+				"1", document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleRequestFriendsInfoyFinished ()));
+	}
+
+	void LJXmlRPC::ParseForError (const QByteArray& content)
+	{
+		QXmlQuery query;
+		query.setFocus (content);
+		QString errorCode;
+		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultCode']/value/int/text()");
+		if (!query.evaluateTo (&errorCode))
+			return;
+
+		QString errorString;
+		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultString']/value/string/text()");
+		if (!query.evaluateTo (&errorString))
+			return;
+		emit error (errorCode.toInt (), errorString);
 	}
 
 	namespace
@@ -222,7 +280,96 @@ namespace Metida
 
 			return result;
 		}
+	}
 
+	void LJXmlRPC::ParseFriends (const QDomDocument& document)
+	{
+		const auto& firstStructElement = document.elementsByTagName ("struct");
+
+		if (firstStructElement.at (0).isNull ())
+			return ;
+
+		const auto& members = firstStructElement.at (0).childNodes ();
+		for (int i = 0, count = members.count (); i < count; ++i)
+		{
+			const QDomNode& member = members.at (i);
+			if (!member.isElement () ||
+				member.toElement ().tagName () != "member")
+				continue;
+
+			auto res = ParseMember (member);
+			if (res.Name () == "friends")
+			{
+				QSet<std::shared_ptr<LJFriendEntry>> frList;
+				for (const auto& moodEntry : res.Value ())
+				{
+					std::shared_ptr<LJFriendEntry> fr = std::make_shared<LJFriendEntry> ();
+					bool isCommunity = false;
+					for (const auto& field : moodEntry.toList ())
+					{
+						LJParserTypes::LJParseProfileEntry fieldEntry =
+								field.value<LJParserTypes::LJParseProfileEntry> ();
+						if (fieldEntry.Name () == "defaultpicurl")
+							fr->SetAvatarUrl (fieldEntry.ValueToUrl ());
+						else if (fieldEntry.Name () == "bgcolor")
+							fr->SetBGColor (fieldEntry.ValueToString ());
+						else if (fieldEntry.Name () == "fgcolor")
+							fr->SetFGColor (fieldEntry.ValueToString ());
+						else if (fieldEntry.Name () == "groupmask")
+							fr->SetGroupMask (fieldEntry.ValueToInt ());
+						else if (fieldEntry.Name () == "fullname")
+							fr->SetFullName (fieldEntry.ValueToString ());
+						else if (fieldEntry.Name () == "username")
+							fr->SetUserName (fieldEntry.ValueToString ());
+						else if (fieldEntry.Name () == "type")
+							isCommunity = (fieldEntry.ValueToString () == "community");
+					}
+					if (!isCommunity)
+						frList << fr;
+				}
+				Account_->AddFriends (frList);
+			}
+		}
+	}
+
+
+	void LJXmlRPC::handleChallengeReplyFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		const auto& content = reply->readAll ();
+		reply->deleteLater ();
+		QDomDocument document;
+		QString errorMsg;
+		int errorLine = -1, errorColumn = -1;
+		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< errorMsg
+					<< "in line:"
+					<< errorLine
+					<< "column:"
+					<< errorColumn;
+			return;
+		}
+
+		QXmlQuery query;
+		query.setFocus (content);
+
+		QString challenge;
+		query.setQuery ("/methodResponse/params/param/value/struct/member[name='challenge']/value/string/text()");
+		if (!query.evaluateTo (&challenge))
+			return;
+
+		ApiCallQueue_.dequeue () (challenge.simplified ());
+		if (!ApiCallQueue_.isEmpty ())
+			GenerateChallenge ();
+	}
+
+	namespace
+	{
 		struct Id2ProfileField
 		{
 			QHash<QString, std::function<void (LJProfileData&,
@@ -250,7 +397,10 @@ namespace Metida
 							else if (fieldEntry.Name () == "name")
 								group.Name_ = fieldEntry.ValueToString ();
 							else if (fieldEntry.Name () == "id")
+							{
 								group.Id_ = fieldEntry.ValueToInt ();
+								group.RealId_ = (1 << group.Id_) + 1;
+							}
 							else if (fieldEntry.Name () == "sortorder")
 								group.SortOrder_ = fieldEntry.ValueToInt ();
 						}
@@ -326,39 +476,6 @@ namespace Metida
 		}
 	}
 
-	void LJXmlRPC::handleChallengeReplyFinished ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		const auto& content = reply->readAll ();
-		reply->deleteLater ();
-		QDomDocument document;
-		QString errorMsg;
-		int errorLine = -1, errorColumn = -1;
-		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< errorMsg
-					<< "in line:"
-					<< errorLine
-					<< "column:"
-					<< errorColumn;
-			return;
-		}
-
-		QXmlQuery query;
-		query.setFocus (content);
-
-		QString challenge;
-		query.setQuery ("/methodResponse/params/param/value/struct/member[name='challenge']/value/string/text()");
-		if (!query.evaluateTo (&challenge))
-			return;
-
-		ApiCallQueue_.dequeue () (challenge.simplified ());
-	}
-
 	void LJXmlRPC::handleValidateReplyFinished ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
@@ -391,21 +508,40 @@ namespace Metida
 		else
 			emit validatingFinished (false);
 
-		QXmlQuery query;
-		query.setFocus (content);
-		QString errorCode;
-		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultCode']/value/int/text()");
-		if (!query.evaluateTo (&errorCode))
+		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleRequestFriendsInfoyFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
 			return;
 
-		QString errorString;
-		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultString']/value/string/text()");
-		if (!query.evaluateTo (&errorString))
+		const auto& content = reply->readAll ();
+		reply->deleteLater ();
+		QDomDocument document;
+		QString errorMsg;
+		int errorLine = -1, errorColumn = -1;
+		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< errorMsg
+					<< "in line:"
+					<< errorLine
+					<< "column:"
+					<< errorColumn;
 			return;
-		emit error (errorCode.toInt (), errorString);
+		}
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			ParseFriends (document);
+			return;
+		}
+
+		ParseForError (content);
 	}
 
 }
 }
 }
-

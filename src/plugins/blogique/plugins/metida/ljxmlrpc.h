@@ -33,24 +33,31 @@ namespace Blogique
 {
 namespace Metida
 {
+	class LJFriendEntry;
+	class LJAccount;
+
 	class LJXmlRPC : public QObject
 	{
 		Q_OBJECT
 
+		LJAccount *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
 	public:
-		LJXmlRPC (QObject *parent = 0);
+		LJXmlRPC (LJAccount *acc, QObject *parent = 0);
 
 		void Validate (const QString& login, const QString& pass);
 	private:
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
 				const QString& pass, const QString& challenge);
-
+		void RequestFriendsInfo (const QString& login,
+				const QString& pass, const QString& challenge);
+		void ParseForError (const QByteArray& content);
+		void ParseFriends (const QDomDocument& doc);
 	private slots:
 		void handleChallengeReplyFinished ();
 		void handleValidateReplyFinished ();
-
+		void handleRequestFriendsInfoyFinished ();
 	signals:
 		void validatingFinished (bool success);
 		void profileUpdated (const LJProfileData& profile);

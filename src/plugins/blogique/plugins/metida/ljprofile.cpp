@@ -26,6 +26,7 @@
 #include <interfaces/blogique/iaccount.h>
 #include "core.h"
 #include "profilewidget.h"
+#include "ljfriendentry.h"
 
 namespace LeechCraft
 {
@@ -52,6 +53,17 @@ namespace Metida
 	QObject* LJProfile::GetParentAccount () const
 	{
 		return ParentAccount_;
+	}
+
+	void LJProfile::AddFriends (const QSet<std::shared_ptr<LJFriendEntry>>& friends)
+	{
+		Friends_.unite (friends);
+		emit profileUpdated ();
+	}
+
+	QSet<std::shared_ptr<LJFriendEntry>> LJProfile::GetFriends () const
+	{
+		return Friends_;
 	}
 
 	void LJProfile::SaveAvatar (QUrl avatarUrl)
