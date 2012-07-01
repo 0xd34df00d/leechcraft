@@ -72,6 +72,7 @@ SET (SRCS
 	biowidget.cpp
 	biopropproxy.cpp
 	audiopropswidget.cpp
+	playlistwidget.cpp
 	devicesbrowserwidget.cpp
 	devsync/copymanager.cpp
 	devsync/devicesuploadmodel.cpp
@@ -93,6 +94,7 @@ SET (FORMS
 	releaseswidget.ui
 	biowidget.ui
 	audiopropswidget.ui
+	playlistwidget.ui
 	devicesbrowserwidget.ui
 	devsync/transcodingparamswidget.ui
 	)

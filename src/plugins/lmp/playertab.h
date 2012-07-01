@@ -30,10 +30,8 @@
 #include "player.h"
 #include "ui_playertab.h"
 
-class QUndoStack;
 class QStandardItemModel;
 class QSortFilterProxyModel;
-class QActionGroup;
 
 namespace Media
 {
@@ -64,10 +62,7 @@ namespace LMP
 		QSortFilterProxyModel *CollectionFilterModel_;
 
 		Player *Player_;
-		QToolBar *PlaylistToolbar_;
 		QToolBar *TabToolbar_;
-
-		QActionGroup *PlayModesGroup_;
 
 		QLabel *PlayedTime_;
 		QLabel *RemainingTime_;
@@ -80,8 +75,6 @@ namespace LMP
 		QMenu *TrayMenu_;
 
 		QAction *CollectionShowTrackProps_;
-
-		QUndoStack *UndoStack_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
@@ -101,7 +94,6 @@ namespace LMP
 		void SetupToolbar ();
 		void SetupCollection ();
 		void SetupPlaylistsTab ();
-		void SetupPlaylist ();
 		void SetNowPlaying (const MediaInfo&, const QPixmap&);
 		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
@@ -117,17 +109,10 @@ namespace LMP
 		void handleGotLyrics (const Media::LyricsQuery&, const QStringList&);
 
 		void handleScanProgress (int);
-		void handleChangePlayMode ();
-		void handlePlayModeChanged (Player::PlayMode);
 		void handlePlaylistSelected (const QModelIndex&);
-		void removeSelectedSongs ();
-		void setStopAfterSelected ();
 		void showCollectionTrackProps ();
-		void showTrackProps ();
 		void loadFromCollection ();
 		void handleCollectionItemSelected (const QModelIndex&);
-		void handleSavePlaylist ();
-		void loadFromDisk ();
 
 		void closeLMP ();
 		void handleStateChanged (Phonon::State newState, Phonon::State oldState);
