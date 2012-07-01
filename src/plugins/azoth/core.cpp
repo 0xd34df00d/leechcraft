@@ -2404,6 +2404,11 @@ namespace Azoth
 
 	void Core::handleAuthorizationRequested (QObject *entryObj, const QString& msg)
 	{
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookGotAuthRequest (proxy, entryObj, msg);
+		if (proxy->IsCancelled ())
+			return;
+
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 		{

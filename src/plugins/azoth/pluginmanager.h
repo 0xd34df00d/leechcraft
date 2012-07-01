@@ -142,6 +142,10 @@ namespace Azoth
 				QString body,
 				QString pack);
 
+		void hookGotAuthRequest (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry,
+				QString msg);
+
 		/** @brief Hook for handling incoming messages.
 		 *
 		 * This hook is called for handling incoming messages. The

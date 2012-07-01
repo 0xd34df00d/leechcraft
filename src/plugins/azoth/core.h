@@ -604,6 +604,9 @@ namespace Azoth
 		void hookGonnaHandleSmiles (LeechCraft::IHookProxy_ptr proxy,
 				QString body,
 				QString pack);
+		void hookGotAuthRequest (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry,
+				QString msg);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 		void hookGotMessage2 (LeechCraft::IHookProxy_ptr proxy,
