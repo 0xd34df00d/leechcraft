@@ -304,10 +304,6 @@ namespace LeechCraft
 		/** Notifies the user about an error by a pop-up message box.
 		 */
 		void error (QString error) const;
-
-		/** Sends the message to the log.
-		 */
-		void log (const QString& message);
 	};
 };
 

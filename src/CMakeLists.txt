@@ -438,7 +438,6 @@ SET (SRCS
 	skinengine.cpp
 	childactioneventfilter.cpp
 	tabmanager.cpp
-	logtoolbox.cpp
 	authenticationdialog.cpp
 	sslerrorsdialog.cpp
 	storagebackend.cpp
@@ -482,7 +481,6 @@ SET (HEADERS
 	skinengine.h
 	childactioneventfilter.h
 	tabmanager.h
-	logtoolbox.h
 	authenticationdialog.h
 	sslerrorsdialog.h
 	storagebackend.h
@@ -522,7 +520,6 @@ SET (FORMS
 	commonjobadder.ui
 	leechcraft.ui
 	pluginmanagerdialog.ui
-	logtoolbox.ui
 	authenticationdialog.ui
 	sslerrorsdialog.ui
 	handlerchoicedialog.ui

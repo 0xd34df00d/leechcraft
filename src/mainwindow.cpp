@@ -38,7 +38,6 @@
 #include "xmlsettingsmanager.h"
 #include "skinengine.h"
 #include "childactioneventfilter.h"
-#include "logtoolbox.h"
 #include "graphwidget.h"
 #include "shortcutmanager.h"
 #include "tagsviewer.h"
@@ -99,10 +98,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SIGNAL (loadProgress (const QString&)),
 			this,
 			SLOT (handleLoadProgress (const QString&)));
-	connect (&Core::Instance (),
-			SIGNAL (log (const QString&)),
-			LogToolBox_,
-			SLOT (log (const QString&)));
 
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
@@ -404,8 +399,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	SetStatusBar ();
 	ReadSettings ();
 
-	LogToolBox_ = new LogToolBox (this);
-
 	Ui_.MainTabWidget_->AddAction2TabBarLayout (QTabBar::LeftSide, Ui_.ActionMenu_);
 }
 
@@ -633,11 +626,6 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	}
 }
 
-void LeechCraft::MainWindow::on_ActionLogger__triggered ()
-{
-	LogToolBox_->show ();
-}
-
 void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 {
 	QToolBar *bar = Core::Instance ().GetToolBar (index);
@@ -851,12 +839,9 @@ void LeechCraft::MainWindow::FillToolMenu ()
 	{
 		const auto& acts = e->GetActions (ActionsEmbedPlace::ToolsMenu);
 		SkinEngine::Instance ().UpdateIconSet (acts);
-
-		Q_FOREACH (QAction *action, acts)
-			MenuTools_->insertAction (Ui_.ActionLogger_, action);
-
+		MenuTools_->addActions (acts);
 		if (acts.size ())
-			MenuTools_->insertSeparator (Ui_.ActionLogger_);
+			MenuTools_->addSeparator ();
 	}
 
 	QMenu *ntm = Core::Instance ()

@@ -49,7 +49,6 @@ namespace LeechCraft
 	class PluginInfo;
 	class PluginManagerDialog;
 	class ShortcutManager;
-	class LogToolBox;
 	class ToolbarGuard;
 
 	class MainWindow : public QMainWindow
@@ -64,7 +63,6 @@ namespace LeechCraft
 		QLabel *Clock_;
 		Util::GraphWidget *SpeedGraph_;
 		ShortcutManager *ShortcutManager_;
-		LogToolBox *LogToolBox_;
 		bool IsShown_;
 		bool WasMaximized_;
 		QString LanguageOnLoad_;
@@ -125,7 +123,6 @@ namespace LeechCraft
 		void handleAppStyle ();
 		void handleLanguage ();
 		void on_ActionFullscreenMode__triggered (bool);
-		void on_ActionLogger__triggered ();
 		void on_MainTabWidget__currentChanged (int);
 		void on_ActionShowToolBar__triggered (bool);
 		void handleShortcutFullscreenMode ();

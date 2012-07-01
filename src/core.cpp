@@ -758,8 +758,8 @@ namespace LeechCraft
 			return DoHandle (dia->GetFirstEntityHandler (), p);
 		else
 		{
-			emit log (tr ("Could not handle download entity %1.")
-					.arg (string));
+			qWarning () << Q_FUNC_INFO
+					<< "Could not handle download entity %1.";
 			return false;
 		}
 
