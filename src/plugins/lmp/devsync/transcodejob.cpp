@@ -37,7 +37,9 @@ namespace LMP
 	{
 		QStringList OggParams (const TranscodingParams& params)
 		{
-			return { "-acodec", "libvorbis", "-aq", QString::number (params.Quality_) };
+			return QStringList ("-acodec") << "libvorbis"
+					<< "-aq"
+					<< QString::number (params.Quality_);
 		}
 	}
 
