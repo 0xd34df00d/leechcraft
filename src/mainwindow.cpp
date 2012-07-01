@@ -771,11 +771,10 @@ void LeechCraft::MainWindow::handleLoadProgress (const QString& str)
 
 void LeechCraft::MainWindow::FillQuickLaunch ()
 {
-	QList<IActionsExporter*> exporters = Core::Instance ()
-			.GetPluginManager ()->GetAllCastableTo<IActionsExporter*> ();
-	Q_FOREACH (IActionsExporter *exp, exporters)
+	const auto& exporters = Core::Instance ().GetPluginManager ()->GetAllCastableTo<IActionsExporter*> ();
+	Q_FOREACH (auto exp, exporters)
 	{
-		QMap<QString, QList<QAction*>> map = exp->GetMenuActions ();
+		const auto& map = exp->GetMenuActions ();
 		if (!map.isEmpty ())
 			AddMenus (map);
 	}
@@ -785,9 +784,9 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 	if (proxy->IsCancelled ())
 		return;
 
-	Q_FOREACH (IActionsExporter *exp, exporters)
+	Q_FOREACH (auto exp, exporters)
 	{
-		QList<QAction*> actions = exp->GetActions (ActionsEmbedPlace::QuickLaunch);
+		const auto& actions = exp->GetActions (ActionsEmbedPlace::QuickLaunch);
 		if (actions.isEmpty ())
 			continue;
 
@@ -809,7 +808,7 @@ void LeechCraft::MainWindow::FillTray ()
 
 	const auto& trayMenus = Core::Instance ().GetPluginManager ()->
 			GetAllCastableTo<IActionsExporter*> ();
-	Q_FOREACH (IActionsExporter *o, trayMenus)
+	Q_FOREACH (auto o, trayMenus)
 	{
 		const auto& actions = o->GetActions (ActionsEmbedPlace::TrayMenu);
 		SkinEngine::Instance ().UpdateIconSet (actions);
