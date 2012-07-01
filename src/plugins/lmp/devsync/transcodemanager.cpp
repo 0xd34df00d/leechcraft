@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "transcodemanager.h"
+#include <algorithm>
 #include <QStringList>
 #include <QtDebug>
 #include <QFileInfo>
