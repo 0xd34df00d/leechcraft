@@ -139,6 +139,36 @@ namespace Herbicide
 		return false;
 	}
 
+	void Plugin::ChallengeEntry (IHookProxy_ptr proxy, QObject *entryObj)
+	{
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		AskedEntries_ << entryObj;
+		const QString& text = tr ("Please answer to the following "
+				"question to verify you are not a bot and is welcome "
+				"to communicate with me:\n%1")
+					.arg (ConfWidget_->GetQuestion ());
+		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
+		OurMessages_ << msgObj;
+		qobject_cast<IMessage*> (msgObj)->Send ();
+
+		proxy->CancelDefault ();
+	}
+
+	void Plugin::hookGotAuthRequest (IHookProxy_ptr proxy, QObject *entry, QString)
+	{
+		if (!IsConfValid ())
+			return;
+
+		if (!XmlSettingsManager::Instance ().property ("EnableForAuths").toBool ())
+			return;
+
+		if (IsEntryAllowed (entry))
+			return;
+
+		if (!AskedEntries_.contains (entry))
+			ChallengeEntry (proxy, entry);
+	}
+
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message)
 	{
@@ -171,18 +201,7 @@ namespace Herbicide
 			return;
 
 		if (!AskedEntries_.contains (entryObj))
-		{
-			AskedEntries_ << entryObj;
-			const QString& text = tr ("Please answer to the following "
-					"question to verify you are not a bot and is welcome "
-					"to communicate with me:\n%1")
-						.arg (ConfWidget_->GetQuestion ());
-			QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
-			OurMessages_ << msgObj;
-			qobject_cast<IMessage*> (msgObj)->Send ();
-
-			proxy->CancelDefault ();
-		}
+			ChallengeEntry (proxy, entryObj);
 		else if (ConfWidget_->GetAnswers ().contains (msg->GetBody ().toLower ()))
 		{
 			AllowedEntries_ << entryObj;

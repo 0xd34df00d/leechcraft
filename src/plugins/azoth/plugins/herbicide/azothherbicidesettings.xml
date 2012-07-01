@@ -8,10 +8,13 @@
 				<label value="Enable quest" />
 				<item type="customwidget" label="own" name="ConfWidget" />
 			</item>
+			<item type="checkbox" property="EnableForAuths" default="false">
+				<label value="Enable even for authorization requests" />
+			</item>
 		</tab>
 		<tab>
 			<label value="Blacklist" />
-			<item type="checkbox" property="AskOnlyBL" default="false">
+			<item type="checkbox" property="AskOnlyBL" default="true">
 				<label value="Ask only those in the black list" />
 				<tooltip>Otherwise, everyone who isn't present in the contact list will be asked with the challenge.</tooltip>
 			</item>

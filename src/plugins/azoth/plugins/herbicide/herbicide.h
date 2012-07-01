@@ -65,7 +65,11 @@ namespace Herbicide
 	private:
 		bool IsConfValid () const;
 		bool IsEntryAllowed (QObject*) const;
+		void ChallengeEntry (IHookProxy_ptr, QObject*);
 	public slots:
+		void hookGotAuthRequest (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry,
+				QString msg);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 	private slots:
