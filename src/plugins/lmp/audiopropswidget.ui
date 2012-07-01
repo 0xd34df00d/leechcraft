@@ -19,6 +19,9 @@
    </property>
    <item>
     <widget class="QTableView" name="PropsView_">
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
      <attribute name="horizontalHeaderVisible">
       <bool>false</bool>
      </attribute>

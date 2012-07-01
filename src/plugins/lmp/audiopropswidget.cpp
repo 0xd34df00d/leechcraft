@@ -24,6 +24,7 @@
 #include <QDialogButtonBox>
 #include <QStandardItemModel>
 #include <QMessageBox>
+#include <QClipboard>
 #include <QMutexLocker>
 #include <QFileInfo>
 #include <QtDebug>
@@ -59,6 +60,14 @@ namespace LMP
 	{
 		Ui_.setupUi (this);
 		Ui_.PropsView_->setModel (PropsModel_);
+
+		auto copy = new QAction (tr ("Copy"), this);
+		copy->setProperty ("ActionIcon", "edit-copy");
+		connect (copy,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleCopy ()));
+		Ui_.PropsView_->addAction (copy);
 	}
 
 	AudioPropsWidget* AudioPropsWidget::MakeDialog ()
@@ -326,6 +335,22 @@ namespace LMP
 				TagLib::WavPack::Properties*
 				> propsTypes;
 		boost::mpl::for_each (MakeGetter (append, props), &propsTypes);
+	}
+
+	void AudioPropsWidget::handleCopy ()
+	{
+		const auto& idx = Ui_.PropsView_->currentIndex ();
+		if (!idx.isValid ())
+			return;
+
+		QString text = idx.sibling (idx.row (), 1).data ().toString ();
+		if (!idx.column ())
+		{
+			text.prepend (": ");
+			text.prepend (idx.data ().toString ());
+		}
+
+		qApp->clipboard ()->setText (text);
 	}
 }
 }
