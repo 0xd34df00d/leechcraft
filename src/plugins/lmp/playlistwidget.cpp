@@ -33,6 +33,7 @@
 #include "staticplaylistmanager.h"
 #include "audiopropswidget.h"
 #include "playlistundocommand.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -43,6 +44,10 @@ namespace LMP
 	, PlaylistToolbar_ (new QToolBar ())
 	, UndoStack_ (new QUndoStack (this))
 	, Player_ (0)
+	, ActionRemoveSelected_ (0)
+	, ActionStopAfterSelected_ (0)
+	, ActionShowTrackProps_ (0)
+	, ActionShowAlbumArt_ (0)
 	{
 		Ui_.setupUi (this);
 
@@ -139,32 +144,55 @@ namespace LMP
 		redo->setProperty ("ActionIcon", "edit-redo");
 		PlaylistToolbar_->addAction (redo);
 
-		auto removeSelected = new QAction (tr ("Delete from playlist"), Ui_.Playlist_);
-		removeSelected->setProperty ("ActionIcon", "list-remove");
-		removeSelected->setShortcut (Qt::Key_Delete);
-		connect (removeSelected,
+		ActionRemoveSelected_ = new QAction (tr ("Delete from playlist"), Ui_.Playlist_);
+		ActionRemoveSelected_->setProperty ("ActionIcon", "list-remove");
+		ActionRemoveSelected_->setShortcut (Qt::Key_Delete);
+		connect (ActionRemoveSelected_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (removeSelectedSongs ()));
-		Ui_.Playlist_->addAction (removeSelected);
 
-		auto stopAfterSelected = new QAction (tr ("Stop after this track"), Ui_.Playlist_);
-		stopAfterSelected->setProperty ("ActionIcon", "media-playback-stop");
-		connect (stopAfterSelected,
+		ActionStopAfterSelected_ = new QAction (tr ("Stop after this track"), Ui_.Playlist_);
+		ActionStopAfterSelected_->setProperty ("ActionIcon", "media-playback-stop");
+		connect (ActionStopAfterSelected_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (setStopAfterSelected ()));
-		Ui_.Playlist_->addAction (stopAfterSelected);
 
-		Ui_.Playlist_->addAction (Util::CreateSeparator (this));
-
-		auto showTrackProps = new QAction (tr ("Show track properties"), Ui_.Playlist_);
-		showTrackProps->setProperty ("ActionIcon", "document-properties");
-		connect (showTrackProps,
+		ActionShowTrackProps_ = new QAction (tr ("Show track properties"), Ui_.Playlist_);
+		ActionShowTrackProps_->setProperty ("ActionIcon", "document-properties");
+		connect (ActionShowTrackProps_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showTrackProps ()));
-		Ui_.Playlist_->addAction (showTrackProps);
+
+		ActionShowAlbumArt_ = new QAction (tr ("Show album art"), Ui_.Playlist_);
+		ActionShowAlbumArt_->setProperty ("ActionIcon", "media-optical");
+		connect (ActionShowAlbumArt_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showAlbumArt ()));
+	}
+
+	void PlaylistWidget::on_Playlist__customContextMenuRequested (const QPoint& pos)
+	{
+		const auto& idx = Ui_.Playlist_->indexAt (pos);
+		if (!idx.isValid ())
+			return;
+
+		auto menu = new QMenu (Ui_.Playlist_);
+		menu->addAction (ActionRemoveSelected_);
+		if (idx.data (Player::Role::IsAlbum).toBool ())
+			menu->addAction (ActionShowAlbumArt_);
+		else
+		{
+			menu->addAction (ActionStopAfterSelected_);
+			menu->addAction (ActionShowTrackProps_);
+		}
+
+		menu->setAttribute (Qt::WA_DeleteOnClose);
+
+		menu->exec (Ui_.Playlist_->viewport ()->mapToGlobal (pos));
 	}
 
 	void PlaylistWidget::handleChangePlayMode ()
@@ -224,6 +252,14 @@ namespace LMP
 			return;
 
 		AudioPropsWidget::MakeDialog ()->SetProps (info);
+	}
+
+	void PlaylistWidget::showAlbumArt ()
+	{
+		const auto& index = Ui_.Playlist_->currentIndex ();
+		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
+
+		ShowAlbumArt (info.LocalPath_, QCursor::pos ());
 	}
 
 	void PlaylistWidget::handleSavePlaylist ()

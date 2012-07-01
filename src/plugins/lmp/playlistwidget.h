@@ -43,17 +43,25 @@ namespace LMP
 		QUndoStack *UndoStack_;
 
 		Player *Player_;
+
+		QAction *ActionRemoveSelected_;
+		QAction *ActionStopAfterSelected_;
+		QAction *ActionShowTrackProps_;
+		QAction *ActionShowAlbumArt_;
 	public:
 		PlaylistWidget (QWidget* = 0);
 
 		void SetPlayer (Player*);
 	private slots:
+		void on_Playlist__customContextMenuRequested (const QPoint&);
 		void handleChangePlayMode ();
 		void handlePlayModeChanged (Player::PlayMode);
 
 		void removeSelectedSongs ();
 		void setStopAfterSelected ();
 		void showTrackProps ();
+
+		void showAlbumArt ();
 
 		void handleSavePlaylist ();
 		void loadFromDisk ();

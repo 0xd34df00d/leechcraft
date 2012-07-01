@@ -20,7 +20,7 @@
    <item>
     <widget class="QTreeView" name="Playlist_">
      <property name="contextMenuPolicy">
-      <enum>Qt::ActionsContextMenu</enum>
+      <enum>Qt::CustomContextMenu</enum>
      </property>
      <property name="acceptDrops">
       <bool>true</bool>
