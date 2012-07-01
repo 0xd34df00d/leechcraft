@@ -111,6 +111,7 @@ namespace LMP
 			return;
 
 		auto label = new QLabel;
+		label->setWindowTitle (QObject::tr ("Album art"));
 		label->setWindowFlags (Qt::Tool);
 		label->setAttribute (Qt::WA_DeleteOnClose);
 		label->setScaledContents (true);
