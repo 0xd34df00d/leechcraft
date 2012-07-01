@@ -755,7 +755,12 @@ namespace LMP
 	{
 		XmlSettingsManager::Instance ().setProperty ("LastSong", source.fileName ());
 
-		auto curItem = CurrentStation_ ? RadioItem_ : Items_ [source];
+		QStandardItem *curItem = 0;
+		if (CurrentStation_)
+			curItem = RadioItem_;
+		else if (Items_.contains (source))
+			curItem = Items_ [source];
+
 		if (curItem)
 			curItem->setData (true, Role::IsCurrent);
 
