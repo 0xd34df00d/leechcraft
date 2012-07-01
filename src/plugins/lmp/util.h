@@ -21,6 +21,7 @@
 #include <QStringList>
 
 class QPixmap;
+class QPoint;
 
 namespace Phonon
 {
@@ -35,6 +36,8 @@ namespace LMP
 
 	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
 	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection = false);
+
+	void ShowAlbumArt (const QString& near, const QPoint& pos);
 
 	bool operator!= (const Phonon::MediaSource&, const Phonon::MediaSource&);
 }
