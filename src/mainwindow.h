@@ -48,7 +48,6 @@ namespace LeechCraft
 	class Core;
 	class PluginInfo;
 	class PluginManagerDialog;
-	class FancyPopupManager;
 	class ShortcutManager;
 	class LogToolBox;
 	class ToolbarGuard;
@@ -65,7 +64,6 @@ namespace LeechCraft
 		QLabel *Clock_;
 		Util::GraphWidget *SpeedGraph_;
 		ShortcutManager *ShortcutManager_;
-		FancyPopupManager *FancyPopupManager_;
 		LogToolBox *LogToolBox_;
 		bool IsShown_;
 		bool WasMaximized_;
@@ -92,7 +90,6 @@ namespace LeechCraft
 		IShortcutProxy* GetShortcutProxy () const;
 		void SetAdditionalTitle (const QString&);
 		ToolbarGuard* GetGuard () const;
-		FancyPopupManager* GetFancyPopupManager () const;
 
 		QMenu* GetMainMenu () const;
 		void HideMainMenu ();

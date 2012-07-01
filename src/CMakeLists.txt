@@ -435,7 +435,6 @@ SET (SRCS
 	pluginmanager.cpp
 	xmlsettingsmanager.cpp
 	pluginmanagerdialog.cpp
-	fancypopupmanager.cpp
 	skinengine.cpp
 	childactioneventfilter.cpp
 	tabmanager.cpp
@@ -480,7 +479,6 @@ SET (HEADERS
 	pluginmanager.h
 	xmlsettingsmanager.h
 	pluginmanagerdialog.h
-	fancypopupmanager.h
 	skinengine.h
 	childactioneventfilter.h
 	tabmanager.h

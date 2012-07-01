@@ -21,13 +21,12 @@
 #include <algorithm>
 #include <QMessageBox>
 #include <QCloseEvent>
-#include <QModelIndex>
-#include <QStandardItemModel>
 #include <QCursor>
 #include <QShortcut>
 #include <QMenu>
 #include <QSplashScreen>
 #include <QBitmap>
+#include <QTime>
 #include <QDockWidget>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
@@ -37,7 +36,6 @@
 #include "core.h"
 #include "commonjobadder.h"
 #include "xmlsettingsmanager.h"
-#include "fancypopupmanager.h"
 #include "skinengine.h"
 #include "childactioneventfilter.h"
 #include "logtoolbox.h"
@@ -204,11 +202,6 @@ void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
 LeechCraft::ToolbarGuard* LeechCraft::MainWindow::GetGuard () const
 {
 	return Guard_;
-}
-
-LeechCraft::FancyPopupManager* LeechCraft::MainWindow::GetFancyPopupManager () const
-{
-	return FancyPopupManager_;
 }
 
 QMenu* LeechCraft::MainWindow::GetMainMenu () const
@@ -841,7 +834,6 @@ void LeechCraft::MainWindow::FillTray ()
 
 	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.svg"), this);
 	handleShowTrayIconChanged ();
-	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
 	TrayIcon_->setContextMenu (iconMenu);
 	connect (TrayIcon_,
 			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
