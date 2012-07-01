@@ -229,7 +229,10 @@ namespace LMP
 				SLOT (handleIterateFinished ()));
 		watcher->setProperty ("Path", path);
 		watcher->setProperty ("IsRoot", root);
-		watcher->setFuture (QtConcurrent::run (RecIterate, path, false));
+
+		const bool symLinks = XmlSettingsManager::Instance ()
+				.property ("FollowSymLinks").toBool ();
+		watcher->setFuture (QtConcurrent::run (RecIterate, path, symLinks));
 	}
 
 	void LocalCollection::Unscan (const QString& path)
