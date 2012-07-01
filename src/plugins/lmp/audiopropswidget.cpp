@@ -62,7 +62,7 @@ namespace LMP
 		Ui_.PropsView_->setModel (PropsModel_);
 
 		auto copy = new QAction (tr ("Copy"), this);
-		copy->setProperty ("ActionIcon", "edit-copy");
+		copy->setIcon (Core::Instance ().GetProxy ()->GetIcon ("edit-copy"));
 		connect (copy,
 				SIGNAL (triggered ()),
 				this,
