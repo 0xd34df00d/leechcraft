@@ -20,6 +20,7 @@
 
 #include <QWidget>
 #include "ui_nowplayingwidget.h"
+#include "mediainfo.h"
 
 namespace LeechCraft
 {
@@ -33,7 +34,9 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::NowPlayingWidget Ui_;
+
 		Media::SimilarityInfos_t LastInfos_;
+		MediaInfo CurrentInfo_;
 	public:
 		NowPlayingWidget (QWidget* = 0);
 
@@ -42,6 +45,8 @@ namespace LMP
 
 		void SetAlbumArt (const QPixmap&);
 		void SetTrackInfo (const MediaInfo&);
+	protected:
+		bool eventFilter (QObject*, QEvent*);
 	private:
 		void SetStatistics (const QString&);
 	private slots:
