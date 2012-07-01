@@ -646,8 +646,10 @@ namespace LMP
 			Source_->pause ();
 		else
 		{
-			if (Source_->currentSource ().type () == Phonon::MediaSource::Invalid ||
-				Source_->currentSource ().type () == Phonon::MediaSource::Empty)
+			const auto& current = Source_->currentSource ();
+			const bool invalidSource = current.type () == Phonon::MediaSource::Invalid ||
+				current.type () == Phonon::MediaSource::Empty;
+			if (invalidSource)
 				Source_->setCurrentSource (CurrentQueue_.value (0));
 			Source_->play ();
 		}
