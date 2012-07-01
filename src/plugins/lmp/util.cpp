@@ -71,6 +71,9 @@ namespace LMP
 
 	QString FindAlbumArtPath (const QString& near, bool ignoreCollection)
 	{
+		if (near.isEmpty ())
+			return QString ();
+
 		if (!ignoreCollection)
 		{
 			auto collection = Core::Instance ().GetLocalCollection ();
@@ -101,6 +104,9 @@ namespace LMP
 
 	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection)
 	{
+		if (near.isEmpty ())
+			return QPixmap ();
+
 		return QPixmap (FindAlbumArtPath (near, ignoreCollection));
 	}
 

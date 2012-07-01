@@ -441,15 +441,10 @@ namespace LMP
 
 	void PlayerTab::handleSongChanged (const MediaInfo& info)
 	{
-		QPixmap px;
-		if (info.LocalPath_.isEmpty ())
+		QPixmap px = FindAlbumArt (info.LocalPath_);
+		if (px.isNull ())
 			px = QIcon::fromTheme ("media-optical").pixmap (128, 128);
-		else
-		{
-			px = FindAlbumArt (info.LocalPath_);
-			if (px.isNull ())
-				px = QIcon::fromTheme ("media-optical").pixmap (128, 128);
-		}
+
 		Ui_.NPWidget_->SetAlbumArt (px);
 		const QPixmap& scaled = px.scaled (Ui_.NPArt_->minimumSize (),
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
