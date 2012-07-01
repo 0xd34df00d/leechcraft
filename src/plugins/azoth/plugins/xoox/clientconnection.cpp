@@ -355,7 +355,7 @@ namespace Xoox
 				!FirstTimeConnect_)
 		{
 			emit statusChanged (EntryStatus (SOffline, state.Status_));
-			emit resetClientConnection ();
+			Client_->disconnectFromServer ();
 			return;
 		}
 
@@ -396,6 +396,8 @@ namespace Xoox
 				JID2CLEntry_.remove (jid);
 				ODSEntries_ [jid] = entry;
 				entry->Convert2ODS ();
+
+				qDebug () << "converting" << jid;
 			}
 			SelfContact_->RemoveVariant (OurResource_);
 		}
