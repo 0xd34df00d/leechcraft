@@ -130,12 +130,6 @@ namespace Azoth
 		 */
 		virtual QString GetAccountPassword (QObject *account, bool useStored = true) = 0;
 
-		/** @brief Returns the name of the OS Azoth runs under.
-		 *
-		 * @return The name of the operating system.
-		 */
-		virtual QString GetOSName () = 0;
-
 		/** @brief Queries whether autojoin is allowed.
 		 *
 		 * @return Whether autojoin is allowed.

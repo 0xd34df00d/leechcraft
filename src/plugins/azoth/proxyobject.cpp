@@ -131,11 +131,6 @@ namespace Azoth
 		return result;
 	}
 
-	QString ProxyObject::GetOSName ()
-	{
-		return Util::SysInfo::GetOSName ();
-	}
-
 	bool ProxyObject::IsAutojoinAllowed ()
 	{
 		return XmlSettingsManager::Instance ()
