@@ -41,10 +41,11 @@ namespace LMP
 
 	TranscodingParams TranscodingParamsWidget::GetParams () const
 	{
+		const bool transcode = Ui_.TranscodingBox_->isChecked ();
 		return
 		{
 			Ui_.FilenameMask_->text (),
-			Ui_.TranscodingFormat_->currentText (),
+			transcode ? Ui_.TranscodingFormat_->currentText () : QString (),
 			Ui_.QualitySlider_->value (),
 			Ui_.ThreadsSlider_->value ()
 		};

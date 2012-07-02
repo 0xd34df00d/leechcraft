@@ -34,6 +34,16 @@ namespace LMP
 
 	void TranscodeManager::Enqueue (const QStringList& files, const TranscodingParams& params)
 	{
+		if (params.Format_.isEmpty ())
+		{
+			std::for_each (files.begin (), files.end (),
+						[this, &params] (decltype (files.front ()) file)
+						{
+							emit fileReady (file, file, params.FilePattern_);
+						});
+			return;
+		}
+
 		std::transform (files.begin (), files.end (), std::back_inserter (Queue_),
 				[&params] (decltype (files.front ()) file) { return qMakePair (file, params); });
 

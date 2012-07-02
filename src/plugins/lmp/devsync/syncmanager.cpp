@@ -46,11 +46,11 @@ namespace LMP
 	void SyncManager::AddFiles (ISyncPlugin *syncer, const QString& mount,
 			const QStringList& files, const TranscodingParams& params)
 	{
-		Transcoder_->Enqueue (files, params);
-
 		std::for_each (files.begin (), files.end (),
 				[this, syncer, &mount] (decltype (files.front ()) file)
 					{ Source2Params_ [file] = { syncer, mount }; });
+
+		Transcoder_->Enqueue (files, params);
 
 		emit uploadLog (tr ("Uploading %n file(s)", 0, files.size ()));
 	}
