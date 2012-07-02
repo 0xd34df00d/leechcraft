@@ -64,6 +64,8 @@ namespace LMP
 
 	void TranscodeManager::handleDone (TranscodeJob *job, bool success)
 	{
+		RunningJobs_.removeAll (job);
+
 		if (!Queue_.isEmpty ())
 		{
 			const auto& pair = Queue_.takeFirst ();
