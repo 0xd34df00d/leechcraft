@@ -101,6 +101,10 @@ namespace LMP
 	{
 		qDebug () << Q_FUNC_INFO << code << status;
 		emit done (this, !code);
+
+		if (code)
+			qWarning () << Q_FUNC_INFO
+					<< Process_->readAllStandardError ();
 	}
 
 	void TranscodeJob::handleReadyRead ()
