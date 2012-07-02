@@ -154,7 +154,29 @@ namespace Herbicide
 		proxy->CancelDefault ();
 	}
 
-	void Plugin::hookGotAuthRequest (IHookProxy_ptr proxy, QObject *entry, QString)
+	void Plugin::GreetEntry (QObject *entryObj)
+	{
+		AllowedEntries_ << entryObj;
+
+		AskedEntries_.remove (entryObj);
+
+		auto entry = qobject_cast<ICLEntry*> (entry);
+
+		const QString& text = tr ("Nice, seems like you've answered "
+				"correctly. Please write again now what you wanted "
+				"to write.");
+		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
+		OurMessages_ << msgObj;
+		qobject_cast<IMessage*> (msgObj)->Send ();
+
+		if (DeniedAuth_.contains (entryObj))
+			QMetaObject::invokeMethod (entry->GetParentAccount (),
+					"authorizationRequested",
+					Q_ARG (QObject*, entryObj),
+					Q_ARG (QString, DeniedAuth_.take (entryObj)));
+	}
+
+	void Plugin::hookGotAuthRequest (IHookProxy_ptr proxy, QObject *entry, QString msg)
 	{
 		if (!IsConfValid ())
 			return;
@@ -166,7 +188,10 @@ namespace Herbicide
 			return;
 
 		if (!AskedEntries_.contains (entry))
+		{
 			ChallengeEntry (proxy, entry);
+			DeniedAuth_ [entry] = msg;
+		}
 	}
 
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
@@ -203,16 +228,7 @@ namespace Herbicide
 		if (!AskedEntries_.contains (entryObj))
 			ChallengeEntry (proxy, entryObj);
 		else if (ConfWidget_->GetAnswers ().contains (msg->GetBody ().toLower ()))
-		{
-			AllowedEntries_ << entryObj;
-			AskedEntries_.remove (entryObj);
-			const QString& text = tr ("Nice, seems like you've answered "
-					"correctly. Please write again now what you wanted "
-					"to write.");
-			QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
-			OurMessages_ << msgObj;
-			qobject_cast<IMessage*> (msgObj)->Send ();
-		}
+			GreetEntry (entryObj);
 		else
 		{
 			const QString& text = tr ("Sorry, you are wrong. Try again.");

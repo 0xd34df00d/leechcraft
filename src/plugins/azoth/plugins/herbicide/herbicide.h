@@ -48,6 +48,8 @@ namespace Herbicide
 		QSet<QObject*> AllowedEntries_;
 		QSet<QObject*> OurMessages_;
 
+		QHash<QObject*, QString> DeniedAuth_;
+
 		QSet<QRegExp> Whitelist_;
 		QSet<QRegExp> Blacklist_;
 	public:
@@ -65,7 +67,9 @@ namespace Herbicide
 	private:
 		bool IsConfValid () const;
 		bool IsEntryAllowed (QObject*) const;
+
 		void ChallengeEntry (IHookProxy_ptr, QObject*);
+		void GreetEntry (QObject*);
 	public slots:
 		void hookGotAuthRequest (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry,
