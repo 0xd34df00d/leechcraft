@@ -160,7 +160,7 @@ namespace Herbicide
 
 		AskedEntries_.remove (entryObj);
 
-		auto entry = qobject_cast<ICLEntry*> (entry);
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
 
 		const QString& text = tr ("Nice, seems like you've answered "
 				"correctly. Please write again now what you wanted "
