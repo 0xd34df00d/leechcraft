@@ -20,6 +20,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QFileInfo>
+#include <util/util.h>
 #include "copymanager.h"
 #include "transcodemanager.h"
 #include "../core.h"
@@ -90,9 +91,18 @@ namespace LMP
 		if (TranscodedCount_ < TotalTCCount_)
 			return;
 
+		if (WereTCErrors_)
+		{
+			const auto& e = Util::MakeNotification ("LMP",
+					tr ("Files were transcoded, but some errors occured. "
+						"Check the upload log for details."),
+					PWarning_);
+			Core::Instance ().SendEntity (e);
+			WereTCErrors_ = false;
+		}
+
 		TotalTCCount_ = 0;
 		TranscodedCount_ = 0;
-		WereTCErrors_ = false;
 	}
 
 	void SyncManager::CheckUploadFinished ()
@@ -102,6 +112,11 @@ namespace LMP
 
 		TotalCopyCount_ = 0;
 		CopiedCount_ = 0;
+
+		const auto& e = Util::MakeNotification ("LMP",
+				tr ("Files finished uploading."),
+				PInfo_);
+		Core::Instance ().SendEntity (e);
 	}
 
 	namespace
