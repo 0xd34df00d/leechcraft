@@ -47,6 +47,7 @@ namespace LMP
 		void fileStartedTranscoding (const QString& origPath);
 		void fileReady (const QString& origPath,
 				const QString& transcodedPath, const QString& pattern);
+		void fileFailed (const QString&);
 	};
 }
 }

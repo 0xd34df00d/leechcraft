@@ -65,6 +65,7 @@ namespace LMP
 	void TranscodeManager::handleDone (TranscodeJob *job, bool success)
 	{
 		RunningJobs_.removeAll (job);
+		job->deleteLater ();
 
 		if (!Queue_.isEmpty ())
 		{
@@ -74,6 +75,8 @@ namespace LMP
 
 		if (success)
 			emit fileReady (job->GetOrigPath (), job->GetTranscodedPath (), job->GetTargetPattern ());
+		else
+			emit fileFailed (job->GetOrigPath ());
 	}
 }
 }

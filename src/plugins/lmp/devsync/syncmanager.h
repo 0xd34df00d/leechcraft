@@ -43,19 +43,32 @@ namespace LMP
 			QString MountPath_;
 		};
 		QMap<QString, SyncTo> Source2Params_;
+
+		int TranscodedCount_;
+		int TotalTCCount_;
+		bool WereTCErrors_;
+
+		int CopiedCount_;
+		int TotalCopyCount_;
 	public:
 		SyncManager (QObject* = 0);
 
 		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
 	private:
 		void CreateSyncer (const QString&);
+		void CheckTCFinished ();
+		void CheckUploadFinished ();
 	private slots:
 		void handleStartedTranscoding (const QString&);
 		void handleFileTranscoded (const QString& from, const QString&, QString);
+		void handleFileTCFailed (const QString&);
 		void handleStartedCopying (const QString&);
 		void handleFinishedCopying ();
 	signals:
 		void uploadLog (const QString&);
+
+		void transcodingProgress (int, int);
+		void uploadProgress (int, int);
 	};
 }
 }
