@@ -23,6 +23,8 @@
 #include "ljprofile.h"
 #include "ljaccount.h"
 #include "ljfriendentry.h"
+#include "frienditemdelegate.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -37,10 +39,21 @@ namespace Metida
 	, CommunitiesModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+
 		Ui_.FriendsView_->setModel (FriendsModel_);
+		FriendsModel_->setHorizontalHeaderLabels ({ tr ("Nick") });
+		FriendItemDelegate *friendDelegate = new FriendItemDelegate (Ui_.FriendsView_);
+		connect (this,
+				SIGNAL (coloringItemChanged ()),
+				friendDelegate,
+				SLOT (handleColoringItemChanged ()));
+		Ui_.FriendsView_->setItemDelegate (friendDelegate);
+
 		Ui_.CommunitiesView_->setModel (CommunitiesModel_);
-		FriendsModel_->setHorizontalHeaderLabels ({tr ("Nick")});
-		CommunitiesModel_->setHorizontalHeaderLabels ({tr ("Name")});
+		CommunitiesModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+
+		Ui_.ColoringFriendsList_->setChecked (XmlSettingsManager::Instance ()
+				.Property ("ColoringFriendsList", true).toBool ());
 
 		updateProfile ();
 	}
@@ -65,28 +78,21 @@ namespace Metida
 		for (const auto& group : groups)
 		{
 			QStandardItem *item = new QStandardItem (group.Name_);
-			ItemToFriendGroup_ [item] = group;
+			Item2FriendGroup_ [item] = group;
 			item->setEditable (false);
 			FriendsModel_->appendRow (item);
 		}
 
-		for (const std::shared_ptr<LJFriendEntry>& fr : Profile_->GetFriends ())
+		for (const auto& fr : Profile_->GetFriends ())
 		{
 			QStandardItem *item = new QStandardItem (fr->GetUserName ());
 			item->setEditable (false);
-			item->setBackground (QBrush (fr->GetBGColor ()));
-			item->setForeground (QBrush (fr->GetFGColor ()));
-			for (int i = 0; i < FriendsModel_->rowCount (); ++i)
-			{
-				QStandardItem *parentItem = FriendsModel_->item (i);
-				qDebug () << Q_FUNC_INFO << parentItem->text ()
-						<< ItemToFriendGroup_ [parentItem].Id_
-						<< ItemToFriendGroup_ [parentItem].RealId_
-						<< item->text ()
-						<< fr->GetGroupMask ();
-				if (ItemToFriendGroup_ [parentItem].RealId_ == fr->GetGroupMask ())
+			item->setData (fr->GetBGColor ().name (), ItemColorRoles::BackgroundColor);
+			item->setData (fr->GetFGColor ().name (), ItemColorRoles::ForegroundColor);
+
+			for (const auto& parentItem : Item2FriendGroup_.keys ())
+				if (Item2FriendGroup_ [parentItem].RealId_ == fr->GetGroupMask ())
 					parentItem->appendRow (item);
-			}
 		}
 	}
 
@@ -107,6 +113,12 @@ namespace Metida
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "Profile is set to 0";
+	}
+
+	void ProfileWidget::on_ColoringFriendsList__toggled (bool toggle)
+	{
+		XmlSettingsManager::Instance ().setProperty ("ColoringFriendsList", toggle);
+		emit coloringItemChanged ();
 	}
 
 }
