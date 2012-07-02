@@ -86,6 +86,18 @@ namespace LMP
 				SIGNAL (uploadLog (QString)),
 				this,
 				SLOT (appendUpLog (QString)));
+
+		connect (Core::Instance ().GetSyncManager (),
+				SIGNAL (transcodingProgress (int, int)),
+				this,
+				SLOT (handleTranscodingProgress (int, int)));
+		connect (Core::Instance ().GetSyncManager (),
+				SIGNAL (uploadProgress (int, int)),
+				this,
+				SLOT (handleUploadProgress (int, int)));
+
+		Ui_.TSProgress_->hide ();
+		Ui_.UploadProgress_->hide ();
 	}
 
 	void DevicesBrowserWidget::InitializeDevices ()
@@ -219,6 +231,20 @@ namespace LMP
 	{
 		text.prepend (QTime::currentTime ().toString ("[HH:mm:ss.zzz] "));
 		Ui_.UploadLog_->append ("<code>" + text + "</code>");
+	}
+
+	void DevicesBrowserWidget::handleTranscodingProgress (int done, int total)
+	{
+		Ui_.TSProgress_->setVisible (done < total);
+		Ui_.TSProgress_->setMaximum (total);
+		Ui_.TSProgress_->setValue (done);
+	}
+
+	void DevicesBrowserWidget::handleUploadProgress (int done, int total)
+	{
+		Ui_.UploadProgress_->setVisible (done < total);
+		Ui_.UploadProgress_->setMaximum (total);
+		Ui_.UploadProgress_->setValue (done);
 	}
 }
 }

@@ -62,6 +62,26 @@
         <widget class="QTreeView" name="OurCollection_"/>
        </item>
        <item>
+        <widget class="QProgressBar" name="TSProgress_">
+         <property name="value">
+          <number>24</number>
+         </property>
+         <property name="format">
+          <string>Transcoding: %p%</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QProgressBar" name="UploadProgress_">
+         <property name="value">
+          <number>24</number>
+         </property>
+         <property name="format">
+          <string>Uploading: %p%</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="UploadButton_">
          <property name="text">
           <string>Upload...</string>

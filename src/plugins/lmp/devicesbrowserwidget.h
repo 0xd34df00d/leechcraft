@@ -50,6 +50,9 @@ namespace LMP
 		void on_MountButton__released ();
 
 		void appendUpLog (QString);
+
+		void handleTranscodingProgress (int, int);
+		void handleUploadProgress (int, int);
 	};
 }
 }
