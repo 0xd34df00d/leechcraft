@@ -35,18 +35,20 @@ namespace LMP
 		{
 			ISyncPlugin *Syncer_;
 			QString From_;
+			bool RemoveOnFinish_;
 			QString MountPoint_;
 			QString Filename_;
 		};
 	private:
 		QList<CopyJob> Queue_;
-		bool IsRunning_;
+		CopyJob CurrentJob_;
 	public:
 		CopyManager (QObject* = 0);
 
 		void Copy (const CopyJob&);
 	private:
 		void StartJob (const CopyJob&);
+		bool IsRunning () const;
 	private slots:
 		void handleUploadFinished (const QString& localPath,
 				QFile::FileError error, const QString& errorStr);

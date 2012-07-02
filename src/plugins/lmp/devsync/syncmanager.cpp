@@ -170,7 +170,7 @@ namespace LMP
 
 		if (!Mount2Copiers_.contains (syncTo.MountPath_))
 			CreateSyncer (syncTo.MountPath_);
-		Mount2Copiers_ [syncTo.MountPath_]->Copy ({ syncTo.Syncer_, transcoded, syncTo.MountPath_, mask });
+		Mount2Copiers_ [syncTo.MountPath_]->Copy ({ syncTo.Syncer_, transcoded, from != transcoded, syncTo.MountPath_, mask });
 	}
 
 	void SyncManager::handleFileTCFailed (const QString& file)

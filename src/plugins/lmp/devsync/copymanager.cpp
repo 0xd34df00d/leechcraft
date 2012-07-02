@@ -26,19 +26,18 @@ namespace LMP
 {
 	CopyManager::CopyManager (QObject *parent)
 	: QObject (parent)
-	, IsRunning_ (false)
 	{
 	}
 
 	void CopyManager::Copy (const CopyJob& job)
 	{
-		if (IsRunning_)
+		if (IsRunning ())
 			Queue_ << job;
 		else
 			StartJob (job);
 	}
 
-	void CopyManager::StartJob (const CopyManager::CopyJob& job)
+	void CopyManager::StartJob (const CopyJob& job)
 	{
 		qDebug () << Q_FUNC_INFO
 				<< "copying"
@@ -47,7 +46,7 @@ namespace LMP
 				<< job.MountPoint_
 				<< job.Filename_;
 
-		IsRunning_ = true;
+		CurrentJob_ = job;
 
 		connect (job.Syncer_->GetObject (),
 				SIGNAL (uploadFinished (QString, QFile::FileError, QString)),
@@ -60,15 +59,22 @@ namespace LMP
 		emit startedCopying (job.Filename_);
 	}
 
+	bool CopyManager::IsRunning () const
+	{
+		return !CurrentJob_.From_.isEmpty ();
+	}
+
 	void CopyManager::handleUploadFinished (const QString& localPath, QFile::FileError error, const QString& errorStr)
 	{
 		emit finishedCopying ();
 
-		IsRunning_ = false;
+		const bool remove = CurrentJob_.RemoveOnFinish_;
+		CurrentJob_ = CopyJob ();
+
 		if (!Queue_.isEmpty ())
 			StartJob (Queue_.takeFirst ());
 
-		if (error == QFile::NoError)
+		if (error == QFile::NoError && remove)
 			QFile::remove (localPath);
 	}
 }
