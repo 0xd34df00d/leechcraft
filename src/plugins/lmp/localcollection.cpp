@@ -705,7 +705,7 @@ namespace LMP
 		Q_FOREACH (const auto& info, infos)
 			PresentPaths_ += info.LocalPath_;
 
-		emit scanProgressChanged (infos.size ());
+		emit scanFinished ();
 
 		auto newArts = Storage_->AddToCollection (infos);
 		HandleNewArtists (newArts);

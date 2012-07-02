@@ -108,6 +108,10 @@ namespace LMP
 				SIGNAL (scanProgressChanged (int)),
 				this,
 				SLOT (handleScanProgress (int)));
+		connect (Core::Instance ().GetLocalCollection (),
+				SIGNAL (scanFinished ()),
+				Ui_.ScanProgress_,
+				SLOT (hide ()));
 		Ui_.ScanProgress_->hide ();
 		handleSongChanged (MediaInfo ());
 
