@@ -287,7 +287,7 @@ namespace Metida
 		const auto& firstStructElement = document.elementsByTagName ("struct");
 
 		if (firstStructElement.at (0).isNull ())
-			return ;
+			return;
 
 		const auto& members = firstStructElement.at (0).childNodes ();
 		for (int i = 0, count = members.count (); i < count; ++i)
@@ -300,10 +300,10 @@ namespace Metida
 			auto res = ParseMember (member);
 			if (res.Name () == "friends")
 			{
-				QSet<std::shared_ptr<LJFriendEntry>> frList;
+				QSet<LJFriendEntry_ptr> frList;
 				for (const auto& moodEntry : res.Value ())
 				{
-					std::shared_ptr<LJFriendEntry> fr = std::make_shared<LJFriendEntry> ();
+					LJFriendEntry_ptr fr = std::make_shared<LJFriendEntry> ();
 					bool isCommunity = false;
 					for (const auto& field : moodEntry.toList ())
 					{

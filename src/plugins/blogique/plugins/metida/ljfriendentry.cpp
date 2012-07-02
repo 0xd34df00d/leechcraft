@@ -89,10 +89,9 @@ namespace Metida
 		return FGColor_;
 	}
 
-
-	uint qHash (const std::shared_ptr<LJFriendEntry>& fr)
+	uint qHash (const LJFriendEntry_ptr& fr)
 	{
-		return qHash (fr->GetFullName () + fr->GetUserName ());
+		return qHash (fr.get ());
 	}
 }
 }

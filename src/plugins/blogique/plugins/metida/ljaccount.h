@@ -23,6 +23,7 @@
 #include <QSet>
 #include <interfaces/blogique/iaccount.h>
 #include "profiletypes.h"
+#include "ljfriendentry.h"
 
 namespace LeechCraft
 {
@@ -70,7 +71,7 @@ namespace Metida
 		void Validate ();
 		void Init ();
 
-		void AddFriends (const QSet<std::shared_ptr<LJFriendEntry>>& friends);
+		void AddFriends (const QSet<LJFriendEntry_ptr>& friends);
 	public slots:
 		void handleValidatingFinished (bool success);
 		void handleXmlRpcError (int errorCode, const QString& msgInEng);

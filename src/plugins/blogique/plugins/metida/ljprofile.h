@@ -23,6 +23,7 @@
 #include <QSet>
 #include <interfaces/blogique/iprofile.h>
 #include "profiletypes.h"
+#include "ljfriendentry.h"
 
 namespace LeechCraft
 {
@@ -41,15 +42,15 @@ namespace Metida
 
 		QObject *ParentAccount_;
 		LJProfileData ProfileData_;
-		QSet<std::shared_ptr<LJFriendEntry>> Friends_;
+		QSet<LJFriendEntry_ptr> Friends_;
 	public:
 		LJProfile (QObject *parentAccount, QObject *parent = 0);
 		QWidget* GetProfileWidget ();
 		LJProfileData GetProfileData () const;
 		QObject* GetParentAccount () const;
 
-		void AddFriends (const QSet<std::shared_ptr<LJFriendEntry>>& friends);
-		QSet<std::shared_ptr<LJFriendEntry>> GetFriends () const;
+		void AddFriends (const QSet<LJFriendEntry_ptr>& friends);
+		QSet<LJFriendEntry_ptr> GetFriends () const;
 	private:
 		void SaveAvatar (QUrl url = QUrl ());
 
