@@ -667,7 +667,7 @@ namespace LeechCraft
 					dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IEntityHandler*> (plugin));
 
 		if (!(numHandlers + numDownloaders))
-			HandleNoHandlers (p);
+			return HandleNoHandlers (p);
 
 		const bool bcastCandidate = !id && !pr && numHandlers;
 
