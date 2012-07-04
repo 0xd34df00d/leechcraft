@@ -139,6 +139,61 @@ namespace Herbicide
 		return false;
 	}
 
+	void Plugin::ChallengeEntry (IHookProxy_ptr proxy, QObject *entryObj)
+	{
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		AskedEntries_ << entryObj;
+		const QString& text = tr ("Please answer to the following "
+				"question to verify you are not a bot and is welcome "
+				"to communicate with me:\n%1")
+					.arg (ConfWidget_->GetQuestion ());
+		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
+		OurMessages_ << msgObj;
+		qobject_cast<IMessage*> (msgObj)->Send ();
+
+		proxy->CancelDefault ();
+	}
+
+	void Plugin::GreetEntry (QObject *entryObj)
+	{
+		AllowedEntries_ << entryObj;
+
+		AskedEntries_.remove (entryObj);
+
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+
+		const QString& text = tr ("Nice, seems like you've answered "
+				"correctly. Please write again now what you wanted "
+				"to write.");
+		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
+		OurMessages_ << msgObj;
+		qobject_cast<IMessage*> (msgObj)->Send ();
+
+		if (DeniedAuth_.contains (entryObj))
+			QMetaObject::invokeMethod (entry->GetParentAccount (),
+					"authorizationRequested",
+					Q_ARG (QObject*, entryObj),
+					Q_ARG (QString, DeniedAuth_.take (entryObj)));
+	}
+
+	void Plugin::hookGotAuthRequest (IHookProxy_ptr proxy, QObject *entry, QString msg)
+	{
+		if (!IsConfValid ())
+			return;
+
+		if (!XmlSettingsManager::Instance ().property ("EnableForAuths").toBool ())
+			return;
+
+		if (IsEntryAllowed (entry))
+			return;
+
+		if (!AskedEntries_.contains (entry))
+		{
+			ChallengeEntry (proxy, entry);
+			DeniedAuth_ [entry] = msg;
+		}
+	}
+
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message)
 	{
@@ -171,29 +226,9 @@ namespace Herbicide
 			return;
 
 		if (!AskedEntries_.contains (entryObj))
-		{
-			AskedEntries_ << entryObj;
-			const QString& text = tr ("Please answer to the following "
-					"question to verify you are not a bot and is welcome "
-					"to communicate with me:\n%1")
-						.arg (ConfWidget_->GetQuestion ());
-			QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
-			OurMessages_ << msgObj;
-			qobject_cast<IMessage*> (msgObj)->Send ();
-
-			proxy->CancelDefault ();
-		}
+			ChallengeEntry (proxy, entryObj);
 		else if (ConfWidget_->GetAnswers ().contains (msg->GetBody ().toLower ()))
-		{
-			AllowedEntries_ << entryObj;
-			AskedEntries_.remove (entryObj);
-			const QString& text = tr ("Nice, seems like you've answered "
-					"correctly. Please write again now what you wanted "
-					"to write.");
-			QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
-			OurMessages_ << msgObj;
-			qobject_cast<IMessage*> (msgObj)->Send ();
-		}
+			GreetEntry (entryObj);
 		else
 		{
 			const QString& text = tr ("Sorry, you are wrong. Try again.");

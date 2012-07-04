@@ -25,6 +25,7 @@
 #include "core.h"
 #include "localcollection.h"
 #include "audiopropswidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -149,7 +150,11 @@ namespace LMP
 		const QFileInfo& fi = FSModel_->fileInfo (index);
 
 		if (fi.isDir ())
-			Player_->Enqueue (RecIterate (fi.absoluteFilePath ()));
+		{
+			const bool symLinks = XmlSettingsManager::Instance ()
+					.property ("FollowSymLinks").toBool ();
+			Player_->Enqueue (RecIterate (fi.absoluteFilePath (), symLinks));
+		}
 		else
 			Player_->Enqueue (QStringList (fi.absoluteFilePath ()));
 	}

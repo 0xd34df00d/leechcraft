@@ -435,11 +435,9 @@ SET (SRCS
 	pluginmanager.cpp
 	xmlsettingsmanager.cpp
 	pluginmanagerdialog.cpp
-	fancypopupmanager.cpp
 	skinengine.cpp
 	childactioneventfilter.cpp
 	tabmanager.cpp
-	logtoolbox.cpp
 	authenticationdialog.cpp
 	sslerrorsdialog.cpp
 	storagebackend.cpp
@@ -480,11 +478,9 @@ SET (HEADERS
 	pluginmanager.h
 	xmlsettingsmanager.h
 	pluginmanagerdialog.h
-	fancypopupmanager.h
 	skinengine.h
 	childactioneventfilter.h
 	tabmanager.h
-	logtoolbox.h
 	authenticationdialog.h
 	sslerrorsdialog.h
 	storagebackend.h
@@ -524,7 +520,6 @@ SET (FORMS
 	commonjobadder.ui
 	leechcraft.ui
 	pluginmanagerdialog.ui
-	logtoolbox.ui
 	authenticationdialog.ui
 	sslerrorsdialog.ui
 	handlerchoicedialog.ui

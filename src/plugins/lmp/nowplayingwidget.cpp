@@ -18,9 +18,11 @@
 
 #include "nowplayingwidget.h"
 #include <algorithm>
+#include <QMouseEvent>
 #include "mediainfo.h"
 #include "core.h"
 #include "localcollection.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -34,6 +36,8 @@ namespace LMP
 				SIGNAL (stateChanged (int)),
 				this,
 				SLOT (resetSimilarArtists ()));
+
+		Ui_.Art_->installEventFilter (this);
 	}
 
 	void NowPlayingWidget::SetSimilarArtists (Media::SimilarityInfos_t infos)
@@ -65,6 +69,8 @@ namespace LMP
 
 	void NowPlayingWidget::SetTrackInfo (const MediaInfo& info)
 	{
+		CurrentInfo_ = info;
+
 		const bool isNull = info.Title_.isEmpty () && info.Artist_.isEmpty ();
 		Ui_.TrackInfoLayout_->setEnabled (!isNull);
 
@@ -89,6 +95,15 @@ namespace LMP
 		Ui_.BioWidget_->SetCurrentArtist (info.Artist_);
 
 		Ui_.AudioProps_->SetProps (info);
+	}
+
+	bool NowPlayingWidget::eventFilter (QObject*, QEvent *event)
+	{
+		if (event->type () != QEvent::MouseButtonRelease)
+			return false;
+
+		ShowAlbumArt (CurrentInfo_.LocalPath_, static_cast<QMouseEvent*> (event)->pos ());
+		return true;
 	}
 
 	namespace

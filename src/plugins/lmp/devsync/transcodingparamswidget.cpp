@@ -16,25 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QString>
+#include "transcodingparamswidget.h"
+#include <QThread>
+#include "transcodingparams.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
-	struct TranscodingParams
+	TranscodingParamsWidget::TranscodingParamsWidget (QWidget *parent)
+	: QWidget (parent)
 	{
-		QString FileMask_;
+		Ui_.setupUi (this);
 
-		QString Format_;
-		int Quality_;
+		const int idealThreads = QThread::idealThreadCount ();
+		if (idealThreads > 0)
+		{
+			Ui_.ThreadsSlider_->setMaximum (idealThreads * 2);
+			Ui_.ThreadsSlider_->setValue (idealThreads > 1 ? idealThreads - 1 : 1);
+		}
+		else
+			Ui_.ThreadsSlider_->setMaximum (4);
+	}
 
-		int NumThreads_;
-	};
-}
+	TranscodingParams TranscodingParamsWidget::GetParams () const
+	{
+		const bool transcode = Ui_.TranscodingBox_->isChecked ();
+		return
+		{
+			Ui_.FilenameMask_->text (),
+			transcode ? Ui_.TranscodingFormat_->currentText () : QString (),
+			Ui_.QualitySlider_->value (),
+			Ui_.ThreadsSlider_->value ()
+		};
+	}
 }
 }

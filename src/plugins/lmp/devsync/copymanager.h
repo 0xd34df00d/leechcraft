@@ -19,19 +19,42 @@
 #pragma once
 
 #include <QObject>
+#include <QFile>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
+	class ISyncPlugin;
+
 	class CopyManager : public QObject
 	{
 		Q_OBJECT
 	public:
+		struct CopyJob
+		{
+			ISyncPlugin *Syncer_;
+			QString From_;
+			bool RemoveOnFinish_;
+			QString MountPoint_;
+			QString Filename_;
+		};
+	private:
+		QList<CopyJob> Queue_;
+		CopyJob CurrentJob_;
+	public:
 		CopyManager (QObject* = 0);
+
+		void Copy (const CopyJob&);
+	private:
+		void StartJob (const CopyJob&);
+		bool IsRunning () const;
+	private slots:
+		void handleUploadFinished (const QString& localPath,
+				QFile::FileError error, const QString& errorStr);
+	signals:
+		void startedCopying (const QString&);
+		void finishedCopying ();
 	};
-}
 }
 }

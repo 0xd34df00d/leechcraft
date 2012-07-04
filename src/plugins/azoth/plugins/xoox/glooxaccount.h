@@ -239,7 +239,6 @@ namespace Xoox
 		void handleServerAuthFailed ();
 		void feedClientPassword ();
 		void showPrivacyDialog ();
-		void handleResetClientConnection ();
 		void handleDestroyClient ();
 #ifdef ENABLE_MEDIACALLS
 		void handleIncomingCall (QXmppCall*);

@@ -33,19 +33,21 @@ namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
 	namespace
 	{
 		QStringList OggParams (const TranscodingParams& params)
 		{
-			return { "-acodec", "libvorbis", "-aq", QString::number (params.Quality_) };
+			return QStringList ("-acodec") << "libvorbis"
+					<< "-aq"
+					<< QString::number (params.Quality_);
 		}
 	}
 
 	TranscodeJob::TranscodeJob (const QString& path, const TranscodingParams& params, QObject* parent)
 	: QObject (parent)
 	, Process_ (new QProcess (this))
+	, OriginalPath_ (path)
+	, TargetPattern_ (params.FilePattern_)
 	{
 		QMap<QString, std::function<QStringList (TranscodingParams)>> trans;
 		trans ["ogg"] = OggParams;
@@ -57,13 +59,13 @@ namespace DumbSync
 			throw std::runtime_error ("unable to cd into temp dir");
 
 		const QFileInfo fi (path);
-		auto targetPath = dir.absoluteFilePath (fi.fileName () + '.' + params.Format_);
+		TranscodedPath_ = dir.absoluteFilePath (fi.fileName () + '.' + params.Format_);
 
 		QStringList args;
 		args << "-i" << path;
 		args << trans [params.Format_] (params);
 		args << "-map_metadata" << "0";
-		args << targetPath;
+		args << TranscodedPath_;
 
 		connect (Process_,
 				SIGNAL (finished (int, QProcess::ExitStatus)),
@@ -80,16 +82,33 @@ namespace DumbSync
 #endif
 	}
 
+	QString TranscodeJob::GetOrigPath () const
+	{
+		return OriginalPath_;
+	}
+
+	QString TranscodeJob::GetTranscodedPath () const
+	{
+		return TranscodedPath_;
+	}
+
+	QString TranscodeJob::GetTargetPattern () const
+	{
+		return TargetPattern_;
+	}
+
 	void TranscodeJob::handleFinished (int code, QProcess::ExitStatus status)
 	{
 		qDebug () << Q_FUNC_INFO << code << status;
-		qDebug () << Process_->readAllStandardError ();
-		emit done (!code);
+		emit done (this, !code);
+
+		if (code)
+			qWarning () << Q_FUNC_INFO
+					<< Process_->readAllStandardError ();
 	}
 
 	void TranscodeJob::handleReadyRead ()
 	{
 	}
-}
 }
 }

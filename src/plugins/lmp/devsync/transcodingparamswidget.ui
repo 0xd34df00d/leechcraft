@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DumbSyncParamsWidget</class>
- <widget class="QWidget" name="DumbSyncParamsWidget">
+ <class>TranscodingParamsWidget</class>
+ <widget class="QWidget" name="TranscodingParamsWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>438</width>
-    <height>137</height>
+    <height>147</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,6 +24,9 @@
      </property>
      <property name="whatsThis">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The following variables are allowed in the track filename: $artist, $year, $album, $trackNumber, $title.&lt;/p&gt;&lt;p&gt;Directories are separated by the '/' symbol. File extension is omitted.&lt;/p&gt;&lt;p&gt;For example, a filename could look like this:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;music/$artist/$year - $album/$trackNumber - $artist - $title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string notr="true">music/$artist/$year - $album/$trackNumber - $artist - $title</string>
      </property>
      <property name="placeholderText">
       <string>Track filename...</string>

@@ -48,9 +48,7 @@ namespace LeechCraft
 	class Core;
 	class PluginInfo;
 	class PluginManagerDialog;
-	class FancyPopupManager;
 	class ShortcutManager;
-	class LogToolBox;
 	class ToolbarGuard;
 
 	class MainWindow : public QMainWindow
@@ -65,8 +63,6 @@ namespace LeechCraft
 		QLabel *Clock_;
 		Util::GraphWidget *SpeedGraph_;
 		ShortcutManager *ShortcutManager_;
-		FancyPopupManager *FancyPopupManager_;
-		LogToolBox *LogToolBox_;
 		bool IsShown_;
 		bool WasMaximized_;
 		QString LanguageOnLoad_;
@@ -92,7 +88,6 @@ namespace LeechCraft
 		IShortcutProxy* GetShortcutProxy () const;
 		void SetAdditionalTitle (const QString&);
 		ToolbarGuard* GetGuard () const;
-		FancyPopupManager* GetFancyPopupManager () const;
 
 		QMenu* GetMainMenu () const;
 		void HideMainMenu ();
@@ -128,7 +123,6 @@ namespace LeechCraft
 		void handleAppStyle ();
 		void handleLanguage ();
 		void on_ActionFullscreenMode__triggered (bool);
-		void on_ActionLogger__triggered ();
 		void on_MainTabWidget__currentChanged (int);
 		void on_ActionShowToolBar__triggered (bool);
 		void handleShortcutFullscreenMode ();

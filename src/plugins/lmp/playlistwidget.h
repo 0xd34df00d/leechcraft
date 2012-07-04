@@ -18,29 +18,53 @@
 
 #pragma once
 
-#include <QObject>
+#include <QWidget>
+#include "ui_playlistwidget.h"
+#include "player.h"
+
+class QToolBar;
+class QActionGroup;
+class QUndoStack;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
-	class TranscodeManager;
-	class CopyManager;
-	struct TranscodingParams;
+	class Player;
 
-	class SyncManager : public QObject
+	class PlaylistWidget : public QWidget
 	{
 		Q_OBJECT
 
-		TranscodeManager *Transcoder_;
-		CopyManager *Copier_;
-	public:
-		SyncManager (QObject* = 0);
+		Ui::PlaylistWidget Ui_;
+		QToolBar *PlaylistToolbar_;
+		QActionGroup *PlayModesGroup_;
 
-		void AddFiles (const QStringList&, const TranscodingParams&);
+		QUndoStack *UndoStack_;
+
+		Player *Player_;
+
+		QAction *ActionRemoveSelected_;
+		QAction *ActionStopAfterSelected_;
+		QAction *ActionShowTrackProps_;
+		QAction *ActionShowAlbumArt_;
+	public:
+		PlaylistWidget (QWidget* = 0);
+
+		void SetPlayer (Player*);
+	private slots:
+		void on_Playlist__customContextMenuRequested (const QPoint&);
+		void handleChangePlayMode ();
+		void handlePlayModeChanged (Player::PlayMode);
+
+		void removeSelectedSongs ();
+		void setStopAfterSelected ();
+		void showTrackProps ();
+
+		void showAlbumArt ();
+
+		void handleSavePlaylist ();
+		void loadFromDisk ();
 	};
-}
 }
 }

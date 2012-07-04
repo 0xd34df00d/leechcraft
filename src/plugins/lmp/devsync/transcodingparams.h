@@ -16,27 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef LOGTOOLBOX_H
-#define LOGTOOLBOX_H
-#include "ui_logtoolbox.h"
+#pragma once
+
+#include <QString>
 
 namespace LeechCraft
 {
-	class LogToolBox : public QDialog
+namespace LMP
+{
+	struct TranscodingParams
 	{
-		Q_OBJECT
-		
-		Ui::LogToolBox Ui_;
-	public:
-		LogToolBox (QWidget* = 0);
-		virtual ~LogToolBox ();
-	public slots:
-		void log (const QString&);
-		void handleMaxLogLines ();
-	private slots:
-		void on_Clear__released ();
+		QString FilePattern_;
+
+		QString Format_;
+		int Quality_;
+
+		int NumThreads_;
 	};
-};
-
-#endif
-
+}
+}

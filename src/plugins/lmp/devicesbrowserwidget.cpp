@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "devicesbrowserwidget.h"
+#include <algorithm>
 #include <QMessageBox>
 #include <QInputDialog>
 #include <util/models/flattenfiltermodel.h>
@@ -25,8 +26,10 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/isyncplugin.h>
 #include "core.h"
-#include "devicesuploadmodel.h"
 #include "localcollection.h"
+#include "devsync/devicesuploadmodel.h"
+#include "devsync/syncmanager.h"
+#include "devsync/transcodingparams.h"
 
 namespace LeechCraft
 {
@@ -78,6 +81,23 @@ namespace LMP
 
 		DevUploadModel_->setSourceModel (Core::Instance ().GetLocalCollection ()->GetCollectionModel ());
 		Ui_.OurCollection_->setModel (DevUploadModel_);
+
+		connect (Core::Instance ().GetSyncManager (),
+				SIGNAL (uploadLog (QString)),
+				this,
+				SLOT (appendUpLog (QString)));
+
+		connect (Core::Instance ().GetSyncManager (),
+				SIGNAL (transcodingProgress (int, int)),
+				this,
+				SLOT (handleTranscodingProgress (int, int)));
+		connect (Core::Instance ().GetSyncManager (),
+				SIGNAL (uploadProgress (int, int)),
+				this,
+				SLOT (handleUploadProgress (int, int)));
+
+		Ui_.TSProgress_->hide ();
+		Ui_.UploadProgress_->hide ();
 	}
 
 	void DevicesBrowserWidget::InitializeDevices ()
@@ -116,13 +136,22 @@ namespace LMP
 		if (!CurrentSyncer_)
 			return;
 
+		const int idx = Ui_.DevicesSelector_->currentIndex ();
+		if (idx < 0)
+			return;
+
+		const auto& to = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
+		if (to.isEmpty ())
+			return;
+
 		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
 		QStringList paths;
 		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
 				[] (const QModelIndex& idx) { return idx.data (LocalCollection::Role::TrackPath).toString (); });
 		paths.removeAll (QString ());
 
-		CurrentSyncer_->Upload (paths, Ui_.UpOptsTab_->layout ()->itemAt (0)->widget ());
+		Ui_.UploadLog_->clear ();
+		Core::Instance ().GetSyncManager ()->AddFiles (CurrentSyncer_, to, paths, Ui_.TranscodingOpts_->GetParams ());
 	}
 
 	void DevicesBrowserWidget::on_DevicesSelector__activated (int idx)
@@ -186,16 +215,6 @@ namespace LMP
 
 			CurrentSyncer_ = suitables.value (items.indexOf (name));
 		}
-
-		if (!CurrentSyncer_)
-			return;
-
-		auto lay = Ui_.UpOptsTab_->layout ();
-		while (lay->count ())
-			lay->removeItem (lay->itemAt (0));
-
-		if (QWidget *w = CurrentSyncer_->MakeSyncParamsWidget ())
-			lay->addWidget (w);
 	}
 
 	void DevicesBrowserWidget::on_MountButton__released ()
@@ -206,6 +225,26 @@ namespace LMP
 
 		const auto& id = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::DevID).toString ();
 		DevMgr_->MountDevice (id);
+	}
+
+	void DevicesBrowserWidget::appendUpLog (QString text)
+	{
+		text.prepend (QTime::currentTime ().toString ("[HH:mm:ss.zzz] "));
+		Ui_.UploadLog_->append ("<code>" + text + "</code>");
+	}
+
+	void DevicesBrowserWidget::handleTranscodingProgress (int done, int total)
+	{
+		Ui_.TSProgress_->setVisible (done < total);
+		Ui_.TSProgress_->setMaximum (total);
+		Ui_.TSProgress_->setValue (done);
+	}
+
+	void DevicesBrowserWidget::handleUploadProgress (int done, int total)
+	{
+		Ui_.UploadProgress_->setVisible (done < total);
+		Ui_.UploadProgress_->setMaximum (total);
+		Ui_.UploadProgress_->setValue (done);
 	}
 }
 }

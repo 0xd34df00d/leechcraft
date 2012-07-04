@@ -42,6 +42,8 @@ namespace LMP
 
 		void SetProps (const QString&);
 		void SetProps (const MediaInfo&);
+	private slots:
+		void handleCopy ();
 	};
 }
 }

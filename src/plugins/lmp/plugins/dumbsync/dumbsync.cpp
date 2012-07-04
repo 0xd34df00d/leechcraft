@@ -17,12 +17,15 @@
  **********************************************************************/
 
 #include "dumbsync.h"
+#include <memory>
+#include <functional>
 #include <QIcon>
 #include <QFileInfo>
 #include <QDir>
-#include "dumbsyncparamswidget.h"
-#include "syncmanager.h"
-#include "transcodingparams.h"
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
+
+typedef std::shared_ptr<QFile> QFile_ptr;
 
 namespace LeechCraft
 {
@@ -32,7 +35,6 @@ namespace DumbSync
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		SyncMgr_ = new SyncManager;
 	}
 
 	void Plugin::SecondInit ()
@@ -75,6 +77,11 @@ namespace DumbSync
 	{
 	}
 
+	QObject* Plugin::GetObject ()
+	{
+		return this;
+	}
+
 	QString Plugin::GetSyncSystemName () const
 	{
 		return tr ("dumb copying");
@@ -93,23 +100,53 @@ namespace DumbSync
 		return SyncConfLevel::Medium;
 	}
 
-	QWidget* Plugin::MakeSyncParamsWidget ()
+	void Plugin::Upload (const QString& localPath, const QString& to, const QString& relPath)
 	{
-		return new DumbSyncParamsWidget ();
-	}
+		QString target = to;
+		if (!target.endsWith ('/') && !relPath.startsWith ('/'))
+			target += '/';
+		target += relPath;
 
-	void Plugin::Upload (const QStringList& paths, QWidget *w)
-	{
-		auto paramsWidget = qobject_cast<DumbSyncParamsWidget*> (w);
-		if (!paramsWidget)
+		const QString& dirPath = relPath.left (relPath.lastIndexOf ('/'));
+		if (!QDir (to).mkpath (dirPath))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "incorrect widget passed"
-					<< w;
+			emit uploadFinished (localPath,
+					QFile::PermissionsError,
+					tr ("Unable to create the directory path %1 on target device %2.")
+						.arg (dirPath)
+						.arg (to));
 			return;
 		}
 
-		SyncMgr_->AddFiles (paths, paramsWidget->GetParams ());
+		auto watcher = new QFutureWatcher<QFile_ptr> (this);
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleCopyFinished ()));
+
+		std::function<QFile_ptr (void)> copier = [target, localPath] ()
+				{
+					QFile_ptr file (new QFile (localPath));
+					file->copy (target);
+					return file;
+				};
+		const auto& future = QtConcurrent::run (copier);
+		watcher->setFuture (future);
+	}
+
+	void Plugin::handleCopyFinished ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<QFile_ptr>*> (sender ());
+		if (!watcher)
+			return;
+
+		const auto& file = watcher->result ();
+		qDebug () << Q_FUNC_INFO << file->error ();
+		if (file->error () != QFile::NoError)
+			qWarning () << Q_FUNC_INFO
+					<< file->errorString ();
+
+		emit uploadFinished (file->fileName (), file->error (), file->errorString ());
 	}
 }
 }

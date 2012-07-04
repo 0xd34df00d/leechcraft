@@ -345,6 +345,22 @@ namespace Azoth
 		if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
 			return;
 
+		if (QApplication::keyboardModifiers () & Qt::CTRL)
+			if (auto tab = Core::Instance ().GetChatTabsManager ()->GetActiveChatTab ())
+			{
+				auto text = index.data ().toString ();
+
+				auto edit = tab->getMsgEdit ();
+				if (edit->toPlainText ().isEmpty ())
+					text += XmlSettingsManager::Instance ()
+							.property ("PostAddressText").toString ();
+				else
+					text.prepend (" ");
+
+				tab->appendMessageText (text);
+				return;
+			}
+
 		Core::Instance ().OpenChat (ProxyModel_->mapToSource (index));
 	}
 

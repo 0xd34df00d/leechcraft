@@ -19,29 +19,35 @@
 #pragma once
 
 #include <QObject>
-#include <QProcess>
+#include <QPair>
+#include "transcodingparams.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
-	struct TranscodingParams;
+	class TranscodeJob;
 
-	class TranscodeJob : public QObject
+	class TranscodeManager : public QObject
 	{
 		Q_OBJECT
 
-		QProcess *Process_;
+		QList<QPair<QString, TranscodingParams>> Queue_;
+
+		QList<TranscodeJob*> RunningJobs_;
 	public:
-		TranscodeJob (const QString& path, const TranscodingParams& params, QObject* parent = 0);
+		TranscodeManager (QObject* = 0);
+
+		void Enqueue (const QStringList&, const TranscodingParams&);
+	private:
+		void EnqueueJob (const QPair<QString, TranscodingParams>&);
 	private slots:
-		void handleFinished (int, QProcess::ExitStatus);
-		void handleReadyRead ();
+		void handleDone (TranscodeJob*, bool);
 	signals:
-		void done (bool);
+		void fileStartedTranscoding (const QString& origPath);
+		void fileReady (const QString& origPath,
+				const QString& transcodedPath, const QString& pattern);
+		void fileFailed (const QString&);
 	};
-}
 }
 }

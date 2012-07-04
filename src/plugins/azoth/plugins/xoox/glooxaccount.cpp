@@ -163,10 +163,6 @@ namespace Xoox
 				SIGNAL (gotMUCInvitation (QVariantMap, QString, QString)),
 				this,
 				SIGNAL (mucInvitationReceived (QVariantMap, QString, QString)));
-		connect (ClientConnection_.get (),
-				SIGNAL (resetClientConnection ()),
-				this,
-				SLOT (handleResetClientConnection ()));
 
 #ifdef ENABLE_MEDIACALLS
 		connect (ClientConnection_->GetCallManager (),
@@ -857,13 +853,6 @@ namespace Xoox
 		PrivacyListsManager *mgr = ClientConnection_->GetPrivacyListsManager ();
 		PrivacyListsConfigDialog *plcd = new PrivacyListsConfigDialog (mgr);
 		plcd->show ();
-	}
-
-	void GlooxAccount::handleResetClientConnection ()
-	{
-		TransferManager_.reset ();
-		Init ();
-		ChangeState (GetState ());
 	}
 
 	void GlooxAccount::handleDestroyClient ()

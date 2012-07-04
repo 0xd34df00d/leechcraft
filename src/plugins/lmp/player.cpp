@@ -646,8 +646,10 @@ namespace LMP
 			Source_->pause ();
 		else
 		{
-			if (Source_->currentSource ().type () == Phonon::MediaSource::Invalid ||
-				Source_->currentSource ().type () == Phonon::MediaSource::Empty)
+			const auto& current = Source_->currentSource ();
+			const bool invalidSource = current.type () == Phonon::MediaSource::Invalid ||
+				current.type () == Phonon::MediaSource::Empty;
+			if (invalidSource)
 				Source_->setCurrentSource (CurrentQueue_.value (0));
 			Source_->play ();
 		}
@@ -755,7 +757,12 @@ namespace LMP
 	{
 		XmlSettingsManager::Instance ().setProperty ("LastSong", source.fileName ());
 
-		auto curItem = CurrentStation_ ? RadioItem_ : Items_ [source];
+		QStandardItem *curItem = 0;
+		if (CurrentStation_)
+			curItem = RadioItem_;
+		else if (Items_.contains (source))
+			curItem = Items_ [source];
+
 		if (curItem)
 			curItem->setData (true, Role::IsCurrent);
 

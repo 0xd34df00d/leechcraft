@@ -45,7 +45,6 @@ namespace Azoth
 		QString GetPassword (QObject*);
 		void SetPassword (const QString&, QObject*);
 		QString GetAccountPassword (QObject*, bool);
-		QString GetOSName ();
 		bool IsAutojoinAllowed ();
 		QString StateToString (State) const;
 		QString AuthStatusToString (AuthStatus) const;

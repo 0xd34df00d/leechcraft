@@ -22,10 +22,7 @@
 #include <QFileDialog>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
-#include <QToolButton>
 #include <QMenu>
-#include <QInputDialog>
-#include <QUndoStack>
 #include <QDialogButtonBox>
 #include <phonon/seekslider.h>
 #include <util/util.h>
@@ -36,15 +33,12 @@
 #include <interfaces/media/ilyricsfinder.h>
 #include <interfaces/core/icoreproxy.h>
 #include "player.h"
-#include "playlistdelegate.h"
 #include "util.h"
 #include "core.h"
 #include "localcollection.h"
 #include "collectiondelegate.h"
 #include "xmlsettingsmanager.h"
 #include "playlistmanager.h"
-#include "staticplaylistmanager.h"
-#include "playlistundocommand.h"
 
 #ifdef ENABLE_MPRIS
 #include "mpris/instance.h"
@@ -91,11 +85,9 @@ namespace LMP
 	, TC_ (info)
 	, CollectionFilterModel_ (new CollectionFilterModel (this))
 	, Player_ (new Player (this))
-	, PlaylistToolbar_ (new QToolBar ())
 	, TabToolbar_ (new QToolBar ())
 	, PlayPause_ (0)
 	, TrayMenu_ (new QMenu ("LMP", this))
-	, UndoStack_ (new QUndoStack (this))
 	{
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->setStretchFactor (0, 2);
@@ -116,6 +108,10 @@ namespace LMP
 				SIGNAL (scanProgressChanged (int)),
 				this,
 				SLOT (handleScanProgress (int)));
+		connect (Core::Instance ().GetLocalCollection (),
+				SIGNAL (scanFinished ()),
+				Ui_.ScanProgress_,
+				SLOT (hide ()));
 		Ui_.ScanProgress_->hide ();
 		handleSongChanged (MediaInfo ());
 
@@ -127,7 +123,8 @@ namespace LMP
 		SetupToolbar ();
 		SetupCollection ();
 		SetupPlaylistsTab ();
-		SetupPlaylist ();
+
+		Ui_.Playlist_->SetPlayer (Player_);
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowTrayIcon",
 				this, "handleShowTrayIcon");
@@ -330,122 +327,6 @@ namespace LMP
 				SLOT (handlePlaylistSelected (QModelIndex)));
 	}
 
-	void PlayerTab::SetupPlaylist ()
-	{
-		Ui_.Playlist_->setItemDelegate (new PlaylistDelegate (Ui_.Playlist_, Ui_.Playlist_));
-		Ui_.Playlist_->setModel (Player_->GetPlaylistModel ());
-		Ui_.Playlist_->expandAll ();
-		connect (Ui_.Playlist_,
-				SIGNAL (doubleClicked (QModelIndex)),
-				Player_,
-				SLOT (play (QModelIndex)));
-		connect (Player_,
-				SIGNAL (insertedAlbum (QModelIndex)),
-				Ui_.Playlist_,
-				SLOT (expand (QModelIndex)));
-
-		Ui_.PlaylistLayout_->addWidget (PlaylistToolbar_);
-
-		QAction *clearPlaylist = new QAction (tr ("Clear..."), this);
-		clearPlaylist->setProperty ("ActionIcon", "edit-clear-list");
-		connect (clearPlaylist,
-				SIGNAL (triggered ()),
-				Player_,
-				SLOT (clear ()));
-		PlaylistToolbar_->addAction (clearPlaylist);
-
-		QAction *savePlaylist = new QAction (tr ("Save playlist..."), this);
-		savePlaylist->setProperty ("ActionIcon", "document-save");
-		connect (savePlaylist,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleSavePlaylist ()));
-		PlaylistToolbar_->addAction (savePlaylist);
-
-		QAction *loadFiles = new QAction (tr ("Load from disk..."), this);
-		loadFiles->setProperty ("ActionIcon", "document-open");
-		connect (loadFiles,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (loadFromDisk ()));
-		PlaylistToolbar_->addAction (loadFiles);
-
-		PlaylistToolbar_->addSeparator ();
-
-		auto playButton = new QToolButton;
-		playButton->setIcon (Core::Instance ().GetProxy ()->GetIcon ("view-media-playlist"));
-		playButton->setPopupMode (QToolButton::InstantPopup);
-		QMenu *playMode = new QMenu (tr ("Play mode"));
-		playButton->setMenu (playMode);
-
-		const std::vector<Player::PlayMode> modes = { Player::PlayMode::Sequential,
-				Player::PlayMode::Shuffle, Player::PlayMode::RepeatTrack,
-				Player::PlayMode::RepeatAlbum, Player::PlayMode::RepeatWhole };
-		const std::vector<QString> names = { tr ("Sequential"),
-				tr ("Shuffle"), tr ("Repeat track"),
-				tr ("Repeat album"), tr ("Repeat whole") };
-		PlayModesGroup_ = new QActionGroup (this);
-		for (size_t i = 0; i < modes.size (); ++i)
-		{
-			QAction *action = new QAction (names [i], this);
-			action->setProperty ("PlayMode", static_cast<int> (modes.at (i)));
-			action->setCheckable (true);
-			action->setChecked (!i);
-			action->setActionGroup (PlayModesGroup_);
-			playMode->addAction (action);
-
-			connect (action,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleChangePlayMode ()));
-		}
-		connect (Player_,
-				SIGNAL (playModeChanged (Player::PlayMode)),
-				this,
-				SLOT (handlePlayModeChanged (Player::PlayMode)));
-		const int resumeMode = XmlSettingsManager::Instance ()
-				.Property ("PlayMode", static_cast<int> (Player::PlayMode::Sequential)).toInt ();
-		Player_->SetPlayMode (static_cast<Player::PlayMode> (resumeMode));
-
-		PlaylistToolbar_->addWidget (playButton);
-
-		PlaylistToolbar_->addAction (Util::CreateSeparator (this));
-		auto undo = UndoStack_->createUndoAction (this);
-		undo->setProperty ("ActionIcon", "edit-undo");
-		undo->setShortcut (QKeySequence ("Ctrl+Z"));
-		PlaylistToolbar_->addAction (undo);
-		auto redo = UndoStack_->createRedoAction (this);
-		redo->setProperty ("ActionIcon", "edit-redo");
-		PlaylistToolbar_->addAction (redo);
-
-		auto removeSelected = new QAction (tr ("Delete from playlist"), Ui_.Playlist_);
-		removeSelected->setProperty ("ActionIcon", "list-remove");
-		removeSelected->setShortcut (Qt::Key_Delete);
-		connect (removeSelected,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (removeSelectedSongs ()));
-		Ui_.Playlist_->addAction (removeSelected);
-
-		auto stopAfterSelected = new QAction (tr ("Stop after this track"), Ui_.Playlist_);
-		stopAfterSelected->setProperty ("ActionIcon", "media-playback-stop");
-		connect (stopAfterSelected,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (setStopAfterSelected ()));
-		Ui_.Playlist_->addAction (stopAfterSelected);
-
-		Ui_.Playlist_->addAction (Util::CreateSeparator (this));
-
-		auto showTrackProps = new QAction (tr ("Show track properties"), Ui_.Playlist_);
-		showTrackProps->setProperty ("ActionIcon", "document-properties");
-		connect (showTrackProps,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (showTrackProps ()));
-		Ui_.Playlist_->addAction (showTrackProps);
-	}
-
 	void PlayerTab::SetNowPlaying (const MediaInfo& info, const QPixmap& px)
 	{
 		Ui_.NowPlaying_->clear ();
@@ -564,15 +445,10 @@ namespace LMP
 
 	void PlayerTab::handleSongChanged (const MediaInfo& info)
 	{
-		QPixmap px;
-		if (info.LocalPath_.isEmpty ())
+		QPixmap px = FindAlbumArt (info.LocalPath_);
+		if (px.isNull ())
 			px = QIcon::fromTheme ("media-optical").pixmap (128, 128);
-		else
-		{
-			px = FindAlbumArt (info.LocalPath_);
-			if (px.isNull ())
-				px = QIcon::fromTheme ("media-optical").pixmap (128, 128);
-		}
+
 		Ui_.NPWidget_->SetAlbumArt (px);
 		const QPixmap& scaled = px.scaled (Ui_.NPArt_->minimumSize (),
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -684,23 +560,6 @@ namespace LMP
 		Ui_.ScanProgress_->setValue (progress);
 	}
 
-	void PlayerTab::handleChangePlayMode ()
-	{
-		auto mode = sender ()->property ("PlayMode").toInt ();
-		Player_->SetPlayMode (static_cast<Player::PlayMode> (mode));
-		XmlSettingsManager::Instance ().setProperty ("PlayMode", mode);
-	}
-
-	void PlayerTab::handlePlayModeChanged (Player::PlayMode mode)
-	{
-		Q_FOREACH (QAction *action, PlayModesGroup_->actions ())
-			if (action->property ("PlayMode").toInt () == static_cast<int> (mode))
-			{
-				action->setChecked (true);
-				return;
-			}
-	}
-
 	void PlayerTab::handlePlaylistSelected (const QModelIndex& index)
 	{
 		auto mgr = Core::Instance ().GetPlaylistManager ();
@@ -711,53 +570,11 @@ namespace LMP
 		Player_->Enqueue (sources, false);
 	}
 
-	void PlayerTab::removeSelectedSongs ()
-	{
-		auto selModel = Ui_.Playlist_->selectionModel ();
-		if (!selModel)
-			return;
-
-		auto indexes = selModel->selectedRows ();
-		if (indexes.isEmpty ())
-			indexes << Ui_.Playlist_->currentIndex ();
-		indexes.removeAll (QModelIndex ());
-
-		QList<Phonon::MediaSource> removedSources;
-		const QString& title = indexes.size () == 1 ?
-				tr ("Remove %1").arg (indexes.at (0).data ().toString ()) :
-				tr ("Remove %n song(s)", 0, indexes.size ());
-
-		Q_FOREACH (const auto& idx, indexes)
-			removedSources << Player_->GetIndexSources (idx);
-
-		auto cmd = new PlaylistUndoCommand (title, removedSources, Player_);
-		UndoStack_->push (cmd);
-	}
-
-	void PlayerTab::setStopAfterSelected ()
-	{
-		auto index = Ui_.Playlist_->currentIndex ();
-		if (!index.isValid ())
-			return;
-
-		Player_->SetStopAfter (index);
-	}
-
 	void PlayerTab::showCollectionTrackProps ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
 		const auto& info = index.data (LocalCollection::Role::TrackPath).value<QString > ();
 		if (info.isEmpty ())
-			return;
-
-		AudioPropsWidget::MakeDialog ()->SetProps (info);
-	}
-
-	void PlayerTab::showTrackProps ()
-	{
-		const auto& index = Ui_.Playlist_->currentIndex ();
-		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
-		if (info.LocalPath_.isEmpty ())
 			return;
 
 		AudioPropsWidget::MakeDialog ()->SetProps (info);
@@ -780,27 +597,6 @@ namespace LMP
 	{
 		const int nodeType = index.data (LocalCollection::Role::Node).value<int> ();
 		CollectionShowTrackProps_->setEnabled (nodeType == LocalCollection::NodeType::Track);
-	}
-
-	void PlayerTab::handleSavePlaylist ()
-	{
-		const auto& name = QInputDialog::getText (this,
-				tr ("Save playlist"),
-				tr ("Enter name for the playlist:"));
-		if (name.isEmpty ())
-			return;
-
-		auto mgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
-		mgr->SaveCustomPlaylist (name, Player_->GetQueue ());
-	}
-
-	void PlayerTab::loadFromDisk ()
-	{
-		QStringList files = QFileDialog::getOpenFileNames (this,
-				tr ("Load files"),
-				QDir::homePath (),
-				tr ("Music files (*.ogg *.flac *.mp3 *.wav);;All files (*.*)"));
-		Player_->Enqueue (files);
 	}
 
 	void PlayerTab::closeLMP ()
@@ -854,6 +650,5 @@ namespace LMP
 				break;
 		}
 	}
-
 }
 }

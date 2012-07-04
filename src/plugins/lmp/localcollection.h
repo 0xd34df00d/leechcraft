@@ -150,6 +150,7 @@ namespace LMP
 	signals:
 		void scanStarted (int);
 		void scanProgressChanged (int);
+		void scanFinished ();
 
 		void collectionReady ();
 

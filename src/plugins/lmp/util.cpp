@@ -20,6 +20,9 @@
 #include <algorithm>
 #include <QDirIterator>
 #include <QPixmap>
+#include <QDesktopWidget>
+#include <QLabel>
+#include <QApplication>
 #include <phonon/mediasource.h>
 #include "core.h"
 #include "localcollection.h"
@@ -68,6 +71,9 @@ namespace LMP
 
 	QString FindAlbumArtPath (const QString& near, bool ignoreCollection)
 	{
+		if (near.isEmpty ())
+			return QString ();
+
 		if (!ignoreCollection)
 		{
 			auto collection = Core::Instance ().GetLocalCollection ();
@@ -98,7 +104,26 @@ namespace LMP
 
 	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection)
 	{
+		if (near.isEmpty ())
+			return QPixmap ();
+
 		return QPixmap (FindAlbumArtPath (near, ignoreCollection));
+	}
+
+	void ShowAlbumArt (const QString& near, const QPoint& pos)
+	{
+		const auto& px = FindAlbumArt (near);
+		if (px.isNull ())
+			return;
+
+		auto label = new QLabel;
+		label->setWindowTitle (QObject::tr ("Album art"));
+		label->setWindowFlags (Qt::Tool);
+		label->setAttribute (Qt::WA_DeleteOnClose);
+		label->setScaledContents (true);
+		label->setMaximumSize (QApplication::desktop ()->availableGeometry (pos).size ());
+		label->setPixmap (px);
+		label->show ();
 	}
 
 	bool operator!= (const Phonon::MediaSource& left, const Phonon::MediaSource& right)

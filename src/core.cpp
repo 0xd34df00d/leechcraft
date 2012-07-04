@@ -55,7 +55,6 @@
 #include "sqlstoragebackend.h"
 #include "handlerchoicedialog.h"
 #include "tagsmanager.h"
-#include "fancypopupmanager.h"
 #include "application.h"
 #include "newtabmenumanager.h"
 #include "networkaccessmanager.h"
@@ -668,7 +667,7 @@ namespace LeechCraft
 					dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IEntityHandler*> (plugin));
 
 		if (!(numHandlers + numDownloaders))
-			HandleNoHandlers (p);
+			return HandleNoHandlers (p);
 
 		const bool bcastCandidate = !id && !pr && numHandlers;
 
@@ -757,15 +756,10 @@ namespace LeechCraft
 						property ("DontAskWhenSingle").toBool ())) &&
 				dia->GetFirstEntityHandler ())
 			return DoHandle (dia->GetFirstEntityHandler (), p);
-		else if (p.Mime_ == "x-leechcraft/notification")
-		{
-			HandleNotify (p);
-			return true;
-		}
 		else
 		{
-			emit log (tr ("Could not handle download entity %1.")
-					.arg (string));
+			qWarning () << Q_FUNC_INFO
+					<< "Could not handle download entity %1.";
 			return false;
 		}
 
@@ -802,54 +796,6 @@ namespace LeechCraft
 			return;
 
 		ReallyMainWindow_->statusBar ()->showMessage (origMessage, 30000);
-	}
-
-	void Core::HandleNotify (const Entity& entity)
-	{
-		const bool show = XmlSettingsManager::Instance ()->
-			property ("ShowFinishedDownloadMessages").toBool ();
-
-		QString pname;
-		IInfo *ii = qobject_cast<IInfo*> (sender ());
-		if (ii)
-		{
-			try
-			{
-				pname = ii->GetName ();
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< e.what ()
-					<< sender ();
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< sender ();
-			}
-		}
-
-		const QString& nheader = entity.Entity_.toString ();
-		const QString& ntext = entity.Additional_ ["Text"].toString ();
-		const int priority = entity.Additional_ ["Priority"].toInt ();
-
-		QString header;
-
-		const QString str ("%1: %2");
-
-		if (pname.isEmpty () || nheader.isEmpty ())
-			header = pname + nheader;
-		else
-			header = str.arg (pname).arg (nheader);
-
-		const QString& text = str.arg (header).arg (ntext);
-
-		emit log (text);
-
-		if (priority != PLog_ &&
-				show)
-			ReallyMainWindow_->GetFancyPopupManager ()->ShowMessage (entity);
 	}
 
 	void Core::InitDynamicSignals (QObject *plugin)

@@ -229,7 +229,10 @@ namespace LMP
 				SLOT (handleIterateFinished ()));
 		watcher->setProperty ("Path", path);
 		watcher->setProperty ("IsRoot", root);
-		watcher->setFuture (QtConcurrent::run (RecIterate, path, false));
+
+		const bool symLinks = XmlSettingsManager::Instance ()
+				.property ("FollowSymLinks").toBool ();
+		watcher->setFuture (QtConcurrent::run (RecIterate, path, symLinks));
 	}
 
 	void LocalCollection::Unscan (const QString& path)
@@ -702,7 +705,7 @@ namespace LMP
 		Q_FOREACH (const auto& info, infos)
 			PresentPaths_ += info.LocalPath_;
 
-		emit scanProgressChanged (infos.size ());
+		emit scanFinished ();
 
 		auto newArts = Storage_->AddToCollection (infos);
 		HandleNewArtists (newArts);

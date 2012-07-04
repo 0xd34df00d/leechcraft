@@ -21,13 +21,12 @@
 #include <algorithm>
 #include <QMessageBox>
 #include <QCloseEvent>
-#include <QModelIndex>
-#include <QStandardItemModel>
 #include <QCursor>
 #include <QShortcut>
 #include <QMenu>
 #include <QSplashScreen>
 #include <QBitmap>
+#include <QTime>
 #include <QDockWidget>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
@@ -37,10 +36,8 @@
 #include "core.h"
 #include "commonjobadder.h"
 #include "xmlsettingsmanager.h"
-#include "fancypopupmanager.h"
 #include "skinengine.h"
 #include "childactioneventfilter.h"
-#include "logtoolbox.h"
 #include "graphwidget.h"
 #include "shortcutmanager.h"
 #include "tagsviewer.h"
@@ -101,10 +98,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SIGNAL (loadProgress (const QString&)),
 			this,
 			SLOT (handleLoadProgress (const QString&)));
-	connect (&Core::Instance (),
-			SIGNAL (log (const QString&)),
-			LogToolBox_,
-			SLOT (log (const QString&)));
 
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
@@ -204,11 +197,6 @@ void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
 LeechCraft::ToolbarGuard* LeechCraft::MainWindow::GetGuard () const
 {
 	return Guard_;
-}
-
-LeechCraft::FancyPopupManager* LeechCraft::MainWindow::GetFancyPopupManager () const
-{
-	return FancyPopupManager_;
 }
 
 QMenu* LeechCraft::MainWindow::GetMainMenu () const
@@ -410,8 +398,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	SetStatusBar ();
 	ReadSettings ();
-
-	LogToolBox_ = new LogToolBox (this);
 
 	Ui_.MainTabWidget_->AddAction2TabBarLayout (QTabBar::LeftSide, Ui_.ActionMenu_);
 }
@@ -640,11 +626,6 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	}
 }
 
-void LeechCraft::MainWindow::on_ActionLogger__triggered ()
-{
-	LogToolBox_->show ();
-}
-
 void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 {
 	QToolBar *bar = Core::Instance ().GetToolBar (index);
@@ -790,11 +771,10 @@ void LeechCraft::MainWindow::handleLoadProgress (const QString& str)
 
 void LeechCraft::MainWindow::FillQuickLaunch ()
 {
-	QList<IActionsExporter*> exporters = Core::Instance ()
-			.GetPluginManager ()->GetAllCastableTo<IActionsExporter*> ();
-	Q_FOREACH (IActionsExporter *exp, exporters)
+	const auto& exporters = Core::Instance ().GetPluginManager ()->GetAllCastableTo<IActionsExporter*> ();
+	Q_FOREACH (auto exp, exporters)
 	{
-		QMap<QString, QList<QAction*>> map = exp->GetMenuActions ();
+		const auto& map = exp->GetMenuActions ();
 		if (!map.isEmpty ())
 			AddMenus (map);
 	}
@@ -804,9 +784,9 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 	if (proxy->IsCancelled ())
 		return;
 
-	Q_FOREACH (IActionsExporter *exp, exporters)
+	Q_FOREACH (auto exp, exporters)
 	{
-		QList<QAction*> actions = exp->GetActions (ActionsEmbedPlace::QuickLaunch);
+		const auto& actions = exp->GetActions (ActionsEmbedPlace::QuickLaunch);
 		if (actions.isEmpty ())
 			continue;
 
@@ -828,7 +808,7 @@ void LeechCraft::MainWindow::FillTray ()
 
 	const auto& trayMenus = Core::Instance ().GetPluginManager ()->
 			GetAllCastableTo<IActionsExporter*> ();
-	Q_FOREACH (IActionsExporter *o, trayMenus)
+	Q_FOREACH (auto o, trayMenus)
 	{
 		const auto& actions = o->GetActions (ActionsEmbedPlace::TrayMenu);
 		SkinEngine::Instance ().UpdateIconSet (actions);
@@ -841,7 +821,6 @@ void LeechCraft::MainWindow::FillTray ()
 
 	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.svg"), this);
 	handleShowTrayIconChanged ();
-	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
 	TrayIcon_->setContextMenu (iconMenu);
 	connect (TrayIcon_,
 			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
@@ -859,12 +838,9 @@ void LeechCraft::MainWindow::FillToolMenu ()
 	{
 		const auto& acts = e->GetActions (ActionsEmbedPlace::ToolsMenu);
 		SkinEngine::Instance ().UpdateIconSet (acts);
-
-		Q_FOREACH (QAction *action, acts)
-			MenuTools_->insertAction (Ui_.ActionLogger_, action);
-
+		MenuTools_->addActions (acts);
 		if (acts.size ())
-			MenuTools_->insertSeparator (Ui_.ActionLogger_);
+			MenuTools_->addSeparator ();
 	}
 
 	QMenu *ntm = Core::Instance ()

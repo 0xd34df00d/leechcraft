@@ -73,8 +73,9 @@ namespace Azoth
 		const QString& id = entry->GetEntryID ();
 		if (Entry2Tab_.contains (id))
 		{
-			emit raiseTab (Entry2Tab_ [id]);
-			return Entry2Tab_ [id];
+			LastCurrentTab_ = Entry2Tab_ [id];
+			emit raiseTab (LastCurrentTab_);
+			return LastCurrentTab_;
 		}
 
 		EverOpened_ << id;
@@ -82,6 +83,7 @@ namespace Azoth
 		QPointer<ChatTab> tab (new ChatTab (id));
 		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
+		LastCurrentTab_ = tab;
 
 		Q_FOREACH (const auto& prop, props)
 			tab->setProperty (prop.first, prop.second);
@@ -139,6 +141,11 @@ namespace Azoth
 	bool ChatTabsManager::IsOpenedChat (const QString& id) const
 	{
 		return EverOpened_.contains (id);
+	}
+
+	ChatTab* ChatTabsManager::GetActiveChatTab () const
+	{
+		return LastCurrentTab_;
 	}
 
 	void ChatTabsManager::UpdateEntryMapping (const QString& id, QObject *obj)

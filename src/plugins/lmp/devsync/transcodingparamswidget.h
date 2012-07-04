@@ -16,18 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "copymanager.h"
+#pragma once
+
+#include <QWidget>
+#include "ui_transcodingparamswidget.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
-{
-	CopyManager::CopyManager (QObject *parent)
-	: QObject (parent)
+	struct TranscodingParams;
+
+	class TranscodingParamsWidget : public QWidget
 	{
-	}
-}
+		Q_OBJECT
+
+		Ui::TranscodingParamsWidget Ui_;
+	public:
+		TranscodingParamsWidget (QWidget* = 0);
+
+		TranscodingParams GetParams () const;
+	};
 }
 }

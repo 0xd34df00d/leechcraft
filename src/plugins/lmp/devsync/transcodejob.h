@@ -16,39 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "logtoolbox.h"
-#include "xmlsettingsmanager.h"
+#pragma once
 
-using namespace LeechCraft;
+#include <QObject>
+#include <QProcess>
 
-LeechCraft::LogToolBox::LogToolBox (QWidget *parent)
-: QDialog (parent, Qt::Tool)
+namespace LeechCraft
 {
-	Ui_.setupUi (this);
-
-	XmlSettingsManager::Instance ()->RegisterObject ("MaxLogLines",
-			this, "handleMaxLogLines");
-	handleMaxLogLines ();
-}
-
-LeechCraft::LogToolBox::~LogToolBox ()
+namespace LMP
 {
-}
+	struct TranscodingParams;
 
-void LeechCraft::LogToolBox::log (const QString& message)
-{
-	Ui_.Logger_->append (message.trimmed ());
-}
+	class TranscodeJob : public QObject
+	{
+		Q_OBJECT
 
-void LeechCraft::LogToolBox::handleMaxLogLines ()
-{
-	Ui_.Logger_->document ()->
-		setMaximumBlockCount (XmlSettingsManager::Instance ()->
-				property ("MaxLogLines").toInt ());
-}
+		QProcess *Process_;
 
-void LeechCraft::LogToolBox::on_Clear__released ()
-{
-	Ui_.Logger_->clear ();
-}
+		const QString OriginalPath_;
+		QString TranscodedPath_;
+		const QString TargetPattern_;
+	public:
+		TranscodeJob (const QString& path, const TranscodingParams& params, QObject* parent = 0);
 
+		QString GetOrigPath () const;
+		QString GetTranscodedPath () const;
+		QString GetTargetPattern () const;
+	private slots:
+		void handleFinished (int, QProcess::ExitStatus);
+		void handleReadyRead ();
+	signals:
+		void done (TranscodeJob*, bool);
+	};
+}
+}
