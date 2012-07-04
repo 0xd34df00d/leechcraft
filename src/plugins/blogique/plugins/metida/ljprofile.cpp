@@ -55,9 +55,24 @@ namespace Metida
 		return ParentAccount_;
 	}
 
-	void LJProfile::AddFriends (const QSet<std::shared_ptr<LJFriendEntry>>& friends)
+	namespace
 	{
-		Friends_.unite (friends);
+		bool myfunc (const LJFriendEntry_ptr& fr1, const LJFriendEntry_ptr& fr2)
+		{
+			return fr1->GetUserName () < fr2->GetUserName ();
+		}
+	}
+	void LJProfile::AddFriends (const QList<LJFriendEntry_ptr>& friends)
+	{
+		Friends_ << friends;
+		std::sort (Friends_.begin (), Friends_.end (), myfunc);
+
+		Friends_.erase (std::unique (Friends_.begin (), Friends_.end (),
+				[] (decltype (Friends_.front ()) fr1, decltype (Friends_.front ()) fr2)
+				{
+					return fr1->GetUserName () == fr2->GetUserName ();
+				}), Friends_.end ());
+
 		emit profileUpdated ();
 	}
 
