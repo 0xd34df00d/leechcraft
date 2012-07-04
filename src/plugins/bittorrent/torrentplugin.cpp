@@ -127,7 +127,8 @@ namespace LeechCraft
 
 			QIcon TorrentPlugin::GetIcon () const
 			{
-				return QIcon (":/resources/images/bittorrent.svg");
+				static QIcon icon (":/resources/images/bittorrent.svg");
+				return icon;
 			}
 
 			qint64 TorrentPlugin::GetDownloadSpeed () const

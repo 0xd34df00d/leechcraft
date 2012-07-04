@@ -32,6 +32,7 @@ namespace Blogique
 {
 namespace Metida
 {
+	class LJFriendEntry;
 	class LJProfile;
 
 	class ProfileWidget : public QWidget
@@ -41,18 +42,34 @@ namespace Metida
 		Q_INTERFACES (LeechCraft::Blogique::IProfileWidget)
 
 		Ui::ProfileWidget Ui_;
+
+		enum Columns
+		{
+			Name
+		};
+
 		LJProfile *Profile_;
 		QStandardItemModel *FriendsModel_;
 		QStandardItemModel *CommunitiesModel_;
-		QHash<QStandardItem*, LJFriendGroup> ItemToFriendGroup_;
+		QHash<QStandardItem*, LJFriendGroup> Item2FriendGroup_;
+		QHash<QStandardItem*, LJFriendEntry> Item2Friend_;
 	public:
 		ProfileWidget (LJProfile *profile, QWidget *parent = 0);
 	private:
 		void RereadProfileData ();
 		void FillFriends (const QList<LJFriendGroup>& groups);
 		void FillCommunities (const QStringList& communities);
+		void ReFillModels ();
 	public slots:
 		void updateProfile ();
+	private slots:
+		void on_ColoringFriendsList__toggled (bool toggle);
+		void on_AddFriend__released ();
+		void on_EditFriend__released ();
+		void on_DeleteFriend__released ();
+
+	signals:
+		void coloringItemChanged ();
 	};
 }
 }

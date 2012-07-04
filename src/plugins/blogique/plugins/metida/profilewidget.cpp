@@ -19,10 +19,14 @@
 #include "profilewidget.h"
 #include <QtDebug>
 #include <QStandardItemModel>
+#include <QMessageBox>
 #include <util/util.h>
 #include "ljprofile.h"
 #include "ljaccount.h"
 #include "ljfriendentry.h"
+#include "frienditemdelegate.h"
+#include "xmlsettingsmanager.h"
+#include "addeditfrienddialog.h"
 
 namespace LeechCraft
 {
@@ -37,10 +41,19 @@ namespace Metida
 	, CommunitiesModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+
 		Ui_.FriendsView_->setModel (FriendsModel_);
+		FriendItemDelegate *friendDelegate = new FriendItemDelegate (Ui_.FriendsView_);
+		connect (this,
+				SIGNAL (coloringItemChanged ()),
+				friendDelegate,
+				SLOT (handleColoringItemChanged ()));
+		Ui_.FriendsView_->setItemDelegate (friendDelegate);
+
 		Ui_.CommunitiesView_->setModel (CommunitiesModel_);
-		FriendsModel_->setHorizontalHeaderLabels ({tr ("Nick")});
-		CommunitiesModel_->setHorizontalHeaderLabels ({tr ("Name")});
+
+		Ui_.ColoringFriendsList_->setChecked (XmlSettingsManager::Instance ()
+				.Property ("ColoringFriendsList", true).toBool ());
 
 		updateProfile ();
 	}
@@ -56,8 +69,7 @@ namespace Metida
 				.absoluteFilePath (acc->GetAccountID ().toBase64 ().replace ('/', '_'));
 		Ui_.JournalPic_->setPixmap (QPixmap (path));
 
-		FillFriends (data.FriendGroups_);
-		FillCommunities (data.Communities_);
+		ReFillModels ();
 	}
 
 	void ProfileWidget::FillFriends (const QList<LJFriendGroup>& groups)
@@ -65,27 +77,38 @@ namespace Metida
 		for (const auto& group : groups)
 		{
 			QStandardItem *item = new QStandardItem (group.Name_);
-			ItemToFriendGroup_ [item] = group;
+			Item2FriendGroup_ [item] = group;
 			item->setEditable (false);
 			FriendsModel_->appendRow (item);
 		}
 
+		QStandardItem *withoutGroupItem = 0;
 		for (const auto& fr : Profile_->GetFriends ())
 		{
 			QStandardItem *item = new QStandardItem (fr->GetUserName ());
 			item->setEditable (false);
-			item->setBackground (QBrush (fr->GetBGColor ()));
-			item->setForeground (QBrush (fr->GetFGColor ()));
-			for (int i = 0; i < FriendsModel_->rowCount (); ++i)
+			item->setData (fr->GetBGColor ().name (), ItemColorRoles::BackgroundColor);
+			item->setData (fr->GetFGColor ().name (), ItemColorRoles::ForegroundColor);
+
+			bool found = false;
+			for (const auto& parentItem : Item2FriendGroup_.keys ())
 			{
-				QStandardItem *parentItem = FriendsModel_->item (i);
-				qDebug () << Q_FUNC_INFO << parentItem->text ()
-						<< ItemToFriendGroup_ [parentItem].Id_
-						<< ItemToFriendGroup_ [parentItem].RealId_
-						<< item->text ()
-						<< fr->GetGroupMask ();
-				if (ItemToFriendGroup_ [parentItem].RealId_ == fr->GetGroupMask ())
+				if (Item2FriendGroup_ [parentItem].RealId_ == fr->GetGroupMask ())
+				{
 					parentItem->appendRow (item);
+					found = true;
+				}
+			}
+
+			if (!found)
+			{
+				if (!withoutGroupItem)
+				{
+					withoutGroupItem = new QStandardItem (tr ("Without group"));
+					FriendsModel_->appendRow (withoutGroupItem);
+				}
+
+				withoutGroupItem->appendRow (item);
 			}
 		}
 	}
@@ -100,6 +123,21 @@ namespace Metida
 		}
 	}
 
+	void ProfileWidget::ReFillModels ()
+	{
+		const LJProfileData& data = Profile_->GetProfileData ();
+
+		FriendsModel_->clear ();
+		FriendsModel_->setHorizontalHeaderLabels ({ tr ("Nick") });
+		Item2Friend_.clear ();
+		Item2FriendGroup_.clear();
+		FillFriends (data.FriendGroups_);
+
+		CommunitiesModel_->clear ();
+		CommunitiesModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+		FillCommunities (data.Communities_);
+	}
+
 	void ProfileWidget::updateProfile ()
 	{
 		if (Profile_)
@@ -107,6 +145,65 @@ namespace Metida
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "Profile is set to 0";
+	}
+
+	void ProfileWidget::on_ColoringFriendsList__toggled (bool toggle)
+	{
+		XmlSettingsManager::Instance ().setProperty ("ColoringFriendsList", toggle);
+		emit coloringItemChanged ();
+	}
+
+	void ProfileWidget::on_AddFriend__released ()
+	{
+		std::unique_ptr<AddEditFriendDialog> aefd (new AddEditFriendDialog (Profile_));
+		if (aefd->exec () == QDialog::Rejected)
+			return;
+
+		const QString& userName = aefd->GetUserName ();
+		const QString& bgcolor = aefd->GetBackgroundColorName ();
+		const QString& fgcolor = aefd->GetForegroundColorName ();
+		uint realId =  aefd->GetGroupRealId ();
+
+		LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
+		if (!account)
+			return;
+
+		account->AddNewFriend (userName, bgcolor, fgcolor, realId);
+	}
+
+	void ProfileWidget::on_EditFriend__released ()
+	{
+	}
+
+	void ProfileWidget::on_DeleteFriend__released ()
+	{
+		auto indexList = Ui_.FriendsView_->selectionModel ()->selectedIndexes ();
+		if (indexList.isEmpty ())
+			return;
+
+		int res = QMessageBox::question (this,
+				tr ("Delete friend."),
+				tr ("Are you sure to delete selected users from your friends?"
+					"\n<i>Note: if you select group all users in this group will be deleted</i>"));
+
+		if (res == QMessageBox::Ok)
+		{
+			LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
+			if (!account)
+				return;
+
+			QStringList names;
+			for (const auto& index : indexList)
+			{
+				if (!index.parent ().isValid ())
+					for (int i = 0; i < FriendsModel_->rowCount (index); ++i)
+						names << FriendsModel_->index (i, Columns::Name, index).data ().toString ();
+				else
+					names << index.sibling (index.row (), Columns::Name).data ().toString ();
+			}
+			names.removeDuplicates ();
+			account->DeleteFriends (names);
+		}
 	}
 
 }

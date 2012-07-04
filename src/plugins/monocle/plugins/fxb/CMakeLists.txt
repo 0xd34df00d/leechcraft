@@ -16,10 +16,10 @@ SET (SRCS
 	document.cpp
 	documentadapter.cpp
 	fb2converter.cpp
+	toclink.cpp
 	)
 
 ADD_LIBRARY (leechcraft_monocle_fxb SHARED
-	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_monocle_fxb

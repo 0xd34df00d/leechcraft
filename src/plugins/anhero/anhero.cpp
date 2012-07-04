@@ -71,7 +71,8 @@ namespace AnHero
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/resources/images/anhero.svg");
+		static QIcon icon (":/resources/images/anhero.svg");
+		return icon;
 	}
 }
 }

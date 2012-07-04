@@ -58,7 +58,8 @@ namespace FileScheme
 
 	QIcon FileScheme::GetIcon () const
 	{
-		return QIcon (":/plugins/poshuku/plugins/filescheme/resources/images/poshuku_filescheme.svg");
+		static QIcon icon (":/plugins/poshuku/plugins/filescheme/resources/images/poshuku_filescheme.svg");
+		return icon;
 	}
 
 	QStringList FileScheme::Provides () const

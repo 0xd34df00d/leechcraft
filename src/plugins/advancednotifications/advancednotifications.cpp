@@ -88,7 +88,8 @@ namespace AdvancedNotifications
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/advancednotifications/resources/images/advancednotifications.svg");
+		static QIcon icon (":/plugins/advancednotifications/resources/images/advancednotifications.svg");
+		return icon;
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const

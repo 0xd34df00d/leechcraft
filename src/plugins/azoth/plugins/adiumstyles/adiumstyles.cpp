@@ -57,7 +57,8 @@ namespace AdiumStyles
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/adiumstyles/resources/images/adiumstyles.svg");
+		static QIcon icon (":/plugins/azoth/plugins/adiumstyles/resources/images/adiumstyles.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

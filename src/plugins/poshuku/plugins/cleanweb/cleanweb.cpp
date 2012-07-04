@@ -90,7 +90,8 @@ namespace CleanWeb
 
 	QIcon CleanWeb::GetIcon () const
 	{
-		return QIcon (":/plugins/poshuku/plugins/cleanweb/resources/images/poshuku_cleanweb.svg");
+		static QIcon icon (":/plugins/poshuku/plugins/cleanweb/resources/images/poshuku_cleanweb.svg");
+		return icon;
 	}
 
 	QStringList CleanWeb::Provides () const

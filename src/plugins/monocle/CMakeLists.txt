@@ -17,31 +17,26 @@ SET (SRCS
 	filewatcher.cpp
 	tocwidget.cpp
 	presenterwidget.cpp
-	)
-SET (HEADERS
-	monocle.h
-	documenttab.h
-	core.h
-	pagegraphicsitem.h
-	filewatcher.h
-	tocwidget.h
-	presenterwidget.h
+	pagesview.cpp
 	)
 SET (FORMS
 	documenttab.ui
 	tocwidget.ui
 	)
 SET (RESOURCES monocleresources.qrc)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+CreateTrVars ("monocle" "en;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
+ADD_CUSTOM_COMMAND (OUTPUT
+	${COMPILED_TRANSLATIONS}
+	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
+	DEPENDS ${TRANSLATIONS}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
 ADD_LIBRARY (leechcraft_monocle SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
@@ -50,6 +45,7 @@ TARGET_LINK_LIBRARIES (leechcraft_monocle
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_monocle DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
 OPTION (ENABLE_MONOCLE_FXB "Enable FictionBook backend for Monocle" ON)
 OPTION (ENABLE_MONOCLE_PDF "Enable PDF backend for Monocle" ON)

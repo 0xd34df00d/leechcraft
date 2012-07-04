@@ -1,0 +1,34 @@
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
+PROJECT (leechcraft_lmp_dumbsync)
+INCLUDE (InitLCPlugin OPTIONAL)
+
+INCLUDE_DIRECTORIES (${LMP_INCLUDE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}
+	)
+
+SET (DUMBSYNC_SRCS
+	dumbsync.cpp
+	copymanager.cpp
+	dumbsyncparamswidget.cpp
+	syncmanager.cpp
+	transcodemanager.cpp
+	transcodejob.cpp
+	)
+SET (DUMBSYNC_FORMS
+	dumbsyncparamswidget.ui
+	)
+QT4_WRAP_UI (DUMBSYNC_UIS_H ${DUMBSYNC_FORMS})
+
+ADD_LIBRARY (leechcraft_lmp_dumbsync SHARED
+	${DUMBSYNC_COMPILED_TRANSLATIONS}
+	${DUMBSYNC_SRCS}
+	${DUMBSYNC_UIS_H}
+	)
+TARGET_LINK_LIBRARIES (leechcraft_lmp_dumbsync
+	${QT_LIBRARIES}
+	${LEECHCRAFT_LIBRARIES}
+	)
+
+INSTALL (TARGETS leechcraft_lmp_dumbsync DESTINATION ${LC_PLUGINS_DEST})

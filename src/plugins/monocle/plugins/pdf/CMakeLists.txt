@@ -27,7 +27,6 @@ IF (NOT LC_NO_MOC)
 ENDIF (NOT LC_NO_MOC)
 
 ADD_LIBRARY (leechcraft_monocle_pdf SHARED
-	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	)

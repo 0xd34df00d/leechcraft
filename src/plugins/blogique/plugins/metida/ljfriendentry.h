@@ -29,6 +29,9 @@ namespace Blogique
 {
 namespace Metida
 {
+	class LJFriendEntry;
+	typedef std::shared_ptr<LJFriendEntry> LJFriendEntry_ptr;
+
 	class LJFriendEntry : public QObject
 	{
 		Q_OBJECT

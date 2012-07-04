@@ -114,7 +114,8 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon (":/resources/images/networkmonitor.svg");
+				static QIcon icon (":/resources/images/networkmonitor.svg");
+				return icon;
 			}
 
 			QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const

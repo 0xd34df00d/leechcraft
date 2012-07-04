@@ -26,7 +26,6 @@
 #include <interfaces/blogique/iaccount.h>
 #include "core.h"
 #include "profilewidget.h"
-#include "ljfriendentry.h"
 
 namespace LeechCraft
 {
@@ -76,9 +75,14 @@ namespace Metida
 		emit profileUpdated ();
 	}
 
-	QSet<std::shared_ptr<LJFriendEntry>> LJProfile::GetFriends () const
+	QList<LJFriendEntry_ptr> LJProfile::GetFriends () const
 	{
 		return ProfileData_.Friends_;
+	}
+
+	QList<LJFriendGroup> LJProfile::GetFriendGroups () const
+	{
+		return ProfileData_.FriendGroups_;
 	}
 
 	void LJProfile::SaveAvatar (QUrl avatarUrl)

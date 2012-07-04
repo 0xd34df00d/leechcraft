@@ -80,7 +80,8 @@ namespace Laure
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/laure/resources/img/laure.svg");
+		static QIcon icon (":/plugins/laure/resources/img/laure.svg");
+		return icon;
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const

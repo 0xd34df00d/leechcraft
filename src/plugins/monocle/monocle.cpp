@@ -18,8 +18,11 @@
 
 #include "monocle.h"
 #include <QIcon>
+#include <qurl.h>
+#include <util/util.h>
 #include "core.h"
 #include "documenttab.h"
+#include <interfaces/entitytesthandleresult.h>
 
 namespace LeechCraft
 {
@@ -27,6 +30,8 @@ namespace Monocle
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("monocle");
+
 		Core::Instance ().SetProxy (proxy);
 
 		DocTabInfo_ =
@@ -65,7 +70,33 @@ namespace Monocle
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/monocle/resources/images/monocle.svg");
+		static QIcon icon (":/monocle/resources/images/monocle.svg");
+		return icon;
+	}
+
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
+	{
+		if (!e.Entity_.canConvert<QUrl> ())
+			return EntityTestHandleResult ();
+
+		const auto& url = e.Entity_.toUrl ();
+		if (url.scheme () != "file")
+			return EntityTestHandleResult ();
+
+		const auto& local = url.toLocalFile ();
+		if (!QFile::exists (local))
+			return EntityTestHandleResult ();
+
+		return Core::Instance ().CanLoadDocument (local) ?
+				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult ();
+	}
+
+	void Plugin::Handle (Entity e)
+	{
+		auto tab = new DocumentTab (DocTabInfo_, this);
+		tab->SetDoc (e.Entity_.toUrl ().toLocalFile ());
+		EmitTab (tab);
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const

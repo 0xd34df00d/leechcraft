@@ -80,7 +80,8 @@ namespace Auscrie
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/resources/images/auscrie.svg");
+		static QIcon icon (":/resources/images/auscrie.svg");
+		return icon;
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const

@@ -80,7 +80,8 @@ namespace Kinotify
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/kinotify/resources/images/kinotify.svg");
+		static QIcon icon (":/plugins/kinotify/resources/images/kinotify.svg");
+		return icon;
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const

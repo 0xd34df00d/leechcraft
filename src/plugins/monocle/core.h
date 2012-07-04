@@ -41,6 +41,8 @@ namespace Monocle
 		ICoreProxy_ptr GetProxy () const;
 
 		void AddPlugin (QObject*);
+
+		bool CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
 	};
 }

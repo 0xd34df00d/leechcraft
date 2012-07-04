@@ -29,7 +29,7 @@ namespace LeechCraft
 {
 namespace GmailNotifier
 {
-	void GmailNotifier::Init (ICoreProxy_ptr proxy)
+	void GmailNotifier::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("gmailnotifier");
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
@@ -39,7 +39,7 @@ namespace GmailNotifier
 				this,
 				"setAuthorization");
 
-		GmailChecker_ = new GmailChecker (proxy, this);
+		GmailChecker_ = new GmailChecker (this);
 		setAuthorization ();
 
 		UpdateTimer_ = new QTimer (this);
@@ -99,7 +99,8 @@ namespace GmailNotifier
 
 	QIcon GmailNotifier::GetIcon () const
 	{
-		return QIcon (":/gmailnotifier.svg");
+		static QIcon icon (":/gmailnotifier.svg");
+		return icon;
 	}
 
 	Util::XmlSettingsDialog_ptr GmailNotifier::GetSettingsDialog () const

@@ -53,6 +53,7 @@ namespace UDisks
 		bool IsValid () const;
 
 		QAbstractItemModel* GetDevicesModel () const;
+		void MountDevice (const QString&);
 	private:
 		void InitialEnumerate ();
 		void AddPath (const QDBusObjectPath&);

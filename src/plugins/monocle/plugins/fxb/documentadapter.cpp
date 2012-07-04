@@ -80,8 +80,6 @@ namespace FXB
 	void DocumentAdapter::SetDocument (QTextDocument *doc)
 	{
 		Doc_.reset (doc);
-		if (Doc_)
-			Doc_->setPageSize (QSize (600, 800));
 	}
 }
 }

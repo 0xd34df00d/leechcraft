@@ -25,6 +25,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/ipluginready.h>
 
 namespace LeechCraft
 {
@@ -39,10 +40,16 @@ namespace LMP
 				 , public IEntityHandler
 				 , public IActionsExporter
 				 , public IHaveRecoverableTabs
+				 , public IPluginReady
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IEntityHandler IActionsExporter
-				IHaveRecoverableTabs)
+		Q_INTERFACES (IInfo
+				IHaveTabs
+				IHaveSettings
+				IEntityHandler
+				IActionsExporter
+				IHaveRecoverableTabs
+				IPluginReady)
 
 		TabClassInfo PlayerTC_;
 		PlayerTab *PlayerTab_;
@@ -71,6 +78,9 @@ namespace LMP
 		QMap<QString, QList<QAction*>> GetMenuActions () const;
 
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject* plugin);
 	private slots:
 		void handleFullRaiseRequested ();
 	signals:

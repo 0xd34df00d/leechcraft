@@ -83,7 +83,8 @@ namespace Acetamide
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/acetamide/resources/images/acetamide.svg");
+		static QIcon icon (":/plugins/azoth/plugins/acetamide/resources/images/acetamide.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

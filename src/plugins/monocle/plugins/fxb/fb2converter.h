@@ -22,7 +22,9 @@
 #include <QString>
 #include <QObject>
 #include <QHash>
+#include <QStack>
 #include <interfaces/monocle/idocument.h>
+#include <interfaces/monocle/ihavetoc.h>
 
 class QTextCharFormat;
 class QTextCursor;
@@ -36,12 +38,19 @@ namespace Monocle
 {
 namespace FXB
 {
+	class Document;
+
 	class FB2Converter : public QObject
 	{
+		Document *ParentDoc_;
+
 		const QDomDocument& FB2_;
 
 		QTextDocument *Result_;
 		DocumentInfo DocInfo_;
+		TOCEntryLevel_t TOC_;
+
+		QStack<TOCEntry*> CurrentTOCStack_;
 
 		QTextCursor *Cursor_;
 
@@ -52,12 +61,13 @@ namespace FXB
 
 		QString Error_;
 	public:
-		FB2Converter (const QDomDocument&);
+		FB2Converter (Document*, const QDomDocument&);
 		~FB2Converter ();
 
 		QString GetError () const;
 		QTextDocument* GetResult () const;
 		DocumentInfo GetDocumentInfo () const;
+		TOCEntryLevel_t GetTOC () const;
 	private:
 		void HandleDescription (const QDomElement&);
 		void HandleBody (const QDomElement&);

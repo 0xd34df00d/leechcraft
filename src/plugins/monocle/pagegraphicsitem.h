@@ -43,6 +43,7 @@ namespace Monocle
 		PageGraphicsItem (IDocument_ptr, int, QGraphicsItem* = 0);
 
 		void SetScale (double, double);
+		int GetPageNum () const;
 	protected:
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*);
 		void hoverMoveEvent (QGraphicsSceneHoverEvent*);

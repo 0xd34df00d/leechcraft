@@ -23,6 +23,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
 {
@@ -32,12 +33,13 @@ namespace Monocle
 
 	class Plugin : public QObject
 					, public IInfo
+					, public IEntityHandler
 					, public IHaveTabs
 					, public IPluginReady
 					, public IHaveRecoverableTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IPluginReady IHaveRecoverableTabs)
+		Q_INTERFACES (IInfo IEntityHandler IHaveTabs IPluginReady IHaveRecoverableTabs)
 
 		TabClassInfo DocTabInfo_;
 	public:
@@ -48,6 +50,9 @@ namespace Monocle
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
