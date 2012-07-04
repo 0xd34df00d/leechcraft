@@ -30,6 +30,8 @@ namespace Metida
 	AddEditFriendDialog::AddEditFriendDialog (LJProfile *profile, QWidget *parent)
 	: QDialog (parent)
 	, Profile_ (profile)
+	, BackgroundColor_ ("#ffffff")
+	, ForegroundColor_ ("#000000")
 	{
 		Ui_.setupUi (this);
 
@@ -43,7 +45,7 @@ namespace Metida
 		for (const auto& frGroup : Profile_->GetFriendGroups ())
 		{
 			Ui_.Groups_->addItem (frGroup.Name_);
-			Ui_.Groups_->setItemData (Ui_.Groups_->count (),
+			Ui_.Groups_->setItemData (Ui_.Groups_->count () - 1,
 					frGroup.RealId_,
 					GroupRoles::RealGroupId);
 		}
@@ -88,7 +90,7 @@ namespace Metida
 
 	void AddEditFriendDialog::on_SelectForegroundColor__released ()
 	{
-		const QColor& color = QColorDialog::getColor (QColor  ("#ffffff"),
+		const QColor& color = QColorDialog::getColor (QColor  ("#000000"),
 				this,
 				tr ("Select foreground color for new user."));
 		if (!color.isValid ())

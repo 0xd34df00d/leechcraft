@@ -78,9 +78,12 @@ namespace Metida
 		void AddNewFriend (const QString& username,
 				const QString& bgcolor, const QString& fgcolor, uint groupId);
 		void DeleteFriends (const QStringList& usernames);
+
 	public slots:
 		void handleValidatingFinished (bool success);
 		void handleXmlRpcError (int errorCode, const QString& msgInEng);
+		void updateProfile ();
+
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();

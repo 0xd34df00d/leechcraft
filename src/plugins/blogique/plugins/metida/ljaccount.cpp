@@ -247,6 +247,11 @@ namespace Metida
 		Core::Instance ().SendEntity (e);
 	}
 
+	void LJAccount::updateProfile ()
+	{
+		LJXmlRpc_->UpdateProfileInfo ();
+	}
+
 }
 }
 }

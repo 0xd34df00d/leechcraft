@@ -67,7 +67,7 @@ namespace Metida
 		void on_AddFriend__released ();
 		void on_EditFriend__released ();
 		void on_DeleteFriend__released ();
-
+		void on_UpdateProfile__released ();
 	signals:
 		void coloringItemChanged ();
 	};

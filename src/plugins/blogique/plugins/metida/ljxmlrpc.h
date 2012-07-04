@@ -50,6 +50,8 @@ namespace Metida
 		void AddNewFriend (const QString& username,
 				const QString& bgcolor, const QString& fgcolor, uint groupId);
 		void DeleteFriends (const QStringList& usernames);
+
+		void UpdateProfileInfo ();
 	private:
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
@@ -64,6 +66,7 @@ namespace Metida
 				uint groupId, const QString& challenge);
 		void DeleteFriendsRequest (const QStringList& usernames,
 				const QString& challenge);
+
 	private slots:
 		void handleChallengeReplyFinished ();
 		void handleValidateReplyFinished ();

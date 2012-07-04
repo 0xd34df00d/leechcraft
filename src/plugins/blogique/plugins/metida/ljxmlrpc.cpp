@@ -336,13 +336,14 @@ namespace Metida
 				continue;
 
 			auto res = ParseMember (member);
-			if (res.Name () == "friends")
+			if (res.Name () == "friends" ||
+					res.Name () == "added")
 			{
 				QList<LJFriendEntry_ptr> frList;
 				for (const auto& moodEntry : res.Value ())
 				{
 					LJFriendEntry_ptr fr = std::make_shared<LJFriendEntry> ();
-					bool isCommunity = false;
+					bool isCommunity = false, personal = false;
 					for (const auto& field : moodEntry.toList ())
 					{
 						LJParserTypes::LJParseProfileEntry fieldEntry =
@@ -361,8 +362,14 @@ namespace Metida
 							fr->SetUserName (fieldEntry.ValueToString ());
 						else if (fieldEntry.Name () == "type")
 							isCommunity = (fieldEntry.ValueToString () == "community");
+						else if (fieldEntry.Name () == "journaltype")
+						{
+							isCommunity = (fieldEntry.ValueToString () == "C");
+							personal = (fieldEntry.ValueToString () == "P");
+						}
 					}
-					if (!isCommunity)
+					if (!isCommunity ||
+							personal)
 						frList << fr;
 				}
 				Account_->AddFriends (frList);
@@ -450,6 +457,11 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleDeleteFriendReplyFinished ()));
+	}
+
+	void LJXmlRPC::UpdateProfileInfo ()
+	{
+		Validate (Account_->GetOurLogin (), Account_->GetPassword ());
 	}
 
 	void LJXmlRPC::handleChallengeReplyFinished ()
@@ -685,6 +697,7 @@ namespace Metida
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
+			ParseFriends (document);
 			return;
 		}
 
@@ -715,6 +728,7 @@ namespace Metida
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
+			Account_->updateProfile ();
 			return;
 		}
 

@@ -184,7 +184,9 @@ namespace Metida
 		int res = QMessageBox::question (this,
 				tr ("Delete friend."),
 				tr ("Are you sure to delete selected users from your friends?"
-					"\n<i>Note: if you select group all users in this group will be deleted</i>"));
+					"<br><i>Note: if you select group all users in this group will be deleted</i>"),
+				QMessageBox::Ok | QMessageBox::Cancel,
+				QMessageBox::Cancel);
 
 		if (res == QMessageBox::Ok)
 		{
@@ -204,6 +206,14 @@ namespace Metida
 			names.removeDuplicates ();
 			account->DeleteFriends (names);
 		}
+	}
+
+	void ProfileWidget::on_UpdateProfile__released ()
+	{
+		LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
+		if (!account)
+			return;
+		account->updateProfile ();
 	}
 
 }
