@@ -55,8 +55,6 @@ namespace Metida
 		void SetFGColor (const QString& name);
 		QColor GetFGColor () const;
 	};
-
-	uint qHash (const std::shared_ptr<LJFriendEntry>& fr);
 }
 }
 }

@@ -70,7 +70,7 @@ namespace Metida
 			FriendsModel_->appendRow (item);
 		}
 
-		for (const std::shared_ptr<LJFriendEntry>& fr : Profile_->GetFriends ())
+		for (const auto& fr : Profile_->GetFriends ())
 		{
 			QStandardItem *item = new QStandardItem (fr->GetUserName ());
 			item->setEditable (false);

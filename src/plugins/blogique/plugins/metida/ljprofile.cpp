@@ -64,21 +64,21 @@ namespace Metida
 	}
 	void LJProfile::AddFriends (const QList<LJFriendEntry_ptr>& friends)
 	{
-		Friends_ << friends;
-		std::sort (Friends_.begin (), Friends_.end (), myfunc);
-
-		Friends_.erase (std::unique (Friends_.begin (), Friends_.end (),
-				[] (decltype (Friends_.front ()) fr1, decltype (Friends_.front ()) fr2)
+		ProfileData_.Friends_ << friends;
+		std::sort (ProfileData_.Friends_.begin (), ProfileData_.Friends_.end (), myfunc);
+		ProfileData_.Friends_.erase (std::unique (ProfileData_.Friends_.begin (), ProfileData_.Friends_.end (),
+				[] (decltype (ProfileData_.Friends_.front ()) fr1,
+						decltype (ProfileData_.Friends_.front ()) fr2)
 				{
 					return fr1->GetUserName () == fr2->GetUserName ();
-				}), Friends_.end ());
+				}), ProfileData_.Friends_.end ());
 
 		emit profileUpdated ();
 	}
 
 	QSet<std::shared_ptr<LJFriendEntry>> LJProfile::GetFriends () const
 	{
-		return Friends_;
+		return ProfileData_.Friends_;
 	}
 
 	void LJProfile::SaveAvatar (QUrl avatarUrl)

@@ -41,7 +41,6 @@ namespace Metida
 
 		QObject *ParentAccount_;
 		LJProfileData ProfileData_;
-		QSet<std::shared_ptr<LJFriendEntry>> Friends_;
 	public:
 		LJProfile (QObject *parentAccount, QObject *parent = 0);
 		QWidget* GetProfileWidget ();
