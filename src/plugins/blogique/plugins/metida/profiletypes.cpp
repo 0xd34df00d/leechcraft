@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "profiletypes.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -26,11 +27,12 @@ namespace Metida
 {
 	QDataStream& operator<< (QDataStream& out, const LJFriendGroup& group)
 	{
-		out << static_cast<qint8> (1)
+		out << static_cast<qint8> (2)
 				<< group.Public_
 				<< group.Name_
 				<< group.Id_
-				<< group.SortOrder_;
+				<< group.SortOrder_
+				<< group.RealId_;
 		return out;
 	}
 
@@ -38,11 +40,13 @@ namespace Metida
 	{
 		qint8 version = 0;
 		in >> version;
-		if (version == 1)
+		if (version > 0)
 			in >> group.Public_
 					>> group.Name_
 					>> group.Id_
 					>> group.SortOrder_;
+		if (version == 2)
+			in >> group.RealId_;
 
 		return in;
 	}
@@ -70,14 +74,21 @@ namespace Metida
 
 	QDataStream& operator<< (QDataStream& out, const LJProfileData& data)
 	{
-		out << static_cast<qint8> (1)
+		out << static_cast<qint8> (2)
 				<< data.AvatarUrl_
 				<< data.Caps_
 				<< data.Communities_
 				<< data.FullName_
 				<< data.UserId_
 				<< data.FriendGroups_
-				<< data.Moods_;
+				<< data.Moods_
+				<< data.Friends_.count ();
+
+		for (const auto& fr : data.Friends_)
+		{
+			QByteArray ba = fr->Serialize ();
+			out << ba;
+		}
 
 		return out;
 	}
@@ -86,7 +97,7 @@ namespace Metida
 	{
 		qint8 version = 0;
 		in >> version;
-		if (version == 1)
+		if (version > 0)
 			in >> data.AvatarUrl_
 					>> data.Caps_
 					>> data.Communities_
@@ -94,7 +105,19 @@ namespace Metida
 					>> data.UserId_
 					>> data.FriendGroups_
 					>> data.Moods_;
+		if (version == 2)
+		{
+			int count = 0;
+			in >> count;
+			for (int i = 0; i < count; ++i)
+			{
+				QByteArray ba;
+				in >> ba;
+				data.Friends_ << LJFriendEntry::Deserialize (ba);
+			}
 
+			data.Friends_.removeAll (0);
+		}
 		return in;
 	}
 

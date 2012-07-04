@@ -105,6 +105,7 @@ namespace Metida
 	{
 		ProfileData_ = profile;
 		SaveAvatar ();
+		emit profileUpdated ();
 	}
 
 	void LJProfile::handleAvatarDownloadFinished ()

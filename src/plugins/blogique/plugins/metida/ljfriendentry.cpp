@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "ljfriendentry.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -88,6 +89,53 @@ namespace Metida
 	{
 		return FGColor_;
 	}
+
+	QByteArray LJFriendEntry::Serialize () const
+	{
+		quint16 ver = 1;
+		QByteArray result;
+		{
+			QDataStream ostr (&result, QIODevice::WriteOnly);
+			ostr << ver
+					<< UserName_
+					<< FullName_
+					<< AvatarUrl_
+					<< BGColor_.name ()
+					<< FGColor_.name ()
+					<< GroupMask_;
+		}
+
+		return result;
+	}
+
+	LJFriendEntry_ptr LJFriendEntry::Deserialize (const QByteArray& data)
+	{
+		quint16 ver;
+		QDataStream in (data);
+		in >> ver;
+
+		if (ver != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< ver;
+			return 0;
+		}
+
+		LJFriendEntry_ptr result = std::make_shared<LJFriendEntry> ();
+		QString bgColorName, fgColorName;
+		in >> result->UserName_
+				>> result->FullName_
+				>> result->AvatarUrl_
+				>> bgColorName
+				>> fgColorName
+				>> result->GroupMask_;
+		result->BGColor_.setNamedColor (bgColorName);
+		result->FGColor_.setNamedColor (fgColorName);
+
+		return result;
+	}
+
 }
 }
 }

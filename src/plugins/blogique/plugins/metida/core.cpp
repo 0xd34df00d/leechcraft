@@ -46,6 +46,12 @@ namespace Metida
 		}
 	}
 
+	void Core::Release ()
+	{
+		if (LJPlatform_)
+			LJPlatform_->Release ();
+	}
+
 	void Core::CreateBloggingPlatfroms (QObject *parentPlatform)
 	{
 		LJPlatform_ = std::make_shared<LJBloggingPlatform> (parentPlatform);

@@ -50,6 +50,7 @@ namespace Metida
 		static Core& Instance ();
 
 		void SecondInit ();
+		void Release ();
 
 		void CreateBloggingPlatfroms (QObject *parentPlatform);
 		void SetCoreProxy (ICoreProxy_ptr proxy);

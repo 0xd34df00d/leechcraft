@@ -57,6 +57,9 @@ namespace Metida
 		QColor GetBGColor () const;
 		void SetFGColor (const QString& name);
 		QColor GetFGColor () const;
+
+		QByteArray Serialize () const;
+		static LJFriendEntry_ptr Deserialize (const QByteArray& data);
 	};
 }
 }
