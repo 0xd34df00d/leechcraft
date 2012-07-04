@@ -53,6 +53,7 @@ namespace LeechCraft
 		IsMediaAvailable,
 		DevID,
 		VisibleName,
+		AvailableSize,
 		TotalSize,
 		MountPoints,
 
