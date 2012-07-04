@@ -18,10 +18,8 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <QUrl>
-#include <QColor>
+#include <QDialog>
+#include "ui_addeditfrienddialog.h"
 
 namespace LeechCraft
 {
@@ -29,36 +27,35 @@ namespace Blogique
 {
 namespace Metida
 {
-	class LJFriendEntry;
-	typedef std::shared_ptr<LJFriendEntry> LJFriendEntry_ptr;
+	class LJProfile;
 
-	class LJFriendEntry : public QObject
+	class AddEditFriendDialog : public QDialog
 	{
 		Q_OBJECT
 
-		QUrl AvatarUrl_;
-		QString FullName_;
-		QString UserName_;
-		int GroupMask_;
-		QColor BGColor_;
-		QColor FGColor_;
+		Ui::AddEditFriendDialog Ui_;
+
+		enum GroupRoles
+		{
+			RealGroupId = Qt::UserRole + 1
+		};
+
+		QColor BackgroundColor_;
+		QColor ForegroundColor_;
+		LJProfile *Profile_;
 	public:
-		LJFriendEntry (QObject *parent = 0);
+		AddEditFriendDialog (LJProfile *profile, QWidget *parent = 0);
 
-		void SetAvatarUrl (const QUrl& url);
-		QUrl GetAvatarurl () const;
-		void SetFullName (const QString& fullName);
-		QString GetFullName () const;
-		void SetUserName (const QString& userName);
 		QString GetUserName () const;
-		void SetGroupMask (int groupmask);
-		int GetGroupMask () const;
-		void SetBGColor (const QString& name);
-		QColor GetBGColor () const;
-		void SetFGColor (const QString& name);
-		QColor GetFGColor () const;
-	};
+		QString GetBackgroundColorName () const;
+		QString GetForegroundColorName () const;
+		uint GetGroupRealId () const;
 
+		void accept ();
+	private slots:
+		void on_SelectBackgroundColor__released ();
+		void on_SelectForegroundColor__released ();
+	};
 }
 }
 }

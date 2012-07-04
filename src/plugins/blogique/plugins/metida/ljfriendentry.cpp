@@ -88,11 +88,6 @@ namespace Metida
 	{
 		return FGColor_;
 	}
-
-	uint qHash (const LJFriendEntry_ptr& fr)
-	{
-		return qHash (fr.get ());
-	}
 }
 }
 }

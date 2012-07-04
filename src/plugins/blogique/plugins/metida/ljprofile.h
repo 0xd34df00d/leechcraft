@@ -42,15 +42,17 @@ namespace Metida
 
 		QObject *ParentAccount_;
 		LJProfileData ProfileData_;
-		QSet<LJFriendEntry_ptr> Friends_;
+		QList<LJFriendEntry_ptr> Friends_;
 	public:
 		LJProfile (QObject *parentAccount, QObject *parent = 0);
 		QWidget* GetProfileWidget ();
 		LJProfileData GetProfileData () const;
 		QObject* GetParentAccount () const;
 
-		void AddFriends (const QSet<LJFriendEntry_ptr>& friends);
-		QSet<LJFriendEntry_ptr> GetFriends () const;
+		void AddFriends (const QList<LJFriendEntry_ptr>& friends);
+		QList<LJFriendEntry_ptr> GetFriends () const;
+
+		QList<LJFriendGroup> GetFriendGroups () const;
 	private:
 		void SaveAvatar (QUrl url = QUrl ());
 

@@ -54,15 +54,28 @@ namespace Metida
 		return ParentAccount_;
 	}
 
-	void LJProfile::AddFriends (const QSet<LJFriendEntry_ptr>& friends)
+	void LJProfile::AddFriends (const QList<LJFriendEntry_ptr>& friends)
 	{
-		Friends_.unite (friends);
+		Friends_ << friends;
+		std::sort (Friends_.begin (), Friends_.end ());
+		auto t = std::unique (Friends_.begin (), Friends_.end (),
+				[] (decltype (Friends_.front ()) fr1, decltype (Friends_.front ()) fr2)
+				{
+					return fr1->GetUserName () == fr2->GetUserName ();
+				});
+		qDebug () << std::distance (t, Friends_.end ());
+		
 		emit profileUpdated ();
 	}
 
-	QSet<LJFriendEntry_ptr> LJProfile::GetFriends () const
+	QList<LJFriendEntry_ptr> LJProfile::GetFriends () const
 	{
 		return Friends_;
+	}
+
+	QList<LJFriendGroup> LJProfile::GetFriendGroups () const
+	{
+		return ProfileData_.FriendGroups_;
 	}
 
 	void LJProfile::SaveAvatar (QUrl avatarUrl)

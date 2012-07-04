@@ -42,6 +42,12 @@ namespace Metida
 		Q_INTERFACES (LeechCraft::Blogique::IProfileWidget)
 
 		Ui::ProfileWidget Ui_;
+
+		enum Columns
+		{
+			Name
+		};
+
 		LJProfile *Profile_;
 		QStandardItemModel *FriendsModel_;
 		QStandardItemModel *CommunitiesModel_;
@@ -53,11 +59,14 @@ namespace Metida
 		void RereadProfileData ();
 		void FillFriends (const QList<LJFriendGroup>& groups);
 		void FillCommunities (const QStringList& communities);
-
+		void ReFillModels ();
 	public slots:
 		void updateProfile ();
 	private slots:
 		void on_ColoringFriendsList__toggled (bool toggle);
+		void on_AddFriend__released ();
+		void on_EditFriend__released ();
+		void on_DeleteFriend__released ();
 
 	signals:
 		void coloringItemChanged ();
