@@ -20,9 +20,11 @@
 #include <QIcon>
 #include <qurl.h>
 #include <util/util.h>
+#include <interfaces/entitytesthandleresult.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "documenttab.h"
-#include <interfaces/entitytesthandleresult.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -31,6 +33,9 @@ namespace Monocle
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("monocle");
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclesettings.xml");
 
 		Core::Instance ().SetProxy (proxy);
 
@@ -97,6 +102,11 @@ namespace Monocle
 		auto tab = new DocumentTab (DocTabInfo_, this);
 		tab->SetDoc (e.Entity_.toUrl ().toLocalFile ());
 		EmitTab (tab);
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const

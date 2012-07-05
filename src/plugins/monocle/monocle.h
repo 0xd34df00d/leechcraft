@@ -24,6 +24,7 @@
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -34,12 +35,20 @@ namespace Monocle
 	class Plugin : public QObject
 					, public IInfo
 					, public IEntityHandler
+					, public IHaveSettings
 					, public IHaveTabs
 					, public IPluginReady
 					, public IHaveRecoverableTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler IHaveTabs IPluginReady IHaveRecoverableTabs)
+		Q_INTERFACES (IInfo
+				IEntityHandler
+				IHaveSettings
+				IHaveTabs
+				IPluginReady
+				IHaveRecoverableTabs)
+
+		Util::XmlSettingsDialog_ptr XSD_;
 
 		TabClassInfo DocTabInfo_;
 	public:
@@ -53,6 +62,8 @@ namespace Monocle
 
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog() const;
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);

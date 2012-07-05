@@ -18,6 +18,7 @@ SET (SRCS
 	tocwidget.cpp
 	presenterwidget.cpp
 	pagesview.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (FORMS
 	documenttab.ui
@@ -46,6 +47,7 @@ TARGET_LINK_LIBRARIES (leechcraft_monocle
 	)
 INSTALL (TARGETS leechcraft_monocle DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES monoclesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 OPTION (ENABLE_MONOCLE_FXB "Enable FictionBook backend for Monocle" ON)
 OPTION (ENABLE_MONOCLE_PDF "Enable PDF backend for Monocle" ON)
