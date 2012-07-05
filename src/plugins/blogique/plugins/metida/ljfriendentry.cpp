@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "ljfriendentry.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -26,6 +27,8 @@ namespace Metida
 {
 	LJFriendEntry::LJFriendEntry (QObject *parent)
 	: QObject (parent)
+	, GroupMask_ (0)
+	, FriendOf_ (false)
 	{
 	}
 
@@ -89,11 +92,79 @@ namespace Metida
 		return FGColor_;
 	}
 
-
-	uint qHash (const std::shared_ptr<LJFriendEntry>& fr)
+	void LJFriendEntry::SetBirthday (const QString& date)
 	{
-		return qHash (fr->GetFullName () + fr->GetUserName ());
+		Birthday_ = date;
 	}
+
+	QString LJFriendEntry::GetBirthday () const
+	{
+		return Birthday_;
+	}
+
+	void LJFriendEntry::SetFriendOf (bool friendOf)
+	{
+		FriendOf_ = friendOf;
+	}
+
+	bool LJFriendEntry::GetFriendOf () const
+	{
+		return FriendOf_;
+	}
+
+	QByteArray LJFriendEntry::Serialize () const
+	{
+		quint16 ver = 2;
+		QByteArray result;
+		{
+			QDataStream ostr (&result, QIODevice::WriteOnly);
+			ostr << ver
+					<< UserName_
+					<< FullName_
+					<< AvatarUrl_
+					<< BGColor_.name ()
+					<< FGColor_.name ()
+					<< GroupMask_
+					<< Birthday_
+					<< FriendOf_;
+		}
+
+		return result;
+	}
+
+	LJFriendEntry_ptr LJFriendEntry::Deserialize (const QByteArray& data)
+	{
+		quint16 ver;
+		QDataStream in (data);
+		in >> ver;
+
+		if (ver < 1 ||
+				ver > 2)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< ver;
+			return 0;
+		}
+
+		LJFriendEntry_ptr result = std::make_shared<LJFriendEntry> ();
+		QString bgColorName, fgColorName;
+		in >> result->UserName_
+				>> result->FullName_
+				>> result->AvatarUrl_
+				>> bgColorName
+				>> fgColorName
+				>> result->GroupMask_;
+		result->BGColor_.setNamedColor (bgColorName);
+		result->FGColor_.setNamedColor (fgColorName);
+
+		if (ver == 2)
+			in >> result->Birthday_
+					>> result->FriendOf_;
+
+		return result;
+	}
+
 }
 }
 }

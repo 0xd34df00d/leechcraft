@@ -23,6 +23,7 @@
 #include <QSet>
 #include <interfaces/blogique/iaccount.h>
 #include "profiletypes.h"
+#include "ljfriendentry.h"
 
 namespace LeechCraft
 {
@@ -60,6 +61,8 @@ namespace Metida
 		void OpenConfigurationDialog ();
 		bool IsValidated () const;
 
+		QString GetPassword () const;
+
 		QObject* GetProfile ();
 
 		void FillSettings (LJAccountConfigurationWidget *widget);
@@ -70,10 +73,17 @@ namespace Metida
 		void Validate ();
 		void Init ();
 
-		void AddFriends (const QSet<std::shared_ptr<LJFriendEntry>>& friends);
+		void AddFriends (const QList<LJFriendEntry_ptr>& friends);
+
+		void AddNewFriend (const QString& username,
+				const QString& bgcolor, const QString& fgcolor, uint groupId);
+		void DeleteFriends (const QStringList& usernames);
+
 	public slots:
 		void handleValidatingFinished (bool success);
 		void handleXmlRpcError (int errorCode, const QString& msgInEng);
+		void updateProfile ();
+
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();

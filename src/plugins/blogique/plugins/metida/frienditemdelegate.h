@@ -18,54 +18,41 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <QSet>
-#include <QUrl>
-#include <interfaces/structures.h>
-#include <interfaces/core/icoreproxy.h>
+#include <QStyledItemDelegate>
 
+class QTreeView;
 namespace LeechCraft
 {
 namespace Blogique
 {
-class IPluginProxy;
-
 namespace Metida
 {
-	class LJBloggingPlatform;
+	const int CPadding = 2;
 
-	class Core : public QObject
+	enum ItemColorRoles
+	{
+		BackgroundColor = Qt::UserRole + 1,
+		ForegroundColor = Qt::UserRole + 2
+	};
+
+	class FriendItemDelegate : public QStyledItemDelegate
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
-		QObjectList BlogPlatformPlugins_;
-		std::shared_ptr<LJBloggingPlatform> LJPlatform_;
-		QObject *PluginProxy_;
+		bool ColoringItems_;
+		QTreeView *View_;
 
-		Core ();
-		Q_DISABLE_COPY (Core)
+		enum Columns
+		{
+			UserName
+		};
 	public:
-		static Core& Instance ();
+		FriendItemDelegate (QTreeView *view = 0);
+		void paint (QPainter *painter, const QStyleOptionViewItem& option,
+				const QModelIndex& index) const;
 
-		void SecondInit ();
-		void Release ();
-
-		void CreateBloggingPlatfroms (QObject *parentPlatform);
-		void SetCoreProxy (ICoreProxy_ptr proxy);
-		ICoreProxy_ptr GetCoreProxy ();
-
-		QObjectList GetBloggingPlatforms () const;
-
-		void SetPluginProxy (QObject *pluginProxy);
-		IPluginProxy* GetPluginProxy ();
-
-		void SendEntity (const Entity& e);
-
-	signals:
-		void gotEntity (LeechCraft::Entity e);
-		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
+	public slots:
+		void handleColoringItemChanged ();
 	};
 }
 }

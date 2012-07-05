@@ -18,54 +18,43 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <QSet>
-#include <QUrl>
-#include <interfaces/structures.h>
-#include <interfaces/core/icoreproxy.h>
+#include <QDialog>
+#include "ui_addeditfrienddialog.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-class IPluginProxy;
-
 namespace Metida
 {
-	class LJBloggingPlatform;
+	class LJProfile;
 
-	class Core : public QObject
+	class AddEditFriendDialog : public QDialog
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
-		QObjectList BlogPlatformPlugins_;
-		std::shared_ptr<LJBloggingPlatform> LJPlatform_;
-		QObject *PluginProxy_;
+		Ui::AddEditFriendDialog Ui_;
 
-		Core ();
-		Q_DISABLE_COPY (Core)
+		enum GroupRoles
+		{
+			RealGroupId = Qt::UserRole + 1
+		};
+
+		QColor BackgroundColor_;
+		QColor ForegroundColor_;
+		LJProfile *Profile_;
 	public:
-		static Core& Instance ();
+		AddEditFriendDialog (LJProfile *profile, QWidget *parent = 0);
 
-		void SecondInit ();
-		void Release ();
+		QString GetUserName () const;
+		QString GetBackgroundColorName () const;
+		QString GetForegroundColorName () const;
+		uint GetGroupRealId () const;
 
-		void CreateBloggingPlatfroms (QObject *parentPlatform);
-		void SetCoreProxy (ICoreProxy_ptr proxy);
-		ICoreProxy_ptr GetCoreProxy ();
-
-		QObjectList GetBloggingPlatforms () const;
-
-		void SetPluginProxy (QObject *pluginProxy);
-		IPluginProxy* GetPluginProxy ();
-
-		void SendEntity (const Entity& e);
-
-	signals:
-		void gotEntity (LeechCraft::Entity e);
-		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
+		void accept ();
+	private slots:
+		void on_SelectBackgroundColor__released ();
+		void on_SelectForegroundColor__released ();
 	};
 }
 }
