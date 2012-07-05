@@ -21,6 +21,7 @@
 #include <memory>
 #include <QObject>
 #include <QUrl>
+#include <QDateTime>
 #include <QColor>
 
 namespace LeechCraft
@@ -42,6 +43,8 @@ namespace Metida
 		int GroupMask_;
 		QColor BGColor_;
 		QColor FGColor_;
+		QDateTime Birthday_;
+		bool FriendOf_;
 	public:
 		LJFriendEntry (QObject *parent = 0);
 
@@ -57,6 +60,10 @@ namespace Metida
 		QColor GetBGColor () const;
 		void SetFGColor (const QString& name);
 		QColor GetFGColor () const;
+		void SetBirthday (const QString& date);
+		QDateTime GetBirthday () const;
+		void SetFriendOf (bool friendOf);
+		bool GetFriendOf () const;
 
 		QByteArray Serialize () const;
 		static LJFriendEntry_ptr Deserialize (const QByteArray& data);

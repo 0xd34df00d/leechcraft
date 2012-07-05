@@ -27,6 +27,8 @@ namespace Metida
 {
 	LJFriendEntry::LJFriendEntry (QObject *parent)
 	: QObject (parent)
+	, GroupMask_ (0)
+	, FriendOf_ (false)
 	{
 	}
 
@@ -88,6 +90,27 @@ namespace Metida
 	QColor LJFriendEntry::GetFGColor () const
 	{
 		return FGColor_;
+	}
+
+	void LJFriendEntry::SetBirthday (const QString& date)
+	{
+		//TODO
+		Birthday_ = QDateTime::fromString (date, "");
+	}
+
+	QDateTime LJFriendEntry::GetBirthday () const
+	{
+		return Birthday_;
+	}
+
+	void LJFriendEntry::SetFriendOf (bool friendOf)
+	{
+		FriendOf_ = friendOf;
+	}
+
+	bool LJFriendEntry::GetFriendOf () const
+	{
+		return FriendOf_;
 	}
 
 	QByteArray LJFriendEntry::Serialize () const
