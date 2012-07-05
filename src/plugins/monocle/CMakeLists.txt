@@ -19,6 +19,7 @@ SET (SRCS
 	presenterwidget.cpp
 	pagesview.cpp
 	xmlsettingsmanager.cpp
+	pixmapcachemanager.cpp
 	)
 SET (FORMS
 	documenttab.ui

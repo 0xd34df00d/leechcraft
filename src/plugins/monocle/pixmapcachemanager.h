@@ -19,36 +19,30 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/monocle/ibackendplugin.h>
-#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	class PixmapCacheManager;
+	class PageGraphicsItem;
 
-	class Core : public QObject
+	class PixmapCacheManager : public QObject
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
-		QList<IBackendPlugin*> Backends_;
-		PixmapCacheManager *CacheManager_;
-
-		Core ();
+		qint64 CurrentSize_;
+		qint64 MaxSize_;
+		QList<PageGraphicsItem*> RecentlyUsed_;
 	public:
-		static Core& Instance ();
+		PixmapCacheManager (QObject* = 0);
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
-
-		void AddPlugin (QObject*);
-
-		bool CanLoadDocument (const QString&);
-		IDocument_ptr LoadDocument (const QString&);
-
-		PixmapCacheManager* GetPixmapCacheManager () const;
+		void PixmapPainted (PageGraphicsItem*);
+		void PixmapChanged (PageGraphicsItem*);
+		void PixmapDeleted (PageGraphicsItem*);
+	private:
+		void CheckCache ();
+	private slots:
+		void handleCacheSizeChanged ();
 	};
 }
 }

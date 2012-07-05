@@ -18,12 +18,14 @@
 
 #include "core.h"
 #include <interfaces/iplugin2.h>
+#include "pixmapcachemanager.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
 	Core::Core ()
+	: CacheManager_ (new PixmapCacheManager (this))
 	{
 	}
 
@@ -67,6 +69,11 @@ namespace Monocle
 				return backend->LoadDocument (path);
 
 		return IDocument_ptr ();
+	}
+
+	PixmapCacheManager* Core::GetPixmapCacheManager () const
+	{
+		return CacheManager_;
 	}
 }
 }

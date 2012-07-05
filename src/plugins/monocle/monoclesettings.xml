@@ -2,7 +2,7 @@
 <settings>
 	<page>
 		<label value="Performance" />
-		<item type="spinbox" property="CacheSize" default="128" minimum="0" maximum="1024">
+		<item type="spinbox" property="PixmapCacheSize" default="128" minimum="0" maximum="1024">
 			<label value="Pixmap cache size:" />
 			<suffix value=" MiB" />
 		</item>
