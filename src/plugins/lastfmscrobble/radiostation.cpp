@@ -18,9 +18,8 @@
 
 #include "radiostation.h"
 #include <QtDebug>
-#include <lastfm/RadioStation>
-#include "radiotuner.h"
 #include <interfaces/media/audiostructs.h>
+#include "radiotuner.h"
 
 namespace LeechCraft
 {

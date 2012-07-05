@@ -22,8 +22,6 @@
 #include <QByteArray>
 #include <QNetworkAccessManager>
 #include <QTimer>
-#include <lastfm/Track>
-#include <lastfm.h>
 #include <interfaces/media/audiostructs.h>
 #include <util/util.h>
 #include "util.h"

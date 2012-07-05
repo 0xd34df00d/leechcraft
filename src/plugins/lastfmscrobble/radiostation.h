@@ -20,9 +20,9 @@
 
 #include <memory>
 #include <QObject>
-#include <lastfm/ParseError>
 #include <interfaces/media/iradiostation.h>
 #include <interfaces/media/iradiostationprovider.h>
+#include "lastfmheaders.h"
 
 class QNetworkAccessManager;
 

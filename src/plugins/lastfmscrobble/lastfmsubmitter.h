@@ -24,7 +24,7 @@
 #include <QString>
 #include <QVariant>
 #include <QMap>
-#include <lastfm/Track>
+#include "lastfmheaders.h"
 
 class QTimer;
 

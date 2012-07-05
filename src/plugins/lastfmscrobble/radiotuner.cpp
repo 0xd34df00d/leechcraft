@@ -17,8 +17,6 @@
  **********************************************************************/
 
 #include "radiotuner.h"
-#include <lastfm/RadioStation>
-#include <lastfm/Xspf>
 #include "util.h"
 
 namespace LeechCraft
