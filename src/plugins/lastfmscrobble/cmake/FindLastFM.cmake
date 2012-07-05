@@ -19,7 +19,7 @@ else (LastFM_LIBRARIES AND LastFM_INCLUDE_DIRS)
 
 	find_path (LastFM_INCLUDE_DIR
 		NAMES
-		lastfm.h
+		global.h
 		PATHS
 		/usr/include
 		/usr/local/include
