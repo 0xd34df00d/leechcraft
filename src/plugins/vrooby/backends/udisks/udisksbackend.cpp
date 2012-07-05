@@ -18,6 +18,8 @@
 
 #include "udisksbackend.h"
 #include <memory>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <QStandardItemModel>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
@@ -187,6 +189,16 @@ namespace UDisks
 		}
 
 		DevicesModel_->blockSignals (true);
+
+		const auto& mountPaths = iface->property ("DeviceMountPaths").toStringList ();
+		if (!mountPaths.isEmpty ())
+		{
+			const auto& space = boost::filesystem::space (mountPaths.value (0).toStdWString ()).free;
+			item->setData (static_cast<qint64> (space), DeviceRoles::AvailableSize);
+		}
+		else
+			item->setData (-1, DeviceRoles::AvailableSize);
+
 		item->setText (name);
 		item->setData (DeviceType::GenericDevice, DeviceRoles::DevType);
 		item->setData (iface->property ("DeviceFile").toString (), DeviceRoles::DevFile);
@@ -200,7 +212,7 @@ namespace UDisks
 		item->setData (fullName, DeviceRoles::VisibleName);
 		item->setData (iface->property ("PartitionSize").toLongLong (), DeviceRoles::TotalSize);
 		DevicesModel_->blockSignals (false);
-		item->setData (iface->property ("DeviceMountPaths").toStringList (), DeviceRoles::MountPoints);
+		item->setData (mountPaths, DeviceRoles::MountPoints);
 	}
 
 	void Backend::toggleMount (const QString& id)
