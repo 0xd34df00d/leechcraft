@@ -55,6 +55,7 @@ namespace Metida
 
 		void SetPluginProxy (QObject *proxy);
 		void Prepare ();
+		void Release ();
 	private:
 		void RestoreAccounts ();
 

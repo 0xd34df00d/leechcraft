@@ -22,6 +22,7 @@
 #include <QMap>
 #include <QStringList>
 #include <QVariant>
+#include "ljfriendentry.h"
 
 namespace LeechCraft
 {
@@ -54,6 +55,7 @@ namespace Metida
 		QList<LJMood> Moods_;
 		QStringList Communities_;
 		QString FullName_;
+		QList<LJFriendEntry_ptr> Friends_;
 	};
 
 	namespace LJParserTypes

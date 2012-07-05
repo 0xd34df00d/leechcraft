@@ -26,7 +26,6 @@
 #include <interfaces/blogique/iaccount.h>
 #include "core.h"
 #include "profilewidget.h"
-#include "ljfriendentry.h"
 
 namespace LeechCraft
 {
@@ -55,15 +54,35 @@ namespace Metida
 		return ParentAccount_;
 	}
 
-	void LJProfile::AddFriends (const QSet<std::shared_ptr<LJFriendEntry>>& friends)
+	namespace
 	{
-		Friends_.unite (friends);
+		bool CompareFriends (const LJFriendEntry_ptr& fr1, const LJFriendEntry_ptr& fr2)
+		{
+			return fr1->GetUserName () < fr2->GetUserName ();
+		}
+	}
+	void LJProfile::AddFriends (const QList<LJFriendEntry_ptr>& friends)
+	{
+		ProfileData_.Friends_ << friends;
+		std::sort (ProfileData_.Friends_.begin (), ProfileData_.Friends_.end (), CompareFriends);
+		ProfileData_.Friends_.erase (std::unique (ProfileData_.Friends_.begin (), ProfileData_.Friends_.end (),
+				[] (decltype (ProfileData_.Friends_.front ()) fr1,
+						decltype (ProfileData_.Friends_.front ()) fr2)
+				{
+					return fr1->GetUserName () == fr2->GetUserName ();
+				}), ProfileData_.Friends_.end ());
+
 		emit profileUpdated ();
 	}
 
-	QSet<std::shared_ptr<LJFriendEntry>> LJProfile::GetFriends () const
+	QList<LJFriendEntry_ptr> LJProfile::GetFriends () const
 	{
-		return Friends_;
+		return ProfileData_.Friends_;
+	}
+
+	QList<LJFriendGroup> LJProfile::GetFriendGroups () const
+	{
+		return ProfileData_.FriendGroups_;
 	}
 
 	void LJProfile::SaveAvatar (QUrl avatarUrl)
@@ -86,6 +105,7 @@ namespace Metida
 	{
 		ProfileData_ = profile;
 		SaveAvatar ();
+		emit profileUpdated ();
 	}
 
 	void LJProfile::handleAvatarDownloadFinished ()

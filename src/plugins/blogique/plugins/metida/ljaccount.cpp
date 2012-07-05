@@ -29,7 +29,6 @@
 #include "ljxmlrpc.h"
 #include "profilewidget.h"
 #include "utils.h"
-#include "ljfriendentry.h"
 
 namespace LeechCraft
 {
@@ -80,8 +79,7 @@ namespace Metida
 
 	QString LJAccount::GetOurLogin () const
 	{
-		//TODO
-		return QString ();
+		return Login_;
 	}
 
 	void LJAccount::RenameAccount (const QString& name)
@@ -102,10 +100,7 @@ namespace Metida
 		if (!Login_.isEmpty ())
 			dia->ConfWidget ()->SetLogin (Login_);
 
-		QString key ("org.LeechCraft.Blogique.PassForAccount/" + GetAccountID ());
-		dia->ConfWidget ()->SetPassword (Util::GetPassword (key,
-				QString (),
-				&Core::Instance ()));
+		dia->ConfWidget ()->SetPassword (GetPassword ());
 
 		if (dia->exec () == QDialog::Rejected)
 			return;
@@ -116,6 +111,12 @@ namespace Metida
 	bool LJAccount::IsValidated () const
 	{
 		return IsValidated_;
+	}
+
+	QString LJAccount::GetPassword () const
+	{
+		QString key ("org.LeechCraft.Blogique.PassForAccount/" + GetAccountID ());
+		return Util::GetPassword (key, QString (), &Core::Instance ());
 	}
 
 	QObject* LJAccount::GetProfile ()
@@ -185,12 +186,7 @@ namespace Metida
 
 	void LJAccount::Validate ()
 	{
-		QString key ("org.LeechCraft.Blogique.PassForAccount/" + GetAccountID ());
-		const QString& pass = Util::GetPassword (key,
-				QString (),
-				&Core::Instance ());
-
-		LJXmlRpc_->Validate (Login_, pass);
+		LJXmlRpc_->Validate (Login_, GetPassword ());
 	}
 
 	void LJAccount::Init ()
@@ -206,9 +202,20 @@ namespace Metida
 				SLOT (saveAccounts ()));
 	}
 
-	void LJAccount::AddFriends (const QSet<std::shared_ptr<LJFriendEntry>>& friends)
+	void LJAccount::AddFriends (const QList<LJFriendEntry_ptr>& friends)
 	{
 		LJProfile_->AddFriends (friends);
+	}
+
+	void LJAccount::AddNewFriend (const QString& username,
+			const QString& bgcolor, const QString& fgcolor, uint groupId)
+	{
+		LJXmlRpc_->AddNewFriend (username, bgcolor, fgcolor, groupId);
+	}
+
+	void LJAccount::DeleteFriends (const QStringList& usernames)
+	{
+		LJXmlRpc_->DeleteFriends (usernames);
 	}
 
 	void LJAccount::handleValidatingFinished (bool success)
@@ -238,6 +245,11 @@ namespace Metida
 				<< msgInEng;
 
 		Core::Instance ().SendEntity (e);
+	}
+
+	void LJAccount::updateProfile ()
+	{
+		LJXmlRpc_->UpdateProfileInfo ();
 	}
 
 }

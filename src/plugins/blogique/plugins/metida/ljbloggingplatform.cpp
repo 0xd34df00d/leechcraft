@@ -131,6 +131,11 @@ namespace Metida
 		RestoreAccounts ();
 	}
 
+	void LJBloggingPlatform::Release ()
+	{
+		saveAccounts ();
+	}
+
 	void LJBloggingPlatform::RestoreAccounts ()
 	{
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
