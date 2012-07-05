@@ -82,9 +82,8 @@ namespace Metida
 		return Login_;
 	}
 
-	void LJAccount::RenameAccount (const QString& name)
+	void LJAccount::RenameAccount (const QString&)
 	{
-
 	}
 
 	QByteArray LJAccount::GetAccountID () const

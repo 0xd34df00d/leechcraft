@@ -40,9 +40,9 @@ namespace Metida
 			RealGroupId = Qt::UserRole + 1
 		};
 
+		LJProfile *Profile_;
 		QColor BackgroundColor_;
 		QColor ForegroundColor_;
-		LJProfile *Profile_;
 	public:
 		AddEditFriendDialog (LJProfile *profile, QWidget *parent = 0);
 

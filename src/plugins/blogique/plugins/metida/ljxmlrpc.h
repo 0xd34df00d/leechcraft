@@ -63,7 +63,7 @@ namespace Metida
 
 		void AddNewFriendRequest (const QString& username,
 				const QString& bgcolor, const QString& fgcolor,
-				uint groupId, const QString& challenge);
+				int groupId, const QString& challenge);
 		void DeleteFriendsRequest (const QStringList& usernames,
 				const QString& challenge);
 
