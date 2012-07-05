@@ -86,7 +86,9 @@ namespace Metida
 		for (const auto& fr : Profile_->GetFriends ())
 		{
 			QStandardItem *item = new QStandardItem (fr->GetUserName ());
+			QStandardItem *itemName = new QStandardItem (fr->GetFullName ());
 			item->setEditable (false);
+			itemName->setEditable (false);
 			item->setData (fr->GetBGColor ().name (), ItemColorRoles::BackgroundColor);
 			item->setData (fr->GetFGColor ().name (), ItemColorRoles::ForegroundColor);
 
@@ -95,7 +97,7 @@ namespace Metida
 			{
 				if (Item2FriendGroup_ [parentItem].RealId_ == fr->GetGroupMask ())
 				{
-					parentItem->appendRow (item);
+					parentItem->appendRow ({ item, itemName });
 					found = true;
 				}
 			}
@@ -108,9 +110,11 @@ namespace Metida
 					FriendsModel_->appendRow (withoutGroupItem);
 				}
 
-				withoutGroupItem->appendRow (item);
+				withoutGroupItem->appendRow ({ item, itemName });
 			}
 		}
+
+		Ui_.FriendsView_->header ()->setResizeMode (QHeaderView::ResizeToContents);
 	}
 
 	void ProfileWidget::FillCommunities (const QStringList& communities)
@@ -128,7 +132,7 @@ namespace Metida
 		const LJProfileData& data = Profile_->GetProfileData ();
 
 		FriendsModel_->clear ();
-		FriendsModel_->setHorizontalHeaderLabels ({ tr ("Nick") });
+		FriendsModel_->setHorizontalHeaderLabels ({ tr ("UserName"), tr ("FullName") });
 		Item2Friend_.clear ();
 		Item2FriendGroup_.clear();
 		FillFriends (data.FriendGroups_);
@@ -173,6 +177,7 @@ namespace Metida
 
 	void ProfileWidget::on_EditFriend__released ()
 	{
+		//TODO
 	}
 
 	void ProfileWidget::on_DeleteFriend__released ()
