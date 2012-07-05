@@ -40,7 +40,7 @@ namespace Metida
 		QUrl AvatarUrl_;
 		QString FullName_;
 		QString UserName_;
-		int GroupMask_;
+		uint GroupMask_;
 		QColor BGColor_;
 		QColor FGColor_;
 		QString Birthday_;
@@ -55,7 +55,7 @@ namespace Metida
 		void SetUserName (const QString& userName);
 		QString GetUserName () const;
 		void SetGroupMask (int groupmask);
-		int GetGroupMask () const;
+		uint GetGroupMask () const;
 		void SetBGColor (const QString& name);
 		QColor GetBGColor () const;
 		void SetFGColor (const QString& name);
