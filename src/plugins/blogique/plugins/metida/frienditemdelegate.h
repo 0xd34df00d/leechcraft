@@ -41,6 +41,11 @@ namespace Metida
 
 		bool ColoringItems_;
 		QTreeView *View_;
+
+		enum Columns
+		{
+			UserName
+		};
 	public:
 		FriendItemDelegate (QTreeView *view = 0);
 		void paint (QPainter *painter, const QStyleOptionViewItem& option,

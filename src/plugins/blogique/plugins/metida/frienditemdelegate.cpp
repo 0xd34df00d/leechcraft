@@ -49,10 +49,10 @@ namespace Metida
 				o.widget->style () :
 				QApplication::style ();
 
-		const QString& backgroundColor = index.data (ItemColorRoles::BackgroundColor)
-				.toString ();
-		const QString& foregroundColor = index.data (ItemColorRoles::ForegroundColor)
-				.toString ();
+		const QString& backgroundColor = index.sibling (index.row (), Columns::UserName)
+				.data (ItemColorRoles::BackgroundColor).toString ();
+		const QString& foregroundColor = index.sibling (index.row (), Columns::UserName)
+				.data (ItemColorRoles::ForegroundColor).toString ();
 		if (index.parent ().isValid () &&
 				ColoringItems_)
 		{
@@ -65,7 +65,8 @@ namespace Metida
 		QStyledItemDelegate::paint (painter, o, index);
 
 		painter->save ();
-		if (!index.parent ().isValid ())
+		if (!index.parent ().isValid () &&
+				index.column () == Columns::UserName)
 		{
 			const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
 			const int rem = r.width () - textWidth;
