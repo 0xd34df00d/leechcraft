@@ -22,7 +22,7 @@
 #include <QNetworkAccessManager>
 #include <QDomDocument>
 #include <QStringList>
-#include <lastfm/Album>
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -32,8 +32,11 @@ namespace Lastfmscrobble
 	: QObject (parent)
 	, Proxy_ (proxy)
 	{
-		lastfm::Album album (lastfm::Artist (albumInfo.Artist_), albumInfo.Album_);
-		auto reply = album.getInfo ();
+		QMap<QString, QString> params;
+		params ["artist"] = albumInfo.Artist_;
+		params ["album"] = albumInfo.Album_;
+		params ["autocorrect"] = "1";
+		auto reply = Request ("album.getInfo", proxy->GetNetworkAccessManager (), params);
 		reply->setProperty ("AlbumInfo", QVariant::fromValue (albumInfo));
 		connect (reply,
 				SIGNAL (finished ()),
