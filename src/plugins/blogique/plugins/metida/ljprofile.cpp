@@ -56,7 +56,7 @@ namespace Metida
 
 	namespace
 	{
-		bool myfunc (const LJFriendEntry_ptr& fr1, const LJFriendEntry_ptr& fr2)
+		bool CompareFriends (const LJFriendEntry_ptr& fr1, const LJFriendEntry_ptr& fr2)
 		{
 			return fr1->GetUserName () < fr2->GetUserName ();
 		}
@@ -64,7 +64,7 @@ namespace Metida
 	void LJProfile::AddFriends (const QList<LJFriendEntry_ptr>& friends)
 	{
 		ProfileData_.Friends_ << friends;
-		std::sort (ProfileData_.Friends_.begin (), ProfileData_.Friends_.end (), myfunc);
+		std::sort (ProfileData_.Friends_.begin (), ProfileData_.Friends_.end (), CompareFriends);
 		ProfileData_.Friends_.erase (std::unique (ProfileData_.Friends_.begin (), ProfileData_.Friends_.end (),
 				[] (decltype (ProfileData_.Friends_.front ()) fr1,
 						decltype (ProfileData_.Friends_.front ()) fr2)

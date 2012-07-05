@@ -166,6 +166,8 @@ namespace Metida
 	void ProfileWidget::on_AddFriend__released ()
 	{
 		std::unique_ptr<AddEditFriendDialog> aefd (new AddEditFriendDialog (Profile_));
+		aefd->setWindowTitle (tr ("Add new friend."));
+
 		if (aefd->exec () == QDialog::Rejected)
 			return;
 
@@ -195,7 +197,7 @@ namespace Metida
 		int res = QMessageBox::question (this,
 				tr ("Delete friend."),
 				tr ("Are you sure to delete selected users from your friends?"
-					"<br><i>Note: if you select group all users in this group will be deleted</i>"),
+					"<br><i>Note: if you select a group then all users in this group will be deleted.</i>"),
 				QMessageBox::Ok | QMessageBox::Cancel,
 				QMessageBox::Cancel);
 

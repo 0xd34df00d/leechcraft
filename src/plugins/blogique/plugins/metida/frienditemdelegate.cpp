@@ -80,9 +80,7 @@ namespace Metida
 			const QRect numRect (r.left () + textWidth - 1, r.top () + CPadding,
 					rem - 1, r.height () - 2 * CPadding);
 			painter->drawText (numRect, Qt::AlignVCenter | Qt::AlignLeft, str);
-
 		}
-
 		painter->restore ();
 	}
 

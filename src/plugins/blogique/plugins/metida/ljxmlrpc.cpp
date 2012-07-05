@@ -53,8 +53,7 @@ namespace Metida
 	void LJXmlRPC::AddNewFriend (const QString& username,
 			const QString& bgcolor, const QString& fgcolor, uint groupId)
 	{
-		ApiCallQueue_ << [username, bgcolor, fgcolor, groupId, this]
-				(const QString& challenge)
+		ApiCallQueue_ << [username, bgcolor, fgcolor, groupId, this] (const QString& challenge)
 				{ AddNewFriendRequest (username, bgcolor, fgcolor, groupId, challenge); };
 		GenerateChallenge ();
 	}
@@ -126,7 +125,7 @@ namespace Metida
 				type.appendChild (dataField);
 			}
 
-			return {member, dataField};
+			return { member, dataField };
 		}
 
 		QNetworkRequest CreateNetworkRequest ()

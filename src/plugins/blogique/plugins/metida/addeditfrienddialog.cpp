@@ -17,9 +17,9 @@
  **********************************************************************/
 
 #include "addeditfrienddialog.h"
-#include "ljprofile.h"
 #include <QColorDialog>
 #include <QMessageBox>
+#include "ljprofile.h"
 
 namespace LeechCraft
 {
@@ -72,36 +72,41 @@ namespace Metida
 				GroupRoles::RealGroupId).toUInt ();
 	}
 
+	namespace
+	{
+		void SelectColor (const QString& text, const QString& initColor,
+				QLabel *pixmapLabel, QColor *color, QWidget *parent)
+		{
+			const QColor& clr = QColorDialog::getColor (QColor (initColor),
+					parent,
+					text);
+			if (!clr.isValid ())
+				return;
+
+			int height = QApplication::fontMetrics ().height ();
+			int width = 1.62 * height;
+			QPixmap pixmap (width, height);
+			pixmap.fill (clr);
+			pixmapLabel->setPixmap (pixmap);
+			*color = clr;
+		}
+	}
 	void AddEditFriendDialog::on_SelectBackgroundColor__released ()
 	{
-		const QColor& color = QColorDialog::getColor (QColor  ("#ffffff"),
-				this,
-				tr ("Select background color for new user."));
-		if (!color.isValid ())
-			return;
-
-		int height = QApplication::fontMetrics ().height ();
-		int width = 1.62 * height;
-		QPixmap pixmap (width, height);
-		pixmap.fill (color);
-		Ui_.BackgroundColorLabel_->setPixmap (pixmap);
-		BackgroundColor_ = color;
+		SelectColor (tr ("Select background color for new user."),
+				"#ffffff",
+				Ui_.BackgroundColorLabel_,
+				&BackgroundColor_,
+				this);
 	}
 
 	void AddEditFriendDialog::on_SelectForegroundColor__released ()
 	{
-		const QColor& color = QColorDialog::getColor (QColor  ("#000000"),
-				this,
-				tr ("Select foreground color for new user."));
-		if (!color.isValid ())
-			return;
-
-		int height = QApplication::fontMetrics ().height ();
-		int width = 1.62 * height;
-		QPixmap pixmap (width, height);
-		pixmap.fill (color);
-		Ui_.ForegroundColorLabel_->setPixmap (pixmap);
-		ForegroundColor_ = color;
+		SelectColor (tr ("Select foreground color for new user."),
+				"#000000",
+				Ui_.ForegroundColorLabel_,
+				&ForegroundColor_,
+				this);
 	}
 
 	void AddEditFriendDialog::accept ()
