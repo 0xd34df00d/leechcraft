@@ -236,7 +236,8 @@ namespace Metida
 				"1", document));
 		result.second.appendChild (GetSimpleMemberElement ("includebdays", "boolean",
 				"1", document));
-
+		result.second.appendChild (GetSimpleMemberElement ("includefriendof", "boolean",
+				"1", document));
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
 						document.toByteArray ());
