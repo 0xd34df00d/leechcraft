@@ -36,7 +36,11 @@ namespace Vrooby
 		names [DeviceRoles::IsPartition] = "isPartition";
 		names [DeviceRoles::IsMountable] = "isMountable";
 		names [DeviceRoles::DevID] = "devID";
+		names [DeviceRoles::AvailableSize] = "availableSize";
+		names [DeviceRoles::TotalSize] = "totalSize";
 		names [CustomRoles::FormattedTotalSize] = "formattedTotalSize";
+		names [CustomRoles::FormattedFreeSpace] = "formattedFreeSpace";
+		names [CustomRoles::UsedPercentage] = "usedPercentage";
 		names [CustomRoles::MountButtonIcon] = "mountButtonIcon";
 		names [CustomRoles::MountedAt] = "mountedAt";
 		setRoleNames (names);
@@ -52,6 +56,12 @@ namespace Vrooby
 			return tr ("total size: %1")
 				.arg (Util::MakePrettySize (size));
 		}
+		case CustomRoles::FormattedFreeSpace:
+		{
+			const auto size = index.data (DeviceRoles::AvailableSize).toLongLong ();
+			return tr ("available size: %1")
+				.arg (Util::MakePrettySize (size));
+		}
 		case CustomRoles::MountButtonIcon:
 			return index.data (DeviceRoles::IsMounted).toBool () ?
 					"image://mountIcons/emblem-unmounted" :
@@ -62,6 +72,15 @@ namespace Vrooby
 			return mounts.isEmpty () ?
 					"" :
 					tr ("Mounted at %1").arg (mounts.join ("; "));
+		}
+		case CustomRoles::UsedPercentage:
+		{
+			const qint64 free = index.data (DeviceRoles::AvailableSize).value<qint64> ();
+			if (free < 0)
+				return -1;
+
+			const double total = index.data (DeviceRoles::TotalSize).value<qint64> ();
+			return (1 - free / total) * 100;
 		}
 		default:
 			return Util::FlattenFilterModel::data (index, role);
