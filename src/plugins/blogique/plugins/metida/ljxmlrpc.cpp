@@ -329,6 +329,7 @@ namespace Metida
 			return;
 
 		const auto& members = firstStructElement.at (0).childNodes ();
+		QHash<QString, LJFriendEntry_ptr> frHash;
 		for (int i = 0, count = members.count (); i < count; ++i)
 		{
 			const QDomNode& member = members.at (i);
@@ -338,13 +339,14 @@ namespace Metida
 
 			auto res = ParseMember (member);
 			if (res.Name () == "friends" ||
-					res.Name () == "added")
+					res.Name () == "added" ||
+					res.Name () == "friendofs")
 			{
-				QList<LJFriendEntry_ptr> frList;
 				for (const auto& moodEntry : res.Value ())
 				{
 					LJFriendEntry_ptr fr = std::make_shared<LJFriendEntry> ();
 					bool isCommunity = false, personal = false;
+					bool friendOf = false;
 					for (const auto& field : moodEntry.toList ())
 					{
 						LJParserTypes::LJParseProfileEntry fieldEntry =
@@ -368,12 +370,21 @@ namespace Metida
 							isCommunity = (fieldEntry.ValueToString () == "C");
 							personal = (fieldEntry.ValueToString () == "P");
 						}
+						else if (fieldEntry.Name () == "birthday")
+							fr->SetBirthday (fieldEntry.ValueToString ());
+
+						fr->SetFriendOf (res.Name () == "friendofs");
 					}
+
 					if (!isCommunity ||
 							personal)
-						frList << fr;
+						if (res.Name () == "friendofs" &&
+								frHash.contains (fr->GetUserName ()))
+							frHash [fr->GetUserName ()]->SetFriendOf (true);
+						else
+							frHash [fr->GetUserName ()] = fr;
 				}
-				Account_->AddFriends (frList);
+				Account_->AddFriends (frHash.values ());
 			}
 		}
 	}

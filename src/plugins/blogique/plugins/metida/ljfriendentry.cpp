@@ -94,11 +94,10 @@ namespace Metida
 
 	void LJFriendEntry::SetBirthday (const QString& date)
 	{
-		//TODO
-		Birthday_ = QDateTime::fromString (date, "");
+		Birthday_ = date;
 	}
 
-	QDateTime LJFriendEntry::GetBirthday () const
+	QString LJFriendEntry::GetBirthday () const
 	{
 		return Birthday_;
 	}
@@ -115,7 +114,7 @@ namespace Metida
 
 	QByteArray LJFriendEntry::Serialize () const
 	{
-		quint16 ver = 1;
+		quint16 ver = 2;
 		QByteArray result;
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
@@ -125,7 +124,9 @@ namespace Metida
 					<< AvatarUrl_
 					<< BGColor_.name ()
 					<< FGColor_.name ()
-					<< GroupMask_;
+					<< GroupMask_
+					<< Birthday_
+					<< FriendOf_;
 		}
 
 		return result;
@@ -137,7 +138,8 @@ namespace Metida
 		QDataStream in (data);
 		in >> ver;
 
-		if (ver != 1)
+		if (ver < 1 ||
+				ver > 2)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -155,6 +157,10 @@ namespace Metida
 				>> result->GroupMask_;
 		result->BGColor_.setNamedColor (bgColorName);
 		result->FGColor_.setNamedColor (fgColorName);
+
+		if (ver == 2)
+			in >> result->Birthday_
+					>> result->FriendOf_;
 
 		return result;
 	}

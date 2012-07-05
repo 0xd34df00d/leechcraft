@@ -87,8 +87,13 @@ namespace Metida
 		{
 			QStandardItem *item = new QStandardItem (fr->GetUserName ());
 			QStandardItem *itemName = new QStandardItem (fr->GetFullName ());
+			QStandardItem *itemStatus = new QStandardItem (fr->GetFriendOf () ? "yes" : "no");
+			QStandardItem *itemBirthday = new QStandardItem (fr->GetBirthday ());
 			item->setEditable (false);
 			itemName->setEditable (false);
+			itemStatus->setEditable (false);
+			itemBirthday->setEditable (false);
+
 			item->setData (fr->GetBGColor ().name (), ItemColorRoles::BackgroundColor);
 			item->setData (fr->GetFGColor ().name (), ItemColorRoles::ForegroundColor);
 
@@ -97,7 +102,7 @@ namespace Metida
 			{
 				if (Item2FriendGroup_ [parentItem].RealId_ == fr->GetGroupMask ())
 				{
-					parentItem->appendRow ({ item, itemName });
+					parentItem->appendRow ({ item, itemStatus, itemName, itemBirthday });
 					found = true;
 				}
 			}
@@ -110,7 +115,7 @@ namespace Metida
 					FriendsModel_->appendRow (withoutGroupItem);
 				}
 
-				withoutGroupItem->appendRow ({ item, itemName });
+				withoutGroupItem->appendRow ({ item, itemStatus, itemName, itemBirthday });
 			}
 		}
 
@@ -132,7 +137,8 @@ namespace Metida
 		const LJProfileData& data = Profile_->GetProfileData ();
 
 		FriendsModel_->clear ();
-		FriendsModel_->setHorizontalHeaderLabels ({ tr ("UserName"), tr ("FullName") });
+		FriendsModel_->setHorizontalHeaderLabels ({ tr ("UserName"),
+				tr ("Status"), tr ("FullName"), tr ("Birthday") });
 		Item2Friend_.clear ();
 		Item2FriendGroup_.clear();
 		FillFriends (data.FriendGroups_);

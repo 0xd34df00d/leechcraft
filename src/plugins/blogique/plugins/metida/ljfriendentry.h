@@ -43,7 +43,7 @@ namespace Metida
 		int GroupMask_;
 		QColor BGColor_;
 		QColor FGColor_;
-		QDateTime Birthday_;
+		QString Birthday_;
 		bool FriendOf_;
 	public:
 		LJFriendEntry (QObject *parent = 0);
@@ -61,7 +61,7 @@ namespace Metida
 		void SetFGColor (const QString& name);
 		QColor GetFGColor () const;
 		void SetBirthday (const QString& date);
-		QDateTime GetBirthday () const;
+		QString GetBirthday () const;
 		void SetFriendOf (bool friendOf);
 		bool GetFriendOf () const;
 
