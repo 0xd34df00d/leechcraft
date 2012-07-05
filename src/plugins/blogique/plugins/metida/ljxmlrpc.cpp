@@ -345,7 +345,6 @@ namespace Metida
 				{
 					LJFriendEntry_ptr fr = std::make_shared<LJFriendEntry> ();
 					bool isCommunity = false, personal = false;
-					bool friendOf = false;
 					for (const auto& field : moodEntry.toList ())
 					{
 						LJParserTypes::LJParseProfileEntry fieldEntry =
@@ -377,11 +376,13 @@ namespace Metida
 
 					if (!isCommunity ||
 							personal)
+					{
 						if (res.Name () == "friendofs" &&
 								frHash.contains (fr->GetUserName ()))
 							frHash [fr->GetUserName ()]->SetFriendOf (true);
 						else
 							frHash [fr->GetUserName ()] = fr;
+					}
 				}
 				Account_->AddFriends (frHash.values ());
 			}
@@ -390,7 +391,7 @@ namespace Metida
 
 	void LJXmlRPC::AddNewFriendRequest (const QString& username,
 			const QString& bgcolor, const QString& fgcolor,
-			uint groupId, const QString& challenge)
+			int groupId, const QString& challenge)
 	{
 		QDomDocument document ("AddNewFriendRequest");
 		auto result = GetStartPart ("LJ.XMLRPC.editfriends", document);

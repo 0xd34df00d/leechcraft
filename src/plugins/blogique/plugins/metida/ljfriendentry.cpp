@@ -67,7 +67,7 @@ namespace Metida
 		GroupMask_ = groupmask;
 	}
 
-	int LJFriendEntry::GetGroupMask () const
+	uint LJFriendEntry::GetGroupMask () const
 	{
 		return GroupMask_;
 	}

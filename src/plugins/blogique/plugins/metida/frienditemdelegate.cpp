@@ -44,15 +44,11 @@ namespace Metida
 	{
 		QStyleOptionViewItemV4 o = option;
 		const QRect& r = o.rect;
-
-		QStyle *style = o.widget ?
-				o.widget->style () :
-				QApplication::style ();
-
 		const QString& backgroundColor = index.sibling (index.row (), Columns::UserName)
 				.data (ItemColorRoles::BackgroundColor).toString ();
 		const QString& foregroundColor = index.sibling (index.row (), Columns::UserName)
 				.data (ItemColorRoles::ForegroundColor).toString ();
+
 		if (index.parent ().isValid () &&
 				ColoringItems_)
 		{
