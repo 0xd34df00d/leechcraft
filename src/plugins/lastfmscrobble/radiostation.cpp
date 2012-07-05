@@ -35,7 +35,11 @@ namespace Lastfmscrobble
 			station = lastfm::RadioStation::similar (lastfm::Artist (param));
 			break;
 		case Media::IRadioStationProvider::Type::GlobalTag:
+#if LASTFM_MAJOR_VERSION < 1
 			station = lastfm::RadioStation::globalTag (lastfm::Tag (param));
+#else
+			station = lastfm::RadioStation::tag (lastfm::Tag (param));
+#endif
 			break;
 		default:
 			qWarning () << Q_FUNC_INFO

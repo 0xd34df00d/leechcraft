@@ -20,6 +20,7 @@
 #include <QNetworkAccessManager>
 #include <QCryptographicHash>
 #include <QDomDocument>
+#include <QtDebug>
 #include <lastfm/ws.h>
 #include <util/passutils.h>
 #include "xmlsettingsmanager.h"

@@ -34,12 +34,10 @@
 
 #else
 
-#include <lastfm/ParseError.h>
+#include <lastfm/ws.h>
 #include <lastfm/Xspf.h>
-#include <lastfm/MutableTrack.h>
 #include <lastfm/Track.h>
 #include <lastfm/ScrobbleCache.h>
-#include <lastfm/Scrobble.h>
 #include <lastfm/Audioscrobbler.h>
 #include <lastfm/RadioTuner.h>
 #include <lastfm/RadioStation.h>
