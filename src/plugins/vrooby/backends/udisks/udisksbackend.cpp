@@ -24,6 +24,7 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDBusInterface>
+#include <QTimer>
 #include <QtDebug>
 #include <util/util.h>
 
@@ -42,6 +43,13 @@ namespace UDisks
 	, UDisksObj_ (0)
 	{
 		InitialEnumerate ();
+
+		auto timer = new QTimer (this);
+		connect (timer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (updateDeviceSpaces ()));
+		timer->start (10000);
 	}
 
 	bool Backend::IsValid () const
@@ -338,6 +346,21 @@ namespace UDisks
 
 		auto item = Object2Item_ [path];
 		SetItemData (GetDeviceInterface (path), item);
+	}
+
+	void Backend::updateDeviceSpaces()
+	{
+		for (const auto& item : Object2Item_.values ())
+		{
+			const auto& mountPaths = item->data (DeviceRoles::MountPoints).toStringList ();
+			if (mountPaths.isEmpty ())
+				continue;
+
+			const auto& space = boost::filesystem::space (mountPaths.value (0).toStdWString ());
+			const auto free = static_cast<qint64> (space.free);
+			if (free != item->data (DeviceRoles::AvailableSize).value<qint64> ())
+				item->setData (static_cast<qint64> (free), DeviceRoles::AvailableSize);
+		}
 	}
 }
 }
