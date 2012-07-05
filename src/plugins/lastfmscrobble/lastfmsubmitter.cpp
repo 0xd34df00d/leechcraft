@@ -159,23 +159,12 @@ namespace Lastfmscrobble
 				SIGNAL (status (int)),
 				this,
 				SIGNAL (status (int)));
-		connect (Scrobbler_.get (),
-				SIGNAL (status (int)),
-				this,
-				SLOT (checkFlushQueue (int)));
 	}
 
 	void LastFMSubmitter::cacheAndSubmit ()
 	{
 		Scrobbler_->cache (NextSubmit_);
 		submit ();
-	}
-
-	void LastFMSubmitter::checkFlushQueue (int code)
-	{
-		qDebug () << Q_FUNC_INFO << code;
-		if (code == lastfm::Audioscrobbler::TracksScrobbled || code == lastfm::Audioscrobbler::Scrobbling)
-			qDebug () << "tracks scrobbled, clearing queue";
 	}
 
 	void LastFMSubmitter::submit ()
