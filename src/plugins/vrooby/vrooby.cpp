@@ -33,6 +33,8 @@ namespace Vrooby
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("vrooby");
+
 		Backend_ = 0;
 		TrayView_ = new TrayView (proxy);
 
