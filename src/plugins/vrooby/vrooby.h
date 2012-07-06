@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iremovabledevmanager.h>
@@ -39,7 +40,7 @@ namespace Vrooby
 		Q_INTERFACES (IInfo IRemovableDevManager IActionsExporter)
 
 		DevBackend *Backend_;
-		QAction *ActionDevices_;
+		std::shared_ptr<QAction> ActionDevices_;
 		TrayView *TrayView_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -55,6 +56,7 @@ namespace Vrooby
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	private slots:
+		void checkAction ();
 		void showTrayView (bool);
 	signals:
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);

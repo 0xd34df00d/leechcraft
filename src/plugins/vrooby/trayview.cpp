@@ -71,6 +71,15 @@ namespace Vrooby
 		rootContext ()->setContextProperty ("devModel", Flattened_);
 		rootContext ()->setContextProperty ("devicesLabelText", tr ("Removable devices"));
 		setSource (QUrl ("qrc:/vrooby/resources/qml/DevicesTrayView.qml"));
+
+		connect (Flattened_,
+				SIGNAL (rowsInserted (QModelIndex, int, int)),
+				this,
+				SIGNAL (hasItemsChanged ()));
+		connect (Flattened_,
+				SIGNAL (rowsRemoved (QModelIndex, int, int)),
+				this,
+				SIGNAL (hasItemsChanged ()));
 	}
 
 	void TrayView::SetBackend (DevBackend *backend)
@@ -88,6 +97,11 @@ namespace Vrooby
 				SLOT (toggleMount (QString)));
 
 		Flattened_->SetSource (Backend_->GetDevicesModel ());
+	}
+
+	bool TrayView::HasItems () const
+	{
+		return Flattened_->rowCount ();
 	}
 }
 }

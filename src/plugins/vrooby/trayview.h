@@ -42,6 +42,9 @@ namespace Vrooby
 		TrayView (ICoreProxy_ptr, QWidget* = 0);
 
 		void SetBackend (DevBackend*);
+		bool HasItems () const;
+	signals:
+		void hasItemsChanged ();
 	};
 }
 }
