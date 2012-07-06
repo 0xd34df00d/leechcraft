@@ -65,9 +65,10 @@ namespace Metida
 	private slots:
 		void on_ColoringFriendsList__toggled (bool toggle);
 		void on_AddFriend__released ();
-		void on_EditFriend__released ();
-		void on_DeleteFriend__released ();
+		void on_Edit__released ();
+		void on_Delete__released ();
 		void on_UpdateProfile__released ();
+		void on_AddGroup__released ();
 	signals:
 		void coloringItemChanged ();
 	};

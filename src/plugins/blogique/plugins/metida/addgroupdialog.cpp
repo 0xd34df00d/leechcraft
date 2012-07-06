@@ -16,14 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
-#include <QSet>
-#include <interfaces/blogique/iprofile.h>
-#include "profiletypes.h"
-#include "ljfriendentry.h"
+#include "addgroupdialog.h"
 
 namespace LeechCraft
 {
@@ -31,40 +24,33 @@ namespace Blogique
 {
 namespace Metida
 {
-	class LJFriendEntry;
-	class ProfileWidget;
-
-	class LJProfile : public QObject
-					, public IProfile
+	AddGroupDialog::AddGroupDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IProfile);
+		Ui_.setupUi (this);
+	}
 
-		QObject *ParentAccount_;
-		LJProfileData ProfileData_;
-	public:
-		LJProfile (QObject *parentAccount, QObject *parent = 0);
-		QWidget* GetProfileWidget ();
-		LJProfileData GetProfileData () const;
-		QObject* GetParentAccount () const;
+	QString AddGroupDialog::GetGroupName () const
+	{
+		return Ui_.GroupName_->text ();
+	}
 
-		void AddFriends (const QList<LJFriendEntry_ptr>& friends);
-		QList<LJFriendEntry_ptr> GetFriends () const;
+	void AddGroupDialog::SetGroupName (const QString& name)
+	{
+		Ui_.GroupName_->setText (name);
+	}
 
-		QList<LJFriendGroup> GetFriendGroups () const;
+	bool AddGroupDialog::GetAcccess () const
+	{
+		return Ui_.Public_->isChecked ();
+	}
 
-		int GetFreeGroupId () const;
-	private:
-		void SaveAvatar (QUrl url = QUrl ());
+	void AddGroupDialog::SetAccess (bool isPublic)
+	{
+		Ui_.Public_->setChecked (isPublic);
+	}
 
-	public slots:
-		void handleProfileUpdate (const LJProfileData& profile);
-	private slots:
-		void handleAvatarDownloadFinished ();
-
-	signals:
-		void profileUpdated ();
-	};
 }
 }
 }
+

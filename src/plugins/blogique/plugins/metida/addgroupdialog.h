@@ -18,12 +18,8 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <QSet>
-#include <interfaces/blogique/iprofile.h>
-#include "profiletypes.h"
-#include "ljfriendentry.h"
+#include <QDialog>
+#include "ui_addgroupdialog.h"
 
 namespace LeechCraft
 {
@@ -31,39 +27,18 @@ namespace Blogique
 {
 namespace Metida
 {
-	class LJFriendEntry;
-	class ProfileWidget;
-
-	class LJProfile : public QObject
-					, public IProfile
+	class AddGroupDialog : public QDialog
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IProfile);
 
-		QObject *ParentAccount_;
-		LJProfileData ProfileData_;
+		Ui::AddGroupDialog Ui_;
 	public:
-		LJProfile (QObject *parentAccount, QObject *parent = 0);
-		QWidget* GetProfileWidget ();
-		LJProfileData GetProfileData () const;
-		QObject* GetParentAccount () const;
+		AddGroupDialog (QWidget *parent = 0);
 
-		void AddFriends (const QList<LJFriendEntry_ptr>& friends);
-		QList<LJFriendEntry_ptr> GetFriends () const;
-
-		QList<LJFriendGroup> GetFriendGroups () const;
-
-		int GetFreeGroupId () const;
-	private:
-		void SaveAvatar (QUrl url = QUrl ());
-
-	public slots:
-		void handleProfileUpdate (const LJProfileData& profile);
-	private slots:
-		void handleAvatarDownloadFinished ();
-
-	signals:
-		void profileUpdated ();
+		QString GetGroupName () const;
+		void SetGroupName (const QString& name);
+		bool GetAcccess () const;
+		void SetAccess (bool isPublic);
 	};
 }
 }

@@ -85,6 +85,26 @@ namespace Metida
 		return ProfileData_.FriendGroups_;
 	}
 
+	int LJProfile::GetFreeGroupId () const
+	{
+		QVector<int> baseVector (30);
+		int current = 0;
+		std::generate (baseVector.begin (), baseVector.end (),
+				[&current] () { return ++current; });
+
+		QVector<int> existsVector;
+		for (const auto& group : ProfileData_.FriendGroups_)
+			existsVector.append (group.Id_);
+
+		std::sort (existsVector.begin (), existsVector.end ());
+		QVector<int> result;
+		auto it = std::set_difference (baseVector.begin (), baseVector.end (),
+				existsVector.begin (), existsVector.end (),
+				std::back_inserter (result));
+
+		return result.isEmpty () ? -1 : result [0];
+	}
+
 	void LJProfile::SaveAvatar (QUrl avatarUrl)
 	{
 		if (avatarUrl.isEmpty ())

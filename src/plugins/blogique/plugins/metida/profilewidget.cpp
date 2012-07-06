@@ -27,6 +27,7 @@
 #include "frienditemdelegate.h"
 #include "xmlsettingsmanager.h"
 #include "addeditfrienddialog.h"
+#include "addgroupdialog.h"
 
 namespace LeechCraft
 {
@@ -183,21 +184,49 @@ namespace Metida
 		account->AddNewFriend (userName, bgcolor, fgcolor, realId);
 	}
 
-	void ProfileWidget::on_EditFriend__released ()
+	void ProfileWidget::on_Edit__released ()
 	{
-		//TODO
-	}
-
-	void ProfileWidget::on_DeleteFriend__released ()
-	{
-		auto indexList = Ui_.FriendsView_->selectionModel ()->selectedIndexes ();
-		if (indexList.isEmpty ())
+		auto index = Ui_.FriendsView_->selectionModel ()->currentIndex ();
+		index = index.sibling (index.row (), Columns::Name);
+		if (!index.isValid ())
 			return;
 
+		QString msg;
+		if (!index.parent ().isValid ())
+		{
+			AddGroupDialog dlg;
+			dlg.SetGroupName (index.data ().toString ());
+			dlg.SetAccess (Item2FriendGroup_ [FriendsModel_->itemFromIndex (index)].Public_);
+
+			if (dlg.exec () == QDialog::Rejected)
+				return;
+
+			LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
+			if (!account)
+				return;
+
+			account->AddGroup (dlg.GetGroupName (), dlg.GetAcccess (),
+					Item2FriendGroup_ [FriendsModel_->itemFromIndex (index)].Id_);
+		}
+	}
+
+	void ProfileWidget::on_Delete__released ()
+	{
+		auto index = Ui_.FriendsView_->selectionModel ()->currentIndex ();
+		index = index.sibling (index.row (), Columns::Name);
+		if (!index.isValid ())
+			return;
+
+		QString msg;
+		index.parent ().isValid () ?
+		msg = tr ("Are you sure to delete user <b>%1</b> from your friends.")
+				.arg (index.data ().toString ()) :
+		msg = tr ("Are you sure to delete group <b>%1</b>"
+				"<br><i>Note: all friends in this group will <b>not</b> be deleted.</i>")
+				.arg (index.data ().toString ());
 		int res = QMessageBox::question (this,
-				tr ("Delete friend."),
-				tr ("Are you sure to delete selected users from your friends?"
-					"<br><i>Note: if you select a group then all users in this group will be deleted.</i>"),
+				tr ("Change friendslist"),
+				msg,
 				QMessageBox::Ok | QMessageBox::Cancel,
 				QMessageBox::Cancel);
 
@@ -207,17 +236,10 @@ namespace Metida
 			if (!account)
 				return;
 
-			QStringList names;
-			for (const auto& index : indexList)
-			{
-				if (!index.parent ().isValid ())
-					for (int i = 0; i < FriendsModel_->rowCount (index); ++i)
-						names << FriendsModel_->index (i, Columns::Name, index).data ().toString ();
-				else
-					names << index.sibling (index.row (), Columns::Name).data ().toString ();
-			}
-			names.removeDuplicates ();
-			account->DeleteFriends (names);
+			if (!index.parent ().isValid ())
+				account->DeleteGroup (Item2FriendGroup_ [FriendsModel_->itemFromIndex (index)].Id_);
+			else
+				account->DeleteFriend (index.data ().toString ());
 		}
 	}
 
@@ -227,6 +249,24 @@ namespace Metida
 		if (!account)
 			return;
 		account->updateProfile ();
+	}
+
+	void ProfileWidget::on_AddGroup__released ()
+	{
+		AddGroupDialog dlg;
+		if (dlg.exec () == QDialog::Rejected)
+			return;
+
+		LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
+		if (!account)
+			return;
+
+		int id = Profile_->GetFreeGroupId ();
+		if (id == -1)
+			//TODO error about max groupcount
+			return;
+
+		account->AddGroup (dlg.GetGroupName (), dlg.GetAcccess (), id);
 	}
 
 }
