@@ -147,6 +147,7 @@ namespace LeechCraft
 		void handleNewTabShortcutActivated ();
 		void setPreviousTab ();
 	private slots:
+		void handleTabBarPosition ();
 		void handleSelectionBehavior ();
 		void handleAddDefaultTab ();
 		void handleShowAddTabButton (bool show);

@@ -46,6 +46,15 @@
 					<label lang="en" value="Context-dependent" />
 				</option>
 			</item>
+			<item type="combobox" property="TabBarPosition">
+				<label value="Tab bar position" />
+				<option name="Top" default="true">
+					<label value="Top" />
+				</option>
+				<option name="Bottom">
+					<label value="Bottom" />
+				</option>
+			</item>
 			<item type="spinbox" property="MaxLogLines" default="500" step="250" minimum="10" maximum="50000">
 				<label lang="en" value="Maximum log lines:" />
 			</item>
