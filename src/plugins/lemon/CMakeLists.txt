@@ -11,18 +11,12 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	lemon.cpp
+	actionsmanager.cpp
 	)
-SET (HEADERS
-	lemon.h
-	)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
 
 ADD_LIBRARY (leechcraft_lemon SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_lemon
 	${QT_LIBRARIES}
