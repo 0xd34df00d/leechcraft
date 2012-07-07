@@ -20,6 +20,7 @@ SET (SRCS
 	pagesview.cpp
 	xmlsettingsmanager.cpp
 	pixmapcachemanager.cpp
+	recentlyopenedmanager.cpp
 	)
 SET (FORMS
 	documenttab.ui
