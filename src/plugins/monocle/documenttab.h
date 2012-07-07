@@ -99,6 +99,7 @@ namespace Monocle
 		void ClearViewActions ();
 	private slots:
 		void handleNavigateRequested (const QString&, int, double, double);
+		void handleRecentOpenAction (QAction*);
 
 		void selectFile ();
 		void handlePrint ();

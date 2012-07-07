@@ -19,6 +19,7 @@
 #include "core.h"
 #include <interfaces/iplugin2.h>
 #include "pixmapcachemanager.h"
+#include "recentlyopenedmanager.h"
 
 namespace LeechCraft
 {
@@ -26,6 +27,7 @@ namespace Monocle
 {
 	Core::Core ()
 	: CacheManager_ (new PixmapCacheManager (this))
+	, ROManager_ (new RecentlyOpenedManager (this))
 	{
 	}
 
@@ -74,6 +76,11 @@ namespace Monocle
 	PixmapCacheManager* Core::GetPixmapCacheManager () const
 	{
 		return CacheManager_;
+	}
+
+	RecentlyOpenedManager* Core::GetROManager () const
+	{
+		return ROManager_;
 	}
 }
 }

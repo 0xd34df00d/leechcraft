@@ -44,6 +44,7 @@ namespace Monocle
 			return Menus_ [docTab];
 
 		auto result = new QMenu (tr ("Recently opened"), docTab);
+		UpdateMenu (result);
 		Menus_ [docTab] = result;
 		connect (docTab,
 				SIGNAL (destroyed (QObject*)),
