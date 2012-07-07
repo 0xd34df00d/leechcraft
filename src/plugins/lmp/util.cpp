@@ -112,16 +112,20 @@ namespace LMP
 
 	void ShowAlbumArt (const QString& near, const QPoint& pos)
 	{
-		const auto& px = FindAlbumArt (near);
+		auto px = FindAlbumArt (near);
 		if (px.isNull ())
 			return;
+
+		const auto& availGeom = QApplication::desktop ()->availableGeometry (pos).size () * 0.9;
+		if (px.size ().width () > availGeom.width () ||
+			px.size ().height () > availGeom.height ())
+			px = px.scaled (availGeom, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
 		auto label = new QLabel;
 		label->setWindowTitle (QObject::tr ("Album art"));
 		label->setWindowFlags (Qt::Tool);
 		label->setAttribute (Qt::WA_DeleteOnClose);
-		label->setScaledContents (true);
-		label->setMaximumSize (QApplication::desktop ()->availableGeometry (pos).size ());
+		label->setFixedSize (px.size ());
 		label->setPixmap (px);
 		label->show ();
 	}
