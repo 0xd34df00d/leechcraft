@@ -82,6 +82,7 @@ namespace Monocle
 		{
 			auto act = menu->addAction (QFileInfo (path).fileName ());
 			act->setProperty ("Path", path);
+			act->setToolTip (path);
 		}
 	}
 
