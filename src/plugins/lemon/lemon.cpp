@@ -47,7 +47,7 @@ namespace Lemon
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("LeechCraft network status monitor.");
+		return tr ("Global network status monitor.");
 	}
 
 	QIcon Plugin::GetIcon () const
