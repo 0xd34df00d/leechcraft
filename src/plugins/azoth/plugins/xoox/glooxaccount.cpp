@@ -72,6 +72,7 @@ namespace Xoox
 	, ParentProtocol_ (qobject_cast<GlooxProtocol*> (parent))
 	, Port_ (-1)
 	, KAParams_ (qMakePair (90, 60))
+	, SelfVCardAction_ (new QAction (tr ("Self VCard..."), this))
 	, PrivacyDialogAction_ (new QAction (tr ("Privacy lists..."), this))
 	{
 		AccState_.State_ = SOffline;
@@ -83,6 +84,13 @@ namespace Xoox
 				SLOT (handleDestroyClient ()),
 				Qt::QueuedConnection);
 
+		SelfVCardAction_->setProperty ("ActionIcon", "text-x-vcard");
+		PrivacyDialogAction_->setProperty ("ActionIcon", "emblem-locked");
+
+		connect (SelfVCardAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showSelfVCard ()));
 		connect (PrivacyDialogAction_,
 				SIGNAL (triggered ()),
 				this,
@@ -231,6 +239,7 @@ namespace Xoox
 	QList<QAction*> GlooxAccount::GetActions () const
 	{
 		QList<QAction*> result;
+		result << SelfVCardAction_;
 		result << PrivacyDialogAction_;
 		return result;
 	}
@@ -846,6 +855,16 @@ namespace Xoox
 	void GlooxAccount::feedClientPassword ()
 	{
 		ClientConnection_->SetPassword (GetPassword ());
+	}
+
+	void GlooxAccount::showSelfVCard ()
+	{
+		if (!ClientConnection_)
+			return;
+
+		auto entry = qobject_cast<EntryBase*> (ClientConnection_->GetCLEntry (JID_));
+		if (entry)
+			entry->ShowInfo ();
 	}
 
 	void GlooxAccount::showPrivacyDialog ()
