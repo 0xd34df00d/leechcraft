@@ -37,7 +37,7 @@ namespace Monocle
 	QSettings* XmlSettingsManager::BeginSettings () const
 	{
 		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_LMP");
+				QCoreApplication::applicationName () + "_Monocle");
 		return settings;
 	}
 
