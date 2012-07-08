@@ -157,7 +157,23 @@ namespace UDisks
 		auto item = Object2Item_.take (path);
 		if (!item)
 			return;
-		else if (item->parent ())
+
+		auto getChildren = [] (QStandardItem *item)
+		{
+			QList<QStandardItem*> result;
+			for (int i = 0; i < item->rowCount (); ++i)
+				result << item->child (i);
+			return result;
+		};
+
+		QList<QStandardItem*> toRemove = getChildren (item);
+		for (int i = 0; i < toRemove.size (); ++i)
+			toRemove += getChildren (toRemove [i]);
+
+		for (QStandardItem *item : toRemove)
+			Object2Item_.remove (Object2Item_.key (item));
+
+		if (item->parent ())
 			item->parent ()->removeRow (item->row ());
 		else
 			DevicesModel_->removeRow (item->row ());
