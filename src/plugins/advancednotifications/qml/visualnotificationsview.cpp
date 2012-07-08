@@ -20,9 +20,13 @@
 #include <QFile>
 #include <QDeclarativeContext>
 #include <QDeclarativeError>
+
+#ifdef Q_OS_WIN32
+#include <QApplication>
+#endif
+
 #include <QtDebug>
 #include "eventproxyobject.h"
-#include <QApplication>
 
 namespace LeechCraft
 {
