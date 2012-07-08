@@ -73,9 +73,9 @@ namespace Azoth
 		const QString& id = entry->GetEntryID ();
 		if (Entry2Tab_.contains (id))
 		{
-			LastCurrentTab_ = Entry2Tab_ [id];
-			emit raiseTab (LastCurrentTab_);
-			return LastCurrentTab_;
+			auto tab = Entry2Tab_ [id];
+			emit raiseTab (tab);
+			return tab;
 		}
 
 		EverOpened_ << id;
@@ -83,7 +83,6 @@ namespace Azoth
 		QPointer<ChatTab> tab (new ChatTab (id));
 		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
-		LastCurrentTab_ = tab;
 
 		Q_FOREACH (const auto& prop, props)
 			tab->setProperty (prop.first, prop.second);
@@ -100,6 +99,10 @@ namespace Azoth
 				SIGNAL (entryMadeCurrent (QObject*)),
 				this,
 				SIGNAL (entryMadeCurrent (QObject*)));
+		connect (tab,
+				SIGNAL (entryMadeCurrent (QObject*)),
+				this,
+				SLOT (updateCurrentTab (QObject*)));
 		connect (tab,
 				SIGNAL (changeTabName (QWidget*, const QString&)),
 				this,
@@ -259,7 +262,6 @@ namespace Azoth
 			return false;
 
 		tab->TabMadeCurrent ();
-
 		return false;
 	}
 
@@ -307,6 +309,12 @@ namespace Azoth
 			if (muc)
 				muc->Leave ();
 		}
+	}
+
+	void ChatTabsManager::updateCurrentTab (QObject *entryObj)
+	{
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		LastCurrentTab_ = Entry2Tab_.value (entry->GetEntryID ());
 	}
 
 	void ChatTabsManager::handleAddingCLEntryEnd (IHookProxy_ptr,

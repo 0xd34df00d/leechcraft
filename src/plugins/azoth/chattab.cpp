@@ -261,6 +261,7 @@ namespace Azoth
 
 	void ChatTab::TabMadeCurrent ()
 	{
+		qDebug () << Q_FUNC_INFO << GetEntry<ICLEntry> ()->GetEntryName ();
 		Core::Instance ().GetChatTabsManager ()->ChatMadeCurrent (this);
 		Core::Instance ().FrameFocused (GetEntry<QObject> (), Ui_.View_->page ()->mainFrame ());
 

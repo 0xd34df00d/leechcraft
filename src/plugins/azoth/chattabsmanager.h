@@ -80,6 +80,7 @@ namespace Azoth
 		void RestoreChat (const RestoreChatInfo&, QObject*);
 	private slots:
 		void handleNeedToClose (ChatTab*);
+		void updateCurrentTab (QObject*);
 		void handleAddingCLEntryEnd (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
 		void chatWindowStyleChanged ();
