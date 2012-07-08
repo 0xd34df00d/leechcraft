@@ -792,6 +792,7 @@ namespace Metida
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
+			qDebug () << document.toByteArray ();
 			ParseFriends (document);
 			return;
 		}

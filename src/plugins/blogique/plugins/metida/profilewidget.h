@@ -52,7 +52,7 @@ namespace Metida
 		QStandardItemModel *FriendsModel_;
 		QStandardItemModel *CommunitiesModel_;
 		QHash<QStandardItem*, LJFriendGroup> Item2FriendGroup_;
-		QHash<QStandardItem*, LJFriendEntry> Item2Friend_;
+		QHash<QStandardItem*, LJFriendEntry_ptr> Item2Friend_;
 	public:
 		ProfileWidget (LJProfile *profile, QWidget *parent = 0);
 	private:
@@ -64,11 +64,10 @@ namespace Metida
 		void updateProfile ();
 	private slots:
 		void on_ColoringFriendsList__toggled (bool toggle);
-		void on_AddFriend__released ();
+		void on_Add__released ();
 		void on_Edit__released ();
 		void on_Delete__released ();
 		void on_UpdateProfile__released ();
-		void on_AddGroup__released ();
 	signals:
 		void coloringItemChanged ();
 	};

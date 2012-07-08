@@ -174,16 +174,9 @@
        <item row="0" column="1">
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="QPushButton" name="AddGroup_">
+          <widget class="QPushButton" name="Add_">
            <property name="text">
-            <string>Add group</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="AddFriend_">
-           <property name="text">
-            <string>Add friend</string>
+            <string>Add</string>
            </property>
           </widget>
          </item>

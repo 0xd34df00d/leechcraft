@@ -19,7 +19,7 @@
 #pragma once
 
 #include <QDialog>
-#include "ui_addgroupdialog.h"
+#include "ui_addeditentrydialog.h"
 
 namespace LeechCraft
 {
@@ -27,18 +27,59 @@ namespace Blogique
 {
 namespace Metida
 {
-	class AddGroupDialog : public QDialog
+	class LJProfile;
+
+	enum AddTypeEntry
+	{
+		ATEFriend,
+		ATEGroup
+	};
+
+	class AddEditEntryDialog : public QDialog
 	{
 		Q_OBJECT
 
-		Ui::AddGroupDialog Ui_;
+		Ui::AddEditEntryDialog Ui_;
+
+		enum GroupRoles
+		{
+			RealGroupId = Qt::UserRole + 1
+		};
+
+		enum AddTypeRoles
+		{
+			AddType = Qt::UserRole + 2
+		};
+		
+
+		LJProfile *Profile_;
+		QColor BackgroundColor_;
+		QColor ForegroundColor_;
 	public:
-		AddGroupDialog (QWidget *parent = 0);
+		AddEditEntryDialog (LJProfile *profile, QWidget *parent = 0);
+
+		QString GetUserName () const;
+		void SetUserName (const QString& name);
+		QString GetBackgroundColorName () const;
+		void SetBackgroundColor (const QColor& clr);
+		QString GetForegroundColorName () const;
+		void SetForegroundColor (const QColor& clr);
+		uint GetGroupRealId () const;
+		void SetGroup (uint id);
 
 		QString GetGroupName () const;
 		void SetGroupName (const QString& name);
 		bool GetAcccess () const;
 		void SetAccess (bool isPublic);
+
+		AddTypeEntry GetAddTypeEntry () const;
+		void ShowAddTypePossibility (bool show);
+		void SetCurrentAddTypeEntry (AddTypeEntry entry);
+
+		void accept ();
+	private slots:
+		void on_SelectBackgroundColor__released ();
+		void on_SelectForegroundColor__released ();
 	};
 }
 }

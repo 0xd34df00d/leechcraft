@@ -92,17 +92,17 @@ namespace Metida
 		std::generate (baseVector.begin (), baseVector.end (),
 				[&current] () { return ++current; });
 
-		QVector<int> existsVector;
+		QVector<int> existingIds;
 		for (const auto& group : ProfileData_.FriendGroups_)
-			existsVector.append (group.Id_);
+			existingIds.append (group.Id_);
 
-		std::sort (existsVector.begin (), existsVector.end ());
+		std::sort (existingIds.begin (), existingIds.end ());
 		QVector<int> result;
 		auto it = std::set_difference (baseVector.begin (), baseVector.end (),
-				existsVector.begin (), existsVector.end (),
+				existingIds.begin (), existingIds.end (),
 				std::back_inserter (result));
 
-		return result.isEmpty () ? -1 : result [0];
+		return result.value (0, -1);
 	}
 
 	void LJProfile::SaveAvatar (QUrl avatarUrl)
