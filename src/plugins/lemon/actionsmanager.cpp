@@ -17,14 +17,61 @@
  **********************************************************************/
 
 #include "actionsmanager.h"
+#include <QNetworkConfigurationManager>
+#include <QNetworkSession>
+#include <QAction>
 
 namespace LeechCraft
 {
 namespace Lemon
 {
+	ActionsManager::InterfaceInfo::InterfaceInfo ()
+	: Action_ (0)
+	, PrevRead_ (0)
+	, PrevWritten_ (0)
+	{
+	}
+
 	ActionsManager::ActionsManager (QObject *parent)
 	: QObject (parent)
+	, Manager_ (new QNetworkConfigurationManager (this))
 	{
+		connect (Manager_,
+				SIGNAL (configurationAdded (QNetworkConfiguration)),
+				this,
+				SLOT (addConfiguration (QNetworkConfiguration)));
+
+		for (const auto& conf : Manager_->allConfigurations (QNetworkConfiguration::Active))
+			addConfiguration (conf);
+	}
+
+	QList<QAction*> ActionsManager::GetActions() const
+	{
+		QList<QAction*> result;
+		for (const auto& info : Infos_.values ())
+			result << info.Action_;
+		return result;
+	}
+
+	void ActionsManager::addConfiguration (const QNetworkConfiguration& conf)
+	{
+		QNetworkSession_ptr sess (new QNetworkSession (conf, this));
+		if (sess->state () != QNetworkSession::Connected)
+			return;
+
+		auto iface = sess->interface ();
+		const auto& ifaceId = iface.hardwareAddress ();
+
+		if (!Infos_.contains (ifaceId))
+		{
+			const auto& title = tr ("Network interface: %1")
+					.arg (iface.humanReadableName ());
+			auto action = new QAction (title, this);
+			Infos_ [ifaceId].Action_ = action;
+			emit gotActions ({ action }, ActionsEmbedPlace::LCTray);
+		}
+
+		Infos_ [ifaceId].Sessions_ [conf.name ()] = sess;
 	}
 }
 }

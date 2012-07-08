@@ -20,16 +20,22 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
 {
 namespace Lemon
 {
+	class ActionsManager;
+
 	class Plugin : public QObject
-					, public IInfo
+				, public IInfo
+				, public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IActionsExporter)
+
+		ActionsManager *Manager_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -38,6 +44,10 @@ namespace Lemon
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+	signals:
+		void gotActions (QList<QAction*> actions, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

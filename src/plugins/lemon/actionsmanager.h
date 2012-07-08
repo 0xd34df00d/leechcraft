@@ -18,10 +18,17 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QMap>
+#include <interfaces/iactionsexporter.h>
 
 class QAction;
+class QNetworkConfigurationManager;
+class QNetworkConfiguration;
+class QNetworkSession;
+
+typedef std::shared_ptr<QNetworkSession> QNetworkSession_ptr;
 
 namespace LeechCraft
 {
@@ -31,13 +38,26 @@ namespace Lemon
 	{
 		Q_OBJECT
 
+		QNetworkConfigurationManager *Manager_;
+
 		struct InterfaceInfo
 		{
 			QAction *Action_;
+			QMap<QString, QNetworkSession_ptr> Sessions_;
+			quint64 PrevRead_;
+			quint64 PrevWritten_;
+
+			InterfaceInfo ();
 		};
 		QMap<QString, InterfaceInfo> Infos_;
 	public:
 		ActionsManager (QObject* = 0);
+
+		QList<QAction*> GetActions () const;
+	private slots:
+		void addConfiguration (const QNetworkConfiguration&);
+	signals:
+		void gotActions (QList<QAction*>, ActionsEmbedPlace);
 	};
 }
 }

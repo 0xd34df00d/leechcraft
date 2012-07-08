@@ -18,6 +18,7 @@
 
 #include "lemon.h"
 #include <QIcon>
+#include "actionsmanager.h"
 
 namespace LeechCraft
 {
@@ -25,6 +26,11 @@ namespace Lemon
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Manager_ = new ActionsManager (this);
+		connect (Manager_,
+				SIGNAL (gotActions (QList<QAction*>, ActionsEmbedPlace)),
+				this,
+				SIGNAL (gotActions (QList<QAction*>, ActionsEmbedPlace)));
 	}
 
 	void Plugin::SecondInit ()
@@ -53,6 +59,13 @@ namespace Lemon
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
+	{
+		return place == ActionsEmbedPlace::LCTray ?
+				Manager_->GetActions () :
+				QList<QAction*> ();
 	}
 }
 }
