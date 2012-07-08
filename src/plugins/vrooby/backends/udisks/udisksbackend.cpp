@@ -170,6 +170,8 @@ namespace UDisks
 		for (int i = 0; i < toRemove.size (); ++i)
 			toRemove += getChildren (toRemove [i]);
 
+		qDebug () << Q_FUNC_INFO << path << toRemove.size ();
+
 		for (QStandardItem *item : toRemove)
 			Object2Item_.remove (Object2Item_.key (item));
 
@@ -368,6 +370,7 @@ namespace UDisks
 	{
 		for (QStandardItem *item : Object2Item_.values ())
 		{
+			qDebug () << Q_FUNC_INFO << Object2Item_.key (item);
 			const auto& mountPaths = item->data (DeviceRoles::MountPoints).toStringList ();
 			if (mountPaths.isEmpty ())
 				continue;
