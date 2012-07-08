@@ -195,7 +195,7 @@ namespace p100q
 		{
 			postRX += "<a href=\"azoth://msgeditreplace/!%20%23\\1%20\" title=\"" +
 				tr ("Recommend") + "\">!</a> ";
-			commentRX += "<a href=\"azoth://msgeditreplace/!%20%23\\1%20\" title=\"" +
+			commentRX += "<a href=\"azoth://msgeditreplace/!%20%23\\1/\\2%20\" title=\"" +
 				tr ("Recommend") + "\">!</a> ";
 		}
 		if (showAddToBookmarkButton)
