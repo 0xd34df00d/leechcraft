@@ -41,6 +41,8 @@ namespace Lemon
 				this,
 				SLOT (addConfiguration (QNetworkConfiguration)));
 
+		Manager_->updateConfigurations ();
+
 		for (const auto& conf : Manager_->allConfigurations (QNetworkConfiguration::Active))
 			addConfiguration (conf);
 	}
@@ -55,6 +57,7 @@ namespace Lemon
 
 	void ActionsManager::addConfiguration (const QNetworkConfiguration& conf)
 	{
+		qDebug () << Q_FUNC_INFO;
 		QNetworkSession_ptr sess (new QNetworkSession (conf, this));
 		if (sess->state () != QNetworkSession::Connected)
 			return;

@@ -47,7 +47,7 @@ namespace Lemon
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	signals:
-		void gotActions (QList<QAction*> actions, LeechCraft::ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

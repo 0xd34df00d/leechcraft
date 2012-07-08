@@ -28,9 +28,9 @@ namespace Lemon
 	{
 		Manager_ = new ActionsManager (this);
 		connect (Manager_,
-				SIGNAL (gotActions (QList<QAction*>, ActionsEmbedPlace)),
+				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
 				this,
-				SIGNAL (gotActions (QList<QAction*>, ActionsEmbedPlace)));
+				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 	}
 
 	void Plugin::SecondInit ()

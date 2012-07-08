@@ -57,7 +57,7 @@ namespace Lemon
 	private slots:
 		void addConfiguration (const QNetworkConfiguration&);
 	signals:
-		void gotActions (QList<QAction*>, ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }
