@@ -348,9 +348,9 @@ namespace UDisks
 		SetItemData (GetDeviceInterface (path), item);
 	}
 
-	void Backend::updateDeviceSpaces()
+	void Backend::updateDeviceSpaces ()
 	{
-		for (const auto& item : Object2Item_.values ())
+		for (QStandardItem *item : Object2Item_.values ())
 		{
 			const auto& mountPaths = item->data (DeviceRoles::MountPoints).toStringList ();
 			if (mountPaths.isEmpty ())
