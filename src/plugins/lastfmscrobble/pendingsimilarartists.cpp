@@ -70,7 +70,7 @@ namespace Lastfmscrobble
 		{
 			const auto& elem = artistElems.at (i).toElement ();
 			similar << qMakePair (elem.firstChildElement ("name").text (),
-						elem.firstChildElement ("match").text ().toDouble ());
+						elem.firstChildElement ("match").text ().toDouble () * 100);
 		}
 
 		auto begin = similar.begin ();
