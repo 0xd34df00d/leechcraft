@@ -26,7 +26,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The following variables are allowed in the track filename: $artist, $year, $album, $trackNumber, $title.&lt;/p&gt;&lt;p&gt;Directories are separated by the '/' symbol. File extension is omitted.&lt;/p&gt;&lt;p&gt;For example, a filename could look like this:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;music/$artist/$year - $album/$trackNumber - $artist - $title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string notr="true">music/$artist/$year - $album/$trackNumber - $artist - $title</string>
+      <string notr="true">music/$artist/$year $album/$trackNumber - $artist - $title</string>
      </property>
      <property name="placeholderText">
       <string>Track filename...</string>
