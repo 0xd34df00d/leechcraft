@@ -49,7 +49,10 @@ namespace Metida
 
 		void AddNewFriend (const QString& username,
 				const QString& bgcolor, const QString& fgcolor, uint groupId);
-		void DeleteFriends (const QStringList& usernames);
+		void DeleteFriend (const QString& username);
+
+		void AddGroup (const QString& name, bool isPublic, int id);
+		void DeleteGroup (int id);
 
 		void UpdateProfileInfo ();
 	private:
@@ -64,15 +67,18 @@ namespace Metida
 		void AddNewFriendRequest (const QString& username,
 				const QString& bgcolor, const QString& fgcolor,
 				int groupId, const QString& challenge);
-		void DeleteFriendsRequest (const QStringList& usernames,
+		void DeleteFriendRequest (const QString& usernames,
 				const QString& challenge);
 
+		void AddGroupRequest (const QString& name, bool isPublic, int id,
+				const QString& challenge);
+		void DeleteGroupRequest (int id, const QString& challenge);
 	private slots:
 		void handleChallengeReplyFinished ();
 		void handleValidateReplyFinished ();
 		void handleRequestFriendsInfoFinished ();
 		void handleAddNewFriendReplyFinished ();
-		void handleDeleteFriendReplyFinished ();
+		void handleReplyWithProfileUpdate ();
 	signals:
 		void validatingFinished (bool success);
 		void profileUpdated (const LJProfileData& profile);

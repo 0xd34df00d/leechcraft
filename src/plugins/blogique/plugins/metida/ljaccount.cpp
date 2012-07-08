@@ -212,9 +212,19 @@ namespace Metida
 		LJXmlRpc_->AddNewFriend (username, bgcolor, fgcolor, groupId);
 	}
 
-	void LJAccount::DeleteFriends (const QStringList& usernames)
+	void LJAccount::DeleteFriend (const QString& username)
 	{
-		LJXmlRpc_->DeleteFriends (usernames);
+		LJXmlRpc_->DeleteFriend (username);
+	}
+
+	void LJAccount::AddGroup (const QString& name, bool isPublic, int id)
+	{
+		LJXmlRpc_->AddGroup (name, isPublic, id);
+	}
+
+	void LJAccount::DeleteGroup (int id)
+	{
+		LJXmlRpc_->DeleteGroup (id);
 	}
 
 	void LJAccount::handleValidatingFinished (bool success)

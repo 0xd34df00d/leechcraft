@@ -77,7 +77,10 @@ namespace Metida
 
 		void AddNewFriend (const QString& username,
 				const QString& bgcolor, const QString& fgcolor, uint groupId);
-		void DeleteFriends (const QStringList& usernames);
+		void DeleteFriend (const QString& username);
+
+		void AddGroup (const QString& name, bool isPublic, int id);
+		void DeleteGroup (int id);
 
 	public slots:
 		void handleValidatingFinished (bool success);
