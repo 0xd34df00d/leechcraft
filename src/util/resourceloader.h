@@ -23,6 +23,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QCache>
+#include <QPixmap>
 #include "utilconfig.h"
 
 class QAbstractItemModel;
@@ -30,7 +31,6 @@ class QStandardItemModel;
 class QSortFilterProxyModel;
 class QFileSystemWatcher;
 class QTimer;
-class QPixmap;
 
 namespace LeechCraft
 {
