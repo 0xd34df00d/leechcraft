@@ -140,6 +140,7 @@ OPTION (ENABLE_NETSTOREMANAGER "Build NetStoreManager for managing network data 
 OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" ${WITH_PLUGINS})
 OPTION (ENABLE_SIDEBAR "Build Sidebar, a nice side bar with quick launch, tabs and tray areas" ${WITH_PLUGINS})
 OPTION (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
+OPTION (ENABLE_TWIFEE "Build Twifee, the Twitter client" OFF)
 OPTION (ENABLE_LASTFMSCROBBLE "Build Last.fm scrobbler" OFF)
 OPTION (ENABLE_LEMON "Build LeechCraft Network Monitor" OFF)
 OPTION (ENABLE_LHTR "Build LeechCraft HTML Text editoR" ${WITH_PLUGINS})
@@ -355,13 +356,17 @@ IF (ENABLE_KNOWHOW)
 	ADD_SUBDIRECTORY (plugins/knowhow)
 ENDIF (ENABLE_KNOWHOW)
 
+IF (ENABLE_SIDEBAR)
+	ADD_SUBDIRECTORY (plugins/sidebar)
+ENDIF (ENABLE_SIDEBAR)
+
 IF (ENABLE_SNAILS)
 	ADD_SUBDIRECTORY (plugins/snails)
 ENDIF (ENABLE_SNAILS)
 
-IF (ENABLE_SIDEBAR)
-	ADD_SUBDIRECTORY (plugins/sidebar)
-ENDIF (ENABLE_SIDEBAR)
+IF (ENABLE_TWIFEE)
+	ADD_SUBDIRECTORY (plugins/twifee)
+ENDIF (ENABLE_TWIFEE)
 
 IF (ENABLE_LIZNOO)
 	ADD_SUBDIRECTORY (plugins/liznoo)
