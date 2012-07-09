@@ -52,6 +52,8 @@ namespace Metida
 		QList<LJFriendEntry_ptr> GetFriends () const;
 
 		QList<LJFriendGroup> GetFriendGroups () const;
+
+		int GetFreeGroupId () const;
 	private:
 		void SaveAvatar (QUrl url = QUrl ());
 

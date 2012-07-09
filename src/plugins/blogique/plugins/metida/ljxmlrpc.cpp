@@ -58,10 +58,24 @@ namespace Metida
 		GenerateChallenge ();
 	}
 
-	void LJXmlRPC::DeleteFriends (const QStringList& usernames)
+	void LJXmlRPC::DeleteFriend (const QString& username)
 	{
-		ApiCallQueue_ << [usernames, this] (const QString& challenge)
-				{ DeleteFriendsRequest (usernames, challenge); };
+		ApiCallQueue_ << [username, this] (const QString& challenge)
+				{ DeleteFriendRequest (username, challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::AddGroup (const QString& name, bool isPublic, int id)
+	{
+		ApiCallQueue_ << [name, isPublic, id, this] (const QString& challenge)
+				{ AddGroupRequest (name, isPublic, id, challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::DeleteGroup (int id)
+	{
+		ApiCallQueue_ << [id, this] (const QString& challenge)
+				{ DeleteGroupRequest (id, challenge); };
 		GenerateChallenge ();
 	}
 
@@ -124,6 +138,8 @@ namespace Metida
 				dataField = doc.createElement ("data");
 				type.appendChild (dataField);
 			}
+			else if (typeVal == "struct")
+				dataField = type;
 
 			return { member, dataField };
 		}
@@ -432,7 +448,7 @@ namespace Metida
 				SLOT (handleAddNewFriendReplyFinished ()));
 	}
 
-	void LJXmlRPC::DeleteFriendsRequest (const QStringList& usernames, const QString& challenge)
+	void LJXmlRPC::DeleteFriendRequest (const QString& username, const QString& challenge)
 	{
 		QDomDocument document ("DeleteFriendRequest");
 		auto result = GetStartPart ("LJ.XMLRPC.editfriends", document);
@@ -450,16 +466,12 @@ namespace Metida
 
 		auto array = GetComplexMemberElement ("delete", "array", document);
 		result.second.appendChild (array.first);
-
-		for (const auto& username : usernames)
-		{
-			QDomElement valueField = document.createElement ("value");
-			array.second.appendChild (valueField);
-			QDomElement valueType = document.createElement ("string");
-			valueField.appendChild (valueType);
-			QDomText text = document.createTextNode (username);
-			valueType.appendChild (text);
-		}
+		QDomElement valueField = document.createElement ("value");
+		array.second.appendChild (valueField);
+		QDomElement valueType = document.createElement ("string");
+		valueField.appendChild (valueType);
+		QDomText text = document.createTextNode (username);
+		valueType.appendChild (text);
 
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
@@ -468,7 +480,78 @@ namespace Metida
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
-				SLOT (handleDeleteFriendReplyFinished ()));
+				SLOT (handleReplyWithProfileUpdate ()));
+	}
+
+	void LJXmlRPC::AddGroupRequest (const QString& name, bool isPublic, int id,
+			const QString& challenge)
+	{
+		QDomDocument document ("AddNewFriendRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.editfriendgroups", document);
+		document.appendChild (result.first);
+		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
+				"challenge", document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
+				challenge, document));
+		result.second.appendChild (GetSimpleMemberElement ("username", "string",
+				Account_->GetOurLogin (), document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
+				GetPassword (Account_->GetPassword (), challenge), document));
+		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
+				"1", document));
+
+		auto data = GetComplexMemberElement ("set", "struct", document);
+		result.second.appendChild (data.first);
+		auto subStruct = GetComplexMemberElement (QString::number (id), "struct", document);
+		data.second.appendChild (subStruct.first);
+		subStruct.second.appendChild (GetSimpleMemberElement ("name", "string",
+				name, document));
+		subStruct.second.appendChild (GetSimpleMemberElement ("public", "boolean",
+				 isPublic ? "1" : "0", document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleReplyWithProfileUpdate ()));
+	}
+
+	void LJXmlRPC::DeleteGroupRequest (int id, const QString& challenge)
+	{
+		QDomDocument document ("DeleteGroupRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.editfriendgroups", document);
+		document.appendChild (result.first);
+		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
+				"challenge", document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
+				challenge, document));
+		result.second.appendChild (GetSimpleMemberElement ("username", "string",
+				Account_->GetOurLogin (), document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
+				GetPassword (Account_->GetPassword (), challenge), document));
+		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
+				"1", document));
+
+		auto array = GetComplexMemberElement ("delete", "array", document);
+		result.second.appendChild (array.first);
+		QDomElement valueField = document.createElement ("value");
+		array.second.appendChild (valueField);
+		QDomElement valueType = document.createElement ("int");
+		valueField.appendChild (valueType);
+		QDomText text = document.createTextNode (QString::number (id));
+		valueType.appendChild (text);
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						  document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleReplyWithProfileUpdate ()));
 	}
 
 	void LJXmlRPC::UpdateProfileInfo ()
@@ -709,6 +792,7 @@ namespace Metida
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
+			qDebug () << document.toByteArray ();
 			ParseFriends (document);
 			return;
 		}
@@ -716,7 +800,7 @@ namespace Metida
 		ParseForError (content);
 	}
 
-	void LJXmlRPC::handleDeleteFriendReplyFinished()
+	void LJXmlRPC::handleReplyWithProfileUpdate ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
