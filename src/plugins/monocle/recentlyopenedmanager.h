@@ -19,39 +19,31 @@
 #pragma once
 
 #include <QObject>
-#include "lastfmheaders.h"
+#include <QHash>
+#include <QStringList>
 
-class QNetworkAccessManager;
-
-namespace lastfm
-{
-	class RadioStation;
-}
+class QMenu;
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace Monocle
 {
-	class RadioTuner : public QObject
+	class RecentlyOpenedManager : public QObject
 	{
 		Q_OBJECT
 
-		QNetworkAccessManager *NAM_;
-		QList<lastfm::Track> Queue_;
-		int NumTries_;
+		QStringList OpenedDocs_;
+		QHash<QWidget*, QMenu*> Menus_;
 	public:
-		RadioTuner (const lastfm::RadioStation&, QNetworkAccessManager*, QObject* = 0);
+		RecentlyOpenedManager (QObject* = 0);
 
-		lastfm::Track GetNextTrack ();
+		QMenu* CreateOpenMenu (QWidget*);
+		void RecordOpened (const QString&);
 	private:
-		void FetchMoreTracks ();
-		bool TryAgain ();
+		void UpdateMenu (QMenu*);
 	private slots:
-		void handleTuned ();
-		void handleGotPlaylist ();
-	signals:
-		void error (const QString&);
-		void trackAvailable ();
+		void handleDocTabDestroyed ();
+		void handleActionTriggered ();
 	};
 }
 }

@@ -151,6 +151,7 @@ namespace LMP
 				SIGNAL (triggered ()),
 				this,
 				SLOT (removeSelectedSongs ()));
+		Ui_.Playlist_->addAction (ActionRemoveSelected_);
 
 		ActionStopAfterSelected_ = new QAction (tr ("Stop after this track"), Ui_.Playlist_);
 		ActionStopAfterSelected_->setProperty ("ActionIcon", "media-playback-stop");

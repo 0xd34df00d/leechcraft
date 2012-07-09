@@ -184,6 +184,9 @@ namespace Azoth
 		if (!accActions.isEmpty ())
 		{
 			actions += accActions;
+			auto proxy = Core::Instance ().GetProxy ();
+			Q_FOREACH (QAction *action, actions)
+				action->setIcon (proxy->GetIcon (action->property ("ActionIcon").toString ()));
 			actions << Util::CreateSeparator (menu);
 		}
 

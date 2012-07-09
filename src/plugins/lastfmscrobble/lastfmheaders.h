@@ -18,40 +18,28 @@
 
 #pragma once
 
-#include <QObject>
-#include "lastfmheaders.h"
+#include <lastfm/global.h>
+#include <lastfm/misc.h>
 
-class QNetworkAccessManager;
+#if LASTFM_MAJOR_VERSION < 1
+#include <lastfm/ParseError>
+#include <lastfm/Xspf>
+#include <lastfm/MutableTrack>
+#include <lastfm/Track>
+#include <lastfm/ScrobbleCache>
+#include <lastfm/Scrobble>
+#include <lastfm/Audioscrobbler>
+#include <lastfm/RadioTuner>
+#include <lastfm/RadioStation>
 
-namespace lastfm
-{
-	class RadioStation;
-}
+#else
 
-namespace LeechCraft
-{
-namespace Lastfmscrobble
-{
-	class RadioTuner : public QObject
-	{
-		Q_OBJECT
+#include <lastfm/ws.h>
+#include <lastfm/Xspf.h>
+#include <lastfm/Track.h>
+#include <lastfm/ScrobbleCache.h>
+#include <lastfm/Audioscrobbler.h>
+#include <lastfm/RadioTuner.h>
+#include <lastfm/RadioStation.h>
 
-		QNetworkAccessManager *NAM_;
-		QList<lastfm::Track> Queue_;
-		int NumTries_;
-	public:
-		RadioTuner (const lastfm::RadioStation&, QNetworkAccessManager*, QObject* = 0);
-
-		lastfm::Track GetNextTrack ();
-	private:
-		void FetchMoreTracks ();
-		bool TryAgain ();
-	private slots:
-		void handleTuned ();
-		void handleGotPlaylist ();
-	signals:
-		void error (const QString&);
-		void trackAvailable ();
-	};
-}
-}
+#endif

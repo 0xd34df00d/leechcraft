@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,40 +18,46 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include "lastfmheaders.h"
+#include <QMap>
+#include <interfaces/iactionsexporter.h>
 
-class QNetworkAccessManager;
+class QAction;
+class QNetworkConfigurationManager;
+class QNetworkConfiguration;
+class QNetworkSession;
 
-namespace lastfm
-{
-	class RadioStation;
-}
+typedef std::shared_ptr<QNetworkSession> QNetworkSession_ptr;
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace Lemon
 {
-	class RadioTuner : public QObject
+	class ActionsManager : public QObject
 	{
 		Q_OBJECT
 
-		QNetworkAccessManager *NAM_;
-		QList<lastfm::Track> Queue_;
-		int NumTries_;
-	public:
-		RadioTuner (const lastfm::RadioStation&, QNetworkAccessManager*, QObject* = 0);
+		QNetworkConfigurationManager *Manager_;
 
-		lastfm::Track GetNextTrack ();
-	private:
-		void FetchMoreTracks ();
-		bool TryAgain ();
+		struct InterfaceInfo
+		{
+			QAction *Action_;
+			QMap<QString, QNetworkSession_ptr> Sessions_;
+			quint64 PrevRead_;
+			quint64 PrevWritten_;
+
+			InterfaceInfo ();
+		};
+		QMap<QString, InterfaceInfo> Infos_;
+	public:
+		ActionsManager (QObject* = 0);
+
+		QList<QAction*> GetActions () const;
 	private slots:
-		void handleTuned ();
-		void handleGotPlaylist ();
+		void addConfiguration (const QNetworkConfiguration&);
 	signals:
-		void error (const QString&);
-		void trackAvailable ();
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

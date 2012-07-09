@@ -96,9 +96,12 @@ namespace LeechCraft
 		MainLayout_ = new QVBoxLayout (this);
 		MainLayout_->setContentsMargins (0, 0, 0, 0);
 		MainLayout_->setSpacing (0);
-		MainLayout_->addLayout (MainTabBarLayout_);
 		MainLayout_->addLayout (MainToolBarLayout_);
 		MainLayout_->addWidget (MainStackedWidget_);
+
+		XmlSettingsManager::Instance ()->RegisterObject ("TabBarPosition",
+				this, "handleTabBarPosition");
+		handleTabBarPosition ();
 
 		Init ();
 		AddTabButtonInit ();
@@ -706,6 +709,20 @@ namespace LeechCraft
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookTabFinishedMoving (proxy, index);
+	}
+
+	void SeparateTabWidget::handleTabBarPosition ()
+	{
+		MainLayout_->removeItem (MainTabBarLayout_);
+
+		const auto& settingVal = XmlSettingsManager::Instance ()->property ("TabBarPosition").toString ();
+		const bool isBottom = settingVal == "Bottom";
+		if (isBottom)
+			MainLayout_->addLayout (MainTabBarLayout_);
+		else
+			MainLayout_->insertLayout (0, MainTabBarLayout_);
+
+		MainTabBar_->setShape (isBottom ? QTabBar::RoundedSouth : QTabBar::RoundedNorth);
 	}
 
 	void SeparateTabWidget::handleSelectionBehavior ()

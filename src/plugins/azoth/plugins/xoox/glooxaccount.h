@@ -129,6 +129,7 @@ namespace Xoox
 
 		GlooxAccountState AccState_;
 
+		QAction *SelfVCardAction_;
 		QAction *PrivacyDialogAction_;
 	public:
 		GlooxAccount (const QString&, QObject*);
@@ -238,6 +239,7 @@ namespace Xoox
 	private slots:
 		void handleServerAuthFailed ();
 		void feedClientPassword ();
+		void showSelfVCard ();
 		void showPrivacyDialog ();
 		void handleDestroyClient ();
 #ifdef ENABLE_MEDIACALLS

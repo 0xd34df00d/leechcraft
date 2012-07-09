@@ -39,6 +39,8 @@ namespace Vrooby
 		enum CustomRoles
 		{
 			FormattedTotalSize = DeviceRoles::DeviceRoleMax + 1,
+			FormattedFreeSpace,
+			UsedPercentage,
 			MountButtonIcon,
 			MountedAt
 		};

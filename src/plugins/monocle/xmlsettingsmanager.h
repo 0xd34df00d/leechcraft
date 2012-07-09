@@ -18,40 +18,22 @@
 
 #pragma once
 
-#include <QObject>
-#include "lastfmheaders.h"
-
-class QNetworkAccessManager;
-
-namespace lastfm
-{
-	class RadioStation;
-}
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace Monocle
 {
-	class RadioTuner : public QObject
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 
-		QNetworkAccessManager *NAM_;
-		QList<lastfm::Track> Queue_;
-		int NumTries_;
+		XmlSettingsManager ();
 	public:
-		RadioTuner (const lastfm::RadioStation&, QNetworkAccessManager*, QObject* = 0);
-
-		lastfm::Track GetNextTrack ();
-	private:
-		void FetchMoreTracks ();
-		bool TryAgain ();
-	private slots:
-		void handleTuned ();
-		void handleGotPlaylist ();
-	signals:
-		void error (const QString&);
-		void trackAvailable ();
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }

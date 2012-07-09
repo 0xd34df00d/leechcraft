@@ -16,42 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include "lastfmheaders.h"
-
-class QNetworkAccessManager;
-
-namespace lastfm
-{
-	class RadioStation;
-}
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace Monocle
 {
-	class RadioTuner : public QObject
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
+		Util::BaseSettingsManager::Init ();
+	}
 
-		QNetworkAccessManager *NAM_;
-		QList<lastfm::Track> Queue_;
-		int NumTries_;
-	public:
-		RadioTuner (const lastfm::RadioStation&, QNetworkAccessManager*, QObject* = 0);
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return manager;
+	}
 
-		lastfm::Track GetNextTrack ();
-	private:
-		void FetchMoreTracks ();
-		bool TryAgain ();
-	private slots:
-		void handleTuned ();
-		void handleGotPlaylist ();
-	signals:
-		void error (const QString&);
-		void trackAvailable ();
-	};
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Monocle");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 }
 }

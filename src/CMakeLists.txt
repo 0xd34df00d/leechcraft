@@ -141,6 +141,7 @@ OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entiti
 OPTION (ENABLE_SIDEBAR "Build Sidebar, a nice side bar with quick launch, tabs and tray areas" ${WITH_PLUGINS})
 OPTION (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
 OPTION (ENABLE_LASTFMSCROBBLE "Build Last.fm scrobbler" OFF)
+OPTION (ENABLE_LEMON "Build LeechCraft Network Monitor" ${WITH_PLUGINS})
 OPTION (ENABLE_LHTR "Build LeechCraft HTML Text editoR" ${WITH_PLUGINS})
 OPTION (ENABLE_GACTS "Build Global Actions provider plugin" OFF)
 OPTION (ENABLE_CEMENTO "Build Cemento, LeechCraft common persistent storage" OFF)
@@ -181,6 +182,27 @@ FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
 	SET (${TranVar} ${_tran} PARENT_SCOPE)
 	SET (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
 ENDFUNCTION (CreateTrVars)
+
+FUNCTION (CreateTrs PlugName Langs CompiledTranVar)
+	STRING (LENGTH "${PlugName}" _pnameLength)
+	SET (_basename "leechcraft")
+	IF (_pnameLength)
+		SET (_basename "${_basename}_${PlugName}")
+	ENDIF (_pnameLength)
+	FOREACH (_LANG ${Langs})
+		SET (_tran ${_tran} ${_basename}_${_LANG}.ts)
+		SET (_ctran ${_ctran} ${CMAKE_CURRENT_SOURCE_DIR}/${_basename}_${_LANG}.qm)
+	ENDFOREACH (_LANG)
+	SET (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
+
+	ADD_CUSTOM_COMMAND (OUTPUT ${_ctran}
+		COMMAND "${QT_LRELEASE_EXECUTABLE}" ${_tran}
+		DEPENDS ${_tran}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		)
+	INSTALL (FILES ${_ctran} DESTINATION ${LC_TRANSLATIONS_DEST})
+	SET (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
+ENDFUNCTION (CreateTrs)
 
 IF (ENABLE_SUMMARY)
 	ADD_SUBDIRECTORY (plugins/summary)
@@ -356,6 +378,10 @@ ENDIF (ENABLE_TABSESSMANAGER)
 IF (ENABLE_LASTFMSCROBBLE)
 	ADD_SUBDIRECTORY (plugins/lastfmscrobble)
 ENDIF (ENABLE_LASTFMSCROBBLE)
+
+IF (ENABLE_LEMON)
+	ADD_SUBDIRECTORY (plugins/lemon)
+ENDIF (ENABLE_LEMON)
 
 IF (ENABLE_LHTR)
 	ADD_SUBDIRECTORY (plugins/lhtr)

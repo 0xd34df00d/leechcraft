@@ -26,12 +26,17 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	class RecentlyOpenedManager;
+	class PixmapCacheManager;
+
 	class Core : public QObject
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
 		QList<IBackendPlugin*> Backends_;
+		PixmapCacheManager *CacheManager_;
+		RecentlyOpenedManager *ROManager_;
 
 		Core ();
 	public:
@@ -44,6 +49,9 @@ namespace Monocle
 
 		bool CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
+
+		PixmapCacheManager* GetPixmapCacheManager () const;
+		RecentlyOpenedManager* GetROManager () const;
 	};
 }
 }

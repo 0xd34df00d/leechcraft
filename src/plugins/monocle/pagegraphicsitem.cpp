@@ -21,6 +21,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
 #include <QApplication>
+#include "core.h"
+#include "pixmapcachemanager.h"
 
 namespace LeechCraft
 {
@@ -40,6 +42,11 @@ namespace Monocle
 
 		if (!Links_.isEmpty ())
 			setAcceptHoverEvents (true);
+	}
+
+	PageGraphicsItem::~PageGraphicsItem ()
+	{
+		Core::Instance ().GetPixmapCacheManager ()->PixmapDeleted (this);
 	}
 
 	void PageGraphicsItem::SetScale (double xs, double ys)
@@ -62,6 +69,16 @@ namespace Monocle
 		return PageNum_;
 	}
 
+	void PageGraphicsItem::ClearPixmap ()
+	{
+		auto size = Doc_->GetPageSize (PageNum_);
+		size.rwidth () *= XScale_;
+		size.rheight () *= YScale_;
+		setPixmap (QPixmap (size));
+
+		Invalid_ = true;
+	}
+
 	void PageGraphicsItem::paint (QPainter *painter,
 			const QStyleOptionGraphicsItem *option, QWidget *w)
 	{
@@ -71,8 +88,12 @@ namespace Monocle
 			setPixmap (QPixmap::fromImage (img));
 			LayoutLinks ();
 			Invalid_ = false;
+
+			Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
 		}
+
 		QGraphicsPixmapItem::paint (painter, option, w);
+		Core::Instance ().GetPixmapCacheManager ()->PixmapPainted (this);
 	}
 
 	void PageGraphicsItem::hoverMoveEvent (QGraphicsSceneHoverEvent *event)

@@ -19,7 +19,7 @@
 #include "pendingsimilarartists.h"
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
-#include <lastfm/Artist>
+#include <QDomDocument>
 #include "util.h"
 
 namespace LeechCraft
@@ -31,7 +31,11 @@ namespace Lastfmscrobble
 	: BaseSimilarArtists (name, num, parent)
 	, NAM_ (nam)
 	{
-		auto reply = lastfm::Artist (name).getSimilar ();
+		QMap<QString, QString> params;
+		params ["artist"] = name;
+		params ["autocorrect"] = "1";
+		params ["limit"] = QString::number (num);
+		auto reply = Request ("artist.getSimilar", nam, params);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -47,11 +51,26 @@ namespace Lastfmscrobble
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
-		const auto& similar = lastfm::Artist::getSimilar (reply);
-		if (similar.isEmpty ())
+		QDomDocument doc;
+		if (!doc.setContent (reply->readAll ()))
 		{
 			emit ready ();
 			return;
+		}
+
+		const auto& artistElems = doc.elementsByTagName ("artist");
+		if (artistElems.isEmpty ())
+		{
+			emit ready ();
+			return;
+		}
+
+		QList<QPair<QString, double>> similar;
+		for (int i = 0, size = artistElems.size (); i < size; ++i)
+		{
+			const auto& elem = artistElems.at (i).toElement ();
+			similar << qMakePair (elem.firstChildElement ("name").text (),
+						elem.firstChildElement ("match").text ().toDouble () * 100);
 		}
 
 		auto begin = similar.begin ();
@@ -65,11 +84,11 @@ namespace Lastfmscrobble
 		for (auto i = begin; i != end; ++i)
 		{
 			QMap<QString, QString> params;
-			params ["artist"] = i.value ();
+			params ["artist"] = i->first;
 			AddLanguageParam (params);
 			auto infoReply = Request ("artist.getInfo", NAM_, params);
 
-			infoReply->setProperty ("Similarity", i.key ());
+			infoReply->setProperty ("Similarity", i->second);
 			connect (infoReply,
 					SIGNAL (finished ()),
 					this,

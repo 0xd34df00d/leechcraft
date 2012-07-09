@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Appearance" />
+		<item type="spinbox" property="RecentlyOpenedListSize" default="10" minimum="1" maximum="100">
+			<label value="Maximum number of items in Recently Opened list:" />
+		</item>
+	</page>
+	<page>
+		<label value="Performance" />
+		<item type="spinbox" property="PixmapCacheSize" default="128" minimum="0" maximum="1024">
+			<label value="Pixmap cache size:" />
+			<suffix value=" MiB" />
+		</item>
+	</page>
+</settings>

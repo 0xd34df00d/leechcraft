@@ -19,39 +19,30 @@
 #pragma once
 
 #include <QObject>
-#include "lastfmheaders.h"
-
-class QNetworkAccessManager;
-
-namespace lastfm
-{
-	class RadioStation;
-}
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace Monocle
 {
-	class RadioTuner : public QObject
+	class PageGraphicsItem;
+
+	class PixmapCacheManager : public QObject
 	{
 		Q_OBJECT
 
-		QNetworkAccessManager *NAM_;
-		QList<lastfm::Track> Queue_;
-		int NumTries_;
+		qint64 CurrentSize_;
+		qint64 MaxSize_;
+		QList<PageGraphicsItem*> RecentlyUsed_;
 	public:
-		RadioTuner (const lastfm::RadioStation&, QNetworkAccessManager*, QObject* = 0);
+		PixmapCacheManager (QObject* = 0);
 
-		lastfm::Track GetNextTrack ();
+		void PixmapPainted (PageGraphicsItem*);
+		void PixmapChanged (PageGraphicsItem*);
+		void PixmapDeleted (PageGraphicsItem*);
 	private:
-		void FetchMoreTracks ();
-		bool TryAgain ();
+		void CheckCache ();
 	private slots:
-		void handleTuned ();
-		void handleGotPlaylist ();
-	signals:
-		void error (const QString&);
-		void trackAvailable ();
+		void handleCacheSizeChanged ();
 	};
 }
 }

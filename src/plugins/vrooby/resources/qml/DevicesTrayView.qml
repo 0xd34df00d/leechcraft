@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import "."
 
 Rectangle {
     id: rootRect
@@ -42,7 +43,7 @@ Rectangle {
             color: "#00000000"
 
             width: devicesView.width
-            height: devNameLabel.height + totalSizeLabel.height + mountedAtLabel.height
+            height: devNameLabel.height + totalSizeLabel.height + mountedAtLabel.height + availIndicator.height
 
             Rectangle {
                 anchors.top: parent.top
@@ -103,6 +104,22 @@ Rectangle {
                 visible: text.length != 0
 
                 anchors.top: totalSizeLabel.bottom
+                anchors.topMargin: 2
+                anchors.left: parent.left
+                anchors.leftMargin: 5
+            }
+
+            ProgressBar {
+                id: availIndicator
+
+                visible: availableSize > 0
+                color: usedPercentage > 90 ? "#ff1d00" : "#999999"
+
+                minimum: 0
+                maximum: 100
+                value: usedPercentage
+
+                anchors.top: mountedAtLabel.bottom
                 anchors.topMargin: 2
                 anchors.left: parent.left
                 anchors.leftMargin: 5

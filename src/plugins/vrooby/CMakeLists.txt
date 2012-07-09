@@ -17,6 +17,7 @@ SET (SRCS
 	)
 SET (RESOURCES vroobyresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+CreateTrs ("vrooby" "en;ru_RU" COMPILED_TRANSLATIONS)
 
 OPTION (ENABLE_VROOBY_UDISKS "Enable UDisks backend for Vrooby" TRUE)
 IF (ENABLE_VROOBY_UDISKS)

@@ -68,6 +68,7 @@ namespace UDisks
 		void handleDeviceAdded (const QDBusObjectPath&);
 		void handleDeviceRemoved (const QDBusObjectPath&);
 		void handleDeviceChanged (const QDBusObjectPath&);
+		void updateDeviceSpaces ();
 	};
 }
 }

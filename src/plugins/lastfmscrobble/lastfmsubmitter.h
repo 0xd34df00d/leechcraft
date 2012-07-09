@@ -24,7 +24,7 @@
 #include <QString>
 #include <QVariant>
 #include <QMap>
-#include <lastfm/Track>
+#include "lastfmheaders.h"
 
 class QTimer;
 
@@ -80,7 +80,6 @@ namespace Lastfmscrobble
 		void handleAuthenticated ();
 	private slots:
 		void cacheAndSubmit ();
-		void checkFlushQueue (int);
 	signals:
 		void status (int code);
 		void authFailure ();

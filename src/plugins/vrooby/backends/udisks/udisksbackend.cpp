@@ -18,10 +18,13 @@
 
 #include "udisksbackend.h"
 #include <memory>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <QStandardItemModel>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDBusInterface>
+#include <QTimer>
 #include <QtDebug>
 #include <util/util.h>
 
@@ -40,6 +43,13 @@ namespace UDisks
 	, UDisksObj_ (0)
 	{
 		InitialEnumerate ();
+
+		auto timer = new QTimer (this);
+		connect (timer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (updateDeviceSpaces ()));
+		timer->start (10000);
 	}
 
 	bool Backend::IsValid () const
@@ -147,7 +157,23 @@ namespace UDisks
 		auto item = Object2Item_.take (path);
 		if (!item)
 			return;
-		else if (item->parent ())
+
+		auto getChildren = [] (QStandardItem *item)
+		{
+			QList<QStandardItem*> result;
+			for (int i = 0; i < item->rowCount (); ++i)
+				result << item->child (i);
+			return result;
+		};
+
+		QList<QStandardItem*> toRemove = getChildren (item);
+		for (int i = 0; i < toRemove.size (); ++i)
+			toRemove += getChildren (toRemove [i]);
+
+		for (QStandardItem *item : toRemove)
+			Object2Item_.remove (Object2Item_.key (item));
+
+		if (item->parent ())
 			item->parent ()->removeRow (item->row ());
 		else
 			DevicesModel_->removeRow (item->row ());
@@ -187,6 +213,16 @@ namespace UDisks
 		}
 
 		DevicesModel_->blockSignals (true);
+
+		const auto& mountPaths = iface->property ("DeviceMountPaths").toStringList ();
+		if (!mountPaths.isEmpty ())
+		{
+			const auto& space = boost::filesystem::space (mountPaths.value (0).toStdWString ()).free;
+			item->setData (static_cast<qint64> (space), DeviceRoles::AvailableSize);
+		}
+		else
+			item->setData (-1, DeviceRoles::AvailableSize);
+
 		item->setText (name);
 		item->setData (DeviceType::GenericDevice, DeviceRoles::DevType);
 		item->setData (iface->property ("DeviceFile").toString (), DeviceRoles::DevFile);
@@ -200,7 +236,7 @@ namespace UDisks
 		item->setData (fullName, DeviceRoles::VisibleName);
 		item->setData (iface->property ("PartitionSize").toLongLong (), DeviceRoles::TotalSize);
 		DevicesModel_->blockSignals (false);
-		item->setData (iface->property ("DeviceMountPaths").toStringList (), DeviceRoles::MountPoints);
+		item->setData (mountPaths, DeviceRoles::MountPoints);
 	}
 
 	void Backend::toggleMount (const QString& id)
@@ -324,8 +360,23 @@ namespace UDisks
 	{
 		const auto& path = pathObj.path ();
 
-		auto item = Object2Item_ [path];
+		auto item = Object2Item_.value (path);
 		SetItemData (GetDeviceInterface (path), item);
+	}
+
+	void Backend::updateDeviceSpaces ()
+	{
+		for (QStandardItem *item : Object2Item_.values ())
+		{
+			const auto& mountPaths = item->data (DeviceRoles::MountPoints).toStringList ();
+			if (mountPaths.isEmpty ())
+				continue;
+
+			const auto& space = boost::filesystem::space (mountPaths.value (0).toStdWString ());
+			const auto free = static_cast<qint64> (space.free);
+			if (free != item->data (DeviceRoles::AvailableSize).value<qint64> ())
+				item->setData (static_cast<qint64> (free), DeviceRoles::AvailableSize);
+		}
 	}
 }
 }

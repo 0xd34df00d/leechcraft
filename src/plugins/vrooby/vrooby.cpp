@@ -33,6 +33,8 @@ namespace Vrooby
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("vrooby");
+
 		Backend_ = 0;
 		TrayView_ = new TrayView (proxy);
 
@@ -44,17 +46,16 @@ namespace Vrooby
 				SIGNAL (gotEntity (LeechCraft::Entity)));
 #endif
 
-		ActionDevices_ = new QAction (tr ("Removable devices..."), this);
-		ActionDevices_->setProperty ("ActionIcon", "drive-removable-media-usb");
+		if (!Backend_)
+			return;
 
-		ActionDevices_->setCheckable (true);
-		connect (ActionDevices_,
-				SIGNAL (toggled (bool)),
+		TrayView_->SetBackend (Backend_);
+		connect (TrayView_,
+				SIGNAL (hasItemsChanged ()),
 				this,
-				SLOT (showTrayView (bool)));
+				SLOT (checkAction ()));
 
-		if (Backend_)
-			TrayView_->SetBackend (Backend_);
+		checkAction ();
 	}
 
 	void Plugin::SecondInit ()
@@ -99,9 +100,35 @@ namespace Vrooby
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
 	{
 		QList<QAction*> result;
-		if (aep == ActionsEmbedPlace::LCTray)
-			result << ActionDevices_;
+		if (aep == ActionsEmbedPlace::LCTray && ActionDevices_)
+			result << ActionDevices_.get ();
 		return result;
+	}
+
+	void Plugin::checkAction ()
+	{
+		if (!Backend_)
+			return;
+
+		if (TrayView_->HasItems () == static_cast<bool> (ActionDevices_))
+			return;
+
+		if (!TrayView_->HasItems ())
+		{
+			ActionDevices_.reset ();
+			showTrayView (false);
+			return;
+		}
+
+		ActionDevices_.reset (new QAction (tr ("Removable devices..."), this));
+		ActionDevices_->setProperty ("ActionIcon", "drive-removable-media-usb");
+
+		ActionDevices_->setCheckable (true);
+		connect (ActionDevices_.get (),
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (showTrayView (bool)));
+		emit gotActions ({ ActionDevices_.get () }, ActionsEmbedPlace::LCTray);
 	}
 
 	void Plugin::showTrayView (bool show)
