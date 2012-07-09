@@ -141,7 +141,7 @@ OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entiti
 OPTION (ENABLE_SIDEBAR "Build Sidebar, a nice side bar with quick launch, tabs and tray areas" ${WITH_PLUGINS})
 OPTION (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
 OPTION (ENABLE_LASTFMSCROBBLE "Build Last.fm scrobbler" OFF)
-OPTION (ENABLE_LEMON "Build LeechCraft Network Monitor" ${WITH_PLUGINS})
+OPTION (ENABLE_LEMON "Build LeechCraft Network Monitor" OFF)
 OPTION (ENABLE_LHTR "Build LeechCraft HTML Text editoR" ${WITH_PLUGINS})
 OPTION (ENABLE_GACTS "Build Global Actions provider plugin" OFF)
 OPTION (ENABLE_CEMENTO "Build Cemento, LeechCraft common persistent storage" OFF)
