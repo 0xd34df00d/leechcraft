@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,38 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_WYFV_CORE_H
-#define PLUGINS_POSHUKU_PLUGINS_WYFV_CORE_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Twifee
 {
-namespace WYFV
-{
-	class WYFVPlugin;
-
-	class Core : public QObject
+	class Plugin : public QObject
+					, public IInfo
 	{
 		Q_OBJECT
-
-		WYFVPlugin *Plugin_;
-		ICoreProxy_ptr Proxy_;
-
-		Core ();
+		Q_INTERFACES (IInfo)
 	public:
-		static Core& Instance ();
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
 		void Release ();
-
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
-
-		WYFVPlugin* GetWYFVPlugin ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 	};
 }
 }
-}
 
-#endif

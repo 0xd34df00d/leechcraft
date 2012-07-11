@@ -53,7 +53,7 @@ namespace Util
 
 		QList<QByteArray> dProperties = dynamicPropertyNames ();
 		for (int i = 0; i < dProperties.size (); ++i)
-			Settings_->setValue (dProperties.at (i),
+			Settings_->setValue (QString::fromUtf8 (dProperties.at (i)),
 					property (dProperties.at (i).constData ()));
 		EndSettings (Settings_);
 		delete Settings_;
@@ -125,10 +125,10 @@ namespace Util
 		if (e->type () != QEvent::DynamicPropertyChange)
 			return false;
 
-		QDynamicPropertyChangeEvent *event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
+		auto event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
 
 		const QByteArray& name = event->propertyName ();
-		Settings_->setValue (name, property (name));
+		Settings_->setValue (QString::fromUtf8 (name), property (name));
 
 		if (ApplyProps_.contains (name))
 		{

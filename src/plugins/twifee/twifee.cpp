@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,33 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_WYFV_ABSTRACTPLAYERCREATOR_H
-#define PLUGINS_POSHUKU_PLUGINS_WYFV_ABSTRACTPLAYERCREATOR_H
-#include <QStringList>
-
-class QUrl;
+#include "twifee.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Twifee
 {
-namespace WYFV
-{
-	class Player;
-
-	class AbstractPlayerCreator
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-	public:
-		virtual ~AbstractPlayerCreator ();
+	}
 
-		virtual bool WouldRatherPlay (const QUrl&) const = 0;
-		virtual Player* Create (const QUrl&,
-				const QStringList&,
-				const QStringList&) const = 0;
-	};
-}
+	void Plugin::SecondInit ()
+	{
+	}
+
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Twifee";
+	}
+
+	void Plugin::Release ()
+	{
+	}
+
+	QString Plugin::GetName () const
+	{
+		return "Twifee";
+	}
+
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Twitter client for LeechCraft.");
+	}
+
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
 }
 }
 
-#endif
+LC_EXPORT_PLUGIN (leechcraft_twifee, LeechCraft::Twifee::Plugin);
 
