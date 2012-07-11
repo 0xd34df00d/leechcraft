@@ -4,6 +4,91 @@ the rest.
 Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
+!!! 0.5.75
+! Devel digest #27 ( http://leechcraft.org/devel-digest-27 ):
+* Core: ignore LanguageChange event.
+* Core: cache sorted plugins list.
+* Core: pixmap cache in ResourceLoader.
+* Core: allow to disable resource caching.
+* Core: removed a bunch of dead code.
+* Core: fixed a possible segfault when there are no handlers for entity.
+* Core: tab bar can be moved to the bottom.
+* XSD: fixed handling of non-latin1 keys.
+* Overall: GetIcon() returns a static icon now.
+* Overall: several other performance optimizations.
+* AdvancedNotifications: fixed QML notifier on some multimonitor systems.
+* Azoth: Ctrl+Click in roster inserts the corresponding nickname.
+* Azoth Herbicide: block authorization requests as well.
+* Azoth p100q: fixed recommending comments.
+* Azoth Xoox: action for modifying self vCard in account menu.
+* Azoth Xoox: fix for client connection handling, and a possible segfault.
+* LastFMScrobble: added support for liblastfm-1.0.
+* LMP: support for uploading & transcoding files from collection.
+* LMP: show full-scale album art when requested.
+* LMP: dynamic playlist menu.
+* LMP: support copying properties from the properties display widget.
+* LMP: properly handle collections with unscannable items.
+* LMP: communicate with scrobblers only after SecondInit.
+* Poshuku WYFV: removed this plugin.
+* Vrooby: new device manager plugin, with UDisks1 backend for now.
+
+! Devel digest #26 ( http://leechcraft.org/devel-digest-26 ):
+* Core: added --list-plugins and --safe-mode options.
+* Core: added Select All and Select None buttons to the plugin manager.
+* AdvancedNotifications: added Urgent hint handler.
+* Azoth: message text is stored in tab info, so it's recovered as well.
+* Azoth: MUCs are rejoined on tab recovery.
+* Azoth: added an option to alias KP_Enter to Enter.
+* Azoth: even non-chat nicknames can be dragged now from contact list.
+* Azoth: multiple performance improvements.
+* Azoth AdiumStyles: support for SenderColors.txt.
+* Azoth ChatHistory: added a calendar for choosing dates.
+* Azoth ChatHistory: clickable links in History.
+* Azoth StandardStyles: added a bunch of StandardStyles by Pendruk.
+* Azoth Xoox: severely optimized load time, especially with big roster.
+* LastFMScrobble: allow the user to choose the language of the info.
+* Liznoo: the dialog is hidden after second click on its action.
+* LMP: added support for MPRIS.
+* LMP: directory iteration now optionally supports symlinks.
+* LMP: track properties for Now Playing, FS, Collection and playlist. 
+* LMP: EnableScrobbling setting is now respected.
+* LMP: some scanning fixes, a couple of segfaults has been fixed too.
+* LMP: fixed compatibility with TagLib < 1.7.
+* LMP: fixed some segfaults.
+* Poshuku: removed tooltips generation.
+* Sidebar: support embeddind dock visibility actions.
+* TabSessManager: fixed Select All and Select None buttons.
+* TabSessManager: fixed tab close handling.
+
+! Devel digest #25 ( http://leechcraft.org/devel-digest-25 ):
+* Azoth: updated contact list delegate.
+* Azoth: highlighting groups is now optional.
+* Azoth Xoox: always show JID in the vCard.
+* GMailNotifier: if the username isn't set, the error is shown only once.
+* Kinotify: support for X11 systems fullscreen detection.
+* Lads: added this new plugin for Unity integration.
+* LastFMScrobble: support for requesting recommended artists.
+* LastFMScrobble: support for Last.FM radios.
+* LastFMScrobble: support for requesting recent releases in user's library.
+* LastFMScrobble: some queueing & scrobbling fixes.
+* LastFMScrobble: fetch artists biography.
+* LMP: support radio sources & allow one to play radio streams.
+* LMP: display personal recommendations for the user.
+* LMP: display recent releases for user's musical taste.
+* LMP: display biography of the currently playing artist.
+* LMP: configurable transition time between tracks.
+* LMP: current item is saved between playlist modifications.
+* LMP: album art can be viewed in full size in some places.
+* LMP: support undo/redo in playlist.
+* LMP: notify when local collection is updated.
+* LMP: on-start directory iteration is async now.
+* LMP: many library scanning fixes.
+* LMP: album time is properly reduced on items removal.
+* Poshuku CleanWeb: fixed a segfault on premature frame destruction.
+* Sidebar: LeechCraft menu is shown here now.
+* TabSessManager: don't add empty tabs to the unclose list.
+* TabSessManager: delayed session saving.
+
 !!! 0.5.70
 ! Devel digest #24 ( http://leechcraft.org/devel-digest-24 ):
 * Core: shortcut items shouldn't be editable.
