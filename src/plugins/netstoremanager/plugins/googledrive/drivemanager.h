@@ -24,6 +24,7 @@
 #include <QDateTime>
 #include <QUrl>
 #include <QStringList>
+#include <qvariant.h>
 
 namespace LeechCraft
 {
@@ -42,7 +43,7 @@ namespace GoogleDrive
 			ILHidden = 0x02,
 			ILRemoved = 0x04,
 			ILShared = 0x08,
-			ILViewed = 0x16
+			ILViewed = 0x10
 		};
 		Q_DECLARE_FLAGS (ItemLabels, ItemLabel);
 
@@ -62,7 +63,10 @@ namespace GoogleDrive
 
 		enum class PermissionTypes
 		{
-			User
+			User,
+			Group,
+			Domain,
+			Anyone
 		};
 
 		QString Id_;
@@ -73,6 +77,7 @@ namespace GoogleDrive
 		QString Name_;
 		QString OriginalFileName_;
 		QString Md5_;
+		QString Mime_;
 
 		qint64 FileSize_;
 
@@ -109,12 +114,16 @@ namespace GoogleDrive
 		void RefreshListing ();
 
 		void RequestFiles (const QString& key);
+		void RequestFileShared (const QString& id, const QString& key);
 	private:
 		void RequestAccessToken ();
+		void ParseError (const QVariantMap& map);
 
 	private slots:
 		void handleAuthTokenRequestFinished ();
 		void handleGotFiles ();
+		void handleRequestFileSharing ();
+
 	signals:
 		void gotFiles (const QList<DriveItem>& items);
 	};

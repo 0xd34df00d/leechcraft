@@ -21,6 +21,7 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <qjson/parser.h>
+#include <qjson/serializer.h>
 #include "account.h"
 #include "core.h"
 
@@ -59,6 +60,31 @@ namespace GoogleDrive
 				SLOT (handleGotFiles ()));
 	}
 
+	void DriveManager::RequestFileShared (const QString& id, const QString& key)
+	{
+		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1/permissions?access_token=%2")
+				.arg (id, key);
+		QNetworkRequest request (str);
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
+
+		QVariantMap map;
+		map.insert ("kind", "drive#permission");
+		map.insert ("id", "anyoneWithLink");
+		map.insert ("role", "reader");
+		map.insert ("type", "anyone");
+		map.insert ("withLink", true);
+
+		QJson::Serializer serializer;
+
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->
+				GetNetworkAccessManager ()->post (request, serializer.serialize (map));
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleRequestFileSharing ()));
+	}
+
 	void DriveManager::RequestAccessToken ()
 	{
 		QNetworkRequest request (QUrl ("https://accounts.google.com/o/oauth2/token"));
@@ -77,6 +103,15 @@ namespace GoogleDrive
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleAuthTokenRequestFinished ()));
+	}
+
+	void DriveManager::ParseError (const QVariantMap& map)
+	{
+		const auto& errorMap = map ["error"].toMap ();
+		const QString& code = errorMap ["code"].toString ();
+		const QString& msg = errorMap ["message"].toString ();
+
+		//TODO error notification
 	}
 
 	void DriveManager::handleAuthTokenRequestFinished ()
@@ -108,7 +143,7 @@ namespace GoogleDrive
 		if (ApiCallQueue_.isEmpty ())
 			return;
 
-			qDebug () << accessKey;
+		qDebug () << accessKey;
 		ApiCallQueue_.dequeue () (accessKey);
 	}
 
@@ -137,16 +172,31 @@ namespace GoogleDrive
 			return;
 		}
 
+		if (res.toMap ().contains ("error"))
+		{
+			ParseError (res.toMap ());
+			return;
+		}
+
 		QList<DriveItem> resList;
 		Q_FOREACH (const auto& item, res.toMap () ["items"].toList ())
 		{
 			QVariantMap map = item.toMap ();
+			if (map ["mimeType"].toString () != "application/vnd.google-apps.folder" &&
+					map ["downloadUrl"].toString ().isEmpty ())
+				continue;
+
 			DriveItem driveItem;
 			driveItem.Id_ = map ["id"].toString ();
 			driveItem.Name_ = map ["title"].toString ();
 			driveItem.IsFolder_ = map ["mimeType"].toString () ==
 					"application/vnd.google-apps.folder";
+			driveItem.Mime_ = map ["mimeType"].toString ();
+
+			driveItem.DownloadUrl_ = map ["downloadUrl"].toUrl ();
+
 			const QVariantMap& labels = map ["labels"].toMap ();
+			driveItem.Labels_ = DriveItem::ILNone;
 			if (labels ["starred"].toBool ())
 				driveItem.Labels_ |= DriveItem::ILFavorite;
 			if (labels ["hidden"].toBool ())
@@ -157,15 +207,12 @@ namespace GoogleDrive
 				driveItem.Labels_ |= DriveItem::ILShared;
 			if (labels ["viewed"].toBool ())
 				driveItem.Labels_ |= DriveItem::ILViewed;
-
 			driveItem.CreateDate_ = QDateTime::fromString (map ["createdDate"].toString (),
 					Qt::ISODate);
 			driveItem.ModifiedDate_ = QDateTime::fromString (map ["modifiedDate"].toString (),
 					Qt::ISODate);
 			driveItem.LastViewedByMe_ = QDateTime::fromString (map ["lastViewedByMeDate"].toString (),
 					Qt::ISODate);
-
-			driveItem.DownloadUrl_ = map ["downloadUrl"].toUrl ();
 
 			const QVariantMap& permission = map ["userPermission"].toMap ();
 			const QString& role = permission ["role"].toString ();
@@ -206,6 +253,36 @@ namespace GoogleDrive
 		}
 
 		emit gotFiles (resList);
+	}
+
+	void DriveManager::handleRequestFileSharing ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		QJson::Parser parser;
+		bool ok;
+		QByteArray ba = reply->readAll ();
+		QVariant res = parser.parse (ba, &ok);
+
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+
+		if (!res.toMap ().contains ("error"))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "file shared successfully";
+			return;
+		}
+
+		ParseError (res.toMap ());
 	}
 
 }
