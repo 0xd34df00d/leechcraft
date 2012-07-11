@@ -22,6 +22,9 @@
 #include <QMessageBox>
 #include <QUuid>
 #include <QDate>
+#include <QTextDocument>
+#include <QTextFrame>
+#include <QPrinter>
 #include <interfaces/structures.h>
 #include <util/util.h>
 #include <util/tags/categoryselector.h>
@@ -52,9 +55,9 @@ namespace Aggregator
 				SLOT (handleChannelsSelectionChanged (const QItemSelection&,
 						const QItemSelection&)));
 
-		for (int i = 0; i < Ui_.Genres_->topLevelItemCount (); ++i)
+		for (int i = 0; i < Ui_.FB2Genres_->topLevelItemCount (); ++i)
 		{
-			QTreeWidgetItem *item = Ui_.Genres_->topLevelItem (i);
+			QTreeWidgetItem *item = Ui_.FB2Genres_->topLevelItem (i);
 			for (int j = 0; j < item->childCount (); ++j)
 			{
 				QTreeWidgetItem *subItem = item->child (j);
@@ -71,56 +74,11 @@ namespace Aggregator
 		on_File__textChanged (QString ());
 	}
 
-	void Export2FB2Dialog::on_Browse__released ()
+	struct WriteInfo
 	{
-		QString filename = QFileDialog::getSaveFileName (this,
-				tr ("Select save file"),
-				QDir::homePath () + "/export.fb2",
-				tr ("fb2 files (*.fb2);;XML files (*.xml);;All files (*.*)"));
-		if (filename.isEmpty ())
-			return;
-
-		Ui_.File_->setText (filename);
-	}
-
-	void Export2FB2Dialog::on_File__textChanged (const QString& name)
-	{
-		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (name.size ());
-	}
-
-	void Export2FB2Dialog::on_Name__textEdited ()
-	{
-		HasBeenTextModified_ = true;
-	}
-
-	void Export2FB2Dialog::handleChannelsSelectionChanged (const QItemSelection& selected,
-			const QItemSelection& deselected)
-	{
-		QStringList removedCategories;
-		Q_FOREACH (QModelIndex index, deselected.indexes ())
-			removedCategories << Core::Instance ().GetCategories (index);
-		removedCategories.removeDuplicates ();
-		Q_FOREACH (QString removed, removedCategories)
-			CurrentCategories_.removeAll (removed);
-
-		QStringList addedCategories;
-		Q_FOREACH (QModelIndex index, selected.indexes ())
-			addedCategories << Core::Instance ().GetCategories (index);
-		CurrentCategories_ << addedCategories;
-
-		CurrentCategories_.removeDuplicates ();
-
-		Selector_->setPossibleSelections (CurrentCategories_);
-		Selector_->selectAll ();
-
-		if (!HasBeenTextModified_ &&
-				Ui_.ChannelsTree_->selectionModel ()->selectedRows ().size () <= 1)
-		{
-			const QModelIndex& index = Ui_.ChannelsTree_->currentIndex ();
-			if (index.isValid ())
-				Ui_.Name_->setText (index.sibling (index.row (), 0).data ().toString ());
-		}
-	}
+		const QString File_;
+		const QMap<ChannelShort, QList<Item_ptr>> Items_;
+	};
 
 	namespace
 	{
@@ -219,104 +177,104 @@ namespace Aggregator
 
 			return descr;
 		}
-	}
 
-	void WriteChannel (QXmlStreamWriter& w,
-			const ChannelShort& cs, const QList<Item_ptr>& items)
-	{
-		w.writeStartElement ("section");
-			w.writeAttribute ("id", QString::number (cs.ChannelID_));
-			w.writeStartElement ("title");
-				w.writeTextElement ("p", FixContents (cs.Title_));
-			w.writeEndElement ();
-			w.writeTextElement ("annotation",
-					Export2FB2Dialog::tr ("%n unread item(s)", "", cs.Unread_));
-			Q_FOREACH (Item_ptr item, items)
-			{
+		void WriteChannel (QXmlStreamWriter& w,
+				const ChannelShort& cs, const QList<Item_ptr>& items)
+		{
+			w.writeStartElement ("section");
+				w.writeAttribute ("id", QString::number (cs.ChannelID_));
 				w.writeStartElement ("title");
-					w.writeStartElement ("p");
-					w.writeComment ("p");
-					w.device ()->write (FixContents (item->Title_).toUtf8 ());
-					w.writeEndElement ();
+					w.writeTextElement ("p", FixContents (cs.Title_));
 				w.writeEndElement ();
-
-				bool hasDate = item->PubDate_.isValid ();
-				bool hasAuthor = item->Author_.size ();
-				if (hasDate || hasAuthor)
+				w.writeTextElement ("annotation",
+						Export2FB2Dialog::tr ("%n unread item(s)", "", cs.Unread_));
+				Q_FOREACH (Item_ptr item, items)
 				{
-					w.writeStartElement ("epigraph");
-						if (hasDate)
-							w.writeTextElement ("p",
-									Export2FB2Dialog::tr ("Published on %1")
-										.arg (item->PubDate_.toString ()));
-						if (hasAuthor)
-							w.writeTextElement ("p",
-									Export2FB2Dialog::tr ("By %1")
-										.arg (item->Author_));
+					w.writeStartElement ("title");
+						w.writeStartElement ("p");
+						w.writeComment ("p");
+						w.device ()->write (FixContents (item->Title_).toUtf8 ());
+						w.writeEndElement ();
 					w.writeEndElement ();
+
+					bool hasDate = item->PubDate_.isValid ();
+					bool hasAuthor = item->Author_.size ();
+					if (hasDate || hasAuthor)
+					{
+						w.writeStartElement ("epigraph");
+							if (hasDate)
+								w.writeTextElement ("p",
+										Export2FB2Dialog::tr ("Published on %1")
+											.arg (item->PubDate_.toString ()));
+							if (hasAuthor)
+								w.writeTextElement ("p",
+										Export2FB2Dialog::tr ("By %1")
+											.arg (item->Author_));
+						w.writeEndElement ();
+						w.writeEmptyElement ("empty-line");
+					}
+
+					w.writeStartElement ("p");
+						w.writeComment ("p");
+						w.device ()->write (FixContents (item->Description_).toUtf8 ());
+					w.writeEndElement ();
+
 					w.writeEmptyElement ("empty-line");
 				}
+			w.writeEndElement ();
+		}
 
-				w.writeStartElement ("p");
-					w.writeComment ("p");
-					w.device ()->write (FixContents (item->Description_).toUtf8 ());
+		void WriteBeginning (QXmlStreamWriter& w,
+				const QStringList& authors,
+				const QStringList& genres,
+				const QString& name)
+		{
+			w.setAutoFormatting (true);
+			w.setAutoFormattingIndent (2);
+			w.writeStartDocument ();
+			w.writeStartElement ("FictionBook");
+			w.writeDefaultNamespace ("http://www.gribuser.ru/xml/fictionbook/2.0");
+			w.writeNamespace ("http://www.w3.org/1999/xlink", "l");
+
+			w.writeStartElement ("description");
+				w.writeStartElement ("title-info");
+					Q_FOREACH (const QString& genre, genres)
+						w.writeTextElement ("genre", genre);
+					Q_FOREACH (QString author, authors)
+					{
+						w.writeStartElement ("author");
+							w.writeTextElement ("nickname", author);
+						w.writeEndElement ();
+					}
+					w.writeTextElement ("book-title", name);
+					w.writeTextElement ("lang", "en");
 				w.writeEndElement ();
 
-				w.writeEmptyElement ("empty-line");
-			}
-		w.writeEndElement ();
-	}
-
-	void WriteBeginning (QXmlStreamWriter& w,
-			const QStringList& authors,
-			const QStringList& genres,
-			const QString& name)
-	{
-		w.setAutoFormatting (true);
-		w.setAutoFormattingIndent (2);
-		w.writeStartDocument ();
-		w.writeStartElement ("FictionBook");
-		w.writeDefaultNamespace ("http://www.gribuser.ru/xml/fictionbook/2.0");
-		w.writeNamespace ("http://www.w3.org/1999/xlink", "l");
-
-		w.writeStartElement ("description");
-			w.writeStartElement ("title-info");
-				Q_FOREACH (const QString& genre, genres)
-					w.writeTextElement ("genre", genre);
-				Q_FOREACH (QString author, authors)
-				{
+				w.writeStartElement ("document-info");
 					w.writeStartElement ("author");
-						w.writeTextElement ("nickname", author);
+						w.writeTextElement ("nickname", "LeechCraft");
 					w.writeEndElement ();
-				}
-				w.writeTextElement ("book-title", name);
-				w.writeTextElement ("lang", "en");
-			w.writeEndElement ();
-
-			w.writeStartElement ("document-info");
-				w.writeStartElement ("author");
-					w.writeTextElement ("nickname", "LeechCraft");
-				w.writeEndElement ();
-				w.writeTextElement ("program-used",
-						QString ("LeechCraft Aggregator %1")
-							.arg (Core::Instance ().GetProxy ()->GetVersion ()));
-				w.writeTextElement ("id",
-						QUuid::createUuid ().toString ());
-				w.writeTextElement ("version", "1.0");
-				w.writeStartElement ("date");
-					const QDate& date = QDate::currentDate ();
-					w.writeAttribute ("date", date.toString (Qt::ISODate));
-					w.writeCharacters (date.toString (Qt::TextDate));
+					w.writeTextElement ("program-used",
+							QString ("LeechCraft Aggregator %1")
+								.arg (Core::Instance ().GetProxy ()->GetVersion ()));
+					w.writeTextElement ("id",
+							QUuid::createUuid ().toString ());
+					w.writeTextElement ("version", "1.0");
+					w.writeStartElement ("date");
+						const QDate& date = QDate::currentDate ();
+						w.writeAttribute ("date", date.toString (Qt::ISODate));
+						w.writeCharacters (date.toString (Qt::TextDate));
+					w.writeEndElement ();
 				w.writeEndElement ();
 			w.writeEndElement ();
-		w.writeEndElement ();
 
-		w.writeStartElement ("body");
+			w.writeStartElement ("body");
+		}
 	}
 
-	void Export2FB2Dialog::handleAccepted ()
+	void Export2FB2Dialog::WriteFB2 (const WriteInfo& info)
 	{
-		QFile file (Ui_.File_->text ());
+		QFile file (info.File_);
 		if (!file.open (QIODevice::WriteOnly))
 		{
 			QMessageBox::critical (this,
@@ -327,30 +285,188 @@ namespace Aggregator
 			return;
 		}
 
+		QStringList authors;
+		const auto& channels = info.Items_.keys ();
+		std::transform (channels.begin (), channels.end (), std::back_inserter (authors),
+				[] (decltype (channels.front ()) ch) { return ch.Author_; });
+		if (!authors.size ())
+			authors << "LeechCraft";
+		else
+			authors.removeDuplicates ();
+
+		QStringList genres;
+		for (int i = 0; i < Ui_.FB2Genres_->topLevelItemCount (); ++i)
+		{
+			auto item = Ui_.FB2Genres_->topLevelItem (i);
+			for (int j = 0; j < item->childCount (); ++j)
+			{
+				auto subItem = item->child (j);
+				if (subItem->checkState (0) == Qt::Checked)
+					genres << subItem->text (1);
+			}
+		}
+
+		QXmlStreamWriter w (&file);
+		WriteBeginning (w, authors, genres, Ui_.Name_->text ());
+
+		Q_FOREACH (const auto& cs, channels)
+			WriteChannel (w, cs, info.Items_ [cs]);
+		w.writeEndElement ();
+		w.writeEndDocument ();
+
+		emit gotEntity (Util::MakeNotification ("Aggregator",
+					tr ("Export complete."),
+					PInfo_));
+	}
+
+	namespace
+	{
+		void WritePDFChannel (QTextCursor& cursor, const ChannelShort& cs, const QList<Item_ptr>& items, const QTextFrame *topFrame)
+		{
+			const auto origCharFmt = cursor.charFormat ();
+
+			QTextFrameFormat frameFmt;
+			frameFmt.setBorder (1);
+			frameFmt.setPadding (5);
+			frameFmt.setBackground (QColor ("#A4C0E4"));
+			cursor.insertFrame (frameFmt);
+
+			auto titleFmt = origCharFmt;
+			titleFmt.setFontPointSize (16);
+			cursor.setCharFormat (titleFmt);
+			cursor.insertText (cs.Title_);
+
+			cursor.setPosition (topFrame->lastPosition ());
+
+			titleFmt.setFontPointSize (14);
+			auto dateFmt = origCharFmt;
+			dateFmt.setFontItalic (true);
+			Q_FOREACH (Item_ptr item, items)
+			{
+				cursor.setCharFormat (titleFmt);
+				cursor.insertText (item->Title_ + "\n");
+
+				cursor.setCharFormat (dateFmt);
+				cursor.insertText (item->PubDate_.toString ());
+
+				cursor.setCharFormat (origCharFmt);
+
+				auto descr = item->Description_;
+				QRegExp imgRx ("<img *>", Qt::CaseSensitive, QRegExp::Wildcard);
+				imgRx.setMinimal (true);
+				descr.remove (imgRx);
+				descr.remove ("</img>");
+
+				QRegExp linkRx ("<a.*></a>");
+				linkRx.setMinimal (true);
+				descr.remove (linkRx);
+				descr += "<br/><br/>";
+
+				cursor.insertHtml (descr);
+			}
+		}
+	}
+
+	void Export2FB2Dialog::WritePDF (const WriteInfo& info)
+	{
+		QTextDocument doc;
+		QTextCursor cursor (&doc);
+
+		auto topFrame = cursor.currentFrame ();
+		QTextFrameFormat frameFmt;
+		frameFmt.setBorder (1);
+		frameFmt.setPadding (10);
+		frameFmt.setBackground (QColor ("#A4C0E4"));
+		cursor.insertFrame(frameFmt);
+
+		const auto origFmt = cursor.charFormat ();
+
+		auto titleFmt = origFmt;
+		titleFmt.setFontPointSize (18);
+		cursor.setCharFormat (titleFmt);
+		cursor.insertText (Ui_.Name_->text ());
+
+		cursor.setPosition (topFrame->lastPosition ());
+
+		cursor.setCharFormat (origFmt);
+		Q_FOREACH (const auto& cs, info.Items_.keys ())
+			WritePDFChannel (cursor, cs, info.Items_ [cs], topFrame);
+
+		QPrinter printer;
+		printer.setOutputFileName (info.File_);
+		printer.setOutputFormat (QPrinter::PdfFormat);
+		doc.print (&printer);
+	}
+
+	void Export2FB2Dialog::on_Browse__released ()
+	{
+		QString filename = QFileDialog::getSaveFileName (this,
+				tr ("Select save file"),
+				QDir::homePath () + "/export.fb2",
+				tr ("fb2 files (*.fb2);;XML files (*.xml);;All files (*.*)"));
+		if (filename.isEmpty ())
+			return;
+
+		Ui_.File_->setText (filename);
+	}
+
+	void Export2FB2Dialog::on_File__textChanged (const QString& name)
+	{
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (name.size ());
+	}
+
+	void Export2FB2Dialog::on_Name__textEdited ()
+	{
+		HasBeenTextModified_ = true;
+	}
+
+	void Export2FB2Dialog::handleChannelsSelectionChanged (const QItemSelection& selected,
+			const QItemSelection& deselected)
+	{
+		QStringList removedCategories;
+		Q_FOREACH (QModelIndex index, deselected.indexes ())
+			removedCategories << Core::Instance ().GetCategories (index);
+		removedCategories.removeDuplicates ();
+		Q_FOREACH (QString removed, removedCategories)
+			CurrentCategories_.removeAll (removed);
+
+		QStringList addedCategories;
+		Q_FOREACH (QModelIndex index, selected.indexes ())
+			addedCategories << Core::Instance ().GetCategories (index);
+		CurrentCategories_ << addedCategories;
+
+		CurrentCategories_.removeDuplicates ();
+
+		Selector_->setPossibleSelections (CurrentCategories_);
+		Selector_->selectAll ();
+
+		if (!HasBeenTextModified_ &&
+				Ui_.ChannelsTree_->selectionModel ()->selectedRows ().size () <= 1)
+		{
+			const QModelIndex& index = Ui_.ChannelsTree_->currentIndex ();
+			if (index.isValid ())
+				Ui_.Name_->setText (index.sibling (index.row (), 0).data ().toString ());
+		}
+	}
+
+	void Export2FB2Dialog::handleAccepted ()
+	{
 		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
 
-		QModelIndexList rows = Ui_.ChannelsTree_->
-				selectionModel ()->selectedRows ();
+		const auto& rows = Ui_.ChannelsTree_->selectionModel ()->selectedRows ();
 		bool unreadOnly = Ui_.UnreadOnly_->checkState () == Qt::Checked;
-		QStringList categories = Selector_->GetSelections ();
+		const auto& categories = Selector_->GetSelections ();
 
 		QMap<ChannelShort, QList<Item_ptr>> items2write;
-		QStringList authors;
 
-		Q_FOREACH (QModelIndex row, rows)
+		Q_FOREACH (const auto& row, rows)
 		{
-			ChannelShort cs = Core::Instance ()
-				.GetRawChannelsModel ()->GetChannelForIndex (row);
-
-			Channel_ptr channel = sb->
-					GetChannel (cs.ChannelID_, cs.FeedID_);
-			authors << channel->Author_;
+			const auto& cs = Core::Instance ().GetRawChannelsModel ()->GetChannelForIndex (row);
 
 			items_shorts_t items;
 			sb->GetItems (items, cs.ChannelID_);
 
-			for (items_shorts_t::const_iterator i = items.begin (),
-					end = items.end (); i != end; ++i)
+			for (auto i = items.begin (), end = items.end (); i != end; ++i)
 			{
 				if (unreadOnly &&
 						!i->Unread_)
@@ -359,7 +475,7 @@ namespace Aggregator
 				if (!i->Categories_.isEmpty ())
 				{
 					bool suitable = false;
-					Q_FOREACH (QString cat, categories)
+					Q_FOREACH (const auto& cat, categories)
 						if (i->Categories_.contains (cat))
 						{
 							suitable = true;
@@ -370,39 +486,26 @@ namespace Aggregator
 						continue;
 				}
 
-				Item_ptr item = sb->GetItem (i->ItemID_);
-
-				items2write [cs].prepend (item);
+				items2write [cs].prepend (sb->GetItem (i->ItemID_));
 			}
 		}
 
-		if (!authors.size ())
-			authors << "LeechCraft";
+		const WriteInfo info = { Ui_.File_->text (), items2write };
 
-		QStringList genres;
-		for (int i = 0; i < Ui_.Genres_->topLevelItemCount (); ++i)
+		switch (Ui_.ExportFormat_->currentIndex ())
 		{
-			QTreeWidgetItem *item = Ui_.Genres_->topLevelItem (i);
-			for (int j = 0; j < item->childCount (); ++j)
-			{
-				QTreeWidgetItem *subItem = item->child (j);
-				if (subItem->checkState (0) == Qt::Checked)
-					genres << subItem->text (1);
-			}
+		case 0:
+			WriteFB2 (info);
+			break;
+		case 1:
+			WritePDF (info);
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown format ID"
+					<< Ui_.ExportFormat_->currentIndex ();
+			return;
 		}
-
-		QXmlStreamWriter w (&file);
-		WriteBeginning (w, authors, genres, Ui_.Name_->text ());
-
-		QList<ChannelShort> shorts = items2write.keys ();
-		Q_FOREACH (ChannelShort cs, shorts)
-			WriteChannel (w, cs, items2write [cs]);
-		w.writeEndElement ();
-		w.writeEndDocument ();
-
-		emit gotEntity (Util::MakeNotification ("Aggregator",
-					tr ("FB2 export complete."),
-					PInfo_));
 	}
 }
 }

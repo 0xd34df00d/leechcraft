@@ -32,6 +32,8 @@ namespace Util
 
 namespace Aggregator
 {
+	struct WriteInfo;
+
 	class Export2FB2Dialog : public QDialog
 	{
 		Q_OBJECT
@@ -39,10 +41,13 @@ namespace Aggregator
 		Ui::Export2FB2Dialog Ui_;
 		Util::CategorySelector *Selector_;
 		QStringList CurrentCategories_;
-		
+
 		bool HasBeenTextModified_;
 	public:
 		Export2FB2Dialog (QWidget* = 0);
+	private:
+		void WriteFB2 (const WriteInfo&);
+		void WritePDF (const WriteInfo&);
 	private slots:
 		void on_Browse__released ();
 		void on_File__textChanged (const QString&);
