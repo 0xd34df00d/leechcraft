@@ -98,6 +98,9 @@ namespace LMP
 
 		Ui_.TSProgress_->hide ();
 		Ui_.UploadProgress_->hide ();
+
+		if (DevUploadModel_->rowCount ())
+			on_DevicesSelector__activated (0);
 	}
 
 	void DevicesBrowserWidget::InitializeDevices ()
