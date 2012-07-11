@@ -16,61 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "lemon.h"
-#include <QIcon>
 #include "core.h"
-#include "actionsmanager.h"
 
 namespace LeechCraft
 {
 namespace Lemon
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
-	{
-		Core::Instance ().SetProxy (proxy);
-
-		Manager_ = new ActionsManager (this);
-		connect (Manager_,
-				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
-				this,
-				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
-	}
-
-	void Plugin::SecondInit ()
+	Core::Core ()
 	{
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	Core& Core::Instance ()
 	{
-		return "org.LeechCraft.Lemon";
+		static Core c;
+		return c;
 	}
 
-	void Plugin::Release ()
+	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
 	}
 
-	QString Plugin::GetName () const
+	ICoreProxy_ptr Core::GetProxy () const
 	{
-		return "Lemon";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Global network status monitor.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
-	{
-		return place == ActionsEmbedPlace::LCTray ?
-				Manager_->GetActions () :
-				QList<QAction*> ();
+		return Proxy_;
 	}
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_lemon, LeechCraft::Lemon::Plugin);
