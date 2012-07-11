@@ -20,6 +20,7 @@
 #include <QNetworkConfigurationManager>
 #include <QNetworkSession>
 #include <QAction>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -55,21 +56,49 @@ namespace Lemon
 		return result;
 	}
 
+	namespace
+	{
+		struct NetIcons
+		{
+			QMap<QNetworkConfiguration::BearerType, QIcon> Icons_;
+
+			NetIcons ()
+			{
+				auto p = Core::Instance ().GetProxy ();
+				Icons_ [QNetworkConfiguration::BearerEthernet] = p->GetIcon ("network-wired");
+				Icons_ [QNetworkConfiguration::BearerWLAN] = p->GetIcon ("network-wireless");
+				Icons_ [QNetworkConfiguration::BearerWiMAX] = p->GetIcon ("network-wireless");
+
+				const auto& mobile = p->GetIcon ("mobile");
+				Icons_ [QNetworkConfiguration::Bearer2G] = mobile;
+				Icons_ [QNetworkConfiguration::BearerCDMA2000] = mobile;
+				Icons_ [QNetworkConfiguration::BearerWCDMA] = mobile;
+				Icons_ [QNetworkConfiguration::BearerHSPA] = mobile;
+
+				Icons_ [QNetworkConfiguration::BearerUnknown] = p->GetIcon ("network-workgroup");
+			}
+		};
+	}
+
 	void ActionsManager::addConfiguration (const QNetworkConfiguration& conf)
 	{
-		qDebug () << Q_FUNC_INFO;
+		static NetIcons icons;
+
 		QNetworkSession_ptr sess (new QNetworkSession (conf, this));
 		if (sess->state () != QNetworkSession::Connected)
 			return;
 
 		auto iface = sess->interface ();
 		const auto& ifaceId = iface.hardwareAddress ();
+		const auto& config = sess->configuration ();
 
 		if (!Infos_.contains (ifaceId))
 		{
-			const auto& title = tr ("Network interface: %1")
-					.arg (iface.humanReadableName ());
+			const auto& title = tr ("Network interface: %1 (%2)")
+					.arg (iface.humanReadableName ())
+					.arg (config.bearerTypeName ());
 			auto action = new QAction (title, this);
+			action->setIcon (icons.Icons_ [config.bearerType ()]);
 			Infos_ [ifaceId].Action_ = action;
 			emit gotActions ({ action }, ActionsEmbedPlace::LCTray);
 		}
