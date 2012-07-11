@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "export2fb2dialog.h"
+#include <algorithm>
 #include <QXmlStreamWriter>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -24,6 +25,7 @@
 #include <QDate>
 #include <QTextDocument>
 #include <QTextFrame>
+#include <QTextCursor>
 #include <QPrinter>
 #include <interfaces/structures.h>
 #include <util/util.h>
@@ -321,9 +323,12 @@ namespace Aggregator
 
 	namespace
 	{
-		void WritePDFChannel (QTextCursor& cursor, const ChannelShort& cs, const QList<Item_ptr>& items, const QTextFrame *topFrame)
+		void WritePDFChannel (QTextCursor& cursor,
+				const ChannelShort& cs, const QList<Item_ptr>& items,
+				const QTextFrame *topFrame, int baseFontSize, const QFont& font)
 		{
-			const auto origCharFmt = cursor.charFormat ();
+			auto origCharFmt = cursor.charFormat ();
+			origCharFmt.setFontPointSize (baseFontSize);
 
 			QTextFrameFormat frameFmt;
 			frameFmt.setBorder (1);
@@ -332,13 +337,15 @@ namespace Aggregator
 			cursor.insertFrame (frameFmt);
 
 			auto titleFmt = origCharFmt;
-			titleFmt.setFontPointSize (16);
+			titleFmt.setFontWeight (QFont::Bold);
+			titleFmt.setFontPointSize (baseFontSize * 1.35);
 			cursor.setCharFormat (titleFmt);
 			cursor.insertText (cs.Title_);
 
 			cursor.setPosition (topFrame->lastPosition ());
 
-			titleFmt.setFontPointSize (14);
+			titleFmt.setFontWeight (QFont::DemiBold);
+			titleFmt.setFontPointSize (baseFontSize * 1.20);
 			auto dateFmt = origCharFmt;
 			dateFmt.setFontItalic (true);
 			Q_FOREACH (Item_ptr item, items)
@@ -362,6 +369,11 @@ namespace Aggregator
 				descr.remove (linkRx);
 				descr += "<br/><br/>";
 
+				descr.prepend (QString ("<div style='font-size: %1pt; font-family: %2;'>")
+							.arg (baseFontSize)
+							.arg (font.family ()));
+				descr.append ("</div>");
+
 				cursor.insertHtml (descr);
 			}
 		}
@@ -372,6 +384,9 @@ namespace Aggregator
 		QTextDocument doc;
 		QTextCursor cursor (&doc);
 
+		const auto& font = Ui_.PDFFont_->currentFont ();
+		const int baseFontSize = Ui_.PDFFontSize_->value ();
+
 		auto topFrame = cursor.currentFrame ();
 		QTextFrameFormat frameFmt;
 		frameFmt.setBorder (1);
@@ -379,10 +394,13 @@ namespace Aggregator
 		frameFmt.setBackground (QColor ("#A4C0E4"));
 		cursor.insertFrame(frameFmt);
 
-		const auto origFmt = cursor.charFormat ();
+		auto origFmt = cursor.charFormat ();
+		origFmt.setFont (font);
+		origFmt.setFontPointSize (baseFontSize);
 
 		auto titleFmt = origFmt;
-		titleFmt.setFontPointSize (18);
+		titleFmt.setFontWeight (QFont::Bold);
+		titleFmt.setFontPointSize (baseFontSize * 1.5);
 		cursor.setCharFormat (titleFmt);
 		cursor.insertText (Ui_.Name_->text ());
 
@@ -390,7 +408,7 @@ namespace Aggregator
 
 		cursor.setCharFormat (origFmt);
 		Q_FOREACH (const auto& cs, info.Items_.keys ())
-			WritePDFChannel (cursor, cs, info.Items_ [cs], topFrame);
+			WritePDFChannel (cursor, cs, info.Items_ [cs], topFrame, baseFontSize, font);
 
 		QPrinter printer;
 		printer.setOutputFileName (info.File_);
@@ -414,18 +432,27 @@ namespace Aggregator
 		}
 
 		doc.print (&printer);
+
+		emit gotEntity (Util::MakeNotification ("Aggregator",
+					tr ("Export complete."),
+					PInfo_));
 	}
 
 	void Export2FB2Dialog::on_Browse__released ()
 	{
-		QString filename = QFileDialog::getSaveFileName (this,
+		const auto& filename = QFileDialog::getSaveFileName (this,
 				tr ("Select save file"),
 				QDir::homePath () + "/export.fb2",
-				tr ("fb2 files (*.fb2);;XML files (*.xml);;All files (*.*)"));
+				tr ("fb2 files (*.fb2);;XML files (*.xml);;PDF files (*.pdf);;All files (*.*)"));
 		if (filename.isEmpty ())
 			return;
 
 		Ui_.File_->setText (filename);
+
+		if (filename.endsWith (".pdf"))
+			Ui_.ExportFormat_->setCurrentIndex (1);
+		else
+			Ui_.ExportFormat_->setCurrentIndex (0);
 	}
 
 	void Export2FB2Dialog::on_File__textChanged (const QString& name)
