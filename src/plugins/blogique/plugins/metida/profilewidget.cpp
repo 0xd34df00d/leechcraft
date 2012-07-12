@@ -210,7 +210,7 @@ namespace Metida
 				if (id == -1)
 				{
 					QMessageBox::warning (this,
-							tr ("Add new group."),
+							tr ("Add new group"),
 							tr ("You cannot add more groups. The limit of 30 groups is reached."));
 					return;
 				}
@@ -263,7 +263,7 @@ namespace Metida
 			const QString& userName = dlg.GetUserName ();
 			const QString& bgcolor = dlg.GetBackgroundColorName ();
 			const QString& fgcolor = dlg.GetForegroundColorName ();
-			uint realId =  dlg.GetGroupRealId ();
+			uint realId = dlg.GetGroupRealId ();
 
 			account->AddNewFriend (userName, bgcolor, fgcolor, realId);
 		}
