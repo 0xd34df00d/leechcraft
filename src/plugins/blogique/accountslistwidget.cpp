@@ -55,6 +55,11 @@ namespace Blogique
 				this,
 				SLOT (handleAccountClicked (const QModelIndex&)));
 
+		connect (Ui_.Accounts_,
+				SIGNAL (doubleClicked (const QModelIndex&)),
+				this,
+				SLOT (handleAccountDoubleClicked (const QModelIndex&)));
+
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 			addAccount (acc->GetObject ());
 
@@ -253,6 +258,11 @@ namespace Blogique
 					IBloggingPlatform::BPFSupportsProfiles) &&
 					acc->IsValidated ());
 		}
+	}
+
+	void AccountsListWidget::handleAccountDoubleClicked (const QModelIndex& idx)
+	{
+		on_Profile__released ();
 	}
 
 }
