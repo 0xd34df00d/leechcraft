@@ -29,6 +29,7 @@ namespace Metida
 	: QObject (parent)
 	, GroupMask_ (0)
 	, FriendOf_ (false)
+	, MyFriend_ (false)
 	{
 	}
 
@@ -112,9 +113,19 @@ namespace Metida
 		return FriendOf_;
 	}
 
+	void LJFriendEntry::SetMyFriend (bool myFriend)
+	{
+		MyFriend_ = myFriend;
+	}
+
+	bool LJFriendEntry::GetMyFriend () const
+	{
+		return MyFriend_;
+	}
+
 	QByteArray LJFriendEntry::Serialize () const
 	{
-		quint16 ver = 2;
+		quint16 ver = 3;
 		QByteArray result;
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
@@ -126,7 +137,8 @@ namespace Metida
 					<< FGColor_.name ()
 					<< GroupMask_
 					<< Birthday_
-					<< FriendOf_;
+					<< FriendOf_
+					<< MyFriend_;
 		}
 
 		return result;
@@ -139,7 +151,7 @@ namespace Metida
 		in >> ver;
 
 		if (ver < 1 ||
-				ver > 2)
+				ver > 3)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -158,9 +170,12 @@ namespace Metida
 		result->BGColor_.setNamedColor (bgColorName);
 		result->FGColor_.setNamedColor (fgColorName);
 
-		if (ver == 2)
+		if (ver >= 2)
 			in >> result->Birthday_
 					>> result->FriendOf_;
+
+		if (ver == 3)
+			in >> result->MyFriend_;
 
 		return result;
 	}

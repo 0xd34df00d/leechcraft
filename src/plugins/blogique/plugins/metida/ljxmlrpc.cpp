@@ -387,7 +387,12 @@ namespace Metida
 						else if (fieldEntry.Name () == "birthday")
 							fr->SetBirthday (fieldEntry.ValueToString ());
 
-						fr->SetFriendOf (res.Name () == "friendofs");
+						if (res.Name () == "friends" ||
+								res.Name () == "added")
+							fr->SetMyFriend (true);
+
+						if (res.Name () == "friendofs")
+							fr->SetFriendOf (true);
 					}
 
 					if (!isCommunity ||
@@ -396,6 +401,10 @@ namespace Metida
 						if (res.Name () == "friendofs" &&
 								frHash.contains (fr->GetUserName ()))
 							frHash [fr->GetUserName ()]->SetFriendOf (true);
+						else if ((res.Name () == "friends" ||
+								res.Name () == "added") &&
+								frHash.contains (fr->GetUserName ()))
+							frHash [fr->GetUserName ()]->SetMyFriend (true);
 						else
 							frHash [fr->GetUserName ()] = fr;
 					}
@@ -430,13 +439,14 @@ namespace Metida
 
 		structField.appendChild (GetSimpleMemberElement ("username", "string",
 				username, document));
-		structField.appendChild (GetSimpleMemberElement ("fgcolor", "string",
-				fgcolor, document));
-		structField.appendChild (GetSimpleMemberElement ("bgcolor", "string",
-				bgcolor, document));
-		if (groupId != -1)
-			structField.appendChild (GetSimpleMemberElement ("groupmask", "int",
-					QString::number (groupId), document));
+		if (!fgcolor.isEmpty ())
+			structField.appendChild (GetSimpleMemberElement ("fgcolor", "string",
+					fgcolor, document));
+		if (!bgcolor.isEmpty ())
+			structField.appendChild (GetSimpleMemberElement ("bgcolor", "string",
+					bgcolor, document));
+		structField.appendChild (GetSimpleMemberElement ("groupmask", "int",
+				QString::number (groupId), document));
 
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
@@ -792,7 +802,6 @@ namespace Metida
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
-			qDebug () << document.toByteArray ();
 			ParseFriends (document);
 			return;
 		}

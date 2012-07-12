@@ -35,6 +35,11 @@ namespace Metida
 		ForegroundColor = Qt::UserRole + 2
 	};
 
+	enum ItemGroupRoles
+	{
+		GroupId = Qt::UserRole + 3
+	};
+
 	class FriendItemDelegate : public QStyledItemDelegate
 	{
 		Q_OBJECT
