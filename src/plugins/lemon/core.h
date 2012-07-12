@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,48 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_EXPORT2FB2DIALOG_H
-#define PLUGINS_AGGREGATOR_EXPORT2FB2DIALOG_H
-#include <QDialog>
-#include "ui_export2fb2dialog.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
-struct Entity;
-
-namespace Util
+namespace Lemon
 {
-	class CategorySelector;
-};
-
-namespace Aggregator
-{
-	struct WriteInfo;
-
-	class Export2FB2Dialog : public QDialog
+	class Core : public QObject
 	{
 		Q_OBJECT
 
-		Ui::Export2FB2Dialog Ui_;
-		Util::CategorySelector *Selector_;
-		QStringList CurrentCategories_;
+		ICoreProxy_ptr Proxy_;
 
-		bool HasBeenTextModified_;
+		Core ();
 	public:
-		Export2FB2Dialog (QWidget* = 0);
-	private:
-		void WriteFB2 (const WriteInfo&);
-		void WritePDF (const WriteInfo&);
-	private slots:
-		void on_Browse__released ();
-		void on_File__textChanged (const QString&);
-		void on_Name__textEdited ();
-		void handleChannelsSelectionChanged (const QItemSelection&, const QItemSelection&);
-		void handleAccepted ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		static Core& Instance ();
+
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy () const;
 	};
 }
 }
-
-#endif

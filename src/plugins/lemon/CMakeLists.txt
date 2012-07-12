@@ -12,6 +12,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	lemon.cpp
 	actionsmanager.cpp
+	core.cpp
 	)
 
 ADD_LIBRARY (leechcraft_lemon SHARED
