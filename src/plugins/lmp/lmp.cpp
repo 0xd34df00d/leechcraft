@@ -92,28 +92,67 @@ namespace LMP
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (rescan ()));
-	}
 
-	void Plugin::SecondInit ()
-	{
+
 		Entity e = Util::MakeEntity (QVariant (), QString (), 0,
 				"x-leechcraft/global-action-register");
 		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_->GetPlayer ());
-
 		auto initShortcut = [&e, this] (const QByteArray& method, const QKeySequence& seq)
 		{
 			Entity thisE = e;
 			thisE.Additional_ ["ActionID"] = "LMP_Global_" + method;
 			thisE.Additional_ ["Method"] = method;
 			thisE.Additional_ ["Shortcut"] = QVariant::fromValue (seq);
-			emit gotEntity (thisE);
+			GlobAction2Entity_ ["LMP_Global_" + method] = thisE;
 		};
 		initShortcut (SLOT (togglePause ()), QString ("Meta+C"));
 		initShortcut (SLOT (previousTrack ()), QString ("Meta+V"));
 		initShortcut (SLOT (nextTrack ()), QString ("Meta+B"));
 		initShortcut (SLOT (stop ()), QString ("Meta+X"));
 
+		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_);
+		initShortcut (SLOT (handleLoveTrack ()), QString ("Meta+L"));
+
+		auto setInfo = [this, proxy] (const QByteArray& method,
+				const QString& userText, const QString& icon)
+		{
+			const auto& id = "LMP_Global_" + method;
+			const auto& seq = GlobAction2Entity_ [id].Additional_ ["Shortcut"].value<QKeySequence> ();
+			GlobAction2Info_ [id] = { userText, seq, proxy->GetIcon (icon) };
+		};
+		setInfo (SLOT (togglePause ()), tr ("Play/pause"), "media-playback-start");
+		setInfo (SLOT (previousTrack ()), tr ("Previous track"), "media-skip-backward");
+		setInfo (SLOT (nextTrack ()), tr ("Next track"), "media-skip-forward");
+		setInfo (SLOT (stop ()), tr ("Stop playback"), "media-playback-stop");
+		setInfo (SLOT (handleLoveTrack ()), tr ("Love track"), "emblem-favorite");
+	}
+
+	void Plugin::SecondInit ()
+	{
+		Q_FOREACH (const auto& e, GlobAction2Entity_.values ())
+			emit gotEntity (e);
+
 		PlayerTab_->InitWithOtherPlugins ();
+	}
+
+	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)
+	{
+		if (!GlobAction2Entity_.contains (id))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown id"
+					<< id;
+			return;
+		}
+
+		auto& e = GlobAction2Entity_ [id];
+		e.Additional_ ["Shortcut"] = QVariant::fromValue (sequences.value (0));
+		emit gotEntity (e);
+	}
+
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	{
+		return GlobAction2Info_;
 	}
 
 	QByteArray Plugin::GetUniqueID () const

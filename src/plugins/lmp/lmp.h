@@ -26,6 +26,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/ipluginready.h>
+#include <interfaces/ihaveshortcuts.h>
 
 namespace LeechCraft
 {
@@ -40,6 +41,7 @@ namespace LMP
 				 , public IEntityHandler
 				 , public IActionsExporter
 				 , public IHaveRecoverableTabs
+				 , public IHaveShortcuts
 				 , public IPluginReady
 	{
 		Q_OBJECT
@@ -49,6 +51,7 @@ namespace LMP
 				IEntityHandler
 				IActionsExporter
 				IHaveRecoverableTabs
+				IHaveShortcuts
 				IPluginReady)
 
 		TabClassInfo PlayerTC_;
@@ -57,6 +60,9 @@ namespace LMP
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		QAction *ActionRescan_;
+
+		QMap<QString, Entity> GlobAction2Entity_;
+		QMap<QString, ActionInfo> GlobAction2Info_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -78,6 +84,9 @@ namespace LMP
 		QMap<QString, QList<QAction*>> GetMenuActions () const;
 
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+
+		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QString, ActionInfo> GetActionInfo () const;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject* plugin);
