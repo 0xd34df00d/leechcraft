@@ -18,6 +18,7 @@ SET (METIDA_SRCS
 	addeditentrydialog.cpp
 	core.cpp
 	frienditemdelegate.cpp
+	friendsmodel.cpp
 	ljaccount.cpp
 	ljaccountconfigurationdialog.cpp
 	ljaccountconfigurationwidget.cpp
@@ -36,6 +37,7 @@ SET (METIDA_HEADERS
 	addeditentrydialog.h
 	core.h
 	frienditemdelegate.h
+	friendsmodel.h
 	ljaccount.h
 	ljaccountconfigurationdialog.h
 	ljaccountconfigurationwidget.h

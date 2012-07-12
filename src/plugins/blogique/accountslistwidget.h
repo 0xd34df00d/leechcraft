@@ -58,6 +58,7 @@ namespace Blogique
 		void on_Delete__released ();
 		void on_Profile__released ();
 		void handleAccountClicked (const QModelIndex& index);
+		void handleAccountDoubleClicked (const QModelIndex& index);
 	};
 }
 }
