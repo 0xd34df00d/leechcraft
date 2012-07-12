@@ -24,7 +24,7 @@
 #include <QDateTime>
 #include <QUrl>
 #include <QStringList>
-#include <qvariant.h>
+#include <QVariant>
 
 namespace LeechCraft
 {

@@ -17,9 +17,9 @@
  **********************************************************************/
 
 #include "account.h"
-#include "core.h"
 #include <QtDebug>
 #include <QStandardItemModel>
+#include "core.h"
 
 namespace LeechCraft
 {

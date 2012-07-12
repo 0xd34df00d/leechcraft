@@ -31,7 +31,6 @@ namespace NetStoreManager
 {
 namespace GoogleDrive
 {
-	class DriveManager;
 	class Account;
 
 	typedef std::shared_ptr<Account> Account_ptr;

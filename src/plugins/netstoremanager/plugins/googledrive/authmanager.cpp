@@ -17,13 +17,14 @@
  **********************************************************************/
 
 #include "authmanager.h"
-#include "core.h"
 #include <QInputDialog>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <util/util.h>
 #include <qjson/parser.h>
+#include <util/util.h>
+#include "account.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -63,7 +64,7 @@ namespace GoogleDrive
 
 		InputDialog_->setLabelText (tr ("Enter account verification code:"));
 		InputDialog_->setWindowTitle (tr ("Account configuration"));
-		InputDialog_->setWindowModality (Qt::NonModal);
+		InputDialog_->setWindowModality (Qt::WindowModal);
 		InputDialog_->setTextEchoMode (QLineEdit::Normal);
 
 		InputDialog_->show ();
@@ -119,9 +120,8 @@ namespace GoogleDrive
 
 		QByteArray data = reply->readAll ();
 
-		QJson::Parser parser;
-		bool ok;
-		QVariant res = parser.parse (data, &ok);
+		bool ok = false;
+		QVariant res = QJson::Parser ().parse (data, &ok);
 		if (!ok)
 			return;
 

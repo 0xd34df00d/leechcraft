@@ -122,10 +122,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		QJson::Parser parser;
-		bool ok;
+		bool ok = false;
 		QByteArray ba = reply->readAll ();
-		QVariant res = parser.parse (ba, &ok);
+		QVariant res = QJson::Parser ().parse (ba, &ok);
 
 		if (!ok)
 		{
@@ -155,10 +154,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		QJson::Parser parser;
-		bool ok;
+		bool ok = false;
 		QByteArray ba = reply->readAll ();
-		QVariant res = parser.parse (ba, &ok);
+		QVariant res = QJson::Parser ().parse (ba, &ok);
 
 		if (!ok)
 		{
@@ -166,20 +164,21 @@ namespace GoogleDrive
 			return;
 		}
 
-		if (!res.toMap ().contains ("items"))
+		const auto& resMap = res.toMap ();
+		if (!resMap.contains ("items"))
 		{
 			qDebug () << Q_FUNC_INFO << "there are no items";
 			return;
 		}
 
-		if (res.toMap ().contains ("error"))
+		if (resMap.contains ("error"))
 		{
 			ParseError (res.toMap ());
 			return;
 		}
 
 		QList<DriveItem> resList;
-		Q_FOREACH (const auto& item, res.toMap () ["items"].toList ())
+		Q_FOREACH (const auto& item, resMap ["items"].toList ())
 		{
 			QVariantMap map = item.toMap ();
 			if (map ["mimeType"].toString () != "application/vnd.google-apps.folder" &&
@@ -219,10 +218,8 @@ namespace GoogleDrive
 			const QString& type = permission ["type"].toString ();
 
 			driveItem.PermissionAdditionalRole_ = DriveItem::ARNone;
-			if (permission.contains ("additionalRoles"))
-				for (const auto& role : permission ["additionalRoles"].toList ())
-					if (role == "commenter")
-						driveItem.PermissionAdditionalRole_ |= DriveItem::ARCommenter;
+			if (permission ["additionalRoles"].toList ().contains ("commenter"))
+				driveItem.PermissionAdditionalRole_ |= DriveItem::ARCommenter;
 
 			if (role == "owner")
 				driveItem.PermissionRole_ = DriveItem::Roles::Owner;
@@ -263,10 +260,9 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		QJson::Parser parser;
-		bool ok;
+		bool ok = false;
 		QByteArray ba = reply->readAll ();
-		QVariant res = parser.parse (ba, &ok);
+		QVariant res = QJson::Parser ().parse (ba, &ok);
 
 		if (!ok)
 		{

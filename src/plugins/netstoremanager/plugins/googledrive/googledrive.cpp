@@ -90,7 +90,7 @@ namespace GoogleDrive
 		QObjectList result;
 		std::transform (Accounts_.begin (), Accounts_.end (),
 				std::back_inserter (result),
-				[] (decltype (Accounts_.front ()) acc){ return acc.get (); });
+				[] (decltype (Accounts_.front ()) acc) { return acc.get (); });
 
 		return result;
 	}
@@ -111,11 +111,11 @@ namespace GoogleDrive
 		AuthManager_->Auth (account);
 	}
 
-	void Plugin::RemoveAccount (QObject* accObj)
+	void Plugin::RemoveAccount (QObject *accObj)
 	{
 		auto pos = std::find_if (Accounts_.begin (), Accounts_.end (),
 				[accObj] (decltype (Accounts_.front ()) acc)
-				{ return acc.get () == accObj; });
+					{ return acc.get () == accObj; });
 		if (pos == Accounts_.end ())
 			return;
 

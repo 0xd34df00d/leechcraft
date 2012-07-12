@@ -21,7 +21,6 @@
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
-#include "account.h"
 
 class QInputDialog;
 
@@ -31,6 +30,8 @@ namespace NetStoreManager
 {
 namespace GoogleDrive
 {
+	class Account;
+
 	class AuthManager : public QObject
 	{
 		Q_OBJECT
