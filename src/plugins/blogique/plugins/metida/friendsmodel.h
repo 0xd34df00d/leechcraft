@@ -18,46 +18,32 @@
 
 #pragma once
 
-#include <QStyledItemDelegate>
+#include <QStandardItemModel>
 
-class QTreeView;
 namespace LeechCraft
 {
 namespace Blogique
 {
 namespace Metida
 {
-	const int CPadding = 2;
-
-	enum ItemColorRoles
-	{
-		BackgroundColor = Qt::UserRole + 1,
-		ForegroundColor = Qt::UserRole + 2
-	};
-
-	enum ItemGroupRoles
-	{
-		GroupId = Qt::UserRole + 3
-	};
-
-	class FriendItemDelegate : public QStyledItemDelegate
+	class FriendsModel : public QStandardItemModel
 	{
 		Q_OBJECT
-
-		bool ColoringItems_;
-		QTreeView *View_;
-
-		enum Columns
-		{
-			UserName
-		};
 	public:
-		FriendItemDelegate (QTreeView *view = 0);
-		void paint (QPainter *painter, const QStyleOptionViewItem& option,
-				const QModelIndex& index) const;
+		FriendsModel (QObject *parent = 0);
 
-	public slots:
-		void handleColoringItemChanged ();
+		Qt::ItemFlags flags (const QModelIndex& index) const;
+
+		Qt::DropActions supportedDropActions () const;
+
+		QStringList mimeTypes () const;
+		QMimeData* mimeData (const QModelIndexList& indexes) const;
+		bool dropMimeData (const QMimeData *data, Qt::DropAction action,
+				int row, int column, const QModelIndex& parent);
+
+	signals:
+		void userGroupChanged (const QString& name,
+				const QString& bgColor, const QString& fgColor, int realGroupId);
 	};
 }
 }

@@ -45,6 +45,7 @@ namespace Metida
 		QColor FGColor_;
 		QString Birthday_;
 		bool FriendOf_;
+		bool MyFriend_;
 	public:
 		LJFriendEntry (QObject *parent = 0);
 
@@ -64,6 +65,8 @@ namespace Metida
 		QString GetBirthday () const;
 		void SetFriendOf (bool friendOf);
 		bool GetFriendOf () const;
+		void SetMyFriend (bool myFriend);
+		bool GetMyFriend () const;
 
 		QByteArray Serialize () const;
 		static LJFriendEntry_ptr Deserialize (const QByteArray& data);

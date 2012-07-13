@@ -18,7 +18,6 @@
 
 #include "profilewidget.h"
 #include <QtDebug>
-#include <QStandardItemModel>
 #include <QMessageBox>
 #include <util/util.h>
 #include "ljprofile.h"
@@ -27,6 +26,8 @@
 #include "frienditemdelegate.h"
 #include "xmlsettingsmanager.h"
 #include "addeditentrydialog.h"
+#include "friendsmodel.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -37,12 +38,21 @@ namespace Metida
 	ProfileWidget::ProfileWidget (LJProfile *profile, QWidget *parent)
 	: QWidget (parent)
 	, Profile_ (profile)
-	, FriendsModel_ (new QStandardItemModel (this))
+	, FriendsModel_ (new FriendsModel (this))
 	, CommunitiesModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
 
 		Ui_.FriendsView_->setModel (FriendsModel_);
+		Ui_.FriendsView_->setDropIndicatorShown (true);
+
+		connect (FriendsModel_,
+				SIGNAL (userGroupChanged (const QString&, const QString&,
+						const QString&, int)),
+				this,
+				SLOT (handleUserGroupChanged (const QString&, const QString&,
+						const QString&, int)));
+
 		FriendItemDelegate *friendDelegate = new FriendItemDelegate (Ui_.FriendsView_);
 		connect (this,
 				SIGNAL (coloringItemChanged ()),
@@ -77,6 +87,7 @@ namespace Metida
 		for (const auto& group : groups)
 		{
 			QStandardItem *item = new QStandardItem (group.Name_);
+			item->setData (group.RealId_, ItemGroupRoles::GroupId);
 			Item2FriendGroup_ [item] = group;
 			item->setEditable (false);
 			FriendsModel_->appendRow (item);
@@ -87,13 +98,18 @@ namespace Metida
 		{
 			QStandardItem *item = new QStandardItem (fr->GetUserName ());
 			QStandardItem *itemName = new QStandardItem (fr->GetFullName ());
-			QStandardItem *itemStatus = new QStandardItem (fr->GetFriendOf () ? "yes" : "no");
+
+			QIcon icon;
+			if (fr->GetFriendOf () &&
+					fr->GetMyFriend ())
+				icon = Core::Instance ().GetCoreProxy ()->GetIcon ("im-msn");
+			else if (fr->GetFriendOf ())
+				icon = Core::Instance ().GetCoreProxy ()->GetIcon ("im-user-offline");
+			else if (fr->GetMyFriend ())
+				icon = Core::Instance ().GetCoreProxy ()->GetIcon ("im-user");
+			QStandardItem *itemStatus = new QStandardItem (icon, QString ());
 			QStandardItem *itemBirthday = new QStandardItem (fr->GetBirthday ());
 			Item2Friend_ [item] = fr;
-			item->setEditable (false);
-			itemName->setEditable (false);
-			itemStatus->setEditable (false);
-			itemBirthday->setEditable (false);
 
 			item->setData (fr->GetBGColor ().name (), ItemColorRoles::BackgroundColor);
 			item->setData (fr->GetFGColor ().name (), ItemColorRoles::ForegroundColor);
@@ -113,6 +129,7 @@ namespace Metida
 				if (!withoutGroupItem)
 				{
 					withoutGroupItem = new QStandardItem (tr ("Without group"));
+					withoutGroupItem->setData (-1, ItemGroupRoles::GroupId);
 					FriendsModel_->appendRow (withoutGroupItem);
 				}
 
@@ -193,7 +210,7 @@ namespace Metida
 				if (id == -1)
 				{
 					QMessageBox::warning (this,
-							tr ("Add new group."),
+							tr ("Add new group"),
 							tr ("You cannot add more groups. The limit of 30 groups is reached."));
 					return;
 				}
@@ -246,7 +263,7 @@ namespace Metida
 			const QString& userName = dlg.GetUserName ();
 			const QString& bgcolor = dlg.GetBackgroundColorName ();
 			const QString& fgcolor = dlg.GetForegroundColorName ();
-			uint realId =  dlg.GetGroupRealId ();
+			uint realId = dlg.GetGroupRealId ();
 
 			account->AddNewFriend (userName, bgcolor, fgcolor, realId);
 		}
@@ -292,6 +309,17 @@ namespace Metida
 			return;
 		account->updateProfile ();
 	}
+
+	void ProfileWidget::handleUserGroupChanged (const QString& username,
+			const QString& bgColor, const QString& fgColor, int groupId)
+	{
+		LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
+		if (!account)
+			return;
+
+		account->AddNewFriend (username, bgColor, fgColor, groupId);
+	}
+
 }
 }
 }
