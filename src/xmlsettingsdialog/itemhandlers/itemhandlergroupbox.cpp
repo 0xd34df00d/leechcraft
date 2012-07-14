@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,10 +45,9 @@ namespace LeechCraft
 		QGridLayout *groupLayout = new QGridLayout ();
 		groupLayout->setContentsMargins (2, 2, 2, 2);
 		box->setLayout (groupLayout);
-		box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 		box->setCheckable (true);
 
-		QVariant value = XSD_->GetValue (item);
+		const QVariant& value = XSD_->GetValue (item);
 
 		box->setChecked (value.toBool ());
 		connect (box,
@@ -62,8 +61,6 @@ namespace LeechCraft
 
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		lay->addWidget (box, lay->rowCount (), 0, 1, 2);
-		QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
-		lay->addItem (verticalSpacer, lay->rowCount (), 0);
 	}
 
 	void ItemHandlerGroupbox::SetValue (QWidget *widget,

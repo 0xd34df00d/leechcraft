@@ -20,7 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCJOINGROUPCHAT_H
 
 #include <QWidget>
-#include <interfaces/imucjoinwidget.h>
+#include <interfaces/azoth/imucjoinwidget.h>
 #include "ui_ircjoingroupchat.h"
 #include "core.h"
 #include "localtypes.h"
@@ -32,42 +32,35 @@ namespace Azoth
 namespace Acetamide
 {
 	class IrcAccount;
-	
+
 	class IrcJoinGroupChat : public QWidget
 						   , public IMUCJoinWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMUCJoinWidget)
-		
+
 		Ui::IrcJoinGroupChat Ui_;
 		IrcAccount *SelectedAccount_;
 	public:
 		IrcJoinGroupChat (QWidget* = 0);
-		
+
 		void AccountSelected (QObject*);
 		void Join (QObject*);
 		void Cancel ();
-		QVariantList GetBookmarkedMUCs () const;
-		void SetBookmarkedMUCs (QObject*, const QVariantList&);
 		void SetIdentifyingData (const QVariantMap&);
 		QVariantMap GetIdentifyingData () const;
-		
+
 		QString GetServer () const;
 		int GetPort () const;
+		QString GetServerPassword () const;
 		QString GetChannel () const;
 		QString GetNickname () const;
 		QString GetEncoding () const;
+		QString GetChannelPassword () const;
 		bool GetSSL () const;
-		bool GetNickServIdentify () const;
-
-		QString GetNickServNickname () const;
-		QString GetNickServMask () const;
-		QString GetNickServAuthRegExp () const;
-		QString GetNickServAuthMessage () const;
 
 		ServerOptions GetServerOptions () const;
 		ChannelOptions GetChannelOptions () const;
-		NickServIdentifyOptions GetNickServIdentifyOptions () const; 
 	signals:
 		void validityChanged (bool);
 	};

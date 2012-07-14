@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,12 +21,13 @@
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include <interfaces/iaccount.h>
-#include <interfaces/isupporttune.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/isupporttune.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "tunesourcebase.h"
 #include "xmlsettingsmanager.h"
 #include "filesource.h"
+#include "lcsource.h"
 
 #ifdef HAVE_DBUS
 #include "mprissource.h"
@@ -44,25 +45,27 @@ namespace Xtazy
 
 		AzothProxy_ = 0;
 		Proxy_ = proxy;
-		
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothxtazysettings.xml");
-		
+
+		LCSource_ = new LCSource (this);
+
 #ifdef HAVE_DBUS
 		TuneSources_ << new MPRISSource (this);
 #endif
 		TuneSources_ << new FileSource (this);
-		
+		TuneSources_ << LCSource_;
+	}
+
+	void Plugin::SecondInit ()
+	{
 		Q_FOREACH (TuneSourceBase *base, TuneSources_)
 			connect (base,
 					SIGNAL (tuneInfoChanged (const QMap<QString, QVariant>&)),
 					this,
 					SLOT (publish (const QMap<QString, QVariant>&)));
-	}
-
-	void Plugin::SecondInit ()
-	{
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -87,7 +90,8 @@ namespace Xtazy
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/xtazy/resources/images/xtazy.svg");
+		static QIcon icon (":/plugins/azoth/plugins/xtazy/resources/images/xtazy.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -96,24 +100,48 @@ namespace Xtazy
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
 	}
-	
+
+	QString Plugin::GetServiceName () const
+	{
+		return GetName ();
+	}
+
+	void Plugin::NowPlaying (const Media::AudioInfo& audio)
+	{
+		LCSource_->NowPlaying (audio);
+	}
+
+	void Plugin::PlaybackStopped ()
+	{
+		LCSource_->Stopped ();
+	}
+
+	void Plugin::LoveCurrentTrack ()
+	{
+	}
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
 	}
-	
+
 	void Plugin::publish (const QMap<QString, QVariant>& info)
 	{
+		if (info == Previous_)
+			return;
+
 		const QByteArray& objName = sender ()->objectName ().toLatin1 ();
-		
+
 		if (!XmlSettingsManager::Instance ()
 				.property ("Enable" + objName).toBool ())
 			return;
+
+		Previous_ = info;
 
 		Q_FOREACH (QObject *accObj, AzothProxy_->GetAllAccounts ())
 		{
@@ -132,5 +160,5 @@ namespace Xtazy
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_xtazy, LeechCraft::Azoth::Xtazy::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_xtazy, LeechCraft::Azoth::Xtazy::Plugin);
 

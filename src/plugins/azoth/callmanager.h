@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@
 #define PLUGINS_AZOTH_CALLMANAGER_H
 #include <QObject>
 #include <QHash>
-#include "interfaces/imediacall.h"
-#include "interfaces/isupportmediacalls.h"
+#include "interfaces/azoth/imediacall.h"
+#include "interfaces/azoth/isupportmediacalls.h"
 
 namespace LeechCraft
 {

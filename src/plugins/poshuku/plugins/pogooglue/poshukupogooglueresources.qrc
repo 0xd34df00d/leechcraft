@@ -1,0 +1,5 @@
+<RCC>
+	<qresource prefix="/plugins/poshuku/plugins/pogooglue" >
+		<file>resources/images/google.png</file>
+	</qresource>
+</RCC>

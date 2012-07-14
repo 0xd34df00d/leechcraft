@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,14 +46,14 @@ namespace LeechCraft
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
 
-		FilePicker::Type type = FilePicker::TExistingDirectory;
+		FilePicker::Type type = FilePicker::Type::ExistingDirectory;
 		if (item.attribute ("pickerType") == "openFileName")
-			type = FilePicker::TOpenFileName;
+			type = FilePicker::Type::OpenFileName;
 		else if (item.attribute ("pickerType") == "saveFileName")
-			type = FilePicker::TSaveFileName;
+			type = FilePicker::Type::SaveFileName;
 
 		FilePicker *picker = new FilePicker (type, XSD_);
-		QVariant value = XSD_->GetValue (item);
+		const QVariant& value = XSD_->GetValue (item);
 		picker->SetText (value.toString ());
 		picker->setObjectName (item.attribute ("property"));
 		if (item.attribute ("onCancel") == "clear")

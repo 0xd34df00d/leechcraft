@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXMESSAGE_H
 #include <QObject>
 #include <QXmppMessage.h>
-#include <interfaces/imessage.h>
-#include <interfaces/iadvancedmessage.h>
-#include <interfaces/irichtextmessage.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iadvancedmessage.h>
+#include <interfaces/azoth/irichtextmessage.h>
 
 namespace LeechCraft
 {
@@ -51,7 +51,7 @@ namespace Xoox
 		QDateTime DateTime_;
 		QXmppMessage Message_;
 		ClientConnection *Connection_;
-		
+
 		bool IsDelivered_;
 	public:
 		GlooxMessage (IMessage::MessageType type,
@@ -65,6 +65,7 @@ namespace Xoox
 		// IMessage
 		QObject* GetObject ();
 		void Send ();
+		void Store ();
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
 		MessageSubType GetMessageSubType () const;
@@ -75,14 +76,14 @@ namespace Xoox
 		void SetBody (const QString&);
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime&);
-		
+
 		// IAdvancedMessage
 		bool IsDelivered () const;
-		
+
 		// IRichTextMessage
 		QString GetRichBody () const;
 		void SetRichBody (const QString&);
-		
+
 		void SetDelivered (bool);
 
 		QXmppMessage GetMessage () const;

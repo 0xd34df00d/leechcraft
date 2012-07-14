@@ -4,5 +4,6 @@
     <file>resources/images/jabbericon.svg</file>
 	<file>resources/images/special/gtalk.svg</file>
 	<file>resources/images/special/facebook.svg</file>
+	<file>resources/images/special/vk.svg</file>
   </qresource>
 </RCC>

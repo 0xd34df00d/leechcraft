@@ -41,8 +41,9 @@ namespace TabsList
 
 		ShowList_ = new QAction (tr ("List of tabs"),
 				Proxy_->GetMainWindow ());
-		ShowList_->setProperty ("ActionIcon", "itemlist");
+		ShowList_->setProperty ("ActionIcon", "view-list-details");
 		ShowList_->setShortcut (QString ("Ctrl+Shift+L"));
+		ShowList_->setProperty ("Action/ID", GetUniqueID () + "_showlist");
 		connect (ShowList_,
 				SIGNAL (triggered ()),
 				this,
@@ -80,7 +81,7 @@ namespace TabsList
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
 	{
 		QList<QAction*> actions;
-		if (aep == AEPQuickLaunch)
+		if (aep == ActionsEmbedPlace::QuickLaunch)
 			actions << ShowList_;
 		return actions;
 	}
@@ -140,6 +141,9 @@ namespace TabsList
 	void Plugin::handleShowList ()
 	{
 		ICoreTabWidget *tw = Proxy_->GetTabWidget ();
+
+		if (tw->WidgetCount () < 2)
+			return;
 
 		QWidget *widget = new QWidget (Proxy_->GetMainWindow (),
 				Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -204,9 +208,9 @@ namespace TabsList
 	void Plugin::navigateToTab ()
 	{
 		const int idx = sender ()->property ("TabIndex").toInt ();
-		Proxy_->GetTabWidget ()->setCurrentIndex (idx);
+		Proxy_->GetTabWidget ()->setCurrentTab (idx);
 	}
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_tabslist, LeechCraft::TabsList::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_tabslist, LeechCraft::TabsList::Plugin);

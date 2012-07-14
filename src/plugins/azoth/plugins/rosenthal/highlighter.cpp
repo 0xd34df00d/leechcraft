@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,21 +26,21 @@ namespace Azoth
 {
 namespace Rosenthal
 {
-	Highlighter::Highlighter (boost::shared_ptr<Hunspell> hunspell, QTextDocument *parent)
+	Highlighter::Highlighter (std::shared_ptr<Hunspell> hunspell, QTextDocument *parent)
 	: QSyntaxHighlighter (parent)
 	, Hunspell_ (hunspell)
 	{
 		SpellCheckFormat_.setUnderlineColor (QColor (Qt::red));
 		SpellCheckFormat_.setUnderlineStyle (QTextCharFormat::SpellCheckUnderline);
-		
+
 		Codec_ = QTextCodec::codecForName (Hunspell_->get_dic_encoding ());
 	}
-	
-	void Highlighter::UpdateHunspell (boost::shared_ptr<Hunspell> hunspell)
+
+	void Highlighter::UpdateHunspell (std::shared_ptr<Hunspell> hunspell)
 	{
 		Hunspell_ = hunspell;
 	}
-	
+
 	void Highlighter::highlightBlock (const QString& text)
 	{
 		QRegExp sr ("\\W+");
@@ -52,7 +52,7 @@ namespace Rosenthal
 			if (str.size () <= 1 ||
 					CheckWord (str))
 				continue;
-			
+
 			const int pos = text.indexOf (str, prevStopPos);
 			if (pos >= 0)
 			{
@@ -61,7 +61,7 @@ namespace Rosenthal
 			}
 		}
 	}
-	
+
 	bool Highlighter::CheckWord (const QString& word)
 	{
 		const QByteArray& encoded = Codec_->fromUnicode (word);

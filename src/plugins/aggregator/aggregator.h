@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,8 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/istartupwizard.h>
 #include <interfaces/ipluginready.h>
+#include <interfaces/isyncable.h>
+#include <interfaces/ihaverecoverabletabs.h>
 
 class QSystemTrayIcon;
 class QTranslator;
@@ -47,16 +49,19 @@ namespace Aggregator
 	struct Aggregator_Impl;
 
 	class Aggregator : public QWidget
-						, public IInfo
-						, public IHaveTabs
-						, public ITabWidget
-						, public IHaveSettings
-						, public IJobHolder
-						, public IEntityHandler
-						, public IHaveShortcuts
-						, public IActionsExporter
-						, public IStartupWizard
-						, public IPluginReady
+					 , public IInfo
+					 , public IHaveTabs
+					 , public ITabWidget
+					 , public IHaveSettings
+					 , public IJobHolder
+					 , public IEntityHandler
+					 , public IHaveShortcuts
+					 , public IActionsExporter
+					 , public IStartupWizard
+					 , public IPluginReady
+					 , public ISyncable
+					 , public IHaveRecoverableTabs
+					 , public IRecoverableTab
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
@@ -68,7 +73,10 @@ namespace Aggregator
 				IHaveShortcuts
 				IStartupWizard
 				IActionsExporter
-				IPluginReady)
+				IPluginReady
+				ISyncable
+				IHaveRecoverableTabs
+				IRecoverableTab)
 
 		Aggregator_Impl *Impl_;
 	public:
@@ -94,7 +102,7 @@ namespace Aggregator
 
 		QAbstractItemModel* GetRepresentation () const;
 
-		boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 		void Handle (LeechCraft::Entity);
@@ -108,6 +116,18 @@ namespace Aggregator
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
+
+		Sync::ChainIDs_t AvailableChains () const;
+		Sync::Payloads_t GetAllDeltas (const Sync::ChainID_t&) const;
+		Sync::Payloads_t GetNewDeltas (const Sync::ChainID_t&) const;
+		void PurgeNewDeltas (const Sync::ChainID_t&, quint32);
+		void ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&);
+
+		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+
+		QByteArray GetTabRecoverData () const;
+		QIcon GetTabRecoverIcon () const;
+		QString GetTabRecoverName () const;
 	protected:
 		virtual void keyPressEvent (QKeyEvent*);
 	private:
@@ -119,8 +139,10 @@ namespace Aggregator
 	public slots:
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
+		void on_ActionMarkAllAsRead__triggered ();
 		void on_ActionAddFeed__triggered ();
 		void on_ActionRemoveFeed__triggered ();
+		void on_ActionRemoveChannel__triggered ();
 		void on_ActionUpdateSelectedFeed__triggered ();
 		void on_ActionRegexpMatcher__triggered ();
 		void on_ActionImportOPML__triggered ();
@@ -148,6 +170,12 @@ namespace Aggregator
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+
+		void newDeltasAvailable (const LeechCraft::Sync::ChainID_t&);
+
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+
+		void tabRecoverDataChanged ();
 	};
 }
 }

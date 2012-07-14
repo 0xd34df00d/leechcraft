@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "newtabmenumanager.h"
+#include <algorithm>
 #include <QMenu>
 #include <QtDebug>
 #include "interfaces/iinfo.h"
@@ -37,7 +38,7 @@ namespace LeechCraft
 		IHaveTabs *imt = qobject_cast<IHaveTabs*> (obj);
 		if (!imt || RegisteredMultiTabs_.contains (obj))
 			return;
-		
+
 		IInfo *ii = qobject_cast<IInfo*> (obj);
 
 		Q_FOREACH (const TabClassInfo& info, imt->GetTabClasses ())
@@ -58,26 +59,23 @@ namespace LeechCraft
 					static_cast<bool> (info.Features_ & TFSingle));
 			newAct->setStatusTip (info.Description_);
 			newAct->setToolTip (info.Description_);
-			
+
 			InsertAction (newAct);
-			
-			if (info.Features_ & TFSingle ||
-					info.Features_ & TFByDefault)
+
+			if (info.Features_ & TFByDefault)
 			{
 				const QByteArray& id = ii->GetUniqueID () + '|' + info.TabClass_;
-				const bool hide = XmlSettingsManager::Instance ()->
-						Property ("Hide" + id, false).toBool ();
+				const bool hide = XmlSettingsManager::Instance ()->Property ("Hide" + id, false).toBool ();
 				if (!hide)
+				{
 					OpenTab (newAct);
+					XmlSettingsManager::Instance ()->setProperty ("Hide" + id, true);
+				}
 			}
 		}
 	}
 
-	void NewTabMenuManager::HandleEmbedTabRemoved (QObject *obj)
-	{
-	}
-
-	void NewTabMenuManager::SetToolbarActions (QList<QList<QAction*> > lists)
+	void NewTabMenuManager::SetToolbarActions (QList<QList<QAction*>> lists)
 	{
 		QList<QAction*> ones;
 		Q_FOREACH (QList<QAction*> list, lists)
@@ -99,7 +97,7 @@ namespace LeechCraft
 			AdditionalTabMenu_->addActions (list);
 		}
 	}
-	
+
 	void NewTabMenuManager::SingleRemoved (ITabWidget *itw)
 	{
 		const QByteArray& tabClass = itw->GetTabClassInfo ().TabClass_;
@@ -113,10 +111,8 @@ namespace LeechCraft
 					<< itw->ParentMultiTabs ();
 			return;
 		}
-		
-		ToggleHide (itw->ParentMultiTabs (), tabClass, true);
-		
 		InsertAction (act);
+		ToggleHide (itw, true);
 	}
 
 	QMenu* NewTabMenuManager::GetNewTabMenu () const
@@ -126,9 +122,33 @@ namespace LeechCraft
 
 	QMenu* NewTabMenuManager::GetAdditionalMenu ()
 	{
-		AdditionalTabMenu_->insertMenu (AdditionalTabMenu_->actions ().first (),
-				NewTabMenu_);
+		if (!AdditionalTabMenu_->actions ().isEmpty ())
+			AdditionalTabMenu_->insertMenu (AdditionalTabMenu_->actions ().first (),
+					NewTabMenu_);
+		else
+			AdditionalTabMenu_->addMenu (NewTabMenu_);
+
 		return AdditionalTabMenu_;
+	}
+
+	void NewTabMenuManager::ToggleHide (ITabWidget *itw, bool hide)
+	{
+		ToggleHide (itw->ParentMultiTabs (), itw->GetTabClassInfo ().TabClass_, hide);
+	}
+
+	void NewTabMenuManager::HideAction (ITabWidget *itw, bool hide)
+	{
+		QObject *pObj = itw->ParentMultiTabs ();
+		const auto& tabClass = itw->GetTabClassInfo ().TabClass_;
+		Q_FOREACH (auto action, NewTabMenu_->actions ())
+		{
+			if (action->property ("TabClass").toByteArray () == tabClass &&
+					action->property ("PluginObj").value<QObject*> () == pObj)
+			{
+				NewTabMenu_->removeAction (action);
+				HiddenActions_ [pObj] [tabClass] = action;
+			}
+		}
 	}
 
 	QString NewTabMenuManager::AccelerateName (QString name)
@@ -146,10 +166,13 @@ namespace LeechCraft
 		}
 		return name;
 	}
-	
+
 	void NewTabMenuManager::ToggleHide (QObject *obj,
 			const QByteArray& tabClass, bool hide)
 	{
+		if (!hide)
+			return;
+
 		IInfo *ii = qobject_cast<IInfo*> (obj);
 		if (!ii)
 		{
@@ -162,7 +185,7 @@ namespace LeechCraft
 		const QByteArray& id = ii->GetUniqueID () + '|' + tabClass;
 		XmlSettingsManager::Instance ()->setProperty ("Hide" + id, hide);
 	}
-	
+
 	void NewTabMenuManager::OpenTab (QAction *action)
 	{
 		QObject *pObj = action->property ("PluginObj").value<QObject*> ();
@@ -177,14 +200,20 @@ namespace LeechCraft
 
 		const QByteArray& tabClass = action->property ("TabClass").toByteArray ();
 		tabs->TabOpenRequested (tabClass);
+
+		const auto& classes = tabs->GetTabClasses ();
+		const auto pos = std::find_if (classes.begin (), classes.end (),
+				[&tabClass] (decltype (classes.front ()) item) { return item.TabClass_ == tabClass; });
 		if (action->property ("Single").toBool ())
 		{
 			NewTabMenu_->removeAction (action);
 			HiddenActions_ [pObj] [tabClass] = action;
 			ToggleHide (pObj, tabClass, false);
 		}
+		else if (pos != classes.end () && pos->Features_ & TFByDefault)
+			ToggleHide (pObj, tabClass, false);
 	}
-	
+
 	void NewTabMenuManager::InsertAction (QAction *act)
 	{
 		bool inserted = false;

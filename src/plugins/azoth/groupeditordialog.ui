@@ -49,12 +49,12 @@
   <customwidget>
    <class>LeechCraft::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global">util/tagslineedit.h</header>
+   <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>
   <customwidget>
    <class>LeechCraft::Util::CategorySelector</class>
    <extends>QWidget</extends>
-   <header location="global">util/categoryselector.h</header>
+   <header location="global">util/tags/categoryselector.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

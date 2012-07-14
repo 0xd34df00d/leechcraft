@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,8 +46,8 @@ namespace AdvancedNotifications
 
 		qRegisterMetaType<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
 		qRegisterMetaTypeStreamOperators<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
-		qRegisterMetaType<QList<NotificationRule> > ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
-		qRegisterMetaTypeStreamOperators<QList<NotificationRule> > ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
+		qRegisterMetaType<QList<NotificationRule>> ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
+		qRegisterMetaTypeStreamOperators<QList<NotificationRule>> ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
 	}
 
 	Core& Core::Instance ()
@@ -78,7 +78,7 @@ namespace AdvancedNotifications
 		return NRW_;
 	}
 
-	boost::shared_ptr<Util::ResourceLoader> Core::GetAudioThemeLoader () const
+	std::shared_ptr<Util::ResourceLoader> Core::GetAudioThemeLoader () const
 	{
 		return AudioThemeLoader_;
 	}
@@ -91,6 +91,9 @@ namespace AdvancedNotifications
 
 		Q_FOREACH (const NotificationRule& rule, NRW_->GetRules ())
 		{
+			if (!rule.IsEnabled ())
+				continue;
+
 			if (!rule.GetTypes ().contains (type))
 				continue;
 
@@ -108,6 +111,9 @@ namespace AdvancedNotifications
 
 			if (!fieldsMatch)
 				continue;
+
+			if (rule.IsSingleShot ())
+				NRW_->SetRuleEnabled (rule, false);
 
 			result << rule;
 			break;

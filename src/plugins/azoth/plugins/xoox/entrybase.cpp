@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +21,14 @@
 #include <QStringList>
 #include <QInputDialog>
 #include <QtDebug>
+#include <QBuffer>
 #include <QXmppVCardIq.h>
 #include <QXmppPresence.h>
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
 #include <util/util.h>
-#include <interfaces/iproxyobject.h>
-#include <interfaces/azothutil.h>
+#include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/azothutil.h>
 #include "glooxmessage.h"
 #include "glooxclentry.h"
 #include "glooxprotocol.h"
@@ -41,10 +42,15 @@
 #include "usermood.h"
 #include "usertune.h"
 #include "userlocation.h"
+#include "pepmicroblog.h"
 #include "adhoccommandmanager.h"
 #include "executecommanddialog.h"
 #include "roomclentry.h"
 #include "roomhandler.h"
+#include "useravatardata.h"
+#include "useravatarmetadata.h"
+#include "capsdatabase.h"
+#include "avatarsstorage.h"
 
 namespace LeechCraft
 {
@@ -54,13 +60,35 @@ namespace Xoox
 {
 	EntryBase::EntryBase (GlooxAccount *parent)
 	: QObject (parent)
-	, Commands_ (0)
 	, Account_ (parent)
+	, Commands_ (new QAction (tr ("Commands..."), Account_))
+	, DetectNick_ (new QAction (tr ("Detect nick"), Account_))
+	, StdSep_ (LeechCraft::Util::CreateSeparator (this))
+	, HasUnreadMsgs_ (false)
+	, VersionReqsEnabled_ (true)
+	, HasBlindlyRequestedVCard_ (false)
 	{
 		connect (this,
 				SIGNAL (locationChanged (const QString&, QObject*)),
 				parent,
 				SIGNAL (geolocationInfoChanged (const QString&, QObject*)));
+
+		connect (Commands_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleCommands ()));
+		connect (DetectNick_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleDetectNick ()));
+	}
+
+	EntryBase::~EntryBase ()
+	{
+		qDeleteAll (AllMessages_);
+		qDeleteAll (Actions_);
+		delete Commands_;
+		delete VCardDialog_;
 	}
 
 	QObject* EntryBase::GetObject ()
@@ -72,18 +100,30 @@ namespace Xoox
 	{
 		return AllMessages_;
 	}
-	
+
 	void EntryBase::PurgeMessages (const QDateTime& before)
 	{
 		Azoth::Util::StandardPurgeMessages (AllMessages_, before);
 	}
-	
+
+	namespace
+	{
+		bool CheckPartFeature (EntryBase *base, const QString& variant)
+		{
+			return XooxUtil::CheckUserFeature (base,
+					variant, "http://jabber.org/protocol/chatstates");
+		}
+	}
+
 	void EntryBase::SetChatPartState (ChatPartState state, const QString& variant)
 	{
-		// TODO check if participant supports this XEP.
-		// Need to wait until disco info storage is implemented.
+		if (!CheckPartFeature (this, variant))
+			return;
+
 		QXmppMessage msg;
-		msg.setTo (GetJID ());
+		msg.setTo (GetJID () + (variant.isEmpty () ?
+						QString () :
+						('/' + variant)));
 		msg.setState (static_cast<QXmppMessage::State> (state));
 		Account_->GetClientConnection ()->
 				GetClient ()->sendPacket (msg);
@@ -104,17 +144,11 @@ namespace Xoox
 	QList<QAction*> EntryBase::GetActions () const
 	{
 		QList<QAction*> additional;
-		
-		if (!Commands_)
-		{
-			Commands_ = new QAction (tr ("Commands..."), Account_);
-			connect (Commands_,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleCommands ()));
-		}
 		additional << Commands_;
-		
+		if (GetEntryFeatures () & FSupportsRenames)
+			additional << DetectNick_;
+		additional << StdSep_;
+
 		return additional + Actions_;
 	}
 
@@ -143,20 +177,45 @@ namespace Xoox
 		if (!VCardDialog_)
 			VCardDialog_ = new VCardDialog (this);
 
-		Account_->GetClientConnection ()->FetchVCard (GetJID (), VCardDialog_);
+		QPointer<VCardDialog> ptr (VCardDialog_);
+		Account_->GetClientConnection ()->FetchVCard (GetJID (),
+				[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->UpdateInfo (iq); });
 		VCardDialog_->show ();
 	}
 
 	QMap<QString, QVariant> EntryBase::GetClientInfo (const QString& var) const
 	{
-		return Variant2ClientInfo_ [var];
+		auto res = Variant2ClientInfo_ [var];
+
+		auto version = Variant2Version_ [var];
+		if (version.name ().isEmpty ())
+			return res;
+
+		QString str;
+		str = version.name ();
+		if (!version.version ().isEmpty ())
+			str += " " + version.version ();
+		if (!version.os ().isEmpty ())
+			str += " (" + version.os () + ")";
+		res ["client_name"] = QString ("%1 (claiming %2)")
+				.arg (res ["client_name"].toString ())
+				.arg (str);
+
+		return res;
 	}
-	
+
+	void EntryBase::MarkMsgsRead ()
+	{
+		HasUnreadMsgs_ = false;
+		UnreadMessages_.clear ();
+		emit messagesAreRead ();
+	}
+
 	IAdvancedCLEntry::AdvancedFeatures EntryBase::GetAdvancedFeatures () const
 	{
 		return AFSupportsAttention;
 	}
-	
+
 	void EntryBase::DrawAttention (const QString& text, const QString& variant)
 	{
 		const QString& to = variant.isEmpty () ?
@@ -166,12 +225,65 @@ namespace Xoox
 		msg.setBody (text);
 		msg.setTo (to);
 		msg.setType (QXmppMessage::Headline);
-		msg.setAttention (true);
+		msg.setAttentionRequested (true);
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
+	}
+
+	bool EntryBase::CanSendDirectedStatusNow (const QString& variant)
+	{
+		if (variant.isEmpty ())
+			return true;
+
+		if (GetStatus (variant).State_ != SOffline)
+			return true;
+
+		return false;
+	}
+
+	void EntryBase::SendDirectedStatus (const EntryStatus& state, const QString& variant)
+	{
+		if (!CanSendDirectedStatusNow (variant))
+			return;
+
+		auto conn = Account_->GetClientConnection ();
+
+		QXmppPresence::Type presType = state.State_ == SOffline ?
+				QXmppPresence::Unavailable :
+				QXmppPresence::Available;
+		QXmppPresence pres (presType,
+				QXmppPresence::Status (static_cast<QXmppPresence::Status::Type> (state.State_),
+						state.StatusString_,
+						conn->GetLastState ().Priority_));
+
+		QString to = GetJID ();
+		if (!variant.isEmpty ())
+			to += '/' + variant;
+		pres.setTo (to);
+
+		conn->GetClient ()->addProperCapability (pres);
+		conn->GetClient ()->sendPacket (pres);
+	}
+
+	void EntryBase::RequestLastPosts (int maxNum)
+	{
+	}
+
+	void EntryBase::HandlePresence (const QXmppPresence& pres, const QString& resource)
+	{
+		SetClientInfo (resource, pres);
+		SetStatus (XooxUtil::PresenceToStatus (pres), resource);
+
+		CheckVCardUpdate (pres);
 	}
 
 	void EntryBase::HandleMessage (GlooxMessage *msg)
 	{
+		if (msg->GetMessageType () == IMessage::MTChatMessage)
+		{
+			HasUnreadMsgs_ = true;
+			UnreadMessages_ << msg;
+		}
+
 		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
 		proxy->PreprocessMessage (msg);
@@ -179,7 +291,7 @@ namespace Xoox
 		AllMessages_ << msg;
 		emit gotMessage (msg);
 	}
-	
+
 	void EntryBase::HandlePEPEvent (QString variant, PEPEventBase *event)
 	{
 		const QStringList& vars = Variants ();
@@ -187,8 +299,7 @@ namespace Xoox
 				(!vars.contains (variant) || variant.isEmpty ()))
 			variant = vars.first ();
 
-		UserActivity *activity = dynamic_cast<UserActivity*> (event);
-		if (activity)
+		if (UserActivity *activity = dynamic_cast<UserActivity*> (event))
 		{
 			if (activity->GetGeneral () == UserActivity::GeneralEmpty)
 				Variant2ClientInfo_ [variant].remove ("user_activity");
@@ -204,9 +315,8 @@ namespace Xoox
 			emit activityChanged (variant);
 			return;
 		}
-		
-		UserMood *mood = dynamic_cast<UserMood*> (event);
-		if (mood)
+
+		if (UserMood *mood = dynamic_cast<UserMood*> (event))
 		{
 			if (mood->GetMood () == UserMood::MoodEmpty)
 				Variant2ClientInfo_ [variant].remove ("user_mood");
@@ -217,13 +327,12 @@ namespace Xoox
 				moodMap ["text"] = mood->GetText ();
 				Variant2ClientInfo_ [variant] ["user_mood"] = moodMap;
 			}
-			
+
 			emit moodChanged (variant);
 			return;
 		}
-		
-		UserTune *tune = dynamic_cast<UserTune*> (event);
-		if (tune)
+
+		if (UserTune *tune = dynamic_cast<UserTune*> (event))
 		{
 			if (tune->IsNull ())
 				Variant2ClientInfo_ [variant].remove ("user_tune");
@@ -239,39 +348,58 @@ namespace Xoox
 				tuneMap ["rating"] = tune->GetRating ();
 				Variant2ClientInfo_ [variant] ["user_tune"] = tuneMap;
 			}
-			
+
 			emit tuneChanged (variant);
 			return;
 		}
-		
-		UserLocation *location = dynamic_cast<UserLocation*> (event);
-		if (location)
+
+		if (UserLocation *location = dynamic_cast<UserLocation*> (event))
 		{
 			Location_ [variant] = location->GetInfo ();
 			emit locationChanged (variant, this);
 			emit locationChanged (variant);
 			return;
 		}
-		
+
+		if (PEPMicroblog *microblog = dynamic_cast<PEPMicroblog*> (event))
+		{
+			emit gotNewPost (*microblog);
+			return;
+		}
+
+		if (dynamic_cast<UserAvatarData*> (event) || dynamic_cast<UserAvatarMetadata*> (event))
+			return;
+
 		qWarning () << Q_FUNC_INFO
 				<< "unhandled PEP event from"
 				<< GetJID ()
 				<< "resource"
 				<< variant;
 	}
-	
+
 	void EntryBase::HandleAttentionMessage (const QXmppMessage& msg)
 	{
 		QString jid;
 		QString resource;
 		ClientConnection::Split (msg.from (), &jid, &resource);
-		
+
 		emit attentionDrawn (msg.body (), resource);
 	}
 
 	void EntryBase::UpdateChatState (QXmppMessage::State state, const QString& variant)
 	{
 		emit chatPartStateChanged (static_cast<ChatPartState> (state), variant);
+
+		if (state == QXmppMessage::Gone)
+		{
+			GlooxMessage *msg = new GlooxMessage (IMessage::MTEventMessage,
+					IMessage::DIn,
+					GetJID (),
+					variant,
+					Account_->GetClientConnection ().get ());
+			msg->SetMessageSubType (IMessage::MSTParticipantEndedConversation);
+			HandleMessage (msg);
+		}
 	}
 
 	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant)
@@ -285,7 +413,7 @@ namespace Xoox
 			return;
 
 		CurrentStatus_ [variant] = status;
-		
+
 		const QStringList& vars = Variants ();
 		if ((!existed || wasOffline) && !vars.isEmpty ())
 		{
@@ -294,7 +422,7 @@ namespace Xoox
 				Location_ [highest] = Location_.take (QString ());
 			if (Variant2ClientInfo_.contains (QString ()))
 			{
-				const QMap<QString, QVariant>& info = Variant2ClientInfo_.take (QString ());
+				const auto& info = Variant2ClientInfo_ [QString ()];
 				QStringList toCopy;
 				toCopy << "user_tune" << "user_mood" << "user_activity";
 				Q_FOREACH (const QString& key, toCopy)
@@ -302,28 +430,38 @@ namespace Xoox
 						Variant2ClientInfo_ [highest] [key] = info [key];
 			}
 		}
-		
+
 		emit statusChanged (status, variant);
-		
+
 		if (!existed ||
 				(existed && status.State_ == SOffline) ||
 				wasOffline)
 			emit availableVariantsChanged (vars);
-		
+
+		if ((!existed || wasOffline) &&
+				status.State_ != SOffline)
+		{
+			const QString& jid = variant.isEmpty () ?
+					GetJID () :
+					GetJID () + '/' + variant;
+			if (VersionReqsEnabled_)
+				Account_->GetClientConnection ()->FetchVersion (jid);
+		}
+
 		if (status.State_ != SOffline)
 		{
 			QXmppRosterManager& rm = Account_->
 					GetClientConnection ()->GetClient ()->rosterManager ();
-			const QMap<QString, QXmppPresence>& presences =
-					rm.getAllPresencesForBareJid (GetJID ());
+			const auto& presences = rm.getAllPresencesForBareJid (GetJID ());
 			if (presences.contains (variant))
 			{
 				const int p = presences.value (variant).status ().priority ();
 				Variant2ClientInfo_ [variant] ["priority"] = p;
 			}
 		}
-		
-		
+		else
+			Variant2Version_.remove (variant);
+
 		GlooxMessage *message = 0;
 		if (GetEntryType () == ETPrivateChat)
 			message = new GlooxMessage (IMessage::MTStatusMessage,
@@ -343,7 +481,7 @@ namespace Xoox
 		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
 		const QString& state = proxy->StateToString (status.State_);
-		
+
 		const QString& nick = GetEntryName () + '/' + variant;
 		message->setProperty ("Azoth/Nick", nick);
 		message->setProperty ("Azoth/TargetState", state);
@@ -371,26 +509,37 @@ namespace Xoox
 
 		emit avatarChanged (Avatar_);
 	}
-	
+
 	QXmppVCardIq EntryBase::GetVCard () const
 	{
 		return VCardIq_;
 	}
 
-	void EntryBase::SetVCard (const QXmppVCardIq& vcard)
+	void EntryBase::SetVCard (const QXmppVCardIq& vcard, bool initial)
 	{
 		VCardIq_ = vcard;
+		VCardPhotoHash_ = VCardIq_.photo ().isEmpty () ?
+				QByteArray () :
+				QCryptographicHash::hash (VCardIq_.photo (), QCryptographicHash::Sha1);
 
 		QString text = FormatRawInfo (vcard);
 		if (!text.isEmpty ())
 			text = QString ("gloox VCard:\n") + text;
 		SetRawInfo (text);
-		SetAvatar (vcard.photo ());
+
+		if (!vcard.photo ().isEmpty ())
+		{
+			SetAvatar (vcard.photo ());
+			Core::Instance ().GetAvatarsStorage ()->StoreAvatar (Avatar_, VCardPhotoHash_.toHex ());
+		}
 
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
-		
-		Core::Instance ().ScheduleSaveRoster (10000);
+
+		if (!initial)
+			Core::Instance ().ScheduleSaveRoster (10000);
+
+		emit vcardUpdated ();
 	}
 
 	void EntryBase::SetRawInfo (const QString& rawinfo)
@@ -398,6 +547,16 @@ namespace Xoox
 		RawInfo_ = rawinfo;
 
 		emit rawinfoChanged (RawInfo_);
+	}
+
+	bool EntryBase::HasUnreadMsgs () const
+	{
+		return HasUnreadMsgs_;
+	}
+
+	QList<GlooxMessage*> EntryBase::GetUnreadMessages () const
+	{
+		return UnreadMessages_;
 	}
 
 	void EntryBase::SetClientInfo (const QString& variant,
@@ -424,33 +583,133 @@ namespace Xoox
 			name = "Unknown";
 		}
 		Variant2ClientInfo_ [variant] ["client_name"] = name;
-		
+		Variant2ClientInfo_ [variant] ["raw_client_name"] = name;
+
 		Variant2VerString_ [variant] = ver;
-		
+
 		QString reqJid = GetJID ();
+		QString reqVar = "";
 		if (GetEntryType () == ETChat)
+		{
 			reqJid = variant.isEmpty () ?
-					QString () :
+					reqJid :
 					reqJid + '/' + variant;
-		
-		if (!reqJid.isEmpty ())
-			Account_->GetClientConnection ()->
-					GetCapsManager ()->FetchCaps (reqJid, ver);
+			reqVar = variant;
+		}
+
+		auto capsManager = Account_->GetClientConnection ()->GetCapsManager ();
+		const auto& storedIds = capsManager->GetIdentities (ver);
+
+		qDebug () << "known stored identities for" << ver.toHex () << GetJID () << storedIds.size ();
+		if (!storedIds.isEmpty ())
+			SetDiscoIdentities (reqVar, storedIds);
+		else
+		{
+			qDebug () << "requesting ids for" << reqJid << reqVar;
+			QPointer<EntryBase> pThis (this);
+			QPointer<CapsManager> pCM (capsManager);
+			Account_->GetClientConnection ()->RequestInfo (reqJid,
+				[ver, reqVar, pThis, pCM] (const QXmppDiscoveryIq& iq)
+				{
+					if (!ver.isEmpty () && pCM)
+						pCM->SetIdentities (ver, iq.identities ());
+					if (pThis)
+						pThis->SetDiscoIdentities (reqVar, iq.identities ());
+				});
+		}
 	}
 
 	void EntryBase::SetClientInfo (const QString& variant, const QXmppPresence& pres)
 	{
-		SetClientInfo (variant, pres.capabilityNode (), pres.capabilityVer ());
+		if (pres.type () == QXmppPresence::Available)
+			SetClientInfo (variant, pres.capabilityNode (), pres.capabilityVer ());
 	}
-	
+
+	void EntryBase::SetClientVersion (const QString& variant, const QXmppVersionIq& version)
+	{
+		Variant2Version_ [variant] = version;
+
+		emit entryGenerallyChanged ();
+	}
+
+	void EntryBase::SetDiscoIdentities (const QString& variant, const QList<QXmppDiscoveryIq::Identity>& ids)
+	{
+		Variant2Identities_ [variant] = ids;
+
+		const QString& name = ids.value (0).name ();
+		const QString& type = ids.value (0).type ();
+		if (name.contains ("Kopete"))
+		{
+			Variant2ClientInfo_ [variant] ["client_type"] = "kopete";
+			Variant2ClientInfo_ [variant] ["client_name"] = "Kopete";
+			Variant2ClientInfo_ [variant] ["raw_client_name"] = "kopete";
+			emit statusChanged (GetStatus (variant), variant);
+		}
+		else if (name.contains ("emacs", Qt::CaseInsensitive) ||
+				name.contains ("jabber.el", Qt::CaseInsensitive))
+		{
+			Variant2ClientInfo_ [variant] ["client_type"] = "jabber.el";
+			Variant2ClientInfo_ [variant] ["client_name"] = "Emacs Jabber.El";
+			Variant2ClientInfo_ [variant] ["raw_client_name"] = "jabber.el";
+			emit statusChanged (GetStatus (variant), variant);
+		}
+		else if (type == "mrim")
+		{
+			Variant2ClientInfo_ [variant] ["client_type"] = "mailruagent";
+			Variant2ClientInfo_ [variant] ["client_name"] = "Mail.Ru Agent Gateway";
+			Variant2ClientInfo_ [variant] ["raw_client_name"] = "mailruagent";
+			emit statusChanged (GetStatus (variant), variant);
+		}
+	}
+
 	GeolocationInfo_t EntryBase::GetGeolocationInfo (const QString& variant) const
 	{
 		return Location_ [variant];
 	}
-	
+
+	void EntryBase::SetVersionReqsEnabled (bool enabled)
+	{
+		VersionReqsEnabled_ = enabled;
+	}
+
 	QByteArray EntryBase::GetVariantVerString (const QString& var) const
 	{
 		return Variant2VerString_ [var];
+	}
+
+	QXmppVersionIq EntryBase::GetClientVersion (const QString& var) const
+	{
+		return Variant2Version_ [var];
+	}
+
+	void EntryBase::CheckVCardUpdate (const QXmppPresence& pres)
+	{
+		auto fetchVCard = [this] ()
+		{
+			QPointer<EntryBase> ptr (this);
+			Account_->GetClientConnection ()->FetchVCard (GetJID (),
+					[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->SetVCard (iq); });
+		};
+
+		const auto& vcardUpdate = pres.vCardUpdateType ();
+		if (vcardUpdate == QXmppPresence::VCardUpdateNoPhoto)
+		{
+			if (!Avatar_.isNull ())
+			{
+				Avatar_ = QImage ();
+				emit avatarChanged (GetAvatar ());
+			}
+		}
+		else if (vcardUpdate == QXmppPresence::VCardUpdateValidPhoto)
+		{
+			if (pres.photoHash () != VCardPhotoHash_)
+				fetchVCard ();
+		}
+		else if (pres.type () == QXmppPresence::Available && !HasBlindlyRequestedVCard_)
+		{
+			fetchVCard ();
+			HasBlindlyRequestedVCard_ = true;
+		}
 	}
 
 	QString EntryBase::FormatRawInfo (const QXmppVCardIq& vcard)
@@ -482,7 +741,36 @@ namespace Xoox
 
 		return text;
 	}
-	
+
+	void EntryBase::SetNickFromVCard (const QXmppVCardIq& vcard)
+	{
+		if (!vcard.nickName ().isEmpty ())
+		{
+			SetEntryName (vcard.nickName ());
+			return;
+		}
+
+		if (!vcard.fullName ().isEmpty ())
+		{
+			SetEntryName (vcard.fullName ());
+			return;
+		}
+
+		const QString& fn = vcard.firstName ();
+		const QString& mn = vcard.middleName ();
+		const QString& ln = vcard.lastName ();
+		QString name = fn;
+		if (!fn.isEmpty ())
+			name += " ";
+		name += mn;
+		if (!mn.isEmpty ())
+			name += " ";
+		name += ln;
+		name = name.trimmed ();
+		if (!name.isEmpty ())
+			SetEntryName (name);
+	}
+
 	void EntryBase::handleCommands ()
 	{
 		QString jid = GetJID ();
@@ -497,7 +785,7 @@ namespace Xoox
 					caps.contains (AdHocCommandManager::GetAdHocFeature ()))
 					commandable << var;
 			}
-			
+
 			if (commandable.isEmpty ())
 				return;
 			else if (commandable.size () == 1)
@@ -514,7 +802,7 @@ namespace Xoox
 						&ok);
 				if (!ok || var.isEmpty ())
 					return;
-				
+
 				jid += '/' + var;
 			}
 		}
@@ -522,6 +810,13 @@ namespace Xoox
 		ExecuteCommandDialog *dia = new ExecuteCommandDialog (jid, Account_);
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
+	}
+
+	void EntryBase::handleDetectNick ()
+	{
+		QPointer<EntryBase> ptr (this);
+		Account_->GetClientConnection ()->FetchVCard (GetJID (),
+				[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->SetNickFromVCard (iq); });
 	}
 }
 }

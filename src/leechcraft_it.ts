@@ -31,6 +31,14 @@
         <source>Third parties</source>
         <translation>Partes terza</translation>
     </message>
+    <message>
+        <source>Diagnostic info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add this information to your bug reports, if any:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AuthenticationDialog</name>
@@ -122,6 +130,21 @@
     </message>
 </context>
 <context>
+    <name>DataViewWidget</name>
+    <message>
+        <source>Add...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modify...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished">Rimuovi</translation>
+    </message>
+</context>
+<context>
     <name>HandlerChoiceDialog</name>
     <message>
         <source>Choose entity handler</source>
@@ -182,20 +205,12 @@
         <translation>Abbandona</translation>
     </message>
     <message>
-        <source>exit</source>
-        <translation>esci</translation>
-    </message>
-    <message>
         <source>Fullscreen mode</source>
         <translation>Modalità schermo intero</translation>
     </message>
     <message>
         <source>Log</source>
         <translation>Traccia</translation>
-    </message>
-    <message>
-        <source>Main toolbar</source>
-        <translation type="obsolete">Barra degli strumenti principali</translation>
     </message>
     <message>
         <source>New tab</source>
@@ -238,16 +253,8 @@
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <source>Glance...</source>
-        <translation type="obsolete">Glance...</translation>
-    </message>
-    <message>
-        <source>Show a quick overview of tabs</source>
-        <translation type="obsolete">Mostrare una rapida panoramica delle shede</translation>
-    </message>
-    <message>
-        <source>Ctrl+G</source>
-        <translation type="obsolete">Ctrl+G</translation>
+        <source>Show toolbar</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -310,6 +317,62 @@
     </message>
     <message>
         <source>Fedora package maintainer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chrome-style tabs.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SecMan SecureStorage.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spanish translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>French translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Italian translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Public relations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extensive and thorough testing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Artwork.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Debian/Ubuntu maintainership.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Small fixes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Microsoft Windows backend for Liznoo plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Microsoft Windows builds.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Laure plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last.FM Scrobbler plugin.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -387,6 +450,10 @@
         <source>Context-dependent</source>
         <translation type="unfinished">Dipendente dal contesto</translation>
     </message>
+    <message>
+        <source>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::FancyPopupManager</name>
@@ -446,6 +513,13 @@
     <message>
         <source>Select save location</source>
         <translation>Seleziona la locazione di salvataggio</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::ItemHandlerCombobox</name>
+    <message>
+        <source>More stuff...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -561,14 +635,6 @@
         <translation>Impossibile caricare il plugin da%1: impossibile cast plugin istanza IInfo *.</translation>
     </message>
     <message>
-        <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
-        <translation>Impossibile caricare il plugin da%1: impossibile ottenere il nome / info / icona con eccezione%2.</translation>
-    </message>
-    <message>
-        <source>Could not load plugin from %1: unable to get name/info/icon.</source>
-        <translation>Impossibile caricare il plugin da%1: impossibile ottenere il nome / info / icona.</translation>
-    </message>
-    <message>
         <source>Initializing %1: stage one...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -578,6 +644,29 @@
     </message>
     <message>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The following plugins would also be disabled as the result:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to disable this one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load library %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: API level mismatch.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::PrefDelegate</name>
+    <message>
+        <source>Configure...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1034,26 +1123,6 @@ If you have read and really understood all these letters, click Cancel button in
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Icon size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>System default</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>16x16</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>24x24</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>32x32</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Tool button style:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1255,6 +1324,10 @@ If you have read and really understood all these letters, click Cancel button in
     </message>
     <message>
         <source>Select the tab to the left of the one being removed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manual toolbar visibility control</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

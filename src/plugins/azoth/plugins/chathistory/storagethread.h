@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORYWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORYWIDGET_H
-#include <boost/shared_ptr.hpp>
+#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGETHREAD_H
+#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGETHREAD_H
+#include <memory>
 #include <QThread>
 
 namespace LeechCraft
@@ -32,11 +32,11 @@ namespace ChatHistory
 	class StorageThread : public QThread
 	{
 		Q_OBJECT
-		
-		boost::shared_ptr<Storage> Storage_;
+
+		std::shared_ptr<Storage> Storage_;
 	public:
 		StorageThread (QObject* = 0);
-		
+
 		Storage* GetStorage ();
 	protected:
 		virtual void run ();

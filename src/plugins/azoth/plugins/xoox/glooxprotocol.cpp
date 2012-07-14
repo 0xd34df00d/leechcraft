@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,16 +22,17 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
-#include <interfaces/iprotocolplugin.h>
-#include <interfaces/iproxyobject.h>
+#include <util/util.h>
+#include <interfaces/azoth/iprotocolplugin.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
 #include "core.h"
 #include "joingroupchatwidget.h"
 #include "glooxaccountconfigurationwidget.h"
-#include "bookmarkeditwidget.h"
 #include "inbandaccountregfirstpage.h"
 #include "inbandaccountregsecondpage.h"
 #include "inbandaccountregthirdpage.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -48,6 +49,8 @@ namespace Xoox
 
 	GlooxProtocol::~GlooxProtocol ()
 	{
+		Q_FOREACH (QObject *acc, GetRegisteredAccounts ())
+			emit accountRemoved (acc);
 	}
 
 	void GlooxProtocol::Prepare ()
@@ -92,17 +95,18 @@ namespace Xoox
 	{
 		return "XMPP";
 	}
-	
+
 	QIcon GlooxProtocol::GetProtocolIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/xoox/resources/images/jabbericon.svg");
+		static QIcon icon (":/plugins/azoth/plugins/xoox/resources/images/jabbericon.svg");
+		return icon;
 	}
 
 	QByteArray GlooxProtocol::GetProtocolID () const
 	{
 		return "Xoox.Gloox.XMPP";
 	}
-	
+
 	QList<QWidget*> GlooxProtocol::GetAccountRegistrationWidgets (AccountAddOptions options)
 	{
 		QList<QWidget*> result;
@@ -126,7 +130,7 @@ namespace Xoox
 
 		return result;
 	}
-	
+
 	void GlooxProtocol::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
 	{
 		if (!widgets.size ())
@@ -136,7 +140,7 @@ namespace Xoox
 			return;
 		}
 
-		bool isNewAcc = widgets.at (0)->property ("IsNewAccount").toBool ();
+		const bool isNewAcc = widgets.at (0)->property ("IsNewAccount").toBool ();
 		const int pos = isNewAcc ? 3 : 0;
 		GlooxAccountConfigurationWidget *w =
 				qobject_cast<GlooxAccountConfigurationWidget*> (widgets.value (pos));
@@ -147,7 +151,7 @@ namespace Xoox
 					<< widgets;
 			return;
 		}
-		
+
 		GlooxAccount *account = new GlooxAccount (name, this);
 		account->FillSettings (w);
 
@@ -158,6 +162,13 @@ namespace Xoox
 			if (second)
 				qobject_cast<IProxyObject*> (ProxyObject_)->
 						SetPassword (second->GetPassword (), account);
+		}
+		else
+		{
+			const QString& pass = w->GetPassword ();
+			if (!pass.isNull ())
+				qobject_cast<IProxyObject*> (ProxyObject_)->
+						SetPassword (pass, account);
 		}
 
 		Accounts_ << account;
@@ -172,26 +183,27 @@ namespace Xoox
 	{
 		return new JoinGroupchatWidget ();
 	}
-	
-	QWidget* GlooxProtocol::GetMUCBookmarkEditorWidget ()
-	{
-		return new BookmarkEditWidget ();
-	}
 
 	void GlooxProtocol::RemoveAccount (QObject *acc)
 	{
 		GlooxAccount *accObj = qobject_cast<GlooxAccount*> (acc);
+
+		QMetaObject::invokeMethod (accObj,
+				"removedCLItems",
+				Q_ARG (QList<QObject*>, accObj->GetCLEntries ()));
+
 		Accounts_.removeAll (accObj);
 		emit accountRemoved (accObj);
+
 		accObj->deleteLater ();
 		saveAccounts ();
 	}
-	
+
 	bool GlooxProtocol::SupportsURI (const QUrl& url) const
 	{
 		return url.scheme () == "xmpp";
 	}
-	
+
 	void GlooxProtocol::HandleURI (const QUrl& url, QObject *accountObj)
 	{
 		GlooxAccount *acc = qobject_cast<GlooxAccount*> (accountObj);
@@ -218,7 +230,7 @@ namespace Xoox
 			}
 			queryItems [splitted.at (0)] = QUrl::fromPercentEncoding (splitted.value (1));
 		}
-			
+
 		qDebug () << "HANDLE" << queryItems;
 
 		const QString& path = url.path ();
@@ -238,28 +250,109 @@ namespace Xoox
 		else if (queryItems.contains ("roster") ||
 				queryItems.contains ("subscribe"))
 		{
-			QString name = queryItems ["name"];
-			QStringList groups (queryItems ["group"]);
+			const QString& name = queryItems ["name"];
+			const QStringList groups (queryItems ["group"]);
 			acc->AddEntry (path, name, groups);
 			if (queryItems.contains ("subscribe"))
 				acc->RequestAuth (path, QString (), name, groups);
 		}
+		else if (queryItems.contains ("message"))
+		{
+			const QString& body = queryItems ["body"];
+
+			QString jid;
+			QString variant;
+			ClientConnection::Split (path, &jid, &variant);
+			if (jid.isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "empty jid for path"
+						<< path
+						<< url.toString ();
+				return;
+			}
+
+			QObject *entryObj = acc->GetClientConnection ()->
+					GetCLEntry (jid, variant);
+			if (!entryObj)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "entry for the given jid not found"
+						<< jid
+						<< variant;
+				return;
+			}
+			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+
+			Core::Instance ().GetPluginProxy ()->OpenChat (entry->GetEntryID (),
+					acc->GetAccountID (), body, variant);
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unhandled query items"
+					<< queryItems;
 	}
 
-	void GlooxProtocol::saveAccounts () const
+	QString GlooxProtocol::GetImportProtocolID () const
 	{
-		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
-				QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Xoox_Accounts");
-		settings.beginWriteArray ("Accounts");
-		for (int i = 0, size = Accounts_.size ();
-				i < size; ++i)
+		return "xmpp";
+	}
+
+	bool GlooxProtocol::ImportAccount (const QVariantMap& info)
+	{
+		const QString& name = info ["Name"].toString ();
+
+		if (name.isEmpty () ||
+				info ["Jid"].toString ().isEmpty ())
 		{
-			settings.setArrayIndex (i);
-			settings.setValue ("SerializedData", Accounts_.at (i)->Serialize ());
+			qWarning () << Q_FUNC_INFO
+					<< "malformed import info"
+					<< info;
+			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+						tr ("Unable to import account: malformed import data."),
+						PCritical_));
+			return false;
 		}
-		settings.endArray ();
-		settings.sync ();
+
+		Q_FOREACH (GlooxAccount *acc, Accounts_)
+			if (acc->GetAccountName () == name)
+			{
+				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+							tr ("Account %1 already exists, cannot import another one."),
+							PCritical_));
+				return false;
+			}
+
+		// Maybe a kludge, dunno. Don't beat me hard :(
+		GlooxAccountConfigurationWidget w;
+		w.SetJID (info ["Jid"].toString ());
+		w.SetHost (info ["Host"].toString ());
+		w.SetPort (info ["Port"].toInt ());
+		w.SetNick (info ["Nick"].toString ());
+
+		GlooxAccount *account = new GlooxAccount (name, this);
+		account->FillSettings (&w);
+
+		Accounts_ << account;
+		account->Init ();
+		saveAccounts ();
+		emit accountAdded (account);
+
+		return true;
+	}
+
+	QString GlooxProtocol::GetEntryID (const QString& hrID, QObject *accObj)
+	{
+		GlooxAccount *acc = qobject_cast<GlooxAccount*> (accObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "passed object is not a GlooxAccount"
+					<< accObj;
+			return QString ();
+		}
+
+		return acc->GetAccountID () + '_' + hrID;
 	}
 
 	void GlooxProtocol::RestoreAccounts ()
@@ -291,6 +384,22 @@ namespace Xoox
 			emit accountAdded (acc);
 		}
 		settings.endArray ();
+	}
+
+	void GlooxProtocol::saveAccounts () const
+	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Xoox_Accounts");
+		settings.beginWriteArray ("Accounts");
+		for (int i = 0, size = Accounts_.size ();
+				i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			settings.setValue ("SerializedData", Accounts_.at (i)->Serialize ());
+		}
+		settings.endArray ();
+		settings.sync ();
 	}
 }
 }

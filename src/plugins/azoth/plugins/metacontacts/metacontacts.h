@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 #include <QDateTime>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/iprotocolplugin.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/azoth/iprotocolplugin.h>
 
 namespace LeechCraft
 {
@@ -59,6 +59,8 @@ namespace Metacontacts
 	public slots:
 		void hookAddingCLEntryBegin (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
+		void hookDnDEntry2Entry (LeechCraft::IHookProxy_ptr,
+				QObject*, QObject*);
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
@@ -66,6 +68,8 @@ namespace Metacontacts
 				QObject *entry);
 	private slots:
 		void handleAddToMetacontacts ();
+	signals:
+		void gotNewProtocols (const QList<QObject*>&);
 	};
 }
 }

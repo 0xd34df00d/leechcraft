@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,12 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/resourceloader.h>
+#include <util/util.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "notificationruleswidget.h"
 #include "core.h"
+#include "enablesoundactionmanager.h"
 
 namespace LeechCraft
 {
@@ -32,8 +34,9 @@ namespace AdvancedNotifications
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Proxy_ = proxy;
+		Util::InstallTranslator ("advancednotifications");
 
+		Proxy_ = proxy;
 		Core::Instance ().SetProxy (proxy);
 
 		connect (&Core::Instance (),
@@ -50,6 +53,12 @@ namespace AdvancedNotifications
 				Core::Instance ().GetAudioThemeLoader ()->GetSubElemModel ());
 
 		GeneralHandler_.reset (new GeneralHandler (proxy));
+		connect (GeneralHandler_.get (),
+				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+				this,
+				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
+
+		EnableSoundMgr_ = new EnableSoundActionManager (this);
 	}
 
 	void Plugin::SecondInit ()
@@ -79,7 +88,8 @@ namespace AdvancedNotifications
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/advancednotifications/resources/images/advancednotifications.svg");
+		static QIcon icon (":/plugins/advancednotifications/resources/images/advancednotifications.svg");
+		return icon;
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
@@ -105,7 +115,14 @@ namespace AdvancedNotifications
 	{
 		return SettingsDialog_;
 	}
+
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
+	{
+		QList<QAction*> result;
+		result << EnableSoundMgr_->GetActions (aep);
+		return result;
+	}
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_advancednotifications, LeechCraft::AdvancedNotifications::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_advancednotifications, LeechCraft::AdvancedNotifications::Plugin);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,14 @@ namespace Azoth
 
 		enum Roles
 		{
-			RAccObj = Qt::UserRole + 1
+			RAccObj = Qt::UserRole + 1,
+			RItemType
+		};
+
+		enum ItemTypes
+		{
+			ShowInRoster,
+			Name
 		};
 	public:
 		AccountsListWidget (QWidget* = 0);
@@ -52,7 +59,11 @@ namespace Azoth
 		void on_PGP__released ();
 		void on_Delete__released ();
 
+		void handleItemChanged (QStandardItem*);
+
 		void handleAccountRemoved (IAccount*);
+	signals:
+		void accountVisibilityChanged (IAccount*);
 	};
 }
 }

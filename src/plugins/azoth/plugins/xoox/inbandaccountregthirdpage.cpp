@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 #include "inbandaccountregthirdpage.h"
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QtDebug>
 #include "inbandaccountregsecondpage.h"
 #include "glooxaccountconfigurationwidget.h"
 
@@ -42,12 +43,12 @@ namespace Xoox
 				this,
 				SLOT (handleSuccessfulReg ()));
 	}
-	
+
 	void InBandAccountRegThirdPage::SetConfWidget (GlooxAccountConfigurationWidget *w)
 	{
 		ConfWidget_ = w;
 	}
-	
+
 	bool InBandAccountRegThirdPage::isComplete () const
 	{
 		switch (RegState_)
@@ -58,23 +59,28 @@ namespace Xoox
 			return false;
 		case RSSuccess:
 			return true;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown state"
+					<< RegState_;
+			return true;
 		}
 	}
-	
+
 	void InBandAccountRegThirdPage::initializePage ()
 	{
 		SecondPage_->Register ();
-		
+
 		StateLabel_->setText (tr ("Awaiting registration result..."));
 		SetState (RSAwaitingResult);
 	}
-	
+
 	void InBandAccountRegThirdPage::SetState (InBandAccountRegThirdPage::RegState state)
 	{
 		RegState_ = state;
 		emit completeChanged ();
 	}
-	
+
 	void InBandAccountRegThirdPage::handleSuccessfulReg ()
 	{
 		StateLabel_->setText (tr ("Registration completed successfully. "
@@ -84,7 +90,7 @@ namespace Xoox
 		ConfWidget_->SetNick (jid.split ('@', QString::SkipEmptyParts).value (0));
 		SetState (RSSuccess);
 	}
-	
+
 	void InBandAccountRegThirdPage::handleRegError (const QString& msg)
 	{
 		StateLabel_->setText (tr ("Registration failed: %1.").arg (msg));

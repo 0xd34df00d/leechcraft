@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +18,14 @@
 
 #ifndef PLUGINS_QROSP_WRAPPERS_HOOKPROXYWRAPPER_H
 #define PLUGINS_QROSP_WRAPPERS_HOOKPROXYWRAPPER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QVariant>
 
 namespace LeechCraft
 {
 class IHookProxy;
-typedef boost::shared_ptr<IHookProxy> IHookProxy_ptr;
+typedef std::shared_ptr<IHookProxy> IHookProxy_ptr;
 
 namespace Qrosp
 {

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,15 +53,6 @@ TabManager::TabManager (SeparateTabWidget *tabWidget,
 			this,
 			SLOT (handleMoveHappened (int, int)));
 
-	connect (TabWidget_,
-			SIGNAL (pinTabRequested ()),
-			this,
-			SLOT (handlePinTab ()));
-	connect (TabWidget_,
-			SIGNAL (unpinTabRequested ()),
-			this,
-			SLOT (handleUnpinTab ()));
-
 	XmlSettingsManager::Instance ()->RegisterObject ("UseTabScrollButtons",
 			this, "handleScrollButtons");
 
@@ -73,8 +64,13 @@ TabManager::TabManager (SeparateTabWidget *tabWidget,
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handleCloseAllButCurrent ()));
-	closeAllButCurrent->setProperty ("ActionIcon", "closeallbutcurrent");
+	closeAllButCurrent->setProperty ("ActionIcon", "tab-close-other");
 	TabWidget_->AddAction2TabBar (closeAllButCurrent);
+}
+
+QWidget* TabManager::GetCurrentWidget () const
+{
+	return TabWidget_->CurrentWidget ();
 }
 
 QWidget* TabManager::GetWidget (int position) const
@@ -116,18 +112,18 @@ void TabManager::rotateLeft ()
 {
 	int index = TabWidget_->CurrentIndex ();
 	if (index)
-		TabWidget_->setCurrentIndex (index - 1);
+		TabWidget_->setCurrentTab (index - 1);
 	else
-		TabWidget_->setCurrentIndex (TabWidget_->WidgetCount () - 1);
+		TabWidget_->setCurrentTab (TabWidget_->WidgetCount () - 1);
 }
 
 void TabManager::rotateRight ()
 {
 	int index = TabWidget_->CurrentIndex ();
 	if (index < TabWidget_->WidgetCount () - 1)
-		TabWidget_->setCurrentIndex (index + 1);
+		TabWidget_->setCurrentTab (index + 1);
 	else
-		TabWidget_->setCurrentIndex (0);
+		TabWidget_->setCurrentTab (0);
 }
 
 void TabManager::navigateToTabNumber ()
@@ -135,41 +131,8 @@ void TabManager::navigateToTabNumber ()
 	int n = sender ()->property ("TabNumber").toInt ();
 	if (n >= TabWidget_->WidgetCount ())
 		return;
-	TabWidget_->setCurrentIndex (n);
-}
 
-void TabManager::handlePinTab ()
-{
-	SeparateTabBar *bar = TabWidget_->TabBar ();
-	const int last = TabWidget_->GetLastContextMenuTab ();
-
-	QStringList names = OriginalTabNames_;
-	names.insert (bar->PinTabsCount (), names.takeAt (last));
-
-	bar->moveTab (last, bar->PinTabsCount ());
-	bar->SetTabData (bar->PinTabsCount ());
-	bar->setPinTab (bar->PinTabsCount ());
-
-	TabWidget_->setCurrentIndex (bar->PinTabsCount () - 1);
-
-	OriginalTabNames_ = names;
-}
-
-void TabManager::handleUnpinTab ()
-{
-	SeparateTabBar *bar = TabWidget_->TabBar ();
-	const int last = TabWidget_->GetLastContextMenuTab ();
-
-	QStringList names = OriginalTabNames_;
-	names.insert (bar->PinTabsCount (), names.at (last));
-	names.removeAt (last);
-
-	bar->moveTab (last, bar->PinTabsCount () - 1);
-	bar->setUnPinTab (bar->PinTabsCount () - 1);
-
-	TabWidget_->setCurrentIndex (bar->PinTabsCount ());
-
-	OriginalTabNames_ = names;
+	TabWidget_->setCurrentTab (n);
 }
 
 void TabManager::ForwardKeyboard (QKeyEvent *key)
@@ -202,6 +165,9 @@ void TabManager::add (const QString& name, QWidget *contents,
 			return;
 		}
 		icon = itw->GetTabClassInfo ().Icon_;
+
+		if (itw->GetTabClassInfo ().Features_ & TFSingle)
+			Core::Instance ().GetNewTabMenuManager ()->HideAction (itw, true);
 	}
 
 	if (XmlSettingsManager::Instance ()->
@@ -242,8 +208,11 @@ void TabManager::remove (QWidget *contents)
 				<< "doesn't implement ITabWidget";
 		return;
 	}
-	if (itw->GetTabClassInfo ().Features_ & TFSingle)
+	const auto& features = itw->GetTabClassInfo ().Features_;
+	if (features & TFSingle)
 		Core::Instance ().GetNewTabMenuManager ()->SingleRemoved (itw);
+	if (features & TFByDefault)
+		Core::Instance ().GetNewTabMenuManager ()->ToggleHide (itw, true);
 }
 
 void TabManager::remove (int index)
@@ -338,7 +307,8 @@ void TabManager::handleCurrentChanged (int index)
 	if (TabWidget_->WidgetCount () != 1)
 		Core::Instance ().GetReallyMainWindow ()->RemoveMenus (Menus_);
 
-	ITabWidget *imtw = qobject_cast<ITabWidget*> (TabWidget_->Widget (index));
+	auto tab = TabWidget_->Widget (index);
+	auto imtw = qobject_cast<ITabWidget*> (tab);
 	if (!imtw)
 	{
 		qWarning () << Q_FUNC_INFO
@@ -347,9 +317,11 @@ void TabManager::handleCurrentChanged (int index)
 		return;
 	}
 
-	QMap<QString, QList<QAction*> > menus = imtw->GetWindowMenus ();
+	QMap<QString, QList<QAction*>> menus = imtw->GetWindowMenus ();
 	Core::Instance ().GetReallyMainWindow ()->AddMenus (menus);
 	Menus_ = menus;
+
+	emit currentTabChanged (tab);
 
 	imtw->TabMadeCurrent ();
 }

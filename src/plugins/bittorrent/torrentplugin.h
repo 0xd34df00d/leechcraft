@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,8 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/istartupwizard.h>
 #include <interfaces/iactionsexporter.h>
-#include <util/tagscompleter.h>
+#include <interfaces/ihavediaginfo.h>
+#include <util/tags/tagscompleter.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "tabwidget.h"
 #include "torrentinfo.h"
@@ -45,6 +46,11 @@ class QTranslator;
 
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class ShortcutManager;
+	}
+
 	namespace Plugins
 	{
 		namespace BitTorrent
@@ -64,20 +70,31 @@ namespace LeechCraft
 								, public IHaveShortcuts
 								, public IStartupWizard
 								, public IActionsExporter
+								, public IHaveDiagInfo
 			{
 				Q_OBJECT
 
-				Q_INTERFACES (IInfo IDownload IEntityHandler IJobHolder IImportExport ITaggableJobs IHaveSettings IHaveShortcuts IStartupWizard IActionsExporter);
+				Q_INTERFACES (IInfo
+						IDownload
+						IEntityHandler
+						IJobHolder
+						IImportExport
+						ITaggableJobs
+						IHaveSettings
+						IHaveShortcuts
+						IStartupWizard
+						IActionsExporter
+						IHaveDiagInfo);
 
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 				std::auto_ptr<AddTorrent> AddTorrentDialog_;
 				std::auto_ptr<QTimer> OverallStatsUpdateTimer_;
 				std::auto_ptr<QTime> LastPeersUpdate_;
 				bool TorrentSelectionChanged_;
-				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsAddDiaCompleter_;
-				std::auto_ptr<TabWidget> TabWidget_;
-				std::auto_ptr<QToolBar> Toolbar_;
-				std::auto_ptr<QAction> OpenTorrent_,
+				std::unique_ptr<LeechCraft::Util::TagsCompleter> TagsAddDiaCompleter_;
+				std::unique_ptr<TabWidget> TabWidget_;
+				std::unique_ptr<QToolBar> Toolbar_;
+				std::unique_ptr<QAction> OpenTorrent_,
 					RemoveTorrent_,
 					Resume_,
 					Stop_,
@@ -95,12 +112,12 @@ namespace LeechCraft
 					MakeMagnetLink_,
 					Import_,
 					Export_;
-				std::auto_ptr<QTranslator> Translator_;
+				std::unique_ptr<QTranslator> Translator_;
 
 				SpeedSelectorAction *DownSelectorAction_,
 						*UpSelectorAction_;
 
-				QMap<QString, QAction*> ActionID2Action_;
+				Util::ShortcutManager *ShortcutMgr_;
 
 				enum
 				{
@@ -164,7 +181,7 @@ namespace LeechCraft
 				void SetTags (int, const QStringList&);
 
 				// IHaveSettings
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 				// IHaveShortcuts
 				void SetShortcut (const QString&, const QKeySequences_t&);
@@ -175,6 +192,9 @@ namespace LeechCraft
 
 				// IToolBarEmbedder
 				QList<QAction*> GetActions (ActionsEmbedPlace) const;
+
+				// IHaveDiagInfo
+				QString GetDiagInfoString () const;
 			private slots:
 				void on_OpenTorrent__triggered ();
 				void on_OpenMultipleTorrents__triggered ();
@@ -206,6 +226,8 @@ namespace LeechCraft
 				void gotEntity (const LeechCraft::Entity&);
 				void jobFinished (int);
 				void jobRemoved (int);
+
+				void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 			};
 		};
 	};

@@ -2,42 +2,42 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Plugins::Auscrie::Plugin</name>
+    <name>LeechCraft::Auscrie::Plugin</name>
     <message>
         <location filename="auscrie.cpp" line="45"/>
         <source>Make a screenshot</source>
         <translation>Сделать снимок экрана</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="73"/>
+        <location filename="auscrie.cpp" line="78"/>
         <source>Simple auto screenshoter.</source>
         <translation>Простой модуль для создания снимков экрана.</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="121"/>
+        <location filename="auscrie.cpp" line="127"/>
         <source>Save as</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="123"/>
+        <location filename="auscrie.cpp" line="129"/>
         <source>%1 files (*.%1);;All files (*.*)</source>
         <translation>Файлы %1 (*.%1);;Все файлы (*.*)</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Auscrie::Poster</name>
+    <name>LeechCraft::Auscrie::Poster</name>
     <message>
-        <location filename="poster.cpp" line="189"/>
+        <location filename="poster.cpp" line="187"/>
         <source>Page parse failed</source>
         <translation>Разбор страницы не удался</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="196"/>
+        <location filename="poster.cpp" line="194"/>
         <source>Image pasted: %1, the URL was copied to the clipboard</source>
         <translation>Картинка загружена: %1, URL был скопирован в буфер обмена</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="208"/>
+        <location filename="poster.cpp" line="206"/>
         <source>Upload of screenshot failed: %1</source>
         <translation>Загрузка снимка экрана не удалась: %1</translation>
     </message>
@@ -90,12 +90,42 @@
         <translation>Формат:</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="76"/>
+        <location filename="shooterdialog.ui" line="81"/>
         <source>JPG</source>
         <translation>JPG</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="81"/>
+        <location filename="shooterdialog.ui" line="142"/>
+        <source>Mode:</source>
+        <translation>Режим:</translation>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="150"/>
+        <source>LeechCraft window and everything on top</source>
+        <translation>Окно LeechCraft и все поверх него</translation>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="155"/>
+        <source>LeechCraft window</source>
+        <translation>Окно LeechCraft</translation>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="160"/>
+        <source>Current screen</source>
+        <translation>Текущий экран</translation>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="165"/>
+        <source>Whole desktop</source>
+        <translation>Весь рабочий стол</translation>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="173"/>
+        <source>Hide this dialog</source>
+        <translation>Спрятать этот диалог</translation>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="76"/>
         <source>PNG</source>
         <translation>PNG</translation>
     </message>

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_AUTOPASTE_AUTOPASTE_H
 #define PLUGINS_AZOTH_PLUGINS_AUTOPASTE_AUTOPASTE_H
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -42,9 +41,8 @@ namespace Autopaste
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
 		ICoreProxy_ptr Proxy_;
-		boost::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-		QMap<QNetworkReply*, QPointer<QObject> > Reply2Entry_;
+		QMap<QNetworkReply*, QPointer<QObject>> Reply2Entry_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -64,8 +62,7 @@ namespace Autopaste
 				QObject *chatTab,
 				QObject *entry,
 				int type,
-				QString variant,
-				QString text);
+				QString variant);
 	private slots:
 		void handleMetadata ();
 	signals:

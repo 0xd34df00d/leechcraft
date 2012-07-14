@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -217,6 +217,12 @@ namespace Aggregator
 			Unread_
 		};
 		return is;
+	}
+
+	void Item::FixDate ()
+	{
+		if (!PubDate_.isValid ())
+			PubDate_ = QDateTime::currentDateTime ();
 	}
 
 	ItemComparator::ItemComparator (const Item_ptr& item)

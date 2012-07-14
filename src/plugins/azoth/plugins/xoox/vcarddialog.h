@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,21 +40,30 @@ namespace Xoox
 		GlooxAccount *Account_;
 		QString JID_;
 		QXmppAnnotationsIq::NoteItem Note_;
-		
+
 		QXmppVCardIq VCard_;
+
+		bool PhotoChanged_;
 	public:
-		VCardDialog (QWidget* = 0);
+		VCardDialog (GlooxAccount*, QWidget* = 0);
 		VCardDialog (EntryBase*, QWidget* = 0);
 
 		void UpdateInfo (const QXmppVCardIq&);
-	private slots:
-		void setNote ();
-		void publishVCard ();
-		void on_PhotoBrowse__released ();
-		void on_PhotoClear__released ();
 	private:
+		void BuildPhones (const QXmppVCardPhoneList&);
+		void BuildEmails (const QXmppVCardEmailList&);
+		void BuildAddresses (const QXmppVCardAddressList&);
+		void InitConnections (EntryBase*);
 		void EnableEditableMode ();
 		void UpdateNote (GlooxAccount*, const QString&);
+	private slots:
+		void rebuildClientInfo ();
+		void setNote ();
+		void publishVCard ();
+		void on_PhoneButton__released ();
+		void on_EmailButton__released ();
+		void on_PhotoBrowse__released ();
+		void on_PhotoClear__released ();
 	};
 }
 }

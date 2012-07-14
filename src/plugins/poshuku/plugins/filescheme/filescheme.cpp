@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 
 #include "filescheme.h"
 #include <typeinfo>
-#include <boost/bind.hpp>
 #include <QIcon>
 #include <util/util.h>
 #include "schemereply.h"
@@ -59,7 +58,8 @@ namespace FileScheme
 
 	QIcon FileScheme::GetIcon () const
 	{
-		return QIcon (":/plugins/poshuku/plugins/filescheme/resources/images/poshuku_filescheme.svg");
+		static QIcon icon (":/plugins/poshuku/plugins/filescheme/resources/images/poshuku_filescheme.svg");
+		return icon;
 	}
 
 	QStringList FileScheme::Provides () const
@@ -110,6 +110,6 @@ namespace FileScheme
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_filescheme,
+LC_EXPORT_PLUGIN (leechcraft_poshuku_filescheme,
 		LeechCraft::Poshuku::FileScheme::FileScheme);
 

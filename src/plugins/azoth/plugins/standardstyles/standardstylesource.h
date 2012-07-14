@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLESOURCE_H
 #define PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLESOURCE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QDateTime>
 #include <QHash>
 #include <QColor>
-#include <interfaces/ichatstyleresourcesource.h>
+#include <interfaces/azoth/ichatstyleresourcesource.h>
 
 namespace LeechCraft
 {
@@ -45,28 +45,32 @@ namespace StandardStyles
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IChatStyleResourceSource)
 
-		boost::shared_ptr<Util::ResourceLoader> StylesLoader_;
+		std::shared_ptr<Util::ResourceLoader> StylesLoader_;
 
 		QMap<QWebFrame*, bool> HasBeenAppended_;
 		IProxyObject *Proxy_;
-		
-		mutable QHash<QString, QList<QColor> > Coloring2Colors_;
+
+		mutable QHash<QString, QList<QColor>> Coloring2Colors_;
 		mutable QString LastPack_;
-		
+
 		QHash<QObject*, QWebFrame*> Msg2Frame_;
 	public:
 		StandardStyleSource (IProxyObject*, QObject* = 0);
-		
+
 		QAbstractItemModel* GetOptionsModel () const;
-		QString GetHTMLTemplate (const QString&, QObject*, QWebFrame*) const;
+		QUrl GetBaseURL (const QString&) const;
+		QString GetHTMLTemplate (const QString&,
+				const QString&, QObject*, QWebFrame*) const;
 		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		void FrameFocused (QWebFrame*);
+		QStringList GetVariantsForPack (const QString&);
 	private:
 		QList<QColor> CreateColors (const QString&);
 		QString GetMessageID (QObject*);
 		QString GetStatusImage (const QString&);
 	private slots:
 		void handleMessageDelivered ();
+		void handleMessageDestroyed ();
 		void handleFrameDestroyed ();
 	};
 }

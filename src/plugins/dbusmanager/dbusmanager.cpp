@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,10 +86,11 @@ namespace LeechCraft
 
 			QIcon DBusManager::GetIcon () const
 			{
-				return QIcon (":/resources/images/dbusmanager.svg");
+				static QIcon icon (":/resources/images/dbusmanager.svg");
+				return icon;
 			}
 
-			boost::shared_ptr<Util::XmlSettingsDialog> DBusManager::GetSettingsDialog () const
+			std::shared_ptr<Util::XmlSettingsDialog> DBusManager::GetSettingsDialog () const
 			{
 				return SettingsDialog_;
 			}
@@ -109,5 +110,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_dbusmanager, LeechCraft::Plugins::DBusManager::DBusManager);
+LC_EXPORT_PLUGIN (leechcraft_dbusmanager, LeechCraft::Plugins::DBusManager::DBusManager);
 

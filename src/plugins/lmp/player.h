@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,53 +16,127 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LMP_PLAYER_H
-#define PLUGINS_LMP_PLAYER_H
-#include <memory>
-#include <QDialog>
-#include <QStandardItemModel>
-#include "ui_player.h"
-#include "phonon.h"
+#pragma once
 
-class QStatusBar;
-class QToolBar;
-class QAction;
+#include <QObject>
+#include <phonon/mediasource.h>
+#include <phonon/path.h>
+#include <interfaces/media/iradiostation.h>
+#include "mediainfo.h"
+
+class QModelIndex;
+class QStandardItem;
+class QAbstractItemModel;
+class QStandardItemModel;
+
+namespace Phonon
+{
+	class MediaObject;
+	class AudioOutput;
+}
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class Player : public QDialog
+	struct MediaInfo;
+
+	class Player : public QObject
 	{
 		Q_OBJECT
 
-		Ui::Player Ui_;
-		QStatusBar *StatusBar_;
-		std::auto_ptr<QStandardItemModel> QueueModel_;
-		enum
-		{
-			SourceRole = Qt::UserRole + 100
-		};
+		QStandardItemModel *PlaylistModel_;
+		Phonon::MediaObject *Source_;
+		Phonon::AudioOutput *Output_;
+		Phonon::Path Path_;
+
+		QList<Phonon::MediaSource> CurrentQueue_;
+		QHash<Phonon::MediaSource, QStandardItem*> Items_;
+		QHash<QPair<QString, QString>, QStandardItem*> AlbumRoots_;
+
+		Phonon::MediaSource CurrentStopSource_;
+
+		Media::IRadioStation_ptr CurrentStation_;
+		QStandardItem *RadioItem_;
+		QHash<QUrl, MediaInfo> Url2Info_;
 	public:
-		Player (QWidget* = 0);
-		void Play ();
-		void Pause ();
-		void Stop ();
-		void Clear ();
-		void TogglePause ();
-		void Enqueue (Phonon::MediaSource*);
+		enum class PlayMode
+		{
+			Sequential,
+			Shuffle,
+			RepeatTrack,
+			RepeatAlbum,
+			RepeatWhole
+		};
 	private:
-		void FillQueue (int) const;
+		PlayMode PlayMode_;
+	public:
+		enum Role
+		{
+			IsCurrent = Qt::UserRole + 1,
+			IsStop,
+			IsAlbum,
+			Source,
+			Info,
+			AlbumArt,
+			AlbumLength
+		};
+
+		Player (QObject* = 0);
+
+		QAbstractItemModel* GetPlaylistModel () const;
+		Phonon::MediaObject* GetSourceObject () const;
+		Phonon::AudioOutput* GetAudioOutput () const;
+
+		PlayMode GetPlayMode () const;
+		void SetPlayMode (PlayMode);
+
+		void Enqueue (const QStringList&, bool = true);
+		void Enqueue (const QList<Phonon::MediaSource>&, bool = true);
+		QList<Phonon::MediaSource> GetQueue () const;
+		QList<Phonon::MediaSource> GetIndexSources (const QModelIndex&) const;
+
+		void Dequeue (const QModelIndex&);
+		void Dequeue (const QList<Phonon::MediaSource>&);
+
+		void SetStopAfter (const QModelIndex&);
+
+		void SetRadioStation (Media::IRadioStation_ptr);
+
+		MediaInfo GetCurrentMediaInfo () const;
+		QString GetCurrentAAPath () const;
+	private:
+		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
+		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
+		void ApplyOrdering (QList<Phonon::MediaSource>&);
+
+		bool HandleCurrentStop (const Phonon::MediaSource&);
+
+		void UnsetRadio ();
+
+		Phonon::MediaSource GetNextSource (const Phonon::MediaSource&) const;
 	public slots:
-		void handleStateUpdated (const QString&);
+		void play (const QModelIndex&);
+		void previousTrack ();
+		void nextTrack ();
+		void togglePause ();
+		void setPause ();
+		void stop ();
+		void clear ();
 	private slots:
-		void handleSourceChanged (const Phonon::MediaSource&);
-		void handleMetadataChanged ();
-		void on_Queue__activated (const QModelIndex&);
+		void restorePlaylist ();
+		void handleStationError (const QString&);
+		void handleRadioStream (const QUrl&, const Media::AudioInfo&);
+		void handleUpdateSourceQueue ();
+		void handlePlaybackFinished ();
+		void handleStateChanged (Phonon::State);
+		void handleCurrentSourceChanged (const Phonon::MediaSource&);
+		void setTransitionTime ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void songChanged (const MediaInfo&);
+		void insertedAlbum (const QModelIndex&);
+
+		void playModeChanged (Player::PlayMode);
 	};
 }
 }
-
-#endif

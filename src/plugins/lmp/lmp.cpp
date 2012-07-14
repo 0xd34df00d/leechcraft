@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,126 +17,288 @@
  **********************************************************************/
 
 #include "lmp.h"
-#include <QToolBar>
+#include <QIcon>
+#include <QFileInfo>
+#include <QSystemTrayIcon>
+#include <QUrl>
+#include <phonon/mediaobject.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "playertab.h"
+#include "player.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
-#include "entitychecker.h"
-#include "playerwidget.h"
+#include "rootpathsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	void LMP::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Translator_.reset (Util::InstallTranslator ("lmp"));
+		Util::InstallTranslator ("lmp");
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
-		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-				"lmpsettings.xml");
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");
 
-		Core::Instance ().SetCoreProxy (proxy);
+		PlayerTC_ =
+		{
+			GetUniqueID () + "_player",
+			"LMP",
+			GetInfo (),
+			GetIcon (),
+			40,
+			TFSingle | TFByDefault | TFOpenableByRequest
+		};
 
-		connect (&Core::Instance (),
-				SIGNAL (bringToFront ()),
+		Core::Instance ().SetProxy (proxy);
+		Core::Instance ().PostInit ();
+
+		auto mgr = new RootPathSettingsManager (this);
+		XSD_->SetDataSource ("RootPathsView", mgr->GetModel ());
+
+		PlayerTab_ = new PlayerTab (PlayerTC_, this);
+
+		connect (PlayerTab_,
+				SIGNAL (removeTab (QWidget*)),
 				this,
-				SIGNAL (bringToFront ()));
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				SIGNAL (removeTab (QWidget*)));
+		connect (PlayerTab_,
+				SIGNAL (changeTabName (QWidget*, QString)),
 				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				SIGNAL (changeTabName (QWidget*, QString)));
+		connect (PlayerTab_,
+				SIGNAL (raiseTab (QWidget*)),
+				this,
+				SIGNAL (raiseTab (QWidget*)));
+		connect (PlayerTab_,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+
+		connect (PlayerTab_,
+				SIGNAL (fullRaiseRequested ()),
+				this,
+				SLOT (handleFullRaiseRequested ()));
+
+		ActionRescan_ = new QAction (tr ("Rescan collection"), this);
+		ActionRescan_->setProperty ("ActionIcon", "view-refresh");
+		connect (ActionRescan_,
+				SIGNAL (triggered ()),
+				&Core::Instance (),
+				SLOT (rescan ()));
+
+
+		Entity e = Util::MakeEntity (QVariant (), QString (), 0,
+				"x-leechcraft/global-action-register");
+		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_->GetPlayer ());
+		auto initShortcut = [&e, this] (const QByteArray& method, const QKeySequence& seq)
+		{
+			Entity thisE = e;
+			thisE.Additional_ ["ActionID"] = "LMP_Global_" + method;
+			thisE.Additional_ ["Method"] = method;
+			thisE.Additional_ ["Shortcut"] = QVariant::fromValue (seq);
+			GlobAction2Entity_ ["LMP_Global_" + method] = thisE;
+		};
+		initShortcut (SLOT (togglePause ()), QString ("Meta+C"));
+		initShortcut (SLOT (previousTrack ()), QString ("Meta+V"));
+		initShortcut (SLOT (nextTrack ()), QString ("Meta+B"));
+		initShortcut (SLOT (stop ()), QString ("Meta+X"));
+
+		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_);
+		initShortcut (SLOT (handleLoveTrack ()), QString ("Meta+L"));
+
+		auto setInfo = [this, proxy] (const QByteArray& method,
+				const QString& userText, const QString& icon)
+		{
+			const auto& id = "LMP_Global_" + method;
+			const auto& seq = GlobAction2Entity_ [id].Additional_ ["Shortcut"].value<QKeySequence> ();
+			GlobAction2Info_ [id] = { userText, seq, proxy->GetIcon (icon) };
+		};
+		setInfo (SLOT (togglePause ()), tr ("Play/pause"), "media-playback-start");
+		setInfo (SLOT (previousTrack ()), tr ("Previous track"), "media-skip-backward");
+		setInfo (SLOT (nextTrack ()), tr ("Next track"), "media-skip-forward");
+		setInfo (SLOT (stop ()), tr ("Stop playback"), "media-playback-stop");
+		setInfo (SLOT (handleLoveTrack ()), tr ("Love track"), "emblem-favorite");
 	}
 
-	void LMP::SecondInit ()
+	void Plugin::SecondInit ()
 	{
+		Q_FOREACH (const auto& e, GlobAction2Entity_.values ())
+			emit gotEntity (e);
+
+		PlayerTab_->InitWithOtherPlugins ();
 	}
 
-	void LMP::Release ()
+	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)
 	{
-		Core::Instance ().Release ();
-		XmlSettingsManager::Instance ()->Release ();
+		if (!GlobAction2Entity_.contains (id))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown id"
+					<< id;
+			return;
+		}
+
+		auto& e = GlobAction2Entity_ [id];
+		e.Additional_ ["Shortcut"] = QVariant::fromValue (sequences.value (0));
+		emit gotEntity (e);
 	}
 
-	QByteArray LMP::GetUniqueID () const
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	{
+		return GlobAction2Info_;
+	}
+
+	QByteArray Plugin::GetUniqueID () const
 	{
 		return "org.LeechCraft.LMP";
 	}
 
-	QString LMP::GetName () const
+	void Plugin::Release ()
+	{
+	}
+
+	QString Plugin::GetName () const
 	{
 		return "LMP";
 	}
 
-	QString LMP::GetInfo () const
+	QString Plugin::GetInfo () const
 	{
-		return "LeechCraft Media Player";
+		return tr ("LeechCraft Music Player.");
 	}
 
-	QStringList LMP::Provides () const
+	QIcon Plugin::GetIcon () const
 	{
-		return QStringList ("media");
+		static QIcon icon (":/lmp/resources/images/lmp.svg");
+		return icon;
 	}
 
-	QStringList LMP::Needs () const
+	TabClasses_t Plugin::GetTabClasses () const
 	{
-		return QStringList ();
+		TabClasses_t tcs;
+		tcs << PlayerTC_;
+		return tcs;
 	}
 
-	QStringList LMP::Uses () const
+	void Plugin::TabOpenRequested (const QByteArray& tc)
 	{
-		return QStringList ();
+		if (tc == PlayerTC_.TabClass_)
+		{
+			emit addNewTab ("LMP", PlayerTab_);
+			emit raiseTab (PlayerTab_);
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tc;
 	}
 
-	void LMP::SetProvider (QObject*, const QString&)
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
+		return XSD_;
 	}
 
-	QIcon LMP::GetIcon () const
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
-		return QIcon (":/plugins/lmp/resources/images/lmp.svg");
+		QString path = e.Entity_.toString ();
+		const QUrl& url = e.Entity_.toUrl ();
+		if (path.isEmpty () &&
+					url.isValid () &&
+					url.scheme () == "file")
+			path = url.toLocalFile ();
+
+		if (!path.isEmpty ())
+		{
+			const auto& goodExt = XmlSettingsManager::Instance ()
+					.property ("TestExtensions").toString ()
+					.split (' ', QString::SkipEmptyParts);
+			const QFileInfo fi = QFileInfo (path);
+			if (fi.exists () && goodExt.contains (fi.suffix ()))
+				return EntityTestHandleResult (EntityTestHandleResult::PHigh);
+			else
+				return EntityTestHandleResult ();
+		}
+
+		return EntityTestHandleResult ();
 	}
 
-	IVideoWidget* LMP::CreateWidget () const
+	void Plugin::Handle (Entity e)
 	{
-		return Core::Instance ().CreateWidget ();
+		QString path = e.Entity_.toString ();
+		const QUrl& url = e.Entity_.toUrl ();
+		if (path.isEmpty () &&
+					url.isValid () &&
+					url.scheme () == "file")
+			path = url.toLocalFile ();
+
+		if (e.Parameters_ & Internal)
+		{
+			auto obj = Phonon::createPlayer (Phonon::NotificationCategory, path);
+			obj->play ();
+			connect (obj,
+					SIGNAL (finished ()),
+					obj,
+					SLOT (deleteLater ()));
+		}
 	}
 
-	IVideoWidget* LMP::GetDefaultWidget () const
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace area) const
 	{
-		return Core::Instance ().GetDefaultWidget ();
+		return QList<QAction*> ();
 	}
 
-	Util::XmlSettingsDialog_ptr LMP::GetSettingsDialog () const
+	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
 	{
-		return SettingsDialog_;
-	}
-
-	EntityTestHandleResult LMP::CouldHandle (const Entity& e) const
-	{
-		EntityChecker ec (e);
-		return ec.Can () ?
-				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
-				EntityTestHandleResult ();
-	}
-
-	void LMP::Handle (Entity e)
-	{
-		Core::Instance ().Handle (e);
-	}
-
-	QList<QAction*> LMP::GetActions (ActionsEmbedPlace place) const
-	{
-		QList<QAction*> result;
-
-		if (place == AEPCommonContextMenu)
-			result += Core::Instance ().GetShowAction ();
-
+		decltype(GetMenuActions ()) result;
+		result [GetName ()] << ActionRescan_;
 		return result;
 	}
+
+	void Plugin::RecoverTabs (const QList<LeechCraft::TabRecoverInfo>& infos)
+	{
+		Q_FOREACH (const auto& recInfo, infos)
+		{
+			qDebug () << Q_FUNC_INFO << recInfo.Data_;
+
+			if (recInfo.Data_ == "playertab")
+			{
+				Q_FOREACH (const auto& pair, recInfo.DynProperties_)
+					PlayerTab_->setProperty (pair.first, pair.second);
+
+				TabOpenRequested (PlayerTC_.TabClass_);
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown context"
+						<< recInfo.Data_;
+		}
+	}
+
+	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.LMP.General";
+		result << "org.LeechCraft.LMP.CollectionSync";
+		return result;
+	}
+
+	void Plugin::AddPlugin (QObject *plugin)
+	{
+		Core::Instance ().AddPlugin (plugin);
+	}
+
+	void Plugin::handleFullRaiseRequested ()
+	{
+		TabOpenRequested (PlayerTC_.TabClass_);
+	}
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_lmp, LeechCraft::LMP::LMP);
+LC_EXPORT_PLUGIN (leechcraft_lmp, LeechCraft::LMP::Plugin);

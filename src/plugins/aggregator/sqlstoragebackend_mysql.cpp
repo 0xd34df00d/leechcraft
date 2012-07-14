@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 
 #include "sqlstoragebackend_mysql.h"
 #include <stdexcept>
-#include <boost/bind.hpp>
 #include <boost/optional.hpp>
 #include <QDir>
 #include <QDebug>
@@ -35,10 +34,10 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	SQLStorageBackendMysql::SQLStorageBackendMysql (StorageBackend::Type t)
+	SQLStorageBackendMysql::SQLStorageBackendMysql (StorageBackend::Type t, const QString& id)
 	: Type_ (t)
 	{
-		DB_ = QSqlDatabase::addDatabase ("QMYSQL", "AggregatorConnection");
+		DB_ = QSqlDatabase::addDatabase ("QMYSQL", "AggregatorConnection" + id);
 		DB_.setDatabaseName (XmlSettingsManager::Instance ()->
 				property ("MysqlDBName").toString ());
 		DB_.setHostName (XmlSettingsManager::Instance ()->
@@ -650,9 +649,7 @@ namespace Aggregator
 		try
 		{
 			std::for_each (feed->Channels_.begin (), feed->Channels_.end (),
-					boost::bind (&SQLStorageBackendMysql::AddChannel,
-						this,
-						_1));
+					[this] (Channel_ptr chan) { AddChannel (chan); });
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -898,9 +895,7 @@ namespace Aggregator
 		InsertChannel_.finish ();
 
 		std::for_each (channel->Items_.begin (), channel->Items_.end (),
-				boost::bind (&SQLStorageBackendMysql::AddItem,
-					this,
-					_1));
+				[this] (Item_ptr item) { AddItem (item); });
 	}
 
 	void SQLStorageBackendMysql::AddItem (Item_ptr item)
@@ -1047,6 +1042,32 @@ namespace Aggregator
 					<< *cid;
 			}
 		}
+	}
+
+	void SQLStorageBackendMysql::RemoveChannel (const IDType_t& channelId)
+	{
+		Util::DBLock lock (DB_);
+		try
+		{
+			lock.Init ();
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+			return;
+		}
+
+		RemoveChannel_.bindValue (":channel_id", channelId);
+		if (!RemoveChannel_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveChannel_);
+			return;
+		}
+
+		RemoveChannel_.finish ();
+
+		lock.Good ();
 	}
 
 	void SQLStorageBackendMysql::RemoveFeed (const IDType_t& feedId)
@@ -1198,7 +1219,7 @@ namespace Aggregator
 		return true;
 	}
 
-	QByteArray SQLStorageBackendMysql::SerializePixmap (const QPixmap& pixmap) const
+	QByteArray SQLStorageBackendMysql::SerializePixmap (const QImage& pixmap) const
 	{
 		QByteArray bytes;
 		if (!pixmap.isNull ())
@@ -1210,9 +1231,9 @@ namespace Aggregator
 		return bytes;
 	}
 
-	QPixmap SQLStorageBackendMysql::UnserializePixmap (const QByteArray& bytes) const
+	QImage SQLStorageBackendMysql::UnserializePixmap (const QByteArray& bytes) const
 	{
-		QPixmap result;
+		QImage result;
 		if (bytes.size ())
 			result.loadFromData (bytes, "PNG");
 		return result;

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,21 +31,26 @@ namespace Azoth
 		bool ShowOffline_;
 		bool MUCMode_;
 		bool OrderByStatus_;
+		bool HideMUCParts_;
 		QObject *MUCEntry_;
 	public:
 		SortFilterProxyModel (QObject* = 0);
 
 		void SetMUCMode (bool);
+		bool IsMUCMode () const;
 		void SetMUC (QObject*);
 	public slots:
 		void showOfflineContacts (bool);
 	private slots:
 		void handleStatusOrderingChanged ();
+		void handleHideMUCPartsChanged ();
+		void handleMUCDestroyed ();
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const;
 		bool lessThan (const QModelIndex&, const QModelIndex&) const;
 	signals:
 		void mucMode ();
+		void wholeMode ();
 	};
 }
 }

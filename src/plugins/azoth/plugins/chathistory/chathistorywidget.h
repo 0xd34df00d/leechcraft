@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,12 @@ class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Azoth
 {
 class ICLEntry;
+
 namespace ChatHistory
 {
 	class Plugin;
@@ -47,13 +50,14 @@ namespace ChatHistory
 		int Amount_;
 		int SearchShift_;
 		int SearchResultPosition_;
+		bool ContactSelectedAsGlobSearch_;
 		QString CurrentAccount_;
 		QString CurrentEntry_;
 		QString PreviousSearchText_;
 		QToolBar *Toolbar_;
-		
+
 		QHash<QString, QString> EntryID2NameCache_;
-		
+
 		ICLEntry *EntryToFocus_;
 
 		static Plugin *S_ParentMultiTabs_;
@@ -66,7 +70,7 @@ namespace ChatHistory
 		static void SetParentMultiTabs (Plugin*);
 
 		ChatHistoryWidget (ICLEntry* = 0, QWidget* = 0);
-		
+
 		void Remove ();
 		QToolBar* GetToolBar () const;
 		QObject* ParentMultiTabs ();
@@ -80,14 +84,19 @@ namespace ChatHistory
 		void on_AccountBox__currentIndexChanged (int);
 		void handleContactSelected (const QModelIndex&);
 		void on_HistorySearch__returnPressed ();
+		void on_SearchType__currentIndexChanged ();
+		void on_Calendar__activated (const QDate&);
 		void previousHistory ();
 		void nextHistory ();
 		void clearHistory ();
+		void on_HistView__anchorClicked (const QUrl&);
 	private:
 		void RequestLogs ();
 		void RequestSearch ();
 	signals:
 		void removeSelf (QWidget*);
+
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

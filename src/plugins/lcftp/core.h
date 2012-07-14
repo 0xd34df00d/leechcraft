@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,8 +46,8 @@ namespace LeechCraft
 			class TabManager;
 			class SummaryTab;
 
-			typedef boost::shared_ptr<CURLM> CURLM_ptr;
-			typedef boost::shared_ptr<CURLSH> CURLSH_ptr;
+			typedef std::shared_ptr<CURLM> CURLM_ptr;
+			typedef std::shared_ptr<CURLSH> CURLSH_ptr;
 
 			class Core : public QAbstractItemModel
 			{
@@ -88,7 +88,7 @@ namespace LeechCraft
 				QMap<QString, int> WorkersPerDomain_;
 				TabManager *TabManager_;
 
-				boost::shared_ptr<InactiveWorkersFilter> WorkersFilter_;
+				std::shared_ptr<InactiveWorkersFilter> WorkersFilter_;
 
 				int NumScheduledWorkers_;
 				int RunningHandles_;

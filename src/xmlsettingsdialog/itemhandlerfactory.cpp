@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,10 +36,11 @@
 #include "itemhandlers/itemhandlercustomwidget.h"
 #include "itemhandlers/itemhandlerdataview.h"
 #include "itemhandlers/itemhandlerlistview.h"
+#include "itemhandlers/itemhandlertreeview.h"
 
 namespace LeechCraft
 {
-	ItemHandlerFactory::ItemHandlerFactory ()
+	ItemHandlerFactory::ItemHandlerFactory (Util::XmlSettingsDialog *xsd)
 	{
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCheckbox ());
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerLineEdit ());
@@ -57,6 +58,10 @@ namespace LeechCraft
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerColor ());
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerDataView (this));
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerListView (this));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerTreeView (this));
+
+		Q_FOREACH (ItemHandlerBase_ptr handler, Handlers_)
+			handler->SetXmlSettingsDialog (xsd);
 	}
 
 	ItemHandlerFactory::~ItemHandlerFactory ()

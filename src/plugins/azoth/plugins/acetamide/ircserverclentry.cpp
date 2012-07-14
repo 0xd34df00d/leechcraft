@@ -23,6 +23,7 @@
 #include "clientconnection.h"
 #include "ircparser.h"
 #include "servercommandmessage.h"
+#include "serverinfowidget.h"
 
 namespace LeechCraft
 {
@@ -65,12 +66,12 @@ namespace Acetamide
 
 	QString IrcServerCLEntry::GetEntryID () const
 	{
-		return Account_->GetAccountID () + "_" + ISH_->GetServerID_ ();
+		return Account_->GetAccountID () + "_" + ISH_->GetServerID ();
 	}
 
 	QString IrcServerCLEntry::GetEntryName () const
 	{
-		return ISH_->GetServerID_ ();
+		return ISH_->GetServerID ();
 	}
 
 	void IrcServerCLEntry::SetEntryName (const QString&)
@@ -128,7 +129,7 @@ namespace Acetamide
 
 	void IrcServerCLEntry::Leave (const QString&)
 	{
-		Account_->GetClientConnection ()->CloseServer (ISH_->GetServerID_ ());
+		ISH_->SendQuit ();
 	}
 
 	QString IrcServerCLEntry::GetNick () const
@@ -168,6 +169,25 @@ namespace Acetamide
 		result ["SSL"] = ISH_->GetServerOptions ().SSL_;
 
 		return result;
+	}
+
+	void IrcServerCLEntry::InviteToMUC (const QString&, const QString&)
+	{
+	}
+
+	QWidget* IrcServerCLEntry::GetConfigurationWidget ()
+	{
+		return new ServerInfoWidget (this);
+	}
+
+	void IrcServerCLEntry::AcceptConfiguration (QWidget*)
+	{
+		// there is nothing to implement
+	}
+
+	QMap<QString, QString> IrcServerCLEntry::GetISupport () const
+	{
+		return ISH_->GetISupport ();
 	}
 
 };

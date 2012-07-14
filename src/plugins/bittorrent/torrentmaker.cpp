@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,8 +77,11 @@ namespace LeechCraft
 				boost::filesystem::path::default_name_check (boost::filesystem::no_check);
 
 				libtorrent::file_storage fs;
-				boost::filesystem::path fullPath =
-					boost::filesystem::complete (params.Path_.toUtf8 ().constData ());
+#if LIBTORRENT_VERSION_NUM >= 1600
+				const auto& fullPath = std::string (params.Path_.toUtf8 ().constData ());
+#else
+				const auto& fullPath = boost::filesystem::complete (params.Path_.toUtf8 ().constData ());
+#endif
 				libtorrent::add_files (fs, fullPath, FileFilter);
 				libtorrent::create_torrent ct (fs, params.PieceSize_);
 
@@ -100,23 +103,27 @@ namespace LeechCraft
 
 				ct.add_tracker (params.AnnounceURL_.toStdString ());
 
-				std::auto_ptr<QProgressDialog> pd (new QProgressDialog ());
+				std::unique_ptr<QProgressDialog> pd (new QProgressDialog ());
 				pd->setWindowTitle (tr ("Hashing torrent..."));
 				pd->setMaximum (ct.num_pieces ());
 
 				boost::system::error_code hashesError;
-				libtorrent::set_piece_hashes (ct, fullPath.branch_path (),
-						boost::bind (&UpdateProgress, _1, pd.get ()), hashesError);
+				libtorrent::set_piece_hashes (ct,
+#if LIBTORRENT_VERSION_NUM >= 1600
+						fullPath,
+#else
+						fullPath.branch_path (),
+#endif
+						[this, &pd] (int i) { UpdateProgress (i, pd.get ()); },
+						hashesError);
 				if (hashesError)
 				{
 					QString message = QString::fromUtf8 (hashesError.message ().c_str ());
 					libtorrent::file_entry entry = fs.at (hashesError.value ());
-					QString fn = QString::fromUtf8 (entry.path.string ().c_str ());
 					qWarning () << Q_FUNC_INFO
 						<< "while in libtorrent::set_piece_hashes():"
 						<< message
-						<< hashesError.category ().name ()
-						<< fn;
+						<< hashesError.category ().name ();
 					emit error (tr ("Torrent creation failed: %1")
 							.arg (message));
 					return;
@@ -137,7 +144,11 @@ namespace LeechCraft
 							QMessageBox::Yes | QMessageBox::No) ==
 						QMessageBox::Yes)
 					Core::Instance ()->AddFile (filename,
+#if LIBTORRENT_VERSION_NUM >= 1600
+							QString::fromUtf8 (fullPath.c_str ()),
+#else
 							QString::fromUtf8 (fullPath.branch_path ().string ().c_str ()),
+#endif
 							QStringList (),
 							false);
 			}

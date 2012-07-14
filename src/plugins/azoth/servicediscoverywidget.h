@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_SERVICEDISCOVERYWIDGET_H
 #define PLUGINS_AZOTH_SERVICEDISCOVERYWIDGET_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include "ui_servicediscoverywidget.h"
@@ -36,20 +36,23 @@ namespace Azoth
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
-		
+
 		static QObject *S_ParentMultiTabs_;
-		
+
 		Ui::ServiceDiscoveryWidget Ui_;
 		QToolBar *Toolbar_;
 		QComboBox *AccountBox_;
 		QLineEdit *AddressLine_;
 		QTimer *DiscoveryTimer_;
-		boost::shared_ptr<ISDSession> SDSession_;
+		std::shared_ptr<ISDSession> SDSession_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
 		ServiceDiscoveryWidget (QWidget* = 0);
-		
+
+		void SetAccount (QObject*);
+		void SetSDSession (ISDSession*);
+
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();

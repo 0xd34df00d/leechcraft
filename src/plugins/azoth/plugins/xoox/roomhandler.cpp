@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,8 @@
 #include <QXmppMucManager.h>
 #include <QXmppClient.h>
 #include <QXmppConstants.h>
-#include <interfaces/iproxyobject.h>
+#include <util/passutils.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
 #include "roomclentry.h"
 #include "roompublicmessage.h"
@@ -34,6 +35,8 @@
 #include "util.h"
 #include "glooxprotocol.h"
 #include "formbuilder.h"
+#include "sdmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -46,11 +49,21 @@ namespace Xoox
 			GlooxAccount* account)
 	: Account_ (account)
 	, MUCManager_ (Account_->GetClientConnection ()->GetMUCManager ())
+	, RoomJID_ (jid)
 	, Room_ (MUCManager_->addRoom (jid))
 	, CLEntry_ (new RoomCLEntry (this, Account_))
+	, HadRequestedPassword_ (false)
 	{
+		const QString& server = jid.split ('@', QString::SkipEmptyParts).value (1);
+		auto sdManager = Account_->GetClientConnection ()->GetSDManager ();
+
+		QPointer<RoomHandler> pThis (this);
+		sdManager->RequestInfo ([pThis] (const QXmppDiscoveryIq& iq)
+					{ if (pThis) pThis->ServerDisco_ = iq; },
+				server);
+
 		Room_->setNickName (ourNick);
-		
+
 		connect (Room_,
 				SIGNAL (participantChanged (const QString&)),
 				this,
@@ -63,19 +76,19 @@ namespace Xoox
 				SIGNAL (participantRemoved (const QString&)),
 				this,
 				SLOT (handleParticipantRemoved (const QString&)));
-		
+
 		connect (this,
 				SIGNAL (gotPendingForm (QXmppDataForm*, const QString&)),
 				Account_->GetClientConnection ().get (),
 				SLOT (handlePendingForm (QXmppDataForm*, const QString&)),
 				Qt::QueuedConnection);
-		
+
 		Room_->join ();
 	}
 
 	QString RoomHandler::GetRoomJID () const
 	{
-		return Room_->jid ();
+		return RoomJID_;
 	}
 
 	RoomCLEntry* RoomHandler::GetCLEntry ()
@@ -99,21 +112,12 @@ namespace Xoox
 		Nick2Entry_ [nick]->SetVCard (card);
 	}
 
-	void RoomHandler::SetState (const GlooxAccountState& state)
+	void RoomHandler::SetPresence (QXmppPresence pres)
 	{
-		if (state.State_ == SOffline)
-		{
-			Leave (state.Status_);
-			return;
-		}
-
-		QXmppPresence pres;
-		pres.setTo (GetRoomJID ());
-		pres.setType (QXmppPresence::Available);
-		pres.setStatus (QXmppPresence::Status (static_cast<QXmppPresence::Status::Type> (state.State_),
-				state.Status_,
-				state.Priority_));
-		Account_->GetClientConnection ()->GetClient ()->sendPacket (pres);
+		if (pres.type () == QXmppPresence::Unavailable)
+			Leave (pres.status ().statusText (), false);
+		else if (!Room_->isJoined ())
+			Join ();
 	}
 
 	/** @todo Detect kicks, bans and the respective actor.
@@ -201,7 +205,7 @@ namespace Xoox
 				GetParticipantEntry (oldNick));
 		CLEntry_->HandleMessage (message);
 	}
-	
+
 	void RoomHandler::MakeKickMessage (const QString& nick, const QString& reason)
 	{
 		QString msg;
@@ -212,7 +216,7 @@ namespace Xoox
 			msg = tr ("%1 has been kicked: %2")
 					.arg (nick)
 					.arg (reason);
-		
+
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::DIn,
 				CLEntry_,
@@ -232,7 +236,7 @@ namespace Xoox
 			msg = tr ("%1 has been banned: %2")
 					.arg (nick)
 					.arg (reason);
-		
+
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::DIn,
 				CLEntry_,
@@ -241,7 +245,7 @@ namespace Xoox
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
-	
+
 	void RoomHandler::MakePermsChangedMessage (const QString& nick,
 			QXmppMucItem::Affiliation aff,
 			QXmppMucItem::Role role, const QString& reason)
@@ -260,7 +264,7 @@ namespace Xoox
 					.arg (roleStr)
 					.arg (affStr)
 					.arg (reason);
-		
+
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::DIn,
 				CLEntry_,
@@ -269,37 +273,39 @@ namespace Xoox
 				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
-	
+
 	void RoomHandler::HandleNickConflict ()
 	{
 		// The room is already joined, should do nothing special here.
 		if (Room_->isJoined ())
 			return;
-		
+
 		emit CLEntry_->nicknameConflict (Room_->nickName ());
 	}
-	
+
 	void RoomHandler::HandlePasswordRequired ()
 	{
-		bool ok = false;
-		const QString& pass = QInputDialog::getText (0,
-				tr ("Authorization required"),
-				tr ("This room is password-protected. Please enter the "
-					"password required to join this room."),
-				QLineEdit::Normal,
-				QString (),
-				&ok);
-		if (!ok ||
-			pass.isEmpty ())
+		const auto& text = tr ("This room is password-protected. Please enter the "
+				"password required to join this room.");
+		const QString& pass = Util::GetPassword (GetPassKey (),
+				text, &Core::Instance (), !HadRequestedPassword_);
+		if (pass.isEmpty ())
 		{
 			Leave (QString ());
 			return;
 		}
-		
+
+		HadRequestedPassword_ = true;
+
 		Room_->setPassword (pass);
 		Join ();
 	}
-	
+
+	QString RoomHandler::GetPassKey () const
+	{
+		return "org.LeechCraft.Azoth.Xoox.MUCpass_" + CLEntry_->GetHumanReadableID ();
+	}
+
 	void RoomHandler::HandleErrorPresence (const QXmppPresence& pres, const QString& nick)
 	{
 		const QString& errorText = pres.error ().text ();
@@ -322,6 +328,15 @@ namespace Xoox
 		case QXmppStanza::Error::RegistrationRequired:
 			hrText = tr ("only registered users can enter this room");
 			break;
+		case QXmppStanza::Error::RemoteServerNotFound:
+			hrText = tr ("remote server not found (try contacting your server's administrator)");
+			break;
+		case QXmppStanza::Error::RemoteServerTimeout:
+			hrText = tr ("timeout connecting to remote server (try contacting your server's administrator)");
+			break;
+		case QXmppStanza::Error::ServiceUnavailable:
+			hrText = tr ("service unavailable");
+			break;
 		default:
 			hrText = tr ("unknown condition %1 (please report to developers)")
 				.arg (pres.error ().condition ());
@@ -339,7 +354,7 @@ namespace Xoox
 				IMessage::MTEventMessage,
 				IMessage::MSTOther);
 		CLEntry_->HandleMessage (message);
-		
+
 		switch (pres.error ().condition ())
 		{
 		case QXmppStanza::Error::Conflict:
@@ -352,7 +367,7 @@ namespace Xoox
 			break;
 		}
 	}
-	
+
 	void RoomHandler::HandlePermsChanged (const QString& nick,
 			QXmppMucItem::Affiliation aff,
 			QXmppMucItem::Role role,
@@ -368,12 +383,12 @@ namespace Xoox
 				MakeBanMessage (nick, reason);
 			else
 				MakeKickMessage (nick, reason);
-			
+
 			Nick2Entry_.remove (nick);
 
 			return;
 		}
-		
+
 		entry->SetAffiliation (aff);
 		entry->SetRole (role);
 		MakePermsChangedMessage (nick, aff, role, reason);
@@ -403,12 +418,12 @@ namespace Xoox
 						<< "unhandled <x> element"
 						<< xmlns;
 		}
-		
+
 		const bool existed = Nick2Entry_.contains (nick);
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick, false);
 		if (msg.type () == QXmppMessage::Chat && !nick.isEmpty ())
 		{
-			if (msg.isAttention ())
+			if (msg.isAttentionRequested ())
 				entry->HandleAttentionMessage (msg);
 
 			if (msg.state ())
@@ -456,7 +471,7 @@ namespace Xoox
 
 			if (message)
 				CLEntry_->HandleMessage (message);
-			
+
 			if (!existed)
 				Nick2Entry_.remove (nick);
 		}
@@ -505,7 +520,7 @@ namespace Xoox
 	{
 		return Subject_;
 	}
-	
+
 	void RoomHandler::Join ()
 	{
 		if (Room_->isJoined ())
@@ -531,16 +546,9 @@ namespace Xoox
 			RemoveThis ();
 	}
 
-	RoomParticipantEntry* RoomHandler::GetSelf () const
+	RoomParticipantEntry* RoomHandler::GetSelf ()
 	{
-		Q_FOREACH (QObject *partObj, GetParticipants ())
-		{
-			RoomParticipantEntry *part =
-					qobject_cast<RoomParticipantEntry*> (partObj);
-			if (part->GetEntryName () == Room_->nickName ())
-				return part;
-		}
-		return 0;
+		return GetParticipantEntry (Room_->nickName ()).get ();
 	}
 
 	QString RoomHandler::GetOurNick () const
@@ -572,7 +580,7 @@ namespace Xoox
 		item.setRole (newRole);
 		Account_->GetClientConnection ()->Update (item, Room_->jid ());
 	}
-	
+
 	QXmppMucRoom* RoomHandler::GetRoom () const
 	{
 		return Room_;
@@ -582,6 +590,13 @@ namespace Xoox
 	{
 		RoomParticipantEntry_ptr entry (new RoomParticipantEntry (nick,
 					this, Account_));
+		if (IsGateway ())
+			entry->SetVersionReqsEnabled (false);
+
+		connect (entry.get (),
+				SIGNAL (messagesAreRead ()),
+				this,
+				SLOT (handleMessagesAreRead ()));
 		Nick2Entry_ [nick] = entry;
 		if (announce)
 			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
@@ -599,62 +614,54 @@ namespace Xoox
 		else
 			return Nick2Entry_ [nick];
 	}
-	
+
 	void RoomHandler::handleParticipantAdded (const QString& jid)
 	{
 		const QXmppPresence& pres = Room_->participantPresence (jid);
-		
+
 		QString nick;
 		ClientConnection::Split (jid, 0, &nick);
-		
+
 		if (PendingNickChanges_.remove (nick))
 			return;
-		
+
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 		entry->SetAffiliation (pres.mucItem ().affiliation ());
 		entry->SetRole (pres.mucItem ().role ());
-		const QXmppPresence::Status& xmppSt = pres.status ();
-		entry->SetStatus (EntryStatus (static_cast<State> (xmppSt.type ()),
-					xmppSt.statusText ()),
-				QString ());
-		entry->SetClientInfo ("", pres);
-		
-		Account_->GetClientConnection ()->FetchVCard (jid);
+
+		entry->SetPhotoHash (pres.photoHash ());
+		entry->HandlePresence (pres, "");
+
 		MakeJoinMessage (pres, nick);
 	}
-	
+
 	void RoomHandler::handleParticipantChanged (const QString& jid)
 	{
 		const QXmppPresence& pres = Room_->participantPresence (jid);
-		
+
 		QString nick;
 		ClientConnection::Split (jid, 0, &nick);
-		
+
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 
-		const QXmppPresence::Status& xmppSt = pres.status ();
-		EntryStatus status (static_cast<State> (xmppSt.type ()),
-				xmppSt.statusText ());
-		if (status != entry->GetStatus (QString ()))
-		{
-			entry->SetStatus (status, QString ());
+		entry->HandlePresence (pres, QString ());
+		if (XooxUtil::PresenceToStatus (pres) != entry->GetStatus (QString ()))
 			MakeStatusChangedMessage (pres, nick);
-		}
-		
+
 		const QXmppMucItem& item = pres.mucItem ();
 		if (item.affiliation () != entry->GetAffiliation () ||
 				item.role () != entry->GetRole ())
 			HandlePermsChanged (nick,
 					item.affiliation (), item.role (), item.reason ());
 	}
-	
+
 	void RoomHandler::handleParticipantRemoved (const QString& jid)
 	{
 		const QXmppPresence& pres = Room_->participantPresence (jid);
 
 		QString nick;
 		ClientConnection::Split (jid, 0, &nick);
-		
+
 		const bool us = Room_->nickName () == nick;
 
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
@@ -685,18 +692,23 @@ namespace Xoox
 							Q_ARG (QString, item.reason ())));
 		else
 			MakeLeaveMessage (pres, nick);
-		
-		if (us)
-			Leave (QString (), false);
 
-		Nick2Entry_.remove (nick);
-		Account_->handleEntryRemoved (entry.get ());
+		if (us)
+		{
+			Leave (QString (), false);
+			return;
+		}
+
+		if (entry->HasUnreadMsgs ())
+			entry->SetStatus (EntryStatus (SOffline, item.reason ()), QString ());
+		else
+			RemoveEntry (entry.get ());
 	}
-	
+
 	void RoomHandler::requestVoice ()
-	{		
+	{
 		QList<QXmppDataForm::Field> fields;
-		
+
 		QXmppDataForm::Field typeField (QXmppDataForm::Field::HiddenField);
 		typeField.setKey ("FORM_TYPE");
 		typeField.setValue ("http://jabber.org/protocol/muc#request");
@@ -707,22 +719,54 @@ namespace Xoox
 		reqField.setKey ("muc#role");
 		reqField.setValue ("participant");
 		fields << reqField;
-		
+
 		QXmppDataForm form;
 		form.setType (QXmppDataForm::Submit);
 		form.setFields (fields);
-	
+
 		QXmppMessage msg ("", Room_->jid ());
 		msg.setType (QXmppMessage::Normal);
 		msg.setExtensions (XooxUtil::Form2XmppElem (form));
-		
+
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
+	}
+
+	void RoomHandler::handleMessagesAreRead ()
+	{
+		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a RoomParticipantEntry";
+			return;
+		}
+
+		if (entry->GetStatus (QString ()).State_ == SOffline)
+			RemoveEntry (entry);
+	}
+
+	bool RoomHandler::IsGateway () const
+	{
+		if (ServerDisco_.identities ().size () != 1)
+			return true;
+
+		auto id = ServerDisco_.identities ().at (0);
+		return id.category () == "conference" && id.type () != "text";
+	}
+
+	void RoomHandler::RemoveEntry (RoomParticipantEntry *entry)
+	{
+		Account_->handleEntryRemoved (entry);
+		Nick2Entry_.remove (entry->GetNick ());
 	}
 
 	void RoomHandler::RemoveThis ()
 	{
 		Account_->handleEntryRemoved (CLEntry_);
 		Account_->GetClientConnection ()->Unregister (this);
+		delete Room_;
+		Room_ = 0;
 		deleteLater ();
 	}
 }

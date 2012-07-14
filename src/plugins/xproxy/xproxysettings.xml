@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Proxy behavior" />
+		<item type="checkbox" property="EnableForNAM" default="false">
+			<label value="Enable for common Network Access Manager" />
+			<tooltip>Intercepts requests made through the global network access manager. Most plugins do their requests via that global manager.</tooltip>
+		</item>
+		<item type="checkbox" property="EnableForApp" default="false">
+			<label value="Enable globally" />
+			<tooltip>Intercepts requests made through other means than the global network access manager.</tooltip>
+		</item>
+	</page>
+	<page>
+		<label value="Proxies" />
+		<item type="customwidget" name="Proxies" label="own" />
+	</page>
+</settings>

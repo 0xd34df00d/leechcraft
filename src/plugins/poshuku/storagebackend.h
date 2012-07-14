@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_POSHUKU_STORAGEBACKEND_H
 #define PLUGINS_POSHUKU_STORAGEBACKEND_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include "historymodel.h"
 #include "favoritesmodel.h"
@@ -46,7 +46,7 @@ namespace Poshuku
 
 		StorageBackend (QObject* = 0);
 		virtual ~StorageBackend ();
-		static boost::shared_ptr<StorageBackend> Create (Type);
+		static std::shared_ptr<StorageBackend> Create (Type);
 
 		/** @brief Do post-initialization.
 			*

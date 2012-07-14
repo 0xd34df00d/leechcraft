@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -534,7 +534,7 @@ namespace Aggregator
 							 */
 							GetItemsForTag_;
 	public:
-		SQLStorageBackend (Type);
+		SQLStorageBackend (Type, const QString&);
 		virtual ~SQLStorageBackend ();
 
 		virtual void Prepare ();
@@ -566,6 +566,7 @@ namespace Aggregator
 		virtual void AddChannel (Channel_ptr);
 		virtual void AddItem (Item_ptr);
 		virtual void RemoveItem (const IDType_t&);
+		virtual void RemoveChannel (const IDType_t&);
 		virtual void RemoveFeed (const IDType_t&);
 		virtual bool UpdateFeedsStorage (int, int);
 		virtual bool UpdateChannelsStorage (int, int);
@@ -582,8 +583,8 @@ namespace Aggregator
 		QString GetBoolType () const;
 		QString GetBlobType () const;
 		bool InitializeTables ();
-		QByteArray SerializePixmap (const QPixmap&) const;
-		QPixmap UnserializePixmap (const QByteArray&) const;
+		QByteArray SerializePixmap (const QImage&) const;
+		QImage UnserializePixmap (const QByteArray&) const;
 		bool RollItemsStorage (int);
 
 		void RemoveTables ();

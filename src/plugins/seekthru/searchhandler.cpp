@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <util/util.h>
-#include <util/selectablebrowser.h>
+#include <util/gui/selectablebrowser.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -37,7 +37,7 @@ namespace LeechCraft
 		namespace SeekThru
 		{
 			const QString SearchHandler::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
-			
+
 			SearchHandler::SearchHandler (const Description& d)
 			: D_ (d)
 			, Viewer_ (new Util::SelectableBrowser)
@@ -45,22 +45,22 @@ namespace LeechCraft
 			{
 				setObjectName ("SeekThru SearchHandler");
 				Viewer_->Construct (Core::Instance ().GetWebBrowser ());
-			
+
 				Action_.reset (Toolbar_->addAction (tr ("Subscribe"),
 						this, SLOT (subscribe ())));
-				Action_->setProperty ("ActionIcon", "seekthru_subscribe");
+				Action_->setProperty ("ActionIcon", "news-subscribe");
 			}
-			
+
 			int SearchHandler::columnCount (const QModelIndex&) const
 			{
 				return 3;
 			}
-			
+
 			QVariant SearchHandler::data (const QModelIndex& index, int role) const
 			{
 				if (!index.isValid ())
 					return QVariant ();
-			
+
 				int r = index.row ();
 				switch (role)
 				{
@@ -100,7 +100,7 @@ namespace LeechCraft
 							Viewer_->SetNavBarVisible (XmlSettingsManager::Instance ()
 									.property ("NavBarVisible").toBool ());
 							Viewer_->SetHtml (Results_.at (r).Response_,
-									Results_.at (r).RequestURL_.toString ()); 
+									Results_.at (r).RequestURL_.toString ());
 							return QVariant::fromValue<QWidget*> (Viewer_.get ());
 						}
 						else
@@ -117,7 +117,7 @@ namespace LeechCraft
 						return QVariant ();
 				}
 			}
-			
+
 			Qt::ItemFlags SearchHandler::flags (const QModelIndex& index) const
 			{
 				if (!index.isValid ())
@@ -125,7 +125,7 @@ namespace LeechCraft
 				else
 					return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 			}
-			
+
 			QVariant SearchHandler::headerData (int, Qt::Orientation orient, int role) const
 			{
 				if (orient == Qt::Horizontal && role == Qt::DisplayRole)
@@ -133,32 +133,32 @@ namespace LeechCraft
 				else
 					return QVariant ();
 			}
-			
+
 			QModelIndex SearchHandler::index (int row, int column, const QModelIndex& parent) const
 			{
 				if (!hasIndex (row, column, parent))
 					return QModelIndex ();
-			
+
 				return createIndex (row, column);
 			}
-			
+
 			QModelIndex SearchHandler::parent (const QModelIndex&) const
 			{
 				return QModelIndex ();
 			}
-			
+
 			int SearchHandler::rowCount (const QModelIndex& parent) const
 			{
 				return parent.isValid () ? 0 : Results_.size ();
 			}
-			
+
 			void SearchHandler::Start (const LeechCraft::Request& r)
 			{
 				SearchString_ = r.String_;
 				Q_FOREACH (UrlDescription u, D_.URLs_)
 				{
 					QUrl url (u.Template_);
-					QList<QPair<QString, QString> > items = url.queryItems (),
+					QList<QPair<QString, QString>> items = url.queryItems (),
 						newItems;
 					QPair<QString, QString> item;
 					Q_FOREACH (item, items)
@@ -169,7 +169,7 @@ namespace LeechCraft
 								item.second.at (item.second.size () - 1) == '}' &&
 								item.second.at (item.second.size () - 2) == '?')
 							continue;
-			
+
 						if (item.second == "{searchTerms}")
 							item.second = SearchString_;
 						else if (item.second.size () > 2 &&
@@ -184,11 +184,11 @@ namespace LeechCraft
 						}
 						else
 							item.second = "";
-			
+
 						newItems << item;
 					}
 					url.setQueryItems (newItems);
-			
+
 					QString fname = LeechCraft::Util::GetTemporaryName ();
 					LeechCraft::Entity e =
 						LeechCraft::Util::MakeEntity (url,
@@ -199,7 +199,7 @@ namespace LeechCraft
 								LeechCraft::NotPersistent |
 								LeechCraft::DoNotAnnounceEntity,
 							u.Type_);
-			
+
 					Result job;
 					if (u.Type_ == "application/rss+xml")
 						job.Type_ = Result::TypeRSS;
@@ -209,7 +209,7 @@ namespace LeechCraft
 						job.Type_ = Result::TypeHTML;
 					else
 						continue;
-			
+
 					int id = -1;
 					QObject *pr;
 					emit delegateEntity (e, &id, &pr);
@@ -219,23 +219,23 @@ namespace LeechCraft
 								.arg (url.toString ()));
 						continue;
 					}
-			
+
 					HandleProvider (pr);
-			
+
 					job.Filename_ = fname;
 					job.RequestURL_ = url;
 					Jobs_ [id] = job;
 				}
 			}
-			
+
 			void SearchHandler::handleJobFinished (int id)
 			{
 				if (!Jobs_.contains (id))
 					return;
-			
+
 				Result result = Jobs_ [id];
 				Jobs_.remove (id);
-			
+
 				QFile file (result.Filename_);
 				if (!file.open (QIODevice::ReadOnly))
 				{
@@ -243,16 +243,16 @@ namespace LeechCraft
 							.arg (result.Filename_));
 					return;
 				}
-			
+
 				result.Response_ = QTextCodec::codecForName ("UTF-8")->
 					toUnicode (file.readAll ());
 				result.TotalResults_ = -1;
-			
+
 				file.close ();
 				if (!file.remove ())
 					emit warning (tr ("Could not remove temporary file %1.")
 							.arg (result.Filename_));
-			
+
 				QDomDocument doc;
 				if (doc.setContent (result.Response_, true))
 				{
@@ -264,7 +264,7 @@ namespace LeechCraft
 							QDomElement meta = nodes.at (i).toElement ();
 							if (meta.isNull ())
 								continue;
-			
+
 							if (meta.attribute ("name") == "totalResults")
 							{
 								result.TotalResults_ = meta.attribute ("content").toInt ();
@@ -283,32 +283,32 @@ namespace LeechCraft
 						}
 					}
 				}
-			
+
 				beginInsertRows (QModelIndex (), Results_.size (), Results_.size ());
 				Results_ << result;
 				endInsertRows ();
 			}
-			
+
 			void SearchHandler::handleJobError (int id)
 			{
 				if (!Jobs_.contains (id))
 					return;
-			
+
 				emit error (tr ("Search request for URL<br />%1<br />was delegated, but it failed.")
 						.arg (Jobs_ [id].RequestURL_.toString ()));
 				Jobs_.remove (id);
 			}
-			
+
 			void SearchHandler::subscribe ()
 			{
 				int r = qobject_cast<QAction*> (sender ())->data ().toInt ();
-			
+
 				QString mime;
 				if (Results_.at (r).Type_ == Result::TypeAtom)
 					mime = "application/atom+xml";
 				else if (Results_.at (r).Type_ == Result::TypeRSS)
 					mime = "application/rss+xml";
-			
+
 				LeechCraft::Entity e =
 					LeechCraft::Util::MakeEntity (Results_.at (r).RequestURL_,
 							QString (),
@@ -316,12 +316,12 @@ namespace LeechCraft
 							mime);
 				emit gotEntity (e);
 			}
-			
+
 			void SearchHandler::HandleProvider (QObject *provider)
 			{
 				if (Downloaders_.contains (provider))
 					return;
-				
+
 				Downloaders_ << provider;
 				connect (provider,
 						SIGNAL (jobFinished (int)),
@@ -332,7 +332,7 @@ namespace LeechCraft
 						this,
 						SLOT (handleJobError (int)));
 			}
-			
+
 		};
 	};
 };

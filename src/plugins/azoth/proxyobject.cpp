@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,18 +17,14 @@
  **********************************************************************/
 
 #include "proxyobject.h"
-
-#if defined(Q_WS_X11)
-#include <sys/utsname.h>
-#endif
-
-#include <QProcess>
-#include <QTextStream>
+#include <QInputDialog>
 #include <QtDebug>
 #include <util/util.h>
-#include "interfaces/iaccount.h"
+#include <util/sysinfo.h>
+#include "interfaces/azoth/iaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "chattabsmanager.h"
 
 namespace LeechCraft
 {
@@ -36,13 +32,15 @@ namespace Azoth
 {
 	ProxyObject::ProxyObject (QObject* parent)
 	: QObject (parent)
+	, LinkRegexp_ ("((?:(?:\\w+://)|(?:xmpp:|mailto:|www\\.|magnet:|irc:))\\S+)",
+			Qt::CaseInsensitive, QRegExp::RegExp2)
 	{
 		SerializedStr2AuthStatus_ ["None"] = ASNone;
 		SerializedStr2AuthStatus_ ["To"] = ASTo;
 		SerializedStr2AuthStatus_ ["From"] = ASFrom;
 		SerializedStr2AuthStatus_ ["Both"] = ASBoth;
 	}
-	
+
 	QObject* ProxyObject::GetSettingsManager ()
 	{
 		return &XmlSettingsManager::Instance ();
@@ -113,116 +111,26 @@ namespace Azoth
 		Core::Instance ().SendEntity (e);
 	}
 
-	QString ProxyObject::GetOSName ()
+	QString ProxyObject::GetAccountPassword (QObject *accObj, bool useStored)
 	{
-#if defined(Q_WS_X11)
-		QProcess proc;
-		proc.start (QString ("/bin/sh"),
-					QStringList ("-c") << "lsb_release -ds", QIODevice::ReadOnly);
-		if (proc.waitForStarted ())
+		if (useStored)
 		{
-			QTextStream stream (&proc);
-			QString ret;
-			while (proc.waitForReadyRead ())
-				ret += stream.readAll ();
-			proc.close ();
-			if (!ret.isEmpty ())
-				return ret.remove ('"').trimmed ();
+			const QString& result = GetPassword (accObj);
+			if (!result.isNull ())
+				return result;
 		}
 
-		struct OsInfo_t
-		{
-			QString path;
-			QString name;
-		} OsInfo [] =
-		{
-			{ "/etc/mandrake-release", "Mandrake Linux" },
-			{ "/etc/debian_version", "Debian GNU/Linux" },
-			{ "/etc/gentoo-release", "Gentoo Linux" },
-			{ "/etc/exherbo-release", "Exherbo" },
-			{ "/etc/arch-release", "Arch Linux" },
-			{ "/etc/slackware-version", "Slackware Linux" },
-			{ "/etc/pld-release", "" },
-			{ "/etc/lfs-release", "LFS" },
-			{ "/etc/SuSE-release", "SuSE linux" },
-			{ "/etc/conectiva-release", "Connectiva" },
-			{ "/etc/.installed", "" },
-			{ "/etc/redhat-release", "" },
-			{ "", "" }
-		};
-		OsInfo_t *osptr = OsInfo;
-		while (!osptr->path.isEmpty ())
-		{
-			QFileInfo fi (osptr->path);
-			if (fi.exists ())
-			{
-				QFile f (osptr->path);
-				f.open (QIODevice::ReadOnly);
-				QString data = QString (f.read (1024)).trimmed ();
-				if (osptr->name.isEmpty ())
-					return data;
-				else
-					return QString ("%1 (%2)")
-							.arg (osptr->name)
-							.arg (data);
-			}
-			++osptr;
-		}
-		utsname u;
-		uname (&u);
-		return QString ("%1 %2 %3 %4")
-			.arg (u.sysname)
-			.arg (u.machine)
-			.arg (u.release)
-			.arg (u.version);
-#endif
-#if defined(Q_WS_MAC)
-		QSysInfo::MacVersion v = QSysInfo::MacintoshVersion;
-		if (v == QSysInfo::MV_10_3)
-			return "Mac OS X 10.3";
-		else if(v == QSysInfo::MV_10_4)
-			return "Mac OS X 10.4";
-		else if(v == QSysInfo::MV_10_5)
-			return "Mac OS X 10.5";
-#if QT_VERSION >= 0x040500
-		else if(v == QSysInfo::MV_10_6)
-			return "Mac OS X 10.6";
-#endif
-		else
-			return "Mac OS X";
-#endif
+		IAccount *acc = qobject_cast<IAccount*> (accObj);
 
-#if defined(Q_WS_WIN)
-		QSysInfo::WinVersion v = QSysInfo::WindowsVersion;
-		if (v == QSysInfo::WV_95)
-			return "Windows 95";
-		else if (v == QSysInfo::WV_98)
-			return "Windows 98";
-		else if (v == QSysInfo::WV_Me)
-			return "Windows Me";
-		else if (v == QSysInfo::WV_DOS_based)
-			return "Windows 9x/Me";
-		else if (v == QSysInfo::WV_NT)
-			return "Windows NT 4.x";
-		else if (v == QSysInfo::WV_2000)
-			return "Windows 2000";
-		else if (v == QSysInfo::WV_XP)
-			return "Windows XP";
-		else if (v == QSysInfo::WV_2003)
-			return "Windows Server 2003";
-		else if (v == QSysInfo::WV_VISTA)
-			return "Windows Vista";
-#if QT_VERSION >= 0x040500
-		else if (v == QSysInfo::WV_WINDOWS7)
-			return "Windows 7";
-#endif
-		else if (v == QSysInfo::WV_NT_based)
-			return "Windows NT";
-#endif
-
-		return tr ("Unknown OS");
+		QString result = QInputDialog::getText (0,
+				"LeechCraft",
+				tr ("Enter password for %1:").arg (acc->GetAccountName ()),
+				QLineEdit::Password);
+		if (!result.isNull ())
+			SetPassword (result, accObj);
+		return result;
 	}
-	
+
 	bool ProxyObject::IsAutojoinAllowed ()
 	{
 		return XmlSettingsManager::Instance ()
@@ -242,7 +150,7 @@ namespace Azoth
 		case SDND:
 			return Core::tr ("Do not disturb");
 		case SXA:
-			return Core::tr ("Extended away");
+			return Core::tr ("Not available");
 		case SOffline:
 			return Core::tr ("Offline");
 		default:
@@ -276,7 +184,7 @@ namespace Azoth
 	{
 		return SerializedStr2AuthStatus_.value (str, ASNone);;
 	}
-	
+
 	QObject* ProxyObject::GetAccount (const QString& accID) const
 	{
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
@@ -285,7 +193,7 @@ namespace Azoth
 
 		return 0;
 	}
-	
+
 	QList<QObject*> ProxyObject::GetAllAccounts () const
 	{
 		QList<QObject*> result;
@@ -293,42 +201,60 @@ namespace Azoth
 			result << acc->GetObject ();
 		return result;
 	}
-	
+
 	QObject* ProxyObject::GetEntry (const QString& entryID, const QString&) const
 	{
 		return Core::Instance ().GetEntry (entryID);
 	}
-	
+
+	void ProxyObject::OpenChat (const QString& entryID, const QString& accID,
+			const QString& message, const QString& variant) const
+	{
+		ChatTabsManager *mgr = Core::Instance ().GetChatTabsManager ();
+
+		ICLEntry *entry = qobject_cast<ICLEntry*> (GetEntry (entryID, accID));
+		QWidget *chat = mgr->OpenChat (entry);
+
+		QMetaObject::invokeMethod (chat,
+				"prepareMessageText",
+				Qt::QueuedConnection,
+				Q_ARG (QString, message));
+		QMetaObject::invokeMethod (chat,
+				"selectVariant",
+				Qt::QueuedConnection,
+				Q_ARG (QString, variant));
+	}
+
 	QString ProxyObject::GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const
 	{
 		return Core::Instance ().GetSelectedChatTemplate (entry, frame);
 	}
-	
+
 	QList<QColor> ProxyObject::GenerateColors (const QString& scheme) const
 	{
 		return Core::Instance ().GenerateColors (scheme);
 	}
-	
+
 	QString ProxyObject::GetNickColor (const QString& nick, const QList<QColor>& colors) const
 	{
 		return Core::Instance ().GetNickColor (nick, colors);
 	}
-	
+
 	QString ProxyObject::FormatDate (QDateTime dt, QObject *obj) const
 	{
 		return Core::Instance ().FormatDate (dt, qobject_cast<IMessage*> (obj));
 	}
-	
+
 	QString ProxyObject::FormatNickname (QString nick, QObject *obj, const QString& color) const
 	{
 		return Core::Instance ().FormatNickname (nick, qobject_cast<IMessage*> (obj), color);
 	}
-	
+
 	QString ProxyObject::FormatBody (QString body, QObject *obj) const
 	{
 		return Core::Instance ().FormatBody (body, qobject_cast<IMessage*> (obj));
 	}
-	
+
 	void ProxyObject::PreprocessMessage (QObject *msgObj)
 	{
 		if (msgObj->property ("Azoth/DoNotPreprocess").toBool ())
@@ -343,7 +269,7 @@ namespace Azoth
 					<< "is not an IMessage";
 			return;
 		}
-		
+
 		switch (msg->GetMessageSubType ())
 		{
 		case IMessage::MSTParticipantStatusChange:
@@ -369,7 +295,7 @@ namespace Azoth
 			break;
 		}
 	}
-	
+
 	Util::ResourceLoader* ProxyObject::GetResourceLoader (IProxyObject::PublicResourceLoader loader) const
 	{
 		switch (loader)
@@ -387,10 +313,31 @@ namespace Azoth
 			return 0;
 		}
 	}
-	
+
 	QIcon ProxyObject::GetIconForState (State state) const
 	{
 		return Core::Instance ().GetIconForState (state);
+	}
+
+	void ProxyObject::FormatLinks (QString& body)
+	{
+		int pos = 0;
+		while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
+		{
+			const auto& link = LinkRegexp_.cap (1);
+			if (pos > 0 &&
+					(body.at (pos - 1) == '"' || body.at (pos - 1) == '='))
+			{
+				pos += link.size ();
+				continue;
+			}
+
+			const auto& str = QString ("<a href=\"%1\">%1</a>")
+					.arg (link.trimmed ());
+			body.replace (pos, link.length (), str);
+
+			pos += str.length ();
+		}
 	}
 }
 }

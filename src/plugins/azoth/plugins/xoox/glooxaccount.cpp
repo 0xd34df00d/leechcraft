@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,9 @@
 #include <QInputDialog>
 #include <QtDebug>
 #include <QXmppCallManager.h>
-#include <interfaces/iprotocol.h>
-#include <interfaces/iproxyobject.h>
+#include <util/util.h>
+#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "glooxprotocol.h"
 #include "glooxaccountconfigurationdialog.h"
 #include "core.h"
@@ -38,11 +39,17 @@
 #include "useractivity.h"
 #include "userlocation.h"
 #include "privacylistsconfigdialog.h"
+#include "pepmicroblog.h"
+
+#ifdef ENABLE_MEDIACALLS
 #include "mediacall.h"
+#endif
+
+#include "jabbersearchsession.h"
+#include "bookmarkeditwidget.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
-#include <util/util.h>
 #endif
 
 namespace LeechCraft
@@ -64,6 +71,8 @@ namespace Xoox
 	, Name_ (name)
 	, ParentProtocol_ (qobject_cast<GlooxProtocol*> (parent))
 	, Port_ (-1)
+	, KAParams_ (qMakePair (90, 60))
+	, SelfVCardAction_ (new QAction (tr ("Self VCard..."), this))
 	, PrivacyDialogAction_ (new QAction (tr ("Privacy lists..."), this))
 	{
 		AccState_.State_ = SOffline;
@@ -74,7 +83,14 @@ namespace Xoox
 				this,
 				SLOT (handleDestroyClient ()),
 				Qt::QueuedConnection);
-		
+
+		SelfVCardAction_->setProperty ("ActionIcon", "text-x-vcard");
+		PrivacyDialogAction_->setProperty ("ActionIcon", "emblem-locked");
+
+		connect (SelfVCardAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showSelfVCard ()));
 		connect (PrivacyDialogAction_,
 				SIGNAL (triggered ()),
 				this,
@@ -84,16 +100,21 @@ namespace Xoox
 	void GlooxAccount::Init ()
 	{
 		ClientConnection_.reset (new ClientConnection (JID_ + "/" + Resource_,
-						AccState_, this));
+						this));
+
+		if (!OurPhotoHash_.isEmpty ())
+			ClientConnection_->SetOurPhotoHash (OurPhotoHash_);
+
+		ClientConnection_->SetKAParams (KAParams_);
 
 		TransferManager_.reset (new TransferManager (ClientConnection_->
 						GetTransferManager (),
 					this));
-		
+
 		connect (ClientConnection_.get (),
-				SIGNAL (gotConsoleLog (const QByteArray&, int)),
+				SIGNAL (gotConsoleLog (QByteArray, int, QString)),
 				this,
-				SIGNAL (gotConsolePacket (const QByteArray&, int)));
+				SIGNAL (gotConsolePacket (QByteArray, int, QString)));
 
 		connect (ClientConnection_.get (),
 				SIGNAL (serverAuthFailed ()),
@@ -103,7 +124,7 @@ namespace Xoox
 				SIGNAL (needPassword ()),
 				this,
 				SLOT (feedClientPassword ()));
-		
+
 		connect (ClientConnection_.get (),
 				SIGNAL (statusChanged (const EntryStatus&)),
 				this,
@@ -150,12 +171,14 @@ namespace Xoox
 				SIGNAL (gotMUCInvitation (QVariantMap, QString, QString)),
 				this,
 				SIGNAL (mucInvitationReceived (QVariantMap, QString, QString)));
-		
+
+#ifdef ENABLE_MEDIACALLS
 		connect (ClientConnection_->GetCallManager (),
 				SIGNAL (callReceived (QXmppCall*)),
 				this,
 				SLOT (handleIncomingCall (QXmppCall*)));
-		
+#endif
+
 		RegenAccountIcon ();
 	}
 
@@ -204,16 +227,19 @@ namespace Xoox
 	void GlooxAccount::RenameAccount (const QString& name)
 	{
 		Name_ = name;
+		emit accountRenamed (name);
+		emit accountSettingsChanged ();
 	}
 
 	QByteArray GlooxAccount::GetAccountID () const
 	{
 		return ParentProtocol_->GetProtocolID () + "_" + JID_.toUtf8 ();
 	}
-	
+
 	QList<QAction*> GlooxAccount::GetActions () const
 	{
 		QList<QAction*> result;
+		result << SelfVCardAction_;
 		result << PrivacyDialogAction_;
 		return result;
 	}
@@ -238,9 +264,12 @@ namespace Xoox
 			dia->W ()->SetPort (Port_);
 		dia->W ()->SetPriority (AccState_.Priority_);
 
+		dia->W ()->SetKAInterval (KAParams_.first);
+		dia->W ()->SetKATimeout (KAParams_.second);
+
 		if (dia->exec () == QDialog::Rejected)
 			return;
-		
+
 		FillSettings (dia->W ());
 	}
 
@@ -253,10 +282,10 @@ namespace Xoox
 			 Resource_ != w->GetResource () ||
 			 Host_ != w->GetHost () ||
 			 Port_ != w->GetPort ()))
-		{
 			ChangeState (EntryStatus (SOffline, AccState_.Status_));
+
+		if (ClientConnection_)
 			ClientConnection_->SetOurJID (w->GetJID () + "/" + w->GetResource ());
-		}
 
 		JID_ = w->GetJID ();
 		Nick_ = w->GetNick ();
@@ -264,8 +293,16 @@ namespace Xoox
 		AccState_.Priority_ = w->GetPriority ();
 		Host_ = w->GetHost ();
 		Port_ = w->GetPort ();
-		
+
 		RegenAccountIcon ();
+
+		const QString& pass = w->GetPassword ();
+		if (!pass.isNull ())
+			Core::Instance ().GetPluginProxy ()->SetPassword (pass, this);
+
+		KAParams_ = qMakePair (w->GetKAInterval (), w->GetKATimeout ());
+		if (ClientConnection_)
+			ClientConnection_->SetKAParams (KAParams_);
 
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, AccState_.Status_));
@@ -293,11 +330,6 @@ namespace Xoox
 		ClientConnection_->SetState (AccState_);
 	}
 
-	void GlooxAccount::Synchronize ()
-	{
-		ClientConnection_->Synchronize ();
-	}
-
 	void GlooxAccount::Authorize (QObject *entryObj)
 	{
 		ClientConnection_->AckAuth (entryObj, true);
@@ -307,7 +339,7 @@ namespace Xoox
 	{
 		ClientConnection_->AckAuth (entryObj, false);
 	}
-	
+
 	void GlooxAccount::AddEntry (const QString& entryId,
 			const QString& name, const QStringList& groups)
 	{
@@ -338,34 +370,64 @@ namespace Xoox
 	{
 		return TransferManager_.get ();
 	}
-	
+
 	QIcon GlooxAccount::GetAccountIcon () const
 	{
 		return AccountIcon_;
 	}
-	
+
 	QObject* GlooxAccount::GetSelfContact () const
 	{
 		return ClientConnection_ ?
 				ClientConnection_->GetCLEntry (JID_, QString ()) :
 				0;
 	}
-	
+
+	QImage GlooxAccount::GetSelfAvatar () const
+	{
+		auto self = GetSelfContact ();
+		return self ?
+				qobject_cast<ICLEntry*> (self)->GetAvatar () :
+				QImage ();
+	}
+
 	QObject* GlooxAccount::CreateSDSession ()
 	{
 		return new SDSession (this);
 	}
-	
+
+	QObject* GlooxAccount::CreateSearchSession ()
+	{
+		return new JabberSearchSession (this);
+	}
+
+	QString GlooxAccount::GetDefaultSearchServer () const
+	{
+		if (!Host_.isEmpty ())
+			return Host_;
+
+		const QString& second = JID_
+				.split ('@', QString::SkipEmptyParts).value (1);
+		const int slIdx = second.indexOf ('/');
+		return slIdx >= 0 ? second.left (slIdx) : second;
+	}
+
 	IHaveConsole::PacketFormat GlooxAccount::GetPacketFormat () const
 	{
 		return PFXML;
 	}
-	
+
 	void GlooxAccount::SetConsoleEnabled (bool enabled)
 	{
 		ClientConnection_->SetSignaledLog (enabled);
 	}
-	
+
+	void GlooxAccount::SubmitPost (const Post& post)
+	{
+		PEPMicroblog micro (post);
+		ClientConnection_->GetPubSubManager ()->PublishEvent (&micro);
+	}
+
 	void GlooxAccount::PublishTune (const QMap<QString, QVariant>& tuneInfo)
 	{
 		UserTune tune;
@@ -373,19 +435,19 @@ namespace Xoox
 		tune.SetTitle (tuneInfo ["title"].toString ());
 		tune.SetSource (tuneInfo ["source"].toString ());
 		tune.SetLength (tuneInfo ["length"].toInt ());
-		
+
 		ClientConnection_->GetPubSubManager ()->PublishEvent (&tune);
 	}
-	
+
 	void GlooxAccount::SetMood (const QString& moodStr, const QString& text)
 	{
 		UserMood mood;
 		mood.SetMoodStr (moodStr);
 		mood.SetText (text);
-		
+
 		ClientConnection_->GetPubSubManager ()->PublishEvent (&mood);
 	}
-	
+
 	void GlooxAccount::SetActivity (const QString& general,
 			const QString& specific, const QString& text)
 	{
@@ -393,47 +455,172 @@ namespace Xoox
 		activity.SetGeneralStr (general);
 		activity.SetSpecificStr (specific);
 		activity.SetText (text);
-		
+
 		ClientConnection_->GetPubSubManager ()->PublishEvent (&activity);
 	}
-	
+
 	void GlooxAccount::SetGeolocationInfo (const GeolocationInfo_t& info)
 	{
 		UserLocation location;
 		location.SetInfo (info);
 		ClientConnection_->GetPubSubManager ()->PublishEvent (&location);
 	}
-	
+
 	GeolocationInfo_t GlooxAccount::GetUserGeolocationInfo (QObject *obj,
 			const QString& variant) const
 	{
 		EntryBase *entry = qobject_cast<EntryBase*> (obj);
 		if (!entry)
 			return GeolocationInfo_t ();
-		
+
 		return entry->GetGeolocationInfo (variant);
 	}
-	
+
+#ifdef ENABLE_MEDIACALLS
 	ISupportMediaCalls::MediaCallFeatures GlooxAccount::GetMediaCallFeatures () const
 	{
 		return MCFSupportsAudioCalls;
 	}
-	
+
 	QObject* GlooxAccount::Call (const QString& id, const QString& variant)
 	{
+		if (id == qobject_cast<ICLEntry*> (GetSelfContact ())->GetEntryID ())
+		{
+			Core::Instance ().SendEntity (Util::MakeNotification ("LeechCraft",
+						tr ("Why would you call yourself?"),
+						PWarning_));
+
+			return 0;
+		}
+
 		QString target = GlooxCLEntry::JIDFromID (this, id);
+
 		QString var = variant;
 		if (var.isEmpty ())
 		{
 			QObject *entryObj = GetClientConnection ()->
 					GetCLEntry (target, QString ());
 			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
-			var = entry->Variants ().value (0);
+			if (entry)
+				var = entry->Variants ().value (0);
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "null entry for"
+						<< target;
 		}
 		target += '/' + var;
 		return new MediaCall (this, ClientConnection_->GetCallManager ()->call (target));
 	}
-	
+#endif
+
+	void GlooxAccount::SuggestItems (QList<RIEXItem> items, QObject *to, QString message)
+	{
+		EntryBase *entry = qobject_cast<EntryBase*> (to);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cast"
+					<< to
+					<< "to EntryBase";
+			return;
+		}
+
+		QList<RIEXManager::Item> add;
+		QList<RIEXManager::Item> del;
+		QList<RIEXManager::Item> modify;
+		Q_FOREACH (const RIEXItem& item, items)
+		{
+			switch (item.Action_)
+			{
+			case RIEXItem::AAdd:
+				add << RIEXManager::Item (RIEXManager::Item::AAdd,
+						item.ID_, item.Nick_, item.Groups_);
+				break;
+			case RIEXItem::ADelete:
+				del << RIEXManager::Item (RIEXManager::Item::ADelete,
+						item.ID_, item.Nick_, item.Groups_);
+				break;
+			case RIEXItem::AModify:
+				modify << RIEXManager::Item (RIEXManager::Item::AModify,
+						item.ID_, item.Nick_, item.Groups_);
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unknown action"
+						<< item.Action_
+						<< "for item"
+						<< item.ID_;
+				break;
+			}
+		}
+
+		if (!add.isEmpty ())
+			ClientConnection_->GetRIEXManager ()->SuggestItems (entry, add, message);
+		if (!modify.isEmpty ())
+			ClientConnection_->GetRIEXManager ()->SuggestItems (entry, modify, message);
+		if (!del.isEmpty ())
+			ClientConnection_->GetRIEXManager ()->SuggestItems (entry, del, message);
+	}
+
+	QWidget* GlooxAccount::GetMUCBookmarkEditorWidget ()
+	{
+		return new BookmarkEditWidget ();
+	}
+
+	QVariantList GlooxAccount::GetBookmarkedMUCs () const
+	{
+		QVariantList result;
+
+		const QXmppBookmarkSet& set = GetBookmarks ();
+
+		Q_FOREACH (const QXmppBookmarkConference& conf, set.conferences ())
+		{
+			const QStringList& split = conf.jid ().split ('@', QString::SkipEmptyParts);
+			if (split.size () != 2)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "incorrectly split jid for conf"
+						<< conf.jid ()
+						<< split;
+				continue;
+			}
+
+			QVariantMap cm;
+			cm ["HumanReadableName"] = QString ("%1 (%2)")
+					.arg (conf.jid ())
+					.arg (conf.nickName ());
+			cm ["AccountID"] = GetAccountID ();
+			cm ["Nick"] = conf.nickName ();
+			cm ["Room"] = split.at (0);
+			cm ["Server"] = split.at (1);
+			cm ["Autojoin"] = conf.autoJoin ();
+			cm ["StoredName"] = conf.name ();
+			result << cm;
+		}
+
+		return result;
+	}
+
+	void GlooxAccount::SetBookmarkedMUCs (const QVariantList& datas)
+	{
+		QList<QXmppBookmarkConference> mucs;
+		Q_FOREACH (const QVariant& var, datas)
+		{
+			const QVariantMap& map = var.toMap ();
+			QXmppBookmarkConference conf;
+			conf.setAutoJoin (map.value ("Autojoin").toBool ());
+			conf.setJid (map.value ("Room").toString () + '@' + map.value ("Server").toString ());
+			conf.setNickName (map.value ("Nick").toString ());
+			conf.setName (map.value ("StoredName").toString ());
+			mucs << conf;
+		}
+
+		QXmppBookmarkSet set;
+		set.setConferences (mucs);
+		set.setUrls (GetBookmarks ().urls ());
+		SetBookmarks (set);
+	}
+
 #ifdef ENABLE_CRYPT
 	void GlooxAccount::SetPrivateKey (const QCA::PGPKey& key)
 	{
@@ -450,7 +637,7 @@ namespace Xoox
 					<< "doesn't implement ICLEntry";
 			return;
 		}
-		
+
 		ClientConnection_->GetPGPManager ()->SetPublicKey (entry->GetHumanReadableID (), pubKey);
 	}
 
@@ -489,11 +676,10 @@ namespace Xoox
 
 	QString GlooxAccount::GetNick () const
 	{
-		return Nick_;
+		return Nick_.isEmpty () ? JID_ : Nick_;
 	}
 
-	void GlooxAccount::JoinRoom (const QString& server,
-			const QString& room, const QString& nick)
+	void GlooxAccount::JoinRoom (const QString& jid, const QString& nick)
 	{
 		if (!ClientConnection_)
 		{
@@ -502,16 +688,21 @@ namespace Xoox
 			return;
 		}
 
-		QString jidStr = QString ("%1@%2")
-				.arg (room, server);
-
-		RoomCLEntry *entry = ClientConnection_->JoinRoom (jidStr, nick);
+		RoomCLEntry *entry = ClientConnection_->JoinRoom (jid, nick);
 		if (!entry)
 			return;
 		emit gotCLItems (QList<QObject*> () << entry);
 	}
 
-	boost::shared_ptr<ClientConnection> GlooxAccount::GetClientConnection () const
+	void GlooxAccount::JoinRoom (const QString& server,
+			const QString& room, const QString& nick)
+	{
+		QString jidStr = QString ("%1@%2")
+				.arg (room, server);
+		JoinRoom (jidStr, nick);
+	}
+
+	std::shared_ptr<ClientConnection> GlooxAccount::GetClientConnection () const
 	{
 		return ClientConnection_;
 	}
@@ -520,26 +711,45 @@ namespace Xoox
 	{
 		return ClientConnection_->AddODSCLEntry (ods);
 	}
-	
+
 	QXmppBookmarkSet GlooxAccount::GetBookmarks () const
 	{
 		if (!ClientConnection_)
 			return QXmppBookmarkSet ();
-		
+
 		return ClientConnection_->GetBookmarks ();
 	}
-	
+
 	void GlooxAccount::SetBookmarks (const QXmppBookmarkSet& set)
 	{
 		if (!ClientConnection_)
 			return;
-		
+
 		ClientConnection_->SetBookmarks (set);
+	}
+
+	void GlooxAccount::UpdateOurPhotoHash (const QByteArray& hash)
+	{
+		if (hash == OurPhotoHash_)
+			return;
+
+		OurPhotoHash_ = hash;
+		ClientConnection_->SetOurPhotoHash (hash);
+		ChangeState (GetState ());
+
+		emit accountSettingsChanged ();
+	}
+
+	void GlooxAccount::CreateSDForResource (const QString& resource)
+	{
+		auto sd = new SDSession (this);
+		sd->SetQuery (resource);
+		emit gotSDSession (sd);
 	}
 
 	QByteArray GlooxAccount::Serialize () const
 	{
-		quint16 version = 2;
+		quint16 version = 4;
 
 		QByteArray result;
 		{
@@ -551,7 +761,9 @@ namespace Xoox
 				<< Resource_
 				<< AccState_.Priority_
 				<< Host_
-				<< Port_;
+				<< Port_
+				<< KAParams_
+				<< OurPhotoHash_;
 		}
 
 		return result;
@@ -564,7 +776,7 @@ namespace Xoox
 		QDataStream in (data);
 		in >> version;
 
-		if (version < 1 || version > 2)
+		if (version < 1 || version > 4)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -582,6 +794,10 @@ namespace Xoox
 		if (version >= 2)
 			in >> result->Host_
 				>> result->Port_;
+		if (version >= 3)
+			in >> result->KAParams_;
+		if (version >= 4)
+			in >> result->OurPhotoHash_;
 		result->Init ();
 
 		return result;
@@ -599,21 +815,9 @@ namespace Xoox
 	{
 		IProxyObject *proxy =
 			qobject_cast<IProxyObject*> (ParentProtocol_->GetProxyObject ());
-		if (!authfailure)
-		{
-			const QString& result = proxy->GetPassword (this);
-			if (!result.isNull ())
-				return result;
-		}
-
-		QString result = QInputDialog::getText (0,
-				"LeechCraft",
-				tr ("Enter password for %1:").arg (JID_), QLineEdit::Password);
-		if (!result.isNull ())
-			proxy->SetPassword (result, this);
-		return result;
+		return proxy->GetAccountPassword (this, !authfailure);
 	}
-	
+
 	void GlooxAccount::RegenAccountIcon ()
 	{
 		AccountIcon_ = QIcon ();
@@ -624,6 +828,8 @@ namespace Xoox
 		else if (JID_.contains ("facebook") ||
 				JID_.contains ("fb.com"))
 			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/facebook.svg");
+		else if (JID_.contains ("vk.com"))
+			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/vk.svg");
 	}
 
 	void GlooxAccount::handleEntryRemoved (QObject *entry)
@@ -650,7 +856,17 @@ namespace Xoox
 	{
 		ClientConnection_->SetPassword (GetPassword ());
 	}
-	
+
+	void GlooxAccount::showSelfVCard ()
+	{
+		if (!ClientConnection_)
+			return;
+
+		auto entry = qobject_cast<EntryBase*> (ClientConnection_->GetCLEntry (JID_));
+		if (entry)
+			entry->ShowInfo ();
+	}
+
 	void GlooxAccount::showPrivacyDialog ()
 	{
 		PrivacyListsManager *mgr = ClientConnection_->GetPrivacyListsManager ();
@@ -662,11 +878,13 @@ namespace Xoox
 	{
 		ClientConnection_.reset ();
 	}
-	
+
+#ifdef ENABLE_MEDIACALLS
 	void GlooxAccount::handleIncomingCall (QXmppCall *call)
 	{
 		emit called (new MediaCall (this, call));
 	}
+#endif
 }
 }
 }

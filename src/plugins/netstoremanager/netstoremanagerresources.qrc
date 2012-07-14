@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/netstoremanager">
+    <file>resources/images/netstoremanager.svg</file>
+  </qresource>
+</RCC>

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 #include "networkaccessmanager.h"
 #include <stdexcept>
+#include <algorithm>
 #include <QNetworkRequest>
 #include <QDir>
 #include <QFile>
@@ -99,6 +100,18 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 			this,
 			SLOT (saveCookies ()));
 	CookieSaveTimer_->start (10000);
+
+	QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName ());
+	settings.beginGroup ("NAMLocales");
+	int size = settings.beginReadArray ("Locales");
+	for (int i = 0; i < size; ++i)
+	{
+		settings.setArrayIndex (i);
+		Locales_ << QLocale (settings.value ("LocaleName").toString ());
+	}
+	settings.endArray ();
+	settings.endGroup ();
 }
 
 NetworkAccessManager::~NetworkAccessManager ()
@@ -117,6 +130,35 @@ NetworkAccessManager::~NetworkAccessManager ()
 	}
 }
 
+QList<QLocale> NetworkAccessManager::GetAcceptLangs () const
+{
+	return Locales_;
+}
+
+void NetworkAccessManager::SetAcceptLangs (const QList<QLocale>& locales)
+{
+	Locales_ = locales;
+
+	QStringList localesStrs;
+	std::transform (locales.begin (), locales.end (), std::back_inserter (localesStrs), Util::GetInternetLocaleName);
+	LocaleStr_ = localesStrs.join (", ");
+
+	emit acceptableLanguagesChanged ();
+
+	QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName ());
+	settings.beginGroup ("NAMLocales");
+	settings.beginWriteArray ("Locales");
+	settings.remove ("");
+	for (int i = 0; i < Locales_.size (); ++i)
+	{
+		settings.setArrayIndex (i);
+		settings.setValue ("LocaleName", Locales_.at (i).name ());
+	}
+	settings.endArray ();
+	settings.endGroup ();
+}
+
 QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Operation op,
 		const QNetworkRequest& req, QIODevice *out)
 {
@@ -130,6 +172,9 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 		return proxy->GetReturnValue ().value<QNetworkReply*> ();
 
 	proxy->FillValue ("request", r);
+
+	if (r.url ().scheme ().startsWith ("http") && !LocaleStr_.isEmpty ())
+		r.setRawHeader ("Accept-Language", LocaleStr_.toUtf8 ());
 
 	QNetworkReply *result = QNetworkAccessManager::createRequest (op, r, out);
 	emit requestCreated (op, r, result);
@@ -194,24 +239,27 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 	QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName ());
 	settings.beginGroup ("SSL exceptions");
-	QStringList keys = settings.allKeys ();
-	if (keys.contains (reply->url ().toString ()))
+	const auto& keys = settings.allKeys ();
+	const auto& url = reply->url ();
+	const auto& urlString = url.toString ();
+	const auto& host = url.host ();
+
+	if (keys.contains (urlString))
 	{
-		if (settings.value (reply->url ().toString ()).toBool ())
+		if (settings.value (urlString).toBool ())
 			reply->ignoreSslErrors ();
 	}
-	else if (keys.contains (reply->url ().host ()))
+	else if (keys.contains (host))
 	{
-		if (settings.value (reply->url ().host ()).toBool ())
+		if (settings.value (host).toBool ())
 			reply->ignoreSslErrors ();
 	}
 	else
 	{
-		QUrl url = reply->url ();
 		QPointer<QNetworkReply> repGuarded (reply);
 		QString msg = tr ("<code>%1</code><br />has SSL errors."
 				" What do you want to do?")
-			.arg (QApplication::fontMetrics ().elidedText(url.toString (), Qt::ElideMiddle, ELIDED_URL_WIDTH));
+			.arg (QApplication::fontMetrics ().elidedText (urlString, Qt::ElideMiddle, ELIDED_URL_WIDTH));
 
 		std::auto_ptr<SslErrorsDialog> errDialog (new SslErrorsDialog ());
 		errDialog->Update (msg, errors);
@@ -222,11 +270,9 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 		if (choice != SslErrorsDialog::RCNot)
 		{
 			if (choice == SslErrorsDialog::RCFile)
-				settings.setValue (url.toString (),
-						ignore);
+				settings.setValue (urlString, ignore);
 			else
-				settings.setValue (url.host (),
-						ignore);
+				settings.setValue (host, ignore);
 		}
 
 		if (ignore)

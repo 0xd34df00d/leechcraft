@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,8 @@
 
 #ifndef INTERFACES_CORE_IHOOKPROXY_H
 #define INTERFACES_CORE_IHOOKPROXY_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
+#include <QMetaType>
 
 class QVariant;
 class QByteArray;
@@ -113,7 +114,9 @@ namespace LeechCraft
 		virtual void SetValue (const QByteArray& name, const QVariant& value) = 0;
 	};
 
-	typedef boost::shared_ptr<IHookProxy> IHookProxy_ptr;
-};
+	typedef std::shared_ptr<IHookProxy> IHookProxy_ptr;
+}
+
+Q_DECLARE_METATYPE (LeechCraft::IHookProxy_ptr);
 
 #endif

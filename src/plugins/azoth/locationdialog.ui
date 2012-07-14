@@ -25,6 +25,9 @@
      <property name="text">
       <string>Accuracy:</string>
      </property>
+     <property name="buddy">
+      <cstring>Accuracy_</cstring>
+     </property>
     </widget>
    </item>
    <item row="0" column="1">
@@ -58,6 +61,9 @@
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Altitude:</string>
+     </property>
+     <property name="buddy">
+      <cstring>Altitude_</cstring>
      </property>
     </widget>
    </item>
@@ -93,6 +99,9 @@
      <property name="text">
       <string>Area:</string>
      </property>
+     <property name="buddy">
+      <cstring>Area_</cstring>
+     </property>
     </widget>
    </item>
    <item row="2" column="1">
@@ -102,6 +111,9 @@
     <widget class="QLabel" name="label_5">
      <property name="text">
       <string>Bearing:</string>
+     </property>
+     <property name="buddy">
+      <cstring>Bearing_</cstring>
      </property>
     </widget>
    </item>
@@ -137,6 +149,9 @@
      <property name="text">
       <string>Building:</string>
      </property>
+     <property name="buddy">
+      <cstring>Building_</cstring>
+     </property>
     </widget>
    </item>
    <item row="4" column="1">
@@ -146,6 +161,9 @@
     <widget class="QLabel" name="label_21">
      <property name="text">
       <string>Country:</string>
+     </property>
+     <property name="buddy">
+      <cstring>Country_</cstring>
      </property>
     </widget>
    </item>
@@ -157,6 +175,9 @@
      <property name="text">
       <string>Country code:</string>
      </property>
+     <property name="buddy">
+      <cstring>CountryCode_</cstring>
+     </property>
     </widget>
    </item>
    <item row="6" column="1">
@@ -166,6 +187,9 @@
     <widget class="QLabel" name="label_7">
      <property name="text">
       <string>Datum:</string>
+     </property>
+     <property name="buddy">
+      <cstring>Datum_</cstring>
      </property>
     </widget>
    </item>
@@ -177,6 +201,9 @@
      <property name="text">
       <string>Description:</string>
      </property>
+     <property name="buddy">
+      <cstring>Description_</cstring>
+     </property>
     </widget>
    </item>
    <item row="8" column="1">
@@ -187,6 +214,9 @@
      <property name="text">
       <string>Floor:</string>
      </property>
+     <property name="buddy">
+      <cstring>Floor_</cstring>
+     </property>
     </widget>
    </item>
    <item row="9" column="1">
@@ -196,6 +226,9 @@
     <widget class="QLabel" name="label_23">
      <property name="text">
       <string>Latitude:</string>
+     </property>
+     <property name="buddy">
+      <cstring>Latitude_</cstring>
      </property>
     </widget>
    </item>
@@ -228,6 +261,9 @@
      <property name="text">
       <string>Locality:</string>
      </property>
+     <property name="buddy">
+      <cstring>Locality_</cstring>
+     </property>
     </widget>
    </item>
    <item row="11" column="1">
@@ -237,6 +273,9 @@
     <widget class="QLabel" name="label_10">
      <property name="text">
       <string>Longitude:</string>
+     </property>
+     <property name="buddy">
+      <cstring>Longitude_</cstring>
      </property>
     </widget>
    </item>
@@ -269,6 +308,9 @@
      <property name="text">
       <string>Postal code:</string>
      </property>
+     <property name="buddy">
+      <cstring>PostalCode_</cstring>
+     </property>
     </widget>
    </item>
    <item row="13" column="1">
@@ -278,6 +320,9 @@
     <widget class="QLabel" name="label_6">
      <property name="text">
       <string>Region:</string>
+     </property>
+     <property name="buddy">
+      <cstring>Region_</cstring>
      </property>
     </widget>
    </item>
@@ -289,6 +334,9 @@
      <property name="text">
       <string>Room:</string>
      </property>
+     <property name="buddy">
+      <cstring>Room_</cstring>
+     </property>
     </widget>
    </item>
    <item row="15" column="1">
@@ -298,6 +346,9 @@
     <widget class="QLabel" name="label_15">
      <property name="text">
       <string>Speed:</string>
+     </property>
+     <property name="buddy">
+      <cstring>Speed_</cstring>
      </property>
     </widget>
    </item>
@@ -333,6 +384,9 @@
      <property name="text">
       <string>Street:</string>
      </property>
+     <property name="buddy">
+      <cstring>Street_</cstring>
+     </property>
     </widget>
    </item>
    <item row="17" column="1">
@@ -343,6 +397,9 @@
      <property name="text">
       <string>Text:</string>
      </property>
+     <property name="buddy">
+      <cstring>Text_</cstring>
+     </property>
     </widget>
    </item>
    <item row="18" column="1">
@@ -352,6 +409,9 @@
     <widget class="QLabel" name="label_20">
      <property name="text">
       <string>Timestamp:</string>
+     </property>
+     <property name="buddy">
+      <cstring>Timestamp_</cstring>
      </property>
     </widget>
    </item>
@@ -386,6 +446,9 @@
     <widget class="QLabel" name="label_16">
      <property name="text">
       <string>URL:</string>
+     </property>
+     <property name="buddy">
+      <cstring>URL_</cstring>
      </property>
     </widget>
    </item>

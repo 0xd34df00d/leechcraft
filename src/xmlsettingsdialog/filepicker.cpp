@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,19 +75,19 @@ void FilePicker::chooseFile ()
 	QString name;
 	switch (Type_)
 	{
-		case TExistingDirectory:
+		case Type::ExistingDirectory:
 			name = QFileDialog::getExistingDirectory (this,
 					tr ("Select directory"),
 					LineEdit_->text (),
 					0);
 			break;
-		case TOpenFileName:
+		case Type::OpenFileName:
 			name = QFileDialog::getOpenFileName (this,
 					tr ("Select file"),
 					LineEdit_->text (),
 					Filter_);
 			break;
-		case TSaveFileName:
+		case Type::SaveFileName:
 			name = QFileDialog::getSaveFileName (this,
 					tr ("Select file"),
 					LineEdit_->text (),

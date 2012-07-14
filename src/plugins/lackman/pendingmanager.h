@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,54 +28,51 @@ class QAbstractItemModel;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	class PendingManager : public QObject
 	{
-		namespace LackMan
+		Q_OBJECT
+
+		QStandardItemModel *PendingModel_;
+
+		enum Action
 		{
-			class PendingManager : public QObject
-			{
-				Q_OBJECT
+			Install,
+			Remove,
+			Update,
+			MAX
+		};
+		QMap<Action, QSet<int>> ScheduledForAction_;
+		QMap<Action, QStandardItem*> RootItemForAction_;
 
-				QStandardItemModel *PendingModel_;
+		QMap<int, QList<int>> Deps_;
+		QMap<int, QStandardItem*> ID2ModelRow_;
+	public:
+		PendingManager (QObject* = 0);
 
-				enum Action
-				{
-					AInstall,
-					ARemove,
-					AUpdate,
-					AMAX
-				};
-				QMap<Action, QSet<int> > ScheduledForAction_;
-				QMap<Action, QStandardItem*> RootItemForAction_;
+		QAbstractItemModel* GetPendingModel () const;
+		void Reset ();
+		void ToggleInstallRemove (int id, bool enable, bool installed);
+		void ToggleUpdate (int id, bool enable);
 
-				QMap<int, QList<int> > Deps_;
-				QMap<int, QStandardItem*> ID2ModelRow_;
-			public:
-				PendingManager (QObject* = 0);
+		QSet<int> GetPendingInstall () const;
+		QSet<int> GetPendingRemove () const;
+		QSet<int> GetPendingUpdate () const;
 
-				QAbstractItemModel* GetPendingModel () const;
-				void Reset ();
-				void ToggleInstallRemove (int id, bool enable, bool installed);
-				void ToggleUpdate (int id, bool enable);
-
-				QSet<int> GetPendingInstall () const;
-				QSet<int> GetPendingRemove () const;
-				QSet<int> GetPendingUpdate () const;
-
-				void SuccessfullyInstalled (int);
-				void SuccessfullyRemoved (int);
-				void SuccessfullyUpdated (int);
-			private:
-				void EnablePackageInto (int, Action);
-				void DisablePackageFrom (int, Action);
-				void ReinitRootItems ();
-				void NotifyFetchListUpdate ();
-			signals:
-				void packageUpdateToggled (int, bool);
-				void fetchListUpdated (const QList<int>&);
-			};
-		}
-	}
+		void SuccessfullyInstalled (int);
+		void SuccessfullyRemoved (int);
+		void SuccessfullyUpdated (int);
+	private:
+		void EnablePackageInto (int, Action);
+		void DisablePackageFrom (int, Action);
+		void ReinitRootItems ();
+		void NotifyFetchListUpdate ();
+	signals:
+		void packageUpdateToggled (int, bool);
+		void fetchListUpdated (const QList<int>&);
+	};
+}
 }
 
 #endif

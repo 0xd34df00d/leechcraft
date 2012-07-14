@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include <QModelIndex>
 #include <QToolButton>
 #include "ui_leechcraft.h"
+#include "interfaces/core/ihookproxy.h"
 
 class QLabel;
 class QDockWidget;
@@ -47,9 +48,7 @@ namespace LeechCraft
 	class Core;
 	class PluginInfo;
 	class PluginManagerDialog;
-	class FancyPopupManager;
 	class ShortcutManager;
-	class LogToolBox;
 	class ToolbarGuard;
 
 	class MainWindow : public QMainWindow
@@ -64,8 +63,6 @@ namespace LeechCraft
 		QLabel *Clock_;
 		Util::GraphWidget *SpeedGraph_;
 		ShortcutManager *ShortcutManager_;
-		FancyPopupManager *FancyPopupManager_;
-		LogToolBox *LogToolBox_;
 		bool IsShown_;
 		bool WasMaximized_;
 		QString LanguageOnLoad_;
@@ -76,27 +73,38 @@ namespace LeechCraft
 		bool IsQuitting_;
 		QSplashScreen *Splash_;
 
+		QToolBar *QLBar_;
+
 		QMenu *MenuView_;
 		QMenu *MenuTools_;
+
+		bool IsToolBarVisible_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
 
 		SeparateTabWidget* GetTabWidget () const;
+		QSplitter* GetMainSplitter () const;
 		IShortcutProxy* GetShortcutProxy () const;
 		void SetAdditionalTitle (const QString&);
 		ToolbarGuard* GetGuard () const;
-		FancyPopupManager* GetFancyPopupManager () const;
-		
+
+		QMenu* GetMainMenu () const;
+		void HideMainMenu ();
+
+		QWidget* GetDockListWidget (Qt::DockWidgetArea) const;
+
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
 
-		void AddMenus (const QMap<QString, QList<QAction*> >&);
-		void RemoveMenus (const QMap<QString, QList<QAction*> >&);
+		void AddMenus (const QMap<QString, QList<QAction*>>&);
+		void RemoveMenus (const QMap<QString, QList<QAction*>>&);
 	public slots:
 		void catchError (QString);
+		void showHideMain ();
 	protected:
 		virtual void closeEvent (QCloseEvent*);
 		virtual void keyPressEvent (QKeyEvent*);
+		virtual void keyReleaseEvent (QKeyEvent*);
 	private:
 		void InitializeInterface ();
 		void SetStatusBar ();
@@ -115,25 +123,29 @@ namespace LeechCraft
 		void handleAppStyle ();
 		void handleLanguage ();
 		void on_ActionFullscreenMode__triggered (bool);
-		void on_ActionLogger__triggered ();
 		void on_MainTabWidget__currentChanged (int);
+		void on_ActionShowToolBar__triggered (bool);
 		void handleShortcutFullscreenMode ();
 		void handleToolButtonStyleChanged ();
-		void handleIconSize ();
+		void handleToolBarManipulationChanged ();
+		void handleShowTrayIconChanged ();
 		void handleNewTabMenuRequested ();
 		void handleRestoreActionAdded (QAction*);
 		void updateSpeedIndicators ();
 		void updateClock ();
-		void showHideMain ();
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void updateIconSet ();
 		void doDelayedInit ();
 		void handleLoadProgress (const QString&);
 	private:
+		void FillQuickLaunch ();
 		void FillTray ();
 		void FillToolMenu ();
 		void InitializeShortcuts ();
 		void ShowMenuAndBar (bool);
+	signals:
+		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QDockWidget*, bool);
+		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
 	};
 };
 

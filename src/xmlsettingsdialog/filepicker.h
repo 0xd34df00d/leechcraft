@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,18 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-/*
-	Copyright (c) 2008 by Rudoy Georg <0xd34df00d@gmail.com>
-
- ***************************************************************************
- *																		 *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or	 *
- *   (at your option) any later version.								   *
- *																		 *
- ***************************************************************************
-*/
 #ifndef XMLSETTINGSDIALOG_FILEPICKER_H
 #define XMLSETTINGSDIALOG_FILEPICKER_H
 #include <QWidget>
@@ -46,16 +34,16 @@ namespace LeechCraft
 		bool ClearOnCancel_;
 		QString Filter_;
 	public:
-		enum Type
+		enum class Type
 		{
-			TExistingDirectory,
-			TOpenFileName,
-			TSaveFileName
+			ExistingDirectory,
+			OpenFileName,
+			SaveFileName
 		};
 	private:
 		Type Type_;
 	public:
-		FilePicker (Type = TExistingDirectory, QWidget* = 0);
+		FilePicker (Type = Type::ExistingDirectory, QWidget* = 0);
 		void SetText (QString);
 		QString GetText () const;
 		void SetClearOnCancel (bool);

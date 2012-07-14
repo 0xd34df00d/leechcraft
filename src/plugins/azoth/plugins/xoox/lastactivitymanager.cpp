@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 #include "lastactivitymanager.h"
 #include <QDomElement>
 #include <QXmppClient.h>
-#include <interfaces/ilastactivityprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/azoth/ilastactivityprovider.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -40,7 +40,7 @@ namespace Xoox
 	bool LastActivityManager::handleStanza (const QDomElement& elem)
 	{
 		if (elem.tagName () != "iq")
-			return false;
+				return false;
 
 		const QDomElement& query = elem.firstChildElement ("query");
 		if (query.namespaceURI () != NsLastActivity)
@@ -58,7 +58,7 @@ namespace Xoox
 			if (!prov)
 				return false;
 
-			QXmppIq iq = CreateIq (from, prov->GetInactiveSeconds ());
+			QXmppIq iq = CreateIq (from, std::max (prov->GetInactiveSeconds (), 0));
 			iq.setType (QXmppIq::Result);
 			iq.setId (elem.attribute ("id"));
 
@@ -84,6 +84,7 @@ namespace Xoox
 		iq.setTo (to);
 
 		QXmppElement queryElem;
+		queryElem.setTagName ("query");
 		queryElem.setAttribute ("xmlns", NsLastActivity);
 		if (secs != -1)
 			queryElem.setAttribute ("seconds", QString::number (secs));

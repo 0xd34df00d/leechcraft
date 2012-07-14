@@ -1,5 +1,12 @@
 <RCC>
   <qresource prefix="/" >
     <file>resources/images/newlife.svg</file>
+	<file>resources/images/apps/akregator.svg</file>
+	<file>resources/images/apps/firefox.svg</file>
+	<file>resources/images/apps/kopete.svg</file>
+	<file>resources/images/apps/ktorrent.svg</file>
+	<file>resources/images/apps/liferea.svg</file>
+	<file>resources/images/apps/psi-plus.svg</file>
+	<file>resources/images/apps/vacuum.svg</file>
   </qresource>
 </RCC>

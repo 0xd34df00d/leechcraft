@@ -21,7 +21,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERCOMMANDMESSAGE_H
 
 #include <QObject>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/imessage.h>
 
 namespace LeechCraft
 {
@@ -54,6 +54,7 @@ namespace Acetamide
 				MessageSubType);
 		QObject* GetObject ();
 		void Send ();
+		void Store ();
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
 		void SetMessageType (IMessage::MessageType);

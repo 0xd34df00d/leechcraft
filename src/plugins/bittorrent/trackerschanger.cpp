@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ namespace LeechCraft
 			void TrackersChanger::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers)
 			{
 				Ui_.Trackers_->clear ();
-				Q_FOREACH (libtorrent::announce_entry tracker, trackers)
+				Q_FOREACH (const auto& tracker, trackers)
 				{
 					QStringList strings;
 					bool torrent, client, magnet, tex;
@@ -73,13 +73,13 @@ namespace LeechCraft
 
 			std::vector<libtorrent::announce_entry> TrackersChanger::GetTrackers () const
 			{
-				std::vector<libtorrent::announce_entry> result;
-				for (int i = 0; i < Ui_.Trackers_->topLevelItemCount (); ++i)
+				const int count = Ui_.Trackers_->topLevelItemCount ();
+				std::vector<libtorrent::announce_entry> result (count, std::string ());
+				for (int i = 0; i < count; ++i)
 				{
 					QTreeWidgetItem *item = Ui_.Trackers_->topLevelItem (i);
-					libtorrent::announce_entry entry (item->text (0).toStdString ());
-					entry.tier = item->text (1).toInt ();
-					result.push_back (entry);
+					result [i].url = (item->text (0).toStdString ());
+					result [i].tier = item->text (1).toInt ();
 				}
 				return result;
 			}

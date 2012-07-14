@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_CLEANWEB_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_CLEANWEB_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QMap>
@@ -34,7 +34,8 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 
-class QWebView;
+class QGraphicsWebView;
+class QGraphicsSceneContextMenuEvent;
 
 namespace LeechCraft
 {
@@ -52,7 +53,7 @@ namespace CleanWeb
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IStartupWizard IPlugin2)
 
-		boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 		std::auto_ptr<QTranslator> Translator_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -88,7 +89,8 @@ namespace CleanWeb
 		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
 				QList<IWebPlugin*>&);
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QWebView*, QContextMenuEvent*,
+				QGraphicsWebView*,
+				QGraphicsSceneContextMenuEvent*,
 				const QWebHitTestResult&, QMenu*,
 				WebViewCtxMenuStage);
 	signals:
@@ -99,5 +101,3 @@ namespace CleanWeb
 }
 }
 }
-
-#endif

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,8 @@
 #include <QIcon>
 #include <QColor>
 #include <QDateTime>
-#include "interfaces/iproxyobject.h"
+#include <QRegExp>
+#include "interfaces/azoth/iproxyobject.h"
 
 namespace LeechCraft
 {
@@ -33,9 +34,9 @@ namespace Azoth
 					  , public IProxyObject
 	{
 		Q_OBJECT
-
 		Q_INTERFACES (LeechCraft::Azoth::IProxyObject)
 
+		QRegExp LinkRegexp_;
 		QHash<QString, AuthStatus> SerializedStr2AuthStatus_;
 	public:
 		ProxyObject (QObject* = 0);
@@ -43,7 +44,7 @@ namespace Azoth
 		QObject* GetSettingsManager ();
 		QString GetPassword (QObject*);
 		void SetPassword (const QString&, QObject*);
-		QString GetOSName ();
+		QString GetAccountPassword (QObject*, bool);
 		bool IsAutojoinAllowed ();
 		QString StateToString (State) const;
 		QString AuthStatusToString (AuthStatus) const;
@@ -51,6 +52,7 @@ namespace Azoth
 		QObject* GetAccount (const QString&) const;
 		QList<QObject*> GetAllAccounts () const;
 		QObject* GetEntry (const QString&, const QString&) const;
+		void OpenChat (const QString&, const QString&, const QString&, const QString&) const;
 		QString GetSelectedChatTemplate (QObject*, QWebFrame*) const;
 		QList<QColor> GenerateColors (const QString&) const;
 		QString GetNickColor (const QString&, const QList<QColor>&) const;
@@ -60,6 +62,7 @@ namespace Azoth
 		void PreprocessMessage (QObject*);
 		Util::ResourceLoader* GetResourceLoader (PublicResourceLoader) const;
 		QIcon GetIconForState (State) const;
+		void FormatLinks (QString&);
 	};
 }
 }

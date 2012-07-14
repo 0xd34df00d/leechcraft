@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include <memory>
 #include <QNetworkAccessManager>
 #include <QTimer>
+#include <QLocale>
 #include "interfaces/core/ihookproxy.h"
 
 namespace LeechCraft
@@ -32,9 +33,14 @@ namespace LeechCraft
 		Q_OBJECT
 
 		std::auto_ptr<QTimer> CookieSaveTimer_;
+		QList<QLocale> Locales_;
+		QString LocaleStr_;
 	public:
 		NetworkAccessManager (QObject* = 0);
 		virtual ~NetworkAccessManager ();
+
+		QList<QLocale> GetAcceptLangs () const;
+		void SetAcceptLangs (const QList<QLocale>&);
 	protected:
 		QNetworkReply* createRequest (Operation,
 				const QNetworkRequest&, QIODevice*);
@@ -50,6 +56,7 @@ namespace LeechCraft
 		void requestCreated (QNetworkAccessManager::Operation,
 				const QNetworkRequest&, QNetworkReply*);
 		void error (const QString&) const;
+		void acceptableLanguagesChanged ();
 
 		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
 					QNetworkAccessManager *manager,

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,14 +17,17 @@
  **********************************************************************/
 
 #include "callmanager.h"
-#include <boost/bind.hpp>
+
+#ifdef ENABLE_MEDIACALLS
 #include <QAudioDeviceInfo>
 #include <QAudioInput>
 #include <QAudioOutput>
+#endif
+
 #include <QtDebug>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
-#include "interfaces/iclentry.h"
+#include "interfaces/azoth/iclentry.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -36,7 +39,7 @@ namespace Azoth
 	: QObject (parent)
 	{
 	}
-	
+
 	void CallManager::AddAccount (QObject *account)
 	{
 		if (!qobject_cast<ISupportMediaCalls*> (account))
@@ -47,9 +50,10 @@ namespace Azoth
 				this,
 				SLOT (handleIncomingCall (QObject*)));
 	}
-	
+
 	QObject* CallManager::Call (ICLEntry *entry, const QString& variant)
 	{
+#ifdef ENABLE_MEDIACALLS
 		ISupportMediaCalls *ismc = qobject_cast<ISupportMediaCalls*> (entry->GetParentAccount ());
 		if (!ismc)
 		{
@@ -58,17 +62,30 @@ namespace Azoth
 					<< "parent account doesn't support media calls";
 			return 0;
 		}
-		
+
 		QObject *callObj = ismc->Call (entry->GetEntryID (), variant);
+		if (!callObj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got null call obj for"
+					<< entry->GetEntryID ()
+					<< variant;
+			return 0;
+		}
+
 		HandleCall (callObj);
 		return callObj;
+#else
+		return 0;
+#endif
 	}
-	
+
 	QObjectList CallManager::GetCallsForEntry (const QString& id) const
 	{
 		return Entry2Calls_ [id];
 	}
-	
+
+#ifdef ENABLE_MEDIACALLS
 	namespace
 	{
 		QAudioDeviceInfo FindDevice (const QByteArray& property, QAudio::Mode mode)
@@ -90,7 +107,8 @@ namespace Azoth
 			return result;
 		}
 	}
-	
+#endif
+
 	void CallManager::HandleCall (QObject *obj)
 	{
 		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (obj);
@@ -104,17 +122,17 @@ namespace Azoth
 		}
 
 		Entry2Calls_ [mediaCall->GetSourceID ()] << obj;
-		
+
 		connect (obj,
 				SIGNAL (stateChanged (LeechCraft::Azoth::IMediaCall::State)),
 				this,
 				SLOT (handleStateChanged (LeechCraft::Azoth::IMediaCall::State)));
 	}
-	
+
 	void CallManager::handleIncomingCall (QObject *obj)
 	{
 		HandleCall (obj);
-		
+
 		IMediaCall *call = qobject_cast<IMediaCall*> (obj);
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (call->GetSourceID ()));
@@ -127,15 +145,16 @@ namespace Azoth
 				PInfo_);
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
-		nh->AddFunction (tr ("Accept"), boost::bind (&IMediaCall::Accept, call));
-		nh->AddFunction (tr ("Hangup"), boost::bind (&IMediaCall::Hangup, call));
+		nh->AddFunction (tr ("Accept"), [call] () { call->Accept (); });
+		nh->AddFunction (tr ("Hangup"), [call] () { call->Hangup (); });
 		Core::Instance ().SendEntity (e);
-		
+
 		emit gotCall (obj);
 	}
-	
+
 	void CallManager::handleStateChanged (IMediaCall::State state)
 	{
+#ifdef ENABLE_MEDIACALLS
 		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (sender ());
 		if (state == IMediaCall::SActive)
 		{
@@ -160,10 +179,11 @@ namespace Azoth
 			QAudioInput *input = new QAudioInput (inInfo, inFormat, sender ());
 			input->setBufferSize (bufSize);
 			input->start (callAudioDev);
-			
+
 			qDebug () << input->state () << input->error () << inInfo.isFormatSupported (callFormat) << inInfo.supportedCodecs ();
 			qDebug () << output->state () << output->error ();
 		}
+#endif
 	}
 }
 }

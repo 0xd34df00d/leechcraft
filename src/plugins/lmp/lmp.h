@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,63 +16,93 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LMP_LMP_H
-#define PLUGINS_LMP_LMP_H
-#include <memory>
+#pragma once
+
 #include <QObject>
-#include <QTranslator>
-#include <QAction>
 #include <interfaces/iinfo.h>
-#include <interfaces/imediaplayer.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/iactionsexporter.h>
-
-class QToolBar;
+#include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/ipluginready.h>
+#include <interfaces/ihaveshortcuts.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class LMP : public QObject
-			  , public IInfo
-			  , public IMediaPlayer
-			  , public IHaveSettings
-			  , public IEntityHandler
-			  , public IActionsExporter
+	class PlayerTab;
+
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IHaveTabs
+				 , public IHaveSettings
+				 , public IEntityHandler
+				 , public IActionsExporter
+				 , public IHaveRecoverableTabs
+				 , public IHaveShortcuts
+				 , public IPluginReady
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IMediaPlayer IHaveSettings IEntityHandler IActionsExporter)
+		Q_INTERFACES (IInfo
+				IHaveTabs
+				IHaveSettings
+				IEntityHandler
+				IActionsExporter
+				IHaveRecoverableTabs
+				IHaveShortcuts
+				IPluginReady)
 
-		std::auto_ptr<QTranslator> Translator_;
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		TabClassInfo PlayerTC_;
+		PlayerTab *PlayerTab_;
+
+		Util::XmlSettingsDialog_ptr XSD_;
+
+		QAction *ActionRescan_;
+
+		QMap<QString, Entity> GlobAction2Entity_;
+		QMap<QString, ActionInfo> GlobAction2Info_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
-		void Release ();
 		QByteArray GetUniqueID () const;
+		void Release ();
 		QString GetName () const;
 		QString GetInfo () const;
-		QStringList Provides () const;
-		QStringList Needs () const;
-		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
 		QIcon GetIcon () const;
 
-		IVideoWidget* CreateWidget () const;
-		IVideoWidget* GetDefaultWidget () const;
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		QList<QAction*> GetActions (ActionsEmbedPlace area) const;
+		QMap<QString, QList<QAction*>> GetMenuActions () const;
+
+		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+
+		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QString, ActionInfo> GetActionInfo () const;
+
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject* plugin);
+	private slots:
+		void handleFullRaiseRequested ();
 	signals:
-		void bringToFront ();
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
+
+		void gotActions (QList<QAction*>, ActionsEmbedPlace);
+
 		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
-
-#endif

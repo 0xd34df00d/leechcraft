@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,25 +18,28 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNT_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNT_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QMap>
 #include <QIcon>
 #include <QXmppRosterIq.h>
 #include <QXmppBookmarkSet.h>
-#include <interfaces/iaccount.h>
-#include <interfaces/iextselfinfoaccount.h>
-#include <interfaces/ihaveservicediscovery.h>
-#include <interfaces/imessage.h>
-#include <interfaces/ihaveconsole.h>
-#include <interfaces/isupporttune.h>
-#include <interfaces/isupportmood.h>
-#include <interfaces/isupportactivity.h>
-#include <interfaces/isupportgeolocation.h>
-#include <interfaces/isupportmediacalls.h>
-#include <interfaces/isupportriex.h>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/iextselfinfoaccount.h>
+#include <interfaces/azoth/ihaveservicediscovery.h>
+#include <interfaces/azoth/ihavesearch.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/ihaveconsole.h>
+#include <interfaces/azoth/isupporttune.h>
+#include <interfaces/azoth/isupportmood.h>
+#include <interfaces/azoth/isupportactivity.h>
+#include <interfaces/azoth/isupportgeolocation.h>
+#include <interfaces/azoth/isupportmediacalls.h>
+#include <interfaces/azoth/isupportriex.h>
+#include <interfaces/azoth/isupportbookmarks.h>
+#include <interfaces/azoth/ihavemicroblogs.h>
 #ifdef ENABLE_CRYPT
-#include <interfaces/isupportpgp.h>
+#include <interfaces/azoth/isupportpgp.h>
 #endif
 #include "glooxclentry.h"
 
@@ -58,7 +61,7 @@ namespace Xoox
 		QString Status_;
 		int Priority_;
 	};
-	
+
 	bool operator== (const GlooxAccountState&, const GlooxAccountState&);
 
 	class GlooxProtocol;
@@ -69,13 +72,18 @@ namespace Xoox
 					   , public IAccount
 					   , public IExtSelfInfoAccount
 					   , public IHaveServiceDiscovery
+					   , public IHaveSearch
 					   , public IHaveConsole
+					   , public IHaveMicroblogs
 					   , public ISupportTune
 					   , public ISupportMood
 					   , public ISupportActivity
 					   , public ISupportGeolocation
+#ifdef ENABLE_MEDIACALLS
 					   , public ISupportMediaCalls
+#endif
 					   , public ISupportRIEX
+					   , public ISupportBookmarks
 #ifdef ENABLE_CRYPT
 					   , public ISupportPGP
 #endif
@@ -84,13 +92,18 @@ namespace Xoox
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
 				LeechCraft::Azoth::IExtSelfInfoAccount
 				LeechCraft::Azoth::IHaveServiceDiscovery
+				LeechCraft::Azoth::IHaveSearch
 				LeechCraft::Azoth::IHaveConsole
+				LeechCraft::Azoth::IHaveMicroblogs
 				LeechCraft::Azoth::ISupportTune
 				LeechCraft::Azoth::ISupportMood
 				LeechCraft::Azoth::ISupportActivity
 				LeechCraft::Azoth::ISupportGeolocation
+#ifdef ENABLE_MEDIACALLS
 				LeechCraft::Azoth::ISupportMediaCalls
+#endif
 				LeechCraft::Azoth::ISupportRIEX
+				LeechCraft::Azoth::ISupportBookmarks
 #ifdef ENABLE_CRYPT
 				LeechCraft::Azoth::ISupportPGP
 #endif
@@ -104,14 +117,19 @@ namespace Xoox
 		QString Resource_;
 		QString Host_;
 		int Port_;
-		
+
+		QByteArray OurPhotoHash_;
+
+		QPair<int, int> KAParams_;
+
 		QIcon AccountIcon_;
 
-		boost::shared_ptr<ClientConnection> ClientConnection_;
-		boost::shared_ptr<TransferManager> TransferManager_;
+		std::shared_ptr<ClientConnection> ClientConnection_;
+		std::shared_ptr<TransferManager> TransferManager_;
 
 		GlooxAccountState AccState_;
-		
+
+		QAction *SelfVCardAction_;
 		QAction *PrivacyDialogAction_;
 	public:
 		GlooxAccount (const QString&, QObject*);
@@ -134,7 +152,6 @@ namespace Xoox
 		void FillSettings (GlooxAccountConfigurationWidget*);
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
-		void Synchronize ();
 		void Authorize (QObject*);
 		void DenyAuth (QObject*);
 		void AddEntry (const QString&,
@@ -143,31 +160,49 @@ namespace Xoox
 				const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
-		
+
 		// IExtSelfInfoAccount
 		QObject* GetSelfContact () const;
+		QImage GetSelfAvatar () const;
 		QIcon GetAccountIcon () const;
-		
+
 		// IHaveServiceDiscovery
 		QObject* CreateSDSession ();
-		
+
+		// IHaveSearch
+		QObject* CreateSearchSession ();
+		QString GetDefaultSearchServer () const;
+
 		// IHaveConsole
 		PacketFormat GetPacketFormat () const;
 		void SetConsoleEnabled (bool);
-		
+
+		// IHaveMicroblogs
+		void SubmitPost (const Post&);
+
 		// ISupportTune, ISupportMood, ISupportActivity
 		void PublishTune (const QMap<QString, QVariant>&);
 		void SetMood (const QString&, const QString&);
 		void SetActivity (const QString&, const QString&, const QString&);
-		
+
 		// ISupportGeolocation
 		void SetGeolocationInfo (const GeolocationInfo_t&);
 		GeolocationInfo_t GetUserGeolocationInfo (QObject*, const QString&) const;
-		
+
+#ifdef ENABLE_MEDIACALLS
 		// ISupportMediaCalls
 		MediaCallFeatures GetMediaCallFeatures () const;
 		QObject* Call (const QString& id, const QString& variant);
-		
+#endif
+
+		// ISupportRIEX
+		void SuggestItems (QList<RIEXItem>, QObject*, QString);
+
+		// ISupportBookmarks
+		QWidget* GetMUCBookmarkEditorWidget ();
+		QVariantList GetBookmarkedMUCs () const;
+		void SetBookmarkedMUCs (const QVariantList&);
+
 #ifdef ENABLE_CRYPT
 		// ISupportPGP
 		void SetPrivateKey (const QCA::PGPKey&);
@@ -177,12 +212,17 @@ namespace Xoox
 
 		QString GetJID () const;
 		QString GetNick () const;
+		void JoinRoom (const QString&, const QString&);
 		void JoinRoom (const QString&, const QString&, const QString&);
 
-		boost::shared_ptr<ClientConnection> GetClientConnection () const;
+		std::shared_ptr<ClientConnection> GetClientConnection () const;
 		GlooxCLEntry* CreateFromODS (OfflineDataSource_ptr);
 		QXmppBookmarkSet GetBookmarks () const;
 		void SetBookmarks (const QXmppBookmarkSet&);
+
+		void UpdateOurPhotoHash (const QByteArray&);
+
+		void CreateSDForResource (const QString&);
 
 		QByteArray Serialize () const;
 		static GlooxAccount* Deserialize (const QByteArray&, QObject*);
@@ -199,12 +239,16 @@ namespace Xoox
 	private slots:
 		void handleServerAuthFailed ();
 		void feedClientPassword ();
+		void showSelfVCard ();
 		void showPrivacyDialog ();
 		void handleDestroyClient ();
+#ifdef ENABLE_MEDIACALLS
 		void handleIncomingCall (QXmppCall*);
+#endif
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
+		void accountRenamed (const QString&);
 		void authorizationRequested (QObject*, const QString&);
 		void itemSubscribed (QObject*, const QString&);
 		void itemUnsubscribed (QObject*, const QString&);
@@ -212,17 +256,24 @@ namespace Xoox
 		void itemCancelledSubscription (QObject*, const QString&);
 		void itemGrantedSubscription (QObject*, const QString&);
 		void statusChanged (const EntryStatus&);
-		void addContactSuggested (const QString&,
-				const QString&, const QStringList&);
 		void mucInvitationReceived (const QVariantMap&,
 				const QString&, const QString&);
-		
-		void gotConsolePacket (const QByteArray&, int);
-		
+
+		void gotSDSession (QObject*);
+
+		void bookmarksChanged ();
+
+		void riexItemsSuggested (QList<LeechCraft::Azoth::RIEXItem> items,
+				QObject*, QString);
+
+		void gotConsolePacket (const QByteArray&, int, const QString&);
+
 		void geolocationInfoChanged (const QString&, QObject*);
-		
+
+#ifdef ENABLE_MEDIACALLS
 		void called (QObject*);
-		
+#endif
+
 #ifdef ENABLE_CRYPT
 		void signatureVerified (QObject*, bool);
 		void encryptionStateChanged (QObject*, bool);
@@ -233,7 +284,7 @@ namespace Xoox
 		void scheduleClientDestruction ();
 	};
 
-	typedef boost::shared_ptr<GlooxAccount> GlooxAccount_ptr;
+	typedef std::shared_ptr<GlooxAccount> GlooxAccount_ptr;
 }
 }
 }

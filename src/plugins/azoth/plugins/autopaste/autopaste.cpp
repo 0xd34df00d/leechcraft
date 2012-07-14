@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,9 @@
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include <interfaces/imessage.h>
-#include <interfaces/iclentry.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iclentry.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -39,7 +39,7 @@ namespace Autopaste
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_autopaste"));
+		Util::InstallTranslator ("azoth_autopaste");
 
 		Proxy_ = proxy;
 
@@ -73,7 +73,8 @@ namespace Autopaste
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/autopaste/resources/images/autopaste.svg");
+		static QIcon icon (":/plugins/azoth/plugins/autopaste/resources/images/autopaste.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -90,14 +91,15 @@ namespace Autopaste
 
 	void Plugin::Paste (const QString& text, QObject *entry)
 	{
-		QNetworkRequest req (QUrl ("http://paste.pocoo.org/"));
+		QNetworkRequest req (QUrl ("http://codepad.org"));
 		req.setHeader (QNetworkRequest::ContentTypeHeader,
 				"application/x-www-form-urlencoded");
-		req.setRawHeader ("Referer", "http://paste.pocoo.org/");
+		req.setRawHeader ("Referer", "http://codepad.org");
 
-		QByteArray data = "code=";
+		QByteArray data = "lang=Plain+Text&code=";
 		data += text.toUtf8 ().toPercentEncoding ();
-		data += "&language=text&webpage=";
+		data += "&private=True&submit=Submit";
+
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 
 		QNetworkReply *reply = Proxy_->GetNetworkAccessManager ()->post (req, data);
@@ -110,7 +112,7 @@ namespace Autopaste
 	}
 
 	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-			QObject *chatTab, QObject *entry, int, QString, QString text)
+			QObject *chatTab, QObject *entry, int, QString)
 	{
 		ICLEntry *other = qobject_cast<ICLEntry*> (entry);
 		if (!other)
@@ -121,6 +123,8 @@ namespace Autopaste
 				<< "to ICLEntry";
 			return;
 		}
+
+		QString text = proxy->GetValue ("text").toString ();
 
 		const int maxLines = XmlSettingsManager::Instance ()
 				.property ("LineCount").toInt ();
@@ -217,4 +221,4 @@ namespace Autopaste
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_autopaste, LeechCraft::Azoth::Autopaste::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_autopaste, LeechCraft::Azoth::Autopaste::Plugin);

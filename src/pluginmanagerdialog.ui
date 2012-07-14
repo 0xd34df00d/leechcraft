@@ -28,6 +28,13 @@
     <number>0</number>
    </property>
    <item>
+    <widget class="QLineEdit" name="FilterLine_">
+     <property name="placeholderText">
+      <string>Filter plugins...</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QTreeView" name="PluginsTree_">
      <property name="minimumSize">
       <size>
@@ -52,9 +59,6 @@
      </property>
      <property name="itemsExpandable">
       <bool>false</bool>
-     </property>
-     <property name="sortingEnabled">
-      <bool>true</bool>
      </property>
      <property name="headerHidden">
       <bool>false</bool>

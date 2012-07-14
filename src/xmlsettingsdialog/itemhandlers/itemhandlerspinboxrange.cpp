@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,12 +42,14 @@ namespace LeechCraft
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
+
 		RangeWidget *widget = new RangeWidget ();
+		XSD_->SetTooltip (widget, item);
 		widget->setObjectName (item.attribute ("property"));
 		widget->SetMinimum (item.attribute ("minimum").toInt ());
 		widget->SetMaximum (item.attribute ("maximum").toInt ());
 
-		QVariant value = XSD_->GetValue (item);
+		const QVariant& value = XSD_->GetValue (item);
 
 		widget->SetRange (value);
 		connect (widget,
@@ -68,9 +70,9 @@ namespace LeechCraft
 	{
 		if (!value.isValid () ||
 				value.isNull () ||
-				!value.canConvert<QList<QVariant> > ())
+				!value.canConvert<QList<QVariant>> ())
 		{
-			QStringList parts = item.attribute ("default").split (":");
+			const QStringList& parts = item.attribute ("default").split (":");
 			QList<QVariant> result;
 			if (parts.size () != 2)
 			{
@@ -101,7 +103,7 @@ namespace LeechCraft
 	void ItemHandlerSpinboxRange::UpdateValue (QDomElement& element,
 			const QVariant& value) const
 	{
-		QStringList vals = value.toStringList ();
+		const QStringList& vals = value.toStringList ();
 		if (vals.size () != 2)
 		{
 			qWarning () << Q_FUNC_INFO

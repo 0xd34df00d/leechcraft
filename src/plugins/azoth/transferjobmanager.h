@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@
 
 #ifndef PLUGINS_AZOTH_TRANSFERJOBMANAGER_H
 #define PLUGINS_AZOTH_TRANSFERJOBMANAGER_H
-#include "interfaces/itransfermanager.h"
 #include <QObject>
 #include <QHash>
 #include <QModelIndex>
+#include "interfaces/azoth/itransfermanager.h"
 
 class QStandardItemModel;
 class QStandardItem;

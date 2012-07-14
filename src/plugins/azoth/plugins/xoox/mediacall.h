@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,11 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_MEDIACALL_H
 #include <QObject>
 #include <QXmppCallManager.h>
-#include <interfaces/imediacall.h>
+#include <interfaces/azoth/imediacall.h>
+
+#ifndef ENABLE_MEDIACALLS
+#error Dont include this if media calls are disabled.
+#endif
 
 namespace LeechCraft
 {
@@ -35,12 +39,12 @@ namespace Xoox
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMediaCall);
-		
+
 		QXmppCall *Call_;
 		GlooxAccount *Account_;
 	public:
 		MediaCall (GlooxAccount*, QXmppCall*);
-		
+
 		Direction GetDirection () const;
 		QString GetSourceID () const;
 		void Accept ();

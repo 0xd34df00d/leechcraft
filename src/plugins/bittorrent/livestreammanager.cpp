@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,11 @@ namespace LeechCraft
 				{
 					qDebug () << Q_FUNC_INFO
 						<< "on"
+#if LIBTORRENT_VERSION_NUM >= 1600
+						<< QString::fromUtf8 (handle.save_path ().c_str ());
+#else
 						<< QString::fromUtf8 (handle.save_path ().string ().c_str ());
+#endif
 					LiveStreamDevice *lsd = new LiveStreamDevice (handle, this);
 					Handle2Device_ [handle] = lsd;
 					connect (lsd,

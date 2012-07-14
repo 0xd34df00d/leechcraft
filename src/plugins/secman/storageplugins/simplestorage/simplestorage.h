@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_SECMAN_PLUGINS_SIMPLESTORAGE_SIMPLESTORAGE_H
 #define PLUGINS_SECMAN_PLUGINS_SIMPLESTORAGE_SIMPLESTORAGE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -44,7 +44,7 @@ namespace LeechCraft
 						Q_OBJECT
 						Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin)
 
-						boost::shared_ptr<QSettings> Storage_;
+						std::shared_ptr<QSettings> Storage_;
 					public:
 						void Init (ICoreProxy_ptr);
 						void SecondInit ();
@@ -64,7 +64,7 @@ namespace LeechCraft
 						QList<QByteArray> ListKeys (StorageType);
 						void Save (const QByteArray&, const QVariantList&, StorageType, bool);
 						QVariantList Load (const QByteArray&, StorageType);
-						void Save (const QList<QPair<QByteArray, QVariantList> >&, StorageType, bool);
+						void Save (const QList<QPair<QByteArray, QVariantList>>&, StorageType, bool);
 						QList<QVariantList> Load (const QList<QByteArray>&, StorageType);
 					};
 				}

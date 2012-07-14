@@ -110,92 +110,92 @@
         <translation>Контакт отписался</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="114"/>
+        <location filename="notificationruleswidget.cpp" line="131"/>
         <source>Incoming chat messages</source>
         <translation>Входящие сообщения в чате</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="120"/>
+        <location filename="notificationruleswidget.cpp" line="137"/>
         <source>MUC highlights</source>
         <translation>Подсветки в конференциях</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="126"/>
+        <location filename="notificationruleswidget.cpp" line="143"/>
         <source>MUC invitations</source>
         <translation>Приглашения в конференции</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="132"/>
+        <location filename="notificationruleswidget.cpp" line="149"/>
         <source>Incoming file transfers</source>
         <translation>Входящие передачи файлов</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="137"/>
+        <location filename="notificationruleswidget.cpp" line="154"/>
         <source>Subscription requests</source>
         <translation>Запросы авторизации</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="143"/>
+        <location filename="notificationruleswidget.cpp" line="160"/>
         <source>Subscription changes</source>
         <translation>Изменения авторизации</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="151"/>
+        <location filename="notificationruleswidget.cpp" line="168"/>
         <source>Attention requests</source>
         <translation>Запросы внимания</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="175"/>
+        <location filename="notificationruleswidget.cpp" line="192"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="176"/>
+        <location filename="notificationruleswidget.cpp" line="193"/>
         <source>Category</source>
         <translation>Категория</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="177"/>
+        <location filename="notificationruleswidget.cpp" line="194"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="186"/>
+        <location filename="notificationruleswidget.cpp" line="203"/>
         <source>Field name</source>
         <translation>Имя поля</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="187"/>
+        <location filename="notificationruleswidget.cpp" line="204"/>
         <source>Rule description</source>
         <translation>Описание правила</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="304"/>
+        <location filename="notificationruleswidget.cpp" line="331"/>
         <source>&lt;empty matcher&gt;</source>
         <translation>&lt;пустой матчер&gt;</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="448"/>
+        <location filename="notificationruleswidget.cpp" line="493"/>
         <source>Are you sure you want to replace all rules with the default set?</source>
         <translation>Вы уверены, что хотите заменить все правила набором по умолчанию?</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="537"/>
+        <location filename="notificationruleswidget.cpp" line="582"/>
         <source>Select audio file</source>
         <translation>Выбор аудиофайла</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="539"/>
+        <location filename="notificationruleswidget.cpp" line="584"/>
         <source>Audio files (*.ogg *.wav *.flac *.mp3);;All files (*.*)</source>
         <translation>Аудиофайлы (*.ogg *.wav *.flac *.mp3);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="574"/>
+        <location filename="notificationruleswidget.cpp" line="619"/>
         <source>Please enter the argument:</source>
         <translation>Введите аргумент:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="590"/>
+        <location filename="notificationruleswidget.cpp" line="635"/>
         <source>Please enter new argument text:</source>
         <translation>Введите новый текст аргумента:</translation>
     </message>
@@ -253,8 +253,8 @@
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="72"/>
-        <location filename="notificationruleswidget.ui" line="249"/>
-        <location filename="notificationruleswidget.ui" line="363"/>
+        <location filename="notificationruleswidget.ui" line="265"/>
+        <location filename="notificationruleswidget.ui" line="379"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
@@ -299,81 +299,86 @@
         <translation>Тип события:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="153"/>
+        <location filename="notificationruleswidget.ui" line="174"/>
         <source>Notify via:</source>
         <translation>Уведомлять при помощи:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="181"/>
+        <location filename="notificationruleswidget.ui" line="194"/>
         <source>Visual</source>
         <translation>Всплывающие уведомления</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="188"/>
+        <location filename="notificationruleswidget.ui" line="187"/>
         <source>System tray</source>
         <translation>Системный трей</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="195"/>
-        <location filename="notificationruleswidget.ui" line="259"/>
+        <location filename="notificationruleswidget.ui" line="201"/>
+        <location filename="notificationruleswidget.ui" line="275"/>
         <source>Audio</source>
         <translation>Звуковые уведомления</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="202"/>
-        <location filename="notificationruleswidget.ui" line="310"/>
+        <location filename="notificationruleswidget.ui" line="208"/>
+        <location filename="notificationruleswidget.ui" line="326"/>
         <source>Command</source>
         <translation>Команда</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="214"/>
+        <location filename="notificationruleswidget.ui" line="218"/>
+        <source>Single shot</source>
+        <translation>Единичное срабатывание</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.ui" line="230"/>
         <source>Fields</source>
         <translation>Поля</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="223"/>
+        <location filename="notificationruleswidget.ui" line="239"/>
         <source>Matches:</source>
         <translation>Совпадения:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="235"/>
-        <location filename="notificationruleswidget.ui" line="349"/>
+        <location filename="notificationruleswidget.ui" line="251"/>
+        <location filename="notificationruleswidget.ui" line="365"/>
         <source>Add...</source>
         <translation>Добавить...</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="242"/>
-        <location filename="notificationruleswidget.ui" line="356"/>
+        <location filename="notificationruleswidget.ui" line="258"/>
+        <location filename="notificationruleswidget.ui" line="372"/>
         <source>Modify...</source>
         <translation>Изменить...</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="290"/>
+        <location filename="notificationruleswidget.ui" line="306"/>
         <source>Browse...</source>
         <translation>Обзор...</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="297"/>
+        <location filename="notificationruleswidget.ui" line="313"/>
         <source>Test</source>
         <translation>Тест</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="319"/>
+        <location filename="notificationruleswidget.ui" line="335"/>
         <source>Command:</source>
         <translation>Команда:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="329"/>
+        <location filename="notificationruleswidget.ui" line="345"/>
         <source>Arguments:</source>
         <translation>Аргументы:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="339"/>
+        <location filename="notificationruleswidget.ui" line="355"/>
         <source>Argument</source>
         <translation>Аргумент</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="271"/>
+        <location filename="notificationruleswidget.ui" line="287"/>
         <source>File:</source>
         <translation>Файл:</translation>
     </message>

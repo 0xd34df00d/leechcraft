@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2010-2011  Oleg Linkin
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,11 +39,12 @@ namespace Glance
 
 		Core::Instance ().SetProxy (proxy);
 
-		ActionGlance_ = new QAction (this);
+		ActionGlance_ = new QAction (GetName (), this);
 		ActionGlance_->setToolTip ("Show the quick overview of tabs");
 		ActionGlance_->setShortcut (QKeySequence ("Ctrl+G"));
 		ActionGlance_->setShortcutContext (Qt::ApplicationShortcut);
-		ActionGlance_->setIcon (proxy->GetIcon ("glance"));
+		ActionGlance_->setProperty ("ActionIcon", "view-list-icons");
+		ActionGlance_->setProperty ("Action/ID", GetUniqueID () + "_glance");
 
 		connect (ActionGlance_,
 				SIGNAL (triggered ()),
@@ -96,7 +97,7 @@ namespace Glance
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
 	{
 		QList<QAction*> result;
-		if (aep == AEPQuickLaunch)
+		if (aep == ActionsEmbedPlace::QuickLaunch)
 			result << ActionGlance_;
 		return result;
 	}
@@ -104,4 +105,4 @@ namespace Glance
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_glance, LeechCraft::Plugins::Glance::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_glance, LeechCraft::Plugins::Glance::Plugin);

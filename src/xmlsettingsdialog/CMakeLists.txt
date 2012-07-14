@@ -43,6 +43,7 @@ SET (SRCS
 	itemhandlers/itemhandlercustomwidget.cpp
 	itemhandlers/itemhandlerdataview.cpp
 	itemhandlers/itemhandlerlistview.cpp
+	itemhandlers/itemhandlertreeview.cpp
 	widgets/dataviewwidget.cpp
 	)
 SET (HEADERS
@@ -83,12 +84,15 @@ SET (HEADERS
 	itemhandlers/itemhandlercustomwidget.h
 	itemhandlers/itemhandlerdataview.h
 	itemhandlers/itemhandlerlistview.h
+	itemhandlers/itemhandlertreeview.h
 	widgets/dataviewwidget.h
 	)
 SET (FORMS
 	widgets/dataviewwidget.ui
 	)
-QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 ADD_LIBRARY (xmlsettingsdialog SHARED
 	${SRCS}

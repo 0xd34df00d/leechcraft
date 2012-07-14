@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMHANDLER_H
 #include <QObject>
 #include <QHash>
-#include <interfaces/imucentry.h>
+#include <interfaces/azoth/imucentry.h>
 #include "clientconnection.h"
 #include "roomparticipantentry.h"
 
@@ -45,12 +45,16 @@ namespace Xoox
 
 		GlooxAccount *Account_;
 		QXmppMucManager *MUCManager_;
+		const QString RoomJID_;
 		QXmppMucRoom *Room_;
 		RoomCLEntry *CLEntry_;
 		QHash<QString, RoomParticipantEntry_ptr> Nick2Entry_;
 		QString Subject_;
 		// contains new nicks
 		QSet<QString> PendingNickChanges_;
+		bool HadRequestedPassword_;
+
+		QXmppDiscoveryIq ServerDisco_;
 	public:
 		RoomHandler (const QString& roomJID, const QString& ourNick, GlooxAccount*);
 
@@ -58,7 +62,7 @@ namespace Xoox
 		RoomCLEntry* GetCLEntry ();
 		void HandleVCard (const QXmppVCardIq&, const QString&);
 
-		void SetState (const GlooxAccountState&);
+		void SetPresence (QXmppPresence);
 
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
@@ -67,7 +71,7 @@ namespace Xoox
 		void SetSubject (const QString&);
 		void Join ();
 		void Leave (const QString& msg, bool remove = true);
-		RoomParticipantEntry* GetSelf () const;
+		RoomParticipantEntry* GetSelf ();
 		QString GetOurNick () const;
 		void SetOurNick (const QString&);
 
@@ -75,7 +79,7 @@ namespace Xoox
 				QXmppMucItem::Affiliation, const QString&);
 		void SetRole (RoomParticipantEntry*,
 				QXmppMucItem::Role, const QString&);
-		
+
 		QXmppMucRoom* GetRoom () const;
 
 		void HandleErrorPresence (const QXmppPresence&, const QString&);
@@ -95,9 +99,12 @@ namespace Xoox
 		void handleParticipantAdded (const QString&);
 		void handleParticipantChanged (const QString&);
 		void handleParticipantRemoved (const QString&);
-		
+
 		void requestVoice ();
+
+		void handleMessagesAreRead ();
 	private:
+		bool IsGateway () const;
 		/** Creates a new entry for the given nick.
 		 */
 		RoomParticipantEntry_ptr CreateParticipantEntry (const QString& nick, bool announce);
@@ -113,6 +120,9 @@ namespace Xoox
 				const QString&);
 		void HandleNickConflict ();
 		void HandlePasswordRequired ();
+		QString GetPassKey () const;
+
+		void RemoveEntry (RoomParticipantEntry*);
 
 		void RemoveThis ();
 	signals:

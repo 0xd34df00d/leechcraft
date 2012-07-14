@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,37 +24,45 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ianemitter.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+	class ServiceDiscoveryWidget;
 	class MainWidget;
 	class ConsoleWidget;
+	class MicroblogsTab;
 
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPluginReady
 				 , public IHaveTabs
+				 , public IHaveRecoverableTabs
 				 , public IHaveSettings
 				 , public IJobHolder
 				 , public IActionsExporter
 				 , public IEntityHandler
+				 , public IHaveShortcuts
 				 , public IANEmitter
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPluginReady
 				IHaveTabs
+				IHaveRecoverableTabs
 				IHaveSettings
 				IJobHolder
 				IActionsExporter
 				IEntityHandler
+				IHaveShortcuts
 				IANEmitter)
 
 		MainWidget *MW_;
@@ -77,20 +85,36 @@ namespace Azoth
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QAbstractItemModel* GetRepresentation () const;
-		
+
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-		QMap<QString, QList<QAction*> > GetMenuActions () const;
-		
+		QMap<QString, QList<QAction*>> GetMenuActions () const;
+
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
-	
+
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
-		
+
+		void RecoverTabs (const QList<TabRecoverInfo>&);
+
+		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QString, ActionInfo> GetActionInfo() const;
+
 		QList<ANFieldData> GetANFields () const;
+	private :
+		void InitShortcuts ();
+		void InitSettings ();
+		void InitMW ();
+		void InitSignals ();
+		void InitTabClasses ();
 	public slots:
+		void handleSDWidget (ServiceDiscoveryWidget*);
+		void handleMicroblogsTab (MicroblogsTab*);
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
+		void handleMWLocation (Qt::DockWidgetArea);
+		void handleMWFloating (bool);
+		void handleMoreThisStuff (const QString&);
 		void handleConsoleWidget (ConsoleWidget*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
@@ -103,6 +127,8 @@ namespace Azoth
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

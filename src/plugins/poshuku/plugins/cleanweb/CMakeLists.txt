@@ -15,6 +15,7 @@ SET (CLEANWEB_SRCS
 	wizardgenerator.cpp
 	startupfirstpage.cpp
 	subscriptionadddialog.cpp
+	lineparser.cpp
 	)
 SET (CLEANWEB_HEADERS
 	cleanweb.h
@@ -31,6 +32,7 @@ SET (CLEANWEB_HEADERS
 	wizardgenerator.h
 	startupfirstpage.h
 	subscriptionadddialog.h
+	lineparser.h
 	)
 SET (CLEANWEB_FORMS
 	subscriptionsmanager.ui
@@ -46,7 +48,9 @@ SET (CLEANWEB_RESOURCES
 	)
 CreateTrVars ("poshuku_cleanweb" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" CLEANWEB_TRANSLATIONS CLEANWEB_COMPILED_TRANSLATIONS)
 
-QT4_WRAP_CPP (CLEANWEB_MOC_SRCS ${CLEANWEB_HEADERS})
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (CLEANWEB_MOC_SRCS ${CLEANWEB_HEADERS})
+ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (CLEANWEB_UIS_H ${CLEANWEB_FORMS})
 QT4_ADD_RESOURCES (CLEANWEB_RCCS ${CLEANWEB_RESOURCES})
 ADD_CUSTOM_COMMAND (OUTPUT

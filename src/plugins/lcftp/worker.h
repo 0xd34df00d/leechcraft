@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_LCFTP_WORKER_H
 #define PLUGINS_LCFTP_WORKER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QFile>
 #include <QBuffer>
@@ -34,9 +34,9 @@ namespace LeechCraft
 		namespace LCFTP
 		{
 			struct Wrapper;
-			typedef boost::shared_ptr<Wrapper> Wrapper_ptr;
+			typedef std::shared_ptr<Wrapper> Wrapper_ptr;
 
-			typedef boost::shared_ptr<CURL> CURL_ptr;
+			typedef std::shared_ptr<CURL> CURL_ptr;
 
 			class Worker : public QObject
 			{
@@ -46,8 +46,8 @@ namespace LeechCraft
 				int ID_;
 				CURL_ptr Handle_;
 				Wrapper_ptr W_;
-				boost::shared_ptr<QFile> File_;
-				boost::shared_ptr<QBuffer> ListBuffer_;
+				std::shared_ptr<QFile> File_;
+				std::shared_ptr<QBuffer> ListBuffer_;
 				bool IsWorking_;
 				bool Paused_;
 				quint64 DLNow_,
@@ -84,7 +84,7 @@ namespace LeechCraft
 				CURL_ptr GetHandle () const;
 				/** Prepares to perform the given task, starts it and
 				 * returns immediately.
-				 * 
+				 *
 				 * @param[in] task The task description.
 				 */
 				CURL_ptr Start (const TaskData& task);
@@ -118,7 +118,7 @@ namespace LeechCraft
 				void fetchedEntry (const FetchedEntry&);
 			};
 
-			typedef boost::shared_ptr<Worker> Worker_ptr;
+			typedef std::shared_ptr<Worker> Worker_ptr;
 		};
 	};
 };

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ namespace LeechCraft
 				Q_INTERFACES (IInfo IActionsExporter IHaveSettings IHaveShortcuts)
 
 				TabPPWidget *Dock_;
-				boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
+				std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 
 				std::auto_ptr<QTranslator> Translator_;
 				enum ActionsEnum
@@ -64,10 +64,12 @@ namespace LeechCraft
 
 				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 
-				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+				std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 				void SetShortcut (const QString&, const QKeySequences_t&);
 				QMap<QString, ActionInfo> GetActionInfo () const;
+			signals:
+				void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 			};
 		};
 	};

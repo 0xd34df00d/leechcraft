@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,7 @@
  **********************************************************************/
 
 #include "customwebpage.h"
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+#include <algorithm>
 #include <QtDebug>
 #include <QFile>
 #include <QBuffer>
@@ -138,91 +137,14 @@ namespace Poshuku
 				this,
 				SLOT (handleWindowCloseRequested ()));
 
-		QString checkDown = tr ("<a href=\"http://downforeveryoneorjustme.com/{host}\" "
-				"target=\"_blank\">check</a> if the site <strong>{host}</strong> is down for you only;",
-				"{host} would be substituded with site's host name.");
-		QString tryAgainLater = tr ("try again later");
-		QString contactRemoteAdmin = tr ("contact remote server's administrator "
-				"(typically at <a href=\"mailto:webmaster@{host}\">webmaster@{host}</a>)");
-		QString contactSystemAdmin = tr ("contact your system/network administrator, "
-				"especially if you can't load any single page");
-		QString checkProxySettings = tr ("check your proxy settings");
-
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ConnectionRefusedError]
-				<< tryAgainLater + ";"
-				<< contactRemoteAdmin + ";"
-				<< checkDown;
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::RemoteHostClosedError]
-				<< tryAgainLater + ";"
-				<< contactRemoteAdmin + ";"
-				<< checkDown;
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::HostNotFoundError]
-				<< tr ("check if the URL is written correctly;")
-				<< tr ("try changing your DNS servers;")
-				<< tr ("make sure that LeechCraft is allowed to access the Internet and particularly web sites;")
-				<< contactSystemAdmin + ";"
-				<< checkDown;
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::TimeoutError]
-				<< tryAgainLater + ";"
-				<< tr ("check whether some downloads consume too much bandwidth: try limiting their speed or reducing number of connections for them;")
-				<< contactSystemAdmin + ";"
-				<< contactRemoteAdmin + ";"
-				<< checkDown;
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::OperationCanceledError]
-				<< tr ("try again.");
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::SslHandshakeFailedError]
-				<< tr ("make sure that remote server is really what it claims to be;")
-				<< contactSystemAdmin + ".";
-#if QT_VERSION >= 0x040700
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::TemporaryNetworkFailureError]
-				<< tryAgainLater + ";"
-				<< contactSystemAdmin + ".";
+#if QT_VERSION >= 0x040800
+		connect (this,
+				SIGNAL (featurePermissionRequested (QWebFrame*, QWebPage::Feature)),
+				this,
+				SLOT (handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature)));
 #endif
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError]
-				<< tryAgainLater + ";"
-				<< checkProxySettings + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionClosedError]
-				<< tryAgainLater + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyNotFoundError] =
-				Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError];
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyTimeoutError] =
-				Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError];
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyAuthenticationRequiredError] =
-				Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError];
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentNotFoundError]
-				<< tr ("check if the URL is written correctly;")
-				<< tr ("go to web site's <a href=\"{schema}://{host}/\">main page</a> and find the required page from there.");
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::AuthenticationRequiredError]
-				<< tr ("check the login and password you entered and try again");
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentReSendError]
-				<< tryAgainLater + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProtocolUnknownError]
-				<< tr ("check if the URL is written correctly, particularly, the part before the '://';")
-				<< tr ("try installing plugins that are known to support this protocol;")
-				<< tryAgainLater + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProtocolInvalidOperationError]
-										<< tryAgainLater + ";"
-				<< contactRemoteAdmin + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::UnknownNetworkError]
-										<< tryAgainLater + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::UnknownProxyError]
-				<< checkProxySettings + ";"
-				<< tryAgainLater + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::UnknownContentError]
-				<< tryAgainLater + ";"
-				<< contactSystemAdmin + ".";
-		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProtocolFailure]
-				<< tryAgainLater + ";"
-				<< contactRemoteAdmin + ";"
-				<< contactSystemAdmin + ".";
 
-		Error2Suggestions_ [Http] [404] = Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentNotFoundError];
+		FillErrorSuggestions ();
 
 		{
 			Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
@@ -337,6 +259,13 @@ namespace Poshuku
 		}
 	}
 
+#if QT_VERSION >= 0x040800
+	void CustomWebPage::handleFeaturePermissionReq (QWebFrame *frame, QWebPage::Feature feature)
+	{
+		qDebug () << Q_FUNC_INFO << frame << feature;
+	}
+#endif
+
 	void CustomWebPage::handleContentsChanged ()
 	{
 		emit hookContentsChanged (IHookProxy_ptr (new Util::DefaultHookProxy),
@@ -398,6 +327,7 @@ namespace Poshuku
 
 	void CustomWebPage::handleLinkClicked (const QUrl& url)
 	{
+		emit loadingURL (url);
 		emit hookLinkClicked (IHookProxy_ptr (new Util::DefaultHookProxy),
 				this, url);
 	}
@@ -523,6 +453,93 @@ namespace Poshuku
 		}
 	}
 
+	void CustomWebPage::FillErrorSuggestions ()
+	{
+		QString checkDown = tr ("<a href=\"http://downforeveryoneorjustme.com/{host}\" "
+				"target=\"_blank\">check</a> if the site <strong>{host}</strong> is down for you only;",
+				"{host} would be substituded with site's host name.");
+		QString tryAgainLater = tr ("try again later");
+		QString contactRemoteAdmin = tr ("contact remote server's administrator "
+				"(typically at <a href=\"mailto:webmaster@{host}\">webmaster@{host}</a>)");
+		QString contactSystemAdmin = tr ("contact your system/network administrator, "
+				"especially if you can't load any single page");
+		QString checkProxySettings = tr ("check your proxy settings");
+
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ConnectionRefusedError]
+				<< tryAgainLater + ";"
+				<< contactRemoteAdmin + ";"
+				<< checkDown;
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::RemoteHostClosedError]
+				<< tryAgainLater + ";"
+				<< contactRemoteAdmin + ";"
+				<< checkDown;
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::HostNotFoundError]
+				<< tr ("check if the URL is written correctly;")
+				<< tr ("try changing your DNS servers;")
+				<< tr ("make sure that LeechCraft is allowed to access the Internet and particularly web sites;")
+				<< contactSystemAdmin + ";"
+				<< checkDown;
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::TimeoutError]
+				<< tryAgainLater + ";"
+				<< tr ("check whether some downloads consume too much bandwidth: try limiting their speed or reducing number of connections for them;")
+				<< contactSystemAdmin + ";"
+				<< contactRemoteAdmin + ";"
+				<< checkDown;
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::OperationCanceledError]
+				<< tr ("try again.");
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::SslHandshakeFailedError]
+				<< tr ("make sure that remote server is really what it claims to be;")
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::TemporaryNetworkFailureError]
+				<< tryAgainLater + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError]
+				<< tryAgainLater + ";"
+				<< checkProxySettings + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionClosedError]
+				<< tryAgainLater + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyNotFoundError] =
+				Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError];
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyTimeoutError] =
+				Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError];
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyAuthenticationRequiredError] =
+				Error2Suggestions_ [QtNetwork] [QNetworkReply::ProxyConnectionRefusedError];
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentNotFoundError]
+				<< tr ("check if the URL is written correctly;")
+				<< tr ("go to web site's <a href=\"{schema}://{host}/\">main page</a> and find the required page from there.");
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::AuthenticationRequiredError]
+				<< tr ("check the login and password you entered and try again");
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentReSendError]
+				<< tryAgainLater + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProtocolUnknownError]
+				<< tr ("check if the URL is written correctly, particularly, the part before the '://';")
+				<< tr ("try installing plugins that are known to support this protocol;")
+				<< tryAgainLater + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProtocolInvalidOperationError]
+										<< tryAgainLater + ";"
+				<< contactRemoteAdmin + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::UnknownNetworkError]
+										<< tryAgainLater + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::UnknownProxyError]
+				<< checkProxySettings + ";"
+				<< tryAgainLater + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::UnknownContentError]
+				<< tryAgainLater + ";"
+				<< contactSystemAdmin + ".";
+		Error2Suggestions_ [QtNetwork] [QNetworkReply::ProtocolFailure]
+				<< tryAgainLater + ";"
+				<< contactRemoteAdmin + ";"
+				<< contactSystemAdmin + ".";
+
+		Error2Suggestions_ [Http] [404] = Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentNotFoundError];
+	}
+
 	QString CustomWebPage::MakeErrorReplyContents (int statusCode,
 			const QUrl& url, const QString& errorString, ErrorDomain domain) const
 	{
@@ -565,7 +582,8 @@ namespace Poshuku
 
 		QBuffer ib;
 		ib.open (QIODevice::ReadWrite);
-		QPixmap px = Core::Instance ().GetProxy ()->GetIcon ("error").pixmap (32, 32);
+		QPixmap px = Core::Instance ().GetProxy ()->
+				GetIcon ("dialog-error").pixmap (32, 32);
 		px.save (&ib, "PNG");
 
 		data.replace ("{img}",
@@ -694,6 +712,11 @@ namespace Poshuku
 				widget->show ();
 				return widget->GetView ()->page ();
 			}
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown type"
+					<< type;
+			return 0;
 		}
 	}
 
@@ -801,7 +824,7 @@ namespace Poshuku
 			return true;
 		}
 
-		QPair<PageFormsData_t, QMap<ElementData, QWebElement> > HarvestForms (QWebFrame *frame, const QUrl& reqUrl = QUrl ())
+		QPair<PageFormsData_t, QMap<ElementData, QWebElement>> HarvestForms (QWebFrame *frame, const QUrl& reqUrl = QUrl ())
 		{
 			PageFormsData_t formsData;
 			QMap<ElementData, QWebElement> ed2element;
@@ -885,32 +908,26 @@ namespace Poshuku
 		ElementsData_t::const_iterator FindElement (const ElementData& filled,
 				const ElementsData_t& list, bool strict)
 		{
-			boost::function<bool (const ElementData&)> typeChecker =
-					boost::bind (&ElementData::Type_, _1) == filled.Type_;
-			boost::function<bool (const ElementData&)> urlChecker =
-					boost::bind (&ElementData::PageURL_, _1) == filled.PageURL_;
-			boost::function<bool (const ElementData&)> formIdChecker =
-					boost::bind (&ElementData::FormID_, _1) == filled.FormID_;
+			auto typeChecker = [filled] (const ElementData& ed)
+				{ return ed.Type_ == filled.Type_; };
+			auto urlChecker = [filled] (const ElementData& ed)
+				{ return ed.PageURL_ == filled.PageURL_; };
+			auto formIdChecker = [filled] (const ElementData& ed)
+				{ return ed.FormID_ == filled.FormID_; };
 
-			ElementsData_t::const_iterator pos =
-					std::find_if (list.begin (), list.end (),
-							boost::bind (std::logical_and<bool> (),
-									boost::bind (typeChecker, _1),
-									boost::bind (std::logical_and<bool> (),
-											boost::bind (urlChecker, _1),
-											boost::bind (formIdChecker, _1))));
+			auto pos = std::find_if (list.begin (), list.end (),
+					[typeChecker, urlChecker, formIdChecker] (const ElementData& ed)
+						{ return typeChecker (ed) && urlChecker (ed) && formIdChecker (ed); });
 			if (!strict)
 			{
 				if (pos == list.end ())
 					pos = std::find_if (list.begin (), list.end (),
-							boost::bind (std::logical_and<bool> (),
-									boost::bind (typeChecker, _1),
-									boost::bind (formIdChecker, _1)));
+							[typeChecker, formIdChecker] (const ElementData& ed)
+								{ return typeChecker (ed) && formIdChecker (ed); });
 				if (pos == list.end ())
 					pos = std::find_if (list.begin (), list.end (),
-							boost::bind (std::logical_and<bool> (),
-									boost::bind (typeChecker, _1),
-									boost::bind (urlChecker, _1)));
+							[typeChecker, urlChecker] (const ElementData& ed)
+								{ return typeChecker (ed) && urlChecker (ed); });
 			}
 
 			return pos;
@@ -921,7 +938,7 @@ namespace Poshuku
 	{
 		PageFormsData_t formsData;
 
-		QPair<PageFormsData_t, QMap<ElementData, QWebElement> > pair =
+		QPair<PageFormsData_t, QMap<ElementData, QWebElement>> pair =
 				HarvestForms (frame ? frame : mainFrame ());
 
 		if (pair.first.isEmpty ())

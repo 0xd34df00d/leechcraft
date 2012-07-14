@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,9 @@
 #include <QPushButton>
 #include <QSettings>
 #include <QTranslator>
-#include <interfaces/imessage.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <interfaces/azoth/imessage.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -41,7 +41,7 @@ namespace HiLi
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothhilisettings.xml");
-		
+
 		XmlSettingsManager::Instance ().RegisterObject ("HighlightRegexps",
 				this, "handleRegexpsChanged");
 		handleRegexpsChanged ();
@@ -49,7 +49,7 @@ namespace HiLi
 
 	void Plugin::SecondInit ()
 	{
-	}	
+	}
 
 	QByteArray Plugin::GetUniqueID () const
 	{
@@ -72,7 +72,8 @@ namespace HiLi
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/hili/resources/images/hili.svg");
+		static QIcon icon (":/plugins/azoth/plugins/hili/resources/images/hili.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -81,12 +82,12 @@ namespace HiLi
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
 	}
-	
+
 	void Plugin::hookIsHighlightMessage (IHookProxy_ptr proxy, QObject *msgObj)
 	{
 		if (RegexpsCache_.isEmpty ())
@@ -95,7 +96,7 @@ namespace HiLi
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (msg->GetMessageType () != IMessage::MTMUCMessage)
 			return;
-		
+
 		bool isHighlight = false;
 		const QString& body = msg->GetBody ();
 		if (body.size () > 1024)
@@ -119,7 +120,7 @@ namespace HiLi
 			proxy->SetReturnValue (true);
 		}
 	}
-	
+
 	void Plugin::handleRegexpsChanged ()
 	{
 		RegexpsCache_.clear ();
@@ -139,4 +140,4 @@ namespace HiLi
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_hili, LeechCraft::Azoth::HiLi::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_hili, LeechCraft::Azoth::HiLi::Plugin);

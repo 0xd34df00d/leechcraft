@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,31 +21,28 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		namespace LackMan
-		{
-			XmlSettingsManager::XmlSettingsManager ()
-			{
-				Util::BaseSettingsManager::Init ();
-			}
-
-			XmlSettingsManager* XmlSettingsManager::Instance ()
-			{
-				static XmlSettingsManager manager;
-				return &manager;
-			}
-
-			QSettings* XmlSettingsManager::BeginSettings () const
-			{
-				QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_LackMan");
-				return settings;
-			}
-
-			void XmlSettingsManager::EndSettings (QSettings*) const
-			{
-			}
-		}
+		Util::BaseSettingsManager::Init ();
 	}
+
+	XmlSettingsManager* XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return &manager;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_LackMan");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
 }

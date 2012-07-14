@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ADIUMSTYLES_ADIUMSTYLES_H
-#define PLUGINS_AZOTH_PLUGINS_ADIUMSTYLES_ADIUMSTYLES_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/iresourceplugin.h>
+#include <interfaces/azoth/iresourceplugin.h>
 
 namespace LeechCraft
 {
@@ -38,8 +38,9 @@ namespace AdiumStyles
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin);
-		
+
 		IProxyObject *Proxy_;
+		QObjectList ResourceSources_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -48,7 +49,7 @@ namespace AdiumStyles
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		
+
 		QSet<QByteArray> GetPluginClasses () const;
 
 		QList<QObject*> GetResourceSources () const;
@@ -58,5 +59,3 @@ namespace AdiumStyles
 }
 }
 }
-
-#endif

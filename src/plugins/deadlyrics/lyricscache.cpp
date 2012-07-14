@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,73 +24,33 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DeadLyrics
+{
+	LyricsCache::LyricsCache ()
 	{
-		namespace DeadLyrics
+		try
 		{
-			LyricsCache::LyricsCache ()
-			{
-				try
-				{
-					LeechCraft::Util::CreateIfNotExists ("deadlyrics/cache");
-				}
-				catch (const std::runtime_error& e)
-				{
-					qWarning () << Q_FUNC_INFO << e.what ();
-					return;
-				}
-			
-				Dir_ = QDir::homePath ();
-				Dir_.cd (".leechcraft/deadlyrics/cache");
-			}
-			
-			LyricsCache& LyricsCache::Instance ()
-			{
-				static LyricsCache lc;
-				return lc;
-			}
-			
-			Lyrics LyricsCache::GetLyrics (const QByteArray& hash) const
-			{
-				if (Dir_.exists (hash.toHex ()))
-				{
-					QFile file (Dir_.filePath (hash.toHex ()));
-					if (file.open (QIODevice::ReadOnly))
-					{
-						QByteArray raw = file.readAll ();
-						QDataStream in (raw);
-						Lyrics lyrics;
-						in >> lyrics;
-						return lyrics;
-					}
-					else
-					{
-						qWarning () << Q_FUNC_INFO
-							<< "could not open (read) file"
-							<< file.fileName ();
-						throw std::runtime_error ("Could not open file");
-					}
-				}
-				else
-					throw std::runtime_error ("No such lyrics");
-			}
-			
-			void LyricsCache::SetLyrics (const QByteArray& hash, const Lyrics& lyrics)
-			{
-				QFile file (Dir_.filePath (hash.toHex ()));
-				if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "could not open (write|truncate) file"
-						<< file.fileName ();
-					return;
-				}
-				QByteArray data;
-				QDataStream out (&data, QIODevice::WriteOnly);
-				out << lyrics;
-				file.write (data);
-			}
-		};
-	};
-};
+			Dir_ = Util::CreateIfNotExists ("deadlyrics/cache");
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO << e.what ();
+		}
+	}
 
+	LyricsCache& LyricsCache::Instance ()
+	{
+		static LyricsCache lc;
+		return lc;
+	}
+
+	QStringList LyricsCache::GetLyrics (const Media::LyricsQuery&) const
+	{
+		return QStringList ();
+	}
+
+	void LyricsCache::AddLyrics (const Media::LyricsQuery& , const QStringList&)
+	{
+	}
+}
+}

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XTAZY_MPRISSOURCE_H
-#define PLUGINS_AZOTH_PLUGINS_XTAZY_MPRISSOURCE_H
+#pragma once
+
 #include "tunesourcebase.h"
 #include <QStringList>
 #include <QDBusConnection>
@@ -39,7 +39,7 @@ namespace Xtazy
 	class MPRISSource : public TuneSourceBase
 	{
 		Q_OBJECT
-		
+
 		QStringList Players_;
 		QDBusConnection SB_;
 		TuneInfo_t Tune_;
@@ -61,5 +61,3 @@ namespace Xtazy
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::Xtazy::PlayerStatus);
-
-#endif

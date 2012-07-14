@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <util/util.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/imessage.h>
 
 Q_DECLARE_METATYPE (QSet<QString>);
 
@@ -36,10 +36,10 @@ namespace Depester
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_depester"));
-		qRegisterMetaType<QSet<QString> > ("QSet<QString>");
-		qRegisterMetaTypeStreamOperators<QSet<QString> > ("QSet<QString>");
-		
+		Util::InstallTranslator ("azoth_depester");
+		qRegisterMetaType<QSet<QString>> ("QSet<QString>");
+		qRegisterMetaTypeStreamOperators<QSet<QString>> ("QSet<QString>");
+
 		LoadIgnores ();
 	}
 
@@ -77,55 +77,61 @@ namespace Depester
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	bool Plugin::IsEntryIgnored (QObject *entryObj)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry ||
 				entry->GetEntryType () != ICLEntry::ETPrivateChat)
 			return false;
-		
+
 		return IgnoredNicks_.contains (entry->GetEntryName ());
 	}
-	
+
 	void Plugin::HandleMsgOccurence (IHookProxy_ptr proxy, QObject *message)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (message);
 		if (IsEntryIgnored (msg->OtherPart ()))
 			proxy->CancelDefault ();
 	}
-	
+
 	void Plugin::SaveIgnores () const
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Depester");
 		settings.setValue ("IgnoredNicks", QVariant::fromValue (IgnoredNicks_));
 	}
-	
+
 	void Plugin::LoadIgnores ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Depester");
-		IgnoredNicks_ = settings.value ("IgnoredNicks").value<QSet<QString> > ();
+		IgnoredNicks_ = settings.value ("IgnoredNicks").value<QSet<QString>> ();
 	}
-	
+
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
 			QObject *action, QObject*)
 	{
 		if (!action->property ("Azoth/Depester/IsGood").toBool ())
 			return;
-		
+
 		QStringList ours;
 		ours << "contactListContextMenu";
 		proxy->SetReturnValue (proxy->GetReturnValue ().toStringList () + ours);
 	}
-	
+
+	void Plugin::hookEntryActionsRemoved (IHookProxy_ptr, QObject *entry)
+	{
+		delete Entry2ActionIgnore_.take (entry);
+		Entry2Nick_.remove (entry);
+	}
+
 	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entryObj)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
 			return;
-		
+
 		if (!Entry2ActionIgnore_.contains (entryObj))
 		{
 			QAction *action = new QAction (tr ("Ignore"), entryObj);
@@ -144,7 +150,7 @@ namespace Depester
 		list << QVariant::fromValue<QObject*> (Entry2ActionIgnore_ [entryObj]);
 		proxy->SetReturnValue (list);
 	}
-	
+
 	void Plugin::hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message)
 	{
@@ -156,7 +162,7 @@ namespace Depester
 	{
 		HandleMsgOccurence (proxy, message);
 	}
-	
+
 	void Plugin::hookShouldCountUnread (IHookProxy_ptr proxy,
 				QObject *message)
 	{
@@ -167,7 +173,7 @@ namespace Depester
 			proxy->SetReturnValue (false);
 		}
 	}
-	
+
 	void Plugin::handleIgnoreEntry (bool ignore)
 	{
 		QObject *entryObj = sender ()->
@@ -175,7 +181,7 @@ namespace Depester
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 			return;
-		
+
 		if (ignore)
 		{
 			const QString& nick = entry->GetEntryName ();
@@ -195,16 +201,16 @@ namespace Depester
 					this,
 					SLOT (handleNameChanged (const QString&)));
 		}
-		
+
 		SaveIgnores ();
 	}
-	
+
 	void Plugin::handleNameChanged (const QString& name)
 	{
 		QObject *entryObj = sender ();
 		if (!entryObj)
 			return;
-		
+
 		IgnoredNicks_.remove (Entry2Nick_ [entryObj]);
 		IgnoredNicks_ << name;
 		Entry2Nick_ [entryObj] = name;
@@ -213,4 +219,4 @@ namespace Depester
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_depester, LeechCraft::Azoth::Depester::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_depester, LeechCraft::Azoth::Depester::Plugin);

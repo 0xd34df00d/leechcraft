@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,10 +31,13 @@
 #include <QUrl>
 #include <QAction>
 #include <QBuffer>
+#include <QDesktopWidget>
 #include <QtDebug>
 
 Q_DECLARE_METATYPE (QList<QModelIndex>);
 Q_DECLARE_METATYPE (QVariantList*);
+
+UTIL_API LeechCraft::Util::IDPool<qint64> LeechCraft::Entity::IDPool_;
 
 QString LeechCraft::Util::GetAsBase64Src (const QImage& pix)
 {
@@ -139,11 +142,11 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 	filename.append (localeName);
 
 	QTranslator *transl = new QTranslator;
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
 					QCoreApplication::applicationDirPath () + "/translations"))
-#elif defined (Q_WS_MAC)
+#elif defined (Q_OS_MAC)
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
 					QCoreApplication::applicationDirPath () + "/../Resources/translations"))
@@ -196,6 +199,18 @@ QString LeechCraft::Util::GetLocaleName ()
 	}
 
 	return localeName;
+}
+
+QString LeechCraft::Util::GetInternetLocaleName (const QLocale& locale)
+{
+#if QT_VERSION >= 0x040800
+	if (locale.language () == QLocale::AnyLanguage)
+		return "*";
+#endif
+
+	QString locStr = locale.name ();
+	locStr.replace ('_', '-');
+	return locStr;
 }
 
 QString LeechCraft::Util::GetLanguage ()
@@ -274,6 +289,24 @@ LeechCraft::Entity LeechCraft::Util::MakeNotification (const QString& header,
 	return result;
 }
 
+LeechCraft::Entity LeechCraft::Util::MakeANCancel (const LeechCraft::Entity& event)
+{
+	Entity e = MakeNotification (event.Entity_.toString (), QString (), PInfo_);
+	e.Additional_ ["org.LC.AdvNotifications.SenderID"] = event.Additional_ ["org.LC.AdvNotifications.SenderID"];
+	e.Additional_ ["org.LC.AdvNotifications.EventID"] = event.Additional_ ["org.LC.AdvNotifications.EventID"];
+	e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Cancel";
+	return e;
+}
+
+LeechCraft::Entity LeechCraft::Util::MakeANCancel (const QString& senderId, const QString& eventId)
+{
+	Entity e = MakeNotification (QString (), QString (), PInfo_);
+	e.Additional_ ["org.LC.AdvNotifications.SenderID"] = senderId;
+	e.Additional_ ["org.LC.AdvNotifications.EventID"] = eventId;
+	e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Cancel";
+	return e;
+}
+
 QModelIndexList LeechCraft::Util::GetSummarySelectedRows (QObject *sender)
 {
 	QAction *senderAct = qobject_cast<QAction*> (sender);
@@ -289,7 +322,7 @@ QModelIndexList LeechCraft::Util::GetSummarySelectedRows (QObject *sender)
 	}
 
 	return senderAct->
-			property ("SelectedRows").value<QList<QModelIndex> > ();
+			property ("SelectedRows").value<QList<QModelIndex>> ();
 }
 
 QAction* LeechCraft::Util::CreateSeparator (QObject *parent)
@@ -316,4 +349,18 @@ QVariantList LeechCraft::Util::GetPersistentData (const QList<QVariant>& keys,
 			Q_ARG (QObject**, 0));
 
 	return values;
+}
+
+QPoint LeechCraft::Util::FitRectScreen (QPoint pos, const QSize& size)
+{
+	const QRect& geometry = QApplication::desktop ()->screenGeometry (pos);
+	const bool dropDown = pos.y () < geometry.height () / 2;
+	const bool dropRight = pos.x () + size.width () < geometry.width () + geometry.x ();
+
+	if (!dropDown)
+		pos.ry () -= size.height ();
+	if (!dropRight)
+		pos.rx () -= size.width ();
+
+	return pos;
 }

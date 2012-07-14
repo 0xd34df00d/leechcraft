@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ namespace AdvancedNotifications
 		ICoreProxy_ptr Proxy_;
 		
 		NotificationRulesWidget *NRW_;
-		boost::shared_ptr<Util::ResourceLoader> AudioThemeLoader_;
+		std::shared_ptr<Util::ResourceLoader> AudioThemeLoader_;
 		
 		Core ();
 	public:
@@ -51,7 +51,7 @@ namespace AdvancedNotifications
 		void SetProxy (ICoreProxy_ptr);
 		
 		NotificationRulesWidget* GetNRW ();
-		boost::shared_ptr<Util::ResourceLoader> GetAudioThemeLoader () const;
+		std::shared_ptr<Util::ResourceLoader> GetAudioThemeLoader () const;
 
 		QList<NotificationRule> GetRules (const Entity&) const;
 		

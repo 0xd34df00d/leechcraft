@@ -74,7 +74,7 @@ namespace Acetamide
 		Ui_.DefaultIrcServer_->setText (server);
 	}
 
-	QString IrcAccountConfigurationWidget::GetDefaultServer() const
+	QString IrcAccountConfigurationWidget::GetDefaultServer () const
 	{
 		return Ui_.DefaultIrcServer_->text ();
 	}
@@ -84,7 +84,7 @@ namespace Acetamide
 		Ui_.DefaultPort_->setValue (port);
 	}
 
-	int IrcAccountConfigurationWidget::GetDefaultPort() const
+	int IrcAccountConfigurationWidget::GetDefaultPort () const
 	{
 		return Ui_.DefaultPort_->value ();
 	}
@@ -95,7 +95,7 @@ namespace Acetamide
 				setCurrentIndex (Ui_.DefaultEncoding_->findText (encoding));
 	}
 
-	QString IrcAccountConfigurationWidget::GetDefaultEncoding() const
+	QString IrcAccountConfigurationWidget::GetDefaultEncoding () const
 	{
 		return Ui_.DefaultEncoding_->currentText ();
 	}
@@ -105,7 +105,7 @@ namespace Acetamide
 		Ui_.DefaultChannel_->setText (channel);
 	}
 
-	QString IrcAccountConfigurationWidget::GetDefaultChannel() const
+	QString IrcAccountConfigurationWidget::GetDefaultChannel () const
 	{
 		return Ui_.DefaultChannel_->text ();
 	}

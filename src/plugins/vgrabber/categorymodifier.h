@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,37 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_VGRABBER_CATEGORYMODIFIER_H
-#define PLUGINS_VGRABBER_CATEGORYMODIFIER_H
+#pragma once
+
 #include <QDialog>
 #include "ui_categorymodifier.h"
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Util
+{
+class TagsCompleter;
+}
+
+namespace vGrabber
+{
+	class CategoryModifier : public QDialog
 	{
-		class TagsCompleter;
+		Q_OBJECT
+
+		Ui::CategoryModifier Ui_;
+		Util::TagsCompleter *Completer_;
+	public:
+		CategoryModifier (const QString&, QWidget* = 0);
+		QString GetText () const;
+	private slots:
+		void on_Line__textChanged (const QString&);
 	};
-
-	namespace Plugins
-	{
-		namespace vGrabber
-		{
-			class CategoryModifier : public QDialog
-			{
-				Q_OBJECT
-
-				Ui::CategoryModifier Ui_;
-				Util::TagsCompleter *Completer_;
-			public:
-				CategoryModifier (const QString&, QWidget* = 0);
-				QString GetText () const;
-			private slots:
-				void on_Line__textChanged (const QString&);
-			};
-		};
-	};
-};
-
-#endif
-
+}
+}

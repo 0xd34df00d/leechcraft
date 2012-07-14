@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -372,17 +372,25 @@ namespace Qrosp
 		QVariantList args;
 		switch (place)
 		{
-		case AEPCommonContextMenu:
+		case ActionsEmbedPlace::CommonContextMenu:
 			args << "AEPCommonContextMenu";
 			break;
-		case AEPQuickLaunch:
+		case ActionsEmbedPlace::QuickLaunch:
 			args << "AEPQuickLaunch";
 			break;
-		case AEPToolsMenu:
+		case ActionsEmbedPlace::ToolsMenu:
 			args << "AEPToolsMenu";
 			break;
-		case AEPTrayMenu:
+		case ActionsEmbedPlace::TrayMenu:
 			args << "AEPTrayMenu";
+			break;
+		case ActionsEmbedPlace::LCTray:
+			args << "AEPLCTray";
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unhandled place"
+					<< static_cast<int> (place);
 			break;
 		}
 		return SCALL (QList<QAction*>) ("GetActions", args);
@@ -416,6 +424,12 @@ namespace Qrosp
 	}
 
 	void WrapperObject::raiseTab (QWidget*)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "is called, but this should never happen";
+	}
+
+	void WrapperObject::gotActions (QList<QAction*>, ActionsEmbedPlace)
 	{
 		qWarning () << Q_FUNC_INFO
 				<< "is called, but this should never happen";

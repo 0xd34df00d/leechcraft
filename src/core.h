@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 #ifndef CORE_H
 #define CORE_H
 #include <memory>
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QString>
 #include <QPair>
@@ -41,10 +40,9 @@ namespace LeechCraft
 	class TabManager;
 	class NewTabMenuManager;
 	class StorageBackend;
-	class ClipboardWatcher;
 	class LocalSocketHandler;
-	class DirectoryWatcher;
 	class CoreInstanceObject;
+	class DockManager;
 
 	/** Contains all the plugins' models, maps from end-user's tree view
 	 * to plugins' models and much more.
@@ -55,15 +53,15 @@ namespace LeechCraft
 
 		PluginManager *PluginManager_;
 		MainWindow *ReallyMainWindow_;
-		boost::shared_ptr<TabManager> TabManager_;
-		boost::shared_ptr<QNetworkAccessManager> NetworkAccessManager_;
-		boost::shared_ptr<StorageBackend> StorageBackend_;
-		boost::shared_ptr<DirectoryWatcher> DirectoryWatcher_;
-		boost::shared_ptr<ClipboardWatcher> ClipboardWatcher_;
-		boost::shared_ptr<LocalSocketHandler> LocalSocketHandler_;
-		boost::shared_ptr<NewTabMenuManager> NewTabMenuManager_;
-		boost::shared_ptr<CoreInstanceObject> CoreInstanceObject_;
+		DockManager *DM_;
+		std::shared_ptr<TabManager> TabManager_;
+		std::shared_ptr<QNetworkAccessManager> NetworkAccessManager_;
+		std::shared_ptr<StorageBackend> StorageBackend_;
+		std::shared_ptr<LocalSocketHandler> LocalSocketHandler_;
+		std::shared_ptr<NewTabMenuManager> NewTabMenuManager_;
+		std::shared_ptr<CoreInstanceObject> CoreInstanceObject_;
 		QList<Entity> QueuedEntities_;
+		bool IsShuttingDown_;
 
 		Core ();
 	public:
@@ -79,6 +77,8 @@ namespace LeechCraft
 		static Core& Instance ();
 		void Release ();
 
+		bool IsShuttingDown () const;
+
 		/** Sets the pointer to the main window.
 		 */
 		void SetReallyMainWindow (MainWindow*);
@@ -87,6 +87,10 @@ namespace LeechCraft
 		 * only if a valid window was set with SetReallyMainWindow().
 		 */
 		MainWindow* GetReallyMainWindow ();
+
+		/** Returns the dock manager over the main window.
+		 */
+		DockManager* GetDockManager () const;
 
 		/** Returns the pointer to the app-wide shortcut proxy.
 		 */
@@ -111,7 +115,7 @@ namespace LeechCraft
 		 *
 		 * @return List of actions.
 		 */
-		QList<QList<QAction*> > GetActions2Embed () const;
+		QList<QList<QAction*>> GetActions2Embed () const;
 
 		/** Returns the model which manages the plugins, displays
 		 * various info about them like name, description, icon and
@@ -296,21 +300,10 @@ namespace LeechCraft
 		void InitMultiTab (QObject *object);
 
 		void InitCommonTab (QObject *object);
-
-		/** Handles the notification. Either logs it or shows to the
-		 * user, depending in the notification and preferences.
-		 *
-		 * @param[in] entity Entity with the notification.
-		 */
-		void HandleNotify (const LeechCraft::Entity& entity);
 	signals:
 		/** Notifies the user about an error by a pop-up message box.
 		 */
 		void error (QString error) const;
-
-		/** Sends the message to the log.
-		 */
-		void log (const QString& message);
 	};
 };
 

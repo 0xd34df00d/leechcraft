@@ -53,37 +53,44 @@ namespace Acetamide
 		bool IsConsoleEnabled_;
 	public:
 		ClientConnection (IrcAccount*);
-		QObject* GetCLEntry (const QString&, const QString&) const;
 		void Sinchronize ();
 
 		IrcAccount* GetAccount () const;
 		QList<IrcServerHandler*> GetServerHandlers () const;
 
 		bool IsServerExists (const QString&);
-		void JoinServer (const ServerOptions&, const NickServIdentifyOptions&);
+		void JoinServer (const ServerOptions&);
 		void JoinChannel (const ServerOptions&, const ChannelOptions&);
 
 		void SetBookmarks (const QList<IrcBookmark>&);
 		QList<IrcBookmark> GetBookmarks () const;
 
-		IrcServerHandler* GetIrcServerHandler (const QString&);
-		void ClosePrivateChat (QString, const QString&);
-		void CloseServer (const QString&);
+		IrcServerHandler* GetIrcServerHandler (const QString&) const;
+
 		void DisconnectFromAll ();
 		void QuitServer (const QStringList&);
 
 		void SetConsoleEnabled (bool);
+
+		void ClosePrivateChat (const QString& serverID, QString nick);
+
+		void FetchVCard (const QString& serverId, const QString& nick);
+
+		void SetAway (bool away, const QString& message);
+
+		QString GetStatusStringForState (Azoth::State state);
 	public slots:
 		void serverConnected (const QString&);
 		void serverDisconnected (const QString&);
-		void handleError (QAbstractSocket::SocketError);
+		void handleError (QAbstractSocket::SocketError error,
+				const QString& errorString);
 		void handleLog (IMessage::Direction, const QString&);
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);
 		void rosterItemsRemoved (const QList<QObject*>&);
 		void gotCLItems (const QList<QObject*>&);
-		void gotConsoleLog (const QByteArray&, int);
+		void gotConsoleLog (const QByteArray&, int, const QString&);
 	};
 };
 };

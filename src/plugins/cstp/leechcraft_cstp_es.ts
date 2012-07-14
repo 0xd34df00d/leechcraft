@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="es">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
 <context>
     <name>LeechCraft::Plugins::CSTP::AddTask</name>
     <message>
@@ -118,7 +116,8 @@
         <location filename="core.cpp" line="580"/>
         <source>Download finished: %1
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>La descarga se ha finalizado: %1
+%2</translation>
     </message>
 </context>
 <context>
@@ -154,7 +153,7 @@
     <message>
         <location filename="task.cpp" line="476"/>
         <source>Error writing to file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -162,118 +161,118 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Local settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustes locales</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <location filename="dummy.cpp" line="7"/>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Behavior</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Alert about errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Notificarme sobre errores</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Network settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustes de la red</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>General</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>Use text transfer mode:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>Identification</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificación</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>HTTP</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTP</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>Login:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de usuario:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Contraseña:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>Custom user agent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Agente personalizado de usuario:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="14"/>
         <source>Predefined user agent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Agente predefinido de usuario:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
         <source>Firefox 3.0.1 on Linux i686</source>
-        <translation type="unfinished"></translation>
+        <translation>Firefox 3.0.1 en Linux i686</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="16"/>
         <source>Internet Explorer 6.0 on Windows XP</source>
-        <translation type="unfinished"></translation>
+        <translation>Internet Explorer 6.0 en Windows XP</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
         <source>Internet Explorer 7.0 on Windows Vista</source>
-        <translation type="unfinished"></translation>
+        <translation>Internet Explorer 7.0 en Windows Vista</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="18"/>
         <source>Internet Explorer 4.0 on Windows 98</source>
-        <translation type="unfinished"></translation>
+        <translation>Internet Explorer 4.0 en Windows 98</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Internet Explorer 2.0 on Windows 95</source>
-        <translation type="unfinished"></translation>
+        <translation>Internet Explorer 2.0 en Windows 95</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
         <source>Konqueror 4.0</source>
-        <translation type="unfinished"></translation>
+        <translation>Konqueror 4.0</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>SeaMonkey 1.1.11 on Linux i686</source>
-        <translation type="unfinished"></translation>
+        <translation>SeaMonkey 1.1.11 en Linux i686</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
         <source>Opera 9.52 on Linux x86_64</source>
-        <translation type="unfinished"></translation>
+        <translation>Opera 9.52 en Linux x86_64</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="23"/>
         <source>Wget 1.9.1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wget 1.9.1</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="24"/>
         <source>w3m 0.5.2</source>
-        <translation type="unfinished"></translation>
+        <translation>w3m 0.5.2</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>
         <source>Lynx 2.8.7 with OpenSSL</source>
-        <translation type="unfinished"></translation>
+        <translation>Lynx 2.8.7 con OpenSSL</translation>
     </message>
 </context>
 </TS>

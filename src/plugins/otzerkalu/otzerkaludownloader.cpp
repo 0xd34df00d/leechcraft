@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2011  Minh Ngo
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ namespace Otzerkalu
 	DownloadParams::DownloadParams ()
 	{
 	}
-	
+
 	DownloadParams::DownloadParams (const QUrl& downloadUrl,
 			const QString& destDir, int recLevel, bool fromOtherSite)
 	: DownloadUrl_ (downloadUrl)
@@ -39,25 +39,11 @@ namespace Otzerkalu
 	, FromOtherSite_ (fromOtherSite)
 	{
 	}
-	
-	namespace
-	{
-		Entity GetEntity (const QUrl& url, const QString& filename)
-		{
-			return Util::MakeEntity (url,
-					filename,
-					LeechCraft::Internal |
-						LeechCraft::DoNotNotifyUser |
-						LeechCraft::DoNotSaveInHistory |
-						LeechCraft::NotPersistent |
-						LeechCraft::DoNotAnnounceEntity);
-		}
-	}
 
 	FileData::FileData ()
 	{
 	}
-	
+
 	FileData::FileData (const QUrl& url,
 			const QString& filename, int recLevel)
 	: Url_ (url)
@@ -67,19 +53,25 @@ namespace Otzerkalu
 	}
 
 	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param,
-			QObject *parent)
+			int id, QObject *parent)
 	: QObject (parent)
 	, Param_ (param)
 	, UrlCount_ (0)
+	, ID_ (id)
 	{
 	}
-	
+
+	QString OtzerkaluDownloader::GetLastDownloaded () const
+	{
+		return DownloadedFiles_.isEmpty () ? QString () : DownloadedFiles_.last ();
+	}
+
 	void OtzerkaluDownloader::Begin ()
 	{
 		//Let's download the first URL
 		Download (Param_.DownloadUrl_, Param_.RecLevel_);
 	}
-	
+
 	void OtzerkaluDownloader::HandleProvider (QObject *provider, int id,
 			const QUrl& url, const QString& filename, int recLevel)
 	{
@@ -95,7 +87,12 @@ namespace Otzerkalu
 				SLOT (handleJobFinished (int)),
 				Qt::UniqueConnection);
 	}
-	
+
+	int OtzerkaluDownloader::FilesCount () const
+	{
+		return DownloadedFiles_.count ();
+	}
+
 	QList<QUrl> OtzerkaluDownloader::CSSParser (const QString& data) const
 	{
 		QRegExp UrlCSS ("(?s).*?:\\s*url\\s*\\((.*?)\\).*");
@@ -111,7 +108,7 @@ namespace Otzerkalu
 		}
 		return urlStack;
 	}
-	
+
 	QString OtzerkaluDownloader::CSSUrlReplace (const QString& value, const FileData& data)
 	{
 		const QList<QUrl>& urlStack = CSSParser (value);
@@ -124,17 +121,18 @@ namespace Otzerkalu
 		}
 		return d;
 	}
-	
+
 	void OtzerkaluDownloader::handleJobFinished (int id)
 	{
 		qDebug () << Q_FUNC_INFO << "Download finished";
 		--UrlCount_;
 		const FileData& data = FileMap_ [id];
-		if (!data.RecLevel_ && !Param_.RecLevel_)
+		if (!data.RecLevel_ && Param_.RecLevel_)
 			return;
 
 		const QString& filename = data.Filename_;
 		DownloadedFiles_.append (filename);
+		emit fileDownloaded (ID_, DownloadedFiles_.count ());
 
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
@@ -169,15 +167,19 @@ namespace Otzerkalu
 				styleItr != styleColl.end (); ++styleItr)
 			(*styleItr).setInnerXml (CSSUrlReplace ((*styleItr).toInnerXml (), data));
 
-		if (!UrlCount_)
-			emit gotEntity (Util::MakeNotification (tr ("Download complete"),
-					tr ("Download complete %1")
-						.arg (Param_.DownloadUrl_.toString ()),
-					PInfo_));
 		if (haveLink)
 			WriteData (filename, page.mainFrame ()->toHtml ());
+
+		if (!UrlCount_)
+		{
+			emit gotEntity (Util::MakeNotification ("Otzerkalu",
+					tr ("Finished mirroring <em>%1</em>.")
+						.arg (Param_.DownloadUrl_.toString ()),
+					PInfo_));
+			emit mirroringFinished (ID_);
+		}
 	}
-	
+
 	bool OtzerkaluDownloader::HTMLReplace (QWebElementCollection::iterator element,
 			const FileData& data)
 	{
@@ -208,10 +210,10 @@ namespace Otzerkalu
 		const QString& name = fi.fileName ();
 		const QString& path = Param_.DestDir_ + '/' + url.host () +
 				fi.path ();
-				
+
 		//If file name's empty, rename it to 'index.html'
 		const QString& file = path + '/' + (name.isEmpty () ? "index.html" : name);
-		
+
 		//If file's not a html file, add .html tail to the name
 		const QString& filename = url.hasQuery () ? file + "?" +
 				url.encodedQuery () + ".html" : file;
@@ -248,7 +250,7 @@ namespace Otzerkalu
 		}
 		++UrlCount_;
 		HandleProvider (pr, id, url, filename, recLevel);
-		
+
 		return filename;
 	}
 

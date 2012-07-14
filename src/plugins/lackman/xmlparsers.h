@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,18 +25,15 @@ class QString;
 
 namespace LeechCraft
 {
-	namespace Plugins
-	{
-		namespace LackMan
-		{
-			RepoInfo ParseRepoInfo (const QUrl& url, const QString& data);
-			PackageShortInfoList ParseComponent (const QByteArray& data);
-			PackageInfo ParsePackage (const QByteArray& data,
-					const QUrl& baseUrl,
-					const QString& packageName,
-					const QStringList& packageVersions);
-		}
-	}
+namespace LackMan
+{
+	RepoInfo ParseRepoInfo (const QUrl& url, const QString& data);
+	PackageShortInfoList ParseComponent (const QByteArray& data);
+	PackageInfo ParsePackage (const QByteArray& data,
+			const QUrl& baseUrl,
+			const QString& packageName,
+			const QStringList& packageVersions);
+}
 }
 
 #endif

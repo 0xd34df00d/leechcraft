@@ -288,7 +288,7 @@
   <customwidget>
    <class>LeechCraft::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global">util/tagslineedit.h</header>
+   <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -338,13 +338,13 @@
   </connection>
   <connection>
    <sender>ChannelTags_</sender>
-   <signal>editingFinished()</signal>
+   <signal>returnPressed()</signal>
    <receiver>FeedSettings</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>161</x>
-     <y>99</y>
+     <x>215</x>
+     <y>77</y>
     </hint>
     <hint type="destinationlabel">
      <x>71</x>

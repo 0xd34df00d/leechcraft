@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +17,11 @@
  **********************************************************************/
 
 #include "storagebackend.h"
-#include "sqlstoragebackend.h"
-#include "sqlstoragebackend_mysql.h"
+#include <stdexcept>
 #include <QFile>
 #include <QDebug>
+#include "sqlstoragebackend.h"
+#include "sqlstoragebackend_mysql.h"
 
 namespace LeechCraft
 {
@@ -53,17 +54,33 @@ namespace Aggregator
 	{
 	}
 
-	boost::shared_ptr<StorageBackend> StorageBackend::Create (Type type)
+	std::shared_ptr<StorageBackend> StorageBackend::Create (const QString& strType, const QString& id)
 	{
-		boost::shared_ptr<StorageBackend> result;
+		StorageBackend::Type type;
+		if (strType == "SQLite")
+			type = StorageBackend::SBSQLite;
+		else if (strType == "PostgreSQL")
+			type = StorageBackend::SBPostgres;
+		else if (strType == "MySQL")
+			type = StorageBackend::SBMysql;
+		else
+			throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
+						.arg (strType)));
+
+		return Create (type, id);
+	}
+
+	std::shared_ptr<StorageBackend> StorageBackend::Create (Type type, const QString& id)
+	{
+		std::shared_ptr<StorageBackend> result;
 		switch (type)
 		{
 			case SBSQLite:
 			case SBPostgres:
-				result.reset (new SQLStorageBackend (type));
+				result.reset (new SQLStorageBackend (type, id));
 				break;
 			case SBMysql:
-				result.reset (new SQLStorageBackendMysql (type));
+				result.reset (new SQLStorageBackendMysql (type, id));
 		}
 		return result;
 	}

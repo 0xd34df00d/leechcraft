@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMANDSERVER_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMANDSERVER_H
-#include <boost/function.hpp>
+#include <functional>
 #include <QSet>
 #include <QXmppClientExtension.h>
 #include <QXmppDataForm.h>
@@ -37,21 +37,21 @@ namespace Xoox
 	class AdHocCommandServer : public QXmppClientExtension
 	{
 		Q_OBJECT
-		
+
 		ClientConnection *Conn_;
 
 		QMap<QString, QXmppDiscoveryIq::Item> XEP0146Items_;
-		
-		typedef boost::function<void (const QDomElement&)> NodeActor_t;
+
+		typedef std::function<void (const QDomElement&)> NodeActor_t;
 		QMap<QString, NodeActor_t> NodeInfos_;
-		typedef boost::function<void (const QDomElement&,
+		typedef std::function<void (const QDomElement&,
 				const QString&, const QXmppDataForm&)> NodeSubmitHandler_t;
 		QMap<QString, NodeSubmitHandler_t> NodeSubmitHandlers_;
-		
+
 		QMap<QString, QStringList> PendingSessions_;
 	public:
 		AdHocCommandServer (ClientConnection*);
-		
+
 		bool handleStanza (const QDomElement&);
 	private:
 		void Send (const QXmppDataForm&, const QDomElement&, const QString&);
@@ -62,6 +62,10 @@ namespace Xoox
 				const QString&, const QXmppDataForm&);
 		void LeaveGroupchatsInfo (const QDomElement&);
 		void LeaveGroupchatsSubmitted (const QDomElement&,
+				const QString&, const QXmppDataForm&);
+		void Forward (const QDomElement&);
+		void AddTaskInfo (const QDomElement&);
+		void AddTaskSubmitted (const QDomElement&,
 				const QString&, const QXmppDataForm&);
 	private slots:
 		void handleDiscoItems (const QXmppDiscoveryIq&);

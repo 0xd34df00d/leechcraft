@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,11 @@
  **********************************************************************/
 
 #include "sortfilterproxymodel.h"
+#include <QTimer>
+#include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/imucperms.h"
 #include "core.h"
-#include "interfaces/iclentry.h"
-#include "interfaces/imucperms.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -31,44 +33,82 @@ namespace Azoth
 	, ShowOffline_ (true)
 	, MUCMode_ (false)
 	, OrderByStatus_ (true)
+	, HideMUCParts_ (false)
 	, MUCEntry_ (0)
 	{
 		setDynamicSortFilter (true);
 		setFilterCaseSensitivity (Qt::CaseInsensitive);
-		
+
 		XmlSettingsManager::Instance ().RegisterObject ("OrderByStatus",
 				this, "handleStatusOrderingChanged");
 		handleStatusOrderingChanged ();
+
+		XmlSettingsManager::Instance ().RegisterObject ("HideMUCPartsInWholeCL",
+				this, "handleHideMUCPartsChanged");
+		handleHideMUCPartsChanged ();
 	}
-	
+
 	void SortFilterProxyModel::SetMUCMode (bool muc)
 	{
 		MUCMode_ = muc;
 		invalidateFilter ();
-		
+
 		if (muc)
 		  emit mucMode ();
 	}
-	
+
+	bool SortFilterProxyModel::IsMUCMode () const
+	{
+		return MUCMode_;
+	}
+
 	void SortFilterProxyModel::SetMUC (QObject *mucEntry)
 	{
+		if (MUCEntry_)
+			disconnect (MUCEntry_,
+					SIGNAL (destroyed (QObject*)),
+					this,
+					SLOT (handleMUCDestroyed ()));
+
 		MUCEntry_ = qobject_cast<IMUCEntry*> (mucEntry) ? mucEntry : 0;
+		if (MUCEntry_)
+			connect (MUCEntry_,
+					SIGNAL (destroyed (QObject*)),
+					this,
+					SLOT (handleMUCDestroyed ()));
+
 		invalidateFilter ();
 	}
 
 	void SortFilterProxyModel::showOfflineContacts (bool show)
 	{
 		ShowOffline_ = show;
-		invalidateFilter ();
+		invalidate ();
 	}
-	
+
 	void SortFilterProxyModel::handleStatusOrderingChanged ()
 	{
 		OrderByStatus_ = XmlSettingsManager::Instance ()
 				.property ("OrderByStatus").toBool ();
+		QTimer::singleShot (0,
+				this,
+				SLOT (invalidate ()));
+	}
+
+	void SortFilterProxyModel::handleHideMUCPartsChanged ()
+	{
+		HideMUCParts_ = XmlSettingsManager::Instance ()
+				.property ("HideMUCPartsInWholeCL").toBool ();
 		invalidate ();
 	}
-	
+
+	void SortFilterProxyModel::handleMUCDestroyed ()
+	{
+		SetMUC (0);
+		SetMUCMode (false);
+		emit wholeMode ();
+	}
+
 	namespace
 	{
 		Core::CLEntryType GetType (const QModelIndex& idx)
@@ -99,12 +139,16 @@ namespace Azoth
 				return acc == idx.data (Core::CLRAccountObject).value<QObject*> ();
 			}
 			case Core::CLETCategory:
-				return idx.data ().toString () == qobject_cast<IMUCEntry*> (MUCEntry_)->GetGroupName ();
+			{
+				const QString& gName = idx.data ().toString ();
+				return gName == qobject_cast<IMUCEntry*> (MUCEntry_)->GetGroupName () ||
+						qobject_cast<ICLEntry*> (MUCEntry_)->Groups ().contains (gName);
+			}
 			default:
 				break;
 			}
 		}
-		else if (!ShowOffline_)
+		else
 		{
 			const QModelIndex& idx = sourceModel ()->index (row, 0, parent);
 			if (!filterRegExp ().isEmpty ())
@@ -112,15 +156,42 @@ namespace Azoth
 						idx.data ().toString ().contains (filterRegExp ()) :
 						true;
 
-			if (GetType (idx) == Core::CLETContact)
+			if (idx.data (Core::CLRUnreadMsgCount).toInt ())
+				return true;
+
+			const auto type = GetType (idx);
+
+			if (type == Core::CLETContact)
 			{
 				ICLEntry *entry = GetEntry (idx);
 				const State state = entry->GetStatus ().State_;
-				if (state == SOffline &&
+
+				if (!ShowOffline_ &&
+						state == SOffline &&
 						!idx.data (Core::CLRUnreadMsgCount).toInt ())
 					return false;
+
+				if (HideMUCParts_ &&
+						entry->GetEntryType () == ICLEntry::ETPrivateChat)
+					return false;
+			}
+			else if (type == Core::CLETCategory)
+			{
+				if (!sourceModel ()->rowCount (idx))
+					return false;
+
+				if (!ShowOffline_ &&
+						!idx.data (Core::CLRNumOnline).toInt ())
+					return false;
+			}
+			else if (type == Core::CLETAccount)
+			{
+				const auto& accObj = idx.data (Core::CLRAccountObject).value<QObject*> ();
+				auto acc = qobject_cast<IAccount*> (accObj);
+				return acc->IsShownInRoster ();
 			}
 		}
+
 		return QSortFilterProxyModel::filterAcceptsRow (row, parent);
 	}
 
@@ -133,7 +204,7 @@ namespace Azoth
 
 		ICLEntry *lE = GetEntry (left);
 		ICLEntry *rE = GetEntry (right);
-		
+
 		if (lE->GetEntryType () == ICLEntry::ETPrivateChat &&
 				rE->GetEntryType () == ICLEntry::ETPrivateChat &&
 				lE->GetParentCLEntry () == rE->GetParentCLEntry ())

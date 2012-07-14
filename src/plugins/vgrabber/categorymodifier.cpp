@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,34 +18,30 @@
 
 #include "categorymodifier.h"
 #include <QPushButton>
-#include <util/tagscompleter.h>
+#include <util/tags/tagscompleter.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace vGrabber
+{
+	CategoryModifier::CategoryModifier (const QString& text, QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace vGrabber
-		{
-			CategoryModifier::CategoryModifier (const QString& text, QWidget *parent)
-			: QDialog (parent)
-			{
-				Ui_.setupUi (this);
+		Ui_.setupUi (this);
 
-				Completer_ = new Util::TagsCompleter (Ui_.Line_);
-				Ui_.Line_->AddSelector ();
-				Ui_.Line_->setText (text);
-			}
+		Completer_ = new Util::TagsCompleter (Ui_.Line_);
+		Ui_.Line_->AddSelector ();
+		Ui_.Line_->setText (text);
+	}
 
-			QString CategoryModifier::GetText () const
-			{
-				return Ui_.Line_->text ();
-			}
+	QString CategoryModifier::GetText () const
+	{
+		return Ui_.Line_->text ();
+	}
 
-			void CategoryModifier::on_Line__textChanged (const QString& text)
-			{
-				Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (text.size ());
-			}
-		};
-	};
-};
-
+	void CategoryModifier::on_Line__textChanged (const QString& text)
+	{
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (text.size ());
+	}
+}
+}

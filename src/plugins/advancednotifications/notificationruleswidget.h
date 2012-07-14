@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,8 +49,9 @@ namespace AdvancedNotifications
 		NotificationRulesWidget (QWidget* = 0);
 
 		QList<NotificationRule> GetRules () const;
+		void SetRuleEnabled (const NotificationRule&, bool);
 	private:
-		void LoadDefaultRules ();
+		void LoadDefaultRules (int = -1);
 		void LoadSettings ();
 		void ResetModel ();
 		void ResetMatchesModel ();
@@ -61,6 +62,7 @@ namespace AdvancedNotifications
 		void SaveSettings () const;
 	private slots:
 		void handleItemSelected (const QModelIndex&);
+		void handleItemChanged (QStandardItem*);
 
 		void on_AddRule__released ();
 		void on_UpdateRule__released ();

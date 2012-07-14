@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_WORKEROBJECT_H
-#define PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_WORKEROBJECT_H
+#pragma once
+
 #include <QObject>
 #include <QVariant>
 #include <QStringList>
@@ -36,27 +36,27 @@ namespace BodyFetch
 	class WorkerObject : public QObject
 	{
 		Q_OBJECT
-		
+
 		IScriptLoaderInstance *Inst_;
 		QVariantList Items_;
-		
+
 		bool IsProcessing_;
 		bool RecheckScheduled_;
-		
+
 		QStringList EnumeratedCache_;
 
 		QHash<QString, QString> ChannelLink2ScriptID_;
 		QHash<QUrl, IScript_ptr> URL2Script_;
 		QHash<QUrl, quint64> URL2ItemID_;
-		
+
 		QHash<QString, IScript_ptr> CachedScripts_;
-		
-		QList<QPair<QUrl, QString> > FetchedQueue_;
-		
+
+		QList<QPair<QUrl, QString>> FetchedQueue_;
+
 		QDir StorageDir_;
 	public:
 		WorkerObject (QObject* = 0);
-		
+
 		void SetLoaderInstance (IScriptLoaderInstance*);
 		bool IsOk () const;
 		void AppendItems (const QVariantList&);
@@ -80,5 +80,3 @@ namespace BodyFetch
 }
 }
 }
-
-#endif

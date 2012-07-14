@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 
 #ifndef PLUGINS_VFSCORE_CONTAINERS_GENERALARCH_GENERALARCH_H
 #define PLUGINS_VFSCORE_CONTAINERS_GENERALARCH_GENERALARCH_H
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/vfs/iengineprovider.h>
@@ -43,7 +42,7 @@ namespace GeneralArch
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		
+
 		QList<VFS::IContainerEngine*> GetContainerEngines () const;
 		QList<VFS::IProtocolEngine*> GetProtocolEngines () const;
 	};

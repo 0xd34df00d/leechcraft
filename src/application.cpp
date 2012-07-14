@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ LeechCraft::Application::Application (int& argc, char **argv)
 	if (VarMap_.count ("version"))
 	{
 		std::cout << "LeechCraft " << LEECHCRAFT_VERSION << " (http://leechcraft.org)" << std::endl;
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 		std::cout << " <this version does not have UNLIMITED CAT POWA :(>" << std::endl;
 #else
 		std::cout << " this version can haz teh UNLIMITED CAT POWA :3 ε:" << std::endl;
@@ -79,6 +79,9 @@ LeechCraft::Application::Application (int& argc, char **argv)
 
 	if (VarMap_.count ("clrsckt"))
 		QLocalServer::removeServer (GetSocketName ());
+
+	if (VarMap_.count ("no-resource-caching"))
+		setProperty ("NoResourceCaching", true);
 
 	if (VarMap_.count ("restart"))
 	{
@@ -115,6 +118,7 @@ LeechCraft::Application::Application (int& argc, char **argv)
 	qRegisterMetaType<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
 	qRegisterMetaType<LeechCraft::Entity> ("LeechCraft::Entity");
 	qRegisterMetaType<LeechCraft::Entity> ("Entity");
+	qRegisterMetaType<LeechCraft::IHookProxy_ptr> ("LeechCraft::IHookProxy_ptr");
 	qRegisterMetaType<LeechCraft::Sync::ChainID_t> ("LeechCraft::Sync::ChainID_t");
 	qRegisterMetaType<LeechCraft::Sync::ChainID_t> ("Sync::ChainID_t");
 	qRegisterMetaType<LeechCraft::Sync::ChainID_t> ("ChainID_t");
@@ -146,7 +150,7 @@ bpo::variables_map Application::Parse (bpo::command_line_parser& parser,
 	bpo::variables_map vm;
 	bpo::options_description invisible ("Invisible options");
 	invisible.add_options ()
-			("entity,E", bpo::value<std::vector<std::string> > (), "the entity to handle");
+			("entity,E", bpo::value<std::vector<std::string>> (), "the entity to handle");
 
 	desc->add_options ()
 			("help", "show the help message")
@@ -156,10 +160,13 @@ bpo::variables_map Application::Parse (bpo::command_line_parser& parser,
 			("type,T", bpo::value<std::string> (), "the type of the entity: url, url_encoded, file (for file paths) and such")
 			("automatic", "the entity is a result of some automatic stuff, not user's actions")
 			("bt", "print backtraces for warning messages into warning.log")
-			("plugin,P", bpo::value<std::vector<std::string> > (), "load only given plugin and ignore already running instances of LC")
+			("plugin,P", bpo::value<std::vector<std::string>> (), "load only given plugin and ignore already running instances of LC")
 			("nolog", "disable custom file logger and print everything to stdout/stderr")
 			("clrsckt", "clear stalled socket, use if you believe previous LC instance has terminated but failed to close its local socket properly")
 			("no-app-catch", "disable exceptions catch-all in QApplication::notify(), useful for debugging purposes")
+			("safe-mode", "disable all plugins so that you can manually enable them in Settings later")
+			("list-plugins", "list all non-adapted plugins that were found and exit (this one doesn't check if plugins are valid and loadable)")
+			("no-resource-caching", "disable caching of dynamic loadable resources (useful for stuff like Azoth themes development)")
 			("autorestart", "automatically restart LC if it's closed (not guaranteed to work everywhere, especially on Windows and Mac OS X)")
 			("minimized", "start LC minimized to tray")
 			("restart", "restart the LC");
@@ -185,7 +192,7 @@ const bpo::variables_map& Application::GetVarMap () const
 	return VarMap_;
 }
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 #include <windows.h>
 #else
 #include <unistd.h>
@@ -195,13 +202,17 @@ const bpo::variables_map& Application::GetVarMap () const
 QString Application::GetSocketName ()
 {
 	QString templ = QString ("LeechCraft_local_socket_%1");
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 	boost::scoped_array<TCHAR> buffer (new TCHAR [0]);
 	DWORD size = 0;
 	GetUserName (buffer.get (), &size);
 	buffer.reset (new TCHAR [size]);
 	if (GetUserName (buffer.get (), &size))
+#ifdef _UNICODE
+		return templ.arg (QString::fromWCharArray (buffer.get ()));
+#else
 		return templ.arg (buffer.get ());
+#endif
 	else
 		return templ.arg ("unknown");
 #else
@@ -221,6 +232,9 @@ void Application::InitiateRestart ()
 
 bool Application::notify (QObject *obj, QEvent *event)
 {
+	if (event->type () == QEvent::LanguageChange)
+		return true;
+
 	if (CatchExceptions_)
 	{
 		try

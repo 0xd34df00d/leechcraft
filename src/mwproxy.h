@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,18 @@ namespace LeechCraft
 		Q_INTERFACES (IMWProxy)
 	public:
 		MWProxy (QObject* = 0);
-		
+
 		void AddDockWidget (Qt::DockWidgetArea, QDockWidget*);
+		void AssociateDockWidget (QDockWidget*, QWidget*);
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
+		void SetViewActionShortcut (QDockWidget*, const QKeySequence&);
+		void AddToolbar (QToolBar*, Qt::ToolBarArea);
+		void AddSideWidget (QWidget*, WidgetArea);
+
+		void ToggleVisibility ();
+
+		QMenu* GetMainMenu ();
+		void HideMainMenu ();
 	};
 }
 

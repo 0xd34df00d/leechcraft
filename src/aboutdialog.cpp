@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,10 @@
  **********************************************************************/
 
 #include "aboutdialog.h"
+#include "util/sysinfo.h"
+#include "interfaces/ihavediaginfo.h"
 #include "config.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -76,6 +79,35 @@ namespace LeechCraft
 
 				return result;
 			}
+
+			QString FmtWeb () const
+			{
+				QString result = "<dt>";
+				if (!Name_.isEmpty ())
+					result += Name_;
+				if (!Name_.isEmpty () && !Nick_.isEmpty ())
+					result += " aka ";
+				if (!Nick_.isEmpty ())
+					result += Nick_;
+				result += "</dt><dd>";
+
+				if (!Email_.isEmpty ())
+					result += QString ("Email: <a href=\"mailto:%1\">%1</a>")
+							.arg (Email_);
+
+				result += "<ul>";
+				Q_FOREACH (const QString& r, Roles_)
+					result += QString ("<li>%1</li>")
+							.arg (r);
+				result += "</ul>";
+
+				result += AboutDialog::tr ("Years: %1")
+						.arg (Years_.join (", "));
+
+				result += "</dd>";
+
+				return result;
+			}
 		};
 	}
 
@@ -91,7 +123,7 @@ namespace LeechCraft
 		authors << ContributorInfo ("Georg Rudoy", "0xd34df00d",
 				"d34df00d@jabber.ru", "0xd34df00d@gmail.com",
 				QStringList (tr ("Lead developer and original author.")),
-				QList<int> () << 2006 << 2007 << 2008 << 2009 << 2010 << 2011);
+				QList<int> () << 2006 << 2007 << 2008 << 2009 << 2010 << 2011 << 2012);
 		authors << ContributorInfo ("Oleg Linkin", "magog",
 				"magog@gentoo.ru", "MaledictusDeMagog@gmail.com",
 				QStringList (tr ("Firefox importer in New Life."))
@@ -99,7 +131,7 @@ namespace LeechCraft
 					<< tr ("Azoth Acetamide: IRC support for Azoth.")
 					<< tr ("Chrome-style tabs.")
 					<< tr ("Various patches."),
-				QList<int> () << 2010 << 2011);
+				QList<int> () << 2010 << 2011 << 2012);
 
 		QList<ContributorInfo> contribs;
 		contribs << ContributorInfo (QString (), "Akon32",
@@ -115,6 +147,35 @@ namespace LeechCraft
 				QString (), "eual.jp@gmail.com",
 				QStringList (tr ("Ukrainian translations.")),
 				QList<int> () << 2011);
+		contribs << ContributorInfo ("Alia Eolova", "alieola",
+				"alieola@jabber.ru", "aeors-team@yandex.ru",
+				QStringList (tr ("Spanish translations.")),
+				QList<int> () << 2011 << 2012);
+		contribs << ContributorInfo ("Azer Abdullaev", "Like-all",
+				QString (), "lik3a11@gmail.com",
+				QStringList (tr ("Artwork.")),
+				QList<int> () << 2011 << 2012);
+		contribs << ContributorInfo ("Boris Pek", "Tehnick",
+				QString (), "tehnick-8@mail.ru",
+				QStringList (tr ("Debian/Ubuntu maintainership."))
+					<< tr ("Small fixes."),
+				QList<int> () << 2011 << 2012);
+		contribs << ContributorInfo ("Dimitriy Ryazantcev", "DJm00n",
+				"djm00n@jabber.ru", "dimitriy.ryazantcev@gmail.com",
+				QStringList (tr ("Windows maintainership."))
+					<< tr ("Windows fixes."),
+				QList<int> () << 2011 << 2012);
+		contribs << ContributorInfo ("Elena Belova", "Zereal",
+				"elena.zereal@neko.im", "zereal25@gmail.com",
+				QStringList (tr ("French translations."))
+					<< tr ("Italian translations.")
+					<< tr ("Public relations."),
+				QList<int> () << 2011);
+		contribs << ContributorInfo ("Eugene Mamin", "DZhon",
+				"dzhon_over@jabber.ru", "TheDZhon@gmail.com",
+				QStringList (tr ("Microsoft Windows backend for Liznoo plugin."))
+					<< tr ("Microsoft Windows builds."),
+				QList<int> () << 2011 << 2012);
 		contribs << ContributorInfo (QString (), "ForNeVeR",
 				"revenrof@jabber.ru", QString (),
 				QStringList ("Maintainer for the Microsoft Windows."),
@@ -122,13 +183,19 @@ namespace LeechCraft
 		contribs << ContributorInfo (QString (), "Ignotus",
 				"nlminhtl@gmail.com", QString (),
 				QStringList ("Improvements in Psto.net plugin for Azoth.")
+					<< tr ("Laure plugin.")
+					<< tr ("Last.FM Scrobbler plugin.")
 					<< tr ("openSUSE package maintainer")
 					<< tr ("Fedora package maintainer"),
-				QList<int> () << 2011);
+				QList<int> () << 2011 << 2012);
 		contribs << ContributorInfo (QString (), "lk4d4",
 				QString (), "lk4d4@yander.ru",
 				QStringList ("Initial ebuilds for Gentoo Linux."),
 				QList<int> () << 2009);
+		contribs << ContributorInfo ("Maxim Kirenenko", "part1zan_ aka 0x73571ab",
+				"part1zancheg@gmail.com", "part1zancheg@gmail.com",
+				QStringList (tr ("Extensive and thorough testing.")),
+				QList<int> () << 2010 << 2011);
 		contribs << ContributorInfo (QString (), "Miha",
 				QString (), "miha@52.ru",
 				QStringList ("OpenSUSE package maintainer."),
@@ -171,6 +238,61 @@ namespace LeechCraft
 		Q_FOREACH (const ContributorInfo& i, contribs)
 			formatted << i.Fmt ();
 		Ui_.Contributors_->setHtml (formatted.join ("<hr />"));
-	}
-};
 
+		if (QCoreApplication::arguments ().contains ("--format-contribs-for-web"))
+		{
+			formatted.clear ();
+
+			Q_FOREACH (const ContributorInfo& i, authors)
+				formatted << i.FmtWeb ();
+
+			formatted << QString () << QString ();
+
+			Q_FOREACH (const ContributorInfo& i, contribs)
+				formatted << i.FmtWeb ();
+
+			qDebug () << formatted.join ("\n\n");
+		}
+
+		BuildDiagInfo ();
+	}
+
+	void AboutDialog::BuildDiagInfo ()
+	{
+		QString text = QString ("LeechCraft ") + LEECHCRAFT_VERSION + "\n";
+		text += QString ("Built with Qt %1, running with Qt %2\n")
+				.arg (QT_VERSION_STR)
+				.arg (qVersion ());
+
+		text += QString ("Running on: %1\n").arg (Util::SysInfo::GetOSName ());
+		text += "--------------------------------\n\n";
+
+		QStringList loadedModules;
+		QStringList unPathedModules;
+		PluginManager *pm = Core::Instance ().GetPluginManager ();
+		Q_FOREACH (QObject *plugin, pm->GetAllPlugins ())
+		{
+			const QString& path = pm->GetPluginLibraryPath (plugin);
+
+			IInfo *ii = qobject_cast<IInfo*> (plugin);
+			if (path.isEmpty ())
+				unPathedModules << ("* " + ii->GetName ());
+			else
+				loadedModules << ("* " + ii->GetName () + " (" + path + ")");
+
+			IHaveDiagInfo *diagInfo = qobject_cast<IHaveDiagInfo*> (plugin);
+			if (diagInfo)
+			{
+				text += "Diag info for " + ii->GetName () + ":\n";
+				text += diagInfo->GetDiagInfoString ();
+				text += "\n--------------------------------\n\n";
+			}
+		}
+
+		text += QString ("Normal plugins:") + "\n" + loadedModules.join ("\n") + "\n\n";
+		if (!unPathedModules.isEmpty ())
+			text += QString ("Adapted plugins:") + "\n" + unPathedModules.join ("\n") + "\n\n";
+
+		Ui_.DiagInfo_->setPlainText (text);
+	}
+}

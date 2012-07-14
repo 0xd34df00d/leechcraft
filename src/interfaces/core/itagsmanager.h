@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,17 @@ public:
 	 */
 	virtual QStringList Split (const QString& string) const = 0;
 
+	/** @brief Splits the given string with tags and returns tags IDs.
+	 *
+	 * This function is essentially a combination of Split() and GetID().
+	 * First, the given string is split into human-readable tags, and
+	 * then for each tag its ID is obtained.
+	 *
+	 * @param[in] string String with tags.
+	 * @return The list of the tags IDs.
+	 */
+	virtual QStringList SplitToIDs (const QString& string) = 0;
+
 	/** @brief Joins the given tags into one string that's suitable to
 	 * display to the user.
 	 *
@@ -81,6 +92,18 @@ public:
 	 * @return The joined string with tags.
 	 */
 	virtual QString Join (const QStringList& tags) const = 0;
+
+	/** @brief Joins the given tag IDs into one human-readable string.
+	 *
+	 * This function is essentially a combination of GetTag() and Join().
+	 * First, it converts all given tagIDs into tag names using GetTag()
+	 * and then joins them using Join(). This function is provided for
+	 * convenience.
+	 *
+	 * @param[in] tagIDs List of tag IDs.
+	 * @return The joined string with tags.
+	 */
+	virtual QString JoinIDs (const QStringList& tagIDs) const = 0;
 
 	/** @brief Returns the completion model for this.
 	 */

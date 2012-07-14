@@ -19,10 +19,12 @@
 #include "acetamide.h"
 #include <ctime>
 #include <QIcon>
+#include <QStandardItemModel>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "nickservidentifywidget.h"
 
 namespace LeechCraft
 {
@@ -36,12 +38,17 @@ namespace Acetamide
 
 		qsrand (time (NULL));
 
+		qRegisterMetaTypeStreamOperators<QList<QStringList>> ("QList<QStringList>");
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
-		SettingsDialog_->
-				RegisterObject (&XmlSettingsManager::Instance (),
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 					"azothacetamidesettings.xml");
 
+		Core::Instance ().Init ();
 		Core::Instance ().SetProxy (proxy);
+
+		SettingsDialog_->SetCustomWidget ("NickServIdentifyWidget",
+				Core::Instance ().GetNickServIdentifyWidget ());
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
@@ -76,14 +83,14 @@ namespace Acetamide
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/acetamide/resources/images/acetamide.svg");
+		static QIcon icon (":/plugins/azoth/plugins/acetamide/resources/images/acetamide.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> classes;
-		classes <<
-				"org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
+		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
 		return classes;
 	}
 
@@ -110,5 +117,26 @@ namespace Acetamide
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_acetamide,
+QDataStream& operator<< (QDataStream& out, const QList<QStringList>& list)
+{
+	Q_FOREACH (const QStringList& subList, list)
+		out << subList;
+
+	return out;
+}
+
+QDataStream& operator>> (QDataStream& in, QList<QStringList>& list)
+{
+	QStringList subList;
+	while (!in.atEnd ())
+	{
+		in >> subList;
+		list << subList;
+		subList.clear ();
+	}
+
+	return in;
+}
+
+LC_EXPORT_PLUGIN (leechcraft_azoth_acetamide,
 		LeechCraft::Azoth::Acetamide::Plugin);

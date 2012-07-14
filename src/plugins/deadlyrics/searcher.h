@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,51 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DEADLYRICS_SEARCHER_H
-#define PLUGINS_DEADLYRICS_SEARCHER_H
-#include <vector>
+#pragma once
+
+#include <memory>
 #include <QObject>
-#include <interfaces/ifinder.h>
+#include <QList>
+#include <interfaces/media/ilyricsfinder.h>
 
 class QDataStream;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DeadLyrics
+{
+	class Searcher : public QObject
 	{
-		namespace DeadLyrics
-		{
-			struct Lyrics
-			{
-				QString Author_;
-				QString Album_;
-				QString Title_;
-				QString Text_;
-				QString URL_;
-			};
+		Q_OBJECT
+	public:
+		virtual ~Searcher ();
 
-			bool operator== (const Lyrics&, const Lyrics&);
-			QDataStream& operator<< (QDataStream&, const Lyrics&);
-			QDataStream& operator>> (QDataStream&, Lyrics&);
-			typedef std::vector<Lyrics> lyrics_t;
-
-			class Searcher : public QObject
-			{
-				Q_OBJECT
-			public:
-				virtual ~Searcher ();
-				virtual void Start (const QStringList&, QByteArray&) = 0;
-				virtual void Stop (const QByteArray&) = 0;
-			signals:
-				void textFetched (const LeechCraft::Plugins::DeadLyrics::Lyrics&, const QByteArray&);
-				void error (const QString&);
-			};
-
-			typedef boost::shared_ptr<Searcher> searcher_ptr;
-			typedef std::vector<searcher_ptr> searchers_t;
-		};
+		virtual void Search (const Media::LyricsQuery&, Media::QueryOptions) = 0;
+	signals:
+		void gotLyrics (const Media::LyricsQuery&, const QStringList&);
 	};
-};
 
-#endif
-
+	typedef std::shared_ptr<Searcher> Searcher_ptr;
+	typedef QList<Searcher_ptr> Searchers_t;
+}
+}

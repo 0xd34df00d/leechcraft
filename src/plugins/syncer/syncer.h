@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,36 +26,32 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Syncer
+{
+	class Plugin : public QObject
+					, public IInfo
+					, public IHaveSettings
 	{
-		namespace Syncer
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IHaveSettings
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveSettings)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveSettings)
 
-				std::auto_ptr<QTranslator> Translator_;
-				Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
+		std::auto_ptr<QTranslator> Translator_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
 
-				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
+}
+}
 
 #endif
-

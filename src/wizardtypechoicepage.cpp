@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,14 @@ namespace LeechCraft
 	: QWizardPage (parent)
 	{
 		Ui_.setupUi (this);
+		connect (Ui_.BasicSetup_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleButtonToggled ()));
+		connect (Ui_.AdvancedSetup_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleButtonToggled ()));
 	}
 
 	WizardTypeChoicePage::~WizardTypeChoicePage ()
@@ -36,5 +44,10 @@ namespace LeechCraft
 			return StartupWizard::TBasic;
 		else
 			return StartupWizard::TAdvanced;
+	}
+
+	void WizardTypeChoicePage::handleButtonToggled ()
+	{
+		emit chosenTypeChanged (GetChosenType ());
 	}
 };

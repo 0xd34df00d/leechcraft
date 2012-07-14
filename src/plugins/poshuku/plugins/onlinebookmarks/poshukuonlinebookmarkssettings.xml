@@ -2,93 +2,91 @@
 <settings>
 	<page>
 		<label value="OnlineBookmarks" />
-		<tab>
 			<label value="Accounts" />
-			<item type="customwidget" label="own" name="Accounts" />
-		</tab>
-		<tab>
-			<label value="Sync options" />
-			<item type="listview" property="ActiveServices">
-				<label value="Select services" />
+		<item type="customwidget" label="own" name="Accounts" />
+		<item type="combobox" property="UploadType">
+			<label value="Upload bookmarks type:"/>
+			<option name="0" default="true">
+				<label value="everything with everything" />
+			</option>
+			<option name="1">
+				<label value="only accounts" />
+			</option>
+			<option name="2">
+				<label value="only services" />
+			</option>
+		</item>
+		<item type="groupbox" property="DownloadGroup" checkable="true" default="false">
+			<label value="Download options" />
+			<item type="combobox" property="DownloadPeriod">
+				<label value="Send bookmarks to selected services every"/>
+				<option name="1" >
+					<label value="15 minutes" />
+				</option>
+				<option name="2" >
+					<label value="30 minutes" />
+				</option>
+				<option name="4" >
+					<label value="hour" />
+				</option>
+				<option name="8">
+					<label value="2 hours" />
+				</option>
+				<option name="16">
+					<label value="4 hours" />
+				</option>
+				<option name="32" default="true">
+					<label value="8 hours" />
+				</option>
+				<option name="48">
+					<label value="12 hours" />
+				</option>
+				<option name="96">
+					<label value="day" />
+				</option>
+				<option name="672">
+					<label value="week" />
+				</option>
+				<option name="2880">
+					<label value="month" />
+				</option>
 			</item>
-			<item type="checkbox" property="ConfirmSend" state="off">
-				<label value="Confirm sending bookmarks on addition" />
+		</item>
+		<item type="groupbox" property="UploadGroup" checkable="true" default="false">
+			<label value="Upload options" />
+			<item type="combobox" property="UploadPeriod" >
+				<label value="Send bookmarks to selected services every"/>
+				<option name="1" >
+					<label value="15 minutes" />
+				</option>
+				<option name="2" >
+					<label value="30 minutes" />
+				</option>
+				<option name="4" >
+					<label value="hour" />
+				</option>
+				<option name="8">
+					<label value="2 hours" />
+				</option>
+				<option name="16">
+					<label value="4 hours" />
+				</option>
+				<option name="32" default="true">
+					<label value="8 hours" />
+				</option>
+				<option name="48">
+					<label value="12 hours" />
+				</option>
+				<option name="96">
+					<label value="day" />
+				</option>
+				<option name="672">
+					<label value="week" />
+				</option>
+				<option name="2880">
+					<label value="month" />
+				</option>
 			</item>
-			<item type="checkbox" property="ShowServices" state="off">
-				<label value="Ask about services to send bookmarks to" />
-			</item>
-			<item type="groupbox" property="DownloadGroup" checkable="true" state="off">
-				<label value="Download options" />
-				<item type="combobox" property="DownloadPeriod">
-					<label value="Send bookmarks to selected services every"/>
-					<option name="0" default="true">
-						<label value="on action" />
-					</option>
-					<option name="1">
-						<label value="day" />
-					</option>
-					<option name="2">
-						<label value="2 days" />
-					</option>
-					<option name="3">
-						<label value="3 days" />
-					</option>
-					<option name="4">
-						<label value="4 days" />
-					</option>
-					<option name="5">
-						<label value="5 days" />
-					</option>
-					<option name="6">
-						<label value="6 days" />
-					</option>
-					<option name="7">
-						<label value="week" />
-					</option>
-					<option name="30">
-						<label value="month" />
-					</option>
-					<option name="365">
-						<label value="year" />
-					</option>
-				</item>
-			</item>
-			<item type="groupbox" property="UploadGroup" checkable="true" state="off">
-				<label value="Upload options" />
-				<item type="combobox" property="UploadPeriod" >
-					<label value="Send bookmarks to selected services every"/>
-					<option name="0" default="true">
-						<label value="on action" />
-					</option>
-					<option name="1">
-						<label value="day" />
-					</option>
-					<option name="2">
-						<label value="2 days" />
-					</option>
-					<option name="3">
-						<label value="3 days" />
-					</option>
-					<option name="4">
-						<label value="4 days" />
-					</option>
-					<option name="5">
-						<label value="5 days" />
-					</option>
-					<option name="6">
-						<label value="6 days" />
-					</option>
-					<option name="7">
-						<label value="week" />
-					</option>
-					<option name="30">
-						<label value="month" />
-					</option>
-					<option name="365">
-						<label value="year" />
-					</option>
-				</item>
-			</item>
-		</tab>
+		</item>
 	</page>
 </settings>

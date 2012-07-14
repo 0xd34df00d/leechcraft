@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "kinotify.h"
-#include <boost/bind.hpp>
 #include <QMainWindow>
 #include <QIcon>
 #include <QTimer>
@@ -27,157 +26,163 @@
 #include <interfaces/core/icoreproxy.h>
 #include "kinotifywidget.h"
 #include "xmlsettingsmanager.h"
+#include "fswinwatcher.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Kinotify
+{
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		namespace Kinotify
+		Proxy_ = proxy;
+
+		ThemeLoader_.reset (new Util::ResourceLoader ("kinotify/themes/notification"));
+		ThemeLoader_->AddLocalPrefix ();
+		ThemeLoader_->AddGlobalPrefix ();
+
+		connect (ThemeLoader_.get (),
+				SIGNAL (watchedDirectoriesChanged ()),
+				this,
+				SLOT (handleWatchedDirsChanged ()));
+
+		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"kinotifysettings.xml");
+
+		SettingsDialog_->SetDataSource ("NotificatorStyle",
+				ThemeLoader_->GetSubElemModel ());
+
+		FSWinWatcher_.reset (new FSWinWatcher (Proxy_));
+	}
+
+	void Plugin::SecondInit ()
+	{
+	}
+
+	void Plugin::Release ()
+	{
+	}
+
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Kinotify";
+	}
+
+	QString Plugin::GetName () const
+	{
+		return "Kinotify";
+	}
+
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Fancy Kinetic notifications.");
+	}
+
+	QIcon Plugin::GetIcon () const
+	{
+		static QIcon icon (":/plugins/kinotify/resources/images/kinotify.svg");
+		return icon;
+	}
+
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
+	{
+		const bool could = e.Mime_ == "x-leechcraft/notification" &&
+				e.Additional_ ["Priority"].toInt () != PLog_ &&
+				!e.Additional_ ["Text"].toString ().isEmpty ();
+		return could ?
+				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult ();
+	}
+
+	void Plugin::Handle (Entity e)
+	{
+		if (XmlSettingsManager::Instance ()->
+					property ("RespectFullscreen").toBool () &&
+				FSWinWatcher_->IsCurrentFS ())
+			return;
+
+		Priority prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
+		if (prio == PLog_)
+			return;
+
+		QString header = e.Entity_.toString ();
+		QString text = e.Additional_ ["Text"].toString ();
+
+		int timeout = Proxy_->GetSettingsManager ()->
+				property ("FinishedDownloadMessageTimeout").toInt () * 1000;
+
+		KinotifyWidget *notificationWidget = new KinotifyWidget (timeout);
+		notificationWidget->SetThemeLoader (ThemeLoader_);
+		notificationWidget->SetEntity (e);
+
+		QStringList actionsNames = e.Additional_ ["NotificationActions"].toStringList ();
+		if (!actionsNames.isEmpty ())
 		{
-			void Plugin::Init (ICoreProxy_ptr proxy)
+			if (!e.Additional_ ["HandlingObject"].canConvert<QObject_ptr> ())
+				qWarning () << Q_FUNC_INFO
+						<< "value is not QObject_ptr"
+						<< e.Additional_ ["HandlingObject"];
+			else
 			{
-				Proxy_ = proxy;
-
-				ThemeLoader_.reset (new Util::ResourceLoader ("kinotify/themes/notification"));
-				ThemeLoader_->AddLocalPrefix ();
-				ThemeLoader_->AddGlobalPrefix ();
-
-				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
-				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-						"kinotifysettings.xml");
-
-				SettingsDialog_->SetDataSource ("NotificatorStyle",
-						ThemeLoader_->GetSubElemModel ());
+				QObject_ptr actionObject = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
+				notificationWidget->SetActions (actionsNames, actionObject);
 			}
+		}
 
-			void Plugin::SecondInit ()
-			{
-			}
+		connect (notificationWidget,
+				SIGNAL (checkNotificationQueue ()),
+				this,
+				SLOT (pushNotification ()));
+		connect (notificationWidget,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
-			void Plugin::Release ()
-			{
-			}
+		QString mi = "dialog-information";
+		switch (prio)
+		{
+			case PWarning_:
+				mi = "dialog-warning";
+				break;
+			case PCritical_:
+				mi = "dialog-error";
+			default:
+				break;
+		}
 
-			QByteArray Plugin::GetUniqueID () const
-			{
-				return "org.LeechCraft.Kinotify";
-			}
+		const QIcon& icon = Proxy_->GetIcon (mi);
+		const QPixmap& px = icon.pixmap (QSize (128, 128));
+		notificationWidget->SetContent (header, text, QString ());
 
-			QString Plugin::GetName () const
-			{
-				return "Kinotify";
-			}
+		const QPixmap& notif = e.Additional_ ["NotificationPixmap"].value<QPixmap> ();
+		notificationWidget->OverrideImage (notif.isNull () ? px : notif);
 
-			QString Plugin::GetInfo () const
-			{
-				return tr ("Fancy Kinetic notifications.");
-			}
+		if (!ActiveNotifications_.size ())
+			notificationWidget->PrepareNotification ();
 
-			QIcon Plugin::GetIcon () const
-			{
-				return QIcon (":/plugins/kinotify/resources/images/kinotify.svg");
-			}
+		ActiveNotifications_ << notificationWidget;
+	}
 
-			EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
-			{
-				const bool could = e.Mime_ == "x-leechcraft/notification" &&
-						e.Additional_ ["Priority"].toInt () != PLog_ &&
-						!e.Additional_ ["Text"].toString ().isEmpty ();
-				return could ?
-						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
-						EntityTestHandleResult ();
-			}
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
 
-			void Plugin::Handle (Entity e)
-			{
-				Priority prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
-				if (prio == PLog_)
-					return;
+	void Plugin::pushNotification ()
+	{
+		if (!ActiveNotifications_.size ())
+			return;
 
-				QString header = e.Entity_.toString ();
-				QString text = e.Additional_ ["Text"].toString ();
+		ActiveNotifications_.removeFirst ();
+		if (ActiveNotifications_.size ())
+			ActiveNotifications_.first ()->PrepareNotification ();
+	}
 
-				int timeout = Proxy_->GetSettingsManager ()->
-						property ("FinishedDownloadMessageTimeout").toInt () * 1000;
+	void Plugin::handleWatchedDirsChanged ()
+	{
+		KinotifyWidget::ClearThemeCache ();
+	}
+}
+}
 
- 				KinotifyWidget *notificationWidget =
-						new KinotifyWidget (timeout, Proxy_->GetMainWindow ());
-				notificationWidget->setWindowModality (Qt::NonModal);
-				notificationWidget->SetThemeLoader (ThemeLoader_);
-				notificationWidget->SetEntity (e);
-
-				QStringList actionsNames = e.Additional_ ["NotificationActions"].toStringList ();
-				if (!actionsNames.isEmpty ())
-				{
-					if (!e.Additional_ ["HandlingObject"].canConvert<QObject_ptr> ())
-						qWarning () << Q_FUNC_INFO
-								<< "value is not QObject_ptr"
-								<< e.Additional_ ["HandlingObject"];
-					else
-					{
-						QObject_ptr actionObject = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
-						notificationWidget->SetActions (actionsNames, actionObject);
-					}
-				}
-
-				connect (notificationWidget,
-						SIGNAL (checkNotificationQueue ()),
-						this,
-						SLOT (pushNotification ()));
-				connect (notificationWidget,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-
-				QString mi = "information";
-				switch (prio)
-				{
-					case PWarning_:
-						mi = "warning";
-						break;
-					case PCritical_:
-						mi = "error";
-					default:
-						break;
-				}
-
-				QString path;
-				QMap<int, QString> sizes = Proxy_->GetIconPath (mi);
-				if (sizes.size ())
-				{
-					int size = 0;
-					if (!sizes.contains (size))
-						size = sizes.keys ().last ();
-					path = sizes [size];
-				}
-
-				notificationWidget->SetContent (header, text, path);
-				if (e.Additional_ ["NotificationPixmap"].isValid ())
-					notificationWidget->OverrideImage (e.Additional_ ["NotificationPixmap"].value<QPixmap> ());
-
-				if (!ActiveNotifications_.size ())
-					notificationWidget->PrepareNotification ();
-
-				ActiveNotifications_ << notificationWidget;
-			}
-
-			Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-			{
-				return SettingsDialog_;
-			}
-
-			void Plugin::pushNotification ()
-			{
-				if (!ActiveNotifications_.size ())
-					return;
-
-				ActiveNotifications_.removeFirst ();
-				if (ActiveNotifications_.size ())
-					ActiveNotifications_.first ()->PrepareNotification ();
-			}
-		};
-	};
-};
-
-Q_EXPORT_PLUGIN2 (leechcraft_kinotify, LeechCraft::Plugins::Kinotify::Plugin);
-
+LC_EXPORT_PLUGIN (leechcraft_kinotify, LeechCraft::Kinotify::Plugin);

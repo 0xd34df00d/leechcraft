@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include <interfaces/iproxyobject.h>
-#include <interfaces/iaccount.h>
+#include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/iaccount.h>
 #include "xmlsettingsmanager.h"
 #include "3dparty/idle.h"
 
@@ -43,7 +43,7 @@ namespace Autoidler
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothautoidlersettings.xml");
-		
+
 		Idle_.reset (new Idle);
 		connect (Idle_.get (),
 				SIGNAL (secondsIdle (int)),
@@ -77,7 +77,8 @@ namespace Autoidler
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/autoidler/resources/images/autoidler.svg");
+		static QIcon icon (":/plugins/azoth/plugins/autoidler/resources/images/autoidler.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -86,31 +87,31 @@ namespace Autoidler
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
 	}
-	
-	quint64 Plugin::GetInactiveSeconds ()
+
+	int Plugin::GetInactiveSeconds ()
 	{
 		return IdleSeconds_;
 	}
-	
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
 	}
-	
+
 	void Plugin::handleIdle (int seconds)
 	{
 		IdleSeconds_ = seconds;
 		if (seconds && seconds % 60)
 			return;
-		
+
 		if (!XmlSettingsManager::Instance ().property ("EnableAutoidler").toBool ())
 			return;
-		
+
 		const int mins = seconds / 60;
 		if (!mins &&
 				!OldStatuses_.isEmpty ())
@@ -119,39 +120,40 @@ namespace Autoidler
 			{
 				if (!OldStatuses_.contains (accObj))
 					continue;
-				
+
 				IAccount *acc = qobject_cast<IAccount*> (accObj);
 				acc->ChangeState (OldStatuses_ [accObj]);
 			}
-			
+
 			OldStatuses_.clear ();
 		}
-		
+
 		if (!mins)
 			return;
-		
+
 		EntryStatus status;
-		
+
 		if (mins == XmlSettingsManager::Instance ().property ("AwayTimeout").toInt ())
 			status = EntryStatus (SAway,
 					XmlSettingsManager::Instance ().property ("AwayText").toString ());
 		else if (mins == XmlSettingsManager::Instance ().property ("NATimeout").toInt ())
-			status = EntryStatus (SDND,
+			status = EntryStatus (SXA,
 					XmlSettingsManager::Instance ().property ("NAText").toString ());
 		else
 			return;
-		
+
 		Q_FOREACH (QObject *accObj, AzothProxy_->GetAllAccounts ())
 		{
 			IAccount *acc = qobject_cast<IAccount*> (accObj);
 
 			const EntryStatus& oldStatus = acc->GetState ();
-			if (oldStatus.State_ == SOffline)
+			if (oldStatus.State_ != SOnline &&
+					oldStatus.State_ != SChat)
 				continue;
-			
+
 			if (!OldStatuses_.contains (accObj))
 				OldStatuses_ [accObj] = oldStatus;
-			
+
 			acc->ChangeState (status);
 		}
 	}
@@ -159,4 +161,4 @@ namespace Autoidler
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_autoidler, LeechCraft::Azoth::Autoidler::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_autoidler, LeechCraft::Azoth::Autoidler::Plugin);

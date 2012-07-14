@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,8 @@
 #include <QDateTime>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ihavetabs.h>
-#include "interfaces/azothcommon.h"
+#include <interfaces/ihaverecoverabletabs.h>
+#include "interfaces/azoth/azothcommon.h"
 #include "ui_chattab.h"
 
 namespace LeechCraft
@@ -41,16 +42,17 @@ namespace Azoth
 
 	class ChatTab : public QWidget
 				  , public ITabWidget
+				  , public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		static QObject *S_ParentMultiTabs_;
+		static TabClassInfo S_TabClass_;
 
 		Ui::ChatTab Ui_;
-		QToolBar *TabToolbar_;
+		std::unique_ptr<QToolBar> TabToolbar_;
 		QAction *ToggleRichText_;
-		QAction *SendFile_;
 		QAction *Call_;
 #ifdef ENABLE_CRYPT
 		QAction *EnableEncryption_;
@@ -68,6 +70,7 @@ namespace Azoth
 		QString NickFirstPart_;
 
 		int NumUnreadMsgs_;
+		int ScrollbackPos_;
 
 		QList<IMessage*> HistoryMessages_;
 
@@ -84,6 +87,7 @@ namespace Azoth
 		ChatPartState PreviousState_;
 	public:
 		static void SetParentMultiTabs (QObject*);
+		static void SetTabClassInfo (const TabClassInfo&);
 
 		ChatTab (const QString&, QWidget* = 0);
 		~ChatTab ();
@@ -105,12 +109,18 @@ namespace Azoth
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
 
+		QByteArray GetTabRecoverData () const;
+		QString GetTabRecoverName () const;
+		QIcon GetTabRecoverIcon () const;
+
 		void HandleMUCParticipantsChanged ();
 
 		QObject* GetCLEntry () const;
+		QString GetSelectedVariant () const;
 	public slots:
 		void prepareMessageText (const QString&);
 		void appendMessageText (const QString&);
+		void selectVariant (const QString&);
 		QTextEdit* getMsgEdit ();
 	private slots:
 		void clearAvailableNick ();
@@ -120,12 +130,15 @@ namespace Azoth
 		void on_MsgEdit__textChanged ();
 		void on_SubjectButton__toggled (bool);
 		void on_SubjChange__released ();
+		void on_View__loadFinished (bool);
 		void handleClearChat ();
+		void handleHistoryBack ();
 		void handleRichTextToggled ();
 		void handleQuoteSelection ();
-		void handleSendFile ();
+#ifdef ENABLE_MEDIACALLS
 		void handleCallRequested ();
 		void handleCall (QObject*);
+#endif
 #ifdef ENABLE_CRYPT
 		void handleEnableEncryption ();
 		void handleEncryptionStateChanged (QObject*, bool);
@@ -135,17 +148,20 @@ namespace Azoth
 		void handleOfferActionTriggered ();
 		void handleEntryMessage (QObject*);
 		void handleVariantsChanged (QStringList);
+		void handleAvatarChanged (const QImage&);
 		void handleStatusChanged (const EntryStatus&, const QString&);
 		void handleChatPartStateChanged (const ChatPartState&, const QString&);
 		void handleViewLinkClicked (const QUrl&);
 		void handleHistoryUp ();
 		void handleHistoryDown ();
-		void handleAddToBookmarks ();
-		void handleConfigureMUC ();
 		void typeTimeout ();
 
 		void handleGotLastMessages (QObject*, const QList<QObject*>&);
 
+		void handleSendButtonVisible ();
+		void handleMinLinesHeightChanged ();
+		void handleRichFormatterPosition ();
+		void handleFontSettingsChanged ();
 		void handleFontSizeChanged ();
 	private:
 		template<typename T>
@@ -156,8 +172,9 @@ namespace Azoth
 		void HandleMUC ();
 		void InitExtraActions ();
 		void InitMsgEdit ();
+		void RegisterSettings ();
 
-		void RequestLogs ();
+		void RequestLogs (int);
 
 		QStringList GetMUCParticipants () const;
 
@@ -195,6 +212,8 @@ namespace Azoth
 		void needToClose (ChatTab*);
 		void entryMadeCurrent (QObject*);
 
+		void tabRecoverDataChanged ();
+
 		// Hooks
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
@@ -208,8 +227,7 @@ namespace Azoth
 				QObject *chatTab,
 				QObject *entry,
 				int type,
-				QString variant,
-				QString text);
+				QString variant);
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);

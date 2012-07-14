@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,10 @@
 #include <QWizard>
 #include <QMessageBox>
 #include <QStandardItemModel>
-#include "interfaces/iaccount.h"
-#include "interfaces/iprotocol.h"
+#include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/iprotocol.h"
 #ifdef ENABLE_CRYPT
-#include "interfaces/isupportpgp.h"
+#include "interfaces/azoth/isupportpgp.h"
 #include "pgpkeyselectiondialog.h"
 #endif
 #include "core.h"
@@ -36,9 +36,17 @@ namespace Azoth
 {
 	AccountsListWidget::AccountsListWidget (QWidget* parent)
 	: QWidget (parent)
-	, AccModel_ (new QStandardItemModel ())
+	, AccModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+
+		QStringList labels;
+		labels << tr ("Show") << tr ("Name");
+		AccModel_->setHorizontalHeaderLabels (labels);
+		connect (AccModel_,
+				SIGNAL (itemChanged (QStandardItem*)),
+				this,
+				SLOT (handleItemChanged (QStandardItem*)));
 
 #ifdef ENABLE_CRYPT
 		Ui_.PGP_->setEnabled (true);
@@ -64,13 +72,22 @@ namespace Azoth
 	{
 		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
-		QStandardItem *item = new QStandardItem (acc->GetAccountName ());
-		item->setIcon (proto ? proto->GetProtocolIcon () : QIcon ());
-		item->setData (QVariant::fromValue<IAccount*> (acc), RAccObj);
-		item->setEditable (false);
-		AccModel_->appendRow (item);
+		QStandardItem *show = new QStandardItem ();
+		show->setCheckable (true);
+		show->setCheckState (acc->IsShownInRoster () ? Qt::Checked : Qt::Unchecked);
+		show->setEditable (false);
+		show->setData (QVariant::fromValue<IAccount*> (acc), RAccObj);
+		show->setData (ItemTypes::ShowInRoster, Roles::RItemType);
 
-		Account2Item_ [acc] = item;
+		QStandardItem *name = new QStandardItem (acc->GetAccountName ());
+		name->setIcon (proto ? proto->GetProtocolIcon () : QIcon ());
+		name->setEditable (false);
+		name->setData (QVariant::fromValue<IAccount*> (acc), RAccObj);
+		name->setData (ItemTypes::Name, Roles::RItemType);
+
+		AccModel_->appendRow (QList<QStandardItem*> () << show << name);
+
+		Account2Item_ [acc] = name;
 	}
 
 	void AccountsListWidget::on_Add__released ()
@@ -80,13 +97,11 @@ namespace Azoth
 
 	void AccountsListWidget::on_Modify__released ()
 	{
-		QModelIndex index = Ui_.Accounts_->
-				selectionModel ()->currentIndex ();
+		QModelIndex index = Ui_.Accounts_->selectionModel ()->currentIndex ();
 		if (!index.isValid ())
 			return;
 
-		IAccount *acc = index
-				.data (RAccObj).value<IAccount*> ();
+		IAccount *acc = index.data (RAccObj).value<IAccount*> ();
 		acc->OpenConfigurationDialog ();
 	}
 
@@ -149,6 +164,19 @@ namespace Azoth
 			return;
 		}
 		proto->RemoveAccount (acc->GetObject ());
+	}
+
+	void AccountsListWidget::handleItemChanged (QStandardItem *item)
+	{
+		const auto type = item->data (Roles::RItemType).toInt ();
+		if (type != ItemTypes::ShowInRoster)
+			return;
+
+		IAccount *acc = item->data (Roles::RAccObj).value<IAccount*> ();
+		acc->SetShownInRoster (item->checkState () == Qt::Checked);
+		if (!acc->IsShownInRoster () && acc->GetState ().State_ != SOffline)
+			acc->ChangeState (EntryStatus (SOffline, QString ()));
+		emit accountVisibilityChanged (acc);
 	}
 
 	void AccountsListWidget::handleAccountRemoved (IAccount *acc)

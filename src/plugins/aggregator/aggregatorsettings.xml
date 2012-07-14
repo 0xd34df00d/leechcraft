@@ -104,6 +104,9 @@
 					<suffix value=" days" />
 				</item>
 			</groupbox>
+			<item type="checkbox" property="ConfirmMarkAllAsRead" default="true">
+				<label value="Ask mark all feeds as read confirmation" />
+			</item>
 		</tab>
 		<tab>
 			<label lang="en" value="Storage" />

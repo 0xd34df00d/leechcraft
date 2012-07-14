@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@
 
 #include "sqlstoragebackend.h"
 #include <stdexcept>
-#include <boost/bind.hpp>
 #include <boost/optional.hpp>
 #include <QDir>
 #include <QDebug>
 #include <QBuffer>
 #include <QSqlError>
+#include <QThread>
 #include <QVariant>
 #include <QSqlRecord>
 #include <util/dblock.h>
@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t)
+	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t, const QString& id)
 	: Type_ (t)
 	{
 		QString strType;
@@ -53,7 +53,7 @@ namespace Aggregator
 				break;
 		}
 
-		DB_ = QSqlDatabase::addDatabase (strType, "AggregatorConnection");
+		DB_ = QSqlDatabase::addDatabase (strType, "AggregatorConnection" + id);
 
 		switch (Type_)
 		{
@@ -1263,9 +1263,7 @@ namespace Aggregator
 		try
 		{
 			std::for_each (feed->Channels_.begin (), feed->Channels_.end (),
-					boost::bind (&SQLStorageBackend::AddChannel,
-						this,
-						_1));
+					[this] (Channel_ptr chan) { AddChannel (chan); });
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -1507,9 +1505,7 @@ namespace Aggregator
 		InsertChannel_.finish ();
 
 		std::for_each (channel->Items_.begin (), channel->Items_.end (),
-				boost::bind (&SQLStorageBackend::AddItem,
-					this,
-					_1));
+				[this] (Item_ptr item) { AddItem (item); });
 	}
 
 	void SQLStorageBackend::AddItem (Item_ptr item)
@@ -1587,7 +1583,7 @@ namespace Aggregator
 		try
 		{
 			Item_ptr item = GetItem (itemId);
-			*cid = item->ChannelID_;
+			cid = item->ChannelID_;
 		}
 		catch (const ItemNotFoundError&)
 		{
@@ -1656,6 +1652,32 @@ namespace Aggregator
 					<< *cid;
 			}
 		}
+	}
+
+	void SQLStorageBackend::RemoveChannel (const IDType_t& channelId)
+	{
+		Util::DBLock lock (DB_);
+		try
+		{
+			lock.Init ();
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+			return;
+		}
+
+		RemoveChannel_.bindValue (":channel_id", channelId);
+		if (!RemoveChannel_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveChannel_);
+			return;
+		}
+
+		RemoveChannel_.finish ();
+
+		lock.Good ();
 	}
 
 	void SQLStorageBackend::RemoveFeed (const IDType_t& feedId)
@@ -1778,7 +1800,8 @@ namespace Aggregator
 	bool SQLStorageBackend::InitializeTables ()
 	{
 		QSqlQuery query (DB_);
-		if (!DB_.tables ().contains ("feeds"))
+		const auto& tables = DB_.tables ();
+		if (!tables.contains ("feeds"))
 		{
 			if (!query.exec ("CREATE TABLE feeds ("
 					"feed_id BIGINT PRIMARY KEY, "
@@ -1791,7 +1814,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("feeds_settings"))
+		if (!tables.contains ("feeds_settings"))
 		{
 			if (!query.exec (QString ("CREATE TABLE feeds_settings ("
 							"settings_id BIGINT PRIMARY KEY, "
@@ -1828,7 +1851,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("channels"))
+		if (!tables.contains ("channels"))
 		{
 			if (!query.exec (QString ("CREATE TABLE channels ("
 					"channel_id BIGINT PRIMARY KEY, "
@@ -1850,7 +1873,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("items"))
+		if (!tables.contains ("items"))
 		{
 			if (!query.exec (QString ("CREATE TABLE items ("
 					"item_id BIGINT PRIMARY KEY, "
@@ -1882,7 +1905,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("enclosures"))
+		if (!tables.contains ("enclosures"))
 		{
 			if (!query.exec ("CREATE TABLE enclosures ("
 						"enclosure_id BIGINT PRIMARY KEY, "
@@ -1917,7 +1940,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("mrss"))
+		if (!tables.contains ("mrss"))
 		{
 			if (!query.exec (QString ("CREATE TABLE mrss ("
 							"mrss_id BIGINT PRIMARY KEY, "
@@ -2005,7 +2028,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("mrss_thumbnails"))
+		if (!tables.contains ("mrss_thumbnails"))
 		{
 			if (!query.exec ("CREATE TABLE mrss_thumbnails ("
 						"mrss_thumb_id BIGINT PRIMARY KEY, "
@@ -2040,7 +2063,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("mrss_credits"))
+		if (!tables.contains ("mrss_credits"))
 		{
 			if (!query.exec ("CREATE TABLE mrss_credits ("
 						"mrss_credits_id BIGINT PRIMARY KEY, "
@@ -2072,7 +2095,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("mrss_comments"))
+		if (!tables.contains ("mrss_comments"))
 		{
 			if (!query.exec ("CREATE TABLE mrss_comments ("
 						"mrss_comment_id BIGINT PRIMARY KEY, "
@@ -2104,7 +2127,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("mrss_peerlinks"))
+		if (!tables.contains ("mrss_peerlinks"))
 		{
 			if (!query.exec ("CREATE TABLE mrss_peerlinks ("
 						"mrss_peerlink_id BIGINT PRIMARY KEY, "
@@ -2136,7 +2159,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("mrss_scenes"))
+		if (!tables.contains ("mrss_scenes"))
 		{
 			if (!query.exec ("CREATE TABLE mrss_scenes ("
 						"mrss_scene_id BIGINT PRIMARY KEY, "
@@ -2172,7 +2195,7 @@ namespace Aggregator
 			}
 		}
 
-		if (!DB_.tables ().contains ("items2tags"))
+		if (!tables.contains ("items2tags"))
 		{
 			if (!query.exec ("CREATE TABLE items2tags ("
 						"item_id BIGINT NOT NULL, "
@@ -2187,7 +2210,7 @@ namespace Aggregator
 		return true;
 	}
 
-	QByteArray SQLStorageBackend::SerializePixmap (const QPixmap& pixmap) const
+	QByteArray SQLStorageBackend::SerializePixmap (const QImage& pixmap) const
 	{
 		QByteArray bytes;
 		if (!pixmap.isNull ())
@@ -2199,9 +2222,9 @@ namespace Aggregator
 		return bytes;
 	}
 
-	QPixmap SQLStorageBackend::UnserializePixmap (const QByteArray& bytes) const
+	QImage SQLStorageBackend::UnserializePixmap (const QByteArray& bytes) const
 	{
-		QPixmap result;
+		QImage result;
 		if (bytes.size ())
 			result.loadFromData (bytes, "PNG");
 		return result;

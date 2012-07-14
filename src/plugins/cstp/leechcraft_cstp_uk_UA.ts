@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="uk">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
 <context>
     <name>LeechCraft::Plugins::CSTP::AddTask</name>
     <message>
@@ -11,12 +9,12 @@
     <message>
         <location filename="addtask.cpp" line="110"/>
         <source>Directory %1 isn&apos;t readable, would you like to select another?</source>
-        <translation>Не можу читати з теки %1. Хочете обрати іншу?</translation>
+        <translation>Не можу читати з теки %1. Бажаєте обрати іншу?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="113"/>
         <source>Directory %1 isn&apos;t writable, would you like to select another?</source>
-        <translation>Не можу писати в теку %1. Хочете обрати іншу?</translation>
+        <translation>Не можу писати в теку %1. Бажаєте обрати іншу?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="116"/>
@@ -59,7 +57,7 @@
     <message>
         <location filename="cstp.cpp" line="243"/>
         <source>Stop all</source>
-        <translation>Зупунити всі</translation>
+        <translation>Зупинити всі</translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="255"/>
@@ -90,6 +88,11 @@
         <translation>Прогрес</translation>
     </message>
     <message>
+        <location filename="core.cpp" line="277"/>
+        <source>Could not truncate file </source>
+        <translation>Не можу обрізати файл</translation>
+    </message>
+    <message>
         <location filename="core.cpp" line="417"/>
         <source>%1 (ETA: %2)</source>
         <translation>%1 (Зал.: %2)</translation>
@@ -100,11 +103,9 @@
         <translation>%1% (%2 з %3 на %4)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="580"/>
-        <source>Download finished: %1
-%2</source>
-        <translation>Завантаження завершено %1
-%2</translation>
+        <location filename="core.cpp" line="433"/>
+        <source>/s</source>
+        <translation>/с</translation>
     </message>
     <message>
         <location filename="core.cpp" line="521"/>
@@ -112,14 +113,11 @@
         <translation>Не можу відкрити файл %1: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="277"/>
-        <source>Could not truncate file </source>
-        <translation>Не можу обрізати файл</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="433"/>
-        <source>/s</source>
-        <translation>/с</translation>
+        <location filename="core.cpp" line="580"/>
+        <source>Download finished: %1
+%2</source>
+        <translation>Завантаження завершено %1
+%2</translation>
     </message>
 </context>
 <context>

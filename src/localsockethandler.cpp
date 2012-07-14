@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,6 +76,7 @@ namespace LeechCraft
 		QDataStream in (read);
 		QStringList arguments;
 		in >> arguments;
+		arguments.removeFirst ();
 
 		std::vector<std::string> strings;
 		Q_FOREACH (const QString& arg, arguments)
@@ -83,8 +84,7 @@ namespace LeechCraft
 
 		boost::program_options::options_description desc;
 		boost::program_options::command_line_parser parser (strings);
-		boost::program_options::variables_map map =
-				qobject_cast<Application*> (qApp)->Parse (parser, &desc);
+		auto map = qobject_cast<Application*> (qApp)->Parse (parser, &desc);
 		DoLine (map);
 	}
 
@@ -127,7 +127,7 @@ namespace LeechCraft
 					<< e.what ();
 		}
 
-		std::vector<std::string> entities = map ["entity"].as<std::vector<std::string> > ();
+		std::vector<std::string> entities = map ["entity"].as<std::vector<std::string>> ();
 		Q_FOREACH (const std::string& entity, entities)
 		{
 			QVariant ve;

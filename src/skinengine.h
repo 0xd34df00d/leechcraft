@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +18,12 @@
 
 #ifndef SKINENGINE_H
 #define SKINENGINE_H
-#include <vector>
+#include <QObject>
 #include <QMap>
 #include <QString>
-#include <QList>
 #include <QDir>
+#include <QHash>
+#include <QIcon>
 
 class QIcon;
 class QAction;
@@ -31,34 +32,31 @@ class QFile;
 
 namespace LeechCraft
 {
-	class SkinEngine
+	class SkinEngine : public QObject
 	{
+		Q_OBJECT
+
 		QString OldIconSet_;
-		typedef QMap<int, QString> sizef_t;
-		QMap<QString, sizef_t> IconName2Path_;
-		QMap<QString, QString> IconName2FileName_;
 		QStringList IconSets_;
-		QStringList IconDirs_;
+
+		mutable QHash<QPair<QString, QString>, QIcon> IconCache_;
 
 		SkinEngine ();
 	public:
 		static SkinEngine& Instance ();
-		virtual ~SkinEngine ();
 
-		QMap<int, QString> GetIconPath (const QString&) const;
 		QIcon GetIcon (const QString&, const QString&) const;
 		void UpdateIconSet (const QList<QAction*>&);
 		void UpdateIconSet (const QList<QTabWidget*>&);
 		QStringList ListIcons () const;
+	protected:
+		bool eventFilter (QObject*, QEvent*);
 	private:
-		QString GetIconName (const QString&) const;
+		void SetIcon (QAction*);
 		void FindIconSets ();
 		void FindIcons ();
-		void FillMapping (const QString&, const QString&);
-		void ParseMapping (QFile&);
-		void CollectDir (const QString&, const QString&);
-		void CollectSubdir (QDir, const QString&, int);
-		std::vector<int> GetDirForBase (const QString&, const QString&);
+	private slots:
+		void flushCaches ();
 	};
 };
 

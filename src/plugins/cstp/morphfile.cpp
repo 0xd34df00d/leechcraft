@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,62 +20,58 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace CSTP
+{
+	MorphFile::MorphFile (const QString& name)
+	: QFile (name)
+	, Gunzip_ (false)
+	, Counter_ (0)
 	{
-		namespace CSTP
-		{
-			MorphFile::MorphFile (const QString& name)
-			: QFile (name)
-			, Gunzip_ (false)
-			, Counter_ (0)
-			{
-			}
-			
-			MorphFile::MorphFile (QObject *parent)
-			: QFile (parent)
-			, Gunzip_ (false)
-			, Counter_ (0)
-			{
-			}
-			
-			MorphFile::MorphFile (const QString& name, QObject *parent)
-			: QFile (name, parent)
-			, Gunzip_ (false)
-			, Counter_ (0)
-			{
-			}
-			
-			MorphFile::~MorphFile ()
-			{
-			}
-			
-			void MorphFile::AddRef ()
-			{
-				++Counter_;
-			}
-			
-			void MorphFile::Release ()
-			{
-				--Counter_;
-				if (!Counter_)
-					deleteLater ();
-			}
-			
-			void MorphFile::Gunzip (bool state)
-			{
-				Gunzip_ = state;
-			}
-			
-			void intrusive_ptr_add_ref (MorphFile *file)
-			{
-				file->AddRef ();
-			}
-			
-			void intrusive_ptr_release (MorphFile *file)
-			{
-				file->Release ();
-			}
-		};
-	};
-};
+	}
 
+	MorphFile::MorphFile (QObject *parent)
+	: QFile (parent)
+	, Gunzip_ (false)
+	, Counter_ (0)
+	{
+	}
+
+	MorphFile::MorphFile (const QString& name, QObject *parent)
+	: QFile (name, parent)
+	, Gunzip_ (false)
+	, Counter_ (0)
+	{
+	}
+
+	MorphFile::~MorphFile ()
+	{
+	}
+
+	void MorphFile::AddRef ()
+	{
+		++Counter_;
+	}
+
+	void MorphFile::Release ()
+	{
+		--Counter_;
+		if (!Counter_)
+			deleteLater ();
+	}
+
+	void MorphFile::Gunzip (bool state)
+	{
+		Gunzip_ = state;
+	}
+
+	void intrusive_ptr_add_ref (MorphFile *file)
+	{
+		file->AddRef ();
+	}
+
+	void intrusive_ptr_release (MorphFile *file)
+	{
+		file->Release ();
+	}
+}
+}

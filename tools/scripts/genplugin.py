@@ -3,22 +3,9 @@
 from string import Template
 from optparse import OptionParser
 
-cmake_str = """IF (NOT QT_USE_FILE)
-	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-	IF (COMMAND cmake_policy)
-		cmake_policy (SET CMP0003 NEW)
-	ENDIF (COMMAND cmake_policy)
-
-	PROJECT (leechcraft_${plug_lower})
-
-	IF (NOT CMAKE_MODULE_PATH)
-		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	ENDIF (NOT CMAKE_MODULE_PATH)
-
-	FIND_PACKAGE (Boost REQUIRED)
-	FIND_PACKAGE (Qt4 REQUIRED)
-	FIND_PACKAGE (LeechCraft REQUIRED)
-ENDIF (NOT QT_USE_FILE)
+cmake_str = """CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
+PROJECT (leechcraft_${plug_lower})
+INCLUDE (InitLCPlugin OPTIONAL)
 
 INCLUDE ($${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
@@ -32,7 +19,9 @@ SET (SRCS
 SET (HEADERS
 	$plug_lower.h
 	)
-QT4_WRAP_CPP (MOC_SRCS $${HEADERS})
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (MOC_SRCS $${HEADERS})
+ENDIF (NOT LC_NO_MOC)
 
 ADD_LIBRARY (leechcraft_${plug_lower} SHARED
 	$${COMPILED_TRANSLATIONS}
@@ -48,7 +37,7 @@ INSTALL (TARGETS leechcraft_${plug_lower} DESTINATION $${LC_PLUGINS_DEST})
 
 header_str = """/**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  $author
+ * Copyright (C) 2012  $author
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,8 +53,8 @@ header_str = """/***************************************************************
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_${plug_upper}_${plug_upper}_H
-#define PLUGINS_${plug_upper}_${plug_upper}_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/$interfaces_includes.h>
 
@@ -79,25 +68,16 @@ namespace $plug
 		Q_OBJECT
 		Q_INTERFACES ($interfaces)
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
 $interfaces_decls
 	};
 }
 }
 
-#endif
-
 """
 
 source_str = """/**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  $author
+ * Copyright (C) 2012  $author
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,7 +100,26 @@ namespace LeechCraft
 {
 namespace $plug
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+$interfaces_defs
+}
+}
+
+LC_EXPORT_PLUGIN (leechcraft_${plug_lower}, LeechCraft::$plug::Plugin);
+
+"""
+
+decls_all = {}
+decls_all ['IInfo'] = """		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;"""
+decls_all ['IToolBarEmbedder'] = """				QList<QAction*> GetActions () const;"""
+
+defs_all = {}
+defs_all ['IInfo'] = """	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 	}
 
@@ -150,20 +149,7 @@ namespace $plug
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
-	}
-
-$interfaces_defs
-}
-}
-
-Q_EXPORT_PLUGIN2 (leechcraft_${plug_lower}, LeechCraft::$plug::Plugin);
-
-"""
-
-decls_all = {}
-decls_all ['IToolBarEmbedder'] = """				QList<QAction*> GetActions () const;"""
-
-defs_all = {}
+	}"""
 defs_all ['IToolBarEmbedder'] = """			QList<QAction*> Plugin::GetActions () const
 			{
 				QList<QAction*> result;
@@ -182,10 +168,10 @@ if p.interfaces != None:
 	for iface in p.interfaces.split (','):
 		interfaces_array.append (iface)
 
+interfaces_array.insert (0, 'IInfo')
+
 decls_array = ([decls_all [v] for v in interfaces_array])
 defs_array = ([defs_all [v] for v in interfaces_array])
-
-interfaces_array.insert (0, 'IInfo')
 
 interfaces_includes = map (lambda s: s.lower (), interfaces_array)
 
@@ -206,7 +192,7 @@ hfile.write (header.substitute (d))
 
 source = Template (source_str)
 sfile = open ('%s.cpp' % p.plugin.lower (), 'w')
-sfile.write (source.substitute (d))
+sfile.write (Template (source.substitute (d)).substitute (d))
 
 cmake = Template (cmake_str)
 sfile = open ('CMakeLists.txt', 'w')

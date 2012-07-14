@@ -20,6 +20,7 @@
 #include <boost/bind.hpp>
 #include "ircserverhandler.h"
 #include "ircparser.h"
+#include "ircaccount.h"
 
 namespace LeechCraft
 {
@@ -27,7 +28,7 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	UserCommandManager::UserCommandManager (IrcServerHandler *ish) 
+	UserCommandManager::UserCommandManager (IrcServerHandler *ish)
 	: QObject (ish)
 	, ISH_ (ish)
 	, Parser_ (ish->GetParser ())
@@ -35,7 +36,7 @@ namespace Acetamide
 		Init ();
 	}
 
-	bool UserCommandManager::VerifyMessage (const QString& msg, 
+	QString UserCommandManager::VerifyMessage (const QString& msg,
 			const QString& channelName)
 	{
 		const int pos = msg.indexOf (' ');
@@ -46,7 +47,7 @@ namespace Acetamide
 			cmd = msg.left (pos).trimmed ().toLower ();
 
 		if (!Command2Action_.contains (cmd))
-			return false;
+			return QString ();
 
 		QString message;
 		QStringList messageList;
@@ -58,8 +59,8 @@ namespace Acetamide
 
 		if (cmd == "me")
 		{
-			messageList.insert (1, channelName);
-			messageList.insert (2, "ACTION");
+			messageList.insert (0, channelName);
+			messageList.insert (1, "ACTION");
 		}
 		else if (cmd == "part" && message.isEmpty ())
 			messageList << channelName; //TODO message for part
@@ -70,9 +71,9 @@ namespace Acetamide
 			for (int i = 0; i < channelList.count (); ++i)
 			{
 				const QString& channel = channelList.at (i);
-				if (!channel.startsWith ('#') && 
-						!channel.startsWith ('+') && 
-						!channel.startsWith ('&') && 
+				if (!channel.startsWith ('#') &&
+						!channel.startsWith ('+') &&
+						!channel.startsWith ('&') &&
 						!channel.startsWith ('!'))
 					channelList [i].prepend ('#');
 			}
@@ -84,23 +85,28 @@ namespace Acetamide
 			messageList << channelList.join (",")
 					<< passwords;
 		}
-		else if (cmd == "kick" && !message.isEmpty ())
+		else if (cmd == "away")
 		{
-			if (ISH_->IsParticipantExists (messageList.first ()))
-				messageList.insert (0, channelName);
+			ISH_->SetAway (messageList.join (" "));
+			return cmd;
 		}
+// 		else if (cmd == "kick" && !message.isEmpty ())
+// 		{
+// 			if (ISH_->IsParticipantExists (messageList.first ()))
+// 				messageList.insert (0, channelName);
+// 		}
 		else if (cmd == "say")
 			messageList.insert (0, channelName);
 
 		Command2Action_ [cmd] (messageList);
-		return true;
+		return cmd;
 	}
 
 	void UserCommandManager::Init ()
 	{
-		Command2Action_ ["join"] = boost::bind (&IrcServerHandler::JoinChannelByCmd, 
-				ISH_, _1);
-		Command2Action_ ["part"] = boost::bind (&IrcParser::PartCommand, 
+		Command2Action_ ["join"] = boost::bind (&IrcParser::JoinCommand,
+				Parser_, _1);
+		Command2Action_ ["part"] = boost::bind (&IrcParser::PartCommand,
 				Parser_, _1);
 		Command2Action_ ["quit"] = boost::bind (&IrcParser::QuitCommand,
 				Parser_, _1);
@@ -118,7 +124,7 @@ namespace Acetamide
 				Parser_, _1);
 		Command2Action_ ["kick"] = boost::bind (&IrcParser::KickCommand,
 				Parser_, _1);
-		Command2Action_ ["invite"] = boost::bind (&IrcParser::InviteCommand, 
+		Command2Action_ ["invite"] = boost::bind (&IrcParser::InviteCommand,
 				Parser_, _1);
 		Command2Action_ ["ctcp"] = boost::bind (&IrcParser::CTCPRequest,
 				Parser_, _1);
@@ -128,17 +134,17 @@ namespace Acetamide
 				Parser_, _1);
 		Command2Action_ ["userhost"] = boost::bind (&IrcParser::UserhostCommand,
 				Parser_, _1);
-		Command2Action_ ["ison"] = boost::bind (&IrcParser::IsonCommand, 
+		Command2Action_ ["ison"] = boost::bind (&IrcParser::IsonCommand,
 				Parser_, _1);
 		Command2Action_ ["whois"] = boost::bind (&IrcParser::WhoisCommand,
 				Parser_, _1);
-		Command2Action_ ["whowas"] = boost::bind (&IrcParser::WhowasCommand, 
+		Command2Action_ ["whowas"] = boost::bind (&IrcParser::WhowasCommand,
 				Parser_, _1);
 		Command2Action_ ["who"] = boost::bind (&IrcParser::WhoCommand,
 				Parser_, _1);
-		Command2Action_ ["summon"] = boost::bind (&IrcParser::SummonCommand, 
+		Command2Action_ ["summon"] = boost::bind (&IrcParser::SummonCommand,
 				Parser_, _1);
-		Command2Action_ ["version"] = boost::bind (&IrcParser::VersionCommand, 
+		Command2Action_ ["version"] = boost::bind (&IrcParser::VersionCommand,
 				Parser_, _1);
 		Command2Action_ ["links"] = boost::bind (&IrcParser::LinksCommand,
 				Parser_, _1);
@@ -150,13 +156,13 @@ namespace Acetamide
 				Parser_, _1);
 		Command2Action_ ["oper"] = boost::bind (&IrcParser::OperCommand,
 				Parser_, _1);
-		Command2Action_ ["rehash"] = boost::bind (&IrcParser::RehashCommand, 
+		Command2Action_ ["rehash"] = boost::bind (&IrcParser::RehashCommand,
 				Parser_, _1);
-		Command2Action_ ["lusers"] = boost::bind (&IrcParser::LusersCommand, 
+		Command2Action_ ["lusers"] = boost::bind (&IrcParser::LusersCommand,
 				Parser_, _1);
-		Command2Action_ ["users"] = boost::bind (&IrcParser::UsersCommand, 
+		Command2Action_ ["users"] = boost::bind (&IrcParser::UsersCommand,
 				Parser_, _1);
-		Command2Action_ ["wallops"] = boost::bind (&IrcParser::WallopsCommand, 
+		Command2Action_ ["wallops"] = boost::bind (&IrcParser::WallopsCommand,
 				Parser_, _1);
 		Command2Action_ ["quote"] = boost::bind (&IrcParser::RawCommand,
 				Parser_, _1);
@@ -166,7 +172,7 @@ namespace Acetamide
 				Parser_, _1);
 		Command2Action_ ["stats"] = boost::bind (&IrcParser::StatsCommand,
 				Parser_, _1);
-		Command2Action_ ["connect"] = boost::bind (&IrcParser::ConnectCommand, 
+		Command2Action_ ["connect"] = boost::bind (&IrcParser::ConnectCommand,
 				Parser_, _1);
 		Command2Action_ ["trace"] = boost::bind (&IrcParser::TraceCommand,
 				Parser_, _1);
@@ -176,7 +182,7 @@ namespace Acetamide
 				Parser_, _1);
 		Command2Action_ ["die"] = boost::bind (&IrcParser::DieCommand,
 				Parser_, _1);
-		Command2Action_ ["restart"] = boost::bind (&IrcParser::RestartCommand, 
+		Command2Action_ ["restart"] = boost::bind (&IrcParser::RestartCommand,
 				Parser_, _1);
 		Command2Action_ ["mode"] = boost::bind (&IrcParser::ChanModeCommand,
 				Parser_, _1);

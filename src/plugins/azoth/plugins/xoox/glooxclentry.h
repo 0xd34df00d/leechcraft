@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,13 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QStringList>
 #include <QXmppRosterIq.h>
 #include <QXmppVCardIq.h>
-#include <interfaces/iauthable.h>
+#include <QXmppPresence.h>
+#include <interfaces/azoth/iauthable.h>
 #include "entrybase.h"
 
 namespace LeechCraft
@@ -35,7 +36,7 @@ class IAccount;
 namespace Xoox
 {
 	class GlooxAccount;
-	
+
 	struct OfflineDataSource
 	{
 		QString ID_;
@@ -44,8 +45,8 @@ namespace Xoox
 		AuthStatus AuthStatus_;
 		QXmppVCardIq VCardIq_;
 	};
-	typedef boost::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
-	
+	typedef std::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
+
 	void Save (OfflineDataSource_ptr, QXmlStreamWriter*);
 	void Load (OfflineDataSource_ptr, const QDomElement&);
 
@@ -67,9 +68,9 @@ namespace Xoox
 			QDateTime DateTime_;
 		};
 		QList<MessageQueueItem> MessageQueue_;
-		
+
 		bool AuthRequested_;
-		
+
 		mutable QAction *GWLogin_;
 		mutable QAction *GWLogout_;
 	public:
@@ -78,7 +79,7 @@ namespace Xoox
 
 		OfflineDataSource_ptr ToOfflineDataSource () const;
 		void Convert2ODS ();
-		
+
 		static QString JIDFromID (GlooxAccount*, const QString&);
 
 		void UpdateRI (const QXmppRosterIq::Item&);
@@ -110,8 +111,10 @@ namespace Xoox
 		void RerequestAuth (const QString&);
 
 		QString GetJID () const;
-		
+
 		void SetAuthRequested (bool);
+	private:
+		void SendGWPresence (QXmppPresence::Type);
 	private slots:
 		void handleGWLogin ();
 		void handleGWLogout ();

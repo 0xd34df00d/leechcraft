@@ -14,19 +14,18 @@
    <string>Shortcut manager</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item>
-    <widget class="QTreeWidget" name="Tree_">
-     <column>
-      <property name="text">
-       <string>Name</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Shortcut</string>
-      </property>
-     </column>
+    <widget class="QLineEdit" name="FilterLine_">
+     <property name="placeholderText">
+      <string>Filter...</string>
+     </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QTreeView" name="Tree_"/>
    </item>
   </layout>
  </widget>

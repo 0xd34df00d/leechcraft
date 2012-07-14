@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,19 +78,6 @@ namespace LMP
 	bool EntityChecker::Can () const
 	{
 		return Result_;
-	}
-
-	void EntityChecker::stateChanged (Phonon::State st)
-	{
-		switch (st)
-		{
-			case Phonon::PlayingState:
-				Result_ = true;
-			case Phonon::ErrorState:
-				Break_ = true;
-			default:
-				break;
-		}
 	}
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "itemhandlerdataview.h"
-#include <boost/bind.hpp>
 #include <QGridLayout>
 #include <QDialog>
 #include <QSpinBox>
@@ -26,6 +25,7 @@
 #include <QDialogButtonBox>
 #include <QtDebug>
 #include "../widgets/dataviewwidget.h"
+#include "../filepicker.h"
 #include "../itemhandlerfactory.h"
 #include "../datasourceroles.h"
 
@@ -59,7 +59,8 @@ namespace LeechCraft
 		view->setObjectName (prop);
 
 		Factory_->RegisterDatasourceSetter (prop,
-				boost::bind (&ItemHandlerDataView::SetDataSource, this, _1, _2));
+				[this] (const QString& str, QAbstractItemModel *m, Util::XmlSettingsDialog*)
+					{ SetDataSource (str, m); });
 		Propname2DataView_ [prop] = view;
 
 		lay->addWidget (view, lay->rowCount (), 0);
@@ -104,11 +105,13 @@ namespace LeechCraft
 		{
 			switch (type)
 			{
-			case DataSources::DFTInteger:
+			case DataSources::DataFieldType::Integer:
 				return new QSpinBox ();
-			case DataSources::DFTString:
-			case DataSources::DFTUrl:
+			case DataSources::DataFieldType::String:
+			case DataSources::DataFieldType::Url:
 				return new QLineEdit ();
+			case DataSources::DataFieldType::LocalPath:
+				return new FilePicker (FilePicker::Type::ExistingDirectory);
 			default:
 				return 0;
 			}
@@ -118,11 +121,13 @@ namespace LeechCraft
 		{
 			switch (type)
 			{
-			case DataSources::DFTInteger:
+			case DataSources::DataFieldType::Integer:
 				return qobject_cast<QSpinBox*> (editor)->value ();
-			case DataSources::DFTString:
-			case DataSources::DFTUrl:
+			case DataSources::DataFieldType::String:
+			case DataSources::DataFieldType::Url:
 				return qobject_cast<QLineEdit*> (editor)->text ();
+			case DataSources::DataFieldType::LocalPath:
+				return qobject_cast<FilePicker*> (editor)->GetText ();
 			default:
 				return QVariant ();
 			}
@@ -145,47 +150,47 @@ namespace LeechCraft
 		QStringList names;
 		for (int i = 0, size = model->columnCount (); i < size; ++i)
 		{
-			DataSources::DataFieldType type = static_cast<DataSources::DataFieldType> (model->
-						headerData (i, Qt::Horizontal, DataSources::DSRFieldType).value<int> ());
-			if (type != DataSources::DFTNone)
+			const auto& hData = model->headerData (i, Qt::Horizontal,
+					DataSources::DataSourceRole::FieldType);
+			auto type = static_cast<DataSources::DataFieldType> (hData.value<int> ());
+			if (type != DataSources::DataFieldType::None)
 			{
 				types << type;
 				names << model->headerData (i, Qt::Horizontal, Qt::DisplayRole).toString ();
 			}
 		}
 
-		QDialog *dia = new QDialog (XSD_);
+		QDialog dia (XSD_);
 		QGridLayout *lay = new QGridLayout ();
-		dia->setLayout (lay);
+		dia.setLayout (lay);
 		for (int i = 0, size = types.size (); i < size; ++i)
 		{
 			QLabel *name = new QLabel (names.at (i));
 			DataSources::DataFieldType type = types.at (i);
 			QWidget *w = GetEditor (type);
-			int row = lay->rowCount ();
+			const int row = lay->rowCount ();
 			lay->addWidget (name, row, 0, Qt::AlignRight);
 			lay->addWidget (w, row, 1);
 		}
 		QDialogButtonBox *buttons = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
-				Qt::Horizontal, dia);
+				Qt::Horizontal, &dia);
 		connect (buttons,
 				SIGNAL (accepted ()),
-				dia,
+				&dia,
 				SLOT (accept ()));
 		connect (buttons,
 				SIGNAL (rejected ()),
-				dia,
+				&dia,
 				SLOT (reject ()));
-		lay->addWidget (buttons, lay->rowCount (), 0, 1, 2);
+		lay->addWidget (buttons, lay->rowCount (), 0, 1, -1);
 
-		if (dia->exec () == QDialog::Accepted)
+		if (dia.exec () == QDialog::Accepted)
 		{
 			QVariantList datas;
 			for (int i = 0, size = types.size (); i < size; ++i)
 			{
-				QWidget *w = lay->itemAt (i)->widget ();
-				QVariant data = GetData (w, types.at (i));
-				datas << data;
+				QWidget *w = lay->itemAt (2 * i + 1)->widget ();
+				datas << GetData (w, types.at (i));
 			}
 			if (!QMetaObject::invokeMethod (model->parent (),
 						"addRequested",

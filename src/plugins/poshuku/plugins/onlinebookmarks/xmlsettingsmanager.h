@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft

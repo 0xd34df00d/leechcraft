@@ -32,6 +32,7 @@ SET (SRCS
 	operationalmodel.cpp
 	searchwidget.cpp
 	summarytagsfilter.cpp
+	modeldelegate.cpp
 	)
 SET (HEADERS
 	summary.h
@@ -44,15 +45,18 @@ SET (HEADERS
 	operationalmodel.h
 	searchwidget.h
 	summarytagsfilter.h
+	modeldelegate.h
 	)
 SET (FORMS
 	summarywidget.ui
 	searchwidget.ui
 	)
 SET (RESOURCES summaryresources.qrc)
-CreateTrVars ("summary" "ar;be;de;en;fr;it;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrVars ("summary" "ar;be;de;en;es;fr;it;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 
-QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 

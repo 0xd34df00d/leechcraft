@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,17 +38,19 @@ namespace LeechCraft
 		QMenu *AdditionalTabMenu_;
 		QList<QObject*> RegisteredMultiTabs_;
 		QSet<QChar> UsedAccelerators_;
-		QMap<QObject*, QMap<QString, QAction*> > HiddenActions_;
+		QMap<QObject*, QMap<QString, QAction*>> HiddenActions_;
 	public:
 		NewTabMenuManager (QObject* = 0);
 
 		void AddObject (QObject*);
-		void HandleEmbedTabRemoved (QObject*);
-		void SetToolbarActions (QList<QList<QAction*> >);
+		void SetToolbarActions (QList<QList<QAction*>>);
 		void SingleRemoved (ITabWidget*);
 
 		QMenu* GetNewTabMenu () const;
 		QMenu* GetAdditionalMenu ();
+
+		void ToggleHide (ITabWidget*, bool hide);
+		void HideAction (ITabWidget *itw, bool hide);
 	private:
 		QString AccelerateName (QString);
 		void ToggleHide (QObject*, const QByteArray&, bool);

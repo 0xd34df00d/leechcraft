@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PlayerTab</class>
+ <widget class="QWidget" name="PlayerTab">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>837</width>
+    <height>564</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <property name="margin">
+    <number>1</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="NPArt_">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>48</width>
+         <height>48</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="NowPlaying_">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QSplitter" name="MainSplitter_">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QTabWidget" name="LyricsPage_">
+      <property name="tabPosition">
+       <enum>QTabWidget::West</enum>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Current song</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="margin">
+         <number>1</number>
+        </property>
+        <item>
+         <widget class="LeechCraft::LMP::NowPlayingWidget" name="NPWidget_" native="true">
+          <zorder>Playlist_</zorder>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="CollectionTab_">
+       <attribute name="title">
+        <string>Collection</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="margin">
+         <number>1</number>
+        </property>
+        <item>
+         <widget class="QLineEdit" name="CollectionFilter_">
+          <property name="placeholderText">
+           <string>Search collection</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTreeView" name="CollectionTree_">
+          <property name="contextMenuPolicy">
+           <enum>Qt::ActionsContextMenu</enum>
+          </property>
+          <property name="dragEnabled">
+           <bool>true</bool>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::ExtendedSelection</enum>
+          </property>
+          <attribute name="headerVisible">
+           <bool>false</bool>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="ScanProgress_">
+          <property name="value">
+           <number>24</number>
+          </property>
+          <property name="format">
+           <string notr="true">%p%</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="PlaylistsTab_">
+       <attribute name="title">
+        <string>Playlists</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <property name="margin">
+         <number>1</number>
+        </property>
+        <item>
+         <widget class="QTreeView" name="PlaylistsTree_">
+          <property name="dragEnabled">
+           <bool>true</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::ExtendedSelection</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="SocialTab_">
+       <attribute name="title">
+        <string>Social</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <property name="margin">
+         <number>1</number>
+        </property>
+        <item>
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="RecTab_">
+           <attribute name="title">
+            <string>Recommendations</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <property name="margin">
+             <number>1</number>
+            </property>
+            <item>
+             <widget class="LeechCraft::LMP::RecommendationsWidget" name="RecommendationsWidget_" native="true"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="RadioTab_">
+           <attribute name="title">
+            <string>Radio</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <property name="margin">
+             <number>1</number>
+            </property>
+            <item>
+             <widget class="LeechCraft::LMP::RadioWidget" name="RadioWidget_" native="true"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="ReleasesTab_">
+           <attribute name="title">
+            <string>Releases</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_9">
+            <property name="margin">
+             <number>1</number>
+            </property>
+            <item>
+             <widget class="LeechCraft::LMP::ReleasesWidget" name="ReleasesWidget_" native="true"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="FSTab_">
+       <attribute name="title">
+        <string>Filesystem</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="margin">
+         <number>1</number>
+        </property>
+        <item>
+         <widget class="LeechCraft::LMP::FSBrowserWidget" name="FSBrowser_" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="DevicesTab_">
+       <attribute name="title">
+        <string>Devices</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_10">
+        <property name="margin">
+         <number>1</number>
+        </property>
+        <item>
+         <widget class="LeechCraft::LMP::DevicesBrowserWidget" name="DevicesBrowser_" native="true"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+	 <widget class="LeechCraft::LMP::PlaylistWidget" name="Playlist_"/>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LeechCraft::LMP::NowPlayingWidget</class>
+   <extends>QWidget</extends>
+   <header>nowplayingwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::FSBrowserWidget</class>
+   <extends>QWidget</extends>
+   <header>fsbrowserwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::RecommendationsWidget</class>
+   <extends>QWidget</extends>
+   <header>recommendationswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::RadioWidget</class>
+   <extends>QWidget</extends>
+   <header>radiowidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::ReleasesWidget</class>
+   <extends>QWidget</extends>
+   <header>releaseswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::DevicesBrowserWidget</class>
+   <extends>QWidget</extends>
+   <header>devicesbrowserwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::PlaylistWidget</class>
+   <extends>QWidget</extends>
+   <header>playlistwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

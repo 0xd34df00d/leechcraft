@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,35 +31,58 @@ namespace Azoth
 {
 	class ICLEntry;
 
-	class ChatTab;
-
 	class ChatTabsManager : public QObject
 	{
 		Q_OBJECT
 
+		QSet<QString> StyleParams_;
 		QHash<QString, ChatTab_ptr> Entry2Tab_;
 		QSet<QString> EverOpened_;
+
+		QPointer<ChatTab> LastCurrentTab_;
 	public:
-		ChatTabsManager(QObject* = 0);
+		struct RestoreChatInfo
+		{
+			QString EntryID_;
+			QString Variant_;
+			QString MsgText_;
+			DynPropertiesList_t Props_;
+		};
+	private:
+		QHash<QString, RestoreChatInfo> RestoreInfo_;
+	public:
+		ChatTabsManager (QObject* = 0);
 
 		void OpenChat (const QModelIndex&);
-		void OpenChat (const ICLEntry*);
+		QWidget* OpenChat (const ICLEntry*,
+				const DynPropertiesList_t& = DynPropertiesList_t ());
 		void CloseChat (const ICLEntry*);
 		bool IsActiveChat (const ICLEntry*) const;
 		bool IsOpenedChat (const QString&) const;
+		ChatTab* GetActiveChatTab () const;
+
 		void UpdateEntryMapping (const QString&, QObject*);
 
 		void HandleEntryAdded (ICLEntry*);
 		void HandleEntryRemoved (ICLEntry*);
+		void HandleInMessage (IMessage*);
 
 		void SetChatEnabled (const QString&, bool);
 		void ChatMadeCurrent (ChatTab*);
+
+		void EnqueueRestoreInfos (const QList<RestoreChatInfo>&);
+
+		QString GetActiveVariant (ICLEntry*) const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
 		void UpdateMUCTab (ICLEntry*);
+		void RestoreChat (const RestoreChatInfo&, QObject*);
 	private slots:
 		void handleNeedToClose (ChatTab*);
+		void updateCurrentTab (QObject*);
+		void handleAddingCLEntryEnd (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
 		void chatWindowStyleChanged ();
 	signals:
 		void addNewTab (const QString&, QWidget*);

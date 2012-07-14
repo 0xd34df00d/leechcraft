@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 #include "mediacall.h"
 #include <QAudioFormat>
+#include <QtDebug>
 #include <QXmppCallManager.h>
 #include <QXmppRtpChannel.h>
 #include "clientconnection.h"
@@ -39,7 +40,7 @@ namespace Xoox
 				this,
 				SLOT (handleStateChanged (QXmppCall::State)));
 	}
-	
+
 	IMediaCall::Direction MediaCall::GetDirection () const
 	{
 		switch (Call_->direction ())
@@ -48,9 +49,14 @@ namespace Xoox
 			return DIn;
 		case QXmppCall::OutgoingDirection:
 			return DOut;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown direction"
+					<< Call_->direction ();
+			return DIn;
 		}
 	}
-	
+
 	QString MediaCall::GetSourceID () const
 	{
 		QString jid;
@@ -58,17 +64,17 @@ namespace Xoox
 		ClientConnection::Split (Call_->jid (), &jid, &var);
 		return Account_->GetAccountID () + '_' + jid;
 	}
-	
+
 	void MediaCall::Accept ()
 	{
 		Call_->accept ();
 	}
-	
+
 	void MediaCall::Hangup ()
 	{
 		Call_->hangup ();
 	}
-	
+
 	QIODevice* MediaCall::GetAudioDevice ()
 	{
 		QXmppJinglePayloadType payload = Call_->audioChannel ()->payloadType ();
@@ -76,7 +82,7 @@ namespace Xoox
 		qDebug () << payload.channels () << payload.clockrate ();
 		return Call_->audioChannel ();
 	}
-	
+
 	QAudioFormat MediaCall::GetAudioFormat ()
 	{
 		const QXmppJinglePayloadType& payload =
@@ -92,12 +98,12 @@ namespace Xoox
 		result.setSampleType (QAudioFormat::SignedInt);
 		return result;
 	}
-	
+
 	QIODevice* MediaCall::GetVideoDevice ()
 	{
 		return 0;
 	}
-	
+
 	void MediaCall::handleStateChanged (QXmppCall::State state)
 	{
 		emit stateChanged (static_cast<State> (state));

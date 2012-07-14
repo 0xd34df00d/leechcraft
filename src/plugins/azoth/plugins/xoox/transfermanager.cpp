@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,13 +49,16 @@ namespace Xoox
 		{
 			QObject *entryObj = Account_->GetClientConnection ()->
 					GetCLEntry (target, QString ());
-			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
+			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+			if (!entry)
+				return 0;
 			var = entry->Variants ().value (0);
 		}
-		target += '/' + var;
+		if (!var.isEmpty ())
+			target += '/' + var;
 		return new TransferJob (Manager_->sendFile (target, name), this);
 	}
-	
+
 	GlooxAccount* TransferManager::GetAccount () const
 	{
 		return Account_;
@@ -63,6 +66,10 @@ namespace Xoox
 
 	void TransferManager::handleFileReceived (QXmppTransferJob *job)
 	{
+		auto cc = Account_->GetClientConnection ();
+		if (!cc->GetCLEntry (job->jid ()))
+			cc->CreateEntry (job->jid ());
+
 		emit fileOffered (new TransferJob (job, this));
 	}
 }

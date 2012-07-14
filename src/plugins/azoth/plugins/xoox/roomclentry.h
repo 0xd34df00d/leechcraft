@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +18,14 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCLENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCLENTRY_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QStringList>
 #include <QXmppMucIq.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/imucentry.h>
-#include <interfaces/imucperms.h>
-#include <interfaces/iconfigurablemuc.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/imucentry.h>
+#include <interfaces/azoth/imucperms.h>
+#include <interfaces/azoth/iconfigurablemuc.h>
 
 namespace LeechCraft
 {
@@ -54,11 +54,11 @@ namespace Xoox
 		GlooxAccount *Account_;
 		QList<QObject*> AllMessages_;
 		RoomHandler *RH_;
-		QMap<QByteArray, QList<QByteArray> > Perms_;
+		QMap<QByteArray, QList<QByteArray>> Perms_;
 		QMap<QXmppMucItem::Role, QByteArray> Role2Str_;
 		QMap<QXmppMucItem::Affiliation, QByteArray> Aff2Str_;
 		QMap<QByteArray, QString> Translations_;
-		
+
 		mutable QAction *ActionRequestVoice_;
 	public:
 		RoomCLEntry (RoomHandler*, GlooxAccount*);
@@ -88,6 +88,7 @@ namespace Xoox
 		QString GetRawInfo () const;
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+		void MarkMsgsRead ();
 
 		// IMUCEntry
 		MUCFeatures GetMUCFeatures () const;
@@ -101,16 +102,20 @@ namespace Xoox
 		QString GetGroupName () const;
 		QVariantMap GetIdentifyingData () const;
 		QString GetRealID (QObject*) const;
-		
+		void InviteToMUC (const QString&, const QString&);
+
 		// IMUCPerms
-		QMap<QByteArray, QList<QByteArray> > GetPossiblePerms () const;
-		QMap<QByteArray, QByteArray> GetPerms (QObject *object) const;
+		QMap<QByteArray, QList<QByteArray>> GetPossiblePerms () const;
+		QMap<QByteArray, QList<QByteArray>> GetPerms (QObject *object) const;
+		QPair<QByteArray, QByteArray> GetKickPerm () const;
+		QPair<QByteArray, QByteArray> GetBanPerm () const;
 		QByteArray GetAffName (QObject*) const;
 		bool MayChangePerm (QObject*, const QByteArray&, const QByteArray&) const;
 		void SetPerm (QObject*, const QByteArray&, const QByteArray&, const QString&);
 		bool IsLessByPerm (QObject*, QObject*) const;
+		bool IsMultiPerm (const QByteArray&) const;
 		QString GetUserString (const QByteArray&) const;
-		
+
 		// IConfigurableMUC
 		QWidget* GetConfigurationWidget ();
 		void AcceptConfiguration (QWidget*);

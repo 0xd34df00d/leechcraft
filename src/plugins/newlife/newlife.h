@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_NEWLIFE_H
-#define PLUGINS_NEWLIFE_NEWLIFE_H
-#include <boost/shared_ptr.hpp>
+#pragma once
+
 #include <QObject>
 #include <QStringList>
 #include <interfaces/iinfo.h>
@@ -28,41 +27,36 @@ class QTranslator;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	class Plugin : public QObject
+					, public IInfo
+					, public IActionsExporter
 	{
-		namespace NewLife
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IActionsExporter
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IActionsExporter)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IActionsExporter)
 
-				boost::shared_ptr<QTranslator> Translator_;
-				boost::shared_ptr<QAction> ImporterAction_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+		QAction *ImporterAction_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
 
-				QList<QAction*> GetActions (ActionsEmbedPlace) const;
-			private slots:
-				void runWizard ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+	private slots:
+		void runWizard ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
-};
-
-#endif
-
+}
+}

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ namespace Herbicide
 		
 		LoadSettings ();
 		
-		QList<QPair<QString, QStringList> > mathQuests;
+		QList<QPair<QString, QStringList>> mathQuests;
 		mathQuests << qMakePair (QString ("(cos(x))'"), QStringList ("-sin(x)"));
 		mathQuests << qMakePair (QString::fromUtf8 ("e^(iπ)"), QStringList ("-1"));
 		PredefinedQuests_ << mathQuests;

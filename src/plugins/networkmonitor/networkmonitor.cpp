@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,12 +114,13 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon (":/resources/images/networkmonitor.svg");
+				static QIcon icon (":/resources/images/networkmonitor.svg");
+				return icon;
 			}
 
 			QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 			{
-				if (place == AEPToolsMenu)
+				if (place == ActionsEmbedPlace::ToolsMenu)
 					return Actions_;
 
 				return QList<QAction*> ();
@@ -156,5 +157,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_networkmonitor, LeechCraft::Plugins::NetworkMonitor::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_networkmonitor, LeechCraft::Plugins::NetworkMonitor::Plugin);
 

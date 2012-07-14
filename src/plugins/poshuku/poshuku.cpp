@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,11 +28,13 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMainWindow>
+#include <qwebpage.h>
+#include <qwebkitversion.h>
 #include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
-#include <util/tagscompletionmodel.h>
+#include <util/tags/tagscompletionmodel.h>
 #include <util/backendselector.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -111,19 +113,19 @@ namespace Poshuku
 
 		ImportXbel_ = new QAction (tr ("Import XBEL..."),
 				this);
-		ImportXbel_->setProperty ("ActionIcon", "poshuku_importxbel");
+		ImportXbel_->setProperty ("ActionIcon", "document-import");
 
 		ExportXbel_ = new QAction (tr ("Export XBEL..."),
 				this);
-		ExportXbel_->setProperty ("ActionIcon", "poshuku_exportxbel");
+		ExportXbel_->setProperty ("ActionIcon", "document-export");
 
 		CheckFavorites_ = new QAction (tr ("Check favorites..."),
 				this);
-		CheckFavorites_->setProperty ("ActionIcon", "poshuku_checkfavorites");
+		CheckFavorites_->setProperty ("ActionIcon", "checkbox");
 
 		ReloadAll_ = new QAction (tr ("Reload all pages"),
 				this);
-		ReloadAll_->setProperty ("ActionIcon", "poshuku_reloadall");
+		ReloadAll_->setProperty ("ActionIcon", "system-software-update");
 
 
 		try
@@ -171,8 +173,7 @@ namespace Poshuku
 		CheckFavorites_->setShortcuts (proxy->GetShortcuts (this, "EACheckFavorites_"));
 		ReloadAll_->setShortcuts (proxy->GetShortcuts (this, "EAReloadAll_"));
 
-		ToolMenu_ = new QMenu ("Poshuku",
-				Core::Instance ().GetProxy ()->GetMainWindow ());
+		ToolMenu_ = new QMenu ("Poshuku");
 		ToolMenu_->setIcon (GetIcon ());
 		ToolMenu_->addAction (ImportXbel_);
 		ToolMenu_->addAction (ExportXbel_);
@@ -229,7 +230,8 @@ namespace Poshuku
 
 	QIcon Poshuku::GetIcon () const
 	{
-		return QIcon (":/resources/images/poshuku.svg");
+		static QIcon icon (":/resources/images/poshuku.svg");
+		return icon;
 	}
 
 	TabClasses_t Poshuku::GetTabClasses () const
@@ -259,7 +261,7 @@ namespace Poshuku
 		Core::Instance ().AddPlugin (plugin);
 	}
 
-	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Poshuku::GetSettingsDialog () const
+	std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Poshuku::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
 	}
@@ -286,7 +288,7 @@ namespace Poshuku
 		return Core::Instance ().GetWidget ();
 	}
 
-	QWebView* Poshuku::CreateWindow ()
+	QGraphicsWebView* Poshuku::CreateWindow ()
 	{
 		return Core::Instance ().MakeWebView ();
 	}
@@ -322,17 +324,28 @@ namespace Poshuku
 		return result;
 	}
 
+	QString Poshuku::GetDiagInfoString () const
+	{
+		return QString ("Built with QtWebKit %1, running with QtWebKit %2")
+#ifdef QTWEBKIT_VERSION_STR
+				.arg (QTWEBKIT_VERSION_STR)
+#else
+				.arg ("unknown (QTWEBKIT_VERSION_STR is not defined)")
+#endif
+				.arg (qWebKitVersion ());
+	}
+
 	QList<QAction*> Poshuku::GetActions (ActionsEmbedPlace place) const
 	{
 		QList<QAction*> result;
 
 		switch (place)
 		{
-		case AEPToolsMenu:
+		case ActionsEmbedPlace::ToolsMenu:
 			result << CheckFavorites_;
 			result << ToolMenu_->menuAction ();
 			break;
-		case AEPCommonContextMenu:
+		case ActionsEmbedPlace::CommonContextMenu:
 			result << ReloadAll_;
 			break;
 		default:
@@ -340,6 +353,16 @@ namespace Poshuku
 		}
 
 		return result;
+	}
+
+	void Poshuku::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		Q_FOREACH (const TabRecoverInfo& info, infos)
+		{
+			auto bw = Core::Instance ().NewURL (QUrl (), false, info.DynProperties_);
+			bw->SetTabRecoverData (info.Data_);
+			emit tabRecovered (info.Data_, bw);
+		}
 	}
 
 	void Poshuku::InitConnections ()
@@ -417,7 +440,12 @@ namespace Poshuku
 			<< "UserStyleSheet"
 			<< "OfflineStorageDB"
 			<< "LocalStorageDB"
-			<< "OfflineWebApplicationCache";
+			<< "OfflineWebApplicationCache"
+			<< "EnableXSSAuditing";
+#if QT_VERSION >= 0x040800
+		viewerSettings << "WebGLEnabled"
+			<< "HyperlinkAuditingEnabled";
+#endif
 		XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
 				this, "viewerSettingsChanged");
 
@@ -491,6 +519,16 @@ namespace Poshuku
 				XmlSettingsManager::Instance ()->property ("OfflineWebApplicationCache").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::LocalStorageEnabled,
 				XmlSettingsManager::Instance ()->property ("LocalStorageDB").toBool ());
+#if QT_VERSION >= 0x040700
+		QWebSettings::globalSettings ()->setAttribute (QWebSettings::XSSAuditingEnabled,
+				XmlSettingsManager::Instance ()->property ("EnableXSSAuditing").toBool ());
+#endif
+#if QT_VERSION >= 0x040800
+		QWebSettings::globalSettings ()->setAttribute (QWebSettings::HyperlinkAuditingEnabled,
+				XmlSettingsManager::Instance ()->property ("EnableHyperlinkAuditing").toBool ());
+		QWebSettings::globalSettings ()->setAttribute (QWebSettings::WebGLEnabled,
+				XmlSettingsManager::Instance ()->property ("EnableWebGL").toBool ());
+#endif
 		QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl (XmlSettingsManager::
 					Instance ()->property ("UserStyleSheet").toString ()));
 	}
@@ -562,4 +600,4 @@ namespace Poshuku
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku, LeechCraft::Poshuku::Poshuku);
+LC_EXPORT_PLUGIN (leechcraft_poshuku, LeechCraft::Poshuku::Poshuku);

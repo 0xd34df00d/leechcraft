@@ -1,3 +1,11 @@
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
+PROJECT (leechcraft_azoth_xoox)
+INCLUDE (InitLCPlugin OPTIONAL)
+
+SET (QT_USE_QTNETWORK TRUE)
+SET (QT_USE_QTXML TRUE)
+INCLUDE (${QT_USE_FILE})
+
 SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 FIND_PACKAGE (QXmpp REQUIRED)
@@ -8,6 +16,8 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${QXMPP_INCLUDE_DIR}
 	${QCA2_INCLUDE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
 SET (XOOX_SRCS
 	xoox.cpp
@@ -53,7 +63,6 @@ SET (XOOX_SRCS
 	imagemediawidget.cpp
 	privacylistsconfigdialog.cpp
 	privacylistsitemdialog.cpp
-	mediacall.cpp
 	adhoccommandmanager.cpp
 	executecommanddialog.cpp
 	userlocation.cpp
@@ -61,6 +70,18 @@ SET (XOOX_SRCS
 	adhoccommandserver.cpp
 	adhoccommand.cpp
 	lastactivitymanager.cpp
+	riexmanager.cpp
+	jabbersearchsession.cpp
+	jabbersearchmanager.cpp
+	useravatarmanager.cpp
+	useravatardata.cpp
+	useravatarmetadata.cpp
+	sdmanager.cpp
+	msgarchivingmanager.cpp
+	avatarsstorage.cpp
+	xep0232handler.cpp
+	pepmicroblog.cpp
+	vcardlisteditdialog.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -106,7 +127,6 @@ SET (XOOX_HEADERS
 	imagemediawidget.h
 	privacylistsconfigdialog.h
 	privacylistsitemdialog.h
-	mediacall.h
 	adhoccommandmanager.h
 	executecommanddialog.h
 	userlocation.h
@@ -114,6 +134,18 @@ SET (XOOX_HEADERS
 	adhoccommandserver.h
 	adhoccommand.h
 	lastactivitymanager.h
+	riexmanager.h
+	jabbersearchsession.h
+	jabbersearchmanager.h
+	useravatarmanager.h
+	useravatardata.h
+	useravatarmetadata.h
+	sdmanager.h
+	msgarchivingmanager.h
+	avatarsstorage.h
+	xep0232handler.h
+	pepmicroblog.h
+	vcardlisteditdialog.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -129,6 +161,7 @@ SET (XOOX_FORMS
 	executecommanddialog.ui
 	commandslistpage.ui
 	commandresultpage.ui
+	vcardlisteditdialog.ui
 	)
 SET (XOOX_RESOURCES azothxooxresources.qrc)
 
@@ -139,8 +172,17 @@ IF (ENABLE_CRYPT)
 	SET (XOOX_HEADERS ${XOOX_HEADERS} pgpmanager.h)
 ENDIF (ENABLE_CRYPT)
 
-CreateTrVars ("azoth_xoox" "de;en;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
-QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
+IF (ENABLE_MEDIACALLS)
+	ADD_DEFINITIONS (-DENABLE_MEDIACALLS)
+
+	SET (XOOX_SRCS ${XOOX_SRCS} mediacall.cpp)
+	SET (XOOX_HEADERS ${XOOX_HEADERS} mediacall.h)
+ENDIF (ENABLE_MEDIACALLS)
+
+CreateTrVars ("azoth_xoox" "de;en;es;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
+ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (XOOX_UIS_H ${XOOX_FORMS})
 QT4_ADD_RESOURCES (XOOX_RCCS ${XOOX_RESOURCES})
 

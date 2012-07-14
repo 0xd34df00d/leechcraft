@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,13 @@ namespace Util
 		Entity_.Additional_ ["HandlingObject"] = QVariant::fromValue<QObject_ptr> (QObject_ptr (this));
 	}
 
-	void NotificationActionHandler::AddFunction (const QString& name, NotificationActionHandler::Callback_t callback)
+	void NotificationActionHandler::AddFunction (const QString& name, Callback_t callback)
 	{
 		ActionName2Callback_ << qMakePair (name, callback);
 		const QStringList& sl = Entity_.Additional_ ["NotificationActions"].toStringList ();
 		Entity_.Additional_ ["NotificationActions"] = sl + QStringList (name);
 	}
-	
+
 	void NotificationActionHandler::AddDependentObject (QObject *obj)
 	{
 		DependentObjects_ << QPointer<QObject> (obj);

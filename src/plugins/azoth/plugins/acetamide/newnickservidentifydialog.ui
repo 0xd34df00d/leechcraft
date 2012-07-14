@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NewNickServDataDialog</class>
+ <widget class="QDialog" name="NewNickServDataDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>484</width>
+    <height>171</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>New NickServ identification</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QFormLayout" name="formLayout">
+     <item row="1" column="0">
+      <widget class="QLabel" name="nicknameLabel">
+       <property name="text">
+        <string>Nickname:</string>
+       </property>
+       <property name="buddy">
+        <cstring>NickName_</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="NickName_">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="nickServNicknameLabel">
+       <property name="text">
+        <string>NickServ nickname:</string>
+       </property>
+       <property name="buddy">
+        <cstring>NickServNickname_</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="NickServNickname_">
+       <property name="text">
+        <string notr="true">*NickServ*</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="nickServAuthStringLabel">
+       <property name="text">
+        <string>NickServ auth string:</string>
+       </property>
+       <property name="buddy">
+        <cstring>NickServAuthString_</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="NickServAuthString_"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="authMessageLabel">
+       <property name="text">
+        <string>Auth message:</string>
+       </property>
+       <property name="buddy">
+        <cstring>AuthMessage_</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="AuthMessage_">
+       <property name="text">
+        <string notr="true">/msg nickserv identify </string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="serverNameLabel">
+       <property name="text">
+        <string>Server name:</string>
+       </property>
+       <property name="buddy">
+        <cstring>Server_</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="Server_"/>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>Server_</tabstop>
+  <tabstop>NickName_</tabstop>
+  <tabstop>NickServNickname_</tabstop>
+  <tabstop>NickServAuthString_</tabstop>
+  <tabstop>AuthMessage_</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>NewNickServDataDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>254</x>
+     <y>164</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>NewNickServDataDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>322</x>
+     <y>164</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

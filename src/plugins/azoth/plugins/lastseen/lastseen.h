@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,13 +18,12 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_LASTSEEN_LASTSEEN_H
 #define PLUGINS_AZOTH_PLUGINS_LASTSEEN_LASTSEEN_H
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QDateTime>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/azothcommon.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/azoth/azothcommon.h>
 
 class QTranslator;
 
@@ -42,8 +41,6 @@ namespace LastSeen
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
-
-		boost::shared_ptr<QTranslator> Translator_;
 
 		QHash<QString, State> LastState_;
 		LastHash_t LastAvailable_;

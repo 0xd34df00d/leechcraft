@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +18,11 @@
 
 #ifndef XMLSETTINGSDIALOG_XMLSETTINGSDIALOG_H
 #define XMLSETTINGSDIALOG_XMLSETTINGSDIALOG_H
+#include <memory>
 #include <QWidget>
 #include <QString>
 #include <QMap>
 #include <QVariant>
-#include <boost/shared_ptr.hpp>
 #include "xsdconfig.h"
 
 class QStackedWidget;
@@ -39,15 +39,17 @@ namespace LeechCraft
 
 	namespace Util
 	{
+		class BaseSettingsManager;
+
 		class XmlSettingsDialog : public QWidget
 		{
 			Q_OBJECT
 
 			QStackedWidget *Pages_;
 			QStringList Titles_;
-			QObject *WorkingObject_;
+			BaseSettingsManager *WorkingObject_;
 			QString DefaultLang_;
-			boost::shared_ptr<QDomDocument> Document_;
+			std::shared_ptr<QDomDocument> Document_;
 			QList<QWidget*> Customs_;
 			ItemHandlerFactory *HandlersManager_;
 			QString Basename_;
@@ -61,7 +63,9 @@ namespace LeechCraft
 
 			XMLSETTINGSMANAGER_API XmlSettingsDialog ();
 			XMLSETTINGSMANAGER_API virtual ~XmlSettingsDialog ();
-			XMLSETTINGSMANAGER_API void RegisterObject (QObject*, const QString&);
+
+			XMLSETTINGSMANAGER_API void RegisterObject (BaseSettingsManager*, const QString&);
+			XMLSETTINGSMANAGER_API BaseSettingsManager* GetManagerObject () const;
 
 			/** @brief Returns the current XML.
 			 *
@@ -221,9 +225,11 @@ namespace LeechCraft
 			virtual void reject ();
 		private slots:
 			void handleCustomDestroyed ();
+			void handleMoreThisStuffRequested ();
 			void handlePushButtonReleased ();
 		signals:
 			XMLSETTINGSMANAGER_API void pushButtonClicked (const QString&);
+			XMLSETTINGSMANAGER_API void moreThisStuffRequested (const QString&);
 		};
 	};
 };

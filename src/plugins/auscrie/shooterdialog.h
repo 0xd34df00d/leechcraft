@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,34 +24,41 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Auscrie
+{
+	class ShooterDialog : public QDialog
 	{
-		namespace Auscrie
+		Q_OBJECT
+
+		Ui::ShooterDialog Ui_;
+	public:
+		enum class Action
 		{
-			class ShooterDialog : public QDialog
-			{
-				Q_OBJECT
+			Upload,
+			Save
+		};
 
-				Ui::ShooterDialog Ui_;
-			public:
-				enum Action
-				{
-					AUpload,
-					ASave
-				};
+		enum class Mode
+		{
+			LCWindowOverlay,
+			LCWindow,
+			CurrentScreen,
+			WholeDesktop
+		};
 
-				ShooterDialog (QWidget* = 0);
+		ShooterDialog (QWidget* = 0);
 
-				Action GetAction () const;
-				Poster::HostingService GetHostingService () const;
-				int GetTimeout () const;
-				QString GetFormat () const;
-				int GetQuality () const;
-			private slots:
-				void on_Format__currentIndexChanged (const QString&);
-			};
-		}
-	}
+		Action GetAction () const;
+		Mode GetMode () const;
+		bool ShouldHide () const;
+		Poster::HostingService GetHostingService () const;
+		int GetTimeout () const;
+		QString GetFormat () const;
+		int GetQuality () const;
+	private slots:
+		void on_Format__currentIndexChanged (const QString&);
+	};
+}
 }
 
 #endif

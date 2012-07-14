@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,9 +50,9 @@ namespace LeechCraft
 				on_Tree__currentItemChanged (0);
 			}
 
-			QList<QPair<Core::BanRange_t, bool> > IPFilterDialog::GetFilter () const
+			QList<QPair<Core::BanRange_t, bool>> IPFilterDialog::GetFilter () const
 			{
-				QList<QPair<Core::BanRange_t, bool> > result;
+				QList<QPair<Core::BanRange_t, bool>> result;
 				for (int i = 0, size = Ui_.Tree_->topLevelItemCount (); i < size; ++i)
 				{
 					QTreeWidgetItem *item = Ui_.Tree_->topLevelItem (i);

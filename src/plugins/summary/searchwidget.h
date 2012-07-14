@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,44 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SUMMARY_SEARCHWIDGET_H
-#define PLUGINS_SUMMARY_SEARCHWIDGET_H
+#pragma once
+
 #include <QDockWidget>
 #include "ui_searchwidget.h"
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Util
+{
+	class CategorySelector;
+}
+
+namespace Summary
+{
+	class SearchWidget : public QDockWidget
 	{
-		class CategorySelector;
+		Q_OBJECT
+
+		Ui::SearchWidget Ui_;
+		Util::CategorySelector *CategorySelector_;
+	public:
+		SearchWidget (QWidget* = 0);
+
+		QLineEdit* GetFilterLine () const;
+		QComboBox* GetFilterType () const;
+		bool IsOr () const;
+
+		QStringList GetCategories () const;
+		void SetPossibleCategories (const QStringList&);
+		void SelectCategories (const QStringList& subset);
+	signals:
+		void paramsChanged ();
 	};
-
-	namespace Plugins
-	{
-		namespace Summary
-		{
-			class SearchWidget : public QDockWidget
-			{
-				Q_OBJECT
-
-				Ui::SearchWidget Ui_;
-				Util::CategorySelector *CategorySelector_;
-			public:
-				SearchWidget (QWidget* = 0);
-
-				QLineEdit* GetFilterLine () const;
-				QComboBox* GetFilterType () const;
-				bool IsOr () const;
-
-				QStringList GetCategories () const;
-				void SetPossibleCategories (const QStringList&);
-				void SelectCategories (const QStringList& subset);
-			signals:
-				void paramsChanged ();
-			};
-		};
-	};
-};
-
-#endif
-
+}
+}

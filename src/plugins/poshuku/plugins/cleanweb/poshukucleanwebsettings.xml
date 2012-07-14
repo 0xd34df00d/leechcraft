@@ -21,7 +21,7 @@
 		</tab>
 		<tab>
 			<label lang="en" value="FlashOnClick" />
-			<item type="groupbox" checkable="true" state="on" property="EnableFlashOnClick">
+			<item type="groupbox" checkable="true" default="false" property="EnableFlashOnClick">
 				<label lang="en" value="Enable FlashOnClick" />
 				<item type="customwidget" name="FlashOnClickWhitelist" label="own" />
 			</item>

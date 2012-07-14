@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,27 +28,27 @@ namespace LeechCraft
 			{
 				return Index_ == other.Index_;
 			}
-			
+
 			PiecesModel::PiecesModel (QObject *parent)
 			: QAbstractItemModel (parent)
 			{
 				Headers_ << tr ("Index") << tr ("Speed") << tr ("State");
 			}
-			
+
 			PiecesModel::~PiecesModel ()
 			{
 			}
-			
+
 			int PiecesModel::columnCount (const QModelIndex&) const
 			{
 				return Headers_.size ();
 			}
-			
+
 			QVariant PiecesModel::data (const QModelIndex& index, int role) const
 			{
 				if (!index.isValid () || role != Qt::DisplayRole)
 					return QVariant ();
-				
+
 				switch (index.column ())
 				{
 					case 0:
@@ -73,98 +73,95 @@ namespace LeechCraft
 						return QVariant ();
 				}
 			}
-			
+
 			Qt::ItemFlags PiecesModel::flags (const QModelIndex&) const
 			{
 				return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 			}
-			
+
 			bool PiecesModel::hasChildren (const QModelIndex& index) const
 			{
 				return !index.isValid ();
 			}
-			
+
 			QModelIndex PiecesModel::index (int row, int column, const QModelIndex&) const
 			{
 				if (!hasIndex (row, column))
 					return QModelIndex ();
-			
+
 				return createIndex (row, column);
-			} 
-			
+			}
+
 			QVariant PiecesModel::headerData (int column, Qt::Orientation orient, int role) const
 			{
 				if (orient == Qt::Vertical)
 					return QVariant ();
-			
+
 				if (role != Qt::DisplayRole)
 					return QVariant ();
-			
+
 				return Headers_ [column];
 			}
-			
+
 			QModelIndex PiecesModel::parent (const QModelIndex&) const
 			{
 				return QModelIndex ();
 			}
-			
+
 			int PiecesModel::rowCount (const QModelIndex& index) const
 			{
 				if (index.isValid ())
 					return 0;
-			
+
 				return Pieces_.size ();
 			}
-			
+
 			void PiecesModel::Clear ()
 			{
 				if (!Pieces_.size ())
 					return;
-			
+
 				beginRemoveRows (QModelIndex (), 0, Pieces_.size () - 1);
 				Pieces_.clear ();
 				endRemoveRows ();
 			}
-			
+
 			void PiecesModel::Update (const std::vector<libtorrent::partial_piece_info>& queue)
 			{
 				QList<Info> pieces2Insert;
 				QMap<int, int> index2position;
-			
-				for (int i = 0; i < Pieces_.size (); ++i)
+
+				const int initSize = Pieces_.size ();
+				for (int i = 0; i < initSize; ++i)
 					index2position [Pieces_.at (i).Index_] = i;
-			
+
 				// Update
-				for (size_t i = 0; i < queue.size (); ++i)
+				for (size_t i = 0, size = queue.size (); i < size; ++i)
 				{
-					libtorrent::partial_piece_info ppi = queue [i];
-			
+					const auto& ppi = queue [i];
+
 					bool found = false;
-					for (int j = 0; j < Pieces_.size (); ++j)
+					for (int j = 0; j < initSize; ++j)
 						if (Pieces_.at (j).Index_ == ppi.piece_index)
 						{
 							index2position.remove (Pieces_.at (j).Index_);
 							Pieces_ [j].State_ = ppi.piece_state;
-							Pieces_ [j].FinishedBlocks_ = 0;
-							for (int k = 0; k < ppi.blocks_in_piece; ++k)
-								Pieces_ [j].FinishedBlocks_ += (ppi.blocks [k].state == libtorrent::block_info::finished);
+							Pieces_ [j].FinishedBlocks_ = ppi.finished;
 							found = true;
 							emit dataChanged (index (j, 1), index (j, 2));
 							break;
 						}
 					if (found)
 						continue;
-			
+
 					Info info;
 					info.Index_ = ppi.piece_index;
 					info.State_ = ppi.piece_state;
 					info.TotalBlocks_ = ppi.blocks_in_piece;
-					info.FinishedBlocks_ = 0;
-					for (int k = 0; k < ppi.blocks_in_piece; ++k)
-						info.FinishedBlocks_ += (ppi.blocks [k].state == libtorrent::block_info::finished);
+					info.FinishedBlocks_ = ppi.finished;
 					pieces2Insert << info;
 				}
-			
+
 				// Remove
 				QList<int> values = index2position.values ();
 				qSort (values.begin (), values.end (), qGreater<int> ());
@@ -174,7 +171,7 @@ namespace LeechCraft
 					Pieces_.removeAt (values.at (i));
 					endRemoveRows ();
 				}
-			
+
 				// Insert new
 				if (pieces2Insert.size ())
 				{
@@ -183,7 +180,6 @@ namespace LeechCraft
 					endInsertRows ();
 				}
 			}
-			
 		};
 	};
 };

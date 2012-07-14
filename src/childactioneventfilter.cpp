@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,17 +41,18 @@ bool ChildActionEventFilter::eventFilter (QObject *obj, QEvent *event)
 			event->type () == QEvent::ChildPolished)
 	{
 		QChildEvent *e = dynamic_cast<QChildEvent*> (event);
-		e->child ()->installEventFilter (this);
+		auto child = e->child ();
+		child->installEventFilter (this);
 
-		QAction *act = dynamic_cast<QAction*> (e->child ());
+		QAction *act = dynamic_cast<QAction*> (child);
 		if (act)
 			SkinEngine::Instance ().UpdateIconSet (QList<QAction*> () << act);
 		else
 		{
 			SkinEngine::Instance ()
-				.UpdateIconSet (e->child ()->findChildren<QAction*> ());
+				.UpdateIconSet (child->findChildren<QAction*> ());
 			SkinEngine::Instance ()
-				.UpdateIconSet (e->child ()->findChildren<QTabWidget*> ());
+				.UpdateIconSet (child->findChildren<QTabWidget*> ());
 		}
 		return false;
 	}

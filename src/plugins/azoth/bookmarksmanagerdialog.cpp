@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,10 @@
 #include "bookmarksmanagerdialog.h"
 #include <QStandardItemModel>
 #include <QMessageBox>
-#include "interfaces/imucjoinwidget.h"
-#include "interfaces/imucbookmarkeditorwidget.h"
-#include "interfaces/iaccount.h"
+#include "interfaces/azoth/imucjoinwidget.h"
+#include "interfaces/azoth/imucbookmarkeditorwidget.h"
+#include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/isupportbookmarks.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -33,22 +34,24 @@ namespace Azoth
 	, BMModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.MoveDown_->setIcon (QIcon::fromTheme ("go-down"));
+		Ui_.MoveUp_->setIcon (QIcon::fromTheme ("go-up"));
 		Ui_.BookmarksTree_->setModel (BMModel_);
-		
+
 		connect (Ui_.BookmarksTree_->selectionModel (),
 				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
 				this,
-				SLOT (handleCurrentBMChanged (const QModelIndex&)));
-		
+				SLOT (handleCurrentBMChanged (const QModelIndex&, const QModelIndex&)));
+
 		Q_FOREACH (IProtocol *proto, Core::Instance ().GetProtocols ())
 		{
 			QWidget *widget = proto->GetMUCJoinWidget ();
 			IMUCJoinWidget *joiner = qobject_cast<IMUCJoinWidget*> (widget);
 			if (!joiner)
 				continue;
-			
+
 			Proto2Joiner_ [proto->GetProtocolID ()] = joiner;
-			
+
 			Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
 			{
 				IAccount *account = qobject_cast<IAccount*> (accObj);
@@ -61,16 +64,37 @@ namespace Azoth
 							<< proto->GetProtocolID ();
 					continue;
 				}
-				
+
+				if (!qobject_cast<ISupportBookmarks*> (accObj))
+					continue;
+
 				Ui_.AccountBox_->addItem (account->GetAccountName (),
 						QVariant::fromValue<IAccount*> (account));
+
+				connect (accObj,
+						SIGNAL (bookmarksChanged ()),
+						this,
+						SLOT (handleBookmarksChanged ()));
 			}
 		}
-		
+
 		if (Ui_.AccountBox_->count ())
 			on_AccountBox__currentIndexChanged (0);
 	}
-	
+
+	void BookmarksManagerDialog::FocusOn (IAccount *acc)
+	{
+		const QVariant& accVar =
+				QVariant::fromValue<IAccount*> (acc);
+
+		for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
+			if (Ui_.AccountBox_->itemData (i) == accVar)
+			{
+				Ui_.AccountBox_->setCurrentIndex (i);
+				break;
+			}
+	}
+
 	void BookmarksManagerDialog::SuggestSaving (QObject *entryObj)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -99,7 +123,7 @@ namespace Azoth
 					<< entryObj;
 			return;
 		}
-		
+
 		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		bool found = false;
 		for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
@@ -110,7 +134,7 @@ namespace Azoth
 				found = true;
 				break;
 			}
-			
+
 		if (!found)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -119,19 +143,20 @@ namespace Azoth
 					<< entry->GetEntryID ();
 			return;
 		}
-		
+
 		if (CurrentEditor_)
 			CurrentEditor_->SetIdentifyingData (data);
 		on_AddButton__released ();
 		CurrentEditor_->SetIdentifyingData (data);
 	}
-	
+
 	void BookmarksManagerDialog::on_AccountBox__currentIndexChanged (int index)
 	{
 		BMModel_->clear ();
 		CurrentEditor_ = 0;
 
 		IAccount *account = Ui_.AccountBox_->itemData (index).value<IAccount*> ();
+		ISupportBookmarks *supBms = qobject_cast<ISupportBookmarks*> (account->GetObject ());
 		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
 		IMUCJoinWidget *joiner = Proto2Joiner_ [proto->GetProtocolID ()];
 		if (!joiner)
@@ -143,8 +168,10 @@ namespace Azoth
 			return;
 		}
 
+		qDebug () << Q_FUNC_INFO << supBms->GetBookmarkedMUCs ().size ();
+
 		const QByteArray& accId = account->GetAccountID ();
-		Q_FOREACH (const QVariant& var, joiner->GetBookmarkedMUCs ())
+		Q_FOREACH (const QVariant& var, supBms->GetBookmarkedMUCs ())
 		{
 			const QVariantMap& map = var.toMap ();
 			if (map.value ("AccountID").toByteArray () != accId)
@@ -153,36 +180,50 @@ namespace Azoth
 			const QString& name = map.value ("HumanReadableName").toString ();
 			if (name.isEmpty ())
 				continue;
-			
+
 			QStandardItem *item = new QStandardItem (name);
 			item->setData (var);
 			BMModel_->appendRow (item);
 		}
-		
+
 		while (Ui_.BMFrameLayout_->count ())
 		{
 			QLayoutItem *item = Ui_.BMFrameLayout_->takeAt (0);
 			delete item->widget ();
 			delete item;
 		}
-		QWidget *w = proto->GetMUCBookmarkEditorWidget ();
+		QWidget *w = supBms->GetMUCBookmarkEditorWidget ();
 		CurrentEditor_ = qobject_cast<IMUCBookmarkEditorWidget*> (w);
 		if (CurrentEditor_)
 			Ui_.BMFrameLayout_->addWidget (w);
 	}
-	
-	void BookmarksManagerDialog::handleCurrentBMChanged (const QModelIndex& current)
+
+	void BookmarksManagerDialog::handleBookmarksChanged ()
 	{
+		const int curIdx = Ui_.AccountBox_->currentIndex ();
+
+		IAccount *acc = qobject_cast<IAccount*> (sender ());
+		if (acc != Ui_.AccountBox_->itemData (curIdx).value<IAccount*> ())
+			return;
+
+		on_AccountBox__currentIndexChanged (curIdx);
+	}
+
+	void BookmarksManagerDialog::handleCurrentBMChanged (const QModelIndex& current, const QModelIndex& previous)
+	{
+		if (CheckSave (previous))
+			return;
+
 		if (!current.isValid ())
 			return;
-		
+
 		QStandardItem *item = BMModel_->itemFromIndex (current);
 		if (!item || !CurrentEditor_)
 			return;
 
 		CurrentEditor_->SetIdentifyingData (item->data ().toMap ());
 	}
-	
+
 	void BookmarksManagerDialog::Save ()
 	{
 		QVariantList datas;
@@ -191,33 +232,63 @@ namespace Azoth
 
 		const int index = Ui_.AccountBox_->currentIndex ();
 		IAccount *account = Ui_.AccountBox_->itemData (index).value<IAccount*> ();
-		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
-		Proto2Joiner_ [proto->GetProtocolID ()]->SetBookmarkedMUCs (account->GetObject (), datas);
-		
+		qobject_cast<ISupportBookmarks*> (account->GetObject ())->SetBookmarkedMUCs (datas);
+
 		on_AccountBox__currentIndexChanged (index);
 	}
-	
+
+	bool BookmarksManagerDialog::CheckSave (const QModelIndex& index)
+	{
+		if (!index.isValid ())
+			return false;
+
+		if (!CurrentEditor_)
+			return false;
+
+		QStandardItem *item = BMModel_->itemFromIndex (index);
+		if (!item)
+			return false;
+
+		QVariantMap oldMap = item->data ().toMap ();
+		const QVariantMap& ourMap = CurrentEditor_->GetIdentifyingData ();
+		if (!ourMap.contains ("AccountID"))
+			oldMap.remove ("AccountID");
+
+		if (oldMap == ourMap)
+			return false;
+
+		if (QMessageBox::question (this,
+					tr ("Save the bookmark?"),
+					tr ("You've changed the bookmark. Do you want to save the changes?"),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return false;
+
+		item->setData (ourMap);
+		Save ();
+		return true;
+	}
+
 	QStandardItem* BookmarksManagerDialog::GetSelectedItem () const
 	{
 		const QModelIndex& currentIdx = Ui_.BookmarksTree_->currentIndex ();
 		if (!currentIdx.isValid ())
 			return 0;
-		
+
 		QStandardItem *item = BMModel_->itemFromIndex (currentIdx);
 		if (!item)
 			qWarning () << Q_FUNC_INFO
 					<< "null item for index"
 					<< currentIdx;
-		
+
 		return item;
 	}
-	
+
 	void BookmarksManagerDialog::on_RemoveButton__released ()
 	{
 		QStandardItem *item = GetSelectedItem ();
 		if (!item)
 			return;
-		
+
 		const QVariantMap& data = item->data ().toMap ();
 
 		if (QMessageBox::question (this,
@@ -226,12 +297,12 @@ namespace Azoth
 					.arg (data.value ("HumanReadableName").toString ()),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
-		
+
 		BMModel_->removeRow (item->row ());
-		
+
 		Save ();
 	}
-	
+
 	void BookmarksManagerDialog::on_AddButton__released ()
 	{
 		QStandardItem *selected = GetSelectedItem ();
@@ -240,14 +311,14 @@ namespace Azoth
 				(CurrentEditor_ ?
 					CurrentEditor_->GetIdentifyingData () :
 					QVariantMap ());
-		
+
 		QStandardItem *item = new QStandardItem (data.value ("HumanReadableName").toString ());
 		item->setData (data);
 		BMModel_->appendRow (item);
 		Ui_.BookmarksTree_->setCurrentIndex (BMModel_->indexFromItem (item));
 	}
-	
-	void BookmarksManagerDialog::on_ApplyButton__released()
+
+	void BookmarksManagerDialog::on_ApplyButton__released ()
 	{
 		QStandardItem *selected = GetSelectedItem ();
 		if (!selected ||
@@ -256,6 +327,38 @@ namespace Azoth
 			return;
 
 		selected->setData (CurrentEditor_->GetIdentifyingData ());
+		Save ();
+	}
+
+	void BookmarksManagerDialog::on_MoveUp__released ()
+	{
+		QStandardItem *selected = GetSelectedItem ();
+		if (!selected)
+			return;
+
+		const int row = selected->row ();
+		if (row <= 0)
+			return;
+
+		auto items = BMModel_->takeRow (row);
+		BMModel_->insertRow (row - 1, items);
+
+		Save ();
+	}
+
+	void BookmarksManagerDialog::on_MoveDown__released ()
+	{
+		QStandardItem *selected = GetSelectedItem ();
+		if (!selected)
+			return;
+
+		const int row = selected->row ();
+		if (row >= BMModel_->rowCount () - 1)
+			return;
+
+		auto items = BMModel_->takeRow (row);
+		BMModel_->insertRow (row, items);
+
 		Save ();
 	}
 }

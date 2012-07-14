@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ namespace Metacontacts
 	, Message_ (qobject_cast<IMessage*> (msg))
 	{
 	}
-	
+
 	QObject* MetaMessage::GetObject ()
 	{
 		return this;
@@ -41,6 +41,11 @@ namespace Metacontacts
 	void MetaMessage::Send ()
 	{
 		Message_->Send ();
+	}
+
+	void MetaMessage::Store ()
+	{
+		Message_->Store ();
 	}
 
 	IMessage::Direction MetaMessage::GetDirection () const
@@ -57,23 +62,23 @@ namespace Metacontacts
 	{
 		return Message_->GetMessageSubType ();
 	}
-	
+
 	QObject* MetaMessage::OtherPart () const
 	{
 		return Entry_;
 	}
-	
+
 	QString MetaMessage::GetOtherVariant () const
 	{
 		return Entry_->GetMetaVariant (Message_->OtherPart (),
 				Message_->GetOtherVariant ());
 	}
-	
+
 	QString MetaMessage::GetBody () const
 	{
 		return Message_->GetBody ();
 	}
-	
+
 	void MetaMessage::SetBody (const QString& body)
 	{
 		Message_->SetBody (body);
@@ -88,7 +93,7 @@ namespace Metacontacts
 	{
 		Message_->SetDateTime (dt);
 	}
-	
+
 	IMessage* MetaMessage::GetOriginalMessage () const
 	{
 		return Message_;

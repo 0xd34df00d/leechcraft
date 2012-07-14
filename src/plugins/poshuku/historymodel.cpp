@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,9 @@
 #include <QVariant>
 #include <QAction>
 #include <QtDebug>
-#include <util/treeitem.h>
+#include <util/models/treeitem.h>
 #include <util/defaulthookproxy.h>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "poshuku.h"
@@ -110,9 +111,6 @@ namespace Poshuku
 				SIGNAL (timeout ()),
 				this,
 				SLOT (loadData ()));
-
-		FolderIconProxy_ = new QAction (this);
-		FolderIconProxy_->setProperty ("ActionIcon", "poshuku_foldericon");
 	}
 
 	HistoryModel::~HistoryModel ()
@@ -224,9 +222,9 @@ namespace Poshuku
 		Core::Instance ().GetStorageBackend ()->AddToHistory (item);
 	}
 
-	QList<QMap<QString, QVariant> > HistoryModel::getItemsMap () const
+	QList<QMap<QString, QVariant>> HistoryModel::getItemsMap () const
 	{
-		QList<QMap<QString, QVariant> > result;
+		QList<QMap<QString, QVariant>> result;
 		Q_FOREACH (const HistoryItem& item, Items_)
 		{
 			QMap<QString, QVariant> map;
@@ -250,7 +248,7 @@ namespace Poshuku
 				<< QString ("");
 			TreeItem *folder = new TreeItem (data, RootItem_);
 			folder->ModifyData (0,
-					FolderIconProxy_->icon (),
+					Core::Instance ().GetProxy ()->GetIcon ("document-open-folder"),
 					Qt::DecorationRole);
 			RootItem_->AppendChild (folder);
 		}

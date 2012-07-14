@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
 
 #ifndef PLUGINS_SEEKTHRU_SEARCHHANDLER_H
 #define PLUGINS_SEEKTHRU_SEARCHHANDLER_H
+#include <memory>
 #include <QAbstractItemModel>
-#include <boost/shared_ptr.hpp>
 #include <QUrl>
 #include <interfaces/ifinder.h>
 #include <interfaces/structures.h>
@@ -72,9 +72,9 @@ namespace LeechCraft
 				QList<Result> Results_;
 				QMap<int, Result> Jobs_;
 				QList<QObject*> Downloaders_;
-				boost::shared_ptr<Util::SelectableBrowser> Viewer_;
-				boost::shared_ptr<QToolBar> Toolbar_;
-				boost::shared_ptr<QAction> Action_;
+				std::shared_ptr<Util::SelectableBrowser> Viewer_;
+				std::shared_ptr<QToolBar> Toolbar_;
+				std::shared_ptr<QAction> Action_;
 			public:
 				SearchHandler (const Description&);
 
@@ -101,7 +101,7 @@ namespace LeechCraft
 				void warning (const QString&);
 			};
 
-			typedef boost::shared_ptr<SearchHandler> SearchHandler_ptr;
+			typedef std::shared_ptr<SearchHandler> SearchHandler_ptr;
 		};
 	};
 };

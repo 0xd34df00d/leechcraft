@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_POSHUKU_CUSTOMWEBVIEW_H
 #define PLUGINS_POSHUKU_CUSTOMWEBVIEW_H
-#include <qwebview.h>
+#include <qgraphicswebview.h>
 #include <interfaces/structures.h>
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/poshukutypes.h"
@@ -32,7 +32,7 @@ namespace Poshuku
 {
 	class BrowserWidget;
 
-	class CustomWebView : public QWebView
+	class CustomWebView : public QGraphicsWebView
 	{
 		Q_OBJECT
 
@@ -43,7 +43,7 @@ namespace Poshuku
 		double ScrollDelta_;
 		double AccumulatedScrollShift_;
 	public:
-		CustomWebView (QWidget* = 0);
+		CustomWebView (QGraphicsItem* = 0);
 		virtual ~CustomWebView ();
 
 		void SetBrowserWidget (BrowserWidget*);
@@ -65,9 +65,9 @@ namespace Poshuku
 		 */
 		QString URLToProperString (const QUrl& url);
 	protected:
-		virtual void mousePressEvent (QMouseEvent*);
-		virtual void wheelEvent (QWheelEvent*);
-		virtual void contextMenuEvent (QContextMenuEvent*);
+		virtual void mousePressEvent (QGraphicsSceneMouseEvent*);
+		virtual void wheelEvent (QGraphicsSceneWheelEvent*);
+		virtual void contextMenuEvent (QGraphicsSceneContextMenuEvent*);
 		virtual void keyReleaseEvent (QKeyEvent*);
 	private:
 		int LevelForZoom (qreal);
@@ -89,6 +89,7 @@ namespace Poshuku
 		void openImageHere ();
 		void openImageInNewTab ();
 		void saveImage ();
+		void savePixmap ();
 		void copyImage ();
 		void copyImageLocation ();
 		void searchSelectedText ();
@@ -107,7 +108,7 @@ namespace Poshuku
 
 		// Hook support signals
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QWebView*, QContextMenuEvent*,
+				QGraphicsWebView*, QGraphicsSceneContextMenuEvent*,
 				const QWebHitTestResult&, QMenu*,
 				WebViewCtxMenuStage);
 	};

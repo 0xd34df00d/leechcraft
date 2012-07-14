@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ namespace Fua
 {
 	void FUA::Init (ICoreProxy_ptr)
 	{
-		Translator_.reset (Util::InstallTranslator ("poshuku_fua"));
+		Util::InstallTranslator ("poshuku_fua");
 
 		Browser2ID_ ["Chromium 5 on Linux x86"] = "Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/533.4 (KHTML, like Gecko) Chrome/5.0.375.70 Safari/533.4";
 		Browser2ID_ ["Chromium 6 on Linux x86"] = "Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.1 (KHTML, like Gecko) Chrome/6.0.427.0 Safari/534.1";
@@ -114,7 +114,8 @@ namespace Fua
 
 	QIcon FUA::GetIcon () const
 	{
-		return QIcon (":/resources/images/poshuku_fua.svg");
+		static QIcon icon (":/resources/images/poshuku_fua.svg");
+		return icon;
 	}
 
 	QStringList FUA::Provides () const
@@ -188,4 +189,4 @@ namespace Fua
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_fua, LeechCraft::Poshuku::Fua::FUA);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_fua, LeechCraft::Poshuku::Fua::FUA);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "core.h"
-#include <boost/bind.hpp>
 #include <QtDebug>
 #include <QDBusError>
 #include <QDBusConnection>
@@ -26,7 +25,7 @@
 #include <QTimer>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
-#ifdef Q_WS_WIN32
+#ifdef Q_OS_WIN32
 #include <QProcess>
 #endif
 #include "generaladaptor.h"
@@ -42,7 +41,7 @@ Core::Core ()
 	QTimer::singleShot (1500,
 			this,
 			SLOT (doDelayedInit ()));
-#ifdef Q_WS_WIN32
+#ifdef Q_OS_WIN32
 	QProcess *daemon = new QProcess (this);
 	daemon->start ("dbus/bin/dbus-daemon --session");
 #endif

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,12 +24,12 @@
 #include <QtDebug>
 #include <util/resourceloader.h>
 #include <util/util.h>
-#include <interfaces/imessage.h>
-#include <interfaces/iadvancedmessage.h>
-#include <interfaces/irichtextmessage.h>
-#include <interfaces/iaccount.h>
-#include <interfaces/imucentry.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iadvancedmessage.h>
+#include <interfaces/azoth/irichtextmessage.h>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/imucentry.h>
+#include <interfaces/azoth/iproxyobject.h>
 
 namespace LeechCraft
 {
@@ -44,29 +44,39 @@ namespace StandardStyles
 	{
 		StylesLoader_->AddGlobalPrefix ();
 		StylesLoader_->AddLocalPrefix ();
+
+		StylesLoader_->SetCacheParams (256, 0);
 	}
-	
+
 	QAbstractItemModel* StandardStyleSource::GetOptionsModel() const
 	{
 		return StylesLoader_->GetSubElemModel ();
 	}
-	
-	QString StandardStyleSource::GetHTMLTemplate (const QString& pack, QObject *entryObj, QWebFrame*) const
+
+	QUrl StandardStyleSource::GetBaseURL (const QString& pack) const
+	{
+		return QUrl ();
+	}
+
+	QString StandardStyleSource::GetHTMLTemplate (const QString& pack,
+			const QString&, QObject *entryObj, QWebFrame*) const
 	{
 		if (pack != LastPack_)
 		{
 			Coloring2Colors_.clear ();
 			LastPack_ = pack;
+
+			StylesLoader_->FlushCache ();
 		}
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		
+
 		Util::QIODevice_ptr dev;
 		if (entry && entry->GetEntryType () == ICLEntry::ETMUC)
 			dev = StylesLoader_->Load (QStringList (pack + "/viewcontents.muc.html"));
 		if (!dev)
 			dev = StylesLoader_->Load (QStringList (pack + "/viewcontents.html"));
-		
+
 		if (!dev)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -83,7 +93,7 @@ namespace StandardStyles
 					<< dev->errorString ();
 			return QString ();
 		}
-		
+
 		QString data = QString::fromUtf8 (dev->readAll ());
 		data.replace ("BACKGROUNDCOLOR",
 				QApplication::palette ().color (QPalette::Base).name ());
@@ -96,7 +106,21 @@ namespace StandardStyles
 						property ("HighlightColor").toString ());
 		return data;
 	}
-	
+
+	namespace
+	{
+		QString WrapNickPart (const QString& part,
+				const QString& color, IMessage::MessageType type)
+		{
+			const QString& pre = type == IMessage::MTMUCMessage ?
+					"<span class='nickname' style='color: " + color + "'>" :
+					"<span class='nickname'>";
+			return pre +
+					Qt::escape (part) +
+					"</span>";
+		}
+	}
+
 	bool StandardStyleSource::AppendMessage (QWebFrame *frame,
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
@@ -105,7 +129,7 @@ namespace StandardStyles
 
 		const bool isHighlightMsg = info.IsHighlightMsg_;
 		const bool isActiveChat = info.IsActiveChat_;
-		
+
 		const QString& msgId = GetMessageID (msgObj);
 
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
@@ -113,6 +137,12 @@ namespace StandardStyles
 		QString entryName = other ?
 				Qt::escape (other->GetEntryName ()) :
 				QString ();
+
+		connect (msgObj,
+				SIGNAL (destroyed ()),
+				this,
+				SLOT (handleMessageDestroyed ()),
+				Qt::UniqueConnection);
 
 		IAdvancedMessage *advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
 		if (msg->GetDirection () == IMessage::DOut &&
@@ -130,27 +160,27 @@ namespace StandardStyles
 					Qt::UniqueConnection);
 			Msg2Frame_ [msgObj] = frame;
 		}
-		
+
 		const QString& nickColor = Proxy_->GetNickColor (entryName, colors);
-		
+
 		IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj);
 		QString body;
 		if (richMsg && info.UseRichTextBody_)
 			body = richMsg->GetRichBody ();
 		if (body.isEmpty ())
 			body = msg->GetBody ();
-		
+
 		body = Proxy_->FormatBody (body, msg->GetObject ());
-		
+
 		const QString dateBegin ("<span class='datetime'>");
 		const QString dateEnd ("</span>");
-		
-		const QString& preNick = dateBegin +
-				azothSettings->property ("PreNickText").toString () +
-				dateEnd;
-		const QString& postNick = dateBegin +
-				azothSettings->property ("PostNickText").toString () +
-				dateEnd;
+
+		const QString& preNick =
+				WrapNickPart (azothSettings->property ("PreNickText").toString (),
+						nickColor, msg->GetMessageType ());
+		const QString& postNick =
+				WrapNickPart (azothSettings->property ("PostNickText").toString (),
+						nickColor, msg->GetMessageType ());
 
 		QString divClass;
 		QString statusIconName;
@@ -173,20 +203,19 @@ namespace StandardStyles
 			case IMessage::MTMUCMessage:
 			{
 				statusIconName = "notification_chat_receive";
-				entryName = Proxy_->FormatNickname (entryName, msg->GetObject (), nickColor);
 
 				if (body.startsWith ("/me "))
 				{
 					body = body.mid (3);
 					string.append ("* ");
-					string.append (entryName);
+					string.append (Proxy_->FormatNickname (entryName, msg->GetObject (), nickColor));
 					string.append (' ');
 					divClass = "slashmechatmsg";
 				}
 				else
 				{
 					string.append (preNick);
-					string.append (entryName);
+					string.append (Proxy_->FormatNickname (entryName, msg->GetObject (), nickColor));
 					string.append (postNick);
 					string.append (' ');
 					if (divClass.isEmpty ())
@@ -234,7 +263,7 @@ namespace StandardStyles
 			{
 				body = body.mid (3);
 				string.append ("* ");
-				string.append (nick);
+				string.append (Proxy_->FormatNickname (nick, msg->GetObject (), nickColor));
 				string.append (' ');
 				divClass = "slashmechatmsg";
 			}
@@ -275,25 +304,30 @@ namespace StandardStyles
 					.arg (string));
 		return true;
 	}
-	
+
 	void StandardStyleSource::FrameFocused (QWebFrame *frame)
 	{
 		HasBeenAppended_ [frame] = false;
 	}
-	
+
+	QStringList StandardStyleSource::GetVariantsForPack (const QString&)
+	{
+		return QStringList ();
+	}
+
 	QList<QColor> StandardStyleSource::CreateColors (const QString& scheme)
 	{
 		if (!Coloring2Colors_.contains (scheme))
 			Coloring2Colors_ [scheme] = Proxy_->GenerateColors (scheme);
-		
+
 		return Coloring2Colors_ [scheme];
 	}
-	
+
 	QString StandardStyleSource::GetMessageID (QObject *msgObj)
 	{
 		return QString::number (reinterpret_cast<long int> (msgObj));
 	}
-	
+
 	QString StandardStyleSource::GetStatusImage (const QString& statusIconName)
 	{
 		const QString& fullName = Proxy_->GetSettingsManager ()->
@@ -303,25 +337,31 @@ namespace StandardStyles
 		const QImage& img = QImage (statusIconPath);
 		return Util::GetAsBase64Src (img);
 	}
-	
+
 	void StandardStyleSource::handleMessageDelivered ()
 	{
 		QWebFrame *frame = Msg2Frame_.take (sender ());
 		if (!frame)
 			return;
-		
+
 		const QString& msgId = GetMessageID (sender ());
 		QWebElement elem = frame->findFirstElement ("img[id=\"" + msgId + "\"]");
 		elem.setAttribute ("src", GetStatusImage ("notification_chat_delivery_ok"));
-		
+
 		disconnect (sender (),
 				SIGNAL (messageDelivered ()),
 				this,
 				SLOT (handleMessageDelivered ()));
 	}
-	
+
+	void StandardStyleSource::handleMessageDestroyed ()
+	{
+		Msg2Frame_.remove (sender ());
+	}
+
 	void StandardStyleSource::handleFrameDestroyed ()
 	{
+		HasBeenAppended_.remove (static_cast<QWebFrame*> (sender ()));
 		const QObject *snd = sender ();
 		for (QHash<QObject*, QWebFrame*>::iterator i = Msg2Frame_.begin ();
 				i != Msg2Frame_.end (); )

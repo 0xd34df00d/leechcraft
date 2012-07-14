@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,73 +37,67 @@ class QTimer;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace CSTP
+{
+	class Task : public QObject
 	{
-		namespace CSTP
-		{
-			class Hook;
+		Q_OBJECT
+		std::auto_ptr<QNetworkReply> Reply_;
+		QUrl URL_;
+		QTime StartTime_;
+		qint64 Done_, Total_, FileSizeAtStart_;
+		double Speed_;
+		QList<QByteArray> RedirectHistory_;
+		boost::intrusive_ptr<MorphFile> To_;
+		int Counter_;
+		int UpdateCounter_;
+		QTimer *Timer_;
+		bool CanChangeName_;
+	public:
+		explicit Task (const QUrl& = QUrl ());
+		explicit Task (QNetworkReply*);
+		void Start (const boost::intrusive_ptr<MorphFile>&);
+		void Stop ();
+		void ForbidNameChanges ();
 
-			class Task : public QObject
-			{
-				Q_OBJECT
-				std::auto_ptr<QNetworkReply> Reply_;
-				QUrl URL_;
-				QTime StartTime_;
-				qint64 Done_, Total_, FileSizeAtStart_;
-				double Speed_;
-				QList<QByteArray> RedirectHistory_;
-				boost::intrusive_ptr<MorphFile> To_;
-				int Counter_;
-				int UpdateCounter_;
-				QTimer *Timer_;
-				bool CanChangeName_;
-			public:
-				explicit Task (const QUrl& = QUrl ());
-				explicit Task (QNetworkReply*);
-				void Start (const boost::intrusive_ptr<MorphFile>&);
-				void Stop ();
-				void ForbidNameChanges ();
+		QByteArray Serialize () const;
+		void Deserialize (QByteArray&);
 
-				QByteArray Serialize () const;
-				void Deserialize (QByteArray&);
+		double GetSpeed () const;
+		qint64 GetDone () const;
+		qint64 GetTotal () const;
+		QString GetState () const;
+		QString GetURL () const;
+		int GetTimeFromStart () const;
+		bool IsRunning () const;
+		QString GetErrorString () const;
 
-				double GetSpeed () const;
-				qint64 GetDone () const;
-				qint64 GetTotal () const;
-				QString GetState () const;
-				QString GetURL () const;
-				int GetTimeFromStart () const;
-				bool IsRunning () const;
-				QString GetErrorString () const;
-
-				void AddRef ();
-				void Release ();
-			private:
-				void Reset ();
-				void RecalculateSpeed ();
-				void HandleMetadataRedirection ();
-				void HandleMetadataFilename ();
-			private slots:
-				void handleDataTransferProgress (qint64, qint64);
-				void redirectedConstruction (const QByteArray&);
-				void handleMetaDataChanged ();
-				void handleLocalTransfer ();
-				/** Returns true if the reply is at end after this read.
-				 */
-				bool handleReadyRead ();
-				void handleFinished ();
-				void handleError ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-				void updateInterface ();
-				void done (bool);
-			};
-
-			void intrusive_ptr_add_ref (Task*);
-			void intrusive_ptr_release (Task*);
-		};
+		void AddRef ();
+		void Release ();
+	private:
+		void Reset ();
+		void RecalculateSpeed ();
+		void HandleMetadataRedirection ();
+		void HandleMetadataFilename ();
+	private slots:
+		void handleDataTransferProgress (qint64, qint64);
+		void redirectedConstruction (const QByteArray&);
+		void handleMetaDataChanged ();
+		void handleLocalTransfer ();
+		/** Returns true if the reply is at end after this read.
+			*/
+		bool handleReadyRead ();
+		void handleFinished ();
+		void handleError ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void updateInterface ();
+		void done (bool);
 	};
-};
+
+	void intrusive_ptr_add_ref (Task*);
+	void intrusive_ptr_release (Task*);
+}
+}
 
 #endif
-

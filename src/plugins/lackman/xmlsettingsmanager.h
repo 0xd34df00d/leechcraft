@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,24 +22,20 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		namespace LackMan
-		{
-			class XmlSettingsManager : public Util::BaseSettingsManager
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				XmlSettingsManager ();
-			public:
-				static XmlSettingsManager* Instance ();
-			protected:
-				virtual QSettings* BeginSettings () const;
-				virtual void EndSettings (QSettings*) const;
-			};
-		};
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager* Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
-};
+}
+}
 
 #endif
-

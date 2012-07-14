@@ -26,6 +26,12 @@ ELSE()
 	ENDIF()
 ENDIF()
 
+IF (NOT CMAKE_VERSION VERSION_LESS 2.8.6)
+	MESSAGE (STATUS "CMake 2.8.6 or greater found, enabling automoc...")
+	SET (CMAKE_AUTOMOC TRUE)
+	SET (LC_NO_MOC TRUE)
+ENDIF (NOT CMAKE_VERSION VERSION_LESS 2.8.6)
+
 FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
 	STRING (LENGTH "${PlugName}" _pnameLength)
 	SET (_basename "leechcraft")
@@ -40,6 +46,27 @@ FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
 	SET (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
 ENDFUNCTION (CreateTrVars)
 
+FUNCTION (CreateTrs PlugName Langs CompiledTranVar)
+	STRING (LENGTH "${PlugName}" _pnameLength)
+	SET (_basename "leechcraft")
+	IF (_pnameLength)
+		SET (_basename "${_basename}_${PlugName}")
+	ENDIF (_pnameLength)
+	FOREACH (_LANG ${Langs})
+		SET (_tran ${_tran} ${_basename}_${_LANG}.ts)
+		SET (_ctran ${_ctran} ${CMAKE_CURRENT_SOURCE_DIR}/${_basename}_${_LANG}.qm)
+	ENDFOREACH (_LANG)
+	SET (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
+
+	ADD_CUSTOM_COMMAND (OUTPUT ${_ctran}
+		COMMAND "${QT_LRELEASE_EXECUTABLE}" ${_tran}
+		DEPENDS ${_tran}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		)
+	INSTALL (FILES ${_ctran} DESTINATION ${LC_TRANSLATIONS_DEST})
+	SET (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
+ENDFUNCTION (CreateTrs)
+
 SET (LC_PLUGINS_DEST @LC_PLUGINS_DEST@)
 SET (LC_TRANSLATIONS_DEST @LC_TRANSLATIONS_DEST@)
 SET (LC_SETTINGS_DEST @LC_SETTINGS_DEST@)
@@ -47,5 +74,5 @@ SET (LC_QML_DEST @LC_QML_DEST@)
 SET (LC_INSTALLEDMANIFEST_DEST @LC_INSTALLEDMANIFEST_DEST@)
 
 IF (UNIX)
-	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-strict-aliasing")
+	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-strict-aliasing -std=c++0x")
 ENDIF (UNIX)

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,11 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGE_H
 #define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QSqlQuery>
 #include <QHash>
 #include <QVariant>
+#include <QDateTime>
 
 class QSqlDatabase;
 
@@ -37,7 +38,7 @@ namespace ChatHistory
 	{
 		Q_OBJECT
 
-		boost::shared_ptr<QSqlDatabase> DB_;
+		std::shared_ptr<QSqlDatabase> DB_;
 		QSqlQuery UserSelector_;
 		QSqlQuery AccountSelector_;
 		QSqlQuery UserIDSelector_;
@@ -46,13 +47,28 @@ namespace ChatHistory
 		QSqlQuery AccountInserter_;
 		QSqlQuery MessageDumper_;
 		QSqlQuery UsersForAccountGetter_;
+		QSqlQuery Date2Pos_;
 		QSqlQuery LogsSearcher_;
+		QSqlQuery LogsSearcherWOContact_;
+		QSqlQuery LogsSearcherWOContactAccount_;
 		QSqlQuery HistoryGetter_;
 		QSqlQuery HistoryClearer_;
 		QSqlQuery EntryCacheSetter_;
 		QSqlQuery EntryCacheGetter_;
 		QHash<QString, qint32> Users_;
 		QHash<QString, qint32> Accounts_;
+
+		struct RawSearchResult
+		{
+			qint32 EntryID_;
+			qint32 AccountID_;
+			QDateTime Date_;
+
+			RawSearchResult ();
+			RawSearchResult (qint32 entryId, qint32 accountId, const QDateTime& date);
+
+			bool IsEmpty () const;
+		};
 	public:
 		Storage (QObject* = 0);
 	private:
@@ -65,6 +81,11 @@ namespace ChatHistory
 		QHash<QString, qint32> GetAccounts ();
 		qint32 GetAccountID (const QString&);
 		void AddAccount (const QString& id);
+		RawSearchResult Search (const QString& accountId, const QString& entryId,
+				const QString& text, int shift);
+		RawSearchResult Search (const QString& accountId, const QString& text, int shift);
+		RawSearchResult Search (const QString& text, int shift);
+		void SearchDate (qint32, qint32, const QDateTime&);
 	public slots:
 		void addMessage (const QVariantMap&);
 		void getOurAccounts ();
@@ -73,6 +94,7 @@ namespace ChatHistory
 				const QString& entryId, int backpages, int amount);
 		void search (const QString& accountId, const QString& entryId,
 				const QString& text, int shift);
+		void searchDate (const QString& accountId, const QString& entryId, const QDateTime& dt);
 		void clearHistory (const QString& accountId, const QString& entryId);
 	signals:
 		void gotOurAccounts (const QStringList&);

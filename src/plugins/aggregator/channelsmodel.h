@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 #ifndef PLUGINS_AGGREGATOR_CHANNELSMODEL_H
 #define PLUGINS_AGGREGATOR_CHANNELSMODEL_H
 #include <QAbstractItemModel>
-#include <boost/shared_ptr.hpp>
 #include "channel.h"
 
 class QToolBar;
@@ -64,9 +63,13 @@ namespace Aggregator
 		void UpdateChannelData (const ChannelShort&);
 		ChannelShort& GetChannelForIndex (const QModelIndex&);
 		void RemoveChannel (const ChannelShort&);
+
+		void Clear ();
+
 		QModelIndex GetUnreadChannelIndex () const;
 		int GetUnreadChannelsNumber () const;
 		int GetUnreadItemsNumber () const;
+
 		void SetMenu (QMenu*);
 	signals:
 		void channelDataUpdated ();

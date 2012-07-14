@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CORE_H
 #define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CORE_H
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QSet>
+#include <QVariantMap>
 #include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
@@ -36,44 +36,49 @@ namespace ChatHistory
 	template<typename T>
 	class STGuard
 	{
-		boost::shared_ptr<T> C_;
+		std::shared_ptr<T> C_;
 	public:
 		STGuard ()
 		: C_ (T::Instance ())
 		{}
 	};
-	
+
 	class StorageThread;
 
 	class Core : public QObject
 	{
 		Q_OBJECT
-		static boost::weak_ptr<Core> InstPtr_;
-		
+		static std::weak_ptr<Core> InstPtr_;
+
 		StorageThread *StorageThread_;
 		IProxyObject *PluginProxy_;
 		QSet<QString> DisabledIDs_;
-		
+
 		TabClassInfo TabClass_;
-		
+
 		Core ();
 	public:
-		static boost::shared_ptr<Core> Instance ();
+		static std::shared_ptr<Core> Instance ();
+
+		~Core ();
+
 		TabClassInfo GetTabClass () const;
-		
+
 		void SetPluginProxy (QObject*);
 		IProxyObject* GetPluginProxy () const;
-		
+
 		bool IsLoggingEnabled (QObject*) const;
 		void SetLoggingEnabled (QObject*, bool);
-		
+
 		void Process (QObject*);
+		void Process (QVariantMap);
 		void GetOurAccounts ();
 		void GetUsersForAccount (const QString&);
 		void GetChatLogs (const QString& accountId, const QString& entryId,
 				int backpages, int amount);
 		void Search (const QString& accountId, const QString& entryId,
 				const QString& text, int shift);
+		void Search (const QString& accountId, const QString& entryId, const QDateTime& dt);
 		void ClearHistory (const QString& accountId, const QString& entryId);
 	private:
 		void LoadDisabled ();

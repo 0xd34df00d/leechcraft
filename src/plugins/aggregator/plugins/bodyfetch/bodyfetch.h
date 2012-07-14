@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_BODYFETCH_H
-#define PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_BODYFETCH_H
+#pragma once
+
 #include <QObject>
 #include <QUrl>
 #include <QDir>
@@ -26,13 +26,11 @@
 #include <interfaces/aggregator/item.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QTranslator;
-
 namespace LeechCraft
 {
 namespace Aggregator
 {
-class Item;
+struct Item;
 
 namespace BodyFetch
 {
@@ -48,7 +46,7 @@ namespace BodyFetch
 		ICoreProxy_ptr Proxy_;
 		QDir StorageDir_;
 		WorkerObject *WO_;
-		QHash<int, QPair<QUrl, QString> > Jobs_;
+		QHash<int, QPair<QUrl, QString>> Jobs_;
 		QHash<int, QString> ContentsCache_;
 		QSet<quint64> FetchedItems_;
 	public:
@@ -78,5 +76,3 @@ namespace BodyFetch
 }
 }
 }
-
-#endif

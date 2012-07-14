@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 
 #ifndef PLUGINS_AZOTH_SOURCETRACKINGMODEL_H
 #define PLUGINS_AZOTH_SOURCETRACKINGMODEL_H
-#include <util/mergemodel.h>
-#include <interfaces/iresourceplugin.h>
-#include <interfaces/ichatstyleresourcesource.h>
+#include <util/models/mergemodel.h>
+#include <interfaces/azoth/iresourceplugin.h>
+#include <interfaces/azoth/ichatstyleresourcesource.h>
 
 namespace LeechCraft
 {
@@ -56,10 +56,10 @@ namespace Azoth
 			MergeModel::handleRowsInserted (idx, from, to);
 		}
 
-		virtual void handleRowsRemoved (const QModelIndex& idx, int from, int to)
+		virtual void handleRowsAboutToBeRemoved (const QModelIndex& idx, int from, int to)
 		{
 			HandleItems (idx.model (), from, to, false);
-			MergeModel::handleRowsRemoved (idx, from, to);
+			MergeModel::handleRowsAboutToBeRemoved (idx, from, to);
 		}
 	private:
 		void HandleItems (const QAbstractItemModel *model,

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="General" />
+		<groupbox>
+			<label value="Power levels" />
+			<item type="spinbox" property="LowPowerLevel" minimum="1" maximum="99" default="15">
+				<label value="Low power level:" />
+				<suffix value="%" />
+			</item>
+			<item type="spinbox" property="ExtremeLowPowerLevel" minimum="1" maximum="99" default="5">
+				<label value="Extremely low power level:" />
+				<suffix value="%" />
+			</item>
+		</groupbox>
+		<groupbox>
+			<label value="Notifications" />
+			<item type="checkbox" property="NotifyOnPowerTransitions" default="true">
+				<label value="Notify on power transitions" />
+			</item>
+			<item type="checkbox" property="NotifyOnLowPower" default="true">
+				<label value="Notify on low power" />
+			</item>
+			<item type="checkbox" property="NotifyOnExtremeLowPower" default="true">
+				<label value="Notify on extremely low power" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

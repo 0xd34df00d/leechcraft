@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,11 +23,16 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <util/util.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/imessage.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "confwidget.h"
+
+uint qHash (const QRegExp& rx)
+{
+	return qHash (rx.pattern ());
+}
 
 namespace LeechCraft
 {
@@ -37,7 +42,7 @@ namespace Herbicide
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_herbicide"));
+		Util::InstallTranslator ("azoth_herbicide");
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
@@ -45,6 +50,9 @@ namespace Herbicide
 
 		ConfWidget_ = new ConfWidget ();
 		SettingsDialog_->SetCustomWidget ("ConfWidget", ConfWidget_);
+
+		handleWhitelistChanged ();
+		handleBlacklistChanged ();
 	}
 
 	void Plugin::SecondInit ()
@@ -72,7 +80,8 @@ namespace Herbicide
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/herbicide/resources/images/herbicide.svg");
+		static QIcon icon (":/plugins/azoth/plugins/herbicide/resources/images/herbicide.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -81,25 +90,25 @@ namespace Herbicide
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
 	}
-	
+
 	bool Plugin::IsConfValid () const
 	{
 		if (!XmlSettingsManager::Instance ()
 				.property ("EnableQuest").toBool ())
 			return false;
-		
+
 		if (ConfWidget_->GetQuestion ().isEmpty () ||
 				ConfWidget_->GetAnswers ().isEmpty ())
 			return false;
-		
+
 		return true;
 	}
-	
+
 	bool Plugin::IsEntryAllowed (QObject *entryObj) const
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -108,19 +117,89 @@ namespace Herbicide
 
 		if ((entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) == ICLEntry::FPermanentEntry)
 			return true;
-		
+
 		if (AllowedEntries_.contains (entryObj))
 			return true;
-		
+
+		const auto& id = entry->GetHumanReadableID ();
+
+		Q_FOREACH (const auto& rx, Whitelist_)
+			if (rx.exactMatch (id))
+				return true;
+
+		if (XmlSettingsManager::Instance ().property ("AskOnlyBL").toBool ())
+		{
+			Q_FOREACH (const auto& rx, Blacklist_)
+				if (rx.exactMatch (id))
+					return false;
+
+			return true;
+		}
+
 		return false;
 	}
-	
+
+	void Plugin::ChallengeEntry (IHookProxy_ptr proxy, QObject *entryObj)
+	{
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		AskedEntries_ << entryObj;
+		const QString& text = tr ("Please answer to the following "
+				"question to verify you are not a bot and is welcome "
+				"to communicate with me:\n%1")
+					.arg (ConfWidget_->GetQuestion ());
+		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
+		OurMessages_ << msgObj;
+		qobject_cast<IMessage*> (msgObj)->Send ();
+
+		proxy->CancelDefault ();
+	}
+
+	void Plugin::GreetEntry (QObject *entryObj)
+	{
+		AllowedEntries_ << entryObj;
+
+		AskedEntries_.remove (entryObj);
+
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+
+		const QString& text = tr ("Nice, seems like you've answered "
+				"correctly. Please write again now what you wanted "
+				"to write.");
+		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
+		OurMessages_ << msgObj;
+		qobject_cast<IMessage*> (msgObj)->Send ();
+
+		if (DeniedAuth_.contains (entryObj))
+			QMetaObject::invokeMethod (entry->GetParentAccount (),
+					"authorizationRequested",
+					Q_ARG (QObject*, entryObj),
+					Q_ARG (QString, DeniedAuth_.take (entryObj)));
+	}
+
+	void Plugin::hookGotAuthRequest (IHookProxy_ptr proxy, QObject *entry, QString msg)
+	{
+		if (!IsConfValid ())
+			return;
+
+		if (!XmlSettingsManager::Instance ().property ("EnableForAuths").toBool ())
+			return;
+
+		if (IsEntryAllowed (entry))
+			return;
+
+		if (!AskedEntries_.contains (entry))
+		{
+			ChallengeEntry (proxy, entry);
+			DeniedAuth_ [entry] = msg;
+		}
+	}
+
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message)
 	{
 		if (!IsConfValid ())
 			return;
-		
+
 		if (OurMessages_.contains (message))
 		{
 			OurMessages_.remove (message);
@@ -136,52 +215,61 @@ namespace Herbicide
 					<< "doesn't implement IMessage";
 			return;
 		}
-		
+
 		if (msg->GetMessageType () != IMessage::MTChatMessage)
 			return;
-		
+
 		QObject *entryObj = msg->OtherPart ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		
+
 		if (IsEntryAllowed (entryObj))
 			return;
-		
+
 		if (!AskedEntries_.contains (entryObj))
-		{
-			AskedEntries_ << entryObj;
-			const QString& text = tr ("Please answer to the following "
-					"question to verify you are not a bot and is welcome "
-					"to communicate with me:\n%1")
-						.arg (ConfWidget_->GetQuestion ());
-			QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
-			OurMessages_ << msgObj;
-			qobject_cast<IMessage*> (msgObj)->Send ();
-			
-			proxy->CancelDefault ();
-		}
+			ChallengeEntry (proxy, entryObj);
 		else if (ConfWidget_->GetAnswers ().contains (msg->GetBody ().toLower ()))
-		{
-			AllowedEntries_ << entryObj;
-			AskedEntries_.remove (entryObj);
-			const QString& text = tr ("Nice, seems like you've answered "
-					"correctly. Please write again now what you wanted "
-					"to write.");
-			QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
-			OurMessages_ << msgObj;
-			qobject_cast<IMessage*> (msgObj)->Send ();
-		}
+			GreetEntry (entryObj);
 		else
 		{
 			const QString& text = tr ("Sorry, you are wrong. Try again.");
 			QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
 			OurMessages_ << msgObj;
 			qobject_cast<IMessage*> (msgObj)->Send ();
-			
+
 			proxy->CancelDefault ();
 		}
+	}
+
+	namespace
+	{
+		QSet<QRegExp> GetRegexps (const QByteArray& prop)
+		{
+			QSet<QRegExp> result;
+
+			const auto& strings = XmlSettingsManager::Instance ().property (prop).toStringList ();
+			Q_FOREACH (auto string, strings)
+			{
+				string = string.trimmed ();
+				if (string.isEmpty ())
+					continue;
+				result << QRegExp (string);
+			}
+
+			return result;
+		}
+	}
+
+	void Plugin::handleWhitelistChanged ()
+	{
+		Whitelist_ = GetRegexps ("WhitelistRegexps");
+	}
+
+	void Plugin::handleBlacklistChanged ()
+	{
+		Blacklist_ = GetRegexps ("BlacklistRegexps");
 	}
 }
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_herbicide, LeechCraft::Azoth::Herbicide::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_herbicide, LeechCraft::Azoth::Herbicide::Plugin);

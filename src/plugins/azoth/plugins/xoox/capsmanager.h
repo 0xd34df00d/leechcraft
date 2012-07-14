@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,18 +33,19 @@ namespace Xoox
 	class CapsManager : public QObject
 	{
 		Q_OBJECT
-		
+
 		ClientConnection *Connection_;
 		CapsDatabase *DB_;
 		QHash<QString, QString> Caps2String_;
 	public:
 		CapsManager (ClientConnection*);
-		
+
 		void FetchCaps (const QString&, const QByteArray&);
 		QStringList GetRawCaps (const QByteArray&) const;
 		QStringList GetCaps (const QByteArray&) const;
 		QStringList GetCaps (const QStringList&) const;
-		
+
+		void SetIdentities (const QByteArray&, const QList<QXmppDiscoveryIq::Identity>&);
 		QList<QXmppDiscoveryIq::Identity> GetIdentities (const QByteArray&) const;
 	public slots:
 		void handleInfoReceived (const QXmppDiscoveryIq&);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,11 @@ namespace Keywords
 	KeywordsManagerWidget::KeywordsManagerWidget (QStandardItemModel *model, Plugin *plugin)
 	: Model_ (model)
 	, Plugin_ (plugin)
-	, Keywords_ (QCoreApplication::organizationName (),	
+	, Keywords_ (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Poshuku_Keywords")
 	{
 		Ui_.setupUi (this);
-		Ui_.Items_->setModel (Model_); 
+		Ui_.Items_->setModel (Model_);
 	}
 
 	void KeywordsManagerWidget::on_Add__released ()
@@ -54,16 +54,16 @@ namespace Keywords
 			bool alreadyExists = Keywords_.allKeys ().contains (keyword);
 
 			if (alreadyExists)
-				if (QMessageBox::question (this, 
-						tr ("Keyword already exists"), 
+				if (QMessageBox::question (this,
+						tr ("Keyword already exists"),
 						tr ("Entered keyword already exists. Change url for this keyword?"),
-						QMessageBox::Yes || QMessageBox::No,
+						QMessageBox::Yes | QMessageBox::No,
 						QMessageBox::Yes) == QMessageBox::No)
 							return;
 
 			Keywords_.setValue (keyword, url);
-			
-			if (alreadyExists) 
+
+			if (alreadyExists)
 			{
 				for (int i = 0; i < Model_->rowCount (); i++)
 				{
@@ -74,12 +74,12 @@ namespace Keywords
 					}
 				}
 			}
-			else 
+			else
 			{
 				QStandardItem *keywordItem = new QStandardItem (keyword);
 				QStandardItem *urlItem = new QStandardItem (url);
-				QList<QStandardItem*> items; 
-				
+				QList<QStandardItem*> items;
+
 				items << keywordItem << urlItem;
 				Model_->appendRow (items);
 			}
@@ -110,7 +110,7 @@ namespace Keywords
 		const QString& url = model->item (selected.row (), 1)->text ();
 		EditKeywordDialog editDialog(url, keyword);
 
-		if (editDialog.exec () == QDialog::Accepted && 
+		if (editDialog.exec () == QDialog::Accepted &&
 				(keyword != editDialog.GetKeyword () || url != editDialog.GetUrl ()))
 		{
 			if (keyword != editDialog.GetKeyword ())

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,33 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DEADLYRICS_LYRICSCACHE_H
-#define PLUGINS_DEADLYRICS_LYRICSCACHE_H
+#pragma once
+
 #include <QObject>
 #include <QString>
 #include <QDir>
-#include "searcher.h"
+#include <interfaces/media/ilyricsfinder.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DeadLyrics
+{
+	class LyricsCache : public QObject
 	{
-		namespace DeadLyrics
-		{
-			class LyricsCache : public QObject
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				QDir Dir_;
-				LyricsCache ();
-			public:
-				static LyricsCache& Instance ();
-				Lyrics GetLyrics (const QByteArray&) const;
-				void SetLyrics (const QByteArray&, const Lyrics&);
-			};
-		};
+		QDir Dir_;
+		LyricsCache ();
+	public:
+		static LyricsCache& Instance ();
+
+		QStringList GetLyrics (const Media::LyricsQuery&) const;
+		void AddLyrics (const Media::LyricsQuery&, const QStringList&);
 	};
-};
-
-#endif
-
+}
+}

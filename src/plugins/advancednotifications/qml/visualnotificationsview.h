@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@ namespace AdvancedNotifications
 	class VisualNotificationsView : public QDeclarativeView
 	{
 		Q_OBJECT
-		
+
 		QObjectList LastEvents_;
 		QUrl Location_;
 	public:
 		VisualNotificationsView (QWidget* = 0);
-		
+
 		void SetEvents (const QList<EventData>&);
 	private slots:
 		void handleStatusChanged (QDeclarativeView::Status);

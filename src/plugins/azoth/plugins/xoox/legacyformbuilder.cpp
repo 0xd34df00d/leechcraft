@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "legacyformbuilder.h"
-#include <boost/bind.hpp>
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -40,13 +39,13 @@ namespace Xoox
 			QLineEdit *edit = new QLineEdit (elem.value ());
 			edit->setObjectName ("field");
 			edit->setProperty ("FieldName", elem.tagName ());
-			
+
 			QHBoxLayout *lay = new QHBoxLayout (form);
 			lay->addWidget (label);
 			lay->addWidget (edit);
 			qobject_cast<QVBoxLayout*> (form->layout ())->addLayout (lay);
 		}
-		
+
 		void InstructionsActor (QWidget *form, const QXmppElement& elem)
 		{
 			QLabel *label = new QLabel (elem.value ());
@@ -57,16 +56,24 @@ namespace Xoox
 	LegacyFormBuilder::LegacyFormBuilder ()
 	: Widget_ (0)
 	{
-		Tag2Actor_ ["username"] = boost::bind (LineEditActorImpl,
-				_1, _2, tr ("Username:"));
-		Tag2Actor_ ["password"] = boost::bind (LineEditActorImpl,
-				_1, _2, tr ("Password:"));
-		Tag2Actor_ ["registered"] = boost::bind (LineEditActorImpl,
-				_1, _2, tr ("Registered:"));
-		Tag2Actor_ ["instructions"] = boost::bind (InstructionsActor,
-				_1, _2);
+		Tag2Actor_ ["username"] = [this] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("Username:")); };
+		Tag2Actor_ ["password"] = [this] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("Password:")); };
+		Tag2Actor_ ["registered"] = [this] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("Registered:")); };
+		Tag2Actor_ ["first"] = [this] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("First name:")); };
+		Tag2Actor_ ["last"] = [this] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("Last name:")); };
+		Tag2Actor_ ["nick"] = [this] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("Nick:")); };
+		Tag2Actor_ ["email"] = [this] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("E-Mail:")); };
+		Tag2Actor_ ["instructions"] = [this] (QWidget *f, const QXmppElement& e)
+			{ InstructionsActor (f, e); };
 	}
-	
+
 	QWidget* LegacyFormBuilder::CreateForm (const QXmppElement& containing,
 			QWidget *parent)
 	{
@@ -86,10 +93,10 @@ namespace Xoox
 
 			element = element.nextSiblingElement ();
 		}
-		
+
 		return Widget_;
 	}
-	
+
 	QList<QXmppElement> LegacyFormBuilder::GetFilledChildren () const
 	{
 		QList<QXmppElement> result;
@@ -103,22 +110,22 @@ namespace Xoox
 			elem.setValue (edit->text ());
 			result << elem;
 		}
-		
+
 		return result;
 	}
-	
+
 	QString LegacyFormBuilder::GetUsername () const
 	{
 		if (!Widget_)
 			return QString ();
-		
+
 		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ("field"))
 			if (edit->property ("FieldName").toString () == "username")
 				return edit->text ();
 
 		return QString ();
 	}
-	
+
 	QString LegacyFormBuilder::GetPassword () const
 	{
 		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ("field"))

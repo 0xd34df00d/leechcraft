@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_ADVANCEDNOTIFICATIONS_CONCRETEHANDLERBASE_H
 #define PLUGINS_ADVANCEDNOTIFICATIONS_CONCRETEHANDLERBASE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include "common.h"
 
@@ -41,8 +41,8 @@ namespace AdvancedNotifications
 		virtual NotificationMethod GetHandlerMethod () const = 0;
 		virtual void Handle (const Entity&, const NotificationRule&) = 0;
 	};
-	
-	typedef boost::shared_ptr<ConcreteHandlerBase> ConcreteHandlerBase_ptr;
+
+	typedef std::shared_ptr<ConcreteHandlerBase> ConcreteHandlerBase_ptr;
 }
 }
 

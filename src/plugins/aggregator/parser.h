@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 #ifndef PLUGINS_AGGREGATOR_PARSER_H
 #define PLUGINS_AGGREGATOR_PARSER_H
 #include <vector>
-#include <boost/shared_ptr.hpp>
 #include <QPair>
 #include <QDomDocument>
 #include "channel.h"
@@ -35,12 +34,12 @@ namespace Aggregator
 		virtual ~Parser ();
 		/** @brief Indicates whether parser could parse the document.
 			*
-			* @param[in] doc 
+			* @param[in] doc
 			*/
 		virtual bool CouldParse (const QDomDocument& doc) const = 0;
 
 		/** @brief Parses the document
-			* 
+			*
 			* Parses the passed XML document. Created channels are
 			* already sane and validated, with proper feed IDs and
 			* such (that's why feedId parameter is required).
@@ -80,7 +79,7 @@ namespace Aggregator
 		QStringList GetPlainCategories (const QDomElement&) const;
 		QList<Enclosure> GetEncEnclosures (const QDomElement&,
 				const IDType_t&) const;
-		QPair<double, double> GetGeoPoint (const QDomElement&) const; 
+		QPair<double, double> GetGeoPoint (const QDomElement&) const;
 		QList<MRSSEntry> GetMediaRSS (const QDomElement&,
 				const IDType_t&) const;
 

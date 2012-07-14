@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>185</height>
+    <height>208</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,6 +24,9 @@
        <property name="text">
         <string>History:</string>
        </property>
+       <property name="buddy">
+        <cstring>HistoryBox_</cstring>
+       </property>
       </widget>
      </item>
      <item row="0" column="1">
@@ -38,6 +41,9 @@
        <property name="text">
         <string>Bookmarks:</string>
        </property>
+       <property name="buddy">
+        <cstring>BookmarksBox_</cstring>
+       </property>
       </widget>
      </item>
      <item row="1" column="1">
@@ -51,6 +57,9 @@
       <widget class="QLabel" name="label">
        <property name="text">
         <string>Account:</string>
+       </property>
+       <property name="buddy">
+        <cstring>AccountBox_</cstring>
        </property>
       </widget>
      </item>
@@ -76,6 +85,13 @@
        <number>1</number>
       </property>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="AddToBookmarks_">
+     <property name="text">
+      <string>Add to bookmarks</string>
+     </property>
     </widget>
    </item>
    <item>

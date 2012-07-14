@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +18,10 @@
 
 #include "itemhandlerbase.h"
 #include <QtDebug>
+#include "../basesettingsmanager.h"
 
 namespace LeechCraft
 {
-	Util::XmlSettingsDialog *ItemHandlerBase::XSD_ = 0;
-
 	void ItemHandlerBase::SetXmlSettingsDialog (Util::XmlSettingsDialog *xsd)
 	{
 		XSD_ = xsd;
@@ -48,7 +47,10 @@ namespace LeechCraft
 
 	void ItemHandlerBase::updatePreferences ()
 	{
-		QString propertyName = sender ()->objectName ();
-		ChangedProperties_ [propertyName] = GetValue (sender ());
+		const QString& propertyName = sender ()->objectName ();
+		const QVariant& value = GetValue (sender ());
+		ChangedProperties_ [propertyName] = value;
+
+		XSD_->GetManagerObject ()->OptionSelected (propertyName.toLatin1 (), value);
 	}
-};
+}

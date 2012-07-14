@@ -1,0 +1,178 @@
+digraph dependencies {
+	eGzip [label="gzip binary", shape=diamond];
+	eLibLastFm [label="liblastfm", shape=diamond];
+	eLibnotify [label="libnotify", shape=diamond];
+	eLibOTR [label="libotr", shape=diamond];
+	ePhonon [label="Phonon", shape=diamond];
+	eRBLT [label="Rasterbar Libtorrent", shape=diamond];
+	eQross [label="Qross", shape=diamond];
+	eQtCrypt [label="QtCrypt", shape=diamond];
+	eQtDBus [label="QtDBus", shape=diamond];
+	eQXmpp [label="QXmpp-dev", shape=diamond];
+	eTar [label="tar binary", shape=diamond];
+	eTeX [label="TeX", shape=diamond];
+	eVLC [label="libvlc", shape=diamond];
+	eVMime [label="libvmime", shape=diamond];
+
+	pAN [label="AN", shape=box];
+	pAudioPlayer [label="Audio player", shape=box];
+	pAzothStyles [label="Azoth chat styler", shape=box];
+	pHTTP [label="HTTP", shape=box];
+	pSecStore [label="Secure Storage", shape=box];
+	pScripting [label="Scripting", shape=box];
+	pSummaryRepresentation [label="Summary representaiton", shape=box];
+	pVisualNotifier [label="Visual notifications", shape=box];
+	pWebBrowser [label="Web browser", shape=box];
+
+	AggregatorBodyFetch [label="Aggregator BodyFetch"];
+	//AzothAcetamide [label="Azoth Acetamide"];
+	AzothAdiumStyles [label="Azoth AdiumStyles"];
+	//AzothAutoidler [label="Azoth Autoidler"];
+	//AzothAutopaste [label="Azoth Autopaste"];
+	//AzothChatHistory [label="Azoth ChatHistory"];
+	//AzothDepester [label="Azoth Depester"];
+	//AzothEmbedMedia [label="Azoth EmbedMedia"];
+	//AzothHerbicide [label="Azoth Herbicide"];
+	//AzothHiLi [label="Azoth HiLi"];
+	//AzothIsterique [label="Azoth Isterique"];
+	//AzothJuick [label="Azoth Juick"];
+	//AzothLastSeen [label="Azoth LastSeen"];
+	//AzothMetacontacts [label="Azoth Metacontacts"];
+	AzothModnok [label="Azoth Modnok"];
+	//AzothNativeEmoticons [label="Azoth NativeEmoticons"];
+	AzothOTRoid [label="Azoth OTRoid"];
+	//AzothP100q [label="Azoth P100q"];
+	//AzothRosenthal [label="Azoth Rosenthal"];
+	AzothStandardStyles [label="Azoth StandardStyles"];
+	AzothXoox [label="Azoth Xoox"];
+	//AzothXtazy [label="Azoth Xtazy"];
+	PoshukuCleanWeb [label="Poshuku CleanWeb"];
+	PoshukuOB [label="Poshuku OnlineBookmarks"];
+	PoshukuOBDelicious [label="Poshuku OB Del.ici.us"];
+	PoshukuOBRIL [label="Poshuku OB Read it Later"];
+	SecmanSimpleStorage [label="Secman SimpleStorage"];
+	SecmanSecureStorage [label="Secman SecureStorage"];
+
+	pAN -> AdvancedNotifications;
+	pAudioPlayer -> LMP;
+	pAudioPlayer -> Laure;
+	pAzothStyles -> AzothAdiumStyles;
+	pAzothStyles -> AzothStandardStyles;
+	pHTTP -> CSTP;
+	pScripting -> Qrosp;
+	pSecStore -> Secman;
+	pSummaryRepresentation -> Summary;
+	pVisualNotifier -> Kinotify;
+	pVisualNotifier -> DBusManager;
+	pWebBrowser -> Poshuku;
+
+	AdvancedNotifications -> pAudioPlayer [color="blue"];
+	AdvancedNotifications -> pVisualNotifier [color="red"];
+
+	Azoth -> eQtCrypt [color="blue"];
+	Azoth -> pAN [color="blue"];
+	Azoth -> pAzothStyles [color="red"];
+	Azoth -> pScripting [color="blue"];
+	Azoth -> pSecStore [color="red"];
+	Azoth -> pSummaryRepresentation [color="blue"];
+	Azoth -> pVisualNotifier [color="blue"];
+	//AzothAcetamide -> Azoth [color="orange"];
+	AzothAdiumStyles -> Azoth [color="orange"];
+	//AzothAutoidler -> Azoth [color="orange"];
+	//AzothAutopaste -> Azoth [color="orange"];
+	//AzothChatHistory -> Azoth [color="orange"];
+	//AzothDepester -> Azoth [color="orange"];
+	//AzothEmbedMedia -> Azoth [color="orange"];
+	//AzothHerbicide -> Azoth [color="orange"];
+	//AzothHiLi -> Azoth [color="orange"];
+	//AzothIsterique -> Azoth [color="orange"];
+	//AzothJuick -> Azoth [color="orange"];
+	//AzothLastSeen -> Azoth [color="orange"];
+	//AzothMetacontacts -> Azoth [color="orange"];
+	AzothModnok -> eTeX [color="red"];
+	AzothModnok -> Azoth [color="orange"];
+	//AzothNativeEmoticons -> Azoth [color="orange"];
+	AzothOTRoid -> eLibOTR [color="red"];
+	AzothOTRoid -> Azoth [color="orange"];
+	//AzothP100q -> Azoth [color="orange"];
+	//AzothRosenthal -> Azoth [color="orange"];
+	AzothStandardStyles -> Azoth [color="orange"];
+	AzothXoox -> Azoth [color="orange"];
+	AzothXoox -> eQtCrypt [color="blue"];
+	AzothXoox -> eQXmpp [color="red"];
+	//AzothXtazy -> Azoth [color="orange"];
+
+	Aggregator -> pAudioPlayer [color="blue"];
+	Aggregator -> pHTTP [color="red"];
+	Aggregator -> pSummaryRepresentation [color="blue"];
+	Aggregator -> pVisualNotifier [color="blue"];
+	Aggregator -> pWebBrowser [color="blue"];
+	AggregatorBodyFetch -> Aggregator [color="orange"];
+	AggregatorBodyFetch -> pHTTP [color="red"];
+	AggregatorBodyFetch -> pScripting [color="red"];
+
+	BitTorrent -> eRBLT [color="red"];
+	BitTorrent -> pSummaryRepresentation [color="red"];
+	BitTorrent -> pVisualNotifier [color="blue"];
+
+	CSTP -> pSummaryRepresentation [color="blue"];
+
+	DeadLyrics -> pHTTP [color="red"];
+	DeadLyrics -> pSummaryRepresentation [color="red"];
+
+	DBusManager -> eLibnotify [color="blue"];
+	DBusManager -> eQtDBus [color="red"];
+
+	GMailNotifier -> pVisualNotifier [color="red"];
+
+	HistoryHolder -> pSummaryRepresentation [color="red"];
+
+	LackMan -> eGzip [color="red"];
+	LackMan -> eTar [color="red"];
+	LackMan -> pHTTP [color="red"];
+	LackMan -> pVisualNotifier [color="blue"];
+	LackMan -> pWebBrowser [color="blue"];
+
+	Laure -> eLibLastFm [color="red"];
+	Laure -> eVLC [color="red"];
+	Laure -> pVisualNotifier [color="blue"];
+
+	LMP -> ePhonon [color="red"];
+
+	Otzerkalu -> pHTTP [color="red"];
+	Otzerkalu -> pSummaryRepresentation [color="blue"];
+	Otzerkalu -> pVisualNotifier [color="blue"];
+
+	Poshuku -> pHTTP [color="blue"];
+	Poshuku -> pScripting [color="blue"];
+	Poshuku -> pSecStore [color="blue"];
+	Poshuku -> pVisualNotifier [color="blue"];
+
+	PoshukuCleanWeb -> pHTTP [color="red"];
+	PoshukuCleanWeb -> Poshuku [color="orange"];
+	PoshukuCleanWeb -> pVisualNotifier [color="blue"];
+
+	PoshukuOB -> pSecStore [color="red"];
+	PoshukuOB -> pVisualNotifier [color="blue"];
+	PoshukuOB -> Poshuku [color="orange"];
+	PoshukuOBDelicious -> PoshukuOB [color="orange"];
+	PoshukuOBRIL -> PoshukuOB [color="orange"];
+
+	Qrosp -> eQross [color="red"];
+
+	SecmanSimpleStorage -> Secman [color="orange"];
+	SecmanSecureStorage -> Secman [color="orange"];
+	Secman -> SecmanSimpleStorage [color="red"];
+	Secman -> SecmanSecureStorage [color="blue"];
+
+	SeekThru -> pHTTP [color="red"];
+	SeekThru -> pSummaryRepresentation [color="red"];
+
+	Snails -> eVMime [color="red"];
+	Snails -> pSecStore [color="red"];
+	Snails -> pSummaryRepresentation [color="blue"];
+
+	vGrabber -> pAudioPlayer [color="blue"];
+	vGrabber -> pHTTP [color="blue"];
+	vGrabber -> pSummaryRepresentation [color="red"];
+}

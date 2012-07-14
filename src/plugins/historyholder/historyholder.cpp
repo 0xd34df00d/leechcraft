@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,8 @@ QString Plugin::GetInfo () const
 
 QIcon Plugin::GetIcon () const
 {
-	return QIcon (":/resources/images/historyholder.svg");
+	static QIcon icon (":/resources/images/historyholder.svg");
+	return icon;
 }
 
 QStringList Plugin::Provides () const
@@ -104,5 +105,5 @@ void Plugin::handleTasksTreeActivated (const QModelIndex& index)
 	Core::Instance ().handleTasksTreeActivated (index);
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_historyholder, Plugin);
+LC_EXPORT_PLUGIN (leechcraft_historyholder, Plugin);
 

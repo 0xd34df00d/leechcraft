@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ namespace LeechCraft
 				Q_INTERFACES (IFindProxy);
 
 				LeechCraft::Request R_;
-				boost::shared_ptr<LeechCraft::Util::MergeModel> MergeModel_;
+				std::shared_ptr<LeechCraft::Util::MergeModel> MergeModel_;
 				QList<SearchHandler_ptr> Handlers_;
 			public:
 				FindProxy (const LeechCraft::Request&);

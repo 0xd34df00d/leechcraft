@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,12 @@ namespace Azoth
 	class ContactListDelegate : public QStyledItemDelegate
 	{
 		Q_OBJECT
-		
+
 		bool ShowAvatars_;
 		bool ShowClientIcons_;
+		bool ShowStatuses_;
+		bool HighlightGroups_;
+		int ContactHeight_;
 		QString ActivityIconset_;
 		QString MoodIconset_;
 		QString SystemIconset_;
@@ -42,6 +45,7 @@ namespace Azoth
 		QTreeView *View_;
 	public:
 		ContactListDelegate (QTreeView* = 0);
+
 		virtual void paint (QPainter*,
 				const QStyleOptionViewItem&, const QModelIndex&) const;
 		virtual QSize sizeHint (const QStyleOptionViewItem&,
@@ -60,6 +64,9 @@ namespace Azoth
 		void handleActivityIconsetChanged ();
 		void handleMoodIconsetChanged ();
 		void handleSystemIconsetChanged ();
+		void handleShowStatusesChanged ();
+		void handleHighlightGroupsChanged ();
+		void handleContactHeightChanged ();
 	};
 }
 }

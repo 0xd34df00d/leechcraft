@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATWIDGET_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATWIDGET_H
 #include <QDialog>
-#include <interfaces/imucjoinwidget.h>
+#include <interfaces/azoth/imucjoinwidget.h>
 #include "ui_joingroupchatwidget.h"
 
 namespace LeechCraft
@@ -50,11 +50,11 @@ namespace Xoox
 		void Cancel ();
 
 		QVariantMap GetIdentifyingData () const;
-		QVariantList GetBookmarkedMUCs () const;
-		void SetBookmarkedMUCs (QObject*, const QVariantList&);
 		void SetIdentifyingData (const QVariantMap& data);
 	private slots:
 		void checkValidity ();
+		void on_ViewRooms__released ();
+		void on_Server__textChanged (const QString&);
 	signals:
 		void validityChanged (bool);
 	};

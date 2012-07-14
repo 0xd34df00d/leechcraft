@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/" >
+    <file>resources/images/snails.svg</file>
+  </qresource>
+</RCC>

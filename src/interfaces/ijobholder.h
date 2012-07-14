@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,10 +19,28 @@
 #ifndef INTERFACES_IJOBHOLDER_H
 #define INTERFACES_IJOBHOLDER_H
 #include <QtPlugin>
+#include "interfaces/structures.h"
 
 class QModelIndex;
 class QAbstractItemModel;
 class QWidget;
+
+namespace LeechCraft
+{
+	enum JobHolderRow
+	{
+		Other,
+		News,
+		DownloadProgress,
+		ProcessProgress
+	};
+
+	enum ProcessState
+	{
+		Done = CustomDataRoles::RoleMAX + 1,
+		Total
+	};
+}
 
 /** @brief Interface for plugins providing data for the Downloaders tab.
  *
@@ -76,6 +94,7 @@ public:
 	virtual ~IJobHolder () {}
 };
 
+Q_DECLARE_METATYPE (LeechCraft::JobHolderRow);
 Q_DECLARE_METATYPE (QAbstractItemModel*);
 Q_DECLARE_METATYPE (QList<QModelIndex>);
 Q_DECLARE_INTERFACE (IJobHolder, "org.Deviant.LeechCraft.IJobHolder/1.0");

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,9 +35,13 @@ namespace Xoox
 		Core::Instance ().SetProxy (proxy);
 
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (&Core::Instance (),
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 	}
 
 	void Plugin::SecondInit ()
@@ -67,7 +71,8 @@ namespace Xoox
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/xoox/resources/images/xoox.svg");
+		static QIcon icon (":/plugins/azoth/plugins/xoox/resources/images/xoox.svg");
+		return icon;
 	}
 
 	QStringList Plugin::Provides () const
@@ -114,5 +119,5 @@ namespace Xoox
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_xoox,
+LC_EXPORT_PLUGIN (leechcraft_azoth_xoox,
 		LeechCraft::Azoth::Xoox::Plugin);

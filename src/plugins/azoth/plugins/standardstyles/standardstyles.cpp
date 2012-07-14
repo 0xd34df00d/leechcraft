@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #include "standardstyles.h"
 #include <QIcon>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "standardstylesource.h"
 
 namespace LeechCraft
@@ -31,35 +31,35 @@ namespace StandardStyles
 	{
 		Proxy_ = 0;
 	}
-	
+
 	void Plugin::SecondInit ()
 	{
 	}
-	
+
 	void Plugin::Release ()
 	{
 	}
-	
+
 	QByteArray Plugin::GetUniqueID () const
 	{
 		return "org.LeechCraft.Azoth.StandardStyles";
 	}
-	
+
 	QString Plugin::GetName () const
 	{
 		return "Azoth StandardStyles";
 	}
-	
+
 	QString Plugin::GetInfo () const
 	{
 		return tr ("Support for standard Azoth chat styles");
 	}
-	
+
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
 	}
-	
+
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> result;
@@ -67,18 +67,19 @@ namespace StandardStyles
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin";
 		return result;
 	}
-	
+
 	QList<QObject*> Plugin::GetResourceSources () const
 	{
-		return QObjectList () << new StandardStyleSource (Proxy_);
+		return ResourceSources_;
 	}
-	
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		Proxy_ = qobject_cast<IProxyObject*> (proxy);
+		ResourceSources_ << new StandardStyleSource (Proxy_);
 	}
 }
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_standardstyles, LeechCraft::Azoth::StandardStyles::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_standardstyles, LeechCraft::Azoth::StandardStyles::Plugin);

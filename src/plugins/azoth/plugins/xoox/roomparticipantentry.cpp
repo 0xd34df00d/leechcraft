@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,12 +19,14 @@
 #include "roomparticipantentry.h"
 #include <QAction>
 #include <QtDebug>
+#include <QXmppMucManager.h>
 #include "glooxaccount.h"
 #include "roompublicmessage.h"
 #include "glooxmessage.h"
 #include "roomhandler.h"
 #include "roomclentry.h"
-#include <QXmppMucManager.h>
+#include "core.h"
+#include "avatarsstorage.h"
 
 namespace LeechCraft
 {
@@ -78,7 +80,7 @@ namespace Xoox
 	{
 		return Account_->GetAccountID () + '_' + ID_;
 	}
-	
+
 	QString RoomParticipantEntry::GetHumanReadableID () const
 	{
 		return ID_;
@@ -110,7 +112,7 @@ namespace Xoox
 	{
 		return RoomHandler_->GetRoomJID () + "/" + Nick_;
 	}
-	
+
 	QString RoomParticipantEntry::GetRealJID () const
 	{
 		return RoomHandler_->GetRoom ()->
@@ -120,6 +122,20 @@ namespace Xoox
 	QString RoomParticipantEntry::GetNick () const
 	{
 		return Nick_;
+	}
+
+	void RoomParticipantEntry::SetPhotoHash (const QByteArray& hash)
+	{
+		VCardPhotoHash_ = hash;
+		if (hash.isEmpty ())
+			Avatar_ = QImage ();
+		else
+		{
+			Avatar_ = Core::Instance ().GetAvatarsStorage ()->GetAvatar (hash.toHex ());
+			if (Avatar_.isNull ())
+				VCardPhotoHash_.clear ();
+		}
+		emit avatarChanged (GetAvatar ());
 	}
 
 	QXmppMucItem::Affiliation RoomParticipantEntry::GetAffiliation () const

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,10 +30,12 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/ihavediaginfo.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "browserwidget.h"
 
-class QWebView;
+class QGraphicsWebView;
 
 namespace LeechCraft
 {
@@ -46,11 +48,22 @@ namespace Poshuku
 					, public IHaveSettings
 					, public IEntityHandler
 					, public IHaveShortcuts
+					, public IHaveDiagInfo
 					, public IWebBrowser
 					, public IActionsExporter
+					, public IHaveRecoverableTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IActionsExporter)
+		Q_INTERFACES (IInfo
+				IHaveTabs
+				IHaveSettings
+				IEntityHandler
+				IPluginReady
+				IWebBrowser
+				IHaveShortcuts
+				IHaveDiagInfo
+				IActionsExporter
+				IHaveRecoverableTabs)
 
 		QMenu *ToolMenu_;
 		QAction *ImportXbel_;
@@ -59,7 +72,7 @@ namespace Poshuku
 		QAction *ReloadAll_;
 
 		std::auto_ptr<QTranslator> Translator_;
-		boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	public:
 		virtual ~Poshuku ();
 		void Init (ICoreProxy_ptr);
@@ -73,26 +86,30 @@ namespace Poshuku
 		QStringList Uses () const;
 		void SetProvider (QObject*, const QString&);
 		QIcon GetIcon () const;
-		
+
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
 
-		boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 		void Handle (LeechCraft::Entity);
 
 		void Open (const QString&);
 		IWebWidget* GetWidget () const;
-		QWebView* CreateWindow ();
+		QGraphicsWebView* CreateWindow ();
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
 		QMap<QString, ActionInfo> GetActionInfo () const;
 
+		QString GetDiagInfoString () const;
+
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+
+		void RecoverTabs (const QList<TabRecoverInfo>&);
 	private:
 		void InitConnections ();
 		void RegisterSettings ();
@@ -117,6 +134,10 @@ namespace Poshuku
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void couldHandle (const LeechCraft::Entity&, bool*);
+
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+
+		void tabRecovered (const QByteArray&, QWidget*);
 	};
 }
 }

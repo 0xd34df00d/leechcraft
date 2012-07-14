@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ namespace Aggregator
 		QAction *ActionImportBinary_;
 		QAction *ActionExportBinary_;
 		QAction *ActionExportFB2_;
+		QAction *ActionMarkAllAsRead_;
 
 		void SetupActionsStruct (QWidget*);
 	};
@@ -51,6 +52,7 @@ namespace Aggregator
 		QAction *ActionUpdateSelectedFeed_;
 		QAction *ActionMarkChannelAsRead_;
 		QAction *ActionMarkChannelAsUnread_;
+		QAction *ActionRemoveChannel_;
 		QAction *ActionChannelSettings_;
 
 		void SetupActionsStruct (QWidget*);

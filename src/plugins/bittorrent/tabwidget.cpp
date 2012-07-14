@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #include <QSortFilterProxyModel>
 #include <QUrl>
 #include <util/util.h>
-#include <util/treeitem.h>
+#include <util/models/treeitem.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
@@ -166,7 +166,7 @@ namespace LeechCraft
 
 				AddPeer_ = new QAction (tr ("Add peer..."),
 						Ui_.PeersView_);
-				AddPeer_->setProperty ("ActionIcon", "torrent_addpeer");
+				AddPeer_->setProperty ("ActionIcon", "list-add-user");
 				AddPeer_->setObjectName ("AddPeer_");
 				connect (AddPeer_,
 						SIGNAL (triggered ()),
@@ -176,7 +176,7 @@ namespace LeechCraft
 
 				BanPeer_ = new QAction (tr ("Ban peer..."),
 						Ui_.PeersView_);
-				BanPeer_->setProperty ("ActionIcon", "torrent_banpeer");
+				BanPeer_->setProperty ("ActionIcon", "im-ban-user");
 				BanPeer_->setObjectName ("BanPeer_");
 				BanPeer_->setEnabled (false);
 				connect (BanPeer_,
@@ -187,7 +187,6 @@ namespace LeechCraft
 
 				AddWebSeed_ = new QAction (tr ("Add web seed..."),
 						Ui_.WebSeedsView_);
-				AddWebSeed_->setProperty ("ActionIcon", "torrent_addwebseed");
 				AddWebSeed_->setObjectName ("AddWebSeed_");
 				connect (AddWebSeed_,
 						SIGNAL (triggered ()),
@@ -196,7 +195,7 @@ namespace LeechCraft
 
 				RemoveWebSeed_ = new QAction (tr ("Remove web seed"),
 						Ui_.WebSeedsView_);
-				RemoveWebSeed_->setProperty ("ActionIcon", "torrent_removewebseed");
+				RemoveWebSeed_->setProperty ("ActionIcon", "list-remove-user");
 				RemoveWebSeed_->setObjectName ("RemoveWebSeed_");
 				RemoveWebSeed_->setEnabled (false);
 				connect (RemoveWebSeed_,
@@ -418,7 +417,7 @@ namespace LeechCraft
 				Ui_.TorrentSuperSeeding_->setCheckState (Core::Instance ()->
 						IsTorrentSuperSeeding () ? Qt::Checked : Qt::Unchecked);
 
-				std::auto_ptr<TorrentInfo> i;
+				std::unique_ptr<TorrentInfo> i;
 				try
 				{
 					i = Core::Instance ()->GetTorrentStats ();

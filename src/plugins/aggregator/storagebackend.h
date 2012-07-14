@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,9 @@ namespace Aggregator
 		};
 		StorageBackend (QObject* = 0);
 		virtual ~StorageBackend ();
-		static boost::shared_ptr<StorageBackend> Create (Type);
+
+		static std::shared_ptr<StorageBackend> Create (const QString&, const QString& = QString ());
+		static std::shared_ptr<StorageBackend> Create (Type, const QString& = QString ());
 
 		static QString LoadQuery (const QString&, const QString&);
 
@@ -310,6 +312,18 @@ namespace Aggregator
 		 * @param[in] id ID of the item that should be removed.
 		 */
 		virtual void RemoveItem (const IDType_t& id) = 0;
+
+		/** @brief Removes an already existing channel.
+		 *
+		 * This function should remove the given channel, leaving other
+		 * channels from the corresponding feed intact.
+		 *
+		 * If the specified channel doesn't exist, this function should
+		 * do nothing.
+		 *
+		 * @param[in] id Channel ID.
+		 */
+		virtual void RemoveChannel (const IDType_t& id) = 0;
 
 		/** @brief Removes an already existing feed.
 		 *

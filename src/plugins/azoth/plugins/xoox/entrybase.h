@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,16 @@
 #include <QVariant>
 #include <QXmppMessage.h>
 #include <QXmppVCardIq.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/iadvancedclentry.h>
-#include <interfaces/isupportgeolocation.h>
+#include <QXmppVersionIq.h>
+#include <QXmppDiscoveryIq.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iadvancedclentry.h>
+#include <interfaces/azoth/ihavedirectedstatus.h>
+#include <interfaces/azoth/isupportgeolocation.h>
+#include <interfaces/azoth/isupportmicroblogs.h>
 
 class QXmppPresence;
+class QXmppVersionIq;
 
 namespace LeechCraft
 {
@@ -51,27 +56,45 @@ namespace Xoox
 	class EntryBase : public QObject
 					, public ICLEntry
 					, public IAdvancedCLEntry
+					, public IHaveDirectedStatus
+					, public ISupportMicroblogs
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry LeechCraft::Azoth::IAdvancedCLEntry)
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
+				LeechCraft::Azoth::IAdvancedCLEntry
+				LeechCraft::Azoth::IHaveDirectedStatus
+				LeechCraft::Azoth::ISupportMicroblogs)
 	protected:
+		GlooxAccount *Account_;
+
 		QList<QObject*> AllMessages_;
+		QList<GlooxMessage*> UnreadMessages_;
 		QMap<QString, EntryStatus> CurrentStatus_;
 		QList<QAction*> Actions_;
-		mutable QAction *Commands_;
-		
+		QAction *Commands_;
+		QAction *DetectNick_;
+		QAction *StdSep_;
+
 		QMap<QString, GeolocationInfo_t> Location_;
 
 		QImage Avatar_;
 		QString RawInfo_;
-		GlooxAccount *Account_;
 		QXmppVCardIq VCardIq_;
 		QPointer<VCardDialog> VCardDialog_;
 
-		QMap<QString, QMap<QString, QVariant> > Variant2ClientInfo_;
+		QByteArray VCardPhotoHash_;
+
+		QMap<QString, QMap<QString, QVariant>> Variant2ClientInfo_;
 		QMap<QString, QByteArray> Variant2VerString_;
+		QMap<QString, QXmppVersionIq> Variant2Version_;
+		QMap<QString, QList<QXmppDiscoveryIq::Identity>> Variant2Identities_;
+
+		bool HasUnreadMsgs_;
+		bool VersionReqsEnabled_;
+		bool HasBlindlyRequestedVCard_;
 	public:
 		EntryBase (GlooxAccount* = 0);
+		virtual ~EntryBase ();
 
 		// ICLEntry
 		QObject* GetObject ();
@@ -84,13 +107,22 @@ namespace Xoox
 		QString GetRawInfo () const;
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
-		
+		void MarkMsgsRead ();
+
 		// IAdvancedCLEntry
 		AdvancedFeatures GetAdvancedFeatures () const;
 		void DrawAttention (const QString&, const QString&);
 
+		// IHaveDirectedStatus
+		bool CanSendDirectedStatusNow (const QString&);
+		void SendDirectedStatus (const EntryStatus&, const QString&);
+
+		// ISupportMicroblogs
+		void RequestLastPosts (int);
+
 		virtual QString GetJID () const = 0;
 
+		void HandlePresence (const QXmppPresence&, const QString&);
 		void HandleMessage (GlooxMessage*);
 		void HandlePEPEvent (QString, PEPEventBase*);
 		void HandleAttentionMessage (const QXmppMessage&);
@@ -99,19 +131,30 @@ namespace Xoox
 		void SetAvatar (const QByteArray&);
 		void SetAvatar (const QImage&);
 		QXmppVCardIq GetVCard () const;
-		void SetVCard (const QXmppVCardIq&);
+		void SetVCard (const QXmppVCardIq&, bool initial = false);
 		void SetRawInfo (const QString&);
+
+		bool HasUnreadMsgs () const;
+		QList<GlooxMessage*> GetUnreadMessages () const;
 
 		void SetClientInfo (const QString&, const QString&, const QByteArray&);
 		void SetClientInfo (const QString&, const QXmppPresence&);
-		
+		void SetClientVersion (const QString&, const QXmppVersionIq&);
+		void SetDiscoIdentities (const QString&, const QList<QXmppDiscoveryIq::Identity>&);
+
 		GeolocationInfo_t GetGeolocationInfo (const QString&) const;
-		
+
+		void SetVersionReqsEnabled (bool);
+
 		QByteArray GetVariantVerString (const QString&) const;
+		QXmppVersionIq GetClientVersion (const QString&) const;
 	private:
+		void CheckVCardUpdate (const QXmppPresence&);
 		QString FormatRawInfo (const QXmppVCardIq&);
+		void SetNickFromVCard (const QXmppVCardIq&);
 	private slots:
 		void handleCommands ();
+		void handleDetectNick ();
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
@@ -123,14 +166,20 @@ namespace Xoox
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
-		
+		void messagesAreRead ();
+
 		void attentionDrawn (const QString&, const QString&);
 		void moodChanged (const QString&);
 		void activityChanged (const QString&);
 		void tuneChanged (const QString&);
 		void locationChanged (const QString&);
 
+		void gotRecentPosts (const QList<LeechCraft::Azoth::Post>&);
+		void gotNewPost (const LeechCraft::Azoth::Post&);
+
 		void locationChanged (const QString&, QObject*);
+
+		void vcardUpdated ();
 	};
 }
 }

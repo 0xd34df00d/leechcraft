@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
 <context>
     <name>LackMan</name>
     <message>
@@ -61,7 +59,7 @@
         <location filename="core.cpp" line="404"/>
         <location filename="core.cpp" line="430"/>
         <source>Error updating repository</source>
-        <translation>Помилка оновлення репозиторія</translation>
+        <translation>Помилка оновлення репозиторію</translation>
     </message>
     <message>
         <location filename="core.cpp" line="387"/>
@@ -76,7 +74,7 @@
     <message>
         <location filename="core.cpp" line="431"/>
         <source>Unable to remove the component `%1` which disappeared from the list of components for repo %2.</source>
-        <translation>Неможливо видалити компонент `%1`, який зник із списку компонентів для репозиторію %2.</translation>
+        <translation>Неможливо видалити компонент `%1`, який зник зі списку компонентів для репозиторію %2.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="477"/>
@@ -163,7 +161,7 @@
     <message>
         <location filename="core.cpp" line="1067"/>
         <source>Unable to load packages already present in the component %1.</source>
-        <translation>Неможливо завантажити пакети, уже присутні в компоненті %1.</translation>
+        <translation>Неможливо завантажити пакети, вже присутні в компоненті %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1086"/>
@@ -390,12 +388,13 @@
     <message>
         <location filename="lackman.cpp" line="276"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Невідомий</translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="294"/>
         <source>Total size to be downloaded: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальний розмір завантаження: %1
+</translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="301"/>
@@ -471,7 +470,7 @@
     <message>
         <location filename="repoinfofetcher.cpp" line="347"/>
         <source>Repository unpack error</source>
-        <translation>Помилка розпакування репозиторія</translation>
+        <translation>Помилка розпакування репозиторію</translation>
     </message>
     <message>
         <location filename="repoinfofetcher.cpp" line="348"/>

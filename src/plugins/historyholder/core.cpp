@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 #include "core.h"
 #include <typeinfo>
+#include <stdexcept>
 #include <QUrl>
 #include <QSettings>
 #include <QTextCodec>
@@ -86,7 +87,7 @@ LeechCraft::Plugins::HistoryHolder::Core::Core ()
 	Remove_ = ToolBar_->addAction (tr ("Remove"),
 			this,
 			SLOT (remove ()));
-	Remove_->setProperty ("ActionIcon", "remove");
+	Remove_->setProperty ("ActionIcon", "list-remove");
 }
 
 Core& Core::Instance ()

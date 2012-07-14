@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,14 +17,14 @@
  **********************************************************************/
 
 #include "itemhandlercombobox.h"
-#include <boost/bind.hpp>
 #include <QLabel>
 #include <QGridLayout>
+#include <QHBoxLayout>
 #include <QComboBox>
+#include <QPushButton>
 #include <QtDebug>
 #include "../scripter.h"
 #include "../itemhandlerfactory.h"
-#include <boost/concept_check.hpp>
 
 namespace LeechCraft
 {
@@ -45,8 +45,15 @@ namespace LeechCraft
 	void ItemHandlerCombobox::Handle (const QDomElement& item, QWidget *pwidget)
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
+
+		QHBoxLayout *hboxLay = new QHBoxLayout;
 		QComboBox *box = new QComboBox (XSD_);
+
+		hboxLay->addWidget (box);
+
+		XSD_->SetTooltip (box, item);
 		box->setObjectName (item.attribute ("property"));
+		box->setSizeAdjustPolicy (QComboBox::AdjustToContents);
 		if (item.hasAttribute ("maxVisibleItems"))
 			box->setMaxVisibleItems (item.attribute ("maxVisibleItems").toInt ());
 
@@ -54,20 +61,35 @@ namespace LeechCraft
 				item.attribute ("mayHaveDataSource").toLower () == "true";
 		if (mayHaveDataSource)
 		{
-			QString prop = item.attribute ("property");
+			const QString& prop = item.attribute ("property");
 			Factory_->RegisterDatasourceSetter (prop,
-					boost::bind (&ItemHandlerCombobox::SetDataSource, this, _1, _2, _3));
+					[this] (const QString& str, QAbstractItemModel *m, Util::XmlSettingsDialog *xsd)
+						{ SetDataSource (str, m, xsd); });
 			Propname2Combobox_ [prop] = box;
 			Propname2Item_ [prop] = item;
+		}
+
+		hboxLay->addStretch ();
+
+		if (item.hasAttribute ("moreThisStuff"))
+		{
+			QPushButton *moreButt = new QPushButton (tr ("More stuff..."));
+			hboxLay->addWidget (moreButt);
+
+			moreButt->setObjectName (item.attribute ("moreThisStuff"));
+			connect (moreButt,
+					SIGNAL (released ()),
+					XSD_,
+					SLOT (handleMoreThisStuffRequested ()));
 		}
 
 		QDomElement option = item.firstChildElement ("option");
 		while (!option.isNull ())
 		{
-			QList<QImage> images = XSD_->GetImages (option);
+			const QList<QImage>& images = XSD_->GetImages (option);
 			if (images.size ())
 			{
-				QIcon icon = QIcon (QPixmap::fromImage (images.at (0)));
+				const QIcon& icon = QIcon (QPixmap::fromImage (images.at (0)));
 				box->addItem (icon,
 						XSD_->GetLabel (option),
 						option.attribute ("name"));
@@ -90,10 +112,9 @@ namespace LeechCraft
 			Scripter scripter (scriptContainer);
 
 			QStringList fromScript = scripter.GetOptions ();
-			for (QStringList::const_iterator i = fromScript.begin (),
-					end = fromScript.end (); i != end; ++i)
-				box->addItem (scripter.HumanReadableOption (*i),
-						*i);
+			Q_FOREACH (const QString& elm, scripter.GetOptions ())
+				box->addItem (scripter.HumanReadableOption (elm),
+						elm);
 		}
 
 		int pos = box->findData (XSD_->GetValue (item));
@@ -113,7 +134,7 @@ namespace LeechCraft
 
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0, Qt::AlignRight);
-		lay->addWidget (box, row, 1);
+		lay->addLayout (hboxLay, row, 1);
 	}
 
 	void ItemHandlerCombobox::SetValue (QWidget *widget, const QVariant& value) const
@@ -174,7 +195,7 @@ namespace LeechCraft
 
 		box->setModel (model);
 
-		QVariant data = xsd->GetValue (Propname2Item_ [prop]);
+		const QVariant& data = xsd->GetValue (Propname2Item_ [prop]);
 		int pos = box->findData (data);
 		if (pos == -1)
 		{

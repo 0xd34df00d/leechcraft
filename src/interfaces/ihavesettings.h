@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef INTERFACES_IHAVESETTINGS_H
 #define INTERFACES_IHAVESETTINGS_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QtPlugin>
 
 namespace LeechCraft
@@ -26,9 +26,9 @@ namespace LeechCraft
 	namespace Util
 	{
 		class XmlSettingsDialog;
-		typedef boost::shared_ptr<XmlSettingsDialog> XmlSettingsDialog_ptr;
-	};
-};
+		typedef std::shared_ptr<XmlSettingsDialog> XmlSettingsDialog_ptr;
+	}
+}
 
 /** @brief Interface for plugins that have user-configurable settings.
  *

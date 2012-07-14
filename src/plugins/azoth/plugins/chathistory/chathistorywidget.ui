@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>616</width>
-    <height>398</height>
+    <width>811</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,6 +34,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="placeholderText">
+        <string>Filter contacts...</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -49,15 +52,71 @@
        </attribute>
       </widget>
      </item>
+     <item>
+      <widget class="QCalendarWidget" name="Calendar_">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="gridVisible">
+        <bool>true</bool>
+       </property>
+       <property name="horizontalHeaderFormat">
+        <enum>QCalendarWidget::SingleLetterDayNames</enum>
+       </property>
+       <property name="verticalHeaderFormat">
+        <enum>QCalendarWidget::NoVerticalHeader</enum>
+       </property>
+       <property name="navigationBarVisible">
+        <bool>true</bool>
+       </property>
+       <property name="dateEditEnabled">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QLineEdit" name="HistorySearch_"/>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLineEdit" name="HistorySearch_">
+         <property name="placeholderText">
+          <string>History search...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="SearchType_">
+         <item>
+          <property name="text">
+           <string>contact</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>account</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>everything</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QTextBrowser" name="HistView_"/>
+      <widget class="QTextBrowser" name="HistView_">
+       <property name="openLinks">
+        <bool>false</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

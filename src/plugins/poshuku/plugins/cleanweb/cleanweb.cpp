@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 
 #include "cleanweb.h"
 #include <typeinfo>
-#include <boost/bind.hpp>
 #include <QIcon>
 #include <QTextCodec>
 #include <QtDebug>
@@ -91,7 +90,8 @@ namespace CleanWeb
 
 	QIcon CleanWeb::GetIcon () const
 	{
-		return QIcon (":/plugins/poshuku/plugins/cleanweb/resources/images/poshuku_cleanweb.svg");
+		static QIcon icon (":/plugins/poshuku/plugins/cleanweb/resources/images/poshuku_cleanweb.svg");
+		return icon;
 	}
 
 	QStringList CleanWeb::Provides () const
@@ -168,8 +168,8 @@ namespace CleanWeb
 	}
 
 	void CleanWeb::hookWebViewContextMenu (IHookProxy_ptr,
-			QWebView *view,
-			QContextMenuEvent*,
+			QGraphicsWebView *view,
+			QGraphicsSceneContextMenuEvent*,
 			const QWebHitTestResult& r,
 			QMenu *menu,
 			WebViewCtxMenuStage stage)
@@ -180,4 +180,4 @@ namespace CleanWeb
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_cleanweb, LeechCraft::Poshuku::CleanWeb::CleanWeb);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_cleanweb, LeechCraft::Poshuku::CleanWeb::CleanWeb);

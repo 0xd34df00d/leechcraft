@@ -32,7 +32,6 @@ INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 SET (SRCS
-	clearbutton.cpp
 	poshuku.cpp
 	xmlsettingsmanager.cpp
 	core.cpp
@@ -45,7 +44,6 @@ SET (SRCS
 	favoritesdelegate.cpp
 	favoritestreeview.cpp
 	customwebpage.cpp
-	restoresessiondialog.cpp
 	historymodel.cpp
 	storagebackend.cpp
 	sqlstoragebackend.cpp
@@ -82,7 +80,6 @@ SET (SRCS
 	importentityhandler.cpp
 	)
 SET (HEADERS
-	clearbutton.h
 	poshuku.h
 	xmlsettingsmanager.h
 	core.h
@@ -95,7 +92,6 @@ SET (HEADERS
 	favoritesdelegate.h
 	favoritestreeview.h
 	customwebpage.h
-	restoresessiondialog.h
 	historymodel.h
 	storagebackend.h
 	sqlstoragebackend.h
@@ -136,7 +132,6 @@ SET (HEADERS
 SET (FORMS
 	browserwidget.ui
 	addtofavoritesdialog.ui
-	restoresessiondialog.ui
 	finddialog.ui
 	screenshotsavedialog.ui
 	cookieseditdialog.ui
@@ -153,7 +148,9 @@ SET (FORMS
 SET (RESOURCES poshukuresources.qrc)
 CreateTrVars ("poshuku" "ar;be;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 
-QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
@@ -170,7 +167,7 @@ ADD_LIBRARY (leechcraft_poshuku SHARED
 	${UIS_H}
 	${RCCS}
 	)
-	
+
 IF (ENABLE_IDN)
 	SET (IDN_LIB "idn")
 ENDIF (ENABLE_IDN)
@@ -193,8 +190,7 @@ OPTION (ENABLE_POSHUKU_FILESCHEME "Build support of local file browsing for Posh
 OPTION (ENABLE_POSHUKU_FUA "Build user agent customization plugin for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_KEYWORDS "Build support of url keywords for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" ON)
-OPTION (ENABLE_POSHUKU_PINTAB "Build support of pinned tab for Poshuku browser" ON)
-OPTION (ENABLE_POSHUKU_WYFV "Build support of native flash-player's replacement for Poshuku browser" ON)
+OPTION (ENABLE_POSHUKU_POGOOGLUE "Build support for searching selected text in Google" ON)
 
 IF (ENABLE_POSHUKU_CLEANWEB)
 	ADD_SUBDIRECTORY (plugins/cleanweb)
@@ -211,12 +207,9 @@ ENDIF (ENABLE_POSHUKU_FUA)
 IF (ENABLE_POSHUKU_FILESCHEME)
 	ADD_SUBDIRECTORY (plugins/filescheme)
 ENDIF (ENABLE_POSHUKU_FILESCHEME)
-IF (ENABLE_POSHUKU_WYFV)
-	ADD_SUBDIRECTORY (plugins/wyfv)
-ENDIF (ENABLE_POSHUKU_WYFV)
 IF (ENABLE_POSHUKU_ONLINEBOOKMARKS)
 	ADD_SUBDIRECTORY (plugins/onlinebookmarks)
 ENDIF (ENABLE_POSHUKU_ONLINEBOOKMARKS)
-IF (ENABLE_POSHUKU_PINTAB)
-	ADD_SUBDIRECTORY (plugins/pintab)
-ENDIF (ENABLE_POSHUKU_PINTAB)
+IF (ENABLE_POSHUKU_POGOOGLUE)
+	ADD_SUBDIRECTORY (plugins/pogooglue)
+ENDIF (ENABLE_POSHUKU_POGOOGLUE)

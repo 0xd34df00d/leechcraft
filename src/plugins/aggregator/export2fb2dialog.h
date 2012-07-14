@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,8 @@ namespace Util
 
 namespace Aggregator
 {
+	struct WriteInfo;
+
 	class Export2FB2Dialog : public QDialog
 	{
 		Q_OBJECT
@@ -39,10 +41,13 @@ namespace Aggregator
 		Ui::Export2FB2Dialog Ui_;
 		Util::CategorySelector *Selector_;
 		QStringList CurrentCategories_;
-		
+
 		bool HasBeenTextModified_;
 	public:
 		Export2FB2Dialog (QWidget* = 0);
+	private:
+		void WriteFB2 (const WriteInfo&);
+		void WritePDF (const WriteInfo&);
 	private slots:
 		void on_Browse__released ();
 		void on_File__textChanged (const QString&);

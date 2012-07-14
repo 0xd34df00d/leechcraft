@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -185,8 +185,6 @@ namespace Poshuku
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO << e.what ();
-			emit error (tr ("Failed to add<br />%1<br />to Favorites, seems "
-						"like such title is already used.").arg (title));
 			return false;
 		}
 
@@ -255,6 +253,11 @@ namespace Poshuku
 		CheckResults_ = res;
 	}
 
+	bool FavoritesModel::IsUrlExists (const QString& url) const
+	{
+		return std::find_if (Items_.begin (), Items_.end (), ItemFinder (url)) != Items_.end ();
+	}
+
 	QStringList FavoritesModel::GetVisibleTags (int index) const
 	{
 		QStringList user;
@@ -264,10 +267,38 @@ namespace Poshuku
 		return user;
 	}
 
+	FavoritesModel::FavoritesItem FavoritesModel::GetItemFromUrl (const QString& url)
+	{
+		Q_FOREACH (const FavoritesItem& item, Items_)
+			if (item.URL_ == url)
+				return item;
+
+		return FavoritesItem ();
+	}
+
 	void FavoritesModel::removeItem (const QModelIndex& index)
 	{
-		Core::Instance ().GetStorageBackend ()->
-			RemoveFromFavorites (Items_ [index.row ()]);
+		if (!index.isValid () ||
+				index.row () < 0 ||
+				index.row () > Items_.size ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid index"
+					<< index
+					<< Items_.size ();
+			return;
+		}
+
+		const QString url = Items_ [index.row ()].URL_;
+		Core::Instance ().GetStorageBackend ()->RemoveFromFavorites (Items_ [index.row ()]);
+		Core::Instance ().RemoveFromFavorites (url);
+	}
+
+	void FavoritesModel::removeItem (const QString& url)
+	{
+		const FavoritesItem& item = GetItemFromUrl (url);
+		Core::Instance ().GetStorageBackend ()->RemoveFromFavorites (item);
+		Core::Instance ().RemoveFromFavorites (url);
 	}
 
 	void FavoritesModel::handleItemAdded (const FavoritesModel::FavoritesItem& item)

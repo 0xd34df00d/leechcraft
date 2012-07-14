@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,18 @@
 #include <QXmppMucIq.h>
 
 class QDomElement;
+class QWidget;
 class QXmppDataForm;
+class QXmppPresence;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+struct EntryStatus;
 namespace Xoox
 {
+class EntryBase;
 namespace XooxUtil
 {
 	QString RoleToString (const QXmppMucItem::Role&);
@@ -37,9 +41,16 @@ namespace XooxUtil
 
 	QString GetClientIDName (const QString&);
 	QString GetClientHRName (const QString&);
-	
+
 	QDomElement XmppElem2DomElem (const QXmppElement&);
 	QXmppElement Form2XmppElem (const QXmppDataForm&);
+
+	bool RunFormDialog (QWidget*);
+
+	bool CheckUserFeature (EntryBase *entry,
+			const QString& variant, const QString& feature);
+
+	EntryStatus PresenceToStatus (const QXmppPresence& pres);
 }
 }
 }

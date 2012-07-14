@@ -18,7 +18,7 @@
 
 #ifndef SEPARATETABWIDGET_H
 #define SEPARATETABWIDGET_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QWidget>
 #include <QIcon>
 #include <QTabBar>
@@ -27,13 +27,14 @@
 #include <QMap>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/icoretabwidget.h>
+#include "interfaces/core/ihookproxy.h"
 
+class QMenu;
 class QStackedWidget;
 class QVBoxLayout;
 class QHBoxLayout;
 class QToolButton;
 class QToolBar;
-class QMenu;
 
 namespace LeechCraft
 {
@@ -46,8 +47,6 @@ namespace LeechCraft
 		Q_INTERFACES (ICoreTabWidget)
 
 		int LastContextMenuTab_;
-		int PreviousTab_;
-		int CurrentTab_;
 		QMenu *DefaultContextMenu_;
 		QMenu *AddTabButtonContextMenu_;
 		QPointer<QStackedWidget> MainStackedWidget_;
@@ -60,99 +59,114 @@ namespace LeechCraft
 		QVBoxLayout *MainLayout_;
 		QWidget *DefaultWidget_;
 		QAction *AddTabButtonAction_;
-		QAction *PinTab_;
-		QAction *UnPinTab_;
 		QAction *DefaultTabAction_;
-		QMap<int, boost::shared_ptr<QWidget> > Widgets_;
-		QList<QPointer<QAction> > TabBarActions_;
-		bool InMoveProcess_;
+		QMap<int, std::shared_ptr<QWidget>> Widgets_;
+		QList<QPointer<QAction>> TabBarActions_;
+		QWidget *CurrentWidget_;
+		int CurrentIndex_;
+		QWidget *PreviousWidget_;
 	public:
-		explicit SeparateTabWidget (QWidget* = 0);
+		explicit SeparateTabWidget (QWidget *parent = 0);
+
 		QObject* GetObject ();
 
 		int WidgetCount () const;
-		void Clear ();
+		QWidget* Widget (int index) const;
+
+		QList<QAction*> GetPermanentActions () const;
+
+		QVariant TabData (int index) const;
+		void SetTabData (int index, QVariant data);
+
+		QString TabText (int index) const;
+		void SetTabText (int index, const QString& text);
+
+		QIcon TabIcon (int index) const;
+		void SetTabIcon (int index, const QIcon& icon);
+
+		QString TabToolTip (int index) const;
+		void SetTabToolTip (int index, const QString& toolTip);
+
+		void SetTooltip (int index, QWidget *toolTip);
+
+		QWidget* TabButton (int index, QTabBar::ButtonPosition positioin) const;
+		QTabBar::ButtonPosition GetCloseButtonPosition () const;
+		void SetTabClosable (int index, bool closable, QWidget *closeButton = 0);
+
+		void SetTabsClosable (bool closable);
+
+		void AddAction2TabBar (QAction *action);
+		void InsertAction2TabBar (int position, QAction *action);
+		void InsertAction2TabBar (QAction *before, QAction *action);
+
+		void AddWidget2TabBarLayout (QTabBar::ButtonPosition pos, QWidget *action);
+		void AddAction2TabBarLayout (QTabBar::ButtonPosition pos, QAction *action);
+		void RemoveActionFromTabBarLayout (QTabBar::ButtonPosition pos, QAction *action);
 
 		int CurrentIndex () const;
 		QWidget* CurrentWidget () const;
-		int IndexOf (QWidget*) const;
 
-		int AddTab (QWidget*, const QString&);
-		int AddTab (QWidget*, const QIcon&, const QString&);
-		int InsertTab (int, QWidget*, const QString&);
-		int InsertTab (int, QWidget*, const QIcon&, const QString&);
-		void RemoveTab (int);
+		QMenu* GetTabMenu (int);
 
-		void SetTabEnabled (int, bool);
-		void SetTabIcon (int, const QIcon&);
-		void SetTabText (int, const QString&);
-		void SetTabToolTip (int, const QString&);
-		void SetTabWhatsThis (int, const QString&);
-		void SetTabsClosable (bool closable);
-		void SetTooltip (int, QWidget*);
+		int IndexOf (QWidget *page) const;
 
-		bool IsTabEnabled (int) const;
-		QIcon TabIcon (int) const;
-		QString TabText (int) const;
-		QString TabToolTip (int) const;
-		QString TabWhatsThis (int) const;
-		QWidget* Widget (int) const;
-		int TabAt (const QPoint&);
+		int GetLastContextMenuTab () const;
 
-		void SetDefaultContextMenu (QMenu*);
-		QMenu* GetDefaultContextMenu () const;
-		void SetAddTabButtonContextMenu (QMenu*);
-		QMenu* GetAddTabButtonContextMenu () const;
-
-		void AddWidget2TabBarLayout (QTabBar::ButtonPosition, QWidget*);
-		void AddAction2TabBarLayout (QTabBar::ButtonPosition, QAction*);
-		void AddWidget2SeparateTabWidget (QWidget*);
-		void RemoveWidgetFromSeparateTabWidget (QWidget*);
-		void SetToolBarVisible (bool);
+		void SetAddTabButtonContextMenu (QMenu *menu);
 
 		SeparateTabBar* TabBar () const;
 
-		void AddAction2TabBar (QAction*);
-		void InsertAction2TabBar (int, QAction*);
-		void InsertAction2TabBar (QAction *before, QAction *action);
+		int AddTab (QWidget *page, const QString& text);
+		int AddTab (QWidget *page, const QIcon& icon, const QString& text);
+		int InsertTab (int index, QWidget *page, const QString& text);
+		int InsertTab (int index, QWidget *page,
+				const QIcon& icon, const QString& text);
+		void RemoveTab (int index);
 
-		int GetLastContextMenuTab () const;
 		bool IsAddTabActionVisible () const;
-		bool IsPinTab (int) const;
 
-		bool IsInMoveProcess () const;
-		void SetInMoveProcess (bool);
+		void AddWidget2SeparateTabWidget (QWidget *widget);
+		void RemoveWidgetFromSeparateTabWidget (QWidget *widget);
+
+		int TabAt (const QPoint& point);
+
+		void MoveTab (int from, int to);
+
+		QWidget* GetPreviousWidget () const;
 	protected:
-		void resizeEvent (QResizeEvent*);
-		bool event (QEvent*);
+		void resizeEvent (QResizeEvent *event);
+		void mousePressEvent (QMouseEvent *event);
+		bool event (QEvent *event);
 	private:
 		void Init ();
 		void AddTabButtonInit ();
-		void PinTabActionsInit ();
 	public slots:
-		void setCurrentIndex (int);
-		void setCurrentWidget (QWidget*);
+		void setCurrentIndex (int index);
+		void setCurrentTab (int tabIndex);
+		void setCurrentWidget (QWidget *widget);
 		void handleNewTabShortcutActivated ();
 		void setPreviousTab ();
 	private slots:
-		void handleCurrentChanged (int);
-		void handleTabMoved (int, int);
-		void handleContextMenuRequested (const QPoint&);
-		void handleShowAddTabButton (bool);
-		void handleAddDefaultTab (bool);
-		void handleActionDestroyed ();
+		void handleTabBarPosition ();
 		void handleSelectionBehavior ();
+		void handleAddDefaultTab ();
+		void handleShowAddTabButton (bool show);
+		void handleTabMoved (int from, int to);
+		void handleContextMenuRequested (const QPoint& point);
+		void handleActionDestroyed ();
+		void releaseMouseAfterMove (int index);
 	signals:
-		void newTabRequested ();
+		void tabInserted (int index);
+		void tabWasRemoved (int index);
+		void tabCloseRequested (int index);
 		void newTabMenuRequested ();
-		void tabWasMoved (int, int);
-		void currentChanged (int);
-		void tabCloseRequested (int);
-		void tabWasInserted (int);
-		void tabWasRemoved (int);
-
-		void pinTabRequested ();
-		void unpinTabRequested ();
+		void currentChanged (int index);
+		void tabWasMoved (int from, int to);
+		// Hook
+		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
+				QMenu *menu, int index);
+		void hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy, int index);
+		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy, int index);
 	};
 }
 #endif // SEPARATETABWIDGET_H

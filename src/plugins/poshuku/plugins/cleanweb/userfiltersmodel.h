@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_USERFILTERSMODEL_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_USERFILTERSMODEL_H
+#pragma once
+
 #include <QAbstractItemModel>
+#include <interfaces/structures.h>
 #include "filter.h"
 
 namespace LeechCraft
@@ -49,6 +50,8 @@ namespace CleanWeb
 		bool InitiateAdd (const QString& = QString ());
 		void Modify (int);
 		void Remove (int);
+
+		void AddMultiFilters (QStringList);
 	private:
 		bool Add (const RuleOptionDialog&);
 		void SplitRow (int*, bool*) const;
@@ -56,9 +59,9 @@ namespace CleanWeb
 		void WriteSettings () const;
 	private slots:
 		void blockImage ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
 }
-
-#endif

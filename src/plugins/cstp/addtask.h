@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,48 +24,44 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace CSTP
+{
+	class AddTask : public QDialog
 	{
-		namespace CSTP
+		Q_OBJECT
+
+		Ui::AddTask Ui_;
+		bool UserModifiedFilename_;
+	public:
+		AddTask (QWidget* = 0);
+		AddTask (const QUrl&, const QString&, QWidget* = 0);
+		virtual ~AddTask ();
+
+		struct Task
 		{
-			class AddTask : public QDialog
-			{
-				Q_OBJECT
+			QUrl URL_;
+			QString LocalPath_;
+			QString Filename_;
+			QString Comment_;
 
-				Ui::AddTask Ui_;
-				bool UserModifiedFilename_;
-			public:
-				AddTask (QWidget* = 0);
-				AddTask (const QUrl&, const QString&, QWidget* = 0);
-				virtual ~AddTask ();
-
-				struct Task
-				{
-					QUrl URL_;
-					QString LocalPath_;
-					QString Filename_;
-					QString Comment_;
-
-					Task (const QUrl&,
-							const QString&,
-							const QString&,
-							const QString&);
-				};
-
-				Task GetTask () const;
-			public slots:
-				virtual void accept ();
-			private slots:
-				void on_URL__textEdited (const QString&);
-				void on_LocalPath__textChanged ();
-				void on_Filename__textEdited ();
-				void on_BrowseButton__released ();
-			private:
-				void CheckOK ();
-			};
+			Task (const QUrl&,
+					const QString&,
+					const QString&,
+					const QString&);
 		};
+
+		Task GetTask () const;
+	public slots:
+		virtual void accept ();
+	private slots:
+		void on_URL__textEdited (const QString&);
+		void on_LocalPath__textChanged ();
+		void on_Filename__textEdited ();
+		void on_BrowseButton__released ();
+	private:
+		void CheckOK ();
 	};
-};
+}
+}
 
 #endif
-

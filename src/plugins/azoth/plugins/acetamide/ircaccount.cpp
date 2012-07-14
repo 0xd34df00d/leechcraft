@@ -21,8 +21,8 @@
 #include <QInputDialog>
 #include <QSettings>
 #include <QTimer>
-#include <interfaces/iprotocol.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "channelclentry.h"
 #include "clientconnection.h"
 #include "core.h"
@@ -33,6 +33,7 @@
 #include "xmlsettingsmanager.h"
 #include "ircserverhandler.h"
 #include "channelhandler.h"
+#include "bookmarkeditwidget.h"
 
 namespace LeechCraft
 {
@@ -75,9 +76,9 @@ namespace Acetamide
 				SIGNAL (removedCLItems (const QList<QObject*>&)));
 
 		connect (ClientConnection_.get (),
-				SIGNAL (gotConsoleLog (const QByteArray&, int)),
+				SIGNAL (gotConsoleLog (QByteArray, int, QString)),
 				this,
-				SIGNAL (gotConsolePacket (const QByteArray&, int)));
+				SIGNAL (gotConsolePacket (QByteArray, int, QString)));
 	}
 
 	QObject* IrcAccount::GetObject ()
@@ -129,7 +130,7 @@ namespace Acetamide
 		return NickNames_;
 	}
 
-	boost::shared_ptr<ClientConnection> IrcAccount::GetClientConnection () const
+	std::shared_ptr<ClientConnection> IrcAccount::GetClientConnection () const
 	{
 		return ClientConnection_;
 	}
@@ -137,6 +138,8 @@ namespace Acetamide
 	void IrcAccount::RenameAccount (const QString& name)
 	{
 		AccountName_ = name;
+		emit accountRenamed (name);
+		emit accountSettingsChanged ();
 	}
 
 	QByteArray IrcAccount::GetAccountID () const
@@ -148,7 +151,7 @@ namespace Acetamide
 	{
 		AccountID_ = id.toUtf8 ();
 	}
-	
+
 	QList<QAction*> IrcAccount::GetActions () const
 	{
 		return QList<QAction*> ();
@@ -198,8 +201,8 @@ namespace Acetamide
 		DefaultPort_ = widget->GetDefaultPort ();
 		DefaultEncoding_ = widget->GetDefaultEncoding ();
 		DefaultChannel_ = widget->GetDefaultChannel ();
-		
-		
+
+
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, QString ()));
 
@@ -207,7 +210,7 @@ namespace Acetamide
 	}
 
 	void IrcAccount::JoinServer (ServerOptions server,
-			ChannelOptions channel, const NickServIdentifyOptions& nickserv)
+			ChannelOptions channel, bool onlyServer)
 	{
 		if (server.ServerName_.isEmpty ())
 			server.ServerName_ = DefaultServer_;
@@ -216,8 +219,7 @@ namespace Acetamide
 		if (server.ServerEncoding_.isEmpty ())
 			server.ServerEncoding_ = DefaultEncoding_;
 		if (server.ServerNickName_.isEmpty ())
-			server.ServerNickName_ = NickNames_.isEmpty() ? GetOurNick ()
-					: NickNames_.at (0);
+			server.ServerNickName_ = NickNames_.value (0, GetOurNick ());
 
 		if (channel.ServerName_.isEmpty ())
 			channel.ServerName_ = server.ServerName_;
@@ -228,15 +230,16 @@ namespace Acetamide
 				QString::number (server.ServerPort_);
 		if (!ClientConnection_->IsServerExists (serverId))
 		{
-			ClientConnection_->JoinServer (server, nickserv);
-			ClientConnection_->GetIrcServerHandler (serverId)->
-					Add2ChannelsQueue (channel);
+			ClientConnection_->JoinServer (server);
+			if (!onlyServer)
+				ClientConnection_->GetIrcServerHandler (serverId)->
+						Add2ChannelsQueue (channel);
 		}
-		else if (!channel.ChannelName_.isEmpty ())
+		else if (!onlyServer)
 			ClientConnection_->JoinChannel (server, channel);
 	}
 
-	void IrcAccount::SetBookmarks(const QList<IrcBookmark>& bookmarks)
+	void IrcAccount::SetBookmarks (const QList<IrcBookmark>& bookmarks)
 	{
 		if (!ClientConnection_)
 			return;
@@ -252,6 +255,63 @@ namespace Acetamide
 		return ClientConnection_->GetBookmarks ();
 	}
 
+	QWidget* IrcAccount::GetMUCBookmarkEditorWidget ()
+	{
+		return new BookmarkEditWidget ();
+	}
+
+	QVariantList IrcAccount::GetBookmarkedMUCs () const
+	{
+		QVariantList result;
+
+		const QList<IrcBookmark>& bookmarks = GetBookmarks ();
+		Q_FOREACH (const IrcBookmark& channel, bookmarks)
+		{
+			QVariantMap cm;
+			cm ["HumanReadableName"] = QString ("%1@%2 (%3)")
+					.arg (channel.ChannelName_ )
+					.arg (channel.ServerName_)
+					.arg (channel.NickName_);
+			cm ["AccountID"] = GetAccountID ();
+			cm ["Server"] = channel.ServerName_;
+			cm ["Port"] = channel.ServerPort_;
+			cm ["ServerPassword"] = channel.ServerPassword_;
+			cm ["Encoding"] = channel.ServerEncoding_;
+			cm ["Channel"] = channel.ChannelName_;
+			cm ["Password"] = channel.ChannelPassword_;
+			cm ["Nickname"] = channel.NickName_;
+			cm ["SSL"] = channel.SSL_;
+			cm ["Autojoin"] = channel.AutoJoin_;
+			cm ["StoredName"] = channel.Name_;
+			result << cm;
+		}
+
+		return result;
+	}
+
+	void IrcAccount::SetBookmarkedMUCs (const QVariantList& datas)
+	{
+		QList<IrcBookmark> channels;
+		Q_FOREACH (const QVariant& var, datas)
+		{
+			const QVariantMap& map = var.toMap ();
+			IrcBookmark bookmark;
+			bookmark.AutoJoin_  = map ["Autojoin"].toBool ();
+			bookmark.ServerName_ = map ["Server"].toString ();
+			bookmark.ServerPort_ = map ["Port"].toInt ();
+			bookmark.ServerPassword_ = map ["ServerPassword"].toString ();
+			bookmark.ServerEncoding_ = map ["Encoding"].toString ();
+			bookmark.ChannelName_ = map ["Channel"].toString ();
+			bookmark.ChannelPassword_ = map ["Password"].toString ();
+			bookmark.SSL_ = map ["SSL"].toBool ();
+			bookmark.NickName_ = map ["Nickname"].toString ();
+			bookmark.Name_ = map ["StoredName"].toString ();
+			channels << bookmark;
+		}
+
+		SetBookmarks (channels);
+	}
+
 	EntryStatus IrcAccount::GetState () const
 	{
 		return EntryStatus (IrcAccountState_, QString ());
@@ -259,11 +319,11 @@ namespace Acetamide
 
 	void IrcAccount::ChangeState (const EntryStatus& state)
 	{
-		if (IrcAccountState_ == SOffline &&
-				!ClientConnection_)
+		if ((IrcAccountState_ == SOffline &&
+				!ClientConnection_) ||
+				(IrcAccountState_ == state.State_ &&
+				IrcAccountState_ == SOffline))
 			return;
-
-		IrcAccountState_ = state.State_;
 
 		IProxyObject *obj = qobject_cast<IProxyObject*> (ParentProtocol_->GetProxyObject ());
 		bool autoJoin = false;
@@ -277,13 +337,40 @@ namespace Acetamide
 			autoJoin = obj->GetSettingsManager ()->
 					property ("IsAutojoinAllowed").toBool ();
 
-			if (state.State_ == SOffline)
+		EntryStatus newStatus = state;
+		switch (state.State_)
+		{
+			case SDND:
+			case SXA:
+				newStatus.State_ = SAway;
+				break;
+			case SChat:
+				newStatus.State_ = SOnline;
+				break;
+			default:
+				break;
+		}
+
+		if (newStatus.State_ == SOffline)
+		{
+			if (ClientConnection_->GetServerHandlers ().count ())
+				SaveActiveChannels ();
+			ClientConnection_->DisconnectFromAll ();
+			SetState (newStatus);
+		}
+		else
+		{
+			if (newStatus.State_ == SOnline)
 			{
-				if (ClientConnection_->GetServerHandlers ().count ())
-					SaveActiveChannels ();
-				ClientConnection_->DisconnectFromAll ();
+				if (IrcAccountState_ == SAway)
+					ClientConnection_->SetAway (false, QString ());
+				else
+					SetState (newStatus);
 			}
-			else if (autoJoin)
+			else if (newStatus.State_ == SAway)
+				ClientConnection_->SetAway (true, newStatus.StatusString_);
+
+			if (autoJoin)
 			{
 				if (ActiveChannels_.isEmpty ())
 					ActiveChannels_ << GetBookmarks ();
@@ -295,13 +382,15 @@ namespace Acetamide
 			}
 			else
 				joinFromBookmarks ();
+		}
 
 		IsFirstStart_ = false;
-		emit statusChanged (state);
 	}
 
-	void IrcAccount::Synchronize ()
+	void IrcAccount::SetState (const EntryStatus& status)
 	{
+		IrcAccountState_ = status.State_;
+		emit statusChanged (status);
 	}
 
 	void IrcAccount::Authorize (QObject*)
@@ -402,12 +491,13 @@ namespace Acetamide
 	void IrcAccount::SaveActiveChannels ()
 	{
 		ActiveChannels_.clear ();
-		Q_FOREACH (IrcServerHandler *ish, ClientConnection_->GetServerHandlers ())
-			Q_FOREACH (ChannelHandler *ich, ish->GetChannelHandlers ())
+		Q_FOREACH (auto ish, ClientConnection_->GetServerHandlers ())
+			Q_FOREACH (auto ich, ish->GetChannelHandlers ())
 			{
 				IrcBookmark bookmark;
 				bookmark.ServerName_ = ish->GetServerOptions ().ServerName_;
 				bookmark.ServerPort_ = ish->GetServerOptions ().ServerPort_;
+				bookmark.ServerPassword_ = ish->GetServerOptions ().ServerPassword_;
 				bookmark.ServerEncoding_ = ish->GetServerOptions ().ServerEncoding_;
 				bookmark.NickName_ = ish->GetServerOptions ().ServerNickName_;
 				bookmark.SSL_ = ish->GetServerOptions ().SSL_;
@@ -443,6 +533,7 @@ namespace Acetamide
 				continue;
 			serverOpt.ServerName_ = bookmark.ServerName_;
 			serverOpt.ServerPort_ = bookmark.ServerPort_;
+			serverOpt.ServerPassword_ = bookmark.ServerPassword_;
 			serverOpt.ServerEncoding_ = bookmark.ServerEncoding_;
 			serverOpt.ServerNickName_ = bookmark.NickName_;
 			serverOpt.SSL_ = bookmark.SSL_;
@@ -452,7 +543,7 @@ namespace Acetamide
 			channelOpt.ChannelPassword_ = bookmark.ChannelPassword_;
 
 			// TODO NickServ for bookmarks
-			JoinServer (serverOpt, channelOpt, NickServIdentifyOptions ());
+			JoinServer (serverOpt, channelOpt);
 		}
 
 		ActiveChannels_.clear ();

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,14 +45,14 @@ namespace Aggregator
 	{
 		Equalify (channel);
 	}
-	
+
 	Channel& Channel::operator= (const Channel& channel)
 	{
 		Equalify (channel);
 		Items_ = channel.Items_;
 		return *this;
 	}
-	
+
 	int Channel::CountUnreadItems () const
 	{
 		int result = 0;
@@ -60,7 +60,7 @@ namespace Aggregator
 			result += (Items_ [i]->Unread_);
 		return result;
 	}
-	
+
 	void Channel::Equalify (const Channel& channel)
 	{
 		ChannelID_ = channel.ChannelID_;
@@ -76,7 +76,7 @@ namespace Aggregator
 		Pixmap_ = channel.Pixmap_;
 		Favicon_ = channel.Favicon_;
 	}
-	
+
 	ChannelShort Channel::ToShort () const
 	{
 		ChannelShort cs =
@@ -93,7 +93,7 @@ namespace Aggregator
 		};
 		return cs;
 	}
-	
+
 	bool operator< (const ChannelShort& cs1, const ChannelShort& cs2)
 	{
 		return cs1.ChannelID_ < cs2.ChannelID_;
@@ -121,7 +121,7 @@ namespace Aggregator
 
 	QDataStream& operator<< (QDataStream& out, const Channel& chan)
 	{
-		int version = 2;
+		int version = 3;
 		out << version
 			<< chan.Title_
 			<< chan.Link_
@@ -164,8 +164,9 @@ namespace Aggregator
 				chan.Items_.push_back (it);
 			}
 		}
-		else if (version == 2)
+		else if (version == 2 || version == 3)
 		{
+
 			quint32 size;
 			in >> chan.Title_
 				>> chan.Link_
@@ -174,9 +175,20 @@ namespace Aggregator
 				>> chan.Tags_
 				>> chan.Language_
 				>> chan.Author_
-				>> chan.PixmapURL_
-				>> chan.Pixmap_
-				>> chan.Favicon_;
+				>> chan.PixmapURL_;
+
+			if (version == 3)
+				in >> chan.Pixmap_
+					>> chan.Favicon_;
+			else
+			{
+				QPixmap px, favicon;
+				in >> px
+					>> favicon;
+				chan.Pixmap_ = px.toImage ();
+				chan.Favicon_ = px.toImage ();
+			}
+
 			in >> size;
 			for (size_t i = 0; i < size; ++i)
 			{

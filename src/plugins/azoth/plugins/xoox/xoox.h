@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +18,11 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_XOOX_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_XOOX_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/iprotocolplugin.h>
+#include <interfaces/azoth/iprotocolplugin.h>
 
 class QTranslator;
 
@@ -39,8 +39,8 @@ namespace Xoox
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
-		
-		boost::shared_ptr<QTranslator> Translator_;
+
+		std::shared_ptr<QTranslator> Translator_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -62,6 +62,9 @@ namespace Xoox
 		void initPlugin (QObject*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+
+		void gotNewProtocols (const QList<QObject*>&);
 	};
 }
 }

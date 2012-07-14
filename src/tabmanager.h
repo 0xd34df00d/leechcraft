@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,10 +42,11 @@ namespace LeechCraft
 		QList<QKeyEvent*> Events_;
 		QMap<QWidget*, QObject*> EmbedTabs_;
 		QMenu *NewTabMenu_;
-		QMap<QString, QList<QAction*> > Menus_;
+		QMap<QString, QList<QAction*>> Menus_;
 	public:
 		TabManager (SeparateTabWidget*, QObject* = 0);
 
+		QWidget* GetCurrentWidget () const;
 		QWidget* GetWidget (int) const;
 		QToolBar* GetToolBar (int) const;
 		void ForwardKeyboard (QKeyEvent*);
@@ -53,9 +54,6 @@ namespace LeechCraft
 		void rotateLeft ();
 		void rotateRight ();
 		void navigateToTabNumber ();
-		
-		void handlePinTab ();
-		void handleUnpinTab ();
 
 		void add (const QString&, QWidget*);
 		void add (const QString&, QWidget*,
@@ -83,9 +81,11 @@ namespace LeechCraft
 		int FindTabForWidget (QWidget*) const;
 		QString MakeTabName (const QString&) const;
 		void InvalidateName ();
-		
+
 		QStringList GetOriginalNames () const;
 		void SetOriginalNames (const QStringList&);
+	signals:
+		void currentTabChanged (QWidget*);
 	};
 };
 

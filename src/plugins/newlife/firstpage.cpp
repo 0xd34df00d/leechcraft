@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,53 +22,52 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	FirstPage::FirstPage (QWidget *parent)
+	: QWizardPage (parent)
 	{
-		namespace NewLife
+		Ui_.setupUi (this);
+	}
+
+	int FirstPage::nextId () const
+	{
+		return StartPages_ [GetImporter ()];
+	}
+
+	void FirstPage::SetupImporter (AbstractImporter *ai)
+	{
+		const auto& names = ai->GetNames ();
+		const auto& icons = ai->GetIcons ();
+		for (int i = 0; i < std::min (names.size (), icons.size ()); ++i)
+			Ui_.SourceApplication_->addItem (icons.at (i),
+					names.at (i),
+					QVariant::fromValue<QObject*> (ai));
+
+		QList<QWizardPage*> pages = ai->GetWizardPages ();
+		if (pages.size ())
 		{
-			FirstPage::FirstPage (QWidget *parent)
-			: QWizardPage (parent)
-			{
-				Ui_.setupUi (this);
-			}
+			QWizardPage *first = pages.takeFirst ();
+			StartPages_ [ai] = wizard ()->addPage (first);
+			Q_FOREACH (QWizardPage *page, pages)
+				wizard ()->addPage (page);
+		}
+	}
 
-			int FirstPage::nextId () const
-			{
-				return StartPages_ [GetImporter ()];
-			}
+	AbstractImporter* FirstPage::GetImporter () const
+	{
+		int currentIndex = Ui_.SourceApplication_->currentIndex ();
+		if (currentIndex == -1)
+			return 0;
 
-			void FirstPage::SetupImporter (const AbstractImporter *ai)
-			{
-				Q_FOREACH (QString name, ai->GetNames ())
-					Ui_.SourceApplication_->addItem (name,
-							QVariant::fromValue<QObject*> (const_cast<AbstractImporter*> (ai)));
+		QObject *importerObject = Ui_.SourceApplication_->
+			itemData (currentIndex).value<QObject*> ();
+		return qobject_cast<AbstractImporter*> (importerObject);
+	}
 
-				QList<QWizardPage*> pages = ai->GetWizardPages ();
-				if (pages.size ())
-				{
-					QWizardPage *first = pages.takeFirst ();
-					StartPages_ [ai] = wizard ()->addPage (first);
-					Q_FOREACH (QWizardPage *page, pages)
-						wizard ()->addPage (page);
-				}
-			}
-
-			AbstractImporter* FirstPage::GetImporter () const
-			{
-				int currentIndex = Ui_.SourceApplication_->currentIndex ();
-				if (currentIndex == -1)
-					return 0;
-
-				QObject *importerObject = Ui_.SourceApplication_->
-					itemData (currentIndex).value<QObject*> ();
-				return qobject_cast<AbstractImporter*> (importerObject);
-			}
-
-			QString FirstPage::GetSelectedName () const
-			{
-				return Ui_.SourceApplication_->currentText ();
-			}
-		};
-	};
-};
-
+	QString FirstPage::GetSelectedName () const
+	{
+		return Ui_.SourceApplication_->currentText ();
+	}
+}
+}

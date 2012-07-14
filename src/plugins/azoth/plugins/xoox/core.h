@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,17 +33,19 @@ namespace Xoox
 	class GlooxProtocol;
 	class GlooxCLEntry;
 	class CapsDatabase;
+	class AvatarsStorage;
 
 	class Core : public QObject
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		boost::shared_ptr<GlooxProtocol> GlooxProtocol_;
+		std::shared_ptr<GlooxProtocol> GlooxProtocol_;
 		QObject *PluginProxy_;
 		bool SaveRosterScheduled_;
 
 		CapsDatabase *CapsDB_;
+		AvatarsStorage *Avatars_;
 
 		Core ();
 	public:
@@ -59,6 +61,7 @@ namespace Xoox
 		ICoreProxy_ptr GetProxy () const;
 
 		CapsDatabase* GetCapsDatabase () const;
+		AvatarsStorage* GetAvatarsStorage () const;
 
 		void SendEntity (const Entity&);
 
@@ -72,6 +75,7 @@ namespace Xoox
 		void handleItemsAdded (const QList<QObject*>&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

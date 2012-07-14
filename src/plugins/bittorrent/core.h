@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #include <map>
 #include <list>
 #include <deque>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QAbstractItemModel>
 #include <QPair>
 #include <QList>
@@ -30,9 +30,10 @@
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/session_status.hpp>
+#include <libtorrent/session.hpp>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
-#include <util/tagscompletionmodel.h>
+#include <util/tags/tagscompletionmodel.h>
 #include "torrentinfo.h"
 #include "fileinfo.h"
 #include "peerinfo.h"
@@ -123,18 +124,20 @@ namespace LeechCraft
 				HandleDict_t Handles_;
 				QList<QString> Headers_;
 				mutable int CurrentTorrent_;
-				std::auto_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
-				boost::shared_ptr<PiecesModel> PiecesModel_;
-				boost::shared_ptr<PeersModel> PeersModel_;
-				boost::shared_ptr<TorrentFilesModel> TorrentFilesModel_;
-				boost::shared_ptr<QStandardItemModel> WebSeedsModel_;
-				boost::shared_ptr<LiveStreamManager> LiveStreamManager_;
+				std::unique_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
+				std::shared_ptr<PiecesModel> PiecesModel_;
+				std::shared_ptr<PeersModel> PeersModel_;
+				std::shared_ptr<TorrentFilesModel> TorrentFilesModel_;
+				std::shared_ptr<QStandardItemModel> WebSeedsModel_;
+				std::shared_ptr<LiveStreamManager> LiveStreamManager_;
 				QString ExternalAddress_;
 				bool SaveScheduled_;
 				QToolBar *Toolbar_;
 				QWidget *TabWidget_;
 				ICoreProxy_ptr Proxy_;
 				QMenu *Menu_;
+
+				const QIcon TorrentIcon_;
 
 				Core ();
 			public:
@@ -193,7 +196,7 @@ namespace LeechCraft
 				libtorrent::torrent_info GetTorrentInfo (const QString&);
 				libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
 				bool IsValidTorrent (const QByteArray&) const;
-				std::auto_ptr<TorrentInfo> GetTorrentStats () const;
+				std::unique_ptr<TorrentInfo> GetTorrentStats () const;
 				libtorrent::session_status GetOverallStats () const;
 				void GetPerTracker (pertrackerstats_t&) const;
 				int GetListenPort () const;

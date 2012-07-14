@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 
 #ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERBASE_H
 #define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERBASE_H
-#include <boost/shared_ptr.hpp>
 #include <QMap>
 #include <QVariant>
 #include <QDomElement>
@@ -34,7 +33,7 @@ namespace LeechCraft
 	public:
 		typedef QMap<QString, QVariant> Prop2NewValue_t;
 
-		static void SetXmlSettingsDialog (Util::XmlSettingsDialog *xsd);
+		void SetXmlSettingsDialog (Util::XmlSettingsDialog *xsd);
 
 		ItemHandlerBase ();
 		virtual ~ItemHandlerBase ();
@@ -125,12 +124,12 @@ namespace LeechCraft
 		virtual QVariant GetValue (QObject *object) const = 0;
 
 		Prop2NewValue_t ChangedProperties_;
-		static Util::XmlSettingsDialog *XSD_;
+		Util::XmlSettingsDialog *XSD_;
 	protected slots:
 		virtual void updatePreferences ();
 	};
 
-	typedef boost::shared_ptr<ItemHandlerBase> ItemHandlerBase_ptr;
+	typedef std::shared_ptr<ItemHandlerBase> ItemHandlerBase_ptr;
 };
 
 #endif

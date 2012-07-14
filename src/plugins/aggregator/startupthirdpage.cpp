@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,18 +47,33 @@ namespace Aggregator
 		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("euronews RSS feed"),
 				"news; world",
 				"http://feeds.feedburner.com/euronews/en/home/");
+		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("TechCrunch"),
+				"news; it",
+				"http://feedproxy.google.com/TechCrunch");
+		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("Wired.com"),
+				"news; it",
+				"http://feeds.wired.com/wired/index");
+		Sets_ ["general"] << FeedInfo (QString::fromUtf8 ("IBM DeveloperWorks"),
+				"it; programming",
+				"http://www.ibm.com/developerworks/views/linux/rss/libraryview.jsp");
+		Sets_ ["en"] << FeedInfo (QString::fromUtf8 ("LeechCraft.org News"),
+				"it; blogs; software",
+				"http://leechcraft.org/rss.xml");
+		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Новости LeechCraft.org"),
+				"it; blogs; software",
+				"http://leechcraft.org/ru/rss.xml");
 		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Linux.org.ru: Новости"),
 				"it; news; software",
-				"http://www.linux.org.ru/section-rss.jsp?section=1");
+				"http://feeds.feedburner.com/org/LOR");
 		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("OpenNews.opennet.ru: Основная лента"),
 				"it; news; software",
 				"http://www.opennet.ru/opennews/opennews_6.rss");
+		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("CNews.ru"),
+				"it; news",
+				"http://www.cnews.ru/news.xml");
 		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Хабрахабр"),
-				"it; news; blogs; software; science",
+				"it; news; blogs",
 				"http://habrahabr.ru/rss/");
-		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Радио-Т"),
-				"it; blogs; podcasts",
-				"http://feeds.rucast.net/radio-t");
 		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Новости: Hardware на iXBT.com"),
 				"it; news; hardware",
 				"http://www.ixbt.com/export/hardnews.rss");
@@ -73,7 +88,7 @@ namespace Aggregator
 				"http://www.3dnews.ru/news/rss/");
 		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("MEMBRANA: Люди. Идеи. Технологии."),
 				"news; science; world",
-				"http://www.membrana.ru/export/rss.xml");
+				"http://feeds.feedburner.com/membrana_ru");
 		Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("Яндекс.Новости"),
 				"news; world",
 				"http://news.yandex.ru/index.rss");
@@ -117,7 +132,8 @@ namespace Aggregator
 		connect (wizard (),
 				SIGNAL (accepted ()),
 				this,
-				SLOT (handleAccepted ()));
+				SLOT (handleAccepted ()),
+				Qt::UniqueConnection);
 		wizard ()->setMinimumWidth (std::max (wizard ()->minimumWidth (), 800));
 		wizard ()->setMinimumHeight (std::max (wizard ()->minimumHeight (), 500));
 
@@ -147,6 +163,9 @@ namespace Aggregator
 
 	void StartupThirdPage::handleAccepted ()
 	{
+		if (wizard ()->field ("Aggregator/StorageDirty").toBool ())
+			Core::Instance ().ReinitStorage ();
+
 		for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
 		{
 			QTreeWidgetItem *item = Ui_.Tree_->topLevelItem (i);

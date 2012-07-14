@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,6 @@
  **********************************************************************/
 
 #include "fatape.h"
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 #include <QDesktopServices>
 #include <QDir>
 #include <QIcon>
@@ -118,7 +116,8 @@ namespace FatApe
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/plugins/poshuku/plugins/fatape/resources/images/fatape.svg");
+		static QIcon icon (":/plugins/poshuku/plugins/fatape/resources/images/fatape.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -136,13 +135,8 @@ namespace FatApe
 	void Plugin::hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
 			QWebPage *page, QWebFrame *frame)
 	{
-		boost::function<bool (const UserScript&)> match =
-			boost::bind (&UserScript::MatchToPage,
-					_1,
-					frame->url ().toString ());
-		boost::function<void (const UserScript&)> inject =
-			boost::bind (&UserScript::Inject, _1, frame, Proxy_);
-
+		auto match = [frame] (const UserScript& us) { return us.MatchToPage (frame->url ().toString ()); };
+		auto inject = [frame, this] (const UserScript& us) { us.Inject (frame, Proxy_); };
 
 		apply_if (UserScripts_.begin (), UserScripts_.end (), match, inject);
 	}
@@ -187,8 +181,8 @@ namespace FatApe
 	void Plugin::hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy, QWebPage *page,
 			QWebFrame *frame, QNetworkRequest request, QWebPage::NavigationType type)
 	{
-		if (!request.url ().toString ().endsWith ("user.js", Qt::CaseInsensitive) ||
-			request.url ().scheme () == "file")
+		if (!request.url ().path ().endsWith ("user.js", Qt::CaseInsensitive) ||
+				request.url ().scheme () == "file")
 			return;
 
 		UserScriptInstallerDialog installer (this,
@@ -231,10 +225,8 @@ namespace FatApe
 		items << name << description;
 		Model_->appendRow (items);
 	}
-
-
 }
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_fatape, LeechCraft::Poshuku::FatApe::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_fatape, LeechCraft::Poshuku::FatApe::Plugin);

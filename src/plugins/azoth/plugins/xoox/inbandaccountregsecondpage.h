@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 #include "legacyformbuilder.h"
 #include "formbuilder.h"
 
+class QXmppBobManager;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -36,17 +38,18 @@ namespace Xoox
 		Q_OBJECT
 
 		QXmppClient *Client_;
+		QXmppBobManager *BobManager_;
 		InBandAccountRegFirstPage *FirstPage_;
 		LegacyFormBuilder LFB_;
 		FormBuilder FB_;
 		QWidget *Widget_;
-		
+
 		enum FormType
 		{
 			FTLegacy,
 			FTNew
 		} FormType_;
-		
+
 		enum State
 		{
 			SError,
@@ -58,15 +61,16 @@ namespace Xoox
 		} State_;
 	public:
 		InBandAccountRegSecondPage (InBandAccountRegFirstPage*, QWidget* = 0);
-		
+
 		void Register ();
-		
+
 		QString GetJID () const;
 		QString GetPassword () const;
 
 		bool isComplete () const;
 		void initializePage ();
 	private:
+		void Clear ();
 		void ShowMessage (const QString&);
 		void SetState (State);
 		void HandleRegForm (const QXmppIq&);

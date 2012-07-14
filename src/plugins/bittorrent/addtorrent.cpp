@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,10 @@
  **********************************************************************/
 
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <QHeaderView>
 #include <QFileDialog>
-#include <boost/filesystem/path.hpp>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -73,6 +74,8 @@ namespace LeechCraft
 				Creator_->setText (tr ("<unknown>"));
 				Comment_->setText (tr ("<unknown>"));
 				Date_->setText (tr ("<unknown>"));
+
+				updateAvailableSpace ();
 			}
 
 			void AddTorrent::SetFilename (const QString& filename)
@@ -245,10 +248,14 @@ namespace LeechCraft
 				QString creator = QString::fromUtf8 (info.creator ().c_str ()),
 						comment = QString::fromUtf8 (info.comment ().c_str ());
 
-				boost::optional<boost::posix_time::ptime> maybeDate = info.creation_date ();
 				QString date;
+				auto maybeDate = info.creation_date ();
 				if (maybeDate)
-					date = QString::fromStdString (boost::posix_time::to_simple_string (*maybeDate.get_ptr ()));
+#if LIBTORRENT_VERSION_NUM >= 1600
+					date = QDateTime::fromTime_t (*maybeDate).toString ();
+#else
+					date = QString::fromStdString (boost::posix_time::to_simple_string (*maybeDate));
+#endif
 
 				if (!creator.isEmpty () && !creator.isNull ())
 					Creator_->setText (creator);
@@ -262,15 +269,27 @@ namespace LeechCraft
 					Date_->setText (date);
 				else
 					Date_->setText ("<>");
-				FilesModel_->ResetFiles (info.begin_files (), info.end_files ());
+				FilesModel_->ResetFiles (info.begin_files (), info.end_files (), info.files ());
 				FilesView_->expandAll ();
 			}
 
 			QPair<quint64, quint64> AddTorrent::GetAvailableSpaceInDestination ()
 			{
-				boost::filesystem::space_info space =
-						boost::filesystem::space (GetSavePath ().toStdWString ());
-				return qMakePair<quint64, quint64> (space.available, space.capacity);
+				try
+				{
+#ifdef Q_OS_WIN32
+					boost::filesystem::space_info space =
+							boost::filesystem::space (std::string (GetSavePath ().toUtf8 ().constData ()));
+#else
+					boost::filesystem::space_info space =
+							boost::filesystem::space (GetSavePath ().toStdWString ());
+#endif
+					return qMakePair<quint64, quint64> (space.available, space.capacity);
+				}
+				catch (...)
+				{
+					return qMakePair<quint64, quint64> (-1, -1);
+				}
 			}
 		};
 	};

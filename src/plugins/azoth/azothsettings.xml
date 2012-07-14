@@ -8,53 +8,56 @@
 		<label value="Appearance" />
 		<tab>
 			<label value="Themes" />
-			<item type="combobox" property="StatusIcons" mayHaveDataSource="true">
+			<item type="combobox" property="StatusIcons" mayHaveDataSource="true" moreThisStuff="StatusIcons">
 				<label value="Status icons:" />
-				<option name="oxygen" default="true">
-					<label value="Oxygen" />
+				<option name="Likey" default="true">
+					<label value="Likey" />
 				</option>
 			</item>
-			<item type="combobox" property="SmileIcons" mayHaveDataSource="true">
+			<item type="combobox" property="SmileIcons" mayHaveDataSource="true" moreThisStuff="Smiles">
 				<label value="Smiles:" />
 				<option name="None" default="true">
 					<label value="None" />
 				</option>
 			</item>
-			<item type="combobox" property="ClientIcons" mayHaveDataSource="true">
+			<item type="combobox" property="ClientIcons" mayHaveDataSource="true" moreThisStuff="ClientIcons">
 				<label value="Client icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="AffIcons" mayHaveDataSource="true">
+			<item type="combobox" property="AffIcons" mayHaveDataSource="true" moreThisStuff="AffIcons">
 				<label value="Affiliation icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="MoodIcons" mayHaveDataSource="true">
+			<item type="combobox" property="MoodIcons" mayHaveDataSource="true" moreThisStuff="MoodIcons">
 				<label value="User mood icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="ActivityIcons" mayHaveDataSource="true">
+			<item type="combobox" property="ActivityIcons" mayHaveDataSource="true" moreThisStuff="ActivityIcons">
 				<label value="User activity icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="SystemIcons" mayHaveDataSource="true">
+			<item type="combobox" property="SystemIcons" mayHaveDataSource="true" moreThisStuff="SystemIcons">
 				<label value="General icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="ChatWindowStyle" mayHaveDataSource="true">
+			<item type="combobox" property="ChatWindowStyle" mayHaveDataSource="true" moreThisStuff="ChatWindowStyles">
 				<label value="Chat window style:" />
 				<option name="Basic" default="true">
 					<label value="Basic" />
 				</option>
+			</item>
+			<item type="combobox" property="ChatWindowStyleVariant" mayHaveDataSource="true">
+				<label value="Chat window style variant:" />
 			</item>
 			<item type="groupbox" property="CustomMUCStyle" checkable="true" default="false">
 				<label value="Custom theme for multiuser chats" />
@@ -64,12 +67,18 @@
 						<label value="Basic" />
 					</option>
 				</item>
+				<item type="combobox" property="MUCWindowStyleVariant" mayHaveDataSource="true">
+					<label value="MUC window style variant:" />
+				</item>
 			</item>
 		</tab>
 		<tab>
 			<label value="Contact list" />
 			<item type="checkbox" property="ShowMenuBar" default="true">
-				<label value="Show Azoth menu under the contact list" />
+				<label value="Show toolbar on top of the contact list" />
+			</item>
+			<item type="checkbox" property="ShowStatuses" default="true">
+				<label value="Show statuses" />
 			</item>
 			<item type="checkbox" property="ShowAvatars" default="true">
 				<label value="Show avatars" />
@@ -79,28 +88,87 @@
 			</item>
 			<item type="checkbox" property="GroupContacts" default="true">
 				<label value="Group contacts" />
+				<tooltip>If this option is enabled, contacts would be grouped, otherwise, they will all appear in the same group.</tooltip>
 			</item>
 			<item type="checkbox" property="OrderByStatus" default="true">
 				<label value="Group contacts by status" />
+				<tooltip>If this option is enabled, contacts are ordered by status and then by name. Otherwise, they are ordered by name only.</tooltip>
+			</item>
+			<item type="checkbox" property="HighlightGroups" default="false">
+				<label value="Highlight groups" />
+			</item>
+			<item type="spinbox" property="RosterContactHeight" default="20" minimum="8" maximum="96">
+				<label value="Distance between contacts in roster:" />
+				<suffix value=" px" />
 			</item>
 		</tab>
 		<tab>
 			<label value="Chat windows" />
-			<item type="lineedit" property="PreNickText" default="">
-				<label value="Pre-nick text:" />
-			</item>
-			<item type="lineedit" property="PostNickText" default=":">
-				<label value="Post-nick text:" />
-			</item>
-			<item type="checkbox" property="ShowRichTextMessageBody" default="true">
-				<label value="Show rich text message body (if available)" />
-			</item>
-			<item type="color" property="HighlightColor" default="#FF0000">
-				<label value="Highlight color:" />
-			</item>
-			<item type="spinbox" property="FontSize" default="12">
-				<label value="Font size:" />
-			</item>
+			<groupbox>
+				<label value="Chat view formatting"/>
+				<item type="lineedit" property="PreNickText" default="">
+					<label value="Pre-nick text:" />
+				</item>
+				<item type="lineedit" property="PostNickText" default=":">
+					<label value="Post-nick text:" />
+				</item>
+				<item type="lineedit" property="PostAddressText" default=":">
+					<label value="Post-address text:" />
+				</item>
+				<item type="checkbox" property="ShowRichTextMessageBody" default="true">
+					<label value="Show rich text message body (if available)" />
+					<tooltip>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
+				</item>
+				<item type="color" property="HighlightColor" default="#FF0000">
+					<label value="Highlight color:" />
+				</item>
+				<item type="spinbox" property="FontSize" default="12">
+					<label value="Font size:" />
+				</item>
+			</groupbox>
+			<groupbox>
+				<label value="Chat tab" />
+				<item type="combobox" property="RichFormatterPosition">
+					<label value="Rich text format toolbar position:" />
+					<option name="aboveEdit" default="true">
+						<label value="Above message editor" />
+					</option>
+					<option name="belowEdit">
+						<label value="Below message editor" />
+					</option>
+				</item>
+				<item type="checkbox" property="SendButtonVisible" default="true">
+					<label value="Display send button" />
+				</item>
+				<item type="spinbox" property="MinLinesHeight" minimum="1" maximum="10" default="3">
+					<label value="Minimal message edit height:" />
+					<suffix value=" lines of text" />
+				</item>
+			</groupbox>
+		</tab>
+		<tab>
+			<label value="Fonts" />
+			<groupbox>
+				<label value="Fonts" />
+				<item type="font" property="StandardFont">
+					<label value="Standard font:" />
+				</item>
+				<item type="font" property="FixedFont">
+					<label value="Fixed font:" />
+				</item>
+				<item type="font" property="SerifFont">
+					<label value="Serif font:" />
+				</item>
+				<item type="font" property="SansSerifFont">
+					<label value="SansSerif font:" />
+				</item>
+				<item type="font" property="CursiveFont">
+					<label value="Cursive font:" />
+				</item>
+				<item type="font" property="FantasyFont">
+					<label value="Fantasy font:" />
+				</item>
+			</groupbox>
 		</tab>
 	</page>
 	<page>
@@ -110,11 +178,20 @@
 			<item type="checkbox" property="JumpToNewTabOnOpen" default="true">
 				<label value="Jump to new tab on open" />
 			</item>
+			<item type="checkbox" property="OpenTabOnNewMsg" default="false">
+				<label value="Open chat tab on new message" />
+			</item>
 			<item type="checkbox" property="CloseConfOnLeave" default="false">
 				<label value="Close conferences tabs when leaving" />
 			</item>
+			<item type="checkbox" property="LeaveConfOnClose" default="false">
+				<label value="Leave conferences when closing their tabs" />
+			</item>
 			<item type="checkbox" property="AutoMUCMode" default="false">
 				<label value="Automatically switch roster to conference mode when needed" />
+			</item>
+			<item type="checkbox" property="HideMUCPartsInWholeCL" default="false">
+				<label value="Hide MUC participants in Whole CL mode" />
 			</item>
 			<item type="checkbox" property="IsAutojoinAllowed" default="true">
 				<label value="Autojoin allowed" />
@@ -122,8 +199,28 @@
 			<item type="checkbox" property="SendChatStates" default="true">
 				<label value="Send chat state events" />
 			</item>
+			<item type="checkbox" property="SendEndConversations" default="true">
+				<label value="Notify remote participant when you've ended conversation" />
+			</item>
 			<item type="checkbox" property="UseAltNick" default="true">
-				<label value="Use alternative nickname" />
+				<label value="Modify nick on conflicts in chat rooms" />
+				<tooltip>If enabled, the a string would be appended to your nick according to the next option. If disabled, nothing would happen.</tooltip>
+			</item>
+			<item type="lineedit" property="AlternativeNickname" default="_azoth">
+				<label value="Nick suffix to append on nick conflict in chat rooms:" />
+				<tooltip>This string would be appended to the nick you've chosen if another chat room participant already uses your nick.</tooltip>
+			</item>
+			<item type="combobox" property="EntryActivationType">
+				<label value="Entry activates on:" />
+				<option name="click" default="true">
+					<label value="Single click" />
+				</option>
+				<option name="dclick">
+					<label value="Double click" />
+				</option>
+				<option name="environment">
+					<label value="Let the environment decide" />
+				</option>
 			</item>
 			<item type="combobox" property="SendOnModifier">
 				<label value="Send message on:" />
@@ -137,11 +234,11 @@
 					<label value="Ctrl+Enter" />
 				</option>
 			</item>
+			<item type="checkbox" property="KPEnterAlias" default="true">
+				<label value="Keypad Enter is analogous to Enter" />
+			</item>
 			<item type="spinbox" property="ShowLastNMessages" default="10" minimum="0" maximum="50">
 				<label value="Load at most messages from history:" />
-			</item>
-			<item type="lineedit" property="AlternativeNickname">
-				<label value="Alternative nickname for chat rooms:" />
 			</item>
 			<item type="path" property="DefaultXferSavePath" default="{DOCUMENTS}/Downloads">
 				<label value="Default file transfers save path:" />
@@ -200,6 +297,12 @@
 			<item type="checkbox" property="ShowStatusChangesEvents" default="false">
 				<label value="Show status changes" />
 			</item>
+			<item type="checkbox" property="ShowEndConversations" default="true">
+				<label value="Show when participant ends conversation" />
+			</item>
+			<item type="checkbox" property="ShowJoinsLeaves" default="true">
+				<label value="Show joins and leaves in MUCs" />
+			</item>
 		</tab>
 	</page>
 	<page>
@@ -218,7 +321,7 @@
 			<item type="lineedit" property="DefaultStatus4" translatable="true" default="Please leave me alone now">
 				<label value="DND:" />
 			</item>
-			<item type="lineedit" property="DefaultStatus3" translatable="true" default="Extended away is okay">
+			<item type="lineedit" property="DefaultStatus3" translatable="true" default="Not available is okay">
 				<label value="XA:" />
 			</item>
 			<item type="lineedit" property="DefaultStatus0" translatable="true" default="I turned off my machine to get some life">

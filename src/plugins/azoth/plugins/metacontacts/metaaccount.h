@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAACCOUNT_H
 #define PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAACCOUNT_H
 #include <QObject>
-#include <interfaces/iaccount.h>
+#include <interfaces/azoth/iaccount.h>
 
 namespace LeechCraft
 {
@@ -34,11 +34,11 @@ namespace Metacontacts
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount);
-		
+
 		MetaProtocol *Parent_;
 	public:
 		MetaAccount (MetaProtocol*);
-		
+
 		QObject* GetObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
@@ -52,7 +52,6 @@ namespace Metacontacts
 		void OpenConfigurationDialog ();
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
-		void Synchronize ();
 		void Authorize (QObject*);
 		void DenyAuth (QObject*);
 		void RequestAuth (const QString&, const QString&,
@@ -62,6 +61,7 @@ namespace Metacontacts
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
+		void accountRenamed (const QString&);
 		void authorizationRequested (QObject*, const QString&);
 		void itemSubscribed (QObject*, const QString&);
 		void itemUnsubscribed (QObject*, const QString&);

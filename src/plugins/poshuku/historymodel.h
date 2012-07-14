@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,6 @@ namespace Poshuku
 
 		QTimer *GarbageTimer_;
 		Util::TreeItem *RootItem_;
-		QAction *FolderIconProxy_;
 		history_items_t Items_;
 	public:
 		enum Columns
@@ -75,7 +74,7 @@ namespace Poshuku
 	public slots:
 		void addItem (QString title, QString url,
 				QDateTime datetime, QObject *browserwidget = 0);
-		QList<QMap<QString, QVariant> > getItemsMap () const;
+		QList<QMap<QString, QVariant>> getItemsMap () const;
 	private:
 		void Add (const HistoryItem&);
 	private slots:

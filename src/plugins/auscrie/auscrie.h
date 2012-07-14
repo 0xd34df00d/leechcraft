@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,50 +19,47 @@
 #ifndef PLUGINS_AUSCRIE_AUSCRIE_H
 #define PLUGINS_AUSCRIE_AUSCRIE_H
 #include <QObject>
-#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Auscrie
+{
+	class ShooterDialog;
+
+	class Plugin : public QObject
+					, public IInfo
+					, public IActionsExporter
 	{
-		namespace Auscrie
-		{
-			class ShooterDialog;
+		Q_OBJECT
+		Q_INTERFACES (IInfo IActionsExporter)
 
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IActionsExporter
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IActionsExporter)
+		ICoreProxy_ptr Proxy_;
+		QAction *ShotAction_;
+		ShooterDialog *Dialog_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-				std::auto_ptr<QTranslator> Translator_;
-				ICoreProxy_ptr Proxy_;
-				QAction *ShotAction_;
-				ShooterDialog *Dialog_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+	private slots:
+		void makeScreenshot ();
+		void shoot ();
+	private:
+		QPixmap GetPixmap () const;
+		void Post (const QByteArray&);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 
-				QList<QAction*> GetActions (ActionsEmbedPlace) const;
-			private slots:
-				void makeScreenshot ();
-				void shoot ();
-			private:
-				void Post (const QByteArray&);
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
-};
+}
+}
 
 #endif
-

@@ -1,52 +1,13 @@
-LeechCraft is a free open source cross-platform modular internet-client.
-LeechCraft allows one to browse the web, read RSS/Atom feeds, download files
-via BitTorrent, FTP, HTTP and ADC/NMDC, automatically download, play or
+LeechCraft is a free opensource cross-platform modular live environment.
+LeechCraft allows one to browse the web, chat in IM via XMPP, IRC, MSN
+and a bunch of other protocols, read RSS/Atom feeds, download files via
+BitTorrent, FTP, HTTP and ADC/NMDC, automatically download, play or
 stream podcasts (and other media files) and much more.
 
 Plugins are easily added and integrated with each other with no effort.
 
-Currently it includes following plugins:
-* Aggregator, RSS/Atom feed reader.
-* AnHero, crash handler.
-* Auscrie, the screen shooter.
-* Azoth, the modular IM client.
-  * Azoth Acetamide, support for IRC protocol.
-  * Azoth ChatHistory for storing chat history.
-  * Azoth HiLi for custom highlights in MUCs.
-  * Azoth Juick for enhanced support for juick.com microblogging service.
-  * Azoth NativeEmoticons, for support own/Psi+/Kopete emoticons packs.
-  * Azoth p100q for enhanced support for psto.net microblogging service.
-  * Azoth StandardStyles for support for basic chat window styles.
-  * Azoth Xoox, support for XMPP protocol.
-* BitTorrent, the BitTorrent client.
-* CSTP, simple HTTP implementation.
-* DBusManager, D-Bus for the LeechCraft.
-* DeadLyrics, LyricWiki.org API.
-* EiskaltDC++, the Direct Connect and Advanced Direct Connect client.
-* GMail Notifier, which notifies about new mail on GMail inboxes.
-* HistoryHolder, which keeps track of the downloads history.
-* Kinotify, which provides fancy kinetic notifications.
-* LackMan, the LeechCraft Package Manager.
-* LCFTP, FTP implementation and two-panel client.
-* LMP, simple media player with streaming support.
-* NetworkMonitor, which monitors for HTTP requests.
-* New Life, settings importer from other applications.
-* Popishu, the text editor with basic syntax highlighting and such.
-* Poshuku, the web browser.
-  * Poshuku CleanWeb, AdBlock+-compatible ad blocker.
-  * Poshuku FileScheme, support for the file:// browsing.
-  * Poshuku FUA, which allows one to set fake user agents per domain.
-  * Poshuku WYFV, which allows one to play flash video on some sites without
-    Flash installed.
-* Qrosp, scripting support for LeechCraft via Qross library.
-* SecMan, password & other sensitive info manager.
-* SeekThru, client for OpenSearch-aware web sites.
-* Summary, a plugin which shows all the downloads, tasks, events and
-  statuses and allows one to perform searches.
-* Syncer, for synchronizing data and state between different machines
-  running LeechCraft.
-* Tab++, for better tabs management.
-* vGrabber, vkontakte.ru audio/video player/downloader.
+A more or less up-to-date list of plugins is available here:
+http://leechcraft.org/plugins
 
 == Getting LeechCraft ==
 Getting precompiled LeechCraft for various OS is documented here:

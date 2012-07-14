@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Lastfmscrobble" />
+		<groupbox>
+			<label value="Last.FM" />
+			<item type="lineedit" property="lastfm.login">
+				<label value="Login:" />
+			</item>
+		</groupbox>
+		<groupbox>
+			<label value="Behavior" />
+			<item type="lineedit" property="Language">
+				<label value="Language to fetch info in:" />
+				<tooltip>The two-letter ISO code of the language (like "en" or "ru"), or empty to use system default language.</tooltip>
+			</item>
+		</groupbox>
+	</page>
+</settings>

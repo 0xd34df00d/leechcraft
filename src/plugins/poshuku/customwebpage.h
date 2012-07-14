@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_CUSTOMWEBPAGE_H
 #define PLUGINS_POSHUKU_PLUGINS_POSHUKU_CUSTOMWEBPAGE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <qwebpage.h>
 #include <QUrl>
 #include <QNetworkRequest>
@@ -41,13 +41,13 @@ namespace Poshuku
 		Qt::KeyboardModifiers Modifiers_;
 
 		QUrl LoadingURL_;
-		boost::shared_ptr<JSProxy> JSProxy_;
-		boost::shared_ptr<ExternalProxy> ExternalProxy_;
+		std::shared_ptr<JSProxy> JSProxy_;
+		std::shared_ptr<ExternalProxy> ExternalProxy_;
 		typedef QMap<QWebFrame*, QWebHistoryItem*> Frame2History_t;
 		Frame2History_t Frame2History_;
 		PageFormsData_t FilledState_;
 
-		QMap<ErrorDomain, QMap<int, QStringList> > Error2Suggestions_;
+		QMap<ErrorDomain, QMap<int, QStringList>> Error2Suggestions_;
 	public:
 		CustomWebPage (QObject* = 0);
 		virtual ~CustomWebPage ();
@@ -57,6 +57,10 @@ namespace Poshuku
 		bool supportsExtension (Extension) const;
 		bool extension (Extension, const ExtensionOption*, ExtensionReturn*);
 	private slots:
+#if QT_VERSION >= 0x040800
+		void handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature);
+#endif
+
 		void handleContentsChanged ();
 		void handleDatabaseQuotaExceeded (QWebFrame*, QString);
 		void handleDownloadRequested (const QNetworkRequest&);
@@ -84,6 +88,7 @@ namespace Poshuku
 		virtual bool javaScriptPrompt (QWebFrame*, const QString&, const QString&, QString*);
 		virtual QString userAgentForUrl (const QUrl&) const;
 	private:
+		void FillErrorSuggestions ();
 		QString MakeErrorReplyContents (int, const QUrl&,
 				const QString&, ErrorDomain = WebKit) const;
 		QWebFrame* FindFrame (const QUrl&);

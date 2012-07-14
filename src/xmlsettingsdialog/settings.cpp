@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,9 @@ using namespace LeechCraft;
 
 Settings::Settings ()
 {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 	ConfigDir_ = QCoreApplication::applicationDirPath () + "/leechcraft/";
-#elif defined (Q_WS_MAC)
+#elif defined (Q_OS_MAC)
 	ConfigDir_ = QCoreApplication::applicationDirPath () + "/../Resources/config";
 #else
 	ConfigDir_ = "/etc/leechcraft/";

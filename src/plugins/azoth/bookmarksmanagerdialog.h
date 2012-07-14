@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,28 +31,34 @@ namespace Azoth
 {
 	class IMUCJoinWidget;
 	class IMUCBookmarkEditorWidget;
+	class IAccount;
 
 	class BookmarksManagerDialog : public QDialog
 	{
 		Q_OBJECT
-		
+
 		Ui::BookmarksManagerDialog Ui_;
 		QMap<QByteArray, IMUCJoinWidget*> Proto2Joiner_;
 		QStandardItemModel *BMModel_;
 		IMUCBookmarkEditorWidget *CurrentEditor_;
 	public:
 		BookmarksManagerDialog (QWidget* = 0);
-		
+
+		void FocusOn (IAccount*);
 		void SuggestSaving (QObject*);
 	private:
 		void Save ();
+		bool CheckSave (const QModelIndex&);
 		QStandardItem* GetSelectedItem () const;
 	private slots:
 		void on_AccountBox__currentIndexChanged (int);
-		void handleCurrentBMChanged (const QModelIndex&);
+		void handleBookmarksChanged ();
+		void handleCurrentBMChanged (const QModelIndex&, const QModelIndex&);
 		void on_RemoveButton__released ();
 		void on_AddButton__released ();
 		void on_ApplyButton__released ();
+		void on_MoveUp__released ();
+		void on_MoveDown__released ();
 	};
 }
 }

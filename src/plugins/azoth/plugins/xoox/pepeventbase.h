@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,13 +32,17 @@ namespace Xoox
 	class PEPEventBase
 	{
 	public:
+		virtual ~PEPEventBase ();
+
 		virtual QXmppElement ToXML () const = 0;
 		virtual void Parse (const QDomElement&) = 0;
 		virtual QString Node () const = 0;
-		
+
 		virtual PEPEventBase* Clone () const = 0;
+
+		virtual QString GetEventID () const;
 	};
-	
+
 	template<typename T>
 	PEPEventBase* StandardCreator ()
 	{

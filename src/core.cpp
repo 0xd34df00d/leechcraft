@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include <limits>
 #include <stdexcept>
-#include <list>
-#include <functional>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+#include <algorithm>
+#include <iostream>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QtDebug>
@@ -30,13 +27,11 @@
 #include <QApplication>
 #include <QAction>
 #include <QToolBar>
-#include <QKeyEvent>
 #include <QDir>
-#include <QTextCodec>
 #include <QDesktopServices>
-#include <QNetworkReply>
 #include <QAbstractNetworkCache>
-#include <QClipboard>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 #include <util/util.h>
 #include <util/customcookiejar.h>
 #include <util/defaulthookproxy.h>
@@ -48,7 +43,6 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
-#include <interfaces/iwindow.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/isummaryrepresentation.h>
 #include <interfaces/structures.h>
@@ -61,30 +55,30 @@
 #include "sqlstoragebackend.h"
 #include "handlerchoicedialog.h"
 #include "tagsmanager.h"
-#include "fancypopupmanager.h"
 #include "application.h"
 #include "newtabmenumanager.h"
 #include "networkaccessmanager.h"
 #include "tabmanager.h"
-#include "directorywatcher.h"
-#include "clipboardwatcher.h"
 #include "localsockethandler.h"
 #include "storagebackend.h"
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
+#include "dockmanager.h"
 
 using namespace LeechCraft::Util;
 
 namespace LeechCraft
 {
 	Core::Core ()
-	: NetworkAccessManager_ (new NetworkAccessManager)
+	: PluginManager_ (0)
+	, ReallyMainWindow_ (0)
+	, DM_ (0)
+	, NetworkAccessManager_ (new NetworkAccessManager)
 	, StorageBackend_ (new SQLStorageBackend)
-	, DirectoryWatcher_ (new DirectoryWatcher)
-	, ClipboardWatcher_ (new ClipboardWatcher)
 	, LocalSocketHandler_ (new LocalSocketHandler)
 	, NewTabMenuManager_ (new NewTabMenuManager)
 	, CoreInstanceObject_ (new CoreInstanceObject)
+	, IsShuttingDown_ (false)
 	{
 		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (NetworkAccessManager_.get ());
 
@@ -102,22 +96,13 @@ namespace LeechCraft
 				this,
 				SIGNAL (error (const QString&)));
 
-		connect (DirectoryWatcher_.get (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SLOT (handleGotEntity (LeechCraft::Entity)));
-		connect (ClipboardWatcher_.get (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SLOT (handleGotEntity (LeechCraft::Entity)));
-
 		StorageBackend_->Prepare ();
 
 		QStringList paths;
-		boost::program_options::variables_map map = qobject_cast<Application*> (qApp)->GetVarMap ();
+		const auto& map = qobject_cast<Application*> (qApp)->GetVarMap ();
 		if (map.count ("plugin"))
 		{
-			const std::vector<std::string>& plugins = map ["plugin"].as<std::vector<std::string> > ();
+			const std::vector<std::string>& plugins = map ["plugin"].as<std::vector<std::string>> ();
 			Q_FOREACH (const std::string& plugin, plugins)
 				paths << QDir (QString::fromUtf8 (plugin.c_str ())).absolutePath ();
 		}
@@ -148,10 +133,9 @@ namespace LeechCraft
 
 	void Core::Release ()
 	{
+		IsShuttingDown_ = true;
 		LocalSocketHandler_.reset ();
 		XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
-		ClipboardWatcher_.reset ();
-		DirectoryWatcher_.reset ();
 
 		PluginManager_->Release ();
 		delete PluginManager_;
@@ -163,6 +147,11 @@ namespace LeechCraft
 		StorageBackend_.reset ();
 	}
 
+	bool Core::IsShuttingDown () const
+	{
+		return IsShuttingDown_;
+	}
+
 	void Core::SetReallyMainWindow (MainWindow *win)
 	{
 		ReallyMainWindow_ = win;
@@ -170,11 +159,18 @@ namespace LeechCraft
 		ReallyMainWindow_->installEventFilter (this);
 
 		LocalSocketHandler_->SetMainWindow (win);
+
+		DM_ = new DockManager (win, this);
 	}
 
 	MainWindow* Core::GetReallyMainWindow ()
 	{
 		return ReallyMainWindow_;
+	}
+
+	DockManager* Core::GetDockManager () const
+	{
+		return DM_;
 	}
 
 	IShortcutProxy* Core::GetShortcutProxy () const
@@ -192,14 +188,14 @@ namespace LeechCraft
 		return PluginManager_->GetAllCastableRoots<IHaveShortcuts*> ();
 	}
 
-	QList<QList<QAction*> > Core::GetActions2Embed () const
+	QList<QList<QAction*>> Core::GetActions2Embed () const
 	{
 		const QList<IActionsExporter*>& plugins =
 				PluginManager_->GetAllCastableTo<IActionsExporter*> ();
-		QList<QList<QAction*> > actions;
+		QList<QList<QAction*>> actions;
 		Q_FOREACH (const IActionsExporter *plugin, plugins)
 		{
-			const QList<QAction*>& list = plugin->GetActions (AEPCommonContextMenu);
+			const QList<QAction*>& list = plugin->GetActions (ActionsEmbedPlace::CommonContextMenu);
 			if (!list.size ())
 				continue;
 			actions << list;
@@ -253,6 +249,14 @@ namespace LeechCraft
 
 	void Core::DelayedInit ()
 	{
+		const auto& map = qobject_cast<Application*> (qApp)->GetVarMap ();
+		if (map.count ("list-plugins"))
+		{
+			Q_FOREACH (QPluginLoader_ptr loader, PluginManager_->GetAllAvailable ())
+				std::cout << "Found plugin: " << loader->fileName ().toUtf8 ().constData () << std::endl;
+			std::exit (0);
+		}
+
 		connect (this,
 				SIGNAL (error (QString)),
 				ReallyMainWindow_,
@@ -261,7 +265,12 @@ namespace LeechCraft
 		TabManager_.reset (new TabManager (ReallyMainWindow_->GetTabWidget (),
 					ReallyMainWindow_->GetTabWidget ()));
 
-		PluginManager_->Init ();
+		connect (TabManager_.get (),
+				SIGNAL (currentTabChanged (QWidget*)),
+				DM_,
+				SLOT (handleTabChanged (QWidget*)));
+
+		PluginManager_->Init (map.count ("safe-mode"));
 
 		NewTabMenuManager_->SetToolbarActions (GetActions2Embed ());
 
@@ -375,10 +384,10 @@ namespace LeechCraft
 			{
 				QDragEnterEvent *event = static_cast<QDragEnterEvent*> (e);
 
-				Q_FOREACH (const QString& format, event->mimeData ()->formats ())
+				auto mimeData = event->mimeData ();
+				Q_FOREACH (const QString& format, mimeData->formats ())
 				{
-					const Entity& e = Util::MakeEntity (event->
-								mimeData ()->data (format),
+					const Entity& e = Util::MakeEntity (mimeData->data (format),
 							QString (),
 							FromUserInitiated,
 							format);
@@ -396,10 +405,10 @@ namespace LeechCraft
 			{
 				QDropEvent *event = static_cast<QDropEvent*> (e);
 
-				Q_FOREACH (const QString& format, event->mimeData ()->formats ())
+				auto mimeData = event->mimeData ();
+				Q_FOREACH (const QString& format, mimeData->formats ())
 				{
-					const Entity& e = Util::MakeEntity (event->
-								mimeData ()->data (format),
+					const Entity& e = Util::MakeEntity (mimeData->data (format),
 							QString (),
 							FromUserInitiated,
 							format);
@@ -519,12 +528,7 @@ namespace LeechCraft
 				const QObjectList& plugins = Core::Instance ().GetPluginManager ()->
 					GetAllCastableRoots<IDownload*> ();
 				*pr = *std::find_if (plugins.begin (), plugins.end (),
-						boost::bind (std::equal_to<IDownload*> (),
-							sd,
-							boost::bind<IDownload*> (
-								static_cast<IDownload* (*) (const QObject*)> (qobject_cast<IDownload*>),
-								_1
-								)));
+						[sd] (QObject *d) { return qobject_cast<IDownload*> (d) == sd; });
 			}
 
 			return true;
@@ -627,6 +631,22 @@ namespace LeechCraft
 		return result;
 	}
 
+	namespace
+	{
+		bool HandleNoHandlers (const Entity& p)
+		{
+			if (p.Entity_.toUrl ().isValid () &&
+					(p.Parameters_ & FromUserInitiated) &&
+					!(p.Parameters_ & OnlyDownload))
+			{
+				QDesktopServices::openUrl (p.Entity_.toUrl ());
+				return true;
+			}
+			else
+				return false;
+		}
+	}
+
 	bool Core::handleGotEntity (Entity p, int *id, QObject **pr)
 	{
 		const QString& string = Util::GetUserText (p);
@@ -647,7 +667,7 @@ namespace LeechCraft
 					dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IEntityHandler*> (plugin));
 
 		if (!(numHandlers + numDownloaders))
-			return false;
+			return HandleNoHandlers (p);
 
 		const bool bcastCandidate = !id && !pr && numHandlers;
 
@@ -736,17 +756,13 @@ namespace LeechCraft
 						property ("DontAskWhenSingle").toBool ())) &&
 				dia->GetFirstEntityHandler ())
 			return DoHandle (dia->GetFirstEntityHandler (), p);
-		else if (p.Mime_ == "x-leechcraft/notification")
-		{
-			HandleNotify (p);
-			return true;
-		}
 		else
 		{
-			emit log (tr ("Could not handle download entity %1.")
-					.arg (string));
+			qWarning () << Q_FUNC_INFO
+					<< "Could not handle download entity %1.";
 			return false;
 		}
+
 		return true;
 	}
 
@@ -780,54 +796,6 @@ namespace LeechCraft
 			return;
 
 		ReallyMainWindow_->statusBar ()->showMessage (origMessage, 30000);
-	}
-
-	void Core::HandleNotify (const Entity& entity)
-	{
-		const bool show = XmlSettingsManager::Instance ()->
-			property ("ShowFinishedDownloadMessages").toBool ();
-
-		QString pname;
-		IInfo *ii = qobject_cast<IInfo*> (sender ());
-		if (ii)
-		{
-			try
-			{
-				pname = ii->GetName ();
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< e.what ()
-					<< sender ();
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< sender ();
-			}
-		}
-
-		const QString& nheader = entity.Entity_.toString ();
-		const QString& ntext = entity.Additional_ ["Text"].toString ();
-		const int priority = entity.Additional_ ["Priority"].toInt ();
-
-		QString header;
-
-		const QString str ("%1: %2");
-
-		if (pname.isEmpty () || nheader.isEmpty ())
-			header = pname + nheader;
-		else
-			header = str.arg (pname).arg (nheader);
-
-		const QString& text = str.arg (header).arg (ntext);
-
-		emit log (text);
-
-		if (priority != PLog_ &&
-				show)
-			ReallyMainWindow_->GetFancyPopupManager ()->ShowMessage (entity);
 	}
 
 	void Core::InitDynamicSignals (QObject *plugin)

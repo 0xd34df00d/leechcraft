@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/vrooby">
+	<file>resources/qml/DevicesTrayView.qml</file>
+	<file>resources/qml/ProgressBar.qml</file>
+  </qresource>
+</RCC>

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,55 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DEADLYRICS_DEADLYRICS_H
-#define PLUGINS_DEADLYRICS_DEADLYRICS_H
+#pragma once
+
 #include <QObject>
 #include <QStringList>
 #include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/media/ilyricsfinder.h>
+#include "searcher.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DeadLyrics
+{
+	class DeadLyRicS : public QObject
+						, public IInfo
+						, public IHaveSettings
+						, public Media::ILyricsFinder
 	{
-		namespace DeadLyrics
-		{
-			class DeadLyRicS : public QObject
-							 , public IInfo
-							 , public IFinder
-							 , public IHaveSettings
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IFinder IHaveSettings)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveSettings Media::ILyricsFinder)
 
-				std::auto_ptr<QTranslator> Translator_;
-				boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		ICoreProxy_ptr Proxy_;
+		Searchers_t Searchers_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-				void SetProvider (QObject*, const QString&);
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-				QStringList GetCategories () const;
-				QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
-
-				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-			signals:
-				void categoriesChanged (const QStringList&, const QStringList&);
-			};
-		};
+		void RequestLyrics (const Media::LyricsQuery&, Media::QueryOptions);
+	signals:
+		void gotLyrics (const Media::LyricsQuery&, const QStringList&);
 	};
-};
-
-#endif
-
+}
+}

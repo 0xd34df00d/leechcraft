@@ -20,7 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCMESSAGE_H
 
 #include <QObject>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/imessage.h>
 
 namespace LeechCraft
 {
@@ -50,6 +50,8 @@ namespace Acetamide
 		QString NickName_;
 		Message Message_;
 		ClientConnection *Connection_;
+
+		QObject *OtherPart_;
 	public:
 		IrcMessage (IMessage::MessageType type,
 				IMessage::Direction direction,
@@ -61,11 +63,13 @@ namespace Acetamide
 				ClientConnection *conn);
 		QObject* GetObject ();
 		void Send ();
+		void Store ();
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
 		MessageSubType GetMessageSubType () const;
 		void SetMessageSubType (IMessage::MessageSubType);
 		QObject* OtherPart () const;
+		void SetOtherPart (QObject *entry);
 		QString GetID () const;
 		QString GetOtherVariant () const;
 		void SetOtherVariant (const QString&);

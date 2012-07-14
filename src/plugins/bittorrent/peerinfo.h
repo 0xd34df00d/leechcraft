@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #ifndef PLUGINS_BITTORRENT_PEERINFO_H
 #define PLUGINS_BITTORRENT_PEERINFO_H
 #include <vector>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QTime>
 #include <libtorrent/peer_info.hpp>
 #include <libtorrent/bitfield.hpp>
@@ -35,7 +35,7 @@ namespace LeechCraft
 				QString IP_;
 				QString Client_;
 				int RemoteHas_;
-				boost::shared_ptr<libtorrent::peer_info> PI_;
+				std::shared_ptr<libtorrent::peer_info> PI_;
 			};
 		};
 	};

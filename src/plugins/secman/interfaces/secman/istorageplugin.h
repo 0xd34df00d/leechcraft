@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ namespace LeechCraft
 						StorageType st = STInsecure,
 						bool overwrite = false) = 0;
 				virtual QVariantList Load (const QByteArray& key, StorageType st = STInsecure) = 0;
-				virtual void Save (const QList<QPair<QByteArray, QVariantList> >& keyValues,
+				virtual void Save (const QList<QPair<QByteArray, QVariantList>>& keyValues,
 						StorageType st = STInsecure,
 						bool overwrite = false) = 0;
 				virtual QList<QVariantList> Load (const QList<QByteArray>& keys, StorageType st = STInsecure) = 0;

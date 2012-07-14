@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,9 @@
 
 #include "customwebview.h"
 #include <cmath>
+#include <limits>
 #include <qwebframe.h>
-#include <QMouseEvent>
+#include <QGraphicsSceneMouseEvent>
 #include <QMenu>
 #include <QApplication>
 #include <QBuffer>
@@ -28,6 +29,7 @@
 #include <QWebElement>
 #include <QTextCodec>
 #include <QWindowsStyle>
+#include <QFileDialog>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
@@ -42,8 +44,8 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	CustomWebView::CustomWebView (QWidget *parent)
-	: QWebView (parent)
+	CustomWebView::CustomWebView (QGraphicsItem *parent)
+	: QGraphicsWebView (parent)
 	, ScrollTimer_ (new QTimer (this))
 	, ScrollDelta_ (0)
 	, AccumulatedScrollShift_ (0)
@@ -75,7 +77,6 @@ namespace Poshuku
 				SIGNAL (timeout ()),
 				this,
 				SLOT (handleAutoscroll ()));
-		ScrollTimer_->start (30);
 
 		CustomWebPage *page = new CustomWebPage (this);
 		setPage (page);
@@ -179,7 +180,7 @@ namespace Poshuku
 			QNetworkAccessManager::Operation op, const QByteArray& ba)
 	{
 		emit titleChanged (tr ("Loading..."));
-		QWebView::load (req, op, ba);
+		QGraphicsWebView::load (req, op, ba);
 	}
 
 
@@ -205,14 +206,24 @@ namespace Poshuku
 		return string;
 	}
 
-	void CustomWebView::mousePressEvent (QMouseEvent *e)
+	void CustomWebView::mousePressEvent (QGraphicsSceneMouseEvent *e)
 	{
 		qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());
 		qobject_cast<CustomWebPage*> (page ())->SetModifiers (e->modifiers ());
-		QWebView::mousePressEvent (e);
+
+		const bool mBack = e->button () == Qt::XButton1;
+		const bool mForward = e->button () == Qt::XButton2;
+		if (mBack || mForward)
+		{
+			pageAction (mBack ? QWebPage::Back : QWebPage::Forward)->trigger ();
+			e->accept ();
+			return;
+		}
+
+		QGraphicsWebView::mousePressEvent (e);
 	}
 
-	void CustomWebView::wheelEvent (QWheelEvent *e)
+	void CustomWebView::wheelEvent (QGraphicsSceneWheelEvent *e)
 	{
 		if (e->modifiers () & Qt::ControlModifier)
 		{
@@ -222,7 +233,7 @@ namespace Poshuku
 			e->accept ();
 		}
 		else
-			QWebView::wheelEvent (e);
+			QGraphicsWebView::wheelEvent (e);
 	}
 
 	namespace
@@ -230,11 +241,11 @@ namespace Poshuku
 		const QRegExp UrlInText ("://|www\\.|\\w\\.\\w");
 	}
 
-	void CustomWebView::contextMenuEvent (QContextMenuEvent *e)
+	void CustomWebView::contextMenuEvent (QGraphicsSceneContextMenuEvent *e)
 	{
-		QPointer<QMenu> menu (new QMenu (this));
+		QPointer<QMenu> menu (new QMenu ());
 		QWebHitTestResult r = page ()->
-			mainFrame ()->hitTestContent (e->pos ());
+			mainFrame ()->hitTestContent (e->pos ().toPoint ());
 
 		IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 
@@ -328,6 +339,13 @@ namespace Poshuku
 			menu->addSeparator ();
 			menu->addAction (tr ("Save image..."),
 					this, SLOT (saveImage ()));
+
+			QAction *spx = menu->addAction (tr ("Save pixmap..."),
+					this, SLOT (savePixmap ()));
+			spx->setToolTip (tr ("Saves the rendered pixmap without redownloading."));
+			spx->setProperty ("Poshuku/OrigPX", r.pixmap ());
+			spx->setProperty ("Poshuku/OrigURL", r.imageUrl ());
+
 			menu->addAction (tr ("Copy image"),
 					this, SLOT (copyImage ()));
 			menu->addAction (tr ("Copy image location"),
@@ -378,17 +396,16 @@ namespace Poshuku
 		menu->addAction (Browser_->NotifyWhenFinished_);
 		menu->addSeparator ();
 		menu->addAction (Browser_->ChangeEncoding_->menuAction ());
-		menu->addSeparator ();
-		menu->addAction (Browser_->RecentlyClosedAction_);
 
 		emit hookWebViewContextMenu (proxy, this, e, r,
 				menu, WVSAfterFinish);
 
 		if (!menu->isEmpty ())
-			menu->exec (mapToGlobal (e->pos ()));
+			menu->exec (Browser_->GetGraphicsView ()->viewport ()->
+					mapToGlobal (e->pos ().toPoint ()));
 		else
-			QWebView::contextMenuEvent (e);
-		
+			QGraphicsWebView::contextMenuEvent (e);
+
 		if (menu)
 			delete menu;
 	}
@@ -398,6 +415,8 @@ namespace Poshuku
 		bool handled = false;
 		if (event->matches (QKeySequence::Copy))
 		{
+			pageAction (QWebPage::Copy)->trigger ();
+			/* TODO
 			const QString& text = selectedText ();
 			if (!text.isEmpty ())
 			{
@@ -405,18 +424,26 @@ namespace Poshuku
 						QClipboard::Clipboard);
 				handled = true;
 			}
+			*/
 		}
 		else if (event->key () == Qt::Key_F6)
 			Browser_->focusLineEdit ();
 		else if (event->modifiers () == Qt::SHIFT &&
 				(event->key () == Qt::Key_PageUp || event->key () == Qt::Key_PageDown))
+		{
 			ScrollDelta_ += event->key () == Qt::Key_PageUp ? -0.1 : 0.1;
+			if (!ScrollTimer_->isActive ())
+				ScrollTimer_->start (30);
+		}
 		else if (event->modifiers () == Qt::SHIFT &&
 				event->key () == Qt::Key_Plus)
+		{
 			ScrollDelta_ = 0;
+			ScrollTimer_->stop ();
+		}
 
 		if (!handled)
-			QWebView::keyReleaseEvent (event);
+			QGraphicsWebView::keyReleaseEvent (event);
 	}
 
 	int CustomWebView::LevelForZoom (qreal zoom)
@@ -574,6 +601,61 @@ namespace Poshuku
 		pageAction (QWebPage::DownloadImageToDisk)->trigger ();
 	}
 
+	void CustomWebView::savePixmap ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not an action"
+					<< sender ();
+			return;
+		}
+
+		const QPixmap& px = action->property ("Poshuku/OrigPX").value<QPixmap> ();
+		if (px.isNull ())
+			return;
+
+		const QUrl& url = action->property ("Poshuku/OrigURL").value<QUrl> ();
+		const QString origName = url.scheme () == "data" ?
+				QString () :
+				QFileInfo (url.path ()).fileName ();
+
+		QString filter;
+		QString fname = QFileDialog::getSaveFileName (0,
+				tr ("Save pixmap"),
+				QDir::homePath () + '/' + origName,
+				tr ("PNG image (*.png);;JPG image (*.jpg);;All files (*.*)"),
+				&filter);
+
+		if (fname.isEmpty ())
+			return;
+
+		if (QFileInfo (fname).suffix ().isEmpty ())
+		{
+			if (filter.contains ("png"))
+				fname += ".png";
+			else if (filter.contains ("jpg"))
+				fname += ".jpg";
+		}
+
+		QFile file (fname);
+		if (!file.open (QIODevice::WriteOnly))
+		{
+			emit gotEntity (Util::MakeNotification ("Poshuku",
+						tr ("Unable to save the image. Unable to open file for writing: %1.")
+							.arg (file.errorString ()),
+						PCritical_));
+			return;
+		}
+
+		const QString& suf = QFileInfo (fname).suffix ();
+		const bool isLossless = suf.toLower () == "png";
+		px.save (&file,
+				suf.toUtf8 ().constData (),
+				isLossless ? 0 : 100);
+	}
+
 	void CustomWebView::copyImage ()
 	{
 		pageAction (QWebPage::CopyImageToClipboard)->trigger ();
@@ -593,7 +675,7 @@ namespace Poshuku
 		if (text.isEmpty ())
 			return;
 
-		SearchText *st = new SearchText (text, this);
+		SearchText *st = new SearchText (text, Browser_);
 		connect (st,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
@@ -604,6 +686,7 @@ namespace Poshuku
 
 	void CustomWebView::renderSettingsChanged ()
 	{
+#if QT_VERSION >= 0x040800
 		QPainter::RenderHints hints;
 		if (XmlSettingsManager::Instance ()->
 				property ("PrimitivesAntialiasing").toBool ())
@@ -619,11 +702,12 @@ namespace Poshuku
 			hints |= QPainter::HighQualityAntialiasing;
 
 		setRenderHints (hints);
+#endif
 	}
 
 	void CustomWebView::handleAutoscroll ()
 	{
-		if (!ScrollDelta_)
+		if (std::fabs (ScrollDelta_) < std::numeric_limits<decltype (ScrollDelta_)>::epsilon ())
 			return;
 
 		AccumulatedScrollShift_ += ScrollDelta_;

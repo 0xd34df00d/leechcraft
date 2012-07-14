@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,33 +33,33 @@ namespace Xoox
 		QString Name_;
 		QString Node_;
 	public:
-		AdHocCommand (const QString&, const QString&);
-		
+		AdHocCommand (const QString& name, const QString& node);
+
 		QString GetName () const;
 		void SetName (const QString&);
 
 		QString GetNode () const;
 		void SetNode (const QString&);
 	};
-	
+
 	class AdHocResult
 	{
 		QString Node_;
 		QString SessionID_;
-		
+
 		QXmppDataForm Form_;
-		
+
 		QStringList Actions_;
 	public:
 		QString GetNode () const;
 		void SetNode (const QString&);
-		
+
 		QString GetSessionID () const;
 		void SetSessionID (const QString&);
 
 		QXmppDataForm GetDataForm () const;
 		void SetDataForm (const QXmppDataForm&);
-		
+
 		QStringList GetActions () const;
 		void SetActions (const QStringList&);
 	};

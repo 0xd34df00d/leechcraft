@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,64 +17,60 @@
  **********************************************************************/
 
 #include "searchwidget.h"
-#include <util/categoryselector.h>
+#include <util/tags/categoryselector.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Summary
+{
+	SearchWidget::SearchWidget (QWidget *parent)
+	: QDockWidget (parent)
+	, CategorySelector_ (new Util::CategorySelector ())
 	{
-		namespace Summary
-		{
-			SearchWidget::SearchWidget (QWidget *parent)
-			: QDockWidget (parent)
-			, CategorySelector_ (new Util::CategorySelector ())
-			{
-				Ui_.setupUi (this);
+		Ui_.setupUi (this);
 
-				Ui_.SearchStuff_->addWidget (CategorySelector_);
-				CategorySelector_->SetCaption (tr ("Search categories"));
+		Ui_.SearchStuff_->addWidget (CategorySelector_);
+		CategorySelector_->SetCaption (tr ("Search categories"));
 
-				connect (CategorySelector_,
-						SIGNAL (selectionChanged (const QStringList&)),
-						this,
-						SIGNAL (paramsChanged ()));
+		connect (CategorySelector_,
+				SIGNAL (tagsSelectionChanged (QStringList)),
+				this,
+				SIGNAL (paramsChanged ()));
 
-				connect (Ui_.Or_,
-						SIGNAL (toggled (bool)),
-						this,
-						SIGNAL (paramsChanged ()));
-			}
+		connect (Ui_.Or_,
+				SIGNAL (toggled (bool)),
+				this,
+				SIGNAL (paramsChanged ()));
+	}
 
-			QLineEdit* SearchWidget::GetFilterLine () const
-			{
-				return Ui_.FilterLine_;
-			}
+	QLineEdit* SearchWidget::GetFilterLine () const
+	{
+		return Ui_.FilterLine_;
+	}
 
-			QComboBox* SearchWidget::GetFilterType () const
-			{
-				return Ui_.Type_;
-			}
+	QComboBox* SearchWidget::GetFilterType () const
+	{
+		return Ui_.Type_;
+	}
 
-			bool SearchWidget::IsOr () const
-			{
-				return Ui_.Or_->isChecked ();
-			}
+	bool SearchWidget::IsOr () const
+	{
+		return Ui_.Or_->isChecked ();
+	}
 
-			QStringList SearchWidget::GetCategories () const
-			{
-				return CategorySelector_->GetSelections ();
-			}
+	QStringList SearchWidget::GetCategories () const
+	{
+		return CategorySelector_->GetSelections ();
+	}
 
-			void SearchWidget::SetPossibleCategories (const QStringList& possible)
-			{
-				CategorySelector_->SetPossibleSelections (possible);
-			}
+	void SearchWidget::SetPossibleCategories (const QStringList& possible)
+	{
+		CategorySelector_->setPossibleSelections (possible);
+	}
 
-			void SearchWidget::SelectCategories (const QStringList& subset)
-			{
-				CategorySelector_->SetSelections (subset);
-			}
-		};
-	};
-};
-
+	void SearchWidget::SelectCategories (const QStringList& subset)
+	{
+		CategorySelector_->SetSelections (subset);
+	}
+}
+}

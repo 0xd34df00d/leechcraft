@@ -51,6 +51,33 @@
       </widget>
      </item>
      <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="Paste_">
+       <property name="toolTip">
+        <string>Allows one to paste several add in AdBlock format.</string>
+       </property>
+       <property name="text">
+        <string>Paste...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="Load_">
+       <property name="toolTip">
+        <string>Loads filters from file, adding them to user filters.</string>
+       </property>
+       <property name="text">
+        <string>Load...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>

@@ -279,7 +279,9 @@ foreach (LANGUAGE ${LANGUAGES})
 endforeach()
 
 #Create moc files
-QT4_WRAP_CPP (M_SRCS ${MOC_HDRS})
+if (NOT LC_NO_MOC)
+    QT4_WRAP_CPP (M_SRCS ${MOC_HDRS})
+endif (NOT LC_NO_MOC)
 #Create .h files from ui files
 QT4_WRAP_UI (U_SRCS ${UI_FORMS})
 #Create translations

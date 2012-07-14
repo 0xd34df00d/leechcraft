@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_QROSP_WRAPPERS_WRAPPEROBJECT_H
 #define PLUGINS_QROSP_WRAPPERS_WRAPPEROBJECT_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <qross/core/action.h>
 #include <interfaces/iinfo.h>
@@ -50,7 +50,7 @@ namespace Qrosp
 		QMap<int, QMetaMethod> Index2MetaMethod_;
 		QMap<int, QByteArray> Index2ExportedSignatures_;
 
-		boost::shared_ptr<QTranslator> Translator_;
+		std::shared_ptr<QTranslator> Translator_;
 	public:
 		WrapperObject (const QString&, const QString&);
 		virtual ~WrapperObject ();
@@ -94,6 +94,7 @@ namespace Qrosp
 		void changeTabIcon (QWidget*, const QIcon&);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	private:
 		template<typename T>
 		struct Call

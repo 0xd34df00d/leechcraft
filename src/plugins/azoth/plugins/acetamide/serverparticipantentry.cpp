@@ -32,162 +32,56 @@ namespace Azoth
 namespace Acetamide
 {
 	ServerParticipantEntry::ServerParticipantEntry (const QString& nick,
-			const QString& server, IrcAccount *acc)
-	: EntryBase (acc)
-	, NickName_ (nick)
-	, ServerKey_ (server)
-	, PrivateChat_ (false)
-	, Account_ (acc)
+			IrcServerHandler *ish, IrcAccount *acc)
+	: IrcParticipantEntry (nick, acc)
+	, ISH_ (ish)
 	{
-		QAction *closeChat = new QAction (tr ("Quit chat"), this);
-		connect (closeChat,
-				SIGNAL (triggered (bool)),
-				this,
-				SLOT (closePrivateChat (bool)));
-		Actions_ << closeChat;
-	}
-
-	QObject* ServerParticipantEntry::GetParentAccount () const
-	{
-		return Account_;
+		ServerID_ = ish->GetServerID ();
 	}
 
 	QObject* ServerParticipantEntry::GetParentCLEntry () const
 	{
-		return Account_->GetClientConnection ()->
-				GetIrcServerHandler (ServerKey_)->GetCLEntry ();
-	}
-
-	ICLEntry::Features ServerParticipantEntry::GetEntryFeatures () const
-	{
-		return FSessionEntry;
-	}
-
-	ICLEntry::EntryType ServerParticipantEntry::GetEntryType () const
-	{
-		return ETPrivateChat;
-	}
-
-	QString ServerParticipantEntry::GetEntryName () const
-	{
-		return NickName_;
-	}
-
-	void ServerParticipantEntry::SetEntryName (const QString& nick)
-	{
-		NickName_ = nick;
-
-		Q_FOREACH (QObject *message, AllMessages_)
-		{
-			IrcMessage *msg = qobject_cast<IrcMessage*> (message);
-			if (!msg)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "is not an object of IrcMessage"
-						<< message;
-				continue;
-			}
-			msg->SetOtherVariant (nick);
-		}
+		return ISH_->GetCLEntry ();
 	}
 
 	QString ServerParticipantEntry::GetEntryID () const
 	{
 		return Account_->GetAccountName () + "/" +
-				ServerKey_ + "_" + NickName_;
+				ISH_->GetServerID () + "_" + Nick_;
 	}
 
 	QString ServerParticipantEntry::GetHumanReadableID () const
 	{
-		return NickName_ + "_" + ServerKey_;
+		return Nick_ + "_" + ISH_->GetServerID ();
 	}
 
 	QStringList ServerParticipantEntry::Groups () const
 	{
-		QStringList list;
-		QString server = ServerKey_.split (':').at (0);
-		Q_FOREACH (QString channel, Channels_)
-			list << channel + "@" + server;
-		return list;
+		return QStringList (tr ("Private chats"));
 	}
 
-	void ServerParticipantEntry::SetGroups (const QStringList& channel)
+	void ServerParticipantEntry::SetGroups (const QStringList&)
 	{
-		Channels_ = channel;
-		emit groupsChanged (Groups ());
 	}
 
-	QStringList ServerParticipantEntry::Variants () const
-	{
-		return QStringList (QString ());
-	}
-
-	QObject*
-			ServerParticipantEntry::CreateMessage (IMessage::MessageType,
-					const QString&, const QString& body)
+	QObject* ServerParticipantEntry::CreateMessage (IMessage::MessageType,
+			const QString&, const QString& body)
 	{
  		IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
 				IMessage::DOut,
-				ServerKey_,
-				NickName_,
+				ISH_->GetServerID (),
+				Nick_,
 				Account_->GetClientConnection ().get ());
 
 		message->SetBody (body);
 		message->SetDateTime (QDateTime::currentDateTime ());
 
-		PrivateChat_ = true;
-
-		AllMessages_ << message;
-
 		return message;
 	}
 
-	QStringList ServerParticipantEntry::GetChannels () const
+	void ServerParticipantEntry::SetMessageHistory (QObjectList messages)
 	{
-		return Channels_;
-	}
-
-	void ServerParticipantEntry::SetPrivateChat (bool value)
-	{
-		PrivateChat_ = value;
-	}
-
-	bool ServerParticipantEntry::IsPrivateChat () const
-	{
-		return PrivateChat_;
-	}
-
-	QList<ChannelRole> ServerParticipantEntry::GetRoles (const QString& channel) const
-	{
-		return Channel2Role_ [channel];
-	}
-
-	void ServerParticipantEntry::AddRole (const QString& channel, ChannelRole role)
-	{
-		if (Channel2Role_.contains (channel))
-		{
-			if (!Channel2Role_ [channel].contains (role))
-				Channel2Role_ [channel].append (role);
-		}
-		else
-			Channel2Role_ [channel] = QList<ChannelRole> () << role;
-	}
-
-	void ServerParticipantEntry::RemoveRole (const QString& channnel, ChannelRole role)
-	{
-		if (Channel2Role_.contains (channnel))
-			Channel2Role_ [channnel].removeOne (role);
-	}
-
-	void ServerParticipantEntry::closePrivateChat (bool)
-	{
-		if (PrivateChat_)
-		{
-			PrivateChat_ = false;
-			if (!Channels_.count ())
-				Account_->GetClientConnection ()->
-						ClosePrivateChat (ServerKey_, NickName_);
-		}
+		AllMessages_ << messages;
 	}
 
 };

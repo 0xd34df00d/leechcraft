@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,12 +34,12 @@ namespace Metacontacts
 	{
 		Core::Instance ().SetMetaAccount (this);
 	}
-	
+
 	QObject* MetaAccount::GetObject ()
 	{
 		return this;
 	}
-	
+
 	QObject* MetaAccount::GetParentProtocol () const
 	{
 		return Parent_;
@@ -68,12 +68,12 @@ namespace Metacontacts
 	void MetaAccount::RenameAccount (const QString&)
 	{
 	}
-	
+
 	QByteArray MetaAccount::GetAccountID () const
 	{
 		return "org.LeechCraft.Azoth.Accounts.MetaAccount";
 	}
-	
+
 	QList<QAction*> MetaAccount::GetActions () const
 	{
 		return QList<QAction*> ();
@@ -95,11 +95,7 @@ namespace Metacontacts
 	void MetaAccount::ChangeState (const EntryStatus&)
 	{
 	}
-	
-	void MetaAccount::Synchronize ()
-	{
-	}
-	
+
 	void MetaAccount::Authorize (QObject*)
 	{
 	}

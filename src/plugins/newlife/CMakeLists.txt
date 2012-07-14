@@ -29,42 +29,68 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	newlife.cpp
 	importwizard.cpp
-	akregatorimporter.cpp
-	akregatorimportpage.cpp
 	firstpage.cpp
-	lifereaimportpage.cpp
-	lifereaimporter.cpp
-	ktorrentimportpage.cpp
-	ktorrentimporter.cpp
-	firefoximporter/firefoximportpage.cpp
-	firefoximporter/firefoximporter.cpp
-	firefoximporter/firefoxprofileselectpage.cpp
+	abstractimporter.cpp
+	imhistimporterbase.cpp
+	common/imimporter.cpp
+	common/imimportpage.cpp
+	common/xmlimaccount.cpp
+	importers/akregator/akregatorimporter.cpp
+	importers/akregator/akregatorimportpage.cpp
+	importers/liferea/lifereaimportpage.cpp
+	importers/liferea/lifereaimporter.cpp
+	importers/kopete/kopeteimporter.cpp
+	importers/kopete/kopeteimportpage.cpp
+	importers/kopete/kopeteimportthread.cpp
+	importers/ktorrent/ktorrentimportpage.cpp
+	importers/ktorrent/ktorrentimporter.cpp
+	importers/firefox/firefoximportpage.cpp
+	importers/firefox/firefoximporter.cpp
+	importers/firefox/firefoxprofileselectpage.cpp
+	importers/psiplus/psiplusimporter.cpp
+	importers/psiplus/psiplusimportpage.cpp
+	importers/vacuum/vacuumimporter.cpp
+	importers/vacuum/vacuumimportpage.cpp
 	)
 SET (HEADERS
 	newlife.h
 	importwizard.h
-	akregatorimporter.h
-	akregatorimportpage.h
 	firstpage.h
-	lifereaimportpage.h
-	lifereaimporter.h
-	ktorrentimportpage.h
-	ktorrentimporter.h
 	abstractimporter.h
-	firefoximporter/firefoximportpage.h
-	firefoximporter/firefoximporter.h
-	firefoximporter/firefoxprofileselectpage.h
+	imhistimporterbase.h
+	common/imimporter.h
+	common/imimportpage.h
+	common/xmlimaccount.h
+	importers/akregator/akregatorimporter.h
+	importers/akregator/akregatorimportpage.h
+	importers/liferea/lifereaimportpage.h
+	importers/liferea/lifereaimporter.h
+	importers/kopete/kopeteimporter.h
+	importers/kopete/kopeteimportpage.h
+	importers/kopete/kopeteimportthread.h
+	importers/ktorrent/ktorrentimportpage.h
+	importers/ktorrent/ktorrentimporter.h
+	importers/firefox/firefoximportpage.h
+	importers/firefox/firefoximporter.h
+	importers/firefox/firefoxprofileselectpage.h
+	importers/psiplus/psiplusimporter.h
+	importers/psiplus/psiplusimportpage.h
+	importers/vacuum/vacuumimporter.h
+	importers/vacuum/vacuumimportpage.h
 	)
 SET (FORMS
 	importwizard.ui
 	feedssettingsimportpage.ui
 	firstpage.ui
-	firefoximporter/firefoxprofileselectpage.ui
+	common/imimportpage.ui
+	importers/firefox/firefoxprofileselectpage.ui
 	)
 SET (RESOURCES newliferesources.qrc)
 CreateTrVars ("newlife" "ar;be;de;en;fr;it;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 
-QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 

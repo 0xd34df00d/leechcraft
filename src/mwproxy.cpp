@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #include <QDockWidget>
 #include "core.h"
 #include "mainwindow.h"
+#include "dockmanager.h"
 
 namespace LeechCraft
 {
@@ -27,15 +28,67 @@ namespace LeechCraft
 	: QObject (parent)
 	{
 	}
-	
+
 	void MWProxy::AddDockWidget (Qt::DockWidgetArea area, QDockWidget *w)
 	{
-		Core::Instance ().GetReallyMainWindow ()->addDockWidget (area, w);
+		Core::Instance ().GetDockManager ()->AddDockWidget (w, area);
 		ToggleViewActionVisiblity (w, true);
 	}
-	
+
+	void MWProxy::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
+	{
+		Core::Instance ().GetDockManager ()->AssociateDockWidget (dock, tab);
+	}
+
 	void MWProxy::ToggleViewActionVisiblity (QDockWidget *w, bool visible)
 	{
 		Core::Instance ().GetReallyMainWindow ()->ToggleViewActionVisiblity (w, visible);
+	}
+
+	void MWProxy::SetViewActionShortcut (QDockWidget *w, const QKeySequence& seq)
+	{
+		w->toggleViewAction ()->setShortcut (seq);
+	}
+
+	void MWProxy::AddToolbar (QToolBar *bar, Qt::ToolBarArea area)
+	{
+		bar->setParent (Core::Instance ().GetReallyMainWindow ());
+		Core::Instance ().GetReallyMainWindow ()->addToolBar (area, bar);
+	}
+
+	void MWProxy::AddSideWidget (QWidget *w, WidgetArea area)
+	{
+		MainWindow *mw = Core::Instance ().GetReallyMainWindow ();
+
+		auto splitter = mw->GetMainSplitter ();
+
+		switch (area)
+		{
+		case WALeft:
+			splitter->insertWidget (0, w);
+			break;
+		case WARight:
+			splitter->addWidget (w);
+			break;
+		case WABottom:
+			qWarning () << Q_FUNC_INFO
+					<< "not implemented yet";
+			break;
+		}
+	}
+
+	void MWProxy::ToggleVisibility ()
+	{
+		Core::Instance ().GetReallyMainWindow ()->showHideMain ();
+	}
+
+	QMenu* MWProxy::GetMainMenu ()
+	{
+		return Core::Instance ().GetReallyMainWindow ()->GetMainMenu ();
+	}
+
+	void MWProxy::HideMainMenu ()
+	{
+		Core::Instance ().GetReallyMainWindow ()->HideMainMenu ();
 	}
 }

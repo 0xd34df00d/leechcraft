@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,25 +22,22 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Auscrie
+{
+	class RequestBuilder
 	{
-		namespace Auscrie
-		{
-			class RequestBuilder
-			{
-				QByteArray Result_;
-				QString Boundary_;
-			public:
-				RequestBuilder ();
+		QByteArray Result_;
+		QString Boundary_;
+	public:
+		RequestBuilder ();
 
-				void AddPair (const QString&, const QString&);
-				void AddFile (const QString&, const QString&, const QByteArray&);
+		void AddPair (const QString&, const QString&);
+		void AddFile (const QString&, const QString&, const QByteArray&);
 
-				QByteArray Build ();
-				QString GetBoundary () const;
-			};
-		};
+		QByteArray Build ();
+		QString GetBoundary () const;
 	};
-};
+}
+}
 
 #endif

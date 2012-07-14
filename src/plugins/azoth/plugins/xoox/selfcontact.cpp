@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,13 +32,18 @@ namespace Xoox
 	, FullJID_ (fullJid)
 	{
 		UpdateJID (fullJid);
+
+		connect (this,
+				SIGNAL (vcardUpdated ()),
+				this,
+				SLOT (handleSelfVCardUpdated ()));
 	}
-	
+
 	QObject* SelfContact::GetParentAccount () const
 	{
 		return Account_;
 	}
-	
+
 	ICLEntry::Features SelfContact::GetEntryFeatures () const
 	{
 		return FSupportsGrouping | FPermanentEntry;
@@ -64,12 +69,12 @@ namespace Xoox
 	{
 		return Account_->GetAccountID () + '_' + ".self";
 	}
-	
+
 	QString SelfContact::GetHumanReadableID () const
 	{
 		return Account_->GetJID ();
 	}
-	
+
 	QStringList SelfContact::Groups () const
 	{
 		return QStringList (tr ("Self contact"));
@@ -80,12 +85,12 @@ namespace Xoox
 		qWarning () << Q_FUNC_INFO
 				<< "can't set groups of self contact";
 	}
-	
+
 	QStringList SelfContact::Variants () const
 	{
 		return Prio2Status_.values ();
 	}
-	
+
 	EntryStatus SelfContact::GetStatus (const QString& resource) const
 	{
 		if (resource == Resource_)
@@ -93,7 +98,7 @@ namespace Xoox
 
 		return EntryBase::GetStatus (resource);
 	}
-	
+
 	QObject* SelfContact::CreateMessage (IMessage::MessageType type,
 			const QString& variant, const QString& text)
 	{
@@ -101,12 +106,12 @@ namespace Xoox
 		AllMessages_ << msg;
 		return msg;
 	}
-	
+
 	QList<QAction*> SelfContact::GetActions () const
 	{
 		return EntryBase::GetActions ();
 	}
-	
+
 	void SelfContact::UpdatePriority (const QString& resource, int prio)
 	{
 		Prio2Status_ [prio] = resource;
@@ -117,19 +122,25 @@ namespace Xoox
 	{
 		Prio2Status_.remove (Prio2Status_.key (resource));
 		CurrentStatus_.remove (resource);
-		emit availableVariantsChanged (Variants ());
+
+		EntryBase::SetStatus (EntryStatus (SOffline, QString ()), resource);
 	}
-	
+
 	QString SelfContact::GetJID () const
 	{
 		return BareJID_;
 	}
-	
+
 	void SelfContact::UpdateJID (const QString& fullJid)
 	{
 		ClientConnection::Split (fullJid, &BareJID_, &Resource_);
-		
+
 		emit availableVariantsChanged (Variants ());
+	}
+
+	void SelfContact::handleSelfVCardUpdated ()
+	{
+		Account_->UpdateOurPhotoHash (VCardPhotoHash_);
 	}
 }
 }

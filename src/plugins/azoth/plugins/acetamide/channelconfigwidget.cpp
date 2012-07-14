@@ -28,7 +28,7 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	ChannelConfigWidget::ChannelConfigWidget (ChannelCLEntry *clentry, QWidget *parent) 
+	ChannelConfigWidget::ChannelConfigWidget (ChannelCLEntry *clentry, QWidget *parent)
 	: QWidget (parent)
 	, ChannelEntry_ (clentry)
 	, IsWidgetRequest_ (false)
@@ -109,21 +109,21 @@ namespace Acetamide
 
 	void ChannelConfigWidget::on_BanSearch__textChanged (const QString& text)
 	{
-		BanFilterModel_->setFilterRegExp (QRegExp(text, Qt::CaseInsensitive,
+		BanFilterModel_->setFilterRegExp (QRegExp (text, Qt::CaseInsensitive,
 				QRegExp::FixedString));
 		BanFilterModel_->setFilterKeyColumn (1);
 	}
 
 	void ChannelConfigWidget::on_ExceptSearch__textChanged (const QString& text)
 	{
-		ExceptFilterModel_->setFilterRegExp (QRegExp(text, Qt::CaseInsensitive,
+		ExceptFilterModel_->setFilterRegExp (QRegExp (text, Qt::CaseInsensitive,
 				QRegExp::FixedString));
 		ExceptFilterModel_->setFilterKeyColumn (1);
 	}
 
 	void ChannelConfigWidget::on_InviteSearch__textChanged (const QString& text)
 	{
-		InviteFilterModel_->setFilterRegExp (QRegExp(text, Qt::CaseInsensitive,
+		InviteFilterModel_->setFilterRegExp (QRegExp (text, Qt::CaseInsensitive,
 				QRegExp::FixedString));
 		InviteFilterModel_->setFilterKeyColumn (1);
 	}
@@ -153,7 +153,7 @@ namespace Acetamide
 		ChannelEntry_->SetIsWidgetRequest (IsWidgetRequest_);
 	}
 
-	void ChannelConfigWidget::addBanListItem (const QString& mask, 
+	void ChannelConfigWidget::addBanListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		QStandardItem *itemMask = new QStandardItem (mask);
@@ -168,7 +168,7 @@ namespace Acetamide
 				<< itemDate);
 	}
 
-	void ChannelConfigWidget::addExceptListItem (const QString& mask, 
+	void ChannelConfigWidget::addExceptListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		QStandardItem *itemMask = new QStandardItem (mask);
@@ -183,7 +183,7 @@ namespace Acetamide
 				<< itemDate);
 	}
 
-	void ChannelConfigWidget::addInviteListItem (const QString& mask, 
+	void ChannelConfigWidget::addInviteListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		QStandardItem *itemMask = new QStandardItem (mask);
@@ -267,7 +267,7 @@ namespace Acetamide
 		ChannelEntry_->RemoveInviteListItem (Ui_.BanHostMask_->text ());
 	}
 
-	void ChannelConfigWidget::handleNewChannelModes(const ChannelModes& modes)
+	void ChannelConfigWidget::handleNewChannelModes (const ChannelModes& modes)
 	{
 		ChannelMode_ = modes;
 		Ui_.OpTopic_->setChecked (ChannelMode_.OnlyOpChangeTopicMode_);

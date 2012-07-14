@@ -1,231 +1,378 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="es">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
 <context>
-    <name>LeechCraft::Plugins::LMP::Core</name>
+    <name>LeechCraft::LMP::ArtistsInfoDisplay</name>
     <message>
-        <location filename="core.cpp" line="38"/>
-        <source>Show LMP</source>
-        <translation>Mostrar LMP</translation>
+        <location filename="artistsinfodisplay.cpp" line="87"/>
+        <source>Similarity: %1%</source>
+        <translation>Similaridad: %1%</translation>
+    </message>
+    <message>
+        <location filename="artistsinfodisplay.cpp" line="97"/>
+        <source>Tags: %1</source>
+        <translation>Etiquetas: %1</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::LMP::Player</name>
+    <name>LeechCraft::LMP::FSBrowserWidget</name>
     <message>
-        <location filename="player.cpp" line="49"/>
-        <source>Source</source>
-        <translation>Fuente</translation>
+        <location filename="fsbrowserwidget.cpp" line="42"/>
+        <source>Add to playlist</source>
+        <translation>Añadir a lista de reproducción</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="50"/>
-        <source>Type</source>
-        <translation>Tipo</translation>
+        <location filename="fsbrowserwidget.cpp" line="82"/>
+        <source>Add to collection...</source>
+        <translation>Añadir a la colección</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="113"/>
-        <source>No metadata</source>
-        <translation>No hay metadatos</translation>
+        <location filename="fsbrowserwidget.cpp" line="90"/>
+        <source>Remove from collection...</source>
+        <translation>Remover de lacolección</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="118"/>
-        <source>File</source>
-        <translation>Archivo</translation>
+        <location filename="fsbrowserwidget.cpp" line="98"/>
+        <source>Already in collection</source>
+        <translation>Ya esta en la colección</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::LMP::LMPSystemTrayIcon</name>
+    <message>
+        <location filename="lmpsystemtrayicon.cpp" line="56"/>
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="122"/>
-        <source>URL</source>
-        <translation>URL</translation>
+        <location filename="lmpsystemtrayicon.cpp" line="66"/>
+        <source>Volume: %1%</source>
+        <translation>Volumen: %1%</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="129"/>
-        <source>Audio CD</source>
-        <translation>CD de Audio</translation>
+        <location filename="lmpsystemtrayicon.cpp" line="93"/>
+        <source>No track playing</source>
+        <translation>Ninguna pista en reproducción</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::LMP::NowPlayingWidget</name>
+    <message>
+        <location filename="nowplayingwidget.cpp" line="58"/>
+        <source>unknown</source>
+        <translation>desconocido</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="nowplayingwidget.cpp" line="84"/>
+        <source>%n day(s) ago</source>
+        <translation><numerusform>a pasar %n dia</numerusform><numerusform>a pasar %n dias</numerusform></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="nowplayingwidget.cpp" line="104"/>
+        <source>%n play(s) since %1</source>
+        <translation><numerusform>%n reproduccion desde %1</numerusform><numerusform>%n reproducciones desde %1</numerusform></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::LMP::Player</name>
+    <message>
+        <location filename="player.cpp" line="280"/>
+        <source>Playlist</source>
+        <translation>Lista de reproducción</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="132"/>
-        <source>DVD</source>
-        <translation>DVD</translation>
-    </message>
-    <message>
-        <location filename="player.cpp" line="135"/>
-        <source>Video CD</source>
-        <translation>CD de Vídeo</translation>
-    </message>
-    <message>
-        <location filename="player.cpp" line="138"/>
-        <source>Unknown disc type</source>
-        <translation>Tipo de disco desconocido</translation>
-    </message>
-    <message>
-        <location filename="player.cpp" line="144"/>
+        <location filename="player.cpp" line="299"/>
         <source>Stream</source>
-        <translation>Flujo</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::LMP::PlayerWidget</name>
+    <name>LeechCraft::LMP::PlayerTab</name>
     <message>
-        <location filename="playerwidget.cpp" line="213"/>
-        <source>Play</source>
-        <translation>Reproducir</translation>
+        <location filename="playertab.cpp" line="167"/>
+        <source>Previous track</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="223"/>
-        <source>Pause</source>
-        <translation>Pausa</translation>
+        <location filename="playertab.cpp" line="175"/>
+        <source>Play/Pause</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="233"/>
-        <source>Viewer settings</source>
-        <translation>Visualizador de configuración</translation>
+        <location filename="playertab.cpp" line="184"/>
+        <source>Stop</source>
+        <translation>Detener</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="259"/>
-        <source>Toggle full screen</source>
-        <translation type="unfinished"></translation>
+        <location filename="playertab.cpp" line="192"/>
+        <source>Next track</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="264"/>
-        <source>F</source>
-        <translation>F</translation>
+        <location filename="playertab.cpp" line="202"/>
+        <source>Love</source>
+        <translation>Amor</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="271"/>
-        <source>Pause/resume</source>
-        <translation type="unfinished"></translation>
+        <location filename="playertab.cpp" line="241"/>
+        <source>Close LMP</source>
+        <translation>Cerrar LMP</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="277"/>
-        <source>P</source>
-        <translation>P</translation>
+        <location filename="playertab.cpp" line="268"/>
+        <source>Add to playlist</source>
+        <translation>Añadir a lista de reproducción</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="278"/>
-        <source>R</source>
-        <translation>R</translation>
+        <location filename="playertab.cpp" line="314"/>
+        <source>Clear...</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="285"/>
-        <source>Volume up</source>
-        <translation type="unfinished"></translation>
+        <location filename="playertab.cpp" line="322"/>
+        <source>Save playlist...</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="299"/>
-        <source>Volume down</source>
-        <translation type="unfinished"></translation>
+        <location filename="playertab.cpp" line="330"/>
+        <source>Load from disk...</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="312"/>
-        <source>On-screen display</source>
-        <translation type="unfinished"></translation>
+        <location filename="playertab.cpp" line="343"/>
+        <source>Play mode</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="387"/>
-        <source>Initializing</source>
-        <translation>Inicializando</translation>
+        <location filename="playertab.cpp" line="351"/>
+        <source>Sequential</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="390"/>
-        <source>Stopped</source>
-        <translation>Detenido</translation>
+        <location filename="playertab.cpp" line="352"/>
+        <source>Shuffle</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="393"/>
-        <source>Playing</source>
-        <translation>Reproduciendo</translation>
+        <location filename="playertab.cpp" line="352"/>
+        <source>Repeat track</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="396"/>
-        <source>Buffering</source>
-        <translation>Cargando buffer</translation>
+        <location filename="playertab.cpp" line="353"/>
+        <source>Repeat album</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="399"/>
-        <source>Paused</source>
-        <translation>Pausado</translation>
+        <location filename="playertab.cpp" line="353"/>
+        <source>Repeat whole</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="402"/>
-        <source>Error</source>
-        <translation>Error</translation>
+        <location filename="playertab.cpp" line="373"/>
+        <source>Delete from playlist</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="407"/>
-        <source> [</source>
-        <translation> [</translation>
+        <location filename="playertab.cpp" line="388"/>
+        <source>unknown song</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="413"/>
-        <source>/</source>
-        <translation>/</translation>
+        <location filename="playertab.cpp" line="389"/>
+        <source>unknown album</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="417"/>
-        <source>]</source>
-        <translation>]</translation>
+        <location filename="playertab.cpp" line="390"/>
+        <source>unknown artist</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="419"/>
-        <source> from </source>
-        <translation> de </translation>
+        <location filename="playertab.cpp" line="392"/>
+        <source>Now playing: %1 from %2 by %3</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="427"/>
-        <source>nowhere</source>
-        <translation>en ninguna parte</translation>
+        <location filename="playertab.cpp" line="564"/>
+        <source>unknown</source>
+        <translation>desconocido</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="440"/>
-        <source> (CD)</source>
-        <translation> (CD)</translation>
+        <location filename="playertab.cpp" line="664"/>
+        <source>Save playlist</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="443"/>
-        <source> (DVD)</source>
-        <translation> (DVD)</translation>
+        <location filename="playertab.cpp" line="665"/>
+        <source>Enter name for the playlist:</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="446"/>
-        <source> (VCD)</source>
-        <translation> (VCD)</translation>
+        <location filename="playertab.cpp" line="676"/>
+        <source>Load files</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="449"/>
-        <source> (Unknown disc type)</source>
-        <translation> (Tipo desconocido de disco)</translation>
-    </message>
-    <message>
-        <location filename="playerwidget.cpp" line="454"/>
-        <source>stream</source>
-        <translation>flujo</translation>
+        <location filename="playertab.cpp" line="678"/>
+        <source>Music files (*.ogg *.flac *.mp3 *.wav);;All files (*.*)</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
-    <name>VideoSettings</name>
+    <name>LeechCraft::LMP::PlaylistManager</name>
     <message>
-        <location filename="videosettings.ui" line="13"/>
-        <source>Video settings</source>
-        <translation>Configuraciones de video</translation>
+        <location filename="playlistmanager.cpp" line="85"/>
+        <source>Static playlists</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="videosettings.ui" line="23"/>
-        <source>Brightness:</source>
-        <translation>Brillo:</translation>
+        <location filename="playlistmanager.cpp" line="99"/>
+        <source>Dynamic playlists</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="videosettings.ui" line="63"/>
-        <source>Contrast:</source>
-        <translation>Contraste:</translation>
+        <location filename="playlistmanager.cpp" line="104"/>
+        <source>50 random tracks</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::LMP::Plugin</name>
+    <message>
+        <location filename="lmp.cpp" line="74"/>
+        <source>Rescan collection</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="videosettings.ui" line="103"/>
-        <source>Hue:</source>
-        <translation>Tono:</translation>
+        <location filename="lmp.cpp" line="118"/>
+        <source>LeechCraft Music Player.</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::LMP::RootPathSettingsManager</name>
+    <message>
+        <location filename="rootpathsettingsmanager.cpp" line="35"/>
+        <source>Path</source>
+        <translation>Ruta</translation>
+    </message>
+</context>
+<context>
+    <name>NowPlayingWidget</name>
+    <message>
+        <location filename="nowplayingwidget.ui" line="77"/>
+        <source>by</source>
+        <translation>de</translation>
     </message>
     <message>
-        <location filename="videosettings.ui" line="143"/>
-        <source>Saturation:</source>
-        <translation>Saturación:</translation>
+        <location filename="nowplayingwidget.ui" line="91"/>
+        <source>from</source>
+        <translation>de</translation>
+    </message>
+    <message>
+        <location filename="nowplayingwidget.ui" line="119"/>
+        <source>Playbacks:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="nowplayingwidget.ui" line="126"/>
+        <source>Last play:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="nowplayingwidget.ui" line="167"/>
+        <source>Similar artists</source>
+        <translation>Artistas similares</translation>
+    </message>
+    <message>
+        <location filename="nowplayingwidget.ui" line="193"/>
+        <source>Lyrics</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>PlayerTab</name>
+    <message>
+        <location filename="playertab.ui" line="73"/>
+        <source>Current song</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="playertab.ui" line="86"/>
+        <source>Collection</source>
+        <translation>Colección</translation>
+    </message>
+    <message>
+        <location filename="playertab.ui" line="95"/>
+        <source>Search collection</source>
+        <translation>Buscar la colección</translation>
+    </message>
+    <message>
+        <location filename="playertab.ui" line="132"/>
+        <source>Playlists</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="playertab.ui" line="152"/>
+        <source>Filesystem</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>lmpsettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <source>Behavior</source>
+        <translation>Behavior</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="3"/>
+        <source>Enable notifications</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Enable scrobbling</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>This option requires at least one other scrobbler plugin, like LastFMScrobble, for example.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>Request lyrics</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="7"/>
+        <source>Show tray icon</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="8"/>
+        <source>Collection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
+        <source>Root paths</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="10"/>
+        <source>Plugin communication</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
+        <source>Test only these extensions</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="12"/>
+        <source>Extenstions list:</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 </TS>

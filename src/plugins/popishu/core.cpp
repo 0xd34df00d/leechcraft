@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ namespace LeechCraft
 				TabClass_.Description_ = tr ("The Popishu text editor");
 				TabClass_.Icon_ = QIcon (":/resources/images/popishu.svg");
 				TabClass_.Priority_ = 70;
-				TabClass_.Features_ = TFOpenableByRequest;
+				TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
 			}
 
 			Core& Core::Instance ()
@@ -40,7 +40,7 @@ namespace LeechCraft
 				static Core c;
 				return c;
 			}
-			
+
 			TabClassInfo Core::GetTabClass () const
 			{
 				return TabClass_;

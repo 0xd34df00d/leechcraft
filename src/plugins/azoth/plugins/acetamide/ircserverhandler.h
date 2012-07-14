@@ -19,11 +19,10 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERHANDLER_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERHANDLER_H
 
-#include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 #include <QObject>
 #include <QTcpSocket>
-#include <interfaces/imessage.h>
+#include <interfaces/azoth/imessage.h>
 #include "localtypes.h"
 #include "serverparticipantentry.h"
 #include "invitechannelsdialog.h"
@@ -43,7 +42,11 @@ namespace Acetamide
 	class IrcServerCLEntry;
 	class IrcServerSocket;
 	class UserCommandManager;
-	class ServerResponceManager;
+	class ServerResponseManager;
+	class RplISupportParser;
+	class ChannelsManager;
+
+	const int AnswersOnWhoCommand = 2;
 
 	class IrcServerHandler : public QObject
 	{
@@ -55,64 +58,69 @@ namespace Acetamide
 		IrcServerCLEntry *ServerCLEntry_;
 		IrcServerSocket *Socket_;
 		UserCommandManager *CmdManager_;
-		ServerResponceManager *ServerResponceManager_;
+		ServerResponseManager *ServerResponseManager_;
+		RplISupportParser *RplISupportParser_;
+		ChannelsManager *ChannelsManager_;
+
 		ConnectionState ServerConnectionState_;
 		bool IsConsoleEnabled_;
 		bool IsInviteDialogActive_;
-		bool IsLongMessageInProcess_;
 		QString ServerID_;
 		QString NickName_;
 		QString OldNickName_;
 		QString LastSendId_;
-		QVariantMap ISupport_;
 		ServerOptions ServerOptions_;
-		QList<ChannelOptions> ChannelsQueue_;
-		NickServIdentifyOptions NickServOptions_;
-		std::auto_ptr<InviteChannelsDialog> InviteChannelsDialog_;
-		QHash<QString, ChannelHandler*> ChannelHandlers_;
+		std::unique_ptr<InviteChannelsDialog> InviteChannelsDialog_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
+		QMap<QString, QString> ISupport_;
+
+		QHash<QString, int> SpyWho_;
+		QHash<QString, WhoIsMessage> SpyNick2WhoIsMessage_;
+		QTimer *AutoWhoTimer_;
 	public:
 		IrcServerHandler (const ServerOptions&,
-				const NickServIdentifyOptions&, IrcAccount*);
-
+				IrcAccount*);
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;
 		IrcParser* GetParser () const;
+		ChannelsManager* GetChannelManager () const;
 		QString GetNickName () const;
-		QString GetServerID_ () const;
+		QString GetServerID () const;
 		ServerOptions GetServerOptions () const;
-		QList<QObject*> GetCLEntries () const;
-		QStringList GetPrivateChats () const;
-		ChannelHandler* GetChannelHandler (const QString&);
-		QList<ServerParticipantEntry_ptr> GetParticipantsOnChannel (const QString&);
-		QList<ChannelHandler*> GetChannelHandlers () const;
+		QObjectList GetCLEntries () const;
 
-		IrcMessage* CreateMessage (IMessage::MessageType,
-				const QString&, const QString&);
+		ChannelHandler* GetChannelHandler (const QString& channel);
+		QList<std::shared_ptr<ChannelHandler>> GetChannelHandlers () const;
 
-		bool IsChannelExists (const QString&);
-		bool IsParticipantExists (const QString&);
+		IrcMessage* CreateMessage (IMessage::MessageType type,
+				const QString& variant, const QString& body);
 
-		void SetLongMessageState (bool);
-		bool IsLongMessageInProcess () const;
-		void SetNickName (const QString&);
-		void Add2ChannelsQueue (const ChannelOptions&);
+		bool IsChannelExists (const QString& channel) const;
 
-		void JoinChannel (const ChannelOptions&);
-		bool JoinedChannel (const ChannelOptions&);
-		void JoinChannelByCmd (const QStringList&);
-		void JoinParticipant (const QString&, const QString&);
+		void SetNickName (const QString& nick);
+		void Add2ChannelsQueue (const ChannelOptions& options);
 
-		void CloseChannel (const QString&);
-		void LeaveParticipant (const QString&, const QString&, const QString&);
-		void QuitServer ();
-		void QuitParticipant (const QString&, const QString&);
+		void JoinChannel (const ChannelOptions& options);
+		bool JoinedChannel (const ChannelOptions& options);
+		void JoinParticipant (const QString& nick, const QString& msg,
+				const QString& user = QString (), const QString& host = QString ());
+
+		void CloseChannel (const QString& channel);
+		void LeaveParticipant (const QString& nick,
+				const QString& channel, const QString& msg);
+
+		void SendQuit ();
+		void QuitParticipant (const QString& nick, const QString& msg);
 
 		void SendMessage (const QStringList&);
-		void IncomingMessage (const QString&, const QString&, const QString&);
+		void IncomingMessage (const QString& nick,
+				const QString& target, const QString& msg,
+				IMessage::MessageType type = IMessage::MTChatMessage);
 		void IncomingNoticeMessage (const QString&, const QString&);
 
 		void ChangeNickname (const QString&, const QString&);
+
+		bool IsCmdHasLongAnswer (const QString& cmd);
 
 		void GetBanList (const QString&);
 		void GetExceptList (const QString&);
@@ -124,75 +132,115 @@ namespace Acetamide
 		void AddInviteListItem (const QString&, QString);
 		void RemoveInviteListItem (const QString&, QString);
 		void SetNewChannelModes (const QString&, const ChannelModes&);
+		void SetNewChannelMode (const QString&, const QString&, const QString&);
 
 		void PongMessage (const QString&);
+
+		void SetTopic (const QString& channel, const QString& topic);
 		void GotTopic (const QString&, const QString&);
-		void KickUserFromChannel (const QString&, const QString&, 
+		void GotKickCommand (const QString&, const QString&,
 				const QString&, const QString&);
+		void KickParticipant (const QString&, const QString&,
+				const QString&);
 		void GotInvitation (const QString&, const QString&);
-		void ShowAnswer (const QString&);
+		void ShowAnswer (const QString& cmd,
+				const QString& answer, bool isEndOf = false,
+				IMessage::MessageType type = IMessage::MTEventMessage);
+
 		void CTCPReply (const QString&, const QString&, const QString&);
 		void CTCPRequestResult (const QString&);
+		void CTCPRequst (const QStringList& cmd);
+
 		void GotNames (const QString&, const QStringList&);
 		void GotEndOfNames (const QString&);
+
 		void ShowUserHost (const QString&, const QString&);
 		void ShowIsUserOnServer (const QString&);
-		void ShowWhoIsReply (const QString&);
-		void ShowWhoWasReply (const QString&);
-		void ShowWhoReply (const QString&);
-		void ShowLinksReply (const QString&);
-		void ShowInfoReply (const QString&);
-		void ShowMotdReply (const QString&);
-		void ShowUsersReply (const QString&);
-		void ShowTraceReply (const QString&);
-		void ShowStatsReply (const QString&);
-		void ShowBanList (const QString&, 
+
+		void ShowWhoIsReply (const WhoIsMessage& msg, bool isEndOf = false);
+		void ShowWhoWasReply (const QString&, bool isEndOf = false);
+		void ShowWhoReply (const WhoMessage& msg, bool isEndOf = false);
+		void ShowLinksReply (const QString&, bool isEndOf = false);
+		void ShowInfoReply (const QString&, bool isEndOf = false);
+		void ShowMotdReply (const QString&, bool isEndOf = false);
+		void ShowUsersReply (const QString&, bool isEndOf = false);
+		void ShowTraceReply (const QString&, bool isEndOf = false);
+		void ShowStatsReply (const QString&, bool isEndOf = false);
+
+		void ShowBanList (const QString&,
 				const QString&, const QString&, const QDateTime&);
 		void ShowBanListEnd (const QString&);
-		void ShowExceptList (const QString&, 
+		void ShowExceptList (const QString&,
 				const QString&, const QString&, const QDateTime&);
 		void ShowExceptListEnd (const QString&);
-		void ShowInviteList (const QString&, 
+		void ShowInviteList (const QString&,
 				const QString&, const QString&, const QDateTime&);
 		void ShowInviteListEnd (const QString&);
-		
-		void SendPublicMessage (const QString&, const QString&);
+
+		void SendPublicMessage (const QString& msg, const QString& channel);
 		void SendPrivateMessage (IrcMessage*);
 		void SendMessage2Server (const QStringList&);
-		void ParseMessageForCommand (const QString&, const QString&);
-		void LeaveChannel (const QString&, const QString&);
-		void ClosePrivateChat (const QString&);
+		QString ParseMessageForCommand (const QString&, const QString&) const;
+		void LeaveChannel (const QString& channel, const QString& msg);
+
 		void ConnectToServer ();
 		void DisconnectFromServer ();
+
 		void SendCommand (const QString&);
+
 		ServerParticipantEntry_ptr GetParticipantEntry (const QString&);
 		void RemoveParticipantEntry (const QString&);
-		void UnregisterChannel (ChannelHandler*);
+
 		void SetConsoleEnabled (bool);
-		void LeaveAllChannel ();
-		void CloseAllPrivateChats ();
-		void SetLastSendID (const QString&);
+
 		void ReadReply (const QByteArray&);
 		void JoinFromQueue ();
 
 		void SayCommand (const QStringList&);
 
-		void ParseChanMode (const QString&, const QString&, 
+		void ParseChanMode (const QString&, const QString&,
 				const QString& value = QString ());
 		void ParseUserMode (const QString&, const QString&);
+
+		void ParserISupport (const QString&);
+		QMap<QString, QString> GetISupport () const;
+
+		void RequestWho (const QString&);
+		void RequestWhoIs (const QString&);
+		void RequestWhoWas (const QString&);
+
+		void ClosePrivateChat (const QString& nick);
+
+		void CreateServerParticipantEntry (QString nick);
+
+		void VCardRequest (const QString& nick);
+
+		void SetAway (const QString& message);
+		void ChangeAway (bool away, const QString& message = QString ());
+
+		void GotChannelUrl (const QString& channel, const QString& url);
+		void GotTopicWhoTime (const QString& channel,
+				const QString& who, quint64 time);
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();
 		ServerParticipantEntry_ptr CreateParticipantEntry (const QString&);
+	public slots:
+		void autoWhoRequest ();
+		void handleSocketError (QAbstractSocket::SocketError error);
 	private slots:
 		void connectionEstablished ();
 		void connectionClosed ();
 		void joinAfterInvite ();
+		void handleSetAutoWho ();
+		void handleUpdateWhoPeriod ();
 	signals:
 		void connected (const QString&);
 		void disconnected (const QString&);
 		void sendMessageToConsole (IMessage::Direction, const QString&);
 		void nicknameConflict (const QString&);
+		void gotSocketError (QAbstractSocket::SocketError error,
+				const QString& erorString);
 	};
 };
 };

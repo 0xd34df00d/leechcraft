@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "audiohandler.h"
 #include "cmdrunhandler.h"
 #include "core.h"
+#include "wmurgenthandler.h"
 
 namespace LeechCraft
 {
@@ -36,11 +37,18 @@ namespace AdvancedNotifications
 		Handlers_ << ConcreteHandlerBase_ptr (new VisualHandler);
 		Handlers_ << ConcreteHandlerBase_ptr (new AudioHandler);
 		Handlers_ << ConcreteHandlerBase_ptr (new CmdRunHandler);
+		Handlers_ << ConcreteHandlerBase_ptr (new WMUrgentHandler);
 
 		Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
 			handler->SetGeneralHandler (this);
 
-		Cat2IconName_ ["org.LC.AdvNotifications.IM"] = "message";
+		connect (Handlers_.first ().get (),
+				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+				this,
+				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
+
+		Cat2IconName_ ["org.LC.AdvNotifications.IM"] = "mail-unread-new";
+		Cat2IconName_ ["org.LC.AdvNotifications.Organizer"] = "view-calendar";
 	}
 
 	void GeneralHandler::Handle (const Entity& e)
@@ -74,7 +82,7 @@ namespace AdvancedNotifications
 
 	QIcon GeneralHandler::GetIconForCategory (const QString& cat) const
 	{
-		const QString& name = "notificationcategory_" + Cat2IconName_.value (cat, "general");
+		const QString& name = Cat2IconName_.value (cat, "general");
 		return Proxy_->GetIcon (name);
 	}
 }

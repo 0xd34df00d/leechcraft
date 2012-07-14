@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 
 #include "addcontactdialog.h"
 #include <QStringListModel>
-#include <util/tagscompleter.h>
-#include "interfaces/iprotocol.h"
-#include "interfaces/iaccount.h"
+#include <util/tags/tagscompleter.h>
+#include "interfaces/azoth/iprotocol.h"
+#include "interfaces/azoth/iaccount.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -31,30 +31,30 @@ namespace Azoth
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
-		
-		Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.Groups_);
+
+		Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.Groups_, this);
 		tc->OverrideModel (new QStringListModel (Core::Instance ().GetChatGroups (), this));
 		Ui_.Groups_->AddSelector ();
 
 		Q_FOREACH (IProtocol *proto, Core::Instance ().GetProtocols ())
 			Ui_.Protocol_->addItem (proto->GetProtocolName (),
 					QVariant::fromValue<IProtocol*> (proto));
-			
+
 		if (focusAcc)
 			FocusAccount (focusAcc);
-		
+
 		checkComplete ();
 		connect (Ui_.ContactID_,
 				SIGNAL (textChanged (const QString&)),
 				this,
 				SLOT (checkComplete ()));
 	}
-	
+
 	void AddContactDialog::SetContactID (const QString& id)
 	{
 		Ui_.ContactID_->setText (id);
 	}
-	
+
 	void AddContactDialog::SetNick (const QString& nick)
 	{
 		Ui_.Nick_->setText (nick);
@@ -111,6 +111,9 @@ namespace Azoth
 				continue;
 			}
 
+			if (!acc->IsShownInRoster ())
+				continue;
+
 			if (acc->GetState ().State_ == SOffline &&
 					!(acc->GetAccountFeatures () & IAccount::FCanAddContactsInOffline))
 				continue;
@@ -121,7 +124,7 @@ namespace Azoth
 					QVariant::fromValue<IAccount*> (acc));
 		}
 	}
-	
+
 	void AddContactDialog::FocusAccount (IAccount *focusAcc)
 	{
 		QObject *protoObj = focusAcc->GetParentProtocol ();
@@ -134,14 +137,14 @@ namespace Azoth
 					<< "to IProtocol";
 			return;
 		}
-		
+
 		for (int i = 0; i < Ui_.Protocol_->count (); ++i)
 			if (Ui_.Protocol_->itemData (i).value<IProtocol*> () == focusProto)
 			{
 				Ui_.Protocol_->setCurrentIndex (i);
 				break;
 			}
-		
+
 		for (int i = 0; i < Ui_.Account_->count (); ++i)
 			if (Ui_.Account_->itemData (i).value<IAccount*> () == focusAcc)
 			{
@@ -149,7 +152,7 @@ namespace Azoth
 				break;
 			}
 	}
-	
+
 	void AddContactDialog::checkComplete ()
 	{
 		const bool isComplete = GetSelectedAccount () &&

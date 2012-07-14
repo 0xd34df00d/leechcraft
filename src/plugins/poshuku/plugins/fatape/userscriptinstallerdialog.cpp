@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,25 +31,23 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	UserScriptInstallerDialog::UserScriptInstallerDialog (Plugin *plugin,  
-			QNetworkAccessManager *networkManager, const QUrl& scriptUrl, QWidget *parent) 
+	UserScriptInstallerDialog::UserScriptInstallerDialog (Plugin *plugin,
+			QNetworkAccessManager *networkManager, const QUrl& scriptUrl, QWidget *parent)
 	: QDialog (parent)
 	, Plugin_ (plugin)
 	{
 		QDir temp (QDesktopServices::storageLocation (QDesktopServices::TempLocation));
 		QFileInfo userScript (temp, QFileInfo (scriptUrl.path ()).fileName ());
-		
 
 		Ui_.setupUi (this);
-		TempScriptPath_  = userScript.absoluteFilePath ();
+		TempScriptPath_ = userScript.absoluteFilePath ();
 
-		QNetworkRequest scriptRequest;
-		scriptRequest.setUrl (scriptUrl);
-		connect (networkManager, 
-				SIGNAL (finished (QNetworkReply*)), 
-				this, 
-				SLOT (ScriptFetchFinished (QNetworkReply*)));
-		networkManager->get (scriptRequest);
+		QNetworkReply *reply = networkManager->get (QNetworkRequest (scriptUrl));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (scriptFetchFinished ()));
+
 		Ui_.ScriptInfo_->setHtml (QString ("<i>%1</i>").arg (tr ("Fetching script...")));
 		connect (Ui_.Install_,
 				SIGNAL (released  ()),
@@ -65,10 +63,11 @@ namespace FatApe
 				SLOT (on_Cancel__released ()));
 	}
 
-	void UserScriptInstallerDialog::scriptFetchFinished (QNetworkReply *reply)
+	void UserScriptInstallerDialog::scriptFetchFinished ()
 	{
-		QFile tempScript (TempScriptPath_);
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 
+		QFile tempScript (TempScriptPath_);
 		if (tempScript.open (QFile::ReadWrite))
 		{
 			tempScript.write (reply->readAll ());

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ namespace LeechCraft
 	void ItemHandlerFont::Handle (const QDomElement& item, QWidget *pwidget)
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		QString labelString = XSD_->GetLabel (item);
+		const QString& labelString = XSD_->GetLabel (item);
 		QLabel *label = new QLabel (labelString);
 		label->setWordWrap (false);
 
@@ -71,7 +71,7 @@ namespace LeechCraft
 			if (element.hasAttribute ("default"))
 			{
 				QFont font;
-				QString defStr = element.attribute ("default");
+				const QString& defStr = element.attribute ("default");
 				if (font.fromString (defStr))
 					value = font;
 				else

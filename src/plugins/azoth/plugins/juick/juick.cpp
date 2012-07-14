@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,15 +17,14 @@
  **********************************************************************/
 
 #include "juick.h"
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+#include <functional>
 #include <QCoreApplication>
 #include <QIcon>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
-#include <interfaces/imessage.h>
-#include <interfaces/iclentry.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iclentry.h>
 
 namespace LeechCraft
 {
@@ -40,7 +39,7 @@ namespace Juick
 		QString Text_;
 		QRegExp CheckRX_;
 		QString FixPattern_;
-		boost::function<QString& (QString&)> Correction_;
+		std::function<QString (QString)> Correction_;
 	public:
 		Typo (const QString& text, const QString& checkPattern, const QString& fixPattern)
 		: Text_ (text)
@@ -48,11 +47,11 @@ namespace Juick
 		, FixPattern_ (fixPattern)
 		{}
 
-		Typo (const QString& text, const QString& checkPattern, 
-			boost::function<QString& (QString&)> correction)
+		Typo (const QString& text, const QString& checkPattern,
+				std::function<QString (QString)> correction)
 		: Text_ (text)
 		, CheckRX_ (checkPattern)
-		, Correction_ (correction) 
+		, Correction_ (correction)
 		{}
 
 		bool Done ()
@@ -63,7 +62,7 @@ namespace Juick
 		QString& Correction ()
 		{
 			if (Correction_)
-				Correction_ (Text_);
+				Text_ = Correction_ (Text_);
 			else if (CheckRX_.indexIn (Text_) != -1)
 				Text_.replace (CheckRX_, FixPattern_);
 			return Text_;
@@ -83,7 +82,7 @@ namespace Juick
 
 	void Plugin::SecondInit ()
 	{
-	}	
+	}
 
 	QByteArray Plugin::GetUniqueID () const
 	{
@@ -96,17 +95,18 @@ namespace Juick
 
 	QString Plugin::GetName () const
 	{
-		return "juick";
+		return "Azoth Juick";
 	}
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("juick is plugin for nicer support of the juick.com microblogging service.");
+		return tr ("Azoth Juick provides nicer support for the juick.com microblogging service.");
 	}
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/plugins/azoth/plugins/juick/resources/images/juick.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -121,24 +121,24 @@ namespace Juick
 		//fix this http://i.imgur.com/t579t.png
 		if (body.startsWith ("@"))
 			body.insert (0, "<br />");
-		
+
 		body.replace(TagRX_,
 			     " <a href=\"azoth://msgeditreplace/\\1\">\\1</a> ");
-			
+
 		InsertAvatars (body);
 		InsertNickLinks (body);
-		body.replace (PostRX_, 
+		body.replace (PostRX_,
 				"<br /> <a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> "
 				"("
 				"<a href=\"azoth://msgeditreplace/S%20%23\\1\">S</a> "
 				"<a href=\"azoth://msgeditreplace/%23\\1+\">+</a> "
 				"<a href=\"azoth://msgeditreplace/!%20%23\\1\">!</a> "
 				") ");
-		body.replace (UnsubRX_, 
+		body.replace (UnsubRX_,
 				"#\\1/\\2 (<a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a>) \\3");
 		body.replace (IdRX_, "<a href=\"azoth://msgeditreplace/%23\\1+\">#\\1</a>\\2");
-		body.replace (ReplyRX_, "<a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> ");	
-	
+		body.replace (ReplyRX_, "<a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> ");
+
 		return body;
 	}
 
@@ -181,22 +181,22 @@ namespace Juick
 	}
 
 	void Plugin::hookFormatBodyEnd (IHookProxy_ptr proxy,
-			QObject*, QString body, QObject *msgObj)
+			QObject *msgObj)
 	{
 		if(ShouldHandle (msgObj, IMessage::DIn, IMessage::MTChatMessage))
-			proxy->SetValue ("body", FormatBody (body));
+			proxy->SetValue ("body", FormatBody (proxy->GetValue ("body").toString ()));
 	}
 
-	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy, 
-			QObject *chatTab, QObject *entry, int, QString, QString text)
+	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+			QObject *chatTab, QObject *entry, int, QString)
 	{
 		ICLEntry *other = qobject_cast<ICLEntry*> (entry);
 
 		if (!other)
 		{
-			qWarning () << Q_FUNC_INFO 
-				<< "unable to cast" 
-				<< entry 
+			qWarning () << Q_FUNC_INFO
+				<< "unable to cast"
+				<< entry
 				<< "to ICLEntry";
 			return;
 		}
@@ -204,12 +204,14 @@ namespace Juick
 		if (!other->GetEntryID ().contains ("juick@juick.com"))
 			return;
 
+		QString text = proxy->GetValue ("text").toString ();
+
 		Typo typos[] = {
-			Typo (text, QString::fromUtf8 ("^!\\s+[#№]{2,}(\\d+)"), QString ("! #\\1")),  
+			Typo (text, QString::fromUtf8 ("^!\\s+[#№]{2,}(\\d+)"), QString ("! #\\1")),
 			Typo (text, "^!\\s+(\\d+)", QString ("! #\\1")),
 			Typo (text, QString::fromUtf8 ("^![#№](\\d+)"), QString ("! #\\1")),
 			Typo (text, "^!(\\d+)", QString ("! #\\1")),
-			Typo (text, QString::fromUtf8 ("^[SЫ]\\s+[#№]{2,}(\\d+)"), QString ("S #\\1")),  
+			Typo (text, QString::fromUtf8 ("^[SЫ]\\s+[#№]{2,}(\\d+)"), QString ("S #\\1")),
 			Typo (text, QString::fromUtf8 ("^[SЫ]\\s+(\\d+)"), QString ("S #\\1")),
 			Typo (text, QString::fromUtf8 ("^[SЫ][#№](\\d+)"), QString ("S #\\1")),
 			Typo (text, QString::fromUtf8 ("^[SЫ](\\d+)"), QString ("S #\\1")),
@@ -238,15 +240,9 @@ namespace Juick
 			Typo (text, QString::fromUtf8 ("^ШТМШЕУ "), QString ("INVITE ")),
 			Typo (text, QString::fromUtf8 ("^МСФКВ$"), QString ("VCARD")),
 			Typo (text, QString::fromUtf8 ("^ЗШТП$"), QString ("PING")),
-			Typo (text, QString::fromUtf8 ("^№+$"), 
-					boost::bind (
-						static_cast<replace_t> (&QString::replace), 
-						_1, 
-						QString::fromUtf8 ("№"), 
-						"#",  
-						Qt::CaseInsensitive))
+			Typo (text, QString::fromUtf8 ("^№+$"), [] (QString str) { return str.replace ("№", "#"); })
 		};
-		
+
 		for (int i = 0; i < static_cast<int> (sizeof (typos) / sizeof (Typo)); ++i)
 		{
 			Typo typo = typos [i];
@@ -269,13 +265,13 @@ namespace Juick
 				return;
 			}
 
-			QMessageBox msgbox (QMessageBox::Question, 
-					tr ("Fix typo?"), 
+			QMessageBox msgbox (QMessageBox::Question,
+					tr ("Fix typo?"),
 					tr ("Did you mean <em>%1</em> instead of <em>%2</em>?")
 						.arg (correction)
 						.arg (text),
 					QMessageBox::NoButton,
-					parent);					
+					parent);
 			msgbox.addButton (QMessageBox::Yes);
 			QPushButton *always = msgbox.addButton (tr ("Always"), QMessageBox::YesRole);
 			msgbox.addButton (QMessageBox::No);
@@ -285,21 +281,21 @@ namespace Juick
 				proxy->SetValue ("text", correction);
 				if (msgbox.clickedButton () == always)
 					settings.setValue ("AskForCorrection", false);
-			}					
+			}
 			break;
 		}
 	}
 
-	
+
 	bool Plugin::IsBehind (const QString& text, int index, const QString& pattern) const
 	{
 		const QRegExp behind (pattern);
 
 		behind.indexIn (text);
 		const int behindIndex = index - behind.matchedLength ();
-		
-		return behindIndex >= 0 && 
-				behind.indexIn (text.mid (behindIndex, behind.matchedLength ())) != -1;	
+
+		return behindIndex >= 0 &&
+				behind.indexIn (text.mid (behindIndex, behind.matchedLength ())) != -1;
 	}
 
 	void Plugin::InsertAvatars (QString& body)
@@ -309,17 +305,17 @@ namespace Juick
 		QRegExp behind("Reply by ");
 
 		while (index >= 0)
-		{			
+		{
 			if (IsBehind (body, index, "Recommended by "))
 			{
 				index = AvatarRX_.indexIn (body, index + 1);
 				continue;
 			}
 
-			bool needNewLine = IsBehind (body, index, "Reply by ") || 
-					IsBehind (body, index, "Private message from ");			
+			bool needNewLine = IsBehind (body, index, "Reply by ") ||
+					IsBehind (body, index, "Private message from ");
 
-			const QString& avatar = 
+			const QString& avatar =
 				QString ("%1<img style='float:left;margin-right:4px' "
 						"width='32px' "
 						"height='32px' "
@@ -337,8 +333,8 @@ namespace Juick
 
 		while (index >= 0)
 		{
-			const QString& userLink = 
-				QString (IsBehind (body, index, "Private message from .*size=32'>") ? 
+			const QString& userLink =
+				QString (IsBehind (body, index, "Private message from .*size=32'>") ?
 					"<a href=\"azoth://msgeditreplace/PM%20%1\">" :
 					"<a href=\"azoth://msgeditreplace/%1+\">")
 						.arg (UserRX_.cap (1));
@@ -353,4 +349,4 @@ namespace Juick
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_juick, LeechCraft::Azoth::Juick::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_juick, LeechCraft::Azoth::Juick::Plugin);

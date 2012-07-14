@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "transferjobmanager.h"
-#include <boost/bind.hpp>
 #include <QUrl>
 #include <QStandardItemModel>
 #include <QDesktopServices>
@@ -25,10 +24,10 @@
 #include <QFileDialog>
 #include <QToolBar>
 #include <QAction>
-#include <interfaces/structures.h>
+#include <interfaces/ijobholder.h>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
-#include "interfaces/iclentry.h"
+#include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -43,7 +42,7 @@ namespace Azoth
 	, ReprBar_ (new QToolBar)
 	{
 		QAction *abort = new QAction (tr ("Abort"), this);
-		abort->setProperty ("ActionIcon", "cancel");
+		abort->setProperty ("ActionIcon", "process-stop");
 		connect (abort,
 				SIGNAL (triggered ()),
 				this,
@@ -67,12 +66,12 @@ namespace Azoth
 				this,
 				SLOT (handleFileOffered (QObject*)));
 	}
-	
+
 	QObjectList TransferJobManager::GetPendingIncomingJobsFor (const QString& id)
 	{
 		return Entry2Incoming_ [id];
 	}
-	
+
 	void TransferJobManager::SelectionChanged (const QModelIndex& idx)
 	{
 		Selected_ = idx;
@@ -128,6 +127,8 @@ namespace Azoth
 		}
 		Object2Status_ [jobObj] = items.at (1);
 		Object2Progress_ [jobObj] = items.at (2);
+		items.at (2)->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
+				CustomDataRoles::RoleJobHolderRow);
 
 		SummaryModel_->appendRow (items);
 
@@ -162,7 +163,7 @@ namespace Azoth
 			path = QFileDialog::getSaveFileName (0,
 					tr ("Select default path for incoming files"),
 					path);
-			
+
 			if (!path.isEmpty ())
 				XmlSettingsManager::Instance ().setProperty ("DefaultXferSavePath", path);
 		}
@@ -231,7 +232,7 @@ namespace Azoth
 	{
 		return SummaryModel_;
 	}
-	
+
 	void TransferJobManager::HandleDeoffer (QObject *jobObj)
 	{
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
@@ -269,9 +270,9 @@ namespace Azoth
 					<< "could not be casted to ITransferJob";
 			return;
 		}
-		
+
 		const QString& id = job->GetSourceID ();
-		
+
 		Entry2Incoming_ [id] << jobObj;
 
 		Entity e = Util::MakeNotification ("Azoth",
@@ -280,8 +281,16 @@ namespace Azoth
 					.arg (Util::MakePrettySize (job->GetSize ()))
 					.arg (GetContactName (id)),
 				PInfo_);
-		
+
 		ICLEntry *entry = GetContact (id);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown contact for"
+					<< id;
+			return;
+		}
+
 		BuildNotification (e, entry);
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + job->GetName ();
@@ -293,10 +302,8 @@ namespace Azoth
 
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
-		nh->AddFunction ("Accept",
-				boost::bind (&TransferJobManager::AcceptJob, this, jobObj, QString ()));
-		nh->AddFunction ("Deny",
-				boost::bind (&TransferJobManager::DenyJob, this, jobObj));
+		nh->AddFunction ("Accept", [this, jobObj] () { AcceptJob (jobObj, QString ()); });
+		nh->AddFunction ("Deny", [this, jobObj] () { DenyJob (jobObj); });
 		nh->AddDependentObject (jobObj);
 
 		Core::Instance ().SendEntity (e);
@@ -312,7 +319,7 @@ namespace Azoth
 					<< "is not an ITransferJob";
 			return;
 		}
-		
+
 		HandleDeoffer (sender ());
 
 		const QString& other = GetContactName (job->GetSourceID ());
@@ -395,7 +402,7 @@ namespace Azoth
 					.arg (name);
 			break;
 		}
-		
+
 		if (state != TSOffer)
 			HandleDeoffer (sender ());
 
@@ -429,17 +436,20 @@ namespace Azoth
 		if (!Object2Progress_.contains (sender ()))
 			return;
 
-		Object2Progress_ [sender ()]->setText (tr ("%1 of %2 (%3%).")
+		auto progress = Object2Progress_ [sender ()];
+		progress->setText (tr ("%1 of %2 (%3%).")
 					.arg (Util::MakePrettySize (done))
 					.arg (Util::MakePrettySize (total))
 					.arg (done * 100 / total));
+		progress->setData (done, ProcessState::Done);
+		progress->setData (total, ProcessState::Total);
 	}
-	
+
 	void TransferJobManager::handleAbortAction ()
 	{
 		if (!Selected_.isValid ())
 			return;
-		
+
 		QStandardItem *item = SummaryModel_->itemFromIndex (Selected_);
 		if (!item)
 		{
@@ -448,7 +458,7 @@ namespace Azoth
 					<< Selected_;
 			return;
 		}
-		
+
 		QObject *jobObj = item->data (MRJobObject).value<QObject*> ();
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
 		if (!job)
@@ -459,7 +469,7 @@ namespace Azoth
 					<< Selected_;
 			return;
 		}
-		
+
 		job->Abort ();
 	}
 }

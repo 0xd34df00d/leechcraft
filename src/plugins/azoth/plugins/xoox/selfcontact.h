@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ namespace Xoox
 	class SelfContact : public EntryBase
 	{
 		Q_OBJECT
-		
+
 		QString FullJID_;
 		QString BareJID_;
 		QString Resource_;
@@ -37,7 +37,7 @@ namespace Xoox
 		QMap<int, QString> Prio2Status_;
 	public:
 		SelfContact (const QString&, GlooxAccount*);
-		
+
 		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
@@ -57,6 +57,8 @@ namespace Xoox
 		void RemoveVariant (const QString&);
 		QString GetJID () const;
 		void UpdateJID (const QString&);
+	private slots:
+		void handleSelfVCardUpdated ();
 	};
 }
 }

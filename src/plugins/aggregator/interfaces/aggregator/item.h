@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,11 +19,11 @@
 #ifndef PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_ITEM_H
 #define PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_ITEM_H
 #include <vector>
+#include <memory>
 #include <QString>
 #include <QStringList>
 #include <QDateTime>
 #include <QMetaType>
-#include <boost/shared_ptr.hpp>
 #include "common.h"
 
 // Workaround stupid MSVS behaviour.
@@ -354,9 +354,15 @@ namespace Aggregator
 			* @return The simplified (short) representation.
 			*/
 		ItemShort ToShort () const;
+
+		/** @brief Fixes the date of the item.
+		 *
+		 * Sets the pubdate to current date if the pubdate is invalid.
+		 */
+		void FixDate ();
 	};
 
-	typedef boost::shared_ptr<Item> Item_ptr;
+	typedef std::shared_ptr<Item> Item_ptr;
 	typedef std::vector<Item_ptr> items_container_t;
 	typedef std::vector<ItemShort> items_shorts_t;
 

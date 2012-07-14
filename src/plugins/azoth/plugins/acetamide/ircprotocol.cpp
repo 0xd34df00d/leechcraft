@@ -25,12 +25,11 @@
 #include <QInputDialog>
 #include <QMainWindow>
 #include <QSettings>
-#include <interfaces/iprotocolplugin.h>
+#include <interfaces/azoth/iprotocolplugin.h>
 #include "core.h"
 #include "ircaccount.h"
 #include "ircaccountconfigurationwidget.h"
 #include "ircjoingroupchat.h"
-#include "bookmarkeditwidget.h"
 
 namespace LeechCraft
 {
@@ -50,6 +49,8 @@ namespace Acetamide
 
 	IrcProtocol::~IrcProtocol ()
 	{
+		Q_FOREACH (QObject *acc, GetRegisteredAccounts ())
+			emit accountRemoved (acc);
 	}
 
 	void IrcProtocol::Prepare ()
@@ -94,10 +95,11 @@ namespace Acetamide
 	{
 		return "IRC";
 	}
-	
+
 	QIcon IrcProtocol::GetProtocolIcon () const
 	{
-		return QIcon (":/plugins/azoth/plugins/acetamide/resources/images/ircicon.svg");
+		static QIcon icon (":/plugins/azoth/plugins/acetamide/resources/images/ircicon.svg");
+		return icon;
 	}
 
 	QByteArray IrcProtocol::GetProtocolID () const
@@ -141,11 +143,6 @@ namespace Acetamide
 		return new IrcJoinGroupChat ();
 	}
 
-	QWidget* IrcProtocol::GetMUCBookmarkEditorWidget ()
-	{
-		return new BookmarkEditWidget ();
-	}
-
 	void IrcProtocol::RemoveAccount (QObject *acc)
 	{
 		IrcAccount *accObj = qobject_cast<IrcAccount*> (acc);
@@ -175,18 +172,18 @@ namespace Acetamide
 		bool isNick = false;
 		bool serverPass = false;
 		bool channelPass = false;
-		
+
 		range<> ascii (char (0x01), char (0x7F));
 		rule<> special = lexeme_d [ch_p ('[') | ']' | '\\' | '`' |
 				'^' | '{' | '|' | '}' | '-'];
 		rule<> hostmask = lexeme_d [+(ascii - ' ' - '\0' - ',' - '\r' - '\n')];
 		rule<> let_dig_hyp = alnum_p | ch_p ('-');
-		rule<> ldh_str = *(let_dig_hyp >> !ldh_str); 
+		rule<> ldh_str = *(let_dig_hyp >> !ldh_str);
 		rule<> label = alpha_p >> !(!ldh_str >> alnum_p);
 		rule<> subdomain = label >> +(label >> !ch_p ('.'));
 		rule<> host = subdomain  [assign_a (host_)];
 		rule<> servername = host;
-		rule<> user = (ascii - ' ' - '\0' - '\r' - '\n') >> 
+		rule<> user = (ascii - ' ' - '\0' - '\r' - '\n') >>
 				*(ascii - ' ' - '\0' - '\r' - '\n');
 		rule<> nick = alpha_p >> *(alnum_p | special);
 		rule<> userinfo = user >> ch_p ('@') >> servername;
@@ -198,7 +195,7 @@ namespace Acetamide
 
 		rule<> nicktrgt = nicktypes >> ch_p (',') >> str_p ("isnick")[assign_a (isNick, true)];
 
-		rule<> channelstr = lexeme_d [!(ch_p ('#') | ch_p ('&') | ch_p ('+')) >> 
+		rule<> channelstr = lexeme_d [!(ch_p ('#') | ch_p ('&') | ch_p ('+')) >>
 				+(ascii - ' ' - '\0' - ',' - '\r' - '\n')][assign_a (channel_)];
 
 		rule<> keystr = lexeme_d [channelstr >> ch_p (',') >> str_p ("needkey")[assign_a (channelPass, true)]];
@@ -208,10 +205,10 @@ namespace Acetamide
 		rule<> target = longest_d [nicktrgt | channeltrgt];
 
 		rule<> port = int_p[assign_a (port_)];
-		rule<> uri = str_p ("irc:") >> 
-				!(str_p ("//") >> 
-				!(host >> !(ch_p (':') >> port)) 
-				>> !ch_p ('/') 
+		rule<> uri = str_p ("irc:") >>
+				!(str_p ("//") >>
+				!(host >> !(ch_p (':') >> port))
+				>> !ch_p ('/')
 				>> !target >> !(ch_p (',') >> str_p ("needpass")[assign_a (serverPass, true)]));
 
 		bool res = parse (url.toString ().toUtf8 ().constData (), uri).full;
@@ -244,12 +241,12 @@ namespace Acetamide
 			cho.ChannelPassword_ = "";
 
 			if (channelPass)
-				cho.ChannelPassword_ = QInputDialog::getText (0, 
+				cho.ChannelPassword_ = QInputDialog::getText (0,
 						tr ("This channel needs password."),
-						tr ("Password:"), 
+						tr ("Password:"),
 						QLineEdit::Password);
 			//TODO nickServ for urls
-			acc->JoinServer(so, cho, NickServIdentifyOptions ());
+			acc->JoinServer (so, cho);
 		}
 	}
 

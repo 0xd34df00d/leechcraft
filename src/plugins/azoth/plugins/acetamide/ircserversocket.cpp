@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +19,10 @@
 
 #include "ircserversocket.h"
 #include <QTcpSocket>
+#include <QSettings>
 #include "ircserverhandler.h"
 #include "clientconnection.h"
+#include "sslerrorsdialog.h"
 
 namespace LeechCraft
 {
@@ -27,76 +30,137 @@ namespace Azoth
 {
 namespace Acetamide
 {
+	int elideWidth = 300;
+
 	IrcServerSocket::IrcServerSocket (IrcServerHandler *ish)
 	: QObject (ish)
-	, Account_ (ish->GetAccount ())
 	, ISH_ (ish)
+	, SSL_ (ish->GetServerOptions ().SSL_)
 	{
-		TcpSocket_ptr.reset (new QTcpSocket);
+		Socket_ptr.reset (SSL_ ? new QSslSocket : new QTcpSocket);
 		Init ();
 	}
 
 	void IrcServerSocket::ConnectToHost (const QString& host, int port)
 	{
-		TcpSocket_ptr->connectToHost (host, port);
+		if (!SSL_)
+			Socket_ptr->connectToHost (host, port);
+		else
+		{
+			std::shared_ptr<QSslSocket> s = std::dynamic_pointer_cast<QSslSocket> (Socket_ptr);
+			s->connectToHostEncrypted (host, port);
+		}
 	}
 
 	void IrcServerSocket::DisconnectFromHost ()
 	{
-		TcpSocket_ptr->disconnectFromHost ();
+		Socket_ptr->disconnectFromHost ();
 	}
 
 	void IrcServerSocket::Send (const QString& message)
 	{
-		if (!TcpSocket_ptr->isWritable ())
+		if (!Socket_ptr->isWritable ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< TcpSocket_ptr->error ()
-					<< TcpSocket_ptr->errorString ();
+					<< Socket_ptr->error ()
+					<< Socket_ptr->errorString ();
 			return;
 		}
 
-		if (TcpSocket_ptr->write (message.toAscii ()) == -1)
+		if (Socket_ptr->write (message.toAscii ()) == -1)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< TcpSocket_ptr->error ()
-					<< TcpSocket_ptr->errorString ();
+					<< Socket_ptr->error ()
+					<< Socket_ptr->errorString ();
 			return;
 		}
 	}
 
 	void IrcServerSocket::Close ()
 	{
-		TcpSocket_ptr->close ();
+		Socket_ptr->close ();
 	}
 
 	void IrcServerSocket::Init ()
 	{
-		connect (TcpSocket_ptr.get (),
+		connect (Socket_ptr.get (),
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (readReply ()));
 
-		connect (TcpSocket_ptr.get (),
+		connect (Socket_ptr.get (),
 				SIGNAL (connected ()),
 				ISH_,
 				SLOT (connectionEstablished ()));
 
-		connect (TcpSocket_ptr.get (),
+		connect (Socket_ptr.get (),
 				SIGNAL (disconnected ()),
 				ISH_,
 				SLOT (connectionClosed ()));
 
-		connect (TcpSocket_ptr.get (),
+		connect (Socket_ptr.get (),
 				SIGNAL (error (QAbstractSocket::SocketError)),
-				Account_->GetClientConnection ().get (),
-				SLOT (handleError (QAbstractSocket::SocketError)));
+				ISH_,
+				SLOT (handleSocketError (QAbstractSocket::SocketError)));
+
+		if (SSL_)
+			connect (Socket_ptr.get(),
+					SIGNAL (sslErrors (const QList<QSslError> &)),
+					this,
+					SLOT (handleSslErrors (const QList<QSslError>&)));
 	}
 
 	void IrcServerSocket::readReply ()
 	{
-		while (TcpSocket_ptr->canReadLine ())
-			ISH_->ReadReply (TcpSocket_ptr->readLine ());
+		while (Socket_ptr->canReadLine ())
+			ISH_->ReadReply (Socket_ptr->readLine ());
+	}
+
+	void IrcServerSocket::handleSslErrors (const QList<QSslError>& errors)
+	{
+		std::shared_ptr<QSslSocket> s = std::dynamic_pointer_cast<QSslSocket> (Socket_ptr);
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Acetamide");
+		settings.beginGroup ("SSL exceptions");
+		QStringList keys = settings.allKeys ();
+		const QString& key = s->peerName () + ":" + s->peerPort ();
+		if (keys.contains (key))
+		{
+			if (settings.value (key).toBool ())
+				s->ignoreSslErrors ();
+		}
+		else if (keys.contains (s->peerName ()))
+		{
+			if (settings.value (s->peerName ()).toBool ())
+				s->ignoreSslErrors ();
+		}
+		else
+		{
+			QString msg = tr ("<code>%1</code><br />has SSL errors."
+					" What do you want to do?")
+						.arg (QApplication::fontMetrics ()
+								.elidedText (key, Qt::ElideMiddle, elideWidth));
+
+			std::unique_ptr<SslErrorsDialog> errDialog (new SslErrorsDialog ());
+			errDialog->Update (msg, errors);
+
+			bool ignore = (errDialog->exec () == QDialog::Accepted);
+
+			SslErrorsDialog::RememberChoice choice = errDialog->GetRememberChoice ();
+
+			if (choice != SslErrorsDialog::RCNot)
+			{
+				if (choice == SslErrorsDialog::RCFile)
+					settings.setValue (key, ignore);
+				else
+					settings.setValue (s->peerName (), ignore);
+			}
+
+			if (ignore)
+				s->ignoreSslErrors (errors);
+		}
+		settings.endGroup ();
 	}
 
 };

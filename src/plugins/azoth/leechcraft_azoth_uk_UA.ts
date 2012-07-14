@@ -1,13 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
+<context>
+    <name>AcceptRIEXDialog</name>
+    <message>
+        <location filename="acceptriexdialog.ui" line="14"/>
+        <source>Contact list change</source>
+        <translation>Змінити список контактів</translation>
+    </message>
+</context>
 <context>
     <name>AccountHandlerChooserDialog</name>
     <message>
         <location filename="accounthandlerchooserdialog.ui" line="14"/>
         <source>Choose account</source>
         <oldsource>Chose account</oldsource>
-        <translation>Вибрати аккаунт</translation>
+        <translation>Вибрати акаунт</translation>
     </message>
     <message>
         <location filename="accounthandlerchooserdialog.ui" line="29"/>
@@ -53,7 +59,7 @@
     <message>
         <location filename="activitydialog.ui" line="25"/>
         <source>General:</source>
-        <translation>Головні:</translation>
+        <translation>Основні:</translation>
     </message>
     <message>
         <location filename="activitydialog.ui" line="35"/>
@@ -71,17 +77,17 @@
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="17"/>
         <source>Account name and type</source>
-        <translation>Ім&apos;я акаунту та його тип</translation>
+        <translation>Тип та назва акаунту</translation>
     </message>
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="20"/>
         <source>Enter the name of the account to be created and select the protocol for which you would like to create the account.</source>
-        <translation>Введіть ім&apos;я акаунту ,що буде створений і виберіть протокол для якого хотіли би створити акаунт.</translation>
+        <translation>Введіть ім&apos;я для нового акаунту і виберіть протокол для нього.</translation>
     </message>
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="29"/>
         <source>Account name:</source>
-        <translation>Ім&apos;я акаунту:</translation>
+        <translation>Назва акаунту:</translation>
     </message>
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="39"/>
@@ -107,37 +113,37 @@
         <translation>Протокол:</translation>
     </message>
     <message>
-        <location filename="addcontactdialog.ui" line="39"/>
+        <location filename="addcontactdialog.ui" line="42"/>
         <source>Contact ID:</source>
         <translation>ID контакту:</translation>
     </message>
     <message>
-        <location filename="addcontactdialog.ui" line="49"/>
+        <location filename="addcontactdialog.ui" line="55"/>
         <source>Nick:</source>
         <translation>Нік:</translation>
     </message>
     <message>
-        <location filename="addcontactdialog.ui" line="64"/>
+        <location filename="addcontactdialog.ui" line="73"/>
         <source>Resolve</source>
         <translation>Перевірити</translation>
     </message>
     <message>
-        <location filename="addcontactdialog.ui" line="80"/>
+        <location filename="addcontactdialog.ui" line="89"/>
         <source>Account:</source>
         <translation>Акаунт:</translation>
     </message>
     <message>
-        <location filename="addcontactdialog.ui" line="87"/>
+        <location filename="addcontactdialog.ui" line="99"/>
         <source>Message:</source>
         <translation>Повідомлення:</translation>
     </message>
     <message>
-        <location filename="addcontactdialog.ui" line="94"/>
+        <location filename="addcontactdialog.ui" line="109"/>
         <source>Please allow me to add you to my contact list.</source>
         <translation>Будь ласка, дозвольте мені додати вас до свого списку контактів.</translation>
     </message>
     <message>
-        <location filename="addcontactdialog.ui" line="104"/>
+        <location filename="addcontactdialog.ui" line="119"/>
         <source>Groups:</source>
         <translation>Групи:</translation>
     </message>
@@ -147,7 +153,7 @@
     <message>
         <location filename="bookmarksmanagerdialog.ui" line="14"/>
         <source>Manage bookmarks</source>
-        <translation>Управляти закладками</translation>
+        <translation>Керувати закладками</translation>
     </message>
     <message>
         <location filename="bookmarksmanagerdialog.ui" line="29"/>
@@ -167,7 +173,7 @@
     <message>
         <location filename="bookmarksmanagerdialog.ui" line="85"/>
         <source>Apply</source>
-        <translation>Застосовувати</translation>
+        <translation>Застосувати</translation>
     </message>
 </context>
 <context>
@@ -175,7 +181,7 @@
     <message>
         <location filename="callchatwidget.ui" line="20"/>
         <source>Call status:</source>
-        <translation>Викликати статус:</translation>
+        <translation>Статус дзвінка:</translation>
     </message>
     <message>
         <location filename="callchatwidget.ui" line="40"/>
@@ -185,8 +191,7 @@
     <message>
         <location filename="callchatwidget.ui" line="47"/>
         <source>Hangup</source>
-        <translatorcomment>???????</translatorcomment>
-        <translation>Повісити</translation>
+        <translation>Завершити дзвінок</translation>
     </message>
 </context>
 <context>
@@ -197,24 +202,29 @@
         <translation>Тема...</translation>
     </message>
     <message>
-        <location filename="chattab.ui" line="78"/>
+        <location filename="chattab.ui" line="85"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="chattab.ui" line="107"/>
+        <location filename="chattab.ui" line="114"/>
         <source>Events...</source>
         <translation>Події...</translation>
     </message>
     <message>
-        <location filename="chattab.ui" line="125"/>
+        <location filename="chattab.ui" line="132"/>
         <source>Subject</source>
         <translation>Тема</translation>
     </message>
     <message>
-        <location filename="chattab.ui" line="153"/>
+        <location filename="chattab.ui" line="160"/>
         <source>Change</source>
         <translation>Змінити</translation>
+    </message>
+    <message>
+        <location filename="chattab.ui" line="222"/>
+        <source>Send</source>
+        <translation>Надіслати</translation>
     </message>
 </context>
 <context>
@@ -227,7 +237,7 @@
     <message>
         <location filename="consolewidget.ui" line="43"/>
         <source>Enabled</source>
-        <translation>Включений</translation>
+        <translation>Увімкнений</translation>
     </message>
 </context>
 <context>
@@ -235,7 +245,6 @@
     <message>
         <location filename="drawattentiondialog.ui" line="14"/>
         <source>Draw attention</source>
-        <translatorcomment>досл.</translatorcomment>
         <translation>Зверніть увагу</translation>
     </message>
     <message>
@@ -244,7 +253,7 @@
         <translation>Ресурс:</translation>
     </message>
     <message>
-        <location filename="drawattentiondialog.ui" line="35"/>
+        <location filename="drawattentiondialog.ui" line="38"/>
         <source>Text:</source>
         <translation>Текст:</translation>
     </message>
@@ -255,6 +264,39 @@
         <location filename="groupeditordialog.ui" line="14"/>
         <source>Edit groups</source>
         <translation>Редагувати групи</translation>
+    </message>
+</context>
+<context>
+    <name>GroupSendDialog</name>
+    <message>
+        <location filename="groupsenddialog.ui" line="14"/>
+        <source>Group send</source>
+        <translation>Угруповане надсилання</translation>
+    </message>
+    <message>
+        <location filename="groupsenddialog.ui" line="36"/>
+        <source>All</source>
+        <translation>Усі</translation>
+    </message>
+    <message>
+        <location filename="groupsenddialog.ui" line="43"/>
+        <source>None</source>
+        <translation>Жоден</translation>
+    </message>
+    <message>
+        <location filename="groupsenddialog.ui" line="54"/>
+        <source>Online</source>
+        <translation>Онлайн</translation>
+    </message>
+    <message>
+        <location filename="groupsenddialog.ui" line="61"/>
+        <source>Offline</source>
+        <translation>Офлайн</translation>
+    </message>
+    <message>
+        <location filename="groupsenddialog.ui" line="80"/>
+        <source>Send</source>
+        <translation>Вiдправити</translation>
     </message>
 </context>
 <context>
@@ -270,14 +312,154 @@
         <translation>Історія:</translation>
     </message>
     <message>
-        <location filename="joinconferencedialog.ui" line="39"/>
+        <location filename="joinconferencedialog.ui" line="42"/>
         <source>Bookmarks:</source>
         <translation>Закладки:</translation>
     </message>
     <message>
-        <location filename="joinconferencedialog.ui" line="53"/>
+        <location filename="joinconferencedialog.ui" line="59"/>
         <source>Account:</source>
         <translation>Акаунт:</translation>
+    </message>
+    <message>
+        <location filename="joinconferencedialog.ui" line="93"/>
+        <source>Add to bookmarks</source>
+        <translation>Додати до закладок</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth</name>
+    <message>
+        <location filename="core.cpp" line="158"/>
+        <source>Smile pack</source>
+        <translation>Набір смайликів</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="159"/>
+        <source>Chat style</source>
+        <translation>Стиль чату</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::AcceptRIEXDialog</name>
+    <message>
+        <location filename="acceptriexdialog.cpp" line="35"/>
+        <source>Action</source>
+        <translation>Дія</translation>
+    </message>
+    <message>
+        <location filename="acceptriexdialog.cpp" line="36"/>
+        <source>ID</source>
+        <translation>ID</translation>
+    </message>
+    <message>
+        <location filename="acceptriexdialog.cpp" line="37"/>
+        <source>Name</source>
+        <translation>Назва</translation>
+    </message>
+    <message>
+        <location filename="acceptriexdialog.cpp" line="38"/>
+        <source>Groups</source>
+        <translation>Групи</translation>
+    </message>
+    <message>
+        <location filename="acceptriexdialog.cpp" line="51"/>
+        <source>add</source>
+        <translation>додавати</translation>
+    </message>
+    <message>
+        <location filename="acceptriexdialog.cpp" line="54"/>
+        <source>delete</source>
+        <translation>видаляти</translation>
+    </message>
+    <message>
+        <location filename="acceptriexdialog.cpp" line="57"/>
+        <source>modify</source>
+        <translation>модіфікувати</translation>
+    </message>
+    <message>
+        <location filename="acceptriexdialog.cpp" line="60"/>
+        <source>(unknown)</source>
+        <translation>(невідомо)</translation>
+    </message>
+    <message>
+        <location filename="acceptriexdialog.cpp" line="82"/>
+        <source>%1 has suggested to modify your contact list:</source>
+        <translation>%1 пропонує вам змінити свій список контактів:</translation>
+    </message>
+    <message>
+        <location filename="acceptriexdialog.cpp" line="84"/>
+        <source>%1 has suggested to modify your contact list:
+%2</source>
+        <translation>%1 пропонує вам змінити свій список контактів: %2</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::AccountActionsManager</name>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="51"/>
+        <source>Join conference...</source>
+        <translation>Зайти в конференцію...</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="52"/>
+        <source>Manage bookmarks...</source>
+        <translation>Керувати закладками...</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="53"/>
+        <source>Add contact...</source>
+        <translation>Додати контакт...</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="54"/>
+        <source>Set activity...</source>
+        <translation>Виставити діяльність...</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="55"/>
+        <source>Set mood...</source>
+        <translation>Встановити настрій...</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="56"/>
+        <source>Set location...</source>
+        <translation>Виставити місце...</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="57"/>
+        <source>Service discovery...</source>
+        <translation>Пошук сервісу...</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="58"/>
+        <source>Console...</source>
+        <translation>Консоль...</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="59"/>
+        <source>Rename...</source>
+        <translation>Переймениувати...</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="60"/>
+        <source>Modify...</source>
+        <translation>Змінити...</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="127"/>
+        <source>Join bookmarked conference</source>
+        <translation>Зайти у конференцію із закладок</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="390"/>
+        <source>Rename account</source>
+        <translation>Змінити назву акаунту</translation>
+    </message>
+    <message>
+        <location filename="accountactionsmanager.cpp" line="391"/>
+        <source>Enter new name for account %1:</source>
+        <translation>Введіть нову назву для акаунту %1:</translation>
     </message>
 </context>
 <context>
@@ -285,17 +467,230 @@
     <message>
         <location filename="accountslistwidget.cpp" line="108"/>
         <source>The account %1 doesn&apos;t support encryption.</source>
-        <translation>Акаунт %1 не пыдтримуе шифрування.</translation>
+        <translation>Акаунт %1 не підтримує шифрування.</translation>
     </message>
     <message>
         <location filename="accountslistwidget.cpp" line="113"/>
         <source>Please select new PGP key for the account %1.</source>
-        <translation>Будь ласка, введіть новий PGP ключ для контакту %1.</translation>
+        <translation>Будь ласка, введіть новий PGP-ключ для контакту %1.</translation>
     </message>
     <message>
         <location filename="accountslistwidget.cpp" line="136"/>
         <source>Are you sure you want to remove the account %1?</source>
-        <translation>Ви дійсно бажаєте відалити акаунт%1?</translation>
+        <translation>Ви дійсно бажаєте видалити акаунт%1?</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::ActionsManager</name>
+    <message>
+        <location filename="actionsmanager.cpp" line="168"/>
+        <source>Enter reason</source>
+        <translation>Ввести причину</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="224"/>
+        <source>Open chat</source>
+        <translation>Відкрити чат</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="237"/>
+        <source>Draw attention...</source>
+        <translation>Зверніть увагу...</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="250"/>
+        <source>Send file...</source>
+        <translation>Надіслати файл...</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="261"/>
+        <source>Rename</source>
+        <translation>Перейменувати</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="272"/>
+        <source>Change groups...</source>
+        <translation>Змінити групи...</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="284"/>
+        <source>Send directed status...</source>
+        <translation>Відправити статус</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="296"/>
+        <source>Authorization</source>
+        <translation>Авторизація</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="300"/>
+        <source>Grant</source>
+        <translation>Авторизувати</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="304"/>
+        <source>Grant with reason...</source>
+        <translation>Авторизувати з причиною...</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="308"/>
+        <source>Revoke</source>
+        <translation>Відкликати</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="312"/>
+        <source>Revoke with reason...</source>
+        <translation>Відкликати з причиною...</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="316"/>
+        <source>Unsubscribe</source>
+        <translation>Відписатись</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="320"/>
+        <source>Unsubscribe with reason...</source>
+        <translation>Відписатись з причиною...</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="324"/>
+        <source>Rerequest authentication</source>
+        <translation>Перезапросити авторизацію</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="328"/>
+        <source>Rerequest authentication with reason...</source>
+        <translation>Перезапросити авторизацію з причиною...</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="336"/>
+        <source>Manage PGP keys...</source>
+        <translation>Управляти PGP ключами...</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="349"/>
+        <source>Share contacts...</source>
+        <translation>Спільне використання контактів ...</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="360"/>
+        <source>VCard</source>
+        <translation>VCard</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="403"/>
+        <source>Add to contact list...</source>
+        <translation>Додати до списку контактів...</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="414"/>
+        <source>Copy ID</source>
+        <translation>Скопіювати ID</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="430"/>
+        <source>Invite...</source>
+        <translation>Запросити...</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="440"/>
+        <source>Leave</source>
+        <translation>Покинути</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="450"/>
+        <source>Add to bookmarks</source>
+        <translation>Додати до закладок</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="462"/>
+        <source>Configure MUC...</source>
+        <translation>Настроїти багатокористувацьку конференцію</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="475"/>
+        <source>Authorize</source>
+        <translation>Авторизувати</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="483"/>
+        <source>Deny authorization</source>
+        <translation>Відхилити авторизацію</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="493"/>
+        <source>Remove</source>
+        <translation>Видалити</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="680"/>
+        <source>Select file to send</source>
+        <translation>Обрати файл для відправлення</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="690"/>
+        <source>Unable to send file to %1.</source>
+        <translation>Неможливо надіслати файл: %1.</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="714"/>
+        <source>Rename contact</source>
+        <translation>Перейменувати контакт</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="715"/>
+        <source>Please enter new name for the contact %1:</source>
+        <translation>Будь ласка, введіть нове ім&apos;я для контакту %1:</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="757"/>
+        <source>All variants</source>
+        <translation>Усі варіанти</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="764"/>
+        <source>Select variant</source>
+        <translation>Обрати варіант</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="765"/>
+        <source>Select variant to send directed status to:</source>
+        <translation>Обрати варіант для надсилання статусу</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="813"/>
+        <source>Enter reason for granting authorization to %1:</source>
+        <translation>Введіть причину авторизації для %1:</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="820"/>
+        <source>Enter reason for revoking authorization from %1:</source>
+        <translation>Введіть причину для відклику авторизації від %1:</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="827"/>
+        <source>Enter reason for unsubscribing from %1:</source>
+        <translation>Введіть причину відписки від %1:</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="834"/>
+        <source>Enter reason for rerequesting authorization from %1:</source>
+        <translation>Введіть причину повторного запиту авторизації від %1:</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="855"/>
+        <source>The parent account %1 for entry %2 doesn&apos;t support encryption.</source>
+        <translation>Керуючий акаунт %1 для введення %2 не підтримує шифрування.</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="862"/>
+        <source>Please select the key for %1 (%2).</source>
+        <translation>Будь ласка, виберіть новий PGP-ключ для %1 (%2).</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="1040"/>
+        <source>Room configuration</source>
+        <translation>Конфігурація кімнати</translation>
     </message>
 </context>
 <context>
@@ -303,8 +698,7 @@
     <message>
         <location filename="activitydialog.cpp" line="40"/>
         <source>doing_chores</source>
-        <translatorcomment>дословно</translatorcomment>
-        <translation>на випадковій роботі</translation>
+        <translation>в рутині</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="41"/>
@@ -329,7 +723,7 @@
     <message>
         <location filename="activitydialog.cpp" line="45"/>
         <source>having_appointment</source>
-        <translation>повинен_вирішити</translation>
+        <translation>на зустрічі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="46"/>
@@ -349,7 +743,7 @@
     <message>
         <location filename="activitydialog.cpp" line="49"/>
         <source>traveling</source>
-        <translation>подорожуе</translation>
+        <translation>подорожує</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="50"/>
@@ -359,7 +753,7 @@
     <message>
         <location filename="activitydialog.cpp" line="55"/>
         <source>buying_groceries</source>
-        <translation>покупає_бакалію</translation>
+        <translation>купує продукти</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="56"/>
@@ -379,27 +773,27 @@
     <message>
         <location filename="activitydialog.cpp" line="59"/>
         <source>doing_the_dishes</source>
-        <translation>миє_посуд</translation>
+        <translation>миє посуд</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="60"/>
         <source>doing_the_laundry</source>
-        <translation>пере</translation>
+        <translation>займається пранням</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="61"/>
         <source>gardening</source>
-        <translation>зайнятий_садовими_роботами</translation>
+        <translation>доглядає за садом</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="62"/>
         <source>running_an_errand</source>
-        <translation>біжить_на_доручення</translation>
+        <translation>біжить за дорученням</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="63"/>
         <source>walking_the_dog</source>
-        <translation>вигулює_собаку</translation>
+        <translation>вигулює собаку</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="64"/>
@@ -414,7 +808,7 @@
     <message>
         <location filename="activitydialog.cpp" line="66"/>
         <source>having_tea</source>
-        <translation>п&apos;є_чай</translation>
+        <translation>п&apos;є чай</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="67"/>
@@ -434,7 +828,7 @@
     <message>
         <location filename="activitydialog.cpp" line="70"/>
         <source>having_lunch</source>
-        <translation>на_ланчі</translation>
+        <translation>на ланчі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="71"/>
@@ -450,27 +844,27 @@
     <message>
         <location filename="activitydialog.cpp" line="73"/>
         <source>hiking</source>
-        <translation>на_туризмі</translation>
+        <translation>займається туризмом</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="74"/>
         <source>jogging</source>
-        <translation>бігає_підтюпцем</translation>
+        <translation>на пробіжці</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="75"/>
         <source>playing_sports</source>
-        <translation>грає_спорт</translation>
+        <translation>займається спортом</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="76"/>
         <source>running</source>
-        <translation>біжить</translation>
+        <translation>бігає</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="77"/>
         <source>skiing</source>
-        <translation>катаеться_на_лижх</translation>
+        <translation>катається на лижах</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="78"/>
@@ -480,18 +874,17 @@
     <message>
         <location filename="activitydialog.cpp" line="79"/>
         <source>working_out</source>
-        <translatorcomment>дословоно</translatorcomment>
-        <translation>розробляє</translation>
+        <translation>тренується</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="80"/>
         <source>at_the_spa</source>
-        <translation>на_спа</translation>
+        <translation>на спа-процедурах</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="81"/>
         <source>brushing_teeth</source>
-        <translation>чистить_зуби</translation>
+        <translation>чистить зуби</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="82"/>
@@ -501,27 +894,27 @@
     <message>
         <location filename="activitydialog.cpp" line="83"/>
         <source>shaving</source>
-        <translation>миеться_у_душі</translation>
+        <translation>голиться</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="84"/>
         <source>taking_a_bath</source>
-        <translation>миеться_в_ванній</translation>
+        <translation>приймає ванну</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="85"/>
         <source>taking_a_shower</source>
-        <translation>миеться_в_душі</translation>
+        <translation>приймає душ</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="86"/>
         <source>day_off</source>
-        <translation>на_вихідних</translation>
+        <translation>на вихідних</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="87"/>
         <source>hanging_out</source>
-        <translation>висить</translation>
+        <translation>тусується</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="88"/>
@@ -531,7 +924,7 @@
     <message>
         <location filename="activitydialog.cpp" line="89"/>
         <source>on_vacation</source>
-        <translation>на_відпустці</translation>
+        <translation>у відпустці</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="90"/>
@@ -541,7 +934,7 @@
     <message>
         <location filename="activitydialog.cpp" line="91"/>
         <source>scheduled_holiday</source>
-        <translation>провів_вихідний</translation>
+        <translation>запланований вихідний</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="92"/>
@@ -556,7 +949,7 @@
     <message>
         <location filename="activitydialog.cpp" line="94"/>
         <source>fishing</source>
-        <translation>ловить_рибу</translation>
+        <translation>ловить рибу</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="95"/>
@@ -566,12 +959,12 @@
     <message>
         <location filename="activitydialog.cpp" line="96"/>
         <source>going_out</source>
-        <translation>виходить</translation>
+        <translation>виходить погуляти</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="97"/>
         <source>partying</source>
-        <translation>на_вечірці</translation>
+        <translation>на вечірці</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="98"/>
@@ -581,7 +974,7 @@
     <message>
         <location filename="activitydialog.cpp" line="99"/>
         <source>rehearsing</source>
-        <translation>репетує</translation>
+        <translation>на репетиції</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="100"/>
@@ -596,72 +989,72 @@
     <message>
         <location filename="activitydialog.cpp" line="102"/>
         <source>socializing</source>
-        <translation>спілкуеться</translation>
+        <translation>спілкується</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="103"/>
         <source>sunbathing</source>
-        <translation>приймає_сонячні_ванни</translation>
+        <translation>приймає сонячні ванни</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="104"/>
         <source>watching_tv</source>
-        <translation>дивиться_телевізор</translation>
+        <translation>дивиться зомбоящик</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="105"/>
         <source>watching_a_movie</source>
-        <translation>дивиться_фільм</translation>
+        <translation>дивиться фільм</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="106"/>
         <source>in_real_life</source>
-        <translation>у_реалі</translation>
+        <translation>у реалі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="107"/>
         <source>on_the_phone</source>
-        <translation>на_телефоні</translation>
+        <translation>з телефону</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="108"/>
         <source>on_video_phone</source>
-        <translation>на_відео_телефоні</translation>
+        <translation>з відеофону</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="109"/>
         <source>commuting</source>
-        <translation>комутує</translation>
+        <translation>у дорозі між роботою і домом</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="111"/>
         <source>driving</source>
-        <translation>водить_машину</translation>
+        <translation>водить машину</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="112"/>
         <source>in_a_car</source>
-        <translation>в_машині</translation>
+        <translation>у машині</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="113"/>
         <source>on_a_bus</source>
-        <translation>на_автобусі</translation>
+        <translation>в автобусі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="114"/>
         <source>on_a_plane</source>
-        <translation>на_літаку</translation>
+        <translation>на літаку</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="115"/>
         <source>on_a_train</source>
-        <translation>на_поїзді</translation>
+        <translation>на поїзді</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="116"/>
         <source>on_a_trip</source>
-        <translation>у_подорожі</translation>
+        <translation>у подорожі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="117"/>
@@ -671,12 +1064,12 @@
     <message>
         <location filename="activitydialog.cpp" line="118"/>
         <source>coding</source>
-        <translation>пише_софт</translation>
+        <translation>кодить</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="119"/>
         <source>in_a_meeting</source>
-        <translation>на_зустрічі</translation>
+        <translation>на зустрічі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="120"/>
@@ -704,15 +1097,39 @@
     <message>
         <location filename="addaccountwizardfirstpage.cpp" line="103"/>
         <source>%1 options</source>
-        <translation>%1 опції</translation>
+        <translation>опції %1</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::BookmarksManagerDialog</name>
     <message>
-        <location filename="bookmarksmanagerdialog.cpp" line="225"/>
+        <location filename="bookmarksmanagerdialog.cpp" line="259"/>
+        <source>Save the bookmark?</source>
+        <translation>Зберегти закладку?</translation>
+    </message>
+    <message>
+        <location filename="bookmarksmanagerdialog.cpp" line="260"/>
+        <source>You&apos;ve changed the bookmark. Do you want to save the changes?</source>
+        <translation>Ви змінили закладки. Бажаєте зберегти зміни?</translation>
+    </message>
+    <message>
+        <location filename="bookmarksmanagerdialog.cpp" line="294"/>
         <source>Are you sure you want to delete the bookmark %1?</source>
-        <translation>Ви дійсно бажаєте відалити закладку %1?</translation>
+        <translation>Ви дійсно бажаєте видалити закладку %1?</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::CLModel</name>
+    <message numerus="yes">
+        <location filename="clmodel.cpp" line="198"/>
+        <source>Are you sure you want to send %n files to %1?</source>
+        <oldsource>Are you sure you want to send %1 files to %2?</oldsource>
+        <translation><numerusform>Ви дійсно хочете надіслати %n файл до %1?</numerusform><numerusform>Ви дійсно хочете надіслати %n файли до %1?</numerusform><numerusform>Ви дійсно хочете надіслати %n файлів до %1?</numerusform></translation>
+    </message>
+    <message>
+        <location filename="clmodel.cpp" line="205"/>
+        <source>Are you sure you want to send %1 to %2?</source>
+        <translation>Ви дійсно хочете відправити %1 до %2?</translation>
     </message>
 </context>
 <context>
@@ -725,7 +1142,7 @@
     <message>
         <location filename="callchatwidget.cpp" line="51"/>
         <source>Connecting...</source>
-        <translation>З&apos;єднання...</translation>
+        <translation>З&apos;єднуємо...</translation>
     </message>
     <message>
         <location filename="callchatwidget.cpp" line="54"/>
@@ -735,181 +1152,162 @@
     <message>
         <location filename="callchatwidget.cpp" line="57"/>
         <source>Disconnecting</source>
-        <translation>Роз&apos;єднання</translation>
+        <translation>Роз&apos;єдную</translation>
     </message>
     <message>
         <location filename="callchatwidget.cpp" line="77"/>
         <source>No active call</source>
-        <translation>Не активний виклик</translation>
+        <translation>Немає активних дзвінків</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::CallManager</name>
     <message>
-        <location filename="callmanager.cpp" line="126"/>
+        <location filename="callmanager.cpp" line="144"/>
         <source>Incoming call from %1</source>
         <translation>Вхідний дзвінок від %1</translation>
     </message>
     <message>
-        <location filename="callmanager.cpp" line="130"/>
+        <location filename="callmanager.cpp" line="148"/>
         <source>Accept</source>
         <translation>Прийняти</translation>
     </message>
     <message>
-        <location filename="callmanager.cpp" line="131"/>
+        <location filename="callmanager.cpp" line="149"/>
         <source>Hangup</source>
-        <translation></translation>
+        <translation>Відключитись</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::ChatTab</name>
     <message>
-        <location filename="chattab.cpp" line="104"/>
+        <location filename="chattab.cpp" line="105"/>
         <source>Azoth chat window</source>
         <translation>Вікно чату Azoth</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="131"/>
+        <location filename="chattab.cpp" line="130"/>
         <source>Events</source>
         <translation>Події</translation>
     </message>
     <message numerus="yes">
-        <location filename="chattab.cpp" line="313"/>
+        <location filename="chattab.cpp" line="290"/>
         <source>%1 (%n participant(s))</source>
-        <translation>
-            <numerusform>%1 (%n учасник)</numerusform>
-            <numerusform>%1 (%n учасники)</numerusform>
-            <numerusform>%1 (%n учасники)</numerusform>
-        </translation>
+        <translation><numerusform>%1 (%n учасник)</numerusform><numerusform>%1 (%n учасники)</numerusform><numerusform>%1 (%n учасників)</numerusform></translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="920"/>
+        <location filename="chattab.cpp" line="963"/>
         <source>Clear chat window</source>
         <translation>Очистити вікно чату</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="928"/>
+        <location filename="chattab.cpp" line="976"/>
         <source>Enable rich text</source>
-        <translation>Включити форматуванний текст</translation>
+        <translation>Увімкнути форматування Rich Text</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="191"/>
+        <location filename="chattab.cpp" line="196"/>
         <source>Unable to load style, please check you&apos;ve enabled at least one styles plugin.</source>
-        <translation>Неможливо загрузити стиль , будь ласка перевірте наявність включеного плагіна стилів.</translation>
+        <translation>Неможливо завантажити стиль. Будь ласка, перевірте, чи ввімкнений хоч один плагін для стилів.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="239"/>
+        <location filename="chattab.cpp" line="215"/>
         <source>A tab with a chat session</source>
-        <translation>Вкладка з сессіею чату</translation>
+        <translation>Вкладка з чатом</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="439"/>
-        <source>Select file to send</source>
-        <translation>Обрати файл для відправлення</translation>
-    </message>
-    <message>
-        <location filename="chattab.cpp" line="546"/>
+        <location filename="chattab.cpp" line="554"/>
         <source>File offered: %1.</source>
         <translation>Запропоновано файл: %1.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="581"/>
+        <location filename="chattab.cpp" line="589"/>
         <source>File transfer request</source>
         <translation>Запит передачі файлу</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="582"/>
+        <location filename="chattab.cpp" line="590"/>
         <source>Would you like to accept or deny file transfer request for file %1?</source>
         <translation>Бажаєте прийняти чи відхилити запит передачі файлу %1?</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="590"/>
+        <location filename="chattab.cpp" line="598"/>
         <source>Select save path for incoming file</source>
         <translation>Виберіть шлях збереження вхідного файлу</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="703"/>
+        <location filename="chattab.cpp" line="729"/>
         <source>participating</source>
-        <translation>приймає участь</translation>
+        <translation>бере участь</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="706"/>
+        <location filename="chattab.cpp" line="732"/>
         <source>inactive</source>
         <translation>неактивний</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="709"/>
+        <location filename="chattab.cpp" line="735"/>
         <source>composing</source>
         <translation>пише</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="712"/>
+        <location filename="chattab.cpp" line="738"/>
         <source>paused composing</source>
         <translation>перестав писати</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="715"/>
+        <location filename="chattab.cpp" line="741"/>
         <source>left the conversation</source>
         <translation>покинув конференцію</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="805"/>
-        <source>Room configuration</source>
-        <translation>Конфігурація кімнати</translation>
-    </message>
-    <message>
-        <location filename="chattab.cpp" line="940"/>
+        <location filename="chattab.cpp" line="988"/>
         <source>Quote selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Процитувати виділене</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1044"/>
-        <source>Send file...</source>
-        <translation>Відправити файл...</translation>
-    </message>
-    <message>
-        <location filename="chattab.cpp" line="1066"/>
+        <location filename="chattab.cpp" line="1103"/>
         <source>Call...</source>
         <translation>Дзвінок...</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1013"/>
-        <source>Add to bookmarks...</source>
-        <translation>Додати в закладки...</translation>
-    </message>
-    <message>
-        <location filename="chattab.cpp" line="1024"/>
-        <source>Configure MUC...</source>
-        <translation>Управління MUC...</translation>
-    </message>
-    <message>
-        <location filename="chattab.cpp" line="1283"/>
+        <location filename="chattab.cpp" line="1372"/>
         <source>MUC&apos;s participants: </source>
         <translation>MUC учасники: </translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="238"/>
-        <location filename="chattab.cpp" line="1439"/>
+        <location filename="chattab.cpp" line="214"/>
+        <location filename="chattab.cpp" line="1531"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1088"/>
+        <location filename="chattab.cpp" line="1126"/>
         <source>Enable encryption</source>
-        <translation>Включити шифрування</translation>
+        <translation>Увімкнути шифрування</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1442"/>
+        <location filename="chattab.cpp" line="1305"/>
+        <source>%1 ended the conversation.</source>
+        <translation>%1 завершив розмову.</translation>
+    </message>
+    <message>
+        <location filename="chattab.cpp" line="1308"/>
+        <source>Conversation ended.</source>
+        <translation>Діалог завершений.</translation>
+    </message>
+    <message>
+        <location filename="chattab.cpp" line="1534"/>
         <source>Conference</source>
         <translation>Конференція</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1445"/>
+        <location filename="chattab.cpp" line="1537"/>
         <source>Private chat</source>
         <translation>Приватний чат</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1448"/>
+        <location filename="chattab.cpp" line="1540"/>
         <source>Unauthorized user</source>
         <translation>Неавторизований користувач</translation>
     </message>
@@ -917,14 +1315,19 @@
 <context>
     <name>LeechCraft::Azoth::ChatTabWebView</name>
     <message>
-        <location filename="chattabwebview.cpp" line="46"/>
+        <location filename="chattabwebview.cpp" line="107"/>
         <source>Open</source>
         <translation>Відкрити</translation>
     </message>
     <message>
-        <location filename="chattabwebview.cpp" line="49"/>
+        <location filename="chattabwebview.cpp" line="110"/>
         <source>Save...</source>
         <translation>Зберегти...</translation>
+    </message>
+    <message>
+        <location filename="chattabwebview.cpp" line="113"/>
+        <source>Open externally</source>
+        <translation>Відкрити ззовні</translation>
     </message>
 </context>
 <context>
@@ -932,12 +1335,12 @@
     <message>
         <location filename="consolewidget.cpp" line="47"/>
         <source>IM console</source>
-        <translation>IM консоль</translation>
+        <translation>IM-консоль</translation>
     </message>
     <message>
         <location filename="consolewidget.cpp" line="48"/>
         <source>Protocol console, for example, XML console for a XMPP client protocol</source>
-        <translation>Консоль протоколів,наприклад,XML консоль для XMPP протоколу кліенту</translation>
+        <translation>Консоль протоколів - наприклад, XML-консоль для XMPP-протоколу клієнта</translation>
     </message>
     <message>
         <location filename="consolewidget.cpp" line="93"/>
@@ -948,503 +1351,354 @@
 <context>
     <name>LeechCraft::Azoth::Core</name>
     <message>
-        <location filename="core.cpp" line="129"/>
-        <source>Smile pack</source>
-        <translation>Набір емоційок</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="130"/>
-        <source>Chat style</source>
-        <translation>Стиль чату</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="379"/>
-        <source>Please select account to handle URI %1</source>
-        <translation>Будь ласка виберіть акаунт для обробку URI %1</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="877"/>
+        <location filename="core.cpp" line="935"/>
         <source>Unauthorized users</source>
         <translation>Неавторизовані користувачі</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="883"/>
-        <source>Contacts</source>
-        <translation>Контакти</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="996"/>
+        <location filename="core.cpp" line="1058"/>
         <source>General</source>
         <translation>Загальне</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1060"/>
-        <source>Mood:</source>
-        <translation>Настрій:</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1069"/>
-        <source>Activity:</source>
-        <translation>Діяльність:</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1085"/>
-        <source>Now listening to:</source>
-        <translation>Зараз слухає:</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1096"/>
-        <source>from</source>
-        <translation>з</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1113"/>
+        <location filename="core.cpp" line="1173"/>
         <source>In groups: </source>
         <translation>У групах:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1122"/>
-        <source>Real ID:</source>
-        <translation>Реальній ID:</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1122"/>
-        <source>unknown</source>
-        <translation>Невідомий</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1162"/>
-        <source>Using:</source>
-        <translation>Використовує:</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1448"/>
-        <location filename="core.cpp" line="2509"/>
-        <location filename="core.cpp" line="2630"/>
+        <location filename="core.cpp" line="2375"/>
+        <location filename="core.cpp" line="2455"/>
         <source>Open chat</source>
         <translation>Відкрити чат</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1459"/>
-        <source>Draw attention...</source>
-        <translation>Зверніть увагу...</translation>
+        <location filename="core.cpp" line="447"/>
+        <source>Please select account to handle URI %1</source>
+        <translation>Будь ласка, виберіть акаунт для обробку URI %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1469"/>
-        <source>Rename</source>
-        <translation>Перейменувати</translation>
+        <location filename="core.cpp" line="941"/>
+        <source>Contacts</source>
+        <translation>Контакти</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1480"/>
-        <source>Change groups...</source>
-        <translation>Змінити групи...</translation>
+        <location filename="core.cpp" line="1120"/>
+        <source>Mood:</source>
+        <translation>Настрій:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1492"/>
-        <source>Authorization</source>
-        <translation>Авторизація</translation>
+        <location filename="core.cpp" line="1129"/>
+        <source>Activity:</source>
+        <translation>Діяльність:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1497"/>
-        <source>Grant</source>
-        <translation>Авторизувати</translation>
+        <location filename="core.cpp" line="1145"/>
+        <source>Now listening to:</source>
+        <translation>Зараз слухає:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1502"/>
-        <source>Grant with reason...</source>
-        <translation>Авторизувати з причиною...</translation>
+        <location filename="core.cpp" line="1156"/>
+        <source>from</source>
+        <translation>з</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1507"/>
-        <source>Revoke</source>
-        <translation>Відкликати</translation>
+        <location filename="core.cpp" line="1182"/>
+        <source>Real ID:</source>
+        <translation>Реальний ID:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1512"/>
-        <source>Revoke with reason...</source>
-        <translation>Відкликати з причиною...</translation>
+        <location filename="core.cpp" line="1182"/>
+        <source>unknown</source>
+        <translation>невідомий</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1517"/>
-        <source>Unsubscribe</source>
-        <translation>Відписатись</translation>
+        <location filename="core.cpp" line="1226"/>
+        <source>Using:</source>
+        <translation>Використовує:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1522"/>
-        <source>Unsubscribe with reason...</source>
-        <translation>Відписатись з причиною...</translation>
+        <location filename="core.cpp" line="1269"/>
+        <source>%1 is now %2.</source>
+        <translation>%1 тепер %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1527"/>
-        <source>Rerequest authentication</source>
-        <translation>Перезапросити авторизацію</translation>
+        <location filename="core.cpp" line="1272"/>
+        <source>%1/%2 is now %3.</source>
+        <translation>%1/%2 тепер %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1532"/>
-        <source>Rerequest authentication with reason...</source>
-        <translation>Перезапросити авторизацію з причиною...</translation>
+        <location filename="core.cpp" line="1524"/>
+        <source>Client went to sleep</source>
+        <translation>Клієнт перейшов у сплячий режим</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1541"/>
-        <source>Manage PGP keys...</source>
-        <translation>Управляти PGP ключами...</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1554"/>
-        <source>VCard</source>
-        <translation>VCard</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1595"/>
-        <source>Add to contact list...</source>
-        <translation>Додати в список контактів...</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1605"/>
-        <source>Copy ID</source>
-        <translation>Скопіювати ID</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1620"/>
-        <source>Leave</source>
-        <translation>Покинути</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1632"/>
-        <location filename="core.cpp" line="2581"/>
+        <location filename="core.cpp" line="2412"/>
         <source>Authorize</source>
         <translation>Авторизувати</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1641"/>
-        <source>Deny authorization</source>
-        <translation>Відхилити авторизацію</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1652"/>
-        <source>Remove</source>
-        <translation>Видалити</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1764"/>
-        <source>Enter reason</source>
-        <translation>Ввести причину</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1873"/>
+        <location filename="core.cpp" line="1619"/>
         <source>Message body</source>
         <translation>Тіло повідомлення</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1874"/>
+        <location filename="core.cpp" line="1620"/>
         <source>Original human-readable message body.</source>
-        <translation>початкове людинозрозуміле тіло повідомлення.</translation>
+        <translation>Початкове повідомлення у зручному для читання форматі.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1879"/>
+        <location filename="core.cpp" line="1625"/>
         <source>Sender name</source>
         <translation>Ім&apos;я відправника</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1880"/>
+        <location filename="core.cpp" line="1626"/>
         <source>Human-readable name of the sender of the message.</source>
-        <translation>Людинозрозуміле ім&apos;я відправника повідомлення.</translation>
+        <translation>Ім&apos;я відправника повідомлення у зручному для читання форматі.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1885"/>
+        <location filename="core.cpp" line="1631"/>
         <source>Sender ID</source>
         <translation>ІD відправника</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1886"/>
+        <location filename="core.cpp" line="1632"/>
         <source>Human-readable ID of the sender (protocol-specific).</source>
-        <translation>Людинозрозуміле ім&apos;я відправника повідомлення(спеціфікація протоколу).</translation>
+        <translation>ІD відправника повідомлення у зручному для читання форматі (специфікація протоколу).</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1891"/>
+        <location filename="core.cpp" line="1637"/>
         <source>Sender groups</source>
         <translation>Групи відправників</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1892"/>
+        <location filename="core.cpp" line="1638"/>
         <source>Groups to which the sender belongs.</source>
-        <translation>Групи доя яких належить відправник.</translation>
+        <translation>Групи, до яких належить відправник.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1897"/>
+        <location filename="core.cpp" line="1643"/>
         <source>New status</source>
         <translation>Новий статус</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1898"/>
+        <location filename="core.cpp" line="1644"/>
         <source>The new status string of the contact.</source>
-        <translation>Новий статусний рядок контакту.</translation>
+        <translation>Новий статусний рядок контакта.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2421"/>
+        <location filename="core.cpp" line="2286"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;.</source>
         <translation>Вхідне повідомлення від &lt;em&gt;%1&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2429"/>
+        <location filename="core.cpp" line="2294"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;.</source>
         <translation>Вхідне повідомлення від &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2442"/>
+        <location filename="core.cpp" line="2307"/>
         <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;.</source>
         <translation>&lt;em&gt;%2&lt;/em&gt; потребує вашої уваги в конференції &lt;em&gt;%1&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2451"/>
+        <location filename="core.cpp" line="2316"/>
         <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;.</source>
         <translation>&lt;em&gt;%2&lt;/em&gt; потребує вашої уваги в конференції &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;.</translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="2486"/>
-        <location filename="core.cpp" line="2498"/>
+        <location filename="core.cpp" line="2353"/>
+        <location filename="core.cpp" line="2364"/>
         <source>%n message(s) from</source>
-        <translation>
-            <numerusform>%n повідомлення від</numerusform>
-            <numerusform>%n повідомленнь від</numerusform>
-            <numerusform>%n повідомленнь від</numerusform>
-        </translation>
+        <translation><numerusform>%n повідомлення від</numerusform><numerusform>%n повідомлень від</numerusform><numerusform>%n повідомлень від</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="2490"/>
+        <location filename="core.cpp" line="2357"/>
         <source>%n message(s) in</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n вхідне повідомлення</numerusform><numerusform>%n вхідних повідомлення</numerusform><numerusform>%n вхідних повідомлень</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="2504"/>
+        <location filename="core.cpp" line="2370"/>
         <source>%n message(s)</source>
-        <translation>
-            <numerusform>%n повідомлення(нь)</numerusform>
-            <numerusform>%n повідомленнь</numerusform>
-            <numerusform>%n повідомленнь</numerusform>
-        </translation>
+        <translation><numerusform>%n повідомлення</numerusform><numerusform>%n повідомлень</numerusform><numerusform>%n повідомлень</numerusform></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2563"/>
+        <location filename="core.cpp" line="2394"/>
         <source>Subscription requested by %1.</source>
         <translation>Запит підписки від %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2565"/>
+        <location filename="core.cpp" line="2396"/>
         <source>Subscription requested by %1: %2.</source>
         <translation>Запит підписки від %1: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2584"/>
+        <location filename="core.cpp" line="2413"/>
         <source>Deny</source>
         <translation>Відхилити</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2587"/>
+        <location filename="core.cpp" line="2414"/>
         <source>View info</source>
-        <translation>Побачити ынформацію</translation>
+        <translation>Переглянути інформацію</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2610"/>
+        <location filename="core.cpp" line="2435"/>
         <source>%1 requests your attention</source>
-        <translation>%1 звертає Вашу увагу</translation>
+        <translation>%1 привертає вашу увагу</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2612"/>
+        <location filename="core.cpp" line="2437"/>
         <source>%1 requests your attention: %2</source>
-        <translation>%1 звертає Вашу увагу: %2</translation>
+        <translation>%1 привертає вашу увагу: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2623"/>
+        <location filename="core.cpp" line="2448"/>
         <source>Attention requested</source>
-        <translation>Увага звернена</translation>
+        <translation>Прохання звернути увагу</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2624"/>
+        <location filename="core.cpp" line="2449"/>
         <source>Attention requested by %1</source>
-        <translation>Увага звернена %1</translation>
+        <translation>Прохання звернути увагу: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2662"/>
+        <location filename="core.cpp" line="2485"/>
         <source>Nickname conflict</source>
-        <translation>Никнейм конфлікт</translation>
+        <translation>Конфлікт нікнеймів</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2663"/>
+        <location filename="core.cpp" line="2486"/>
         <source>You have specified a nickname for %1 that&apos;s already used. Would you like to try to join with another nick?</source>
-        <translation>Ви вказали нікнейм для %1 котрий вже використовуеться. Ви не хотіли б використати інший?</translation>
+        <translation>Ви вказали нікнейм для %1, який вже використовується. Бажаєте спробувати інший нік?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2672"/>
+        <location filename="core.cpp" line="2495"/>
         <source>Enter new nick</source>
         <translation>Введіть новий нік</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2673"/>
+        <location filename="core.cpp" line="2496"/>
         <source>Enter new nick for joining %1 (%2 is already used):</source>
-        <translation>Введіть новий нік для заходження%1 (%2 вже використовуеться):</translation>
+        <translation>Введіть новий нік для входу до %1 (%2 вже використовується):</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2699"/>
+        <location filename="core.cpp" line="2522"/>
         <source>You have been kicked from %1. Do you want to rejoin?</source>
-        <translation>Ви були викинуті з %1. Чи не хочете ви перезайти?</translation>
+        <translation>Ви були викинуті з %1. Бажаєте перезайти?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2701"/>
+        <location filename="core.cpp" line="2524"/>
         <source>You have been kicked from %1: %2. Do you want to rejoin?</source>
-        <translation>Ви були викинуті з %1: %2. Чи не хочете ви перезайти?</translation>
+        <translation>Ви були викинуті з %1: %2. Бажаєте перезайти?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2724"/>
+        <location filename="core.cpp" line="2547"/>
         <source>You have been banned from %1.</source>
         <translation>Ви були забанені в %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2726"/>
+        <location filename="core.cpp" line="2549"/>
         <source>You have been banned from %1: %2.</source>
         <translation>Ви були забанені в %1: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2779"/>
+        <location filename="core.cpp" line="2602"/>
         <source>%1 (%2) subscribed to us.</source>
         <translation>%1 (%2) підписався на нас.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2780"/>
+        <location filename="core.cpp" line="2603"/>
         <source>%1 (%2) subscribed to us: %3.</source>
         <translation>%1 (%2) підписався на нас: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2793"/>
+        <location filename="core.cpp" line="2616"/>
         <source>%1 (%2) unsubscribed from us.</source>
         <translation>%1 (%2) відписався від нас.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2794"/>
+        <location filename="core.cpp" line="2617"/>
         <source>%1 (%2) unsubscribed from us: %3.</source>
         <translation>%1 (%2) відписався від нас: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2807"/>
+        <location filename="core.cpp" line="2630"/>
         <source>%1 unsubscribed from us.</source>
         <translation>%1 відписався від нас.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2809"/>
+        <location filename="core.cpp" line="2632"/>
         <source>%1 unsubscribed from us: %2.</source>
         <translation>%1 відписався від нас: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2823"/>
+        <location filename="core.cpp" line="2646"/>
         <source>%1 (%2) cancelled our subscription.</source>
         <translation>%1 (%2) скасував нашу підписку.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2824"/>
+        <location filename="core.cpp" line="2647"/>
         <source>%1 (%2) cancelled our subscription: %3.</source>
         <translation>%1 (%2) скасував нашу підписку: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2835"/>
+        <location filename="core.cpp" line="2658"/>
         <source>%1 (%2) granted subscription.</source>
         <translation>%1 (%2) дозволив підписку.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2836"/>
+        <location filename="core.cpp" line="2659"/>
         <source>%1 (%2) granted subscription: %3.</source>
         <translation>%1 (%2) дозволив підписку: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2854"/>
+        <location filename="core.cpp" line="2677"/>
         <source>You have been invited to %1 by %2.</source>
-        <translation>Ви були запрошені до %1 %2.</translation>
+        <translation>Вас запросили до %1 %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2857"/>
+        <location filename="core.cpp" line="2680"/>
         <source>You have been invited to %1 by %2: %3</source>
-        <translation>Ви були запрошені до %1 %2: %3</translation>
+        <translation>Вас запросили до %1 %2: %3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2875"/>
+        <location filename="core.cpp" line="2700"/>
         <source>Join</source>
         <translation>Зайти</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="3106"/>
-        <source>Rename contact</source>
-        <translation>Перейменувати контакт</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="3107"/>
-        <source>Please enter new name for the contact %1:</source>
-        <translation>Будь ласка, введіть нове ім&apos;я для контакту %1:</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="3173"/>
-        <source>Enter reason for granting authorization to %1:</source>
-        <translation>Введіть причину авторизації для %1:</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="3180"/>
-        <source>Enter reason for revoking authorization from %1:</source>
-        <translation>Введіть причину для відклику авторизації від %1:</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="3187"/>
-        <source>Enter reason for unsubscribing from %1:</source>
-        <translation>Введіть причину відписки від %1:</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="3194"/>
-        <source>Enter reason for rerequesting authorization from %1:</source>
-        <translation>Введіть причину запиту авторизації від %1:</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="3215"/>
-        <source>The parent account %1 for entry %2 doesn&apos;t support encryption.</source>
-        <translation>Акаунт %1 для введення %2 не підтримує шифрування.</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="3222"/>
-        <source>Please select the key for %1 (%2).</source>
-        <translation>Будь ласка, виберіть новий PGP ключ для %1 (%2).</translation>
-    </message>
-    <message>
-        <location filename="proxyobject.cpp" line="237"/>
+        <location filename="proxyobject.cpp" line="148"/>
         <source>Online</source>
         <translation>Онлайн</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="239"/>
+        <location filename="proxyobject.cpp" line="150"/>
         <source>Free to chat</source>
-        <translation>Готовий поспілкуватись</translation>
+        <translation>Готовий спілкуватися</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="241"/>
+        <location filename="proxyobject.cpp" line="152"/>
         <source>Away</source>
         <translation>Відійшов</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="243"/>
+        <location filename="proxyobject.cpp" line="154"/>
         <source>Do not disturb</source>
         <translation>Не турбувати</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="245"/>
-        <source>Extended away</source>
-        <translation>Розширений відійшов</translation>
+        <location filename="proxyobject.cpp" line="156"/>
+        <source>Not available</source>
+        <translation>Недоступний</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="247"/>
+        <location filename="proxyobject.cpp" line="158"/>
         <source>Offline</source>
-        <translation>Офлайн</translation>
+        <translation>Відключений</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="249"/>
+        <location filename="proxyobject.cpp" line="160"/>
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
@@ -1460,20 +1714,41 @@
 <context>
     <name>LeechCraft::Azoth::EventsNotifier</name>
     <message>
-        <location filename="eventsnotifier.cpp" line="74"/>
+        <location filename="eventsnotifier.cpp" line="73"/>
         <source>%1 started composing a message to you.</source>
-        <translation>%1 почате повідомлення до вас.</translation>
+        <translation>%1 пише вам повідомлення.</translation>
     </message>
     <message>
-        <location filename="eventsnotifier.cpp" line="81"/>
+        <location filename="eventsnotifier.cpp" line="80"/>
         <source>Open chat</source>
         <translation>Відкрити чат</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::Azoth::GroupSendDialog</name>
+    <message>
+        <location filename="groupsenddialog.cpp" line="35"/>
+        <source>Name</source>
+        <translation>Ім&apos;я</translation>
+    </message>
+    <message>
+        <location filename="groupsenddialog.cpp" line="35"/>
+        <source>ID</source>
+        <translation>ID</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::ImportManager</name>
+    <message>
+        <location filename="importmanager.cpp" line="139"/>
+        <source>Select account to import history from %1 into:</source>
+        <translation>Обрати аккаунт для імпорту історії з %1 до:</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Azoth::JoinConferenceDialog</name>
     <message>
-        <location filename="joinconferencedialog.cpp" line="78"/>
+        <location filename="joinconferencedialog.cpp" line="79"/>
         <source>%1 (%2, %3)</source>
         <translation>%1 (%2, %3)</translation>
     </message>
@@ -1481,126 +1756,119 @@
 <context>
     <name>LeechCraft::Azoth::MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="133"/>
+        <location filename="mainwidget.cpp" line="204"/>
         <source>Set status</source>
         <translation>Встановити статус</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="156"/>
-        <source>Set activity...</source>
-        <translation>Виставити діяльність...</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="162"/>
-        <source>Set mood...</source>
-        <translation>Встановити настрій...</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="168"/>
-        <source>Set location...</source>
-        <translation>Виставити місце...</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="174"/>
-        <source>Console...</source>
-        <translation>Консоль...</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="208"/>
+        <location filename="mainwidget.cpp" line="249"/>
         <source>Manage bookmarks...</source>
-        <translation>Управляти закладками...</translation>
+        <translation>Керувати закладками...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="214"/>
+        <location filename="mainwidget.cpp" line="253"/>
         <source>Add account...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати акаунт...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="235"/>
+        <location filename="mainwidget.cpp" line="295"/>
         <source>Change status</source>
         <translation>Змінити статус</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="237"/>
+        <location filename="mainwidget.cpp" line="297"/>
         <source>Online</source>
         <translation>Онлайн</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="241"/>
+        <location filename="mainwidget.cpp" line="301"/>
         <source>Free to chat</source>
-        <translation>Готовий поспілкуватись</translation>
+        <translation>Готовий спілкуватися</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="245"/>
+        <location filename="mainwidget.cpp" line="305"/>
         <source>Away</source>
         <translation>Відійшов</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="249"/>
+        <location filename="mainwidget.cpp" line="309"/>
         <source>DND</source>
         <translation>Не турбувати</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="253"/>
-        <source>Extended away</source>
-        <translation>Розширений відійшов</translation>
+        <location filename="mainwidget.cpp" line="313"/>
+        <source>Not available</source>
+        <translation>Недоступний</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="257"/>
+        <location filename="mainwidget.cpp" line="317"/>
         <source>Offline</source>
-        <translation>Офлайн</translation>
+        <translation>Відключений</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="264"/>
+        <location filename="mainwidget.cpp" line="324"/>
         <source>Custom...</source>
         <translation>Особливий...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="508"/>
+        <location filename="mainwidget.cpp" line="382"/>
+        <source>Send message...</source>
+        <translation>Надіслати повідомлення...</translation>
+    </message>
+    <message>
+        <location filename="mainwidget.cpp" line="545"/>
         <source>Rename group</source>
         <translation>Перейменувати групу</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="509"/>
+        <location filename="mainwidget.cpp" line="546"/>
         <source>Enter new group name for %1:</source>
-        <translation>Будь ласка, введіть нове ім&apos;я групи для %1:</translation>
+        <translation>Будь ласка, введіть нову назву для групи %1:</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="54"/>
+        <location filename="mainwidget.cpp" line="103"/>
         <source>Azoth menu</source>
-        <translation>меню Azoth</translation>
+        <translation>Меню Azoth</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="150"/>
-        <location filename="mainwidget.cpp" line="199"/>
+        <location filename="mainwidget.cpp" line="107"/>
+        <source>CL mode</source>
+        <translation>Режим CL</translation>
+    </message>
+    <message>
+        <location filename="mainwidget.cpp" line="108"/>
+        <source>Azoth bar</source>
+        <translation>Панель Azoth</translation>
+    </message>
+    <message>
+        <location filename="mainwidget.cpp" line="238"/>
         <source>Add contact...</source>
         <translation>Додати контакт...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="144"/>
-        <location filename="mainwidget.cpp" line="202"/>
+        <location filename="mainwidget.cpp" line="243"/>
         <source>Join conference...</source>
         <translation>Зайти в конференцію...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="63"/>
+        <location filename="mainwidget.cpp" line="133"/>
         <source>Search...</source>
         <translation>Пошук...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="220"/>
+        <location filename="mainwidget.cpp" line="258"/>
         <source>Show offline contacts</source>
-        <translation>Показати контакти, що в офлайні</translation>
+        <translation>Показати вiдключенi контакти</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="340"/>
+        <location filename="mainwidget.cpp" line="372"/>
         <source>Rename group...</source>
         <translation>Перейменувати групу...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="322"/>
+        <location filename="mainwidget.cpp" line="354"/>
         <source>Entry context menu</source>
-        <translation>Контекстне меню контакту</translation>
+        <translation>Контекстне меню запису</translation>
     </message>
 </context>
 <context>
@@ -1618,7 +1886,6 @@
     <message>
         <location filename="mooddialog.cpp" line="42"/>
         <source>amorous</source>
-        <translatorcomment>дословно.</translatorcomment>
         <translation>влюбливий</translation>
     </message>
     <message>
@@ -1639,13 +1906,12 @@
     <message>
         <location filename="mooddialog.cpp" line="46"/>
         <source>aroused</source>
-        <translatorcomment>дословно</translatorcomment>
-        <translation>спричинений</translation>
+        <translation>збуджений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="47"/>
         <source>ashamed</source>
-        <translation>совісно</translation>
+        <translation>присоромлений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="48"/>
@@ -1685,7 +1951,7 @@
     <message>
         <location filename="mooddialog.cpp" line="55"/>
         <source>contemplative</source>
-        <translation>споглядальний</translation>
+        <translation>замислений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="56"/>
@@ -1710,7 +1976,7 @@
     <message>
         <location filename="mooddialog.cpp" line="60"/>
         <source>curious</source>
-        <translation>цікавий</translation>
+        <translation>зацікавлений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="61"/>
@@ -1720,7 +1986,7 @@
     <message>
         <location filename="mooddialog.cpp" line="62"/>
         <source>depressed</source>
-        <translation>сумний</translation>
+        <translation>пригнічений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="63"/>
@@ -1730,7 +1996,7 @@
     <message>
         <location filename="mooddialog.cpp" line="64"/>
         <source>disgusted</source>
-        <translation>противний</translation>
+        <translation>відчуває огиду</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="65"/>
@@ -1740,7 +2006,7 @@
     <message>
         <location filename="mooddialog.cpp" line="66"/>
         <source>distracted</source>
-        <translation>відволічений</translation>
+        <translation>спантеличений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="67"/>
@@ -1750,7 +2016,7 @@
     <message>
         <location filename="mooddialog.cpp" line="68"/>
         <source>envious</source>
-        <translation>зависливий</translation>
+        <translation>заздрісний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="69"/>
@@ -1765,7 +2031,7 @@
     <message>
         <location filename="mooddialog.cpp" line="71"/>
         <source>frustrated</source>
-        <translation>засмучений</translation>
+        <translation>розчарований</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="72"/>
@@ -1775,7 +2041,7 @@
     <message>
         <location filename="mooddialog.cpp" line="73"/>
         <source>grieving</source>
-        <translation>уболіваючий</translation>
+        <translation>горює</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="74"/>
@@ -1805,7 +2071,7 @@
     <message>
         <location filename="mooddialog.cpp" line="79"/>
         <source>humbled</source>
-        <translation>непишний</translation>
+        <translation>принижений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="80"/>
@@ -1820,7 +2086,7 @@
     <message>
         <location filename="mooddialog.cpp" line="82"/>
         <source>hurt</source>
-        <translation>болісний</translation>
+        <translation>боляче</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="83"/>
@@ -1830,17 +2096,17 @@
     <message>
         <location filename="mooddialog.cpp" line="84"/>
         <source>in_awe</source>
-        <translation>в_благоговінні</translation>
+        <translation>в шоці</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="85"/>
         <source>in_love</source>
-        <translation>в_коханні</translation>
+        <translation>закоханий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="86"/>
         <source>indignant</source>
-        <translation>неспроможний</translation>
+        <translation>обурений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="87"/>
@@ -1925,17 +2191,17 @@
     <message>
         <location filename="mooddialog.cpp" line="103"/>
         <source>relieved</source>
-        <translation>звільнений</translation>
+        <translation>полегшений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="104"/>
         <source>remorseful</source>
-        <translation>повний_каяття</translation>
+        <translation>повний каяття</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="105"/>
         <source>restless</source>
-        <translation>невсидючий</translation>
+        <translation>непосидючий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="106"/>
@@ -1965,7 +2231,7 @@
     <message>
         <location filename="mooddialog.cpp" line="111"/>
         <source>shy</source>
-        <translation>тихий</translation>
+        <translation>сором’язливий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="112"/>
@@ -1985,7 +2251,7 @@
     <message>
         <location filename="mooddialog.cpp" line="115"/>
         <source>stressed</source>
-        <translation>наляканий</translation>
+        <translation>під впливом стресу</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="116"/>
@@ -2005,7 +2271,7 @@
     <message>
         <location filename="mooddialog.cpp" line="119"/>
         <source>thirsty</source>
-        <translation>пересохлий</translation>
+        <translation>хоче пити</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="120"/>
@@ -2020,7 +2286,7 @@
     <message>
         <location filename="mooddialog.cpp" line="122"/>
         <source>weak</source>
-        <translation>слабкий</translation>
+        <translation>слабий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="123"/>
@@ -2036,9 +2302,9 @@
 <context>
     <name>LeechCraft::Azoth::MsgFormatterWidget</name>
     <message>
-        <location filename="msgformatterwidget.cpp" line="51"/>
+        <location filename="msgformatterwidget.cpp" line="50"/>
         <source>Emoticons</source>
-        <translation>Емоційки</translation>
+        <translation>Смайлики</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="58"/>
@@ -2068,7 +2334,7 @@
     <message>
         <location filename="msgformatterwidget.cpp" line="89"/>
         <source>Font</source>
-        <translation>шрифт</translation>
+        <translation>Шрифт</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="96"/>
@@ -2093,219 +2359,284 @@
     <message>
         <location filename="msgformatterwidget.cpp" line="142"/>
         <source>Emoticons...</source>
-        <translation>Емоційки...</translation>
+        <translation>Смайлики...</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Plugin</name>
     <message>
-        <location filename="azoth.cpp" line="78"/>
+        <location filename="azoth.cpp" line="104"/>
         <source>Default input device</source>
         <translation>Пристрій вводу за замовчуванням</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="84"/>
+        <location filename="azoth.cpp" line="110"/>
         <source>Default output device</source>
         <translation>Пристрій виводу за замовчуванням</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="135"/>
+        <location filename="azoth.cpp" line="171"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="136"/>
+        <location filename="azoth.cpp" line="172"/>
         <source>A tab with a chat session</source>
-        <translation>Вкладка з сессіею чату</translation>
+        <translation>Вкладка з чатом</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="144"/>
+        <location filename="azoth.cpp" line="180"/>
         <source>MUC</source>
         <translation>MUC</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="145"/>
+        <location filename="azoth.cpp" line="181"/>
         <source>A multiuser conference</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>Багатокористувацька конференція</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="153"/>
-        <location filename="azoth.cpp" line="286"/>
+        <location filename="azoth.cpp" line="189"/>
+        <location filename="azoth.cpp" line="344"/>
+        <source>Search</source>
+        <translation>Пошук</translation>
+    </message>
+    <message>
+        <location filename="azoth.cpp" line="190"/>
+        <source>A search tab allows one to search within IM services</source>
+        <translation>Вкладки пошуку дозволяють шукати з по IM сервісам</translation>
+    </message>
+    <message>
+        <location filename="azoth.cpp" line="198"/>
+        <location filename="azoth.cpp" line="387"/>
         <source>Service discovery</source>
         <translation>Відкриття сервісу</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="154"/>
+        <location filename="azoth.cpp" line="199"/>
         <source>A service discovery tab that allows one to discover capabilities of remote entries</source>
         <translation>Вкладка пошуку послуг, яка дозволяє виявити можливості дистанційних записів</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="163"/>
+        <location filename="azoth.cpp" line="208"/>
         <source>IM console</source>
-        <translation>IM консоль</translation>
+        <translation>IM-консоль</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="164"/>
+        <location filename="azoth.cpp" line="209"/>
         <source>Protocol console, for example, XML console for a XMPP client protocol</source>
-        <translation>Консоль протоколів,наприклад,XML консоль для XMPP протоколу кліенту</translation>
+        <translation>Консоль протоколів - наприклад, XML-консоль для XMPP-протоколу клієнта</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="204"/>
+        <location filename="azoth.cpp" line="260"/>
         <source>Extensible IM client for LeechCraft.</source>
         <translation>Розширюваний клієнт миттєвих повідомлень для LeechCraft.</translation>
+    </message>
+    <message>
+        <location filename="azoth.cpp" line="372"/>
+        <source>Clear chat window</source>
+        <translation>Очистити вікно чату</translation>
+    </message>
+    <message>
+        <location filename="azoth.cpp" line="376"/>
+        <source>Quote selected in chat tab</source>
+        <translation>Процитувати виділене у вкладці чату</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::ProxyObject</name>
     <message>
-        <location filename="proxyobject.cpp" line="223"/>
-        <source>Unknown OS</source>
-        <translation>Невідома ОС</translation>
+        <location filename="proxyobject.cpp" line="125"/>
+        <source>Enter password for %1:</source>
+        <translation>Введіть пароль для %1:</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="357"/>
+        <location filename="proxyobject.cpp" line="286"/>
         <source>%1 changed status to %2</source>
         <translation>%1 змінив(ла) статус на %2</translation>
     </message>
     <message>
-        <location filename="proxyobject.cpp" line="360"/>
+        <location filename="proxyobject.cpp" line="289"/>
         <source>%1 changed status to %2 (%3)</source>
         <translation>%1 змінив(ла) статус на %2 (%3)</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::Azoth::SearchWidget</name>
+    <message>
+        <location filename="searchwidget.cpp" line="86"/>
+        <source>Search</source>
+        <translation>Пошук</translation>
+    </message>
+    <message>
+        <location filename="searchwidget.cpp" line="87"/>
+        <source>A search tab allows one to search within IM services</source>
+        <translation>Вкладки пошуку дозволяють шукати по IM-сервісам</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Azoth::ServiceDiscoveryWidget</name>
     <message>
-        <location filename="servicediscoverywidget.cpp" line="99"/>
+        <location filename="servicediscoverywidget.cpp" line="98"/>
         <source>Service discovery</source>
         <translation>Відкриття сервісу</translation>
     </message>
     <message>
-        <location filename="servicediscoverywidget.cpp" line="100"/>
+        <location filename="servicediscoverywidget.cpp" line="99"/>
         <source>A service discovery tab that allows one to discover capabilities of remote entries</source>
         <translation>Вкладка пошуку послуг, яка дозволяє виявити можливості дистанційних записів</translation>
     </message>
     <message>
-        <location filename="servicediscoverywidget.cpp" line="142"/>
+        <location filename="servicediscoverywidget.cpp" line="159"/>
         <source>Discovery actions</source>
-        <translatorcomment>дословно</translatorcomment>
-        <translation>Відкриття дії</translation>
+        <translation>Дії відкриття</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::ShareRIEXDialog</name>
+    <message>
+        <location filename="shareriexdialog.cpp" line="41"/>
+        <source>Select items to be shared with %1:</source>
+        <translation>Вибір елементів для спільного використання з %1:</translation>
+    </message>
+    <message>
+        <location filename="shareriexdialog.cpp" line="119"/>
+        <source>Name</source>
+        <translation>Ім’я</translation>
+    </message>
+    <message>
+        <location filename="shareriexdialog.cpp" line="120"/>
+        <source>ID</source>
+        <translation>ID</translation>
+    </message>
+    <message>
+        <location filename="shareriexdialog.cpp" line="121"/>
+        <source>Account</source>
+        <translation>Акаунт</translation>
+    </message>
+    <message>
+        <location filename="shareriexdialog.cpp" line="122"/>
+        <source>Groups</source>
+        <translation>Групи</translation>
+    </message>
+    <message>
+        <location filename="shareriexdialog.cpp" line="144"/>
+        <source>General</source>
+        <translation>Загальне</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::TransferJobManager</name>
     <message>
-        <location filename="transferjobmanager.cpp" line="45"/>
+        <location filename="transferjobmanager.cpp" line="44"/>
         <source>Abort</source>
         <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="111"/>
+        <location filename="transferjobmanager.cpp" line="110"/>
         <source>Transferring %1 from %2</source>
         <translation>Передається %1 від %2</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="112"/>
+        <location filename="transferjobmanager.cpp" line="111"/>
         <source>Transferring %1 to %2</source>
         <translation>Передається %1 до %2</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="116"/>
-        <location filename="transferjobmanager.cpp" line="378"/>
+        <location filename="transferjobmanager.cpp" line="115"/>
+        <location filename="transferjobmanager.cpp" line="377"/>
         <source>offered</source>
         <translation>запропоновано</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="117"/>
+        <location filename="transferjobmanager.cpp" line="116"/>
         <location filename="transferjobmanager.cpp" line="432"/>
         <source>%1 of %2 (%3%).</source>
         <translation>%1 з %2 (%3%).</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="157"/>
+        <location filename="transferjobmanager.cpp" line="158"/>
         <source>Default path for incoming files doesn&apos;t exist, is not a directory or is unwritable. Would you like to adjust the path now? Refusing will abort the transfer.</source>
         <translation>Шлях за замовчуванням для вхідного файлу не існує, не є текою або запис неможливий. Бажаєте уточнити шлях зараз? Відхилення перерве передачу.</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="163"/>
+        <location filename="transferjobmanager.cpp" line="164"/>
         <source>Select default path for incoming files</source>
         <translation>Виберіть шлях за замовчуванням для вхідних файлів</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="278"/>
+        <location filename="transferjobmanager.cpp" line="279"/>
         <source>File %1 (%2) offered from %3.</source>
-        <translation>Файл %1 (%2) запропоновано від %3.</translation>
+        <translation>%3 пропонує файл %1 (%2).</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="290"/>
+        <location filename="transferjobmanager.cpp" line="291"/>
         <source>Incoming file</source>
         <translation>Вхідний файл</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="322"/>
+        <location filename="transferjobmanager.cpp" line="321"/>
         <source>Unable to transfer file from %1.</source>
         <translation>Неможливо передати файли від %1.</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="325"/>
+        <location filename="transferjobmanager.cpp" line="324"/>
         <source>Unable to transfer file to %1.</source>
         <translation>Неможливо передати файл до %1.</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="333"/>
+        <location filename="transferjobmanager.cpp" line="332"/>
         <source>Transfer aborted.</source>
         <translation>Передача перервана.</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="336"/>
+        <location filename="transferjobmanager.cpp" line="335"/>
         <source>Error accessing file.</source>
         <translation>Помилка доступу до файлу.</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="339"/>
+        <location filename="transferjobmanager.cpp" line="338"/>
         <source>File is corrupted.</source>
         <translation>Файл пошкоджено.</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="342"/>
+        <location filename="transferjobmanager.cpp" line="341"/>
         <source>Protocol error.</source>
         <translation>Помилка протоколу.</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="345"/>
+        <location filename="transferjobmanager.cpp" line="344"/>
         <source>No error.</source>
-        <translation>Нема помилки.</translation>
+        <translation>Немає помилки.</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="375"/>
+        <location filename="transferjobmanager.cpp" line="374"/>
         <source>Transfer of file %1 with %2 has been offered.</source>
-        <translation>Передача файлу %1 від %2 було запропоновано.</translation>
+        <translation>Пропонується передача файлу %1 від %2.</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="381"/>
+        <location filename="transferjobmanager.cpp" line="380"/>
         <source>Transfer of file %1 with %2 is being started...</source>
         <translation>Передача файлу %1 від %2 розпочинається...</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="384"/>
+        <location filename="transferjobmanager.cpp" line="383"/>
         <source>starting</source>
         <translation>починається</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="387"/>
+        <location filename="transferjobmanager.cpp" line="386"/>
         <source>Transfer of file %1 with %2 is started.</source>
-        <translation>Передача файлу %1 від %2 було розпочато.</translation>
+        <translation>Передачу файлу %1 від %2 розпочато.</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="390"/>
+        <location filename="transferjobmanager.cpp" line="389"/>
         <source>transferring</source>
         <translation>передається</translation>
     </message>
     <message>
-        <location filename="transferjobmanager.cpp" line="393"/>
+        <location filename="transferjobmanager.cpp" line="392"/>
         <source>Transfer of file %1 with %2 is finished.</source>
-        <translation>Передача файлу %1 від %2 завершено.</translation>
+        <translation>Передачу файлу %1 від %2 завершено.</translation>
     </message>
 </context>
 <context>
@@ -2321,134 +2652,139 @@
         <translation>Точність:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="48"/>
-        <location filename="locationdialog.ui" line="82"/>
-        <location filename="locationdialog.ui" line="126"/>
-        <location filename="locationdialog.ui" line="217"/>
-        <location filename="locationdialog.ui" line="258"/>
-        <location filename="locationdialog.ui" line="322"/>
-        <location filename="locationdialog.ui" line="376"/>
+        <location filename="locationdialog.ui" line="51"/>
+        <location filename="locationdialog.ui" line="88"/>
+        <location filename="locationdialog.ui" line="138"/>
+        <location filename="locationdialog.ui" line="250"/>
+        <location filename="locationdialog.ui" line="297"/>
+        <location filename="locationdialog.ui" line="373"/>
+        <location filename="locationdialog.ui" line="436"/>
         <source>Set</source>
-        <translation>Віставити</translation>
+        <translation>Виставити</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="60"/>
+        <location filename="locationdialog.ui" line="63"/>
         <source>Altitude:</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>Підйом:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="94"/>
+        <location filename="locationdialog.ui" line="100"/>
         <source>Area:</source>
         <translation>Площа:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="104"/>
+        <location filename="locationdialog.ui" line="113"/>
         <source>Bearing:</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>Орієнтація:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="138"/>
+        <location filename="locationdialog.ui" line="150"/>
         <source>Building:</source>
         <translation>Будівля:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="148"/>
+        <location filename="locationdialog.ui" line="163"/>
         <source>Country:</source>
         <translation>Країна:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="158"/>
+        <location filename="locationdialog.ui" line="176"/>
         <source>Country code:</source>
         <translation>Код країни:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="168"/>
+        <location filename="locationdialog.ui" line="189"/>
         <source>Datum:</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>Характеристика:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="178"/>
+        <location filename="locationdialog.ui" line="202"/>
         <source>Description:</source>
         <translation>Опис:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="188"/>
+        <location filename="locationdialog.ui" line="215"/>
         <source>Floor:</source>
         <translation>Поверх:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="198"/>
+        <location filename="locationdialog.ui" line="228"/>
         <source>Latitude:</source>
         <translation>Широта:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="229"/>
+        <location filename="locationdialog.ui" line="262"/>
         <source>Locality:</source>
         <translation>Місце знаходження:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="239"/>
+        <location filename="locationdialog.ui" line="275"/>
         <source>Longitude:</source>
         <translation>Довгота:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="270"/>
+        <location filename="locationdialog.ui" line="309"/>
         <source>Postal code:</source>
         <translation>Поштовий код:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="280"/>
+        <location filename="locationdialog.ui" line="322"/>
         <source>Region:</source>
-        <translation>Регион:</translation>
+        <translation>Регіон:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="290"/>
+        <location filename="locationdialog.ui" line="335"/>
         <source>Room:</source>
         <translation>Кімната:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="300"/>
+        <location filename="locationdialog.ui" line="348"/>
         <source>Speed:</source>
         <translation>Швидкість:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="334"/>
+        <location filename="locationdialog.ui" line="385"/>
         <source>Street:</source>
         <translation>Вулиця:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="344"/>
+        <location filename="locationdialog.ui" line="398"/>
         <source>Text:</source>
         <translation>Текст:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="354"/>
+        <location filename="locationdialog.ui" line="411"/>
         <source>Timestamp:</source>
         <translation>Час:</translation>
     </message>
     <message>
-        <location filename="locationdialog.ui" line="388"/>
+        <location filename="locationdialog.ui" line="448"/>
         <source>URL:</source>
         <translation>URL:</translation>
     </message>
 </context>
 <context>
+    <name>MUCInviteDialog</name>
+    <message>
+        <location filename="mucinvitedialog.ui" line="14"/>
+        <source>Invite to a MUC</source>
+        <translation>Запросити до MUC</translation>
+    </message>
+    <message>
+        <location filename="mucinvitedialog.ui" line="23"/>
+        <source>Invitee:</source>
+        <translation>Запрошених:</translation>
+    </message>
+    <message>
+        <location filename="mucinvitedialog.ui" line="40"/>
+        <source>Message:</source>
+        <translation>Повідомлення:</translation>
+    </message>
+</context>
+<context>
     <name>MainWidget</name>
     <message>
-        <location filename="mainwidget.ui" line="60"/>
-        <source>Whole CL</source>
-        <translation>Загальний CL</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="65"/>
-        <source>Current MUC</source>
-        <translation>Поточний MUC</translation>
-    </message>
-    <message>
-        <location filename="mainwidget.ui" line="90"/>
+        <location filename="mainwidget.ui" line="71"/>
         <source>Add account</source>
         <translation>Додати акаунт</translation>
     </message>
@@ -2466,7 +2802,7 @@
         <translation>Настрій:</translation>
     </message>
     <message>
-        <location filename="mooddialog.ui" line="39"/>
+        <location filename="mooddialog.ui" line="42"/>
         <source>Text:</source>
         <translation>Текст:</translation>
     </message>
@@ -2476,7 +2812,7 @@
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="14"/>
         <source>PGP key selection</source>
-        <translation>Вибір PGP ключа</translation>
+        <translation>Вибір PGP-ключа</translation>
     </message>
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="32"/>
@@ -2484,17 +2820,17 @@
         <translation>Ключ:</translation>
     </message>
     <message>
-        <location filename="pgpkeyselectiondialog.ui" line="40"/>
+        <location filename="pgpkeyselectiondialog.ui" line="43"/>
         <source>&lt;no key&gt;</source>
-        <translation>&lt;нема ключа&gt;</translation>
+        <translation>&lt;немає ключа&gt;</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="55"/>
+        <location filename="util.cpp" line="59"/>
         <source>Add account</source>
-        <translation type="unfinished">Додати акаунт</translation>
+        <translation>Додати акаунт</translation>
     </message>
 </context>
 <context>
@@ -2517,7 +2853,7 @@
     <message>
         <location filename="setstatusdialog.ui" line="41"/>
         <source>Free to chat</source>
-        <translation>Готовий поспілкуватись</translation>
+        <translation>Готовий спілкуватися</translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="46"/>
@@ -2531,13 +2867,46 @@
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="56"/>
-        <source>Extended away</source>
-        <translation>Розширений відійшов</translation>
+        <source>Not available</source>
+        <translation>Недоступний</translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="61"/>
         <source>Offline</source>
-        <translation>Офлайн</translation>
+        <translation>Відключений</translation>
+    </message>
+</context>
+<context>
+    <name>ShareRIEXDialog</name>
+    <message>
+        <location filename="shareriexdialog.ui" line="14"/>
+        <source>Share contacts</source>
+        <translation>Спільне використання контактів</translation>
+    </message>
+    <message>
+        <location filename="shareriexdialog.ui" line="29"/>
+        <source>Filter:</source>
+        <translation>Фільтр:</translation>
+    </message>
+    <message>
+        <location filename="shareriexdialog.ui" line="44"/>
+        <source>All accounts</source>
+        <translation>Всі акаунти</translation>
+    </message>
+    <message>
+        <location filename="shareriexdialog.ui" line="53"/>
+        <source>Message:</source>
+        <translation>Повідомлення:</translation>
+    </message>
+    <message>
+        <location filename="shareriexdialog.ui" line="81"/>
+        <source>If checked, the information about the groups of the selected contacts would also be sent along with the sharing request.</source>
+        <translation>Якщо відмічено, інформація про групи вибраних контактів буде також направлена разом із спільного запиту.</translation>
+    </message>
+    <message>
+        <location filename="shareriexdialog.ui" line="84"/>
+        <source>Share groups</source>
+        <translation>Спільне використання груп</translation>
     </message>
 </context>
 <context>
@@ -2551,11 +2920,6 @@
         <location filename="dummy.cpp" line="5"/>
         <source>Status icons:</source>
         <translation>Іконки статусу:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="6"/>
-        <source>Oxygen</source>
-        <translation>Oxygen</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
@@ -2574,7 +2938,7 @@
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Smiles:</source>
-        <translation>Емоційки:</translation>
+        <translation>Смайлики:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="2"/>
@@ -2599,7 +2963,6 @@
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>User mood icons:</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>Іконки настрою користувача:</translation>
     </message>
     <message>
@@ -2610,7 +2973,7 @@
     <message>
         <location filename="dummy.cpp" line="17"/>
         <source>General icons:</source>
-        <translation>Головні іконки:</translation>
+        <translation>Основні іконки:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
@@ -2624,7 +2987,7 @@
         <translation>Основний</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Font size:</source>
         <oldsource>Font size</oldsource>
         <translation>Розмір шрифта:</translation>
@@ -2632,324 +2995,480 @@
     <message>
         <location filename="dummy.cpp" line="24"/>
         <source>Contact list</source>
-        <translation>Ростер</translation>
+        <translation>Список контактів</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>Likey</source>
+        <translation>Likey</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Custom theme for multiuser chats</source>
-        <translation type="unfinished"></translation>
+        <translation>Настроювані теми для багатокористувацьких чатів</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
         <source>MUC window style:</source>
-        <translation type="unfinished"></translation>
+        <translation>стиль вікна MUC:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>
-        <source>Show Azoth menu under the contact list</source>
-        <translation>Показати меню Azoth під списком контактів</translation>
+        <source>Show toolbar on top of the contact list</source>
+        <oldsource>Show Azoth menu under the contact list</oldsource>
+        <translation>Відображати панель інструментів над списком контактів</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="26"/>
+        <source>Show statuses</source>
+        <translation>Показувати статуси</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="27"/>
         <source>Show avatars</source>
         <translation>Показувати аватарки</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="27"/>
+        <location filename="dummy.cpp" line="28"/>
         <source>Show client icons</source>
         <translation>Показувати іконки клієнтів</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>Group contacts</source>
-        <translation>Групові контакти</translation>
+        <translation>Групувати контакти</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="29"/>
-        <source>Group contacts by status</source>
-        <translation>Групові контакти по статусу</translation>
+        <location filename="dummy.cpp" line="30"/>
+        <source>If this option is enabled, contacts would be grouped, otherwise, they will all appear in the same group.</source>
+        <translation>Розподіляти контакти по групам</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="31"/>
-        <source>Pre-nick text:</source>
-        <translation>Перед-нік текст:</translation>
+        <source>Group contacts by status</source>
+        <translation>Групувати контакти за статусом</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="32"/>
-        <source>Post-nick text:</source>
-        <translation>Post-nick text:</translation>
+        <source>If this option is enabled, contacts are ordered by status and then by name. Otherwise, they are ordered by name only.</source>
+        <translation>Сортувати за статусом, потім за ім’ям; якщо вимкнено, сортування буде лише за ім’ям.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="33"/>
-        <source>Show rich text message body (if available)</source>
-        <translation>Показати форматоване тіло повідомлення (якщо можливо)</translation>
+        <source>Distance between contacts in roster:</source>
+        <translation>Відстань між контактами у ростері:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="34"/>
+        <source> px</source>
+        <translation>пікселів</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="36"/>
+        <source>Chat view formatting</source>
+        <translation>Форматування чату</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="37"/>
+        <source>Pre-nick text:</source>
+        <translation>Текст перед ніком:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="38"/>
+        <source>Post-nick text:</source>
+        <translation>Текст після ніку:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="39"/>
+        <source>Post-address text:</source>
+        <translation>Текст після адреси:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="40"/>
+        <source>Show rich text message body (if available)</source>
+        <translation>Показувати форматоване повідомлення (якщо можливо)</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="41"/>
+        <source>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</source>
+        <translation>Використовувати Rich Text у повідомленні при можливості. Це значення за замовченням, поведінка може бути змінена для кожного відкритого вікна чату.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="42"/>
         <source>Highlight color:</source>
         <translation>Колір підсвічування:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="36"/>
-        <location filename="dummy.cpp" line="37"/>
+        <location filename="dummy.cpp" line="44"/>
+        <source>Chat tab</source>
+        <translation>Вкладка чату</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="45"/>
+        <source>Rich text format toolbar position:</source>
+        <translation>Розміщення панелі інструментів при редагуванні у Rich Text</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="46"/>
+        <source>Above message editor</source>
+        <translation>Над редактором повідомлення</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="47"/>
+        <source>Below message editor</source>
+        <translation>Під редактором повідомлення</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="48"/>
+        <source>Display send button</source>
+        <translation>Показувати кнопку відправлення</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="49"/>
+        <location filename="dummy.cpp" line="50"/>
+        <source>Fonts</source>
+        <translation>Шрифти</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="51"/>
+        <source>Standard font:</source>
+        <translation>Стандартний шрифт:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="52"/>
+        <source>Fixed font:</source>
+        <translation>Моноширинний шрифт:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="53"/>
+        <source>Serif font:</source>
+        <translation>Шрифт з зарубками:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="54"/>
+        <source>SansSerif font:</source>
+        <translation>Шрифт без зарубок:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="55"/>
+        <source>Cursive font:</source>
+        <translation>Курсивний шрифт:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="56"/>
+        <source>Fantasy font:</source>
+        <translation>Fantasy-шрифт:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="57"/>
+        <location filename="dummy.cpp" line="58"/>
         <source>Behavior</source>
         <translation>Поведінка</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="38"/>
+        <location filename="dummy.cpp" line="59"/>
         <source>Jump to new tab on open</source>
         <translation>Переходити на новий таб при відкритті</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="39"/>
+        <location filename="dummy.cpp" line="60"/>
+        <source>Open chat tab on new message</source>
+        <translation>Коли приходить нове повідомлення, відкривати вкладку чату</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="61"/>
         <source>Close conferences tabs when leaving</source>
-        <translation>Закрити вкладки конференцій при виході</translation>
+        <translation>Закривати вкладки конференцій при виході</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="40"/>
+        <location filename="dummy.cpp" line="62"/>
+        <source>Leave conferences when closing their tabs</source>
+        <translation>Після закриття вкладки з конференцією, покидати її</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="63"/>
         <source>Automatically switch roster to conference mode when needed</source>
-        <translation>Автоматичне перемикання ростеру в режим конференції, коли це необхідно</translation>
+        <translation>Автоматичне перемикання ростера в режим конференції, коли це необхідно</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="41"/>
+        <location filename="dummy.cpp" line="64"/>
+        <source>Hide MUC participants in Whole CL mode</source>
+        <translation>Приховати MUC-учасників </translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="65"/>
         <source>Autojoin allowed</source>
         <translation>Дозволити автовхід</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="42"/>
+        <location filename="dummy.cpp" line="66"/>
         <source>Send chat state events</source>
         <translation>Відправляти статусні повідомлення</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="43"/>
+        <location filename="dummy.cpp" line="67"/>
+        <source>Notify remote participant when you&apos;ve ended conversation</source>
+        <translation>Повідомити віддаленому учасникові, коли у вас закінчиться розмова</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="68"/>
         <source>Use alternative nickname</source>
-        <translation>використовувати альтернативний нік</translation>
+        <translation>Використати альтернативний нік</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="44"/>
+        <location filename="dummy.cpp" line="69"/>
+        <source>Entry activates on:</source>
+        <translation>Спосіб активації запису:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="70"/>
+        <source>Single click</source>
+        <translation>Одиничний клік</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="71"/>
+        <source>Double click</source>
+        <translation>Подвійний клік</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="72"/>
+        <source>Let the environment decide</source>
+        <translation>Нехай вирішує середовище</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="73"/>
         <source>Send message on:</source>
-        <translation>Відправляти повідомлення при:</translation>
+        <translation>Відправляти повідомлення по натисненні:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="45"/>
+        <location filename="dummy.cpp" line="74"/>
         <source>Enter</source>
-        <translation></translation>
+        <translation>Enter</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="46"/>
+        <location filename="dummy.cpp" line="75"/>
         <source>Shift+Enter</source>
-        <translation></translation>
+        <translation>Shift + Enter</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="47"/>
+        <location filename="dummy.cpp" line="76"/>
         <source>Ctrl+Enter</source>
-        <translation></translation>
+        <translation>Ctrl + Enter</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="77"/>
         <source>Load at most messages from history:</source>
         <oldsource>Show at most this many messages from history:</oldsource>
-        <translation>Завантажувати більшість повідомлень з історії:</translation>
+        <translation>Завантажувати щонайбільше повідомлень з історії:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="49"/>
+        <location filename="dummy.cpp" line="78"/>
         <source>Alternative nickname for chat rooms:</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>Альтернативний нік для кімнат чату:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="50"/>
+        <location filename="dummy.cpp" line="79"/>
         <source>Default file transfers save path:</source>
-        <translation>Шлях по замовчуванню для збереження прийнятих файлів:</translation>
+        <translation>Шлях за замовчуванням для збереження прийнятих файлів:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="51"/>
+        <location filename="dummy.cpp" line="80"/>
         <source>Notifications</source>
         <translation>Сповіщення</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="52"/>
+        <location filename="dummy.cpp" line="81"/>
         <source>Incoming messages</source>
         <translation>Вхідне повідомлення</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="53"/>
+        <location filename="dummy.cpp" line="82"/>
         <source>Notify about incoming messages</source>
-        <translation>Сповіщувати про вхідні повідомлення</translation>
+        <translation>Сповіщати про вхідні повідомлення</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="54"/>
+        <location filename="dummy.cpp" line="83"/>
         <source>Notify when remote contact starts composing a message:</source>
-        <translation>Повідомляти, коли віддалений контакт при пише повідомлення:</translation>
+        <translation>Повідомляти, коли віддалений контакт почав друкувати повідомлення:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="55"/>
+        <location filename="dummy.cpp" line="84"/>
         <source>always</source>
         <translation>завжди</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="56"/>
+        <location filename="dummy.cpp" line="85"/>
         <source>in opened chats</source>
         <translation>у відкритих чатах</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="57"/>
+        <location filename="dummy.cpp" line="86"/>
         <source>never</source>
         <translation>ніколи</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="58"/>
+        <location filename="dummy.cpp" line="87"/>
         <source>Notify about highlights in conferences</source>
-        <translation>Сповіщувати про підсвічування в конференціях</translation>
+        <translation>Сповіщати про підсвічування в конференціях</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="59"/>
+        <location filename="dummy.cpp" line="88"/>
         <source>Show triggering message in notifications</source>
-        <translation>Показувати відповідне повідомлення в сповіщенні</translation>
+        <translation>Показувати відповідне повідомлення у сповіщенні</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="60"/>
+        <location filename="dummy.cpp" line="89"/>
         <source>Ignore when someone draws our attention</source>
-        <translation>Ігнорувати коли хтось звертає вашу увагу</translation>
+        <translation>Ігнорувати, коли хтось звертає вашу увагу</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="61"/>
+        <location filename="dummy.cpp" line="90"/>
         <source>Subscriptions</source>
         <translation>Підписки</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="62"/>
+        <location filename="dummy.cpp" line="91"/>
         <source>Notify when someone not present in contact-list unsubscribes</source>
-        <translation>Сповіщувати, коли дехто не з ростеру відписується</translation>
+        <translation>Сповіщати, коли відписується хтось не із списку контактів</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="63"/>
+        <location filename="dummy.cpp" line="92"/>
         <source>Notify when someone subscribes to us</source>
-        <translation>Сповіщати, коли дехто підписується</translation>
+        <translation>Сповіщати, коли хто-небудь підписується</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="64"/>
+        <location filename="dummy.cpp" line="93"/>
         <source>Notify when someone unsubscribes from us</source>
-        <translation>Сповіщувати, коли дехто відписується</translation>
+        <translation>Сповіщати, коли хто-небудь відписується</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="65"/>
+        <location filename="dummy.cpp" line="94"/>
         <source>Notify when someone cancels our subscription</source>
-        <translation>Сповіщати, коли дехто відміняє підписку</translation>
+        <translation>Сповіщати, коли хто-небудь відміняє підписку</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="66"/>
+        <location filename="dummy.cpp" line="95"/>
         <source>Notify when someone grants us subscription</source>
-        <translation>Сповіщати, коли дехто підтвержує підписку</translation>
+        <translation>Сповіщати, коли хто-небудь підтвержує підписку</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="30"/>
-        <location filename="dummy.cpp" line="67"/>
+        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="96"/>
         <source>Chat windows</source>
         <translation>Вікна чатів</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="68"/>
+        <location filename="dummy.cpp" line="97"/>
         <source>Show status changes</source>
         <translation>Показувати зміни статусу</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="69"/>
+        <location filename="dummy.cpp" line="98"/>
+        <source>Show when participant ends conversation</source>
+        <translation>Показувати, коли співрозмовник закінчує розмову.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="99"/>
+        <source>Show joins and leaves in MUCs</source>
+        <translation>Показувати входи і виходи з багатокористувацьких конференцій</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="100"/>
         <source>Statuses</source>
         <translation>Статуси</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="70"/>
+        <location filename="dummy.cpp" line="101"/>
         <source>Default status texts</source>
         <translation>Тексти статусів за замовчуванням</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="71"/>
+        <location filename="dummy.cpp" line="102"/>
         <source>I&apos;m online!</source>
         <translation>Я онлайн!</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="72"/>
+        <location filename="dummy.cpp" line="103"/>
         <source>Online:</source>
         <translation>Онлайн:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="73"/>
+        <location filename="dummy.cpp" line="104"/>
         <source>Wanna chat :3</source>
         <translation>Хочу погомоніти :3</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="74"/>
+        <location filename="dummy.cpp" line="105"/>
         <source>Free to chat:</source>
-        <translation>Готовий поспілкуватись:</translation>
+        <translation>Готовий спілкуватися:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="75"/>
+        <location filename="dummy.cpp" line="106"/>
         <source>Oh, seems like I&apos;m away</source>
         <translation>Хм, здається, я відійшов</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="76"/>
+        <location filename="dummy.cpp" line="107"/>
         <source>Away:</source>
         <translation>Відійшов:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="77"/>
+        <location filename="dummy.cpp" line="108"/>
         <source>Please leave me alone now</source>
         <translation>Будь ласка, не чіпайте мене</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="78"/>
+        <location filename="dummy.cpp" line="109"/>
         <source>DND:</source>
         <translation>Не турбувати:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="79"/>
-        <source>Extended away is okay</source>
-        <translation>Розширений відійшов — це нормально</translation>
+        <location filename="dummy.cpp" line="110"/>
+        <source>Not available is okay</source>
+        <translation>Недоступний, i це добре</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="80"/>
+        <location filename="dummy.cpp" line="111"/>
         <source>XA:</source>
         <translation>Розширений відійшов:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="81"/>
+        <location filename="dummy.cpp" line="112"/>
         <source>I turned off my machine to get some life</source>
         <translation>Я вимкнув машину, щоб трохи пожити</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="82"/>
+        <location filename="dummy.cpp" line="113"/>
         <source>Offline:</source>
-        <translation>Офлайн:</translation>
+        <translation>Відключений:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="83"/>
+        <location filename="dummy.cpp" line="114"/>
         <source>Devices</source>
         <translation>Пристрої</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="84"/>
+        <location filename="dummy.cpp" line="115"/>
         <source>Audio devices</source>
-        <translation>Аудіо пристрої</translation>
+        <translation>Аудіопристрої</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="85"/>
+        <location filename="dummy.cpp" line="116"/>
         <source>Input audio device:</source>
-        <translation>Вхідний аудіо пристрій:</translation>
+        <translation>Вхідний аудіопристрій:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="86"/>
+        <location filename="dummy.cpp" line="117"/>
         <source>Default input device</source>
         <translation>Пристрій вводу за замовчуванням</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="87"/>
+        <location filename="dummy.cpp" line="118"/>
         <source>Output audio device:</source>
-        <translation>Вихідний аудіо пристрій:</translation>
+        <translation>Вихідний аудіопристрій:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="88"/>
+        <location filename="dummy.cpp" line="119"/>
         <source>Default output device</source>
         <translation>Пристрій виводу за замовчуванням</translation>
     </message>

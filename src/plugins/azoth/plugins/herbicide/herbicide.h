@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,11 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_HERBICIDE_HERBICIDE_H
 #define PLUGINS_AZOTH_PLUGINS_HERBICIDE_HERBICIDE_H
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
-#include "core.h"
+#include <interfaces/core/ihookproxy.h>
 
 class QTranslator;
 
@@ -43,12 +42,16 @@ namespace Herbicide
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
-		boost::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		ConfWidget *ConfWidget_;
 		QSet<QObject*> AskedEntries_;
 		QSet<QObject*> AllowedEntries_;
 		QSet<QObject*> OurMessages_;
+
+		QHash<QObject*, QString> DeniedAuth_;
+
+		QSet<QRegExp> Whitelist_;
+		QSet<QRegExp> Blacklist_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -59,14 +62,23 @@ namespace Herbicide
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
-		
+
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
 		bool IsConfValid () const;
 		bool IsEntryAllowed (QObject*) const;
+
+		void ChallengeEntry (IHookProxy_ptr, QObject*);
+		void GreetEntry (QObject*);
 	public slots:
+		void hookGotAuthRequest (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry,
+				QString msg);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
+	private slots:
+		void handleWhitelistChanged ();
+		void handleBlacklistChanged ();
 	};
 }
 }

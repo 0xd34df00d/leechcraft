@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #define PLUGINS_POSHUKU_FAVORITESDELEGATE_H
 #include <memory>
 #include <QItemDelegate>
-#include <util/tagscompleter.h>
+#include <util/tags/tagscompleter.h>
 
 namespace LeechCraft
 {
@@ -30,7 +30,7 @@ namespace Poshuku
 	{
 		Q_OBJECT
 
-		mutable std::auto_ptr<Util::TagsCompleter> TagsCompleter_;
+		mutable std::unique_ptr<Util::TagsCompleter> TagsCompleter_;
 	public:
 		FavoritesDelegate (QObject* = 0);
 

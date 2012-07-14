@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AUSCRIE_POSTER_H
 #define PLUGINS_AUSCRIE_POSTER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QMap>
 
@@ -27,51 +27,47 @@ class QNetworkAccessManager;
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace Auscrie
+{
+	struct Worker
 	{
-		namespace Auscrie
-		{
-			struct Worker
-			{
-				virtual ~Worker () {}
+		virtual ~Worker () {}
 
-				virtual QNetworkReply* Post (const QByteArray& imageData,
-						const QString& format, QNetworkAccessManager *am) const = 0;
-				virtual QString GetLink (const QString& contents, QNetworkReply *reply) const = 0;
-			};
-
-			typedef boost::shared_ptr<Worker> Worker_ptr;
-
-			class Poster : public QObject
-			{
-				Q_OBJECT
-
-				QNetworkReply *Reply_;
-			public:
-				enum HostingService
-				{
-					DumpBitcheeseNet,
-					SavepicRu,
-					ImagebinCa
-				};
-			private:
-				const HostingService Service_;
-				QMap<HostingService, Worker_ptr> Workers_;
-			public:
-				Poster (HostingService,
-						const QByteArray&, const QString&,
-						QNetworkAccessManager*, QObject* = 0);
-			private slots:
-				void handleFinished ();
-				void handleError ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		virtual QNetworkReply* Post (const QByteArray& imageData,
+				const QString& format, QNetworkAccessManager *am) const = 0;
+		virtual QString GetLink (const QString& contents, QNetworkReply *reply) const = 0;
 	};
-};
+
+	typedef std::shared_ptr<Worker> Worker_ptr;
+
+	class Poster : public QObject
+	{
+		Q_OBJECT
+
+		QNetworkReply *Reply_;
+	public:
+		enum HostingService
+		{
+			DumpBitcheeseNet,
+			SavepicRu,
+			ImagebinCa
+		};
+	private:
+		const HostingService Service_;
+		QMap<HostingService, Worker_ptr> Workers_;
+	public:
+		Poster (HostingService,
+				const QByteArray&, const QString&,
+				QNetworkAccessManager*, QObject* = 0);
+	private slots:
+		void handleFinished ();
+		void handleError ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+	};
+}
+}
 
 #endif
-

@@ -17,13 +17,13 @@
  **********************************************************************/
 
 #include "channelclentry.h"
-#include <interfaces/azothutil.h>
+#include <interfaces/azoth/azothutil.h>
 #include "channelhandler.h"
 #include "channelpublicmessage.h"
 #include "ircmessage.h"
-#include "ircserverhandler.h"
 #include "ircaccount.h"
 #include "channelconfigwidget.h"
+#include "channelsmanager.h"
 
 namespace LeechCraft
 {
@@ -32,10 +32,73 @@ namespace Azoth
 namespace Acetamide
 {
 	ChannelCLEntry::ChannelCLEntry (ChannelHandler *handler)
-	: QObject (handler->GetIrcServerHandler ()->GetAccount ())
-	, ICH_ (handler)
+	: ICH_ (handler)
 	, IsWidgetRequest_ (false)
 	{
+		Perms_ ["permclass_managment"] << "kick";
+		Perms_ ["permclass_managment"] << "ban_by_name";
+		Perms_ ["permclass_managment"] << "ban_by_user_and_domain";
+		Perms_ ["permclass_managment"] << "ban_by_domain";
+		Perms_ ["permclass_managment"] << "kick_and_ban";
+
+		Perms_ ["permclass_role"] << "participant";
+
+		Role2Str_ [ChannelRole::Participant] = "participant";
+
+		Aff2Str_ [ChannelRole::Participant] = "noaffiliation";
+
+		Managment2Str_ [ChannelManagment::Kick] = "kick";
+		Managment2Str_ [ChannelManagment::BanByName] = "ban_by_name";
+		Managment2Str_ [ChannelManagment::BanByDomain] = "ban_by_user_and_domain";
+		Managment2Str_ [ChannelManagment::BanByUserAndDomain] = "ban_by_domain";
+		Managment2Str_ [ChannelManagment::KickAndBan] = "kick_and_ban";
+
+		Translations_ ["permclass_role"] = tr ("Role");
+		Translations_ ["participant"] = tr ("Participant");
+
+		Translations_ ["permclass_managment"] = tr ("Kick and Ban");
+		Translations_ ["kick"] = tr ("Kick");
+		Translations_ ["ban_by_name"] = tr ("Ban by nickname");
+		Translations_ ["ban_by_domain"] = tr ("Ban by mask (*!*@domain)");
+		Translations_ ["ban_by_user_and_domain"] = tr ("Ban by mask (*!user@domain)");
+		Translations_ ["kick_and_ban"] = tr ("Kick and ban");
+
+		const auto& iSupport = ICH_->GetChannelsManager ()->GetISupport ();
+		QString roles = iSupport ["PREFIX"].split (')').value (0);
+		for (int i = roles.length () - 1; i >= 1; --i)
+			switch (roles.at (i).toAscii ())
+			{
+			case 'v':
+				Perms_ ["permclass_role"] << "voiced";
+				Role2Str_ [ChannelRole::Voiced] = "voiced";
+				Aff2Str_ [ChannelRole::Voiced] = "member";
+				Translations_ ["voiced"] = tr ("Voiced");
+				break;
+			case 'h':
+				Perms_ ["permclass_role"] << "halfoperator";
+				Role2Str_ [ChannelRole::HalfOperator] = "halfoperator";
+				Aff2Str_ [ChannelRole::HalfOperator] = "admin";
+				Translations_ ["halfoperator"] = tr ("HalfOperator");
+				break;
+			case 'o':
+				Perms_ ["permclass_role"] << "operator";
+				Role2Str_ [ChannelRole::Operator] = "operator";
+				Aff2Str_ [ChannelRole::Operator] = "admin";
+				Translations_ ["operator"] = tr ("Operator");
+				break;
+			case 'a':
+				Perms_ ["permclass_role"] << "admin";
+				Role2Str_ [ChannelRole::Admin] = "administrator";
+				Aff2Str_ [ChannelRole::Admin] = "admin";
+				Translations_ ["admin"] = tr ("Admin");
+				break;
+			case 'q':
+				Perms_ ["permclass_role"] << "owner";
+				Role2Str_ [ChannelRole::Owner] = "owner";
+				Aff2Str_ [ChannelRole::Owner] = "owner";
+				Translations_ ["owner"] = tr ("Owner");
+				break;
+			}
 	}
 
 	ChannelHandler* ChannelCLEntry::GetChannelHandler () const
@@ -50,7 +113,7 @@ namespace Acetamide
 
 	QObject* ChannelCLEntry::GetParentAccount () const
 	{
-		return ICH_->GetIrcServerHandler ()->GetAccount ();
+		return ICH_->GetChannelsManager ()->GetAccount ();
 	}
 
 	ICLEntry::Features ChannelCLEntry::GetEntryFeatures () const
@@ -74,9 +137,9 @@ namespace Acetamide
 
 	QString ChannelCLEntry::GetEntryID () const
 	{
-		return ICH_->GetIrcServerHandler ()->GetAccount ()->
-				GetAccountID () + "_" + ICH_->
-				GetIrcServerHandler ()->GetServerID_ () + "_" +
+		return ICH_->GetChannelsManager ()->GetAccount ()->
+				GetAccountID () + "_" +
+				ICH_->GetChannelsManager ()->GetServerID () + "_" +
 				ICH_->GetChannelID ();
 	}
 
@@ -122,7 +185,6 @@ namespace Acetamide
 
 	void ChannelCLEntry::SetChatPartState (ChatPartState, const QString&)
 	{
-
 	}
 
 	QList<QAction*> ChannelCLEntry::GetActions () const
@@ -130,13 +192,16 @@ namespace Acetamide
 		return QList<QAction*> ();
 	}
 
-	QMap<QString, QVariant>
-			ChannelCLEntry::GetClientInfo (const QString&) const
+	QMap<QString, QVariant> ChannelCLEntry::GetClientInfo (const QString&) const
 	{
 		return QMap<QString, QVariant> ();
 	}
-	
-	QString ChannelCLEntry::GetRealID (QObject *participant) const
+
+	void ChannelCLEntry::MarkMsgsRead ()
+	{
+	}
+
+	QString ChannelCLEntry::GetRealID (QObject*) const
 	{
 		return QString ();
 	}
@@ -172,14 +237,14 @@ namespace Acetamide
 
 	void ChannelCLEntry::SetMUCSubject (const QString& subject)
 	{
-		ICH_->SetMUCSubject (subject);
+		ICH_->SetTopic (subject);
 	}
 
 	QList<QObject*> ChannelCLEntry::GetParticipants ()
 	{
 		return ICH_->GetParticipants ();
 	}
-	
+
 	// TODO implement this
 	void ChannelCLEntry::Join ()
 	{
@@ -193,42 +258,43 @@ namespace Acetamide
 
 	QString ChannelCLEntry::GetNick () const
 	{
-		return ICH_->GetIrcServerHandler ()->GetNickName ();
+		return ICH_->GetChannelsManager ()->GetOurNick ();
 	}
 
 	void ChannelCLEntry::SetNick (const QString& nick)
 	{
 		ICH_->SendPublicMessage ("/nick " + nick);
 	}
-	
+
 	QString ChannelCLEntry::GetGroupName () const
 	{
-		return ICH_->GetSelf ()->Groups ().value (0);
+		return ICH_->GetChannelID ();
 	}
 
 	QVariantMap ChannelCLEntry::GetIdentifyingData () const
 	{
 		QVariantMap result;
+		const auto& channelOpts = ICH_->GetChannelOptions ();
+		const auto& serverOpts = ICH_->GetChannelsManager ()->GetServerOptions ();
 		result ["HumanReadableName"] = QString ("%1 on %2@%3:%4")
-				.arg (ICH_->GetIrcServerHandler ()->GetNickName ())
-				.arg (ICH_->GetChannelOptions ().ChannelName_)
-				.arg (ICH_->GetChannelOptions ().ServerName_)
-				.arg (ICH_->GetIrcServerHandler ()->
-					GetServerOptions ().ServerPort_);
-		result ["AccountID"] = ICH_->GetIrcServerHandler ()->
+				.arg (GetNick ())
+				.arg (channelOpts.ChannelName_)
+				.arg (channelOpts.ServerName_)
+				.arg (serverOpts.ServerPort_);
+		result ["AccountID"] = ICH_->GetChannelsManager ()->
 				GetAccount ()->GetAccountID ();
-		result ["Nickname"] = ICH_->GetIrcServerHandler ()->
-				GetNickName ();
-		result ["Channel"] = ICH_->GetChannelOptions ().ChannelName_;
-		result ["Server"] = ICH_->GetChannelOptions ().ServerName_;
-		result ["Port"] = ICH_->GetIrcServerHandler ()->
-				GetServerOptions ().ServerPort_;
-		result ["Encoding"] = ICH_->GetIrcServerHandler ()->
-				GetServerOptions ().ServerEncoding_;
-		result ["SSL"] = ICH_->GetIrcServerHandler ()->
-				GetServerOptions ().SSL_;
+		result ["Nickname"] = GetNick ();
+		result ["Channel"] = channelOpts.ChannelName_;
+		result ["Server"] = channelOpts.ServerName_;
+		result ["Port"] = serverOpts.ServerPort_;
+		result ["Encoding"] = serverOpts.ServerEncoding_;
+		result ["SSL"] = serverOpts.SSL_;
 
 		return result;
+	}
+
+	void ChannelCLEntry::InviteToMUC (const QString&, const QString&)
+	{
 	}
 
 	void ChannelCLEntry::HandleMessage (ChannelPublicMessage *msg)
@@ -249,41 +315,181 @@ namespace Acetamide
 	{
 		emit mucSubjectChanged (subj);
 	}
-	//TODO Permissions
-	QByteArray ChannelCLEntry::GetAffName (QObject*) const
+
+	QByteArray ChannelCLEntry::GetAffName (QObject *participant) const
 	{
-		return QByteArray ();
+		ChannelParticipantEntry *entry = qobject_cast<ChannelParticipantEntry*> (participant);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< participant
+					<< "is not a ChannelParticipantEntry";
+			return "noaffiliation";
+		}
+
+		return Aff2Str_ [entry->HighestRole ()];
 	}
 
-	QMap<QByteArray, QByteArray> ChannelCLEntry::GetPerms (QObject*) const
+	QMap<QByteArray, QList<QByteArray>>  ChannelCLEntry::GetPerms (QObject *participant) const
 	{
-		return QMap<QByteArray, QByteArray> ();
+		if (!participant)
+			participant = ICH_->GetSelf ().get ();
+
+		QMap<QByteArray, QList<QByteArray>>  result;
+		ChannelParticipantEntry *entry = qobject_cast<ChannelParticipantEntry*> (participant);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< participant
+					<< "is not a ChannelParticipantEntry";
+			result ["permclass_role"] << "norole";
+		}
+		else
+			Q_FOREACH (const ChannelRole& role, entry->Roles ())
+				result ["permclass_role"] << Role2Str_.value (role, "invalid");
+
+		return result;
 	}
 
-	void ChannelCLEntry::SetPerm (QObject*,
-			const QByteArray&, const QByteArray&, const QString&)
+	QPair<QByteArray, QByteArray> ChannelCLEntry::GetKickPerm () const
 	{
+		return QPair<QByteArray, QByteArray> ();
 	}
 
-	QMap<QByteArray, QList<QByteArray> > ChannelCLEntry::GetPossiblePerms () const
+	QPair<QByteArray, QByteArray> ChannelCLEntry::GetBanPerm () const
 	{
-		return QMap<QByteArray, QList<QByteArray> > ();
+		return QPair<QByteArray, QByteArray> ();
 	}
 
-	QString ChannelCLEntry::GetUserString (const QByteArray&) const
+	void ChannelCLEntry::SetPerm (QObject *participant,
+			const QByteArray& permClass,
+			const QByteArray& perm,
+			const QString& reason)
 	{
-		return QString ();
+		ChannelParticipantEntry *entry = qobject_cast<ChannelParticipantEntry*> (participant);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< participant
+					<< "is not a ChannelParticipantEntry";
+			return;
+		}
+
+		if (permClass == "permclass_role")
+			ICH_->SetRole (entry, Role2Str_.key (perm), reason);
+		else if (permClass == "permclass_managment")
+			ICH_->ManageWithParticipant (entry, Managment2Str_.key (perm));
+		else
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown perm class"
+					<< permClass;
+			return;
+		}
 	}
 
-	bool ChannelCLEntry::IsLessByPerm (QObject*, QObject*) const
+	QMap<QByteArray, QList<QByteArray>> ChannelCLEntry::GetPossiblePerms () const
 	{
-		return false;
+		return Perms_;
 	}
 
-	bool ChannelCLEntry::MayChangePerm (QObject*,
-			const QByteArray&, const QByteArray&) const
+	QString ChannelCLEntry::GetUserString (const QByteArray& id) const
 	{
-		return false;
+		return Translations_.value (id, id);
+	}
+
+	bool ChannelCLEntry::IsLessByPerm (QObject *p1, QObject *p2) const
+	{
+		ChannelParticipantEntry *e1 = qobject_cast<ChannelParticipantEntry*> (p1);
+		ChannelParticipantEntry *e2 = qobject_cast<ChannelParticipantEntry*> (p2);
+		if (!e1 || !e2)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< p1
+					<< "or"
+					<< p2
+					<< "is not a ChannelParticipantEntry";
+			return false;
+		}
+
+		return e1->HighestRole () < e2->HighestRole ();
+	}
+
+	namespace
+	{
+		bool MayChange (ChannelRole ourRole,
+				ChannelParticipantEntry *entry,
+				ChannelRole newRole)
+		{
+			ChannelRole role = entry->HighestRole ();
+
+			if (ourRole < ChannelRole::HalfOperator)
+				return false;
+
+			if (ourRole == ChannelRole::Owner)
+				return true;
+
+			if (role > ourRole)
+				return false;
+
+			if (newRole > ourRole)
+				return false;
+
+			return true;
+		}
+
+		bool MayManage (ChannelRole ourRole,
+				ChannelParticipantEntry *entry,
+				const QString& nick)
+		{
+			ChannelRole role = entry->HighestRole ();
+
+			if (ourRole < ChannelRole::HalfOperator)
+				return false;
+
+			if (ourRole == ChannelRole::Owner)
+				return true;
+
+			if (role > ourRole)
+				return false;
+
+			if (entry->GetEntryName () == nick)
+				return false;
+
+			return true;
+		}
+	}
+
+	bool ChannelCLEntry::MayChangePerm (QObject *participant,
+			const QByteArray& permClass, const QByteArray& perm) const
+	{
+		ChannelParticipantEntry *entry = qobject_cast<ChannelParticipantEntry*> (participant);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< participant
+					<< "is not a ChannelParticipantEntry";
+			return false;
+		}
+
+		const ChannelRole ourRole = ICH_->GetSelf ()->HighestRole ();
+
+		if (permClass == "permclass_role")
+			return MayChange (ourRole, entry, Role2Str_.key (perm));
+		else if (permClass == "permclass_managment")
+			return MayManage (ourRole, entry, ICH_->GetSelf ()->GetEntryName ());
+		else
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown perm class"
+					<< permClass;
+			return false;
+		}
+	}
+
+	bool ChannelCLEntry::IsMultiPerm (const QByteArray&) const
+	{
+		return true;
 	}
 
 	ChannelModes ChannelCLEntry::GetChannelModes () const
@@ -302,9 +508,9 @@ namespace Acetamide
 		if (!cfg)
 		{
 			qWarning () << Q_FUNC_INFO
-			<< "unable to cast"
-			<< widget
-			<< "to ChannelConfigWidget";
+					<< "unable to cast"
+					<< widget
+					<< "to ChannelConfigWidget";
 			return;
 		}
 
@@ -326,19 +532,19 @@ namespace Acetamide
 		ICH_->RequestInviteList ();
 	}
 
-	void ChannelCLEntry::SetBanListItem (const QString& mask, 
+	void ChannelCLEntry::SetBanListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		emit gotBanListItem (mask, nick, date);
 	}
 
-	void ChannelCLEntry::SetExceptListItem (const QString& mask, 
+	void ChannelCLEntry::SetExceptListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		emit gotExceptListItem (mask, nick, date);
 	}
 
-	void ChannelCLEntry::SetInviteListItem (const QString& mask, 
+	void ChannelCLEntry::SetInviteListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		emit gotInviteListItem (mask, nick, date);
@@ -389,6 +595,10 @@ namespace Acetamide
 		ICH_->SetNewChannelModes (modes);
 	}
 
-};
-};
-};
+	QString ChannelCLEntry::Role2String (const ChannelRole& role) const
+	{
+		return Role2Str_ [role];
+	}
+}
+}
+}

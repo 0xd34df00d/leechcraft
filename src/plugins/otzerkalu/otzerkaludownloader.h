@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2011  Minh Ngo
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,32 +36,33 @@ namespace Otzerkalu
 		QString DestDir_;
 		int RecLevel_;
 		bool FromOtherSite_;
-		
+
 		DownloadParams ();
 		DownloadParams (const QUrl& downloadUrl, const QString& destDir,
 				int recLevel, bool fromOtherSite);
 	};
-	
+
 	struct FileData
 	{
 		QUrl Url_;
 		QString Filename_;
 		int RecLevel_;
-		
+
 		FileData ();
 		FileData (const QUrl& url, const QString& filename, int recLevel);
 	};
-	
+
 	class OtzerkaluDownloader : public QObject
 	{
 		Q_OBJECT
 		const DownloadParams Param_;
 		QMap<int, FileData> FileMap_;
 		QStringList DownloadedFiles_;
-		int UrlCount_;
+		int UrlCount_, ID_;
 	public:
-		OtzerkaluDownloader (const DownloadParams& param, QObject *parent = 0);
-		
+		OtzerkaluDownloader (const DownloadParams& param, int id, QObject *parent = 0);
+		QString GetLastDownloaded () const;
+		int FilesCount () const;
 		void Begin ();
 	private:
 		QString Download (const QUrl&, int);
@@ -76,6 +77,8 @@ namespace Otzerkalu
 	signals:
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
+		void fileDownloaded (int id, int count);
+		void mirroringFinished (int id);
 	};
 };
 };

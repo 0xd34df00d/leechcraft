@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,9 +45,10 @@ namespace LeechCraft
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
 
-		QVariant value = XSD_->GetValue (item);
+		const QVariant& value = XSD_->GetValue (item);
 
 		QLineEdit *edit = new QLineEdit (value.toString ());
+		XSD_->SetTooltip (edit, item);
 		edit->setObjectName (item.attribute ("property"));
 		edit->setMinimumWidth (QApplication::fontMetrics ()
 				.width ("thisismaybeadefaultsetting"));

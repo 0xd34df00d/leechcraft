@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,24 +29,24 @@ namespace Aggregator
 	RSS20Parser::RSS20Parser ()
 	{
 	}
-	
+
 	RSS20Parser::~RSS20Parser ()
 	{
 	}
-	
+
 	RSS20Parser& RSS20Parser::Instance ()
 	{
 		static RSS20Parser inst;
 		return inst;
 	}
-	
+
 	bool RSS20Parser::CouldParse (const QDomDocument& doc) const
 	{
 		QDomElement root = doc.documentElement ();
 		return root.tagName () == "rss" &&
 			root.attribute ("version") == "2.0";
 	}
-	
+
 	channels_container_t RSS20Parser::Parse (const QDomDocument& doc,
 			const IDType_t& feedId) const
 	{
@@ -67,17 +67,20 @@ namespace Aggregator
 			if (chan->Author_.isEmpty ())
 				chan->Author_ = channel.firstChildElement ("webMaster").text ();
 			chan->PixmapURL_ = channel.firstChildElement ("image").attribute ("url");
-	
+
+			auto& itemsList = chan->Items_;
+			itemsList.reserve (20);
+
 			QDomElement item = channel.firstChildElement ("item");
 			while (!item.isNull ())
 			{
-				chan->Items_.push_back (Item_ptr (ParseItem (item, chan->ChannelID_)));
+				itemsList.push_back (Item_ptr (ParseItem (item, chan->ChannelID_)));
 				item = item.nextSiblingElement ("item");
 			}
 			if (!chan->LastBuild_.isValid () || chan->LastBuild_.isNull ())
 			{
-				if (chan->Items_.size ())
-					chan->LastBuild_ = chan->Items_.at (0)->PubDate_;
+				if (!itemsList.empty ())
+					chan->LastBuild_ = itemsList.at (0)->PubDate_;
 				else
 					chan->LastBuild_ = QDateTime::currentDateTime ();
 			}
@@ -86,7 +89,7 @@ namespace Aggregator
 		}
 		return channels;
 	}
-	
+
 	Item* RSS20Parser::ParseItem (const QDomElement& item,
 			const IDType_t& channelId) const
 	{

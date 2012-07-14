@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +18,14 @@
 
 #ifndef INTERFACES_IINFO_H
 #define INTERFACES_IINFO_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QString>
 #include <QStringList>
 #include <QtPlugin>
 #include "structures.h"
 
 class ICoreProxy;
-typedef boost::shared_ptr<ICoreProxy> ICoreProxy_ptr;
+typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
 
 /** @brief Required interface for every plugin.
  *
@@ -347,5 +347,16 @@ public:
 };
 
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
+
+#define CURRENT_API_LEVEL 8
+
+#define LC_EXPORT_PLUGIN(name,file) Q_EXPORT_PLUGIN2(name, file) \
+	extern "C"\
+	{\
+		Q_DECL_EXPORT quint64 GetAPILevels ()\
+		{\
+			return CURRENT_API_LEVEL;\
+		}\
+	}
 
 #endif

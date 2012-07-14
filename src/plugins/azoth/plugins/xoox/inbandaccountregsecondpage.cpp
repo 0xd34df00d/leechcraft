@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
 #include <QLabel>
 #include <QDomElement>
 #include <QLineEdit>
+#include <QPointer>
+#include <QXmppBobManager.h>
 #include "inbandaccountregfirstpage.h"
 #include "util.h"
 
@@ -35,12 +37,16 @@ namespace Xoox
 	InBandAccountRegSecondPage::InBandAccountRegSecondPage (InBandAccountRegFirstPage *first, QWidget *parent)
 	: QWizardPage (parent)
 	, Client_ (new QXmppClient (this))
+	, BobManager_ (new QXmppBobManager)
 	, FirstPage_ (first)
+	, FB_ (FormBuilder (QString (), BobManager_))
 	, Widget_ (0)
 	, State_ (SIdle)
 	{
 		Q_FOREACH (QXmppClientExtension *ext, Client_->extensions ())
 			Client_->removeExtension (ext);
+
+		Client_->addExtension (BobManager_);
 
 		setLayout (new QVBoxLayout);
 
@@ -93,16 +99,21 @@ namespace Xoox
 
 	QString InBandAccountRegSecondPage::GetJID () const
 	{
-		if (FormType_ != FTLegacy)
-			return QString ();
-		return LFB_.GetUsername () + '@' + FirstPage_->GetServerName ();
+		QString res;
+		if (FormType_ == FTNew)
+			res = FB_.GetSavedUsername ();
+		else
+			res = LFB_.GetUsername ();
+		res += '@' + FirstPage_->GetServerName ();
+		return res;
 	}
 
 	QString InBandAccountRegSecondPage::GetPassword () const
 	{
-		if (FormType_ != FTLegacy)
-			return QString ();
-		return LFB_.GetPassword ();
+		if (FormType_ == FTNew)
+			return FB_.GetSavedPass ();
+		else
+			return LFB_.GetPassword ();
 	}
 
 	bool InBandAccountRegSecondPage::isComplete () const
@@ -149,9 +160,20 @@ namespace Xoox
 		SetState (SConnecting);
 	}
 
+	void InBandAccountRegSecondPage::Clear ()
+	{
+		auto widgets = findChildren<QWidget*> ();
+		QList<QPointer<QWidget>> pWidgets;
+		std::transform (widgets.begin (), widgets.end (), std::back_inserter (pWidgets),
+				[] (QWidget *w) { return QPointer<QWidget> (w); });
+		Q_FOREACH (auto pWidget, pWidgets)
+			if (pWidget)
+				delete pWidget;
+	}
+
 	void InBandAccountRegSecondPage::ShowMessage (const QString& msg)
 	{
-		qDeleteAll (findChildren<QWidget*> ());
+		Clear ();
 
 		layout ()->addWidget (new QLabel (msg));
 	}
@@ -166,12 +188,14 @@ namespace Xoox
 	{
 		QXmppElement queryElem;
 		Q_FOREACH (const QXmppElement& elem, iq.extensions ())
+		{
 			if (elem.tagName () == "query" &&
 					elem.attribute ("xmlns") == NsRegister)
 			{
 				queryElem = elem;
 				break;
 			}
+		}
 
 		if (queryElem.isNull ())
 		{
@@ -180,10 +204,11 @@ namespace Xoox
 			return;
 		}
 
-		qDeleteAll (findChildren<QWidget*> ());
+		Clear ();
 
 		const QXmppElement& formElem = queryElem.firstChildElement ("x");
-		if (formElem.attribute ("xmlns") == NsRegister &&
+		if ((formElem.attribute ("xmlns") == NsRegister ||
+					formElem.attribute ("xmlns") == "jabber:x:data") &&
 				formElem.attribute ("type") == "form")
 		{
 			QXmppDataForm form;

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,61 +16,57 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LMP_CORE_H
-#define PLUGINS_LMP_CORE_H
-#include <memory>
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/structures.h>
-#include "phonon.h"
-#include "player.h"
+#pragma once
 
-namespace Phonon
-{
-	class VideoWidget;
-	class SeekSlider;
-	class VolumeSlider;
-};
+#include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace LMP
 {
-	class DefaultWidget;
+	class LocalCollection;
+	class LocalFileResolver;
+	class PlaylistManager;
+	class SyncManager;
 
 	class Core : public QObject
 	{
 		Q_OBJECT
 
-		std::auto_ptr<Player> Player_;
 		ICoreProxy_ptr Proxy_;
-		QAction *ShowAction_;
-		mutable DefaultWidget *DefaultWidget_;
+
+		LocalFileResolver *Resolver_;
+		LocalCollection *Collection_;
+		PlaylistManager *PLManager_;
+		SyncManager *SyncManager_;
+
+		QObjectList SyncPlugins_;
 
 		Core ();
 	public:
 		static Core& Instance ();
-		void Release ();
-		void SetCoreProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetCoreProxy () const;
 
-		PlayerWidget* CreateWidget () const;
-		IVideoWidget* GetDefaultWidget () const;
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy ();
 
-		void Reinitialize ();
-		void Play ();
-		void Pause ();
-		void Stop ();
-		void Clear ();
-		void Enqueue (const QUrl&);
-		void Enqueue (QIODevice*);
-		QAction* GetShowAction () const;
-		void Handle (const Entity&);
+		void SendEntity (const Entity&);
+
+		void PostInit ();
+
+		void AddPlugin (QObject*);
+		QList<QObject*> GetSyncPlugins () const;
+
+		LocalFileResolver* GetLocalFileResolver () const;
+		LocalCollection* GetLocalCollection () const;
+		PlaylistManager* GetPlaylistManager () const;
+		SyncManager* GetSyncManager () const;
+	public slots:
+		void rescan ();
 	signals:
-		void bringToFront ();
 		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
-
-#endif

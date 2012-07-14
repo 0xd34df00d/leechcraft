@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,11 +19,11 @@
 #ifndef PLUGINS_AGGREGATOR_CORE_H
 #define PLUGINS_AGGREGATOR_CORE_H
 #include <memory>
-#include <boost/shared_ptr.hpp>
 #include <QAbstractItemModel>
 #include <QString>
 #include <QMap>
 #include <QPair>
+#include <QList>
 #include <QDateTime>
 #include <interfaces/idownload.h>
 #include <interfaces/core/icoreproxy.h>
@@ -47,6 +47,7 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+	class DBUpdateThread;
 	class ChannelsModel;
 	class JobHolderRepresentation;
 	class ChannelsFilterModel;
@@ -82,7 +83,7 @@ namespace Aggregator
 			QString URL_;
 			QString Filename_;
 			QStringList Tags_;
-			boost::shared_ptr<Feed::FeedSettings> FeedSettings_;
+			std::shared_ptr<Feed::FeedSettings> FeedSettings_;
 		};
 		struct ExternalData
 		{
@@ -102,7 +103,7 @@ namespace Aggregator
 		bool SaveScheduled_;
 		ChannelsModel *ChannelsModel_;
 		QTimer *UpdateTimer_, *CustomUpdateTimer_;
-		boost::shared_ptr<StorageBackend> StorageBackend_;
+		std::shared_ptr<StorageBackend> StorageBackend_;
 		JobHolderRepresentation *JobHolderRepresentation_;
 		QMap<IDType_t, QDateTime> Updates_;
 		ChannelsFilterModel *ChannelsFilterModel_;
@@ -111,11 +112,15 @@ namespace Aggregator
 		AppWideActions AppWideActions_;
 		ItemsWidget *ReprWidget_;
 
+		QList<IDType_t> UpdatesQueue_;
+
 		PluginManager *PluginManager_;
+
+		DBUpdateThread *DBUpThread_;
 
 		Core ();
 	private:
-		QHash<PoolType, Util::IDPool<IDType_t> > Pools_;
+		QHash<PoolType, Util::IDPool<IDType_t>> Pools_;
 	public:
 		struct ChannelInfo
 		{
@@ -143,11 +148,15 @@ namespace Aggregator
 		void StartAddingOPML (const QString&);
 		void SetAppWideActions (const AppWideActions&);
 		const AppWideActions& GetAppWideActions () const;
+
 		bool DoDelayedInit ();
+		bool ReinitStorage ();
+
 		void AddFeed (const QString&, const QString&);
 		void AddFeed (const QString&, const QStringList&,
 				FeedSettings_ptr = FeedSettings_ptr ());
 		void RemoveFeed (const QModelIndex&);
+		void RemoveChannel (const QModelIndex&);
 		ItemsWidget* GetReprWidget () const;
 
 		/** Returns the channels model as it is.
@@ -197,7 +206,6 @@ namespace Aggregator
 				const std::vector<bool>&) const;
 		JobHolderRepresentation* GetJobHolderRepresentation () const;
 		StorageBackend* GetStorageBackend () const;
-		QWebView* CreateWindow ();
 		void GetChannels (channels_shorts_t&) const;
 		void AddFeeds (const feeds_container_t&, const QString&);
 		void SetContextMenu (QMenu*);
@@ -216,6 +224,11 @@ namespace Aggregator
 		void saveSettings ();
 		void handleChannelDataUpdated (Channel_ptr);
 		void handleCustomUpdates ();
+		void rotateUpdatesQueue ();
+
+		void handleDBUpThreadStarted ();
+		void handleDBUpChannelDataUpdated (IDType_t, IDType_t);
+		void handleDBUpGotNewChannel (const ChannelShort&);
 	private:
 		void UpdateUnreadItemsNumber () const;
 		void FetchPixmap (const Channel_ptr&);
@@ -235,6 +248,9 @@ namespace Aggregator
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 		void channelRemoved (IDType_t);
+		void itemDataUpdated (Item_ptr, Channel_ptr);
+
+		void storageChanged ();
 
 		// Plugin API
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,

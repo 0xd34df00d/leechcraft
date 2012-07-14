@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,29 +18,35 @@
 
 #ifndef PLUGINS_ADVANCEDNOTIFICATIONS_GENERALHANDLER_H
 #define PLUGINS_ADVANCEDNOTIFICATIONS_GENERALHANDLER_H
+#include <QObject>
 #include <QList>
 #include <QIcon>
 #include <interfaces/iinfo.h>
+#include <interfaces/iactionsexporter.h>
 #include "concretehandlerbase.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class GeneralHandler
+	class GeneralHandler : public QObject
 	{
+		Q_OBJECT
+
 		QList<ConcreteHandlerBase_ptr> Handlers_;
-		
+
 		ICoreProxy_ptr Proxy_;
 		QMap<QString, QString> Cat2IconName_;
 	public:
 		GeneralHandler (ICoreProxy_ptr);
-		
+
 		void Handle (const Entity&);
-		
+
 		ICoreProxy_ptr GetProxy () const;
-		
+
 		QIcon GetIconForCategory (const QString&) const;
+	signals:
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

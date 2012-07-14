@@ -32,7 +32,7 @@ namespace TabsList
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IActionsExporter)
-		
+
 		ICoreProxy_ptr Proxy_;
 		QAction *ShowList_;
 	public:
@@ -43,11 +43,13 @@ namespace TabsList
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		
+
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	private slots:
 		void handleShowList ();
 		void navigateToTab ();
+	signals:
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

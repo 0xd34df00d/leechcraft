@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,9 @@
 #include "roomclentry.h"
 #include <QImage>
 #include <QtDebug>
-#include <interfaces/iproxyobject.h>
-#include <interfaces/azothutil.h>
+#include <QXmppMucManager.h>
+#include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/azothutil.h>
 #include "glooxaccount.h"
 #include "glooxprotocol.h"
 #include "roompublicmessage.h"
@@ -43,7 +44,7 @@ namespace Xoox
 				SIGNAL (statusChanged (const EntryStatus&)),
 				this,
 				SLOT (reemitStatusChange (const EntryStatus&)));
-		
+
 		Perms_ ["permclass_role"] << "norole";
 		Perms_ ["permclass_role"] << "visitor";
 		Perms_ ["permclass_role"] << "participant";
@@ -54,18 +55,18 @@ namespace Xoox
 		Perms_ ["permclass_aff"] << "member";
 		Perms_ ["permclass_aff"] << "admin";
 		Perms_ ["permclass_aff"] << "owner";
-		
+
 		Role2Str_ [QXmppMucItem::NoRole] = "norole";
 		Role2Str_ [QXmppMucItem::VisitorRole] = "visitor";
 		Role2Str_ [QXmppMucItem::ParticipantRole] = "participant";
 		Role2Str_ [QXmppMucItem::ModeratorRole] = "moderator";
-		
+
 		Aff2Str_ [QXmppMucItem::OutcastAffiliation] = "outcast";
 		Aff2Str_ [QXmppMucItem::NoAffiliation] = "noaffiliation";
 		Aff2Str_ [QXmppMucItem::MemberAffiliation] = "member";
 		Aff2Str_ [QXmppMucItem::AdminAffiliation] = "admin";
 		Aff2Str_ [QXmppMucItem::OwnerAffiliation] = "owner";
-		
+
 		Translations_ ["permclass_role"] = tr ("Role");
 		Translations_ ["permclass_aff"] = tr ("Affiliation");
 		Translations_ ["norole"] = tr ("Kicked");
@@ -152,12 +153,12 @@ namespace Xoox
 	{
 		return AllMessages_;
 	}
-	
+
 	void RoomCLEntry::PurgeMessages (const QDateTime& before)
 	{
 		Util::StandardPurgeMessages (AllMessages_, before);
 	}
-	
+
 	void RoomCLEntry::SetChatPartState (ChatPartState, const QString&)
 	{
 	}
@@ -183,7 +184,7 @@ namespace Xoox
 						RH_,
 						SLOT (requestVoice ()));
 			}
-			
+
 			result << ActionRequestVoice_;
 		}
 		return result;
@@ -208,9 +209,13 @@ namespace Xoox
 		return QMap<QString, QVariant> ();
 	}
 
+	void RoomCLEntry::MarkMsgsRead ()
+	{
+	}
+
 	IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const
 	{
-		return MUCFCanBeConfigured;
+		return MUCFCanBeConfigured | MUCFCanInvite;
 	}
 
 	QString RoomCLEntry::GetMUCSubject () const
@@ -227,7 +232,7 @@ namespace Xoox
 	{
 		return RH_->GetParticipants ();
 	}
-	
+
 	void RoomCLEntry::Join ()
 	{
 		RH_->Join ();
@@ -247,7 +252,7 @@ namespace Xoox
 	{
 		RH_->SetOurNick (nick);
 	}
-	
+
 	QString RoomCLEntry::GetGroupName () const
 	{
 		return tr ("%1 participants").arg (RH_->GetRoomJID ());
@@ -270,48 +275,65 @@ namespace Xoox
 		result ["Server"] = server;
 		return result;
 	}
-	
+
 	QString RoomCLEntry::GetRealID (QObject *obj) const
 	{
 		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (obj);
 		if (!entry)
 			return QString ();
-		
+
 		const QString& jid = entry->GetRealJID ();
 		QString bare;
 		QString resource;
 		ClientConnection::Split (jid, &bare, &resource);
 		return bare;
 	}
-	
-	QMap<QByteArray, QList<QByteArray> > RoomCLEntry::GetPossiblePerms () const
+
+	void RoomCLEntry::InviteToMUC (const QString& id, const QString& msg)
+	{
+		RH_->GetRoom ()->sendInvitation (id, msg);
+	}
+
+	QMap<QByteArray, QList<QByteArray>> RoomCLEntry::GetPossiblePerms () const
 	{
 		return Perms_;
 	}
-	
-	QMap<QByteArray, QByteArray> RoomCLEntry::GetPerms (QObject *participant) const
+
+	QMap<QByteArray, QList<QByteArray>> RoomCLEntry::GetPerms (QObject *participant) const
 	{
 		if (!participant)
 			participant = RH_->GetSelf ();
 
-		QMap<QByteArray, QByteArray> result;
+		QMap<QByteArray, QList<QByteArray>> result;
 		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< participant
 					<< "is not a RoomParticipantEntry";
-			result ["permclass_role"] = "norole";
-			result ["permclass_aff"] = "noaffiliation";
+			result ["permclass_role"] << "norole";
+			result ["permclass_aff"] << "noaffiliation";
 		}
 		else
 		{
-			result ["permclass_role"] = Role2Str_.value (entry->GetRole (), "invalid");
-			result ["permclass_aff"] = Aff2Str_.value (entry->GetAffiliation (), "invalid");
+			result ["permclass_role"] << Role2Str_.value (entry->GetRole (), "invalid");
+			result ["permclass_aff"] << Aff2Str_.value (entry->GetAffiliation (), "invalid");
 		}
 		return result;
 	}
-	
+
+	QPair<QByteArray, QByteArray> RoomCLEntry::GetKickPerm () const
+	{
+		return qMakePair<QByteArray, QByteArray> ("permclass_role",
+				Role2Str_ [QXmppMucItem::Role::NoRole]);
+	}
+
+	QPair<QByteArray, QByteArray> RoomCLEntry::GetBanPerm () const
+	{
+		return qMakePair<QByteArray, QByteArray> ("permclass_aff",
+				Aff2Str_ [QXmppMucItem::Affiliation::OutcastAffiliation]);
+	}
+
 	QByteArray RoomCLEntry::GetAffName (QObject *participant) const
 	{
 		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
@@ -322,10 +344,10 @@ namespace Xoox
 					<< "is not a RoomParticipantEntry";
 			return "noaffiliation";
 		}
-		
+
 		return Aff2Str_ [entry->GetAffiliation ()];
 	}
-	
+
 	namespace
 	{
 		bool MayChange (QXmppMucItem::Role ourRole,
@@ -346,13 +368,13 @@ namespace Xoox
 			if (ourRole != QXmppMucItem::ModeratorRole)
 				return false;
 
-			if (ourAff <= aff)
+			if (ourAff < aff)
 				return false;
 
 			return true;
 		}
-		
-		bool MayChange (QXmppMucItem::Role ourRole,
+
+		bool MayChange (QXmppMucItem::Role,
 				QXmppMucItem::Affiliation ourAff,
 				RoomParticipantEntry *entry,
 				QXmppMucItem::Affiliation aff)
@@ -373,7 +395,7 @@ namespace Xoox
 			return true;
 		}
 	}
-	
+
 	bool RoomCLEntry::MayChangePerm (QObject *participant,
 			const QByteArray& permClass, const QByteArray& perm) const
 	{
@@ -385,12 +407,12 @@ namespace Xoox
 					<< "is not a RoomParticipantEntry";
 			return false;
 		}
-		
+
 		const QXmppMucItem::Role ourRole =
 				RH_->GetSelf ()->GetRole ();
 		const QXmppMucItem::Affiliation ourAff =
 				RH_->GetSelf ()->GetAffiliation ();
-		
+
 		if (permClass == "permclass_role")
 			return MayChange (ourRole, ourAff, entry, Role2Str_.key (perm));
 		else if (permClass == "permclass_aff")
@@ -403,7 +425,7 @@ namespace Xoox
 			return false;
 		}
 	}
-	
+
 	void RoomCLEntry::SetPerm (QObject *participant,
 			const QByteArray& permClass,
 			const QByteArray& perm,
@@ -430,7 +452,7 @@ namespace Xoox
 			return;
 		}
 	}
-	
+
 	bool RoomCLEntry::IsLessByPerm (QObject *p1, QObject *p2) const
 	{
 		RoomParticipantEntry *e1 = qobject_cast<RoomParticipantEntry*> (p1);
@@ -444,20 +466,25 @@ namespace Xoox
 					<< "is not a RoomParticipantEntry";
 			return false;
 		}
-		
+
 		return e1->GetRole () < e2->GetRole ();
 	}
-	
+
+	bool RoomCLEntry::IsMultiPerm (const QByteArray&) const
+	{
+		return false;
+	}
+
 	QString RoomCLEntry::GetUserString (const QByteArray& id) const
 	{
 		return Translations_.value (id, id);
 	}
-	
+
 	QWidget* RoomCLEntry::GetConfigurationWidget ()
 	{
 		return new RoomConfigWidget (this);
 	}
-	
+
 	void RoomCLEntry::AcceptConfiguration (QWidget *w)
 	{
 		RoomConfigWidget *cfg = qobject_cast<RoomConfigWidget*> (w);
@@ -469,7 +496,7 @@ namespace Xoox
 					<< "to RoomConfigWidget";
 			return;
 		}
-		
+
 		cfg->accept ();
 	}
 
@@ -495,7 +522,7 @@ namespace Xoox
 	{
 		emit mucSubjectChanged (subj);
 	}
-	
+
 	void RoomCLEntry::reemitStatusChange (const EntryStatus& status)
 	{
 		emit statusChanged (status, QString ());

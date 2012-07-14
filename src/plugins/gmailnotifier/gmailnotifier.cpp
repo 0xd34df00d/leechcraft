@@ -31,7 +31,7 @@ namespace GmailNotifier
 {
 	void GmailNotifier::Init (ICoreProxy_ptr)
 	{
-		Translator_.reset (Util::InstallTranslator ("gmailnotifier"));
+		Util::InstallTranslator ("gmailnotifier");
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"gmailnotifiersettings.xml");
@@ -45,7 +45,7 @@ namespace GmailNotifier
 		UpdateTimer_ = new QTimer (this);
 		applyInterval ();
 		UpdateTimer_->start ();
-		
+
 		XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval",
 				this,
 				"applyInterval");
@@ -99,7 +99,8 @@ namespace GmailNotifier
 
 	QIcon GmailNotifier::GetIcon () const
 	{
-		return QIcon (":/gmailnotifier.svg");
+		static QIcon icon (":/gmailnotifier.svg");
+		return icon;
 	}
 
 	Util::XmlSettingsDialog_ptr GmailNotifier::GetSettingsDialog () const
@@ -112,7 +113,7 @@ namespace GmailNotifier
 		GmailChecker_->SetAuthSettings (XmlSettingsManager::Instance ()->property ("Login").toString (),
 				XmlSettingsManager::Instance ()->property ("Password").toString ());
 	}
-	
+
 	void GmailNotifier::applyInterval ()
 	{
 		const int secs = XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt ();
@@ -133,4 +134,4 @@ namespace GmailNotifier
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_gmailnotifier, LeechCraft::GmailNotifier::GmailNotifier);
+LC_EXPORT_PLUGIN (leechcraft_gmailnotifier, LeechCraft::GmailNotifier::GmailNotifier);

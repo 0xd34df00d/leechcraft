@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,6 @@
 #include "customwebview.h"
 #include "addtofavoritesdialog.h"
 #include "xmlsettingsmanager.h"
-#include "restoresessiondialog.h"
 #include "sqlstoragebackend.h"
 #include "xbelparser.h"
 #include "xbelgenerator.h"
@@ -69,7 +68,6 @@ namespace Poshuku
 	Core::Core ()
 	: NetworkAccessManager_ (0)
 	, WebPluginFactory_ (0)
-	, IsShuttingDown_ (false)
 	, ShortcutProxy_ (0)
 	, FavoritesChecker_ (0)
 	, Initialized_ (false)
@@ -87,21 +85,7 @@ namespace Poshuku
 		TabClass_.Description_ = tr ("The Poshuku web browser");
 		TabClass_.Icon_ = QIcon (":/resources/images/poshuku.svg");
 		TabClass_.Priority_ = 80;
-		TabClass_.Features_ = TFOpenableByRequest;
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku");
-		int size = settings.beginReadArray ("Saved session");
-		if (size)
-			for (int i = 0; i < size; ++i)
-			{
-				settings.setArrayIndex (i);
-				QString title = settings.value ("Title").toString ();
-				QString url = settings.value ("URL").toString ();
-				SavedSessionState_ << QPair<QString, QString> (title, url);
-				SavedSessionSettings_ << settings.value ("Settings").value<BrowserWidgetSettings> ();
-			}
-		settings.endArray ();
+		TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
 
 		PluginManager_.reset (new PluginManager (this));
 		PluginManager_->RegisterHookable (this);
@@ -142,7 +126,7 @@ namespace Poshuku
 			throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
 						.arg (strType)));
 
-		boost::shared_ptr<StorageBackend> sb;
+		std::shared_ptr<StorageBackend> sb;
 		try
 		{
 			sb = StorageBackend::Create (type);
@@ -192,7 +176,6 @@ namespace Poshuku
 
 		FavoritesChecker_ = new FavoritesChecker (this);
 
-		QTimer::singleShot (200, this, SLOT (postConstruct ()));
 		Initialized_ = true;
 	}
 
@@ -203,8 +186,6 @@ namespace Poshuku
 
 	void Core::Release ()
 	{
-		saveSession ();
-		IsShuttingDown_ = true;
 		while (Widgets_.begin () != Widgets_.end ())
 			delete *Widgets_.begin ();
 
@@ -345,15 +326,18 @@ namespace Poshuku
 		return result;
 	}
 
-	BrowserWidget* Core::NewURL (const QUrl& url, bool raise)
+	BrowserWidget* Core::NewURL (const QUrl& url, bool raise,
+			const QList<QPair<QByteArray, QVariant>>& props)
 	{
 		if (!Initialized_)
 			return 0;
 
 		BrowserWidget *widget = new BrowserWidget ();
 		widget->InitShortcuts ();
-		widget->SetUnclosers (Unclosers_);
 		Widgets_.push_back (widget);
+
+		Q_FOREACH (const auto& pair, props)
+			widget->setProperty (pair.first, pair.second);
 
 		QString tabTitle = "Poshuku";
 		if (url.host ().size ())
@@ -432,10 +416,6 @@ namespace Poshuku
 				this,
 				SLOT (handleTooltipChanged (QWidget*)));
 		connect (widget,
-				SIGNAL (invalidateSettings ()),
-				this,
-				SLOT (saveSingleSession ()));
-		connect (widget,
 				SIGNAL (raiseTab (QWidget*)),
 				this,
 				SIGNAL (raiseTab (QWidget*)));
@@ -449,7 +429,7 @@ namespace Poshuku
 	void Core::ReloadAll ()
 	{
 		Q_FOREACH (BrowserWidget *widget, Widgets_)
-			widget->GetWebView ()->
+			widget->GetView ()->
 					pageAction (QWebPage::Reload)->trigger ();
 	}
 
@@ -527,275 +507,28 @@ namespace Poshuku
 		}
 
 		return QString ();
+	}
 
-		/*
-#if defined (Q_OS_WINCE) || defined (Q_OS_WIN32) || defined (Q_OS_MSDOS)
-		QString winver = "unknown Windows";
-		switch (QSysInfo::windowsVersion ())
-		{
-			case QSysInfo::WV_32s:
-				winver = "Windows 3.1 with Win32s";
-				break;
-			case QSysInfo::WV_95:
-				winver = "Windows 95";
-				break;
-			case QSysInfo::WV_98:
-				winver = "Windows 98";
-				break;
-			case QSysInfo::WV_Me:
-				winver = "Windows ME";
-				break;
-			case QSysInfo::WV_NT:
-				winver = "Windows NT";
-				break;
-			case QSysInfo::WV_2000:
-				winver = "Windows 2000";
-				break;
-			case QSysInfo::WV_XP:
-				winver = "Windows XP";
-				break;
-			case QSysInfo::WV_2003:
-				winver = "Windows 2003";
-				break;
-			case QSysInfo::WV_VISTA:
-				winver = "Windows Vista";
-				break;
-			case QSysInfo::WV_WINDOWS7:
-				winver = "Windows 7";
-				break;
-			case QSysInfo::WV_CE:
-				winver = "Windows CE";
-				break;
-			case QSysInfo::WV_CENET:
-				winver = "Windows CE .NET";
-				break;
-			case QSysInfo::WV_CE_5:
-				winver = "Windows CE 5.x";
-				break;
-			case QSysInfo::WV_CE_6:
-				winver = "Windows CE 6.x";
-				break;
-			case QSysInfo::WV_DOS_based:
-				winver = "unknown DOS-based";
-				break;
-			case QSysInfo::WV_NT_based:
-				winver = "unknown NT-based";
-				break;
-			case QSysInfo::WV_CE_based:
-				winver = "unknown CE-based";
-				break;
-		}
-#elif defined (Q_OS_DARWIN)
-		QString macver;
-		switch (QSysInfo::MacintoshVersion)
-		{
-			case QSysInfo::MV_CHEETAH:
-				macver = "Cheetah";
-				break;
-			case QSysInfo::MV_PUMA:
-				macver = "Puma";
-				break;
-			case QSysInfo::MV_JAGUAR:
-				macver = "Jaguar";
-				break;
-			case QSysInfo::MV_PANTHER:
-				macver = "Panther";
-				break;
-			case QSysInfo::MV_TIGER:
-				macver = "Tiger";
-				break;
-			case QSysInfo::MV_LEOPARD:
-				macver = "Leopard";
-				break;
-			case QSysInfo::MV_SNOWLEOPARD:
-				macver = "Snow Leopard";
-				break;
-			default:
-				macver = "unknown Mac OS ";
-				break;
-		}
-#endif
-		return QString ("LeechCraft (%1; %2; %3; %4) (LeechCraft/Poshuku %5; WebKit %6/%7)")
-			// %1 platform
-#ifdef Q_WS_MAC
-			.arg ("MacOS")
-#elif defined (Q_WS_WIN)
-			.arg ("Windows")
-#elif defined (Q_WS_X11)
-			.arg ("X11")
-#elif defined (Q_WS_QWS)
-			.arg ("QWS")
-#else
-			.arg ("compatible")
-#endif
-			// %2 security
-			.arg (QSslSocket::supportsSsl () ? "U" : "N")
-			// %3 subplatform
-#ifdef Q_OS_AIX
-			.arg ("AIX")
-#elif defined (Q_OS_BSD4)
-			.arg ("BSD 4.4")
-#elif defined (Q_OS_BSDI)
-			.arg ("BSD/OS")
-#elif defined (Q_OS_CYGWIN)
-			.arg ("Cygwin")
-#elif defined (Q_OS_DARWIN)
-			.arg (macver)
-#elif defined (Q_OS_DGUX)
-			.arg ("DG/UX")
-#elif defined (Q_OS_DYNIX)
-			.arg ("DYNIX/ptx")
-#elif defined (Q_OS_FREEBSD)
-			.arg ("FreeBSD")
-#elif defined (Q_OS_HPUX)
-			.arg ("HP-UX")
-#elif defined (Q_OS_HURD)
-			.arg ("GNU Hurd")
-#elif defined (Q_OS_IRIX)
-			.arg ("IRIX")
-#elif defined (Q_OS_LINUX)
-			.arg ("Linux")
-#elif defined (Q_OS_LYNX)
-			.arg ("LynxOS")
-#elif defined (Q_OS_NETBSD)
-			.arg ("NetBSD")
-#elif defined (Q_OS_OPENBSD)
-			.arg ("OpenBSD")
-#elif defined (Q_OS_OS2)
-			.arg ("OS/2")
-#elif defined (Q_OS_OS2EMX)
-			.arg ("OS/2 XFree86")
-#elif defined (Q_OS_OSF)
-			.arg ("HP Tru64 UNIX")
-#elif defined (Q_OS_QNX6)
-			.arg ("QNX RTP 6.1")
-#elif defined (Q_OS_QNX)
-			.arg ("QNX")
-#elif defined (Q_OS_RELIANT)
-			.arg ("Reliant UNIX")
-#elif defined (Q_OS_SCO)
-			.arg ("SCO OpenServer 5")
-#elif defined (Q_OS_SOLARIS)
-			.arg ("Sun Solaris")
-#elif defined (Q_OS_ULTRIX)
-			.arg ("DEC Ultrix")
-#elif defined (Q_OS_UNIXWARE)
-			.arg ("UnixWare 7 or Open UNIX 8")
-#elif defined (Q_OS_WINCE) || defined (Q_OS_WIN32) || defined (Q_OS_MSDOS)
-			.arg (winver)
-#elif defined (Q_OS_UNIX)
-			.arg ("any UNIX BSD/SYSV")
-#else
-#warning "Unknown OS"
-			.arg ("unknown subplatform")
-#endif
-			// %4 locale
-			.arg (QLocale::system ().name ())
-			.arg (LEECHCRAFT_VERSION)
-			.arg (QT_VERSION_STR)
-			.arg (qVersion ());
-			*/
+	bool Core::IsUrlInFavourites (const QString& url)
+	{
+		return FavoritesModel_->IsUrlExists (url);
+	}
+
+	void Core::RemoveFromFavorites (const QString& url)
+	{
+		emit bookmarkRemoved (url);
 	}
 
 	void Core::Unregister (BrowserWidget *widget)
 	{
-		widgets_t::iterator pos =
-			std::find (Widgets_.begin (), Widgets_.end (), widget);
+		auto pos = std::find (Widgets_.begin (), Widgets_.end (), widget);
 		if (pos == Widgets_.end ())
 		{
 			qWarning () << Q_FUNC_INFO << widget << "not found in the collection";
 			return;
 		}
 
-		QString title = widget->GetView ()->title ();
-		if (title.isEmpty ())
-			title = widget->GetView ()->url ().toString ();
-
-		if (!title.isEmpty ())
-		{
-			if (title.size () > 53)
-				title = title.left (50) + "...";
-			QAction *action = new QAction (widget->GetView ()->icon (),
-					title, this);
-
-			QByteArray ba;
-			QDataStream out (&ba, QIODevice::WriteOnly);
-			out << *widget->GetView ()->page ()->history ();
-
-			UncloseData ud =
-			{
-				widget->GetView ()->url (),
-				widget->GetView ()->page ()->mainFrame ()->scrollPosition (),
-				ba
-			};
-			action->setData (QVariant::fromValue (ud));
-
-			connect (action,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleUnclose ()));
-
-			emit newUnclose (action);
-
-			Unclosers_.push_front (action);
-		}
-
 		Widgets_.erase (pos);
-
-		saveSession ();
-	}
-
-	void Core::RestoreSession (bool ask)
-	{
-		if (!SavedSessionState_.size ()) ;
-		else if (ask)
-		{
-			std::auto_ptr<RestoreSessionDialog> dia (new RestoreSessionDialog (Core::Instance ().GetProxy ()->GetMainWindow ()));
-			bool added = false;
-			for (int i = 0; i < SavedSessionState_.size (); ++i)
-			{
-				QPair<QString, QString> pair = SavedSessionState_.at (i);
-				QString title = pair.first;
-				QString url = pair.second;
-				if (url.isEmpty ())
-					continue;
-				dia->AddPair (title, url);
-				added = true;
-			}
-
-			if (added &&
-					dia->exec () == QDialog::Accepted)
-			{
-				RestoredURLs_ = dia->GetSelectedURLs ();
-				QTimer::singleShot (2000, this, SLOT (restorePages ()));
-			}
-			else
-				saveSession ();
-		}
-		else
-		{
-			for (int i = 0; i < SavedSessionState_.size (); ++i)
-			{
-				QString url = SavedSessionState_.at (i).second;
-				if (url.isEmpty ())
-					continue;
-				RestoredURLs_ << i;
-			}
-			QTimer::singleShot (2000, this, SLOT (restorePages ()));
-		}
-
-		QList<QUrl> toRestore;
-		Q_FOREACH (int idx, RestoredURLs_)
-			toRestore << SavedSessionState_ [idx].second;
-
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookSessionRestoreScheduled (proxy,
-				toRestore);
-		if (proxy->IsCancelled ())
-		{
-			RestoredURLs_.clear ();
-			SavedSessionState_.clear ();
-		}
 	}
 
 	void Core::HandleHistory (CustomWebView *view)
@@ -922,34 +655,14 @@ namespace Poshuku
 		file.write (data);
 	}
 
-	void Core::handleUnclose ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		UncloseData ud = action->data ().value<UncloseData> ();
-		BrowserWidget *bw = NewURL (ud.URL_);
-
-		QDataStream str (ud.History_);
-		str >> *bw->GetView ()->page ()->history ();
-
-		bw->SetOnLoadScrollPoint (ud.SPoint_);
-
-		Unclosers_.removeAll (action);
-
-		action->deleteLater ();
-	}
-
 	void Core::handleTitleChanged (const QString& newTitle)
 	{
 		emit changeTabName (dynamic_cast<QWidget*> (sender ()), newTitle);
-
-		saveSingleSession ();
 	}
 
 	void Core::handleURLChanged (const QString&)
 	{
 		HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetView ());
-
-		saveSingleSession ();
 	}
 
 	void Core::handleIconChanged (const QIcon& newIcon)
@@ -963,8 +676,6 @@ namespace Poshuku
 		emit removeTab (w);
 
 		w->deleteLater ();
-
-		saveSession ();
 	}
 
 	void Core::handleAddToFavorites (QString title, QString url)
@@ -982,15 +693,28 @@ namespace Poshuku
 					qApp->activeWindow ()));
 
 		bool result = false;
+		bool oneClick = XmlSettingsManager::Instance ()->property ("BookmarkInOneClick").toBool ();
+
 		do
 		{
-			if (dia->exec () == QDialog::Rejected)
-				return;
+			if (!oneClick)
+			{
+				if (dia->exec () == QDialog::Rejected)
+					return;
 
-			result = FavoritesModel_->addItem (dia->GetTitle (),
-					url, dia->GetTags ());
+				result = FavoritesModel_->addItem (dia->GetTitle (),
+						url, dia->GetTags ());
+			}
+			else
+			{
+				result = FavoritesModel_->addItem (title,
+						url, QStringList ());
+				oneClick = false;
+			}
 		}
 		while (!result);
+
+		emit bookmarkAdded (url);
 	}
 
 	void Core::handleStatusBarChanged (const QString& msg)
@@ -1006,98 +730,6 @@ namespace Poshuku
 	void Core::favoriteTagsUpdated (const QStringList& tags)
 	{
 		XmlSettingsManager::Instance ()->setProperty ("FavoriteTags", tags);
-	}
-
-	void Core::saveSession ()
-	{
-		if (IsShuttingDown_ || !Initialized_)
-			return;
-
-		QList<QString> titles;
-		QList<QString> urls;
-		QList<BrowserWidgetSettings> bwsettings;
-		for (widgets_t::const_iterator i = Widgets_.begin (),
-				end = Widgets_.end (); i != end; ++i)
-		{
-			titles << (*i)->GetView ()->title ();
-			urls << (*i)->GetView ()->url ().toString ();
-			bwsettings << (*i)->GetWidgetSettings ();
-		}
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku");
-		settings.beginWriteArray ("Saved session");
-		settings.remove ("");
-		for (int i = 0; i < titles.size (); ++i)
-		{
-			settings.setArrayIndex (i);
-			settings.setValue ("Title", titles.at (i));
-			settings.setValue ("URL", urls.at (i));
-			settings.setValue ("Settings", QVariant::fromValue<BrowserWidgetSettings> (bwsettings.at (i)));
-		}
-		settings.endArray ();
-		settings.sync ();
-	}
-
-	void Core::saveSingleSession ()
-	{
-		BrowserWidget *source = qobject_cast<BrowserWidget*> (sender ());
-		if (!source)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "sender is not a BrowserWidget*"
-				<< sender ();
-			return;
-		}
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku");
-		settings.beginWriteArray ("Saved session");
-		for (int i = 0, size = Widgets_.size (); i < size; ++i)
-			if (Widgets_.at (i) == source)
-			{
-				settings.setArrayIndex (i);
-				settings.setValue ("Title", source->GetView ()->title ());
-				settings.setValue ("URL", source->GetView ()->url ().toString ());
-				settings.setValue ("Settings",
-						QVariant::fromValue<BrowserWidgetSettings> (source->GetWidgetSettings ()));
-				break;
-			}
-
-		// It looks like QSettings determines array size by last used index
-		// no matter what was passed to QSettings::beginWriteArray (). Forcing correct size
-		settings.setArrayIndex (Widgets_.size () - 1);
-		settings.endArray ();
-		settings.sync ();
-	}
-
-	void Core::restorePages ()
-	{
-		for (QList<int>::const_iterator i = RestoredURLs_.begin (),
-				end = RestoredURLs_.end (); i != end; ++i)
-		{
-			int idx = *i;
-			NewURL (SavedSessionState_.at (idx).second)->
-				SetWidgetSettings (SavedSessionSettings_.at (idx));
-		}
-
-		SavedSessionState_.clear ();
-		SavedSessionSettings_.clear ();
-
-		saveSession ();
-	}
-
-	void Core::postConstruct ()
-	{
-		bool cleanShutdown = XmlSettingsManager::Instance ()->
-			Property ("CleanShutdown", true).toBool ();
-		XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", false);
-
-		if (!cleanShutdown)
-			RestoreSession (true);
-		else if (XmlSettingsManager::Instance ()->
-				property ("RestorePreviousSession").toBool ())
-			RestoreSession (false);
 	}
 }
 }

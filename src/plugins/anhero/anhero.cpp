@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,58 +26,55 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace AnHero
+{
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		namespace AnHero
+		Util::InstallTranslator ("anhero");
+
+		if (!QApplication::arguments ().contains ("-noanhero"))
 		{
-			void Plugin::Init (ICoreProxy_ptr)
-			{
-				Translator_.reset (Util::InstallTranslator ("anhero"));
-
-				if (!QApplication::arguments ().contains ("-noanhero"))
-				{
 #if KDE_VERSION_MINOR < 6
-					KCrash::setApplicationPath (qApp->applicationDirPath ());
+			KCrash::setApplicationPath (qApp->applicationDirPath ());
 #endif
-					KCrash::setApplicationName ("LeechCraft");
+			KCrash::setApplicationName ("LeechCraft");
 #if KDE_VERSION_MINOR < 5
-					KCrash::setCrashHandler (KCrash::defaultCrashHandler);
+			KCrash::setCrashHandler (KCrash::defaultCrashHandler);
 #else
-					KCrash::setDrKonqiEnabled (true);;
+			KCrash::setDrKonqiEnabled (true);;
 #endif
-				}
-			}
+		}
+	}
 
-			void Plugin::SecondInit ()
-			{
-			}
+	void Plugin::SecondInit ()
+	{
+	}
 
-			void Plugin::Release ()
-			{
-				Translator_.reset ();
-			}
+	void Plugin::Release ()
+	{
+	}
 
-			QByteArray Plugin::GetUniqueID () const
-			{
-				return "org.LeechCraft.AnHero";
-			}
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.AnHero";
+	}
 
-			QString Plugin::GetName () const
-			{
-				return "AnHero";
-			}
+	QString Plugin::GetName () const
+	{
+		return "AnHero";
+	}
 
-			QString Plugin::GetInfo () const
-			{
-				return tr ("Crash handler");
-			}
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Crash handler");
+	}
 
-			QIcon Plugin::GetIcon () const
-			{
-				return QIcon (":/resources/images/anhero.svg");
-			}
-		};
-	};
-};
+	QIcon Plugin::GetIcon () const
+	{
+		static QIcon icon (":/resources/images/anhero.svg");
+		return icon;
+	}
+}
+}
 
-Q_EXPORT_PLUGIN2 (leechcraft_anhero, LeechCraft::Plugins::AnHero::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_anhero, LeechCraft::AnHero::Plugin);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,7 @@
 
 #include <stdexcept>
 #include <numeric>
-#include <boost/bind.hpp>
-#include <boost/foreach.hpp>
+#include <algorithm>
 #include <QtDebug>
 #include <QImage>
 #include <QDir>
@@ -32,7 +31,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include <util/mergemodel.h>
+#include <util/models/mergemodel.h>
 #include <util/util.h>
 #include <util/fileremoveguard.h>
 #include <util/defaulthookproxy.h>
@@ -55,6 +54,9 @@
 #include "addfeed.h"
 #include "itemswidget.h"
 #include "pluginmanager.h"
+#include "dbupdatethread.h"
+#include "dbupdatethreadworker.h"
+#include "tovarmaps.h"
 
 namespace LeechCraft
 {
@@ -66,11 +68,16 @@ namespace Aggregator
 	, JobHolderRepresentation_ (0)
 	, ChannelsFilterModel_ (0)
 	, Initialized_ (false)
+	, ReprWidget_ (0)
 	, PluginManager_ (new PluginManager)
+	, DBUpThread_ (new DBUpdateThread (this))
 	{
+		qRegisterMetaType<IDType_t> ("IDType_t");
 		qRegisterMetaType<QItemSelection> ("QItemSelection");
 		qRegisterMetaType<Item_ptr> ("Item_ptr");
+		qRegisterMetaType<ChannelShort> ("ChannelShort");
 		qRegisterMetaType<Channel_ptr> ("Channel_ptr");
+		qRegisterMetaType<channels_container_t> ("channels_container_t");
 		qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
 
 		PluginManager_->RegisterHookable (this);
@@ -87,7 +94,6 @@ namespace Aggregator
 		delete JobHolderRepresentation_;
 		delete ChannelsFilterModel_;
 		delete ChannelsModel_;
-		delete ReprWidget_;
 
 		StorageBackend_.reset ();
 		XmlSettingsManager::Instance ()->Release ();
@@ -125,16 +131,19 @@ namespace Aggregator
 		{
 			if (url.scheme () != "file" &&
 					url.scheme () != "http" &&
-					url.scheme () != "https")
+					url.scheme () != "https" &&
+					url.scheme () != "itpc")
 				return false;
 		}
 		else
 		{
 			if (url.scheme () == "feed")
 				return true;
-
+			if (url.scheme () == "itpc")
+				return true;
 			if (url.scheme () != "http" &&
-					url.scheme () != "https")
+					url.scheme () != "https" &&
+					url.scheme () != "itpc")
 				return false;
 
 			if (e.Mime_ != "application/atom+xml" &&
@@ -212,6 +221,8 @@ namespace Aggregator
 				str.replace (0, 4, "http");
 			else if (str.startsWith ("feed:"))
 				str.remove  (0, 5);
+			else if (str.startsWith ("itpc://"))
+				str.replace (0, 4, "http");
 
 			LeechCraft::Aggregator::AddFeed af (str);
 			if (af.exec () == QDialog::Accepted)
@@ -252,83 +263,35 @@ namespace Aggregator
 			return false;
 		}
 
-		StorageBackend::Type type;
-		QString strType = XmlSettingsManager::Instance ()->
-			property ("StorageType").toString ();
-		if (strType == "SQLite")
-			type = StorageBackend::SBSQLite;
-		else if (strType == "PostgreSQL")
-			type = StorageBackend::SBPostgres;
-		else if (strType == "MySQL")
-			type = StorageBackend::SBMysql;
-		else
-			throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
-						.arg (strType)));
+		ChannelsModel_ = new ChannelsModel ();
 
-		try
-		{
-			StorageBackend_ = StorageBackend::Create (type);
-		}
-		catch (const std::runtime_error& s)
-		{
-			ErrorNotification (tr ("Storage error"),
-					QTextCodec::codecForName ("UTF-8")->
-					toUnicode (s.what ()));
+		if (!ReinitStorage ())
 			return false;
-		}
-		catch (...)
-		{
-			ErrorNotification (tr ("Storage error"),
-					tr ("Aggregator: general storage initialization error."));
-			return false;
-		}
 
 		PluginManager_->RegisterHookable (StorageBackend_.get ());
 
-		ChannelsModel_ = new ChannelsModel ();
 		ChannelsFilterModel_ = new ChannelsFilterModel ();
 		ChannelsFilterModel_->setSourceModel (ChannelsModel_);
 		ChannelsFilterModel_->setFilterKeyColumn (0);
 
 		JobHolderRepresentation_ = new JobHolderRepresentation ();
 
-		const int feedsTable = 1;
-		const int channelsTable = 1;
-		const int itemsTable = 6;
-
-		bool tablesOK = true;
-
-		if (StorageBackend_->UpdateFeedsStorage (XmlSettingsManager::Instance ()->
-				Property (strType + "FeedsTableVersion", feedsTable).toInt (),
-				feedsTable))
-			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "FeedsTableVersion"),
-					feedsTable);
-		else
-			tablesOK = false;
-
-		if (StorageBackend_->UpdateChannelsStorage (XmlSettingsManager::Instance ()->
-				Property (strType + "ChannelsTableVersion", channelsTable).toInt (),
-				channelsTable))
-			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "ChannelsTableVersion"),
-					channelsTable);
-		else
-			tablesOK = false;
-
-		if (StorageBackend_->UpdateItemsStorage (XmlSettingsManager::Instance ()->
-				Property (strType + "ItemsTableVersion", itemsTable).toInt (),
-				itemsTable))
-			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "ItemsTableVersion"),
-					itemsTable);
-		else
-			tablesOK = false;
-
-		StorageBackend_->Prepare ();
+		connect (DBUpThread_,
+				SIGNAL (started ()),
+				this,
+				SLOT (handleDBUpThreadStarted ()),
+				Qt::QueuedConnection);
+		DBUpThread_->start (QThread::LowestPriority);
 
 		connect (StorageBackend_.get (),
 				SIGNAL (channelDataUpdated (Channel_ptr)),
 				this,
 				SLOT (handleChannelDataUpdated (Channel_ptr)),
 				Qt::QueuedConnection);
+		connect (StorageBackend_.get (),
+				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
+				this,
+				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)));
 
 		ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 		ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
@@ -340,28 +303,6 @@ namespace Aggregator
 				SIGNAL (channelDataUpdated ()),
 				this,
 				SIGNAL (channelDataUpdated ()));
-
-		if (tablesOK)
-		{
-			ids_t feeds;
-			StorageBackend_->GetFeedsIDs (feeds);
-			Q_FOREACH (IDType_t feedId, feeds)
-			{
-				channels_shorts_t channels;
-				StorageBackend_->GetChannels (channels, feedId);
-				std::for_each (channels.begin (), channels.end (),
-						boost::bind (&ChannelsModel::AddChannel,
-							ChannelsModel_,
-							_1));
-			}
-
-			for (int type = 0; type < PTMAX; ++type)
-			{
-				Util::IDPool<IDType_t> pool;
-				pool.SetID (StorageBackend_->GetHighestID (static_cast<PoolType> (type)) + 1);
-				Pools_ [static_cast<PoolType> (type)] = pool;
-			}
-		}
 
 		ReprWidget_ = new ItemsWidget ();
 		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
@@ -417,13 +358,91 @@ namespace Aggregator
 		return true;
 	}
 
+	bool Core::ReinitStorage ()
+	{
+		Pools_.clear ();
+		ChannelsModel_->Clear ();
+
+		const QString& strType = XmlSettingsManager::Instance ()->
+				property ("StorageType").toString ();
+		try
+		{
+			StorageBackend_ = StorageBackend::Create (strType);
+		}
+		catch (const std::runtime_error& s)
+		{
+			ErrorNotification (tr ("Storage error"),
+					QTextCodec::codecForName ("UTF-8")->
+					toUnicode (s.what ()));
+			return false;
+		}
+		catch (...)
+		{
+			ErrorNotification (tr ("Storage error"),
+					tr ("Aggregator: general storage initialization error."));
+			return false;
+		}
+
+		emit storageChanged ();
+
+		const int feedsTable = 1;
+		const int channelsTable = 1;
+		const int itemsTable = 6;
+
+		if (StorageBackend_->UpdateFeedsStorage (XmlSettingsManager::Instance ()->
+				Property (strType + "FeedsTableVersion", feedsTable).toInt (),
+				feedsTable))
+			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "FeedsTableVersion"),
+					feedsTable);
+		else
+			return false;
+
+		if (StorageBackend_->UpdateChannelsStorage (XmlSettingsManager::Instance ()->
+				Property (strType + "ChannelsTableVersion", channelsTable).toInt (),
+				channelsTable))
+			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "ChannelsTableVersion"),
+					channelsTable);
+		else
+			return false;
+
+		if (StorageBackend_->UpdateItemsStorage (XmlSettingsManager::Instance ()->
+				Property (strType + "ItemsTableVersion", itemsTable).toInt (),
+				itemsTable))
+			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "ItemsTableVersion"),
+					itemsTable);
+		else
+			return false;
+
+		StorageBackend_->Prepare ();
+
+		ids_t feeds;
+		StorageBackend_->GetFeedsIDs (feeds);
+		Q_FOREACH (IDType_t feedId, feeds)
+		{
+			channels_shorts_t channels;
+			StorageBackend_->GetChannels (channels, feedId);
+			std::for_each (channels.begin (), channels.end (),
+					[this] (ChannelShort chan)
+						{ ChannelsModel_->AddChannel (chan); });
+		}
+
+		for (int type = 0; type < PTMAX; ++type)
+		{
+			Util::IDPool<IDType_t> pool;
+			pool.SetID (StorageBackend_->GetHighestID (static_cast<PoolType> (type)) + 1);
+			Pools_ [static_cast<PoolType> (type)] = pool;
+		}
+
+		return true;
+	}
+
 	void Core::AddFeed (const QString& url, const QString& tagString)
 	{
 		AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
 	}
 
 	void Core::AddFeed (const QString& url, const QStringList& tags,
-			boost::shared_ptr<Feed::FeedSettings> fs)
+			std::shared_ptr<Feed::FeedSettings> fs)
 	{
 		if (StorageBackend_->FindFeed (url) != static_cast<IDType_t> (-1))
 		{
@@ -502,6 +521,30 @@ namespace Aggregator
 		UpdateUnreadItemsNumber ();
 	}
 
+	void Core::RemoveChannel (const QModelIndex& index)
+	{
+		if (!index.isValid ())
+			return;
+
+		ChannelShort channel;
+		try
+		{
+			channel = ChannelsModel_->GetChannelForIndex (index);
+		}
+		catch (const std::exception& e)
+		{
+			ErrorNotification (tr ("Channel removal error"),
+					tr ("Could not remove the channel: %1")
+					.arg (e.what ()));
+			return;
+		}
+
+		ChannelsModel_->RemoveChannel (channel);
+		emit channelRemoved (channel.ChannelID_);
+
+		StorageBackend_->RemoveChannel (channel.ChannelID_);
+	}
+
 	ItemsWidget* Core::GetReprWidget () const
 	{
 		return ReprWidget_;
@@ -519,7 +562,7 @@ namespace Aggregator
 
 	IWebBrowser* Core::GetWebBrowser () const
 	{
-		qDebug () << "GetWebBrowser" << Proxy_->GetPluginsManager ()->
+		Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IWebBrowser*> ();
 		return Proxy_->GetPluginsManager ()->
 				GetAllCastableTo<IWebBrowser*> ().value (0, 0);
@@ -599,7 +642,7 @@ namespace Aggregator
 			ChannelShort channel = ChannelsModel_->GetChannelForIndex (i);
 			Channel_ptr rc = StorageBackend_->
 					GetChannel (channel.ChannelID_, channel.FeedID_);
-			return rc->Pixmap_;
+			return QPixmap::fromImage (rc->Pixmap_);
 		}
 		catch (const std::exception& e)
 		{
@@ -907,15 +950,6 @@ namespace Aggregator
 		return StorageBackend_.get ();
 	}
 
-	QWebView* Core::CreateWindow ()
-	{
-		IWebBrowser *browser = GetWebBrowser ();
-		if (!browser)
-			return 0;
-
-		return browser->CreateWindow ();
-	}
-
 	void Core::GetChannels (channels_shorts_t& channels) const
 	{
 		ids_t ids;
@@ -1179,7 +1213,7 @@ namespace Aggregator
 			url,
 			where,
 			QStringList (),
-			boost::shared_ptr<Feed::FeedSettings> ()
+			std::shared_ptr<Feed::FeedSettings> ()
 		};
 
 		int id = -1;
@@ -1271,6 +1305,129 @@ namespace Aggregator
 		}
 	}
 
+	void Core::rotateUpdatesQueue ()
+	{
+		if (UpdatesQueue_.isEmpty ())
+			return;
+
+		const IDType_t id = UpdatesQueue_.takeFirst ();
+
+		if (!UpdatesQueue_.isEmpty ())
+			QTimer::singleShot (2000,
+					this,
+					SLOT (rotateUpdatesQueue ()));
+
+		QString url = StorageBackend_->GetFeed (id)->URL_;
+		QList<int> keys = PendingJobs_.keys ();
+		Q_FOREACH (int key, keys)
+			if (PendingJobs_ [key].URL_ == url)
+			{
+				QObject *provider = ID2Downloader_ [key];
+				IDownload *downloader = qobject_cast<IDownload*> (provider);
+				if (downloader)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "stalled task detected from"
+						<< downloader
+						<< "trying to kill...";
+					downloader->KillTask (key);
+					ID2Downloader_.remove (key);
+					PendingJobs_.remove (key);
+					qWarning () << Q_FUNC_INFO
+						<< "killed!";
+				}
+				else
+					qWarning () << Q_FUNC_INFO
+						<< "provider is not a downloader:"
+						<< provider
+						<< "; cannot kill the task";
+				return;
+			}
+
+		QString filename = Util::GetTemporaryName ();
+
+		Entity e = Util::MakeEntity (QUrl (url),
+				filename,
+				LeechCraft::Internal |
+					LeechCraft::DoNotNotifyUser |
+					LeechCraft::DoNotSaveInHistory |
+					LeechCraft::NotPersistent |
+					LeechCraft::DoNotAnnounceEntity);
+
+		PendingJob pj =
+		{
+			PendingJob::RFeedUpdated,
+			url,
+			filename,
+			QStringList (),
+			std::shared_ptr<Feed::FeedSettings> ()
+		};
+
+		int jobId = -1;
+		QObject *pr;
+		emit delegateEntity (e, &jobId, &pr);
+		if (jobId == -1)
+		{
+			qWarning () << Q_FUNC_INFO << url << "wasn't delegated";
+			emit gotEntity (Util::MakeNotification ("Aggregator",
+					tr ("Could not find plugin for feed with URL %1")
+						.arg (url), LeechCraft::PCritical_));
+			return;
+		}
+
+		HandleProvider (pr, jobId);
+		PendingJobs_ [jobId] = pj;
+		Updates_ [id] = QDateTime::currentDateTime ();
+	}
+
+	void Core::handleDBUpThreadStarted ()
+	{
+		connect (DBUpThread_->GetWorker (),
+				SIGNAL (channelDataUpdated (IDType_t, IDType_t)),
+				this,
+				SLOT (handleDBUpChannelDataUpdated (IDType_t, IDType_t)),
+				Qt::QueuedConnection);
+		connect (DBUpThread_->GetWorker (),
+				SIGNAL (gotNewChannel (ChannelShort)),
+				this,
+				SLOT (handleDBUpGotNewChannel (ChannelShort)),
+				Qt::QueuedConnection);
+		connect (DBUpThread_->GetWorker (),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				Qt::QueuedConnection);
+		connect (DBUpThread_->GetWorker (),
+				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
+				this,
+				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
+				Qt::QueuedConnection);
+		connect (DBUpThread_->GetWorker (),
+				SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)),
+				this,
+				SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)));
+	}
+
+	void Core::handleDBUpChannelDataUpdated (IDType_t id, IDType_t feedId)
+	{
+		try
+		{
+			auto ch = StorageBackend_->GetChannel (id, feedId);
+			handleChannelDataUpdated (ch);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got"
+					<< e.what ();
+		}
+	}
+
+	void Core::handleDBUpGotNewChannel (const ChannelShort& chSh)
+	{
+		ChannelsModel_->AddChannel (chSh);
+	}
+
 	void Core::UpdateUnreadItemsNumber () const
 	{
 		emit unreadNumberChanged (ChannelsModel_->GetUnreadItemsNumber ());
@@ -1328,13 +1485,11 @@ namespace Aggregator
 			switch (data.Type_)
 			{
 				case ExternalData::TImage:
-					data.RelatedChannel_->Pixmap_ =
-						QPixmap::fromImage (QImage (file.fileName ()));
+					data.RelatedChannel_->Pixmap_ = QImage (file.fileName ());
 					break;
 				case ExternalData::TIcon:
 					data.RelatedChannel_->Favicon_ =
-						QPixmap::fromImage (QImage (file.fileName ()))
-						.scaled (16, 16);;
+							QImage (file.fileName ()).scaled (16, 16);
 					break;
 			}
 			try
@@ -1352,89 +1507,22 @@ namespace Aggregator
 		}
 	}
 
-	namespace
-	{
-		struct ChannelFinder
-		{
-			const Channel_ptr& Channel_;
-
-			ChannelFinder (const Channel_ptr& channel)
-			: Channel_ (channel)
-			{
-			}
-
-			bool operator() (const Channel_ptr& obj)
-			{
-				return *Channel_ == *obj;
-			}
-		};
-	};
-
-	namespace
-	{
-		void FixDate (Item_ptr& item)
-		{
-			if (!item->PubDate_.isValid ())
-				item->PubDate_ = QDateTime::currentDateTime ();
-		}
-	};
-
-	namespace
-	{
-		QVariantMap GetItemMapChannelPart (const Channel_ptr channel)
-		{
-			QVariantMap result;
-			result ["ChannelID"] = channel->ChannelID_;
-			result ["ChannelTitle"] = channel->Title_;
-			result ["ChannelLink"] = channel->Link_;
-			result ["ChannelTags"] = channel->Tags_;
-			return result;
-		}
-
-		QVariantMap GetItemMapItemPart (const Item_ptr item)
-		{
-			QVariantMap result;
-			result ["ItemID"] = item->ItemID_;
-			result ["ItemTitle"] = item->Title_;
-			result ["ItemLink"] = item->Link_;
-			result ["ItemDescription"] = item->Description_;
-			result ["ItemCategories"] = item->Categories_;
-			result ["ItemPubdate"] = item->PubDate_;
-			result ["ItemCommentsLink"] = item->CommentsLink_;
-			result ["ItemCommentsPageLink"] = item->CommentsPageLink_;
-			return result;
-		}
-
-		QVariantList GetItems (const Channel_ptr channel)
-		{
-			QVariantList result;
-			const QVariantMap& channelPart = GetItemMapChannelPart (channel);
-			Q_FOREACH (const Item_ptr item, channel->Items_)
-				result << GetItemMapItemPart (item).unite (channelPart);
-			return result;
-		}
-	}
-
 	void Core::HandleFeedAdded (const channels_container_t& channels,
 			const Core::PendingJob& pj)
 	{
 		for (size_t i = 0; i < channels.size (); ++i)
 		{
 			Channel_ptr channel = channels [i];
-			std::for_each (channel->Items_.begin (),
-					channel->Items_.end (),
-					boost::bind (FixDate,
-						_1));
+			std::for_each (channel->Items_.begin (), channel->Items_.end (),
+					[] (Item_ptr item) { item->FixDate (); });
 
 			channel->Tags_ = pj.Tags_;
 			ChannelsModel_->AddChannel (channel->ToShort ());
 			StorageBackend_->AddChannel (channel);
 
-			std::for_each (channel->Items_.begin (),
-					channel->Items_.end (),
-					boost::bind (&RegexpMatcherManager::HandleItem,
-						&RegexpMatcherManager::Instance (),
-						_1));
+			std::for_each (channel->Items_.begin (), channel->Items_.end (),
+					[] (Item_ptr item)
+						{ RegexpMatcherManager::Instance ().HandleItem (item); });
 
 			emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 					GetItems (channel));
@@ -1471,203 +1559,10 @@ namespace Aggregator
 	void Core::HandleFeedUpdated (const channels_container_t& channels,
 			const Core::PendingJob& pj)
 	{
-		const QString& url = pj.URL_;
-		IDType_t feedId = StorageBackend_->FindFeed (url);
-		if (feedId == static_cast<IDType_t> (-1))
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "skipping"
-				<< url
-				<< "cause seems like it's not in storage yet";
-			return;
-		}
-
-		const int defaultDays = XmlSettingsManager::Instance ()->
-			property ("ItemsMaxAge").toInt ();
-		const unsigned defaultIpc = XmlSettingsManager::Instance ()->
-			property ("ItemsPerChannel").value<unsigned> ();
-		bool downloadEnclosures = false;
-
-		int days = defaultDays;
-		unsigned ipc = defaultIpc;
-		try
-		{
-			Feed::FeedSettings settings = StorageBackend_->
-					GetFeedSettings (feedId);
-			if (settings.ItemAge_)
-				days = settings.ItemAge_;
-			if (settings.NumItems_)
-				ipc = settings.NumItems_;
-			downloadEnclosures = settings.AutoDownloadEnclosures_;
-		}
-		catch (const StorageBackend::FeedSettingsNotFoundError&)
-		{
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to get feed settings for"
-					<< feedId
-					<< url
-					<< e.what ();
-		}
-
-		QDateTime current = QDateTime::currentDateTime ();
-		Q_FOREACH (Channel_ptr channel, channels)
-		{
-			Channel_ptr ourChannel;
-			try
-			{
-				IDType_t ourChannelID = StorageBackend_->FindChannel (channel->Title_,
-						channel->Link_, feedId);
-				ourChannel = StorageBackend_->GetChannel (ourChannelID, feedId);
-			}
-			catch (const StorageBackend::ChannelNotFoundError&)
-			{
-				size_t truncateAt = (channel->Items_.size () <= ipc) ?
-					channel->Items_.size () : ipc;
-				for (size_t j = 0; j < channel->Items_.size (); j++)
-					if (channel->Items_ [j]->PubDate_.daysTo (current) > days)
-					{
-						truncateAt = std::min (j, truncateAt);
-						break;
-					}
-				channel->Items_.resize (truncateAt);
-
-				ChannelsModel_->AddChannel (channel->ToShort ());
-				StorageBackend_->AddChannel (channel);
-				QString str = tr ("Added channel \"%1\" (%n item(s))",
-						"", channel->Items_.size ())
-					.arg (channel->Title_);
-				emit gotEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
-				continue;
-			}
-
-			const QVariantMap& channelPart = GetItemMapChannelPart (ourChannel);
-
-			int newItems = 0;
-			int updatedItems = 0;
-
-			GetPool (PTChannel).FreeID (channel->ChannelID_);
-
-			Q_FOREACH (Item_ptr item, channel->Items_)
-			{
-				Item_ptr ourItem;
-				try
-				{
-					IDType_t ourItemID = StorageBackend_->
-							FindItem (item->Title_, item->Link_,
-									ourChannel->ChannelID_);
-					ourItem = StorageBackend_->GetItem (ourItemID);
-				}
-				catch (const StorageBackend::ItemNotFoundError&)
-				{
-					if (item->PubDate_.isValid ())
-					{
-						if (item->PubDate_.daysTo (current) >= days)
-							continue;
-					}
-					else
-						FixDate (item);
-
-					item->ChannelID_ = ourChannel->ChannelID_;
-					StorageBackend_->AddItem (item);
-
-					RegexpMatcherManager::Instance ().HandleItem (item);
-
-					QVariantList itemData;
-					itemData << GetItemMapItemPart (item).unite (channelPart);
-					emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
-							itemData);
-
-					if (downloadEnclosures)
-						Q_FOREACH (Enclosure e, item->Enclosures_)
-						{
-							Entity de = Util::MakeEntity (QUrl (e.URL_),
-									XmlSettingsManager::Instance ()->
-										property ("EnclosuresDownloadPath").toString (),
-									0,
-									e.Type_);
-							de.Additional_ [" Tags"] = channel->Tags_;
-							emit gotEntity (de);
-						}
-					++newItems;
-					continue;
-				}
-
-				if (!IsModified (ourItem, item))
-					continue;
-
-				ourItem->Description_ = item->Description_;
-				ourItem->Categories_ = item->Categories_;
-				ourItem->NumComments_ = item->NumComments_;
-				ourItem->CommentsLink_ = item->CommentsLink_;
-				ourItem->CommentsPageLink_ = item->CommentsPageLink_;
-				ourItem->Latitude_ = item->Latitude_;
-				ourItem->Longitude_ = item->Longitude_;
-
-				Q_FOREACH (Enclosure enc, item->Enclosures_)
-				{
-					if (ourItem->Enclosures_.contains (enc))
-						GetPool (PTEnclosure).FreeID (enc.EnclosureID_);
-					else
-					{
-						enc.ItemID_ = ourItem->ItemID_;
-						ourItem->Enclosures_ << enc;
-					}
-				}
-
-				Q_FOREACH (MRSSEntry entry, item->MRSSEntries_)
-				{
-					if (ourItem->MRSSEntries_.contains (entry))
-					{
-						GetPool (PTMRSSEntry).FreeID (entry.MRSSEntryID_);
-
-						Q_FOREACH (MRSSComment comment, entry.Comments_)
-							GetPool (PTMRSSComment).FreeID (comment.MRSSCommentID_);
-						Q_FOREACH (MRSSCredit credit, entry.Credits_)
-							GetPool (PTMRSSCredit).FreeID (credit.MRSSCreditID_);
-						Q_FOREACH (MRSSPeerLink peerLink, entry.PeerLinks_)
-							GetPool (PTMRSSPeerLink).FreeID (peerLink.MRSSPeerLinkID_);
-						Q_FOREACH (MRSSThumbnail thumb, entry.Thumbnails_)
-							GetPool (PTMRSSThumbnail).FreeID (thumb.MRSSThumbnailID_);
-						Q_FOREACH (MRSSScene scene, entry.Scenes_)
-							GetPool (PTMRSSScene).FreeID (scene.MRSSSceneID_);
-					}
-					else
-					{
-						entry.ItemID_ = ourItem->ItemID_;
-						ourItem->MRSSEntries_ << entry;
-					}
-				}
-
-				GetPool (PTItem).FreeID (item->ItemID_);
-
-				StorageBackend_->UpdateItem (ourItem);
-				++updatedItems;
-			}
-
-			QString method = XmlSettingsManager::Instance ()->
-					property ("NotificationsFeedUpdateBehavior").toString ();
-			bool shouldShow = true;
-			if (method == "ShowNo")
-				shouldShow = false;
-			else if (method == "ShowNew")
-				shouldShow = newItems;
-			else if (method == "ShowAll")
-				shouldShow = newItems + updatedItems;
-
-			if (shouldShow)
-			{
-				QString str = tr ("Updated channel \"%1\" (%2, %3)").arg (channel->Title_)
-					.arg (tr ("%n new item(s)", "Channel update", newItems))
-					.arg (tr ("%n updated item(s)", "Channel update", updatedItems));
-				emit gotEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
-			}
-
-			StorageBackend_->TrimChannel (ourChannel->ChannelID_,
-					days, ipc);
-		}
+		QMetaObject::invokeMethod (DBUpThread_->GetWorker (),
+				"updateFeed",
+				Q_ARG (channels_container_t, channels),
+				Q_ARG (QString, pj.URL_));
 	}
 
 	void Core::MarkChannel (const QModelIndex& i, bool state)
@@ -1675,8 +1570,11 @@ namespace Aggregator
 		try
 		{
 			ChannelShort cs = ChannelsModel_->GetChannelForIndex (i);
-
-			StorageBackend_->ToggleChannelUnread (cs.ChannelID_, state);
+			QMetaObject::invokeMethod (DBUpThread_->GetWorker (),
+					"toggleChannelUnread",
+					Qt::QueuedConnection,
+					Q_ARG (IDType_t, cs.ChannelID_),
+					Q_ARG (bool, state));
 		}
 		catch (const std::exception& e)
 		{
@@ -1689,67 +1587,12 @@ namespace Aggregator
 
 	void Core::UpdateFeed (const IDType_t& id)
 	{
-		QString url = StorageBackend_->GetFeed (id)->URL_;
-		QList<int> keys = PendingJobs_.keys ();
-		Q_FOREACH (int key, keys)
-			if (PendingJobs_ [key].URL_ == url)
-			{
-				QObject *provider = ID2Downloader_ [key];
-				IDownload *downloader = qobject_cast<IDownload*> (provider);
-				if (downloader)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "stalled task detected from"
-						<< downloader
-						<< "trying to kill...";
-					downloader->KillTask (key);
-					ID2Downloader_.remove (key);
-					PendingJobs_.remove (key);
-					qWarning () << Q_FUNC_INFO
-						<< "killed!";
-				}
-				else
-					qWarning () << Q_FUNC_INFO
-						<< "provider is not a downloader:"
-						<< provider
-						<< "; cannot kill the task";
-				return;
-			}
+		if (UpdatesQueue_.isEmpty ())
+			QTimer::singleShot (500,
+					this,
+					SLOT (rotateUpdatesQueue ()));
 
-		QString filename = LeechCraft::Util::GetTemporaryName ();
-
-		LeechCraft::Entity e = LeechCraft::Util::MakeEntity (QUrl (url),
-				filename,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
-
-		PendingJob pj =
-		{
-			PendingJob::RFeedUpdated,
-			url,
-			filename,
-			QStringList (),
-			boost::shared_ptr<Feed::FeedSettings> ()
-		};
-
-		int jobId = -1;
-		QObject *pr;
-		emit delegateEntity (e, &jobId, &pr);
-		if (jobId == -1)
-		{
-			qWarning () << Q_FUNC_INFO << url << "wasn't delegated";
-			emit gotEntity (Util::MakeNotification ("Aggregator",
-					tr ("Could not find plugin for feed with URL %1")
-						.arg (url), LeechCraft::PCritical_));
-			return;
-		}
-
-		HandleProvider (pr, jobId);
-		PendingJobs_ [jobId] = pj;
-		Updates_ [id] = QDateTime::currentDateTime ();
+		UpdatesQueue_ << id;
 	}
 
 	void Core::HandleProvider (QObject *provider, int id)

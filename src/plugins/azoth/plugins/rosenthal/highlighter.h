@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
 #define PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QSyntaxHighlighter>
 #include <QTextFormat>
 
@@ -34,14 +34,14 @@ namespace Rosenthal
 	class Highlighter : public QSyntaxHighlighter
 	{
 		Q_OBJECT
-		
-		boost::shared_ptr<Hunspell> Hunspell_;
+
+		std::shared_ptr<Hunspell> Hunspell_;
 		QTextCharFormat SpellCheckFormat_;
 		QTextCodec *Codec_;
 	public:
-		Highlighter (boost::shared_ptr<Hunspell>, QTextDocument*);
-		
-		void UpdateHunspell (boost::shared_ptr<Hunspell>);
+		Highlighter (std::shared_ptr<Hunspell>, QTextDocument*);
+
+		void UpdateHunspell (std::shared_ptr<Hunspell>);
 	protected:
 		void highlightBlock (const QString&);
 	private:

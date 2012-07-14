@@ -56,7 +56,9 @@ SET (HEADERS
 	wrappers/pluginsmanagerwrapper.h
 	wrappers/tagsmanagerwrapper.h
 	)
-QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+ENDIF (NOT LC_NO_MOC)
 
 IF (${QT_VERSION_MINOR} LESS 8)
 	SET (SRCS ${SRCS} third-party/qmetaobjectbuilder.cpp)

@@ -28,10 +28,22 @@
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
+     <property name="acceptDrops">
+      <bool>true</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">QTreeView::branch:!has-children {
 	background: transparent;
 }</string>
+     </property>
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::DragDrop</enum>
+     </property>
+     <property name="defaultDropAction">
+      <enum>Qt::CopyAction</enum>
      </property>
      <property name="iconSize">
       <size>
@@ -52,37 +64,6 @@
       <bool>true</bool>
      </property>
     </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="RosterMode_">
-     <item>
-      <property name="text">
-       <string>Whole CL</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Current MUC</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="BottomLayout_">
-     <item>
-      <widget class="QLineEdit" name="FastStatusText_"/>
-     </item>
-     <item>
-      <widget class="QToolButton" name="FastStatusButton_">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="popupMode">
-        <enum>QToolButton::MenuButtonPopup</enum>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
   </layout>
   <action name="ActionAddAccount_">

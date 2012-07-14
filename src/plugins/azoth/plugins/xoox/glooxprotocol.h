@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,9 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
 #include <QObject>
-#include <interfaces/iprotocol.h>
-#include <interfaces/iurihandler.h>
+#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/azoth/iurihandler.h>
+#include <interfaces/azoth/isupportimport.h>
 
 namespace LeechCraft
 {
@@ -35,9 +36,12 @@ namespace Xoox
 	class GlooxProtocol : public QObject
 						, public IProtocol
 						, public IURIHandler
+						, public ISupportImport
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol LeechCraft::Azoth::IURIHandler);
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol
+				LeechCraft::Azoth::IURIHandler
+				LeechCraft::Azoth::ISupportImport);
 
 		QObject *ParentProtocolPlugin_;
 		QList<GlooxAccount*> Accounts_;
@@ -61,11 +65,14 @@ namespace Xoox
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
 		QWidget* GetMUCJoinWidget ();
-		QWidget* GetMUCBookmarkEditorWidget ();
 		void RemoveAccount (QObject*);
-		
+
 		bool SupportsURI (const QUrl&) const;
 		void HandleURI (const QUrl&, QObject*);
+
+		QString GetImportProtocolID () const;
+		bool ImportAccount (const QVariantMap&);
+		QString GetEntryID (const QString&, QObject*);
 	private:
 		void RestoreAccounts ();
 	private slots:

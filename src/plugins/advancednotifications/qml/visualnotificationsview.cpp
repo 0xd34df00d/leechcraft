@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,13 @@
 #include <QFile>
 #include <QDeclarativeContext>
 #include <QDeclarativeError>
+
+#ifdef Q_OS_WIN32
+#include <QApplication>
+#endif
+
 #include <QtDebug>
 #include "eventproxyobject.h"
-#include <QApplication>
 
 namespace LeechCraft
 {
@@ -39,13 +43,13 @@ namespace AdvancedNotifications
 				SIGNAL (statusChanged (QDeclarativeView::Status)),
 				this,
 				SLOT (handleStatusChanged (QDeclarativeView::Status)));
-		
+
 		QStringList candidates;
-#ifdef Q_WS_X11
+#ifdef Q_OS_WIN32
+		candidates << QApplication::applicationDirPath () + "/share/qml/advancednotifications/";
+#else
 		candidates << "/usr/local/share/leechcraft/qml/advancednotifications/"
 				<< "/usr/share/leechcraft/qml/advancednotifications/";
-#elif defined (Q_WS_WIN32)
-		candidates << QApplication::applicationDirPath () + "/share/qml/advancednotifications/";
 #endif
 
 		QString fileLocation;
@@ -62,14 +66,16 @@ namespace AdvancedNotifications
 					<< "visualnotificationsview.qml isn't found";
 			return;
 		}
-		
-		Location_ = QUrl::fromLocalFile (fileLocation); 
+
+		qDebug () << Q_FUNC_INFO << "created";
+
+		Location_ = QUrl::fromLocalFile (fileLocation);
 	}
-	
+
 	void VisualNotificationsView::SetEvents (const QList<EventData>& events)
 	{
 		QObjectList oldEvents = LastEvents_;
-		
+
 		LastEvents_.clear ();
 		Q_FOREACH (const EventData& ed, events)
 		{
@@ -86,13 +92,13 @@ namespace AdvancedNotifications
 		}
 
 		rootContext ()->setContextProperty ("eventsModel",
-				QVariant::fromValue<QList<QObject*> > (LastEvents_));
-		
+				QVariant::fromValue<QList<QObject*>> (LastEvents_));
+
 		setSource (Location_);
-		
+
 		qDeleteAll (oldEvents);
 	}
-	
+
 	void VisualNotificationsView::handleStatusChanged (QDeclarativeView::Status status)
 	{
 		qDebug () << Q_FUNC_INFO

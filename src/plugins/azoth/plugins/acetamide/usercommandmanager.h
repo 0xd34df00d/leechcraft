@@ -39,10 +39,10 @@ namespace Acetamide
 
 		IrcServerHandler *ISH_;
 		IrcParser *Parser_;
-		QHash<QString, boost::function<void (const QStringList&)> > Command2Action_;
+		QHash<QString, boost::function<void (const QStringList&)>> Command2Action_;
 	public:
 		UserCommandManager (IrcServerHandler*);
-		bool VerifyMessage (const QString&, const QString&);
+		QString VerifyMessage (const QString&, const QString&);
 	private:
 		void Init ();
 	};

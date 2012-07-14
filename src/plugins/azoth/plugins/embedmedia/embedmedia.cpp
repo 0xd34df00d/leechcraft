@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,15 +45,15 @@ namespace EmbedMedia
 			return;
 		}
 
-		QTextStream content (&embedderJS); 
+		QTextStream content (&embedderJS);
 
-		content.setCodec (QTextCodec::codecForName ("UTF-8")); 
+		content.setCodec (QTextCodec::codecForName ("UTF-8"));
 		ScriptContent_ = content.readAll ();
 	}
 
 	void Plugin::SecondInit ()
 	{
-	}	
+	}
 
 	QByteArray Plugin::GetUniqueID () const
 	{
@@ -86,7 +86,7 @@ namespace EmbedMedia
 		return result;
 	}
 
-	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr, 
+	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr,
 			QObject*, QObject*, QWebView *webView)
 	{
 		webView->page ()->mainFrame ()->evaluateJavaScript (ScriptContent_);
@@ -95,4 +95,4 @@ namespace EmbedMedia
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_embedmedia, LeechCraft::Azoth::EmbedMedia::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_embedmedia, LeechCraft::Azoth::EmbedMedia::Plugin);

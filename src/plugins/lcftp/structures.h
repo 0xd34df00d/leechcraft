@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ namespace LeechCraft
 			struct FetchedEntry
 			{
 				QUrl URL_;
-				quint64 Size_;
+				qint64 Size_;
 				QDateTime DateTime_;
 				bool IsDir_;
 				QString Name_;

@@ -17,9 +17,12 @@
  **********************************************************************/
 
 #include "core.h"
-#include <interfaces/iaccount.h>
-#include <interfaces/iproxyobject.h>
+#include <QStandardItemModel>
+#include <QRegExp>
+#include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "ircprotocol.h"
+#include "nickservidentifywidget.h"
 
 namespace LeechCraft
 {
@@ -37,6 +40,12 @@ namespace Acetamide
 	{
 		static Core c;
 		return c;
+	}
+
+	void Core::Init ()
+	{
+		Model_ = new QStandardItemModel (this);
+		NickServIdentifyWidget_ = new NickServIdentifyWidget (Model_);
 	}
 
 	void Core::SecondInit ()
@@ -79,6 +88,73 @@ namespace Acetamide
 
 	void Core::handleItemsAdded (const QList<QObject*>&)
 	{
+	}
+
+	NickServIdentifyWidget* Core::GetNickServIdentifyWidget () const
+	{
+		return NickServIdentifyWidget_;
+	}
+
+	QStandardItemModel* Core::GetNickServIdentifyModel () const
+	{
+		return Model_;
+	}
+
+	void Core::AddNickServIdentify (const NickServIdentify& nsi)
+	{
+		if (NickServIdentifyList_.contains (nsi))
+			return;
+
+		NickServIdentifyList_ << nsi;
+	}
+
+	QList<NickServIdentify> Core::GetAllNickServIdentify () const
+	{
+		return NickServIdentifyList_;
+	}
+
+	QList<NickServIdentify> Core::GetNickServIdentifyWithNick (const QString& nick) const
+	{
+		QList<NickServIdentify> list;
+		Q_FOREACH ( const NickServIdentify& nsi, NickServIdentifyList_)
+			if (nsi.Nick_ == nick)
+				list << nsi;
+		return list;
+	}
+
+	QList<NickServIdentify> Core::GetNickServIdentifyWithNickServ (const QString& nickserv) const
+	{
+		QList<NickServIdentify> list;
+		Q_FOREACH ( const NickServIdentify& nsi, NickServIdentifyList_)
+		if (nsi.NickServNick_ == nickserv)
+			list << nsi;
+		return list;
+	}
+
+	QList<NickServIdentify> Core::GetNickServIdentifyWithServ (const QString& server) const
+	{
+		QList<NickServIdentify> list;
+		Q_FOREACH ( const NickServIdentify& nsi, NickServIdentifyList_)
+		if (nsi.Server_ == server)
+			list << nsi;
+		return list;
+	}
+
+	QList<NickServIdentify> Core::GetNickServIdentifyWithMainParams (const QString& server,
+			const QString& nick, const QString& nickserv) const
+	{
+		QList<NickServIdentify> list;
+		Q_FOREACH ( const NickServIdentify& nsi, NickServIdentifyList_)
+		{
+			QRegExp nickMask (nsi.NickServNick_,
+					Qt::CaseInsensitive,
+					QRegExp::Wildcard);
+			if ((nsi.Server_ == server) &&
+					(nsi.Nick_ == nick) &&
+					(nickMask.indexIn (nickserv) == 0))
+				list << nsi;
+		}
+		return list;
 	}
 }
 }

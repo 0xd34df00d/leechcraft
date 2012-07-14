@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,16 +105,17 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon (":/resources/images/popishu.svg");
+				static QIcon icon (":/resources/images/popishu.svg");
+				return icon;
 			}
-			
+
 			TabClasses_t Plugin::GetTabClasses () const
 			{
 				TabClasses_t result;
 				result << Core::Instance ().GetTabClass ();
 				return result;
 			}
-			
+
 			void Plugin::TabOpenRequested (const QByteArray& tabClass)
 			{
 				if (tabClass == "Popishu")
@@ -140,7 +141,7 @@ namespace LeechCraft
 				Core::Instance ().Handle (entity);
 			}
 
-			boost::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
+			std::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}
@@ -148,5 +149,5 @@ namespace LeechCraft
 	}
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_popishu, LeechCraft::Plugins::Popishu::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_popishu, LeechCraft::Plugins::Popishu::Plugin);
 

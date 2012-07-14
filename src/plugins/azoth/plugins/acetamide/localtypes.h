@@ -21,6 +21,7 @@
 
 #include <QStringList>
 #include <QPair>
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -46,14 +47,6 @@ namespace Acetamide
 		QString ChannelPassword_;
 	};
 
-	struct NickServIdentifyOptions
-	{
-		QString NickName_;
-		QString NickServMask_;
-		QString NickServAuthRegExp_;
-		QString AuthMessage_;
-	};
-	
 	enum ConnectionState
 	{
 		Connected,
@@ -63,8 +56,6 @@ namespace Acetamide
 
 	enum ChannelRole
 	{
-		Outcast,
-		NoRole,
 		Participant,
 		Voiced,
 		HalfOperator,
@@ -73,9 +64,20 @@ namespace Acetamide
 		Owner
 	};
 
+	enum ChannelManagment
+	{
+		Kick,
+		BanByName,
+		BanByDomain,
+		BanByUserAndDomain,
+		KickAndBan
+	};
+
 	struct IrcMessageOptions
 	{
 		QString Nick_;
+		QString UserName_;
+		QString Host_;
 		QString Command_;
 		QString Message_;
 		QList<std::string> Parameters_;
@@ -85,6 +87,7 @@ namespace Acetamide
 	{
 		QString Name_;
 		QString ServerName_;
+		QString ServerPassword_;
 		QString ServerEncoding_;
 		QString NickName_;
 		QString ChannelName_;
@@ -109,7 +112,49 @@ namespace Acetamide
 		QPair<bool, QString> ChannelKey_;
 	};
 
+	struct NickServIdentify
+	{
+		QString Server_;
+		QString Nick_;
+		QString NickServNick_;
+		QString AuthString_;
+		QString AuthMessage_;
+	};
+
+	struct MainEntryInfo
+	{
+		QString Nick_;
+		QString UserName_;
+		QString Host_;
+		QString RealName_;
+		QString ServerName_;
+	};
+
+	struct WhoMessage : MainEntryInfo
+	{
+		QString Flags_;
+		QString Channel_;
+		bool IsAway_;
+		int Jumps_;
+		QString EndString_;
+	};
+
+	struct WhoIsMessage : MainEntryInfo
+	{
+		QStringList Channels_;
+		QString IdentifyAs_;
+		QString IdleTime_;
+		QString AuthTime_;
+		QString IrcOperator_;
+		QString ServerCountry_;
+		QString LoggedName_;
+		QString Secure_;
+		QString EndString_;
+	};
+
 	bool operator== (const ChannelOptions&, const ChannelOptions&);
+
+	bool operator== (const NickServIdentify&, const NickServIdentify&);
 };
 };
 };
