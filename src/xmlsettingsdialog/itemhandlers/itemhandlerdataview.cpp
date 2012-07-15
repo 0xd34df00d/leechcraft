@@ -54,6 +54,11 @@ namespace LeechCraft
 				this,
 				SLOT (handleRemoveRequested ()));
 
+		if (item.attribute ("addEnabled") == "false")
+			view->DisableAddition ();
+		if (item.attribute ("removeEnabled") == "false")
+			view->DisableRemoval ();
+
 		QString prop = item.attribute ("property");
 
 		view->setObjectName (prop);

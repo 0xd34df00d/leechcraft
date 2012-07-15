@@ -31,6 +31,9 @@ namespace LeechCraft
 	public:
 		DataViewWidget (QWidget* = 0);
 
+		void DisableAddition ();
+		void DisableRemoval ();
+
 		void SetModel (QAbstractItemModel*);
 		QAbstractItemModel* GetModel () const;
 		QModelIndexList GetSelectedRows () const;
