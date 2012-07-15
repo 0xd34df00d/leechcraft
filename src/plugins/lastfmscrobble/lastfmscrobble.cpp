@@ -22,6 +22,7 @@
 #include <QByteArray>
 #include <interfaces/core/icoreproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include "lastfmsubmitter.h"
 #include "xmlsettingsmanager.h"
 #include "pendingsimilarartists.h"
@@ -38,6 +39,8 @@ namespace Lastfmscrobble
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("lastfmscrobble");
+
 		Proxy_ = proxy;
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
