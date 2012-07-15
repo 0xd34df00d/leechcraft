@@ -16,45 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/monocle/ibackendplugin.h>
-#include <interfaces/core/icoreproxy.h>
+#include "choosebackenddialog.h"
+#include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	class RecentlyOpenedManager;
-	class PixmapCacheManager;
-	class DefaultBackendManager;
-
-	class Core : public QObject
+	ChooseBackendDialog::ChooseBackendDialog (const QList<QObject*>& backends, QWidget *parent)
+	: QDialog (parent)
+	, Backends_ (backends)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
+		Q_FOREACH (auto backend, backends)
+		{
+			auto ii = qobject_cast<IInfo*> (backend);
+			Ui_.BackendSelector_->addItem (ii->GetIcon (),
+					QString ("%1 (%2)")
+						.arg (ii->GetName ())
+						.arg (ii->GetInfo ()));
+		}
+	}
 
-		ICoreProxy_ptr Proxy_;
-		QList<QObject*> Backends_;
-		PixmapCacheManager *CacheManager_;
-		RecentlyOpenedManager *ROManager_;
-		DefaultBackendManager *DefaultBackendManager_;
+	QObject* ChooseBackendDialog::GetSelectedBackend () const
+	{
+		return Backends_.value (Ui_.BackendSelector_->currentIndex ());
+	}
 
-		Core ();
-	public:
-		static Core& Instance ();
-
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
-
-		void AddPlugin (QObject*);
-
-		bool CanLoadDocument (const QString&);
-		IDocument_ptr LoadDocument (const QString&);
-
-		PixmapCacheManager* GetPixmapCacheManager () const;
-		RecentlyOpenedManager* GetROManager () const;
-		DefaultBackendManager* GetDefaultBackendManager () const;
-	};
+	bool ChooseBackendDialog::GetRememberChoice () const
+	{
+		return Ui_.RememberBox_->checkState () == Qt::Checked;
+	}
 }
 }

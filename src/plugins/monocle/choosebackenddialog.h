@@ -18,43 +18,25 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/monocle/ibackendplugin.h>
-#include <interfaces/core/icoreproxy.h>
+#include <QDialog>
+#include "ui_choosebackenddialog.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	class RecentlyOpenedManager;
-	class PixmapCacheManager;
-	class DefaultBackendManager;
-
-	class Core : public QObject
+	class ChooseBackendDialog : public QDialog
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
+		Ui::ChooseBackendDialog Ui_;
+
 		QList<QObject*> Backends_;
-		PixmapCacheManager *CacheManager_;
-		RecentlyOpenedManager *ROManager_;
-		DefaultBackendManager *DefaultBackendManager_;
-
-		Core ();
 	public:
-		static Core& Instance ();
+		ChooseBackendDialog (const QList<QObject*>&, QWidget* = 0);
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
-
-		void AddPlugin (QObject*);
-
-		bool CanLoadDocument (const QString&);
-		IDocument_ptr LoadDocument (const QString&);
-
-		PixmapCacheManager* GetPixmapCacheManager () const;
-		RecentlyOpenedManager* GetROManager () const;
-		DefaultBackendManager* GetDefaultBackendManager () const;
+		QObject* GetSelectedBackend () const;
+		bool GetRememberChoice () const;
 	};
 }
 }

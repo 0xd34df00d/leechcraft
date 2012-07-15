@@ -21,10 +21,13 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	pixmapcachemanager.cpp
 	recentlyopenedmanager.cpp
+	choosebackenddialog.cpp
+	defaultbackendmanager.cpp
 	)
 SET (FORMS
 	documenttab.ui
 	tocwidget.ui
+	choosebackenddialog.ui
 	)
 SET (RESOURCES monocleresources.qrc)
 CreateTrVars ("monocle" "en;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
