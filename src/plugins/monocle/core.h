@@ -34,7 +34,7 @@ namespace Monocle
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		QList<IBackendPlugin*> Backends_;
+		QList<QObject*> Backends_;
 		PixmapCacheManager *CacheManager_;
 		RecentlyOpenedManager *ROManager_;
 

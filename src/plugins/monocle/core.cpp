@@ -17,9 +17,13 @@
  **********************************************************************/
 
 #include "core.h"
+#include <QSettings>
+#include <QApplication>
+#include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include "pixmapcachemanager.h"
 #include "recentlyopenedmanager.h"
+#include "choosebackenddialog.h"
 
 namespace LeechCraft
 {
@@ -52,13 +56,13 @@ namespace Monocle
 		auto plugin2 = qobject_cast<IPlugin2*> (pluginObj);
 		const auto& classes = plugin2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.Monocle.IBackendPlugin"))
-			Backends_ << qobject_cast<IBackendPlugin*> (pluginObj);
+			Backends_ << pluginObj;
 	}
 
 	bool Core::CanLoadDocument (const QString& path)
 	{
 		Q_FOREACH (auto backend, Backends_)
-			if (backend->CanLoadDocument (path))
+			if (qobject_cast<IBackendPlugin*> (backend)->CanLoadDocument (path))
 				return true;
 
 		return false;
@@ -66,11 +70,48 @@ namespace Monocle
 
 	IDocument_ptr Core::LoadDocument (const QString& path)
 	{
+		decltype (Backends_) loaders;
 		Q_FOREACH (auto backend, Backends_)
-			if (backend->CanLoadDocument (path))
-				return backend->LoadDocument (path);
+			if (qobject_cast<IBackendPlugin*> (backend)->CanLoadDocument (path))
+				loaders << backend;
 
-		return IDocument_ptr ();
+		if (loaders.isEmpty ())
+			return IDocument_ptr ();
+		else if (loaders.size () == 1)
+			return qobject_cast<IBackendPlugin*> (loaders.at (0))->LoadDocument (path);
+
+		QList<QByteArray> ids;
+		Q_FOREACH (auto backend, loaders)
+			ids << qobject_cast<IInfo*> (backend)->GetUniqueID ();
+		std::sort (ids.begin (), ids.end ());
+		const auto& key = std::accumulate (ids.begin (), ids.end (), QByteArray (),
+				[] (const QByteArray& left, const QByteArray& right)
+					{ return left + '|' + right; });
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Monocle");
+		settings.beginGroup ("BackendChoices");
+		std::shared_ptr<void> (static_cast<void*> (0),
+				[&settings] (void*) { settings.endGroup (); });
+
+		if (ids.contains (settings.value (key).toByteArray ()))
+		{
+			const auto& id = settings.value (key).toByteArray ();
+			Q_FOREACH (auto backend, loaders)
+				if (qobject_cast<IInfo*> (backend)->GetUniqueID () == id)
+					return qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path);
+			return IDocument_ptr ();
+		}
+
+		ChooseBackendDialog dia (loaders);
+		if (dia.exec () != QDialog::Accepted)
+			return IDocument_ptr ();
+
+		auto backend = dia.GetSelectedBackend ();
+		if (dia.GetRememberChoice ())
+			settings.setValue (key, qobject_cast<IInfo*> (backend)->GetUniqueID ());
+
+		return qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path);
 	}
 
 	PixmapCacheManager* Core::GetPixmapCacheManager () const
