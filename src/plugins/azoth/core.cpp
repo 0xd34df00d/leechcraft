@@ -1481,7 +1481,7 @@ namespace Azoth
 		return scaled;
 	}
 
-	QImage Core::GetDefaultAvatar (int size)
+	QImage Core::GetDefaultAvatar (int size) const
 	{
 		const QString& name = XmlSettingsManager::Instance ()
 				.property ("SystemIcons").toString () + "/default_avatar";
