@@ -211,6 +211,12 @@ namespace LeechCraft
 					<< sender ();
 			return;
 		}
+		if (!view->GetModel ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "model isn't ready";
+			return;
+		}
 
 		QModelIndexList indexes = view->GetSelectedRows ();
 		if (!indexes.size ())
