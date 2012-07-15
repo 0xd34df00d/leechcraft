@@ -1194,7 +1194,7 @@ namespace Azoth
 		tip += "</td><td>";
 
 		tip += "<strong>" + entry->GetEntryName () + "</strong>";
-		tip += "<br />" + entry->GetHumanReadableID () + "<br />";
+		tip += " (<em>" + entry->GetHumanReadableID () + "</em>)<br />";
 		tip += Status2Str (entry->GetStatus (), PluginProxyObject_);
 		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
 		{
@@ -1269,6 +1269,8 @@ namespace Azoth
 					tip += " " + info.value ("client_version").toString ();
 				if (info.contains ("client_remote_name"))
 					tip += "<br />" + tr ("Claiming:") + ' ' + info.value ("client_remote_name").toString ();
+				if (info.contains ("client_os"))
+					tip += "<br />" + tr ("OS:") + ' ' + info.value ("client_os").toString ();
 
 				if (info.contains ("user_mood"))
 					FormatMood (tip, info ["user_mood"].toMap ());
