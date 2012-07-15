@@ -160,6 +160,11 @@ namespace Lastfmscrobble
 		}
 	}
 
+	QMap<QByteArray, QString> Plugin::GetPredefinedStations () const
+	{
+		return RadioStation::GetPredefinedStations ();
+	}
+
 	void Plugin::RequestRecentReleases (int num, bool withRecs)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();

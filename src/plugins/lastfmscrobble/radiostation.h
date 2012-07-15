@@ -42,6 +42,8 @@ namespace Lastfmscrobble
 	public:
 		struct UnsupportedType {};
 
+		static QMap<QByteArray, QString> GetPredefinedStations ();
+
 		RadioStation (QNetworkAccessManager*, Media::IRadioStationProvider::Type, const QString&);
 
 		QObject* GetObject ();

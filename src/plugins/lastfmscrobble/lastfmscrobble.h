@@ -89,6 +89,7 @@ namespace Lastfmscrobble
 
 		QString GetRadioName () const;
 		Media::IRadioStation_ptr GetRadioStation (Type, const QString&);
+		QMap<QByteArray, QString> GetPredefinedStations () const;
 
 		void RequestRecentReleases (int, bool);
 
