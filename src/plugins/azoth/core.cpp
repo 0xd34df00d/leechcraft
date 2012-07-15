@@ -1194,7 +1194,7 @@ namespace Azoth
 		tip += "</td><td>";
 
 		tip += "<strong>" + entry->GetEntryName () + "</strong>";
-		tip += " (<em>" + entry->GetHumanReadableID () + "</em>)<br />";
+		tip += "&nbsp;(<em>" + entry->GetHumanReadableID () + "</em>)<br />";
 		tip += Status2Str (entry->GetStatus (), PluginProxyObject_);
 		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
 		{
