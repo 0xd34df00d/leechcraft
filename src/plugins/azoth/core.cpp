@@ -1178,7 +1178,8 @@ namespace Azoth
 
 	QString Core::MakeTooltipString (ICLEntry *entry) const
 	{
-		QString tip = "<strong>" + entry->GetEntryName () + "</strong>";
+		QString tip = "<table border='0'><tr><td>";
+		tip += "<strong>" + entry->GetEntryName () + "</strong>";
 		tip += "<br />" + entry->GetHumanReadableID () + "<br />";
 		tip += Status2Str (entry->GetStatus (), PluginProxyObject_);
 		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
@@ -1220,6 +1221,18 @@ namespace Azoth
 		emit hookTooltipBeforeVariants (proxy, entry->GetObject ());
 		proxy->FillValue ("tooltip", tip);
 
+		auto cleanupBR = [&tip] ()
+		{
+			tip = tip.simplified ();
+			while (tip.endsWith ("<br />"))
+			{
+				tip.chop (6);
+				tip = tip.simplified ();
+			}
+		};
+
+		cleanupBR ();
+
 		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
 			Q_FOREACH (const QString& variant, variants)
 			{
@@ -1255,6 +1268,22 @@ namespace Azoth
 						tip += "<br />" + key + ": " + map [key].toString () + "<br />";
 				}
 			}
+
+		cleanupBR ();
+
+		tip += "</td><td>";
+		const int avatarSize = 75;
+		const int minAvatarSize = 32;
+		auto avatar = entry->GetAvatar ();
+		if (avatar.isNull ())
+			avatar = GetDefaultAvatar (avatarSize);
+
+		if (std::max (avatar.width (), avatar.height ()) > avatarSize)
+			avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		else if (std::max (avatar.width (), avatar.height ()) < minAvatarSize)
+			avatar = avatar.scaled (minAvatarSize, minAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		tip += "<img style='float:right;' src='" + Util::GetAsBase64Src (avatar) + "' />";
+		tip += "</td></tr></table>";
 
 		return tip;
 	}
