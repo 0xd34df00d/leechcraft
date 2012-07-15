@@ -21,7 +21,6 @@
 #include <cstring>
 #include <QPainter>
 #include <QtDebug>
-#include <fitz-internal.h>
 
 namespace LeechCraft
 {
