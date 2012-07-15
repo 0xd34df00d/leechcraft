@@ -458,7 +458,10 @@ namespace Xoox
 			}
 		}
 		else
+		{
 			Variant2Version_.remove (variant);
+			Variant2ClientInfo_.remove (variant);
+		}
 
 		GlooxMessage *message = 0;
 		if (GetEntryType () == ETPrivateChat)
