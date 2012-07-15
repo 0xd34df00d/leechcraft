@@ -1,0 +1,27 @@
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
+PROJECT (leechcraft_monocle_mu)
+INCLUDE (InitLCPlugin OPTIONAL)
+
+SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+INCLUDE (${QT_USE_FILE})
+INCLUDE_DIRECTORIES (
+	${CMAKE_CURRENT_BINARY_DIR}
+	${Boost_INCLUDE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}
+	)
+SET (SRCS
+	mu.cpp
+	document.cpp
+	)
+
+ADD_LIBRARY (leechcraft_monocle_mu SHARED
+	${SRCS}
+	)
+TARGET_LINK_LIBRARIES (leechcraft_monocle_mu
+	fitz
+	jpeg
+	${QT_LIBRARIES}
+	${LEECHCRAFT_LIBRARIES}
+	)
+INSTALL (TARGETS leechcraft_monocle_mu DESTINATION ${LC_PLUGINS_DEST})
