@@ -22,6 +22,7 @@ SET (SRCS
 	pixmapcachemanager.cpp
 	recentlyopenedmanager.cpp
 	choosebackenddialog.cpp
+	defaultbackendmanager.cpp
 	)
 SET (FORMS
 	documenttab.ui

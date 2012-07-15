@@ -17,13 +17,10 @@
  **********************************************************************/
 
 #include "core.h"
-#include <QSettings>
-#include <QApplication>
-#include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include "pixmapcachemanager.h"
 #include "recentlyopenedmanager.h"
-#include "choosebackenddialog.h"
+#include "defaultbackendmanager.h"
 
 namespace LeechCraft
 {
@@ -32,6 +29,7 @@ namespace Monocle
 	Core::Core ()
 	: CacheManager_ (new PixmapCacheManager (this))
 	, ROManager_ (new RecentlyOpenedManager (this))
+	, DefaultBackendManager_ (new DefaultBackendManager (this))
 	{
 	}
 
@@ -44,6 +42,7 @@ namespace Monocle
 	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+		DefaultBackendManager_->LoadSettings ();
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -80,38 +79,10 @@ namespace Monocle
 		else if (loaders.size () == 1)
 			return qobject_cast<IBackendPlugin*> (loaders.at (0))->LoadDocument (path);
 
-		QList<QByteArray> ids;
-		Q_FOREACH (auto backend, loaders)
-			ids << qobject_cast<IInfo*> (backend)->GetUniqueID ();
-		std::sort (ids.begin (), ids.end ());
-		const auto& key = std::accumulate (ids.begin (), ids.end (), QByteArray (),
-				[] (const QByteArray& left, const QByteArray& right)
-					{ return left + '|' + right; });
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Monocle");
-		settings.beginGroup ("BackendChoices");
-		std::shared_ptr<void> (static_cast<void*> (0),
-				[&settings] (void*) { settings.endGroup (); });
-
-		if (ids.contains (settings.value (key).toByteArray ()))
-		{
-			const auto& id = settings.value (key).toByteArray ();
-			Q_FOREACH (auto backend, loaders)
-				if (qobject_cast<IInfo*> (backend)->GetUniqueID () == id)
-					return qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path);
-			return IDocument_ptr ();
-		}
-
-		ChooseBackendDialog dia (loaders);
-		if (dia.exec () != QDialog::Accepted)
-			return IDocument_ptr ();
-
-		auto backend = dia.GetSelectedBackend ();
-		if (dia.GetRememberChoice ())
-			settings.setValue (key, qobject_cast<IInfo*> (backend)->GetUniqueID ());
-
-		return qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path);
+		auto backend = DefaultBackendManager_->GetBackend (loaders);
+		return backend ?
+				qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path) :
+				IDocument_ptr ();
 	}
 
 	PixmapCacheManager* Core::GetPixmapCacheManager () const
@@ -122,6 +93,11 @@ namespace Monocle
 	RecentlyOpenedManager* Core::GetROManager () const
 	{
 		return ROManager_;
+	}
+
+	DefaultBackendManager* Core::GetDefaultBackendManager () const
+	{
+		return DefaultBackendManager_;
 	}
 }
 }

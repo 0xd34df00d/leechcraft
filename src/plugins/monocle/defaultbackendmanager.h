@@ -19,42 +19,34 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/monocle/ibackendplugin.h>
-#include <interfaces/core/icoreproxy.h>
+#include <QModelIndexList>
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	class RecentlyOpenedManager;
-	class PixmapCacheManager;
-	class DefaultBackendManager;
-
-	class Core : public QObject
+	class DefaultBackendManager : public QObject
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
-		QList<QObject*> Backends_;
-		PixmapCacheManager *CacheManager_;
-		RecentlyOpenedManager *ROManager_;
-		DefaultBackendManager *DefaultBackendManager_;
-
-		Core ();
+		QStandardItemModel *Model_;
+		enum Roles
+		{
+			KeyID = Qt::UserRole + 1
+		};
 	public:
-		static Core& Instance ();
+		DefaultBackendManager (QObject* = 0);
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
+		void LoadSettings ();
 
-		void AddPlugin (QObject*);
-
-		bool CanLoadDocument (const QString&);
-		IDocument_ptr LoadDocument (const QString&);
-
-		PixmapCacheManager* GetPixmapCacheManager () const;
-		RecentlyOpenedManager* GetROManager () const;
-		DefaultBackendManager* GetDefaultBackendManager () const;
+		QAbstractItemModel* GetModel () const;
+		QObject* GetBackend (const QList<QObject*>&);
+	private:
+		void AddToModel (const QByteArray&, const QByteArray&);
+	public slots:
+		void removeRequested (const QString&, const QModelIndexList&);
 	};
 }
 }
