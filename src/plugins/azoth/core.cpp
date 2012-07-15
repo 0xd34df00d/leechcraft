@@ -1184,7 +1184,7 @@ namespace Azoth
 		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
 		{
 			tip += "<br />";
-			tip += tr ("In groups: ") + entry->Groups ().join ("; ");
+			tip += tr ("In groups:") + ' ' + entry->Groups ().join ("; ");
 		}
 
 		const QStringList& variants = entry->Variants ();
