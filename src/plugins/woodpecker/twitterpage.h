@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QScrollBar>
 #include <QTimer>
+#include <QMenu>
+#include <QAction>
 
 #include <interfaces/ihavetabs.h>
 #include <interfaces/structures.h>
@@ -40,6 +42,9 @@ class TwitterPage : public QWidget
     QtMsgHandler DefaultMsgHandler_;
     QObject *WrappedObject_;
     bool TemporaryDocument_;
+	
+	QAction *actionRetwit_;
+	QAction *actionReply_;
 public:
     explicit TwitterPage (QWidget *parent = 0);
     ~TwitterPage();
@@ -53,12 +58,19 @@ public:
     QMap<QString, QList<QAction*> > GetWindowMenus () const;
     TabClassInfo GetTabClassInfo () const;
 
+private slots:
+	void on_TwitList__customContextMenuRequested (const QPoint&);
+	
 public slots:
     void tryToLogin();
     void requestUserTimeline (QString username);
     void updateTweetList (QList< std::shared_ptr< Tweet > > twits);
     void recvdAuth (QString token, QString tokenSecret);
     void twit();
+    void retwit();
+    void reply();
+    void reply(QListWidgetItem*);
+    void sendReply();
 	void scrolledDown(int sliderPos);
 
 
@@ -67,7 +79,7 @@ private:
     twitterInterface *interface;
     QTimer *timer;
     QSettings *settings;
-    QList< std::shared_ptr< Tweet > > screenTwits;
+    QList<std::shared_ptr<Tweet>> screenTwits;
 
 signals:
     void removeTab (QWidget*);

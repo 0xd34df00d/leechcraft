@@ -27,14 +27,31 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 	tryToLogin();
 	int newSliderPos;
 
+	connect(ui->TwitEdit_, SIGNAL(returnPressed()), ui->TwitButton_, SLOT(click()));
+	
 	connect((ui->TwitList_->verticalScrollBar()), SIGNAL (valueChanged(int)),
 			this, SLOT (scrolledDown(int)));
 //    connect(ui->login_Test_, SIGNAL (clicked ()), SLOT(tryToLogin()));
 	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (twit()));
+	connect (ui->dbgButton, SIGNAL (clicked()), SLOT (retwit()));
 	settings = new QSettings (QCoreApplication::organizationName (),
 							  QCoreApplication::applicationName () + "_Woodpecker");
 	connect(ui->TwitList_, SIGNAL(clicked()), SLOT(getHomeFeed()));
 
+	actionRetwit_ = new QAction (tr ("Retwit"), ui->TwitList_);
+	actionRetwit_->setShortcut(Qt::Key_R + Qt::ALT);
+	connect (actionRetwit_, SIGNAL (triggered ()), this, SLOT (retwit()));
+	
+	actionReply_ = new QAction (tr ("Reply"), ui->TwitList_);
+	actionReply_->setShortcut(Qt::Key_A + Qt::ALT);
+	connect (actionReply_, SIGNAL (triggered ()), this, SLOT (reply()));
+	
+	connect(ui->TwitList_, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(reply()));
+	connect(ui->TwitList_, SIGNAL(itemEntered(QListWidgetItem*)) , this, SLOT(reply()));
+	
+	ui->TwitList_->addAction(actionRetwit_);
+	ui->TwitList_->addAction(actionReply_);
+	
 	if ( (! settings->value ("token").isNull()) && (! settings->value ("tokenSecret").isNull()))
 	{
 		qDebug() << "Have an authorized" << settings->value ("token") << ":" << settings->value ("tokenSecret");
@@ -143,6 +160,7 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 		tmpitem->setText (twit->text() + "\n" +
 						  "\t\t" + twit->author()->username() + "\t" +
 						  twit->dateTime().toLocalTime().toString());
+		tmpitem->setData(Qt::UserRole, twit->id());
 		tmpitem->setIcon (icon);
 		ui->TwitList_->insertItem (0, tmpitem);
 	}
@@ -164,6 +182,51 @@ void TwitterPage::twit()
 	ui->TwitEdit_->clear();
 }
 
+void TwitterPage::retwit()
+{
+	const auto& idx = ui->TwitList_->currentItem();
+	auto twitid = idx->data(Qt::UserRole);
+	interface->retweet(twitid.toULongLong());
+}
+
+void TwitterPage::sendReply()
+{
+	const auto& idx = ui->TwitList_->currentItem();
+	auto twitid = idx->data(Qt::UserRole);
+	interface->reply(twitid.toULongLong(), ui->TwitEdit_->text());
+	ui->TwitEdit_->clear();
+	disconnect (ui->TwitButton_, SIGNAL(clicked()), 0, 0);
+	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (twit()));
+}
+
+void TwitterPage::reply()
+{
+	const auto& idx = ui->TwitList_->currentItem();
+	const auto twitid = idx->data(Qt::UserRole).toULongLong();
+	auto replyto = std::find_if (screenTwits.begin (), screenTwits.end (), 
+			  [twitid] 
+			  (decltype (screenTwits.front ()) tweet) 
+			  { return tweet->id() == twitid; });
+	ui->TwitEdit_->setText(QString("@").append((*replyto)->author()->username()).append(" "));
+	disconnect (ui->TwitButton_, SIGNAL(clicked()), 0, 0);
+	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (sendReply()));
+	ui->TwitEdit_->setFocus();
+}
+
+void TwitterPage::reply(QListWidgetItem* idx)
+{
+	const auto twitid = idx->data(Qt::UserRole).toULongLong();
+	auto replyto = std::find_if (screenTwits.begin (), screenTwits.end (), 
+			  [twitid] 
+			  (decltype (screenTwits.front ()) tweet) 
+			  { return tweet->id() == twitid; });
+	ui->TwitEdit_->setText(QString("@").append((*replyto)->author()->username()).append(" "));
+	disconnect (ui->TwitButton_, SIGNAL(clicked()), 0, 0);
+	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (sendReply()));
+	ui->TwitEdit_->setFocus();
+}
+
+
 void TwitterPage::scrolledDown (int sliderPos)
 {
 	qDebug() << "Scrolled down to: " << sliderPos << " Min/Max: " <<
@@ -177,6 +240,28 @@ void TwitterPage::scrolledDown (int sliderPos)
 	}
 }
 
+void TwitterPage::on_TwitList__customContextMenuRequested(const QPoint& pos)
+	{
+		qDebug() << "MENUSLOT";
+		const auto& idx = ui->TwitList_->indexAt (pos);
+		if (!idx.isValid ())
+			return;
+
+		auto menu = new QMenu (ui->TwitList_);
+		menu->addAction (actionRetwit_);
+		menu->addAction (actionReply_);
+/*		if (idx.data (Player::Role::IsAlbum).toBool ())
+			menu->addAction (ActionShowAlbumArt_);
+		else
+		{
+			menu->addAction (ActionStopAfterSelected_);
+			menu->addAction (ActionShowTrackProps_);
+		}
+*/
+		menu->setAttribute (Qt::WA_DeleteOnClose);
+
+		menu->exec (ui->TwitList_->viewport ()->mapToGlobal (pos));
+	}
 
 }
 }

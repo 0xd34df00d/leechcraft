@@ -152,6 +152,19 @@ void twitterInterface::signedRequest (twitterRequest req, KQOAuthRequest::Reques
 
 	case TRUpdate:
 		reqUrl = "http://api.twitter.com/1/statuses/update.xml";
+		qDebug() << "Updating:" << params;
+		break;
+		
+	case TRDirect:
+		reqUrl = "https://api.twitter.com/1/direct_messages.json";
+		
+	case TRRetweet:
+		reqUrl = QString("http://api.twitter.com/1/statuses/retweet/").append(params.value("rt_id")).append(".json");
+		break;
+		
+	case TRReply:
+		reqUrl = "http://api.twitter.com/1/statuses/update.xml";
+		qDebug() << "Replying:" << params;
 		break;
 
 	default:
@@ -178,6 +191,22 @@ void twitterInterface::sendTweet (QString tweet)
 	param.insert ("status", tweet);
 	signedRequest (TRUpdate, KQOAuthRequest::POST, param);
 }
+
+void twitterInterface::retweet(long unsigned int id)
+{
+	KQOAuthParameters param;
+	param.insert ("rt_id", QString::number(id));
+	signedRequest (TRRetweet, KQOAuthRequest::POST, param);
+}
+
+void twitterInterface::reply(long unsigned int replyid, QString tweet)
+{
+	KQOAuthParameters param;
+	param.insert ("status", tweet);
+	param.insert ("in_reply_to_status_id", QString::number(replyid));
+	signedRequest (TRReply, KQOAuthRequest::POST, param);
+}
+
 
 void twitterInterface::onAuthorizedRequestDone() {
 	qDebug() << "Request sent to Twitter!";

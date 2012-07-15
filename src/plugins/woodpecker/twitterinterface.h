@@ -23,7 +23,10 @@ enum twitterRequest
 	TRHomeTimeline,
 	TRMentions,
 	TRUserTimeline,
-	TRUpdate
+	TRUpdate,
+	TRDirect,
+	TRRetweet,
+	TRReply,
 };
 
 enum feedMode
@@ -31,7 +34,8 @@ enum feedMode
 	FMHomeTimeline,
 	FMMentions,
 	FMUserTimeline,
-	FMSearchResult
+	FMSearchResult,
+	FMDirect,
 };
 
 class twitterInterface : public QObject
@@ -42,6 +46,8 @@ public:
 	explicit twitterInterface (QObject *parent = 0);
 	~twitterInterface ();
 	void sendTweet (QString tweet);
+	void retweet (long unsigned int id);
+	void reply (long unsigned int replyid, QString tweet);
 	void getAccess ();
 	void login (QString savedToken, QString savedTokenSecret);
 	feedMode getLastRequestMode() { return  lastRequestMode;};
