@@ -214,12 +214,7 @@ namespace DeadLyrics
 
 		str = str.trimmed ();
 		if (str.count ("<br", Qt::CaseInsensitive) < 3)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< Desc_.Name_
-					<< "less than 3 newlines, considering the lyrics empty";
 			str.clear ();
-		}
 
 		if (str.size () >= 100)
 			emit gotLyrics (Query_, QStringList (str));
