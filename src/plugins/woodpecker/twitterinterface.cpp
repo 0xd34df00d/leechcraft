@@ -152,7 +152,6 @@ void twitterInterface::signedRequest (twitterRequest req, KQOAuthRequest::Reques
 
 	case TRUpdate:
 		reqUrl = "http://api.twitter.com/1/statuses/update.xml";
-		qDebug() << "Updating:" << params;
 		break;
 		
 	case TRDirect:
@@ -164,7 +163,6 @@ void twitterInterface::signedRequest (twitterRequest req, KQOAuthRequest::Reques
 		
 	case TRReply:
 		reqUrl = "http://api.twitter.com/1/statuses/update.xml";
-		qDebug() << "Replying:" << params;
 		break;
 
 	default:
