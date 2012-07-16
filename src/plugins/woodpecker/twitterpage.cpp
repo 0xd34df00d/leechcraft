@@ -39,10 +39,12 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 
 	actionRetwit_ = new QAction (tr ("Retwit"), ui->TwitList_);
 	actionRetwit_->setShortcut(Qt::Key_R + Qt::ALT);
+	actionRetwit_->setProperty ("ActionIcon", "edit-redo");
 	connect (actionRetwit_, SIGNAL (triggered ()), this, SLOT (retwit()));
 	
 	actionReply_ = new QAction (tr ("Reply"), ui->TwitList_);
 	actionReply_->setShortcut(Qt::Key_A + Qt::ALT);
+	actionReply_->setProperty ("ActionIcon", "mail-reply-sender");
 	connect (actionReply_, SIGNAL (triggered ()), this, SLOT (reply()));
 	
 	connect(ui->TwitList_, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(reply()));
@@ -154,14 +156,18 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 	Q_FOREACH (twit, screenTwits)
 	{
 		QListWidgetItem *tmpitem = new QListWidgetItem();
-		QIcon icon (twit->author()->avatar);
 		tmpitem->setText (twit->text() + "\n" +
 						  "\t\t" + twit->author()->username() + "\t" +
 						  twit->dateTime().toLocalTime().toString());
-		tmpitem->setData(Qt::UserRole, twit->id());
-		tmpitem->setIcon (icon);
+		tmpitem->setData (Qt::UserRole, twit->id());
+		if (twit->author()->avatar.isNull())
+			tmpitem->setIcon (QIcon (":/resources/images/woodpecker.svg"));
+		else
+			tmpitem->setIcon (twit->author()->avatar);
 		ui->TwitList_->insertItem (0, tmpitem);
 	}
+//	QTimer::singleShot(1000, ui->TwitList_, SLOT(update()));
+	
 	ui->TwitList_->update();
 	ui->TwitList_->setEnabled(true);
 }
@@ -227,12 +233,9 @@ void TwitterPage::reply(QListWidgetItem* idx)
 
 void TwitterPage::scrolledDown (int sliderPos)
 {
-	qDebug() << "Scrolled down to: " << sliderPos << " Min/Max: " <<
-		ui->TwitList_->verticalScrollBar()->minimum() << "/" << ui->TwitList_->verticalScrollBar()->maximum();
 	if (sliderPos == ui->TwitList_->verticalScrollBar()->maximum())
 	{
 		ui->TwitList_->verticalScrollBar()->setSliderPosition(ui->TwitList_->verticalScrollBar()->maximum()-1);
-
 		ui->TwitList_->setEnabled(false);
 		if (not screenTwits.empty())
 			interface->getMoreTweets(QString("%1").arg((*(screenTwits.begin()))->id()));

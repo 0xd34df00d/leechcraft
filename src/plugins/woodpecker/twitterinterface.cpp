@@ -79,7 +79,7 @@ QList< std::shared_ptr<Tweet> > twitterInterface::parseReply (QByteArray json)
 	QVariantList answers = parser.parse (json, &ok).toList();
 
 	if (!ok) {
-		qDebug() << "Parsing error";
+		qDebug() << "Parsing error at parseReply " << QString::fromUtf8(json);
 	}
 
 	QVariantMap tweetMap;
@@ -285,7 +285,7 @@ void twitterInterface::getMoreTweets(QString last)
 
 	qDebug() << "Getting more tweets from " << last;
 	param.insert ("max_id",last);
-	param.insert ("count",QString("%1").arg(10));
+	param.insert ("count",QString("%1").arg(30));
 	setLastRequestMode(FMHomeTimeline);
 	signedRequest (TRHomeTimeline, KQOAuthRequest::GET,param);
 }
