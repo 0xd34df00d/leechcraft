@@ -21,6 +21,8 @@
 #include <QWidget>
 #include "ui_radiowidget.h"
 
+class QStandardItemModel;
+
 namespace Media
 {
 	class IRadioStationProvider;
@@ -40,12 +42,20 @@ namespace LMP
 
 		QList<Media::IRadioStationProvider*> Providers_;
 		Player *Player_;
+
+		QStandardItemModel *StationsModel_;
+		enum StationRoles
+		{
+			StationID = Qt::UserRole + 1
+		};
 	public:
 		RadioWidget (QWidget* = 0);
 
 		void SetPlayer (Player*);
 	private slots:
 		void on_PlayButton__released ();
+		void on_StationsView__doubleClicked (const QModelIndex&);
+		void on_ProviderBox__currentIndexChanged (int);
 	};
 }
 }

@@ -1,6 +1,5 @@
 <RCC>
   <qresource prefix="/plugins/azoth">
-    <file>resources/html/viewcontents.html</file>
     <file>resources/images/azoth.svg</file>
 	<file>resources/images/chattabclass.svg</file>
 	<file>resources/images/console.svg</file>

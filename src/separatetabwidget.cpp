@@ -35,7 +35,6 @@
 #include "separatetabbar.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
-#include "3dparty/qxttooltip.h"
 #include "util/defaulthookproxy.h"
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
@@ -203,15 +202,6 @@ namespace LeechCraft
 		}
 
 		MainTabBar_->setTabToolTip (index, tip);
-	}
-
-	void SeparateTabWidget::SetTooltip (int index, QWidget *widget)
-	{
-		if (index >= WidgetCount () &&
-				!IsAddTabActionVisible ())
-			return;
-
-		Widgets_ [index].reset (widget);
 	}
 
 	QWidget* SeparateTabWidget::TabButton (int index, QTabBar::ButtonPosition positioin) const
@@ -433,16 +423,6 @@ namespace LeechCraft
 
 		MainStackedWidget_->removeWidget (Widget (index));
 		MainTabBar_->removeTab (index);
-
-		Widgets_.remove (index);
-		QList<int> keys = Widgets_.keys ();
-		for (auto i = keys.begin (),
-				end = keys.end (); i != end; ++i)
-			if (*i > index)
-			{
-				Widgets_ [*i - 1] = Widgets_ [*i];
-				Widgets_.remove (*i);
-			}
 	}
 
 	bool SeparateTabWidget::IsAddTabActionVisible () const
@@ -520,24 +500,6 @@ namespace LeechCraft
 		}
 
 		QWidget::mousePressEvent (event);
-	}
-
-	bool SeparateTabWidget::event (QEvent *e)
-	{
-		if (e->type () == QEvent::ToolTip)
-		{
-			QHelpEvent *he = static_cast<QHelpEvent*> (e);
-			int index = TabAt (he->pos ());
-			if (Widgets_.value (index))
-			{
-				QxtToolTip::show (he->globalPos (), Widgets_ [index].get (), MainTabBar_);
-				return true;
-			}
-			else
-				return false;
-		}
-		else
-			return QWidget::event (e);
 	}
 
 	void SeparateTabWidget::Init ()
@@ -658,7 +620,6 @@ namespace LeechCraft
 		MainStackedWidget_->insertWidget (to, MainStackedWidget_->widget (from));
 
 		MainTabBar_->SetInMove (true);
-		std::swap (Widgets_ [from], Widgets_ [to]);
 		emit tabWasMoved (from, to);
 	}
 
