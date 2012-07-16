@@ -33,7 +33,6 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 			this, SLOT (scrolledDown(int)));
 //    connect(ui->login_Test_, SIGNAL (clicked ()), SLOT(tryToLogin()));
 	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (twit()));
-	connect (ui->dbgButton, SIGNAL (clicked()), SLOT (retwit()));
 	settings = new QSettings (QCoreApplication::organizationName (),
 							  QCoreApplication::applicationName () + "_Woodpecker");
 	connect(ui->TwitList_, SIGNAL(clicked()), SLOT(getHomeFeed()));
@@ -47,7 +46,6 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 	connect (actionReply_, SIGNAL (triggered ()), this, SLOT (reply()));
 	
 	connect(ui->TwitList_, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(reply()));
-	connect(ui->TwitList_, SIGNAL(itemEntered(QListWidgetItem*)) , this, SLOT(reply()));
 	
 	ui->TwitList_->addAction(actionRetwit_);
 	ui->TwitList_->addAction(actionReply_);
@@ -236,7 +234,8 @@ void TwitterPage::scrolledDown (int sliderPos)
 		ui->TwitList_->verticalScrollBar()->setSliderPosition(ui->TwitList_->verticalScrollBar()->maximum()-1);
 
 		ui->TwitList_->setEnabled(false);
-		interface->getMoreTweets(QString("%1").arg((*(screenTwits.begin()))->id()));
+		if (not screenTwits.empty())
+			interface->getMoreTweets(QString("%1").arg((*(screenTwits.begin()))->id()));
 	}
 }
 
