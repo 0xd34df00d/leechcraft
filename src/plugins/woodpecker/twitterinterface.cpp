@@ -151,7 +151,7 @@ void twitterInterface::signedRequest (twitterRequest req, KQOAuthRequest::Reques
 		break;
 
 	case TRUpdate:
-		reqUrl = "http://api.twitter.com/1/statuses/update.xml";
+		reqUrl = "http://api.twitter.com/1/statuses/update.json";
 		break;
 		
 	case TRDirect:
@@ -162,9 +162,13 @@ void twitterInterface::signedRequest (twitterRequest req, KQOAuthRequest::Reques
 		break;
 		
 	case TRReply:
-		reqUrl = "http://api.twitter.com/1/statuses/update.xml";
+		reqUrl = "http://api.twitter.com/1/statuses/update.json";
 		break;
 
+	case TRSPAMReport:
+		reqUrl = "http://api.twitter.com/1/report_spam.json";
+		break;
+		
 	default:
 		return;
 
@@ -304,6 +308,16 @@ void twitterInterface::login (QString savedToken, QString savedTokenSecret)
 	token = savedToken;
 	tokenSecret = savedTokenSecret;
 	qDebug() << "Successfully logged in";
+}
+
+void twitterInterface::reportSPAM(QString username, long unsigned int userid)
+{
+	KQOAuthParameters param;
+
+	param.insert ("screen_name", username);
+	if (userid)
+		param.insert ("user_id", QString::number(userid));
+	signedRequest (TRSPAMReport, KQOAuthRequest::POST, param);
 }
 
 }

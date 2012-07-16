@@ -45,6 +45,7 @@ class TwitterPage : public QWidget
 	
 	QAction *actionRetwit_;
 	QAction *actionReply_;
+	QAction *actionSPAM_;
 public:
     explicit TwitterPage (QWidget *parent = 0);
     ~TwitterPage();
@@ -64,12 +65,13 @@ private slots:
 public slots:
     void tryToLogin();
     void requestUserTimeline (QString username);
-    void updateTweetList (QList< std::shared_ptr< Tweet > > twits);
+    void updateTweetList (QList<std::shared_ptr<Tweet>> twits);
     void recvdAuth (QString token, QString tokenSecret);
     void twit();
     void retwit();
     void reply();
     void reply(QListWidgetItem*);
+	void reportSpam();
     void sendReply();
 	void scrolledDown(int sliderPos);
 

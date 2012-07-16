@@ -27,6 +27,7 @@ enum twitterRequest
 	TRDirect,
 	TRRetweet,
 	TRReply,
+	TRSPAMReport,
 };
 
 enum feedMode
@@ -48,6 +49,7 @@ public:
 	void sendTweet (QString tweet);
 	void retweet (long unsigned int id);
 	void reply (long unsigned int replyid, QString tweet);
+	void reportSPAM (QString username, long unsigned int userid=0);
 	void getAccess ();
 	void login (QString savedToken, QString savedTokenSecret);
 	feedMode getLastRequestMode() { return  lastRequestMode;};

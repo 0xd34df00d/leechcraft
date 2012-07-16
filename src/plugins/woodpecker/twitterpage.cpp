@@ -47,6 +47,10 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 	actionReply_->setProperty ("ActionIcon", "mail-reply-sender");
 	connect (actionReply_, SIGNAL (triggered ()), this, SLOT (reply()));
 	
+	actionSPAM_ = new QAction (tr ("Report SPAM"), ui->TwitList_);
+	actionSPAM_->setProperty ("ActionIcon", "dialog-close");
+	connect (actionSPAM_, SIGNAL (triggered ()), this, SLOT (reportSpam()));
+	
 	connect(ui->TwitList_, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(reply()));
 	
 	ui->TwitList_->addAction(actionRetwit_);
@@ -252,6 +256,8 @@ void TwitterPage::on_TwitList__customContextMenuRequested(const QPoint& pos)
 		auto menu = new QMenu (ui->TwitList_);
 		menu->addAction (actionRetwit_);
 		menu->addAction (actionReply_);
+		menu->addSeparator();
+		menu->addAction (actionSPAM_);
 /*		if (idx.data (Player::Role::IsAlbum).toBool ())
 			menu->addAction (ActionShowAlbumArt_);
 		else
@@ -264,6 +270,18 @@ void TwitterPage::on_TwitList__customContextMenuRequested(const QPoint& pos)
 
 		menu->exec (ui->TwitList_->viewport ()->mapToGlobal (pos));
 	}
+
+void TwitterPage::reportSpam()
+{
+	const auto& idx = ui->TwitList_->currentItem();
+	const auto twitid = idx->data(Qt::UserRole).toULongLong();
+	
+	auto spamTwit = std::find_if (screenTwits.begin (), screenTwits.end (), 
+			  [twitid] 
+			  (decltype (screenTwits.front ()) tweet) 
+			  { return tweet->id() == twitid; });
+	interface->reportSPAM((*spamTwit)->author()->username());
+}
 
 }
 }
