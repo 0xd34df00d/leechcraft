@@ -150,12 +150,72 @@ namespace GoogleDrive
 		return RefreshToken_;
 	}
 
+	namespace
+	{
+		QList<QStandardItem*> CreateNewItem (const DriveItem& item, QStandardItem *parent,
+				QHash<QString, QStandardItem*>& dirs)
+		{
+			QList<QStandardItem*> row;
+			row << new QStandardItem (item.Name_);
+			row [0]->setData (item.DownloadUrl_, ListingRole::URL);
+			row [0]->setData (item.Id_, ListingRole::ID);
+
+			if (!item.IsFolder_)
+			{
+				row << new QStandardItem (item.OwnerNames_.join (", "));
+				row << new QStandardItem (QString ("%1 (by %2)")
+						.arg (item.ModifiedDate_.toString (Qt::SystemLocaleDate),
+								item.LastModifiedBy_));
+			}
+			else
+			{
+				row [0]->setIcon (Core::Instance ().GetProxy ()->GetIcon ("folder"));
+				dirs [item.Id_] = row [0];
+			}
+
+			if (parent)
+			{
+				parent->appendRow (row);
+				for (auto item : row)
+					item->setEditable (false);
+			}
+
+			return row;
+		}
+
+		void CreateItems (QList<DriveItem> items, QHash<QString, QStandardItem*>& dirs,
+				const QStringList& trashedItems, QStandardItem *trash)
+		{
+			int i = 0;
+			while (!items.isEmpty ())
+			{
+				if (items.count () == i)
+					break;
+
+				DriveItem item = items.at (i++);
+				if (dirs.contains (item.ParentId_))
+				{
+					QStandardItem *parentItem = 0;
+					if (!trash ||
+							trashedItems.contains (item.ParentId_))
+						parentItem = dirs [item.ParentId_];
+					else
+						parentItem = trash;
+
+					CreateNewItem (item, parentItem, dirs);
+
+					items.removeAt (i - 1);
+					i = 0;
+				}
+			}
+		}
+	}
 	void Account::handleFileList (const QList<DriveItem>& items)
 	{
 		QList<QList<QStandardItem*>> treeItems;
 
 		QHash<QString, QStandardItem*> Id2ItemDir;
-		QList<QString> IdThrashed;
+		QStringList IdThrashed;
 		QList<DriveItem> othersItems;
 		QList<DriveItem> trashedItems;
 		Q_FOREACH (const DriveItem& item, items)
@@ -169,105 +229,21 @@ namespace GoogleDrive
 			}
 
 			if (item.ParentIsRoot_)
-			{
-				QStandardItem *dirItem = new QStandardItem (item.Name_);
-				dirItem->setData (item.DownloadUrl_, ListingRole::URL);
-				dirItem->setData (item.Id_, ListingRole::ID);
-				row << dirItem;
-				if (item.IsFolder_)
-				{
-					Id2ItemDir [item.Id_] = dirItem;
-					dirItem->setIcon (QIcon::fromTheme ("folder"));
-				}
-				else
-				{
-					row << new QStandardItem (item.Name_);
-					row << new QStandardItem (item.OwnerNames_.join (", "));
-					row << new QStandardItem (QString ("%1 (by %2)")
-							.arg (item.ModifiedDate_.toString (Qt::ISODate),
-									item.LastModifiedBy_));
-				}
-
-				treeItems << row;
-			}
+				treeItems << CreateNewItem (item, 0, Id2ItemDir);
 			else
 				othersItems << item;
 		}
 
-		int i = 0;
-		while (!othersItems.isEmpty ())
-		{
-			if (othersItems.count () == i)
-				break;
-
-			DriveItem item = othersItems.at (i++);
-			if (Id2ItemDir.contains (item.ParentId_))
-			{
-				QList<QStandardItem*> row;
-				row << new QStandardItem (item.Name_);
-				row [0]->setData (item.DownloadUrl_, ListingRole::URL);
-				row [0]->setData (item.Id_, ListingRole::ID);
-
-				if (!item.IsFolder_)
-				{
-					row << new QStandardItem (item.OwnerNames_.join (", "));
-					row << new QStandardItem (QString ("%1 (by %2)")
-							.arg (item.ModifiedDate_.toString (Qt::ISODate), item.LastModifiedBy_));
-				}
-				else
-				{
-					row [0]->setIcon (QIcon::fromTheme ("folder"));
-					Id2ItemDir [item.Id_] = row [0];
-				}
-
-				Id2ItemDir [item.ParentId_]->appendRow (row);
-				othersItems.removeAt (i - 1);
-				i = 0;
-			}
-		}
+		CreateItems (othersItems, Id2ItemDir, QStringList (), 0);
 
 		QList<QStandardItem*> row;
-		QStandardItem *trash = new QStandardItem (QIcon::fromTheme ("user-trash"),
-				tr ("Trash"));
-		row << trash;
+		row << new QStandardItem (Core::Instance ()
+				.GetProxy ()->GetIcon ("user-trash"), tr ("Trash"));
 		treeItems << row;
-		i = 0;
-		while (!trashedItems.isEmpty ())
-		{
-			if (trashedItems.count () == i)
-				break;
+		CreateItems (trashedItems, Id2ItemDir, IdThrashed, row [0]);
 
-			DriveItem item = trashedItems.at (i++);
-			if (Id2ItemDir.contains (item.ParentId_))
-			{
-				QList<QStandardItem*> row;
-				row << new QStandardItem (item.Name_);
-				row [0]->setData (item.DownloadUrl_, ListingRole::URL);
-				row [0]->setData (item.Id_, ListingRole::ID);
-
-				if (!item.IsFolder_)
-				{
-					row << new QStandardItem (item.OwnerNames_.join (", "));
-					row << new QStandardItem (QString ("%1 (by %2)")
-							.arg (item.ModifiedDate_.toString (Qt::ISODate), item.LastModifiedBy_));
-				}
-				else
-				{
-					row [0]->setIcon (QIcon::fromTheme ("folder"));
-					Id2ItemDir [item.Id_] = row [0];
-				}
-
-				if (IdThrashed.contains (item.ParentId_))
-					Id2ItemDir [item.ParentId_]->appendRow (row);
-				else
-					trash->appendRow (row);
-				trashedItems.removeAt (i - 1);
-				i = 0;
-			}
-		}
-
-		for (const auto& row : treeItems)
-			for (const auto& item : row)
+		for (auto row : treeItems)
+			for (auto item : row)
 				item->setEditable (false);
 
 		emit gotListing (treeItems);
