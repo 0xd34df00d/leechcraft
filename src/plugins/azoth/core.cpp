@@ -1256,11 +1256,11 @@ namespace Azoth
 
 				tip += "<hr />";
 				if (!variant.isEmpty ())
-					tip += "<strong>" + variant + "</strong>";
+					tip += "<strong>" + variant;
 
 				if (info.contains ("priority"))
 					tip += " (" + QString::number (info.value ("priority").toInt ()) + ")";
-				tip += ": ";
+				tip += "</strong><br />";
 				tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
 
 				if (info.contains ("client_name"))
