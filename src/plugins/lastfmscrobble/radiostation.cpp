@@ -67,7 +67,11 @@ namespace Lastfmscrobble
 			else if (param == "recommendations")
 				station = lastfm::RadioStation::recommendations (user);
 			else if (param == "loved")
+#if LASTFM_MAJOR_VERSION < 1
 				station = lastfm::RadioStation::lovedTracks (user);
+#else
+				station = lastfm::RadioStation::mix (user);
+#endif
 			else if (param == "neighbourhood")
 				station = lastfm::RadioStation::neighbourhood (user);
 			break;
