@@ -19,9 +19,13 @@
 #include "otlozhu.h"
 #include <QIcon>
 #include <util/util.h>
+#include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/itagsmanager.h>
 #include "todotab.h"
 #include "core.h"
 #include "deltagenerator.h"
+#include "todomanager.h"
+#include "todostorage.h"
 
 namespace LeechCraft
 {
@@ -104,6 +108,31 @@ namespace Otlozhu
 			qWarning () << Q_FUNC_INFO
 					<< "unknown id"
 					<< id;
+	}
+
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
+	{
+		return e.Mime_ == "x-leechcraft/todo-item" ?
+				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult ();
+	}
+
+	void Plugin::Handle (Entity e)
+	{
+		auto mgr = Core::Instance ().GetTodoManager ();
+
+		TodoItem_ptr item (new TodoItem ());
+		item->SetTitle (e.Entity_.toString ());
+		item->SetComment (e.Additional_ ["TodoBody"].toString ());
+
+		const auto& tags = e.Additional_ ["Tags"].toStringList ();
+		auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
+		QStringList ids;
+		std::transform (tags.begin (), tags.end (), std::back_inserter (ids),
+				[tm] (const QString& tag) { return tm->GetID (tag); });
+		item->SetTagIDs (ids);
+
+		mgr->GetTodoStorage ()->AddItem (item);
 	}
 
 	Sync::ChainIDs_t Plugin::AvailableChains () const
