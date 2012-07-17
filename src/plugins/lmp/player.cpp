@@ -148,6 +148,11 @@ namespace LMP
 				this,
 				SLOT (handleStateChanged (Phonon::State)));
 
+		connect (Source_,
+				SIGNAL (metaDataChanged ()),
+				this,
+				SLOT (handleMetadata ()));
+
 		auto collection = Core::Instance ().GetLocalCollection ();
 		if (collection->IsReady ())
 			restorePlaylist ();
@@ -332,12 +337,7 @@ namespace LMP
 		if (!info.LocalPath_.isEmpty ())
 			return info;
 
-		info.Artist_ = Source_->metaData (Phonon::ArtistMetaData).value (0);
-		info.Album_ = Source_->metaData (Phonon::AlbumMetaData).value (0);
-		info.Title_ = Source_->metaData (Phonon::TitleMetaData).value (0);
-		info.Genres_ = Source_->metaData (Phonon::GenreMetaData);
-		info.TrackNumber_ = Source_->metaData (Phonon::TracknumberMetaData).value (0).toInt ();
-		info.Length_ = Source_->totalTime ();
+		info = GetPhononMediaInfo ();
 		return info;
 	}
 
@@ -354,6 +354,18 @@ namespace LMP
 		return Items_.contains (source) ?
 				Items_ [source]->data (Role::Info).value<MediaInfo> () :
 				MediaInfo ();
+	}
+
+	MediaInfo Player::GetPhononMediaInfo () const
+	{
+		MediaInfo info;
+		info.Artist_ = Source_->metaData (Phonon::ArtistMetaData).value (0);
+		info.Album_ = Source_->metaData (Phonon::AlbumMetaData).value (0);
+		info.Title_ = Source_->metaData (Phonon::TitleMetaData).value (0);
+		info.Genres_ = Source_->metaData (Phonon::GenreMetaData);
+		info.TrackNumber_ = Source_->metaData (Phonon::TracknumberMetaData).value (0).toInt ();
+		info.Length_ = Source_->totalTime () / 1000;
+		return info;
 	}
 
 	namespace
@@ -786,6 +798,23 @@ namespace LMP
 				break;
 			}
 		}
+	}
+
+	void Player::handleMetadata ()
+	{
+		const auto& source = Source_->currentSource ();
+		const auto& isUrl = source.type () == Phonon::MediaSource::Stream ||
+				(source.type () == Phonon::MediaSource::Url && source.url ().scheme () != "file");
+		if (!isUrl ||
+				CurrentStation_ ||
+				!Items_.contains (source))
+			return;
+
+		auto curItem = Items_ [source];
+
+		const auto& info = GetPhononMediaInfo ();
+		FillItem (curItem, info);
+		emit songChanged (info);
 	}
 
 	void Player::setTransitionTime ()
