@@ -4,12 +4,12 @@ Rectangle {
     gradient: Gradient {
         GradientStop {
             position: 0
-            color: "#ff6600"
+            color: "#53485F"
         }
 
         GradientStop {
             position: 1
-            color: "#ff1d00"
+            color: "#222222"
         }
     }
     anchors.fill: parent
@@ -79,7 +79,7 @@ Rectangle {
                     }
                 }
 
-                border.width: 0
+                border.width: 1
                 border.color: "#000000"
                 smooth: true
 
