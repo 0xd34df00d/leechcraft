@@ -1,6 +1,8 @@
 import QtQuick 1.0
 
 Rectangle {
+    id: rootRect
+
     gradient: Gradient {
         GradientStop {
             position: 0
@@ -13,6 +15,8 @@ Rectangle {
         }
     }
     anchors.fill: parent
+
+    signal bookmarkArtistRequested(string id, string page, string tags)
 
     Image {
         id: fullSizeArtistImg
@@ -115,6 +119,30 @@ Rectangle {
                         onClicked: {
                             fullSizeArtistImg.source = artistBigImageURL
                             if (fullSizeArtistImg.status == Image.Ready) fullSizeArtistImg.state = "visible"
+                        }
+                    }
+                }
+
+                Image {
+                    id: addToList
+
+                    width: 16
+                    height: 16
+                    smooth: true
+                    fillMode: Image.PreserveAspectFit
+
+                    anchors.top: parent.top
+                    anchors.topMargin: 2
+                    anchors.left: artistNameLabel.right
+                    anchors.leftMargin: 8
+                    source: "image://sysIcons/bookmark-new"
+                    visible: !artistInCollection
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: {
+                            rootRect.bookmarkArtistRequested(artistName, artistPageURL, artistTags)
                         }
                     }
                 }
