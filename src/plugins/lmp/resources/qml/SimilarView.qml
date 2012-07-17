@@ -139,11 +139,27 @@ Rectangle {
                     visible: !artistInCollection
 
                     MouseArea {
+                        id: addToListArea
                         anchors.fill: parent
+                        anchors.margins: -2
+                        hoverEnabled: true
 
                         onClicked: {
                             rootRect.bookmarkArtistRequested(artistName, artistPageURL, artistTags)
                         }
+                    }
+
+                    Rectangle {
+                        id: addToListHover
+                        anchors.fill: parent
+                        anchors.margins: -1
+                        radius: 2
+
+                        visible: addToListArea.containsMouse
+
+                        color: "#00000000"
+                        border.width: 1
+                        border.color: "#888888"
                     }
                 }
 
