@@ -35,15 +35,27 @@ namespace LMP
 	{
 		QStringList result;
 		QStringList nameFilters;
-		nameFilters << "*.ogg"
+		nameFilters << "*.aiff"
+				<< "*.ape"
+				<< "*.asf"
 				<< "*.flac"
+				<< "*.m4a"
 				<< "*.mp3"
-				<< "*.wav";
+				<< "*.mp4"
+				<< "*.mpc"
+				<< "*.mpeg"
+				<< "*.mpg"
+				<< "*.ogg"
+				<< "*.tta"
+				<< "*.wav"
+				<< "*.wma"
+				<< "*.wv"
+				<< "*.wvp";
 
 		if (QFileInfo (dirPath).isFile ())
 		{
 			Q_FOREACH (const auto& filter, nameFilters)
-				if (dirPath.endsWith (filter.mid (1)))
+				if (dirPath.endsWith (filter.mid (1), Qt::CaseInsensitive))
 					return QStringList (dirPath);
 			return QStringList ();
 		}
