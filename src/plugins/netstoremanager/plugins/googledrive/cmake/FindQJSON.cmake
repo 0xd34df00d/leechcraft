@@ -1,0 +1,89 @@
+# Find QJSON - JSON handling library for Qt
+#
+# This module defines
+#  QJSON_FOUND - whether the qsjon library was found
+#  QJSON_LIBRARIES - the qjson library
+#  QJSON_INCLUDE_DIR - the include path of the qjson library
+#
+# Added more introspection for WIN32 (c) 2011 DZhon (TheDZhon@gmail.com)
+
+IF (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
+	# Already in cache
+	SET (QJSON_FOUND TRUE)
+ELSE (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
+	IF (NOT WIN32)
+		FIND_LIBRARY (QJSON_LIBRARIES
+			NAMES
+				qjson
+			PATHS
+				${QJSON_DIR}
+				${LIB_INSTALL_DIR}
+				${KDE4_LIB_DIR}
+		)
+	ELSE (NOT WIN32)
+		IF (NOT DEFINED QJSON_DIR)
+			IF (QJSON_FIND_REQUIRED)
+				MESSAGE(FATAL_ERROR "Please set QJSON_DIR variable")
+			ELSE (QJSON_FIND_REQUIRED)
+				MESSAGE(STATUS "Please set QJSON_DIR variable for onlinebookmarks support")
+			ENDIF (QJSON_FIND_REQUIRED)
+		ENDIF (NOT DEFINED QJSON_DIR)
+
+		SET (QJSON_INCLUDE_WIN32 ${QJSON_DIR})		
+
+		SET (PROBE_DIR_Debug
+			${QJSON_DIR}/build/lib/Debug)
+		SET (PROBE_DIR_Release
+			${QJSON_DIR}/build/lib/MinSizeRel ${QJSON_DIR}/build/lib/Release)
+
+		FIND_LIBRARY (QJSON_LIBRARY_DEBUG NAMES qjson.lib PATHS ${PROBE_DIR_Debug})
+		FIND_LIBRARY (QJSON_LIBRARY_RELEASE NAMES qjson.lib PATHS ${PROBE_DIR_Release})
+		win32_tune_libs_names (QJSON)	
+	ENDIF (NOT WIN32)
+
+IF (NOT WIN32) # regression guard
+	FIND_PATH (QJSON_INCLUDE_DIR
+    NAMES
+		qjson_export.h
+	PATH_SUFFIXES
+		qjson
+    PATHS
+		${QJSON_DIR}
+		${INCLUDE_INSTALL_DIR}
+		${KDE4_INCLUDE_DIR}
+	)
+ELSE (NOT WIN32) #may be works for linux too
+	FIND_PATH (QJSON_INCLUDE_DIR
+    NAMES
+		qjson/qjson_export.h
+	PATH_SUFFIXES
+		qjson
+    PATHS
+		${QJSON_DIR}
+		${INCLUDE_INSTALL_DIR}
+		${KDE4_INCLUDE_DIR}
+		${QJSON_INCLUDE_WIN32}
+	)
+ENDIF (NOT WIN32)
+
+#Win32 Strange beg
+	
+	IF (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
+		SET (QJSON_FOUND 1)
+	ENDIF (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
+
+	IF (QJSON_FOUND)
+		MESSAGE (STATUS "Found the QJSON libraries at ${QJSON_LIBRARIES}")
+		MESSAGE (STATUS "Found the QJSON headers at ${QJSON_INCLUDE_DIR}")
+		IF (WIN32)
+			MESSAGE (STATUS ${_WIN32_ADDITIONAL_MESS})
+		ENDIF (WIN32)
+	ELSE (QJSON_FOUND)
+		IF (QJSON_FIND_REQUIRED)
+			MESSAGE (FATAL_ERROR "Could NOT find required QJSON library, aborting")
+		ELSE (QJSON_FIND_REQUIRED)
+			MESSAGE (STATUS "Could NOT find QJSON")
+		ENDIF (QJSON_FIND_REQUIRED)
+	ENDIF (QJSON_FOUND)
+
+ENDIF (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
