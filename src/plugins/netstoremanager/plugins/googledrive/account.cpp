@@ -163,7 +163,7 @@ namespace GoogleDrive
 			if (!item.IsFolder_)
 			{
 				row << new QStandardItem (item.OwnerNames_.join (", "));
-				row << new QStandardItem (tr ("%1 (by %2)")
+				row << new QStandardItem (QObject::tr ("%1 (by %2)")
 						.arg (item.ModifiedDate_.toString (Qt::SystemLocaleDate),
 								item.LastModifiedBy_));
 			}
@@ -210,6 +210,7 @@ namespace GoogleDrive
 			}
 		}
 	}
+
 	void Account::handleFileList (const QList<DriveItem>& items)
 	{
 		QList<QList<QStandardItem*>> treeItems;
