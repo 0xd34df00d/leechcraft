@@ -40,7 +40,11 @@ namespace LeechCraft
 			{
 				bool FileFilter (const boost::filesystem::path& filename)
 				{
+#if BOOST_FILESYSTEM_VERSION == 2
 					if (filename.leaf () [0] == '.')
+#else
+					if (filename.leaf ().string () [0] == '.')
+#endif
 						return false;
 					QFileInfo fi (QString::fromUtf8 (filename.string ().c_str ()));
 					if ((fi.isDir () ||
@@ -74,7 +78,9 @@ namespace LeechCraft
 					return;
 				}
 
+#if BOOST_FILESYSTEM_VERSION == 2
 				boost::filesystem::path::default_name_check (boost::filesystem::no_check);
+#endif
 
 				libtorrent::file_storage fs;
 #if LIBTORRENT_VERSION_NUM >= 1600
