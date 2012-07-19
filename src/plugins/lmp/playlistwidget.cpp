@@ -173,6 +173,17 @@ namespace LMP
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showAlbumArt ()));
+
+		auto model = Player_->GetPlaylistModel ();
+		connect (model,
+				SIGNAL (rowsInserted (QModelIndex, int, int)),
+				this,
+				SLOT (updateStatsLabel ()));
+		connect (model,
+				SIGNAL (rowsRemoved (QModelIndex, int, int)),
+				this,
+				SLOT (updateStatsLabel ()));
+		updateStatsLabel ();
 	}
 
 	void PlaylistWidget::on_Playlist__customContextMenuRequested (const QPoint& pos)
@@ -282,6 +293,19 @@ namespace LMP
 				QDir::homePath (),
 				tr ("Music files (*.ogg *.flac *.mp3 *.wav);;All files (*.*)"));
 		Player_->Enqueue (files);
+	}
+
+	void PlaylistWidget::updateStatsLabel ()
+	{
+		const int tracksCount = Player_->GetQueue ().size ();
+
+		auto model = Player_->GetPlaylistModel ();
+		int length = 0;
+		for (int i = 0, rc = model->rowCount (); i < rc; ++i)
+			length += model->index (i, 0).data (Player::Role::AlbumLength).toInt ();
+
+		Ui_.StatsLabel_->setText (tr ("%n track(s), total duration: %1", 0, tracksCount)
+					.arg (Util::MakeTimeFromLong (length)));
 	}
 }
 }
