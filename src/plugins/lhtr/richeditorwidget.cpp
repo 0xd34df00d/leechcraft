@@ -90,7 +90,7 @@ namespace LHTR
 				SLOT (updateActions ()));
 
 		QToolBar *bar = new QToolBar (tr ("Editor bar"));
-		qobject_cast<QVBoxLayout*> (Ui_.HTMLTab_->layout ())->insertWidget (0, bar);
+		qobject_cast<QVBoxLayout*> (Ui_.ViewTab_->layout ())->insertWidget (0, bar);
 
 		auto fwdCmd = [bar, this] (const QString& name,
 				const QString& icon,
