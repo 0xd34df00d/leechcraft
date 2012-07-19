@@ -16,39 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include "ui_nowplayingwidget.h"
-#include "mediainfo.h"
+#include "aalabeleventfilter.h"
+#include <QMouseEvent>
+#include "util.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
-
-	class NowPlayingWidget : public QWidget
+	AALabelEventFilter::AALabelEventFilter (CoverPathGetter_t getter, QObject *parent)
+	: QObject (parent)
+	, Getter_ (getter)
 	{
-		Q_OBJECT
+	}
 
-		Ui::NowPlayingWidget Ui_;
+	bool AALabelEventFilter::eventFilter (QObject* , QEvent *event)
+	{
+		if (event->type () != QEvent::MouseButtonRelease)
+			return false;
 
-		Media::SimilarityInfos_t LastInfos_;
-		MediaInfo CurrentInfo_;
-	public:
-		NowPlayingWidget (QWidget* = 0);
-
-		void SetSimilarArtists (Media::SimilarityInfos_t);
-		void SetLyrics (const QString&);
-
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
-	private:
-		void SetStatistics (const QString&);
-	private slots:
-		void resetSimilarArtists ();
-	};
+		ShowAlbumArt (Getter_ (), static_cast<QMouseEvent*> (event)->pos ());
+		return true;
+	}
 }
 }

@@ -18,37 +18,23 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_nowplayingwidget.h"
-#include "mediainfo.h"
+#include <functional>
+#include <QObject>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
-
-	class NowPlayingWidget : public QWidget
+	class AALabelEventFilter : public QObject
 	{
-		Q_OBJECT
-
-		Ui::NowPlayingWidget Ui_;
-
-		Media::SimilarityInfos_t LastInfos_;
-		MediaInfo CurrentInfo_;
 	public:
-		NowPlayingWidget (QWidget* = 0);
-
-		void SetSimilarArtists (Media::SimilarityInfos_t);
-		void SetLyrics (const QString&);
-
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
+		typedef std::function<QString ()> CoverPathGetter_t;
 	private:
-		void SetStatistics (const QString&);
-	private slots:
-		void resetSimilarArtists ();
+		CoverPathGetter_t Getter_;
+	public:
+		AALabelEventFilter (CoverPathGetter_t, QObject* = 0);
+	protected:
+		bool eventFilter (QObject*, QEvent*);
 	};
 }
 }

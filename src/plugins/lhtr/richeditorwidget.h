@@ -24,6 +24,8 @@
 #include <interfaces/itexteditor.h>
 #include "ui_richeditorwidget.h"
 
+class QToolBar;
+
 namespace LeechCraft
 {
 namespace LHTR
@@ -37,6 +39,8 @@ namespace LHTR
 		ICoreProxy_ptr Proxy_;
 		Ui::RichEditorWidget Ui_;
 
+		QToolBar *ViewBar_;
+
 		QHash<QWebPage::WebAction, QAction*> WebAction2Action_;
 		QHash<QString, QHash<QString, QAction*>> Cmd2Action_;
 
@@ -46,6 +50,7 @@ namespace LHTR
 
 		QString GetContents (ContentType) const;
 		void SetContents (const QString&, ContentType);
+		void AppendAction (QAction*);
 	private:
 		void ExecCommand (const QString&, const QString& = QString ());
 		bool QueryCommandState (const QString& cmd);

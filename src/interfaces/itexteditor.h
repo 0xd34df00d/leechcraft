@@ -19,7 +19,8 @@
 #pragma once
 
 class QWidget;
-class QSTring;
+class QString;
+class QAction;
 
 namespace LeechCraft
 {
@@ -38,6 +39,8 @@ public:
 	virtual QString GetContents (LeechCraft::ContentType) const = 0;
 
 	virtual void SetContents (const QString& contents, LeechCraft::ContentType) = 0;
+	
+	virtual void AppendAction (QAction*) = 0;
 };
 
 class ITextEditor
