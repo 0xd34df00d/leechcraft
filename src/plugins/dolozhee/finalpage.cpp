@@ -44,6 +44,7 @@ namespace Dolozhee
 		QString title;
 		QString desc;
 		const auto type = wiz->GetReportTypePage ()->GetReportType ();
+		const auto category = wiz->GetReportTypePage ()->GetCategoryID ();
 		switch (type)
 		{
 		case ReportTypePage::Type::Bug:
@@ -56,7 +57,7 @@ namespace Dolozhee
 			break;
 		}
 
-		const auto& data = XMLGenerator ().CreateIssue (title, desc, ReportTypePage::Type::Bug);
+		const auto& data = XMLGenerator ().CreateIssue (title, desc, category, ReportTypePage::Type::Bug);
 		auto reply = wiz->PostRequest ("/issues.xml", data);
 		connect (reply,
 				SIGNAL (finished ()),
