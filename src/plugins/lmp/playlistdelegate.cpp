@@ -122,11 +122,14 @@ namespace LMP
 		const int width = option.fontMetrics.width (lengthText);
 		style->drawItemText (painter, option.rect,
 				Qt::AlignRight, option.palette, true, lengthText);
-		style->drawItemText (painter, option.rect.adjusted (0, 0, -width, 0),
-				0, option.palette, true,
-				isSubAlbum ?
-					QString::fromUtf8 ("%1 — %2").arg (info.TrackNumber_).arg (info.Title_) :
-					index.data ().toString ());
+
+		const auto& itemTextRect = option.rect.adjusted (0, 0, -width, 0);
+		auto itemStr = isSubAlbum ?
+				QString::fromUtf8 ("%1 — %2").arg (info.TrackNumber_).arg (info.Title_) :
+				index.data ().toString ();
+		itemStr = option.fontMetrics.elidedText (itemStr, Qt::ElideRight, itemTextRect.width ());
+
+		style->drawItemText (painter, itemTextRect, 0, option.palette, true, itemStr);
 		painter->restore ();
 	}
 
