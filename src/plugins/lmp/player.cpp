@@ -439,7 +439,7 @@ namespace LMP
 				PlaylistModel_->appendRow (item);
 				break;
 			case Phonon::MediaSource::Url:
-				item->setText ("URL");
+				item->setText (source.url ().toString ());
 				PlaylistModel_->appendRow (item);
 				break;
 			case Phonon::MediaSource::LocalFile:
