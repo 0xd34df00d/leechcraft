@@ -260,6 +260,11 @@ namespace LHTR
 		ViewBar_->addAction (act);
 	}
 
+	void RichEditorWidget::RemoveAction (QAction *act)
+	{
+		ViewBar_->removeAction (act);
+	}
+
 	void RichEditorWidget::ExecCommand (const QString& cmd, const QString& arg)
 	{
 		auto frame = Ui_.View_->page ()->mainFrame ();

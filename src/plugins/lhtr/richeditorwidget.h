@@ -51,6 +51,7 @@ namespace LHTR
 		QString GetContents (ContentType) const;
 		void SetContents (const QString&, ContentType);
 		void AppendAction (QAction*);
+		void RemoveAction (QAction*);
 	private:
 		void ExecCommand (const QString&, const QString& = QString ());
 		bool QueryCommandState (const QString& cmd);
