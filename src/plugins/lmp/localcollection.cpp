@@ -48,6 +48,29 @@ namespace LMP
 			return left.value<T> () < right.value<T> ();
 		}
 
+		template<>
+		bool VarCompare<QString> (const QVariant& left, const QVariant& right)
+		{
+			return QString::localeAwareCompare (left.toString (), right.toString ()) < 0;
+		}
+
+		bool NameCompare (const QVariant& left, const QVariant& right)
+		{
+			auto leftStr = left.toString ();
+			auto rightStr = right.toString ();
+
+			auto chopStr = [] (QString& str)
+			{
+				if (str.startsWith ("the ", Qt::CaseInsensitive))
+					str = str.mid (4);
+			};
+
+			chopStr (leftStr);
+			chopStr (rightStr);
+
+			return QString::localeAwareCompare (leftStr, rightStr) < 0;
+		}
+
 		struct Comparators
 		{
 			typedef std::function<bool (const QVariant&, const QVariant&)> Comparator_t;
@@ -55,7 +78,7 @@ namespace LMP
 
 			Comparators ()
 			{
-				Role2Cmp_ [LocalCollection::Role::ArtistName] = VarCompare<QString>;
+				Role2Cmp_ [LocalCollection::Role::ArtistName] = NameCompare;
 				Role2Cmp_ [LocalCollection::Role::AlbumName] = VarCompare<QString>;
 				Role2Cmp_ [LocalCollection::Role::AlbumYear] = VarCompare<int>;
 				Role2Cmp_ [LocalCollection::Role::TrackNumber] = VarCompare<int>;
