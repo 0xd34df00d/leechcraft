@@ -22,6 +22,7 @@
 #include "mediainfo.h"
 #include "core.h"
 #include "localcollection.h"
+#include "aalabeleventfilter.h"
 #include "util.h"
 
 namespace LeechCraft
@@ -37,7 +38,8 @@ namespace LMP
 				this,
 				SLOT (resetSimilarArtists ()));
 
-		Ui_.Art_->installEventFilter (this);
+		auto coverGetter = [this] () { return CurrentInfo_.LocalPath_; };
+		Ui_.Art_->installEventFilter (new AALabelEventFilter (coverGetter, this));
 	}
 
 	void NowPlayingWidget::SetSimilarArtists (Media::SimilarityInfos_t infos)
@@ -95,15 +97,6 @@ namespace LMP
 		Ui_.BioWidget_->SetCurrentArtist (info.Artist_);
 
 		Ui_.AudioProps_->SetProps (info);
-	}
-
-	bool NowPlayingWidget::eventFilter (QObject*, QEvent *event)
-	{
-		if (event->type () != QEvent::MouseButtonRelease)
-			return false;
-
-		ShowAlbumArt (CurrentInfo_.LocalPath_, static_cast<QMouseEvent*> (event)->pos ());
-		return true;
 	}
 
 	namespace
