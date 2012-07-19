@@ -314,7 +314,9 @@ namespace Azoth
 	void ChatTabsManager::updateCurrentTab (QObject *entryObj)
 	{
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
-		LastCurrentTab_ = Entry2Tab_.value (entry->GetEntryID ());
+		LastCurrentTab_ = entry ?
+				Entry2Tab_.value (entry->GetEntryID ()) :
+				0;
 	}
 
 	void ChatTabsManager::handleAddingCLEntryEnd (IHookProxy_ptr,
