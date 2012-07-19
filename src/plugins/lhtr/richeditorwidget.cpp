@@ -70,6 +70,10 @@ namespace LHTR
 				case Type::Bar:
 					return Bar_->addAction (text, receiver, member);
 				}
+
+				qWarning () << Q_FUNC_INFO
+						<< "unknown addable type";
+				return 0;
 			}
 		};
 	}
@@ -232,6 +236,10 @@ namespace LHTR
 		case ContentType::PlainText:
 			return Ui_.View_->page ()->mainFrame ()->toPlainText ();
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown content type";
+		return QString ();
 	}
 
 	void RichEditorWidget::SetContents (const QString& contents, ContentType type)
