@@ -17,10 +17,10 @@
  **********************************************************************/
 
 #include "userstatuspage.h"
+#include <QNetworkAccessManager>
 #include "reportwizard.h"
 #include "chooseuserpage.h"
 #include "xmlgenerator.h"
-#include <QNetworkAccessManager>
 
 namespace LeechCraft
 {
