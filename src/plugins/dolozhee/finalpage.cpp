@@ -57,7 +57,7 @@ namespace Dolozhee
 			break;
 		}
 
-		const auto& data = XMLGenerator ().CreateIssue (title, desc, category, ReportTypePage::Type::Bug);
+		const auto& data = XMLGenerator ().CreateIssue (title, desc, category, type);
 		auto reply = wiz->PostRequest ("/issues.xml", data);
 		connect (reply,
 				SIGNAL (finished ()),
