@@ -41,6 +41,8 @@ namespace Blogique
 
 		IEditorWidget *PostEdit_;
 		QWidget *PostEditWidget_;
+		QToolBar *ToolBar_;
+		QComboBox *AccountsBox_;
 	public:
 		BlogiqueWidget (QWidget *parent = 0);
 

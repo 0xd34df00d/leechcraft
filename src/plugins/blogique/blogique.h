@@ -23,6 +23,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ipluginready.h>
+#include <interfaces/iactionsexporter.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LeechCraft
@@ -58,6 +59,7 @@ namespace Blogique
 		void AddPlugin (QObject* plugin);
 	private:
 		void CreateTab ();
+
 	signals:
 		void addNewTab (const QString& name, QWidget *tabContents);
 		void removeTab (QWidget *tabContents);
@@ -68,6 +70,8 @@ namespace Blogique
 
 		void gotEntity (LeechCraft::Entity e);
 		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
+
+		void gotActions (QList<QAction*> actions, ActionsEmbedPlace area);
 	};
 }
 }

@@ -21,6 +21,8 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include "blogique.h"
 #include "core.h"
+#include "interfaces/blogique/iaccount.h"
+#include <QWidgetAction>
 
 namespace LeechCraft
 {
@@ -32,6 +34,7 @@ namespace Blogique
 	: QWidget (parent)
 	, PostEdit_ (0)
 	, PostEditWidget_ (0)
+	, ToolBar_ (new QToolBar)
 	{
 		Ui_.setupUi (this);
 		auto plugs = Core::Instance ().GetCoreProxy ()->
@@ -57,6 +60,24 @@ namespace Blogique
 			editFrameLay->addWidget (w);
 			break;
 		}
+
+		Ui_.SaveEntry_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("document-save"));
+		ToolBar_->addAction (Ui_.SaveEntry_);
+		Ui_.Submit_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("svn-commit"));
+		ToolBar_->addAction (Ui_.Submit_);
+
+		AccountsBox_ = new QComboBox (ToolBar_);
+		for (IAccount *acc : Core::Instance ().GetAccounts ())
+			AccountsBox_->addItem (acc->GetAccountName ());
+		QWidgetAction *action = new QWidgetAction (ToolBar_);
+		action->setDefaultWidget (AccountsBox_);
+		ToolBar_->addAction (action);
+
+		Ui_.OpenInBrowser_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("applications-internet"));
+		ToolBar_->addAction (Ui_.OpenInBrowser_);
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
@@ -72,7 +93,7 @@ namespace Blogique
 
 	QToolBar* BlogiqueWidget::GetToolBar () const
 	{
-		return 0;
+		return ToolBar_;
 	}
 
 	void BlogiqueWidget::Remove ()
