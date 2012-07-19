@@ -15,6 +15,9 @@
 		<item type="checkbox" property="ShowTrayIcon" default="false">
 			<label value="Show tray icon" />
 		</item>
+		<item type="checkbox" property="SortWithThe" default="true">
+			<label value="Take 'The' into account when sorting" />
+		</item>
 		<item type="checkbox" property="FollowSymLinks" default="false">
 			<label value="Follow symbolic links" />
 		</item>

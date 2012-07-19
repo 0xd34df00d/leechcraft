@@ -26,10 +26,15 @@ namespace LMP
 {
 	class CollectionSorterModel : public QSortFilterProxyModel
 	{
+		Q_OBJECT
+
+		bool UseThe_;
 	public:
 		CollectionSorterModel (QObject*);
 	protected:
 		bool lessThan (const QModelIndex&, const QModelIndex&) const;
+	private slots:
+		void handleUseTheChanged ();
 	};
 }
 }

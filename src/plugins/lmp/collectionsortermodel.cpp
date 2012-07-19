@@ -18,6 +18,7 @@
 
 #include "collectionsortermodel.h"
 #include "localcollection.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -25,38 +26,48 @@ namespace LMP
 {
 	namespace
 	{
+		enum CompareFlag
+		{
+			None = 0x0,
+			WithoutThe = 0x1
+		};
+		Q_DECLARE_FLAGS (CompareFlags, CompareFlag);
+
 		template<typename T>
-		bool VarCompare (const QVariant& left, const QVariant& right)
+		bool VarCompare (const QVariant& left, const QVariant& right, CompareFlags)
 		{
 			return left.value<T> () < right.value<T> ();
 		}
 
 		template<>
-		bool VarCompare<QString> (const QVariant& left, const QVariant& right)
+		bool VarCompare<QString> (const QVariant& left, const QVariant& right, CompareFlags)
 		{
 			return QString::localeAwareCompare (left.toString (), right.toString ()) < 0;
 		}
 
-		bool NameCompare (const QVariant& left, const QVariant& right)
+		bool NameCompare (const QVariant& left, const QVariant& right, CompareFlags flags)
 		{
 			auto leftStr = left.toString ();
 			auto rightStr = right.toString ();
 
-			auto chopStr = [] (QString& str)
+			if (flags & WithoutThe)
 			{
-				if (str.startsWith ("the ", Qt::CaseInsensitive))
-					str = str.mid (4);
-			};
+				auto chopStr = [] (QString& str)
+				{
+					if (str.startsWith ("the ", Qt::CaseInsensitive))
+						str = str.mid (4);
+				};
 
-			chopStr (leftStr);
-			chopStr (rightStr);
+				chopStr (leftStr);
+				chopStr (rightStr);
+			}
 
 			return QString::localeAwareCompare (leftStr, rightStr) < 0;
 		}
 
 		struct Comparators
 		{
-			typedef std::function<bool (const QVariant&, const QVariant&)> Comparator_t;
+			typedef std::function<bool (const QVariant&, const QVariant&, CompareFlags)> Comparator_t;
 			QHash<LocalCollection::Role, Comparator_t> Role2Cmp_;
 
 			Comparators ()
@@ -71,7 +82,7 @@ namespace LMP
 		};
 
 		bool RoleCompare (const QModelIndex& left, const QModelIndex& right,
-				QList<LocalCollection::Role> roles)
+				QList<LocalCollection::Role> roles, CompareFlags flags)
 		{
 			static Comparators comparators;
 			while (!roles.isEmpty ())
@@ -80,14 +91,20 @@ namespace LMP
 				const auto& lData = left.data (role);
 				const auto& rData = right.data (role);
 				if (lData != rData)
-					return comparators.Role2Cmp_ [role] (lData, rData);
+					return comparators.Role2Cmp_ [role] (lData, rData, flags);
 			}
 			return false;
 		}
 	}
 	CollectionSorterModel::CollectionSorterModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
+	, UseThe_ (true)
 	{
+		XmlSettingsManager::Instance ().RegisterObject ("SortWithThe",
+				this,
+				"handleUseTheChanged");
+
+		handleUseTheChanged ();
 	}
 
 	bool CollectionSorterModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
@@ -111,7 +128,19 @@ namespace LMP
 		default:
 			return QSortFilterProxyModel::lessThan (left, right);
 		}
-		return RoleCompare (left, right, roles);
+
+		CompareFlags flags = CompareFlag::None;
+		if (!UseThe_)
+			flags |= CompareFlag::WithoutThe;
+
+		return RoleCompare (left, right, roles, flags);
+	}
+
+	void CollectionSorterModel::handleUseTheChanged ()
+	{
+		UseThe_ = XmlSettingsManager::Instance ()
+				.property ("SortWithThe").toBool ();
+		invalidate ();
 	}
 }
 }
