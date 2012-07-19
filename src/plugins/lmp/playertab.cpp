@@ -42,6 +42,7 @@
 
 #ifdef ENABLE_MPRIS
 #include "mpris/instance.h"
+#include "aalabeleventfilter.h"
 #endif
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);
@@ -95,6 +96,9 @@ namespace LMP
 		Ui_.RadioWidget_->SetPlayer (Player_);
 
 		Ui_.FSBrowser_->AssociatePlayer (Player_);
+
+		auto coverGetter = [this] () { return Ui_.NPArt_->property ("LMP/CoverPath").toString (); };
+		Ui_.NPArt_->installEventFilter (new AALabelEventFilter (coverGetter, this));
 
 		connect (Player_,
 				SIGNAL (songChanged (MediaInfo)),
@@ -445,14 +449,19 @@ namespace LMP
 
 	void PlayerTab::handleSongChanged (const MediaInfo& info)
 	{
-		QPixmap px = FindAlbumArt (info.LocalPath_);
+		const auto& coverPath = FindAlbumArtPath (info.LocalPath_);
+		QPixmap px;
+		if (!coverPath.isEmpty ())
+			px = QPixmap (coverPath);
 		if (px.isNull ())
 			px = QIcon::fromTheme ("media-optical").pixmap (128, 128);
 
 		Ui_.NPWidget_->SetAlbumArt (px);
 		const QPixmap& scaled = px.scaled (Ui_.NPArt_->minimumSize (),
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
 		Ui_.NPArt_->setPixmap (scaled);
+		Ui_.NPArt_->setProperty ("LMP/CoverPath", coverPath);
 
 		Ui_.NPWidget_->SetTrackInfo (info);
 

@@ -33,6 +33,9 @@
          <height>48</height>
         </size>
        </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -77,9 +80,7 @@
          <number>1</number>
         </property>
         <item>
-         <widget class="LeechCraft::LMP::NowPlayingWidget" name="NPWidget_" native="true">
-          <zorder>Playlist_</zorder>
-         </widget>
+         <widget class="LeechCraft::LMP::NowPlayingWidget" name="NPWidget_" native="true"/>
         </item>
        </layout>
       </widget>
@@ -232,7 +233,7 @@
        </layout>
       </widget>
      </widget>
-	 <widget class="LeechCraft::LMP::PlaylistWidget" name="Playlist_"/>
+     <widget class="LeechCraft::LMP::PlaylistWidget" name="Playlist_" native="true"/>
     </widget>
    </item>
   </layout>
