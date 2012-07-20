@@ -42,7 +42,7 @@ namespace Dolozhee
 	}
 
 	QByteArray XMLGenerator::CreateIssue (const QString& title,
-			const QString& desc, ReportTypePage::Type type) const
+			const QString& desc, int category, ReportTypePage::Type type) const
 	{
 		QByteArray result;
 
@@ -53,6 +53,8 @@ namespace Dolozhee
 		w.writeTextElement ("description", desc);
 		w.writeTextElement ("project_id", "1");
 		w.writeTextElement ("priority_id", "4");
+		if (category >= 0)
+			w.writeTextElement ("category_id", QString::number (category));
 		switch (type)
 		{
 		case ReportTypePage::Type::Bug:

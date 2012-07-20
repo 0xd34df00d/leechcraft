@@ -18,56 +18,23 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_playlistwidget.h"
-#include "player.h"
-
-class QToolBar;
-class QActionGroup;
-class QUndoStack;
+#include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class Player;
-
-	class PlaylistWidget : public QWidget
+	class CollectionSorterModel : public QSortFilterProxyModel
 	{
 		Q_OBJECT
 
-		Ui::PlaylistWidget Ui_;
-		QToolBar *PlaylistToolbar_;
-		QActionGroup *PlayModesGroup_;
-
-		QUndoStack *UndoStack_;
-
-		Player *Player_;
-
-		QAction *ActionRemoveSelected_;
-		QAction *ActionStopAfterSelected_;
-		QAction *ActionShowTrackProps_;
-		QAction *ActionShowAlbumArt_;
+		bool UseThe_;
 	public:
-		PlaylistWidget (QWidget* = 0);
-
-		void SetPlayer (Player*);
+		CollectionSorterModel (QObject*);
+	protected:
+		bool lessThan (const QModelIndex&, const QModelIndex&) const;
 	private slots:
-		void on_Playlist__customContextMenuRequested (const QPoint&);
-		void handleChangePlayMode ();
-		void handlePlayModeChanged (Player::PlayMode);
-
-		void removeSelectedSongs ();
-		void setStopAfterSelected ();
-		void showTrackProps ();
-
-		void showAlbumArt ();
-
-		void handleSavePlaylist ();
-		void loadFromDisk ();
-		void addURL ();
-
-		void updateStatsLabel ();
+		void handleUseTheChanged ();
 	};
 }
 }
