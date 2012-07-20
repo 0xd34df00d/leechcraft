@@ -113,6 +113,7 @@ namespace LMP
 
 		void Enqueue (const QStringList&, bool = true);
 		void Enqueue (const QList<Phonon::MediaSource>&, bool = true);
+		void ReplaceQueue (const QList<Phonon::MediaSource>&, bool = true);
 		QList<Phonon::MediaSource> GetQueue () const;
 		QList<Phonon::MediaSource> GetIndexSources (const QModelIndex&) const;
 

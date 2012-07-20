@@ -268,6 +268,26 @@ namespace LMP
 		AddToPlaylistModel (sources, sort);
 	}
 
+	void Player::ReplaceQueue (const QList<Phonon::MediaSource>& queue, bool sort)
+	{
+		auto vals = Items_.values ();
+		auto curSrcPos = std::find_if (vals.begin (), vals.end (),
+				[] (decltype (vals.front ()) item) { return item->data (Role::IsCurrent).toBool (); });
+		const auto& currentSource = curSrcPos != vals.end () ?
+				(*curSrcPos)->data (Role::Source).value<Phonon::MediaSource> () :
+				Phonon::MediaSource ();
+
+		PlaylistModel_->clear ();
+		Items_.clear ();
+		AlbumRoots_.clear ();
+		CurrentQueue_.clear ();
+
+		AddToPlaylistModel (queue, sort);
+
+		if (Items_.contains (currentSource))
+			Items_ [currentSource]->setData (true, Role::IsCurrent);
+	}
+
 	QList<Phonon::MediaSource> Player::GetQueue () const
 	{
 		return CurrentQueue_;
@@ -455,23 +475,7 @@ namespace LMP
 	{
 		if (!CurrentQueue_.isEmpty ())
 		{
-			auto vals = Items_.values ();
-			auto curSrcPos = std::find_if (vals.begin (), vals.end (),
-					[] (decltype (vals.front ()) item) { return item->data (Role::IsCurrent).toBool (); });
-			const auto& currentSource = curSrcPos != vals.end () ?
-					(*curSrcPos)->data (Role::Source).value<Phonon::MediaSource> () :
-					Phonon::MediaSource ();
-
-			PlaylistModel_->clear ();
-			Items_.clear ();
-			AlbumRoots_.clear ();
-
-			auto newList = CurrentQueue_ + sources;
-			CurrentQueue_.clear ();
-			AddToPlaylistModel (newList, sort);
-
-			if (Items_.contains (currentSource))
-				Items_ [currentSource]->setData (true, Role::IsCurrent);
+			ReplaceQueue (CurrentQueue_ + sources, sort);
 			return;
 		}
 
