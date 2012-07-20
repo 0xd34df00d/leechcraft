@@ -75,6 +75,23 @@ namespace LMP
 
 		Ui_.PlaylistLayout_->addWidget (PlaylistToolbar_);
 
+		InitToolbarActions ();
+		InitViewActions ();
+
+		auto model = Player_->GetPlaylistModel ();
+		connect (model,
+				SIGNAL (rowsInserted (QModelIndex, int, int)),
+				this,
+				SLOT (updateStatsLabel ()));
+		connect (model,
+				SIGNAL (rowsRemoved (QModelIndex, int, int)),
+				this,
+				SLOT (updateStatsLabel ()));
+		updateStatsLabel ();
+	}
+
+	void PlaylistWidget::InitToolbarActions ()
+	{
 		QAction *clearPlaylist = new QAction (tr ("Clear..."), this);
 		clearPlaylist->setProperty ("ActionIcon", "edit-clear-list");
 		connect (clearPlaylist,
@@ -109,6 +126,20 @@ namespace LMP
 
 		PlaylistToolbar_->addSeparator ();
 
+		SetPlayModeButton ();
+
+		PlaylistToolbar_->addAction (Util::CreateSeparator (this));
+		auto undo = UndoStack_->createUndoAction (this);
+		undo->setProperty ("ActionIcon", "edit-undo");
+		undo->setShortcut (QKeySequence ("Ctrl+Z"));
+		PlaylistToolbar_->addAction (undo);
+		auto redo = UndoStack_->createRedoAction (this);
+		redo->setProperty ("ActionIcon", "edit-redo");
+		PlaylistToolbar_->addAction (redo);
+	}
+
+	void PlaylistWidget::SetPlayModeButton ()
+	{
 		auto playButton = new QToolButton;
 		playButton->setIcon (Core::Instance ().GetProxy ()->GetIcon ("view-media-playlist"));
 		playButton->setPopupMode (QToolButton::InstantPopup);
@@ -145,16 +176,10 @@ namespace LMP
 		Player_->SetPlayMode (static_cast<Player::PlayMode> (resumeMode));
 
 		PlaylistToolbar_->addWidget (playButton);
+	}
 
-		PlaylistToolbar_->addAction (Util::CreateSeparator (this));
-		auto undo = UndoStack_->createUndoAction (this);
-		undo->setProperty ("ActionIcon", "edit-undo");
-		undo->setShortcut (QKeySequence ("Ctrl+Z"));
-		PlaylistToolbar_->addAction (undo);
-		auto redo = UndoStack_->createRedoAction (this);
-		redo->setProperty ("ActionIcon", "edit-redo");
-		PlaylistToolbar_->addAction (redo);
-
+	void PlaylistWidget::InitViewActions ()
+	{
 		ActionRemoveSelected_ = new QAction (tr ("Delete from playlist"), Ui_.Playlist_);
 		ActionRemoveSelected_->setProperty ("ActionIcon", "list-remove");
 		ActionRemoveSelected_->setShortcut (Qt::Key_Delete);
@@ -184,17 +209,6 @@ namespace LMP
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showAlbumArt ()));
-
-		auto model = Player_->GetPlaylistModel ();
-		connect (model,
-				SIGNAL (rowsInserted (QModelIndex, int, int)),
-				this,
-				SLOT (updateStatsLabel ()));
-		connect (model,
-				SIGNAL (rowsRemoved (QModelIndex, int, int)),
-				this,
-				SLOT (updateStatsLabel ()));
-		updateStatsLabel ();
 	}
 
 	void PlaylistWidget::on_Playlist__customContextMenuRequested (const QPoint& pos)

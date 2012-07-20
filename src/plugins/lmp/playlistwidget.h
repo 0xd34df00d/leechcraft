@@ -52,6 +52,10 @@ namespace LMP
 		PlaylistWidget (QWidget* = 0);
 
 		void SetPlayer (Player*);
+	private:
+		void InitToolbarActions ();
+		void SetPlayModeButton ();
+		void InitViewActions ();
 	private slots:
 		void on_Playlist__customContextMenuRequested (const QPoint&);
 		void handleChangePlayMode ();
