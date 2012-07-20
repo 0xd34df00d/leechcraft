@@ -68,8 +68,26 @@ namespace LMP
 			RepeatAlbum,
 			RepeatWhole
 		};
+
+		enum class SortingCriteria
+		{
+			Artist,
+			Year,
+			Album,
+			TrackNumber,
+			TrackTitle,
+			FilePath
+		};
 	private:
 		PlayMode PlayMode_;
+
+		struct Sorter
+		{
+			QList<SortingCriteria> Criteria_;
+
+			Sorter ();
+			bool operator() (const MediaInfo&, const MediaInfo&) const;
+		} Sorter_;
 	public:
 		enum Role
 		{
@@ -90,6 +108,8 @@ namespace LMP
 
 		PlayMode GetPlayMode () const;
 		void SetPlayMode (PlayMode);
+
+		void SetSortingCriteria (const QList<SortingCriteria>&);
 
 		void Enqueue (const QStringList&, bool = true);
 		void Enqueue (const QList<Phonon::MediaSource>&, bool = true);

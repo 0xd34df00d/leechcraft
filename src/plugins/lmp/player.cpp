@@ -115,6 +115,49 @@ namespace LMP
 		};
 	}
 
+	Player::Sorter::Sorter ()
+	{
+		Criteria_ << SortingCriteria::Artist
+				<< SortingCriteria::Year
+				<< SortingCriteria::TrackNumber;
+	}
+
+	bool Player::Sorter::operator() (const MediaInfo& left, const MediaInfo& right) const
+	{
+		Q_FOREACH (auto crit, Criteria_)
+		{
+			switch (crit)
+			{
+			case SortingCriteria::Artist:
+				if (left.Artist_ != right.Artist_)
+					return left.Artist_ < right.Artist_;
+				break;
+			case SortingCriteria::Year:
+				if (left.Year_ != right.Year_)
+					return left.Year_ < right.Year_;
+				break;
+			case SortingCriteria::Album:
+				if (left.Album_ != right.Album_)
+					return left.Album_ < right.Album_;
+				break;
+			case SortingCriteria::TrackNumber:
+				if (left.TrackNumber_ != right.TrackNumber_)
+					return left.TrackNumber_ < right.TrackNumber_;
+				break;
+			case SortingCriteria::TrackTitle:
+				if (left.Title_ != right.Title_)
+					return left.Title_ < right.Title_;
+				break;
+			case SortingCriteria::FilePath:
+				if (left.LocalPath_ != right.LocalPath_)
+					return left.LocalPath_ < right.LocalPath_;
+				break;
+			}
+		}
+
+		return left.LocalPath_ < right.LocalPath_;
+	}
+
 	Player::Player (QObject *parent)
 	: QObject (parent)
 	, PlaylistModel_ (new PlaylistModel (this))
@@ -190,6 +233,13 @@ namespace LMP
 
 		PlayMode_ = playMode;
 		emit playModeChanged (PlayMode_);
+	}
+
+	void Player::SetSortingCriteria (const QList<Player::SortingCriteria>& criteria)
+	{
+		Sorter_.Criteria_ = criteria;
+
+		AddToPlaylistModel (QList<Phonon::MediaSource> (), true);
 	}
 
 	namespace
@@ -502,9 +552,12 @@ namespace LMP
 
 	void Player::ApplyOrdering (QList<Phonon::MediaSource>& sources)
 	{
+		if (Sorter_.Criteria_.isEmpty ())
+			return;
+
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
 		std::sort (sources.begin (), sources.end (),
-				[resolver] (const Phonon::MediaSource& s1, const Phonon::MediaSource& s2)
+				[resolver, this] (const Phonon::MediaSource& s1, const Phonon::MediaSource& s2)
 				{
 					if (s1.type () != Phonon::MediaSource::LocalFile ||
 						s2.type () != Phonon::MediaSource::LocalFile)
@@ -514,15 +567,7 @@ namespace LMP
 					{
 						const auto& left = resolver->ResolveInfo (s1.fileName ());
 						const auto& right = resolver->ResolveInfo (s2.fileName ());
-						if (left.Artist_ != right.Artist_)
-							return left.Artist_ < right.Artist_;
-						if (left.Year_ != right.Year_)
-							return left.Year_ < right.Year_;
-						if (left.Album_ != right.Album_)
-							return left.Album_ < right.Album_;
-						if (left.TrackNumber_ != right.TrackNumber_)
-							return left.TrackNumber_ < right.TrackNumber_;
-						return left.Title_ < right.Title_;
+						return Sorter_ (left, right);
 					}
 					catch (...)
 					{
