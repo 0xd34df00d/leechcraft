@@ -35,10 +35,12 @@ namespace Blogique
 	public:
 		AddAccountWizardFirstPage (QWidget* = 0);
 		void initializePage ();
+		bool isComplete () const;
 
 	private slots:
 		void readdWidgets ();
 		void handleAccepted ();
+		void handleAccountNameChanged (const QString& text);
 	};
 }
 }
