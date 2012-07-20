@@ -80,6 +80,7 @@ namespace LMP
 			: QStandardItemModel (parent)
 			, Player_ (parent)
 			{
+				setSupportedDragActions (Qt::CopyAction | Qt::MoveAction);
 			}
 
 			QStringList mimeTypes () const
@@ -87,7 +88,28 @@ namespace LMP
 				return QStringList ("text/uri-list");
 			}
 
-			bool dropMimeData (const QMimeData *data, Qt::DropAction action, int, int, const QModelIndex&)
+			QMimeData* mimeData (const QModelIndexList& indexes) const
+			{
+				QList<QUrl> urls;
+				Q_FOREACH (const auto& index, indexes)
+				{
+					const auto& sources = Player_->GetIndexSources (index);
+					std::transform (sources.begin (), sources.end (), std::back_inserter (urls),
+							[] (decltype (sources.front ()) source)
+							{
+								return source.type () == Phonon::MediaSource::LocalFile ?
+										QUrl::fromLocalFile (source.fileName ()) :
+										source.url ();
+							});
+				}
+				urls.removeAll (QUrl ());
+
+				QMimeData *result = new QMimeData;
+				result->setUrls (urls);
+				return result;
+			}
+
+			bool dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int, const QModelIndex& parent)
 			{
 				if (action == Qt::IgnoreAction)
 					return true;
@@ -104,13 +126,48 @@ namespace LMP
 									Phonon::MediaSource (url.toLocalFile ()) :
 									Phonon::MediaSource (url);
 						});
-				Player_->Enqueue (sources);
+
+				auto afterIdx = row >= 0 ?
+						parent.child (row, 0) :
+						parent;
+				const auto& firstSrc = afterIdx.isValid () ?
+						Player_->GetIndexSources (afterIdx).value (0) :
+						Phonon::MediaSource ();
+
+				auto existingQueue = Player_->GetQueue ();
+				if (action == Qt::MoveAction)
+					Q_FOREACH (const auto& src, sources)
+					{
+						auto pred = [&src] (decltype (existingQueue.front ()) item)
+						{
+							if (src.type () != item.type ())
+								return false;
+							if (src.type () == Phonon::MediaSource::LocalFile)
+								return src.fileName () == item.fileName ();
+							if (src.type () == Phonon::MediaSource::Url)
+								return src.url () == item.url ();
+							return false;
+						};
+						auto remPos = std::remove_if (existingQueue.begin (), existingQueue.end (), pred);
+						existingQueue.erase (remPos, existingQueue.end ());
+					}
+
+				auto pos = std::find (existingQueue.begin (), existingQueue.end (), firstSrc);
+				if (pos == existingQueue.end ())
+					existingQueue << sources;
+				else
+				{
+					Q_FOREACH (const auto& src, sources)
+						pos = existingQueue.insert (pos, src) + 1;
+				}
+
+				Player_->ReplaceQueue (existingQueue);
 				return true;
 			}
 
 			Qt::DropActions supportedDropActions () const
 			{
-				return Qt::CopyAction;
+				return Qt::CopyAction | Qt::MoveAction;
 			}
 		};
 	}
