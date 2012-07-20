@@ -55,11 +55,14 @@ namespace LMP
 	private:
 		void InitToolbarActions ();
 		void SetPlayModeButton ();
+		void SetSortOrderButton ();
 		void InitViewActions ();
 	private slots:
 		void on_Playlist__customContextMenuRequested (const QPoint&);
 		void handleChangePlayMode ();
 		void handlePlayModeChanged (Player::PlayMode);
+
+		void handleStdSort ();
 
 		void removeSelectedSongs ();
 		void setStopAfterSelected ();
