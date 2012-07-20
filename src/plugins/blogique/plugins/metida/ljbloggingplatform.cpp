@@ -21,6 +21,7 @@
 #include <QInputDialog>
 #include <QSettings>
 #include <QtDebug>
+#include <QMainWindow>
 #include <util/passutils.h>
 #include "core.h"
 #include "ljaccount.h"
