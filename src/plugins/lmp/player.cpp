@@ -314,7 +314,16 @@ namespace LMP
 			{
 				if (parent->rowCount () == 1)
 				{
-					AlbumRoots_.remove (AlbumRoots_.key (parent));
+					Q_FOREACH (const auto& key, AlbumRoots_.keys ())
+					{
+						auto& items = AlbumRoots_ [key];
+						if (!items.contains (parent))
+							continue;
+
+						items.removeAll (parent);
+						if (items.isEmpty ())
+							AlbumRoots_.remove (key);
+					}
 					PlaylistModel_->removeRow (parent->row ());
 				}
 				else
@@ -477,6 +486,8 @@ namespace LMP
 
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
 
+		QPair<QString, QString> prevAlbumRoot;
+
 		Q_FOREACH (const auto& source, sources)
 		{
 			auto item = new QStandardItem ();
@@ -510,21 +521,21 @@ namespace LMP
 
 				const auto& albumID = qMakePair (info.Artist_, info.Album_);
 				FillItem (item, info);
-				if (!AlbumRoots_.contains (albumID))
+				if (albumID != prevAlbumRoot)
 				{
 					PlaylistModel_->appendRow (item);
-					AlbumRoots_ [albumID] = item;
+					AlbumRoots_ [albumID] << item;
 				}
-				else if (AlbumRoots_ [albumID]->data (Role::IsAlbum).toBool ())
+				else if (AlbumRoots_ [albumID].last ()->data (Role::IsAlbum).toBool ())
 				{
-					IncAlbumLength (AlbumRoots_ [albumID], info.Length_);
-					AlbumRoots_ [albumID]->appendRow (item);
+					IncAlbumLength (AlbumRoots_ [albumID].last (), info.Length_);
+					AlbumRoots_ [albumID].last ()->appendRow (item);
 				}
 				else
 				{
 					auto albumItem = MakeAlbumItem (info);
 
-					const int row = AlbumRoots_ [albumID]->row ();
+					const int row = AlbumRoots_ [albumID].last ()->row ();
 					const auto& existing = PlaylistModel_->takeRow (row);
 					albumItem->appendRow (existing);
 					albumItem->appendRow (item);
@@ -536,8 +547,9 @@ namespace LMP
 
 					emit insertedAlbum (albumItem->index ());
 
-					AlbumRoots_ [albumID] = albumItem;
+					AlbumRoots_ [albumID].last () = albumItem;
 				}
+				prevAlbumRoot = albumID;
 				break;
 			}
 			default:
