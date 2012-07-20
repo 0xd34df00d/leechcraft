@@ -82,11 +82,18 @@ namespace LMP
 		connect (model,
 				SIGNAL (rowsInserted (QModelIndex, int, int)),
 				this,
-				SLOT (updateStatsLabel ()));
+				SLOT (updateStatsLabel ()),
+				Qt::QueuedConnection);
 		connect (model,
 				SIGNAL (rowsRemoved (QModelIndex, int, int)),
 				this,
-				SLOT (updateStatsLabel ()));
+				SLOT (updateStatsLabel ()),
+				Qt::QueuedConnection);
+		connect (model,
+				SIGNAL (modelReset ()),
+				this,
+				SLOT (updateStatsLabel ()),
+				Qt::QueuedConnection);
 		updateStatsLabel ();
 	}
 
