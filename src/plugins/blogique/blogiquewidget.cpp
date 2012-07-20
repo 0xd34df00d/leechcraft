@@ -22,6 +22,7 @@
 #include "blogique.h"
 #include "core.h"
 #include "interfaces/blogique/iaccount.h"
+#include "interfaces/blogique/ibloggingplatform.h"
 #include <QWidgetAction>
 
 namespace LeechCraft
@@ -35,6 +36,7 @@ namespace Blogique
 	, PostEdit_ (0)
 	, PostEditWidget_ (0)
 	, ToolBar_ (new QToolBar)
+	, PrevAccountId_ (0)
 	{
 		Ui_.setupUi (this);
 		auto plugs = Core::Instance ().GetCoreProxy ()->
@@ -69,8 +71,16 @@ namespace Blogique
 		ToolBar_->addAction (Ui_.Submit_);
 
 		AccountsBox_ = new QComboBox (ToolBar_);
+		AccountsBox_->addItem (QString ());
+		connect (AccountsBox_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (handleCurrentAccountChanged (int)));
 		for (IAccount *acc : Core::Instance ().GetAccounts ())
+		{
 			AccountsBox_->addItem (acc->GetAccountName ());
+			Id2Account_ [AccountsBox_->count () - 1] = acc;
+		}
 		QWidgetAction *action = new QWidgetAction (ToolBar_);
 		action->setDefaultWidget (AccountsBox_);
 		ToolBar_->addAction (action);
@@ -107,6 +117,25 @@ namespace Blogique
 		S_ParentMultiTabs_ = tab;
 	}
 
+	void BlogiqueWidget::handleCurrentAccountChanged (int id)
+	{
+		if (PrevAccountId_)
+		{
+			auto ibp = qobject_cast<IBloggingPlatform*> (Id2Account_ [PrevAccountId_]->
+					GetParentBloggingPlatform ());
+			for (auto action : ibp->GetEditorActions ())
+				PostEdit_->RemoveAction (action);
+		}
+
+		PrevAccountId_ = id;
+		if (!PrevAccountId_)
+			return;
+
+		auto ibp = qobject_cast<IBloggingPlatform*> (Id2Account_ [PrevAccountId_]->
+				GetParentBloggingPlatform ());
+		for (auto action : ibp->GetEditorActions ())
+			PostEdit_->AppendAction (action);
+	}
 }
 }
 
