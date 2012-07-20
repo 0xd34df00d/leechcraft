@@ -55,13 +55,11 @@ namespace LMP
 			return paths;
 		}
 
-		class CollectionModel : public QStandardItemModel
+		class CollectionDraggableModel : public CollectionSorterModel
 		{
-			LocalCollection *Collection_;
 		public:
-			CollectionModel (LocalCollection *parent)
-			: QStandardItemModel (parent)
-			, Collection_ (parent)
+			CollectionDraggableModel (LocalCollection *parent)
+			: CollectionSorterModel (parent)
 			{
 				setSupportedDragActions (Qt::CopyAction);
 			}
@@ -94,8 +92,8 @@ namespace LMP
 	: QObject (parent)
 	, IsReady_ (false)
 	, Storage_ (new LocalCollectionStorage (this))
-	, CollectionModel_ (new CollectionModel (this))
-	, Sorter_ (new CollectionSorterModel (this))
+	, CollectionModel_ (new QStandardItemModel (this))
+	, Sorter_ (new CollectionDraggableModel (this))
 	, FilesWatcher_ (new LocalCollectionWatcher (this))
 	, AlbumArtMgr_ (new AlbumArtManager (this))
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
