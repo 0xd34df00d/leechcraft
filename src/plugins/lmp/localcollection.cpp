@@ -43,6 +43,18 @@ namespace LMP
 {
 	namespace
 	{
+		QStringList CollectPaths (const QModelIndex& index, const QAbstractItemModel *model)
+		{
+			const auto type = index.data (LocalCollection::Role::Node).toInt ();
+			if (type == LocalCollection::NodeType::Track)
+				return QStringList (index.data (LocalCollection::Role::TrackPath).toString ());
+
+			QStringList paths;
+			for (int i = 0; i < model->rowCount (index); ++i)
+				paths += CollectPaths (model->index (i, 0, index), model);
+			return paths;
+		}
+
 		class CollectionModel : public QStandardItemModel
 		{
 			LocalCollection *Collection_;
@@ -66,7 +78,7 @@ namespace LMP
 				QList<QUrl> urls;
 				Q_FOREACH (const auto& index, indexes)
 				{
-					const auto& paths = Collection_->CollectPaths (index);
+					const auto& paths = CollectPaths (index, this);
 					std::transform (paths.begin (), paths.end (), std::back_inserter (urls),
 							[] (const QString& path) { return QUrl::fromLocalFile (path); });
 				}
@@ -137,7 +149,7 @@ namespace LMP
 
 	void LocalCollection::Enqueue (const QModelIndex& index, Player *player)
 	{
-		player->Enqueue (CollectPaths (Sorter_->mapToSource (index)));
+		player->Enqueue (CollectPaths (index, Sorter_));
 	}
 
 	void LocalCollection::Clear ()
@@ -311,18 +323,6 @@ namespace LMP
 					<< e.what ();
 			return Collection::TrackStats ();
 		}
-	}
-
-	QStringList LocalCollection::CollectPaths (const QModelIndex& index)
-	{
-		const auto type = index.data (Role::Node).toInt ();
-		if (type == NodeType::Track)
-			return QStringList (index.data (Role::TrackPath).toString ());
-
-		QStringList paths;
-		for (int i = 0; i < CollectionModel_->rowCount (index); ++i)
-			paths += CollectPaths (CollectionModel_->index (i, 0, index));
-		return paths;
 	}
 
 	namespace
