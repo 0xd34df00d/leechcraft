@@ -18,37 +18,23 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_nowplayingwidget.h"
-#include "mediainfo.h"
+#include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
-
-	class NowPlayingWidget : public QWidget
+	class CollectionSorterModel : public QSortFilterProxyModel
 	{
 		Q_OBJECT
 
-		Ui::NowPlayingWidget Ui_;
-
-		Media::SimilarityInfos_t LastInfos_;
-		MediaInfo CurrentInfo_;
+		bool UseThe_;
 	public:
-		NowPlayingWidget (QWidget* = 0);
-
-		void SetSimilarArtists (Media::SimilarityInfos_t);
-		void SetLyrics (const QString&);
-
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
-	private:
-		void SetStatistics (const QString&);
+		CollectionSorterModel (QObject*);
+	protected:
+		bool lessThan (const QModelIndex&, const QModelIndex&) const;
 	private slots:
-		void resetSimilarArtists ();
+		void handleUseTheChanged ();
 	};
 }
 }

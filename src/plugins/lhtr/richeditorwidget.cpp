@@ -70,6 +70,10 @@ namespace LHTR
 				case Type::Bar:
 					return Bar_->addAction (text, receiver, member);
 				}
+
+				qWarning () << Q_FUNC_INFO
+						<< "unknown addable type";
+				return 0;
 			}
 		};
 	}
@@ -77,6 +81,7 @@ namespace LHTR
 	RichEditorWidget::RichEditorWidget (ICoreProxy_ptr proxy, QWidget *parent)
 	: QWidget (parent)
 	, Proxy_ (proxy)
+	, ViewBar_ (0)
 	, HTMLDirty_ (false)
 	{
 		Ui_.setupUi (this);
@@ -89,10 +94,10 @@ namespace LHTR
 				this,
 				SLOT (updateActions ()));
 
-		QToolBar *bar = new QToolBar (tr ("Editor bar"));
-		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, bar);
+		ViewBar_ = new QToolBar (tr ("Editor bar"));
+		qobject_cast<QVBoxLayout*> (Ui_.ViewTab_->layout ())->insertWidget (0, ViewBar_);
 
-		auto fwdCmd = [bar, this] (const QString& name,
+		auto fwdCmd = [this] (const QString& name,
 				const QString& icon,
 				QWebPage::WebAction action,
 				Addable addable)
@@ -107,7 +112,7 @@ namespace LHTR
 			WebAction2Action_ [action] = act;
 			return act;
 		};
-		auto addCmd = [bar, this] (const QString& name,
+		auto addCmd = [this] (const QString& name,
 				const QString& icon,
 				const QString& cmd,
 				Addable addable,
@@ -121,7 +126,7 @@ namespace LHTR
 			return act;
 		};
 
-		Addable barAdd (bar);
+		Addable barAdd (ViewBar_);
 
 		fwdCmd (tr ("Bold"), "format-text-bold",
 				QWebPage::ToggleBold, barAdd)->setCheckable (true);
@@ -136,7 +141,7 @@ namespace LHTR
 		fwdCmd (tr ("Superscript"), "format-text-superscript",
 				QWebPage::ToggleSuperscript, barAdd)->setCheckable (true);
 
-		bar->addSeparator ();
+		ViewBar_->addSeparator ();
 
 		QList<QAction*> alignActs;
 		alignActs << fwdCmd (tr ("Align left"), "format-justify-left",
@@ -154,11 +159,11 @@ namespace LHTR
 			alignGroup->addAction (act);
 		}
 
-		bar->addSeparator ();
+		ViewBar_->addSeparator ();
 
 		QMenu *headMenu = new QMenu (tr ("Headings"));
 		headMenu->setIcon (Proxy_->GetIcon ("view-list-details"));
-		bar->addAction (headMenu->menuAction ());
+		ViewBar_->addAction (headMenu->menuAction ());
 		for (int i = 1; i <= 6; ++i)
 		{
 			const auto& num = QString::number (i);
@@ -169,39 +174,39 @@ namespace LHTR
 		addCmd (tr ("Paragraph"), QString (), "formatBlock",
 				Addable (headMenu), "p");
 
-		bar->addSeparator ();
+		ViewBar_->addSeparator ();
 
-		QAction *bgColor = bar->addAction (tr ("Background color..."),
+		QAction *bgColor = ViewBar_->addAction (tr ("Background color..."),
 					this,
 					SLOT (handleBgColor ()));
 		bgColor->setProperty ("ActionIcon", "format-fill-color");
 
-		QAction *fgColor = bar->addAction (tr ("Text color..."),
+		QAction *fgColor = ViewBar_->addAction (tr ("Text color..."),
 					this,
 					SLOT (handleFgColor ()));
 		fgColor->setProperty ("ActionIcon", "format-text-color");
 
-		QAction *font = bar->addAction (tr ("Font..."),
+		QAction *font = ViewBar_->addAction (tr ("Font..."),
 					this,
 					SLOT (handleFont ()));
 		font->setProperty ("ActionIcon", "list-add-font");
-		bar->addSeparator ();
+		ViewBar_->addSeparator ();
 
 		addCmd (tr ("Indent more"), "format-indent-more", "indent", barAdd);
 		addCmd (tr ("Indent less"), "format-indent-less", "outdent", barAdd);
 
-		bar->addSeparator ();
+		ViewBar_->addSeparator ();
 
 		addCmd (tr ("Ordered list"), "format-list-ordered", "insertOrderedList", barAdd);
 		addCmd (tr ("Unordered list"), "format-list-unordered", "insertUnorderedList", barAdd);
 
-		bar->addSeparator ();
-		QAction *link = bar->addAction (tr ("Insert link..."),
+		ViewBar_->addSeparator ();
+		QAction *link = ViewBar_->addAction (tr ("Insert link..."),
 					this,
 					SLOT (handleInsertLink ()));
 		link->setProperty ("ActionIcon", "insert-link");
 
-		QAction *img = bar->addAction (tr ("Insert image..."),
+		QAction *img = ViewBar_->addAction (tr ("Insert image..."),
 					this,
 					SLOT (handleInsertImage ()));
 		img->setProperty ("ActionIcon", "insert-image");
@@ -231,6 +236,10 @@ namespace LHTR
 		case ContentType::PlainText:
 			return Ui_.View_->page ()->mainFrame ()->toPlainText ();
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown content type";
+		return QString ();
 	}
 
 	void RichEditorWidget::SetContents (const QString& contents, ContentType type)
@@ -244,6 +253,16 @@ namespace LHTR
 			Ui_.View_->setHtml ("<html><head><meta http-equiv='content-type' content='text/html; charset=utf-8' /><title></title></head><body><pre>" + contents + "</pre></body></html>");
 			break;
 		}
+	}
+
+	void RichEditorWidget::AppendAction (QAction *act)
+	{
+		ViewBar_->addAction (act);
+	}
+
+	void RichEditorWidget::RemoveAction (QAction *act)
+	{
+		ViewBar_->removeAction (act);
 	}
 
 	void RichEditorWidget::ExecCommand (const QString& cmd, const QString& arg)

@@ -52,7 +52,7 @@ namespace LMP
 
 		QList<Phonon::MediaSource> CurrentQueue_;
 		QHash<Phonon::MediaSource, QStandardItem*> Items_;
-		QHash<QPair<QString, QString>, QStandardItem*> AlbumRoots_;
+		QHash<QPair<QString, QString>, QList<QStandardItem*>> AlbumRoots_;
 
 		Phonon::MediaSource CurrentStopSource_;
 
@@ -68,8 +68,26 @@ namespace LMP
 			RepeatAlbum,
 			RepeatWhole
 		};
+
+		enum class SortingCriteria
+		{
+			Artist,
+			Year,
+			Album,
+			TrackNumber,
+			TrackTitle,
+			FilePath
+		};
 	private:
 		PlayMode PlayMode_;
+
+		struct Sorter
+		{
+			QList<SortingCriteria> Criteria_;
+
+			Sorter ();
+			bool operator() (const MediaInfo&, const MediaInfo&) const;
+		} Sorter_;
 	public:
 		enum Role
 		{
@@ -91,8 +109,11 @@ namespace LMP
 		PlayMode GetPlayMode () const;
 		void SetPlayMode (PlayMode);
 
+		void SetSortingCriteria (const QList<SortingCriteria>&);
+
 		void Enqueue (const QStringList&, bool = true);
 		void Enqueue (const QList<Phonon::MediaSource>&, bool = true);
+		void ReplaceQueue (const QList<Phonon::MediaSource>&, bool = true);
 		QList<Phonon::MediaSource> GetQueue () const;
 		QList<Phonon::MediaSource> GetIndexSources (const QModelIndex&) const;
 
@@ -107,6 +128,7 @@ namespace LMP
 		QString GetCurrentAAPath () const;
 	private:
 		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
+		MediaInfo GetPhononMediaInfo () const;
 		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
 		void ApplyOrdering (QList<Phonon::MediaSource>&);
 
@@ -131,6 +153,7 @@ namespace LMP
 		void handlePlaybackFinished ();
 		void handleStateChanged (Phonon::State);
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
+		void handleMetadata ();
 		void setTransitionTime ();
 	signals:
 		void songChanged (const MediaInfo&);

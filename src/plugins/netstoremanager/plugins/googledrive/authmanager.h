@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,37 +18,48 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_nowplayingwidget.h"
-#include "mediainfo.h"
+#include <QObject>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/structures.h>
+
+class QInputDialog;
 
 namespace LeechCraft
 {
-namespace LMP
+namespace NetStoreManager
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
+namespace GoogleDrive
+{
+	class Account;
 
-	class NowPlayingWidget : public QWidget
+	class AuthManager : public QObject
 	{
 		Q_OBJECT
 
-		Ui::NowPlayingWidget Ui_;
+		const QString ClientId_;
+		const QString ClientSecret_;
+		const QString Scope_;
+		const QString ResponseType_;
+		const QString RedirectUri_;
 
-		Media::SimilarityInfos_t LastInfos_;
-		MediaInfo CurrentInfo_;
+		QInputDialog *InputDialog_;
+		QMap<QInputDialog*, Account*> Dialog2Account_;
+		QMap<QNetworkReply*, Account*> Reply2Account_;
 	public:
-		NowPlayingWidget (QWidget* = 0);
-
-		void SetSimilarArtists (Media::SimilarityInfos_t);
-		void SetLyrics (const QString&);
-
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
+		AuthManager (QObject *parent = 0);
+		void Auth (Account *acc);
 	private:
-		void SetStatistics (const QString&);
+		void RequestAuthToken (const QString& code, Account *acc);
+
 	private slots:
-		void resetSimilarArtists ();
+		void handleDialogFinished (int code);
+		void handleRequestAuthTokenFinished ();
+
+	signals:
+		void gotEntity (LeechCraft::Entity e);
+		void authSuccess (QObject *accObj);
 	};
 }
 }
+}
+

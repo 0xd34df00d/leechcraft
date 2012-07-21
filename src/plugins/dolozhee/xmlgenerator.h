@@ -30,7 +30,7 @@ namespace Dolozhee
 	public:
 		QByteArray RegisterUser (const QString&, const QString&,
 				const QString&, const QString&, const QString&) const;
-		QByteArray CreateIssue (const QString&, const QString&, ReportTypePage::Type) const;
+		QByteArray CreateIssue (const QString&, const QString&, int, ReportTypePage::Type) const;
 	};
 }
 }

@@ -120,11 +120,11 @@ namespace UDisks
 				SLOT (handleDeviceChanged (QDBusObjectPath)));
 	}
 
-	void Backend::AddPath (const QDBusObjectPath& path)
+	bool Backend::AddPath (const QDBusObjectPath& path)
 	{
 		const auto& str = path.path ();
 		if (Object2Item_.contains (str))
-			return;
+			return true;
 
 		auto iface = GetDeviceInterface (str);
 
@@ -135,7 +135,7 @@ namespace UDisks
 		if ((!isSlave && !isRemovable) || Unremovables_.contains (slaveTo.path ()))
 		{
 			Unremovables_ << str;
-			return;
+			return false;
 		}
 
 		auto item = new QStandardItem;
@@ -146,7 +146,8 @@ namespace UDisks
 		else
 		{
 			if (!Object2Item_.contains (slaveTo.path ()))
-				AddPath (slaveTo);
+				if (!AddPath (slaveTo))
+					return false;
 			Object2Item_ [slaveTo.path ()]->appendRow (item);
 		}
 	}

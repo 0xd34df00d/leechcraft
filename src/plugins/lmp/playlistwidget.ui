@@ -25,8 +25,11 @@
      <property name="acceptDrops">
       <bool>true</bool>
      </property>
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
      <property name="defaultDropAction">
-      <enum>Qt::CopyAction</enum>
+      <enum>Qt::MoveAction</enum>
      </property>
      <property name="alternatingRowColors">
       <bool>true</bool>
@@ -45,6 +48,13 @@
      </property>
      <property name="itemsExpandable">
       <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="StatsLabel_">
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </item>

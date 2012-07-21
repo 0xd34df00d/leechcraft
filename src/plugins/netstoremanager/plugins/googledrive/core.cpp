@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,39 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include "ui_nowplayingwidget.h"
-#include "mediainfo.h"
+#include "core.h"
 
 namespace LeechCraft
 {
-namespace LMP
+namespace NetStoreManager
 {
-	struct MediaInfo;
-	class ArtistsInfoDisplay;
-
-	class NowPlayingWidget : public QWidget
+namespace GoogleDrive
+{
+	Core::Core ()
 	{
-		Q_OBJECT
+	}
 
-		Ui::NowPlayingWidget Ui_;
+	Core& Core::Instance ()
+	{
+		static Core c;
+		return c;
+	}
 
-		Media::SimilarityInfos_t LastInfos_;
-		MediaInfo CurrentInfo_;
-	public:
-		NowPlayingWidget (QWidget* = 0);
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
 
-		void SetSimilarArtists (Media::SimilarityInfos_t);
-		void SetLyrics (const QString&);
+	ICoreProxy_ptr Core::GetProxy () const
+	{
+		return Proxy_;
+	}
 
-		void SetAlbumArt (const QPixmap&);
-		void SetTrackInfo (const MediaInfo&);
-	private:
-		void SetStatistics (const QString&);
-	private slots:
-		void resetSimilarArtists ();
-	};
+}
 }
 }

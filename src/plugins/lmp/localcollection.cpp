@@ -35,6 +35,7 @@
 #include "albumartmanager.h"
 #include "xmlsettingsmanager.h"
 #include "localcollectionwatcher.h"
+#include "collectionsortermodel.h"
 
 namespace LeechCraft
 {
@@ -42,83 +43,23 @@ namespace LMP
 {
 	namespace
 	{
-		template<typename T>
-		bool VarCompare (const QVariant& left, const QVariant& right)
+		QStringList CollectPaths (const QModelIndex& index, const QAbstractItemModel *model)
 		{
-			return left.value<T> () < right.value<T> ();
+			const auto type = index.data (LocalCollection::Role::Node).toInt ();
+			if (type == LocalCollection::NodeType::Track)
+				return QStringList (index.data (LocalCollection::Role::TrackPath).toString ());
+
+			QStringList paths;
+			for (int i = 0; i < model->rowCount (index); ++i)
+				paths += CollectPaths (model->index (i, 0, index), model);
+			return paths;
 		}
 
-		struct Comparators
-		{
-			typedef std::function<bool (const QVariant&, const QVariant&)> Comparator_t;
-			QHash<LocalCollection::Role, Comparator_t> Role2Cmp_;
-
-			Comparators ()
-			{
-				Role2Cmp_ [LocalCollection::Role::ArtistName] = VarCompare<QString>;
-				Role2Cmp_ [LocalCollection::Role::AlbumName] = VarCompare<QString>;
-				Role2Cmp_ [LocalCollection::Role::AlbumYear] = VarCompare<int>;
-				Role2Cmp_ [LocalCollection::Role::TrackNumber] = VarCompare<int>;
-				Role2Cmp_ [LocalCollection::Role::TrackTitle] = VarCompare<QString>;
-				Role2Cmp_ [LocalCollection::Role::TrackPath] = VarCompare<QString>;
-			}
-		};
-
-		bool RoleCompare (const QModelIndex& left, const QModelIndex& right,
-				QList<LocalCollection::Role> roles)
-		{
-			static Comparators comparators;
-			while (!roles.isEmpty ())
-			{
-				auto role = roles.takeFirst ();
-				const auto& lData = left.data (role);
-				const auto& rData = right.data (role);
-				if (lData != rData)
-					return comparators.Role2Cmp_ [role] (lData, rData);
-			}
-			return false;
-		}
-
-		class CollectionSorter : public QSortFilterProxyModel
+		class CollectionDraggableModel : public CollectionSorterModel
 		{
 		public:
-			CollectionSorter (QObject *parent)
-			: QSortFilterProxyModel (parent)
-			{
-			}
-		protected:
-			bool lessThan (const QModelIndex& left, const QModelIndex& right) const
-			{
-				const auto type = left.data (LocalCollection::Role::Node).toInt ();
-				QList<LocalCollection::Role> roles;
-				switch (type)
-				{
-				case LocalCollection::NodeType::Artist:
-					roles << LocalCollection::Role::ArtistName;
-					break;
-				case LocalCollection::NodeType::Album:
-					roles << LocalCollection::Role::AlbumYear
-							<< LocalCollection::Role::AlbumName;
-					break;
-				case LocalCollection::NodeType::Track:
-					roles << LocalCollection::Role::TrackNumber
-							<< LocalCollection::Role::TrackTitle
-							<< LocalCollection::Role::TrackPath;
-					break;
-				default:
-					return QSortFilterProxyModel::lessThan (left, right);
-				}
-				return RoleCompare (left, right, roles);
-			}
-		};
-
-		class CollectionModel : public QStandardItemModel
-		{
-			LocalCollection *Collection_;
-		public:
-			CollectionModel (LocalCollection *parent)
-			: QStandardItemModel (parent)
-			, Collection_ (parent)
+			CollectionDraggableModel (LocalCollection *parent)
+			: CollectionSorterModel (parent)
 			{
 				setSupportedDragActions (Qt::CopyAction);
 			}
@@ -135,7 +76,7 @@ namespace LMP
 				QList<QUrl> urls;
 				Q_FOREACH (const auto& index, indexes)
 				{
-					const auto& paths = Collection_->CollectPaths (index);
+					const auto& paths = CollectPaths (index, this);
 					std::transform (paths.begin (), paths.end (), std::back_inserter (urls),
 							[] (const QString& path) { return QUrl::fromLocalFile (path); });
 				}
@@ -151,8 +92,8 @@ namespace LMP
 	: QObject (parent)
 	, IsReady_ (false)
 	, Storage_ (new LocalCollectionStorage (this))
-	, CollectionModel_ (new CollectionModel (this))
-	, Sorter_ (new CollectionSorter (this))
+	, CollectionModel_ (new QStandardItemModel (this))
+	, Sorter_ (new CollectionDraggableModel (this))
 	, FilesWatcher_ (new LocalCollectionWatcher (this))
 	, AlbumArtMgr_ (new AlbumArtManager (this))
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
@@ -206,7 +147,7 @@ namespace LMP
 
 	void LocalCollection::Enqueue (const QModelIndex& index, Player *player)
 	{
-		player->Enqueue (CollectPaths (Sorter_->mapToSource (index)));
+		player->Enqueue (CollectPaths (index, Sorter_));
 	}
 
 	void LocalCollection::Clear ()
@@ -380,18 +321,6 @@ namespace LMP
 					<< e.what ();
 			return Collection::TrackStats ();
 		}
-	}
-
-	QStringList LocalCollection::CollectPaths (const QModelIndex& index)
-	{
-		const auto type = index.data (Role::Node).toInt ();
-		if (type == NodeType::Track)
-			return QStringList (index.data (Role::TrackPath).toString ());
-
-		QStringList paths;
-		for (int i = 0; i < CollectionModel_->rowCount (index); ++i)
-			paths += CollectPaths (CollectionModel_->index (i, 0, index));
-		return paths;
 	}
 
 	namespace
