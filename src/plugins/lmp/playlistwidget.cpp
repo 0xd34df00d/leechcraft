@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "playlistwidget.h"
+#include <algorithm>
 #include <QToolBar>
 #include <QInputDialog>
 #include <QFileDialog>
