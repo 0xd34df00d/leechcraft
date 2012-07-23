@@ -582,7 +582,8 @@ namespace LMP
 
 				const auto& albumID = qMakePair (info.Artist_, info.Album_);
 				FillItem (item, info);
-				if (albumID != prevAlbumRoot)
+				if (albumID != prevAlbumRoot ||
+						AlbumRoots_ [albumID].isEmpty ())
 				{
 					PlaylistModel_->appendRow (item);
 					AlbumRoots_ [albumID] << item;
