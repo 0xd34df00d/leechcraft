@@ -57,6 +57,8 @@ namespace GoogleDrive
 		bool Trusted_;
 
 		DriveManager *DriveManager_;
+		QStringList TrashedItemIds_;
+		QHash<QString, DriveItem> Items_;
 	public:
 		Account (const QString& name, QObject *parentPlugin = 0);
 
@@ -91,7 +93,7 @@ namespace GoogleDrive
 		void upProgress (quint64 done, quint64 total, const QString& filepath);
 		void upStatusChanged (const QString& status, const QString& filepath);
 
-		void gotListing (const QList<QList<QStandardItem*>>&);
+		void gotListing (const QList<QList<QStandardItem*>>& items);
 	};
 }
 }

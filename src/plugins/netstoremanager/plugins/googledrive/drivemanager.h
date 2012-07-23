@@ -112,9 +112,13 @@ namespace GoogleDrive
 		DriveManager (Account *acc, QObject *parent = 0);
 
 		void RefreshListing ();
+		void RemoveEntry (const QString& id);
+		void MoveEntryToTrash (const QString& id);
 
 		void RequestFiles (const QString& key);
 		void RequestFileShared (const QString& id, const QString& key);
+		void RequestEntryRemoving (const QString& id, const QString& key);
+		void RequestMovingEntryToTrash (const QString& id, const QString& key);
 	private:
 		void RequestAccessToken ();
 		void ParseError (const QVariantMap& map);
@@ -123,6 +127,8 @@ namespace GoogleDrive
 		void handleAuthTokenRequestFinished ();
 		void handleGotFiles ();
 		void handleRequestFileSharing ();
+		void handleRequestEntryRemoving ();
+		void handleRequestMovingEntryToTrash ();
 
 	signals:
 		void gotFiles (const QList<DriveItem>& items);
