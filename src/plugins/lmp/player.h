@@ -52,7 +52,7 @@ namespace LMP
 
 		QList<Phonon::MediaSource> CurrentQueue_;
 		QHash<Phonon::MediaSource, QStandardItem*> Items_;
-		QHash<QPair<QString, QString>, QStandardItem*> AlbumRoots_;
+		QHash<QPair<QString, QString>, QList<QStandardItem*>> AlbumRoots_;
 
 		Phonon::MediaSource CurrentStopSource_;
 
@@ -68,8 +68,26 @@ namespace LMP
 			RepeatAlbum,
 			RepeatWhole
 		};
+
+		enum class SortingCriteria
+		{
+			Artist,
+			Year,
+			Album,
+			TrackNumber,
+			TrackTitle,
+			FilePath
+		};
 	private:
 		PlayMode PlayMode_;
+
+		struct Sorter
+		{
+			QList<SortingCriteria> Criteria_;
+
+			Sorter ();
+			bool operator() (const MediaInfo&, const MediaInfo&) const;
+		} Sorter_;
 	public:
 		enum Role
 		{
@@ -91,8 +109,11 @@ namespace LMP
 		PlayMode GetPlayMode () const;
 		void SetPlayMode (PlayMode);
 
+		void SetSortingCriteria (const QList<SortingCriteria>&);
+
 		void Enqueue (const QStringList&, bool = true);
 		void Enqueue (const QList<Phonon::MediaSource>&, bool = true);
+		void ReplaceQueue (const QList<Phonon::MediaSource>&, bool = true);
 		QList<Phonon::MediaSource> GetQueue () const;
 		QList<Phonon::MediaSource> GetIndexSources (const QModelIndex&) const;
 

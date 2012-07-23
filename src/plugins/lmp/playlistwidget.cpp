@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "playlistwidget.h"
+#include <algorithm>
 #include <QToolBar>
 #include <QInputDialog>
 #include <QFileDialog>
@@ -75,6 +76,30 @@ namespace LMP
 
 		Ui_.PlaylistLayout_->addWidget (PlaylistToolbar_);
 
+		InitToolbarActions ();
+		InitViewActions ();
+
+		auto model = Player_->GetPlaylistModel ();
+		connect (model,
+				SIGNAL (rowsInserted (QModelIndex, int, int)),
+				this,
+				SLOT (updateStatsLabel ()),
+				Qt::QueuedConnection);
+		connect (model,
+				SIGNAL (rowsRemoved (QModelIndex, int, int)),
+				this,
+				SLOT (updateStatsLabel ()),
+				Qt::QueuedConnection);
+		connect (model,
+				SIGNAL (modelReset ()),
+				this,
+				SLOT (updateStatsLabel ()),
+				Qt::QueuedConnection);
+		updateStatsLabel ();
+	}
+
+	void PlaylistWidget::InitToolbarActions ()
+	{
 		QAction *clearPlaylist = new QAction (tr ("Clear..."), this);
 		clearPlaylist->setProperty ("ActionIcon", "edit-clear-list");
 		connect (clearPlaylist,
@@ -100,7 +125,7 @@ namespace LMP
 		PlaylistToolbar_->addAction (loadFiles);
 
 		QAction *addURL = new QAction (tr ("Add URL..."), this);
-		addURL->setProperty ("ActionIcon", "network-server");
+		addURL->setProperty ("ActionIcon", "folder-remote");
 		connect (addURL,
 				SIGNAL (triggered ()),
 				this,
@@ -109,6 +134,21 @@ namespace LMP
 
 		PlaylistToolbar_->addSeparator ();
 
+		SetPlayModeButton ();
+		SetSortOrderButton ();
+
+		PlaylistToolbar_->addAction (Util::CreateSeparator (this));
+		auto undo = UndoStack_->createUndoAction (this);
+		undo->setProperty ("ActionIcon", "edit-undo");
+		undo->setShortcut (QKeySequence ("Ctrl+Z"));
+		PlaylistToolbar_->addAction (undo);
+		auto redo = UndoStack_->createRedoAction (this);
+		redo->setProperty ("ActionIcon", "edit-redo");
+		PlaylistToolbar_->addAction (redo);
+	}
+
+	void PlaylistWidget::SetPlayModeButton ()
+	{
 		auto playButton = new QToolButton;
 		playButton->setIcon (Core::Instance ().GetProxy ()->GetIcon ("view-media-playlist"));
 		playButton->setPopupMode (QToolButton::InstantPopup);
@@ -145,16 +185,69 @@ namespace LMP
 		Player_->SetPlayMode (static_cast<Player::PlayMode> (resumeMode));
 
 		PlaylistToolbar_->addWidget (playButton);
+	}
 
-		PlaylistToolbar_->addAction (Util::CreateSeparator (this));
-		auto undo = UndoStack_->createUndoAction (this);
-		undo->setProperty ("ActionIcon", "edit-undo");
-		undo->setShortcut (QKeySequence ("Ctrl+Z"));
-		PlaylistToolbar_->addAction (undo);
-		auto redo = UndoStack_->createRedoAction (this);
-		redo->setProperty ("ActionIcon", "edit-redo");
-		PlaylistToolbar_->addAction (redo);
+	void PlaylistWidget::SetSortOrderButton ()
+	{
+		auto sortButton = new QToolButton;
+		sortButton->setIcon (Core::Instance ().GetProxy ()->GetIcon ("view-sort-ascending"));
+		sortButton->setPopupMode (QToolButton::InstantPopup);
 
+		auto menu = new QMenu (tr ("Sorting"));
+		sortButton->setMenu (menu);
+
+		auto getInts = [] (const QList<Player::SortingCriteria>& crit)
+		{
+			QVariantList result;
+			std::transform (crit.begin (), crit.end (), std::back_inserter (result),
+					[] (decltype (crit.front ()) item) { return static_cast<int> (item); });
+			return result;
+		};
+
+		typedef QPair<QString, QList<Player::SortingCriteria>> SortPair_t;
+		QList<SortPair_t> stdSorts;
+#if QT_VERSION >= 0x040800
+		stdSorts << SortPair_t (tr ("Artist / Year / Track number"),
+					{
+						Player::SortingCriteria::Artist,
+						Player::SortingCriteria::Year,
+						Player::SortingCriteria::TrackNumber
+					});
+		stdSorts << SortPair_t (tr ("Artist / Track title"),
+					{
+						Player::SortingCriteria::Artist,
+						Player::SortingCriteria::TrackTitle
+					});
+		stdSorts << SortPair_t (tr ("File path"),
+					{
+						Player::SortingCriteria::FilePath
+					});
+		stdSorts << SortPair_t (tr ("No sort"), {});
+#endif
+
+		auto sortGroup = new QActionGroup (this);
+		bool isFirst = true;
+		Q_FOREACH (const auto& pair, stdSorts)
+		{
+			auto act = menu->addAction (pair.first);
+			act->setProperty ("SortInts", getInts (pair.second));
+			act->setCheckable (true);
+			act->setChecked (isFirst);
+			sortGroup->addAction (act);
+
+			isFirst = false;
+
+			connect (act,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleStdSort ()));
+		}
+
+		PlaylistToolbar_->addWidget (sortButton);
+	}
+
+	void PlaylistWidget::InitViewActions ()
+	{
 		ActionRemoveSelected_ = new QAction (tr ("Delete from playlist"), Ui_.Playlist_);
 		ActionRemoveSelected_->setProperty ("ActionIcon", "list-remove");
 		ActionRemoveSelected_->setShortcut (Qt::Key_Delete);
@@ -184,17 +277,6 @@ namespace LMP
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showAlbumArt ()));
-
-		auto model = Player_->GetPlaylistModel ();
-		connect (model,
-				SIGNAL (rowsInserted (QModelIndex, int, int)),
-				this,
-				SLOT (updateStatsLabel ()));
-		connect (model,
-				SIGNAL (rowsRemoved (QModelIndex, int, int)),
-				this,
-				SLOT (updateStatsLabel ()));
-		updateStatsLabel ();
 	}
 
 	void PlaylistWidget::on_Playlist__customContextMenuRequested (const QPoint& pos)
@@ -233,6 +315,16 @@ namespace LMP
 				action->setChecked (true);
 				return;
 			}
+	}
+
+	void PlaylistWidget::handleStdSort ()
+	{
+		const auto& intVars = sender ()->property ("SortInts").toList ();
+		QList<Player::SortingCriteria> criteria;
+		std::transform (intVars.begin (), intVars.end (), std::back_inserter (criteria),
+				[] (decltype (intVars.front ()) var)
+					{ return static_cast<Player::SortingCriteria> (var.toInt ()); });
+		Player_->SetSortingCriteria (criteria);
 	}
 
 	void PlaylistWidget::removeSelectedSongs ()
