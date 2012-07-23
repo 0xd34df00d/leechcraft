@@ -134,6 +134,9 @@ namespace Dolozhee
 
 	void ChooseUserPage::saveCredentials ()
 	{
+		if (GetUser () != User::Existing)
+			return;
+
 		QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Dolozhee");
 		settings.beginGroup ("Credentials");

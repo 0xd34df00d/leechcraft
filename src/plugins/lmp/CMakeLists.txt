@@ -74,6 +74,8 @@ SET (SRCS
 	audiopropswidget.cpp
 	playlistwidget.cpp
 	devicesbrowserwidget.cpp
+	aalabeleventfilter.cpp
+	collectionsortermodel.cpp
 	devsync/copymanager.cpp
 	devsync/devicesuploadmodel.cpp
 	devsync/syncmanager.cpp

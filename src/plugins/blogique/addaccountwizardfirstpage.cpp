@@ -19,6 +19,7 @@
 #include "addaccountwizardfirstpage.h"
 #include <QtDebug>
 #include "interfaces/blogique/ibloggingplatform.h"
+#include "interfaces/blogique/iaccount.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -39,6 +40,11 @@ namespace Blogique
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (readdWidgets ()));
+
+		connect (Ui_.NameEdit_,
+				SIGNAL (textChanged (const QString&)),
+				this,
+				SLOT (handleAccountNameChanged (const QString&)));
 	}
 
 	void AddAccountWizardFirstPage::initializePage ()
@@ -59,6 +65,19 @@ namespace Blogique
 				SIGNAL (accepted ()),
 				this,
 				SLOT (handleAccepted ()));
+	}
+
+	bool AddAccountWizardFirstPage::isComplete () const
+	{
+		bool found = false;
+		for (auto acc : Core::Instance ().GetAccounts ())
+			if (acc->GetAccountName () == Ui_.NameEdit_->text ())
+			{
+				found = true;
+				break;
+			}
+
+		return !found;
 	}
 
 	void AddAccountWizardFirstPage::readdWidgets ()
@@ -130,5 +149,11 @@ namespace Blogique
 
 		ibp->RegisterAccount (Ui_.NameEdit_->text (), Widgets_);
 	}
+
+	void AddAccountWizardFirstPage::handleAccountNameChanged (const QString&)
+	{
+		emit completeChanged ();
+	}
+
 }
 }

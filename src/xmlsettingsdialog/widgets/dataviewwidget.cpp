@@ -35,6 +35,16 @@ namespace LeechCraft
 				SIGNAL (removeRequested ()));
 	}
 
+	void DataViewWidget::DisableAddition ()
+	{
+		Ui_.Add_->setEnabled (false);
+	}
+
+	void DataViewWidget::DisableRemoval ()
+	{
+		Ui_.Remove_->setEnabled (false);
+	}
+
 	void DataViewWidget::SetModel (QAbstractItemModel *model)
 	{
 		Ui_.View_->setModel (model);

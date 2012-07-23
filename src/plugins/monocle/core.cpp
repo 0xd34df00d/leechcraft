@@ -20,6 +20,7 @@
 #include <interfaces/iplugin2.h>
 #include "pixmapcachemanager.h"
 #include "recentlyopenedmanager.h"
+#include "defaultbackendmanager.h"
 
 namespace LeechCraft
 {
@@ -28,6 +29,7 @@ namespace Monocle
 	Core::Core ()
 	: CacheManager_ (new PixmapCacheManager (this))
 	, ROManager_ (new RecentlyOpenedManager (this))
+	, DefaultBackendManager_ (new DefaultBackendManager (this))
 	{
 	}
 
@@ -40,6 +42,7 @@ namespace Monocle
 	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+		DefaultBackendManager_->LoadSettings ();
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -52,13 +55,13 @@ namespace Monocle
 		auto plugin2 = qobject_cast<IPlugin2*> (pluginObj);
 		const auto& classes = plugin2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.Monocle.IBackendPlugin"))
-			Backends_ << qobject_cast<IBackendPlugin*> (pluginObj);
+			Backends_ << pluginObj;
 	}
 
 	bool Core::CanLoadDocument (const QString& path)
 	{
 		Q_FOREACH (auto backend, Backends_)
-			if (backend->CanLoadDocument (path))
+			if (qobject_cast<IBackendPlugin*> (backend)->CanLoadDocument (path))
 				return true;
 
 		return false;
@@ -66,11 +69,20 @@ namespace Monocle
 
 	IDocument_ptr Core::LoadDocument (const QString& path)
 	{
+		decltype (Backends_) loaders;
 		Q_FOREACH (auto backend, Backends_)
-			if (backend->CanLoadDocument (path))
-				return backend->LoadDocument (path);
+			if (qobject_cast<IBackendPlugin*> (backend)->CanLoadDocument (path))
+				loaders << backend;
 
-		return IDocument_ptr ();
+		if (loaders.isEmpty ())
+			return IDocument_ptr ();
+		else if (loaders.size () == 1)
+			return qobject_cast<IBackendPlugin*> (loaders.at (0))->LoadDocument (path);
+
+		auto backend = DefaultBackendManager_->GetBackend (loaders);
+		return backend ?
+				qobject_cast<IBackendPlugin*> (backend)->LoadDocument (path) :
+				IDocument_ptr ();
 	}
 
 	PixmapCacheManager* Core::GetPixmapCacheManager () const
@@ -81,6 +93,11 @@ namespace Monocle
 	RecentlyOpenedManager* Core::GetROManager () const
 	{
 		return ROManager_;
+	}
+
+	DefaultBackendManager* Core::GetDefaultBackendManager () const
+	{
+		return DefaultBackendManager_;
 	}
 }
 }

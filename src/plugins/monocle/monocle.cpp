@@ -25,6 +25,7 @@
 #include "core.h"
 #include "documenttab.h"
 #include "xmlsettingsmanager.h"
+#include "defaultbackendmanager.h"
 
 namespace LeechCraft
 {
@@ -38,6 +39,9 @@ namespace Monocle
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "monoclesettings.xml");
 
 		Core::Instance ().SetProxy (proxy);
+
+		XSD_->SetDataSource ("DefaultBackends",
+				Core::Instance ().GetDefaultBackendManager ()->GetModel ());
 
 		DocTabInfo_ =
 		{

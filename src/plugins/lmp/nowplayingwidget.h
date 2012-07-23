@@ -45,8 +45,6 @@ namespace LMP
 
 		void SetAlbumArt (const QPixmap&);
 		void SetTrackInfo (const MediaInfo&);
-	protected:
-		bool eventFilter (QObject*, QEvent*);
 	private:
 		void SetStatistics (const QString&);
 	private slots:

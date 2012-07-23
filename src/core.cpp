@@ -866,11 +866,6 @@ namespace LeechCraft
 				SLOT (changeTabIcon (QWidget*, const QIcon&)),
 				Qt::UniqueConnection);
 		connect (plugin,
-				SIGNAL (changeTooltip (QWidget*, QWidget*)),
-				TabManager_.get (),
-				SLOT (changeTooltip (QWidget*, QWidget*)),
-				Qt::UniqueConnection);
-		connect (plugin,
 				SIGNAL (statusBarChanged (QWidget*, const QString&)),
 				this,
 				SLOT (handleStatusBarChanged (QWidget*, const QString&)),

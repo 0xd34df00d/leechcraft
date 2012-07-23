@@ -273,14 +273,6 @@ void TabManager::changeTabIcon (QWidget *contents, const QIcon& icon)
 	TabWidget_->SetTabIcon (tabNumber, icon);
 }
 
-void TabManager::changeTooltip (QWidget *contents, QWidget *tip)
-{
-	int tabNumber = FindTabForWidget (contents);
-	if (tabNumber == -1)
-		return;
-	TabWidget_->SetTooltip (tabNumber, tip);
-}
-
 void TabManager::handleScrollButtons ()
 {
 	TabWidget_->TabBar ()->setUsesScrollButtons (XmlSettingsManager::Instance ()->

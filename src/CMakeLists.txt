@@ -489,7 +489,6 @@ SET (SRCS
 	localsockethandler.cpp
 	toolbarguard.cpp
 	wizardtypechoicepage.cpp
-	3dparty/qxttooltip.cpp
 	newtabmenumanager.cpp
 	plugintreebuilder.cpp
 	coreinstanceobject.cpp
@@ -543,8 +542,6 @@ SET (HEADERS
 	coreplugin2manager.h
 	dockmanager.h
 	acceptlangwidget.h
-	3dparty/qxttooltip.h
-	3dparty/qxttooltip_p.h
 	interfaces/structures.h
 	)
 SET (FORMS

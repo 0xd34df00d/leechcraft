@@ -54,6 +54,11 @@ namespace LeechCraft
 				this,
 				SLOT (handleRemoveRequested ()));
 
+		if (item.attribute ("addEnabled") == "false")
+			view->DisableAddition ();
+		if (item.attribute ("removeEnabled") == "false")
+			view->DisableRemoval ();
+
 		QString prop = item.attribute ("property");
 
 		view->setObjectName (prop);
@@ -209,6 +214,12 @@ namespace LeechCraft
 			qWarning () << Q_FUNC_INFO
 					<< "sender is not a DataViewWidget"
 					<< sender ();
+			return;
+		}
+		if (!view->GetModel ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "model isn't ready";
 			return;
 		}
 

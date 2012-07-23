@@ -19,7 +19,13 @@
 #include "artistsinfodisplay.h"
 #include <algorithm>
 #include <QStandardItemModel>
+#include <QGraphicsObject>
 #include <QDeclarativeContext>
+#include <QDeclarativeImageProvider>
+#include <QDeclarativeEngine>
+#include <util/util.h>
+#include "core.h"
+#include "localcollection.h"
 
 namespace LeechCraft
 {
@@ -27,6 +33,29 @@ namespace LMP
 {
 	namespace
 	{
+		class SysIconProvider : public QDeclarativeImageProvider
+		{
+			ICoreProxy_ptr Proxy_;
+		public:
+			SysIconProvider (ICoreProxy_ptr proxy)
+			: QDeclarativeImageProvider (Pixmap)
+			, Proxy_ (proxy)
+			{
+			}
+
+			QPixmap requestPixmap (const QString& id, QSize *size, const QSize& requestedSize)
+			{
+				const auto& icon = Proxy_->GetIcon (id);
+
+				const auto& getSize = requestedSize.width () > 2 && requestedSize.height () > 2 ?
+						requestedSize :
+						QSize (48, 48);
+				if (size)
+					*size = icon.actualSize (getSize);
+				return icon.pixmap (getSize);
+			}
+		};
+
 		class SimilarModel : public QStandardItemModel
 		{
 		public:
@@ -39,7 +68,8 @@ namespace LMP
 				ArtistPageURL,
 				ArtistTags,
 				ShortDesc,
-				FullDesc
+				FullDesc,
+				IsInCollection
 			};
 
 			SimilarModel (QObject *parent = 0)
@@ -54,6 +84,7 @@ namespace LMP
 				names [ArtistTags] = "artistTags";
 				names [ShortDesc] = "shortDesc";
 				names [FullDesc] = "fullDesc";
+				names [IsInCollection] = "artistInCollection";
 				setRoleNames (names);
 			}
 		};
@@ -63,8 +94,14 @@ namespace LMP
 	: QDeclarativeView (parent)
 	, Model_ (new SimilarModel (this))
 	{
+		engine ()->addImageProvider ("sysIcons", new SysIconProvider (Core::Instance ().GetProxy ()));
 		rootContext ()->setContextProperty ("similarModel", Model_);
 		setSource (QUrl ("qrc:/lmp/resources/qml/SimilarView.qml"));
+
+		connect (rootObject (),
+				SIGNAL (bookmarkArtistRequested (QString, QString, QString)),
+				this,
+				SLOT (handleBookmark (QString, QString, QString)));
 	}
 
 	void ArtistsInfoDisplay::SetSimilarArtists (Media::SimilarityInfos_t infos)
@@ -75,6 +112,7 @@ namespace LMP
 				[] (const Media::SimilarityInfo& left, const Media::SimilarityInfo& right)
 					{ return left.Similarity_ > right.Similarity_; });
 
+		const auto col = Core::Instance ().GetLocalCollection ();
 		Q_FOREACH (const Media::SimilarityInfo& info, infos)
 		{
 			auto item = new QStandardItem ();
@@ -85,6 +123,7 @@ namespace LMP
 			item->setData (artist.LargeImage_, SimilarModel::Role::ArtistBigImageURL);
 			item->setData (artist.ShortDesc_, SimilarModel::Role::ShortDesc);
 			item->setData (artist.FullDesc_, SimilarModel::Role::FullDesc);
+			item->setData (artist.Page_, SimilarModel::Role::ArtistPageURL);
 
 			QString simStr;
 			if (info.Similarity_ > 0)
@@ -106,8 +145,21 @@ namespace LMP
 			std::reverse (tags.begin (), tags.end ());
 			item->setData (tr ("Tags: %1").arg (tags.join ("; ")), SimilarModel::Role::ArtistTags);
 
+			item->setData (col->FindArtist (artist.Name_) >= 0, SimilarModel::Role::IsInCollection);
+
 			Model_->appendRow (item);
 		}
+	}
+
+	void ArtistsInfoDisplay::handleBookmark (const QString& name, const QString& page, const QString& tags)
+	{
+		auto e = Util::MakeEntity (tr ("Check out \"%1\"").arg (name),
+				QString (),
+				FromUserInitiated | OnlyHandle,
+				"x-leechcraft/todo-item");
+		e.Additional_ ["TodoBody"] = tags + "<br />" + QString ("<a href='%1'>%1</a>").arg (page);
+		e.Additional_ ["Tags"] = QStringList ("music");
+		Core::Instance ().SendEntity (e);
 	}
 }
 }

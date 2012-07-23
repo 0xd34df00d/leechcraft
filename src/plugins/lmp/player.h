@@ -107,6 +107,7 @@ namespace LMP
 		QString GetCurrentAAPath () const;
 	private:
 		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
+		MediaInfo GetPhononMediaInfo () const;
 		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
 		void ApplyOrdering (QList<Phonon::MediaSource>&);
 
@@ -131,6 +132,7 @@ namespace LMP
 		void handlePlaybackFinished ();
 		void handleStateChanged (Phonon::State);
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
+		void handleMetadata ();
 		void setTransitionTime ();
 	signals:
 		void songChanged (const MediaInfo&);

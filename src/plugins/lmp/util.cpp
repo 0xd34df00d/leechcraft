@@ -19,10 +19,12 @@
 #include "util.h"
 #include <algorithm>
 #include <QDirIterator>
+#include <QTimer>
 #include <QPixmap>
 #include <QDesktopWidget>
 #include <QLabel>
 #include <QApplication>
+#include <QKeyEvent>
 #include <phonon/mediasource.h>
 #include "core.h"
 #include "localcollection.h"
@@ -35,15 +37,27 @@ namespace LMP
 	{
 		QStringList result;
 		QStringList nameFilters;
-		nameFilters << "*.ogg"
+		nameFilters << "*.aiff"
+				<< "*.ape"
+				<< "*.asf"
 				<< "*.flac"
+				<< "*.m4a"
 				<< "*.mp3"
-				<< "*.wav";
+				<< "*.mp4"
+				<< "*.mpc"
+				<< "*.mpeg"
+				<< "*.mpg"
+				<< "*.ogg"
+				<< "*.tta"
+				<< "*.wav"
+				<< "*.wma"
+				<< "*.wv"
+				<< "*.wvp";
 
 		if (QFileInfo (dirPath).isFile ())
 		{
 			Q_FOREACH (const auto& filter, nameFilters)
-				if (dirPath.endsWith (filter.mid (1)))
+				if (dirPath.endsWith (filter.mid (1), Qt::CaseInsensitive))
 					return QStringList (dirPath);
 			return QStringList ();
 		}
@@ -110,6 +124,44 @@ namespace LMP
 		return QPixmap (FindAlbumArtPath (near, ignoreCollection));
 	}
 
+	namespace
+	{
+		class AADisplayEventFilter : public QObject
+		{
+			QWidget *Display_;
+		public:
+			AADisplayEventFilter (QWidget *display)
+			: QObject (display)
+			, Display_ (display)
+			{
+			}
+		protected:
+			bool eventFilter (QObject*, QEvent *event)
+			{
+				bool shouldClose = false;
+				switch (event->type ())
+				{
+				case QEvent::KeyRelease:
+					shouldClose = static_cast<QKeyEvent*> (event)->key () == Qt::Key_Escape;
+					break;
+				case QEvent::MouseButtonRelease:
+					shouldClose = true;
+					break;
+				default:
+					break;
+				}
+
+				if (!shouldClose)
+					return false;
+
+				QTimer::singleShot (0,
+						Display_,
+						SLOT (close ()));
+				return true;
+			}
+		};
+	}
+
 	void ShowAlbumArt (const QString& near, const QPoint& pos)
 	{
 		auto px = FindAlbumArt (near);
@@ -128,6 +180,8 @@ namespace LMP
 		label->setFixedSize (px.size ());
 		label->setPixmap (px);
 		label->show ();
+		label->activateWindow ();
+		label->installEventFilter (new AADisplayEventFilter (label));
 	}
 
 	bool operator!= (const Phonon::MediaSource& left, const Phonon::MediaSource& right)

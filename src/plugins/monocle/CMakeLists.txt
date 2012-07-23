@@ -21,10 +21,13 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	pixmapcachemanager.cpp
 	recentlyopenedmanager.cpp
+	choosebackenddialog.cpp
+	defaultbackendmanager.cpp
 	)
 SET (FORMS
 	documenttab.ui
 	tocwidget.ui
+	choosebackenddialog.ui
 	)
 SET (RESOURCES monocleresources.qrc)
 CreateTrVars ("monocle" "en;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
@@ -52,11 +55,16 @@ INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES monoclesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 OPTION (ENABLE_MONOCLE_FXB "Enable FictionBook backend for Monocle" ON)
-OPTION (ENABLE_MONOCLE_PDF "Enable PDF backend for Monocle" ON)
+OPTION (ENABLE_MONOCLE_MU "Enable PDF backend for Monocle using the mupdf library" OFF)
+OPTION (ENABLE_MONOCLE_PDF "Enable PDF backend for Monocle using the Poppler library" ON)
 
 IF (ENABLE_MONOCLE_FXB)
 	ADD_SUBDIRECTORY (plugins/fxb)
 ENDIF (ENABLE_MONOCLE_FXB)
+
+IF (ENABLE_MONOCLE_MU)
+	ADD_SUBDIRECTORY (plugins/mu)
+ENDIF (ENABLE_MONOCLE_MU)
 
 IF (ENABLE_MONOCLE_PDF)
 	ADD_SUBDIRECTORY (plugins/pdf)

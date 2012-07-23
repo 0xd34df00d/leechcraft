@@ -65,6 +65,9 @@ namespace LMP
 
 		void handleSavePlaylist ();
 		void loadFromDisk ();
+		void addURL ();
+
+		void updateStatsLabel ();
 	};
 }
 }

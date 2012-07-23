@@ -56,7 +56,7 @@ namespace UDisks
 		void MountDevice (const QString&);
 	private:
 		void InitialEnumerate ();
-		void AddPath (const QDBusObjectPath&);
+		bool AddPath (const QDBusObjectPath&);
 		void RemovePath (const QDBusObjectPath&);
 		void SetItemData (QDBusInterface_ptr, QStandardItem*);
 	public slots:

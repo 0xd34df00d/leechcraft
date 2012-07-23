@@ -24,6 +24,9 @@
 #include <QToolButton>
 #include <QMenu>
 #include <QUndoStack>
+#include <QMessageBox>
+#include <QClipboard>
+#include <QApplication>
 #include <util/util.h>
 #include "player.h"
 #include "playlistdelegate.h"
@@ -95,6 +98,14 @@ namespace LMP
 				this,
 				SLOT (loadFromDisk ()));
 		PlaylistToolbar_->addAction (loadFiles);
+
+		QAction *addURL = new QAction (tr ("Add URL..."), this);
+		addURL->setProperty ("ActionIcon", "network-server");
+		connect (addURL,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addURL ()));
+		PlaylistToolbar_->addAction (addURL);
 
 		PlaylistToolbar_->addSeparator ();
 
@@ -173,6 +184,17 @@ namespace LMP
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showAlbumArt ()));
+
+		auto model = Player_->GetPlaylistModel ();
+		connect (model,
+				SIGNAL (rowsInserted (QModelIndex, int, int)),
+				this,
+				SLOT (updateStatsLabel ()));
+		connect (model,
+				SIGNAL (rowsRemoved (QModelIndex, int, int)),
+				this,
+				SLOT (updateStatsLabel ()));
+		updateStatsLabel ();
 	}
 
 	void PlaylistWidget::on_Playlist__customContextMenuRequested (const QPoint& pos)
@@ -282,6 +304,48 @@ namespace LMP
 				QDir::homePath (),
 				tr ("Music files (*.ogg *.flac *.mp3 *.wav);;All files (*.*)"));
 		Player_->Enqueue (files);
+	}
+
+	void PlaylistWidget::addURL ()
+	{
+		auto cb = qApp->clipboard ();
+		QString textCb = cb->text (QClipboard::Selection);
+		if (textCb.isEmpty () || !QUrl (textCb).isValid ())
+			textCb = cb->text (QClipboard::Selection);
+		if (!QUrl (textCb).isValid ())
+			textCb.clear ();
+
+		const auto& url = QInputDialog::getText (this,
+				"LeechCraft",
+				tr ("Enter URL to add to the play queue:"),
+				QLineEdit::Normal,
+				textCb);
+		if (url.isEmpty ())
+			return;
+
+		QUrl urlObj (url);
+		if (!urlObj.isValid ())
+		{
+			QMessageBox::warning (this,
+					"LeechCraft",
+					tr ("Invalid URL."));
+			return;
+		}
+
+		Player_->Enqueue (QList<Phonon::MediaSource> () << urlObj);
+	}
+
+	void PlaylistWidget::updateStatsLabel ()
+	{
+		const int tracksCount = Player_->GetQueue ().size ();
+
+		auto model = Player_->GetPlaylistModel ();
+		int length = 0;
+		for (int i = 0, rc = model->rowCount (); i < rc; ++i)
+			length += model->index (i, 0).data (Player::Role::AlbumLength).toInt ();
+
+		Ui_.StatsLabel_->setText (tr ("%n track(s), total duration: %1", 0, tracksCount)
+					.arg (Util::MakeTimeFromLong (length)));
 	}
 }
 }

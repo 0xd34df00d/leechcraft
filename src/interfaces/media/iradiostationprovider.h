@@ -19,6 +19,7 @@
 #pragma once
 
 #include <memory>
+#include <QMap>
 #include <QtPlugin>
 
 namespace Media
@@ -34,11 +35,14 @@ namespace Media
 		enum class Type
 		{
 			SimilarArtists,
-			GlobalTag
+			GlobalTag,
+			Predefined
 		};
 
 		virtual QString GetRadioName () const = 0;
 		virtual IRadioStation_ptr GetRadioStation (Type, const QString&) = 0;
+
+		virtual QMap<QByteArray, QString> GetPredefinedStations () const = 0;
 	};
 }
 

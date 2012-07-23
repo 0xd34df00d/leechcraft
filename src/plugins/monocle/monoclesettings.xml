@@ -13,4 +13,10 @@
 			<suffix value=" MiB" />
 		</item>
 	</page>
+	<page>
+		<label value="Default backends" />
+		<item type="dataview" property="DefaultBackends" addEnabled="false">
+			<label value="Default backends:" />
+		</item>
+	</page>
 </settings>

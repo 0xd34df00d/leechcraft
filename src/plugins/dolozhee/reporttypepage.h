@@ -40,8 +40,12 @@ namespace Dolozhee
 		ReportTypePage (QWidget* = 0);
 
 		int nextId () const;
+		void initializePage ();
 
 		Type GetReportType () const;
+		int GetCategoryID () const;
+	private slots:
+		void handleCategoriesFinished ();
 	};
 }
 }

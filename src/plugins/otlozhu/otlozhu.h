@@ -22,6 +22,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/isyncable.h>
+#include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
 {
@@ -30,10 +31,11 @@ namespace Otlozhu
 	class Plugin : public QObject
 					, public IInfo
 					, public IHaveTabs
+					, public IEntityHandler
 					, public ISyncable
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
+		Q_INTERFACES (IInfo IHaveTabs IEntityHandler)
 
 		TabClassInfo TCTodo_;
 	public:
@@ -47,6 +49,9 @@ namespace Otlozhu
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
+
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 
 		Sync::ChainIDs_t AvailableChains () const;
 		Sync::Payloads_t GetAllDeltas (const Sync::ChainID_t&) const;
