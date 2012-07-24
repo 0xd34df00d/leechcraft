@@ -30,8 +30,6 @@ namespace LMP
 {
 namespace DumbSync
 {
-	class SyncManager;
-
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
