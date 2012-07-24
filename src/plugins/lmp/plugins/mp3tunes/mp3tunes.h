@@ -22,6 +22,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
+#include <interfaces/lmp/icloudstorageplugin.h>
 
 namespace LeechCraft
 {
@@ -33,11 +34,13 @@ namespace MP3Tunes
 				 , public IInfo
 				 , public IPlugin2
 				 , public ILMPPlugin
+				 , public ICloudStoragePlugin
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
-				LeechCraft::LMP::ILMPPlugin)
+				LeechCraft::LMP::ILMPPlugin
+				LeechCraft::LMP::ICloudStoragePlugin)
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -51,6 +54,16 @@ namespace MP3Tunes
 		QSet<QByteArray> GetPluginClasses() const;
 
 		void SetLMPProxy (ILMPProxy*);
+
+		QObject* GetObject ();
+		QString GetCloudName () const;
+		QIcon GetCloudIcon () const;
+		QStringList GetSupportedFileFormats () const;
+		void Upload (const QString&, const QString& account);
+		QStringList GetAccounts () const;
+	signals:
+		void uploadFinished (const QString&, CloudStorageError, const QString&);
+		void accountsChanged ();
 	};
 }
 }

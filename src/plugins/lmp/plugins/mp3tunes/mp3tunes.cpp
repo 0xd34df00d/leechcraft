@@ -44,12 +44,12 @@ namespace MP3Tunes
 
 	QString Plugin::GetName () const
 	{
-		return "LMP MP3Tunes";
+		return "LMP MP3tunes";
 	}
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Supports using the mp3tunes.com service, including its playlist and locker facilities.");
+		return tr ("Adds support for the MP3tunes.com service, including its playlist and locker facilities.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -60,12 +60,41 @@ namespace MP3Tunes
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> result;
-		result << "org.LeechCraft.LMP.WebSync";
+		result << "org.LeechCraft.LMP.CloudStorage";
 		return result;
 	}
 
 	void Plugin::SetLMPProxy (ILMPProxy*)
 	{
+	}
+
+	QObject* Plugin::GetObject ()
+	{
+		return this;
+	}
+
+	QString Plugin::GetCloudName () const
+	{
+		return "MP3tunes";
+	}
+
+	QIcon Plugin::GetCloudIcon () const
+	{
+		return QIcon ();
+	}
+
+	QStringList Plugin::GetSupportedFileFormats () const
+	{
+		return { "m4a", "mp3", "mp4", "ogg" };
+	}
+
+	void Plugin::Upload (const QString& localPath, const QString& account)
+	{
+	}
+
+	QStringList Plugin::GetAccounts () const
+	{
+		return QStringList ();
 	}
 }
 }
