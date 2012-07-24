@@ -22,6 +22,7 @@
 #include <QStandardItemModel>
 #include <QApplication>
 #include <QClipboard>
+#include <QtDebug>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
@@ -136,6 +137,57 @@ namespace NetStoreManager
 		Model_->setHorizontalHeaderLabels (sfl->GetListingHeaders ());
 	}
 
+	void ManagerTab::SaveModelState (const QModelIndex& parent)
+	{
+		for (int i = 0; i < Model_->rowCount (parent); ++i)
+		{
+			QStandardItem *item = 0;
+			if (!parent.isValid ())
+				item = Model_->item (i);
+			else
+				item = Model_->itemFromIndex (parent)->child (i);
+
+			const auto& index = Model_->indexFromItem (item);
+			Account2ItemExpandState_ [GetCurrentAccount ()]
+					.insert (item->data (ListingRole::ID).toString (),
+							Ui_.FilesTree_->isExpanded (index));
+
+			if (item->hasChildren ())
+				SaveModelState (index);
+		}
+	}
+
+	void ManagerTab::RestoreModelState ()
+	{
+		if (Account2ItemExpandState_ [GetCurrentAccount ()].isEmpty ())
+			return;
+
+		ExpandModelItems ();
+		Account2ItemExpandState_.clear ();
+	}
+
+	void ManagerTab::ExpandModelItems (const QModelIndex& parent)
+	{
+		for (int i = 0; i < Model_->rowCount (parent); ++i)
+		{
+			QStandardItem *item = 0;
+			if (!parent.isValid ())
+				item = Model_->item (i);
+			else
+				item = Model_->itemFromIndex (parent)->child (i);
+			const auto& id = item->data (ListingRole::ID).toString ();
+
+			if (item->hasChildren () &&
+					Account2ItemExpandState_ [GetCurrentAccount ()].value (id))
+			{
+				const auto& index = Model_->indexFromItem (item);
+				Ui_.FilesTree_->expand (index);
+				Ui_.FilesTree_->resizeColumnToContents (index.column ());
+				ExpandModelItems (index);
+			}
+		}
+	}
+
 	void ManagerTab::handleGotListing (const QList<QList<QStandardItem*>>& items)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
@@ -144,28 +196,15 @@ namespace NetStoreManager
 
 		if (items.isEmpty ())
 		{
+			SaveModelState ();
 			ClearFilesModel ();
 			return;
 		}
 
-		QFontMetrics fm = Ui_.FilesTree_->fontMetrics ();
-
-		QMap<int, int> sizes;
 		Q_FOREACH (auto row, items)
-		{
 			Model_->appendRow (row);
 
-			for (int i = 0; i < row.size (); ++i)
-				sizes [i] = std::max (sizes [i], fm.width (row.at (i)->text ()));
-		}
-
-		Q_FOREACH (auto idx, sizes.keys ())
-		{
-			auto hdr = Ui_.FilesTree_->header ();
-			const int size = hdr->sectionSize (idx);
-			if (size < sizes [idx])
-				hdr->resizeSection (idx, sizes [idx]);
-		}
+		RestoreModelState ();
 	}
 
 	void ManagerTab::flCopyURL ()
@@ -216,6 +255,8 @@ namespace NetStoreManager
 		IStorageAccount *acc = GetCurrentAccount ();
 		if (!acc)
 			return;
+
+		SaveModelState ();
 
 		Model_->clear ();
 

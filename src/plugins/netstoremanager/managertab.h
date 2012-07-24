@@ -51,6 +51,7 @@ namespace NetStoreManager
 
 		QAction *ProlongateFile_;
 		QAction *DeleteFile_;
+		QHash<IStorageAccount*, QHash<QString, bool>> Account2ItemExpandState_;
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, QObject*);
 
@@ -62,6 +63,9 @@ namespace NetStoreManager
 		IStorageAccount* GetCurrentAccount () const;
 		void CallOnSelection (std::function<void (ISupportFileListings*, const QList<QStringList>&)>);
 		void ClearFilesModel ();
+		void SaveModelState (const QModelIndex& parent = QModelIndex ());
+		void RestoreModelState ();
+		void ExpandModelItems (const QModelIndex& parent = QModelIndex ());
 	private slots:
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
 		void flCopyURL ();
