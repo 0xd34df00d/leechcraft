@@ -259,9 +259,10 @@ namespace GoogleDrive
 		QList<QStandardItem*> row;
 		row << new QStandardItem (Core::Instance ()
 				.GetProxy ()->GetIcon ("user-trash"), tr ("Trash"));
+		row [0]->setData ("google.drive-trash", ListingRole::ID);
+
 		treeItems << row;
 		CreateItems (trashedItems, id2ItemDir, TrashedItemIds_, row [0]);
-
 		for (auto row : treeItems)
 			for (auto item : row)
 				item->setEditable (false);
