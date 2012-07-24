@@ -76,6 +76,7 @@ SET (SRCS
 	devicesbrowserwidget.cpp
 	aalabeleventfilter.cpp
 	collectionsortermodel.cpp
+	cloudwidget.cpp
 	devsync/copymanager.cpp
 	devsync/devicesuploadmodel.cpp
 	devsync/syncmanager.cpp
@@ -98,6 +99,7 @@ SET (FORMS
 	audiopropswidget.ui
 	playlistwidget.ui
 	devicesbrowserwidget.ui
+	cloudwidget.ui
 	devsync/transcodingparamswidget.ui
 	)
 SET (RESOURCES resources.qrc)
