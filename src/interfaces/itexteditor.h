@@ -56,7 +56,7 @@ public:
 	typedef QPair<QRegExp, QString> Replacement_t;
 	typedef QList<Replacement_t> Replacements_t;
 
-	virtual void InsertHTML (const QString& html);
+	virtual void InsertHTML (const QString& html) = 0;
 
 	virtual void SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich) = 0;
 };
