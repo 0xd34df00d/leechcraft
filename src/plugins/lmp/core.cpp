@@ -25,6 +25,7 @@
 #include "devsync/syncmanager.h"
 #include "interfaces/lmp/ilmpplugin.h"
 #include "interfaces/lmp/isyncplugin.h"
+#include "interfaces/lmp/icloudstorageplugin.h"
 
 namespace LeechCraft
 {
@@ -81,11 +82,23 @@ namespace LMP
 		if (classes.contains ("org.LeechCraft.LMP.CollectionSync") &&
 			qobject_cast<ISyncPlugin*> (pluginObj))
 			SyncPlugins_ << pluginObj;
+
+		if (classes.contains ("org.LeechCraft.LMP.CloudStorage") &&
+			qobject_cast<ICloudStoragePlugin*> (pluginObj))
+		{
+			CloudPlugins_ << pluginObj;
+			emit cloudStoragePluginsChanged ();
+		}
 	}
 
 	QList<QObject*> Core::GetSyncPlugins () const
 	{
 		return SyncPlugins_;
+	}
+
+	QList<QObject*> Core::GetCloudStoragePlugins() const
+	{
+		return CloudPlugins_;
 	}
 
 	LocalFileResolver* Core::GetLocalFileResolver () const

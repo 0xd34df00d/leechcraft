@@ -44,6 +44,7 @@ namespace LMP
 		SyncManager *SyncManager_;
 
 		QObjectList SyncPlugins_;
+		QObjectList CloudPlugins_;
 
 		Core ();
 	public:
@@ -58,6 +59,7 @@ namespace LMP
 
 		void AddPlugin (QObject*);
 		QList<QObject*> GetSyncPlugins () const;
+		QList<QObject*> GetCloudStoragePlugins () const;
 
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;
@@ -67,6 +69,8 @@ namespace LMP
 		void rescan ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+
+		void cloudStoragePluginsChanged ();
 	};
 }
 }
