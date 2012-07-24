@@ -53,7 +53,7 @@ namespace LMP
 
 		virtual QStringList GetSupportedFileFormats () const = 0;
 
-		virtual void Upload (const QString& localPath) = 0;
+		virtual void Upload (const QString& localPath, const QString& account) = 0;
 
 		virtual QStringList GetAccounts () const = 0;
 	protected:
