@@ -25,13 +25,20 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class DevicesUploadModel;
+
 	class CloudWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::CloudWidget Ui_;
+		DevicesUploadModel *DevUploadModel_;
+		QObjectList Clouds_;
 	public:
 		CloudWidget (QWidget* = 0);
+	private slots:
+		void on_CloudSelector__activated (int);
+		void handleCloudStoragePlugins ();
 	};
 }
 }

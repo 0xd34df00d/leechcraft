@@ -17,6 +17,10 @@
  **********************************************************************/
 
 #include "cloudwidget.h"
+#include <interfaces/lmp/icloudstorageplugin.h>
+#include "devsync/devicesuploadmodel.h"
+#include "core.h"
+#include "localcollection.h"
 
 namespace LeechCraft
 {
@@ -24,8 +28,51 @@ namespace LMP
 {
 	CloudWidget::CloudWidget (QWidget *parent)
 	: QWidget (parent)
+	, DevUploadModel_ (new DevicesUploadModel (this))
 	{
 		Ui_.setupUi (this);
+
+		DevUploadModel_->setSourceModel (Core::Instance ().GetLocalCollection ()->GetCollectionModel ());
+		Ui_.OurCollection_->setModel (DevUploadModel_);
+
+		Ui_.SyncTabs_->setEnabled (false);
+
+		connect (&Core::Instance (),
+				SIGNAL (cloudStoragePluginsChanged ()),
+				this,
+				SLOT (handleCloudStoragePlugins ()));
+		handleCloudStoragePlugins ();
+	}
+
+	void CloudWidget::on_CloudSelector__activated (int idx)
+	{
+		Ui_.AccountSelector_->clear ();
+		Ui_.SyncTabs_->setEnabled (false);
+		if (idx < 0)
+			return;
+
+		auto cloud = qobject_cast<ICloudStoragePlugin*> (Clouds_.at (idx));
+		const auto& accounts = cloud->GetAccounts ();
+		if (accounts.isEmpty ())
+			return;
+
+		Ui_.AccountSelector_->addItems (accounts);
+		Ui_.SyncTabs_->setEnabled (true);
+	}
+
+	void CloudWidget::handleCloudStoragePlugins ()
+	{
+		Ui_.CloudSelector_->clear ();
+
+		Clouds_ = Core::Instance ().GetCloudStoragePlugins ();
+		Q_FOREACH (QObject *cloudObj, Clouds_)
+		{
+			auto cloud = qobject_cast<ICloudStoragePlugin*> (cloudObj);
+			Ui_.CloudSelector_->addItem (cloud->GetCloudIcon (), cloud->GetCloudName ());
+		}
+
+		if (!Clouds_.isEmpty ())
+			on_CloudSelector__activated (0);
 	}
 }
 }
