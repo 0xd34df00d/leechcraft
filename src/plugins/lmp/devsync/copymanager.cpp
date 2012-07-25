@@ -64,7 +64,8 @@ namespace LMP
 		return !CurrentJob_.From_.isEmpty ();
 	}
 
-	void CopyManager::handleUploadFinished (const QString& localPath, QFile::FileError error, const QString& errorStr)
+	void CopyManager::handleUploadFinished (const QString& localPath,
+			QFile::FileError error, const QString& errorStr)
 	{
 		emit finishedCopying ();
 
