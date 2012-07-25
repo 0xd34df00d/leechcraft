@@ -39,6 +39,7 @@ namespace LMP
 	private slots:
 		void on_CloudSelector__activated (int);
 		void handleCloudStoragePlugins ();
+		void handleAccountsChanged ();
 	};
 }
 }

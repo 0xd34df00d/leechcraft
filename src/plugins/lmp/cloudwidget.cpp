@@ -72,10 +72,25 @@ namespace LMP
 		{
 			auto cloud = qobject_cast<ICloudStoragePlugin*> (cloudObj);
 			Ui_.CloudSelector_->addItem (cloud->GetCloudIcon (), cloud->GetCloudName ());
+
+			connect (cloudObj,
+					SIGNAL (accountsChanged ()),
+					this,
+					SLOT (handleAccountsChanged ()),
+					Qt::UniqueConnection);
 		}
 
 		if (!Clouds_.isEmpty ())
 			on_CloudSelector__activated (0);
+	}
+
+	void CloudWidget::handleAccountsChanged ()
+	{
+		const int idx = Ui_.CloudSelector_->currentIndex ();
+		if (idx < 0 || sender () != Clouds_.at (idx))
+			return;
+
+		on_CloudSelector__activated (idx);
 	}
 }
 }
