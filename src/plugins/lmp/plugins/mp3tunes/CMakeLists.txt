@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES (${LMP_INCLUDE_DIR}
 
 SET (MP3TUNES_SRCS
 	mp3tunes.cpp
+	xmlsettingsmanager.cpp
 	)
 
 ADD_LIBRARY (leechcraft_lmp_mp3tunes SHARED
@@ -22,3 +23,4 @@ TARGET_LINK_LIBRARIES (leechcraft_lmp_mp3tunes
 	)
 
 INSTALL (TARGETS leechcraft_lmp_mp3tunes DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES lmpmp3tunessettings.xml DESTINATION ${LC_SETTINGS_DEST})

@@ -18,6 +18,8 @@
 
 #include "mp3tunes.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -27,6 +29,8 @@ namespace MP3Tunes
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpmp3tunessettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -62,6 +66,11 @@ namespace MP3Tunes
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.LMP.CloudStorage";
 		return result;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	void Plugin::SetLMPProxy (ILMPProxy*)

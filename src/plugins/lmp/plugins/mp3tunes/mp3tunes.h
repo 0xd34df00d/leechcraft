@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/icloudstorageplugin.h>
@@ -32,15 +33,19 @@ namespace MP3Tunes
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IHaveSettings
 				 , public IPlugin2
 				 , public ILMPPlugin
 				 , public ICloudStoragePlugin
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
+				IHaveSettings
 				IPlugin2
 				LeechCraft::LMP::ILMPPlugin
 				LeechCraft::LMP::ICloudStoragePlugin)
+
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -51,7 +56,9 @@ namespace MP3Tunes
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
-		QSet<QByteArray> GetPluginClasses() const;
+		QSet<QByteArray> GetPluginClasses () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		void SetLMPProxy (ILMPProxy*);
 
