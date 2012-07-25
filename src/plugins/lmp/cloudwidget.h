@@ -40,6 +40,12 @@ namespace LMP
 		void on_CloudSelector__activated (int);
 		void handleCloudStoragePlugins ();
 		void handleAccountsChanged ();
+
+		void on_UploadButton__released ();
+
+		void appendUpLog (QString);
+		void handleTranscodingProgress (int, int);
+		void handleUploadProgress (int, int);
 	};
 }
 }

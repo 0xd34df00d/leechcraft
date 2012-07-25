@@ -17,8 +17,12 @@
  **********************************************************************/
 
 #include "cloudwidget.h"
+#include <algorithm>
+#include <iterator>
 #include <interfaces/lmp/icloudstorageplugin.h>
 #include "devsync/devicesuploadmodel.h"
+#include "devsync/clouduploadmanager.h"
+#include "devsync/transcodingparams.h"
 #include "core.h"
 #include "localcollection.h"
 
@@ -45,6 +49,20 @@ namespace LMP
 
 		Ui_.TSProgress_->hide ();
 		Ui_.UploadProgress_->hide ();
+
+		connect (Core::Instance ().GetCloudUploadManager (),
+				SIGNAL (uploadLog (QString)),
+				this,
+				SLOT (appendUpLog (QString)));
+
+		connect (Core::Instance ().GetCloudUploadManager (),
+				SIGNAL (transcodingProgress (int, int)),
+				this,
+				SLOT (handleTranscodingProgress (int, int)));
+		connect (Core::Instance ().GetCloudUploadManager (),
+				SIGNAL (uploadProgress (int, int)),
+				this,
+				SLOT (handleUploadProgress (int, int)));
 	}
 
 	void CloudWidget::on_CloudSelector__activated (int idx)
@@ -91,6 +109,46 @@ namespace LMP
 			return;
 
 		on_CloudSelector__activated (idx);
+	}
+
+	void CloudWidget::on_UploadButton__released ()
+	{
+		const int idx = Ui_.CloudSelector_->currentIndex ();
+		const auto& accName = Ui_.AccountSelector_->currentText ();
+		if (idx < 0 || accName.isEmpty ())
+			return;
+
+		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
+		QStringList paths;
+		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
+				[] (const QModelIndex& idx) { return idx.data (LocalCollection::Role::TrackPath).toString (); });
+		paths.removeAll (QString ());
+
+		Ui_.UploadLog_->clear ();
+
+		auto cloud = qobject_cast<ICloudStoragePlugin*> (Clouds_.at (idx));
+		Core::Instance ().GetCloudUploadManager ()->AddFiles (cloud,
+				accName, paths, Ui_.TranscodingOpts_->GetParams ());
+	}
+
+	void CloudWidget::appendUpLog (QString text)
+	{
+		text.prepend (QTime::currentTime ().toString ("[HH:mm:ss.zzz] "));
+		Ui_.UploadLog_->append ("<code>" + text + "</code>");
+	}
+
+	void CloudWidget::handleTranscodingProgress (int done, int total)
+	{
+		Ui_.TSProgress_->setVisible (done < total);
+		Ui_.TSProgress_->setMaximum (total);
+		Ui_.TSProgress_->setValue (done);
+	}
+
+	void CloudWidget::handleUploadProgress (int done, int total)
+	{
+		Ui_.UploadProgress_->setVisible (done < total);
+		Ui_.UploadProgress_->setMaximum (total);
+		Ui_.UploadProgress_->setValue (done);
 	}
 }
 }
