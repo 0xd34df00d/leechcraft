@@ -77,6 +77,8 @@ SET (SRCS
 	aalabeleventfilter.cpp
 	collectionsortermodel.cpp
 	cloudwidget.cpp
+	devsync/clouduploadmanager.cpp
+	devsync/clouduploader.cpp
 	devsync/copymanager.cpp
 	devsync/devicesuploadmodel.cpp
 	devsync/syncmanagerbase.cpp
