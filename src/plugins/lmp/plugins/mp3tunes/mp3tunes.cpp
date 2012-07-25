@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
+#include "accountsmanager.h"
 
 namespace LeechCraft
 {
@@ -29,8 +30,16 @@ namespace MP3Tunes
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		AccMgr_ = new AccountsManager ();
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpmp3tunessettings.xml");
+		XSD_->SetDataSource ("AccountsView", AccMgr_->GetAccModel ());
+
+		connect (AccMgr_,
+				SIGNAL (accountsChanged ()),
+				this,
+				SIGNAL (accountsChanged ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -103,7 +112,7 @@ namespace MP3Tunes
 
 	QStringList Plugin::GetAccounts () const
 	{
-		return QStringList ();
+		return AccMgr_->GetAccounts ();
 	}
 }
 }

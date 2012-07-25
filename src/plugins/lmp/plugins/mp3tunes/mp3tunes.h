@@ -31,6 +31,8 @@ namespace LMP
 {
 namespace MP3Tunes
 {
+	class AccountsManager;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveSettings
@@ -45,6 +47,7 @@ namespace MP3Tunes
 				LeechCraft::LMP::ILMPPlugin
 				LeechCraft::LMP::ICloudStoragePlugin)
 
+		AccountsManager *AccMgr_;
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
