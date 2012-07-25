@@ -48,7 +48,7 @@ namespace LMP
 	}
 
 	void CloudUploadManager::handleFileTranscoded (const QString& from,
-			const QString& transcoded, const QString&)
+			const QString& transcoded, QString)
 	{
 		SyncManagerBase::HandleFileTranscoded (from, transcoded);
 

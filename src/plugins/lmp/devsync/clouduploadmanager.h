@@ -46,7 +46,7 @@ namespace LMP
 	private:
 		void CreateUploader (ICloudStoragePlugin*);
 	private slots:
-		void handleFileTranscoded (const QString& from, const QString&, const QString&);
+		void handleFileTranscoded (const QString& from, const QString&, QString);
 	};
 }
 }
