@@ -79,6 +79,7 @@ SET (SRCS
 	cloudwidget.cpp
 	devsync/copymanager.cpp
 	devsync/devicesuploadmodel.cpp
+	devsync/syncmanagerbase.cpp
 	devsync/syncmanager.cpp
 	devsync/transcodejob.cpp
 	devsync/transcodemanager.cpp

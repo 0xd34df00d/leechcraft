@@ -22,7 +22,6 @@
 #include <QFileInfo>
 #include <util/util.h>
 #include "copymanager.h"
-#include "transcodemanager.h"
 #include "../core.h"
 #include "../localfileresolver.h"
 
@@ -31,45 +30,18 @@ namespace LeechCraft
 namespace LMP
 {
 	SyncManager::SyncManager (QObject *parent)
-	: QObject (parent)
-	, Transcoder_ (new TranscodeManager (this))
-	, TranscodedCount_ (0)
-	, TotalTCCount_ (0)
-	, WereTCErrors_ (false)
-	, CopiedCount_ (0)
-	, TotalCopyCount_ (0)
+	: SyncManagerBase (parent)
 	{
-		connect (Transcoder_,
-				SIGNAL (fileStartedTranscoding (QString)),
-				this,
-				SLOT (handleStartedTranscoding (QString)));
-		connect (Transcoder_,
-				SIGNAL (fileReady (QString, QString, QString)),
-				this,
-				SLOT (handleFileTranscoded (QString, QString, QString)));
-		connect (Transcoder_,
-				SIGNAL (fileFailed (QString)),
-				this,
-				SLOT (handleFileTCFailed (QString)));
 	}
 
 	void SyncManager::AddFiles (ISyncPlugin *syncer, const QString& mount,
 			const QStringList& files, const TranscodingParams& params)
 	{
-		const int numFiles = files.size ();
-		TotalTCCount_ += numFiles;
-		TotalCopyCount_ += numFiles;
-
 		std::for_each (files.begin (), files.end (),
 				[this, syncer, &mount] (decltype (files.front ()) file)
 					{ Source2Params_ [file] = { syncer, mount }; });
 
-		emit transcodingProgress (TranscodedCount_, TotalTCCount_);
-		emit uploadProgress (CopiedCount_, TotalCopyCount_);
-
-		Transcoder_->Enqueue (files, params);
-
-		emit uploadLog (tr ("Uploading %n file(s)", 0, numFiles));
+		SyncManagerBase::AddFiles (files, params);
 	}
 
 	void SyncManager::CreateSyncer (const QString& mount)
@@ -84,39 +56,6 @@ namespace LMP
 				this,
 				SLOT (handleFinishedCopying ()));
 		Mount2Copiers_ [mount] = mgr;
-	}
-
-	void SyncManager::CheckTCFinished ()
-	{
-		if (TranscodedCount_ < TotalTCCount_)
-			return;
-
-		if (WereTCErrors_)
-		{
-			const auto& e = Util::MakeNotification ("LMP",
-					tr ("Files were transcoded, but some errors occured. "
-						"Check the upload log for details."),
-					PWarning_);
-			Core::Instance ().SendEntity (e);
-			WereTCErrors_ = false;
-		}
-
-		TotalTCCount_ = 0;
-		TranscodedCount_ = 0;
-	}
-
-	void SyncManager::CheckUploadFinished ()
-	{
-		if (CopiedCount_ < TotalCopyCount_)
-			return;
-
-		TotalCopyCount_ = 0;
-		CopiedCount_ = 0;
-
-		const auto& e = Util::MakeNotification ("LMP",
-				tr ("Files finished uploading."),
-				PInfo_);
-		Core::Instance ().SendEntity (e);
 	}
 
 	namespace
@@ -152,19 +91,10 @@ namespace LMP
 		}
 	}
 
-	void SyncManager::handleStartedTranscoding (const QString& file)
-	{
-		emit uploadLog (tr ("File %1 started transcoding...")
-				.arg ("<em>" + QFileInfo (file).fileName () + "</em>"));
-	}
-
 	void SyncManager::handleFileTranscoded (const QString& from,
 			const QString& transcoded, QString mask)
 	{
-		qDebug () << Q_FUNC_INFO << "file transcoded, gonna copy";
-
-		emit transcodingProgress (++TranscodedCount_, TotalTCCount_);
-		CheckTCFinished ();
+		SyncManagerBase::HandleFileTranscoded (from, transcoded);
 
 		const auto& syncTo = Source2Params_.take (from);
 		if (syncTo.MountPath_.isEmpty ())
@@ -186,33 +116,6 @@ namespace LMP
 		if (!Mount2Copiers_.contains (syncTo.MountPath_))
 			CreateSyncer (syncTo.MountPath_);
 		Mount2Copiers_ [syncTo.MountPath_]->Copy ({ syncTo.Syncer_, transcoded, from != transcoded, syncTo.MountPath_, mask });
-	}
-
-	void SyncManager::handleFileTCFailed (const QString& file)
-	{
-		emit uploadLog (tr ("Transcoding of file %1 failed")
-				.arg ("<em>" + QFileInfo (file).fileName () + "</em>"));
-		WereTCErrors_ = true;
-
-		emit transcodingProgress (TranscodedCount_, --TotalTCCount_);
-		CheckTCFinished ();
-
-		emit uploadProgress (CopiedCount_, --TotalCopyCount_);
-		CheckUploadFinished ();
-	}
-
-	void SyncManager::handleStartedCopying (const QString& file)
-	{
-		emit uploadLog (tr ("File %1 started copying...")
-					.arg ("<em>" + QFileInfo (file).fileName () + "</em>"));
-	}
-
-	void SyncManager::handleFinishedCopying ()
-	{
-		emit uploadLog (tr ("File finished copying"));
-
-		emit uploadProgress (++CopiedCount_, TotalCopyCount_);
-		CheckUploadFinished ();
 	}
 }
 }
