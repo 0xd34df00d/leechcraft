@@ -31,6 +31,7 @@ namespace LMP
 	class LocalFileResolver;
 	class PlaylistManager;
 	class SyncManager;
+	class CloudUploadManager;
 
 	class Core : public QObject
 	{
@@ -42,6 +43,7 @@ namespace LMP
 		LocalCollection *Collection_;
 		PlaylistManager *PLManager_;
 		SyncManager *SyncManager_;
+		CloudUploadManager *CloudUpMgr_;
 
 		QObjectList SyncPlugins_;
 		QObjectList CloudPlugins_;
@@ -65,6 +67,7 @@ namespace LMP
 		LocalCollection* GetLocalCollection () const;
 		PlaylistManager* GetPlaylistManager () const;
 		SyncManager* GetSyncManager () const;
+		CloudUploadManager* GetCloudUploadManager () const;
 	public slots:
 		void rescan ();
 	signals:
