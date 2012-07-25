@@ -42,6 +42,9 @@ namespace LMP
 				this,
 				SLOT (handleCloudStoragePlugins ()));
 		handleCloudStoragePlugins ();
+
+		Ui_.TSProgress_->hide ();
+		Ui_.UploadProgress_->hide ();
 	}
 
 	void CloudWidget::on_CloudSelector__activated (int idx)
