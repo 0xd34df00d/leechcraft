@@ -69,10 +69,11 @@ namespace MP3Tunes
 		QString GetCloudName () const;
 		QIcon GetCloudIcon () const;
 		QStringList GetSupportedFileFormats () const;
-		void Upload (const QString&, const QString& account);
+		void Upload (const QString& account, const QString& filename);
 		QStringList GetAccounts () const;
 	signals:
-		void uploadFinished (const QString&, CloudStorageError, const QString&);
+		void uploadFinished (const QString&,
+				LeechCraft::LMP::CloudStorageError, const QString&);
 		void accountsChanged ();
 	};
 }
