@@ -39,10 +39,14 @@ namespace Media
 			Predefined
 		};
 
+		virtual bool IsRadioSupported (Type) const = 0;
+
 		virtual QString GetRadioName () const = 0;
 		virtual IRadioStation_ptr GetRadioStation (Type, const QString&) = 0;
 
 		virtual QMap<QByteArray, QString> GetPredefinedStations () const = 0;
+	protected:
+		virtual void predefinedStationsChanged () = 0;
 	};
 }
 
