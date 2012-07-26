@@ -56,6 +56,7 @@ namespace LMP
 		void on_PlayButton__released ();
 		void on_StationsView__doubleClicked (const QModelIndex&);
 		void on_ProviderBox__currentIndexChanged (int);
+		void handlePredefinedStationsChanged ();
 	};
 }
 }
