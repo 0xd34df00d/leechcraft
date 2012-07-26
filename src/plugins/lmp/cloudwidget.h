@@ -18,37 +18,34 @@
 
 #pragma once
 
-#include "syncmanagerbase.h"
+#include <QWidget>
+#include "ui_cloudwidget.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class ISyncPlugin;
-	class TranscodeManager;
-	class CopyManager;
-	struct TranscodingParams;
+	class DevicesUploadModel;
 
-	class SyncManager : public SyncManagerBase
+	class CloudWidget : public QWidget
 	{
 		Q_OBJECT
 
-		QMap<QString, CopyManager*> Mount2Copiers_;
-
-		struct SyncTo
-		{
-			ISyncPlugin *Syncer_;
-			QString MountPath_;
-		};
-		QMap<QString, SyncTo> Source2Params_;
+		Ui::CloudWidget Ui_;
+		DevicesUploadModel *DevUploadModel_;
+		QObjectList Clouds_;
 	public:
-		SyncManager (QObject* = 0);
+		CloudWidget (QWidget* = 0);
+	private slots:
+		void on_CloudSelector__activated (int);
+		void handleCloudStoragePlugins ();
+		void handleAccountsChanged ();
 
-		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
-	private:
-		void CreateSyncer (const QString&);
-	protected slots:
-		void handleFileTranscoded (const QString& from, const QString&, QString);
+		void on_UploadButton__released ();
+
+		void appendUpLog (QString);
+		void handleTranscodingProgress (int, int);
+		void handleUploadProgress (int, int);
 	};
 }
 }

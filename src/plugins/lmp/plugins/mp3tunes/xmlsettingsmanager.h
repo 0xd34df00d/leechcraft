@@ -18,37 +18,25 @@
 
 #pragma once
 
-#include "syncmanagerbase.h"
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class ISyncPlugin;
-	class TranscodeManager;
-	class CopyManager;
-	struct TranscodingParams;
-
-	class SyncManager : public SyncManagerBase
+namespace MP3Tunes
+{
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 
-		QMap<QString, CopyManager*> Mount2Copiers_;
-
-		struct SyncTo
-		{
-			ISyncPlugin *Syncer_;
-			QString MountPath_;
-		};
-		QMap<QString, SyncTo> Source2Params_;
+		XmlSettingsManager ();
 	public:
-		SyncManager (QObject* = 0);
-
-		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
-	private:
-		void CreateSyncer (const QString&);
-	protected slots:
-		void handleFileTranscoded (const QString& from, const QString&, QString);
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
+}
 }
 }

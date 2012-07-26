@@ -31,6 +31,7 @@ namespace LMP
 	class LocalFileResolver;
 	class PlaylistManager;
 	class SyncManager;
+	class CloudUploadManager;
 
 	class Core : public QObject
 	{
@@ -42,8 +43,10 @@ namespace LMP
 		LocalCollection *Collection_;
 		PlaylistManager *PLManager_;
 		SyncManager *SyncManager_;
+		CloudUploadManager *CloudUpMgr_;
 
 		QObjectList SyncPlugins_;
+		QObjectList CloudPlugins_;
 
 		Core ();
 	public:
@@ -58,15 +61,19 @@ namespace LMP
 
 		void AddPlugin (QObject*);
 		QList<QObject*> GetSyncPlugins () const;
+		QList<QObject*> GetCloudStoragePlugins () const;
 
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;
 		PlaylistManager* GetPlaylistManager () const;
 		SyncManager* GetSyncManager () const;
+		CloudUploadManager* GetCloudUploadManager () const;
 	public slots:
 		void rescan ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+
+		void cloudStoragePluginsChanged ();
 	};
 }
 }

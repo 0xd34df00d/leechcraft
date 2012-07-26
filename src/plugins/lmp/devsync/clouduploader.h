@@ -18,37 +18,42 @@
 
 #pragma once
 
-#include "syncmanagerbase.h"
+#include <QObject>
+#include <QList>
+#include <interfaces/lmp/icloudstorageplugin.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class ISyncPlugin;
-	class TranscodeManager;
-	class CopyManager;
-	struct TranscodingParams;
-
-	class SyncManager : public SyncManagerBase
+	class CloudUploader : public QObject
 	{
 		Q_OBJECT
 
-		QMap<QString, CopyManager*> Mount2Copiers_;
-
-		struct SyncTo
-		{
-			ISyncPlugin *Syncer_;
-			QString MountPath_;
-		};
-		QMap<QString, SyncTo> Source2Params_;
+		ICloudStoragePlugin *Cloud_;
 	public:
-		SyncManager (QObject* = 0);
-
-		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
+		struct UploadJob
+		{
+			bool RemoveOnFinish_;
+			QString Account_;
+			QString Filename_;
+		};
 	private:
-		void CreateSyncer (const QString&);
-	protected slots:
-		void handleFileTranscoded (const QString& from, const QString&, QString);
+		QList<UploadJob> Queue_;
+		UploadJob CurrentJob_;
+	public:
+		CloudUploader (ICloudStoragePlugin*, QObject* = 0);
+
+		void Upload (const UploadJob&);
+	private:
+		void StartJob (const UploadJob&);
+		bool IsRunning () const;
+	private slots:
+		void handleUploadFinished (const QString& localPath,
+				LeechCraft::LMP::CloudStorageError error, const QString& errorStr);
+	signals:
+		void startedCopying (const QString&);
+		void finishedCopying ();
 	};
 }
 }

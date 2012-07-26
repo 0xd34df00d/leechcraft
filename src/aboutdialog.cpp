@@ -126,9 +126,11 @@ namespace LeechCraft
 				QList<int> () << 2006 << 2007 << 2008 << 2009 << 2010 << 2011 << 2012);
 		authors << ContributorInfo ("Oleg Linkin", "magog",
 				"magog@gentoo.ru", "MaledictusDeMagog@gmail.com",
-				QStringList (tr ("Firefox importer in New Life."))
-					<< tr ("Poshuku OnlineBookmarks.")
+				QStringList (tr ("Blogique module."))
 					<< tr ("Azoth Acetamide: IRC support for Azoth.")
+					<< tr ("Google Drive support in NetStoreManager module.")
+					<< tr ("Poshuku OnlineBookmarks.")
+					<< tr ("Firefox importer in New Life.")
 					<< tr ("Chrome-style tabs.")
 					<< tr ("Various patches."),
 				QList<int> () << 2010 << 2011 << 2012);

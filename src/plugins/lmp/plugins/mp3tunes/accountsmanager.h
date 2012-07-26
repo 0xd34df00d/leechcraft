@@ -18,37 +18,38 @@
 
 #pragma once
 
-#include "syncmanagerbase.h"
+#include <QObject>
+#include <QVariantList>
+#include <QModelIndexList>
+
+class QStandardItemModel;
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class ISyncPlugin;
-	class TranscodeManager;
-	class CopyManager;
-	struct TranscodingParams;
-
-	class SyncManager : public SyncManagerBase
+namespace MP3Tunes
+{
+	class AccountsManager : public QObject
 	{
 		Q_OBJECT
 
-		QMap<QString, CopyManager*> Mount2Copiers_;
-
-		struct SyncTo
-		{
-			ISyncPlugin *Syncer_;
-			QString MountPath_;
-		};
-		QMap<QString, SyncTo> Source2Params_;
+		QStandardItemModel *AccModel_;
 	public:
-		SyncManager (QObject* = 0);
+		AccountsManager (QObject* = 0);
 
-		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
+		QAbstractItemModel* GetAccModel () const;
+		QStringList GetAccounts () const;
 	private:
-		void CreateSyncer (const QString&);
-	protected slots:
-		void handleFileTranscoded (const QString& from, const QString&, QString);
+		void SaveAccounts ();
+		void LoadAccounts ();
+	public slots:
+		void addRequested (const QString&, const QVariantList&);
+		void removeRequested (const QString&, const QModelIndexList&);
+	signals:
+		void accountsChanged ();
 	};
+}
 }
 }

@@ -76,8 +76,12 @@ SET (SRCS
 	devicesbrowserwidget.cpp
 	aalabeleventfilter.cpp
 	collectionsortermodel.cpp
+	cloudwidget.cpp
+	devsync/clouduploadmanager.cpp
+	devsync/clouduploader.cpp
 	devsync/copymanager.cpp
 	devsync/devicesuploadmodel.cpp
+	devsync/syncmanagerbase.cpp
 	devsync/syncmanager.cpp
 	devsync/transcodejob.cpp
 	devsync/transcodemanager.cpp
@@ -98,6 +102,7 @@ SET (FORMS
 	audiopropswidget.ui
 	playlistwidget.ui
 	devicesbrowserwidget.ui
+	cloudwidget.ui
 	devsync/transcodingparamswidget.ui
 	)
 SET (RESOURCES resources.qrc)
@@ -137,7 +142,11 @@ INSTALL (FILES lmpsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 INSTALL (DIRECTORY interfaces DESTINATION include/leechcraft)
 
 OPTION (ENABLE_LMP_DUMBSYNC "Enable DumbSync, plugin for syncing with Flash-like media players" ON)
+OPTION (ENABLE_LMP_MP3TUNES "Enable plugin for syncing and using the mp3tunes.com service" ON)
 
 IF (ENABLE_LMP_DUMBSYNC)
 	ADD_SUBDIRECTORY (plugins/dumbsync)
 ENDIF (ENABLE_LMP_DUMBSYNC)
+IF (ENABLE_LMP_MP3TUNES)
+	ADD_SUBDIRECTORY (plugins/mp3tunes)
+ENDIF (ENABLE_LMP_MP3TUNES)

@@ -16,39 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include "syncmanagerbase.h"
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class ISyncPlugin;
-	class TranscodeManager;
-	class CopyManager;
-	struct TranscodingParams;
-
-	class SyncManager : public SyncManagerBase
+namespace MP3Tunes
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
+		Util::BaseSettingsManager::Init ();
+	}
 
-		QMap<QString, CopyManager*> Mount2Copiers_;
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return manager;
+	}
 
-		struct SyncTo
-		{
-			ISyncPlugin *Syncer_;
-			QString MountPath_;
-		};
-		QMap<QString, SyncTo> Source2Params_;
-	public:
-		SyncManager (QObject* = 0);
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_LMP_MP3Tunes");
+		return settings;
+	}
 
-		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
-	private:
-		void CreateSyncer (const QString&);
-	protected slots:
-		void handleFileTranscoded (const QString& from, const QString&, QString);
-	};
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
 }
 }

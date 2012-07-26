@@ -23,8 +23,10 @@
 #include "xmlsettingsmanager.h"
 #include "playlistmanager.h"
 #include "devsync/syncmanager.h"
+#include "devsync/clouduploadmanager.h"
 #include "interfaces/lmp/ilmpplugin.h"
 #include "interfaces/lmp/isyncplugin.h"
+#include "interfaces/lmp/icloudstorageplugin.h"
 
 namespace LeechCraft
 {
@@ -35,6 +37,7 @@ namespace LMP
 	, Collection_ (new LocalCollection)
 	, PLManager_ (new PlaylistManager)
 	, SyncManager_ (new SyncManager)
+	, CloudUpMgr_ (new CloudUploadManager)
 	{
 	}
 
@@ -81,11 +84,23 @@ namespace LMP
 		if (classes.contains ("org.LeechCraft.LMP.CollectionSync") &&
 			qobject_cast<ISyncPlugin*> (pluginObj))
 			SyncPlugins_ << pluginObj;
+
+		if (classes.contains ("org.LeechCraft.LMP.CloudStorage") &&
+			qobject_cast<ICloudStoragePlugin*> (pluginObj))
+		{
+			CloudPlugins_ << pluginObj;
+			emit cloudStoragePluginsChanged ();
+		}
 	}
 
 	QList<QObject*> Core::GetSyncPlugins () const
 	{
 		return SyncPlugins_;
+	}
+
+	QList<QObject*> Core::GetCloudStoragePlugins() const
+	{
+		return CloudPlugins_;
 	}
 
 	LocalFileResolver* Core::GetLocalFileResolver () const
@@ -106,6 +121,11 @@ namespace LMP
 	SyncManager* Core::GetSyncManager () const
 	{
 		return SyncManager_;
+	}
+
+	CloudUploadManager* Core::GetCloudUploadManager () const
+	{
+		return CloudUpMgr_;
 	}
 
 	void Core::rescan ()

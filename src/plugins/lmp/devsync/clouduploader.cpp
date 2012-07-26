@@ -16,20 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "copymanager.h"
+#include "clouduploader.h"
+#include <QFile>
 #include <QtDebug>
-#include "interfaces/lmp/isyncplugin.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	CopyManager::CopyManager (QObject *parent)
+	CloudUploader::CloudUploader (ICloudStoragePlugin *cloud, QObject *parent)
 	: QObject (parent)
+	, Cloud_ (cloud)
 	{
+		connect (Cloud_->GetObject (),
+				SIGNAL (uploadFinished (QString, LeechCraft::LMP::CloudStorageError, QString)),
+				this,
+				SLOT (handleUploadFinished (QString, LeechCraft::LMP::CloudStorageError, QString)),
+				Qt::UniqueConnection);
 	}
 
-	void CopyManager::Copy (const CopyJob& job)
+	void CloudUploader::Upload (const UploadJob& job)
 	{
 		if (IsRunning ())
 			Queue_ << job;
@@ -37,45 +43,35 @@ namespace LMP
 			StartJob (job);
 	}
 
-	void CopyManager::StartJob (const CopyJob& job)
+	void CloudUploader::StartJob (const UploadJob& job)
 	{
 		qDebug () << Q_FUNC_INFO
-				<< "copying"
-				<< job.From_
+				<< "uploading"
+				<< job.Filename_
 				<< "to"
-				<< job.MountPoint_
-				<< job.Filename_;
+				<< job.Account_;
 
 		CurrentJob_ = job;
-
-		connect (job.Syncer_->GetObject (),
-				SIGNAL (uploadFinished (QString, QFile::FileError, QString)),
-				this,
-				SLOT (handleUploadFinished (QString, QFile::FileError, QString)),
-				Qt::UniqueConnection);
-
-		job.Syncer_->Upload (job.From_, job.MountPoint_, job.Filename_);
-
+		Cloud_->Upload (job.Account_, job.Filename_);
 		emit startedCopying (job.Filename_);
 	}
 
-	bool CopyManager::IsRunning () const
+	bool CloudUploader::IsRunning () const
 	{
-		return !CurrentJob_.From_.isEmpty ();
+		return !CurrentJob_.Filename_.isEmpty ();
 	}
 
-	void CopyManager::handleUploadFinished (const QString& localPath,
-			QFile::FileError error, const QString& errorStr)
+	void CloudUploader::handleUploadFinished (const QString& localPath, CloudStorageError error, const QString& errorStr)
 	{
 		emit finishedCopying ();
 
 		const bool remove = CurrentJob_.RemoveOnFinish_;
-		CurrentJob_ = CopyJob ();
+		CurrentJob_ = UploadJob ();
 
 		if (!Queue_.isEmpty ())
 			StartJob (Queue_.takeFirst ());
 
-		if (error == QFile::NoError && remove)
+		if (error == CloudStorageError::NoError && remove)
 			QFile::remove (localPath);
 	}
 }

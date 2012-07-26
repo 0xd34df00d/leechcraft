@@ -20,29 +20,37 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
-#include <interfaces/lmp/isyncplugin.h>
+#include <interfaces/lmp/icloudstorageplugin.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-namespace DumbSync
+namespace MP3Tunes
 {
+	class AccountsManager;
+
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IHaveSettings
 				 , public IPlugin2
 				 , public ILMPPlugin
-				 , public ISyncPlugin
+				 , public ICloudStoragePlugin
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
+				IHaveSettings
 				IPlugin2
 				LeechCraft::LMP::ILMPPlugin
-				LeechCraft::LMP::ISyncPlugin)
+				LeechCraft::LMP::ICloudStoragePlugin)
+
+		AccountsManager *AccMgr_;
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
-		void Init (ICoreProxy_ptr proxy);
+		void Init (ICoreProxy_ptr);
 		void SecondInit ();
 		void Release ();
 		QByteArray GetUniqueID () const;
@@ -53,16 +61,20 @@ namespace DumbSync
 
 		QSet<QByteArray> GetPluginClasses () const;
 
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
 		void SetLMPProxy (ILMPProxy*);
 
 		QObject* GetObject ();
-		QString GetSyncSystemName () const;
-		SyncConfLevel CouldSync (const QString&);
-		void Upload (const QString& localPath, const QString& to, const QString& relPath);
-	private slots:
-		void handleCopyFinished ();
+		QString GetCloudName () const;
+		QIcon GetCloudIcon () const;
+		QStringList GetSupportedFileFormats () const;
+		void Upload (const QString& account, const QString& filename);
+		QStringList GetAccounts () const;
 	signals:
-		void uploadFinished (const QString&, QFile::FileError, const QString&);
+		void uploadFinished (const QString&,
+				LeechCraft::LMP::CloudStorageError, const QString&);
+		void accountsChanged ();
 	};
 }
 }

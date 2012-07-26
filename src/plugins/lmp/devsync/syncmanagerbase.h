@@ -18,7 +18,8 @@
 
 #pragma once
 
-#include "syncmanagerbase.h"
+#include <QObject>
+#include <QMap>
 
 namespace LeechCraft
 {
@@ -26,29 +27,40 @@ namespace LMP
 {
 	class ISyncPlugin;
 	class TranscodeManager;
-	class CopyManager;
 	struct TranscodingParams;
 
-	class SyncManager : public SyncManagerBase
+	class SyncManagerBase : public QObject
 	{
 		Q_OBJECT
 
-		QMap<QString, CopyManager*> Mount2Copiers_;
+	protected:
+		TranscodeManager *Transcoder_;
 
-		struct SyncTo
-		{
-			ISyncPlugin *Syncer_;
-			QString MountPath_;
-		};
-		QMap<QString, SyncTo> Source2Params_;
+		int TranscodedCount_;
+		int TotalTCCount_;
+		bool WereTCErrors_;
+
+		int CopiedCount_;
+		int TotalCopyCount_;
 	public:
-		SyncManager (QObject* = 0);
-
-		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
+		SyncManagerBase (QObject* = 0);
+	protected:
+		void AddFiles (const QStringList&, const TranscodingParams&);
+		void HandleFileTranscoded (const QString&, const QString&);
 	private:
-		void CreateSyncer (const QString&);
+		void CheckTCFinished ();
+		void CheckUploadFinished ();
 	protected slots:
-		void handleFileTranscoded (const QString& from, const QString&, QString);
+		void handleStartedTranscoding (const QString&);
+		virtual void handleFileTranscoded (const QString&, const QString&, QString) = 0;
+		void handleFileTCFailed (const QString&);
+		void handleStartedCopying (const QString&);
+		void handleFinishedCopying ();
+	signals:
+		void uploadLog (const QString&);
+
+		void transcodingProgress (int, int);
+		void uploadProgress (int, int);
 	};
 }
 }

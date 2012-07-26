@@ -18,37 +18,51 @@
 
 #pragma once
 
-#include "syncmanagerbase.h"
+#include <QtPlugin>
+
+class QString;
+class QObject;
+class QIcon;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class ISyncPlugin;
-	class TranscodeManager;
-	class CopyManager;
-	struct TranscodingParams;
-
-	class SyncManager : public SyncManagerBase
+	enum class CloudStorageError
 	{
-		Q_OBJECT
+		NoError,
+		FileHashMismatch,
+		InvalidSession,
+		NotAuthorized,
+		UnsupportedFileFormat,
+		FilesizeExceeded,
+		StorageFull,
+		ServiceError
+	};
 
-		QMap<QString, CopyManager*> Mount2Copiers_;
-
-		struct SyncTo
-		{
-			ISyncPlugin *Syncer_;
-			QString MountPath_;
-		};
-		QMap<QString, SyncTo> Source2Params_;
+	class ICloudStoragePlugin
+	{
 	public:
-		SyncManager (QObject* = 0);
+		virtual ~ICloudStoragePlugin () {}
 
-		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
-	private:
-		void CreateSyncer (const QString&);
-	protected slots:
-		void handleFileTranscoded (const QString& from, const QString&, QString);
+		virtual QObject* GetObject () = 0;
+
+		virtual QString GetCloudName () const = 0;
+
+		virtual QIcon GetCloudIcon () const = 0;
+
+		virtual QStringList GetSupportedFileFormats () const = 0;
+
+		virtual void Upload (const QString& account, const QString& localPath) = 0;
+
+		virtual QStringList GetAccounts () const = 0;
+	protected:
+		virtual void uploadFinished (const QString& localPath,
+				CloudStorageError, const QString& errorStr) = 0;
+
+		virtual void accountsChanged () = 0;
 	};
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::LMP::ICloudStoragePlugin, "org.LeechCraft.LMP.ICloudStoragePlugin/1.0");

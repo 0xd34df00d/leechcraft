@@ -24,30 +24,28 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	class ISyncPlugin;
-	class TranscodeManager;
-	class CopyManager;
-	struct TranscodingParams;
+	class ICloudStoragePlugin;
+	class CloudUploader;
 
-	class SyncManager : public SyncManagerBase
+	class CloudUploadManager : public SyncManagerBase
 	{
 		Q_OBJECT
 
-		QMap<QString, CopyManager*> Mount2Copiers_;
+		QMap<ICloudStoragePlugin*, CloudUploader*> Cloud2Uploaders_;
 
-		struct SyncTo
+		struct CloudUpload
 		{
-			ISyncPlugin *Syncer_;
-			QString MountPath_;
+			ICloudStoragePlugin *Cloud_;
+			QString Account_;
 		};
-		QMap<QString, SyncTo> Source2Params_;
+		QMap<QString, CloudUpload> Source2Params_;
 	public:
-		SyncManager (QObject* = 0);
+		CloudUploadManager (QObject* = 0);
 
-		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
+		void AddFiles (ICloudStoragePlugin*, const QString&, const QStringList&, const TranscodingParams&);
 	private:
-		void CreateSyncer (const QString&);
-	protected slots:
+		void CreateUploader (ICloudStoragePlugin*);
+	private slots:
 		void handleFileTranscoded (const QString& from, const QString&, QString);
 	};
 }
