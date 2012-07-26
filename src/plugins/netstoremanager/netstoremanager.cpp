@@ -57,6 +57,8 @@ namespace NetStoreManager
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+
+		Proxy_ = proxy;
 	}
 
 	void Plugin::SecondInit ()
@@ -97,7 +99,8 @@ namespace NetStoreManager
 	{
 		if (id == ManagerTC_.TabClass_)
 		{
-			ManagerTab *tab = new ManagerTab (ManagerTC_, AccountsManager_, this);
+			ManagerTab *tab = new ManagerTab (ManagerTC_, AccountsManager_,
+					Proxy_, this);
 			emit addNewTab (tr ("Net storage"), tab);
 			emit changeTabIcon (tab, GetIcon ());
 			emit raiseTab (tab);

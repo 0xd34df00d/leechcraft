@@ -20,6 +20,7 @@
 #define PLUGINS_NETSTOREMANAGER_MANAGERTAB_H
 #include <functional>
 #include <QWidget>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
 #include "ui_managertab.h"
 
@@ -45,15 +46,17 @@ namespace NetStoreManager
 
 		QObject *Parent_;
 		TabClassInfo Info_;
+		ICoreProxy_ptr Proxy_;
 
 		AccountsManager *AM_;
 		QStandardItemModel *Model_;
 
 		QAction *ProlongateFile_;
 		QAction *DeleteFile_;
+		QAction *MoveToTrash_;
 		QHash<IStorageAccount*, QHash<QString, bool>> Account2ItemExpandState_;
 	public:
-		ManagerTab (const TabClassInfo&, AccountsManager*, QObject*);
+		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
@@ -71,6 +74,7 @@ namespace NetStoreManager
 		void flCopyURL ();
 		void flProlongate ();
 		void flDelete ();
+		void flMoveToTrash ();
 		void on_AccountsBox__activated (int);
 		void on_Update__released ();
 		void on_Upload__released ();

@@ -32,9 +32,11 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	ManagerTab::ManagerTab (const TabClassInfo& tc, AccountsManager *am, QObject *obj)
+	ManagerTab::ManagerTab (const TabClassInfo& tc, AccountsManager *am,
+			ICoreProxy_ptr proxy, QObject *obj)
 	: Parent_ (obj)
 	, Info_ (tc)
+	, Proxy_ (proxy)
 	, AM_ (am)
 	, Model_ (new QStandardItemModel (this))
 	{
@@ -53,6 +55,11 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flDelete ()));
+		MoveToTrash_ = new QAction (tr ("Move to trash selected"), this);
+		connect (MoveToTrash_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flMoveToTrash ()));
 
 		Ui_.setupUi (this);
 		Ui_.FilesTree_->setModel (Model_);
@@ -77,6 +84,7 @@ namespace NetStoreManager
 
 		Ui_.FilesTree_->addAction (copyURL);
 		Ui_.FilesTree_->addAction (ProlongateFile_);
+		Ui_.FilesTree_->addAction (MoveToTrash_);
 		Ui_.FilesTree_->addAction (DeleteFile_);
 	}
 
@@ -200,9 +208,20 @@ namespace NetStoreManager
 			ClearFilesModel ();
 			return;
 		}
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		const bool trashSupporting = (sfl &&
+				sfl->GetListingOps () & ListingOp::TrashSupporing);
+
+		QStandardItem *trashItem = new QStandardItem (Proxy_->GetIcon ("user-trash"),
+				tr ("Trash"));
+		trashItem->setEditable (false);
+		trashItem->setData ("netstoremanager.item_trash", ListingRole::ID);
 
 		Q_FOREACH (auto row, items)
 			Model_->appendRow (row);
+
+		if (trashSupporting)
+			Model_->appendRow (trashItem);
 
 		RestoreModelState ();
 	}
@@ -232,6 +251,11 @@ namespace NetStoreManager
 		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->Delete (ids); });
 	}
 
+	void ManagerTab::flMoveToTrash ()
+	{
+		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->MoveToTrash (ids); });
+	}
+
 	void ManagerTab::on_AccountsBox__activated (int)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
@@ -248,6 +272,7 @@ namespace NetStoreManager
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
 		ProlongateFile_->setEnabled (sfl->GetListingOps () & ListingOp::Prolongate);
 		DeleteFile_->setEnabled (sfl->GetListingOps () & ListingOp::Delete);
+		MoveToTrash_->setEnabled (sfl->GetListingOps () & ListingOp::TrashSupporing);
 	}
 
 	void ManagerTab::on_Update__released ()
