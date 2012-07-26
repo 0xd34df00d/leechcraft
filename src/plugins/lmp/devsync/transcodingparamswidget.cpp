@@ -39,6 +39,11 @@ namespace LMP
 			Ui_.ThreadsSlider_->setMaximum (4);
 	}
 
+	void TranscodingParamsWidget::SetMaskVisible (bool visible)
+	{
+		Ui_.FilenameMask_->setVisible (visible);
+	}
+
 	TranscodingParams TranscodingParamsWidget::GetParams () const
 	{
 		const bool transcode = Ui_.TranscodingBox_->isChecked ();

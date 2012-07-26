@@ -35,6 +35,8 @@ namespace LMP
 	public:
 		TranscodingParamsWidget (QWidget* = 0);
 
+		void SetMaskVisible (bool);
+
 		TranscodingParams GetParams () const;
 	};
 }
