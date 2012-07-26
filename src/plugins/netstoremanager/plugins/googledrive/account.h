@@ -72,6 +72,7 @@ namespace GoogleDrive
 		QStringList GetListingHeaders () const;
 		ListingOps GetListingOps () const;
 		void Prolongate (const QList<QStringList>& id);
+		void MoveToTrash (const QList<QStringList>& id);
 		void RefreshListing ();
 
 		QByteArray Serialize ();

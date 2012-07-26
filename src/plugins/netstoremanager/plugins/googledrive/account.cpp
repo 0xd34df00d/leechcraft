@@ -64,25 +64,19 @@ namespace GoogleDrive
 
 	void Account::Upload (const QString& filepath)
 	{
-
 	}
 
 	void Account::Delete (const QList<QStringList>& id)
 	{
 		const QString& itemId = id [0] [0];
-		if (TrashedItemIds_.contains (itemId))
-		{
-			auto res = QMessageBox::warning (Core::Instance ().GetProxy ()->GetMainWindow (),
-					tr ("Remove item"),
-					tr ("Are you sure to delete permanently an entry <b>%1</b>?"
-							"<br><i>Note: If entry is directory all files in it will <b>be</b> deleted.</i>")
+		auto res = QMessageBox::warning (Core::Instance ().GetProxy ()->GetMainWindow (),
+				tr ("Remove item"),
+				tr ("Are you sure to delete permanently an entry <b>%1</b>?"
+					"<br><i>Note: If entry is directory all files in it <b>will be</b> deleted.</i>")
 							.arg (Items_ [itemId].Name_),
-					QMessageBox::Ok | QMessageBox::Cancel);
-			if (res == QMessageBox::Ok)
-				DriveManager_->RemoveEntry (itemId);
-		}
-		else
-			DriveManager_->MoveEntryToTrash (itemId);
+				QMessageBox::Ok | QMessageBox::Cancel);
+		if (res == QMessageBox::Ok)
+			DriveManager_->RemoveEntry (itemId);
 	}
 
 	QStringList Account::GetListingHeaders () const
@@ -96,11 +90,16 @@ namespace GoogleDrive
 
 	ListingOps Account::GetListingOps () const
 	{
-		return ListingOp::Delete;
+		return ListingOp::Delete | ListingOp::TrashSupporing;
 	}
 
 	void Account::Prolongate (const QList<QStringList>&)
 	{
+	}
+
+	void Account::MoveToTrash (const QList<QStringList>& id)
+	{
+		DriveManager_->MoveEntryToTrash (id [0] [0]);
 	}
 
 	void Account::RefreshListing ()
