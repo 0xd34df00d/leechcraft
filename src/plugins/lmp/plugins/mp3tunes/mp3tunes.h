@@ -32,6 +32,7 @@ namespace LMP
 namespace MP3Tunes
 {
 	class AccountsManager;
+	class Uploader;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -47,8 +48,12 @@ namespace MP3Tunes
 				LeechCraft::LMP::ILMPPlugin
 				LeechCraft::LMP::ICloudStoragePlugin)
 
+		ICoreProxy_ptr Proxy_;
+
 		AccountsManager *AccMgr_;
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		QMap<QString, Uploader*> Uploaders_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -75,6 +80,9 @@ namespace MP3Tunes
 		void uploadFinished (const QString&,
 				LeechCraft::LMP::CloudStorageError, const QString&);
 		void accountsChanged ();
+
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

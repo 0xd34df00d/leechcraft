@@ -19,8 +19,10 @@
 #include "mp3tunes.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/icoreproxy.h>
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
+#include "uploader.h"
 
 namespace LeechCraft
 {
@@ -28,8 +30,10 @@ namespace LMP
 {
 namespace MP3Tunes
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		AccMgr_ = new AccountsManager ();
 
 		XSD_.reset (new Util::XmlSettingsDialog);
@@ -106,8 +110,28 @@ namespace MP3Tunes
 		return { "m4a", "mp3", "mp4", "ogg" };
 	}
 
-	void Plugin::Upload (const QString& localPath, const QString& account)
+	void Plugin::Upload (const QString& acc, const QString& localPath)
 	{
+		if (!Uploaders_.contains (acc))
+		{
+			auto up = new Uploader (acc, Proxy_->GetNetworkAccessManager (), this);
+			Uploaders_ [acc] = up;
+
+			connect (up,
+					SIGNAL (gotEntity (LeechCraft::Entity)),
+					this,
+					SIGNAL (gotEntity (LeechCraft::Entity)));
+			connect (up,
+					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+					this,
+					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+			connect (up,
+					SIGNAL (uploadFinished (QString, LeechCraft::LMP::CloudStorageError, QString)),
+					this,
+					SIGNAL (uploadFinished (QString, LeechCraft::LMP::CloudStorageError, QString)));
+		}
+
+		Uploaders_ [acc]->Upload (localPath);
 	}
 
 	QStringList Plugin::GetAccounts () const
