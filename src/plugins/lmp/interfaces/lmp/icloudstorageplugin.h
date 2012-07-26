@@ -31,13 +31,16 @@ namespace LMP
 	enum class CloudStorageError
 	{
 		NoError,
+		LocalError,
+		NetError,
 		FileHashMismatch,
 		InvalidSession,
 		NotAuthorized,
 		UnsupportedFileFormat,
 		FilesizeExceeded,
 		StorageFull,
-		ServiceError
+		ServiceError,
+		OtherError
 	};
 
 	class ICloudStoragePlugin
