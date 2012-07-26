@@ -35,6 +35,7 @@ namespace LMP
 	, DevUploadModel_ (new DevicesUploadModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.TranscodingOpts_->SetMaskVisible (false);
 
 		DevUploadModel_->setSourceModel (Core::Instance ().GetLocalCollection ()->GetCollectionModel ());
 		Ui_.OurCollection_->setModel (DevUploadModel_);
