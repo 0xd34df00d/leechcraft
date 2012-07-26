@@ -30,7 +30,8 @@ namespace NetStoreManager
 	enum ListingRole
 	{
 		ID = Qt::UserRole + 20,
-		URL
+		URL,
+		InTrash
 	};
 
 	enum ListingOp
@@ -38,7 +39,8 @@ namespace NetStoreManager
 		NoneOp = 0x00,
 		Delete = 0x01,
 		Prolongate = 0x02,
-		ToggleProtected = 0x04
+		ToggleProtected = 0x04,
+		TrashSupporing = 0x08
 	};
 
 	Q_DECLARE_FLAGS (ListingOps, ListingOp);
@@ -55,6 +57,7 @@ namespace NetStoreManager
 
 		virtual void Delete (const QList<QStringList>& id) = 0;
 		virtual void Prolongate (const QList<QStringList>& id) = 0;
+		virtual void MoveToTrash (const QList<QStringList>& id) = 0;
 	protected:
 		virtual void gotListing (const QList<QList<QStandardItem*>>&) = 0;
 	};
