@@ -32,6 +32,7 @@ namespace LMP
 namespace MP3Tunes
 {
 	class AccountsManager;
+	class AuthManager;
 	class Uploader;
 
 	class Plugin : public QObject
@@ -52,6 +53,8 @@ namespace MP3Tunes
 
 		AccountsManager *AccMgr_;
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		AuthManager *AuthMgr_;
 
 		QMap<QString, Uploader*> Uploaders_;
 	public:

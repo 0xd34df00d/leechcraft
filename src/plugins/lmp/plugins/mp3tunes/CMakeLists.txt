@@ -14,6 +14,7 @@ INCLUDE_DIRECTORIES (${LMP_INCLUDE_DIR}
 SET (MP3TUNES_SRCS
 	mp3tunes.cpp
 	accountsmanager.cpp
+	authmanager.cpp
 	uploader.cpp
 	xmlsettingsmanager.cpp
 	)

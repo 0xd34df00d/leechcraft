@@ -19,6 +19,8 @@
 #pragma once
 
 #include <QObject>
+#include <QMap>
+#include <QSet>
 
 class QNetworkAccessManager;
 
@@ -28,34 +30,29 @@ struct Entity;
 
 namespace LMP
 {
-enum class CloudStorageError;
-
 namespace MP3Tunes
 {
-	class AuthManager;
-
-	class Uploader : public QObject
+	class AuthManager : public QObject
 	{
 		Q_OBJECT
 
-		const QString Login_;
 		QNetworkAccessManager *NAM_;
-		AuthManager *AuthMgr_;
 
-		QString UpAfterAuth_;
+		QMap<QString, QString> Login2Sid_;
+		QSet<QString> FailedAuth_;
 	public:
-		Uploader (const QString&, QNetworkAccessManager*, AuthManager*, QObject* = 0);
+		AuthManager (QNetworkAccessManager*, QObject* = 0);
 
-		void Upload (const QString&);
+		QString GetSID (const QString&);
 	private slots:
-		void handleSidReady (const QString&);
-		void handleSidError (const QString&, const QString&);
-		void handleUploadFinished ();
+		void handleAuthReplyFinished ();
+		void handleAuthReplyError ();
 	signals:
-		void removeThis (const QString&);
+		void sidReady (const QString&);
+		void sidError (const QString&, const QString&);
 
-		void uploadFinished (const QString&,
-				LeechCraft::LMP::CloudStorageError, const QString&);
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

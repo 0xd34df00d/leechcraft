@@ -22,6 +22,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
+#include "authmanager.h"
 #include "uploader.h"
 
 namespace LeechCraft
@@ -33,6 +34,16 @@ namespace MP3Tunes
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		AuthMgr_ = new AuthManager (proxy->GetNetworkAccessManager (), this);
+		connect (AuthMgr_,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (AuthMgr_,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 
 		AccMgr_ = new AccountsManager ();
 
@@ -114,17 +125,12 @@ namespace MP3Tunes
 	{
 		if (!Uploaders_.contains (acc))
 		{
-			auto up = new Uploader (acc, Proxy_->GetNetworkAccessManager (), this);
+			auto up = new Uploader (acc,
+				Proxy_->GetNetworkAccessManager (),
+				AuthMgr_,
+				this);
 			Uploaders_ [acc] = up;
 
-			connect (up,
-					SIGNAL (gotEntity (LeechCraft::Entity)),
-					this,
-					SIGNAL (gotEntity (LeechCraft::Entity)));
-			connect (up,
-					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
-					this,
-					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 			connect (up,
 					SIGNAL (uploadFinished (QString, LeechCraft::LMP::CloudStorageError, QString)),
 					this,

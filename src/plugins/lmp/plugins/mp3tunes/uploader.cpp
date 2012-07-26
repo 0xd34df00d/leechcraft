@@ -20,12 +20,11 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QDomDocument>
 #include <QFile>
 #include <QCryptographicHash>
 #include <QtDebug>
-#include <util/passutils.h>
 #include <interfaces/lmp/icloudstorageplugin.h>
+#include "authmanager.h"
 #include "consts.h"
 
 namespace LeechCraft
@@ -34,47 +33,28 @@ namespace LMP
 {
 namespace MP3Tunes
 {
-	Uploader::Uploader (const QString& login, QNetworkAccessManager *nam, QObject *parent)
+	Uploader::Uploader (const QString& login, QNetworkAccessManager *nam, AuthManager *auth, QObject *parent)
 	: QObject (parent)
 	, Login_ (login)
 	, NAM_ (nam)
-	, FirstAuth_ (true)
+	, AuthMgr_ (auth)
 	{
-	}
-
-	bool Uploader::Auth ()
-	{
-		const auto& pass = Util::GetPassword ("org.LeechCraft.LMP.MP3Tunes.Account." + Login_,
-				tr ("Enter password for MP3tunes account %1:").arg (Login_),
+		connect (AuthMgr_,
+				SIGNAL (sidReady (QString)),
 				this,
-				FirstAuth_);
-		if (pass.isEmpty ())
-			return false;
-
-		const auto authUrl = QString ("https://shop.mp3tunes.com/api/v1/login?output=xml&"
-				"username=%1&password=%2&partner_token=%3")
-					.arg (Login_)
-					.arg (pass)
-					.arg (Consts::PartnerId);
-		auto reply = NAM_->get (QNetworkRequest (authUrl));
-		connect (reply,
-				SIGNAL (finished ()),
+				SLOT (handleSidReady (QString)));
+		connect (AuthMgr_,
+				SIGNAL (sidError (QString, QString)),
 				this,
-				SLOT (handleAuthReplyFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleAuthReplyError ()));
-
-		return true;
+				SLOT (handleSidError (QString, QString)));
 	}
 
 	void Uploader::Upload (const QString& up)
 	{
-		if (SID_.isEmpty ())
+		const auto& sid = AuthMgr_->GetSID (Login_);
+		if (sid.isEmpty ())
 		{
 			UpAfterAuth_ = up;
-			Auth ();
 			return;
 		}
 
@@ -95,7 +75,7 @@ namespace MP3Tunes
 		const auto url = QString ("http://content.mp3tunes.com/storage/lockerPut/%1?"
 				"output=xml&sid=%2&partner_token=%3")
 					.arg (QString (hash.toHex ()))
-					.arg (SID_)
+					.arg (sid)
 					.arg (Consts::PartnerId);
 
 		auto reply = NAM_->put (QNetworkRequest (url), fileData);
@@ -107,49 +87,25 @@ namespace MP3Tunes
 		qDebug () << Q_FUNC_INFO << "sent request for" << up;
 	}
 
-	void Uploader::handleAuthReplyFinished ()
+	void Uploader::handleSidReady (const QString& login)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& data = reply->readAll ();
-		QDomDocument doc;
-		if (!doc.setContent (data))
-		{
-			emit uploadFinished (UpAfterAuth_,
-					CloudStorageError::ServiceError,
-					tr ("Unable to parse authentication reply."));
+		if (login != Login_)
 			return;
-		}
 
-		const auto& docElem = doc.documentElement ();
-		if (docElem.firstChildElement ("status").text () != "1")
-		{
-			FirstAuth_ = false;
-			emit uploadFinished (UpAfterAuth_,
-					CloudStorageError::NotAuthorized,
-					docElem.firstChildElement ("errorMessage").text ());
-			return;
-		}
-
-		SID_ = docElem.firstChildElement ("session_id").text ();
-		FirstAuth_ = true;
-
-		if (!UpAfterAuth_.isEmpty ())
-		{
-			Upload (UpAfterAuth_);
-			UpAfterAuth_.clear ();
-		}
+		Upload (UpAfterAuth_);
+		UpAfterAuth_.clear ();
 	}
 
-	void Uploader::handleAuthReplyError ()
+	void Uploader::handleSidError (const QString& login, const QString& msg)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
+		if (login != Login_)
+			return;
 
 		emit uploadFinished (UpAfterAuth_,
-				CloudStorageError::NetError,
-				tr ("Unable to parse authentication reply."));
+					CloudStorageError::NotAuthorized,
+					msg);
+
+		UpAfterAuth_.clear ();
 	}
 
 	void Uploader::handleUploadFinished ()
