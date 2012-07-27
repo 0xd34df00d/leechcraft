@@ -56,6 +56,8 @@ namespace LMP
 		QAbstractItemModel* GetPlaylistsModel () const;
 		StaticPlaylistManager* GetStaticManager () const;
 
+		void AddProvider (QObject*);
+
 		QList<Phonon::MediaSource> GetSources (const QModelIndex&) const;
 	private slots:
 		void handleStaticPlaylistsChanged ();

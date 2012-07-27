@@ -60,8 +60,8 @@ namespace LMP
 		void PostInit ();
 
 		void AddPlugin (QObject*);
-		QList<QObject*> GetSyncPlugins () const;
-		QList<QObject*> GetCloudStoragePlugins () const;
+		QObjectList GetSyncPlugins () const;
+		QObjectList GetCloudStoragePlugins () const;
 
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;

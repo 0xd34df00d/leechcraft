@@ -24,6 +24,7 @@
 #include "core.h"
 #include "staticplaylistmanager.h"
 #include "localcollection.h"
+#include "interfaces/lmp/iplaylistprovider.h"
 
 namespace LeechCraft
 {
@@ -35,6 +36,12 @@ namespace LMP
 		{
 			PlaylistManager *Manager_;
 		public:
+			enum Roles
+			{
+				IncrementalFetch = Qt::UserRole + 1,
+				PlaylistProvider
+			};
+
 			PlaylistModel (PlaylistManager *parent)
 			: QStandardItemModel (parent)
 			, Manager_ (parent)
@@ -75,6 +82,30 @@ namespace LMP
 				result->setUrls (urls);
 
 				return result;
+			}
+
+			bool canFetchMore (const QModelIndex& parent) const
+			{
+				return parent.data (Roles::IncrementalFetch).toBool ();
+			}
+
+			void fetchMore (const QModelIndex& parent)
+			{
+				QObject *obj = 0;
+				auto idx = parent;
+				while (!obj && idx.isValid ())
+				{
+					obj = parent.data (Roles::PlaylistProvider).value<QObject*> ();
+					idx = idx.parent ();
+				}
+				if (!obj)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "no object found";
+					return;
+				}
+
+				qobject_cast<IPlaylistProvider*> (obj)->UpdatePlaylists ();
 			}
 		};
 	}
@@ -121,6 +152,18 @@ namespace LMP
 		return Static_;
 	}
 
+	void PlaylistManager::AddProvider (QObject *provObj)
+	{
+		auto prov = qobject_cast<IPlaylistProvider*> (provObj);
+		if (!prov)
+			return;
+
+		auto root = prov->GetPlaylistsRoot ();
+		root->setData (true, PlaylistModel::Roles::IncrementalFetch);
+		root->setData (QVariant::fromValue (provObj), PlaylistModel::Roles::PlaylistProvider);
+		Model_->appendRow (root);
+	}
+
 	QList<Phonon::MediaSource> PlaylistManager::GetSources (const QModelIndex& index) const
 	{
 		auto col = Core::Instance ().GetLocalCollection ();
@@ -140,7 +183,13 @@ namespace LMP
 		case PlaylistTypes::Random50:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::Random50));
 		default:
-			return QList<Phonon::MediaSource> ();
+		{
+			QList<Phonon::MediaSource> result;
+			const auto& urls = index.data (IPlaylistProvider::ItemRoles::SourceURLs).value<QList<QUrl>> ();
+			std::transform (urls.begin (), urls.end (), std::back_inserter (result),
+					[] (decltype (urls.front ()) path) { return Phonon::MediaSource (path); });
+			return result;
+		}
 		}
 	}
 
