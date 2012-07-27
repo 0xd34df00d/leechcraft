@@ -24,6 +24,7 @@
 #include "accountsmanager.h"
 #include "authmanager.h"
 #include "uploader.h"
+#include "playlistmanager.h"
 
 namespace LeechCraft
 {
@@ -44,6 +45,8 @@ namespace MP3Tunes
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+
+		PLManager_ = new PlaylistManager (AuthMgr_, this);
 
 		AccMgr_ = new AccountsManager ();
 
@@ -89,6 +92,7 @@ namespace MP3Tunes
 	{
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.LMP.CloudStorage";
+		result << "org.LeechCraft.LMP.PlaylistProvider";
 		return result;
 	}
 
@@ -143,6 +147,16 @@ namespace MP3Tunes
 	QStringList Plugin::GetAccounts () const
 	{
 		return AccMgr_->GetAccounts ();
+	}
+
+	QStandardItem* Plugin::GetPlaylistsRoot () const
+	{
+		return PLManager_->GetRoot ();
+	}
+
+	void Plugin::UpdatePlaylists ()
+	{
+		PLManager_->Update ();
 	}
 }
 }

@@ -24,6 +24,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/icloudstorageplugin.h>
+#include <interfaces/lmp/iplaylistprovider.h>
 
 namespace LeechCraft
 {
@@ -34,6 +35,7 @@ namespace MP3Tunes
 	class AccountsManager;
 	class AuthManager;
 	class Uploader;
+	class PlaylistManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -41,13 +43,15 @@ namespace MP3Tunes
 				 , public IPlugin2
 				 , public ILMPPlugin
 				 , public ICloudStoragePlugin
+				 , public IPlaylistProvider
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IHaveSettings
 				IPlugin2
 				LeechCraft::LMP::ILMPPlugin
-				LeechCraft::LMP::ICloudStoragePlugin)
+				LeechCraft::LMP::ICloudStoragePlugin
+				LeechCraft::LMP::IPlaylistProvider)
 
 		ICoreProxy_ptr Proxy_;
 
@@ -55,6 +59,8 @@ namespace MP3Tunes
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		AuthManager *AuthMgr_;
+
+		PlaylistManager *PLManager_;
 
 		QMap<QString, Uploader*> Uploaders_;
 	public:
@@ -79,6 +85,9 @@ namespace MP3Tunes
 		QStringList GetSupportedFileFormats () const;
 		void Upload (const QString& account, const QString& filename);
 		QStringList GetAccounts () const;
+
+		QStandardItem* GetPlaylistsRoot () const;
+		void UpdatePlaylists ();
 	signals:
 		void uploadFinished (const QString&,
 				LeechCraft::LMP::CloudStorageError, const QString&);

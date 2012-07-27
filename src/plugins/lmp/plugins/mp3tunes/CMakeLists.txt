@@ -15,6 +15,7 @@ SET (MP3TUNES_SRCS
 	mp3tunes.cpp
 	accountsmanager.cpp
 	authmanager.cpp
+	playlistmanager.cpp
 	uploader.cpp
 	xmlsettingsmanager.cpp
 	)
