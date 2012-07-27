@@ -218,7 +218,9 @@ namespace NetStoreManager
 		trashItem->setData ("netstoremanager.item_trash", ListingRole::ID);
 
 		Q_FOREACH (auto row, items)
-			Model_->appendRow (row);
+			row [0]->data (ListingRole::InTrash).toBool () ?
+				trashItem->appendRow (row) :
+				Model_->appendRow (row);
 
 		if (trashSupporting)
 			Model_->appendRow (trashItem);
