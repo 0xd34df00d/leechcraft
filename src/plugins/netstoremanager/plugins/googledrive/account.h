@@ -57,7 +57,6 @@ namespace GoogleDrive
 		bool Trusted_;
 
 		DriveManager *DriveManager_;
-		QStringList TrashedItemIds_;
 		QHash<QString, DriveItem> Items_;
 	public:
 		Account (const QString& name, QObject *parentPlugin = 0);
