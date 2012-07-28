@@ -24,7 +24,6 @@
 #include "core.h"
 #include "staticplaylistmanager.h"
 #include "localcollection.h"
-#include "interfaces/lmp/iplaylistprovider.h"
 
 namespace LeechCraft
 {

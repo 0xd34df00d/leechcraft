@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <phonon/mediasource.h>
+#include "interfaces/lmp/iplaylistprovider.h"
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -43,12 +44,13 @@ namespace LMP
 
 		enum PlaylistTypes
 		{
+			Other,
 			Static,
 			Random50
 		};
 		enum Roles
 		{
-			PlaylistType = Qt::UserRole + 1
+			PlaylistType = IPlaylistProvider::ItemRoles::Max + 1
 		};
 	public:
 		PlaylistManager (QObject* = 0);
