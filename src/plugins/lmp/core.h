@@ -18,8 +18,11 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
+
+class QUrl;
 
 namespace LeechCraft
 {
@@ -27,6 +30,7 @@ struct Entity;
 
 namespace LMP
 {
+	class MediaInfo;
 	class LocalCollection;
 	class LocalFileResolver;
 	class PlaylistManager;
@@ -68,6 +72,8 @@ namespace LMP
 		PlaylistManager* GetPlaylistManager () const;
 		SyncManager* GetSyncManager () const;
 		CloudUploadManager* GetCloudUploadManager () const;
+
+		boost::optional<MediaInfo> TryURLResolve (const QUrl&) const;
 	public slots:
 		void rescan ();
 	signals:

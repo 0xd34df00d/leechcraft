@@ -133,6 +133,11 @@ namespace LMP
 		return CloudUpMgr_;
 	}
 
+	boost::optional<MediaInfo> Core::TryURLResolve (const QUrl& url) const
+	{
+		return PLManager_->TryResolveMediaInfo (url);
+	}
+
 	void Core::rescan ()
 	{
 		Collection_->Rescan ();

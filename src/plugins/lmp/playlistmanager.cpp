@@ -21,9 +21,11 @@
 #include <QStandardItemModel>
 #include <QTimer>
 #include <QMimeData>
+#include <boost/graph/graph_concepts.hpp>
 #include "core.h"
 #include "staticplaylistmanager.h"
 #include "localcollection.h"
+#include "mediainfo.h"
 
 namespace LeechCraft
 {
@@ -133,6 +135,8 @@ namespace LMP
 		if (!prov)
 			return;
 
+		PlaylistProviders_ << provObj;
+
 		auto root = prov->GetPlaylistsRoot ();
 		root->setData (true, PlaylistModel::Roles::IncrementalFetch);
 		root->setData (QVariant::fromValue (provObj), PlaylistModel::Roles::PlaylistProvider);
@@ -166,6 +170,21 @@ namespace LMP
 			return result;
 		}
 		}
+	}
+
+	boost::optional<MediaInfo> PlaylistManager::TryResolveMediaInfo (const QUrl& url) const
+	{
+		Q_FOREACH (auto provObj, PlaylistProviders_)
+		{
+			auto prov = qobject_cast<IPlaylistProvider*> (provObj);
+			auto info = prov->GetURLInfo (url);
+			if (!info)
+				continue;
+
+			return boost::make_optional (MediaInfo::FromAudioInfo (*info));
+		}
+
+		return boost::optional<MediaInfo> ();
 	}
 
 	void PlaylistManager::handleStaticPlaylistsChanged ()
