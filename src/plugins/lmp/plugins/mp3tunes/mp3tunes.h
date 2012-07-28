@@ -88,6 +88,7 @@ namespace MP3Tunes
 
 		QStandardItem* GetPlaylistsRoot () const;
 		void UpdatePlaylists ();
+		boost::optional<Media::AudioInfo> GetURLInfo (const QUrl&);
 	signals:
 		void uploadFinished (const QString&,
 				LeechCraft::LMP::CloudStorageError, const QString&);

@@ -18,8 +18,10 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QtPlugin>
 #include <QUrl>
+#include <interfaces/media/audiostructs.h>
 
 class QStandardItem;
 
@@ -41,6 +43,8 @@ namespace LMP
 		virtual QStandardItem* GetPlaylistsRoot () const = 0;
 
 		virtual void UpdatePlaylists () = 0;
+
+		virtual boost::optional<Media::AudioInfo> GetURLInfo (const QUrl&) = 0;
 	};
 }
 }
