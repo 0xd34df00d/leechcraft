@@ -18,8 +18,10 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
 #include <QMap>
+#include <interfaces/media/audiostructs.h>
 
 class QStandardItem;
 class QNetworkAccessManager;
@@ -45,11 +47,15 @@ namespace MP3Tunes
 
 		QMap<QString, QStandardItem*> AccItems_;
 		QMap<QString, QMap<QString, QStandardItem*>> AccPlaylists_;
+
+		QHash<QUrl, Media::AudioInfo> Infos_;
 	public:
 		PlaylistManager (QNetworkAccessManager*, AuthManager*, AccountsManager*, QObject* = 0);
 
 		QStandardItem* GetRoot () const;
 		void Update ();
+
+		boost::optional<Media::AudioInfo> GetMediaInfo (const QUrl&) const;
 	private slots:
 		void requestPlaylists (const QString&);
 		void handleGotPlaylists ();

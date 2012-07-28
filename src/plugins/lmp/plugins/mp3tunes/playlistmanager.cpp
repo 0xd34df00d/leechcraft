@@ -68,6 +68,7 @@ namespace MP3Tunes
 			Root_->removeRow (0);
 		AccItems_.clear ();
 		AccPlaylists_.clear ();
+		Infos_.clear ();
 
 		const auto& accs = AccMgr_->GetAccounts ();
 		for (const auto& acc : accs)
@@ -79,6 +80,13 @@ namespace MP3Tunes
 
 			requestPlaylists (acc);
 		}
+	}
+
+	boost::optional<Media::AudioInfo> PlaylistManager::GetMediaInfo (const QUrl& url) const
+	{
+		return Infos_.contains (url) ?
+				boost::make_optional (Infos_ [url]) :
+				boost::optional<Media::AudioInfo> ();
 	}
 
 	void PlaylistManager::requestPlaylists (const QString& accName)
@@ -182,17 +190,22 @@ namespace MP3Tunes
 				return text.isEmpty () ? "unknown" : text;
 			};
 
-			const auto& encodedUrl = getText ("playURL").toUtf8 ();
-			urls << QUrl::fromEncoded (encodedUrl);
+			const auto& urlStr = getText ("playURL").toUtf8 ();
+			const auto& url = QUrl::fromEncoded (urlStr);
+			urls << url;
 
-			const auto& artist = getText ("artistName");
-			const auto& album = getText ("albumTitle");
-			const auto& track = getText ("trackTitle");
+			Media::AudioInfo info;
+			info.Artist_ = getText ("artistName");
+			info.Album_ = getText ("albumTitle");
+			info.Title_ = getText ("trackTitle");
+			info.Length_ = getText ("trackLength").toInt () / 1000;
 
 			compositions << QString::fromUtf8 ("%1 — %2 — %3")
-					.arg (artist)
-					.arg (album)
-					.arg (track);
+					.arg (info.Artist_)
+					.arg (info.Album_)
+					.arg (info.Title_);
+
+			Infos_ [url] = info;
 
 			trackItem = trackItem.nextSiblingElement ("item");
 		}
