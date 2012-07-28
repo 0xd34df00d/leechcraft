@@ -18,7 +18,13 @@
 
 #include "playlistmanager.h"
 #include <QStandardItem>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QtDebug>
+#include "authmanager.h"
+#include "accountsmanager.h"
+#include "consts.h"
 
 namespace LeechCraft
 {
@@ -26,11 +32,24 @@ namespace LMP
 {
 namespace MP3Tunes
 {
-	PlaylistManager::PlaylistManager (AuthManager *authMgr, QObject *parent)
+	PlaylistManager::PlaylistManager (QNetworkAccessManager *nam,
+			AuthManager *authMgr, AccountsManager *accMgr, QObject *parent)
 	: QObject (parent)
+	, NAM_ (nam)
 	, AuthMgr_ (authMgr)
+	, AccMgr_ (accMgr)
 	, Root_ (new QStandardItem ("mp3tunes.com"))
 	{
+		connect (AuthMgr_,
+				SIGNAL (sidReady (QString)),
+				this,
+				SLOT (requestPlaylists (QString)));
+
+		connect (AccMgr_,
+				SIGNAL (accountsChanged ()),
+				this,
+				SLOT (handleAccountsChanged ()),
+				Qt::QueuedConnection);
 	}
 
 	QStandardItem* PlaylistManager::GetRoot () const
@@ -40,7 +59,53 @@ namespace MP3Tunes
 
 	void PlaylistManager::Update ()
 	{
-		qDebug () << Q_FUNC_INFO;
+		if (Root_->rowCount ())
+			return;
+		/*
+		while (Root_->rowCount ())
+			Root_->removeRow (0);*/
+
+		const auto& accs = AccMgr_->GetAccounts ();
+		for (const auto& acc : accs)
+		{
+			auto item = new QStandardItem (acc);
+			AccItems_ [acc] = item;
+			Root_->appendRow (item);
+
+			requestPlaylists (acc);
+		}
+	}
+
+	void PlaylistManager::requestPlaylists (const QString& accName)
+	{
+		const auto& sid = AuthMgr_->GetSID (accName);
+		if (sid.isEmpty ())
+			return;
+
+		const auto& url = QString ("http://ws.mp3tunes.com/api/v1/lockerData?output=xml"
+					"&sid=%1&partner_token=%2&type=playlist")
+				.arg (sid)
+				.arg (Consts::PartnerId);
+		auto reply = NAM_->get (QNetworkRequest (url));
+		reply->setProperty ("AccountName", accName);
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGotPlaylists ()));
+	}
+
+	void PlaylistManager::handleGotPlaylists ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& name = reply->property ("AccountName").toString ();
+		const auto& data = reply->readAll ();
+	}
+
+	void PlaylistManager::handleAccountsChanged ()
+	{
+		Update ();
 	}
 }
 }

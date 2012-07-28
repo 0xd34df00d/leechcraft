@@ -36,7 +36,8 @@ namespace MP3Tunes
 	{
 		Proxy_ = proxy;
 
-		AuthMgr_ = new AuthManager (proxy->GetNetworkAccessManager (), this);
+		auto nam = proxy->GetNetworkAccessManager ();
+		AuthMgr_ = new AuthManager (nam, this);
 		connect (AuthMgr_,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
@@ -46,9 +47,9 @@ namespace MP3Tunes
 				this,
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 
-		PLManager_ = new PlaylistManager (AuthMgr_, this);
-
 		AccMgr_ = new AccountsManager ();
+
+		PLManager_ = new PlaylistManager (nam, AuthMgr_, AccMgr_, this);
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpmp3tunessettings.xml");
@@ -62,6 +63,7 @@ namespace MP3Tunes
 
 	void Plugin::SecondInit ()
 	{
+		PLManager_->Update ();
 	}
 
 	void Plugin::Release ()

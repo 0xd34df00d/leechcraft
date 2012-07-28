@@ -19,8 +19,10 @@
 #pragma once
 
 #include <QObject>
+#include <QMap>
 
 class QStandardItem;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
@@ -29,18 +31,28 @@ namespace LMP
 namespace MP3Tunes
 {
 	class AuthManager;
+	class AccountsManager;
 
 	class PlaylistManager : public QObject
 	{
 		Q_OBJECT
 
+		QNetworkAccessManager *NAM_;
+
 		AuthManager *AuthMgr_;
+		AccountsManager *AccMgr_;
 		QStandardItem *Root_;
+
+		QMap<QString, QStandardItem*> AccItems_;
 	public:
-		PlaylistManager (AuthManager*, QObject* = 0);
+		PlaylistManager (QNetworkAccessManager*, AuthManager*, AccountsManager*, QObject* = 0);
 
 		QStandardItem* GetRoot () const;
 		void Update ();
+	private slots:
+		void requestPlaylists (const QString&);
+		void handleGotPlaylists ();
+		void handleAccountsChanged ();
 	};
 }
 }
