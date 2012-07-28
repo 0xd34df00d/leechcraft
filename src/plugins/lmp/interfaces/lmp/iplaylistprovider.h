@@ -32,7 +32,8 @@ namespace LMP
 	public:
 		enum ItemRoles
 		{
-			SourceURLs = Qt::UserRole + 1
+			SourceURLs = Qt::UserRole + 1,
+			Max
 		};
 
 		virtual ~IPlaylistProvider () {}
