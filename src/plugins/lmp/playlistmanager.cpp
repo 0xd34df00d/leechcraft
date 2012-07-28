@@ -83,30 +83,6 @@ namespace LMP
 
 				return result;
 			}
-
-			bool canFetchMore (const QModelIndex& parent) const
-			{
-				return parent.data (Roles::IncrementalFetch).toBool ();
-			}
-
-			void fetchMore (const QModelIndex& parent)
-			{
-				QObject *obj = 0;
-				auto idx = parent;
-				while (!obj && idx.isValid ())
-				{
-					obj = parent.data (Roles::PlaylistProvider).value<QObject*> ();
-					idx = idx.parent ();
-				}
-				if (!obj)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "no object found";
-					return;
-				}
-
-				qobject_cast<IPlaylistProvider*> (obj)->UpdatePlaylists ();
-			}
 		};
 	}
 
