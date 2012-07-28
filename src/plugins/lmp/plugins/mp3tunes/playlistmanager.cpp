@@ -17,11 +17,15 @@
  **********************************************************************/
 
 #include "playlistmanager.h"
+#include <memory>
 #include <QStandardItem>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QDomDocument>
 #include <QtDebug>
+#include <util/util.h>
+#include <interfaces/lmp/iplaylistprovider.h>
 #include "authmanager.h"
 #include "accountsmanager.h"
 #include "consts.h"
@@ -40,6 +44,7 @@ namespace MP3Tunes
 	, AccMgr_ (accMgr)
 	, Root_ (new QStandardItem ("mp3tunes.com"))
 	{
+		Root_->setEditable (false);
 		connect (AuthMgr_,
 				SIGNAL (sidReady (QString)),
 				this,
@@ -59,16 +64,16 @@ namespace MP3Tunes
 
 	void PlaylistManager::Update ()
 	{
-		if (Root_->rowCount ())
-			return;
-		/*
 		while (Root_->rowCount ())
-			Root_->removeRow (0);*/
+			Root_->removeRow (0);
+		AccItems_.clear ();
+		AccPlaylists_.clear ();
 
 		const auto& accs = AccMgr_->GetAccounts ();
 		for (const auto& acc : accs)
 		{
 			auto item = new QStandardItem (acc);
+			item->setEditable (false);
 			AccItems_ [acc] = item;
 			Root_->appendRow (item);
 
@@ -99,8 +104,110 @@ namespace MP3Tunes
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
-		const auto& name = reply->property ("AccountName").toString ();
+		const auto& accName = reply->property ("AccountName").toString ();
 		const auto& data = reply->readAll ();
+
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse reply";
+			return;
+		}
+
+		auto playlistsRoot = AccItems_ [accName];
+		auto& playlists = AccPlaylists_ [accName];
+
+		auto plItem = doc.documentElement ()
+				.firstChildElement ("playlistList")
+				.firstChildElement ("item");
+		while (!plItem.isNull ())
+		{
+			std::shared_ptr<void> (static_cast<void*> (0),
+					[&plItem] (void*) { plItem = plItem.nextSiblingElement ("item"); });
+			const auto& id = plItem.firstChildElement ("playlistId").text ();
+			if (id == "INBOX" || id.isEmpty ())
+				continue;
+
+			const auto& title = plItem.firstChildElement ("playlistTitle").text ();
+			auto item = new QStandardItem (title);
+			item->setEditable (false);
+			playlists [id] = item;
+			playlistsRoot->appendRow (item);
+
+			const auto& sid = AuthMgr_->GetSID (accName);
+			const auto& url = QString ("http://ws.mp3tunes.com/api/v1/lockerData?output=xml"
+					"&sid=%1&partner_token=%2&type=track&playlist_id=%3")
+					.arg (sid)
+					.arg (Consts::PartnerId)
+					.arg (id);
+			auto contentsReply = NAM_->get (QNetworkRequest (url));
+			contentsReply->setProperty ("AccountName", accName);
+			contentsReply->setProperty ("PlaylistID", id);
+			connect (contentsReply,
+					SIGNAL (finished ()),
+					this,
+					SLOT (handleGotPlaylistContents ()));
+		}
+	}
+
+	void PlaylistManager::handleGotPlaylistContents ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& accName = reply->property ("AccountName").toString ();
+		const auto& id = reply->property ("PlaylistID").toString ();
+
+		const auto& data = reply->readAll ();
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse reply";
+			return;
+		}
+
+		QList<QUrl> urls;
+		QStringList compositions;
+
+		auto trackItem = doc.documentElement ()
+				.firstChildElement ("trackList")
+				.firstChildElement ("item");
+		while (!trackItem.isNull ())
+		{
+			auto getText = [&trackItem] (const QString& elem)
+			{
+				const auto& text = trackItem.firstChildElement (elem).text ();
+				return text.isEmpty () ? "unknown" : text;
+			};
+
+			const auto& encodedUrl = getText ("playURL").toUtf8 ();
+			urls << QUrl::fromEncoded (encodedUrl);
+
+			const auto& artist = getText ("artistName");
+			const auto& album = getText ("albumTitle");
+			const auto& track = getText ("trackTitle");
+
+			compositions << QString::fromUtf8 ("%1 — %2 — %3")
+					.arg (artist)
+					.arg (album)
+					.arg (track);
+
+			trackItem = trackItem.nextSiblingElement ("item");
+		}
+
+		auto plItem = AccPlaylists_ [accName] [id];
+
+		if (urls.isEmpty ())
+		{
+			plItem->parent ()->removeRow (plItem->row ());
+			AccPlaylists_ [accName].remove (id);
+			return;
+		}
+
+		plItem->setData (QVariant::fromValue (urls), IPlaylistProvider::ItemRoles::SourceURLs);
+		plItem->setToolTip ("<ul><li>" + compositions.join ("</li><li>") + "</li></ul>");
 	}
 
 	void PlaylistManager::handleAccountsChanged ()

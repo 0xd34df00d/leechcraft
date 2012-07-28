@@ -44,6 +44,7 @@ namespace MP3Tunes
 		QStandardItem *Root_;
 
 		QMap<QString, QStandardItem*> AccItems_;
+		QMap<QString, QMap<QString, QStandardItem*>> AccPlaylists_;
 	public:
 		PlaylistManager (QNetworkAccessManager*, AuthManager*, AccountsManager*, QObject* = 0);
 
@@ -52,6 +53,7 @@ namespace MP3Tunes
 	private slots:
 		void requestPlaylists (const QString&);
 		void handleGotPlaylists ();
+		void handleGotPlaylistContents ();
 		void handleAccountsChanged ();
 	};
 }
