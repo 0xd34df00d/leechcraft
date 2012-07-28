@@ -67,3 +67,5 @@ namespace Media
 	};
 	typedef QList<SimilarityInfo> SimilarityInfos_t;
 }
+
+Q_DECLARE_METATYPE (Media::AudioInfo);
