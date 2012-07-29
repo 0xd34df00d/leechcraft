@@ -73,13 +73,13 @@ SET (SRCS
 	biopropproxy.cpp
 	audiopropswidget.cpp
 	playlistwidget.cpp
-	devicesbrowserwidget.cpp
 	aalabeleventfilter.cpp
 	collectionsortermodel.cpp
-	cloudwidget.cpp
+	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
 	sync/copymanager.cpp
+	sync/devicesbrowserwidget.cpp
 	sync/syncmanagerbase.cpp
 	sync/syncmanager.cpp
 	sync/transcodejob.cpp
@@ -101,8 +101,8 @@ SET (FORMS
 	biowidget.ui
 	audiopropswidget.ui
 	playlistwidget.ui
-	devicesbrowserwidget.ui
-	cloudwidget.ui
+	sync/cloudwidget.ui
+	sync/devicesbrowserwidget.ui
 	sync/transcodingparamswidget.ui
 	)
 SET (RESOURCES resources.qrc)

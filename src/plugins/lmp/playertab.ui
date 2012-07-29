@@ -288,7 +288,7 @@
   <customwidget>
    <class>LeechCraft::LMP::DevicesBrowserWidget</class>
    <extends>QWidget</extends>
-   <header>devicesbrowserwidget.h</header>
+   <header>sync/devicesbrowserwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -300,7 +300,7 @@
   <customwidget>
    <class>LeechCraft::LMP::CloudWidget</class>
    <extends>QWidget</extends>
-   <header>cloudwidget.h</header>
+   <header>sync/cloudwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
