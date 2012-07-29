@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "clouduploadmanager.h"
+#include <algorithm>
 #include <QStringList>
 #include <QFileInfo>
 #include <QtDebug>
