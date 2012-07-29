@@ -77,15 +77,15 @@ SET (SRCS
 	aalabeleventfilter.cpp
 	collectionsortermodel.cpp
 	cloudwidget.cpp
-	devsync/clouduploadmanager.cpp
-	devsync/clouduploader.cpp
-	devsync/copymanager.cpp
-	devsync/devicesuploadmodel.cpp
-	devsync/syncmanagerbase.cpp
-	devsync/syncmanager.cpp
-	devsync/transcodejob.cpp
-	devsync/transcodemanager.cpp
-	devsync/transcodingparamswidget.cpp
+	sync/clouduploadmanager.cpp
+	sync/clouduploader.cpp
+	sync/copymanager.cpp
+	sync/devicesuploadmodel.cpp
+	sync/syncmanagerbase.cpp
+	sync/syncmanager.cpp
+	sync/transcodejob.cpp
+	sync/transcodemanager.cpp
+	sync/transcodingparamswidget.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
@@ -103,7 +103,7 @@ SET (FORMS
 	playlistwidget.ui
 	devicesbrowserwidget.ui
 	cloudwidget.ui
-	devsync/transcodingparamswidget.ui
+	sync/transcodingparamswidget.ui
 	)
 SET (RESOURCES resources.qrc)
 CreateTrVars ("lmp" "en;es;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)

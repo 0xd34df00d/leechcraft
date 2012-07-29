@@ -27,9 +27,9 @@
 #include <interfaces/lmp/isyncplugin.h>
 #include "core.h"
 #include "localcollection.h"
-#include "devsync/devicesuploadmodel.h"
-#include "devsync/syncmanager.h"
-#include "devsync/transcodingparams.h"
+#include "sync/devicesuploadmodel.h"
+#include "sync/syncmanager.h"
+#include "sync/transcodingparams.h"
 
 namespace LeechCraft
 {

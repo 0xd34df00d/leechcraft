@@ -20,9 +20,9 @@
 #include <algorithm>
 #include <iterator>
 #include <interfaces/lmp/icloudstorageplugin.h>
-#include "devsync/devicesuploadmodel.h"
-#include "devsync/clouduploadmanager.h"
-#include "devsync/transcodingparams.h"
+#include "sync/devicesuploadmodel.h"
+#include "sync/clouduploadmanager.h"
+#include "sync/transcodingparams.h"
 #include "core.h"
 #include "localcollection.h"
 
