@@ -27,7 +27,7 @@
 #include <interfaces/lmp/isyncplugin.h>
 #include "core.h"
 #include "localcollection.h"
-#include "sync/devicesuploadmodel.h"
+#include "sync/uploadmodel.h"
 #include "sync/syncmanager.h"
 #include "sync/transcodingparams.h"
 
@@ -73,7 +73,7 @@ namespace LMP
 	DevicesBrowserWidget::DevicesBrowserWidget (QWidget *parent)
 	: QWidget (parent)
 	, DevMgr_ (0)
-	, DevUploadModel_ (new DevicesUploadModel (this))
+	, DevUploadModel_ (new UploadModel (this))
 	, CurrentSyncer_ (0)
 	{
 		Ui_.setupUi (this);

@@ -20,7 +20,7 @@
 #include <algorithm>
 #include <iterator>
 #include <interfaces/lmp/icloudstorageplugin.h>
-#include "sync/devicesuploadmodel.h"
+#include "sync/uploadmodel.h"
 #include "sync/clouduploadmanager.h"
 #include "sync/transcodingparams.h"
 #include "core.h"
@@ -32,7 +32,7 @@ namespace LMP
 {
 	CloudWidget::CloudWidget (QWidget *parent)
 	: QWidget (parent)
-	, DevUploadModel_ (new DevicesUploadModel (this))
+	, DevUploadModel_ (new UploadModel (this))
 	{
 		Ui_.setupUi (this);
 		Ui_.TranscodingOpts_->SetMaskVisible (false);

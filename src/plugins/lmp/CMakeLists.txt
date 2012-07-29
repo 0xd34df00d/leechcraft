@@ -80,12 +80,12 @@ SET (SRCS
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
 	sync/copymanager.cpp
-	sync/devicesuploadmodel.cpp
 	sync/syncmanagerbase.cpp
 	sync/syncmanager.cpp
 	sync/transcodejob.cpp
 	sync/transcodemanager.cpp
 	sync/transcodingparamswidget.cpp
+	sync/uploadmodel.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
