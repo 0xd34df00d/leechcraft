@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "clouduploadmanager.h"
+#include <algorithm>
 #include <QStringList>
 #include <QFileInfo>
 #include <QtDebug>
@@ -44,7 +45,16 @@ namespace LMP
 
 	void CloudUploadManager::CreateUploader (ICloudStoragePlugin *cloud)
 	{
-		Cloud2Uploaders_ [cloud] = new CloudUploader (cloud, this);
+		auto up = new CloudUploader (cloud, this);
+		connect (up,
+				SIGNAL (startedCopying (QString)),
+				this,
+				SLOT (handleStartedCopying (QString)));
+		connect (up,
+				SIGNAL (finishedCopying ()),
+				this,
+				SLOT (handleFinishedCopying ()));
+		Cloud2Uploaders_ [cloud] = up;
 	}
 
 	void CloudUploadManager::handleFileTranscoded (const QString& from,

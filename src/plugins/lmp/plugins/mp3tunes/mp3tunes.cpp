@@ -19,8 +19,12 @@
 #include "mp3tunes.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/icoreproxy.h>
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
+#include "authmanager.h"
+#include "uploader.h"
+#include "playlistmanager.h"
 
 namespace LeechCraft
 {
@@ -28,9 +32,24 @@ namespace LMP
 {
 namespace MP3Tunes
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
+		auto nam = proxy->GetNetworkAccessManager ();
+		AuthMgr_ = new AuthManager (nam, this);
+		connect (AuthMgr_,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (AuthMgr_,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+
 		AccMgr_ = new AccountsManager ();
+
+		PLManager_ = new PlaylistManager (nam, AuthMgr_, AccMgr_, this);
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpmp3tunessettings.xml");
@@ -44,6 +63,7 @@ namespace MP3Tunes
 
 	void Plugin::SecondInit ()
 	{
+		PLManager_->Update ();
 	}
 
 	void Plugin::Release ()
@@ -74,6 +94,7 @@ namespace MP3Tunes
 	{
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.LMP.CloudStorage";
+		result << "org.LeechCraft.LMP.PlaylistProvider";
 		return result;
 	}
 
@@ -106,13 +127,43 @@ namespace MP3Tunes
 		return { "m4a", "mp3", "mp4", "ogg" };
 	}
 
-	void Plugin::Upload (const QString& localPath, const QString& account)
+	void Plugin::Upload (const QString& acc, const QString& localPath)
 	{
+		if (!Uploaders_.contains (acc))
+		{
+			auto up = new Uploader (acc,
+				Proxy_->GetNetworkAccessManager (),
+				AuthMgr_,
+				this);
+			Uploaders_ [acc] = up;
+
+			connect (up,
+					SIGNAL (uploadFinished (QString, LeechCraft::LMP::CloudStorageError, QString)),
+					this,
+					SIGNAL (uploadFinished (QString, LeechCraft::LMP::CloudStorageError, QString)));
+		}
+
+		Uploaders_ [acc]->Upload (localPath);
 	}
 
 	QStringList Plugin::GetAccounts () const
 	{
 		return AccMgr_->GetAccounts ();
+	}
+
+	QStandardItem* Plugin::GetPlaylistsRoot () const
+	{
+		return PLManager_->GetRoot ();
+	}
+
+	void Plugin::UpdatePlaylists ()
+	{
+		PLManager_->Update ();
+	}
+
+	boost::optional<Media::AudioInfo> Plugin::GetURLInfo (const QUrl& url)
+	{
+		return PLManager_->GetMediaInfo (url);
 	}
 }
 }

@@ -16,39 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "transcodingparamswidget.h"
-#include <QThread>
-#include "transcodingparams.h"
+#pragma once
+
+#include <QWidget>
+#include "ui_cloudwidget.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	TranscodingParamsWidget::TranscodingParamsWidget (QWidget *parent)
-	: QWidget (parent)
-	{
-		Ui_.setupUi (this);
+	class UploadModel;
 
-		const int idealThreads = QThread::idealThreadCount ();
-		if (idealThreads > 0)
-		{
-			Ui_.ThreadsSlider_->setMaximum (idealThreads * 2);
-			Ui_.ThreadsSlider_->setValue (idealThreads > 1 ? idealThreads - 1 : 1);
-		}
-		else
-			Ui_.ThreadsSlider_->setMaximum (4);
-	}
-
-	TranscodingParams TranscodingParamsWidget::GetParams () const
+	class CloudWidget : public QWidget
 	{
-		const bool transcode = Ui_.TranscodingBox_->isChecked ();
-		return
-		{
-			Ui_.FilenameMask_->text (),
-			transcode ? Ui_.TranscodingFormat_->currentText () : QString (),
-			Ui_.QualitySlider_->value (),
-			Ui_.ThreadsSlider_->value ()
-		};
-	}
+		Q_OBJECT
+
+		Ui::CloudWidget Ui_;
+		UploadModel *DevUploadModel_;
+		QObjectList Clouds_;
+	public:
+		CloudWidget (QWidget* = 0);
+	private slots:
+		void on_CloudSelector__activated (int);
+		void handleCloudStoragePlugins ();
+		void handleAccountsChanged ();
+
+		void on_UploadButton__released ();
+
+		void appendUpLog (QString);
+		void handleTranscodingProgress (int, int);
+		void handleUploadProgress (int, int);
+	};
 }
 }

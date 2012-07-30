@@ -2,6 +2,9 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_lmp_mp3tunes)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (QT_USE_QTNETWORK TRUE)
+SET (QT_USE_QTXML TRUE)
+INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (${LMP_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -11,6 +14,9 @@ INCLUDE_DIRECTORIES (${LMP_INCLUDE_DIR}
 SET (MP3TUNES_SRCS
 	mp3tunes.cpp
 	accountsmanager.cpp
+	authmanager.cpp
+	playlistmanager.cpp
+	uploader.cpp
 	xmlsettingsmanager.cpp
 	)
 

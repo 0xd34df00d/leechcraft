@@ -25,13 +25,13 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	class DevicesUploadModel : public QSortFilterProxyModel
+	class UploadModel : public QSortFilterProxyModel
 	{
 		Q_OBJECT
 
 		QSet<QPersistentModelIndex> SourceIndexes_;
 	public:
-		DevicesUploadModel (QObject* = 0);
+		UploadModel (QObject* = 0);
 
 		QSet<QPersistentModelIndex> GetSelectedIndexes () const;
 

@@ -508,7 +508,10 @@ namespace LMP
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
 		{
-			item->setText (QString ("%1 - %2 - %3").arg (info.Artist_).arg (info.Album_).arg (info.Title_));
+			item->setText (QString ("%1 - %2 - %3")
+						.arg (info.Artist_)
+						.arg (info.Album_)
+						.arg (info.Title_));
 			item->setData (QVariant::fromValue (info), Player::Role::Info);
 		}
 
@@ -561,9 +564,18 @@ namespace LMP
 				PlaylistModel_->appendRow (item);
 				break;
 			case Phonon::MediaSource::Url:
-				item->setText (source.url ().toString ());
+			{
+				const auto& url = source.url ();
+
+				const auto info = Core::Instance ().TryURLResolve (url);
+				if (info)
+					FillItem (item, *info);
+				else
+					item->setText (url.toString ());
+
 				PlaylistModel_->appendRow (item);
 				break;
+			}
 			case Phonon::MediaSource::LocalFile:
 			{
 				MediaInfo info;

@@ -18,54 +18,41 @@
 
 #pragma once
 
-#include <QtPlugin>
+#include <QWidget>
+#include "ui_devicesbrowserwidget.h"
 
-class QString;
-class QObject;
-class QIcon;
+class IRemovableDevManager;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	enum class CloudStorageError
-	{
-		NoError,
-		LocalError,
-		NetError,
-		FileHashMismatch,
-		InvalidSession,
-		NotAuthorized,
-		UnsupportedFileFormat,
-		FilesizeExceeded,
-		StorageFull,
-		ServiceError,
-		OtherError
-	};
+	class ISyncPlugin;
+	class UploadModel;
 
-	class ICloudStoragePlugin
+	class DevicesBrowserWidget : public QWidget
 	{
+		Q_OBJECT
+
+		Ui::DevicesBrowserWidget Ui_;
+		IRemovableDevManager *DevMgr_;
+		UploadModel *DevUploadModel_;
+
+		ISyncPlugin *CurrentSyncer_;
 	public:
-		virtual ~ICloudStoragePlugin () {}
+		DevicesBrowserWidget (QWidget* = 0);
 
-		virtual QObject* GetObject () = 0;
+		void InitializeDevices ();
+	private slots:
+		void handleDevDataChanged (const QModelIndex&, const QModelIndex&);
+		void on_UploadButton__released ();
+		void on_DevicesSelector__activated (int);
+		void on_MountButton__released ();
 
-		virtual QString GetCloudName () const = 0;
+		void appendUpLog (QString);
 
-		virtual QIcon GetCloudIcon () const = 0;
-
-		virtual QStringList GetSupportedFileFormats () const = 0;
-
-		virtual void Upload (const QString& account, const QString& localPath) = 0;
-
-		virtual QStringList GetAccounts () const = 0;
-	protected:
-		virtual void uploadFinished (const QString& localPath,
-				CloudStorageError, const QString& errorStr) = 0;
-
-		virtual void accountsChanged () = 0;
+		void handleTranscodingProgress (int, int);
+		void handleUploadProgress (int, int);
 	};
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::LMP::ICloudStoragePlugin, "org.LeechCraft.LMP.ICloudStoragePlugin/1.0");

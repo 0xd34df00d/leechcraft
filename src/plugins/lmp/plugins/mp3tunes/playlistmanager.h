@@ -18,54 +18,50 @@
 
 #pragma once
 
-#include <QtPlugin>
+#include <boost/optional.hpp>
+#include <QObject>
+#include <QMap>
+#include <interfaces/media/audiostructs.h>
 
-class QString;
-class QObject;
-class QIcon;
+class QStandardItem;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	enum class CloudStorageError
-	{
-		NoError,
-		LocalError,
-		NetError,
-		FileHashMismatch,
-		InvalidSession,
-		NotAuthorized,
-		UnsupportedFileFormat,
-		FilesizeExceeded,
-		StorageFull,
-		ServiceError,
-		OtherError
-	};
+namespace MP3Tunes
+{
+	class AuthManager;
+	class AccountsManager;
 
-	class ICloudStoragePlugin
+	class PlaylistManager : public QObject
 	{
+		Q_OBJECT
+
+		QNetworkAccessManager *NAM_;
+
+		AuthManager *AuthMgr_;
+		AccountsManager *AccMgr_;
+		QStandardItem *Root_;
+
+		QMap<QString, QStandardItem*> AccItems_;
+		QMap<QString, QMap<QString, QStandardItem*>> AccPlaylists_;
+
+		QHash<QUrl, Media::AudioInfo> Infos_;
 	public:
-		virtual ~ICloudStoragePlugin () {}
+		PlaylistManager (QNetworkAccessManager*, AuthManager*, AccountsManager*, QObject* = 0);
 
-		virtual QObject* GetObject () = 0;
+		QStandardItem* GetRoot () const;
+		void Update ();
 
-		virtual QString GetCloudName () const = 0;
-
-		virtual QIcon GetCloudIcon () const = 0;
-
-		virtual QStringList GetSupportedFileFormats () const = 0;
-
-		virtual void Upload (const QString& account, const QString& localPath) = 0;
-
-		virtual QStringList GetAccounts () const = 0;
-	protected:
-		virtual void uploadFinished (const QString& localPath,
-				CloudStorageError, const QString& errorStr) = 0;
-
-		virtual void accountsChanged () = 0;
+		boost::optional<Media::AudioInfo> GetMediaInfo (const QUrl&) const;
+	private slots:
+		void requestPlaylists (const QString&);
+		void handleGotPlaylists ();
+		void handleGotPlaylistContents ();
+		void handleAccountsChanged ();
 	};
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::LMP::ICloudStoragePlugin, "org.LeechCraft.LMP.ICloudStoragePlugin/1.0");
+}

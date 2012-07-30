@@ -18,34 +18,37 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_cloudwidget.h"
+#include <boost/optional.hpp>
+#include <QtPlugin>
+#include <QUrl>
+#include <interfaces/media/audiostructs.h>
+
+class QStandardItem;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class DevicesUploadModel;
-
-	class CloudWidget : public QWidget
+	class IPlaylistProvider
 	{
-		Q_OBJECT
-
-		Ui::CloudWidget Ui_;
-		DevicesUploadModel *DevUploadModel_;
-		QObjectList Clouds_;
 	public:
-		CloudWidget (QWidget* = 0);
-	private slots:
-		void on_CloudSelector__activated (int);
-		void handleCloudStoragePlugins ();
-		void handleAccountsChanged ();
+		enum ItemRoles
+		{
+			SourceURLs = Qt::UserRole + 1,
+			Max
+		};
 
-		void on_UploadButton__released ();
+		virtual ~IPlaylistProvider () {}
 
-		void appendUpLog (QString);
-		void handleTranscodingProgress (int, int);
-		void handleUploadProgress (int, int);
+		virtual QStandardItem* GetPlaylistsRoot () const = 0;
+
+		virtual void UpdatePlaylists () = 0;
+
+		virtual boost::optional<Media::AudioInfo> GetURLInfo (const QUrl&) = 0;
 	};
 }
 }
+
+Q_DECLARE_METATYPE (QList<QUrl>);
+
+Q_DECLARE_INTERFACE (LeechCraft::LMP::IPlaylistProvider, "org.LeechCraft.LMP.IPlaylistProvider/1.0");

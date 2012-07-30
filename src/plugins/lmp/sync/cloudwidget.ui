@@ -69,7 +69,14 @@
         <number>1</number>
        </property>
        <item>
-        <widget class="QTreeView" name="OurCollection_"/>
+        <widget class="QTreeView" name="OurCollection_">
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+        </widget>
+       </item>
+       <item>
+        <widget class="LeechCraft::LMP::TranscodingParamsWidget" name="TranscodingOpts_" native="true"/>
        </item>
        <item>
         <widget class="QProgressBar" name="TSProgress_">
@@ -97,19 +104,6 @@
           <string>Upload...</string>
          </property>
         </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="UpOptsTab_">
-      <attribute name="title">
-       <string>Transcoding options</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
-        <number>1</number>
-       </property>
-       <item>
-        <widget class="LeechCraft::LMP::TranscodingParamsWidget" name="TranscodingOpts_" native="true"/>
        </item>
       </layout>
      </widget>
@@ -145,7 +139,7 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>LeechCraft::LMP::TranscodingParamsWidget</class>
    <extends>QWidget</extends>
-   <header>devsync/transcodingparamswidget.h</header>
+   <header>sync/transcodingparamswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -15,29 +15,14 @@ SET (SRCS
 	poster.cpp
 	requestbuilder.cpp
 	)
-SET (HEADERS
-	auscrie.h
-	shooterdialog.h
-	poster.h
-	requestbuilder.h
-	)
 SET (FORMS
 	shooterdialog.ui
 	)
 SET (RESOURCES auscrieresources.qrc)
-CreateTrVars ("auscrie" "de;en;es;fr;it;oc;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+CreateTrs ("auscrie" "de;en;es;fr;it;oc;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_CUSTOM_COMMAND (OUTPUT
-	${COMPILED_TRANSLATIONS}
-	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
-	DEPENDS ${TRANSLATIONS}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
 ADD_LIBRARY (leechcraft_auscrie SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}

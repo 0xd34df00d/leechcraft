@@ -18,54 +18,42 @@
 
 #pragma once
 
-#include <QtPlugin>
+#include <QObject>
+#include <QMap>
+#include <QSet>
 
-class QString;
-class QObject;
-class QIcon;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace LMP
 {
-	enum class CloudStorageError
+namespace MP3Tunes
+{
+	class AuthManager : public QObject
 	{
-		NoError,
-		LocalError,
-		NetError,
-		FileHashMismatch,
-		InvalidSession,
-		NotAuthorized,
-		UnsupportedFileFormat,
-		FilesizeExceeded,
-		StorageFull,
-		ServiceError,
-		OtherError
-	};
+		Q_OBJECT
 
-	class ICloudStoragePlugin
-	{
+		QNetworkAccessManager *NAM_;
+
+		QMap<QString, QString> Login2Sid_;
+		QSet<QString> FailedAuth_;
 	public:
-		virtual ~ICloudStoragePlugin () {}
+		AuthManager (QNetworkAccessManager*, QObject* = 0);
 
-		virtual QObject* GetObject () = 0;
+		QString GetSID (const QString&);
+	private slots:
+		void handleAuthReplyFinished ();
+		void handleAuthReplyError ();
+	signals:
+		void sidReady (const QString&);
+		void sidError (const QString&, const QString&);
 
-		virtual QString GetCloudName () const = 0;
-
-		virtual QIcon GetCloudIcon () const = 0;
-
-		virtual QStringList GetSupportedFileFormats () const = 0;
-
-		virtual void Upload (const QString& account, const QString& localPath) = 0;
-
-		virtual QStringList GetAccounts () const = 0;
-	protected:
-		virtual void uploadFinished (const QString& localPath,
-				CloudStorageError, const QString& errorStr) = 0;
-
-		virtual void accountsChanged () = 0;
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::LMP::ICloudStoragePlugin, "org.LeechCraft.LMP.ICloudStoragePlugin/1.0");
+}

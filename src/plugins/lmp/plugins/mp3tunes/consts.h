@@ -18,54 +18,18 @@
 
 #pragma once
 
-#include <QtPlugin>
-
-class QString;
-class QObject;
-class QIcon;
+#include <QString>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	enum class CloudStorageError
-	{
-		NoError,
-		LocalError,
-		NetError,
-		FileHashMismatch,
-		InvalidSession,
-		NotAuthorized,
-		UnsupportedFileFormat,
-		FilesizeExceeded,
-		StorageFull,
-		ServiceError,
-		OtherError
-	};
-
-	class ICloudStoragePlugin
-	{
-	public:
-		virtual ~ICloudStoragePlugin () {}
-
-		virtual QObject* GetObject () = 0;
-
-		virtual QString GetCloudName () const = 0;
-
-		virtual QIcon GetCloudIcon () const = 0;
-
-		virtual QStringList GetSupportedFileFormats () const = 0;
-
-		virtual void Upload (const QString& account, const QString& localPath) = 0;
-
-		virtual QStringList GetAccounts () const = 0;
-	protected:
-		virtual void uploadFinished (const QString& localPath,
-				CloudStorageError, const QString& errorStr) = 0;
-
-		virtual void accountsChanged () = 0;
-	};
+namespace MP3Tunes
+{
+namespace Consts
+{
+	const QString PartnerId = "9999999999";
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::LMP::ICloudStoragePlugin, "org.LeechCraft.LMP.ICloudStoragePlugin/1.0");
+}
+}

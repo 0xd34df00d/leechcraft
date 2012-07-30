@@ -613,7 +613,7 @@
 <context>
     <name>LeechCraft::LMP::SyncManager</name>
     <message numerus="yes">
-        <location filename="devsync/syncmanager.cpp" line="72"/>
+        <location filename="sync/syncmanager.cpp" line="72"/>
         <source>Uploading %n file(s)</source>
         <translation>
             <numerusform>Закачка %n файла</numerusform>
@@ -622,37 +622,37 @@
         </translation>
     </message>
     <message>
-        <location filename="devsync/syncmanager.cpp" line="97"/>
+        <location filename="sync/syncmanager.cpp" line="97"/>
         <source>Files were transcoded, but some errors occured. Check the upload log for details.</source>
         <translation>Файлы были перекодированы, но возникли некоторые ошибки. Проверьте журнал загрузки для подробностей.</translation>
     </message>
     <message>
-        <location filename="devsync/syncmanager.cpp" line="117"/>
+        <location filename="sync/syncmanager.cpp" line="117"/>
         <source>Files finished uploading.</source>
         <translation>Файлы загружены.</translation>
     </message>
     <message>
-        <location filename="devsync/syncmanager.cpp" line="157"/>
+        <location filename="sync/syncmanager.cpp" line="157"/>
         <source>File %1 started transcoding...</source>
         <translation>Файл %1 начал перекодироваться...</translation>
     </message>
     <message>
-        <location filename="devsync/syncmanager.cpp" line="179"/>
+        <location filename="sync/syncmanager.cpp" line="179"/>
         <source>File %1 successfully transcoded, adding to copy queue for the device %2...</source>
         <translation>Файл %1 успешно перекодировался, добавляем в очередь копирования на устройство %2...</translation>
     </message>
     <message>
-        <location filename="devsync/syncmanager.cpp" line="193"/>
+        <location filename="sync/syncmanager.cpp" line="193"/>
         <source>Transcoding of file %1 failed</source>
         <translation>Не удалось перекодировать файл %1</translation>
     </message>
     <message>
-        <location filename="devsync/syncmanager.cpp" line="206"/>
+        <location filename="sync/syncmanager.cpp" line="206"/>
         <source>File %1 started copying...</source>
         <translation>Файл %1 начал копироваться...</translation>
     </message>
     <message>
-        <location filename="devsync/syncmanager.cpp" line="212"/>
+        <location filename="sync/syncmanager.cpp" line="212"/>
         <source>File finished copying</source>
         <translation>Файл закончил копироваться</translation>
     </message>
@@ -813,33 +813,33 @@
 <context>
     <name>TranscodingParamsWidget</name>
     <message>
-        <location filename="devsync/transcodingparamswidget.ui" line="23"/>
-        <location filename="devsync/transcodingparamswidget.ui" line="26"/>
+        <location filename="sync/transcodingparamswidget.ui" line="23"/>
+        <location filename="sync/transcodingparamswidget.ui" line="26"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The following variables are allowed in the track filename: $artist, $year, $album, $trackNumber, $title.&lt;/p&gt;&lt;p&gt;Directories are separated by the &apos;/&apos; symbol. File extension is omitted.&lt;/p&gt;&lt;p&gt;For example, a filename could look like this:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;music/$artist/$year - $album/$trackNumber - $artist - $title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Следующие переменные разрешены в имени файла трека: $artist, $year, $album, $trackNumber, $title.&lt;/p&gt;&lt;p&gt;Директории разделяются символом &apos;/. Расширение файла не указывается.&lt;/p&gt;&lt;p&gt;Например, имя фалйа может выглядеть как-то так:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;music/$artist/$year $album/$trackNumber - $artist - $title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="devsync/transcodingparamswidget.ui" line="32"/>
+        <location filename="sync/transcodingparamswidget.ui" line="32"/>
         <source>Track filename...</source>
         <translation>Имя файла трека...</translation>
     </message>
     <message>
-        <location filename="devsync/transcodingparamswidget.ui" line="39"/>
+        <location filename="sync/transcodingparamswidget.ui" line="39"/>
         <source>Transcoding</source>
         <translation>Перекодирование</translation>
     </message>
     <message>
-        <location filename="devsync/transcodingparamswidget.ui" line="54"/>
+        <location filename="sync/transcodingparamswidget.ui" line="54"/>
         <source>Format:</source>
         <translation>Формат:</translation>
     </message>
     <message>
-        <location filename="devsync/transcodingparamswidget.ui" line="75"/>
+        <location filename="sync/transcodingparamswidget.ui" line="75"/>
         <source>Quality:</source>
         <translation>Качество:</translation>
     </message>
     <message>
-        <location filename="devsync/transcodingparamswidget.ui" line="82"/>
+        <location filename="sync/transcodingparamswidget.ui" line="82"/>
         <source>Threads:</source>
         <translation>Количество потоков:</translation>
     </message>
