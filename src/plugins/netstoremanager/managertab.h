@@ -51,9 +51,11 @@ namespace NetStoreManager
 		AccountsManager *AM_;
 		QStandardItemModel *Model_;
 
+		QAction *CopyURL_;
 		QAction *ProlongateFile_;
 		QAction *DeleteFile_;
 		QAction *MoveToTrash_;
+		QAction *RemoveAll_;
 		QHash<IStorageAccount*, QHash<QString, bool>> Account2ItemExpandState_;
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
@@ -75,9 +77,11 @@ namespace NetStoreManager
 		void flProlongate ();
 		void flDelete ();
 		void flMoveToTrash ();
+		void flClearTrash ();
 		void on_AccountsBox__activated (int);
 		void on_Update__released ();
 		void on_Upload__released ();
+		void handleContextMenuRequested (const QPoint& point);
 	signals:
 		void removeTab (QWidget*);
 

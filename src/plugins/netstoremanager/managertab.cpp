@@ -22,6 +22,7 @@
 #include <QStandardItemModel>
 #include <QApplication>
 #include <QClipboard>
+#include <QMenu>
 #include <QtDebug>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
@@ -40,8 +41,8 @@ namespace NetStoreManager
 	, AM_ (am)
 	, Model_ (new QStandardItemModel (this))
 	{
-		QAction *copyURL = new QAction (tr ("Copy URL..."), this);
-		connect (copyURL,
+		CopyURL_ = new QAction (tr ("Copy URL..."), this);
+		connect (CopyURL_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flCopyURL ()));
@@ -60,6 +61,11 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flMoveToTrash ()));
+		RemoveAll_  = new QAction (tr ("Clear trash"), this);
+		connect (RemoveAll_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flClearTrash ()));
 
 		Ui_.setupUi (this);
 		Ui_.FilesTree_->setModel (Model_);
@@ -82,10 +88,16 @@ namespace NetStoreManager
 		if (Ui_.AccountsBox_->count ())
 			on_AccountsBox__activated (0);
 
-		Ui_.FilesTree_->addAction (copyURL);
+		Ui_.FilesTree_->addAction (CopyURL_);
 		Ui_.FilesTree_->addAction (ProlongateFile_);
 		Ui_.FilesTree_->addAction (MoveToTrash_);
 		Ui_.FilesTree_->addAction (DeleteFile_);
+
+		Ui_.FilesTree_->setContextMenuPolicy (Qt::CustomContextMenu);
+		connect (Ui_.FilesTree_,
+				SIGNAL (customContextMenuRequested (const QPoint&)),
+				this,
+				SLOT (handleContextMenuRequested (const QPoint&)));
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -224,7 +236,6 @@ namespace NetStoreManager
 
 		if (trashSupporting)
 			Model_->appendRow (trashItem);
-
 		RestoreModelState ();
 	}
 
@@ -256,6 +267,10 @@ namespace NetStoreManager
 	void ManagerTab::flMoveToTrash ()
 	{
 		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->MoveToTrash (ids); });
+	}
+
+	void ManagerTab::flClearTrash ()
+	{
 	}
 
 	void ManagerTab::on_AccountsBox__activated (int)
@@ -313,5 +328,26 @@ namespace NetStoreManager
 				itemData (accIdx).value<IStorageAccount*> ();
 		emit uploadRequested (acc, filename);
 	}
+
+	void ManagerTab::handleContextMenuRequested (const QPoint& point)
+	{
+		const auto& index = Ui_.FilesTree_->indexAt (point);
+		if (!index.isValid ())
+			return;
+
+		QMenu *menu = new QMenu;
+		MoveToTrash_->setEnabled (!index.data (ListingRole::InTrash).toBool ());
+
+		if (index.data (ListingRole::ID).toString () == "netstoremanager.item_trash")
+			menu->addAction (RemoveAll_);
+		else
+			menu->addActions ({ CopyURL_, ProlongateFile_, MoveToTrash_, DeleteFile_ });
+
+		menu->exec (Ui_.FilesTree_->
+				mapToGlobal (QPoint (point.x (), point.y () +
+						Ui_.FilesTree_->header ()->sizeHint ().height ())));
+		menu->deleteLater ();
+	}
+
 }
 }
