@@ -18,63 +18,35 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_playlistwidget.h"
-#include "player.h"
-
-class QToolBar;
-class QActionGroup;
-class QUndoStack;
+#include "syncmanagerbase.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class Player;
+	class ICloudStoragePlugin;
+	class CloudUploader;
 
-	class PlaylistWidget : public QWidget
+	class CloudUploadManager : public SyncManagerBase
 	{
 		Q_OBJECT
 
-		Ui::PlaylistWidget Ui_;
-		QToolBar *PlaylistToolbar_;
-		QActionGroup *PlayModesGroup_;
+		QMap<ICloudStoragePlugin*, CloudUploader*> Cloud2Uploaders_;
 
-		QUndoStack *UndoStack_;
-
-		Player *Player_;
-
-		QAction *ActionRemoveSelected_;
-		QAction *ActionStopAfterSelected_;
-		QAction *ActionShowTrackProps_;
-		QAction *ActionShowAlbumArt_;
+		struct CloudUpload
+		{
+			ICloudStoragePlugin *Cloud_;
+			QString Account_;
+		};
+		QMap<QString, CloudUpload> Source2Params_;
 	public:
-		PlaylistWidget (QWidget* = 0);
+		CloudUploadManager (QObject* = 0);
 
-		void SetPlayer (Player*);
+		void AddFiles (ICloudStoragePlugin*, const QString&, const QStringList&, const TranscodingParams&);
 	private:
-		void InitToolbarActions ();
-		void SetPlayModeButton ();
-		void SetSortOrderButton ();
-		void InitViewActions ();
+		void CreateUploader (ICloudStoragePlugin*);
 	private slots:
-		void on_Playlist__customContextMenuRequested (const QPoint&);
-		void handleChangePlayMode ();
-		void handlePlayModeChanged (Player::PlayMode);
-
-		void handleStdSort ();
-
-		void removeSelectedSongs ();
-		void setStopAfterSelected ();
-		void showTrackProps ();
-
-		void showAlbumArt ();
-
-		void handleSavePlaylist ();
-		void loadFromDisk ();
-		void addURL ();
-
-		void updateStatsLabel ();
+		void handleFileTranscoded (const QString& from, const QString&, QString);
 	};
 }
 }

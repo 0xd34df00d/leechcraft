@@ -18,35 +18,28 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QMetaType>
-#include <interfaces/media/audiostructs.h>
+#include <QSortFilterProxyModel>
+#include <QSet>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo
+	class UploadModel : public QSortFilterProxyModel
 	{
-		QString LocalPath_;
+		Q_OBJECT
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+		QSet<QPersistentModelIndex> SourceIndexes_;
+	public:
+		UploadModel (QObject* = 0);
 
-		QStringList Genres_;
+		QSet<QPersistentModelIndex> GetSelectedIndexes () const;
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
-
-		MediaInfo& operator= (const Media::AudioInfo&);
-
-		operator Media::AudioInfo () const;
-
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
+		Qt::ItemFlags flags (const QModelIndex&) const;
+		QVariant data (const QModelIndex&, int) const;
+		bool setData (const QModelIndex&, const QVariant&, int);
+	protected:
+		bool filterAcceptsRow (int, const QModelIndex&) const;
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);

@@ -18,35 +18,18 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QMetaType>
-#include <interfaces/media/audiostructs.h>
+#include <QString>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo
-	{
-		QString LocalPath_;
-
-		QString Artist_;
-		QString Album_;
-		QString Title_;
-
-		QStringList Genres_;
-
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
-
-		MediaInfo& operator= (const Media::AudioInfo&);
-
-		operator Media::AudioInfo () const;
-
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
-	};
+namespace MP3Tunes
+{
+namespace Consts
+{
+	const QString PartnerId = "9999999999";
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);
+}
+}

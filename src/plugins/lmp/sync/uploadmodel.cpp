@@ -16,29 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "devicesuploadmodel.h"
+#include "uploadmodel.h"
 #include <QtDebug>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	DevicesUploadModel::DevicesUploadModel (QObject *parent)
+	UploadModel::UploadModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
 	{
 	}
 
-	QSet<QPersistentModelIndex> DevicesUploadModel::GetSelectedIndexes () const
+	QSet<QPersistentModelIndex> UploadModel::GetSelectedIndexes () const
 	{
 		return SourceIndexes_;
 	}
 
-	Qt::ItemFlags DevicesUploadModel::flags (const QModelIndex& idx) const
+	Qt::ItemFlags UploadModel::flags (const QModelIndex& idx) const
 	{
 		return QSortFilterProxyModel::flags (idx) | Qt::ItemIsUserCheckable;
 	}
 
-	QVariant DevicesUploadModel::data (const QModelIndex& idx, int role) const
+	QVariant UploadModel::data (const QModelIndex& idx, int role) const
 	{
 		const auto& var = QSortFilterProxyModel::data (idx, role);
 		if (role != Qt::CheckStateRole)
@@ -49,7 +49,7 @@ namespace LMP
 				Qt::Unchecked;
 	}
 
-	bool DevicesUploadModel::setData (const QModelIndex& idx, const QVariant& data, int role)
+	bool UploadModel::setData (const QModelIndex& idx, const QVariant& data, int role)
 	{
 		if (role != Qt::CheckStateRole)
 			return false;
@@ -76,7 +76,7 @@ namespace LMP
 		return true;
 	}
 
-	bool DevicesUploadModel::filterAcceptsRow (int srcRow, const QModelIndex& sourceParent) const
+	bool UploadModel::filterAcceptsRow (int srcRow, const QModelIndex& sourceParent) const
 	{
 		return true;
 	}

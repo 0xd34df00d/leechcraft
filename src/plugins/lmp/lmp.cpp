@@ -286,6 +286,8 @@ namespace LMP
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.LMP.General";
 		result << "org.LeechCraft.LMP.CollectionSync";
+		result << "org.LeechCraft.LMP.CloudStorage";
+		result << "org.LeechCraft.LMP.PlaylistProvider";
 		return result;
 	}
 

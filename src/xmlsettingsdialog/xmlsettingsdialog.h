@@ -116,6 +116,24 @@ namespace LeechCraft
 			 * Sets the datasource for the given item with the given
 			 * property name to be the given source model.
 			 *
+			 * The source model's parent() is used to manipulate the item
+			 * data. There should be two public slots in the parent:
+			 * - addRequested(QString, QVariantList)
+			 * - removeRequested(QString, QModelIndexList)
+			 *
+			 * These functions are called by the XmlSettingsDialog when
+			 * user chooses to add or remove a row correspondingly.
+			 *
+			 * The first parameter in both functions is set to the
+			 * property name. The second parameter in the addRequested()
+			 * function is set to the list of data values for the row.
+			 * The model is expected to contain the information about
+			 * what data types are expected to be in what row. For that,
+			 * each horizontal header item should contain an integer for
+			 * the DataSources::DataSourceRole::FieldType role. The
+			 * integers should correspond to values of the
+			 * DataSources::DataFieldType enumeration.
+			 *
 			 * @param[in] name The identifier of the property.
 			 * @param[in] source The new datasource.
 			 */

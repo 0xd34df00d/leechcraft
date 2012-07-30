@@ -18,35 +18,41 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QMetaType>
-#include <interfaces/media/audiostructs.h>
+#include <QWidget>
+#include "ui_devicesbrowserwidget.h"
+
+class IRemovableDevManager;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo
+	class ISyncPlugin;
+	class UploadModel;
+
+	class DevicesBrowserWidget : public QWidget
 	{
-		QString LocalPath_;
+		Q_OBJECT
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+		Ui::DevicesBrowserWidget Ui_;
+		IRemovableDevManager *DevMgr_;
+		UploadModel *DevUploadModel_;
 
-		QStringList Genres_;
+		ISyncPlugin *CurrentSyncer_;
+	public:
+		DevicesBrowserWidget (QWidget* = 0);
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
+		void InitializeDevices ();
+	private slots:
+		void handleDevDataChanged (const QModelIndex&, const QModelIndex&);
+		void on_UploadButton__released ();
+		void on_DevicesSelector__activated (int);
+		void on_MountButton__released ();
 
-		MediaInfo& operator= (const Media::AudioInfo&);
+		void appendUpLog (QString);
 
-		operator Media::AudioInfo () const;
-
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
+		void handleTranscodingProgress (int, int);
+		void handleUploadProgress (int, int);
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);

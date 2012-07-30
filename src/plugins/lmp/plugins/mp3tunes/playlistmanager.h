@@ -18,35 +18,50 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QMetaType>
+#include <boost/optional.hpp>
+#include <QObject>
+#include <QMap>
 #include <interfaces/media/audiostructs.h>
+
+class QStandardItem;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo
+namespace MP3Tunes
+{
+	class AuthManager;
+	class AccountsManager;
+
+	class PlaylistManager : public QObject
 	{
-		QString LocalPath_;
+		Q_OBJECT
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+		QNetworkAccessManager *NAM_;
 
-		QStringList Genres_;
+		AuthManager *AuthMgr_;
+		AccountsManager *AccMgr_;
+		QStandardItem *Root_;
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
+		QMap<QString, QStandardItem*> AccItems_;
+		QMap<QString, QMap<QString, QStandardItem*>> AccPlaylists_;
 
-		MediaInfo& operator= (const Media::AudioInfo&);
+		QHash<QUrl, Media::AudioInfo> Infos_;
+	public:
+		PlaylistManager (QNetworkAccessManager*, AuthManager*, AccountsManager*, QObject* = 0);
 
-		operator Media::AudioInfo () const;
+		QStandardItem* GetRoot () const;
+		void Update ();
 
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
+		boost::optional<Media::AudioInfo> GetMediaInfo (const QUrl&) const;
+	private slots:
+		void requestPlaylists (const QString&);
+		void handleGotPlaylists ();
+		void handleGotPlaylistContents ();
+		void handleAccountsChanged ();
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);
+}

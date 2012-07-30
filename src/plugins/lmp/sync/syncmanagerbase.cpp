@@ -16,21 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "syncmanager.h"
-#include <QStringList>
-#include <QtDebug>
-#include <QFileInfo>
+#include "syncmanagerbase.h"
 #include <util/util.h>
-#include "copymanager.h"
 #include "transcodemanager.h"
 #include "../core.h"
-#include "../localfileresolver.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	SyncManager::SyncManager (QObject *parent)
+	SyncManagerBase::SyncManagerBase (QObject *parent)
 	: QObject (parent)
 	, Transcoder_ (new TranscodeManager (this))
 	, TranscodedCount_ (0)
@@ -53,16 +48,11 @@ namespace LMP
 				SLOT (handleFileTCFailed (QString)));
 	}
 
-	void SyncManager::AddFiles (ISyncPlugin *syncer, const QString& mount,
-			const QStringList& files, const TranscodingParams& params)
+	void SyncManagerBase::AddFiles (const QStringList& files, const TranscodingParams& params)
 	{
 		const int numFiles = files.size ();
 		TotalTCCount_ += numFiles;
 		TotalCopyCount_ += numFiles;
-
-		std::for_each (files.begin (), files.end (),
-				[this, syncer, &mount] (decltype (files.front ()) file)
-					{ Source2Params_ [file] = { syncer, mount }; });
 
 		emit transcodingProgress (TranscodedCount_, TotalTCCount_);
 		emit uploadProgress (CopiedCount_, TotalCopyCount_);
@@ -72,21 +62,7 @@ namespace LMP
 		emit uploadLog (tr ("Uploading %n file(s)", 0, numFiles));
 	}
 
-	void SyncManager::CreateSyncer (const QString& mount)
-	{
-		auto mgr = new CopyManager (this);
-		connect (mgr,
-				SIGNAL (startedCopying (QString)),
-				this,
-				SLOT (handleStartedCopying (QString)));
-		connect (mgr,
-				SIGNAL (finishedCopying ()),
-				this,
-				SLOT (handleFinishedCopying ()));
-		Mount2Copiers_ [mount] = mgr;
-	}
-
-	void SyncManager::CheckTCFinished ()
+	void SyncManagerBase::CheckTCFinished ()
 	{
 		if (TranscodedCount_ < TotalTCCount_)
 			return;
@@ -105,7 +81,7 @@ namespace LMP
 		TranscodedCount_ = 0;
 	}
 
-	void SyncManager::CheckUploadFinished ()
+	void SyncManagerBase::CheckUploadFinished ()
 	{
 		if (CopiedCount_ < TotalCopyCount_)
 			return;
@@ -119,76 +95,20 @@ namespace LMP
 		Core::Instance ().SendEntity (e);
 	}
 
-	namespace
+	void SyncManagerBase::HandleFileTranscoded (const QString&, const QString&)
 	{
-		bool FixMask (QString& mask, const QString& transcoded)
-		{
-			MediaInfo info;
-			try
-			{
-				info = Core::Instance ().GetLocalFileResolver ()->ResolveInfo (transcoded);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< e.what ();
-				return false;
-			}
-
-			mask.replace ("$artist", info.Artist_);
-			mask.replace ("$year", QString::number (info.Year_));
-			mask.replace ("$album", info.Album_);
-			QString trackNumStr = QString::number (info.TrackNumber_);
-			if (info.TrackNumber_ < 10)
-				trackNumStr.prepend ('0');
-			mask.replace ("$trackNumber", trackNumStr);
-			mask.replace ("$title", info.Title_);
-
-			const auto& ext = QFileInfo (transcoded).suffix ();
-			if (!mask.endsWith (ext))
-				mask+= "." + ext;
-
-			return true;
-		}
+		qDebug () << Q_FUNC_INFO << "file transcoded, gonna copy";
+		emit transcodingProgress (++TranscodedCount_, TotalTCCount_);
+		CheckTCFinished ();
 	}
 
-	void SyncManager::handleStartedTranscoding (const QString& file)
+	void SyncManagerBase::handleStartedTranscoding (const QString& file)
 	{
 		emit uploadLog (tr ("File %1 started transcoding...")
 				.arg ("<em>" + QFileInfo (file).fileName () + "</em>"));
 	}
 
-	void SyncManager::handleFileTranscoded (const QString& from,
-			const QString& transcoded, QString mask)
-	{
-		qDebug () << Q_FUNC_INFO << "file transcoded, gonna copy";
-
-		emit transcodingProgress (++TranscodedCount_, TotalTCCount_);
-		CheckTCFinished ();
-
-		const auto& syncTo = Source2Params_.take (from);
-		if (syncTo.MountPath_.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "dumb transcoded file detected"
-					<< from
-					<< transcoded;
-			return;
-		}
-
-		emit uploadLog (tr ("File %1 successfully transcoded, adding to copy queue for the device %2...")
-				.arg ("<em>" + QFileInfo (from).fileName () + "</em>")
-				.arg ("<em>" + syncTo.MountPath_) + "</em>");
-
-		if (!FixMask (mask, transcoded))
-			return;
-
-		if (!Mount2Copiers_.contains (syncTo.MountPath_))
-			CreateSyncer (syncTo.MountPath_);
-		Mount2Copiers_ [syncTo.MountPath_]->Copy ({ syncTo.Syncer_, transcoded, from != transcoded, syncTo.MountPath_, mask });
-	}
-
-	void SyncManager::handleFileTCFailed (const QString& file)
+	void SyncManagerBase::handleFileTCFailed (const QString& file)
 	{
 		emit uploadLog (tr ("Transcoding of file %1 failed")
 				.arg ("<em>" + QFileInfo (file).fileName () + "</em>"));
@@ -201,13 +121,13 @@ namespace LMP
 		CheckUploadFinished ();
 	}
 
-	void SyncManager::handleStartedCopying (const QString& file)
+	void SyncManagerBase::handleStartedCopying (const QString& file)
 	{
 		emit uploadLog (tr ("File %1 started copying...")
 					.arg ("<em>" + QFileInfo (file).fileName () + "</em>"));
 	}
 
-	void SyncManager::handleFinishedCopying ()
+	void SyncManagerBase::handleFinishedCopying ()
 	{
 		emit uploadLog (tr ("File finished copying"));
 

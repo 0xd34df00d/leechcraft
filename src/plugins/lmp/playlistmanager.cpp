@@ -21,9 +21,11 @@
 #include <QStandardItemModel>
 #include <QTimer>
 #include <QMimeData>
+#include <boost/graph/graph_concepts.hpp>
 #include "core.h"
 #include "staticplaylistmanager.h"
 #include "localcollection.h"
+#include "mediainfo.h"
 
 namespace LeechCraft
 {
@@ -35,6 +37,12 @@ namespace LMP
 		{
 			PlaylistManager *Manager_;
 		public:
+			enum Roles
+			{
+				IncrementalFetch = Qt::UserRole + 1,
+				PlaylistProvider
+			};
+
 			PlaylistModel (PlaylistManager *parent)
 			: QStandardItemModel (parent)
 			, Manager_ (parent)
@@ -121,6 +129,20 @@ namespace LMP
 		return Static_;
 	}
 
+	void PlaylistManager::AddProvider (QObject *provObj)
+	{
+		auto prov = qobject_cast<IPlaylistProvider*> (provObj);
+		if (!prov)
+			return;
+
+		PlaylistProviders_ << provObj;
+
+		auto root = prov->GetPlaylistsRoot ();
+		root->setData (true, PlaylistModel::Roles::IncrementalFetch);
+		root->setData (QVariant::fromValue (provObj), PlaylistModel::Roles::PlaylistProvider);
+		Model_->appendRow (root);
+	}
+
 	QList<Phonon::MediaSource> PlaylistManager::GetSources (const QModelIndex& index) const
 	{
 		auto col = Core::Instance ().GetLocalCollection ();
@@ -140,8 +162,29 @@ namespace LMP
 		case PlaylistTypes::Random50:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::Random50));
 		default:
-			return QList<Phonon::MediaSource> ();
+		{
+			QList<Phonon::MediaSource> result;
+			const auto& urls = index.data (IPlaylistProvider::ItemRoles::SourceURLs).value<QList<QUrl>> ();
+			std::transform (urls.begin (), urls.end (), std::back_inserter (result),
+					[] (decltype (urls.front ()) path) { return Phonon::MediaSource (path); });
+			return result;
 		}
+		}
+	}
+
+	boost::optional<MediaInfo> PlaylistManager::TryResolveMediaInfo (const QUrl& url) const
+	{
+		Q_FOREACH (auto provObj, PlaylistProviders_)
+		{
+			auto prov = qobject_cast<IPlaylistProvider*> (provObj);
+			auto info = prov->GetURLInfo (url);
+			if (!info)
+				continue;
+
+			return boost::make_optional (MediaInfo::FromAudioInfo (*info));
+		}
+
+		return boost::optional<MediaInfo> ();
 	}
 
 	void PlaylistManager::handleStaticPlaylistsChanged ()

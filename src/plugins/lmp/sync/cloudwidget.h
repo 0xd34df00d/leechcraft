@@ -19,62 +19,33 @@
 #pragma once
 
 #include <QWidget>
-#include "ui_playlistwidget.h"
-#include "player.h"
-
-class QToolBar;
-class QActionGroup;
-class QUndoStack;
+#include "ui_cloudwidget.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class Player;
+	class UploadModel;
 
-	class PlaylistWidget : public QWidget
+	class CloudWidget : public QWidget
 	{
 		Q_OBJECT
 
-		Ui::PlaylistWidget Ui_;
-		QToolBar *PlaylistToolbar_;
-		QActionGroup *PlayModesGroup_;
-
-		QUndoStack *UndoStack_;
-
-		Player *Player_;
-
-		QAction *ActionRemoveSelected_;
-		QAction *ActionStopAfterSelected_;
-		QAction *ActionShowTrackProps_;
-		QAction *ActionShowAlbumArt_;
+		Ui::CloudWidget Ui_;
+		UploadModel *DevUploadModel_;
+		QObjectList Clouds_;
 	public:
-		PlaylistWidget (QWidget* = 0);
-
-		void SetPlayer (Player*);
-	private:
-		void InitToolbarActions ();
-		void SetPlayModeButton ();
-		void SetSortOrderButton ();
-		void InitViewActions ();
+		CloudWidget (QWidget* = 0);
 	private slots:
-		void on_Playlist__customContextMenuRequested (const QPoint&);
-		void handleChangePlayMode ();
-		void handlePlayModeChanged (Player::PlayMode);
+		void on_CloudSelector__activated (int);
+		void handleCloudStoragePlugins ();
+		void handleAccountsChanged ();
 
-		void handleStdSort ();
+		void on_UploadButton__released ();
 
-		void removeSelectedSongs ();
-		void setStopAfterSelected ();
-		void showTrackProps ();
-
-		void showAlbumArt ();
-
-		void handleSavePlaylist ();
-		void loadFromDisk ();
-		void addURL ();
-
-		void updateStatsLabel ();
+		void appendUpLog (QString);
+		void handleTranscodingProgress (int, int);
+		void handleUploadProgress (int, int);
 	};
 }
 }

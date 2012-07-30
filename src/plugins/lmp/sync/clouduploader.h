@@ -19,56 +19,41 @@
 #pragma once
 
 #include <QObject>
-#include <QMap>
+#include <QList>
+#include <interfaces/lmp/icloudstorageplugin.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class ISyncPlugin;
-	class TranscodeManager;
-	class CopyManager;
-	struct TranscodingParams;
-
-	class SyncManager : public QObject
+	class CloudUploader : public QObject
 	{
 		Q_OBJECT
 
-		TranscodeManager *Transcoder_;
-		QMap<QString, CopyManager*> Mount2Copiers_;
-
-		struct SyncTo
-		{
-			ISyncPlugin *Syncer_;
-			QString MountPath_;
-		};
-		QMap<QString, SyncTo> Source2Params_;
-
-		int TranscodedCount_;
-		int TotalTCCount_;
-		bool WereTCErrors_;
-
-		int CopiedCount_;
-		int TotalCopyCount_;
+		ICloudStoragePlugin *Cloud_;
 	public:
-		SyncManager (QObject* = 0);
-
-		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
+		struct UploadJob
+		{
+			bool RemoveOnFinish_;
+			QString Account_;
+			QString Filename_;
+		};
 	private:
-		void CreateSyncer (const QString&);
-		void CheckTCFinished ();
-		void CheckUploadFinished ();
-	private slots:
-		void handleStartedTranscoding (const QString&);
-		void handleFileTranscoded (const QString& from, const QString&, QString);
-		void handleFileTCFailed (const QString&);
-		void handleStartedCopying (const QString&);
-		void handleFinishedCopying ();
-	signals:
-		void uploadLog (const QString&);
+		QList<UploadJob> Queue_;
+		UploadJob CurrentJob_;
+	public:
+		CloudUploader (ICloudStoragePlugin*, QObject* = 0);
 
-		void transcodingProgress (int, int);
-		void uploadProgress (int, int);
+		void Upload (const UploadJob&);
+	private:
+		void StartJob (const UploadJob&);
+		bool IsRunning () const;
+	private slots:
+		void handleUploadFinished (const QString& localPath,
+				LeechCraft::LMP::CloudStorageError error, const QString& errorStr);
+	signals:
+		void startedCopying (const QString&);
+		void finishedCopying ();
 	};
 }
 }

@@ -992,7 +992,11 @@ namespace Azoth
 		connect (clEntry->GetObject (),
 				SIGNAL (entryGenerallyChanged ()),
 				this,
-				SLOT (handleEntryGenerallyChanged ()));
+				SLOT (remakeTooltipForSender ()));
+		connect (clEntry->GetObject (),
+				SIGNAL (avatarChanged (const QImage&)),
+				this,
+				SLOT (remakeTooltipForSender ()));
 		connect (clEntry->GetObject (),
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
@@ -1179,19 +1183,23 @@ namespace Azoth
 	QString Core::MakeTooltipString (ICLEntry *entry) const
 	{
 		QString tip = "<table border='0'><tr><td>";
-		const int avatarSize = 75;
-		const int minAvatarSize = 32;
-		auto avatar = entry->GetAvatar ();
-		if (avatar.isNull ())
-			avatar = GetDefaultAvatar (avatarSize);
 
-		if (std::max (avatar.width (), avatar.height ()) > avatarSize)
-			avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-		else if (std::max (avatar.width (), avatar.height ()) < minAvatarSize)
-			avatar = avatar.scaled (minAvatarSize, minAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-		tip += "<img src='" + Util::GetAsBase64Src (avatar) + "' />";
+		if (entry->GetEntryType () != ICLEntry::ETMUC)
+		{
+			const int avatarSize = 75;
+			const int minAvatarSize = 32;
+			auto avatar = entry->GetAvatar ();
+			if (avatar.isNull ())
+				avatar = GetDefaultAvatar (avatarSize);
 
-		tip += "</td><td>";
+			if (std::max (avatar.width (), avatar.height ()) > avatarSize)
+				avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			else if (std::max (avatar.width (), avatar.height ()) < minAvatarSize)
+				avatar = avatar.scaled (minAvatarSize, minAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			tip += "<img src='" + Util::GetAsBase64Src (avatar) + "' />";
+
+			tip += "</td><td>";
+		}
 
 		tip += "<strong>" + entry->GetEntryName () + "</strong>";
 		tip += "&nbsp;(<em>" + entry->GetHumanReadableID () + "</em>)<br />";
@@ -2266,7 +2274,7 @@ namespace Azoth
 		}
 	}
 
-	void Core::handleEntryGenerallyChanged ()
+	void Core::remakeTooltipForSender ()
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
 		if (!entry)

@@ -16,39 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "transcodingparamswidget.h"
-#include <QThread>
-#include "transcodingparams.h"
+#pragma once
+
+#include <QObject>
+#include <QVariantList>
+#include <QModelIndexList>
+
+class QStandardItemModel;
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	TranscodingParamsWidget::TranscodingParamsWidget (QWidget *parent)
-	: QWidget (parent)
+namespace MP3Tunes
+{
+	class AccountsManager : public QObject
 	{
-		Ui_.setupUi (this);
+		Q_OBJECT
 
-		const int idealThreads = QThread::idealThreadCount ();
-		if (idealThreads > 0)
-		{
-			Ui_.ThreadsSlider_->setMaximum (idealThreads * 2);
-			Ui_.ThreadsSlider_->setValue (idealThreads > 1 ? idealThreads - 1 : 1);
-		}
-		else
-			Ui_.ThreadsSlider_->setMaximum (4);
-	}
+		QStandardItemModel *AccModel_;
+	public:
+		AccountsManager (QObject* = 0);
 
-	TranscodingParams TranscodingParamsWidget::GetParams () const
-	{
-		const bool transcode = Ui_.TranscodingBox_->isChecked ();
-		return
-		{
-			Ui_.FilenameMask_->text (),
-			transcode ? Ui_.TranscodingFormat_->currentText () : QString (),
-			Ui_.QualitySlider_->value (),
-			Ui_.ThreadsSlider_->value ()
-		};
-	}
+		QAbstractItemModel* GetAccModel () const;
+		QStringList GetAccounts () const;
+	private:
+		void SaveAccounts ();
+		void LoadAccounts ();
+	public slots:
+		void addRequested (const QString&, const QVariantList&);
+		void removeRequested (const QString&, const QModelIndexList&);
+	signals:
+		void accountsChanged ();
+	};
+}
 }
 }

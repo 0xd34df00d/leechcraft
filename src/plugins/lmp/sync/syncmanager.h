@@ -18,35 +18,37 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QMetaType>
-#include <interfaces/media/audiostructs.h>
+#include "syncmanagerbase.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo
+	class ISyncPlugin;
+	class TranscodeManager;
+	class CopyManager;
+	struct TranscodingParams;
+
+	class SyncManager : public SyncManagerBase
 	{
-		QString LocalPath_;
+		Q_OBJECT
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+		QMap<QString, CopyManager*> Mount2Copiers_;
 
-		QStringList Genres_;
+		struct SyncTo
+		{
+			ISyncPlugin *Syncer_;
+			QString MountPath_;
+		};
+		QMap<QString, SyncTo> Source2Params_;
+	public:
+		SyncManager (QObject* = 0);
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
-
-		MediaInfo& operator= (const Media::AudioInfo&);
-
-		operator Media::AudioInfo () const;
-
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
+		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
+	private:
+		void CreateSyncer (const QString&);
+	protected slots:
+		void handleFileTranscoded (const QString& from, const QString&, QString);
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);

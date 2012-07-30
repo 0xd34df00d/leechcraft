@@ -80,6 +80,7 @@ namespace LMP
 			: QStandardItemModel (parent)
 			, Player_ (parent)
 			{
+				setSupportedDragActions (Qt::CopyAction | Qt::MoveAction);
 			}
 
 			QStringList mimeTypes () const
@@ -87,7 +88,28 @@ namespace LMP
 				return QStringList ("text/uri-list");
 			}
 
-			bool dropMimeData (const QMimeData *data, Qt::DropAction action, int, int, const QModelIndex&)
+			QMimeData* mimeData (const QModelIndexList& indexes) const
+			{
+				QList<QUrl> urls;
+				Q_FOREACH (const auto& index, indexes)
+				{
+					const auto& sources = Player_->GetIndexSources (index);
+					std::transform (sources.begin (), sources.end (), std::back_inserter (urls),
+							[] (decltype (sources.front ()) source)
+							{
+								return source.type () == Phonon::MediaSource::LocalFile ?
+										QUrl::fromLocalFile (source.fileName ()) :
+										source.url ();
+							});
+				}
+				urls.removeAll (QUrl ());
+
+				QMimeData *result = new QMimeData;
+				result->setUrls (urls);
+				return result;
+			}
+
+			bool dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int, const QModelIndex& parent)
 			{
 				if (action == Qt::IgnoreAction)
 					return true;
@@ -104,15 +126,93 @@ namespace LMP
 									Phonon::MediaSource (url.toLocalFile ()) :
 									Phonon::MediaSource (url);
 						});
-				Player_->Enqueue (sources);
+
+				auto afterIdx = row >= 0 ?
+						parent.child (row, 0) :
+						parent;
+				const auto& firstSrc = afterIdx.isValid () ?
+						Player_->GetIndexSources (afterIdx).value (0) :
+						Phonon::MediaSource ();
+
+				auto existingQueue = Player_->GetQueue ();
+				if (action == Qt::MoveAction)
+					Q_FOREACH (const auto& src, sources)
+					{
+						auto pred = [&src] (decltype (existingQueue.front ()) item)
+						{
+							if (src.type () != item.type ())
+								return false;
+							if (src.type () == Phonon::MediaSource::LocalFile)
+								return src.fileName () == item.fileName ();
+							if (src.type () == Phonon::MediaSource::Url)
+								return src.url () == item.url ();
+							return false;
+						};
+						auto remPos = std::remove_if (existingQueue.begin (), existingQueue.end (), pred);
+						existingQueue.erase (remPos, existingQueue.end ());
+					}
+
+				auto pos = std::find (existingQueue.begin (), existingQueue.end (), firstSrc);
+				if (pos == existingQueue.end ())
+					existingQueue << sources;
+				else
+				{
+					Q_FOREACH (const auto& src, sources)
+						pos = existingQueue.insert (pos, src) + 1;
+				}
+
+				Player_->ReplaceQueue (existingQueue);
 				return true;
 			}
 
 			Qt::DropActions supportedDropActions () const
 			{
-				return Qt::CopyAction;
+				return Qt::CopyAction | Qt::MoveAction;
 			}
 		};
+	}
+
+	Player::Sorter::Sorter ()
+	{
+		Criteria_ << SortingCriteria::Artist
+				<< SortingCriteria::Year
+				<< SortingCriteria::TrackNumber;
+	}
+
+	bool Player::Sorter::operator() (const MediaInfo& left, const MediaInfo& right) const
+	{
+		Q_FOREACH (auto crit, Criteria_)
+		{
+			switch (crit)
+			{
+			case SortingCriteria::Artist:
+				if (left.Artist_ != right.Artist_)
+					return left.Artist_ < right.Artist_;
+				break;
+			case SortingCriteria::Year:
+				if (left.Year_ != right.Year_)
+					return left.Year_ < right.Year_;
+				break;
+			case SortingCriteria::Album:
+				if (left.Album_ != right.Album_)
+					return left.Album_ < right.Album_;
+				break;
+			case SortingCriteria::TrackNumber:
+				if (left.TrackNumber_ != right.TrackNumber_)
+					return left.TrackNumber_ < right.TrackNumber_;
+				break;
+			case SortingCriteria::TrackTitle:
+				if (left.Title_ != right.Title_)
+					return left.Title_ < right.Title_;
+				break;
+			case SortingCriteria::FilePath:
+				if (left.LocalPath_ != right.LocalPath_)
+					return left.LocalPath_ < right.LocalPath_;
+				break;
+			}
+		}
+
+		return left.LocalPath_ < right.LocalPath_;
 	}
 
 	Player::Player (QObject *parent)
@@ -192,6 +292,13 @@ namespace LMP
 		emit playModeChanged (PlayMode_);
 	}
 
+	void Player::SetSortingCriteria (const QList<Player::SortingCriteria>& criteria)
+	{
+		Sorter_.Criteria_ = criteria;
+
+		AddToPlaylistModel (QList<Phonon::MediaSource> (), true);
+	}
+
 	namespace
 	{
 		QList<Phonon::MediaSource> FileToSource (const QString& file)
@@ -216,6 +323,26 @@ namespace LMP
 	void Player::Enqueue (const QList<Phonon::MediaSource>& sources, bool sort)
 	{
 		AddToPlaylistModel (sources, sort);
+	}
+
+	void Player::ReplaceQueue (const QList<Phonon::MediaSource>& queue, bool sort)
+	{
+		auto vals = Items_.values ();
+		auto curSrcPos = std::find_if (vals.begin (), vals.end (),
+				[] (decltype (vals.front ()) item) { return item->data (Role::IsCurrent).toBool (); });
+		const auto& currentSource = curSrcPos != vals.end () ?
+				(*curSrcPos)->data (Role::Source).value<Phonon::MediaSource> () :
+				Phonon::MediaSource ();
+
+		PlaylistModel_->clear ();
+		Items_.clear ();
+		AlbumRoots_.clear ();
+		CurrentQueue_.clear ();
+
+		AddToPlaylistModel (queue, sort);
+
+		if (Items_.contains (currentSource))
+			Items_ [currentSource]->setData (true, Role::IsCurrent);
 	}
 
 	QList<Phonon::MediaSource> Player::GetQueue () const
@@ -264,7 +391,16 @@ namespace LMP
 			{
 				if (parent->rowCount () == 1)
 				{
-					AlbumRoots_.remove (AlbumRoots_.key (parent));
+					Q_FOREACH (const auto& key, AlbumRoots_.keys ())
+					{
+						auto& items = AlbumRoots_ [key];
+						if (!items.contains (parent))
+							continue;
+
+						items.removeAll (parent);
+						if (items.isEmpty ())
+							AlbumRoots_.remove (key);
+					}
 					PlaylistModel_->removeRow (parent->row ());
 				}
 				else
@@ -372,7 +508,10 @@ namespace LMP
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
 		{
-			item->setText (QString ("%1 - %2 - %3").arg (info.Artist_).arg (info.Album_).arg (info.Title_));
+			item->setText (QString ("%1 - %2 - %3")
+						.arg (info.Artist_)
+						.arg (info.Album_)
+						.arg (info.Title_));
 			item->setData (QVariant::fromValue (info), Player::Role::Info);
 		}
 
@@ -396,23 +535,7 @@ namespace LMP
 	{
 		if (!CurrentQueue_.isEmpty ())
 		{
-			auto vals = Items_.values ();
-			auto curSrcPos = std::find_if (vals.begin (), vals.end (),
-					[] (decltype (vals.front ()) item) { return item->data (Role::IsCurrent).toBool (); });
-			const auto& currentSource = curSrcPos != vals.end () ?
-					(*curSrcPos)->data (Role::Source).value<Phonon::MediaSource> () :
-					Phonon::MediaSource ();
-
-			PlaylistModel_->clear ();
-			Items_.clear ();
-			AlbumRoots_.clear ();
-
-			auto newList = CurrentQueue_ + sources;
-			CurrentQueue_.clear ();
-			AddToPlaylistModel (newList, sort);
-
-			if (Items_.contains (currentSource))
-				Items_ [currentSource]->setData (true, Role::IsCurrent);
+			ReplaceQueue (CurrentQueue_ + sources, sort);
 			return;
 		}
 
@@ -427,6 +550,8 @@ namespace LMP
 
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
 
+		QPair<QString, QString> prevAlbumRoot;
+
 		Q_FOREACH (const auto& source, sources)
 		{
 			auto item = new QStandardItem ();
@@ -439,9 +564,18 @@ namespace LMP
 				PlaylistModel_->appendRow (item);
 				break;
 			case Phonon::MediaSource::Url:
-				item->setText (source.url ().toString ());
+			{
+				const auto& url = source.url ();
+
+				const auto info = Core::Instance ().TryURLResolve (url);
+				if (info)
+					FillItem (item, *info);
+				else
+					item->setText (url.toString ());
+
 				PlaylistModel_->appendRow (item);
 				break;
+			}
 			case Phonon::MediaSource::LocalFile:
 			{
 				MediaInfo info;
@@ -460,21 +594,22 @@ namespace LMP
 
 				const auto& albumID = qMakePair (info.Artist_, info.Album_);
 				FillItem (item, info);
-				if (!AlbumRoots_.contains (albumID))
+				if (albumID != prevAlbumRoot ||
+						AlbumRoots_ [albumID].isEmpty ())
 				{
 					PlaylistModel_->appendRow (item);
-					AlbumRoots_ [albumID] = item;
+					AlbumRoots_ [albumID] << item;
 				}
-				else if (AlbumRoots_ [albumID]->data (Role::IsAlbum).toBool ())
+				else if (AlbumRoots_ [albumID].last ()->data (Role::IsAlbum).toBool ())
 				{
-					IncAlbumLength (AlbumRoots_ [albumID], info.Length_);
-					AlbumRoots_ [albumID]->appendRow (item);
+					IncAlbumLength (AlbumRoots_ [albumID].last (), info.Length_);
+					AlbumRoots_ [albumID].last ()->appendRow (item);
 				}
 				else
 				{
 					auto albumItem = MakeAlbumItem (info);
 
-					const int row = AlbumRoots_ [albumID]->row ();
+					const int row = AlbumRoots_ [albumID].last ()->row ();
 					const auto& existing = PlaylistModel_->takeRow (row);
 					albumItem->appendRow (existing);
 					albumItem->appendRow (item);
@@ -486,8 +621,9 @@ namespace LMP
 
 					emit insertedAlbum (albumItem->index ());
 
-					AlbumRoots_ [albumID] = albumItem;
+					AlbumRoots_ [albumID].last () = albumItem;
 				}
+				prevAlbumRoot = albumID;
 				break;
 			}
 			default:
@@ -502,9 +638,12 @@ namespace LMP
 
 	void Player::ApplyOrdering (QList<Phonon::MediaSource>& sources)
 	{
+		if (Sorter_.Criteria_.isEmpty ())
+			return;
+
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
 		std::sort (sources.begin (), sources.end (),
-				[resolver] (const Phonon::MediaSource& s1, const Phonon::MediaSource& s2)
+				[resolver, this] (const Phonon::MediaSource& s1, const Phonon::MediaSource& s2)
 				{
 					if (s1.type () != Phonon::MediaSource::LocalFile ||
 						s2.type () != Phonon::MediaSource::LocalFile)
@@ -514,15 +653,7 @@ namespace LMP
 					{
 						const auto& left = resolver->ResolveInfo (s1.fileName ());
 						const auto& right = resolver->ResolveInfo (s2.fileName ());
-						if (left.Artist_ != right.Artist_)
-							return left.Artist_ < right.Artist_;
-						if (left.Year_ != right.Year_)
-							return left.Year_ < right.Year_;
-						if (left.Album_ != right.Album_)
-							return left.Album_ < right.Album_;
-						if (left.TrackNumber_ != right.TrackNumber_)
-							return left.TrackNumber_ < right.TrackNumber_;
-						return left.Title_ < right.Title_;
+						return Sorter_ (left, right);
 					}
 					catch (...)
 					{

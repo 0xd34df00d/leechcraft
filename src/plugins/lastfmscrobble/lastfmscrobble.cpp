@@ -145,6 +145,11 @@ namespace Lastfmscrobble
 				Proxy_->GetNetworkAccessManager (), num, this);
 	}
 
+	bool Plugin::IsRadioSupported (Type) const
+	{
+		return true;
+	}
+
 	QString Plugin::GetRadioName () const
 	{
 		return "Last.FM";

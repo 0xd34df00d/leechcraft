@@ -50,5 +50,12 @@ namespace LMP
 		};
 		return aInfo;
 	}
+
+	MediaInfo MediaInfo::FromAudioInfo (const Media::AudioInfo& info)
+	{
+		MediaInfo result;
+		result = info;
+		return result;
+	}
 }
 }

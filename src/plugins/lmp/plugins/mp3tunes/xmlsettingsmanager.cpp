@@ -16,37 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QStringList>
-#include <QMetaType>
-#include <interfaces/media/audiostructs.h>
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo
+namespace MP3Tunes
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		QString LocalPath_;
+		Util::BaseSettingsManager::Init ();
+	}
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return manager;
+	}
 
-		QStringList Genres_;
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_LMP_MP3Tunes");
+		return settings;
+	}
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
-
-		MediaInfo& operator= (const Media::AudioInfo&);
-
-		operator Media::AudioInfo () const;
-
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
-	};
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);
+}
