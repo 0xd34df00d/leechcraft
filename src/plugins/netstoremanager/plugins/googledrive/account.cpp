@@ -167,33 +167,47 @@ namespace GoogleDrive
 
 	namespace
 	{
-		QList<QStandardItem*> CreateNewItem (const DriveItem& item,
-				QHash<QString, QStandardItem*>& dirs)
+		QList<QStandardItem*> CreateItem (QHash<QString,
+				QList<QStandardItem*>>& id2Item, const DriveItem& item)
 		{
 			QList<QStandardItem*> row;
-			row << new QStandardItem (item.Name_);
-			row [0]->setData (item.DownloadUrl_, ListingRole::URL);
-			row [0]->setData (item.Id_, ListingRole::ID);
-			row [0]->setData (static_cast<bool> (item.Labels_ & DriveItem::ILRemoved),
-					ListingRole::InTrash);
-
-			if (!item.IsFolder_)
+			if (!id2Item.contains (item.Id_))
 			{
-				row << new QStandardItem (item.OwnerNames_.join (", "));
-				row << new QStandardItem (QObject::tr ("%1 (by %2)")
-						.arg (item.ModifiedDate_.toString (Qt::SystemLocaleDate),
-								item.LastModifiedBy_));
-			}
-			else
-			{
-				row [0]->setIcon (Core::Instance ().GetProxy ()->GetIcon ("folder"));
-				dirs [item.Id_] = row [0];
+				row << new QStandardItem (item.Name_);
+				row [0]->setData (item.Id_, ListingRole::ID);
+				row [0]->setData (static_cast<bool> (item.Labels_ & DriveItem::ILRemoved),
+						ListingRole::InTrash);
+
+				if (!item.IsFolder_)
+				{
+					row << new QStandardItem (item.OwnerNames_.join (", "));
+					row << new QStandardItem (QObject::tr ("%1 (by %2)")
+							.arg (item.ModifiedDate_.toString (Qt::SystemLocaleDate),
+									item.LastModifiedBy_));
+				}
+				else
+				{
+					row [0]->setIcon (Core::Instance ().GetProxy ()->GetIcon ("folder"));
+					id2Item [item.Id_] = row;
+				}
 			}
 
-			for (auto it : row)
-				it->setEditable (false);
+			for (const auto& itm : row)
+				itm->setEditable (false);
 
 			return row;
+		}
+
+		void CreateChildItem (QHash<QString, QList<QStandardItem*>>& id2Item,
+				const DriveItem& parentItem, const DriveItem& childItem)
+		{
+			QList<QStandardItem*> parentRow = !id2Item.contains (parentItem.Id_) ?
+				CreateItem (id2Item, parentItem) :
+				id2Item [parentItem.Id_];
+			QList<QStandardItem*> childRow = !id2Item.contains (childItem.Id_) ?
+				CreateItem (id2Item, childItem) :
+				id2Item [childItem.Id_];
+			parentRow [0]->appendRow (childRow);
 		}
 	}
 
@@ -201,11 +215,12 @@ namespace GoogleDrive
 	{
 		QList<QList<QStandardItem*>> treeItems;
 
-		QHash<QString, QStandardItem*> id2ItemDir;
 		QHash<QString, DriveItem> trashedItems;
-		QList<DriveItem> othersItems;
+		QHash<QString, DriveItem> id2DriveItem_;
+		QHash<QString, QList<QStandardItem*>> id2Item_;
+		QHash<QString, QList<QStandardItem*>> trashedId2Item_;
 
-		Q_FOREACH (const DriveItem& item, items)
+		for (const auto& item : items)
 		{
 			if (item.Labels_ & DriveItem::ILRemoved)
 			{
@@ -213,59 +228,32 @@ namespace GoogleDrive
 				continue;
 			}
 
+			id2DriveItem_ [item.Id_] = item;
 			if (item.ParentIsRoot_)
-				treeItems << CreateNewItem (item, id2ItemDir);
+				treeItems << CreateItem (id2Item_, item);
+		}
+
+		const QStringList& keys = id2DriveItem_.keys ();
+		const auto& values = id2DriveItem_.values ();
+		for (const auto& item : values)
+		{
+			if (keys.contains (item.ParentId_))
+				CreateChildItem (id2Item_, id2DriveItem_ [item.ParentId_], item);
 			else
-				othersItems << item;
+				CreateItem (id2Item_, item);
 		}
 
-		int i = 0;
-		while (!othersItems.isEmpty ())
-		{
-			if (othersItems.count () == i)
-				break;
+		const QStringList& trashedKeys = trashedItems.keys ();
+		const auto& trashedValues = trashedItems.values ();
+		for (const auto& item : trashedValues)
+			if (!trashedKeys.contains (item.ParentId_))
+				treeItems << CreateItem (trashedId2Item_, item);
 
-			DriveItem item = othersItems.at (i++);
-			if (id2ItemDir.contains (item.ParentId_))
-			{
-				auto row = CreateNewItem (item, id2ItemDir);
-				id2ItemDir [item.ParentId_]->appendRow (row);
-				othersItems.removeAt (i - 1);
-				i = 0;
-			}
-		}
+		for (const auto& item : trashedValues)
+			if (trashedKeys.contains (item.ParentId_))
+				CreateChildItem (trashedId2Item_, trashedItems [item.ParentId_], item);
 
-		QList<DriveItem> result;
-		QStringList removedKeys;
-		Q_FOREACH (const auto& key, trashedItems.keys ())
-		{
-			const auto& item = trashedItems [key];
-			if (!trashedItems.contains (item.ParentId_))
-			{
-				treeItems << CreateNewItem (trashedItems [key], id2ItemDir);
-				removedKeys << key;
-			}
-		}
-
-		for (const auto& key : removedKeys)
-			trashedItems.remove (key);
-
-		i = 0;
-		while (!trashedItems.isEmpty ())
-		{
-			if (trashedItems.count () == i)
-				break;
-
-			auto key = trashedItems.keys ().at (i++);
-			DriveItem item = trashedItems [key];
-			if (id2ItemDir.contains (item.ParentId_))
-			{
-				auto row = CreateNewItem (item, id2ItemDir);
-				id2ItemDir [item.ParentId_]->appendRow (row);
-				trashedItems.remove (key);
-				i = 0;
-			}
-		}
+		treeItems.removeAll (QList<QStandardItem*> ());
 
 		emit gotListing (QList<QList<QStandardItem*>> ());
 		emit gotListing (treeItems);
