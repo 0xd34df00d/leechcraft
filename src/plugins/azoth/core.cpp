@@ -992,7 +992,11 @@ namespace Azoth
 		connect (clEntry->GetObject (),
 				SIGNAL (entryGenerallyChanged ()),
 				this,
-				SLOT (handleEntryGenerallyChanged ()));
+				SLOT (remakeTooltipForSender ()));
+		connect (clEntry->GetObject (),
+				SIGNAL (avatarChanged (const QImage&)),
+				this,
+				SLOT (remakeTooltipForSender ()));
 		connect (clEntry->GetObject (),
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
@@ -2266,7 +2270,7 @@ namespace Azoth
 		}
 	}
 
-	void Core::handleEntryGenerallyChanged ()
+	void Core::remakeTooltipForSender ()
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
 		if (!entry)
