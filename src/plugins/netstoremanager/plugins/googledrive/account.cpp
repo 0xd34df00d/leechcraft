@@ -182,7 +182,7 @@ namespace GoogleDrive
 				{
 					row << new QStandardItem (item.OwnerNames_.join (", "));
 					row << new QStandardItem (QObject::tr ("%1 (by %2)")
-							.arg (item.ModifiedDate_.toString (Qt::SystemLocaleDate),
+							.arg (item.ModifiedDate_.toString ("dd.MM.yy hh:mm"),
 									item.LastModifiedBy_));
 				}
 				else
