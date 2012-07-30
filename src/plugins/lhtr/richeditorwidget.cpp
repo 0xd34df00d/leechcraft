@@ -265,6 +265,17 @@ namespace LHTR
 		ViewBar_->removeAction (act);
 	}
 
+	void RichEditorWidget::InsertHTML (const QString& html)
+	{
+		ExecCommand ("insertHTML", html);
+	}
+
+	void RichEditorWidget::SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich)
+	{
+		Rich2HTML_ = rich2html;
+		HTML2Rich_ = html2rich;
+	}
+
 	void RichEditorWidget::ExecCommand (const QString& cmd, const QString& arg)
 	{
 		auto frame = Ui_.View_->page ()->mainFrame ();
@@ -282,17 +293,27 @@ namespace LHTR
 		return res.toString ().simplified ().toLower () == "true";
 	}
 
+	namespace
+	{
+		QString ProcessWith (QString html, const IAdvancedHTMLEditor::Replacements_t& rxs)
+		{
+			for (const auto& rx : rxs)
+				html.replace (rx.first, rx.second);
+			return html;
+		}
+	}
+
 	void RichEditorWidget::on_TabWidget__currentChanged (int idx)
 	{
 		switch (idx)
 		{
 		case 1:
-			Ui_.HTML_->setPlainText (Ui_.View_->page ()->mainFrame ()->toHtml ());
+			Ui_.HTML_->setPlainText (ProcessWith (Ui_.View_->page ()->mainFrame ()->toHtml (), Rich2HTML_));
 			break;
 		case 0:
 			if (HTMLDirty_)
 			{
-				Ui_.View_->setHtml (Ui_.HTML_->toPlainText ());
+				Ui_.View_->setHtml (ProcessWith (Ui_.HTML_->toPlainText (), HTML2Rich_));
 				HTMLDirty_ = false;
 			}
 			break;

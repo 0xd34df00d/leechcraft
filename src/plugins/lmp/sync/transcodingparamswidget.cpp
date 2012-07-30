@@ -16,37 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QStringList>
-#include <QMetaType>
-#include <interfaces/media/audiostructs.h>
+#include "transcodingparamswidget.h"
+#include <QThread>
+#include "transcodingparams.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo
+	TranscodingParamsWidget::TranscodingParamsWidget (QWidget *parent)
+	: QWidget (parent)
 	{
-		QString LocalPath_;
+		Ui_.setupUi (this);
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+		const int idealThreads = QThread::idealThreadCount ();
+		if (idealThreads > 0)
+		{
+			Ui_.ThreadsSlider_->setMaximum (idealThreads * 2);
+			Ui_.ThreadsSlider_->setValue (idealThreads > 1 ? idealThreads - 1 : 1);
+		}
+		else
+			Ui_.ThreadsSlider_->setMaximum (4);
+	}
 
-		QStringList Genres_;
+	void TranscodingParamsWidget::SetMaskVisible (bool visible)
+	{
+		Ui_.FilenameMask_->setVisible (visible);
+	}
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
-
-		MediaInfo& operator= (const Media::AudioInfo&);
-
-		operator Media::AudioInfo () const;
-
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
-	};
+	TranscodingParams TranscodingParamsWidget::GetParams () const
+	{
+		const bool transcode = Ui_.TranscodingBox_->isChecked ();
+		return
+		{
+			Ui_.FilenameMask_->text (),
+			transcode ? Ui_.TranscodingFormat_->currentText () : QString (),
+			Ui_.QualitySlider_->value (),
+			Ui_.ThreadsSlider_->value ()
+		};
+	}
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);

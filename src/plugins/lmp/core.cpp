@@ -22,9 +22,12 @@
 #include "localcollection.h"
 #include "xmlsettingsmanager.h"
 #include "playlistmanager.h"
-#include "devsync/syncmanager.h"
+#include "sync/syncmanager.h"
+#include "sync/clouduploadmanager.h"
 #include "interfaces/lmp/ilmpplugin.h"
 #include "interfaces/lmp/isyncplugin.h"
+#include "interfaces/lmp/icloudstorageplugin.h"
+#include "interfaces/lmp/iplaylistprovider.h"
 
 namespace LeechCraft
 {
@@ -35,6 +38,7 @@ namespace LMP
 	, Collection_ (new LocalCollection)
 	, PLManager_ (new PlaylistManager)
 	, SyncManager_ (new SyncManager)
+	, CloudUpMgr_ (new CloudUploadManager)
 	{
 	}
 
@@ -81,11 +85,27 @@ namespace LMP
 		if (classes.contains ("org.LeechCraft.LMP.CollectionSync") &&
 			qobject_cast<ISyncPlugin*> (pluginObj))
 			SyncPlugins_ << pluginObj;
+
+		if (classes.contains ("org.LeechCraft.LMP.CloudStorage") &&
+			qobject_cast<ICloudStoragePlugin*> (pluginObj))
+		{
+			CloudPlugins_ << pluginObj;
+			emit cloudStoragePluginsChanged ();
+		}
+
+		if (classes.contains ("org.LeechCraft.LMP.PlaylistProvider") &&
+			qobject_cast<IPlaylistProvider*> (pluginObj))
+			PLManager_->AddProvider (pluginObj);
 	}
 
-	QList<QObject*> Core::GetSyncPlugins () const
+	QObjectList Core::GetSyncPlugins () const
 	{
 		return SyncPlugins_;
+	}
+
+	QObjectList Core::GetCloudStoragePlugins() const
+	{
+		return CloudPlugins_;
 	}
 
 	LocalFileResolver* Core::GetLocalFileResolver () const
@@ -106,6 +126,16 @@ namespace LMP
 	SyncManager* Core::GetSyncManager () const
 	{
 		return SyncManager_;
+	}
+
+	CloudUploadManager* Core::GetCloudUploadManager () const
+	{
+		return CloudUpMgr_;
+	}
+
+	boost::optional<MediaInfo> Core::TryURLResolve (const QUrl& url) const
+	{
+		return PLManager_->TryResolveMediaInfo (url);
 	}
 
 	void Core::rescan ()

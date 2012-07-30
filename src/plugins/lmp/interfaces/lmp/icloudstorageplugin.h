@@ -18,28 +18,54 @@
 
 #pragma once
 
-#include <QSortFilterProxyModel>
-#include <QSet>
+#include <QtPlugin>
+
+class QString;
+class QObject;
+class QIcon;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class DevicesUploadModel : public QSortFilterProxyModel
+	enum class CloudStorageError
 	{
-		Q_OBJECT
+		NoError,
+		LocalError,
+		NetError,
+		FileHashMismatch,
+		InvalidSession,
+		NotAuthorized,
+		UnsupportedFileFormat,
+		FilesizeExceeded,
+		StorageFull,
+		ServiceError,
+		OtherError
+	};
 
-		QSet<QPersistentModelIndex> SourceIndexes_;
+	class ICloudStoragePlugin
+	{
 	public:
-		DevicesUploadModel (QObject* = 0);
+		virtual ~ICloudStoragePlugin () {}
 
-		QSet<QPersistentModelIndex> GetSelectedIndexes () const;
+		virtual QObject* GetObject () = 0;
 
-		Qt::ItemFlags flags (const QModelIndex&) const;
-		QVariant data (const QModelIndex&, int) const;
-		bool setData (const QModelIndex&, const QVariant&, int);
+		virtual QString GetCloudName () const = 0;
+
+		virtual QIcon GetCloudIcon () const = 0;
+
+		virtual QStringList GetSupportedFileFormats () const = 0;
+
+		virtual void Upload (const QString& account, const QString& localPath) = 0;
+
+		virtual QStringList GetAccounts () const = 0;
 	protected:
-		bool filterAcceptsRow (int, const QModelIndex&) const;
+		virtual void uploadFinished (const QString& localPath,
+				CloudStorageError, const QString& errorStr) = 0;
+
+		virtual void accountsChanged () = 0;
 	};
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::LMP::ICloudStoragePlugin, "org.LeechCraft.LMP.ICloudStoragePlugin/1.0");

@@ -18,8 +18,10 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
 #include <phonon/mediasource.h>
+#include "interfaces/lmp/iplaylistprovider.h"
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -30,6 +32,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class MediaInfo;
 	class StaticPlaylistManager;
 
 	class PlaylistManager : public QObject
@@ -43,20 +46,27 @@ namespace LMP
 
 		enum PlaylistTypes
 		{
+			Other,
 			Static,
 			Random50
 		};
 		enum Roles
 		{
-			PlaylistType = Qt::UserRole + 1
+			PlaylistType = IPlaylistProvider::ItemRoles::Max + 1
 		};
+
+		QObjectList PlaylistProviders_;
 	public:
 		PlaylistManager (QObject* = 0);
 
 		QAbstractItemModel* GetPlaylistsModel () const;
 		StaticPlaylistManager* GetStaticManager () const;
 
+		void AddProvider (QObject*);
+
 		QList<Phonon::MediaSource> GetSources (const QModelIndex&) const;
+
+		boost::optional<MediaInfo> TryResolveMediaInfo (const QUrl&) const;
 	private slots:
 		void handleStaticPlaylistsChanged ();
 	};

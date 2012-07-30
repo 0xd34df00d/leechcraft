@@ -18,35 +18,42 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QMetaType>
-#include <interfaces/media/audiostructs.h>
+#include <QObject>
+#include <QMap>
+#include <QSet>
+
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace LMP
 {
-	struct MediaInfo
+namespace MP3Tunes
+{
+	class AuthManager : public QObject
 	{
-		QString LocalPath_;
+		Q_OBJECT
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+		QNetworkAccessManager *NAM_;
 
-		QStringList Genres_;
+		QMap<QString, QString> Login2Sid_;
+		QSet<QString> FailedAuth_;
+	public:
+		AuthManager (QNetworkAccessManager*, QObject* = 0);
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
+		QString GetSID (const QString&);
+	private slots:
+		void handleAuthReplyFinished ();
+		void handleAuthReplyError ();
+	signals:
+		void sidReady (const QString&);
+		void sidError (const QString&, const QString&);
 
-		MediaInfo& operator= (const Media::AudioInfo&);
-
-		operator Media::AudioInfo () const;
-
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);
+}

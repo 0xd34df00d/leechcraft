@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "playlistwidget.h"
+#include <algorithm>
 #include <QToolBar>
 #include <QInputDialog>
 #include <QFileDialog>
@@ -124,7 +125,7 @@ namespace LMP
 		PlaylistToolbar_->addAction (loadFiles);
 
 		QAction *addURL = new QAction (tr ("Add URL..."), this);
-		addURL->setProperty ("ActionIcon", "network-server");
+		addURL->setProperty ("ActionIcon", "folder-remote");
 		connect (addURL,
 				SIGNAL (triggered ()),
 				this,

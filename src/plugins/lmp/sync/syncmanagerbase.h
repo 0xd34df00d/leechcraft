@@ -18,35 +18,49 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QMetaType>
-#include <interfaces/media/audiostructs.h>
+#include <QObject>
+#include <QMap>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo
+	class ISyncPlugin;
+	class TranscodeManager;
+	struct TranscodingParams;
+
+	class SyncManagerBase : public QObject
 	{
-		QString LocalPath_;
+		Q_OBJECT
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+	protected:
+		TranscodeManager *Transcoder_;
 
-		QStringList Genres_;
+		int TranscodedCount_;
+		int TotalTCCount_;
+		bool WereTCErrors_;
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
+		int CopiedCount_;
+		int TotalCopyCount_;
+	public:
+		SyncManagerBase (QObject* = 0);
+	protected:
+		void AddFiles (const QStringList&, const TranscodingParams&);
+		void HandleFileTranscoded (const QString&, const QString&);
+	private:
+		void CheckTCFinished ();
+		void CheckUploadFinished ();
+	protected slots:
+		void handleStartedTranscoding (const QString&);
+		virtual void handleFileTranscoded (const QString&, const QString&, QString) = 0;
+		void handleFileTCFailed (const QString&);
+		void handleStartedCopying (const QString&);
+		void handleFinishedCopying ();
+	signals:
+		void uploadLog (const QString&);
 
-		MediaInfo& operator= (const Media::AudioInfo&);
-
-		operator Media::AudioInfo () const;
-
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
+		void transcodingProgress (int, int);
+		void uploadProgress (int, int);
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);

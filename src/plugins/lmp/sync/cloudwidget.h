@@ -18,35 +18,34 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QMetaType>
-#include <interfaces/media/audiostructs.h>
+#include <QWidget>
+#include "ui_cloudwidget.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo
+	class UploadModel;
+
+	class CloudWidget : public QWidget
 	{
-		QString LocalPath_;
+		Q_OBJECT
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+		Ui::CloudWidget Ui_;
+		UploadModel *DevUploadModel_;
+		QObjectList Clouds_;
+	public:
+		CloudWidget (QWidget* = 0);
+	private slots:
+		void on_CloudSelector__activated (int);
+		void handleCloudStoragePlugins ();
+		void handleAccountsChanged ();
 
-		QStringList Genres_;
+		void on_UploadButton__released ();
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
-
-		MediaInfo& operator= (const Media::AudioInfo&);
-
-		operator Media::AudioInfo () const;
-
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
+		void appendUpLog (QString);
+		void handleTranscodingProgress (int, int);
+		void handleUploadProgress (int, int);
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);

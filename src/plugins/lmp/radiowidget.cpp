@@ -36,10 +36,19 @@ namespace LMP
 
 		on_ProviderBox__currentIndexChanged (-1);
 
-		Providers_ = Core::Instance ().GetProxy ()->GetPluginsManager ()->
-				GetAllCastableTo<Media::IRadioStationProvider*> ();
-		Q_FOREACH (auto provider, Providers_)
-			Ui_.ProviderBox_->addItem (provider->GetRadioName ());
+		auto providerObjs = Core::Instance ().GetProxy ()->GetPluginsManager ()->
+				GetAllCastableRoots<Media::IRadioStationProvider*> ();
+		Q_FOREACH (auto provObj, providerObjs)
+		{
+			auto prov = qobject_cast<Media::IRadioStationProvider*> (provObj);
+			Providers_ << prov;
+			Ui_.ProviderBox_->addItem (prov->GetRadioName ());
+
+			connect (provObj,
+					SIGNAL (predefinedStationsChanged ()),
+					this,
+					SLOT (handlePredefinedStationsChanged ()));
+		}
 
 		Ui_.ProviderBox_->setCurrentIndex (-1);
 
@@ -91,6 +100,17 @@ namespace LMP
 			item->setData (station, StationRoles::StationID);
 			StationsModel_->appendRow (item);
 		}
+	}
+
+	void RadioWidget::handlePredefinedStationsChanged ()
+	{
+		const int idx = Ui_.ProviderBox_->currentIndex ();
+		if (idx < 0)
+			return;
+
+		auto prov = qobject_cast<Media::IRadioStationProvider*> (sender ());
+		if (Providers_.at (idx) == prov)
+			on_ProviderBox__currentIndexChanged (idx);
 	}
 }
 }

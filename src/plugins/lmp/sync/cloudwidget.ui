@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DevicesBrowserWidget</class>
- <widget class="QWidget" name="DevicesBrowserWidget">
+ <class>CloudWidget</class>
+ <widget class="QWidget" name="CloudWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>459</width>
+    <width>461</width>
     <height>620</height>
    </rect>
   </property>
@@ -18,48 +18,65 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Device to sync:</string>
+        <string>Cloud service:</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QComboBox" name="DevicesSelector_">
+     <item row="0" column="1">
+      <widget class="QComboBox" name="CloudSelector_">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
       </widget>
      </item>
-     <item>
-      <widget class="QPushButton" name="MountButton_">
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Mount</string>
+        <string>Account:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="AccountSelector_">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
        </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="SyncTabs_">
      <property name="currentIndex">
       <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>Local collection</string>
+       <string>Sync</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="margin">
         <number>1</number>
        </property>
        <item>
-        <widget class="QTreeView" name="OurCollection_"/>
+        <widget class="QTreeView" name="OurCollection_">
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+        </widget>
+       </item>
+       <item>
+        <widget class="LeechCraft::LMP::TranscodingParamsWidget" name="TranscodingOpts_" native="true"/>
        </item>
        <item>
         <widget class="QProgressBar" name="TSProgress_">
@@ -87,19 +104,6 @@
           <string>Upload...</string>
          </property>
         </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="UpOptsTab_">
-      <attribute name="title">
-       <string>Transcoding options</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
-        <number>1</number>
-       </property>
-       <item>
-        <widget class="LeechCraft::LMP::TranscodingParamsWidget" name="TranscodingOpts_" native="true"/>
        </item>
       </layout>
      </widget>
@@ -135,7 +139,7 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>LeechCraft::LMP::TranscodingParamsWidget</class>
    <extends>QWidget</extends>
-   <header>devsync/transcodingparamswidget.h</header>
+   <header>sync/transcodingparamswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

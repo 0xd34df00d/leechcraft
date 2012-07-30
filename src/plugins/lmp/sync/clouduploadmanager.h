@@ -18,35 +18,35 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QMetaType>
-#include <interfaces/media/audiostructs.h>
+#include "syncmanagerbase.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo
+	class ICloudStoragePlugin;
+	class CloudUploader;
+
+	class CloudUploadManager : public SyncManagerBase
 	{
-		QString LocalPath_;
+		Q_OBJECT
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+		QMap<ICloudStoragePlugin*, CloudUploader*> Cloud2Uploaders_;
 
-		QStringList Genres_;
+		struct CloudUpload
+		{
+			ICloudStoragePlugin *Cloud_;
+			QString Account_;
+		};
+		QMap<QString, CloudUpload> Source2Params_;
+	public:
+		CloudUploadManager (QObject* = 0);
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
-
-		MediaInfo& operator= (const Media::AudioInfo&);
-
-		operator Media::AudioInfo () const;
-
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
+		void AddFiles (ICloudStoragePlugin*, const QString&, const QStringList&, const TranscodingParams&);
+	private:
+		void CreateUploader (ICloudStoragePlugin*);
+	private slots:
+		void handleFileTranscoded (const QString& from, const QString&, QString);
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);

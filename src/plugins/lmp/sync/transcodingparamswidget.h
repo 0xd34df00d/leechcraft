@@ -19,40 +19,25 @@
 #pragma once
 
 #include <QWidget>
-#include "ui_devicesbrowserwidget.h"
-
-class IRemovableDevManager;
+#include "ui_transcodingparamswidget.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class ISyncPlugin;
-	class DevicesUploadModel;
+	struct TranscodingParams;
 
-	class DevicesBrowserWidget : public QWidget
+	class TranscodingParamsWidget : public QWidget
 	{
 		Q_OBJECT
 
-		Ui::DevicesBrowserWidget Ui_;
-		IRemovableDevManager *DevMgr_;
-		DevicesUploadModel *DevUploadModel_;
-
-		ISyncPlugin *CurrentSyncer_;
+		Ui::TranscodingParamsWidget Ui_;
 	public:
-		DevicesBrowserWidget (QWidget* = 0);
+		TranscodingParamsWidget (QWidget* = 0);
 
-		void InitializeDevices ();
-	private slots:
-		void handleDevDataChanged (const QModelIndex&, const QModelIndex&);
-		void on_UploadButton__released ();
-		void on_DevicesSelector__activated (int);
-		void on_MountButton__released ();
+		void SetMaskVisible (bool);
 
-		void appendUpLog (QString);
-
-		void handleTranscodingProgress (int, int);
-		void handleUploadProgress (int, int);
+		TranscodingParams GetParams () const;
 	};
 }
 }

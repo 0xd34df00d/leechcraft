@@ -87,6 +87,7 @@ namespace Lastfmscrobble
 
 		Media::IPendingSimilarArtists* RequestRecommended (int);
 
+		bool IsRadioSupported (Type) const;
 		QString GetRadioName () const;
 		Media::IRadioStation_ptr GetRadioStation (Type, const QString&);
 		QMap<QByteArray, QString> GetPredefinedStations () const;
@@ -99,6 +100,8 @@ namespace Lastfmscrobble
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 
 		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
+
+		void predefinedStationsChanged ();
 
 		void gotRecentReleases (const QList<Media::AlbumRelease>&);
 	};

@@ -73,15 +73,19 @@ SET (SRCS
 	biopropproxy.cpp
 	audiopropswidget.cpp
 	playlistwidget.cpp
-	devicesbrowserwidget.cpp
 	aalabeleventfilter.cpp
 	collectionsortermodel.cpp
-	devsync/copymanager.cpp
-	devsync/devicesuploadmodel.cpp
-	devsync/syncmanager.cpp
-	devsync/transcodejob.cpp
-	devsync/transcodemanager.cpp
-	devsync/transcodingparamswidget.cpp
+	sync/cloudwidget.cpp
+	sync/clouduploadmanager.cpp
+	sync/clouduploader.cpp
+	sync/copymanager.cpp
+	sync/devicesbrowserwidget.cpp
+	sync/syncmanagerbase.cpp
+	sync/syncmanager.cpp
+	sync/transcodejob.cpp
+	sync/transcodemanager.cpp
+	sync/transcodingparamswidget.cpp
+	sync/uploadmodel.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
@@ -97,8 +101,9 @@ SET (FORMS
 	biowidget.ui
 	audiopropswidget.ui
 	playlistwidget.ui
-	devicesbrowserwidget.ui
-	devsync/transcodingparamswidget.ui
+	sync/cloudwidget.ui
+	sync/devicesbrowserwidget.ui
+	sync/transcodingparamswidget.ui
 	)
 SET (RESOURCES resources.qrc)
 CreateTrVars ("lmp" "en;es;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
@@ -137,7 +142,11 @@ INSTALL (FILES lmpsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 INSTALL (DIRECTORY interfaces DESTINATION include/leechcraft)
 
 OPTION (ENABLE_LMP_DUMBSYNC "Enable DumbSync, plugin for syncing with Flash-like media players" ON)
+OPTION (ENABLE_LMP_MP3TUNES "Enable plugin for syncing and using the mp3tunes.com service" ON)
 
 IF (ENABLE_LMP_DUMBSYNC)
 	ADD_SUBDIRECTORY (plugins/dumbsync)
 ENDIF (ENABLE_LMP_DUMBSYNC)
+IF (ENABLE_LMP_MP3TUNES)
+	ADD_SUBDIRECTORY (plugins/mp3tunes)
+ENDIF (ENABLE_LMP_MP3TUNES)

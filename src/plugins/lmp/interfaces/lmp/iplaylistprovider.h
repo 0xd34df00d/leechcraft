@@ -18,35 +18,37 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QMetaType>
+#include <boost/optional.hpp>
+#include <QtPlugin>
+#include <QUrl>
 #include <interfaces/media/audiostructs.h>
+
+class QStandardItem;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo
+	class IPlaylistProvider
 	{
-		QString LocalPath_;
+	public:
+		enum ItemRoles
+		{
+			SourceURLs = Qt::UserRole + 1,
+			Max
+		};
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+		virtual ~IPlaylistProvider () {}
 
-		QStringList Genres_;
+		virtual QStandardItem* GetPlaylistsRoot () const = 0;
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
+		virtual void UpdatePlaylists () = 0;
 
-		MediaInfo& operator= (const Media::AudioInfo&);
-
-		operator Media::AudioInfo () const;
-
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
+		virtual boost::optional<Media::AudioInfo> GetURLInfo (const QUrl&) = 0;
 	};
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);
+Q_DECLARE_METATYPE (QList<QUrl>);
+
+Q_DECLARE_INTERFACE (LeechCraft::LMP::IPlaylistProvider, "org.LeechCraft.LMP.IPlaylistProvider/1.0");

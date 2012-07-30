@@ -18,24 +18,45 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_transcodingparamswidget.h"
+#include <QObject>
+
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace LMP
 {
-	struct TranscodingParams;
+enum class CloudStorageError;
 
-	class TranscodingParamsWidget : public QWidget
+namespace MP3Tunes
+{
+	class AuthManager;
+
+	class Uploader : public QObject
 	{
 		Q_OBJECT
 
-		Ui::TranscodingParamsWidget Ui_;
-	public:
-		TranscodingParamsWidget (QWidget* = 0);
+		const QString Login_;
+		QNetworkAccessManager *NAM_;
+		AuthManager *AuthMgr_;
 
-		TranscodingParams GetParams () const;
+		QString UpAfterAuth_;
+	public:
+		Uploader (const QString&, QNetworkAccessManager*, AuthManager*, QObject* = 0);
+
+		void Upload (const QString&);
+	private slots:
+		void handleSidReady (const QString&);
+		void handleSidError (const QString&, const QString&);
+		void handleUploadFinished ();
+	signals:
+		void removeThis (const QString&);
+
+		void uploadFinished (const QString&,
+				LeechCraft::LMP::CloudStorageError, const QString&);
 	};
+}
 }
 }
