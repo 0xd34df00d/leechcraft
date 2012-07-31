@@ -130,6 +130,31 @@ namespace Xtazy
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
 	}
 
+	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+			QObject*,
+			QObject *entryObj,
+			int,
+			QString variant)
+	{
+		if (!XmlSettingsManager::Instance ().property ("NPCmdEnabled").toBool ())
+			return;
+
+		auto text = proxy->GetValue ("text").toString ();
+		if (text != "/np")
+			return;
+
+		if (!Previous_.isEmpty ())
+		{
+			text = XmlSettingsManager::Instance ().property ("NPCmdSubst").toString ();
+			text.replace ("$artist", Previous_ ["artist"].toString ());
+			text.replace ("$album", Previous_ ["source"].toString ());
+			text.replace ("$title", Previous_ ["title"].toString ());
+		}
+		else
+			text = XmlSettingsManager::Instance ().property ("NPCmdNoPlaying").toString ();
+		proxy->SetValue ("text", text);
+	}
+
 	void Plugin::publish (const QMap<QString, QVariant>& info)
 	{
 		if (info == Previous_)

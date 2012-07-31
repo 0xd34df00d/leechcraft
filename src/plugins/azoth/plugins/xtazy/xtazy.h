@@ -22,6 +22,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/core/ihookproxy.h>
 #include <interfaces/media/iaudioscrobbler.h>
 
 class QTranslator;
@@ -74,6 +75,11 @@ namespace Xtazy
 		void LoveCurrentTrack ();
 	public slots:
 		void initPlugin (QObject*);
+		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QObject *entry,
+				int type,
+				QString variant);
 	private slots:
 		void publish (const QMap<QString, QVariant>&);
 	};
