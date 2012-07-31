@@ -18,9 +18,13 @@
 
 #include "xtazy.h"
 #include <QIcon>
+#include <QMessageBox>
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/iwebfilestorage.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/isupporttune.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -31,6 +35,7 @@
 
 #ifdef HAVE_DBUS
 #include "mprissource.h"
+#include "tracksharedialog.h"
 #endif
 
 namespace LeechCraft
@@ -125,6 +130,56 @@ namespace Xtazy
 	{
 	}
 
+	void Plugin::HandleShare (LeechCraft::IHookProxy_ptr proxy, QObject *entryObj, const QString& variant, const QUrl& url)
+	{
+		proxy->CancelDefault ();
+		if (!url.isValid ())
+			return;
+
+		if (url.scheme () != "file")
+		{
+			proxy->SetValue ("text", QString::fromUtf8 (url.toEncoded ()));
+			return;
+		}
+
+		auto sharers = Proxy_->GetPluginsManager ()->GetAllCastableRoots<IWebFileStorage*> ();
+		QMap<QString, QObject*> variants;
+		Q_FOREACH (auto sharerObj, sharers)
+		{
+			auto sharer = qobject_cast<IWebFileStorage*> (sharerObj);
+			Q_FOREACH (const auto& var, sharer->GetServiceVariants ())
+				variants [var] = sharerObj;
+		}
+
+		if (sharers.isEmpty ())
+		{
+			QMessageBox::critical (0,
+					"LeechCraft",
+					tr ("No web share plugins are installed. Try installing NetStoreManager, for example."));
+			return;
+		}
+
+		const auto& localPath = url.toLocalFile ();
+
+		TrackShareDialog dia (localPath, variants.keys (), entryObj);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& selectedVar = dia.GetVariantName ();
+		auto sharerObj = variants [selectedVar];
+
+		auto sharer = qobject_cast<IWebFileStorage*> (sharerObj);
+		sharer->UploadFile (localPath, selectedVar);
+
+		PendingUploads_ [localPath] << UploadNotifee_t (entryObj, variant);
+
+		connect (sharerObj,
+				SIGNAL (fileUploaded (QString, QUrl)),
+				this,
+				SLOT (handleFileUploaded (QString, QUrl)),
+				Qt::UniqueConnection);
+	}
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
@@ -140,19 +195,21 @@ namespace Xtazy
 			return;
 
 		auto text = proxy->GetValue ("text").toString ();
-		if (text != "/np")
-			return;
-
-		if (!Previous_.isEmpty ())
+		if (text == "/np")
 		{
-			text = XmlSettingsManager::Instance ().property ("NPCmdSubst").toString ();
-			text.replace ("$artist", Previous_ ["artist"].toString ());
-			text.replace ("$album", Previous_ ["source"].toString ());
-			text.replace ("$title", Previous_ ["title"].toString ());
+			if (!Previous_.isEmpty ())
+			{
+				text = XmlSettingsManager::Instance ().property ("NPCmdSubst").toString ();
+				text.replace ("$artist", Previous_ ["artist"].toString ());
+				text.replace ("$album", Previous_ ["source"].toString ());
+				text.replace ("$title", Previous_ ["title"].toString ());
+			}
+			else
+				text = XmlSettingsManager::Instance ().property ("NPCmdNoPlaying").toString ();
+			proxy->SetValue ("text", text);
 		}
-		else
-			text = XmlSettingsManager::Instance ().property ("NPCmdNoPlaying").toString ();
-		proxy->SetValue ("text", text);
+		else if (text == "/sharesong" && Previous_.contains ("URL"))
+			HandleShare (proxy, entryObj, variant, Previous_ ["URL"].toUrl ());
 	}
 
 	void Plugin::publish (const QMap<QString, QVariant>& info)
@@ -179,6 +236,29 @@ namespace Xtazy
 			ISupportTune *tune = qobject_cast<ISupportTune*> (accObj);
 			if (tune)
 				tune->PublishTune (info);
+		}
+	}
+
+	void Plugin::handleFileUploaded (const QString& filename, const QUrl& url)
+	{
+		if (!PendingUploads_.contains (filename))
+			return;
+
+		const auto& encoded = url.toEncoded ();
+
+		const auto& notifees = PendingUploads_.take (filename);
+		Q_FOREACH (const auto& notifee, notifees)
+		{
+			auto entry = qobject_cast<ICLEntry*> (notifee.first);
+			if (!entry)
+				continue;
+
+			const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
+					IMessage::MTMUCMessage :
+					IMessage::MTChatMessage;
+			auto msgObj = entry->CreateMessage (msgType, notifee.second, encoded);
+			auto msg = qobject_cast<IMessage*> (msgObj);
+			msg->Send ();
 		}
 	}
 }

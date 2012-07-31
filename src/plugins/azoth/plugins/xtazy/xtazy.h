@@ -56,6 +56,9 @@ namespace Xtazy
 		LCSource *LCSource_;
 
 		QMap<QString, QVariant> Previous_;
+
+		typedef QPair<QPointer<QObject>, QString> UploadNotifee_t;
+		QMap<QString, QList<UploadNotifee_t>> PendingUploads_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -73,6 +76,9 @@ namespace Xtazy
 		void NowPlaying (const Media::AudioInfo& audio);
 		void PlaybackStopped ();
 		void LoveCurrentTrack ();
+	private:
+		void HandleShare (LeechCraft::IHookProxy_ptr proxy,
+				QObject*, const QString&, const QUrl&);
 	public slots:
 		void initPlugin (QObject*);
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
@@ -82,6 +88,7 @@ namespace Xtazy
 				QString variant);
 	private slots:
 		void publish (const QMap<QString, QVariant>&);
+		void handleFileUploaded (const QString&, const QUrl&);
 	};
 }
 }
