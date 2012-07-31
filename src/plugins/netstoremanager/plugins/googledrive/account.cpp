@@ -19,6 +19,8 @@
 #include "account.h"
 #include <QtDebug>
 #include <QStandardItemModel>
+#include <QMessageBox>
+#include <QMainWindow>
 #include "core.h"
 
 namespace LeechCraft
@@ -62,11 +64,19 @@ namespace GoogleDrive
 
 	void Account::Upload (const QString& filepath)
 	{
-
 	}
 
 	void Account::Delete (const QList<QStringList>& id)
 	{
+		const QString& itemId = id [0] [0];
+		auto res = QMessageBox::warning (Core::Instance ().GetProxy ()->GetMainWindow (),
+				tr ("Remove item"),
+				tr ("Are you sure to delete permanently an entry <b>%1</b>?"
+					"<br><i>Note: If entry is directory all files in it <b>will be</b> deleted.</i>")
+							.arg (Items_ [itemId].Name_),
+				QMessageBox::Ok | QMessageBox::Cancel);
+		if (res == QMessageBox::Ok)
+			DriveManager_->RemoveEntry (itemId);
 	}
 
 	QStringList Account::GetListingHeaders () const
@@ -80,11 +90,27 @@ namespace GoogleDrive
 
 	ListingOps Account::GetListingOps () const
 	{
-		return ListingOp::Delete;
+		return ListingOp::Delete | ListingOp::TrashSupporing;
 	}
 
 	void Account::Prolongate (const QList<QStringList>&)
 	{
+	}
+
+	void Account::MoveToTrash (const QList<QStringList>& ids)
+	{
+		DriveManager_->MoveEntryToTrash (ids [0] [0]);
+	}
+
+	void Account::RestoreFromTrash (const QList<QStringList>& ids)
+	{
+		DriveManager_->RestoreEntryFromTrash (ids [0] [0]);
+	}
+
+	void Account::EmptyTrash (const QList<QStringList>& ids)
+	{
+		for (const auto& id : ids)
+			DriveManager_->RemoveEntry (id [0]);
 	}
 
 	void Account::RefreshListing ()
@@ -152,62 +178,47 @@ namespace GoogleDrive
 
 	namespace
 	{
-		QList<QStandardItem*> CreateNewItem (const DriveItem& item, QStandardItem *parent,
-				QHash<QString, QStandardItem*>& dirs)
+		QList<QStandardItem*> CreateItem (QHash<QString,
+				QList<QStandardItem*>>& id2Item, const DriveItem& item)
 		{
 			QList<QStandardItem*> row;
-			row << new QStandardItem (item.Name_);
-			row [0]->setData (item.DownloadUrl_, ListingRole::URL);
-			row [0]->setData (item.Id_, ListingRole::ID);
+			if (!id2Item.contains (item.Id_))
+			{
+				row << new QStandardItem (item.Name_);
+				row [0]->setData (item.Id_, ListingRole::ID);
+				row [0]->setData (static_cast<bool> (item.Labels_ & DriveItem::ILRemoved),
+						ListingRole::InTrash);
 
-			if (!item.IsFolder_)
-			{
-				row << new QStandardItem (item.OwnerNames_.join (", "));
-				row << new QStandardItem (QObject::tr ("%1 (by %2)")
-						.arg (item.ModifiedDate_.toString (Qt::SystemLocaleDate),
-								item.LastModifiedBy_));
-			}
-			else
-			{
-				row [0]->setIcon (Core::Instance ().GetProxy ()->GetIcon ("folder"));
-				dirs [item.Id_] = row [0];
+				if (!item.IsFolder_)
+				{
+					row << new QStandardItem (item.OwnerNames_.join (", "));
+					row << new QStandardItem (QObject::tr ("%1 (by %2)")
+							.arg (item.ModifiedDate_.toString ("dd.MM.yy hh:mm"),
+									item.LastModifiedBy_));
+				}
+				else
+				{
+					row [0]->setIcon (Core::Instance ().GetProxy ()->GetIcon ("folder"));
+					id2Item [item.Id_] = row;
+				}
 			}
 
-			if (parent)
-			{
-				parent->appendRow (row);
-				for (auto item : row)
-					item->setEditable (false);
-			}
+			for (const auto& itm : row)
+				itm->setEditable (false);
 
 			return row;
 		}
 
-		void CreateItems (QList<DriveItem> items, QHash<QString, QStandardItem*>& dirs,
-				const QStringList& trashedItems, QStandardItem *trash)
+		void CreateChildItem (QHash<QString, QList<QStandardItem*>>& id2Item,
+				const DriveItem& parentItem, const DriveItem& childItem)
 		{
-			int i = 0;
-			while (!items.isEmpty ())
-			{
-				if (items.count () == i)
-					break;
-
-				DriveItem item = items.at (i++);
-				if (dirs.contains (item.ParentId_))
-				{
-					QStandardItem *parentItem = 0;
-					if (!trash ||
-							trashedItems.contains (item.ParentId_))
-						parentItem = dirs [item.ParentId_];
-					else
-						parentItem = trash;
-
-					CreateNewItem (item, parentItem, dirs);
-
-					items.removeAt (i - 1);
-					i = 0;
-				}
-			}
+			QList<QStandardItem*> parentRow = !id2Item.contains (parentItem.Id_) ?
+				CreateItem (id2Item, parentItem) :
+				id2Item [parentItem.Id_];
+			QList<QStandardItem*> childRow = !id2Item.contains (childItem.Id_) ?
+				CreateItem (id2Item, childItem) :
+				id2Item [childItem.Id_];
+			parentRow [0]->appendRow (childRow);
 		}
 	}
 
@@ -215,38 +226,47 @@ namespace GoogleDrive
 	{
 		QList<QList<QStandardItem*>> treeItems;
 
-		QHash<QString, QStandardItem*> Id2ItemDir;
-		QStringList IdThrashed;
-		QList<DriveItem> othersItems;
-		QList<DriveItem> trashedItems;
-		Q_FOREACH (const DriveItem& item, items)
+		QHash<QString, DriveItem> trashedItems;
+		QHash<QString, DriveItem> id2DriveItem_;
+		QHash<QString, QList<QStandardItem*>> id2Item_;
+		QHash<QString, QList<QStandardItem*>> trashedId2Item_;
+
+		for (const auto& item : items)
 		{
-			QList<QStandardItem*> row;
 			if (item.Labels_ & DriveItem::ILRemoved)
 			{
-				trashedItems << item;
-				IdThrashed << item.Id_;
+				trashedItems [item.Id_] = item;
 				continue;
 			}
 
+			id2DriveItem_ [item.Id_] = item;
 			if (item.ParentIsRoot_)
-				treeItems << CreateNewItem (item, 0, Id2ItemDir);
-			else
-				othersItems << item;
+				treeItems << CreateItem (id2Item_, item);
 		}
 
-		CreateItems (othersItems, Id2ItemDir, QStringList (), 0);
+		const QStringList& keys = id2DriveItem_.keys ();
+		const auto& values = id2DriveItem_.values ();
+		for (const auto& item : values)
+		{
+			if (keys.contains (item.ParentId_))
+				CreateChildItem (id2Item_, id2DriveItem_ [item.ParentId_], item);
+			else
+				CreateItem (id2Item_, item);
+		}
 
-		QList<QStandardItem*> row;
-		row << new QStandardItem (Core::Instance ()
-				.GetProxy ()->GetIcon ("user-trash"), tr ("Trash"));
-		treeItems << row;
-		CreateItems (trashedItems, Id2ItemDir, IdThrashed, row [0]);
+		const QStringList& trashedKeys = trashedItems.keys ();
+		const auto& trashedValues = trashedItems.values ();
+		for (const auto& item : trashedValues)
+			if (!trashedKeys.contains (item.ParentId_))
+				treeItems << CreateItem (trashedId2Item_, item);
 
-		for (auto row : treeItems)
-			for (auto item : row)
-				item->setEditable (false);
+		for (const auto& item : trashedValues)
+			if (trashedKeys.contains (item.ParentId_))
+				CreateChildItem (trashedId2Item_, trashedItems [item.ParentId_], item);
 
+		treeItems.removeAll (QList<QStandardItem*> ());
+
+		emit gotListing (QList<QList<QStandardItem*>> ());
 		emit gotListing (treeItems);
 	}
 

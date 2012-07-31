@@ -57,6 +57,7 @@ namespace GoogleDrive
 		bool Trusted_;
 
 		DriveManager *DriveManager_;
+		QHash<QString, DriveItem> Items_;
 	public:
 		Account (const QString& name, QObject *parentPlugin = 0);
 
@@ -69,7 +70,10 @@ namespace GoogleDrive
 		void Delete (const QList<QStringList>& id);
 		QStringList GetListingHeaders () const;
 		ListingOps GetListingOps () const;
-		void Prolongate (const QList<QStringList>& id);
+		void Prolongate (const QList<QStringList>& ids);
+		void MoveToTrash (const QList<QStringList>& ids);
+		void RestoreFromTrash (const QList<QStringList>& ids);
+		void EmptyTrash (const QList<QStringList>& ids);
 		void RefreshListing ();
 
 		QByteArray Serialize ();
@@ -91,7 +95,7 @@ namespace GoogleDrive
 		void upProgress (quint64 done, quint64 total, const QString& filepath);
 		void upStatusChanged (const QString& status, const QString& filepath);
 
-		void gotListing (const QList<QList<QStandardItem*>>&);
+		void gotListing (const QList<QList<QStandardItem*>>& items);
 	};
 }
 }
