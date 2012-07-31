@@ -201,6 +201,7 @@ namespace GoogleDrive
 					row [0]->setIcon (Core::Instance ().GetProxy ()->GetIcon ("folder"));
 					id2Item [item.Id_] = row;
 				}
+				row [0]->setData (item.IsFolder_, FileItemRoles::ItemIsFolderRole);
 			}
 
 			for (const auto& itm : row)
@@ -266,6 +267,20 @@ namespace GoogleDrive
 				CreateChildItem (trashedId2Item_, trashedItems [item.ParentId_], item);
 
 		treeItems.removeAll (QList<QStandardItem*> ());
+
+		std::sort (treeItems.begin (), treeItems.end (),
+				[] (const QList<QStandardItem*>& leftItem, const QList<QStandardItem*>& rightItem)
+				{
+					if (leftItem [0]->data (FileItemRoles::ItemIsFolderRole).toBool () &&
+							!rightItem [0]->data (FileItemRoles::ItemIsFolderRole).toBool ())
+						return true;
+					else if (!leftItem [0]->data (FileItemRoles::ItemIsFolderRole).toBool () &&
+							rightItem [0]->data (FileItemRoles::ItemIsFolderRole).toBool ())
+						return false;
+					else
+						return (QString::localeAwareCompare (leftItem [0]->text (), rightItem [0]->text ()) < 0);
+
+				});
 
 		emit gotListing (QList<QList<QStandardItem*>> ());
 		emit gotListing (treeItems);

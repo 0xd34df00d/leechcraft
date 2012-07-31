@@ -35,6 +35,11 @@ namespace GoogleDrive
 
 	typedef std::shared_ptr<Account> Account_ptr;
 
+	enum FileItemRoles
+	{
+		ItemIsFolderRole = Qt::UserRole + 1
+	};
+
 	class Account : public QObject
 					, public IStorageAccount
 					, public ISupportFileListings
@@ -43,11 +48,6 @@ namespace GoogleDrive
 		Q_INTERFACES (LeechCraft::NetStoreManager::IStorageAccount
 				LeechCraft::NetStoreManager::ISupportFileListings)
 
-		enum FileItemRoles
-		{
-			ItemIdRole = Qt::UserRole + 1,
-			ItemParentIdRole
-		};
 
 		QObject *ParentPlugin_;
 		QString Name_;
