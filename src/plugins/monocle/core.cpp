@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <QFile>
 #include <interfaces/iplugin2.h>
 #include "pixmapcachemanager.h"
 #include "recentlyopenedmanager.h"
@@ -69,6 +70,9 @@ namespace Monocle
 
 	IDocument_ptr Core::LoadDocument (const QString& path)
 	{
+		if (!QFile::exists (path))
+			return IDocument_ptr ();
+
 		decltype (Backends_) loaders;
 		Q_FOREACH (auto backend, Backends_)
 			if (qobject_cast<IBackendPlugin*> (backend)->CanLoadDocument (path))
