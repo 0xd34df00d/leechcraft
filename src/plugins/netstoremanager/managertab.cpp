@@ -56,16 +56,21 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flDelete ()));
-		MoveToTrash_ = new QAction (tr ("Move to trash selected"), this);
+		MoveToTrash_ = new QAction (tr ("Move to trash"), this);
 		connect (MoveToTrash_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flMoveToTrash ()));
-		RemoveAll_  = new QAction (tr ("Clear trash"), this);
-		connect (RemoveAll_,
+		UntrashFile_ = new QAction (tr ("Restore from trash"), this);
+		connect (UntrashFile_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (flClearTrash ()));
+				SLOT (flRestoreFromTrash ()));
+		EmptyTrash_  = new QAction (tr ("Empty trash"), this);
+		connect (EmptyTrash_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flEmptyTrash ()));
 
 		Ui_.setupUi (this);
 		Ui_.FilesTree_->setModel (Model_);
@@ -87,11 +92,6 @@ namespace NetStoreManager
 		}
 		if (Ui_.AccountsBox_->count ())
 			on_AccountsBox__activated (0);
-
-		Ui_.FilesTree_->addAction (CopyURL_);
-		Ui_.FilesTree_->addAction (ProlongateFile_);
-		Ui_.FilesTree_->addAction (MoveToTrash_);
-		Ui_.FilesTree_->addAction (DeleteFile_);
 
 		Ui_.FilesTree_->setContextMenuPolicy (Qt::CustomContextMenu);
 		connect (Ui_.FilesTree_,
@@ -208,6 +208,26 @@ namespace NetStoreManager
 		}
 	}
 
+	QList<QStringList> ManagerTab::GetTrashedFiles () const
+	{
+		QList<QStringList> result;
+		for (int i = 0, count = Model_->rowCount (); i < count; ++i)
+		{
+			QStandardItem *item = Model_->item (i);
+			if (item->data (ListingRole::ID).toString () == "netstoremanager.item_trash")
+			{
+				for (int j = 0, cnt = item->rowCount (); j < cnt; ++j)
+				{
+					qDebug () << item->child (j)->text ();
+					result << QStringList (item->child (j)->data (ListingRole::ID).toString ());
+				}
+				break;
+			}
+		}
+
+		return result;
+	}
+
 	void ManagerTab::handleGotListing (const QList<QList<QStandardItem*>>& items)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
@@ -269,8 +289,24 @@ namespace NetStoreManager
 		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->MoveToTrash (ids); });
 	}
 
-	void ManagerTab::flClearTrash ()
+	void ManagerTab::flRestoreFromTrash ()
 	{
+		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->RestoreFromTrash (ids); });
+	}
+
+	void ManagerTab::flEmptyTrash ()
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		if (sfl)
+			sfl->EmptyTrash (GetTrashedFiles ());
+		else
+			qDebug () << Q_FUNC_INFO
+					<< acc->GetObject ()
+					<< "is not an ISupportFileListings object";
 	}
 
 	void ManagerTab::on_AccountsBox__activated (int)
@@ -337,11 +373,12 @@ namespace NetStoreManager
 
 		QMenu *menu = new QMenu;
 		MoveToTrash_->setEnabled (!index.data (ListingRole::InTrash).toBool ());
+		UntrashFile_->setEnabled (index.data (ListingRole::InTrash).toBool ());
 
 		if (index.data (ListingRole::ID).toString () == "netstoremanager.item_trash")
-			menu->addAction (RemoveAll_);
+			menu->addAction (EmptyTrash_);
 		else
-			menu->addActions ({ CopyURL_, ProlongateFile_, MoveToTrash_, DeleteFile_ });
+			menu->addActions ({ CopyURL_, ProlongateFile_, MoveToTrash_, UntrashFile_,  DeleteFile_ });
 
 		menu->exec (Ui_.FilesTree_->
 				mapToGlobal (QPoint (point.x (), point.y () +

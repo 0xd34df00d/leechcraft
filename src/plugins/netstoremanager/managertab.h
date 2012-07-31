@@ -55,7 +55,8 @@ namespace NetStoreManager
 		QAction *ProlongateFile_;
 		QAction *DeleteFile_;
 		QAction *MoveToTrash_;
-		QAction *RemoveAll_;
+		QAction *UntrashFile_;
+		QAction *EmptyTrash_;
 		QHash<IStorageAccount*, QHash<QString, bool>> Account2ItemExpandState_;
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
@@ -71,13 +72,15 @@ namespace NetStoreManager
 		void SaveModelState (const QModelIndex& parent = QModelIndex ());
 		void RestoreModelState ();
 		void ExpandModelItems (const QModelIndex& parent = QModelIndex ());
+		QList<QStringList> GetTrashedFiles () const;
 	private slots:
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
 		void flCopyURL ();
 		void flProlongate ();
 		void flDelete ();
 		void flMoveToTrash ();
-		void flClearTrash ();
+		void flRestoreFromTrash ();
+		void flEmptyTrash ();
 		void on_AccountsBox__activated (int);
 		void on_Update__released ();
 		void on_Upload__released ();

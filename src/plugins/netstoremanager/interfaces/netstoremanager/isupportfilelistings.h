@@ -58,6 +58,8 @@ namespace NetStoreManager
 		virtual void Delete (const QList<QStringList>& id) = 0;
 		virtual void Prolongate (const QList<QStringList>& id) = 0;
 		virtual void MoveToTrash (const QList<QStringList>& id) = 0;
+		virtual void RestoreFromTrash (const QList<QStringList>& id) = 0;
+		virtual void EmptyTrash (const QList<QStringList>& id) = 0;
 	protected:
 		virtual void gotListing (const QList<QList<QStandardItem*>>&) = 0;
 	};
