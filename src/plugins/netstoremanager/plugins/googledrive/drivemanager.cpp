@@ -55,6 +55,12 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
+	void DriveManager::RestoreEntryFromTrash (const QString& id)
+	{
+		ApiCallQueue_ << [this, id] (const QString& key) { RequestRestoreEntryFromTrash (id, key); };
+		RequestAccessToken ();
+	}
+
 	void DriveManager::RequestFiles (const QString& key)
 	{
 		QString str = QString ("https://www.googleapis.com/drive/v2/files?access_token=%1")
@@ -127,6 +133,22 @@ namespace GoogleDrive
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleRequestMovingEntryToTrash ()));
+	}
+
+	void DriveManager::RequestRestoreEntryFromTrash (const QString& id, const QString& key)
+	{
+		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1/untrash?access_token=%2")
+				.arg (id, key);
+		QNetworkRequest request (str);
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
+
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->
+				GetNetworkAccessManager ()->post (request, QByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleRequestRestoreEntryFromTrash ()));
 	}
 
 	void DriveManager::RequestAccessToken ()
@@ -346,10 +368,11 @@ namespace GoogleDrive
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "file removed successfully";
-			qDebug () << Q_FUNC_INFO << res.toMap ();
 			RefreshListing ();
 			return;
 		}
+
+		ParseError (res.toMap ());
 	}
 
 	void DriveManager::handleRequestMovingEntryToTrash ()
@@ -374,11 +397,40 @@ namespace GoogleDrive
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "file moved to trash successfully";
-			qDebug () << Q_FUNC_INFO << res.toMap ();
 			RefreshListing ();
 			return;
 		}
 
+		ParseError (res.toMap ());
+	}
+
+	void DriveManager::handleRequestRestoreEntryFromTrash ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		bool ok = false;
+		QByteArray ba = reply->readAll ();
+		QVariant res = QJson::Parser ().parse (ba, &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+
+		if (!res.toMap ().contains ("error"))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "file restored from trash successfully";
+			RefreshListing ();
+			return;
+		}
+
+		ParseError (res.toMap ());
 	}
 
 }

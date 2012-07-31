@@ -97,9 +97,20 @@ namespace GoogleDrive
 	{
 	}
 
-	void Account::MoveToTrash (const QList<QStringList>& id)
+	void Account::MoveToTrash (const QList<QStringList>& ids)
 	{
-		DriveManager_->MoveEntryToTrash (id [0] [0]);
+		DriveManager_->MoveEntryToTrash (ids [0] [0]);
+	}
+
+	void Account::RestoreFromTrash (const QList<QStringList>& ids)
+	{
+		DriveManager_->RestoreEntryFromTrash (ids [0] [0]);
+	}
+
+	void Account::EmptyTrash (const QList<QStringList>& ids)
+	{
+		for (const auto& id : ids)
+			DriveManager_->RemoveEntry (id [0]);
 	}
 
 	void Account::RefreshListing ()
