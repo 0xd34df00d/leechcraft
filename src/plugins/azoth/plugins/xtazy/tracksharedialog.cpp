@@ -16,61 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
+#include "tracksharedialog.h"
+#include <QFileInfo>
+#include <util/util.h>
+#include <interfaces/azoth/iclentry.h>
 
-#include <QStringList>
-#include <QVariantMap>
-#include <QUrl>
-
-namespace Media
+namespace LeechCraft
 {
-	struct AudioInfo
+namespace Azoth
+{
+namespace Xtazy
+{
+	TrackShareDialog::TrackShareDialog (const QString& path,
+			const QStringList& services, QObject *entryObj, QWidget *parent)
+	: QDialog (parent)
 	{
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+		Ui_.setupUi (this);
 
-		QStringList Genres_;
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
+		QFileInfo info (path);
+		Ui_.FileLabel_->setText (Ui_.FileLabel_->text ()
+					.arg (info.fileName ())
+					.arg (Util::MakePrettySize (info.size ()))
+					.arg (entry->GetEntryName ()));
 
-		/** Other fields known to be used:
-		 * - URL with a QUrl pointing to either local file (if the scheme
-		 *   is "file:") or a remote file or radio stream otherwise.
-		 */
-		QVariantMap Other_;
-	};
+		Ui_.Services_->addItems (services);
+	}
 
-	struct TagInfo
+	QString TrackShareDialog::GetVariantName () const
 	{
-		QString Name_;
-	};
-	typedef QList<TagInfo> TagInfos_t;
-
-	struct ArtistInfo
-	{
-		QString Name_;
-
-		QString ShortDesc_;
-		QString FullDesc_;
-
-		QUrl Image_;
-		QUrl LargeImage_;
-		QUrl Page_;
-
-		TagInfos_t Tags_;
-	};
-
-	struct SimilarityInfo
-	{
-		ArtistInfo Artist_;
-		int Similarity_;
-		QStringList SimilarTo_;
-	};
-	typedef QList<SimilarityInfo> SimilarityInfos_t;
+		return Ui_.Services_->currentText ();
+	}
 }
-
-Q_DECLARE_METATYPE (Media::AudioInfo);
-Q_DECLARE_METATYPE (QList<Media::AudioInfo>);
+}
+}

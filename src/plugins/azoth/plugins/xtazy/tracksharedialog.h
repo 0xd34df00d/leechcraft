@@ -18,59 +18,25 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QVariantMap>
-#include <QUrl>
+#include <QDialog>
+#include "ui_tracksharedialog.h"
 
-namespace Media
+namespace LeechCraft
 {
-	struct AudioInfo
+namespace Azoth
+{
+namespace Xtazy
+{
+	class TrackShareDialog : public QDialog
 	{
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+		Q_OBJECT
 
-		QStringList Genres_;
+		Ui::TrackShareDialog Ui_;
+	public:
+		TrackShareDialog (const QString&, const QStringList&, QObject*, QWidget* = 0);
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
-
-		/** Other fields known to be used:
-		 * - URL with a QUrl pointing to either local file (if the scheme
-		 *   is "file:") or a remote file or radio stream otherwise.
-		 */
-		QVariantMap Other_;
+		QString GetVariantName () const;
 	};
-
-	struct TagInfo
-	{
-		QString Name_;
-	};
-	typedef QList<TagInfo> TagInfos_t;
-
-	struct ArtistInfo
-	{
-		QString Name_;
-
-		QString ShortDesc_;
-		QString FullDesc_;
-
-		QUrl Image_;
-		QUrl LargeImage_;
-		QUrl Page_;
-
-		TagInfos_t Tags_;
-	};
-
-	struct SimilarityInfo
-	{
-		ArtistInfo Artist_;
-		int Similarity_;
-		QStringList SimilarTo_;
-	};
-	typedef QList<SimilarityInfo> SimilarityInfos_t;
 }
-
-Q_DECLARE_METATYPE (Media::AudioInfo);
-Q_DECLARE_METATYPE (QList<Media::AudioInfo>);
+}
+}
