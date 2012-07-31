@@ -59,6 +59,7 @@ namespace NetStoreManager
 		void handleUpProgress (quint64, quint64, const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+		void fileUploaded (const QString&, const QUrl&);
 	};
 }
 }
