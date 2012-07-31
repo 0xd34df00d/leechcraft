@@ -199,6 +199,7 @@ namespace GoogleDrive
 		}
 
 		QString accessKey = res.toMap ().value ("access_token").toString ();
+		qDebug () << accessKey;
 		if (accessKey.isEmpty ())
 		{
 			qDebug () << Q_FUNC_INFO << "access token is empty";
@@ -246,11 +247,31 @@ namespace GoogleDrive
 		Q_FOREACH (const auto& item, resMap ["items"].toList ())
 		{
 			QVariantMap map = item.toMap ();
-			if (map ["mimeType"].toString () != "application/vnd.google-apps.folder" &&
-					map ["downloadUrl"].toString ().isEmpty ())
+
+			const QVariantMap& permission = map ["userPermission"].toMap ();
+			const QString& role = permission ["role"].toString ();
+
+			if (role != "owner")
 				continue;
 
 			DriveItem driveItem;
+
+			const QString& type = permission ["type"].toString ();
+
+			driveItem.PermissionAdditionalRole_ = DriveItem::ARNone;
+			if (permission ["additionalRoles"].toList ().contains ("commenter"))
+				driveItem.PermissionAdditionalRole_ |= DriveItem::ARCommenter;
+
+			if (role == "owner")
+				driveItem.PermissionRole_ = DriveItem::Roles::Owner;
+			else if (role == "writer")
+				driveItem.PermissionRole_ = DriveItem::Roles::Writer;
+			else if (role == "reader")
+				driveItem.PermissionRole_ = DriveItem::Roles::Reader;
+
+			if (type == "user")
+				driveItem.PermissionType_ = DriveItem::PermissionTypes::User;
+
 			driveItem.Id_ = map ["id"].toString ();
 			driveItem.Name_ = map ["title"].toString ();
 			driveItem.IsFolder_ = map ["mimeType"].toString () ==
@@ -278,24 +299,6 @@ namespace GoogleDrive
 			driveItem.LastViewedByMe_ = QDateTime::fromString (map ["lastViewedByMeDate"].toString (),
 					Qt::ISODate);
 
-			const QVariantMap& permission = map ["userPermission"].toMap ();
-			const QString& role = permission ["role"].toString ();
-			const QString& type = permission ["type"].toString ();
-
-			driveItem.PermissionAdditionalRole_ = DriveItem::ARNone;
-			if (permission ["additionalRoles"].toList ().contains ("commenter"))
-				driveItem.PermissionAdditionalRole_ |= DriveItem::ARCommenter;
-
-			if (role == "owner")
-				driveItem.PermissionRole_ = DriveItem::Roles::Owner;
-			else if (role == "writer")
-				driveItem.PermissionRole_ = DriveItem::Roles::Writer;
-			else if (role == "reader")
-				driveItem.PermissionRole_ = DriveItem::Roles::Reader;
-
-			if (type == "user")
-				driveItem.PermissionType_ = DriveItem::PermissionTypes::User;
-
 			driveItem.OriginalFileName_ = map ["originalFilename"].toString ();
 			driveItem.Md5_ = map ["md5Checksum"].toString ();
 			driveItem.FileSize_ = map ["fileSize"].toLongLong ();
@@ -308,8 +311,11 @@ namespace GoogleDrive
 			driveItem.WritersCanShare_ = map ["writersCanShare"].toBool ();
 
 			const auto& parent = map ["parents"].toList ().value (0).toMap ();
-			driveItem.ParentId_ = parent ["id"].toString ();
-			driveItem.ParentIsRoot_ = parent ["isRoot"].toBool ();
+			if (!parent.isEmpty ())
+			{
+				driveItem.ParentId_ = parent ["id"].toString ();
+				driveItem.ParentIsRoot_ = parent ["isRoot"].toBool ();
+			}
 
 			resList << driveItem;
 		}

@@ -240,7 +240,8 @@ namespace GoogleDrive
 			}
 
 			id2DriveItem_ [item.Id_] = item;
-			if (item.ParentIsRoot_)
+			if (item.ParentIsRoot_ ||
+					item.ParentId_.isEmpty ())
 				treeItems << CreateItem (id2Item_, item);
 		}
 
