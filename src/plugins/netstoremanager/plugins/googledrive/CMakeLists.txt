@@ -19,6 +19,7 @@ SET (GOOGLEDRIVE_SRCS
 	core.cpp
 	drivemanager.cpp
 	googledrive.cpp
+	uploadmanager.cpp
 	xmlsettingsmanager.cpp
 	)
 SET (GOOGLEDRIVE_HEADERS
@@ -27,6 +28,7 @@ SET (GOOGLEDRIVE_HEADERS
 	core.h
 	drivemanager.h
 	googledrive.h
+	uploadmanager.cpp
 	xmlsettingsmanager.h
 	)
 

@@ -23,6 +23,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include "core.h"
+#include "uploadmanager.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -70,6 +71,7 @@ namespace GoogleDrive
 
 	void Account::Upload (const QString& filepath)
 	{
+		auto uploadManager = new UploadManager (filepath, this);
 	}
 
 	void Account::Delete (const QList<QStringList>& id)
