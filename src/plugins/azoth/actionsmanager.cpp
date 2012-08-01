@@ -1020,7 +1020,6 @@ namespace Azoth
 
 		BookmarksManagerDialog *dia = new BookmarksManagerDialog ();
 		dia->SuggestSaving (entry->GetObject ());
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		dia->show ();
 	}
 

@@ -283,7 +283,6 @@ namespace Azoth
 		auto dia = new BookmarksManagerDialog (MW_);
 		dia->FocusOn (account);
 		dia->show ();
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 	}
 
 	void AccountActionsManager::addAccountContact ()
