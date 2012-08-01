@@ -84,6 +84,12 @@ namespace Azoth
 			on_AccountBox__currentIndexChanged (0);
 	}
 
+	BookmarksManagerDialog::~BookmarksManagerDialog ()
+	{
+		delete CurrentEditor_;
+		qDeleteAll (Proto2Joiner_.values ());
+	}
+
 	void BookmarksManagerDialog::FocusOn (IAccount *acc)
 	{
 		const QVariant& accVar =
@@ -195,6 +201,7 @@ namespace Azoth
 			delete item;
 		}
 		QWidget *w = supBms->GetMUCBookmarkEditorWidget ();
+		delete CurrentEditor_;
 		CurrentEditor_ = qobject_cast<IMUCBookmarkEditorWidget*> (w);
 		if (CurrentEditor_)
 			Ui_.BMFrameLayout_->addWidget (w);
