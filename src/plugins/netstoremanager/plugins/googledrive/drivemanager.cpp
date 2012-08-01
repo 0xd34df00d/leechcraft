@@ -61,6 +61,12 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
+	void DriveManager::ShareEntry (const QString& id)
+	{
+		ApiCallQueue_ << [this, id] (const QString& key) { RequestSharingEntry (id, key); };
+		RequestAccessToken ();
+	}
+
 	void DriveManager::RequestFiles (const QString& key)
 	{
 		QString str = QString ("https://www.googleapis.com/drive/v2/files?access_token=%1")
@@ -78,7 +84,7 @@ namespace GoogleDrive
 				SLOT (handleGotFiles ()));
 	}
 
-	void DriveManager::RequestFileShared (const QString& id, const QString& key)
+	void DriveManager::RequestSharingEntry (const QString& id, const QString& key)
 	{
 		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1/permissions?access_token=%2")
 				.arg (id, key);
@@ -96,6 +102,7 @@ namespace GoogleDrive
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
 				GetNetworkAccessManager ()->post (request, serializer.serialize (map));
+		Reply2Id_ [reply] = id;
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -346,6 +353,7 @@ namespace GoogleDrive
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "file shared successfully";
+			emit gotSharedFileId (Reply2Id_.take (reply));
 			return;
 		}
 

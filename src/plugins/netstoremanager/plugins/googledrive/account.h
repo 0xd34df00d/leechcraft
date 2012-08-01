@@ -75,6 +75,7 @@ namespace GoogleDrive
 		void RestoreFromTrash (const QList<QStringList>& ids);
 		void EmptyTrash (const QList<QStringList>& ids);
 		void RefreshListing ();
+		void RequestUrl (const QList<QStringList>& id);
 
 		QByteArray Serialize ();
 		static Account_ptr Deserialize (const QByteArray& data, QObject *parentPlugin);
@@ -88,6 +89,7 @@ namespace GoogleDrive
 
 	private slots:
 		void handleFileList (const QList<DriveItem>& items);
+		void handleSharedFileId (const QString& id);
 
 	signals:
 		void gotURL (const QUrl& url, const QString& filepath);
@@ -96,6 +98,7 @@ namespace GoogleDrive
 		void upStatusChanged (const QString& status, const QString& filepath);
 
 		void gotListing (const QList<QList<QStandardItem*>>& items);
+		void gotFileUrl (const QUrl& url);
 	};
 }
 }

@@ -21,7 +21,9 @@
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include <QMainWindow>
+#include <QPushButton>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -40,6 +42,10 @@ namespace GoogleDrive
 				SIGNAL (gotFiles (const QList<DriveItem>&)),
 				this,
 				SLOT (handleFileList (const QList<DriveItem>&)));
+		connect (DriveManager_,
+				SIGNAL (gotSharedFileId (const QString&)),
+				this,
+				SLOT (handleSharedFileId (const QString&)));
 	}
 
 	QObject* Account::GetObject ()
@@ -116,6 +122,29 @@ namespace GoogleDrive
 	void Account::RefreshListing ()
 	{
 		DriveManager_->RefreshListing ();
+	}
+
+	void Account::RequestUrl (const QList<QStringList>& id)
+	{
+		if (!XmlSettingsManager::Instance ().property ("AutoShareOnUrlRequest").toBool ())
+		{
+			QMessageBox mbox (QMessageBox::Question,
+					tr ("Share item"),
+					tr ("You should share this item for getting url. Share it?"),
+					QMessageBox::Yes | QMessageBox::No,
+					Core::Instance ().GetProxy ()->GetMainWindow ());
+			mbox.setDefaultButton (QMessageBox::Yes);
+
+			QPushButton always (tr ("Always"));
+			mbox.addButton (&always, QMessageBox::AcceptRole);
+
+			if (mbox.exec () == QMessageBox::No)
+				return;
+			else if (mbox.clickedButton () == &always)
+				XmlSettingsManager::Instance ().setProperty ("AutoShareOnUrlRequest", true);
+		}
+
+		DriveManager_->ShareEntry (id [0] [0]);
 	}
 
 	QByteArray Account::Serialize ()
@@ -284,6 +313,12 @@ namespace GoogleDrive
 
 		emit gotListing (QList<QList<QStandardItem*>> ());
 		emit gotListing (treeItems);
+	}
+
+	void Account::handleSharedFileId (const QString& id)
+	{
+		emit gotFileUrl (QUrl (QString ("https://docs.google.com/open?id=%1")
+				.arg (id)));
 	}
 
 }

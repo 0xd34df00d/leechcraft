@@ -26,6 +26,8 @@
 #include <QStringList>
 #include <QVariant>
 
+class QNetworkReply;
+
 namespace LeechCraft
 {
 namespace NetStoreManager
@@ -108,6 +110,7 @@ namespace GoogleDrive
 
 		Account *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
+		QHash<QNetworkReply*, QString> Reply2Id_;
 	public:
 		DriveManager (Account *acc, QObject *parent = 0);
 
@@ -115,9 +118,10 @@ namespace GoogleDrive
 		void RemoveEntry (const QString& id);
 		void MoveEntryToTrash (const QString& id);
 		void RestoreEntryFromTrash (const QString& id);
+		void ShareEntry (const QString& id);
 
 		void RequestFiles (const QString& key);
-		void RequestFileShared (const QString& id, const QString& key);
+		void RequestSharingEntry (const QString& id, const QString& key);
 		void RequestEntryRemoving (const QString& id, const QString& key);
 		void RequestMovingEntryToTrash (const QString& id, const QString& key);
 		void RequestRestoreEntryFromTrash (const QString& id, const QString& key);
@@ -135,6 +139,7 @@ namespace GoogleDrive
 
 	signals:
 		void gotFiles (const QList<DriveItem>& items);
+		void gotSharedFileId (const QString& id);
 	};
 }
 }
