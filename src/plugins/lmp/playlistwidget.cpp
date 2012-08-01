@@ -207,10 +207,11 @@ namespace LMP
 		typedef QPair<QString, QList<Player::SortingCriteria>> SortPair_t;
 		QList<SortPair_t> stdSorts;
 #if QT_VERSION >= 0x040800
-		stdSorts << SortPair_t (tr ("Artist / Year / Track number"),
+		stdSorts << SortPair_t (tr ("Artist / Year / Album / Track number"),
 					{
 						Player::SortingCriteria::Artist,
 						Player::SortingCriteria::Year,
+						Player::SortingCriteria::Album,
 						Player::SortingCriteria::TrackNumber
 					});
 		stdSorts << SortPair_t (tr ("Artist / Track title"),
