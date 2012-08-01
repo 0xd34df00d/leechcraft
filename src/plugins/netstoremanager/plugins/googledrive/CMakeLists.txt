@@ -19,6 +19,7 @@ SET (GOOGLEDRIVE_SRCS
 	core.cpp
 	drivemanager.cpp
 	googledrive.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (GOOGLEDRIVE_HEADERS
 	account.h
@@ -26,6 +27,7 @@ SET (GOOGLEDRIVE_HEADERS
 	core.h
 	drivemanager.h
 	googledrive.h
+	xmlsettingsmanager.h
 	)
 
 SET (GOOGLEDRIVE_RESOURCES netstoremanagergoogledriveresources.qrc)
@@ -49,3 +51,4 @@ TARGET_LINK_LIBRARIES (leechcraft_netstoremanager_googledrive
 	)
 
 INSTALL (TARGETS leechcraft_netstoremanager_googledrive DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES nsmgoogledrivesettings.xml DESTINATION ${LC_SETTINGS_DEST})
