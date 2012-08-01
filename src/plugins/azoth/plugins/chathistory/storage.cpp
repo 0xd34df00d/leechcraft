@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "storage.h"
+#include <algorithm>
 #include <stdexcept>
 #include <QStringList>
 #include <QSqlDatabase>
