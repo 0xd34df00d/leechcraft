@@ -21,6 +21,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include "interfaces/netstoremanager/istorageplugin.h"
+#include "interfaces/netstoremanager/istorageaccount.h"
 #include "managertab.h"
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
@@ -57,6 +58,10 @@ namespace NetStoreManager
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (UpManager_,
+				SIGNAL (fileUploaded (QString, QUrl)),
+				this,
+				SIGNAL (fileUploaded (QString, QUrl)));
 	}
 
 	void Plugin::SecondInit ()
@@ -139,6 +144,29 @@ namespace NetStoreManager
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
 		return UpManager_->GetRepresentationModel ();
+	}
+
+	QStringList Plugin::GetServiceVariants () const
+	{
+		QStringList result;
+		for (auto account : AccountsManager_->GetAccounts ())
+		{
+			auto parent = qobject_cast<IStoragePlugin*> (account->GetParentPlugin ());
+			result << QString ("%1: %2")
+					.arg (parent->GetStorageName ())
+					.arg (account->GetAccountName ());
+		}
+		return result;
+	}
+
+	void Plugin::UploadFile (const QString& filename, const QString& service)
+	{
+		const int idx = GetServiceVariants ().indexOf (service);
+		auto account = AccountsManager_->GetAccounts ().value (idx);
+		if (!account)
+			return;
+
+		UpManager_->handleUploadRequest (account, filename);
 	}
 }
 }

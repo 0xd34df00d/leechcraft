@@ -117,6 +117,8 @@ namespace NetStoreManager
 					.arg (QFileInfo (path).fileName ()),
 				PInfo_);
 		emit gotEntity (e);
+
+		emit fileUploaded (path, url);
 	}
 
 	void UpManager::handleError (const QString& str, const QString& path)

@@ -26,20 +26,20 @@ namespace LeechCraft
 namespace Azoth
 {
 	/** @brief Interface for publishing user tunes.
-	 * 
+	 *
 	 * This interface can be implemented by account objects (those that
 	 * implement IAccount) to advertise the support for publishing
 	 * currently playing tune information.
-	 * 
+	 *
 	 * @sa IAccount
 	 */
 	class ISupportTune
 	{
 	public:
 		virtual ~ISupportTune () {}
-		
+
 		/** @brief Publishes the currently listening music information.
-		 * 
+		 *
 		 * The tuneData parameter is the map containing the following
 		 * keys:
 		 * - "artist" of type QString.

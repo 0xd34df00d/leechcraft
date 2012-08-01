@@ -19,58 +19,21 @@
 #pragma once
 
 #include <QStringList>
-#include <QVariantMap>
-#include <QUrl>
+#include <QtPlugin>
 
-namespace Media
+class QUrl;
+
+class IWebFileStorage
 {
-	struct AudioInfo
-	{
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+public:
+	virtual ~IWebFileStorage () {}
 
-		QStringList Genres_;
+	virtual QStringList GetServiceVariants () const = 0;
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
+	virtual void UploadFile (const QString& filename,
+			const QString& service = QString ()) = 0;
+protected:
+	virtual void fileUploaded (const QString& filename, const QUrl&) = 0;
+};
 
-		/** Other fields known to be used:
-		 * - URL with a QUrl pointing to either local file (if the scheme
-		 *   is "file:") or a remote file or radio stream otherwise.
-		 */
-		QVariantMap Other_;
-	};
-
-	struct TagInfo
-	{
-		QString Name_;
-	};
-	typedef QList<TagInfo> TagInfos_t;
-
-	struct ArtistInfo
-	{
-		QString Name_;
-
-		QString ShortDesc_;
-		QString FullDesc_;
-
-		QUrl Image_;
-		QUrl LargeImage_;
-		QUrl Page_;
-
-		TagInfos_t Tags_;
-	};
-
-	struct SimilarityInfo
-	{
-		ArtistInfo Artist_;
-		int Similarity_;
-		QStringList SimilarTo_;
-	};
-	typedef QList<SimilarityInfo> SimilarityInfos_t;
-}
-
-Q_DECLARE_METATYPE (Media::AudioInfo);
-Q_DECLARE_METATYPE (QList<Media::AudioInfo>);
+Q_DECLARE_INTERFACE (IWebFileStorage, "org.Deviant.LeechCraft.IWebFileStorage/1.0");

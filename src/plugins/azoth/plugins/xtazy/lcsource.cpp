@@ -39,6 +39,7 @@ namespace Xtazy
 		tune ["source"] = audio.Album_;
 		tune ["track"] = audio.TrackNumber_;
 		tune ["length"] = audio.Length_;
+		tune ["URL"] = audio.Other_ ["URL"];
 		emit tuneInfoChanged (tune);
 	}
 
