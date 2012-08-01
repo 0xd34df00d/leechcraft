@@ -20,6 +20,7 @@
 #define PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISUPPORTFILELISTINGS_H
 #include <QStringList>
 #include <QtPlugin>
+#include <QUrl>
 
 class QStandardItem;
 
@@ -30,7 +31,6 @@ namespace NetStoreManager
 	enum ListingRole
 	{
 		ID = Qt::UserRole + 20,
-		URL,
 		InTrash
 	};
 
@@ -60,8 +60,10 @@ namespace NetStoreManager
 		virtual void MoveToTrash (const QList<QStringList>& id) = 0;
 		virtual void RestoreFromTrash (const QList<QStringList>& id) = 0;
 		virtual void EmptyTrash (const QList<QStringList>& id) = 0;
+		virtual void RequestUrl (const QList<QStringList>& id) = 0;
 	protected:
 		virtual void gotListing (const QList<QList<QStandardItem*>>&) = 0;
+		virtual void gotFileUrl (const QUrl& url) = 0;
 	};
 }
 }

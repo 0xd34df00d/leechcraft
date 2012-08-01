@@ -20,6 +20,7 @@
 #define PLUGINS_NETSTOREMANAGER_MANAGERTAB_H
 #include <functional>
 #include <QWidget>
+#include "interfaces/structures.h"
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
 #include "ui_managertab.h"
@@ -75,6 +76,7 @@ namespace NetStoreManager
 		QList<QStringList> GetTrashedFiles () const;
 	private slots:
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
+		void handleGotFileUrl (const QUrl& url);
 		void flCopyURL ();
 		void flProlongate ();
 		void flDelete ();
@@ -89,6 +91,8 @@ namespace NetStoreManager
 		void removeTab (QWidget*);
 
 		void uploadRequested (IStorageAccount*, const QString&);
+
+		void gotEntity (LeechCraft::Entity entity);
 	};
 }
 }

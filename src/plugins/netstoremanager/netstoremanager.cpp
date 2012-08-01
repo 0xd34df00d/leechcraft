@@ -117,6 +117,10 @@ namespace NetStoreManager
 					SIGNAL (uploadRequested (IStorageAccount*, QString)),
 					UpManager_,
 					SLOT (handleUploadRequest (IStorageAccount*, QString)));
+			connect (tab,
+					SIGNAL (gotEntity (LeechCraft::Entity)),
+					this,
+					SIGNAL (gotEntity (LeechCraft::Entity)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO

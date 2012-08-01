@@ -27,6 +27,7 @@
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
+#include <util/util.h>
 #include "accountsmanager.h"
 
 namespace LeechCraft
@@ -88,6 +89,11 @@ namespace NetStoreManager
 						SIGNAL (gotListing (const QList<QList<QStandardItem*>>&)),
 						this,
 						SLOT (handleGotListing (const QList<QList<QStandardItem*>>&)));
+
+				connect (acc->GetObject (),
+						SIGNAL (gotFileUrl (const QUrl&)),
+						this,
+						SLOT (handleGotFileUrl (const QUrl&)));
 			}
 		}
 		if (Ui_.AccountsBox_->count ())
@@ -259,19 +265,23 @@ namespace NetStoreManager
 		RestoreModelState ();
 	}
 
-	void ManagerTab::flCopyURL ()
+	void ManagerTab::handleGotFileUrl (const QUrl& url)
 	{
-		auto item = Model_->itemFromIndex (Ui_.FilesTree_->currentIndex ());
-		if (!item)
-			return;
-
-		const QUrl& url = item->data (ListingRole::URL).toUrl ();
 		if (url.isEmpty () || !url.isValid ())
 			return;
 
 		const QString& str = url.toString ();
 		qApp->clipboard ()->setText (str, QClipboard::Clipboard);
 		qApp->clipboard ()->setText (str, QClipboard::Selection);
+
+		QString text = tr ("File shared with URL: %1, the URL was copied to the clipboard")
+				.arg (url.toString ());
+		emit gotEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
+	}
+
+	void ManagerTab::flCopyURL ()
+	{
+		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->RequestUrl (ids); });
 	}
 
 	void ManagerTab::flProlongate ()
