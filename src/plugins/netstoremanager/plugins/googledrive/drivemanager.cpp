@@ -20,10 +20,12 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <QFileInfo>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #include "account.h"
 #include "core.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -35,6 +37,15 @@ namespace GoogleDrive
 	: QObject (parent)
 	, Account_ (acc)
 	{
+#ifdef HAVE_MAGIC
+		Magic_ = magic_open (MAGIC_MIME_TYPE);
+		magic_load (Magic_, NULL);
+#endif
+	}
+
+	DriveManager::~DriveManager ()
+	{
+		magic_close (Magic_);
 	}
 
 	void DriveManager::RefreshListing ()
@@ -64,6 +75,12 @@ namespace GoogleDrive
 	void DriveManager::ShareEntry (const QString& id)
 	{
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestSharingEntry (id, key); };
+		RequestAccessToken ();
+	}
+
+	void DriveManager::Upload (const QString& filePath)
+	{
+		ApiCallQueue_ << [this, filePath] (const QString& key) { RequestUpload (filePath, key); };
 		RequestAccessToken ();
 	}
 
@@ -178,13 +195,47 @@ namespace GoogleDrive
 				SLOT (handleAuthTokenRequestFinished ()));
 	}
 
+	void DriveManager::RequestUpload (const QString& filePath, const QString& key)
+	{
+		QFileInfo info (filePath);
+		const QUrl initiateUrl (QString ("https://www.googleapis.com/upload/drive/v2/files?access_token=%1")
+				.arg (key));
+		QNetworkRequest request (initiateUrl);
+		request.setPriority (QNetworkRequest::LowPriority);
+
+		QFile file (filePath);
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "Unable to open file: "
+					<< file.errorString ();
+
+			emit finished ();
+			return;
+		}
+
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->
+				GetNetworkAccessManager ()->post (request, file.readAll ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleUploadRequestFinished ()));
+		connect (reply,
+				SIGNAL (uploadProgress (qint64,qint64)),
+				this,
+				SIGNAL (uploadProgress (qint64,qint64)));
+	}
+
 	void DriveManager::ParseError (const QVariantMap& map)
 	{
 		const auto& errorMap = map ["error"].toMap ();
 		const QString& code = errorMap ["code"].toString ();
 		const QString& msg = errorMap ["message"].toString ();
 
-		//TODO error notification
+		Core::Instance ().SendEntity (Util::MakeNotification ("NetStoreManager",
+				msg,
+				PWarning_));
 	}
 
 	void DriveManager::handleAuthTokenRequestFinished ()
@@ -219,47 +270,17 @@ namespace GoogleDrive
 		ApiCallQueue_.dequeue () (accessKey);
 	}
 
-	void DriveManager::handleGotFiles ()
+	namespace
 	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-
-		bool ok = false;
-		QByteArray ba = reply->readAll ();
-		QVariant res = QJson::Parser ().parse (ba, &ok);
-
-		if (!ok)
+		DriveItem CreateDriveItem (const QVariant& itemData)
 		{
-			qDebug () << Q_FUNC_INFO << "parse error";
-			return;
-		}
-
-		const auto& resMap = res.toMap ();
-		if (!resMap.contains ("items"))
-		{
-			qDebug () << Q_FUNC_INFO << "there are no items";
-			return;
-		}
-
-		if (resMap.contains ("error"))
-		{
-			ParseError (res.toMap ());
-			return;
-		}
-
-		QList<DriveItem> resList;
-		Q_FOREACH (const auto& item, resMap ["items"].toList ())
-		{
-			QVariantMap map = item.toMap ();
+			QVariantMap map = itemData.toMap ();
 
 			const QVariantMap& permission = map ["userPermission"].toMap ();
 			const QString& role = permission ["role"].toString ();
 
 			if (role != "owner")
-				continue;
+				return DriveItem ();
 
 			DriveItem driveItem;
 
@@ -324,6 +345,47 @@ namespace GoogleDrive
 				driveItem.ParentIsRoot_ = parent ["isRoot"].toBool ();
 			}
 
+			return driveItem;
+		}
+	}
+
+	void DriveManager::handleGotFiles ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		bool ok = false;
+		QByteArray ba = reply->readAll ();
+		QVariant res = QJson::Parser ().parse (ba, &ok);
+
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO << "parse error";
+			return;
+		}
+
+		const auto& resMap = res.toMap ();
+		if (!resMap.contains ("items"))
+		{
+			qDebug () << Q_FUNC_INFO << "there are no items";
+			return;
+		}
+
+		if (resMap.contains ("error"))
+		{
+			ParseError (res.toMap ());
+			return;
+		}
+
+		QList<DriveItem> resList;
+		Q_FOREACH (const auto& item, resMap ["items"].toList ())
+		{
+			DriveItem driveItem = CreateDriveItem (item);
+			if (driveItem.Name_.isEmpty ())
+				continue;
 			resList << driveItem;
 		}
 
@@ -441,6 +503,36 @@ namespace GoogleDrive
 			qDebug () << Q_FUNC_INFO
 					<< "file restored from trash successfully";
 			RefreshListing ();
+			return;
+		}
+
+		ParseError (res.toMap ());
+	}
+
+	void DriveManager::handleUploadRequestFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		bool ok = false;
+		QByteArray ba = reply->readAll ();
+		QVariant res = QJson::Parser ().parse (ba, &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+
+		if (!res.toMap ().contains ("error"))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "file uploaded successfully";
+			RefreshListing ();
+			emit finished ();
 			return;
 		}
 

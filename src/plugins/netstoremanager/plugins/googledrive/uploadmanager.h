@@ -31,6 +31,12 @@ namespace GoogleDrive
 	class Account;
 	class DriveManager;
 
+	enum class UploadType
+	{
+		Upload,
+		Update
+	};
+
 	class UploadManager : public QObject
 	{
 		Q_OBJECT
@@ -38,8 +44,19 @@ namespace GoogleDrive
 		Account *Account_;
 		QString FilePath_;
 		QNetworkAccessManager *NAM_;
+		UploadType UploadType_;
 	public:
-		UploadManager (const QString& path, Account *account);
+		UploadManager (const QString& path, UploadType ut, Account *account);
+
+	private:
+		void InitiateUploadSession ();
+
+	private slots:
+		void handleUploadProgress (qint64 sent, qint64 total);
+		void handleFinished ();
+
+	signals:
+		void finished ();
 	};
 }
 }

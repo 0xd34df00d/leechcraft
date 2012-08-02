@@ -19,12 +19,17 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 #include <QObject>
 #include <QQueue>
 #include <QDateTime>
 #include <QUrl>
 #include <QStringList>
 #include <QVariant>
+
+#ifdef HAVE_MAGIC
+	#include <magic.h>
+#endif
 
 class QNetworkReply;
 
@@ -111,8 +116,13 @@ namespace GoogleDrive
 		Account *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
 		QHash<QNetworkReply*, QString> Reply2Id_;
+
+#ifdef HAVE_MAGIC
+		magic_t Magic_;
+#endif
 	public:
 		DriveManager (Account *acc, QObject *parent = 0);
+		~DriveManager ();
 
 		void RefreshListing ();
 		void RemoveEntry (const QString& id);
@@ -120,11 +130,15 @@ namespace GoogleDrive
 		void RestoreEntryFromTrash (const QString& id);
 		void ShareEntry (const QString& id);
 
+		void Upload (const QString& filePath);
+
 		void RequestFiles (const QString& key);
 		void RequestSharingEntry (const QString& id, const QString& key);
 		void RequestEntryRemoving (const QString& id, const QString& key);
 		void RequestMovingEntryToTrash (const QString& id, const QString& key);
 		void RequestRestoreEntryFromTrash (const QString& id, const QString& key);
+
+		void RequestUpload (const QString& filePath, const QString& key);
 	private:
 		void RequestAccessToken ();
 		void ParseError (const QVariantMap& map);
@@ -136,10 +150,13 @@ namespace GoogleDrive
 		void handleRequestEntryRemoving ();
 		void handleRequestMovingEntryToTrash ();
 		void handleRequestRestoreEntryFromTrash ();
+		void handleUploadRequestFinished ();
 
 	signals:
 		void gotFiles (const QList<DriveItem>& items);
 		void gotSharedFileId (const QString& id);
+		void uploadProgress (qint64 sent, qint64 total);
+		void finished ();
 	};
 }
 }

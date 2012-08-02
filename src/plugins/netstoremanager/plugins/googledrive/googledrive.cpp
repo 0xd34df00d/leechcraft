@@ -44,6 +44,11 @@ namespace GoogleDrive
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+
 		connect (AuthManager_,
 				SIGNAL (authSuccess (QObject*)),
 				this,

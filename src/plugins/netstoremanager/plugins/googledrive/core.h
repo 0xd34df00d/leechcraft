@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
@@ -40,6 +41,11 @@ namespace GoogleDrive
 
 		void SetProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetProxy () const;
+
+		void SendEntity (LeechCraft::Entity e);
+
+	signals:
+		void gotEntity (LeechCraft::Entity e);
 	};
 }
 }

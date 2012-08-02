@@ -87,6 +87,7 @@ namespace GoogleDrive
 		void SetRefreshToken (const QString& token);
 		QString GetRefreshToken () const;
 
+		DriveManager* GetDriveManager () const;
 	private slots:
 		void handleFileList (const QList<DriveItem>& items);
 		void handleSharedFileId (const QString& id);

@@ -71,7 +71,7 @@ namespace GoogleDrive
 
 	void Account::Upload (const QString& filepath)
 	{
-		auto uploadManager = new UploadManager (filepath, this);
+		auto uploadManager = new UploadManager (filepath, UploadType::Upload, this);
 	}
 
 	void Account::Delete (const QList<QStringList>& id)
@@ -205,6 +205,11 @@ namespace GoogleDrive
 	QString Account::GetRefreshToken () const
 	{
 		return RefreshToken_;
+	}
+
+	DriveManager* Account::GetDriveManager () const
+	{
+		return DriveManager_;
 	}
 
 	namespace

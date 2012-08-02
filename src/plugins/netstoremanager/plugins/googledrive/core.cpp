@@ -44,6 +44,11 @@ namespace GoogleDrive
 		return Proxy_;
 	}
 
+	void Core::SendEntity (LeechCraft::Entity e)
+	{
+		emit gotEntity (e);
+	}
+
 }
 }
 }
