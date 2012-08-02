@@ -289,11 +289,25 @@ namespace XooxUtil
 
 	EntryStatus PresenceToStatus (const QXmppPresence& pres)
 	{
-		const QXmppPresence::Status& status = pres.status ();
-		EntryStatus st (static_cast<State> (status.type ()), status.statusText ());
+		EntryStatus st (static_cast<State> (pres.availableStatusType () + 1), pres.statusText ());
 		if (pres.type () == QXmppPresence::Unavailable)
 			st.State_ = SOffline;
 		return st;
+	}
+
+	QXmppPresence StatusToPresence (State state, const QString& text, int prio)
+	{
+		QXmppPresence::Type presType = state == SOffline ?
+				QXmppPresence::Unavailable :
+				QXmppPresence::Available;
+
+		QXmppPresence pres (presType);
+		if (state != SOffline)
+			pres.setAvailableStatusType (static_cast<QXmppPresence::AvailableStatusType> (state - 1));
+		pres.setStatusText (text);
+		pres.setPriority (prio);
+
+		return pres;
 	}
 }
 }

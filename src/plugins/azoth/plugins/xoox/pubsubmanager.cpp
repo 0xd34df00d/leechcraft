@@ -55,7 +55,7 @@ namespace Xoox
 		pubsub.appendChild (publish);
 
 		QXmppIq iq (QXmppIq::Set);
-		iq.setExtensions (pubsub);
+		iq.setExtensions (QXmppElementList () << pubsub);
 		client ()->sendPacket (iq);
 	}
 
@@ -78,7 +78,7 @@ namespace Xoox
 
 		QXmppIq iq (QXmppIq::Get);
 		iq.setTo (jid);
-		iq.setExtensions (pubsub);
+		iq.setExtensions (QXmppElementList () << pubsub);
 		client ()->sendPacket (iq);
 	}
 

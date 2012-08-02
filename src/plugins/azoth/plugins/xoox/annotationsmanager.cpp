@@ -32,30 +32,30 @@ namespace Xoox
 	, XMPPAnnManager_ (new QXmppAnnotationsManager)
 	{
 		ClientConn_->GetClient ()->addExtension (XMPPAnnManager_);
-		
+
 		connect (XMPPAnnManager_,
 				SIGNAL (notesReceived (const QList<QXmppAnnotationsIq::NoteItem>&)),
 				this,
 				SLOT (handleNotesReceived (const QList<QXmppAnnotationsIq::NoteItem>&)));
 	}
-	
+
 	QXmppAnnotationsIq::NoteItem AnnotationsManager::GetNote (const QString& jid) const
 	{
 		return JID2Note_ [jid];
 	}
-	
+
 	void AnnotationsManager::SetNote (const QString& jid, const QXmppAnnotationsIq::NoteItem& note)
 	{
 		JID2Note_ [jid] = note;
 		XMPPAnnManager_->setNotes (JID2Note_.values ());
 	}
-	
+
 	void AnnotationsManager::refetchNotes ()
 	{
 		JID2Note_.clear ();
 		XMPPAnnManager_->requestNotes ();
 	}
-	
+
 	void AnnotationsManager::handleNotesReceived (const QList<QXmppAnnotationsIq::NoteItem>& notes)
 	{
 		Q_FOREACH (const QXmppAnnotationsIq::NoteItem& item, notes)

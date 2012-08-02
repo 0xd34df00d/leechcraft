@@ -20,6 +20,7 @@
 #include <QPushButton>
 #include <QFileDialog>
 #include <QBuffer>
+#include <QCryptographicHash>
 #include <QXmppVCardManager.h>
 #include "entrybase.h"
 #include "glooxaccount.h"

@@ -26,7 +26,6 @@
 #include <QXmppVCardManager.h>
 #include <QXmppDiscoveryManager.h>
 #include <QXmppTransferManager.h>
-#include <QXmppReconnectionManager.h>
 #include <QXmppBookmarkManager.h>
 #include <QXmppEntityTimeManager.h>
 #include <QXmppArchiveManager.h>
@@ -91,7 +90,7 @@ namespace Xoox
 	, MUCManager_ (new QXmppMucManager)
 	, XferManager_ (new QXmppTransferManager)
 	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
-	, BMManager_ (new QXmppBookmarkManager (Client_))
+	, BMManager_ (new QXmppBookmarkManager)
 	, EntityTimeManager_ (Client_->findExtension<QXmppEntityTimeManager> ())
 	, ArchiveManager_ (new QXmppArchiveManager)
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
@@ -171,6 +170,7 @@ namespace Xoox
 
 		InitializeQCA ();
 
+		Client_->addExtension (BMManager_);
 		Client_->addExtension (BobManager_);
 		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (DeliveryReceiptsManager_);
@@ -312,15 +312,6 @@ namespace Xoox
 				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
 				this,
 				SLOT (handleDiscoItems (const QXmppDiscoveryIq&)));
-
-		connect (Client_->reconnectionManager (),
-				SIGNAL (reconnectingIn (int)),
-				this,
-				SLOT (handleReconnecting (int)));
-		connect (Client_->reconnectionManager (),
-				SIGNAL (reconnectingNow ()),
-				this,
-				SLOT (handleReconnecting ()));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -332,14 +323,7 @@ namespace Xoox
 	{
 		LastState_ = state;
 
-		QXmppPresence::Type presType = state.State_ == SOffline ?
-				QXmppPresence::Unavailable :
-				QXmppPresence::Available;
-
-		QXmppPresence pres (presType,
-				QXmppPresence::Status (static_cast<QXmppPresence::Status::Type> (state.State_),
-						state.Status_,
-						state.Priority_));
+		auto pres = XooxUtil::StatusToPresence (state.State_, state.Status_, state.Priority_);
 		if (!OurPhotoHash_.isEmpty ())
 		{
 			pres.setVCardUpdateType (QXmppPresence::VCardUpdateValidPhoto);
@@ -380,6 +364,7 @@ namespace Xoox
 				conf.setPort (port);
 			conf.setKeepAliveInterval (KAInterval_);
 			conf.setKeepAliveTimeout (KATimeout_);
+			conf.setUseSASLAuthentication (false);
 			Client_->connectToServer (conf, pres);
 
 			FirstTimeConnect_ = false;
@@ -670,8 +655,8 @@ namespace Xoox
 	void ClientConnection::AddEntry (const QString& id,
 			const QString& name, const QStringList& groups)
 	{
-		Client_->rosterManager ().addRosterEntry (id,
-				name, QString (), QSet<QString>::fromList (groups));
+		Client_->rosterManager ().addItem (id,
+				name, QSet<QString>::fromList (groups));
 	}
 
 	void ClientConnection::Subscribe (const QString& id,
@@ -679,8 +664,8 @@ namespace Xoox
 	{
 		qDebug () << "Subscribe" << id;
 		if (!Client_->rosterManager ().getRosterBareJids ().contains (id))
-			Client_->rosterManager ().addRosterEntry (id,
-					name, msg, QSet<QString>::fromList (groups));
+			Client_->rosterManager ().addItem (id,
+					name, QSet<QString>::fromList (groups));
 		Client_->rosterManager ().subscribe (id, msg);
 		Client_->rosterManager ().acceptSubscription (id, msg);
 	}
@@ -727,7 +712,7 @@ namespace Xoox
 	void ClientConnection::SendMessage (GlooxMessage *msgObj)
 	{
 		QXmppMessage msg = msgObj->GetMessage ();
-		if (msg.requestReceipt ())
+		if (msg.isReceiptRequested ())
 			UndeliveredMessages_ [msg.id ()] = msgObj;
 
 #ifdef ENABLE_CRYPT
@@ -748,7 +733,7 @@ namespace Xoox
 				crypt.setAttribute ("xmlns", "jabber:x:encrypted");
 				crypt.setValue (PGPManager_->EncryptBody (key, body.toUtf8 ()));
 
-				msg.setExtensions (msg.extensions () + QXmppElementList (crypt));
+				msg.setExtensions (msg.extensions () << crypt);
 			}
 		}
 #endif
@@ -912,7 +897,7 @@ namespace Xoox
 		msg.setType (QXmppMessage::Normal);
 		QXmppDataForm subForm = fb.GetForm ();
 		subForm.setType (QXmppDataForm::Submit);
-		msg.setExtensions (XooxUtil::Form2XmppElem (subForm));
+		msg.setExtensions (QXmppElementList () << XooxUtil::Form2XmppElem (subForm));
 		Client_->sendPacket (msg);
 	}
 
@@ -938,12 +923,6 @@ namespace Xoox
 	void ClientConnection::handleDisconnected ()
 	{
 		emit statusChanged (EntryStatus (SOffline, LastState_.Status_));
-	}
-
-	void ClientConnection::handleReconnecting (int timeout)
-	{
-		qDebug () << "Azoth: reconnecting in"
-				<< (timeout >= 0 ? QString::number (timeout).toLatin1 () : "now");
 	}
 
 	void ClientConnection::handleError (QXmppClient::Error error)
@@ -991,8 +970,15 @@ namespace Xoox
 
 	void ClientConnection::handleIqReceived (const QXmppIq& iq)
 	{
-		if (iq.error ().isValid ())
+		switch (iq.error ().type ())
+		{
+		case QXmppStanza::Error::Cancel:
+		case QXmppStanza::Error::Continue:
+		case QXmppStanza::Error::Modify:
+		case QXmppStanza::Error::Auth:
+		case QXmppStanza::Error::Wait:
 			HandleError (iq);
+		}
 		InvokeCallbacks (iq);
 	}
 
@@ -1111,7 +1097,7 @@ namespace Xoox
 			if (pres.type () == QXmppPresence::Available)
 			{
 				SelfContact_->SetClientInfo (resource, pres);
-				SelfContact_->UpdatePriority (resource, pres.status ().priority ());
+				SelfContact_->UpdatePriority (resource, pres.priority ());
 				SelfContact_->SetStatus (XooxUtil::PresenceToStatus (pres), resource);
 			}
 			else

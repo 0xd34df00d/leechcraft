@@ -91,7 +91,7 @@ namespace Xoox
 		}
 
 		QXmppIq iq (QXmppIq::Set);
-		iq.setExtensions (queryElem);
+		iq.setExtensions (QXmppElementList () <<  queryElem);
 		Client_->sendPacket (iq);
 
 		SetState (SAwaitingRegistrationResult);
@@ -280,7 +280,7 @@ namespace Xoox
 		queryElem.setAttribute ("xmlns", NsRegister);
 
 		QXmppIq iq;
-		iq.setExtensions (queryElem);
+		iq.setExtensions (QXmppElementList () << queryElem);
 		Client_->sendPacket (iq);
 
 		SetState (SFetchingForm);

@@ -273,7 +273,6 @@ namespace Xoox
 	private slots:
 		void handleConnected ();
 		void handleDisconnected ();
-		void handleReconnecting (int = -1);
 		void handleError (QXmppClient::Error);
 		void handleIqReceived (const QXmppIq&);
 		void handleRosterReceived ();

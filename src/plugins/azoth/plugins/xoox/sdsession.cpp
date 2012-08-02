@@ -381,7 +381,7 @@ namespace Xoox
 		QXmppElement elem;
 		elem.setTagName ("query");
 		elem.setAttribute ("xmlns", "jabber:iq:register");
-		iq.setExtensions (QXmppElementList (elem));
+		iq.setExtensions (QXmppElementList () << elem);
 
 		Account_->GetClientConnection ()->SendPacketWCallback (iq, this, "handleRegistrationForm");
 	}
@@ -453,7 +453,7 @@ namespace Xoox
 		elem.setAttribute ("xmlns", "jabber:iq:register");
 		elem.appendChild (XooxUtil::Form2XmppElem (form));
 
-		regIq.setExtensions (QXmppElementList (elem));
+		regIq.setExtensions (QXmppElementList () << elem);
 
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (regIq);
 	}
