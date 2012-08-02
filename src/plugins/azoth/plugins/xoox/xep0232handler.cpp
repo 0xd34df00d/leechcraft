@@ -95,6 +95,7 @@ namespace XEP0232Handler
 			uris << qMakePair (si.IconType_, QString (si.IconURL_.toEncoded ()));
 			media.setUris (uris);
 			iconField.setMedia (media);
+			iconField.setValue (si.IconURL_.toEncoded ());
 
 			fields << iconField;
 		}
