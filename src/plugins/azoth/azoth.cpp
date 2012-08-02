@@ -247,12 +247,14 @@ namespace Azoth
 				{
 					auto acc = Core::Instance ().GetAccount (accountId);
 					auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
-					auto widget = qobject_cast<IMUCJoinWidget*> (proto->GetMUCJoinWidget ());
+					auto widgetObj = proto->GetMUCJoinWidget ();
+					auto widget = qobject_cast<IMUCJoinWidget*> (widgetObj);
 					if (!widget)
 						return;
 
 					widget->SetIdentifyingData (data);
 					widget->Join (acc->GetObject ());
+					widgetObj->deleteLater ();
 				}
 			}
 			else

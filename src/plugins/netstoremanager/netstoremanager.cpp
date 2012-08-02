@@ -156,7 +156,7 @@ namespace NetStoreManager
 	QStringList Plugin::GetServiceVariants () const
 	{
 		QStringList result;
-		for (auto account : AccountsManager_->GetAccounts ())
+		Q_FOREACH (auto account, AccountsManager_->GetAccounts ())
 		{
 			auto parent = qobject_cast<IStoragePlugin*> (account->GetParentPlugin ());
 			result << QString ("%1: %2")

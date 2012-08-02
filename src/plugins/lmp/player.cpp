@@ -176,6 +176,7 @@ namespace LMP
 	{
 		Criteria_ << SortingCriteria::Artist
 				<< SortingCriteria::Year
+				<< SortingCriteria::Album
 				<< SortingCriteria::TrackNumber;
 	}
 
