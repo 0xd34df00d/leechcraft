@@ -205,6 +205,22 @@ namespace LeechCraft
 							 ver.at (3).digitValue ()),
 							0);
 
+#if defined (ENABLE_GEOIP) && !defined (TORRENT_DISABLE_GEO_IP)
+					QStringList geoipCands;
+					geoipCands << "/usr/share/GeoIP"
+							<< "/usr/local/share/GeoIP"
+							<< "/var/lib/GeoIP";
+					Q_FOREACH (const auto& cand, geoipCands)
+					{
+						const auto& name = cand + "/GeoIP.dat";
+						if (QFile::exists (name))
+						{
+							Session_->load_country_db (name.toUtf8 ().constData ());
+							break;
+						}
+					}
+#endif
+
 					setLoggingSettings ();
 
 					QList<QVariant> ports = XmlSettingsManager::Instance ()->
@@ -769,6 +785,11 @@ namespace LeechCraft
 						QString::fromStdString (pi.ip.address ().to_string ()),
 						QString::fromUtf8 (pi.client.c_str ()),
 						interesting,
+#if defined (ENABLE_GEOIP) && !defined (TORRENT_DISABLE_GEO_IP)
+						QString::fromLatin1 (QByteArray (pi.country, 2)).toLower (),
+#else
+						QString (),
+#endif
 						std::shared_ptr<libtorrent::peer_info> (new libtorrent::peer_info (pi))
 					};
 					result << ppi;
@@ -828,6 +849,8 @@ namespace LeechCraft
 					handle = libtorrent::add_magnet_uri (*Session_,
 							magnet.toStdString (),
 							atp);
+					if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
+						handle.resolve_countries (true);
 				}
 				catch (const libtorrent::libtorrent_exception& e)
 				{
@@ -888,6 +911,8 @@ namespace LeechCraft
 #endif
 					atp.duplicate_is_error = true;
 					handle = Session_->add_torrent (atp);
+					if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
+						handle.resolve_countries (true);
 				}
 				catch (const libtorrent::libtorrent_exception& e)
 				{
@@ -2031,6 +2056,8 @@ namespace LeechCraft
 							std::back_inserter (*atp.resume_data));
 
 					handle = Session_->add_torrent (atp);
+					if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
+						handle.resolve_countries (true);
 				}
 				catch (const libtorrent::libtorrent_exception& e)
 				{
