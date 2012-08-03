@@ -829,6 +829,8 @@ namespace Xoox
 			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/facebook.svg");
 		else if (JID_.contains ("vk.com"))
 			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/vk.svg");
+		else if (JID_.contains ("odnoklassniki"))
+			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/odnoklassniki.svg");
 	}
 
 	QString GlooxAccount::GetDefaultReqHost () const
