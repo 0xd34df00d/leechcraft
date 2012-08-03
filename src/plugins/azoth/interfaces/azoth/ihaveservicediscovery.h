@@ -183,6 +183,19 @@ namespace Azoth
 		 * @sa ISDSession, gotSDSession()
 		 */
 		virtual QObject* CreateSDSession () = 0;
+
+		/** @brief Returns the default query for this account.
+		 *
+		 * The returned query (if non-empty) will be used to initiate
+		 * service discovery upon opening the service discovery tab for
+		 * this account.
+		 *
+		 * For example, an XMPP account would wish to return the user's
+		 * server as default query.
+		 *
+		 * @return The default query.
+		 */
+		virtual QString GetDefaultQuery () const = 0;
 	protected:
 		/** @brief Notifies about a new service discovery session.
 		 *
