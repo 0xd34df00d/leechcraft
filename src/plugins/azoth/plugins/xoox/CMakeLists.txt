@@ -84,6 +84,8 @@ SET (XOOX_SRCS
 	vcardlisteditdialog.cpp
 	xmppannotationsiq.cpp
 	xmppannotationsmanager.cpp
+	xmppbobiq.cpp
+	xmppbobmanager.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -150,6 +152,8 @@ SET (XOOX_HEADERS
 	vcardlisteditdialog.h
 	xmppannotationsiq.h
 	xmppannotationsmanager.h
+	xmppbobiq.h
+	xmppbobmanager.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
