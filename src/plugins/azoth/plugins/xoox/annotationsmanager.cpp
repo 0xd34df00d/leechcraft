@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "annotationsmanager.h"
-#include <QXmppAnnotationsManager.h>
+#include "xmppannotationsmanager.h"
 #include "clientconnection.h"
 
 namespace LeechCraft
@@ -29,37 +29,37 @@ namespace Xoox
 	AnnotationsManager::AnnotationsManager (ClientConnection *parent)
 	: QObject (parent)
 	, ClientConn_ (parent)
-	, XMPPAnnManager_ (new QXmppAnnotationsManager)
+	, XMPPAnnManager_ (new XMPPAnnotationsManager)
 	{
 		ClientConn_->GetClient ()->addExtension (XMPPAnnManager_);
 
 		connect (XMPPAnnManager_,
-				SIGNAL (notesReceived (const QList<QXmppAnnotationsIq::NoteItem>&)),
+				SIGNAL (notesReceived (const QList<XMPPAnnotationsIq::NoteItem>&)),
 				this,
-				SLOT (handleNotesReceived (const QList<QXmppAnnotationsIq::NoteItem>&)));
+				SLOT (handleNotesReceived (const QList<XMPPAnnotationsIq::NoteItem>&)));
 	}
 
-	QXmppAnnotationsIq::NoteItem AnnotationsManager::GetNote (const QString& jid) const
+	XMPPAnnotationsIq::NoteItem AnnotationsManager::GetNote (const QString& jid) const
 	{
 		return JID2Note_ [jid];
 	}
 
-	void AnnotationsManager::SetNote (const QString& jid, const QXmppAnnotationsIq::NoteItem& note)
+	void AnnotationsManager::SetNote (const QString& jid, const XMPPAnnotationsIq::NoteItem& note)
 	{
 		JID2Note_ [jid] = note;
-		XMPPAnnManager_->setNotes (JID2Note_.values ());
+		XMPPAnnManager_->SetNotes (JID2Note_.values ());
 	}
 
 	void AnnotationsManager::refetchNotes ()
 	{
 		JID2Note_.clear ();
-		XMPPAnnManager_->requestNotes ();
+		XMPPAnnManager_->RequestNotes ();
 	}
 
-	void AnnotationsManager::handleNotesReceived (const QList<QXmppAnnotationsIq::NoteItem>& notes)
+	void AnnotationsManager::handleNotesReceived (const QList<XMPPAnnotationsIq::NoteItem>& notes)
 	{
-		Q_FOREACH (const QXmppAnnotationsIq::NoteItem& item, notes)
-			JID2Note_ [item.jid ()] = item;
+		Q_FOREACH (const auto& item, notes)
+			JID2Note_ [item.GetJid ()] = item;
 	}
 }
 }

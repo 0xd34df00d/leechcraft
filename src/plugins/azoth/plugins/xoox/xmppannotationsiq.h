@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ANNOTATIONSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ANNOTATIONSMANAGER_H
-#include <QObject>
-#include <QHash>
-#include "xmppannotationsiq.h"
+#pragma once
+
+#include <QXmppIq.h>
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -28,29 +27,42 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class ClientConnection;
-	class XMPPAnnotationsManager;
-
-	class AnnotationsManager : public QObject
+	class XMPPAnnotationsIq : public QXmppIq
 	{
-		Q_OBJECT
-		
-		ClientConnection *ClientConn_;
-		XMPPAnnotationsManager *XMPPAnnManager_;
-		
-		QHash<QString, XMPPAnnotationsIq::NoteItem> JID2Note_;
 	public:
-		AnnotationsManager (ClientConnection*);
-		
-		XMPPAnnotationsIq::NoteItem GetNote (const QString&) const;
-		void SetNote (const QString&, const XMPPAnnotationsIq::NoteItem&);
-	public slots:
-		void refetchNotes ();
-	private slots:
-		void handleNotesReceived (const QList<XMPPAnnotationsIq::NoteItem>&);
+		class NoteItem
+		{
+			QString Jid_;
+			QString Note_;
+			QDateTime CDate_;
+			QDateTime MDate_;
+		public:
+			NoteItem ();
+			NoteItem (const QString&, const QString&);
+
+			QString GetJid () const;
+			void SetJid (const QString&);
+
+			QString GetNote () const;
+			void SetNote (const QString&);
+
+			QDateTime GetCDate () const;
+			void SetCDate (const QDateTime&);
+
+			QDateTime GetMDate () const;
+			void SetMDate (const QDateTime&);
+		};
+	private:
+		QList<NoteItem> Items_;
+	public:
+		XMPPAnnotationsIq ();
+
+		QList<NoteItem> GetItems () const;
+		void SetItems (const QList<NoteItem>&);
+	protected:
+		void parseElementFromChild (const QDomElement&);
+		void toXmlElementFromChild (QXmlStreamWriter*) const;
 	};
 }
 }
 }
-
-#endif

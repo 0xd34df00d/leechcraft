@@ -29,9 +29,8 @@
 #include <QXmppBookmarkManager.h>
 #include <QXmppEntityTimeManager.h>
 #include <QXmppArchiveManager.h>
-#include <QXmppActivityItem.h>
 #include <QXmppPubSubIq.h>
-#include <QXmppDeliveryReceiptsManager.h>
+#include <QXmppMessageReceiptManager.h>
 #include <QXmppCaptchaManager.h>
 #include <QXmppBobManager.h>
 #include <QXmppCallManager.h>
@@ -93,7 +92,7 @@ namespace Xoox
 	, BMManager_ (new QXmppBookmarkManager)
 	, EntityTimeManager_ (Client_->findExtension<QXmppEntityTimeManager> ())
 	, ArchiveManager_ (new QXmppArchiveManager)
-	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
+	, DeliveryReceiptsManager_ (new QXmppMessageReceiptManager)
 	, CaptchaManager_ (new QXmppCaptchaManager)
 	, BobManager_ (new QXmppBobManager)
 #ifdef ENABLE_MEDIACALLS
@@ -282,9 +281,9 @@ namespace Xoox
 				SLOT (handleVersionReceived (const QXmppVersionIq&)));
 
 		connect (DeliveryReceiptsManager_,
-				SIGNAL (messageDelivered (const QString&)),
+				SIGNAL (messageDelivered (const QString&, const QString&)),
 				this,
-				SLOT (handleMessageDelivered (const QString&)));
+				SLOT (handleMessageDelivered (const QString&, const QString&)));
 
 		connect (CaptchaManager_,
 				SIGNAL (captchaFormReceived (const QString&, const QXmppDataForm&)),
@@ -1233,7 +1232,7 @@ namespace Xoox
 		JID2CLEntry_ [from]->SetAvatar (image);
 	}
 
-	void ClientConnection::handleMessageDelivered (const QString& msgId)
+	void ClientConnection::handleMessageDelivered (const QString&, const QString& msgId)
 	{
 		QPointer<GlooxMessage> msg = UndeliveredMessages_.take (msgId);
 		if (msg)

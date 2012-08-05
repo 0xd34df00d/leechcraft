@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ANNOTATIONSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ANNOTATIONSMANAGER_H
-#include <QObject>
-#include <QHash>
-#include "xmppannotationsiq.h"
+#include "xmppannotationsmanager.h"
+#include <QDomElement>
+#include <QXmppClient.h>
+#include <QXmppConstants.h>
 
 namespace LeechCraft
 {
@@ -28,29 +27,35 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class ClientConnection;
-	class XMPPAnnotationsManager;
-
-	class AnnotationsManager : public QObject
+	void XMPPAnnotationsManager::SetNotes (const QList<XMPPAnnotationsIq::NoteItem>& notes)
 	{
-		Q_OBJECT
-		
-		ClientConnection *ClientConn_;
-		XMPPAnnotationsManager *XMPPAnnManager_;
-		
-		QHash<QString, XMPPAnnotationsIq::NoteItem> JID2Note_;
-	public:
-		AnnotationsManager (ClientConnection*);
-		
-		XMPPAnnotationsIq::NoteItem GetNote (const QString&) const;
-		void SetNote (const QString&, const XMPPAnnotationsIq::NoteItem&);
-	public slots:
-		void refetchNotes ();
-	private slots:
-		void handleNotesReceived (const QList<XMPPAnnotationsIq::NoteItem>&);
-	};
-}
-}
-}
+		XMPPAnnotationsIq iq;
+		iq.setType (QXmppIq::Set);
+		iq.SetItems (notes);
+		client ()->sendPacket (iq);
+	}
 
-#endif
+	void XMPPAnnotationsManager::RequestNotes ()
+	{
+		XMPPAnnotationsIq iq;
+		iq.setType (QXmppIq::Get);
+		client ()->sendPacket (iq);
+	}
+
+	bool XMPPAnnotationsManager::handleStanza(const QDomElement& element)
+	{
+		if (element.tagName () != "iq")
+			return false;
+
+		const auto& query = element.firstChildElement ("query");
+		if (query.firstChildElement ("storage").namespaceURI () != ns_rosternotes)
+			return false;
+
+		XMPPAnnotationsIq iq;
+		iq.parse (element);
+		emit notesReceived (iq.GetItems ());
+		return true;
+	}
+}
+}
+}

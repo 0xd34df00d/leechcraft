@@ -45,7 +45,7 @@ class QXmppDiscoveryIq;
 class QXmppBookmarkManager;
 class QXmppArchiveManager;
 class QXmppEntityTimeManager;
-class QXmppDeliveryReceiptsManager;
+class QXmppMessageReceiptManager;
 class QXmppCaptchaManager;
 class QXmppBobManager;
 #ifdef ENABLE_MEDIACALLS
@@ -95,7 +95,7 @@ namespace Xoox
 		QXmppBookmarkManager *BMManager_;
 		QXmppEntityTimeManager *EntityTimeManager_;
 		QXmppArchiveManager *ArchiveManager_;
-		QXmppDeliveryReceiptsManager *DeliveryReceiptsManager_;
+		QXmppMessageReceiptManager *DeliveryReceiptsManager_;
 		QXmppCaptchaManager *CaptchaManager_;
 		QXmppBobManager *BobManager_;
 #ifdef ENABLE_MEDIACALLS
@@ -284,7 +284,7 @@ namespace Xoox
 		void handleMessageReceived (QXmppMessage);
 		void handlePEPEvent (const QString&, PEPEventBase*);
 		void handlePEPAvatarUpdated (const QString&, const QImage&);
-		void handleMessageDelivered (const QString&);
+		void handleMessageDelivered (const QString&, const QString&);
 		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
 		void handleRoomInvitation (const QString&, const QString&, const QString&);
 		void handleGotRIEXItems (QString, QList<RIEXManager::Item>, bool);
