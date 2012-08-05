@@ -31,7 +31,6 @@
 #include <QXmppArchiveManager.h>
 #include <QXmppPubSubIq.h>
 #include <QXmppMessageReceiptManager.h>
-#include <QXmppCaptchaManager.h>
 #include <QXmppCallManager.h>
 #include <util/util.h>
 #include <util/socketerrorstrings.h>
@@ -70,6 +69,7 @@
 #include "xep0232handler.h"
 #include "pepmicroblog.h"
 #include "xmppbobmanager.h"
+#include "xmppcaptchamanager.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -93,7 +93,7 @@ namespace Xoox
 	, EntityTimeManager_ (Client_->findExtension<QXmppEntityTimeManager> ())
 	, ArchiveManager_ (new QXmppArchiveManager)
 	, DeliveryReceiptsManager_ (new QXmppMessageReceiptManager)
-	, CaptchaManager_ (new QXmppCaptchaManager)
+	, CaptchaManager_ (new XMPPCaptchaManager)
 	, BobManager_ (new XMPPBobManager)
 #ifdef ENABLE_MEDIACALLS
 	, CallManager_ (new QXmppCallManager)
@@ -1266,7 +1266,7 @@ namespace Xoox
 			return;
 
 		QXmppDataForm form = builder.GetForm ();
-		CaptchaManager_->sendResponse (jid, form);
+		CaptchaManager_->SendResponse (jid, form);
 	}
 
 	void ClientConnection::handleRoomInvitation (const QString& room,

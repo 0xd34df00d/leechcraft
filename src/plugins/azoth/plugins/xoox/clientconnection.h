@@ -46,7 +46,6 @@ class QXmppBookmarkManager;
 class QXmppArchiveManager;
 class QXmppEntityTimeManager;
 class QXmppMessageReceiptManager;
-class QXmppCaptchaManager;
 #ifdef ENABLE_MEDIACALLS
 class QXmppCallManager;
 class QXmppCall;
@@ -76,6 +75,7 @@ namespace Xoox
 	class LastActivityManager;
 	class JabberSearchManager;
 	class XMPPBobManager;
+	class XMPPCaptchaManager;
 	class UserAvatarManager;
 	class MsgArchivingManager;
 	class SDManager;
@@ -96,7 +96,7 @@ namespace Xoox
 		QXmppEntityTimeManager *EntityTimeManager_;
 		QXmppArchiveManager *ArchiveManager_;
 		QXmppMessageReceiptManager *DeliveryReceiptsManager_;
-		QXmppCaptchaManager *CaptchaManager_;
+		XMPPCaptchaManager *CaptchaManager_;
 		XMPPBobManager *BobManager_;
 #ifdef ENABLE_MEDIACALLS
 		QXmppCallManager *CallManager_;
