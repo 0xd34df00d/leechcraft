@@ -32,7 +32,6 @@
 #include <QXmppPubSubIq.h>
 #include <QXmppMessageReceiptManager.h>
 #include <QXmppCaptchaManager.h>
-#include <QXmppBobManager.h>
 #include <QXmppCallManager.h>
 #include <util/util.h>
 #include <util/socketerrorstrings.h>
@@ -70,6 +69,7 @@
 #include "sdmanager.h"
 #include "xep0232handler.h"
 #include "pepmicroblog.h"
+#include "xmppbobmanager.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -94,7 +94,7 @@ namespace Xoox
 	, ArchiveManager_ (new QXmppArchiveManager)
 	, DeliveryReceiptsManager_ (new QXmppMessageReceiptManager)
 	, CaptchaManager_ (new QXmppCaptchaManager)
-	, BobManager_ (new QXmppBobManager)
+	, BobManager_ (new XMPPBobManager)
 #ifdef ENABLE_MEDIACALLS
 	, CallManager_ (new QXmppCallManager)
 #endif
@@ -509,7 +509,7 @@ namespace Xoox
 		return PrivacyListsManager_;
 	}
 
-	QXmppBobManager* ClientConnection::GetBobManager () const
+	XMPPBobManager* ClientConnection::GetBobManager () const
 	{
 		return BobManager_;
 	}

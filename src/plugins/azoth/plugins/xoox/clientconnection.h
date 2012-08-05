@@ -47,7 +47,6 @@ class QXmppArchiveManager;
 class QXmppEntityTimeManager;
 class QXmppMessageReceiptManager;
 class QXmppCaptchaManager;
-class QXmppBobManager;
 #ifdef ENABLE_MEDIACALLS
 class QXmppCallManager;
 class QXmppCall;
@@ -76,6 +75,7 @@ namespace Xoox
 	class AdHocCommandManager;
 	class LastActivityManager;
 	class JabberSearchManager;
+	class XMPPBobManager;
 	class UserAvatarManager;
 	class MsgArchivingManager;
 	class SDManager;
@@ -97,7 +97,7 @@ namespace Xoox
 		QXmppArchiveManager *ArchiveManager_;
 		QXmppMessageReceiptManager *DeliveryReceiptsManager_;
 		QXmppCaptchaManager *CaptchaManager_;
-		QXmppBobManager *BobManager_;
+		XMPPBobManager *BobManager_;
 #ifdef ENABLE_MEDIACALLS
 		QXmppCallManager *CallManager_;
 #endif
@@ -209,7 +209,7 @@ namespace Xoox
 		AnnotationsManager* GetAnnotationsManager () const;
 		PubSubManager* GetPubSubManager () const;
 		PrivacyListsManager* GetPrivacyListsManager () const;
-		QXmppBobManager* GetBobManager () const;
+		XMPPBobManager* GetBobManager () const;
 #ifdef ENABLE_MEDIACALLS
 		QXmppCallManager* GetCallManager () const;
 #endif
