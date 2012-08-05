@@ -40,13 +40,13 @@ namespace Xoox
 
 		QString GetCid () const;
 		void SetCid (const QString&);
-		
+
 		QString GetMimeType () const;
 		void SetMimeType (const QString&);
-		
+
 		int GetMaxAge () const;
 		void SetMaxAge (int);
-		
+
 		static bool IsBobIq (const QDomElement&);
 	protected:
 		void parseElementFromChild (const QDomElement&);

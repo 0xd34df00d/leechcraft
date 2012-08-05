@@ -39,7 +39,7 @@ namespace Xoox
 		bool requestReceived = false;
 
 		const auto& tagName = stanza.tagName ();
-		if (tagName == "iq") 
+		if (tagName == "iq")
 		{
 			if (XMPPBobIq::IsBobIq (stanza))
 			{
@@ -54,7 +54,7 @@ namespace Xoox
 			bobIq.parse (stanza);
 		else
 			return false;
-	
+
 		BobCache_.insert (qMakePair (bobIq.GetCid (), bobIq.from ()),
 				new QByteArray (bobIq.GetData ()),
 				bobIq.GetData ().size () / 1024);

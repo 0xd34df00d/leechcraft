@@ -78,7 +78,7 @@ namespace Xoox
 		return dataElement.namespaceURI () == ns_bob;
 	}
 
-	void XMPPBobIq::parseElementFromChild(const QDomElement &element)
+	void XMPPBobIq::parseElementFromChild (const QDomElement& element)
 	{
 		const auto& dataElement = element.firstChildElement ("data");
 		Cid_ = dataElement.attribute ("cid");
