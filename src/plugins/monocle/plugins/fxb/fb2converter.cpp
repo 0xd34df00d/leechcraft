@@ -294,7 +294,15 @@ namespace FXB
 
 			if (child.isText ())
 			{
+				auto fmt = Cursor_->charFormat ();
+				auto newFmt = fmt;
+				newFmt.setForeground (Qt::black);
+				Cursor_->setCharFormat (newFmt);
+
 				Cursor_->insertText (child.toText ().data ());
+
+				Cursor_->setCharFormat (fmt);
+
 				continue;
 			}
 
