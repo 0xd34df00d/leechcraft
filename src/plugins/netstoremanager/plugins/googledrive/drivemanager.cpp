@@ -34,6 +34,7 @@ namespace GoogleDrive
 {
 	DriveManager::DriveManager (Account *acc, QObject *parent)
 	: QObject (parent)
+	, DirectoryId_ ("application/vnd.google-apps.folder")
 	, Account_ (acc)
 	{
 #ifdef HAVE_MAGIC
@@ -80,6 +81,12 @@ namespace GoogleDrive
 	void DriveManager::Upload (const QString& filePath)
 	{
 		ApiCallQueue_ << [this, filePath] (const QString& key) { RequestUpload (filePath, key); };
+		RequestAccessToken ();
+	}
+
+	void DriveManager::CreateDirectory (const QString& name, const QString& parentId)
+	{
+		ApiCallQueue_ << [this, name, parentId] (const QString& key) { RequestCreateDirectory (name, parentId, key); };
 		RequestAccessToken ();
 	}
 
@@ -229,6 +236,34 @@ namespace GoogleDrive
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleUploadRequestFinished ()));
+	}
+
+	void DriveManager::RequestCreateDirectory (const QString& name,
+			const QString& parentId, const QString& key)
+	{
+		QString str = QString ("https://www.googleapis.com/drive/v2/files?access_token=%1")
+				.arg (key);
+		QNetworkRequest request (str);
+
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
+		QVariantMap data;
+		data ["title"] = name;
+		data ["mimeType"] = DirectoryId_;
+		if (!parentId.isEmpty ())
+		{
+			QVariantList parents;
+			QVariantMap parent;
+			parent ["id"] = parentId;
+			parents << parent;
+			data ["parents"] = parents;
+		}
+
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				post (request, QJson::Serializer ().serialize (data));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleCreateDirectory ()));
 	}
 
 	void DriveManager::ParseError (const QVariantMap& map)
@@ -621,6 +656,35 @@ namespace GoogleDrive
 		emit uploadError ("Error", Reply2FilePath_.take (reply));
 		if (error == QNetworkReply::ProtocolUnknownError)
 			;//TODO resume upload
+	}
+
+	void DriveManager::handleCreateDirectory ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		bool ok = false;
+		QByteArray ba = reply->readAll ();
+		QVariant res = QJson::Parser ().parse (ba, &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+
+		if (!res.toMap ().contains ("error"))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "directory created successfully";
+			RefreshListing ();
+			return;
+		}
+
+		ParseError (res.toMap ());
 	}
 
 }
