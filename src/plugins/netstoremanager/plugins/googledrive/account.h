@@ -23,6 +23,7 @@
 #include <QUrl>
 #include <interfaces/netstoremanager/istorageaccount.h>
 #include <interfaces/netstoremanager/isupportfilelistings.h>
+#include <util/idpool.h>
 #include "drivemanager.h"
 
 namespace LeechCraft
@@ -58,6 +59,7 @@ namespace GoogleDrive
 
 		DriveManager *DriveManager_;
 		QHash<QString, DriveItem> Items_;
+
 	public:
 		Account (const QString& name, QObject *parentPlugin = 0);
 

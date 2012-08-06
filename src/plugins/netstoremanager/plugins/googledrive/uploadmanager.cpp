@@ -19,7 +19,11 @@
 #include "uploadmanager.h"
 #include <QNetworkAccessManager>
 #include <QFileInfo>
+#include <util/util.h>
 #include "account.h"
+#include "core.h"
+#include <interfaces/ijobholder.h>
+
 
 namespace LeechCraft
 {
@@ -42,14 +46,21 @@ namespace GoogleDrive
 				Qt::QueuedConnection);
 
 		connect (Account_->GetDriveManager (),
-				SIGNAL (uploadProgress (qint64, qint64)),
+				SIGNAL (uploadProgress (qint64, qint64, const QString&)),
 				this,
-				SLOT (handleUploadProgress (qint64, qint64)));
-
+				SLOT (handleUploadProgress (qint64, qint64, const QString&)));
 		connect (Account_->GetDriveManager (),
-				SIGNAL (finished ()),
+				SIGNAL (uploadStatusChanged (const QString&, const QString&)),
 				this,
-				SLOT (handleFinished ()));
+				SLOT (handleStatusChanged (const QString&, const QString&)));
+		connect (Account_->GetDriveManager (),
+				SIGNAL (uploadError (const QString&, const QString&)),
+				this,
+				SLOT (handleError  (const QString&, const QString&)));
+		connect (Account_->GetDriveManager (),
+				SIGNAL (finished (const QString&)),
+				this,
+				SLOT (handleFinished (const QString&)));
 
 
 		if (UploadType_ == UploadType::Upload)
@@ -61,15 +72,42 @@ namespace GoogleDrive
 		Account_->GetDriveManager ()->Upload (FilePath_);
 	}
 
-	void UploadManager::handleUploadProgress (qint64 sent, qint64 total)
+	void UploadManager::handleError (const QString& error, const QString& filePath)
 	{
-		//TODO show upload in summary
+		if (filePath != FilePath_)
+			return;
+
+		emit uploadError (error, FilePath_);
 	}
 
-	void UploadManager::handleFinished ()
+	void UploadManager::handleUploadProgress (qint64 sent,
+			qint64 total, const QString& filePath)
 	{
-		//TODO notify about upload
+		if (filePath != FilePath_)
+			return;
+
+		emit uploadProgress (sent, total, FilePath_);
+	}
+
+	void UploadManager::handleStatusChanged (const QString& status,
+			const QString& filePath)
+	{
+		if (filePath != FilePath_)
+			return;
+
+		emit uploadStatusChanged (status, FilePath_);
+	}
+
+	void UploadManager::handleFinished (const QString& filePath)
+	{
+		if (filePath != FilePath_)
+			return;
+
+		Core::Instance ().SendEntity (Util::MakeNotification ("NetStoreManager",
+				tr ("File %1 was uploaded successfully").arg (FilePath_),
+				PWarning_));
 		emit finished ();
+		emit uploadStatusChanged (tr ("Finished"), FilePath_);
 	}
 
 }

@@ -71,7 +71,21 @@ namespace GoogleDrive
 
 	void Account::Upload (const QString& filepath)
 	{
-		auto uploadManager = new UploadManager (filepath, UploadType::Upload, this);
+		auto uploadManager = new UploadManager (filepath,
+				UploadType::Upload, this);
+
+		connect (uploadManager,
+				SIGNAL (uploadProgress (quint64, quint64, const QString&)),
+				this,
+				SIGNAL (upProgress (quint64, quint64, const QString&)));
+		connect (uploadManager,
+				SIGNAL (uploadError (const QString&, const QString&)),
+				this,
+				SIGNAL (upError (const QString&, const QString&)));
+		connect (uploadManager,
+				SIGNAL (uploadStatusChanged (const QString&, const QString&)),
+				this,
+				SIGNAL (upStatusChanged (const QString&, const QString&)));
 	}
 
 	void Account::Delete (const QList<QStringList>& id)

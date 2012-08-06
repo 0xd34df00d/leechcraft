@@ -18,7 +18,6 @@
 
 #include "drivemanager.h"
 #include <QNetworkRequest>
-#include <QNetworkReply>
 #include <QtDebug>
 #include <QFileInfo>
 #include <qjson/parser.h>
@@ -90,7 +89,8 @@ namespace GoogleDrive
 				.arg (key);
 		QNetworkRequest request (str);
 
-		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+		request.setHeader (QNetworkRequest::ContentTypeHeader,
+				"application/x-www-form-urlencoded");
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
 				GetNetworkAccessManager ()->get (request);
@@ -101,7 +101,8 @@ namespace GoogleDrive
 				SLOT (handleGotFiles ()));
 	}
 
-	void DriveManager::RequestSharingEntry (const QString& id, const QString& key)
+	void DriveManager::RequestSharingEntry (const QString& id,
+			const QString& key)
 	{
 		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1/permissions?access_token=%2")
 				.arg (id, key);
@@ -127,7 +128,8 @@ namespace GoogleDrive
 				SLOT (handleRequestFileSharing ()));
 	}
 
-	void DriveManager::RequestEntryRemoving (const QString& id, const QString& key)
+	void DriveManager::RequestEntryRemoving (const QString& id,
+			const QString& key)
 	{
 		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1?access_token=%2")
 				.arg (id, key);
@@ -143,7 +145,8 @@ namespace GoogleDrive
 				SLOT (handleRequestEntryRemoving ()));
 	}
 
-	void DriveManager::RequestMovingEntryToTrash (const QString& id, const QString& key)
+	void DriveManager::RequestMovingEntryToTrash (const QString& id,
+			const QString& key)
 	{
 		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1/trash?access_token=%2")
 				.arg (id, key);
@@ -159,7 +162,8 @@ namespace GoogleDrive
 				SLOT (handleRequestMovingEntryToTrash ()));
 	}
 
-	void DriveManager::RequestRestoreEntryFromTrash (const QString& id, const QString& key)
+	void DriveManager::RequestRestoreEntryFromTrash (const QString& id,
+			const QString& key)
 	{
 		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1/untrash?access_token=%2")
 				.arg (id, key);
@@ -197,25 +201,34 @@ namespace GoogleDrive
 
 	void DriveManager::RequestUpload (const QString& filePath, const QString& key)
 	{
+		emit uploadStatusChanged (tr ("Initializing..."), filePath);
+
 		QFileInfo info (filePath);
-		const QUrl initiateUrl (QString ("https://www.googleapis.com/upload/drive/v2/files?access_token=%1")
+		const QUrl initiateUrl (QString ("https://www.googleapis.com/upload/drive/v2/files?access_token=%1&uploadType=resumable")
 				.arg (key));
 		QNetworkRequest request (initiateUrl);
 		request.setPriority (QNetworkRequest::LowPriority);
+#ifdef HAVE_MAGIC
+		request.setRawHeader ("X-Upload-Content-Type",
+				magic_file (Magic_, filePath.toUtf8 ()));
+#endif
+		request.setRawHeader ("X-Upload-Content-Length",
+				QString::number (QFileInfo (filePath).size ()).toUtf8 ());
+		QVariantMap map;
+		map ["title"] = QFileInfo (filePath).fileName ();
 
-		QFile *file = new QFile (filePath);
+		QByteArray data = QJson::Serializer ().serialize (map);
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
+		request.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
+
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
-				GetNetworkAccessManager ()->post (request, file);
-		Reply2File_ [reply] = file;
+				GetNetworkAccessManager ()->post (request, data);
+		Reply2FilePath_ [reply] = filePath;
 
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleUploadRequestFinished ()));
-		connect (reply,
-				SIGNAL (uploadProgress (qint64,qint64)),
-				this,
-				SIGNAL (uploadProgress (qint64,qint64)));
 	}
 
 	void DriveManager::ParseError (const QVariantMap& map)
@@ -507,11 +520,67 @@ namespace GoogleDrive
 			return;
 
 		reply->deleteLater ();
+		QString path = Reply2FilePath_.take (reply);
 
-		Reply2File_.take (reply)->deleteLater ();
+		const int code = reply->
+				attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
+		if (code != 200)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "upload initiating failed with code:"
+					<< code;
+			return;
+		}
 
-		bool ok = false;
+		emit uploadStatusChanged (tr ("Uploading..."), path);
+
+		QFile *file = new QFile (path);
+		if (!file->open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open file: "
+					<< file->errorString ();
+			return;
+		}
+
+		QUrl url (reply->rawHeader ("Location"));
+		QNetworkRequest request (url);
+#ifdef HAVE_MAGIC
+		request.setHeader (QNetworkRequest::ContentTypeHeader,
+				magic_file (Magic_, path.toUtf8 ()));
+#endif
+		request.setHeader (QNetworkRequest::ContentLengthHeader,
+				QString::number (QFileInfo (path).size ()).toUtf8 ());
+
+		QNetworkReply *uploadReply = Core::Instance ().GetProxy ()->
+				GetNetworkAccessManager ()->put (request, file);
+		file->setParent (uploadReply);
+		Reply2FilePath_ [uploadReply] = path;
+
+		connect (uploadReply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleUploadFinished ()));
+		connect (uploadReply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleUploadError (QNetworkReply::NetworkError)));
+		connect (uploadReply,
+				SIGNAL (uploadProgress (qint64, qint64)),
+				this,
+				SLOT (handleUploadProgress (qint64,qint64)));
+	}
+
+	void DriveManager::handleUploadFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
 		QByteArray ba = reply->readAll ();
+		bool ok = false;
 		QVariant res = QJson::Parser ().parse (ba, &ok);
 		if (!ok)
 		{
@@ -525,11 +594,33 @@ namespace GoogleDrive
 			qDebug () << Q_FUNC_INFO
 					<< "file uploaded successfully";
 			RefreshListing ();
-			emit finished ();
+			emit finished (Reply2FilePath_.take (reply));
 			return;
 		}
 
-		ParseError (res.toMap ());
+		 ParseError (res.toMap ());
+	}
+
+	void DriveManager::handleUploadProgress (qint64 uploaded, qint64 total)
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		emit uploadProgress (uploaded, total, Reply2FilePath_ [reply]);
+	}
+
+	void DriveManager::handleUploadError (QNetworkReply::NetworkError error)
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		emit uploadError ("Error", Reply2FilePath_.take (reply));
+		if (error == QNetworkReply::ProtocolUnknownError)
+			;//TODO resume upload
 	}
 
 }

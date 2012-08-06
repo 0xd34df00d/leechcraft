@@ -26,13 +26,12 @@
 #include <QUrl>
 #include <QStringList>
 #include <QVariant>
-
+#include <QNetworkReply>
 #ifdef HAVE_MAGIC
 	#include <magic.h>
 #endif
 
 class QFile;
-class QNetworkReply;
 
 namespace LeechCraft
 {
@@ -117,7 +116,7 @@ namespace GoogleDrive
 		Account *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
 		QHash<QNetworkReply*, QString> Reply2Id_;
-		QHash<QNetworkReply*, QFile*> Reply2File_;
+		QHash<QNetworkReply*, QString> Reply2FilePath_;
 
 #ifdef HAVE_MAGIC
 		magic_t Magic_;
@@ -153,12 +152,17 @@ namespace GoogleDrive
 		void handleRequestMovingEntryToTrash ();
 		void handleRequestRestoreEntryFromTrash ();
 		void handleUploadRequestFinished ();
+		void handleUploadFinished ();
+		void handleUploadProgress (qint64 uploaded, qint64 total);
+		void handleUploadError (QNetworkReply::NetworkError error);
 
 	signals:
 		void gotFiles (const QList<DriveItem>& items);
 		void gotSharedFileId (const QString& id);
-		void uploadProgress (qint64 sent, qint64 total);
-		void finished ();
+		void uploadProgress (qint64 sent, qint64 total, const QString& filePath);
+		void uploadStatusChanged (const QString& status, const QString& filePath);
+		void uploadError (const QString& str, const QString& filePath);
+		void finished (const QString& path);
 	};
 }
 }

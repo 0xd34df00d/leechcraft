@@ -35,7 +35,7 @@ SET (GOOGLEDRIVE_HEADERS
 	core.h
 	drivemanager.h
 	googledrive.h
-	uploadmanager.cpp
+	uploadmanager.h
 	xmlsettingsmanager.h
 	)
 
