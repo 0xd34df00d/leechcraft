@@ -31,6 +31,7 @@
 	#include <magic.h>
 #endif
 
+class QFile;
 class QNetworkReply;
 
 namespace LeechCraft
@@ -116,6 +117,7 @@ namespace GoogleDrive
 		Account *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
 		QHash<QNetworkReply*, QString> Reply2Id_;
+		QHash<QNetworkReply*, QFile*> Reply2File_;
 
 #ifdef HAVE_MAGIC
 		magic_t Magic_;

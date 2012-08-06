@@ -203,19 +203,10 @@ namespace GoogleDrive
 		QNetworkRequest request (initiateUrl);
 		request.setPriority (QNetworkRequest::LowPriority);
 
-		QFile file (filePath);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "Unable to open file: "
-					<< file.errorString ();
-
-			emit finished ();
-			return;
-		}
-
+		QFile *file = new QFile (filePath);
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
-				GetNetworkAccessManager ()->post (request, file.readAll ());
+				GetNetworkAccessManager ()->post (request, file);
+		Reply2File_ [reply] = file;
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -516,6 +507,8 @@ namespace GoogleDrive
 			return;
 
 		reply->deleteLater ();
+
+		Reply2File_.take (reply)->deleteLater ();
 
 		bool ok = false;
 		QByteArray ba = reply->readAll ();
