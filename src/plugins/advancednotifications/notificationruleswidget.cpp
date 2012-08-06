@@ -178,7 +178,8 @@ namespace AdvancedNotifications
 			attentionDrawn.SetAudioParams (AudioParams ("im-attention"));
 			Rules_ << attentionDrawn;
 		}
-		else if (version == -1 || version == 1)
+
+		if (version == -1 || version == 1)
 		{
 			NotificationRule eventDue (tr ("Event is due"), CatOrganizer,
 					QStringList (TypeOrganizerEventDue));
