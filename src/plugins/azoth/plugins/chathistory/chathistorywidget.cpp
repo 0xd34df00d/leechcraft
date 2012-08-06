@@ -86,6 +86,10 @@ namespace ChatHistory
 				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
 				this,
 				SLOT (handleGotSearchPosition (const QString&, const QString&, int)));
+		connect (Core::Instance ().get (),
+				SIGNAL (gotDaysForSheet (QString, QString, int, int, QList<int>)),
+				this,
+				SLOT (handleGotDaysForSheet (QString, QString, int, int, QList<int>)));
 
 		Toolbar_->addAction (tr ("Previous"),
 				this,
@@ -383,11 +387,29 @@ namespace ChatHistory
 		RequestLogs ();
 	}
 
+	void ChatHistoryWidget::handleGotDaysForSheet (const QString& accountId,
+			const QString& entryId, int year, int month, const QList<int>& days)
+	{
+		if (accountId != CurrentAccount_ ||
+			entryId != CurrentEntry_ ||
+			year != Ui_.Calendar_->yearShown () ||
+			month != Ui_.Calendar_->monthShown ())
+			return;
+
+		Ui_.Calendar_->setDateTextFormat (QDate (), QTextCharFormat ());
+
+		QTextCharFormat fmt;
+		fmt.setFontWeight (QFont::Bold);
+		Q_FOREACH (int day, days)
+			Ui_.Calendar_->setDateTextFormat (QDate (year, month, day), fmt);
+	}
+
 	void ChatHistoryWidget::on_AccountBox__currentIndexChanged (int idx)
 	{
 		const QString& id = Ui_.AccountBox_->itemData (idx).toString ();
 		Core::Instance ()->GetUsersForAccount (id);
 		CurrentEntry_.clear ();
+		UpdateDates ();
 	}
 
 	void ChatHistoryWidget::handleContactSelected (const QModelIndex& index)
@@ -405,6 +427,7 @@ namespace ChatHistory
 		ContactSelectedAsGlobSearch_ = false;
 
 		RequestLogs ();
+		UpdateDates ();
 	}
 
 	void ChatHistoryWidget::on_HistorySearch__returnPressed ()
@@ -440,8 +463,15 @@ namespace ChatHistory
 		}
 	}
 
+	void ChatHistoryWidget::on_Calendar__currentPageChanged ()
+	{
+		UpdateDates ();
+	}
+
 	void ChatHistoryWidget::on_Calendar__activated (const QDate& date)
 	{
+		Ui_.Calendar_->setDateTextFormat (QDate (), QTextCharFormat ());
+
 		if (CurrentEntry_.isEmpty ())
 			return;
 
@@ -492,6 +522,17 @@ namespace ChatHistory
 		emit gotEntity (Util::MakeEntity (url,
 				QString (),
 				static_cast<TaskParameters> (FromUserInitiated | OnlyHandle)));
+	}
+
+	void ChatHistoryWidget::UpdateDates ()
+	{
+		Ui_.Calendar_->setDateTextFormat (QDate (), QTextCharFormat ());
+
+		if (CurrentEntry_.isEmpty ())
+			return;
+
+		Core::Instance ()->GetDaysForSheet (CurrentAccount_, CurrentEntry_,
+				Ui_.Calendar_->yearShown (), Ui_.Calendar_->monthShown ());
 	}
 
 	void ChatHistoryWidget::RequestLogs ()

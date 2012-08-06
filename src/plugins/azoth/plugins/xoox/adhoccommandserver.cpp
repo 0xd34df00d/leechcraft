@@ -173,7 +173,7 @@ namespace Xoox
 		iq.setTo (sourceElem.attribute ("from"));
 		iq.setId (sourceElem.attribute ("id"));
 		iq.setType (QXmppIq::Result);
-		iq.setExtensions (elem);
+		iq.setExtensions (QXmppElementList () << elem);
 
 		Conn_->GetClient ()->sendPacket (iq);
 	}
@@ -192,7 +192,7 @@ namespace Xoox
 		iq.setTo (sourceElem.attribute ("from"));
 		iq.setId (sourceElem.attribute ("id"));
 		iq.setType (QXmppIq::Result);
-		iq.setExtensions (elem);
+		iq.setExtensions (QXmppElementList () << elem);
 
 		Conn_->GetClient ()->sendPacket (iq);
 	}

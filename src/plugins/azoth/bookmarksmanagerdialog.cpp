@@ -33,6 +33,8 @@ namespace Azoth
 	: QDialog (parent)
 	, BMModel_ (new QStandardItemModel (this))
 	{
+		setAttribute (Qt::WA_DeleteOnClose, true);
+
 		Ui_.setupUi (this);
 		Ui_.MoveDown_->setIcon (QIcon::fromTheme ("go-down"));
 		Ui_.MoveUp_->setIcon (QIcon::fromTheme ("go-up"));
@@ -80,6 +82,12 @@ namespace Azoth
 
 		if (Ui_.AccountBox_->count ())
 			on_AccountBox__currentIndexChanged (0);
+	}
+
+	BookmarksManagerDialog::~BookmarksManagerDialog ()
+	{
+		delete CurrentEditor_;
+		qDeleteAll (Proto2Joiner_.values ());
 	}
 
 	void BookmarksManagerDialog::FocusOn (IAccount *acc)
@@ -193,6 +201,7 @@ namespace Azoth
 			delete item;
 		}
 		QWidget *w = supBms->GetMUCBookmarkEditorWidget ();
+		delete CurrentEditor_;
 		CurrentEditor_ = qobject_cast<IMUCBookmarkEditorWidget*> (w);
 		if (CurrentEditor_)
 			Ui_.BMFrameLayout_->addWidget (w);

@@ -59,7 +59,7 @@ namespace Xoox
 
 		QXmppIq iq (QXmppIq::Set);
 		iq.setTo (jid);
-		iq.setExtensions (command);
+		iq.setExtensions (QXmppElementList () << command);
 
 		PendingCommands_ << iq.id ();
 		client ()->sendPacket (iq);
@@ -88,7 +88,7 @@ namespace Xoox
 
 		QXmppIq iq (QXmppIq::Set);
 		iq.setTo (jid);
-		iq.setExtensions (command);
+		iq.setExtensions (QXmppElementList () << command);
 
 		PendingCommands_ << iq.id ();
 		client ()->sendPacket (iq);

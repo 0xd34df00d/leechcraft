@@ -25,8 +25,8 @@
 #include <QLineEdit>
 #include <QTreeWidget>
 #include <QtDebug>
-#include <QXmppBobManager.h>
 #include "imagemediawidget.h"
+#include "xmppbobmanager.h"
 
 namespace LeechCraft
 {
@@ -297,7 +297,7 @@ namespace Xoox
 		}
 	};
 
-	FormBuilder::FormBuilder (const QString& from, QXmppBobManager *bobManager)
+	FormBuilder::FormBuilder (const QString& from, XMPPBobManager *bobManager)
 	: From_ (from)
 	, BobManager_ (bobManager)
 	{
@@ -313,7 +313,7 @@ namespace Xoox
 		Type2Handler_ [QXmppDataForm::Field::TextSingleField].reset (new SingleTextHandler (false, this));
 	}
 
-	QXmppBobManager* FormBuilder::BobManager () const
+	XMPPBobManager* FormBuilder::BobManager () const
 	{
 		return BobManager_;
 	}

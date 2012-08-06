@@ -168,6 +168,7 @@ namespace Xoox
 
 		// IHaveServiceDiscovery
 		QObject* CreateSDSession ();
+		QString GetDefaultQuery () const;
 
 		// IHaveSearch
 		QObject* CreateSearchSession ();
@@ -233,6 +234,7 @@ namespace Xoox
 	private:
 		QString GetPassword (bool authFailure = false);
 		void RegenAccountIcon ();
+		QString GetDefaultReqHost () const;
 	public slots:
 		void handleEntryRemoved (QObject*);
 		void handleGotRosterItems (const QList<QObject*>&);

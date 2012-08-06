@@ -88,7 +88,7 @@ namespace Xoox
 		queryElem.setAttribute ("xmlns", NsLastActivity);
 		if (secs != -1)
 			queryElem.setAttribute ("seconds", QString::number (secs));
-		iq.setExtensions (queryElem);
+		iq.setExtensions (QXmppElementList () << queryElem);
 
 		return iq;
 	}

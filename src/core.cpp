@@ -637,7 +637,9 @@ namespace LeechCraft
 		{
 			if (p.Entity_.toUrl ().isValid () &&
 					(p.Parameters_ & FromUserInitiated) &&
-					!(p.Parameters_ & OnlyDownload))
+					!(p.Parameters_ & OnlyDownload) &&
+					XmlSettingsManager::Instance ()->
+						property ("FallbackExternalHandlers").toBool ())
 			{
 				QDesktopServices::openUrl (p.Entity_.toUrl ());
 				return true;

@@ -87,7 +87,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			GetCorePluginManager ()->RegisterHookable (this);
 
 	InitializeInterface ();
-	hide ();
 
 	connect (qApp,
 			SIGNAL (aboutToQuit ()),

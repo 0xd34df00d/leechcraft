@@ -22,7 +22,7 @@
 #include <QDomElement>
 #include <QLineEdit>
 #include <QPointer>
-#include <QXmppBobManager.h>
+#include "xmppbobmanager.h"
 #include "inbandaccountregfirstpage.h"
 #include "util.h"
 
@@ -37,7 +37,7 @@ namespace Xoox
 	InBandAccountRegSecondPage::InBandAccountRegSecondPage (InBandAccountRegFirstPage *first, QWidget *parent)
 	: QWizardPage (parent)
 	, Client_ (new QXmppClient (this))
-	, BobManager_ (new QXmppBobManager)
+	, BobManager_ (new XMPPBobManager)
 	, FirstPage_ (first)
 	, FB_ (FormBuilder (QString (), BobManager_))
 	, Widget_ (0)
@@ -91,7 +91,7 @@ namespace Xoox
 		}
 
 		QXmppIq iq (QXmppIq::Set);
-		iq.setExtensions (queryElem);
+		iq.setExtensions (QXmppElementList () <<  queryElem);
 		Client_->sendPacket (iq);
 
 		SetState (SAwaitingRegistrationResult);
@@ -280,7 +280,7 @@ namespace Xoox
 		queryElem.setAttribute ("xmlns", NsRegister);
 
 		QXmppIq iq;
-		iq.setExtensions (queryElem);
+		iq.setExtensions (QXmppElementList () << queryElem);
 		Client_->sendPacket (iq);
 
 		SetState (SFetchingForm);

@@ -4,6 +4,44 @@ the rest.
 Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
+! Devel digest #29 ( http://leechcraft.org/devel-digest-29 ):
+* Core: fallback to using external apps is now optional.
+* Azoth: autoselect other resources only when a chat message is recieved.
+* Azoth: tooltip is updated on avatar changes.
+* Azoth: fixed a couple of bookmarks-related memory leaks.
+* Azoth: added default queries in Service Discovery.
+* Azoth: more compatibility with full Unicode JIDs.
+* Azoth CH: calendar now displays dates in bold if there are logs for
+  that date.
+* Azoth Xoox: synced QXmpp with upstream.
+* Azoth Xoox: added icon for odnoklassniki.
+* Azoth Xtazy: added /np and /sharesong commands.
+* BitTorrent: optional flags for peers' countries.
+* LMP: initial support for MP3tunes.com service: uploading & playlists.
+* LMP: support different sorting styles in the playlist.
+* LMP: support Drag'n'Drop for reordering items in the playlist.
+* NSM: other plugins can request uploads now.
+
+! Devel digest #28 ( http://leechcraft.org/devel-digest-28 ):
+* Aggregator: support exporting feeds to PDF.
+* Azoth: display avatar in tooltips.
+* Azoth: fixed a segfault when Ctrl+Clicking.
+* BitTorrent: compatibility with Boost-1.50.
+* Dolozhee: fetch the list of issue categories and assign issues to them.
+* LastFMScrobble: expose some predefined radio stations.
+* LastFMScrobble: liblastfm-1.0 compatibility.
+* LMP: support adding artists to wishlists.
+* LMP: support predefined radio stations from radio plugins.
+* LMP: playlist stats below the playlist.
+* LMP: configurable shortcuts.
+* LMP: close the Album Art display on Esc or mouse click.
+* LMP: added an option to ignore "The " when sorting artists.
+* LMP: URLs are displayed in playlist instead of just the string "URL".
+* LMP: fixed background in QMLs.
+* LMP: more file types are now supported.
+* Otlozhu: support adding tasks from other plugins.
+* Vrooby: fixed a segfault on startup on some systems.
+
 !!! 0.5.75
 ! Devel digest #27 ( http://leechcraft.org/devel-digest-27 ):
 * Core: ignore LanguageChange event.

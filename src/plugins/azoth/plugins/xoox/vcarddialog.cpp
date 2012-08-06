@@ -20,6 +20,7 @@
 #include <QPushButton>
 #include <QFileDialog>
 #include <QBuffer>
+#include <QCryptographicHash>
 #include <QXmppVCardManager.h>
 #include "entrybase.h"
 #include "glooxaccount.h"
@@ -278,9 +279,9 @@ namespace Xoox
 		if (!Account_)
 			return;
 
-		Note_.setJid (JID_);
-		Note_.setNote (Ui_.NotesEdit_->toPlainText ());
-		Note_.setMdate (QDateTime::currentDateTime ());
+		Note_.SetJid (JID_);
+		Note_.SetNote (Ui_.NotesEdit_->toPlainText ());
+		Note_.SetMDate (QDateTime::currentDateTime ());
 		Account_->GetClientConnection ()->
 				GetAnnotationsManager ()->SetNote (JID_, Note_);
 	}
@@ -474,7 +475,7 @@ namespace Xoox
 		JID_ = jid;
 		Note_ = acc->GetClientConnection ()->
 				GetAnnotationsManager ()->GetNote (jid);
-		Ui_.NotesEdit_->setPlainText (Note_.note ());
+		Ui_.NotesEdit_->setPlainText (Note_.GetNote ());
 
 		rebuildClientInfo ();
 

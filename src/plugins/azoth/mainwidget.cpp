@@ -620,7 +620,6 @@ namespace Azoth
 	void MainWidget::handleManageBookmarks ()
 	{
 		BookmarksManagerDialog *dia = new BookmarksManagerDialog (this);
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		dia->show ();
 	}
 

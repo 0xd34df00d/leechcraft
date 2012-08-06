@@ -22,6 +22,7 @@
 #include <QInputDialog>
 #include <QtDebug>
 #include <QBuffer>
+#include <QCryptographicHash>
 #include <QXmppVCardIq.h>
 #include <QXmppPresence.h>
 #include <QXmppClient.h>
@@ -245,13 +246,8 @@ namespace Xoox
 
 		auto conn = Account_->GetClientConnection ();
 
-		QXmppPresence::Type presType = state.State_ == SOffline ?
-				QXmppPresence::Unavailable :
-				QXmppPresence::Available;
-		QXmppPresence pres (presType,
-				QXmppPresence::Status (static_cast<QXmppPresence::Status::Type> (state.State_),
-						state.StatusString_,
-						conn->GetLastState ().Priority_));
+		auto pres = XooxUtil::StatusToPresence (state.State_,
+				state.StatusString_, conn->GetLastState ().Priority_);
 
 		QString to = GetJID ();
 		if (!variant.isEmpty ())
@@ -453,7 +449,7 @@ namespace Xoox
 			const auto& presences = rm.getAllPresencesForBareJid (GetJID ());
 			if (presences.contains (variant))
 			{
-				const int p = presences.value (variant).status ().priority ();
+				const int p = presences.value (variant).priority ();
 				Variant2ClientInfo_ [variant] ["priority"] = p;
 			}
 		}

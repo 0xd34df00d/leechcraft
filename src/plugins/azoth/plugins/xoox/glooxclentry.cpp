@@ -262,7 +262,7 @@ namespace Xoox
 				QMap<int, QList<QString>> prio2res;
 				for (QMap<QString, QXmppPresence>::const_iterator i = presences.begin ();
 						i != presences.end (); ++i)
-					prio2res [i->status ().priority ()] << i.key ();
+					prio2res [i->priority ()] << i.key ();
 				Q_FOREACH (int prio, prio2res.keys ())
 					result << prio2res [prio];
 				std::reverse (result.begin (), result.end ());
@@ -298,11 +298,11 @@ namespace Xoox
 				break;
 			}
 			const QXmppPresence& pres = press [resource];
-			if (pres.status ().priority () > max.status ().priority ())
+			if (pres.priority () > max.priority ())
 				max = pres;
 		}
-		return EntryStatus (static_cast<State> (max.status ().type ()),
-				max.status ().statusText ());
+		return EntryStatus (static_cast<State> (max.availableStatusType () + 1),
+				max.statusText ());
 	}
 
 	QObject* GlooxCLEntry::CreateMessage (IMessage::MessageType type,

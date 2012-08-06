@@ -207,10 +207,11 @@ namespace LMP
 		typedef QPair<QString, QList<Player::SortingCriteria>> SortPair_t;
 		QList<SortPair_t> stdSorts;
 #if QT_VERSION >= 0x040800
-		stdSorts << SortPair_t (tr ("Artist / Year / Track number"),
+		stdSorts << SortPair_t (tr ("Artist / Year / Album / Track number"),
 					{
 						Player::SortingCriteria::Artist,
 						Player::SortingCriteria::Year,
+						Player::SortingCriteria::Album,
 						Player::SortingCriteria::TrackNumber
 					});
 		stdSorts << SortPair_t (tr ("Artist / Track title"),
@@ -277,6 +278,42 @@ namespace LMP
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showAlbumArt ()));
+
+		ActionMoveUp_ = new QAction (tr ("Move tracks up"), Ui_.Playlist_);
+		ActionMoveUp_->setProperty ("ActionIcon", "go-up");
+		connect (ActionMoveUp_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleMoveUp ()));
+
+		ActionMoveDown_ = new QAction (tr ("Move tracks down"), Ui_.Playlist_);
+		ActionMoveDown_->setProperty ("ActionIcon", "go-down");
+		connect (ActionMoveDown_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleMoveDown ()));
+	}
+
+	void PlaylistWidget::SelectSources (const QList<Phonon::MediaSource>& sources)
+	{
+		auto tryIdx = [&sources, this] (const QModelIndex& idx)
+		{
+			if (sources.contains (Player_->GetIndexSources (idx).value (0)))
+				Ui_.Playlist_->selectionModel ()->select (idx, QItemSelectionModel::Select | QItemSelectionModel::Rows);
+		};
+
+		auto plModel = Player_->GetPlaylistModel ();
+		for (int i = 0; i < plModel->rowCount (); ++i)
+		{
+			const auto& albumIdx = plModel->index (i, 0);
+
+			const int tracks = plModel->rowCount (albumIdx);
+			if (!tracks)
+				tryIdx (albumIdx);
+			else
+				for (int j = 0; j < tracks; ++j)
+					tryIdx (plModel->index (j, 0, albumIdx));
+		}
 	}
 
 	void PlaylistWidget::on_Playlist__customContextMenuRequested (const QPoint& pos)
@@ -294,6 +331,11 @@ namespace LMP
 			menu->addAction (ActionStopAfterSelected_);
 			menu->addAction (ActionShowTrackProps_);
 		}
+
+		menu->addSeparator ();
+
+		menu->addAction (ActionMoveUp_);
+		menu->addAction (ActionMoveDown_);
 
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
@@ -375,6 +417,46 @@ namespace LMP
 		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
 
 		ShowAlbumArt (info.LocalPath_, QCursor::pos ());
+	}
+
+	void PlaylistWidget::handleMoveUp ()
+	{
+		const auto& selected = Ui_.Playlist_->selectionModel ()->selectedRows ();
+		QList<Phonon::MediaSource> sources;
+		Q_FOREACH (const auto& index, selected)
+			sources += Player_->GetIndexSources (index);
+
+		if (sources.isEmpty ())
+			return;
+
+		auto allSrcs = Player_->GetQueue ();
+		for (int i = 1, size = allSrcs.size (); i < size; ++i)
+			if (sources.contains (allSrcs.at (i)))
+				std::swap (allSrcs [i], allSrcs [i - 1]);
+
+		Player_->ReplaceQueue (allSrcs, false);
+
+		SelectSources (sources);
+	}
+
+	void PlaylistWidget::handleMoveDown ()
+	{
+		const auto& selected = Ui_.Playlist_->selectionModel ()->selectedRows ();
+		QList<Phonon::MediaSource> sources;
+		Q_FOREACH (const auto& index, selected)
+			sources += Player_->GetIndexSources (index);
+
+		if (sources.isEmpty ())
+			return;
+
+		auto allSrcs = Player_->GetQueue ();
+		for (int i = allSrcs.size () - 2; i >= 0; --i)
+			if (sources.contains (allSrcs.at (i)))
+				std::swap (allSrcs [i], allSrcs [i + 1]);
+
+		Player_->ReplaceQueue (allSrcs, false);
+
+		SelectSources (sources);
 	}
 
 	void PlaylistWidget::handleSavePlaylist ()

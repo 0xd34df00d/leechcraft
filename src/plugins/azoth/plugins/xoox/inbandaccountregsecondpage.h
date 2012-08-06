@@ -23,8 +23,6 @@
 #include "legacyformbuilder.h"
 #include "formbuilder.h"
 
-class QXmppBobManager;
-
 namespace LeechCraft
 {
 namespace Azoth
@@ -32,13 +30,14 @@ namespace Azoth
 namespace Xoox
 {
 	class InBandAccountRegFirstPage;
+	class XMPPBobManager;
 
 	class InBandAccountRegSecondPage : public QWizardPage
 	{
 		Q_OBJECT
 
 		QXmppClient *Client_;
-		QXmppBobManager *BobManager_;
+		XMPPBobManager *BobManager_;
 		InBandAccountRegFirstPage *FirstPage_;
 		LegacyFormBuilder LFB_;
 		FormBuilder FB_;

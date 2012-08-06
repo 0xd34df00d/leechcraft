@@ -35,6 +35,7 @@ namespace LeechCraft
 				QString IP_;
 				QString Client_;
 				int RemoteHas_;
+				QString CountryCode_;
 				std::shared_ptr<libtorrent::peer_info> PI_;
 			};
 		};

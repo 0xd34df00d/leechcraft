@@ -82,6 +82,12 @@ SET (XOOX_SRCS
 	xep0232handler.cpp
 	pepmicroblog.cpp
 	vcardlisteditdialog.cpp
+	xmppannotationsiq.cpp
+	xmppannotationsmanager.cpp
+	xmppbobiq.cpp
+	xmppbobmanager.cpp
+	xmppcaptchaiq.cpp
+	xmppcaptchamanager.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -146,6 +152,12 @@ SET (XOOX_HEADERS
 	xep0232handler.h
 	pepmicroblog.h
 	vcardlisteditdialog.h
+	xmppannotationsiq.h
+	xmppannotationsmanager.h
+	xmppbobiq.h
+	xmppbobmanager.h
+	xmppcaptchaiq.h
+	xmppcaptchamanager.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
