@@ -116,8 +116,8 @@ class IJobHolder
 public:
 	/** @brief Returns the item representation model.
 	 *
-	 * The returned model should have four columns, each for name,
-	 * state, progress and speed. Inside of LeechCraft it would be
+	 * The returned model should have three columns, each for name,
+	 * state and progress with speed. Inside of LeechCraft it would be
 	 * merged with other models from other plugins.
 	 *
 	 * This model is also used to retrieve controls and additional info
