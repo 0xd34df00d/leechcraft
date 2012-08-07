@@ -55,6 +55,8 @@ namespace NetStoreManager
 
 		AccountsManager *AccountsManager_;
 		UpManager *UpManager_;
+
+		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

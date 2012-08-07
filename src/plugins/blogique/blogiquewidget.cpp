@@ -17,10 +17,13 @@
  **********************************************************************/
 
 #include "blogiquewidget.h"
+#include <QWidgetAction>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "blogique.h"
 #include "core.h"
+#include "interfaces/blogique/iaccount.h"
+#include "interfaces/blogique/ibloggingplatform.h"
 
 namespace LeechCraft
 {
@@ -32,6 +35,8 @@ namespace Blogique
 	: QWidget (parent)
 	, PostEdit_ (0)
 	, PostEditWidget_ (0)
+	, ToolBar_ (new QToolBar)
+	, PrevAccountId_ (0)
 	{
 		Ui_.setupUi (this);
 		auto plugs = Core::Instance ().GetCoreProxy ()->
@@ -57,6 +62,32 @@ namespace Blogique
 			editFrameLay->addWidget (w);
 			break;
 		}
+
+		Ui_.SaveEntry_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("document-save"));
+		ToolBar_->addAction (Ui_.SaveEntry_);
+		Ui_.Submit_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("svn-commit"));
+		ToolBar_->addAction (Ui_.Submit_);
+
+		AccountsBox_ = new QComboBox (ToolBar_);
+		AccountsBox_->addItem (QString ());
+		connect (AccountsBox_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (handleCurrentAccountChanged (int)));
+		for (IAccount *acc : Core::Instance ().GetAccounts ())
+		{
+			AccountsBox_->addItem (acc->GetAccountName ());
+			Id2Account_ [AccountsBox_->count () - 1] = acc;
+		}
+		QWidgetAction *action = new QWidgetAction (ToolBar_);
+		action->setDefaultWidget (AccountsBox_);
+		ToolBar_->addAction (action);
+
+		Ui_.OpenInBrowser_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("applications-internet"));
+		ToolBar_->addAction (Ui_.OpenInBrowser_);
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
@@ -72,7 +103,7 @@ namespace Blogique
 
 	QToolBar* BlogiqueWidget::GetToolBar () const
 	{
-		return 0;
+		return ToolBar_;
 	}
 
 	void BlogiqueWidget::Remove ()
@@ -86,6 +117,25 @@ namespace Blogique
 		S_ParentMultiTabs_ = tab;
 	}
 
+	void BlogiqueWidget::handleCurrentAccountChanged (int id)
+	{
+		if (PrevAccountId_)
+		{
+			auto ibp = qobject_cast<IBloggingPlatform*> (Id2Account_ [PrevAccountId_]->
+					GetParentBloggingPlatform ());
+			for (auto action : ibp->GetEditorActions ())
+				PostEdit_->RemoveAction (action);
+		}
+
+		PrevAccountId_ = id;
+		if (!PrevAccountId_)
+			return;
+
+		auto ibp = qobject_cast<IBloggingPlatform*> (Id2Account_ [PrevAccountId_]->
+				GetParentBloggingPlatform ());
+		for (auto action : ibp->GetEditorActions ())
+			PostEdit_->AppendAction (action);
+	}
 }
 }
 

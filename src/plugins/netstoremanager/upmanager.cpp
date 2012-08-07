@@ -142,7 +142,7 @@ namespace NetStoreManager
 		const auto& list = ReprItems_ [acc] [filepath];
 		if (list.isEmpty ())
 			return;
-		list [2]->setText (status);
+		list [1]->setText (status);
 	}
 
 	void UpManager::handleUpProgress (quint64 done, quint64 total, const QString& filepath)
@@ -151,7 +151,7 @@ namespace NetStoreManager
 		const auto& list = ReprItems_ [acc] [filepath];
 		if (list.isEmpty ())
 			return;
-		list [1]->setText (tr ("%1 of %2")
+		list [2]->setText (tr ("%1 of %2")
 				.arg (Util::MakePrettySize (done))
 				.arg (Util::MakePrettySize (total)));
 	}

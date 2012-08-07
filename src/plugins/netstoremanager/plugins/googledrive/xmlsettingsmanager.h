@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,29 +18,23 @@
 
 #pragma once
 
-#include <QWizardPage>
-#include "ui_addaccountwizardfirstpage.h"
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-namespace Blogique
+namespace NetStoreManager
 {
-	class AddAccountWizardFirstPage : public QWizardPage
+namespace GoogleDrive
+{
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		Q_OBJECT
-
-		Ui::AddAccountWizardFirstPage Ui_;
-		QList<QWidget*> Widgets_;
-
+		XmlSettingsManager ();
 	public:
-		AddAccountWizardFirstPage (QWidget* = 0);
-		void initializePage ();
-		bool isComplete () const;
-
-	private slots:
-		void readdWidgets ();
-		void handleAccepted ();
-		void handleAccountNameChanged (const QString& text);
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
+}
 }
 }
