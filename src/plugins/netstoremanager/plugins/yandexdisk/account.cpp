@@ -192,6 +192,26 @@ namespace YandexDisk
 		SimpleAction ("prolongate", ids);
 	}
 
+	void Account::MoveToTrash (const QList<QStringList>& id)
+	{
+		//TODO implement if needed
+	}
+
+	void Account::RestoreFromTrash (const QList<QStringList>& id)
+	{
+		//TODO implement if needed
+	}
+
+	void Account::EmptyTrash (const QList<QStringList>& id)
+	{
+		//TODO implement if needed
+	}
+
+	void Account::RequestUrl (const QList<QStringList>& id)
+	{
+		//TODO implement if needed
+	}
+
 	QNetworkRequest Account::MakeRequest (const QUrl& url) const
 	{
 		QNetworkRequest rq (url);
@@ -241,13 +261,14 @@ namespace YandexDisk
 			row << new QStandardItem (item.PassSet_ ? tr ("yes") : tr ("no"));
 
 			row.first ()->setIcon (item.Icon_);
-			row.first ()->setData (QUrl (item.URL_), ListingRole::URL);
+			//TODO please, fix it
+// 			row.first ()->setData (QUrl (item.URL_), ListingRole::URL);
 
 			QStringList id;
 			id << item.ID_
 				<< item.Token_
 				<< item.PassToken_;
-			row.first ()->setData (id, ListingRole::ID);
+// 			row.first ()->setData (id, ListingRole::ID);
 
 			treeItems << row;
 		}
