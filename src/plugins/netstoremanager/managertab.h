@@ -20,6 +20,8 @@
 #define PLUGINS_NETSTOREMANAGER_MANAGERTAB_H
 #include <functional>
 #include <QWidget>
+#include "interfaces/structures.h"
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
 #include "ui_managertab.h"
 
@@ -45,14 +47,20 @@ namespace NetStoreManager
 
 		QObject *Parent_;
 		TabClassInfo Info_;
+		ICoreProxy_ptr Proxy_;
 
 		AccountsManager *AM_;
 		QStandardItemModel *Model_;
 
+		QAction *CopyURL_;
 		QAction *ProlongateFile_;
 		QAction *DeleteFile_;
+		QAction *MoveToTrash_;
+		QAction *UntrashFile_;
+		QAction *EmptyTrash_;
+		QHash<IStorageAccount*, QHash<QString, bool>> Account2ItemExpandState_;
 	public:
-		ManagerTab (const TabClassInfo&, AccountsManager*, QObject*);
+		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
@@ -62,18 +70,29 @@ namespace NetStoreManager
 		IStorageAccount* GetCurrentAccount () const;
 		void CallOnSelection (std::function<void (ISupportFileListings*, const QList<QStringList>&)>);
 		void ClearFilesModel ();
+		void SaveModelState (const QModelIndex& parent = QModelIndex ());
+		void RestoreModelState ();
+		void ExpandModelItems (const QModelIndex& parent = QModelIndex ());
+		QList<QStringList> GetTrashedFiles () const;
 	private slots:
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
+		void handleGotFileUrl (const QUrl& url);
 		void flCopyURL ();
 		void flProlongate ();
 		void flDelete ();
+		void flMoveToTrash ();
+		void flRestoreFromTrash ();
+		void flEmptyTrash ();
 		void on_AccountsBox__activated (int);
 		void on_Update__released ();
 		void on_Upload__released ();
+		void handleContextMenuRequested (const QPoint& point);
 	signals:
 		void removeTab (QWidget*);
 
 		void uploadRequested (IStorageAccount*, const QString&);
+
+		void gotEntity (LeechCraft::Entity entity);
 	};
 }
 }

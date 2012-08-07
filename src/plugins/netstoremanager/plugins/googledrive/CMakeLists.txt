@@ -5,12 +5,19 @@ INCLUDE (InitLCPlugin OPTIONAL)
 SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 FIND_PACKAGE (QJSON REQUIRED)
+IF (NOT MSVC)
+	FIND_PACKAGE (MAGIC REQUIRED)
+	IF (MAGIC_FOUND)
+		ADD_DEFINITIONS (-DHAVE_MAGIC)
+	ENDIF (MAGIC_FOUND)
+ENDIF (NOT MSVC)
 
 INCLUDE_DIRECTORIES (${NETSTOREMANAGER_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${QJSON_INCLUDE_DIR}
+	${MAGIC_INCLUDE_DIR}
 	)
 
 SET (GOOGLEDRIVE_SRCS
@@ -19,6 +26,8 @@ SET (GOOGLEDRIVE_SRCS
 	core.cpp
 	drivemanager.cpp
 	googledrive.cpp
+	uploadmanager.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (GOOGLEDRIVE_HEADERS
 	account.h
@@ -26,6 +35,8 @@ SET (GOOGLEDRIVE_HEADERS
 	core.h
 	drivemanager.h
 	googledrive.h
+	uploadmanager.h
+	xmlsettingsmanager.h
 	)
 
 SET (GOOGLEDRIVE_RESOURCES netstoremanagergoogledriveresources.qrc)
@@ -46,6 +57,8 @@ TARGET_LINK_LIBRARIES (leechcraft_netstoremanager_googledrive
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
+	${MAGIC_LIBRARIES}
 	)
 
 INSTALL (TARGETS leechcraft_netstoremanager_googledrive DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES nsmgoogledrivesettings.xml DESTINATION ${LC_SETTINGS_DEST})

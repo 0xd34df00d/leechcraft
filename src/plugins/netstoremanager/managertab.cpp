@@ -22,23 +22,28 @@
 #include <QStandardItemModel>
 #include <QApplication>
 #include <QClipboard>
+#include <QMenu>
+#include <QtDebug>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
+#include <util/util.h>
 #include "accountsmanager.h"
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	ManagerTab::ManagerTab (const TabClassInfo& tc, AccountsManager *am, QObject *obj)
+	ManagerTab::ManagerTab (const TabClassInfo& tc, AccountsManager *am,
+			ICoreProxy_ptr proxy, QObject *obj)
 	: Parent_ (obj)
 	, Info_ (tc)
+	, Proxy_ (proxy)
 	, AM_ (am)
 	, Model_ (new QStandardItemModel (this))
 	{
-		QAction *copyURL = new QAction (tr ("Copy URL..."), this);
-		connect (copyURL,
+		CopyURL_ = new QAction (tr ("Copy URL..."), this);
+		connect (CopyURL_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flCopyURL ()));
@@ -52,6 +57,21 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flDelete ()));
+		MoveToTrash_ = new QAction (tr ("Move to trash"), this);
+		connect (MoveToTrash_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flMoveToTrash ()));
+		UntrashFile_ = new QAction (tr ("Restore from trash"), this);
+		connect (UntrashFile_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flRestoreFromTrash ()));
+		EmptyTrash_  = new QAction (tr ("Empty trash"), this);
+		connect (EmptyTrash_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flEmptyTrash ()));
 
 		Ui_.setupUi (this);
 		Ui_.FilesTree_->setModel (Model_);
@@ -69,14 +89,21 @@ namespace NetStoreManager
 						SIGNAL (gotListing (const QList<QList<QStandardItem*>>&)),
 						this,
 						SLOT (handleGotListing (const QList<QList<QStandardItem*>>&)));
+
+				connect (acc->GetObject (),
+						SIGNAL (gotFileUrl (const QUrl&)),
+						this,
+						SLOT (handleGotFileUrl (const QUrl&)));
 			}
 		}
 		if (Ui_.AccountsBox_->count ())
 			on_AccountsBox__activated (0);
 
-		Ui_.FilesTree_->addAction (copyURL);
-		Ui_.FilesTree_->addAction (ProlongateFile_);
-		Ui_.FilesTree_->addAction (DeleteFile_);
+		Ui_.FilesTree_->setContextMenuPolicy (Qt::CustomContextMenu);
+		connect (Ui_.FilesTree_,
+				SIGNAL (customContextMenuRequested (const QPoint&)),
+				this,
+				SLOT (handleContextMenuRequested (const QPoint&)));
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -136,6 +163,77 @@ namespace NetStoreManager
 		Model_->setHorizontalHeaderLabels (sfl->GetListingHeaders ());
 	}
 
+	void ManagerTab::SaveModelState (const QModelIndex& parent)
+	{
+		for (int i = 0; i < Model_->rowCount (parent); ++i)
+		{
+			QStandardItem *item = 0;
+			if (!parent.isValid ())
+				item = Model_->item (i);
+			else
+				item = Model_->itemFromIndex (parent)->child (i);
+
+			const auto& index = Model_->indexFromItem (item);
+			Account2ItemExpandState_ [GetCurrentAccount ()]
+					.insert (item->data (ListingRole::ID).toString (),
+							Ui_.FilesTree_->isExpanded (index));
+
+			if (item->hasChildren ())
+				SaveModelState (index);
+		}
+	}
+
+	void ManagerTab::RestoreModelState ()
+	{
+		if (Account2ItemExpandState_ [GetCurrentAccount ()].isEmpty ())
+			return;
+
+		ExpandModelItems ();
+		Account2ItemExpandState_.clear ();
+	}
+
+	void ManagerTab::ExpandModelItems (const QModelIndex& parent)
+	{
+		for (int i = 0; i < Model_->rowCount (parent); ++i)
+		{
+			QStandardItem *item = 0;
+			if (!parent.isValid ())
+				item = Model_->item (i);
+			else
+				item = Model_->itemFromIndex (parent)->child (i);
+			const auto& id = item->data (ListingRole::ID).toString ();
+
+			if (item->hasChildren () &&
+					Account2ItemExpandState_ [GetCurrentAccount ()].value (id))
+			{
+				const auto& index = Model_->indexFromItem (item);
+				Ui_.FilesTree_->expand (index);
+				Ui_.FilesTree_->resizeColumnToContents (index.column ());
+				ExpandModelItems (index);
+			}
+		}
+	}
+
+	QList<QStringList> ManagerTab::GetTrashedFiles () const
+	{
+		QList<QStringList> result;
+		for (int i = 0, count = Model_->rowCount (); i < count; ++i)
+		{
+			QStandardItem *item = Model_->item (i);
+			if (item->data (ListingRole::ID).toString () == "netstoremanager.item_trash")
+			{
+				for (int j = 0, cnt = item->rowCount (); j < cnt; ++j)
+				{
+					qDebug () << item->child (j)->text ();
+					result << QStringList (item->child (j)->data (ListingRole::ID).toString ());
+				}
+				break;
+			}
+		}
+
+		return result;
+	}
+
 	void ManagerTab::handleGotListing (const QList<QList<QStandardItem*>>& items)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
@@ -144,43 +242,46 @@ namespace NetStoreManager
 
 		if (items.isEmpty ())
 		{
+			SaveModelState ();
 			ClearFilesModel ();
 			return;
 		}
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		const bool trashSupporting = (sfl &&
+				sfl->GetListingOps () & ListingOp::TrashSupporing);
 
-		QFontMetrics fm = Ui_.FilesTree_->fontMetrics ();
+		QStandardItem *trashItem = new QStandardItem (Proxy_->GetIcon ("user-trash"),
+				tr ("Trash"));
+		trashItem->setEditable (false);
+		trashItem->setData ("netstoremanager.item_trash", ListingRole::ID);
 
-		QMap<int, int> sizes;
 		Q_FOREACH (auto row, items)
-		{
-			Model_->appendRow (row);
+			row [0]->data (ListingRole::InTrash).toBool () ?
+				trashItem->appendRow (row) :
+				Model_->appendRow (row);
 
-			for (int i = 0; i < row.size (); ++i)
-				sizes [i] = std::max (sizes [i], fm.width (row.at (i)->text ()));
-		}
-
-		Q_FOREACH (auto idx, sizes.keys ())
-		{
-			auto hdr = Ui_.FilesTree_->header ();
-			const int size = hdr->sectionSize (idx);
-			if (size < sizes [idx])
-				hdr->resizeSection (idx, sizes [idx]);
-		}
+		if (trashSupporting)
+			Model_->appendRow (trashItem);
+		RestoreModelState ();
 	}
 
-	void ManagerTab::flCopyURL ()
+	void ManagerTab::handleGotFileUrl (const QUrl& url)
 	{
-		auto item = Model_->itemFromIndex (Ui_.FilesTree_->currentIndex ());
-		if (!item)
-			return;
-
-		const QUrl& url = item->data (ListingRole::URL).toUrl ();
 		if (url.isEmpty () || !url.isValid ())
 			return;
 
 		const QString& str = url.toString ();
 		qApp->clipboard ()->setText (str, QClipboard::Clipboard);
 		qApp->clipboard ()->setText (str, QClipboard::Selection);
+
+		QString text = tr ("File shared with URL: %1, the URL was copied to the clipboard")
+				.arg (url.toString ());
+		emit gotEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
+	}
+
+	void ManagerTab::flCopyURL ()
+	{
+		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->RequestUrl (ids); });
 	}
 
 	void ManagerTab::flProlongate ()
@@ -191,6 +292,31 @@ namespace NetStoreManager
 	void ManagerTab::flDelete ()
 	{
 		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->Delete (ids); });
+	}
+
+	void ManagerTab::flMoveToTrash ()
+	{
+		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->MoveToTrash (ids); });
+	}
+
+	void ManagerTab::flRestoreFromTrash ()
+	{
+		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->RestoreFromTrash (ids); });
+	}
+
+	void ManagerTab::flEmptyTrash ()
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		if (sfl)
+			sfl->EmptyTrash (GetTrashedFiles ());
+		else
+			qDebug () << Q_FUNC_INFO
+					<< acc->GetObject ()
+					<< "is not an ISupportFileListings object";
 	}
 
 	void ManagerTab::on_AccountsBox__activated (int)
@@ -209,6 +335,7 @@ namespace NetStoreManager
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
 		ProlongateFile_->setEnabled (sfl->GetListingOps () & ListingOp::Prolongate);
 		DeleteFile_->setEnabled (sfl->GetListingOps () & ListingOp::Delete);
+		MoveToTrash_->setEnabled (sfl->GetListingOps () & ListingOp::TrashSupporing);
 	}
 
 	void ManagerTab::on_Update__released ()
@@ -216,6 +343,8 @@ namespace NetStoreManager
 		IStorageAccount *acc = GetCurrentAccount ();
 		if (!acc)
 			return;
+
+		SaveModelState ();
 
 		Model_->clear ();
 
@@ -245,5 +374,27 @@ namespace NetStoreManager
 				itemData (accIdx).value<IStorageAccount*> ();
 		emit uploadRequested (acc, filename);
 	}
+
+	void ManagerTab::handleContextMenuRequested (const QPoint& point)
+	{
+		const auto& index = Ui_.FilesTree_->indexAt (point);
+		if (!index.isValid ())
+			return;
+
+		QMenu *menu = new QMenu;
+		MoveToTrash_->setEnabled (!index.data (ListingRole::InTrash).toBool ());
+		UntrashFile_->setEnabled (index.data (ListingRole::InTrash).toBool ());
+
+		if (index.data (ListingRole::ID).toString () == "netstoremanager.item_trash")
+			menu->addAction (EmptyTrash_);
+		else
+			menu->addActions ({ CopyURL_, ProlongateFile_, MoveToTrash_, UntrashFile_,  DeleteFile_ });
+
+		menu->exec (Ui_.FilesTree_->
+				mapToGlobal (QPoint (point.x (), point.y () +
+						Ui_.FilesTree_->header ()->sizeHint ().height ())));
+		menu->deleteLater ();
+	}
+
 }
 }

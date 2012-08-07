@@ -62,6 +62,8 @@ namespace NetStoreManager
 				SIGNAL (fileUploaded (QString, QUrl)),
 				this,
 				SIGNAL (fileUploaded (QString, QUrl)));
+
+		Proxy_ = proxy;
 	}
 
 	void Plugin::SecondInit ()
@@ -102,7 +104,8 @@ namespace NetStoreManager
 	{
 		if (id == ManagerTC_.TabClass_)
 		{
-			ManagerTab *tab = new ManagerTab (ManagerTC_, AccountsManager_, this);
+			ManagerTab *tab = new ManagerTab (ManagerTC_, AccountsManager_,
+					Proxy_, this);
 			emit addNewTab (tr ("Net storage"), tab);
 			emit changeTabIcon (tab, GetIcon ());
 			emit raiseTab (tab);
@@ -114,6 +117,10 @@ namespace NetStoreManager
 					SIGNAL (uploadRequested (IStorageAccount*, QString)),
 					UpManager_,
 					SLOT (handleUploadRequest (IStorageAccount*, QString)));
+			connect (tab,
+					SIGNAL (gotEntity (LeechCraft::Entity)),
+					this,
+					SIGNAL (gotEntity (LeechCraft::Entity)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO

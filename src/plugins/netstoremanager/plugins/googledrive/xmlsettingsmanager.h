@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,7 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/structures.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -28,24 +26,14 @@ namespace NetStoreManager
 {
 namespace GoogleDrive
 {
-	class Core : public QObject
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		Q_OBJECT
-		Q_DISABLE_COPY (Core);
-
-		ICoreProxy_ptr Proxy_;
-
-		Core ();
+		XmlSettingsManager ();
 	public:
-		static Core& Instance ();
-
-		void SetProxy (ICoreProxy_ptr proxy);
-		ICoreProxy_ptr GetProxy () const;
-
-		void SendEntity (LeechCraft::Entity e);
-
-	signals:
-		void gotEntity (LeechCraft::Entity e);
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }

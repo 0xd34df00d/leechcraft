@@ -19,8 +19,10 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/structures.h>
+#include <QPointer>
+#include <QStandardItem>
+
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
@@ -28,24 +30,40 @@ namespace NetStoreManager
 {
 namespace GoogleDrive
 {
-	class Core : public QObject
+	class Account;
+	class DriveManager;
+
+	enum class UploadType
+	{
+		Upload,
+		Update
+	};
+
+	class UploadManager : public QObject
 	{
 		Q_OBJECT
-		Q_DISABLE_COPY (Core);
 
-		ICoreProxy_ptr Proxy_;
-
-		Core ();
+		Account *Account_;
+		QString FilePath_;
+		QNetworkAccessManager *NAM_;
+		UploadType UploadType_;
 	public:
-		static Core& Instance ();
+		UploadManager (const QString& path, UploadType ut, Account *account);
 
-		void SetProxy (ICoreProxy_ptr proxy);
-		ICoreProxy_ptr GetProxy () const;
+	private:
+		void InitiateUploadSession ();
 
-		void SendEntity (LeechCraft::Entity e);
+	private slots:
+		void handleUploadProgress (qint64 sent, qint64 total, const QString& filePath);
+		void handleStatusChanged (const QString& status, const QString& filePath);
+		void handleError (const QString& error, const QString& filePath);
+		void handleFinished (const QString& filePath);
 
 	signals:
-		void gotEntity (LeechCraft::Entity e);
+		void uploadError (const QString& str, const QString& filePath);
+		void uploadProgress (quint64 sent, quint64 total, const QString& filePath);
+		void uploadStatusChanged (const QString& status, const QString& filePath);
+		void finished ();
 	};
 }
 }

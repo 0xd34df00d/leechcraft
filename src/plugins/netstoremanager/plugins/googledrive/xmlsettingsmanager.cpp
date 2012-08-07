@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/structures.h>
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
@@ -28,25 +25,27 @@ namespace NetStoreManager
 {
 namespace GoogleDrive
 {
-	class Core : public QObject
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
-		Q_DISABLE_COPY (Core);
+		Util::BaseSettingsManager::Init ();
+	}
 
-		ICoreProxy_ptr Proxy_;
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return manager;
+	}
 
-		Core ();
-	public:
-		static Core& Instance ();
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_NetStoreManager_GoogleDrive");
+		return settings;
+	}
 
-		void SetProxy (ICoreProxy_ptr proxy);
-		ICoreProxy_ptr GetProxy () const;
-
-		void SendEntity (LeechCraft::Entity e);
-
-	signals:
-		void gotEntity (LeechCraft::Entity e);
-	};
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 }
 }
 }

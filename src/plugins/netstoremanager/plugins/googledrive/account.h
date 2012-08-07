@@ -23,6 +23,7 @@
 #include <QUrl>
 #include <interfaces/netstoremanager/istorageaccount.h>
 #include <interfaces/netstoremanager/isupportfilelistings.h>
+#include <util/idpool.h>
 #include "drivemanager.h"
 
 namespace LeechCraft
@@ -35,6 +36,11 @@ namespace GoogleDrive
 
 	typedef std::shared_ptr<Account> Account_ptr;
 
+	enum FileItemRoles
+	{
+		ItemIsFolderRole = Qt::UserRole + 1
+	};
+
 	class Account : public QObject
 					, public IStorageAccount
 					, public ISupportFileListings
@@ -43,11 +49,6 @@ namespace GoogleDrive
 		Q_INTERFACES (LeechCraft::NetStoreManager::IStorageAccount
 				LeechCraft::NetStoreManager::ISupportFileListings)
 
-		enum FileItemRoles
-		{
-			ItemIdRole = Qt::UserRole + 1,
-			ItemParentIdRole
-		};
 
 		QObject *ParentPlugin_;
 		QString Name_;
@@ -57,6 +58,8 @@ namespace GoogleDrive
 		bool Trusted_;
 
 		DriveManager *DriveManager_;
+		QHash<QString, DriveItem> Items_;
+
 	public:
 		Account (const QString& name, QObject *parentPlugin = 0);
 
@@ -69,8 +72,12 @@ namespace GoogleDrive
 		void Delete (const QList<QStringList>& id);
 		QStringList GetListingHeaders () const;
 		ListingOps GetListingOps () const;
-		void Prolongate (const QList<QStringList>& id);
+		void Prolongate (const QList<QStringList>& ids);
+		void MoveToTrash (const QList<QStringList>& ids);
+		void RestoreFromTrash (const QList<QStringList>& ids);
+		void EmptyTrash (const QList<QStringList>& ids);
 		void RefreshListing ();
+		void RequestUrl (const QList<QStringList>& id);
 
 		QByteArray Serialize ();
 		static Account_ptr Deserialize (const QByteArray& data, QObject *parentPlugin);
@@ -82,8 +89,10 @@ namespace GoogleDrive
 		void SetRefreshToken (const QString& token);
 		QString GetRefreshToken () const;
 
+		DriveManager* GetDriveManager () const;
 	private slots:
 		void handleFileList (const QList<DriveItem>& items);
+		void handleSharedFileId (const QString& id);
 
 	signals:
 		void gotURL (const QUrl& url, const QString& filepath);
@@ -91,7 +100,8 @@ namespace GoogleDrive
 		void upProgress (quint64 done, quint64 total, const QString& filepath);
 		void upStatusChanged (const QString& status, const QString& filepath);
 
-		void gotListing (const QList<QList<QStandardItem*>>&);
+		void gotListing (const QList<QList<QStandardItem*>>& items);
+		void gotFileUrl (const QUrl& url);
 	};
 }
 }
