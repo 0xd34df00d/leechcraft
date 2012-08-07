@@ -758,27 +758,19 @@ namespace Azoth
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
 			const QString& variant)
 	{
-		const QStringList& vars = GetEntry<ICLEntry> ()->Variants ();
-
-		const QIcon& icon = Core::Instance ().GetIconForState (status.State_);
-
-		if (status.State_ == SOffline)
-			handleVariantsChanged (vars);
-		else
-			for (int i = 0; i < Ui_.VariantBox_->count (); ++i)
-				if (variant == Ui_.VariantBox_->itemText (i))
-				{
-					Ui_.VariantBox_->setItemIcon (i, icon);
-					break;
-				}
-
-		if (!variant.isEmpty () &&
-				vars.size () &&
-				vars.value (0) != variant)
+		auto entry = GetEntry<ICLEntry> ();
+		if (entry->GetEntryType () == ICLEntry::ETMUC)
 			return;
 
-		TabIcon_ = icon;
-		UpdateStateIcon ();
+		const QStringList& vars = entry->Variants ();
+		handleVariantsChanged (vars);
+
+		if (vars.value (0) == variant)
+		{
+			const QIcon& icon = Core::Instance ().GetIconForState (status.State_);
+			TabIcon_ = icon;
+			UpdateStateIcon ();
+		}
 	}
 
 	void ChatTab::handleChatPartStateChanged (const ChatPartState& state, const QString&)

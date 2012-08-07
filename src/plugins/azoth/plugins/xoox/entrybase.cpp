@@ -228,6 +228,21 @@ namespace Xoox
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
 	}
 
+	QVariant EntryBase::GetMetaInfo (DataField field) const
+	{
+		switch (field)
+		{
+		case DataField::BirthDate:
+			return VCardIq_.birthday ();
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown data field"
+				<< static_cast<int> (field);
+
+		return QVariant ();
+	}
+
 	bool EntryBase::CanSendDirectedStatusNow (const QString& variant)
 	{
 		if (variant.isEmpty ())

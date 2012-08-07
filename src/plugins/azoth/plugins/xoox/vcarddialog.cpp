@@ -464,6 +464,8 @@ namespace Xoox
 			edit->setReadOnly (false);
 
 		Ui_.About_->setReadOnly (false);
+
+		Ui_.EditBirthday_->setReadOnly (false);
 	}
 
 	void VCardDialog::UpdateNote (GlooxAccount *acc, const QString& jid)
