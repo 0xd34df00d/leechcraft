@@ -758,7 +758,8 @@ namespace Azoth
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
 			const QString& variant)
 	{
-		const QStringList& vars = GetEntry<ICLEntry> ()->Variants ();
+		auto entry = GetEntry<ICLEntry> ();
+		const QStringList& vars = entry->Variants ();
 
 		const QIcon& icon = Core::Instance ().GetIconForState (status.State_);
 
@@ -777,8 +778,11 @@ namespace Azoth
 				vars.value (0) != variant)
 			return;
 
-		TabIcon_ = icon;
-		UpdateStateIcon ();
+		if (entry->GetEntryType () != ICLEntry::ETMUC)
+		{
+			TabIcon_ = icon;
+			UpdateStateIcon ();
+		}
 	}
 
 	void ChatTab::handleChatPartStateChanged (const ChatPartState& state, const QString&)
