@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QMetaType>
+#include <QAction>
 
 class QObject;
 class QIcon;
@@ -191,6 +192,14 @@ namespace Blogique
 		 */
 		virtual void RemoveAccount (QObject *account) = 0;
 
+		/** @brief Returns specific editor actions.
+		 *
+		 * This function returns specific editor actions such as LJ-cut,
+		 * LJ-user, etc
+		 *
+		 * @return The List of actions witch should be added to editor widget.
+		 */
+		virtual QList<QAction*> GetEditorActions () const = 0;
 	protected:
 		/** @brief Notifies about new account.
 		 *

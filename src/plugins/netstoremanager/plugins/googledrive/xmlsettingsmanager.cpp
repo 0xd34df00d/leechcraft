@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,31 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QWizardPage>
-#include "ui_addaccountwizardfirstpage.h"
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-namespace Blogique
+namespace NetStoreManager
 {
-	class AddAccountWizardFirstPage : public QWizardPage
+namespace GoogleDrive
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
+		Util::BaseSettingsManager::Init ();
+	}
 
-		Ui::AddAccountWizardFirstPage Ui_;
-		QList<QWidget*> Widgets_;
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return manager;
+	}
 
-	public:
-		AddAccountWizardFirstPage (QWidget* = 0);
-		void initializePage ();
-		bool isComplete () const;
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_NetStoreManager_GoogleDrive");
+		return settings;
+	}
 
-	private slots:
-		void readdWidgets ();
-		void handleAccepted ();
-		void handleAccountNameChanged (const QString& text);
-	};
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
 }
 }
