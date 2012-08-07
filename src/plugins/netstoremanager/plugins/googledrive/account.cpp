@@ -93,8 +93,8 @@ namespace GoogleDrive
 		const QString& itemId = id [0] [0];
 		auto res = QMessageBox::warning (Core::Instance ().GetProxy ()->GetMainWindow (),
 				tr ("Remove item"),
-				tr ("Are you sure to delete permanently an entry <b>%1</b>?"
-					"<br><i>Note: If entry is directory all files in it <b>will be</b> deleted.</i>")
+				tr ("Are you sure you want to delete %1? This action cannot be undone."
+						"<br><i>Note: if you delete a directory then all files in it will also be deleted.</i>")
 							.arg (Items_ [itemId].Name_),
 				QMessageBox::Ok | QMessageBox::Cancel);
 		if (res == QMessageBox::Ok)
@@ -146,7 +146,7 @@ namespace GoogleDrive
 		{
 			QMessageBox mbox (QMessageBox::Question,
 					tr ("Share item"),
-					tr ("You should share this item for getting url. Share it?"),
+					tr ("The item needs to be shared to obtain the URL. Do you want to share it?"),
 					QMessageBox::Yes | QMessageBox::No,
 					Core::Instance ().GetProxy ()->GetMainWindow ());
 			mbox.setDefaultButton (QMessageBox::Yes);
@@ -228,8 +228,8 @@ namespace GoogleDrive
 
 	namespace
 	{
-		QList<QStandardItem*> CreateItem (QHash<QString,
-				QList<QStandardItem*>>& id2Item, const DriveItem& item)
+		QList<QStandardItem*> CreateItem (QHash<QString, QList<QStandardItem*>>& id2Item,
+				const DriveItem& item)
 		{
 			QList<QStandardItem*> row;
 			if (!id2Item.contains (item.Id_))
@@ -254,8 +254,8 @@ namespace GoogleDrive
 				row [0]->setData (item.IsFolder_, FileItemRoles::ItemIsFolderRole);
 			}
 
-			for (const auto& itm : row)
-				itm->setEditable (false);
+			for (const auto& rowItem : row)
+				rowItem->setEditable (false);
 
 			return row;
 		}
@@ -263,10 +263,10 @@ namespace GoogleDrive
 		void CreateChildItem (QHash<QString, QList<QStandardItem*>>& id2Item,
 				const DriveItem& parentItem, const DriveItem& childItem)
 		{
-			QList<QStandardItem*> parentRow = !id2Item.contains (parentItem.Id_) ?
+			const auto& parentRow = !id2Item.contains (parentItem.Id_) ?
 				CreateItem (id2Item, parentItem) :
 				id2Item [parentItem.Id_];
-			QList<QStandardItem*> childRow = !id2Item.contains (childItem.Id_) ?
+			const auto& childRow = !id2Item.contains (childItem.Id_) ?
 				CreateItem (id2Item, childItem) :
 				id2Item [childItem.Id_];
 			parentRow [0]->appendRow (childRow);
@@ -278,9 +278,9 @@ namespace GoogleDrive
 		QList<QList<QStandardItem*>> treeItems;
 
 		QHash<QString, DriveItem> trashedItems;
-		QHash<QString, DriveItem> id2DriveItem_;
-		QHash<QString, QList<QStandardItem*>> id2Item_;
-		QHash<QString, QList<QStandardItem*>> trashedId2Item_;
+		QHash<QString, DriveItem> id2DriveItem;
+		QHash<QString, QList<QStandardItem*>> id2Item;
+		QHash<QString, QList<QStandardItem*>> trashedId2Item;
 
 		for (const auto& item : items)
 		{
@@ -290,31 +290,31 @@ namespace GoogleDrive
 				continue;
 			}
 
-			id2DriveItem_ [item.Id_] = item;
+			id2DriveItem [item.Id_] = item;
 			if (item.ParentIsRoot_ ||
 					item.ParentId_.isEmpty ())
-				treeItems << CreateItem (id2Item_, item);
+				treeItems << CreateItem (id2Item, item);
 		}
 
-		const QStringList& keys = id2DriveItem_.keys ();
-		const auto& values = id2DriveItem_.values ();
+		const QStringList& keys = id2DriveItem.keys ();
+		const auto& values = id2DriveItem.values ();
 		for (const auto& item : values)
 		{
 			if (keys.contains (item.ParentId_))
-				CreateChildItem (id2Item_, id2DriveItem_ [item.ParentId_], item);
+				CreateChildItem (id2Item, id2DriveItem [item.ParentId_], item);
 			else
-				CreateItem (id2Item_, item);
+				CreateItem (id2Item, item);
 		}
 
 		const QStringList& trashedKeys = trashedItems.keys ();
 		const auto& trashedValues = trashedItems.values ();
 		for (const auto& item : trashedValues)
 			if (!trashedKeys.contains (item.ParentId_))
-				treeItems << CreateItem (trashedId2Item_, item);
+				treeItems << CreateItem (trashedId2Item, item);
 
 		for (const auto& item : trashedValues)
 			if (trashedKeys.contains (item.ParentId_))
-				CreateChildItem (trashedId2Item_, trashedItems [item.ParentId_], item);
+				CreateChildItem (trashedId2Item, trashedItems [item.ParentId_], item);
 
 		treeItems.removeAll (QList<QStandardItem*> ());
 
@@ -328,8 +328,7 @@ namespace GoogleDrive
 							rightItem [0]->data (FileItemRoles::ItemIsFolderRole).toBool ())
 						return false;
 					else
-						return (QString::localeAwareCompare (leftItem [0]->text (), rightItem [0]->text ()) < 0);
-
+						return QString::localeAwareCompare (leftItem [0]->text (), rightItem [0]->text ()) < 0;
 				});
 
 		emit gotListing (QList<QList<QStandardItem*>> ());
@@ -339,7 +338,7 @@ namespace GoogleDrive
 	void Account::handleSharedFileId (const QString& id)
 	{
 		emit gotFileUrl (QUrl (QString ("https://docs.google.com/open?id=%1")
-				.arg (id)));
+				.arg (id)), QStringList (id));
 	}
 
 }

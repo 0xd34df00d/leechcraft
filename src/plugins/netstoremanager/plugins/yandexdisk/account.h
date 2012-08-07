@@ -95,7 +95,7 @@ namespace YandexDisk
 		void upProgress (quint64, quint64, const QString&);
 		void upError (const QString&, const QString&);
 		void gotURL (const QUrl&, const QString&);
-		void gotFileUrl (const QUrl& url);
+		void gotFileUrl (const QUrl& url, const QStringList& id);
 
 		void gotListing (const QList<QList<QStandardItem*>>&);
 	};

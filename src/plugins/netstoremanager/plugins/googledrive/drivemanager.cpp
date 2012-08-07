@@ -20,11 +20,11 @@
 #include <QNetworkRequest>
 #include <QtDebug>
 #include <QFileInfo>
+#include <util/util.h>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #include "account.h"
 #include "core.h"
-#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -45,7 +45,9 @@ namespace GoogleDrive
 
 	DriveManager::~DriveManager ()
 	{
+#ifdef HAVE_MAGIC
 		magic_close (Magic_);
+#endif
 	}
 
 	void DriveManager::RefreshListing ()
@@ -224,7 +226,7 @@ namespace GoogleDrive
 		QVariantMap map;
 		map ["title"] = QFileInfo (filePath).fileName ();
 
-		QByteArray data = QJson::Serializer ().serialize (map);
+		const auto& data = QJson::Serializer ().serialize (map);
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
 		request.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 
@@ -397,8 +399,7 @@ namespace GoogleDrive
 		reply->deleteLater ();
 
 		bool ok = false;
-		QByteArray ba = reply->readAll ();
-		QVariant res = QJson::Parser ().parse (ba, &ok);
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
 
 		if (!ok)
 		{
@@ -422,7 +423,7 @@ namespace GoogleDrive
 		QList<DriveItem> resList;
 		Q_FOREACH (const auto& item, resMap ["items"].toList ())
 		{
-			DriveItem driveItem = CreateDriveItem (item);
+			const auto& driveItem = CreateDriveItem (item);
 			if (driveItem.Name_.isEmpty ())
 				continue;
 			resList << driveItem;
@@ -440,8 +441,7 @@ namespace GoogleDrive
 		reply->deleteLater ();
 
 		bool ok = false;
-		QByteArray ba = reply->readAll ();
-		QVariant res = QJson::Parser ().parse (ba, &ok);
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
 
 		if (!ok)
 		{
@@ -470,8 +470,7 @@ namespace GoogleDrive
 		reply->deleteLater ();
 
 		bool ok = false;
-		QByteArray ba = reply->readAll ();
-		QVariant res = QJson::Parser ().parse (ba, &ok);
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
 		if (!ok)
 		{
 			qDebug () << Q_FUNC_INFO
@@ -499,8 +498,7 @@ namespace GoogleDrive
 		reply->deleteLater ();
 
 		bool ok = false;
-		QByteArray ba = reply->readAll ();
-		QVariant res = QJson::Parser ().parse (ba, &ok);
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
 		if (!ok)
 		{
 			qDebug () << Q_FUNC_INFO
@@ -528,8 +526,7 @@ namespace GoogleDrive
 		reply->deleteLater ();
 
 		bool ok = false;
-		QByteArray ba = reply->readAll ();
-		QVariant res = QJson::Parser ().parse (ba, &ok);
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
 		if (!ok)
 		{
 			qDebug () << Q_FUNC_INFO
@@ -603,7 +600,7 @@ namespace GoogleDrive
 		connect (uploadReply,
 				SIGNAL (uploadProgress (qint64, qint64)),
 				this,
-				SLOT (handleUploadProgress (qint64,qint64)));
+				SLOT (handleUploadProgress (qint64, qint64)));
 	}
 
 	void DriveManager::handleUploadFinished ()
@@ -614,9 +611,8 @@ namespace GoogleDrive
 
 		reply->deleteLater ();
 
-		QByteArray ba = reply->readAll ();
 		bool ok = false;
-		QVariant res = QJson::Parser ().parse (ba, &ok);
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
 		if (!ok)
 		{
 			qDebug () << Q_FUNC_INFO
@@ -667,8 +663,7 @@ namespace GoogleDrive
 		reply->deleteLater ();
 
 		bool ok = false;
-		QByteArray ba = reply->readAll ();
-		QVariant res = QJson::Parser ().parse (ba, &ok);
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
 		if (!ok)
 		{
 			qDebug () << Q_FUNC_INFO

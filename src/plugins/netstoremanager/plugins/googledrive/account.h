@@ -23,7 +23,6 @@
 #include <QUrl>
 #include <interfaces/netstoremanager/istorageaccount.h>
 #include <interfaces/netstoremanager/isupportfilelistings.h>
-#include <util/idpool.h>
 #include "drivemanager.h"
 
 namespace LeechCraft
@@ -101,7 +100,7 @@ namespace GoogleDrive
 		void upStatusChanged (const QString& status, const QString& filepath);
 
 		void gotListing (const QList<QList<QStandardItem*>>& items);
-		void gotFileUrl (const QUrl& url);
+		void gotFileUrl (const QUrl& url, const QStringList& id);
 	};
 }
 }

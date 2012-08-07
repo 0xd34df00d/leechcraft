@@ -22,8 +22,6 @@
 #include <util/util.h>
 #include "account.h"
 #include "core.h"
-#include <interfaces/ijobholder.h>
-
 
 namespace LeechCraft
 {
@@ -104,7 +102,8 @@ namespace GoogleDrive
 			return;
 
 		Core::Instance ().SendEntity (Util::MakeNotification ("NetStoreManager",
-				tr ("File %1 was uploaded successfully").arg (FilePath_),
+				tr ("File %1 was uploaded successfully")
+						.arg ("<em>" + QFileInfo (FilePath_).fileName () + "</em>"),
 				PWarning_));
 		emit finished ();
 		emit uploadStatusChanged (tr ("Finished"), FilePath_);

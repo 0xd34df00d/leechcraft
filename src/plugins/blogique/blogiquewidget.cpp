@@ -17,13 +17,13 @@
  **********************************************************************/
 
 #include "blogiquewidget.h"
+#include <QWidgetAction>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "blogique.h"
 #include "core.h"
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatform.h"
-#include <QWidgetAction>
 
 namespace LeechCraft
 {

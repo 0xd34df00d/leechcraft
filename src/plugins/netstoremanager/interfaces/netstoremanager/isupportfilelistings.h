@@ -63,7 +63,7 @@ namespace NetStoreManager
 		virtual void RequestUrl (const QList<QStringList>& id) = 0;
 	protected:
 		virtual void gotListing (const QList<QList<QStandardItem*>>&) = 0;
-		virtual void gotFileUrl (const QUrl& url) = 0;
+		virtual void gotFileUrl (const QUrl& url, const QStringList& id) = 0;
 	};
 }
 }

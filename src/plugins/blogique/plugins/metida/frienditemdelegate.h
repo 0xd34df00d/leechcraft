@@ -32,7 +32,7 @@ namespace Metida
 	enum ItemColorRoles
 	{
 		BackgroundColor = Qt::UserRole + 1,
-		ForegroundColor = Qt::UserRole + 2,
+		ForegroundColor = Qt::UserRole,
 
 		MaxColor
 	};

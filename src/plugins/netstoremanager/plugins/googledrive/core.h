@@ -42,10 +42,10 @@ namespace GoogleDrive
 		void SetProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetProxy () const;
 
-		void SendEntity (LeechCraft::Entity e);
+		void SendEntity (const LeechCraft::Entity& e);
 
 	signals:
-		void gotEntity (LeechCraft::Entity e);
+		void gotEntity (const LeechCraft::Entity& e);
 	};
 }
 }
