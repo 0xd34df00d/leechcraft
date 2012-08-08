@@ -115,10 +115,6 @@ namespace GoogleDrive
 		return ListingOp::Delete | ListingOp::TrashSupporing;
 	}
 
-	void Account::Prolongate (const QList<QStringList>&)
-	{
-	}
-
 	void Account::MoveToTrash (const QList<QStringList>& ids)
 	{
 		DriveManager_->MoveEntryToTrash (ids [0] [0]);

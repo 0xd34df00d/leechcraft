@@ -53,7 +53,6 @@ namespace NetStoreManager
 		QStandardItemModel *Model_;
 
 		QAction *CopyURL_;
-		QAction *ProlongateFile_;
 		QAction *DeleteFile_;
 		QAction *MoveToTrash_;
 		QAction *UntrashFile_;
@@ -78,7 +77,6 @@ namespace NetStoreManager
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
 		void handleGotFileUrl (const QUrl& url, const QList<QStringList>& id);
 		void flCopyURL ();
-		void flProlongate ();
 		void flDelete ();
 		void flMoveToTrash ();
 		void flRestoreFromTrash ();

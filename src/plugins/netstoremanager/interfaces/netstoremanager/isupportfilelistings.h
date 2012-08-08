@@ -38,9 +38,7 @@ namespace NetStoreManager
 	{
 		NoneOp = 0x00,
 		Delete = 0x01,
-		Prolongate = 0x02,
-		ToggleProtected = 0x04,
-		TrashSupporing = 0x08
+		TrashSupporing = 0x02
 	};
 
 	Q_DECLARE_FLAGS (ListingOps, ListingOp);
@@ -56,7 +54,6 @@ namespace NetStoreManager
 		virtual QStringList GetListingHeaders () const = 0;
 
 		virtual void Delete (const QList<QStringList>& id) = 0;
-		virtual void Prolongate (const QList<QStringList>& id) = 0;
 		virtual void MoveToTrash (const QList<QStringList>& id) = 0;
 		virtual void RestoreFromTrash (const QList<QStringList>& id) = 0;
 		virtual void EmptyTrash (const QList<QStringList>& id) = 0;

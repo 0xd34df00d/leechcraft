@@ -47,11 +47,6 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flCopyURL ()));
-		ProlongateFile_ = new QAction (tr ("Prolongate selected"), this);
-		connect (ProlongateFile_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (flProlongate ()));
 		DeleteFile_ = new QAction (tr ("Delete selected"), this);
 		connect (DeleteFile_,
 				SIGNAL (triggered ()),
@@ -277,11 +272,6 @@ namespace NetStoreManager
 		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->RequestUrl (ids); });
 	}
 
-	void ManagerTab::flProlongate ()
-	{
-		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->Prolongate (ids); });
-	}
-
 	void ManagerTab::flDelete ()
 	{
 		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->Delete (ids); });
@@ -326,7 +316,6 @@ namespace NetStoreManager
 		on_Update__released ();
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
-		ProlongateFile_->setEnabled (sfl->GetListingOps () & ListingOp::Prolongate);
 		DeleteFile_->setEnabled (sfl->GetListingOps () & ListingOp::Delete);
 		MoveToTrash_->setEnabled (sfl->GetListingOps () & ListingOp::TrashSupporing);
 	}
@@ -380,8 +369,7 @@ namespace NetStoreManager
 
 		index.data (ListingRole::ID).toString () == "netstoremanager.item_trash" ?
 			menu->addAction (EmptyTrash_) :
-			menu->addActions ({ CopyURL_, ProlongateFile_,
-					MoveToTrash_, UntrashFile_,  DeleteFile_ });
+			menu->addActions ({ CopyURL_, MoveToTrash_, UntrashFile_,  DeleteFile_ });
 
 		menu->exec (Ui_.FilesTree_->viewport ()->
 				mapToGlobal (QPoint (point.x (), point.y ())));

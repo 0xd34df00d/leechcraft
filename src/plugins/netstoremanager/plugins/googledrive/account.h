@@ -71,7 +71,6 @@ namespace GoogleDrive
 		void Delete (const QList<QStringList>& id);
 		QStringList GetListingHeaders () const;
 		ListingOps GetListingOps () const;
-		void Prolongate (const QList<QStringList>& ids);
 		void MoveToTrash (const QList<QStringList>& ids);
 		void RestoreFromTrash (const QList<QStringList>& ids);
 		void EmptyTrash (const QList<QStringList>& ids);
