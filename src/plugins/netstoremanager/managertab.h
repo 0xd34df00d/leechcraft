@@ -37,6 +37,11 @@ namespace NetStoreManager
 	class ISupportFileListings;
 	class AccountsManager;
 
+	enum Columns
+	{
+		FirstColumnNumber
+	};
+
 	class ManagerTab : public QWidget
 					 , public ITabWidget
 	{
@@ -57,6 +62,7 @@ namespace NetStoreManager
 		QAction *MoveToTrash_;
 		QAction *UntrashFile_;
 		QAction *EmptyTrash_;
+		QAction *CreateDir_;
 		QHash<IStorageAccount*, QHash<QString, bool>> Account2ItemExpandState_;
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
@@ -81,6 +87,7 @@ namespace NetStoreManager
 		void flMoveToTrash ();
 		void flRestoreFromTrash ();
 		void flEmptyTrash ();
+		void flCreateDir ();
 		void on_AccountsBox__activated (int);
 		void on_Update__released ();
 		void on_Upload__released ();

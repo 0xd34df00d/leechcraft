@@ -112,7 +112,7 @@ namespace GoogleDrive
 
 	ListingOps Account::GetListingOps () const
 	{
-		return ListingOp::Delete | ListingOp::TrashSupporing;
+		return ListingOp::Delete | ListingOp::TrashSupporing | ListingOp::DirectorySupport;
 	}
 
 	void Account::MoveToTrash (const QList<QStringList>& ids)
@@ -157,6 +157,11 @@ namespace GoogleDrive
 		}
 
 		DriveManager_->ShareEntry (id [0] [0]);
+	}
+
+	void Account::CreateDirectory (const QString& name, const QStringList& parentId)
+	{
+		DriveManager_->CreateDirectory (name, parentId.value (0));
 	}
 
 	QByteArray Account::Serialize ()
@@ -247,7 +252,7 @@ namespace GoogleDrive
 					row [0]->setIcon (Core::Instance ().GetProxy ()->GetIcon ("folder"));
 					id2Item [item.Id_] = row;
 				}
-				row [0]->setData (item.IsFolder_, FileItemRoles::ItemIsFolderRole);
+				row [0]->setData (item.IsFolder_, ListingRole::Directory);
 			}
 
 			for (const auto& rowItem : row)
@@ -317,11 +322,11 @@ namespace GoogleDrive
 		std::sort (treeItems.begin (), treeItems.end (),
 				[] (const QList<QStandardItem*>& leftItem, const QList<QStandardItem*>& rightItem)
 				{
-					if (leftItem [0]->data (FileItemRoles::ItemIsFolderRole).toBool () &&
-							!rightItem [0]->data (FileItemRoles::ItemIsFolderRole).toBool ())
+					if (leftItem [0]->data (ListingRole::Directory).toBool () &&
+							!rightItem [0]->data (ListingRole::Directory).toBool ())
 						return true;
-					else if (!leftItem [0]->data (FileItemRoles::ItemIsFolderRole).toBool () &&
-							rightItem [0]->data (FileItemRoles::ItemIsFolderRole).toBool ())
+					else if (!leftItem [0]->data (ListingRole::Directory).toBool () &&
+							rightItem [0]->data (ListingRole::Directory).toBool ())
 						return false;
 					else
 						return QString::localeAwareCompare (leftItem [0]->text (), rightItem [0]->text ()) < 0;

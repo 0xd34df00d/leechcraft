@@ -23,6 +23,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QMenu>
+#include <QInputDialog>
 #include <QtDebug>
 #include <util/util.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
@@ -67,6 +68,11 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flEmptyTrash ()));
+		CreateDir_  = new QAction (tr ("Create directory"), this);
+		connect (CreateDir_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flCreateDir ()));
 
 		Ui_.setupUi (this);
 		Ui_.FilesTree_->setModel (Model_);
@@ -302,6 +308,33 @@ namespace NetStoreManager
 					<< "is not an ISupportFileListings object";
 	}
 
+	void ManagerTab::flCreateDir ()
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		if (!(sfl->GetListingOps () & ListingOp::DirectorySupport))
+			return;
+
+		QString name = QInputDialog::getText (this,
+				"Create directory",
+				tr ("New directory name:"));
+		if (name.isEmpty ())
+			return;
+
+		const QModelIndex& idx = Ui_.FilesTree_->currentIndex ();
+		QModelIndex index = idx.sibling (idx.row (), Columns::FirstColumnNumber);
+		index = index.data (ListingRole::Directory).toBool () ?
+			index :
+			index.parent ();
+		QStringList id = index.isValid () ?
+			index.data (ListingRole::ID).toStringList () :
+			QStringList ();
+		sfl->CreateDirectory (name, id);
+	}
+
 	void ManagerTab::on_AccountsBox__activated (int)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
@@ -360,16 +393,24 @@ namespace NetStoreManager
 	void ManagerTab::handleContextMenuRequested (const QPoint& point)
 	{
 		const auto& index = Ui_.FilesTree_->indexAt (point);
-		if (!index.isValid ())
-			return;
 
 		QMenu *menu = new QMenu;
-		MoveToTrash_->setEnabled (!index.data (ListingRole::InTrash).toBool ());
-		UntrashFile_->setEnabled (index.data (ListingRole::InTrash).toBool ());
+		if (index.isValid ())
+		{
+			const bool inTrash = index.data (ListingRole::InTrash).toBool ();
+			MoveToTrash_->setEnabled (!inTrash);
+			UntrashFile_->setEnabled (inTrash);
+			const bool isTrashItem = index.data (ListingRole::ID).toString () == "netstoremanager.item_trash";
+			isTrashItem ?
+				menu->addAction (EmptyTrash_) :
+				menu->addActions ({ CopyURL_, MoveToTrash_, UntrashFile_,  DeleteFile_ });
 
-		index.data (ListingRole::ID).toString () == "netstoremanager.item_trash" ?
-			menu->addAction (EmptyTrash_) :
-			menu->addActions ({ CopyURL_, MoveToTrash_, UntrashFile_,  DeleteFile_ });
+			if (!inTrash &&
+					!isTrashItem)
+				menu->insertAction (MoveToTrash_, CreateDir_);
+		}
+		else
+			menu->addAction (CreateDir_);
 
 		menu->exec (Ui_.FilesTree_->viewport ()->
 				mapToGlobal (QPoint (point.x (), point.y ())));
