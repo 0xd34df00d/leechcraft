@@ -258,7 +258,7 @@ namespace NetStoreManager
 		RestoreModelState ();
 	}
 
-	void ManagerTab::handleGotFileUrl (const QUrl& url, const QList<QStringList>& id)
+	void ManagerTab::handleGotFileUrl (const QUrl& url, const QStringList&)
 	{
 		if (url.isEmpty () || !url.isValid ())
 			return;
