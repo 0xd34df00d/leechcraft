@@ -221,6 +221,8 @@ namespace Acetamide
 		void GotChannelUrl (const QString& channel, const QString& url);
 		void GotTopicWhoTime (const QString& channel,
 				const QString& who, quint64 time);
+
+		void SetIrcServerInfo (IrcServer server, const QString& version);
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();
