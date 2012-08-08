@@ -388,9 +388,12 @@ namespace NetStoreManager
 		UntrashFile_->setEnabled (index.data (ListingRole::InTrash).toBool ());
 
 		index.data (ListingRole::ID).toString () == "netstoremanager.item_trash" ?
-			menu->addAction (EmptyTrash_) :
-			menu->addActions ({ CopyURL_, ProlongateFile_,
-					MoveToTrash_, UntrashFile_,  DeleteFile_ });
+				menu->addAction (EmptyTrash_) :
+				menu->addActions (QList<QAction*> () << CopyURL_
+						<< ProlongateFile_
+						<< MoveToTrash_
+						<< UntrashFile_
+						<< DeleteFile_);
 
 		menu->exec (Ui_.FilesTree_->viewport ()->
 				mapToGlobal (QPoint (point.x (), point.y ())));
