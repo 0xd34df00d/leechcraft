@@ -81,8 +81,16 @@ namespace Acetamide
 		ISH_->SendCommand (nickCmd);
 	}
 
-	void IrcParser::JoinCommand (const QStringList& cmd)
+	void IrcParser::JoinCommand (QStringList cmd)
 	{
+		auto& str = cmd [0];
+		if (!str.isEmpty () &&
+				!str.startsWith ('#') &&
+				!str.startsWith ('&') &&
+				!str.startsWith ('+') &&
+				!str.startsWith ('!'))
+			str.prepend ('#');
+
 		QString joinCmd ("JOIN " + cmd.join (" ") + "\r\n");
 		ISH_->SendCommand (joinCmd);
 	}

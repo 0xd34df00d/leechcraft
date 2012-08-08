@@ -49,7 +49,7 @@ namespace Acetamide
 		void AuthCommand ();
 		void UserCommand ();
 		void NickCommand (const QStringList&);
-		void JoinCommand (const QStringList&);
+		void JoinCommand (QStringList);
 		void PrivMsgCommand (const QStringList&);
 		void PartCommand (const QStringList&);
 		void PongCommand (const QStringList&);
