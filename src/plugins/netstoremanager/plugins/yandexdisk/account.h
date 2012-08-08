@@ -53,6 +53,8 @@ namespace YandexDisk
 		QString Login_;
 
 		AuthManager *AM_;
+
+		QHash<QStringList, QUrl> ID2URL_;
 	public:
 		Account (Plugin*);
 
