@@ -267,8 +267,8 @@ namespace NetStoreManager
 		qApp->clipboard ()->setText (str, QClipboard::Clipboard);
 		qApp->clipboard ()->setText (str, QClipboard::Selection);
 
-		QString text = tr ("File shared with URL: %1, the URL was copied to the clipboard")
-				.arg (url.toString ());
+		QString text = tr ("File URL %1 has been copied to the clipboard.")
+				.arg (str);
 		emit gotEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
 	}
 
