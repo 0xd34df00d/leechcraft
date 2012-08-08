@@ -274,7 +274,16 @@ namespace NetStoreManager
 
 	void ManagerTab::flCopyURL ()
 	{
-		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->RequestUrl (ids); });
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		const auto& id = Ui_.FilesTree_->currentIndex ().data (ListingRole::ID).toStringList ();
+		if (id.isEmpty ())
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		sfl->RequestUrl (QList<QStringList> () << id);
 	}
 
 	void ManagerTab::flProlongate ()
