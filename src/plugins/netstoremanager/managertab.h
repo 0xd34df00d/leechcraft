@@ -25,7 +25,6 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_managertab.h"
 
-class QStandardItemModel;
 class QStandardItem;
 class QAction;
 
@@ -36,6 +35,7 @@ namespace NetStoreManager
 	class IStorageAccount;
 	class ISupportFileListings;
 	class AccountsManager;
+	class FilesModel;
 
 	enum Columns
 	{
@@ -55,7 +55,7 @@ namespace NetStoreManager
 		ICoreProxy_ptr Proxy_;
 
 		AccountsManager *AM_;
-		QStandardItemModel *Model_;
+		FilesModel *Model_;
 
 		QAction *CopyURL_;
 		QAction *DeleteFile_;

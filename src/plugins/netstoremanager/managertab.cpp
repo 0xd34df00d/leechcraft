@@ -19,7 +19,6 @@
 #include "managertab.h"
 #include <QMessageBox>
 #include <QFileDialog>
-#include <QStandardItemModel>
 #include <QApplication>
 #include <QClipboard>
 #include <QMenu>
@@ -30,6 +29,7 @@
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "accountsmanager.h"
+#include "filesmodel.h"
 
 namespace LeechCraft
 {
@@ -41,7 +41,6 @@ namespace NetStoreManager
 	, Info_ (tc)
 	, Proxy_ (proxy)
 	, AM_ (am)
-	, Model_ (new QStandardItemModel (this))
 	{
 		CopyURL_ = new QAction (tr ("Copy URL..."), this);
 		connect (CopyURL_,
@@ -80,8 +79,8 @@ namespace NetStoreManager
 				SLOT (flUploadInCurrentDir ()));
 
 		Ui_.setupUi (this);
+		Model_ = new FilesModel (Ui_.FilesTree_, this);
 		Ui_.FilesTree_->setModel (Model_);
-
 		Q_FOREACH (auto acc, AM_->GetAccounts ())
 		{
 			auto stP = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
