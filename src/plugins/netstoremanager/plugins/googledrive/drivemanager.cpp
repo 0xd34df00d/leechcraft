@@ -80,9 +80,10 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::Upload (const QString& filePath)
+	void DriveManager::Upload (const QString& filePath, const QStringList& parentId)
 	{
-		ApiCallQueue_ << [this, filePath] (const QString& key) { RequestUpload (filePath, key); };
+		QString parent = parentId.value (0);
+		ApiCallQueue_ << [this, filePath, parent] (const QString& key) { RequestUpload (filePath, parent, key); };
 		RequestAccessToken ();
 	}
 
@@ -208,7 +209,8 @@ namespace GoogleDrive
 				SLOT (handleAuthTokenRequestFinished ()));
 	}
 
-	void DriveManager::RequestUpload (const QString& filePath, const QString& key)
+	void DriveManager::RequestUpload (const QString& filePath,
+			const QString& parent, const QString& key)
 	{
 		emit uploadStatusChanged (tr ("Initializing..."), filePath);
 
@@ -225,6 +227,14 @@ namespace GoogleDrive
 				QString::number (QFileInfo (filePath).size ()).toUtf8 ());
 		QVariantMap map;
 		map ["title"] = QFileInfo (filePath).fileName ();
+		if (!parent.isEmpty ())
+		{
+			QVariantList parents;
+			QVariantMap parentMap;
+			parentMap ["id"] = parent;
+			parents << parentMap;
+			map ["parents"] = parents;
+		}
 
 		const auto& data = QJson::Serializer ().serialize (map);
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");

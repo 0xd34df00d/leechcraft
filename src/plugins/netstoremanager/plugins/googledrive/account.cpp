@@ -70,10 +70,10 @@ namespace GoogleDrive
 		return Name_;
 	}
 
-	void Account::Upload (const QString& filepath)
+	void Account::Upload (const QString& filepath, const QStringList& parentId)
 	{
 		auto uploadManager = new UploadManager (filepath,
-				UploadType::Upload, this);
+				UploadType::Upload, parentId, this);
 
 		connect (uploadManager,
 				SIGNAL (uploadProgress (quint64, quint64, const QString&)),

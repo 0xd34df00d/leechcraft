@@ -61,7 +61,8 @@ namespace GoogleDrive
 		QObject* GetParentPlugin () const;
 		AccountFeatures GetAccountFeatures () const;
 		QString GetAccountName () const;
-		void Upload (const QString& filepath);
+		void Upload (const QString& filepath,
+				const QStringList& parentId = QStringList ());
 
 		void Delete (const QList<QStringList>& id);
 		QStringList GetListingHeaders () const;

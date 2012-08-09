@@ -132,7 +132,8 @@ namespace GoogleDrive
 		void MoveEntryToTrash (const QString& id);
 		void RestoreEntryFromTrash (const QString& id);
 		void ShareEntry (const QString& id);
-		void Upload (const QString& filePath);
+		void Upload (const QString& filePath,
+				const QStringList& parentId = QStringList ());
 		void CreateDirectory (const QString& name, const QString& parentId = QString ());
 
 		void RequestFiles (const QString& key);
@@ -140,7 +141,8 @@ namespace GoogleDrive
 		void RequestEntryRemoving (const QString& id, const QString& key);
 		void RequestMovingEntryToTrash (const QString& id, const QString& key);
 		void RequestRestoreEntryFromTrash (const QString& id, const QString& key);
-		void RequestUpload (const QString& filePath, const QString& key);
+		void RequestUpload (const QString& filePath, const QString& parent,
+				const QString& key);
 		void RequestCreateDirectory (const QString& name,
 				const QString& parentId, const QString& key);
 	private:
