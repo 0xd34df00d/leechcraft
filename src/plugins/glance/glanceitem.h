@@ -43,8 +43,10 @@ namespace Glance
 		QPropertyAnimation *ScaleAnim_;
 		bool Current_;
 		QList<GlanceItem*> ItemsList_;
+		QRect CloseButtonRect_;
+		QPixmap Pixmap_;
 	public:
-		GlanceItem (const QPixmap&, QGraphicsItem* = 0);
+		GlanceItem (const QPixmap&, const QRect&, QGraphicsItem* = 0);
 
 		void SetIndex (int);
 		void SetIdealScale (qreal);
@@ -53,13 +55,15 @@ namespace Glance
 		bool IsCurrent () const;
 	private:
 		void QueueScaleAnim (qreal, qreal);
+		void DrawCloseButton (bool);
 	protected:
 		virtual void hoverEnterEvent (QGraphicsSceneHoverEvent*);
+		virtual void hoverMoveEvent (QGraphicsSceneHoverEvent*);
 		virtual void hoverLeaveEvent (QGraphicsSceneHoverEvent*);
 		virtual void mousePressEvent (QGraphicsSceneMouseEvent*);
 		virtual void mouseReleaseEvent (QGraphicsSceneMouseEvent*);
 	signals:
-		void clicked (int);
+		void clicked (int, bool);
 	};
 };
 };

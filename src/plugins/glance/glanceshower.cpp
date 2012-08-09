@@ -32,6 +32,7 @@
 #include <QMainWindow>
 #include <QtDebug>
 #include <interfaces/core/icoretabwidget.h>
+#include <interfaces/ihavetabs.h>
 #include "core.h"
 #include "glanceitem.h"
 
@@ -99,7 +100,6 @@ namespace Glance
 		const int wH = singleH * 4 / 5;
 
 		qreal scaleFactor = 0;
-		QSize sSize;
 
 		const int animLength = 400;
 
@@ -116,37 +116,44 @@ namespace Glance
 				pg.setValue (idx);
 				QWidget *w = TabWidget_->Widget (idx);
 
-				if (!sSize.isValid ())
-					sSize = w->size () / 2;
-				if (sSize != w->size ())
-					w->resize (sSize * 2);
+				if (!SSize_.isValid ())
+					SSize_ = w->size () / 2;
+				if (SSize_ != w->size ())
+					w->resize (SSize_ * 2);
 
 				if (std::fabs (scaleFactor) < std::numeric_limits<qreal>::epsilon ())
-					scaleFactor = std::min (static_cast<qreal> (wW) / sSize.width (),
-							static_cast<qreal> (wH) / sSize.height ());
+					scaleFactor = std::min (static_cast<qreal> (wW) / SSize_.width (),
+							static_cast<qreal> (wH) / SSize_.height ());
 
-				QPixmap pixmap (sSize * 2);
+				QPixmap pixmap (SSize_ * 2);
 				w->render (&pixmap);
-				pixmap = pixmap.scaled (sSize,
+				pixmap = pixmap.scaled (SSize_,
 						Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+				//Close button
+				const int buttonSize = 25;
+				const int buttonLeft = SSize_.width() - buttonSize * 2;
+				const int buttonTop = buttonSize;
+				QRect buttonRect(QPoint (buttonLeft, buttonTop), QPoint (buttonLeft + buttonSize, buttonTop + buttonSize));
 
 				{
 					QPainter p (&pixmap);
 					QPen pen (Qt::black);
 					pen.setWidth (2 / scaleFactor + 1);
 					p.setPen (pen);
-					p.drawRect (QRect (QPoint (0, 0), sSize));
+					p.drawRect (QRect (QPoint (0, 0), SSize_));
+
 				}
 
-				GlanceItem *item = new GlanceItem (pixmap);
+				GlanceItem *item = new GlanceItem (pixmap, buttonRect);
 				item->SetIndex (idx);
 				connect (item,
-						SIGNAL (clicked (int)),
+						SIGNAL (clicked (int, bool)),
 						this,
-						SLOT (handleClicked (int)));
+						SLOT (handleClicked (int, bool)));
 
 				Scene_->addItem (item);
-				item->setTransformOriginPoint (sSize.width () / 2, sSize.height () / 2);
+				item->setTransformOriginPoint (SSize_.width () / 2, SSize_.height () / 2);
 				item->setScale (scaleFactor);
 				item->SetIdealScale (scaleFactor);
 				item->setOpacity (0);
@@ -298,10 +305,79 @@ namespace Glance
 		}
 	}
 
-	void GlanceShower::handleClicked (int idx)
+	void GlanceShower::handleClicked (int idx, bool close)
 	{
-		TabWidget_->setCurrentTab (idx);
-		Finalize ();
+		if (close)
+		{
+			qobject_cast<ITabWidget*> (TabWidget_->Widget (idx))->Remove ();
+			Scene_->removeItem (Scene_->items () [idx]);
+			if (Scene_->items ().size () < 2)
+			{
+				Finalize ();
+				return;
+			}
+			//Now rearrange and resize all the rest items
+			const int count = TabWidget_->WidgetCount ();
+			const int sqr = std::sqrt (static_cast<double> (count));
+			int rows = sqr;
+			int cols = sqr;
+			if (rows * cols < count)
+				++cols;
+			if (rows * cols < count)
+				++rows;
+
+			const QRect& screenGeom = QApplication::desktop ()->
+					screenGeometry (Core::Instance ().GetMainWindow ());
+			const int width = screenGeom.width ();
+			const int height = screenGeom.height ();
+
+			const int singleW = width / cols;
+			const int singleH = height / rows;
+
+			const int wW = singleW * 4 / 5;
+			const int wH = singleH * 4 / 5;
+
+			const int animLength = 400;
+
+			QParallelAnimationGroup *anim = new QParallelAnimationGroup();
+
+			qreal scaleFactor = std::min (static_cast<qreal> (wW) / SSize_.width (),
+					static_cast<qreal> (wH) / SSize_.height ());
+
+			for (int row = 0; row < rows; ++row)
+				for (int column = 0;
+						column < cols && column + row * cols < count;
+						++column)
+				{
+					const int idx = column + row * cols;
+					GlanceItem *item = qgraphicsitem_cast<GlanceItem*> (items ()[idx]);
+					item->SetIndex (idx);
+					item->SetIdealScale (scaleFactor);
+
+					auto pair = new QParallelAnimationGroup ();
+
+					auto posAnim = new QPropertyAnimation (item, "Pos");
+					posAnim->setDuration (animLength);
+					posAnim->setStartValue (item->pos ());
+					posAnim->setEndValue (QPointF (column * singleW, row * singleH));
+					posAnim->setEasingCurve (QEasingCurve::OutSine);
+					pair->addAnimation (posAnim);
+
+					auto scaleAnim = new QPropertyAnimation (item, "Scale");
+					scaleAnim->setDuration (animLength);
+					scaleAnim->setStartValue (item->scale ());
+					scaleAnim->setEndValue (scaleFactor);
+					pair->addAnimation (scaleAnim);
+
+					anim->addAnimation (pair);
+				}
+			anim->start ();
+		}
+		else
+		{
+			TabWidget_->setCurrentTab (idx);
+			Finalize ();
+		}
 	}
 
 	void GlanceShower::Finalize ()
@@ -317,6 +393,6 @@ namespace Glance
 		if (!this->itemAt (e->pos ()))
 			Finalize ();
 	}
-};
-};
-};
+}
+}
+}
