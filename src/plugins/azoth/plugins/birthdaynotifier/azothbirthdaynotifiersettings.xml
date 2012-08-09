@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Azoth BirthdayNotifier" />
+		<groupbox>
+			<label value="Behavior" />
+			<item type="checkbox" property="NotifyEnabled" default="true">
+				<label value="Notify about birthdays" />
+			</item>
+			<item type="lineedit" property="NotificationDays" default="0-3,7">
+				<label value="Notify in these days:" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

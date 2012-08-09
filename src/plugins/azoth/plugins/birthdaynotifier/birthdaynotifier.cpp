@@ -20,11 +20,13 @@
 #include <QTimer>
 #include <QIcon>
 #include <util/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/imetainfoentry.h>
 #include <interfaces/azoth/iextselfinfoaccount.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -34,6 +36,9 @@ namespace BirthdayNotifier
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothbirthdaynotifiersettings.xml");
+
 		CheckTimer_ = new QTimer (this);
 
 		connect (CheckTimer_,
@@ -82,6 +87,11 @@ namespace BirthdayNotifier
 		return result;
 	}
 
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
+	}
+
 	void Plugin::NotifyBirthday (ICLEntry *entry, int days)
 	{
 		const auto& hrId = entry->GetEntryName ();
@@ -115,6 +125,38 @@ namespace BirthdayNotifier
 
 	void Plugin::checkDates ()
 	{
+		if (!XmlSettingsManager::Instance ().property ("NotifyEnabled").toBool ())
+			return;
+
+		const auto& ranges = XmlSettingsManager::Instance ()
+				.property ("NotificationDays").toString ().split (',', QString::SkipEmptyParts);
+
+		QList<int> allowedDays;
+		Q_FOREACH (const auto& range, ranges)
+		{
+			if (!range.contains ('-'))
+			{
+				bool ok = false;
+				const int day = range.toInt (&ok);
+				if (ok)
+					allowedDays << day;
+				continue;
+			}
+
+			const auto& ends = range.split ('-', QString::SkipEmptyParts);
+			if (ends.size () != 2)
+				continue;
+
+			bool bOk = false, eOk = false;
+			const int begin = ends.at (0).toInt (&bOk);
+			const int end = ends.at (1).toInt (&eOk);
+			if (!bOk || !eOk)
+				continue;
+
+			for (int i = begin; i <= end; ++i)
+				allowedDays << i;
+		}
+
 		const auto& today = QDate::currentDate ();
 
 		auto accs = AzothProxy_->GetAllAccounts ();
@@ -152,7 +194,7 @@ namespace BirthdayNotifier
 					days = today.daysTo (dt);
 				}
 
-				if (days == 7 || days < 3)
+				if (allowedDays.contains (days))
 					NotifyBirthday (entry, days);
 			}
 		}

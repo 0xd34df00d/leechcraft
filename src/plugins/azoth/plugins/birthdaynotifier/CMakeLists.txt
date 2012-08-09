@@ -10,9 +10,11 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	)
 SET (BIRTHDAYNOTIFIER_SRCS
 	birthdaynotifier.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (BIRTHDAYNOTIFIER_HEADERS
 	birthdaynotifier.h
+	xmlsettingsmanager.h
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (BIRTHDAYNOTIFIER_MOC_SRCS ${BIRTHDAYNOTIFIER_HEADERS})
@@ -28,3 +30,4 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth_birthdaynotifier
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_azoth_birthdaynotifier DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES azothbirthdaynotifiersettings.xml DESTINATION ${LC_SETTINGS_DEST})
