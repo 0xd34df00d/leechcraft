@@ -81,7 +81,8 @@ namespace GoogleDrive
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/netstoremanager/googledrive/resources/images/googledrive.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
