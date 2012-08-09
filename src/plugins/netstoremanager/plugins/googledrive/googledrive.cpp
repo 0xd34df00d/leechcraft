@@ -21,6 +21,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include "authmanager.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -33,6 +34,8 @@ namespace GoogleDrive
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("netstoremanager_googledrive");
+
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"nsmgoogledrivesettings.xml");
