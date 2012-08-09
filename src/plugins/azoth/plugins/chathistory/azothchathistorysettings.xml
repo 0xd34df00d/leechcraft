@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Azoth ChatHistory" />
+		<groupbox>
+			<label value="Appearance" />
+			<item type="spinbox" property="ItemsPerPage" default="50" minimum="10" maximum="1000" step="10">
+				<label value="Items per page:" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

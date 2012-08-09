@@ -25,6 +25,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "chathistory.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -34,8 +35,6 @@ namespace ChatHistory
 {
 	Plugin *ChatHistoryWidget::S_ParentMultiTabs_ = 0;
 
-	const int Amount = 50;
-
 	void ChatHistoryWidget::SetParentMultiTabs (Plugin *ch)
 	{
 		S_ParentMultiTabs_ = ch;
@@ -43,6 +42,7 @@ namespace ChatHistory
 
 	ChatHistoryWidget::ChatHistoryWidget (ICLEntry *entry, QWidget *parent)
 	: QWidget (parent)
+	, PerPageAmount_ (XmlSettingsManager::Instance ().property ("ItemsPerPage").toInt ())
 	, ContactsModel_ (new QStandardItemModel (this))
 	, SortFilter_ (new QSortFilterProxyModel (this))
 	, Backpages_ (0)
@@ -301,7 +301,7 @@ namespace ChatHistory
 			msgText.replace ('\n', "<br/>");
 			html += postNick + ' ' + msgText;
 
-			const bool isSearchRes = SearchResultPosition_ == Amount - Amount_;
+			const bool isSearchRes = SearchResultPosition_ == PerPageAmount_ - Amount_;
 			if (isChat && !isSearchRes)
 			{
 				html.prepend (QString ("<font color=\"#") +
@@ -382,8 +382,8 @@ namespace ChatHistory
 				}
 		}
 
-		Backpages_ = position / Amount;
-		SearchResultPosition_ = position % Amount;
+		Backpages_ = position / PerPageAmount_;
+		SearchResultPosition_ = position % PerPageAmount_;
 		RequestLogs ();
 	}
 
@@ -482,7 +482,7 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::previousHistory ()
 	{
-		if (Amount_ < Amount)
+		if (Amount_ < PerPageAmount_)
 			return;
 
 		++Backpages_;
@@ -538,7 +538,7 @@ namespace ChatHistory
 	void ChatHistoryWidget::RequestLogs ()
 	{
 		Core::Instance ()->GetChatLogs (CurrentAccount_,
-				CurrentEntry_, Backpages_, Amount);
+				CurrentEntry_, Backpages_, PerPageAmount_);
 	}
 
 	void ChatHistoryWidget::RequestSearch ()
