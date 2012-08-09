@@ -114,9 +114,9 @@ namespace NetStoreManager
 					this,
 					SIGNAL (removeTab (QWidget*)));
 			connect (tab,
-					SIGNAL (uploadRequested (IStorageAccount*, QString)),
+					SIGNAL (uploadRequested (IStorageAccount*, QString, QStringList)),
 					UpManager_,
-					SLOT (handleUploadRequest (IStorageAccount*, QString)));
+					SLOT (handleUploadRequest (IStorageAccount*, QString, QStringList)));
 			connect (tab,
 					SIGNAL (gotEntity (LeechCraft::Entity)),
 					this,

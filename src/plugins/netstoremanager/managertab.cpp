@@ -63,16 +63,21 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flRestoreFromTrash ()));
-		EmptyTrash_  = new QAction (tr ("Empty trash"), this);
+		EmptyTrash_ = new QAction (tr ("Empty trash"), this);
 		connect (EmptyTrash_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flEmptyTrash ()));
-		CreateDir_  = new QAction (tr ("Create directory"), this);
+		CreateDir_ = new QAction (tr ("Create directory"), this);
 		connect (CreateDir_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flCreateDir ()));
+		UploadInCurrentDir_ = new QAction (tr ("Upload in this directory"), this);
+		connect (UploadInCurrentDir_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flUploadInCurrentDir ()));
 
 		Ui_.setupUi (this);
 		Ui_.FilesTree_->setModel (Model_);
@@ -344,6 +349,29 @@ namespace NetStoreManager
 		sfl->CreateDirectory (name, id);
 	}
 
+	void ManagerTab::flUploadInCurrentDir ()
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		if (!(sfl->GetListingOps () & ListingOp::DirectorySupport))
+			return;
+
+		const QString& filename = QFileDialog::getOpenFileName (this,
+				tr ("Select file for upload"),
+				QDir::homePath ());
+		if (filename.isEmpty ())
+			return;
+
+		QModelIndex idx = Ui_.FilesTree_->currentIndex ();
+		idx = idx.sibling (idx.row (), Columns::FirstColumnNumber);
+		QStringList id = idx.data (ListingRole::ID).toStringList ();
+
+		emit uploadRequested (acc, filename, id);
+	}
+
 	void ManagerTab::on_AccountsBox__activated (int)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
@@ -417,6 +445,9 @@ namespace NetStoreManager
 			if (!inTrash &&
 					!isTrashItem)
 				menu->insertAction (MoveToTrash_, CreateDir_);
+
+			if (index.data (ListingRole::Directory).toBool ())
+				menu->addActions ({ menu->addSeparator (), UploadInCurrentDir_ });
 		}
 		else
 			menu->addAction (CreateDir_);

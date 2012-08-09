@@ -55,7 +55,8 @@ namespace NetStoreManager
 		return qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
 	}
 
-	void UpManager::handleUploadRequest (IStorageAccount *acc, const QString& path)
+	void UpManager::handleUploadRequest (IStorageAccount *acc, const QString& path,
+			const QStringList& id)
 	{
 		if (!Uploads_.contains (acc))
 		{
@@ -88,7 +89,7 @@ namespace NetStoreManager
 			return;
 		}
 
-		acc->Upload (path);
+		acc->Upload (path, id);
 
 		auto plugin = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
 

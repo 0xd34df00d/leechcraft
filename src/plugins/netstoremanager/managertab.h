@@ -63,6 +63,7 @@ namespace NetStoreManager
 		QAction *UntrashFile_;
 		QAction *EmptyTrash_;
 		QAction *CreateDir_;
+		QAction *UploadInCurrentDir_;
 		QHash<IStorageAccount*, QHash<QString, bool>> Account2ItemExpandState_;
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
@@ -88,6 +89,7 @@ namespace NetStoreManager
 		void flRestoreFromTrash ();
 		void flEmptyTrash ();
 		void flCreateDir ();
+		void flUploadInCurrentDir ();
 		void on_AccountsBox__activated (int);
 		void on_Update__released ();
 		void on_Upload__released ();
@@ -95,7 +97,8 @@ namespace NetStoreManager
 	signals:
 		void removeTab (QWidget*);
 
-		void uploadRequested (IStorageAccount*, const QString&);
+		void uploadRequested (IStorageAccount *isa, const QString& file,
+				const QStringList& parentId = QStringList ());
 
 		void gotEntity (LeechCraft::Entity entity);
 	};
