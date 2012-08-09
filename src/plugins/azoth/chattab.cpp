@@ -694,7 +694,9 @@ namespace Azoth
 		else
 			GetEntry<ICLEntry> ()->MarkMsgsRead ();
 
-		if (!Core::Instance ().GetChatTabsManager ()->IsActiveChat (entry) && !HadHighlight_)
+		if (msg->GetMessageType () == IMessage::MTMUCMessage &&
+				!Core::Instance ().GetChatTabsManager ()->IsActiveChat (entry) &&
+				!HadHighlight_)
 		{
 			HadHighlight_ = Core::Instance ().IsHighlightMessage (msg);
 			if (HadHighlight_)

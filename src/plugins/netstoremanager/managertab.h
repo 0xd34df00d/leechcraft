@@ -81,7 +81,7 @@ namespace NetStoreManager
 		QList<QStringList> GetTrashedFiles () const;
 	private slots:
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
-		void handleGotFileUrl (const QUrl& url, const QList<QStringList>& id);
+		void handleGotFileUrl (const QUrl& url, const QStringList& id);
 		void flCopyURL ();
 		void flDelete ();
 		void flMoveToTrash ();

@@ -259,7 +259,7 @@ namespace NetStoreManager
 		RestoreModelState ();
 	}
 
-	void ManagerTab::handleGotFileUrl (const QUrl& url, const QList<QStringList>& id)
+	void ManagerTab::handleGotFileUrl (const QUrl& url, const QStringList&)
 	{
 		if (url.isEmpty () || !url.isValid ())
 			return;
@@ -268,14 +268,23 @@ namespace NetStoreManager
 		qApp->clipboard ()->setText (str, QClipboard::Clipboard);
 		qApp->clipboard ()->setText (str, QClipboard::Selection);
 
-		QString text = tr ("File shared with URL: %1, the URL was copied to the clipboard")
-				.arg (url.toString ());
+		QString text = tr ("File URL %1 has been copied to the clipboard.")
+				.arg (str);
 		emit gotEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
 	}
 
 	void ManagerTab::flCopyURL ()
 	{
-		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->RequestUrl (ids); });
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		const auto& id = Ui_.FilesTree_->currentIndex ().data (ListingRole::ID).toStringList ();
+		if (id.isEmpty ())
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		sfl->RequestUrl (QList<QStringList> () << id);
 	}
 
 	void ManagerTab::flDelete ()

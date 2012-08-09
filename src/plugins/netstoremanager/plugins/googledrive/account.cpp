@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "account.h"
+#include <algorithm>
 #include <QtDebug>
 #include <QStandardItemModel>
 #include <QMessageBox>
