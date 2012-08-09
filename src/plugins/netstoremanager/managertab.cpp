@@ -444,10 +444,11 @@ namespace NetStoreManager
 
 			if (!inTrash &&
 					!isTrashItem)
+			{
 				menu->insertAction (MoveToTrash_, CreateDir_);
-
-			if (index.data (ListingRole::Directory).toBool ())
-				menu->addActions ({ menu->addSeparator (), UploadInCurrentDir_ });
+				if (index.data (ListingRole::Directory).toBool ())
+					menu->addActions ({ menu->addSeparator (), UploadInCurrentDir_ });
+			}
 		}
 		else
 			menu->addAction (CreateDir_);
