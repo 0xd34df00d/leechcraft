@@ -870,12 +870,17 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The IRC network name.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: NETWORK=EFnet indicates that the client is connected  to the EFnet IRC network.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Имя IRC-сети.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Пример: NETWORK=EFnet означает, что клиент подключен к IRC-сети EFnet.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="78"/>
         <source>Maximum number of channel modes with parameter allowed per MODE command.</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальное количество режимов канала, которые можно сменить одной командой MODE.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="81"/>
@@ -890,7 +895,12 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum number of channel modes with parameter allowed per MODE command.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: MODES=3 indicates that 3 modes may be set with a MODE command.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Максимальное количество режимов канала, которые можно сменить одной командой MODE.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Пример: MODES=3 означает, что не более трех разных режимов может быть сменено одной командой MODE.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="109"/>
@@ -920,12 +930,16 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum nickname length.&lt;br /&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: NICKLEN=9 indicates that clients may have nicknames up to 9 characters in length.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Максимальная длина ника.&lt;br /&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Пример: NICKLEN=9 означает что клиенты могут иметь ники длиной до 9 символов.]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="162"/>
         <source>Maximum number entries in the list per mode. </source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальное количество записей в списках на каждый режим.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="165"/>
@@ -1033,7 +1047,12 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;The server supports a method of sending a NOTICE message to only those people on a channel with the specified status.  This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.&lt;/span&gt;&lt;/pre&gt;
 &lt;pre style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Example: NOTICE @#channel :Hi there]&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;pre style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;Сервер поддерживает метод отправки уведомлений только посетителям канала с определенным статусом.  Данная возможность реализуется с помощью команды NOTICE, с указанием канала, предваренного префиксом статуса тех пользователей, кому нужно отправить уведомление.&lt;/span&gt;&lt;/pre&gt;
+&lt;pre style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;;&quot;&gt;[Пример: NOTICE @#channel :Привет]&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="355"/>
@@ -1058,7 +1077,7 @@ p, li { white-space: pre-wrap; }
         <location filename="serverinfowidget.ui" line="382"/>
         <location filename="serverinfowidget.ui" line="398"/>
         <source>The EXCEPTS parameter indicates that the server supports &quot;ban exceptions&quot; (channel mode +e), as defined in RFC 2811, section 4.3.1</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметр EXCEPTS указывает, поддерживает ли сервер &quot;исключения для банлистов&quot; (режим канала +e), как определено в RFC 2811, параграф 4.3.1</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="385"/>
@@ -1089,7 +1108,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="serverinfowidget.ui" line="463"/>
         <source>Mode that adds or removes a nick or address to a list. Always has a parameter. </source>
-        <translation type="unfinished"></translation>
+        <translation>Режимы, добавляющие или удаляющие пользователя в определенный список. Всегда имеют обязательный параметр.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="466"/>
@@ -1099,7 +1118,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="serverinfowidget.ui" line="483"/>
         <source>Mode that changes a setting and always has a parameter. </source>
-        <translation type="unfinished"></translation>
+        <translation>Режимы, изменяющие настройки и всегда имеющие обязательный параметр.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="486"/>
@@ -1109,7 +1128,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="serverinfowidget.ui" line="503"/>
         <source>Mode that changes a setting and only has a parameter when set. </source>
-        <translation type="unfinished"></translation>
+        <translation>Режимы, изменяющие настройки, имеющие необязательный параметр.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="506"/>
@@ -1119,7 +1138,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="serverinfowidget.ui" line="523"/>
         <source>Mode that changes a setting and never has a parameter. </source>
-        <translation type="unfinished"></translation>
+        <translation>Режимы, изменяющие настройки, никогда не имеющие дополнительных параметров.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="526"/>
@@ -1129,7 +1148,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="serverinfowidget.ui" line="554"/>
         <source>The supported channel prefixes. </source>
-        <translation type="unfinished"></translation>
+        <translation>Поддерживаемые префиксы каналов.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="557"/>
@@ -1144,7 +1163,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="serverinfowidget.ui" line="584"/>
         <source>PREFIX:</source>
-        <translation type="unfinished"></translation>
+        <translation>Префиксы:</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="597"/>
