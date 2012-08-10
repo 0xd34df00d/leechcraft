@@ -348,8 +348,10 @@ namespace GoogleDrive
 	{
 		const auto& errorMap = map ["error"].toMap ();
 		const QString& code = errorMap ["code"].toString ();
-		const QString& msg = errorMap ["message"].toString ();
+		QString msg = errorMap ["message"].toString ();
 
+		if (code == "500")
+			msg = tr ("Google Drive API v.2 doesn't support directory copying.");
 		Core::Instance ().SendEntity (Util::MakeNotification ("NetStoreManager",
 				msg,
 				PWarning_));
