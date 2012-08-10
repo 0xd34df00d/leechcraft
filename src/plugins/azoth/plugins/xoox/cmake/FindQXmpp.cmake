@@ -11,7 +11,6 @@
 
 FIND_PATH(QXMPP_INCLUDE_DIR
 	NAMES
-	qxmpp-lc/QXmppClient.h
 	qxmpp-dev/QXmppClient.h
 	qxmpp/QXmppClient.h
 	PATH
@@ -19,7 +18,6 @@ FIND_PATH(QXMPP_INCLUDE_DIR
 )
 FIND_LIBRARY(QXMPP_LIBRARIES
 	NAMES
-	qxmpp-lc
 	qxmpp-dev
 	qxmpp
 )
@@ -40,7 +38,6 @@ ENDIF(QXMPP_LOCAL)
 IF(QXMPP_LIBRARIES AND QXMPP_INCLUDE_DIR)
 	IF(NOT QXMPP_LOCAL)
 		SET(QXMPP_INCLUDE_DIR
-			${QXMPP_INCLUDE_DIR}/qxmpp-lc
 			${QXMPP_INCLUDE_DIR}/qxmpp-dev
 			${QXMPP_INCLUDE_DIR}/qxmpp
 		)
