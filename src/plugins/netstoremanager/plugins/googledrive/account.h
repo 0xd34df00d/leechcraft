@@ -73,6 +73,8 @@ namespace GoogleDrive
 		void RefreshListing ();
 		void RequestUrl (const QList<QStringList>& id);
 		void CreateDirectory (const QString& name, const QStringList& parentId);
+		void Copy (const QStringList& id, const QStringList& newParentId);
+		void Move (const QStringList& id, const QStringList& newParentId);
 
 		QByteArray Serialize ();
 		static Account_ptr Deserialize (const QByteArray& data, QObject *parentPlugin);

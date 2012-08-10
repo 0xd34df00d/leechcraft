@@ -165,6 +165,16 @@ namespace GoogleDrive
 		DriveManager_->CreateDirectory (name, parentId.value (0));
 	}
 
+	void Account::Copy (const QStringList& id, const QStringList& newParentId)
+	{
+		DriveManager_->Copy (id [0], newParentId.value (0));
+	}
+
+	void Account::Move (const QStringList& id, const QStringList& newParentId)
+	{
+		DriveManager_->Move (id [0], newParentId.value (0));
+	}
+
 	QByteArray Account::Serialize ()
 	{
 		QByteArray result;
