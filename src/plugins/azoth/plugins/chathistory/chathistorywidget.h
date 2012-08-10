@@ -44,6 +44,9 @@ namespace ChatHistory
 		Q_INTERFACES (ITabWidget);
 
 		Ui::ChatHistoryWidget Ui_;
+
+		const int PerPageAmount_;
+
 		QStandardItemModel *ContactsModel_;
 		QSortFilterProxyModel *SortFilter_;
 		int Backpages_;

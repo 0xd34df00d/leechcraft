@@ -20,7 +20,11 @@
 #include <QPropertyAnimation>
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsSceneMouseEvent>
+#include <QPainter>
+#include <QIcon>
 #include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -28,15 +32,19 @@ namespace Plugins
 {
 namespace Glance
 {
-	GlanceItem::GlanceItem (const QPixmap& px, QGraphicsItem *parent)
+	GlanceItem::GlanceItem (const QPixmap& px, const QRect& closeButtonRect, QGraphicsItem *parent)
 	: QGraphicsPixmapItem (px, parent)
 	, Scale_ (0)
 	, ScaleAnim_ (new QPropertyAnimation (this, "Scale"))
 	, Current_ (false)
+	, CloseButtonRect_ (closeButtonRect)
+	, Pixmap_ (px)
 	{
 		setAcceptHoverEvents (true);
 		setTransformationMode (Qt::SmoothTransformation);
-		setCacheMode (ItemCoordinateCache);		
+		setCacheMode (ItemCoordinateCache);
+
+		DrawCloseButton(false);
 	}
 
 	void GlanceItem::SetIndex (int idx)
@@ -59,7 +67,7 @@ namespace Glance
 		ScaleAnim_->start ();
 	}
 
-	void GlanceItem::hoverEnterEvent (QGraphicsSceneHoverEvent*)
+	void GlanceItem::hoverEnterEvent (QGraphicsSceneHoverEvent *e)
 	{
 		Q_FOREACH (GlanceItem* item, ItemsList_)
 			if (item->IsCurrent () && item != this)
@@ -67,9 +75,18 @@ namespace Glance
 		SetCurrent (true);
 	}
 
+	void GlanceItem::hoverMoveEvent (QGraphicsSceneHoverEvent *e)
+	{
+		if (CloseButtonRect_.contains (e->pos ().toPoint ()))
+				DrawCloseButton(true);
+		else
+				DrawCloseButton(false);
+	}
+
 	void GlanceItem::hoverLeaveEvent (QGraphicsSceneHoverEvent*)
 	{
 		SetCurrent (false);
+		DrawCloseButton (false);
 	}
 
 	void GlanceItem::mousePressEvent (QGraphicsSceneMouseEvent *e)
@@ -78,9 +95,13 @@ namespace Glance
 		e->accept ();
 	}
 
-	void GlanceItem::mouseReleaseEvent (QGraphicsSceneMouseEvent*)
+	void GlanceItem::mouseReleaseEvent (QGraphicsSceneMouseEvent *e)
 	{
-		emit clicked (Index_);
+		const auto& clickPoint = e->buttonDownPos (Qt::LeftButton).toPoint ();
+		if (CloseButtonRect_.contains (clickPoint))
+			emit clicked (Index_, true);
+		else
+			emit clicked (Index_, false);
 	}
 
 	void GlanceItem::SetCurrent (bool cur)
@@ -107,6 +128,18 @@ namespace Glance
 	{
 		Q_FOREACH (QGraphicsItem* item, list)
 			ItemsList_ << qgraphicsitem_cast<GlanceItem*> (item);
+	}
+
+	void GlanceItem::DrawCloseButton (bool selected)
+	{
+		QPixmap px (Pixmap_);
+		QPainter p (&px);
+
+		QIcon closeIcon = Core::Instance ().GetProxy ()->GetIcon ("window-close");
+		closeIcon.paint (&p, CloseButtonRect_, Qt::AlignCenter, selected ? QIcon::Selected : QIcon::Normal);
+
+		p.end ();
+		setPixmap (px);
 	}
 };
 };

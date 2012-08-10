@@ -16,57 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-
-class QTimer;
+#ifndef PLUGINS_AZOTH_PLUGINS_AUTOPASTE_XMLSETTINGSMANAGER_H
+#define PLUGINS_AZOTH_PLUGINS_AUTOPASTE_XMLSETTINGSMANAGER_H
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-class ICLEntry;
-class IProxyObject;
-
-namespace BirthdayNotifier
+namespace ChatHistory
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IHaveSettings
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
-		Util::XmlSettingsDialog_ptr XSD_;
-
-		QTimer *CheckTimer_;
-		IProxyObject *AzothProxy_;
+		XmlSettingsManager ();
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	private:
-		void NotifyBirthday (ICLEntry*, int);
-	public slots:
-		void initPlugin (QObject*);
-	private slots:
-		void checkDates ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }
 }
+
+#endif

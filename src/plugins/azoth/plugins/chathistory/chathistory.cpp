@@ -22,6 +22,7 @@
 #include <QAction>
 #include <QTranslator>
 #include <util/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
@@ -29,6 +30,7 @@
 #include "core.h"
 #include "chathistorywidget.h"
 #include "historymessage.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -39,6 +41,9 @@ namespace ChatHistory
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Translator_.reset (Util::InstallTranslator ("azoth_chathistory"));
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothchathistorysettings.xml");
 
 		ChatHistoryWidget::SetParentMultiTabs (this);
 
@@ -119,6 +124,11 @@ namespace ChatHistory
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
 					<< tabClass;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	bool Plugin::IsHistoryEnabledFor (QObject *entry) const
