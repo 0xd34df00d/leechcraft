@@ -98,6 +98,8 @@ namespace NetStoreManager
 				const QStringList& newParentId);
 		void handleMovedItem (const QStringList& itemId,
 				const QStringList& newParentId);
+		void handleRestoredFromTrash (const QStringList& id);
+		void handleTrashedItem (const QStringList& id);
 	signals:
 		void removeTab (QWidget*);
 

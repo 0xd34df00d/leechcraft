@@ -62,17 +62,26 @@ namespace NetStoreManager
 				>> isDir
 				>> parentId;
 
-		//TODO
-		if (isInTrash ||
-				id [0] == "netstoremanager.item_trash")
+		const auto& targetIndex = indexAt (event->pos ());
+
+		if (isInTrash &&
+				targetIndex.data (ListingRole::ID).toString () != "netstoremanager.item_trash" &&
+				!targetIndex.data (ListingRole::InTrash).toBool ())
 		{
-			event->ignore ();
+			emit restoredFromTrash (id);
 			return;
 		}
 
-		const auto& targetIndex = indexAt (event->pos ());
+		if (!isInTrash &&
+				(targetIndex.data (ListingRole::ID).toString () == "netstoremanager.item_trash" ||
+						targetIndex.data (ListingRole::InTrash).toBool ()))
+		{
+			emit trashedItem (id);
+			return;
+		}
+
 		if (!targetIndex.data (ListingRole::Directory).toBool () &&
-				targetIndex.parent ().data (ListingRole::ID).toStringList () == parentId)
+			targetIndex.parent ().data (ListingRole::ID).toStringList () == parentId)
 		{
 			event->ignore ();
 			return;
@@ -90,11 +99,7 @@ namespace NetStoreManager
 
 			if (!targetIndex.data (ListingRole::InTrash).toBool () &&
 					targetIndex.data (ListingRole::ID).toStringList () [0] != "netstoremanager.item_trash");
-			{
-				!isDir ?
-					menu->addActions ({ CopyItem_, MoveItem_, menu->addSeparator (), Cancel_ }) :
-					menu->addActions ({ MoveItem_, menu->addSeparator (), Cancel_ });
-			}
+				menu->addActions ({ CopyItem_, MoveItem_, menu->addSeparator (), Cancel_ });
 
 			menu->exec (viewport ()->mapToGlobal (event->pos ()));
 			menu->deleteLater ();

@@ -117,6 +117,14 @@ namespace NetStoreManager
 				SIGNAL (movedItem (QStringList, QStringList)),
 				this,
 				SLOT (handleMovedItem (QStringList, QStringList)));
+		connect (Ui_.FilesTree_,
+				SIGNAL (restoredFromTrash (QStringList)),
+				this,
+				SLOT (handleRestoredFromTrash (QStringList)));
+		connect (Ui_.FilesTree_,
+				SIGNAL (trashedItem (QStringList)),
+				this,
+				SLOT (handleTrashedItem (QStringList)));
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -485,6 +493,26 @@ namespace NetStoreManager
 
 		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
 		sfl->Move (itemId, newParentId);
+	}
+
+	void ManagerTab::handleRestoredFromTrash (const QStringList& id)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		sfl->RestoreFromTrash (QList<QStringList> () << id);
+	}
+
+	void ManagerTab::handleTrashedItem (const QStringList& id)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		sfl->MoveToTrash (QList<QStringList> () << id);
 	}
 
 }

@@ -49,6 +49,8 @@ namespace NetStoreManager
 	signals:
 		void copiedItem (const QStringList& itemId, const QStringList& newParentId);
 		void movedItem (const QStringList& itemId, const QStringList& newParentId);
+		void restoredFromTrash (const QStringList& itemId);
+		void trashedItem (const QStringList& itemId);
 	};
 }
 }
