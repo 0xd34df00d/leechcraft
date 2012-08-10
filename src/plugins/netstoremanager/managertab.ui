@@ -52,7 +52,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QTreeView" name="FilesTree_">
+    <widget class="LeechCraft::NetStoreManager::FilesView" name="FilesTree_">
      <property name="contextMenuPolicy">
       <enum>Qt::ActionsContextMenu</enum>
      </property>
@@ -69,6 +69,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LeechCraft::NetStoreManager::FilesView</class>
+   <extends>QTreeView</extends>
+   <header>filesview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

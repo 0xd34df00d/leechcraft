@@ -41,6 +41,7 @@ namespace NetStoreManager
 	, Info_ (tc)
 	, Proxy_ (proxy)
 	, AM_ (am)
+	, Model_ (new FilesModel (this))
 	{
 		CopyURL_ = new QAction (tr ("Copy URL..."), this);
 		connect (CopyURL_,
@@ -79,7 +80,6 @@ namespace NetStoreManager
 				SLOT (flUploadInCurrentDir ()));
 
 		Ui_.setupUi (this);
-		Model_ = new FilesModel (Ui_.FilesTree_, this);
 		Ui_.FilesTree_->setModel (Model_);
 		Q_FOREACH (auto acc, AM_->GetAccounts ())
 		{
@@ -109,6 +109,14 @@ namespace NetStoreManager
 				SIGNAL (customContextMenuRequested (const QPoint&)),
 				this,
 				SLOT (handleContextMenuRequested (const QPoint&)));
+		connect (Ui_.FilesTree_,
+				SIGNAL (copiedItem (QStringList, QStringList)),
+				this,
+				SLOT (handleCopiedItem (QStringList, QStringList)));
+		connect (Ui_.FilesTree_,
+				SIGNAL (movedItem (QStringList, QStringList)),
+				this,
+				SLOT (handleMovedItem (QStringList, QStringList)));
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -455,6 +463,28 @@ namespace NetStoreManager
 		menu->exec (Ui_.FilesTree_->viewport ()->
 				mapToGlobal (QPoint (point.x (), point.y ())));
 		menu->deleteLater ();
+	}
+
+	void ManagerTab::handleCopiedItem (const QStringList& itemId,
+			const QStringList& newParentId)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		sfl->Copy (itemId, newParentId);
+	}
+
+	void ManagerTab::handleMovedItem (const QStringList& itemId,
+			const QStringList& newParentId)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		sfl->Move (itemId, newParentId);
 	}
 
 }

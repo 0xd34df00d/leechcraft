@@ -94,6 +94,10 @@ namespace NetStoreManager
 		void on_Update__released ();
 		void on_Upload__released ();
 		void handleContextMenuRequested (const QPoint& point);
+		void handleCopiedItem (const QStringList& itemId,
+				const QStringList& newParentId);
+		void handleMovedItem (const QStringList& itemId,
+				const QStringList& newParentId);
 	signals:
 		void removeTab (QWidget*);
 

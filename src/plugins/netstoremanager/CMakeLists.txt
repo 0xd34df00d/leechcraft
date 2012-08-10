@@ -19,6 +19,7 @@ SET (SRCS
 	addaccountdialog.cpp
 	upmanager.cpp
 	filesmodel.cpp
+	filesview.cpp
 	)
 SET (HEADERS
 	netstoremanager.h
@@ -29,6 +30,7 @@ SET (HEADERS
 	addaccountdialog.h
 	upmanager.h
 	filesmodel.h
+	filesview.h
 	)
 SET (FORMS
 	managertab.ui
