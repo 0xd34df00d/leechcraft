@@ -24,11 +24,13 @@ relevant blocks of changes, so one could easily lookup
 * Azoth Xoox: birthday field is now editable for self vcards.
 * Azoth Xtazy: added /np and /sharesong commands.
 * BitTorrent: optional flags for peers' countries.
+* Glance: nice Close button right on thumbnails.
 * LMP: initial support for MP3tunes.com service: uploading & playlists.
 * LMP: support different sorting styles in the playlist.
 * LMP: support Drag'n'Drop and actions for reordering items in the playlist.
 * LMP: all found lyrics can be displayed, not the last found one.
 * LMP: faster prescaler for huge album arts in notifications.
+* LMP: fixed compatibility with taglib built without ASF or MP4.
 * NSM: initial Google Drive support.
 * NSM: other plugins can request uploads now.
 
