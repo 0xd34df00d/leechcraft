@@ -17,10 +17,10 @@
  **********************************************************************/
 
 #include "filesview.h"
-#include "interfaces/netstoremanager/isupportfilelistings.h"
 #include <QAction>
 #include <QDropEvent>
 #include <QMenu>
+#include "interfaces/netstoremanager/isupportfilelistings.h"
 
 namespace LeechCraft
 {
