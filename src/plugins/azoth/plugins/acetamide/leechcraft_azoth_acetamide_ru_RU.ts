@@ -509,32 +509,32 @@
     <message>
         <location filename="channelhandler.cpp" line="655"/>
         <source>Change topic available only for channel operators (+t)</source>
-        <translation type="unfinished"></translation>
+        <translation>Смена темы канала доступна только операторам (+t)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="657"/>
         <source>Change topic available not only for channel operators (-t)</source>
-        <translation type="unfinished"></translation>
+        <translation>Смена темы канала доступна обычным посетителям (-t)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="668"/>
         <source>Limit user set to %1 (+l)</source>
-        <translation type="unfinished"></translation>
+        <translation>Лимит пользователей на канале установлен в %1 (+l)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="670"/>
         <source>Remove limit user (-l)</source>
-        <translation type="unfinished"></translation>
+        <translation>Лимит пользователей на канале отключен (-l)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="681"/>
         <source>Channel key set to %1 (+k)</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль на канал установлен в &quot;%1&quot; (+k)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="683"/>
         <source>Remove channel key (-k)</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль на канал cнят (-k)</translation>
     </message>
 </context>
 <context>
@@ -896,7 +896,7 @@ p, li { white-space: pre-wrap; }
         <location filename="serverinfowidget.ui" line="109"/>
         <location filename="serverinfowidget.ui" line="125"/>
         <source>Maximum number of channels allowed to join by channel prefix. </source>
-        <translation type="unfinished"></translation>
+        <translation>Максимум каналов, на которых одновременно может присутствовать пользователь(для каждого из префиксов канала).</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="112"/>
@@ -906,7 +906,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="serverinfowidget.ui" line="135"/>
         <source>Maximum nickname length.</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальная длина ника.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="138"/>
@@ -966,7 +966,7 @@ p, li { white-space: pre-wrap; }
         <location filename="serverinfowidget.ui" line="230"/>
         <location filename="serverinfowidget.ui" line="243"/>
         <source>Maximum topic length. </source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальная длина темы канала.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="233"/>
@@ -977,7 +977,7 @@ p, li { white-space: pre-wrap; }
         <location filename="serverinfowidget.ui" line="253"/>
         <location filename="serverinfowidget.ui" line="266"/>
         <source>Maximum kick comment length. </source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальная длина сообщения о кике с канала.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="256"/>
@@ -988,7 +988,7 @@ p, li { white-space: pre-wrap; }
         <location filename="serverinfowidget.ui" line="276"/>
         <location filename="serverinfowidget.ui" line="289"/>
         <source>Maximum channel name length.</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальная длина имени канала.</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="279"/>
@@ -1084,7 +1084,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="serverinfowidget.ui" line="452"/>
         <source>Channel parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры канала</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="463"/>
@@ -1159,12 +1159,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="serverinfowidget.ui" line="609"/>
         <source>Mode</source>
-        <translation type="unfinished">Режим</translation>
+        <translation>Режим</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="614"/>
         <source>Prefix</source>
-        <translation type="unfinished"></translation>
+        <translation>Префикс</translation>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="625"/>
