@@ -38,6 +38,7 @@ namespace Glance
 		ICoreTabWidget *TabWidget_;
 		QGraphicsScene *Scene_;
 		bool Shown_;
+		QSize SSize_;
 	public:
 		GlanceShower (QWidget* = 0);
 		void SetTabWidget (ICoreTabWidget*);
@@ -48,7 +49,7 @@ namespace Glance
 		void keyPressEvent (QKeyEvent*);
 		void mousePressEvent (QMouseEvent *);
 	private slots:
-		void handleClicked (int);
+		void handleClicked (int, bool = false);
 	signals:
 		void finished (bool);
 	};

@@ -86,13 +86,16 @@ namespace XEP0232Handler
 		{
 			QXmppDataForm::Field iconField;
 			iconField.setKey ("icon");
-			QXmppDataForm::Media media (si.IconHeight_, si.IconWidth_);
+			QXmppDataForm::Media media;
+			media.setWidth (si.IconHeight_);
+			media.setHeight (si.IconWidth_);
 			QList<QPair<QString, QString>> uris;
 			if (!si.IconCID_.isEmpty ())
 				uris << qMakePair (si.IconType_, si.IconCID_);
 			uris << qMakePair (si.IconType_, QString (si.IconURL_.toEncoded ()));
 			media.setUris (uris);
 			iconField.setMedia (media);
+			iconField.setValue (si.IconURL_.toEncoded ());
 
 			fields << iconField;
 		}

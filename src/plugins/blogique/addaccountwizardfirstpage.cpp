@@ -69,15 +69,11 @@ namespace Blogique
 
 	bool AddAccountWizardFirstPage::isComplete () const
 	{
-		bool found = false;
-		for (auto acc : Core::Instance ().GetAccounts ())
-			if (acc->GetAccountName () == Ui_.NameEdit_->text ())
-			{
-				found = true;
-				break;
-			}
-
-		return !found;
+		const auto& accs = Core::Instance ().GetAccounts ();
+		const auto& name = Ui_.NameEdit_->text ();
+		return std::find_if (accs.begin (), accs.end (),
+				[&name] (decltype (accs.front ()) acc)
+					{ return acc->GetAccountName () == name; }) == accs.end ();
 	}
 
 	void AddAccountWizardFirstPage::readdWidgets ()

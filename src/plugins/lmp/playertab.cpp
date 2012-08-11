@@ -348,8 +348,17 @@ namespace LMP
 
 			if (XmlSettingsManager::Instance ().property ("EnableNotifications").toBool ())
 			{
+				QPixmap notifyPx = px;
+				int width = notifyPx.width ();
+				if (width > 200)
+				{
+					while (width > 200)
+						width /= 2;
+					notifyPx = notifyPx.scaledToWidth (width);
+				}
+
 				Entity e = Util::MakeNotification ("LMP", text, PInfo_);
-				e.Additional_ ["NotificationPixmap"] = px;
+				e.Additional_ ["NotificationPixmap"] = notifyPx;
 				emit gotEntity (e);
 			}
 		}

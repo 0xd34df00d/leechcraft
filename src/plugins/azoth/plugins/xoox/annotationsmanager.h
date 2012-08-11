@@ -20,9 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ANNOTATIONSMANAGER_H
 #include <QObject>
 #include <QHash>
-#include <QXmppAnnotationsIq.h>
-
-class QXmppAnnotationsManager;
+#include "xmppannotationsiq.h"
 
 namespace LeechCraft
 {
@@ -31,24 +29,25 @@ namespace Azoth
 namespace Xoox
 {
 	class ClientConnection;
+	class XMPPAnnotationsManager;
 
 	class AnnotationsManager : public QObject
 	{
 		Q_OBJECT
 		
 		ClientConnection *ClientConn_;
-		QXmppAnnotationsManager *XMPPAnnManager_;
+		XMPPAnnotationsManager *XMPPAnnManager_;
 		
-		QHash<QString, QXmppAnnotationsIq::NoteItem> JID2Note_;
+		QHash<QString, XMPPAnnotationsIq::NoteItem> JID2Note_;
 	public:
 		AnnotationsManager (ClientConnection*);
 		
-		QXmppAnnotationsIq::NoteItem GetNote (const QString&) const;
-		void SetNote (const QString&, const QXmppAnnotationsIq::NoteItem&);
+		XMPPAnnotationsIq::NoteItem GetNote (const QString&) const;
+		void SetNote (const QString&, const XMPPAnnotationsIq::NoteItem&);
 	public slots:
 		void refetchNotes ();
 	private slots:
-		void handleNotesReceived (const QList<QXmppAnnotationsIq::NoteItem>&);
+		void handleNotesReceived (const QList<XMPPAnnotationsIq::NoteItem>&);
 	};
 }
 }

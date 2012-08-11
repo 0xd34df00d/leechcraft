@@ -120,6 +120,7 @@ namespace Azoth
 	, CurrentHistoryPosition_ (-1)
 	, CurrentNickIndex_ (0)
 	, LastSpacePosition_(-1)
+	, HadHighlight_ (false)
 	, NumUnreadMsgs_ (0)
 	, ScrollbackPos_ (0)
 	, IsMUC_ (false)
@@ -272,6 +273,7 @@ namespace Azoth
 		emit entryMadeCurrent (GetEntry<QObject> ());
 
 		NumUnreadMsgs_ = 0;
+		HadHighlight_ = false;
 
 		ReformatTitle ();
 		Ui_.MsgEdit_->setFocus ();
@@ -682,13 +684,27 @@ namespace Azoth
 			return;
 		}
 
-		if (Core::Instance ().ShouldCountUnread (GetEntry<ICLEntry> (), msg))
+		auto entry = GetEntry<ICLEntry> ();
+		bool shouldReformat = false;
+		if (Core::Instance ().ShouldCountUnread (entry, msg))
 		{
 			++NumUnreadMsgs_;
-			ReformatTitle ();
+			shouldReformat = true;
 		}
 		else
 			GetEntry<ICLEntry> ()->MarkMsgsRead ();
+
+		if (msg->GetMessageType () == IMessage::MTMUCMessage &&
+				!Core::Instance ().GetChatTabsManager ()->IsActiveChat (entry) &&
+				!HadHighlight_)
+		{
+			HadHighlight_ = Core::Instance ().IsHighlightMessage (msg);
+			if (HadHighlight_)
+				shouldReformat = true;
+		}
+
+		if (shouldReformat)
+			ReformatTitle ();
 
 		if (msg->GetMessageType () == IMessage::MTChatMessage)
 		{
@@ -758,27 +774,19 @@ namespace Azoth
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
 			const QString& variant)
 	{
-		const QStringList& vars = GetEntry<ICLEntry> ()->Variants ();
-
-		const QIcon& icon = Core::Instance ().GetIconForState (status.State_);
-
-		if (status.State_ == SOffline)
-			handleVariantsChanged (vars);
-		else
-			for (int i = 0; i < Ui_.VariantBox_->count (); ++i)
-				if (variant == Ui_.VariantBox_->itemText (i))
-				{
-					Ui_.VariantBox_->setItemIcon (i, icon);
-					break;
-				}
-
-		if (!variant.isEmpty () &&
-				vars.size () &&
-				vars.value (0) != variant)
+		auto entry = GetEntry<ICLEntry> ();
+		if (entry->GetEntryType () == ICLEntry::ETMUC)
 			return;
 
-		TabIcon_ = icon;
-		UpdateStateIcon ();
+		const QStringList& vars = entry->Variants ();
+		handleVariantsChanged (vars);
+
+		if (vars.value (0) == variant)
+		{
+			const QIcon& icon = Core::Instance ().GetIconForState (status.State_);
+			TabIcon_ = icon;
+			UpdateStateIcon ();
+		}
 	}
 
 	void ChatTab::handleChatPartStateChanged (const ChatPartState& state, const QString&)
@@ -1639,6 +1647,8 @@ namespace Azoth
 		if (NumUnreadMsgs_)
 			title.prepend (QString ("(%1) ")
 					.arg (NumUnreadMsgs_));
+		if (HadHighlight_)
+			title.prepend ("* ");
 		emit changeTabName (this, title);
 
 		QStringList path ("Azoth");

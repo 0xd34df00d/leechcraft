@@ -95,7 +95,7 @@ namespace Xoox
 		query.setTagName ("query");
 		query.setAttribute ("xmlns", NsJabberSearch);
 
-		iq.setExtensions (query);
+		iq.setExtensions (QXmppElementList () << query);
 
 		FieldRequests_ << iq.id ();
 
@@ -106,7 +106,7 @@ namespace Xoox
 	{
 		QXmppIq iq (QXmppIq::Set);
 		iq.setTo (server);
-		iq.setExtensions (elem);
+		iq.setExtensions (QXmppElementList () << elem);
 
 		SearchRequests_ << iq.id ();
 

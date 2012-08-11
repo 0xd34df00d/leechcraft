@@ -24,6 +24,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/ihistoryplugin.h>
@@ -42,6 +43,7 @@ namespace ChatHistory
 				 , public IPlugin2
 				 , public IActionsExporter
 				 , public IHaveTabs
+				 , public IHaveSettings
 				 , public IHistoryPlugin
 	{
 		Q_OBJECT
@@ -49,7 +51,10 @@ namespace ChatHistory
 				IPlugin2
 				IActionsExporter
 				IHaveTabs
+				IHaveSettings
 				LeechCraft::Azoth::IHistoryPlugin)
+
+		Util::XmlSettingsDialog_ptr XSD_;
 
 		std::shared_ptr<STGuard<Core>> Guard_;
 		std::shared_ptr<QTranslator> Translator_;
@@ -77,6 +82,9 @@ namespace ChatHistory
 		// IHaveTabs
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
+
+		// IHaveSettings
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		// IHistoryPlugin
 		bool IsHistoryEnabledFor (QObject*) const;

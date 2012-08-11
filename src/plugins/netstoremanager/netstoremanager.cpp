@@ -21,6 +21,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include "interfaces/netstoremanager/istorageplugin.h"
+#include "interfaces/netstoremanager/istorageaccount.h"
 #include "managertab.h"
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
@@ -57,6 +58,12 @@ namespace NetStoreManager
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (UpManager_,
+				SIGNAL (fileUploaded (QString, QUrl)),
+				this,
+				SIGNAL (fileUploaded (QString, QUrl)));
+
+		Proxy_ = proxy;
 	}
 
 	void Plugin::SecondInit ()
@@ -97,7 +104,8 @@ namespace NetStoreManager
 	{
 		if (id == ManagerTC_.TabClass_)
 		{
-			ManagerTab *tab = new ManagerTab (ManagerTC_, AccountsManager_, this);
+			ManagerTab *tab = new ManagerTab (ManagerTC_, AccountsManager_,
+					Proxy_, this);
 			emit addNewTab (tr ("Net storage"), tab);
 			emit changeTabIcon (tab, GetIcon ());
 			emit raiseTab (tab);
@@ -106,9 +114,13 @@ namespace NetStoreManager
 					this,
 					SIGNAL (removeTab (QWidget*)));
 			connect (tab,
-					SIGNAL (uploadRequested (IStorageAccount*, QString)),
+					SIGNAL (uploadRequested (IStorageAccount*, QString, QStringList)),
 					UpManager_,
-					SLOT (handleUploadRequest (IStorageAccount*, QString)));
+					SLOT (handleUploadRequest (IStorageAccount*, QString, QStringList)));
+			connect (tab,
+					SIGNAL (gotEntity (LeechCraft::Entity)),
+					this,
+					SIGNAL (gotEntity (LeechCraft::Entity)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO
@@ -139,6 +151,29 @@ namespace NetStoreManager
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
 		return UpManager_->GetRepresentationModel ();
+	}
+
+	QStringList Plugin::GetServiceVariants () const
+	{
+		QStringList result;
+		Q_FOREACH (auto account, AccountsManager_->GetAccounts ())
+		{
+			auto parent = qobject_cast<IStoragePlugin*> (account->GetParentPlugin ());
+			result << QString ("%1: %2")
+					.arg (parent->GetStorageName ())
+					.arg (account->GetAccountName ());
+		}
+		return result;
+	}
+
+	void Plugin::UploadFile (const QString& filename, const QString& service)
+	{
+		const int idx = GetServiceVariants ().indexOf (service);
+		auto account = AccountsManager_->GetAccounts ().value (idx);
+		if (!account)
+			return;
+
+		UpManager_->handleUploadRequest (account, filename);
 	}
 }
 }

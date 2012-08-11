@@ -53,6 +53,8 @@ namespace YandexDisk
 		QString Login_;
 
 		AuthManager *AM_;
+
+		QHash<QStringList, QUrl> ID2URL_;
 	public:
 		Account (Plugin*);
 
@@ -79,6 +81,10 @@ namespace YandexDisk
 
 		void Delete (const QList<QStringList>&);
 		void Prolongate (const QList<QStringList>&);
+		void MoveToTrash (const QList< QStringList >& id);
+		void RestoreFromTrash (const QList< QStringList >& id);
+		void EmptyTrash (const QList< QStringList >& id);
+		void RequestUrl (const QList< QStringList >& id);
 
 		QNetworkRequest MakeRequest (const QUrl& = QUrl ()) const;
 	private:
@@ -91,6 +97,7 @@ namespace YandexDisk
 		void upProgress (quint64, quint64, const QString&);
 		void upError (const QString&, const QString&);
 		void gotURL (const QUrl&, const QString&);
+		void gotFileUrl (const QUrl& url, const QStringList& id);
 
 		void gotListing (const QList<QList<QStandardItem*>>&);
 	};

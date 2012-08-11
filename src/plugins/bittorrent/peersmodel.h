@@ -38,6 +38,8 @@ namespace LeechCraft
 				QStringList Headers_;
 				QList<PeerInfo> Peers_;
 				int CurrentTorrent_;
+
+				QString FlagsPath_;
 			public:
 				enum { SortRole = 45 };
 				PeersModel (QObject *parent = 0);

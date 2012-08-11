@@ -36,6 +36,10 @@ namespace Media
 		qint32 Year_;
 		qint32 TrackNumber_;
 
+		/** Other fields known to be used:
+		 * - URL with a QUrl pointing to either local file (if the scheme
+		 *   is "file:") or a remote file or radio stream otherwise.
+		 */
 		QVariantMap Other_;
 	};
 

@@ -20,10 +20,11 @@
 #define PLUGINS_NETSTOREMANAGER_MANAGERTAB_H
 #include <functional>
 #include <QWidget>
+#include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
 #include "ui_managertab.h"
 
-class QStandardItemModel;
 class QStandardItem;
 class QAction;
 
@@ -34,6 +35,12 @@ namespace NetStoreManager
 	class IStorageAccount;
 	class ISupportFileListings;
 	class AccountsManager;
+	class FilesModel;
+
+	enum Columns
+	{
+		FirstColumnNumber
+	};
 
 	class ManagerTab : public QWidget
 					 , public ITabWidget
@@ -45,14 +52,21 @@ namespace NetStoreManager
 
 		QObject *Parent_;
 		TabClassInfo Info_;
+		ICoreProxy_ptr Proxy_;
 
 		AccountsManager *AM_;
-		QStandardItemModel *Model_;
+		FilesModel *Model_;
 
-		QAction *ProlongateFile_;
+		QAction *CopyURL_;
 		QAction *DeleteFile_;
+		QAction *MoveToTrash_;
+		QAction *UntrashFile_;
+		QAction *EmptyTrash_;
+		QAction *CreateDir_;
+		QAction *UploadInCurrentDir_;
+		QHash<IStorageAccount*, QHash<QString, bool>> Account2ItemExpandState_;
 	public:
-		ManagerTab (const TabClassInfo&, AccountsManager*, QObject*);
+		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
@@ -62,18 +76,37 @@ namespace NetStoreManager
 		IStorageAccount* GetCurrentAccount () const;
 		void CallOnSelection (std::function<void (ISupportFileListings*, const QList<QStringList>&)>);
 		void ClearFilesModel ();
+		void SaveModelState (const QModelIndex& parent = QModelIndex ());
+		void RestoreModelState ();
+		void ExpandModelItems (const QModelIndex& parent = QModelIndex ());
+		QList<QStringList> GetTrashedFiles () const;
 	private slots:
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
+		void handleGotFileUrl (const QUrl& url, const QStringList& id);
 		void flCopyURL ();
-		void flProlongate ();
 		void flDelete ();
+		void flMoveToTrash ();
+		void flRestoreFromTrash ();
+		void flEmptyTrash ();
+		void flCreateDir ();
+		void flUploadInCurrentDir ();
 		void on_AccountsBox__activated (int);
 		void on_Update__released ();
 		void on_Upload__released ();
+		void handleContextMenuRequested (const QPoint& point);
+		void handleCopiedItem (const QStringList& itemId,
+				const QStringList& newParentId);
+		void handleMovedItem (const QStringList& itemId,
+				const QStringList& newParentId);
+		void handleRestoredFromTrash (const QStringList& id);
+		void handleTrashedItem (const QStringList& id);
 	signals:
 		void removeTab (QWidget*);
 
-		void uploadRequested (IStorageAccount*, const QString&);
+		void uploadRequested (IStorageAccount *isa, const QString& file,
+				const QStringList& parentId = QStringList ());
+
+		void gotEntity (LeechCraft::Entity entity);
 	};
 }
 }

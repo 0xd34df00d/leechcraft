@@ -45,9 +45,7 @@ class QXmppDiscoveryIq;
 class QXmppBookmarkManager;
 class QXmppArchiveManager;
 class QXmppEntityTimeManager;
-class QXmppDeliveryReceiptsManager;
-class QXmppCaptchaManager;
-class QXmppBobManager;
+class QXmppMessageReceiptManager;
 #ifdef ENABLE_MEDIACALLS
 class QXmppCallManager;
 class QXmppCall;
@@ -76,6 +74,8 @@ namespace Xoox
 	class AdHocCommandManager;
 	class LastActivityManager;
 	class JabberSearchManager;
+	class XMPPBobManager;
+	class XMPPCaptchaManager;
 	class UserAvatarManager;
 	class MsgArchivingManager;
 	class SDManager;
@@ -95,9 +95,9 @@ namespace Xoox
 		QXmppBookmarkManager *BMManager_;
 		QXmppEntityTimeManager *EntityTimeManager_;
 		QXmppArchiveManager *ArchiveManager_;
-		QXmppDeliveryReceiptsManager *DeliveryReceiptsManager_;
-		QXmppCaptchaManager *CaptchaManager_;
-		QXmppBobManager *BobManager_;
+		QXmppMessageReceiptManager *DeliveryReceiptsManager_;
+		XMPPCaptchaManager *CaptchaManager_;
+		XMPPBobManager *BobManager_;
 #ifdef ENABLE_MEDIACALLS
 		QXmppCallManager *CallManager_;
 #endif
@@ -209,7 +209,7 @@ namespace Xoox
 		AnnotationsManager* GetAnnotationsManager () const;
 		PubSubManager* GetPubSubManager () const;
 		PrivacyListsManager* GetPrivacyListsManager () const;
-		QXmppBobManager* GetBobManager () const;
+		XMPPBobManager* GetBobManager () const;
 #ifdef ENABLE_MEDIACALLS
 		QXmppCallManager* GetCallManager () const;
 #endif
@@ -273,7 +273,6 @@ namespace Xoox
 	private slots:
 		void handleConnected ();
 		void handleDisconnected ();
-		void handleReconnecting (int = -1);
 		void handleError (QXmppClient::Error);
 		void handleIqReceived (const QXmppIq&);
 		void handleRosterReceived ();
@@ -285,7 +284,7 @@ namespace Xoox
 		void handleMessageReceived (QXmppMessage);
 		void handlePEPEvent (const QString&, PEPEventBase*);
 		void handlePEPAvatarUpdated (const QString&, const QImage&);
-		void handleMessageDelivered (const QString&);
+		void handleMessageDelivered (const QString&, const QString&);
 		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
 		void handleRoomInvitation (const QString&, const QString&, const QString&);
 		void handleGotRIEXItems (QString, QList<RIEXManager::Item>, bool);

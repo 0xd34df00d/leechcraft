@@ -1846,8 +1846,8 @@ namespace Azoth
 			return;
 		}
 
-		const bool show = XmlSettingsManager::Instance ()
-				.Property ("ShowAccount_" + account->GetAccountID (), true).toBool ();
+		const auto& showKey = QString::fromUtf8 ("ShowAccount_" + account->GetAccountID ());
+		const bool show = XmlSettingsManager::Instance ().Property (showKey, true).toBool ();
 		account->SetShownInRoster (show);
 
 		emit accountAdded (account);

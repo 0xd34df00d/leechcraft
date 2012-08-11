@@ -115,7 +115,7 @@ namespace Xoox
 	void RoomHandler::SetPresence (QXmppPresence pres)
 	{
 		if (pres.type () == QXmppPresence::Unavailable)
-			Leave (pres.status ().statusText (), false);
+			Leave (pres.statusText (), false);
 		else if (!Room_->isJoined ())
 			Join ();
 	}
@@ -125,8 +125,8 @@ namespace Xoox
 	void RoomHandler::MakeLeaveMessage (const QXmppPresence& pres, const QString& nick)
 	{
 		QString msg = tr ("%1 has left the room").arg (nick);
-		if (pres.status ().statusText ().size ())
-			msg += ": " + pres.status ().statusText ();
+		if (pres.statusText ().size ())
+			msg += ": " + pres.statusText ();
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::DIn,
@@ -171,13 +171,11 @@ namespace Xoox
 		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
 
-		const QXmppPresence::Status& status = pres.status ();
-		const QString& state = proxy->
-				StateToString (static_cast<State> (status.type ()));
+		const QString& state = proxy->StateToString (static_cast<State> (pres.availableStatusType () + 1));
 		QString msg = tr ("%1 changed status to %2 (%3)")
 				.arg (nick)
 				.arg (state)
-				.arg (status.statusText ());
+				.arg (pres.statusText ());
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::DIn,
@@ -187,7 +185,7 @@ namespace Xoox
 				GetParticipantEntry (nick));
 		message->setProperty ("Azoth/Nick", nick);
 		message->setProperty ("Azoth/TargetState", state);
-		message->setProperty ("Azoth/StatusText", status.statusText ());
+		message->setProperty ("Azoth/StatusText", pres.statusText ());
 		CLEntry_->HandleMessage (message);
 	}
 
@@ -726,7 +724,7 @@ namespace Xoox
 
 		QXmppMessage msg ("", Room_->jid ());
 		msg.setType (QXmppMessage::Normal);
-		msg.setExtensions (XooxUtil::Form2XmppElem (form));
+		msg.setExtensions (QXmppElementList () << XooxUtil::Form2XmppElem (form));
 
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
 	}

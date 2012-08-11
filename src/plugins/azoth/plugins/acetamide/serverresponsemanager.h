@@ -23,6 +23,7 @@
 #include <string>
 #include <QObject>
 #include <QHash>
+#include <QMap>
 #include "localtypes.h"
 
 namespace LeechCraft
@@ -40,8 +41,9 @@ namespace Acetamide
 
 		IrcServerHandler *ISH_;
 		QHash<QString, boost::function<void (const IrcMessageOptions&)>> Command2Action_;
+		QMap<QString, IrcServer> MatchString2Server_;
 	public:
-				ServerResponseManager (IrcServerHandler*);
+		ServerResponseManager (IrcServerHandler*);
         void DoAction (const IrcMessageOptions& opts);
 	private:
 		void Init ();
@@ -123,12 +125,17 @@ namespace Acetamide
 		void GotExceptListEnd (const IrcMessageOptions& opts);
 		void GotInviteList (const IrcMessageOptions& opts);
 		void GotInviteListEnd (const IrcMessageOptions& opts);
+		void GotServerInfo (const IrcMessageOptions& opts);
 
 		//not from rfc
 		void GotWhoIsAccount (const IrcMessageOptions& opts);
 		void GotWhoIsSecure (const IrcMessageOptions& opts);
 		void GotChannelUrl (const IrcMessageOptions& opts);
 		void GotTopicWhoTime (const IrcMessageOptions& opts);
+		void GotCMD307Info (const IrcMessageOptions& opts);
+		void GotCMD310Info (const IrcMessageOptions& opts);
+		void GotCMD320Info (const IrcMessageOptions& opts);
+		void GotCMD378Info (const IrcMessageOptions& opts);
 	};
 };
 };

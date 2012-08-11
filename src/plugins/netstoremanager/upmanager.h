@@ -51,7 +51,8 @@ namespace NetStoreManager
 		void RemovePending (const QString&);
 		IStoragePlugin* GetSenderPlugin ();
 	public slots:
-		void handleUploadRequest (IStorageAccount*, const QString&);
+		void handleUploadRequest (IStorageAccount *isa, const QString& file,
+				const QStringList& id = QStringList ());
 	private slots:
 		void handleGotURL (const QUrl&, const QString&);
 		void handleError (const QString&, const QString&);
@@ -59,6 +60,7 @@ namespace NetStoreManager
 		void handleUpProgress (quint64, quint64, const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+		void fileUploaded (const QString&, const QUrl&);
 	};
 }
 }

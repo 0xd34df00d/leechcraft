@@ -194,7 +194,7 @@ namespace Xoox
 		{
 			QXmppIq iq (QXmppIq::Set);
 			iq.setTo (to->GetJID () + '/' + suppRes);
-			iq.setExtensions (x);
+			iq.setExtensions (QXmppElementList () << x);
 			client ()->sendPacket (iq);
 		}
 		else
@@ -202,7 +202,7 @@ namespace Xoox
 			QXmppMessage msg;
 			msg.setTo (to->GetHumanReadableID ());
 			msg.setBody (message);
-			msg.setExtensions (x);
+			msg.setExtensions (QXmppElementList () << x);
 			client ()->sendPacket (msg);
 		}
 	}

@@ -666,6 +666,8 @@ INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcra
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
 INSTALL (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
 
+INSTALL (DIRECTORY share/ DESTINATION share)
+
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)
 IF (UNIX)

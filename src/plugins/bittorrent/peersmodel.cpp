@@ -39,30 +39,57 @@ namespace LeechCraft
 					<< tr ("Uploaded")
 					<< tr ("Client")
 					<< tr ("Available pieces");
+
+				QStringList flagCands;
+				flagCands << "/usr/local/share/leechcraft/global_icons/flags"
+						<< "/usr/share/leechcraft/global_icons/flags";
+				Q_FOREACH (const auto& cand, flagCands)
+					if (QFile::exists (cand))
+					{
+						FlagsPath_ = cand + '/';
+						break;
+					}
 			}
-			
+
 			PeersModel::~PeersModel ()
 			{
 			}
-			
+
 			int PeersModel::columnCount (const QModelIndex&) const
 			{
 				return Headers_.size ();
 			}
-			
+
 			QVariant PeersModel::data (const QModelIndex& index, int role) const
 			{
-				if (!index.isValid () ||
-						(role != Qt::DisplayRole && role != SortRole))
+				if (!index.isValid ())
 					return QVariant ();
-			
-				int i = index.row ();
-				PeerInfo pi = Peers_.at (i);
-			
+
+				const int i = index.row ();
+				const auto& pi = Peers_.at (i);
+
+				if (index.column () == 0)
+				{
+					const auto& code = Peers_.at (i).CountryCode_;
+					switch (role)
+					{
+					case Qt::DecorationRole:
+						return QIcon (FlagsPath_ + code + ".png");
+					case Qt::DisplayRole:
+					case SortRole:
+						return pi.IP_;
+					case Qt::ToolTipRole:
+						return code.isEmpty () || code == "--" || code == "00" ?
+								QString () :
+								code;
+					}
+				}
+
+				if (role != Qt::DisplayRole && role != SortRole)
+					return QVariant ();
+
 				switch (index.column ())
 				{
-					case 0:
-						return pi.IP_;
 					case 1:
 						if (role == Qt::DisplayRole)
 							return Util::MakePrettySize (pi.PI_->payload_down_speed) + tr ("/s");
@@ -101,38 +128,38 @@ namespace LeechCraft
 						return "Unhandled column";
 				}
 			}
-			
+
 			Qt::ItemFlags PeersModel::flags (const QModelIndex&) const
 			{
 				return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 			}
-			
+
 			bool PeersModel::hasChildren (const QModelIndex& index) const
 			{
 				return !index.isValid ();
 			}
-			
+
 			QModelIndex PeersModel::index (int row, int column, const QModelIndex&) const
 			{
 				if (!hasIndex (row, column))
 					return QModelIndex ();
-			
+
 				return createIndex (row, column);
-			} 
-			
+			}
+
 			QVariant PeersModel::headerData (int column, Qt::Orientation orient, int role) const
 			{
 				if (role != Qt::DisplayRole || orient != Qt::Horizontal)
 					return QVariant ();
-			
+
 				return Headers_.at (column);
 			}
-			
+
 			QModelIndex PeersModel::parent (const QModelIndex&) const
 			{
 				return QModelIndex ();
 			}
-			
+
 			int PeersModel::rowCount (const QModelIndex&) const
 			{
 				return Peers_.size ();
@@ -144,17 +171,17 @@ namespace LeechCraft
 					throw std::runtime_error ("Index too large");
 				return Peers_.at (index.row ());
 			}
-			
+
 			void PeersModel::Clear ()
 			{
 				if (!Peers_.size ())
 					return;
-			
+
 				beginRemoveRows (QModelIndex (), 0, Peers_.size () - 1);
 				Peers_.clear ();
 				endRemoveRows ();
 			}
-			
+
 			void PeersModel::Update (const QList<PeerInfo>& peers, int torrent)
 			{
 				if (torrent != CurrentTorrent_)
@@ -162,7 +189,7 @@ namespace LeechCraft
 					CurrentTorrent_ = torrent;
 					Peers_.clear ();
 					reset ();
-			
+
 					Update (peers, torrent);
 				}
 				else
@@ -170,7 +197,7 @@ namespace LeechCraft
 					QHash<QString, int> IP2position;
 					for (int i = 0; i < Peers_.size (); ++i)
 						IP2position [Peers_.at (i).IP_] = i;
-			
+
 					int psize = peers.size ();
 					QList<PeerInfo> peers2insert;
 					for (int i = 0; i < psize; ++i)
@@ -188,7 +215,7 @@ namespace LeechCraft
 						else
 							peers2insert << pi;
 					}
-			
+
 					QList<int> values = IP2position.values ();
 					std::sort (values.begin (), values.end (),
 							std::greater<int> ());
@@ -210,7 +237,7 @@ namespace LeechCraft
 					}
 				}
 			}
-			
+
 		};
 	};
 };

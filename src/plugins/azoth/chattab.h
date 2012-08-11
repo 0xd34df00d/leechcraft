@@ -69,6 +69,7 @@ namespace Azoth
 		int LastSpacePosition_;
 		QString NickFirstPart_;
 
+		bool HadHighlight_;
 		int NumUnreadMsgs_;
 		int ScrollbackPos_;
 

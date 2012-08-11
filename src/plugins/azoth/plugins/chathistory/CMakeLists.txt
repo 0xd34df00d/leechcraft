@@ -16,6 +16,7 @@ SET (CHATHISTORY_SRCS
 	chathistorywidget.cpp
 	storagethread.cpp
 	historymessage.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (CHATHISTORY_HEADERS
 	chathistory.h
@@ -24,6 +25,7 @@ SET (CHATHISTORY_HEADERS
 	chathistorywidget.h
 	storagethread.h
 	historymessage.h
+	xmlsettingsmanager.h
 	)
 SET (CHATHISTORY_FORMS
 	chathistorywidget.ui
@@ -55,3 +57,4 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth_chathistory
 	)
 INSTALL (TARGETS leechcraft_azoth_chathistory DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${CHATHISTORY_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES azothchathistorysettings.xml DESTINATION ${LC_SETTINGS_DEST})

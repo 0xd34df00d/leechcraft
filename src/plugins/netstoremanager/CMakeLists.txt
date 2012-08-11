@@ -18,6 +18,8 @@ SET (SRCS
 	accountslistwidget.cpp
 	addaccountdialog.cpp
 	upmanager.cpp
+	filesmodel.cpp
+	filesview.cpp
 	)
 SET (HEADERS
 	netstoremanager.h
@@ -27,6 +29,8 @@ SET (HEADERS
 	accountslistwidget.h
 	addaccountdialog.h
 	upmanager.h
+	filesmodel.h
+	filesview.h
 	)
 SET (FORMS
 	managertab.ui
@@ -62,12 +66,7 @@ INSTALL (TARGETS leechcraft_netstoremanager DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES netstoremanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
-OPTION (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE "Build support for Google Drive" OFF)
-OPTION (ENABLE_NETSTOREMANAGER_YANDEXDISK "Build support for Yandex.Disk" ON)
-
-IF (ENABLE_NETSTOREMANAGER_YANDEXDISK)
-	ADD_SUBDIRECTORY (plugins/yandexdisk)
-ENDIF (ENABLE_NETSTOREMANAGER_YANDEXDISK)
+OPTION (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE "Build support for Google Drive" ON)
 
 IF (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE)
 	ADD_SUBDIRECTORY (plugins/googledrive)
