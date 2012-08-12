@@ -471,6 +471,13 @@ namespace Azoth
 			AppendMessage (msg);
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
+		if (!e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null entry";
+			return;
+		}
+
 		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
 		{
 			IMessage *msg = qobject_cast<IMessage*> (msgObj);
