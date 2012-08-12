@@ -602,13 +602,27 @@ namespace Xoox
 
 	void GlooxAccount::SetBookmarkedMUCs (const QVariantList& datas)
 	{
+		QSet<QString> jids;
+
 		QList<QXmppBookmarkConference> mucs;
 		Q_FOREACH (const QVariant& var, datas)
 		{
 			const QVariantMap& map = var.toMap ();
 			QXmppBookmarkConference conf;
 			conf.setAutoJoin (map.value ("Autojoin").toBool ());
-			conf.setJid (map.value ("Room").toString () + '@' + map.value ("Server").toString ());
+
+			const auto& room = map.value ("Room").toString ();
+			const auto& server = map.value ("Server").toString ();
+			if (room.isEmpty () || server.isEmpty ())
+				continue;
+
+			const auto& jid = room + '@' + server;
+			if (jids.contains (jid))
+				continue;
+
+			jids << jid;
+
+			conf.setJid (jid);
 			conf.setNickName (map.value ("Nick").toString ());
 			conf.setName (map.value ("StoredName").toString ());
 			mucs << conf;
