@@ -1053,10 +1053,16 @@ namespace Azoth
 		ID2Entry_ [id] = clEntry->GetObject ();
 
 		const QStringList& groups = GetDisplayGroups (clEntry);
-		QList<QStandardItem*> catItems =
-				GetCategoriesItems (groups, accItem);
+		QList<QStandardItem*> catItems = GetCategoriesItems (groups, accItem);
 		Q_FOREACH (QStandardItem *catItem, catItems)
+		{
 			AddEntryTo (clEntry, catItem);
+
+			bool isMucCat = catItem->data (CLRIsMUCCategory).toBool ();
+			if (!isMucCat)
+				isMucCat = clEntry->GetEntryType () == ICLEntry::ETPrivateChat;
+			catItem->setData (isMucCat, CLRIsMUCCategory);
+		}
 
 		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
 
