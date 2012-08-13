@@ -35,11 +35,6 @@ namespace GoogleDrive
 
 	typedef std::shared_ptr<Account> Account_ptr;
 
-	enum FileItemRoles
-	{
-		ItemIsFolderRole = Qt::UserRole + 1
-	};
-
 	class Account : public QObject
 					, public IStorageAccount
 					, public ISupportFileListings
@@ -66,17 +61,20 @@ namespace GoogleDrive
 		QObject* GetParentPlugin () const;
 		AccountFeatures GetAccountFeatures () const;
 		QString GetAccountName () const;
-		void Upload (const QString& filepath);
+		void Upload (const QString& filepath,
+				const QStringList& parentId = QStringList ());
 
 		void Delete (const QList<QStringList>& id);
 		QStringList GetListingHeaders () const;
 		ListingOps GetListingOps () const;
-		void Prolongate (const QList<QStringList>& ids);
 		void MoveToTrash (const QList<QStringList>& ids);
 		void RestoreFromTrash (const QList<QStringList>& ids);
 		void EmptyTrash (const QList<QStringList>& ids);
 		void RefreshListing ();
 		void RequestUrl (const QList<QStringList>& id);
+		void CreateDirectory (const QString& name, const QStringList& parentId);
+		void Copy (const QStringList& id, const QStringList& newParentId);
+		void Move (const QStringList& id, const QStringList& newParentId);
 
 		QByteArray Serialize ();
 		static Account_ptr Deserialize (const QByteArray& data, QObject *parentPlugin);

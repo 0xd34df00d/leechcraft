@@ -47,8 +47,10 @@ namespace GoogleDrive
 		QString FilePath_;
 		QNetworkAccessManager *NAM_;
 		UploadType UploadType_;
+		QStringList ParentId_;
 	public:
-		UploadManager (const QString& path, UploadType ut, Account *account);
+		UploadManager (const QString& path, UploadType ut,
+				const QStringList& parentId, Account *account);
 
 	private:
 		void InitiateUploadSession ();

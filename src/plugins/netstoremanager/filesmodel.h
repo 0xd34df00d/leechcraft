@@ -16,37 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "vcarddialog.h"
-#include <QPushButton>
-#include <QFileDialog>
-#include <QBuffer>
-#include "entrybase.h"
-#include "ircaccount.h"
+#pragma once
+
+#include <QStandardItemModel>
+
+class QAction;
+class QTreeView;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace NetStoreManager
 {
-namespace Acetamide
-{
-	VCardDialog::VCardDialog (EntryBase *entry, QWidget *parent)
-	: QDialog (parent)
+	class FilesModel : public QStandardItemModel
 	{
-		Ui_.setupUi (this);
-	}
+		Q_OBJECT
 
-	void VCardDialog::UpdateInfo (const WhoIsMessage& msg)
-	{
-		setWindowTitle (tr ("VCard for %1").arg (msg.Nick_));
+	public:
+		FilesModel (QObject *parent = 0);
 
-		Ui_.EditNick_->setText (msg.Nick_);
-		Ui_.EditUserName_->setText (msg.UserName_);
-		Ui_.EditHostName_->setText (msg.Host_);
-		Ui_.EditRealName_->setText (msg.RealName_);
-		Ui_.ServerName_->setText (msg.ServerName_);
-		Ui_.ServerDislocation_->setText (msg.ServerCountry_);
-		Ui_.EMailAddress_->setText (msg.Mail_);
-	}
+		Qt::DropActions supportedDropActions () const;
+		QStringList mimeTypes () const;
+		QMimeData* mimeData (const QModelIndexList& indexes) const;
+	};
 }
 }
-}
+

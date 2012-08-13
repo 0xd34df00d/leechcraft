@@ -80,15 +80,28 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::Upload (const QString& filePath)
+	void DriveManager::Upload (const QString& filePath, const QStringList& parentId)
 	{
-		ApiCallQueue_ << [this, filePath] (const QString& key) { RequestUpload (filePath, key); };
+		QString parent = parentId.value (0);
+		ApiCallQueue_ << [this, filePath, parent] (const QString& key) { RequestUpload (filePath, parent, key); };
 		RequestAccessToken ();
 	}
 
 	void DriveManager::CreateDirectory (const QString& name, const QString& parentId)
 	{
 		ApiCallQueue_ << [this, name, parentId] (const QString& key) { RequestCreateDirectory (name, parentId, key); };
+		RequestAccessToken ();
+	}
+
+	void DriveManager::Copy (const QString& id, const QString& parentId)
+	{
+		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestCopyItem (id, parentId, key); };
+		RequestAccessToken ();
+	}
+
+	void DriveManager::Move (const QString& id, const QString& parentId)
+	{
+		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestMoveItem (id, parentId, key); };
 		RequestAccessToken ();
 	}
 
@@ -208,7 +221,8 @@ namespace GoogleDrive
 				SLOT (handleAuthTokenRequestFinished ()));
 	}
 
-	void DriveManager::RequestUpload (const QString& filePath, const QString& key)
+	void DriveManager::RequestUpload (const QString& filePath,
+			const QString& parent, const QString& key)
 	{
 		emit uploadStatusChanged (tr ("Initializing..."), filePath);
 
@@ -225,6 +239,14 @@ namespace GoogleDrive
 				QString::number (QFileInfo (filePath).size ()).toUtf8 ());
 		QVariantMap map;
 		map ["title"] = QFileInfo (filePath).fileName ();
+		if (!parent.isEmpty ())
+		{
+			QVariantList parents;
+			QVariantMap parentMap;
+			parentMap ["id"] = parent;
+			parents << parentMap;
+			map ["parents"] = parents;
+		}
 
 		const auto& data = QJson::Serializer ().serialize (map);
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
@@ -245,8 +267,8 @@ namespace GoogleDrive
 	{
 		QString str = QString ("https://www.googleapis.com/drive/v2/files?access_token=%1")
 				.arg (key);
-		QNetworkRequest request (str);
 
+		QNetworkRequest request (str);
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
 		QVariantMap data;
 		data ["title"] = name;
@@ -268,12 +290,68 @@ namespace GoogleDrive
 				SLOT (handleCreateDirectory ()));
 	}
 
+	void DriveManager::RequestCopyItem (const QString& id,
+			const QString& parentId, const QString& key)
+	{
+		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1/copy?access_token=%2")
+				.arg (id)
+				.arg (key);
+
+		QNetworkRequest request (str);
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
+		QVariantMap data;
+		if (!parentId.isEmpty ())
+		{
+			QVariantList parents;
+			QVariantMap parent;
+			parent ["id"] = parentId;
+			parents << parent;
+			data ["parents"] = parents;
+		}
+
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				post (request, QJson::Serializer ().serialize (data));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleCopyItem ()));
+	}
+
+	void DriveManager::RequestMoveItem (const QString& id,
+			const QString& parentId, const QString& key)
+	{
+		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1?access_token=%2")
+				.arg (id)
+				.arg (key);
+
+		QNetworkRequest request (str);
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
+		QVariantMap data;
+		if (!parentId.isEmpty ())
+		{
+			QVariantList parents;
+			QVariantMap parent;
+			parent ["id"] = parentId;
+			parents << parent;
+			data ["parents"] = parents;
+		}
+
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				put (request, QJson::Serializer ().serialize (data));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleMoveItem ()));
+	}
+
 	void DriveManager::ParseError (const QVariantMap& map)
 	{
 		const auto& errorMap = map ["error"].toMap ();
 		const QString& code = errorMap ["code"].toString ();
-		const QString& msg = errorMap ["message"].toString ();
+		QString msg = errorMap ["message"].toString ();
 
+		if (code == "500")
+			msg = tr ("Google Drive API v.2 doesn't support directory copying.");
 		Core::Instance ().SendEntity (Util::MakeNotification ("NetStoreManager",
 				msg,
 				PWarning_));
@@ -675,6 +753,62 @@ namespace GoogleDrive
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "directory created successfully";
+			RefreshListing ();
+			return;
+		}
+
+		ParseError (res.toMap ());
+	}
+
+	void DriveManager::handleCopyItem ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		bool ok = false;
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+
+		if (!res.toMap ().contains ("error"))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "entry copied successfully";
+			RefreshListing ();
+			return;
+		}
+
+		ParseError (res.toMap ());
+	}
+
+	void DriveManager::handleMoveItem ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		bool ok = false;
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+
+		if (!res.toMap ().contains ("error"))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "entry moved successfully";
 			RefreshListing ();
 			return;
 		}
