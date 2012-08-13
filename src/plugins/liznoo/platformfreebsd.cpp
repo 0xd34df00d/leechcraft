@@ -21,7 +21,8 @@
 #include <sys/ioctl.h>
 #include <dev/acpica/acpiio.h>
 #include <fcntl.h>
-#include <QDebug>
+#include <errno.h>
+#include <QMessageBox>
 
 namespace LeechCraft
 {
@@ -47,6 +48,15 @@ namespace Liznoo
 	void PlatformFreeBSD::ChangeState (PowerState state)
 	{
 		int fd = open("/dev/acpi", O_WRONLY);
+		if (fd < 0 && errno == EACCES)
+		{
+			QMessageBox::information(NULL, tr("LeechCraft Liznoo"),
+				tr("Looks like you don\'t have permission to write to /dev/acpi. "
+				"If you're in \'wheel\' group, add \'perm acpi 0664\' to "
+				"/etc/devfs.conf and run \'/etc/rc.d/devfs restart\' to apply "
+				"needed permissions to /dev/acpi."));
+			return;
+		}
 		int sleep_state = -1;
 		switch (state)
 		{
