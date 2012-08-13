@@ -22,6 +22,8 @@
 #include "interfaces/ihavetabs.h"
 #include "ui_settingstab.h"
 
+class IHaveSettings;
+
 namespace LeechCraft
 {
 	class SettingsTab : public QWidget
@@ -36,7 +38,7 @@ namespace LeechCraft
 		QAction *ActionApply_;
 		QAction *ActionCancel_;
 
-		QObject *CurrentIHS_;
+		QHash<QListWidgetItem*, QPair<IHaveSettings*, int>> Item2Page_;
 	public:
 		SettingsTab (QWidget* = 0);
 
@@ -53,7 +55,7 @@ namespace LeechCraft
 		void handleBackRequested ();
 		void handleApply ();
 		void handleCancel ();
-		void on_Cats__currentItemChanged (QTreeWidgetItem*);
+		void on_Cats__currentItemChanged (QListWidgetItem*);
 	signals:
 		void remove (QWidget*);
 	};
