@@ -48,6 +48,8 @@ namespace LeechCraft
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private:
+		void FillPages (QObject*, bool);
 	public slots:
 		void showSettingsFor (QObject*);
 	private slots:

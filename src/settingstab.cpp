@@ -241,45 +241,29 @@ namespace LeechCraft
 		return Toolbar_;
 	}
 
-	void SettingsTab::showSettingsFor (QObject *obj)
+	void SettingsTab::FillPages (QObject *obj, bool sub)
 	{
-		Item2Page_.clear ();
-
 		IInfo *ii = qobject_cast<IInfo*> (obj);
-		Ui_.SectionName_->setText (tr ("Settings for %1")
-				.arg (ii->GetName ()));
-
 		IHaveSettings *ihs = qobject_cast<IHaveSettings*> (obj);
 		auto sd = ihs->GetSettingsDialog ();
-		Ui_.DialogContents_->layout ()->addWidget (sd.get ());
-		sd->show ();
 
-		auto fillPages = [this] (QObject *obj, bool sub)
+		const QStringList& pages = sd->GetPages ();
+		int pgId = 0;
+		Q_FOREACH (const QString& page, pages)
 		{
-			IInfo *ii = qobject_cast<IInfo*> (obj);
-			IHaveSettings *ihs = qobject_cast<IHaveSettings*> (obj);
-			auto sd = ihs->GetSettingsDialog ();
+			QString itemName;
+			if (sub)
+				itemName = pages.size () == 1 && ii->GetName ().contains (page) ?
+						ii->GetName () :
+						(ii->GetName () + ": " + page);
+			else
+				itemName = page;
+			auto item = new QListWidgetItem (ii->GetIcon (), itemName);
+			item->setTextAlignment (Qt::AlignCenter);
+			Ui_.Cats_->addItem (item);
 
-			const QStringList& pages = sd->GetPages ();
-			int pgId = 0;
-			Q_FOREACH (const QString& page, pages)
-			{
-				QString itemName;
-				if (sub)
-					itemName = pages.size () == 1 && ii->GetName ().contains (page) ?
-							ii->GetName () :
-							(ii->GetName () + ": " + page);
-				else
-					itemName = page;
-				auto item = new QListWidgetItem (ii->GetIcon (), itemName);
-				item->setTextAlignment (Qt::AlignCenter);
-				Ui_.Cats_->addItem (item);
-
-				Item2Page_ [item] = qMakePair (ihs, pgId++);
-			}
-		};
-
-		fillPages (obj, false);
+			Item2Page_ [item] = qMakePair (ihs, pgId++);
+		}
 
 		if (auto ihp = qobject_cast<IPluginReady*> (obj))
 		{
@@ -293,9 +277,25 @@ namespace LeechCraft
 				if (!ip2 || !expected.contains (ip2->GetPluginClasses ()))
 					continue;
 
-				fillPages (settableObj, true);
+				FillPages (settableObj, true);
 			}
 		}
+	}
+
+	void SettingsTab::showSettingsFor (QObject *obj)
+	{
+		Item2Page_.clear ();
+
+		IInfo *ii = qobject_cast<IInfo*> (obj);
+		Ui_.SectionName_->setText (tr ("Settings for %1")
+				.arg (ii->GetName ()));
+
+		IHaveSettings *ihs = qobject_cast<IHaveSettings*> (obj);
+		auto sd = ihs->GetSettingsDialog ();
+		Ui_.DialogContents_->layout ()->addWidget (sd.get ());
+		sd->show ();
+
+		FillPages (obj, false);
 
 		Ui_.StackedWidget_->setCurrentIndex (1);
 		Toolbar_->addAction (ActionBack_);
