@@ -13,6 +13,9 @@
 			<item type="checkbox" property="BindLastID" default="true">
 				<label value="Bind Ctrl+L hotkey to insert last post ID" />
 			</item>
+			<item type="checkbox" property="AlwaysReplace" default="true">
+				<label value="Always replace previous contents on action buttons" />
+			</item>
 			<label value="User actions" />
 			<groupbox>
 				<label value="User Actions" />

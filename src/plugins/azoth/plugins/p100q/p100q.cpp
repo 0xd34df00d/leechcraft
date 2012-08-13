@@ -154,17 +154,34 @@ namespace p100q
 		const bool showBlockButton = getProp ("BlockButton");
 		const bool showCommentsButton = getProp ("CommentsButton");
 
-		QString postRX = " <a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> ";
-		QString postAuthorRX = " <a href=\"azoth://msgeditreplace/@\\1+\" title=\"" +
+		const bool alwaysReplace = getProp ("AlwaysReplace");
+
+		QString postRX = alwaysReplace ?
+				" <a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> " :
+				" <a href=\"azoth://msgeditinsert/%23\\1%20\">#\\1</a> ";
+
+		QString postAuthorRX = (alwaysReplace ?
+				" <a href=\"azoth://msgeditreplace/@\\1+\" title=\"" :
+				" <a href=\"azoth://msgeditinsert/@\\1%20/%23/@\\1+\" title=\"") +
 			tr ("View user's posts") + "\">@\\1</a> ";
-		QString userRX = " <a href=\"azoth://msgeditreplace/@\\1+\" title=\"" +
+
+		QString userRX = (alwaysReplace ?
+				" <a href=\"azoth://msgeditreplace/@\\1+\" title=\"" :
+				" <a href=\"azoth://msgeditinsert/@\\1%20/%23/@\\1+\" title=\"")+
 			tr ("View user's posts") + "\">@\\1</a> ";
-		QString commentRX = " <a href=\"azoth://msgeditreplace/%23\\1/\\2%20\" title=\"" +
+
+		QString commentRX = (alwaysReplace ?
+				" <a href=\"azoth://msgeditreplace/%23\\1/\\2%20\" title=\"" :
+				" <a href=\"azoth://msgeditinsert/%23\\1/\\2%20\" title=\"")+
 			tr ("Reply") + "\">#\\1/\\2</a> ";
-		QString postByUserRX = " <a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" +
+
+		QString postByUserRX = (alwaysReplace ?
+				" <a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" :
+				" <a href=\"azoth://msgeditinsert/%23\\1%20/%23/%23\\1+\" title=\"") +
 			tr ("View post") + "\">#\\1</a> ";
-		QString imgRX =
-			"<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>";
+
+		QString imgRX = "<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>";
+
 		if (showSubscribeButton || showCommentsButton || showRecommendButton || showAddToBookmarkButton)
 		{
 			postRX += "(";
