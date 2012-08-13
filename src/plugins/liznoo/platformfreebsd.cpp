@@ -46,6 +46,7 @@ namespace Liznoo
 
 	void PlatformFreeBSD::ChangeState (PowerState state)
 	{
+		int fd = open("/dev/acpi", O_WRONLY);
 		int sleep_state = -1;
 		switch (state)
 		{
@@ -56,8 +57,8 @@ namespace Liznoo
 			sleep_state = 4;
 			break;
 		}
-		if (acpifd >= 0 && sleep_state > 0)
-			ioctl(acpifd, ACPIIO_REQSLPSTATE, &sleep_state); // XXX: this requires root privileges by default
+		if (fd >= 0 && sleep_state > 0)
+			ioctl(fd, ACPIIO_REQSLPSTATE, &sleep_state); // XXX: this requires root privileges by default
 	}
 
 	void PlatformFreeBSD::update ()
