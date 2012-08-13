@@ -873,17 +873,12 @@ namespace Azoth
 				Ui_.MsgEdit_->setFocus ();
 			}
 			else
-			{
-				QPair<QString, QString> comma;
-				Q_FOREACH (comma, url.queryItems ())
-				{
-					if (comma.first == "hrid")
+				Q_FOREACH (auto item, url.queryItems ())
+					if (item.first == "hrid")
 					{
-						OpenChatWithText (url, comma.second, GetEntry<ICLEntry> ());
+						OpenChatWithText (url, item.second, GetEntry<ICLEntry> ());
 						return;
 					}
-				}
-			}
 		}
 		else if (url.host () == "insertnick")
 		{
