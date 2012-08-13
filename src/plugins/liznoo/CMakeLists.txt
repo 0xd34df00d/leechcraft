@@ -33,18 +33,29 @@ SET (HEADERS
 	)
 # Default implementation using UPower
 IF (NOT WIN32)
-	SET (SRCS
-		${SRCS}
-		platformupower.cpp
-		dbusthread.cpp
-		dbusconnector.cpp
-		)
-	SET (HEADERS
-		${HEADERS}
-		platformupower.h
-		dbusthread.h
-		dbusconnector.h
-		)
+	IF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+		SET (SRCS
+			${SRCS}
+			platformfreebsd.cpp
+			)
+		SET (HEADERS
+			${HEADERS}
+			platformfreebsd.h
+			)
+	ELSE (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+		SET (SRCS
+			${SRCS}
+			platformupower.cpp
+			dbusthread.cpp
+			dbusconnector.cpp
+			)
+		SET (HEADERS
+			${HEADERS}
+			platformupower.h
+			dbusthread.h
+			dbusconnector.h
+			)
+	ENDIF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
 # Windows implementation using WinAPI
 ELSE (NOT WIN32)
 	SET (SRCS
