@@ -29,6 +29,12 @@ namespace Azoth
 {
 namespace Acetamide
 {
+	enum class IrcServer
+	{
+		UnknownServer,
+		UnrealIRCD
+	};
+
 	struct ServerOptions
 	{
 		QString ServerName_;
@@ -38,6 +44,9 @@ namespace Acetamide
 		int ServerPort_;
 		bool SSL_;
 		bool NickServIdentify_;
+
+		IrcServer IrcServer_;
+		QString IrcServerVersion_;
 	};
 
 	struct ChannelOptions
@@ -150,6 +159,10 @@ namespace Acetamide
 		QString LoggedName_;
 		QString Secure_;
 		QString EndString_;
+		QString IsRegistered_;
+		QString Mail_;
+		QString IsHelpOp_;
+		QString ConnectedFrom_;
 	};
 
 	bool operator== (const ChannelOptions&, const ChannelOptions&);

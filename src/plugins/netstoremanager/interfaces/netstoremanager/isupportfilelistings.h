@@ -31,16 +31,16 @@ namespace NetStoreManager
 	enum ListingRole
 	{
 		ID = Qt::UserRole + 20,
-		InTrash
+		InTrash,
+		Directory
 	};
 
 	enum ListingOp
 	{
 		NoneOp = 0x00,
 		Delete = 0x01,
-		Prolongate = 0x02,
-		ToggleProtected = 0x04,
-		TrashSupporing = 0x08
+		TrashSupporing = 0x02,
+		DirectorySupport = 0x04
 	};
 
 	Q_DECLARE_FLAGS (ListingOps, ListingOp);
@@ -56,11 +56,13 @@ namespace NetStoreManager
 		virtual QStringList GetListingHeaders () const = 0;
 
 		virtual void Delete (const QList<QStringList>& id) = 0;
-		virtual void Prolongate (const QList<QStringList>& id) = 0;
 		virtual void MoveToTrash (const QList<QStringList>& id) = 0;
 		virtual void RestoreFromTrash (const QList<QStringList>& id) = 0;
 		virtual void EmptyTrash (const QList<QStringList>& id) = 0;
 		virtual void RequestUrl (const QList<QStringList>& id) = 0;
+		virtual void CreateDirectory (const QString& name, const QStringList& parentId) = 0;
+		virtual void Copy (const QStringList& id, const QStringList& newParentId) = 0;
+		virtual void Move (const QStringList& id, const QStringList& newParentId) = 0;
 	protected:
 		virtual void gotListing (const QList<QList<QStandardItem*>>&) = 0;
 		virtual void gotFileUrl (const QUrl& url, const QStringList& id) = 0;

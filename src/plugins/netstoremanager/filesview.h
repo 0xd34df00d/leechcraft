@@ -16,37 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "vcarddialog.h"
-#include <QPushButton>
-#include <QFileDialog>
-#include <QBuffer>
-#include "entrybase.h"
-#include "ircaccount.h"
+#pragma once
+
+#include <QTreeView>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace NetStoreManager
 {
-namespace Acetamide
-{
-	VCardDialog::VCardDialog (EntryBase *entry, QWidget *parent)
-	: QDialog (parent)
+	class FilesView : public QTreeView
 	{
-		Ui_.setupUi (this);
-	}
+		Q_OBJECT
 
-	void VCardDialog::UpdateInfo (const WhoIsMessage& msg)
-	{
-		setWindowTitle (tr ("VCard for %1").arg (msg.Nick_));
+		QAction *MoveItem_;
+		QAction *CopyItem_;
+		QAction *Cancel_;
 
-		Ui_.EditNick_->setText (msg.Nick_);
-		Ui_.EditUserName_->setText (msg.UserName_);
-		Ui_.EditHostName_->setText (msg.Host_);
-		Ui_.EditRealName_->setText (msg.RealName_);
-		Ui_.ServerName_->setText (msg.ServerName_);
-		Ui_.ServerDislocation_->setText (msg.ServerCountry_);
-		Ui_.EMailAddress_->setText (msg.Mail_);
-	}
-}
+		QDropEvent *CurrentEvent_;
+		QStringList DraggedItemId_;
+		QStringList TargetItemId_;
+	public:
+		FilesView (QWidget *parent = 0);
+
+	protected:
+		void dropEvent (QDropEvent *event);
+
+	private slots:
+		void handleCopyItem ();
+		void handleMoveItem ();
+		void handleCancel ();
+
+	signals:
+		void copiedItem (const QStringList& itemId, const QStringList& newParentId);
+		void movedItem (const QStringList& itemId, const QStringList& newParentId);
+		void restoredFromTrash (const QStringList& itemId);
+		void trashedItem (const QStringList& itemId);
+	};
 }
 }
