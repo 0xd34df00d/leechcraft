@@ -20,7 +20,6 @@
 
 #include <QWidget>
 #include <interfaces/blogique/iblogiquesidewidget.h>
-#include <interfaces/blogique/ipostoptionswidget.h>
 #include "ui_postoptionswidget.h"
 
 namespace LeechCraft
@@ -31,11 +30,9 @@ namespace Metida
 {
 	class PostOptionsWidget : public QWidget
 							, public IBlogiqueSideWidget
-							, public IPostOptionsWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget
-				LeechCraft::Blogique::IPostOptionsWidget)
+		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget)
 
 		Ui::PostOptions Ui_;
 	public:

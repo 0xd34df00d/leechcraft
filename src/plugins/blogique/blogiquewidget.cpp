@@ -21,13 +21,12 @@
 #include <QComboBox>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include "blogique.h"
-#include "core.h"
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatform.h"
-#include "interfaces/blogique/ipostoptionswidget.h"
 #include "interfaces/blogique/iblogiquesidewidget.h"
-#include <xmlsettingsmanager.h>
+#include "blogique.h"
+#include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
