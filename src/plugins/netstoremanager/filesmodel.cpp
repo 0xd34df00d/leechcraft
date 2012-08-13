@@ -39,7 +39,7 @@ namespace NetStoreManager
 
 	QStringList FilesModel::mimeTypes () const
 	{
-		return { "application/nsm-item" };
+		return { "x-leechcraft/nsm-item" };
 	}
 
 	QMimeData* FilesModel::mimeData (const QModelIndexList& indexes) const
@@ -57,7 +57,7 @@ namespace NetStoreManager
 						<< data (index, ListingRole::Directory).toBool ()
 						<< index.parent ().data (ListingRole::ID).toStringList ();
 
-		mimeData->setData ("application/nsm-item", encodedData);
+		mimeData->setData ("x-leechcraft/nsm-item", encodedData);
 		return mimeData;
 	}
 }

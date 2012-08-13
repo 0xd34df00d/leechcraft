@@ -52,7 +52,7 @@ namespace NetStoreManager
 	void FilesView::dropEvent (QDropEvent *event)
 	{
 		auto mimeData = event->mimeData ();
-		QDataStream stream (mimeData->data ("application/nsm-item"));
+		QDataStream stream (mimeData->data ("x-leechcraft/nsm-item"));
 		QString name;
 		QStringList id, parentId;
 		bool isInTrash = false, isDir = false;
@@ -98,7 +98,7 @@ namespace NetStoreManager
 			QMenu *menu = new QMenu;
 
 			if (!targetIndex.data (ListingRole::InTrash).toBool () &&
-					targetIndex.data (ListingRole::ID).toStringList () [0] != "netstoremanager.item_trash");
+					targetIndex.data (ListingRole::ID).toStringList ().value (0) != "netstoremanager.item_trash");
 				menu->addActions ({ CopyItem_, MoveItem_, menu->addSeparator (), Cancel_ });
 
 			menu->exec (viewport ()->mapToGlobal (event->pos ()));
