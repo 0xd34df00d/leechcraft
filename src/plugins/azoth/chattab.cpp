@@ -788,7 +788,9 @@ namespace Azoth
 		const QStringList& vars = entry->Variants ();
 		handleVariantsChanged (vars);
 
-		if (vars.value (0) == variant)
+		if (vars.value (0) == variant ||
+				variant.isEmpty () ||
+				vars.isEmpty ())
 		{
 			const QIcon& icon = Core::Instance ().GetIconForState (status.State_);
 			TabIcon_ = icon;
