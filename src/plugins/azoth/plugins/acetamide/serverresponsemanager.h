@@ -132,10 +132,6 @@ namespace Acetamide
 		void GotWhoIsSecure (const IrcMessageOptions& opts);
 		void GotChannelUrl (const IrcMessageOptions& opts);
 		void GotTopicWhoTime (const IrcMessageOptions& opts);
-		void GotCMD307Info (const IrcMessageOptions& opts);
-		void GotCMD310Info (const IrcMessageOptions& opts);
-		void GotCMD320Info (const IrcMessageOptions& opts);
-		void GotCMD378Info (const IrcMessageOptions& opts);
 	};
 };
 };

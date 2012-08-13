@@ -235,14 +235,14 @@ namespace Acetamide
 				this, _1);
 		Command2Action_ ["004"] = boost::bind (&ServerResponseManager::GotServerInfo,
 				this, _1);
-		Command2Action_ ["307"] = boost::bind (&ServerResponseManager::GotCMD307Info,
-				this, _1);
-		Command2Action_ ["310"] = boost::bind (&ServerResponseManager::GotCMD310Info,
-				this, _1);
-		Command2Action_ ["320"] = boost::bind (&ServerResponseManager::GotCMD320Info,
-				this, _1);
-		Command2Action_ ["378"] = boost::bind (&ServerResponseManager::GotCMD378Info,
-				this, _1);
+		Command2Action_ ["307"] = [this] (const IrcMessageOptions& opts)
+			{ ISH_->ShowAnswer ("307", opts.Message_); };
+		Command2Action_ ["310"] = [this] (const IrcMessageOptions& opts)
+			{ ISH_->ShowAnswer ("310", opts.Message_); };
+		Command2Action_ ["320"] = [this] (const IrcMessageOptions& opts)
+			{ ISH_->ShowAnswer ("320", opts.Message_); };
+		Command2Action_ ["378"] = [this] (const IrcMessageOptions& opts)
+			{ ISH_->ShowAnswer ("278", opts.Message_); };
 
 		MatchString2Server_ ["unreal"] = IrcServer::UnrealIRCD;
 	}
@@ -1106,6 +1106,42 @@ namespace Acetamide
 
 		server = MatchString2Server_ [*it];
 		ISH_->SetIrcServerInfo (server, ircServer);
+
+		switch (server)
+		{
+			case IrcServer::UnrealIRCD:
+				Command2Action_ ["307"] = [this] (const IrcMessageOptions& opts)
+					{
+						WhoIsMessage msg;
+						msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
+						msg.IsRegistered_ = opts.Message_;
+						ISH_->ShowWhoIsReply (msg);
+					};
+				Command2Action_ ["310"] = [this] (const IrcMessageOptions& opts)
+					{
+						WhoIsMessage msg;
+						msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
+						msg.IsHelpOp_ = opts.Message_;
+						ISH_->ShowWhoIsReply (msg);
+					};
+				Command2Action_ ["320"] = [this] (const IrcMessageOptions& opts)
+					{
+						WhoIsMessage msg;
+						msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
+						msg.Mail_ = opts.Message_;
+						ISH_->ShowWhoIsReply (msg);
+					};
+				Command2Action_ ["378"] = [this] (const IrcMessageOptions& opts)
+					{
+						WhoIsMessage msg;
+						msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
+						msg.ConnectedFrom_ = opts.Message_;
+						ISH_->ShowWhoIsReply (msg);
+					};
+				break;
+			default:
+				break;
+		}
 	}
 
 	void ServerResponseManager::GotWhoIsAccount (const IrcMessageOptions& opts)
@@ -1149,73 +1185,6 @@ namespace Acetamide
 				QString::fromUtf8 (opts.Parameters_.at (3).c_str ()).toULongLong ());
 	}
 
-	void ServerResponseManager::GotCMD307Info (const IrcMessageOptions& opts)
-	{
-		QString mode = "307";
-		WhoIsMessage msg;
-		switch (ISH_->GetServerOptions ().IrcServer_)
-		{
-			case IrcServer::UnrealIRCD:
-				msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
-				msg.IsRegistered_ = opts.Message_;
-				break;
-			default:
-				ISH_->ShowAnswer (mode, opts.Message_);
-				break;
-		}
-		ISH_->ShowWhoIsReply (msg);
-	}
-
-	void ServerResponseManager::GotCMD310Info (const IrcMessageOptions& opts)
-	{
-		QString mode = "310";
-		WhoIsMessage msg;
-		switch (ISH_->GetServerOptions ().IrcServer_)
-		{
-			case IrcServer::UnrealIRCD:
-				msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
-				msg.IsHelpOp_ = opts.Message_;
-				break;
-			default:
-				ISH_->ShowAnswer (mode, opts.Message_);
-				break;
-		}
-		ISH_->ShowWhoIsReply (msg);
-	}
-
-	void ServerResponseManager::GotCMD320Info (const IrcMessageOptions& opts)
-	{
-		QString mode = "320";
-		WhoIsMessage msg;
-		switch (ISH_->GetServerOptions ().IrcServer_)
-		{
-			case IrcServer::UnrealIRCD:
-				msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
-				msg.Mail_ = opts.Message_;
-				break;
-			default:
-				ISH_->ShowAnswer (mode, opts.Message_);
-				break;
-		}
-		ISH_->ShowWhoIsReply (msg);
-	}
-
-	void ServerResponseManager::GotCMD378Info (const IrcMessageOptions& opts)
-	{
-		QString mode = "378";
-		WhoIsMessage msg;
-		switch (ISH_->GetServerOptions ().IrcServer_)
-		{
-			case IrcServer::UnrealIRCD:
-				msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
-				msg.ConnectedFrom_ = opts.Message_;
-				break;
-			default:
-				ISH_->ShowAnswer (mode, opts.Message_);
-				break;
-		}
-		ISH_->ShowWhoIsReply (msg);
-	}
 
 }
 }
