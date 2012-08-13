@@ -18,12 +18,16 @@
 
 #include "blogiquewidget.h"
 #include <QWidgetAction>
+#include <QComboBox>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "blogique.h"
 #include "core.h"
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatform.h"
+#include "interfaces/blogique/ipostoptionswidget.h"
+#include "interfaces/blogique/iblogiquesidewidget.h"
+#include <xmlsettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -88,6 +92,38 @@ namespace Blogique
 		Ui_.OpenInBrowser_->setIcon (Core::Instance ()
 				.GetCoreProxy ()->GetIcon ("applications-internet"));
 		ToolBar_->addAction (Ui_.OpenInBrowser_);
+
+		connect (Ui_.SaveEntry_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (saveEntry ()));
+		connect (Ui_.Submit_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (submit ()));
+
+		if (!Ui_.MainSplitter_->restoreState (XmlSettingsManager::Instance ()
+				.property ("MainSplitterPosition").toByteArray ()))
+		{
+			Ui_.MainSplitter_->setStretchFactor (0, 6);
+			Ui_.MainSplitter_->setStretchFactor (1, 1);
+		}
+
+		if (!Ui_.CalendarSplitter_->restoreState (XmlSettingsManager::Instance ()
+				.property ("CalendarSplitterPosition").toByteArray ()))
+		{
+			Ui_.CalendarSplitter_->setStretchFactor (0, 1);
+			Ui_.CalendarSplitter_->setStretchFactor (1, 4);
+		}
+
+		connect (Ui_.MainSplitter_,
+				SIGNAL (splitterMoved (int,int)),
+				this,
+				SLOT (saveSplitterPosition (int, int)));
+		connect (Ui_.CalendarSplitter_,
+				SIGNAL (splitterMoved (int,int)),
+				this,
+				SLOT (saveSplitterPosition (int, int)));
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
@@ -125,6 +161,10 @@ namespace Blogique
 					GetParentBloggingPlatform ());
 			for (auto action : ibp->GetEditorActions ())
 				PostEdit_->RemoveAction (action);
+
+			for (auto w : SidePluginsWidgets_)
+				w->deleteLater ();
+			SidePluginsWidgets_.clear ();
 		}
 
 		PrevAccountId_ = id;
@@ -135,7 +175,44 @@ namespace Blogique
 				GetParentBloggingPlatform ());
 		for (auto action : ibp->GetEditorActions ())
 			PostEdit_->AppendAction (action);
+
+		for (auto w : ibp->GetBlogiqueSideWidgets ())
+		{
+			IBlogiqueSideWidget *ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
+			if (!ibsw)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "Side widget"
+						<< w
+						<< "from"
+						<< w
+						<< "is not an IBlogiqueSideWidget";
+				continue;
+			}
+
+			SidePluginsWidgets_ << w;
+			Ui_.Tools_->addItem (w, ibsw->GetName ());
+		}
 	}
+
+	void BlogiqueWidget::saveEntry ()
+	{
+
+	}
+
+	void BlogiqueWidget::submit ()
+	{
+
+	}
+
+	void BlogiqueWidget::saveSplitterPosition (int , int)
+	{
+		XmlSettingsManager::Instance ().setProperty ("MainSplitterPosition",
+				Ui_.MainSplitter_->saveState ());
+		XmlSettingsManager::Instance ().setProperty ("CalendarSplitterPosition",
+				Ui_.CalendarSplitter_->saveState ());
+	}
+
 }
 }
 
