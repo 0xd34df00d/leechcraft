@@ -64,7 +64,7 @@ namespace Liznoo
 				arg.unit = i;
 				if (ioctl (acpifd, ACPIIO_BATT_GET_BIF, &arg) >= 0)
 				{
-					info.ID_ = QString("Battery %1: %2 %3 %4").arg(i)
+					info.ID_ = QString("%1 %2 %3")
 									.arg(arg.bif.model)
 									.arg(arg.bif.serial)
 									.arg(arg.bif.oeminfo);
