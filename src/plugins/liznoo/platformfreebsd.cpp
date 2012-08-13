@@ -91,17 +91,17 @@ namespace Liznoo
 				}
 
 				info.Percentage_ = percentage;
-				info.Voltage_ = (double)voltage / 1000;
+				info.Voltage_ = static_cast<double>(voltage) / 1000;
 				switch (units)
 				{
 				case ACPI_BIF_UNITS_MW:
-					info.EnergyRate_ = (double)rate / 1000;
-					info.EnergyFull_ = (double)capacity / 1000;
+					info.EnergyRate_ = static_cast<double>(rate) / 1000;
+					info.EnergyFull_ = static_cast<double>(capacity) / 1000;
 					info.Energy_ = info.EnergyFull_ * percentage / 100;
 					break;
 				case ACPI_BIF_UNITS_MA:
-					info.EnergyRate_ = ((double)rate / 1000) * info.Voltage_;
-					info.EnergyFull_ = ((double)capacity / 1000) * info.Voltage_;
+					info.EnergyRate_ = (static_cast<double>(rate) / 1000) * info.Voltage_;
+					info.EnergyFull_ = (static_cast<double>(capacity) / 1000) * info.Voltage_;
 					info.Energy_ = info.EnergyFull_ * percentage / 100;
 					break;
 				default:
