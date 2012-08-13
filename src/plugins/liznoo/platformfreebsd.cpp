@@ -46,7 +46,18 @@ namespace Liznoo
 
 	void PlatformFreeBSD::ChangeState (PowerState state)
 	{
-		// XXX: not implemented
+		int sleep_state = -1;
+		switch (state)
+		{
+		case PowerState::Suspend:
+			sleep_state = 3;
+			break;
+		case PowerState::Hibernate:
+			sleep_state = 4;
+			break;
+		}
+		if (acpifd >= 0 && sleep_state > 0)
+			ioctl(acpifd, ACPIIO_REQSLPSTATE, &sleep_state); // XXX: this requires root privileges by default
 	}
 
 	void PlatformFreeBSD::update ()
