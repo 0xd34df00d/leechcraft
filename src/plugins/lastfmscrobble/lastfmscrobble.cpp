@@ -179,7 +179,8 @@ namespace Lastfmscrobble
 			auto nam = Proxy_->GetNetworkAccessManager ();
 			return Media::IRadioStation_ptr (new RadioStation (nam,
 						static_cast<Media::RadioType> (type),
-						param));
+						param,
+						item->text ()));
 		}
 		catch (const RadioStation::UnsupportedType&)
 		{
