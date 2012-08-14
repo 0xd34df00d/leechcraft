@@ -1,5 +1,12 @@
 <RCC>
   <qresource prefix="/" >
     <file>resources/images/lastfmscrobble.svg</file>
+	<file>resources/images/lastfm.png</file>
+	<file>resources/images/loved.png</file>
+	<file>resources/images/neighbours.png</file>
+	<file>resources/images/personal.png</file>
+	<file>resources/images/radio.png</file>
+	<file>resources/images/recs.png</file>
+	<file>resources/images/tag.png</file>
   </qresource>
 </RCC>
