@@ -31,6 +31,7 @@ namespace Media
 
 	enum RadioType
 	{
+		None,
 		SimilarArtists,
 		GlobalTag,
 		Predefined
