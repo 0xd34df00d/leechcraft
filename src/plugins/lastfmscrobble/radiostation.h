@@ -44,7 +44,7 @@ namespace Lastfmscrobble
 
 		static QMap<QByteArray, QString> GetPredefinedStations ();
 
-		RadioStation (QNetworkAccessManager*, Media::IRadioStationProvider::Type, const QString&);
+		RadioStation (QNetworkAccessManager*, Media::RadioType, const QString&);
 
 		QObject* GetObject ();
 		void RequestNewStream ();

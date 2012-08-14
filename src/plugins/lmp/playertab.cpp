@@ -196,6 +196,7 @@ namespace LMP
 	{
 		handleSongChanged (MediaInfo ());
 		Ui_.DevicesBrowser_->InitializeDevices ();
+		Ui_.RadioWidget_->InitializeProviders ();
 	}
 
 	void PlayerTab::SetupNavButtons ()

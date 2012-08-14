@@ -42,22 +42,22 @@ namespace Lastfmscrobble
 	}
 
 	RadioStation::RadioStation (QNetworkAccessManager *nam,
-			Media::IRadioStationProvider::Type type, const QString& param)
+			Media::RadioType type, const QString& param)
 	{
 		lastfm::RadioStation station;
 		switch (type)
 		{
-		case Media::IRadioStationProvider::Type::SimilarArtists:
+		case Media::RadioType::SimilarArtists:
 			station = lastfm::RadioStation::similar (lastfm::Artist (param));
 			break;
-		case Media::IRadioStationProvider::Type::GlobalTag:
+		case Media::RadioType::GlobalTag:
 #if LASTFM_MAJOR_VERSION < 1
 			station = lastfm::RadioStation::globalTag (lastfm::Tag (param));
 #else
 			station = lastfm::RadioStation::tag (lastfm::Tag (param));
 #endif
 			break;
-		case Media::IRadioStationProvider::Type::Predefined:
+		case Media::RadioType::Predefined:
 		{
 			const auto& login = XmlSettingsManager::Instance ().property ("lastfm.login").toString ();
 			const lastfm::User user (login);
