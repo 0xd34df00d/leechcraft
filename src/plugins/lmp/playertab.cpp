@@ -24,6 +24,8 @@
 #include <QSortFilterProxyModel>
 #include <QMenu>
 #include <QDialogButtonBox>
+#include <QListWidget>
+#include <QTabBar>
 #include <phonon/seekslider.h>
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -135,9 +137,19 @@ namespace LMP
 				this, "handleShowTrayIcon");
 		handleShowTrayIcon ();
 
+		XmlSettingsManager::Instance ().RegisterObject ("UseNavTabBar",
+				this, "handleUseNavTabBar");
+		handleUseNavTabBar ();
+
 #ifdef ENABLE_MPRIS
 		new MPRIS::Instance (this, Player_);
 #endif
+	}
+
+	PlayerTab::~PlayerTab ()
+	{
+		delete NavBar_;
+		delete NavButtons_;
 	}
 
 	TabClassInfo PlayerTab::GetTabClassInfo () const
@@ -188,14 +200,37 @@ namespace LMP
 
 	void PlayerTab::SetupNavButtons ()
 	{
-		auto mkButton = [this] (const QString& title, const QString& icon)
+		NavBar_ = new QTabBar ();
+		NavBar_->setShape (QTabBar::RoundedWest);
+		NavBar_->hide ();
+
+		NavButtons_ = new QListWidget ();
+		NavButtons_->hide ();
+		NavButtons_->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Expanding);
+		NavButtons_->setFixedWidth (70);
+		NavButtons_->setStyleSheet ("background-color: palette(window);");
+		NavButtons_->setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
+		NavButtons_->setFrameShape (QFrame::NoFrame);
+		NavButtons_->setFrameShadow (QFrame::Plain);
+		NavButtons_->setIconSize (QSize (24, 24));
+		NavButtons_->setViewMode (QListView::IconMode);
+		NavButtons_->setWordWrap (true);
+		NavButtons_->setGridSize (QSize (70, 65));
+		NavButtons_->setMovement (QListView::Static);
+		NavButtons_->setFlow (QListView::TopToBottom);
+
+		auto mkButton = [this] (const QString& title, const QString& iconName)
 		{
+			const auto& icon = Core::Instance ().GetProxy ()->GetIcon (iconName);
+
 			auto but = new QListWidgetItem (title);
-			Ui_.NavButtons_->addItem (but);
-			but->setSizeHint (Ui_.NavButtons_->gridSize ());
+			NavButtons_->addItem (but);
+			but->setToolTip (title);
+			but->setSizeHint (NavButtons_->gridSize ());
 			but->setTextAlignment (Qt::AlignCenter);
-			but->setIcon (Core::Instance ().GetProxy ()->GetIcon (icon));
-			return but;
+			but->setIcon (icon);
+
+			NavBar_->addTab (icon, title);
 		};
 
 		mkButton (tr ("Current song"), "view-media-lyrics");
@@ -205,7 +240,20 @@ namespace LMP
 		mkButton (tr ("Filesystem"), "document-open");
 		mkButton (tr ("Devices"), "drive-removable-media-usb");
 
-		Ui_.NavButtons_->setCurrentRow (0);
+		NavButtons_->setCurrentRow (0);
+
+		connect (NavBar_,
+				SIGNAL (currentChanged (int)),
+				Ui_.WidgetsStack_,
+				SLOT (setCurrentIndex (int)));
+		connect (NavButtons_,
+				SIGNAL (currentRowChanged (int)),
+				Ui_.WidgetsStack_,
+				SLOT (setCurrentIndex (int)));
+		connect (Ui_.WidgetsStack_,
+				SIGNAL (currentChanged (int)),
+				NavBar_,
+				SLOT (setCurrentIndex (int)));
 	}
 
 	void PlayerTab::SetupToolbar ()
@@ -663,6 +711,22 @@ namespace LMP
 	void PlayerTab::handleShowTrayIcon ()
 	{
 		TrayIcon_->setVisible (XmlSettingsManager::Instance ().property ("ShowTrayIcon").toBool ());
+	}
+
+	void PlayerTab::handleUseNavTabBar ()
+	{
+		if (Ui_.WidgetsLayout_->count () == 2)
+		{
+			auto item = Ui_.WidgetsLayout_->takeAt (0);
+			item->widget ()->hide ();
+			delete item;
+		}
+		const bool useTabs = XmlSettingsManager::Instance ().property ("UseNavTabBar").toBool ();
+		QWidget *widget = useTabs ?
+				static_cast<QWidget*> (NavBar_) :
+				static_cast<QWidget*> (NavButtons_);
+		Ui_.WidgetsLayout_->insertWidget (0, widget, 0, Qt::AlignTop);
+		widget->show ();
 	}
 
 	void PlayerTab::handleChangedVolume (qreal delta)
