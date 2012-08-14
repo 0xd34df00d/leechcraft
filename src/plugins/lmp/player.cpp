@@ -459,7 +459,10 @@ namespace LMP
 				SLOT (handleRadioStream (QUrl, Media::AudioInfo)));
 		CurrentStation_->RequestNewStream ();
 
-		RadioItem_ = new QStandardItem (tr ("Radio"));
+		auto radioName = station->GetRadioName ();
+		if (radioName.isEmpty ())
+			radioName = tr ("Radio");
+		RadioItem_ = new QStandardItem (radioName);
 		RadioItem_->setEditable (false);
 		PlaylistModel_->appendRow (RadioItem_);
 	}
