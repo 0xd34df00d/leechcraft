@@ -257,6 +257,7 @@ namespace Azoth
 
 	void ChatTab::Remove ()
 	{
+		emit entryLostCurrent (GetEntry<QObject> ());
 		emit needToClose (this);
 	}
 
@@ -283,6 +284,8 @@ namespace Azoth
 	{
 		TypeTimer_->stop ();
 		SetChatPartState (CPSInactive);
+
+		emit entryLostCurrent (GetEntry<QObject> ());
 	}
 
 	QByteArray ChatTab::GetTabRecoverData () const
