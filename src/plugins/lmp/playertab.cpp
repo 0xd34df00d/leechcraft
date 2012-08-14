@@ -726,7 +726,8 @@ namespace LMP
 		QWidget *widget = useTabs ?
 				static_cast<QWidget*> (NavBar_) :
 				static_cast<QWidget*> (NavButtons_);
-		Ui_.WidgetsLayout_->insertWidget (0, widget, 0, Qt::AlignTop);
+		Ui_.WidgetsLayout_->insertWidget (0, widget, 0,
+				useTabs ? Qt::AlignTop : Qt::Alignment ());
 		widget->show ();
 	}
 
