@@ -74,6 +74,8 @@ namespace LMP
 		QString param;
 		switch (item->data (Media::RadioItemRole::ItemType).toInt ())
 		{
+		case Media::RadioType::None:
+			return;
 		case Media::RadioType::Predefined:
 			break;
 		case Media::RadioType::SimilarArtists:
