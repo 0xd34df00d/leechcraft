@@ -2,6 +2,8 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_hotstreams)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (QT_USE_QTNETWORK TRUE)
+SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -11,6 +13,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	hotstreams.cpp
 	radiostation.cpp
+	streamlistfetcherbase.cpp
 	)
 
 ADD_LIBRARY (leechcraft_hotstreams SHARED
