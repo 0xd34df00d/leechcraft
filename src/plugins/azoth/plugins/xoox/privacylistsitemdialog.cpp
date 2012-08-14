@@ -35,7 +35,11 @@ namespace Xoox
 	{
 		PrivacyListItem result;
 
-		result.SetValue (Ui_.Value_->currentText ());
+		if (Ui_.Type_->currentIndex () == TNSubscription)
+			result.SetValue (Ui_.Value_->itemData (Ui_.Value_->currentIndex ()).toString ());
+		else
+			result.SetValue (Ui_.Value_->currentText ());
+
 		result.SetAction (Ui_.Action_->currentIndex () == ANAllow ?
 					PrivacyListItem::AAllow :
 					PrivacyListItem::ADeny);

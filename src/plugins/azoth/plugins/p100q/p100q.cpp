@@ -116,6 +116,12 @@ namespace p100q
 
 	QString Plugin::FormatBody (QString body)
 	{
+		auto getProp = [] (const QByteArray& name)
+		{
+			return XmlSettingsManager::Instance ().property (name).toBool ();
+		};
+		const bool alwaysReplace = getProp ("AlwaysReplace");
+
 		if (body.indexOf (PstoCommentRX_, 0) != PstoCommentPos)
 		{
 			QString tags, tag;
@@ -130,10 +136,11 @@ namespace p100q
 				Q_FOREACH (const QString& tagval, tagslist)
 				{
 					QString t = QString (QUrl::toPercentEncoding (tagval)).replace ("%2F", "/");
-					tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\" title=\""
-							+ tr ("Subscribe to tag") + "\">%2</a> ")
-								.arg (t)
-								.arg (tagval);
+					auto tmpl = alwaysReplace ?
+							" <a href=\"azoth://msgeditreplace/S *%1\" title=\"" :
+							" <a href=\"azoth://msgeditinsert/%1%20/%23/S *%1\" title=\"";
+					tags += QString (tmpl + tr ("Subscribe to tag") + "\">" + tagval + "</a> ")
+								.arg (t);
 				}
 				delta = body.length ();
 				body.replace (tag, tags);
@@ -141,10 +148,6 @@ namespace p100q
 			}
 		}
 
-		auto getProp = [] (const QByteArray& name)
-		{
-			return XmlSettingsManager::Instance ().property (name).toBool ();
-		};
 		const bool showRecommendButton = getProp ("RecommendButton");
 		const bool showAvatars = getProp ("ShowAvatars");
 		const bool showAddToBookmarkButton = getProp ("AddToBookmarkButton");
@@ -154,17 +157,32 @@ namespace p100q
 		const bool showBlockButton = getProp ("BlockButton");
 		const bool showCommentsButton = getProp ("CommentsButton");
 
-		QString postRX = " <a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> ";
-		QString postAuthorRX = " <a href=\"azoth://msgeditreplace/@\\1+\" title=\"" +
+		QString postRX = alwaysReplace ?
+				" <a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> " :
+				" <a href=\"azoth://msgeditinsert/%23\\1%20\">#\\1</a> ";
+
+		QString postAuthorRX = (alwaysReplace ?
+				" <a href=\"azoth://msgeditreplace/@\\1+\" title=\"" :
+				" <a href=\"azoth://msgeditinsert/@\\1%20/%23/@\\1+\" title=\"") +
 			tr ("View user's posts") + "\">@\\1</a> ";
-		QString userRX = " <a href=\"azoth://msgeditreplace/@\\1+\" title=\"" +
+
+		QString userRX = (alwaysReplace ?
+				" <a href=\"azoth://msgeditreplace/@\\1+\" title=\"" :
+				" <a href=\"azoth://msgeditinsert/@\\1%20/%23/@\\1+\" title=\"")+
 			tr ("View user's posts") + "\">@\\1</a> ";
-		QString commentRX = " <a href=\"azoth://msgeditreplace/%23\\1/\\2%20\" title=\"" +
+
+		QString commentRX = (alwaysReplace ?
+				" <a href=\"azoth://msgeditreplace/%23\\1/\\2%20\" title=\"" :
+				" <a href=\"azoth://msgeditinsert/%23\\1/\\2%20\" title=\"")+
 			tr ("Reply") + "\">#\\1/\\2</a> ";
-		QString postByUserRX = " <a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" +
+
+		QString postByUserRX = (alwaysReplace ?
+				" <a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" :
+				" <a href=\"azoth://msgeditinsert/%23\\1%20/%23/%23\\1+\" title=\"") +
 			tr ("View post") + "\">#\\1</a> ";
-		QString imgRX =
-			"<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>";
+
+		QString imgRX = "<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>";
+
 		if (showSubscribeButton || showCommentsButton || showRecommendButton || showAddToBookmarkButton)
 		{
 			postRX += "(";

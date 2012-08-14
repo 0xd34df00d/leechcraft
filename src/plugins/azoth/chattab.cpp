@@ -788,7 +788,9 @@ namespace Azoth
 		const QStringList& vars = entry->Variants ();
 		handleVariantsChanged (vars);
 
-		if (vars.value (0) == variant)
+		if (vars.value (0) == variant ||
+				variant.isEmpty () ||
+				vars.isEmpty ())
 		{
 			const QIcon& icon = Core::Instance ().GetIconForState (status.State_);
 			TabIcon_ = icon;
@@ -862,7 +864,8 @@ namespace Azoth
 			return;
 		}
 
-		if (url.host () == "msgeditreplace")
+		const auto& host = url.host ();
+		if (host == "msgeditreplace")
 		{
 			if (url.queryItems ().isEmpty ())
 			{
@@ -871,19 +874,33 @@ namespace Azoth
 				Ui_.MsgEdit_->setFocus ();
 			}
 			else
-			{
-				QPair<QString, QString> comma;
-				Q_FOREACH (comma, url.queryItems ())
-				{
-					if (comma.first == "hrid")
+				Q_FOREACH (auto item, url.queryItems ())
+					if (item.first == "hrid")
 					{
-						OpenChatWithText (url, comma.second, GetEntry<ICLEntry> ());
+						OpenChatWithText (url, item.second, GetEntry<ICLEntry> ());
 						return;
 					}
-				}
-			}
 		}
-		else if (url.host () == "insertnick")
+		else if (host == "msgeditinsert")
+		{
+			const auto& text = url.path ().mid (1);
+			const auto& split = text.split ("/#/", QString::SkipEmptyParts);
+
+			const auto& insertText = split.value (0);
+			const auto& replaceText = split.size () > 1 ?
+					split.value (1) :
+					insertText;
+
+			if (Ui_.MsgEdit_->toPlainText ().simplified ().trimmed ().isEmpty ())
+			{
+				Ui_.MsgEdit_->setText (replaceText);
+				Ui_.MsgEdit_->moveCursor (QTextCursor::End);
+				Ui_.MsgEdit_->setFocus ();
+			}
+			else
+				Ui_.MsgEdit_->textCursor ().insertText (insertText);
+		}
+		else if (host == "insertnick")
 		{
 			const QByteArray& encoded = url.encodedQueryItemValue ("nick");
 			InsertNick (QUrl::fromPercentEncoding (encoded));

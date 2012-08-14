@@ -65,7 +65,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="VariantBox_"/>
+      <widget class="QComboBox" name="VariantBox_">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="CharCounter_">

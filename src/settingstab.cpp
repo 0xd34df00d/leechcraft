@@ -22,6 +22,8 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QToolButton>
+#include <QStyledItemDelegate>
+#include <QPainter>
 #include "util/gui/flowlayout.h"
 #include "xmlsettingsdialog/xmlsettingsdialog.h"
 #include "interfaces/ihavesettings.h"
@@ -40,7 +42,6 @@ namespace LeechCraft
 	, ActionBack_ (new QAction (tr ("Back"), this))
 	, ActionApply_ (new QAction (tr ("Apply"), this))
 	, ActionCancel_ (new QAction (tr ("Cancel"), this))
-	, CurrentIHS_ (0)
 	{
 		Ui_.setupUi (this);
 		Ui_.ListContents_->setLayout (new QVBoxLayout);
@@ -129,9 +130,7 @@ namespace LeechCraft
 
 				if (obj == Core::Instance ().GetCoreInstanceObject ())
 					result [obj] << qMakePair (QString ("LeechCraft"), QString ());
-				else if (!firstClass.isEmpty ())
-					result [obj] = firstClass;
-				else
+				else if (firstClass.isEmpty ())
 					result [obj] << qMakePair (SettingsTab::tr ("General plugins"), QString ());
 			}
 
@@ -242,9 +241,50 @@ namespace LeechCraft
 		return Toolbar_;
 	}
 
+	void SettingsTab::FillPages (QObject *obj, bool sub)
+	{
+		IInfo *ii = qobject_cast<IInfo*> (obj);
+		IHaveSettings *ihs = qobject_cast<IHaveSettings*> (obj);
+		auto sd = ihs->GetSettingsDialog ();
+
+		const QStringList& pages = sd->GetPages ();
+		int pgId = 0;
+		Q_FOREACH (const QString& page, pages)
+		{
+			QString itemName;
+			if (sub)
+				itemName = pages.size () == 1 && ii->GetName ().contains (page) ?
+						ii->GetName () :
+						(ii->GetName () + ": " + page);
+			else
+				itemName = page;
+			auto item = new QListWidgetItem (ii->GetIcon (), itemName);
+			item->setTextAlignment (Qt::AlignCenter);
+			Ui_.Cats_->addItem (item);
+
+			Item2Page_ [item] = qMakePair (ihs, pgId++);
+		}
+
+		if (auto ihp = qobject_cast<IPluginReady*> (obj))
+		{
+			const auto& expected = ihp->GetExpectedPluginClasses ();
+
+			const auto& settables = Core::Instance ()
+					.GetPluginManager ()->GetAllCastableRoots<IHaveSettings*> ();
+			Q_FOREACH (auto settableObj, settables)
+			{
+				auto ip2 = qobject_cast<IPlugin2*> (settableObj);
+				if (!ip2 || !expected.contains (ip2->GetPluginClasses ()))
+					continue;
+
+				FillPages (settableObj, true);
+			}
+		}
+	}
+
 	void SettingsTab::showSettingsFor (QObject *obj)
 	{
-		CurrentIHS_ = obj;
+		Item2Page_.clear ();
 
 		IInfo *ii = qobject_cast<IInfo*> (obj);
 		Ui_.SectionName_->setText (tr ("Settings for %1")
@@ -255,17 +295,20 @@ namespace LeechCraft
 		Ui_.DialogContents_->layout ()->addWidget (sd.get ());
 		sd->show ();
 
-		const QStringList& pages = sd->GetPages ();
-		Q_FOREACH (const QString& page, pages)
-			Ui_.Cats_->addTopLevelItem (new QTreeWidgetItem (QStringList (page)));
-
-		Ui_.Cats_->setVisible (pages.size () != 1);
+		FillPages (obj, false);
 
 		Ui_.StackedWidget_->setCurrentIndex (1);
 		Toolbar_->addAction (ActionBack_);
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (ActionApply_);
 		Toolbar_->addAction (ActionCancel_);
+
+		const int width = Ui_.Cats_->viewport ()->width ();
+		auto gridSize = Ui_.Cats_->gridSize ();
+		gridSize.setWidth (width);
+		Q_FOREACH (auto item, Item2Page_.keys ())
+			item->setSizeHint (gridSize);
+		Ui_.Cats_->setGridSize (gridSize);
 	}
 
 	void SettingsTab::handleSettingsCalled ()
@@ -296,29 +339,37 @@ namespace LeechCraft
 			delete item;
 		}
 
-		CurrentIHS_ = 0;
+		Item2Page_.clear ();
 	}
 
 	void SettingsTab::handleApply ()
 	{
-		qobject_cast<IHaveSettings*> (CurrentIHS_)->GetSettingsDialog ()->accept ();
+		Q_FOREACH (const auto& pair, Item2Page_.values ())
+			pair.first->GetSettingsDialog ()->accept ();
 	}
 
-	void SettingsTab::handleCancel()
+	void SettingsTab::handleCancel ()
 	{
-		qobject_cast<IHaveSettings*> (CurrentIHS_)->GetSettingsDialog ()->reject ();
+		Q_FOREACH (const auto& pair, Item2Page_.values ())
+			pair.first->GetSettingsDialog ()->reject ();
 	}
 
-	void SettingsTab::on_Cats__currentItemChanged (QTreeWidgetItem *current)
+	void SettingsTab::on_Cats__currentItemChanged (QListWidgetItem *current)
 	{
-		if (!CurrentIHS_)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "called with null CurrentIHS_";
+		const auto& pair = Item2Page_ [current];
+		if (!pair.first)
 			return;
-		}
 
-		const int idx = Ui_.Cats_->indexOfTopLevelItem (current);
-		qobject_cast<IHaveSettings*> (CurrentIHS_)->GetSettingsDialog ()->SetPage (idx);
+		auto sd = pair.first->GetSettingsDialog ();
+		sd->SetPage (pair.second);
+
+		if (Ui_.DialogContents_->layout ()->count ())
+		{
+			QLayoutItem *item = Ui_.DialogContents_->layout ()->takeAt (0);
+			item->widget ()->hide ();
+			delete item;
+		}
+		Ui_.DialogContents_->layout ()->addWidget (sd.get ());
+		sd->show ();
 	}
 }

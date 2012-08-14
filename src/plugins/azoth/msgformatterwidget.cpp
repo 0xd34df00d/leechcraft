@@ -347,6 +347,8 @@ namespace Azoth
 		}
 
 		SmilesTooltip_->setLayout (layout);
+		SmilesTooltip_->adjustSize ();
+		SmilesTooltip_->setMaximumSize (SmilesTooltip_->sizeHint ());
 	}
 
 	void MsgFormatterWidget::insertEmoticon ()
