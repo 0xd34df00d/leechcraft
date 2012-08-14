@@ -1748,6 +1748,7 @@ namespace Azoth
 	void ChatTab::appendMessageText (const QString& text)
 	{
 		Ui_.MsgEdit_->setText (Ui_.MsgEdit_->toPlainText () + text);
+		Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 	}
 
 	void ChatTab::selectVariant (const QString& var)
