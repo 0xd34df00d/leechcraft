@@ -13,6 +13,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	hotstreams.cpp
 	radiostation.cpp
+	somafmlistfetcher.cpp
 	streamlistfetcherbase.cpp
 	)
 
