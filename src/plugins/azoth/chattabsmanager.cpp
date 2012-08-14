@@ -104,6 +104,10 @@ namespace Azoth
 				this,
 				SLOT (updateCurrentTab (QObject*)));
 		connect (tab,
+				SIGNAL (entryLostCurrent (QObject*)),
+				this,
+				SIGNAL (entryLostCurrent (QObject*)));
+		connect (tab,
 				SIGNAL (changeTabName (QWidget*, const QString&)),
 				this,
 				SIGNAL (changeTabName (QWidget*, const QString&)));
