@@ -286,7 +286,7 @@ namespace p100q
 				this,
 				SLOT (handleChatDestroyed ()));
 
-		QShortcut *sh = new QShortcut (QString ("Ctrl+L"), edit);
+		QShortcut *sh = new QShortcut (QString ("Ctrl+Shift+P"), qobject_cast<QWidget*> (chatTab));
 		sh->setProperty ("Azoth/p100q/Tab", QVariant::fromValue<QObject*> (chatTab));
 		connect (sh,
 				SIGNAL (activated ()),
@@ -340,14 +340,16 @@ namespace p100q
 			LastPostInTab_ [tab] = rx.cap (1);
 		else if (rx.capturedTexts ().size () == 3)
 			LastPostInTab_ [tab] = rx.cap (1) + '/' + rx.cap (2);
+		qDebug () << Q_FUNC_INFO << aPos << pPos << cPos << LastPostInTab_;
 	}
 
 	void Plugin::handleShortcutActivated ()
 	{
 		QObject *chat = sender ()->property ("Azoth/p100q/Tab").value<QObject*> ();
 
+		qDebug () << Q_FUNC_INFO << LastPostInTab_ << chat;
 		QMetaObject::invokeMethod (chat,
-				"prepareMessageText",
+				"appendMessageText",
 				Q_ARG (QString, "#" + LastPostInTab_ [chat] + " "));
 	}
 
