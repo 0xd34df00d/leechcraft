@@ -95,7 +95,8 @@ namespace LMP
 		}
 
 		auto station = Root2Prov_ [root]->GetRadioStation (item, param);
-		Player_->SetRadioStation (station);
+		if (station)
+			Player_->SetRadioStation (station);
 	}
 }
 }
