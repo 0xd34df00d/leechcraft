@@ -22,41 +22,50 @@
 #include <dev/acpica/acpiio.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <QTimer>
 #include <QMessageBox>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
+	const int UpdateInterval = 10 * 1000;
+
 	PlatformFreeBSD::PlatformFreeBSD (QObject *parent)
 	: PlatformLayer (parent)
 	{
-		timer = new QTimer (this);
-		timer->start (updateInterval);
-		connect(timer, SIGNAL(timeout()), SLOT(update()));
-		acpifd = open("/dev/acpi", O_RDONLY);
-		// XXX: no error handling
-		QTimer::singleShot (0, this, SIGNAL (started ()));
+		Timer_ = new QTimer (this);
+		Timer_->start (UpdateInterval);
+		connect (Timer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (update ()));
+		ACPIfd_ = open ("/dev/acpi", O_RDONLY);
+
+		QTimer::singleShot (0,
+				this,
+				SIGNAL (started ()));
 	}
 
 	void PlatformFreeBSD::Stop ()
 	{
-		if (timer)
-			timer->stop();
+		Timer_->stop ();
 	}
 
 	void PlatformFreeBSD::ChangeState (PowerState state)
 	{
-		int fd = open("/dev/acpi", O_WRONLY);
+		int fd = open ("/dev/acpi", O_WRONLY);
 		if (fd < 0 && errno == EACCES)
 		{
-			QMessageBox::information(NULL, tr("LeechCraft Liznoo"),
-				tr("Looks like you don\'t have permission to write to /dev/acpi. "
-				"If you're in \'wheel\' group, add \'perm acpi 0664\' to "
-				"/etc/devfs.conf and run \'/etc/rc.d/devfs restart\' to apply "
-				"needed permissions to /dev/acpi."));
+			QMessageBox::information (NULL,
+				"LeechCraft Liznoo",
+				tr ("Looks like you don't have permission to write to /dev/acpi. "
+					"If you're in 'wheel' group, add 'perm acpi 0664' to "
+					"/etc/devfs.conf and run '/etc/rc.d/devfs restart' to apply "
+					"needed permissions to /dev/acpi."));
 			return;
 		}
+
 		int sleep_state = -1;
 		switch (state)
 		{
@@ -68,82 +77,81 @@ namespace Liznoo
 			break;
 		}
 		if (fd >= 0 && sleep_state > 0)
-			ioctl(fd, ACPIIO_REQSLPSTATE, &sleep_state); // XXX: this requires root privileges by default
+			ioctl (fd, ACPIIO_REQSLPSTATE, &sleep_state); // this requires root privileges by default
 	}
 
 	void PlatformFreeBSD::update ()
 	{
 		int batteries = 0;
-		if (acpifd > 0)
-		{
-			ioctl(acpifd, ACPIIO_BATT_GET_UNITS, &batteries);
-			for (int i = 0; i < batteries; i++)
-			{
-				acpi_battery_ioctl_arg arg;
-				BatteryInfo info;
-				int units, capacity, percentage, rate, voltage, remaining_time;
-				bool valid = false;
-				arg.unit = i;
-				if (ioctl (acpifd, ACPIIO_BATT_GET_BIF, &arg) >= 0)
-				{
-					info.ID_ = QString("%1 %2 %3")
-									.arg(arg.bif.model)
-									.arg(arg.bif.serial)
-									.arg(arg.bif.oeminfo);
-					info.Technology_ = arg.bif.type;
-					units = arg.bif.units;
-					capacity = arg.bif.lfcap >= 0 ? arg.bif.lfcap : arg.bif.dcap;
-				}
-				arg.unit = i;
-				if (ioctl (acpifd, ACPIIO_BATT_GET_BATTINFO, &arg) >= 0)
-				{
-					percentage = arg.battinfo.cap;
-					rate = arg.battinfo.rate;
-					remaining_time = arg.battinfo.min * 60;
-				}
-				arg.unit = i;
-				if (ioctl (acpifd, ACPIIO_BATT_GET_BST, &arg) >= 0)
-				{
-					voltage = arg.bst.volt;
-					if ((arg.bst.state & ACPI_BATT_STAT_INVALID) != ACPI_BATT_STAT_INVALID &&
-						arg.bst.state != ACPI_BATT_STAT_NOT_PRESENT)
-					{
-						valid = true;
-					}
-				}
+		if (ACPIfd_ <= 0)
+			return;
 
-				info.Percentage_ = percentage;
-				info.Voltage_ = static_cast<double>(voltage) / 1000;
-				switch (units)
+		ioctl (ACPIfd_, ACPIIO_BATT_GET_UNITS, &batteries);
+		for (int i = 0; i < batteries; i++)
+		{
+			acpi_battery_ioctl_arg arg;
+			BatteryInfo info;
+			int units, capacity, percentage, rate, voltage, remaining_time;
+			bool valid = false;
+			arg.unit = i;
+			if (ioctl (ACPIfd_, ACPIIO_BATT_GET_BIF, &arg) >= 0)
+			{
+				info.ID_ = QString("%1 %2 %3")
+								.arg (arg.bif.model)
+								.arg (arg.bif.serial)
+								.arg (arg.bif.oeminfo);
+				info.Technology_ = arg.bif.type;
+				units = arg.bif.units;
+				capacity = arg.bif.lfcap >= 0 ? arg.bif.lfcap : arg.bif.dcap;
+			}
+			arg.unit = i;
+			if (ioctl (ACPIfd_, ACPIIO_BATT_GET_BATTINFO, &arg) >= 0)
+			{
+				percentage = arg.battinfo.cap;
+				rate = arg.battinfo.rate;
+				remaining_time = arg.battinfo.min * 60;
+			}
+			arg.unit = i;
+			if (ioctl (ACPIfd_, ACPIIO_BATT_GET_BST, &arg) >= 0)
+			{
+				voltage = arg.bst.volt;
+				if ((arg.bst.state & ACPI_BATT_STAT_INVALID) != ACPI_BATT_STAT_INVALID &&
+					arg.bst.state != ACPI_BATT_STAT_NOT_PRESENT)
+					valid = true;
+			}
+
+			info.Percentage_ = percentage;
+			info.Voltage_ = static_cast<double> (voltage) / 1000;
+			switch (units)
+			{
+			case ACPI_BIF_UNITS_MW:
+				info.EnergyRate_ = static_cast<double> (rate) / 1000;
+				info.EnergyFull_ = static_cast<double> (capacity) / 1000;
+				info.Energy_ = info.EnergyFull_ * percentage / 100;
+				break;
+			case ACPI_BIF_UNITS_MA:
+				info.EnergyRate_ = (static_cast<double> (rate) / 1000) * info.Voltage_;
+				info.EnergyFull_ = (static_cast<double> (capacity) / 1000) * info.Voltage_;
+				info.Energy_ = info.EnergyFull_ * percentage / 100;
+				break;
+			default:
+				valid = false;
+				break;
+			}
+
+			if (valid)
+			{
+				if ((arg.bst.state & ACPI_BATT_STAT_DISCHARG) != 0)
 				{
-				case ACPI_BIF_UNITS_MW:
-					info.EnergyRate_ = static_cast<double>(rate) / 1000;
-					info.EnergyFull_ = static_cast<double>(capacity) / 1000;
-					info.Energy_ = info.EnergyFull_ * percentage / 100;
-					break;
-				case ACPI_BIF_UNITS_MA:
-					info.EnergyRate_ = (static_cast<double>(rate) / 1000) * info.Voltage_;
-					info.EnergyFull_ = (static_cast<double>(capacity) / 1000) * info.Voltage_;
-					info.Energy_ = info.EnergyFull_ * percentage / 100;
-					break;
-				default:
-					valid = false;
-					break;
+					info.TimeToFull_ = 0;
+					info.TimeToEmpty_ = remaining_time;
 				}
-				if (valid)
+				else if ((arg.bst.state & ACPI_BATT_STAT_CHARGING) != 0)
 				{
-					if ((arg.bst.state & ACPI_BATT_STAT_DISCHARG) != 0)
-					{
-						info.TimeToFull_ = 0;
-						info.TimeToEmpty_ = remaining_time;
-					}
-					else if ((arg.bst.state & ACPI_BATT_STAT_CHARGING) != 0)
-					{
-						info.TimeToEmpty_ = 0;
-						info.TimeToFull_ = (info.EnergyFull_ - info.Energy_) / info.EnergyRate_ * 3600;
-					}
-					emit batteryInfoUpdated (info);
+					info.TimeToEmpty_ = 0;
+					info.TimeToFull_ = (info.EnergyFull_ - info.Energy_) / info.EnergyRate_ * 3600;
 				}
+				emit batteryInfoUpdated (info);
 			}
 		}
 	}

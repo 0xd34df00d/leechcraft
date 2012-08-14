@@ -20,7 +20,8 @@
 #pragma once
 
 #include "platformlayer.h"
-#include <QTimer>
+
+class QTimer;
 
 namespace LeechCraft
 {
@@ -30,16 +31,14 @@ namespace Liznoo
 	{
 		Q_OBJECT
 
+		QTimer *Timer_;
+		int ACPIfd_;
 	public:
 		PlatformFreeBSD (QObject* = 0);
 		void Stop ();
 		void ChangeState (PowerState);
 	private slots:
-		void update();
-	private:
-		QTimer *timer;
-		static const int updateInterval = 10*1000;
-		int acpifd;
+		void update ();
 	signals:
 		void batteryInfoUpdated (Liznoo::BatteryInfo);
 	};
