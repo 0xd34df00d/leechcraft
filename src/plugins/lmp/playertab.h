@@ -91,6 +91,7 @@ namespace LMP
 
 		void InitWithOtherPlugins ();
 	private:
+		void SetupNavButtons ();
 		void SetupToolbar ();
 		void SetupCollection ();
 		void SetupPlaylistsTab ();

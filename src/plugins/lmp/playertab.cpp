@@ -95,6 +95,8 @@ namespace LMP
 		Ui_.MainSplitter_->setStretchFactor (1, 1);
 		Ui_.RadioWidget_->SetPlayer (Player_);
 
+		SetupNavButtons ();
+
 		Ui_.FSBrowser_->AssociatePlayer (Player_);
 
 		auto coverGetter = [this] () { return Ui_.NPArt_->property ("LMP/CoverPath").toString (); };
@@ -182,6 +184,28 @@ namespace LMP
 	{
 		handleSongChanged (MediaInfo ());
 		Ui_.DevicesBrowser_->InitializeDevices ();
+	}
+
+	void PlayerTab::SetupNavButtons ()
+	{
+		auto mkButton = [this] (const QString& title, const QString& icon)
+		{
+			auto but = new QListWidgetItem (title);
+			Ui_.NavButtons_->addItem (but);
+			but->setSizeHint (Ui_.NavButtons_->gridSize ());
+			but->setTextAlignment (Qt::AlignCenter);
+			but->setIcon (Core::Instance ().GetProxy ()->GetIcon (icon));
+			return but;
+		};
+
+		mkButton (tr ("Current song"), "view-media-lyrics");
+		mkButton (tr ("Collection"), "folder-sound");
+		mkButton (tr ("Playlists"), "view-media-playlist");
+		mkButton (tr ("Social"), "applications-internet");
+		mkButton (tr ("Filesystem"), "document-open");
+		mkButton (tr ("Devices"), "drive-removable-media-usb");
+
+		Ui_.NavButtons_->setCurrentRow (0);
 	}
 
 	void PlayerTab::SetupToolbar ()
