@@ -662,7 +662,7 @@ namespace Azoth
 	void MainWidget::handleEntryMadeCurrent (QObject *obj)
 	{
 		auto entry = qobject_cast<ICLEntry*> (obj);
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		if (entry && entry->GetEntryType () == ICLEntry::ETPrivateChat)
 			obj = entry->GetParentCLEntry ();
 
 		const bool isMUC = qobject_cast<IMUCEntry*> (obj);
