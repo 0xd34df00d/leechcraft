@@ -32,6 +32,8 @@
 	#include "platformupower.h"
 #elif defined(Q_OS_WIN32)
 	#include "platformwinapi.h"
+#elif defined(Q_OS_FREEBSD)
+	#include "platformfreebsd.h"
 #else
 	#pragma message ("Unsupported system")
 #endif
@@ -56,6 +58,8 @@ namespace Liznoo
 		PL_ = new PlatformUPower (this);
 #elif defined(Q_OS_WIN32)
 		PL_ = new PlatformWinAPI (this);
+#elif defined(Q_OS_FREEBSD)
+		PL_ = new PlatformFreeBSD (this);
 #else
 		PL_ = 0;
 #endif
