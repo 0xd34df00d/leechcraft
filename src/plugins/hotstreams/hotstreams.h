@@ -19,17 +19,23 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
 #include <interfaces/iinfo.h>
+#include <interfaces/media/iradiostationprovider.h>
 
 namespace LeechCraft
 {
 namespace HotStreams
 {
 	class Plugin : public QObject
-					, public IInfo
+				 , public IInfo
+				 , public Media::IRadioStationProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo Media::IRadioStationProvider)
+
+		ICoreProxy_ptr Proxy_;
+		QHash<QString, QStandardItem*> Roots_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -38,6 +44,11 @@ namespace HotStreams
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QList<QStandardItem*> GetRadioListItems () const;
+		Media::IRadioStation_ptr GetRadioStation (QStandardItem* , const QString&);
+	protected slots:
+		void refreshRadios ();
 	};
 }
 }

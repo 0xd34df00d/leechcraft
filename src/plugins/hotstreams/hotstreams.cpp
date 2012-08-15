@@ -18,6 +18,12 @@
 
 #include "hotstreams.h"
 #include <QIcon>
+#include <QStandardItem>
+#include <QTimer>
+#include <interfaces/core/icoreproxy.h>
+#include "somafmlistfetcher.h"
+#include "radiostation.h"
+#include "roles.h"
 
 namespace LeechCraft
 {
@@ -25,10 +31,19 @@ namespace HotStreams
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
+		auto somafm = new QStandardItem ("SomaFM");
+		somafm->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
+		somafm->setEditable (false);
+		Roots_ ["somafm"] = somafm;
 	}
 
 	void Plugin::SecondInit ()
 	{
+		QTimer::singleShot (5000,
+				this,
+				SLOT (refreshRadios ()));
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -53,6 +68,33 @@ namespace HotStreams
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QList<QStandardItem*> Plugin::GetRadioListItems () const
+	{
+		return Roots_.values ();
+	}
+
+	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem *item, const QString&)
+	{
+		const auto& name = item->data (StreamItemRoles::PristineName).toString ();
+		const auto& url = item->data (Media::RadioItemRole::RadioID).toUrl ();
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		return Media::IRadioStation_ptr (new RadioStation (url, name, nam));
+	}
+
+	void Plugin::refreshRadios ()
+	{
+		auto clearRoot = [] (QStandardItem *item)
+		{
+			while (item->rowCount ())
+				item->removeRow (0);
+		};
+
+		clearRoot (Roots_ ["somafm"]);
+
+		new SomaFMListFetcher (Roots_ ["somafm"],
+				Proxy_->GetNetworkAccessManager (), this);
 	}
 }
 }
