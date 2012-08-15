@@ -133,7 +133,7 @@ OPTION (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 # New
 OPTION (ENABLE_BLACKDASH "Build BlackDash, the dashboard plugin for LeechCraft" OFF)
 OPTION (ENABLE_CHOROID "Build Choroid, image viewer" OFF)
-OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" OFF)
+OPTION (ENABLE_HOTSTREAMS "Build HotStreams, radio streams provider module" ${WITH_PLUGINS})
 OPTION (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" ${WITH_PLUGINS})
 OPTION (ENABLE_LIZNOO "Build Liznoo, our nice power manager" ${WITH_PLUGINS})
 OPTION (ENABLE_NETSTOREMANAGER "Build NetStoreManager for managing network data storages like Yandex.Disk" ${WITH_PLUGINS})
@@ -160,6 +160,7 @@ IF (WIN32)
 ENDIF (WIN32)
 
 # Defunct
+OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" OFF)
 OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" OFF)
 OPTION (ENABLE_FTP "Build LCFTP, the FTP client" OFF)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
@@ -299,6 +300,10 @@ ENDIF (ENABLE_QROSP)
 IF (ENABLE_POPISHU)
 	ADD_SUBDIRECTORY (plugins/popishu)
 ENDIF (ENABLE_POPISHU)
+
+IF (ENABLE_HOTSTREAMS)
+	ADD_SUBDIRECTORY (plugins/hotstreams)
+ENDIF (ENABLE_HOTSTREAMS)
 
 IF (ENABLE_LACKMAN)
 	ADD_SUBDIRECTORY (plugins/lackman)
