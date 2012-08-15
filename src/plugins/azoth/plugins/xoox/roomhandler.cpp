@@ -23,7 +23,6 @@
 #include <QXmppVCardIq.h>
 #include <QXmppMucManager.h>
 #include <QXmppClient.h>
-#include <QXmppConstants.h>
 #include <util/passutils.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
@@ -44,6 +43,8 @@ namespace Azoth
 {
 namespace Xoox
 {
+	const QString NSData = "jabber:x:data";
+
 	RoomHandler::RoomHandler (const QString& jid,
 			const QString& ourNick,
 			GlooxAccount* account)
@@ -397,7 +398,7 @@ namespace Xoox
 		Q_FOREACH (const QXmppElement& elem, msg.extensions ())
 		{
 			const QString& xmlns = elem.attribute ("xmlns");
-			if (xmlns == ns_data)
+			if (xmlns == NSData)
 			{
 				QXmppDataForm *df = new QXmppDataForm ();
 				df->parse (XooxUtil::XmppElem2DomElem (elem));

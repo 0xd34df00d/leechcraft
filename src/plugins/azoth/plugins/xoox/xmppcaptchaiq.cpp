@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "xmppcaptchaiq.h"
-#include <QXmppConstants.h>
 
 namespace LeechCraft
 {
@@ -25,6 +24,8 @@ namespace Azoth
 {
 namespace Xoox
 {
+	const QString NSCaptcha = "urn:xmpp:captcha";
+
 	XMPPCaptchaIq::XMPPCaptchaIq (QXmppIq::Type type)
 	: QXmppIq (type)
 	{
@@ -43,7 +44,7 @@ namespace Xoox
 	void XMPPCaptchaIq::toXmlElementFromChild (QXmlStreamWriter *writer) const
 	{
 		writer->writeStartElement ("captcha");
-		writer->writeAttribute ("xmlns", ns_captcha);
+		writer->writeAttribute ("xmlns", NSCaptcha);
 		DataForm_.toXml (writer);
 		writer->writeEndElement ();
 	}

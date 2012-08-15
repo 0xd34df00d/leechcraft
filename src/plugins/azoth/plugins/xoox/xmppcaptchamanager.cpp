@@ -19,7 +19,6 @@
 #include "xmppcaptchamanager.h"
 #include <QDomElement>
 #include <QXmppClient.h>
-#include <QXmppConstants.h>
 #include "xmppcaptchaiq.h"
 
 namespace LeechCraft
@@ -28,6 +27,8 @@ namespace Azoth
 {
 namespace Xoox
 {
+	const QString NSCaptcha = "urn:xmpp:captcha";
+
 	bool XMPPCaptchaManager::handleStanza (const QDomElement& stanza)
 	{
 		if (stanza.tagName () != "message")
@@ -35,7 +36,7 @@ namespace Xoox
 
 		const auto& captchaStanza = stanza.firstChildElement ("captcha");
 
-		if (captchaStanza.namespaceURI () != ns_captcha)
+		if (captchaStanza.namespaceURI () != NSCaptcha)
 			return false;
 
 		const auto& dataFormStanza = captchaStanza.firstChildElement ("x");
