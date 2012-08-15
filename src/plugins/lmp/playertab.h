@@ -32,6 +32,8 @@
 
 class QStandardItemModel;
 class QSortFilterProxyModel;
+class QListWidget;
+class QTabBar;
 
 namespace Media
 {
@@ -75,8 +77,11 @@ namespace LMP
 		QMenu *TrayMenu_;
 
 		QAction *CollectionShowTrackProps_;
+		QListWidget *NavButtons_;
+		QTabBar *NavBar_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
+		~PlayerTab ();
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
@@ -91,6 +96,7 @@ namespace LMP
 
 		void InitWithOtherPlugins ();
 	private:
+		void SetupNavButtons ();
 		void SetupToolbar ();
 		void SetupCollection ();
 		void SetupPlaylistsTab ();
@@ -117,6 +123,7 @@ namespace LMP
 		void closeLMP ();
 		void handleStateChanged (Phonon::State newState, Phonon::State oldState);
 		void handleShowTrayIcon ();
+		void handleUseNavTabBar ();
 		void handleChangedVolume (qreal delta);
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason);
 	signals:

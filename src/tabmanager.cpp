@@ -296,6 +296,10 @@ void TabManager::handleCurrentChanged (int index)
 
 	InvalidateName ();
 
+	if (auto prevTab = TabWidget_->GetPreviousWidget ())
+		if (auto imtw = qobject_cast<ITabWidget*> (prevTab))
+			imtw->TabLostCurrent ();
+
 	if (TabWidget_->WidgetCount () != 1)
 		Core::Instance ().GetReallyMainWindow ()->RemoveMenus (Menus_);
 

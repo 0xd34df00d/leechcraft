@@ -257,6 +257,7 @@ namespace Azoth
 
 	void ChatTab::Remove ()
 	{
+		emit entryLostCurrent (GetEntry<QObject> ());
 		emit needToClose (this);
 	}
 
@@ -283,6 +284,8 @@ namespace Azoth
 	{
 		TypeTimer_->stop ();
 		SetChatPartState (CPSInactive);
+
+		emit entryLostCurrent (GetEntry<QObject> ());
 	}
 
 	QByteArray ChatTab::GetTabRecoverData () const
@@ -1745,6 +1748,7 @@ namespace Azoth
 	void ChatTab::appendMessageText (const QString& text)
 	{
 		Ui_.MsgEdit_->setText (Ui_.MsgEdit_->toPlainText () + text);
+		Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 	}
 
 	void ChatTab::selectVariant (const QString& var)

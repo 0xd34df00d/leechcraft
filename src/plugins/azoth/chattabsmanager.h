@@ -93,6 +93,7 @@ namespace Azoth
 
 		void clearUnreadMsgCount (QObject*);
 		void entryMadeCurrent (QObject*);
+		void entryLostCurrent (QObject*);
 	};
 }
 }

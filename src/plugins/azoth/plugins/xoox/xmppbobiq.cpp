@@ -18,7 +18,6 @@
 
 #include "xmppbobiq.h"
 #include <QDomElement>
-#include <QXmppConstants.h>
 
 namespace LeechCraft
 {
@@ -26,6 +25,8 @@ namespace Azoth
 {
 namespace Xoox
 {
+	const QString NSBob = "urn:xmpp:bob";
+
 	XMPPBobIq::XMPPBobIq (QXmppIq::Type type)
 	: QXmppIq (type)
 	, MaxAge_ (86400)
@@ -75,7 +76,7 @@ namespace Xoox
 	bool XMPPBobIq::IsBobIq (const QDomElement& element)
 	{
 		const auto& dataElement = element.firstChildElement ("data");
-		return dataElement.namespaceURI () == ns_bob;
+		return dataElement.namespaceURI () == NSBob;
 	}
 
 	void XMPPBobIq::parseElementFromChild (const QDomElement& element)
@@ -90,7 +91,7 @@ namespace Xoox
 	void XMPPBobIq::toXmlElementFromChild(QXmlStreamWriter *writer) const
 	{
 		writer->writeStartElement ("data");
-		writer->writeAttribute ("xmlns", ns_bob);
+		writer->writeAttribute ("xmlns", NSBob);
 		writer->writeAttribute ("cid", Cid_);
 
 		if (!MimeType_.isEmpty ())

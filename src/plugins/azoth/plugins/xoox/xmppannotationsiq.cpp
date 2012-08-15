@@ -18,7 +18,6 @@
 
 #include "xmppannotationsiq.h"
 #include <QDomElement>
-#include <QXmppConstants.h>
 
 namespace LeechCraft
 {
@@ -26,6 +25,9 @@ namespace Azoth
 {
 namespace Xoox
 {
+	const QString NSPrivate = "jabber:iq:private";
+	const QString NSRosterNotes = "storage:rosternotes";
+
 	XMPPAnnotationsIq::NoteItem::NoteItem ()
 	{
 	}
@@ -112,9 +114,9 @@ namespace Xoox
 	void XMPPAnnotationsIq::toXmlElementFromChild (QXmlStreamWriter *writer) const
 	{
 		writer->writeStartElement ("query");
-		writer->writeAttribute ("xmlns", ns_private);
+		writer->writeAttribute ("xmlns", NSPrivate);
 		writer->writeStartElement ("storage");
-		writer->writeAttribute ("xmlns", ns_rosternotes);
+		writer->writeAttribute ("xmlns", NSRosterNotes);
 
 		Q_FOREACH (const auto& item, Items_)
 		{

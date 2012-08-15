@@ -212,6 +212,7 @@ namespace Azoth
 		void changeTabIcon (QWidget*, const QIcon&);
 		void needToClose (ChatTab*);
 		void entryMadeCurrent (QObject*);
+		void entryLostCurrent (QObject*);
 
 		void tabRecoverDataChanged ();
 

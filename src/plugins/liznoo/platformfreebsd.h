@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012       Maxim Ignatenko
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,40 +19,28 @@
 
 #pragma once
 
-#include <QWidget>
-#include <QHash>
-#include "ui_radiowidget.h"
+#include "platformlayer.h"
 
-class QStandardItemModel;
-class QStandardItem;
-
-namespace Media
-{
-	class IRadioStationProvider;
-}
+class QTimer;
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Liznoo
 {
-	class Player;
-
-	class RadioWidget : public QWidget
+	class PlatformFreeBSD : public PlatformLayer
 	{
 		Q_OBJECT
 
-		Ui::RadioWidget Ui_;
-
-		Player *Player_;
-		QStandardItemModel *StationsModel_;
-		QHash<QStandardItem*, Media::IRadioStationProvider*> Root2Prov_;
+		QTimer *Timer_;
+		int ACPIfd_;
 	public:
-		RadioWidget (QWidget* = 0);
-
-		void SetPlayer (Player*);
-		void InitializeProviders ();
+		PlatformFreeBSD (QObject* = 0);
+		void Stop ();
+		void ChangeState (PowerState);
 	private slots:
-		void on_StationsView__doubleClicked (const QModelIndex&);
+		void update ();
+	signals:
+		void batteryInfoUpdated (Liznoo::BatteryInfo);
 	};
 }
 }

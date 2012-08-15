@@ -19,6 +19,7 @@
 
 #include "lastfmscrobble.h"
 #include <QIcon>
+#include <QStandardItemModel>
 #include <QByteArray>
 #include <interfaces/core/icoreproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -63,6 +64,31 @@ namespace Lastfmscrobble
 				SIGNAL (authenticated ()),
 				LFSubmitter_,
 				SLOT (handleAuthenticated ()));
+
+		RadioRoot_ = new QStandardItem ("Last.FM");
+		RadioRoot_->setEditable (false);
+		RadioRoot_->setIcon (QIcon (":/resources/images/lastfm.png"));
+		auto addPredefined = [this] (const QString& name, const QString& id, const QIcon& icon)
+		{
+			auto item = new QStandardItem (name);
+			item->setData (Media::RadioType::Predefined, Media::RadioItemRole::ItemType);
+			item->setData (id, Media::RadioItemRole::RadioID);
+			item->setEditable (false);
+			item->setIcon (icon);
+			RadioRoot_->appendRow (item);
+			return item;
+		};
+		addPredefined (tr ("Library"), "library", QIcon (":/resources/images/personal.png"));
+		addPredefined (tr ("Recommendations"), "recommendations", QIcon (":/resources/images/recs.png"));
+		addPredefined (tr ("Loved"), "loved", QIcon (":/resources/images/loved.png"));
+		addPredefined (tr ("Neighbourhood"), "neighbourhood", QIcon (":/resources/images/neighbours.png"));
+
+		auto similarItem = addPredefined (tr ("Similar artists"),
+				QString (), QIcon (":/resources/images/radio.png"));
+		similarItem->setData (Media::RadioType::SimilarArtists, Media::RadioItemRole::ItemType);
+		auto globalItem = addPredefined (tr ("Global tag"),
+				QString (), QIcon (":/resources/images/tag.png"));
+		globalItem->setData (Media::RadioType::GlobalTag, Media::RadioItemRole::ItemType);;
 	}
 
 	void Plugin::SecondInit ()
@@ -145,22 +171,20 @@ namespace Lastfmscrobble
 				Proxy_->GetNetworkAccessManager (), num, this);
 	}
 
-	bool Plugin::IsRadioSupported (Type) const
-	{
-		return true;
-	}
-
-	QString Plugin::GetRadioName () const
-	{
-		return "Last.FM";
-	}
-
-	Media::IRadioStation_ptr Plugin::GetRadioStation (Type type, const QString& name)
+	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem *item, const QString& name)
 	{
 		try
 		{
+			auto type = item->data (Media::RadioItemRole::ItemType).toInt ();
+			const auto& param = type == Media::RadioType::Predefined ?
+					item->data (Media::RadioItemRole::RadioID).toString () :
+					name;
+
 			auto nam = Proxy_->GetNetworkAccessManager ();
-			return Media::IRadioStation_ptr (new RadioStation (nam, type, name));
+			return Media::IRadioStation_ptr (new RadioStation (nam,
+						static_cast<Media::RadioType> (type),
+						param,
+						item->text ()));
 		}
 		catch (const RadioStation::UnsupportedType&)
 		{
@@ -168,9 +192,9 @@ namespace Lastfmscrobble
 		}
 	}
 
-	QMap<QByteArray, QString> Plugin::GetPredefinedStations () const
+	QList<QStandardItem*> Plugin::GetRadioListItems () const
 	{
-		return RadioStation::GetPredefinedStations ();
+		return QList<QStandardItem*> () << RadioRoot_;
 	}
 
 	void Plugin::RequestRecentReleases (int num, bool withRecs)

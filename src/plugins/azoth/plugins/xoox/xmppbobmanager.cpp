@@ -19,7 +19,6 @@
 #include "xmppbobmanager.h"
 #include <QDomElement>
 #include <QXmppClient.h>
-#include <QXmppConstants.h>
 #include "xmppbobiq.h"
 
 namespace LeechCraft
@@ -28,6 +27,8 @@ namespace Azoth
 {
 namespace Xoox
 {
+	const QString NSBob = "urn:xmpp:bob";
+
 	XMPPBobManager::XMPPBobManager (unsigned int cacheSizeKb)
 	: BobCache_ (cacheSizeKb)
 	{
@@ -67,7 +68,7 @@ namespace Xoox
 
 	QStringList XMPPBobManager::discoveryFeatures () const
 	{
-		return QStringList (ns_bob);
+		return QStringList (NSBob);
 	}
 
 	QString XMPPBobManager::RequestBob (const QString& jid, const QString& cid)

@@ -19,7 +19,6 @@
 #include "xmppannotationsmanager.h"
 #include <QDomElement>
 #include <QXmppClient.h>
-#include <QXmppConstants.h>
 
 namespace LeechCraft
 {
@@ -27,6 +26,8 @@ namespace Azoth
 {
 namespace Xoox
 {
+	const QString NSRosterNotes = "storage:rosternotes";
+
 	void XMPPAnnotationsManager::SetNotes (const QList<XMPPAnnotationsIq::NoteItem>& notes)
 	{
 		XMPPAnnotationsIq iq;
@@ -48,7 +49,7 @@ namespace Xoox
 			return false;
 
 		const auto& query = element.firstChildElement ("query");
-		if (query.firstChildElement ("storage").namespaceURI () != ns_rosternotes)
+		if (query.firstChildElement ("storage").namespaceURI () != NSRosterNotes)
 			return false;
 
 		XMPPAnnotationsIq iq;

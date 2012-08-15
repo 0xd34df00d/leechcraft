@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
+		<label value="Appearance" />
+		<item type="checkbox" property="ShowTrayIcon" default="false">
+			<label value="Show tray icon" />
+		</item>
+		<item type="checkbox" property="UseNavTabBar" default="false">
+			<label value="Use tabs for switching pages" />
+		</item>
+	</page>
+	<page>
 		<label value="Behavior" />
 		<item type="checkbox" property="EnableNotifications" default="true">
 			<label value="Enable notifications" />
@@ -11,9 +20,6 @@
 		</item>
 		<item type="checkbox" property="RequestLyrics" default="true">
 			<label value="Request lyrics" />
-		</item>
-		<item type="checkbox" property="ShowTrayIcon" default="false">
-			<label value="Show tray icon" />
 		</item>
 		<item type="checkbox" property="SortWithThe" default="true">
 			<label value="Take 'The' into account when sorting" />

@@ -88,6 +88,7 @@ namespace Azoth
 		void clearFilter ();
 
 		void handleEntryMadeCurrent (QObject*);
+		void handleEntryLostCurrent (QObject*);
 		void resetToWholeMode ();
 		void handleCLMode (bool);
 		void menuBarVisibilityToggled ();

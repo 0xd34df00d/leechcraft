@@ -42,22 +42,24 @@ namespace Lastfmscrobble
 	}
 
 	RadioStation::RadioStation (QNetworkAccessManager *nam,
-			Media::IRadioStationProvider::Type type, const QString& param)
+			Media::RadioType type, const QString& param, const QString& visibleName)
 	{
 		lastfm::RadioStation station;
 		switch (type)
 		{
-		case Media::IRadioStationProvider::Type::SimilarArtists:
+		case Media::RadioType::SimilarArtists:
 			station = lastfm::RadioStation::similar (lastfm::Artist (param));
+			RadioName_ = tr ("Similar to \"%1\" radio").arg (param);
 			break;
-		case Media::IRadioStationProvider::Type::GlobalTag:
+		case Media::RadioType::GlobalTag:
 #if LASTFM_MAJOR_VERSION < 1
 			station = lastfm::RadioStation::globalTag (lastfm::Tag (param));
 #else
 			station = lastfm::RadioStation::tag (lastfm::Tag (param));
 #endif
+			RadioName_ = tr ("Tag \"%1\" radio").arg (param);
 			break;
-		case Media::IRadioStationProvider::Type::Predefined:
+		case Media::RadioType::Predefined:
 		{
 			const auto& login = XmlSettingsManager::Instance ().property ("lastfm.login").toString ();
 			const lastfm::User user (login);
@@ -74,6 +76,9 @@ namespace Lastfmscrobble
 #endif
 			else if (param == "neighbourhood")
 				station = lastfm::RadioStation::neighbourhood (user);
+
+			RadioName_ = visibleName;
+
 			break;
 		}
 		default:
@@ -113,6 +118,11 @@ namespace Lastfmscrobble
 				SIGNAL (trackAvailable ()),
 				this,
 				SLOT (handleNextTrack ()));
+	}
+
+	QString RadioStation::GetRadioName () const
+	{
+		return RadioName_;
 	}
 
 	void RadioStation::EmitTrack (const lastfm::Track& track)

@@ -64,6 +64,8 @@ namespace Lastfmscrobble
 		LastFMSubmitter *LFSubmitter_;
 
 		ICoreProxy_ptr Proxy_;
+
+		QStandardItem *RadioRoot_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -87,10 +89,8 @@ namespace Lastfmscrobble
 
 		Media::IPendingSimilarArtists* RequestRecommended (int);
 
-		bool IsRadioSupported (Type) const;
-		QString GetRadioName () const;
-		Media::IRadioStation_ptr GetRadioStation (Type, const QString&);
-		QMap<QByteArray, QString> GetPredefinedStations () const;
+		Media::IRadioStation_ptr GetRadioStation (QStandardItem*, const QString&);
+		QList<QStandardItem*> GetRadioListItems () const;
 
 		void RequestRecentReleases (int, bool);
 
@@ -100,8 +100,6 @@ namespace Lastfmscrobble
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 
 		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
-
-		void predefinedStationsChanged ();
 
 		void gotRecentReleases (const QList<Media::AlbumRelease>&);
 	};
