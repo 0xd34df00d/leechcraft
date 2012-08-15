@@ -60,6 +60,7 @@ namespace Lastfmscrobble
 		void handleError (const QString&);
 		void handleNextTrack ();
 	signals:
+		void gotPlaylist (const QUrl&, const QString&);
 		void gotNewStream (const QUrl&, const Media::AudioInfo&);
 		void gotError (const QString&);
 	};

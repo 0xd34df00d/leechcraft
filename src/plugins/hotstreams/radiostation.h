@@ -41,8 +41,9 @@ namespace HotStreams
 		QString GetRadioName () const;
 		void RequestNewStream ();
 	signals:
-		void gotError (const QString&);
 		void gotNewStream (const QUrl&, const Media::AudioInfo&);
+		void gotPlaylist (const QString&, const QString&);
+		void gotError (const QString&);
 	};
 }
 }

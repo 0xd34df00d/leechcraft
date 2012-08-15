@@ -40,7 +40,8 @@ namespace Media
 	enum RadioItemRole
 	{
 		ItemType = Qt::UserRole + 1,
-		RadioID
+		RadioID,
+		MaxRadioRole
 	};
 
 	class IRadioStationProvider
