@@ -10,12 +10,12 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	hotstreams.cpp
+	radiostation.cpp
 	)
 
 ADD_LIBRARY (leechcraft_hotstreams SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_hotstreams
 	${QT_LIBRARIES}
