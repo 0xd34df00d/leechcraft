@@ -22,6 +22,8 @@
 #include <QUrl>
 #include <interfaces/media/iradiostation.h>
 
+class QNetworkAccessManager;
+
 namespace LeechCraft
 {
 namespace HotStreams
@@ -35,11 +37,13 @@ namespace HotStreams
 		QUrl StreamUrl_;
 		QString Name_;
 	public:
-		RadioStation ();
+		RadioStation (const QUrl&, const QString&, QNetworkAccessManager*);
 
 		QObject* GetObject ();
 		QString GetRadioName () const;
 		void RequestNewStream ();
+	private slots:
+		void handlePlaylistFetched ();
 	signals:
 		void gotNewStream (const QUrl&, const Media::AudioInfo&);
 		void gotPlaylist (const QString&, const QString&);

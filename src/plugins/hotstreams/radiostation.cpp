@@ -17,14 +17,25 @@
  **********************************************************************/
 
 #include "radiostation.h"
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QTemporaryFile>
+#include <QtDebug>
 #include <interfaces/media/audiostructs.h>
 
 namespace LeechCraft
 {
 namespace HotStreams
 {
-	RadioStation::RadioStation ()
+	RadioStation::RadioStation (const QUrl& url, const QString& name, QNetworkAccessManager *nam)
+	: StreamUrl_ (url)
+	, Name_ (name)
 	{
+		connect (nam->get (QNetworkRequest (url)),
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePlaylistFetched ()));
 	}
 
 	QObject* RadioStation::GetObject ()
@@ -39,7 +50,28 @@ namespace HotStreams
 
 	void RadioStation::RequestNewStream ()
 	{
-		emit gotNewStream (StreamUrl_, Media::AudioInfo ());
+	}
+
+	void RadioStation::handlePlaylistFetched ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		QTemporaryFile file;
+		file.setAutoRemove (false);
+		if (!file.open ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open temporary file";
+			return;
+		}
+
+		file.write (reply->readAll ());
+		file.close ();
+		emit gotPlaylist (file.fileName (), "pls");
 	}
 }
 }
