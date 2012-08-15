@@ -22,6 +22,7 @@
 #include <QNetworkAccessManager>
 #include <QStandardItem>
 #include <interfaces/media/iradiostationprovider.h>
+#include "roles.h"
 
 namespace LeechCraft
 {
@@ -53,6 +54,7 @@ namespace HotStreams
 
 			auto item = new QStandardItem (name);
 			item->setToolTip (stream.Description_);
+			item->setData (stream.Name_, StreamItemRoles::PristineName);
 			item->setData (Media::RadioType::Predefined, Media::RadioItemRole::ItemType);
 			item->setData (stream.URL_, Media::RadioItemRole::RadioID);
 			item->setEditable (false);
