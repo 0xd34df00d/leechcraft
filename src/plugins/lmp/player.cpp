@@ -457,6 +457,10 @@ namespace LMP
 				SIGNAL (gotNewStream (QUrl, Media::AudioInfo)),
 				this,
 				SLOT (handleRadioStream (QUrl, Media::AudioInfo)));
+		connect (CurrentStation_->GetObject (),
+				SIGNAL (gotPlaylist (QString, QString)),
+				this,
+				SLOT (handleGotRadioPlaylist (QString, QString)));
 		CurrentStation_->RequestNewStream ();
 
 		auto radioName = station->GetRadioName ();
@@ -682,7 +686,8 @@ namespace LMP
 		if (!CurrentStation_)
 			return;
 
-		PlaylistModel_->removeRow (RadioItem_->row ());
+		if (RadioItem_)
+			PlaylistModel_->removeRow (RadioItem_->row ());
 		RadioItem_ = 0;
 
 		CurrentStation_.reset ();
@@ -862,6 +867,32 @@ namespace LMP
 		qDebug () << Q_FUNC_INFO << Source_->state ();
 		if (Source_->state () == Phonon::StoppedState)
 			Source_->play ();
+	}
+
+	void Player::handleGotRadioPlaylist (const QString& name, const QString& format)
+	{
+		QMetaObject::invokeMethod (this,
+				"postPlaylistCleanup",
+				Qt::QueuedConnection,
+				Q_ARG (QString, name));
+
+		auto parser = MakePlaylistParser (format);
+		if (!parser)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find parser for format"
+					<< format;
+			return;
+		}
+
+		const auto& list = parser (name);
+		Enqueue (list, false);
+	}
+
+	void Player::postPlaylistCleanup (const QString& filename)
+	{
+		UnsetRadio ();
+		QFile::remove (filename);
 	}
 
 	void Player::handleUpdateSourceQueue ()
