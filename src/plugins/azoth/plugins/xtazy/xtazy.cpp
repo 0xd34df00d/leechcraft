@@ -32,10 +32,10 @@
 #include "xmlsettingsmanager.h"
 #include "filesource.h"
 #include "lcsource.h"
+#include "tracksharedialog.h"
 
 #ifdef HAVE_DBUS
 #include "mprissource.h"
-#include "tracksharedialog.h"
 #endif
 
 namespace LeechCraft
