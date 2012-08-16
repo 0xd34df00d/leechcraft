@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/hotstreams">
+	<file>resources/images/radio.png</file>
 	<file>resources/images/di.png</file>
 	<file>resources/images/skyfm.png</file>
 	<file>resources/images/somafm.png</file>

@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QUrl>
 #include <QStringList>
+#include <QIcon>
 
 class QNetworkAccessManager;
 class QNetworkRequest;
@@ -36,6 +37,7 @@ namespace HotStreams
 	protected:
 		QNetworkAccessManager *NAM_;
 		QStandardItem *Root_;
+		QIcon RadioIcon_;
 
 		struct StreamInfo
 		{

@@ -32,6 +32,7 @@ namespace HotStreams
 	: QObject (parent)
 	, NAM_ (nam)
 	, Root_ (root)
+	, RadioIcon_ (":/hotstreams/resources/images/radio.png")
 	{
 	}
 
@@ -58,6 +59,7 @@ namespace HotStreams
 
 			auto item = new QStandardItem (name);
 			item->setToolTip (stream.Description_);
+			item->setIcon (RadioIcon_);
 			item->setData (stream.Name_, StreamItemRoles::PristineName);
 			item->setData (Media::RadioType::Predefined, Media::RadioItemRole::ItemType);
 			item->setData (stream.URL_, Media::RadioItemRole::RadioID);
