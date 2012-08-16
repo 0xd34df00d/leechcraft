@@ -100,7 +100,8 @@ namespace HotStreams
 					channel ["description"].toString (),
 					QStringList (),
 					url,
-					channel ["asset_url"].toString ()
+					channel ["asset_url"].toString (),
+					channel ["channel_director"].toString ()
 				};
 				result << info;
 			}

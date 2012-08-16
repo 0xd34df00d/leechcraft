@@ -74,7 +74,8 @@ namespace HotStreams
 				getText ("description"),
 				getText ("genre").split ('|', QString::SkipEmptyParts),
 				url,
-				QUrl ()
+				QUrl (),
+				getText ("dj") + " (" + getText ("djmail") + ")"
 			};
 			result << info;
 			channel = channel.nextSiblingElement ("channel");

@@ -46,6 +46,8 @@ namespace HotStreams
 			QStringList Genres_;
 			QUrl URL_;
 			QUrl IconURL_;
+
+			QString DJ_;
 		};
 	public:
 		StreamListFetcherBase (QStandardItem*, QNetworkAccessManager*, QObject* = 0);
