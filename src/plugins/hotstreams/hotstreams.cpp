@@ -36,6 +36,7 @@ namespace HotStreams
 		auto somafm = new QStandardItem ("SomaFM");
 		somafm->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		somafm->setEditable (false);
+		somafm->setIcon (QIcon (":/hotstreams/resources/images/somafm.png"));
 		Roots_ ["somafm"] = somafm;
 	}
 

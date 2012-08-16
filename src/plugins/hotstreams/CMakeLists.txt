@@ -16,10 +16,13 @@ SET (SRCS
 	somafmlistfetcher.cpp
 	streamlistfetcherbase.cpp
 	)
+SET (RESOURCES hotstreamsresources.qrc)
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_hotstreams SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_hotstreams
 	${QT_LIBRARIES}
