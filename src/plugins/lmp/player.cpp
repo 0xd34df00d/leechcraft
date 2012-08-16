@@ -1011,6 +1011,13 @@ namespace LMP
 		auto curItem = Items_ [source];
 
 		const auto& info = GetPhononMediaInfo ();
+		if (info.Album_ == LastPhononMediaInfo_.Album_ &&
+				info.Artist_ == LastPhononMediaInfo_.Artist_ &&
+				info.Title_ == LastPhononMediaInfo_.Title_)
+			return;
+
+		LastPhononMediaInfo_ = info;
+
 		FillItem (curItem, info);
 		emit songChanged (info);
 	}
