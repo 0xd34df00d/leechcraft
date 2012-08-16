@@ -46,7 +46,11 @@ namespace HotStreams
 
 	void StreamListFetcherBase::HandleData (const QByteArray& data)
 	{
-		for (const auto& stream : Parse (data))
+		auto result = Parse (data);
+		std::sort (result.begin (), result.end (),
+				[] (decltype (result.at (0)) left, decltype (result.at (0)) right)
+					{ return QString::localeAwareCompare (left.Name_, right.Name_) < 0; });
+		for (const auto& stream : result)
 		{
 			auto name = stream.Name_;
 			if (!stream.Genres_.isEmpty ())
