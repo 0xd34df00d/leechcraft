@@ -68,6 +68,7 @@ namespace HotStreams
 			item->setData (stream.Name_, StreamItemRoles::PristineName);
 			item->setData (Media::RadioType::Predefined, Media::RadioItemRole::ItemType);
 			item->setData (stream.URL_, Media::RadioItemRole::RadioID);
+			item->setData (stream.PlaylistFormat_, StreamItemRoles::PlaylistFormat);
 			item->setEditable (false);
 			Root_->appendRow (item);
 		}

@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012 Maxim Koltsov
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,46 +19,18 @@
 
 #pragma once
 
-#include <QObject>
-#include <QUrl>
-#include <QStringList>
-#include <QIcon>
-
-class QNetworkAccessManager;
-class QNetworkRequest;
-class QStandardItem;
+#include "streamlistfetcherbase.h"
 
 namespace LeechCraft
 {
 namespace HotStreams
 {
-	class StreamListFetcherBase : public QObject
+	class StealKillListFetcher : public StreamListFetcherBase
 	{
-		Q_OBJECT
-	protected:
-		QNetworkAccessManager *NAM_;
-		QStandardItem *Root_;
-		QIcon RadioIcon_;
-
-		struct StreamInfo
-		{
-			QString Name_;
-			QString Description_;
-			QStringList Genres_;
-			QUrl URL_;
-			QUrl IconURL_;
-			QString DJ_;
-			QString PlaylistFormat_;
-		};
 	public:
-		StreamListFetcherBase (QStandardItem*, QNetworkAccessManager*, QObject* = 0);
+		StealKillListFetcher (QStandardItem*, QNetworkAccessManager*, QObject* = 0);
 	protected:
-		void Request (const QNetworkRequest&);
-
-		virtual void HandleData (const QByteArray&);
-		virtual QList<StreamInfo> Parse (const QByteArray&) = 0;
-	protected slots:
-		void handleReplyFinished ();
+		QList<StreamInfo> Parse (const QByteArray&);
 	};
 }
 }

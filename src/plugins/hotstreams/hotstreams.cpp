@@ -22,6 +22,7 @@
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include "somafmlistfetcher.h"
+#include "stealkilllistfetcher.h"
 
 #ifdef HAVE_QJSON
 #include "audioaddictstreamfetcher.h"
@@ -57,6 +58,11 @@ namespace HotStreams
 		somafm->setEditable (false);
 		somafm->setIcon (QIcon (":/hotstreams/resources/images/somafm.png"));
 		Roots_ ["somafm"] = somafm;
+
+		auto stealkill = new QStandardItem ("42fm");
+		stealkill->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
+		stealkill->setEditable (false);
+		Roots_ ["42fm"] = stealkill;
 	}
 
 	void Plugin::SecondInit ()
@@ -100,7 +106,8 @@ namespace HotStreams
 		const auto& name = item->data (StreamItemRoles::PristineName).toString ();
 		const auto& url = item->data (Media::RadioItemRole::RadioID).toUrl ();
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		return Media::IRadioStation_ptr (new RadioStation (url, name, nam));
+		const auto& format = item->data (StreamItemRoles::PlaylistFormat).toString ();
+		return Media::IRadioStation_ptr (new RadioStation (url, name, nam, format));
 	}
 
 	void Plugin::refreshRadios ()
@@ -115,6 +122,9 @@ namespace HotStreams
 
 		clearRoot (Roots_ ["somafm"]);
 		new SomaFMListFetcher (Roots_ ["somafm"], nam, this);
+
+		clearRoot (Roots_ ["42fm"]);
+		new StealKillListFetcher (Roots_ ["42fm"], nam, this);
 
 #ifdef HAVE_QJSON
 		clearRoot (Roots_ ["di"]);

@@ -19,6 +19,7 @@ SET (SRCS
 	radiostation.cpp
 	somafmlistfetcher.cpp
 	streamlistfetcherbase.cpp
+	stealkilllistfetcher.cpp
 	)
 
 IF (QJSON_FOUND)
