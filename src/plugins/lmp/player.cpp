@@ -509,6 +509,24 @@ namespace LMP
 		info.Genres_ = Source_->metaData (Phonon::GenreMetaData);
 		info.TrackNumber_ = Source_->metaData (Phonon::TracknumberMetaData).value (0).toInt ();
 		info.Length_ = Source_->totalTime () / 1000;
+
+		if (info.Artist_.isEmpty () && info.Title_.contains (" - "))
+		{
+			const auto& strs = info.Title_.split (" - ", QString::SkipEmptyParts);
+			switch (strs.size ())
+			{
+			case 2:
+				info.Artist_ = strs.value (0);
+				info.Title_ = strs.value (1);
+				break;
+			case 3:
+				info.Artist_ = strs.value (0);
+				info.Album_ = strs.value (1);
+				info.Title_ = strs.value (2);
+				break;
+			}
+		}
+
 		return info;
 	}
 
@@ -516,10 +534,18 @@ namespace LMP
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
 		{
-			item->setText (QString ("%1 - %2 - %3")
-						.arg (info.Artist_)
-						.arg (info.Album_)
-						.arg (info.Title_));
+			if (!info.Album_.isEmpty ())
+				item->setText (QString ("%1 - %2 - %3")
+							.arg (info.Artist_)
+							.arg (info.Album_)
+							.arg (info.Title_));
+			else if (!info.Artist_.isEmpty () && !info.Title_.isEmpty ())
+				item->setText (QString ("%1 - %2")
+							.arg (info.Artist_)
+							.arg (info.Title_));
+			else if (!info.Title_.isEmpty ())
+				item->setText (info.Title_);
+
 			item->setData (QVariant::fromValue (info), Player::Role::Info);
 		}
 
@@ -971,6 +997,8 @@ namespace LMP
 		const auto& source = Source_->currentSource ();
 		const auto& isUrl = source.type () == Phonon::MediaSource::Stream ||
 				(source.type () == Phonon::MediaSource::Url && source.url ().scheme () != "file");
+		qDebug () << Q_FUNC_INFO << isUrl << CurrentStation_.get () << !Items_.contains (source);
+		qDebug () << Source_->metaData ();
 		if (!isUrl ||
 				CurrentStation_ ||
 				!Items_.contains (source))
