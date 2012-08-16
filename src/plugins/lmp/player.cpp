@@ -457,6 +457,10 @@ namespace LMP
 				SIGNAL (gotNewStream (QUrl, Media::AudioInfo)),
 				this,
 				SLOT (handleRadioStream (QUrl, Media::AudioInfo)));
+		connect (CurrentStation_->GetObject (),
+				SIGNAL (gotPlaylist (QString, QString)),
+				this,
+				SLOT (handleGotRadioPlaylist (QString, QString)));
 		CurrentStation_->RequestNewStream ();
 
 		auto radioName = station->GetRadioName ();
@@ -505,6 +509,24 @@ namespace LMP
 		info.Genres_ = Source_->metaData (Phonon::GenreMetaData);
 		info.TrackNumber_ = Source_->metaData (Phonon::TracknumberMetaData).value (0).toInt ();
 		info.Length_ = Source_->totalTime () / 1000;
+
+		if (info.Artist_.isEmpty () && info.Title_.contains (" - "))
+		{
+			const auto& strs = info.Title_.split (" - ", QString::SkipEmptyParts);
+			switch (strs.size ())
+			{
+			case 2:
+				info.Artist_ = strs.value (0);
+				info.Title_ = strs.value (1);
+				break;
+			case 3:
+				info.Artist_ = strs.value (0);
+				info.Album_ = strs.value (1);
+				info.Title_ = strs.value (2);
+				break;
+			}
+		}
+
 		return info;
 	}
 
@@ -512,10 +534,18 @@ namespace LMP
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
 		{
-			item->setText (QString ("%1 - %2 - %3")
-						.arg (info.Artist_)
-						.arg (info.Album_)
-						.arg (info.Title_));
+			if (!info.Album_.isEmpty ())
+				item->setText (QString ("%1 - %2 - %3")
+							.arg (info.Artist_)
+							.arg (info.Album_)
+							.arg (info.Title_));
+			else if (!info.Artist_.isEmpty () && !info.Title_.isEmpty ())
+				item->setText (QString ("%1 - %2")
+							.arg (info.Artist_)
+							.arg (info.Title_));
+			else if (!info.Title_.isEmpty ())
+				item->setText (info.Title_);
+
 			item->setData (QVariant::fromValue (info), Player::Role::Info);
 		}
 
@@ -682,7 +712,8 @@ namespace LMP
 		if (!CurrentStation_)
 			return;
 
-		PlaylistModel_->removeRow (RadioItem_->row ());
+		if (RadioItem_)
+			PlaylistModel_->removeRow (RadioItem_->row ());
 		RadioItem_ = 0;
 
 		CurrentStation_.reset ();
@@ -864,6 +895,32 @@ namespace LMP
 			Source_->play ();
 	}
 
+	void Player::handleGotRadioPlaylist (const QString& name, const QString& format)
+	{
+		QMetaObject::invokeMethod (this,
+				"postPlaylistCleanup",
+				Qt::QueuedConnection,
+				Q_ARG (QString, name));
+
+		auto parser = MakePlaylistParser (format);
+		if (!parser)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find parser for format"
+					<< format;
+			return;
+		}
+
+		const auto& list = parser (name);
+		Enqueue (list, false);
+	}
+
+	void Player::postPlaylistCleanup (const QString& filename)
+	{
+		UnsetRadio ();
+		QFile::remove (filename);
+	}
+
 	void Player::handleUpdateSourceQueue ()
 	{
 		if (CurrentStation_)
@@ -940,6 +997,8 @@ namespace LMP
 		const auto& source = Source_->currentSource ();
 		const auto& isUrl = source.type () == Phonon::MediaSource::Stream ||
 				(source.type () == Phonon::MediaSource::Url && source.url ().scheme () != "file");
+		qDebug () << Q_FUNC_INFO << isUrl << CurrentStation_.get () << !Items_.contains (source);
+		qDebug () << Source_->metaData ();
 		if (!isUrl ||
 				CurrentStation_ ||
 				!Items_.contains (source))

@@ -19,15 +19,20 @@
 #pragma once
 
 #include <functional>
-#include <QString>
+#include <QStringList>
 #include <phonon/mediasource.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	typedef std::function<QList<Phonon::MediaSource> (const QString&)> PlaylistParser_f;
+	struct ReadParams
+	{
+		QStringList Suffixes_;
+		QString Path_;
 
-	PlaylistParser_f MakePlaylistParser (const QString& filename);
+		std::function<QStringList (QString)> RawParser_;
+	};
+	QList<Phonon::MediaSource> CommonRead2Sources (const ReadParams&);
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,51 +18,38 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
-#include <interfaces/media/iradiostation.h>
+#include <QHash>
+#include <interfaces/iinfo.h>
 #include <interfaces/media/iradiostationprovider.h>
-#include "lastfmheaders.h"
-
-class QNetworkAccessManager;
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace HotStreams
 {
-	class RadioTuner;
-
-	class RadioStation : public QObject
-					   , public Media::IRadioStation
+	class Plugin : public QObject
+				 , public IInfo
+				 , public Media::IRadioStationProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (Media::IRadioStation)
+		Q_INTERFACES (IInfo Media::IRadioStationProvider)
 
-		std::shared_ptr<RadioTuner> Tuner_;
-		QString RadioName_;
+		ICoreProxy_ptr Proxy_;
+		QHash<QString, QStandardItem*> Roots_;
 	public:
-		struct UnsupportedType {};
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		static QMap<QByteArray, QString> GetPredefinedStations ();
-
-		RadioStation (QNetworkAccessManager*,
-				Media::RadioType,
-				const QString& param,
-				const QString& visibleName);
-
-		QObject* GetObject ();
-		void RequestNewStream ();
-		QString GetRadioName () const;
-	private:
-		void EmitTrack (const lastfm::Track&);
-	private slots:
-		void handleTitle (const QString&);
-		void handleError (const QString&);
-		void handleNextTrack ();
-	signals:
-		void gotPlaylist (const QString&, const QString&);
-		void gotNewStream (const QUrl&, const Media::AudioInfo&);
-		void gotError (const QString&);
+		QList<QStandardItem*> GetRadioListItems () const;
+		Media::IRadioStation_ptr GetRadioStation (QStandardItem* , const QString&);
+	protected slots:
+		void refreshRadios ();
 	};
 }
 }
+

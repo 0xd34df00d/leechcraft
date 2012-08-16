@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,16 +18,15 @@
 
 #pragma once
 
-#include <functional>
-#include <QString>
-#include <phonon/mediasource.h>
+#include <interfaces/media/iradiostationprovider.h>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace HotStreams
 {
-	typedef std::function<QList<Phonon::MediaSource> (const QString&)> PlaylistParser_f;
-
-	PlaylistParser_f MakePlaylistParser (const QString& filename);
+	enum StreamItemRoles
+	{
+		PristineName = Media::RadioItemRole::MaxRadioRole + 1
+	};
 }
 }

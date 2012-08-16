@@ -16,18 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <functional>
-#include <QString>
-#include <phonon/mediasource.h>
+#include "commonpl.h"
+#include <QFileInfo>
+#include <QDir>
+#include <QUrl>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	typedef std::function<QList<Phonon::MediaSource> (const QString&)> PlaylistParser_f;
+	QList<Phonon::MediaSource> CommonRead2Sources (const ReadParams& params)
+	{
+		const auto& plDir = QFileInfo (params.Path_).absoluteDir ();
 
-	PlaylistParser_f MakePlaylistParser (const QString& filename);
+		QList<Phonon::MediaSource> result;
+		Q_FOREACH (const auto& src, params.RawParser_ (params.Path_))
+		{
+			QUrl url (src);
+			if (!url.scheme ().isEmpty ())
+			{
+				result << (url.scheme () == "file" ? url.toLocalFile () : url);
+				continue;
+			}
+
+			const QFileInfo fi (src);
+			if (params.Suffixes_.contains (fi.suffix ()))
+				result += CommonRead2Sources ({ params.Suffixes_,
+							plDir.absoluteFilePath (src), params.RawParser_ });
+			else if (fi.isRelative ())
+				result << plDir.absoluteFilePath (src);
+			else
+				result << src;
+		}
+
+		return result;
+	}
 }
 }

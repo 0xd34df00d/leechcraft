@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,16 +18,42 @@
 
 #pragma once
 
-#include <functional>
-#include <QString>
-#include <phonon/mediasource.h>
+#include <QObject>
+#include <QUrl>
+#include <QStringList>
+
+class QNetworkAccessManager;
+class QNetworkRequest;
+class QStandardItem;
 
 namespace LeechCraft
 {
-namespace LMP
+namespace HotStreams
 {
-	typedef std::function<QList<Phonon::MediaSource> (const QString&)> PlaylistParser_f;
+	class StreamListFetcherBase : public QObject
+	{
+		Q_OBJECT
+	protected:
+		QNetworkAccessManager *NAM_;
+		QStandardItem *Root_;
 
-	PlaylistParser_f MakePlaylistParser (const QString& filename);
+		struct StreamInfo
+		{
+			QString Name_;
+			QString Description_;
+			QStringList Genres_;
+			QUrl URL_;
+			QUrl IconURL_;
+		};
+	public:
+		StreamListFetcherBase (QStandardItem*, QNetworkAccessManager*, QObject* = 0);
+	protected:
+		void Request (const QNetworkRequest&);
+
+		virtual void HandleData (const QByteArray&);
+		virtual QList<StreamInfo> Parse (const QByteArray&) = 0;
+	protected slots:
+		void handleReplyFinished ();
+	};
 }
 }

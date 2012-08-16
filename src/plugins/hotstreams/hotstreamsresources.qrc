@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/hotstreams" >
+	<file>resources/images/somafm.png</file>
+  </qresource>
+</RCC>

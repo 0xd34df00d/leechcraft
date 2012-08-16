@@ -18,16 +18,18 @@
 
 #pragma once
 
-#include <functional>
-#include <QString>
-#include <phonon/mediasource.h>
+#include "streamlistfetcherbase.h"
 
 namespace LeechCraft
 {
-namespace LMP
+namespace HotStreams
 {
-	typedef std::function<QList<Phonon::MediaSource> (const QString&)> PlaylistParser_f;
-
-	PlaylistParser_f MakePlaylistParser (const QString& filename);
+	class SomaFMListFetcher : public StreamListFetcherBase
+	{
+	public:
+		SomaFMListFetcher (QStandardItem*, QNetworkAccessManager*, QObject* = 0);
+	protected:
+		QList<StreamInfo> Parse (const QByteArray&);
+	};
 }
 }

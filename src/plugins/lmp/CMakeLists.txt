@@ -86,6 +86,7 @@ SET (SRCS
 	sync/transcodemanager.cpp
 	sync/transcodingparamswidget.cpp
 	sync/uploadmodel.cpp
+	playlistparsers/commonpl.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp

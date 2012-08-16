@@ -31,6 +31,7 @@ namespace Media
 
 	enum RadioType
 	{
+		None,
 		SimilarArtists,
 		GlobalTag,
 		Predefined
@@ -39,7 +40,8 @@ namespace Media
 	enum RadioItemRole
 	{
 		ItemType = Qt::UserRole + 1,
-		RadioID
+		RadioID,
+		MaxRadioRole
 	};
 
 	class IRadioStationProvider

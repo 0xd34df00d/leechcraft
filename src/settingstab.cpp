@@ -258,7 +258,12 @@ namespace LeechCraft
 						(ii->GetName () + ": " + page);
 			else
 				itemName = page;
-			auto item = new QListWidgetItem (ii->GetIcon (), itemName);
+
+			auto icon = ii->GetIcon ();
+			if (icon.isNull ())
+				icon = QIcon (":/resources/images/defaultpluginicon.svg");
+
+			auto item = new QListWidgetItem (icon, itemName);
 			item->setTextAlignment (Qt::AlignCenter);
 			Ui_.Cats_->addItem (item);
 

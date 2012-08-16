@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,50 +18,35 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
+#include <QUrl>
 #include <interfaces/media/iradiostation.h>
-#include <interfaces/media/iradiostationprovider.h>
-#include "lastfmheaders.h"
 
 class QNetworkAccessManager;
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace HotStreams
 {
-	class RadioTuner;
-
 	class RadioStation : public QObject
 					   , public Media::IRadioStation
 	{
 		Q_OBJECT
 		Q_INTERFACES (Media::IRadioStation)
 
-		std::shared_ptr<RadioTuner> Tuner_;
-		QString RadioName_;
+		QUrl StreamUrl_;
+		QString Name_;
 	public:
-		struct UnsupportedType {};
-
-		static QMap<QByteArray, QString> GetPredefinedStations ();
-
-		RadioStation (QNetworkAccessManager*,
-				Media::RadioType,
-				const QString& param,
-				const QString& visibleName);
+		RadioStation (const QUrl&, const QString&, QNetworkAccessManager*);
 
 		QObject* GetObject ();
-		void RequestNewStream ();
 		QString GetRadioName () const;
-	private:
-		void EmitTrack (const lastfm::Track&);
+		void RequestNewStream ();
 	private slots:
-		void handleTitle (const QString&);
-		void handleError (const QString&);
-		void handleNextTrack ();
+		void handlePlaylistFetched ();
 	signals:
-		void gotPlaylist (const QString&, const QString&);
 		void gotNewStream (const QUrl&, const Media::AudioInfo&);
+		void gotPlaylist (const QString&, const QString&);
 		void gotError (const QString&);
 	};
 }
