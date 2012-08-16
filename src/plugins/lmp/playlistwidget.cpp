@@ -55,12 +55,18 @@ namespace LMP
 	{
 		Ui_.setupUi (this);
 
+		Ui_.BufferProgress_->hide ();
 		Ui_.Playlist_->setItemDelegate (new PlaylistDelegate (Ui_.Playlist_, Ui_.Playlist_));
 	}
 
 	void PlaylistWidget::SetPlayer (Player *player)
 	{
 		Player_ = player;
+
+		connect (Player_,
+				SIGNAL (bufferStatusChanged (int)),
+				this,
+				SLOT (handleBufferStatus (int)));
 
 		Ui_.Playlist_->setModel (Player_->GetPlaylistModel ());
 		Ui_.Playlist_->expandAll ();
@@ -357,6 +363,12 @@ namespace LMP
 				action->setChecked (true);
 				return;
 			}
+	}
+
+	void PlaylistWidget::handleBufferStatus (int status)
+	{
+		Ui_.BufferProgress_->setValue (status);
+		Ui_.BufferProgress_->setVisible (status > 0 && status < 100);
 	}
 
 	void PlaylistWidget::handleStdSort ()

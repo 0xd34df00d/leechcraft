@@ -65,6 +65,8 @@ namespace LMP
 		void handleChangePlayMode ();
 		void handlePlayModeChanged (Player::PlayMode);
 
+		void handleBufferStatus (int);
+
 		void handleStdSort ();
 
 		void removeSelectedSongs ();

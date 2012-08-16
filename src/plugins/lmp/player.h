@@ -162,6 +162,7 @@ namespace LMP
 		void insertedAlbum (const QModelIndex&);
 
 		void playModeChanged (Player::PlayMode);
+		void bufferStatusChanged (int);
 	};
 }
 }

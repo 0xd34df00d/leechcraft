@@ -253,6 +253,10 @@ namespace LMP
 				SIGNAL (metaDataChanged ()),
 				this,
 				SLOT (handleMetadata ()));
+		connect (Source_,
+				SIGNAL (bufferStatus (int)),
+				this,
+				SIGNAL (bufferStatusChanged (int)));
 
 		auto collection = Core::Instance ().GetLocalCollection ();
 		if (collection->IsReady ())
