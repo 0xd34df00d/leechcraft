@@ -22,6 +22,11 @@
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include "somafmlistfetcher.h"
+
+#ifdef HAVE_QJSON
+#include "audioaddictstreamfetcher.h"
+#endif
+
 #include "radiostation.h"
 #include "roles.h"
 
@@ -32,6 +37,20 @@ namespace HotStreams
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+#ifdef HAVE_QJSON
+		auto di = new QStandardItem ("Digitally Imported");
+		di->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
+		di->setEditable (false);
+		di->setIcon (QIcon (":/hotstreams/resources/images/di.png"));
+		Roots_ ["di"] = di;
+
+		auto sky = new QStandardItem ("SkyFM");
+		sky->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
+		sky->setEditable (false);
+		sky->setIcon (QIcon (":/hotstreams/resources/images/skyfm.png"));
+		Roots_ ["sky"] = sky;
+#endif
 
 		auto somafm = new QStandardItem ("SomaFM");
 		somafm->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
@@ -86,6 +105,8 @@ namespace HotStreams
 
 	void Plugin::refreshRadios ()
 	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+
 		auto clearRoot = [] (QStandardItem *item)
 		{
 			while (item->rowCount ())
@@ -93,9 +114,17 @@ namespace HotStreams
 		};
 
 		clearRoot (Roots_ ["somafm"]);
+		new SomaFMListFetcher (Roots_ ["somafm"], nam, this);
 
-		new SomaFMListFetcher (Roots_ ["somafm"],
-				Proxy_->GetNetworkAccessManager (), this);
+#ifdef HAVE_QJSON
+		clearRoot (Roots_ ["di"]);
+		new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::DI,
+				Roots_ ["di"], nam, this);
+
+		clearRoot (Roots_ ["sky"]);
+		new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::SkyFM,
+				Roots_ ["sky"], nam, this);
+#endif
 	}
 }
 }
