@@ -62,6 +62,7 @@ namespace HotStreams
 		auto stealkill = new QStandardItem ("42fm");
 		stealkill->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		stealkill->setEditable (false);
+		stealkill->setIcon (QIcon (":/hotstreams/resources/images/radio.png"));
 		Roots_ ["42fm"] = stealkill;
 	}
 
