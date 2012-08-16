@@ -1498,7 +1498,14 @@ namespace Azoth
 					.property ("ClientIcons").toString () + '/';
 		Q_FOREACH (const QString& variant, entry->Variants ())
 		{
-			const QString& filename = pack + entry->GetClientInfo (variant) ["client_type"].toString ();
+			const auto& type = entry->GetClientInfo (variant) ["client_type"].toString ();
+			if (type.isNull ())
+			{
+				result [variant] = QIcon ();
+				continue;
+			}
+
+			const QString& filename = pack + type;
 
 			QPixmap pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (filename);
 			if (pixmap.isNull ())
