@@ -28,6 +28,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QKeyEvent>
+#include <QTextBrowser>
+#include <QDesktopWidget>
 #include <util/defaulthookproxy.h>
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -110,6 +112,7 @@ namespace Azoth
 			QWidget *parent)
 	: QWidget (parent)
 	, TabToolbar_ (new QToolBar (tr ("Azoth chat window"), this))
+	, MUCEventLog_ (new QTextBrowser ())
 	, ToggleRichText_ (0)
 	, Call_ (0)
 #ifdef ENABLE_CRYPT
@@ -203,6 +206,8 @@ namespace Azoth
 
 		qDeleteAll (HistoryMessages_);
 		delete Ui_.MsgEdit_->document ();
+
+		delete MUCEventLog_;
 	}
 
 	void ChatTab::PrepareTheme ()
@@ -1192,6 +1197,17 @@ namespace Azoth
 	{
 		TabIcon_ = QIcon (":/plugins/azoth/resources/images/azoth.svg");
 		Ui_.AvatarLabel_->hide ();
+
+		const int height = qApp->desktop ()->availableGeometry (QCursor::pos ()).height ();
+
+		MUCEventLog_->setWindowTitle (tr ("MUC log for %1")
+					.arg (GetEntry<ICLEntry> ()->GetHumanReadableID ()));
+		MUCEventLog_->setStyleSheet ("background-color: rgb(0, 0, 0);");
+		MUCEventLog_->resize (600, height * 2 / 3);
+
+		XmlSettingsManager::Instance ().RegisterObject ("SeparateMUCEventLogWindow",
+				this, "handleSeparateMUCLog");
+		handleSeparateMUCLog ();
 	}
 
 	void ChatTab::InitExtraActions ()
@@ -1388,7 +1404,7 @@ namespace Azoth
 			return;
 		}
 
-		if (msg->GetObject ()->property ("Azoth/HiddenMessage").toBool () == true)
+		if (msg->GetObject ()->property ("Azoth/HiddenMessage").toBool ())
 			return;
 
 		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
@@ -1422,6 +1438,17 @@ namespace Azoth
 		emit hookGonnaAppendMsg (proxy, msg->GetObject ());
 		if (proxy->IsCancelled ())
 			return;
+
+		if (XmlSettingsManager::Instance ().property ("SeparateMUCEventLogWindow").toBool () &&
+			(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
+			msg->GetMessageType () != IMessage::MTMUCMessage)
+		{
+			const auto& dt = msg->GetDateTime ().toString ("HH:mm:ss.zzz");
+			MUCEventLog_->append (QString ("<font color=\"#56ED56\">[%1] %2</font>")
+						.arg (dt)
+						.arg (msg->GetBody ()));
+			return;
+		}
 
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
 
@@ -1763,6 +1790,25 @@ namespace Azoth
 	QTextEdit* ChatTab::getMsgEdit ()
 	{
 		return Ui_.MsgEdit_;
+	}
+
+	void ChatTab::on_MUCEventsButton__toggled (bool on)
+	{
+		MUCEventLog_->setVisible (on);
+		if (!on)
+			return;
+
+		MUCEventLog_->move (QCursor::pos ());
+	}
+
+	void ChatTab::handleSeparateMUCLog ()
+	{
+		MUCEventLog_->clear ();
+		const bool isSep = XmlSettingsManager::Instance ()
+				.property ("SeparateMUCEventLogWindow").toBool ();
+
+		Ui_.MUCEventsButton_->setVisible (isSep);
+		PrepareTheme ();
 	}
 
 	void ChatTab::clearAvailableNick ()
