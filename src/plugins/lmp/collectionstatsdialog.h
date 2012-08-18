@@ -32,6 +32,8 @@ namespace LMP
 		Ui::CollectionStatsDialog Ui_;
 	public:
 		CollectionStatsDialog (QWidget* = 0);
+	protected:
+		void keyReleaseEvent (QKeyEvent*);
 	};
 }
 }

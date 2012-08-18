@@ -18,6 +18,7 @@
 
 #include "collectionstatsdialog.h"
 #include <algorithm>
+#include <QKeyEvent>
 #include "core.h"
 #include "localcollection.h"
 
@@ -92,6 +93,16 @@ namespace LMP
 
 		const auto& genres = QStringList (findTops (genre2encounters, 5));
 		addValue (tr ("Top 5 genres:"), genres.join ("; "));
+	}
+
+	void CollectionStatsDialog::keyReleaseEvent (QKeyEvent *e)
+	{
+		if (e->key () == Qt::Key_Escape)
+		{
+			deleteLater ();
+			return;
+		}
+		QWidget::keyReleaseEvent (e);
 	}
 }
 }
