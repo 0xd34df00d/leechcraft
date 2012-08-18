@@ -303,7 +303,7 @@ namespace LMP
 		return result;
 	}
 
-	Collection::TrackStats LocalCollection::GetTrackStats (const QString& path)
+	Collection::TrackStats LocalCollection::GetTrackStats (const QString& path) const
 	{
 		if (!Path2Track_.contains (path))
 			return Collection::TrackStats ();
