@@ -103,7 +103,9 @@ namespace Azoth
 				"#56ED56" :			// rather green
 				"#ED55ED";			// violet or something
 
-		QString html = QString::fromUtf8 ("—————— [%1] ——————")
+		QString html = (direction == IHaveConsole::PDOut ?
+					QString::fromUtf8 ("→→→→→→ [%1] →→→→→→") :
+					QString::fromUtf8 ("←←←←←← [%1] ←←←←←←"))
 				.arg (QTime::currentTime ().toString ("HH:mm:ss.zzz"));
 		html += "<br /><font color=\"" + color + "\">";
 		switch (Format_)
