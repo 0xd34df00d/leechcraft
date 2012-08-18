@@ -80,7 +80,7 @@ namespace LMP
 
 				if (!album->Tracks_.isEmpty ())
 					Q_FOREACH (const auto& genre, album->Tracks_.at (0).Genres_)
-						++genre2encounters [genre];
+						++genre2encounters [genre.toLower ()];
 			}
 
 		const int albumsCount = albumIds.size ();
