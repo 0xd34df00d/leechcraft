@@ -171,6 +171,9 @@ namespace LMP
 		watcher->setProperty ("Path", path);
 		watcher->setProperty ("IsRoot", root);
 
+		if (root)
+			AddRootPaths (QStringList (path));
+
 		const bool symLinks = XmlSettingsManager::Instance ()
 				.property ("FollowSymLinks").toBool ();
 		watcher->setFuture (QtConcurrent::run (RecIterate, path, symLinks));
@@ -605,9 +608,6 @@ namespace LMP
 		paths.subtract (PresentPaths_);
 		if (paths.isEmpty ())
 			return;
-
-		if (root)
-			AddRootPaths (QStringList (path));
 
 		emit scanStarted (paths.size ());
 		auto worker = [resolver] (const QString& path)
