@@ -1478,6 +1478,19 @@ namespace Xoox
 				typeText,
 				PCritical_);
 		Core::Instance ().SendEntity (e);
+
+		if (error.type () == QXmppStanza::Error::Cancel ||
+			(error.type () == QXmppStanza::Error::Auth &&
+			 error.condition () != QXmppStanza::Error::NotAuthorized))
+		{
+			GlooxAccountState state =
+			{
+				SOffline,
+				QString (),
+				0
+			};
+			SetState (state);
+		}
 	}
 
 	void ClientConnection::HandleRIEX (QString msgFrom, QList<RIEXManager::Item> origItems, QString body)
