@@ -1479,9 +1479,10 @@ namespace Xoox
 				PCritical_);
 		Core::Instance ().SendEntity (e);
 
-		if (error.type () == QXmppStanza::Error::Cancel ||
+		const bool dontTryFurther = error.type () == QXmppStanza::Error::Cancel ||
 			(error.type () == QXmppStanza::Error::Auth &&
-			 error.condition () != QXmppStanza::Error::NotAuthorized))
+			 error.condition () != QXmppStanza::Error::NotAuthorized);
+		if (dontTryFurther && !Client_->isConnected ())
 		{
 			GlooxAccountState state =
 			{
