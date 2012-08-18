@@ -49,8 +49,15 @@ namespace LMP
 		{
 			const int rc = Ui_.StatsTable_->rowCount ();
 			Ui_.StatsTable_->setRowCount (rc + 1);
-			Ui_.StatsTable_->setItem (rc, 0, new QTableWidgetItem (name));
-			Ui_.StatsTable_->setItem (rc, 1, new QTableWidgetItem (value));
+
+			auto nameItem = new QTableWidgetItem (name);
+			nameItem->setFlags (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			Ui_.StatsTable_->setItem (rc, 0, nameItem);
+
+			auto valueItem = new QTableWidgetItem (value);
+			valueItem->setFlags (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			Ui_.StatsTable_->setItem (rc, 1, valueItem);
+
 			Ui_.StatsTable_->resizeColumnsToContents ();
 		};
 
