@@ -323,6 +323,11 @@ namespace LMP
 		}
 	}
 
+	Collection::Artists_t LocalCollection::GetAllArtists () const
+	{
+		return Artists_;
+	}
+
 	namespace
 	{
 		template<typename T, typename U, typename Init, typename Parent>

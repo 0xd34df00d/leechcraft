@@ -130,6 +130,8 @@ namespace LMP
 		QStringList TrackList2PathList (const QList<int>&) const;
 
 		Collection::TrackStats GetTrackStats (const QString&) const;
+
+		Collection::Artists_t GetAllArtists () const;
 	private:
 		void HandleNewArtists (const Collection::Artists_t&);
 		void RemoveTrack (const QString&);
