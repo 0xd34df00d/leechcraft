@@ -140,6 +140,8 @@ namespace LMP
 
 		void AddRootPaths (QStringList);
 		void RemoveRootPaths (const QStringList&);
+
+		void CheckRemovedFiles (const QSet<QString>& scanned, const QString& root);
 	public slots:
 		void recordPlayedTrack (const QString&);
 	private slots:
