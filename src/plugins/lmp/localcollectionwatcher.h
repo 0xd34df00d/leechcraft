@@ -40,6 +40,7 @@ namespace LMP
 		void AddPath (const QString&);
 		void RemovePath (const QString&);
 	private slots:
+		void handleSubdirsCollected ();
 		void handleDirectoryChanged (const QString&);
 	};
 }
