@@ -30,7 +30,7 @@ struct Entity;
 
 namespace LMP
 {
-	class MediaInfo;
+	struct MediaInfo;
 	class LocalCollection;
 	class LocalFileResolver;
 	class PlaylistManager;
