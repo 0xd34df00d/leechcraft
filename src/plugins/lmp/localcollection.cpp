@@ -168,8 +168,6 @@ namespace LMP
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleIterateFinished ()));
-		watcher->setProperty ("Path", path);
-		watcher->setProperty ("IsRoot", root);
 
 		if (root)
 			AddRootPaths (QStringList (path));
@@ -600,8 +598,6 @@ namespace LMP
 	void LocalCollection::handleIterateFinished ()
 	{
 		sender ()->deleteLater ();
-		const bool root = sender ()->property ("IsRoot").toBool ();
-		const auto& path = sender ()->property ("Path").toString ();
 		auto watcher = dynamic_cast<QFutureWatcher<QStringList>*> (sender ());
 		auto paths = QSet<QString>::fromList (watcher->result ());
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
