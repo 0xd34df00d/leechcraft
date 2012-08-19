@@ -440,6 +440,9 @@ namespace LMP
 	void LocalCollection::RemoveTrack (const QString& path)
 	{
 		const int id = FindTrack (path);
+		if (id == -1)
+			return;
+
 		auto album = GetTrackAlbum (id);
 		try
 		{
