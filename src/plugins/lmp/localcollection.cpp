@@ -211,7 +211,7 @@ namespace LMP
 		Clear ();
 
 		Q_FOREACH (const auto& path, paths)
-			Scan (path);
+			Scan (path, true);
 	}
 
 	LocalCollection::DirStatus LocalCollection::GetDirStatus (const QString& dir) const
