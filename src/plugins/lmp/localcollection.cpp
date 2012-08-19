@@ -652,8 +652,7 @@ namespace LMP
 			Watcher_->setFuture (future);
 		}
 
-		if (root)
-			CheckRemovedFiles (origPaths, path);
+		CheckRemovedFiles (origPaths, path);
 	}
 
 	void LocalCollection::handleScanFinished ()
