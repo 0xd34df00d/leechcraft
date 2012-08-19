@@ -132,9 +132,10 @@ namespace LMP
 		Collection::TrackStats GetTrackStats (const QString&) const;
 
 		Collection::Artists_t GetAllArtists () const;
+
+		void RemoveTrack (const QString&);
 	private:
 		void HandleNewArtists (const Collection::Artists_t&);
-		void RemoveTrack (const QString&);
 		void RemoveAlbum (int);
 		Collection::Artists_t::iterator RemoveArtist (Collection::Artists_t::iterator);
 
