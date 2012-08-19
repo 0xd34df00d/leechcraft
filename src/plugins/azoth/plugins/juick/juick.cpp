@@ -335,8 +335,8 @@ namespace Juick
 		{
 			const QString& userLink =
 				QString (IsBehind (body, index, "Private message from .*size=32'>") ?
-					"<a href=\"azoth://msgeditreplace/PM%20%1\">" :
-					"<a href=\"azoth://msgeditreplace/%1+\">")
+					"<a href=\"azoth://msgeditinsert/%1/%23/PM%20%1\">" :
+					"<a href=\"azoth://msgeditinsert/%1/%23/%1+\">")
 						.arg (UserRX_.cap (1));
 
 			body.insert (index, userLink);
