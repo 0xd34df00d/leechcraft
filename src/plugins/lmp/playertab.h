@@ -77,6 +77,8 @@ namespace LMP
 		QMenu *TrayMenu_;
 
 		QAction *CollectionShowTrackProps_;
+		QAction *CollectionRemove_;
+		QAction *CollectionDelete_;
 		QListWidget *NavButtons_;
 		QTabBar *NavBar_;
 	public:
@@ -117,6 +119,8 @@ namespace LMP
 		void handleScanProgress (int);
 		void handlePlaylistSelected (const QModelIndex&);
 		void showCollectionTrackProps ();
+		void handleCollectionRemove ();
+		void handleCollectionDelete ();
 		void loadFromCollection ();
 		void handleCollectionItemSelected (const QModelIndex&);
 
