@@ -4,5 +4,6 @@
 	<file>resources/qml/BioView.qml</file>
 	<file>resources/qml/ReleasesView.qml</file>
 	<file>resources/qml/SimilarView.qml</file>
+	<file>resources/qml/EventsView.qml</file>
   </qresource>
 </RCC>
