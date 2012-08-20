@@ -32,7 +32,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	class MediaInfo;
+	struct MediaInfo;
 	class StaticPlaylistManager;
 
 	class PlaylistManager : public QObject

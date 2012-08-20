@@ -22,6 +22,12 @@
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include "somafmlistfetcher.h"
+#include "stealkilllistfetcher.h"
+
+#ifdef HAVE_QJSON
+#include "audioaddictstreamfetcher.h"
+#endif
+
 #include "radiostation.h"
 #include "roles.h"
 
@@ -33,11 +39,31 @@ namespace HotStreams
 	{
 		Proxy_ = proxy;
 
+#ifdef HAVE_QJSON
+		auto di = new QStandardItem ("Digitally Imported");
+		di->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
+		di->setEditable (false);
+		di->setIcon (QIcon (":/hotstreams/resources/images/di.png"));
+		Roots_ ["di"] = di;
+
+		auto sky = new QStandardItem ("SkyFM");
+		sky->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
+		sky->setEditable (false);
+		sky->setIcon (QIcon (":/hotstreams/resources/images/skyfm.png"));
+		Roots_ ["sky"] = sky;
+#endif
+
 		auto somafm = new QStandardItem ("SomaFM");
 		somafm->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		somafm->setEditable (false);
 		somafm->setIcon (QIcon (":/hotstreams/resources/images/somafm.png"));
 		Roots_ ["somafm"] = somafm;
+
+		auto stealkill = new QStandardItem ("42fm");
+		stealkill->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
+		stealkill->setEditable (false);
+		stealkill->setIcon (QIcon (":/hotstreams/resources/images/radio.png"));
+		Roots_ ["42fm"] = stealkill;
 	}
 
 	void Plugin::SecondInit ()
@@ -81,11 +107,14 @@ namespace HotStreams
 		const auto& name = item->data (StreamItemRoles::PristineName).toString ();
 		const auto& url = item->data (Media::RadioItemRole::RadioID).toUrl ();
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		return Media::IRadioStation_ptr (new RadioStation (url, name, nam));
+		const auto& format = item->data (StreamItemRoles::PlaylistFormat).toString ();
+		return Media::IRadioStation_ptr (new RadioStation (url, name, nam, format));
 	}
 
 	void Plugin::refreshRadios ()
 	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+
 		auto clearRoot = [] (QStandardItem *item)
 		{
 			while (item->rowCount ())
@@ -93,9 +122,20 @@ namespace HotStreams
 		};
 
 		clearRoot (Roots_ ["somafm"]);
+		new SomaFMListFetcher (Roots_ ["somafm"], nam, this);
 
-		new SomaFMListFetcher (Roots_ ["somafm"],
-				Proxy_->GetNetworkAccessManager (), this);
+		clearRoot (Roots_ ["42fm"]);
+		new StealKillListFetcher (Roots_ ["42fm"], nam, this);
+
+#ifdef HAVE_QJSON
+		clearRoot (Roots_ ["di"]);
+		new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::DI,
+				Roots_ ["di"], nam, this);
+
+		clearRoot (Roots_ ["sky"]);
+		new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::SkyFM,
+				Roots_ ["sky"], nam, this);
+#endif
 	}
 }
 }

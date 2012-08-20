@@ -26,6 +26,7 @@
 #include <QDialogButtonBox>
 #include <QListWidget>
 #include <QTabBar>
+#include <QMessageBox>
 #include <phonon/seekslider.h>
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -368,13 +369,31 @@ namespace LMP
 				SLOT (loadFromCollection ()));
 		Ui_.CollectionTree_->addAction (addToPlaylist);
 
-		CollectionShowTrackProps_ = new QAction (tr ("Show track properties"), Ui_.Playlist_);
+		CollectionShowTrackProps_ = new QAction (tr ("Show track properties"), Ui_.CollectionTree_);
 		CollectionShowTrackProps_->setProperty ("ActionIcon", "document-properties");
 		connect (CollectionShowTrackProps_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showCollectionTrackProps ()));
 		Ui_.CollectionTree_->addAction (CollectionShowTrackProps_);
+
+		Ui_.CollectionTree_->addAction (Util::CreateSeparator (Ui_.CollectionTree_));
+
+		CollectionRemove_ = new QAction (tr ("Remove from collection..."), Ui_.CollectionTree_);
+		CollectionRemove_->setProperty ("ActionIcon", "list-remove");
+		connect (CollectionRemove_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleCollectionRemove ()));
+		Ui_.CollectionTree_->addAction (CollectionRemove_);
+
+		CollectionDelete_ = new QAction (tr ("Delete from disk..."), Ui_.CollectionTree_);
+		CollectionDelete_->setProperty ("ActionIcon", "edit-delete");
+		connect (CollectionDelete_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleCollectionDelete ()));
+		Ui_.CollectionTree_->addAction (CollectionDelete_);
 
 		connect (Ui_.CollectionTree_,
 				SIGNAL (doubleClicked (QModelIndex)),
@@ -664,11 +683,73 @@ namespace LMP
 	void PlayerTab::showCollectionTrackProps ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& info = index.data (LocalCollection::Role::TrackPath).value<QString > ();
+		const auto& info = index.data (LocalCollection::Role::TrackPath).value<QString> ();
 		if (info.isEmpty ())
 			return;
 
 		AudioPropsWidget::MakeDialog ()->SetProps (info);
+	}
+
+	namespace
+	{
+		template<typename T>
+		QList<T> CollectFromModel (const QModelIndex& root, int role)
+		{
+			QList<T> result;
+
+			const auto& var = root.data (role);
+			if (!var.isNull ())
+				result << var.value<T> ();
+
+			auto model = root.model ();
+			for (int i = 0; i < model->rowCount (root); ++i)
+				result += CollectFromModel<T> (root.child (i, 0), role);
+
+			return result;
+		}
+	}
+
+	void PlayerTab::handleCollectionRemove ()
+	{
+		const auto& index = Ui_.CollectionTree_->currentIndex ();
+		const auto& paths = CollectFromModel<QString> (index, LocalCollection::Role::TrackPath);
+		if (paths.isEmpty ())
+			return;
+
+		auto response = QMessageBox::question (this,
+				"LeechCraft",
+				tr ("Are you sure you want to remove %n track(s) from your collection?<br/><br/>"
+					"Please note that if tracks remain on your disk they will be re-added next "
+					"time collection is scanned, but you will lose the statistics.",
+					0,
+					paths.size ()),
+					QMessageBox::Yes | QMessageBox::No);
+		if (response != QMessageBox::Yes)
+			return;
+
+		auto collection = Core::Instance ().GetLocalCollection ();
+		Q_FOREACH (const auto& path, paths)
+			collection->RemoveTrack (path);
+	}
+
+	void PlayerTab::handleCollectionDelete ()
+	{
+		const auto& index = Ui_.CollectionTree_->currentIndex ();
+		const auto& paths = CollectFromModel<QString> (index, LocalCollection::Role::TrackPath);
+		if (paths.isEmpty ())
+			return;
+
+		auto response = QMessageBox::question (this,
+				"LeechCraft",
+				tr ("Are you sure you want to erase %n track(s)? This action cannot be undone.",
+					0,
+					paths.size ()),
+					QMessageBox::Yes | QMessageBox::No);
+		if (response != QMessageBox::Yes)
+			return;
+
+		Q_FOREACH (const auto& path, paths)
+			QFile::remove (path);
 	}
 
 	void PlayerTab::loadFromCollection ()

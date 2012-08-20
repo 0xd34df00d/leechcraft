@@ -18,30 +18,30 @@
 
 #pragma once
 
-#include <QObject>
-#include <QHash>
-#include <QStringList>
+#ifndef HAVE_QJSON
+#error "This header shouldn't be included when QJson isn't found"
+#endif
 
-class QFileSystemWatcher;
+#include "streamlistfetcherbase.h"
 
 namespace LeechCraft
 {
-namespace LMP
+namespace HotStreams
 {
-	class LocalCollectionWatcher : public QObject
+	class AudioAddictStreamFetcher : public StreamListFetcherBase
 	{
-		Q_OBJECT
-
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
 	public:
-		LocalCollectionWatcher (QObject* = 0);
-
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private slots:
-		void handleSubdirsCollected ();
-		void handleDirectoryChanged (const QString&);
+		enum class Service
+		{
+			DI,
+			SkyFM
+		};
+	private:
+		const Service Service_;
+	public:
+		AudioAddictStreamFetcher (Service, QStandardItem*, QNetworkAccessManager*, QObject* = 0);
+	protected:
+		QList<StreamInfo> Parse (const QByteArray&);
 	};
 }
 }

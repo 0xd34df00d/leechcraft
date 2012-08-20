@@ -278,7 +278,6 @@ namespace Xoox
 		State lastState = AccState_.State_;
 		if (lastState != SOffline &&
 			(JID_ != w->GetJID () ||
-			 Nick_ != w->GetNick () ||
 			 Resource_ != w->GetResource () ||
 			 Host_ != w->GetHost () ||
 			 Port_ != w->GetPort ()))

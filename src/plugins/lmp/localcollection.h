@@ -129,15 +129,20 @@ namespace LMP
 		QList<int> GetDynamicPlaylist (DynamicPlaylist) const;
 		QStringList TrackList2PathList (const QList<int>&) const;
 
-		Collection::TrackStats GetTrackStats (const QString&);
+		Collection::TrackStats GetTrackStats (const QString&) const;
+
+		Collection::Artists_t GetAllArtists () const;
+
+		void RemoveTrack (const QString&);
 	private:
 		void HandleNewArtists (const Collection::Artists_t&);
-		void RemoveTrack (const QString&);
 		void RemoveAlbum (int);
 		Collection::Artists_t::iterator RemoveArtist (Collection::Artists_t::iterator);
 
 		void AddRootPaths (QStringList);
 		void RemoveRootPaths (const QStringList&);
+
+		void CheckRemovedFiles (const QSet<QString>& scanned, const QString& root);
 	public slots:
 		void recordPlayedTrack (const QString&);
 	private slots:

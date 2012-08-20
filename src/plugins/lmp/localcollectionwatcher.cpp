@@ -18,6 +18,7 @@
 
 #include "localcollectionwatcher.h"
 #include <algorithm>
+#include <QtConcurrentRun>
 #include <QFileSystemWatcher>
 #include <QtDebug>
 #include <QDir>
@@ -56,14 +57,34 @@ namespace LMP
 
 	void LocalCollectionWatcher::AddPath (const QString& path)
 	{
-		const auto& paths = CollectSubdirs (path);
-		Dir2Subdirs_ [path] = paths;
-		Watcher_->addPaths (paths);
+		qDebug () << Q_FUNC_INFO << "scanning" << path;
+		auto watcher = new QFutureWatcher<QStringList> ();
+		watcher->setProperty ("Path", path);
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleSubdirsCollected ()));
+
+		watcher->setFuture (QtConcurrent::run (CollectSubdirs, path));
 	}
 
 	void LocalCollectionWatcher::RemovePath (const QString& path)
 	{
 		Watcher_->removePaths (Dir2Subdirs_ [path]);
+	}
+
+	void LocalCollectionWatcher::handleSubdirsCollected ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<QStringList>*> (sender ());
+		if (!watcher)
+			return;
+
+		watcher->deleteLater ();
+
+		const auto& paths = watcher->result ();
+		const auto& path = watcher->property ("Path").toString ();
+		Dir2Subdirs_ [path] = paths;
+		Watcher_->addPaths (paths);
 	}
 
 	void LocalCollectionWatcher::handleDirectoryChanged (const QString& path)

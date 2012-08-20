@@ -303,6 +303,9 @@
 			<item type="checkbox" property="ShowJoinsLeaves" default="true">
 				<label value="Show joins and leaves in MUCs" />
 			</item>
+			<item type="checkbox" property="SeparateMUCEventLogWindow" default="false">
+				<label value="Separate MUC event log window" />
+			</item>
 		</tab>
 	</page>
 	<page>

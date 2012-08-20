@@ -28,6 +28,8 @@
 #include "interfaces/azoth/azothcommon.h"
 #include "ui_chattab.h"
 
+class QTextBrowser;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -52,6 +54,7 @@ namespace Azoth
 
 		Ui::ChatTab Ui_;
 		std::unique_ptr<QToolBar> TabToolbar_;
+		QTextBrowser *MUCEventLog_;
 		QAction *ToggleRichText_;
 		QAction *Call_;
 #ifdef ENABLE_CRYPT
@@ -124,6 +127,9 @@ namespace Azoth
 		void selectVariant (const QString&);
 		QTextEdit* getMsgEdit ();
 	private slots:
+		void on_MUCEventsButton__toggled (bool);
+		void handleSeparateMUCLog ();
+
 		void clearAvailableNick ();
 		void handleEditScroll (int);
 		void messageSend ();

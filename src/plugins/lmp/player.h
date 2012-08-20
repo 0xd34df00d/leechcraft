@@ -59,6 +59,8 @@ namespace LMP
 		Media::IRadioStation_ptr CurrentStation_;
 		QStandardItem *RadioItem_;
 		QHash<QUrl, MediaInfo> Url2Info_;
+
+		MediaInfo LastPhononMediaInfo_;
 	public:
 		enum class PlayMode
 		{
@@ -162,6 +164,7 @@ namespace LMP
 		void insertedAlbum (const QModelIndex&);
 
 		void playModeChanged (Player::PlayMode);
+		void bufferStatusChanged (int);
 	};
 }
 }

@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012 Maxim Koltsov
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,30 +19,18 @@
 
 #pragma once
 
-#include <QObject>
-#include <QHash>
-#include <QStringList>
-
-class QFileSystemWatcher;
+#include "streamlistfetcherbase.h"
 
 namespace LeechCraft
 {
-namespace LMP
+namespace HotStreams
 {
-	class LocalCollectionWatcher : public QObject
+	class StealKillListFetcher : public StreamListFetcherBase
 	{
-		Q_OBJECT
-
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
 	public:
-		LocalCollectionWatcher (QObject* = 0);
-
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private slots:
-		void handleSubdirsCollected ();
-		void handleDirectoryChanged (const QString&);
+		StealKillListFetcher (QStandardItem*, QNetworkAccessManager*, QObject* = 0);
+	protected:
+		QList<StreamInfo> Parse (const QByteArray&);
 	};
 }
 }

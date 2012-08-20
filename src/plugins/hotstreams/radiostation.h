@@ -36,8 +36,9 @@ namespace HotStreams
 
 		QUrl StreamUrl_;
 		QString Name_;
+		QString PlaylistFormat_;
 	public:
-		RadioStation (const QUrl&, const QString&, QNetworkAccessManager*);
+		RadioStation (const QUrl&, const QString&, QNetworkAccessManager*, const QString&);
 
 		QObject* GetObject ();
 		QString GetRadioName () const;

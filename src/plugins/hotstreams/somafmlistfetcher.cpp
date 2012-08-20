@@ -74,15 +74,13 @@ namespace HotStreams
 				getText ("description"),
 				getText ("genre").split ('|', QString::SkipEmptyParts),
 				url,
-				QUrl ()
+				QUrl (),
+				getText ("dj") + " (" + getText ("djmail") + ")",
+				"pls"
 			};
 			result << info;
 			channel = channel.nextSiblingElement ("channel");
 		}
-
-		std::sort (result.begin (), result.end (),
-				[] (decltype (result.at (0)) left, decltype (result.at (0)) right)
-					{ return QString::localeAwareCompare (left.Name_, right.Name_) < 0; });
 
 		return result;
 	}

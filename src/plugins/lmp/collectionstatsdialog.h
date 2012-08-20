@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,30 +18,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <QHash>
-#include <QStringList>
-
-class QFileSystemWatcher;
+#include <QDialog>
+#include "ui_collectionstatsdialog.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class LocalCollectionWatcher : public QObject
+	class CollectionStatsDialog : public QDialog
 	{
 		Q_OBJECT
 
-		QFileSystemWatcher *Watcher_;
-		QHash<QString, QStringList> Dir2Subdirs_;
+		Ui::CollectionStatsDialog Ui_;
 	public:
-		LocalCollectionWatcher (QObject* = 0);
-
-		void AddPath (const QString&);
-		void RemovePath (const QString&);
-	private slots:
-		void handleSubdirsCollected ();
-		void handleDirectoryChanged (const QString&);
+		CollectionStatsDialog (QWidget* = 0);
+	protected:
+		void keyReleaseEvent (QKeyEvent*);
 	};
 }
 }

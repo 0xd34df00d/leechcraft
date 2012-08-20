@@ -253,6 +253,10 @@ namespace LMP
 				SIGNAL (metaDataChanged ()),
 				this,
 				SLOT (handleMetadata ()));
+		connect (Source_,
+				SIGNAL (bufferStatus (int)),
+				this,
+				SIGNAL (bufferStatusChanged (int)));
 
 		auto collection = Core::Instance ().GetLocalCollection ();
 		if (collection->IsReady ())
@@ -1007,6 +1011,13 @@ namespace LMP
 		auto curItem = Items_ [source];
 
 		const auto& info = GetPhononMediaInfo ();
+		if (info.Album_ == LastPhononMediaInfo_.Album_ &&
+				info.Artist_ == LastPhononMediaInfo_.Artist_ &&
+				info.Title_ == LastPhononMediaInfo_.Title_)
+			return;
+
+		LastPhononMediaInfo_ = info;
+
 		FillItem (curItem, info);
 		emit songChanged (info);
 	}

@@ -20,6 +20,7 @@
 #include <stdexcept>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QThread>
 #include <util/util.h>
 #include <util/dblock.h>
 #include "util.h"
@@ -28,9 +29,33 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		template<typename T, typename U>
+		struct DumbCast
+		{
+			T operator() (U u)
+			{
+				return reinterpret_cast<T> (u);
+			}
+		};
+
+		template<typename T>
+		struct DumbCast<T, T>
+		{
+			T operator() (T t)
+			{
+				return t;
+			}
+		};
+	}
+
 	LocalCollectionStorage::LocalCollectionStorage (QObject *parent)
 	: QObject (parent)
-	, DB_ (QSqlDatabase::addDatabase ("QSQLITE", QString ("LMP_LocalCollection_%1").arg (qrand ())))
+	, DB_ (QSqlDatabase::addDatabase ("QSQLITE",
+			QString ("LMP_LocalCollection_%1_%2")
+				.arg (qrand ())
+				.arg (DumbCast<unsigned long, decltype (QThread::currentThreadId ())> () (QThread::currentThreadId ()))))
 	{
 		DB_.setDatabaseName (Util::CreateIfNotExists ("lmp").filePath ("localcollection.db"));
 

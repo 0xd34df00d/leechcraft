@@ -28,9 +28,10 @@ namespace LeechCraft
 {
 namespace HotStreams
 {
-	RadioStation::RadioStation (const QUrl& url, const QString& name, QNetworkAccessManager *nam)
+	RadioStation::RadioStation (const QUrl& url, const QString& name, QNetworkAccessManager *nam, const QString& format)
 	: StreamUrl_ (url)
 	, Name_ (name)
+	, PlaylistFormat_ (format)
 	{
 		connect (nam->get (QNetworkRequest (url)),
 				SIGNAL (finished ()),
@@ -71,7 +72,7 @@ namespace HotStreams
 
 		file.write (reply->readAll ());
 		file.close ();
-		emit gotPlaylist (file.fileName (), "pls");
+		emit gotPlaylist (file.fileName (), PlaylistFormat_);
 	}
 }
 }

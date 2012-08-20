@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <cmath>
 #include <QIcon>
 #include <QAction>
 #include <QStandardItemModel>
@@ -802,7 +803,7 @@ namespace Azoth
 					c.unicode ();
 			hash += nick.length ();
 		}
-		QColor nc = colors.at (hash % colors.size ());
+		QColor nc = colors.at (std::abs (hash) % colors.size ());
 		return nc.name ();
 	}
 
@@ -1498,7 +1499,14 @@ namespace Azoth
 					.property ("ClientIcons").toString () + '/';
 		Q_FOREACH (const QString& variant, entry->Variants ())
 		{
-			const QString& filename = pack + entry->GetClientInfo (variant) ["client_type"].toString ();
+			const auto& type = entry->GetClientInfo (variant) ["client_type"].toString ();
+			if (type.isNull ())
+			{
+				result [variant] = QIcon ();
+				continue;
+			}
+
+			const QString& filename = pack + type;
 
 			QPixmap pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (filename);
 			if (pixmap.isNull ())

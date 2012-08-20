@@ -32,6 +32,7 @@ namespace HotStreams
 	: QObject (parent)
 	, NAM_ (nam)
 	, Root_ (root)
+	, RadioIcon_ (":/hotstreams/resources/images/radio.png")
 	{
 	}
 
@@ -46,17 +47,28 @@ namespace HotStreams
 
 	void StreamListFetcherBase::HandleData (const QByteArray& data)
 	{
-		for (const auto& stream : Parse (data))
+		auto result = Parse (data);
+		std::sort (result.begin (), result.end (),
+				[] (decltype (result.at (0)) left, decltype (result.at (0)) right)
+					{ return QString::localeAwareCompare (left.Name_, right.Name_) < 0; });
+		for (const auto& stream : result)
 		{
 			auto name = stream.Name_;
 			if (!stream.Genres_.isEmpty ())
 				name += " (" + stream.Genres_.join ("; ") + ")";
 
+			auto tooltip = "<span style=\"white-space: nowrap\">" + stream.Description_;
+			if (!stream.DJ_.isEmpty ())
+				tooltip += "<br /><em>DJ:</em> " + stream.DJ_;
+			tooltip += "</span>";
+
 			auto item = new QStandardItem (name);
-			item->setToolTip (stream.Description_);
+			item->setToolTip (tooltip);
+			item->setIcon (RadioIcon_);
 			item->setData (stream.Name_, StreamItemRoles::PristineName);
 			item->setData (Media::RadioType::Predefined, Media::RadioItemRole::ItemType);
 			item->setData (stream.URL_, Media::RadioItemRole::RadioID);
+			item->setData (stream.PlaylistFormat_, StreamItemRoles::PlaylistFormat);
 			item->setEditable (false);
 			Root_->appendRow (item);
 		}
