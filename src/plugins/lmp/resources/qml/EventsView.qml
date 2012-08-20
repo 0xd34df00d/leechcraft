@@ -151,6 +151,7 @@ Rectangle {
                     id: eventTagsLabel
                     text: eventTags
                     color: "#999999"
+                    clip: true
                     anchors.left: eventImageThumb.right
                     anchors.leftMargin: 5
                     anchors.top: eventPlaceLabel.bottom
@@ -176,6 +177,7 @@ Rectangle {
                     id: eventArtistsLabel
                     text: eventArtists
                     color: "#999999"
+                    clip: true
                     anchors.left: eventImageThumb.right
                     anchors.leftMargin: 5
                     anchors.top: eventHeadlinerLabel.bottom
