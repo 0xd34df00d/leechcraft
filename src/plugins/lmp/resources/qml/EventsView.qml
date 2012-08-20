@@ -15,9 +15,9 @@ Rectangle {
         }
     }
     anchors.fill: parent
-/*
+
     Image {
-        id: fullSizeArtistImg
+        id: fullSizeEventImg
         state: "hidden"
 
         anchors.centerIn: parent
@@ -32,11 +32,11 @@ Rectangle {
         states: [
             State {
                 name: "hidden"
-                PropertyChanges { target: fullSizeArtistImg; opacity: 0 }
+                PropertyChanges { target: fullSizeEventImg; opacity: 0 }
             },
             State {
                 name: "visible"
-                PropertyChanges { target: fullSizeArtistImg; opacity: 1 }
+                PropertyChanges { target: fullSizeEventImg; opacity: 1 }
             }
         ]
 
@@ -46,20 +46,21 @@ Rectangle {
 
         MouseArea {
             anchors.fill: parent
-            onClicked: fullSizeArtistImg.state = "hidden"
+            onClicked: fullSizeEventImg.state = "hidden"
         }
 
-        onStatusChanged: if (fullSizeArtistImg.status == Image.Ready) fullSizeArtistImg.state = "visible"
+        onStatusChanged: if (fullSizeEventImg.status == Image.Ready) fullSizeEventImg.state = "visible"
     }
-*/
+
     ListView {
         anchors.fill: parent
         id: eventsView
 
         model: eventsModel
         delegate: Item {
-            height: 110
+            height: 115
             width: eventsView.width
+            clip: true
 
             Rectangle {
                 id: delegateRect
@@ -98,6 +99,15 @@ Rectangle {
                     anchors.top: parent.top
                     anchors.topMargin: 2
                     source: eventImageThumbURL
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: {
+                            fullSizeEventImg.source = eventImageBigURL
+                            if (fullSizeEventImg.status == Image.Ready) fullSizeEventImg.state = "visible"
+                        }
+                    }
                 }
 
                 Text {
@@ -110,6 +120,7 @@ Rectangle {
                     anchors.topMargin: 2
                     anchors.left: eventImageThumb.right
                     anchors.leftMargin: 5
+                    anchors.right: parent.right
                 }
 
                 Text {
@@ -120,6 +131,7 @@ Rectangle {
                     anchors.leftMargin: 5
                     anchors.top: eventNameLabel.bottom
                     anchors.topMargin: 2
+                    anchors.right: parent.right
                     font.pointSize: 10
                 }
 
@@ -131,6 +143,7 @@ Rectangle {
                     anchors.leftMargin: 5
                     anchors.top: eventDateLabel.bottom
                     anchors.topMargin: 0
+                    anchors.right: parent.right
                     font.pointSize: 9
                 }
 
@@ -142,6 +155,7 @@ Rectangle {
                     anchors.leftMargin: 5
                     anchors.top: eventPlaceLabel.bottom
                     anchors.topMargin: 0
+                    anchors.right: parent.right
                     font.pointSize: 8
                 }
 
@@ -154,6 +168,7 @@ Rectangle {
                     anchors.leftMargin: 5
                     anchors.top: eventTagsLabel.bottom
                     anchors.topMargin: 5
+                    anchors.right: parent.right
                     font.pointSize: 8
                 }
 
@@ -165,87 +180,9 @@ Rectangle {
                     anchors.leftMargin: 5
                     anchors.top: eventHeadlinerLabel.bottom
                     anchors.topMargin: 0
+                    anchors.right: parent.right
                     font.pointSize: 8
                 }
-
-                /*
-                Image {
-                    id: artistImageThumb
-                    width: 100
-                    height: 100
-                    smooth: true
-                    fillMode: Image.PreserveAspectFit
-                    anchors.left: parent.left
-                    anchors.leftMargin: 2
-                    anchors.top: parent.top
-                    anchors.topMargin: 2
-                    source: artistImageURL
-
-                    MouseArea {
-                        anchors.fill: parent
-
-                        onClicked: {
-                            fullSizeArtistImg.source = artistBigImageURL
-                            if (fullSizeArtistImg.status == Image.Ready) fullSizeArtistImg.state = "visible"
-                        }
-                    }
-                }
-
-                Image {
-                    id: addToList
-
-                    width: 16
-                    height: 16
-                    smooth: true
-                    fillMode: Image.PreserveAspectFit
-
-                    anchors.top: parent.top
-                    anchors.topMargin: 2
-                    anchors.left: artistNameLabel.right
-                    anchors.leftMargin: 8
-                    source: "image://sysIcons/bookmark-new"
-                    visible: !artistInCollection
-
-                    MouseArea {
-                        id: addToListArea
-                        anchors.fill: parent
-                        anchors.margins: -2
-                        hoverEnabled: true
-
-                        onClicked: {
-                            rootRect.bookmarkArtistRequested(artistName, artistPageURL, artistTags)
-                        }
-                    }
-
-                    Rectangle {
-                        id: addToListHover
-                        anchors.fill: parent
-                        anchors.margins: -1
-                        radius: 2
-
-                        visible: addToListArea.containsMouse
-
-                        color: "#00000000"
-                        border.width: 1
-                        border.color: "#888888"
-                    }
-                }
-
-                Text {
-                    id: shortDescLabel
-                    text: shortDesc
-                    textFormat: Text.RichText
-                    width: parent.width - artistImageThumb.width - 10
-                    clip: true
-                    color: "#aaaaaa"
-                    wrapMode: Text.WordWrap
-                    anchors.leftMargin: 5
-                    anchors.left: artistImageThumb.right
-                    anchors.top: artistTagsLabel.bottom
-                    anchors.topMargin: 5
-                    anchors.bottom: parent.bottom
-                }
-                */
             }
         }
     }

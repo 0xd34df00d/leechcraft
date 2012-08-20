@@ -36,6 +36,7 @@ namespace LMP
 			{
 				EventName = Qt::UserRole + 1,
 				ImageThumbURL,
+				ImageBigURL,
 				Tags,
 				Date,
 				City,
@@ -50,6 +51,7 @@ namespace LMP
 				QHash<int, QByteArray> names;
 				names [EventName] = "eventName";
 				names [ImageThumbURL] = "eventImageThumbURL";
+				names [ImageBigURL] = "eventImageBigURL";
 				names [Tags] = "eventTags";
 				names [Date] = "eventDate";
 				names [City] = "eventCity";
@@ -114,6 +116,7 @@ namespace LMP
 			auto item = new QStandardItem;
 			item->setData (event.Name_, EventsModel::Role::EventName);
 			item->setData (event.SmallImage_, EventsModel::Role::ImageThumbURL);
+			item->setData (event.BigImage_, EventsModel::Role::ImageBigURL);
 			item->setData (event.Tags_.join ("; "), EventsModel::Role::Tags);
 			item->setData (event.Date_.toString (Qt::SystemLocaleLongDate), EventsModel::Role::Date);
 			item->setData (event.PlaceName_, EventsModel::Role::Place);
