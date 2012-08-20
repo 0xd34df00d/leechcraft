@@ -127,9 +127,10 @@ namespace LMP
 
 			auto otherArtists = event.Artists_;
 			otherArtists.removeAll (event.Headliner_);
-			if (!otherArtists.isEmpty ())
-				item->setData (tr ("Other artists: %1").arg (otherArtists.join ("; ")),
-						EventsModel::Role::OtherArtists);
+			item->setData (otherArtists.isEmpty () ?
+						QString () :
+						tr ("Other artists: %1").arg (otherArtists.join ("; ")),
+					EventsModel::Role::OtherArtists);
 
 			Model_->appendRow (item);
 		}
