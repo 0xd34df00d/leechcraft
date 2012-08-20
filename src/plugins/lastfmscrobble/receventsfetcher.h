@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <QMap>
 #include <interfaces/media/ieventsprovider.h>
 
 class QNetworkAccessManager;
@@ -36,8 +37,12 @@ namespace Lastfmscrobble
 		QNetworkAccessManager *NAM_;
 	public:
 		RecEventsFetcher (Authenticator*, QNetworkAccessManager*, QObject* = 0);
+	private:
+		void RequestEvents (QMap<QString, QString>);
 	private slots:
 		void request ();
+		void handleLocationReceived ();
+		void handleLocationError ();
 		void handleFinished ();
 		void handleError ();
 	signals:

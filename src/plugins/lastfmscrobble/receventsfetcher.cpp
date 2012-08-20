@@ -42,10 +42,8 @@ namespace Lastfmscrobble
 					SLOT (request ()));
 	}
 
-	void RecEventsFetcher::request ()
+	void RecEventsFetcher::RequestEvents (QMap<QString, QString> params)
 	{
-		QMap<QString, QString> params;
-		params ["country"] = "Russia";
 		AddLanguageParam (params);
 		auto reply = Request ("user.getRecommendedEvents", NAM_, params);
 		connect (reply,
@@ -56,6 +54,63 @@ namespace Lastfmscrobble
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
 				SLOT (handleError ()));
+	}
+
+	void RecEventsFetcher::request ()
+	{
+		auto reply = NAM_->get (QNetworkRequest (QUrl ("http://geoip.elib.ru/cgi-bin/getdata.pl")));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleLocationReceived ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleLocationError ()));
+	}
+
+	void RecEventsFetcher::handleLocationReceived ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error parsing reply"
+					<< data;
+			handleLocationError ();
+			return;
+		}
+
+		auto geoElem = doc.documentElement ().firstChildElement ("GeoAddr");
+		const auto& lon = geoElem.firstChildElement ("Lon").text ();
+		const auto& lat = geoElem.firstChildElement ("Lat").text ();
+		qDebug () << Q_FUNC_INFO
+				<< "fetched data:"
+				<< lon
+				<< lat;
+
+		QMap<QString, QString> params;
+		params ["latitude"] = lat;
+		params ["longitude"] = lon;
+		RequestEvents (params);
+	}
+
+	void RecEventsFetcher::handleLocationError ()
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "location fetching failed, falling back to Russia";
+		sender ()->deleteLater ();
+
+		QMap<QString, QString> params;
+		params ["country"] = "Russia";
+		RequestEvents (params);
 	}
 
 	namespace
@@ -83,7 +138,6 @@ namespace Lastfmscrobble
 		deleteLater ();
 
 		const auto& data = reply->readAll ();
-		qDebug () << data;
 
 		QDomDocument doc;
 		if (!doc.setContent (data))
