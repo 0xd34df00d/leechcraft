@@ -152,7 +152,7 @@ namespace Lastfmscrobble
 		if (!domList.size ())
 			return;
 
-		IsAuthenticated_ = false;
+		IsAuthenticated_ = true;
 
 		lastfm::ws::SessionKey = domList.at (0).toElement ().text ();
 		emit authenticated ();
@@ -160,6 +160,7 @@ namespace Lastfmscrobble
 
 	void Authenticator::handleAuth ()
 	{
+		IsAuthenticated_ = false;
 		FeedPassword (false);
 	}
 }
