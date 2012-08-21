@@ -334,11 +334,11 @@ namespace Xoox
 			Client_->setClientPresence (pres);
 
 		if (state.State_ == SOffline &&
-				!IsConnected_ &&
 				!FirstTimeConnect_)
 		{
 			emit statusChanged (EntryStatus (SOffline, state.Status_));
 			Client_->disconnectFromServer ();
+			IsConnected_ = false;
 			return;
 		}
 

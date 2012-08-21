@@ -303,10 +303,10 @@ namespace Xoox
 		if (ClientConnection_)
 			ClientConnection_->SetKAParams (KAParams_);
 
+		emit accountSettingsChanged ();
+
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, AccState_.Status_));
-
-		emit accountSettingsChanged ();
 	}
 
 	EntryStatus GlooxAccount::GetState () const
