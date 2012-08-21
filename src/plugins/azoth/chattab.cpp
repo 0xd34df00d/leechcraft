@@ -351,6 +351,17 @@ namespace Azoth
 		Ui_.EntryInfo_->setText (text);
 	}
 
+	void ChatTab::SetEnabled (bool enabled)
+	{
+		auto children = findChildren<QWidget*> ();
+		children += TabToolbar_.get ();
+		children += MUCEventLog_;
+		children += MsgFormatter_;
+		Q_FOREACH (auto child, children)
+			if (child != Ui_.View_)
+				child->setEnabled (enabled);
+	}
+
 	QObject* ChatTab::GetCLEntry () const
 	{
 		return GetEntry<QObject> ();

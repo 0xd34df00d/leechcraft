@@ -214,7 +214,7 @@ namespace Azoth
 		if (!Entry2Tab_.contains (id))
 			return;
 
-		Entry2Tab_ [id]->setEnabled (enabled);
+		Entry2Tab_ [id]->SetEnabled (enabled);
 	}
 
 	void ChatTabsManager::ChatMadeCurrent (ChatTab *curTab)
