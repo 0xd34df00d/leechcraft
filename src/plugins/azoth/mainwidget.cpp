@@ -39,6 +39,7 @@
 #include "actionsmanager.h"
 #include "accountactionsmanager.h"
 #include "bookmarksmanagerdialog.h"
+#include "clearlineeditaddon.h"
 
 namespace LeechCraft
 {
@@ -131,6 +132,7 @@ namespace Azoth
 		FastStatusButton_->setPopupMode (QToolButton::MenuButtonPopup);
 
 		Ui_.setupUi (this);
+		new ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.FilterLine_);
 		Ui_.FilterLine_->setPlaceholderText (tr ("Search..."));
 		Ui_.CLTree_->setFocusProxy (Ui_.FilterLine_);
 
