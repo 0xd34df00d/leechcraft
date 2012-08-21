@@ -488,7 +488,7 @@ namespace LMP
 		const auto& files = QFileDialog::getOpenFileNames (this,
 				tr ("Load files"),
 				QDir::homePath (),
-				tr ("Music files (*.ogg *.flac *.mp3 *.wav);;All files (*.*)"));
+				tr ("Music files (*.ogg *.flac *.mp3 *.wav);;Playlists (*.pls *.m3u *.m3u8 *.xspf);;All files (*.*)"));
 		if (files.isEmpty ())
 			return;
 
