@@ -276,6 +276,8 @@ namespace Xoox
 	void GlooxAccount::FillSettings (GlooxAccountConfigurationWidget *w)
 	{
 		State lastState = AccState_.State_;
+
+		const bool priorityChanged = AccState_.Priority_ != w->GetPriority ();
 		if (lastState != SOffline &&
 			(JID_ != w->GetJID () ||
 			 Resource_ != w->GetResource () ||
@@ -305,7 +307,7 @@ namespace Xoox
 
 		emit accountSettingsChanged ();
 
-		if (lastState != SOffline)
+		if (lastState != SOffline || priorityChanged)
 			ChangeState (EntryStatus (lastState, AccState_.Status_));
 	}
 
