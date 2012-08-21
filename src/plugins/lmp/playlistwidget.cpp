@@ -485,10 +485,13 @@ namespace LMP
 
 	void PlaylistWidget::loadFromDisk ()
 	{
-		QStringList files = QFileDialog::getOpenFileNames (this,
+		const auto& files = QFileDialog::getOpenFileNames (this,
 				tr ("Load files"),
 				QDir::homePath (),
 				tr ("Music files (*.ogg *.flac *.mp3 *.wav);;All files (*.*)"));
+		if (files.isEmpty ())
+			return;
+
 		Player_->Enqueue (files);
 	}
 
