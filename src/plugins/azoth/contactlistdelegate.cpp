@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "contactlistdelegate.h"
+#include <algorithm>
 #include <QPainter>
 #include <QPixmap>
 #include <QApplication>
@@ -308,7 +309,10 @@ namespace Azoth
 			const auto& iconsMap = Core::Instance ().GetClientIconForEntry (entry);
 			for (int i = 0; i < std::min (vars.size (), 4); ++i)
 				clientIcons << iconsMap [vars.at (i)];
-			clientIcons.removeAll (QIcon ());
+
+			clientIcons.erase (std::remove_if (clientIcons.begin (), clientIcons.end (),
+						[] (const QIcon& icon) { return icon.isNull (); }),
+					clientIcons.end ());
 		}
 
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
