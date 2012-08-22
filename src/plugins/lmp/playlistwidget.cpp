@@ -531,7 +531,12 @@ namespace LMP
 		auto model = Player_->GetPlaylistModel ();
 		int length = 0;
 		for (int i = 0, rc = model->rowCount (); i < rc; ++i)
-			length += model->index (i, 0).data (Player::Role::AlbumLength).toInt ();
+		{
+			const auto& idx = model->index (i, 0);
+			length += model->rowCount (idx) ?
+					idx.data (Player::Role::AlbumLength).toInt () :
+					idx.data (Player::Role::Info).value<MediaInfo> ().Length_;
+		}
 
 		Ui_.StatsLabel_->setText (tr ("%n track(s), total duration: %1", 0, tracksCount)
 					.arg (Util::MakeTimeFromLong (length)));
