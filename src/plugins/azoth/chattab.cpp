@@ -1194,6 +1194,7 @@ namespace Azoth
 		else
 		{
 			Ui_.SubjectButton_->hide ();
+			Ui_.MUCEventsButton_->hide ();
 			TabIcon_ = Core::Instance ()
 					.GetIconForState (e->GetStatus ().State_);
 
