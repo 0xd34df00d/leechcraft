@@ -34,16 +34,20 @@ FIND_PATH (RBTorrent_INCLUDE_DIR
 	
 IF (RBTorrent_INCLUDE_DIR)
 	IF (WIN32)
-		SET (PROBE_DIR_Debug 
-			${RBTorrent_DIR}/bin/msvc-10.0/debug/boost-link-shared/boost-source/threading-multi/)
-		SET (PROBE_DIR_Release 
-			${RBTorrent_DIR}/bin/msvc-10.0/release/boost-link-shared/boost-source/threading-multi/)
-	
-		FIND_LIBRARY (RBTorrent_LIBRARY_DEBUG NAMES torrent.lib PATHS ${PROBE_DIR_Debug})
-		FIND_LIBRARY (RBTorrent_LIBRARY_RELEASE NAMES torrent.lib PATHS ${PROBE_DIR_Release})
+		IF (MSVC)
+			SET (PROBE_DIR_Debug 
+				${RBTorrent_DIR}/bin/msvc-10.0/debug/boost-link-shared/boost-source/threading-multi/)
+			SET (PROBE_DIR_Release 
+				${RBTorrent_DIR}/bin/msvc-10.0/release/boost-link-shared/boost-source/threading-multi/)
 		
-		win32_tune_libs_names (RBTorrent)
-		SET (RBTorrent_LIBRARY ${RBTorrent_LIBRARIES})
+			FIND_LIBRARY (RBTorrent_LIBRARY_DEBUG NAMES torrent.lib PATHS ${PROBE_DIR_Debug})
+			FIND_LIBRARY (RBTorrent_LIBRARY_RELEASE NAMES torrent.lib PATHS ${PROBE_DIR_Release})
+			
+			win32_tune_libs_names (RBTorrent)
+			SET (RBTorrent_LIBRARY ${RBTorrent_LIBRARIES})
+		ELSE (MSVC)
+			FIND_LIBRARY (RBTorrent_LIBRARY NAMES libtorrent.dll.a PATHS ${RBTorrent_DIR}/bin/gcc-mingw-4.7.0/release/boost-link-shared/boost-source/encryption-off/threading-multi)
+		ENDIF (MSVC)
 	ELSE (WIN32)
 		FIND_LIBRARY (RBTorrent_LIBRARY NAMES torrent-rasterbar PATH ENV)
 	ENDIF (WIN32)
