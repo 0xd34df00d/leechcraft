@@ -454,7 +454,7 @@ namespace Xoox
 					IMessage::DIn,
 					CLEntry_,
 					IMessage::MTEventMessage,
-					IMessage::MSTOther);
+					IMessage::MSTRoomSubjectChange);
 			}
 			else if (!nick.isEmpty ())
 			{
