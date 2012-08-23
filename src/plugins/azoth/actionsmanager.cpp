@@ -445,7 +445,8 @@ namespace Azoth
 			connect (leave,
 					SIGNAL (triggered ()),
 					this,
-					SLOT (handleActionLeaveTriggered ()));
+					SLOT (handleActionLeaveTriggered ()),
+					Qt::QueuedConnection);
 			Entry2Actions_ [entry] ["leave"] = leave;
 			Action2Areas_ [leave] << CLEAAContactListCtxtMenu
 					<< CLEAATabCtxtMenu
