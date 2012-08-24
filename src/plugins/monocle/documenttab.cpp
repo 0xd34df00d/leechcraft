@@ -545,8 +545,10 @@ namespace Monocle
 		RelayoutScheduled_ = true;
 	}
 
-	void DocumentTab::handlePageContentsChanged (int)
+	void DocumentTab::handlePageContentsChanged (int idx)
 	{
+		auto pageItem = Pages_.at (idx);
+		pageItem->UpdatePixmap ();
 	}
 
 	void DocumentTab::handleRelayout ()
