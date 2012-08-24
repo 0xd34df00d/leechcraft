@@ -698,16 +698,19 @@ namespace GoogleDrive
 			return;
 		}
 
-		if (!res.toMap ().contains ("error"))
+		const auto& map = res.toMap ();
+		const auto& id = map ["id"].toString ();
+
+		if (!map.contains ("error"))
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "file uploaded successfully";
 			RefreshListing ();
-			emit finished (Reply2FilePath_.take (reply));
+			emit finished (id, Reply2FilePath_.take (reply));
 			return;
 		}
 
-		 ParseError (res.toMap ());
+		 ParseError (map);
 	}
 
 	void DriveManager::handleUploadProgress (qint64 uploaded, qint64 total)

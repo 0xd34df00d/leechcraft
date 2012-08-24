@@ -53,6 +53,7 @@ namespace NetStoreManager
 		virtual void upStatusChanged (const QString& status, const QString& filepath) = 0;
 		virtual void upProgress (quint64 done, quint64 total, const QString& filepath) = 0;
 		virtual void upError (const QString& error, const QString& filepath) = 0;
+		virtual void upFinished (const QStringList& id, const QString& filepath) = 0;
 		virtual void gotURL (const QUrl& url, const QString& filepath) = 0;
 	};
 }

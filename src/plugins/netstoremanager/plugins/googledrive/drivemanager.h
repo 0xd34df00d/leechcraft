@@ -175,7 +175,7 @@ namespace GoogleDrive
 		void uploadProgress (qint64 sent, qint64 total, const QString& filePath);
 		void uploadStatusChanged (const QString& status, const QString& filePath);
 		void uploadError (const QString& str, const QString& filePath);
-		void finished (const QString& path);
+		void finished (const QString& id, const QString& path);
 	};
 }
 }
