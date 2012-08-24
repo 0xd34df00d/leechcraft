@@ -1134,7 +1134,7 @@ namespace Azoth
 		Ui_.View_->SetQuoteAction (quoteSelection);
 	}
 
-	void ChatTab::InitEntry()
+	void ChatTab::InitEntry ()
 	{
 		connect (GetEntry<QObject> (),
 				SIGNAL (gotMessage (QObject*)),
