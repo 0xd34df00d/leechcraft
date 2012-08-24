@@ -109,6 +109,9 @@ namespace Seen
 			case DDJVU_PAGEINFO:
 				DocMgr_->HandlePageInfo (msg->m_any.document, msg->m_any.page);
 				break;
+			case DDJVU_REDISPLAY:
+				DocMgr_->RedrawPage (msg->m_any.document, msg->m_any.page);
+				break;
 			}
 
 			ddjvu_message_pop (Context_);

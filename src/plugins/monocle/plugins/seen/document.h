@@ -47,6 +47,8 @@ namespace Seen
 		DocManager *DocMgr_;
 
 		QHash<int, QSize> Sizes_;
+		QHash<int, ddjvu_page_t*> PendingRenders_;
+		QHash<ddjvu_page_t*, int> PendingRendersNums_;
 	public:
 		Document (const QString&, ddjvu_context_t*, DocManager*);
 		~Document ();
@@ -63,6 +65,7 @@ namespace Seen
 
 		void UpdateDocInfo ();
 		void UpdatePageInfo (ddjvu_page_t*);
+		void RedrawPage (ddjvu_page_t*);
 	private:
 		void TryUpdateSizes ();
 		void TryGetPageInfo (int);

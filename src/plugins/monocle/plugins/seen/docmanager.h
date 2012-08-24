@@ -47,6 +47,7 @@ namespace Seen
 
 		void HandleDocInfo (ddjvu_document_t*);
 		void HandlePageInfo (ddjvu_document_t*, ddjvu_page_t*);
+		void RedrawPage (ddjvu_document_t*, ddjvu_page_t*);
 	};
 }
 }

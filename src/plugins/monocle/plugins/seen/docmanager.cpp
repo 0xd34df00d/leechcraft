@@ -58,6 +58,14 @@ namespace Seen
 		if (doc)
 			doc->UpdatePageInfo (page);
 	}
+
+	void DocManager::RedrawPage (ddjvu_document_t *nativeDoc, ddjvu_page_t *page)
+	{
+		auto weak = Documents_ [nativeDoc];
+		auto doc = weak.lock ();
+		if (doc)
+			doc->RedrawPage (page);
+	}
 }
 }
 }

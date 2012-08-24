@@ -78,7 +78,15 @@ namespace Seen
 
 	QImage Document::RenderPage (int pageNum, double xScale, double yScale)
 	{
-		auto page = ddjvu_page_create_by_pageno (Doc_, pageNum);
+		ddjvu_page_t *page = 0;
+		if (PendingRenders_.contains (pageNum))
+			page = PendingRenders_ [pageNum];
+		else
+		{
+			page = ddjvu_page_create_by_pageno (Doc_, pageNum);
+			PendingRenders_ [pageNum] = page;
+			PendingRendersNums_ [page] = pageNum;
+		}
 
 		const auto& size = Sizes_.value (pageNum);
 		ddjvu_rect_s rect =
@@ -99,6 +107,12 @@ namespace Seen
 				img.bytesPerLine (),
 				reinterpret_cast<char*> (img.bits ()));
 		qDebug () << Q_FUNC_INFO << pageNum << res;
+		if (res)
+		{
+			PendingRenders_.remove (pageNum);
+			PendingRendersNums_.remove (page);
+			ddjvu_page_release (page);
+		}
 
 		return img.scaled (img.width () * xScale, img.height () * yScale, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
@@ -118,9 +132,15 @@ namespace Seen
 		TryUpdateSizes ();
 	}
 
-	void Document::UpdatePageInfo (ddjvu_page_t *page)
+	void Document::UpdatePageInfo (ddjvu_page_t*)
 	{
 		TryUpdateSizes ();
+	}
+
+	void Document::RedrawPage (ddjvu_page_t *page)
+	{
+		auto num = PendingRendersNums_ [page];
+		emit pageContentsChanged (num);
 	}
 
 	void Document::TryUpdateSizes ()
