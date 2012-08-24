@@ -174,6 +174,7 @@ namespace NetStoreManager
 			return;
 
 		UpManager_->handleUploadRequest (account, filename);
+		UpManager_->ScheduleAutoshare (filename);
 	}
 }
 }

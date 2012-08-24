@@ -27,6 +27,11 @@
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 
+inline uint qHash (const QStringList& id)
+{
+	return qHash (id.join ("/"));
+}
+
 namespace LeechCraft
 {
 namespace NetStoreManager
@@ -57,16 +62,17 @@ namespace NetStoreManager
 		return qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
 	}
 
+	void UpManager::ScheduleAutoshare (const QString& path)
+	{
+		Autoshare_ << path;
+	}
+
 	void UpManager::handleUploadRequest (IStorageAccount *acc, const QString& path,
 			const QStringList& id)
 	{
 		if (!Uploads_.contains (acc))
 		{
 			QObject *accObj = acc->GetObject ();
-			connect (accObj,
-					SIGNAL (gotURL (QUrl, QString)),
-					this,
-					SLOT (handleGotURL (QUrl, QString)));
 			connect (accObj,
 					SIGNAL (upError (QString, QString)),
 					this,
@@ -76,9 +82,19 @@ namespace NetStoreManager
 					this,
 					SLOT (handleUpStatusChanged (QString, QString)));
 			connect (accObj,
+					SIGNAL (upFinished (QStringList, QString)),
+					this,
+					SLOT (handleUpFinished (QStringList, QString)));
+			connect (accObj,
 					SIGNAL (upProgress (quint64, quint64, QString)),
 					this,
 					SLOT (handleUpProgress (quint64, quint64, QString)));
+
+			if (qobject_cast<ISupportFileListings*> (accObj))
+				connect (accObj,
+						SIGNAL (gotFileUrl (QUrl, QStringList)),
+						this,
+						SLOT (handleGotURL (QUrl, QStringList)));
 		}
 		else if (Uploads_ [acc].contains (path))
 		{
@@ -108,22 +124,26 @@ namespace NetStoreManager
 		ReprItems_ [acc] [path] = row;
 	}
 
-	void UpManager::handleGotURL (const QUrl& url, const QString& path)
+	void UpManager::handleGotURL (const QUrl& url, const QStringList& id)
 	{
+		const auto& handlers = URLHandlers_.take (id);
+		if (!handlers.isEmpty ())
+		{
+			Q_FOREACH (auto handler, handlers)
+				handler (url, id);
+
+			return;
+		}
+
 		const QString& urlStr = url.toString ();
 		qApp->clipboard ()->setText (urlStr, QClipboard::Clipboard);
 		qApp->clipboard ()->setText (urlStr, QClipboard::Selection);
 
-		RemovePending (path);
-
 		auto plugin = GetSenderPlugin ();
 		const Entity& e = Util::MakeNotification (plugin->GetStorageName (),
-				tr ("%1 is successfully uploaded, URL is pasted into clipboard.")
-					.arg (QFileInfo (path).fileName ()),
+				tr ("URL is pasted into clipboard."),
 				PInfo_);
 		emit gotEntity (e);
-
-		emit fileUploaded (path, url);
 	}
 
 	void UpManager::handleError (const QString& str, const QString& path)
@@ -148,6 +168,33 @@ namespace NetStoreManager
 		if (list.isEmpty ())
 			return;
 		list [1]->setText (status);
+	}
+
+	void UpManager::handleUpFinished (const QStringList& id, const QString& filePath)
+	{
+		RemovePending (filePath);
+		emit gotEntity (Util::MakeNotification ("NetStoreManager",
+				tr ("File %1 was uploaded successfully")
+						.arg ("<em>" + QFileInfo (filePath).fileName () + "</em>"),
+				PWarning_));
+
+		if (Autoshare_.remove (filePath))
+		{
+			auto ifl = qobject_cast<ISupportFileListings*> (sender ());
+			if (!ifl)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "account doesn't support file listings, cannot autoshare";
+				return;
+			}
+
+			URLHandlers_ [id] << [this, filePath] (const QUrl& url, const QStringList&)
+			{
+				emit fileUploaded (filePath, url);
+			};
+
+			ifl->RequestUrl (QList<QStringList> () << id);
+		}
 	}
 
 	void UpManager::handleUpProgress (quint64 done, quint64 total, const QString& filepath)
