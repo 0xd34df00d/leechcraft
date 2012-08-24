@@ -21,9 +21,11 @@
 #include <QClipboard>
 #include <QStandardItemModel>
 #include <interfaces/structures.h>
+#include <interfaces/ijobholder.h>
 #include <util/util.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
+#include "interfaces/netstoremanager/isupportfilelistings.h"
 
 namespace LeechCraft
 {
@@ -99,6 +101,8 @@ namespace NetStoreManager
 					.arg (plugin->GetStorageName ()));
 		row << new QStandardItem ();
 		row << new QStandardItem (tr ("Initializing..."));
+		row.last ()->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
+				CustomDataRoles::RoleJobHolderRow);
 		ReprModel_->appendRow (row);
 
 		ReprItems_ [acc] [path] = row;
@@ -152,9 +156,13 @@ namespace NetStoreManager
 		const auto& list = ReprItems_ [acc] [filepath];
 		if (list.isEmpty ())
 			return;
-		list [2]->setText (tr ("%1 of %2")
+
+		auto item = list.at (2);
+		item->setText (tr ("%1 of %2")
 				.arg (Util::MakePrettySize (done))
 				.arg (Util::MakePrettySize (total)));
+		item->setData (done, ProcessState::Done);
+		item->setData (total, ProcessState::Total);
 	}
 }
 }
