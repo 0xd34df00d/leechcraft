@@ -119,6 +119,8 @@ namespace Azoth
 
 		void HandleMUCParticipantsChanged ();
 
+		void SetEnabled (bool);
+
 		QObject* GetCLEntry () const;
 		QString GetSelectedVariant () const;
 	public slots:

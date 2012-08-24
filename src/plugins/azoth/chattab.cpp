@@ -351,6 +351,17 @@ namespace Azoth
 		Ui_.EntryInfo_->setText (text);
 	}
 
+	void ChatTab::SetEnabled (bool enabled)
+	{
+		auto children = findChildren<QWidget*> ();
+		children += TabToolbar_.get ();
+		children += MUCEventLog_;
+		children += MsgFormatter_;
+		Q_FOREACH (auto child, children)
+			if (child != Ui_.View_)
+				child->setEnabled (enabled);
+	}
+
 	QObject* ChatTab::GetCLEntry () const
 	{
 		return GetEntry<QObject> ();
@@ -1123,7 +1134,7 @@ namespace Azoth
 		Ui_.View_->SetQuoteAction (quoteSelection);
 	}
 
-	void ChatTab::InitEntry()
+	void ChatTab::InitEntry ()
 	{
 		connect (GetEntry<QObject> (),
 				SIGNAL (gotMessage (QObject*)),
@@ -1183,6 +1194,7 @@ namespace Azoth
 		else
 		{
 			Ui_.SubjectButton_->hide ();
+			Ui_.MUCEventsButton_->hide ();
 			TabIcon_ = Core::Instance ()
 					.GetIconForState (e->GetStatus ().State_);
 
@@ -1447,7 +1459,8 @@ namespace Azoth
 			MUCEventLog_->append (QString ("<font color=\"#56ED56\">[%1] %2</font>")
 						.arg (dt)
 						.arg (msg->GetBody ()));
-			return;
+			if (msg->GetMessageSubType () != IMessage::MSTRoomSubjectChange)
+				return;
 		}
 
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();

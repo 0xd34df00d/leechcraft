@@ -247,7 +247,7 @@
     <message>
         <location filename="leechcraft.ui" line="109"/>
         <source>Settings</source>
-        <translation>Көйләу</translation>
+        <translation>Көйләүләр</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="112"/>
@@ -299,7 +299,7 @@
     <message>
         <location filename="leechcraft.ui" line="180"/>
         <source>Close tab</source>
-        <translation>Вкладканы ябырга</translation>
+        <translation>Вкладканы ябарга</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="183"/>
@@ -560,7 +560,7 @@
     <message>
         <location filename="coreinstanceobject.cpp" line="194"/>
         <source>Settings</source>
-        <translation>Көйләу</translation>
+        <translation>Көйләүләр</translation>
     </message>
     <message>
         <location filename="coreinstanceobject.cpp" line="228"/>
@@ -857,7 +857,7 @@
     <message>
         <location filename="settingstab.cpp" line="35"/>
         <source>Settings bar</source>
-        <translation>Көйләү панеле</translation>
+        <translation>Көйләүләр панеле</translation>
     </message>
     <message>
         <location filename="settingstab.cpp" line="36"/>
@@ -895,7 +895,7 @@
     <message>
         <location filename="settingstab.cpp" line="202"/>
         <source>Settings</source>
-        <translation>Көйләү</translation>
+        <translation>Көйләүләр</translation>
     </message>
     <message>
         <location filename="settingstab.cpp" line="203"/>
@@ -1030,7 +1030,7 @@
     <message>
         <location filename="tabmanager.cpp" line="70"/>
         <source>Close all but this</source>
-        <translation>Моннан башканы ябырга</translation>
+        <translation>Моннан башканы ябарга</translation>
     </message>
 </context>
 <context>
@@ -1046,7 +1046,7 @@
     <message>
         <location filename="tagsviewer.cpp" line="44"/>
         <source>Rename</source>
-        <translation>Янә атау</translation>
+        <translation>Янә атарга</translation>
     </message>
     <message>
         <location filename="tagsviewer.cpp" line="45"/>
@@ -1352,7 +1352,7 @@ Windows өчен булган LeechCraft шактый экспериментал
     <message>
         <location filename="tagsviewer.ui" line="38"/>
         <source>Rename...</source>
-        <translation>Янә атау...</translation>
+        <translation>Янә атарга...</translation>
     </message>
     <message>
         <location filename="tagsviewer.ui" line="45"/>
@@ -1459,7 +1459,7 @@ Windows өчен булган LeechCraft шактый экспериментал
     <message>
         <location filename="dummy.cpp" line="16"/>
         <source>Default new tab contents:</source>
-        <translation>Яңа вкладканың алданук билгеләнгән эчтәлеге:</translation>
+        <translation>Яңа вкладканың баштагыча эчтәлеге:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
@@ -1506,7 +1506,7 @@ Windows өчен булган LeechCraft шактый экспериментал
     <message>
         <location filename="dummy.cpp" line="27"/>
         <source>Open new tab next to current</source>
-        <translation>Яңа вкладканы хәзергесе кырында ачырга</translation>
+        <translation>Яңа вкладканы хәзергесе кырында ачарга</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
@@ -1591,7 +1591,7 @@ Windows өчен булган LeechCraft шактый экспериментал
     <message>
         <location filename="dummy.cpp" line="44"/>
         <source>Filter tracking cookies</source>
-        <translation>Эзләүче cookie&apos;ларны филльтрларга</translation>
+        <translation>Эзләүче cookie&apos;ларны фильтрларга</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="45"/>

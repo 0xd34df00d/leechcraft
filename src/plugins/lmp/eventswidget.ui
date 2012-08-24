@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RecommendationsWidget</class>
- <widget class="QWidget" name="RecommendationsWidget">
+ <class>EventsWidget</class>
+ <widget class="QWidget" name="EventsWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>366</width>
-    <height>380</height>
+    <width>400</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,16 +22,12 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Recommendations provider:</string>
+        <string>Service:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="RecProvider_">
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContents</enum>
-       </property>
-      </widget>
+      <widget class="QComboBox" name="Provider_"/>
      </item>
      <item>
       <spacer name="horizontalSpacer">
@@ -49,15 +45,12 @@
     </layout>
    </item>
    <item>
-    <widget class="LeechCraft::LMP::ArtistsInfoDisplay" name="RecView_">
+    <widget class="QDeclarativeView" name="View_">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
-       <verstretch>1</verstretch>
+       <verstretch>0</verstretch>
       </sizepolicy>
-     </property>
-     <property name="renderHints">
-      <set>QPainter::Antialiasing|QPainter::HighQualityAntialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing</set>
      </property>
      <property name="resizeMode">
       <enum>QDeclarativeView::SizeRootObjectToView</enum>
@@ -71,12 +64,6 @@
    <class>QDeclarativeView</class>
    <extends>QGraphicsView</extends>
    <header>QtDeclarative/QDeclarativeView</header>
-  </customwidget>
-  <customwidget>
-   <class>LeechCraft::LMP::ArtistsInfoDisplay</class>
-   <extends>QDeclarativeView</extends>
-   <header>artistsinfodisplay.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

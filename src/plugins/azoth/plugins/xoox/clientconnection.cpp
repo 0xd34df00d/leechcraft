@@ -333,15 +333,6 @@ namespace Xoox
 				state.State_ == SOffline)
 			Client_->setClientPresence (pres);
 
-		if (state.State_ == SOffline &&
-				!IsConnected_ &&
-				!FirstTimeConnect_)
-		{
-			emit statusChanged (EntryStatus (SOffline, state.Status_));
-			Client_->disconnectFromServer ();
-			return;
-		}
-
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
 			rh->SetPresence (pres);
 
@@ -384,6 +375,14 @@ namespace Xoox
 				qDebug () << "converting" << jid;
 			}
 			SelfContact_->RemoveVariant (OurResource_);
+		}
+
+		if (state.State_ == SOffline &&
+				!FirstTimeConnect_)
+		{
+			emit statusChanged (EntryStatus (SOffline, state.Status_));
+			Client_->disconnectFromServer ();
+			IsConnected_ = false;
 		}
 	}
 

@@ -146,7 +146,7 @@ SET (FORMS
 	urlframe.ui
 	)
 SET (RESOURCES poshukuresources.qrc)
-CreateTrVars ("poshuku" "ar;be;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrVars ("poshuku" "ar;be;de;en;eo;es;fr;it;pl;ru_RU;tt;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

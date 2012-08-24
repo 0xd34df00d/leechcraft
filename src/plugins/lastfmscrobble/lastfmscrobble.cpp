@@ -33,6 +33,7 @@
 #include "radiostation.h"
 #include "recentreleasesfetcher.h"
 #include "pendingartistbio.h"
+#include "receventsfetcher.h"
 
 namespace LeechCraft
 {
@@ -209,6 +210,15 @@ namespace Lastfmscrobble
 	Media::IPendingArtistBio* Plugin::RequestArtistBio (const QString& artist)
 	{
 		return new PendingArtistBio (artist, Proxy_->GetNetworkAccessManager (), this);
+	}
+
+	void Plugin::UpdateRecommendedEvents ()
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		connect (new RecEventsFetcher (Auth_, nam, this),
+				SIGNAL (gotRecommendedEvents (Media::EventInfos_t)),
+				this,
+				SIGNAL (gotRecommendedEvents (Media::EventInfos_t)));
 	}
 }
 }
