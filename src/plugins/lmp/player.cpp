@@ -561,8 +561,11 @@ namespace LMP
 			albumItem->setData (true, Player::Role::IsAlbum);
 			albumItem->setData (QVariant::fromValue (info), Player::Role::Info);
 			auto art = FindAlbumArt (info.LocalPath_);
+			const int dim = 48;
 			if (art.isNull ())
-				art = QIcon::fromTheme ("media-optical").pixmap (64, 64);
+				art = QIcon::fromTheme ("media-optical").pixmap (dim, dim);
+			else if (std::max (art.width (), art.height ()) > dim)
+				art = art.scaled (dim, dim, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 			albumItem->setData (art, Player::Role::AlbumArt);
 			albumItem->setData (0, Player::Role::AlbumLength);
 			return albumItem;
