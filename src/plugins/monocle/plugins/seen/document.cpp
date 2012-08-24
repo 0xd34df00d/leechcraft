@@ -26,17 +26,27 @@ namespace Monocle
 {
 namespace Seen
 {
+	namespace
+	{
+		static unsigned int FormatMask [4] = { 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 };
+	}
+
 	Document::Document (const QString& file, ddjvu_context_t *ctx, DocManager *mgr)
 	: Context_ (ctx)
 	, Doc_ (ddjvu_document_create_by_filename_utf8 (Context_, file.toUtf8 ().constData (), 1))
+	, RenderFormat_ (ddjvu_format_create (DDJVU_FORMAT_RGBMASK32, 4, FormatMask))
 	, DocMgr_ (mgr)
 	{
+		ddjvu_format_set_row_order (RenderFormat_, 1);
+		ddjvu_format_set_y_direction (RenderFormat_, 1);
+
 		if (ddjvu_document_get_type (Doc_) != DDJVU_DOCTYPE_UNKNOWN)
 			UpdateDocInfo ();
 	}
 
 	Document::~Document ()
 	{
+		ddjvu_format_release (RenderFormat_);
 		DocMgr_->Unregister (Doc_);
 		ddjvu_document_release (Doc_);
 	}
@@ -66,9 +76,31 @@ namespace Seen
 		return Sizes_.value (pageNum);
 	}
 
-	QImage Document::RenderPage (int pageNum, double xRes, double yRes)
+	QImage Document::RenderPage (int pageNum, double xScale, double yScale)
 	{
-		return QImage ().scaled (GetPageSize (pageNum));
+		auto page = ddjvu_page_create_by_pageno (Doc_, pageNum);
+
+		const auto& size = Sizes_.value (pageNum);
+		ddjvu_rect_s rect =
+		{
+			0,
+			0,
+			size.width (),
+			size.height ()
+		};
+
+		QImage img (size, QImage::Format_RGB32);
+
+		auto res = ddjvu_page_render (page,
+				DDJVU_RENDER_COLOR,
+				&rect,
+				&rect,
+				RenderFormat_,
+				img.bytesPerLine (),
+				reinterpret_cast<char*> (img.bits ()));
+		qDebug () << Q_FUNC_INFO << pageNum << res;
+
+		return img.scaled (img.width () * xScale, img.height () * yScale, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 
 	QList<ILink_ptr> Document::GetPageLinks (int page)

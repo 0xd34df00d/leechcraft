@@ -42,6 +42,7 @@ namespace Seen
 
 		ddjvu_context_t *Context_;
 		ddjvu_document_t *Doc_;
+		ddjvu_format_t *RenderFormat_;
 
 		DocManager *DocMgr_;
 
