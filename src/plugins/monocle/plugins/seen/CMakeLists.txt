@@ -12,6 +12,7 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	seen.cpp
+	docmanager.cpp
 	document.cpp
 	)
 

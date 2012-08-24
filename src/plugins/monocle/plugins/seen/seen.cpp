@@ -19,6 +19,7 @@
 #include "seen.h"
 #include <QIcon>
 #include "document.h"
+#include "docmanager.h"
 
 namespace LeechCraft
 {
@@ -41,6 +42,8 @@ namespace Seen
 	{
 		Context_ = ddjvu_context_create ("leechcraft");
 		ddjvu_message_set_callback (Context_, MsgCallback, this);
+
+		DocMgr_ = new DocManager (Context_, this);
 	}
 
 	void Plugin::SecondInit ()
@@ -87,7 +90,7 @@ namespace Seen
 	IDocument_ptr Plugin::LoadDocument (const QString& file)
 	{
 		qDebug () << Q_FUNC_INFO << "requested opening" << file;
-		IDocument_ptr doc (new Document (file, Context_));
+		auto doc = DocMgr_->LoadDocument (file);
 		ddjvu_message_wait (Context_);
 		return doc;
 	}
@@ -97,6 +100,16 @@ namespace Seen
 		while (const ddjvu_message_t *msg = ddjvu_message_peek (Context_))
 		{
 			qDebug () << Q_FUNC_INFO << msg->m_any.tag;
+
+			switch (msg->m_any.tag)
+			{
+			case DDJVU_DOCINFO:
+				DocMgr_->HandleDocInfo (msg->m_any.document);
+				break;
+			case DDJVU_PAGEINFO:
+				DocMgr_->HandlePageInfo (msg->m_any.document, msg->m_any.page);
+				break;
+			}
 
 			ddjvu_message_pop (Context_);
 		}

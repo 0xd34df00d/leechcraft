@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "document.h"
+#include "seen.h"
+#include "docmanager.h"
 
 namespace LeechCraft
 {
@@ -24,14 +26,18 @@ namespace Monocle
 {
 namespace Seen
 {
-	Document::Document (const QString& file, ddjvu_context_t *ctx)
+	Document::Document (const QString& file, ddjvu_context_t *ctx, DocManager *mgr)
 	: Context_ (ctx)
 	, Doc_ (ddjvu_document_create_by_filename_utf8 (Context_, file.toUtf8 ().constData (), 1))
+	, DocMgr_ (mgr)
 	{
+		if (ddjvu_document_get_type (Doc_) != DDJVU_DOCTYPE_UNKNOWN)
+			UpdateDocInfo ();
 	}
 
 	Document::~Document ()
 	{
+		DocMgr_->Unregister (Doc_);
 		ddjvu_document_release (Doc_);
 	}
 
@@ -57,17 +63,51 @@ namespace Seen
 
 	QSize Document::GetPageSize (int pageNum) const
 	{
-		return QSize ();
+		return Sizes_.value (pageNum);
 	}
 
-	QImage Document::RenderPage (int , double xRes, double yRes)
+	QImage Document::RenderPage (int pageNum, double xRes, double yRes)
 	{
-		return QImage ();
+		return QImage ().scaled (GetPageSize (pageNum));
 	}
 
 	QList<ILink_ptr> Document::GetPageLinks (int page)
 	{
 		return QList<ILink_ptr> ();
+	}
+
+	ddjvu_document_t* Document::GetNativeDoc () const
+	{
+		return Doc_;
+	}
+
+	void Document::UpdateDocInfo ()
+	{
+		TryUpdateSizes ();
+	}
+
+	void Document::UpdatePageInfo (ddjvu_page_t *page)
+	{
+		TryUpdateSizes ();
+	}
+
+	void Document::TryUpdateSizes ()
+	{
+		const int numPages = GetNumPages ();
+		for (int i = 0; i < numPages; ++i)
+			if (!Sizes_.contains (i))
+				TryGetPageInfo (i);
+	}
+
+	void Document::TryGetPageInfo (int pageNum)
+	{
+		ddjvu_pageinfo_t info;
+		auto r = ddjvu_document_get_pageinfo (Doc_, pageNum, &info);
+		if (r != DDJVU_JOB_OK)
+			return;
+
+		Sizes_ [pageNum] = QSize (info.width, info.height);
+		emit pageSizeChanged (pageNum);
 	}
 }
 }

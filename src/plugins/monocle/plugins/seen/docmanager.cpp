@@ -16,14 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/monocle/ibackendplugin.h>
-#include <libdjvu/ddjvuapi.h>
-#include <libdjvu/miniexp.h>
+#include "docmanager.h"
+#include "document.h"
 
 namespace LeechCraft
 {
@@ -31,34 +25,39 @@ namespace Monocle
 {
 namespace Seen
 {
-	class DocManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IBackendPlugin
+	DocManager::DocManager (ddjvu_context_t *ctx, QObject *parent)
+	: QObject (parent)
+	, Context_ (ctx)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
+	}
 
-		ddjvu_context_t *Context_;
-		DocManager *DocMgr_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	std::shared_ptr<Document> DocManager::LoadDocument (const QString& file)
+	{
+		std::shared_ptr<Document> doc (new Document (file, Context_, this));
+		Documents_ [doc->GetNativeDoc ()] = doc;
+		return doc;
+	}
 
-		QSet<QByteArray> GetPluginClasses () const;
+	void DocManager::Unregister (ddjvu_document_t *doc)
+	{
+		Documents_.remove (doc);
+	}
 
-		bool CanLoadDocument (const QString&);
-		IDocument_ptr LoadDocument (const QString&);
-	private slots:
-		void checkMessageQueue ();
-	};
+	void DocManager::HandleDocInfo (ddjvu_document_t *nativeDoc)
+	{
+		auto weak = Documents_ [nativeDoc];
+		auto doc = weak.lock ();
+		if (doc)
+			doc->UpdateDocInfo ();
+	}
+
+	void DocManager::HandlePageInfo (ddjvu_document_t *nativeDoc, ddjvu_page_t *page)
+	{
+		auto weak = Documents_ [nativeDoc];
+		auto doc = weak.lock ();
+		if (doc)
+			doc->UpdatePageInfo (page);
+	}
 }
 }
 }

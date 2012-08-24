@@ -19,9 +19,11 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
 #include <interfaces/monocle/idocument.h>
+#include <interfaces/monocle/idynamicdocument.h>
 
 namespace LeechCraft
 {
@@ -29,16 +31,23 @@ namespace Monocle
 {
 namespace Seen
 {
+	class DocManager;
+
 	class Document : public QObject
 				   , public IDocument
+				   , public IDynamicDocument
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument)
+		Q_INTERFACES (LeechCraft::Monocle::IDocument LeechCraft::Monocle::IDynamicDocument)
 
 		ddjvu_context_t *Context_;
 		ddjvu_document_t *Doc_;
+
+		DocManager *DocMgr_;
+
+		QHash<int, QSize> Sizes_;
 	public:
-		Document (const QString&, ddjvu_context_t*);
+		Document (const QString&, ddjvu_context_t*, DocManager*);
 		~Document ();
 
 		QObject* GetObject ();
@@ -48,8 +57,19 @@ namespace Seen
 		QSize GetPageSize (int) const;
 		QImage RenderPage (int, double xRes, double yRes);
 		QList<ILink_ptr> GetPageLinks (int);
+
+		ddjvu_document_t* GetNativeDoc () const;
+
+		void UpdateDocInfo ();
+		void UpdatePageInfo (ddjvu_page_t*);
+	private:
+		void TryUpdateSizes ();
+		void TryGetPageInfo (int);
 	signals:
 		void navigateRequested (const QString&, int pageNum, double x, double y);
+
+		void pageSizeChanged (int);
+		void pageContentsChanged (int);
 	};
 }
 }

@@ -18,9 +18,9 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
+#include <QHash>
 #include <interfaces/monocle/ibackendplugin.h>
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
@@ -31,33 +31,22 @@ namespace Monocle
 {
 namespace Seen
 {
-	class DocManager;
+	class Document;
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IBackendPlugin
+	class DocManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
 
 		ddjvu_context_t *Context_;
-		DocManager *DocMgr_;
+		QHash<ddjvu_document_t*, std::weak_ptr<Document>> Documents_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		DocManager (ddjvu_context_t*, QObject* = 0);
 
-		QSet<QByteArray> GetPluginClasses () const;
+		std::shared_ptr<Document> LoadDocument (const QString&);
+		void Unregister (ddjvu_document_t*);
 
-		bool CanLoadDocument (const QString&);
-		IDocument_ptr LoadDocument (const QString&);
-	private slots:
-		void checkMessageQueue ();
+		void HandleDocInfo (ddjvu_document_t*);
+		void HandlePageInfo (ddjvu_document_t*, ddjvu_page_t*);
 	};
 }
 }
