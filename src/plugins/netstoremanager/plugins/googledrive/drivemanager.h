@@ -136,7 +136,7 @@ namespace GoogleDrive
 		void CreateDirectory (const QString& name, const QString& parentId = QString ());
 		void Copy (const QString& id, const QString& parentId);
 		void Move (const QString& id, const QString& parentId);
-
+	private:
 		void RequestFiles (const QString& key);
 		void RequestSharingEntry (const QString& id, const QString& key);
 		void RequestEntryRemoving (const QString& id, const QString& key);
