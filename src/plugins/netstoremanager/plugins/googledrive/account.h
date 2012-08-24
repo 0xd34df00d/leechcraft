@@ -92,7 +92,6 @@ namespace GoogleDrive
 		void handleSharedFileId (const QString& id);
 
 	signals:
-		void gotURL (const QUrl& url, const QString& filepath);
 		void upError (const QString& error, const QString& filepath);
 		void upFinished (const QStringList& id, const QString& filepath);
 		void upProgress (quint64 done, quint64 total, const QString& filepath);
