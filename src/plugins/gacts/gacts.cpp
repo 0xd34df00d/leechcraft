@@ -18,7 +18,7 @@
 
 #include "gacts.h"
 #include <QIcon>
-#include <QxtGui/QxtGlobalShortcut>
+#include <QxtGlobalShortcut>
 #include <interfaces/entitytesthandleresult.h>
 
 namespace LeechCraft
