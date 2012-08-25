@@ -29,22 +29,28 @@ namespace Xoox
 	{
 		Ui_.setupUi (this);
 	}
-	
+
 	QVariantMap BookmarkEditWidget::GetIdentifyingData() const
 	{
 		QVariantMap result;
-		result ["HumanReadableName"] = QString ("%1@%2 (%3)")
-			.arg (Ui_.Room_->text ())
-			.arg (Ui_.Server_->text ())
-			.arg (Ui_.Nickname_->text ());
-		result ["StoredName"] = Ui_.Name_->text ();
+		const auto& hrName = QString ("%1@%2 (%3)")
+				.arg (Ui_.Room_->text ())
+				.arg (Ui_.Server_->text ())
+				.arg (Ui_.Nickname_->text ());
+		result ["HumanReadableName"] = hrName;
+
+		auto name = Ui_.Name_->text ();
+		if (name.isEmpty ())
+			name = hrName;
+		result ["StoredName"] = name;
+
 		result ["Room"] = Ui_.Room_->text ();
 		result ["Server"] = Ui_.Server_->text ();
 		result ["Nick"] = Ui_.Nickname_->text ();
 		result ["Autojoin"] = Ui_.Autojoin_->checkState () == Qt::Checked;
 		return result;
 	}
-	
+
 	void BookmarkEditWidget::SetIdentifyingData (const QVariantMap& map)
 	{
 		Ui_.HumanReadable_->setText (map.value ("HumanReadableName").toString ());
