@@ -699,7 +699,8 @@ namespace Xoox
 		}
 
 		if (entry->HasUnreadMsgs ())
-			entry->SetStatus (EntryStatus (SOffline, item.reason ()), QString ());
+			entry->SetStatus (EntryStatus (SOffline, item.reason ()),
+					QString (), QXmppPresence (QXmppPresence::Unavailable));
 		else
 			RemoveEntry (entry.get ());
 	}
