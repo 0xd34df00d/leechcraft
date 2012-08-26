@@ -18,13 +18,9 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/core/ihookproxy.h>
+#include "pasteservicebase.h"
 
-class QTranslator;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
@@ -32,36 +28,15 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IHaveSettings
+	class CodepadService : public PasteServiceBase
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
-
-		ICoreProxy_ptr Proxy_;
-		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
+		CodepadService (const PasteParams&, QObject* = 0);
+
 		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	public slots:
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *entry,
-				int type,
-				QString variant);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+	protected:
+		void handleMetadata ();
 	};
 }
 }

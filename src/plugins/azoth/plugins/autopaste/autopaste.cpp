@@ -18,18 +18,13 @@
 
 #include "autopaste.h"
 #include <QIcon>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QClipboard>
-#include <QApplication>
 #include <QMessageBox>
-#include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
-#include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iclentry.h>
 #include "xmlsettingsmanager.h"
+#include "codepadservice.h"
 
 namespace LeechCraft
 {
@@ -89,28 +84,6 @@ namespace Autopaste
 		return XmlSettingsDialog_;
 	}
 
-	void Plugin::Paste (const QString& text, QObject *entry)
-	{
-		QNetworkRequest req (QUrl ("http://codepad.org"));
-		req.setHeader (QNetworkRequest::ContentTypeHeader,
-				"application/x-www-form-urlencoded");
-		req.setRawHeader ("Referer", "http://codepad.org");
-
-		QByteArray data = "lang=Plain+Text&code=";
-		data += text.toUtf8 ().toPercentEncoding ();
-		data += "&private=True&submit=Submit";
-
-		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
-
-		QNetworkReply *reply = Proxy_->GetNetworkAccessManager ()->post (req, data);
-		connect (reply,
-				SIGNAL (metaDataChanged ()),
-				this,
-				SLOT (handleMetadata ()));
-
-		Reply2Entry_ [reply] = entry;
-	}
-
 	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 			QObject *chatTab, QObject *entry, int, QString)
 	{
@@ -162,60 +135,8 @@ namespace Autopaste
 					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 			return;
 
-		Paste (text, entry);
+		new CodepadService ({ Proxy_->GetNetworkAccessManager (), text, Highlight::None, entry }, this);
 		proxy->CancelDefault ();
-	}
-
-	void Plugin::handleMetadata ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a QNetworkReply:"
-					<< sender ();
-			return;
-		}
-
-		const QString& pasteUrl = reply->header (QNetworkRequest::LocationHeader).toString ();
-		QPointer<QObject> entryObj = Reply2Entry_ [reply];
-		if (!entryObj)
-		{
-			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
-			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);
-			const Entity& e = Util::MakeNotification (tr ("Text pasted"),
-					tr ("Your text has been pasted: %1. The URL has "
-						"been copied to the clipboard."),
-					PInfo_);
-			emit gotEntity (e);
-			return;
-		}
-
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to cast"
-					<< entryObj
-					<< "to ICLEntry";
-			return;
-		}
-
-		IMessage::MessageType type =
-				entry->GetEntryType () == ICLEntry::ETMUC ?
-						IMessage::MTMUCMessage :
-						IMessage::MTChatMessage;
-		QObject *msgObj = entry->CreateMessage (type, QString (), pasteUrl);
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (!msg)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to cast"
-					<< msgObj
-					<< "to IMessage";
-			return;
-		}
-		msg->Send ();
 	}
 }
 }

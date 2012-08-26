@@ -11,11 +11,13 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	)
 SET (AUTOPASTE_SRCS
 	autopaste.cpp
+	codepadservice.cpp
 	pasteservicebase.cpp
 	xmlsettingsmanager.cpp
 	)
 SET (AUTOPASTE_HEADERS
 	autopaste.h
+	codepadservice.h
 	pasteservicebase.h
 	xmlsettingsmanager.h
 	)
