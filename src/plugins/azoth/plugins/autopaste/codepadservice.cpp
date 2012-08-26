@@ -39,9 +39,31 @@ namespace Autopaste
 		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		req.setRawHeader ("Referer", "http://codepad.org");
 
-		QByteArray data = "lang=Plain+Text&code=";
+		QByteArray highlight = "Plain+Text";
+		bool run = false;
+		switch (params.High_)
+		{
+		case Highlight::CPP:
+			highlight = "C%2B%2B";
+			run = true;
+			break;
+		case Highlight::XML:
+			highlight = "XML";
+			break;
+		case Highlight::Haskell:
+			highlight = "Haskell";
+			run = true;
+			break;
+		case Highlight::None:
+			highlight = "Plain+Text";
+			break;
+		}
+
+		QByteArray data = "lang=" + highlight + "&code=";
 		data += params.Text_.toUtf8 ().toPercentEncoding ();
 		data += "&private=True&submit=Submit";
+		if (run)
+			data += "&run=True";
 
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 
