@@ -51,21 +51,18 @@ namespace GoogleDrive
 	public:
 		UploadManager (const QString& path, UploadType ut,
 				const QStringList& parentId, Account *account);
-
 	private:
 		void InitiateUploadSession ();
-
 	private slots:
 		void handleUploadProgress (qint64 sent, qint64 total, const QString& filePath);
 		void handleStatusChanged (const QString& status, const QString& filePath);
 		void handleError (const QString& error, const QString& filePath);
-		void handleFinished (const QString& filePath);
-
+		void handleFinished (const QString& id, const QString& filePath);
 	signals:
 		void uploadError (const QString& str, const QString& filePath);
 		void uploadProgress (quint64 sent, quint64 total, const QString& filePath);
 		void uploadStatusChanged (const QString& status, const QString& filePath);
-		void finished ();
+		void finished (const QStringList& id, const QString& filepath);
 	};
 }
 }

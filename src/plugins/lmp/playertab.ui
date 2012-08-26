@@ -189,19 +189,6 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="RadioTab_">
-              <attribute name="title">
-               <string>Radio</string>
-              </attribute>
-              <layout class="QVBoxLayout" name="verticalLayout_8">
-               <property name="margin">
-                <number>1</number>
-               </property>
-               <item>
-                <widget class="LeechCraft::LMP::RadioWidget" name="RadioWidget_" native="true"/>
-               </item>
-              </layout>
-             </widget>
              <widget class="QWidget" name="ReleasesTab_">
               <attribute name="title">
                <string>Releases</string>
@@ -215,11 +202,38 @@
                </item>
               </layout>
              </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="InternetTab_">
+          <layout class="QVBoxLayout" name="verticalLayout_13">
+           <property name="margin">
+            <number>1</number>
+           </property>
+           <item>
+            <widget class="QTabWidget" name="tabWidget_2">
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <widget class="QWidget" name="RadioTab_">
+              <attribute name="title">
+               <string>Radio</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_14">
+               <property name="margin">
+                <number>1</number>
+               </property>
+               <item>
+                <widget class="LeechCraft::LMP::RadioWidget" name="RadioWidget_" native="true"/>
+               </item>
+              </layout>
+             </widget>
              <widget class="QWidget" name="CloudTab_">
               <attribute name="title">
                <string>Cloud</string>
               </attribute>
-              <layout class="QVBoxLayout" name="verticalLayout_11">
+              <layout class="QVBoxLayout" name="verticalLayout_8">
                <property name="margin">
                 <number>1</number>
                </property>

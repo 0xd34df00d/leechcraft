@@ -454,7 +454,7 @@ namespace Xoox
 					IMessage::DIn,
 					CLEntry_,
 					IMessage::MTEventMessage,
-					IMessage::MSTOther);
+					IMessage::MSTRoomSubjectChange);
 			}
 			else if (!nick.isEmpty ())
 			{
@@ -699,7 +699,8 @@ namespace Xoox
 		}
 
 		if (entry->HasUnreadMsgs ())
-			entry->SetStatus (EntryStatus (SOffline, item.reason ()), QString ());
+			entry->SetStatus (EntryStatus (SOffline, item.reason ()),
+					QString (), QXmppPresence (QXmppPresence::Unavailable));
 		else
 			RemoveEntry (entry.get ());
 	}
@@ -764,7 +765,7 @@ namespace Xoox
 	{
 		Account_->handleEntryRemoved (CLEntry_);
 		Account_->GetClientConnection ()->Unregister (this);
-		delete Room_;
+		Room_->deleteLater ();
 		Room_ = 0;
 		deleteLater ();
 	}

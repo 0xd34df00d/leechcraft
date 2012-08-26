@@ -38,29 +38,22 @@ namespace GoogleDrive
 	, UploadType_ (ut)
 	, ParentId_ (parentid)
 	{
-		connect (this,
-				SIGNAL (finished ()),
-				this,
-				SLOT (deleteLater ()),
-				Qt::QueuedConnection);
-
 		connect (Account_->GetDriveManager (),
-				SIGNAL (uploadProgress (qint64, qint64, const QString&)),
+				SIGNAL (uploadProgress (qint64, qint64, QString)),
 				this,
-				SLOT (handleUploadProgress (qint64, qint64, const QString&)));
+				SLOT (handleUploadProgress (qint64, qint64, QString)));
 		connect (Account_->GetDriveManager (),
-				SIGNAL (uploadStatusChanged (const QString&, const QString&)),
+				SIGNAL (uploadStatusChanged (QString, QString)),
 				this,
-				SLOT (handleStatusChanged (const QString&, const QString&)));
+				SLOT (handleStatusChanged (QString, QString)));
 		connect (Account_->GetDriveManager (),
-				SIGNAL (uploadError (const QString&, const QString&)),
+				SIGNAL (uploadError (QString, QString)),
 				this,
-				SLOT (handleError  (const QString&, const QString&)));
+				SLOT (handleError  (QString, QString)));
 		connect (Account_->GetDriveManager (),
-				SIGNAL (finished (const QString&)),
+				SIGNAL (finished (QString, QString)),
 				this,
-				SLOT (handleFinished (const QString&)));
-
+				SLOT (handleFinished (QString, QString)));
 
 		if (UploadType_ == UploadType::Upload)
 			InitiateUploadSession ();
@@ -77,6 +70,7 @@ namespace GoogleDrive
 			return;
 
 		emit uploadError (error, FilePath_);
+		deleteLater ();
 	}
 
 	void UploadManager::handleUploadProgress (qint64 sent,
@@ -97,19 +91,15 @@ namespace GoogleDrive
 		emit uploadStatusChanged (status, FilePath_);
 	}
 
-	void UploadManager::handleFinished (const QString& filePath)
+	void UploadManager::handleFinished (const QString& id, const QString& filePath)
 	{
 		if (filePath != FilePath_)
 			return;
 
-		Core::Instance ().SendEntity (Util::MakeNotification ("NetStoreManager",
-				tr ("File %1 was uploaded successfully")
-						.arg ("<em>" + QFileInfo (FilePath_).fileName () + "</em>"),
-				PWarning_));
-		emit finished ();
 		emit uploadStatusChanged (tr ("Finished"), FilePath_);
+		emit finished (QStringList (id), FilePath_);
+		deleteLater ();
 	}
-
 }
 }
 }

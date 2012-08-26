@@ -333,15 +333,6 @@ namespace Xoox
 				state.State_ == SOffline)
 			Client_->setClientPresence (pres);
 
-		if (state.State_ == SOffline &&
-				!FirstTimeConnect_)
-		{
-			emit statusChanged (EntryStatus (SOffline, state.Status_));
-			Client_->disconnectFromServer ();
-			IsConnected_ = false;
-			return;
-		}
-
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
 			rh->SetPresence (pres);
 
@@ -376,7 +367,8 @@ namespace Xoox
 			{
 				GlooxCLEntry *entry = JID2CLEntry_ [jid];
 				Q_FOREACH (const QString& var, entry->Variants ())
-					entry->SetStatus (EntryStatus (SOffline, QString ()), var);
+					entry->SetStatus (EntryStatus (SOffline, QString ()),
+							var, QXmppPresence (QXmppPresence::Unavailable));
 				JID2CLEntry_.remove (jid);
 				ODSEntries_ [jid] = entry;
 				entry->Convert2ODS ();
@@ -384,6 +376,14 @@ namespace Xoox
 				qDebug () << "converting" << jid;
 			}
 			SelfContact_->RemoveVariant (OurResource_);
+		}
+
+		if (state.State_ == SOffline &&
+				!FirstTimeConnect_)
+		{
+			emit statusChanged (EntryStatus (SOffline, state.Status_));
+			Client_->disconnectFromServer ();
+			IsConnected_ = false;
 		}
 	}
 
@@ -1023,7 +1023,7 @@ namespace Xoox
 		{
 			const QXmppPresence& pres = presences [resource];
 			entry->SetClientInfo (resource, pres);
-			entry->SetStatus (XooxUtil::PresenceToStatus (pres), resource);
+			entry->SetStatus (XooxUtil::PresenceToStatus (pres), resource, pres);
 		}
 		entry->UpdateRI (rm.getRosterEntry (bareJid));
 	}
@@ -1097,7 +1097,7 @@ namespace Xoox
 			{
 				SelfContact_->SetClientInfo (resource, pres);
 				SelfContact_->UpdatePriority (resource, pres.priority ());
-				SelfContact_->SetStatus (XooxUtil::PresenceToStatus (pres), resource);
+				SelfContact_->SetStatus (XooxUtil::PresenceToStatus (pres), resource, pres);
 			}
 			else
 				SelfContact_->RemoveVariant (resource);

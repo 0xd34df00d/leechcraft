@@ -58,7 +58,9 @@ SET(QXT_QXTBERKELEY_DEPENDSON QxtCore)
 FOREACH(mod ${QXT_MODULES})
     STRING(TOUPPER ${mod} U_MOD)
     FIND_PATH(QXT_${U_MOD}_INCLUDE_DIR ${mod}
-        PATH_SUFFIXES ${mod} include/${mod} Qxt/include/${mod} include/Qxt/${mod}
+        PATH_SUFFIXES ${mod} include/${mod}
+            qxt/include/${mod} include/qxt/${mod}
+            Qxt/include/${mod} include/Qxt/${mod}
         PATHS
         ~/Library/Frameworks/
         /Library/Frameworks/
@@ -74,7 +76,7 @@ FOREACH(mod ${QXT_MODULES})
         NO_DEFAULT_PATH
     )
     FIND_LIBRARY(QXT_${U_MOD}_LIB_RELEASE NAME ${mod}
-        PATH_SUFFIXES Qxt/lib64 Qxt/lib lib64 lib
+        PATH_SUFFIXES Qxt/lib64 Qxt/lib lib64 lib lib/${CMAKE_LIBRARY_ARCHITECTURE}
         PATHS
         /sw
         /usr/local
@@ -88,7 +90,7 @@ FOREACH(mod ${QXT_MODULES})
         NO_DEFAULT_PATH
     )
     FIND_LIBRARY(QXT_${U_MOD}_LIB_DEBUG NAME ${mod}d
-        PATH_SUFFIXES Qxt/lib64 Qxt/lib lib64 lib
+        PATH_SUFFIXES Qxt/lib64 Qxt/lib lib64 lib lib/${CMAKE_LIBRARY_ARCHITECTURE}
         PATHS
         /sw
         /usr/local

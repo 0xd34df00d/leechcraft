@@ -47,6 +47,7 @@ namespace Monocle
 		int GetPageNum () const;
 
 		void ClearPixmap ();
+		void UpdatePixmap ();
 	protected:
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*);
 		void hoverMoveEvent (QGraphicsSceneHoverEvent*);

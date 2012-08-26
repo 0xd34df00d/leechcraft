@@ -16,34 +16,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_BOOKMARKEDITWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_BOOKMARKEDITWIDGET_H
-#include <QWidget>
-#include <QVariant>
-#include <interfaces/azoth/imucbookmarkeditorwidget.h>
-#include "ui_bookmarkeditwidget.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/monocle/ibackendplugin.h>
+#include <libdjvu/ddjvuapi.h>
+#include <libdjvu/miniexp.h>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Monocle
 {
-namespace Xoox
+namespace Seen
 {
-	class BookmarkEditWidget : public QWidget
-							 , public IMUCBookmarkEditorWidget
+	class DocManager;
+
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
+				 , public IBackendPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCBookmarkEditorWidget);
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
 
-		Ui::BookmarkEditWidget Ui_;
+		ddjvu_context_t *Context_;
+		DocManager *DocMgr_;
 	public:
-		BookmarkEditWidget (QWidget* = 0);
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		QVariantMap GetIdentifyingData () const;
-		void SetIdentifyingData (const QVariantMap&);
+		QSet<QByteArray> GetPluginClasses () const;
+
+		bool CanLoadDocument (const QString&);
+		IDocument_ptr LoadDocument (const QString&);
+	private slots:
+		void checkMessageQueue ();
 	};
 }
 }
 }
-
-#endif

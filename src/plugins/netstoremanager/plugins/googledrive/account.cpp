@@ -76,17 +76,21 @@ namespace GoogleDrive
 				UploadType::Upload, parentId, this);
 
 		connect (uploadManager,
-				SIGNAL (uploadProgress (quint64, quint64, const QString&)),
+				SIGNAL (uploadProgress (quint64, quint64, QString)),
 				this,
-				SIGNAL (upProgress (quint64, quint64, const QString&)));
+				SIGNAL (upProgress (quint64, quint64, QString)));
 		connect (uploadManager,
-				SIGNAL (uploadError (const QString&, const QString&)),
+				SIGNAL (uploadError (QString, QString)),
 				this,
-				SIGNAL (upError (const QString&, const QString&)));
+				SIGNAL (upError (QString, QString)));
 		connect (uploadManager,
-				SIGNAL (uploadStatusChanged (const QString&, const QString&)),
+				SIGNAL (finished (QStringList, QString)),
 				this,
-				SIGNAL (upStatusChanged (const QString&, const QString&)));
+				SIGNAL (upFinished (QStringList, QString)));
+		connect (uploadManager,
+				SIGNAL (uploadStatusChanged (QString, QString)),
+				this,
+				SIGNAL (upStatusChanged (QString, QString)));
 	}
 
 	void Account::Delete (const QList<QStringList>& id)
