@@ -19,11 +19,14 @@
 #include "iinfoadaptor.h"
 #include <interfaces/iinfo.h>
 
-using namespace LeechCraft::Plugins::DBusManager;
-
-IInfoAdaptor::IInfoAdaptor (QObject *info)
-: QDBusAbstractAdaptor (info)
-, Object_ (qobject_cast<IInfo*> (info))
+namespace LeechCraft
 {
+namespace DBusManager
+{
+	IInfoAdaptor::IInfoAdaptor (QObject *info)
+	: QDBusAbstractAdaptor (info)
+	, Object_ (qobject_cast<IInfo*> (info))
+	{
+	}
 }
-
+}

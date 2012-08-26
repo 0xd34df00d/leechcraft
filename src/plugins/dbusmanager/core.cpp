@@ -31,74 +31,76 @@
 #include "generaladaptor.h"
 #include "tasksadaptor.h"
 
-using namespace LeechCraft;
-using namespace LeechCraft::Plugins::DBusManager;
-
-Core::Core ()
+namespace LeechCraft
 {
-	NotificationManager_.reset (new NotificationManager);
+namespace DBusManager
+{
+	Core::Core ()
+	{
+		NotificationManager_.reset (new NotificationManager);
 
-	QTimer::singleShot (1500,
-			this,
-			SLOT (doDelayedInit ()));
+		QTimer::singleShot (1500,
+				this,
+				SLOT (doDelayedInit ()));
 #ifdef Q_OS_WIN32
-	QProcess *daemon = new QProcess (this);
-	daemon->start ("dbus/bin/dbus-daemon --session");
+		QProcess *daemon = new QProcess (this);
+		daemon->start ("dbus/bin/dbus-daemon --session");
 #endif
+	}
+
+	Core& Core::Instance ()
+	{
+		static Core core;
+		return core;
+	}
+
+	void Core::Release ()
+	{
+		Proxy_.reset ();
+	}
+
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
+
+	ICoreProxy_ptr Core::GetProxy () const
+	{
+		return Proxy_;
+	}
+
+	QString Core::Greeter (const QString&)
+	{
+		return tr ("LeechCraft D-Bus general interface");
+	}
+
+	bool Core::CouldHandle (const LeechCraft::Entity& e) const
+	{
+		return NotificationManager_->CouldNotify (e);
+	}
+
+	void Core::Handle (const LeechCraft::Entity& e)
+	{
+		NotificationManager_->HandleNotification (e);
+	}
+
+	void Core::DumpError ()
+	{
+		qDebug () << Q_FUNC_INFO
+			<< Connection_->lastError ().message ();
+	}
+
+	void Core::doDelayedInit ()
+	{
+		General_.reset (new General);
+		new GeneralAdaptor (General_.get ());
+
+		Tasks_.reset (new Tasks);
+		new TasksAdaptor (Tasks_.get ());
+
+		QDBusConnection::sessionBus ().registerService ("org.LeechCraft.DBus");
+		QDBusConnection::sessionBus ().registerObject ("/General", General_.get ());
+		QDBusConnection::sessionBus ().registerObject ("/Tasks", Tasks_.get ());
+	}
 }
-
-Core& Core::Instance ()
-{
-	static Core core;
-	return core;
 }
-
-void Core::Release ()
-{
-	Proxy_.reset ();
-}
-
-void Core::SetProxy (ICoreProxy_ptr proxy)
-{
-	Proxy_ = proxy;
-}
-
-ICoreProxy_ptr Core::GetProxy () const
-{
-	return Proxy_;
-}
-
-QString Core::Greeter (const QString&)
-{
-	return tr ("LeechCraft D-Bus general interface");
-}
-
-bool Core::CouldHandle (const LeechCraft::Entity& e) const
-{
-	return NotificationManager_->CouldNotify (e);
-}
-
-void Core::Handle (const LeechCraft::Entity& e)
-{
-	NotificationManager_->HandleNotification (e);
-}
-
-void Core::DumpError ()
-{
-	qDebug () << Q_FUNC_INFO
-		<< Connection_->lastError ().message ();
-}
-
-void Core::doDelayedInit ()
-{
-	General_.reset (new General);
-	new GeneralAdaptor (General_.get ());
-
-	Tasks_.reset (new Tasks);
-	new TasksAdaptor (Tasks_.get ());
-
-	QDBusConnection::sessionBus ().registerService ("org.LeechCraft.DBus");
-	QDBusConnection::sessionBus ().registerObject ("/General", General_.get ());
-	QDBusConnection::sessionBus ().registerObject ("/Tasks", Tasks_.get ());
-}
-

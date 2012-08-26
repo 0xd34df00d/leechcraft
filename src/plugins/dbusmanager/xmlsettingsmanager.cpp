@@ -19,27 +19,30 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-using namespace LeechCraft::Plugins::DBusManager;
-
-XmlSettingsManager::XmlSettingsManager ()
+namespace LeechCraft
 {
-	LeechCraft::Util::BaseSettingsManager::Init ();
-}
-
-XmlSettingsManager* XmlSettingsManager::Instance ()
+namespace DBusManager
 {
-	static XmlSettingsManager manager;
-	return &manager;
-}
+	XmlSettingsManager::XmlSettingsManager ()
+	{
+		LeechCraft::Util::BaseSettingsManager::Init ();
+	}
 
-QSettings* XmlSettingsManager::BeginSettings () const
-{
-	QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_DBusManager");
-	return settings;
-}
+	XmlSettingsManager* XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return &manager;
+	}
 
-void XmlSettingsManager::EndSettings (QSettings*) const
-{
-}
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_DBusManager");
+		return settings;
+	}
 
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
+}
