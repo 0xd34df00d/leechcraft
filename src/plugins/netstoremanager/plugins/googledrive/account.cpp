@@ -60,6 +60,11 @@ namespace GoogleDrive
 		return ParentPlugin_;
 	}
 
+	QByteArray Account::GetUniqueID () const
+	{
+		return QString ("NetStoreManager.GoogleDrive_" + Name_).toUtf8 ();
+	}
+
 	AccountFeatures Account::GetAccountFeatures () const
 	{
 		return FileListings;
