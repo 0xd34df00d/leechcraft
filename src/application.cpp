@@ -85,6 +85,7 @@ LeechCraft::Application::Application (int& argc, char **argv)
 
 	if (VarMap_.count ("restart"))
 	{
+		Arguments_.removeAll ("--restart");
 		EnterRestartMode ();
 		return;
 	}
