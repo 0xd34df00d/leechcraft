@@ -48,11 +48,6 @@ namespace Autopaste
 		InitReply (params.NAM_->post (req, data));
 	}
 
-	QString CodepadService::GetName () const
-	{
-		return "codepad.org";
-	}
-
 	void CodepadService::handleMetadata ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());

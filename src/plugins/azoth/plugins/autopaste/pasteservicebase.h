@@ -23,7 +23,6 @@
 
 class QNetworkAccessManager;
 class QNetworkReply;
-class QIcon;
 
 namespace LeechCraft
 {
@@ -57,9 +56,6 @@ namespace Autopaste
 		PasteServiceBase (QObject *entry, QObject* = 0);
 
 		virtual void Paste (const PasteParams&) = 0;
-
-		virtual QString GetName () const = 0;
-		virtual QIcon GetIcon () const;
 	protected:
 		void InitReply (QNetworkReply*);
 		void FeedURL (const QString&);

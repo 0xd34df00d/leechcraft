@@ -21,7 +21,6 @@
 #include <QClipboard>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QIcon>
 #include <util/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imessage.h>
@@ -36,11 +35,6 @@ namespace Autopaste
 	: QObject (parent)
 	, Entry_ (entry)
 	{
-	}
-
-	QIcon PasteServiceBase::GetIcon () const
-	{
-		return QIcon ();
 	}
 
 	void PasteServiceBase::InitReply (QNetworkReply *reply)
