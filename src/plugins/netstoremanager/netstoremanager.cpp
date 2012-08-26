@@ -27,6 +27,8 @@
 #include "accountsmanager.h"
 #include "accountslistwidget.h"
 #include "upmanager.h"
+#include "syncmanager.h"
+#include "syncwidget.h"
 
 namespace LeechCraft
 {
@@ -68,6 +70,8 @@ namespace NetStoreManager
 
 	void Plugin::SecondInit ()
 	{
+		SyncManager_ = new SyncManager (AccountsManager_, this);
+		XSD_->SetCustomWidget ("SyncWidget", new SyncWidget (AccountsManager_));
 	}
 
 	QByteArray Plugin::GetUniqueID () const
