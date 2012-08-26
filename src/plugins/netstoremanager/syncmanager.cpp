@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "syncmanager.h"
+#include <QtDebug>
+#include <QStringList>
 #include "accountsmanager.h"
 
 namespace LeechCraft
@@ -26,7 +28,40 @@ namespace NetStoreManager
 	SyncManager::SyncManager (AccountsManager *am, QObject *parent)
 	: QObject (parent)
 	, AM_ (am)
+	, FileSystemWatcher_ (new QFileSystemWatcher (this))
 	{
+		connect (FileSystemWatcher_,
+				SIGNAL (directoryChanged (QString)),
+				this,
+				SLOT (handleDirectoryChanged (QString)));
+		connect (FileSystemWatcher_,
+				SIGNAL (fileChanged (QString)),
+				this,
+				SLOT (handleFileChanged (QString)));
+	}
+
+	void SyncManager::handleDirectoryAdded (const QVariantMap& dirs)
+	{
+		FileSystemWatcher_->removePaths (FileSystemWatcher_->directories ());
+
+		for (const auto& key : dirs.keys ())
+		{
+			const QString& path = dirs [key].toString ();
+			Path2Account_ [path] = AM_->GetAccountFromUniqueID (key);
+			FileSystemWatcher_->addPath (path);
+			qDebug () << "watching directory "
+					<< path;
+		}
+	}
+
+	void SyncManager::handleDirectoryChanged (const QString& path)
+	{
+		qDebug () << Q_FUNC_INFO << path;
+	}
+
+	void SyncManager::handleFileChanged (const QString& path)
+	{
+		qDebug () << Q_FUNC_INFO << path;
 	}
 
 }

@@ -40,13 +40,11 @@ namespace NetStoreManager
 		Ui_.SyncView_->horizontalHeader ()->setStretchLastSection (true);
 		Ui_.SyncView_->setItemDelegate (new SyncItemDelegate (AM_, this));
 		Ui_.SyncView_->setModel (Model_);
-
-		RestoreData ();
 	}
 
 	void SyncWidget::RestoreData ()
 	{
-		const QVariantMap& map = XmlSettingsManager::Instance ().property ("Synchronization").toMap ();
+		QVariantMap map = XmlSettingsManager::Instance ().property ("Synchronization").toMap ();
 		for (auto key : map.keys ())
 		{
 			auto isa = AM_->GetAccountFromUniqueID (key);
@@ -68,9 +66,12 @@ namespace NetStoreManager
 			QStandardItem *dirItem = new QStandardItem;
 			dirItem->setData (map [key].toString (), Qt::EditRole);
 			Model_->appendRow ({ accItem, dirItem });
+
 			Ui_.SyncView_->openPersistentEditor (Model_->indexFromItem (accItem));
 			Ui_.SyncView_->resizeColumnToContents (SyncItemDelegate::Account);
 		}
+
+		emit directoryAdded (map);
 	}
 
 	void SyncWidget::accept ()
@@ -87,6 +88,7 @@ namespace NetStoreManager
 			map [accItem->data (SyncItemDelegate::AccountId).toString ()] = dirItem->text ();
 		}
 
+		emit directoryAdded (map);
 		XmlSettingsManager::Instance ().setProperty ("Synchronization", map);
 	}
 

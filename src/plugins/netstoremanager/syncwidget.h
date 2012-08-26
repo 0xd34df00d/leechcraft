@@ -40,15 +40,16 @@ namespace NetStoreManager
 
 	public:
 		SyncWidget (AccountsManager *am, QWidget *parent = 0);
-	private:
 		void RestoreData ();
 
 	public slots:
 		void accept ();
-
 	private slots:
 		void on_Add__released ();
 		void on_Remove__released ();
+
+	signals:
+		void directoryAdded (const QVariantMap& dirs);
 	};
 }
 }

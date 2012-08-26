@@ -19,11 +19,14 @@
 #pragma once
 
 #include <QObject>
+#include <QVariant>
+#include <QFileSystemWatcher>
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
+	class IStorageAccount;
 	class AccountsManager;
 
 	class SyncManager : public QObject
@@ -31,8 +34,16 @@ namespace NetStoreManager
 		Q_OBJECT
 
 		AccountsManager *AM_;
+		QFileSystemWatcher *FileSystemWatcher_;
+		QMap<QString, IStorageAccount*> Path2Account_;
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
+
+	public slots:
+		void handleDirectoryAdded (const QVariantMap& dirs);
+	private slots:
+		void handleDirectoryChanged (const QString& path);
+		void handleFileChanged (const QString& path);
 	};
 }
 }
