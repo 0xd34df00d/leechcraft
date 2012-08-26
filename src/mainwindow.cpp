@@ -384,6 +384,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	menu->addSeparator ();
 	menu->addAction (Ui_.ActionAboutLeechCraft_);
 	menu->addSeparator ();
+	menu->addAction (Ui_.ActionRestart_);
 	menu->addAction (Ui_.ActionQuit_);
 	Ui_.ActionMenu_->setMenu (menu);
 
@@ -500,6 +501,20 @@ void LeechCraft::MainWindow::on_ActionAboutLeechCraft__triggered ()
 	AboutDialog *dia = new AboutDialog (this);
 	dia->setAttribute (Qt::WA_DeleteOnClose);
 	dia->show ();
+}
+
+void LeechCraft::MainWindow::on_ActionRestart__triggered()
+{
+	if (QMessageBox::question (this,
+				"LeechCraft",
+				tr ("Do you really want to restart?"),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+		return;
+
+	static_cast<Application*> (qApp)->InitiateRestart ();
+	QTimer::singleShot (1000,
+			qApp,
+			SLOT (quit ()));
 }
 
 void LeechCraft::MainWindow::on_ActionQuit__triggered ()
