@@ -23,13 +23,17 @@
 #include <QDBusConnectionInterface>
 #include <QApplication>
 #include <QTimer>
+#include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
+#include <interfaces/iwebfilestorage.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #ifdef Q_OS_WIN32
 #include <QProcess>
 #endif
 #include "generaladaptor.h"
 #include "tasksadaptor.h"
+#include "webfilestorageadaptor.h"
 
 namespace LeechCraft
 {
@@ -101,6 +105,17 @@ namespace DBusManager
 		QDBusConnection::sessionBus ().registerService ("org.LeechCraft.DBus");
 		QDBusConnection::sessionBus ().registerObject ("/General", General_.get ());
 		QDBusConnection::sessionBus ().registerObject ("/Tasks", Tasks_.get ());
+
+		auto roots = Proxy_->GetPluginsManager ()->GetAllCastableRoots<IWebFileStorage*> ();
+		Q_FOREACH (QObject *root, roots)
+		{
+			new WebFileStorageAdaptor (root);
+
+			auto ii = qobject_cast<IInfo*> (root);
+			const auto& name = "/WebFileStorage/" + ii->GetUniqueID ().replace ('.', '_');
+
+			QDBusConnection::sessionBus ().registerObject (name, root);
+		}
 	}
 }
 }
