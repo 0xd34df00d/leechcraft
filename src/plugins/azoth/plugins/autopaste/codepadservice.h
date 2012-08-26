@@ -32,7 +32,9 @@ namespace Autopaste
 	{
 		Q_OBJECT
 	public:
-		CodepadService (const PasteParams&, QObject* = 0);
+		CodepadService (QObject *entry, QObject* = 0);
+
+		void Paste (const PasteParams&);
 
 		QString GetName () const;
 	protected:

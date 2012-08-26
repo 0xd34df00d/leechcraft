@@ -28,8 +28,12 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	CodepadService::CodepadService (const PasteParams& params, QObject *parent)
-	: PasteServiceBase (params.Entry_, parent)
+	CodepadService::CodepadService (QObject *entry, QObject *parent)
+	: PasteServiceBase (entry, parent)
+	{
+	}
+
+	void CodepadService::Paste (const PasteParams& params)
 	{
 		QNetworkRequest req (QUrl ("http://codepad.org"));
 		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");

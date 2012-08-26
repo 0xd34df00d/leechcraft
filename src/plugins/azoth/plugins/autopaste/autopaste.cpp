@@ -135,7 +135,8 @@ namespace Autopaste
 					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 			return;
 
-		new CodepadService ({ Proxy_->GetNetworkAccessManager (), text, Highlight::None, entry }, this);
+		auto service = new CodepadService (entry, this);
+		service->Paste ({ Proxy_->GetNetworkAccessManager (), text, Highlight::None });
 		proxy->CancelDefault ();
 	}
 }
