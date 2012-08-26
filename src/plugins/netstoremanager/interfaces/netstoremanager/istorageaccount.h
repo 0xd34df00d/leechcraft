@@ -45,6 +45,8 @@ namespace NetStoreManager
 		virtual QObject* GetParentPlugin () const = 0;
 		virtual QObject* GetObject () = 0;
 
+		virtual QByteArray GetUniqueID () const = 0;
+
 		virtual QString GetAccountName () const = 0;
 		virtual AccountFeatures GetAccountFeatures () const = 0;
 
