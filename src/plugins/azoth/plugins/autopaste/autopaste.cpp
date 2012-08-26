@@ -25,6 +25,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include "xmlsettingsmanager.h"
 #include "codepadservice.h"
+#include "pastedialog.h"
 
 namespace LeechCraft
 {
@@ -120,24 +121,25 @@ namespace Autopaste
 			return;
 		}
 
-		if (!XmlSettingsManager::Instance ()
-				.property (propName).toBool ())
+		if (!XmlSettingsManager::Instance ().property (propName).toBool ())
 			return;
 
-		const bool shouldConfirm = XmlSettingsManager::Instance ()
-				.property ("ConfirmPasting").toBool ();
-		if (shouldConfirm &&
-			QMessageBox::question (qobject_cast<QWidget*> (chatTab),
-					tr ("Confirm pasting"),
-					tr ("This message is too long according to current "
-						"settings. Would you like to paste it on a "
-						"pastebin?"),
-					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+		PasteDialog dia;
+		dia.exec ();
+		auto choice = dia.GetChoice ();
+		switch (choice)
+		{
+		case PasteDialog::Cancel:
+			proxy->CancelDefault ();
+		case PasteDialog::No:
 			return;
-
-		auto service = new CodepadService (entry, this);
-		service->Paste ({ Proxy_->GetNetworkAccessManager (), text, Highlight::None });
-		proxy->CancelDefault ();
+		case PasteDialog::Yes:
+		{
+			auto service = dia.GetCreator () (entry);
+			service->Paste ({ Proxy_->GetNetworkAccessManager (), text, dia.GetHighlight () });
+			proxy->CancelDefault ();
+		}
+		}
 	}
 }
 }
