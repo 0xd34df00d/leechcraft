@@ -119,7 +119,8 @@ namespace LeechCraft
 		QString type;
 		try
 		{
-			type = QString::fromUtf8 (map ["type"].as<std::string> ().c_str ());
+			if (map.find ("type") != map.end ())
+				type = QString::fromUtf8 (map ["type"].as<std::string> ().c_str ());
 		}
 		catch (const std::exception& e)
 		{
