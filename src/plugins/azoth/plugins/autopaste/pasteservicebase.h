@@ -35,9 +35,12 @@ namespace Autopaste
 	enum class Highlight
 	{
 		None,
+		C,
 		CPP,
-		XML,
-		Haskell
+		CPP0x,
+		Haskell,
+		Java,
+		XML
 	};
 
 	class PasteServiceBase : public QObject

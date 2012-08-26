@@ -44,7 +44,12 @@ namespace Autopaste
 		switch (params.High_)
 		{
 		case Highlight::CPP:
+		case Highlight::CPP0x:
 			highlight = "C%2B%2B";
+			run = true;
+			break;
+		case Highlight::C:
+			highlight = "C";
 			run = true;
 			break;
 		case Highlight::XML:
@@ -52,6 +57,10 @@ namespace Autopaste
 			break;
 		case Highlight::Haskell:
 			highlight = "Haskell";
+			run = true;
+			break;
+		case Highlight::Java:
+			highlight = "Java";
 			run = true;
 			break;
 		case Highlight::None:

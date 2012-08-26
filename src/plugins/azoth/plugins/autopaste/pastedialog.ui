@@ -52,17 +52,32 @@
        </item>
        <item>
         <property name="text">
+         <string notr="true">C</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string notr="true">C++</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string notr="true">XML</string>
+         <string notr="true">C++0x</string>
         </property>
        </item>
        <item>
         <property name="text">
          <string notr="true">Haskell</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">Java</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">XML</string>
         </property>
        </item>
       </widget>
