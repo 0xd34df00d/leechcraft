@@ -13,12 +13,14 @@ SET (AUTOPASTE_SRCS
 	autopaste.cpp
 	codepadservice.cpp
 	pasteservicebase.cpp
+	pasteservicefactory.cpp
 	xmlsettingsmanager.cpp
 	)
 SET (AUTOPASTE_HEADERS
 	autopaste.h
 	codepadservice.h
 	pasteservicebase.h
+	pasteservicefactory.h
 	xmlsettingsmanager.h
 	)
 SET (AUTOPASTE_RESOURCES azothautopasteresources.qrc)
