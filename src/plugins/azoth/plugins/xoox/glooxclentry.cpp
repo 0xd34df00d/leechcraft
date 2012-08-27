@@ -23,6 +23,7 @@
 #include <QtDebug>
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
+#include <util/util.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/azothcommon.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -30,6 +31,7 @@
 #include "core.h"
 #include "clientconnection.h"
 #include "capsmanager.h"
+#include "gwoptionsdialog.h"
 
 namespace LeechCraft
 {
@@ -352,8 +354,18 @@ namespace Xoox
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleGWLogout ()));
-
 				GWActions_ << logout;
+
+				auto edit = new QAction (tr ("Gateway preferences..."), Account_);
+				edit->setProperty ("Azoth/Xoox/Variant", gvVar);
+				edit->setProperty ("ActionIcon", "preferences-other");
+				connect (edit,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleGWEdit ()));
+				GWActions_ << edit;
+
+				GWActions_ << Util::CreateSeparator (Account_);
 			}
 		}
 		else if (!GWActions_.isEmpty ())
@@ -424,8 +436,7 @@ namespace Xoox
 
 	void GlooxCLEntry::SendGWPresence (QXmppPresence::Type type)
 	{
-		const auto& variant = sender ()->
-				property ("Azoth/Xoox/Variant").toString ();
+		const auto& variant = sender ()->property ("Azoth/Xoox/Variant").toString ();
 		QString jid = GetJID ();
 		if (!variant.isEmpty ())
 			jid += '/' + variant;
@@ -443,6 +454,13 @@ namespace Xoox
 	void GlooxCLEntry::handleGWLogout ()
 	{
 		SendGWPresence (QXmppPresence::Unavailable);
+	}
+
+	void GlooxCLEntry::handleGWEdit ()
+	{
+		auto dia = new GWOptionsDialog (Account_->GetClientConnection ()->GetClient ());
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 	}
 }
 }

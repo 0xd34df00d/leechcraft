@@ -117,6 +117,7 @@ namespace Xoox
 	private slots:
 		void handleGWLogin ();
 		void handleGWLogout ();
+		void handleGWEdit ();
 	};
 }
 }
