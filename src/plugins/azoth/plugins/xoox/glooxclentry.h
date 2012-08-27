@@ -71,8 +71,7 @@ namespace Xoox
 
 		bool AuthRequested_;
 
-		mutable QAction *GWLogin_;
-		mutable QAction *GWLogout_;
+		mutable QList<QAction*> GWActions_;
 	public:
 		GlooxCLEntry (const QString& bareJID, GlooxAccount*);
 		GlooxCLEntry (OfflineDataSource_ptr, GlooxAccount*);
