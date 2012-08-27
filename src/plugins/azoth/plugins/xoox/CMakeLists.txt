@@ -82,6 +82,7 @@ SET (XOOX_SRCS
 	xep0232handler.cpp
 	pepmicroblog.cpp
 	vcardlisteditdialog.cpp
+	regformhandlerwidget.cpp
 	xmppannotationsiq.cpp
 	xmppannotationsmanager.cpp
 	xmppbobiq.cpp
@@ -152,6 +153,7 @@ SET (XOOX_HEADERS
 	xep0232handler.h
 	pepmicroblog.h
 	vcardlisteditdialog.h
+	regformhandlerwidget.h
 	xmppannotationsiq.h
 	xmppannotationsmanager.h
 	xmppbobiq.h
