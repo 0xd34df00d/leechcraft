@@ -238,7 +238,8 @@ namespace LMP
 		mkButton (tr ("Current song"), "view-media-lyrics");
 		mkButton (tr ("Collection"), "folder-sound");
 		mkButton (tr ("Playlists"), "view-media-playlist");
-		mkButton (tr ("Social"), "applications-internet");
+		mkButton (tr ("Social"), "system-users");
+		mkButton (tr ("Internet"), "applications-internet");
 		mkButton (tr ("Filesystem"), "document-open");
 		mkButton (tr ("Devices"), "drive-removable-media-usb");
 

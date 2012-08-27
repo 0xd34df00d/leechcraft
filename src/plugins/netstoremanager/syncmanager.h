@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,34 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_BOOKMARKEDITWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_BOOKMARKEDITWIDGET_H
-#include <QWidget>
+#pragma once
+
+#include <QObject>
 #include <QVariant>
-#include <interfaces/azoth/imucbookmarkeditorwidget.h>
-#include "ui_bookmarkeditwidget.h"
+#include <QFileSystemWatcher>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace NetStoreManager
 {
-namespace Xoox
-{
-	class BookmarkEditWidget : public QWidget
-							 , public IMUCBookmarkEditorWidget
+	class IStorageAccount;
+	class AccountsManager;
+
+	class SyncManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCBookmarkEditorWidget);
 
-		Ui::BookmarkEditWidget Ui_;
+		AccountsManager *AM_;
+		QFileSystemWatcher *FileSystemWatcher_;
+		QMap<QString, IStorageAccount*> Path2Account_;
 	public:
-		BookmarkEditWidget (QWidget* = 0);
+		SyncManager (AccountsManager *am, QObject *parent = 0);
 
-		QVariantMap GetIdentifyingData () const;
-		void SetIdentifyingData (const QVariantMap&);
+	public slots:
+		void handleDirectoryAdded (const QVariantMap& dirs);
+	private slots:
+		void handleDirectoryChanged (const QString& path);
+		void handleFileChanged (const QString& path);
 	};
 }
 }
-}
-
-#endif

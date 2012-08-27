@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,47 +16,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NETSTOREMANAGER_ACCOUNTSMANAGER_H
-#define PLUGINS_NETSTOREMANAGER_ACCOUNTSMANAGER_H
-#include <QObject>
+#pragma once
 
-class QAbstractItemModel;
-class QStandardItemModel;
-class QModelIndex;
+#include <QItemDelegate>
+
+class QComboBox;
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	class IStoragePlugin;
-	class IStorageAccount;
+	class AccountsManager;
 
-	class AccountsManager : public QObject
+	class SyncItemDelegate : public QItemDelegate
 	{
 		Q_OBJECT
 
-		QStandardItemModel *Model_;
-		enum Roles
+		AccountsManager *AM_;
+
+	public:
+		enum Columns
 		{
-			AccountObj = Qt::UserRole + 1
+			Account,
+			Directory
 		};
 
-		QList<IStoragePlugin*> Plugins_;
-	public:
-		AccountsManager (QObject* = 0);
+		enum SyncItemDelegateRoles
+		{
+			AccountId = Qt::UserRole + 1
+		};
 
-		void AddPlugin (IStoragePlugin*);
-		QList<IStoragePlugin*> GetPlugins () const;
-		QList<IStorageAccount*> GetAccounts () const;
-		IStorageAccount* GetAccountFromUniqueID (const QString& id) const;
-		QAbstractItemModel* GetModel () const;
+		SyncItemDelegate (AccountsManager *am, QObject *parent = 0);
 
-		void RemoveAccount (const QModelIndex&);
+		QWidget* createEditor (QWidget *parent,
+				const QStyleOptionViewItem& option, const QModelIndex& index) const;
+		void setEditorData (QWidget *editor, const QModelIndex& index) const;
+		void setModelData (QWidget *editor, QAbstractItemModel *model,
+				const QModelIndex& index) const;
+		void updateEditorGeometry (QWidget *editor,
+				const QStyleOptionViewItem& option, const QModelIndex& index) const;
+	private:
+		void FillAccounts (QComboBox *box) const;
+// 		void FillAccountsAndSetCurrent (QComboBox *box, );
+
 	private slots:
-		void handleAccountAdded (QObject*);
-		void handleAccountRemoved (QObject*);
+		void handleCloseDirectoryEditor (QWidget *w);
 	};
 }
 }
-
-#endif

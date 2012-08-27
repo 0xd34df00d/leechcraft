@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,34 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_BOOKMARKEDITWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_BOOKMARKEDITWIDGET_H
+#pragma once
+
 #include <QWidget>
-#include <QVariant>
-#include <interfaces/azoth/imucbookmarkeditorwidget.h>
-#include "ui_bookmarkeditwidget.h"
+#include "ui_syncwidget.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace NetStoreManager
 {
-namespace Xoox
-{
-	class BookmarkEditWidget : public QWidget
-							 , public IMUCBookmarkEditorWidget
+	class AccountsManager;
+
+	class SyncWidget : public QWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCBookmarkEditorWidget);
 
-		Ui::BookmarkEditWidget Ui_;
+		Ui::SynchronizationWidget Ui_;
+
+		AccountsManager *AM_;
+		QStandardItemModel *Model_;
+
 	public:
-		BookmarkEditWidget (QWidget* = 0);
+		SyncWidget (AccountsManager *am, QWidget *parent = 0);
+		void RestoreData ();
 
-		QVariantMap GetIdentifyingData () const;
-		void SetIdentifyingData (const QVariantMap&);
+	public slots:
+		void accept ();
+	private slots:
+		void on_Add__released ();
+		void on_Remove__released ();
+
+	signals:
+		void directoryAdded (const QVariantMap& dirs);
 	};
 }
 }
-}
-
-#endif

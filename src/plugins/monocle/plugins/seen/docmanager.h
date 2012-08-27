@@ -16,34 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_BOOKMARKEDITWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_BOOKMARKEDITWIDGET_H
-#include <QWidget>
-#include <QVariant>
-#include <interfaces/azoth/imucbookmarkeditorwidget.h>
-#include "ui_bookmarkeditwidget.h"
+#pragma once
+
+#include <memory>
+#include <QObject>
+#include <QHash>
+#include <interfaces/monocle/ibackendplugin.h>
+#include <libdjvu/ddjvuapi.h>
+#include <libdjvu/miniexp.h>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Monocle
 {
-namespace Xoox
+namespace Seen
 {
-	class BookmarkEditWidget : public QWidget
-							 , public IMUCBookmarkEditorWidget
+	class Document;
+
+	class DocManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCBookmarkEditorWidget);
 
-		Ui::BookmarkEditWidget Ui_;
+		ddjvu_context_t *Context_;
+		QHash<ddjvu_document_t*, std::weak_ptr<Document>> Documents_;
 	public:
-		BookmarkEditWidget (QWidget* = 0);
+		DocManager (ddjvu_context_t*, QObject* = 0);
 
-		QVariantMap GetIdentifyingData () const;
-		void SetIdentifyingData (const QVariantMap&);
+		std::shared_ptr<Document> LoadDocument (const QString&);
+		void Unregister (ddjvu_document_t*);
+
+		void HandleDocInfo (ddjvu_document_t*);
+		void HandlePageInfo (ddjvu_document_t*, ddjvu_page_t*);
+		void RedrawPage (ddjvu_document_t*, ddjvu_page_t*);
 	};
 }
 }
 }
-
-#endif

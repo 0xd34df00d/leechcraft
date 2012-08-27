@@ -5,6 +5,7 @@
 		<item type="customwidget" name="AccountsWidget" label="own" />
 	</page>
 	<page>
-		<label value="Upload" />
+		<label value="Synchronization" />
+		<item type="customwidget" name="SyncWidget" label="own" />
 	</page>
 </settings>

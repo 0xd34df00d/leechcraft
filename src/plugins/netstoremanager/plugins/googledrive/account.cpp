@@ -60,6 +60,11 @@ namespace GoogleDrive
 		return ParentPlugin_;
 	}
 
+	QByteArray Account::GetUniqueID () const
+	{
+		return QString ("NetStoreManager.GoogleDrive_" + Name_).toUtf8 ();
+	}
+
 	AccountFeatures Account::GetAccountFeatures () const
 	{
 		return FileListings;
@@ -76,17 +81,21 @@ namespace GoogleDrive
 				UploadType::Upload, parentId, this);
 
 		connect (uploadManager,
-				SIGNAL (uploadProgress (quint64, quint64, const QString&)),
+				SIGNAL (uploadProgress (quint64, quint64, QString)),
 				this,
-				SIGNAL (upProgress (quint64, quint64, const QString&)));
+				SIGNAL (upProgress (quint64, quint64, QString)));
 		connect (uploadManager,
-				SIGNAL (uploadError (const QString&, const QString&)),
+				SIGNAL (uploadError (QString, QString)),
 				this,
-				SIGNAL (upError (const QString&, const QString&)));
+				SIGNAL (upError (QString, QString)));
 		connect (uploadManager,
-				SIGNAL (uploadStatusChanged (const QString&, const QString&)),
+				SIGNAL (finished (QStringList, QString)),
 				this,
-				SIGNAL (upStatusChanged (const QString&, const QString&)));
+				SIGNAL (upFinished (QStringList, QString)));
+		connect (uploadManager,
+				SIGNAL (uploadStatusChanged (QString, QString)),
+				this,
+				SIGNAL (upStatusChanged (QString, QString)));
 	}
 
 	void Account::Delete (const QList<QStringList>& id)
@@ -349,10 +358,9 @@ namespace GoogleDrive
 
 	void Account::handleSharedFileId (const QString& id)
 	{
-		emit gotFileUrl (QUrl (QString ("https://docs.google.com/open?id=%1")
+		emit gotFileUrl (QUrl (QString ("https://drive.google.com/uc?export=&confirm=no_antivirus&id=%1")
 				.arg (id)), QStringList (id));
 	}
-
 }
 }
 }

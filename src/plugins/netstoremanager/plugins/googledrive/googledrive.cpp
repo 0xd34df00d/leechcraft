@@ -56,11 +56,12 @@ namespace GoogleDrive
 				SIGNAL (authSuccess (QObject*)),
 				this,
 				SLOT (handleAuthSuccess (QObject*)));
+
+		ReadAccounts ();
 	}
 
 	void Plugin::SecondInit ()
 	{
-		ReadAccounts ();
 	}
 
 	void Plugin::Release ()

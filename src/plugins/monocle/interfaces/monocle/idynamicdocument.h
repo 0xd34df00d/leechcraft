@@ -16,34 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_BOOKMARKEDITWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_BOOKMARKEDITWIDGET_H
-#include <QWidget>
-#include <QVariant>
-#include <interfaces/azoth/imucbookmarkeditorwidget.h>
-#include "ui_bookmarkeditwidget.h"
+#pragma once
+
+#include <QtPlugin>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Monocle
 {
-namespace Xoox
-{
-	class BookmarkEditWidget : public QWidget
-							 , public IMUCBookmarkEditorWidget
+	class IDynamicDocument
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCBookmarkEditorWidget);
-
-		Ui::BookmarkEditWidget Ui_;
 	public:
-		BookmarkEditWidget (QWidget* = 0);
+		virtual ~IDynamicDocument () {}
+	protected:
+		virtual void pageSizeChanged (int) = 0;
 
-		QVariantMap GetIdentifyingData () const;
-		void SetIdentifyingData (const QVariantMap&);
+		virtual void pageContentsChanged (int) = 0;
 	};
 }
 }
-}
 
-#endif
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::IDynamicDocument,
+		"org.LeechCraft.Monocle.IDynamicDocument/1.0");

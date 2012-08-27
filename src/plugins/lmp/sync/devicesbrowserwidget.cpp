@@ -194,9 +194,9 @@ namespace LMP
 
 		if (suitables.isEmpty ())
 		{
-			QMessageBox::warning (this,
-					"LeechCraft",
-					tr ("No plugins are able to sync this device."));
+			Core::Instance ().SendEntity (Util::MakeNotification ("LMP",
+						tr ("No plugins are able to sync this device."),
+						PWarning_));
 			return;
 		}
 

@@ -59,6 +59,7 @@ namespace GoogleDrive
 
 		QObject* GetObject ();
 		QObject* GetParentPlugin () const;
+		QByteArray GetUniqueID () const;
 		AccountFeatures GetAccountFeatures () const;
 		QString GetAccountName () const;
 		void Upload (const QString& filepath,
@@ -92,8 +93,8 @@ namespace GoogleDrive
 		void handleSharedFileId (const QString& id);
 
 	signals:
-		void gotURL (const QUrl& url, const QString& filepath);
 		void upError (const QString& error, const QString& filepath);
+		void upFinished (const QStringList& id, const QString& filepath);
 		void upProgress (quint64 done, quint64 total, const QString& filepath);
 		void upStatusChanged (const QString& status, const QString& filepath);
 
