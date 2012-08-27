@@ -83,6 +83,7 @@ SET (XOOX_SRCS
 	pepmicroblog.cpp
 	vcardlisteditdialog.cpp
 	regformhandlerwidget.cpp
+	gwoptionsdialog.cpp
 	xmppannotationsiq.cpp
 	xmppannotationsmanager.cpp
 	xmppbobiq.cpp
@@ -154,6 +155,7 @@ SET (XOOX_HEADERS
 	pepmicroblog.h
 	vcardlisteditdialog.h
 	regformhandlerwidget.h
+	gwoptionsdialog.h
 	xmppannotationsiq.h
 	xmppannotationsmanager.h
 	xmppbobiq.h
@@ -176,6 +178,7 @@ SET (XOOX_FORMS
 	commandslistpage.ui
 	commandresultpage.ui
 	vcardlisteditdialog.ui
+	gwoptionsdialog.ui
 	)
 SET (XOOX_RESOURCES azothxooxresources.qrc)
 
