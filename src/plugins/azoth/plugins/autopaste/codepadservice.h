@@ -18,43 +18,26 @@
 
 #pragma once
 
-#include <memory>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ientityhandler.h>
+#include "pasteservicebase.h"
+
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
-namespace DBusManager
+namespace Azoth
 {
-	class DBusManager : public QObject
-						, public IInfo
-						, public IHaveSettings
-						, public IEntityHandler
+namespace Autopaste
+{
+	class CodepadService : public PasteServiceBase
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IEntityHandler);
-
-		std::auto_ptr<QTranslator> Translator_;
-		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QStringList Provides () const;
-		QStringList Uses () const;
-		QStringList Needs () const;
-		void SetProvider (QObject*, const QString&);
-		QIcon GetIcon () const;
+		CodepadService (QObject *entry, QObject* = 0);
 
-		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		void Paste (const PasteParams&);
+	protected:
+		void handleMetadata ();
 	};
+}
 }
 }

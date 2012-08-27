@@ -18,43 +18,57 @@
 
 #pragma once
 
-#include <memory>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ientityhandler.h>
+#include <QObject>
+#include <QPointer>
+
+class QNetworkAccessManager;
+class QNetworkReply;
 
 namespace LeechCraft
 {
-namespace DBusManager
+struct Entity;
+
+namespace Azoth
 {
-	class DBusManager : public QObject
-						, public IInfo
-						, public IHaveSettings
-						, public IEntityHandler
+namespace Autopaste
+{
+	enum class Highlight
+	{
+		None,
+		C,
+		CPP,
+		CPP0x,
+		Haskell,
+		Java,
+		XML
+	};
+
+	class PasteServiceBase : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IEntityHandler);
 
-		std::auto_ptr<QTranslator> Translator_;
-		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+		QPointer<QObject> Entry_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QStringList Provides () const;
-		QStringList Uses () const;
-		QStringList Needs () const;
-		void SetProvider (QObject*, const QString&);
-		QIcon GetIcon () const;
+		struct PasteParams
+		{
+			QNetworkAccessManager *NAM_;
+			QString Text_;
+			Highlight High_;
+		};
 
-		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+		PasteServiceBase (QObject *entry, QObject* = 0);
 
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		virtual void Paste (const PasteParams&) = 0;
+	protected:
+		void InitReply (QNetworkReply*);
+		void FeedURL (const QString&);
+	protected slots:
+		virtual void handleMetadata ();
+		virtual void handleFinished ();
+		virtual void handleError ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
+}
 }
 }

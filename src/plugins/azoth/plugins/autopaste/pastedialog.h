@@ -18,43 +18,42 @@
 
 #pragma once
 
-#include <memory>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ientityhandler.h>
+#include <QDialog>
+#include <QPointer>
+#include "pasteservicefactory.h"
+#include "pasteservicebase.h"
+#include "ui_pastedialog.h"
 
 namespace LeechCraft
 {
-namespace DBusManager
+namespace Azoth
 {
-	class DBusManager : public QObject
-						, public IInfo
-						, public IHaveSettings
-						, public IEntityHandler
+namespace Autopaste
+{
+	class PasteDialog : public QDialog
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IEntityHandler);
 
-		std::auto_ptr<QTranslator> Translator_;
-		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+		Ui::PasteDialog Ui_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QStringList Provides () const;
-		QStringList Uses () const;
-		QStringList Needs () const;
-		void SetProvider (QObject*, const QString&);
-		QIcon GetIcon () const;
+		enum Choice
+		{
+			Yes,
+			No,
+			Cancel
+		};
+	private:
+		Choice Choice_;
+	public:
+		PasteDialog (QWidget* = 0);
 
-		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+		Choice GetChoice () const;
 
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		PasteServiceFactory::Creator_f GetCreator () const;
+		Highlight GetHighlight () const;
+	private slots:
+		void on_ButtonBox__clicked (QAbstractButton*);
 	};
+}
 }
 }

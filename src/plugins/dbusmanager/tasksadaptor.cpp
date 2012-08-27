@@ -25,55 +25,49 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DBusManager
+{
+	TasksAdaptor::TasksAdaptor (Tasks *parent)
+	: QDBusAbstractAdaptor (parent)
+	, Tasks_ (parent)
 	{
-		namespace DBusManager
+		qDBusRegisterMetaType<QVariantList> ();
+	}
+
+	QStringList TasksAdaptor::GetHolders () const
+	{
+		return Tasks_->GetHolders ();
+	}
+
+	int TasksAdaptor::RowCount (const QString& name,
+			const QDBusMessage& msg) const
+	{
+		try
 		{
-			TasksAdaptor::TasksAdaptor (Tasks *parent)
-			: QDBusAbstractAdaptor (parent)
-			, Tasks_ (parent)
-			{
-				qDBusRegisterMetaType<QVariantList> ();
-			}
+			return Tasks_->RowCount (name);
+		}
+		catch (const QString& str)
+		{
+			QDBusConnection::sessionBus ()
+				.send (msg.createErrorReply ("RowCount() failure", str));
+			return -1;
+		}
+	}
 
-			QStringList TasksAdaptor::GetHolders () const
-			{
-				return Tasks_->GetHolders ();
-			}
-
-			int TasksAdaptor::RowCount (const QString& name,
-					const QDBusMessage& msg) const
-			{
-				try
-				{
-					return Tasks_->RowCount (name);
-				}
-				catch (const QString& str)
-				{
-					QDBusConnection::sessionBus ()
-						.send (msg.createErrorReply ("RowCount() failure",
-									str));
-					return -1;
-				}
-			}
-
-			QVariantList TasksAdaptor::GetData (const QString& name,
-					int r, int role,
-					const QDBusMessage& msg) const
-			{
-				try
-				{
-					return Tasks_->GetData (name, r, role);
-				}
-				catch (const QString& str)
-				{
-					QDBusConnection::sessionBus ()
-						.send (msg.createErrorReply ("GetData() failure",
-									str));
-					return QVariantList () << str;
-				}
-			}
-		};
-	};
-};
-
+	QVariantList TasksAdaptor::GetData (const QString& name,
+			int r, int role,
+			const QDBusMessage& msg) const
+	{
+		try
+		{
+			return Tasks_->GetData (name, r, role);
+		}
+		catch (const QString& str)
+		{
+			QDBusConnection::sessionBus ()
+				.send (msg.createErrorReply ("GetData() failure", str));
+			return QVariantList () << str;
+		}
+	}
+}
+}

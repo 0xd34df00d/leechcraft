@@ -23,63 +23,59 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DBusManager
+{
+	GeneralAdaptor::GeneralAdaptor (General *parent)
+	: QDBusAbstractAdaptor (parent)
+	, General_ (parent)
 	{
-		namespace DBusManager
+	}
+
+	QString GeneralAdaptor::GetOrganizationName () const
+	{
+		return QCoreApplication::organizationName ();
+	}
+
+	QString GeneralAdaptor::GetApplicationName () const
+	{
+		return QCoreApplication::applicationName ();
+	}
+
+	QStringList GeneralAdaptor::GetLoadedPlugins ()
+	{
+		return General_->GetLoadedPlugins ();
+	}
+
+	QString GeneralAdaptor::GetDescription (const QString& name,
+			const QDBusMessage& msg)
+	{
+		try
 		{
-			GeneralAdaptor::GeneralAdaptor (General *parent)
-			: QDBusAbstractAdaptor (parent)
-			, General_ (parent)
-			{
-			}
+			return General_->GetDescription (name);
+		}
+		catch (const QString& str)
+		{
+			QDBusConnection::sessionBus ()
+				.send (msg.createErrorReply ("GetDescription() failure",
+							str));
+			return str;
+		}
+	}
 
-			QString GeneralAdaptor::GetOrganizationName () const
-			{
-				return QCoreApplication::organizationName ();
-			}
-
-			QString GeneralAdaptor::GetApplicationName () const
-			{
-				return QCoreApplication::applicationName ();
-			}
-
-			QStringList GeneralAdaptor::GetLoadedPlugins ()
-			{
-				return General_->GetLoadedPlugins ();
-			}
-
-			QString GeneralAdaptor::GetDescription (const QString& name,
-					const QDBusMessage& msg)
-			{
-				try
-				{
-					return General_->GetDescription (name);
-				}
-				catch (const QString& str)
-				{
-					QDBusConnection::sessionBus ()
-						.send (msg.createErrorReply ("GetDescription() failure",
-									str));
-					return str;
-				}
-			}
-
-			QByteArray GeneralAdaptor::GetIcon (const QString& name, int dim,
-					const QDBusMessage& msg)
-			{
-				try
-				{
-					return General_->GetIcon (name, dim);
-				}
-				catch (const QString& str)
-				{
-					QDBusConnection::sessionBus ()
-						.send (msg.createErrorReply ("GetDescription() failure",
-									str));
-					return str.toUtf8 ();
-				}
-			}
-		};
-	};
-};
-
+	QByteArray GeneralAdaptor::GetIcon (const QString& name, int dim,
+			const QDBusMessage& msg)
+	{
+		try
+		{
+			return General_->GetIcon (name, dim);
+		}
+		catch (const QString& str)
+		{
+			QDBusConnection::sessionBus ()
+				.send (msg.createErrorReply ("GetDescription() failure",
+							str));
+			return str.toUtf8 ();
+		}
+	}
+}
+}

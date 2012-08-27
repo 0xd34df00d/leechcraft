@@ -16,45 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ientityhandler.h>
+#include "webfilestorageadaptor.h"
+#include <QUrl>
+#include <interfaces/iwebfilestorage.h>
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace DBusManager
 {
-	class DBusManager : public QObject
-						, public IInfo
-						, public IHaveSettings
-						, public IEntityHandler
+	WebFileStorageAdaptor::WebFileStorageAdaptor (QObject *parent)
+	: QDBusAbstractAdaptor (parent)
+	, WFS_ (qobject_cast<IWebFileStorage*> (parent))
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IEntityHandler);
+		setAutoRelaySignals (false);
+		connect (parent,
+				SIGNAL (fileUploaded (QString, QUrl)),
+				this,
+				SLOT (handleFileUploaded (QString, QUrl)));
+	}
 
-		std::auto_ptr<QTranslator> Translator_;
-		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QStringList Provides () const;
-		QStringList Uses () const;
-		QStringList Needs () const;
-		void SetProvider (QObject*, const QString&);
-		QIcon GetIcon () const;
+	QStringList WebFileStorageAdaptor::GetServiceVariants () const
+	{
+		return WFS_->GetServiceVariants ();
+	}
 
-		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+	void WebFileStorageAdaptor::UploadFile (const QString& filename, const QString& service)
+	{
+		WFS_->UploadFile (filename, service);
+	}
 
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-	};
+	void WebFileStorageAdaptor::handleFileUploaded (const QString& filename, const QUrl& url)
+	{
+		emit FileUploaded (filename, url.toString ());
+	}
 }
 }

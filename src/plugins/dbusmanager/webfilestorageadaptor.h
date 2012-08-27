@@ -18,43 +18,34 @@
 
 #pragma once
 
-#include <memory>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ientityhandler.h>
+#include <QDBusAbstractAdaptor>
+#include <QStringList>
+
+class IWebFileStorage;
 
 namespace LeechCraft
 {
 namespace DBusManager
 {
-	class DBusManager : public QObject
-						, public IInfo
-						, public IHaveSettings
-						, public IEntityHandler
+	class WebFileStorageAdaptor : public QDBusAbstractAdaptor
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IEntityHandler);
 
-		std::auto_ptr<QTranslator> Translator_;
-		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.WebFileStorage");
+		Q_PROPERTY (QStringList ServiceVariants READ GetServiceVariants);
+
+		QObject *WFSObj_;
+		IWebFileStorage *WFS_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QStringList Provides () const;
-		QStringList Uses () const;
-		QStringList Needs () const;
-		void SetProvider (QObject*, const QString&);
-		QIcon GetIcon () const;
+		WebFileStorageAdaptor (QObject*);
 
-		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		QStringList GetServiceVariants () const;
+	public slots:
+		Q_NOREPLY void UploadFile (const QString& filename, const QString& service);
+	private slots:
+		void handleFileUploaded (const QString& filename, const QUrl& url);
+	signals:
+		void FileUploaded (const QString& filename, const QString& url);
 	};
 }
 }

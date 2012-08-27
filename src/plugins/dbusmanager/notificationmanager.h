@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DBUSMANAGER_NOTIFICATIONMANAGER_H
-#define PLUGINS_DBUSMANAGER_NOTIFICATIONMANAGER_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QDBusInterface>
@@ -28,47 +28,41 @@ class QDBusPendingCallWatcher;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DBusManager
+{
+	class NotificationManager : public QObject
 	{
-		namespace DBusManager
+		Q_OBJECT
+
+		std::auto_ptr<QDBusInterface> Connection_;
+
+		struct CapCheckData
 		{
-			class NotificationManager : public QObject
-			{
-				Q_OBJECT
-
-				std::auto_ptr<QDBusInterface> Connection_;
-
-				struct CapCheckData
-				{
-					Entity Entity_;
-				};
-				QMap<QDBusPendingCallWatcher*, CapCheckData> Watcher2CapCheck_;
-
-				struct ActionData
-				{
-					Entity E_;
-					QObject_ptr Handler_;
-					QStringList Actions_;
-				};
-				QMap<QDBusPendingCallWatcher*, ActionData> Watcher2AD_;
-				QMap<uint, ActionData> CallID2AD_;
-			public:
-				NotificationManager (QObject* = 0);
-
-				void Init ();
-				bool CouldNotify (const Entity&) const;
-				void HandleNotification (const Entity&);
-			private:
-				void DoNotify (const Entity&, bool);
-			private slots:
-				void handleNotificationCallFinished (QDBusPendingCallWatcher*);
-				void handleCapCheckCallFinished (QDBusPendingCallWatcher*);
-				void handleActionInvoked (uint, QString);
-				void handleNotificationClosed (uint);
-			};
+			Entity Entity_;
 		};
+		QMap<QDBusPendingCallWatcher*, CapCheckData> Watcher2CapCheck_;
+
+		struct ActionData
+		{
+			Entity E_;
+			QObject_ptr Handler_;
+			QStringList Actions_;
+		};
+		QMap<QDBusPendingCallWatcher*, ActionData> Watcher2AD_;
+		QMap<uint, ActionData> CallID2AD_;
+	public:
+		NotificationManager (QObject* = 0);
+
+		void Init ();
+		bool CouldNotify (const Entity&) const;
+		void HandleNotification (const Entity&);
+	private:
+		void DoNotify (const Entity&, bool);
+	private slots:
+		void handleNotificationCallFinished (QDBusPendingCallWatcher*);
+		void handleCapCheckCallFinished (QDBusPendingCallWatcher*);
+		void handleActionInvoked (uint, QString);
+		void handleNotificationClosed (uint);
 	};
-};
-
-#endif
-
+}
+}

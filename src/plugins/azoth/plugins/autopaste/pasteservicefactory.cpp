@@ -16,33 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QCoreApplication>
+#include "pasteservicefactory.h"
+#include <QIcon>
+#include "codepadservice.h"
 
 namespace LeechCraft
 {
-namespace DBusManager
+namespace Azoth
 {
-	XmlSettingsManager::XmlSettingsManager ()
+namespace Autopaste
+{
+	PasteServiceFactory::PasteServiceFactory ()
 	{
-		LeechCraft::Util::BaseSettingsManager::Init ();
+		Infos_.push_back ({ "codepad.org", QIcon (), [] (QObject *entry) { return new CodepadService (entry); } });
 	}
 
-	XmlSettingsManager* XmlSettingsManager::Instance ()
+	QList<PasteServiceFactory::PasteInfo> PasteServiceFactory::GetInfos () const
 	{
-		static XmlSettingsManager manager;
-		return &manager;
+		return Infos_;
 	}
-
-	QSettings* XmlSettingsManager::BeginSettings () const
-	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_DBusManager");
-		return settings;
-	}
-
-	void XmlSettingsManager::EndSettings (QSettings*) const
-	{
-	}
+}
 }
 }

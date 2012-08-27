@@ -23,6 +23,7 @@ SET (SRCS
 	generaladaptor.cpp
 	tasks.cpp
 	tasksadaptor.cpp
+	webfilestorageadaptor.cpp
 	)
 SET (HEADERS
 	dbusmanager.h
@@ -34,6 +35,7 @@ SET (HEADERS
 	generaladaptor.h
 	tasks.h
 	tasksadaptor.h
+	webfilestorageadaptor.h
 	)
 SET (FORMS
 	)
