@@ -23,6 +23,7 @@
 #include <QtDebug>
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
+#include <util/util.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/azothcommon.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -30,6 +31,7 @@
 #include "core.h"
 #include "clientconnection.h"
 #include "capsmanager.h"
+#include "gwoptionsdialog.h"
 
 namespace LeechCraft
 {
@@ -94,8 +96,6 @@ namespace Xoox
 	: EntryBase (parent)
 	, BareJID_ (jid)
 	, AuthRequested_ (false)
-	, GWLogin_ (0)
-	, GWLogout_ (0)
 	{
 	}
 
@@ -103,8 +103,6 @@ namespace Xoox
 	: EntryBase (parent)
 	, ODS_ (ods)
 	, AuthRequested_ (false)
-	, GWLogin_ (0)
-	, GWLogout_ (0)
 	{
 		const QString& pre = Account_->GetAccountID () + '_';
 		if (ods->ID_.startsWith (pre))
@@ -321,7 +319,7 @@ namespace Xoox
 
 	QList<QAction*> GlooxCLEntry::GetActions () const
 	{
-		auto baseActs = EntryBase::GetActions ();
+		auto result = EntryBase::GetActions ();
 		QString gvVar;
 		bool gwFound = false;
 		Q_FOREACH (const QString& varCand, Variant2Identities_.keys ())
@@ -340,33 +338,42 @@ namespace Xoox
 
 		if (gwFound)
 		{
-			if (!GWLogin_ || !GWLogout_)
+			if (GWActions_.isEmpty ())
 			{
-				GWLogin_ = new QAction (tr ("Login"), Account_);
-				GWLogin_->setProperty ("Azoth/Xoox/Variant", gvVar);
-				connect (GWLogin_,
+				auto login = new QAction (tr ("Login"), Account_);
+				login->setProperty ("Azoth/Xoox/Variant", gvVar);
+				connect (login,
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleGWLogin ()));
-				GWLogout_ = new QAction (tr ("Logout"), Account_);
-				GWLogout_->setProperty ("Azoth/Xoox/Variant", gvVar);
-				connect (GWLogout_,
+				GWActions_ << login;
+
+				auto logout = new QAction (tr ("Logout"), Account_);
+				logout->setProperty ("Azoth/Xoox/Variant", gvVar);
+				connect (logout,
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleGWLogout ()));
+				GWActions_ << logout;
+
+				auto edit = new QAction (tr ("Gateway preferences..."), Account_);
+				edit->setProperty ("Azoth/Xoox/Variant", gvVar);
+				edit->setProperty ("ActionIcon", "preferences-other");
+				connect (edit,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleGWEdit ()));
+				GWActions_ << edit;
+
+				GWActions_ << Util::CreateSeparator (Account_);
 			}
-
-			baseActs << GWLogin_ << GWLogout_;
 		}
-		else
-		{
-			delete GWLogin_;
-			GWLogin_ = 0;
-			delete GWLogout_;
-			GWLogout_ = 0;
-		}
+		else if (!GWActions_.isEmpty ())
+			GWActions_.clear ();
 
-		return baseActs;
+		result += GWActions_;
+
+		return result;
 	}
 
 	AuthStatus GlooxCLEntry::GetAuthStatus () const
@@ -429,8 +436,7 @@ namespace Xoox
 
 	void GlooxCLEntry::SendGWPresence (QXmppPresence::Type type)
 	{
-		const auto& variant = sender ()->
-				property ("Azoth/Xoox/Variant").toString ();
+		const auto& variant = sender ()->property ("Azoth/Xoox/Variant").toString ();
 		QString jid = GetJID ();
 		if (!variant.isEmpty ())
 			jid += '/' + variant;
@@ -448,6 +454,13 @@ namespace Xoox
 	void GlooxCLEntry::handleGWLogout ()
 	{
 		SendGWPresence (QXmppPresence::Unavailable);
+	}
+
+	void GlooxCLEntry::handleGWEdit ()
+	{
+		auto dia = new GWOptionsDialog (Account_->GetClientConnection ()->GetClient ());
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 	}
 }
 }

@@ -16,10 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGSECONDPAGE_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGSECONDPAGE_H
-#include <QWizardPage>
+#pragma once
+
+#include <QWidget>
 #include <QXmppClient.h>
+#include "legacyformbuilder.h"
+#include "formbuilder.h"
+
+class QXmppClient;
 
 namespace LeechCraft
 {
@@ -27,34 +31,63 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class InBandAccountRegFirstPage;
-	class RegFormHandlerWidget;
+	class XMPPBobManager;
 
-	class InBandAccountRegSecondPage : public QWizardPage
+	class RegFormHandlerWidget : public QWidget
 	{
 		Q_OBJECT
 
 		QXmppClient *Client_;
-		RegFormHandlerWidget *RegForm_;
-		InBandAccountRegFirstPage *FirstPage_;
+		XMPPBobManager *BobManager_;
+		LegacyFormBuilder LFB_;
+		FormBuilder FB_;
+		QWidget *Widget_;
+
+		QString LastStanzaID_;
+
+		enum FormType
+		{
+			FTLegacy,
+			FTNew
+		} FormType_;
 	public:
-		InBandAccountRegSecondPage (InBandAccountRegFirstPage*, QWidget* = 0);
+		enum class State
+		{
+			Error,
+			Idle,
+			Connecting,
+			FetchingForm,
+			AwaitingUserInput,
+			AwaitingRegistrationResult
+		};
+	private:
+		State State_;
+	public:
+		RegFormHandlerWidget (QXmppClient*, QWidget* = 0);
 
-		void Register ();
-
-		QString GetJID () const;
+		QString GetUser () const;
 		QString GetPassword () const;
 
-		bool isComplete () const;
-		void initializePage ();
+		bool IsComplete () const;
+
+		void HandleConnecting (const QString&);
+
+		void SendRequest ();
+		void Register ();
+	private:
+		void Clear ();
+		void ShowMessage (const QString&);
+		void SetState (State);
+		void HandleRegForm (const QXmppIq&);
+		void HandleRegResult (const QXmppIq&);
 	private slots:
-		void handleConnected ();
+		void handleError (QXmppClient::Error);
+		void handleIqReceived (const QXmppIq&);;
 	signals:
+		void completeChanged ();
 		void successfulReg ();
 		void regError (const QString&);
 	};
 }
 }
 }
-
-#endif

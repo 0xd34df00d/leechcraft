@@ -16,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGSECONDPAGE_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGSECONDPAGE_H
-#include <QWizardPage>
-#include <QXmppClient.h>
+#pragma once
+
+#include <QDialog>
+#include "ui_gwoptionsdialog.h"
+
+class QXmppClient;
 
 namespace LeechCraft
 {
@@ -27,34 +29,21 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class InBandAccountRegFirstPage;
 	class RegFormHandlerWidget;
 
-	class InBandAccountRegSecondPage : public QWizardPage
+	class GWOptionsDialog : public QDialog
 	{
 		Q_OBJECT
 
-		QXmppClient *Client_;
+		Ui::GWOptionsDialog Ui_;
 		RegFormHandlerWidget *RegForm_;
-		InBandAccountRegFirstPage *FirstPage_;
 	public:
-		InBandAccountRegSecondPage (InBandAccountRegFirstPage*, QWidget* = 0);
-
-		void Register ();
-
-		QString GetJID () const;
-		QString GetPassword () const;
-
-		bool isComplete () const;
-		void initializePage ();
+		GWOptionsDialog (QXmppClient*, QWidget* = 0);
 	private slots:
-		void handleConnected ();
-	signals:
-		void successfulReg ();
-		void regError (const QString&);
+		void sendRegistration ();
+		void handleError (const QString&);
+		void handleCompleteChanged ();
 	};
 }
 }
 }
-
-#endif
