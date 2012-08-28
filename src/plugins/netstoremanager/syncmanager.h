@@ -22,6 +22,8 @@
 #include <QVariant>
 #include <QFileSystemWatcher>
 
+class QTimer;
+
 namespace LeechCraft
 {
 namespace NetStoreManager
@@ -36,6 +38,7 @@ namespace NetStoreManager
 		AccountsManager *AM_;
 		QFileSystemWatcher *FileSystemWatcher_;
 		QMap<QString, IStorageAccount*> Path2Account_;
+		QTimer *Timer_;
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
 
@@ -44,6 +47,7 @@ namespace NetStoreManager
 	private slots:
 		void handleDirectoryChanged (const QString& path);
 		void handleFileChanged (const QString& path);
+		void handleTimeout ();
 	};
 }
 }
