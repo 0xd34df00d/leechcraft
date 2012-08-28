@@ -93,14 +93,14 @@ namespace Launchy
 			: Parser::base_type (Start_)
 			{
 				auto eol = qi::lit ("\n");
-				Comment_ %= qi::lit ("#") >> *(qi::char_) >> eol;
+				Comment_ %= qi::lit ("#") >> *(qi::char_ - '\r' - '\n') >> eol;
 
 				Lang_ %= '[' >> qi::lexeme [+(qi::char_ ("a-zA-Z0-9"))] >> ']';
 
 				KeyValSep_ %= *(qi::lit (' ')) >> '=' >> *(qi::lit (' '));
 
 				LineValSingle_ %= qi::lexeme [+((qi::lit ("\\;") | (qi::char_ - ';' - '\r' - '\n')))];
-				LineVal_ %= LineValSingle_ | +(LineValSingle_ >> ';');
+				LineVal_ %= +(LineValSingle_ >> ';') | LineValSingle_;
 
 				Line_ %= qi::lexeme [+(qi::char_ ("a-zA-Z0-9-"))] >>
 						-Lang_ >>
@@ -110,11 +110,10 @@ namespace Launchy
 
 				GroupName_ %= '[' >> qi::lexeme [+(qi::char_ ("a-zA-Z0-9 "))] >> ']';
 
-				Group_ %= *Comment_ >>
-						GroupName_ >> eol >>
+				Group_ %= GroupName_ >> eol >>
 						*(Comment_ | Line_);
 
-				Start_ %= Group_ >> *Group_;
+				Start_ %= *Comment_ >> +Group_;
 
 				qi::on_error<qi::fail> (Start_,
 						std::cout << phoenix::val ("Error! Expecting") << qi::_4
