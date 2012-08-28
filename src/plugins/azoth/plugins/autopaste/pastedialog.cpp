@@ -16,15 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/core/ihookproxy.h>
-
-class QTranslator;
+#include "pastedialog.h"
+#include "pasteservicefactory.h"
 
 namespace LeechCraft
 {
@@ -32,37 +25,46 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IHaveSettings
+	PasteDialog::PasteDialog (QWidget *parent)
+	: QDialog (parent)
+	, Choice_ (Choice::Cancel)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Ui_.setupUi (this);
 
-		ICoreProxy_ptr Proxy_;
-		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		Q_FOREACH (const auto& info, PasteServiceFactory ().GetInfos ())
+			Ui_.ServiceCombo_->addItem (info.Icon_, info.Name_);
+	}
 
-		QSet<QByteArray> GetPluginClasses () const;
+	PasteDialog::Choice PasteDialog::GetChoice () const
+	{
+		return Choice_;
+	}
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	public slots:
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *entry,
-				int type,
-				QString variant);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-	};
+	PasteServiceFactory::Creator_f PasteDialog::GetCreator () const
+	{
+		return PasteServiceFactory ().GetInfos ().at (Ui_.ServiceCombo_->currentIndex ()).Creator_;
+	}
+
+	Highlight PasteDialog::GetHighlight () const
+	{
+		return static_cast<Highlight> (Ui_.HighlightCombo_->currentIndex ());
+	}
+
+	void PasteDialog::on_ButtonBox__clicked (QAbstractButton *button)
+	{
+		switch (Ui_.ButtonBox_->standardButton (button))
+		{
+		case QDialogButtonBox::Yes:
+			Choice_ = Choice::Yes;
+			break;
+		case QDialogButtonBox::No:
+			Choice_ = Choice::No;
+			break;
+		default:
+			Choice_ = Choice::Cancel;
+			break;
+		}
+	}
 }
 }
 }

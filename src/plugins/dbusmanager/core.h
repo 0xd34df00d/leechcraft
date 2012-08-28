@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DBUSMANAGER_CORE_H
-#define PLUGINS_DBUSMANAGER_CORE_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QDBusConnection>
@@ -29,40 +29,34 @@
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace DBusManager
+{
+	class Core : public QObject
 	{
-		namespace DBusManager
-		{
-			class Core : public QObject
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				std::auto_ptr<QDBusConnection> Connection_;
-				std::auto_ptr<NotificationManager> NotificationManager_;
-				std::auto_ptr<General> General_;
-				std::auto_ptr<Tasks> Tasks_;
+		std::unique_ptr<QDBusConnection> Connection_;
+		std::unique_ptr<NotificationManager> NotificationManager_;
+		std::unique_ptr<General> General_;
+		std::unique_ptr<Tasks> Tasks_;
 
-				ICoreProxy_ptr Proxy_;
+		ICoreProxy_ptr Proxy_;
 
-				Core ();
-			public:
-				static Core& Instance ();
-				void Release ();
-				void SetProxy (ICoreProxy_ptr);
-				ICoreProxy_ptr GetProxy () const;
-				QString Greeter (const QString&);
-				bool CouldHandle (const LeechCraft::Entity&) const;
-				void Handle (const LeechCraft::Entity&);
-			private:
-				void DumpError ();
-			private slots:
-				void doDelayedInit ();
-			};
-		};
+		Core ();
+	public:
+		static Core& Instance ();
+		void Release ();
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy () const;
+		QString Greeter (const QString&);
+		bool CouldHandle (const LeechCraft::Entity&) const;
+		void Handle (const LeechCraft::Entity&);
+	private:
+		void DumpError ();
+	private slots:
+		void doDelayedInit ();
 	};
-};
-
-#endif
-
+}
+}

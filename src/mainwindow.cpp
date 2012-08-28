@@ -27,7 +27,9 @@
 #include <QSplashScreen>
 #include <QBitmap>
 #include <QTime>
+#include <QCryptographicHash>
 #include <QDockWidget>
+#include <QInputDialog>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
@@ -69,6 +71,21 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 		Qt::SplashScreen))
 , IsToolBarVisible_ (true)
 {
+	const auto& storedPass = XmlSettingsManager::Instance ()->property ("StartupPassword").toString ();
+	if (!storedPass.isEmpty ())
+	{
+		const auto& pass = QInputDialog::getText (this,
+				tr ("Startup password"),
+				tr ("Enter startup password for LeechCraft:"),
+				QLineEdit::Password);
+		if (QCryptographicHash::hash (pass.toUtf8 (), QCryptographicHash::Sha1).toHex () != storedPass)
+		{
+			if (!pass.isEmpty ())
+				QMessageBox::critical (this, "LeechCraft", tr ("Sorry, incorrect password"));
+			std::exit (0);
+		}
+	}
+
 	Guard_ = new ToolbarGuard (this);
 	setUpdatesEnabled (false);
 
@@ -384,6 +401,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	menu->addSeparator ();
 	menu->addAction (Ui_.ActionAboutLeechCraft_);
 	menu->addSeparator ();
+	menu->addAction (Ui_.ActionRestart_);
 	menu->addAction (Ui_.ActionQuit_);
 	Ui_.ActionMenu_->setMenu (menu);
 
@@ -500,6 +518,20 @@ void LeechCraft::MainWindow::on_ActionAboutLeechCraft__triggered ()
 	AboutDialog *dia = new AboutDialog (this);
 	dia->setAttribute (Qt::WA_DeleteOnClose);
 	dia->show ();
+}
+
+void LeechCraft::MainWindow::on_ActionRestart__triggered()
+{
+	if (QMessageBox::question (this,
+				"LeechCraft",
+				tr ("Do you really want to restart?"),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+		return;
+
+	static_cast<Application*> (qApp)->InitiateRestart ();
+	QTimer::singleShot (1000,
+			qApp,
+			SLOT (quit ()));
 }
 
 void LeechCraft::MainWindow::on_ActionQuit__triggered ()

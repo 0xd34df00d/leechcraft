@@ -148,10 +148,14 @@ namespace Azoth
 				{
 					const QVariantMap& map = bm.toMap ();
 
-					QAction *act = bmsMenu->addAction (map ["HumanReadableName"].toString ());
+					auto name = map ["StoredName"].toString ();
+					const auto& hrName = map ["HumanReadableName"].toString ();
+					if (name.isEmpty ())
+						name = hrName;
+					QAction *act = bmsMenu->addAction (name);
 					act->setProperty ("Azoth/BMData", bm);
-					act->setProperty ("Azoth/AccountObject",
-							QVariant::fromValue<QObject*> (accObj));
+					act->setProperty ("Azoth/AccountObject", QVariant::fromValue<QObject*> (accObj));
+					act->setToolTip (hrName);
 					connect (act,
 							SIGNAL (triggered ()),
 							this,
