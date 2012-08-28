@@ -18,7 +18,6 @@
 
 #pragma once
 
-#include <boost/variant.hpp>
 #include <QHash>
 #include <QStringList>
 
@@ -29,8 +28,14 @@ namespace Launchy
 	class FDODesktopParser
 	{
 	public:
-		typedef boost::variant<QStringList, QHash<QString, QStringList>> Value_t;
-		typedef QHash<QString, Value_t> Result_t;
+		/** Mapping from language to the list of values.
+		 */
+		typedef QHash<QString, QStringList> LangValue_t;
+
+		/** Attributes in a group with their lang -> value mappings.
+		 */
+		typedef QHash<QString, LangValue_t> Group_t;
+		typedef QHash<QString, Group_t> Result_t;
 
 		Result_t operator() (const QByteArray&);
 	};

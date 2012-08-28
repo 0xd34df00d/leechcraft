@@ -21,7 +21,6 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/fusion/adapted.hpp>
-#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -126,7 +125,7 @@ namespace Launchy
 		File Parse (Iter begin, Iter end)
 		{
 			File res;
-			qDebug () << qi::parse (begin, end, Parser<Iter> (), res);
+			qi::parse (begin, end, Parser<Iter> (), res);
 			return res;
 		}
 
@@ -134,6 +133,21 @@ namespace Launchy
 		{
 			return QString::fromUtf8 (str.c_str ());
 		}
+
+		struct ValGetter : public boost::static_visitor<QStringList>
+		{
+			QStringList operator() (const std::string& str) const
+			{
+				return QStringList (ToUtf8 (str));
+			}
+
+			QStringList operator() (const std::vector<std::string>& vec) const
+			{
+				QStringList result;
+				std::transform (vec.begin (), vec.end (), std::back_inserter (result), ToUtf8);
+				return result;
+			}
+		};
 	}
 
 	FDODesktopParser::Result_t FDODesktopParser::operator() (const QByteArray& data)
@@ -141,16 +155,16 @@ namespace Launchy
 		const auto& file = Parse (data.begin (), data.end ());
 
 		Result_t result;
-		qDebug () << data;
-		qDebug () << Q_FUNC_INFO << file.Groups_.size ();
 		for (const auto& item : file.Groups_)
 		{
-			qDebug () << ToUtf8 (item.Name_) << item.Fields_.size ();
+			Group_t group;
 			for (const auto& field : item.Fields_)
 			{
-				qDebug () << ToUtf8 (field.Name_) << (field.Lang_ ? ToUtf8 (*field.Lang_) : "no lang") << field.Val_.which ();
-				//result [ToUtf8 (field.Name_)];
+				const auto& values = boost::apply_visitor (ValGetter (), field.Val_);
+				const auto& lang = field.Lang_ ? ToUtf8 (*field.Lang_) : QString ();
+				group [ToUtf8 (field.Name_)] [lang] = values;
 			}
+			result [ToUtf8 (item.Name_)] = group;
 		}
 		return result;
 	}
