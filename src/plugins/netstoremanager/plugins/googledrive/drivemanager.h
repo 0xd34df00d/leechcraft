@@ -117,6 +117,7 @@ namespace GoogleDrive
 
 		Account *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
+		QQueue<std::function<void (const QUrl&)>> DownloadsQueue_;
 		QHash<QNetworkReply*, QString> Reply2Id_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
 #ifdef HAVE_MAGIC
@@ -133,9 +134,12 @@ namespace GoogleDrive
 		void ShareEntry (const QString& id);
 		void Upload (const QString& filePath,
 				const QStringList& parentId = QStringList ());
+		void Download (const QString& id, const QString& filePath);
+
 		void CreateDirectory (const QString& name, const QString& parentId = QString ());
 		void Copy (const QString& id, const QString& parentId);
 		void Move (const QString& id, const QString& parentId);
+		void RequestFileChanges (const QString& startId);
 	private:
 		void RequestFiles (const QString& key);
 		void RequestSharingEntry (const QString& id, const QString& key);
@@ -150,7 +154,10 @@ namespace GoogleDrive
 				const QString& parentId, const QString& key);
 		void RequestMoveItem (const QString& id,
 				const QString& parentId, const QString& key);
-	private:
+		void GetFileChanges (const QString& startId, const QString& key);
+		void RequestFileInfo (const QString& id, const QString& key);
+		void DownloadFile (const QString& filePath, const QUrl& url);
+
 		void RequestAccessToken ();
 		void ParseError (const QVariantMap& map);
 
@@ -168,6 +175,8 @@ namespace GoogleDrive
 		void handleCreateDirectory ();
 		void handleCopyItem ();
 		void handleMoveItem ();
+		void handleGetFileChanges ();
+		void handleGetFileInfo ();
 
 	signals:
 		void gotFiles (const QList<DriveItem>& items);

@@ -98,6 +98,11 @@ namespace GoogleDrive
 				SIGNAL (upStatusChanged (QString, QString)));
 	}
 
+	void Account::Download (const QStringList& id, const QString& filepath)
+	{
+		DriveManager_->Download (id [0], filepath);
+	}
+
 	void Account::Delete (const QList<QStringList>& id)
 	{
 		const QString& itemId = id [0] [0];
@@ -182,6 +187,12 @@ namespace GoogleDrive
 	void Account::Move (const QStringList& id, const QStringList& newParentId)
 	{
 		DriveManager_->Move (id [0], newParentId.value (0));
+	}
+
+	void Account::RequestFileChanges ()
+	{
+		DriveManager_->RequestFileChanges (XmlSettingsManager::Instance ()
+				.Property ("LastChangesId", 0).toString ());
 	}
 
 	QByteArray Account::Serialize ()
