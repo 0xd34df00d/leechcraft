@@ -25,6 +25,7 @@
 #include <qjson/serializer.h>
 #include "account.h"
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -87,6 +88,13 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
+	void DriveManager::Download (const QString& id, const QString& filepath)
+	{
+		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
+		DownloadsQueue_ << [this, filepath] (const QUrl& url) { DownloadFile (filepath, url); };
+		RequestAccessToken ();
+	}
+
 	void DriveManager::CreateDirectory (const QString& name, const QString& parentId)
 	{
 		ApiCallQueue_ << [this, name, parentId] (const QString& key) { RequestCreateDirectory (name, parentId, key); };
@@ -102,6 +110,12 @@ namespace GoogleDrive
 	void DriveManager::Move (const QString& id, const QString& parentId)
 	{
 		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestMoveItem (id, parentId, key); };
+		RequestAccessToken ();
+	}
+
+	void DriveManager::RequestFileChanges (const QString& startId)
+	{
+		ApiCallQueue_ << [this, startId] (const QString& key) { GetFileChanges (startId, key); };
 		RequestAccessToken ();
 	}
 
@@ -344,14 +358,54 @@ namespace GoogleDrive
 				SLOT (handleMoveItem ()));
 	}
 
+	void DriveManager::GetFileChanges (const QString& startId, const QString& key)
+	{
+		QString str = QString ("https://www.googleapis.com/drive/v2/changes?includeDeleted=true&startChangeId=%1&access_token=%2")
+				.arg (startId)
+				.arg (key);
+
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				get (QNetworkRequest (str));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGetFileChanges ()));
+	}
+
+	void DriveManager::RequestFileInfo (const QString& id, const QString& key)
+	{
+		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1?access_token=%2")
+				.arg (id)
+				.arg (key);
+
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				get (QNetworkRequest (str));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGetFileInfo ()));
+	}
+
+	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url)
+	{
+		QUrl u = url;
+		u.removeQueryItem ("gd");
+
+		LeechCraft::Entity e = Util::MakeEntity (u,
+				filePath,
+				OnlyHandle | FromUserInitiated | AutoAccept);
+		Core::Instance ().SendEntity (e);
+	}
+
 	void DriveManager::ParseError (const QVariantMap& map)
 	{
 		const auto& errorMap = map ["error"].toMap ();
 		const QString& code = errorMap ["code"].toString ();
 		QString msg = errorMap ["message"].toString ();
 
-		if (code == "500")
-			msg = tr ("Google Drive API v.2 doesn't support directory copying.");
+		//TODO fix false execute
+// 		if (code == "500")
+// 			msg = tr ("Google Drive API v.2 doesn't support directory copying.");
 		Core::Instance ().SendEntity (Util::MakeNotification ("NetStoreManager",
 				msg,
 				PWarning_));
@@ -817,6 +871,70 @@ namespace GoogleDrive
 		}
 
 		ParseError (res.toMap ());
+	}
+
+	namespace
+	{
+		void ApplyChanges (const QVariantMap& changes)
+		{
+
+		}
+	}
+	void DriveManager::handleGetFileChanges ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		bool ok = false;
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+
+		const QVariantMap& map = res.toMap ();
+		if (!map.contains ("error"))
+		{
+			ApplyChanges (map);
+			return;
+		}
+
+		ParseError (map);
+	}
+
+	void DriveManager::handleGetFileInfo ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		bool ok = false;
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+
+		const QVariantMap& map = res.toMap ();
+		if (!map.contains ("error"))
+		{
+			DriveItem it = CreateDriveItem (res);
+
+			if (!DownloadsQueue_.isEmpty ())
+				DownloadsQueue_.dequeue () (it.DownloadUrl_);
+			return;
+		}
+
+		ParseError (map);
 	}
 
 }

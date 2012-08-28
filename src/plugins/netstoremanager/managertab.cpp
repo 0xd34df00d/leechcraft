@@ -78,6 +78,11 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flUploadInCurrentDir ()));
+		Download_ = new QAction (tr ("Download"), this);
+		connect (Download_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flDownload ()));
 
 		Ui_.setupUi (this);
 		Ui_.FilesTree_->setModel (Model_);
@@ -387,6 +392,25 @@ namespace NetStoreManager
 		emit uploadRequested (acc, filename, id);
 	}
 
+	void ManagerTab::flDownload ()
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		QString filePath = QFileDialog::getSaveFileName (this,
+				"Download file",
+				QDir::homePath ());
+		if (filePath.isEmpty ())
+			return;
+
+		QModelIndex idx = Ui_.FilesTree_->currentIndex ();
+		idx = idx.sibling (idx.row (), Columns::FirstColumnNumber);
+		QStringList id = idx.data (ListingRole::ID).toStringList ();
+
+		acc->Download (idx.data (ListingRole::ID).toStringList (), filePath);
+	}
+
 	void ManagerTab::on_AccountsBox__activated (int)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
@@ -463,6 +487,8 @@ namespace NetStoreManager
 				menu->insertAction (MoveToTrash_, CreateDir_);
 				if (index.data (ListingRole::Directory).toBool ())
 					menu->addActions ({ menu->addSeparator (), UploadInCurrentDir_ });
+				else
+					menu->addActions ({ menu->addSeparator (), Download_ });
 			}
 		}
 		else

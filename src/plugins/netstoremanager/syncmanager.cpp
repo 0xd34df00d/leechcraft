@@ -19,7 +19,11 @@
 #include "syncmanager.h"
 #include <QtDebug>
 #include <QStringList>
+#include <QTimer>
+#include <boost/concept_check.hpp>
 #include "accountsmanager.h"
+#include "interfaces/netstoremanager/istorageaccount.h"
+#include "interfaces/netstoremanager/isupportfilelistings.h"
 
 namespace LeechCraft
 {
@@ -29,6 +33,7 @@ namespace NetStoreManager
 	: QObject (parent)
 	, AM_ (am)
 	, FileSystemWatcher_ (new QFileSystemWatcher (this))
+	, Timer_ (new QTimer (this))
 	{
 		connect (FileSystemWatcher_,
 				SIGNAL (directoryChanged (QString)),
@@ -38,6 +43,10 @@ namespace NetStoreManager
 				SIGNAL (fileChanged (QString)),
 				this,
 				SLOT (handleFileChanged (QString)));
+		connect (Timer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (handleTimeout ()));
 	}
 
 	void SyncManager::handleDirectoryAdded (const QVariantMap& dirs)
@@ -52,6 +61,10 @@ namespace NetStoreManager
 			qDebug () << "watching directory "
 					<< path;
 		}
+
+		// check for changes every minute
+// 		Timer_->start (60000);
+// 		handleTimeout ();
 	}
 
 	void SyncManager::handleDirectoryChanged (const QString& path)
@@ -62,6 +75,18 @@ namespace NetStoreManager
 	void SyncManager::handleFileChanged (const QString& path)
 	{
 		qDebug () << Q_FUNC_INFO << path;
+	}
+
+	void SyncManager::handleTimeout ()
+	{
+		for (auto account : Path2Account_.values ())
+		{
+			if (!(account->GetAccountFeatures () & FileListings))
+				continue;
+
+			auto isfl = qobject_cast<ISupportFileListings*> (account->GetObject ());
+			isfl->RequestFileChanges ();
+		}
 	}
 
 }

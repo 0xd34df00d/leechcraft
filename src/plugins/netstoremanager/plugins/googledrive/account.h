@@ -64,6 +64,7 @@ namespace GoogleDrive
 		QString GetAccountName () const;
 		void Upload (const QString& filepath,
 				const QStringList& parentId = QStringList ());
+		void Download (const QStringList& id, const QString& filepath);
 
 		void Delete (const QList<QStringList>& id);
 		QStringList GetListingHeaders () const;
@@ -76,6 +77,7 @@ namespace GoogleDrive
 		void CreateDirectory (const QString& name, const QStringList& parentId);
 		void Copy (const QStringList& id, const QStringList& newParentId);
 		void Move (const QStringList& id, const QStringList& newParentId);
+		void RequestFileChanges ();
 
 		QByteArray Serialize ();
 		static Account_ptr Deserialize (const QByteArray& data, QObject *parentPlugin);
@@ -100,6 +102,8 @@ namespace GoogleDrive
 
 		void gotListing (const QList<QList<QStandardItem*>>& items);
 		void gotFileUrl (const QUrl& url, const QStringList& id);
+
+		void gotChanges (QObject *account);
 	};
 }
 }
