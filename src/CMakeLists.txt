@@ -155,9 +155,14 @@ OPTION (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging client" OFF)
 OPTION (ENABLE_MONOCLE "Build Monocle, modular document viewer for LeechCraft" ${WITH_PLUGINS})
 OPTION (ENABLE_LADS "Build Lads, Ubuntu Unity integration layer" ${WITH_PLUGINS})
 OPTION (ENABLE_VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
+
 IF (WIN32)
 	OPTION (ENABLE_Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS})
 ENDIF (WIN32)
+
+IF (UNIX)
+	OPTION (ENABLE_LAUNCHY "Build Launchy, third-party application launcher module" ${WITH_PLUGINS})
+ENDIF (UNIX)
 
 # Defunct
 OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" OFF)
@@ -308,6 +313,10 @@ ENDIF (ENABLE_HOTSTREAMS)
 IF (ENABLE_LACKMAN)
 	ADD_SUBDIRECTORY (plugins/lackman)
 ENDIF (ENABLE_LACKMAN)
+
+IF (ENABLE_LAUNCHY)
+	ADD_SUBDIRECTORY (plugins/launchy)
+ENDIF (ENABLE_LAUNCHY)
 
 IF (ENABLE_SYNCER)
 	ADD_SUBDIRECTORY (plugins/syncer)
