@@ -51,6 +51,7 @@ namespace NetStoreManager
 		virtual AccountFeatures GetAccountFeatures () const = 0;
 
 		virtual void Upload (const QString& filepath, const QStringList& parentId = QStringList ()) = 0;
+		virtual void Download (const QStringList& id, const QString& filepath) = 0;
 	protected:
 		virtual void upStatusChanged (const QString& status, const QString& filepath) = 0;
 		virtual void upProgress (quint64 done, quint64 total, const QString& filepath) = 0;
