@@ -50,7 +50,7 @@ namespace GoogleDrive
 	{
 		BaseDir_ = baseDir;
 		Pathes_ =  pathes;
-
+		std::sort (Pathes_.begin (), Pathes_.end ());
 		connect (DM_,
 				SIGNAL (gotFiles (QList<DriveItem>)),
 				this,
@@ -58,8 +58,31 @@ namespace GoogleDrive
 		DM_->RefreshListing ();
 	}
 
-	void Syncer::ContinueLocalStorageChecking (const QList<DriveItem>& files)
+	void Syncer::ContinueLocalStorageChecking ()
 	{
+		if (Pathes_.isEmpty ())
+		{
+			//TODO checking finished
+			return;
+		}
+
+		QString path = Pathes_.first ();
+		QFileInfo info (path);
+		for (const auto& item : Items_)
+		{
+			if (info.isDir ())
+			{
+				if (!item.IsFolder_ ||
+						item.Name_ != info.fileName () ||
+						item.Labels_ & DriveItem::ILRemoved)
+					continue;
+				else
+				{
+					//TODO remove item, continue checking
+				}
+			}
+		}
+
 	}
 
 	void Syncer::handleGotDriveChanges (const QList<DriveChanges>& changes, qlonglong id)
@@ -94,6 +117,7 @@ namespace GoogleDrive
 
 			rootItem = item;
 			found = true;
+			Items_.removeAll (rootItem);
 			break;
 		}
 
