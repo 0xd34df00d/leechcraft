@@ -23,7 +23,7 @@ Rectangle {
         ListView {
             id: catsView
             anchors.fill: parent
-            spacing: 10
+            spacing: 3
 
             model: VisualDataModel {
                 model: itemsModel
@@ -32,11 +32,23 @@ Rectangle {
                     id: catsViewDelegate
 
                     width: catsView.width
-                    height: 20
+                    height: 24
                     radius: 5
 
                     color: categoryMouseArea.containsMouse ? "#aa000000" : "#00000000"
                     Behavior on color { PropertyAnimation {} }
+
+                    Image {
+                        id: categoryIconImage
+                        width: 24
+                        height: 24
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 5
+
+                        source: "image://appicon/" + categoryIcon
+                        smooth: true
+                    }
 
                     Text {
                         text: categoryName
@@ -45,8 +57,8 @@ Rectangle {
                         font.pointSize: 12
                         color: "#cccccc"
 
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: categoryIconImage.right
                         anchors.leftMargin: 5
                     }
 
