@@ -19,7 +19,6 @@
 #include "item.h"
 #include <stdexcept>
 #include <QFile>
-#include <boost/graph/graph_concepts.hpp>
 #include "fdodesktopparser.h"
 
 namespace LeechCraft
