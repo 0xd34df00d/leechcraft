@@ -54,6 +54,8 @@ namespace Launchy
 			if (name.isEmpty ())
 				return QIcon ();
 
+			qDebug () << name;
+
 			if (name.endsWith (".png") || name.endsWith (".svg"))
 				name.chop (4);
 
@@ -61,15 +63,12 @@ namespace Launchy
 			if (!result.isNull ())
 				return result;
 
-			for (auto ext : { ".png", ".svg", ".xpm" })
+			for (auto ext : { ".png", ".svg", ".xpm", ".jpg" })
 			{
-				result = QIcon ("/usr/share/pixmaps/" + name + ext);
-				if (!result.isNull ())
-					return result;
-
-				result = QIcon ("/usr/local/share/pixmaps/" + name + ext);
-				if (!result.isNull ())
-					return result;
+				if (QFile::exists ("/usr/share/pixmaps/" + name + ext))
+					return QIcon ("/usr/share/pixmaps/" + name + ext);
+				if (QFile::exists ("/usr/local/share/pixmaps/" + name + ext))
+					return QIcon ("/usr/local/share/pixmaps/" + name + ext);
 			}
 
 			if (result.isNull ())
