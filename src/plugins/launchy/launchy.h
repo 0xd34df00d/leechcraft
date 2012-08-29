@@ -35,6 +35,7 @@ namespace Launchy
 		Q_OBJECT
 		Q_INTERFACES (IInfo IActionsExporter)
 
+		ICoreProxy_ptr Proxy_;
 		ItemsFinder *Finder_;
 		QAction *FSLauncher_;
 	public:

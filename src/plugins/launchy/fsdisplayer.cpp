@@ -33,10 +33,12 @@ namespace Launchy
 {
 	class ItemIconsProvider : public QDeclarativeImageProvider
 	{
+		ICoreProxy_ptr Proxy_;
 		QHash<QString, QIcon> Icons_;
 	public:
-		ItemIconsProvider ()
+		ItemIconsProvider (ICoreProxy_ptr proxy)
 		: QDeclarativeImageProvider (Pixmap)
+		, Proxy_ (proxy)
 		{
 		}
 
@@ -52,7 +54,9 @@ namespace Launchy
 
 		QPixmap requestPixmap (const QString& id, QSize* size, const QSize& requestedSize)
 		{
-			const auto& icon = Icons_.value (id);
+			auto icon = Icons_.value (id);
+			if (icon.isNull ())
+				icon = Proxy_->GetIcon ("system-run");
 
 			const auto& ourSize = requestedSize.width () > 1 ?
 					requestedSize :
@@ -92,12 +96,13 @@ namespace Launchy
 		};
 	}
 
-	FSDisplayer::FSDisplayer (ItemsFinder *finder, QObject *parent)
+	FSDisplayer::FSDisplayer (ICoreProxy_ptr proxy, ItemsFinder *finder, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	, Finder_ (finder)
 	, Model_ (new DisplayModel (this))
 	, View_ (new QDeclarativeView)
-	, IconsProvider_ (new ItemIconsProvider)
+	, IconsProvider_ (new ItemIconsProvider (proxy))
 	{
 		View_->setStyleSheet ("background: transparent");
 		View_->setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);

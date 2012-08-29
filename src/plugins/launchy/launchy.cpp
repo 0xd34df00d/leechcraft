@@ -28,6 +28,8 @@ namespace Launchy
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		Finder_ = new ItemsFinder (proxy);
 
 		FSLauncher_ = new QAction (tr ("Open fullscreen launcher..."), this);
@@ -76,7 +78,7 @@ namespace Launchy
 
 	void Plugin::handleFSRequested ()
 	{
-		new FSDisplayer (Finder_, this);
+		new FSDisplayer (Proxy_, Finder_, this);
 	}
 }
 }

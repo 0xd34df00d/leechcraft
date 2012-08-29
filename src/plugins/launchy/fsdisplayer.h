@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
 class QDeclarativeView;
@@ -34,15 +35,14 @@ namespace Launchy
 	{
 		Q_OBJECT
 
+		ICoreProxy_ptr Proxy_;
+
 		ItemsFinder *Finder_;
-
 		QStandardItemModel *Model_;
-
 		QDeclarativeView *View_;
-
 		ItemIconsProvider *IconsProvider_;
 	public:
-		FSDisplayer (ItemsFinder *finder, QObject* = 0);
+		FSDisplayer (ICoreProxy_ptr, ItemsFinder *finder, QObject* = 0);
 		~FSDisplayer ();
 	private slots:
 		void handleFinderUpdated ();
