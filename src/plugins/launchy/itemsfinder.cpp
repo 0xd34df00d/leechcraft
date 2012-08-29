@@ -42,10 +42,13 @@ namespace Launchy
 	{
 		QStringList ScanDir (const QString& path)
 		{
-			const auto& infos = QDir (path).entryInfoList (QStringList ("*.desktop"));
+			const auto& infos = QDir (path).entryInfoList (QStringList ("*.desktop"),
+						QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot);
 			QStringList result;
 			for (const auto& info : infos)
-				result << info.absoluteFilePath ();
+				result += info.isDir () ?
+						ScanDir (info.absoluteFilePath ()) :
+						QStringList (info.absoluteFilePath ());
 			return result;
 		}
 
@@ -83,7 +86,6 @@ namespace Launchy
 		qDebug () << Q_FUNC_INFO;
 		Items_.clear ();
 		auto paths = ScanDir ("/usr/share/applications");
-		paths += ScanDir ("/usr/share/applications/kde4");
 		qDebug () << "scanned";
 
 		for (const auto& path : paths)
