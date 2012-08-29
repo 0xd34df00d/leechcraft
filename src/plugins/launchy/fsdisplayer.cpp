@@ -219,7 +219,11 @@ namespace Launchy
 				auto appItem = new QStandardItem ();
 				itemsInCat [itemName] = appItem;
 				appItem->setData (itemName, DisplayModel::Roles::ItemName);
-				appItem->setData (item->GetComment (currentLang), DisplayModel::Roles::ItemDescription);
+
+				auto comment = item->GetComment (currentLang);
+				if (comment.isEmpty ())
+					comment = item->GetGenericName (currentLang);
+				appItem->setData (comment, DisplayModel::Roles::ItemDescription);
 
 				const auto& iconName = item->GetIconName ();
 				appItem->setData (iconName, DisplayModel::Roles::ItemIcon);
