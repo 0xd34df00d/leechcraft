@@ -134,6 +134,43 @@ namespace Launchy
 		delete View_;
 	}
 
+	namespace
+	{
+		struct CategoriesInfo
+		{
+			struct SingleInfo
+			{
+				QString TranslatedName_;
+				QString IconName_;
+			};
+			QHash<QString, SingleInfo> Infos_;
+
+			CategoriesInfo ()
+			{
+				Infos_ ["Accessories"] = { FSDisplayer::tr ("Accessories"), "applications-accessories" };
+				Infos_ ["Development"] = { FSDisplayer::tr ("Development"), "applications-development" };
+				Infos_ ["Education"] = { FSDisplayer::tr ("Education"), "applications-education" };
+				Infos_ ["Games"] = { FSDisplayer::tr ("Games"), "applications-games" };
+				Infos_ ["Graphics"] = { FSDisplayer::tr ("Graphics"), "applications-graphics" };
+				Infos_ ["Internet"] = { FSDisplayer::tr ("Internet"), "applications-internet" };
+				Infos_ ["Multimedia"] = { FSDisplayer::tr ("Multimedia"), "applications-multimedia" };
+				Infos_ ["Office"] = { FSDisplayer::tr ("Office"), "applications-office" };
+				Infos_ ["Other"] = { FSDisplayer::tr ("Other"), "applications-other" };
+				Infos_ ["Settings"] = { FSDisplayer::tr ("Settings"), "preferences-system" };
+				Infos_ ["Science"] = { FSDisplayer::tr ("Science"), "applications-science" };
+				Infos_ ["System"] = { FSDisplayer::tr ("System"), "applications-system" };
+				Infos_ ["Toys"] = { FSDisplayer::tr ("Toys"), "applications-toys" };
+				Infos_ ["Utilities"] = { FSDisplayer::tr ("Utilities"), "applications-utilities" };
+
+				Infos_ ["Application"] = Infos_ ["Utilities"];
+				Infos_ ["InstantMessaging"] = Infos_ ["Internet"];
+				Infos_ ["Music"] = Infos_ ["Multimedia"];
+				Infos_ ["Network"] = Infos_ ["Internet"];
+				Infos_ ["Utility"] = Infos_ ["Utilities"];
+			}
+		};
+	}
+
 	void FSDisplayer::handleFinderUpdated ()
 	{
 		Model_->clear ();
@@ -142,16 +179,47 @@ namespace Launchy
 
 		const auto& currentLang = Util::GetLanguage ().toLower ();
 
+		static const CategoriesInfo cInfo;
+
 		const auto& items = Finder_->GetItems ();
+		QMap<QString, QStandardItem*> visibleItems;
+		QMap<QString, QSet<QString>> itemsInCats;
 		for (const auto& cat : items.keys ())
 		{
-			auto catItem = new QStandardItem (cat);
-			catItem->setData (cat, DisplayModel::Roles::CategoryName);
+			if (!cInfo.Infos_.contains (cat))
+			{
+				qDebug () << Q_FUNC_INFO << "skipping" << cat;
+				continue;
+			}
+
+			const auto& catInfo = cInfo.Infos_ [cat];
+			if (!catInfo.IconName_.isEmpty ())
+				IconsProvider_->AddIcon (catInfo.IconName_, Proxy_->GetIcon (catInfo.IconName_));
+
+			const auto& visibleName = catInfo.TranslatedName_;
+
+			QStandardItem *catItem = 0;
+			if (visibleItems.contains (visibleName))
+				catItem = visibleItems [visibleName];
+			else
+			{
+				catItem = new QStandardItem ();
+				catItem->setData (visibleName, DisplayModel::Roles::CategoryName);
+				catItem->setData (catInfo.IconName_, DisplayModel::Roles::CategoryIcon);
+			}
+
+			auto& itemsInCat = itemsInCats [visibleName];
 
 			for (const auto& item : items [cat])
 			{
+				const auto& itemName = item->GetName (currentLang);
+				if (itemsInCat.contains (itemName))
+					continue;
+
+				itemsInCat << itemName;
+
 				auto appItem = new QStandardItem ();
-				appItem->setData (item->GetName (currentLang), DisplayModel::Roles::ItemName);
+				appItem->setData (itemName, DisplayModel::Roles::ItemName);
 				appItem->setData (item->GetComment (currentLang), DisplayModel::Roles::ItemDescription);
 
 				const auto& iconName = item->GetIconName ();
@@ -162,8 +230,11 @@ namespace Launchy
 				catItem->appendRow (appItem);
 			}
 
-			Model_->appendRow (catItem);
+			visibleItems [visibleName] = catItem;
 		}
+
+		for (const auto& vis : visibleItems.keys ())
+			Model_->appendRow (visibleItems [vis]);
 	}
 }
 }
