@@ -79,6 +79,7 @@ namespace Launchy
 		qDebug () << Q_FUNC_INFO;
 		Items_.clear ();
 		auto paths = ScanDir ("/usr/share/applications");
+		paths += ScanDir ("/usr/share/applications/kde4");
 		qDebug () << "scanned";
 
 		for (const auto& path : paths)
