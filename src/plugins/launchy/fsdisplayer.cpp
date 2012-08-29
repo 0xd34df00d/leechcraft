@@ -183,7 +183,7 @@ namespace Launchy
 
 		const auto& items = Finder_->GetItems ();
 		QMap<QString, QStandardItem*> visibleItems;
-		QMap<QString, QSet<QString>> itemsInCats;
+		QMap<QString, QMap<QString, QStandardItem*>> itemsInCats;
 		for (const auto& cat : items.keys ())
 		{
 			if (!cInfo.Infos_.contains (cat))
@@ -216,9 +216,8 @@ namespace Launchy
 				if (itemsInCat.contains (itemName))
 					continue;
 
-				itemsInCat << itemName;
-
 				auto appItem = new QStandardItem ();
+				itemsInCat [itemName] = appItem;
 				appItem->setData (itemName, DisplayModel::Roles::ItemName);
 				appItem->setData (item->GetComment (currentLang), DisplayModel::Roles::ItemDescription);
 
@@ -226,15 +225,17 @@ namespace Launchy
 				appItem->setData (iconName, DisplayModel::Roles::ItemIcon);
 
 				IconsProvider_->AddIcon (iconName, item->GetIcon ());
-
-				catItem->appendRow (appItem);
 			}
 
 			visibleItems [visibleName] = catItem;
 		}
 
 		for (const auto& vis : visibleItems.keys ())
-			Model_->appendRow (visibleItems [vis]);
+		{
+			auto visItem = visibleItems [vis];
+			visItem->appendRows (itemsInCats [vis].values ());
+			Model_->appendRow (visItem);
+		}
 	}
 }
 }
