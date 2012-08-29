@@ -10,6 +10,8 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	launchy.cpp
+	item.cpp
+	fdodesktopparser.cpp
 	)
 
 ADD_LIBRARY (leechcraft_launchy SHARED
