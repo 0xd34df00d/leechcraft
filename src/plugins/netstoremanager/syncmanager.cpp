@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include <QStringList>
 #include <QTimer>
+#include <QDir>
 #include <boost/concept_check.hpp>
 #include "accountsmanager.h"
 #include "interfaces/netstoremanager/istorageaccount.h"
@@ -49,22 +50,40 @@ namespace NetStoreManager
 				SLOT (handleTimeout ()));
 	}
 
+	QStringList SyncManager::ScanDir (const QString& path)
+	{
+		QDir baseDir (path);
+		QStringList pathes;
+		for (const auto& entry : baseDir.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot))
+		{
+			pathes << entry.absoluteFilePath ();
+			if (entry.isDir ())
+				pathes << ScanDir (entry.absoluteFilePath ());
+		}
+		return pathes;
+	}
+
 	void SyncManager::handleDirectoryAdded (const QVariantMap& dirs)
 	{
-		FileSystemWatcher_->removePaths (FileSystemWatcher_->directories ());
+		if (!FileSystemWatcher_->directories ().isEmpty ())
+			FileSystemWatcher_->removePaths (FileSystemWatcher_->directories ());
 
 		for (const auto& key : dirs.keys ())
 		{
-			const QString& path = dirs [key].toString ();
-			Path2Account_ [path] = AM_->GetAccountFromUniqueID (key);
-			FileSystemWatcher_->addPath (path);
+			const QString& dirPath = dirs [key].toString ();
+			Path2Account_ [dirPath] = AM_->GetAccountFromUniqueID (key);
 			qDebug () << "watching directory "
-					<< path;
+					<< dirPath;
+			QStringList pathes = ScanDir (dirPath);
+			FileSystemWatcher_->addPaths (pathes);
+			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [dirPath]->GetObject ());
+			isfl->CheckForSyncUpload (pathes, dirPath);
 		}
 
+
 		// check for changes every minute
-// 		Timer_->start (60000);
-// 		handleTimeout ();
+		Timer_->start (60000);
+		handleTimeout ();
 	}
 
 	void SyncManager::handleDirectoryChanged (const QString& path)

@@ -95,9 +95,11 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::CreateDirectory (const QString& name, const QString& parentId)
+	void DriveManager::CreateDirectory (const QString& name,
+			bool signalize, const QString& parentId)
 	{
-		ApiCallQueue_ << [this, name, parentId] (const QString& key) { RequestCreateDirectory (name, parentId, key); };
+		ApiCallQueue_ << [this, name, signalize, parentId] (const QString& key)
+			{ RequestCreateDirectory (name, signalize, parentId, key); };
 		RequestAccessToken ();
 	}
 
@@ -113,7 +115,7 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::RequestFileChanges (const QString& startId)
+	void DriveManager::RequestFileChanges (qlonglong startId)
 	{
 		ApiCallQueue_ << [this, startId] (const QString& key) { GetFileChanges (startId, key); };
 		RequestAccessToken ();
@@ -277,7 +279,7 @@ namespace GoogleDrive
 	}
 
 	void DriveManager::RequestCreateDirectory (const QString& name,
-			const QString& parentId, const QString& key)
+			bool signalize, const QString& parentId, const QString& key)
 	{
 		QString str = QString ("https://www.googleapis.com/drive/v2/files?access_token=%1")
 				.arg (key);
@@ -298,6 +300,7 @@ namespace GoogleDrive
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
 				post (request, QJson::Serializer ().serialize (data));
+		Reply2Signalization_ [reply] = signalize;
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -358,11 +361,14 @@ namespace GoogleDrive
 				SLOT (handleMoveItem ()));
 	}
 
-	void DriveManager::GetFileChanges (const QString& startId, const QString& key)
+	void DriveManager::GetFileChanges (qlonglong startId, const QString& key)
 	{
-		QString str = QString ("https://www.googleapis.com/drive/v2/changes?includeDeleted=true&startChangeId=%1&access_token=%2")
-				.arg (startId)
-				.arg (key);
+		QString str = startId ?
+			QString ("https://www.googleapis.com/drive/v2/changes?includeDeleted=true&startChangeId=%1&access_token=%2")
+					.arg (startId)
+					.arg (key) :
+			QString ("https://www.googleapis.com/drive/v2/changes?includeDeleted=true&access_token=%1")
+					.arg (key);
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
 				get (QNetworkRequest (str));
@@ -395,6 +401,27 @@ namespace GoogleDrive
 				filePath,
 				OnlyHandle | FromUserInitiated | AutoAccept);
 		Core::Instance ().SendEntity (e);
+	}
+
+	void DriveManager::FindSyncableItems (const QStringList& pathes,
+			const QString& baseDir, const QList<DriveItem>& items)
+	{
+		const QString& baseName = QFileInfo (baseDir).fileName ();
+
+		DriveItem rootItem;
+		bool found = false;
+		for (const auto& item : items)
+			if (item.Name_ == baseName &&
+					item.IsFolder_ &&
+					!(item.Labels_ & DriveItem::ILRemoved))
+			{
+				rootItem = item;
+				found = true;
+				break;
+			}
+
+		if (!found)
+			CreateDirectory (baseName);
 	}
 
 	void DriveManager::ParseError (const QVariantMap& map)
@@ -810,6 +837,13 @@ namespace GoogleDrive
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "directory created successfully";
+
+			if (Reply2Signalization_.contains (reply))
+			{
+				Reply2Signalization_.remove (reply);
+				emit gotNewItem (CreateDriveItem (res));
+			}
+
 			RefreshListing ();
 			return;
 		}
@@ -873,13 +907,6 @@ namespace GoogleDrive
 		ParseError (res.toMap ());
 	}
 
-	namespace
-	{
-		void ApplyChanges (const QVariantMap& changes)
-		{
-
-		}
-	}
 	void DriveManager::handleGetFileChanges ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
@@ -900,7 +927,26 @@ namespace GoogleDrive
 		const QVariantMap& map = res.toMap ();
 		if (!map.contains ("error"))
 		{
-			ApplyChanges (map);
+			QList<DriveChanges> changes;
+
+			if (!map.contains ("items") ||
+					map ["items"].toList ().isEmpty ())
+				return;
+
+			for (auto item : map ["items"].toList ())
+			{
+				QVariantMap itemMap = item.toMap ();
+				DriveChanges change;
+				DriveItem item = CreateDriveItem (itemMap ["file"]);
+				change.FileId_ = itemMap ["fileId"].toString ();
+				change.Id_ = itemMap ["id"].toString ();
+				change.Deleted_ = itemMap ["deleted"].toBool ();
+				change.FileResource_ = item;
+
+				changes << change;
+			}
+
+			gotChanges (changes, map ["largestChangeId"].toLongLong () + 1);
 			return;
 		}
 

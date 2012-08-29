@@ -109,6 +109,14 @@ namespace GoogleDrive
 		PermissionTypes PermissionType_;
 	};
 
+	struct DriveChanges
+	{
+		QString Id_;
+		QString FileId_;
+		bool Deleted_;
+		DriveItem FileResource_;
+	};
+
 	class DriveManager : public QObject
 	{
 		Q_OBJECT
@@ -120,6 +128,7 @@ namespace GoogleDrive
 		QQueue<std::function<void (const QUrl&)>> DownloadsQueue_;
 		QHash<QNetworkReply*, QString> Reply2Id_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
+		QHash<QNetworkReply*, bool> Reply2Signalization_;
 #ifdef HAVE_MAGIC
 		magic_t Magic_;
 #endif
@@ -136,10 +145,12 @@ namespace GoogleDrive
 				const QStringList& parentId = QStringList ());
 		void Download (const QString& id, const QString& filePath);
 
-		void CreateDirectory (const QString& name, const QString& parentId = QString ());
+		void CreateDirectory (const QString& name,
+				bool signalize = false, const QString& parentId = QString ());
 		void Copy (const QString& id, const QString& parentId);
 		void Move (const QString& id, const QString& parentId);
-		void RequestFileChanges (const QString& startId);
+
+		void RequestFileChanges (qlonglong startId);
 	private:
 		void RequestFiles (const QString& key);
 		void RequestSharingEntry (const QString& id, const QString& key);
@@ -148,15 +159,18 @@ namespace GoogleDrive
 		void RequestRestoreEntryFromTrash (const QString& id, const QString& key);
 		void RequestUpload (const QString& filePath, const QString& parent,
 				const QString& key);
-		void RequestCreateDirectory (const QString& name,
+		void RequestCreateDirectory (const QString& name, bool signalize,
 				const QString& parentId, const QString& key);
 		void RequestCopyItem (const QString& id,
 				const QString& parentId, const QString& key);
 		void RequestMoveItem (const QString& id,
 				const QString& parentId, const QString& key);
-		void GetFileChanges (const QString& startId, const QString& key);
+		void GetFileChanges (qlonglong startId, const QString& key);
 		void RequestFileInfo (const QString& id, const QString& key);
 		void DownloadFile (const QString& filePath, const QUrl& url);
+
+		void FindSyncableItems (const QStringList& pathes,
+				const QString& baseDir, const QList<DriveItem>& items);
 
 		void RequestAccessToken ();
 		void ParseError (const QVariantMap& map);
@@ -185,6 +199,10 @@ namespace GoogleDrive
 		void uploadStatusChanged (const QString& status, const QString& filePath);
 		void uploadError (const QString& str, const QString& filePath);
 		void finished (const QString& id, const QString& path);
+
+		void gotNewItem (const DriveItem& item);
+
+		void gotChanges (const QList<DriveChanges>& changes, qlonglong lastChangeId);
 	};
 }
 }

@@ -26,6 +26,7 @@
 #include "core.h"
 #include "uploadmanager.h"
 #include "xmlsettingsmanager.h"
+#include "syncer.h"
 
 namespace LeechCraft
 {
@@ -39,6 +40,7 @@ namespace GoogleDrive
 	, Name_ (name)
 	, Trusted_ (false)
 	, DriveManager_ (new DriveManager (this, this))
+	, Syncer_ (new Syncer (DriveManager_, this))
 	{
 		connect (DriveManager_,
 				SIGNAL (gotFiles (const QList<DriveItem>&)),
@@ -176,7 +178,7 @@ namespace GoogleDrive
 
 	void Account::CreateDirectory (const QString& name, const QStringList& parentId)
 	{
-		DriveManager_->CreateDirectory (name, parentId.value (0));
+		DriveManager_->CreateDirectory (name, false, parentId.value (0));
 	}
 
 	void Account::Copy (const QStringList& id, const QStringList& newParentId)
@@ -191,8 +193,13 @@ namespace GoogleDrive
 
 	void Account::RequestFileChanges ()
 	{
-		DriveManager_->RequestFileChanges (XmlSettingsManager::Instance ()
-				.Property ("LastChangesId", 0).toString ());
+		Syncer_->CheckRemoteStorage ();
+	}
+
+	void Account::CheckForSyncUpload (const QStringList& pathes,
+			const QString& baseDir)
+	{
+		Syncer_->CheckLocalStorage (pathes, baseDir);
 	}
 
 	QByteArray Account::Serialize ()
