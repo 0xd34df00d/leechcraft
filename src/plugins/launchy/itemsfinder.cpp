@@ -54,18 +54,23 @@ namespace Launchy
 			if (name.isEmpty ())
 				return QIcon ();
 
-			if (name.endsWith (".png"))
+			if (name.endsWith (".png") || name.endsWith (".svg"))
 				name.chop (4);
 
 			auto result = proxy->GetIcon (name);
 			if (!result.isNull ())
 				return result;
 
-			result = QIcon ("/usr/share/pixmaps/" + name + ".png");
-			if (!result.isNull ())
-				return result;
+			for (auto ext : { ".png", ".svg", ".xpm" })
+			{
+				result = QIcon ("/usr/share/pixmaps/" + name + ext);
+				if (!result.isNull ())
+					return result;
 
-			result = QIcon ("/usr/local/share/pixmaps/" + name + ".png");
+				result = QIcon ("/usr/local/share/pixmaps/" + name + ext);
+				if (!result.isNull ())
+					return result;
+			}
 
 			if (result.isNull ())
 				qDebug () << Q_FUNC_INFO << name << "not found";
