@@ -133,7 +133,7 @@ Rectangle {
                     }
 
                     onEntered: itemDescriptionLabel.text = itemDescription
-                    onExited: itemDescriptionLabel.text = null
+                    onExited: itemDescriptionLabel.text = ""
                 }
             }
         }
