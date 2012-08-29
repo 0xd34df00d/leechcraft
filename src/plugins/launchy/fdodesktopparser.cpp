@@ -94,7 +94,7 @@ namespace Launchy
 				auto eol = qi::lit ("\n");
 				Comment_ %= qi::lit ("#") >> *(qi::char_ - '\r' - '\n') >> eol;
 
-				Lang_ %= '[' >> qi::lexeme [+(qi::char_ ("a-zA-Z0-9"))] >> ']';
+				Lang_ %= '[' >> qi::lexeme [+(qi::char_ ("a-zA-Z0-9@_-"))] >> ']';
 
 				KeyValSep_ %= *(qi::lit (' ')) >> '=' >> *(qi::lit (' '));
 
