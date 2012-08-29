@@ -19,6 +19,8 @@
 #include "syncer.h"
 #include <QtDebug>
 #include <QFileInfo>
+#include <QDir>
+#include <QCryptographicHash>
 #include "xmlsettingsmanager.h"
 #include "drivemanager.h"
 
@@ -63,26 +65,63 @@ namespace GoogleDrive
 		if (Pathes_.isEmpty ())
 		{
 			//TODO checking finished
+			qDebug () << "finished";
 			return;
 		}
 
-		QString path = Pathes_.first ();
+		QString path = Pathes_.takeAt (0);
 		QFileInfo info (path);
+		DriveItem parentItem = RealPath2Item_.value (info.dir ().absolutePath ());
+		
+		bool found = false;
+		DriveItem currentItem;
 		for (const auto& item : Items_)
 		{
-			if (info.isDir ())
-			{
-				if (!item.IsFolder_ ||
-						item.Name_ != info.fileName () ||
-						item.Labels_ & DriveItem::ILRemoved)
-					continue;
-				else
-				{
-					//TODO remove item, continue checking
-				}
-			}
+			if (item.IsFolder_ != info.isDir () ||
+					item.Name_ != info.fileName () ||
+					item.Labels_ & DriveItem::ILRemoved ||
+					item.ParentId_ != parentItem.Id_)
+				continue;
+
+			currentItem = item;
+			found = true;
+			Items_.removeOne (item);
+			break;
 		}
 
+		if (found)
+		{
+			if (QFileInfo (path).exists ())
+			{
+				RealPath2Item_ [path] = currentItem;
+				if (!info.isDir ())
+				{
+					QFile file (path);
+					if (file.open (QIODevice::ReadOnly))
+					{
+						if (currentItem.Md5_ != QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5).toHex ())
+						{
+							//TODO update
+							qDebug () << currentItem.Id_ << currentItem.Name_ << "need update";
+						}
+					}
+				}
+			}
+			else
+				DM_->MoveEntryToTrash (currentItem.Id_);
+			ContinueLocalStorageChecking ();
+		}
+		else
+		{
+			connect (DM_,
+					SIGNAL (gotNewItem (DriveItem)),
+					this,
+					SLOT (handleGotNewItem (DriveItem)));
+			RealPathQueue_ << path;
+			!info.isDir () ?
+				DM_->Upload (path, QStringList () << parentItem.Id_) :
+				DM_->CreateDirectory (info.fileName (), true, parentItem.Id_);
+		}
 	}
 
 	void Syncer::handleGotDriveChanges (const QList<DriveChanges>& changes, qlonglong id)
@@ -117,7 +156,7 @@ namespace GoogleDrive
 
 			rootItem = item;
 			found = true;
-			Items_.removeAll (rootItem);
+			Items_.removeOne (rootItem);
 			break;
 		}
 
@@ -132,7 +171,11 @@ namespace GoogleDrive
 		}
 		else
 		{
-			RealPath2Item_ [BaseDir_] = rootItem;
+			if (QFileInfo (BaseDir_).exists ())
+				RealPath2Item_ [BaseDir_] = rootItem;
+			else
+				DM_->MoveEntryToTrash (rootItem.Id_);
+
 			ContinueLocalStorageChecking ();
 		}
 	}
@@ -146,9 +189,10 @@ namespace GoogleDrive
 		if (!RealPathQueue_.isEmpty ())
 			RealPath2Item_ [RealPathQueue_.dequeue ()] = item;
 
+		Items_ << item;
+		qDebug () << "created entry: " << item.Name_ << RealPath2Item_.key (item);
 		ContinueLocalStorageChecking ();
 	}
-
 }
 }
 }

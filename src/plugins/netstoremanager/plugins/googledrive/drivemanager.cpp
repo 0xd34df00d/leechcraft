@@ -787,6 +787,7 @@ namespace GoogleDrive
 			qDebug () << Q_FUNC_INFO
 					<< "file uploaded successfully";
 			RefreshListing ();
+			emit gotNewItem (CreateDriveItem (res));
 			emit finished (id, Reply2FilePath_.take (reply));
 			return;
 		}

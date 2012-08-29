@@ -107,6 +107,11 @@ namespace GoogleDrive
 		Roles PermissionRole_;
 		AdditionalRoles PermissionAdditionalRole_;
 		PermissionTypes PermissionType_;
+
+		bool operator== (const DriveItem& item) const
+		{
+			return Id_ == item.Id_;
+		}
 	};
 
 	struct DriveChanges

@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QVariant>
+#include <QStringList>
 #include <QFileSystemWatcher>
 
 class QTimer;
@@ -39,7 +40,7 @@ namespace NetStoreManager
 		QFileSystemWatcher *FileSystemWatcher_;
 		QMap<QString, IStorageAccount*> Path2Account_;
 		QTimer *Timer_;
-		QMultiMap<QString, QString> Path2Id_;
+		QStringList WatchedPathes_;
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
 	private:

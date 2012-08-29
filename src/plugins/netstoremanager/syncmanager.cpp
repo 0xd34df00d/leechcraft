@@ -78,8 +78,8 @@ namespace NetStoreManager
 			FileSystemWatcher_->addPaths (pathes);
 			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [dirPath]->GetObject ());
 			isfl->CheckForSyncUpload (pathes, dirPath);
+			WatchedPathes_ << pathes;
 		}
-
 
 		// check for changes every minute
 		Timer_->start (60000);
@@ -89,6 +89,38 @@ namespace NetStoreManager
 	void SyncManager::handleDirectoryChanged (const QString& path)
 	{
 		qDebug () << Q_FUNC_INFO << path;
+		QStringList watchedFiles = WatchedPathes_;
+		QDir dir (path);
+
+		QStringList baseDirs;
+		for (const auto& str : Path2Account_.keys ())
+			if (path.contains (str))
+			{
+				baseDirs << str;
+				WatchedPathes_ << ScanDir (str);
+			}
+
+		//check for removed files
+		QStringList removedFiles;
+		std::set_difference (watchedFiles.begin (), watchedFiles.end (),
+				WatchedPathes_.begin (), WatchedPathes_.end (),
+				std::back_inserter (removedFiles));
+
+		//check for adding files
+		for (const auto& info : dir.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot))
+		{
+			if (!watchedFiles.contains (info.absoluteFilePath ()))
+				FileSystemWatcher_->addPath (info.absoluteFilePath ());
+		}
+
+		for (const auto& str : Path2Account_.keys ())
+		{
+			if (path.contains (str))
+			{
+				auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [str]->GetObject ());
+				isfl->CheckForSyncUpload (FileSystemWatcher_->files (), str);
+			}
+		}
 	}
 
 	void SyncManager::handleFileChanged (const QString& path)
