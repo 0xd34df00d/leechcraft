@@ -4,7 +4,7 @@ Rectangle {
     id: rootRect
     anchors.fill: parent
     focus: true
-    color: "#99000000"
+    color: "#e0000000"
 
     signal closeRequested()
 
@@ -33,20 +33,21 @@ Rectangle {
 
                     width: catsView.width
                     height: 20
-
                     radius: 5
-                    color: categoryMouseArea.containsMouse ? "#ff000000" : "#00000000"
 
+                    color: categoryMouseArea.containsMouse ? "#aa000000" : "#00000000"
                     Behavior on color { PropertyAnimation {} }
 
                     Text {
                         text: categoryName
+
+                        font.italic: true
+                        font.pointSize: 12
+                        color: "#cccccc"
+
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: 5
-                        font.italic: true
-                        font.pointSize: 12
-                        color: "#dddddd"
                     }
 
                     MouseArea {
@@ -55,7 +56,8 @@ Rectangle {
                         hoverEnabled: true
 
                         onClicked: {
-                            itemsView.model.rootIndex = catsView.model.modelIndex(index)
+                            itemsView.visible = true;
+                            itemsView.model.rootIndex = catsView.model.modelIndex(index);
                         }
                     }
                 }
@@ -69,15 +71,55 @@ Rectangle {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.right: parent.right
+        visible: false
+
+        cellWidth: 128
+        cellHeight: 128
 
         model: VisualDataModel {
             model: itemsModel
 
             delegate: Rectangle {
-                width: 32
-                height: 32
+                width: itemsView.cellWidth
+                height: itemsView.cellHeight
+                radius: 5
 
-                Text { text: "text"; anchors.fill: parent }
+                color: itemMouseArea.containsMouse ? "#44FF6600" : "#00000000"
+                Behavior on color { PropertyAnimation {} }
+
+                Image {
+                    width: 96
+                    height: 96
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: parent.top
+
+                    source: "image://appicon/" + itemIcon
+                    smooth: true
+                }
+
+                Text {
+                    text: itemName
+
+                    width: parent.width
+                    font.pointSize: 10
+                    color: "#eeeeee"
+
+                    anchors.left: parent.left
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 3
+
+                    wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                MouseArea {
+                    id: itemMouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                    onClicked: {
+                    }
+                }
             }
         }
     }
