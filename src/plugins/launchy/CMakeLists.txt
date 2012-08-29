@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	launchy.cpp
 	item.cpp
+	itemsfinder.cpp
 	fdodesktopparser.cpp
 	)
 
