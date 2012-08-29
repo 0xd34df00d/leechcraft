@@ -24,6 +24,22 @@ Rectangle {
             id: catsView
             anchors.fill: parent
             spacing: 3
+            currentIndex: -1
+
+            highlight: Rectangle {
+                width: catsView.width
+                height: 24
+
+                color: "#A51E00"
+                radius: 5
+                y: catsView.currentItem.y
+
+                Behavior on y {
+                    PropertyAnimation {}
+                }
+            }
+
+            highlightFollowsCurrentItem: false
 
             model: VisualDataModel {
                 model: itemsModel
@@ -35,7 +51,7 @@ Rectangle {
                     height: 24
                     radius: 5
 
-                    color: categoryMouseArea.containsMouse ? "#aa000000" : "#00000000"
+                    color: (index != catsView.currentIndex && categoryMouseArea.containsMouse) ? "#aa000000" : "#00000000"
                     Behavior on color { PropertyAnimation {} }
 
                     Image {
@@ -70,6 +86,8 @@ Rectangle {
                         onClicked: {
                             itemsView.visible = true;
                             itemsView.model.rootIndex = catsView.model.modelIndex(index);
+
+                            catsView.currentIndex = index;
                         }
                     }
                 }
