@@ -16,11 +16,13 @@ SET (SRCS
 	itemsfinder.cpp
 	fdodesktopparser.cpp
 	)
+SET (RESOURCES resources.qrc)
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_launchy SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_launchy
 	${QT_LIBRARIES}
