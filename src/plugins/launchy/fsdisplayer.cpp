@@ -77,7 +77,7 @@ namespace Launchy
 		public:
 			enum Roles
 			{
-				CategoryName,
+				CategoryName = Qt::UserRole + 1,
 				CategoryIcon,
 				ItemName,
 				ItemIcon,
