@@ -110,7 +110,7 @@ namespace Launchy
 				GroupName_ %= '[' >> qi::lexeme [+(qi::char_ ("a-zA-Z0-9 "))] >> ']';
 
 				Group_ %= GroupName_ >> eol >>
-						*(Comment_ | Line_);
+						*(Comment_ | Line_ | eol);
 
 				Start_ %= *Comment_ >> +Group_;
 
