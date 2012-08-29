@@ -65,6 +65,7 @@ namespace NetStoreManager
 		virtual void Move (const QStringList& id, const QStringList& newParentId) = 0;
 
 		virtual void RequestFileChanges () = 0;
+		virtual void CheckForSyncUpload (const QStringList& pathes, const QString& baseDir) = 0;
 	protected:
 		virtual void gotListing (const QList<QList<QStandardItem*>>&) = 0;
 		virtual void gotFileUrl (const QUrl& url, const QStringList& id) = 0;

@@ -19,38 +19,45 @@
 #pragma once
 
 #include <QObject>
-#include <QVariant>
-#include <QFileSystemWatcher>
-
-class QTimer;
+#include <QStringList>
+#include <QMap>
+#include <QQueue>
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	class IStorageAccount;
-	class AccountsManager;
+namespace GoogleDrive
+{
+	class DriveManager;
+	struct DriveChanges;
+	struct DriveItem;
 
-	class SyncManager : public QObject
+	class Syncer : public QObject
 	{
 		Q_OBJECT
 
-		AccountsManager *AM_;
-		QFileSystemWatcher *FileSystemWatcher_;
-		QMap<QString, IStorageAccount*> Path2Account_;
-		QTimer *Timer_;
-		QMultiMap<QString, QString> Path2Id_;
-	public:
-		SyncManager (AccountsManager *am, QObject *parent = 0);
-	private:
-		QStringList ScanDir (const QString& path);
+		qlonglong LastChangesId_;
+		DriveManager *DM_;
 
-	public slots:
-		void handleDirectoryAdded (const QVariantMap& dirs);
+		QString BaseDir_;
+		QStringList Pathes_;
+		QMap<QString, DriveItem> RealPath2Item_;
+		QQueue<QString> RealPathQueue_;
+		QList<DriveItem> Items_;
+	public:
+		Syncer (DriveManager *dm, QObject *parent = 0);
+
+		void CheckRemoteStorage ();
+		void CheckLocalStorage (const QStringList& pathes, const QString& baseDir);
+	private:
+		void ContinueLocalStorageChecking ();
+
 	private slots:
-		void handleDirectoryChanged (const QString& path);
-		void handleFileChanged (const QString& path);
-		void handleTimeout ();
+		void handleGotDriveChanges (const QList<DriveChanges>& changes, qlonglong);
+		void handleGotFiles (const QList<DriveItem>& files);
+		void handleGotNewItem (const DriveItem& item);
 	};
+}
 }
 }
