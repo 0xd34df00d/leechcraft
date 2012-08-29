@@ -33,7 +33,7 @@ namespace Launchy
 		QTimer::singleShot (1000, this, SLOT (update ()));
 	}
 
-	QHash<QString, Item_ptr> ItemsFinder::GetItems () const
+	QHash<QString, QList<Item_ptr>> ItemsFinder::GetItems () const
 	{
 		return Items_;
 	}
@@ -107,7 +107,8 @@ namespace Launchy
 			item->SetIcon (LoadIcon (Proxy_, item->GetIconName ()));
 
 			for (const auto& cat : item->GetCategories ())
-				Items_ [cat] = item;
+				if (!cat.startsWith ("X-"))
+					Items_ [cat] << item;
 		}
 
 		qDebug () << Items_.keys ();
