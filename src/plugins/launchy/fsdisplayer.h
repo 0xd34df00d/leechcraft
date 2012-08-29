@@ -41,6 +41,8 @@ namespace Launchy
 	public:
 		FSDisplayer (ItemsFinder *finder, QObject* = 0);
 		~FSDisplayer ();
+	private slots:
+		void handleFinderUpdated ();
 	};
 }
 }
