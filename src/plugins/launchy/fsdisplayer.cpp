@@ -19,8 +19,11 @@
 #include "fsdisplayer.h"
 #include <QDeclarativeView>
 #include <QDeclarativeContext>
+#include <QDeclarativeEngine>
+#include <QDeclarativeImageProvider>
 #include <QGraphicsObject>
 #include <QStandardItemModel>
+#include <util/util.h>
 #include "itemsfinder.h"
 #include "item.h"
 
@@ -28,6 +31,39 @@ namespace LeechCraft
 {
 namespace Launchy
 {
+	class ItemIconsProvider : public QDeclarativeImageProvider
+	{
+		QHash<QString, QIcon> Icons_;
+	public:
+		ItemIconsProvider ()
+		: QDeclarativeImageProvider (Pixmap)
+		{
+		}
+
+		void Clear ()
+		{
+			Icons_.clear ();
+		}
+
+		void AddIcon (const QString& id, const QIcon& icon)
+		{
+			Icons_ [id] = icon;
+		}
+
+		QPixmap requestPixmap (const QString& id, QSize* size, const QSize& requestedSize)
+		{
+			const auto& icon = Icons_.value (id);
+
+			const auto& ourSize = requestedSize.width () > 1 ?
+					requestedSize :
+					QSize (96, 96);
+
+			if (size)
+				*size = icon.actualSize (ourSize);
+			return icon.pixmap (ourSize);
+		}
+	};
+
 	namespace
 	{
 		class DisplayModel : public QStandardItemModel
@@ -36,7 +72,10 @@ namespace Launchy
 			enum Roles
 			{
 				CategoryName,
-				CategoryIcon
+				CategoryIcon,
+				ItemName,
+				ItemIcon,
+				ItemDescription
 			};
 
 			DisplayModel (QObject *parent = 0)
@@ -45,6 +84,9 @@ namespace Launchy
 				QHash<int, QByteArray> roleNames;
 				roleNames [CategoryName] = "categoryName";
 				roleNames [CategoryIcon] = "categoryIcon";
+				roleNames [ItemName] = "itemName";
+				roleNames [ItemIcon] = "itemIcon";
+				roleNames [ItemDescription] = "itemDescription";
 				setRoleNames (roleNames);
 			}
 		};
@@ -55,12 +97,15 @@ namespace Launchy
 	, Finder_ (finder)
 	, Model_ (new DisplayModel (this))
 	, View_ (new QDeclarativeView)
+	, IconsProvider_ (new ItemIconsProvider)
 	{
 		View_->setStyleSheet ("background: transparent");
 		View_->setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
 		View_->setAttribute (Qt::WA_TranslucentBackground);
 		View_->setAttribute (Qt::WA_OpaquePaintEvent, false);
-		View_->setFixedSize (QSize (800, 600));
+		View_->setFixedSize (QSize (1280, 800));
+
+		View_->engine ()->addImageProvider ("appicon", IconsProvider_);
 
 		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
 		View_->rootContext ()->setContextProperty ("itemsModel", Model_);
@@ -88,6 +133,10 @@ namespace Launchy
 	{
 		Model_->clear ();
 
+		IconsProvider_->Clear ();
+
+		const auto& currentLang = Util::GetLanguage ().toLower ();
+
 		const auto& items = Finder_->GetItems ();
 		for (const auto& cat : items.keys ())
 		{
@@ -97,6 +146,14 @@ namespace Launchy
 			for (const auto& item : items [cat])
 			{
 				auto appItem = new QStandardItem ();
+				appItem->setData (item->GetName (currentLang), DisplayModel::Roles::ItemName);
+				appItem->setData (item->GetComment (currentLang), DisplayModel::Roles::ItemDescription);
+
+				const auto& iconName = item->GetIconName ();
+				appItem->setData (iconName, DisplayModel::Roles::ItemIcon);
+
+				IconsProvider_->AddIcon (iconName, item->GetIcon ());
+
 				catItem->appendRow (appItem);
 			}
 

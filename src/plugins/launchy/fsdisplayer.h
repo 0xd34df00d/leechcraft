@@ -28,6 +28,7 @@ namespace LeechCraft
 namespace Launchy
 {
 	class ItemsFinder;
+	class ItemIconsProvider;
 
 	class FSDisplayer : public QObject
 	{
@@ -38,6 +39,8 @@ namespace Launchy
 		QStandardItemModel *Model_;
 
 		QDeclarativeView *View_;
+
+		ItemIconsProvider *IconsProvider_;
 	public:
 		FSDisplayer (ItemsFinder *finder, QObject* = 0);
 		~FSDisplayer ();
