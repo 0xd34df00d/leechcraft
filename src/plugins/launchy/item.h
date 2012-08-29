@@ -36,12 +36,22 @@ namespace Launchy
 		QHash<QString, QString> GenericName_;
 		QHash<QString, QString> Comments_;
 
-		QString Type_;
 		QStringList Categories_;
 		QString Command_;
+		QString WD_;
 
 		QString IconName_;
 		QIcon Icon_;
+	public:
+		enum class Type
+		{
+			Other,
+			Application,
+			URL,
+			Dir
+		};
+	private:
+		Type Type_;
 	public:
 		bool IsValid () const;
 
@@ -50,6 +60,10 @@ namespace Launchy
 		QString GetComment (const QString&) const;
 		QString GetIconName () const;
 		QStringList GetCategories () const;
+
+		Type GetType () const;
+		QString GetCommand () const;
+		QString GetWorkingDirectory () const;
 
 		void SetIcon (const QIcon&);
 		QIcon GetIcon () const;

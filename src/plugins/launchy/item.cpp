@@ -63,6 +63,21 @@ namespace Launchy
 		return Categories_;
 	}
 
+	Item::Type Item::GetType () const
+	{
+		return Type_;
+	}
+
+	QString Item::GetCommand () const
+	{
+		return Command_;
+	}
+
+	QString Item::GetWorkingDirectory () const
+	{
+		return WD_;
+	}
+
 	void Item::SetIcon (const QIcon& icon)
 	{
 		Icon_ = icon;
@@ -102,9 +117,24 @@ namespace Launchy
 
 		auto getSingle = [&group] (const QString& name) { return group [name] [QString ()].value (0); };
 
-		item->Command_ = getSingle ("Exec");
 		item->IconName_ = getSingle ("Icon");
-		item->Type_ = getSingle ("Type");
+
+		const auto& typeStr = getSingle ("Type");
+		if (typeStr == "Application")
+		{
+			item->Type_ = Type::Application;
+			item->Command_ = getSingle ("Exec");
+			item->WD_ = getSingle ("Path");
+		}
+		else if (typeStr == "URL")
+		{
+			item->Type_ = Type::URL;
+			item->Command_ = getSingle ("URL");
+		}
+		else if (typeStr == "Directory")
+			item->Type_ = Type::Dir;
+		else
+			item->Type_ = Type::Other;
 
 		return item;
 	}
