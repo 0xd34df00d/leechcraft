@@ -23,12 +23,12 @@ Rectangle {
         ListView {
             id: catsView
             anchors.fill: parent
-            spacing: 3
+            anchors.topMargin: 5
             currentIndex: -1
 
             highlight: Rectangle {
                 width: catsView.width
-                height: 24
+                height: 30
 
                 color: "#A51E00"
                 radius: 5
@@ -48,7 +48,7 @@ Rectangle {
                     id: catsViewDelegate
 
                     width: catsView.width
-                    height: 24
+                    height: 30
                     radius: 5
 
                     color: (index != catsView.currentIndex && categoryMouseArea.containsMouse) ? "#aa000000" : "#00000000"
