@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QHash>
 #include <QIcon>
 
@@ -25,6 +26,10 @@ namespace LeechCraft
 {
 namespace Launchy
 {
+	class Item;
+
+	typedef std::shared_ptr<Item> Item_ptr;
+
 	class Item
 	{
 		QHash<QString, QString> Name_;
@@ -36,13 +41,20 @@ namespace Launchy
 		QString Command_;
 
 		QString IconName_;
+		QIcon Icon_;
 	public:
+		bool IsValid () const;
+
 		QString GetName (const QString&) const;
 		QString GetGenericName (const QString&) const;
 		QString GetComment (const QString&) const;
 		QString GetIconName () const;
+		QStringList GetCategories () const;
 
-		static Item FromDesktopFile (const QString&);
+		void SetIcon (const QIcon&);
+		QIcon GetIcon () const;
+
+		static Item_ptr FromDesktopFile (const QString&);
 	};
 }
 }

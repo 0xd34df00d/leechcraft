@@ -26,6 +26,11 @@ namespace LeechCraft
 {
 namespace Launchy
 {
+	bool Item::IsValid () const
+	{
+		return !Name_.isEmpty ();
+	}
+
 	namespace
 	{
 		QString ByLang (const QHash<QString, QString>& cont, const QString& lang)
@@ -54,6 +59,21 @@ namespace Launchy
 		return IconName_;
 	}
 
+	QStringList Item::GetCategories () const
+	{
+		return Categories_;
+	}
+
+	void Item::SetIcon (const QIcon& icon)
+	{
+		Icon_ = icon;
+	}
+
+	QIcon Item::GetIcon () const
+	{
+		return Icon_;
+	}
+
 	namespace
 	{
 		QHash<QString, QString> FirstValues (const QHash<QString, QStringList>& hash)
@@ -65,7 +85,7 @@ namespace Launchy
 		}
 	}
 
-	Item Item::FromDesktopFile (const QString& filename)
+	Item_ptr Item::FromDesktopFile (const QString& filename)
 	{
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
@@ -74,18 +94,18 @@ namespace Launchy
 		const auto& result = FDODesktopParser () (file.readAll ());
 		const auto& group = result ["Desktop Entry"];
 
-		Item item;
-		item.Name_ = FirstValues (group ["Name"]);
-		item.GenericName_ = FirstValues (group ["GenericName"]);
-		item.Comments_ = FirstValues (group ["Comment"]);
+		Item_ptr item (new Item);
+		item->Name_ = FirstValues (group ["Name"]);
+		item->GenericName_ = FirstValues (group ["GenericName"]);
+		item->Comments_ = FirstValues (group ["Comment"]);
 
-		item.Categories_ = group ["Categories"] [QString ()];
+		item->Categories_ = group ["Categories"] [QString ()];
 
 		auto getSingle = [&group] (const QString& name) { return group [name] [QString ()].value (0); };
 
-		item.Command_ = getSingle ("Exec");
-		item.IconName_ = getSingle ("Icon");
-		item.Type_ = getSingle ("Type");
+		item->Command_ = getSingle ("Exec");
+		item->IconName_ = getSingle ("Icon");
+		item->Type_ = getSingle ("Type");
 
 		return item;
 	}
