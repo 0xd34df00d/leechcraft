@@ -7,6 +7,7 @@ Rectangle {
     color: "#e0000000"
 
     signal closeRequested()
+    signal itemSelected(string id)
 
     Keys.onEscapePressed: rootRect.closeRequested()
 
@@ -149,8 +150,7 @@ Rectangle {
                     anchors.fill: parent
                     hoverEnabled: true
 
-                    onClicked: {
-                    }
+                    onClicked: rootRect.itemSelected(itemID)
 
                     onEntered: itemDescriptionLabel.text = itemDescription
                     onExited: itemDescriptionLabel.text = ""
