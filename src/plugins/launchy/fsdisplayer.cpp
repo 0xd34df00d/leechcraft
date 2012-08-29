@@ -23,6 +23,8 @@
 #include <QDeclarativeImageProvider>
 #include <QGraphicsObject>
 #include <QStandardItemModel>
+#include <QApplication>
+#include <QDesktopWidget>
 #include <util/util.h>
 #include "itemsfinder.h"
 #include "item.h"
@@ -108,7 +110,10 @@ namespace Launchy
 		View_->setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
 		View_->setAttribute (Qt::WA_TranslucentBackground);
 		View_->setAttribute (Qt::WA_OpaquePaintEvent, false);
-		View_->setFixedSize (QSize (1280, 800));
+
+		const auto& rect = qApp->desktop ()->screenGeometry (QCursor::pos ());
+		View_->setGeometry (rect);
+		View_->setFixedSize (rect.size ());
 
 		View_->engine ()->addImageProvider ("appicon", IconsProvider_);
 
@@ -116,7 +121,7 @@ namespace Launchy
 		View_->rootContext ()->setContextProperty ("itemsModel", Model_);
 		View_->setSource (QUrl ("qrc:/launchy/resources/qml/FSView.qml"));
 
-		View_->show ();
+		View_->showFullScreen ();
 
 		View_->setFocus ();
 		View_->setFocus (Qt::MouseFocusReason);
