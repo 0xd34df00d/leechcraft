@@ -51,6 +51,7 @@ namespace Launchy
 	private slots:
 		void handleFSRequested ();
 	signals:
+		void gotEntity (const LeechCraft::Entity&);
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }

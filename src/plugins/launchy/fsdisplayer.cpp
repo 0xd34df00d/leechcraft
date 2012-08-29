@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "fsdisplayer.h"
+#include <algorithm>
 #include <QDeclarativeView>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
@@ -25,6 +26,7 @@
 #include <QStandardItemModel>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QProcess>
 #include <util/util.h>
 #include "itemsfinder.h"
 #include "item.h"
@@ -81,7 +83,8 @@ namespace Launchy
 				CategoryIcon,
 				ItemName,
 				ItemIcon,
-				ItemDescription
+				ItemDescription,
+				ItemID
 			};
 
 			DisplayModel (QObject *parent = 0)
@@ -93,6 +96,7 @@ namespace Launchy
 				roleNames [ItemName] = "itemName";
 				roleNames [ItemIcon] = "itemIcon";
 				roleNames [ItemDescription] = "itemDescription";
+				roleNames [ItemID] = "itemID";
 				setRoleNames (roleNames);
 			}
 		};
@@ -130,6 +134,10 @@ namespace Launchy
 				SIGNAL (closeRequested ()),
 				this,
 				SLOT (deleteLater ()));
+		connect (View_->rootObject (),
+				SIGNAL (itemSelected (QString)),
+				this,
+				SLOT (handleExecRequested (QString)));
 
 		handleFinderUpdated ();
 	}
@@ -137,6 +145,36 @@ namespace Launchy
 	FSDisplayer::~FSDisplayer ()
 	{
 		delete View_;
+	}
+
+	void FSDisplayer::Execute (Item_ptr item)
+	{
+		const auto& command = item->GetCommand ();
+
+		if (item->GetType () == Item::Type::Application)
+		{
+			auto items = command.split (' ', QString::SkipEmptyParts);
+			auto removePred = [] (const QString& str)
+				{ return str.size () == 2 && str.at (0) == '%'; };
+			items.erase (std::remove_if (items.begin (), items.end (), removePred),
+					items.end ());
+			if (items.isEmpty ())
+				return;
+
+			QProcess::startDetached (items.at (0), items.mid (1), item->GetWorkingDirectory ());
+		}
+		else if (item->GetType () == Item::Type::URL)
+		{
+			const auto& e = Util::MakeEntity (QUrl (command),
+					QString (),
+					FromUserInitiated | OnlyHandle);
+			emit gotEntity (e);
+		}
+		else
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "don't know how to execute this type of app";
+		}
 	}
 
 	namespace
@@ -232,8 +270,11 @@ namespace Launchy
 
 				const auto& iconName = item->GetIconName ();
 				appItem->setData (iconName, DisplayModel::Roles::ItemIcon);
-
 				IconsProvider_->AddIcon (iconName, item->GetIcon ());
+
+				appItem->setData (itemName, DisplayModel::Roles::ItemID);
+
+				Execs_ [itemName] = [this, item] () { Execute (item); };
 			}
 
 			visibleItems [visibleName] = catItem;
@@ -245,6 +286,20 @@ namespace Launchy
 			visItem->appendRows (itemsInCats [vis].values ());
 			Model_->appendRow (visItem);
 		}
+	}
+
+	void FSDisplayer::handleExecRequested (const QString& item)
+	{
+		if (!Execs_.contains (item))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no such item"
+					<< item;
+			return;
+		}
+
+		Execs_ [item] ();
+		deleteLater ();
 	}
 }
 }

@@ -18,7 +18,9 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
+#include <QHash>
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
@@ -26,10 +28,15 @@ class QDeclarativeView;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Launchy
 {
 	class ItemsFinder;
 	class ItemIconsProvider;
+
+	class Item;
+	typedef std::shared_ptr<Item> Item_ptr;
 
 	class FSDisplayer : public QObject
 	{
@@ -41,11 +48,19 @@ namespace Launchy
 		QStandardItemModel *Model_;
 		QDeclarativeView *View_;
 		ItemIconsProvider *IconsProvider_;
+
+		typedef std::function<void ()> Executor_f;
+		QHash<QString, Executor_f> Execs_;
 	public:
 		FSDisplayer (ICoreProxy_ptr, ItemsFinder *finder, QObject* = 0);
 		~FSDisplayer ();
+	private:
+		void Execute (Item_ptr);
 	private slots:
 		void handleFinderUpdated ();
+		void handleExecRequested (const QString&);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
