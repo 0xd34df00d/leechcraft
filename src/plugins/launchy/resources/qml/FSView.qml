@@ -101,10 +101,11 @@ Rectangle {
         anchors.top: parent.top
         anchors.bottom: itemDescriptionLabel.top
         anchors.right: parent.right
+        anchors.margins: 5
         visible: false
 
-        cellWidth: 128
-        cellHeight: 128
+        cellWidth: 192
+        cellHeight: 160
 
         model: VisualDataModel {
             model: itemsModel
@@ -114,7 +115,7 @@ Rectangle {
                 height: itemsView.cellHeight
                 radius: 5
 
-                color: itemMouseArea.containsMouse ? "#44FF6600" : "#00000000"
+                color: itemMouseArea.containsMouse ? "#AAA51E00" : "#33222222"
                 Behavior on color { PropertyAnimation {} }
 
                 Image {
@@ -122,6 +123,7 @@ Rectangle {
                     height: 96
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: parent.top
+                    anchors.topMargin: 16
 
                     source: "image://appicon/" + itemIcon
                     smooth: true
@@ -136,7 +138,7 @@ Rectangle {
 
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 3
+                    anchors.bottomMargin: 16
 
                     wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                     horizontalAlignment: Text.AlignHCenter
