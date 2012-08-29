@@ -20,16 +20,23 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
 {
 namespace Launchy
 {
+	class ItemsFinder;
+
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IActionsExporter)
+
+		ItemsFinder *Finder_;
+		QAction *FSLauncher_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -38,6 +45,12 @@ namespace Launchy
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+	private slots:
+		void handleFSRequested ();
+	signals:
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

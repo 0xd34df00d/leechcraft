@@ -18,7 +18,9 @@
 
 #include "launchy.h"
 #include <QIcon>
-#include "item.h"
+#include <QAction>
+#include "itemsfinder.h"
+#include "fsdisplayer.h"
 
 namespace LeechCraft
 {
@@ -26,6 +28,14 @@ namespace Launchy
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Finder_ = new ItemsFinder (proxy);
+
+		FSLauncher_ = new QAction (tr ("Open fullscreen launcher..."), this);
+		FSLauncher_->setProperty ("ActionIcon", "system-run");
+		connect (FSLauncher_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleFSRequested ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -54,6 +64,19 @@ namespace Launchy
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
+	{
+		QList<QAction*> result;
+		if (aep == ActionsEmbedPlace::LCTray)
+			result << FSLauncher_;
+		return result;
+	}
+
+	void Plugin::handleFSRequested ()
+	{
+		new FSDisplayer (Finder_, this);
 	}
 }
 }
