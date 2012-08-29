@@ -69,7 +69,7 @@ Rectangle {
         id: itemsView
         anchors.left: catsContainer.right
         anchors.top: parent.top
-        anchors.bottom: parent.bottom
+        anchors.bottom: itemDescriptionLabel.top
         anchors.right: parent.right
         visible: false
 
@@ -119,8 +119,24 @@ Rectangle {
 
                     onClicked: {
                     }
+
+                    onEntered: itemDescriptionLabel.text = itemDescription
+                    onExited: itemDescriptionLabel.text = null
                 }
             }
         }
+    }
+
+    Text {
+        id: itemDescriptionLabel
+
+        height: 16
+
+        color: "#aaaaaa"
+
+        anchors.left: catsContainer.right
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        clip: true
     }
 }
