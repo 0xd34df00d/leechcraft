@@ -19,42 +19,16 @@
 #pragma once
 
 #include <QObject>
-#include <QVariant>
-#include <QStringList>
-#include <QFileSystemWatcher>
-
-class QTimer;
-class QThread;
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	class IStorageAccount;
-	class AccountsManager;
-
-	class SyncManager : public QObject
+	class FilesWatcher : public QObject
 	{
 		Q_OBJECT
-
-		AccountsManager *AM_;
-		QFileSystemWatcher *FileSystemWatcher_;
-		QMap<QString, IStorageAccount*> Path2Account_;
-		QTimer *Timer_;
-		QStringList WatchedPathes_;
-		QThread *WatcherThread_;
 	public:
-		SyncManager (AccountsManager *am, QObject *parent = 0);
-
-		void Release ();
-	private:
-
-	public slots:
-		void handleDirectoryAdded (const QVariantMap& dirs);
-	private slots:
-		void handleDirectoryChanged (const QString& path);
-		void handleFileChanged (const QString& path);
-		void handleTimeout ();
+		FilesWatcher (QObject *parent = 0);
 	};
 }
 }

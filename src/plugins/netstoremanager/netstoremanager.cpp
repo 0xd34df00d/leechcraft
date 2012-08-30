@@ -87,6 +87,7 @@ namespace NetStoreManager
 
 	void Plugin::Release ()
 	{
+		SyncManager_->Release ();
 	}
 
 	QString Plugin::GetName () const

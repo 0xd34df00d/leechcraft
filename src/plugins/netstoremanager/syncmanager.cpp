@@ -21,10 +21,11 @@
 #include <QStringList>
 #include <QTimer>
 #include <QDir>
-#include <boost/concept_check.hpp>
-#include "accountsmanager.h"
+#include <QThread>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
+#include "accountsmanager.h"
+#include "fileswatcher.h"
 
 namespace LeechCraft
 {
@@ -35,6 +36,7 @@ namespace NetStoreManager
 	, AM_ (am)
 	, FileSystemWatcher_ (new QFileSystemWatcher (this))
 	, Timer_ (new QTimer (this))
+	, WatcherThread_ (new QThread (this))
 	{
 		connect (FileSystemWatcher_,
 				SIGNAL (directoryChanged (QString)),
@@ -48,37 +50,56 @@ namespace NetStoreManager
 				SIGNAL (timeout ()),
 				this,
 				SLOT (handleTimeout ()));
+
+		FilesWatcher *watcher = new FilesWatcher;
+		watcher->moveToThread (WatcherThread_);
 	}
 
-	QStringList SyncManager::ScanDir (const QString& path)
+	void SyncManager::Release ()
 	{
-		QDir baseDir (path);
-		QStringList pathes;
-		for (const auto& entry : baseDir.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot))
+		WatcherThread_->exit ();
+	}
+
+	namespace
+	{
+		QStringList ScanDir (const QString& path, bool recursive)
 		{
-			pathes << entry.absoluteFilePath ();
-			if (entry.isDir ())
-				pathes << ScanDir (entry.absoluteFilePath ());
+			QDir baseDir (path);
+			QStringList pathes;
+			for (const auto& entry : baseDir.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot))
+			{
+				pathes << entry.absoluteFilePath ();
+				if (recursive &&
+						entry.isDir ())
+					pathes << ScanDir (entry.absoluteFilePath (), recursive);
+			}
+			return pathes;
 		}
-		return pathes;
 	}
 
 	void SyncManager::handleDirectoryAdded (const QVariantMap& dirs)
 	{
 		if (!FileSystemWatcher_->directories ().isEmpty ())
 			FileSystemWatcher_->removePaths (FileSystemWatcher_->directories ());
+		if (!FileSystemWatcher_->files ().isEmpty ())
+			FileSystemWatcher_->removePaths (FileSystemWatcher_->files ());
 
+		WatchedPathes_.clear ();
 		for (const auto& key : dirs.keys ())
 		{
 			const QString& dirPath = dirs [key].toString ();
 			Path2Account_ [dirPath] = AM_->GetAccountFromUniqueID (key);
 			qDebug () << "watching directory "
 					<< dirPath;
-			QStringList pathes = ScanDir (dirPath);
+
+			QStringList pathes = ScanDir (dirPath, true);
 			FileSystemWatcher_->addPaths (pathes);
+			FileSystemWatcher_->addPath (dirPath);
+
 			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [dirPath]->GetObject ());
 			isfl->CheckForSyncUpload (pathes, dirPath);
-			WatchedPathes_ << pathes;
+
+			WatchedPathes_ << pathes << dirPath;
 		}
 
 		// check for changes every minute
@@ -89,43 +110,52 @@ namespace NetStoreManager
 	void SyncManager::handleDirectoryChanged (const QString& path)
 	{
 		qDebug () << Q_FUNC_INFO << path;
-		QStringList watchedFiles = WatchedPathes_;
-		QDir dir (path);
+		qDebug () << FileSystemWatcher_->directories ()
+				<< FileSystemWatcher_->files ();
+		qDebug () << WatchedPathes_;
 
-		QStringList baseDirs;
-		for (const auto& str : Path2Account_.keys ())
-			if (path.contains (str))
-			{
-				baseDirs << str;
-				WatchedPathes_ << ScanDir (str);
-			}
-
-		//check for removed files
-		QStringList removedFiles;
-		std::set_difference (watchedFiles.begin (), watchedFiles.end (),
-				WatchedPathes_.begin (), WatchedPathes_.end (),
-				std::back_inserter (removedFiles));
-
-		//check for adding files
-		for (const auto& info : dir.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot))
-		{
-			if (!watchedFiles.contains (info.absoluteFilePath ()))
-				FileSystemWatcher_->addPath (info.absoluteFilePath ());
-		}
-
-		for (const auto& str : Path2Account_.keys ())
-		{
-			if (path.contains (str))
-			{
-				auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [str]->GetObject ());
-				isfl->CheckForSyncUpload (FileSystemWatcher_->files (), str);
-			}
-		}
+		QStringList pathesInDir = ScanDir (path, false);
+		qDebug () << "pathes in dir" << pathesInDir;
+// 		QStringList watchedFiles = WatchedPathes_;
+// 		QDir dir (path);
+//
+// 		QStringList baseDirs;
+// 		for (const auto& str : Path2Account_.keys ())
+// 			if (path.contains (str))
+// 			{
+// 				baseDirs << str;
+// 				WatchedPathes_ << ScanDir (str);
+// 			}
+//
+// 		//check for removed files
+// 		QStringList removedFiles;
+// 		std::set_difference (watchedFiles.begin (), watchedFiles.end (),
+// 				WatchedPathes_.begin (), WatchedPathes_.end (),
+// 				std::back_inserter (removedFiles));
+//
+// 		//check for adding files
+// 		for (const auto& info : dir.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot))
+// 		{
+// 			if (!watchedFiles.contains (info.absoluteFilePath ()))
+// 				FileSystemWatcher_->addPath (info.absoluteFilePath ());
+// 		}
+//
+// 		for (const auto& str : Path2Account_.keys ())
+// 		{
+// 			if (path.contains (str))
+// 			{
+// 				auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [str]->GetObject ());
+// 				isfl->CheckForSyncUpload (FileSystemWatcher_->files (), str);
+// 			}
+// 		}
 	}
 
 	void SyncManager::handleFileChanged (const QString& path)
 	{
 		qDebug () << Q_FUNC_INFO << path;
+		qDebug () << FileSystemWatcher_->directories ()
+				<< FileSystemWatcher_->files ();
+		qDebug () << WatchedPathes_;
 	}
 
 	void SyncManager::handleTimeout ()

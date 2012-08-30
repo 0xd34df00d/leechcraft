@@ -24,6 +24,7 @@ SET (SRCS
 	syncwidget.cpp
 	syncitemdelegate.cpp
 	directorywidget.cpp
+	fileswatcher.cpp
 	)
 SET (HEADERS
 	netstoremanager.h
@@ -39,6 +40,7 @@ SET (HEADERS
 	syncwidget.h
 	syncitemdelegate.h
 	directorywidget.h
+	fileswatcher.h
 	)
 SET (FORMS
 	managertab.ui

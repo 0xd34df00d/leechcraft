@@ -16,45 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QVariant>
-#include <QStringList>
-#include <QFileSystemWatcher>
-
-class QTimer;
-class QThread;
+#include "fileswatcher.h"
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	class IStorageAccount;
-	class AccountsManager;
-
-	class SyncManager : public QObject
+	FilesWatcher::FilesWatcher (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
+	}
 
-		AccountsManager *AM_;
-		QFileSystemWatcher *FileSystemWatcher_;
-		QMap<QString, IStorageAccount*> Path2Account_;
-		QTimer *Timer_;
-		QStringList WatchedPathes_;
-		QThread *WatcherThread_;
-	public:
-		SyncManager (AccountsManager *am, QObject *parent = 0);
-
-		void Release ();
-	private:
-
-	public slots:
-		void handleDirectoryAdded (const QVariantMap& dirs);
-	private slots:
-		void handleDirectoryChanged (const QString& path);
-		void handleFileChanged (const QString& path);
-		void handleTimeout ();
-	};
 }
 }
