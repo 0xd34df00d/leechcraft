@@ -57,8 +57,6 @@ namespace Launchy
 			if (name.isEmpty ())
 				return QIcon ();
 
-			qDebug () << name;
-
 			if (name.endsWith (".png") || name.endsWith (".svg"))
 				name.chop (4);
 
@@ -83,10 +81,8 @@ namespace Launchy
 
 	void ItemsFinder::update ()
 	{
-		qDebug () << Q_FUNC_INFO;
 		Items_.clear ();
 		auto paths = ScanDir ("/usr/share/applications");
-		qDebug () << "scanned";
 
 		for (const auto& path : paths)
 		{
@@ -117,9 +113,6 @@ namespace Launchy
 				if (!cat.startsWith ("X-"))
 					Items_ [cat] << item;
 		}
-
-		qDebug () << Items_.keys ();
-		qDebug () << "done";
 
 		emit itemsListChanged ();
 	}
