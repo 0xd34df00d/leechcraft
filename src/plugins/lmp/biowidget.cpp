@@ -18,7 +18,9 @@
 
 #include "biowidget.h"
 #include <QDeclarativeContext>
+#include <QGraphicsObject>
 #include <QtDebug>
+#include <util/util.h>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -47,6 +49,11 @@ namespace LMP
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (requestBiography ()));
+
+		connect (Ui_.View_->rootObject (),
+				SIGNAL (linkActivated (QString)),
+				this,
+				SLOT (handleLink (QString)));
 	}
 
 	void BioWidget::SetCurrentArtist (const QString& artist)
@@ -76,6 +83,13 @@ namespace LMP
 		auto pending = qobject_cast<Media::IPendingArtistBio*> (sender ());
 		const auto& bio = pending->GetArtistBio ();
 		BioPropProxy_->SetBio (bio);
+	}
+
+	void BioWidget::handleLink (const QString& link)
+	{
+		Core::Instance ().SendEntity (Util::MakeEntity (QUrl (link),
+					QString (),
+					FromUserInitiated | OnlyHandle));
 	}
 }
 }

@@ -7,6 +7,8 @@ Rectangle {
 
     color: "black"
 
+    signal linkActivated(string id)
+
     Text {
         id: artistNameLabel
         z: 2
@@ -106,6 +108,8 @@ Rectangle {
             anchors.topMargin: 8
             anchors.left: parent.left
             anchors.right: parent.right
+
+            onLinkActivated: rootRect.linkActivated(link)
         }
     }
 

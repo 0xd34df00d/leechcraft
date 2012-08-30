@@ -50,6 +50,7 @@ namespace LMP
 	private slots:
 		void requestBiography ();
 		void handleBioReady ();
+		void handleLink (const QString&);
 	};
 }
 }
