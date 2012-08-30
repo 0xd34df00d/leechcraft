@@ -17,6 +17,7 @@ Rectangle {
     anchors.fill: parent
 
     signal bookmarkArtistRequested(string id, string page, string tags)
+    signal linkActivated(string id)
 
     Image {
         id: fullSizeArtistImg
@@ -197,6 +198,8 @@ Rectangle {
                     anchors.top: artistTagsLabel.bottom
                     anchors.topMargin: 5
                     anchors.bottom: parent.bottom
+
+                    onLinkActivated: rootRect.linkActivated(link)
                 }
             }
         }
