@@ -19,39 +19,33 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iactionsexporter.h>
+#include <interfaces/core/icoreproxy.h>
+
+class QStandardItemModel;
+class QDeclarativeView;
 
 namespace LeechCraft
 {
 namespace Launchy
 {
 	class ItemsFinder;
+	class ItemIconsProvider;
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IActionsExporter
+	class FSDisplayer : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
 
 		ICoreProxy_ptr Proxy_;
-		ItemsFinder *Finder_;
-		QAction *FSLauncher_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		ItemsFinder *Finder_;
+		QStandardItemModel *Model_;
+		QDeclarativeView *View_;
+		ItemIconsProvider *IconsProvider_;
+	public:
+		FSDisplayer (ICoreProxy_ptr, ItemsFinder *finder, QObject* = 0);
+		~FSDisplayer ();
 	private slots:
-		void handleFSRequested ();
-	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void handleFinderUpdated ();
 	};
 }
 }

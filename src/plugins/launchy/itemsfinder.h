@@ -18,40 +18,32 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iactionsexporter.h>
+#include <QHash>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace Launchy
 {
-	class ItemsFinder;
+	class Item;
+	typedef std::shared_ptr<Item> Item_ptr;
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IActionsExporter
+	class ItemsFinder : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
 
 		ICoreProxy_ptr Proxy_;
-		ItemsFinder *Finder_;
-		QAction *FSLauncher_;
+		QHash<QString, QList<Item_ptr>> Items_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		ItemsFinder (ICoreProxy_ptr, QObject* = 0);
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	private slots:
-		void handleFSRequested ();
+		QHash<QString, QList<Item_ptr>> GetItems () const;
+	public slots:
+		void update ();
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void itemsListChanged ();
 	};
 }
 }

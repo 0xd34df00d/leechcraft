@@ -18,40 +18,43 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iactionsexporter.h>
+#include <memory>
+#include <QHash>
+#include <QIcon>
 
 namespace LeechCraft
 {
 namespace Launchy
 {
-	class ItemsFinder;
+	class Item;
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IActionsExporter
+	typedef std::shared_ptr<Item> Item_ptr;
+
+	class Item
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
+		QHash<QString, QString> Name_;
+		QHash<QString, QString> GenericName_;
+		QHash<QString, QString> Comments_;
 
-		ICoreProxy_ptr Proxy_;
-		ItemsFinder *Finder_;
-		QAction *FSLauncher_;
+		QString Type_;
+		QStringList Categories_;
+		QString Command_;
+
+		QString IconName_;
+		QIcon Icon_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
+		bool IsValid () const;
+
+		QString GetName (const QString&) const;
+		QString GetGenericName (const QString&) const;
+		QString GetComment (const QString&) const;
+		QString GetIconName () const;
+		QStringList GetCategories () const;
+
+		void SetIcon (const QIcon&);
 		QIcon GetIcon () const;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	private slots:
-		void handleFSRequested ();
-	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		static Item_ptr FromDesktopFile (const QString&);
 	};
 }
 }

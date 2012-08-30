@@ -2,6 +2,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_launchy)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (QT_USE_QTDECLARATIVE TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -10,12 +11,18 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	launchy.cpp
+	fsdisplayer.cpp
+	item.cpp
+	itemsfinder.cpp
+	fdodesktopparser.cpp
 	)
+SET (RESOURCES resources.qrc)
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_launchy SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_launchy
 	${QT_LIBRARIES}

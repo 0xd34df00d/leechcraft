@@ -80,7 +80,9 @@ QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconO
 		return result;
 	}
 
+#ifdef QT_DEBUG
 	qDebug () << Q_FUNC_INFO << "no icon for" << actionIcon << actionIconOff << QIcon::themeName () << QIcon::themeSearchPaths ();
+#endif
 
 	return QIcon ();
 }
