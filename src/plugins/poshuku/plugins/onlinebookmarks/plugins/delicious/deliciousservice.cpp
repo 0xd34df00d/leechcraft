@@ -74,7 +74,6 @@ namespace Delicious
 	{
 		const QString& login = map ["Login"].toString ();
 		const QString& password = map ["Password"].toString ();
-		bool oAuth = map.value ("OAuth", false).toBool ();
 
 		if (login.isEmpty () || password.isEmpty ())
 			return;
