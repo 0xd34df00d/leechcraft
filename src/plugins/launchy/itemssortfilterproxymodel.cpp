@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "itemssortfilterproxymodel.h"
+#include <QtDebug>
 #include "modelroles.h"
 
 namespace LeechCraft
@@ -29,6 +30,17 @@ namespace Launchy
 		setDynamicSortFilter (true);
 		setSourceModel (source);
 		setRoleNames (source->roleNames ());
+	}
+
+	QString ItemsSortFilterProxyModel::GetAppFilterText () const
+	{
+		return AppFilterText_;
+	}
+
+	void ItemsSortFilterProxyModel::SetAppFilterText (const QString& text)
+	{
+		AppFilterText_ = text;
+		invalidateFilter ();
 	}
 
 	bool ItemsSortFilterProxyModel::filterAcceptsRow (int row, const QModelIndex&) const
@@ -45,7 +57,14 @@ namespace Launchy
 					[&itemCats] (const QString& cat)
 						{ return itemCats.contains (cat); }) != CategoryNames_.end ();
 		}
-		return false;
+
+		auto checkStr = [&idx, this] (int role)
+		{
+			return idx.data (role).toString ().contains (AppFilterText_, Qt::CaseInsensitive);
+		};
+
+		return checkStr (ModelRoles::ItemName) ||
+				checkStr (ModelRoles::ItemDescription);
 	}
 
 	void ItemsSortFilterProxyModel::setCategoryNames (const QStringList& cats)

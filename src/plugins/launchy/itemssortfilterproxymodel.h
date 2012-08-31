@@ -28,15 +28,21 @@ namespace Launchy
 	class ItemsSortFilterProxyModel : public QSortFilterProxyModel
 	{
 		Q_OBJECT
+		Q_PROPERTY (QString appFilterText READ GetAppFilterText WRITE SetAppFilterText NOTIFY appFilterTextChanged);
 
 		QStringList CategoryNames_;
 		QString AppFilterText_;
 	public:
 		ItemsSortFilterProxyModel (QAbstractItemModel*, QObject* = 0);
+
+		QString GetAppFilterText () const;
+		void SetAppFilterText (const QString&);
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const;
 	public slots:
 		void setCategoryNames (const QStringList&);
+	signals:
+		void appFilterTextChanged ();
 	};
 }
 }
