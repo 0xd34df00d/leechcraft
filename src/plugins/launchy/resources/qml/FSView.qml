@@ -8,6 +8,7 @@ Rectangle {
 
     signal closeRequested()
     signal itemSelected(string id)
+    signal categorySelected(int index)
 
     Keys.onEscapePressed: rootRect.closeRequested()
 
@@ -42,55 +43,48 @@ Rectangle {
 
             highlightFollowsCurrentItem: false
 
-            model: VisualDataModel {
-                model: itemsModel
+            model: catsModel
 
-                delegate: Rectangle {
-                    id: catsViewDelegate
+            delegate: Rectangle {
+                id: catsViewDelegate
 
-                    width: catsView.width
-                    height: 30
-                    radius: 5
+                width: catsView.width
+                height: 30
+                radius: 5
 
-                    color: (index != catsView.currentIndex && categoryMouseArea.containsMouse) ? "#aa000000" : "#00000000"
-                    Behavior on color { PropertyAnimation {} }
+                color: (index != catsView.currentIndex && categoryMouseArea.containsMouse) ? "#aa000000" : "#00000000"
+                Behavior on color { PropertyAnimation {} }
 
-                    Image {
-                        id: categoryIconImage
-                        width: 24
-                        height: 24
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        anchors.leftMargin: 5
+                Image {
+                    id: categoryIconImage
+                    width: 24
+                    height: 24
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
 
-                        source: "image://appicon/" + categoryIcon
-                        smooth: true
-                    }
+                    source: "image://appicon/" + categoryIcon
+                    smooth: true
+                }
 
-                    Text {
-                        text: categoryName
+                Text {
+                    text: categoryName
 
-                        font.italic: true
-                        font.pointSize: 12
-                        color: "#cccccc"
+                    font.italic: true
+                    font.pointSize: 12
+                    color: "#cccccc"
 
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: categoryIconImage.right
-                        anchors.leftMargin: 5
-                    }
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: categoryIconImage.right
+                    anchors.leftMargin: 5
+                }
 
-                    MouseArea {
-                        id: categoryMouseArea
-                        anchors.fill: parent
-                        hoverEnabled: true
+                MouseArea {
+                    id: categoryMouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
 
-                        onClicked: {
-                            itemsView.visible = true;
-                            itemsView.model.rootIndex = catsView.model.modelIndex(index);
-
-                            catsView.currentIndex = index;
-                        }
-                    }
+                    onClicked: rootRect.categorySelected(index)
                 }
             }
         }
@@ -103,58 +97,57 @@ Rectangle {
         anchors.bottom: itemDescriptionLabel.top
         anchors.right: parent.right
         anchors.margins: 5
-        visible: false
 
         cellWidth: 192
         cellHeight: 160
 
-        model: VisualDataModel {
-            model: itemsModel
+        model: itemsModel
 
-            delegate: Rectangle {
-                width: itemsView.cellWidth
-                height: itemsView.cellHeight
-                radius: 5
+        delegate: Rectangle {
+            id: itemsViewDelegate
 
-                color: itemMouseArea.containsMouse ? "#AAA51E00" : "#33222222"
-                Behavior on color { PropertyAnimation {} }
+            width: itemsView.cellWidth
+            height: itemsView.cellHeight
+            radius: 5
 
-                Image {
-                    width: 96
-                    height: 96
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.top: parent.top
-                    anchors.topMargin: 16
+            color: itemMouseArea.containsMouse ? "#AAA51E00" : "#33222222"
+            Behavior on color { PropertyAnimation {} }
 
-                    source: "image://appicon/" + itemIcon
-                    smooth: true
-                }
+            Image {
+                width: 96
+                height: 96
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 16
 
-                Text {
-                    text: itemName
+                source: "image://appicon/" + itemIcon
+                smooth: true
+            }
 
-                    width: parent.width
-                    font.pointSize: 10
-                    color: "#eeeeee"
+            Text {
+                text: itemName
 
-                    anchors.left: parent.left
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 16
+                width: parent.width
+                font.pointSize: 10
+                color: "#eeeeee"
 
-                    wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                    horizontalAlignment: Text.AlignHCenter
-                }
+                anchors.left: parent.left
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 16
 
-                MouseArea {
-                    id: itemMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
+                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                horizontalAlignment: Text.AlignHCenter
+            }
 
-                    onClicked: rootRect.itemSelected(itemID)
+            MouseArea {
+                id: itemMouseArea
+                anchors.fill: parent
+                hoverEnabled: true
 
-                    onEntered: itemDescriptionLabel.text = itemDescription
-                    onExited: itemDescriptionLabel.text = ""
-                }
+                onClicked: rootRect.itemSelected(itemID)
+
+                onEntered: itemDescriptionLabel.text = itemDescription
+                onExited: itemDescriptionLabel.text = ""
             }
         }
     }

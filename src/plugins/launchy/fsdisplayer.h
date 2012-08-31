@@ -34,6 +34,7 @@ namespace Launchy
 {
 	class ItemsFinder;
 	class ItemIconsProvider;
+	class ItemsSortFilterProxyModel;
 
 	class Item;
 	typedef std::shared_ptr<Item> Item_ptr;
@@ -45,7 +46,11 @@ namespace Launchy
 		ICoreProxy_ptr Proxy_;
 
 		ItemsFinder *Finder_;
-		QStandardItemModel *Model_;
+
+		QStandardItemModel *CatsModel_;
+		QStandardItemModel *ItemsModel_;
+		ItemsSortFilterProxyModel *ItemsProxyModel_;
+
 		QDeclarativeView *View_;
 		ItemIconsProvider *IconsProvider_;
 
@@ -58,6 +63,7 @@ namespace Launchy
 		void Execute (Item_ptr);
 	private slots:
 		void handleFinderUpdated ();
+		void handleCategorySelected (int);
 		void handleExecRequested (const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);

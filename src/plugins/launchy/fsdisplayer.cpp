@@ -30,6 +30,8 @@
 #include <util/util.h>
 #include "itemsfinder.h"
 #include "item.h"
+#include "itemssortfilterproxymodel.h"
+#include "modelroles.h"
 
 namespace LeechCraft
 {
@@ -77,26 +79,16 @@ namespace Launchy
 		class DisplayModel : public QStandardItemModel
 		{
 		public:
-			enum Roles
-			{
-				CategoryName = Qt::UserRole + 1,
-				CategoryIcon,
-				ItemName,
-				ItemIcon,
-				ItemDescription,
-				ItemID
-			};
-
 			DisplayModel (QObject *parent = 0)
 			: QStandardItemModel (parent)
 			{
 				QHash<int, QByteArray> roleNames;
-				roleNames [CategoryName] = "categoryName";
-				roleNames [CategoryIcon] = "categoryIcon";
-				roleNames [ItemName] = "itemName";
-				roleNames [ItemIcon] = "itemIcon";
-				roleNames [ItemDescription] = "itemDescription";
-				roleNames [ItemID] = "itemID";
+				roleNames [ModelRoles::CategoryName] = "categoryName";
+				roleNames [ModelRoles::CategoryIcon] = "categoryIcon";
+				roleNames [ModelRoles::ItemName] = "itemName";
+				roleNames [ModelRoles::ItemIcon] = "itemIcon";
+				roleNames [ModelRoles::ItemDescription] = "itemDescription";
+				roleNames [ModelRoles::ItemID] = "itemID";
 				setRoleNames (roleNames);
 			}
 		};
@@ -106,7 +98,9 @@ namespace Launchy
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Finder_ (finder)
-	, Model_ (new DisplayModel (this))
+	, CatsModel_ (new DisplayModel (this))
+	, ItemsModel_ (new DisplayModel (this))
+	, ItemsProxyModel_ (new ItemsSortFilterProxyModel (ItemsModel_, this))
 	, View_ (new QDeclarativeView)
 	, IconsProvider_ (new ItemIconsProvider (proxy))
 	{
@@ -122,18 +116,18 @@ namespace Launchy
 		View_->engine ()->addImageProvider ("appicon", IconsProvider_);
 
 		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-		View_->rootContext ()->setContextProperty ("itemsModel", Model_);
+		View_->rootContext ()->setContextProperty ("itemsModel", ItemsProxyModel_);
+		View_->rootContext ()->setContextProperty ("catsModel", CatsModel_);
 		View_->setSource (QUrl ("qrc:/launchy/resources/qml/FSView.qml"));
-
-		View_->showFullScreen ();
-
-		View_->setFocus ();
-		View_->setFocus (Qt::MouseFocusReason);
 
 		connect (View_->rootObject (),
 				SIGNAL (closeRequested ()),
 				this,
 				SLOT (deleteLater ()));
+		connect (View_->rootObject (),
+				SIGNAL (categorySelected (int)),
+				this,
+				SLOT (handleCategorySelected (int)));
 		connect (View_->rootObject (),
 				SIGNAL (itemSelected (QString)),
 				this,
@@ -216,18 +210,19 @@ namespace Launchy
 
 	void FSDisplayer::handleFinderUpdated ()
 	{
-		Model_->clear ();
+		CatsModel_->clear ();
+		ItemsModel_->clear ();
+		ItemsProxyModel_->setCategoryNames (QStringList ());
 
 		IconsProvider_->Clear ();
 
-		const auto& currentLang = Util::GetLanguage ().toLower ();
+		const auto& curLang = Util::GetLanguage ().toLower ();
 
 		static const CategoriesInfo cInfo;
 
-		const auto& items = Finder_->GetItems ();
-		QMap<QString, QStandardItem*> visibleItems;
-		QMap<QString, QMap<QString, QStandardItem*>> itemsInCats;
-		for (const auto& cat : items.keys ())
+		const auto& categorizedItems = Finder_->GetItems ();
+		QMap<QString, QStandardItem*> catItems;
+		for (const auto& cat : categorizedItems.keys ())
 		{
 			if (!cInfo.Infos_.contains (cat))
 			{
@@ -236,56 +231,72 @@ namespace Launchy
 			}
 
 			const auto& catInfo = cInfo.Infos_ [cat];
+			const auto& visibleName = catInfo.TranslatedName_;
+			if (catItems.contains (visibleName))
+			{
+				auto item = catItems [visibleName];
+				const auto& list = item->data (ModelRoles::NativeCategories).toStringList ();
+				item->setData (list + QStringList (cat), ModelRoles::NativeCategories);
+				continue;
+			}
+
 			if (!catInfo.IconName_.isEmpty ())
 				IconsProvider_->AddIcon (catInfo.IconName_, Proxy_->GetIcon (catInfo.IconName_));
 
-			const auto& visibleName = catInfo.TranslatedName_;
-
-			QStandardItem *catItem = 0;
-			if (visibleItems.contains (visibleName))
-				catItem = visibleItems [visibleName];
-			else
-			{
-				catItem = new QStandardItem ();
-				catItem->setData (visibleName, DisplayModel::Roles::CategoryName);
-				catItem->setData (catInfo.IconName_, DisplayModel::Roles::CategoryIcon);
-			}
-
-			auto& itemsInCat = itemsInCats [visibleName];
-
-			for (const auto& item : items [cat])
-			{
-				const auto& itemName = item->GetName (currentLang);
-				if (itemsInCat.contains (itemName))
-					continue;
-
-				auto appItem = new QStandardItem ();
-				itemsInCat [itemName] = appItem;
-				appItem->setData (itemName, DisplayModel::Roles::ItemName);
-
-				auto comment = item->GetComment (currentLang);
-				if (comment.isEmpty ())
-					comment = item->GetGenericName (currentLang);
-				appItem->setData (comment, DisplayModel::Roles::ItemDescription);
-
-				const auto& iconName = item->GetIconName ();
-				appItem->setData (iconName, DisplayModel::Roles::ItemIcon);
-				IconsProvider_->AddIcon (iconName, item->GetIcon ());
-
-				appItem->setData (itemName, DisplayModel::Roles::ItemID);
-
-				Execs_ [itemName] = [this, item] () { Execute (item); };
-			}
-
-			visibleItems [visibleName] = catItem;
+			auto catItem = new QStandardItem;
+			catItem->setData (visibleName, ModelRoles::CategoryName);
+			catItem->setData (QStringList (cat), ModelRoles::NativeCategories);
+			catItem->setData (catInfo.IconName_, ModelRoles::CategoryIcon);
+			catItems [visibleName] = catItem;
 		}
+		for (auto item : catItems.values ())
+			CatsModel_->appendRow (item);
 
-		for (const auto& vis : visibleItems.keys ())
+		QList<Item_ptr> uniqueItems;
+		for (const auto& sublist : categorizedItems.values ())
+			for (auto item : sublist)
+				if (!uniqueItems.contains (item))
+					uniqueItems << item;
+		std::sort (uniqueItems.begin (), uniqueItems.end (),
+				[&curLang] (Item_ptr left, Item_ptr right)
+				{
+					return QString::localeAwareCompare (left->GetName (curLang), right->GetName (curLang)) < 0;
+				});
+		for (const auto& item : uniqueItems)
 		{
-			auto visItem = visibleItems [vis];
-			visItem->appendRows (itemsInCats [vis].values ());
-			Model_->appendRow (visItem);
+			const auto& itemName = item->GetName (curLang);
+
+			auto appItem = new QStandardItem ();
+			appItem->setData (itemName, ModelRoles::ItemName);
+
+			auto comment = item->GetComment (curLang);
+			if (comment.isEmpty ())
+				comment = item->GetGenericName (curLang);
+			appItem->setData (comment, ModelRoles::ItemDescription);
+
+			const auto& iconName = item->GetIconName ();
+			appItem->setData (iconName, ModelRoles::ItemIcon);
+			IconsProvider_->AddIcon (iconName, item->GetIcon ());
+
+			appItem->setData (item->GetCategories (), ModelRoles::ItemNativeCategories);
+
+			appItem->setData (itemName, ModelRoles::ItemID);
+			Execs_ [itemName] = [this, item] () { Execute (item); };
+
+			ItemsModel_->appendRow (appItem);
 		}
+
+		View_->showFullScreen ();
+
+		View_->setFocus ();
+		View_->setFocus (Qt::MouseFocusReason);
+	}
+
+	void FSDisplayer::handleCategorySelected (int row)
+	{
+		auto item = CatsModel_->item (row);
+		const auto& list = item->data (ModelRoles::NativeCategories).toStringList ();
+		ItemsProxyModel_->setCategoryNames (list);
 	}
 
 	void FSDisplayer::handleExecRequested (const QString& item)
