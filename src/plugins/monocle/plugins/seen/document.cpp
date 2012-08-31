@@ -117,7 +117,7 @@ namespace Seen
 		return img.scaled (img.width () * xScale, img.height () * yScale, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 
-	QList<ILink_ptr> Document::GetPageLinks (int page)
+	QList<ILink_ptr> Document::GetPageLinks (int)
 	{
 		return QList<ILink_ptr> ();
 	}
