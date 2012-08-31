@@ -98,7 +98,7 @@ namespace Acetamide
 		}
 
 		if (!VCardDialog_)
-			VCardDialog_ = new VCardDialog (this);
+			VCardDialog_ = new VCardDialog ();
 
 		Account_->GetClientConnection ()->FetchVCard (entry->GetServerID (),
 				entry->GetEntryName());

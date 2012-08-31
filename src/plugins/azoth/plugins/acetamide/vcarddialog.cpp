@@ -29,7 +29,7 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	VCardDialog::VCardDialog (EntryBase *entry, QWidget *parent)
+	VCardDialog::VCardDialog (QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
