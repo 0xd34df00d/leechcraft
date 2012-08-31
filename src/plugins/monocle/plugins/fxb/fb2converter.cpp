@@ -269,8 +269,9 @@ namespace FXB
 		}
 	}
 
-	void FB2Converter::HandleImage (const QDomElement& tagElem)
+	void FB2Converter::HandleImage (const QDomElement&)
 	{
+		// TODO
 	}
 
 	void FB2Converter::HandlePara (const QDomElement& tagElem)
