@@ -277,7 +277,7 @@ namespace Xoox
 		conn->GetClient ()->sendPacket (pres);
 	}
 
-	void EntryBase::RequestLastPosts (int maxNum)
+	void EntryBase::RequestLastPosts (int)
 	{
 	}
 

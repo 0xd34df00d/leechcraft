@@ -82,7 +82,7 @@ namespace Azoth
 	}
 
 	bool CLModel::dropMimeData (const QMimeData *mime,
-			Qt::DropAction action, int row, int column, const QModelIndex& parent)
+			Qt::DropAction action, int row, int, const QModelIndex& parent)
 	{
 		qDebug () << "drop" << mime->formats () << action;
 		if (action == Qt::IgnoreAction)

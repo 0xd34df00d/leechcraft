@@ -484,7 +484,7 @@ namespace Azoth
 		me->SetMUCSubject (Ui_.SubjEdit_->toPlainText ());
 	}
 
-	void ChatTab::on_View__loadFinished (bool ok)
+	void ChatTab::on_View__loadFinished (bool)
 	{
 		Q_FOREACH (IMessage *msg, HistoryMessages_)
 			AppendMessage (msg);

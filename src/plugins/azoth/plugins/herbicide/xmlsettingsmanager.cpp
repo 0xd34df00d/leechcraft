@@ -29,14 +29,14 @@ namespace Herbicide
 	{
 		Util::BaseSettingsManager::Init ();
 	}
-	
+
 	XmlSettingsManager& XmlSettingsManager::Instance ()
 	{
 		static XmlSettingsManager xsm;
 		return xsm;
 	}
-	
-	void XmlSettingsManager::EndSettings (QSettings* settings) const
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
 	}
 

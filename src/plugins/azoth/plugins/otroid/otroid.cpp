@@ -175,7 +175,7 @@ namespace OTRoid
 		msg->Send ();
 	}
 
-	void Plugin::Notify (const QString& accId, const QString& entryId,
+	void Plugin::Notify (const QString&, const QString&,
 			Priority prio, const QString& title,
 			const QString& prim, const QString& sec)
 	{
@@ -299,8 +299,7 @@ namespace OTRoid
 		}
 	}
 
-	void Plugin::hookMessageCreated (IHookProxy_ptr proxy,
-			QObject *chatTab, QObject *msgObj)
+	void Plugin::hookMessageCreated (IHookProxy_ptr proxy, QObject*, QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)

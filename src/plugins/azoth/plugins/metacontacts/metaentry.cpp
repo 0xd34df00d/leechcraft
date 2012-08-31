@@ -453,7 +453,7 @@ namespace Metacontacts
 		}
 	}
 
-	void MetaEntry::handleRealNameChanged (const QString& name)
+	void MetaEntry::handleRealNameChanged (const QString&)
 	{
 		QObject *obj = sender ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);

@@ -79,8 +79,7 @@ namespace Isterique
 		return SettingsDialog_;
 	}
 
-	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
-			QObject *message)
+	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr, QObject *message)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (message);
 		if (!msg)
