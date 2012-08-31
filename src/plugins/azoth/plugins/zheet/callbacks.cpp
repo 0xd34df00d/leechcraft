@@ -119,7 +119,7 @@ namespace Zheet
 		emit buddyUpdatedName (id, ZheetUtil::FromStd (friendlyname));
 	}
 
-	void Callbacks::buddyOffline (MSN::NotificationServerConnection *conn, MSN::Passport buddy)
+	void Callbacks::buddyOffline (MSN::NotificationServerConnection*, MSN::Passport buddy)
 	{
 		qDebug () << Q_FUNC_INFO << buddy.c_str ();
 
@@ -134,7 +134,7 @@ namespace Zheet
 		LogFile_.flush ();
 	}
 
-	void Callbacks::gotFriendlyName (MSN::NotificationServerConnection *conn, std::string friendlyname)
+	void Callbacks::gotFriendlyName (MSN::NotificationServerConnection*, std::string friendlyname)
 	{
 		emit gotOurFriendlyName (ZheetUtil::FromStd (friendlyname));
 	}
@@ -168,26 +168,26 @@ namespace Zheet
 		emit finishedConnecting ();
 	}
 
-	void Callbacks::buddyChangedPersonalInfo (MSN::NotificationServerConnection *conn,
+	void Callbacks::buddyChangedPersonalInfo (MSN::NotificationServerConnection*,
 			MSN::Passport fromPassport, MSN::personalInfo pInfo)
 	{
 		emit buddyChangedStatusText (ZheetUtil::FromStd (fromPassport),
 				ZheetUtil::FromStd (pInfo.PSM));
 	}
 
-	void Callbacks::gotLatestListSerial (MSN::NotificationServerConnection *conn, std::string lastChange)
+	void Callbacks::gotLatestListSerial (MSN::NotificationServerConnection*, std::string)
 	{
 	}
 
-	void Callbacks::gotGTC (MSN::NotificationServerConnection *conn, char c)
+	void Callbacks::gotGTC (MSN::NotificationServerConnection*, char)
 	{
 	}
 
-	void Callbacks::gotBLP (MSN::NotificationServerConnection *conn, char c)
+	void Callbacks::gotBLP (MSN::NotificationServerConnection*, char)
 	{
 	}
 
-	void Callbacks::addedListEntry (MSN::NotificationServerConnection *conn,
+	void Callbacks::addedListEntry (MSN::NotificationServerConnection*,
 			MSN::ContactList list, MSN::Passport pass, std::string friendlyname)
 	{
 		qDebug () << Q_FUNC_INFO << pass.c_str () << friendlyname.c_str () << list;
@@ -199,31 +199,31 @@ namespace Zheet
 		emit gotBuddies (res);
 	}
 
-	void Callbacks::removedListEntry (MSN::NotificationServerConnection *conn,
+	void Callbacks::removedListEntry (MSN::NotificationServerConnection*,
 			MSN::ContactList list, MSN::Passport buddy)
 	{
 		emit removedBuddy (list, ZheetUtil::FromStd (buddy));
 	}
 
-	void Callbacks::addedGroup (MSN::NotificationServerConnection *conn,
-			bool added, std::string groupName, std::string groupId)
+	void Callbacks::addedGroup (MSN::NotificationServerConnection*,
+			bool, std::string groupName, std::string groupId)
 	{
 		emit gotGroups (QList<MSN::Group> () << MSN::Group (groupId, groupName));
 	}
 
-	void Callbacks::removedGroup (MSN::NotificationServerConnection *conn,
-			bool removed, std::string groupId)
+	void Callbacks::removedGroup (MSN::NotificationServerConnection*,
+			bool, std::string groupId)
 	{
 		emit removedGroup (ZheetUtil::FromStd (groupId));
 	}
 
-	void Callbacks::renamedGroup (MSN::NotificationServerConnection *conn,
-			bool renamed, std::string newGroupName, std::string groupId)
+	void Callbacks::renamedGroup (MSN::NotificationServerConnection*,
+			bool, std::string newGroupName, std::string groupId)
 	{
 		emit renamedGroup (ZheetUtil::FromStd (groupId), ZheetUtil::FromStd (newGroupName));
 	}
 
-	void Callbacks::addedContactToGroup (MSN::NotificationServerConnection *conn,
+	void Callbacks::addedContactToGroup (MSN::NotificationServerConnection*,
 			bool added, std::string groupId, std::string contactId)
 	{
 		qDebug () << Q_FUNC_INFO << added;
@@ -231,7 +231,7 @@ namespace Zheet
 			emit buddyAddedToGroup (ZheetUtil::FromStd (contactId), ZheetUtil::FromStd (groupId));
 	}
 
-	void Callbacks::removedContactFromGroup (MSN::NotificationServerConnection *conn,
+	void Callbacks::removedContactFromGroup (MSN::NotificationServerConnection*,
 			bool removed, std::string groupId, std::string contactId)
 	{
 		qDebug () << Q_FUNC_INFO << removed;
@@ -239,13 +239,13 @@ namespace Zheet
 			emit buddyRemovedFromGroup (ZheetUtil::FromStd (contactId), ZheetUtil::FromStd (groupId));
 	}
 
-	void Callbacks::addedContactToAddressBook (MSN::NotificationServerConnection *conn,
+	void Callbacks::addedContactToAddressBook (MSN::NotificationServerConnection*,
 			bool added, std::string passport, std::string displayName, std::string guid)
 	{
 		qDebug () << Q_FUNC_INFO << added << passport.c_str () << displayName.c_str () << guid.c_str ();
 	}
 
-	void Callbacks::removedContactFromAddressBook (MSN::NotificationServerConnection *conn,
+	void Callbacks::removedContactFromAddressBook (MSN::NotificationServerConnection*,
 			bool removed, std::string contactId, std::string passport)
 	{
 		qDebug () << Q_FUNC_INFO << removed << ZheetUtil::FromStd (contactId) << ZheetUtil::FromStd (passport);
@@ -253,16 +253,14 @@ namespace Zheet
 			emit removedBuddy (ZheetUtil::FromStd (contactId), ZheetUtil::FromStd (passport));
 	}
 
-	void Callbacks::enabledContactOnAddressBook (MSN::NotificationServerConnection *conn,
-			bool enabled, std::string contactId, std::string passport)
+	void Callbacks::enabledContactOnAddressBook (MSN::NotificationServerConnection*,
+			bool, std::string, std::string)
 	{
-
 	}
 
-	void Callbacks::disabledContactOnAddressBook (MSN::NotificationServerConnection *conn,
-			bool disabled, std::string contactId)
+	void Callbacks::disabledContactOnAddressBook (MSN::NotificationServerConnection*,
+			bool, std::string)
 	{
-
 	}
 
 	void Callbacks::gotSwitchboard (MSN::SwitchboardServerConnection *conn, const void *tag)
@@ -273,106 +271,105 @@ namespace Zheet
 		emit gotSB (conn, static_cast<const MSNBuddyEntry*> (tag));
 	}
 
-	void Callbacks::buddyJoinedConversation (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string friendlyname, int is_initial)
+	void Callbacks::buddyJoinedConversation (MSN::SwitchboardServerConnection *conn, MSN::Passport, std::string, int)
 	{
 		if (conn->auth.tag)
 			emit buddyJoinedSB (conn, static_cast<const MSNBuddyEntry*> (conn->auth.tag));
 	}
 
-	void Callbacks::buddyLeftConversation (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy)
+	void Callbacks::buddyLeftConversation (MSN::SwitchboardServerConnection *conn, MSN::Passport)
 	{
 		if (conn->auth.tag)
 			emit buddyLeftSB (conn, static_cast<const MSNBuddyEntry*> (conn->auth.tag));
 	}
 
-	void Callbacks::gotInstantMessage (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string friendlyname, MSN::Message *msg)
+	void Callbacks::gotInstantMessage (MSN::SwitchboardServerConnection*, MSN::Passport buddy, std::string, MSN::Message *msg)
 	{
 		emit gotMessage (ZheetUtil::FromStd (buddy), msg);
 	}
 
-	void Callbacks::gotMessageSentACK (MSN::SwitchboardServerConnection *conn, int trID)
+	void Callbacks::gotMessageSentACK (MSN::SwitchboardServerConnection*, int trID)
 	{
 		emit messageDelivered (trID);
 	}
 
-	void Callbacks::gotEmoticonNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string alias, std::string)
+	void Callbacks::gotEmoticonNotification (MSN::SwitchboardServerConnection*, MSN::Passport, std::string, std::string)
 	{
-
 	}
 
 	void Callbacks::failedSendingMessage (MSN::Connection*)
 	{
 	}
 
-	void Callbacks::gotNudge (MSN::SwitchboardServerConnection *conn, MSN::Passport username)
+	void Callbacks::gotNudge (MSN::SwitchboardServerConnection*, MSN::Passport username)
 	{
 		emit gotNudge (ZheetUtil::FromStd (username));
 	}
 
-	void Callbacks::gotVoiceClipNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport, std::string)
+	void Callbacks::gotVoiceClipNotification (MSN::SwitchboardServerConnection*, MSN::Passport, std::string)
 	{
 	}
 
-	void Callbacks::gotWinkNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport, std::string)
+	void Callbacks::gotWinkNotification (MSN::SwitchboardServerConnection*, MSN::Passport, std::string)
 	{
 	}
 
-	void Callbacks::gotInk (MSN::SwitchboardServerConnection *conn, MSN::Passport username, std::string image)
+	void Callbacks::gotInk (MSN::SwitchboardServerConnection*, MSN::Passport, std::string)
 	{
 	}
 
-	void Callbacks::gotActionMessage (MSN::SwitchboardServerConnection *conn, MSN::Passport username, std::string message)
+	void Callbacks::gotActionMessage (MSN::SwitchboardServerConnection*, MSN::Passport username, std::string message)
 	{
 		qDebug () << Q_FUNC_INFO << ZheetUtil::FromStd (username) << ZheetUtil::FromStd (message);
 	}
 
-	void Callbacks::buddyTyping (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string friendlyname)
+	void Callbacks::buddyTyping (MSN::SwitchboardServerConnection*, MSN::Passport, std::string)
 	{
 	}
 
-	void Callbacks::gotInitialEmailNotification (MSN::NotificationServerConnection *conn, int msgs_inbox, int unread_inbox, int msgs_folders, int unread_folders)
+	void Callbacks::gotInitialEmailNotification (MSN::NotificationServerConnection*, int msgs_inbox, int unread_inbox, int, int)
 	{
 		emit initialEmailNotification (msgs_inbox, unread_inbox);
 	}
 
-	void Callbacks::gotNewEmailNotification (MSN::NotificationServerConnection *conn, std::string from, std::string subject)
+	void Callbacks::gotNewEmailNotification (MSN::NotificationServerConnection*, std::string from, std::string subject)
 	{
 		emit newEmailNotification (ZheetUtil::FromStd (from), ZheetUtil::FromStd (subject));
 	}
 
-	void Callbacks::fileTransferProgress (MSN::SwitchboardServerConnection *conn,
+	void Callbacks::fileTransferProgress (MSN::SwitchboardServerConnection*,
 			unsigned int sessionID, long long unsigned int transferred, long long unsigned int total)
 	{
 		emit fileTransferProgress (sessionID, transferred, total);
 	}
 
-	void Callbacks::fileTransferFailed (MSN::SwitchboardServerConnection *conn,
-			unsigned int sessionID, MSN::fileTransferError error)
+	void Callbacks::fileTransferFailed (MSN::SwitchboardServerConnection*,
+			unsigned int sessionID, MSN::fileTransferError)
 	{
 		emit fileTransferFailed (sessionID);
 	}
 
-	void Callbacks::fileTransferSucceeded (MSN::SwitchboardServerConnection *conn,
+	void Callbacks::fileTransferSucceeded (MSN::SwitchboardServerConnection*,
 			unsigned int sessionID)
 	{
 		emit fileTransferFinished (sessionID);
 	}
 
-	void Callbacks::fileTransferInviteResponse (MSN::SwitchboardServerConnection *conn,
+	void Callbacks::fileTransferInviteResponse (MSN::SwitchboardServerConnection*,
 			unsigned int sessionID, bool response)
 	{
 		emit fileTransferGotResponse (sessionID, response);
 	}
 
-	void Callbacks::gotVoiceClipFile (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, std::string file)
+	void Callbacks::gotVoiceClipFile (MSN::SwitchboardServerConnection*, unsigned int, std::string)
 	{
 	}
 
-	void Callbacks::gotEmoticonFile (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, std::string alias, std::string file)
+	void Callbacks::gotEmoticonFile (MSN::SwitchboardServerConnection*, unsigned int, std::string, std::string)
 	{
 	}
 
-	void Callbacks::gotWinkFile (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, std::string file)
+	void Callbacks::gotWinkFile (MSN::SwitchboardServerConnection*, unsigned int, std::string)
 	{
 	}
 
@@ -383,25 +380,24 @@ namespace Zheet
 			nsc->synchronizeContactList ();
 	}
 
-	void Callbacks::gotOIMList (MSN::NotificationServerConnection *conn, std::vector<MSN::eachOIM> OIMs)
+	void Callbacks::gotOIMList (MSN::NotificationServerConnection*, std::vector<MSN::eachOIM>)
 	{
 	}
 
-	void Callbacks::gotOIM (MSN::NotificationServerConnection *conn, bool success, std::string id, std::string message)
+	void Callbacks::gotOIM (MSN::NotificationServerConnection*, bool, std::string, std::string)
 	{
 	}
 
-	void Callbacks::gotOIMSendConfirmation (MSN::NotificationServerConnection *conn, bool success, int id)
+	void Callbacks::gotOIMSendConfirmation (MSN::NotificationServerConnection*, bool, int)
 	{
 	}
 
-	void Callbacks::gotOIMDeleteConfirmation (MSN::NotificationServerConnection *conn, bool success, std::string id)
+	void Callbacks::gotOIMDeleteConfirmation (MSN::NotificationServerConnection*, bool, std::string)
 	{
 	}
 
-	void Callbacks::gotContactDisplayPicture (MSN::SwitchboardServerConnection *conn, MSN::Passport passport, std::string filename)
+	void Callbacks::gotContactDisplayPicture (MSN::SwitchboardServerConnection*, MSN::Passport, std::string)
 	{
-
 	}
 
 	void Callbacks::connectionReady (MSN::Connection*)
@@ -412,7 +408,7 @@ namespace Zheet
 	{
 	}
 
-	void Callbacks::changedStatus (MSN::NotificationServerConnection *conn, MSN::BuddyStatus state)
+	void Callbacks::changedStatus (MSN::NotificationServerConnection*, MSN::BuddyStatus state)
 	{
 		emit weChangedState (ZheetUtil::FromMSNState (state));
 	}
@@ -449,7 +445,7 @@ namespace Zheet
 		return sock;
 	}
 
-	void Callbacks::askFileTransfer (MSN::SwitchboardServerConnection *conn, MSN::fileTransferInvite ft)
+	void Callbacks::askFileTransfer (MSN::SwitchboardServerConnection*, MSN::fileTransferInvite ft)
 	{
 		emit fileTransferSuggested (ft);
 	}

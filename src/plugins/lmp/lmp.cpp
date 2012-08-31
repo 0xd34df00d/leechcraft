@@ -256,7 +256,7 @@ namespace LMP
 		}
 	}
 
-	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace area) const
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
 	{
 		return QList<QAction*> ();
 	}

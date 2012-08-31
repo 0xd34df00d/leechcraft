@@ -53,8 +53,8 @@ namespace Laure
 
 		VolumeSliderGradient_ = QPixmap::fromImage (gradient_image);
 	}
-	
-	void VolumeSlider::paintEvent (QPaintEvent* ev)
+
+	void VolumeSlider::paintEvent (QPaintEvent*)
 	{
 		const int padding = 7;
 		const int offset = double ((width () - 2 * padding) * value ()) / maximum ();
@@ -62,7 +62,7 @@ namespace Laure
 		QPainter p (this);
 		p.drawPixmap(0, 0, VolumeSliderGradient_, 0, 0, offset + padding, 0);
 		p.drawPixmap (0, 0,  VolumeSliderInset_);
-		
+
 		p.setPen (palette ().color (QPalette::Disabled, QPalette::Text).dark ());
 		QFont font;
 		font.setPixelSize (9);
@@ -70,14 +70,14 @@ namespace Laure
 		const QRect rect (0, 0, 34, 15);
 		p.drawText (rect, Qt::AlignRight | Qt::AlignVCenter, QString::number (value ()) + '%');
 	}
-	
+
 	void VolumeSlider::mousePressEvent (QMouseEvent *ev)
 	{
 		if (ev->button () != Qt::RightButton)
 			QSlider::setValue (QStyle::sliderValueFromPosition(minimum (),
 							maximum (), ev->pos ().x (), width () - 2));
 	}
-	
+
 	void VolumeSlider::mouseMoveEvent (QMouseEvent *ev)
 	{
 		mousePressEvent (ev);

@@ -676,7 +676,7 @@ namespace Azoth
 			ProxyModel_->SetMUC (obj);
 	}
 
-	void MainWidget::handleEntryLostCurrent (QObject *obj)
+	void MainWidget::handleEntryLostCurrent (QObject*)
 	{
 		if (XmlSettingsManager::Instance ().property ("AutoMUCMode").toBool ())
 			ActionCLMode_->setChecked (false);

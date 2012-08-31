@@ -38,7 +38,7 @@ namespace Seen
 		}
 	}
 
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Context_ = ddjvu_context_create ("leechcraft");
 		ddjvu_message_set_callback (Context_, MsgCallback, this);
@@ -111,6 +111,8 @@ namespace Seen
 				break;
 			case DDJVU_REDISPLAY:
 				DocMgr_->RedrawPage (msg->m_any.document, msg->m_any.page);
+				break;
+			default:
 				break;
 			}
 

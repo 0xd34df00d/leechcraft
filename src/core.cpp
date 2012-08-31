@@ -232,13 +232,7 @@ namespace LeechCraft
 
 	void Core::Setup (QObject *plugin)
 	{
-		const IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
-
 		InitDynamicSignals (plugin);
-
-		if (ijh)
-			InitJobHolder (plugin);
-
 		if (qobject_cast<IHaveTabs*> (plugin))
 			InitMultiTab (plugin);
 	}
@@ -860,10 +854,6 @@ namespace LeechCraft
 					this,
 					SLOT (handleGotEntity (LeechCraft::Entity,
 							int*, QObject**)));
-	}
-
-	void Core::InitJobHolder (QObject *plugin)
-	{
 	}
 
 	void Core::InitEmbedTab (QObject *plugin)

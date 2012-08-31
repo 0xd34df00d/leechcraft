@@ -25,7 +25,7 @@
 namespace LeechCraft
 {
 	class SeparateTabWidget;
-	
+
 	class SeparateTabBar : public QTabBar
 	{
 		Q_OBJECT

@@ -283,8 +283,8 @@ namespace FatApe
 				SLOT (handleFinished ()));
 	}
 
-	void UserScript::DownloadRequired (const QString& required,
-			QNetworkAccessManager *networkManager)
+	void UserScript::DownloadRequired (const QString&,
+			QNetworkAccessManager*)
 	{
 		//TODO
 	}

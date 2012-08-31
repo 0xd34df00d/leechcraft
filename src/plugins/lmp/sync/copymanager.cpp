@@ -18,7 +18,10 @@
 
 #include "copymanager.h"
 #include <QtDebug>
+#include <QFileInfo>
+#include <util/util.h>
 #include "interfaces/lmp/isyncplugin.h"
+#include "../core.h"
 
 namespace LeechCraft
 {
@@ -77,6 +80,13 @@ namespace LMP
 
 		if (error == QFile::NoError && remove)
 			QFile::remove (localPath);
+
+		if (!errorStr.isEmpty () && error != QFile::NoError)
+			Core::Instance ().SendEntity (Util::MakeNotification ("LMP",
+						tr ("Error uploading file %1 to cloud: %2.")
+							.arg (QFileInfo (localPath).fileName ())
+							.arg (errorStr),
+						PWarning_));
 	}
 }
 }

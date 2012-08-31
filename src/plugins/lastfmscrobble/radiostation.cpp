@@ -134,9 +134,10 @@ namespace Lastfmscrobble
 			track.album (),
 			track.title (),
 			QStringList (),
-			track.duration () / 1000,
+			static_cast<qint32> (track.duration () / 1000),
 			0,
-			track.trackNumber ()
+			static_cast<qint32> (track.trackNumber ()),
+			QVariantMap ()
 		};
 		emit gotNewStream (track.url (), info);
 	}

@@ -282,7 +282,7 @@ namespace Vader
 	}
 
 	void MRIMAccount::RequestAuth (const QString& email,
-			const QString& msg, const QString& name, const QStringList& groups)
+			const QString& msg, const QString& name, const QStringList&)
 	{
 		if (!Buddies_.contains (email))
 		{

@@ -69,7 +69,7 @@ namespace Metida
 	}
 
 	bool FriendsModel::dropMimeData (const QMimeData *mime,
-			Qt::DropAction action, int row, int column, const QModelIndex& parent)
+			Qt::DropAction action, int, int, const QModelIndex& parent)
 	{
 		if (action == Qt::IgnoreAction)
 			return true;

@@ -2501,7 +2501,7 @@ namespace Azoth
 		emit gotEntity (e);
 	}
 
-	void Core::handleAttentionDrawn (const QString& text, const QString& variant)
+	void Core::handleAttentionDrawn (const QString& text, const QString&)
 	{
 		if (XmlSettingsManager::Instance ()
 				.property ("IgnoreDrawAttentions").toBool ())

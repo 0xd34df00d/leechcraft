@@ -265,7 +265,7 @@ namespace p100q
 		return body;
 	}
 
-	void Plugin::hookChatTabCreated (IHookProxy_ptr proxy,
+	void Plugin::hookChatTabCreated (IHookProxy_ptr,
 			QObject *chatTab, QObject *entry, QWebView*)
 	{
 		if (!XmlSettingsManager::Instance ()

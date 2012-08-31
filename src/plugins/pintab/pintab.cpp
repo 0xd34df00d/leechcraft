@@ -92,7 +92,7 @@ namespace PinTab
 		return result;
 	}
 
-	void Plugin::hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
+	void Plugin::hookTabContextMenuFill (LeechCraft::IHookProxy_ptr,
 			QMenu *menu, int index)
 	{
 		QList<QAction*> actions = MainTabWidget_->GetPermanentActions ();
@@ -113,7 +113,7 @@ namespace PinTab
 		}
 	}
 
-	void Plugin::hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy, int index)
+	void Plugin::hookTabFinishedMoving (LeechCraft::IHookProxy_ptr, int index)
 	{
 		int realIndex = MainTabWidget_->TabData (index).toInt ();
 		int realNextIndex = MainTabWidget_->TabData (index + 1).toInt ();

@@ -96,7 +96,7 @@ namespace Importers
 		emit completeChanged ();
 	}
 
-	void FirefoxImportPage::handleAccepted (int index)
+	void FirefoxImportPage::handleAccepted (int)
 	{
 		setField ("ProfileFile", Ui_.FileLocation_->text ());
 	}

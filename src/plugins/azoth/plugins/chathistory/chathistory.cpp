@@ -253,7 +253,7 @@ namespace ChatHistory
 	}
 
 	void Plugin::handleGotChatLogs (const QString& accId, const QString& entryId,
-			int backPages, int amount, const QVariant& logs)
+			int, int, const QVariant& logs)
 	{
 		if (!RequestedLogs_.contains (accId) ||
 				!RequestedLogs_ [accId].contains (entryId))
