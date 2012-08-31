@@ -84,16 +84,49 @@ Rectangle {
                     anchors.fill: parent
                     hoverEnabled: true
 
-                    onClicked: rootRect.categorySelected(index)
+                    onClicked: {
+                        appsFilterInput.text = "";
+                        rootRect.categorySelected(index);
+                    }
                 }
             }
+        }
+    }
+
+    Rectangle {
+        id: appsFilterInputContainer
+
+        anchors.left: catsContainer.right
+        anchors.leftMargin: 5
+        anchors.top: parent.top
+        anchors.topMargin: 5
+        anchors.right: parent.right
+        height: 22
+
+        color: "#cccccccc"
+
+        TextEdit {
+            id: appsFilterInput
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.margins: 4
+            font.pointSize: 12
+            font.italic: true
+            textFormat: TextEdit.PlainText
+        }
+
+        Binding {
+            target: itemsModelFilter
+            property: "appFilterText"
+            value: appsFilterInput.text
         }
     }
 
     GridView {
         id: itemsView
         anchors.left: catsContainer.right
-        anchors.top: parent.top
+        anchors.top: appsFilterInputContainer.bottom
         anchors.bottom: itemDescriptionLabel.top
         anchors.right: parent.right
         anchors.margins: 5
