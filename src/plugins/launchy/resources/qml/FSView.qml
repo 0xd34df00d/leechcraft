@@ -183,6 +183,16 @@ Rectangle {
                 onEntered: itemDescriptionLabel.text = itemDescription
                 onExited: itemDescriptionLabel.text = ""
             }
+
+            GridView.onAdd: SequentialAnimation {
+                NumberAnimation { target: itemsViewDelegate; property: "opacity"; from: 0; to: 1; duration: 250; easing.type: Easing.InOutQuad }
+            }
+
+            GridView.onRemove: SequentialAnimation {
+                PropertyAction { target: itemsViewDelegate; property: "GridView.delayRemove"; value: true }
+                NumberAnimation { target: itemsViewDelegate; property: "scale"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
+                PropertyAction { target: itemsViewDelegate; property: "GridView.delayRemove"; value: false }
+            }
         }
     }
 
