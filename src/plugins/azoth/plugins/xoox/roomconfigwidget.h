@@ -55,6 +55,11 @@ namespace Xoox
 
 		QStandardItemModel *PermsModel_;
 		QMap<QXmppMucItem::Affiliation, QStandardItem*> Aff2Cat_;
+
+		enum ItemRoles
+		{
+			Reason = Qt::UserRole + 1
+		};
 	public:
 		RoomConfigWidget (RoomCLEntry*, QWidget* = 0);
 	private:
