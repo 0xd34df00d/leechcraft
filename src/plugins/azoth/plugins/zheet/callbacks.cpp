@@ -388,11 +388,11 @@ namespace Zheet
 	{
 	}
 
-	void Callbacks::gotOIMSendConfirmation (MSN::NotificationServerConnection*, bool success, int)
+	void Callbacks::gotOIMSendConfirmation (MSN::NotificationServerConnection*, bool, int)
 	{
 	}
 
-	void Callbacks::gotOIMDeleteConfirmation (MSN::NotificationServerConnection*, bool success, std::string)
+	void Callbacks::gotOIMDeleteConfirmation (MSN::NotificationServerConnection*, bool, std::string)
 	{
 	}
 
