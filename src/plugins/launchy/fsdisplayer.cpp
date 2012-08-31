@@ -117,6 +117,7 @@ namespace Launchy
 
 		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
 		View_->rootContext ()->setContextProperty ("itemsModel", ItemsProxyModel_);
+		View_->rootContext ()->setContextProperty ("itemsModelFilter", ItemsProxyModel_);
 		View_->rootContext ()->setContextProperty ("catsModel", CatsModel_);
 		View_->setSource (QUrl ("qrc:/launchy/resources/qml/FSView.qml"));
 
