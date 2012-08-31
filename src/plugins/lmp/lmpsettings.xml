@@ -8,6 +8,9 @@
 		<item type="checkbox" property="UseNavTabBar" default="false">
 			<label value="Use tabs for switching pages" />
 		</item>
+		<item type="lineedit" property="SingleTrackDisplayMask" default="$artist - $album - $title">
+			<label value="Format for single tracks in playlist:" />
+		</item>
 	</page>
 	<page>
 		<label value="Behavior" />

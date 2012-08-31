@@ -240,6 +240,9 @@ namespace LMP
 				this, "setTransitionTime");
 		setTransitionTime ();
 
+		XmlSettingsManager::Instance ().RegisterObject ("SingleTrackDisplayMask",
+				this, "refillPlaylist");
+
 		connect (Source_,
 				SIGNAL (finished ()),
 				this,
@@ -538,17 +541,17 @@ namespace LMP
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
 		{
-			if (!info.Album_.isEmpty ())
-				item->setText (QString ("%1 - %2 - %3")
-							.arg (info.Artist_)
-							.arg (info.Album_)
-							.arg (info.Title_));
-			else if (!info.Artist_.isEmpty () && !info.Title_.isEmpty ())
-				item->setText (QString ("%1 - %2")
-							.arg (info.Artist_)
-							.arg (info.Title_));
-			else if (!info.Title_.isEmpty ())
-				item->setText (info.Title_);
+			auto text = XmlSettingsManager::Instance ()
+					.property ("SingleTrackDisplayMask").toString ();
+
+			text = PerformSubstitutions (text, info).simplified ();
+			text.remove ("- -");
+			if (text.startsWith ("- "))
+				text = text.mid (2);
+			if (text.endsWith (" -"))
+				text.chop (2);
+
+			item->setText (text);
 
 			item->setData (QVariant::fromValue (info), Player::Role::Info);
 		}
@@ -1023,6 +1026,11 @@ namespace LMP
 
 		FillItem (curItem, info);
 		emit songChanged (info);
+	}
+
+	void Player::refillPlaylist ()
+	{
+		ReplaceQueue (GetQueue (), false);
 	}
 
 	void Player::setTransitionTime ()
