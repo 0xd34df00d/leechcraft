@@ -152,6 +152,7 @@ namespace Xoox
 		int SocketErrorAccumulator_;
 		int KAInterval_;
 		int KATimeout_;
+		bool FileLogEnabled_;
 
 		QList<QXmppMessage> OfflineMsgQueue_;
 		QList<QPair<QString, PEPEventBase*>> InitialEventQueue_;
@@ -185,6 +186,8 @@ namespace Xoox
 
 		QPair<int, int> GetKAParams () const;
 		void SetKAParams (const QPair<int, int>&);
+
+		void SetFileLogging (bool);
 
 		void SetPassword (const QString&);
 

@@ -127,6 +127,7 @@ namespace Xoox
 	, SocketErrorAccumulator_ (0)
 	, KAInterval_ (90)
 	, KATimeout_ (30)
+	, FileLogEnabled_ (false)
 	{
 		SetOurJID (OurJID_);
 
@@ -409,6 +410,17 @@ namespace Xoox
 		}
 	}
 
+	void ClientConnection::SetFileLogging (bool fileLog)
+	{
+		FileLogEnabled_ = fileLog;
+
+		auto type = Client_->logger ()->loggingType ();
+		if (type == QXmppLogger::FileLogging && !fileLog)
+			Client_->logger ()->setLoggingType (QXmppLogger::NoLogging);
+		else if (type == QXmppLogger::NoLogging && fileLog)
+			Client_->logger ()->setLoggingType (QXmppLogger::FileLogging);
+	}
+
 	void ClientConnection::SetPassword (const QString& pwd)
 	{
 		Password_ = pwd;
@@ -580,7 +592,9 @@ namespace Xoox
 					SIGNAL (message (QXmppLogger::MessageType, const QString&)),
 					this,
 					SLOT (handleLog (QXmppLogger::MessageType, const QString&)));
-			Client_->logger ()->setLoggingType (QXmppLogger::FileLogging);
+			Client_->logger ()->setLoggingType (FileLogEnabled_ ?
+						QXmppLogger::FileLogging :
+						QXmppLogger::NoLogging);
 		}
 	}
 
@@ -850,7 +864,7 @@ namespace Xoox
 			QFile::remove (path);
 
 		QXmppLogger *logger = new QXmppLogger (Client_);
-		logger->setLoggingType (QXmppLogger::FileLogging);
+		logger->setLoggingType (QXmppLogger::NoLogging);
 		logger->setLogFilePath (path);
 		logger->setMessageTypes (QXmppLogger::AnyMessage);
 		Client_->setLogger (logger);
