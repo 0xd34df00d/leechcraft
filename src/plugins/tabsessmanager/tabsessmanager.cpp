@@ -121,7 +121,7 @@ namespace TabSessManager
 		return result;
 	}
 
-	bool Plugin::eventFilter (QObject *obj, QEvent *e)
+	bool Plugin::eventFilter (QObject*, QEvent *e)
 	{
 		if (e->type () != QEvent::DynamicPropertyChange)
 			return false;
