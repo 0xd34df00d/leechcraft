@@ -52,7 +52,7 @@ Rectangle {
                 height: 30
                 radius: 5
 
-                color: (index != catsView.currentIndex && categoryMouseArea.containsMouse) ? "#aa000000" : "#00000000"
+                color: (!ListView.isCurrentItem && categoryMouseArea.containsMouse) ? "#aa000000" : "#00000000"
                 Behavior on color { PropertyAnimation {} }
 
                 Image {
@@ -87,6 +87,7 @@ Rectangle {
                     onClicked: {
                         appsFilterInput.text = "";
                         rootRect.categorySelected(index);
+                        catsView.currentIndex = index
                     }
                 }
             }
