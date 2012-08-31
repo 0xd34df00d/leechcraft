@@ -29,7 +29,7 @@ namespace Poshuku
 {
 namespace Pogooglue
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("poshuku_pogooglue");
 	}
