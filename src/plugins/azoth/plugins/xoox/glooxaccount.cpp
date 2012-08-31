@@ -72,6 +72,7 @@ namespace Xoox
 	, ParentProtocol_ (qobject_cast<GlooxProtocol*> (parent))
 	, Port_ (-1)
 	, KAParams_ (qMakePair (90, 60))
+	, FileLogEnabled_ (false)
 	, SelfVCardAction_ (new QAction (tr ("Self VCard..."), this))
 	, PrivacyDialogAction_ (new QAction (tr ("Privacy lists..."), this))
 	{
@@ -106,6 +107,7 @@ namespace Xoox
 			ClientConnection_->SetOurPhotoHash (OurPhotoHash_);
 
 		ClientConnection_->SetKAParams (KAParams_);
+		ClientConnection_->SetFileLogging (FileLogEnabled_);
 
 		TransferManager_.reset (new TransferManager (ClientConnection_->
 						GetTransferManager (),
@@ -267,6 +269,8 @@ namespace Xoox
 		dia->W ()->SetKAInterval (KAParams_.first);
 		dia->W ()->SetKATimeout (KAParams_.second);
 
+		dia->W ()->SetFileLogEnabled (FileLogEnabled_);
+
 		if (dia->exec () == QDialog::Rejected)
 			return;
 
@@ -285,15 +289,19 @@ namespace Xoox
 			 Port_ != w->GetPort ()))
 			ChangeState (EntryStatus (SOffline, AccState_.Status_));
 
-		if (ClientConnection_)
-			ClientConnection_->SetOurJID (w->GetJID () + "/" + w->GetResource ());
-
 		JID_ = w->GetJID ();
 		Nick_ = w->GetNick ();
 		Resource_ = w->GetResource ();
 		AccState_.Priority_ = w->GetPriority ();
 		Host_ = w->GetHost ();
 		Port_ = w->GetPort ();
+		FileLogEnabled_ = w->GetFileLogEnabled ();
+
+		if (ClientConnection_)
+		{
+			ClientConnection_->SetOurJID (w->GetJID () + "/" + w->GetResource ());
+			ClientConnection_->SetFileLogging (FileLogEnabled_);
+		}
 
 		RegenAccountIcon ();
 
@@ -763,7 +771,7 @@ namespace Xoox
 
 	QByteArray GlooxAccount::Serialize () const
 	{
-		quint16 version = 4;
+		quint16 version = 5;
 
 		QByteArray result;
 		{
@@ -777,7 +785,8 @@ namespace Xoox
 				<< Host_
 				<< Port_
 				<< KAParams_
-				<< OurPhotoHash_;
+				<< OurPhotoHash_
+				<< FileLogEnabled_;
 		}
 
 		return result;
@@ -790,7 +799,7 @@ namespace Xoox
 		QDataStream in (data);
 		in >> version;
 
-		if (version < 1 || version > 4)
+		if (version < 1 || version > 5)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -812,6 +821,8 @@ namespace Xoox
 			in >> result->KAParams_;
 		if (version >= 4)
 			in >> result->OurPhotoHash_;
+		if (version >= 5)
+			in >> result->FileLogEnabled_;
 		result->Init ();
 
 		return result;
