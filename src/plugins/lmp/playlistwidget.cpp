@@ -28,6 +28,7 @@
 #include <QMessageBox>
 #include <QClipboard>
 #include <QApplication>
+#include <QKeyEvent>
 #include <util/util.h>
 #include "player.h"
 #include "playlistdelegate.h"
@@ -43,6 +44,37 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		class PlaylistTreeEventFilter : public QObject
+		{
+			Player *Player_;
+			QTreeView *View_;
+		public:
+			PlaylistTreeEventFilter (Player* player, QTreeView *view, QObject *parent = 0)
+			: QObject (parent)
+			, Player_ (player)
+			, View_ (view)
+			{
+			}
+
+			bool eventFilter (QObject*, QEvent *e)
+			{
+				if (e->type () != QEvent::KeyRelease)
+					return false;
+
+				const auto key = static_cast<QKeyEvent*> (e)->key ();
+				if (key == Qt::Key_Enter || key == Qt::Key_Return || key == Qt::Key_Space)
+				{
+					Player_->play (View_->currentIndex ());
+					return true;
+				}
+
+				return false;
+			}
+		};
+	}
+
 	PlaylistWidget::PlaylistWidget (QWidget *parent)
 	: QWidget (parent)
 	, PlaylistToolbar_ (new QToolBar ())
@@ -70,6 +102,8 @@ namespace LMP
 
 		Ui_.Playlist_->setModel (Player_->GetPlaylistModel ());
 		Ui_.Playlist_->expandAll ();
+
+		Ui_.Playlist_->installEventFilter (new PlaylistTreeEventFilter (Player_, Ui_.Playlist_));
 
 		connect (Ui_.Playlist_,
 				SIGNAL (doubleClicked (QModelIndex)),
