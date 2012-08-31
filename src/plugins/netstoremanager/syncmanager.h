@@ -22,6 +22,7 @@
 #include <QVariant>
 #include <QStringList>
 #include <QFileSystemWatcher>
+#include <QPointer>
 
 class QTimer;
 class QThread;
@@ -30,6 +31,7 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
+	class FilesWatcher;
 	class IStorageAccount;
 	class AccountsManager;
 
@@ -38,11 +40,11 @@ namespace NetStoreManager
 		Q_OBJECT
 
 		AccountsManager *AM_;
-		QFileSystemWatcher *FileSystemWatcher_;
 		QMap<QString, IStorageAccount*> Path2Account_;
 		QTimer *Timer_;
-		QStringList WatchedPathes_;
+
 		QThread *WatcherThread_;
+		FilesWatcher *FilesWatcher_;
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
 
@@ -52,8 +54,6 @@ namespace NetStoreManager
 	public slots:
 		void handleDirectoryAdded (const QVariantMap& dirs);
 	private slots:
-		void handleDirectoryChanged (const QString& path);
-		void handleFileChanged (const QString& path);
 		void handleTimeout ();
 	};
 }
