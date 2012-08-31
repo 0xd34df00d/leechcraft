@@ -93,8 +93,8 @@ namespace Seen
 		{
 			0,
 			0,
-			size.width (),
-			size.height ()
+			static_cast<unsigned int> (size.width ()),
+			static_cast<unsigned int> (size.height ())
 		};
 
 		QImage img (size, QImage::Format_RGB32);
