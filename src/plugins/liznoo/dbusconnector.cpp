@@ -81,7 +81,7 @@ namespace Liznoo
 
 			qWarning () << Q_FUNC_INFO
 					<< "unknown state";
-			return QString ();
+			return "";
 		};
 
 		face.call (QDBus::NoBlock, st2meth (state));
