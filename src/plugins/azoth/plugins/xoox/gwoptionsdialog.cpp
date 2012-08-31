@@ -27,7 +27,7 @@ namespace Azoth
 {
 namespace Xoox
 {
-	GWOptionsDialog::GWOptionsDialog (QXmppClient *client, QWidget *parent)
+	GWOptionsDialog::GWOptionsDialog (QXmppClient *client, const QString& to, QWidget *parent)
 	: QDialog (parent)
 	, RegForm_ (new RegFormHandlerWidget (client))
 	{
@@ -48,7 +48,7 @@ namespace Xoox
 				this,
 				SLOT (sendRegistration ()));
 
-		RegForm_->SendRequest ();
+		RegForm_->SendRequest (to);
 	}
 
 	void GWOptionsDialog::sendRegistration ()
