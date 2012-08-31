@@ -112,6 +112,8 @@ namespace Seen
 			case DDJVU_REDISPLAY:
 				DocMgr_->RedrawPage (msg->m_any.document, msg->m_any.page);
 				break;
+			default:
+				break;
 			}
 
 			ddjvu_message_pop (Context_);
