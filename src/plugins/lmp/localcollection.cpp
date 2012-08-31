@@ -621,7 +621,6 @@ namespace LMP
 	{
 		sender ()->deleteLater ();
 
-		const bool root = sender ()->property ("IsRoot").toBool ();
 		const auto& path = sender ()->property ("Path").toString ();
 
 		auto watcher = dynamic_cast<QFutureWatcher<QStringList>*> (sender ());
