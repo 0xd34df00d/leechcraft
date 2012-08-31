@@ -27,7 +27,7 @@ namespace LeechCraft
 {
 namespace Nacheku
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		XSD_.reset (new Util::XmlSettingsDialog ());
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "nachekusettings.xml");
