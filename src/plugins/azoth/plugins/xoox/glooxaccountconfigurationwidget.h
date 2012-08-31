@@ -56,6 +56,9 @@ namespace Xoox
 		int GetKATimeout () const;
 		void SetKATimeout (int);
 
+		bool GetFileLogEnabled () const;
+		void SetFileLogEnabled (bool);
+
 		QString GetPassword () const;
 	private slots:
 		void on_UpdatePassword__released ();
