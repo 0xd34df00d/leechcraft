@@ -32,6 +32,10 @@ namespace Xoox
 	class EntryBase;
 	class GlooxAccount;
 
+	typedef QList<QXmppVCardPhone> QXmppVCardPhoneList;
+	typedef QList<QXmppVCardEmail> QXmppVCardEmailList;
+	typedef QList<QXmppVCardAddress> QXmppVCardAddressList;
+
 	class VCardDialog : public QDialog
 	{
 		Q_OBJECT

@@ -212,7 +212,7 @@ namespace Xoox
 			vm.clientName (),
 			vm.clientVersion ()
 		};
-		DiscoveryManager_->setInfoForm (XEP0232Handler::ToDataForm (si));
+		DiscoveryManager_->setClientInfoForm (XEP0232Handler::ToDataForm (si));
 
 		connect (Client_,
 				SIGNAL (connected ()),
