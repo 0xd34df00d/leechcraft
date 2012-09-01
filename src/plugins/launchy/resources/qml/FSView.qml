@@ -132,8 +132,8 @@ Rectangle {
         anchors.right: parent.right
         anchors.margins: 5
 
-        cellWidth: 192
-        cellHeight: 160
+        cellWidth: 160
+        cellHeight: 128
 
         model: itemsModel
 
@@ -148,8 +148,8 @@ Rectangle {
             Behavior on color { PropertyAnimation {} }
 
             Image {
-                width: 96
-                height: 96
+                width: 64
+                height: 64
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: 16
