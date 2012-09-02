@@ -1,8 +1,13 @@
 import QtQuick 1.0
 import Effects 1.0
+import "."
 
 Rectangle {
     id: rootRect
+
+    signal attendSure(int id)
+    signal attendMaybe(int id)
+    signal unattend(int id)
 
     gradient: Gradient {
         GradientStop {
@@ -63,7 +68,7 @@ Rectangle {
         effect: Blur {
             id: eventsViewBlur
             blurRadius: 0.0
-            blurHints: Blur.Quality
+            blurHints: Blur.QualityHint
         }
 
         model: eventsModel
@@ -203,6 +208,45 @@ Rectangle {
                     anchors.topMargin: 0
                     anchors.right: parent.right
                     font.pointSize: 8
+                }
+
+                TextButton {
+                    id: attendMaybe
+                    anchors.top: parent.top
+                    anchors.topMargin: 2
+                    anchors.right: parent.right
+                    anchors.rightMargin: 2
+                    visible: !isAttended
+
+                    text: "Sure!"
+
+                    onClicked: rootRect.attendSure(eventID)
+                }
+
+                TextButton {
+                    id: attendSure
+                    anchors.top: parent.top
+                    anchors.topMargin: 2
+                    anchors.right: attendMaybe.left
+                    anchors.rightMargin: 2
+                    visible: !isAttended
+
+                    text: "Maybe…"
+
+                    onClicked: rootRect.unattendMaybe(eventID)
+                }
+
+                TextButton {
+                    id: unAttend
+                    anchors.top: parent.top
+                    anchors.topMargin: 2
+                    anchors.right: parent.right
+                    anchors.rightMargin: 2
+                    visible: isAttended
+
+                    text: "I won't go"
+
+                    onClicked: rootRect.unattend(eventID)
                 }
             }
         }
