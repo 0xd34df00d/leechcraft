@@ -18,7 +18,9 @@
 
 #include "eventswidget.h"
 #include <QStandardItemModel>
+#include <QGraphicsObject>
 #include <QDeclarativeContext>
+#include <QtDebug>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/ieventsprovider.h>
 #include "core.h"
@@ -96,6 +98,19 @@ namespace LMP
 		}
 
 		Ui_.Provider_->setCurrentIndex (-1);
+
+		connect (Ui_.View_->rootObject (),
+				SIGNAL (attendSure (int)),
+				this,
+				SLOT (handleAttendSure (int)));
+		connect (Ui_.View_->rootObject (),
+				SIGNAL (attendMaybe (int)),
+				this,
+				SLOT (handleAttendMaybe (int)));
+		connect (Ui_.View_->rootObject (),
+				SIGNAL (unattend (int)),
+				this,
+				SLOT (handleUnattend (int)));
 	}
 
 	void EventsWidget::on_Provider__activated (int index)
@@ -146,6 +161,30 @@ namespace LMP
 
 			Model_->appendRow (item);
 		}
+	}
+
+	void EventsWidget::handleAttendSure (int id)
+	{
+		auto prov = Providers_.value (Ui_.Provider_->currentIndex ());
+		if (!prov)
+			return;
+		prov->AttendEvent (id, Media::EventAttendType::Surely);
+	}
+
+	void EventsWidget::handleAttendMaybe (int id)
+	{
+		auto prov = Providers_.value (Ui_.Provider_->currentIndex ());
+		if (!prov)
+			return;
+		prov->AttendEvent (id, Media::EventAttendType::Maybe);
+	}
+
+	void EventsWidget::handleUnattend (int id)
+	{
+		auto prov = Providers_.value (Ui_.Provider_->currentIndex ());
+		if (!prov)
+			return;
+		prov->AttendEvent (id, Media::EventAttendType::None);
 	}
 }
 }
