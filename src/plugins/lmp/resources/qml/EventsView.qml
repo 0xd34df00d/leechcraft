@@ -63,6 +63,7 @@ Rectangle {
         effect: Blur {
             id: eventsViewBlur
             blurRadius: 0.0
+            blurHints: Blur.Quality
         }
 
         model: eventsModel
@@ -96,6 +97,15 @@ Rectangle {
                 border.width: 1
                 border.color: "#000000"
                 smooth: true
+
+                Rectangle {
+                    id: fillRect
+                    radius: parent.radius
+                    anchors.fill: parent
+                    color: "#aa000000"
+                    visible: isAttended
+                    z: 5
+                }
 
                 Image {
                     id: eventImageThumb
