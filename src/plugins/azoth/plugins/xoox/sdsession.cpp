@@ -87,9 +87,11 @@ namespace Xoox
 
 		QPointer<SDSession> ptr (this);
 		Account_->GetClientConnection ()->RequestInfo (query,
-				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleInfo (iq); });
+				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleInfo (iq); },
+				true);
 		Account_->GetClientConnection ()->RequestItems (query,
-				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleItems (iq); });
+				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleItems (iq); },
+				true);
 	}
 
 	QString SDSession::GetQuery () const
@@ -331,6 +333,7 @@ namespace Xoox
 
 			Account_->GetClientConnection ()->RequestInfo (item.jid (),
 					[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleInfo (iq); },
+					true,
 					item.node ());
 		}
 	}
@@ -344,6 +347,7 @@ namespace Xoox
 		const QString& node = item->data (DRNode).toString ();
 		Account_->GetClientConnection ()->RequestItems (jid,
 				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleItems (iq); },
+				true,
 				node);
 	}
 
@@ -357,7 +361,8 @@ namespace Xoox
 		dia->show ();
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		Account_->GetClientConnection ()->FetchVCard (jid,
-				[dia] (const QXmppVCardIq& iq) { if (dia) dia->UpdateInfo (iq); });
+				[dia] (const QXmppVCardIq& iq) { if (dia) dia->UpdateInfo (iq); },
+				true);
 	}
 
 	void SDSession::AddToRoster (const SDSession::ItemInfo& info)

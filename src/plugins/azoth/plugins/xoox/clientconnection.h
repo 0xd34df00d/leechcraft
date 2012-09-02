@@ -163,6 +163,8 @@ namespace Xoox
 		QHash<QString, QString> EncryptedMessages_;
 		QSet<QString> Entries2Crypt_;
 
+		QSet<QString> WhitelistedErrors_;
+
 		QHash<QString, QList<RIEXManager::Item>> AwaitingRIEXItems_;
 	public:
 		typedef std::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
@@ -231,8 +233,8 @@ namespace Xoox
 
 		void RequestInfo (const QString&) const;
 
-		void RequestInfo (const QString&, DiscoCallback_t, const QString& = "");
-		void RequestItems (const QString&, DiscoCallback_t, const QString& = "");
+		void RequestInfo (const QString&, DiscoCallback_t, bool reportErrors = false, const QString& = "");
+		void RequestItems (const QString&, DiscoCallback_t, bool reportErrors = false, const QString& = "");
 
 		void Update (const QXmppRosterIq::Item&);
 		void Update (const QXmppMucItem&, const QString& room);
@@ -247,6 +249,8 @@ namespace Xoox
 		void RevokeSubscription (const QString&, const QString&);
 		void Remove (GlooxCLEntry*);
 
+		void WhitelistError (const QString&);
+
 		void SendPacketWCallback (const QXmppIq&, QObject*, const QByteArray&);
 		void SendMessage (GlooxMessage*);
 		QXmppClient* GetClient () const;
@@ -254,9 +258,9 @@ namespace Xoox
 		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
 		GlooxCLEntry* AddODSCLEntry (OfflineDataSource_ptr);
 		QList<QObject*> GetCLEntries () const;
-		void FetchVCard (const QString&);
-		void FetchVCard (const QString&, VCardCallback_t);
-		void FetchVersion (const QString&);
+		void FetchVCard (const QString&, bool reportErrors = false);
+		void FetchVCard (const QString&, VCardCallback_t, bool reportErrors = false);
+		void FetchVersion (const QString&, bool reportErrors = false);
 		QXmppBookmarkSet GetBookmarks () const;
 		void SetBookmarks (const QXmppBookmarkSet&);
 		GlooxMessage* CreateMessage (IMessage::MessageType,

@@ -118,11 +118,26 @@ namespace Xoox
 	, CapsManager_ (new CapsManager (this))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
-	, VCardQueue_ (new FetchQueue ([this] (QString str) { Client_->vCardManager ().requestVCard (str); },
+	, VCardQueue_ (new FetchQueue ([this] (QString str, bool report)
+				{
+					const auto& id = Client_->vCardManager ().requestVCard (str);
+					if (report && !id.isEmpty ())
+						WhitelistedErrors_ << id;
+				},
 				jid.contains ("gmail.com") ? 1700 : 300, 1, this))
-	, CapsQueue_ (new FetchQueue ([this] (QString str) { DiscoveryManager_->requestInfo (str, ""); },
+	, CapsQueue_ (new FetchQueue ([this] (QString str, bool report)
+				{
+					const auto& id = DiscoveryManager_->requestInfo (str, "");
+					if (report && !id.isEmpty ())
+						WhitelistedErrors_ << id;
+				},
 				jid.contains ("gmail.com") ? 1000 : 200, 1, this))
-	, VersionQueue_ (new FetchQueue ([this] (QString str) { Client_->versionManager ().requestVersion (str); },
+	, VersionQueue_ (new FetchQueue ([this] (QString str, bool report)
+				{
+					const auto& id = Client_->versionManager ().requestVersion (str);
+					if (report && !id.isEmpty ())
+						WhitelistedErrors_ << id;
+				},
 				jid.contains ("gmail.com") ? 1200 : 250, 1, this))
 	, SocketErrorAccumulator_ (0)
 	, KAInterval_ (90)
@@ -608,19 +623,23 @@ namespace Xoox
 	}
 
 	void ClientConnection::RequestInfo (const QString& jid,
-			DiscoCallback_t callback, const QString& node)
+			DiscoCallback_t callback, bool report, const QString& node)
 	{
 		AwaitingDiscoInfo_ [jid] = callback;
 
-		DiscoveryManager_->requestInfo (jid, node);
+		const auto& id = DiscoveryManager_->requestInfo (jid, node);
+		if (report && !id.isEmpty ())
+			WhitelistedErrors_ << id;
 	}
 
 	void ClientConnection::RequestItems (const QString& jid,
-			DiscoCallback_t callback, const QString& node)
+			DiscoCallback_t callback, bool report, const QString& node)
 	{
 		AwaitingDiscoItems_ [jid] = callback;
 
-		DiscoveryManager_->requestItems (jid, node);
+		const auto& id = DiscoveryManager_->requestItems (jid, node);
+		if (report && !id.isEmpty ())
+			WhitelistedErrors_ << id;
 	}
 
 	void ClientConnection::Update (const QXmppRosterIq::Item& item)
@@ -713,6 +732,11 @@ namespace Xoox
 
 		if (ODSEntries_.contains (jid))
 			delete ODSEntries_.take (jid);
+	}
+
+	void ClientConnection::WhitelistError (const QString& id)
+	{
+		WhitelistedErrors_ << id;
 	}
 
 	void ClientConnection::SendPacketWCallback (const QXmppIq& packet,
@@ -810,18 +834,18 @@ namespace Xoox
 		return result;
 	}
 
-	void ClientConnection::FetchVCard (const QString& jid)
+	void ClientConnection::FetchVCard (const QString& jid, bool reportErrors)
 	{
 		ScheduleFetchVCard (jid);
 	}
 
-	void ClientConnection::FetchVCard (const QString& jid, VCardCallback_t callback)
+	void ClientConnection::FetchVCard (const QString& jid, VCardCallback_t callback, bool reportErrors)
 	{
 		VCardFetchCallbacks_ [jid] << callback;
 		ScheduleFetchVCard (jid);
 	}
 
-	void ClientConnection::FetchVersion (const QString& jid)
+	void ClientConnection::FetchVersion (const QString& jid, bool reportErrors)
 	{
 		VersionQueue_->Schedule (jid);
 	}
@@ -991,6 +1015,10 @@ namespace Xoox
 		case QXmppStanza::Error::Auth:
 		case QXmppStanza::Error::Wait:
 			HandleError (iq);
+			break;
+		default:
+			WhitelistedErrors_.remove (iq.id ());
+			break;
 		}
 		InvokeCallbacks (iq);
 	}
@@ -1472,12 +1500,17 @@ namespace Xoox
 	void ClientConnection::HandleError (const QXmppIq& iq)
 	{
 		const QXmppStanza::Error& error = iq.error ();
-		if (error.condition () == QXmppStanza::Error::FeatureNotImplemented ||
-				error.condition () == QXmppStanza::Error::ItemNotFound)
-		{
-			// Whatever it is, it just keeps appearing, hz.
-			return;
-		}
+		if (!WhitelistedErrors_.remove (iq.id ()))
+			switch (error.condition ())
+			{
+			case QXmppStanza::Error::FeatureNotImplemented:
+			case QXmppStanza::Error::ItemNotFound:
+			case QXmppStanza::Error::ServiceUnavailable:
+				return;
+			default:
+				break;
+			}
+
 		QString typeText;
 		if (!iq.from ().isEmpty ())
 			typeText = tr ("Error from %1: ")
