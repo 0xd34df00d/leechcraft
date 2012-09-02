@@ -9,7 +9,7 @@ Rectangle {
 
 	width: label.width + 20; height: label.height + 6
 	smooth: true
-	radius: 10
+    radius: 4
 
 	gradient: Gradient {
 		GradientStop { id: gradientStop; position: 0.0; color: palette.light }
@@ -27,6 +27,7 @@ Rectangle {
 	Text {
 		id: label
 		anchors.centerIn: parent
+        color: palette.buttonText
 	}
 
 	states: State {
