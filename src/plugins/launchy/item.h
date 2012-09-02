@@ -43,6 +43,8 @@ namespace Launchy
 
 		QString IconName_;
 		QIcon Icon_;
+
+		bool IsHidden_;
 	public:
 		enum class Type
 		{
@@ -57,6 +59,8 @@ namespace Launchy
 		bool operator== (const Item&) const;
 
 		bool IsValid () const;
+
+		bool IsHidden () const;
 
 		QString GetName (const QString&) const;
 		QString GetGenericName (const QString&) const;

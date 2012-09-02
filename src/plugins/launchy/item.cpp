@@ -27,7 +27,8 @@ namespace Launchy
 {
 	bool Item::operator== (const Item& item) const
 	{
-		return Name_ == item.Name_ &&
+		return IsHidden_ == item.IsHidden_ &&
+				Name_ == item.Name_ &&
 				GenericName_ == item.GenericName_ &&
 				Comments_ == item.Comments_ &&
 				Categories_ == item.Categories_ &&
@@ -39,6 +40,11 @@ namespace Launchy
 	bool Item::IsValid () const
 	{
 		return !Name_.isEmpty ();
+	}
+
+	bool Item::IsHidden () const
+	{
+		return IsHidden_;
 	}
 
 	namespace
@@ -108,6 +114,7 @@ namespace Launchy
 				<< "\n\tCommand: " << Command_
 				<< "\n\tWorkingDir: " << WD_
 				<< "\n\tIconName: " << IconName_
+				<< "\n\tHidden: " << IsHidden_
 				<< "\n}\n";
 		return dbg.space ();
 	}
@@ -159,6 +166,8 @@ namespace Launchy
 			item->Type_ = Type::Dir;
 		else
 			item->Type_ = Type::Other;
+
+		item->IsHidden_ = getSingle ("NoDisplay").toLower () == "true";
 
 		return item;
 	}
