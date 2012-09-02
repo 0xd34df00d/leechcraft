@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import Effects 1.0
 
 Rectangle {
     id: rootRect
@@ -33,15 +34,18 @@ Rectangle {
             State {
                 name: "hidden"
                 PropertyChanges { target: fullSizeEventImg; opacity: 0 }
+                PropertyChanges { target: eventsViewBlur; blurRadius: 0 }
             },
             State {
                 name: "visible"
                 PropertyChanges { target: fullSizeEventImg; opacity: 1 }
+                PropertyChanges { target: eventsViewBlur; blurRadius: 10 }
             }
         ]
 
         transitions: Transition {
             PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+            PropertyAnimation { target: eventsViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
         }
 
         MouseArea {
@@ -55,6 +59,11 @@ Rectangle {
     ListView {
         anchors.fill: parent
         id: eventsView
+
+        effect: Blur {
+            id: eventsViewBlur
+            blurRadius: 0.0
+        }
 
         model: eventsModel
         delegate: Item {
