@@ -34,7 +34,8 @@ namespace LMP
 		public:
 			enum Role
 			{
-				EventName = Qt::UserRole + 1,
+				EventID = Qt::UserRole + 1,
+				EventName,
 				ImageThumbURL,
 				ImageBigURL,
 				Tags,
@@ -42,13 +43,16 @@ namespace LMP
 				City,
 				Place,
 				Headliner,
-				OtherArtists
+				OtherArtists,
+				CanBeAttended,
+				IsAttended
 			};
 
 			EventsModel (QObject *parent = 0)
 			: QStandardItemModel (parent)
 			{
 				QHash<int, QByteArray> names;
+				names [EventID] = "eventID";
 				names [EventName] = "eventName";
 				names [ImageThumbURL] = "eventImageThumbURL";
 				names [ImageBigURL] = "eventImageBigURL";
@@ -58,6 +62,8 @@ namespace LMP
 				names [Place] = "eventPlace";
 				names [Headliner] = "eventHeadliner";
 				names [OtherArtists] = "eventArtists";
+				names [CanBeAttended] = "canBeAttended";
+				names [IsAttended] = "isAttended";
 				setRoleNames (names);
 			}
 		};
@@ -114,6 +120,7 @@ namespace LMP
 			Media::EventInfo event (event_t);
 
 			auto item = new QStandardItem;
+			item->setData (event.ID_, EventsModel::Role::EventID);
 			item->setData (event.Name_, EventsModel::Role::EventName);
 			item->setData (event.SmallImage_, EventsModel::Role::ImageThumbURL);
 			item->setData (event.BigImage_, EventsModel::Role::ImageBigURL);
@@ -123,7 +130,8 @@ namespace LMP
 			item->setData (event.City_, EventsModel::Role::City);
 
 			if (!event.Headliner_.isEmpty ())
-				item->setData (tr ("Headliner: %1").arg (event.Headliner_), EventsModel::Role::Headliner);
+				item->setData (tr ("Headliner: %1").arg (event.Headliner_),
+						EventsModel::Role::Headliner);
 
 			auto otherArtists = event.Artists_;
 			otherArtists.removeAll (event.Headliner_);
@@ -131,6 +139,10 @@ namespace LMP
 						QString () :
 						tr ("Other artists: %1").arg (otherArtists.join ("; ")),
 					EventsModel::Role::OtherArtists);
+
+			item->setData (event.CanBeAttended_, EventsModel::Role::CanBeAttended);
+			item->setData (event.AttendType_ != Media::EventAttendType::None,
+					EventsModel::Role::IsAttended);
 
 			Model_->appendRow (item);
 		}
