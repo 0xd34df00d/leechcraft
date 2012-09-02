@@ -34,6 +34,7 @@ SET (SRCS
 	pendingartistbio.cpp
 	receventsfetcher.cpp
 	eventsfetchaggregator.cpp
+	eventattendmarker.cpp
 	)
 SET (HEADERS
 	lastfmsubmitter.h
@@ -51,6 +52,7 @@ SET (HEADERS
 	pendingartistbio.h
 	receventsfetcher.h
 	eventsfetchaggregator.h
+	eventattendmarker.h
 	)
 SET (RESOURCES lastfmscrobbleresources.qrc)
 IF (NOT LC_NO_MOC)
