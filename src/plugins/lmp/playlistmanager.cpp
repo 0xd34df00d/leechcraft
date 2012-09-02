@@ -143,6 +143,17 @@ namespace LMP
 		Model_->appendRow (root);
 	}
 
+	bool PlaylistManager::CanDeletePlaylist (const QModelIndex& index) const
+	{
+		return index.data (Roles::PlaylistType).toInt () == PlaylistTypes::Static;
+	}
+
+	void PlaylistManager::DeletePlaylist (const QModelIndex& index)
+	{
+		if (index.data (Roles::PlaylistType).toInt () == PlaylistTypes::Static)
+			Static_->DeleteCustomPlaylist (index.data ().toString ());
+	}
+
 	QList<Phonon::MediaSource> PlaylistManager::GetSources (const QModelIndex& index) const
 	{
 		auto col = Core::Instance ().GetLocalCollection ();
