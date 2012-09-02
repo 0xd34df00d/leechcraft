@@ -53,6 +53,8 @@ namespace Launchy
 	private:
 		Type Type_;
 	public:
+		bool operator== (const Item&) const;
+
 		bool IsValid () const;
 
 		QString GetName (const QString&) const;

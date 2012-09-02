@@ -25,6 +25,17 @@ namespace LeechCraft
 {
 namespace Launchy
 {
+	bool Item::operator== (const Item& item) const
+	{
+		return Name_ == item.Name_ &&
+				GenericName_ == item.GenericName_ &&
+				Comments_ == item.Comments_ &&
+				Categories_ == item.Categories_ &&
+				Command_ == item.Command_ &&
+				WD_ == item.WD_ &&
+				IconName_ == item.IconName_;
+	}
+
 	bool Item::IsValid () const
 	{
 		return !Name_.isEmpty ();
