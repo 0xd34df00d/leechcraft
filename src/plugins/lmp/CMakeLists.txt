@@ -77,6 +77,7 @@ SET (SRCS
 	collectionsortermodel.cpp
 	collectionstatsdialog.cpp
 	eventswidget.cpp
+	plmanagerwidget.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
@@ -106,6 +107,7 @@ SET (FORMS
 	playlistwidget.ui
 	collectionstatsdialog.ui
 	eventswidget.ui
+	plmanagerwidget.ui
 	sync/cloudwidget.ui
 	sync/devicesbrowserwidget.ui
 	sync/transcodingparamswidget.ui

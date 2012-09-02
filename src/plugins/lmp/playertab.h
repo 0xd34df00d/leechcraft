@@ -101,7 +101,6 @@ namespace LMP
 		void SetupNavButtons ();
 		void SetupToolbar ();
 		void SetupCollection ();
-		void SetupPlaylistsTab ();
 		void SetNowPlaying (const MediaInfo&, const QPixmap&);
 		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
@@ -117,7 +116,6 @@ namespace LMP
 		void handleGotLyrics (const Media::LyricsQuery&, const QStringList&);
 
 		void handleScanProgress (int);
-		void handlePlaylistSelected (const QModelIndex&);
 		void showCollectionTrackProps ();
 		void handleCollectionRemove ();
 		void handleCollectionDelete ();
