@@ -112,7 +112,6 @@ SET (SRCS
 	chatstyleoptionmanager.cpp
 	microblogstab.cpp
 	riexhandler.cpp
-	clearlineeditaddon.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -162,7 +161,6 @@ SET (HEADERS
 	chatstyleoptionmanager.h
 	microblogstab.h
 	riexhandler.h
-	clearlineeditaddon.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	)

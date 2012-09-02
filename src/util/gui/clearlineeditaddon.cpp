@@ -24,7 +24,7 @@
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Util
 {
 	ClearLineEditAddon::ClearLineEditAddon (ICoreProxy_ptr proxy, QLineEdit *edit)
 	: QObject (edit)

@@ -20,15 +20,16 @@
 
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
+#include "utilconfig.h"
 
 class QLineEdit;
 class QToolButton;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Util
 {
-	class ClearLineEditAddon : public QObject
+	class UTIL_API ClearLineEditAddon : public QObject
 	{
 		Q_OBJECT
 
