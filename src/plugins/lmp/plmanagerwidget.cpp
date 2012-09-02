@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "plmanagerwidget.h"
+#include <QMenu>
 #include "core.h"
 #include "playlistmanager.h"
 #include "player.h"
@@ -28,6 +29,7 @@ namespace LMP
 	PLManagerWidget::PLManagerWidget (QWidget *parent)
 	: QWidget (parent)
 	, Player_ (0)
+	, DeletePlaylistAction_ (new QAction (tr ("Delete playlist"), this))
 	{
 		Ui_.setupUi (this);
 
@@ -39,11 +41,39 @@ namespace LMP
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,
 				SLOT (handlePlaylistSelected (QModelIndex)));
+
+		DeletePlaylistAction_->setProperty ("ActionIcon", "list-remove");
+		connect (DeletePlaylistAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleDeleteSelected ()));
 	}
 
 	void PLManagerWidget::SetPlayer (Player *player)
 	{
 		Player_ = player;
+	}
+
+	void PLManagerWidget::on_PlaylistsTree__customContextMenuRequested (const QPoint& pos)
+	{
+		const auto& idx = Ui_.PlaylistsTree_->indexAt (pos);
+		if (!idx.isValid ())
+			return;
+
+		auto mgr = Core::Instance ().GetPlaylistManager ();
+		if (!mgr->CanDeletePlaylist (idx))
+			return;
+
+		auto menu = new QMenu (Ui_.PlaylistsTree_);
+		menu->addAction (DeletePlaylistAction_);
+		menu->setAttribute (Qt::WA_DeleteOnClose);
+		menu->exec (Ui_.PlaylistsTree_->viewport ()->mapToGlobal (pos));
+	}
+
+	void PLManagerWidget::handleDeleteSelected ()
+	{
+		auto mgr = Core::Instance ().GetPlaylistManager ();
+		mgr->DeletePlaylist (Ui_.PlaylistsTree_->currentIndex ());
 	}
 
 	void PLManagerWidget::handlePlaylistSelected (const QModelIndex& index)

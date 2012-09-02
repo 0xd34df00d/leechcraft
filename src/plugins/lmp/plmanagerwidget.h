@@ -33,11 +33,15 @@ namespace LMP
 
 		Ui::PLManagerWidget Ui_;
 		Player *Player_;
+
+		QAction *DeletePlaylistAction_;
 	public:
 		PLManagerWidget (QWidget* = 0);
 
 		void SetPlayer (Player*);
 	private slots:
+		void on_PlaylistsTree__customContextMenuRequested (const QPoint&);
+		void handleDeleteSelected ();
 		void handlePlaylistSelected (const QModelIndex&);
 	};
 }
