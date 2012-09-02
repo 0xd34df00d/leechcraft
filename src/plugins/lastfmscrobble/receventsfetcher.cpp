@@ -162,6 +162,7 @@ namespace Lastfmscrobble
 
 			Media::EventInfo info =
 			{
+				eventElem.firstChildElement ("id").text ().toInt (),
 				eventElem.firstChildElement ("title").text (),
 				QString (),
 				QLocale ("en_US").toDateTime (eventElem.firstChildElement ("startDate").text (),

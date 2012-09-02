@@ -25,8 +25,17 @@
 
 namespace Media
 {
+	enum class EventAttendType
+	{
+		None,
+		Maybe,
+		Surely
+	};
+
 	struct EventInfo
 	{
+		qint64 ID_;
+
 		QString Name_;
 		QString Description_;
 		QDateTime Date_;
@@ -47,6 +56,9 @@ namespace Media
 		double Longitude_;
 		QString City_;
 		QString Address_;
+
+		bool CanBeAttended_;
+		EventAttendType AttendType_;
 	};
 
 	typedef QList<EventInfo> EventInfos_t;
@@ -59,6 +71,8 @@ namespace Media
 		virtual QString GetServiceName () const = 0;
 
 		virtual void UpdateRecommendedEvents () = 0;
+
+		virtual void AttendEvent (qint64, EventAttendType) = 0;
 	protected:
 		virtual void gotRecommendedEvents (const EventInfos_t&) = 0;
 	};

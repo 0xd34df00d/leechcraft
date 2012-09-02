@@ -220,6 +220,10 @@ namespace Lastfmscrobble
 				this,
 				SIGNAL (gotRecommendedEvents (Media::EventInfos_t)));
 	}
+
+	void Plugin::AttendEvent (qint64 id, Media::EventAttendType type)
+	{
+	}
 }
 }
 
