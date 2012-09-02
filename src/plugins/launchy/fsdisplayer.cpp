@@ -256,7 +256,8 @@ namespace Launchy
 		QList<Item_ptr> uniqueItems;
 		for (const auto& sublist : categorizedItems.values ())
 			for (auto item : sublist)
-				if (!uniqueItems.contains (item))
+				if (std::find_if (uniqueItems.begin (), uniqueItems.end (),
+							[&item] (const Item_ptr other) { return *other == *item; }) == uniqueItems.end ())
 					uniqueItems << item;
 		std::sort (uniqueItems.begin (), uniqueItems.end (),
 				[&curLang] (Item_ptr left, Item_ptr right)
