@@ -20,7 +20,7 @@
 
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 class QLineEdit;
 class QToolButton;
