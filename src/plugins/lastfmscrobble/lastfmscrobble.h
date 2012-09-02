@@ -101,6 +101,8 @@ namespace Lastfmscrobble
 
 		void UpdateRecommendedEvents ();
 		void AttendEvent (qint64, Media::EventAttendType);
+	private slots:
+		void reloadRecommendedEvents ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
