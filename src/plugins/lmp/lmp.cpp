@@ -42,6 +42,14 @@ namespace LMP
 	{
 		Util::InstallTranslator ("lmp");
 
+		const auto& paths = QCoreApplication::libraryPaths ();
+		if (std::find_if (paths.begin (), paths.end (),
+				[] (const QString& path) { return path.contains ("kde4"); }) == paths.end ())
+		{
+			QCoreApplication::addLibraryPath ("/usr/lib/kde4/plugins");
+			QCoreApplication::addLibraryPath ("/usr/lib64/kde4/plugins");
+		}
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");
 
