@@ -18,6 +18,7 @@
 
 #include "plmanagerwidget.h"
 #include <QMenu>
+#include <QMessageBox>
 #include "core.h"
 #include "playlistmanager.h"
 #include "player.h"
@@ -72,6 +73,14 @@ namespace LMP
 
 	void PLManagerWidget::handleDeleteSelected ()
 	{
+		const auto& idx = Ui_.PlaylistsTree_->currentIndex ();
+		if (QMessageBox::question (this,
+				"LeechCraft",
+				tr ("Are you sure you want to delete playlist %1?")
+					.arg ("<em>" + idx.data ().toString () + "</em>"),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
 		auto mgr = Core::Instance ().GetPlaylistManager ();
 		mgr->DeletePlaylist (Ui_.PlaylistsTree_->currentIndex ());
 	}
