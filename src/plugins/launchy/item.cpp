@@ -99,6 +99,19 @@ namespace Launchy
 		return Icon_;
 	}
 
+	QDebug Item::DebugPrint (QDebug dbg) const
+	{
+		dbg.nospace () << "DesktopItem\n{\n\tNames: " << Name_
+				<< "\n\tGenericNames: " << GenericName_
+				<< "\n\tComments: " << Comments_
+				<< "\n\tCategories: " << Categories_
+				<< "\n\tCommand: " << Command_
+				<< "\n\tWorkingDir: " << WD_
+				<< "\n\tIconName: " << IconName_
+				<< "\n}\n";
+		return dbg.space ();
+	}
+
 	namespace
 	{
 		QHash<QString, QString> FirstValues (const QHash<QString, QStringList>& hash)
@@ -148,6 +161,11 @@ namespace Launchy
 			item->Type_ = Type::Other;
 
 		return item;
+	}
+
+	QDebug operator<< (QDebug dbg, const Item& item)
+	{
+		return item.DebugPrint (dbg);
 	}
 }
 }

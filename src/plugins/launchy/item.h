@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <QHash>
+#include <QDebug>
 #include <QIcon>
 
 namespace LeechCraft
@@ -70,7 +71,11 @@ namespace Launchy
 		void SetIcon (const QIcon&);
 		QIcon GetIcon () const;
 
+		QDebug DebugPrint (QDebug) const;
+
 		static Item_ptr FromDesktopFile (const QString&);
 	};
+
+	QDebug operator<< (QDebug, const Item&);
 }
 }
