@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import Effects 1.0
 
 Rectangle {
     id: rootRect
@@ -36,15 +37,20 @@ Rectangle {
             State {
                 name: "hidden"
                 PropertyChanges { target: fullSizeArtistImg; opacity: 0 }
+                PropertyChanges { target: similarViewBlur; blurRadius: 0 }
             },
             State {
                 name: "visible"
                 PropertyChanges { target: fullSizeArtistImg; opacity: 1 }
+                PropertyChanges { target: similarViewBlur; blurRadius: 10 }
             }
         ]
 
         transitions: Transition {
-            PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+            ParallelAnimation {
+                PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+                PropertyAnimation { target: similarViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
+            }
         }
 
         MouseArea {
@@ -58,6 +64,11 @@ Rectangle {
     ListView {
         anchors.fill: parent
         id: similarView
+
+        effect: Blur {
+            id: similarViewBlur
+            blurRadius: 0.0
+        }
 
         model: similarModel
         delegate: Item {
