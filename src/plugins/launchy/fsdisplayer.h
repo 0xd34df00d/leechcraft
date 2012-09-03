@@ -61,6 +61,8 @@ namespace Launchy
 		~FSDisplayer ();
 	private:
 		void Execute (Item_ptr);
+		void MakeStdCategories ();
+		void MakeStdItems ();
 		void MakeCategories (const QStringList&);
 		void MakeItems (const QList<QList<Item_ptr>>&);
 	private slots:

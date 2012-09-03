@@ -28,6 +28,8 @@
 #include <QDesktopWidget>
 #include <QProcess>
 #include <util/util.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/ihavetabs.h>
 #include "itemsfinder.h"
 #include "item.h"
 #include "itemssortfilterproxymodel.h"
@@ -172,6 +174,42 @@ namespace Launchy
 		}
 	}
 
+	void FSDisplayer::MakeStdCategories ()
+	{
+		auto lcCat = new QStandardItem;
+		lcCat->setData ("LeechCraft", ModelRoles::CategoryName);
+		lcCat->setData (QStringList ("X-LeechCraft"), ModelRoles::NativeCategories);
+		lcCat->setData ("leechcraft", ModelRoles::CategoryIcon);
+
+		IconsProvider_->AddIcon ("leechcraft", QIcon (":/resources/images/leechcraft.svg"));
+		CatsModel_->appendRow (lcCat);
+	}
+
+	void FSDisplayer::MakeStdItems ()
+	{
+		const auto& tabs = Proxy_->GetPluginsManager ()->GetAllCastableTo<IHaveTabs*> ();
+		for (IHaveTabs *iht : tabs)
+			for (const auto& tc : iht->GetTabClasses ())
+			{
+				if (!(tc.Features_ & TabFeature::TFOpenableByRequest))
+					continue;
+
+				const auto& iconId = tc.TabClass_;
+				IconsProvider_->AddIcon (iconId, tc.Icon_);
+
+				auto item = new QStandardItem;
+				item->setData (tc.VisibleName_, ModelRoles::ItemName);
+				item->setData (tc.Description_, ModelRoles::ItemDescription);
+				item->setData (iconId, ModelRoles::ItemIcon);
+				item->setData (QStringList ("X-LeechCraft"), ModelRoles::ItemNativeCategories);
+				item->setData (tc.TabClass_, ModelRoles::ItemID);
+
+				Execs_ [tc.TabClass_] = [iht, tc] () { iht->TabOpenRequested (tc.TabClass_); };
+
+				ItemsModel_->appendRow (item);
+			}
+	}
+
 	namespace
 	{
 		struct CategoriesInfo
@@ -211,6 +249,8 @@ namespace Launchy
 
 	void FSDisplayer::MakeCategories (const QStringList& cats)
 	{
+		MakeStdCategories ();
+
 		static const CategoriesInfo cInfo;
 
 		QMap<QString, QStandardItem*> catItems;
@@ -247,6 +287,8 @@ namespace Launchy
 
 	void FSDisplayer::MakeItems (const QList<QList<Item_ptr>>& items)
 	{
+		MakeStdItems ();
+
 		const auto& curLang = Util::GetLanguage ().toLower ();
 
 		QList<Item_ptr> uniqueItems;
