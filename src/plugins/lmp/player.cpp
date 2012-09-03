@@ -541,15 +541,21 @@ namespace LMP
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
 		{
-			auto text = XmlSettingsManager::Instance ()
-					.property ("SingleTrackDisplayMask").toString ();
+			QString text;
+			if (!info.IsUseless ())
+			{
+				text = XmlSettingsManager::Instance ()
+						.property ("SingleTrackDisplayMask").toString ();
 
-			text = PerformSubstitutions (text, info).simplified ();
-			text.remove ("- -");
-			if (text.startsWith ("- "))
-				text = text.mid (2);
-			if (text.endsWith (" -"))
-				text.chop (2);
+				text = PerformSubstitutions (text, info).simplified ();
+				text.remove ("- -");
+				if (text.startsWith ("- "))
+					text = text.mid (2);
+				if (text.endsWith (" -"))
+					text.chop (2);
+			}
+			else
+				text = QFileInfo (info.LocalPath_).fileName ();
 
 			item->setText (text);
 
