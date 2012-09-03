@@ -31,6 +31,7 @@
 #include <QKeyEvent>
 #include <QSortFilterProxyModel>
 #include <util/util.h>
+#include <util/gui/clearlineeditaddon.h>
 #include "player.h"
 #include "playlistdelegate.h"
 #include "xmlsettingsmanager.h"
@@ -129,6 +130,8 @@ namespace LMP
 	, ActionShowAlbumArt_ (0)
 	{
 		Ui_.setupUi (this);
+
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.SearchPlaylist_);
 
 		Ui_.BufferProgress_->hide ();
 		Ui_.Playlist_->setItemDelegate (new PlaylistDelegate (Ui_.Playlist_, Ui_.Playlist_));
