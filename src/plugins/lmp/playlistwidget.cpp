@@ -585,6 +585,15 @@ namespace LMP
 			return;
 
 		auto mgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
+
+		if (mgr->EnumerateCustomPlaylists ().contains (name) &&
+				QMessageBox::question (this,
+						"LeechCraft",
+						tr ("Playlist %1 already exists. Do you want to overwrite it?")
+							.arg ("<em>" + name + "</em>"),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
 		mgr->SaveCustomPlaylist (name, Player_->GetQueue ());
 	}
 
