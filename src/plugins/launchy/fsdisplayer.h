@@ -61,6 +61,8 @@ namespace Launchy
 		~FSDisplayer ();
 	private:
 		void Execute (Item_ptr);
+		void MakeCategories (const QStringList&);
+		void MakeItems (const QList<QList<Item_ptr>>&);
 	private slots:
 		void handleFinderUpdated ();
 		void handleCategorySelected (int);

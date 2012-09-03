@@ -209,21 +209,12 @@ namespace Launchy
 		};
 	}
 
-	void FSDisplayer::handleFinderUpdated ()
+	void FSDisplayer::MakeCategories (const QStringList& cats)
 	{
-		CatsModel_->clear ();
-		ItemsModel_->clear ();
-		ItemsProxyModel_->setCategoryNames (QStringList ());
-
-		IconsProvider_->Clear ();
-
-		const auto& curLang = Util::GetLanguage ().toLower ();
-
 		static const CategoriesInfo cInfo;
 
-		const auto& categorizedItems = Finder_->GetItems ();
 		QMap<QString, QStandardItem*> catItems;
-		for (const auto& cat : categorizedItems.keys ())
+		for (const auto& cat : cats)
 		{
 			if (!cInfo.Infos_.contains (cat))
 			{
@@ -252,9 +243,14 @@ namespace Launchy
 		}
 		for (auto item : catItems.values ())
 			CatsModel_->appendRow (item);
+	}
+
+	void FSDisplayer::MakeItems (const QList<QList<Item_ptr>>& items)
+	{
+		const auto& curLang = Util::GetLanguage ().toLower ();
 
 		QList<Item_ptr> uniqueItems;
-		for (const auto& sublist : categorizedItems.values ())
+		for (const auto& sublist : items)
 			for (auto item : sublist)
 				if (!item->IsHidden () &&
 					std::find_if (uniqueItems.begin (), uniqueItems.end (),
@@ -288,6 +284,19 @@ namespace Launchy
 
 			ItemsModel_->appendRow (appItem);
 		}
+	}
+
+	void FSDisplayer::handleFinderUpdated ()
+	{
+		CatsModel_->clear ();
+		ItemsModel_->clear ();
+		ItemsProxyModel_->setCategoryNames (QStringList ());
+
+		IconsProvider_->Clear ();
+
+		const auto& categorizedItems = Finder_->GetItems ();
+		MakeCategories (categorizedItems.keys ());
+		MakeItems (categorizedItems.values ());
 
 		View_->showFullScreen ();
 
