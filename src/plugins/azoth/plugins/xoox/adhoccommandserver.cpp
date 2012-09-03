@@ -374,7 +374,10 @@ namespace Xoox
 				const QString& from = var.isEmpty () ?
 						base->GetHumanReadableID () :
 						base->GetHumanReadableID () + '/' + var;
-				QXmppExtendedAddress address ("ofrom", from);
+
+				QXmppExtendedAddress address;
+				address.setType ("ofrom");
+				address.setJid (from);
 				msg.setExtendedAddresses (QXmppExtendedAddressList () << address);
 
 				Conn_->GetClient ()->sendPacket (msg);
