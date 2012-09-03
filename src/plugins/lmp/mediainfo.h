@@ -42,6 +42,8 @@ namespace LMP
 
 		MediaInfo& operator= (const Media::AudioInfo&);
 
+		bool IsUseless () const;
+
 		operator Media::AudioInfo () const;
 
 		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
