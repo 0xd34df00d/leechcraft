@@ -370,7 +370,6 @@ namespace Xoox
 				conf.setPort (port);
 			conf.setKeepAliveInterval (KAInterval_);
 			conf.setKeepAliveTimeout (KATimeout_);
-			conf.setUseSASLAuthentication (false);
 			Client_->connectToServer (conf, pres);
 
 			FirstTimeConnect_ = false;
