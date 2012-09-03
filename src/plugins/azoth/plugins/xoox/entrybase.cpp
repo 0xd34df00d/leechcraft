@@ -180,7 +180,8 @@ namespace Xoox
 
 		QPointer<VCardDialog> ptr (VCardDialog_);
 		Account_->GetClientConnection ()->FetchVCard (GetJID (),
-				[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->UpdateInfo (iq); });
+				[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->UpdateInfo (iq); },
+				true);
 		VCardDialog_->show ();
 	}
 
@@ -277,7 +278,7 @@ namespace Xoox
 		conn->GetClient ()->sendPacket (pres);
 	}
 
-	void EntryBase::RequestLastPosts (int maxNum)
+	void EntryBase::RequestLastPosts (int)
 	{
 	}
 

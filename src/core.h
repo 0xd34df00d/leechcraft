@@ -284,11 +284,6 @@ namespace LeechCraft
 		 */
 		void InitDynamicSignals (QObject *object);
 
-		/** Initializes the object as a IJobHolder. The object is assumed
-		 * to be a valid IJobHolder*.
-		 */
-		void InitJobHolder (QObject *object);
-
 		/** Initializes the object as a IEmbedTab. The object is assumed
 		 * to be a valid IEmbedTab*.
 		 */

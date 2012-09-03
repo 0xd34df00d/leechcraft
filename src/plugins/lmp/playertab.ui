@@ -139,17 +139,7 @@
             <number>1</number>
            </property>
            <item>
-            <widget class="QTreeView" name="PlaylistsTree_">
-             <property name="dragEnabled">
-              <bool>true</bool>
-             </property>
-             <property name="selectionMode">
-              <enum>QAbstractItemView::ExtendedSelection</enum>
-             </property>
-             <attribute name="headerVisible">
-              <bool>false</bool>
-             </attribute>
-            </widget>
+            <widget class="LeechCraft::LMP::PLManagerWidget" name="PLManagerWidget_" native="true"/>
            </item>
           </layout>
          </widget>
@@ -335,6 +325,12 @@
    <class>LeechCraft::LMP::EventsWidget</class>
    <extends>QWidget</extends>
    <header>eventswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::PLManagerWidget</class>
+   <extends>QWidget</extends>
+   <header>plmanagerwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

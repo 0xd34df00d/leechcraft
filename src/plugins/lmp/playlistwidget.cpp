@@ -28,6 +28,8 @@
 #include <QMessageBox>
 #include <QClipboard>
 #include <QApplication>
+#include <QKeyEvent>
+#include <QSortFilterProxyModel>
 #include <util/util.h>
 #include "player.h"
 #include "playlistdelegate.h"
@@ -43,9 +45,82 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		class PlaylistTreeEventFilter : public QObject
+		{
+			Player *Player_;
+			QTreeView *View_;
+			QSortFilterProxyModel *PlaylistFilter_;
+		public:
+			PlaylistTreeEventFilter (Player* player, QTreeView *view,
+					QSortFilterProxyModel *filter, QObject *parent = 0)
+			: QObject (parent)
+			, Player_ (player)
+			, View_ (view)
+			, PlaylistFilter_ (filter)
+			{
+			}
+
+			bool eventFilter (QObject*, QEvent *e)
+			{
+				if (e->type () != QEvent::KeyRelease)
+					return false;
+
+				const auto key = static_cast<QKeyEvent*> (e)->key ();
+				if (key == Qt::Key_Enter || key == Qt::Key_Return || key == Qt::Key_Space)
+				{
+					Player_->play (PlaylistFilter_->mapToSource (View_->currentIndex ()));
+					return true;
+				}
+
+				return false;
+			}
+		};
+
+		class TreeFilterModel : public QSortFilterProxyModel
+		{
+		public:
+			TreeFilterModel (QObject *parent = 0)
+			: QSortFilterProxyModel (parent)
+			{
+				setDynamicSortFilter (true);
+			}
+		protected:
+			bool filterAcceptsRow (int row, const QModelIndex& parent) const
+			{
+				const auto& str = filterRegExp ().pattern ();
+				if (str.isEmpty ())
+					return true;
+
+				auto check = [&str] (const QString& string)
+				{
+					return string.contains (str, Qt::CaseInsensitive);
+				};
+
+				const auto& idx = sourceModel ()->index (row, 0, parent);
+				const auto& info = idx.data (Player::Role::Info).value<MediaInfo> ();
+				if (check (info.Artist_) ||
+					check (info.Album_) ||
+					check (QString::number (info.Year_)))
+					return true;
+
+				if (parent.isValid () && check (info.Title_))
+					return true;
+
+				for (int i = 0, rc = sourceModel ()->rowCount (idx); i < rc; ++i)
+					if (filterAcceptsRow (i, idx))
+						return true;
+
+				return false;
+			}
+		};
+	}
+
 	PlaylistWidget::PlaylistWidget (QWidget *parent)
 	: QWidget (parent)
 	, PlaylistToolbar_ (new QToolBar ())
+	, PlaylistFilter_ (new TreeFilterModel (this))
 	, UndoStack_ (new QUndoStack (this))
 	, Player_ (0)
 	, ActionRemoveSelected_ (0)
@@ -57,6 +132,22 @@ namespace LMP
 
 		Ui_.BufferProgress_->hide ();
 		Ui_.Playlist_->setItemDelegate (new PlaylistDelegate (Ui_.Playlist_, Ui_.Playlist_));
+
+		connect (Ui_.SearchPlaylist_,
+				SIGNAL (textChanged (QString)),
+				PlaylistFilter_,
+				SLOT (setFilterFixedString (QString)));
+
+		connect (PlaylistFilter_,
+				SIGNAL (rowsInserted (QModelIndex, int, int)),
+				Ui_.Playlist_,
+				SLOT (expandAll ()),
+				Qt::QueuedConnection);
+		connect (PlaylistFilter_,
+				SIGNAL (modelReset ()),
+				Ui_.Playlist_,
+				SLOT (expandAll ()),
+				Qt::QueuedConnection);
 	}
 
 	void PlaylistWidget::SetPlayer (Player *player)
@@ -68,16 +159,19 @@ namespace LMP
 				this,
 				SLOT (handleBufferStatus (int)));
 
-		Ui_.Playlist_->setModel (Player_->GetPlaylistModel ());
+		PlaylistFilter_->setSourceModel (Player_->GetPlaylistModel ());
+		Ui_.Playlist_->setModel (PlaylistFilter_);
 		Ui_.Playlist_->expandAll ();
+
+		Ui_.Playlist_->installEventFilter (new PlaylistTreeEventFilter (Player_, Ui_.Playlist_, PlaylistFilter_));
 
 		connect (Ui_.Playlist_,
 				SIGNAL (doubleClicked (QModelIndex)),
-				Player_,
+				this,
 				SLOT (play (QModelIndex)));
 		connect (Player_,
 				SIGNAL (insertedAlbum (QModelIndex)),
-				Ui_.Playlist_,
+				this,
 				SLOT (expand (QModelIndex)));
 
 		Ui_.PlaylistLayout_->addWidget (PlaylistToolbar_);
@@ -305,7 +399,8 @@ namespace LMP
 		auto tryIdx = [&sources, this] (const QModelIndex& idx)
 		{
 			if (sources.contains (Player_->GetIndexSources (idx).value (0)))
-				Ui_.Playlist_->selectionModel ()->select (idx, QItemSelectionModel::Select | QItemSelectionModel::Rows);
+				Ui_.Playlist_->selectionModel ()->select (PlaylistFilter_->mapFromSource (idx),
+						QItemSelectionModel::Select | QItemSelectionModel::Rows);
 		};
 
 		auto plModel = Player_->GetPlaylistModel ();
@@ -365,6 +460,16 @@ namespace LMP
 			}
 	}
 
+	void PlaylistWidget::play (const QModelIndex& index)
+	{
+		Player_->play (PlaylistFilter_->mapToSource (index));
+	}
+
+	void PlaylistWidget::expand (const QModelIndex& index)
+	{
+		Ui_.Playlist_->expand (PlaylistFilter_->mapFromSource (index));
+	}
+
 	void PlaylistWidget::handleBufferStatus (int status)
 	{
 		Ui_.BufferProgress_->setValue (status);
@@ -389,7 +494,7 @@ namespace LMP
 
 		auto indexes = selModel->selectedRows ();
 		if (indexes.isEmpty ())
-			indexes << Ui_.Playlist_->currentIndex ();
+			indexes << PlaylistFilter_->mapToSource (Ui_.Playlist_->currentIndex ());
 		indexes.removeAll (QModelIndex ());
 
 		QList<Phonon::MediaSource> removedSources;
@@ -406,7 +511,7 @@ namespace LMP
 
 	void PlaylistWidget::setStopAfterSelected ()
 	{
-		auto index = Ui_.Playlist_->currentIndex ();
+		auto index = PlaylistFilter_->mapToSource (Ui_.Playlist_->currentIndex ());
 		if (!index.isValid ())
 			return;
 
@@ -436,7 +541,7 @@ namespace LMP
 		const auto& selected = Ui_.Playlist_->selectionModel ()->selectedRows ();
 		QList<Phonon::MediaSource> sources;
 		Q_FOREACH (const auto& index, selected)
-			sources += Player_->GetIndexSources (index);
+			sources += Player_->GetIndexSources (PlaylistFilter_->mapToSource (index));
 
 		if (sources.isEmpty ())
 			return;
@@ -456,7 +561,7 @@ namespace LMP
 		const auto& selected = Ui_.Playlist_->selectionModel ()->selectedRows ();
 		QList<Phonon::MediaSource> sources;
 		Q_FOREACH (const auto& index, selected)
-			sources += Player_->GetIndexSources (index);
+			sources += Player_->GetIndexSources (PlaylistFilter_->mapToSource (index));
 
 		if (sources.isEmpty ())
 			return;

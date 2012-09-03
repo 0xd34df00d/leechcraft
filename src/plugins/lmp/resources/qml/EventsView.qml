@@ -1,7 +1,13 @@
 import QtQuick 1.0
+import Effects 1.0
+import "."
 
 Rectangle {
     id: rootRect
+
+    signal attendSure(int id)
+    signal attendMaybe(int id)
+    signal unattend(int id)
 
     gradient: Gradient {
         GradientStop {
@@ -33,15 +39,18 @@ Rectangle {
             State {
                 name: "hidden"
                 PropertyChanges { target: fullSizeEventImg; opacity: 0 }
+                PropertyChanges { target: eventsViewBlur; blurRadius: 0 }
             },
             State {
                 name: "visible"
                 PropertyChanges { target: fullSizeEventImg; opacity: 1 }
+                PropertyChanges { target: eventsViewBlur; blurRadius: 10 }
             }
         ]
 
         transitions: Transition {
             PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+            PropertyAnimation { target: eventsViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
         }
 
         MouseArea {
@@ -55,6 +64,12 @@ Rectangle {
     ListView {
         anchors.fill: parent
         id: eventsView
+
+        effect: Blur {
+            id: eventsViewBlur
+            blurRadius: 0.0
+            blurHints: Blur.QualityHint
+        }
 
         model: eventsModel
         delegate: Item {
@@ -87,6 +102,15 @@ Rectangle {
                 border.width: 1
                 border.color: "#000000"
                 smooth: true
+
+                Rectangle {
+                    id: fillRect
+                    radius: parent.radius
+                    anchors.fill: parent
+                    color: "#aa000000"
+                    visible: isAttended
+                    z: 5
+                }
 
                 Image {
                     id: eventImageThumb
@@ -184,6 +208,45 @@ Rectangle {
                     anchors.topMargin: 0
                     anchors.right: parent.right
                     font.pointSize: 8
+                }
+
+                TextButton {
+                    id: attendMaybe
+                    anchors.top: parent.top
+                    anchors.topMargin: 2
+                    anchors.right: parent.right
+                    anchors.rightMargin: 2
+                    visible: !isAttended
+
+                    text: attendSureTextString
+
+                    onClicked: rootRect.attendSure(eventID)
+                }
+
+                TextButton {
+                    id: attendSure
+                    anchors.top: parent.top
+                    anchors.topMargin: 2
+                    anchors.right: attendMaybe.left
+                    anchors.rightMargin: 2
+                    visible: !isAttended
+
+                    text: attendMaybeTextString
+
+                    onClicked: rootRect.unattendMaybe(eventID)
+                }
+
+                TextButton {
+                    id: unAttend
+                    anchors.top: parent.top
+                    anchors.topMargin: 2
+                    anchors.right: parent.right
+                    anchors.rightMargin: 2
+                    visible: isAttended
+
+                    text: unattendTextString
+
+                    onClicked: rootRect.unattend(eventID)
                 }
             }
         }

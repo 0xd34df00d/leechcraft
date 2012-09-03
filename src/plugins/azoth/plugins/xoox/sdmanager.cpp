@@ -34,7 +34,7 @@ namespace Xoox
 			const QString& jid, const QString& node)
 	{
 		auto f = [this] (const QString& jid, ClientConnection::DiscoCallback_t cb, const QString& node)
-				{ Conn_->RequestInfo (jid, cb, node); };
+				{ Conn_->RequestInfo (jid, cb, false, node); };
 		CommonDo (Infos_, f, callback, jid, node);
 	}
 
@@ -42,7 +42,7 @@ namespace Xoox
 			const QString& jid, const QString& node)
 	{
 		auto f = [this] (const QString& jid, ClientConnection::DiscoCallback_t cb, const QString& node)
-				{ Conn_->RequestItems (jid, cb, node); };
+				{ Conn_->RequestItems (jid, cb, false, node); };
 		CommonDo (Items_, f, callback, jid, node);
 	}
 

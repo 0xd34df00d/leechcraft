@@ -82,7 +82,7 @@ namespace Importers
 
 	namespace
 	{
-		void ParseFile (const QString& path, QVariantList& result, const QVariantMap& data)
+		void ParseFile (const QString& path, QVariantList& result, const QVariantMap&)
 		{
 			QFile file (path);
 			if (!file.open (QIODevice::ReadOnly))

@@ -38,7 +38,7 @@ namespace Xoox
 		Ui::GWOptionsDialog Ui_;
 		RegFormHandlerWidget *RegForm_;
 	public:
-		GWOptionsDialog (QXmppClient*, QWidget* = 0);
+		GWOptionsDialog (QXmppClient*, const QString& to, QWidget* = 0);
 	private slots:
 		void sendRegistration ();
 		void handleError (const QString&);

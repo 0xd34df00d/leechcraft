@@ -24,14 +24,16 @@
 #include <QDomDocument>
 #include "util.h"
 #include "authenticator.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	RecEventsFetcher::RecEventsFetcher (Authenticator *auth, QNetworkAccessManager *nam, QObject *parent)
+	RecEventsFetcher::RecEventsFetcher (Authenticator *auth, QNetworkAccessManager *nam, Type type, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
+	, Type_ (type)
 	{
 		if (auth->IsAuthenticated ())
 			request ();
@@ -45,7 +47,20 @@ namespace Lastfmscrobble
 	void RecEventsFetcher::RequestEvents (QMap<QString, QString> params)
 	{
 		AddLanguageParam (params);
-		auto reply = Request ("user.getRecommendedEvents", NAM_, params);
+		QString method;
+		switch (Type_)
+		{
+		case Type::Recommended:
+			method = "user.getRecommendedEvents";
+			break;
+		case Type::Attending:
+			method = "user.getEvents";
+			params ["user"] = XmlSettingsManager::Instance ()
+					.property ("lastfm.login").toString ();
+			break;
+		}
+
+		auto reply = Request (method, NAM_, params);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -58,15 +73,25 @@ namespace Lastfmscrobble
 
 	void RecEventsFetcher::request ()
 	{
-		auto reply = NAM_->get (QNetworkRequest (QUrl ("http://geoip.elib.ru/cgi-bin/getdata.pl")));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleLocationReceived ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleLocationError ()));
+		switch (Type_)
+		{
+		case Type::Recommended:
+		{
+			auto reply = NAM_->get (QNetworkRequest (QUrl ("http://geoip.elib.ru/cgi-bin/getdata.pl")));
+			connect (reply,
+					SIGNAL (finished ()),
+					this,
+					SLOT (handleLocationReceived ()));
+			connect (reply,
+					SIGNAL (error (QNetworkReply::NetworkError)),
+					this,
+					SLOT (handleLocationError ()));
+			break;
+		}
+		case Type::Attending:
+			RequestEvents (QMap<QString, QString> ());
+			break;
+		}
 	}
 
 	void RecEventsFetcher::handleLocationReceived ()
@@ -162,6 +187,7 @@ namespace Lastfmscrobble
 
 			Media::EventInfo info =
 			{
+				eventElem.firstChildElement ("id").text ().toInt (),
 				eventElem.firstChildElement ("title").text (),
 				QString (),
 				QLocale ("en_US").toDateTime (eventElem.firstChildElement ("startDate").text (),
@@ -177,7 +203,11 @@ namespace Lastfmscrobble
 				pointElem.firstChildElement ("lat").text ().toDouble (),
 				pointElem.firstChildElement ("long").text ().toDouble (),
 				locationElem.firstChildElement ("city").text (),
-				locationElem.firstChildElement ("street").text ()
+				locationElem.firstChildElement ("street").text (),
+				true,
+				Type_ == Type::Attending ?
+						Media::EventAttendType::Surely :
+						Media::EventAttendType::None
 			};
 			result << info;
 

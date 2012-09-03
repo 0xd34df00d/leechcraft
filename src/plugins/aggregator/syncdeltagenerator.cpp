@@ -26,7 +26,7 @@ namespace Aggregator
 	Sync::Payloads_t SyncDeltaGenerator::GetFeedAdded (Feed_ptr feedPtr)
 	{
 		Sync::Payloads_t result;
-		
+
 		Sync::Payload fp;
 		{
 			QDataStream ostr (&fp.Data_, QIODevice::WriteOnly);
@@ -45,7 +45,7 @@ namespace Aggregator
 		Sync::Payloads_t result;
 
 		Sync::Payload item;
-		
+
 		{
 			QDataStream ostr (&item.Data_, QIODevice::WriteOnly);
 			ostr << static_cast<quint16> (PTChanAdded);
@@ -54,7 +54,7 @@ namespace Aggregator
 			channel.FeedID_ = FixFeedID (channel.FeedID_);
 			ostr << channel;
 		}
-		
+
 		result << item;
 
 		return result;
@@ -63,7 +63,7 @@ namespace Aggregator
 	Sync::Payloads_t SyncDeltaGenerator::GetItemAdded (Item_ptr srcItemPtr)
 	{
 		Sync::Payloads_t result;
-		
+
 		Sync::Payload item;
 
 		{
@@ -76,26 +76,22 @@ namespace Aggregator
 		}
 
 		result << item;
-		
+
 		return result;
 	}
-	
-	Sync::Payloads_t SyncDeltaGenerator::GetChannelTagsChanged (Channel_ptr channel, const QStringList& tags)
+
+	Sync::Payloads_t SyncDeltaGenerator::GetChannelTagsChanged (Channel_ptr, const QStringList&)
 	{
-		Sync::Payloads_t result;
-		
-		Sync::Payload item;
-		
-		
-		return result;
+		// TODO
+		return Sync::Payloads_t ();
 	}
-	
+
 	void SyncDeltaGenerator::ParseDelta (const Sync::Payload& delta)
 	{
 		QDataStream istr (delta.Data_);
 		quint16 action = 0;
 		istr >> action;
-		
+
 		switch (action)
 		{
 		case PTFeedAdded:
@@ -121,17 +117,17 @@ namespace Aggregator
 			return;
 		}
 	}
-	
+
 	IDType_t SyncDeltaGenerator::FixFeedID (IDType_t id)
 	{
 		return Remote2LocalFeeds_.key (id, id);
 	}
-	
+
 	IDType_t SyncDeltaGenerator::FixChanID (IDType_t id)
 	{
 		return Remote2LocalChannels_.key (id, id);
 	}
-	
+
 	IDType_t SyncDeltaGenerator::FixItemID (IDType_t id)
 	{
 		return Remote2LocalItems_.key (id, id);

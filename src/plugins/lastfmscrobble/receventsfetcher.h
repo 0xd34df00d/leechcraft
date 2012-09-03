@@ -36,7 +36,15 @@ namespace Lastfmscrobble
 
 		QNetworkAccessManager *NAM_;
 	public:
-		RecEventsFetcher (Authenticator*, QNetworkAccessManager*, QObject* = 0);
+		enum class Type
+		{
+			Attending,
+			Recommended
+		};
+	private:
+		Type Type_;
+	public:
+		RecEventsFetcher (Authenticator*, QNetworkAccessManager*, Type, QObject* = 0);
 	private:
 		void RequestEvents (QMap<QString, QString>);
 	private slots:

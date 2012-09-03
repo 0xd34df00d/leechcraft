@@ -123,6 +123,8 @@ namespace Liznoo
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
 		QList<QAction*> result;
+		if (place == ActionsEmbedPlace::LCTray)
+			result << Battery2Action_.values ();
 		return result;
 	}
 

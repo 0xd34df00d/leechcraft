@@ -25,6 +25,7 @@
 class QToolBar;
 class QActionGroup;
 class QUndoStack;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -39,6 +40,7 @@ namespace LMP
 		Ui::PlaylistWidget Ui_;
 		QToolBar *PlaylistToolbar_;
 		QActionGroup *PlayModesGroup_;
+		QSortFilterProxyModel *PlaylistFilter_;
 
 		QUndoStack *UndoStack_;
 
@@ -64,6 +66,9 @@ namespace LMP
 		void on_Playlist__customContextMenuRequested (const QPoint&);
 		void handleChangePlayMode ();
 		void handlePlayModeChanged (Player::PlayMode);
+
+		void play (const QModelIndex&);
+		void expand (const QModelIndex&);
 
 		void handleBufferStatus (int);
 

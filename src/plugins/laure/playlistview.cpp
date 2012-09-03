@@ -30,45 +30,45 @@
 namespace LeechCraft
 {
 namespace Laure
-{	
+{
 	PlayListView::PlayListView (QStandardItemModel *model, QWidget *parent)
 	: QTreeView (parent)
 	, PlayListModel_ (model)
 	, CurrentItem_ (-1)
 	{
 		setModel (PlayListModel_);
-		
+
 		PlayListModel_->setColumnCount (PlayListColumns::MAX);
-		
+
 		setEditTriggers (SelectedClicked);
 		setSelectionMode (ContiguousSelection);
 		setAlternatingRowColors (true);
 		hideColumn (URLColumn);
-		
+
 		HeaderProperties_ [ArtistColumn] = "ArtistHeader";
 		HeaderProperties_ [TitleColumn] = "TitleHeader";
 		HeaderProperties_ [AlbumColumn] = "AlbumHeader";
 		HeaderProperties_ [GenreColumn] = "GenreHeader";
 		HeaderProperties_ [DateColumn] = "DateHeader";
-		
+
 		handleHideHeaders ();
-		
+
 		QList<QByteArray> propNames;
 		Q_FOREACH (const QByteArray& el, HeaderProperties_)
 			propNames << el;
-		
+
 		XmlSettingsManager::Instance ().RegisterObject (propNames, this,
 				"handleHideHeaders");
 
 		setItemDelegate (new NowPlayingDelegate (this));
-		
+
 		header ()->setResizeMode (QHeaderView::Interactive);
 		header ()->setContextMenuPolicy (Qt::CustomContextMenu);
 		connect (header (),
 				SIGNAL (sectionResized (int, int, int)),
 				this,
 				SLOT (handleSectionResized (int, int, int)));
-		
+
 		setColumnWidth (StatusColumn, 40);
 		header ()->setResizeMode (StatusColumn, QHeaderView::Fixed);
 		header ()->setResizeMode (QueueColumn, QHeaderView::ResizeToContents);
@@ -76,25 +76,25 @@ namespace Laure
 
 		setItemDelegateForColumn (PlayListColumns::StatusColumn, new PlayListStatusDelegate (this));
 		setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
-		
+
 		connect (header (),
 				SIGNAL (customContextMenuRequested (QPoint)),
 				this,
 				SLOT (handleHeaderMenu (QPoint)));
-		
+
 		setContextMenuPolicy (Qt::CustomContextMenu);
 		connect (this,
 				SIGNAL (customContextMenuRequested (QPoint)),
 				this,
 				SLOT (handleMenu (QPoint)));
-		
+
 		connect (this,
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,
 				SLOT (handleDoubleClicked (QModelIndex)));
-		
+
 		QStringList headers;
-		
+
 		headers << QString ()
 				<< QString ()
 				<< tr ("Artist")
@@ -104,9 +104,9 @@ namespace Laure
 				<< tr ("Date")
 				<< QString ()
 				<< tr ("Length");
-				
+
 		PlayListModel_->setHorizontalHeaderLabels (headers);
-		
+
 		for (int i = ArtistColumn; i < QueueColumn; ++i)
 		{
 			const int prop = XmlSettingsManager::Instance ()
@@ -116,7 +116,7 @@ namespace Laure
 			setColumnWidth (i, prop);
 		}
 	}
-	
+
 	void PlayListView::Init (std::shared_ptr<VLCWrapper> wrapper)
 	{
 		VLCWrapper_ = wrapper;
@@ -130,14 +130,14 @@ namespace Laure
 				w,
 				SLOT (playItem (int)));
 	}
-	
+
 	void PlayListView::handleSectionResized (int logicalIndex,
-			int oldSize, int newSize)
+			int, int newSize)
 	{
 		XmlSettingsManager::Instance ().setProperty ("PlayListHeader" +
 				QString::number (logicalIndex).toAscii (), newSize);
 	}
-	
+
 	void PlayListView::handleHeaderMenu (const QPoint& point)
 	{
 		QMenu menu;
@@ -147,12 +147,12 @@ namespace Laure
 					headerData (i, Qt::Horizontal).toString (), &menu);
 			menuAction->setCheckable (true);
 			menuAction->setData (i);
-			
+
 			if (!isColumnHidden (i))
 				menuAction->setChecked (true);
 			menu.addAction (menuAction);
 		}
-		
+
 		QAction *selectedItem = menu.exec (mapToGlobal (point));
 		if (selectedItem)
 		{
@@ -161,47 +161,47 @@ namespace Laure
 						selectedItem->isChecked ());
 		}
 	}
-	
+
 	void PlayListView::handleMenu (const QPoint& point)
 	{
 		if (selectedIndexes ().empty ())
 			return;
-		
+
 		const int row = selectedIndexes ().first ().row ();
-		
+
 		const bool found = VLCWrapper_->GetQueueListIndexes ().contains (row);
-		
+
 		QMenu menu;
 		QAction *menuAction = new QAction (found ? tr ("Unqueue") : tr ("Queue"), &menu);
 		menuAction->setData (found);
-		
+
 		menu.addAction (menuAction);
 		QAction *action = menu.exec (mapToGlobal (point));
 		if (!action)
 			return;
-		
+
 		if (action->data ().toBool ())
 			VLCWrapper_->removeFromQueue (row);
 		else
 			VLCWrapper_->addToQueue (row);
-		
+
 		UpdateQueueIndexes ();
 	}
-	
+
 	void PlayListView::UpdateQueueIndexes ()
 	{
 		const QList<int>& queueIndexes = VLCWrapper_->GetQueueListIndexes ();
-		
+
 		for (int i = 0; i < PlayListModel_->columnCount (); ++i)
 			PlayListModel_->setData (PlayListModel_->
 					index (i, PlayListColumns::QueueColumn), QString ());
-		
+
 		int i = 0;
 		Q_FOREACH (const int index, queueIndexes)
 			PlayListModel_->setData (PlayListModel_->
 					index (index, PlayListColumns::QueueColumn), "#" + QString::number (i++));
 	}
-	
+
 	void PlayListView::handleHideHeaders ()
 	{
 		NotHiddenColumnCount_ = 0;
@@ -211,11 +211,11 @@ namespace Laure
 					.property (HeaderProperties_ [static_cast<PlayListColumns> (i)]).toBool ();
 			if (checked)
 				++NotHiddenColumnCount_;
-			
+
 			setColumnHidden (i, !checked);
 		}
 	}
-	
+
 	void PlayListView::selectRow (int row)
 	{
 		setCurrentIndex (model ()->index (row, 0));
@@ -230,33 +230,33 @@ namespace Laure
 				<< new QStandardItem (item.Album_)
 				<< new QStandardItem (item.Genre_)
 				<< new QStandardItem (item.Date_);
-		
+
 		Q_FOREACH (QStandardItem *itemList, list)
 			itemList->setFlags (Qt::ItemIsSelectable | Qt::ItemIsEnabled
 					| Qt::ItemIsDropEnabled | Qt::ItemIsEditable);
-		
+
 		QStandardItem *queueItem = new QStandardItem ();
 		queueItem->setFlags (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		
+
 		QStandardItem *timeItem = new QStandardItem (QTime ()
 				.addSecs (item.Length_).toString ());
 		timeItem->setFlags (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		
+
 		list << queueItem << timeItem;
-		
+
 		QStandardItem *statusItem = new QStandardItem ();
 		statusItem->setFlags (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		list.push_front (statusItem);
-		
+
 		PlayListModel_->appendRow (list);
 	}
-	
+
 	void PlayListView::MarkPlayingItem (int row)
 	{
 		auto it = PlayListModel_->item (CurrentItem_);
 		if (it)
 			it->setData (false, Roles::IsPlayingRole);
-		
+
 		it = PlayListModel_->item (row);
 		it->setData (true, Roles::IsPlayingRole);
 		CurrentItem_ = row;
@@ -266,23 +266,23 @@ namespace Laure
 	{
 		emit playItem (index.row ());
 	}
-	
+
 	void PlayListView::removeSelectedRows ()
 	{
 		const QModelIndexList& indexList = selectedIndexes ();
 		const int c = indexList.count ();
 		if (!c || !NotHiddenColumnCount_)
 			return;
-		
+
 		const int first = indexList.first ().row ();
 		const int rows = indexList.count () / NotHiddenColumnCount_;
 		PlayListModel_->removeRows (first, rows);
 		for (int i = 0; i < rows; ++i)
 			emit itemRemoved (first);
-		
+
 		UpdateQueueIndexes ();
 	}
-	
+
 	void PlayListView::keyPressEvent (QKeyEvent *event)
 	{
 		const QModelIndex& curIndex = currentIndex ();
@@ -303,4 +303,4 @@ namespace Laure
 		}
 	}
 }
-}	
+}

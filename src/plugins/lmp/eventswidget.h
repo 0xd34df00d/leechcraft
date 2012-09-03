@@ -47,6 +47,9 @@ namespace LMP
 	private slots:
 		void on_Provider__activated (int);
 		void handleEvents (const Media::EventInfos_t&);
+		void handleAttendSure (int);
+		void handleAttendMaybe (int);
+		void handleUnattend (int);
 	};
 }
 }

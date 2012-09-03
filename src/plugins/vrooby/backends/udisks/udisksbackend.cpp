@@ -150,6 +150,7 @@ namespace UDisks
 					return false;
 			Object2Item_ [slaveTo.path ()]->appendRow (item);
 		}
+		return true;
 	}
 
 	void Backend::RemovePath (const QDBusObjectPath& pathObj)

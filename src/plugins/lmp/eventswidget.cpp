@@ -18,7 +18,9 @@
 
 #include "eventswidget.h"
 #include <QStandardItemModel>
+#include <QGraphicsObject>
 #include <QDeclarativeContext>
+#include <QtDebug>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/ieventsprovider.h>
 #include "core.h"
@@ -34,7 +36,8 @@ namespace LMP
 		public:
 			enum Role
 			{
-				EventName = Qt::UserRole + 1,
+				EventID = Qt::UserRole + 1,
+				EventName,
 				ImageThumbURL,
 				ImageBigURL,
 				Tags,
@@ -42,13 +45,16 @@ namespace LMP
 				City,
 				Place,
 				Headliner,
-				OtherArtists
+				OtherArtists,
+				CanBeAttended,
+				IsAttended
 			};
 
 			EventsModel (QObject *parent = 0)
 			: QStandardItemModel (parent)
 			{
 				QHash<int, QByteArray> names;
+				names [EventID] = "eventID";
 				names [EventName] = "eventName";
 				names [ImageThumbURL] = "eventImageThumbURL";
 				names [ImageBigURL] = "eventImageBigURL";
@@ -58,6 +64,8 @@ namespace LMP
 				names [Place] = "eventPlace";
 				names [Headliner] = "eventHeadliner";
 				names [OtherArtists] = "eventArtists";
+				names [CanBeAttended] = "canBeAttended";
+				names [IsAttended] = "isAttended";
 				setRoleNames (names);
 			}
 		};
@@ -70,6 +78,9 @@ namespace LMP
 		Ui_.setupUi (this);
 
 		Ui_.View_->rootContext ()->setContextProperty ("eventsModel", Model_);
+		Ui_.View_->rootContext ()->setContextProperty ("attendSureTextString", tr ("Sure!"));
+		Ui_.View_->rootContext ()->setContextProperty ("attendMaybeTextString", tr ("Maybe"));
+		Ui_.View_->rootContext ()->setContextProperty ("unattendTextString", tr ("Unattend"));
 		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/EventsView.qml"));
 
 		const auto& roots = Core::Instance ().GetProxy ()->GetPluginsManager ()->
@@ -90,6 +101,19 @@ namespace LMP
 		}
 
 		Ui_.Provider_->setCurrentIndex (-1);
+
+		connect (Ui_.View_->rootObject (),
+				SIGNAL (attendSure (int)),
+				this,
+				SLOT (handleAttendSure (int)));
+		connect (Ui_.View_->rootObject (),
+				SIGNAL (attendMaybe (int)),
+				this,
+				SLOT (handleAttendMaybe (int)));
+		connect (Ui_.View_->rootObject (),
+				SIGNAL (unattend (int)),
+				this,
+				SLOT (handleUnattend (int)));
 	}
 
 	void EventsWidget::on_Provider__activated (int index)
@@ -114,6 +138,7 @@ namespace LMP
 			Media::EventInfo event (event_t);
 
 			auto item = new QStandardItem;
+			item->setData (event.ID_, EventsModel::Role::EventID);
 			item->setData (event.Name_, EventsModel::Role::EventName);
 			item->setData (event.SmallImage_, EventsModel::Role::ImageThumbURL);
 			item->setData (event.BigImage_, EventsModel::Role::ImageBigURL);
@@ -123,7 +148,8 @@ namespace LMP
 			item->setData (event.City_, EventsModel::Role::City);
 
 			if (!event.Headliner_.isEmpty ())
-				item->setData (tr ("Headliner: %1").arg (event.Headliner_), EventsModel::Role::Headliner);
+				item->setData (tr ("Headliner: %1").arg (event.Headliner_),
+						EventsModel::Role::Headliner);
 
 			auto otherArtists = event.Artists_;
 			otherArtists.removeAll (event.Headliner_);
@@ -132,8 +158,36 @@ namespace LMP
 						tr ("Other artists: %1").arg (otherArtists.join ("; ")),
 					EventsModel::Role::OtherArtists);
 
+			item->setData (event.CanBeAttended_, EventsModel::Role::CanBeAttended);
+			item->setData (event.AttendType_ != Media::EventAttendType::None,
+					EventsModel::Role::IsAttended);
+
 			Model_->appendRow (item);
 		}
+	}
+
+	void EventsWidget::handleAttendSure (int id)
+	{
+		auto prov = Providers_.value (Ui_.Provider_->currentIndex ());
+		if (!prov)
+			return;
+		prov->AttendEvent (id, Media::EventAttendType::Surely);
+	}
+
+	void EventsWidget::handleAttendMaybe (int id)
+	{
+		auto prov = Providers_.value (Ui_.Provider_->currentIndex ());
+		if (!prov)
+			return;
+		prov->AttendEvent (id, Media::EventAttendType::Maybe);
+	}
+
+	void EventsWidget::handleUnattend (int id)
+	{
+		auto prov = Providers_.value (Ui_.Provider_->currentIndex ());
+		if (!prov)
+			return;
+		prov->AttendEvent (id, Media::EventAttendType::None);
 	}
 }
 }

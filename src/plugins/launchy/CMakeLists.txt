@@ -14,6 +14,7 @@ SET (SRCS
 	fsdisplayer.cpp
 	item.cpp
 	itemsfinder.cpp
+	itemssortfilterproxymodel.cpp
 	fdodesktopparser.cpp
 	)
 SET (RESOURCES resources.qrc)

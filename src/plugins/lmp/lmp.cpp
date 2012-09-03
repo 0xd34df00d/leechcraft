@@ -21,6 +21,8 @@
 #include <QFileInfo>
 #include <QSystemTrayIcon>
 #include <QUrl>
+#include <QtDeclarative>
+#include <QGraphicsEffect>
 #include <phonon/mediaobject.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
@@ -40,8 +42,21 @@ namespace LMP
 	{
 		Util::InstallTranslator ("lmp");
 
+		const auto& paths = QCoreApplication::libraryPaths ();
+		if (std::find_if (paths.begin (), paths.end (),
+				[] (const QString& path) { return path.contains ("kde4"); }) == paths.end ())
+		{
+			QCoreApplication::addLibraryPath ("/usr/lib/kde4/plugins");
+			QCoreApplication::addLibraryPath ("/usr/lib64/kde4/plugins");
+		}
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");
+
+		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
+		qmlRegisterType<QGraphicsColorizeEffect> ("Effects", 1, 0, "Colorize");
+		qmlRegisterType<QGraphicsDropShadowEffect> ("Effects", 1, 0, "DropShadow");
+		qmlRegisterType<QGraphicsOpacityEffect> ("Effects", 1, 0, "OpacityEffect");
 
 		PlayerTC_ =
 		{
@@ -256,7 +271,7 @@ namespace LMP
 		}
 	}
 
-	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace area) const
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
 	{
 		return QList<QAction*> ();
 	}

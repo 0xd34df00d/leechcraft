@@ -114,7 +114,7 @@ namespace Xoox
 
 	void SelfContact::UpdatePriority (const QString& resource, int prio)
 	{
-		bool existed = Prio2Status_.remove (Prio2Status_.key (resource));
+		Prio2Status_.remove (Prio2Status_.key (resource));
 		Prio2Status_ [prio] = resource;
 		emit availableVariantsChanged (Variants ());
 	}

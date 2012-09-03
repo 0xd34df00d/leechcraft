@@ -814,7 +814,9 @@ namespace GoogleDrive
 
 		emit uploadError ("Error", Reply2FilePath_.take (reply));
 		if (error == QNetworkReply::ProtocolUnknownError)
-			;//TODO resume upload
+		{
+			//TODO resume upload
+		}
 	}
 
 	void DriveManager::handleCreateDirectory ()

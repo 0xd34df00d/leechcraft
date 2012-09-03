@@ -481,21 +481,21 @@ namespace Aggregator
 		return result;
 	}
 
-	Sync::Payloads_t Aggregator::GetAllDeltas (const Sync::ChainID_t& chain) const
+	Sync::Payloads_t Aggregator::GetAllDeltas (const Sync::ChainID_t&) const
 	{
 		return Sync::Payloads_t ();
 	}
 
-	Sync::Payloads_t Aggregator::GetNewDeltas (const Sync::ChainID_t& chain) const
+	Sync::Payloads_t Aggregator::GetNewDeltas (const Sync::ChainID_t&) const
 	{
 		return Sync::Payloads_t ();
 	}
 
-	void Aggregator::PurgeNewDeltas (const Sync::ChainID_t& chain, quint32 since)
+	void Aggregator::PurgeNewDeltas (const Sync::ChainID_t&, quint32)
 	{
 	}
 
-	void Aggregator::ApplyDeltas (const Sync::Payloads_t& payloads, const Sync::ChainID_t& chain)
+	void Aggregator::ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&)
 	{
 	}
 

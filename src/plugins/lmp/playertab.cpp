@@ -41,7 +41,6 @@
 #include "localcollection.h"
 #include "collectiondelegate.h"
 #include "xmlsettingsmanager.h"
-#include "playlistmanager.h"
 #include "aalabeleventfilter.h"
 
 #ifdef ENABLE_MPRIS
@@ -130,7 +129,7 @@ namespace LMP
 				SLOT (handleSongChanged (const MediaInfo&)));
 		SetupToolbar ();
 		SetupCollection ();
-		SetupPlaylistsTab ();
+		Ui_.PLManagerWidget_->SetPlayer (Player_);
 
 		Ui_.Playlist_->SetPlayer (Player_);
 
@@ -412,18 +411,6 @@ namespace LMP
 				SLOT (setFilterFixedString (QString)));
 	}
 
-	void PlayerTab::SetupPlaylistsTab ()
-	{
-		auto mgr = Core::Instance ().GetPlaylistManager ();
-		Ui_.PlaylistsTree_->setModel (mgr->GetPlaylistsModel ());
-		Ui_.PlaylistsTree_->expandAll ();
-
-		connect (Ui_.PlaylistsTree_,
-				SIGNAL (doubleClicked (QModelIndex)),
-				this,
-				SLOT (handlePlaylistSelected (QModelIndex)));
-	}
-
 	void PlayerTab::SetNowPlaying (const MediaInfo& info, const QPixmap& px)
 	{
 		Ui_.NowPlaying_->clear ();
@@ -669,16 +656,6 @@ namespace LMP
 		if (!Ui_.ScanProgress_->isVisible ())
 			Ui_.ScanProgress_->show ();
 		Ui_.ScanProgress_->setValue (progress);
-	}
-
-	void PlayerTab::handlePlaylistSelected (const QModelIndex& index)
-	{
-		auto mgr = Core::Instance ().GetPlaylistManager ();
-		const auto& sources = mgr->GetSources (index);
-		if (sources.isEmpty ())
-			return;
-
-		Player_->Enqueue (sources, false);
 	}
 
 	void PlayerTab::showCollectionTrackProps ()

@@ -7,6 +7,8 @@ Rectangle {
     color: "#e0000000"
 
     signal closeRequested()
+    signal itemSelected(string id)
+    signal categorySelected(int index)
 
     Keys.onEscapePressed: rootRect.closeRequested()
 
@@ -23,12 +25,12 @@ Rectangle {
         ListView {
             id: catsView
             anchors.fill: parent
-            spacing: 3
+            anchors.topMargin: 5
             currentIndex: -1
 
             highlight: Rectangle {
                 width: catsView.width
-                height: 24
+                height: 30
 
                 color: "#A51E00"
                 radius: 5
@@ -41,118 +43,155 @@ Rectangle {
 
             highlightFollowsCurrentItem: false
 
-            model: VisualDataModel {
-                model: itemsModel
+            model: catsModel
 
-                delegate: Rectangle {
-                    id: catsViewDelegate
+            delegate: Rectangle {
+                id: catsViewDelegate
 
-                    width: catsView.width
+                width: catsView.width
+                height: 30
+                radius: 5
+
+                color: (!ListView.isCurrentItem && categoryMouseArea.containsMouse) ? "#aa000000" : "#00000000"
+                Behavior on color { PropertyAnimation {} }
+
+                Image {
+                    id: categoryIconImage
+                    width: 24
                     height: 24
-                    radius: 5
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
 
-                    color: (index != catsView.currentIndex && categoryMouseArea.containsMouse) ? "#aa000000" : "#00000000"
-                    Behavior on color { PropertyAnimation {} }
+                    source: "image://appicon/" + categoryIcon
+                    smooth: true
+                }
 
-                    Image {
-                        id: categoryIconImage
-                        width: 24
-                        height: 24
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        anchors.leftMargin: 5
+                Text {
+                    text: categoryName
 
-                        source: "image://appicon/" + categoryIcon
-                        smooth: true
-                    }
+                    font.italic: true
+                    font.pointSize: 12
+                    color: "#cccccc"
 
-                    Text {
-                        text: categoryName
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: categoryIconImage.right
+                    anchors.leftMargin: 5
+                }
 
-                        font.italic: true
-                        font.pointSize: 12
-                        color: "#cccccc"
+                MouseArea {
+                    id: categoryMouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
 
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: categoryIconImage.right
-                        anchors.leftMargin: 5
-                    }
-
-                    MouseArea {
-                        id: categoryMouseArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-
-                        onClicked: {
-                            itemsView.visible = true;
-                            itemsView.model.rootIndex = catsView.model.modelIndex(index);
-
-                            catsView.currentIndex = index;
-                        }
+                    onClicked: {
+                        appsFilterInput.text = "";
+                        rootRect.categorySelected(index);
+                        catsView.currentIndex = index
                     }
                 }
             }
         }
     }
 
+    Rectangle {
+        id: appsFilterInputContainer
+
+        anchors.left: catsContainer.right
+        anchors.leftMargin: 5
+        anchors.top: parent.top
+        anchors.topMargin: 5
+        anchors.right: parent.right
+        height: 22
+
+        color: "#cccccccc"
+
+        TextEdit {
+            id: appsFilterInput
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.margins: 4
+            font.pointSize: 12
+            font.italic: true
+            textFormat: TextEdit.PlainText
+        }
+
+        Binding {
+            target: itemsModelFilter
+            property: "appFilterText"
+            value: appsFilterInput.text
+        }
+    }
+
     GridView {
         id: itemsView
         anchors.left: catsContainer.right
-        anchors.top: parent.top
+        anchors.top: appsFilterInputContainer.bottom
         anchors.bottom: itemDescriptionLabel.top
         anchors.right: parent.right
-        visible: false
+        anchors.margins: 5
 
-        cellWidth: 128
+        cellWidth: 160
         cellHeight: 128
 
-        model: VisualDataModel {
-            model: itemsModel
+        model: itemsModel
 
-            delegate: Rectangle {
-                width: itemsView.cellWidth
-                height: itemsView.cellHeight
-                radius: 5
+        delegate: Rectangle {
+            id: itemsViewDelegate
 
-                color: itemMouseArea.containsMouse ? "#44FF6600" : "#00000000"
-                Behavior on color { PropertyAnimation {} }
+            width: itemsView.cellWidth
+            height: itemsView.cellHeight
+            radius: 5
 
-                Image {
-                    width: 96
-                    height: 96
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.top: parent.top
+            color: itemMouseArea.containsMouse ? "#AAA51E00" : "#33222222"
+            Behavior on color { PropertyAnimation {} }
 
-                    source: "image://appicon/" + itemIcon
-                    smooth: true
-                }
+            Image {
+                width: 64
+                height: 64
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 16
 
-                Text {
-                    text: itemName
+                source: "image://appicon/" + itemIcon
+                smooth: true
+            }
 
-                    width: parent.width
-                    font.pointSize: 10
-                    color: "#eeeeee"
+            Text {
+                text: itemName
 
-                    anchors.left: parent.left
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 3
+                width: parent.width
+                font.pointSize: 10
+                color: "#eeeeee"
 
-                    wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                    horizontalAlignment: Text.AlignHCenter
-                }
+                anchors.left: parent.left
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 16
 
-                MouseArea {
-                    id: itemMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
+                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                horizontalAlignment: Text.AlignHCenter
+            }
 
-                    onClicked: {
-                    }
+            MouseArea {
+                id: itemMouseArea
+                anchors.fill: parent
+                hoverEnabled: true
 
-                    onEntered: itemDescriptionLabel.text = itemDescription
-                    onExited: itemDescriptionLabel.text = ""
-                }
+                onClicked: rootRect.itemSelected(itemID)
+
+                onEntered: itemDescriptionLabel.text = itemDescription
+                onExited: itemDescriptionLabel.text = ""
+            }
+
+            GridView.onAdd: SequentialAnimation {
+                NumberAnimation { target: itemsViewDelegate; property: "opacity"; from: 0; to: 1; duration: 250; easing.type: Easing.InOutQuad }
+            }
+
+            GridView.onRemove: SequentialAnimation {
+                PropertyAction { target: itemsViewDelegate; property: "GridView.delayRemove"; value: true }
+                NumberAnimation { target: itemsViewDelegate; property: "scale"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
+                PropertyAction { target: itemsViewDelegate; property: "GridView.delayRemove"; value: false }
             }
         }
     }

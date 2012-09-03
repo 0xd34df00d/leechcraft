@@ -184,6 +184,19 @@ namespace LMP
 		label->installEventFilter (new AADisplayEventFilter (label));
 	}
 
+	QString PerformSubstitutions (QString mask, const MediaInfo& info)
+	{
+		mask.replace ("$artist", info.Artist_);
+		mask.replace ("$year", QString::number (info.Year_));
+		mask.replace ("$album", info.Album_);
+		QString trackNumStr = QString::number (info.TrackNumber_);
+		if (info.TrackNumber_ < 10)
+			trackNumStr.prepend ('0');
+		mask.replace ("$trackNumber", trackNumStr);
+		mask.replace ("$title", info.Title_);
+		return mask;
+	}
+
 	bool operator!= (const Phonon::MediaSource& left, const Phonon::MediaSource& right)
 	{
 		return !(left == right);

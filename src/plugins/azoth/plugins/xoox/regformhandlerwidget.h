@@ -72,7 +72,7 @@ namespace Xoox
 
 		void HandleConnecting (const QString&);
 
-		void SendRequest ();
+		void SendRequest (const QString& jid = QString ());
 		void Register ();
 	private:
 		void Clear ();

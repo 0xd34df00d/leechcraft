@@ -35,7 +35,7 @@ namespace Xoox
 		template<typename T>
 		class BaseConverter
 		{
-			const QString& Str_;
+			const QString Str_;
 			const T T_;
 
 			const QString DefStr_;

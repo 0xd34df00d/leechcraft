@@ -100,7 +100,7 @@ namespace Xoox
 		SetState (State::Connecting);
 	}
 
-	void RegFormHandlerWidget::SendRequest ()
+	void RegFormHandlerWidget::SendRequest (const QString& jid)
 	{
 		ShowMessage ("Fetching registration form...");
 
@@ -110,6 +110,8 @@ namespace Xoox
 
 		QXmppIq iq;
 		iq.setExtensions (QXmppElementList () << queryElem);
+		if (!jid.isEmpty ())
+			iq.setTo (jid);
 		Client_->sendPacket (iq);
 		LastStanzaID_ = iq.id ();
 

@@ -42,7 +42,7 @@ namespace Vrooby
 			{
 			}
 
-			QPixmap requestPixmap (const QString& id, QSize *size, const QSize& requestedSize)
+			QPixmap requestPixmap (const QString& id, QSize *size, const QSize&)
 			{
 				const auto& icon = Proxy_->GetIcon (id);
 				if (size)

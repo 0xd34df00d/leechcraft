@@ -1,5 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2011 Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,29 +20,31 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/core/icoreproxy.h>
+#include <interfaces/media/ieventsprovider.h>
 
-class QLineEdit;
-class QToolButton;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Lastfmscrobble
 {
-	class ClearLineEditAddon : public QObject
+	class Authenticator;
+
+	class EventAttendMarker : public QObject
 	{
 		Q_OBJECT
 
-		QToolButton *Button_;
-		QLineEdit *Edit_;
+		QNetworkAccessManager *NAM_;
+		qint64 ID_;
+		int Code_;
 	public:
-		ClearLineEditAddon (ICoreProxy_ptr, QLineEdit*);
-	protected:
-		bool eventFilter (QObject*, QEvent*);
-	private:
-		void UpdatePos ();
+		EventAttendMarker (Authenticator*, QNetworkAccessManager*, qint64, Media::EventAttendType, QObject* = 0);
 	private slots:
-		void updateButton (const QString&);
+		void mark ();
+		void handleFinished ();
+		void handleError ();
+	signals:
+		void finished ();
 	};
 }
 }

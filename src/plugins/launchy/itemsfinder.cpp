@@ -42,10 +42,13 @@ namespace Launchy
 	{
 		QStringList ScanDir (const QString& path)
 		{
-			const auto& infos = QDir (path).entryInfoList (QStringList ("*.desktop"));
+			const auto& infos = QDir (path).entryInfoList (QStringList ("*.desktop"),
+						QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot);
 			QStringList result;
 			for (const auto& info : infos)
-				result << info.absoluteFilePath ();
+				result += info.isDir () ?
+						ScanDir (info.absoluteFilePath ()) :
+						QStringList (info.absoluteFilePath ());
 			return result;
 		}
 
@@ -61,15 +64,12 @@ namespace Launchy
 			if (!result.isNull ())
 				return result;
 
-			for (auto ext : { ".png", ".svg", ".xpm" })
+			for (auto ext : { ".png", ".svg", ".xpm", ".jpg" })
 			{
-				result = QIcon ("/usr/share/pixmaps/" + name + ext);
-				if (!result.isNull ())
-					return result;
-
-				result = QIcon ("/usr/local/share/pixmaps/" + name + ext);
-				if (!result.isNull ())
-					return result;
+				if (QFile::exists ("/usr/share/pixmaps/" + name + ext))
+					return QIcon ("/usr/share/pixmaps/" + name + ext);
+				if (QFile::exists ("/usr/local/share/pixmaps/" + name + ext))
+					return QIcon ("/usr/local/share/pixmaps/" + name + ext);
 			}
 
 			if (result.isNull ())
@@ -81,11 +81,8 @@ namespace Launchy
 
 	void ItemsFinder::update ()
 	{
-		qDebug () << Q_FUNC_INFO;
 		Items_.clear ();
 		auto paths = ScanDir ("/usr/share/applications");
-		paths += ScanDir ("/usr/share/applications/kde4");
-		qDebug () << "scanned";
 
 		for (const auto& path : paths)
 		{
@@ -116,9 +113,6 @@ namespace Launchy
 				if (!cat.startsWith ("X-"))
 					Items_ [cat] << item;
 		}
-
-		qDebug () << Items_.keys ();
-		qDebug () << "done";
 
 		emit itemsListChanged ();
 	}

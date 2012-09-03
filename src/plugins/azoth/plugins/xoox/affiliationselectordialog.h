@@ -31,15 +31,19 @@ namespace Xoox
 	class AffiliationSelectorDialog : public QDialog
 	{
 		Q_OBJECT
-		
+
 		Ui::AffiliationSelectorDialog Ui_;
 	public:
 		AffiliationSelectorDialog (QWidget* = 0);
-		
+
 		QString GetJID () const;
 		void SetJID (const QString&);
+
 		QXmppMucItem::Affiliation GetAffiliation () const;
 		void SetAffiliation (QXmppMucItem::Affiliation);
+
+		QString GetReason () const;
+		void SetReason (const QString&);
 	};
 }
 }

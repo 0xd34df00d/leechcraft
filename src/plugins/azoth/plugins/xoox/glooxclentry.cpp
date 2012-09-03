@@ -458,7 +458,7 @@ namespace Xoox
 
 	void GlooxCLEntry::handleGWEdit ()
 	{
-		auto dia = new GWOptionsDialog (Account_->GetClientConnection ()->GetClient ());
+		auto dia = new GWOptionsDialog (Account_->GetClientConnection ()->GetClient (), GetJID ());
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
 	}

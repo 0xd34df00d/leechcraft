@@ -80,7 +80,7 @@ namespace Zheet
 		PendingNudges_ << entry;
 		Account_->GetNSConnection ()->requestSwitchboardConnection (entry);
 	}
-	
+
 	void SBManager::SendFile (const QString& file, uint id, const MSNBuddyEntry *entry)
 	{
 		const QFileInfo info (file);
@@ -115,7 +115,7 @@ namespace Zheet
 
 		Q_FOREACH (MSNMessage *msg, PendingMessages_.take (entry))
 			SendMessage (msg, entry);
-			
+
 		Q_FOREACH (auto ft, PendingTransfers_.take (entry))
 			conn->sendFile (ft);
 
@@ -123,7 +123,7 @@ namespace Zheet
 			SendNudge (QString (), entry);
 	}
 
-	void SBManager::handleBuddyLeft (MSN::SwitchboardServerConnection *conn, const MSNBuddyEntry *entry)
+	void SBManager::handleBuddyLeft (MSN::SwitchboardServerConnection*, const MSNBuddyEntry *entry)
 	{
 		Switchboards_.remove (entry);
 	}

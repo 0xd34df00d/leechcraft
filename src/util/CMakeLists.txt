@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 	..)
 
 SET (SRCS
+	gui/clearlineeditaddon.cpp
 	gui/flowlayout.cpp
 	gui/selectablebrowser.cpp
 	models/flattenfiltermodel.cpp
@@ -40,6 +41,7 @@ SET (SRCS
 	shortcuts/shortcutmanager.cpp
 	)
 SET (HEADERS
+	gui/clearlineeditaddon.h
 	gui/flowlayout.h
 	gui/selectablebrowser.h
 	models/flattenfiltermodel.h

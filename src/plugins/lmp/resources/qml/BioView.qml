@@ -1,11 +1,15 @@
 import QtQuick 1.0
 
 Rectangle {
+    id: rootRect
+
     anchors.fill: parent
     smooth: true
     z: 0
 
     color: "black"
+
+    signal linkActivated(string id)
 
     Text {
         id: artistNameLabel
@@ -106,6 +110,8 @@ Rectangle {
             anchors.topMargin: 8
             anchors.left: parent.left
             anchors.right: parent.right
+
+            onLinkActivated: rootRect.linkActivated(link)
         }
     }
 

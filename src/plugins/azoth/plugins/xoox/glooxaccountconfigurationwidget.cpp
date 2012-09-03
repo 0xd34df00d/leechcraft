@@ -117,6 +117,16 @@ namespace Xoox
 		Ui_.KeepAliveTimeout_->setValue (val);
 	}
 
+	bool GlooxAccountConfigurationWidget::GetFileLogEnabled () const
+	{
+		return Ui_.FileLogCheckbox_->checkState () == Qt::Checked;
+	}
+
+	void GlooxAccountConfigurationWidget::SetFileLogEnabled (bool log)
+	{
+		Ui_.FileLogCheckbox_->setCheckState (log ? Qt::Checked : Qt::Unchecked);
+	}
+
 	QString GlooxAccountConfigurationWidget::GetPassword () const
 	{
 		return Password_;

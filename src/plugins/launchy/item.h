@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <QHash>
+#include <QDebug>
 #include <QIcon>
 
 namespace LeechCraft
@@ -36,14 +37,30 @@ namespace Launchy
 		QHash<QString, QString> GenericName_;
 		QHash<QString, QString> Comments_;
 
-		QString Type_;
 		QStringList Categories_;
 		QString Command_;
+		QString WD_;
 
 		QString IconName_;
 		QIcon Icon_;
+
+		bool IsHidden_;
 	public:
+		enum class Type
+		{
+			Other,
+			Application,
+			URL,
+			Dir
+		};
+	private:
+		Type Type_;
+	public:
+		bool operator== (const Item&) const;
+
 		bool IsValid () const;
+
+		bool IsHidden () const;
 
 		QString GetName (const QString&) const;
 		QString GetGenericName (const QString&) const;
@@ -51,10 +68,18 @@ namespace Launchy
 		QString GetIconName () const;
 		QStringList GetCategories () const;
 
+		Type GetType () const;
+		QString GetCommand () const;
+		QString GetWorkingDirectory () const;
+
 		void SetIcon (const QIcon&);
 		QIcon GetIcon () const;
 
+		QDebug DebugPrint (QDebug) const;
+
 		static Item_ptr FromDesktopFile (const QString&);
 	};
+
+	QDebug operator<< (QDebug, const Item&);
 }
 }

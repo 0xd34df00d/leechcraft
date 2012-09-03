@@ -121,6 +121,7 @@ namespace Xoox
 		QByteArray OurPhotoHash_;
 
 		QPair<int, int> KAParams_;
+		bool FileLogEnabled_;
 
 		QIcon AccountIcon_;
 

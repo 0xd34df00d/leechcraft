@@ -67,7 +67,7 @@ namespace Glance
 		ScaleAnim_->start ();
 	}
 
-	void GlanceItem::hoverEnterEvent (QGraphicsSceneHoverEvent *e)
+	void GlanceItem::hoverEnterEvent (QGraphicsSceneHoverEvent*)
 	{
 		Q_FOREACH (GlanceItem* item, ItemsList_)
 			if (item->IsCurrent () && item != this)

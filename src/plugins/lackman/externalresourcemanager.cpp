@@ -43,7 +43,6 @@ namespace LackMan
 	{
 		QString fileName = URLToFileName (url);
 
-		bool hasFile = ResourcesDir_.exists (fileName);
 		if (ResourcesDir_.exists (fileName))
 			ResourcesDir_.remove (fileName);
 

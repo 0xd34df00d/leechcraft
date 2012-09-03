@@ -37,11 +37,8 @@ namespace Acetamide
 		Q_OBJECT
 
 		Ui::VCardDialog Ui_;
-
-		IrcAccount *Account_;
-		QString ID_;
 	public:
-		VCardDialog (EntryBase *entry, QWidget *parent = 0);
+		VCardDialog (QWidget *parent = 0);
 
 		void UpdateInfo (const WhoIsMessage& msg);
 	};

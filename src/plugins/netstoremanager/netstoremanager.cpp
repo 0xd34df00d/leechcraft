@@ -182,7 +182,13 @@ namespace NetStoreManager
 		const int idx = GetServiceVariants ().indexOf (service);
 		auto account = AccountsManager_->GetAccounts ().value (idx);
 		if (!account)
+		{
+			emit gotEntity (Util::MakeNotification ("NetStoreManager",
+					tr ("No account for service name %1.")
+						.arg ("<em>" + service + "</em>"),
+					PCritical_));
 			return;
+		}
 
 		UpManager_->handleUploadRequest (account, filename);
 		UpManager_->ScheduleAutoshare (filename);

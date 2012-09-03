@@ -34,6 +34,8 @@
 #include "recentreleasesfetcher.h"
 #include "pendingartistbio.h"
 #include "receventsfetcher.h"
+#include "eventsfetchaggregator.h"
+#include "eventattendmarker.h"
 
 namespace LeechCraft
 {
@@ -214,11 +216,33 @@ namespace Lastfmscrobble
 
 	void Plugin::UpdateRecommendedEvents ()
 	{
+		auto aggregator = new EventsFetchAggregator (this);
+
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		connect (new RecEventsFetcher (Auth_, nam, this),
+		aggregator->AddFetcher (new RecEventsFetcher (Auth_,
+					nam, RecEventsFetcher::Type::Recommended, this));
+		aggregator->AddFetcher (new RecEventsFetcher (Auth_,
+					nam, RecEventsFetcher::Type::Attending, this));
+
+		connect (aggregator,
 				SIGNAL (gotRecommendedEvents (Media::EventInfos_t)),
 				this,
 				SIGNAL (gotRecommendedEvents (Media::EventInfos_t)));
+	}
+
+	void Plugin::AttendEvent (qint64 id, Media::EventAttendType type)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		auto attendMarker = new EventAttendMarker (Auth_, nam, id, type, this);
+		connect (attendMarker,
+				SIGNAL (finished ()),
+				this,
+				SLOT (reloadRecommendedEvents ()));
+	}
+
+	void Plugin::reloadRecommendedEvents ()
+	{
+		UpdateRecommendedEvents ();
 	}
 }
 }

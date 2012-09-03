@@ -64,6 +64,9 @@ namespace LMP
 
 		void AddProvider (QObject*);
 
+		bool CanDeletePlaylist (const QModelIndex&) const;
+		void DeletePlaylist (const QModelIndex&);
+
 		QList<Phonon::MediaSource> GetSources (const QModelIndex&) const;
 
 		boost::optional<MediaInfo> TryResolveMediaInfo (const QUrl&) const;

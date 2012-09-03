@@ -158,6 +158,7 @@ namespace LMP
 		void handleStateChanged (Phonon::State);
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
 		void handleMetadata ();
+		void refillPlaylist ();
 		void setTransitionTime ();
 	signals:
 		void songChanged (const MediaInfo&);
