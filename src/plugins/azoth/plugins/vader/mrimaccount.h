@@ -113,6 +113,8 @@ namespace Vader
 	private slots:
 		void updateSelfAvatar (const QImage&);
 
+		void handleAuthError (const QString&);
+
 		void handleGotContacts (const QList<Proto::ContactInfo>&);
 		void handleUserStatusChanged (const Proto::ContactInfo&);
 		void handleContactAdded (quint32, quint32);
