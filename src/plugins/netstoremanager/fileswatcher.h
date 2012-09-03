@@ -19,6 +19,9 @@
 #pragma once
 
 #include <QObject>
+#include <QMap>
+
+class QTimer;
 
 namespace LeechCraft
 {
@@ -27,8 +30,30 @@ namespace NetStoreManager
 	class FilesWatcher : public QObject
 	{
 		Q_OBJECT
+
+		int INotifyDescriptor_;
+		int LastDescriptor_;
+		const uint32_t WatchMask_;
+		struct timeval WaitTime_;
+		fd_set WatchedDescriptors_;
+		const size_t BufferLength_;
+		const size_t EventSize_;
+
+		QMap<QString, int> WatchedPathes2Descriptors_;
+
+		QTimer *Timer_;
 	public:
 		FilesWatcher (QObject *parent = 0);
+		~FilesWatcher ();
+
+		void AddPath (const QString& path);
+		void AddPathes (const QStringList& pathes);
+
+	private:
+		void HandleNotification (int descriptor);
+
+	public slots:
+		void checkNotifications ();
 	};
 }
 }
