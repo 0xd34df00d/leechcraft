@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "eventsfetchaggregator.h"
+#include <algorithm>
 #include "receventsfetcher.h"
 
 namespace LeechCraft
