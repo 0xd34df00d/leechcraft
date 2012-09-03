@@ -497,7 +497,7 @@ namespace LMP
 
 		auto indexes = selModel->selectedRows ();
 		if (indexes.isEmpty ())
-			indexes << PlaylistFilter_->mapToSource (Ui_.Playlist_->currentIndex ());
+			indexes << Ui_.Playlist_->currentIndex ();
 		indexes.removeAll (QModelIndex ());
 
 		QList<Phonon::MediaSource> removedSources;
@@ -506,7 +506,7 @@ namespace LMP
 				tr ("Remove %n song(s)", 0, indexes.size ());
 
 		Q_FOREACH (const auto& idx, indexes)
-			removedSources << Player_->GetIndexSources (idx);
+			removedSources << Player_->GetIndexSources (PlaylistFilter_->mapToSource (idx));
 
 		auto cmd = new PlaylistUndoCommand (title, removedSources, Player_);
 		UndoStack_->push (cmd);
