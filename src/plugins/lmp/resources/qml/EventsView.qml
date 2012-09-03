@@ -218,7 +218,7 @@ Rectangle {
                     anchors.rightMargin: 2
                     visible: !isAttended
 
-                    text: "Sure!"
+                    text: attendSureTextString
 
                     onClicked: rootRect.attendSure(eventID)
                 }
@@ -231,7 +231,7 @@ Rectangle {
                     anchors.rightMargin: 2
                     visible: !isAttended
 
-                    text: "Maybe…"
+                    text: attendMaybeTextString
 
                     onClicked: rootRect.unattendMaybe(eventID)
                 }
@@ -244,7 +244,7 @@ Rectangle {
                     anchors.rightMargin: 2
                     visible: isAttended
 
-                    text: "I won't go"
+                    text: unattendTextString
 
                     onClicked: rootRect.unattend(eventID)
                 }

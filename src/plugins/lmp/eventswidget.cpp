@@ -78,6 +78,9 @@ namespace LMP
 		Ui_.setupUi (this);
 
 		Ui_.View_->rootContext ()->setContextProperty ("eventsModel", Model_);
+		Ui_.View_->rootContext ()->setContextProperty ("attendSureTextString", tr ("Sure!"));
+		Ui_.View_->rootContext ()->setContextProperty ("attendMaybeTextString", tr ("Maybe"));
+		Ui_.View_->rootContext ()->setContextProperty ("unattendTextString", tr ("Unattend"));
 		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/EventsView.qml"));
 
 		const auto& roots = Core::Instance ().GetProxy ()->GetPluginsManager ()->
