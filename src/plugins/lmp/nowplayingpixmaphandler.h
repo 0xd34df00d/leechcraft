@@ -46,6 +46,10 @@ namespace LMP
 		void AddSetter (const PixmapSetter_f);
 
 		void HandleSongChanged (const MediaInfo&, const QString&, const QPixmap&, bool);
+	public slots:
+		void handleGotArtistImage (const QString&, const QUrl&);
+	private slots:
+		void handleDownloadedImage ();
 	};
 }
 }

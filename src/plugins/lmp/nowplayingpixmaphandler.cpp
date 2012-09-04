@@ -58,5 +58,39 @@ namespace LMP
 		IsValidPixmap_ = correct;
 		LastCoverPath_ = coverPath;
 	}
+
+	void NowPlayingPixmapHandler::handleGotArtistImage (const QString& name, const QUrl& url)
+	{
+		if (name != LastArtist_ || !url.isValid ())
+			return;
+
+		if (IsValidPixmap_)
+			return;
+
+		auto nam = Core::Instance ().GetProxy ()->GetNetworkAccessManager ();
+		connect (nam->get (QNetworkRequest (url)),
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleDownloadedImage ()));
+	}
+
+	void NowPlayingPixmapHandler::handleDownloadedImage ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		const auto& pixmap = QPixmap::fromImage (QImage::fromData (reply->readAll ()));
+		if (pixmap.isNull ())
+			return;
+
+		Q_FOREACH (const auto& setter, Setters_)
+			setter (pixmap, QString ());
+
+		LastCoverPath_.clear ();
+		IsValidPixmap_ = true;
+	}
 }
 }
