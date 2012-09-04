@@ -53,6 +53,13 @@ namespace NetStoreManager
 		Uploads_ [acc].removeAll (path);
 
 		auto items = ReprItems_ [acc].take (path);
+		if (items.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty items list for"
+					<< path;
+			return;
+		}
 		ReprModel_->removeRow (items.first ()->row ());
 	}
 

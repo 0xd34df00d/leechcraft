@@ -35,6 +35,11 @@ namespace LMP
 		return *this;
 	}
 
+	bool MediaInfo::IsUseless () const
+	{
+		return (Artist_ + Album_ + Title_).trimmed ().isEmpty ();
+	}
+
 	MediaInfo::operator Media::AudioInfo () const
 	{
 		Media::AudioInfo aInfo =

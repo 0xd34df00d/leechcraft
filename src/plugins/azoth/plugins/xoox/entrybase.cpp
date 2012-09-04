@@ -27,6 +27,7 @@
 #include <QXmppPresence.h>
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
+#include <QXmppDiscoveryManager.h>
 #include <util/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
@@ -274,7 +275,10 @@ namespace Xoox
 			to += '/' + variant;
 		pres.setTo (to);
 
-		conn->GetClient ()->addProperCapability (pres);
+		auto discoMgr = conn->GetClient ()->findExtension<QXmppDiscoveryManager> ();
+		pres.setCapabilityHash ("sha-1");
+		pres.setCapabilityNode (discoMgr->clientCapabilitiesNode ());
+		pres.setCapabilityVer (discoMgr->capabilities ().verificationString ());
 		conn->GetClient ()->sendPacket (pres);
 	}
 

@@ -31,6 +31,7 @@
 #include <QKeyEvent>
 #include <QSortFilterProxyModel>
 #include <util/util.h>
+#include <util/gui/clearlineeditaddon.h>
 #include "player.h"
 #include "playlistdelegate.h"
 #include "xmlsettingsmanager.h"
@@ -129,6 +130,8 @@ namespace LMP
 	, ActionShowAlbumArt_ (0)
 	{
 		Ui_.setupUi (this);
+
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.SearchPlaylist_);
 
 		Ui_.BufferProgress_->hide ();
 		Ui_.Playlist_->setItemDelegate (new PlaylistDelegate (Ui_.Playlist_, Ui_.Playlist_));
@@ -494,7 +497,7 @@ namespace LMP
 
 		auto indexes = selModel->selectedRows ();
 		if (indexes.isEmpty ())
-			indexes << PlaylistFilter_->mapToSource (Ui_.Playlist_->currentIndex ());
+			indexes << Ui_.Playlist_->currentIndex ();
 		indexes.removeAll (QModelIndex ());
 
 		QList<Phonon::MediaSource> removedSources;
@@ -503,7 +506,7 @@ namespace LMP
 				tr ("Remove %n song(s)", 0, indexes.size ());
 
 		Q_FOREACH (const auto& idx, indexes)
-			removedSources << Player_->GetIndexSources (idx);
+			removedSources << Player_->GetIndexSources (PlaylistFilter_->mapToSource (idx));
 
 		auto cmd = new PlaylistUndoCommand (title, removedSources, Player_);
 		UndoStack_->push (cmd);
@@ -585,6 +588,15 @@ namespace LMP
 			return;
 
 		auto mgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
+
+		if (mgr->EnumerateCustomPlaylists ().contains (name) &&
+				QMessageBox::question (this,
+						"LeechCraft",
+						tr ("Playlist %1 already exists. Do you want to overwrite it?")
+							.arg ("<em>" + name + "</em>"),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
 		mgr->SaveCustomPlaylist (name, Player_->GetQueue ());
 	}
 

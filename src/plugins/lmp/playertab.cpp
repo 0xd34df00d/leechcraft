@@ -29,6 +29,7 @@
 #include <QMessageBox>
 #include <phonon/seekslider.h>
 #include <util/util.h>
+#include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/isimilarartists.h>
@@ -96,6 +97,8 @@ namespace LMP
 		Ui_.MainSplitter_->setStretchFactor (0, 2);
 		Ui_.MainSplitter_->setStretchFactor (1, 1);
 		Ui_.RadioWidget_->SetPlayer (Player_);
+
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.CollectionFilter_);
 
 		SetupNavButtons ();
 

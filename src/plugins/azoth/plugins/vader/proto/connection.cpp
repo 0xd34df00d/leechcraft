@@ -193,9 +193,10 @@ namespace Proto
 
 	void Connection::SetState (const EntryStatus& status)
 	{
-		if (IsConnected_ && status.State_ == SOffline)
+		if (status.State_ == SOffline)
 		{
 			Disconnect ();
+			emit statusChanged (status);
 		}
 		else if (!IsConnected_ && status.State_ != SOffline)
 		{
@@ -818,7 +819,8 @@ namespace Proto
 
 	void Connection::Disconnect ()
 	{
-		PingTimer_->stop ();
+		if (PingTimer_->isActive ())
+			PingTimer_->stop ();
 		Socket_->disconnectFromHost ();
 
 		PE_.Clear ();

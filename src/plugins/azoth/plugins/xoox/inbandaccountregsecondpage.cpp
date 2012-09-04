@@ -102,8 +102,8 @@ namespace Xoox
 
 		QXmppConfiguration conf;
 		conf.setDomain (server);
-		conf.setSASLAuthMechanism (QXmppConfiguration::SASLAnonymous);
-		conf.setIgnoreAuth (true);
+		conf.setUseNonSASLAuthentication (false);
+		conf.setUseSASLAuthentication (false);
 		Client_->connectToServer (conf);
 	}
 
