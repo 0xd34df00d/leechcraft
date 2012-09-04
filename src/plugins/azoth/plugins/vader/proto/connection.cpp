@@ -819,7 +819,8 @@ namespace Proto
 
 	void Connection::Disconnect ()
 	{
-		PingTimer_->stop ();
+		if (PingTimer_->isActive ())
+			PingTimer_->stop ();
 		Socket_->disconnectFromHost ();
 
 		PE_.Clear ();
