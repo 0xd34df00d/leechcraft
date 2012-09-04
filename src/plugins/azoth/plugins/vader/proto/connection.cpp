@@ -193,7 +193,7 @@ namespace Proto
 
 	void Connection::SetState (const EntryStatus& status)
 	{
-		if (IsConnected_ && status.State_ == SOffline)
+		if (status.State_ == SOffline)
 		{
 			Disconnect ();
 			emit statusChanged (status);
