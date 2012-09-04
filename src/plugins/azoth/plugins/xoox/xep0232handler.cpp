@@ -38,8 +38,25 @@ namespace XEP0232Handler
 
 	SoftwareInformation FromDataForm (const QXmppDataForm& form)
 	{
+		if (form.isNull ())
+			return SoftwareInformation ();
+
+		const auto& fields = form.fields ();
+		auto pos = std::find_if (fields.begin (), fields.end (),
+				[] (decltype (fields.front ()) field) { return field.key () == "FORM_TYPE"; });
+		if (pos == fields.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no FORM_TYPE"
+					<< form.title ();
+			return SoftwareInformation ();
+		}
+
+		if (pos->value () != SWInfoFormType)
+			return SoftwareInformation ();
+
 		SoftwareInformation si;
-		Q_FOREACH (const QXmppDataForm::Field& f, form.fields ())
+		Q_FOREACH (const QXmppDataForm::Field& f, fields)
 		{
 			const auto& var = f.key ();
 			if (var == "icon")
@@ -64,7 +81,7 @@ namespace XEP0232Handler
 				si.Software_ = f.value ().toString ();
 			else if (var == "software_version")
 				si.SoftwareVer_ = f.value ().toString ();
-			else
+			else if (var != "FORM_TYPE")
 				qWarning () << Q_FUNC_INFO
 						<< "unknown field"
 						<< var
