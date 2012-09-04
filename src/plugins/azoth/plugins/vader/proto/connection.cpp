@@ -196,6 +196,7 @@ namespace Proto
 		if (IsConnected_ && status.State_ == SOffline)
 		{
 			Disconnect ();
+			emit statusChanged (status);
 		}
 		else if (!IsConnected_ && status.State_ != SOffline)
 		{
