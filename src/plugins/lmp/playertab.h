@@ -48,6 +48,7 @@ namespace LMP
 {
 	struct MediaInfo;
 	class Player;
+	class NowPlayingPixmapHandler;
 
 	class PlayerTab : public QWidget
 					, public ITabWidget
@@ -70,7 +71,7 @@ namespace LMP
 		QLabel *RemainingTime_;
 
 		QHash<QString, Media::SimilarityInfos_t> Similars_;
-		QString LastSimilar_;
+		QString LastArtist_;
 
 		LMPSystemTrayIcon *TrayIcon_;
 		QAction *PlayPause_;
@@ -81,6 +82,8 @@ namespace LMP
 		QAction *CollectionDelete_;
 		QListWidget *NavButtons_;
 		QTabBar *NavBar_;
+
+		NowPlayingPixmapHandler *NPPixmapHandler_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
 		~PlayerTab ();

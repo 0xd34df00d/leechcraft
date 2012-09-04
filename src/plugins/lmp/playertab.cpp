@@ -46,6 +46,7 @@
 
 #ifdef ENABLE_MPRIS
 #include "mpris/instance.h"
+#include "nowplayingpixmaphandler.h"
 #endif
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);
@@ -92,11 +93,21 @@ namespace LMP
 	, TabToolbar_ (new QToolBar ())
 	, PlayPause_ (0)
 	, TrayMenu_ (new QMenu ("LMP", this))
+	, NPPixmapHandler_ (new NowPlayingPixmapHandler (this))
 	{
 		Ui_.setupUi (this);
 		Ui_.MainSplitter_->setStretchFactor (0, 2);
 		Ui_.MainSplitter_->setStretchFactor (1, 1);
 		Ui_.RadioWidget_->SetPlayer (Player_);
+
+		NPPixmapHandler_->AddSetter ([this] (const QPixmap& px, const QString&) { Ui_.NPWidget_->SetAlbumArt (px); });
+		NPPixmapHandler_->AddSetter ([this] (const QPixmap& px, const QString& path)
+				{
+					const QPixmap& scaled = px.scaled (Ui_.NPArt_->minimumSize (),
+							Qt::KeepAspectRatio, Qt::SmoothTransformation);
+					Ui_.NPArt_->setPixmap (scaled);
+					Ui_.NPArt_->setProperty ("LMP/CoverPath", path);
+				});
 
 		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.CollectionFilter_);
 
@@ -143,6 +154,11 @@ namespace LMP
 		XmlSettingsManager::Instance ().RegisterObject ("UseNavTabBar",
 				this, "handleUseNavTabBar");
 		handleUseNavTabBar ();
+
+		connect (Ui_.NPWidget_,
+				SIGNAL (gotArtistImage (QString, QUrl)),
+				NPPixmapHandler_,
+				SLOT (handleGotArtistImage (QString, QUrl)));
 
 #ifdef ENABLE_MPRIS
 		new MPRIS::Instance (this, Player_);
@@ -541,19 +557,19 @@ namespace LMP
 
 	void PlayerTab::handleSongChanged (const MediaInfo& info)
 	{
-		const auto& coverPath = FindAlbumArtPath (info.LocalPath_);
+		auto coverPath = FindAlbumArtPath (info.LocalPath_);
 		QPixmap px;
 		if (!coverPath.isEmpty ())
 			px = QPixmap (coverPath);
-		if (px.isNull ())
+
+		const bool isCorrect = !px.isNull ();
+		if (!isCorrect)
+		{
 			px = QIcon::fromTheme ("media-optical").pixmap (128, 128);
+			coverPath.clear ();
+		}
 
-		Ui_.NPWidget_->SetAlbumArt (px);
-		const QPixmap& scaled = px.scaled (Ui_.NPArt_->minimumSize (),
-				Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-		Ui_.NPArt_->setPixmap (scaled);
-		Ui_.NPArt_->setProperty ("LMP/CoverPath", coverPath);
+		NPPixmapHandler_->HandleSongChanged (info, coverPath, px, isCorrect);
 
 		Ui_.NPWidget_->SetTrackInfo (info);
 
@@ -563,7 +579,7 @@ namespace LMP
 
 		if (info.Artist_.isEmpty ())
 		{
-			LastSimilar_.clear ();
+			LastArtist_.clear ();
 			FillSimilar (Media::SimilarityInfos_t ());
 		}
 		else if (!Similars_.contains (info.Artist_))
@@ -586,9 +602,9 @@ namespace LMP
 						SLOT (handleSimilarReady ()));
 			}
 		}
-		else if (info.Artist_ != LastSimilar_)
+		else if (info.Artist_ != LastArtist_)
 		{
-			LastSimilar_ = info.Artist_;
+			LastArtist_ = info.Artist_;
 			FillSimilar (Similars_ [info.Artist_]);
 		}
 	}
@@ -635,8 +651,8 @@ namespace LMP
 		auto obj = qobject_cast<Media::IPendingSimilarArtists*> (sender ());
 
 		const auto& similar = obj->GetSimilar ();
-		LastSimilar_ = obj->GetSourceArtistName ();
-		Similars_ [LastSimilar_] = similar;
+		LastArtist_ = obj->GetSourceArtistName ();
+		Similars_ [LastArtist_] = similar;
 		FillSimilar (similar);
 	}
 

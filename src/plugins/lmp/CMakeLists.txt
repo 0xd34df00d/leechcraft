@@ -79,6 +79,7 @@ SET (SRCS
 	collectionstatsdialog.cpp
 	eventswidget.cpp
 	plmanagerwidget.cpp
+	nowplayingpixmaphandler.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
