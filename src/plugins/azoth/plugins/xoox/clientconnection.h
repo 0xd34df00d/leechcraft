@@ -80,6 +80,8 @@ namespace Xoox
 	class MsgArchivingManager;
 	class SDManager;
 
+	class ClientConnectionErrorMgr;
+
 #ifdef ENABLE_CRYPT
 	class PgpManager;
 #endif
@@ -115,6 +117,8 @@ namespace Xoox
 #ifdef ENABLE_CRYPT
 		PgpManager *PGPManager_;
 #endif
+
+		ClientConnectionErrorMgr *ErrorMgr_;
 
 		QString OurJID_;
 		QString OurBareJID_;
@@ -162,8 +166,6 @@ namespace Xoox
 		QSet<QString> SignedMessages_;
 		QHash<QString, QString> EncryptedMessages_;
 		QSet<QString> Entries2Crypt_;
-
-		QSet<QString> WhitelistedErrors_;
 
 		QHash<QString, QList<RIEXManager::Item>> AwaitingRIEXItems_;
 	public:
@@ -271,10 +273,8 @@ namespace Xoox
 	private:
 		void SetupLogger ();
 		void HandleOtherPresence (const QXmppPresence&);
-		void HandleError (const QXmppIq&);
 		void HandleRIEX (QString, QList<RIEXManager::Item>, QString = QString ());
 		void InvokeCallbacks (const QXmppIq&);
-		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
 	public slots:
 		void handlePendingForm (QXmppDataForm*, const QString&);
 	private slots:

@@ -84,6 +84,7 @@ SET (XOOX_SRCS
 	vcardlisteditdialog.cpp
 	regformhandlerwidget.cpp
 	gwoptionsdialog.cpp
+	clientconnectionerrormgr.cpp
 	xmppannotationsiq.cpp
 	xmppannotationsmanager.cpp
 	xmppbobiq.cpp
@@ -156,6 +157,7 @@ SET (XOOX_HEADERS
 	vcardlisteditdialog.h
 	regformhandlerwidget.h
 	gwoptionsdialog.h
+	clientconnectionerrormgr.h
 	xmppannotationsiq.h
 	xmppannotationsmanager.h
 	xmppbobiq.h

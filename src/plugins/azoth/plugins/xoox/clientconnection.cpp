@@ -70,6 +70,7 @@
 #include "pepmicroblog.h"
 #include "xmppbobmanager.h"
 #include "xmppcaptchamanager.h"
+#include "clientconnectionerrormgr.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -111,6 +112,7 @@ namespace Xoox
 #ifdef ENABLE_CRYPT
 	, PGPManager_ (0)
 #endif
+	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
 	, OurJID_ (jid)
 	, SelfContact_ (new SelfContact (jid, account))
 	, Account_ (account)
@@ -121,22 +123,19 @@ namespace Xoox
 	, VCardQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = Client_->vCardManager ().requestVCard (str);
-					if (report && !id.isEmpty ())
-						WhitelistedErrors_ << id;
+					ErrorMgr_->Whitelist (id, report);
 				},
 				jid.contains ("gmail.com") ? 1700 : 300, 1, this))
 	, CapsQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = DiscoveryManager_->requestInfo (str, "");
-					if (report && !id.isEmpty ())
-						WhitelistedErrors_ << id;
+					ErrorMgr_->Whitelist (id, report);
 				},
 				jid.contains ("gmail.com") ? 1000 : 200, 1, this))
 	, VersionQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = Client_->versionManager ().requestVersion (str);
-					if (report && !id.isEmpty ())
-						WhitelistedErrors_ << id;
+					ErrorMgr_->Whitelist (id, report);
 				},
 				jid.contains ("gmail.com") ? 1200 : 250, 1, this))
 	, SocketErrorAccumulator_ (0)
@@ -147,6 +146,11 @@ namespace Xoox
 		SetOurJID (OurJID_);
 
 		SetupLogger ();
+
+		connect (ErrorMgr_,
+				SIGNAL (serverAuthFailed ()),
+				this,
+				SIGNAL (serverAuthFailed ()));
 
 		LastState_.State_ = SOffline;
 
@@ -627,8 +631,7 @@ namespace Xoox
 		AwaitingDiscoInfo_ [jid] = callback;
 
 		const auto& id = DiscoveryManager_->requestInfo (jid, node);
-		if (report && !id.isEmpty ())
-			WhitelistedErrors_ << id;
+		ErrorMgr_->Whitelist (id, report);
 	}
 
 	void ClientConnection::RequestItems (const QString& jid,
@@ -637,8 +640,7 @@ namespace Xoox
 		AwaitingDiscoItems_ [jid] = callback;
 
 		const auto& id = DiscoveryManager_->requestItems (jid, node);
-		if (report && !id.isEmpty ())
-			WhitelistedErrors_ << id;
+		ErrorMgr_->Whitelist (id, report);
 	}
 
 	void ClientConnection::Update (const QXmppRosterIq::Item& item)
@@ -735,7 +737,7 @@ namespace Xoox
 
 	void ClientConnection::WhitelistError (const QString& id)
 	{
-		WhitelistedErrors_ << id;
+		ErrorMgr_->Whitelist (id, true);
 	}
 
 	void ClientConnection::SendPacketWCallback (const QXmppIq& packet,
@@ -979,7 +981,7 @@ namespace Xoox
 			break;
 		case QXmppClient::XmppStreamError:
 			str = tr ("error while connecting: ");
-			str += HandleErrorCondition (Client_->xmppStreamError ());
+			str += ErrorMgr_->HandleErrorCondition (Client_->xmppStreamError ());
 			break;
 		case QXmppClient::NoError:
 			str = tr ("no error.");
@@ -1006,19 +1008,7 @@ namespace Xoox
 
 	void ClientConnection::handleIqReceived (const QXmppIq& iq)
 	{
-		switch (iq.error ().type ())
-		{
-		case QXmppStanza::Error::Cancel:
-		case QXmppStanza::Error::Continue:
-		case QXmppStanza::Error::Modify:
-		case QXmppStanza::Error::Auth:
-		case QXmppStanza::Error::Wait:
-			HandleError (iq);
-			break;
-		default:
-			WhitelistedErrors_.remove (iq.id ());
-			break;
-		}
+		ErrorMgr_->HandleIq (iq);
 		InvokeCallbacks (iq);
 	}
 
@@ -1496,50 +1486,6 @@ namespace Xoox
 		}
 	}
 
-	void ClientConnection::HandleError (const QXmppIq& iq)
-	{
-		const QXmppStanza::Error& error = iq.error ();
-		if (!WhitelistedErrors_.remove (iq.id ()))
-			switch (error.condition ())
-			{
-			case QXmppStanza::Error::FeatureNotImplemented:
-			case QXmppStanza::Error::ItemNotFound:
-			case QXmppStanza::Error::ServiceUnavailable:
-				return;
-			default:
-				break;
-			}
-
-		QString typeText;
-		if (!iq.from ().isEmpty ())
-			typeText = tr ("Error from %1: ")
-					.arg (iq.from ());
-		typeText += HandleErrorCondition (error.condition ());
-
-		if (!error.text ().isEmpty ())
-			typeText += " " + tr ("Error text: %1.")
-					.arg (error.text ());
-
-		const Entity& e = Util::MakeNotification ("Azoth",
-				typeText,
-				PCritical_);
-		Core::Instance ().SendEntity (e);
-
-		const bool dontTryFurther = error.type () == QXmppStanza::Error::Cancel ||
-			(error.type () == QXmppStanza::Error::Auth &&
-			 error.condition () != QXmppStanza::Error::NotAuthorized);
-		if (dontTryFurther && !Client_->isConnected ())
-		{
-			GlooxAccountState state =
-			{
-				SOffline,
-				QString (),
-				0
-			};
-			SetState (state);
-		}
-	}
-
 	void ClientConnection::HandleRIEX (QString msgFrom, QList<RIEXManager::Item> origItems, QString body)
 	{
 		QList<RIEXItem> items;
@@ -1586,57 +1532,6 @@ namespace Xoox
 		QMetaObject::invokeMethod (cb.first,
 				cb.second,
 				Q_ARG (QXmppIq, iq));
-	}
-
-	QString ClientConnection::HandleErrorCondition (const QXmppStanza::Error::Condition& condition)
-	{
-		switch (condition)
-		{
-		case QXmppStanza::Error::BadRequest:
-			return tr ("Bad request.");
-		case QXmppStanza::Error::Conflict:
-			return tr ("Conflict (possibly, resource conflict).");
-		case QXmppStanza::Error::FeatureNotImplemented:
-			return tr ("Feature not implemented.");
-		case QXmppStanza::Error::Forbidden:
-			return tr ("Forbidden.");
-			//case QXmppStanza::Error::Gone:
-		case QXmppStanza::Error::InternalServerError:
-			return tr ("Internal server error.");
-		case QXmppStanza::Error::ItemNotFound:
-			return tr ("Item not found.");
-		case QXmppStanza::Error::JidMalformed:
-			return tr ("JID is malformed.");
-		case QXmppStanza::Error::NotAcceptable:
-			return tr ("Data is not acceptable.");
-		case QXmppStanza::Error::NotAllowed:
-			return tr ("Action is not allowed.");
-		case QXmppStanza::Error::NotAuthorized:
-			emit serverAuthFailed ();
-			return tr ("Not authorized.");
-		case QXmppStanza::Error::PaymentRequired:
-			return tr ("Payment required.");
-		case QXmppStanza::Error::RecipientUnavailable:
-			return tr ("Recipient unavailable.");
-		case QXmppStanza::Error::Redirect:
-			return tr ("Got redirect.");
-		case QXmppStanza::Error::RegistrationRequired:
-			return tr ("Registration required.");
-		case QXmppStanza::Error::RemoteServerNotFound:
-			return tr ("Remote server not found.");
-		case QXmppStanza::Error::RemoteServerTimeout:
-			return tr ("Timeout contacting remote server.");
-		case QXmppStanza::Error::ResourceConstraint:
-			return tr ("Error due to resource constraint.");
-		case QXmppStanza::Error::ServiceUnavailable:
-			return tr ("Service is unavailable at the moment.");
-		case QXmppStanza::Error::SubscriptionRequired:
-			return tr ("Subscription is required to perform this action.");
-			//case QXmppStanza::Error::UndefinedCondition:
-			//case QXmppStanza::Error::UnexpectedRequest:
-		default:
-			return tr ("Other error.");
-		}
 	}
 
 	void ClientConnection::InitializeQCA ()
