@@ -43,10 +43,10 @@
 #include "collectiondelegate.h"
 #include "xmlsettingsmanager.h"
 #include "aalabeleventfilter.h"
+#include "nowplayingpixmaphandler.h"
 
 #ifdef ENABLE_MPRIS
 #include "mpris/instance.h"
-#include "nowplayingpixmaphandler.h"
 #endif
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);
