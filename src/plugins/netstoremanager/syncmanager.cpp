@@ -45,6 +45,7 @@ namespace NetStoreManager
 
 	void SyncManager::Release ()
 	{
+		FilesWatcher_->Release ();
 	}
 
 	namespace

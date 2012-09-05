@@ -47,23 +47,14 @@ namespace LeechCraft
 					SLOT (checkNotifications ()));
 		}
 
-		FilesWatcher::~FilesWatcher ()
-		{
-			for (auto fd : WatchedPathes2Descriptors_.values ())
-				inotify_rm_watch (INotifyDescriptor_, fd);
-
-			close (INotifyDescriptor_);
-		}
-
 		void FilesWatcher::AddPath (const QString& path)
 		{
 			int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
-			WatchedPathes2Descriptors_ [path] = fd;
+			WatchedPathes2Descriptors_.insert (descriptorsMap::value_type (path, fd));
 
 			qDebug () << "added path"
-					<< path
-					<< "with id"
-					<< fd;
+					<< path;
+
 			if (!Timer_->isActive ())
 				Timer_->start (1000);
 		}
@@ -72,6 +63,14 @@ namespace LeechCraft
 		{
 			for (const auto & path : pathes)
 				AddPath (path);
+		}
+
+		void FilesWatcher::Release ()
+		{
+			for (auto map : WatchedPathes2Descriptors_.left)
+				inotify_rm_watch (INotifyDescriptor_, map.second);
+
+			close (INotifyDescriptor_);
 		}
 
 		void FilesWatcher::HandleNotification (int descriptor)
@@ -87,7 +86,6 @@ namespace LeechCraft
 			int i = 0;
 
 			QList<inotify_event*> eventsBuffer;
-			qDebug () << "length" << length;
 			while (i < length)
 			{
 				struct inotify_event *event = reinterpret_cast<struct inotify_event*> (&buffer [i]);
@@ -96,7 +94,7 @@ namespace LeechCraft
 				{
 					if (event->mask & IN_ISDIR)
 					{
-						QString path = WatchedPathes2Descriptors_.key (event->wd);
+						QString path = WatchedPathes2Descriptors_.right.at (event->wd);
 						if (!path.isEmpty ())
 							AddPath (path + "/" + QString (event->name));
 						//TODO create dir
@@ -153,7 +151,7 @@ namespace LeechCraft
 				else if (event->mask & IN_DELETE_SELF)
 				{
 					inotify_rm_watch (INotifyDescriptor_, event->wd);
-					WatchedPathes2Descriptors_.remove (WatchedPathes2Descriptors_.key (event->wd));
+					WatchedPathes2Descriptors_.right.erase (event->wd);
 					//TODO remove dir
 				}
 				else if (event->mask & IN_MOVE_SELF)

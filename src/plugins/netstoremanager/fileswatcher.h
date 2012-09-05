@@ -19,7 +19,7 @@
 #pragma once
 
 #include <QObject>
-#include <QMap>
+#include <boost/bimap.hpp>
 
 class QTimer;
 
@@ -37,15 +37,17 @@ namespace NetStoreManager
 		size_t BufferLength_;
 		size_t EventSize_;
 
-		QMap<QString, int> WatchedPathes2Descriptors_;
+		typedef boost::bimaps::bimap<QString, int> descriptorsMap;
+		descriptorsMap WatchedPathes2Descriptors_;
 
 		QTimer *Timer_;
 	public:
 		FilesWatcher (QObject *parent = 0);
-		~FilesWatcher ();
 
 		void AddPath (const QString& path);
 		void AddPathes (const QStringList& pathes);
+
+		void Release ();
 
 	private:
 		void HandleNotification (int descriptor);
