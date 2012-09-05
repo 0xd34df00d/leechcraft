@@ -32,12 +32,10 @@ namespace NetStoreManager
 		Q_OBJECT
 
 		int INotifyDescriptor_;
-		int LastDescriptor_;
 		const uint32_t WatchMask_;
-		struct timeval WaitTime_;
-		fd_set WatchedDescriptors_;
-		const size_t BufferLength_;
-		const size_t EventSize_;
+		const int  WaitMSecs_;
+		size_t BufferLength_;
+		size_t EventSize_;
 
 		QMap<QString, int> WatchedPathes2Descriptors_;
 

@@ -35,7 +35,6 @@ namespace NetStoreManager
 	: QObject (parent)
 	, AM_ (am)
 	, Timer_ (new QTimer (this))
-	, WatcherThread_ (new QThread (this))
 	, FilesWatcher_ (0)
 	{
 // 		connect (Timer_,
@@ -46,21 +45,20 @@ namespace NetStoreManager
 
 	void SyncManager::Release ()
 	{
-		WatcherThread_->exit ();
 	}
 
 	namespace
 	{
-		QStringList ScanDir (const QString& path, bool recursive)
+		QStringList ScanDir (QDir::Filters filter, const QString& path, bool recursive)
 		{
 			QDir baseDir (path);
 			QStringList pathes;
-			for (const auto& entry : baseDir.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot))
+			for (const auto& entry : baseDir.entryInfoList (filter))
 			{
 				pathes << entry.absoluteFilePath ();
 				if (recursive &&
 						entry.isDir ())
-					pathes << ScanDir (entry.absoluteFilePath (), recursive);
+					pathes << ScanDir (filter, entry.absoluteFilePath (), recursive);
 			}
 			return pathes;
 		}
@@ -73,8 +71,6 @@ namespace NetStoreManager
 			try
 			{
 				FilesWatcher_ = new FilesWatcher;
-				WatcherThread_->start ();
-				FilesWatcher_->moveToThread (WatcherThread_);
 			}
 			catch (const std::exception& e)
 			{
@@ -91,11 +87,11 @@ namespace NetStoreManager
 			qDebug () << "watching directory "
 					<< dirPath;
 
-			QStringList pathes = ScanDir (dirPath, true);
+			QStringList pathes = ScanDir (QDir::NoDotAndDotDot | QDir::Dirs, dirPath, true);
 			FilesWatcher_->AddPathes (pathes);
 			FilesWatcher_->AddPath (dirPath);
 			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [dirPath]->GetObject ());
-			isfl->CheckForSyncUpload (pathes, dirPath);
+// 			isfl->CheckForSyncUpload (pathes, dirPath);
 		}
 
 		// check for changes every minute

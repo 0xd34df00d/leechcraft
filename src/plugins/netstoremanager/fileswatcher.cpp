@@ -21,6 +21,7 @@
 #include <QStringList>
 #include <QTimer>
 #include <sys/inotify.h>
+#include <sys/poll.h>
 #include <stdexcept>
 
 namespace LeechCraft
@@ -29,24 +30,21 @@ namespace LeechCraft
 	{
 		FilesWatcher::FilesWatcher (QObject *parent)
 		: QObject (parent)
-		, INotifyDescriptor_ (inotify_init ())
-		, WatchMask_ (IN_ALL_EVENTS)
-		, EventSize_ (sizeof (struct inotify_event))
-		, BufferLength_ (1024 * (EventSize_ + 16))
+		, WatchMask_ (IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY | IN_MOVE_SELF | IN_MOVED_FROM | IN_MOVED_TO )
+		, WaitMSecs_ (50)
 		, Timer_ (new QTimer (this))
 		{
+			INotifyDescriptor_ = inotify_init ();
 			if (INotifyDescriptor_ < 0)
 				throw std::runtime_error ("inotify_init faild. Synchronization will not work.");
 
-			FD_ZERO (&WatchedDescriptors_);
-			WaitTime_.tv_sec = 0;
-			WaitTime_.tv_usec = 50;
+			EventSize_ = sizeof (struct inotify_event);
+			BufferLength_ = 1024 * (EventSize_ + 16);
 
 			connect (Timer_,
 					SIGNAL (timeout ()),
 					this,
-					SLOT (checkNotifications ()),
-					Qt::QueuedConnection);
+					SLOT (checkNotifications ()));
 		}
 
 		FilesWatcher::~FilesWatcher ()
@@ -60,10 +58,12 @@ namespace LeechCraft
 		void FilesWatcher::AddPath (const QString& path)
 		{
 			int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
-			FD_SET (fd, &WatchedDescriptors_);
 			WatchedPathes2Descriptors_ [path] = fd;
-			LastDescriptor_ = fd;
 
+			qDebug () << "added path"
+					<< path
+					<< "with id"
+					<< fd;
 			if (!Timer_->isActive ())
 				Timer_->start (1000);
 		}
@@ -78,7 +78,6 @@ namespace LeechCraft
 		{
 			char buffer [BufferLength_];
 			ssize_t length = read (descriptor, buffer, BufferLength_);
-
 			if (length < 0)
 			{
 				qDebug () << "read error";
@@ -87,77 +86,79 @@ namespace LeechCraft
 
 			int i = 0;
 
+			QList<inotify_event*> eventsBuffer;
+			qDebug () << "length" << length;
 			while (i < length)
 			{
 				struct inotify_event *event = reinterpret_cast<struct inotify_event*> (&buffer [i]);
 
-				if (event->len)
+				if (event->mask & IN_CREATE)
 				{
-					if (event->mask & IN_CREATE)
+					if (event->mask & IN_ISDIR)
 					{
-						if (event->mask & IN_ISDIR)
-						{
-							qDebug () << "The directory"
-									<< event->name
-									<< "was created";
-						}
-						else
-						{
-							qDebug () << "The file"
-									<< event->name
-									<< "was created";
-						}
+						QString path = WatchedPathes2Descriptors_.key (event->wd);
+						if (!path.isEmpty ())
+							AddPath (path + "/" + QString (event->name));
+						//TODO create dir
 					}
-					else if (event->mask & IN_DELETE)
+					else
 					{
-						if (event->mask & IN_ISDIR)
-						{
-							qDebug () << "The directory"
-									<< event->name
-									<< "was deleted";
-						}
-						else
-						{
-							qDebug () << "The file"
-									<< event->name
-									<< "was deleted";
-						}
+						//TODO upload file
 					}
-					else if (event->mask & IN_MODIFY)
+
+				}
+				else if (event->mask & IN_DELETE)
+				{
+					if (event->mask & IN_ISDIR)
 					{
-						if (event->mask & IN_ISDIR)
-						{
-							qDebug () << "The directory"
-									<< event->name
-									<< "was modified";
-						}
-						else
-						{
-							qDebug () << "The file"
-									<< event->name
-									<< "was modified";
-						}
+						//TODO remove dir with all content
 					}
-					else if (event->mask & IN_ATTRIB)
+					else
 					{
-						qDebug () << "The file"
-								<< event->name
-								<< "change attribute";
+						//TODO remove file
 					}
-					else if (event->mask & IN_MOVED_FROM)
+
+				}
+				else if (event->mask & IN_MODIFY)
+				{
+					if (event->mask & IN_ISDIR)
 					{
-						qDebug () << "The file"
-								<< event->name
-								<< "change move from with cookie"
-								<< event->cookie;
+						//TODO modify directory
 					}
-					else if (event->mask & IN_MOVED_TO)
+					else
 					{
-						qDebug () << "The file"
-								<< event->name
-								<< "change move to with cookie"
-								<< event->cookie;
+						//TODO reupload file
 					}
+				}
+				else if (event->mask & IN_MOVED_FROM)
+				{
+					eventsBuffer << event;
+				}
+				else if (event->mask & IN_MOVED_TO)
+				{
+					if (!eventsBuffer.isEmpty ())
+						for (auto e : eventsBuffer)
+							if (e->cookie == event->cookie &&
+									e->wd == event->wd)
+							{
+								//TODO rename file
+								break;
+							}
+							else if (e->cookie == event->cookie)
+							{
+								//TODO moving file
+								break;
+							}
+				}
+				else if (event->mask & IN_DELETE_SELF)
+				{
+					inotify_rm_watch (INotifyDescriptor_, event->wd);
+					WatchedPathes2Descriptors_.remove (WatchedPathes2Descriptors_.key (event->wd));
+					//TODO remove dir
+				}
+				else if (event->mask & IN_MOVE_SELF)
+				{
+					//TODO remove file
 				}
 
 				i += EventSize_ + event->len;
@@ -166,25 +167,16 @@ namespace LeechCraft
 
 		void FilesWatcher::checkNotifications ()
 		{
-// 		int res = select (LastDescriptor_ + 1,
-// 				&WatchedDescriptors_,
-// 				NULL,
-// 				NULL,
-// 				&WaitTime_);
-//
-// 		qDebug () << res;
-// 		if (res < 0)
-// 		{
-// 			qDebug () << "error";
-// 		}
-// 		else if (!res)
-// 		{
-// 		}
-// 		else
-// 		{
-			qDebug () << "handle";
-			HandleNotification (INotifyDescriptor_);
-// 		}
+			struct pollfd pfd = { INotifyDescriptor_, POLLIN, 0 };
+			int res = poll (&pfd, 1, WaitMSecs_);
+
+			if (res < 0)
+				qDebug () << "error";
+			else if (!res)
+			{
+			}
+			else
+				HandleNotification (INotifyDescriptor_);
 		}
 	}
 }

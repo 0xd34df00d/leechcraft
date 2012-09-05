@@ -43,7 +43,6 @@ namespace NetStoreManager
 		QMap<QString, IStorageAccount*> Path2Account_;
 		QTimer *Timer_;
 
-		QThread *WatcherThread_;
 		FilesWatcher *FilesWatcher_;
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
