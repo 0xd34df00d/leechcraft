@@ -6,6 +6,15 @@
 	</page>
 	<page>
 		<label value="Synchronization" />
-		<item type="customwidget" name="SyncWidget" label="own" />
+		<tab>
+			<label value="Directories" />
+			<item type="customwidget" name="SyncWidget" label="own" />
+		</tab>
+		<tab>
+			<label value="Exceptions" />
+			<item type="multiline" property="ExceptionsList" position="bottom">
+				<label value="Ignore synchronizations for files with following masks: " />
+			</item>
+		</tab>
 	</page>
 </settings>
