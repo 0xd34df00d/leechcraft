@@ -96,8 +96,11 @@ namespace LeechCraft
 					{
 						QString path = WatchedPathes2Descriptors_.right.at (event->wd);
 						if (!path.isEmpty ())
-							AddPath (path + "/" + QString (event->name));
-						//TODO create dir
+						{
+							QString dirPath = path + "/" + QString (event->name);
+							AddPath (dirPath);
+							//TODO create dir
+						}
 					}
 					else
 					{
