@@ -146,10 +146,16 @@ namespace Launchy
 
 	void FSDisplayer::Execute (Item_ptr item)
 	{
-		const auto& command = item->GetCommand ();
+		auto command = item->GetCommand ();
 
 		if (item->GetType () == Item::Type::Application)
 		{
+			command.remove ("%c");
+			command.remove ("%f");
+			command.remove ("%F");
+			command.remove ("%u");
+			command.remove ("%U");
+			command.remove ("%i");
 			auto items = command.split (' ', QString::SkipEmptyParts);
 			auto removePred = [] (const QString& str)
 				{ return str.size () == 2 && str.at (0) == '%'; };

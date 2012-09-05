@@ -55,6 +55,8 @@ namespace LMP
 		void on_NextLyricsButton__released ();
 		void updateLyricsSwitcher ();
 		void resetSimilarArtists ();
+	signals:
+		void gotArtistImage (const QString&, const QUrl&);
 	};
 }
 }

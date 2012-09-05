@@ -27,6 +27,7 @@ FIND_PACKAGE (Taglib REQUIRED)
 ADD_DEFINITIONS (${TAGLIB_CFLAGS})
 
 SET (QT_USE_QTDECLARATIVE TRUE)
+SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTSQL TRUE)
 SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
@@ -79,6 +80,7 @@ SET (SRCS
 	collectionstatsdialog.cpp
 	eventswidget.cpp
 	plmanagerwidget.cpp
+	nowplayingpixmaphandler.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
@@ -118,7 +120,7 @@ CreateTrVars ("lmp" "en;es;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-OPTION (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" FALSE)
+OPTION (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" TRUE)
 
 ADD_CUSTOM_COMMAND (OUTPUT
 	${COMPILED_TRANSLATIONS}

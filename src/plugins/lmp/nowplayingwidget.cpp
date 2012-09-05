@@ -46,6 +46,11 @@ namespace LMP
 		Ui_.NextLyricsButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("go-next"));
 
 		updateLyricsSwitcher ();
+
+		connect (Ui_.BioWidget_,
+				SIGNAL (gotArtistImage (QString, QUrl)),
+				this,
+				SIGNAL (gotArtistImage (QString, QUrl)));
 	}
 
 	void NowPlayingWidget::SetSimilarArtists (Media::SimilarityInfos_t infos)

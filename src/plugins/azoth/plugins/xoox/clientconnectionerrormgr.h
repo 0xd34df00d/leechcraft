@@ -16,51 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CONSOLEWIDGET_H
-#define PLUGINS_AZOTH_CONSOLEWIDGET_H
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "interfaces/azoth/ihaveconsole.h"
-#include "ui_consolewidget.h"
+#pragma once
+
+#include <QObject>
+#include <QSet>
+#include <QXmppStanza.h>
+
+class QXmppIq;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class IAccount;
-	class IHaveConsole;
+namespace Xoox
+{
+	class ClientConnection;
 
-	class ConsoleWidget : public QWidget
-						, public ITabWidget
+	class ClientConnectionErrorMgr : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget);
 
-		Ui::ConsoleWidget Ui_;
-		QObject *ParentMultiTabs_;
-		TabClassInfo TabClass_;
+		ClientConnection *ClientConn_;
 
-		IAccount *AsAccount_;
-		IHaveConsole *AsConsole_;
-		const IHaveConsole::PacketFormat Format_;
+		QSet<QString> WhitelistedErrors_;
 	public:
-		ConsoleWidget (QObject*, QWidget* = 0);
+		ClientConnectionErrorMgr (ClientConnection*);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		void Whitelist (const QString&, bool add = true);
+		void HandleIq (const QXmppIq&);
 
-		void SetParentMultiTabs (QObject*);
-		QString GetTitle () const;
-	private slots:
-		void handleConsolePacket (QByteArray, int, const QString&);
-		void on_ClearButton__released ();
-		void on_EnabledBox__toggled (bool);
+		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
+	private:
+		void HandleError (const QXmppIq&);
 	signals:
-		void removeTab (QWidget*);
+		void serverAuthFailed ();
 	};
 }
 }
-
-#endif
+}

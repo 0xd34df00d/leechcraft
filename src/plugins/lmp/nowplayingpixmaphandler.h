@@ -16,51 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CONSOLEWIDGET_H
-#define PLUGINS_AZOTH_CONSOLEWIDGET_H
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "interfaces/azoth/ihaveconsole.h"
-#include "ui_consolewidget.h"
+#pragma once
+
+#include <QObject>
+
+class QPixmap;
+class QUrl;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace LMP
 {
-	class IAccount;
-	class IHaveConsole;
+	struct MediaInfo;
 
-	class ConsoleWidget : public QWidget
-						, public ITabWidget
+	class NowPlayingPixmapHandler : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget);
 
-		Ui::ConsoleWidget Ui_;
-		QObject *ParentMultiTabs_;
-		TabClassInfo TabClass_;
-
-		IAccount *AsAccount_;
-		IHaveConsole *AsConsole_;
-		const IHaveConsole::PacketFormat Format_;
+		bool IsValidPixmap_;
+		QString LastArtist_;
+		QString LastCoverPath_;
 	public:
-		ConsoleWidget (QObject*, QWidget* = 0);
+		typedef std::function<void (QPixmap, QString)> PixmapSetter_f;
+	private:
+		QList<PixmapSetter_f> Setters_;
+	public:
+		NowPlayingPixmapHandler (QObject* = 0);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		void AddSetter (const PixmapSetter_f);
 
-		void SetParentMultiTabs (QObject*);
-		QString GetTitle () const;
+		void HandleSongChanged (const MediaInfo&, const QString&, const QPixmap&, bool);
+	public slots:
+		void handleGotArtistImage (const QString&, const QUrl&);
 	private slots:
-		void handleConsolePacket (QByteArray, int, const QString&);
-		void on_ClearButton__released ();
-		void on_EnabledBox__toggled (bool);
-	signals:
-		void removeTab (QWidget*);
+		void handleDownloadedImage ();
 	};
 }
 }
-
-#endif

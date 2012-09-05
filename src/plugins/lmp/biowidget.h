@@ -51,6 +51,8 @@ namespace LMP
 		void requestBiography ();
 		void handleBioReady ();
 		void handleLink (const QString&);
+	signals:
+		void gotArtistImage (const QString&, const QUrl&);
 	};
 }
 }

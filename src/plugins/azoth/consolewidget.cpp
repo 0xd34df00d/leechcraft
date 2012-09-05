@@ -117,8 +117,17 @@ namespace Azoth
 		case IHaveConsole::PFXML:
 		{
 			QDomDocument doc;
+			data.prepend ("<root>");
+			data.append ("</root>");
 			if (doc.setContent (data))
 				data = doc.toByteArray (2);
+
+			auto lines = data.split ('\n');
+			data.clear ();
+			lines = lines.mid (1, lines.size () - 3);
+
+			Q_FOREACH (const auto& line, lines)
+				data += line.mid (2) + '\n';
 		}
 		case IHaveConsole::PFPlainText:
 			html += QString::fromUtf8 (data

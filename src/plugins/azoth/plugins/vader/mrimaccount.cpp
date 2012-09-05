@@ -602,6 +602,16 @@ namespace Vader
 
 	void MRIMAccount::handleOurStatusChanged (const EntryStatus& status)
 	{
+		if (status.State_ == SOffline)
+			Q_FOREACH (MRIMBuddy *buddy, Buddies_.values ())
+			{
+				auto info = buddy->GetInfo ();
+				info.StatusID_ = Proto::UserState::Offline;
+				info.StatusDesc_.clear ();
+				info.StatusTitle_.clear ();
+				buddy->UpdateInfo (info);
+			}
+
 		Status_ = status;
 		emit statusChanged (status);
 	}
