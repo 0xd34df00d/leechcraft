@@ -62,8 +62,35 @@ namespace LeechCraft
 				QVariant::fromValue<QObject*> (this));
 
 		int row = lay->rowCount ();
-		lay->addWidget (label, row, 0, Qt::AlignRight | Qt::AlignTop);
-		lay->addWidget (edit, row, 1);
+		QString pos = item.attribute ("position");
+		qDebug () << pos;
+		if (pos == "bottom")
+		{
+			lay->addWidget (label, row, 0, Qt::AlignLeft);
+			lay->addWidget (edit, row + 1, 0);
+		}
+		else if (pos == "right")
+		{
+			lay->addWidget (label, row, 0, Qt::AlignRight | Qt::AlignTop);
+			lay->addWidget (edit, row, 1);
+		}
+		else if (pos == "left")
+		{
+			lay->addWidget (label, row, 1, Qt::AlignLeft | Qt::AlignTop);
+			lay->addWidget (edit, row, 0);
+		}
+		else if (pos == "top")
+		{
+			lay->addWidget (edit, row, 0);
+			lay->addWidget (label, row + 1, 0, Qt::AlignLeft);
+		}
+		else
+		{
+			lay->addWidget (label, row, 0, Qt::AlignRight | Qt::AlignTop);
+			lay->addWidget (edit, row, 1);
+		}
+
+		lay->setContentsMargins (2, 2, 2, 2);
 	}
 
 	void ItemHandlerMultiLine::SetValue (QWidget *widget, const QVariant& value) const
