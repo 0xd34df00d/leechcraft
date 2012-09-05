@@ -369,6 +369,8 @@ namespace LMP
 		TrayMenu_->addAction (stop);
 		TrayMenu_->addAction (next);
 		TrayMenu_->addSeparator ();
+		TrayMenu_->addAction (love);
+		TrayMenu_->addSeparator ();
 		TrayMenu_->addAction (closeLMP);
 		TrayIcon_->setContextMenu (TrayMenu_);
 	}
