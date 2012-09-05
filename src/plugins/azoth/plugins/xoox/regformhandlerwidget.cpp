@@ -239,7 +239,10 @@ namespace Xoox
 	void RegFormHandlerWidget::HandleRegResult (const QXmppIq& iq)
 	{
 		if (iq.type () == QXmppIq::Result)
+		{
 			emit successfulReg ();
+			return;
+		}
 		else if (iq.type () != QXmppIq::Error)
 		{
 			qWarning () << Q_FUNC_INFO
