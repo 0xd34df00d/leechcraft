@@ -104,6 +104,8 @@ namespace Xoox
 	{
 		ShowMessage ("Fetching registration form...");
 
+		ReqJID_ = jid;
+
 		QXmppElement queryElem;
 		queryElem.setTagName ("query");
 		queryElem.setAttribute ("xmlns", NsRegister);
@@ -145,6 +147,8 @@ namespace Xoox
 		}
 
 		QXmppIq iq (QXmppIq::Set);
+		if (!ReqJID_.isEmpty ())
+			iq.setTo (ReqJID_);
 		iq.setExtensions (QXmppElementList () <<  queryElem);
 		Client_->sendPacket (iq);
 		LastStanzaID_ = iq.id ();
