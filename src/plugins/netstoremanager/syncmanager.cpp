@@ -26,6 +26,7 @@
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "accountsmanager.h"
 #include "fileswatcher.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -41,11 +42,15 @@ namespace NetStoreManager
 // 				SIGNAL (timeout ()),
 // 				this,
 // 				SLOT (handleTimeout ()));
+
+		XmlSettingsManager::Instance ().RegisterObject ("ExceptionsList",
+				this, "handleUpdateExceptionsList");
 	}
 
 	void SyncManager::Release ()
 	{
-		FilesWatcher_->Release ();
+		if (FilesWatcher_)
+			FilesWatcher_->Release ();
 	}
 
 	namespace
@@ -91,6 +96,7 @@ namespace NetStoreManager
 			QStringList pathes = ScanDir (QDir::NoDotAndDotDot | QDir::Dirs, dirPath, true);
 			FilesWatcher_->AddPathes (pathes);
 			FilesWatcher_->AddPath (dirPath);
+			handleUpdateExceptionsList ();
 			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [dirPath]->GetObject ());
 // 			isfl->CheckForSyncUpload (pathes, dirPath);
 		}
@@ -148,6 +154,15 @@ namespace NetStoreManager
 			auto isfl = qobject_cast<ISupportFileListings*> (account->GetObject ());
 			isfl->RequestFileChanges ();
 		}
+	}
+
+	void SyncManager::handleUpdateExceptionsList ()
+	{
+		QStringList masks = XmlSettingsManager::Instance ()
+				.property ("ExceptionsList").toStringList ();
+
+		if (FilesWatcher_)
+			FilesWatcher_->UpdateExceptions (masks);
 	}
 
 }

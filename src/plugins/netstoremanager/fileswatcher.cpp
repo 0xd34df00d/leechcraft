@@ -73,6 +73,11 @@ namespace LeechCraft
 			close (INotifyDescriptor_);
 		}
 
+		void FilesWatcher::UpdateExceptions (const QStringList& masks)
+		{
+			ExceptionMasks_ = masks;
+		}
+
 		void FilesWatcher::HandleNotification (int descriptor)
 		{
 			char buffer [BufferLength_];
@@ -90,45 +95,64 @@ namespace LeechCraft
 			{
 				struct inotify_event *event = reinterpret_cast<struct inotify_event*> (&buffer [i]);
 
+				QString path = WatchedPathes2Descriptors_.right.at (event->wd);
+				QString fullPath = path + "/" + QString (event->name);
+
+				//TODO if in exception list - ignore
+
 				if (event->mask & IN_CREATE)
 				{
 					if (event->mask & IN_ISDIR)
 					{
-						QString path = WatchedPathes2Descriptors_.right.at (event->wd);
 						if (!path.isEmpty ())
 						{
-							QString dirPath = path + "/" + QString (event->name);
-							AddPath (dirPath);
-							//TODO create dir
+							AddPath (fullPath);
+							emit dirWasCreated (fullPath);
+							qDebug () << "created dir"
+									<< fullPath
+									<< event->wd;
 						}
 					}
 					else
 					{
-						//TODO upload file
+						emit fileWasCreated (fullPath);
+						qDebug () << "created file"
+								<< fullPath
+								<< event->wd;
 					}
-
 				}
 				else if (event->mask & IN_DELETE)
 				{
 					if (event->mask & IN_ISDIR)
 					{
-						//TODO remove dir with all content
+						emit dirWasRemoved (fullPath);
+						qDebug () << "remove dir"
+								<< fullPath
+								<< event->wd;
 					}
 					else
 					{
-						//TODO remove file
+						emit fileWasRemoved (fullPath);
+						qDebug () << "remove file"
+								<< fullPath
+								<< event->wd;
 					}
-
 				}
 				else if (event->mask & IN_MODIFY)
 				{
 					if (event->mask & IN_ISDIR)
 					{
 						//TODO modify directory
+						qDebug () << "modify dir"
+								<< fullPath
+								<< event->wd;
 					}
 					else
 					{
-						//TODO reupload file
+						emit fileWasUpdated (fullPath);
+						qDebug () << "modify file"
+								<< fullPath
+								<< event->wd;
 					}
 				}
 				else if (event->mask & IN_MOVED_FROM)
@@ -142,12 +166,24 @@ namespace LeechCraft
 							if (e->cookie == event->cookie &&
 									e->wd == event->wd)
 							{
-								//TODO rename file
+								emit entryWasRenamed (path + "/" + QString (e->name),
+										fullPath);
+								qDebug () << "rename entry"
+										<< path + "/" + QString (e->name)
+										<< fullPath
+										<< e->wd
+										<< event->wd;
 								break;
 							}
 							else if (e->cookie == event->cookie)
 							{
-								//TODO moving file
+								emit entryWasMoved (path + "/" + QString (e->name),
+										fullPath);
+								qDebug () << "move entry"
+										<< path + "/" + QString (e->name)
+										<< fullPath
+										<< e->wd
+										<< event->wd;
 								break;
 							}
 				}
@@ -155,11 +191,16 @@ namespace LeechCraft
 				{
 					inotify_rm_watch (INotifyDescriptor_, event->wd);
 					WatchedPathes2Descriptors_.right.erase (event->wd);
-					//TODO remove dir
+					emit dirWasRemoved (fullPath);
+					qDebug () << "remove watched dir"
+							<< fullPath
+							<< event->wd;
 				}
 				else if (event->mask & IN_MOVE_SELF)
 				{
-					//TODO remove file
+					qDebug () << "move watched dir"
+							<< fullPath
+							<< event->wd;
 				}
 
 				i += EventSize_ + event->len;

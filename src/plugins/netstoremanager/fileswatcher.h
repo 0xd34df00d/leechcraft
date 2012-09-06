@@ -18,8 +18,9 @@
 
 #pragma once
 
-#include <QObject>
 #include <boost/bimap.hpp>
+#include <QObject>
+#include <QStringList>
 
 class QTimer;
 
@@ -41,6 +42,7 @@ namespace NetStoreManager
 		descriptorsMap WatchedPathes2Descriptors_;
 
 		QTimer *Timer_;
+		QStringList ExceptionMasks_;
 	public:
 		FilesWatcher (QObject *parent = 0);
 
@@ -48,12 +50,21 @@ namespace NetStoreManager
 		void AddPathes (const QStringList& pathes);
 
 		void Release ();
-
+		void UpdateExceptions (const QStringList& masks);
 	private:
 		void HandleNotification (int descriptor);
 
 	public slots:
 		void checkNotifications ();
+
+	signals:
+		void dirWasCreated (const QString& path);
+		void fileWasCreated (const QString& path);
+		void dirWasRemoved (const QString& path);
+		void fileWasRemoved (const QString& path);
+		void fileWasUpdated (const QString& path);
+		void entryWasRenamed (const QString& oldName, const QString& newName);
+		void entryWasMoved (const QString& oldPath, const QString& newPath);
 	};
 }
 }

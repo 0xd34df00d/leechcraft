@@ -54,6 +54,7 @@ namespace NetStoreManager
 		void handleDirectoryAdded (const QVariantMap& dirs);
 	private slots:
 		void handleTimeout ();
+		void handleUpdateExceptionsList ();
 	};
 }
 }
