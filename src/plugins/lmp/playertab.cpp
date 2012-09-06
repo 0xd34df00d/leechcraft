@@ -654,13 +654,13 @@ namespace LMP
 	void PlayerTab::handleBanTrack ()
 	{
 		if (!XmlSettingsManager::Instance ()
-			.property ("EnableScrobbling").toBool ())
+				.property ("EnableScrobbling").toBool ())
 			return;
 
 		auto scrobblers = Core::Instance ().GetProxy ()->
-		GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
+					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
 		std::for_each (scrobblers.begin (), scrobblers.end (),
-					   [] (decltype (scrobblers.front ()) s) { s->BanCurrentTrack (); });
+				[] (decltype (scrobblers.front ()) s) { s->BanCurrentTrack (); });
 	}
 
 	void PlayerTab::handleSimilarError ()
