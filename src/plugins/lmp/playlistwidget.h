@@ -52,6 +52,8 @@ namespace LMP
 		QAction *ActionShowAlbumArt_;
 		QAction *ActionMoveUp_;
 		QAction *ActionMoveDown_;
+
+		QAction *ActionToggleSearch_;
 	public:
 		PlaylistWidget (QWidget* = 0);
 

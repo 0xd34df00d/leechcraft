@@ -53,13 +53,21 @@ namespace LMP
 			Player *Player_;
 			QTreeView *View_;
 			QSortFilterProxyModel *PlaylistFilter_;
+			QLineEdit *FilterLine_;
+			QAction *FilterToggle_;
 		public:
-			PlaylistTreeEventFilter (Player* player, QTreeView *view,
-					QSortFilterProxyModel *filter, QObject *parent = 0)
+			PlaylistTreeEventFilter (Player* player,
+					QTreeView *view,
+					QSortFilterProxyModel *filter,
+					QLineEdit *filterLine,
+					QAction *filterToggle,
+					QObject *parent = 0)
 			: QObject (parent)
 			, Player_ (player)
 			, View_ (view)
 			, PlaylistFilter_ (filter)
+			, FilterLine_ (filterLine)
+			, FilterToggle_ (filterToggle)
 			{
 			}
 
@@ -72,6 +80,14 @@ namespace LMP
 				if (key == Qt::Key_Enter || key == Qt::Key_Return || key == Qt::Key_Space)
 				{
 					Player_->play (PlaylistFilter_->mapToSource (View_->currentIndex ()));
+					return true;
+				}
+
+				if (key == Qt::Key_F &&
+						static_cast<QKeyEvent*> (e)->modifiers () == Qt::CTRL)
+				{
+					FilterLine_->setVisible (!FilterLine_->isVisible ());
+					FilterToggle_->toggle ();
 					return true;
 				}
 
@@ -166,8 +182,6 @@ namespace LMP
 		Ui_.Playlist_->setModel (PlaylistFilter_);
 		Ui_.Playlist_->expandAll ();
 
-		Ui_.Playlist_->installEventFilter (new PlaylistTreeEventFilter (Player_, Ui_.Playlist_, PlaylistFilter_));
-
 		connect (Ui_.Playlist_,
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,
@@ -199,6 +213,12 @@ namespace LMP
 				SLOT (updateStatsLabel ()),
 				Qt::QueuedConnection);
 		updateStatsLabel ();
+
+		Ui_.Playlist_->installEventFilter (new PlaylistTreeEventFilter (Player_,
+					Ui_.Playlist_,
+					PlaylistFilter_,
+					Ui_.SearchPlaylist_,
+					ActionToggleSearch_));
 	}
 
 	void PlaylistWidget::InitToolbarActions ()
@@ -395,6 +415,15 @@ namespace LMP
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleMoveDown ()));
+
+		ActionToggleSearch_ = new QAction (tr ("Toggle search field"), Ui_.Playlist_);
+		ActionToggleSearch_->setShortcut (QKeySequence::Find);
+		ActionToggleSearch_->setCheckable (true);
+		connect (ActionToggleSearch_,
+				SIGNAL (toggled (bool)),
+				Ui_.SearchPlaylist_,
+				SLOT (setVisible (bool)));
+		Ui_.SearchPlaylist_->setVisible (false);
 	}
 
 	void PlaylistWidget::SelectSources (const QList<Phonon::MediaSource>& sources)
@@ -440,6 +469,10 @@ namespace LMP
 
 		menu->addAction (ActionMoveUp_);
 		menu->addAction (ActionMoveDown_);
+
+		menu->addSeparator ();
+
+		menu->addAction (ActionToggleSearch_);
 
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
