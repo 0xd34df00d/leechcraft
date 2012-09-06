@@ -27,6 +27,7 @@
 #include "accountsmanager.h"
 #include "fileswatcher.h"
 #include "xmlsettingsmanager.h"
+#include "utils.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,7 @@ namespace NetStoreManager
 	: QObject (parent)
 	, AM_ (am)
 	, Timer_ (new QTimer (this))
+	, Thread_ (new QThread (this))
 	, FilesWatcher_ (0)
 	{
 // 		connect (Timer_,
@@ -51,23 +53,8 @@ namespace NetStoreManager
 	{
 		if (FilesWatcher_)
 			FilesWatcher_->Release ();
-	}
 
-	namespace
-	{
-		QStringList ScanDir (QDir::Filters filter, const QString& path, bool recursive)
-		{
-			QDir baseDir (path);
-			QStringList pathes;
-			for (const auto& entry : baseDir.entryInfoList (filter))
-			{
-				pathes << entry.absoluteFilePath ();
-				if (recursive &&
-						entry.isDir ())
-					pathes << ScanDir (filter, entry.absoluteFilePath (), recursive);
-			}
-			return pathes;
-		}
+		Thread_->exit ();
 	}
 
 	void SyncManager::handleDirectoryAdded (const QVariantMap& dirs)
@@ -77,6 +64,41 @@ namespace NetStoreManager
 			try
 			{
 				FilesWatcher_ = new FilesWatcher;
+				connect (Thread_,
+						SIGNAL (started ()),
+						FilesWatcher_,
+						SLOT (handleThreadStarted ()));
+				FilesWatcher_->moveToThread (Thread_);
+				Thread_->start ();
+
+				connect (FilesWatcher_,
+						SIGNAL (dirWasCreated (QString)),
+						this,
+						SLOT (handleDirWasCreated (QString)));
+				connect (FilesWatcher_,
+						SIGNAL (fileWasCreated (QString)),
+						this,
+						SLOT (handleFileWasCreated (QString)));
+				connect (FilesWatcher_,
+						SIGNAL (dirWasRemoved (QString)),
+						this,
+						SLOT (handleDirWasRemoved (QString)));
+				connect (FilesWatcher_,
+						SIGNAL (fileWasRemoved (QString)),
+						this,
+						SLOT (handleFileWasRemoved (QString)));
+				connect (FilesWatcher_,
+						SIGNAL (entryWasRenamed (QString, QString)),
+						this,
+						SLOT (handleEntryWasRenamed (QString, QString)));
+				connect (FilesWatcher_,
+						SIGNAL (entryWasMoved (QString, QString)),
+						this,
+						SLOT (handleEntryWasMoved (QString, QString)));
+				connect (FilesWatcher_,
+						SIGNAL (fileWasUpdated (QString)),
+						this,
+						SLOT (handleFileWasUpdated (QString)));
 			}
 			catch (const std::exception& e)
 			{
@@ -93,7 +115,7 @@ namespace NetStoreManager
 			qDebug () << "watching directory "
 					<< dirPath;
 
-			QStringList pathes = ScanDir (QDir::NoDotAndDotDot | QDir::Dirs, dirPath, true);
+			QStringList pathes = Utils::ScanDir (QDir::NoDotAndDotDot | QDir::Dirs, dirPath, true);
 			FilesWatcher_->AddPathes (pathes);
 			FilesWatcher_->AddPath (dirPath);
 			handleUpdateExceptionsList ();
@@ -164,6 +186,78 @@ namespace NetStoreManager
 		if (FilesWatcher_)
 			FilesWatcher_->UpdateExceptions (masks);
 	}
+
+		void SyncManager::handleDirWasCreated (const QString& path)
+		{
+			for (const auto& basePath : Path2Account_.keys ())
+			{
+				if (!path.startsWith (basePath))
+					continue;
+
+				auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+				if (!isfl)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< Path2Account_ [basePath]->GetObject ()
+							<< "isn't an ISupportFileListings";
+					continue;
+				}
+
+// 				isfl->CreateDirectory ();
+			}
+		}
+
+		void SyncManager::handleFileWasCreated (const QString& path)
+		{
+			for (const auto& basePath : Path2Account_.keys ())
+			{
+				if (!path.startsWith (basePath))
+					continue;
+
+
+			}
+		}
+
+		void SyncManager::handleDirWasRemoved (const QString& path)
+		{
+			for (const auto& basePath : Path2Account_.keys ())
+			{
+				if (!path.startsWith (basePath))
+					continue;
+
+
+			}
+		}
+
+		void SyncManager::handleFileWasRemoved (const QString& path)
+		{
+			for (const auto& basePath : Path2Account_.keys ())
+			{
+				if (!path.startsWith (basePath))
+					continue;
+
+
+			}
+		}
+
+		void SyncManager::handleEntryWasRenamed (const QString& oldPath, const QString& newPath)
+		{
+		}
+
+		void SyncManager::handleEntryWasMoved (const QString& oldPath, const QString& newPath)
+		{
+		}
+
+		void SyncManager::handleFileWasUpdated (const QString& path)
+		{
+			for (const auto& basePath : Path2Account_.keys ())
+			{
+				if (!path.startsWith (basePath))
+					continue;
+
+
+			}
+		}
 
 }
 }

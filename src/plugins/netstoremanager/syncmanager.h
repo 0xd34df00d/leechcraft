@@ -23,6 +23,7 @@
 #include <QStringList>
 #include <QFileSystemWatcher>
 #include <QPointer>
+#include <boost/graph/graph_concepts.hpp>
 
 class QTimer;
 class QThread;
@@ -43,6 +44,7 @@ namespace NetStoreManager
 		QMap<QString, IStorageAccount*> Path2Account_;
 		QTimer *Timer_;
 
+		QThread *Thread_;
 		FilesWatcher *FilesWatcher_;
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
@@ -55,6 +57,14 @@ namespace NetStoreManager
 	private slots:
 		void handleTimeout ();
 		void handleUpdateExceptionsList ();
+
+		void handleDirWasCreated (const QString& path);
+		void handleFileWasCreated (const QString& path);
+		void handleDirWasRemoved (const QString& path);
+		void handleFileWasRemoved (const QString& path);
+		void handleEntryWasRenamed (const QString& oldPath, const QString&  newPath);
+		void handleEntryWasMoved (const QString& oldPath, const QString& newPath);
+		void handleFileWasUpdated (const QString& path);
 	};
 }
 }
