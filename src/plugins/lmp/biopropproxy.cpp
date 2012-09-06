@@ -47,6 +47,7 @@ namespace LMP
 		emit artistImageURLChanged (GetArtistImageURL ());
 		emit artistTagsChanged (GetArtistTags ());
 		emit artistInfoChanged (GetArtistInfo ());
+		emit artistPageURLChanged (GetArtistPageURL ());
 	}
 
 	QString BioPropProxy::GetArtistName () const
@@ -67,6 +68,11 @@ namespace LMP
 	QString BioPropProxy::GetArtistInfo () const
 	{
 		return CachedInfo_;
+	}
+
+	QUrl BioPropProxy::GetArtistPageURL () const
+	{
+		return Bio_.BasicInfo_.Page_;
 	}
 }
 }

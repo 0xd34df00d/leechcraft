@@ -33,6 +33,7 @@ namespace LMP
 		Q_PROPERTY (QUrl artistImageURL READ GetArtistImageURL NOTIFY artistImageURLChanged);
 		Q_PROPERTY (QString artistTags READ GetArtistTags NOTIFY artistTagsChanged);
 		Q_PROPERTY (QString artistInfo READ GetArtistInfo NOTIFY artistInfoChanged);
+		Q_PROPERTY (QUrl artistPageURL READ GetArtistPageURL NOTIFY artistPageURLChanged);
 
 		Media::ArtistBio Bio_;
 
@@ -47,11 +48,13 @@ namespace LMP
 		QUrl GetArtistImageURL () const;
 		QString GetArtistTags () const;
 		QString GetArtistInfo () const;
+		QUrl GetArtistPageURL () const;
 	signals:
 		void artistNameChanged (const QString&);
 		void artistImageURLChanged (const QUrl&);
 		void artistTagsChanged (const QString&);
 		void artistInfoChanged (const QString&);
+		void artistPageURLChanged (const QUrl&);
 	};
 }
 }
