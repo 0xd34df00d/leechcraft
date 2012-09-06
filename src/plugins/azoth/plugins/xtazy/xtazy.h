@@ -76,6 +76,7 @@ namespace Xtazy
 		void NowPlaying (const Media::AudioInfo& audio);
 		void PlaybackStopped ();
 		void LoveCurrentTrack ();
+		void BanCurrentTrack ();
 	private:
 		void HandleShare (LeechCraft::IHookProxy_ptr proxy,
 				QObject*, const QString&, const QUrl&);
