@@ -325,7 +325,7 @@ namespace LMP
 
 		QAction *ban = new QAction (tr ("Ban"), this);
 		ban->setProperty ("ActionIcon", "dialog-cancel");
-		//ban->setShortcut (QString ("Ctrl+L"));
+		ban->setShortcut (QString ("Ctrl+B"));
 		connect (ban,
 				 SIGNAL (triggered ()),
 				 this,
