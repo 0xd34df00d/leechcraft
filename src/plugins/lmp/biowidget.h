@@ -48,6 +48,7 @@ namespace LMP
 
 		void SetCurrentArtist (const QString&);
 	private slots:
+		void saveLastUsedProv ();
 		void requestBiography ();
 		void handleBioReady ();
 		void handleLink (const QString&);
