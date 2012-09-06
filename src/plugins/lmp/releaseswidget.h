@@ -43,6 +43,8 @@ namespace LMP
 		QStandardItemModel *ReleasesModel_;
 	public:
 		ReleasesWidget (QWidget* = 0);
+
+		void InitializeProviders ();
 	private slots:
 		void handleRecentReleases (const QList<Media::AlbumRelease>&);
 		void request ();
