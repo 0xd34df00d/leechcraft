@@ -704,11 +704,16 @@ namespace LMP
 				return Phonon::MediaSource ();
 
 			const auto& curAlbum = GetMediaInfo (*pos).Album_;
-			if (++pos == CurrentQueue_.end () ||
+			++pos;
+			if (pos == CurrentQueue_.end () ||
 					GetMediaInfo (*pos).Album_ != curAlbum)
-				while (pos >= CurrentQueue_.begin () &&
-						GetMediaInfo (*pos).Album_ == curAlbum)
+			{
+				do
 					--pos;
+				while (pos >= CurrentQueue_.begin () &&
+						GetMediaInfo (*pos).Album_ == curAlbum);
+				++pos;
+			}
 			return *pos;
 		}
 		case PlayMode::RepeatWhole:
