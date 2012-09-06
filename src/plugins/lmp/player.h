@@ -166,6 +166,7 @@ namespace LMP
 		void setTransitionTime ();
 	signals:
 		void songChanged (const MediaInfo&);
+		void indexChanged (const QModelIndex&);
 		void insertedAlbum (const QModelIndex&);
 
 		void playModeChanged (Player::PlayMode);

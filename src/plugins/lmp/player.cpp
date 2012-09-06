@@ -1044,6 +1044,9 @@ namespace LMP
 		else
 			emit songChanged (MediaInfo ());
 
+		if (curItem)
+			emit indexChanged (PlaylistModel_->indexFromItem (curItem));
+
 		Q_FOREACH (auto item, Items_.values ())
 		{
 			if (item == curItem)
