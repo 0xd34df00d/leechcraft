@@ -68,7 +68,6 @@ Rectangle {
         effect: Blur {
             id: eventsViewBlur
             blurRadius: 0.0
-            blurHints: Blur.QualityHint
         }
 
         model: eventsModel
