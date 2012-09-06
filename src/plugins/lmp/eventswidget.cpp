@@ -25,6 +25,7 @@
 #include <interfaces/media/ieventsprovider.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -100,8 +101,10 @@ namespace LMP
 
 	void EventsWidget::InitializeProviders ()
 	{
-		const auto& lastProv = XmlSettingsManager::Instance ()
-				.Property ("LastUsedEventsProvider", QString ()).toString ();
+		const auto& lastProv = ShouldRememberProvs () ?
+				XmlSettingsManager::Instance ()
+					.Property ("LastUsedEventsProvider", QString ()).toString () :
+				QString ();
 
 		bool lastFound = false;
 

@@ -28,6 +28,7 @@
 #include <phonon/mediasource.h>
 #include "core.h"
 #include "localcollection.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -195,6 +196,11 @@ namespace LMP
 		mask.replace ("$trackNumber", trackNumStr);
 		mask.replace ("$title", info.Title_);
 		return mask;
+	}
+
+	bool ShouldRememberProvs ()
+	{
+		return XmlSettingsManager::Instance ().property ("RememberUsedProviders").toBool ();
 	}
 
 	bool operator!= (const Phonon::MediaSource& left, const Phonon::MediaSource& right)

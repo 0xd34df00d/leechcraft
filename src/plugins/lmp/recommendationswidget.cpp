@@ -24,6 +24,7 @@
 #include <interfaces/media/ipendingsimilarartists.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -37,8 +38,10 @@ namespace LMP
 
 	void RecommendationsWidget::InitializeProviders ()
 	{
-		const auto& lastProv = XmlSettingsManager::Instance ()
-				.Property ("LastUsedRecsProvider", QString ()).toString ();
+		const auto& lastProv = ShouldRememberProvs () ?
+				XmlSettingsManager::Instance ()
+					.Property ("LastUsedRecsProvider", QString ()).toString () :
+				QString ();
 
 		bool lastFound = false;
 

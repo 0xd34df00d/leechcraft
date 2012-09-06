@@ -25,6 +25,7 @@
 #include <interfaces/media/irecentreleases.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -80,8 +81,10 @@ namespace LMP
 
 	void ReleasesWidget::InitializeProviders ()
 	{
-		const auto& lastProv = XmlSettingsManager::Instance ()
-				.Property ("LastUsedReleasesProvider", QString ()).toString ();
+		const auto& lastProv = ShouldRememberProvs () ?
+				XmlSettingsManager::Instance ()
+					.Property ("LastUsedReleasesProvider", QString ()).toString () :
+				QString ();
 
 		bool lastFound = false;
 
