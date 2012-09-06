@@ -661,6 +661,7 @@ namespace LMP
 					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
 		std::for_each (scrobblers.begin (), scrobblers.end (),
 				[] (decltype (scrobblers.front ()) s) { s->BanCurrentTrack (); });
+		Player_->nextTrack ();
 	}
 
 	void PlayerTab::handleSimilarError ()
