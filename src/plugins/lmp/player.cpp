@@ -614,11 +614,11 @@ namespace LMP
 		}
 
 		template<typename T>
-		QList<QPair<Phonon::MediaSource, MediaInfo>> ApplyOrdering (const QList<Phonon::MediaSource>& sources, T sorter)
+		QList<QPair<Phonon::MediaSource, MediaInfo>> PairResolveSort (const QList<Phonon::MediaSource>& sources, T sorter, bool sort)
 		{
 			auto result = PairResolveAll (sources);
 
-			if (sorter.Criteria_.isEmpty ())
+			if (sorter.Criteria_.isEmpty () || !sort)
 				return result;
 
 			std::sort (result.begin (), result.end (),
@@ -645,23 +645,18 @@ namespace LMP
 
 		PlaylistModel_->setHorizontalHeaderLabels (QStringList (tr ("Playlist")));
 
-		if (sort)
-		{
-			std::function<QList<QPair<Phonon::MediaSource, MediaInfo>> ()> worker =
-					[this, sources] ()
-					{
-						return ApplyOrdering (sources, Sorter_);
-					};
+		std::function<QList<QPair<Phonon::MediaSource, MediaInfo>> ()> worker =
+				[this, sources, sort] ()
+				{
+					return PairResolveSort (sources, Sorter_, sort);
+				};
 
-			auto watcher = new QFutureWatcher<QList<QPair<Phonon::MediaSource, MediaInfo>>> ();
-			connect (watcher,
-					SIGNAL (finished ()),
-					this,
-					SLOT (handleSorted ()));
-			watcher->setFuture (QtConcurrent::run (worker));
-		}
-		else
-			continueAfterSorted (PairResolveAll (sources));
+		auto watcher = new QFutureWatcher<QList<QPair<Phonon::MediaSource, MediaInfo>>> ();
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleSorted ()));
+		watcher->setFuture (QtConcurrent::run (worker));
 	}
 
 	bool Player::HandleCurrentStop (const Phonon::MediaSource& source)

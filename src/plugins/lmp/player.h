@@ -170,6 +170,8 @@ namespace LMP
 
 		void playModeChanged (Player::PlayMode);
 		void bufferStatusChanged (int);
+
+		void playerAvailable (bool);
 	};
 }
 }
