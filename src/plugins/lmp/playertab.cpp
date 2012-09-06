@@ -119,6 +119,10 @@ namespace LMP
 		Ui_.NPArt_->installEventFilter (new AALabelEventFilter (coverGetter, this));
 
 		connect (Player_,
+				SIGNAL (playerAvailable (bool)),
+				this,
+				SLOT (setEnabled (bool)));
+		connect (Player_,
 				SIGNAL (songChanged (MediaInfo)),
 				this,
 				SLOT (handleSongChanged (MediaInfo)));

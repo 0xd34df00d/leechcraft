@@ -651,6 +651,8 @@ namespace LMP
 					return PairResolveSort (sources, Sorter_, sort);
 				};
 
+		emit playerAvailable (false);
+
 		auto watcher = new QFutureWatcher<QList<QPair<Phonon::MediaSource, MediaInfo>>> ();
 		connect (watcher,
 				SIGNAL (finished ()),
@@ -828,6 +830,7 @@ namespace LMP
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<QList<QPair<Phonon::MediaSource, MediaInfo>>>*> (sender ());
 		continueAfterSorted (watcher->result ());
+		emit playerAvailable (true);
 	}
 
 	void Player::continueAfterSorted (const QList<QPair<Phonon::MediaSource, MediaInfo>>& sources)
