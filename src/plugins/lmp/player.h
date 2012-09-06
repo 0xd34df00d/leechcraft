@@ -35,6 +35,8 @@ namespace Phonon
 	class AudioOutput;
 }
 
+typedef QPair<QString, QString> StringPair_t;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -148,6 +150,10 @@ namespace LMP
 		void stop ();
 		void clear ();
 	private slots:
+		void handleSorted ();
+		void continueAfterSorted (const QList<Phonon::MediaSource>&);
+		void addNextItem (QList<Phonon::MediaSource>, StringPair_t);
+
 		void restorePlaylist ();
 		void handleStationError (const QString&);
 		void handleRadioStream (const QUrl&, const Media::AudioInfo&);

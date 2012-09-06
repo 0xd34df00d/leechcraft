@@ -23,6 +23,7 @@
 #include <QDir>
 #include <QMimeData>
 #include <QUrl>
+#include <QtConcurrentRun>
 #include <QApplication>
 #include <phonon/mediaobject.h>
 #include <phonon/audiooutput.h>
@@ -38,6 +39,7 @@
 #include "playlistparsers/playlistfactory.h"
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);
+Q_DECLARE_METATYPE (QList<Phonon::MediaSource>);
 
 namespace Phonon
 {
@@ -225,6 +227,9 @@ namespace LMP
 	, RadioItem_ (0)
 	, PlayMode_ (PlayMode::Sequential)
 	{
+		qRegisterMetaType<QList<Phonon::MediaSource>> ("QList<Phonon::MediaSource>");
+		qRegisterMetaType<StringPair_t> ("StringPair_t");
+
 		connect (Source_,
 				SIGNAL (currentSourceChanged (Phonon::MediaSource)),
 				this,
@@ -592,98 +597,24 @@ namespace LMP
 		PlaylistModel_->setHorizontalHeaderLabels (QStringList (tr ("Playlist")));
 
 		if (sort)
-			ApplyOrdering (sources);
-		CurrentQueue_ = sources;
-
-		Core::Instance ().GetPlaylistManager ()->
-				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
-
-		auto resolver = Core::Instance ().GetLocalFileResolver ();
-
-		QPair<QString, QString> prevAlbumRoot;
-
-		Q_FOREACH (const auto& source, sources)
 		{
-			auto item = new QStandardItem ();
-			item->setEditable (false);
-			item->setData (QVariant::fromValue (source), Role::Source);
-			switch (source.type ())
-			{
-			case Phonon::MediaSource::Stream:
-				item->setText (tr ("Stream"));
-				PlaylistModel_->appendRow (item);
-				break;
-			case Phonon::MediaSource::Url:
-			{
-				const auto& url = source.url ();
+			std::function<QList<Phonon::MediaSource> ()> worker =
+					[this, sources] ()
+					{
+						auto srcCopy = sources;
+						ApplyOrdering (srcCopy);
+						return srcCopy;
+					};
 
-				const auto info = Core::Instance ().TryURLResolve (url);
-				if (info)
-					FillItem (item, *info);
-				else
-					item->setText (url.toString ());
-
-				PlaylistModel_->appendRow (item);
-				break;
-			}
-			case Phonon::MediaSource::LocalFile:
-			{
-				MediaInfo info;
-				try
-				{
-					info = resolver->ResolveInfo (source.fileName ());
-				}
-				catch (const ResolveError& error)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "error resolving info for"
-							<< error.GetPath ()
-							<< error.what ();
-					continue;
-				}
-
-				const auto& albumID = qMakePair (info.Artist_, info.Album_);
-				FillItem (item, info);
-				if (albumID != prevAlbumRoot ||
-						AlbumRoots_ [albumID].isEmpty ())
-				{
-					PlaylistModel_->appendRow (item);
-					AlbumRoots_ [albumID] << item;
-				}
-				else if (AlbumRoots_ [albumID].last ()->data (Role::IsAlbum).toBool ())
-				{
-					IncAlbumLength (AlbumRoots_ [albumID].last (), info.Length_);
-					AlbumRoots_ [albumID].last ()->appendRow (item);
-				}
-				else
-				{
-					auto albumItem = MakeAlbumItem (info);
-
-					const int row = AlbumRoots_ [albumID].last ()->row ();
-					const auto& existing = PlaylistModel_->takeRow (row);
-					albumItem->appendRow (existing);
-					albumItem->appendRow (item);
-					PlaylistModel_->insertRow (row, albumItem);
-
-					const auto& existingInfo = existing.at (0)->data (Role::Info).value<MediaInfo> ();
-					albumItem->setData (existingInfo.Length_, Role::AlbumLength);
-					IncAlbumLength (albumItem, info.Length_);
-
-					emit insertedAlbum (albumItem->index ());
-
-					AlbumRoots_ [albumID].last () = albumItem;
-				}
-				prevAlbumRoot = albumID;
-				break;
-			}
-			default:
-				item->setText ("unknown");
-				PlaylistModel_->appendRow (item);
-				break;
-			}
-
-			Items_ [source] = item;
+			auto watcher = new QFutureWatcher<QList<Phonon::MediaSource>> ();
+			connect (watcher,
+					SIGNAL (finished ()),
+					this,
+					SLOT (handleSorted ()));
+			watcher->setFuture (QtConcurrent::run (worker));
 		}
+		else
+			continueAfterSorted (sources);
 	}
 
 	void Player::ApplyOrdering (QList<Phonon::MediaSource>& sources)
@@ -875,6 +806,126 @@ namespace LMP
 
 		Core::Instance ().GetPlaylistManager ()->
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+	}
+
+	void Player::handleSorted ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<QList<Phonon::MediaSource>>*> (sender ());
+		continueAfterSorted (watcher->result ());
+	}
+
+	void Player::continueAfterSorted (const QList<Phonon::MediaSource>& sources)
+	{
+		CurrentQueue_ = sources;
+
+		Core::Instance ().GetPlaylistManager ()->
+				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+
+		addNextItem (sources, QPair<QString, QString> ());
+	}
+
+	void Player::addNextItem (QList<Phonon::MediaSource> sources, QPair<QString, QString> prevAlbumRoot)
+	{
+		if (sources.isEmpty ())
+			return;
+
+		auto resolver = Core::Instance ().GetLocalFileResolver ();
+
+		const int numFirsts = 5;
+		const auto& firsts = sources.mid (0, numFirsts);
+		sources = sources.mid (numFirsts);
+
+		Q_FOREACH (const auto& source, firsts)
+		{
+			auto item = new QStandardItem ();
+			item->setEditable (false);
+			item->setData (QVariant::fromValue (source), Role::Source);
+			switch (source.type ())
+			{
+			case Phonon::MediaSource::Stream:
+				item->setText (tr ("Stream"));
+				PlaylistModel_->appendRow (item);
+				break;
+			case Phonon::MediaSource::Url:
+			{
+				const auto& url = source.url ();
+
+				const auto info = Core::Instance ().TryURLResolve (url);
+				if (info)
+					FillItem (item, *info);
+				else
+					item->setText (url.toString ());
+
+				PlaylistModel_->appendRow (item);
+				break;
+			}
+			case Phonon::MediaSource::LocalFile:
+			{
+				MediaInfo info;
+				try
+				{
+					info = resolver->ResolveInfo (source.fileName ());
+				}
+				catch (const ResolveError& error)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "error resolving info for"
+							<< error.GetPath ()
+							<< error.what ();
+					delete item;
+					item = 0;
+					break;
+				}
+
+				const auto& albumID = qMakePair (info.Artist_, info.Album_);
+				FillItem (item, info);
+				if (albumID != prevAlbumRoot ||
+						AlbumRoots_ [albumID].isEmpty ())
+				{
+					PlaylistModel_->appendRow (item);
+					AlbumRoots_ [albumID] << item;
+				}
+				else if (AlbumRoots_ [albumID].last ()->data (Role::IsAlbum).toBool ())
+				{
+					IncAlbumLength (AlbumRoots_ [albumID].last (), info.Length_);
+					AlbumRoots_ [albumID].last ()->appendRow (item);
+				}
+				else
+				{
+					auto albumItem = MakeAlbumItem (info);
+
+					const int row = AlbumRoots_ [albumID].last ()->row ();
+					const auto& existing = PlaylistModel_->takeRow (row);
+					albumItem->appendRow (existing);
+					albumItem->appendRow (item);
+					PlaylistModel_->insertRow (row, albumItem);
+
+					const auto& existingInfo = existing.at (0)->data (Role::Info).value<MediaInfo> ();
+					albumItem->setData (existingInfo.Length_, Role::AlbumLength);
+					IncAlbumLength (albumItem, info.Length_);
+
+					emit insertedAlbum (albumItem->index ());
+
+					AlbumRoots_ [albumID].last () = albumItem;
+				}
+				prevAlbumRoot = albumID;
+				break;
+			}
+			default:
+				item->setText ("unknown");
+				PlaylistModel_->appendRow (item);
+				break;
+			}
+
+			if (item)
+				Items_ [source] = item;
+		}
+
+		QMetaObject::invokeMethod (this,
+				"addNextItem",
+				Qt::QueuedConnection,
+				Q_ARG (QList<Phonon::MediaSource>, sources),
+				Q_ARG (StringPair_t, prevAlbumRoot));
 	}
 
 	void Player::restorePlaylist ()
