@@ -108,17 +108,11 @@ namespace LeechCraft
 						{
 							AddPath (fullPath);
 							emit dirWasCreated (fullPath);
-							qDebug () << "created dir"
-									<< fullPath
-									<< event->wd;
 						}
 					}
 					else
 					{
 						emit fileWasCreated (fullPath);
-						qDebug () << "created file"
-								<< fullPath
-								<< event->wd;
 					}
 				}
 				else if (event->mask & IN_DELETE)
@@ -126,16 +120,10 @@ namespace LeechCraft
 					if (event->mask & IN_ISDIR)
 					{
 						emit dirWasRemoved (fullPath);
-						qDebug () << "remove dir"
-								<< fullPath
-								<< event->wd;
 					}
 					else
 					{
 						emit fileWasRemoved (fullPath);
-						qDebug () << "remove file"
-								<< fullPath
-								<< event->wd;
 					}
 				}
 				else if (event->mask & IN_MODIFY)
@@ -150,9 +138,6 @@ namespace LeechCraft
 					else
 					{
 						emit fileWasUpdated (fullPath);
-						qDebug () << "modify file"
-								<< fullPath
-								<< event->wd;
 					}
 				}
 				else if (event->mask & IN_MOVED_FROM)
@@ -168,22 +153,13 @@ namespace LeechCraft
 							{
 								emit entryWasRenamed (path + "/" + QString (e->name),
 										fullPath);
-								qDebug () << "rename entry"
-										<< path + "/" + QString (e->name)
-										<< fullPath
-										<< e->wd
-										<< event->wd;
 								break;
 							}
 							else if (e->cookie == event->cookie)
 							{
-								emit entryWasMoved (path + "/" + QString (e->name),
+								QString oldPrePath = WatchedPathes2Descriptors_.right.at (e->wd);
+								emit entryWasMoved (oldPrePath + "/" + QString (e->name),
 										fullPath);
-								qDebug () << "move entry"
-										<< path + "/" + QString (e->name)
-										<< fullPath
-										<< e->wd
-										<< event->wd;
 								break;
 							}
 				}
@@ -192,15 +168,9 @@ namespace LeechCraft
 					inotify_rm_watch (INotifyDescriptor_, event->wd);
 					WatchedPathes2Descriptors_.right.erase (event->wd);
 					emit dirWasRemoved (fullPath);
-					qDebug () << "remove watched dir"
-							<< fullPath
-							<< event->wd;
 				}
 				else if (event->mask & IN_MOVE_SELF)
 				{
-					qDebug () << "move watched dir"
-							<< fullPath
-							<< event->wd;
 				}
 
 				i += EventSize_ + event->len;
