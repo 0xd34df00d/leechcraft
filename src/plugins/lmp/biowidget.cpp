@@ -83,7 +83,6 @@ namespace LMP
 		auto pending = qobject_cast<Media::IPendingArtistBio*> (sender ());
 		const auto& bio = pending->GetArtistBio ();
 		BioPropProxy_->SetBio (bio);
-		qDebug () << Q_FUNC_INFO << bio.BasicInfo_.Name_ << bio.BasicInfo_.LargeImage_;
 
 		emit gotArtistImage (bio.BasicInfo_.Name_, bio.BasicInfo_.LargeImage_);
 	}
