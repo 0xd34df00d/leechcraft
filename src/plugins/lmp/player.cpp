@@ -774,12 +774,12 @@ namespace LMP
 		}
 
 		const auto& current = Source_->currentSource ();
-		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
-		if (pos == CurrentQueue_.end () || pos == CurrentQueue_.end () - 1)
+		const auto& next = GetNextSource (current);
+		if (next.type () == Phonon::MediaSource::Empty)
 			return;
 
 		Source_->stop ();
-		Source_->setCurrentSource (*(++pos));
+		Source_->setCurrentSource (next);
 		Source_->play ();
 	}
 
