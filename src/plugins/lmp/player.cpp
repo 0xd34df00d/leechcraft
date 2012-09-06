@@ -839,8 +839,8 @@ namespace LMP
 	{
 		CurrentQueue_.clear ();
 
-		Core::Instance ().GetPlaylistManager ()->
-				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+		QMetaObject::invokeMethod (PlaylistModel_, "modelAboutToBeReset");
+		PlaylistModel_->blockSignals (true);
 
 		QPair<QString, QString> prevAlbumRoot;
 
@@ -918,6 +918,13 @@ namespace LMP
 			if (item)
 				Items_ [source] = item;
 		}
+
+		PlaylistModel_->blockSignals (false);
+
+		QMetaObject::invokeMethod (PlaylistModel_, "modelReset");
+
+		Core::Instance ().GetPlaylistManager ()->
+				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 	}
 
 	void Player::restorePlaylist ()
