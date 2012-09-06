@@ -64,6 +64,8 @@ namespace LMP
 		void SetSortOrderButton ();
 		void InitViewActions ();
 		void SelectSources (const QList<Phonon::MediaSource>&);
+	public slots:
+		void focusIndex (const QModelIndex&);
 	private slots:
 		void on_Playlist__customContextMenuRequested (const QPoint&);
 		void handleChangePlayMode ();

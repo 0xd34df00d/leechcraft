@@ -449,6 +449,12 @@ namespace LMP
 		}
 	}
 
+	void PlaylistWidget::focusIndex (const QModelIndex& index)
+	{
+		Ui_.Playlist_->scrollTo (PlaylistFilter_->mapFromSource (index),
+				QAbstractItemView::PositionAtCenter);
+	}
+
 	void PlaylistWidget::on_Playlist__customContextMenuRequested (const QPoint& pos)
 	{
 		const auto& idx = Ui_.Playlist_->indexAt (pos);

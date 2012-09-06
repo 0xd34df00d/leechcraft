@@ -126,6 +126,10 @@ namespace LMP
 				SIGNAL (songChanged (MediaInfo)),
 				this,
 				SLOT (handleSongChanged (MediaInfo)));
+		connect (Player_,
+				SIGNAL (indexChanged (QModelIndex)),
+				Ui_.Playlist_,
+				SLOT (focusIndex (QModelIndex)));
 		connect (Core::Instance ().GetLocalCollection (),
 				SIGNAL (scanStarted (int)),
 				Ui_.ScanProgress_,
