@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "fileswatcher.h"
+#include "utils.h"
 #include <QtDebug>
 #include <QStringList>
 #include <QTimer>
@@ -30,9 +31,8 @@ namespace LeechCraft
 	{
 		FilesWatcher::FilesWatcher (QObject *parent)
 		: QObject (parent)
-		, WatchMask_ (IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY | IN_MOVE_SELF | IN_MOVED_FROM | IN_MOVED_TO )
+		, WatchMask_ (IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY |IN_MOVED_FROM | IN_MOVED_TO )
 		, WaitMSecs_ (50)
-		, Timer_ (new QTimer (this))
 		{
 			INotifyDescriptor_ = inotify_init ();
 			if (INotifyDescriptor_ < 0)
@@ -40,11 +40,6 @@ namespace LeechCraft
 
 			EventSize_ = sizeof (struct inotify_event);
 			BufferLength_ = 1024 * (EventSize_ + 16);
-
-			connect (Timer_,
-					SIGNAL (timeout ()),
-					this,
-					SLOT (checkNotifications ()));
 		}
 
 		void FilesWatcher::AddPath (const QString& path)
@@ -53,10 +48,8 @@ namespace LeechCraft
 			WatchedPathes2Descriptors_.insert (descriptorsMap::value_type (path, fd));
 
 			qDebug () << "added path"
-					<< path;
-
-			if (!Timer_->isActive ())
-				Timer_->start (1000);
+					<< path
+					<< fd;
 		}
 
 		void FilesWatcher::AddPathes (const QStringList& pathes)
@@ -103,42 +96,19 @@ namespace LeechCraft
 				if (event->mask & IN_CREATE)
 				{
 					if (event->mask & IN_ISDIR)
-					{
-						if (!path.isEmpty ())
-						{
-							AddPath (fullPath);
-							emit dirWasCreated (fullPath);
-						}
-					}
+						AddPathWithNotify (path);
 					else
-					{
 						emit fileWasCreated (fullPath);
-					}
 				}
 				else if (event->mask & IN_DELETE)
 				{
-					if (event->mask & IN_ISDIR)
-					{
-						emit dirWasRemoved (fullPath);
-					}
-					else
-					{
+					if (!(event->mask & IN_ISDIR))
 						emit fileWasRemoved (fullPath);
-					}
 				}
 				else if (event->mask & IN_MODIFY)
 				{
-					if (event->mask & IN_ISDIR)
-					{
-						//TODO modify directory
-						qDebug () << "modify dir"
-								<< fullPath
-								<< event->wd;
-					}
-					else
-					{
+					if (!(event->mask & IN_ISDIR))
 						emit fileWasUpdated (fullPath);
-					}
 				}
 				else if (event->mask & IN_MOVED_FROM)
 				{
@@ -147,12 +117,14 @@ namespace LeechCraft
 				else if (event->mask & IN_MOVED_TO)
 				{
 					if (!eventsBuffer.isEmpty ())
+					{
 						for (auto e : eventsBuffer)
 							if (e->cookie == event->cookie &&
 									e->wd == event->wd)
 							{
 								emit entryWasRenamed (path + "/" + QString (e->name),
 										fullPath);
+								eventsBuffer.removeAll (e);
 								break;
 							}
 							else if (e->cookie == event->cookie)
@@ -160,20 +132,50 @@ namespace LeechCraft
 								QString oldPrePath = WatchedPathes2Descriptors_.right.at (e->wd);
 								emit entryWasMoved (oldPrePath + "/" + QString (e->name),
 										fullPath);
+								eventsBuffer.removeAll (e);
 								break;
 							}
+					}
+					else
+						AddPathWithNotify (fullPath);
 				}
 				else if (event->mask & IN_DELETE_SELF)
 				{
+					emit dirWasRemoved (path);
+				}
+
+				if (event->mask & IN_IGNORED)
+				{
 					inotify_rm_watch (INotifyDescriptor_, event->wd);
 					WatchedPathes2Descriptors_.right.erase (event->wd);
-					emit dirWasRemoved (fullPath);
-				}
-				else if (event->mask & IN_MOVE_SELF)
-				{
 				}
 
 				i += EventSize_ + event->len;
+			}
+
+			for (auto e : eventsBuffer)
+			{
+				QString path = WatchedPathes2Descriptors_.right.at (e->wd);
+				QString fullPath = path + "/" + QString (e->name);
+
+				if (e->mask & IN_ISDIR)
+					emit dirWasRemoved (path);
+				else
+					emit fileWasRemoved (fullPath);
+			}
+		}
+
+		void FilesWatcher::AddPathWithNotify (const QString& path)
+		{
+			AddPath (path);
+			emit dirWasCreated (path);
+			auto pathes = Utils::ScanDir (QDir::Dirs | QDir::NoDotAndDotDot,
+					path,
+					true);
+			for (const auto& p : pathes)
+			{
+				AddPath (p);
+				emit dirWasCreated (p);
 			}
 		}
 
@@ -182,6 +184,7 @@ namespace LeechCraft
 			struct pollfd pfd = { INotifyDescriptor_, POLLIN, 0 };
 			int res = poll (&pfd, 1, WaitMSecs_);
 
+			qDebug () << "handle" << res;
 			if (res < 0)
 				qDebug () << "error";
 			else if (!res)
@@ -191,4 +194,15 @@ namespace LeechCraft
 				HandleNotification (INotifyDescriptor_);
 		}
 	}
+
+	void NetStoreManager::FilesWatcher::handleThreadStarted ()
+	{
+		QTimer *timer = new QTimer (this);
+		connect (timer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (checkNotifications ()));
+		timer->start (1000);
+	}
+
 }

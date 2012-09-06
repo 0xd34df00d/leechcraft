@@ -41,7 +41,6 @@ namespace NetStoreManager
 		typedef boost::bimaps::bimap<QString, int> descriptorsMap;
 		descriptorsMap WatchedPathes2Descriptors_;
 
-		QTimer *Timer_;
 		QStringList ExceptionMasks_;
 	public:
 		FilesWatcher (QObject *parent = 0);
@@ -53,9 +52,11 @@ namespace NetStoreManager
 		void UpdateExceptions (const QStringList& masks);
 	private:
 		void HandleNotification (int descriptor);
+		void AddPathWithNotify (const QString& path);
 
 	public slots:
 		void checkNotifications ();
+		void handleThreadStarted ();
 
 	signals:
 		void dirWasCreated (const QString& path);
