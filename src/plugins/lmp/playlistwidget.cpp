@@ -602,12 +602,17 @@ namespace LMP
 
 	void PlaylistWidget::loadFromDisk ()
 	{
+		auto prevPath = XmlSettingsManager::Instance ()
+				.Property ("PrevAddToPlaylistPath", QDir::homePath ()).toString ();
 		const auto& files = QFileDialog::getOpenFileNames (this,
 				tr ("Load files"),
-				QDir::homePath (),
+				prevPath,
 				tr ("Music files (*.ogg *.flac *.mp3 *.wav);;Playlists (*.pls *.m3u *.m3u8 *.xspf);;All files (*.*)"));
 		if (files.isEmpty ())
 			return;
+
+		prevPath = QFileInfo (files.at (0)).absoluteDir ().absolutePath ();
+		XmlSettingsManager::Instance ().setProperty ("PrevAddToPlaylistPath", prevPath);
 
 		Player_->Enqueue (files);
 	}
