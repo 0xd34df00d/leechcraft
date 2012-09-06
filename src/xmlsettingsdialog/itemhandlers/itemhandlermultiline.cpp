@@ -63,7 +63,6 @@ namespace LeechCraft
 
 		int row = lay->rowCount ();
 		QString pos = item.attribute ("position");
-		qDebug () << pos;
 		if (pos == "bottom")
 		{
 			lay->addWidget (label, row, 0, Qt::AlignLeft);
