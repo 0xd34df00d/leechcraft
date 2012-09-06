@@ -586,6 +586,55 @@ namespace LMP
 		}
 	}
 
+	namespace
+	{
+		QPair<Phonon::MediaSource, MediaInfo> PairResolve (const Phonon::MediaSource& source)
+		{
+			auto resolver = Core::Instance ().GetLocalFileResolver ();
+
+			MediaInfo info;
+			if (source.type () == Phonon::MediaSource::LocalFile)
+				try
+				{
+					info = resolver->ResolveInfo (source.fileName ());
+				}
+				catch (...)
+				{
+					info.LocalPath_ = source.fileName ();
+				}
+
+			return qMakePair (source, info);
+		}
+
+		QList<QPair<Phonon::MediaSource, MediaInfo>> PairResolveAll (const QList<Phonon::MediaSource>& sources)
+		{
+			QList<QPair<Phonon::MediaSource, MediaInfo>> result;
+			std::transform (sources.begin (), sources.end (), std::back_inserter (result), PairResolve);
+			return result;
+		}
+
+		template<typename T>
+		QList<QPair<Phonon::MediaSource, MediaInfo>> ApplyOrdering (const QList<Phonon::MediaSource>& sources, T sorter)
+		{
+			auto result = PairResolveAll (sources);
+
+			if (sorter.Criteria_.isEmpty ())
+				return result;
+
+			std::sort (result.begin (), result.end (),
+					[sorter] (decltype (result.at (0)) s1, decltype (result.at (0)) s2) -> bool
+					{
+						if (s1.first.type () != Phonon::MediaSource::LocalFile ||
+							s2.first.type () != Phonon::MediaSource::LocalFile)
+							return qHash (s1.first) < qHash (s2.first);
+
+						return sorter (s1.second, s2.second);
+					});
+
+			return result;
+		}
+	}
+
 	void Player::AddToPlaylistModel (QList<Phonon::MediaSource> sources, bool sort)
 	{
 		if (!CurrentQueue_.isEmpty ())
@@ -598,15 +647,13 @@ namespace LMP
 
 		if (sort)
 		{
-			std::function<QList<Phonon::MediaSource> ()> worker =
+			std::function<QList<QPair<Phonon::MediaSource, MediaInfo>> ()> worker =
 					[this, sources] ()
 					{
-						auto srcCopy = sources;
-						ApplyOrdering (srcCopy);
-						return srcCopy;
+						return ApplyOrdering (sources, Sorter_);
 					};
 
-			auto watcher = new QFutureWatcher<QList<Phonon::MediaSource>> ();
+			auto watcher = new QFutureWatcher<QList<QPair<Phonon::MediaSource, MediaInfo>>> ();
 			connect (watcher,
 					SIGNAL (finished ()),
 					this,
@@ -614,33 +661,7 @@ namespace LMP
 			watcher->setFuture (QtConcurrent::run (worker));
 		}
 		else
-			continueAfterSorted (sources);
-	}
-
-	void Player::ApplyOrdering (QList<Phonon::MediaSource>& sources)
-	{
-		if (Sorter_.Criteria_.isEmpty ())
-			return;
-
-		auto resolver = Core::Instance ().GetLocalFileResolver ();
-		std::sort (sources.begin (), sources.end (),
-				[resolver, this] (const Phonon::MediaSource& s1, const Phonon::MediaSource& s2)
-				{
-					if (s1.type () != Phonon::MediaSource::LocalFile ||
-						s2.type () != Phonon::MediaSource::LocalFile)
-						return qHash (s1) < qHash (s2);
-
-					try
-					{
-						const auto& left = resolver->ResolveInfo (s1.fileName ());
-						const auto& right = resolver->ResolveInfo (s2.fileName ());
-						return Sorter_ (left, right);
-					}
-					catch (...)
-					{
-						return s1.fileName () < s2.fileName ();
-					}
-				});
+			continueAfterSorted (PairResolveAll (sources));
 	}
 
 	bool Player::HandleCurrentStop (const Phonon::MediaSource& source)
@@ -810,33 +831,24 @@ namespace LMP
 
 	void Player::handleSorted ()
 	{
-		auto watcher = dynamic_cast<QFutureWatcher<QList<Phonon::MediaSource>>*> (sender ());
+		auto watcher = dynamic_cast<QFutureWatcher<QList<QPair<Phonon::MediaSource, MediaInfo>>>*> (sender ());
 		continueAfterSorted (watcher->result ());
 	}
 
-	void Player::continueAfterSorted (const QList<Phonon::MediaSource>& sources)
+	void Player::continueAfterSorted (const QList<QPair<Phonon::MediaSource, MediaInfo>>& sources)
 	{
-		CurrentQueue_ = sources;
+		CurrentQueue_.clear ();
 
 		Core::Instance ().GetPlaylistManager ()->
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 
-		addNextItem (sources, QPair<QString, QString> ());
-	}
+		QPair<QString, QString> prevAlbumRoot;
 
-	void Player::addNextItem (QList<Phonon::MediaSource> sources, QPair<QString, QString> prevAlbumRoot)
-	{
-		if (sources.isEmpty ())
-			return;
-
-		auto resolver = Core::Instance ().GetLocalFileResolver ();
-
-		const int numFirsts = 5;
-		const auto& firsts = sources.mid (0, numFirsts);
-		sources = sources.mid (numFirsts);
-
-		Q_FOREACH (const auto& source, firsts)
+		Q_FOREACH (const auto& sourcePair, sources)
 		{
+			const auto& source = sourcePair.first;
+			CurrentQueue_ << source;
+
 			auto item = new QStandardItem ();
 			item->setEditable (false);
 			item->setData (QVariant::fromValue (source), Role::Source);
@@ -861,21 +873,7 @@ namespace LMP
 			}
 			case Phonon::MediaSource::LocalFile:
 			{
-				MediaInfo info;
-				try
-				{
-					info = resolver->ResolveInfo (source.fileName ());
-				}
-				catch (const ResolveError& error)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "error resolving info for"
-							<< error.GetPath ()
-							<< error.what ();
-					delete item;
-					item = 0;
-					break;
-				}
+				const auto& info = sourcePair.second;
 
 				const auto& albumID = qMakePair (info.Artist_, info.Album_);
 				FillItem (item, info);
@@ -920,12 +918,6 @@ namespace LMP
 			if (item)
 				Items_ [source] = item;
 		}
-
-		QMetaObject::invokeMethod (this,
-				"addNextItem",
-				Qt::QueuedConnection,
-				Q_ARG (QList<Phonon::MediaSource>, sources),
-				Q_ARG (StringPair_t, prevAlbumRoot));
 	}
 
 	void Player::restorePlaylist ()

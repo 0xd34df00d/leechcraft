@@ -134,7 +134,6 @@ namespace LMP
 		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
 		MediaInfo GetPhononMediaInfo () const;
 		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
-		void ApplyOrdering (QList<Phonon::MediaSource>&);
 
 		bool HandleCurrentStop (const Phonon::MediaSource&);
 
@@ -151,8 +150,7 @@ namespace LMP
 		void clear ();
 	private slots:
 		void handleSorted ();
-		void continueAfterSorted (const QList<Phonon::MediaSource>&);
-		void addNextItem (QList<Phonon::MediaSource>, StringPair_t);
+		void continueAfterSorted (const QList<QPair<Phonon::MediaSource, MediaInfo>>&);
 
 		void restorePlaylist ();
 		void handleStationError (const QString&);
