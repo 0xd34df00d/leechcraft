@@ -30,7 +30,10 @@
 			</item>
 			<item type="combobox" property="AppQStyle" mayHaveDataSource="true">
 				<label lang="en" value="Style:" />
-				<option name="Plastique" default="true">
+				<option name="Default" default="true">
+					<label lang="en" value="Default" />
+				</option>
+				<option name="Plastique">
 					<label lang="en" value="Plastique" />
 				</option>
 			</item>
