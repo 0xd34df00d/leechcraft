@@ -323,6 +323,15 @@ namespace LMP
 				SLOT (handleLoveTrack ()));
 		TabToolbar_->addAction (love);
 
+		QAction *ban = new QAction (tr ("Ban"), this);
+		ban->setProperty ("ActionIcon", "dialog-cancel");
+		ban->setShortcut (QString ("Ctrl+B"));
+		connect (ban,
+				 SIGNAL (triggered ()),
+				 this,
+		   SLOT (handleBanTrack ()));
+		TabToolbar_->addAction (ban);
+
 		TabToolbar_->addSeparator ();
 
 		PlayedTime_ = new QLabel ();
@@ -370,6 +379,7 @@ namespace LMP
 		TrayMenu_->addAction (next);
 		TrayMenu_->addSeparator ();
 		TrayMenu_->addAction (love);
+		TrayMenu_->addAction (ban);
 		TrayMenu_->addSeparator ();
 		TrayMenu_->addAction (closeLMP);
 		TrayIcon_->setContextMenu (TrayMenu_);
@@ -639,6 +649,18 @@ namespace LMP
 					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
 		std::for_each (scrobblers.begin (), scrobblers.end (),
 				[] (decltype (scrobblers.front ()) s) { s->LoveCurrentTrack (); });
+	}
+
+	void PlayerTab::handleBanTrack ()
+	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("EnableScrobbling").toBool ())
+			return;
+
+		auto scrobblers = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
+		std::for_each (scrobblers.begin (), scrobblers.end (),
+				[] (decltype (scrobblers.front ()) s) { s->BanCurrentTrack (); });
 	}
 
 	void PlayerTab::handleSimilarError ()
