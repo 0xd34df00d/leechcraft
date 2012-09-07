@@ -41,7 +41,8 @@ namespace
 			return;
 
 #endif
-		static const std::map <QtMsgType, QString> fileName = {
+		static const std::map<QtMsgType, QString> fileName =
+		{
 			{QtDebugMsg, "debug.log"},
 			{QtWarningMsg, "warning.log"},
 			{QtCriticalMsg, "critical.log"},
