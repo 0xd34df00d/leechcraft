@@ -48,17 +48,15 @@ namespace LeechCraft
 					SLOT (checkNotifications ()));
 		}
 
-		void FilesWatcher::AddPath (QString path)
+		bool FilesWatcher::AddPath (QString path, bool baseDir)
 		{
 			int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
 			WatchedPathes2Descriptors_.insert (descriptorsMap::value_type (path, fd));
 
-			qDebug () << "added path"
-					<< path
-					<< fd;
-
 			if (!Timer_->isActive ())
 				Timer_->start (1000);
+
+			return true;
 		}
 
 		void FilesWatcher::AddPathes (QStringList pathes)
@@ -72,12 +70,21 @@ namespace LeechCraft
 			for (auto map : WatchedPathes2Descriptors_.left)
 				inotify_rm_watch (INotifyDescriptor_, map.second);
 
+			WatchedPathes2Descriptors_.clear ();
 			close (INotifyDescriptor_);
 		}
 
 		void FilesWatcher::UpdateExceptions (QStringList masks)
 		{
 			ExceptionMasks_ = masks;
+			ExceptionMasks_.removeAll ("");
+			ExceptionMasks_.removeDuplicates ();
+
+			for (const auto& pair : WatchedPathes2Descriptors_.left)
+			{
+				if (IsInExceptionList (pair.first))
+					RemoveWatchingPath (pair.second);
+			}
 		}
 
 		void FilesWatcher::HandleNotification (int descriptor)
@@ -100,12 +107,16 @@ namespace LeechCraft
 				QString path = WatchedPathes2Descriptors_.right.at (event->wd);
 				QString fullPath = path + "/" + QString (event->name);
 
-				//TODO if in exception list - ignore
+				i += EventSize_ + event->len;
+
+				if (!(event->mask & IN_ISDIR))
+					if (IsInExceptionList (fullPath))
+						continue;
 
 				if (event->mask & IN_CREATE)
 				{
 					if (event->mask & IN_ISDIR)
-						AddPathWithNotify (path);
+						AddPathWithNotify (fullPath);
 					else
 						emit fileWasCreated (fullPath);
 				}
@@ -155,11 +166,8 @@ namespace LeechCraft
 
 				if (event->mask & IN_IGNORED)
 				{
-					inotify_rm_watch (INotifyDescriptor_, event->wd);
-					WatchedPathes2Descriptors_.right.erase (event->wd);
+					RemoveWatchingPath (event->wd);
 				}
-
-				i += EventSize_ + event->len;
 			}
 
 			for (auto e : eventsBuffer)
@@ -176,16 +184,45 @@ namespace LeechCraft
 
 		void FilesWatcher::AddPathWithNotify (const QString& path)
 		{
-			AddPath (path);
+			if (!AddPath (path))
+				return;
+
 			emit dirWasCreated (path);
 			auto pathes = Utils::ScanDir (QDir::Dirs | QDir::NoDotAndDotDot,
 					path,
 					true);
 			for (const auto& p : pathes)
 			{
-				AddPath (p);
+				if (!AddPath (p))
+					continue;
+
 				emit dirWasCreated (p);
 			}
+		}
+
+		bool FilesWatcher::IsInExceptionList (const QString& path)
+		{
+			if (!ExceptionMasks_.isEmpty ())
+				for (const auto& mask : ExceptionMasks_)
+				{
+					QRegExp rx (mask, Qt::CaseInsensitive, QRegExp::WildcardUnix);
+					if (rx.exactMatch (path))
+					{
+						qDebug () << "entry with name"
+								<< QFileInfo (path).fileName ()
+								<< "was ignored by "
+								<< mask;
+						return true;
+					}
+				}
+
+			return false;
+		}
+
+		void FilesWatcher::RemoveWatchingPath (int descriptor)
+		{
+			inotify_rm_watch (INotifyDescriptor_, descriptor);
+			WatchedPathes2Descriptors_.right.erase (descriptor);
 		}
 
 		void FilesWatcher::checkNotifications ()

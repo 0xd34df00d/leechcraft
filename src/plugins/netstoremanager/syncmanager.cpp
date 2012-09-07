@@ -104,6 +104,7 @@ namespace NetStoreManager
 			}
 		}
 
+		handleUpdateExceptionsList ();
 		for (const auto& key : dirs.keys ())
 		{
 			const QString& dirPath = dirs [key].toString ();
@@ -113,12 +114,11 @@ namespace NetStoreManager
 
 			QStringList pathes = Utils::ScanDir (QDir::NoDotAndDotDot | QDir::Dirs, dirPath, true);
 			QMetaObject::invokeMethod (FilesWatcher_,
-					"AddPathes",
-					Q_ARG (QStringList, pathes));
-			QMetaObject::invokeMethod (FilesWatcher_,
 					"AddPath",
 					Q_ARG (QString, dirPath));
-			handleUpdateExceptionsList ();
+			QMetaObject::invokeMethod (FilesWatcher_,
+					"AddPathes",
+					Q_ARG (QStringList, pathes));
 			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [dirPath]->GetObject ());
 // 			isfl->CheckForSyncUpload (pathes, dirPath);
 		}
