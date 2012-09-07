@@ -52,8 +52,8 @@ namespace NetStoreManager
 	void SyncManager::Release ()
 	{
 		if (FilesWatcher_)
-			FilesWatcher_->Release ();
-
+			QMetaObject::invokeMethod (FilesWatcher_,
+					"Release");
 		Thread_->exit ();
 	}
 
@@ -64,10 +64,6 @@ namespace NetStoreManager
 			try
 			{
 				FilesWatcher_ = new FilesWatcher;
-				connect (Thread_,
-						SIGNAL (started ()),
-						FilesWatcher_,
-						SLOT (handleThreadStarted ()));
 				FilesWatcher_->moveToThread (Thread_);
 				Thread_->start ();
 
@@ -116,8 +112,12 @@ namespace NetStoreManager
 					<< dirPath;
 
 			QStringList pathes = Utils::ScanDir (QDir::NoDotAndDotDot | QDir::Dirs, dirPath, true);
-			FilesWatcher_->AddPathes (pathes);
-			FilesWatcher_->AddPath (dirPath);
+			QMetaObject::invokeMethod (FilesWatcher_,
+					"AddPathes",
+					Q_ARG (QStringList, pathes));
+			QMetaObject::invokeMethod (FilesWatcher_,
+					"AddPath",
+					Q_ARG (QString, dirPath));
 			handleUpdateExceptionsList ();
 			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [dirPath]->GetObject ());
 // 			isfl->CheckForSyncUpload (pathes, dirPath);
@@ -184,7 +184,9 @@ namespace NetStoreManager
 				.property ("ExceptionsList").toStringList ();
 
 		if (FilesWatcher_)
-			FilesWatcher_->UpdateExceptions (masks);
+			QMetaObject::invokeMethod (FilesWatcher_,
+					"UpdateExceptions",
+					Q_ARG (QStringList, masks));
 	}
 
 		void SyncManager::handleDirWasCreated (const QString& path)
