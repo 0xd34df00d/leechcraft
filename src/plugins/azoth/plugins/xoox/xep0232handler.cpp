@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "xep0232handler.h"
+#include <algorithm>
 #include <QtDebug>
 #include <QXmppDataForm.h>
 

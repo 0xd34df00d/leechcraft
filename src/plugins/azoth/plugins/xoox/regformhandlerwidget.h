@@ -45,6 +45,8 @@ namespace Xoox
 
 		QString LastStanzaID_;
 
+		QString ReqJID_;
+
 		enum FormType
 		{
 			FTLegacy,

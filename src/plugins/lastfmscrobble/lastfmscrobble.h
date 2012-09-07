@@ -84,6 +84,7 @@ namespace Lastfmscrobble
 		void NowPlaying (const Media::AudioInfo&);
 		void PlaybackStopped ();
 		void LoveCurrentTrack ();
+		void BanCurrentTrack ();
 
 		QString GetAlbumArtProviderName () const;
 		void RequestAlbumArt (const Media::AlbumInfo& album) const;

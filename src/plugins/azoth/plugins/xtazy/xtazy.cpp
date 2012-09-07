@@ -130,6 +130,10 @@ namespace Xtazy
 	{
 	}
 
+	void Plugin::BanCurrentTrack ()
+	{
+	}
+
 	void Plugin::HandleShare (LeechCraft::IHookProxy_ptr proxy, QObject *entryObj, const QString& variant, const QUrl& url)
 	{
 		proxy->CancelDefault ();

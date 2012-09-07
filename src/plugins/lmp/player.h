@@ -35,6 +35,8 @@ namespace Phonon
 	class AudioOutput;
 }
 
+typedef QPair<QString, QString> StringPair_t;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -132,7 +134,6 @@ namespace LMP
 		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
 		MediaInfo GetPhononMediaInfo () const;
 		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
-		void ApplyOrdering (QList<Phonon::MediaSource>&);
 
 		bool HandleCurrentStop (const Phonon::MediaSource&);
 
@@ -148,6 +149,9 @@ namespace LMP
 		void stop ();
 		void clear ();
 	private slots:
+		void handleSorted ();
+		void continueAfterSorted (const QList<QPair<Phonon::MediaSource, MediaInfo>>&);
+
 		void restorePlaylist ();
 		void handleStationError (const QString&);
 		void handleRadioStream (const QUrl&, const Media::AudioInfo&);
@@ -162,10 +166,13 @@ namespace LMP
 		void setTransitionTime ();
 	signals:
 		void songChanged (const MediaInfo&);
+		void indexChanged (const QModelIndex&);
 		void insertedAlbum (const QModelIndex&);
 
 		void playModeChanged (Player::PlayMode);
 		void bufferStatusChanged (int);
+
+		void playerAvailable (bool);
 	};
 }
 }

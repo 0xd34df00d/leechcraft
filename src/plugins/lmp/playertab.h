@@ -112,6 +112,7 @@ namespace LMP
 		void handleSongChanged (const MediaInfo&);
 		void handleCurrentPlayTime (qint64);
 		void handleLoveTrack ();
+		void handleBanTrack ();
 
 		void handleSimilarError ();
 		void handleSimilarReady ();

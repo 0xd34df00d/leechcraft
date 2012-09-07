@@ -43,6 +43,8 @@ namespace LMP
 
 	QString PerformSubstitutions (QString mask, const MediaInfo& info);
 
+	bool ShouldRememberProvs ();
+
 	bool operator!= (const Phonon::MediaSource&, const Phonon::MediaSource&);
 }
 }

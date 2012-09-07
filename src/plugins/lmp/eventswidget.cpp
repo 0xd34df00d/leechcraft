@@ -24,6 +24,8 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/ieventsprovider.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -83,6 +85,29 @@ namespace LMP
 		Ui_.View_->rootContext ()->setContextProperty ("unattendTextString", tr ("Unattend"));
 		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/EventsView.qml"));
 
+		connect (Ui_.View_->rootObject (),
+				SIGNAL (attendSure (int)),
+				this,
+				SLOT (handleAttendSure (int)));
+		connect (Ui_.View_->rootObject (),
+				SIGNAL (attendMaybe (int)),
+				this,
+				SLOT (handleAttendMaybe (int)));
+		connect (Ui_.View_->rootObject (),
+				SIGNAL (unattend (int)),
+				this,
+				SLOT (handleUnattend (int)));
+	}
+
+	void EventsWidget::InitializeProviders ()
+	{
+		const auto& lastProv = ShouldRememberProvs () ?
+				XmlSettingsManager::Instance ()
+					.Property ("LastUsedEventsProvider", QString ()).toString () :
+				QString ();
+
+		bool lastFound = false;
+
 		const auto& roots = Core::Instance ().GetProxy ()->GetPluginsManager ()->
 				GetAllCastableRoots<Media::IEventsProvider*> ();
 		Q_FOREACH (auto root, roots)
@@ -98,22 +123,18 @@ namespace LMP
 					SIGNAL (gotRecommendedEvents (Media::EventInfos_t)),
 					this,
 					SLOT (handleEvents (Media::EventInfos_t)));
+
+			if (scrob->GetServiceName () == lastProv)
+			{
+				const int idx = Providers_.size () - 1;
+				Ui_.Provider_->setCurrentIndex (idx);
+				on_Provider__activated (idx);
+				lastFound = true;
+			}
 		}
 
-		Ui_.Provider_->setCurrentIndex (-1);
-
-		connect (Ui_.View_->rootObject (),
-				SIGNAL (attendSure (int)),
-				this,
-				SLOT (handleAttendSure (int)));
-		connect (Ui_.View_->rootObject (),
-				SIGNAL (attendMaybe (int)),
-				this,
-				SLOT (handleAttendMaybe (int)));
-		connect (Ui_.View_->rootObject (),
-				SIGNAL (unattend (int)),
-				this,
-				SLOT (handleUnattend (int)));
+		if (!lastFound)
+			Ui_.Provider_->setCurrentIndex (-1);
 	}
 
 	void EventsWidget::on_Provider__activated (int index)
@@ -122,6 +143,8 @@ namespace LMP
 
 		auto prov = Providers_.at (index);
 		prov->UpdateRecommendedEvents ();
+
+		XmlSettingsManager::Instance ().setProperty ("LastUsedEventsProvider", prov->GetServiceName ());
 	}
 
 	void EventsWidget::handleEvents (const Media::EventInfos_t& events)

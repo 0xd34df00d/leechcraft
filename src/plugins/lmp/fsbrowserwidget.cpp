@@ -35,6 +35,7 @@ namespace LMP
 	: QWidget (parent)
 	, Player_ (0)
 	, FSModel_ (new FSModel (this))
+	, ColumnsBeenResized_ (false)
 	{
 		Ui_.setupUi (this);
 
@@ -73,6 +74,17 @@ namespace LMP
 				SIGNAL (rootPathsChanged (QStringList)),
 				this,
 				SLOT (handleCollectionChanged ()));
+	}
+
+	void FSBrowserWidget::showEvent (QShowEvent *event)
+	{
+		QWidget::showEvent (event);
+
+		if (!ColumnsBeenResized_)
+		{
+			Ui_.FSTree_->setColumnWidth (0, Ui_.FSTree_->width () * 0.6);
+			ColumnsBeenResized_ = true;
+		}
 	}
 
 	void FSBrowserWidget::AssociatePlayer (Player *player)

@@ -38,10 +38,14 @@ namespace LMP
 		FSModel *FSModel_;
 		QAction *DirCollection_;
 		QAction *ViewProps_;
+
+		bool ColumnsBeenResized_;
 	public:
 		FSBrowserWidget (QWidget* = 0);
 
 		void AssociatePlayer (Player*);
+	protected:
+		void showEvent (QShowEvent*);
 	private slots:
 		void handleItemSelected (const QModelIndex&);
 		void handleCollectionChanged ();

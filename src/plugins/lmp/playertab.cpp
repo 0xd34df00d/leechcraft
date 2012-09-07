@@ -119,9 +119,17 @@ namespace LMP
 		Ui_.NPArt_->installEventFilter (new AALabelEventFilter (coverGetter, this));
 
 		connect (Player_,
+				SIGNAL (playerAvailable (bool)),
+				this,
+				SLOT (setEnabled (bool)));
+		connect (Player_,
 				SIGNAL (songChanged (MediaInfo)),
 				this,
 				SLOT (handleSongChanged (MediaInfo)));
+		connect (Player_,
+				SIGNAL (indexChanged (QModelIndex)),
+				Ui_.Playlist_,
+				SLOT (focusIndex (QModelIndex)));
 		connect (Core::Instance ().GetLocalCollection (),
 				SIGNAL (scanStarted (int)),
 				Ui_.ScanProgress_,
@@ -216,6 +224,9 @@ namespace LMP
 		handleSongChanged (MediaInfo ());
 		Ui_.DevicesBrowser_->InitializeDevices ();
 		Ui_.RadioWidget_->InitializeProviders ();
+		Ui_.EventsWidget_->InitializeProviders ();
+		Ui_.ReleasesWidget_->InitializeProviders ();
+		Ui_.RecommendationsWidget_->InitializeProviders ();
 	}
 
 	void PlayerTab::SetupNavButtons ()
@@ -323,6 +334,15 @@ namespace LMP
 				SLOT (handleLoveTrack ()));
 		TabToolbar_->addAction (love);
 
+		QAction *ban = new QAction (tr ("Ban"), this);
+		ban->setProperty ("ActionIcon", "dialog-cancel");
+		ban->setShortcut (QString ("Ctrl+B"));
+		connect (ban,
+				 SIGNAL (triggered ()),
+				 this,
+		   SLOT (handleBanTrack ()));
+		TabToolbar_->addAction (ban);
+
 		TabToolbar_->addSeparator ();
 
 		PlayedTime_ = new QLabel ();
@@ -368,6 +388,9 @@ namespace LMP
 		TrayMenu_->addAction (PlayPause_);
 		TrayMenu_->addAction (stop);
 		TrayMenu_->addAction (next);
+		TrayMenu_->addSeparator ();
+		TrayMenu_->addAction (love);
+		TrayMenu_->addAction (ban);
 		TrayMenu_->addSeparator ();
 		TrayMenu_->addAction (closeLMP);
 		TrayIcon_->setContextMenu (TrayMenu_);
@@ -637,6 +660,19 @@ namespace LMP
 					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
 		std::for_each (scrobblers.begin (), scrobblers.end (),
 				[] (decltype (scrobblers.front ()) s) { s->LoveCurrentTrack (); });
+	}
+
+	void PlayerTab::handleBanTrack ()
+	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("EnableScrobbling").toBool ())
+			return;
+
+		auto scrobblers = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
+		std::for_each (scrobblers.begin (), scrobblers.end (),
+				[] (decltype (scrobblers.front ()) s) { s->BanCurrentTrack (); });
+		Player_->nextTrack ();
 	}
 
 	void PlayerTab::handleSimilarError ()

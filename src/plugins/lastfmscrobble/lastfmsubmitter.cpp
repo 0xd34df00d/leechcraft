@@ -145,6 +145,26 @@ namespace Lastfmscrobble
 				SLOT (deleteLater ()));
 	}
 
+	void LastFMSubmitter::Ban ()
+	{
+		if (NextSubmit_.isNull ())
+			return;
+
+		QList<QPair<QString, QString>> params;
+		params << QPair<QString, QString> ("track", NextSubmit_.title ());
+		params << QPair<QString, QString> ("artist", NextSubmit_.artist ());
+		qDebug () << Q_FUNC_INFO << "banning" << NextSubmit_.artist () << NextSubmit_.title ();
+		QNetworkReply *reply = Request ("track.ban", NAM_, params);
+		connect (reply,
+				 SIGNAL (finished ()),
+				 reply,
+				 SLOT (deleteLater ()));
+		connect (reply,
+				 SIGNAL (error (QNetworkReply::NetworkError)),
+				 reply,
+				 SLOT (deleteLater ()));
+	}
+
 	void LastFMSubmitter::Clear ()
 	{
 		NextSubmit_ = lastfm::MutableTrack ();
