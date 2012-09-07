@@ -33,6 +33,7 @@ namespace LeechCraft
 		: QObject (parent)
 		, WatchMask_ (IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY |IN_MOVED_FROM | IN_MOVED_TO )
 		, WaitMSecs_ (50)
+		, Timer_ (new QTimer (this))
 		{
 			INotifyDescriptor_ = inotify_init ();
 			if (INotifyDescriptor_ < 0)
@@ -40,9 +41,14 @@ namespace LeechCraft
 
 			EventSize_ = sizeof (struct inotify_event);
 			BufferLength_ = 1024 * (EventSize_ + 16);
+
+			connect (Timer_,
+					SIGNAL (timeout ()),
+					this,
+					SLOT (checkNotifications ()));
 		}
 
-		void FilesWatcher::AddPath (const QString& path)
+		void FilesWatcher::AddPath (QString path)
 		{
 			int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
 			WatchedPathes2Descriptors_.insert (descriptorsMap::value_type (path, fd));
@@ -50,9 +56,12 @@ namespace LeechCraft
 			qDebug () << "added path"
 					<< path
 					<< fd;
+
+			if (!Timer_->isActive ())
+				Timer_->start (1000);
 		}
 
-		void FilesWatcher::AddPathes (const QStringList& pathes)
+		void FilesWatcher::AddPathes (QStringList pathes)
 		{
 			for (const auto & path : pathes)
 				AddPath (path);
@@ -66,7 +75,7 @@ namespace LeechCraft
 			close (INotifyDescriptor_);
 		}
 
-		void FilesWatcher::UpdateExceptions (const QStringList& masks)
+		void FilesWatcher::UpdateExceptions (QStringList masks)
 		{
 			ExceptionMasks_ = masks;
 		}
@@ -184,7 +193,6 @@ namespace LeechCraft
 			struct pollfd pfd = { INotifyDescriptor_, POLLIN, 0 };
 			int res = poll (&pfd, 1, WaitMSecs_);
 
-			qDebug () << "handle" << res;
 			if (res < 0)
 				qDebug () << "error";
 			else if (!res)
@@ -193,16 +201,6 @@ namespace LeechCraft
 			else
 				HandleNotification (INotifyDescriptor_);
 		}
-	}
-
-	void NetStoreManager::FilesWatcher::handleThreadStarted ()
-	{
-		QTimer *timer = new QTimer (this);
-		connect (timer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (checkNotifications ()));
-		timer->start (1000);
 	}
 
 }

@@ -42,21 +42,21 @@ namespace NetStoreManager
 		descriptorsMap WatchedPathes2Descriptors_;
 
 		QStringList ExceptionMasks_;
+		QTimer *Timer_;
 	public:
 		FilesWatcher (QObject *parent = 0);
 
-		void AddPath (const QString& path);
-		void AddPathes (const QStringList& pathes);
+		Q_INVOKABLE void AddPath (QString path);
+		Q_INVOKABLE void AddPathes (QStringList pathes);
 
-		void Release ();
-		void UpdateExceptions (const QStringList& masks);
+		Q_INVOKABLE void Release ();
+		Q_INVOKABLE void UpdateExceptions (QStringList masks);
 	private:
 		void HandleNotification (int descriptor);
 		void AddPathWithNotify (const QString& path);
 
 	public slots:
 		void checkNotifications ();
-		void handleThreadStarted ();
 
 	signals:
 		void dirWasCreated (const QString& path);
