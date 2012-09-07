@@ -69,7 +69,8 @@ namespace
 
 #ifdef _GNU_SOURCE
 
-		if (type != QtDebugMsg && bt) {
+		if (type != QtDebugMsg && bt)
+		{
 			const int maxSize = 100;
 			void *array [maxSize];
 			size_t size = backtrace (array, maxSize);
