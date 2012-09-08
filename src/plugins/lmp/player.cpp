@@ -704,11 +704,16 @@ namespace LMP
 				return Phonon::MediaSource ();
 
 			const auto& curAlbum = GetMediaInfo (*pos).Album_;
-			if (++pos == CurrentQueue_.end () ||
+			++pos;
+			if (pos == CurrentQueue_.end () ||
 					GetMediaInfo (*pos).Album_ != curAlbum)
-				while (pos >= CurrentQueue_.begin () &&
-						GetMediaInfo (*pos).Album_ == curAlbum)
+			{
+				do
 					--pos;
+				while (pos >= CurrentQueue_.begin () &&
+						GetMediaInfo (*pos).Album_ == curAlbum);
+				++pos;
+			}
 			return *pos;
 		}
 		case PlayMode::RepeatWhole:
@@ -754,12 +759,26 @@ namespace LMP
 	void Player::previousTrack ()
 	{
 		const auto& current = Source_->currentSource ();
-		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
-		if (pos == CurrentQueue_.end () || pos == CurrentQueue_.begin ())
-			return;
+
+		Phonon::MediaSource next;
+		if (PlayMode_ == PlayMode::Shuffle)
+		{
+			next = GetNextSource (current);
+			if (next.type () == Phonon::MediaSource::Empty)
+				return;
+		}
+		else
+		{
+			QList<Phonon::MediaSource>::const_iterator pos;
+			pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
+			if (pos == CurrentQueue_.end () || pos == CurrentQueue_.begin ())
+				return;
+
+			next = *(--pos);
+		}
 
 		Source_->stop ();
-		Source_->setCurrentSource (*(--pos));
+		Source_->setCurrentSource (next);
 		Source_->play ();
 	}
 
@@ -774,12 +793,12 @@ namespace LMP
 		}
 
 		const auto& current = Source_->currentSource ();
-		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
-		if (pos == CurrentQueue_.end () || pos == CurrentQueue_.end () - 1)
+		const auto& next = GetNextSource (current);
+		if (next.type () == Phonon::MediaSource::Empty)
 			return;
 
 		Source_->stop ();
-		Source_->setCurrentSource (*(++pos));
+		Source_->setCurrentSource (next);
 		Source_->play ();
 	}
 

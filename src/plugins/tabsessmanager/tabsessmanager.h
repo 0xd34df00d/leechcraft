@@ -35,7 +35,7 @@ namespace TabSessManager
 		Q_INTERFACES (IInfo IActionsExporter)
 
 		ICoreProxy_ptr Proxy_;
-		QSet<QObject*> Tabs_;
+		QList<QObject*> Tabs_;
 		bool IsRecovering_;
 
 		bool IsScheduled_;

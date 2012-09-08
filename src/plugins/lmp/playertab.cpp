@@ -789,13 +789,16 @@ namespace LMP
 	{
 		const auto& idxs = Ui_.CollectionTree_->selectionModel ()->selectedRows ();
 		auto collection = Core::Instance ().GetLocalCollection ();
+
+		QModelIndexList mapped;
 		Q_FOREACH (const auto& src, idxs)
 		{
 			const QModelIndex& index = CollectionFilterModel_->mapToSource (src);
-			if (!index.isValid ())
-				continue;
-			collection->Enqueue (index, Player_);
+			if (index.isValid ())
+				mapped << index;
 		}
+
+		collection->Enqueue (mapped, Player_);
 	}
 
 	void PlayerTab::handleCollectionItemSelected (const QModelIndex& index)

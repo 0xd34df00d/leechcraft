@@ -451,6 +451,9 @@ namespace LMP
 
 	void PlaylistWidget::focusIndex (const QModelIndex& index)
 	{
+		if (!XmlSettingsManager::Instance ().property ("AutocenterCurrentTrack").toBool ())
+			return;
+
 		Ui_.Playlist_->scrollTo (PlaylistFilter_->mapFromSource (index),
 				QAbstractItemView::PositionAtCenter);
 	}

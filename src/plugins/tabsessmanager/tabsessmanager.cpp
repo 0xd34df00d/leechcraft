@@ -216,7 +216,7 @@ namespace TabSessManager
 
 		auto removeGuard = [this, widget] (void*)
 		{
-			Tabs_.remove (widget);
+			Tabs_.removeAll (widget);
 			handleTabRecoverDataChanged ();
 		};
 		std::shared_ptr<void> guard (static_cast<void*> (0), removeGuard);
@@ -268,6 +268,7 @@ namespace TabSessManager
 			QHash<QByteArray, QObject*> pluginCache;
 			QHash<QObject*, QList<RecInfo>> tabs;
 
+			int order = 0;
 			while (!str.atEnd ())
 			{
 				QByteArray pluginId;
@@ -291,7 +292,7 @@ namespace TabSessManager
 					continue;
 				}
 
-				tabs [plugin] << RecInfo { recData, props, name, icon };
+				tabs [plugin] << RecInfo { order++, recData, props, name, icon };
 
 				qDebug () << Q_FUNC_INFO << "got restore data for"
 						<< pluginId << name << plugin;
@@ -322,20 +323,23 @@ namespace TabSessManager
 
 		void OpenTabs (const QHash<QObject*, QList<RecInfo>>& tabs)
 		{
-			Q_FOREACH (QObject *plugin, tabs.keys ())
+			QList<QPair<IHaveRecoverableTabs*, RecInfo>> ordered;
+			Q_FOREACH (auto plugin, tabs.keys ())
 			{
 				auto ihrt = qobject_cast<IHaveRecoverableTabs*> (plugin);
 				if (!ihrt)
 					continue;
 
-				QList<TabRecoverInfo> datas;
-				const auto& infos = tabs [plugin];
-				std::transform (infos.begin (), infos.end (), std::back_inserter (datas),
-						[] (const RecInfo& rec) { return TabRecoverInfo { rec.Data_, rec.Props_ }; });
-				qDebug () << Q_FUNC_INFO << "recovering"
-						<< plugin << infos.size ();
-				ihrt->RecoverTabs (datas);
+				Q_FOREACH (const auto& info, tabs [plugin])
+					ordered << qMakePair (ihrt, info);
 			}
+
+			std::sort (ordered.begin (), ordered.end (),
+					[] (decltype (ordered.at (0)) left, decltype (ordered.at (0)) right)
+						{ return left.second.Order_ < right.second.Order_; });
+
+			Q_FOREACH (const auto& pair, ordered)
+				pair.first->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, pair.second.Props_ } });
 		}
 	}
 
