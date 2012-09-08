@@ -155,7 +155,6 @@ namespace LMP
 		const auto& paths = std::accumulate (indexes.begin (), indexes.end (), QStringList (),
 				[this] (const QStringList& paths, decltype (indexes.front ()) item)
 					{ return paths + CollectPaths (item, Sorter_); });
-		qDebug () << Q_FUNC_INFO << indexes << paths;
 		player->Enqueue (paths);
 	}
 
