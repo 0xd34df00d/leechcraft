@@ -576,6 +576,31 @@ namespace LMP
 			RemoveTrack (path);
 	}
 
+	void LocalCollection::InitiateScan (const QSet<QString>& newPaths)
+	{
+		auto resolver = Core::Instance ().GetLocalFileResolver ();
+
+		emit scanStarted (newPaths.size ());
+		auto worker = [resolver] (const QString& path)
+		{
+			try
+			{
+				return resolver->ResolveInfo (path);
+			}
+			catch (const ResolveError& error)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error resolving media info for"
+						<< error.GetPath ()
+						<< error.what ();
+				return MediaInfo ();
+			}
+		};
+		QFuture<MediaInfo> future = QtConcurrent::mapped (newPaths,
+				std::function<MediaInfo (const QString&)> (worker));
+		Watcher_->setFuture (future);
+	}
+
 	void LocalCollection::recordPlayedTrack (const QString& path)
 	{
 		if (!Path2Track_.contains (path))
@@ -626,35 +651,17 @@ namespace LMP
 		auto watcher = dynamic_cast<QFutureWatcher<QStringList>*> (sender ());
 
 		const auto& origPaths = QSet<QString>::fromList (watcher->result ());
-		auto newPaths = origPaths;
-
-		auto resolver = Core::Instance ().GetLocalFileResolver ();
-
-		newPaths.subtract (PresentPaths_);
-		if (!newPaths.isEmpty ())
-		{
-			emit scanStarted (newPaths.size ());
-			auto worker = [resolver] (const QString& path)
-			{
-				try
-				{
-					return resolver->ResolveInfo (path);
-				}
-				catch (const ResolveError& error)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "error resolving media info for"
-							<< error.GetPath ()
-							<< error.what ();
-					return MediaInfo ();
-				}
-			};
-			QFuture<MediaInfo> future = QtConcurrent::mapped (newPaths,
-					std::function<MediaInfo (const QString&)> (worker));
-			Watcher_->setFuture (future);
-		}
-
 		CheckRemovedFiles (origPaths, path);
+
+		auto newPaths = origPaths;
+		newPaths.subtract (PresentPaths_);
+		if (newPaths.isEmpty ())
+			return;
+
+		if (Watcher_->isRunning ())
+			NewPathsQueue_ << newPaths;
+		else
+			InitiateScan (newPaths);
 	}
 
 	void LocalCollection::handleScanFinished ()
@@ -670,6 +677,9 @@ namespace LMP
 
 		auto newArts = Storage_->AddToCollection (infos);
 		HandleNewArtists (newArts);
+
+		if (!NewPathsQueue_.isEmpty ())
+			InitiateScan (NewPathsQueue_.takeFirst ());
 	}
 
 	void LocalCollection::saveRootPaths ()

@@ -71,6 +71,7 @@ namespace LMP
 		QHash<int, QStandardItem*> Track2Item_;
 
 		QFutureWatcher<MediaInfo> *Watcher_;
+		QList<QSet<QString>> NewPathsQueue_;
 	public:
 		enum NodeType
 		{
@@ -143,6 +144,8 @@ namespace LMP
 		void RemoveRootPaths (const QStringList&);
 
 		void CheckRemovedFiles (const QSet<QString>& scanned, const QString& root);
+
+		void InitiateScan (const QSet<QString>&);
 	public slots:
 		void recordPlayedTrack (const QString&);
 	private slots:
