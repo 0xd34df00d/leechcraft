@@ -44,6 +44,11 @@ namespace Azoth
 				SLOT (send ()));
 		show ();
 
+		auto name = entry->GetEntryName ();
+		if (name != entry->GetHumanReadableID ())
+			name += " (" + entry->GetHumanReadableID () + ")";
+		Ui_.TargetLabel_->setText (name);
+
 		auto acc = qobject_cast<IAccount*> (Entry_->GetParentAccount ());
 		if (acc->GetTransferManager ())
 		{
