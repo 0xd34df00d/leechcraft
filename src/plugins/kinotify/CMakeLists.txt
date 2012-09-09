@@ -16,13 +16,13 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	)
 
-IF (UNIX)
+IF (UNIX AND NOT APPLE)
 	SET (SRCS fswinwatcher_x11.cpp ${SRCS})
 ELSEIF (WIN32)
 	SET (SRCS fswinwatcher_win.cpp ${SRCS})
-ELSE (UNIX)
+ELSE (UNIX AND NOT APPLE)
 	SET (SRCS fswinwatcher.cpp ${SRCS})
-ENDIF (UNIX)
+ENDIF (UNIX AND NOT APPLE)
 
 SET (HEADERS
 	fswinwatcher.h
