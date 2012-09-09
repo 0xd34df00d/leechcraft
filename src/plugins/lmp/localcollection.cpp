@@ -162,9 +162,18 @@ namespace LMP
 	{
 		Storage_->Clear ();
 		CollectionModel_->clear ();
+		Artists_.clear ();
 		PresentPaths_.clear ();
+
+		Path2Track_.clear ();
+		Track2Path_.clear ();
+
+		Track2Album_.clear ();
+		AlbumID2Album_.clear ();
+
 		Artist2Item_.clear ();
 		Album2Item_.clear ();
+		Track2Item_.clear ();
 
 		RemoveRootPaths (RootPaths_);
 	}
