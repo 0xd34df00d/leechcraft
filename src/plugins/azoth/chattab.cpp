@@ -21,6 +21,7 @@
 #include <QWebElement>
 #include <QTextDocument>
 #include <QTimer>
+#include <QBuffer>
 #include <QPalette>
 #include <QApplication>
 #include <QShortcut>
@@ -1028,7 +1029,12 @@ namespace Azoth
 
 		if (IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj))
 		{
-			const auto& body = "<img src='" + Util::GetAsBase64Src (image) + "'/>";
+			QBuffer buf;
+			buf.open (QIODevice::ReadWrite);
+			image.save (&buf, "JPG", 60);
+			const auto& asBase = QString ("data:image/png;base64,%1")
+					.arg (QString (buf.buffer ().toBase64 ()));
+			const auto& body = "<img src='" + asBase + "'/>";
 			richMsg->SetRichBody (body);
 		}
 
