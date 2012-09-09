@@ -113,6 +113,7 @@ SET (SRCS
 	microblogstab.cpp
 	riexhandler.cpp
 	filesenddialog.cpp
+	pendinguploadpaster.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -163,6 +164,7 @@ SET (HEADERS
 	microblogstab.h
 	riexhandler.h
 	filesenddialog.h
+	pendinguploadpaster.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	)
