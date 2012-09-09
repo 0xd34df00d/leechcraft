@@ -26,7 +26,6 @@
 #include <QtConcurrentRun>
 #include <QTimer>
 #include <QtDebug>
-#include <boost-1_50/boost/concept_check.hpp>
 #include <util/util.h>
 #include "localcollectionstorage.h"
 #include "core.h"
