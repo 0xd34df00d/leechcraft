@@ -20,12 +20,16 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/iwebfilestorage.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/itransfermanager.h"
 #include "core.h"
 #include "chattabsmanager.h"
 #include "transferjobmanager.h"
+#include "pendinguploadpaster.h"
 
 namespace LeechCraft
 {
@@ -34,6 +38,7 @@ namespace Azoth
 	FileSendDialog::FileSendDialog (ICLEntry *entry, const QString& suggested, QWidget *parent)
 	: QDialog (parent)
 	, Entry_ (entry)
+	, EntryVariant_ (Core::Instance ().GetChatTabsManager ()->GetActiveVariant (entry))
 	, AccSupportsFT_ (false)
 	{
 		Ui_.setupUi (this);
@@ -56,10 +61,38 @@ namespace Azoth
 			Ui_.TransferMethod_->addItem (tr ("Protocol file transfer"));
 		}
 
+		FillSharers ();
+
 		if (suggested.isEmpty ())
 			on_FileBrowse__released ();
 		else
 			Ui_.FileEdit_->setText (suggested);
+	}
+
+	void FileSendDialog::FillSharers ()
+	{
+		auto sharers = Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetAllCastableRoots<IWebFileStorage*> ();
+		QMap<QString, QObject*> variants;
+		Q_FOREACH (auto sharerObj, sharers)
+		{
+			auto sharer = qobject_cast<IWebFileStorage*> (sharerObj);
+			Q_FOREACH (const auto& var, sharer->GetServiceVariants ())
+			{
+				const int idx = Ui_.TransferMethod_->count ();
+				Ui_.TransferMethod_->addItem (var);
+				Pos2Sharer_ [idx] = { sharerObj, var };
+			}
+		}
+	}
+
+	void FileSendDialog::SendSharer (const SharerInfo& info)
+	{
+		const auto& filename = Ui_.FileEdit_->text ();
+
+		auto sharer = qobject_cast<IWebFileStorage*> (info.Sharer_);
+		sharer->UploadFile (filename, info.Service_);
+		new PendingUploadPaster (info.Sharer_, Entry_, EntryVariant_, filename);
 	}
 
 	void FileSendDialog::SendProto ()
@@ -78,9 +111,7 @@ namespace Azoth
 		if (filename.isEmpty ())
 			return;
 
-		QObject *job = xferMgr->SendFile (Entry_->GetEntryID (),
-				Core::Instance ().GetChatTabsManager ()->GetActiveVariant (Entry_),
-				filename);
+		QObject *job = xferMgr->SendFile (Entry_->GetEntryID (), EntryVariant_, filename);
 		if (!job)
 		{
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
@@ -94,7 +125,10 @@ namespace Azoth
 
 	void FileSendDialog::send ()
 	{
-		if (AccSupportsFT_ && !Ui_.TransferMethod_->currentIndex ())
+		const int idx = Ui_.TransferMethod_->currentIndex ();
+		if (Pos2Sharer_.contains (idx))
+			SendSharer (Pos2Sharer_ [idx]);
+		else if (AccSupportsFT_)
 			SendProto ();
 		else
 			QMessageBox::critical (this,

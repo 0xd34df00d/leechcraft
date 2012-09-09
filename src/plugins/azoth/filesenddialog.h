@@ -33,10 +33,20 @@ namespace Azoth
 
 		Ui::FileSendDialog Ui_;
 		ICLEntry *Entry_;
+		const QString EntryVariant_;
 		bool AccSupportsFT_;
+
+		struct SharerInfo
+		{
+			QObject *Sharer_;
+			QString Service_;
+		};
+		QMap<int, SharerInfo> Pos2Sharer_;
 	public:
 		FileSendDialog (ICLEntry*, const QString& = QString (), QWidget* = 0);
 	private:
+		void FillSharers ();
+		void SendSharer (const SharerInfo&);
 		void SendProto ();
 	private slots:
 		void send ();
