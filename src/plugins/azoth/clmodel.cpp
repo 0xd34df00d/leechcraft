@@ -26,6 +26,7 @@
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
 #include "transferjobmanager.h"
+#include "filesenddialog.h"
 
 namespace LeechCraft
 {
@@ -215,17 +216,22 @@ namespace Azoth
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return false;
 
-		Q_FOREACH (const QUrl& url, urls)
+		if (urls.size () > 2)
 		{
-			const QString& path = url.toLocalFile ();
+			Q_FOREACH (const QUrl& url, urls)
+			{
+				const QString& path = url.toLocalFile ();
 
-			if (!QFileInfo (path).exists ())
-				continue;
+				if (!QFileInfo (path).exists ())
+					continue;
 
-			QObject *job = mgr->SendFile (entry->GetEntryID (),
-					entry->Variants ().first (), path);
-			Core::Instance ().GetTransferJobManager()->HandleJob (job);
+				QObject *job = mgr->SendFile (entry->GetEntryID (),
+						entry->Variants ().first (), path);
+				Core::Instance ().GetTransferJobManager()->HandleJob (job);
+			}
 		}
+		else
+			new FileSendDialog (entry, urls.value (0).toLocalFile ());
 
 		return true;
 	}
