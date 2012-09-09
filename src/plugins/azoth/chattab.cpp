@@ -1029,11 +1029,17 @@ namespace Azoth
 
 		if (IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj))
 		{
-			QBuffer buf;
-			buf.open (QIODevice::ReadWrite);
-			image.save (&buf, "JPG", 60);
-			const auto& asBase = QString ("data:image/png;base64,%1")
-					.arg (QString (buf.buffer ().toBase64 ()));
+			QString asBase;
+			if (entry->GetEntryType () == ICLEntry::ETMUC)
+			{
+				QBuffer buf;
+				buf.open (QIODevice::ReadWrite);
+				image.save (&buf, "JPG", 60);
+				asBase = QString ("data:image/png;base64,%1")
+						.arg (QString (buf.buffer ().toBase64 ()));
+			}
+			else
+				asBase = Util::GetAsBase64Src (image);
 			const auto& body = "<img src='" + asBase + "'/>";
 			richMsg->SetRichBody (body);
 		}
