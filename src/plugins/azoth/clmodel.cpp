@@ -26,7 +26,6 @@
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
 #include "transferjobmanager.h"
-#include "filesenddialog.h"
 
 namespace LeechCraft
 {
@@ -185,55 +184,12 @@ namespace Azoth
 
 		QObject *entryObj = parent.data (Core::CLREntryObject).value<QObject*> ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		if (entry->Variants ().isEmpty ())
-			return false;
-
-		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		ITransferManager *mgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
-		if (!mgr)
-			return false;
 
 		const QList<QUrl>& urls = mime->urls ();
 		if (urls.isEmpty ())
 			return false;
 
-		QString text;
-		if (urls.size () > 2)
-			text = tr ("Are you sure you want to send %n files to %1?", 0, urls.size ())
-					.arg (entry->GetEntryName ());
-		else
-		{
-			QStringList list;
-			Q_FOREACH (const QUrl& url, urls)
-				list << QFileInfo (url.path ()).fileName ();
-			text = tr ("Are you sure you want to send %1 to %2?")
-					.arg ("<em>" + list.join (", ") + "</em>")
-					.arg (entry->GetEntryName ());
-		}
-		if (QMessageBox::question (0,
-					"LeechCraft",
-					text,
-					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-			return false;
-
-		if (urls.size () > 2)
-		{
-			Q_FOREACH (const QUrl& url, urls)
-			{
-				const QString& path = url.toLocalFile ();
-
-				if (!QFileInfo (path).exists ())
-					continue;
-
-				QObject *job = mgr->SendFile (entry->GetEntryID (),
-						entry->Variants ().first (), path);
-				Core::Instance ().GetTransferJobManager()->HandleJob (job);
-			}
-		}
-		else
-			new FileSendDialog (entry, urls.value (0).toLocalFile ());
-
-		return true;
+		return Core::Instance ().GetTransferJobManager ()->OfferURLs (entry, urls);
 	}
 }
 }
