@@ -63,6 +63,7 @@
 #include "chattabwebview.h"
 #include "msgformatterwidget.h"
 #include "actionsmanager.h"
+#include "contactdropfilter.h"
 
 namespace LeechCraft
 {
@@ -135,6 +136,22 @@ namespace Azoth
 		Ui_.setupUi (this);
 		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
 		Ui_.MsgEdit_->installEventFilter (new CopyFilter (Ui_.View_));
+
+		auto dropFilter = new ContactDropFilter (this);
+		Ui_.View_->installEventFilter (dropFilter);
+		Ui_.MsgEdit_->installEventFilter (dropFilter);
+		connect (dropFilter,
+				SIGNAL (localImageDropped (QImage, QUrl)),
+				this,
+				SLOT (handleLocalImageDropped (QImage, QUrl)));
+		connect (dropFilter,
+				SIGNAL (imageDropped (QImage)),
+				this,
+				SLOT (handleImageDropped (QImage)));
+		connect (dropFilter,
+				SIGNAL (filesDropped (QList<QUrl>)),
+				this,
+				SLOT (handleFilesDropped (QList<QUrl>)));
 
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);
@@ -963,6 +980,98 @@ namespace Azoth
 	void ChatTab::typeTimeout ()
 	{
 		SetChatPartState (CPSPaused);
+	}
+
+	void ChatTab::handleLocalImageDropped (const QImage& image, const QUrl& url)
+	{
+		if (url.scheme () == "file")
+			handleFilesDropped (QList<QUrl> () << url);
+		else
+		{
+			if (QMessageBox::question (this,
+						"Sending image",
+						tr ("Would you like to send image %1 directly in chat? "
+							"Otherwise the link to it will be sent.")
+							.arg (QFileInfo (url.path ()).fileName ()),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+			{
+				handleImageDropped (image);
+				return;
+			}
+
+			auto entry = GetEntry<ICLEntry> ();
+			if (!entry)
+				return;
+
+			const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
+						IMessage::MTMUCMessage :
+						IMessage::MTChatMessage;
+			auto msgObj = entry->CreateMessage (msgType, GetSelectedVariant (), url.toEncoded ());
+			auto msg = qobject_cast<IMessage*> (msgObj);
+			msg->Send ();
+		}
+	}
+
+	void ChatTab::handleImageDropped (const QImage& image)
+	{
+		auto entry = GetEntry<ICLEntry> ();
+		if (!entry)
+			return;
+
+		const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
+					IMessage::MTMUCMessage :
+					IMessage::MTChatMessage;
+		auto msgObj = entry->CreateMessage (msgType,
+				GetSelectedVariant (),
+				tr ("This message contains inline image, enable XHTML-IM to view it."));
+		auto msg = qobject_cast<IMessage*> (msgObj);
+
+		if (IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj))
+		{
+			const auto& body = "<img src='" + Util::GetAsBase64Src (image) + "'/>";
+			richMsg->SetRichBody (body);
+		}
+
+		msg->Send ();
+	}
+
+	namespace
+	{
+		bool CheckImage (const QList<QUrl>& urls, ChatTab *chat)
+		{
+			if (urls.size () != 1)
+				return false;
+
+			const auto& local = urls.at (0).toLocalFile ();
+			if (!QFile::exists (local))
+				return false;
+
+			const QImage img (local);
+			if (img.isNull ())
+				return false;
+
+			const QFileInfo fileInfo (local);
+
+			if (QMessageBox::question (chat,
+						"Sending image",
+						ChatTab::tr ("Would you like to send image %1 (%2) directly in chat? "
+							"Otherwise it will be sent as file.")
+							.arg (fileInfo.fileName ())
+							.arg (Util::MakePrettySize (fileInfo.size ())),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+				return false;
+
+			chat->handleImageDropped (img);
+			return true;
+		}
+	}
+
+	void ChatTab::handleFilesDropped (const QList<QUrl>& urls)
+	{
+		if (CheckImage (urls, this))
+			return;
+
+		Core::Instance ().GetTransferJobManager ()->OfferURLs (GetEntry<ICLEntry> (), urls);
 	}
 
 	void ChatTab::handleGotLastMessages (QObject *entryObj, const QList<QObject*>& messages)

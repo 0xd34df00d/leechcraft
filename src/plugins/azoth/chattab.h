@@ -128,6 +128,10 @@ namespace Azoth
 		void appendMessageText (const QString&);
 		void selectVariant (const QString&);
 		QTextEdit* getMsgEdit ();
+
+		void handleLocalImageDropped (const QImage&, const QUrl&);
+		void handleImageDropped (const QImage&);
+		void handleFilesDropped (const QList<QUrl>&);
 	private slots:
 		void on_MUCEventsButton__toggled (bool);
 		void handleSeparateMUCLog ();
