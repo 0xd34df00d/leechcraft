@@ -24,6 +24,14 @@
 #include <util/util.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
+
+#ifdef ENABLE_MEDIACALLS
+#include "mediacall.h"
+#endif
+#ifdef ENABLE_CRYPT
+#include "pgpmanager.h"
+#endif
+
 #include "glooxprotocol.h"
 #include "glooxaccountconfigurationdialog.h"
 #include "core.h"
@@ -40,17 +48,9 @@
 #include "userlocation.h"
 #include "privacylistsconfigdialog.h"
 #include "pepmicroblog.h"
-
-#ifdef ENABLE_MEDIACALLS
-#include "mediacall.h"
-#endif
-
 #include "jabbersearchsession.h"
 #include "bookmarkeditwidget.h"
-
-#ifdef ENABLE_CRYPT
-#include "pgpmanager.h"
-#endif
+#include "accstatusrestorer.h"
 
 namespace LeechCraft
 {
@@ -282,11 +282,12 @@ namespace Xoox
 		State lastState = AccState_.State_;
 
 		const bool priorityChanged = AccState_.Priority_ != w->GetPriority ();
-		if (lastState != SOffline &&
-			(JID_ != w->GetJID () ||
-			 Resource_ != w->GetResource () ||
-			 Host_ != w->GetHost () ||
-			 Port_ != w->GetPort ()))
+		const bool reconnect = lastState != SOffline &&
+				(JID_ != w->GetJID () ||
+				Resource_ != w->GetResource () ||
+				Host_ != w->GetHost () ||
+				Port_ != w->GetPort ());
+		if (reconnect)
 			ChangeState (EntryStatus (SOffline, AccState_.Status_));
 
 		JID_ = w->GetJID ();
@@ -315,7 +316,13 @@ namespace Xoox
 
 		emit accountSettingsChanged ();
 
-		if (lastState != SOffline || priorityChanged)
+		if (reconnect)
+		{
+			auto state = AccState_;
+			state.State_ = lastState;
+			new AccStatusRestorer (state, ClientConnection_);
+		}
+		else if (priorityChanged)
 			ChangeState (EntryStatus (lastState, AccState_.Status_));
 	}
 
