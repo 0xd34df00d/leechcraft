@@ -114,6 +114,7 @@ SET (SRCS
 	riexhandler.cpp
 	filesenddialog.cpp
 	pendinguploadpaster.cpp
+	contactdropfilter.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -165,6 +166,7 @@ SET (HEADERS
 	riexhandler.h
 	filesenddialog.h
 	pendinguploadpaster.h
+	contactdropfilter.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	)
