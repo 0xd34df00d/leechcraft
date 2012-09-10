@@ -41,7 +41,7 @@ namespace Xoox
 	}
 
 	QObject* TransferManager::SendFile (const QString& id,
-			const QString& sourceVar, const QString& name)
+			const QString& sourceVar, const QString& name, const QString& comment)
 	{
 		QString target = GlooxCLEntry::JIDFromID (Account_, id);
 		QString var = sourceVar;

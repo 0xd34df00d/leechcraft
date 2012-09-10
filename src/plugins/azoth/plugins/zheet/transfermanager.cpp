@@ -39,15 +39,17 @@ namespace Zheet
 				this,
 				SLOT (handleSuggestion (MSN::fileTransferInvite)));
 	}
-	
+
 	QObject* TransferManager::SendFile (const QString& id,
-			const QString&, const QString& name)
+			const QString&, const QString& name, const QString& comment)
 	{
+		Q_UNUSED (comment)
+
 		MSNBuddyEntry *buddy = A_->GetBuddy (id);
 		A_->GetSBManager ()->SendFile (name, ++SessID_, buddy);
 		return new TransferJob (SessID_, name, buddy, CB_, A_);
 	}
-	
+
 	void TransferManager::handleSuggestion (MSN::fileTransferInvite fti)
 	{
 		TransferJob *job = new TransferJob (fti, CB_, A_);

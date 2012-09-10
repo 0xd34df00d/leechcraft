@@ -274,7 +274,9 @@ namespace Azoth
 					continue;
 
 				QObject *job = mgr->SendFile (entry->GetEntryID (),
-						entry->Variants ().first (), path);
+						entry->Variants ().first (),
+						path,
+						QString ());
 				Core::Instance ().GetTransferJobManager ()->HandleJob (job);
 			}
 		}

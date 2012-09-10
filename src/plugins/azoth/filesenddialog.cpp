@@ -111,7 +111,8 @@ namespace Azoth
 		if (filename.isEmpty ())
 			return;
 
-		QObject *job = xferMgr->SendFile (Entry_->GetEntryID (), EntryVariant_, filename);
+		QObject *job = xferMgr->SendFile (Entry_->GetEntryID (),
+				EntryVariant_, filename, Ui_.CommentEdit_->toPlainText ());
 		if (!job)
 		{
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
