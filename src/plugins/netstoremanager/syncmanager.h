@@ -27,11 +27,13 @@
 
 class QTimer;
 class QThread;
+class QStandardItem;
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
+	class ISupportFileListings;
 	class FilesWatcher;
 	class IStorageAccount;
 	class AccountsManager;
@@ -46,6 +48,8 @@ namespace NetStoreManager
 
 		QThread *Thread_;
 		FilesWatcher *FilesWatcher_;
+
+		QMap<ISupportFileListings*, QMap<QString, QStringList>> Isfl2PathId_;
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
 
@@ -65,6 +69,8 @@ namespace NetStoreManager
 		void handleEntryWasRenamed (const QString& oldPath, const QString&  newPath);
 		void handleEntryWasMoved (const QString& oldPath, const QString& newPath);
 		void handleFileWasUpdated (const QString& path);
+
+		void handleGotListing (const QList<QList<QStandardItem*>>&);
 	};
 }
 }

@@ -22,6 +22,7 @@
 #include <QTimer>
 #include <QDir>
 #include <QThread>
+#include <QStandardItemModel>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "accountsmanager.h"
@@ -115,18 +116,22 @@ namespace NetStoreManager
 		for (const auto& key : dirs.keys ())
 		{
 			const QString& dirPath = dirs [key].toString ();
-			Path2Account_ [dirPath] = AM_->GetAccountFromUniqueID (key);
-			qDebug () << "watching directory "
-					<< dirPath;
+			auto isa = AM_->GetAccountFromUniqueID (key);
+			auto isfl = qobject_cast<ISupportFileListings*> (isa->GetObject ());
+			if (!isfl)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< isa->GetObject ()
+						<< "isn't an ISupportFileListings. Synchronization will not work.";
+				continue;
+			}
 
-			QStringList pathes = Utils::ScanDir (QDir::NoDotAndDotDot | QDir::Dirs, dirPath, true);
-			QMetaObject::invokeMethod (FilesWatcher_,
-					"AddPath",
-					Q_ARG (QString, dirPath));
-			QMetaObject::invokeMethod (FilesWatcher_,
-					"AddPathes",
-					Q_ARG (QStringList, pathes));
-			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [dirPath]->GetObject ());
+			connect (isa->GetObject (),
+					SIGNAL (gotListing (QList<QList<QStandardItem*>>)),
+					this,
+					SLOT (handleGotListing (QList<QList<QStandardItem*>>)));
+			isfl->RefreshListing ();
+			Path2Account_ [dirPath] = isa;
 // 			isfl->CheckForSyncUpload (pathes, dirPath);
 		}
 
@@ -196,8 +201,88 @@ namespace NetStoreManager
 					Q_ARG (QStringList, masks));
 	}
 
-		void SyncManager::handleDirWasCreated (const QString& path)
+	void SyncManager::handleDirWasCreated (const QString& path)
+	{
+		for (const auto& basePath : Path2Account_.keys ())
 		{
+			if (!path.startsWith (basePath))
+				continue;
+
+			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+			if (!isfl)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< Path2Account_ [basePath]->GetObject ()
+						<< "isn't an ISupportFileListings";
+				continue;
+			}
+		}
+	}
+
+	void SyncManager::handleFileWasCreated (const QString& path)
+	{
+		for (const auto& basePath : Path2Account_.keys ())
+		{
+			if (!path.startsWith (basePath))
+				continue;
+
+			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+			if (!isfl)
+			{
+				qWarning () << Q_FUNC_INFO
+				<< Path2Account_ [basePath]->GetObject ()
+				<< "isn't an ISupportFileListings";
+				continue;
+			}
+		}
+	}
+
+	void SyncManager::handleDirWasRemoved (const QString& path)
+	{
+		for (const auto& basePath : Path2Account_.keys ())
+		{
+			if (!path.startsWith (basePath))
+				continue;
+
+			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+			if (!isfl)
+			{
+				qWarning () << Q_FUNC_INFO
+				<< Path2Account_ [basePath]->GetObject ()
+				<< "isn't an ISupportFileListings";
+				continue;
+			}
+		}
+	}
+
+	void SyncManager::handleFileWasRemoved (const QString& path)
+	{
+		for (const auto& basePath : Path2Account_.keys ())
+		{
+			if (!path.startsWith (basePath))
+				continue;
+
+			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+			if (!isfl)
+			{
+				qWarning () << Q_FUNC_INFO
+				<< Path2Account_ [basePath]->GetObject ()
+				<< "isn't an ISupportFileListings";
+				continue;
+			}
+		}
+	}
+
+	void SyncManager::handleEntryWasRenamed (const QString& oldPath, const QString& newPath)
+	{
+	}
+
+	void SyncManager::handleEntryWasMoved (const QString& oldPath, const QString& newPath)
+	{
+	}
+
+	void SyncManager::handleFileWasUpdated (const QString& path)
+	{
 			for (const auto& basePath : Path2Account_.keys ())
 			{
 				if (!path.startsWith (basePath))
@@ -211,62 +296,59 @@ namespace NetStoreManager
 							<< "isn't an ISupportFileListings";
 					continue;
 				}
-
-// 				isfl->CreateDirectory ();
 			}
 		}
 
-		void SyncManager::handleFileWasCreated (const QString& path)
+	namespace
+	{
+		void GetItemsInWideFromDeep (QStandardItem *item,
+				QMap<QString, QStringList>& map)
 		{
-			for (const auto& basePath : Path2Account_.keys ())
-			{
-				if (!path.startsWith (basePath))
-					continue;
+			if (item->data (ListingRole::ID) == "netstoremanager.item_trash" ||
+					item->data (ListingRole::InTrash).toBool () ||
+					!item->data (ListingRole::Directory).toBool ())
+				return;
 
+			QString path = item->parent () ? map.key (item->parent ()->data (ListingRole::ID).toStringList ()):
+					QString ();
+			if (path.isEmpty ())
+				map [item->text ()] = item->data (ListingRole::ID).toStringList ();
+			else
+				map [path + "/" + item->text ()] = item->data (ListingRole::ID).toStringList ();
 
-			}
+			if (item->hasChildren ())
+				for (int i = 0; i < item->rowCount (); ++i)
+					GetItemsInWideFromDeep (item->child (i), map);
 		}
+	}
 
-		void SyncManager::handleDirWasRemoved (const QString& path)
-		{
-			for (const auto& basePath : Path2Account_.keys ())
-			{
-				if (!path.startsWith (basePath))
-					continue;
+	void SyncManager::handleGotListing (const QList<QList<QStandardItem*>>& items)
+	{
+		auto isa = qobject_cast<IStorageAccount*> (sender ());
+		if (!isa)
+			return;
 
+		QString dirPath = Path2Account_.key (isa);
+		if (dirPath.isEmpty ())
+			return;
+		qDebug () << "watching directory "
+				<< dirPath;
 
-			}
-		}
+		QMap<QString, QStringList> map;
 
-		void SyncManager::handleFileWasRemoved (const QString& path)
-		{
-			for (const auto& basePath : Path2Account_.keys ())
-			{
-				if (!path.startsWith (basePath))
-					continue;
+		for (int i = 0; i < items.count (); ++i)
+			GetItemsInWideFromDeep (items [i] [0], map);
 
+		qDebug () << map;
 
-			}
-		}
-
-		void SyncManager::handleEntryWasRenamed (const QString& oldPath, const QString& newPath)
-		{
-		}
-
-		void SyncManager::handleEntryWasMoved (const QString& oldPath, const QString& newPath)
-		{
-		}
-
-		void SyncManager::handleFileWasUpdated (const QString& path)
-		{
-			for (const auto& basePath : Path2Account_.keys ())
-			{
-				if (!path.startsWith (basePath))
-					continue;
-
-
-			}
-		}
+// 		QStringList pathes = Utils::ScanDir (QDir::NoDotAndDotDot | QDir::Dirs, dirPath, true);
+// 		QMetaObject::invokeMethod (FilesWatcher_,
+// 				"AddPath",
+// 				Q_ARG (QString, dirPath));
+// 		QMetaObject::invokeMethod (FilesWatcher_,
+// 				"AddPathes",
+// 				Q_ARG (QStringList, pathes));
+	}
 
 }
 }
