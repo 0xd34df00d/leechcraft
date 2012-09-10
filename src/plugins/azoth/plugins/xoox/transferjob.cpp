@@ -68,7 +68,7 @@ namespace Xoox
 
 	QString TransferJob::GetComment () const
 	{
-		return QString ();
+		return Job_->fileInfo ().description ();
 	}
 
 	TransferDirection TransferJob::GetDirection () const
