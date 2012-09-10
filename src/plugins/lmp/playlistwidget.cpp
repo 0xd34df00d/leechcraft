@@ -262,6 +262,13 @@ namespace LMP
 
 		PlaylistToolbar_->addSeparator ();
 
+		ActionMoveTop_ = new QAction (tr ("Move tracks to top"), Ui_.Playlist_);
+		ActionMoveTop_->setProperty ("ActionIcon", "go-top");
+		connect (ActionMoveTop_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleMoveTop ()));
+
 		ActionMoveUp_ = new QAction (tr ("Move tracks up"), Ui_.Playlist_);
 		ActionMoveUp_->setProperty ("ActionIcon", "go-up");
 		connect (ActionMoveUp_,
@@ -276,11 +283,27 @@ namespace LMP
 				this,
 				SLOT (handleMoveDown ()));
 
+		ActionMoveBottom_ = new QAction (tr ("Move tracks to bottom"), Ui_.Playlist_);
+		ActionMoveBottom_->setProperty ("ActionIcon", "go-bottom");
+		connect (ActionMoveBottom_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleMoveBottom ()));
+
 		SetPlayModeButton ();
 		SetSortOrderButton ();
 
-		PlaylistToolbar_->addAction (ActionMoveUp_);
-		PlaylistToolbar_->addAction (ActionMoveDown_);
+		auto moveUpButton = new QToolButton;
+		moveUpButton->setDefaultAction (ActionMoveUp_);
+		moveUpButton->setMenu (new QMenu);
+		moveUpButton->menu ()->addAction (ActionMoveTop_);
+		PlaylistToolbar_->addWidget (moveUpButton);
+
+		auto moveDownButton = new QToolButton;
+		moveDownButton->setDefaultAction (ActionMoveDown_);
+		moveDownButton->setMenu (new QMenu);
+		moveDownButton->menu ()->addAction (ActionMoveBottom_);
+		PlaylistToolbar_->addWidget (moveDownButton);
 
 		PlaylistToolbar_->addSeparator ();
 
@@ -389,8 +412,10 @@ namespace LMP
 					this,
 					SLOT (handleStdSort ()));
 		}
+		ActionMoveBottom_->setEnabled (false);
 		ActionMoveDown_->setEnabled (false);
 		ActionMoveUp_->setEnabled (false);
+		ActionMoveTop_->setEnabled (false);
 
 		PlaylistToolbar_->addWidget (sortButton);
 	}
@@ -435,6 +460,15 @@ namespace LMP
 				Ui_.SearchPlaylist_,
 				SLOT (setVisible (bool)));
 		Ui_.SearchPlaylist_->setVisible (false);
+	}
+
+	QList<Phonon::MediaSource> PlaylistWidget::GetSelected () const
+	{
+		const auto& selected = Ui_.Playlist_->selectionModel ()->selectedRows ();
+		QList<Phonon::MediaSource> sources;
+		Q_FOREACH (const auto& index, selected)
+			sources += Player_->GetIndexSources (PlaylistFilter_->mapToSource (index));
+		return sources;
 	}
 
 	void PlaylistWidget::SelectSources (const QList<Phonon::MediaSource>& sources)
@@ -551,8 +585,10 @@ namespace LMP
 		Player_->SetSortingCriteria (criteria);
 
 		const bool sortEnabled = !criteria.isEmpty ();
+		ActionMoveBottom_->setEnabled (!sortEnabled);
 		ActionMoveDown_->setEnabled (!sortEnabled);
 		ActionMoveUp_->setEnabled (!sortEnabled);
+		ActionMoveTop_->setEnabled (!sortEnabled);
 	}
 
 	void PlaylistWidget::removeSelectedSongs ()
@@ -607,10 +643,7 @@ namespace LMP
 
 	void PlaylistWidget::handleMoveUp ()
 	{
-		const auto& selected = Ui_.Playlist_->selectionModel ()->selectedRows ();
-		QList<Phonon::MediaSource> sources;
-		Q_FOREACH (const auto& index, selected)
-			sources += Player_->GetIndexSources (PlaylistFilter_->mapToSource (index));
+		const auto& sources = GetSelected ();
 
 		if (sources.isEmpty ())
 			return;
@@ -625,12 +658,20 @@ namespace LMP
 		NextResetSelect_ = sources;
 	}
 
+	void PlaylistWidget::handleMoveTop ()
+	{
+		const auto& sources = GetSelected ();
+		auto allSrcs = Player_->GetQueue ();
+		Q_FOREACH (const auto& source, sources)
+			allSrcs.removeAll (source);
+
+		Player_->ReplaceQueue (sources + allSrcs, false);
+		NextResetSelect_ = sources;
+	}
+
 	void PlaylistWidget::handleMoveDown ()
 	{
-		const auto& selected = Ui_.Playlist_->selectionModel ()->selectedRows ();
-		QList<Phonon::MediaSource> sources;
-		Q_FOREACH (const auto& index, selected)
-			sources += Player_->GetIndexSources (PlaylistFilter_->mapToSource (index));
+		const auto& sources = GetSelected ();
 
 		if (sources.isEmpty ())
 			return;
@@ -642,6 +683,17 @@ namespace LMP
 
 		Player_->ReplaceQueue (allSrcs, false);
 
+		NextResetSelect_ = sources;
+	}
+
+	void PlaylistWidget::handleMoveBottom ()
+	{
+		const auto& sources = GetSelected ();
+		auto allSrcs = Player_->GetQueue ();
+		Q_FOREACH (const auto& source, sources)
+			allSrcs.removeAll (source);
+
+		Player_->ReplaceQueue (allSrcs + sources, false);
 		NextResetSelect_ = sources;
 	}
 

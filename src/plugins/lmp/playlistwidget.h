@@ -50,8 +50,10 @@ namespace LMP
 		QAction *ActionStopAfterSelected_;
 		QAction *ActionShowTrackProps_;
 		QAction *ActionShowAlbumArt_;
+		QAction *ActionMoveTop_;
 		QAction *ActionMoveUp_;
 		QAction *ActionMoveDown_;
+		QAction *ActionMoveBottom_;
 
 		QAction *ActionToggleSearch_;
 
@@ -65,6 +67,7 @@ namespace LMP
 		void SetPlayModeButton ();
 		void SetSortOrderButton ();
 		void InitViewActions ();
+		QList<Phonon::MediaSource> GetSelected () const;
 		void SelectSources (const QList<Phonon::MediaSource>&);
 	public slots:
 		void focusIndex (const QModelIndex&);
@@ -88,7 +91,9 @@ namespace LMP
 		void showAlbumArt ();
 
 		void handleMoveUp ();
+		void handleMoveTop ();
 		void handleMoveDown ();
+		void handleMoveBottom();
 
 		void handleSavePlaylist ();
 		void loadFromDisk ();
