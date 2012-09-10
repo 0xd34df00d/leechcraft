@@ -257,10 +257,28 @@ namespace LMP
 
 		PlaylistToolbar_->addSeparator ();
 
+		ActionMoveUp_ = new QAction (tr ("Move tracks up"), Ui_.Playlist_);
+		ActionMoveUp_->setProperty ("ActionIcon", "go-up");
+		connect (ActionMoveUp_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleMoveUp ()));
+
+		ActionMoveDown_ = new QAction (tr ("Move tracks down"), Ui_.Playlist_);
+		ActionMoveDown_->setProperty ("ActionIcon", "go-down");
+		connect (ActionMoveDown_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleMoveDown ()));
+
 		SetPlayModeButton ();
 		SetSortOrderButton ();
 
-		PlaylistToolbar_->addAction (Util::CreateSeparator (this));
+		PlaylistToolbar_->addAction (ActionMoveUp_);
+		PlaylistToolbar_->addAction (ActionMoveDown_);
+
+		PlaylistToolbar_->addSeparator ();
+
 		auto undo = UndoStack_->createUndoAction (this);
 		undo->setProperty ("ActionIcon", "edit-undo");
 		undo->setShortcut (QKeySequence ("Ctrl+Z"));
@@ -366,6 +384,8 @@ namespace LMP
 					this,
 					SLOT (handleStdSort ()));
 		}
+		ActionMoveDown_->setEnabled (false);
+		ActionMoveUp_->setEnabled (false);
 
 		PlaylistToolbar_->addWidget (sortButton);
 	}
@@ -401,20 +421,6 @@ namespace LMP
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showAlbumArt ()));
-
-		ActionMoveUp_ = new QAction (tr ("Move tracks up"), Ui_.Playlist_);
-		ActionMoveUp_->setProperty ("ActionIcon", "go-up");
-		connect (ActionMoveUp_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleMoveUp ()));
-
-		ActionMoveDown_ = new QAction (tr ("Move tracks down"), Ui_.Playlist_);
-		ActionMoveDown_->setProperty ("ActionIcon", "go-down");
-		connect (ActionMoveDown_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleMoveDown ()));
 
 		ActionToggleSearch_ = new QAction (tr ("Toggle search field"), Ui_.Playlist_);
 		ActionToggleSearch_->setShortcut (QKeySequence::Find);
@@ -529,6 +535,10 @@ namespace LMP
 				[] (decltype (intVars.front ()) var)
 					{ return static_cast<Player::SortingCriteria> (var.toInt ()); });
 		Player_->SetSortingCriteria (criteria);
+
+		const bool sortEnabled = !criteria.isEmpty ();
+		ActionMoveDown_->setEnabled (!sortEnabled);
+		ActionMoveUp_->setEnabled (!sortEnabled);
 	}
 
 	void PlaylistWidget::removeSelectedSongs ()
