@@ -271,6 +271,7 @@ namespace LMP
 
 		ActionMoveUp_ = new QAction (tr ("Move tracks up"), Ui_.Playlist_);
 		ActionMoveUp_->setProperty ("ActionIcon", "go-up");
+		ActionMoveUp_->setShortcut (QString ("Ctrl+Up"));
 		connect (ActionMoveUp_,
 				SIGNAL (triggered ()),
 				this,
@@ -278,6 +279,7 @@ namespace LMP
 
 		ActionMoveDown_ = new QAction (tr ("Move tracks down"), Ui_.Playlist_);
 		ActionMoveDown_->setProperty ("ActionIcon", "go-down");
+		ActionMoveDown_->setShortcut (QString ("Ctrl+Down"));
 		connect (ActionMoveDown_,
 				SIGNAL (triggered ()),
 				this,
