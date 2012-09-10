@@ -45,16 +45,6 @@ namespace Xoox
 	AdHocCommandServer::AdHocCommandServer (ClientConnection *conn)
 	: Conn_ (conn)
 	{
-		QXmppDiscoveryManager *mgr = conn->GetDiscoveryManager ();
-		connect (mgr,
-				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
-				this,
-				SLOT (handleDiscoItems (const QXmppDiscoveryIq&)));
-		connect (mgr,
-				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
-				this,
-				SLOT (handleDiscoInfo (const QXmppDiscoveryIq&)));
-
 		const QString& jid = Conn_->GetOurJID ();
 
 		QXmppDiscoveryIq::Item changeStatus;
@@ -97,10 +87,53 @@ namespace Xoox
 
 	bool AdHocCommandServer::handleStanza (const QDomElement& elem)
 	{
-		if (elem.tagName () != "iq" ||
-				elem.attribute ("type") != "set")
+		if (elem.tagName () != "iq")
 			return false;
 
+		if (elem.attribute ("type") == "set")
+			return HandleIqSet (elem);
+		else if (QXmppDiscoveryIq::isDiscoveryIq (elem))
+			return HandleDiscoIq (elem);
+
+		return false;
+	}
+
+	bool AdHocCommandServer::HandleDiscoIq (const QDomElement& elem)
+	{
+		QXmppDiscoveryIq receivedIq;
+        receivedIq.parse (elem);
+		if (receivedIq.type () != QXmppIq::Get)
+			return false;
+
+		if (receivedIq.queryType () != QXmppDiscoveryIq::ItemsQuery)
+			return false;
+
+		if (receivedIq.queryNode () != NsCommands)
+			return false;
+
+		QString from;
+		QString resource;
+		ClientConnection::Split (receivedIq.from (), &from, &resource);
+
+		QList<QXmppDiscoveryIq::Item> items;
+		if (Conn_->GetOurJID ().startsWith (from))
+			items << XEP0146Items_.values ();
+
+		QXmppDiscoveryIq result;
+		result.setId (receivedIq.id ());
+		result.setTo (receivedIq.from ());
+		result.setType (QXmppIq::Result);
+		result.setQueryNode (NsCommands);
+		result.setQueryType (QXmppDiscoveryIq::ItemsQuery);
+		result.setItems (items);
+
+		Conn_->GetClient ()->sendPacket (result);
+
+		return true;
+	}
+
+	bool AdHocCommandServer::HandleIqSet (const QDomElement& elem)
+	{
 		QXmppElement cmdElem = elem.firstChildElement ("command");
 		if (cmdElem.attribute ("xmlns") != NsCommands)
 			return false;
@@ -440,41 +473,6 @@ namespace Xoox
 		}
 
 		SendCompleted (sourceElem, NodeAddTask, sessionId);
-	}
-
-	void AdHocCommandServer::handleDiscoItems (const QXmppDiscoveryIq& iq)
-	{
-		if (iq.type () != QXmppIq::Get ||
-				iq.queryNode () != NsCommands)
-			return;
-
-		QString from;
-		QString resource;
-		ClientConnection::Split (iq.from (), &from, &resource);
-
-		QList<QXmppDiscoveryIq::Item> items;
-		if (Conn_->GetOurJID ().startsWith (from))
-			items << XEP0146Items_.values ();
-
-		QXmppDiscoveryIq result;
-		result.setId (iq.id ());
-		result.setTo (iq.from ());
-		result.setType (QXmppIq::Result);
-		result.setQueryNode (NsCommands);
-		result.setQueryType (QXmppDiscoveryIq::ItemsQuery);
-		result.setItems (items);
-
-		Conn_->GetClient ()->sendPacket (result);
-	}
-
-	void AdHocCommandServer::handleDiscoInfo (const QXmppDiscoveryIq& iq)
-	{
-		if (iq.type () != QXmppIq::Get)
-			return;
-
-		QString from;
-		QString resource;
-		ClientConnection::Split (iq.from (), &from, &resource);
 	}
 }
 }
