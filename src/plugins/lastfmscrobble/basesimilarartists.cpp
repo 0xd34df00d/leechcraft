@@ -52,7 +52,6 @@ namespace Lastfmscrobble
 	void BaseSimilarArtists::DecrementWaiting ()
 	{
 		--InfosWaiting_;
-		qDebug () << Q_FUNC_INFO << InfosWaiting_ << Similar_.size ();
 
 		if (!InfosWaiting_)
 			emit ready ();
