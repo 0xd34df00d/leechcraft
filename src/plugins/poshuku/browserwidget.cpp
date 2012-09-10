@@ -485,8 +485,7 @@ namespace Poshuku
 		connect (WebView_,
 				SIGNAL (loadStarted ()),
 				this,
-				SLOT (updateNavHistory ()),
-				Qt::QueuedConnection);
+				SLOT (updateNavHistory ()));
 		connect (WebView_,
 				SIGNAL (printRequested (QWebFrame*)),
 				this,
@@ -1200,18 +1199,14 @@ namespace Poshuku
 
 		BackMenu_->clear ();
 		auto items = history->backItems (MaxHistoryItems);
-		std::reverse (items.begin (), items.end ());
-		int idx = items.size () - 1;
-		Q_FOREACH (const auto& item, items)
+		for (int i = items.size () - 1; i >= 0; --i)
 		{
+			const auto& item = items.at (i);
 			if (!item.isValid ())
-			{
-				--idx;
 				continue;
-			}
-			auto act = BackMenu_->addAction (item.icon (), item.title ());
+			auto act = BackMenu_->addAction (Core::Instance ().GetIcon (item.url ()), item.title ());
 			act->setToolTip (item.url ().toString ());
-			act->setData (idx--);
+			act->setData (i);
 
 			connect (act,
 					SIGNAL (triggered ()),
@@ -1221,17 +1216,14 @@ namespace Poshuku
 
 		ForwardMenu_->clear ();
 		items = history->forwardItems (MaxHistoryItems);
-		idx = 0;
-		Q_FOREACH (const auto& item, items)
+		for (int i = 0; i < items.size (); ++i)
 		{
+			const auto& item = items.at (i);
 			if (!item.isValid ())
-			{
-				++idx;
 				continue;
-			}
-			auto act = ForwardMenu_->addAction (item.icon (), item.title ());
+			auto act = ForwardMenu_->addAction (Core::Instance ().GetIcon (item.url ()), item.title ());
 			act->setToolTip (item.url ().toString ());
-			act->setData (idx++);
+			act->setData (i);
 
 			connect (act,
 					SIGNAL (triggered ()),
