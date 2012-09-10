@@ -115,19 +115,26 @@ namespace Xoox
 		QString resource;
 		ClientConnection::Split (receivedIq.from (), &from, &resource);
 
-		QList<QXmppDiscoveryIq::Item> items;
 		if (Conn_->GetOurJID ().startsWith (from))
-			items << XEP0146Items_.values ();
-
-		QXmppDiscoveryIq result;
-		result.setId (receivedIq.id ());
-		result.setTo (receivedIq.from ());
-		result.setType (QXmppIq::Result);
-		result.setQueryNode (NsCommands);
-		result.setQueryType (QXmppDiscoveryIq::ItemsQuery);
-		result.setItems (items);
-
-		Conn_->GetClient ()->sendPacket (result);
+		{
+			QXmppDiscoveryIq result;
+			result.setId (receivedIq.id ());
+			result.setTo (receivedIq.from ());
+			result.setType (QXmppIq::Result);
+			result.setQueryNode (NsCommands);
+			result.setQueryType (QXmppDiscoveryIq::ItemsQuery);
+			result.setItems (XEP0146Items_.values ());
+			Conn_->GetClient ()->sendPacket (result);
+		}
+		else
+		{
+			QXmppIq error;
+			error.setId (receivedIq.id ());
+			error.setTo (receivedIq.from ());
+			error.setType (QXmppIq::Error);
+			error.setError (QXmppStanza::Error (QXmppStanza::Error::Wait, QXmppStanza::Error::Forbidden, "Wrong JID, bro."));
+			Conn_->GetClient ()->sendPacket (error);
+		}
 
 		return true;
 	}
