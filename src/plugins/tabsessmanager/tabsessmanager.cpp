@@ -29,6 +29,7 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/icoretabwidget.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/ihavetabs.h>
 #include "restoresessiondialog.h"
@@ -72,6 +73,11 @@ namespace TabSessManager
 				QCoreApplication::applicationName () + "_TabSessManager");
 		Q_FOREACH (const auto& group, settings.childGroups ())
 			AddCustomSession (group);
+
+		connect (proxy->GetTabWidget ()->GetObject (),
+				SIGNAL (tabWasMoved (int, int)),
+				this,
+				SLOT (handleTabMoved (int, int)));
 	}
 
 	void Plugin::SecondInit ()
@@ -259,6 +265,27 @@ namespace TabSessManager
 		UncloseMenu_->insertAction (UncloseMenu_->actions ().value (0), action);
 		UncloseMenu_->setDefaultAction (action);
 		action->setShortcut (QString ("Ctrl+Shift+T"));
+	}
+
+	void Plugin::handleTabMoved (int from, int to)
+	{
+		if (std::max (from, to) >= Tabs_.size () ||
+			std::min (from, to) < 0)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid"
+					<< from
+					<< "->"
+					<< to
+					<< "; total tabs:"
+					<< Tabs_.size ();
+			return;
+		}
+
+		auto tab = Tabs_.takeAt (from);
+		Tabs_.insert (to, tab);
+
+		handleTabRecoverDataChanged ();
 	}
 
 	namespace
