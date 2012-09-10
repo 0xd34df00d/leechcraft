@@ -488,11 +488,6 @@ namespace Poshuku
 				SLOT (updateNavHistory ()),
 				Qt::QueuedConnection);
 		connect (WebView_,
-				SIGNAL (loadFinished ()),
-				this,
-				SLOT (updateNavHistory ()),
-				Qt::QueuedConnection);
-		connect (WebView_,
 				SIGNAL (printRequested (QWebFrame*)),
 				this,
 				SLOT (handleViewPrint (QWebFrame*)));
