@@ -662,6 +662,7 @@ namespace Azoth
 		QAction *act = Ui_.EventsButton_->menu ()->
 				addAction (text, this, SLOT (handleOfferActionTriggered ()));
 		act->setData (QVariant::fromValue<QObject*> (jobObj));
+		act->setToolTip (job->GetComment ());
 	}
 
 	void ChatTab::handleFileNoLongerOffered (QObject *jobObj)
@@ -691,12 +692,24 @@ namespace Azoth
 		QObject *jobObj = action->data ().value<QObject*> ();
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
 
-		if (QMessageBox::question (this,
-					tr ("File transfer request"),
-					tr ("Would you like to accept or deny file transfer "
-						"request for file %1?")
-						.arg (job->GetName ()),
-					QMessageBox::Save | QMessageBox::Abort) == QMessageBox::Abort)
+		QString text = tr ("Would you like to accept or reject file transfer "
+				"request for file %1?")
+					.arg (job->GetName ());
+		if (!job->GetComment ().isEmpty ())
+		{
+			text += "<br /><br />" + tr ("The file description is:") + "<br /><br /><em>";
+			auto comment = Qt::escape (job->GetComment ());
+			comment.replace ("\n", "<br />");
+			text += comment + "</em>";
+		}
+
+		auto questResult = QMessageBox::question (this,
+				tr ("File transfer request"), text,
+				QMessageBox::Save | QMessageBox::Abort | QMessageBox::Cancel);
+
+		if (questResult == QMessageBox::Cancel)
+			return;
+		else if (questResult == QMessageBox::Abort)
 			Core::Instance ().GetTransferJobManager ()->DenyJob (jobObj);
 		else
 		{

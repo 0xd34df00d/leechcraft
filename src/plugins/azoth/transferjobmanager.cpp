@@ -349,7 +349,10 @@ namespace Azoth
 				"org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + job->GetName ();
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = (QStringList (entry->GetEntryName ()) << job->GetName ());
 		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Incoming file");
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = job->GetComment ().isEmpty () ?
+				tr ("Incoming file") :
+				tr ("Incoming file: %1")
+					.arg ("<br />" + job->GetComment ());
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] =
 				"org.LC.AdvNotifications.IM.IncomingFile";
 
