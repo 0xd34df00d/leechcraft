@@ -72,6 +72,10 @@ namespace LMP
 
 		QFutureWatcher<MediaInfo> *Watcher_;
 		QList<QSet<QString>> NewPathsQueue_;
+
+		int UpdateNewArtists_;
+		int UpdateNewAlbums_;
+		int UpdateNewTracks_;
 	public:
 		enum NodeType
 		{

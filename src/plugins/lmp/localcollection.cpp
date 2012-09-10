@@ -97,6 +97,9 @@ namespace LMP
 	, FilesWatcher_ (new LocalCollectionWatcher (this))
 	, AlbumArtMgr_ (new AlbumArtManager (this))
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
+	, UpdateNewArtists_ (0)
+	, UpdateNewAlbums_ (0)
+	, UpdateNewTracks_ (0)
 	{
 		connect (Watcher_,
 				SIGNAL (finished ()),
@@ -439,18 +442,11 @@ namespace LMP
 		}
 
 		if (shouldEmit &&
-				artists.size () &&
-				albumCount &&
 				trackCount)
 		{
-			const auto& artistsMsg = tr ("%n new artist(s)", 0, artists.size ());
-			const auto& albumsMsg = tr ("%n new album(s)", 0, albumCount);
-			const auto& tracksMsg = tr ("%n new track(s)", 0, trackCount);
-			const auto& msg = tr ("Local collection updated: %1, %2, %3.")
-					.arg (artistsMsg)
-					.arg (albumsMsg)
-					.arg (tracksMsg);
-			Core::Instance ().SendEntity (Util::MakeNotification ("LMP", msg, PInfo_));
+			UpdateNewArtists_ += artists.size ();
+			UpdateNewAlbums_ += albumCount;
+			UpdateNewTracks_ += trackCount;
 		}
 	}
 
@@ -697,6 +693,19 @@ namespace LMP
 
 		if (!NewPathsQueue_.isEmpty ())
 			InitiateScan (NewPathsQueue_.takeFirst ());
+		else if (UpdateNewTracks_)
+		{
+			const auto& artistsMsg = tr ("%n new artist(s)", 0, UpdateNewArtists_);
+			const auto& albumsMsg = tr ("%n new album(s)", 0, UpdateNewAlbums_);
+			const auto& tracksMsg = tr ("%n new track(s)", 0, UpdateNewTracks_);
+			const auto& msg = tr ("Local collection updated: %1, %2, %3.")
+					.arg (artistsMsg)
+					.arg (albumsMsg)
+					.arg (tracksMsg);
+			Core::Instance ().SendEntity (Util::MakeNotification ("LMP", msg, PInfo_));
+
+			UpdateNewArtists_ = UpdateNewAlbums_ = UpdateNewTracks_ = 0;
+		}
 	}
 
 	void LocalCollection::saveRootPaths ()
