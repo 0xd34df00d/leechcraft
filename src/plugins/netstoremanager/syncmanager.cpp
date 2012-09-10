@@ -70,31 +70,38 @@ namespace NetStoreManager
 				connect (FilesWatcher_,
 						SIGNAL (dirWasCreated (QString)),
 						this,
-						SLOT (handleDirWasCreated (QString)));
+						SLOT (handleDirWasCreated (QString)),
+						Qt::QueuedConnection);
 				connect (FilesWatcher_,
 						SIGNAL (fileWasCreated (QString)),
 						this,
-						SLOT (handleFileWasCreated (QString)));
+						SLOT (handleFileWasCreated (QString)),
+						Qt::QueuedConnection);
 				connect (FilesWatcher_,
 						SIGNAL (dirWasRemoved (QString)),
 						this,
-						SLOT (handleDirWasRemoved (QString)));
+						SLOT (handleDirWasRemoved (QString)),
+						Qt::QueuedConnection);
 				connect (FilesWatcher_,
 						SIGNAL (fileWasRemoved (QString)),
 						this,
-						SLOT (handleFileWasRemoved (QString)));
+						SLOT (handleFileWasRemoved (QString)),
+						Qt::QueuedConnection);
 				connect (FilesWatcher_,
 						SIGNAL (entryWasRenamed (QString, QString)),
 						this,
-						SLOT (handleEntryWasRenamed (QString, QString)));
+						SLOT (handleEntryWasRenamed (QString, QString)),
+						Qt::QueuedConnection);
 				connect (FilesWatcher_,
 						SIGNAL (entryWasMoved (QString, QString)),
 						this,
-						SLOT (handleEntryWasMoved (QString, QString)));
+						SLOT (handleEntryWasMoved (QString, QString)),
+						Qt::QueuedConnection);
 				connect (FilesWatcher_,
 						SIGNAL (fileWasUpdated (QString)),
 						this,
-						SLOT (handleFileWasUpdated (QString)));
+						SLOT (handleFileWasUpdated (QString)),
+						Qt::QueuedConnection);
 			}
 			catch (const std::exception& e)
 			{
