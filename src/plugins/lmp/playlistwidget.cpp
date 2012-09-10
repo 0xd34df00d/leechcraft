@@ -167,6 +167,11 @@ namespace LMP
 				Ui_.Playlist_,
 				SLOT (expandAll ()),
 				Qt::QueuedConnection);
+		connect (PlaylistFilter_,
+				SIGNAL (modelReset ()),
+				this,
+				SLOT (checkSelections ()),
+				Qt::QueuedConnection);
 	}
 
 	void PlaylistWidget::SetPlayer (Player *player)
@@ -521,6 +526,15 @@ namespace LMP
 		Ui_.Playlist_->expand (PlaylistFilter_->mapFromSource (index));
 	}
 
+	void PlaylistWidget::checkSelections ()
+	{
+		if (NextResetSelect_.isEmpty () || !PlaylistFilter_->rowCount ())
+			return;
+
+		SelectSources (NextResetSelect_);
+		NextResetSelect_.clear ();
+	}
+
 	void PlaylistWidget::handleBufferStatus (int status)
 	{
 		Ui_.BufferProgress_->setValue (status);
@@ -608,7 +622,7 @@ namespace LMP
 
 		Player_->ReplaceQueue (allSrcs, false);
 
-		SelectSources (sources);
+		NextResetSelect_ = sources;
 	}
 
 	void PlaylistWidget::handleMoveDown ()
@@ -628,7 +642,7 @@ namespace LMP
 
 		Player_->ReplaceQueue (allSrcs, false);
 
-		SelectSources (sources);
+		NextResetSelect_ = sources;
 	}
 
 	void PlaylistWidget::handleSavePlaylist ()

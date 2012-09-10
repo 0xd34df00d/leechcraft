@@ -54,6 +54,8 @@ namespace LMP
 		QAction *ActionMoveDown_;
 
 		QAction *ActionToggleSearch_;
+
+		QList<Phonon::MediaSource> NextResetSelect_;
 	public:
 		PlaylistWidget (QWidget* = 0);
 
@@ -73,6 +75,7 @@ namespace LMP
 
 		void play (const QModelIndex&);
 		void expand (const QModelIndex&);
+		void checkSelections ();
 
 		void handleBufferStatus (int);
 
