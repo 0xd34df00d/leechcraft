@@ -244,7 +244,6 @@ namespace Xoox
 		void feedClientPassword ();
 		void showSelfVCard ();
 		void showPrivacyDialog ();
-		void handleDestroyClient ();
 #ifdef ENABLE_MEDIACALLS
 		void handleIncomingCall (QXmppCall*);
 #endif
@@ -283,8 +282,6 @@ namespace Xoox
 #endif
 
 		void accountSettingsChanged ();
-
-		void scheduleClientDestruction ();
 	};
 
 	typedef std::shared_ptr<GlooxAccount> GlooxAccount_ptr;
