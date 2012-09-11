@@ -216,6 +216,17 @@ namespace NetStoreManager
 						<< "isn't an ISupportFileListings";
 				continue;
 			}
+
+			QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
+			auto map = Isfl2PathId_ [isfl];
+
+			QString parentDir = QFileInfo (path).dir ().path ();
+			QString remotePath = path;
+			remotePath.remove (0, rootDirPath.length ());
+			qDebug () << rootDirPath << path << map << remotePath << QFileInfo (remotePath).dir ().absolutePath ();
+			if (map.contains (QFileInfo (remotePath).dir ().absolutePath ()))
+				isfl->CreateDirectory (QFileInfo (path).fileName (),
+						map [QFileInfo (remotePath).dir ().absolutePath ()]);
 		}
 	}
 
@@ -230,8 +241,8 @@ namespace NetStoreManager
 			if (!isfl)
 			{
 				qWarning () << Q_FUNC_INFO
-				<< Path2Account_ [basePath]->GetObject ()
-				<< "isn't an ISupportFileListings";
+						<< Path2Account_ [basePath]->GetObject ()
+						<< "isn't an ISupportFileListings";
 				continue;
 			}
 		}
@@ -248,8 +259,8 @@ namespace NetStoreManager
 			if (!isfl)
 			{
 				qWarning () << Q_FUNC_INFO
-				<< Path2Account_ [basePath]->GetObject ()
-				<< "isn't an ISupportFileListings";
+						<< Path2Account_ [basePath]->GetObject ()
+						<< "isn't an ISupportFileListings";
 				continue;
 			}
 		}
@@ -266,8 +277,8 @@ namespace NetStoreManager
 			if (!isfl)
 			{
 				qWarning () << Q_FUNC_INFO
-				<< Path2Account_ [basePath]->GetObject ()
-				<< "isn't an ISupportFileListings";
+						<< Path2Account_ [basePath]->GetObject ()
+						<< "isn't an ISupportFileListings";
 				continue;
 			}
 		}
@@ -299,33 +310,14 @@ namespace NetStoreManager
 			}
 		}
 
-	namespace
-	{
-		void GetItemsInWideFromDeep (QStandardItem *item,
-				QMap<QString, QStringList>& map)
-		{
-			if (item->data (ListingRole::ID) == "netstoremanager.item_trash" ||
-					item->data (ListingRole::InTrash).toBool () ||
-					!item->data (ListingRole::Directory).toBool ())
-				return;
-
-			QString path = item->parent () ? map.key (item->parent ()->data (ListingRole::ID).toStringList ()):
-					QString ();
-			if (path.isEmpty ())
-				map [item->text ()] = item->data (ListingRole::ID).toStringList ();
-			else
-				map [path + "/" + item->text ()] = item->data (ListingRole::ID).toStringList ();
-
-			if (item->hasChildren ())
-				for (int i = 0; i < item->rowCount (); ++i)
-					GetItemsInWideFromDeep (item->child (i), map);
-		}
-	}
-
 	void SyncManager::handleGotListing (const QList<QList<QStandardItem*>>& items)
 	{
 		auto isa = qobject_cast<IStorageAccount*> (sender ());
 		if (!isa)
+			return;
+
+		auto isfl = qobject_cast<ISupportFileListings*> (sender ());
+		if (!isfl)
 			return;
 
 		QString dirPath = Path2Account_.key (isa);
@@ -336,18 +328,52 @@ namespace NetStoreManager
 
 		QMap<QString, QStringList> map;
 
-		for (int i = 0; i < items.count (); ++i)
-			GetItemsInWideFromDeep (items [i] [0], map);
+		QList<QStandardItem*> parents;
+		QList<QStandardItem*> children;
 
-		qDebug () << map;
+		for (const auto& row : items)
+			parents << row [0];
 
-// 		QStringList pathes = Utils::ScanDir (QDir::NoDotAndDotDot | QDir::Dirs, dirPath, true);
-// 		QMetaObject::invokeMethod (FilesWatcher_,
-// 				"AddPath",
-// 				Q_ARG (QString, dirPath));
-// 		QMetaObject::invokeMethod (FilesWatcher_,
-// 				"AddPathes",
-// 				Q_ARG (QStringList, pathes));
+		while (!parents.isEmpty ())
+		{
+			for (auto parentItem : parents)
+			{
+				if (parentItem->data (ListingRole::ID) == "netstoremanager.item_trash" ||
+						parentItem->data (ListingRole::InTrash).toBool () ||
+						!parentItem->data (ListingRole::Directory).toBool ())
+					continue;
+
+				QString path = parentItem->parent () ?
+					map.key (parentItem->parent ()->data (ListingRole::ID).toStringList ()):
+					QString ();
+				if (path.isEmpty ())
+					map ["/" + parentItem->text ()] =
+							parentItem->data (ListingRole::ID).toStringList ();
+				else
+					map [path + "/" + parentItem->text ()] =
+							parentItem->data (ListingRole::ID).toStringList ();
+
+				for (int i = 0; i < parentItem->rowCount (); ++i)
+					children << parentItem->child (i);
+			}
+
+			auto tempItems = parents;
+			parents = children;
+			children = tempItems;
+
+			children.clear ();
+		}
+
+		Isfl2PathId_ [isfl] = map;
+
+		QStringList pathes = Utils::ScanDir (QDir::NoDotAndDotDot | QDir::Dirs,
+				dirPath, true);
+		QMetaObject::invokeMethod (FilesWatcher_,
+				"AddPath",
+				Q_ARG (QString, dirPath));
+		QMetaObject::invokeMethod (FilesWatcher_,
+				"AddPathes",
+				Q_ARG (QStringList, pathes));
 	}
 
 }

@@ -178,7 +178,7 @@ namespace GoogleDrive
 
 	void Account::CreateDirectory (const QString& name, const QStringList& parentId)
 	{
-		DriveManager_->CreateDirectory (name, false, parentId.value (0));
+		DriveManager_->CreateDirectory (name, parentId.value (0));
 	}
 
 	void Account::Copy (const QStringList& id, const QStringList& newParentId)

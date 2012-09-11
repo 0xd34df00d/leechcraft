@@ -72,7 +72,7 @@ namespace GoogleDrive
 		QString path = Pathes_.takeAt (0);
 		QFileInfo info (path);
 		DriveItem parentItem = RealPath2Item_.value (info.dir ().absolutePath ());
-		
+
 		bool found = false;
 		DriveItem currentItem;
 		for (const auto& item : Items_)
@@ -120,7 +120,7 @@ namespace GoogleDrive
 			RealPathQueue_ << path;
 			!info.isDir () ?
 				DM_->Upload (path, QStringList () << parentItem.Id_) :
-				DM_->CreateDirectory (info.fileName (), true, parentItem.Id_);
+				DM_->CreateDirectory (info.fileName (), parentItem.Id_);
 		}
 	}
 
@@ -167,7 +167,7 @@ namespace GoogleDrive
 					this,
 					SLOT (handleGotNewItem (DriveItem)));
 			RealPathQueue_ << BaseDir_;
-			DM_->CreateDirectory (rootName, true);
+			DM_->CreateDirectory (rootName);
 		}
 		else
 		{

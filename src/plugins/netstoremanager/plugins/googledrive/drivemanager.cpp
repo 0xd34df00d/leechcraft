@@ -96,10 +96,10 @@ namespace GoogleDrive
 	}
 
 	void DriveManager::CreateDirectory (const QString& name,
-			bool signalize, const QString& parentId)
+			const QString& parentId)
 	{
-		ApiCallQueue_ << [this, name, signalize, parentId] (const QString& key)
-			{ RequestCreateDirectory (name, signalize, parentId, key); };
+		ApiCallQueue_ << [this, name, parentId] (const QString& key)
+			{ RequestCreateDirectory (name, parentId, key); };
 		RequestAccessToken ();
 	}
 
@@ -279,7 +279,7 @@ namespace GoogleDrive
 	}
 
 	void DriveManager::RequestCreateDirectory (const QString& name,
-			bool signalize, const QString& parentId, const QString& key)
+			const QString& parentId, const QString& key)
 	{
 		QString str = QString ("https://www.googleapis.com/drive/v2/files?access_token=%1")
 				.arg (key);
@@ -300,7 +300,6 @@ namespace GoogleDrive
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
 				post (request, QJson::Serializer ().serialize (data));
-		Reply2Signalization_ [reply] = signalize;
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -841,12 +840,7 @@ namespace GoogleDrive
 			qDebug () << Q_FUNC_INFO
 					<< "directory created successfully";
 
-			if (Reply2Signalization_.contains (reply))
-			{
-				Reply2Signalization_.remove (reply);
-				emit gotNewItem (CreateDriveItem (res));
-			}
-
+			emit gotNewItem (CreateDriveItem (res));
 			RefreshListing ();
 			return;
 		}
