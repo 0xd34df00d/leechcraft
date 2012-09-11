@@ -112,8 +112,19 @@ namespace Lastfmscrobble
 	{
 		SubmitTimer_->stop ();
 
-		NextSubmit_ = lastfm::Track ();
-		if (info.Length_ < 30)
+		if (!NextSubmit_.isNull ())
+		{
+			const int secsTo = NextSubmit_.timestamp ().secsTo (QDateTime::currentDateTime ());
+			if (!NextSubmit_.duration () && secsTo > 30)
+			{
+				NextSubmit_.setDuration (secsTo);
+				cacheAndSubmit ();
+			}
+			else
+				NextSubmit_ = lastfm::Track ();
+		}
+
+		if (info.Length_ && info.Length_ < 30)
 			return;
 
 		const auto& lfmTrack = ToLastFMTrack (info);
@@ -122,7 +133,8 @@ namespace Lastfmscrobble
 		Scrobbler_->nowPlaying (lfmTrack);
 
 		NextSubmit_ = lfmTrack;
-		SubmitTimer_->start (std::min (info.Length_ / 2, 240) * 1000);
+		if (info.Length_)
+			SubmitTimer_->start (std::min (info.Length_ / 2, 240) * 1000);
 	}
 
 	void LastFMSubmitter::Love ()
@@ -185,6 +197,7 @@ namespace Lastfmscrobble
 	{
 		Scrobbler_->cache (NextSubmit_);
 		submit ();
+		NextSubmit_ = lastfm::Track ();
 	}
 
 	void LastFMSubmitter::submit ()

@@ -16,45 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "transfermanager.h"
-#include "msnaccount.h"
-#include "sbmanager.h"
-#include "transferjob.h"
-#include "callbacks.h"
+#pragma once
+
+#include <memory>
+#include <QObject>
+#include "glooxaccount.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Zheet
+namespace Xoox
 {
-	TransferManager::TransferManager (Callbacks *cb, MSNAccount *parent)
-	: QObject (parent)
-	, A_ (parent)
-	, CB_ (cb)
-	, SessID_ (0)
-	{
-		connect (CB_,
-				SIGNAL (fileTransferSuggested (MSN::fileTransferInvite)),
-				this,
-				SLOT (handleSuggestion (MSN::fileTransferInvite)));
-	}
+	class ClientConnection;
+	typedef std::weak_ptr<ClientConnection> ClientConnection_wptr;
 
-	QObject* TransferManager::SendFile (const QString& id,
-			const QString&, const QString& name, const QString& comment)
+	class AccStatusRestorer : public QObject
 	{
-		Q_UNUSED (comment)
+		Q_OBJECT
 
-		MSNBuddyEntry *buddy = A_->GetBuddy (id);
-		A_->GetSBManager ()->SendFile (name, ++SessID_, buddy);
-		return new TransferJob (SessID_, name, buddy, CB_, A_);
-	}
-
-	void TransferManager::handleSuggestion (MSN::fileTransferInvite fti)
-	{
-		TransferJob *job = new TransferJob (fti, CB_, A_);
-		emit fileOffered (job);
-	}
+		const GlooxAccountState State_;
+		ClientConnection_wptr Client_;
+	public:
+		AccStatusRestorer (const GlooxAccountState&, ClientConnection_wptr);
+	private slots:
+		void handleDisconnected ();
+	};
 }
 }
 }

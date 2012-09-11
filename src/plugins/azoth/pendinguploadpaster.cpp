@@ -16,45 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "transfermanager.h"
-#include "msnaccount.h"
-#include "sbmanager.h"
-#include "transferjob.h"
-#include "callbacks.h"
+#include "pendinguploadpaster.h"
+#include <QUrl>
+#include "interfaces/azoth/iclentry.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Zheet
-{
-	TransferManager::TransferManager (Callbacks *cb, MSNAccount *parent)
+	PendingUploadPaster::PendingUploadPaster (QObject *sharer,
+			ICLEntry *entry, const QString& variant, const QString& filename, QObject *parent)
 	: QObject (parent)
-	, A_ (parent)
-	, CB_ (cb)
-	, SessID_ (0)
+	, Entry_ (entry)
+	, EntryVariant_ (variant)
+	, Filename_ (filename)
 	{
-		connect (CB_,
-				SIGNAL (fileTransferSuggested (MSN::fileTransferInvite)),
+		connect (sharer,
+				SIGNAL (fileUploaded (QString, QUrl)),
 				this,
-				SLOT (handleSuggestion (MSN::fileTransferInvite)));
+				SLOT (handleFileUploaded (QString, QUrl)));
 	}
 
-	QObject* TransferManager::SendFile (const QString& id,
-			const QString&, const QString& name, const QString& comment)
+	void PendingUploadPaster::handleFileUploaded (const QString& filename, const QUrl& url)
 	{
-		Q_UNUSED (comment)
+		if (filename != Filename_)
+			return;
 
-		MSNBuddyEntry *buddy = A_->GetBuddy (id);
-		A_->GetSBManager ()->SendFile (name, ++SessID_, buddy);
-		return new TransferJob (SessID_, name, buddy, CB_, A_);
-	}
+		const auto msgType = Entry_->GetEntryType () == ICLEntry::ETMUC ?
+					IMessage::MTMUCMessage :
+					IMessage::MTChatMessage;
+		auto msgObj = Entry_->CreateMessage (msgType, EntryVariant_, url.toEncoded ());
+		auto msg = qobject_cast<IMessage*> (msgObj);
+		msg->Send ();
 
-	void TransferManager::handleSuggestion (MSN::fileTransferInvite fti)
-	{
-		TransferJob *job = new TransferJob (fti, CB_, A_);
-		emit fileOffered (job);
+		deleteLater ();
 	}
-}
 }
 }

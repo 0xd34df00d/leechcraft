@@ -56,6 +56,7 @@
 #include "bookmarksmanagerdialog.h"
 #include "simpledialog.h"
 #include "setstatusdialog.h"
+#include "filesenddialog.h"
 
 namespace LeechCraft
 {
@@ -672,33 +673,8 @@ namespace Azoth
 	{
 		ICLEntry *entry = sender ()->
 				property ("Azoth/Entry").value<ICLEntry*> ();
-		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		auto xferMgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
-		if (!xferMgr)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "null Xfer manager for"
-					<< entry->GetObject ();
-			return;
-		}
 
-		const QString& filename = QFileDialog::getOpenFileName (0,
-				tr ("Select file to send"));
-		if (filename.isEmpty ())
-			return;
-
-		QObject *job = xferMgr->SendFile (entry->GetEntryID (),
-				Core::Instance ().GetChatTabsManager ()->GetActiveVariant (entry),
-				filename);
-		if (!job)
-		{
-			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
-						tr ("Unable to send file to %1.")
-							.arg (entry->GetEntryName ()),
-						PCritical_));
-			return;
-		}
-		Core::Instance ().GetTransferJobManager ()->HandleJob (job);
+		new FileSendDialog (entry);
 	}
 
 	void ActionsManager::handleActionRenameTriggered ()

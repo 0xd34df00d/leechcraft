@@ -112,6 +112,9 @@ SET (SRCS
 	chatstyleoptionmanager.cpp
 	microblogstab.cpp
 	riexhandler.cpp
+	filesenddialog.cpp
+	pendinguploadpaster.cpp
+	contactdropfilter.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -161,6 +164,9 @@ SET (HEADERS
 	chatstyleoptionmanager.h
 	microblogstab.h
 	riexhandler.h
+	filesenddialog.h
+	pendinguploadpaster.h
+	contactdropfilter.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	)
@@ -189,6 +195,7 @@ SET (FORMS
 	mucinvitedialog.ui
 	groupsenddialog.ui
 	microblogstab.ui
+	filesenddialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 

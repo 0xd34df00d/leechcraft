@@ -16,45 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "transfermanager.h"
-#include "msnaccount.h"
-#include "sbmanager.h"
-#include "transferjob.h"
-#include "callbacks.h"
+#pragma once
+
+#include <QObject>
+#include <QString>
+
+class QUrl;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Zheet
-{
-	TransferManager::TransferManager (Callbacks *cb, MSNAccount *parent)
-	: QObject (parent)
-	, A_ (parent)
-	, CB_ (cb)
-	, SessID_ (0)
-	{
-		connect (CB_,
-				SIGNAL (fileTransferSuggested (MSN::fileTransferInvite)),
-				this,
-				SLOT (handleSuggestion (MSN::fileTransferInvite)));
-	}
+	class ICLEntry;
 
-	QObject* TransferManager::SendFile (const QString& id,
-			const QString&, const QString& name, const QString& comment)
+	class PendingUploadPaster : public QObject
 	{
-		Q_UNUSED (comment)
+		Q_OBJECT
 
-		MSNBuddyEntry *buddy = A_->GetBuddy (id);
-		A_->GetSBManager ()->SendFile (name, ++SessID_, buddy);
-		return new TransferJob (SessID_, name, buddy, CB_, A_);
-	}
-
-	void TransferManager::handleSuggestion (MSN::fileTransferInvite fti)
-	{
-		TransferJob *job = new TransferJob (fti, CB_, A_);
-		emit fileOffered (job);
-	}
-}
+		ICLEntry *Entry_;
+		const QString EntryVariant_;
+		const QString Filename_;
+	public:
+		PendingUploadPaster (QObject *sharer, ICLEntry *entry, const QString& variant, const QString& filename, QObject* = 0);
+	private slots:
+		void handleFileUploaded (const QString&, const QUrl&);
+	};
 }
 }

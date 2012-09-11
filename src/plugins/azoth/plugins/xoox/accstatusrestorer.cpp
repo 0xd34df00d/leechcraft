@@ -16,44 +16,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "transfermanager.h"
-#include "msnaccount.h"
-#include "sbmanager.h"
-#include "transferjob.h"
-#include "callbacks.h"
+#include "accstatusrestorer.h"
+#include <QXmppClient.h>
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Zheet
+namespace Xoox
 {
-	TransferManager::TransferManager (Callbacks *cb, MSNAccount *parent)
-	: QObject (parent)
-	, A_ (parent)
-	, CB_ (cb)
-	, SessID_ (0)
+	AccStatusRestorer::AccStatusRestorer (const GlooxAccountState& state, ClientConnection_wptr client)
+	: State_ (state)
+	, Client_ (client)
 	{
-		connect (CB_,
-				SIGNAL (fileTransferSuggested (MSN::fileTransferInvite)),
-				this,
-				SLOT (handleSuggestion (MSN::fileTransferInvite)));
+		auto sharedPtr = client.lock ();
+		if (!sharedPtr || state.State_ == SOffline)
+		{
+			deleteLater ();
+			return;
+		}
+
+		auto xmppClient = sharedPtr->GetClient ();
+		if (xmppClient->isConnected ())
+			connect (xmppClient,
+					SIGNAL (disconnected ()),
+					this,
+					SLOT (handleDisconnected ()));
+		else
+			handleDisconnected ();
 	}
 
-	QObject* TransferManager::SendFile (const QString& id,
-			const QString&, const QString& name, const QString& comment)
+	void AccStatusRestorer::handleDisconnected ()
 	{
-		Q_UNUSED (comment)
+		auto sharedPtr = Client_.lock ();
+		if (!sharedPtr)
+		{
+			deleteLater ();
+			return;
+		}
 
-		MSNBuddyEntry *buddy = A_->GetBuddy (id);
-		A_->GetSBManager ()->SendFile (name, ++SessID_, buddy);
-		return new TransferJob (SessID_, name, buddy, CB_, A_);
-	}
-
-	void TransferManager::handleSuggestion (MSN::fileTransferInvite fti)
-	{
-		TransferJob *job = new TransferJob (fti, CB_, A_);
-		emit fileOffered (job);
+		sharedPtr->SetState (State_);
 	}
 }
 }

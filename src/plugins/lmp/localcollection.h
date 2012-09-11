@@ -71,6 +71,11 @@ namespace LMP
 		QHash<int, QStandardItem*> Track2Item_;
 
 		QFutureWatcher<MediaInfo> *Watcher_;
+		QList<QSet<QString>> NewPathsQueue_;
+
+		int UpdateNewArtists_;
+		int UpdateNewAlbums_;
+		int UpdateNewTracks_;
 	public:
 		enum NodeType
 		{
@@ -108,6 +113,7 @@ namespace LMP
 
 		QAbstractItemModel* GetCollectionModel () const;
 		void Enqueue (const QModelIndex&, Player*);
+		void Enqueue (const QList<QModelIndex>&, Player*);
 		void Clear ();
 
 		void Scan (const QString&, bool root = true);
@@ -143,6 +149,8 @@ namespace LMP
 		void RemoveRootPaths (const QStringList&);
 
 		void CheckRemovedFiles (const QSet<QString>& scanned, const QString& root);
+
+		void InitiateScan (const QSet<QString>&);
 	public slots:
 		void recordPlayedTrack (const QString&);
 	private slots:

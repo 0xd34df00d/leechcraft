@@ -159,9 +159,13 @@ namespace Poshuku
 		Back_->setParent (this);
 		Back_->setProperty ("ActionIcon", "go-previous");
 
+		BackMenu_ = new QMenu ();
+
 		Forward_ = WebView_->pageAction (QWebPage::Forward);
 		Forward_->setParent (this);
 		Forward_->setProperty ("ActionIcon", "go-next");
+
+		ForwardMenu_ = new QMenu ();
 
 		Reload_ = WebView_->pageAction (QWebPage::Reload);
 		Reload_->setProperty ("ActionIcon", "view-refresh");
@@ -270,8 +274,18 @@ namespace Poshuku
 		BookmarksAction_->setShortcut (QKeySequence (tr ("Ctrl+B")));
 		BookmarksAction_->setProperty ("ActionIcon", "bookmarks-organize");
 
-		ToolBar_->addAction (Back_);
-		ToolBar_->addAction (Forward_);
+		auto backButton = new QToolButton ();
+		backButton->setMenu (BackMenu_);
+		backButton->setDefaultAction (Back_);
+		backButton->setPopupMode (QToolButton::MenuButtonPopup);
+		ToolBar_->addWidget (backButton);
+
+		auto fwdButton = new QToolButton ();
+		fwdButton->setMenu (ForwardMenu_);
+		fwdButton->setDefaultAction (Forward_);
+		fwdButton->setPopupMode (QToolButton::MenuButtonPopup);
+		ToolBar_->addWidget (fwdButton);
+
 		ToolBar_->addAction (ReloadStop_);
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
@@ -468,6 +482,16 @@ namespace Poshuku
 				SIGNAL (loadStarted ()),
 				this,
 				SLOT (enableActions ()));
+		connect (WebView_,
+				SIGNAL (loadStarted ()),
+				this,
+				SLOT (updateNavHistory ()),
+				Qt::QueuedConnection);
+		connect (WebView_,
+				SIGNAL (loadFinished ()),
+				this,
+				SLOT (updateNavHistory ()),
+				Qt::QueuedConnection);
 		connect (WebView_,
 				SIGNAL (printRequested (QWebFrame*)),
 				this,
@@ -1171,6 +1195,86 @@ namespace Poshuku
 		ScreenSave_->setEnabled (true);
 		ViewSources_->setEnabled (true);
 		SavePage_->setEnabled (true);
+	}
+
+	const int MaxHistoryItems = 10;
+
+	void BrowserWidget::updateNavHistory ()
+	{
+		auto history = WebView_->history ();
+
+		BackMenu_->clear ();
+		auto items = history->backItems (MaxHistoryItems);
+		std::reverse (items.begin (), items.end ());
+		int idx = items.size () - 1;
+		Q_FOREACH (const auto& item, items)
+		{
+			if (!item.isValid ())
+			{
+				--idx;
+				continue;
+			}
+			auto act = BackMenu_->addAction (item.icon (), item.title ());
+			act->setToolTip (item.url ().toString ());
+			act->setData (idx--);
+
+			connect (act,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleBackHistoryAction ()));
+		}
+
+		ForwardMenu_->clear ();
+		items = history->forwardItems (MaxHistoryItems);
+		idx = 0;
+		Q_FOREACH (const auto& item, items)
+		{
+			if (!item.isValid ())
+			{
+				++idx;
+				continue;
+			}
+			auto act = ForwardMenu_->addAction (item.icon (), item.title ());
+			act->setToolTip (item.url ().toString ());
+			act->setData (idx++);
+
+			connect (act,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleForwardHistoryAction ()));
+		}
+	}
+
+	void BrowserWidget::handleBackHistoryAction ()
+	{
+		auto idx = qobject_cast<QAction*> (sender ())->data ().toInt ();
+
+		auto history = WebView_->history ();
+		const auto& items = history->backItems (MaxHistoryItems);
+		if (idx < 0 || idx >= items.size ())
+			return;
+
+		const auto& item = items.at (idx);
+		if (!item.isValid ())
+			return;
+
+		history->goToItem (item);
+	}
+
+	void BrowserWidget::handleForwardHistoryAction ()
+	{
+		auto idx = qobject_cast<QAction*> (sender ())->data ().toInt ();
+
+		auto history = WebView_->history ();
+		const auto& items = history->forwardItems (MaxHistoryItems);
+		if (idx < 0 || idx >= items.size ())
+			return;
+
+		const auto& item = items.at (idx);
+		if (!item.isValid ())
+			return;
+
+		history->goToItem (item);
 	}
 
 	void BrowserWidget::handleEntityAction ()

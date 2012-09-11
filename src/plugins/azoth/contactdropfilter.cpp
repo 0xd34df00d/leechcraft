@@ -16,45 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "transfermanager.h"
-#include "msnaccount.h"
-#include "sbmanager.h"
-#include "transferjob.h"
-#include "callbacks.h"
+#include "contactdropfilter.h"
+#include <QDropEvent>
+#include <QImage>
+#include <QUrl>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Zheet
-{
-	TransferManager::TransferManager (Callbacks *cb, MSNAccount *parent)
+	ContactDropFilter::ContactDropFilter (QObject *parent)
 	: QObject (parent)
-	, A_ (parent)
-	, CB_ (cb)
-	, SessID_ (0)
 	{
-		connect (CB_,
-				SIGNAL (fileTransferSuggested (MSN::fileTransferInvite)),
-				this,
-				SLOT (handleSuggestion (MSN::fileTransferInvite)));
 	}
 
-	QObject* TransferManager::SendFile (const QString& id,
-			const QString&, const QString& name, const QString& comment)
+	bool ContactDropFilter::eventFilter (QObject *obj, QEvent *e)
 	{
-		Q_UNUSED (comment)
+		if (e->type () != QEvent::Drop)
+			return false;
 
-		MSNBuddyEntry *buddy = A_->GetBuddy (id);
-		A_->GetSBManager ()->SendFile (name, ++SessID_, buddy);
-		return new TransferJob (SessID_, name, buddy, CB_, A_);
-	}
+		auto data = static_cast<QDropEvent*> (e)->mimeData ();
+		const auto& imgData = data->imageData ();
 
-	void TransferManager::handleSuggestion (MSN::fileTransferInvite fti)
-	{
-		TransferJob *job = new TransferJob (fti, CB_, A_);
-		emit fileOffered (job);
+		if (data->hasImage () && data->hasUrls () && data->urls ().size () == 1)
+			emit localImageDropped (imgData.value<QImage> (), data->urls ().value (0));
+		else if (data->hasImage ())
+			emit imageDropped (imgData.value<QImage> ());
+		else if (data->hasUrls ())
+		{
+			const auto& urls = data->urls ();
+			if (!urls.isEmpty ())
+				emit filesDropped (urls);
+		}
+
+		return true;
 	}
-}
 }
 }
