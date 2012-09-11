@@ -292,20 +292,22 @@ namespace LMP
 				this,
 				SLOT (handleMoveBottom ()));
 
-		SetPlayModeButton ();
-		SetSortOrderButton ();
-
 		auto moveUpButton = new QToolButton;
 		moveUpButton->setDefaultAction (ActionMoveUp_);
 		moveUpButton->setMenu (new QMenu);
 		moveUpButton->menu ()->addAction (ActionMoveTop_);
-		PlaylistToolbar_->addWidget (moveUpButton);
 
 		auto moveDownButton = new QToolButton;
 		moveDownButton->setDefaultAction (ActionMoveDown_);
 		moveDownButton->setMenu (new QMenu);
 		moveDownButton->menu ()->addAction (ActionMoveBottom_);
-		PlaylistToolbar_->addWidget (moveDownButton);
+
+		SetPlayModeButton ();
+		SetSortOrderButton ();
+
+		MoveUpButtonAction_ = PlaylistToolbar_->addWidget (moveUpButton);
+		MoveDownButtonAction_ = PlaylistToolbar_->addWidget (moveDownButton);
+		EnableMoveButtons (false);
 
 		PlaylistToolbar_->addSeparator ();
 
@@ -414,10 +416,6 @@ namespace LMP
 					this,
 					SLOT (handleStdSort ()));
 		}
-		ActionMoveBottom_->setEnabled (false);
-		ActionMoveDown_->setEnabled (false);
-		ActionMoveUp_->setEnabled (false);
-		ActionMoveTop_->setEnabled (false);
 
 		PlaylistToolbar_->addWidget (sortButton);
 	}
@@ -462,6 +460,12 @@ namespace LMP
 				Ui_.SearchPlaylist_,
 				SLOT (setVisible (bool)));
 		Ui_.SearchPlaylist_->setVisible (false);
+	}
+
+	void PlaylistWidget::EnableMoveButtons (bool enabled)
+	{
+		MoveUpButtonAction_->setVisible (enabled);
+		MoveDownButtonAction_->setVisible (enabled);
 	}
 
 	QList<Phonon::MediaSource> PlaylistWidget::GetSelected () const
@@ -523,11 +527,6 @@ namespace LMP
 
 		menu->addSeparator ();
 
-		menu->addAction (ActionMoveUp_);
-		menu->addAction (ActionMoveDown_);
-
-		menu->addSeparator ();
-
 		menu->addAction (ActionToggleSearch_);
 
 		menu->setAttribute (Qt::WA_DeleteOnClose);
@@ -586,11 +585,7 @@ namespace LMP
 					{ return static_cast<Player::SortingCriteria> (var.toInt ()); });
 		Player_->SetSortingCriteria (criteria);
 
-		const bool sortEnabled = !criteria.isEmpty ();
-		ActionMoveBottom_->setEnabled (!sortEnabled);
-		ActionMoveDown_->setEnabled (!sortEnabled);
-		ActionMoveUp_->setEnabled (!sortEnabled);
-		ActionMoveTop_->setEnabled (!sortEnabled);
+		EnableMoveButtons (criteria.isEmpty ());
 	}
 
 	void PlaylistWidget::removeSelectedSongs ()

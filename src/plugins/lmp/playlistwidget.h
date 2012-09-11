@@ -55,6 +55,9 @@ namespace LMP
 		QAction *ActionMoveDown_;
 		QAction *ActionMoveBottom_;
 
+		QAction *MoveUpButtonAction_;
+		QAction *MoveDownButtonAction_;
+
 		QAction *ActionToggleSearch_;
 
 		QList<Phonon::MediaSource> NextResetSelect_;
@@ -67,6 +70,9 @@ namespace LMP
 		void SetPlayModeButton ();
 		void SetSortOrderButton ();
 		void InitViewActions ();
+
+		void EnableMoveButtons (bool);
+
 		QList<Phonon::MediaSource> GetSelected () const;
 		void SelectSources (const QList<Phonon::MediaSource>&);
 	public slots:
