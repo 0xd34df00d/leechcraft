@@ -57,4 +57,4 @@ TARGET_LINK_LIBRARIES (leechcraft_kinotify
 	)
 INSTALL (TARGETS leechcraft_kinotify DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES kinotifysettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (DIRECTORY themes DESTINATION share/leechcraft/kinotify)
+INSTALL (DIRECTORY themes DESTINATION ${LC_SHARE_DEST}/kinotify)

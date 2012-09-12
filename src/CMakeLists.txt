@@ -62,6 +62,7 @@ SET (LC_PLUGINS_DEST "${LIBDIR}/leechcraft/plugins")
 SET (LC_TRANSLATIONS_DEST "share/leechcraft/translations")
 SET (LC_SETTINGS_DEST "share/leechcraft/settings")
 SET (LC_QML_DEST "share/leechcraft/qml")
+SET (LC_SHARE_DEST "share/leechcraft")
 SET (LC_INSTALLEDMANIFEST_DEST "share/leechcraft/installed")
 SET (LC_GLOBAL_SETTINGS_DEST "share/leechcraft/rc")
 SET (LC_GLOBAL_SETTINGS_DEST_IN "${CMAKE_INSTALL_PREFIX}/${LC_GLOBAL_SETTINGS_DEST}")
@@ -679,7 +680,7 @@ INSTALL (FILES xmlsettingsdialog/xsdconfig.h DESTINATION include/leechcraft/xmls
 INSTALL (FILES xmlsettingsdialog/datasourceroles.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
 
-INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
+INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft.cmake DESTINATION ${LC_SHARE_DEST}/cmake/)
 INSTALL (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
 
 INSTALL (DIRECTORY share/ DESTINATION share)

@@ -23,4 +23,4 @@ TARGET_LINK_LIBRARIES (leechcraft_aggregator_bodyfetch
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_aggregator_bodyfetch DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (DIRECTORY share/scripts DESTINATION share/leechcraft)
+INSTALL (DIRECTORY share/scripts DESTINATION ${LC_SHARE_DEST})
