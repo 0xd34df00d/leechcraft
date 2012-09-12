@@ -104,6 +104,11 @@ namespace NetStoreManager
 						SIGNAL (gotFileUrl (const QUrl&, const QStringList&)),
 						this,
 						SLOT (handleGotFileUrl (const QUrl&, const QStringList&)));
+
+				connect (acc->GetObject (),
+						SIGNAL (gotNewItem (QList<QStandardItem*>, QStringList)),
+						this,
+						SLOT (handleGotNewItem (QList<QStandardItem*>, QStringList)));
 			}
 		}
 		if (Ui_.AccountsBox_->count ())
@@ -253,6 +258,35 @@ namespace NetStoreManager
 		return result;
 	}
 
+	QStandardItem* ManagerTab::GetItemFromId (const QStringList& id) const
+	{
+		QList<QStandardItem*> parents;
+		QList<QStandardItem*> children;
+
+		for (int i = 0; i < Model_->rowCount (); ++i)
+			parents << Model_->item (i);
+
+		while (!parents.isEmpty ())
+		{
+			for (auto parentItem : parents)
+			{
+				if (parentItem->data (ListingRole::ID) == id)
+					return parentItem;
+
+				for (int i = 0; i < parentItem->rowCount (); ++i)
+					children << parentItem->child (i);
+			}
+
+			auto tempItems = parents;
+			parents = children;
+			children = tempItems;
+
+			children.clear ();
+		}
+
+		return 0;
+	}
+
 	void ManagerTab::handleGotListing (const QList<QList<QStandardItem*>>& items)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
@@ -296,6 +330,16 @@ namespace NetStoreManager
 		QString text = tr ("File URL %1 has been copied to the clipboard.")
 				.arg (str);
 		emit gotEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
+	}
+
+	void ManagerTab::handleGotNewItem (const QList<QStandardItem*>& item,
+			const QStringList& parentId)
+	{
+		QStandardItem *parentItem = GetItemFromId (parentId);
+		if (!parentItem)
+			Model_->appendRow (item);
+		else
+			parentItem->appendRow (item);
 	}
 
 	void ManagerTab::flCopyURL ()
@@ -398,17 +442,11 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		QString filePath = QFileDialog::getSaveFileName (this,
-				"Download file",
-				QDir::homePath ());
-		if (filePath.isEmpty ())
-			return;
-
 		QModelIndex idx = Ui_.FilesTree_->currentIndex ();
 		idx = idx.sibling (idx.row (), Columns::FirstColumnNumber);
 		QStringList id = idx.data (ListingRole::ID).toStringList ();
 
-		acc->Download (idx.data (ListingRole::ID).toStringList (), filePath);
+		acc->Download (idx.data (ListingRole::ID).toStringList (), "");
 	}
 
 	void ManagerTab::on_AccountsBox__activated (int)
