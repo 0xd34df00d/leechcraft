@@ -49,7 +49,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include "browserwidget.h"
 #include "customwebview.h"
-#include "addtofavoritesdialog.h"
 #include "xmlsettingsmanager.h"
 #include "sqlstoragebackend.h"
 #include "xbelparser.h"

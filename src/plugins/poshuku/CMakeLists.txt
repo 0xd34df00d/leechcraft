@@ -39,7 +39,6 @@ SET (SRCS
 	customwebview.cpp
 	progresslineedit.cpp
 	favoritesmodel.cpp
-	addtofavoritesdialog.cpp
 	filtermodel.cpp
 	favoritesdelegate.cpp
 	favoritestreeview.cpp
@@ -87,7 +86,6 @@ SET (HEADERS
 	customwebview.h
 	progresslineedit.h
 	favoritesmodel.h
-	addtofavoritesdialog.h
 	filtermodel.h
 	favoritesdelegate.h
 	favoritestreeview.h
@@ -131,7 +129,6 @@ SET (HEADERS
 	)
 SET (FORMS
 	browserwidget.ui
-	addtofavoritesdialog.ui
 	finddialog.ui
 	screenshotsavedialog.ui
 	cookieseditdialog.ui
