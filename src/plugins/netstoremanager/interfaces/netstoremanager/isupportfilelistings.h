@@ -70,6 +70,7 @@ namespace NetStoreManager
 		virtual void gotListing (const QList<QList<QStandardItem*>>&) = 0;
 		virtual void gotFileUrl (const QUrl& url, const QStringList& id) = 0;
 		virtual void gotChanges (QObject *account) = 0;
+		virtual void gotNewItem (const QList<QStandardItem*>& item, const QStringList& parentId) = 0;
 	};
 }
 }

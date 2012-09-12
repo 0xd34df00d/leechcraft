@@ -21,6 +21,7 @@
 #include <boost/bimap.hpp>
 #include <QObject>
 #include <QStringList>
+#include <QMultiMap>
 
 class QTimer;
 
@@ -41,18 +42,21 @@ namespace NetStoreManager
 		typedef boost::bimaps::bimap<QString, int> descriptorsMap;
 		descriptorsMap WatchedPathes2Descriptors_;
 
-		QTimer *Timer_;
 		QStringList ExceptionMasks_;
+		QTimer *Timer_;
 	public:
 		FilesWatcher (QObject *parent = 0);
 
-		void AddPath (const QString& path);
-		void AddPathes (const QStringList& pathes);
+		Q_INVOKABLE bool AddPath (QString path, bool baseDir = false);
+		Q_INVOKABLE void AddPathes (QStringList pathes);
 
-		void Release ();
-		void UpdateExceptions (const QStringList& masks);
+		Q_INVOKABLE void Release ();
+		Q_INVOKABLE void UpdateExceptions (QStringList masks);
 	private:
 		void HandleNotification (int descriptor);
+		void AddPathWithNotify (const QString& path);
+		bool IsInExceptionList (const QString& path);
+		void RemoveWatchingPath (int descriptor);
 
 	public slots:
 		void checkNotifications ();

@@ -96,10 +96,10 @@ namespace GoogleDrive
 	}
 
 	void DriveManager::CreateDirectory (const QString& name,
-			bool signalize, const QString& parentId)
+			const QString& parentId)
 	{
-		ApiCallQueue_ << [this, name, signalize, parentId] (const QString& key)
-			{ RequestCreateDirectory (name, signalize, parentId, key); };
+		ApiCallQueue_ << [this, name, parentId] (const QString& key)
+			{ RequestCreateDirectory (name, parentId, key); };
 		RequestAccessToken ();
 	}
 
@@ -279,7 +279,7 @@ namespace GoogleDrive
 	}
 
 	void DriveManager::RequestCreateDirectory (const QString& name,
-			bool signalize, const QString& parentId, const QString& key)
+			const QString& parentId, const QString& key)
 	{
 		QString str = QString ("https://www.googleapis.com/drive/v2/files?access_token=%1")
 				.arg (key);
@@ -300,7 +300,6 @@ namespace GoogleDrive
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
 				post (request, QJson::Serializer ().serialize (data));
-		Reply2Signalization_ [reply] = signalize;
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -386,6 +385,7 @@ namespace GoogleDrive
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
 				get (QNetworkRequest (str));
+		Reply2DownloadAccessToken_ [reply] = key;
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -394,12 +394,11 @@ namespace GoogleDrive
 
 	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url)
 	{
-		QUrl u = url;
-		u.removeQueryItem ("gd");
-
-		LeechCraft::Entity e = Util::MakeEntity (u,
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				get (QNetworkRequest (url));
+		LeechCraft::Entity e = Util::MakeEntity (QVariant::fromValue<QNetworkReply*> (reply),
 				filePath,
-				OnlyHandle | FromUserInitiated | AutoAccept);
+				OnlyDownload | FromUserInitiated);
 		Core::Instance ().SendEntity (e);
 	}
 
@@ -447,8 +446,7 @@ namespace GoogleDrive
 		reply->deleteLater ();
 
 		bool ok = false;
-		QByteArray ba = reply->readAll ();
-		QVariant res = QJson::Parser ().parse (ba, &ok);
+		QVariant res = QJson::Parser ().parse (reply->readAll (), &ok);
 
 		if (!ok)
 		{
@@ -841,13 +839,7 @@ namespace GoogleDrive
 			qDebug () << Q_FUNC_INFO
 					<< "directory created successfully";
 
-			if (Reply2Signalization_.contains (reply))
-			{
-				Reply2Signalization_.remove (reply);
-				emit gotNewItem (CreateDriveItem (res));
-			}
-
-			RefreshListing ();
+			emit gotNewItem (CreateDriveItem (res));
 			return;
 		}
 
@@ -974,9 +966,13 @@ namespace GoogleDrive
 		}
 
 		const QVariantMap& map = res.toMap ();
+		QString access_token = Reply2DownloadAccessToken_.take (reply);
+
 		if (!map.contains ("error"))
 		{
 			DriveItem it = CreateDriveItem (res);
+			if (!access_token.isEmpty ())
+				it.DownloadUrl_.addQueryItem ("access_token", access_token);
 
 			if (!DownloadsQueue_.isEmpty ())
 				DownloadsQueue_.dequeue () (it.DownloadUrl_);

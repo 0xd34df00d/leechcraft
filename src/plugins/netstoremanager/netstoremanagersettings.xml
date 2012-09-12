@@ -13,7 +13,7 @@
 		<tab>
 			<label value="Exceptions" />
 			<item type="multiline" property="ExceptionsList" position="bottom">
-				<label value="Ignore synchronizations for files with following masks: " />
+				<label value="Ignore synchronization for files with following masks: " />
 			</item>
 		</tab>
 	</page>

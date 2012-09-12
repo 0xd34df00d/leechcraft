@@ -18,19 +18,23 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <QVariant>
 #include <QStringList>
 #include <QFileSystemWatcher>
 #include <QPointer>
+#include <QQueue>
 
 class QTimer;
 class QThread;
+class QStandardItem;
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
+	class ISupportFileListings;
 	class FilesWatcher;
 	class IStorageAccount;
 	class AccountsManager;
@@ -43,18 +47,34 @@ namespace NetStoreManager
 		QMap<QString, IStorageAccount*> Path2Account_;
 		QTimer *Timer_;
 
+		QThread *Thread_;
 		FilesWatcher *FilesWatcher_;
+
+		QMap<ISupportFileListings*, QMap<QString, QStringList>> Isfl2PathId_;
+		QQueue<std::function<void (void)>> ApiCallQueue_;
+
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
 
 		void Release ();
-	private:
 
 	public slots:
 		void handleDirectoryAdded (const QVariantMap& dirs);
 	private slots:
 		void handleTimeout ();
 		void handleUpdateExceptionsList ();
+
+		void handleDirWasCreated (const QString& path);
+		void handleFileWasCreated (const QString& path);
+		void handleDirWasRemoved (const QString& path);
+		void handleFileWasRemoved (const QString& path);
+		void handleEntryWasRenamed (const QString& oldPath, const QString&  newPath);
+		void handleEntryWasMoved (const QString& oldPath, const QString& newPath);
+		void handleFileWasUpdated (const QString& path);
+
+		void handleGotListing (const QList<QList<QStandardItem*>>&);
+		void handleGotNewItem (const QList<QStandardItem*>& item,
+				const QStringList& parentId);
 	};
 }
 }

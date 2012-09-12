@@ -133,7 +133,7 @@ namespace GoogleDrive
 		QQueue<std::function<void (const QUrl&)>> DownloadsQueue_;
 		QHash<QNetworkReply*, QString> Reply2Id_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
-		QHash<QNetworkReply*, bool> Reply2Signalization_;
+		QHash<QNetworkReply*, QString> Reply2DownloadAccessToken_;
 #ifdef HAVE_MAGIC
 		magic_t Magic_;
 #endif
@@ -151,7 +151,7 @@ namespace GoogleDrive
 		void Download (const QString& id, const QString& filePath);
 
 		void CreateDirectory (const QString& name,
-				bool signalize = false, const QString& parentId = QString ());
+				const QString& parentId = QString ());
 		void Copy (const QString& id, const QString& parentId);
 		void Move (const QString& id, const QString& parentId);
 
@@ -164,7 +164,7 @@ namespace GoogleDrive
 		void RequestRestoreEntryFromTrash (const QString& id, const QString& key);
 		void RequestUpload (const QString& filePath, const QString& parent,
 				const QString& key);
-		void RequestCreateDirectory (const QString& name, bool signalize,
+		void RequestCreateDirectory (const QString& name,
 				const QString& parentId, const QString& key);
 		void RequestCopyItem (const QString& id,
 				const QString& parentId, const QString& key);

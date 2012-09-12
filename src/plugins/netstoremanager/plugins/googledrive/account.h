@@ -97,7 +97,7 @@ namespace GoogleDrive
 	private slots:
 		void handleFileList (const QList<DriveItem>& items);
 		void handleSharedFileId (const QString& id);
-
+		void handleGotNewItem (const DriveItem& item);
 	signals:
 		void upError (const QString& error, const QString& filepath);
 		void upFinished (const QStringList& id, const QString& filepath);
@@ -108,6 +108,8 @@ namespace GoogleDrive
 		void gotFileUrl (const QUrl& url, const QStringList& id);
 
 		void gotChanges (QObject *account);
+
+		void gotNewItem (const QList<QStandardItem*>& item, const QStringList& parentId);
 	};
 }
 }

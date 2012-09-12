@@ -81,9 +81,13 @@ namespace NetStoreManager
 		void RestoreModelState ();
 		void ExpandModelItems (const QModelIndex& parent = QModelIndex ());
 		QList<QStringList> GetTrashedFiles () const;
+		QStandardItem* GetItemFromId (const QStringList& id) const;
+
 	private slots:
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
 		void handleGotFileUrl (const QUrl& url, const QStringList& id);
+		void handleGotNewItem (const QList<QStandardItem*>& item,
+				const QStringList& parentId);
 		void flCopyURL ();
 		void flDelete ();
 		void flMoveToTrash ();
@@ -102,6 +106,7 @@ namespace NetStoreManager
 				const QStringList& newParentId);
 		void handleRestoredFromTrash (const QStringList& id);
 		void handleTrashedItem (const QStringList& id);
+
 	signals:
 		void removeTab (QWidget*);
 

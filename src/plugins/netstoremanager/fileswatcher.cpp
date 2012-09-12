@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "fileswatcher.h"
+#include "utils.h"
 #include <QtDebug>
 #include <QStringList>
 #include <QTimer>
@@ -30,7 +31,7 @@ namespace LeechCraft
 	{
 		FilesWatcher::FilesWatcher (QObject *parent)
 		: QObject (parent)
-		, WatchMask_ (IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY | IN_MOVE_SELF | IN_MOVED_FROM | IN_MOVED_TO )
+		, WatchMask_ (IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY |IN_MOVED_FROM | IN_MOVED_TO )
 		, WaitMSecs_ (50)
 		, Timer_ (new QTimer (this))
 		{
@@ -47,19 +48,21 @@ namespace LeechCraft
 					SLOT (checkNotifications ()));
 		}
 
-		void FilesWatcher::AddPath (const QString& path)
+		bool FilesWatcher::AddPath (QString path, bool baseDir)
 		{
+			if (WatchedPathes2Descriptors_.left.count (path))
+				return true;
+
 			int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
 			WatchedPathes2Descriptors_.insert (descriptorsMap::value_type (path, fd));
 
-			qDebug () << "added path"
-					<< path;
-
 			if (!Timer_->isActive ())
 				Timer_->start (1000);
+
+			return true;
 		}
 
-		void FilesWatcher::AddPathes (const QStringList& pathes)
+		void FilesWatcher::AddPathes (QStringList pathes)
 		{
 			for (const auto & path : pathes)
 				AddPath (path);
@@ -70,12 +73,21 @@ namespace LeechCraft
 			for (auto map : WatchedPathes2Descriptors_.left)
 				inotify_rm_watch (INotifyDescriptor_, map.second);
 
+			WatchedPathes2Descriptors_.clear ();
 			close (INotifyDescriptor_);
 		}
 
-		void FilesWatcher::UpdateExceptions (const QStringList& masks)
+		void FilesWatcher::UpdateExceptions (QStringList masks)
 		{
 			ExceptionMasks_ = masks;
+			ExceptionMasks_.removeAll ("");
+			ExceptionMasks_.removeDuplicates ();
+
+			for (const auto& pair : WatchedPathes2Descriptors_.left)
+			{
+				if (IsInExceptionList (pair.first))
+					RemoveWatchingPath (pair.second);
+			}
 		}
 
 		void FilesWatcher::HandleNotification (int descriptor)
@@ -98,62 +110,28 @@ namespace LeechCraft
 				QString path = WatchedPathes2Descriptors_.right.at (event->wd);
 				QString fullPath = path + "/" + QString (event->name);
 
-				//TODO if in exception list - ignore
+				i += EventSize_ + event->len;
+
+				if (!(event->mask & IN_ISDIR))
+					if (IsInExceptionList (fullPath))
+						continue;
 
 				if (event->mask & IN_CREATE)
 				{
 					if (event->mask & IN_ISDIR)
-					{
-						if (!path.isEmpty ())
-						{
-							AddPath (fullPath);
-							emit dirWasCreated (fullPath);
-							qDebug () << "created dir"
-									<< fullPath
-									<< event->wd;
-						}
-					}
+						AddPathWithNotify (fullPath);
 					else
-					{
 						emit fileWasCreated (fullPath);
-						qDebug () << "created file"
-								<< fullPath
-								<< event->wd;
-					}
 				}
 				else if (event->mask & IN_DELETE)
 				{
-					if (event->mask & IN_ISDIR)
-					{
-						emit dirWasRemoved (fullPath);
-						qDebug () << "remove dir"
-								<< fullPath
-								<< event->wd;
-					}
-					else
-					{
+					if (!(event->mask & IN_ISDIR))
 						emit fileWasRemoved (fullPath);
-						qDebug () << "remove file"
-								<< fullPath
-								<< event->wd;
-					}
 				}
 				else if (event->mask & IN_MODIFY)
 				{
-					if (event->mask & IN_ISDIR)
-					{
-						//TODO modify directory
-						qDebug () << "modify dir"
-								<< fullPath
-								<< event->wd;
-					}
-					else
-					{
+					if (!(event->mask & IN_ISDIR))
 						emit fileWasUpdated (fullPath);
-						qDebug () << "modify file"
-								<< fullPath
-								<< event->wd;
-					}
 				}
 				else if (event->mask & IN_MOVED_FROM)
 				{
@@ -162,49 +140,92 @@ namespace LeechCraft
 				else if (event->mask & IN_MOVED_TO)
 				{
 					if (!eventsBuffer.isEmpty ())
+					{
 						for (auto e : eventsBuffer)
 							if (e->cookie == event->cookie &&
 									e->wd == event->wd)
 							{
 								emit entryWasRenamed (path + "/" + QString (e->name),
 										fullPath);
-								qDebug () << "rename entry"
-										<< path + "/" + QString (e->name)
-										<< fullPath
-										<< e->wd
-										<< event->wd;
+								eventsBuffer.removeAll (e);
 								break;
 							}
 							else if (e->cookie == event->cookie)
 							{
-								emit entryWasMoved (path + "/" + QString (e->name),
+								QString oldPrePath = WatchedPathes2Descriptors_.right.at (e->wd);
+								emit entryWasMoved (oldPrePath + "/" + QString (e->name),
 										fullPath);
-								qDebug () << "move entry"
-										<< path + "/" + QString (e->name)
-										<< fullPath
-										<< e->wd
-										<< event->wd;
+								eventsBuffer.removeAll (e);
 								break;
 							}
+					}
+					else
+						AddPathWithNotify (fullPath);
 				}
 				else if (event->mask & IN_DELETE_SELF)
 				{
-					inotify_rm_watch (INotifyDescriptor_, event->wd);
-					WatchedPathes2Descriptors_.right.erase (event->wd);
-					emit dirWasRemoved (fullPath);
-					qDebug () << "remove watched dir"
-							<< fullPath
-							<< event->wd;
-				}
-				else if (event->mask & IN_MOVE_SELF)
-				{
-					qDebug () << "move watched dir"
-							<< fullPath
-							<< event->wd;
+					emit dirWasRemoved (path);
 				}
 
-				i += EventSize_ + event->len;
+				if (event->mask & IN_IGNORED)
+				{
+					RemoveWatchingPath (event->wd);
+				}
 			}
+
+			for (auto e : eventsBuffer)
+			{
+				QString path = WatchedPathes2Descriptors_.right.at (e->wd);
+				QString fullPath = path + "/" + QString (e->name);
+
+				if (e->mask & IN_ISDIR)
+					emit dirWasRemoved (path);
+				else
+					emit fileWasRemoved (fullPath);
+			}
+		}
+
+		void FilesWatcher::AddPathWithNotify (const QString& path)
+		{
+			if (!AddPath (path))
+				return;
+
+			emit dirWasCreated (path);
+			auto pathes = Utils::ScanDir (QDir::Dirs | QDir::NoDotAndDotDot,
+					path,
+					true);
+			for (const auto& p : pathes)
+			{
+				if (!AddPath (p))
+					continue;
+
+				emit dirWasCreated (p);
+			}
+		}
+
+		bool FilesWatcher::IsInExceptionList (const QString& path)
+		{
+			if (!ExceptionMasks_.isEmpty ())
+				for (const auto& mask : ExceptionMasks_)
+				{
+					QRegExp rx (mask, Qt::CaseInsensitive, QRegExp::WildcardUnix);
+					if (rx.exactMatch (path))
+					{
+						qDebug () << "entry with name"
+								<< QFileInfo (path).fileName ()
+								<< "was ignored by "
+								<< mask;
+						return true;
+					}
+				}
+
+			return false;
+		}
+
+		void FilesWatcher::RemoveWatchingPath (int descriptor)
+		{
+			inotify_rm_watch (INotifyDescriptor_, descriptor);
+			WatchedPathes2Descriptors_.right.erase (descriptor);
 		}
 
 		void FilesWatcher::checkNotifications ()
@@ -221,4 +242,5 @@ namespace LeechCraft
 				HandleNotification (INotifyDescriptor_);
 		}
 	}
+
 }
