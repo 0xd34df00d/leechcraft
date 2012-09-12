@@ -29,6 +29,7 @@
 #include "annotationsmanager.h"
 #include "useravatarmanager.h"
 #include "vcardlisteditdialog.h"
+#include "accountsettingsholder.h"
 
 namespace LeechCraft
 {
@@ -64,7 +65,7 @@ namespace Xoox
 		GlooxAccount *account = qobject_cast<GlooxAccount*> (entry->GetParentAccount ());
 		UpdateNote (account, entry->GetJID ());
 
-		if (entry->GetJID () == account->GetJID ())
+		if (entry->GetJID () == account->GetSettings ()->GetJID ())
 			EnableEditableMode ();
 		else
 		{

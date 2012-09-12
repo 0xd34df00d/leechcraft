@@ -71,6 +71,7 @@
 #include "xmppbobmanager.h"
 #include "xmppcaptchamanager.h"
 #include "clientconnectionerrormgr.h"
+#include "accountsettingsholder.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -84,9 +85,10 @@ namespace Xoox
 {
 	const int ErrorLimit = 5;
 
-	ClientConnection::ClientConnection (const QString& jid,
-			GlooxAccount *account)
-	: Client_ (new QXmppClient (this))
+	ClientConnection::ClientConnection (GlooxAccount *account)
+	: Account_ (account)
+	, Settings_ (account->GetSettings ())
+	, Client_ (new QXmppClient (this))
 	, MUCManager_ (new QXmppMucManager)
 	, XferManager_ (new QXmppTransferManager)
 	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
@@ -113,9 +115,8 @@ namespace Xoox
 	, PGPManager_ (0)
 #endif
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
-	, OurJID_ (jid)
-	, SelfContact_ (new SelfContact (jid, account))
-	, Account_ (account)
+	, OurJID_ (Settings_->GetFullJID ())
+	, SelfContact_ (new SelfContact (OurJID_, account))
 	, ProxyObject_ (0)
 	, CapsManager_ (new CapsManager (this))
 	, IsConnected_ (false)
@@ -125,23 +126,20 @@ namespace Xoox
 					const auto& id = Client_->vCardManager ().requestVCard (str);
 					ErrorMgr_->Whitelist (id, report);
 				},
-				jid.contains ("gmail.com") ? 1700 : 300, 1, this))
+				OurJID_.contains ("gmail.com") ? 1700 : 300, 1, this))
 	, CapsQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = DiscoveryManager_->requestInfo (str, "");
 					ErrorMgr_->Whitelist (id, report);
 				},
-				jid.contains ("gmail.com") ? 1000 : 200, 1, this))
+				OurJID_.contains ("gmail.com") ? 1000 : 200, 1, this))
 	, VersionQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = Client_->versionManager ().requestVersion (str);
 					ErrorMgr_->Whitelist (id, report);
 				},
-				jid.contains ("gmail.com") ? 1200 : 250, 1, this))
+				OurJID_.contains ("gmail.com") ? 1200 : 250, 1, this))
 	, SocketErrorAccumulator_ (0)
-	, KAInterval_ (90)
-	, KATimeout_ (30)
-	, FileLogEnabled_ (false)
 	{
 		SetOurJID (OurJID_);
 
@@ -153,6 +151,7 @@ namespace Xoox
 				SIGNAL (serverAuthFailed ()));
 
 		LastState_.State_ = SOffline;
+		handlePriorityChanged (Settings_->GetPriority ());
 
 		QTimer *decrTimer = new QTimer (this);
 		connect (decrTimer,
@@ -331,6 +330,23 @@ namespace Xoox
 				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
 				this,
 				SLOT (handleDiscoItems (const QXmppDiscoveryIq&)));
+
+		connect (Settings_,
+				SIGNAL (kaParamsChanged (QPair<int,int>)),
+				this,
+				SLOT (setKAParams (QPair<int,int>)));
+		connect (Settings_,
+				SIGNAL (fileLogChanged (bool)),
+				this,
+				SLOT (setFileLogging (bool)));
+		connect (Settings_,
+				SIGNAL (photoHashChanged (QByteArray)),
+				this,
+				SLOT (handlePhotoHash ()));
+		connect (Settings_,
+				SIGNAL (priorityChanged (int)),
+				this,
+				SLOT (handlePriorityChanged (int)));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -343,10 +359,10 @@ namespace Xoox
 		LastState_ = state;
 
 		auto pres = XooxUtil::StatusToPresence (state.State_, state.Status_, state.Priority_);
-		if (!OurPhotoHash_.isEmpty ())
+		if (!Settings_->GetPhotoHash ().isEmpty ())
 		{
 			pres.setVCardUpdateType (QXmppPresence::VCardUpdateValidPhoto);
-			pres.setPhotoHash (OurPhotoHash_);
+			pres.setPhotoHash (Settings_->GetPhotoHash ());
 		}
 
 		if (IsConnected_ ||
@@ -366,14 +382,14 @@ namespace Xoox
 			QXmppConfiguration conf;
 			conf.setJid (OurJID_);
 			conf.setPassword (Password_);
-			const QString& host = Account_->GetHost ();
-			const int port = Account_->GetPort ();
+			const QString& host = Settings_->GetHost ();
+			const int port = Settings_->GetPort ();
 			if (!host.isEmpty ())
 				conf.setHost (host);
 			if (port >= 0)
 				conf.setPort (port);
-			conf.setKeepAliveInterval (KAInterval_);
-			conf.setKeepAliveTimeout (KATimeout_);
+			conf.setKeepAliveInterval (Settings_->GetKAParams ().first);
+			conf.setKeepAliveTimeout (Settings_->GetKAParams ().second);
 			Client_->connectToServer (conf, pres);
 
 			FirstTimeConnect_ = false;
@@ -411,34 +427,6 @@ namespace Xoox
 		return LastState_;
 	}
 
-	QPair<int, int> ClientConnection::GetKAParams () const
-	{
-		return qMakePair (KAInterval_, KATimeout_);
-	}
-
-	void ClientConnection::SetKAParams (const QPair<int, int>& p)
-	{
-		KAInterval_ = p.first;
-		KATimeout_ = p.second;
-
-		if (Client_)
-		{
-			Client_->configuration ().setKeepAliveInterval (KAInterval_);
-			Client_->configuration ().setKeepAliveTimeout (KATimeout_);
-		}
-	}
-
-	void ClientConnection::SetFileLogging (bool fileLog)
-	{
-		FileLogEnabled_ = fileLog;
-
-		auto type = Client_->logger ()->loggingType ();
-		if (type == QXmppLogger::FileLogging && !fileLog)
-			Client_->logger ()->setLoggingType (QXmppLogger::NoLogging);
-		else if (type == QXmppLogger::NoLogging && fileLog)
-			Client_->logger ()->setLoggingType (QXmppLogger::FileLogging);
-	}
-
 	void ClientConnection::SetPassword (const QString& pwd)
 	{
 		Password_ = pwd;
@@ -456,11 +444,6 @@ namespace Xoox
 		Split (jid, &OurBareJID_, &OurResource_);
 
 		SelfContact_->UpdateJID (jid);
-	}
-
-	void ClientConnection::SetOurPhotoHash (const QByteArray& hash)
-	{
-		OurPhotoHash_ = hash;
 	}
 
 	RoomCLEntry* ClientConnection::JoinRoom (const QString& jid, const QString& nick)
@@ -610,7 +593,7 @@ namespace Xoox
 					SIGNAL (message (QXmppLogger::MessageType, const QString&)),
 					this,
 					SLOT (handleLog (QXmppLogger::MessageType, const QString&)));
-			Client_->logger ()->setLoggingType (FileLogEnabled_ ?
+			Client_->logger ()->setLoggingType (Settings_->GetFileLogEnabled () ?
 						QXmppLogger::FileLogging :
 						QXmppLogger::NoLogging);
 		}
@@ -1527,6 +1510,37 @@ namespace Xoox
 		QMetaObject::invokeMethod (cb.first,
 				cb.second,
 				Q_ARG (QXmppIq, iq));
+	}
+
+	void ClientConnection::setKAParams (const QPair<int, int>& p)
+	{
+		if (!Client_)
+			return;
+
+		Client_->configuration ().setKeepAliveInterval (p.first);
+		Client_->configuration ().setKeepAliveTimeout (p.second);
+	}
+
+	void ClientConnection::setFileLogging (bool fileLog)
+	{
+		auto type = Client_->logger ()->loggingType ();
+		if (type == QXmppLogger::FileLogging && !fileLog)
+			Client_->logger ()->setLoggingType (QXmppLogger::NoLogging);
+		else if (type == QXmppLogger::NoLogging && fileLog)
+			Client_->logger ()->setLoggingType (QXmppLogger::FileLogging);
+	}
+
+	void ClientConnection::handlePhotoHash ()
+	{
+		if (LastState_.State_ != SOffline)
+			SetState (LastState_);
+	}
+
+	void ClientConnection::handlePriorityChanged (int prio)
+	{
+		LastState_.Priority_ = prio;
+		if (LastState_.State_ != SOffline)
+			SetState (LastState_);
 	}
 
 	void ClientConnection::InitializeQCA ()

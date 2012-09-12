@@ -17,9 +17,10 @@
  **********************************************************************/
 
 #include "selfcontact.h"
+#include <QXmppVCardManager.h>
 #include "clientconnection.h"
 #include "vcarddialog.h"
-#include <QXmppVCardManager.h>
+#include "accountsettingsholder.h"
 
 namespace LeechCraft
 {
@@ -72,7 +73,7 @@ namespace Xoox
 
 	QString SelfContact::GetHumanReadableID () const
 	{
-		return Account_->GetJID ();
+		return Account_->GetSettings ()->GetJID ();
 	}
 
 	QStringList SelfContact::Groups () const

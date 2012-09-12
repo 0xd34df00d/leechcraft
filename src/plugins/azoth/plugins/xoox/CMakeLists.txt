@@ -86,6 +86,7 @@ SET (XOOX_SRCS
 	gwoptionsdialog.cpp
 	clientconnectionerrormgr.cpp
 	accstatusrestorer.cpp
+	accountsettingsholder.cpp
 	xmppannotationsiq.cpp
 	xmppannotationsmanager.cpp
 	xmppbobiq.cpp
@@ -160,6 +161,7 @@ SET (XOOX_HEADERS
 	gwoptionsdialog.h
 	clientconnectionerrormgr.h
 	accstatusrestorer.h
+	accountsettingsholder.h
 	xmppannotationsiq.h
 	xmppannotationsmanager.h
 	xmppbobiq.h

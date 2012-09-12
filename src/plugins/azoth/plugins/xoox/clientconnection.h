@@ -90,6 +90,9 @@ namespace Xoox
 	{
 		Q_OBJECT
 
+		GlooxAccount *Account_;
+		AccountSettingsHolder *Settings_;
+
 		QXmppClient *Client_;
 		QXmppMucManager *MUCManager_;
 		QXmppTransferManager *XferManager_;
@@ -124,11 +127,8 @@ namespace Xoox
 		QString OurBareJID_;
 		QString OurResource_;
 
-		QByteArray OurPhotoHash_;
-
 		SelfContact *SelfContact_;
 
-		GlooxAccount *Account_;
 		IProxyObject *ProxyObject_;
 		CapsManager *CapsManager_;
 
@@ -154,9 +154,6 @@ namespace Xoox
 		FetchQueue *VersionQueue_;
 
 		int SocketErrorAccumulator_;
-		int KAInterval_;
-		int KATimeout_;
-		bool FileLogEnabled_;
 
 		QList<QXmppMessage> OfflineMsgQueue_;
 		QList<QPair<QString, PEPEventBase*>> InitialEventQueue_;
@@ -181,24 +178,16 @@ namespace Xoox
 
 		QHash<QString, QList<VCardCallback_t>> VCardFetchCallbacks_;
 	public:
-		ClientConnection (const QString&,
-				GlooxAccount*);
+		ClientConnection (GlooxAccount*);
 		virtual ~ClientConnection ();
 
 		void SetState (const GlooxAccountState&);
 		GlooxAccountState GetLastState () const;
 
-		QPair<int, int> GetKAParams () const;
-		void SetKAParams (const QPair<int, int>&);
-
-		void SetFileLogging (bool);
-
 		void SetPassword (const QString&);
 
 		QString GetOurJID () const;
 		void SetOurJID (const QString&);
-
-		void SetOurPhotoHash (const QByteArray&);
 
 		/** Joins the room and returns the contact list
 		 * entry representing that room.
@@ -310,6 +299,11 @@ namespace Xoox
 		void handleLog (QXmppLogger::MessageType, const QString&);
 
 		void decrementErrAccumulators ();
+
+		void setKAParams (const QPair<int, int>&);
+		void setFileLogging (bool);
+		void handlePhotoHash ();
+		void handlePriorityChanged (int);
 	private:
 		void InitializeQCA ();
 		void ScheduleFetchVCard (const QString&);
