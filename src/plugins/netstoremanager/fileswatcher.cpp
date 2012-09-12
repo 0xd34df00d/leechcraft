@@ -50,6 +50,9 @@ namespace LeechCraft
 
 		bool FilesWatcher::AddPath (QString path, bool baseDir)
 		{
+			if (WatchedPathes2Descriptors_.left.count (path))
+				return true;
+
 			int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
 			WatchedPathes2Descriptors_.insert (descriptorsMap::value_type (path, fd));
 
