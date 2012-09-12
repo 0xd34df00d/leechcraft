@@ -282,9 +282,7 @@ namespace Poshuku
 			return QUrl ();
 		}
 
-		QHostAddress testAddress;
-		bool success = testAddress.setAddress (url);
-		if (success)
+		if (QHostAddress ().setAddress (url))
 		{
 			QUrl result;
 			result.setHost (url);
