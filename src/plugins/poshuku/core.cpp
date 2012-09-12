@@ -686,31 +686,12 @@ namespace Poshuku
 		proxy->FillValue ("title", title);
 		proxy->FillValue ("url", url);
 
-		std::auto_ptr<AddToFavoritesDialog> dia (new AddToFavoritesDialog (title,
-					url,
-					qApp->activeWindow ()));
-
-		bool result = false;
 		bool oneClick = XmlSettingsManager::Instance ()->property ("BookmarkInOneClick").toBool ();
 
-		do
-		{
-			if (!oneClick)
-			{
-				if (dia->exec () == QDialog::Rejected)
-					return;
+		const auto& index = FavoritesModel_->addItem (title, url, QStringList ());
 
-				result = FavoritesModel_->addItem (dia->GetTitle (),
-						url, dia->GetTags ());
-			}
-			else
-			{
-				result = FavoritesModel_->addItem (title,
-						url, QStringList ());
-				oneClick = false;
-			}
-		}
-		while (!result);
+		if (!oneClick)
+			FavoritesModel_->EditBookmark (index);
 
 		emit bookmarkAdded (url);
 	}

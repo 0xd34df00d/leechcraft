@@ -80,7 +80,7 @@ namespace Poshuku
 		QStringList GetVisibleTags (int) const;
 		FavoritesItem GetItemFromUrl (const QString& url);
 	public slots:
-		bool addItem (const QString&, const QString&, const QStringList&);
+		QModelIndex addItem (const QString&, const QString&, const QStringList&);
 		QList<QVariant> getItemsMap () const;
 		void removeItem (const QModelIndex&);
 		void removeItem (const QString&);

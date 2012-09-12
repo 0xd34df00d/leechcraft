@@ -165,7 +165,7 @@ namespace Poshuku
 		}
 	}
 
-	bool FavoritesModel::addItem (const QString& title, const QString& url,
+	QModelIndex FavoritesModel::addItem (const QString& title, const QString& url,
 			const QStringList& visibleTags)
 	{
 		QStringList tags;
@@ -186,13 +186,13 @@ namespace Poshuku
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO << e.what ();
-			return false;
+			return QModelIndex ();
 		}
 
 		Util::DefaultHookProxy_ptr proxy = Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy ());
 		emit hookAddedToFavorites (proxy, title, url, visibleTags);
 
-		return true;
+		return createIndex (Items_.size () - 1, 0);
 	}
 
 	QList<QVariant> FavoritesModel::getItemsMap() const
