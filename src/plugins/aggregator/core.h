@@ -188,7 +188,7 @@ namespace Aggregator
 		QStringList GetCategories (const QModelIndex&) const;
 		Feed::FeedSettings GetFeedSettings (const QModelIndex&) const;
 		void SetFeedSettings (const Feed::FeedSettings&);
-		void UpdateFeed (const QModelIndex&, bool);
+		void UpdateFeed (const QModelIndex&);
 		QModelIndex GetUnreadChannelIndex () const;
 		int GetUnreadChannelsNumber () const;
 		void AddFromOPML (const QString&,
