@@ -112,8 +112,19 @@ namespace Lastfmscrobble
 	{
 		SubmitTimer_->stop ();
 
-		NextSubmit_ = lastfm::Track ();
-		if (info.Length_ < 30)
+		if (!NextSubmit_.isNull ())
+		{
+			const int secsTo = NextSubmit_.timestamp ().secsTo (QDateTime::currentDateTime ());
+			if (!NextSubmit_.duration () && secsTo > 30)
+			{
+				NextSubmit_.setDuration (secsTo);
+				cacheAndSubmit ();
+			}
+			else
+				NextSubmit_ = lastfm::Track ();
+		}
+
+		if (info.Length_ && info.Length_ < 30)
 			return;
 
 		const auto& lfmTrack = ToLastFMTrack (info);
@@ -122,7 +133,8 @@ namespace Lastfmscrobble
 		Scrobbler_->nowPlaying (lfmTrack);
 
 		NextSubmit_ = lfmTrack;
-		SubmitTimer_->start (std::min (info.Length_ / 2, 240) * 1000);
+		if (info.Length_)
+			SubmitTimer_->start (std::min (info.Length_ / 2, 240) * 1000);
 	}
 
 	void LastFMSubmitter::Love ()
@@ -145,6 +157,26 @@ namespace Lastfmscrobble
 				SLOT (deleteLater ()));
 	}
 
+	void LastFMSubmitter::Ban ()
+	{
+		if (NextSubmit_.isNull ())
+			return;
+
+		QList<QPair<QString, QString>> params;
+		params << QPair<QString, QString> ("track", NextSubmit_.title ());
+		params << QPair<QString, QString> ("artist", NextSubmit_.artist ());
+		qDebug () << Q_FUNC_INFO << "banning" << NextSubmit_.artist () << NextSubmit_.title ();
+		QNetworkReply *reply = Request ("track.ban", NAM_, params);
+		connect (reply,
+				 SIGNAL (finished ()),
+				 reply,
+				 SLOT (deleteLater ()));
+		connect (reply,
+				 SIGNAL (error (QNetworkReply::NetworkError)),
+				 reply,
+				 SLOT (deleteLater ()));
+	}
+
 	void LastFMSubmitter::Clear ()
 	{
 		NextSubmit_ = lastfm::MutableTrack ();
@@ -165,6 +197,7 @@ namespace Lastfmscrobble
 	{
 		Scrobbler_->cache (NextSubmit_);
 		submit ();
+		NextSubmit_ = lastfm::Track ();
 	}
 
 	void LastFMSubmitter::submit ()

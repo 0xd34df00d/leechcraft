@@ -21,6 +21,7 @@
 #include <QWebElement>
 #include <QTextDocument>
 #include <QTimer>
+#include <QBuffer>
 #include <QPalette>
 #include <QApplication>
 #include <QShortcut>
@@ -63,6 +64,7 @@
 #include "chattabwebview.h"
 #include "msgformatterwidget.h"
 #include "actionsmanager.h"
+#include "contactdropfilter.h"
 
 namespace LeechCraft
 {
@@ -135,6 +137,22 @@ namespace Azoth
 		Ui_.setupUi (this);
 		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
 		Ui_.MsgEdit_->installEventFilter (new CopyFilter (Ui_.View_));
+
+		auto dropFilter = new ContactDropFilter (this);
+		Ui_.View_->installEventFilter (dropFilter);
+		Ui_.MsgEdit_->installEventFilter (dropFilter);
+		connect (dropFilter,
+				SIGNAL (localImageDropped (QImage, QUrl)),
+				this,
+				SLOT (handleLocalImageDropped (QImage, QUrl)));
+		connect (dropFilter,
+				SIGNAL (imageDropped (QImage)),
+				this,
+				SLOT (handleImageDropped (QImage)));
+		connect (dropFilter,
+				SIGNAL (filesDropped (QList<QUrl>)),
+				this,
+				SLOT (handleFilesDropped (QList<QUrl>)));
 
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);
@@ -644,6 +662,7 @@ namespace Azoth
 		QAction *act = Ui_.EventsButton_->menu ()->
 				addAction (text, this, SLOT (handleOfferActionTriggered ()));
 		act->setData (QVariant::fromValue<QObject*> (jobObj));
+		act->setToolTip (job->GetComment ());
 	}
 
 	void ChatTab::handleFileNoLongerOffered (QObject *jobObj)
@@ -673,12 +692,24 @@ namespace Azoth
 		QObject *jobObj = action->data ().value<QObject*> ();
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
 
-		if (QMessageBox::question (this,
-					tr ("File transfer request"),
-					tr ("Would you like to accept or deny file transfer "
-						"request for file %1?")
-						.arg (job->GetName ()),
-					QMessageBox::Save | QMessageBox::Abort) == QMessageBox::Abort)
+		QString text = tr ("Would you like to accept or reject file transfer "
+				"request for file %1?")
+					.arg (job->GetName ());
+		if (!job->GetComment ().isEmpty ())
+		{
+			text += "<br /><br />" + tr ("The file description is:") + "<br /><br /><em>";
+			auto comment = Qt::escape (job->GetComment ());
+			comment.replace ("\n", "<br />");
+			text += comment + "</em>";
+		}
+
+		auto questResult = QMessageBox::question (this,
+				tr ("File transfer request"), text,
+				QMessageBox::Save | QMessageBox::Abort | QMessageBox::Cancel);
+
+		if (questResult == QMessageBox::Cancel)
+			return;
+		else if (questResult == QMessageBox::Abort)
 			Core::Instance ().GetTransferJobManager ()->DenyJob (jobObj);
 		else
 		{
@@ -963,6 +994,109 @@ namespace Azoth
 	void ChatTab::typeTimeout ()
 	{
 		SetChatPartState (CPSPaused);
+	}
+
+	void ChatTab::handleLocalImageDropped (const QImage& image, const QUrl& url)
+	{
+		if (url.scheme () == "file")
+			handleFilesDropped (QList<QUrl> () << url);
+		else
+		{
+			if (QMessageBox::question (this,
+						"Sending image",
+						tr ("Would you like to send image %1 directly in chat? "
+							"Otherwise the link to it will be sent.")
+							.arg (QFileInfo (url.path ()).fileName ()),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+			{
+				handleImageDropped (image);
+				return;
+			}
+
+			auto entry = GetEntry<ICLEntry> ();
+			if (!entry)
+				return;
+
+			const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
+						IMessage::MTMUCMessage :
+						IMessage::MTChatMessage;
+			auto msgObj = entry->CreateMessage (msgType, GetSelectedVariant (), url.toEncoded ());
+			auto msg = qobject_cast<IMessage*> (msgObj);
+			msg->Send ();
+		}
+	}
+
+	void ChatTab::handleImageDropped (const QImage& image)
+	{
+		auto entry = GetEntry<ICLEntry> ();
+		if (!entry)
+			return;
+
+		const auto msgType = entry->GetEntryType () == ICLEntry::ETMUC ?
+					IMessage::MTMUCMessage :
+					IMessage::MTChatMessage;
+		auto msgObj = entry->CreateMessage (msgType,
+				GetSelectedVariant (),
+				tr ("This message contains inline image, enable XHTML-IM to view it."));
+		auto msg = qobject_cast<IMessage*> (msgObj);
+
+		if (IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj))
+		{
+			QString asBase;
+			if (entry->GetEntryType () == ICLEntry::ETMUC)
+			{
+				QBuffer buf;
+				buf.open (QIODevice::ReadWrite);
+				image.save (&buf, "JPG", 60);
+				asBase = QString ("data:image/png;base64,%1")
+						.arg (QString (buf.buffer ().toBase64 ()));
+			}
+			else
+				asBase = Util::GetAsBase64Src (image);
+			const auto& body = "<img src='" + asBase + "'/>";
+			richMsg->SetRichBody (body);
+		}
+
+		msg->Send ();
+	}
+
+	namespace
+	{
+		bool CheckImage (const QList<QUrl>& urls, ChatTab *chat)
+		{
+			if (urls.size () != 1)
+				return false;
+
+			const auto& local = urls.at (0).toLocalFile ();
+			if (!QFile::exists (local))
+				return false;
+
+			const QImage img (local);
+			if (img.isNull ())
+				return false;
+
+			const QFileInfo fileInfo (local);
+
+			if (QMessageBox::question (chat,
+						"Sending image",
+						ChatTab::tr ("Would you like to send image %1 (%2) directly in chat? "
+							"Otherwise it will be sent as file.")
+							.arg (fileInfo.fileName ())
+							.arg (Util::MakePrettySize (fileInfo.size ())),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+				return false;
+
+			chat->handleImageDropped (img);
+			return true;
+		}
+	}
+
+	void ChatTab::handleFilesDropped (const QList<QUrl>& urls)
+	{
+		if (CheckImage (urls, this))
+			return;
+
+		Core::Instance ().GetTransferJobManager ()->OfferURLs (GetEntry<ICLEntry> (), urls);
 	}
 
 	void ChatTab::handleGotLastMessages (QObject *entryObj, const QList<QObject*>& messages)

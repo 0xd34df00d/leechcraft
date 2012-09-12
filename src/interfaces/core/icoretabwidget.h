@@ -30,9 +30,6 @@ class QMenu;
 /** @brief This interface is used to represent LeechCraft's core tab widget
  *
  * This interface is for communication with the core tab widget.
- *
- * Object returned by the GetObject() function emits these signals:
- * - tabWasInserted (int index) after the new tab was inserted.
  */
 class ICoreTabWidget
 {
@@ -185,12 +182,19 @@ public:
 	 */
 	virtual void tabInserted (int index) = 0;
 
-	/** @brief This signal is emitted when the tab bar's current tab changes.
+	/** @brief This signal is emitted when the tab widget's current tab changes.
 	 * The new current has the given index, or -1 if there isn't a new one.
 	 *
 	 * @param[out] index The index of current tab.
 	 */
 	virtual void currentChanged (int index) = 0;
+
+	/** @brief This signal is emitted when tab at from moves to position to.
+	 *
+	 * @param[out] from Previous index of the tab that has just moved.
+	 * @param[out] to The new position of the tab.
+	 */
+	virtual void tabWasMoved (int from, int to) = 0;
 };
 
 Q_DECLARE_INTERFACE (ICoreTabWidget, "org.Deviant.LeechCraft.ICoreTabWidget/1.0");

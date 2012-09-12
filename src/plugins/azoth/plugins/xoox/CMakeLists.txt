@@ -85,6 +85,7 @@ SET (XOOX_SRCS
 	regformhandlerwidget.cpp
 	gwoptionsdialog.cpp
 	clientconnectionerrormgr.cpp
+	accstatusrestorer.cpp
 	xmppannotationsiq.cpp
 	xmppannotationsmanager.cpp
 	xmppbobiq.cpp
@@ -158,6 +159,7 @@ SET (XOOX_HEADERS
 	regformhandlerwidget.h
 	gwoptionsdialog.h
 	clientconnectionerrormgr.h
+	accstatusrestorer.h
 	xmppannotationsiq.h
 	xmppannotationsmanager.h
 	xmppbobiq.h

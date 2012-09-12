@@ -35,7 +35,7 @@ namespace TabSessManager
 		Q_INTERFACES (IInfo IActionsExporter)
 
 		ICoreProxy_ptr Proxy_;
-		QSet<QObject*> Tabs_;
+		QList<QObject*> Tabs_;
 		bool IsRecovering_;
 
 		bool IsScheduled_;
@@ -67,6 +67,7 @@ namespace TabSessManager
 	private slots:
 		void handleNewTab (const QString&, QWidget*);
 		void handleRemoveTab (QWidget*);
+		void handleTabMoved (int, int);
 		void handleUnclose ();
 		void recover ();
 		void handleTabRecoverDataChanged ();

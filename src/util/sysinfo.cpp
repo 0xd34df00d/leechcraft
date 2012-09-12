@@ -46,12 +46,14 @@ namespace SysInfo
 		QSysInfo::MacVersion v = QSysInfo::MacintoshVersion;
 		if (v == QSysInfo::MV_10_3)
 			return SplitInfo_t ("Mac OS X", "10.3");
-		else if(v == QSysInfo::MV_10_4)
+		else if (v == QSysInfo::MV_10_4)
 			return SplitInfo_t ("Mac OS X", "10.4");
-		else if(v == QSysInfo::MV_10_5)
+		else if (v == QSysInfo::MV_10_5)
 			return SplitInfo_t ("Mac OS X", "10.5");
-		else if(v == QSysInfo::MV_10_6)
+		else if (v == QSysInfo::MV_10_6)
 			return SplitInfo_t ("Mac OS X", "10.6");
+		else if (v == QSysInfo::MV_10_7)
+			return SplitInfo_t ("Mac OS X", "10.7");
 		else
 			return SplitInfo_t ("Mac OS X", "Unknown version");
 #elif defined(Q_OS_WIN32)

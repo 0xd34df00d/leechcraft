@@ -105,12 +105,19 @@ Rectangle {
                     id: artistNameLabel
                     text: artistName
                     font.bold: true
+                    font.underline: true
                     font.pointSize: 12
                     color: "#dddddd"
                     anchors.top: parent.top
                     anchors.topMargin: 2
                     anchors.left: artistImageThumb.right
                     anchors.leftMargin: 5
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: rootRect.linkActivated(artistPageURL)
+                    }
                 }
 
                 Image {

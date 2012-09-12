@@ -36,9 +36,12 @@ namespace LMP
 
 		Ui::RecommendationsWidget Ui_;
 
+		QList<QObject*> ProvRoots_;
 		QList<Media::IRecommendedArtists*> Providers_;
 	public:
 		RecommendationsWidget (QWidget* = 0);
+
+		void InitializeProviders ();
 	private slots:
 		void handleGotRecs ();
 		void on_RecProvider__activated (int);

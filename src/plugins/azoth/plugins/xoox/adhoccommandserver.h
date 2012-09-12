@@ -54,6 +54,9 @@ namespace Xoox
 
 		bool handleStanza (const QDomElement&);
 	private:
+		bool HandleDiscoIq (const QDomElement&);
+		bool HandleIqSet (const QDomElement&);
+
 		void Send (const QXmppDataForm&, const QDomElement&, const QString&);
 		void SendCompleted (const QDomElement&, const QString&, const QString&);
 
@@ -67,9 +70,6 @@ namespace Xoox
 		void AddTaskInfo (const QDomElement&);
 		void AddTaskSubmitted (const QDomElement&,
 				const QString&, const QXmppDataForm&);
-	private slots:
-		void handleDiscoItems (const QXmppDiscoveryIq&);
-		void handleDiscoInfo (const QXmppDiscoveryIq&);
 	};
 }
 }

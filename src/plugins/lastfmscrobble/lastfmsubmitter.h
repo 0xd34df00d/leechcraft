@@ -74,6 +74,7 @@ namespace Lastfmscrobble
 
 		void NowPlaying (const MediaMeta&);
 		void Love ();
+		void Ban ();
 		void Clear ();
 	public slots:
 		void submit ();

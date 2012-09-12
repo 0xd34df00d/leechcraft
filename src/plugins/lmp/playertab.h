@@ -112,6 +112,7 @@ namespace LMP
 		void handleSongChanged (const MediaInfo&);
 		void handleCurrentPlayTime (qint64);
 		void handleLoveTrack ();
+		void handleBanTrack ();
 
 		void handleSimilarError ();
 		void handleSimilarReady ();
@@ -124,6 +125,8 @@ namespace LMP
 		void handleCollectionDelete ();
 		void loadFromCollection ();
 		void handleCollectionItemSelected (const QModelIndex&);
+
+		void handlePlayerAvailable (bool);
 
 		void closeLMP ();
 		void handleStateChanged (Phonon::State newState, Phonon::State oldState);

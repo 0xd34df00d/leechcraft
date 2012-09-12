@@ -19,6 +19,7 @@
 #include "launchy.h"
 #include <QIcon>
 #include <QAction>
+#include <util/util.h>
 #include "itemsfinder.h"
 #include "fsdisplayer.h"
 
@@ -28,6 +29,8 @@ namespace Launchy
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("launchy");
+
 		Proxy_ = proxy;
 
 		Finder_ = new ItemsFinder (proxy);

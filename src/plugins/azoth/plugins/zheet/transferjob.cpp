@@ -80,7 +80,7 @@ namespace Zheet
 	{
 		return Buddy_->GetEntryID ();
 	}
-	
+
 	QString TransferJob::GetName () const
 	{
 		return Filename_;
@@ -91,11 +91,16 @@ namespace Zheet
 		return Total_;
 	}
 
+	QString TransferJob::GetComment () const
+	{
+		return QString ();
+	}
+
 	TransferDirection TransferJob::GetDirection () const
 	{
 		return Dir_;
 	}
-	
+
 	void TransferJob::Accept (const QString& out)
 	{
 		if (Dir_ == TDOut)
@@ -104,7 +109,7 @@ namespace Zheet
 					<< "can't accept outgoing transfer job";
 			return;
 		}
-		
+
 		auto sb = GetSB ();
 		if (!sb)
 		{
@@ -113,11 +118,11 @@ namespace Zheet
 					<< Buddy_->GetHumanReadableID ();
 			return;
 		}
-		
+
 		Filename_ = out;
 		sb->fileTransferResponse (ID_, ZheetUtil::ToStd (out), true);
 	}
-	
+
 	void TransferJob::Abort ()
 	{
 		auto sb = GetSB ();
@@ -134,28 +139,28 @@ namespace Zheet
 		else if (Dir_ == TDIn)
 			sb->fileTransferResponse (ID_, ZheetUtil::ToStd (Filename_), false);
 	}
-	
+
 	MSN::SwitchboardServerConnection* TransferJob::GetSB () const
 	{
 		const auto& id = ZheetUtil::ToStd (Buddy_->GetHumanReadableID ());
 		return A_->GetNSConnection ()->switchboardWithOnlyUser (id);
 	}
-	
+
 	void TransferJob::handleProgress (uint id, quint64 done, quint64 total)
 	{
 		if (ID_ != id)
 			return;
-		
+
 		Done_ = done;
 		Total_ = total;
 		emit transferProgress (done, total);
 	}
-	
+
 	void TransferJob::handleFailed (uint id)
 	{
 		if (ID_ != id)
 			return;
-		
+
 		State_ = TSFinished;
 		emit errorAppeared (TEProtocolError, QString ());
 	}
@@ -164,7 +169,7 @@ namespace Zheet
 	{
 		if (ID_ != id)
 			return;
-		
+
 		State_ = TSFinished;
 		emit stateChanged (State_);
 	}
@@ -173,7 +178,7 @@ namespace Zheet
 	{
 		if (ID_ != id)
 			return;
-		
+
 		if (resp)
 		{
 			State_ = TSTransfer;

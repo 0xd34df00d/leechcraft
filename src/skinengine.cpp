@@ -45,6 +45,8 @@ SkinEngine::SkinEngine ()
 
 #ifdef Q_OS_WIN32
 	QIcon::setThemeSearchPaths (QStringList (qApp->applicationDirPath () + "/icons/"));
+#elif defined (Q_OS_MAC)
+	QIcon::setThemeSearchPaths (QStringList (qApp->applicationDirPath () + "/../Resources/icons/"));
 #endif
 
 	const QDir& dir = Util::CreateIfNotExists ("/icons/");

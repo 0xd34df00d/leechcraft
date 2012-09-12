@@ -149,6 +149,11 @@ namespace Lastfmscrobble
 		LFSubmitter_->Love ();
 	}
 
+	void Plugin::BanCurrentTrack ()
+	{
+		LFSubmitter_->Ban ();
+	}
+
 	QString Plugin::GetAlbumArtProviderName () const
 	{
 		return GetServiceName ();

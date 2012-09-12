@@ -25,8 +25,14 @@
 		<item type="checkbox" property="RequestLyrics" default="true">
 			<label value="Request lyrics" />
 		</item>
+		<item type="checkbox" property="RememberUsedProviders" default="true">
+			<label value="Remember used data providers" />
+		</item>
 		<item type="checkbox" property="SortWithThe" default="true">
 			<label value="Take 'The' into account when sorting" />
+		</item>
+		<item type="checkbox" property="AutocenterCurrentTrack" default="true">
+			<label value="Automatically center on current track" />
 		</item>
 		<item type="checkbox" property="FollowSymLinks" default="false">
 			<label value="Follow symbolic links" />

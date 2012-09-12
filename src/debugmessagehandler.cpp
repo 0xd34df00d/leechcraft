@@ -18,6 +18,8 @@
 
 #include "debugmessagehandler.h"
 #include <fstream>
+#include <map>
+#include <iomanip>
 #include <cstdlib>
 #ifdef _GNU_SOURCE
 #include <execinfo.h>
@@ -34,40 +36,39 @@ namespace
 	void Write (QtMsgType type, const char *message, bool bt)
 	{
 #if not defined (Q_OS_WIN32) && not defined (Q_OS_MAC)
+
 		if (!strcmp (message, "QPixmap::handle(): Pixmap is not an X11 class pixmap"))
 			return;
+
 #endif
-		QString name (QDir::homePath ());
-		name += ("/.leechcraft/");
-		switch (type)
+		static const std::map<QtMsgType, QString> fileName =
 		{
-			case QtDebugMsg:
-				name += "debug.log";
-				break;
-			case QtWarningMsg:
-				name += "warning.log";
-				break;
-			case QtCriticalMsg:
-				name += "critical.log";
-				break;
-			case QtFatalMsg:
-				name += "fatal.log";
-				break;
-		}
+			{QtDebugMsg, "debug.log"},
+			{QtWarningMsg, "warning.log"},
+			{QtCriticalMsg, "critical.log"},
+			{QtFatalMsg, "fatal.log"}
+		};
+
+		const QString name = QDir::homePath () + "/.leechcraft/" + fileName.at (type);
+
+		G_DbgMutex.lock ();
 
 		std::ofstream ostr;
-		G_DbgMutex.lock ();
 		ostr.open (QDir::toNativeSeparators (name).toStdString ().c_str (), std::ios::app);
 		ostr << "["
-			<< QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
-			<< "] ["
-			<< QThread::currentThread ()
-			<< "] ["
-			<< QString ("%1").arg (Counter++, 3, 10, QChar ('0')).toStdString ()
-			<< "] ";
-		ostr << message << std::endl;
+			 << QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
+			 << "] ["
+			 << QThread::currentThread ()
+			 << "] ["
+			 << std::setfill ('0')
+			 << std::setw (3)
+			 << Counter++
+			 << "] "
+			 << message
+			 << std::endl;
 
 #ifdef _GNU_SOURCE
+
 		if (type != QtDebugMsg && bt)
 		{
 			const int maxSize = 100;
@@ -79,8 +80,10 @@ namespace
 
 			for (size_t i = 0; i < size; ++i)
 				ostr << i << "\t" << strings [i] << std::endl;
+
 			std::free (strings);
 		}
+
 #endif
 
 		ostr.close ();
@@ -97,4 +100,3 @@ void DebugHandler::backtraced (QtMsgType type, const char *message)
 {
 	Write (type, message, true);
 }
-

@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 
 class QPixmap;

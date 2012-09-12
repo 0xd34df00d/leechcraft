@@ -16,45 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "transfermanager.h"
-#include "msnaccount.h"
-#include "sbmanager.h"
-#include "transferjob.h"
-#include "callbacks.h"
+#pragma once
+
+#include <QDialog>
+#include "ui_filesenddialog.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Zheet
-{
-	TransferManager::TransferManager (Callbacks *cb, MSNAccount *parent)
-	: QObject (parent)
-	, A_ (parent)
-	, CB_ (cb)
-	, SessID_ (0)
-	{
-		connect (CB_,
-				SIGNAL (fileTransferSuggested (MSN::fileTransferInvite)),
-				this,
-				SLOT (handleSuggestion (MSN::fileTransferInvite)));
-	}
+	class ICLEntry;
 
-	QObject* TransferManager::SendFile (const QString& id,
-			const QString&, const QString& name, const QString& comment)
+	class FileSendDialog : public QDialog
 	{
-		Q_UNUSED (comment)
+		Q_OBJECT
 
-		MSNBuddyEntry *buddy = A_->GetBuddy (id);
-		A_->GetSBManager ()->SendFile (name, ++SessID_, buddy);
-		return new TransferJob (SessID_, name, buddy, CB_, A_);
-	}
+		Ui::FileSendDialog Ui_;
+		ICLEntry *Entry_;
+		const QString EntryVariant_;
+		bool AccSupportsFT_;
 
-	void TransferManager::handleSuggestion (MSN::fileTransferInvite fti)
-	{
-		TransferJob *job = new TransferJob (fti, CB_, A_);
-		emit fileOffered (job);
-	}
-}
+		struct SharerInfo
+		{
+			QObject *Sharer_;
+			QString Service_;
+		};
+		QMap<int, SharerInfo> Pos2Sharer_;
+	public:
+		FileSendDialog (ICLEntry*, const QString& = QString (), QWidget* = 0);
+	private:
+		void FillSharers ();
+		void SendSharer (const SharerInfo&);
+		void SendProto ();
+	private slots:
+		void send ();
+		void on_FileBrowse__released ();
+	};
 }
 }

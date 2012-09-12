@@ -26,6 +26,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 #include "biopropproxy.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -40,15 +41,26 @@ namespace LMP
 		Ui_.View_->rootContext ()->setContextObject (BioPropProxy_);
 		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/BioView.qml"));
 
+		const auto& lastProv = XmlSettingsManager::Instance ()
+				.Property ("LastUsedBioProvider", QString ()).toString ();
+
 		Providers_ = Core::Instance ().GetProxy ()->GetPluginsManager ()->
 				GetAllCastableTo<Media::IArtistBioFetcher*> ();
 		Q_FOREACH (auto provider, Providers_)
+		{
 			Ui_.Provider_->addItem (provider->GetServiceName ());
+			if (lastProv == provider->GetServiceName ())
+				Ui_.Provider_->setCurrentIndex (Ui_.Provider_->count () - 1);
+		}
 
 		connect (Ui_.Provider_,
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (requestBiography ()));
+		connect (Ui_.Provider_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (saveLastUsedProv ()));
 
 		connect (Ui_.View_->rootObject (),
 				SIGNAL (linkActivated (QString)),
@@ -63,6 +75,16 @@ namespace LMP
 
 		CurrentArtist_ = artist;
 		requestBiography ();
+	}
+
+	void BioWidget::saveLastUsedProv ()
+	{
+		const int idx = Ui_.Provider_->currentIndex ();
+		const auto& prov = idx >= 0 ?
+				Providers_.value (idx)->GetServiceName () :
+				QString ();
+
+		XmlSettingsManager::Instance ().setProperty ("LastUsedBioProvider", prov);
 	}
 
 	void BioWidget::requestBiography ()
@@ -83,7 +105,6 @@ namespace LMP
 		auto pending = qobject_cast<Media::IPendingArtistBio*> (sender ());
 		const auto& bio = pending->GetArtistBio ();
 		BioPropProxy_->SetBio (bio);
-		qDebug () << Q_FUNC_INFO << bio.BasicInfo_.Name_ << bio.BasicInfo_.LargeImage_;
 
 		emit gotArtistImage (bio.BasicInfo_.Name_, bio.BasicInfo_.LargeImage_);
 	}
