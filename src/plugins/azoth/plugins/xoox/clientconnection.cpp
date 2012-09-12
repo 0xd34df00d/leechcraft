@@ -1211,13 +1211,8 @@ namespace Xoox
 			}
 			HandleMessageForEntry (SelfContact_, msg, resource, this);
 		}
-		else
+		else if (msg.mucInvitationJid ().isEmpty ())
 		{
-			Q_FOREACH (const auto& extension, msg.extensions ())
-				if (extension.tagName () == "x" &&
-						extension.attribute ("xmlns") == "jabber:x:conference")
-					return;
-
 			qWarning () << Q_FUNC_INFO
 					<< "could not find source for"
 					<< msg.from ()
