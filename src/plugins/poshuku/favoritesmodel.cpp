@@ -25,6 +25,7 @@
 #include <util/defaulthookproxy.h>
 #include "filtermodel.h"
 #include "core.h"
+#include "editbookmarkdialog.h"
 
 namespace LeechCraft
 {
@@ -211,6 +212,22 @@ namespace Poshuku
 		}
 
 		return result;
+	}
+
+	void FavoritesModel::EditBookmark (const QModelIndex& source)
+	{
+		const auto& currentURL = source.sibling (source.row (),
+				FavoritesModel::ColumnURL).data ().toString ();
+
+		EditBookmarkDialog dia (source);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		setData (source.sibling (source.row (), FavoritesModel::ColumnTitle), dia.GetTitle ());
+		setData (source.sibling (source.row (), FavoritesModel::ColumnTags), dia.GetTags ());
+
+		if (currentURL != dia.GetURL ())
+			ChangeURL (source, dia.GetURL ());
 	}
 
 	void FavoritesModel::ChangeURL (const QModelIndex& index,

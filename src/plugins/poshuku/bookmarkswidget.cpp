@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "bookmarkswidget.h"
-#include <QInputDialog>
 #include <QMessageBox>
 #include <util/models/flattofoldersproxymodel.h>
 #include <interfaces/core/icoreproxy.h>
@@ -25,7 +24,6 @@
 #include "core.h"
 #include "favoritesdelegate.h"
 #include "favoritesmodel.h"
-#include "editbookmarkdialog.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -96,23 +94,7 @@ namespace Poshuku
 		if (!current.isValid ())
 			return;
 
-		const auto& source = FavoritesFilterModel_->mapToSource (current);
-
-		const auto& currentURL = source.sibling (source.row (),
-				FavoritesModel::ColumnURL).data ().toString ();
-
-		EditBookmarkDialog dia (source, this);
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		FavoritesModel *model = Core::Instance ().GetFavoritesModel ();
-		model->setData (source.sibling (source.row (), FavoritesModel::ColumnTitle),
-				dia.GetTitle ());
-		model->setData (source.sibling (source.row (), FavoritesModel::ColumnTags),
-				dia.GetTags ());
-
-		if (currentURL != dia.GetURL ())
-			Core::Instance ().GetFavoritesModel ()->ChangeURL (source, dia.GetURL ());
+		Core::Instance ().GetFavoritesModel ()->EditBookmark (FavoritesFilterModel_->mapToSource (current));
 	}
 
 	void BookmarksWidget::on_ActionDeleteBookmark__triggered ()

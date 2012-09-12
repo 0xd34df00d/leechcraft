@@ -70,6 +70,7 @@ namespace Poshuku
 		virtual bool setData (const QModelIndex&, const QVariant&,
 				int = Qt::EditRole);
 
+		void EditBookmark (const QModelIndex&);
 		void ChangeURL (const QModelIndex&, const QString&);
 		const items_t& GetItems () const;
 		void SetCheckResults (const QMap<QString, QString>&);
