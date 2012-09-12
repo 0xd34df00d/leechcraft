@@ -50,6 +50,10 @@ namespace GoogleDrive
 				SIGNAL (gotSharedFileId (const QString&)),
 				this,
 				SLOT (handleSharedFileId (const QString&)));
+		connect (DriveManager_,
+				SIGNAL (gotNewItem (DriveItem)),
+				this,
+				SLOT (handleGotNewItem (DriveItem)));
 	}
 
 	QObject* Account::GetObject ()
@@ -367,7 +371,8 @@ namespace GoogleDrive
 							rightItem [0]->data (ListingRole::Directory).toBool ())
 						return false;
 					else
-						return QString::localeAwareCompare (leftItem [0]->text (), rightItem [0]->text ()) < 0;
+						return QString::localeAwareCompare (leftItem [0]->text (),
+								rightItem [0]->text ()) < 0;
 				});
 
 		emit gotListing (QList<QList<QStandardItem*>> ());
@@ -379,6 +384,14 @@ namespace GoogleDrive
 		emit gotFileUrl (QUrl (QString ("https://drive.google.com/uc?export=&confirm=no_antivirus&id=%1")
 				.arg (id)), QStringList (id));
 	}
+
+	void Account::handleGotNewItem (const DriveItem& item)
+	{
+		QHash<QString, QList<QStandardItem*>> map;
+		auto row = CreateItem (map, item);
+		emit gotNewItem (row, QStringList (item.ParentId_));
+	}
+
 }
 }
 }

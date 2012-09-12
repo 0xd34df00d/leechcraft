@@ -385,6 +385,7 @@ namespace GoogleDrive
 
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
 				get (QNetworkRequest (str));
+		Reply2DownloadAccessToken_ [reply] = key;
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -393,12 +394,11 @@ namespace GoogleDrive
 
 	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url)
 	{
-		QUrl u = url;
-		u.removeQueryItem ("gd");
-
-		LeechCraft::Entity e = Util::MakeEntity (u,
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				get (QNetworkRequest (url));
+		LeechCraft::Entity e = Util::MakeEntity (QVariant::fromValue<QNetworkReply*> (reply),
 				filePath,
-				OnlyHandle | FromUserInitiated | AutoAccept);
+				OnlyDownload | FromUserInitiated);
 		Core::Instance ().SendEntity (e);
 	}
 
@@ -446,8 +446,7 @@ namespace GoogleDrive
 		reply->deleteLater ();
 
 		bool ok = false;
-		QByteArray ba = reply->readAll ();
-		QVariant res = QJson::Parser ().parse (ba, &ok);
+		QVariant res = QJson::Parser ().parse (reply->readAll (), &ok);
 
 		if (!ok)
 		{
@@ -841,7 +840,6 @@ namespace GoogleDrive
 					<< "directory created successfully";
 
 			emit gotNewItem (CreateDriveItem (res));
-			RefreshListing ();
 			return;
 		}
 
@@ -968,9 +966,13 @@ namespace GoogleDrive
 		}
 
 		const QVariantMap& map = res.toMap ();
+		QString access_token = Reply2DownloadAccessToken_.take (reply);
+
 		if (!map.contains ("error"))
 		{
 			DriveItem it = CreateDriveItem (res);
+			if (!access_token.isEmpty ())
+				it.DownloadUrl_.addQueryItem ("access_token", access_token);
 
 			if (!DownloadsQueue_.isEmpty ())
 				DownloadsQueue_.dequeue () (it.DownloadUrl_);
