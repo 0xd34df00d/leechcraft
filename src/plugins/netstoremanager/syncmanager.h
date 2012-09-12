@@ -18,12 +18,13 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <QVariant>
 #include <QStringList>
 #include <QFileSystemWatcher>
 #include <QPointer>
-#include <boost/graph/graph_concepts.hpp>
+#include <QQueue>
 
 class QTimer;
 class QThread;
@@ -50,11 +51,12 @@ namespace NetStoreManager
 		FilesWatcher *FilesWatcher_;
 
 		QMap<ISupportFileListings*, QMap<QString, QStringList>> Isfl2PathId_;
+		QQueue<std::function<void (void)>> ApiCallQueue_;
+
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
 
 		void Release ();
-	private:
 
 	public slots:
 		void handleDirectoryAdded (const QVariantMap& dirs);
@@ -71,6 +73,8 @@ namespace NetStoreManager
 		void handleFileWasUpdated (const QString& path);
 
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
+		void handleGotNewItem (const QList<QStandardItem*>& item,
+				const QStringList& parentId);
 	};
 }
 }

@@ -130,8 +130,14 @@ namespace NetStoreManager
 					SIGNAL (gotListing (QList<QList<QStandardItem*>>)),
 					this,
 					SLOT (handleGotListing (QList<QList<QStandardItem*>>)));
+			connect (isa->GetObject (),
+					SIGNAL (gotNewItem (QList<QStandardItem*>, QStringList)),
+					this,
+					SLOT (handleGotNewItem (QList<QStandardItem*>, QStringList)));
 			isfl->RefreshListing ();
 			Path2Account_ [dirPath] = isa;
+			qDebug () << "watching directory "
+					<< dirPath;
 // 			isfl->CheckForSyncUpload (pathes, dirPath);
 		}
 
@@ -220,13 +226,16 @@ namespace NetStoreManager
 			QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
 			auto map = Isfl2PathId_ [isfl];
 
-			QString parentDir = QFileInfo (path).dir ().path ();
 			QString remotePath = path;
 			remotePath.remove (0, rootDirPath.length ());
-			qDebug () << rootDirPath << path << map << remotePath << QFileInfo (remotePath).dir ().absolutePath ();
-			if (map.contains (QFileInfo (remotePath).dir ().absolutePath ()))
-				isfl->CreateDirectory (QFileInfo (path).fileName (),
-						map [QFileInfo (remotePath).dir ().absolutePath ()]);
+			const QString& parentPath = QFileInfo (remotePath).dir ().absolutePath ();
+			const QString& dirName = QFileInfo (path).fileName ();
+
+			if (map.contains (parentPath))
+				isfl->CreateDirectory (dirName, map [parentPath]);
+			else
+				ApiCallQueue_ << [this, path] ()
+					{ handleDirWasCreated (path); };
 		}
 	}
 
@@ -284,11 +293,13 @@ namespace NetStoreManager
 		}
 	}
 
-	void SyncManager::handleEntryWasRenamed (const QString& oldPath, const QString& newPath)
+	void SyncManager::handleEntryWasRenamed (const QString& oldPath,
+			const QString& newPath)
 	{
 	}
 
-	void SyncManager::handleEntryWasMoved (const QString& oldPath, const QString& newPath)
+	void SyncManager::handleEntryWasMoved (const QString& oldPath,
+			const QString& newPath)
 	{
 	}
 
@@ -323,8 +334,6 @@ namespace NetStoreManager
 		QString dirPath = Path2Account_.key (isa);
 		if (dirPath.isEmpty ())
 			return;
-		qDebug () << "watching directory "
-				<< dirPath;
 
 		QMap<QString, QStringList> map;
 
@@ -374,6 +383,32 @@ namespace NetStoreManager
 		QMetaObject::invokeMethod (FilesWatcher_,
 				"AddPathes",
 				Q_ARG (QStringList, pathes));
+	}
+
+	void SyncManager::handleGotNewItem (const QList<QStandardItem*>& item,
+			const QStringList& parentId)
+	{
+		if (!item [0]->data (ListingRole::Directory).toBool () ||
+				item [0]->data (ListingRole::InTrash).toBool ())
+			return;
+
+		auto isfl = qobject_cast<ISupportFileListings*> (sender ());
+		if (!isfl)
+			return;
+
+		auto map = Isfl2PathId_ [isfl];
+
+		if (map.values ().contains (parentId))
+		{
+			QString path = map.key (parentId);
+			map [path + "/" + item [0]->text ()] =
+					item [0]->data (ListingRole::ID).toStringList ();
+		}
+
+		Isfl2PathId_ [isfl] = map;
+
+		if (!ApiCallQueue_.isEmpty ())
+			ApiCallQueue_.dequeue() ();
 	}
 
 }
