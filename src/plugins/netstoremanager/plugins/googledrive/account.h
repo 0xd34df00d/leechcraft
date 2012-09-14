@@ -68,7 +68,7 @@ namespace GoogleDrive
 				const QStringList& parentId = QStringList ());
 		void Download (const QStringList& id, const QString& filepath);
 
-		void Delete (const QList<QStringList>& id);
+		void Delete (const QList<QStringList>& id, bool ask = true);
 		QStringList GetListingHeaders () const;
 		ListingOps GetListingOps () const;
 		void MoveToTrash (const QList<QStringList>& ids);

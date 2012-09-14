@@ -109,9 +109,15 @@ namespace GoogleDrive
 		DriveManager_->Download (id [0], filepath);
 	}
 
-	void Account::Delete (const QList<QStringList>& id)
+	void Account::Delete (const QList<QStringList>& id, bool ask)
 	{
 		const QString& itemId = id [0] [0];
+		if (!ask)
+		{
+			DriveManager_->RemoveEntry (itemId);
+			return;
+		}
+
 		auto res = QMessageBox::warning (Core::Instance ().GetProxy ()->GetMainWindow (),
 				tr ("Remove item"),
 				tr ("Are you sure you want to delete %1? This action cannot be undone."
