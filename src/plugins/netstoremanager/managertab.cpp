@@ -335,11 +335,19 @@ namespace NetStoreManager
 	void ManagerTab::handleGotNewItem (const QList<QStandardItem*>& item,
 			const QStringList& parentId)
 	{
-		QStandardItem *parentItem = GetItemFromId (parentId);
-		if (!parentItem)
-			Model_->appendRow (item);
+		QStandardItem *thisItem = GetItemFromId (item [0]->data (ListingRole::ID).toStringList ());
+		if (thisItem)
+		{
+			//try to update item
+		}
 		else
-			parentItem->appendRow (item);
+		{
+			QStandardItem *parentItem = GetItemFromId (parentId);
+			if (!parentItem)
+				Model_->appendRow (item);
+			else
+				parentItem->appendRow (item);
+		}
 	}
 
 	void ManagerTab::flCopyURL ()
