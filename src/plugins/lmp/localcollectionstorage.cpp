@@ -135,9 +135,9 @@ namespace LMP
 			{
 				album.CoverPath_ = FindAlbumArtPath (info.LocalPath_);
 				AddAlbum (artist, album);
-				artists [artist.ID_].Albums_ << Collection::Album_ptr (new Collection::Album (album));
 			}
 
+			artists [artist.ID_].Albums_ << Collection::Album_ptr (new Collection::Album (album));
 			Collection::Track track =
 			{
 				0,
