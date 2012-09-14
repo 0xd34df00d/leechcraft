@@ -353,10 +353,7 @@ namespace NetStoreManager
 			QString remotePath = oldPath, newRemotePath = newPath;
 			remotePath.remove (0, rootDirPath.length ());
 			newRemotePath.remove (0, rootDirPath.length ());
-			QStringList id = map.take (remotePath);
-			isfl->Rename (id, QFileInfo (newPath).fileName ());
-			map [newRemotePath] = id;
-			Isfl2PathId_ [isfl] = map;
+			isfl->Rename (map.take (remotePath), QFileInfo (newPath).fileName ());
 		}
 	}
 
@@ -451,14 +448,12 @@ namespace NetStoreManager
 		if (!isfl)
 			return;
 
-		if (!item [0]->data (ListingRole::Directory).toBool ())
-			return;
-
 		auto map = Isfl2PathId_ [isfl];
 
 		if (map.values ().contains (parentId))
 		{
 			QString path = map.key (parentId);
+			qDebug () << path + "/" + item [0]->text () << item [0]->data (ListingRole::ID).toStringList ();
 			map [path + "/" + item [0]->text ()] =
 					item [0]->data (ListingRole::ID).toStringList ();
 		}
