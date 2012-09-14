@@ -304,6 +304,7 @@ namespace Xoox
 		void setFileLogging (bool);
 		void handlePhotoHash ();
 		void handlePriorityChanged (int);
+		void updateFTSettings ();
 	private:
 		void InitializeQCA ();
 		void ScheduleFetchVCard (const QString&);

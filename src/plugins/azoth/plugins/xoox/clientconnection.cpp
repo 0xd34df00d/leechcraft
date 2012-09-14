@@ -347,6 +347,11 @@ namespace Xoox
 				SIGNAL (priorityChanged (int)),
 				this,
 				SLOT (handlePriorityChanged (int)));
+		connect (Settings_,
+				SIGNAL (fileTransferSettingsChanged ()),
+				this,
+				SLOT (updateFTSettings ()));
+		updateFTSettings ();
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -1541,6 +1546,13 @@ namespace Xoox
 		LastState_.Priority_ = prio;
 		if (LastState_.State_ != SOffline)
 			SetState (LastState_);
+	}
+
+	void ClientConnection::updateFTSettings ()
+	{
+		auto ft = GetTransferManager ();
+		ft->setSupportedMethods (Settings_->GetFTMethods ());
+		ft->setProxy (Settings_->GetUseSOCKS5Proxy () ? Settings_->GetSOCKS5Proxy () : QString ());
 	}
 
 	void ClientConnection::InitializeQCA ()
