@@ -475,6 +475,7 @@ namespace LMP
 		Path2Track_.remove (path);
 		Track2Path_.remove (id);
 		Track2Album_.remove (id);
+		PresentPaths_.remove (path);
 
 		if (!album)
 			return;
