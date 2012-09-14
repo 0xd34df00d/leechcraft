@@ -394,9 +394,7 @@ namespace GoogleDrive
 
 	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url)
 	{
-		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
-				get (QNetworkRequest (url));
-		LeechCraft::Entity e = Util::MakeEntity (QVariant::fromValue<QNetworkReply*> (reply),
+		LeechCraft::Entity e = Util::MakeEntity (url,
 				filePath,
 				OnlyDownload | FromUserInitiated);
 		Core::Instance ().SendEntity (e);
