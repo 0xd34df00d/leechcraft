@@ -427,11 +427,15 @@ namespace LMP
 		int trackCount = 0;
 		const bool shouldEmit = !Artists_.isEmpty ();
 
-		Artists_ += artists;
 		Q_FOREACH (const auto& artist, artists)
+		{
+			if (std::find_if (Artists_.begin (), Artists_.end (),
+						[&artist] (decltype (artist) present) { return present.ID_ == artist.ID_; }) == Artists_.end ())
+				Artists_ += artist;
 			Q_FOREACH (auto album, artist.Albums_)
 				Q_FOREACH (const auto& track, album->Tracks_)
 					PresentPaths_ << track.FilePath_;
+		}
 
 		Q_FOREACH (const auto& artist, artists)
 		{
