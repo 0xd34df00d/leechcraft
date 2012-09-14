@@ -39,7 +39,7 @@ namespace NetStoreManager
 	{
 		NoneOp = 0x00,
 		Delete = 0x01,
-		TrashSupporing = 0x02,
+		TrashSupporting = 0x02,
 		DirectorySupport = 0x04
 	};
 

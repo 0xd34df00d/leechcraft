@@ -301,7 +301,7 @@ namespace NetStoreManager
 		}
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
 		const bool trashSupporting = sfl &&
-				sfl->GetListingOps () & ListingOp::TrashSupporing;
+				sfl->GetListingOps () & ListingOp::TrashSupporting;
 
 		QStandardItem *trashItem = new QStandardItem (Proxy_->GetIcon ("user-trash"),
 				tr ("Trash"));
@@ -464,7 +464,7 @@ namespace NetStoreManager
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
 		DeleteFile_->setEnabled (sfl->GetListingOps () & ListingOp::Delete);
-		MoveToTrash_->setEnabled (sfl->GetListingOps () & ListingOp::TrashSupporing);
+		MoveToTrash_->setEnabled (sfl->GetListingOps () & ListingOp::TrashSupporting);
 	}
 
 	void ManagerTab::on_Update__released ()

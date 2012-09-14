@@ -139,7 +139,7 @@ namespace GoogleDrive
 
 	ListingOps Account::GetListingOps () const
 	{
-		return ListingOp::Delete | ListingOp::TrashSupporing | ListingOp::DirectorySupport;
+		return ListingOp::Delete | ListingOp::TrashSupporting | ListingOp::DirectorySupport;
 	}
 
 	void Account::MoveToTrash (const QList<QStringList>& ids)
