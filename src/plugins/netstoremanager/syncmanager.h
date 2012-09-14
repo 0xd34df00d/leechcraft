@@ -52,7 +52,7 @@ namespace NetStoreManager
 
 		QMap<ISupportFileListings*, QMap<QString, QStringList>> Isfl2PathId_;
 		QQueue<std::function<void (void)>> ApiCallQueue_;
-
+		QTimer *QueueCheckTimer_;
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
 
@@ -75,6 +75,12 @@ namespace NetStoreManager
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
 		void handleGotNewItem (const QList<QStandardItem*>& item,
 				const QStringList& parentId);
+
+		void checkApiCallQueue ();
+
+	signals:
+		void uploadRequested (IStorageAccount *account,
+				const QString& fileName, const QStringList& parentId);
 	};
 }
 }

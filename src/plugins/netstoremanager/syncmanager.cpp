@@ -40,11 +40,17 @@ namespace NetStoreManager
 	, Timer_ (new QTimer (this))
 	, Thread_ (new QThread (this))
 	, FilesWatcher_ (0)
+	, QueueCheckTimer_ (new QTimer (this))
 	{
 // 		connect (Timer_,
 // 				SIGNAL (timeout ()),
 // 				this,
 // 				SLOT (handleTimeout ()));
+
+		connect (QueueCheckTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (checkApiCallQueue ()));
 
 		XmlSettingsManager::Instance ().RegisterObject ("ExceptionsList",
 				this, "handleUpdateExceptionsList");
@@ -144,6 +150,7 @@ namespace NetStoreManager
 		// check for changes every minute
 // 		Timer_->start (60000);
 // 		handleTimeout ();
+		QueueCheckTimer_->start (1000);
 	}
 
 // 	void SyncManager::handleDirectoryChanged (const QString& path)
@@ -234,8 +241,7 @@ namespace NetStoreManager
 			if (map.contains (parentPath))
 				isfl->CreateDirectory (dirName, map [parentPath]);
 			else
-				ApiCallQueue_ << [this, path] ()
-					{ handleDirWasCreated (path); };
+				ApiCallQueue_ << [this, path] () { handleDirWasCreated (path); };
 		}
 	}
 
@@ -254,6 +260,17 @@ namespace NetStoreManager
 						<< "isn't an ISupportFileListings";
 				continue;
 			}
+
+			QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
+			auto map = Isfl2PathId_ [isfl];
+
+			QString remotePath = path;
+			remotePath.remove (0, rootDirPath.length ());
+			const QString& parentPath = QFileInfo (remotePath).dir ().absolutePath ();
+			if (map.contains (parentPath))
+				emit uploadRequested (Path2Account_ [basePath], path, map [parentPath]);
+			else
+				ApiCallQueue_ << [this, path] () { handleFileWasCreated (path); };
 		}
 	}
 
@@ -279,10 +296,9 @@ namespace NetStoreManager
 			QString remotePath = path;
 			remotePath.remove (0, rootDirPath.length ());
 
-			if (map.contains (remotePath))
+			isfl->GetListingOps () & TrashSupporting ?
+				isfl->MoveToTrash ({ map [remotePath] }) :
 				isfl->Delete ({ map [remotePath] }, false);
-			else
-				ApiCallQueue_ << [this, path] () { handleDirWasRemoved (path); };
 		}
 	}
 
@@ -301,36 +317,73 @@ namespace NetStoreManager
 						<< "isn't an ISupportFileListings";
 				continue;
 			}
+
+			QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
+			auto map = Isfl2PathId_ [isfl];
+
+			QString remotePath = path;
+			remotePath.remove (0, rootDirPath.length ());
+
+			isfl->GetListingOps () & TrashSupporting ?
+				isfl->MoveToTrash ({ map [remotePath] }) :
+				isfl->Delete ({ map [remotePath] }, false);
 		}
 	}
 
 	void SyncManager::handleEntryWasRenamed (const QString& oldPath,
 			const QString& newPath)
 	{
+		for (const auto& basePath : Path2Account_.keys ())
+		{
+			if (!oldPath.startsWith (basePath))
+				continue;
+
+			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+			if (!isfl)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< Path2Account_ [basePath]->GetObject ()
+						<< "isn't an ISupportFileListings";
+				continue;
+			}
+
+			QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
+			auto map = Isfl2PathId_ [isfl];
+
+			QString remotePath = oldPath, newRemotePath = newPath;
+			remotePath.remove (0, rootDirPath.length ());
+			newRemotePath.remove (0, rootDirPath.length ());
+			QStringList id = map.take (remotePath);
+			isfl->Rename (id, QFileInfo (newPath).fileName ());
+			map [newRemotePath] = id;
+			Isfl2PathId_ [isfl] = map;
+		}
 	}
 
 	void SyncManager::handleEntryWasMoved (const QString& oldPath,
 			const QString& newPath)
 	{
+		qDebug () << Q_FUNC_INFO << oldPath << newPath;
 	}
 
 	void SyncManager::handleFileWasUpdated (const QString& path)
 	{
-			for (const auto& basePath : Path2Account_.keys ())
-			{
-				if (!path.startsWith (basePath))
-					continue;
+		for (const auto& basePath : Path2Account_.keys ())
+		{
+			if (!path.startsWith (basePath))
+				continue;
 
-				auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
-				if (!isfl)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< Path2Account_ [basePath]->GetObject ()
-							<< "isn't an ISupportFileListings";
-					continue;
-				}
+			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+			if (!isfl)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< Path2Account_ [basePath]->GetObject ()
+						<< "isn't an ISupportFileListings";
+				continue;
 			}
 		}
+		qDebug () << Q_FUNC_INFO << path;
+	}
 
 	void SyncManager::handleGotListing (const QList<QList<QStandardItem*>>& items)
 	{
@@ -358,11 +411,6 @@ namespace NetStoreManager
 		{
 			for (auto parentItem : parents)
 			{
-				if (parentItem->data (ListingRole::ID) == "netstoremanager.item_trash" ||
-						parentItem->data (ListingRole::InTrash).toBool () ||
-						!parentItem->data (ListingRole::Directory).toBool ())
-					continue;
-
 				QString path = parentItem->parent () ?
 					map.key (parentItem->parent ()->data (ListingRole::ID).toStringList ()):
 					QString ();
@@ -399,12 +447,11 @@ namespace NetStoreManager
 	void SyncManager::handleGotNewItem (const QList<QStandardItem*>& item,
 			const QStringList& parentId)
 	{
-		if (!item [0]->data (ListingRole::Directory).toBool () ||
-				item [0]->data (ListingRole::InTrash).toBool ())
-			return;
-
 		auto isfl = qobject_cast<ISupportFileListings*> (sender ());
 		if (!isfl)
+			return;
+
+		if (!item [0]->data (ListingRole::Directory).toBool ())
 			return;
 
 		auto map = Isfl2PathId_ [isfl];
@@ -417,7 +464,10 @@ namespace NetStoreManager
 		}
 
 		Isfl2PathId_ [isfl] = map;
+	}
 
+	void SyncManager::checkApiCallQueue ()
+	{
 		if (!ApiCallQueue_.isEmpty ())
 			ApiCallQueue_.dequeue() ();
 	}
