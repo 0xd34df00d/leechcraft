@@ -340,22 +340,12 @@ namespace LMP
 
 	void Player::ReplaceQueue (const QList<Phonon::MediaSource>& queue, bool sort)
 	{
-		auto vals = Items_.values ();
-		auto curSrcPos = std::find_if (vals.begin (), vals.end (),
-				[] (decltype (vals.front ()) item) { return item->data (Role::IsCurrent).toBool (); });
-		const auto& currentSource = curSrcPos != vals.end () ?
-				(*curSrcPos)->data (Role::Source).value<Phonon::MediaSource> () :
-				Phonon::MediaSource ();
-
 		PlaylistModel_->clear ();
 		Items_.clear ();
 		AlbumRoots_.clear ();
 		CurrentQueue_.clear ();
 
 		AddToPlaylistModel (queue, sort);
-
-		if (Items_.contains (currentSource))
-			Items_ [currentSource]->setData (true, Role::IsCurrent);
 	}
 
 	QList<Phonon::MediaSource> Player::GetQueue () const
@@ -942,6 +932,10 @@ namespace LMP
 
 		Core::Instance ().GetPlaylistManager ()->
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+
+		const auto& currentSource = Source_->currentSource ();
+		if (Items_.contains (currentSource))
+			Items_ [currentSource]->setData (true, Role::IsCurrent);
 	}
 
 	void Player::restorePlaylist ()

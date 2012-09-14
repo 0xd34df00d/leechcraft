@@ -24,6 +24,7 @@
 #include "exceptions.h"
 #include "message.h"
 #include "typingmanager.h"
+#include "../vaderutil.h"
 
 namespace LeechCraft
 {
@@ -205,10 +206,9 @@ namespace Proto
 		}
 		else if (status.State_ != SOffline)
 		{
-			const quint32 state = PendingStatus_.State_ == SOnline ?
-				UserState::Online :
-				UserState::Away;
-			Write (PF_.SetStatus (state, status.StatusString_).Packet_);
+			Write (PF_.SetStatus (VaderUtil::State2StatusID (status.State_),
+						status.StatusString_).Packet_);
+			emit statusChanged (status);
 		}
 	}
 

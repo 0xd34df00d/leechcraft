@@ -126,6 +126,8 @@ namespace LMP
 		void loadFromCollection ();
 		void handleCollectionItemSelected (const QModelIndex&);
 
+		void handlePlayerAvailable (bool);
+
 		void closeLMP ();
 		void handleStateChanged (Phonon::State newState, Phonon::State oldState);
 		void handleShowTrayIcon ();

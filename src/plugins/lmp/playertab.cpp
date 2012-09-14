@@ -121,7 +121,7 @@ namespace LMP
 		connect (Player_,
 				SIGNAL (playerAvailable (bool)),
 				this,
-				SLOT (setEnabled (bool)));
+				SLOT (handlePlayerAvailable (bool)));
 		connect (Player_,
 				SIGNAL (songChanged (MediaInfo)),
 				this,
@@ -805,6 +805,15 @@ namespace LMP
 	{
 		const int nodeType = index.data (LocalCollection::Role::Node).value<int> ();
 		CollectionShowTrackProps_->setEnabled (nodeType == LocalCollection::NodeType::Track);
+	}
+
+	void PlayerTab::handlePlayerAvailable (bool available)
+	{
+		TabToolbar_->setEnabled (available);
+		Ui_.Playlist_->setEnabled (available);
+		Ui_.PlaylistsTab_->setEnabled (available);
+		Ui_.CollectionTab_->setEnabled (available);
+		Ui_.RadioTab_->setEnabled (available);
 	}
 
 	void PlayerTab::closeLMP ()

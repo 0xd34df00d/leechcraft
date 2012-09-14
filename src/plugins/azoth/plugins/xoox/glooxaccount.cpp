@@ -79,12 +79,6 @@ namespace Xoox
 		AccState_.State_ = SOffline;
 		AccState_.Priority_ = -1;
 
-		connect (this,
-				SIGNAL (scheduleClientDestruction ()),
-				this,
-				SLOT (handleDestroyClient ()),
-				Qt::QueuedConnection);
-
 		SelfVCardAction_->setProperty ("ActionIcon", "text-x-vcard");
 		PrivacyDialogAction_->setProperty ("ActionIcon", "emblem-locked");
 
@@ -916,11 +910,6 @@ namespace Xoox
 		PrivacyListsManager *mgr = ClientConnection_->GetPrivacyListsManager ();
 		PrivacyListsConfigDialog *plcd = new PrivacyListsConfigDialog (mgr);
 		plcd->show ();
-	}
-
-	void GlooxAccount::handleDestroyClient ()
-	{
-		ClientConnection_.reset ();
 	}
 
 #ifdef ENABLE_MEDIACALLS
