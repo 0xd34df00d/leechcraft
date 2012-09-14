@@ -338,7 +338,13 @@ namespace NetStoreManager
 		QStandardItem *thisItem = GetItemFromId (item [0]->data (ListingRole::ID).toStringList ());
 		if (thisItem)
 		{
-			//try to update item
+			QModelIndex index = Model_->indexFromItem (thisItem);
+			int columnCount = index.parent ().isValid () ?
+				thisItem->parent ()->columnCount () :
+				Model_->columnCount ();
+
+			for (int i = 0; i < columnCount; ++i)
+				Model_->setData (index.sibling (index.row (), i), item.value (i)->text ());
 		}
 		else
 		{
