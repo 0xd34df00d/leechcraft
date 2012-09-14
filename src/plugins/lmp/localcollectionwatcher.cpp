@@ -22,6 +22,7 @@
 #include <QFileSystemWatcher>
 #include <QtDebug>
 #include <QDir>
+#include <QTimer>
 #include "core.h"
 #include "localcollection.h"
 #include "util.h"
@@ -33,6 +34,7 @@ namespace LMP
 	LocalCollectionWatcher::LocalCollectionWatcher (QObject *parent)
 	: QObject (parent)
 	, Watcher_ (new QFileSystemWatcher (this))
+	, ScanScheduled_ (false)
 	{
 		connect (Watcher_,
 				SIGNAL (directoryChanged (QString)),
@@ -73,6 +75,21 @@ namespace LMP
 		Watcher_->removePaths (Dir2Subdirs_ [path]);
 	}
 
+	void LocalCollectionWatcher::ScheduleDir (const QString& dir)
+	{
+		if (ScheduledDirs_.contains (dir))
+			return;
+
+		ScheduledDirs_ << dir;
+		if (ScanScheduled_)
+			return;
+
+		QTimer::singleShot (1000,
+				this,
+				SLOT (rescanQueue ()));
+		ScanScheduled_ = true;
+	}
+
 	void LocalCollectionWatcher::handleSubdirsCollected ()
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<QStringList>*> (sender ());
@@ -89,7 +106,16 @@ namespace LMP
 
 	void LocalCollectionWatcher::handleDirectoryChanged (const QString& path)
 	{
-		Core::Instance ().GetLocalCollection ()->Scan (path, false);
+		ScheduleDir (path);
+	}
+
+	void LocalCollectionWatcher::rescanQueue ()
+	{
+		Q_FOREACH (const auto& path, ScheduledDirs_)
+			Core::Instance ().GetLocalCollection ()->Scan (path, false);
+
+		ScheduledDirs_.clear ();
+		ScanScheduled_ = false;
 	}
 }
 }
