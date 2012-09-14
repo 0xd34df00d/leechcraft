@@ -63,6 +63,7 @@ namespace NetStoreManager
 		virtual void CreateDirectory (const QString& name, const QStringList& parentId) = 0;
 		virtual void Copy (const QStringList& id, const QStringList& newParentId) = 0;
 		virtual void Move (const QStringList& id, const QStringList& newParentId) = 0;
+		virtual void Rename (const QStringList& id, const QString& newName) = 0;
 
 		virtual void RequestFileChanges () = 0;
 		virtual void CheckForSyncUpload (const QStringList& pathes, const QString& baseDir) = 0;
