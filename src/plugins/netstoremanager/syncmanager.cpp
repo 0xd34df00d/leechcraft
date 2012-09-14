@@ -272,6 +272,17 @@ namespace NetStoreManager
 						<< "isn't an ISupportFileListings";
 				continue;
 			}
+
+			QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
+			auto map = Isfl2PathId_ [isfl];
+
+			QString remotePath = path;
+			remotePath.remove (0, rootDirPath.length ());
+
+			if (map.contains (remotePath))
+				isfl->Delete ({ map [remotePath] }, false);
+			else
+				ApiCallQueue_ << [this, path] () { handleDirWasRemoved (path); };
 		}
 	}
 
