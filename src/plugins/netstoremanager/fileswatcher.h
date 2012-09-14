@@ -47,7 +47,7 @@ namespace NetStoreManager
 	public:
 		FilesWatcher (QObject *parent = 0);
 
-		Q_INVOKABLE bool AddPath (QString path, bool baseDir = false);
+		Q_INVOKABLE bool AddPath (QString path);
 		Q_INVOKABLE void AddPathes (QStringList pathes);
 
 		Q_INVOKABLE void Release ();

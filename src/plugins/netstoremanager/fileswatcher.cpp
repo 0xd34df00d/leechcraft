@@ -48,11 +48,8 @@ namespace LeechCraft
 					SLOT (checkNotifications ()));
 		}
 
-		bool FilesWatcher::AddPath (QString path, bool baseDir)
+		bool FilesWatcher::AddPath (QString path)
 		{
-			if (WatchedPathes2Descriptors_.left.count (path))
-				return true;
-
 			int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
 			WatchedPathes2Descriptors_.insert (descriptorsMap::value_type (path, fd));
 
@@ -201,6 +198,13 @@ namespace LeechCraft
 
 				emit dirWasCreated (p);
 			}
+
+			pathes = Utils::ScanDir (QDir::AllEntries | QDir::NoDotAndDotDot,
+					path,
+					true);
+			for (const auto& p : pathes)
+				if (!QFileInfo (p).isDir ())
+					emit fileWasCreated (p);
 		}
 
 		bool FilesWatcher::IsInExceptionList (const QString& path)
