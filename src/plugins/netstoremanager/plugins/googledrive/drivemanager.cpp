@@ -115,6 +115,12 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
+	void DriveManager::Rename (const QString& id, const QString& newName)
+	{
+		ApiCallQueue_ << [this, id, newName] (const QString& key) { RequestRenameItem (id, newName, key); };
+		RequestAccessToken ();
+	}
+
 	void DriveManager::RequestFileChanges (qlonglong startId)
 	{
 		ApiCallQueue_ << [this, startId] (const QString& key) { GetFileChanges (startId, key); };
@@ -390,6 +396,25 @@ namespace GoogleDrive
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleGetFileInfo ()));
+	}
+
+	void DriveManager::RequestRenameItem (const QString& id, const QString& name, const QString& key)
+	{
+		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1?access_token=%2")
+				.arg (id)
+				.arg (key);
+
+		QNetworkRequest request (str);
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
+		QVariantMap data;
+		data ["title"] = name;
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				put (request, QJson::Serializer ().serialize (data));
+		Reply2DownloadAccessToken_ [reply] = key;
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleItemRenamed ()));
 	}
 
 	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url)
@@ -974,6 +999,38 @@ namespace GoogleDrive
 
 			if (!DownloadsQueue_.isEmpty ())
 				DownloadsQueue_.dequeue () (it.DownloadUrl_);
+			return;
+		}
+
+		ParseError (map);
+	}
+
+	void DriveManager::handleItemRenamed ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		bool ok = false;
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+
+		const QVariantMap& map = res.toMap ();
+
+		if (!map.contains ("error"))
+		{
+			DriveItem it = CreateDriveItem (res);
+			qDebug () << Q_FUNC_INFO
+					<< "entry renamed successfully";
+			emit gotNewItem (it);
+
 			return;
 		}
 

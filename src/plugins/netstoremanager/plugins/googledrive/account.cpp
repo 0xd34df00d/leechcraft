@@ -165,6 +165,9 @@ namespace GoogleDrive
 
 	void Account::RequestUrl (const QList<QStringList>& id)
 	{
+		if (id.isEmpty ())
+			return;
+
 		if (!XmlSettingsManager::Instance ().property ("AutoShareOnUrlRequest").toBool ())
 		{
 			QMessageBox mbox (QMessageBox::Question,
@@ -188,17 +191,30 @@ namespace GoogleDrive
 
 	void Account::CreateDirectory (const QString& name, const QStringList& parentId)
 	{
+		if (name.isEmpty ())
+			return;
 		DriveManager_->CreateDirectory (name, parentId.value (0));
 	}
 
 	void Account::Copy (const QStringList& id, const QStringList& newParentId)
 	{
+		if (id.isEmpty ())
+			return;
 		DriveManager_->Copy (id [0], newParentId.value (0));
 	}
 
 	void Account::Move (const QStringList& id, const QStringList& newParentId)
 	{
+		if (id.isEmpty ())
+			return;
 		DriveManager_->Move (id [0], newParentId.value (0));
+	}
+
+	void Account::Rename (const QStringList& id, const QString& newName)
+	{
+		if (id.isEmpty ())
+			return;
+		DriveManager_->Rename (id [0], newName);
 	}
 
 	void Account::RequestFileChanges ()
