@@ -55,7 +55,7 @@ namespace NetStoreManager
 		virtual void RefreshListing () = 0;
 		virtual QStringList GetListingHeaders () const = 0;
 
-		virtual void Delete (const QList<QStringList>& id) = 0;
+		virtual void Delete (const QList<QStringList>& id, bool ask = true) = 0;
 		virtual void MoveToTrash (const QList<QStringList>& id) = 0;
 		virtual void RestoreFromTrash (const QList<QStringList>& id) = 0;
 		virtual void EmptyTrash (const QList<QStringList>& id) = 0;
