@@ -39,6 +39,8 @@ namespace Xoox
 	, KAParams_ (qMakePair (90, 60))
 	, FileLogEnabled_ (false)
 	, Priority_ (5)
+	, FTMethods_ (QXmppTransferJob::AnyMethod)
+	, UseSOCKS5Proxy_ (false)
 	{
 		connect (this,
 				SIGNAL (jidChanged (QString)),
@@ -68,7 +70,11 @@ namespace Xoox
 			<< Port_
 			<< KAParams_
 			<< OurPhotoHash_
-			<< FileLogEnabled_;
+			<< FileLogEnabled_
+			<< (FTMethods_ & QXmppTransferJob::InBandMethod)
+			<< (FTMethods_ & QXmppTransferJob::SocksMethod)
+			<< UseSOCKS5Proxy_
+			<< SOCKS5Proxy_;
 	}
 
 	void AccountSettingsHolder::Deserialize (QDataStream& in, quint16 version)
@@ -86,6 +92,20 @@ namespace Xoox
 			in >> OurPhotoHash_;
 		if (version >= 5)
 			in >> FileLogEnabled_;
+		if (version >= 6)
+		{
+			bool useIBB = true, useSocks = true;
+			in >> useIBB
+				>> useSocks
+				>> UseSOCKS5Proxy_
+				>> SOCKS5Proxy_;
+
+			FTMethods_ = QXmppTransferJob::NoMethod;
+			if (useIBB)
+				FTMethods_ |= QXmppTransferJob::InBandMethod;
+			if (useSocks)
+				FTMethods_ |= QXmppTransferJob::SocksMethod;
+		}
 	}
 
 	void AccountSettingsHolder::OpenConfigDialog ()
@@ -108,6 +128,10 @@ namespace Xoox
 
 		dia->W ()->SetFileLogEnabled (FileLogEnabled_);
 
+		dia->W ()->SetFTMethods (GetFTMethods ());
+		dia->W ()->SetUseSOCKS5Proxy (GetUseSOCKS5Proxy ());
+		dia->W ()->SetSOCKS5Proxy (GetSOCKS5Proxy ());
+
 		if (dia->exec () == QDialog::Rejected)
 			return;
 
@@ -123,6 +147,9 @@ namespace Xoox
 		SetHost (w->GetHost ());
 		SetPort (w->GetPort ());
 		SetFileLogEnabled (w->GetFileLogEnabled ());
+		SetFTMethods (w->GetFTMethods ());
+		SetUseSOCKS5Proxy (w->GetUseSOCKS5Proxy ());
+		SetSOCKS5Proxy (w->GetSOCKS5Proxy ());
 
 		const QString& pass = w->GetPassword ();
 		if (!pass.isNull ())
@@ -263,6 +290,48 @@ namespace Xoox
 
 		Priority_ = prio;
 		emit priorityChanged (Priority_);
+	}
+
+	QXmppTransferJob::Methods AccountSettingsHolder::GetFTMethods () const
+	{
+		return FTMethods_;
+	}
+
+	void AccountSettingsHolder::SetFTMethods (QXmppTransferJob::Methods methods)
+	{
+		if (methods == FTMethods_)
+			return;
+
+		FTMethods_ = methods;
+		emit fileTransferSettingsChanged ();
+	}
+
+	bool AccountSettingsHolder::GetUseSOCKS5Proxy () const
+	{
+		return UseSOCKS5Proxy_;
+	}
+
+	void AccountSettingsHolder::SetUseSOCKS5Proxy (bool use)
+	{
+		if (use == UseSOCKS5Proxy_)
+			return;
+
+		UseSOCKS5Proxy_ = use;
+		emit fileTransferSettingsChanged ();
+	}
+
+	QString AccountSettingsHolder::GetSOCKS5Proxy () const
+	{
+		return SOCKS5Proxy_;
+	}
+
+	void AccountSettingsHolder::SetSOCKS5Proxy (const QString& proxy)
+	{
+		if (proxy == SOCKS5Proxy_)
+			return;
+
+		SOCKS5Proxy_ = proxy;
+		emit fileTransferSettingsChanged ();
 	}
 
 	void AccountSettingsHolder::scheduleReconnect ()

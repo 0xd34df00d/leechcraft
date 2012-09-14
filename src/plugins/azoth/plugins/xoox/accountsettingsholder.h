@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QString>
 #include <QPair>
+#include <QXmppTransferManager.h>
 
 namespace LeechCraft
 {
@@ -51,6 +52,10 @@ namespace Xoox
 		bool FileLogEnabled_;
 
 		int Priority_;
+
+		QXmppTransferJob::Methods FTMethods_;
+		bool UseSOCKS5Proxy_;
+		QString SOCKS5Proxy_;
 	public:
 		AccountSettingsHolder (GlooxAccount* = 0);
 
@@ -88,6 +93,15 @@ namespace Xoox
 
 		int GetPriority () const;
 		void SetPriority (int);
+
+		QXmppTransferJob::Methods GetFTMethods () const;
+		void SetFTMethods (QXmppTransferJob::Methods);
+
+		bool GetUseSOCKS5Proxy () const;
+		void SetUseSOCKS5Proxy (bool);
+
+		QString GetSOCKS5Proxy () const;
+		void SetSOCKS5Proxy (const QString&);
 	private slots:
 		void scheduleReconnect ();
 		void handleReconnect ();
@@ -101,6 +115,8 @@ namespace Xoox
 		void kaParamsChanged (const QPair<int, int>&);
 		void fileLogChanged (bool);
 		void priorityChanged (int);
+
+		void fileTransferSettingsChanged ();
 
 		void accountSettingsChanged ();
 	};
