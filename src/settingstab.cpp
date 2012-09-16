@@ -390,6 +390,19 @@ namespace LeechCraft
 			}
 
 			toolButton->setEnabled (foundMatching);
+
+			Q_FOREACH (auto item, Item2Page_.keys ())
+			{
+				const auto& page = Item2Page_ [item];
+				const bool enabled = !Obj2SearchMatchingPages_.contains (page.first) ||
+						Obj2SearchMatchingPages_ [page.first].contains (page.second);
+				auto flags = item->flags ();
+				if (enabled)
+					flags |= Qt::ItemIsEnabled;
+				else
+					flags &= ~Qt::ItemIsEnabled;
+				item->setFlags (flags);
+			}
 		}
 	}
 
