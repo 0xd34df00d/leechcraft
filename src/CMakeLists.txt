@@ -209,8 +209,6 @@ FUNCTION (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
 	IF (_pnameLength)
 		SET (_basename "${_basename}_${PlugName}")
 	ENDIF (_pnameLength)
-	MESSAGE (STATUS "SOURCES!!!!!!!!!!!!!!!!!!!!!!!!! ${Sources}")
-	MESSAGE (STATUS "FORMS!!!!!!!!!!!!!!!!!!!!!!!!! ${Forms}")
 	IF (_xmlLength)
 		FOREACH (_LANG ${Langs})
 			ADD_CUSTOM_TARGET (${_basename}_ts_${_LANG}
