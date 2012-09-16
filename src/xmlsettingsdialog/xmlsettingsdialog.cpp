@@ -192,10 +192,7 @@ namespace Util
 					tab->setTabEnabled (i, true);
 
 			Q_FOREACH (auto child, widget->findChildren<QWidget*> () << widget)
-			{
-				qDebug () << "enabling" << child;
 				child->setEnabled (true);
-			}
 		}
 
 		bool HighlightWidget (QWidget *widget, const QString& query, ItemHandlerFactory *factory)
