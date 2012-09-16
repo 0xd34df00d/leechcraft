@@ -24,12 +24,14 @@
 #include <QToolButton>
 #include <QLineEdit>
 #include "util/gui/flowlayout.h"
+#include "util/gui/clearlineeditaddon.h"
 #include "xmlsettingsdialog/xmlsettingsdialog.h"
 #include "interfaces/ihavesettings.h"
 #include "interfaces/iplugin2.h"
 #include "interfaces/ipluginready.h"
 #include "core.h"
 #include "coreinstanceobject.h"
+#include "coreproxy.h"
 
 namespace LeechCraft
 {
@@ -42,8 +44,6 @@ namespace LeechCraft
 	, ActionApply_ (new QAction (tr ("Apply"), this))
 	, ActionCancel_ (new QAction (tr ("Cancel"), this))
 	{
-		AddSearchBox ();
-
 		Ui_.setupUi (this);
 		Ui_.ListContents_->setLayout (new QVBoxLayout);
 		Ui_.DialogContents_->setLayout (new QVBoxLayout);
@@ -65,6 +65,10 @@ namespace LeechCraft
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleCancel ()));
+
+		QTimer::singleShot (1000,
+				this,
+				SLOT (addSearchBox ()));
 	}
 
 	namespace
@@ -308,7 +312,7 @@ namespace LeechCraft
 			FillPages (sub, true);
 	}
 
-	void SettingsTab::AddSearchBox ()
+	void SettingsTab::addSearchBox ()
 	{
 		auto widget = new QWidget ();
 		auto lay = new QHBoxLayout;
@@ -321,6 +325,7 @@ namespace LeechCraft
 		box->setText (LastSearch_);
 		lay->addStretch ();
 		lay->addWidget (box, 0, Qt::AlignRight);
+		new Util::ClearLineEditAddon (ICoreProxy_ptr (new CoreProxy ()), box);
 
 		Toolbar_->addWidget (widget);
 
@@ -351,7 +356,7 @@ namespace LeechCraft
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (ActionApply_);
 		Toolbar_->addAction (ActionCancel_);
-		AddSearchBox ();
+		addSearchBox ();
 
 		const int width = Ui_.Cats_->viewport ()->width ();
 		auto gridSize = Ui_.Cats_->gridSize ();
@@ -406,7 +411,7 @@ namespace LeechCraft
 	void SettingsTab::handleBackRequested ()
 	{
 		Toolbar_->clear ();
-		AddSearchBox ();
+		addSearchBox ();
 		Ui_.StackedWidget_->setCurrentIndex (0);
 
 		Ui_.Cats_->clear ();

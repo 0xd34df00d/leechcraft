@@ -55,10 +55,10 @@ namespace LeechCraft
 		QToolBar* GetToolBar () const;
 	private:
 		void FillPages (QObject*, bool);
-		void AddSearchBox ();
 	public slots:
 		void showSettingsFor (QObject*);
 	private slots:
+		void addSearchBox ();
 		void handleSearch (const QString&);
 		void handleSettingsCalled ();
 		void handleBackRequested ();
