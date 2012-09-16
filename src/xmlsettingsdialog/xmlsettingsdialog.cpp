@@ -185,6 +185,20 @@ namespace Util
 
 	namespace
 	{
+		QList<QWidget*> FindDirectChildren (QWidget *widget)
+		{
+			auto result = widget->findChildren<QWidget*> ();
+			for (auto i = result.begin (); i != result.end (); )
+			{
+				const auto& sub = *i;
+				if (sub->parentWidget () && sub->parentWidget () != widget)
+					i = result.erase (i);
+				else
+					++i;
+			}
+			return result;
+		}
+
 		void EnableChildren (QWidget *widget)
 		{
 			Q_FOREACH (auto tab, widget->findChildren<QTabWidget*> ())
@@ -198,6 +212,8 @@ namespace Util
 		bool HighlightWidget (QWidget *widget, const QString& query, ItemHandlerFactory *factory)
 		{
 			bool result = false;
+
+			auto allChildren = FindDirectChildren (widget);
 
 			const auto& terms = widget->property ("SearchTerms").toStringList ();
 			if (!terms.isEmpty ())
@@ -215,7 +231,6 @@ namespace Util
 				}
 			}
 
-			auto allChildren = widget->findChildren<QWidget*> ();
 			Q_FOREACH (auto tab, widget->findChildren<QTabWidget*> ())
 				for (int i = 0; i < tab->count (); ++i)
 				{
@@ -230,7 +245,10 @@ namespace Util
 						allChildren.removeAll (tabChild);
 
 					if (tabMatches)
+					{
+						tab->setEnabled (true);
 						result = true;
+					}
 				}
 
 			Q_FOREACH (auto child, allChildren)
