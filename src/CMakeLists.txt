@@ -209,18 +209,20 @@ FUNCTION (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
 	IF (_pnameLength)
 		SET (_basename "${_basename}_${PlugName}")
 	ENDIF (_pnameLength)
+	MESSAGE (STATUS "SOURCES!!!!!!!!!!!!!!!!!!!!!!!!! ${Sources}")
+	MESSAGE (STATUS "FORMS!!!!!!!!!!!!!!!!!!!!!!!!! ${Forms}")
 	IF (_xmlLength)
 		FOREACH (_LANG ${Langs})
 			ADD_CUSTOM_TARGET (${_basename}_ts_${_LANG}
 					${GENCPP_XML_PATH} ${Xml}
-					COMMAND ${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "dummy.cpp" "-ts" "leechcraft_lmp_${_LANG}.ts"
+					COMMAND ${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "dummy.cpp" "-ts" "${_basename}_${_LANG}.ts"
 					COMMAND "rm" "-f" "dummy.cpp"
 					WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
 		ENDFOREACH (_LANG)
 	ELSE (_xmlLength)
 		FOREACH (_LANG ${Langs})
 			ADD_CUSTOM_TARGET (${_basename}_ts_${_LANG}
-					${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "-ts" "leechcraft_lmp_${_LANG}.ts"
+					${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "-ts" "${_basename}_${_LANG}.ts"
 					WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
 		ENDFOREACH (_LANG)
 	ENDIF (_xmlLength)
@@ -596,6 +598,7 @@ SOURCE_GROUP ("core\\forms" FILES ${FORMS})
 SOURCE_GROUP ("core\\resources" FILES ${RESOURCES})
 
 CreateTrs ("" "ru_RU;de;uk_UA;it;ar;eo;es;tr;tt;en;be;fr;pl" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("" "en;ru_RU" "${SRCS};${UTIL_SRCS};${XSD_SRCS}" "${FORMS};${UTIL_FORMS};${XSD_FORMS}" "coresettings.xml")
 
 ADD_DEFINITIONS (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
 ADD_DEFINITIONS (${QT_DEFINITIONS})
