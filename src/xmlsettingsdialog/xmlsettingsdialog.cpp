@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <QUrl>
 #include <QScrollArea>
+#include <QComboBox>
 #include <QDomNodeList>
 #include <QtScript>
 #include <util/util.h>
@@ -180,6 +181,98 @@ namespace Util
 
 		UpdateXml ();
 		HandlersManager_->ClearNewValues ();
+	}
+
+	namespace
+	{
+		void EnableChildren (QWidget *widget)
+		{
+			Q_FOREACH (auto tab, widget->findChildren<QTabWidget*> ())
+				for (int i = 0; i < tab->count (); ++i)
+					tab->setTabEnabled (i, true);
+
+			Q_FOREACH (auto child, widget->findChildren<QWidget*> () << widget)
+			{
+				qDebug () << "enabling" << child;
+				child->setEnabled (true);
+			}
+		}
+
+		bool HighlightWidget (QWidget *widget, const QString& query, ItemHandlerFactory *factory)
+		{
+			bool result = false;
+
+			const auto& terms = widget->property ("SearchTerms").toStringList ();
+			if (!terms.isEmpty ())
+			{
+				Q_FOREACH (const auto& term, terms)
+					if (term.contains (query, Qt::CaseInsensitive))
+					{
+						result = true;
+						break;
+					}
+				if (result)
+				{
+					EnableChildren (widget);
+					return true;
+				}
+			}
+
+			auto allChildren = widget->findChildren<QWidget*> ();
+			Q_FOREACH (auto tab, widget->findChildren<QTabWidget*> ())
+				for (int i = 0; i < tab->count (); ++i)
+				{
+					const bool tabTextMatches = tab->tabText (i).contains (query, Qt::CaseInsensitive);
+					const bool tabMatches = tabTextMatches ||
+							HighlightWidget (tab->widget (i), query, factory);
+					tab->setTabEnabled (i, tabMatches);
+					if (tabTextMatches)
+						EnableChildren (tab->widget (i));
+
+					Q_FOREACH (auto tabChild, tab->findChildren<QWidget*> ())
+						allChildren.removeAll (tabChild);
+
+					if (tabMatches)
+						result = true;
+				}
+
+			Q_FOREACH (auto child, allChildren)
+				if (HighlightWidget (child, query, factory))
+					result = true;
+
+			widget->setEnabled (result);
+
+			return result;
+		}
+	}
+
+	QList<int> XmlSettingsDialog::HighlightMatches (const QString& query)
+	{
+		QList<int> result;
+		if (query.isEmpty ())
+		{
+			for (int i = 0; i < Pages_->count (); ++i)
+			{
+				EnableChildren (Pages_->widget (i));
+				result << i;
+			}
+			return result;
+		}
+
+		for (int i = 0; i < Pages_->count (); ++i)
+		{
+			if (Titles_.at (i).contains (query, Qt::CaseInsensitive))
+			{
+				EnableChildren (Pages_->widget (i));
+				result << i;
+				continue;
+			}
+
+			if (HighlightWidget (Pages_->widget (i), query, HandlersManager_))
+				result << i;
+		}
+
+		return result;
 	}
 
 	void XmlSettingsDialog::SetCustomWidget (const QString& name, QWidget *widget)
@@ -350,10 +443,9 @@ namespace Util
 		WorkingObject_->setProperty (property.toLatin1 ().constData (), GetValue (item));
 	}
 
-	#if defined (Q_OS_WIN32) || defined (Q_OS_MAC)
-	#include <QCoreApplication>
-	#include <QLocale>
-
+#if defined (Q_OS_WIN32) || defined (Q_OS_MAC)
+#include <QCoreApplication>
+#include <QLocale>
 	namespace
 	{
 		QString GetLanguageHack ()
@@ -372,8 +464,7 @@ namespace Util
 			return localeName.left (2);
 		}
 	};
-
-	#endif
+#endif
 
 	QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 	{

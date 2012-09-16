@@ -84,6 +84,8 @@ namespace Util
 		 */
 		XMLSETTINGSMANAGER_API void MergeXml (const QByteArray& xml);
 
+		XMLSETTINGSMANAGER_API QList<int> HighlightMatches (const QString& query);
+
 		/** @brief Sets custom widget mentioned in the XML.
 		 *
 		 * Sets the placeholder named name, mentioned in the XML, to
