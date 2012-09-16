@@ -61,6 +61,7 @@ namespace Util
 		UpdatePos ();
 
 		edit->installEventFilter (this);
+		updateButton (edit->text ());
 	}
 
 	bool ClearLineEditAddon::eventFilter (QObject *obj, QEvent *event)
