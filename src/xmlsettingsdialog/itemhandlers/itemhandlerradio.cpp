@@ -45,10 +45,12 @@ namespace LeechCraft
 		RadioGroup *group = new RadioGroup (XSD_);
 		group->setObjectName (item.attribute ("property"));
 
+		QStringList searchTerms;
 		QDomElement option = item.firstChildElement ("option");
 		while (!option.isNull ())
 		{
 			QRadioButton *button = new QRadioButton (XSD_->GetLabel (option));
+			searchTerms << button->text ();
 			XSD_->SetTooltip (button, option);
 			button->setObjectName (option.attribute ("name"));
 			group->AddButton (button,
@@ -69,8 +71,9 @@ namespace LeechCraft
 		box->setLayout (layout);
 		layout->addWidget (group);
 
-		group->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
+		searchTerms << box->title ();
+		group->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		group->setProperty ("SearchTerms", searchTerms);
 
 		lay->addWidget (box, lay->rowCount (), 0);
 	}

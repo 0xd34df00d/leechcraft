@@ -83,8 +83,8 @@ Rectangle {
         Image {
             id: artistImageThumb
             z: 2
-            width: 170
             height: 170
+            width: Math.min(height, sourceSize.width * height / sourceSize.height)
             smooth: true
             fillMode: Image.PreserveAspectFit
             anchors.left: parent.left
@@ -108,10 +108,11 @@ Rectangle {
             z: 2
             text: artistTags
             color: "#999999"
-            anchors.leftMargin: 5
-            anchors.left: artistImageThumb.right
-            anchors.top: artistNameLabel.bottom
+            anchors.left: artistImageThumb.left
+            anchors.top: artistImageThumb.bottom
             anchors.topMargin: 0
+            anchors.right: flickableBioText.left
+            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
             font.pointSize: 8
         }
 
@@ -120,8 +121,8 @@ Rectangle {
             z: 3
             height: 10
 
-            anchors.top: artistImageThumb.bottom
-            anchors.left: parent.left
+            anchors.top: artistNameLabel.bottom
+            anchors.left: artistImageThumb.right
             anchors.right: parent.right
 
             gradient: Gradient {
@@ -140,11 +141,13 @@ Rectangle {
         Flickable {
             z: 2
 
+            id: flickableBioText
+
             anchors.leftMargin: 5
-            anchors.left: parent.left
+            anchors.left: artistImageThumb.right
             anchors.rightMargin: 5
             anchors.right: parent.right
-            anchors.top: artistImageThumb.bottom
+            anchors.top: artistNameLabel.bottom
             anchors.bottom: parent.bottom
 
             contentWidth: width

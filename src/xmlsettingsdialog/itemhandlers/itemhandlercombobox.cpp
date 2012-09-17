@@ -129,8 +129,8 @@ namespace LeechCraft
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
 
-		box->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
+		box->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		box->setProperty ("SearchTerms", label->text ());
 
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0, Qt::AlignRight);

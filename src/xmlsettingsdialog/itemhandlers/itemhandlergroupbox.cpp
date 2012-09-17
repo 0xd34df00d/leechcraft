@@ -54,8 +54,8 @@ namespace LeechCraft
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (updatePreferences ()));
-		box->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
+		box->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		box->setProperty ("SearchTerms", box->title ());
 
 		XSD_->ParseEntity (item, box);
 

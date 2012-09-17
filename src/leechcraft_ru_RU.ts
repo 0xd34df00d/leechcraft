@@ -42,6 +42,25 @@
     </message>
 </context>
 <context>
+    <name>AcceptLangWidget</name>
+    <message>
+        <source>Add</source>
+        <translation>Добавить</translation>
+    </message>
+    <message>
+        <source>Move up</source>
+        <translation>Вверх</translation>
+    </message>
+    <message>
+        <source>Move down</source>
+        <translation>Вниз</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Удалить</translation>
+    </message>
+</context>
+<context>
     <name>AuthenticationDialog</name>
     <message>
         <source>Authentication required</source>
@@ -213,10 +232,6 @@
         <translation>Полноэкранный режим</translation>
     </message>
     <message>
-        <source>Log</source>
-        <translation>Лог</translation>
-    </message>
-    <message>
         <source>New tab</source>
         <translation>Новая вкладка</translation>
     </message>
@@ -259,6 +274,10 @@
     <message>
         <source>Show toolbar</source>
         <translation>Показывать панель инструментов</translation>
+    </message>
+    <message>
+        <source>Restart LeechCraft...</source>
+        <translation>Перезапустить LeechCraft...</translation>
     </message>
 </context>
 <context>
@@ -379,6 +398,37 @@
         <source>Last.FM Scrobbler plugin.</source>
         <translation>Скробблер Last.FM.</translation>
     </message>
+    <message>
+        <source>Blogique module.</source>
+        <translation>Модуль Blogique.</translation>
+    </message>
+    <message>
+        <source>Google Drive support in NetStoreManager module.</source>
+        <translation>Поддержка Google Drive в модуле NetStoreManager.</translation>
+    </message>
+    <message>
+        <source>Windows maintainership.</source>
+        <translation>Поддержка Windows.</translation>
+    </message>
+    <message>
+        <source>Windows fixes.</source>
+        <translation>Исправления для Windows.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::AcceptLangWidget</name>
+    <message>
+        <source>Language</source>
+        <translation>Язык</translation>
+    </message>
+    <message>
+        <source>Country</source>
+        <translation>Страна</translation>
+    </message>
+    <message>
+        <source>Code</source>
+        <translation>Код</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Application</name>
@@ -416,10 +466,6 @@
         <translation>Ошибка</translation>
     </message>
     <message>
-        <source>Could not handle download entity %1.</source>
-        <translation>Не удалось обработать объект %1.</translation>
-    </message>
-    <message>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
         <translation>Невозможно добавить задачу в выбранный загрузчик, хотите попробовать другой?</translation>
     </message>
@@ -439,6 +485,14 @@
         <source>Plugin load error</source>
         <translation>Ошибка загрузки модуля</translation>
     </message>
+    <message>
+        <source>This security measure is easily circumvented by modifying LeechCraft&apos;s settings files (or registry on Windows) in a text editor. For proper and robust protection consider using some third-party tools like &lt;em&gt;encfs&lt;/em&gt; (http://www.arg0.net/encfs/).&lt;br/&gt;&lt;br/&gt;Accept this dialog if you understand the above and this kind of security through obscurity is OK for you.</source>
+        <translation>Эту меру безопасности достаточно легко обойти, отредактировав файлы настроек LeechCraft (или реестр в Windows) в текстовом редакторе. Для корректной и разумной защиты подумайте об использовании сторонних утилит вроде &lt;em&gt;encfs&lt;/em&gt; (http://www.arg0.net/encfs/).&lt;br/&gt;&lt;br/&gt;Жмите OK только если вы понимаете все вышесказанное, и подобный тип «защиты» для вас приемлем.</translation>
+    </message>
+    <message>
+        <source>Enter new startup password:</source>
+        <translation>Введите новый пароль на запуск:</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::CoreInstanceObject</name>
@@ -457,13 +511,6 @@
     <message>
         <source>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</source>
         <translation>Некоторые графические ресурсы могли быть удалены из LeechCraft из-за лицензионных соображений. Воспользуйтесь модулем LackMan для установки этих ресурсов.</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::FancyPopupManager</name>
-    <message>
-        <source>LeechCraft Notification</source>
-        <translation>Уведомление LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -577,6 +624,22 @@
         <source>Finalizing...</source>
         <translation>Последние штрихи...</translation>
     </message>
+    <message>
+        <source>Startup password</source>
+        <translation>Пароль на запуск</translation>
+    </message>
+    <message>
+        <source>Enter startup password for LeechCraft:</source>
+        <translation>Введите пароль на запуск LeechCraft:</translation>
+    </message>
+    <message>
+        <source>Sorry, incorrect password</source>
+        <translation>Извините, неправильный пароль</translation>
+    </message>
+    <message>
+        <source>Do you really want to restart?</source>
+        <translation>Вы действительно хотите перезапустить LeechCraft?</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
@@ -675,17 +738,6 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SeparateTabWidget</name>
-    <message>
-        <source>Pin tab</source>
-        <translation>Закрепить вкладку</translation>
-    </message>
-    <message>
-        <source>Unpin tab</source>
-        <translation>Открепить вкладку</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::SettingsTab</name>
     <message>
         <source>Settings bar</source>
@@ -726,6 +778,21 @@
     <message>
         <source>Settings for %1</source>
         <translation>Параметры %1</translation>
+    </message>
+    <message>
+        <source>Search...</source>
+        <translation>Поиск...</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::ShortcutManager</name>
+    <message>
+        <source>Name</source>
+        <translation>Имя</translation>
+    </message>
+    <message>
+        <source>Shortcut</source>
+        <translation>Сочетание</translation>
     </message>
 </context>
 <context>
@@ -885,21 +952,14 @@ LeechCraft для Windows — довольно экспериментальна�
     </message>
 </context>
 <context>
-    <name>LogToolBox</name>
-    <message>
-        <source>Log</source>
-        <translation>Лог</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation>Очистить</translation>
-    </message>
-</context>
-<context>
     <name>PluginManagerDialog</name>
     <message>
         <source>Plugin Manager</source>
         <translation>Менеджер модулей</translation>
+    </message>
+    <message>
+        <source>Filter plugins...</source>
+        <translation>Фильтровать модули...</translation>
     </message>
 </context>
 <context>
@@ -939,9 +999,9 @@ LeechCraft для Windows — довольно экспериментальна�
     <message numerus="yes">
         <source>%n day(s), </source>
         <translation>
-            <numerusform>%n день</numerusform>
-            <numerusform>%n дня</numerusform>
-            <numerusform>%n дней</numerusform>
+            <numerusform>%n день </numerusform>
+            <numerusform>%n дня </numerusform>
+            <numerusform>%n дней </numerusform>
         </translation>
     </message>
     <message>
@@ -1044,12 +1104,8 @@ LeechCraft для Windows — довольно экспериментальна�
         <translation>Сочетания клавиш</translation>
     </message>
     <message>
-        <source>Name</source>
-        <translation>Имя</translation>
-    </message>
-    <message>
-        <source>Shortcut</source>
-        <translation>Сочетание</translation>
+        <source>Filter...</source>
+        <translation>Фильтр...</translation>
     </message>
 </context>
 <context>
@@ -1196,10 +1252,6 @@ LeechCraft для Windows — довольно экспериментальна�
         <translation>Поведение</translation>
     </message>
     <message>
-        <source>Watch clipboard</source>
-        <translation>Следить за буфером обмена</translation>
-    </message>
-    <message>
         <source>Ask quit confirmation</source>
         <translation>Запрашивать подтверждение выхода</translation>
     </message>
@@ -1214,10 +1266,6 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>Automatically accept task when there is only one handler</source>
         <translation>Автоматически принимать задание при одном обработчике</translation>
-    </message>
-    <message>
-        <source>Watch directory:</source>
-        <translation>Директория для слежения:</translation>
     </message>
     <message>
         <source>Show plugin-dependent actions in tab bar context menu</source>
@@ -1338,6 +1386,46 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>Manual toolbar visibility control</source>
         <translation>Ручное управление видимостью панели инструментов</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation>По умолчанию</translation>
+    </message>
+    <message>
+        <source>Tab bar position</source>
+        <translation>Позиция панели вкладок</translation>
+    </message>
+    <message>
+        <source>Top</source>
+        <translation>Сверху</translation>
+    </message>
+    <message>
+        <source>Bottom</source>
+        <translation>Снизу</translation>
+    </message>
+    <message>
+        <source>Show icon in tray</source>
+        <translation>Показывать иконку в системном лотке</translation>
+    </message>
+    <message>
+        <source>Try external applications when no plugins can handle an entity</source>
+        <translation>Использовать внешние приложения при отсутствии обработчиков сущности</translation>
+    </message>
+    <message>
+        <source>Set startup password</source>
+        <translation>Установить пароль на запуск</translation>
+    </message>
+    <message>
+        <source>Languages</source>
+        <translation>Языки</translation>
+    </message>
+    <message>
+        <source>Enable all plugins</source>
+        <translation>Включить все модули</translation>
+    </message>
+    <message>
+        <source>Disable all plugins</source>
+        <translation>Выключить все модули</translation>
     </message>
 </context>
 </TS>

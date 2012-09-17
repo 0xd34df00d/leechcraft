@@ -26,7 +26,7 @@ SET (HEADERS
 	sitessearcher.h
 	concretesite.h
 	)
-CreateTrVars ("deadlyrics" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrs ("deadlyrics" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 SET (RESOURCES deadlyricsresources.qrc)
 
 IF (NOT LC_NO_MOC)
@@ -34,12 +34,6 @@ IF (NOT LC_NO_MOC)
 ENDIF (NOT LC_NO_MOC)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_CUSTOM_COMMAND (OUTPUT
-	${COMPILED_TRANSLATIONS}
-	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
-	DEPENDS ${TRANSLATIONS}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
 ADD_LIBRARY (leechcraft_deadlyrics SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}

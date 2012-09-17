@@ -91,8 +91,8 @@ namespace LeechCraft
 					this,
 					SLOT (updatePreferences ()));
 
-			box->setProperty ("ItemHandler",
-					QVariant::fromValue<QObject*> (this));
+			box->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+			box->setProperty ("SearchTerms", label->text ());
 
 			int row = lay->rowCount ();
 			lay->setColumnMinimumWidth (0, 10);
