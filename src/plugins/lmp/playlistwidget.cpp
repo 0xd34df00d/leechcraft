@@ -119,7 +119,7 @@ namespace LMP
 				const auto& info = idx.data (Player::Role::Info).value<MediaInfo> ();
 				if (check (info.Artist_) ||
 					check (info.Album_) ||
-					check (QString::number (info.Year_)))
+					info.Year_ == str.toInt ())
 					return true;
 
 				if (parent.isValid () && check (info.Title_))

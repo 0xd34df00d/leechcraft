@@ -65,6 +65,7 @@ namespace LMP
 
 		QHash<int, int> Track2Album_;
 		QHash<int, Collection::Album_ptr> AlbumID2Album_;
+		QHash<int, int> AlbumID2ArtistID_;
 
 		QHash<int, QStandardItem*> Artist2Item_;
 		QHash<int, QStandardItem*> Album2Item_;
@@ -137,10 +138,12 @@ namespace LMP
 
 		Collection::TrackStats GetTrackStats (const QString&) const;
 
+		Collection::Artist GetArtist (int) const;
 		Collection::Artists_t GetAllArtists () const;
 
 		void RemoveTrack (const QString&);
 	private:
+		void HandleExistingInfos (const QList<MediaInfo>&);
 		void HandleNewArtists (const Collection::Artists_t&);
 		void RemoveAlbum (int);
 		Collection::Artists_t::iterator RemoveArtist (Collection::Artists_t::iterator);

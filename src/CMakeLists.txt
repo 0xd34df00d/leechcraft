@@ -62,6 +62,7 @@ SET (LC_PLUGINS_DEST "${LIBDIR}/leechcraft/plugins")
 SET (LC_TRANSLATIONS_DEST "share/leechcraft/translations")
 SET (LC_SETTINGS_DEST "share/leechcraft/settings")
 SET (LC_QML_DEST "share/leechcraft/qml")
+SET (LC_SHARE_DEST "share/leechcraft")
 SET (LC_INSTALLEDMANIFEST_DEST "share/leechcraft/installed")
 SET (LC_GLOBAL_SETTINGS_DEST "share/leechcraft/rc")
 SET (LC_GLOBAL_SETTINGS_DEST_IN "${CMAKE_INSTALL_PREFIX}/${LC_GLOBAL_SETTINGS_DEST}")
@@ -178,20 +179,6 @@ OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
 
 ENABLE_TESTING ()
 
-FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
-	STRING (LENGTH "${PlugName}" _pnameLength)
-	SET (_basename "leechcraft")
-	IF (_pnameLength)
-		SET (_basename "${_basename}_${PlugName}")
-	ENDIF (_pnameLength)
-	FOREACH (_LANG ${Langs})
-		SET (_tran ${_tran} ${_basename}_${_LANG}.ts)
-		SET (_ctran ${_ctran} ${CMAKE_CURRENT_SOURCE_DIR}/${_basename}_${_LANG}.qm)
-	ENDFOREACH (_LANG)
-	SET (${TranVar} ${_tran} PARENT_SCOPE)
-	SET (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
-ENDFUNCTION (CreateTrVars)
-
 FUNCTION (CreateTrs PlugName Langs CompiledTranVar)
 	STRING (LENGTH "${PlugName}" _pnameLength)
 	SET (_basename "leechcraft")
@@ -212,6 +199,32 @@ FUNCTION (CreateTrs PlugName Langs CompiledTranVar)
 	INSTALL (FILES ${_ctran} DESTINATION ${LC_TRANSLATIONS_DEST})
 	SET (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
 ENDFUNCTION (CreateTrs)
+
+SET (GENCPP_XML_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../tools/scripts/translationstuff/gencpp.sh")
+
+FUNCTION (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
+	STRING (LENGTH "${PlugName}" _pnameLength)
+	STRING (LENGTH "${Xml}" _xmlLength)
+	SET (_basename "leechcraft")
+	IF (_pnameLength)
+		SET (_basename "${_basename}_${PlugName}")
+	ENDIF (_pnameLength)
+	IF (_xmlLength)
+		FOREACH (_LANG ${Langs})
+			ADD_CUSTOM_TARGET (${_basename}_ts_${_LANG}
+					${GENCPP_XML_PATH} ${Xml}
+					COMMAND ${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "dummy.cpp" "-ts" "${_basename}_${_LANG}.ts"
+					COMMAND "rm" "-f" "dummy.cpp"
+					WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
+		ENDFOREACH (_LANG)
+	ELSE (_xmlLength)
+		FOREACH (_LANG ${Langs})
+			ADD_CUSTOM_TARGET (${_basename}_ts_${_LANG}
+					${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "-ts" "${_basename}_${_LANG}.ts"
+					WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
+		ENDFOREACH (_LANG)
+	ENDIF (_xmlLength)
+ENDFUNCTION (CreateTrsUpTarget)
 
 IF (ENABLE_SUMMARY)
 	ADD_SUBDIRECTORY (plugins/summary)
@@ -582,7 +595,8 @@ SOURCE_GROUP ("core\\sources" FILES ${SRCS})
 SOURCE_GROUP ("core\\forms" FILES ${FORMS})
 SOURCE_GROUP ("core\\resources" FILES ${RESOURCES})
 
-CreateTrVars ("" "ru_RU;de;uk_UA;it;ar;eo;es;tr;tt;en;be;fr;pl" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrs ("" "ru_RU;de;uk_UA;it;ar;eo;es;tr;tt;en;be;fr;pl" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("" "en;ru_RU" "${SRCS};${UTIL_SRCS};${XSD_SRCS}" "${FORMS};${UTIL_FORMS};${XSD_FORMS}" "coresettings.xml")
 
 ADD_DEFINITIONS (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
 ADD_DEFINITIONS (${QT_DEFINITIONS})
@@ -594,13 +608,6 @@ QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCC ${RESOURCES})
 
 SOURCE_GROUP ("core\\generated_qt" FILES ${MOC_SRCS} ${UIS_H} ${RCC})
-
-ADD_CUSTOM_COMMAND (OUTPUT
-	${COMPILED_TRANSLATIONS}
-	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
-	DEPENDS ${TRANSLATIONS}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
 
 SOURCE_GROUP("core\\translations" FILES ${COMPILED_TRANSLATIONS})
 
@@ -679,7 +686,7 @@ INSTALL (FILES xmlsettingsdialog/xsdconfig.h DESTINATION include/leechcraft/xmls
 INSTALL (FILES xmlsettingsdialog/datasourceroles.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
 
-INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
+INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft.cmake DESTINATION ${LC_SHARE_DEST}/cmake/)
 INSTALL (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
 
 INSTALL (DIRECTORY share/ DESTINATION share)

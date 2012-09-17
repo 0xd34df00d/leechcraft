@@ -66,8 +66,8 @@ namespace LeechCraft
 				this,
 				SLOT (updatePreferences ()));
 
-		picker->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
+		picker->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		picker->setProperty ("SearchTerms", label->text ());
 
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0);

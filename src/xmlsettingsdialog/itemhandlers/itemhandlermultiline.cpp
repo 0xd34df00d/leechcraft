@@ -58,8 +58,8 @@ namespace LeechCraft
 				this,
 				SLOT (updatePreferences ()));
 
-		edit->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
+		edit->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		edit->setProperty ("SearchTerms", label->text ());
 
 		int row = lay->rowCount ();
 		QString pos = item.attribute ("position");

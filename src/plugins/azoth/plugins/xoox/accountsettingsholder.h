@@ -16,11 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNTCONFIGURATIONWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNTCONFIGURATIONWIDGET_H
-#include <QWidget>
+#pragma once
+
+#include <QObject>
+#include <QString>
+#include <QPair>
 #include <QXmppTransferManager.h>
-#include "ui_glooxaccountconfigurationwidget.h"
 
 namespace LeechCraft
 {
@@ -28,37 +29,70 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class GlooxAccountConfigurationWidget : public QWidget
+	class GlooxAccount;
+	class GlooxAccountConfigurationWidget;
+
+	class AccountSettingsHolder : public QObject
 	{
 		Q_OBJECT
 
-		Ui::GlooxAccountConfigurationWidget Ui_;
+		bool ReconnectScheduled_;
 
-		QString Password_;
+		GlooxAccount *Account_;
+
+		QString JID_;
+		QString Nick_;
+		QString Resource_;
+		QString Host_;
+		int Port_;
+
+		QByteArray OurPhotoHash_;
+
+		QPair<int, int> KAParams_;
+		bool FileLogEnabled_;
+
+		int Priority_;
+
+		QXmppTransferJob::Methods FTMethods_;
+		bool UseSOCKS5Proxy_;
+		QString SOCKS5Proxy_;
 	public:
-		GlooxAccountConfigurationWidget (QWidget* = 0);
+		AccountSettingsHolder (GlooxAccount* = 0);
+
+		void Serialize (QDataStream&) const;
+		void Deserialize (QDataStream&, quint16);
+
+		void OpenConfigDialog ();
+		void FillSettings (GlooxAccountConfigurationWidget*);
 
 		QString GetJID () const;
 		void SetJID (const QString&);
+
 		QString GetNick () const;
 		void SetNick (const QString&);
+
 		QString GetResource () const;
 		void SetResource (const QString&);
-		short GetPriority () const;
-		void SetPriority (short);
+
+		QString GetFullJID () const;
 
 		QString GetHost () const;
 		void SetHost (const QString&);
+
 		int GetPort () const;
 		void SetPort (int);
 
-		int GetKAInterval () const;
-		void SetKAInterval (int);
-		int GetKATimeout () const;
-		void SetKATimeout (int);
+		QByteArray GetPhotoHash () const;
+		void SetPhotoHash (const QByteArray&);
+
+		QPair<int, int> GetKAParams () const;
+		void SetKAParams (const QPair<int, int>&);
 
 		bool GetFileLogEnabled () const;
 		void SetFileLogEnabled (bool);
+
+		int GetPriority () const;
+		void SetPriority (int);
 
 		QXmppTransferJob::Methods GetFTMethods () const;
 		void SetFTMethods (QXmppTransferJob::Methods);
@@ -68,13 +102,24 @@ namespace Xoox
 
 		QString GetSOCKS5Proxy () const;
 		void SetSOCKS5Proxy (const QString&);
-
-		QString GetPassword () const;
 	private slots:
-		void on_UpdatePassword__released ();
+		void scheduleReconnect ();
+		void handleReconnect ();
+	signals:
+		void jidChanged (const QString&);
+		void resourceChanged (const QString&);
+		void nickChanged (const QString&);
+		void hostChanged (const QString&);
+		void portChanged (int);
+		void photoHashChanged (const QByteArray&);
+		void kaParamsChanged (const QPair<int, int>&);
+		void fileLogChanged (bool);
+		void priorityChanged (int);
+
+		void fileTransferSettingsChanged ();
+
+		void accountSettingsChanged ();
 	};
 }
 }
 }
-
-#endif

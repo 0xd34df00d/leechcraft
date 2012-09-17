@@ -23,6 +23,8 @@
 #include "ui_settingstab.h"
 
 class IHaveSettings;
+class QLineEdit;
+class QToolButton;
 
 namespace LeechCraft
 {
@@ -38,6 +40,9 @@ namespace LeechCraft
 		QAction *ActionApply_;
 		QAction *ActionCancel_;
 
+		QString LastSearch_;
+		QHash<QToolButton*, QObject*> Button2SettableRoot_;
+		QHash<IHaveSettings*, QList<int>> Obj2SearchMatchingPages_;
 		QHash<QListWidgetItem*, QPair<IHaveSettings*, int>> Item2Page_;
 	public:
 		SettingsTab (QWidget* = 0);
@@ -53,6 +58,8 @@ namespace LeechCraft
 	public slots:
 		void showSettingsFor (QObject*);
 	private slots:
+		void addSearchBox ();
+		void handleSearch (const QString&);
 		void handleSettingsCalled ();
 		void handleBackRequested ();
 		void handleApply ();

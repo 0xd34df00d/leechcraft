@@ -67,7 +67,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , WasMaximized_ (false)
 , DefaultSystemStyleName_ (QApplication::style ()->objectName ())
 , IsQuitting_ (false)
-, Splash_ (new QSplashScreen (QPixmap (":/resources/images/funsplash.jpg"),
+, Splash_ (new QSplashScreen (QPixmap (":/resources/images/splash.svg"),
 		Qt::SplashScreen))
 , IsToolBarVisible_ (true)
 {
@@ -93,7 +93,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	//Splash_->setMask (QPixmap (":/resources/images/funsplash.jpg").mask ());
 	Splash_->show ();
 	Splash_->setUpdatesEnabled (true);
-	Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom);
+	Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
 	QApplication::processEvents ();
 
 #ifdef Q_OS_WIN32
@@ -118,7 +118,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
 
-	Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom);
+	Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
 
 	connect (Core::Instance ().GetNewTabMenuManager (),
 			SIGNAL (restoreTabActionAdded (QAction*)),
@@ -797,7 +797,7 @@ void LeechCraft::MainWindow::doDelayedInit ()
 
 void LeechCraft::MainWindow::handleLoadProgress (const QString& str)
 {
-	Splash_->showMessage (str, Qt::AlignLeft | Qt::AlignBottom);
+	Splash_->showMessage (str, Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
 }
 
 void LeechCraft::MainWindow::FillQuickLaunch ()

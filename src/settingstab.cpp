@@ -22,15 +22,16 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QToolButton>
-#include <QStyledItemDelegate>
-#include <QPainter>
+#include <QLineEdit>
 #include "util/gui/flowlayout.h"
+#include "util/gui/clearlineeditaddon.h"
 #include "xmlsettingsdialog/xmlsettingsdialog.h"
 #include "interfaces/ihavesettings.h"
 #include "interfaces/iplugin2.h"
 #include "interfaces/ipluginready.h"
 #include "core.h"
 #include "coreinstanceobject.h"
+#include "coreproxy.h"
 
 namespace LeechCraft
 {
@@ -64,6 +65,10 @@ namespace LeechCraft
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleCancel ()));
+
+		QTimer::singleShot (1000,
+				this,
+				SLOT (addSearchBox ()));
 	}
 
 	namespace
@@ -187,9 +192,9 @@ namespace LeechCraft
 				butt->setToolTip (ii->GetInfo ());
 				butt->setIconSize (QSize (72, 72));
 				butt->setIcon (icon);
-				butt->setProperty ("SettableObject", QVariant::fromValue<QObject*> (obj));
 				butt->setFixedWidth (ButtonWidth);
 				butt->setAutoRaise (true);
+				Button2SettableRoot_ [butt] = obj;
 
 				connect (butt,
 						SIGNAL (released ()),
@@ -241,6 +246,31 @@ namespace LeechCraft
 		return Toolbar_;
 	}
 
+	namespace
+	{
+		QObjectList FindSubplugins (QObject *obj)
+		{
+			QObjectList result;
+
+			auto ihp = qobject_cast<IPluginReady*> (obj);
+			if (!ihp)
+				return result;
+
+			const auto& expected = ihp->GetExpectedPluginClasses ();
+			const auto& settables = Core::Instance ()
+					.GetPluginManager ()->GetAllCastableRoots<IHaveSettings*> ();
+			Q_FOREACH (auto settableObj, settables)
+			{
+				auto ip2 = qobject_cast<IPlugin2*> (settableObj);
+				if (!ip2 || !expected.contains (ip2->GetPluginClasses ()))
+					continue;
+
+				result << settableObj;
+			}
+			return result;
+		}
+	}
+
 	void SettingsTab::FillPages (QObject *obj, bool sub)
 	{
 		IInfo *ii = qobject_cast<IInfo*> (obj);
@@ -267,28 +297,47 @@ namespace LeechCraft
 			item->setTextAlignment (Qt::AlignCenter);
 			Ui_.Cats_->addItem (item);
 
+			if (Obj2SearchMatchingPages_.contains (ihs) &&
+					!Obj2SearchMatchingPages_ [ihs].contains (pgId))
+			{
+				auto flags = item->flags ();
+				flags &= ~Qt::ItemIsEnabled;
+				item->setFlags (flags);
+			}
+
 			Item2Page_ [item] = qMakePair (ihs, pgId++);
 		}
 
-		if (auto ihp = qobject_cast<IPluginReady*> (obj))
-		{
-			const auto& expected = ihp->GetExpectedPluginClasses ();
+		Q_FOREACH (const auto& sub, FindSubplugins (obj))
+			FillPages (sub, true);
+	}
 
-			const auto& settables = Core::Instance ()
-					.GetPluginManager ()->GetAllCastableRoots<IHaveSettings*> ();
-			Q_FOREACH (auto settableObj, settables)
-			{
-				auto ip2 = qobject_cast<IPlugin2*> (settableObj);
-				if (!ip2 || !expected.contains (ip2->GetPluginClasses ()))
-					continue;
+	void SettingsTab::addSearchBox ()
+	{
+		auto widget = new QWidget ();
+		auto lay = new QHBoxLayout;
+		widget->setLayout (lay);
 
-				FillPages (settableObj, true);
-			}
-		}
+		auto box = new QLineEdit ();
+		box->setPlaceholderText (tr ("Search..."));
+		box->setMaximumWidth (200);
+		box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
+		box->setText (LastSearch_);
+		lay->addStretch ();
+		lay->addWidget (box, 0, Qt::AlignRight);
+		new Util::ClearLineEditAddon (ICoreProxy_ptr (new CoreProxy ()), box);
+
+		Toolbar_->addWidget (widget);
+
+		connect (box,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (handleSearch (QString)));
 	}
 
 	void SettingsTab::showSettingsFor (QObject *obj)
 	{
+		Toolbar_->clear ();
 		Item2Page_.clear ();
 
 		IInfo *ii = qobject_cast<IInfo*> (obj);
@@ -307,6 +356,7 @@ namespace LeechCraft
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (ActionApply_);
 		Toolbar_->addAction (ActionCancel_);
+		addSearchBox ();
 
 		const int width = Ui_.Cats_->viewport ()->width ();
 		auto gridSize = Ui_.Cats_->gridSize ();
@@ -316,9 +366,49 @@ namespace LeechCraft
 		Ui_.Cats_->setGridSize (gridSize);
 	}
 
+	void SettingsTab::handleSearch (const QString& text)
+	{
+		if (text == LastSearch_)
+			return;
+
+		LastSearch_ = text;
+		Q_FOREACH (auto toolButton, Button2SettableRoot_.keys ())
+		{
+			auto rootObj = Button2SettableRoot_ [toolButton];
+
+			bool foundMatching = false;
+			auto objs = FindSubplugins (rootObj);
+			objs.prepend (rootObj);
+			Q_FOREACH (auto obj, objs)
+			{
+				auto ihs = qobject_cast<IHaveSettings*> (obj);
+				const auto& list = ihs->GetSettingsDialog ()->HighlightMatches (text);
+				Obj2SearchMatchingPages_ [ihs] = list;
+
+				if (!list.isEmpty ())
+					foundMatching = true;
+			}
+
+			toolButton->setEnabled (foundMatching);
+
+			Q_FOREACH (auto item, Item2Page_.keys ())
+			{
+				const auto& page = Item2Page_ [item];
+				const bool enabled = !Obj2SearchMatchingPages_.contains (page.first) ||
+						Obj2SearchMatchingPages_ [page.first].contains (page.second);
+				auto flags = item->flags ();
+				if (enabled)
+					flags |= Qt::ItemIsEnabled;
+				else
+					flags &= ~Qt::ItemIsEnabled;
+				item->setFlags (flags);
+			}
+		}
+	}
+
 	void SettingsTab::handleSettingsCalled ()
 	{
-		QObject *obj = sender ()->property ("SettableObject").value<QObject*> ();
+		QObject *obj = Button2SettableRoot_.value (static_cast<QToolButton*> (sender ()));
 		if (!obj)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -334,6 +424,7 @@ namespace LeechCraft
 	void SettingsTab::handleBackRequested ()
 	{
 		Toolbar_->clear ();
+		addSearchBox ();
 		Ui_.StackedWidget_->setCurrentIndex (0);
 
 		Ui_.Cats_->clear ();
