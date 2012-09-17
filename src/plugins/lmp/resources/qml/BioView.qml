@@ -120,8 +120,8 @@ Rectangle {
             z: 3
             height: 10
 
-            anchors.top: artistImageThumb.bottom
-            anchors.left: parent.left
+            anchors.top: artistTagsLabel.bottom
+            anchors.left: artistImageThumb.right
             anchors.right: parent.right
 
             gradient: Gradient {
@@ -141,10 +141,10 @@ Rectangle {
             z: 2
 
             anchors.leftMargin: 5
-            anchors.left: parent.left
+            anchors.left: artistImageThumb.right
             anchors.rightMargin: 5
             anchors.right: parent.right
-            anchors.top: artistImageThumb.bottom
+            anchors.top: artistTagsLabel.bottom
             anchors.bottom: parent.bottom
 
             contentWidth: width
