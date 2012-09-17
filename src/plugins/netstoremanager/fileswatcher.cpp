@@ -176,7 +176,7 @@ namespace LeechCraft
 				QString fullPath = path + "/" + QString (e->name);
 
 				if (e->mask & IN_ISDIR)
-					emit dirWasRemoved (path);
+					emit dirWasRemoved (fullPath);
 				else
 					emit fileWasRemoved (fullPath);
 			}
