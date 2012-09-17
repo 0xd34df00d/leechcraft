@@ -202,6 +202,9 @@ Rectangle {
                     anchors.left: artistImageThumb.right
                     anchors.top: artistNameLabel.bottom
                     anchors.topMargin: 0
+                    anchors.right: parent.right
+                    anchors.rightMargin: 5
+                    elide: Text.ElideRight
                     font.pointSize: 8
                 }
 
