@@ -153,8 +153,6 @@ namespace Xoox
 		FetchQueue *CapsQueue_;
 		FetchQueue *VersionQueue_;
 
-		int SocketErrorAccumulator_;
-
 		QList<QXmppMessage> OfflineMsgQueue_;
 		QList<QPair<QString, PEPEventBase*>> InitialEventQueue_;
 		QHash<QString, QPointer<GlooxMessage>> UndeliveredMessages_;
@@ -269,7 +267,6 @@ namespace Xoox
 	private slots:
 		void handleConnected ();
 		void handleDisconnected ();
-		void handleError (QXmppClient::Error);
 		void handleIqReceived (const QXmppIq&);
 		void handleRosterReceived ();
 		void handleRosterChanged (const QString&);
@@ -297,8 +294,6 @@ namespace Xoox
 		void handleInvalidSignatureReceived (const QString&);
 
 		void handleLog (QXmppLogger::MessageType, const QString&);
-
-		void decrementErrAccumulators ();
 
 		void setKAParams (const QPair<int, int>&);
 		void setFileLogging (bool);

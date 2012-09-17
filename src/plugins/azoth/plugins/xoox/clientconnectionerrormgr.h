@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QSet>
 #include <QXmppStanza.h>
+#include <QXmppClient.h>
 
 class QXmppIq;
 
@@ -37,17 +38,22 @@ namespace Xoox
 		Q_OBJECT
 
 		ClientConnection *ClientConn_;
+		QXmppClient *Client_;
 
 		QSet<QString> WhitelistedErrors_;
+
+		int SocketErrorAccumulator_;
 	public:
 		ClientConnectionErrorMgr (ClientConnection*);
 
 		void Whitelist (const QString&, bool add = true);
 		void HandleIq (const QXmppIq&);
-
-		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
 	private:
+		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
 		void HandleError (const QXmppIq&);
+	private slots:
+		void handleError (QXmppClient::Error);
+		void decrementErrAccumulators ();
 	signals:
 		void serverAuthFailed ();
 	};
