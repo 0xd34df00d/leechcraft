@@ -72,10 +72,7 @@
 #include "xmppcaptchamanager.h"
 #include "clientconnectionerrormgr.h"
 #include "accountsettingsholder.h"
-
-#ifdef ENABLE_CRYPT
-#include "pgpmanager.h"
-#endif
+#include "crypthandler.h"
 
 namespace LeechCraft
 {
@@ -109,9 +106,7 @@ namespace Xoox
 	, RIEXManager_ (new RIEXManager)
 	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
-#ifdef ENABLE_CRYPT
-	, PGPManager_ (0)
-#endif
+	, CryptHandler_ (new CryptHandler (this))
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
 	, OurJID_ (Settings_->GetFullJID ())
 	, SelfContact_ (new SelfContact (OurJID_, account))
@@ -176,7 +171,7 @@ namespace Xoox
 				this,
 				SLOT (handlePEPAvatarUpdated (QString, QImage)));
 
-		InitializeQCA ();
+		CryptHandler_->Init ();
 
 		Client_->addExtension (BMManager_);
 		Client_->addExtension (BobManager_);
@@ -549,22 +544,10 @@ namespace Xoox
 		return SDManager_;
 	}
 
-#ifdef ENABLE_CRYPT
-	PgpManager* ClientConnection::GetPGPManager () const
+	CryptHandler* ClientConnection::GetCryptHandler () const
 	{
-		return PGPManager_;
+		return CryptHandler_;
 	}
-
-	bool ClientConnection::SetEncryptionEnabled (const QString& jid, bool enabled)
-	{
-		if (enabled)
-			Entries2Crypt_ << jid;
-		else
-			Entries2Crypt_.remove (jid);
-
-		return true;
-	}
-#endif
 
 	void ClientConnection::SetSignaledLog (bool signaled)
 	{
@@ -726,28 +709,7 @@ namespace Xoox
 		if (msg.isReceiptRequested ())
 			UndeliveredMessages_ [msg.id ()] = msgObj;
 
-#ifdef ENABLE_CRYPT
-		EntryBase *entry = qobject_cast<EntryBase*> (msgObj->OtherPart ());
-		if (entry &&
-				Entries2Crypt_.contains (entry->GetJID ()))
-		{
-			const QCA::PGPKey& key = PGPManager_->PublicKey (entry->GetJID ());
-
-			if (!key.isNull ())
-			{
-				const QString& body = msg.body ();
-				msg.setBody (tr ("This message is encrypted. Please decrypt "
-								"it to view the original contents."));
-
-				QXmppElement crypt;
-				crypt.setTagName ("x");
-				crypt.setAttribute ("xmlns", "jabber:x:encrypted");
-				crypt.setValue (PGPManager_->EncryptBody (key, body.toUtf8 ()));
-
-				msg.setExtensions (msg.extensions () << crypt);
-			}
-		}
-#endif
+		CryptHandler_->ProcessOutgoing (msg, msgObj);
 
 		Client_->sendPacket (msg);
 	}
@@ -1074,10 +1036,8 @@ namespace Xoox
 		}
 
 		JID2CLEntry_ [jid]->HandlePresence (pres, resource);
-		if (SignedPresences_.remove (jid))
-		{
-			qDebug () << "got signed presence" << jid;
-		}
+
+		CryptHandler_->HandlePresence (pres, jid, resource);
 	}
 
 	namespace
@@ -1114,8 +1074,7 @@ namespace Xoox
 		QString resource;
 		Split (msg.from (), &jid, &resource);
 
-		if (EncryptedMessages_.contains (msg.from ()))
-			msg.setBody (EncryptedMessages_.take (msg.from ()));
+		CryptHandler_->ProcessIncoming (msg);
 
 		if (AwaitingRIEXItems_.contains (msg.from ()))
 		{
@@ -1309,25 +1268,6 @@ namespace Xoox
 			AwaitingDiscoItems_.take (jid) (iq);
 	}
 
-	void ClientConnection::handleEncryptedMessageReceived (const QString& id,
-			const QString& decrypted)
-	{
-		EncryptedMessages_ [id] = decrypted;
-	}
-
-	void ClientConnection::handleSignedMessageReceived (const QString&)
-	{
-	}
-
-	void ClientConnection::handleSignedPresenceReceived (const QString&)
-	{
-	}
-
-	void ClientConnection::handleInvalidSignatureReceived (const QString& id)
-	{
-		qDebug () << Q_FUNC_INFO << id;
-	}
-
 	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)
 	{
 		QString entryId;
@@ -1489,31 +1429,6 @@ namespace Xoox
 		auto ft = GetTransferManager ();
 		ft->setSupportedMethods (Settings_->GetFTMethods ());
 		ft->setProxy (Settings_->GetUseSOCKS5Proxy () ? Settings_->GetSOCKS5Proxy () : QString ());
-	}
-
-	void ClientConnection::InitializeQCA ()
-	{
-#ifdef ENABLE_CRYPT
-		PGPManager_ = new PgpManager ();
-
-		Client_->addExtension (PGPManager_);
-		connect (PGPManager_,
-				SIGNAL (encryptedMessageReceived (QString, QString)),
-				this,
-				SLOT (handleEncryptedMessageReceived (QString, QString)));
-		connect (PGPManager_,
-				SIGNAL (signedMessageReceived (const QString&)),
-				this,
-				SLOT (handleSignedMessageReceived (const QString&)));
-		connect (PGPManager_,
-				SIGNAL (signedPresenceReceived (const QString&)),
-				this,
-				SLOT (handleSignedPresenceReceived (const QString&)));
-		connect (PGPManager_,
-				SIGNAL (invalidSignatureReceived (const QString&)),
-				this,
-				SLOT (handleInvalidSignatureReceived (const QString&)));
-#endif
 	}
 
 	void ClientConnection::ScheduleFetchVCard (const QString& jid)
