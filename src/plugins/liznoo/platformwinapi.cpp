@@ -92,19 +92,19 @@ namespace Liznoo
 
 	void PlatformWinAPI::handleSchemeChanged (QString schemeName)
 	{
-		qDebug() << tr ("New power scheme detected") << ": [" << schemeName << "]";
+		qDebug() << "New power scheme detected" << ": [" << schemeName << "]";
 	}
 
 	void PlatformWinAPI::handlePowerSourceChanged (QString powerSource)
 	{
-		qDebug() << tr ("New power source detected") << ": [" << powerSource << "]";
+		qDebug() << "New power source detected" << ": [" << powerSource << "]";
 	}
 
 	void PlatformWinAPI::handleBatteryStateChanged (int newPercentage)
 	{
 		//TODO(DZhon): Rewrite using Win32_Battery WMI Class.
 
-		qDebug() << tr ("New battery state detected") << ": [" << newPercentage << "]";
+		qDebug() << "New battery state detected" << ": [" << newPercentage << "]";
 
 		SYSTEM_POWER_STATUS powerStatus;
 		BOOL retCode = GetSystemPowerStatus (&powerStatus);
