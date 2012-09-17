@@ -245,43 +245,35 @@ namespace Azoth
 		if (!mgr)
 			return false;
 
-		QString text;
-		if (urls.size () > 2)
-			text = tr ("Are you sure you want to send %n files to %1?", 0, urls.size ())
-					.arg (entry->GetEntryName ());
-		else
+		if (urls.isEmpty ())
+			return false;
+
+		if (urls.size () == 1)
 		{
-			QStringList list;
-			Q_FOREACH (const QUrl& url, urls)
-				list << QFileInfo (url.path ()).fileName ();
-			text = tr ("Are you sure you want to send %1 to %2?")
-					.arg ("<em>" + list.join (", ") + "</em>")
-					.arg (entry->GetEntryName ());
+			new FileSendDialog (entry, urls.value (0).toLocalFile ());
+			return true;
 		}
+
+		const auto& text = tr ("Are you sure you want to send %n files to %1?", 0, urls.size ())
+				.arg (entry->GetEntryName ());
 		if (QMessageBox::question (0,
 					"LeechCraft",
 					text,
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return false;
 
-		if (urls.size () > 2)
+		Q_FOREACH (const QUrl& url, urls)
 		{
-			Q_FOREACH (const QUrl& url, urls)
-			{
-				const QString& path = url.toLocalFile ();
+			const QString& path = url.toLocalFile ();
+			if (!QFileInfo (path).exists ())
+				continue;
 
-				if (!QFileInfo (path).exists ())
-					continue;
-
-				QObject *job = mgr->SendFile (entry->GetEntryID (),
-						entry->Variants ().first (),
-						path,
-						QString ());
-				Core::Instance ().GetTransferJobManager ()->HandleJob (job);
-			}
+			QObject *job = mgr->SendFile (entry->GetEntryID (),
+					entry->Variants ().first (),
+					path,
+					QString ());
+			Core::Instance ().GetTransferJobManager ()->HandleJob (job);
 		}
-		else
-			new FileSendDialog (entry, urls.value (0).toLocalFile ());
 
 		return true;
 	}
