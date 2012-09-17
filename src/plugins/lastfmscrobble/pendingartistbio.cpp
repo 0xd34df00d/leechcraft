@@ -72,6 +72,7 @@ namespace Lastfmscrobble
 
 		const auto& artist = doc.documentElement ().firstChildElement ("artist");
 		Bio_.BasicInfo_ = GetArtistInfo (artist);
+		std::reverse (Bio_.BasicInfo_.Tags_.begin (), Bio_.BasicInfo_.Tags_.end ());
 
 		emit ready ();
 		deleteLater ();
