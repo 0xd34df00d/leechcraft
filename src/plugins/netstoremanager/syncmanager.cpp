@@ -295,7 +295,6 @@ namespace NetStoreManager
 
 			QString remotePath = path;
 			remotePath.remove (0, rootDirPath.length ());
-
 			isfl->GetListingOps () & TrashSupporting ?
 				isfl->MoveToTrash ({ map [remotePath] }) :
 				isfl->Delete ({ map [remotePath] }, false);
@@ -323,7 +322,6 @@ namespace NetStoreManager
 
 			QString remotePath = path;
 			remotePath.remove (0, rootDirPath.length ());
-
 			isfl->GetListingOps () & TrashSupporting ?
 				isfl->MoveToTrash ({ map [remotePath] }) :
 				isfl->Delete ({ map [remotePath] }, false);
@@ -360,7 +358,54 @@ namespace NetStoreManager
 	void SyncManager::handleEntryWasMoved (const QString& oldPath,
 			const QString& newPath)
 	{
-		qDebug () << Q_FUNC_INFO << oldPath << newPath;
+		for (const auto& basePath : Path2Account_.keys ())
+		{
+			if (oldPath.startsWith (basePath) &&
+					newPath.startsWith (basePath))
+			{
+				auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+				if (!isfl)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< Path2Account_ [basePath]->GetObject ()
+							<< "isn't an ISupportFileListings";
+					continue;
+				}
+
+				QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
+				auto map = Isfl2PathId_ [isfl];
+
+				QString remotePath = oldPath, newRemotePath = newPath;
+				remotePath.remove (0, rootDirPath.length ());
+				newRemotePath.remove (0, rootDirPath.length ());
+				const QString& newParentPath = QFileInfo (newRemotePath).dir ().absolutePath ();
+
+				if (map.contains (remotePath) &&
+						map.contains (newParentPath))
+				{
+					QStringList id = map.take (remotePath);
+					isfl->Move (id, map [newParentPath]);
+					map [newRemotePath] = id;
+				}
+				else
+					ApiCallQueue_ << [this, oldPath, newPath] ()
+						{ handleEntryWasMoved (oldPath, newPath); };
+			}
+			else if (oldPath.startsWith (basePath) &&
+					!newPath.startsWith (basePath))
+			{
+				QFileInfo (oldPath).isDir () ?
+					handleDirWasRemoved (oldPath) :
+					handleFileWasRemoved (oldPath);
+			}
+			else if (!oldPath.startsWith (basePath) &&
+					newPath.startsWith (basePath))
+			{
+				QFileInfo (oldPath).isDir () ?
+					handleDirWasCreated (oldPath) :
+					handleFileWasCreated (oldPath);
+			}
+		}
 	}
 
 	void SyncManager::handleFileWasUpdated (const QString& path)
@@ -453,7 +498,6 @@ namespace NetStoreManager
 		if (map.values ().contains (parentId))
 		{
 			QString path = map.key (parentId);
-			qDebug () << path + "/" + item [0]->text () << item [0]->data (ListingRole::ID).toStringList ();
 			map [path + "/" + item [0]->text ()] =
 					item [0]->data (ListingRole::ID).toStringList ();
 		}
