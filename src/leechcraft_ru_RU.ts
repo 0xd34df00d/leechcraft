@@ -999,9 +999,9 @@ LeechCraft для Windows — довольно экспериментальна�
     <message numerus="yes">
         <source>%n day(s), </source>
         <translation>
-            <numerusform>%n день</numerusform>
-            <numerusform>%n дня</numerusform>
-            <numerusform>%n дней</numerusform>
+            <numerusform>%n день </numerusform>
+            <numerusform>%n дня </numerusform>
+            <numerusform>%n дней </numerusform>
         </translation>
     </message>
     <message>
