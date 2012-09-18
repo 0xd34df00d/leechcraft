@@ -88,6 +88,7 @@ SET (XOOX_SRCS
 	accstatusrestorer.cpp
 	accountsettingsholder.cpp
 	crypthandler.cpp
+	serverinfostorage.cpp
 	xmppannotationsiq.cpp
 	xmppannotationsmanager.cpp
 	xmppbobiq.cpp
@@ -164,6 +165,7 @@ SET (XOOX_HEADERS
 	accstatusrestorer.h
 	accountsettingsholder.h
 	crypthandler.h
+	serverinfostorage.h
 	xmppannotationsiq.h
 	xmppannotationsmanager.h
 	xmppbobiq.h
