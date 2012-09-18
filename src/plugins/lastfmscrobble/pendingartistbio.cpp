@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "pendingartistbio.h"
+#include <algorithm>
 #include <QNetworkReply>
 #include <QDomDocument>
 #include <QtDebug>
