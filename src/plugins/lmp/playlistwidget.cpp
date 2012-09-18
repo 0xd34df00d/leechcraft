@@ -76,15 +76,19 @@ namespace LMP
 				if (e->type () != QEvent::KeyRelease)
 					return false;
 
-				const auto key = static_cast<QKeyEvent*> (e)->key ();
-				if (key == Qt::Key_Enter || key == Qt::Key_Return || key == Qt::Key_Space)
+				auto keyEvent = static_cast<QKeyEvent*> (e);
+
+				const auto key = keyEvent->key ();
+				if (key == Qt::Key_Enter ||
+						key == Qt::Key_Return ||
+						(key == Qt::Key_Space && keyEvent->modifiers () == Qt::NoModifier))
 				{
 					Player_->play (PlaylistFilter_->mapToSource (View_->currentIndex ()));
 					return true;
 				}
 
 				if (key == Qt::Key_F &&
-						static_cast<QKeyEvent*> (e)->modifiers () == Qt::CTRL)
+						keyEvent->modifiers () == Qt::CTRL)
 				{
 					FilterLine_->setVisible (!FilterLine_->isVisible ());
 					FilterToggle_->toggle ();
