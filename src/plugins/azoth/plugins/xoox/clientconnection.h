@@ -77,6 +77,7 @@ namespace Xoox
 
 	class ClientConnectionErrorMgr;
 	class CryptHandler;
+	class ServerInfoStorage;
 
 	class ClientConnection : public QObject
 	{
@@ -120,6 +121,8 @@ namespace Xoox
 
 		IProxyObject *ProxyObject_;
 		CapsManager *CapsManager_;
+
+		ServerInfoStorage *ServerInfoStorage_;
 
 		QHash<QString, GlooxCLEntry*> JID2CLEntry_;
 		QHash<QString, GlooxCLEntry*> ODSEntries_;
@@ -196,7 +199,9 @@ namespace Xoox
 		UserAvatarManager* GetUserAvatarManager () const;
 		RIEXManager* GetRIEXManager () const;
 		SDManager* GetSDManager () const;
+
 		CryptHandler* GetCryptHandler () const;
+		ServerInfoStorage* GetServerInfoStorage () const;
 
 		void SetSignaledLog (bool);
 
@@ -275,6 +280,7 @@ namespace Xoox
 		void handlePhotoHash ();
 		void handlePriorityChanged (int);
 		void updateFTSettings ();
+		void handleDetectedBSProxy (const QString&);
 	private:
 		void ScheduleFetchVCard (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QString&);

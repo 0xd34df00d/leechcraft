@@ -73,6 +73,7 @@
 #include "clientconnectionerrormgr.h"
 #include "accountsettingsholder.h"
 #include "crypthandler.h"
+#include "serverinfostorage.h"
 
 namespace LeechCraft
 {
@@ -112,6 +113,7 @@ namespace Xoox
 	, SelfContact_ (new SelfContact (OurJID_, account))
 	, ProxyObject_ (0)
 	, CapsManager_ (new CapsManager (this))
+	, ServerInfoStorage_ (new ServerInfoStorage (this, Settings_))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
 	, VCardQueue_ (new FetchQueue ([this] (QString str, bool report)
@@ -332,6 +334,11 @@ namespace Xoox
 				this,
 				SLOT (updateFTSettings ()));
 		updateFTSettings ();
+
+		connect (ServerInfoStorage_,
+				SIGNAL (bytestreamsProxyChanged (QString)),
+				this,
+				SLOT (handleDetectedBSProxy (QString)));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -545,6 +552,11 @@ namespace Xoox
 	CryptHandler* ClientConnection::GetCryptHandler () const
 	{
 		return CryptHandler_;
+	}
+
+	ServerInfoStorage* ClientConnection::GetServerInfoStorage () const
+	{
+		return ServerInfoStorage_;
 	}
 
 	void ClientConnection::SetSignaledLog (bool signaled)
@@ -1427,6 +1439,16 @@ namespace Xoox
 		auto ft = GetTransferManager ();
 		ft->setSupportedMethods (Settings_->GetFTMethods ());
 		ft->setProxy (Settings_->GetUseSOCKS5Proxy () ? Settings_->GetSOCKS5Proxy () : QString ());
+
+		handleDetectedBSProxy (ServerInfoStorage_->GetBytestreamsProxy ());
+	}
+
+	void ClientConnection::handleDetectedBSProxy (const QString& proxy)
+	{
+		if (Settings_->GetUseSOCKS5Proxy () && !Settings_->GetSOCKS5Proxy ().isEmpty ())
+			return;
+
+		GetTransferManager ()->setProxy (proxy);
 	}
 
 	void ClientConnection::ScheduleFetchVCard (const QString& jid)
