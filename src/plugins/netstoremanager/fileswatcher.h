@@ -55,7 +55,7 @@ namespace NetStoreManager
 	private:
 		void HandleNotification (int descriptor);
 		void AddPathWithNotify (const QString& path);
-		bool IsInExceptionList (const QString& path);
+		bool IsInExceptionList (const QString& path) const;
 		void RemoveWatchingPath (int descriptor);
 
 	public slots:

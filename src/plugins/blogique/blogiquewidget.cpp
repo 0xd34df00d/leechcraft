@@ -116,11 +116,11 @@ namespace Blogique
 		}
 
 		connect (Ui_.MainSplitter_,
-				SIGNAL (splitterMoved (int,int)),
+				SIGNAL (splitterMoved (int, int)),
 				this,
 				SLOT (saveSplitterPosition (int, int)));
 		connect (Ui_.CalendarSplitter_,
-				SIGNAL (splitterMoved (int,int)),
+				SIGNAL (splitterMoved (int, int)),
 				this,
 				SLOT (saveSplitterPosition (int, int)));
 	}
@@ -184,7 +184,7 @@ namespace Blogique
 						<< "Side widget"
 						<< w
 						<< "from"
-						<< w
+						<< ibp
 						<< "is not an IBlogiqueSideWidget";
 				continue;
 			}
@@ -204,7 +204,7 @@ namespace Blogique
 
 	}
 
-	void BlogiqueWidget::saveSplitterPosition (int , int)
+	void BlogiqueWidget::saveSplitterPosition (int, int)
 	{
 		XmlSettingsManager::Instance ().setProperty ("MainSplitterPosition",
 				Ui_.MainSplitter_->saveState ());

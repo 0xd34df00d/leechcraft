@@ -54,7 +54,6 @@ namespace GoogleDrive
 
 		DriveManager *DriveManager_;
 		QHash<QString, DriveItem> Items_;
-		Syncer *Syncer_;
 
 	public:
 		Account (const QString& name, QObject *parentPlugin = 0);
@@ -80,9 +79,6 @@ namespace GoogleDrive
 		void Copy (const QStringList& id, const QStringList& newParentId);
 		void Move (const QStringList& id, const QStringList& newParentId);
 		void Rename (const QStringList& id, const QString& newName);
-
-		void RequestFileChanges ();
-		void CheckForSyncUpload (const QStringList& pathes, const QString& baseDir);
 
 		QByteArray Serialize ();
 		static Account_ptr Deserialize (const QByteArray& data, QObject *parentPlugin);

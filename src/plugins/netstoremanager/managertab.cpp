@@ -277,10 +277,7 @@ namespace NetStoreManager
 					children << parentItem->child (i);
 			}
 
-			auto tempItems = parents;
-			parents = children;
-			children = tempItems;
-
+			std::swap (parents, children);
 			children.clear ();
 		}
 
@@ -338,8 +335,8 @@ namespace NetStoreManager
 		QStandardItem *thisItem = GetItemFromId (item [0]->data (ListingRole::ID).toStringList ());
 		if (thisItem)
 		{
-			QModelIndex index = Model_->indexFromItem (thisItem);
-			int columnCount = index.parent ().isValid () ?
+			const QModelIndex index = Model_->indexFromItem (thisItem);
+			const int columnCount = index.parent ().isValid () ?
 				thisItem->parent ()->columnCount () :
 				Model_->columnCount ();
 
@@ -458,7 +455,6 @@ namespace NetStoreManager
 
 		QModelIndex idx = Ui_.FilesTree_->currentIndex ();
 		idx = idx.sibling (idx.row (), Columns::FirstColumnNumber);
-		QStringList id = idx.data (ListingRole::ID).toStringList ();
 
 		acc->Download (idx.data (ListingRole::ID).toStringList (), "");
 	}

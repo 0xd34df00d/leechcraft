@@ -199,7 +199,6 @@ namespace NetStoreManager
 				continue;
 
 			auto isfl = qobject_cast<ISupportFileListings*> (account->GetObject ());
-			isfl->RequestFileChanges ();
 		}
 	}
 

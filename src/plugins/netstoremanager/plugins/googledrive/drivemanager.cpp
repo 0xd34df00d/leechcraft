@@ -368,7 +368,7 @@ namespace GoogleDrive
 
 	void DriveManager::GetFileChanges (qlonglong startId, const QString& key)
 	{
-		QString str = startId ?
+		const QString str = startId ?
 			QString ("https://www.googleapis.com/drive/v2/changes?includeDeleted=true&startChangeId=%1&access_token=%2")
 					.arg (startId)
 					.arg (key) :
