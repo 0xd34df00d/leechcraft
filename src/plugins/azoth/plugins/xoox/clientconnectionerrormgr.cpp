@@ -17,7 +17,9 @@
  **********************************************************************/
 
 #include "clientconnectionerrormgr.h"
+#include <QTimer>
 #include <util/util.h>
+#include <util/socketerrorstrings.h>
 #include "clientconnection.h"
 #include "core.h"
 
@@ -27,10 +29,25 @@ namespace Azoth
 {
 namespace Xoox
 {
+	const int ErrorLimit = 5;
+
 	ClientConnectionErrorMgr::ClientConnectionErrorMgr (ClientConnection *conn)
 	: QObject (conn)
 	, ClientConn_ (conn)
+	, Client_ (ClientConn_->GetClient ())
+	, SocketErrorAccumulator_ (0)
 	{
+		connect (Client_,
+				SIGNAL (error (QXmppClient::Error)),
+				this,
+				SLOT (handleError (QXmppClient::Error)));
+
+		QTimer *decrTimer = new QTimer (this);
+		connect (decrTimer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (decrementErrAccumulators ()));
+		decrTimer->start (15000);
 	}
 
 	void ClientConnectionErrorMgr::Whitelist (const QString& id, bool add)
@@ -149,6 +166,55 @@ namespace Xoox
 			};
 			ClientConn_->SetState (state);
 		}
+	}
+
+	void ClientConnectionErrorMgr::handleError (QXmppClient::Error error)
+	{
+		QString str;
+		switch (error)
+		{
+		case QXmppClient::SocketError:
+			if (SocketErrorAccumulator_ < ErrorLimit)
+			{
+				++SocketErrorAccumulator_;
+				str = tr ("socket error: %1.")
+						.arg (Util::GetSocketErrorString (Client_->socketError ()));
+			}
+			break;
+		case QXmppClient::KeepAliveError:
+			str = tr ("keep-alive error.");
+			break;
+		case QXmppClient::XmppStreamError:
+			str = tr ("error while connecting: ");
+			str += HandleErrorCondition (Client_->xmppStreamError ());
+			break;
+		case QXmppClient::NoError:
+			str = tr ("no error.");
+			break;
+		}
+
+		if (str.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "suppressed"
+					<< str
+					<< error
+					<< Client_->socketError ()
+					<< Client_->xmppStreamError ();
+			return;
+		}
+
+		const Entity& e = Util::MakeNotification ("Azoth",
+				tr ("Account %1:").arg (ClientConn_->GetOurJID ()) +
+					' ' + str,
+				PCritical_);
+		Core::Instance ().SendEntity (e);
+	}
+
+	void ClientConnectionErrorMgr::decrementErrAccumulators ()
+	{
+		if (SocketErrorAccumulator_ > 0)
+			--SocketErrorAccumulator_;
 	}
 }
 }

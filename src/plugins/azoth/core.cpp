@@ -934,8 +934,10 @@ namespace Azoth
 					.arg (QString ("data:image/png;base64," + rawData));
 			if (body.startsWith (escaped))
 				body.replace (0, escaped.size (), smileStr);
-			body.replace (' ' + escaped, ' ' + smileStr);
-			body.replace ('\n' + escaped, '\n' + smileStr);
+
+			auto whites = { " ", "\n", "\t", "<br/>", "<br />", "<br>" };
+			Q_FOREACH (auto white, whites)
+				body.replace (white + escaped, white + smileStr);
 		}
 
 		return body;

@@ -19,11 +19,7 @@
 #pragma once
 
 #include <QObject>
-#include <QSet>
-#include <QXmppStanza.h>
-#include <QXmppClient.h>
-
-class QXmppIq;
+#include <QXmppDiscoveryIq.h>
 
 namespace LeechCraft
 {
@@ -31,31 +27,34 @@ namespace Azoth
 {
 namespace Xoox
 {
+	class AccountSettingsHolder;
 	class ClientConnection;
 
-	class ClientConnectionErrorMgr : public QObject
+	class ServerInfoStorage : public QObject
 	{
 		Q_OBJECT
 
-		ClientConnection *ClientConn_;
-		QXmppClient *Client_;
+		ClientConnection *Conn_;
+		AccountSettingsHolder *Settings_;
+		QString PreviousJID_;
+		QString Server_;
 
-		QSet<QString> WhitelistedErrors_;
+		QStringList ServerFeatures_;
 
-		int SocketErrorAccumulator_;
+		QString BytestreamsProxy_;
 	public:
-		ClientConnectionErrorMgr (ClientConnection*);
+		ServerInfoStorage (ClientConnection*, AccountSettingsHolder*);
 
-		void Whitelist (const QString&, bool add = true);
-		void HandleIq (const QXmppIq&);
+		bool HasServerFeatures () const;
+		QString GetBytestreamsProxy () const;
 	private:
-		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
-		void HandleError (const QXmppIq&);
+		void HandleItems (const QXmppDiscoveryIq&);
+		void HandleServerInfo (const QXmppDiscoveryIq&);
+		void HandleItemInfo (const QXmppDiscoveryIq&);
 	private slots:
-		void handleError (QXmppClient::Error);
-		void decrementErrAccumulators ();
+		void handleConnected ();
 	signals:
-		void serverAuthFailed ();
+		void bytestreamsProxyChanged (const QString&);
 	};
 }
 }

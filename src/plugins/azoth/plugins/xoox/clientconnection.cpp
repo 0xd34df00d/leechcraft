@@ -72,10 +72,8 @@
 #include "xmppcaptchamanager.h"
 #include "clientconnectionerrormgr.h"
 #include "accountsettingsholder.h"
-
-#ifdef ENABLE_CRYPT
-#include "pgpmanager.h"
-#endif
+#include "crypthandler.h"
+#include "serverinfostorage.h"
 
 namespace LeechCraft
 {
@@ -83,8 +81,6 @@ namespace Azoth
 {
 namespace Xoox
 {
-	const int ErrorLimit = 5;
-
 	ClientConnection::ClientConnection (GlooxAccount *account)
 	: Account_ (account)
 	, Settings_ (account->GetSettings ())
@@ -111,14 +107,13 @@ namespace Xoox
 	, RIEXManager_ (new RIEXManager)
 	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
-#ifdef ENABLE_CRYPT
-	, PGPManager_ (0)
-#endif
+	, CryptHandler_ (new CryptHandler (this))
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
 	, OurJID_ (Settings_->GetFullJID ())
 	, SelfContact_ (new SelfContact (OurJID_, account))
 	, ProxyObject_ (0)
 	, CapsManager_ (new CapsManager (this))
+	, ServerInfoStorage_ (new ServerInfoStorage (this, Settings_))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
 	, VCardQueue_ (new FetchQueue ([this] (QString str, bool report)
@@ -139,7 +134,6 @@ namespace Xoox
 					ErrorMgr_->Whitelist (id, report);
 				},
 				OurJID_.contains ("gmail.com") ? 1200 : 250, 1, this))
-	, SocketErrorAccumulator_ (0)
 	{
 		SetOurJID (OurJID_);
 
@@ -152,13 +146,6 @@ namespace Xoox
 
 		LastState_.State_ = SOffline;
 		handlePriorityChanged (Settings_->GetPriority ());
-
-		QTimer *decrTimer = new QTimer (this);
-		connect (decrTimer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (decrementErrAccumulators ()));
-		decrTimer->start (15000);
 
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
@@ -186,7 +173,7 @@ namespace Xoox
 				this,
 				SLOT (handlePEPAvatarUpdated (QString, QImage)));
 
-		InitializeQCA ();
+		CryptHandler_->Init ();
 
 		Client_->addExtension (BMManager_);
 		Client_->addExtension (BobManager_);
@@ -194,7 +181,6 @@ namespace Xoox
 		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (XferManager_);
-		Client_->addExtension (BMManager_);
 		Client_->addExtension (ArchiveManager_);
 		Client_->addExtension (CaptchaManager_);
 		Client_->addExtension (new LegacyEntityTimeExt);
@@ -240,10 +226,6 @@ namespace Xoox
 				SIGNAL (disconnected ()),
 				this,
 				SLOT (handleDisconnected ()));
-		connect (Client_,
-				SIGNAL (error (QXmppClient::Error)),
-				this,
-				SLOT (handleError (QXmppClient::Error)));
 		connect (Client_,
 				SIGNAL (iqReceived (const QXmppIq&)),
 				this,
@@ -352,6 +334,11 @@ namespace Xoox
 				this,
 				SLOT (updateFTSettings ()));
 		updateFTSettings ();
+
+		connect (ServerInfoStorage_,
+				SIGNAL (bytestreamsProxyChanged (QString)),
+				this,
+				SLOT (handleDetectedBSProxy (QString)));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -412,8 +399,6 @@ namespace Xoox
 				JID2CLEntry_.remove (jid);
 				ODSEntries_ [jid] = entry;
 				entry->Convert2ODS ();
-
-				qDebug () << "converting" << jid;
 			}
 			SelfContact_->RemoveVariant (OurResource_);
 		}
@@ -564,22 +549,15 @@ namespace Xoox
 		return SDManager_;
 	}
 
-#ifdef ENABLE_CRYPT
-	PgpManager* ClientConnection::GetPGPManager () const
+	CryptHandler* ClientConnection::GetCryptHandler () const
 	{
-		return PGPManager_;
+		return CryptHandler_;
 	}
 
-	bool ClientConnection::SetEncryptionEnabled (const QString& jid, bool enabled)
+	ServerInfoStorage* ClientConnection::GetServerInfoStorage () const
 	{
-		if (enabled)
-			Entries2Crypt_ << jid;
-		else
-			Entries2Crypt_.remove (jid);
-
-		return true;
+		return ServerInfoStorage_;
 	}
-#endif
 
 	void ClientConnection::SetSignaledLog (bool signaled)
 	{
@@ -741,28 +719,7 @@ namespace Xoox
 		if (msg.isReceiptRequested ())
 			UndeliveredMessages_ [msg.id ()] = msgObj;
 
-#ifdef ENABLE_CRYPT
-		EntryBase *entry = qobject_cast<EntryBase*> (msgObj->OtherPart ());
-		if (entry &&
-				Entries2Crypt_.contains (entry->GetJID ()))
-		{
-			const QCA::PGPKey& key = PGPManager_->PublicKey (entry->GetJID ());
-
-			if (!key.isNull ())
-			{
-				const QString& body = msg.body ();
-				msg.setBody (tr ("This message is encrypted. Please decrypt "
-								"it to view the original contents."));
-
-				QXmppElement crypt;
-				crypt.setTagName ("x");
-				crypt.setAttribute ("xmlns", "jabber:x:encrypted");
-				crypt.setValue (PGPManager_->EncryptBody (key, body.toUtf8 ()));
-
-				msg.setExtensions (msg.extensions () << crypt);
-			}
-		}
-#endif
+		CryptHandler_->ProcessOutgoing (msg, msgObj);
 
 		Client_->sendPacket (msg);
 	}
@@ -951,49 +908,6 @@ namespace Xoox
 		emit statusChanged (EntryStatus (SOffline, LastState_.Status_));
 	}
 
-	void ClientConnection::handleError (QXmppClient::Error error)
-	{
-		QString str;
-		switch (error)
-		{
-		case QXmppClient::SocketError:
-			if (SocketErrorAccumulator_ < ErrorLimit)
-			{
-				++SocketErrorAccumulator_;
-				str = tr ("socket error: %1.")
-						.arg (Util::GetSocketErrorString (Client_->socketError ()));
-			}
-			break;
-		case QXmppClient::KeepAliveError:
-			str = tr ("keep-alive error.");
-			break;
-		case QXmppClient::XmppStreamError:
-			str = tr ("error while connecting: ");
-			str += ErrorMgr_->HandleErrorCondition (Client_->xmppStreamError ());
-			break;
-		case QXmppClient::NoError:
-			str = tr ("no error.");
-			break;
-		}
-
-		if (str.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "suppressed"
-					<< str
-					<< error
-					<< Client_->socketError ()
-					<< Client_->xmppStreamError ();
-			return;
-		}
-
-		const Entity& e = Util::MakeNotification ("Azoth",
-				tr ("Account %1:").arg (OurJID_) +
-					' ' + str,
-				PCritical_);
-		Core::Instance ().SendEntity (e);
-	}
-
 	void ClientConnection::handleIqReceived (const QXmppIq& iq)
 	{
 		ErrorMgr_->HandleIq (iq);
@@ -1132,10 +1046,8 @@ namespace Xoox
 		}
 
 		JID2CLEntry_ [jid]->HandlePresence (pres, resource);
-		if (SignedPresences_.remove (jid))
-		{
-			qDebug () << "got signed presence" << jid;
-		}
+
+		CryptHandler_->HandlePresence (pres, jid, resource);
 	}
 
 	namespace
@@ -1172,8 +1084,7 @@ namespace Xoox
 		QString resource;
 		Split (msg.from (), &jid, &resource);
 
-		if (EncryptedMessages_.contains (msg.from ()))
-			msg.setBody (EncryptedMessages_.take (msg.from ()));
+		CryptHandler_->ProcessIncoming (msg);
 
 		if (AwaitingRIEXItems_.contains (msg.from ()))
 		{
@@ -1367,25 +1278,6 @@ namespace Xoox
 			AwaitingDiscoItems_.take (jid) (iq);
 	}
 
-	void ClientConnection::handleEncryptedMessageReceived (const QString& id,
-			const QString& decrypted)
-	{
-		EncryptedMessages_ [id] = decrypted;
-	}
-
-	void ClientConnection::handleSignedMessageReceived (const QString&)
-	{
-	}
-
-	void ClientConnection::handleSignedPresenceReceived (const QString&)
-	{
-	}
-
-	void ClientConnection::handleInvalidSignatureReceived (const QString& id)
-	{
-		qDebug () << Q_FUNC_INFO << id;
-	}
-
 	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)
 	{
 		QString entryId;
@@ -1409,12 +1301,6 @@ namespace Xoox
 		default:
 			break;
 		}
-	}
-
-	void ClientConnection::decrementErrAccumulators ()
-	{
-		if (SocketErrorAccumulator_ > 0)
-			--SocketErrorAccumulator_;
 	}
 
 	/** @todo Handle action reasons in QXmppPresence::Subscribe and
@@ -1553,31 +1439,16 @@ namespace Xoox
 		auto ft = GetTransferManager ();
 		ft->setSupportedMethods (Settings_->GetFTMethods ());
 		ft->setProxy (Settings_->GetUseSOCKS5Proxy () ? Settings_->GetSOCKS5Proxy () : QString ());
+
+		handleDetectedBSProxy (ServerInfoStorage_->GetBytestreamsProxy ());
 	}
 
-	void ClientConnection::InitializeQCA ()
+	void ClientConnection::handleDetectedBSProxy (const QString& proxy)
 	{
-#ifdef ENABLE_CRYPT
-		PGPManager_ = new PgpManager ();
+		if (Settings_->GetUseSOCKS5Proxy () && !Settings_->GetSOCKS5Proxy ().isEmpty ())
+			return;
 
-		Client_->addExtension (PGPManager_);
-		connect (PGPManager_,
-				SIGNAL (encryptedMessageReceived (QString, QString)),
-				this,
-				SLOT (handleEncryptedMessageReceived (QString, QString)));
-		connect (PGPManager_,
-				SIGNAL (signedMessageReceived (const QString&)),
-				this,
-				SLOT (handleSignedMessageReceived (const QString&)));
-		connect (PGPManager_,
-				SIGNAL (signedPresenceReceived (const QString&)),
-				this,
-				SLOT (handleSignedPresenceReceived (const QString&)));
-		connect (PGPManager_,
-				SIGNAL (invalidSignatureReceived (const QString&)),
-				this,
-				SLOT (handleInvalidSignatureReceived (const QString&)));
-#endif
+		GetTransferManager ()->setProxy (proxy);
 	}
 
 	void ClientConnection::ScheduleFetchVCard (const QString& jid)

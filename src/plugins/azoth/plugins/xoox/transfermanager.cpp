@@ -56,7 +56,7 @@ namespace Xoox
 		}
 		if (!var.isEmpty ())
 			target += '/' + var;
-		return new TransferJob (Manager_->sendFile (target, name, QString (), comment), this);
+		return new TransferJob (Manager_->sendFile (target, name, comment), this);
 	}
 
 	GlooxAccount* TransferManager::GetAccount () const

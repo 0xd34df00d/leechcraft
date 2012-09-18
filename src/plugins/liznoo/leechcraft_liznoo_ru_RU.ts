@@ -61,92 +61,82 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Liznoo::PlatformWinAPI</name>
+    <name>LeechCraft::Liznoo::PlatformFreeBSD</name>
     <message>
-        <location filename="platformwinapi.cpp" line="95"/>
-        <source>New power scheme detected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="platformwinapi.cpp" line="100"/>
-        <source>New power source detected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="platformwinapi.cpp" line="107"/>
-        <source>New battery state detected</source>
-        <translation type="unfinished"></translation>
+        <location filename="platformfreebsd.cpp" line="62"/>
+        <source>Looks like you don&apos;t have permission to write to /dev/acpi. If you&apos;re in &apos;wheel&apos; group, add &apos;perm acpi 0664&apos; to /etc/devfs.conf and run &apos;/etc/rc.d/devfs restart&apos; to apply needed permissions to /dev/acpi.</source>
+        <translation>Похоже, что у вас нет прав на запись в /dev/acpi. Если вы в группе &apos;wheel&apos;, добавьте &apos;perm acpi 0664&apos; в /etc/devfs.conf и выполните &apos;/etc/rc.d/devfs restart&apos; для применения необходимых разрешений на /dev/acpi.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Liznoo::Plugin</name>
     <message>
-        <location filename="liznoo.cpp" line="67"/>
+        <location filename="liznoo.cpp" line="72"/>
         <source>Suspend</source>
         <translation>Ждущий режим</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="74"/>
+        <location filename="liznoo.cpp" line="79"/>
         <source>Hibernate</source>
         <translation>Спящий режим</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="104"/>
+        <location filename="liznoo.cpp" line="109"/>
         <source>UPower/WinAPI-based power manager.</source>
         <translation>Управление энергией, основанное на UPower/WinAPI.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="169"/>
+        <location filename="liznoo.cpp" line="177"/>
         <source>(charging)</source>
         <translation>(заряжается)</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="171"/>
+        <location filename="liznoo.cpp" line="179"/>
         <source>(discharging)</source>
         <translation>(разряжается)</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="175"/>
+        <location filename="liznoo.cpp" line="183"/>
         <source>Battery</source>
         <translation>Батарея</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="186"/>
+        <location filename="liznoo.cpp" line="194"/>
         <source>Battery technology: %1</source>
         <translation>Технология: %1</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="191"/>
+        <location filename="liznoo.cpp" line="200"/>
         <source>Energy rate: %1 W</source>
         <translation>Мощность: %1 W</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="197"/>
+        <location filename="liznoo.cpp" line="206"/>
         <source>Remaining energy: %1 Wh</source>
         <translation>Осталось энергии: %1 Вт·ч</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="203"/>
+        <location filename="liznoo.cpp" line="212"/>
         <source>Full energy capacity: %1 Wh</source>
         <translation>Полная емкость: %1 Вт·ч</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="232"/>
+        <location filename="liznoo.cpp" line="241"/>
         <source>Battery charge level is below %1.</source>
         <translation>Заряд батареи ниже %1.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="245"/>
+        <location filename="liznoo.cpp" line="254"/>
         <source>The device started charging.</source>
         <translation>Устройство начало заряжаться.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="249"/>
+        <location filename="liznoo.cpp" line="258"/>
         <source>The device started discharging.</source>
         <translation>Устройство начало разряжаться.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="258"/>
+        <location filename="liznoo.cpp" line="267"/>
         <source>Battery status</source>
         <translation>Статус батареи</translation>
     </message>

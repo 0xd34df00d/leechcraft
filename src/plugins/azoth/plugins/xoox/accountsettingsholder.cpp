@@ -353,8 +353,12 @@ namespace Xoox
 			return;
 
 		auto conn = Account_->GetClientConnection ();
+		if (!conn)
+			return;
+
 		const auto state = conn->GetLastState ();
 		Account_->ChangeState (EntryStatus (SOffline, Account_->GetState ().StatusString_));
+		conn->SetOurJID (GetFullJID ());
 		new AccStatusRestorer (state, conn);
 	}
 }
