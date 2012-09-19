@@ -105,6 +105,7 @@ namespace Xoox
 			msg.setBody (EncryptedMessages_.take (msg.from ()));
 	}
 
+#ifdef ENABLE_CRYPT
 	PgpManager* CryptHandler::GetPGPManager () const
 	{
 		return PGPManager_;
@@ -119,6 +120,7 @@ namespace Xoox
 
 		return true;
 	}
+#endif
 
 	void CryptHandler::handleEncryptedMessageReceived (const QString& id,
 			const QString& decrypted)
