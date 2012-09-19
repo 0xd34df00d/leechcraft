@@ -121,9 +121,10 @@ namespace LMP
 
 				const auto& idx = sourceModel ()->index (row, 0, parent);
 				const auto& info = idx.data (Player::Role::Info).value<MediaInfo> ();
+				bool isInt = false;
 				if (check (info.Artist_) ||
 					check (info.Album_) ||
-					info.Year_ == str.toInt ())
+					(info.Year_ == str.toInt (&isInt) && isInt))
 					return true;
 
 				if (parent.isValid () && check (info.Title_))
