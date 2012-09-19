@@ -31,11 +31,11 @@ namespace NetStoreManager
 {
 	FilesWatcher::FilesWatcher (QObject *parent)
 	: QObject (parent)
+	, INotifyDescriptor_ (inotify_init ())
 	, WatchMask_ (IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY |IN_MOVED_FROM | IN_MOVED_TO )
 	, WaitMSecs_ (50)
 	, Timer_ (new QTimer (this))
 	{
-		INotifyDescriptor_ = inotify_init ();
 		if (INotifyDescriptor_ < 0)
 			throw std::runtime_error ("inotify_init failed. Synchronization will not work.");
 
