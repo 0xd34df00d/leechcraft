@@ -38,6 +38,8 @@ namespace Azoth
 {
 namespace ChatHistory
 {
+	class ChatHistoryWidget;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -90,6 +92,8 @@ namespace ChatHistory
 		bool IsHistoryEnabledFor (QObject*) const;
 		void RequestLastMessages (QObject*, int);
 		void AddRawMessage (const QVariantMap&);
+	private:
+		void InitWidget (ChatHistoryWidget*);
 	public slots:
 		void initPlugin (QObject*);
 

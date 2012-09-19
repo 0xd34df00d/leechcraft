@@ -170,6 +170,18 @@ namespace ChatHistory
 	{
 		Core::Instance ()->Process (map);
 	}
+	
+	void Plugin::InitWidget (ChatHistoryWidget *wh)
+	{
+		connect (wh,
+				SIGNAL (removeSelf (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		connect (wh,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+	}
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
@@ -284,14 +296,7 @@ namespace ChatHistory
 	void Plugin::handleHistoryRequested ()
 	{
 		ChatHistoryWidget *wh = new ChatHistoryWidget;
-		connect (wh,
-				SIGNAL (removeSelf (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		connect (wh,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+		InitWidget (wh);
 		emit addNewTab (tr ("Chat history"), wh);
 	}
 
@@ -326,10 +331,7 @@ namespace ChatHistory
 		}
 
 		ChatHistoryWidget *wh = new ChatHistoryWidget (entry);
-		connect (wh,
-				SIGNAL (removeSelf (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
+		InitWidget (wh);
 		emit addNewTab (tr ("Chat history"), wh);
 		emit raiseTab (wh);
 	}
