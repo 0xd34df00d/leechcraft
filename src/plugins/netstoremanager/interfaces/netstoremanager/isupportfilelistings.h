@@ -32,7 +32,9 @@ namespace NetStoreManager
 	{
 		ID = Qt::UserRole + 20,
 		InTrash,
-		Directory
+		Directory,
+		ModifiedDate,
+		Hash
 	};
 
 	enum ListingOp
