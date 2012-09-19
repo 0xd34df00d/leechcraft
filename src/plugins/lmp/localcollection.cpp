@@ -19,6 +19,7 @@
 #include "localcollection.h"
 #include <functional>
 #include <algorithm>
+#include <numeric>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QMimeData>
