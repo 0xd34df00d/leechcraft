@@ -231,7 +231,7 @@ namespace TabSessManager
 		if (recoverData.isEmpty ())
 			return;
 
-		const TabUncloseInfo& info =
+		const TabUncloseInfo info
 		{
 			{
 				recoverData,
