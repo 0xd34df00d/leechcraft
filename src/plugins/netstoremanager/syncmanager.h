@@ -53,10 +53,17 @@ namespace NetStoreManager
 		QMap<ISupportFileListings*, QMap<QString, QStringList>> Isfl2PathId_;
 		QQueue<std::function<void (void)>> ApiCallQueue_;
 		QTimer *QueueCheckTimer_;
+
+		const int RemoteStorageCheckingTimeout_;
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
 
 		void Release ();
+	private:
+		void CreateDirectory (const QString& path);
+		void DownloadFile (const QString& path, const QStringList& id,
+				const QDateTime& modifiedDate, const QString& hash,
+				ISupportFileListings *isfl) const;
 
 	public slots:
 		void handleDirectoryAdded (const QVariantMap& dirs);

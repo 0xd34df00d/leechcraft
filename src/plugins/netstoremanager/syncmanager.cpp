@@ -22,6 +22,7 @@
 #include <QTimer>
 #include <QDir>
 #include <QThread>
+#include <QDateTime>
 #include <QStandardItemModel>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
@@ -41,11 +42,12 @@ namespace NetStoreManager
 	, Thread_ (new QThread (this))
 	, FilesWatcher_ (0)
 	, QueueCheckTimer_ (new QTimer (this))
+	, RemoteStorageCheckingTimeout_ (10000)
 	{
-// 		connect (Timer_,
-// 				SIGNAL (timeout ()),
-// 				this,
-// 				SLOT (handleTimeout ()));
+		connect (Timer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (handleTimeout ()));
 
 		connect (QueueCheckTimer_,
 				SIGNAL (timeout ()),
@@ -62,6 +64,28 @@ namespace NetStoreManager
 			QMetaObject::invokeMethod (FilesWatcher_,
 					"Release");
 		Thread_->exit ();
+	}
+
+	void SyncManager::CreateDirectory (const QString& path)
+	{
+		QDir ().mkpath (path);
+	}
+
+	void SyncManager::DownloadFile (const QString& path, const QStringList& id,
+			const QDateTime& modifiedDate, const QString& hash,
+			ISupportFileListings *isfl) const
+	{
+		QFileInfo fi (path);
+		if (fi.exists () &&
+				fi.lastModified () > modifiedDate)
+		{
+			//TODO hash checking
+			//TODO update remote file
+		}
+		else
+		{
+			//TODO silent file download
+		}
 	}
 
 	void SyncManager::handleDirectoryAdded (const QVariantMap& dirs)
@@ -147,49 +171,10 @@ namespace NetStoreManager
 // 			isfl->CheckForSyncUpload (pathes, dirPath);
 		}
 
-		// check for changes every minute
-// 		Timer_->start (60000);
-// 		handleTimeout ();
+		Timer_->start (RemoteStorageCheckingTimeout_);
+		handleTimeout ();
 		QueueCheckTimer_->start (1000);
 	}
-
-// 	void SyncManager::handleDirectoryChanged (const QString& path)
-// 	{
-// 		QStringList pathesInDir = ScanDir (path, false);
-// 		qDebug () << "pathes in dir" << pathesInDir;
-// // 		QStringList watchedFiles = WatchedPathes_;
-// // 		QDir dir (path);
-// //
-// // 		QStringList baseDirs;
-// // 		for (const auto& str : Path2Account_.keys ())
-// // 			if (path.contains (str))
-// // 			{
-// // 				baseDirs << str;
-// // 				WatchedPathes_ << ScanDir (str);
-// // 			}
-// //
-// // 		//check for removed files
-// // 		QStringList removedFiles;
-// // 		std::set_difference (watchedFiles.begin (), watchedFiles.end (),
-// // 				WatchedPathes_.begin (), WatchedPathes_.end (),
-// // 				std::back_inserter (removedFiles));
-// //
-// // 		//check for adding files
-// // 		for (const auto& info : dir.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot))
-// // 		{
-// // 			if (!watchedFiles.contains (info.absoluteFilePath ()))
-// // 				FileSystemWatcher_->addPath (info.absoluteFilePath ());
-// // 		}
-// //
-// // 		for (const auto& str : Path2Account_.keys ())
-// // 		{
-// // 			if (path.contains (str))
-// // 			{
-// // 				auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [str]->GetObject ());
-// // 				isfl->CheckForSyncUpload (FileSystemWatcher_->files (), str);
-// // 			}
-// // 		}
-// 	}
 
 	void SyncManager::handleTimeout ()
 	{
@@ -229,16 +214,16 @@ namespace NetStoreManager
 				continue;
 			}
 
-			auto map = Isfl2PathId_ [isfl];
-			if (map.contains (path))
-				continue;
-
 			const QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
 
 			QString remotePath = path;
 			remotePath.remove (0, rootDirPath.length ());
 			const QString& parentPath = QFileInfo (remotePath).dir ().absolutePath ();
 			const QString& dirName = QFileInfo (path).fileName ();
+
+			auto map = Isfl2PathId_ [isfl];
+			if (map.contains (remotePath))
+				continue;
 
 			if (map.contains (parentPath))
 				isfl->CreateDirectory (dirName, map [parentPath]);
@@ -455,13 +440,13 @@ namespace NetStoreManager
 		if (dirPath.isEmpty ())
 			return;
 
-		QMap<QString, QStringList> map;
+		QMap<QString, QStringList>& map = Isfl2PathId_ [isfl];
 
 		QList<QStandardItem*> parents;
 		QList<QStandardItem*> children;
 
 		for (const auto& row : items)
-			parents << row [0];
+			parents << row.value (0);
 
 		while (!parents.isEmpty ())
 		{
@@ -470,25 +455,36 @@ namespace NetStoreManager
 				QString path = parentItem->parent () ?
 					map.key (parentItem->parent ()->data (ListingRole::ID).toStringList ()):
 					QString ();
-				if (path.isEmpty ())
-					map ["/" + parentItem->text ()] =
-							parentItem->data (ListingRole::ID).toStringList ();
-				else
-					map [path + "/" + parentItem->text ()] =
-							parentItem->data (ListingRole::ID).toStringList ();
+
+				const QString relativePath = path.isEmpty () ?
+					"/" + parentItem->text () :
+					path + "/" + parentItem->text ();
+
+				QFileInfo baseDirFI (dirPath);
+				const QString baseDir = "/" + baseDirFI.fileName ();
+				if (relativePath != baseDir &&
+						!relativePath.startsWith (baseDir + "/"))
+					continue;
+
+				const QString resultPath = baseDirFI.dir ().absolutePath () +
+						relativePath;
+				map [relativePath] = parentItem->data (ListingRole::ID).toStringList ();
+
+				if (relativePath != baseDir)
+					parentItem->data (ListingRole::Directory).toBool () ?
+						CreateDirectory (resultPath) :
+						DownloadFile (resultPath,
+								parentItem->data (ListingRole::ID).toStringList (),
+								parentItem->data (ListingRole::ModifiedDate).toDateTime (),
+								parentItem->data (ListingRole::Hash).toString (),
+								isfl);
 
 				for (int i = 0; i < parentItem->rowCount (); ++i)
 					children << parentItem->child (i);
 			}
-
-			auto tempItems = parents;
-			parents = children;
-			children = tempItems;
-
+			std::swap (parents, children);
 			children.clear ();
 		}
-
-		Isfl2PathId_ [isfl] = map;
 
 		QStringList pathes = Utils::ScanDir (QDir::NoDotAndDotDot | QDir::Dirs,
 				dirPath, true);
