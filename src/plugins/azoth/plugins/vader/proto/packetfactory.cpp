@@ -39,12 +39,12 @@ namespace Proto
 
 	Packet PacketFactory::Hello ()
 	{
-		return HalfPacket { { Packets::Hello, Seq_++ }, QByteArray () };
+		return HalfPacket { Header (Packets::Hello, Seq_++), QByteArray () };
 	}
 
 	Packet PacketFactory::Ping ()
 	{
-		return HalfPacket { { Packets::Ping, Seq_++ }, QByteArray () };
+		return HalfPacket { Header (Packets::Ping, Seq_++), QByteArray () };
 	}
 
 	Packet PacketFactory::Login (const QString& login,
@@ -65,7 +65,7 @@ namespace Proto
 				0,
 				0,
 				QByteArray ("vader"));
-		return HalfPacket { { Packets::Login2, Seq_++ }, data };
+		return HalfPacket { Header (Packets::Login2, Seq_++), data };
 	}
 
 	Packet PacketFactory::SetStatus (quint32 state, const QString& status)
@@ -74,7 +74,7 @@ namespace Proto
 				QByteArray (),
 				QByteArray (),
 				ToMRIM16 (status));
-		return HalfPacket { { Packets::ChangeStatus, Seq_++ }, data };
+		return HalfPacket { Header (Packets::ChangeStatus, Seq_++), data };
 	}
 
 	Packet PacketFactory::RequestInfo (const QString& id)
@@ -84,45 +84,45 @@ namespace Proto
 				split.value (0),
 				static_cast<quint32> (WPParams::Domain),
 				split.value (1));
-		return HalfPacket { { Packets::WPRequest, Seq_++ }, data };
+		return HalfPacket { Header (Packets::WPRequest, Seq_++), data };
 	}
 
 	Packet PacketFactory::Message (MsgFlags flags,
 			const QString& to, const QString& msg)
 	{
 		const QByteArray& data = ToMRIM (static_cast<quint32> (flags), to, ToMRIM16 (msg), ToMRIM1251 (" "));
-		return HalfPacket { { Packets::Msg, Seq_++ }, data };
+		return HalfPacket { Header (Packets::Msg, Seq_++), data };
 	}
 
 	Packet PacketFactory::MessageAck (const QString& from, quint32 msgId)
 	{
 		const QByteArray& data = ToMRIM (from, msgId);
-		return HalfPacket { { Packets::MsgRecv, Seq_++ }, data };
+		return HalfPacket { Header (Packets::MsgRecv, Seq_++), data };
 	}
 
 	Packet PacketFactory::OfflineMessageAck (const UIDL& id)
 	{
 		const QByteArray& data = ToMRIM (id);
-		return HalfPacket { { Packets::DeleteOfflineMsg, Seq_++ }, data };
+		return HalfPacket { Header (Packets::DeleteOfflineMsg, Seq_++), data };
 	}
 
 	Packet PacketFactory::Microblog (BlogStatus st, const QString& text)
 	{
 		const QByteArray& data = ToMRIM (static_cast<quint32> (st), text);
-		return HalfPacket { { Packets::MicroblogPost, Seq_++ }, data };
+		return HalfPacket { Header (Packets::MicroblogPost, Seq_++), data };
 	}
 
 	Packet PacketFactory::SMS (const QString& to, const QString& text)
 	{
 		const QByteArray& data = ToMRIM (0, to, ToMRIM16 (text));
-		return HalfPacket { { Packets::SMS, Seq_++ }, data };
+		return HalfPacket { Header (Packets::SMS, Seq_++), data };
 	}
 
 	Packet PacketFactory::AddGroup (const QString& name, int numGroups)
 	{
 		const QByteArray& data = ToMRIM (static_cast<quint32> (ContactOpFlag::Group | (numGroups << 24)),
 				0, QString (), ToMRIM16 (name), QString (), 0, 0);
-		return HalfPacket { { Packets::Contact, Seq_++ }, data };
+		return HalfPacket { Header (Packets::Contact, Seq_++), data };
 	}
 
 	Packet PacketFactory::AddContact (ContactOpFlags flags,
@@ -130,7 +130,7 @@ namespace Proto
 	{
 		const QByteArray& data = ToMRIM (static_cast<quint32> (flags),
 				group, email, ToMRIM16 (name), QString (" "), QString (" "), 0);
-		return HalfPacket { { Packets::Contact, Seq_++ }, data };
+		return HalfPacket { Header (Packets::Contact, Seq_++), data };
 	}
 
 	Packet PacketFactory::ModifyContact (quint32 cid, ContactOpFlags flags,
@@ -138,7 +138,7 @@ namespace Proto
 	{
 		const QByteArray& data = ToMRIM (cid, static_cast<quint32> (flags),
 				group, email, ToMRIM16 (name), phone);
-		return HalfPacket { { Packets::ModifyContact, Seq_++ }, data };
+		return HalfPacket { Header (Packets::ModifyContact, Seq_++), data };
 	}
 
 	Packet PacketFactory::RemoveContact (quint32 id, const QString& email, const QString& name)
@@ -149,18 +149,18 @@ namespace Proto
 				email,
 				name,
 				QString (" "));
-		return HalfPacket { { Packets::ModifyContact, Seq_++ }, data };
+		return HalfPacket { Header (Packets::ModifyContact, Seq_++), data };
 	}
 
 	Packet PacketFactory::Authorize (const QString& email)
 	{
 		const QByteArray& data = ToMRIM (email);
-		return HalfPacket { { Packets::Authorize }, data };
+		return HalfPacket { Header (Packets::Authorize), data };
 	}
 
 	Packet PacketFactory::RequestKey ()
 	{
-		return HalfPacket { { Packets::GetMPOPSession }, QByteArray () };
+		return HalfPacket { Header (Packets::GetMPOPSession), QByteArray () };
 	}
 }
 }
