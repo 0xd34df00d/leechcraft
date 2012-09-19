@@ -229,8 +229,11 @@ namespace NetStoreManager
 				continue;
 			}
 
-			QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
 			auto map = Isfl2PathId_ [isfl];
+			if (map.contains (path))
+				continue;
+
+			const QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
 
 			QString remotePath = path;
 			remotePath.remove (0, rootDirPath.length ());
@@ -260,8 +263,11 @@ namespace NetStoreManager
 				continue;
 			}
 
-			QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
 			auto map = Isfl2PathId_ [isfl];
+			if (map.contains (path))
+				continue;
+
+			const QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
 
 			QString remotePath = path;
 			remotePath.remove (0, rootDirPath.length ());
@@ -289,14 +295,18 @@ namespace NetStoreManager
 				continue;
 			}
 
-			QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
+
 			auto map = Isfl2PathId_ [isfl];
+			const QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
 
 			QString remotePath = path;
 			remotePath.remove (0, rootDirPath.length ());
+			if (!map.contains (remotePath))
+				continue;
+
 			isfl->GetListingOps () & TrashSupporting ?
-				isfl->MoveToTrash ({ map [remotePath] }) :
-				isfl->Delete ({ map [remotePath] }, false);
+				isfl->MoveToTrash ({ map.take (remotePath) }) :
+				isfl->Delete ({ map.take (remotePath) }, false);
 		}
 	}
 
@@ -321,15 +331,19 @@ namespace NetStoreManager
 
 			QString remotePath = path;
 			remotePath.remove (0, rootDirPath.length ());
+			if (!map.contains (remotePath))
+				continue;
+
 			isfl->GetListingOps () & TrashSupporting ?
-				isfl->MoveToTrash ({ map [remotePath] }) :
-				isfl->Delete ({ map [remotePath] }, false);
+				isfl->MoveToTrash ({ map.take (remotePath) }) :
+				isfl->Delete ({ map.take (remotePath) }, false);
 		}
 	}
 
 	void SyncManager::handleEntryWasRenamed (const QString& oldPath,
 			const QString& newPath)
 	{
+		//TODO check on double action
 		for (const auto& basePath : Path2Account_.keys ())
 		{
 			if (!oldPath.startsWith (basePath))
@@ -357,6 +371,7 @@ namespace NetStoreManager
 	void SyncManager::handleEntryWasMoved (const QString& oldPath,
 			const QString& newPath)
 	{
+		//TODO check on double action
 		for (const auto& basePath : Path2Account_.keys ())
 		{
 			if (oldPath.startsWith (basePath) &&
