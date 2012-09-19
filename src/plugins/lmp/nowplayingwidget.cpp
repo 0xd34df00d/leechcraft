@@ -100,14 +100,15 @@ namespace LMP
 		const QString& unknown = isNull ?
 				QString () :
 				tr ("unknown");
-		auto str = [&unknown] (const QString& str)
+		const auto& fm = fontMetrics ();
+		auto str = [&unknown, &fm] (const QString& str)
 		{
 			return str.isNull () ?
 					unknown :
-					("<strong>") + str + ("</strong>");
+					("<strong>") + fm.elidedText (str, Qt::ElideRight, 300) + ("</strong>");
 		};
 		Ui_.ArtistName_->setText (str (info.Artist_));
-		Ui_.AlbumName_->setText (str (fontMetrics ().elidedText (info.Album_, Qt::ElideRight, 300)));
+		Ui_.AlbumName_->setText (str (info.Album_));
 		Ui_.TrackName_->setText (str (info.Title_));
 
 		const auto& genres = info.Genres_.join (" / ");
