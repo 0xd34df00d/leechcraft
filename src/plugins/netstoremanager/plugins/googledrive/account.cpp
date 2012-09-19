@@ -290,6 +290,8 @@ namespace GoogleDrive
 				row [0]->setData (item.Id_, ListingRole::ID);
 				row [0]->setData (static_cast<bool> (item.Labels_ & DriveItem::ILRemoved),
 						ListingRole::InTrash);
+				row [0]->setData (item.ModifiedDate_, ListingRole::ModifiedDate);
+				row [0]->setData (item.Md5_, ListingRole::Hash);
 
 				if (!item.IsFolder_)
 				{
