@@ -71,15 +71,20 @@ namespace CleanWeb
 		QDateTime LastDateTime_;
 	};
 
-	typedef QHash<QString, FilterOption> OptionsDict_t;
-	typedef QHash<QString, QRegExp> RegExpsDict_t;
+	struct FilterItem
+	{
+		QString OrigString_;
+		QRegExp RegExp_;
+		FilterOption Option_;
+	};
+
+	QDataStream& operator<< (QDataStream&, const FilterItem&);
+	QDataStream& operator>> (QDataStream&, FilterItem&);
 
 	struct Filter
 	{
-		QStringList ExceptionStrings_;
-		QStringList FilterStrings_;
-		OptionsDict_t Options_;
-		RegExpsDict_t RegExps_;
+		QList<FilterItem> Filters_;
+		QList<FilterItem> Exceptions_;
 
 		SubscriptionData SD_;
 
@@ -89,5 +94,5 @@ namespace CleanWeb
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::RegExpsDict_t);
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::OptionsDict_t);
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::FilterItem);
+Q_DECLARE_METATYPE (QList<LeechCraft::Poshuku::CleanWeb::FilterItem>);

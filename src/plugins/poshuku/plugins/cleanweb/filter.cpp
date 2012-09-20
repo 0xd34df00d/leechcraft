@@ -90,16 +90,37 @@ namespace CleanWeb
 		return !(f1 == f2);
 	}
 
+	QDataStream& operator<< (QDataStream& out, const FilterItem& item)
+	{
+		out << static_cast<quint8> (1)
+			<< item.OrigString_
+			<< item.RegExp_
+			<< item.Option_;
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, FilterItem& item)
+	{
+		quint8 version = 0;
+		in >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return in;
+		}
+
+		in >> item.OrigString_
+			>> item.RegExp_
+			>> item.Option_;
+		return in;
+	}
+
 	Filter& Filter::operator+= (const Filter& f)
 	{
-		ExceptionStrings_ << f.ExceptionStrings_;
-		ExceptionStrings_.removeDuplicates ();
-		FilterStrings_ << f.FilterStrings_;
-		FilterStrings_.removeDuplicates ();
-
-		Options_.unite (f.Options_);
-		RegExps_.unite (f.RegExps_);
-
+		Filters_ << f.Filters_;
+		Exceptions_ << f.Exceptions_;
 		return *this;
 	}
 }

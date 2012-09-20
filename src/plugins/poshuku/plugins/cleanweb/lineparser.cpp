@@ -94,12 +94,10 @@ namespace CleanWeb
 
 			if (options.size ())
 			{
-				/*
 				qWarning () << Q_FUNC_INFO
 						<< "unsupported options for filter"
 						<< actualLine
 						<< options;
-						*/
 				return;
 			}
 		}
@@ -142,16 +140,20 @@ namespace CleanWeb
 			actualLine.replace ('?', "\\?");
 		}
 
+		const auto& itemRx = f.MatchType_ == FilterOption::MTRegexp ?
+				QRegExp (actualLine, f.Case_, QRegExp::RegExp) :
+				QRegExp ();
+		const FilterItem item
+		{
+			(cs ? actualLine : actualLine.toLower ()),
+			itemRx,
+			f
+		};
+
 		if (white)
-			Filter_->ExceptionStrings_ << (cs ? actualLine : actualLine.toLower ());
+			Filter_->Exceptions_ << item;
 		else
-			Filter_->FilterStrings_ << (cs ? actualLine : actualLine.toLower ());
-
-		if (FilterOption () != f)
-			Filter_->Options_ [actualLine] = f;
-
-		if (f.MatchType_ == FilterOption::MTRegexp)
-			Filter_->RegExps_ [actualLine] = QRegExp (actualLine, f.Case_, QRegExp::RegExp);
+			Filter_->Filters_ << item;
 
 		++Success_;
 	}

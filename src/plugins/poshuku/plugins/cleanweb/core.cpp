@@ -399,6 +399,9 @@ namespace CleanWeb
 		if (!req.hasRawHeader ("referer"))
 			return false;
 
+		const auto& begin = QDateTime::currentDateTime ();
+		std::shared_ptr<void> guard (static_cast<void*> (0), [&begin] (void*) { qDebug () << "match time:" << begin.msecsTo (QDateTime::currentDateTime ()); });
+
 		const QUrl& url = req.url ();
 		const QString& urlStr = url.toString ();
 		const QString& cinUrlStr = urlStr.toLower ();
@@ -408,26 +411,23 @@ namespace CleanWeb
 		allFilters << UserFilters_->GetFilter ();
 		Q_FOREACH (const Filter& filter, allFilters)
 		{
-			Q_FOREACH (const QString& exception, filter.ExceptionStrings_)
+			Q_FOREACH (const auto& item, filter.Exceptions_)
 			{
-				const bool cs = filter.Options_ [exception].Case_ == Qt::CaseSensitive;
-				const QString& url = cs ? urlStr : cinUrlStr;
-				if (Matches (exception, filter, url, domain))
+				const auto& url = item.Option_.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
+				if (Matches (item, url, domain))
 					return false;
 			}
 
-			Q_FOREACH (const QString& filterString, filter.FilterStrings_)
+			Q_FOREACH (const auto& item, filter.Filters_)
 			{
-				const FilterOption& opt = filter.Options_ [filterString];
-				if (opt.AbortForeign_ &&
-						!req.rawHeader ("referer").contains (domain.toUtf8 ()))
+				const auto& opt = item.Option_;
+				if (opt.AbortForeign_ && !req.rawHeader ("referer").contains (domain.toUtf8 ()))
 					continue;
 
-				const bool cs = opt.Case_ == Qt::CaseSensitive;
-				const QString& url = cs ? urlStr : cinUrlStr;
-				if (Matches (filterString, filter, url, domain))
+				const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
+				if (Matches (item, url, domain))
 				{
-					*matchedFilter = filterString;
+					*matchedFilter = item.OrigString_;
 					return true;
 				}
 			}
@@ -496,13 +496,12 @@ namespace CleanWeb
 	}
 	#endif
 
-	bool Core::Matches (const QString& exception, const Filter& filter,
-			const QString& urlStr, const QString& domain) const
+	bool Core::Matches (const FilterItem& item, const QString& urlStr, const QString& domain) const
 	{
-		const FilterOption& opt = filter.Options_ [exception];
+		const auto& opt = item.Option_;
 		if (!opt.NotDomains_.isEmpty ())
 		{
-			Q_FOREACH (const QString& notDomain, opt.NotDomains_)
+			Q_FOREACH (const auto& notDomain, opt.NotDomains_)
 				if (domain.endsWith (notDomain, opt.Case_))
 					return false;
 		}
@@ -521,16 +520,16 @@ namespace CleanWeb
 		}
 
 		if (opt.MatchType_ == FilterOption::MTRegexp &&
-				filter.RegExps_ [exception].exactMatch (urlStr))
+				item.RegExp_.exactMatch (urlStr))
 			return true;
 		else if (opt.MatchType_ == FilterOption::MTWildcard)
 		{
-			if (WildcardMatches (qPrintable ("*" + exception + "*"),
+			if (WildcardMatches (qPrintable ("*" + item.OrigString_ + "*"),
 						qPrintable (urlStr)))
 				return true;
 		}
 		else if (opt.MatchType_ == FilterOption::MTPlain)
-			return urlStr.contains (exception);
+			return urlStr.contains (item.OrigString_);
 
 		return false;
 	}
