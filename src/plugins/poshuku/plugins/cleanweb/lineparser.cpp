@@ -51,19 +51,36 @@ namespace CleanWeb
 
 		++Total_;
 
-		QString actualLine;
+		QString actualLine = line;
 		FilterOption f = FilterOption ();
 		bool cs = false;
-		if (line.contains ('$'))
+
+		if (actualLine.contains ("##"))
 		{
-			const auto& splitted = line.split ('$', QString::SkipEmptyParts);
+			const auto& split = actualLine.split ("##");
+			if (split.size () != 2)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "incorrect usage of ##-pattern:"
+					<< split.size ()
+					<< line;
+				return;
+			}
+
+			actualLine = split.at (0);
+			f.HideSelector_ = split.at (1);
+		}
+
+		if (actualLine.contains ('$'))
+		{
+			const auto& splitted = actualLine.split ('$', QString::SkipEmptyParts);
 
 			if (splitted.size () != 2)
 			{
 				qWarning () << Q_FUNC_INFO
 					<< "incorrect usage of $-pattern:"
 					<< splitted.size ()
-					<< line;
+					<< actualLine;
 				return;
 			}
 
@@ -93,6 +110,22 @@ namespace CleanWeb
 					options.removeAll (option);
 				}
 
+			auto handleSubobj = [&options, &f] (const QString& name, FilterOption::MatchObject obj)
+			{
+				if (options.removeAll (name))
+					f.MatchObjects_ |= obj;
+				if (options.removeAll ("~" + name))
+					f.MatchObjects_ |= ~FilterOption::MatchObjects (obj);
+			};
+			handleSubobj ("image", FilterOption::MatchObject::Image);
+			handleSubobj ("script", FilterOption::MatchObject::Script);
+			handleSubobj ("object", FilterOption::MatchObject::Object);
+			handleSubobj ("stylesheet", FilterOption::MatchObject::CSS);
+			handleSubobj ("object-subrequest", FilterOption::MatchObject::ObjSubrequest);
+			handleSubobj ("subdocument", FilterOption::MatchObject::Subdocument);
+			handleSubobj ("xmlhttprequest", FilterOption::MatchObject::AJAX);
+			handleSubobj ("popup", FilterOption::MatchObject::Popup);
+
 			if (options.size ())
 			{
 				qWarning () << Q_FUNC_INFO
@@ -101,24 +134,6 @@ namespace CleanWeb
 						<< options;
 				return;
 			}
-		}
-		else
-			actualLine = line;
-
-		if (actualLine.contains ("##"))
-		{
-			const auto& split = actualLine.split ("##");
-			if (split.size () != 2)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "incorrect usage of ##-pattern:"
-					<< split.size ()
-					<< line;
-				return;
-			}
-
-			actualLine = split.at (0);
-			f.HideSelector_ = split.at (1);
 		}
 
 		bool white = false;

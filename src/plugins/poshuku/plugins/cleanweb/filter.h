@@ -42,11 +42,22 @@ namespace CleanWeb
 			MTBegin,
 			MTEnd
 		} MatchType_;
+
 		enum MatchObject
 		{
-			MatchScript = 0x01,
-			MatchImage = 0x02,
+			All = 0x00,
+			Script = 0x01,
+			Image = 0x02,
+			Object = 0x04,
+			CSS = 0x08,
+			ObjSubrequest = 0x10,
+			Subdocument = 0x20,
+			AJAX = 0x40,
+			Popup = 0x80
 		};
+		Q_DECLARE_FLAGS (MatchObjects, MatchObject);
+		MatchObjects MatchObjects_;
+
 		QStringList Domains_;
 		QStringList NotDomains_;
 		QString HideSelector_;
