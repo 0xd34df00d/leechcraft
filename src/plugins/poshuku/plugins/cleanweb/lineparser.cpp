@@ -55,8 +55,7 @@ namespace CleanWeb
 		bool cs = false;
 		if (line.indexOf ('$') != -1)
 		{
-			const QStringList& splitted = line.split ('$',
-					QString::SkipEmptyParts);
+			const auto& splitted = line.split ('$', QString::SkipEmptyParts);
 
 			if (splitted.size () != 2)
 			{
@@ -68,8 +67,7 @@ namespace CleanWeb
 			}
 
 			actualLine = splitted.at (0);
-			QStringList options = splitted.at (1).split (',',
-					QString::SkipEmptyParts);
+			auto options = splitted.at (1).split (',', QString::SkipEmptyParts);
 
 			if (options.removeAll ("match-case"))
 			{
@@ -83,10 +81,9 @@ namespace CleanWeb
 			Q_FOREACH (const QString& option, options)
 				if (option.startsWith ("domain="))
 				{
-					QString domain = option;
-					domain.remove (0, 7);
+					const auto& domain = option.mid (7);
 					if (domain.startsWith ('~'))
-						f.NotDomains_ << domain.remove (0, 1);
+						f.NotDomains_ << domain.mid (1);
 					else
 						f.Domains_ << domain;
 					options.removeAll (option);
