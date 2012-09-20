@@ -78,6 +78,9 @@ namespace CleanWeb
 			if (options.removeAll ("third-party"))
 				f.AbortForeign_ = true;
 
+			if (options.removeAll ("~third-party"))
+				f.AbortForeign_ = false;
+
 			Q_FOREACH (const QString& option, options)
 				if (option.startsWith ("domain="))
 				{
