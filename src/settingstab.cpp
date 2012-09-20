@@ -240,7 +240,7 @@ namespace LeechCraft
 			Q_FOREACH (auto settableObj, settables)
 			{
 				auto ip2 = qobject_cast<IPlugin2*> (settableObj);
-				if (!ip2 || !expected.contains (ip2->GetPluginClasses ()))
+				if (!ip2 || QSet<QByteArray> (expected).intersect (ip2->GetPluginClasses ()).isEmpty ())
 					continue;
 
 				result << settableObj;
