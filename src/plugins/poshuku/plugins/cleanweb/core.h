@@ -89,6 +89,8 @@ namespace CleanWeb
 		void Handle (Entity);
 		QAbstractItemModel* GetModel ();
 		void Remove (const QModelIndex&);
+
+		void HandleInitialLayout (QWebPage*, QWebFrame*);
 		QNetworkReply* Hook (LeechCraft::IHookProxy_ptr,
 				QNetworkAccessManager*,
 				QNetworkAccessManager::Operation*,
@@ -101,6 +103,7 @@ namespace CleanWeb
 		void HandleContextMenu (const QWebHitTestResult&,
 				QGraphicsWebView*, QMenu*,
 				WebViewCtxMenuStage);
+
 		bool ShouldReject (const QNetworkRequest&, QString*) const;
 
 		UserFiltersModel* GetUserFiltersModel () const;

@@ -281,6 +281,49 @@ namespace CleanWeb
 		Remove (Filters_ [index.row ()].SD_.Filename_);
 	}
 
+	namespace
+	{
+		void RemoveElem (QWebElement elem)
+		{
+			auto parent = elem.parent ();
+			elem.removeFromDocument ();
+			if (!parent.findAll ("*").count ())
+				RemoveElem (parent);
+		}
+	}
+
+	void Core::HandleInitialLayout (QWebPage *page, QWebFrame *frame)
+	{
+		const auto& begin = QDateTime::currentDateTime ();
+		std::shared_ptr<void> guard (static_cast<void*> (0), [&begin] (void*) { qDebug () << "layout match time:" << begin.msecsTo (QDateTime::currentDateTime ()); });
+
+		const QUrl& url = frame->url ();
+		const QString& urlStr = url.toString ();
+		const auto& urlUtf8 = urlStr.toUtf8 ();
+		const QString& cinUrlStr = urlStr.toLower ();
+		const auto& cinUrlUtf8 = cinUrlStr.toUtf8 ();
+
+		const QString& domain = url.host ();
+
+		QList<Filter> allFilters = Filters_;
+		allFilters << UserFilters_->GetFilter ();
+		Q_FOREACH (const Filter& filter, allFilters)
+			Q_FOREACH (const auto& item, filter.Filters_)
+			{
+				if (item.Option_.HideSelector_.isEmpty ())
+					continue;
+
+				const auto& opt = item.Option_;
+				const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
+				const auto& utf8 = opt.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
+				if (!item.OrigString_.isEmpty () && !Matches (item, url, utf8, domain))
+					continue;
+
+				Q_FOREACH (auto elem, frame->findAllElements (item.Option_.HideSelector_))
+					RemoveElem (elem);
+			}
+	}
+
 	QNetworkReply* Core::Hook (IHookProxy_ptr hook,
 			QNetworkAccessManager*,
 			QNetworkAccessManager::Operation*,
@@ -802,17 +845,6 @@ namespace CleanWeb
 			return;
 
 		PendingJobs_.remove (id);
-	}
-
-	namespace
-	{
-		void RemoveElem (QWebElement elem)
-		{
-			auto parent = elem.parent ();
-			elem.removeFromDocument ();
-			if (!parent.findAll ("*").count ())
-				RemoveElem (parent);
-		}
 	}
 
 	void Core::delayedRemoveElements (QPointer<QWebFrame> frame, const QString& url)
