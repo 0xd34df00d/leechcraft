@@ -23,7 +23,10 @@
 #include <QDir>
 #include <QThread>
 #include <QDateTime>
+#include <QtConcurrentRun>
+#include <QCryptographicHash>
 #include <QStandardItemModel>
+#include <QFutureWatcher>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "accountsmanager.h"
@@ -71,21 +74,56 @@ namespace NetStoreManager
 		QDir ().mkpath (path);
 	}
 
+	namespace
+	{
+		DownloadParams CountFileHash (const QString& path, IStorageAccount *isa, QString remoteHash)
+		{
+			QFile file (path);
+			if (!file.open (QIODevice::ReadOnly))
+				return DownloadParams ();
+
+			DownloadParams dp;
+			dp.Account_ = isa;
+			dp.Path_ = path;
+			dp.LocalHash_ = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
+			dp.RemoteHash_ = remoteHash;
+
+			return dp;
+		}
+	}
+
 	void SyncManager::DownloadFile (const QString& path, const QStringList& id,
 			const QDateTime& modifiedDate, const QString& hash,
-			ISupportFileListings *isfl) const
+			IStorageAccount *isa)
 	{
 		QFileInfo fi (path);
-		if (fi.exists () &&
-				fi.lastModified () > modifiedDate)
+		if (fi.exists ())
 		{
-			//TODO hash checking
-			//TODO update remote file
+			if (fi.lastModified () > modifiedDate)
+			{
+				if (!hash.isEmpty ())
+				{
+					QFutureWatcher<DownloadParams> *watcher = new QFutureWatcher<DownloadParams> (this);
+					connect (watcher,
+							SIGNAL (finished ()),
+							this,
+							SLOT (finishedHashCounting ()));
+					QFuture<DownloadParams> f = QtConcurrent::run (CountFileHash, path, isa, hash);
+					watcher->setFuture (f);
+				}
+				else
+				{
+					DownloadParams dp;
+					dp.Account_ = isa;
+					dp.Path_ = path;
+					dp.LocalHash_ = QString ();
+					dp.RemoteHash_ = hash;
+					finishedHashCounting (dp);
+				}
+			}
 		}
 		else
-		{
-			//TODO silent file download
-		}
+			isa->Download (id, path, true);
 	}
 
 	void SyncManager::handleDirectoryAdded (const QVariantMap& dirs)
@@ -477,7 +515,7 @@ namespace NetStoreManager
 								parentItem->data (ListingRole::ID).toStringList (),
 								parentItem->data (ListingRole::ModifiedDate).toDateTime (),
 								parentItem->data (ListingRole::Hash).toString (),
-								isfl);
+								isa);
 
 				for (int i = 0; i < parentItem->rowCount (); ++i)
 					children << parentItem->child (i);
@@ -519,6 +557,30 @@ namespace NetStoreManager
 	{
 		if (!ApiCallQueue_.isEmpty ())
 			ApiCallQueue_.dequeue() ();
+	}
+
+	void SyncManager::finishedHashCounting (const DownloadParams& downloadParams)
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<DownloadParams>*> (sender ());
+		DownloadParams dp = !watcher ?
+			downloadParams :
+			watcher->result ();
+		if (!dp.RemoteHash_.isEmpty () &&
+				dp.RemoteHash_ == dp.LocalHash_)
+			return;
+
+		IStorageAccount *isa = dp.Account_;
+		QString path = dp.Path_;
+
+		auto isfl = qobject_cast<ISupportFileListings*> (isa->GetObject ());
+		if (!isfl)
+			return;
+
+		const QString basePath = Path2Account_.key (isa);
+		QString remotePath = path;
+		remotePath.remove (0, basePath.length ());
+		QFileInfo fi (remotePath);
+		isa->Upload (path, Isfl2PathId_ [isfl] [fi.dir ().absolutePath ()]);
 	}
 
 }
