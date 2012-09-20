@@ -308,7 +308,7 @@ namespace CleanWeb
 					Q_ARG (QPointer<QWebFrame>, frame),
 					Q_ARG (QString, req.url ().toString ()));
 
-		Util::CustomNetworkReply *result = new Util::CustomNetworkReply (this);
+		Util::CustomNetworkReply *result = new Util::CustomNetworkReply (req.url (), this);
 		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
 		result->SetError (QNetworkReply::ContentAccessDenied,
 				tr ("Blocked by Poshuku CleanWeb: %1")
