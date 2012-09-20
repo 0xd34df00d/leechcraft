@@ -307,6 +307,7 @@ namespace CleanWeb
 
 		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
+		int numItems = 0;
 		Q_FOREACH (const Filter& filter, allFilters)
 			Q_FOREACH (const auto& item, filter.Filters_)
 			{
@@ -321,6 +322,9 @@ namespace CleanWeb
 
 				Q_FOREACH (auto elem, frame->findAllElements (item.Option_.HideSelector_))
 					RemoveElem (elem);
+
+				if (!(++numItems % 100))
+					qApp->processEvents ();
 			}
 	}
 
