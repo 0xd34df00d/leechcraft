@@ -122,6 +122,7 @@ namespace CleanWeb
 	, UserFilters_ (new UserFiltersModel (this))
 	{
 		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
+		qRegisterMetaType<QPointer<QWebFrame>> ("QPointer<QWebFrame>");
 
 		HeaderLabels_ << tr ("Name")
 			<< tr ("Last updated")
