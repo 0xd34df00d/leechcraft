@@ -294,9 +294,6 @@ namespace CleanWeb
 
 	void Core::HandleInitialLayout (QWebPage *page, QWebFrame *frame)
 	{
-		const auto& begin = QDateTime::currentDateTime ();
-		std::shared_ptr<void> guard (static_cast<void*> (0), [&begin] (void*) { qDebug () << "layout match time:" << begin.msecsTo (QDateTime::currentDateTime ()); });
-
 		const QUrl& url = frame->url ();
 		const QString& urlStr = url.toString ();
 		const auto& urlUtf8 = urlStr.toUtf8 ();
@@ -445,9 +442,6 @@ namespace CleanWeb
 	{
 		if (!req.hasRawHeader ("referer"))
 			return false;
-
-		const auto& begin = QDateTime::currentDateTime ();
-		std::shared_ptr<void> guard (static_cast<void*> (0), [&begin] (void*) { qDebug () << "match time:" << begin.msecsTo (QDateTime::currentDateTime ()); });
 
 		const QUrl& url = req.url ();
 		const QString& urlStr = url.toString ();
