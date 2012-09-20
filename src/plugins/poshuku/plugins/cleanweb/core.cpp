@@ -306,7 +306,7 @@ namespace CleanWeb
 					"delayedRemoveElements",
 					Qt::QueuedConnection,
 					Q_ARG (QPointer<QWebFrame>, frame),
-					Q_ARG (QString, req.url ().toString ()));
+					Q_ARG (QString, req.url ().toEncoded ()));
 
 		Util::CustomNetworkReply *result = new Util::CustomNetworkReply (req.url (), this);
 		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
@@ -330,7 +330,7 @@ namespace CleanWeb
 		if (error->error != QNetworkReply::ContentAccessDenied)
 			return;
 
-		QString url = error->url.toString ();
+		QString url = error->url.toEncoded ();
 		proxy->CancelDefault ();
 		proxy->SetReturnValue (true);
 		QMetaObject::invokeMethod (this,
