@@ -804,6 +804,17 @@ namespace CleanWeb
 		PendingJobs_.remove (id);
 	}
 
+	namespace
+	{
+		void RemoveElem (QWebElement elem)
+		{
+			auto parent = elem.parent ();
+			elem.removeFromDocument ();
+			if (!parent.findAll ("*").count ())
+				RemoveElem (parent);
+		}
+	}
+
 	void Core::delayedRemoveElements (QPointer<QWebFrame> frame, const QString& url)
 	{
 		if (!frame)
@@ -812,7 +823,7 @@ namespace CleanWeb
 		const auto& elems = frame->findAllElements ("*[src=\"" + url + "\"]");
 		if (elems.count ())
 			Q_FOREACH (QWebElement elem, elems)
-				elem.removeFromDocument ();
+				RemoveElem (elem);
 		else if (frame->parentFrame ())
 			delayedRemoveElements (frame->parentFrame (), url);
 		else
