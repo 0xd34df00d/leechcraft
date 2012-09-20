@@ -66,8 +66,6 @@ namespace CleanWeb
 		};
 		QMap<int, PendingJob> PendingJobs_;
 
-		QList<QString> Blocked_;
-
 		QHash<QWebFrame*, QStringList> MoreDelayedURLs_;
 
 		ICoreProxy_ptr Proxy_;

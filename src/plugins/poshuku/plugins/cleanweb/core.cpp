@@ -297,22 +297,16 @@ namespace CleanWeb
 		if (!ShouldReject (req, &matched))
 			return 0;
 
-		if (Blocked_.size () > 300)
-			Blocked_.removeFirst ();
-		qDebug () << "rejecting against" << matched;
 		hook->CancelDefault ();
 
-#if QT_VERSION >= 0x040700
 		QWebFrame *frame = qobject_cast<QWebFrame*> (req.originatingObject ());
+		qDebug () << "rejecting against" << matched << frame;
 		if (frame)
 			QMetaObject::invokeMethod (this,
 					"delayedRemoveElements",
 					Qt::QueuedConnection,
 					Q_ARG (QPointer<QWebFrame>, frame),
 					Q_ARG (QString, req.url ().toString ()));
-#else
-		Blocked_ << req.url ().toString ();
-#endif
 
 		Util::CustomNetworkReply *result = new Util::CustomNetworkReply (this);
 		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
@@ -332,23 +326,13 @@ namespace CleanWeb
 		if (ext != QWebPage::ErrorPageExtension)
 			return;
 
-		const QWebPage::ErrorPageExtensionOption *error =
-				static_cast<const QWebPage::ErrorPageExtensionOption*> (opt);
+		auto error = static_cast<const QWebPage::ErrorPageExtensionOption*> (opt);
 		if (error->error != QNetworkReply::ContentAccessDenied)
 			return;
 
 		QString url = error->url.toString ();
-		if (!Blocked_.contains (url))
-		{
-			url = error->frame->url ().toString ();
-			if (!Blocked_.contains (url))
-				return;
-		}
-
 		proxy->CancelDefault ();
 		proxy->SetReturnValue (true);
-
-		// Otherwise things segfault on Qt 4.7.
 		QMetaObject::invokeMethod (this,
 				"delayedRemoveElements",
 				Qt::QueuedConnection,
