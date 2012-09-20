@@ -23,6 +23,7 @@
 #include <QDateTime>
 #include <QHash>
 #include <QUrl>
+#include <QByteArrayMatcher>
 
 namespace LeechCraft
 {
@@ -80,9 +81,9 @@ namespace CleanWeb
 
 	struct FilterItem
 	{
-		QString OrigString_;
+		QByteArray OrigString_;
 		QRegExp RegExp_;
-		QStringMatcher PlainMatcher_;
+		QByteArrayMatcher PlainMatcher_;
 		FilterOption Option_;
 	};
 

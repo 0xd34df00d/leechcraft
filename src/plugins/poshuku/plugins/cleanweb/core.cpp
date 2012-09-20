@@ -404,7 +404,10 @@ namespace CleanWeb
 
 		const QUrl& url = req.url ();
 		const QString& urlStr = url.toString ();
+		const auto& urlUtf8 = urlStr.toUtf8 ();
 		const QString& cinUrlStr = urlStr.toLower ();
+		const auto& cinUrlUtf8 = cinUrlStr.toUtf8 ();
+
 		const QString& domain = url.host ();
 		const auto& domainUtf8 = domain.toUtf8 ();
 		const bool isForeign = !req.rawHeader ("referer").contains (domainUtf8);
@@ -416,7 +419,8 @@ namespace CleanWeb
 			Q_FOREACH (const auto& item, filter.Exceptions_)
 			{
 				const auto& url = item.Option_.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
-				if (item.Option_.HideSelector_.isEmpty () && Matches (item, url, domain))
+				const auto& utf8 = item.Option_.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
+				if (item.Option_.HideSelector_.isEmpty () && Matches (item, url, utf8, domain))
 					return false;
 			}
 
@@ -430,7 +434,8 @@ namespace CleanWeb
 					continue;
 
 				const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
-				if (Matches (item, url, domain))
+				const auto& utf8 = opt.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
+				if (Matches (item, url, utf8, domain))
 				{
 					*matchedFilter = item.OrigString_;
 					return true;
@@ -501,7 +506,7 @@ namespace CleanWeb
 	}
 	#endif
 
-	bool Core::Matches (const FilterItem& item, const QString& urlStr, const QString& domain) const
+	bool Core::Matches (const FilterItem& item, const QString& urlStr, const QByteArray& urlUtf8, const QString& domain) const
 	{
 		const auto& opt = item.Option_;
 		if (!opt.NotDomains_.isEmpty ())
@@ -529,9 +534,9 @@ namespace CleanWeb
 		case FilterOption::MTRegexp:
 			return item.RegExp_.exactMatch (urlStr);
 		case FilterOption::MTWildcard:
-			return WildcardMatches (item.OrigString_.toLatin1 ().constData (), urlStr.toLatin1 ().constData ());
+			return WildcardMatches (item.OrigString_.constData (), urlUtf8.constData ());
 		case FilterOption::MTPlain:
-			return item.PlainMatcher_.indexIn (urlStr) >= 0;
+			return item.PlainMatcher_.indexIn (urlUtf8) >= 0;
 		case FilterOption::MTBegin:
 			return urlStr.startsWith (item.OrigString_);
 		case FilterOption::MTEnd:

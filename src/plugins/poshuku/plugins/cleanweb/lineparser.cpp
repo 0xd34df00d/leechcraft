@@ -148,7 +148,7 @@ namespace CleanWeb
 					spawned = spawned.toLower ();
 
 				f.MatchType_ = FilterOption::MTPlain;
-				const FilterItem item { spawned, QRegExp (), QStringMatcher (spawned, f.Case_), f };
+				const FilterItem item { spawned.toUtf8 (), QRegExp (), QByteArrayMatcher (spawned.toUtf8 ()), f };
 				if (white)
 					Filter_->Exceptions_ << item;
 				else
@@ -193,12 +193,12 @@ namespace CleanWeb
 		const auto& itemRx = f.MatchType_ == FilterOption::MTRegexp ?
 				QRegExp (actualLine, f.Case_, QRegExp::RegExp) :
 				QRegExp ();
-		const QStringMatcher matcher = f.MatchType_ == FilterOption::MTPlain ?
-				QStringMatcher (actualLine, f.Case_) :
-				QStringMatcher ();
+		const QByteArrayMatcher matcher = f.MatchType_ == FilterOption::MTPlain ?
+				QByteArrayMatcher (actualLine.toUtf8 ()) :
+				QByteArrayMatcher ();
 		const FilterItem item
 		{
-			(cs ? actualLine : actualLine.toLower ()),
+			(cs ? actualLine : actualLine.toLower ()).toUtf8 (),
 			itemRx,
 			matcher,
 			f

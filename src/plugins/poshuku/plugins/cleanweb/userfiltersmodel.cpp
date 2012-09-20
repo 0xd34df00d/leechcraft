@@ -173,11 +173,11 @@ namespace CleanWeb
 		fo.NotDomains_ = dia.GetNotDomains ();
 		const FilterItem item
 		{
-			dia.GetString (),
+			dia.GetString ().toUtf8 (),
 			itemRx,
 			fo.MatchType_ == FilterOption::MTPlain ?
-					QStringMatcher (dia.GetString (), dia.GetCase ()) :
-					QStringMatcher (),
+					QByteArrayMatcher (dia.GetString ().toUtf8 ()) :
+					QByteArrayMatcher (),
 			fo
 		};
 
