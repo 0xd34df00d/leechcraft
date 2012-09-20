@@ -407,6 +407,7 @@ namespace CleanWeb
 		const QString& cinUrlStr = urlStr.toLower ();
 		const QString& domain = url.host ();
 		const auto& domainUtf8 = domain.toUtf8 ();
+		const bool isForeign = !req.rawHeader ("referer").contains (domainUtf8);
 
 		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
@@ -425,7 +426,7 @@ namespace CleanWeb
 					continue;
 
 				const auto& opt = item.Option_;
-				if (opt.AbortForeign_ && !req.rawHeader ("referer").contains (domainUtf8))
+				if (opt.AbortForeign_ && isForeign)
 					continue;
 
 				const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
