@@ -89,6 +89,8 @@ namespace CleanWeb
 				{
 					case FilterOption::MTWildcard:
 					case FilterOption::MTPlain:
+					case FilterOption::MTBegin:
+					case FilterOption::MTEnd:
 						return tr ("Wildcard");
 					case FilterOption::MTRegexp:
 						return tr ("Regexp");
@@ -173,6 +175,9 @@ namespace CleanWeb
 		{
 			dia.GetString (),
 			itemRx,
+			fo.MatchType_ == FilterOption::MTPlain ?
+					QStringMatcher (dia.GetString (), dia.GetCase ()) :
+					QStringMatcher (),
 			fo
 		};
 

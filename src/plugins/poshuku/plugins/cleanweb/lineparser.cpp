@@ -18,6 +18,7 @@
 
 #include "lineparser.h"
 #include <QtDebug>
+#include <boost/graph/graph_concepts.hpp>
 #include "filter.h"
 
 namespace LeechCraft
@@ -53,7 +54,7 @@ namespace CleanWeb
 		QString actualLine;
 		FilterOption f = FilterOption ();
 		bool cs = false;
-		if (line.indexOf ('$') != -1)
+		if (line.contains ('$'))
 		{
 			const auto& splitted = line.split ('$', QString::SkipEmptyParts);
 
@@ -104,6 +105,22 @@ namespace CleanWeb
 		else
 			actualLine = line;
 
+		if (actualLine.contains ("##"))
+		{
+			const auto& split = actualLine.split ("##");
+			if (split.size () != 2)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "incorrect usage of ##-pattern:"
+					<< split.size ()
+					<< line;
+				return;
+			}
+
+			actualLine = split.at (0);
+			f.HideSelector_ = split.at (1);
+		}
+
 		bool white = false;
 		if (actualLine.startsWith ("@@"))
 		{
@@ -119,34 +136,71 @@ namespace CleanWeb
 		}
 		else
 		{
-			if (actualLine.endsWith ('|'))
+			while (!actualLine.isEmpty () && actualLine.at (0) == '*')
+				actualLine = actualLine.mid (1);
+			while (!actualLine.isEmpty () && actualLine.at (actualLine.size () - 1) == '*')
+				actualLine.chop (1);
+
+			if (actualLine.startsWith ("||"))
+			{
+				auto spawned = "." + actualLine.mid (2);
+				if (!cs)
+					spawned = spawned.toLower ();
+
+				f.MatchType_ = FilterOption::MTPlain;
+				const FilterItem item { spawned, QRegExp (), QStringMatcher (spawned, f.Case_), f };
+				if (white)
+					Filter_->Exceptions_ << item;
+				else
+					Filter_->Filters_ << item;
+
+				actualLine = actualLine.mid (2);
+				actualLine.prepend ('/');
+			}
+			else if (actualLine.endsWith ('|') && actualLine.startsWith ('|'))
+				actualLine = actualLine.mid (1, actualLine.size () - 2);
+			else if (actualLine.endsWith ('|'))
 			{
 				actualLine.chop (1);
-				actualLine.prepend ('*');
+				if (actualLine.contains ('*'))
+					actualLine.prepend ('*');
+				else
+					f.MatchType_ = FilterOption::MTEnd;
 			}
 			else if (actualLine.startsWith ('|'))
 			{
 				actualLine.remove (0, 1);
-				actualLine.append ('*');
-			}
-			else if (actualLine.contains ('*') ||
-					actualLine.contains ('?'))
-			{
-				actualLine.prepend ('*');
-				actualLine.append ('*');
+				if (actualLine.contains ('*'))
+					actualLine.append ('*');
+				else
+					f.MatchType_ = FilterOption::MTBegin;
 			}
 			else
-				f.MatchType_ = FilterOption::MTPlain;
-			actualLine.replace ('?', "\\?");
+			{
+				if (actualLine.contains ('*'))
+				{
+					actualLine.prepend ('*');
+					actualLine.append ('*');
+				}
+				else
+					f.MatchType_ = FilterOption::MTPlain;
+			}
+
+			if (f.MatchType_ == FilterOption::MTWildcard)
+				actualLine.replace ('?', "\\?");
 		}
 
 		const auto& itemRx = f.MatchType_ == FilterOption::MTRegexp ?
 				QRegExp (actualLine, f.Case_, QRegExp::RegExp) :
 				QRegExp ();
+		const QStringMatcher matcher = f.MatchType_ == FilterOption::MTPlain ?
+				QStringMatcher (actualLine, f.Case_) :
+				QStringMatcher ();
 		const FilterItem item
 		{
 			(cs ? actualLine : actualLine.toLower ()),
 			itemRx,
+			matcher,
 			f
 		};
 

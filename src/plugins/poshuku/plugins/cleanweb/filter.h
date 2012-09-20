@@ -37,11 +37,18 @@ namespace CleanWeb
 		{
 			MTWildcard,
 			MTRegexp,
-			MTPlain
+			MTPlain,
+			MTBegin,
+			MTEnd
+		} MatchType_;
+		enum MatchObject
+		{
+			MatchScript = 0x01,
+			MatchImage = 0x02,
 		};
-		MatchType MatchType_;
 		QStringList Domains_;
 		QStringList NotDomains_;
+		QString HideSelector_;
 		bool AbortForeign_;
 
 		FilterOption ();
@@ -75,6 +82,7 @@ namespace CleanWeb
 	{
 		QString OrigString_;
 		QRegExp RegExp_;
+		QStringMatcher PlainMatcher_;
 		FilterOption Option_;
 	};
 

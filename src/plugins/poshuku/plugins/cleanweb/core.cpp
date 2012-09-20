@@ -406,6 +406,7 @@ namespace CleanWeb
 		const QString& urlStr = url.toString ();
 		const QString& cinUrlStr = urlStr.toLower ();
 		const QString& domain = url.host ();
+		const auto& domainUtf8 = domain.toUtf8 ();
 
 		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
@@ -414,14 +415,17 @@ namespace CleanWeb
 			Q_FOREACH (const auto& item, filter.Exceptions_)
 			{
 				const auto& url = item.Option_.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
-				if (Matches (item, url, domain))
+				if (item.Option_.HideSelector_.isEmpty () && Matches (item, url, domain))
 					return false;
 			}
 
 			Q_FOREACH (const auto& item, filter.Filters_)
 			{
+				if (!item.Option_.HideSelector_.isEmpty ())
+					continue;
+
 				const auto& opt = item.Option_;
-				if (opt.AbortForeign_ && !req.rawHeader ("referer").contains (domain.toUtf8 ()))
+				if (opt.AbortForeign_ && !req.rawHeader ("referer").contains (domainUtf8))
 					continue;
 
 				const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
@@ -519,17 +523,19 @@ namespace CleanWeb
 				return false;
 		}
 
-		if (opt.MatchType_ == FilterOption::MTRegexp &&
-				item.RegExp_.exactMatch (urlStr))
-			return true;
-		else if (opt.MatchType_ == FilterOption::MTWildcard)
+		switch (opt.MatchType_)
 		{
-			if (WildcardMatches (qPrintable ("*" + item.OrigString_ + "*"),
-						qPrintable (urlStr)))
-				return true;
+		case FilterOption::MTRegexp:
+			return item.RegExp_.exactMatch (urlStr);
+		case FilterOption::MTWildcard:
+			return WildcardMatches (item.OrigString_.toLatin1 ().constData (), urlStr.toLatin1 ().constData ());
+		case FilterOption::MTPlain:
+			return item.PlainMatcher_.indexIn (urlStr) >= 0;
+		case FilterOption::MTBegin:
+			return urlStr.startsWith (item.OrigString_);
+		case FilterOption::MTEnd:
+			return urlStr.endsWith (item.OrigString_);
 		}
-		else if (opt.MatchType_ == FilterOption::MTPlain)
-			return urlStr.contains (item.OrigString_);
 
 		return false;
 	}
