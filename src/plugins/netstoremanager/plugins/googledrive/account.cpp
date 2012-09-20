@@ -102,9 +102,10 @@ namespace GoogleDrive
 				SIGNAL (upStatusChanged (QString, QString)));
 	}
 
-	void Account::Download (const QStringList& id, const QString& filepath)
+	void Account::Download (const QStringList& id, const QString& filepath,
+			bool silent)
 	{
-		DriveManager_->Download (id [0], filepath);
+		DriveManager_->Download (id.value (0), filepath, silent);
 	}
 
 	void Account::Delete (const QList<QStringList>& id, bool ask)

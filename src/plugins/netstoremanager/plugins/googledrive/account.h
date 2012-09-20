@@ -65,7 +65,8 @@ namespace GoogleDrive
 		QString GetAccountName () const;
 		void Upload (const QString& filepath,
 				const QStringList& parentId = QStringList ());
-		void Download (const QStringList& id, const QString& filepath);
+		void Download (const QStringList& id, const QString& filepath,
+				bool silent = false);
 
 		void Delete (const QList<QStringList>& id, bool ask = true);
 		QStringList GetListingHeaders () const;

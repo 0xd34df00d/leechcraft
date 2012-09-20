@@ -88,10 +88,11 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::Download (const QString& id, const QString& filepath)
+	void DriveManager::Download (const QString& id, const QString& filepath,
+			bool silent)
 	{
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
-		DownloadsQueue_ << [this, filepath] (const QUrl& url) { DownloadFile (filepath, url); };
+		DownloadsQueue_ << [this, filepath, silent] (const QUrl& url) { DownloadFile (filepath, url, silent); };
 		RequestAccessToken ();
 	}
 
@@ -417,11 +418,16 @@ namespace GoogleDrive
 				SLOT (handleItemRenamed ()));
 	}
 
-	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url)
+	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url,
+			bool silent)
 	{
+		TaskParameters tp = OnlyDownload | FromUserInitiated;
+		if (silent)
+			tp |= AutoAccept;
+
 		LeechCraft::Entity e = Util::MakeEntity (url,
 				filePath,
-				OnlyDownload | FromUserInitiated);
+				tp);
 		Core::Instance ().SendEntity (e);
 	}
 
