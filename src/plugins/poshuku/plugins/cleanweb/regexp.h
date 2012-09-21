@@ -18,10 +18,11 @@
 
 #pragma once
 
+#include <memory>
 #include <QString>
 
 #if USE_PCRE
-#include <pcre.h>
+// nothing yet
 #else
 #include <QRegExp>
 #endif
@@ -32,13 +33,17 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
+#if USE_PCRE
+	class PCREWrapper;
+#endif
+
 	class RegExp
 	{
 #if USE_PCRE
 		QString Pattern_;
 		Qt::CaseSensitivity CS_;
 
-		pcre *PRx_;
+		std::shared_ptr<PCREWrapper> PRx_;
 #else
 		QRegExp Rx_;
 #endif

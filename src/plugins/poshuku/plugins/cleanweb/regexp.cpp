@@ -19,6 +19,10 @@
 #include "regexp.h"
 #include <QtDebug>
 
+#ifdef USE_PCRE
+#include <pcre.h>
+#endif
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -26,8 +30,71 @@ namespace Poshuku
 namespace CleanWeb
 {
 #ifdef USE_PCRE
-	namespace
+	class PCREWrapper
 	{
+		pcre *RE_;
+		pcre_extra *Extra_;
+	public:
+		PCREWrapper ()
+		: RE_ (0)
+		, Extra_ (0)
+		{
+		}
+
+		PCREWrapper (const QString& str, Qt::CaseSensitivity cs)
+		: RE_ (Compile (str, cs))
+		, Extra_ (0)
+		{
+			if (RE_)
+			{
+				pcre_refcount (RE_, 1);
+				const char *error = 0;
+				Extra_ = pcre_study (RE_, PCRE_STUDY_JIT_COMPILE, &error);
+			}
+		}
+
+		PCREWrapper (const PCREWrapper& other)
+		: RE_ (0)
+		, Extra_ (0)
+		{
+			*this = other;
+		}
+
+		PCREWrapper& operator= (const PCREWrapper& other)
+		{
+			if (RE_ && !pcre_refcount (RE_, -1))
+			{
+				if (Extra_)
+					pcre_free_study (Extra_);
+				pcre_free (RE_);
+			}
+
+			RE_ = other.RE_;
+			Extra_ = other.Extra_;
+			if (RE_)
+				pcre_refcount (RE_, 1);
+
+			return *this;
+		}
+
+		~PCREWrapper ()
+		{
+			if (!RE_)
+				return;
+
+			if (!pcre_refcount (RE_, -1))
+			{
+				if (Extra_)
+					pcre_free_study (Extra_);
+				pcre_free (RE_);
+			}
+		}
+
+		int Exec (const QByteArray& utf8) const
+		{
+			return RE_ ? pcre_exec (RE_, Extra_, utf8.constData (), utf8.size (), 0, 0, NULL, 0) : -1;
+		}
+	private:
 		pcre* Compile (const QString& str, Qt::CaseSensitivity cs)
 		{
 			const char *error = 0;
@@ -43,7 +110,7 @@ namespace CleanWeb
 						<< error;
 			return re;
 		}
-	}
+	};
 #endif
 
 	bool RegExp::IsFast ()
@@ -56,9 +123,6 @@ namespace CleanWeb
 	}
 
 	RegExp::RegExp ()
-#ifdef USE_PCRE
-	: PRx_ (0)
-#endif
 	{
 	}
 
@@ -66,9 +130,9 @@ namespace CleanWeb
 #ifdef USE_PCRE
 	: Pattern_ (rx.Pattern_)
 	, CS_ (rx.CS_)
-	, PRx_ (Compile (Pattern_, CS_))
+	, PRx_ (rx.PRx_)
 #else
-	: Rx_ (rx)
+	: Rx_ (rx.Rx_)
 #endif
 	{
 	}
@@ -77,7 +141,7 @@ namespace CleanWeb
 #ifdef USE_PCRE
 	: Pattern_ (str)
 	, CS_ (cs)
-	, PRx_ (Compile (Pattern_, CS_))
+	, PRx_ (new PCREWrapper (str, cs))
 #else
 	: Rx_ (str, cs, QRegExp::RegExp)
 #endif
@@ -86,10 +150,6 @@ namespace CleanWeb
 
 	RegExp::~RegExp ()
 	{
-#ifdef USE_PCRE
-		if (PRx_)
-			pcre_free (PRx_);
-#endif
 	}
 
 	RegExp& RegExp::operator= (const RegExp& rx)
@@ -97,9 +157,7 @@ namespace CleanWeb
 #ifdef USE_PCRE
 		Pattern_ = rx.Pattern_;
 		CS_ = rx.CS_;
-		if (PRx_)
-			pcre_free (PRx_);
-		PRx_ = Compile (Pattern_, CS_);
+		PRx_ = rx.PRx_;
 #else
 		Rx_ = rx.Rx_;
 #endif
@@ -109,8 +167,7 @@ namespace CleanWeb
 	bool RegExp::Matches (const QString& str) const
 	{
 #ifdef USE_PCRE
-		const auto& utf8 = str.toUtf8 ();
-		return pcre_exec (PRx_, NULL, utf8.constData (), utf8.size (), 0, 0, NULL, 0) >= 0;
+		return PRx_->Exec (str.toUtf8 ()) >= 0;
 #else
 		return Rx_.exactMatch (str);
 #endif
