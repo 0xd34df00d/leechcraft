@@ -85,7 +85,7 @@ namespace NetStoreManager
 			DownloadParams dp;
 			dp.Account_ = isa;
 			dp.Path_ = path;
-			dp.LocalHash_ = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5);
+			dp.LocalHash_ = QCryptographicHash::hash (file.readAll (), QCryptographicHash::Md5).toHex ();
 			dp.RemoteHash_ = remoteHash;
 
 			return dp;
@@ -206,7 +206,6 @@ namespace NetStoreManager
 			Path2Account_ [dirPath] = isa;
 			qDebug () << "watching directory "
 					<< dirPath;
-// 			isfl->CheckForSyncUpload (pathes, dirPath);
 		}
 
 		Timer_->start (RemoteStorageCheckingTimeout_);
@@ -286,15 +285,15 @@ namespace NetStoreManager
 				continue;
 			}
 
-			auto map = Isfl2PathId_ [isfl];
-			if (map.contains (path))
-				continue;
-
 			const QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
-
 			QString remotePath = path;
 			remotePath.remove (0, rootDirPath.length ());
+			auto map = Isfl2PathId_ [isfl];
+			if (map.contains (remotePath))
+				continue;
+
 			const QString& parentPath = QFileInfo (remotePath).dir ().absolutePath ();
+			qDebug () << Q_FUNC_INFO << remotePath << map [remotePath] << parentPath << map [parentPath];
 			if (map.contains (parentPath))
 				emit uploadRequested (Path2Account_ [basePath], path, map [parentPath]);
 			else
@@ -461,7 +460,6 @@ namespace NetStoreManager
 				continue;
 			}
 		}
-		qDebug () << Q_FUNC_INFO << path;
 	}
 
 	void SyncManager::handleGotListing (const QList<QList<QStandardItem*>>& items)
@@ -580,7 +578,9 @@ namespace NetStoreManager
 		QString remotePath = path;
 		remotePath.remove (0, basePath.length ());
 		QFileInfo fi (remotePath);
-		isa->Upload (path, Isfl2PathId_ [isfl] [fi.dir ().absolutePath ()]);
+		isa->Upload (path,
+				Isfl2PathId_ [isfl] [fi.dir ().absolutePath ()],
+				UploadType::Update, Isfl2PathId_ [isfl] [remotePath]);
 	}
 
 }
