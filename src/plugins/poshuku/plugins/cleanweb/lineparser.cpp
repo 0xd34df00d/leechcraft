@@ -18,6 +18,7 @@
 
 #include "lineparser.h"
 #include <QtDebug>
+#include <boost/graph/graph_concepts.hpp>
 #include "filter.h"
 
 namespace LeechCraft
@@ -50,26 +51,41 @@ namespace CleanWeb
 
 		++Total_;
 
-		QString actualLine;
+		QString actualLine = line;
 		FilterOption f = FilterOption ();
 		bool cs = false;
-		if (line.indexOf ('$') != -1)
+
+		if (actualLine.contains ("##"))
 		{
-			const QStringList& splitted = line.split ('$',
-					QString::SkipEmptyParts);
+			const auto& split = actualLine.split ("##");
+			if (split.size () != 2)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "incorrect usage of ##-pattern:"
+					<< split.size ()
+					<< line;
+				return;
+			}
+
+			actualLine = split.at (0);
+			f.HideSelector_ = split.at (1);
+		}
+
+		if (actualLine.contains ('$'))
+		{
+			const auto& splitted = actualLine.split ('$', QString::SkipEmptyParts);
 
 			if (splitted.size () != 2)
 			{
 				qWarning () << Q_FUNC_INFO
 					<< "incorrect usage of $-pattern:"
 					<< splitted.size ()
-					<< line;
+					<< actualLine;
 				return;
 			}
 
 			actualLine = splitted.at (0);
-			QStringList options = splitted.at (1).split (',',
-					QString::SkipEmptyParts);
+			auto options = splitted.at (1).split (',', QString::SkipEmptyParts);
 
 			if (options.removeAll ("match-case"))
 			{
@@ -80,31 +96,45 @@ namespace CleanWeb
 			if (options.removeAll ("third-party"))
 				f.AbortForeign_ = true;
 
+			if (options.removeAll ("~third-party"))
+				f.AbortForeign_ = false;
+
 			Q_FOREACH (const QString& option, options)
 				if (option.startsWith ("domain="))
 				{
-					QString domain = option;
-					domain.remove (0, 7);
+					const auto& domain = option.mid (7);
 					if (domain.startsWith ('~'))
-						f.NotDomains_ << domain.remove (0, 1);
+						f.NotDomains_ << domain.mid (1);
 					else
 						f.Domains_ << domain;
 					options.removeAll (option);
 				}
 
+			auto handleSubobj = [&options, &f] (const QString& name, FilterOption::MatchObject obj)
+			{
+				if (options.removeAll (name))
+					f.MatchObjects_ |= obj;
+				if (options.removeAll ("~" + name))
+					f.MatchObjects_ |= ~FilterOption::MatchObjects (obj);
+			};
+			handleSubobj ("image", FilterOption::MatchObject::Image);
+			handleSubobj ("script", FilterOption::MatchObject::Script);
+			handleSubobj ("object", FilterOption::MatchObject::Object);
+			handleSubobj ("stylesheet", FilterOption::MatchObject::CSS);
+			handleSubobj ("object-subrequest", FilterOption::MatchObject::ObjSubrequest);
+			handleSubobj ("subdocument", FilterOption::MatchObject::Subdocument);
+			handleSubobj ("xmlhttprequest", FilterOption::MatchObject::AJAX);
+			handleSubobj ("popup", FilterOption::MatchObject::Popup);
+
 			if (options.size ())
 			{
-				/*
 				qWarning () << Q_FUNC_INFO
 						<< "unsupported options for filter"
 						<< actualLine
 						<< options;
-						*/
 				return;
 			}
 		}
-		else
-			actualLine = line;
 
 		bool white = false;
 		if (actualLine.startsWith ("@@"))
@@ -121,37 +151,78 @@ namespace CleanWeb
 		}
 		else
 		{
-			if (actualLine.endsWith ('|'))
+			while (!actualLine.isEmpty () && actualLine.at (0) == '*')
+				actualLine = actualLine.mid (1);
+			while (!actualLine.isEmpty () && actualLine.at (actualLine.size () - 1) == '*')
+				actualLine.chop (1);
+
+			if (actualLine.startsWith ("||"))
+			{
+				auto spawned = "." + actualLine.mid (2);
+				if (!cs)
+					spawned = spawned.toLower ();
+
+				f.MatchType_ = FilterOption::MTPlain;
+				const FilterItem item { spawned.toUtf8 (), QRegExp (), QByteArrayMatcher (spawned.toUtf8 ()), f };
+				if (white)
+					Filter_->Exceptions_ << item;
+				else
+					Filter_->Filters_ << item;
+
+				actualLine = actualLine.mid (2);
+				actualLine.prepend ('/');
+			}
+			else if (actualLine.endsWith ('|') && actualLine.startsWith ('|'))
+				actualLine = actualLine.mid (1, actualLine.size () - 2);
+			else if (actualLine.endsWith ('|'))
 			{
 				actualLine.chop (1);
-				actualLine.prepend ('*');
+				if (actualLine.contains ('*'))
+					actualLine.prepend ('*');
+				else
+					f.MatchType_ = FilterOption::MTEnd;
 			}
 			else if (actualLine.startsWith ('|'))
 			{
 				actualLine.remove (0, 1);
-				actualLine.append ('*');
-			}
-			else if (actualLine.contains ('*') ||
-					actualLine.contains ('?'))
-			{
-				actualLine.prepend ('*');
-				actualLine.append ('*');
+				if (actualLine.contains ('*'))
+					actualLine.append ('*');
+				else
+					f.MatchType_ = FilterOption::MTBegin;
 			}
 			else
-				f.MatchType_ = FilterOption::MTPlain;
-			actualLine.replace ('?', "\\?");
+			{
+				if (actualLine.contains ('*'))
+				{
+					actualLine.prepend ('*');
+					actualLine.append ('*');
+				}
+				else
+					f.MatchType_ = FilterOption::MTPlain;
+			}
+
+			if (f.MatchType_ == FilterOption::MTWildcard)
+				actualLine.replace ('?', "\\?");
 		}
 
+		const auto& itemRx = f.MatchType_ == FilterOption::MTRegexp ?
+				QRegExp (actualLine, f.Case_, QRegExp::RegExp) :
+				QRegExp ();
+		const QByteArrayMatcher matcher = f.MatchType_ == FilterOption::MTPlain ?
+				QByteArrayMatcher (actualLine.toUtf8 ()) :
+				QByteArrayMatcher ();
+		const FilterItem item
+		{
+			(cs ? actualLine : actualLine.toLower ()).toUtf8 (),
+			itemRx,
+			matcher,
+			f
+		};
+
 		if (white)
-			Filter_->ExceptionStrings_ << (cs ? actualLine : actualLine.toLower ());
+			Filter_->Exceptions_ << item;
 		else
-			Filter_->FilterStrings_ << (cs ? actualLine : actualLine.toLower ());
-
-		if (FilterOption () != f)
-			Filter_->Options_ [actualLine] = f;
-
-		if (f.MatchType_ == FilterOption::MTRegexp)
-			Filter_->RegExps_ [actualLine] = QRegExp (actualLine, f.Case_, QRegExp::RegExp);
+			Filter_->Filters_ << item;
 
 		++Success_;
 	}

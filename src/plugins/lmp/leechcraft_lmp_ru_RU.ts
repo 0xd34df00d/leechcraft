@@ -605,9 +605,9 @@
         <location filename="playlistwidget.cpp" line="521"/>
         <source>%n track(s), total duration: %1</source>
         <translation>
-            <numerusform>%n трек, общая продолжительность: %1</numerusform>
-            <numerusform>%n трека, общая продолжительность: %1</numerusform>
-            <numerusform>%n треков, общая продолжительность: %1</numerusform>
+            <numerusform>%n трек, продолжительность: %1</numerusform>
+            <numerusform>%n трека, продолжительность: %1</numerusform>
+            <numerusform>%n треков, продолжительность: %1</numerusform>
         </translation>
     </message>
 </context>

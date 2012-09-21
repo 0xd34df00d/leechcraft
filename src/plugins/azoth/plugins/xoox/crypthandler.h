@@ -20,10 +20,14 @@
 
 #include <QObject>
 #include <QSet>
-#include <QXmppStanza.h>
-#include <QXmppClient.h>
+#include <QHash>
 
-class QXmppIq;
+#ifdef ENABLE_CRYPT
+#include <QtCrypto>
+#endif
+
+class QXmppMessage;
+class QXmppPresence;
 
 namespace LeechCraft
 {
@@ -32,30 +36,44 @@ namespace Azoth
 namespace Xoox
 {
 	class ClientConnection;
+	class GlooxMessage;
 
-	class ClientConnectionErrorMgr : public QObject
+#ifdef ENABLE_CRYPT
+	class PgpManager;
+#endif
+
+	class CryptHandler : public QObject
 	{
 		Q_OBJECT
 
-		ClientConnection *ClientConn_;
-		QXmppClient *Client_;
+		ClientConnection *Conn_;
 
-		QSet<QString> WhitelistedErrors_;
+#ifdef ENABLE_CRYPT
+		PgpManager *PGPManager_;
+#endif
 
-		int SocketErrorAccumulator_;
+		QSet<QString> SignedPresences_;
+		QSet<QString> SignedMessages_;
+		QHash<QString, QString> EncryptedMessages_;
+		QSet<QString> Entries2Crypt_;
 	public:
-		ClientConnectionErrorMgr (ClientConnection*);
+		CryptHandler (ClientConnection*);
 
-		void Whitelist (const QString&, bool add = true);
-		void HandleIq (const QXmppIq&);
-	private:
-		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
-		void HandleError (const QXmppIq&);
+		void Init ();
+
+		void HandlePresence (const QXmppPresence&, const QString&, const QString&);
+		void ProcessOutgoing (QXmppMessage&, GlooxMessage*);
+		void ProcessIncoming (QXmppMessage&);
+
+#ifdef ENABLE_CRYPT
+		PgpManager* GetPGPManager () const;
+		bool SetEncryptionEnabled (const QString&, bool);
+#endif
 	private slots:
-		void handleError (QXmppClient::Error);
-		void decrementErrAccumulators ();
-	signals:
-		void serverAuthFailed ();
+		void handleEncryptedMessageReceived (const QString&, const QString&);
+		void handleSignedMessageReceived (const QString&);
+		void handleSignedPresenceReceived (const QString&);
+		void handleInvalidSignatureReceived (const QString&);
 	};
 }
 }

@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "pendingartistbio.h"
+#include <algorithm>
 #include <QNetworkReply>
 #include <QDomDocument>
 #include <QtDebug>
@@ -72,6 +73,7 @@ namespace Lastfmscrobble
 
 		const auto& artist = doc.documentElement ().firstChildElement ("artist");
 		Bio_.BasicInfo_ = GetArtistInfo (artist);
+		std::reverse (Bio_.BasicInfo_.Tags_.begin (), Bio_.BasicInfo_.Tags_.end ());
 
 		emit ready ();
 		deleteLater ();

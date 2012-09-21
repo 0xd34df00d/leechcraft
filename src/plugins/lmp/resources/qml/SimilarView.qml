@@ -64,6 +64,7 @@ Rectangle {
     ListView {
         anchors.fill: parent
         id: similarView
+        smooth: true
 
         effect: Blur {
             id: similarViewBlur
@@ -74,6 +75,7 @@ Rectangle {
         delegate: Item {
             height: 150
             width: similarView.width
+            smooth: true
 
             Rectangle {
                 id: delegateRect
@@ -200,6 +202,9 @@ Rectangle {
                     anchors.left: artistImageThumb.right
                     anchors.top: artistNameLabel.bottom
                     anchors.topMargin: 0
+                    anchors.right: parent.right
+                    anchors.rightMargin: 5
+                    elide: Text.ElideRight
                     font.pointSize: 8
                 }
 
@@ -216,8 +221,35 @@ Rectangle {
                     anchors.top: artistTagsLabel.bottom
                     anchors.topMargin: 5
                     anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 1
 
                     onLinkActivated: rootRect.linkActivated(link)
+                }
+
+                Rectangle {
+                    id: downTextShade
+                    z: 3
+                    height: 10
+                    radius: parent.radius
+
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 1
+                    anchors.left: parent.left
+                    anchors.leftMargin: 1
+                    anchors.right: parent.right
+                    anchors.rightMargin: 1
+
+                    gradient: Gradient {
+                        GradientStop {
+                            position: 0
+                            color: "#0042394b"
+                        }
+
+                        GradientStop {
+                            position: 1
+                            color: "#ff42394b"
+                        }
+                    }
                 }
             }
         }

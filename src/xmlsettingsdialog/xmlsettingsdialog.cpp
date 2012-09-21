@@ -458,7 +458,7 @@ namespace Util
 		WorkingObject_->setProperty (property.toLatin1 ().constData (), GetValue (item));
 	}
 
-#if defined (Q_OS_WIN32) || defined (Q_OS_MAC)
+#if defined (Q_OS_WIN32)
 #include <QCoreApplication>
 #include <QLocale>
 	namespace

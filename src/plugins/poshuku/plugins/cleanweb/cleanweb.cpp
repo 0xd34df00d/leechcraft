@@ -150,6 +150,11 @@ namespace CleanWeb
 		plugins << Core::Instance ().GetFlashOnClick ();
 	}
 
+	void CleanWeb::hookInitialLayoutCompleted (IHookProxy_ptr, QWebPage *page, QWebFrame *frame)
+	{
+		Core::Instance ().HandleInitialLayout (page, frame);
+	}
+
 	void CleanWeb::hookNAMCreateRequest (IHookProxy_ptr proxy,
 			QNetworkAccessManager *manager,
 			QNetworkAccessManager::Operation *op,

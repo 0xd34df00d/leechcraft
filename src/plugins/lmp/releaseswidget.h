@@ -26,7 +26,7 @@ class QStandardItemModel;
 namespace Media
 {
 	class IRecentReleases;
-	class AlbumRelease;
+	struct AlbumRelease;
 }
 
 namespace LeechCraft

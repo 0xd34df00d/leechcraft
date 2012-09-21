@@ -50,6 +50,7 @@
 #include "jabbersearchsession.h"
 #include "bookmarkeditwidget.h"
 #include "accountsettingsholder.h"
+#include "crypthandler.h"
 
 namespace LeechCraft
 {
@@ -570,7 +571,7 @@ namespace Xoox
 #ifdef ENABLE_CRYPT
 	void GlooxAccount::SetPrivateKey (const QCA::PGPKey& key)
 	{
-		ClientConnection_->GetPGPManager ()->SetPrivateKey (key);
+		ClientConnection_->GetCryptHandler ()->GetPGPManager ()->SetPrivateKey (key);
 	}
 
 	void GlooxAccount::SetEntryKey (QObject *entryObj, const QCA::PGPKey& pubKey)
@@ -584,7 +585,7 @@ namespace Xoox
 			return;
 		}
 
-		ClientConnection_->GetPGPManager ()->SetPublicKey (entry->GetHumanReadableID (), pubKey);
+		ClientConnection_->GetCryptHandler ()->GetPGPManager ()->SetPublicKey (entry->GetHumanReadableID (), pubKey);
 	}
 
 	void GlooxAccount::SetEncryptionEnabled (QObject *entry, bool enabled)
@@ -595,7 +596,7 @@ namespace Xoox
 
 		const QString& jid = glEntry->GetJID ();
 		if (enabled &&
-				ClientConnection_->GetPGPManager ()->PublicKey (jid).isNull ())
+				ClientConnection_->GetCryptHandler ()->GetPGPManager ()->PublicKey (jid).isNull ())
 		{
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 						tr ("Unable to enable encryption for entry %1: "
@@ -605,7 +606,7 @@ namespace Xoox
 			return;
 		}
 
-		if (!ClientConnection_->SetEncryptionEnabled (jid, enabled))
+		if (!ClientConnection_->GetCryptHandler ()->SetEncryptionEnabled (jid, enabled))
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 						tr ("Unable to change encryption state for %1.")
 								.arg (glEntry->GetEntryName ()),
