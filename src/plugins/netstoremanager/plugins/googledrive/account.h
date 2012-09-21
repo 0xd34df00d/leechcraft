@@ -64,7 +64,9 @@ namespace GoogleDrive
 		AccountFeatures GetAccountFeatures () const;
 		QString GetAccountName () const;
 		void Upload (const QString& filepath,
-				const QStringList& parentId = QStringList ());
+				const QStringList& parentId = QStringList (),
+				UploadType ut = UploadType::Upload,
+				const QStringList& id = QStringList ());
 		void Download (const QStringList& id, const QString& filepath,
 				bool silent = false);
 

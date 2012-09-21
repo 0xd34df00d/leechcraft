@@ -79,10 +79,11 @@ namespace GoogleDrive
 		return Name_;
 	}
 
-	void Account::Upload (const QString& filepath, const QStringList& parentId)
+	void Account::Upload (const QString& filepath, const QStringList& parentId,
+			UploadType ut, const QStringList& id)
 	{
 		auto uploadManager = new UploadManager (filepath,
-				UploadType::Upload, parentId, this);
+				ut, parentId, this, id);
 
 		connect (uploadManager,
 				SIGNAL (uploadProgress (quint64, quint64, QString)),
@@ -105,12 +106,18 @@ namespace GoogleDrive
 	void Account::Download (const QStringList& id, const QString& filepath,
 			bool silent)
 	{
+		if (id.isEmpty ())
+			return;
+
 		DriveManager_->Download (id.value (0), filepath, silent);
 	}
 
-	void Account::Delete (const QList<QStringList>& id, bool ask)
+	void Account::Delete (const QList<QStringList>& ids, bool ask)
 	{
-		const QString& itemId = id [0] [0];
+		if (ids.isEmpty ())
+			return;
+
+		const QString& itemId = ids.value (0).value (0);
 		if (!ask)
 		{
 			DriveManager_->RemoveEntry (itemId);
@@ -143,18 +150,22 @@ namespace GoogleDrive
 
 	void Account::MoveToTrash (const QList<QStringList>& ids)
 	{
-		DriveManager_->MoveEntryToTrash (ids [0] [0]);
+		if (ids.isEmpty ())
+			return;
+		DriveManager_->MoveEntryToTrash (ids.value (0).value (0));
 	}
 
 	void Account::RestoreFromTrash (const QList<QStringList>& ids)
 	{
-		DriveManager_->RestoreEntryFromTrash (ids [0] [0]);
+		if (ids.isEmpty ())
+			return;
+		DriveManager_->RestoreEntryFromTrash (ids.value (0).value (0));
 	}
 
 	void Account::EmptyTrash (const QList<QStringList>& ids)
 	{
 		for (const auto& id : ids)
-			DriveManager_->RemoveEntry (id [0]);
+			DriveManager_->RemoveEntry (id.value (0));
 	}
 
 	void Account::RefreshListing ()
@@ -162,9 +173,9 @@ namespace GoogleDrive
 		DriveManager_->RefreshListing ();
 	}
 
-	void Account::RequestUrl (const QList<QStringList>& id)
+	void Account::RequestUrl (const QList<QStringList>& ids)
 	{
-		if (id.isEmpty ())
+		if (ids.isEmpty ())
 			return;
 
 		if (!XmlSettingsManager::Instance ().property ("AutoShareOnUrlRequest").toBool ())
@@ -185,7 +196,7 @@ namespace GoogleDrive
 				XmlSettingsManager::Instance ().setProperty ("AutoShareOnUrlRequest", true);
 		}
 
-		DriveManager_->ShareEntry (id [0] [0]);
+		DriveManager_->ShareEntry (ids.value (0).value (0));
 	}
 
 	void Account::CreateDirectory (const QString& name, const QStringList& parentId)
@@ -213,7 +224,7 @@ namespace GoogleDrive
 	{
 		if (id.isEmpty ())
 			return;
-		DriveManager_->Rename (id [0], newName);
+		DriveManager_->Rename (id.value (0), newName);
 	}
 
 	QByteArray Account::Serialize ()

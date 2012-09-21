@@ -20,6 +20,7 @@
 #include <QNetworkRequest>
 #include <QtDebug>
 #include <QFileInfo>
+#include <QDesktopServices>
 #include <util/util.h>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
@@ -59,24 +60,32 @@ namespace GoogleDrive
 
 	void DriveManager::RemoveEntry (const QString& id)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestEntryRemoving (id, key); };
 		RequestAccessToken ();
 	}
 
 	void DriveManager::MoveEntryToTrash (const QString& id)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestMovingEntryToTrash (id, key); };
 		RequestAccessToken ();
 	}
 
 	void DriveManager::RestoreEntryFromTrash (const QString& id)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestRestoreEntryFromTrash (id, key); };
 		RequestAccessToken ();
 	}
 
 	void DriveManager::ShareEntry (const QString& id)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestSharingEntry (id, key); };
 		RequestAccessToken ();
 	}
@@ -91,6 +100,8 @@ namespace GoogleDrive
 	void DriveManager::Download (const QString& id, const QString& filepath,
 			bool silent)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
 		DownloadsQueue_ << [this, filepath, silent] (const QUrl& url) { DownloadFile (filepath, url, silent); };
 		RequestAccessToken ();
@@ -106,18 +117,24 @@ namespace GoogleDrive
 
 	void DriveManager::Copy (const QString& id, const QString& parentId)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestCopyItem (id, parentId, key); };
 		RequestAccessToken ();
 	}
 
 	void DriveManager::Move (const QString& id, const QString& parentId)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestMoveItem (id, parentId, key); };
 		RequestAccessToken ();
 	}
 
 	void DriveManager::Rename (const QString& id, const QString& newName)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id, newName] (const QString& key) { RequestRenameItem (id, newName, key); };
 		RequestAccessToken ();
 	}
@@ -423,12 +440,17 @@ namespace GoogleDrive
 	{
 		TaskParameters tp = OnlyDownload | FromUserInitiated;
 		if (silent)
-			tp |= AutoAccept;
-
+			tp |= AutoAccept | Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					DoNotAnnounceEntity;
 		LeechCraft::Entity e = Util::MakeEntity (url,
-				filePath,
+				QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
+						"/" + QFileInfo (filePath).fileName (),
 				tp);
-		Core::Instance ().SendEntity (e);
+		silent ?
+			Core::Instance ().DelegateEntity (e, filePath) :
+			Core::Instance ().SendEntity (e);
 	}
 
 	void DriveManager::FindSyncableItems (const QStringList& pathes,
