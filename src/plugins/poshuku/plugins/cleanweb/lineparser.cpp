@@ -18,7 +18,6 @@
 
 #include "lineparser.h"
 #include <QtDebug>
-#include <boost/graph/graph_concepts.hpp>
 #include "filter.h"
 
 namespace LeechCraft
@@ -94,11 +93,10 @@ namespace CleanWeb
 			{
 				actualLine = actualLine.mid (1, actualLine.size () - 2);
 				f.MatchType_ = FilterOption::MTRegexp;
-				const auto& itemRx = QRegExp (actualLine, f.Case_, QRegExp::RegExp);
 				const FilterItem item
 				{
 					actualLine.toUtf8 (),
-					itemRx,
+					RegExp (actualLine, f.Case_),
 					QByteArrayMatcher (),
 					f
 				};
@@ -164,6 +162,9 @@ namespace CleanWeb
 
 			if (f.MatchType_ != FilterOption::MTRegexp && actualLine.contains ('^'))
 			{
+				if (!RegExp::IsFast ())
+					return;
+
 				actualLine.replace ('*', ".*");
 				if (f.MatchType_ != FilterOption::MTWildcard)
 					actualLine.replace ('?', "\\?");
@@ -188,8 +189,8 @@ namespace CleanWeb
 			}
 
 			const auto& itemRx = f.MatchType_ == FilterOption::MTRegexp ?
-					QRegExp (actualLine, f.Case_, QRegExp::RegExp) :
-					QRegExp ();
+					RegExp (actualLine, f.Case_) :
+					RegExp ();
 			const QByteArrayMatcher matcher = f.MatchType_ == FilterOption::MTPlain ?
 					QByteArrayMatcher (actualLine.toUtf8 ()) :
 					QByteArrayMatcher ();
@@ -266,6 +267,7 @@ namespace CleanWeb
 		}
 
 		ParseWithOption (actualLine, f, white ? Filter_->Exceptions_ : Filter_->Filters_);
+
 		++Success_;
 	}
 }

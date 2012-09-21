@@ -24,6 +24,7 @@
 #include <QHash>
 #include <QUrl>
 #include <QByteArrayMatcher>
+#include "regexp.h"
 
 namespace LeechCraft
 {
@@ -93,7 +94,7 @@ namespace CleanWeb
 	struct FilterItem
 	{
 		QByteArray OrigString_;
-		QRegExp RegExp_;
+		RegExp RegExp_;
 		QByteArrayMatcher PlainMatcher_;
 		FilterOption Option_;
 	};
