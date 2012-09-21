@@ -18,6 +18,7 @@
 
 #include "defaultbackendmanager.h"
 #include <memory>
+#include <numeric>
 #include <QStandardItemModel>
 #include <QSettings>
 #include <QApplication>
