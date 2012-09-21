@@ -66,8 +66,6 @@ namespace CleanWeb
 		};
 		QMap<int, PendingJob> PendingJobs_;
 
-		QList<QString> Blocked_;
-
 		QHash<QWebFrame*, QStringList> MoreDelayedURLs_;
 
 		ICoreProxy_ptr Proxy_;
@@ -91,6 +89,8 @@ namespace CleanWeb
 		void Handle (Entity);
 		QAbstractItemModel* GetModel ();
 		void Remove (const QModelIndex&);
+
+		void HandleInitialLayout (QWebPage*, QWebFrame*);
 		QNetworkReply* Hook (LeechCraft::IHookProxy_ptr,
 				QNetworkAccessManager*,
 				QNetworkAccessManager::Operation*,
@@ -103,6 +103,7 @@ namespace CleanWeb
 		void HandleContextMenu (const QWebHitTestResult&,
 				QGraphicsWebView*, QMenu*,
 				WebViewCtxMenuStage);
+
 		bool ShouldReject (const QNetworkRequest&, QString*) const;
 
 		UserFiltersModel* GetUserFiltersModel () const;
@@ -143,8 +144,7 @@ namespace CleanWeb
 		 */
 		bool Load (const QUrl& url, const QString& subscrName);
 	private:
-		bool Matches (const QString&, const Filter&,
-				const QString&, const QString&) const;
+		bool Matches (const FilterItem&, const QString&, const QByteArray&, const QString&) const;
 		void HandleProvider (QObject*);
 		void Parse (const QString&);
 

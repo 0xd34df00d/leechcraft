@@ -32,7 +32,7 @@ namespace LeechCraft
 			QByteArray Content_;
 			qint64 Offset_;
 		public:
-			CustomNetworkReply (QObject* = 0);
+			CustomNetworkReply (const QUrl& url, QObject* = 0);
 			virtual ~CustomNetworkReply ();
 
 			void SetError (NetworkError, const QString& = QString ());
