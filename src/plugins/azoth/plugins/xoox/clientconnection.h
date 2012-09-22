@@ -282,7 +282,7 @@ namespace Xoox
 		void updateFTSettings ();
 		void handleDetectedBSProxy (const QString&);
 	private:
-		void ScheduleFetchVCard (const QString&);
+		void ScheduleFetchVCard (const QString&, bool);
 		GlooxCLEntry* CreateCLEntry (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QXmppRosterIq::Item&);
 		GlooxCLEntry* ConvertFromODS (const QString&, const QXmppRosterIq::Item&);
