@@ -30,6 +30,11 @@ namespace Poshuku
 namespace CleanWeb
 {
 #ifdef USE_PCRE
+
+#ifndef PCRE_STUDY_JIT_COMPILE
+#define PCRE_STUDY_JIT_COMPILE 0
+#endif
+
 	class PCREWrapper
 	{
 		pcre *RE_;
