@@ -73,8 +73,7 @@ namespace CleanWeb
 		{
 			if (RE_ && !pcre_refcount (RE_, -1))
 			{
-				if (Extra_)
-					pcre_free_study (Extra_);
+				FreeStudy ();
 				pcre_free (RE_);
 			}
 
@@ -93,8 +92,7 @@ namespace CleanWeb
 
 			if (!pcre_refcount (RE_, -1))
 			{
-				if (Extra_)
-					pcre_free_study (Extra_);
+				FreeStudy ();
 				pcre_free (RE_);
 			}
 		}
@@ -118,6 +116,16 @@ namespace CleanWeb
 						<< str
 						<< error;
 			return re;
+		}
+
+		void FreeStudy ()
+		{
+			if (Extra_)
+#ifdef PCRE_CONFIG_JIT
+				pcre_free_study (Extra_);
+#else
+				pcre_free (Extra_);
+#endif
 		}
 	};
 #endif
