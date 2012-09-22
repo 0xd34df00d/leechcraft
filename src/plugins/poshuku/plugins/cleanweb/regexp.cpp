@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "regexp.h"
+#include "xmlsettingsmanager.h"
 #include <QtDebug>
 
 #ifdef USE_PCRE
@@ -54,7 +55,10 @@ namespace CleanWeb
 			{
 				pcre_refcount (RE_, 1);
 				const char *error = 0;
-				Extra_ = pcre_study (RE_, PCRE_STUDY_JIT_COMPILE, &error);
+				const int opts = XmlSettingsManager::Instance ()->property ("EnableJIT").toBool () ?
+						PCRE_STUDY_JIT_COMPILE :
+						0;
+				Extra_ = pcre_study (RE_, opts, &error);
 			}
 		}
 
