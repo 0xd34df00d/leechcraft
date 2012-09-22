@@ -41,6 +41,11 @@ namespace CleanWeb
 	void CleanWeb::Init (ICoreProxy_ptr proxy)
 	{
 		Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku_cleanweb"));
+
+		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"poshukucleanwebsettings.xml");
+
 		connect (&Core::Instance (),
 				SIGNAL (delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**)),
@@ -54,9 +59,6 @@ namespace CleanWeb
 
 		Core::Instance ().SetProxy (proxy);
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog);
-		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-				"poshukucleanwebsettings.xml");
 		SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
 				new SubscriptionsManager ());
 		SettingsDialog_->SetCustomWidget ("UserFilters",
