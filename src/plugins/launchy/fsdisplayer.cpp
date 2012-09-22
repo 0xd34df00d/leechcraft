@@ -137,6 +137,7 @@ namespace Launchy
 				SLOT (handleExecRequested (QString)));
 
 		handleFinderUpdated ();
+		handleCategorySelected (0);
 	}
 
 	FSDisplayer::~FSDisplayer ()
