@@ -30,7 +30,7 @@ namespace Azoth
 	{
 	}
 
-	bool ContactDropFilter::eventFilter (QObject *obj, QEvent *e)
+	bool ContactDropFilter::eventFilter (QObject*, QEvent *e)
 	{
 		if (e->type () != QEvent::Drop)
 			return false;
