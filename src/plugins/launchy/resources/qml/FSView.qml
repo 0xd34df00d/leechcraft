@@ -114,6 +114,7 @@ Rectangle {
             anchors.margins: 4
             font.pointSize: 12
             font.italic: true
+            focus: true
             textFormat: TextEdit.PlainText
         }
 
