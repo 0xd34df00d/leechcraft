@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "regexp.h"
+#include "xmlsettingsmanager.h"
 #include <QtDebug>
 
 #ifdef USE_PCRE
@@ -30,6 +31,11 @@ namespace Poshuku
 namespace CleanWeb
 {
 #ifdef USE_PCRE
+
+#ifndef PCRE_STUDY_JIT_COMPILE
+#define PCRE_STUDY_JIT_COMPILE 0
+#endif
+
 	class PCREWrapper
 	{
 		pcre *RE_;
@@ -49,7 +55,10 @@ namespace CleanWeb
 			{
 				pcre_refcount (RE_, 1);
 				const char *error = 0;
-				Extra_ = pcre_study (RE_, PCRE_STUDY_JIT_COMPILE, &error);
+				const int opts = XmlSettingsManager::Instance ()->property ("EnableJIT").toBool () ?
+						PCRE_STUDY_JIT_COMPILE :
+						0;
+				Extra_ = pcre_study (RE_, opts, &error);
 			}
 		}
 
@@ -64,8 +73,7 @@ namespace CleanWeb
 		{
 			if (RE_ && !pcre_refcount (RE_, -1))
 			{
-				if (Extra_)
-					pcre_free_study (Extra_);
+				FreeStudy ();
 				pcre_free (RE_);
 			}
 
@@ -84,8 +92,7 @@ namespace CleanWeb
 
 			if (!pcre_refcount (RE_, -1))
 			{
-				if (Extra_)
-					pcre_free_study (Extra_);
+				FreeStudy ();
 				pcre_free (RE_);
 			}
 		}
@@ -109,6 +116,16 @@ namespace CleanWeb
 						<< str
 						<< error;
 			return re;
+		}
+
+		void FreeStudy ()
+		{
+			if (Extra_)
+#ifdef PCRE_CONFIG_JIT
+				pcre_free_study (Extra_);
+#else
+				pcre_free (Extra_);
+#endif
 		}
 	};
 #endif
