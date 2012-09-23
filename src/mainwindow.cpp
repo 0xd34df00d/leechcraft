@@ -360,6 +360,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	MenuView_->addAction (Ui_.ActionFullscreenMode_);
 	MenuTools_ = new QMenu (tr ("Tools"), this);
 
+#ifdef Q_OS_MAC
+	Ui_.ActionFullscreenMode_->setVisible (false);
+#endif
+
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "list-add");
 	Ui_.ActionCloseTab_->setProperty ("ActionIcon", "tab-close");
 	Ui_.ActionSettings_->setProperty ("ActionIcon", "preferences-system");
