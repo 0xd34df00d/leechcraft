@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "serverinfostorage.h"
+#include <algorithm>
 #include <QTimer>
 #include <QXmppDiscoveryManager.h>
 #include "clientconnection.h"
