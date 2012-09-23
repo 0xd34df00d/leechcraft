@@ -18,7 +18,7 @@
 
 #ifndef XMLSETTINGSDIALOG_COLORPICKER_H
 #define XMLSETTINGSDIALOG_COLORPICKER_H
-#include <QWidget>
+#include <QPushButton>
 #include <QColor>
 
 class QLabel;
@@ -26,18 +26,18 @@ class QPushButton;
 
 namespace LeechCraft
 {
-	class ColorPicker : public QWidget
+	class ColorPicker : public QPushButton
 	{
 		Q_OBJECT
 
 		QString Title_;
 		QColor Color_;
-		QLabel *Label_;
-		QPushButton *ChooseButton_;
 	public:
 		ColorPicker (const QString& = QString (), QWidget* = 0);
 		void SetCurrentColor (const QColor&);
 		QColor GetCurrentColor () const;
+	protected:
+		void paintEvent (QPaintEvent *event);
 	private slots:
 		void chooseColor ();
 	signals:
