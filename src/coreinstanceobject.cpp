@@ -127,11 +127,18 @@ namespace LeechCraft
 		Classes_ << SettingsTab_->GetTabClassInfo ();
 
 		PluginManagerDialog *manager = new PluginManagerDialog;
+		PluginManager *pm = Core::Instance ().GetPluginManager ();
+		manager->selectAll (pm->SelectionState ());
 		
+		connect (pm,
+				SIGNAL (needSelectAll (Qt::CheckState)),
+				manager,
+				SLOT (selectAll (Qt::CheckState)));
+				
 		connect (manager,
-				SIGNAL (selectAll (int)),
-				Core::Instance ().GetPluginManager (),
-				SLOT (setAllPlugins (int)));
+				SIGNAL (needSelectAll (int)),
+				pm,
+				SLOT (selectAllPlugins (int)));
 		
 		XmlSettingsDialog_->SetCustomWidget ("PluginManager", manager);
 		XmlSettingsDialog_->SetCustomWidget ("TagsViewer", new TagsViewer);

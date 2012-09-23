@@ -101,16 +101,16 @@ namespace LeechCraft
 		void InjectPlugin (QObject *object);
 		void ReleasePlugin (QObject *object);
 
-		
-
 		QObject* GetObject ();
 
 		QObject* GetProvider (const QString&) const;
 
 		const QStringList& GetPluginLoadErrors () const;
 		
+		Qt::CheckState SelectionState () const;
+		
 	public slots:
-		void setAllPlugins (int);
+		void selectAllPlugins (int);
 		
 	private:
 		void FindPlugins ();
@@ -148,6 +148,7 @@ namespace LeechCraft
 	signals:
 		void pluginInjected (QObject*);
 		void loadProgress (const QString&);
+		void needSelectAll (Qt::CheckState);
 	};
 };
 

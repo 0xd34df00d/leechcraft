@@ -28,14 +28,35 @@ namespace LeechCraft
 	: QHeaderView (Qt::Horizontal, parent)
 	, SelectAllCheckBox_ (new QCheckBox (this))
 	{
+		setResizeMode (Interactive);
 		QRect rect (SelectAllCheckBox_->geometry ());
 		rect.setX (rect.x () + XPadding_);
 		rect.setY (rect.y () + YPadding_);
 		SelectAllCheckBox_->setGeometry (rect);
+		SelectAllCheckBox_->setTristate (true);
 		
 		connect (SelectAllCheckBox_,
 				SIGNAL (stateChanged (int)),
 				this,
-				SIGNAL (selectAll (int)));
+				SLOT (onSelectAllCheckBoxClicked (int)));
+	}
+	
+	void PluginManagerHeader::onSelectAllCheckBoxClicked (int state)
+	{
+		if (state == Qt::PartiallyChecked)
+			SelectAllCheckBox_->setCheckState (Qt::Checked);
+		else
+			emit needSelectAll (state);
+	}
+	
+	void PluginManagerHeader::selectAll (Qt::CheckState state)
+	{
+		SelectAllCheckBox_->disconnect (this, SLOT (onSelectAllCheckBoxClicked (int)));
+		SelectAllCheckBox_->setCheckState (state);
+		
+		connect (SelectAllCheckBox_,
+				SIGNAL (stateChanged (int)),
+				this,
+				SLOT (onSelectAllCheckBoxClicked (int)));
 	}
 }

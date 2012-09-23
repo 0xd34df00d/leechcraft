@@ -32,7 +32,10 @@ namespace LeechCraft
 		QCheckBox *SelectAllCheckBox_;
 	public:
 		PluginManagerHeader (QWidget* = 0);
+	public slots:
+		void selectAll (Qt::CheckState state);
+		void onSelectAllCheckBoxClicked (int state);
 	signals:
-		void selectAll (int);
+		void needSelectAll (int);
 	};
 }

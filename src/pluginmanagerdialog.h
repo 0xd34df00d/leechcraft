@@ -25,12 +25,15 @@ class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
+	class PluginManagerHeader;
+	
 	class PluginManagerDialog : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::PluginManagerDialog Ui_;
 		QSortFilterProxyModel *FilterProxy_;
+		PluginManagerHeader *Header_;
 	public:
 		PluginManagerDialog (QWidget* = 0);
 	public slots:
@@ -38,8 +41,9 @@ namespace LeechCraft
 
 		void accept ();
 		void reject ();
+		void selectAll (Qt::CheckState selectState);
 	signals:
-		void selectAll (int);
+		void needSelectAll (int);
 	};
 }
 
