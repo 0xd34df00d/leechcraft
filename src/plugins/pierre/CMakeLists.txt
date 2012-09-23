@@ -24,3 +24,4 @@ TARGET_LINK_LIBRARIES (leechcraft_pierre
 	"-framework AppKit"
 	)
 INSTALL (TARGETS leechcraft_pierre DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (DIRECTORY data/ DESTINATION ${LC_BINDIR}/..)

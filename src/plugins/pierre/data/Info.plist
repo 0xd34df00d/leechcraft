@@ -1,0 +1,24 @@
+<?xml version=1.0 encoding=UTF-8?>
+<!DOCTYPE plist PUBLIC -//Apple//DTD PLIST 1.0//EN http://www.apple.com/DTDs/PropertyList-1.0.dtd>
+<plist version=1.0>
+<dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>(C) 2006-2012 LeechCraft Development Team</string>
+	<key>CFBundleIconFile</key>
+	<string>leechcraft.icns</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleName</key>
+	<string>LeechCraft</string>
+	<key>CFBundleExecutable</key>
+	<string>leechcraft</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.LC.LeechCraft</string>
+	<key>CFBundleVersion</key>
+	<string>0.5.85</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.5.85</string>
+</dict>
+</plist>
