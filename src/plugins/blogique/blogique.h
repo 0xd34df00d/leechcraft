@@ -68,8 +68,8 @@ namespace Blogique
 		void statusBarChanged (QWidget *tabContents, const QString& text);
 		void raiseTab (QWidget *tabContents);
 
-		void gotEntity (LeechCraft::Entity e);
-		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
+		void gotEntity (const LeechCraft::Entity& e);
+		void delegateEntity (const LeechCraft::Entity& e, int *id, QObject **obj);
 
 		void gotActions (QList<QAction*> actions, ActionsEmbedPlace area);
 	};

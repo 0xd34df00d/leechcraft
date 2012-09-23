@@ -34,7 +34,7 @@ namespace Pierre
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-		MenuBar_ = new QMenuBar (Proxy_->GetMainWindow ());
+		MenuBar_ = new QMenuBar (0);
 
 		FS::AddAction (Proxy_->GetMainWindow ());
 	}
@@ -96,9 +96,27 @@ namespace Pierre
 	{
 		auto menu = Proxy_->GetMWProxy ()->GetMainMenu ();
 
+		QMenu *lcMenu = 0;
+		QList<QAction*> firstLevelActions;
 		Q_FOREACH (auto action, menu->actions ())
 			if (action->menu ())
+			{
 				MenuBar_->addAction (action);
+				if (!lcMenu)
+					lcMenu = action->menu ();
+			}
+			else
+			{
+				if (action->menuRole () == QAction::TextHeuristicRole)
+					action->setMenuRole (QAction::ApplicationSpecificRole);
+				firstLevelActions << action;
+			}
+
+		Q_FOREACH (auto act, firstLevelActions)
+			lcMenu->addAction (act);
+
+		if (!lcMenu->actions ().isEmpty ())
+			MenuBar_->addMenu (lcMenu);
 
 		const auto& actors = Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IActionsExporter*> ();
