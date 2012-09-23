@@ -64,8 +64,8 @@ namespace Metida
 		void initPlugin (QObject *proxy);
 
 	signals:
-		void gotEntity (LeechCraft::Entity e);
-		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
+		void gotEntity (const LeechCraft::Entity& e);
+		void delegateEntity (const LeechCraft::Entity& e, int *id, QObject **obj);
 	};
 }
 }
