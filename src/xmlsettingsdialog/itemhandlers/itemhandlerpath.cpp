@@ -118,7 +118,7 @@ namespace LeechCraft
 		picker->SetText (value.toString ());
 	}
 
-	QVariant ItemHandlerPath::GetValue (QObject *object) const
+	QVariant ItemHandlerPath::GetObjectValue (QObject *object) const
 	{
 		FilePicker *picker = qobject_cast<FilePicker*> (object);
 		if (!picker)

@@ -116,7 +116,7 @@ namespace LeechCraft
 			spinbox->setValue (value.value<ValueType> ());
 		}
 	protected:
-		QVariant GetValue (QObject *object) const
+		QVariant GetObjectValue (QObject *object) const
 		{
 			WidgetType *spinbox = qobject_cast<WidgetType*> (object);
 			if (!spinbox)

@@ -95,7 +95,7 @@ namespace LeechCraft
 		element.setAttribute ("default", value.toString ());
 	}
 
-	QVariant ItemHandlerMultiLine::GetValue (QObject *object) const
+	QVariant ItemHandlerMultiLine::GetObjectValue (QObject *object) const
 	{
 		QTextEdit *edit = qobject_cast<QTextEdit*> (object);
 		if (!edit)

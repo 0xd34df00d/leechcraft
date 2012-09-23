@@ -165,7 +165,7 @@ namespace LeechCraft
 				<< "not found";
 	}
 
-	QVariant ItemHandlerCombobox::GetValue (QObject *object) const
+	QVariant ItemHandlerCombobox::GetObjectValue (QObject *object) const
 	{
 		QComboBox *combobox = qobject_cast<QComboBox*> (object);
 		if (!combobox)

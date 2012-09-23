@@ -82,7 +82,7 @@ namespace LeechCraft
 		edit->setText (value.toString ());
 	}
 
-	QVariant ItemHandlerLineEdit::GetValue (QObject *object) const
+	QVariant ItemHandlerLineEdit::GetObjectValue (QObject *object) const
 	{
 		QLineEdit *edit = qobject_cast<QLineEdit*> (object);
 		if (!edit)
