@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,40 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "contactdropfilter.h"
-#include <QDropEvent>
-#include <QImage>
-#include <QUrl>
+#pragma once
+
+#include <QObject>
+#include <interfaces/core/ihookproxy.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/iactionsexporter.h>
+#include <interfaces/iplugin2.h>
+
+class QMenuBar;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Pierre
 {
-	ContactDropFilter::ContactDropFilter (QObject *parent)
-	: QObject (parent)
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
 	{
-	}
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2)
 
-	bool ContactDropFilter::eventFilter (QObject*, QEvent *e)
-	{
-		if (e->type () != QEvent::Drop)
-			return false;
+		QMenuBar *MenuBar_;
+		ICoreProxy_ptr Proxy_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		auto data = static_cast<QDropEvent*> (e)->mimeData ();
-		const auto& imgData = data->imageData ();
-
-		if (data->hasImage () && data->hasUrls () && data->urls ().size () == 1)
-			emit localImageDropped (imgData.value<QImage> (), data->urls ().value (0));
-		else if (data->hasImage ())
-			emit imageDropped (imgData.value<QImage> ());
-		else if (data->hasUrls ())
-		{
-			const auto& urls = data->urls ();
-			if (!urls.isEmpty ())
-				emit filesDropped (urls);
-		}
-
-		return true;
-	}
+		QSet<QByteArray> GetPluginClasses () const;
+	public slots:
+		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
+	private slots:
+		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
+		void fillMenu ();
+	};
 }
 }
+

@@ -181,6 +181,10 @@ IF (UNIX)
 	OPTION (ENABLE_LAUNCHY "Build Launchy, third-party application launcher module" ${WITH_PLUGINS})
 ENDIF (UNIX)
 
+IF (APPLE)
+	OPTION (ENABLE_PIERRE "Build Pierre, Mac OS X integration layer" ${WITH_PLUGINS})
+ENDIF (APPLE)
+
 # Defunct
 OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" OFF)
 OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" OFF)
@@ -490,6 +494,12 @@ IF (WIN32)
 		ADD_SUBDIRECTORY (plugins/y7)
 	ENDIF (ENABLE_Y7)
 ENDIF (WIN32)
+
+IF (APPLE)
+	IF (ENABLE_PIERRE)
+		ADD_SUBDIRECTORY (plugins/pierre)
+	ENDIF (ENABLE_PIERRE)
+ENDIF (APPLE)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)

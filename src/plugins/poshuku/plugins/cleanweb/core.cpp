@@ -292,7 +292,7 @@ namespace CleanWeb
 		}
 	}
 
-	void Core::HandleInitialLayout (QWebPage *page, QWebFrame *frame)
+	void Core::HandleInitialLayout (QWebPage*, QWebFrame *frame)
 	{
 		const QUrl& url = frame->url ();
 		const QString& urlStr = url.toString ();

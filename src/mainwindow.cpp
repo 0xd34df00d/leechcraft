@@ -175,7 +175,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			0,
 			Qt::ApplicationShortcut);
 
-    Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
+	Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
 }
 
 void LeechCraft::MainWindow::handleShortcutFullscreenMode ()
@@ -343,7 +343,7 @@ void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 
 void LeechCraft::MainWindow::InitializeInterface ()
 {
- 	installEventFilter (new ChildActionEventFilter (this));
+	installEventFilter (new ChildActionEventFilter (this));
 
 	Ui_.setupUi (this);
 
@@ -359,6 +359,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	MenuView_->addAction (Ui_.ActionShowStatusBar_);
 	MenuView_->addAction (Ui_.ActionFullscreenMode_);
 	MenuTools_ = new QMenu (tr ("Tools"), this);
+
+#ifdef Q_OS_MAC
+	Ui_.ActionFullscreenMode_->setVisible (false);
+#endif
 
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "list-add");
 	Ui_.ActionCloseTab_->setProperty ("ActionIcon", "tab-close");
@@ -802,6 +806,11 @@ void LeechCraft::MainWindow::handleLoadProgress (const QString& str)
 
 void LeechCraft::MainWindow::FillQuickLaunch ()
 {
+	Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+	emit hookGonnaFillMenu (proxy);
+	if (proxy->IsCancelled ())
+		return;
+
 	const auto& exporters = Core::Instance ().GetPluginManager ()->GetAllCastableTo<IActionsExporter*> ();
 	Q_FOREACH (auto exp, exporters)
 	{
@@ -810,7 +819,7 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 			AddMenus (map);
 	}
 
-	Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+	proxy.reset (new Util::DefaultHookProxy);
 	emit hookGonnaFillQuickLaunch (proxy);
 	if (proxy->IsCancelled ())
 		return;

@@ -262,7 +262,7 @@ namespace Acetamide
 				property (statusKey.toUtf8 ()).toString ();
 	}
 
-	void ClientConnection::serverConnected (const QString& serverId)
+	void ClientConnection::serverConnected (const QString&)
 	{
 		if (Account_->GetState ().State_ == SOffline)
 		{
@@ -288,6 +288,9 @@ namespace Acetamide
 	void ClientConnection::handleError (QAbstractSocket::SocketError error,
 			const QString& errorString)
 	{
+		qWarning () << Q_FUNC_INFO
+				<< error
+				<< errorString;
 		IrcServerHandler *ish = qobject_cast<IrcServerHandler*> (sender ());
 		if (!ish)
 		{

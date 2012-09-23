@@ -261,8 +261,8 @@ namespace Acetamide
 			ChannelHandlers_ [chnnl]->HandleIncomingMessage (nick, msg);
 	}
 
-	bool ChannelsManager::ReceiveCmdAnswerMessage (const QString& cmd,
-			const QString& answer, bool endOfCmd)
+	bool ChannelsManager::ReceiveCmdAnswerMessage (const QString&,
+			const QString& answer, bool)
 	{
 		if (LastActiveChannel_.isEmpty () ||
 				!ChannelHandlers_.contains (LastActiveChannel_))

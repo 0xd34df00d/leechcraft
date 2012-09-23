@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,40 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "contactdropfilter.h"
-#include <QDropEvent>
-#include <QImage>
-#include <QUrl>
+#pragma once
+
+class QMainWindow;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Pierre
 {
-	ContactDropFilter::ContactDropFilter (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
-	bool ContactDropFilter::eventFilter (QObject*, QEvent *e)
-	{
-		if (e->type () != QEvent::Drop)
-			return false;
-
-		auto data = static_cast<QDropEvent*> (e)->mimeData ();
-		const auto& imgData = data->imageData ();
-
-		if (data->hasImage () && data->hasUrls () && data->urls ().size () == 1)
-			emit localImageDropped (imgData.value<QImage> (), data->urls ().value (0));
-		else if (data->hasImage ())
-			emit imageDropped (imgData.value<QImage> ());
-		else if (data->hasUrls ())
-		{
-			const auto& urls = data->urls ();
-			if (!urls.isEmpty ())
-				emit filesDropped (urls);
-		}
-
-		return true;
-	}
+namespace FS
+{
+	bool SupportsFS ();
+	void AddAction (QMainWindow*);
+	void Toggle (QMainWindow*);
+}
 }
 }
