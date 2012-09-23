@@ -19,17 +19,26 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/ihookproxy.h>
 #include <interfaces/iinfo.h>
+#include <interfaces/iactionsexporter.h>
+#include <interfaces/iplugin2.h>
+
+class QMenuBar;
 
 namespace LeechCraft
 {
 namespace Pierre
 {
 	class Plugin : public QObject
-					, public IInfo
+				 , public IInfo
+				 , public IPlugin2
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IPlugin2)
+
+		QMenuBar *MenuBar_;
+		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -38,6 +47,13 @@ namespace Pierre
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QSet<QByteArray> GetPluginClasses () const;
+	public slots:
+		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
+	private slots:
+		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
+		void fillMenu ();
 	};
 }
 }

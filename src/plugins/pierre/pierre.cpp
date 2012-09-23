@@ -18,6 +18,13 @@
 
 #include "pierre.h"
 #include <QIcon>
+#include <QMenuBar>
+#include <QMainWindow>
+#include <QTimer>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/imwproxy.h>
+#include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
 {
@@ -25,6 +32,8 @@ namespace Pierre
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+		MenuBar_ = new QMenuBar (Proxy_->GetMainWindow ());
 	}
 
 	void Plugin::SecondInit ()
@@ -53,6 +62,48 @@ namespace Pierre
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Core.Plugins/1.0";
+		return result;
+	}
+
+	void Plugin::hookGonnaFillMenu (IHookProxy_ptr)
+	{
+		QTimer::singleShot (0,
+				this,
+				SLOT (fillMenu ()));
+	}
+
+	void Plugin::handleGotActions (const QList<QAction*>&, ActionsEmbedPlace aep)
+	{
+		if (aep != ActionsEmbedPlace::ToolsMenu)
+			return;
+
+		MenuBar_->clear ();
+		QTimer::singleShot (0,
+				this,
+				SLOT (fillMenu ()));
+	}
+
+	void Plugin::fillMenu ()
+	{
+		auto menu = Proxy_->GetMWProxy ()->GetMainMenu ();
+
+		Q_FOREACH (auto action, menu->actions ())
+			if (action->menu ())
+				MenuBar_->addAction (action);
+
+		const auto& actors = Proxy_->GetPluginsManager ()->
+				GetAllCastableRoots<IActionsExporter*> ();
+		Q_FOREACH (auto actor, actors)
+			connect (actor,
+					SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+					this,
+					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 	}
 }
 }
