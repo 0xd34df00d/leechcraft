@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	pierre.cpp
+	fullscreen.mm
 	)
 
 ADD_LIBRARY (leechcraft_pierre SHARED
@@ -20,5 +21,6 @@ ADD_LIBRARY (leechcraft_pierre SHARED
 TARGET_LINK_LIBRARIES (leechcraft_pierre
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	"-framework AppKit"
 	)
 INSTALL (TARGETS leechcraft_pierre DESTINATION ${LC_PLUGINS_DEST})

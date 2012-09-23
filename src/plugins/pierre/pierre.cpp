@@ -25,6 +25,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/iactionsexporter.h>
+#include "fullscreen.h"
 
 namespace LeechCraft
 {
@@ -34,6 +35,8 @@ namespace Pierre
 	{
 		Proxy_ = proxy;
 		MenuBar_ = new QMenuBar (Proxy_->GetMainWindow ());
+
+		FS::AddAction (Proxy_->GetMainWindow ());
 	}
 
 	void Plugin::SecondInit ()
