@@ -154,6 +154,7 @@ namespace Xoox
 		std::unique_ptr<AffiliationSelectorDialog> dia (new AffiliationSelectorDialog (this));
 		dia->SetJID (jid);
 		dia->SetAffiliation (aff);
+		dia->SetReason (stdItem->data (ItemRoles::Reason).toString ());
 		if (dia->exec () != QDialog::Accepted)
 			return;
 
@@ -166,6 +167,7 @@ namespace Xoox
 		QXmppMucItem item;
 		item.setJid (newJid);
 		item.setAffiliation (dia->GetAffiliation ());
+		item.setReason (dia->GetReason ());
 		SendItem (item);
 
 		if (item.affiliation () != QXmppMucItem::NoAffiliation)
@@ -221,8 +223,11 @@ namespace Xoox
 				continue;
 			}
 
+			auto firstItem = new QStandardItem (perm.jid ());
+			firstItem->setData (perm.reason (), ItemRoles::Reason);
+
 			QList<QStandardItem*> items;
-			items << new QStandardItem (perm.jid ());
+			items << firstItem;
 			items << new QStandardItem (perm.reason ());
 			Q_FOREACH (QStandardItem *item, items)
 				item->setEditable (false);

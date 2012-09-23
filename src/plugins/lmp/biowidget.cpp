@@ -18,12 +18,15 @@
 
 #include "biowidget.h"
 #include <QDeclarativeContext>
+#include <QGraphicsObject>
 #include <QtDebug>
+#include <util/util.h>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 #include "biopropproxy.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -38,15 +41,31 @@ namespace LMP
 		Ui_.View_->rootContext ()->setContextObject (BioPropProxy_);
 		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/BioView.qml"));
 
+		const auto& lastProv = XmlSettingsManager::Instance ()
+				.Property ("LastUsedBioProvider", QString ()).toString ();
+
 		Providers_ = Core::Instance ().GetProxy ()->GetPluginsManager ()->
 				GetAllCastableTo<Media::IArtistBioFetcher*> ();
 		Q_FOREACH (auto provider, Providers_)
+		{
 			Ui_.Provider_->addItem (provider->GetServiceName ());
+			if (lastProv == provider->GetServiceName ())
+				Ui_.Provider_->setCurrentIndex (Ui_.Provider_->count () - 1);
+		}
 
 		connect (Ui_.Provider_,
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (requestBiography ()));
+		connect (Ui_.Provider_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (saveLastUsedProv ()));
+
+		connect (Ui_.View_->rootObject (),
+				SIGNAL (linkActivated (QString)),
+				this,
+				SLOT (handleLink (QString)));
 	}
 
 	void BioWidget::SetCurrentArtist (const QString& artist)
@@ -56,6 +75,16 @@ namespace LMP
 
 		CurrentArtist_ = artist;
 		requestBiography ();
+	}
+
+	void BioWidget::saveLastUsedProv ()
+	{
+		const int idx = Ui_.Provider_->currentIndex ();
+		const auto& prov = idx >= 0 ?
+				Providers_.value (idx)->GetServiceName () :
+				QString ();
+
+		XmlSettingsManager::Instance ().setProperty ("LastUsedBioProvider", prov);
 	}
 
 	void BioWidget::requestBiography ()
@@ -76,6 +105,15 @@ namespace LMP
 		auto pending = qobject_cast<Media::IPendingArtistBio*> (sender ());
 		const auto& bio = pending->GetArtistBio ();
 		BioPropProxy_->SetBio (bio);
+
+		emit gotArtistImage (bio.BasicInfo_.Name_, bio.BasicInfo_.LargeImage_);
+	}
+
+	void BioWidget::handleLink (const QString& link)
+	{
+		Core::Instance ().SendEntity (Util::MakeEntity (QUrl (link),
+					QString (),
+					FromUserInitiated | OnlyHandle));
 	}
 }
 }

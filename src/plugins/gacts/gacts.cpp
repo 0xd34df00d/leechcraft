@@ -18,14 +18,14 @@
 
 #include "gacts.h"
 #include <QIcon>
-#include <QxtGui/QxtGlobalShortcut>
+#include <QxtGlobalShortcut>
 #include <interfaces/entitytesthandleresult.h>
 
 namespace LeechCraft
 {
 namespace GActs
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 	}
 

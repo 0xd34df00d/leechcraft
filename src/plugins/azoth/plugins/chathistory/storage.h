@@ -48,6 +48,7 @@ namespace ChatHistory
 		QSqlQuery MessageDumper_;
 		QSqlQuery UsersForAccountGetter_;
 		QSqlQuery Date2Pos_;
+		QSqlQuery GetMonthDates_;
 		QSqlQuery LogsSearcher_;
 		QSqlQuery LogsSearcherWOContact_;
 		QSqlQuery LogsSearcherWOContactAccount_;
@@ -95,6 +96,7 @@ namespace ChatHistory
 		void search (const QString& accountId, const QString& entryId,
 				const QString& text, int shift);
 		void searchDate (const QString& accountId, const QString& entryId, const QDateTime& dt);
+		void getDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 		void clearHistory (const QString& accountId, const QString& entryId);
 	signals:
 		void gotOurAccounts (const QStringList&);
@@ -102,6 +104,8 @@ namespace ChatHistory
 		void gotChatLogs (const QString&, const QString&,
 				int, int, const QVariant&);
 		void gotSearchPosition (const QString&, const QString&, int);
+		void gotDaysForSheet (const QString& accountId, const QString& entryId,
+				int year, int month, const QList<int>& days);
 	};
 }
 }

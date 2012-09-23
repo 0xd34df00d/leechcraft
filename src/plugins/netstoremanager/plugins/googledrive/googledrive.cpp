@@ -20,8 +20,11 @@
 #include <QIcon>
 #include <QSettings>
 #include <QCoreApplication>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include "authmanager.h"
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -31,6 +34,12 @@ namespace GoogleDrive
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("netstoremanager_googledrive");
+
+		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+				"nsmgoogledrivesettings.xml");
+
 		Core::Instance ().SetProxy (proxy);
 		AuthManager_ = new AuthManager (this);
 
@@ -38,6 +47,11 @@ namespace GoogleDrive
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+
 		connect (AuthManager_,
 				SIGNAL (authSuccess (QObject*)),
 				this,
@@ -70,7 +84,8 @@ namespace GoogleDrive
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/netstoremanager/googledrive/resources/images/googledrive.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -78,6 +93,11 @@ namespace GoogleDrive
 		QSet<QByteArray> classes;
 		classes << "org.LeechCraft.Plugins.NetStoreManager.Plugins.IStoragePlugin";
 		return classes;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XmlSettingsDialog_;
 	}
 
 	QObject* Plugin::GetObject ()

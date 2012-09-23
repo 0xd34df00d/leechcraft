@@ -35,6 +35,8 @@ namespace Phonon
 	class AudioOutput;
 }
 
+typedef QPair<QString, QString> StringPair_t;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -59,6 +61,8 @@ namespace LMP
 		Media::IRadioStation_ptr CurrentStation_;
 		QStandardItem *RadioItem_;
 		QHash<QUrl, MediaInfo> Url2Info_;
+
+		MediaInfo LastPhononMediaInfo_;
 	public:
 		enum class PlayMode
 		{
@@ -130,7 +134,6 @@ namespace LMP
 		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
 		MediaInfo GetPhononMediaInfo () const;
 		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
-		void ApplyOrdering (QList<Phonon::MediaSource>&);
 
 		bool HandleCurrentStop (const Phonon::MediaSource&);
 
@@ -146,20 +149,30 @@ namespace LMP
 		void stop ();
 		void clear ();
 	private slots:
+		void handleSorted ();
+		void continueAfterSorted (const QList<QPair<Phonon::MediaSource, MediaInfo>>&);
+
 		void restorePlaylist ();
 		void handleStationError (const QString&);
 		void handleRadioStream (const QUrl&, const Media::AudioInfo&);
+		void handleGotRadioPlaylist (const QString&, const QString&);
+		void postPlaylistCleanup (const QString&);
 		void handleUpdateSourceQueue ();
 		void handlePlaybackFinished ();
 		void handleStateChanged (Phonon::State);
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
 		void handleMetadata ();
+		void refillPlaylist ();
 		void setTransitionTime ();
 	signals:
 		void songChanged (const MediaInfo&);
+		void indexChanged (const QModelIndex&);
 		void insertedAlbum (const QModelIndex&);
 
 		void playModeChanged (Player::PlayMode);
+		void bufferStatusChanged (int);
+
+		void playerAvailable (bool);
 	};
 }
 }

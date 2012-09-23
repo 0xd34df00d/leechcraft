@@ -33,6 +33,7 @@ namespace Dolozhee
 	: QWizardPage (parent)
 	{
 		Ui_.setupUi (this);
+		Ui_.CatCombo_->addItem (QString ());
 	}
 
 	int ReportTypePage::nextId () const
@@ -53,7 +54,7 @@ namespace Dolozhee
 	void ReportTypePage::initializePage ()
 	{
 		QWizardPage::initializePage ();
-		if (Ui_.CatCombo_->count ())
+		if (Ui_.CatCombo_->count () > 1)
 			return;
 
 		auto rw = static_cast<ReportWizard*> (wizard ());

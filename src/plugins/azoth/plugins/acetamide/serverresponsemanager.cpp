@@ -233,6 +233,18 @@ namespace Acetamide
 				this, _1);
 		Command2Action_ ["333"] = boost::bind (&ServerResponseManager::GotTopicWhoTime,
 				this, _1);
+		Command2Action_ ["004"] = boost::bind (&ServerResponseManager::GotServerInfo,
+				this, _1);
+		Command2Action_ ["307"] = [this] (const IrcMessageOptions& opts)
+			{ ISH_->ShowAnswer ("307", opts.Message_); };
+		Command2Action_ ["310"] = [this] (const IrcMessageOptions& opts)
+			{ ISH_->ShowAnswer ("310", opts.Message_); };
+		Command2Action_ ["320"] = [this] (const IrcMessageOptions& opts)
+			{ ISH_->ShowAnswer ("320", opts.Message_); };
+		Command2Action_ ["378"] = [this] (const IrcMessageOptions& opts)
+			{ ISH_->ShowAnswer ("278", opts.Message_); };
+
+		MatchString2Server_ ["unreal"] = IrcServer::UnrealIRCD;
 	}
 
 	bool ServerResponseManager::IsCTCPMessage (const QString& msg)
@@ -1073,6 +1085,65 @@ namespace Acetamide
 		ISH_->ShowInviteListEnd (opts.Message_);
 	}
 
+	void ServerResponseManager::GotServerInfo (const IrcMessageOptions& opts)
+	{
+		QStringList answer;
+		std::transform (opts.Parameters_.begin (), opts.Parameters_.end (),
+			std::back_inserter (answer),
+			[] (decltype (opts.Parameters_.front ()) param)
+				{ return QString::fromUtf8 (param.c_str ()); });
+		ISH_->ShowAnswer ("myinfo", answer.join (" "));
+
+		QString ircServer = QString::fromUtf8 (opts.Parameters_.at (2).c_str ());
+		IrcServer server;
+		auto serversKeys = MatchString2Server_.keys ();
+		auto it = std::find_if (serversKeys.begin (),serversKeys.end (),
+				[&ircServer] (decltype (serversKeys.front ()) key)
+					{ return ircServer.contains (key, Qt::CaseInsensitive); });
+
+		if (it == serversKeys.end ())
+			return;
+
+		server = MatchString2Server_ [*it];
+		ISH_->SetIrcServerInfo (server, ircServer);
+
+		switch (server)
+		{
+			case IrcServer::UnrealIRCD:
+				Command2Action_ ["307"] = [this] (const IrcMessageOptions& opts)
+					{
+						WhoIsMessage msg;
+						msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
+						msg.IsRegistered_ = opts.Message_;
+						ISH_->ShowWhoIsReply (msg);
+					};
+				Command2Action_ ["310"] = [this] (const IrcMessageOptions& opts)
+					{
+						WhoIsMessage msg;
+						msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
+						msg.IsHelpOp_ = opts.Message_;
+						ISH_->ShowWhoIsReply (msg);
+					};
+				Command2Action_ ["320"] = [this] (const IrcMessageOptions& opts)
+					{
+						WhoIsMessage msg;
+						msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
+						msg.Mail_ = opts.Message_;
+						ISH_->ShowWhoIsReply (msg);
+					};
+				Command2Action_ ["378"] = [this] (const IrcMessageOptions& opts)
+					{
+						WhoIsMessage msg;
+						msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
+						msg.ConnectedFrom_ = opts.Message_;
+						ISH_->ShowWhoIsReply (msg);
+					};
+				break;
+			default:
+				break;
+		}
+	}
+
 	void ServerResponseManager::GotWhoIsAccount (const IrcMessageOptions& opts)
 	{
 		if (opts.Parameters_.count () < 3)
@@ -1113,6 +1184,8 @@ namespace Acetamide
 				QString::fromUtf8 (opts.Parameters_.at (2).c_str ()),
 				QString::fromUtf8 (opts.Parameters_.at (3).c_str ()).toULongLong ());
 	}
+
+
 }
 }
 }

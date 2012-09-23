@@ -22,10 +22,12 @@
 #include <QInputDialog>
 #include <QtDebug>
 #include <QBuffer>
+#include <QCryptographicHash>
 #include <QXmppVCardIq.h>
 #include <QXmppPresence.h>
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
+#include <QXmppDiscoveryManager.h>
 #include <util/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
@@ -179,13 +181,18 @@ namespace Xoox
 
 		QPointer<VCardDialog> ptr (VCardDialog_);
 		Account_->GetClientConnection ()->FetchVCard (GetJID (),
-				[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->UpdateInfo (iq); });
+				[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->UpdateInfo (iq); },
+				true);
 		VCardDialog_->show ();
 	}
 
 	QMap<QString, QVariant> EntryBase::GetClientInfo (const QString& var) const
 	{
 		auto res = Variant2ClientInfo_ [var];
+
+		if (GetJID ().endsWith ("@vk.com") ||
+			GetJID ().endsWith ("@vkmessenger.com"))
+			res.remove ("client_type");
 
 		auto version = Variant2Version_ [var];
 		if (version.name ().isEmpty ())
@@ -227,6 +234,21 @@ namespace Xoox
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
 	}
 
+	QVariant EntryBase::GetMetaInfo (DataField field) const
+	{
+		switch (field)
+		{
+		case DataField::BirthDate:
+			return VCardIq_.birthday ();
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown data field"
+				<< static_cast<int> (field);
+
+		return QVariant ();
+	}
+
 	bool EntryBase::CanSendDirectedStatusNow (const QString& variant)
 	{
 		if (variant.isEmpty ())
@@ -245,31 +267,29 @@ namespace Xoox
 
 		auto conn = Account_->GetClientConnection ();
 
-		QXmppPresence::Type presType = state.State_ == SOffline ?
-				QXmppPresence::Unavailable :
-				QXmppPresence::Available;
-		QXmppPresence pres (presType,
-				QXmppPresence::Status (static_cast<QXmppPresence::Status::Type> (state.State_),
-						state.StatusString_,
-						conn->GetLastState ().Priority_));
+		auto pres = XooxUtil::StatusToPresence (state.State_,
+				state.StatusString_, conn->GetLastState ().Priority_);
 
 		QString to = GetJID ();
 		if (!variant.isEmpty ())
 			to += '/' + variant;
 		pres.setTo (to);
 
-		conn->GetClient ()->addProperCapability (pres);
+		auto discoMgr = conn->GetClient ()->findExtension<QXmppDiscoveryManager> ();
+		pres.setCapabilityHash ("sha-1");
+		pres.setCapabilityNode (discoMgr->clientCapabilitiesNode ());
+		pres.setCapabilityVer (discoMgr->capabilities ().verificationString ());
 		conn->GetClient ()->sendPacket (pres);
 	}
 
-	void EntryBase::RequestLastPosts (int maxNum)
+	void EntryBase::RequestLastPosts (int)
 	{
 	}
 
 	void EntryBase::HandlePresence (const QXmppPresence& pres, const QString& resource)
 	{
 		SetClientInfo (resource, pres);
-		SetStatus (XooxUtil::PresenceToStatus (pres), resource);
+		SetStatus (XooxUtil::PresenceToStatus (pres), resource, pres);
 
 		CheckVCardUpdate (pres);
 	}
@@ -400,14 +420,16 @@ namespace Xoox
 		}
 	}
 
-	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant)
+	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant, const QXmppPresence& presence)
 	{
 		const bool existed = CurrentStatus_.contains (variant);
 		const bool wasOffline = existed ?
 				CurrentStatus_ [variant].State_ == SOffline :
 				false;
+
 		if (existed &&
-				status == CurrentStatus_ [variant])
+				status == CurrentStatus_ [variant] &&
+				presence.priority () == Variant2ClientInfo_.value (variant).value ("priority"))
 			return;
 
 		CurrentStatus_ [variant] = status;
@@ -429,13 +451,6 @@ namespace Xoox
 			}
 		}
 
-		emit statusChanged (status, variant);
-
-		if (!existed ||
-				(existed && status.State_ == SOffline) ||
-				wasOffline)
-			emit availableVariantsChanged (vars);
-
 		if ((!existed || wasOffline) &&
 				status.State_ != SOffline)
 		{
@@ -448,20 +463,21 @@ namespace Xoox
 
 		if (status.State_ != SOffline)
 		{
-			QXmppRosterManager& rm = Account_->
-					GetClientConnection ()->GetClient ()->rosterManager ();
-			const auto& presences = rm.getAllPresencesForBareJid (GetJID ());
-			if (presences.contains (variant))
-			{
-				const int p = presences.value (variant).status ().priority ();
+			if (const int p = presence.priority ())
 				Variant2ClientInfo_ [variant] ["priority"] = p;
-			}
 		}
 		else
 		{
 			Variant2Version_.remove (variant);
 			Variant2ClientInfo_.remove (variant);
 		}
+
+		emit statusChanged (status, variant);
+
+		if (!existed ||
+				(existed && status.State_ == SOffline) ||
+				wasOffline)
+			emit availableVariantsChanged (vars);
 
 		GlooxMessage *message = 0;
 		if (GetEntryType () == ETPrivateChat)
@@ -601,7 +617,6 @@ namespace Xoox
 		auto capsManager = Account_->GetClientConnection ()->GetCapsManager ();
 		const auto& storedIds = capsManager->GetIdentities (ver);
 
-		qDebug () << "known stored identities for" << ver.toHex () << GetJID () << storedIds.size ();
 		if (!storedIds.isEmpty ())
 			SetDiscoIdentities (reqVar, storedIds);
 		else

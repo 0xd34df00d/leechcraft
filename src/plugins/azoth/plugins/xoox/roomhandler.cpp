@@ -23,7 +23,6 @@
 #include <QXmppVCardIq.h>
 #include <QXmppMucManager.h>
 #include <QXmppClient.h>
-#include <QXmppConstants.h>
 #include <util/passutils.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
@@ -44,6 +43,8 @@ namespace Azoth
 {
 namespace Xoox
 {
+	const QString NSData = "jabber:x:data";
+
 	RoomHandler::RoomHandler (const QString& jid,
 			const QString& ourNick,
 			GlooxAccount* account)
@@ -115,7 +116,7 @@ namespace Xoox
 	void RoomHandler::SetPresence (QXmppPresence pres)
 	{
 		if (pres.type () == QXmppPresence::Unavailable)
-			Leave (pres.status ().statusText (), false);
+			Leave (pres.statusText (), false);
 		else if (!Room_->isJoined ())
 			Join ();
 	}
@@ -125,8 +126,8 @@ namespace Xoox
 	void RoomHandler::MakeLeaveMessage (const QXmppPresence& pres, const QString& nick)
 	{
 		QString msg = tr ("%1 has left the room").arg (nick);
-		if (pres.status ().statusText ().size ())
-			msg += ": " + pres.status ().statusText ();
+		if (pres.statusText ().size ())
+			msg += ": " + pres.statusText ();
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::DIn,
@@ -171,13 +172,11 @@ namespace Xoox
 		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
 
-		const QXmppPresence::Status& status = pres.status ();
-		const QString& state = proxy->
-				StateToString (static_cast<State> (status.type ()));
+		const QString& state = proxy->StateToString (static_cast<State> (pres.availableStatusType () + 1));
 		QString msg = tr ("%1 changed status to %2 (%3)")
 				.arg (nick)
 				.arg (state)
-				.arg (status.statusText ());
+				.arg (pres.statusText ());
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::DIn,
@@ -187,7 +186,7 @@ namespace Xoox
 				GetParticipantEntry (nick));
 		message->setProperty ("Azoth/Nick", nick);
 		message->setProperty ("Azoth/TargetState", state);
-		message->setProperty ("Azoth/StatusText", status.statusText ());
+		message->setProperty ("Azoth/StatusText", pres.statusText ());
 		CLEntry_->HandleMessage (message);
 	}
 
@@ -399,7 +398,7 @@ namespace Xoox
 		Q_FOREACH (const QXmppElement& elem, msg.extensions ())
 		{
 			const QString& xmlns = elem.attribute ("xmlns");
-			if (xmlns == ns_data)
+			if (xmlns == NSData)
 			{
 				QXmppDataForm *df = new QXmppDataForm ();
 				df->parse (XooxUtil::XmppElem2DomElem (elem));
@@ -455,7 +454,7 @@ namespace Xoox
 					IMessage::DIn,
 					CLEntry_,
 					IMessage::MTEventMessage,
-					IMessage::MSTOther);
+					IMessage::MSTRoomSubjectChange);
 			}
 			else if (!nick.isEmpty ())
 			{
@@ -700,7 +699,8 @@ namespace Xoox
 		}
 
 		if (entry->HasUnreadMsgs ())
-			entry->SetStatus (EntryStatus (SOffline, item.reason ()), QString ());
+			entry->SetStatus (EntryStatus (SOffline, item.reason ()),
+					QString (), QXmppPresence (QXmppPresence::Unavailable));
 		else
 			RemoveEntry (entry.get ());
 	}
@@ -726,7 +726,7 @@ namespace Xoox
 
 		QXmppMessage msg ("", Room_->jid ());
 		msg.setType (QXmppMessage::Normal);
-		msg.setExtensions (XooxUtil::Form2XmppElem (form));
+		msg.setExtensions (QXmppElementList () << XooxUtil::Form2XmppElem (form));
 
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
 	}
@@ -765,7 +765,7 @@ namespace Xoox
 	{
 		Account_->handleEntryRemoved (CLEntry_);
 		Account_->GetClientConnection ()->Unregister (this);
-		delete Room_;
+		Room_->deleteLater ();
 		Room_ = 0;
 		deleteLater ();
 	}

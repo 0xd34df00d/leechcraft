@@ -126,7 +126,7 @@ namespace LeechCraft
 				SIGNAL (removeTab (QWidget*)));
 	}
 
-	void CoreInstanceObject::Init (ICoreProxy_ptr proxy)
+	void CoreInstanceObject::Init (ICoreProxy_ptr)
 	{
 		Classes_ << SettingsTab_->GetTabClassInfo ();
 

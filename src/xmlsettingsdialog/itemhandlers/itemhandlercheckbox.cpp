@@ -53,8 +53,8 @@ namespace LeechCraft
 				this,
 				SLOT (updatePreferences ()));
 
-		box->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
+		box->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		box->setProperty ("SearchTerms", QStringList (box->text ()));
 
 		lay->addWidget (box, lay->rowCount (), 0, 1, 2, Qt::AlignTop);
 	}
@@ -73,7 +73,7 @@ namespace LeechCraft
 		checkbox->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
 	}
 
-	QVariant ItemHandlerCheckbox::GetValue (QObject *object) const
+	QVariant ItemHandlerCheckbox::GetObjectValue (QObject *object) const
 	{
 		QCheckBox *checkbox = qobject_cast<QCheckBox*> (object);
 		if (!checkbox)

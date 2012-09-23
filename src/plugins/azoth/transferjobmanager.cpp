@@ -28,9 +28,11 @@
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
 #include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/iaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
+#include "filesenddialog.h"
 
 namespace LeechCraft
 {
@@ -233,6 +235,49 @@ namespace Azoth
 		return SummaryModel_;
 	}
 
+	bool TransferJobManager::OfferURLs (ICLEntry *entry, const QList<QUrl>& urls)
+	{
+		if (entry->Variants ().isEmpty ())
+			return false;
+
+		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		ITransferManager *mgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
+		if (!mgr)
+			return false;
+
+		if (urls.isEmpty ())
+			return false;
+
+		if (urls.size () == 1)
+		{
+			new FileSendDialog (entry, urls.value (0).toLocalFile ());
+			return true;
+		}
+
+		const auto& text = tr ("Are you sure you want to send %n files to %1?", 0, urls.size ())
+				.arg (entry->GetEntryName ());
+		if (QMessageBox::question (0,
+					"LeechCraft",
+					text,
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return false;
+
+		Q_FOREACH (const QUrl& url, urls)
+		{
+			const QString& path = url.toLocalFile ();
+			if (!QFileInfo (path).exists ())
+				continue;
+
+			QObject *job = mgr->SendFile (entry->GetEntryID (),
+					entry->Variants ().first (),
+					path,
+					QString ());
+			Core::Instance ().GetTransferJobManager ()->HandleJob (job);
+		}
+
+		return true;
+	}
+
 	void TransferJobManager::HandleDeoffer (QObject *jobObj)
 	{
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
@@ -296,7 +341,10 @@ namespace Azoth
 				"org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + job->GetName ();
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = (QStringList (entry->GetEntryName ()) << job->GetName ());
 		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Incoming file");
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = job->GetComment ().isEmpty () ?
+				tr ("Incoming file") :
+				tr ("Incoming file: %1")
+					.arg ("<br />" + job->GetComment ());
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] =
 				"org.LC.AdvNotifications.IM.IncomingFile";
 

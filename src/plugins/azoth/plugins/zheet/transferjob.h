@@ -42,17 +42,17 @@ namespace Zheet
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ITransferJob);
-		
+
 		uint ID_;
 		MSNAccount *A_;
 		Callbacks *CB_;
 		MSNBuddyEntry *Buddy_;
-		
+
 		TransferDirection Dir_;
 		QString Filename_;
 		quint64 Done_;
 		quint64 Total_;
-		
+
 		TransferState State_;
 	public:
 		TransferJob (const MSN::fileTransferInvite&,
@@ -63,6 +63,7 @@ namespace Zheet
 		QString GetSourceID () const;
 		QString GetName () const;
 		qint64 GetSize () const;
+		QString GetComment () const;
 		TransferDirection GetDirection () const;
 		void Accept (const QString&);
 		void Abort ();

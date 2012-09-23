@@ -24,6 +24,8 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecentreleases.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -67,13 +69,6 @@ namespace LMP
 		Ui_.ReleasesView_->rootContext ()->setContextProperty ("releasesModel", ReleasesModel_);
 		Ui_.ReleasesView_->setSource (QUrl ("qrc:/lmp/resources/qml/ReleasesView.qml"));
 
-		Providers_ = Core::Instance ().GetProxy ()->GetPluginsManager ()->
-				GetAllCastableTo<Media::IRecentReleases*> ();
-		Q_FOREACH (auto prov, Providers_)
-			Ui_.InfoProvider_->addItem (prov->GetServiceName ());
-
-		Ui_.InfoProvider_->setCurrentIndex (-1);
-
 		connect (Ui_.InfoProvider_,
 				SIGNAL (activated (int)),
 				this,
@@ -82,6 +77,34 @@ namespace LMP
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (request ()));
+	}
+
+	void ReleasesWidget::InitializeProviders ()
+	{
+		const auto& lastProv = ShouldRememberProvs () ?
+				XmlSettingsManager::Instance ()
+					.Property ("LastUsedReleasesProvider", QString ()).toString () :
+				QString ();
+
+		bool lastFound = false;
+
+		Providers_ = Core::Instance ().GetProxy ()->GetPluginsManager ()->
+				GetAllCastableTo<Media::IRecentReleases*> ();
+		Q_FOREACH (auto prov, Providers_)
+		{
+			Ui_.InfoProvider_->addItem (prov->GetServiceName ());
+
+			if (prov->GetServiceName () == lastProv)
+			{
+				const int idx = Providers_.size () - 1;
+				Ui_.InfoProvider_->setCurrentIndex (idx);
+				request ();
+				lastFound = true;
+			}
+		}
+
+		if (!lastFound)
+			Ui_.InfoProvider_->setCurrentIndex (-1);
 	}
 
 	void ReleasesWidget::request ()
@@ -105,6 +128,9 @@ namespace LMP
 				this,
 				SLOT (handleRecentReleases (const QList<Media::AlbumRelease>&)));
 		prov->RequestRecentReleases (15, withRecs);
+
+		XmlSettingsManager::Instance ()
+				.setProperty ("LastUsedReleasesProvider", prov->GetServiceName ());
 	}
 
 	void ReleasesWidget::handleRecentReleases (const QList<Media::AlbumRelease>& releases)

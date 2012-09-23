@@ -269,8 +269,9 @@ namespace FXB
 		}
 	}
 
-	void FB2Converter::HandleImage (const QDomElement& tagElem)
+	void FB2Converter::HandleImage (const QDomElement&)
 	{
+		// TODO
 	}
 
 	void FB2Converter::HandlePara (const QDomElement& tagElem)
@@ -294,7 +295,15 @@ namespace FXB
 
 			if (child.isText ())
 			{
+				auto fmt = Cursor_->charFormat ();
+				auto newFmt = fmt;
+				newFmt.setForeground (Qt::black);
+				Cursor_->setCharFormat (newFmt);
+
 				Cursor_->insertText (child.toText ().data ());
+
+				Cursor_->setCharFormat (fmt);
+
 				continue;
 			}
 

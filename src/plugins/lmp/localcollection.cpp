@@ -19,6 +19,7 @@
 #include "localcollection.h"
 #include <functional>
 #include <algorithm>
+#include <numeric>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QMimeData>
@@ -97,6 +98,9 @@ namespace LMP
 	, FilesWatcher_ (new LocalCollectionWatcher (this))
 	, AlbumArtMgr_ (new AlbumArtManager (this))
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
+	, UpdateNewArtists_ (0)
+	, UpdateNewAlbums_ (0)
+	, UpdateNewTracks_ (0)
 	{
 		connect (Watcher_,
 				SIGNAL (finished ()),
@@ -150,13 +154,31 @@ namespace LMP
 		player->Enqueue (CollectPaths (index, Sorter_));
 	}
 
+	void LocalCollection::Enqueue (const QList<QModelIndex>& indexes, Player *player)
+	{
+		const auto& paths = std::accumulate (indexes.begin (), indexes.end (), QStringList (),
+				[this] (const QStringList& paths, decltype (indexes.front ()) item)
+					{ return paths + CollectPaths (item, Sorter_); });
+		player->Enqueue (paths);
+	}
+
 	void LocalCollection::Clear ()
 	{
 		Storage_->Clear ();
 		CollectionModel_->clear ();
+		Artists_.clear ();
 		PresentPaths_.clear ();
+
+		Path2Track_.clear ();
+		Track2Path_.clear ();
+
+		Track2Album_.clear ();
+		AlbumID2Album_.clear ();
+		AlbumID2ArtistID_.clear ();
+
 		Artist2Item_.clear ();
 		Album2Item_.clear ();
+		Track2Item_.clear ();
 
 		RemoveRootPaths (RootPaths_);
 	}
@@ -170,6 +192,9 @@ namespace LMP
 				SLOT (handleIterateFinished ()));
 		watcher->setProperty ("Path", path);
 		watcher->setProperty ("IsRoot", root);
+
+		if (root)
+			AddRootPaths (QStringList (path));
 
 		const bool symLinks = XmlSettingsManager::Instance ()
 				.property ("FollowSymLinks").toBool ();
@@ -210,7 +235,7 @@ namespace LMP
 		Clear ();
 
 		Q_FOREACH (const auto& path, paths)
-			Scan (path);
+			Scan (path, true);
 	}
 
 	LocalCollection::DirStatus LocalCollection::GetDirStatus (const QString& dir) const
@@ -303,7 +328,7 @@ namespace LMP
 		return result;
 	}
 
-	Collection::TrackStats LocalCollection::GetTrackStats (const QString& path)
+	Collection::TrackStats LocalCollection::GetTrackStats (const QString& path) const
 	{
 		if (!Path2Track_.contains (path))
 			return Collection::TrackStats ();
@@ -320,6 +345,62 @@ namespace LMP
 					<< Path2Track_ [path]
 					<< e.what ();
 			return Collection::TrackStats ();
+		}
+	}
+
+	Collection::Artist LocalCollection::GetArtist (int id) const
+	{
+		auto pos = std::find_if (Artists_.begin (), Artists_.end (),
+				[id] (decltype (Artists_.front ()) artist) { return artist.ID_ == id; });
+		return pos != Artists_.end () ?
+				*pos :
+				Collection::Artist ();
+	}
+
+	Collection::Artists_t LocalCollection::GetAllArtists () const
+	{
+		return Artists_;
+	}
+
+	void LocalCollection::HandleExistingInfos (const QList<MediaInfo>& infos)
+	{
+		Q_FOREACH (const auto& info, infos)
+		{
+			const auto& path = info.LocalPath_;
+			const auto trackIdx = FindTrack (path);
+			const auto trackAlbum = GetTrackAlbum (trackIdx);
+			if (!trackAlbum)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no album for track"
+						<< path;
+				continue;
+			}
+
+			const auto pos = std::find_if (trackAlbum->Tracks_.begin (), trackAlbum->Tracks_.end (),
+					[trackIdx] (decltype (trackAlbum->Tracks_.front ()) track)
+						{ return track.ID_ == trackIdx; });
+			const auto& track = pos != trackAlbum->Tracks_.end () ?
+					*pos :
+					Collection::Track ();
+			const auto& artist = GetArtist (AlbumID2ArtistID_ [trackAlbum->ID_]);
+			if (artist.Name_ == info.Artist_ &&
+					trackAlbum->Name_ == info.Album_ &&
+					trackAlbum->Year_ == info.Year_ &&
+					track.Number_ == info.TrackNumber_ &&
+					track.Name_ == info.Title_ &&
+					track.Genres_ == info.Genres_)
+				continue;
+
+			auto stats = GetTrackStats (path);
+			RemoveTrack (path);
+
+			const auto& newArts = Storage_->AddToCollection (QList<MediaInfo> () << info);
+			HandleNewArtists (newArts);
+
+			const auto newTrackIdx = FindTrack (path);
+			stats.TrackID_ = newTrackIdx;
+			Storage_->SetTrackStats (stats);
 		}
 	}
 
@@ -347,11 +428,15 @@ namespace LMP
 		int trackCount = 0;
 		const bool shouldEmit = !Artists_.isEmpty ();
 
-		Artists_ += artists;
 		Q_FOREACH (const auto& artist, artists)
+		{
+			if (std::find_if (Artists_.begin (), Artists_.end (),
+						[&artist] (decltype (artist) present) { return present.ID_ == artist.ID_; }) == Artists_.end ())
+				Artists_ += artist;
 			Q_FOREACH (auto album, artist.Albums_)
 				Q_FOREACH (const auto& track, album->Tracks_)
 					PresentPaths_ << track.FilePath_;
+		}
 
 		Q_FOREACH (const auto& artist, artists)
 		{
@@ -388,7 +473,13 @@ namespace LMP
 						},
 						artistItem);
 
-				AlbumID2Album_ [album->ID_] = album;
+				if (AlbumID2Album_.contains (album->ID_))
+					AlbumID2Album_ [album->ID_]->Tracks_ << album->Tracks_;
+				else
+				{
+					AlbumID2Album_ [album->ID_] = album;
+					AlbumID2ArtistID_ [album->ID_] = artist.ID_;
+				}
 
 				Q_FOREACH (const auto& track, album->Tracks_)
 				{
@@ -414,24 +505,20 @@ namespace LMP
 		}
 
 		if (shouldEmit &&
-				artists.size () &&
-				albumCount &&
 				trackCount)
 		{
-			const auto& artistsMsg = tr ("%n new artist(s)", 0, artists.size ());
-			const auto& albumsMsg = tr ("%n new album(s)", 0, albumCount);
-			const auto& tracksMsg = tr ("%n new track(s)", 0, trackCount);
-			const auto& msg = tr ("Local collection updated: %1, %2, %3.")
-					.arg (artistsMsg)
-					.arg (albumsMsg)
-					.arg (tracksMsg);
-			Core::Instance ().SendEntity (Util::MakeNotification ("LMP", msg, PInfo_));
+			UpdateNewArtists_ += artists.size ();
+			UpdateNewAlbums_ += albumCount;
+			UpdateNewTracks_ += trackCount;
 		}
 	}
 
 	void LocalCollection::RemoveTrack (const QString& path)
 	{
 		const int id = FindTrack (path);
+		if (id == -1)
+			return;
+
 		auto album = GetTrackAlbum (id);
 		try
 		{
@@ -451,6 +538,7 @@ namespace LMP
 		Path2Track_.remove (path);
 		Track2Path_.remove (id);
 		Track2Album_.remove (id);
+		PresentPaths_.remove (path);
 
 		if (!album)
 			return;
@@ -478,6 +566,7 @@ namespace LMP
 		}
 
 		AlbumID2Album_.remove (id);
+		AlbumID2ArtistID_.remove (id);
 
 		auto item = Album2Item_.take (id);
 		item->parent ()->removeRow (item->row ());
@@ -548,6 +637,48 @@ namespace LMP
 			emit rootPathsChanged (RootPaths_);
 	}
 
+	void LocalCollection::CheckRemovedFiles (const QSet<QString>& scanned, const QString& rootPath)
+	{
+		auto toRemove = PresentPaths_;
+		toRemove.subtract (scanned);
+
+		for (auto pos = toRemove.begin (); pos != toRemove.end (); )
+		{
+			if (pos->startsWith (rootPath) && !scanned.contains (*pos))
+				++pos;
+			else
+				pos = toRemove.erase (pos);
+		}
+
+		Q_FOREACH (const auto& path, toRemove)
+			RemoveTrack (path);
+	}
+
+	void LocalCollection::InitiateScan (const QSet<QString>& newPaths)
+	{
+		auto resolver = Core::Instance ().GetLocalFileResolver ();
+
+		emit scanStarted (newPaths.size ());
+		auto worker = [resolver] (const QString& path)
+		{
+			try
+			{
+				return resolver->ResolveInfo (path);
+			}
+			catch (const ResolveError& error)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error resolving media info for"
+						<< error.GetPath ()
+						<< error.what ();
+				return MediaInfo ();
+			}
+		};
+		QFuture<MediaInfo> future = QtConcurrent::mapped (newPaths,
+				std::function<MediaInfo (const QString&)> (worker));
+		Watcher_->setFuture (future);
+	}
+
 	void LocalCollection::recordPlayedTrack (const QString& path)
 	{
 		if (!Path2Track_.contains (path))
@@ -592,52 +723,61 @@ namespace LMP
 	void LocalCollection::handleIterateFinished ()
 	{
 		sender ()->deleteLater ();
-		const bool root = sender ()->property ("IsRoot").toBool ();
+
 		const auto& path = sender ()->property ("Path").toString ();
+
 		auto watcher = dynamic_cast<QFutureWatcher<QStringList>*> (sender ());
-		auto paths = QSet<QString>::fromList (watcher->result ());
-		auto resolver = Core::Instance ().GetLocalFileResolver ();
-		paths.subtract (PresentPaths_);
-		if (paths.isEmpty ())
-			return;
 
-		if (root)
-			AddRootPaths (QStringList (path));
+		const auto& origPaths = QSet<QString>::fromList (watcher->result ());
+		CheckRemovedFiles (origPaths, path);
 
-		emit scanStarted (paths.size ());
-		auto worker = [resolver] (const QString& path)
-		{
-			try
-			{
-				return resolver->ResolveInfo (path);
-			}
-			catch (const ResolveError& error)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "error resolving media info for"
-						<< error.GetPath ()
-						<< error.what ();
-				return MediaInfo ();
-			}
-		};
-		QFuture<MediaInfo> future = QtConcurrent::mapped (paths,
-				std::function<MediaInfo (const QString&)> (worker));
-		Watcher_->setFuture (future);
+		if (Watcher_->isRunning ())
+			NewPathsQueue_ << origPaths;
+		else
+			InitiateScan (origPaths);
 	}
 
 	void LocalCollection::handleScanFinished ()
 	{
 		auto future = Watcher_->future ();
-		QList<MediaInfo> infos;
-		std::copy_if (future.begin (), future.end (), std::back_inserter (infos),
-				[] (const MediaInfo& info) { return !info.LocalPath_.isEmpty (); });
-		Q_FOREACH (const auto& info, infos)
-			PresentPaths_ += info.LocalPath_;
+		QList<MediaInfo> newInfos, existingInfos;
+		Q_FOREACH (const auto& info, future)
+		{
+			const auto& path = info.LocalPath_;
+			if (path.isEmpty ())
+				continue;
+
+			if (PresentPaths_.contains (path))
+				existingInfos << info;
+			else
+			{
+				newInfos << info;
+				PresentPaths_ += path;
+			}
+		}
 
 		emit scanFinished ();
 
-		auto newArts = Storage_->AddToCollection (infos);
+		auto newArts = Storage_->AddToCollection (newInfos);
 		HandleNewArtists (newArts);
+
+		if (!NewPathsQueue_.isEmpty ())
+			InitiateScan (NewPathsQueue_.takeFirst ());
+		else if (UpdateNewTracks_)
+		{
+			const auto& artistsMsg = tr ("%n new artist(s)", 0, UpdateNewArtists_);
+			const auto& albumsMsg = tr ("%n new album(s)", 0, UpdateNewAlbums_);
+			const auto& tracksMsg = tr ("%n new track(s)", 0, UpdateNewTracks_);
+			const auto& msg = tr ("Local collection updated: %1, %2, %3.")
+					.arg (artistsMsg)
+					.arg (albumsMsg)
+					.arg (tracksMsg);
+			Core::Instance ().SendEntity (Util::MakeNotification ("LMP", msg, PInfo_));
+
+			UpdateNewArtists_ = UpdateNewAlbums_ = UpdateNewTracks_ = 0;
+		}
+
+		HandleExistingInfos (existingInfos);
 	}
 
 	void LocalCollection::saveRootPaths ()

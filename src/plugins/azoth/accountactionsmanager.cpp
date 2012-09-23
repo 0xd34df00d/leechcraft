@@ -148,10 +148,14 @@ namespace Azoth
 				{
 					const QVariantMap& map = bm.toMap ();
 
-					QAction *act = bmsMenu->addAction (map ["HumanReadableName"].toString ());
+					auto name = map ["StoredName"].toString ();
+					const auto& hrName = map ["HumanReadableName"].toString ();
+					if (name.isEmpty ())
+						name = hrName;
+					QAction *act = bmsMenu->addAction (name);
 					act->setProperty ("Azoth/BMData", bm);
-					act->setProperty ("Azoth/AccountObject",
-							QVariant::fromValue<QObject*> (accObj));
+					act->setProperty ("Azoth/AccountObject", QVariant::fromValue<QObject*> (accObj));
+					act->setToolTip (hrName);
 					connect (act,
 							SIGNAL (triggered ()),
 							this,
@@ -265,9 +269,13 @@ namespace Azoth
 			return;
 
 		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
-		IMUCJoinWidget *imjw = qobject_cast<IMUCJoinWidget*> (proto->GetMUCJoinWidget ());
+
+		auto jWidget = proto->GetMUCJoinWidget ();
+		IMUCJoinWidget *imjw = qobject_cast<IMUCJoinWidget*> (jWidget);
 		imjw->SetIdentifyingData (bmData.toMap ());
 		imjw->Join (account->GetObject ());
+
+		jWidget->deleteLater ();
 	}
 
 	void AccountActionsManager::manageAccountBookmarks ()
@@ -279,7 +287,6 @@ namespace Azoth
 		auto dia = new BookmarksManagerDialog (MW_);
 		dia->FocusOn (account);
 		dia->show ();
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 	}
 
 	void AccountActionsManager::addAccountContact ()

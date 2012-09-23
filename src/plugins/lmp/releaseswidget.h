@@ -26,7 +26,7 @@ class QStandardItemModel;
 namespace Media
 {
 	class IRecentReleases;
-	class AlbumRelease;
+	struct AlbumRelease;
 }
 
 namespace LeechCraft
@@ -43,6 +43,8 @@ namespace LMP
 		QStandardItemModel *ReleasesModel_;
 	public:
 		ReleasesWidget (QWidget* = 0);
+
+		void InitializeProviders ();
 	private slots:
 		void handleRecentReleases (const QList<Media::AlbumRelease>&);
 		void request ();

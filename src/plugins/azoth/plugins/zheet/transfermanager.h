@@ -36,7 +36,7 @@ namespace Zheet
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ITransferManager);
-		
+
 		MSNAccount *A_;
 		Callbacks *CB_;
 		uint SessID_;
@@ -44,7 +44,9 @@ namespace Zheet
 		TransferManager (Callbacks*, MSNAccount*);
 
 		QObject* SendFile (const QString& id,
-				const QString&, const QString& name);
+				const QString&,
+				const QString& name,
+				const QString& comment);
 	private slots:
 		void handleSuggestion (MSN::fileTransferInvite);
 	signals:

@@ -32,6 +32,7 @@ namespace Media
 		virtual void PlaybackStopped () = 0;
 
 		virtual void LoveCurrentTrack () = 0;
+		virtual void BanCurrentTrack () = 0;
 	};
 }
 

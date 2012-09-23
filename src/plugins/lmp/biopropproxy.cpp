@@ -36,7 +36,7 @@ namespace LMP
 		std::transform (Bio_.BasicInfo_.Tags_.begin (), Bio_.BasicInfo_.Tags_.end (),
 				std::back_inserter (tags),
 				[] (decltype (Bio_.BasicInfo_.Tags_.front ()) item) { return item.Name_; });
-		CachedTags_ = tags.join ("; ");
+		CachedTags_ = tags.join ("<br />");
 
 		CachedInfo_ = Bio_.BasicInfo_.FullDesc_.isEmpty () ?
 				Bio_.BasicInfo_.ShortDesc_ :
@@ -45,8 +45,10 @@ namespace LMP
 
 		emit artistNameChanged (GetArtistName ());
 		emit artistImageURLChanged (GetArtistImageURL ());
+		emit artistBigImageURLChanged (GetArtistBigImageURL ());
 		emit artistTagsChanged (GetArtistTags ());
 		emit artistInfoChanged (GetArtistInfo ());
+		emit artistPageURLChanged (GetArtistPageURL ());
 	}
 
 	QString BioPropProxy::GetArtistName () const
@@ -59,6 +61,11 @@ namespace LMP
 		return Bio_.BasicInfo_.Image_;
 	}
 
+	QUrl BioPropProxy::GetArtistBigImageURL () const
+	{
+		return Bio_.BasicInfo_.LargeImage_;
+	}
+
 	QString BioPropProxy::GetArtistTags () const
 	{
 		return CachedTags_;
@@ -67,6 +74,11 @@ namespace LMP
 	QString BioPropProxy::GetArtistInfo () const
 	{
 		return CachedInfo_;
+	}
+
+	QUrl BioPropProxy::GetArtistPageURL () const
+	{
+		return Bio_.BasicInfo_.Page_;
 	}
 }
 }

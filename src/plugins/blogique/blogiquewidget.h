@@ -29,6 +29,8 @@ namespace LeechCraft
 {
 namespace Blogique
 {
+	class IAccount;
+
 	class BlogiqueWidget : public QWidget
 				,  public ITabWidget
 	{
@@ -41,6 +43,11 @@ namespace Blogique
 
 		IEditorWidget *PostEdit_;
 		QWidget *PostEditWidget_;
+		QToolBar *ToolBar_;
+		QComboBox *AccountsBox_;
+
+		QHash<int, IAccount*> Id2Account_;
+		int PrevAccountId_;
 	public:
 		BlogiqueWidget (QWidget *parent = 0);
 
@@ -50,6 +57,10 @@ namespace Blogique
 		void Remove ();
 
 		static void SetParentMultiTabs (QObject *tab);
+
+	private slots:
+		void handleCurrentAccountChanged (int id);
+
 	signals:
 		void removeTab (QWidget *tab);
 	};

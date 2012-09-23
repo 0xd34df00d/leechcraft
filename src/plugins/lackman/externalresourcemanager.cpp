@@ -39,83 +39,65 @@ namespace LackMan
 	{
 	}
 
-	boost::optional<QByteArray> ExternalResourceManager::GetResourceData (const QUrl& url)
+	void ExternalResourceManager::GetResourceData (const QUrl& url)
 	{
 		QString fileName = URLToFileName (url);
 
-		bool hasFile = ResourcesDir_.exists (fileName);
-		if (hasFile &&
-				ResourcesDir_.entryInfoList (QStringList (fileName)).at (0).size ())
+		if (ResourcesDir_.exists (fileName))
+			ResourcesDir_.remove (fileName);
+
+		Q_FOREACH (const PendingResource& pr, PendingResources_.values ())
+			if (pr.URL_ == url)
+				return;
+
+		QString location = ResourcesDir_.filePath (fileName);
+
+		Entity e = Util::MakeEntity (url,
+				location,
+				LeechCraft::Internal |
+					LeechCraft::DoNotNotifyUser |
+					LeechCraft::DoNotSaveInHistory |
+					LeechCraft::NotPersistent |
+					LeechCraft::DoNotAnnounceEntity);
+
+		int id = -1;
+		QObject *pr;
+		emit delegateEntity (e, &id, &pr);
+		if (id == -1)
 		{
-			QString path = ResourcesDir_.filePath (fileName);
-			QFile file (path);
-			if (!file.open (QIODevice::ReadOnly))
-			{
-				QString errorString = QString ("Could not open "
-							"file for reading %1: %2.")
-						.arg (path)
-						.arg (file.errorString ());
-				qWarning () << Q_FUNC_INFO
-						<< errorString;
-				throw std::runtime_error (qPrintable (errorString));
-			}
-			return file.readAll ();
-		}
-		else
-		{
-			Q_FOREACH (const PendingResource& pr, PendingResources_.values ())
-				if (pr.URL_ == url)
-					return boost::optional<QByteArray> ();
-
-			QString location = ResourcesDir_.filePath (fileName);
-
-			Entity e = Util::MakeEntity (url,
-					location,
-					LeechCraft::Internal |
-						LeechCraft::DoNotNotifyUser |
-						LeechCraft::DoNotSaveInHistory |
-						LeechCraft::NotPersistent |
-						LeechCraft::DoNotAnnounceEntity);
-
-			int id = -1;
-			QObject *pr;
-			emit delegateEntity (e, &id, &pr);
-			if (id == -1)
-			{
-				QString errorString = QString ("Could not find "
-							"plugin to download %1 to %2.")
-						.arg (url.toString ())
-						.arg (location);
-				qWarning () << Q_FUNC_INFO
-						<< errorString;
-				throw std::runtime_error (qPrintable (errorString));
-			}
-
-			PendingResource prdata =
-			{
-				url
-			};
-
-			PendingResources_ [id] = prdata;
-
-			connect (pr,
-					SIGNAL (jobFinished (int)),
-					this,
-					SLOT (handleResourceFinished (int)),
-					Qt::UniqueConnection);
-			connect (pr,
-					SIGNAL (jobRemoved (int)),
-					this,
-					SLOT (handleResourceRemoved (int)),
-					Qt::UniqueConnection);
-			connect (pr,
-					SIGNAL (jobError (int, IDownload::Error)),
-					this,
-					SLOT (handleResourceError (int, IDownload::Error)),
-					Qt::UniqueConnection);
+			QString errorString = QString ("Could not find "
+						"plugin to download %1 to %2.")
+					.arg (url.toString ())
+					.arg (location);
+			qWarning () << Q_FUNC_INFO
+					<< errorString;
+			throw std::runtime_error (qPrintable (errorString));
 		}
 
-		return boost::optional<QByteArray> ();
+		PendingResource prdata =
+		{
+			url
+		};
+
+		PendingResources_ [id] = prdata;
+
+		connect (pr,
+				SIGNAL (jobFinished (int)),
+				this,
+				SLOT (handleResourceFinished (int)),
+				Qt::UniqueConnection);
+		connect (pr,
+				SIGNAL (jobRemoved (int)),
+				this,
+				SLOT (handleResourceRemoved (int)),
+				Qt::UniqueConnection);
+		connect (pr,
+				SIGNAL (jobError (int, IDownload::Error)),
+				this,
+				SLOT (handleResourceError (int, IDownload::Error)),
+				Qt::UniqueConnection);
+
+		return;
 	}
 
 	QString ExternalResourceManager::GetResourcePath (const QUrl& url) const

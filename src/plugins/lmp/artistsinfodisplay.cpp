@@ -102,6 +102,10 @@ namespace LMP
 				SIGNAL (bookmarkArtistRequested (QString, QString, QString)),
 				this,
 				SLOT (handleBookmark (QString, QString, QString)));
+		connect (rootObject (),
+				SIGNAL (linkActivated (QString)),
+				this,
+				SLOT (handleLink (QString)));
 	}
 
 	void ArtistsInfoDisplay::SetSimilarArtists (Media::SimilarityInfos_t infos)
@@ -160,6 +164,13 @@ namespace LMP
 		e.Additional_ ["TodoBody"] = tags + "<br />" + QString ("<a href='%1'>%1</a>").arg (page);
 		e.Additional_ ["Tags"] = QStringList ("music");
 		Core::Instance ().SendEntity (e);
+	}
+
+	void ArtistsInfoDisplay::handleLink (const QString& link)
+	{
+		Core::Instance ().SendEntity (Util::MakeEntity (QUrl (link),
+					QString (),
+					FromUserInitiated | OnlyHandle));
 	}
 }
 }

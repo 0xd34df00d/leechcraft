@@ -84,7 +84,7 @@ namespace LeechCraft
 	{
 	}
 
-	QVariant ItemHandlerDataView::GetValue (QObject*) const
+	QVariant ItemHandlerDataView::GetObjectValue (QObject*) const
 	{
 		return QVariant ();
 	}

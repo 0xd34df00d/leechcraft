@@ -18,6 +18,7 @@
 
 #include "lhtr.h"
 #include <QIcon>
+#include <QtDebug>
 #include <util/util.h>
 #include "richeditorwidget.h"
 
@@ -68,6 +69,11 @@ namespace LHTR
 		case ContentType::PlainText:
 			return true;
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown content type"
+				<< static_cast<int> (type);
+		return false;
 	}
 
 	QWidget* Plugin::GetTextEditor (ContentType)

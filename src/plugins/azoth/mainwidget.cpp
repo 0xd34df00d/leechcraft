@@ -25,6 +25,7 @@
 #include <QToolBar>
 #include <QTimer>
 #include <util/util.h>
+#include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
@@ -131,6 +132,7 @@ namespace Azoth
 		FastStatusButton_->setPopupMode (QToolButton::MenuButtonPopup);
 
 		Ui_.setupUi (this);
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.FilterLine_);
 		Ui_.FilterLine_->setPlaceholderText (tr ("Search..."));
 		Ui_.CLTree_->setFocusProxy (Ui_.FilterLine_);
 
@@ -147,6 +149,10 @@ namespace Azoth
 				this,
 				SLOT (handleEntryMadeCurrent (QObject*)),
 				Qt::QueuedConnection);
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (entryLostCurrent (QObject*)),
+				this,
+				SLOT (handleEntryLostCurrent (QObject*)));
 
 		XmlSettingsManager::Instance ().RegisterObject ("EntryActivationType",
 				this, "handleEntryActivationType");
@@ -620,7 +626,6 @@ namespace Azoth
 	void MainWidget::handleManageBookmarks ()
 	{
 		BookmarksManagerDialog *dia = new BookmarksManagerDialog (this);
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		dia->show ();
 	}
 
@@ -658,6 +663,10 @@ namespace Azoth
 
 	void MainWidget::handleEntryMadeCurrent (QObject *obj)
 	{
+		auto entry = qobject_cast<ICLEntry*> (obj);
+		if (entry && entry->GetEntryType () == ICLEntry::ETPrivateChat)
+			obj = entry->GetParentCLEntry ();
+
 		const bool isMUC = qobject_cast<IMUCEntry*> (obj);
 
 		if (XmlSettingsManager::Instance ().property ("AutoMUCMode").toBool ())
@@ -665,6 +674,12 @@ namespace Azoth
 
 		if (isMUC)
 			ProxyModel_->SetMUC (obj);
+	}
+
+	void MainWidget::handleEntryLostCurrent (QObject*)
+	{
+		if (XmlSettingsManager::Instance ().property ("AutoMUCMode").toBool ())
+			ActionCLMode_->setChecked (false);
 	}
 
 	void MainWidget::resetToWholeMode ()

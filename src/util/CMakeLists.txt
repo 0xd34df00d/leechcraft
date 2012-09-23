@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 	..)
 
 SET (SRCS
+	gui/clearlineeditaddon.cpp
 	gui/flowlayout.cpp
 	gui/selectablebrowser.cpp
 	models/flattenfiltermodel.cpp
@@ -40,6 +41,7 @@ SET (SRCS
 	shortcuts/shortcutmanager.cpp
 	)
 SET (HEADERS
+	gui/clearlineeditaddon.h
 	gui/flowlayout.h
 	gui/selectablebrowser.h
 	models/flattenfiltermodel.h
@@ -76,6 +78,15 @@ SET (FORMS
 	backendselector.ui
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
+
+FOREACH (SRC ${SRCS})
+	SET (UTIL_SRCS "${UTIL_SRCS};util/${SRC}")
+ENDFOREACH (SRC)
+FOREACH (FORM ${FORMS})
+	SET (UTIL_FORMS "${UTIL_FORMS};util/${FORM}")
+ENDFOREACH (FORM)
+SET (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
+SET (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)

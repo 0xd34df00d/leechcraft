@@ -15,6 +15,9 @@
 				<item type="spinbox" property="MaxConnections" default="200" minimum="2" maximum="5000" step="10">
 					<label lang="en" value="Maximum total connections:" />
 				</item>
+				<item type="checkbox" property="ResolveCountries" default="true">
+					<label value="Resolve countries" />
+				</item>
 			</groupbox>
 		</tab>
 		<tab>

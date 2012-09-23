@@ -157,7 +157,8 @@ namespace Azoth
 			CLRUnreadMsgCount,
 			CLRRole,
 			CLRAffiliation,
-			CLRNumOnline
+			CLRNumOnline,
+			CLRIsMUCCategory
 		};
 
 		enum CLEntryType
@@ -479,7 +480,7 @@ namespace Azoth
 		 */
 		void handleEntryPermsChanged (ICLEntry *entry = 0);
 
-		void handleEntryGenerallyChanged ();
+		void remakeTooltipForSender ();
 
 		/** Handles the message receival from contact list entries.
 		 */

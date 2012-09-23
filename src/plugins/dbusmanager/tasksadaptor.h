@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DBUSMANAGER_TASKSADAPTOR_H
-#define PLUGINS_DBUSMANAGER_TASKSADAPTOR_H
+#pragma once
+
 #include <QDBusAbstractAdaptor>
 #include <QDBusVariant>
 #include <QStringList>
@@ -26,31 +26,25 @@ class QDBusMessage;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DBusManager
+{
+	class Tasks;
+
+	class TasksAdaptor : public QDBusAbstractAdaptor
 	{
-		namespace DBusManager
-		{
-			class Tasks;
+		Q_OBJECT
 
-			class TasksAdaptor : public QDBusAbstractAdaptor
-			{
-				Q_OBJECT
+		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.Tasks");
 
-				Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.Tasks");
-
-				Tasks *Tasks_;
-			public:
-				TasksAdaptor (Tasks*);
-			public slots:
-				QStringList GetHolders () const;
-				int RowCount (const QString& holder, const QDBusMessage&) const;
-				QVariantList GetData (const QString& holder,
-						int row, int role,
-						const QDBusMessage&) const;
-			};
-		};
+		Tasks *Tasks_;
+	public:
+		TasksAdaptor (Tasks*);
+	public slots:
+		QStringList GetHolders () const;
+		int RowCount (const QString& holder, const QDBusMessage&) const;
+		QVariantList GetData (const QString& holder,
+				int row, int role,
+				const QDBusMessage&) const;
 	};
-};
-
-#endif
-
+}
+}

@@ -260,7 +260,7 @@ namespace Blogique
 		}
 	}
 
-	void AccountsListWidget::handleAccountDoubleClicked (const QModelIndex& idx)
+	void AccountsListWidget::handleAccountDoubleClicked (const QModelIndex&)
 	{
 		on_Profile__released ();
 	}

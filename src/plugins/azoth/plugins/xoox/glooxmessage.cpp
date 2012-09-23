@@ -93,7 +93,7 @@ namespace Xoox
 		switch (Type_)
 		{
 		case MTChatMessage:
-			Message_.setRequestReceipt (true);
+			Message_.setReceiptRequested (true);
 		case MTMUCMessage:
 			Connection_->SendMessage (this);
 			QMetaObject::invokeMethod (OtherPart (),
@@ -175,7 +175,7 @@ namespace Xoox
 
 	QString GlooxMessage::GetRichBody () const
 	{
-		return Message_.getXhtml ();
+		return Message_.xhtml ();
 	}
 
 	void GlooxMessage::SetRichBody (const QString& html)

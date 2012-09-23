@@ -145,14 +145,9 @@ namespace LackMan
 
 		ExternalResourceManager *erm = PrepareResourceManager ();
 
-		if (QFile::exists (erm->GetResourcePath (url)))
-			HandleFile (packageId, url, MInstall);
-		else
-		{
-			URL2Id_ [url] = packageId;
-			URL2Mode_ [url] = MInstall;
-			erm->GetResourceData (url);
-		}
+		URL2Id_ [url] = packageId;
+		URL2Mode_ [url] = MInstall;
+		erm->GetResourceData (url);
 	}
 
 	void PackageProcessor::Update (int toPackageId)
@@ -161,14 +156,9 @@ namespace LackMan
 
 		ExternalResourceManager *erm = PrepareResourceManager ();
 
-		if (QFile::exists (erm->GetResourcePath (url)))
-			HandleFile (toPackageId, url, MUpdate);
-		else
-		{
-			URL2Id_ [url] = toPackageId;
-			URL2Mode_ [url] = MUpdate;
-			erm->GetResourceData (url);
-		}
+		URL2Id_ [url] = toPackageId;
+		URL2Mode_ [url] = MUpdate;
+		erm->GetResourceData (url);
 	}
 
 	void PackageProcessor::handleResourceFetched (const QUrl& url)
@@ -312,8 +302,7 @@ namespace LackMan
 	void PackageProcessor::HandleFile (int packageId,
 			const QUrl& url, PackageProcessor::Mode mode)
 	{
-		QString path = Core::Instance ()
-				.GetExtResourceManager ()->GetResourcePath (url);
+		QString path = Core::Instance ().GetExtResourceManager ()->GetResourcePath (url);
 
 		PackageShortInfo info;
 		try

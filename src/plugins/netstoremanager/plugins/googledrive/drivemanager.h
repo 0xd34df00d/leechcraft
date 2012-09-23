@@ -19,12 +19,19 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 #include <QObject>
 #include <QQueue>
 #include <QDateTime>
 #include <QUrl>
 #include <QStringList>
 #include <QVariant>
+#include <QNetworkReply>
+#ifdef HAVE_MAGIC
+	#include <magic.h>
+#endif
+
+class QFile;
 
 namespace LeechCraft
 {
@@ -106,15 +113,43 @@ namespace GoogleDrive
 	{
 		Q_OBJECT
 
+		const QString DirectoryId_;
+
 		Account *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
+		QHash<QNetworkReply*, QString> Reply2Id_;
+		QHash<QNetworkReply*, QString> Reply2FilePath_;
+#ifdef HAVE_MAGIC
+		magic_t Magic_;
+#endif
 	public:
 		DriveManager (Account *acc, QObject *parent = 0);
+		~DriveManager ();
 
 		void RefreshListing ();
-
+		void RemoveEntry (const QString& id);
+		void MoveEntryToTrash (const QString& id);
+		void RestoreEntryFromTrash (const QString& id);
+		void ShareEntry (const QString& id);
+		void Upload (const QString& filePath,
+				const QStringList& parentId = QStringList ());
+		void CreateDirectory (const QString& name, const QString& parentId = QString ());
+		void Copy (const QString& id, const QString& parentId);
+		void Move (const QString& id, const QString& parentId);
+	private:
 		void RequestFiles (const QString& key);
-		void RequestFileShared (const QString& id, const QString& key);
+		void RequestSharingEntry (const QString& id, const QString& key);
+		void RequestEntryRemoving (const QString& id, const QString& key);
+		void RequestMovingEntryToTrash (const QString& id, const QString& key);
+		void RequestRestoreEntryFromTrash (const QString& id, const QString& key);
+		void RequestUpload (const QString& filePath, const QString& parent,
+				const QString& key);
+		void RequestCreateDirectory (const QString& name,
+				const QString& parentId, const QString& key);
+		void RequestCopyItem (const QString& id,
+				const QString& parentId, const QString& key);
+		void RequestMoveItem (const QString& id,
+				const QString& parentId, const QString& key);
 	private:
 		void RequestAccessToken ();
 		void ParseError (const QVariantMap& map);
@@ -123,9 +158,24 @@ namespace GoogleDrive
 		void handleAuthTokenRequestFinished ();
 		void handleGotFiles ();
 		void handleRequestFileSharing ();
+		void handleRequestEntryRemoving ();
+		void handleRequestMovingEntryToTrash ();
+		void handleRequestRestoreEntryFromTrash ();
+		void handleUploadRequestFinished ();
+		void handleUploadFinished ();
+		void handleUploadProgress (qint64 uploaded, qint64 total);
+		void handleUploadError (QNetworkReply::NetworkError error);
+		void handleCreateDirectory ();
+		void handleCopyItem ();
+		void handleMoveItem ();
 
 	signals:
 		void gotFiles (const QList<DriveItem>& items);
+		void gotSharedFileId (const QString& id);
+		void uploadProgress (qint64 sent, qint64 total, const QString& filePath);
+		void uploadStatusChanged (const QString& status, const QString& filePath);
+		void uploadError (const QString& str, const QString& filePath);
+		void finished (const QString& id, const QString& path);
 	};
 }
 }

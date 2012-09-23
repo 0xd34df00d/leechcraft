@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_UTIL_H
 #include <QString>
 #include <QXmppMucIq.h>
+#include <interfaces/azoth/azothcommon.h>
 
 class QDomElement;
 class QWidget;
@@ -51,6 +52,8 @@ namespace XooxUtil
 			const QString& variant, const QString& feature);
 
 	EntryStatus PresenceToStatus (const QXmppPresence& pres);
+
+	QXmppPresence StatusToPresence (State, const QString&, int);
 }
 }
 }

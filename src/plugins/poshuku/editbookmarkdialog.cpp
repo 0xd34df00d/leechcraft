@@ -35,17 +35,19 @@ namespace Poshuku
 		new Util::TagsCompleter (Ui_.Tags_);
 		Ui_.Tags_->AddSelector ();
 
-		QString url = index.sibling (index.row (), FavoritesModel::ColumnURL)
-			.data ().toString ();
-		if (url.size () > 100)
-			url = QString ("%1...").arg (url.left (97));
-		Ui_.Label_->setText (url);
+		auto getRoleValue = [&index] (FavoritesModel::Columns column)
+		{
+			return index.sibling (index.row (), column).data ().toString ();
+		};
 
-		Ui_.Title_->setText (index.sibling (index.row (), FavoritesModel::ColumnTitle)
-				.data ().toString ());
+		Ui_.URL_->setText (getRoleValue (FavoritesModel::ColumnURL));
+		Ui_.Title_->setText (getRoleValue (FavoritesModel::ColumnTitle));
+		Ui_.Tags_->setText (getRoleValue (FavoritesModel::ColumnTags));
+	}
 
-		Ui_.Tags_->setText (index.sibling (index.row (), FavoritesModel::ColumnTags)
-				.data ().toString ());
+	QString EditBookmarkDialog::GetURL () const
+	{
+		return Ui_.URL_->text ();
 	}
 
 	QString EditBookmarkDialog::GetTitle () const

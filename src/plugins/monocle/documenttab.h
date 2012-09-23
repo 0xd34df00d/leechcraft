@@ -69,6 +69,8 @@ namespace Monocle
 			Move,
 			Select
 		} MouseMode_;
+
+		bool RelayoutScheduled_;
 	public:
 		DocumentTab (const TabClassInfo&, QObject*);
 
@@ -99,6 +101,11 @@ namespace Monocle
 		void ClearViewActions ();
 	private slots:
 		void handleNavigateRequested (const QString&, int, double, double);
+
+		void handlePageSizeChanged (int);
+		void handlePageContentsChanged (int);
+		void handleRelayout ();
+
 		void handleRecentOpenAction (QAction*);
 
 		void selectFile ();

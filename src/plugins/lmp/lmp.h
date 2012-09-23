@@ -60,6 +60,7 @@ namespace LMP
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		QAction *ActionRescan_;
+		QAction *ActionCollectionStats_;
 
 		QMap<QString, Entity> GlobAction2Entity_;
 		QMap<QString, ActionInfo> GlobAction2Info_;
@@ -92,6 +93,7 @@ namespace LMP
 		void AddPlugin (QObject* plugin);
 	private slots:
 		void handleFullRaiseRequested ();
+		void showCollectionStats ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

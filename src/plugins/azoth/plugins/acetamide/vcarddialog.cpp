@@ -29,7 +29,7 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	VCardDialog::VCardDialog (EntryBase *entry, QWidget *parent)
+	VCardDialog::VCardDialog (QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
@@ -45,6 +45,7 @@ namespace Acetamide
 		Ui_.EditRealName_->setText (msg.RealName_);
 		Ui_.ServerName_->setText (msg.ServerName_);
 		Ui_.ServerDislocation_->setText (msg.ServerCountry_);
+		Ui_.EMailAddress_->setText (msg.Mail_);
 	}
 }
 }

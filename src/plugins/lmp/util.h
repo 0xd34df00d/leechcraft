@@ -32,12 +32,18 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	struct MediaInfo;
+
 	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
 
 	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
 	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection = false);
 
 	void ShowAlbumArt (const QString& near, const QPoint& pos);
+
+	QString PerformSubstitutions (QString mask, const MediaInfo& info);
+
+	bool ShouldRememberProvs ();
 
 	bool operator!= (const Phonon::MediaSource&, const Phonon::MediaSource&);
 }

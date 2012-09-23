@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QSet>
 #include <QStringList>
 
 class QFileSystemWatcher;
@@ -34,13 +35,20 @@ namespace LMP
 
 		QFileSystemWatcher *Watcher_;
 		QHash<QString, QStringList> Dir2Subdirs_;
+
+		QList<QString> ScheduledDirs_;
+		bool ScanScheduled_;
 	public:
 		LocalCollectionWatcher (QObject* = 0);
 
 		void AddPath (const QString&);
 		void RemovePath (const QString&);
+	private:
+		void ScheduleDir (const QString&);
 	private slots:
+		void handleSubdirsCollected ();
 		void handleDirectoryChanged (const QString&);
+		void rescanQueue ();
 	};
 }
 }

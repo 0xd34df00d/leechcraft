@@ -18,6 +18,7 @@ SET (XTAZY_SRCS
 	filesource.cpp
 	xmlsettingsmanager.cpp
 	lcsource.cpp
+	tracksharedialog.cpp
 	)
 SET (XTAZY_HEADERS
 	xtazy.h
@@ -25,10 +26,15 @@ SET (XTAZY_HEADERS
 	filesource.h
 	xmlsettingsmanager.h
 	lcsource.h
+	tracksharedialog.h
+	)
+SET (XTAZY_FORMS
+	tracksharedialog.ui
 	)
 SET (XTAZY_RESOURCES azothxtazyresources.qrc)
-CreateTrVars ("azoth_xtazy" "en;es;ru_RU;uk_UA" XTAZY_TRANSLATIONS XTAZY_COMPILED_TRANSLATIONS)
+CreateTrs ("azoth_xtazy" "en;es;ru_RU;uk_UA" XTAZY_COMPILED_TRANSLATIONS)
 QT4_ADD_RESOURCES (XTAZY_RCCS ${XTAZY_RESOURCES})
+QT4_WRAP_UI (XTAZY_UIS_H ${XTAZY_FORMS})
 
 IF (QT_QTDBUS_FOUND)
 	ADD_DEFINITIONS (-DHAVE_DBUS)
@@ -47,17 +53,12 @@ IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (XTAZY_MOC_SRCS ${XTAZY_HEADERS})
 ENDIF (NOT LC_NO_MOC)
 
-ADD_CUSTOM_COMMAND (OUTPUT
-	${XTAZY_COMPILED_TRANSLATIONS}
-	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${XTAZY_TRANSLATIONS}
-	DEPENDS ${XTAZY_TRANSLATIONS}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
 ADD_LIBRARY (leechcraft_azoth_xtazy SHARED
 	${XTAZY_COMPILED_TRANSLATIONS}
 	${XTAZY_SRCS}
 	${XTAZY_MOC_SRCS}
 	${XTAZY_RCCS}
+	${XTAZY_UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_azoth_xtazy
 	${QT_LIBRARIES}

@@ -30,6 +30,7 @@ namespace TabSessManager
 {
 	struct RecInfo
 	{
+		int Order_;
 		QByteArray Data_;
 		QList<QPair<QByteArray, QVariant>> Props_;
 		QString Name_;

@@ -32,6 +32,8 @@
 
 class QStandardItemModel;
 class QSortFilterProxyModel;
+class QListWidget;
+class QTabBar;
 
 namespace Media
 {
@@ -46,6 +48,7 @@ namespace LMP
 {
 	struct MediaInfo;
 	class Player;
+	class NowPlayingPixmapHandler;
 
 	class PlayerTab : public QWidget
 					, public ITabWidget
@@ -68,15 +71,22 @@ namespace LMP
 		QLabel *RemainingTime_;
 
 		QHash<QString, Media::SimilarityInfos_t> Similars_;
-		QString LastSimilar_;
+		QString LastArtist_;
 
 		LMPSystemTrayIcon *TrayIcon_;
 		QAction *PlayPause_;
 		QMenu *TrayMenu_;
 
 		QAction *CollectionShowTrackProps_;
+		QAction *CollectionRemove_;
+		QAction *CollectionDelete_;
+		QListWidget *NavButtons_;
+		QTabBar *NavBar_;
+
+		NowPlayingPixmapHandler *NPPixmapHandler_;
 	public:
 		PlayerTab (const TabClassInfo&, QObject*, QWidget* = 0);
+		~PlayerTab ();
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
@@ -91,9 +101,9 @@ namespace LMP
 
 		void InitWithOtherPlugins ();
 	private:
+		void SetupNavButtons ();
 		void SetupToolbar ();
 		void SetupCollection ();
-		void SetupPlaylistsTab ();
 		void SetNowPlaying (const MediaInfo&, const QPixmap&);
 		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
@@ -102,6 +112,7 @@ namespace LMP
 		void handleSongChanged (const MediaInfo&);
 		void handleCurrentPlayTime (qint64);
 		void handleLoveTrack ();
+		void handleBanTrack ();
 
 		void handleSimilarError ();
 		void handleSimilarReady ();
@@ -109,14 +120,18 @@ namespace LMP
 		void handleGotLyrics (const Media::LyricsQuery&, const QStringList&);
 
 		void handleScanProgress (int);
-		void handlePlaylistSelected (const QModelIndex&);
 		void showCollectionTrackProps ();
+		void handleCollectionRemove ();
+		void handleCollectionDelete ();
 		void loadFromCollection ();
 		void handleCollectionItemSelected (const QModelIndex&);
+
+		void handlePlayerAvailable (bool);
 
 		void closeLMP ();
 		void handleStateChanged (Phonon::State newState, Phonon::State oldState);
 		void handleShowTrayIcon ();
+		void handleUseNavTabBar ();
 		void handleChangedVolume (qreal delta);
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason);
 	signals:

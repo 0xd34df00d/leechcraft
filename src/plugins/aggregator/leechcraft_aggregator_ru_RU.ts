@@ -153,62 +153,62 @@
     <message>
         <location filename="export2fb2dialog.ui" line="25"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя:</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="32"/>
         <source>Genres:</source>
-        <translation type="unfinished"></translation>
+        <translation>Жанры:</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="39"/>
         <source>Exported Feeds</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспортируемые ленты</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="68"/>
         <source>Genre</source>
-        <translation type="unfinished"></translation>
+        <translation>Жанр</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="73"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Идентификатор</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="78"/>
         <source>Computers</source>
-        <translation type="unfinished"></translation>
+        <translation>Компьютеры</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="82"/>
         <source>Internet</source>
-        <translation type="unfinished"></translation>
+        <translation>Интернет</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="93"/>
         <source>Programming</source>
-        <translation type="unfinished"></translation>
+        <translation>Программирование</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="104"/>
         <source>Hardware</source>
-        <translation type="unfinished"></translation>
+        <translation>Железо</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="115"/>
         <source>Software</source>
-        <translation type="unfinished"></translation>
+        <translation>Программное обеспечение</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="126"/>
         <source>Databases</source>
-        <translation type="unfinished"></translation>
+        <translation>Базы данных</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="137"/>
         <source>OS</source>
-        <translation type="unfinished"></translation>
+        <translation>Операционные системы</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="148"/>
@@ -226,153 +226,153 @@
         <location filename="export2fb2dialog.ui" line="996"/>
         <location filename="export2fb2dialog.ui" line="1081"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Другое</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="160"/>
         <source>Science</source>
-        <translation type="unfinished"></translation>
+        <translation>Наука</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="164"/>
         <source>Math</source>
-        <translation type="unfinished"></translation>
+        <translation>Математика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="172"/>
         <source>Physics</source>
-        <translation type="unfinished"></translation>
+        <translation>Физика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="180"/>
         <source>Chemistry</source>
-        <translation type="unfinished"></translation>
+        <translation>Химия</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="188"/>
         <source>Biology</source>
-        <translation type="unfinished"></translation>
+        <translation>Биология</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="196"/>
         <source>Technology</source>
-        <translation type="unfinished"></translation>
+        <translation>Техника</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="204"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>История</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="212"/>
         <source>Psychology</source>
-        <translation type="unfinished"></translation>
+        <translation>Психология</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="220"/>
         <source>Culture</source>
-        <translation type="unfinished"></translation>
+        <translation>Культура</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="228"/>
         <location filename="export2fb2dialog.ui" line="931"/>
         <location filename="export2fb2dialog.ui" line="935"/>
         <source>Religion</source>
-        <translation type="unfinished"></translation>
+        <translation>Религия</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="236"/>
         <source>Philosophy</source>
-        <translation type="unfinished"></translation>
+        <translation>Философия</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="244"/>
         <source>Politics</source>
-        <translation type="unfinished"></translation>
+        <translation>Политика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="252"/>
         <source>Business</source>
-        <translation type="unfinished"></translation>
+        <translation>Бизнес</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="260"/>
         <source>Jurisprudence</source>
-        <translation type="unfinished"></translation>
+        <translation>Юриспруденция</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="268"/>
         <source>Linguistic</source>
-        <translation type="unfinished"></translation>
+        <translation>Лингвистика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="276"/>
         <source>Medicine</source>
-        <translation type="unfinished"></translation>
+        <translation>Медицина</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="293"/>
         <source>Science Fiction</source>
-        <translation type="unfinished"></translation>
+        <translation>Научная фантастика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="297"/>
         <source>Alternative history</source>
-        <translation type="unfinished"></translation>
+        <translation>Альтернативная история</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="305"/>
         <location filename="export2fb2dialog.ui" line="425"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Экшн</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="313"/>
         <source>Epic</source>
-        <translation type="unfinished"></translation>
+        <translation>Эпическая драма</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="321"/>
         <source>Heroic</source>
-        <translation type="unfinished"></translation>
+        <translation>Героическая драма</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="329"/>
         <location filename="export2fb2dialog.ui" line="630"/>
         <source>Detective</source>
-        <translation type="unfinished"></translation>
+        <translation>Детектив</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="337"/>
         <source>Cyberpunk</source>
-        <translation type="unfinished"></translation>
+        <translation>Киберпанк</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="345"/>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Космос</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="353"/>
         <source>Social</source>
-        <translation type="unfinished"></translation>
+        <translation>Социальное</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="361"/>
         <source>Horror</source>
-        <translation type="unfinished"></translation>
+        <translation>Ужасы</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="369"/>
         <location filename="export2fb2dialog.ui" line="585"/>
         <location filename="export2fb2dialog.ui" line="968"/>
         <source>Humor</source>
-        <translation type="unfinished"></translation>
+        <translation>Юмор</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="377"/>
         <source>Fantasy</source>
-        <translation type="unfinished"></translation>
+        <translation>Фэнтези</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="385"/>
@@ -380,29 +380,29 @@
         <location filename="export2fb2dialog.ui" line="593"/>
         <location filename="export2fb2dialog.ui" line="724"/>
         <source>For children</source>
-        <translation type="unfinished"></translation>
+        <translation>Детская литература</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="402"/>
         <location filename="export2fb2dialog.ui" line="763"/>
         <source>Detectives</source>
-        <translation type="unfinished"></translation>
+        <translation>Детективы</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="409"/>
         <location filename="export2fb2dialog.ui" line="537"/>
         <source>Classic</source>
-        <translation type="unfinished"></translation>
+        <translation>Классика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="417"/>
         <source>Police</source>
-        <translation type="unfinished"></translation>
+        <translation>Полиция</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="433"/>
         <source>Ironic</source>
-        <translation type="unfinished"></translation>
+        <translation>Ирония</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="441"/>
@@ -410,270 +410,270 @@
         <location filename="export2fb2dialog.ui" line="622"/>
         <location filename="export2fb2dialog.ui" line="675"/>
         <source>Historic</source>
-        <translation type="unfinished"></translation>
+        <translation>Историческое произведение</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="449"/>
         <source>Espionage</source>
-        <translation type="unfinished"></translation>
+        <translation>Шпионаж</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="457"/>
         <source>Criminal</source>
-        <translation type="unfinished"></translation>
+        <translation>Криминальная драма</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="465"/>
         <source>Political</source>
-        <translation type="unfinished"></translation>
+        <translation>Политика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="473"/>
         <source>Maniac</source>
-        <translation type="unfinished"></translation>
+        <translation>Про маньяков</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="481"/>
         <source>Hard</source>
-        <translation type="unfinished"></translation>
+        <translation>Тяжелое</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="489"/>
         <source>Thriller</source>
-        <translation type="unfinished"></translation>
+        <translation>Триллер</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="497"/>
         <source>Fictional</source>
-        <translation type="unfinished"></translation>
+        <translation>Выдуманное</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="513"/>
         <location filename="export2fb2dialog.ui" line="610"/>
         <source>Love</source>
-        <translation type="unfinished"></translation>
+        <translation>Любовный роман</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="530"/>
         <location filename="export2fb2dialog.ui" line="747"/>
         <location filename="export2fb2dialog.ui" line="980"/>
         <source>Prose</source>
-        <translation type="unfinished"></translation>
+        <translation>Проза</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="553"/>
         <location filename="export2fb2dialog.ui" line="614"/>
         <source>Contemporary</source>
-        <translation type="unfinished"></translation>
+        <translation>Современное</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="561"/>
         <source>Counterculture</source>
-        <translation type="unfinished"></translation>
+        <translation>Контркультура</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="569"/>
         <source>Russian classic</source>
-        <translation type="unfinished"></translation>
+        <translation>Русская классика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="577"/>
         <source>USSR classic</source>
-        <translation type="unfinished"></translation>
+        <translation>Советская классика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="638"/>
         <source>Short</source>
-        <translation type="unfinished"></translation>
+        <translation>Короткие произведения</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="646"/>
         <source>Erotica</source>
-        <translation type="unfinished"></translation>
+        <translation>Эротика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="663"/>
         <location filename="export2fb2dialog.ui" line="771"/>
         <source>Adventure</source>
-        <translation type="unfinished"></translation>
+        <translation>Приключения</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="667"/>
         <source>Western</source>
-        <translation type="unfinished"></translation>
+        <translation>Вестерн</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="683"/>
         <source>Indian</source>
-        <translation type="unfinished"></translation>
+        <translation>Индийские произведения</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="691"/>
         <source>Maritime</source>
-        <translation type="unfinished"></translation>
+        <translation>Морские истории</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="699"/>
         <source>Travel &amp; geography</source>
-        <translation type="unfinished"></translation>
+        <translation>Путешествия и география</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="707"/>
         <source>Animals</source>
-        <translation type="unfinished"></translation>
+        <translation>Про животных</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="731"/>
         <source>Tales</source>
-        <translation type="unfinished"></translation>
+        <translation>Сказки</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="739"/>
         <location filename="export2fb2dialog.ui" line="988"/>
         <source>Verses</source>
-        <translation type="unfinished"></translation>
+        <translation>Стихи</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="755"/>
         <source>Science fiction</source>
-        <translation type="unfinished"></translation>
+        <translation>Научная фантастика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="779"/>
         <source>Educational</source>
-        <translation type="unfinished"></translation>
+        <translation>Образовательное</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="796"/>
         <location filename="export2fb2dialog.ui" line="800"/>
         <source>Antique</source>
-        <translation type="unfinished"></translation>
+        <translation>Античная литература</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="808"/>
         <source>European</source>
-        <translation type="unfinished"></translation>
+        <translation>Европейская литература</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="816"/>
         <source>Russian</source>
-        <translation type="unfinished"></translation>
+        <translation>Русская литература</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="824"/>
         <source>East</source>
-        <translation type="unfinished"></translation>
+        <translation>Восточная литература</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="832"/>
         <source>Myths</source>
-        <translation type="unfinished"></translation>
+        <translation>Мифы</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="849"/>
         <location filename="export2fb2dialog.ui" line="869"/>
         <source>References</source>
-        <translation type="unfinished"></translation>
+        <translation>Ссылки</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="853"/>
         <source>Encyclopedia</source>
-        <translation type="unfinished"></translation>
+        <translation>Энциклопедия</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="861"/>
         <source>Dictionaries</source>
-        <translation type="unfinished"></translation>
+        <translation>Словари</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="877"/>
         <source>Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Руководства</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="894"/>
         <source>Documentary</source>
-        <translation type="unfinished"></translation>
+        <translation>Документальная литература</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="898"/>
         <source>Biography</source>
-        <translation type="unfinished"></translation>
+        <translation>Биография</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="906"/>
         <source>Publicism</source>
-        <translation type="unfinished"></translation>
+        <translation>Публицизм</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="914"/>
         <source>Criticism</source>
-        <translation type="unfinished"></translation>
+        <translation>Критицизм</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="943"/>
         <source>Esoterics</source>
-        <translation type="unfinished"></translation>
+        <translation>Эзотерика</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="951"/>
         <source>Self-improvement</source>
-        <translation type="unfinished"></translation>
+        <translation>Саморазвитие</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="972"/>
         <source>Anecdotes</source>
-        <translation type="unfinished"></translation>
+        <translation>Анекдоты</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1005"/>
         <source>Home &amp; Family</source>
-        <translation type="unfinished"></translation>
+        <translation>Дом и семья</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1009"/>
         <source>Cooking</source>
-        <translation type="unfinished"></translation>
+        <translation>Кулинария</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1017"/>
         <source>Pets</source>
-        <translation type="unfinished"></translation>
+        <translation>Домашние животные</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1025"/>
         <source>Crafts</source>
-        <translation type="unfinished"></translation>
+        <translation>Ремесла</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1033"/>
         <source>Entertainment</source>
-        <translation type="unfinished"></translation>
+        <translation>Развлечения</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1041"/>
         <source>Health</source>
-        <translation type="unfinished"></translation>
+        <translation>Здоровье</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1049"/>
         <source>Garden</source>
-        <translation type="unfinished"></translation>
+        <translation>Садоводство</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1057"/>
         <source>DIY</source>
-        <translation type="unfinished"></translation>
+        <translation>Мастерство</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1065"/>
         <source>Sports</source>
-        <translation type="unfinished"></translation>
+        <translation>Спорт</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1073"/>
         <source>Sex</source>
-        <translation type="unfinished"></translation>
+        <translation>Секс</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1112"/>
@@ -683,7 +683,7 @@
     <message>
         <location filename="export2fb2dialog.ui" line="1124"/>
         <source>Output:</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл:</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="1134"/>

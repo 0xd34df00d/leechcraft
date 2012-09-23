@@ -116,6 +116,7 @@ namespace LeechCraft
 		void handleCloseCurrentTab ();
 		void on_ActionSettings__triggered ();
 		void on_ActionAboutLeechCraft__triggered ();
+		void on_ActionRestart__triggered ();
 		void on_ActionQuit__triggered ();
 		void on_ActionShowStatusBar__triggered ();
 		void on_ActionMenu__triggered ();
@@ -145,6 +146,7 @@ namespace LeechCraft
 		void ShowMenuAndBar (bool);
 	signals:
 		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QDockWidget*, bool);
+		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
 	};
 };

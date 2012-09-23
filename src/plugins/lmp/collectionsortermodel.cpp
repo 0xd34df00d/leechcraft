@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "collectionsortermodel.h"
+#include <functional>
 #include "localcollection.h"
 #include "xmlsettingsmanager.h"
 

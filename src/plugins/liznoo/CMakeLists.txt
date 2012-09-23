@@ -31,31 +31,57 @@ SET (HEADERS
 	platformlayer.h
 	xmlsettingsmanager.h
 	)
+
+SET (FBSD_SRCS platformfreebsd.cpp)
+SET (FBSD_HEADERS platformfreebsd.h)
+SET (UPOWER_SRCS
+	platformupower.cpp
+	dbusthread.cpp
+	dbusconnector.cpp
+	)
+SET (UPOWER_HEADERS
+	platformupower.h
+	dbusthread.h
+	dbusconnector.h
+	)
+SET (WIN32_SRCS
+	platformwinapi.cpp
+	fakeqwidgetwinapi.cpp
+	)
+SET (WIN32_HEADERS
+	platformwinapi.h
+	fakeqwidgetwinapi.h
+	)
 # Default implementation using UPower
 IF (NOT WIN32)
-	SET (SRCS
-		${SRCS}
-		platformupower.cpp
-		dbusthread.cpp
-		dbusconnector.cpp
-		)
-	SET (HEADERS
-		${HEADERS}
-		platformupower.h
-		dbusthread.h
-		dbusconnector.h
-		)
+	IF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+		SET (SRCS
+			${SRCS}
+			${FBSD_SRCS}
+			)
+		SET (HEADERS
+			${HEADERS}
+			${FBSD_HEADERS}
+			)
+	ELSE (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+		SET (SRCS
+			${SRCS}
+			${UPOWER_SRCS}
+			)
+		SET (HEADERS
+			${HEADERS}
+			${UPOWER_HEADERS}
+			)
+	ENDIF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
 # Windows implementation using WinAPI
 ELSE (NOT WIN32)
 	SET (SRCS
 		${SRCS}
-		platformwinapi.cpp
-		fakeqwidgetwinapi.cpp
+		${WIN32_SRCS}
 		)
 	SET (HEADERS
 		${HEADERS}
-		platformwinapi.h
-		fakeqwidgetwinapi.h
+		${WIN32_HEADERS}
 		)
 ENDIF (NOT WIN32)
 
@@ -63,19 +89,14 @@ SET (FORMS
 	batteryhistorydialog.ui
 	)
 SET (RESOURCES liznooresources.qrc)
-CreateTrVars ("liznoo" "en;es;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrs ("liznoo" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("liznoo" "en;ru_RU" "${SRCS};${FBSD_SRCS};${UPOWER_SRCS};${WIN32_SRCS}" "${FORMS}" "liznoosettings.xml")
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_CUSTOM_COMMAND (OUTPUT
-	${COMPILED_TRANSLATIONS}
-	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
-	DEPENDS ${TRANSLATIONS}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
 ADD_LIBRARY (leechcraft_liznoo SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}

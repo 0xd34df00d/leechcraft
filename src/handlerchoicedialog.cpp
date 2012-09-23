@@ -168,7 +168,7 @@ namespace LeechCraft
 	{
 		return Handlers_.empty () ? 0 : Handlers_.begin ().value ();
 	}
-	
+
 	QList<IEntityHandler*> HandlerChoiceDialog::GetAllEntityHandlers ()
 	{
 		return Handlers_.values ();
@@ -213,7 +213,7 @@ namespace LeechCraft
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName ());
 		settings.beginGroup ("SavePaths");
-		
+
 		const QStringList& l = settings.value (plugin).toStringList ();
 		settings.endGroup ();
 		return l;
@@ -302,7 +302,7 @@ namespace LeechCraft
 				Ui_.LocationsBox_->setCurrentIndex (2);
 		}
 	}
-	
+
 	void HandlerChoiceDialog::on_BrowseButton__released ()
 	{
 		const QString& name = Buttons_->checkedButton ()->
@@ -313,11 +313,10 @@ namespace LeechCraft
 
 		const QString& result = QFileDialog::getExistingDirectory (0,
 				tr ("Select save location"),
-				Suggestion_,
-				QFileDialog::Option (~QFileDialog::ShowDirsOnly));
+				Suggestion_);
 		if (result.isEmpty ())
 			return;
-		
+
 		Ui_.LocationsBox_->setCurrentIndex (0);
 		Ui_.LocationsBox_->setItemText (0, result);
 	}

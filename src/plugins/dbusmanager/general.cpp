@@ -28,65 +28,61 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DBusManager
+{
+	General::General (QObject *parent)
+	: QObject (parent)
 	{
-		namespace DBusManager
+	}
+
+	QStringList General::GetLoadedPlugins ()
+	{
+		QObjectList plugins = Core::Instance ().GetProxy ()->
+			GetPluginsManager ()->GetAllPlugins ();
+		QStringList result;
+		Q_FOREACH (QObject *plugin, plugins)
+			result << qobject_cast<IInfo*> (plugin)->GetName ();
+
+		return result;
+	}
+
+	QString General::GetDescription (const QString& name)
+	{
+		QObjectList plugins = Core::Instance ().GetProxy ()->
+			GetPluginsManager ()->GetAllPlugins ();
+		Q_FOREACH (QObject *plugin, plugins)
 		{
-			General::General (QObject *parent)
-			: QObject (parent)
-			{
-			}
+			IInfo *ii = qobject_cast<IInfo*> (plugin);
+			if (ii->GetName () == name)
+				return ii->GetInfo ();
+		}
 
-			QStringList General::GetLoadedPlugins ()
-			{
-				QObjectList plugins = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetAllPlugins ();
-				QStringList result;
-				Q_FOREACH (QObject *plugin, plugins)
-					result << qobject_cast<IInfo*> (plugin)->GetName ();
+		throw tr ("Not found plugin %1.")
+			.arg (name);
+	}
 
-				return result;
-			}
+	QByteArray General::GetIcon (const QString& name, int dim)
+	{
+		QObjectList plugins = Core::Instance ().GetProxy ()->
+			GetPluginsManager ()->GetAllPlugins ();
+		Q_FOREACH (QObject *plugin, plugins)
+		{
+			IInfo *ii = qobject_cast<IInfo*> (plugin);
+			if (ii->GetName () != name)
+				continue;
 
-			QString General::GetDescription (const QString& name)
-			{
-				QObjectList plugins = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetAllPlugins ();
-				Q_FOREACH (QObject *plugin, plugins)
-				{
-					IInfo *ii = qobject_cast<IInfo*> (plugin);
-					if (ii->GetName () == name)
-						return ii->GetInfo ();
-				}
+			QIcon icon = ii->GetIcon ();
+			QPixmap pixmap = icon.pixmap (dim, dim);
+			QBuffer buffer;
+			if (!pixmap.save (&buffer, "PNG", 100))
+				throw tr ("Could not save icon for plugin %1 to PNG %2x%2")
+					.arg (name)
+					.arg (dim);
+			return buffer.data ();
+		}
 
-				throw tr ("Not found plugin %1.")
-					.arg (name);
-			}
-
-			QByteArray General::GetIcon (const QString& name, int dim)
-			{
-				QObjectList plugins = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetAllPlugins ();
-				Q_FOREACH (QObject *plugin, plugins)
-				{
-					IInfo *ii = qobject_cast<IInfo*> (plugin);
-					if (ii->GetName () != name)
-						continue;
-
-					QIcon icon = ii->GetIcon ();
-					QPixmap pixmap = icon.pixmap (dim, dim);
-					QBuffer buffer;
-					if (!pixmap.save (&buffer, "PNG", 100))
-						throw tr ("Could not save icon for plugin %1 to PNG %2x%2")
-							.arg (name)
-							.arg (dim);
-					return buffer.data ();
-				}
-
-				throw tr ("Not found plugin %1.")
-					.arg (name);
-			}
-		};
-	};
-};
-
+		throw tr ("Not found plugin %1.")
+			.arg (name);
+	}
+}
+}

@@ -49,6 +49,9 @@ namespace XProxy
 			case QNetworkProxy::ProxyType::FtpCachingProxy:
 				return ProxiesConfigWidget::tr ("caching FTP");
 				break;
+			case QNetworkProxy::ProxyType::NoProxy:
+				return ProxiesConfigWidget::tr ("no proxy");
+				break;
 			default:
 				return ProxiesConfigWidget::tr ("other type");
 				break;
@@ -167,6 +170,9 @@ namespace XProxy
 			case 3:
 				type = QNetworkProxy::ProxyType::FtpCachingProxy;
 				break;
+			case 4:
+				type = QNetworkProxy::ProxyType::NoProxy;
+				break;
 		}
 		Proxy proxy =
 		{
@@ -227,6 +233,9 @@ namespace XProxy
 			break;
 		case QNetworkProxy::ProxyType::FtpCachingProxy:
 			Ui_.ProxyType_->setCurrentIndex (3);
+			break;
+		case QNetworkProxy::ProxyType::NoProxy:
+			Ui_.ProxyType_->setCurrentIndex (4);
 			break;
 		default:
 			qWarning () << Q_FUNC_INFO

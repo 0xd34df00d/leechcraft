@@ -61,8 +61,8 @@ namespace LeechCraft
 				this,
 				SLOT (updatePreferences ()));
 
-		edit->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
+		edit->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		edit->setProperty ("SearchTerms", label->text ());
 
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0, Qt::AlignRight);
@@ -82,7 +82,7 @@ namespace LeechCraft
 		edit->setText (value.toString ());
 	}
 
-	QVariant ItemHandlerLineEdit::GetValue (QObject *object) const
+	QVariant ItemHandlerLineEdit::GetObjectValue (QObject *object) const
 	{
 		QLineEdit *edit = qobject_cast<QLineEdit*> (object);
 		if (!edit)

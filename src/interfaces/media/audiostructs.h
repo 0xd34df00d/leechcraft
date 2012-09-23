@@ -36,6 +36,10 @@ namespace Media
 		qint32 Year_;
 		qint32 TrackNumber_;
 
+		/** Other fields known to be used:
+		 * - URL with a QUrl pointing to either local file (if the scheme
+		 *   is "file:") or a remote file or radio stream otherwise.
+		 */
 		QVariantMap Other_;
 	};
 
@@ -67,3 +71,6 @@ namespace Media
 	};
 	typedef QList<SimilarityInfo> SimilarityInfos_t;
 }
+
+Q_DECLARE_METATYPE (Media::AudioInfo);
+Q_DECLARE_METATYPE (QList<Media::AudioInfo>);

@@ -20,6 +20,7 @@
 #include <QPushButton>
 #include <QFileDialog>
 #include <QBuffer>
+#include <QCryptographicHash>
 #include <QXmppVCardManager.h>
 #include "entrybase.h"
 #include "glooxaccount.h"
@@ -28,6 +29,7 @@
 #include "annotationsmanager.h"
 #include "useravatarmanager.h"
 #include "vcardlisteditdialog.h"
+#include "accountsettingsholder.h"
 
 namespace LeechCraft
 {
@@ -63,7 +65,7 @@ namespace Xoox
 		GlooxAccount *account = qobject_cast<GlooxAccount*> (entry->GetParentAccount ());
 		UpdateNote (account, entry->GetJID ());
 
-		if (entry->GetJID () == account->GetJID ())
+		if (entry->GetJID () == account->GetSettings ()->GetJID ())
 			EnableEditableMode ();
 		else
 		{
@@ -114,11 +116,13 @@ namespace Xoox
 		else
 			Ui_.LabelPhoto_->setText (tr ("No photo"));
 
+		/* TODO wait until newer QXmpp
 		Ui_.OrgName_->setText (vcard.orgName ());
 		Ui_.OrgUnit_->setText (vcard.orgUnit ());
 		Ui_.Title_->setText (vcard.title ());
 		Ui_.Role_->setText (vcard.role ());
 		Ui_.About_->setPlainText (vcard.desc ());
+		*/
 	}
 
 	void VCardDialog::BuildPhones (const QXmppVCardPhoneList& phonesList)
@@ -126,22 +130,22 @@ namespace Xoox
 		QStringList phones;
 		Q_FOREACH (const QXmppVCardPhone& phone, phonesList)
 		{
-			if (phone.number.isEmpty ())
+			if (phone.number ().isEmpty ())
 				continue;
 
 			QStringList attrs;
-			if (phone.isPref)
+			if (phone.type () & QXmppVCardPhone::Preferred)
 				attrs << tr ("preferred");
-			if (phone.isHome)
+			if (phone.type () & QXmppVCardPhone::Home)
 				attrs << tr ("home");
-			if (phone.isWork)
+			if (phone.type () & QXmppVCardPhone::Work)
 				attrs << tr ("work");
-			if (phone.isCell)
+			if (phone.type () & QXmppVCardPhone::Cell)
 				attrs << tr ("cell");
 
 			phones << (attrs.isEmpty () ?
-						phone.number :
-						(phone.number + " (" + attrs.join (", ") + ")"));
+						phone.number () :
+						(phone.number () + " (" + attrs.join (", ") + ")"));
 		}
 		Ui_.EditPhone_->setText (phones.join ("; "));
 	}
@@ -151,22 +155,22 @@ namespace Xoox
 		QStringList emails;
 		Q_FOREACH (const QXmppVCardEmail& email, emailsList)
 		{
-			if (email.address.isEmpty ())
+			if (email.address ().isEmpty ())
 				continue;
 
 			QStringList attrs;
-			if (email.isPref)
+			if (email.type () == QXmppVCardEmail::Preferred)
 				attrs << tr ("preferred");
-			if (email.isHome)
+			if (email.type () == QXmppVCardEmail::Home)
 				attrs << tr ("home");
-			if (email.isWork)
+			if (email.type () == QXmppVCardEmail::Work)
 				attrs << tr ("work");
-			if (email.isX400)
+			if (email.type () == QXmppVCardEmail::X400)
 				attrs << "X400";
 
 			emails << (attrs.isEmpty () ?
-						email.address :
-						(email.address + " (" + attrs.join (", ") + ")"));
+						email.address () :
+						(email.address () + " (" + attrs.join (", ") + ")"));
 		}
 		Ui_.EditEmail_->setText (emails.join ("; "));
 	}
@@ -177,17 +181,18 @@ namespace Xoox
 		int addrNum = 1;
 		Q_FOREACH (const QXmppVCardAddress& address, addressList)
 		{
-			if (address.isEmpty ())
+			if ((address.country () + address.locality () + address.postcode () +
+					address.region () + address.street ()).isEmpty ())
 				continue;
 
 			QStringList attrs;
-			if (address.isHome)
+			if (address.type () & QXmppVCardAddress::Home)
 				attrs << tr ("home");
-			if (address.isWork)
+			if (address.type () & QXmppVCardAddress::Work)
 				attrs << tr ("work");
-			if (address.isPostal)
+			if (address.type () & QXmppVCardAddress::Postal)
 				attrs << tr ("postal");
-			if (address.isPref)
+			if (address.type () & QXmppVCardAddress::Preferred)
 				attrs << tr ("preferred");
 
 			QString str;
@@ -206,12 +211,11 @@ namespace Xoox
 				if (!val.isEmpty ())
 					fields << label.arg (val);
 			};
-			addField (tr ("Country: %1"), address.country);
-			addField (tr ("Region: %1"), address.region);
-			addField (tr ("Locality: %1", "User's locality"), address.locality);
-			addField (tr ("Street: %1"), address.street);
-			addField (tr ("Additional: %1", "Additional address in user's address"), address.extAdd);
-			addField (tr ("Postal code: %1"), address.pCode);
+			addField (tr ("Country: %1"), address.country ());
+			addField (tr ("Region: %1"), address.region ());
+			addField (tr ("Locality: %1", "User's locality"), address.locality ());
+			addField (tr ("Street: %1"), address.street ());
+			addField (tr ("Postal code: %1"), address.postcode ());
 			str += "<ul><li>";
 			str += fields.join ("</li><li>");
 			str += "</li></ul>";
@@ -278,9 +282,9 @@ namespace Xoox
 		if (!Account_)
 			return;
 
-		Note_.setJid (JID_);
-		Note_.setNote (Ui_.NotesEdit_->toPlainText ());
-		Note_.setMdate (QDateTime::currentDateTime ());
+		Note_.SetJid (JID_);
+		Note_.SetNote (Ui_.NotesEdit_->toPlainText ());
+		Note_.SetMDate (QDateTime::currentDateTime ());
 		Account_->GetClientConnection ()->
 				GetAnnotationsManager ()->SetNote (JID_, Note_);
 	}
@@ -291,11 +295,13 @@ namespace Xoox
 		VCard_.setNickName (Ui_.EditNick_->text ());
 		VCard_.setBirthday (Ui_.EditBirthday_->date ());
 		VCard_.setUrl (Ui_.EditURL_->text ());
+		/* TODO wait for newer QXmpp
 		VCard_.setOrgName (Ui_.OrgName_->text ());
 		VCard_.setOrgUnit (Ui_.OrgUnit_->text ());
 		VCard_.setTitle (Ui_.Title_->text ());
 		VCard_.setRole (Ui_.Role_->text ());
 		VCard_.setDesc (Ui_.About_->toPlainText ());
+		*/
 		VCard_.setEmail (QString ());
 
 		const QPixmap *px = Ui_.LabelPhoto_->pixmap ();
@@ -334,23 +340,28 @@ namespace Xoox
 				<< tr ("work")
 				<< tr ("cell");
 
+		const std::vector<QXmppVCardPhone::Type> type2pos =
+		{
+			QXmppVCardPhone::Preferred,
+			QXmppVCardPhone::Home,
+			QXmppVCardPhone::Work,
+			QXmppVCardPhone::Cell
+		};
+
 		VCardListEditDialog dia (options, this);
 		dia.setWindowTitle (tr ("VCard phones"));
 		Q_FOREACH (const QXmppVCardPhone& phone, VCard_.phones ())
 		{
-			if (phone.number.isEmpty ())
+			if (phone.number ().isEmpty ())
 				continue;
 
 			QPair<QString, QStringList> pair;
-			pair.first = phone.number;
-			if (phone.isPref)
-				pair.second << options.at (0);
-			if (phone.isHome)
-				pair.second << options.at (1);
-			if (phone.isWork)
-				pair.second << options.at (2);
-			if (phone.isCell)
-				pair.second << options.at (3);
+			pair.first = phone.number ();
+
+			for (size_t i = 0; i < type2pos.size (); ++i)
+				if (phone.type () & type2pos [i])
+					pair.second << options.at (i);
+
 			dia.AddItems (QList<decltype (pair)> () << pair);
 		}
 
@@ -361,11 +372,14 @@ namespace Xoox
 		Q_FOREACH (const auto& item, dia.GetItems ())
 		{
 			QXmppVCardPhone phone;
-			phone.number = item.first;
-			phone.isPref = item.second.contains (options.at (0));
-			phone.isHome = item.second.contains (options.at (1));
-			phone.isWork = item.second.contains (options.at (2));
-			phone.isCell = item.second.contains (options.at (3));
+			phone.setNumber (item.first);
+
+			QXmppVCardPhone::Type type = QXmppVCardPhone::None;
+			for (size_t i = 0; i < type2pos.size (); ++i)
+				if (item.second.contains (options.at (i)))
+					type &= type2pos [i];
+			phone.setType (type);
+
 			list << phone;
 		}
 		VCard_.setPhones (list);
@@ -380,23 +394,27 @@ namespace Xoox
 				<< tr ("work")
 				<< "X400";
 
+		const std::vector<QXmppVCardEmail::Type> type2pos =
+		{
+			QXmppVCardEmail::Preferred,
+			QXmppVCardEmail::Home,
+			QXmppVCardEmail::Work,
+			QXmppVCardEmail::X400
+		};
+
 		VCardListEditDialog dia (options, this);
 		dia.setWindowTitle (tr ("VCard emails"));
 		Q_FOREACH (const QXmppVCardEmail& email, VCard_.emails ())
 		{
-			if (email.address.isEmpty ())
+			if (email.address ().isEmpty ())
 				continue;
 
 			QPair<QString, QStringList> pair;
-			pair.first = email.address;
-			if (email.isPref)
-				pair.second << options.at (0);
-			if (email.isHome)
-				pair.second << options.at (1);
-			if (email.isWork)
-				pair.second << options.at (2);
-			if (email.isX400)
-				pair.second << options.at (3);
+			pair.first = email.address ();
+			for (size_t i = 0; i < type2pos.size (); ++i)
+				if (email.type () & type2pos [i])
+					pair.second << options.at (i);
+
 			dia.AddItems (QList<decltype (pair)> () << pair);
 		}
 
@@ -407,11 +425,14 @@ namespace Xoox
 		Q_FOREACH (const auto& item, dia.GetItems ())
 		{
 			QXmppVCardEmail email;
-			email.address = item.first;
-			email.isPref = item.second.contains (options.at (0));
-			email.isHome = item.second.contains (options.at (1));
-			email.isWork = item.second.contains (options.at (2));
-			email.isX400 = item.second.contains (options.at (3));
+			email.setAddress (item.first);
+
+			QXmppVCardEmail::Type type = QXmppVCardEmail::None;
+			for (size_t i = 0; i < type2pos.size (); ++i)
+				if (item.second.contains (options.at (i)))
+					type &= type2pos [i];
+			email.setType (type);
+
 			list << email;
 		}
 		VCard_.setEmails (list);
@@ -463,6 +484,8 @@ namespace Xoox
 			edit->setReadOnly (false);
 
 		Ui_.About_->setReadOnly (false);
+
+		Ui_.EditBirthday_->setReadOnly (false);
 	}
 
 	void VCardDialog::UpdateNote (GlooxAccount *acc, const QString& jid)
@@ -474,7 +497,7 @@ namespace Xoox
 		JID_ = jid;
 		Note_ = acc->GetClientConnection ()->
 				GetAnnotationsManager ()->GetNote (jid);
-		Ui_.NotesEdit_->setPlainText (Note_.note ());
+		Ui_.NotesEdit_->setPlainText (Note_.GetNote ());
 
 		rebuildClientInfo ();
 

@@ -27,7 +27,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	class MediaInfo;
+	struct MediaInfo;
 
 	class AudioPropsWidget : public QWidget
 	{

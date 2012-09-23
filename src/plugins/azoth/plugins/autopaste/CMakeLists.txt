@@ -11,30 +11,37 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	)
 SET (AUTOPASTE_SRCS
 	autopaste.cpp
+	codepadservice.cpp
+	pastedialog.cpp
+	pasteservicebase.cpp
+	pasteservicefactory.cpp
 	xmlsettingsmanager.cpp
 	)
 SET (AUTOPASTE_HEADERS
 	autopaste.h
+	codepadservice.h
+	pastedialog.h
+	pasteservicebase.h
+	pasteservicefactory.h
 	xmlsettingsmanager.h
 	)
+SET (AUTOPASTE_FORMS
+	pastedialog.ui
+	)
 SET (AUTOPASTE_RESOURCES azothautopasteresources.qrc)
-CreateTrVars ("azoth_autopaste" "en;es;ru_RU;uk_UA" AUTOPASTE_TRANSLATIONS AUTOPASTE_COMPILED_TRANSLATIONS)
+CreateTrs ("azoth_autopaste" "en;es;ru_RU;uk_UA" AUTOPASTE_COMPILED_TRANSLATIONS)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (AUTOPASTE_MOC_SRCS ${AUTOPASTE_HEADERS})
 ENDIF (NOT LC_NO_MOC)
+QT4_WRAP_UI (AUTOPASTE_UIS_H ${AUTOPASTE_FORMS})
 QT4_ADD_RESOURCES (AUTOPASTE_RCCS ${AUTOPASTE_RESOURCES})
 
-ADD_CUSTOM_COMMAND (OUTPUT
-	${AUTOPASTE_COMPILED_TRANSLATIONS}
-	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${AUTOPASTE_TRANSLATIONS}
-	DEPENDS ${AUTOPASTE_TRANSLATIONS}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
 ADD_LIBRARY (leechcraft_azoth_autopaste SHARED
 	${AUTOPASTE_COMPILED_TRANSLATIONS}
 	${AUTOPASTE_SRCS}
 	${AUTOPASTE_MOC_SRCS}
 	${AUTOPASTE_RCCS}
+	${AUTOPASTE_UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_azoth_autopaste
 	${QT_LIBRARIES}

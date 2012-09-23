@@ -24,6 +24,7 @@
 #include "exceptions.h"
 #include "message.h"
 #include "typingmanager.h"
+#include "../vaderutil.h"
 
 namespace LeechCraft
 {
@@ -193,9 +194,10 @@ namespace Proto
 
 	void Connection::SetState (const EntryStatus& status)
 	{
-		if (IsConnected_ && status.State_ == SOffline)
+		if (status.State_ == SOffline)
 		{
 			Disconnect ();
+			emit statusChanged (status);
 		}
 		else if (!IsConnected_ && status.State_ != SOffline)
 		{
@@ -204,10 +206,9 @@ namespace Proto
 		}
 		else if (status.State_ != SOffline)
 		{
-			const quint32 state = PendingStatus_.State_ == SOnline ?
-				UserState::Online :
-				UserState::Away;
-			Write (PF_.SetStatus (state, status.StatusString_).Packet_);
+			Write (PF_.SetStatus (VaderUtil::State2StatusID (status.State_),
+						status.StatusString_).Packet_);
+			emit statusChanged (status);
 		}
 	}
 
@@ -818,7 +819,8 @@ namespace Proto
 
 	void Connection::Disconnect ()
 	{
-		PingTimer_->stop ();
+		if (PingTimer_->isActive ())
+			PingTimer_->stop ();
 		Socket_->disconnectFromHost ();
 
 		PE_.Clear ();

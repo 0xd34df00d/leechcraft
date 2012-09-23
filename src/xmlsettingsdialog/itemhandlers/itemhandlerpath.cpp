@@ -66,8 +66,8 @@ namespace LeechCraft
 				this,
 				SLOT (updatePreferences ()));
 
-		picker->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
+		picker->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		picker->setProperty ("SearchTerms", label->text ());
 
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0);
@@ -118,7 +118,7 @@ namespace LeechCraft
 		picker->SetText (value.toString ());
 	}
 
-	QVariant ItemHandlerPath::GetValue (QObject *object) const
+	QVariant ItemHandlerPath::GetObjectValue (QObject *object) const
 	{
 		FilePicker *picker = qobject_cast<FilePicker*> (object);
 		if (!picker)

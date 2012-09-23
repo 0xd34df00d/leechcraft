@@ -28,6 +28,7 @@
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/irecentreleases.h>
 #include <interfaces/media/iartistbiofetcher.h>
+#include <interfaces/media/ieventsprovider.h>
 
 namespace LeechCraft
 {
@@ -46,6 +47,7 @@ namespace Lastfmscrobble
 				, public Media::IRadioStationProvider
 				, public Media::IRecentReleases
 				, public Media::IArtistBioFetcher
+				, public Media::IEventsProvider
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
@@ -56,7 +58,8 @@ namespace Lastfmscrobble
 				Media::IRecommendedArtists
 				Media::IRadioStationProvider
 				Media::IRecentReleases
-				Media::IArtistBioFetcher)
+				Media::IArtistBioFetcher
+				Media::IEventsProvider)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
@@ -64,6 +67,8 @@ namespace Lastfmscrobble
 		LastFMSubmitter *LFSubmitter_;
 
 		ICoreProxy_ptr Proxy_;
+
+		QStandardItem *RadioRoot_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -79,6 +84,7 @@ namespace Lastfmscrobble
 		void NowPlaying (const Media::AudioInfo&);
 		void PlaybackStopped ();
 		void LoveCurrentTrack ();
+		void BanCurrentTrack ();
 
 		QString GetAlbumArtProviderName () const;
 		void RequestAlbumArt (const Media::AlbumInfo& album) const;
@@ -87,13 +93,17 @@ namespace Lastfmscrobble
 
 		Media::IPendingSimilarArtists* RequestRecommended (int);
 
-		QString GetRadioName () const;
-		Media::IRadioStation_ptr GetRadioStation (Type, const QString&);
-		QMap<QByteArray, QString> GetPredefinedStations () const;
+		Media::IRadioStation_ptr GetRadioStation (QStandardItem*, const QString&);
+		QList<QStandardItem*> GetRadioListItems () const;
 
 		void RequestRecentReleases (int, bool);
 
 		Media::IPendingArtistBio* RequestArtistBio (const QString&);
+
+		void UpdateRecommendedEvents ();
+		void AttendEvent (qint64, Media::EventAttendType);
+	private slots:
+		void reloadRecommendedEvents ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
@@ -101,6 +111,8 @@ namespace Lastfmscrobble
 		void gotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 
 		void gotRecentReleases (const QList<Media::AlbumRelease>&);
+
+		void gotRecommendedEvents (const Media::EventInfos_t&);
 	};
 }
 }

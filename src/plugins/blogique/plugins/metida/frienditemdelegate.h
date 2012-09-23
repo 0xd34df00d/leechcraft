@@ -32,12 +32,14 @@ namespace Metida
 	enum ItemColorRoles
 	{
 		BackgroundColor = Qt::UserRole + 1,
-		ForegroundColor = Qt::UserRole + 2
+		ForegroundColor = Qt::UserRole,
+
+		MaxColor
 	};
 
 	enum ItemGroupRoles
 	{
-		GroupId = Qt::UserRole + 3
+		GroupId = MaxColor + 1
 	};
 
 	class FriendItemDelegate : public QStyledItemDelegate

@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <cmath>
 #include <QIcon>
 #include <QAction>
 #include <QStandardItemModel>
@@ -802,7 +803,7 @@ namespace Azoth
 					c.unicode ();
 			hash += nick.length ();
 		}
-		QColor nc = colors.at (hash % colors.size ());
+		QColor nc = colors.at (std::abs (hash) % colors.size ());
 		return nc.name ();
 	}
 
@@ -933,8 +934,10 @@ namespace Azoth
 					.arg (QString ("data:image/png;base64," + rawData));
 			if (body.startsWith (escaped))
 				body.replace (0, escaped.size (), smileStr);
-			body.replace (' ' + escaped, ' ' + smileStr);
-			body.replace ('\n' + escaped, '\n' + smileStr);
+
+			auto whites = { " ", "\n", "\t", "<br/>", "<br />", "<br>" };
+			Q_FOREACH (auto white, whites)
+				body.replace (white + escaped, white + smileStr);
 		}
 
 		return body;
@@ -992,7 +995,11 @@ namespace Azoth
 		connect (clEntry->GetObject (),
 				SIGNAL (entryGenerallyChanged ()),
 				this,
-				SLOT (handleEntryGenerallyChanged ()));
+				SLOT (remakeTooltipForSender ()));
+		connect (clEntry->GetObject (),
+				SIGNAL (avatarChanged (const QImage&)),
+				this,
+				SLOT (remakeTooltipForSender ()));
 		connect (clEntry->GetObject (),
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
@@ -1049,10 +1056,16 @@ namespace Azoth
 		ID2Entry_ [id] = clEntry->GetObject ();
 
 		const QStringList& groups = GetDisplayGroups (clEntry);
-		QList<QStandardItem*> catItems =
-				GetCategoriesItems (groups, accItem);
+		QList<QStandardItem*> catItems = GetCategoriesItems (groups, accItem);
 		Q_FOREACH (QStandardItem *catItem, catItems)
+		{
 			AddEntryTo (clEntry, catItem);
+
+			bool isMucCat = catItem->data (CLRIsMUCCategory).toBool ();
+			if (!isMucCat)
+				isMucCat = clEntry->GetEntryType () == ICLEntry::ETPrivateChat;
+			catItem->setData (isMucCat, CLRIsMUCCategory);
+		}
 
 		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
 
@@ -1179,27 +1192,31 @@ namespace Azoth
 	QString Core::MakeTooltipString (ICLEntry *entry) const
 	{
 		QString tip = "<table border='0'><tr><td>";
-		const int avatarSize = 75;
-		const int minAvatarSize = 32;
-		auto avatar = entry->GetAvatar ();
-		if (avatar.isNull ())
-			avatar = GetDefaultAvatar (avatarSize);
 
-		if (std::max (avatar.width (), avatar.height ()) > avatarSize)
-			avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-		else if (std::max (avatar.width (), avatar.height ()) < minAvatarSize)
-			avatar = avatar.scaled (minAvatarSize, minAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-		tip += "<img src='" + Util::GetAsBase64Src (avatar) + "' />";
+		if (entry->GetEntryType () != ICLEntry::ETMUC)
+		{
+			const int avatarSize = 75;
+			const int minAvatarSize = 32;
+			auto avatar = entry->GetAvatar ();
+			if (avatar.isNull ())
+				avatar = GetDefaultAvatar (avatarSize);
 
-		tip += "</td><td>";
+			if (std::max (avatar.width (), avatar.height ()) > avatarSize)
+				avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			else if (std::max (avatar.width (), avatar.height ()) < minAvatarSize)
+				avatar = avatar.scaled (minAvatarSize, minAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			tip += "<img src='" + Util::GetAsBase64Src (avatar) + "' />";
 
-		tip += "<strong>" + entry->GetEntryName () + "</strong>";
-		tip += "&nbsp;(<em>" + entry->GetHumanReadableID () + "</em>)<br />";
+			tip += "</td><td>";
+		}
+
+		tip += "<strong>" + Qt::escape (entry->GetEntryName ()) + "</strong>";
+		tip += "&nbsp;(<em>" + Qt::escape (entry->GetHumanReadableID ()) + "</em>)<br />";
 		tip += Status2Str (entry->GetStatus (), PluginProxyObject_);
 		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
 		{
 			tip += "<br />";
-			tip += tr ("In groups:") + ' ' + entry->Groups ().join ("; ");
+			tip += tr ("In groups:") + ' ' + Qt::escape (entry->Groups ().join ("; "));
 		}
 
 		const QStringList& variants = entry->Variants ();
@@ -1208,7 +1225,8 @@ namespace Azoth
 		if (mucEntry)
 		{
 			const QString& jid = mucEntry->GetRealID (entry->GetObject ());
-			tip += "<br />" + tr ("Real ID:") + ' ' + (jid.isEmpty () ? tr ("unknown") : jid);
+			tip += "<br />" + tr ("Real ID:") + ' ';
+			tip += jid.isEmpty () ? tr ("unknown") : Qt::escape (jid);
 		}
 
 		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
@@ -1264,13 +1282,13 @@ namespace Azoth
 				tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
 
 				if (info.contains ("client_name"))
-					tip += "<br />" + tr ("Using:") + ' ' + info.value ("client_name").toString ();
+					tip += "<br />" + tr ("Using:") + ' ' + Qt::escape (info.value ("client_name").toString ());
 				if (info.contains ("client_version"))
-					tip += " " + info.value ("client_version").toString ();
+					tip += " " + Qt::escape (info.value ("client_version").toString ());
 				if (info.contains ("client_remote_name"))
-					tip += "<br />" + tr ("Claiming:") + ' ' + info.value ("client_remote_name").toString ();
+					tip += "<br />" + tr ("Claiming:") + ' ' + Qt::escape (info.value ("client_remote_name").toString ());
 				if (info.contains ("client_os"))
-					tip += "<br />" + tr ("OS:") + ' ' + info.value ("client_os").toString ();
+					tip += "<br />" + tr ("OS:") + ' ' + Qt::escape (info.value ("client_os").toString ());
 
 				if (info.contains ("user_mood"))
 					FormatMood (tip, info ["user_mood"].toMap ());
@@ -1283,7 +1301,7 @@ namespace Azoth
 				{
 					const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
 					Q_FOREACH (const QString& key, map.keys ())
-						tip += "<br />" + key + ": " + map [key].toString () + "<br />";
+						tip += "<br />" + key + ": " + Qt::escape (map [key].toString ()) + "<br />";
 				}
 			}
 
@@ -1484,7 +1502,14 @@ namespace Azoth
 					.property ("ClientIcons").toString () + '/';
 		Q_FOREACH (const QString& variant, entry->Variants ())
 		{
-			const QString& filename = pack + entry->GetClientInfo (variant) ["client_type"].toString ();
+			const auto& type = entry->GetClientInfo (variant) ["client_type"].toString ();
+			if (type.isNull ())
+			{
+				result [variant] = QIcon ();
+				continue;
+			}
+
+			const QString& filename = pack + type;
 
 			QPixmap pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (filename);
 			if (pixmap.isNull ())
@@ -1838,8 +1863,8 @@ namespace Azoth
 			return;
 		}
 
-		const bool show = XmlSettingsManager::Instance ()
-				.Property ("ShowAccount_" + account->GetAccountID (), true).toBool ();
+		const auto& showKey = QString::fromUtf8 ("ShowAccount_" + account->GetAccountID ());
+		const bool show = XmlSettingsManager::Instance ().Property (showKey, true).toBool ();
 		account->SetShownInRoster (show);
 
 		emit accountAdded (account);
@@ -2266,7 +2291,7 @@ namespace Azoth
 		}
 	}
 
-	void Core::handleEntryGenerallyChanged ()
+	void Core::remakeTooltipForSender ()
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
 		if (!entry)
@@ -2479,7 +2504,7 @@ namespace Azoth
 		emit gotEntity (e);
 	}
 
-	void Core::handleAttentionDrawn (const QString& text, const QString& variant)
+	void Core::handleAttentionDrawn (const QString& text, const QString&)
 	{
 		if (XmlSettingsManager::Instance ()
 				.property ("IgnoreDrawAttentions").toBool ())

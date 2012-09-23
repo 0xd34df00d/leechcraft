@@ -30,7 +30,10 @@
 			</item>
 			<item type="combobox" property="AppQStyle" mayHaveDataSource="true">
 				<label lang="en" value="Style:" />
-				<option name="Plastique" default="true">
+				<option name="Default" default="true">
+					<label lang="en" value="Default" />
+				</option>
+				<option name="Plastique">
 					<label lang="en" value="Plastique" />
 				</option>
 			</item>
@@ -93,6 +96,12 @@
 			</item>
 			<item type="checkbox" property="DontAskWhenSingle" default="true">
 				<label lang="en" value="Automatically accept task when there is only one handler" />
+			</item>
+			<item type="checkbox" property="FallbackExternalHandlers" default="true">
+				<label value="Try external applications when no plugins can handle an entity" />
+			</item>
+			<item type="pushbutton" name="SetStartupPassword">
+				<label value="Set startup password" />
 			</item>
 		</groupbox>
 		<item type="groupbox" property="ShowPluginMenuInTabs" state="on" checkable="true">

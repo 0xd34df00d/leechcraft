@@ -36,7 +36,7 @@ namespace Xoox
 	class AdHocCommandManager : public QXmppClientExtension
 	{
 		Q_OBJECT
-		
+
 		ClientConnection *ClientConn_;
 		QSet<QString> PendingCommands_;
 	public:

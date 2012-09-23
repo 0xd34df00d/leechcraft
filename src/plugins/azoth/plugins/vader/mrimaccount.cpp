@@ -48,6 +48,10 @@ namespace Vader
 	, AvatarFetcher_ (new SelfAvatarFetcher (this))
 	{
 		connect (Conn_,
+				SIGNAL (authenticationError (QString)),
+				this,
+				SLOT (handleAuthError (QString)));
+		connect (Conn_,
 				SIGNAL (gotContacts (QList<Proto::ContactInfo>)),
 				this,
 				SLOT (handleGotContacts (QList<Proto::ContactInfo>)));
@@ -282,7 +286,7 @@ namespace Vader
 	}
 
 	void MRIMAccount::RequestAuth (const QString& email,
-			const QString& msg, const QString& name, const QStringList& groups)
+			const QString& msg, const QString& name, const QStringList&)
 	{
 		if (!Buddies_.contains (email))
 		{
@@ -413,6 +417,16 @@ namespace Vader
 	void MRIMAccount::updateSelfAvatar (const QImage& avatar)
 	{
 		SelfAvatar_ = avatar;
+	}
+
+	void MRIMAccount::handleAuthError (const QString& errorString)
+	{
+		const auto& e = Util::MakeNotification ("Azoth",
+				tr ("Authentication error for account %1: server reports %2.")
+					.arg ("<em>" + GetAccountName () + "</em>")
+					.arg ("<em>" + errorString + "</em>"),
+				PCritical_);
+		Core::Instance ().SendEntity (e);
 	}
 
 	void MRIMAccount::handleGotContacts (const QList<Proto::ContactInfo>& contacts)
@@ -588,6 +602,16 @@ namespace Vader
 
 	void MRIMAccount::handleOurStatusChanged (const EntryStatus& status)
 	{
+		if (status.State_ == SOffline)
+			Q_FOREACH (MRIMBuddy *buddy, Buddies_.values ())
+			{
+				auto info = buddy->GetInfo ();
+				info.StatusID_ = Proto::UserState::Offline;
+				info.StatusDesc_.clear ();
+				info.StatusTitle_.clear ();
+				buddy->UpdateInfo (info);
+			}
+
 		Status_ = status;
 		emit statusChanged (status);
 	}

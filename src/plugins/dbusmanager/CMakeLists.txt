@@ -23,6 +23,7 @@ SET (SRCS
 	generaladaptor.cpp
 	tasks.cpp
 	tasksadaptor.cpp
+	webfilestorageadaptor.cpp
 	)
 SET (HEADERS
 	dbusmanager.h
@@ -34,13 +35,14 @@ SET (HEADERS
 	generaladaptor.h
 	tasks.h
 	tasksadaptor.h
+	webfilestorageadaptor.h
 	)
 SET (FORMS
 	)
 SET (RESOURCES
 	dbusmanagerresources.qrc
 	)
-CreateTrVars ("dbusmanager" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrs ("dbusmanager" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
@@ -48,12 +50,6 @@ ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_CUSTOM_COMMAND (OUTPUT
-	${COMPILED_TRANSLATIONS}
-	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
-	DEPENDS ${TRANSLATIONS}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
 ADD_LIBRARY (leechcraft_dbusmanager SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}

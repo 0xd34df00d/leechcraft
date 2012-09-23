@@ -30,17 +30,17 @@ namespace Xoox
 	{
 		Ui_.setupUi (this);
 	}
-	
+
 	QString AffiliationSelectorDialog::GetJID () const
 	{
 		return Ui_.JIDEdit_->text ();
 	}
-	
+
 	void AffiliationSelectorDialog::SetJID (const QString& jid)
 	{
 		Ui_.JIDEdit_->setText (jid);
 	}
-	
+
 	QXmppMucItem::Affiliation AffiliationSelectorDialog::GetAffiliation () const
 	{
 		if (Ui_.Owner_->isChecked ())
@@ -54,7 +54,7 @@ namespace Xoox
 		else
 			return QXmppMucItem::NoAffiliation;
 	}
-	
+
 	void AffiliationSelectorDialog::SetAffiliation (QXmppMucItem::Affiliation aff)
 	{
 		switch (aff)
@@ -80,6 +80,16 @@ namespace Xoox
 					<< aff;
 			break;
 		}
+	}
+
+	QString AffiliationSelectorDialog::GetReason () const
+	{
+		return Ui_.ReasonEdit_->text ();
+	}
+
+	void AffiliationSelectorDialog::SetReason (const QString& reason)
+	{
+		Ui_.ReasonEdit_->setText (reason);
 	}
 }
 }

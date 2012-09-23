@@ -82,6 +82,9 @@ namespace CleanWeb
 				QWebPage::Extension,
 				const QWebPage::ExtensionOption*,
 				QWebPage::ExtensionReturn*);
+		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr,
+				QWebPage*,
+				QWebFrame*);
 		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
 				QNetworkAccessManager *manager,
 				QNetworkAccessManager::Operation *op,

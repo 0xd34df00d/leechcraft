@@ -28,6 +28,6 @@ namespace LMP
 {
 	typedef std::function<QList<Phonon::MediaSource> (const QString&)> PlaylistParser_f;
 
-	PlaylistParser_f MakePlaylistParser (const QString&);
+	PlaylistParser_f MakePlaylistParser (const QString& filename);
 }
 }

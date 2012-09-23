@@ -60,8 +60,7 @@ namespace Xoox
 			{ LineEditActorImpl (f, e, tr ("Username:")); };
 		Tag2Actor_ ["password"] = [this] (QWidget *f, const QXmppElement& e)
 			{ LineEditActorImpl (f, e, tr ("Password:")); };
-		Tag2Actor_ ["registered"] = [this] (QWidget *f, const QXmppElement& e)
-			{ LineEditActorImpl (f, e, tr ("Registered:")); };
+		Tag2Actor_ ["registered"] = [this] (QWidget*, const QXmppElement&) {};
 		Tag2Actor_ ["first"] = [this] (QWidget *f, const QXmppElement& e)
 			{ LineEditActorImpl (f, e, tr ("First name:")); };
 		Tag2Actor_ ["last"] = [this] (QWidget *f, const QXmppElement& e)

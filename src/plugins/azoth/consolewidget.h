@@ -45,12 +45,12 @@ namespace Azoth
 		const IHaveConsole::PacketFormat Format_;
 	public:
 		ConsoleWidget (QObject*, QWidget* = 0);
-		
+
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
-		
+
 		void SetParentMultiTabs (QObject*);
 		QString GetTitle () const;
 	private slots:
