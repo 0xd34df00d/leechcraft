@@ -19,7 +19,6 @@
 
 #pragma once
 #include <QHeaderView>
-#include <signal.h>
 
 class QCheckBox;
 
