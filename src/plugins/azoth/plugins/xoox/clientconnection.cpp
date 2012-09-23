@@ -121,19 +121,19 @@ namespace Xoox
 					const auto& id = Client_->vCardManager ().requestVCard (str);
 					ErrorMgr_->Whitelist (id, report);
 				},
-				OurJID_.contains ("gmail.com") ? 1700 : 300, 1, this))
+				OurJID_.contains ("gmail.com") ? 1700 : 600, 1, this))
 	, CapsQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = DiscoveryManager_->requestInfo (str, "");
 					ErrorMgr_->Whitelist (id, report);
 				},
-				OurJID_.contains ("gmail.com") ? 1000 : 200, 1, this))
+				OurJID_.contains ("gmail.com") ? 1000 : 400, 1, this))
 	, VersionQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = Client_->versionManager ().requestVersion (str);
 					ErrorMgr_->Whitelist (id, report);
 				},
-				OurJID_.contains ("gmail.com") ? 1200 : 250, 1, this))
+				OurJID_.contains ("gmail.com") ? 2000 : 1000, 1, this))
 	{
 		SetOurJID (OurJID_);
 
