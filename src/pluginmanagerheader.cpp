@@ -1,5 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,32 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
-
-#ifndef PLUGINMANAGERDIALOG_H
-#define PLUGINMANAGERDIALOG_H
-#include <QWidget>
-#include "ui_pluginmanagerdialog.h"
-
-class QSortFilterProxyModel;
+#include "pluginmanagerheader.h"
+#include <QCheckBox>
 
 namespace LeechCraft
 {
-	class PluginManagerDialog : public QWidget
+	const int XPadding_ = 2;
+	const int YPadding_ = -8;
+	
+	PluginManagerHeader::PluginManagerHeader (QWidget *parent)
+	: QHeaderView (Qt::Horizontal, parent)
+	, SelectAllCheckBox_ (new QCheckBox (this))
 	{
-		Q_OBJECT
-
-		Ui::PluginManagerDialog Ui_;
-		QSortFilterProxyModel *FilterProxy_;
-	public:
-		PluginManagerDialog (QWidget* = 0);
-	public slots:
-		void readjustColumns ();
-
-		void accept ();
-		void reject ();
-	signals:
-		void selectAll (int);
-	};
+		QRect rect (SelectAllCheckBox_->geometry ());
+		rect.setX (rect.x () + XPadding_);
+		rect.setY (rect.y () + YPadding_);
+		SelectAllCheckBox_->setGeometry (rect);
+		
+		connect (SelectAllCheckBox_,
+				SIGNAL (stateChanged (int)),
+				this,
+				SIGNAL (selectAll (int)));
+	}
 }
-
-#endif

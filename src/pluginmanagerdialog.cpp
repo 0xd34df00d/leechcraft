@@ -26,6 +26,7 @@
 #include "skinengine.h"
 #include "coreinstanceobject.h"
 #include "settingstab.h"
+#include "pluginmanagerheader.h"
 
 namespace LeechCraft
 {
@@ -149,6 +150,15 @@ namespace LeechCraft
 		}
 
 		Ui_.PluginsTree_->installEventFilter (new SizeFilter (this));
+		
+		PluginManagerHeader *header = new PluginManagerHeader (this);
+		
+		connect (header,
+				SIGNAL (selectAll (int)),
+				this,
+				SIGNAL (selectAll (int)));
+		
+		Ui_.PluginsTree_->setHeader (header);
 
 		connect (Ui_.FilterLine_,
 				SIGNAL (textChanged (QString)),

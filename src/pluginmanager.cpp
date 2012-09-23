@@ -575,7 +575,7 @@ namespace LeechCraft
 		}
 	}
 
-	void PluginManager::SetAllPlugins (Qt::CheckState state)
+	void PluginManager::setAllPlugins (int state)
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");

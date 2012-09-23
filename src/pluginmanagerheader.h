@@ -1,5 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,31 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINMANAGERDIALOG_H
-#define PLUGINMANAGERDIALOG_H
-#include <QWidget>
-#include "ui_pluginmanagerdialog.h"
+#pragma once
+#include <QHeaderView>
+#include <signal.h>
 
-class QSortFilterProxyModel;
+class QCheckBox;
 
 namespace LeechCraft
 {
-	class PluginManagerDialog : public QWidget
+	class PluginManagerHeader : public QHeaderView
 	{
 		Q_OBJECT
-
-		Ui::PluginManagerDialog Ui_;
-		QSortFilterProxyModel *FilterProxy_;
+		
+		QCheckBox *SelectAllCheckBox_;
 	public:
-		PluginManagerDialog (QWidget* = 0);
-	public slots:
-		void readjustColumns ();
-
-		void accept ();
-		void reject ();
+		PluginManagerHeader (QWidget* = 0);
 	signals:
 		void selectAll (int);
 	};
 }
-
-#endif

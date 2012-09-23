@@ -101,13 +101,17 @@ namespace LeechCraft
 		void InjectPlugin (QObject *object);
 		void ReleasePlugin (QObject *object);
 
-		void SetAllPlugins (Qt::CheckState);
+		
 
 		QObject* GetObject ();
 
 		QObject* GetProvider (const QString&) const;
 
 		const QStringList& GetPluginLoadErrors () const;
+		
+	public slots:
+		void setAllPlugins (int);
+		
 	private:
 		void FindPlugins ();
 		void ScanDir (const QString&);
