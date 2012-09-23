@@ -35,6 +35,8 @@ SET (FORMS
 	restoresessiondialog.ui
 	)
 CreateTrs ("tabsessmanager" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("tabsessmanager" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
