@@ -52,7 +52,7 @@ namespace Lastfmscrobble
 			RadioName_ = tr ("Similar to \"%1\" radio").arg (param);
 			break;
 		case Media::RadioType::GlobalTag:
-#if LASTFM_MAJOR_VERSION < 1
+#if LASTFM_VERSION < 0x00010000
 			station = lastfm::RadioStation::globalTag (lastfm::Tag (param));
 #else
 			station = lastfm::RadioStation::tag (lastfm::Tag (param));
@@ -69,7 +69,7 @@ namespace Lastfmscrobble
 			else if (param == "recommendations")
 				station = lastfm::RadioStation::recommendations (user);
 			else if (param == "loved")
-#if LASTFM_MAJOR_VERSION < 1
+#if LASTFM_VERSION < 0x00010000
 				station = lastfm::RadioStation::lovedTracks (user);
 #else
 				station = lastfm::RadioStation::mix (user);
