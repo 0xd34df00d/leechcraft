@@ -34,7 +34,7 @@ namespace Pierre
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-		MenuBar_ = new QMenuBar (Proxy_->GetMainWindow ());
+		MenuBar_ = new QMenuBar (0);
 
 		FS::AddAction (Proxy_->GetMainWindow ());
 	}
