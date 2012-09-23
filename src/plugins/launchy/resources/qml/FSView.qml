@@ -26,7 +26,7 @@ Rectangle {
             id: catsView
             anchors.fill: parent
             anchors.topMargin: 5
-            currentIndex: -1
+            currentIndex: 0
 
             highlight: Rectangle {
                 width: catsView.width
@@ -114,6 +114,7 @@ Rectangle {
             anchors.margins: 4
             font.pointSize: 12
             font.italic: true
+            focus: true
             textFormat: TextEdit.PlainText
         }
 

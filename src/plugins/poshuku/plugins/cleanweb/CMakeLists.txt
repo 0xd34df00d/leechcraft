@@ -49,6 +49,7 @@ SET (CLEANWEB_RESOURCES
 	poshukucleanwebresources.qrc
 	)
 CreateTrs ("poshuku_cleanweb" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" CLEANWEB_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("poshuku_cleanweb" "en;ru_RU" "${CLEANWEB_SRCS}" "${CLEANWEB_FORMS}" "poshukucleanwebsettings.xml")
 
 OPTION (USE_POSHUKU_CLEANWEB_PCRE "Use PCRE regular expression engine for AdBlock+ filter matching instead of Qt's one (recommended since QRegExps are slow)." ON)
 IF (USE_POSHUKU_CLEANWEB_PCRE)

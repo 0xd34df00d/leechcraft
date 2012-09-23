@@ -18,28 +18,4 @@
 
 #pragma once
 
-#include <lastfm/global.h>
-#include <lastfm/misc.h>
-
-#if LASTFM_MAJOR_VERSION < 1
-#include <lastfm/ParseError>
-#include <lastfm/Xspf>
-#include <lastfm/MutableTrack>
-#include <lastfm/Track>
-#include <lastfm/ScrobbleCache>
-#include <lastfm/Scrobble>
-#include <lastfm/Audioscrobbler>
-#include <lastfm/RadioTuner>
-#include <lastfm/RadioStation>
-
-#else
-
-#include <lastfm/ws.h>
-#include <lastfm/Xspf.h>
-#include <lastfm/Track.h>
-#include <lastfm/ScrobbleCache.h>
-#include <lastfm/Audioscrobbler.h>
-#include <lastfm/RadioTuner.h>
-#include <lastfm/RadioStation.h>
-
-#endif
+#include <lastfm.h>

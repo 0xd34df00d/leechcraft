@@ -71,8 +71,8 @@ namespace Xoox
 			<< KAParams_
 			<< OurPhotoHash_
 			<< FileLogEnabled_
-			<< (FTMethods_ & QXmppTransferJob::InBandMethod)
-			<< (FTMethods_ & QXmppTransferJob::SocksMethod)
+			<< static_cast<bool> (FTMethods_ & QXmppTransferJob::InBandMethod)
+			<< static_cast<bool> (FTMethods_ & QXmppTransferJob::SocksMethod)
 			<< UseSOCKS5Proxy_
 			<< SOCKS5Proxy_;
 	}

@@ -87,10 +87,10 @@ namespace CleanWeb
 		auto edit = new QPlainTextEdit ();
 
 		QDialog dia (this);
-		dia.setWindowTitle (tr ("Paste filters"));
+		dia.setWindowTitle (tr ("Paste rules"));
 		dia.resize (600, 400);
 		dia.setLayout (new QVBoxLayout ());
-		dia.layout ()->addWidget (new QLineEdit (tr ("Paste your filter strings here:")));
+		dia.layout ()->addWidget (new QLineEdit (tr ("Paste your custom rules here:")));
 		dia.layout ()->addWidget (edit);
 		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 		dia.layout ()->addWidget (box);
@@ -112,7 +112,7 @@ namespace CleanWeb
 	void UserFilters::on_Load__released ()
 	{
 		const QString& filename = QFileDialog::getOpenFileName (this,
-				tr ("Load filters"),
+				tr ("Load rules"),
 				QDir::homePath ());
 		if (filename.isEmpty ())
 			return;
