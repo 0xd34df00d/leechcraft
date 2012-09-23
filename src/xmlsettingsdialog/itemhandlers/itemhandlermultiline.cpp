@@ -80,7 +80,7 @@ namespace LeechCraft
 	}
 
 	QVariant ItemHandlerMultiLine::GetValue (const QDomElement& item,
-			QVariant value) const
+			QVariant) const
 	{
 		QString def = item.attribute ("default");
 		if (item.attribute ("translatable") == "true")

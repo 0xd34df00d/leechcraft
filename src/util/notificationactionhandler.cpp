@@ -22,7 +22,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	NotificationActionHandler::NotificationActionHandler (Entity& e, QObject *parent)
+	NotificationActionHandler::NotificationActionHandler (Entity& e, QObject*)
 	: Entity_ (e)
 	{
 		Entity_.Additional_ ["HandlingObject"] = QVariant::fromValue<QObject_ptr> (QObject_ptr (this));

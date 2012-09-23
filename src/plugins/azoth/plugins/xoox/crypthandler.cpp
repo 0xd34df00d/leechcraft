@@ -78,7 +78,7 @@ namespace Xoox
 	{
 #ifdef ENABLE_CRYPT
 		EntryBase *entry = qobject_cast<EntryBase*> (msgObj->OtherPart ());
-		if (!entry || !Entries2Crypt_.contains (entry->GetJID ()));
+		if (!entry || !Entries2Crypt_.contains (entry->GetJID ()))
 			return;
 
 		const QCA::PGPKey& key = PGPManager_->PublicKey (entry->GetJID ());

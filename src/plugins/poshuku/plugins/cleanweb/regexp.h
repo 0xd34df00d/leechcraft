@@ -16,40 +16,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "contactdropfilter.h"
-#include <QDropEvent>
-#include <QImage>
-#include <QUrl>
+#pragma once
+
+#include <memory>
+#include <QString>
+
+#if USE_PCRE
+// nothing yet
+#else
+#include <QRegExp>
+#endif
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Poshuku
 {
-	ContactDropFilter::ContactDropFilter (QObject *parent)
-	: QObject (parent)
+namespace CleanWeb
+{
+#if USE_PCRE
+	class PCREWrapper;
+#endif
+
+	class RegExp
 	{
-	}
+#if USE_PCRE
+		QString Pattern_;
+		Qt::CaseSensitivity CS_;
 
-	bool ContactDropFilter::eventFilter (QObject*, QEvent *e)
-	{
-		if (e->type () != QEvent::Drop)
-			return false;
+		std::shared_ptr<PCREWrapper> PRx_;
+#else
+		QRegExp Rx_;
+#endif
+	public:
+		static bool IsFast ();
 
-		auto data = static_cast<QDropEvent*> (e)->mimeData ();
-		const auto& imgData = data->imageData ();
+		RegExp ();
+		RegExp (const RegExp&);
+		RegExp (const QString&, Qt::CaseSensitivity);
+		~RegExp ();
+		RegExp& operator= (const RegExp&);
 
-		if (data->hasImage () && data->hasUrls () && data->urls ().size () == 1)
-			emit localImageDropped (imgData.value<QImage> (), data->urls ().value (0));
-		else if (data->hasImage ())
-			emit imageDropped (imgData.value<QImage> ());
-		else if (data->hasUrls ())
-		{
-			const auto& urls = data->urls ();
-			if (!urls.isEmpty ())
-				emit filesDropped (urls);
-		}
+		bool Matches (const QString&) const;
 
-		return true;
-	}
+		QString GetPattern () const;
+		Qt::CaseSensitivity GetCaseSensitivity () const;
+	};
+}
 }
 }
