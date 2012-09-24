@@ -23,6 +23,8 @@
 #include <QDateTime>
 #include <QHash>
 #include <QUrl>
+#include <QByteArrayMatcher>
+#include "regexp.h"
 
 namespace LeechCraft
 {
@@ -37,11 +39,29 @@ namespace CleanWeb
 		{
 			MTWildcard,
 			MTRegexp,
-			MTPlain
+			MTPlain,
+			MTBegin,
+			MTEnd
+		} MatchType_;
+
+		enum MatchObject
+		{
+			All = 0x00,
+			Script = 0x01,
+			Image = 0x02,
+			Object = 0x04,
+			CSS = 0x08,
+			ObjSubrequest = 0x10,
+			Subdocument = 0x20,
+			AJAX = 0x40,
+			Popup = 0x80
 		};
-		MatchType MatchType_;
+		Q_DECLARE_FLAGS (MatchObjects, MatchObject);
+		MatchObjects MatchObjects_;
+
 		QStringList Domains_;
 		QStringList NotDomains_;
+		QString HideSelector_;
 		bool AbortForeign_;
 
 		FilterOption ();
@@ -71,15 +91,21 @@ namespace CleanWeb
 		QDateTime LastDateTime_;
 	};
 
-	typedef QHash<QString, FilterOption> OptionsDict_t;
-	typedef QHash<QString, QRegExp> RegExpsDict_t;
+	struct FilterItem
+	{
+		QByteArray OrigString_;
+		RegExp RegExp_;
+		QByteArrayMatcher PlainMatcher_;
+		FilterOption Option_;
+	};
+
+	QDataStream& operator<< (QDataStream&, const FilterItem&);
+	QDataStream& operator>> (QDataStream&, FilterItem&);
 
 	struct Filter
 	{
-		QStringList ExceptionStrings_;
-		QStringList FilterStrings_;
-		OptionsDict_t Options_;
-		RegExpsDict_t RegExps_;
+		QList<FilterItem> Filters_;
+		QList<FilterItem> Exceptions_;
 
 		SubscriptionData SD_;
 
@@ -89,5 +115,5 @@ namespace CleanWeb
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::RegExpsDict_t);
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::OptionsDict_t);
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::FilterItem);
+Q_DECLARE_METATYPE (QList<LeechCraft::Poshuku::CleanWeb::FilterItem>);

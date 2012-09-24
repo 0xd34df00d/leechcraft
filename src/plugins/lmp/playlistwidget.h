@@ -45,6 +45,8 @@ namespace LMP
 		QUndoStack *UndoStack_;
 
 		Player *Player_;
+		
+		bool ExpandAllScheduled_;
 
 		QAction *ActionRemoveSelected_;
 		QAction *ActionStopAfterSelected_;
@@ -84,6 +86,8 @@ namespace LMP
 
 		void play (const QModelIndex&);
 		void expand (const QModelIndex&);
+		void scheduleExpandAll ();
+		void expandAll ();
 		void checkSelections ();
 
 		void handleBufferStatus (int);

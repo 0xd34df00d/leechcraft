@@ -3,7 +3,8 @@ import "."
 
 Rectangle {
     id: notifArea
-    width: 450; height: 200
+    width: 450
+    height: Math.min(200, listView.count * 61)
     smooth: true
     radius: 12
     gradient: Gradient {

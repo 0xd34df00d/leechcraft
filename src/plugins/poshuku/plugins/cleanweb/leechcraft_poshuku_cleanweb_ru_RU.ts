@@ -30,7 +30,7 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="98"/>
+        <location filename="cleanweb.cpp" line="90"/>
         <source>Blocks unwanted ads.</source>
         <translation>Блокирует нежелательную рекламу.</translation>
     </message>
@@ -38,37 +38,37 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="244"/>
+        <location filename="core.cpp" line="127"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="245"/>
+        <location filename="core.cpp" line="128"/>
         <source>Last updated</source>
         <translation>Последнее обновление</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="246"/>
+        <location filename="core.cpp" line="129"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="436"/>
+        <location filename="core.cpp" line="358"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
         <translation>Заблокировано Poshuku CleanWeb: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="482"/>
+        <location filename="core.cpp" line="395"/>
         <source>Block image...</source>
         <translation>Заблокировать изображение...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="747"/>
+        <location filename="core.cpp" line="666"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>Подписка %1 была успешно добавлена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="782"/>
+        <location filename="core.cpp" line="701"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>Подписка %1 не была делегирована.</translation>
     </message>
@@ -179,71 +179,102 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Poshuku::CleanWeb::UserFilters</name>
+    <message>
+        <location filename="userfilters.cpp" line="90"/>
+        <source>Paste rules</source>
+        <oldsource>Paste filters</oldsource>
+        <translation>Вставить правила</translation>
+    </message>
+    <message>
+        <location filename="userfilters.cpp" line="93"/>
+        <source>Paste your custom rules here:</source>
+        <oldsource>Paste your filter strings here:</oldsource>
+        <translation>Вставьте сюда строки с вашими правилами:</translation>
+    </message>
+    <message>
+        <location filename="userfilters.cpp" line="115"/>
+        <source>Load rules</source>
+        <oldsource>Load filters</oldsource>
+        <translation>Загрузить правила</translation>
+    </message>
+    <message>
+        <location filename="userfilters.cpp" line="129"/>
+        <source>Error opening file %1: %2.</source>
+        <translation>Невозможно открыть файл %1: %2.</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Poshuku::CleanWeb::UserFiltersModel</name>
     <message>
-        <location filename="userfiltersmodel.cpp" line="41"/>
+        <location filename="userfiltersmodel.cpp" line="46"/>
         <source>Filter</source>
         <translation>Фильтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="42"/>
+        <location filename="userfiltersmodel.cpp" line="47"/>
         <source>Policy</source>
         <translation>Действие</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="43"/>
+        <location filename="userfiltersmodel.cpp" line="48"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="44"/>
+        <location filename="userfiltersmodel.cpp" line="49"/>
         <source>Case sensitive</source>
         <translation>Учитывать регистр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="45"/>
+        <location filename="userfiltersmodel.cpp" line="50"/>
         <source>Domains</source>
         <translation>Домены</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="80"/>
+        <location filename="userfiltersmodel.cpp" line="85"/>
         <source>Allowed</source>
         <translation>Разрешить</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="81"/>
+        <location filename="userfiltersmodel.cpp" line="86"/>
         <source>Blocked</source>
         <translation>Блокировать</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="86"/>
+        <location filename="userfiltersmodel.cpp" line="94"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="88"/>
+        <location filename="userfiltersmodel.cpp" line="96"/>
         <source>Regexp</source>
         <translation>Regexp</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="92"/>
+        <location filename="userfiltersmodel.cpp" line="100"/>
         <source>True</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="93"/>
+        <location filename="userfiltersmodel.cpp" line="101"/>
         <source>False</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="147"/>
+        <location filename="userfiltersmodel.cpp" line="157"/>
         <source>Add a filter</source>
         <translation>Добавить фильтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="205"/>
+        <location filename="userfiltersmodel.cpp" line="212"/>
         <source>Modify filter</source>
         <translation>Изменить фильтр</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="250"/>
+        <source>Imported %1 user filters (%2 parsed successfully).</source>
+        <translation>Импортировано %1 пользовательских правил (%2 успешно разобрано).</translation>
     </message>
 </context>
 <context>
@@ -438,6 +469,28 @@ p, li { white-space: pre-wrap; }
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
+    <message>
+        <location filename="userfilters.ui" line="63"/>
+        <source>Allows one to paste several add blocking rules in AdBlock+ format.</source>
+        <oldsource>Allows one to paste several add in AdBlock format.</oldsource>
+        <translation>Позволяет загрузить несколько правил блокировки в формате AdBlock+.</translation>
+    </message>
+    <message>
+        <location filename="userfilters.ui" line="66"/>
+        <source>Paste...</source>
+        <translation>Вставить...</translation>
+    </message>
+    <message>
+        <location filename="userfilters.ui" line="73"/>
+        <source>Loads rules from a file, adding them to user rules.</source>
+        <oldsource>Loads filters from file, adding them to user filters.</oldsource>
+        <translation>Загружает правила из файла, добавляя их в список пользовательских правил.</translation>
+    </message>
+    <message>
+        <location filename="userfilters.ui" line="76"/>
+        <source>Load...</source>
+        <translation>Загрузить...</translation>
+    </message>
 </context>
 <context>
     <name>poshukucleanwebsettings</name>
@@ -463,21 +516,33 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
-        <source>User filters</source>
-        <translation>Пользовательские фильтры</translation>
+        <source>Enable JIT for regexps</source>
+        <translation>Включить JIT для регулярных выражений</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
+        <source>This option controls the usage of Just-In-Time compilation for regular expressions if CleanWeb was built with PCRE 8.20 and upper. JIT speeds up rules matching at the cost of higher memory usage. The speedup is somewhere between 25% and 50% depending on page being loaded, but this option uses about 2.1 KiB of RAM per regular expression.&amp;lt;br/&amp;gt;Disable this if you want to lower memory footprint.</source>
+        <oldsource>This option controls the usage of Just-In-Time compilation for regular expressions if CleanWeb was built with PCRE 8.20 and upper. JIT speeds up rules matching at the cost of higher memory usage. The speedup is somewhere between 25% and 50% depending on page being loaded, but this option uses additional â2.1 KiB of RAM per regular expression.&amp;lt;br/&amp;gt;Disable this if you want to lower memory footprint.</oldsource>
+        <translation>Эта опция контролирует использование Just-In-Time-компиляции для регулярных выражений, если CleanWeb был собран с PCRE 8.20 и выше. JIT ускоряет проверку правил ценой увеличения использования памяти. Выигрыш составляет где-то между 25% и 50% в зависимости от страницы, но на каждое регулярное выражение потребляется примерно 2.1 КиБ памяти.&lt;br /&gt;Отключите это, если вы хотите снизить использование памяти.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="8"/>
+        <source>User rules</source>
+        <oldsource>User filters</oldsource>
+        <translation>Пользовательские правила</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
         <source>Subscriptions</source>
         <translation>Подписки</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="8"/>
+        <location filename="dummy.cpp" line="10"/>
         <source>FlashOnClick</source>
         <translation>FlashOnClick</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="9"/>
+        <location filename="dummy.cpp" line="11"/>
         <source>Enable FlashOnClick</source>
         <translation>Включить FlashOnClick</translation>
     </message>

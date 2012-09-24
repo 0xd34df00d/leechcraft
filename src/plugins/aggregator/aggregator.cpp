@@ -828,8 +828,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
 	{
-		const bool repr = IsRepr ();
-		Perform ([repr] (const QModelIndex& mi) { Core::Instance ().UpdateFeed (mi, repr); });
+		Perform ([] (const QModelIndex& mi) { Core::Instance ().UpdateFeed (mi); });
 	}
 
 	void Aggregator::on_ActionRegexpMatcher__triggered ()

@@ -129,8 +129,8 @@ namespace LeechCraft
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
 
-		box->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
+		box->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		box->setProperty ("SearchTerms", label->text ());
 
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0, Qt::AlignRight);
@@ -165,7 +165,7 @@ namespace LeechCraft
 				<< "not found";
 	}
 
-	QVariant ItemHandlerCombobox::GetValue (QObject *object) const
+	QVariant ItemHandlerCombobox::GetObjectValue (QObject *object) const
 	{
 		QComboBox *combobox = qobject_cast<QComboBox*> (object);
 		if (!combobox)

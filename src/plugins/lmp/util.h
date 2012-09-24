@@ -32,7 +32,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	class MediaInfo;
+	struct MediaInfo;
 
 	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
 

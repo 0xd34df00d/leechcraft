@@ -33,7 +33,6 @@
 #endif
 
 #include "glooxprotocol.h"
-#include "glooxaccountconfigurationdialog.h"
 #include "core.h"
 #include "clientconnection.h"
 #include "glooxmessage.h"
@@ -50,7 +49,8 @@
 #include "pepmicroblog.h"
 #include "jabbersearchsession.h"
 #include "bookmarkeditwidget.h"
-#include "accstatusrestorer.h"
+#include "accountsettingsholder.h"
+#include "crypthandler.h"
 
 namespace LeechCraft
 {
@@ -70,15 +70,10 @@ namespace Xoox
 	: QObject (parent)
 	, Name_ (name)
 	, ParentProtocol_ (qobject_cast<GlooxProtocol*> (parent))
-	, Port_ (-1)
-	, KAParams_ (qMakePair (90, 60))
-	, FileLogEnabled_ (false)
+	, SettingsHolder_ (new AccountSettingsHolder (this))
 	, SelfVCardAction_ (new QAction (tr ("Self VCard..."), this))
 	, PrivacyDialogAction_ (new QAction (tr ("Privacy lists..."), this))
 	{
-		AccState_.State_ = SOffline;
-		AccState_.Priority_ = -1;
-
 		SelfVCardAction_->setProperty ("ActionIcon", "text-x-vcard");
 		PrivacyDialogAction_->setProperty ("ActionIcon", "emblem-locked");
 
@@ -90,21 +85,22 @@ namespace Xoox
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showPrivacyDialog ()));
+
+		connect (SettingsHolder_,
+				SIGNAL (accountSettingsChanged ()),
+				this,
+				SIGNAL (accountSettingsChanged ()));
+		connect (SettingsHolder_,
+				SIGNAL (jidChanged (QString)),
+				this,
+				SLOT (regenAccountIcon (QString)));
 	}
 
 	void GlooxAccount::Init ()
 	{
-		ClientConnection_.reset (new ClientConnection (JID_ + "/" + Resource_,
-						this));
+		ClientConnection_.reset (new ClientConnection (this));
 
-		if (!OurPhotoHash_.isEmpty ())
-			ClientConnection_->SetOurPhotoHash (OurPhotoHash_);
-
-		ClientConnection_->SetKAParams (KAParams_);
-		ClientConnection_->SetFileLogging (FileLogEnabled_);
-
-		TransferManager_.reset (new TransferManager (ClientConnection_->
-						GetTransferManager (),
+		TransferManager_.reset (new TransferManager (ClientConnection_->GetTransferManager (),
 					this));
 
 		connect (ClientConnection_.get (),
@@ -175,7 +171,12 @@ namespace Xoox
 				SLOT (handleIncomingCall (QXmppCall*)));
 #endif
 
-		RegenAccountIcon ();
+		regenAccountIcon (SettingsHolder_->GetJID ());
+	}
+
+	AccountSettingsHolder* GlooxAccount::GetSettings () const
+	{
+		return SettingsHolder_;
 	}
 
 	QObject* GlooxAccount::GetObject ()
@@ -207,17 +208,7 @@ namespace Xoox
 
 	QString GlooxAccount::GetOurNick () const
 	{
-		return Nick_.isEmpty () ? JID_ : Nick_;
-	}
-
-	QString GlooxAccount::GetHost () const
-	{
-		return Host_;
-	}
-
-	int GlooxAccount::GetPort () const
-	{
-		return Port_;
+		return SettingsHolder_->GetNick ();
 	}
 
 	void GlooxAccount::RenameAccount (const QString& name)
@@ -229,7 +220,7 @@ namespace Xoox
 
 	QByteArray GlooxAccount::GetAccountID () const
 	{
-		return ParentProtocol_->GetProtocolID () + "_" + JID_.toUtf8 ();
+		return ParentProtocol_->GetProtocolID () + "_" + SettingsHolder_->GetJID ().toUtf8 ();
 	}
 
 	QList<QAction*> GlooxAccount::GetActions () const
@@ -247,82 +238,15 @@ namespace Xoox
 
 	void GlooxAccount::OpenConfigurationDialog ()
 	{
-		std::auto_ptr<GlooxAccountConfigurationDialog> dia (new GlooxAccountConfigurationDialog (0));
-		if (!JID_.isEmpty ())
-			dia->W ()->SetJID (JID_);
-		if (!Nick_.isEmpty ())
-			dia->W ()->SetNick (Nick_);
-		if (!Resource_.isEmpty ())
-			dia->W ()->SetResource (Resource_);
-		if (!Host_.isEmpty ())
-			dia->W ()->SetHost (Host_);
-		if (Port_ >= 0)
-			dia->W ()->SetPort (Port_);
-		dia->W ()->SetPriority (AccState_.Priority_);
-
-		dia->W ()->SetKAInterval (KAParams_.first);
-		dia->W ()->SetKATimeout (KAParams_.second);
-
-		dia->W ()->SetFileLogEnabled (FileLogEnabled_);
-
-		if (dia->exec () == QDialog::Rejected)
-			return;
-
-		FillSettings (dia->W ());
-	}
-
-	void GlooxAccount::FillSettings (GlooxAccountConfigurationWidget *w)
-	{
-		State lastState = AccState_.State_;
-
-		const bool priorityChanged = AccState_.Priority_ != w->GetPriority ();
-		const bool reconnect = lastState != SOffline &&
-				(JID_ != w->GetJID () ||
-				Resource_ != w->GetResource () ||
-				Host_ != w->GetHost () ||
-				Port_ != w->GetPort ());
-		if (reconnect)
-			ChangeState (EntryStatus (SOffline, AccState_.Status_));
-
-		JID_ = w->GetJID ();
-		Nick_ = w->GetNick ();
-		Resource_ = w->GetResource ();
-		AccState_.Priority_ = w->GetPriority ();
-		Host_ = w->GetHost ();
-		Port_ = w->GetPort ();
-		FileLogEnabled_ = w->GetFileLogEnabled ();
-
-		if (ClientConnection_)
-		{
-			ClientConnection_->SetOurJID (w->GetJID () + "/" + w->GetResource ());
-			ClientConnection_->SetFileLogging (FileLogEnabled_);
-		}
-
-		RegenAccountIcon ();
-
-		const QString& pass = w->GetPassword ();
-		if (!pass.isNull ())
-			Core::Instance ().GetPluginProxy ()->SetPassword (pass, this);
-
-		KAParams_ = qMakePair (w->GetKAInterval (), w->GetKATimeout ());
-		if (ClientConnection_)
-			ClientConnection_->SetKAParams (KAParams_);
-
-		emit accountSettingsChanged ();
-
-		if (reconnect)
-		{
-			auto state = AccState_;
-			state.State_ = lastState;
-			new AccStatusRestorer (state, ClientConnection_);
-		}
-		else if (priorityChanged)
-			ChangeState (EntryStatus (lastState, AccState_.Status_));
+		SettingsHolder_->OpenConfigDialog ();
 	}
 
 	EntryStatus GlooxAccount::GetState () const
 	{
-		return EntryStatus (AccState_.State_, AccState_.Status_);
+		const auto& state = ClientConnection_ ?
+				ClientConnection_->GetLastState () :
+				GlooxAccountState ();
+		return EntryStatus (state.State_, state.Status_);
 	}
 
 	void GlooxAccount::ChangeState (const EntryStatus& status)
@@ -331,13 +255,13 @@ namespace Xoox
 				!ClientConnection_)
 			return;
 
-		AccState_.State_ = status.State_;
-		AccState_.Status_ = status.StatusString_;
-
 		if (!ClientConnection_)
 			Init ();
 
-		ClientConnection_->SetState (AccState_);
+		auto state = ClientConnection_->GetLastState ();
+		state.State_ = status.State_;
+		state.Status_ = status.StatusString_;
+		ClientConnection_->SetState (state);
 	}
 
 	void GlooxAccount::Authorize (QObject *entryObj)
@@ -389,7 +313,7 @@ namespace Xoox
 	QObject* GlooxAccount::GetSelfContact () const
 	{
 		return ClientConnection_ ?
-				ClientConnection_->GetCLEntry (JID_, QString ()) :
+				ClientConnection_->GetCLEntry (SettingsHolder_->GetJID (), QString ()) :
 				0;
 	}
 
@@ -647,7 +571,7 @@ namespace Xoox
 #ifdef ENABLE_CRYPT
 	void GlooxAccount::SetPrivateKey (const QCA::PGPKey& key)
 	{
-		ClientConnection_->GetPGPManager ()->SetPrivateKey (key);
+		ClientConnection_->GetCryptHandler ()->GetPGPManager ()->SetPrivateKey (key);
 	}
 
 	void GlooxAccount::SetEntryKey (QObject *entryObj, const QCA::PGPKey& pubKey)
@@ -661,7 +585,7 @@ namespace Xoox
 			return;
 		}
 
-		ClientConnection_->GetPGPManager ()->SetPublicKey (entry->GetHumanReadableID (), pubKey);
+		ClientConnection_->GetCryptHandler ()->GetPGPManager ()->SetPublicKey (entry->GetHumanReadableID (), pubKey);
 	}
 
 	void GlooxAccount::SetEncryptionEnabled (QObject *entry, bool enabled)
@@ -672,7 +596,7 @@ namespace Xoox
 
 		const QString& jid = glEntry->GetJID ();
 		if (enabled &&
-				ClientConnection_->GetPGPManager ()->PublicKey (jid).isNull ())
+				ClientConnection_->GetCryptHandler ()->GetPGPManager ()->PublicKey (jid).isNull ())
 		{
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 						tr ("Unable to enable encryption for entry %1: "
@@ -682,7 +606,7 @@ namespace Xoox
 			return;
 		}
 
-		if (!ClientConnection_->SetEncryptionEnabled (jid, enabled))
+		if (!ClientConnection_->GetCryptHandler ()->SetEncryptionEnabled (jid, enabled))
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 						tr ("Unable to change encryption state for %1.")
 								.arg (glEntry->GetEntryName ()),
@@ -692,14 +616,9 @@ namespace Xoox
 	}
 #endif
 
-	QString GlooxAccount::GetJID () const
-	{
-		return JID_;
-	}
-
 	QString GlooxAccount::GetNick () const
 	{
-		return Nick_.isEmpty () ? JID_ : Nick_;
+		return SettingsHolder_->GetNick ();
 	}
 
 	void GlooxAccount::JoinRoom (const QString& jid, const QString& nick)
@@ -753,14 +672,7 @@ namespace Xoox
 
 	void GlooxAccount::UpdateOurPhotoHash (const QByteArray& hash)
 	{
-		if (hash == OurPhotoHash_)
-			return;
-
-		OurPhotoHash_ = hash;
-		ClientConnection_->SetOurPhotoHash (hash);
-		ChangeState (GetState ());
-
-		emit accountSettingsChanged ();
+		SettingsHolder_->SetPhotoHash (hash);
 	}
 
 	void GlooxAccount::CreateSDForResource (const QString& resource)
@@ -772,22 +684,14 @@ namespace Xoox
 
 	QByteArray GlooxAccount::Serialize () const
 	{
-		quint16 version = 5;
+		quint16 version = 6;
 
 		QByteArray result;
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << version
-				<< Name_
-				<< JID_
-				<< Nick_
-				<< Resource_
-				<< AccState_.Priority_
-				<< Host_
-				<< Port_
-				<< KAParams_
-				<< OurPhotoHash_
-				<< FileLogEnabled_;
+				<< Name_;
+			SettingsHolder_->Serialize (ostr);
 		}
 
 		return result;
@@ -800,7 +704,7 @@ namespace Xoox
 		QDataStream in (data);
 		in >> version;
 
-		if (version < 1 || version > 5)
+		if (version < 1 || version > 6)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -811,19 +715,7 @@ namespace Xoox
 		QString name;
 		in >> name;
 		GlooxAccount *result = new GlooxAccount (name, parent);
-		in >> result->JID_
-			>> result->Nick_
-			>> result->Resource_
-			>> result->AccState_.Priority_;
-		if (version >= 2)
-			in >> result->Host_
-				>> result->Port_;
-		if (version >= 3)
-			in >> result->KAParams_;
-		if (version >= 4)
-			in >> result->OurPhotoHash_;
-		if (version >= 5)
-			in >> result->FileLogEnabled_;
+		result->GetSettings ()->Deserialize (in, version);
 		result->Init ();
 
 		return result;
@@ -844,28 +736,28 @@ namespace Xoox
 		return proxy->GetAccountPassword (this, !authfailure);
 	}
 
-	void GlooxAccount::RegenAccountIcon ()
+	void GlooxAccount::regenAccountIcon (const QString& jid)
 	{
 		AccountIcon_ = QIcon ();
 
-		if (JID_.contains ("google") ||
-				JID_.contains ("gmail"))
+		if (jid.contains ("google") ||
+				jid.contains ("gmail"))
 			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/gtalk.svg");
-		else if (JID_.contains ("facebook") ||
-				JID_.contains ("fb.com"))
+		else if (jid.contains ("facebook") ||
+				jid.contains ("fb.com"))
 			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/facebook.svg");
-		else if (JID_.contains ("vk.com"))
+		else if (jid.contains ("vk.com"))
 			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/vk.svg");
-		else if (JID_.contains ("odnoklassniki"))
+		else if (jid.contains ("odnoklassniki"))
 			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/odnoklassniki.svg");
 	}
 
 	QString GlooxAccount::GetDefaultReqHost () const
 	{
-		if (!Host_.isEmpty ())
-			return Host_;
+		if (!SettingsHolder_->GetHost ().isEmpty ())
+			return SettingsHolder_->GetHost ();
 
-		const auto& second = JID_.split ('@', QString::SkipEmptyParts).value (1);
+		const auto& second = SettingsHolder_->GetJID ().split ('@', QString::SkipEmptyParts).value (1);
 		const int slIdx = second.indexOf ('/');
 		return slIdx >= 0 ? second.left (slIdx) : second;
 	}
@@ -886,7 +778,7 @@ namespace Xoox
 		if (!pwd.isNull ())
 		{
 			ClientConnection_->SetPassword (pwd);
-			ChangeState (EntryStatus (AccState_.State_, AccState_.Status_));
+			ClientConnection_->SetState (ClientConnection_->GetLastState ());
 		}
 	}
 
@@ -900,7 +792,8 @@ namespace Xoox
 		if (!ClientConnection_)
 			return;
 
-		auto entry = qobject_cast<EntryBase*> (ClientConnection_->GetCLEntry (JID_));
+		const auto& jid = SettingsHolder_->GetJID ();
+		auto entry = qobject_cast<EntryBase*> (ClientConnection_->GetCLEntry (jid));
 		if (entry)
 			entry->ShowInfo ();
 	}

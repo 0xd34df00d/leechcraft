@@ -25,6 +25,7 @@
 #include <util/defaulthookproxy.h>
 #include "filtermodel.h"
 #include "core.h"
+#include "editbookmarkdialog.h"
 
 namespace LeechCraft
 {
@@ -164,7 +165,7 @@ namespace Poshuku
 		}
 	}
 
-	bool FavoritesModel::addItem (const QString& title, const QString& url,
+	QModelIndex FavoritesModel::addItem (const QString& title, const QString& url,
 			const QStringList& visibleTags)
 	{
 		QStringList tags;
@@ -185,13 +186,13 @@ namespace Poshuku
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO << e.what ();
-			return false;
+			return QModelIndex ();
 		}
 
 		Util::DefaultHookProxy_ptr proxy = Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy ());
 		emit hookAddedToFavorites (proxy, title, url, visibleTags);
 
-		return true;
+		return createIndex (Items_.size () - 1, 0);
 	}
 
 	QList<QVariant> FavoritesModel::getItemsMap() const
@@ -211,6 +212,22 @@ namespace Poshuku
 		}
 
 		return result;
+	}
+
+	void FavoritesModel::EditBookmark (const QModelIndex& source)
+	{
+		const auto& currentURL = source.sibling (source.row (),
+				FavoritesModel::ColumnURL).data ().toString ();
+
+		EditBookmarkDialog dia (source);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		setData (source.sibling (source.row (), FavoritesModel::ColumnTitle), dia.GetTitle ());
+		setData (source.sibling (source.row (), FavoritesModel::ColumnTags), dia.GetTags ());
+
+		if (currentURL != dia.GetURL ())
+			ChangeURL (source, dia.GetURL ());
 	}
 
 	void FavoritesModel::ChangeURL (const QModelIndex& index,

@@ -4,27 +4,32 @@
 <context>
     <name>LeechCraft::TabSessManager::Plugin</name>
     <message>
-        <location filename="tabsessmanager.cpp" line="53"/>
+        <location filename="tabsessmanager.cpp" line="47"/>
+        <source>Unclose tabs</source>
+        <translation>Восстановить закрытые вкладки</translation>
+    </message>
+    <message>
+        <location filename="tabsessmanager.cpp" line="66"/>
         <source>Sessions</source>
         <translation>Сессии</translation>
     </message>
     <message>
-        <location filename="tabsessmanager.cpp" line="54"/>
+        <location filename="tabsessmanager.cpp" line="67"/>
         <source>Save current session...</source>
         <translation>Сохранить текущую сессию...</translation>
     </message>
     <message>
-        <location filename="tabsessmanager.cpp" line="91"/>
+        <location filename="tabsessmanager.cpp" line="109"/>
         <source>Manages sessions of tabs in LeechCraft.</source>
         <translation>Управляет сессиями вкладок в LeechCraft.</translation>
     </message>
     <message>
-        <location filename="tabsessmanager.cpp" line="318"/>
+        <location filename="tabsessmanager.cpp" line="449"/>
         <source>Custom session</source>
         <translation>Сохранение сессии</translation>
     </message>
     <message>
-        <location filename="tabsessmanager.cpp" line="319"/>
+        <location filename="tabsessmanager.cpp" line="450"/>
         <source>Enter the name of the session:</source>
         <translation>Введите имя сессии:</translation>
     </message>

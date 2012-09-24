@@ -108,14 +108,14 @@ LeechCraft::Application::Application (int& argc, char **argv)
 		}
 
 	// Things are sane, prepare
-    QCoreApplication::setApplicationName ("Leechcraft");
+	QCoreApplication::setApplicationName ("Leechcraft");
 	QCoreApplication::setApplicationVersion (LEECHCRAFT_VERSION);
-    QCoreApplication::setOrganizationName ("Deviant");
+	QCoreApplication::setOrganizationName ("Deviant");
 
 	Translator_.reset (LeechCraft::Util::InstallTranslator (""));
 
-    qRegisterMetaType<QModelIndex> ("QModelIndex");
-    qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
+	qRegisterMetaType<QModelIndex> ("QModelIndex");
+	qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
 	qRegisterMetaType<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
 	qRegisterMetaType<LeechCraft::Entity> ("LeechCraft::Entity");
 	qRegisterMetaType<LeechCraft::Entity> ("Entity");
@@ -130,11 +130,21 @@ LeechCraft::Application::Application (int& argc, char **argv)
 
 	ParseCommandLine ();
 
+#ifdef Q_OS_MAC
+	if (!Arguments_.contains ("-nobundle"))
+	{
+		QDir dir (applicationDirPath ());
+		dir.cdUp ();
+		dir.cd ("PlugIns");
+		QApplication::setLibraryPaths (QStringList (dir.absolutePath ()));
+	}
+#endif
+
 	setWindowIcon (QIcon (":/resources/images/leechcraft.svg"));
 
 	// Say hello to logs
-    qDebug () << "======APPLICATION STARTUP======";
-    qWarning () << "======APPLICATION STARTUP======";
+	qDebug () << "======APPLICATION STARTUP======";
+	qWarning () << "======APPLICATION STARTUP======";
 
 	// And finally!..
 	new LeechCraft::MainWindow ();
@@ -299,8 +309,8 @@ bool Application::IsAlreadyRunning () const
 		out << Arguments_;
 		if (socket.waitForBytesWritten ())
 			return true;
-        if (socket.error() == QLocalSocket::UnknownSocketError)
-            return true;
+		if (socket.error() == QLocalSocket::UnknownSocketError)
+			return true;
 	}
 	else
 	{

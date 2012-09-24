@@ -16,45 +16,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "addtofavoritesdialog.h"
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/itagsmanager.h>
-#include "core.h"
+#pragma once
+
+#include <memory>
+#include <QString>
+
+#if USE_PCRE
+// nothing yet
+#else
+#include <QRegExp>
+#endif
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	using LeechCraft::Util::TagsCompleter;
-	using LeechCraft::Util::TagsCompletionModel;
+namespace CleanWeb
+{
+#if USE_PCRE
+	class PCREWrapper;
+#endif
 
-	AddToFavoritesDialog::AddToFavoritesDialog (const QString& title,
-			const QString& url,
-			QWidget *parent)
-	: QDialog (parent)
+	class RegExp
 	{
-		Ui_.setupUi (this);
-		Ui_.URLLabel_->setText (url);
-		Ui_.TitleEdit_->setText (title);
-		Ui_.TagsEdit_->setText (tr ("untagged"));
+#if USE_PCRE
+		QString Pattern_;
+		Qt::CaseSensitivity CS_;
 
-		TagsCompleter_.reset (new TagsCompleter (Ui_.TagsEdit_));
-		Ui_.TagsEdit_->AddSelector ();
-	}
+		std::shared_ptr<PCREWrapper> PRx_;
+#else
+		QRegExp Rx_;
+#endif
+	public:
+		static bool IsFast ();
 
-	AddToFavoritesDialog::~AddToFavoritesDialog ()
-	{
-	}
+		RegExp ();
+		RegExp (const RegExp&);
+		RegExp (const QString&, Qt::CaseSensitivity);
+		~RegExp ();
+		RegExp& operator= (const RegExp&);
 
-	QString AddToFavoritesDialog::GetTitle () const
-	{
-		return Ui_.TitleEdit_->text ();
-	}
+		bool Matches (const QString&) const;
 
-	QStringList AddToFavoritesDialog::GetTags () const
-	{
-		return Core::Instance ().GetProxy ()->
-			GetTagsManager ()->Split (Ui_.TagsEdit_->text ());
-	}
+		QString GetPattern () const;
+		Qt::CaseSensitivity GetCaseSensitivity () const;
+	};
+}
 }
 }

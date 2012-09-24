@@ -54,6 +54,7 @@ class IProtocol;
 namespace Xoox
 {
 	class ClientConnection;
+	class AccountSettingsHolder;
 
 	struct GlooxAccountState
 	{
@@ -66,7 +67,6 @@ namespace Xoox
 
 	class GlooxProtocol;
 	class TransferManager;
-	class GlooxAccountConfigurationWidget;
 
 	class GlooxAccount : public QObject
 					   , public IAccount
@@ -112,29 +112,20 @@ namespace Xoox
 		QString Name_;
 		GlooxProtocol *ParentProtocol_;
 
-		QString JID_;
-		QString Nick_;
-		QString Resource_;
-		QString Host_;
-		int Port_;
-
-		QByteArray OurPhotoHash_;
-
-		QPair<int, int> KAParams_;
-		bool FileLogEnabled_;
+		AccountSettingsHolder *SettingsHolder_;
 
 		QIcon AccountIcon_;
 
 		std::shared_ptr<ClientConnection> ClientConnection_;
 		std::shared_ptr<TransferManager> TransferManager_;
 
-		GlooxAccountState AccState_;
-
 		QAction *SelfVCardAction_;
 		QAction *PrivacyDialogAction_;
 	public:
 		GlooxAccount (const QString&, QObject*);
 		void Init ();
+
+		AccountSettingsHolder* GetSettings () const;
 
 		// IAccount
 		QObject* GetObject ();
@@ -143,14 +134,11 @@ namespace Xoox
 		QList<QObject*> GetCLEntries ();
 		QString GetAccountName () const;
 		QString GetOurNick () const;
-		QString GetHost () const;
-		int GetPort () const;
 		void RenameAccount (const QString&);
 		QByteArray GetAccountID () const;
 		QList<QAction*> GetActions () const;
 		void QueryInfo (const QString&);
 		void OpenConfigurationDialog ();
-		void FillSettings (GlooxAccountConfigurationWidget*);
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
 		void Authorize (QObject*);
@@ -212,7 +200,6 @@ namespace Xoox
 		void SetEncryptionEnabled (QObject*, bool);
 #endif
 
-		QString GetJID () const;
 		QString GetNick () const;
 		void JoinRoom (const QString&, const QString&);
 		void JoinRoom (const QString&, const QString&, const QString&);
@@ -234,12 +221,12 @@ namespace Xoox
 				const QString&);
 	private:
 		QString GetPassword (bool authFailure = false);
-		void RegenAccountIcon ();
 		QString GetDefaultReqHost () const;
 	public slots:
 		void handleEntryRemoved (QObject*);
 		void handleGotRosterItems (const QList<QObject*>&);
 	private slots:
+		void regenAccountIcon (const QString&);
 		void handleServerAuthFailed ();
 		void feedClientPassword ();
 		void showSelfVCard ();

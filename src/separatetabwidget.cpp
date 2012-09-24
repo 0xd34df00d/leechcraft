@@ -71,8 +71,8 @@ namespace LeechCraft
 		LeftToolBar_->setMaximumHeight (25);
 		RightToolBar_->setMaximumHeight (25);
 
-		QPointer<QVBoxLayout> leftToolBarLayout = new QVBoxLayout;
-		QPointer<QVBoxLayout> rightToolBarLayout = new QVBoxLayout;
+		auto leftToolBarLayout = new QVBoxLayout;
+		auto rightToolBarLayout = new QVBoxLayout;
 		leftToolBarLayout->addWidget (LeftToolBar_);
 		leftToolBarLayout->setContentsMargins (0, 0, 0, 0);
 		rightToolBarLayout->addWidget (RightToolBar_);

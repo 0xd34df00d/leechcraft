@@ -146,6 +146,7 @@ namespace LeechCraft
 		void ShowMenuAndBar (bool);
 	signals:
 		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QDockWidget*, bool);
+		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
 	};
 };

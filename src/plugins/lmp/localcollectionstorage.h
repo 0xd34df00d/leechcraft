@@ -57,6 +57,7 @@ namespace LMP
 		QSqlQuery SetAlbumArt_;
 
 		QSqlQuery GetTrackStats_;
+		QSqlQuery SetTrackStats_;
 		QSqlQuery UpdateTrackStats_;
 	public:
 		struct LoadResult
@@ -81,6 +82,7 @@ namespace LMP
 		void SetAlbumArt (int, const QString&);
 
 		Collection::TrackStats GetTrackStats (int);
+		void SetTrackStats (const Collection::TrackStats&);
 		void RecordTrackPlayed (int);
 	private:
 		Collection::Artists_t GetAllArtists ();

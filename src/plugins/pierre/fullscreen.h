@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,39 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_ADDTOFAVORITESDIALOG_H
-#define PLUGINS_POSHUKU_ADDTOFAVORITESDIALOG_H
-#include <memory>
-#include <QDialog>
-#include <util/tags/tagscompleter.h>
-#include "ui_addtofavoritesdialog.h"
+#pragma once
+
+class QMainWindow;
 
 namespace LeechCraft
 {
-namespace Util
+namespace Pierre
 {
-	class TagsCompletionModel;
-};
-
-namespace Poshuku
+namespace FS
 {
-	class AddToFavoritesDialog : public QDialog
-	{
-		Q_OBJECT
-
-		Ui::AddToFavoritesDialog Ui_;
-
-		std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsCompleter_;
-	public:
-		AddToFavoritesDialog (const QString&,
-				const QString&,
-				QWidget* = 0);
-		virtual ~AddToFavoritesDialog ();
-
-		QString GetTitle () const;
-		QStringList GetTags () const;
-	};
+	bool SupportsFS ();
+	void AddAction (QMainWindow*);
+	void Toggle (QMainWindow*);
 }
 }
-
-#endif
+}

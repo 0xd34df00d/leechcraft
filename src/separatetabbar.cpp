@@ -40,6 +40,7 @@ namespace LeechCraft
 		setIconSize (QSize (15, 15));
 		setContextMenuPolicy (Qt::CustomContextMenu);
 		setElideMode (Qt::ElideRight);
+		setDocumentMode (true);
 
 		addTab (QString ());
 

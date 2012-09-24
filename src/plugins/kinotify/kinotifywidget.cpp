@@ -355,8 +355,8 @@ namespace Kinotify
 
 	void KinotifyWidget::ShowNotification ()
 	{
-		show ();
 		setWindowOpacity (0.0);
+		show ();
 		Machine_.start ();
 	}
 

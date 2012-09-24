@@ -90,16 +90,50 @@ namespace CleanWeb
 		return !(f1 == f2);
 	}
 
+	QDataStream& operator<< (QDataStream& out, const FilterItem& item)
+	{
+		out << static_cast<quint8> (2)
+			<< item.OrigString_
+			<< item.RegExp_.GetPattern ()
+			<< static_cast<quint8> (item.RegExp_.GetCaseSensitivity ())
+			<< item.Option_;
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, FilterItem& item)
+	{
+		quint8 version = 0;
+		in >> version;
+		if (version < 1 || version > 2)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return in;
+		}
+
+		in >> item.OrigString_;
+		if (version == 1)
+		{
+			QRegExp rx;
+			in >> rx;
+			item.RegExp_ = RegExp (rx.pattern (), rx.caseSensitivity ());
+		}
+		else if (version == 2)
+		{
+			QString str;
+			quint8 cs;
+			in >> str >> cs;
+			item.RegExp_ = RegExp (str, static_cast<Qt::CaseSensitivity> (cs));
+		}
+		in >> item.Option_;
+		return in;
+	}
+
 	Filter& Filter::operator+= (const Filter& f)
 	{
-		ExceptionStrings_ << f.ExceptionStrings_;
-		ExceptionStrings_.removeDuplicates ();
-		FilterStrings_ << f.FilterStrings_;
-		FilterStrings_.removeDuplicates ();
-
-		Options_.unite (f.Options_);
-		RegExps_.unite (f.RegExps_);
-
+		Filters_ << f.Filters_;
+		Exceptions_ << f.Exceptions_;
 		return *this;
 	}
 }

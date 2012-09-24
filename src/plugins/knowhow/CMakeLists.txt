@@ -40,4 +40,4 @@ TARGET_LINK_LIBRARIES (leechcraft_knowhow
 	)
 INSTALL (TARGETS leechcraft_knowhow DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES knowhowsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (DIRECTORY share/knowhow DESTINATION share/leechcraft)
+INSTALL (DIRECTORY share/knowhow DESTINATION ${LC_SHARE_DEST})

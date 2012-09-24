@@ -54,9 +54,9 @@ namespace LeechCraft
 				this,
 				SLOT (updatePreferences ()));
 
-		picker->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
-		
+		picker->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		picker->setProperty ("SearchTerms", labelString);
+
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0);
 		lay->addWidget (picker, row, 1);
@@ -103,7 +103,7 @@ namespace LeechCraft
 		element.setAttribute ("default", value.value<QFont> ().toString ());
 	}
 
-	QVariant ItemHandlerFont::GetValue (QObject *object) const
+	QVariant ItemHandlerFont::GetObjectValue (QObject *object) const
 	{
 		FontPicker *fontPicker = qobject_cast<FontPicker*> (object);
 		if (!fontPicker)

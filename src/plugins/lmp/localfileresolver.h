@@ -23,6 +23,7 @@
 #include <QHash>
 #include <QReadWriteLock>
 #include <QMutex>
+#include <QDateTime>
 #include <taglib/fileref.h>
 #include "mediainfo.h"
 
@@ -46,7 +47,7 @@ namespace LMP
 
 		QMutex TaglibMutex_;
 		QReadWriteLock CacheLock_;
-		QHash<QString, MediaInfo> Cache_;
+		QHash<QString, QPair<QDateTime, MediaInfo>> Cache_;
 	public:
 		LocalFileResolver (QObject* = 0);
 

@@ -934,8 +934,10 @@ namespace Azoth
 					.arg (QString ("data:image/png;base64," + rawData));
 			if (body.startsWith (escaped))
 				body.replace (0, escaped.size (), smileStr);
-			body.replace (' ' + escaped, ' ' + smileStr);
-			body.replace ('\n' + escaped, '\n' + smileStr);
+
+			auto whites = { " ", "\n", "\t", "<br/>", "<br />", "<br>" };
+			Q_FOREACH (auto white, whites)
+				body.replace (white + escaped, white + smileStr);
 		}
 
 		return body;
@@ -1208,13 +1210,13 @@ namespace Azoth
 			tip += "</td><td>";
 		}
 
-		tip += "<strong>" + entry->GetEntryName () + "</strong>";
-		tip += "&nbsp;(<em>" + entry->GetHumanReadableID () + "</em>)<br />";
+		tip += "<strong>" + Qt::escape (entry->GetEntryName ()) + "</strong>";
+		tip += "&nbsp;(<em>" + Qt::escape (entry->GetHumanReadableID ()) + "</em>)<br />";
 		tip += Status2Str (entry->GetStatus (), PluginProxyObject_);
 		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
 		{
 			tip += "<br />";
-			tip += tr ("In groups:") + ' ' + entry->Groups ().join ("; ");
+			tip += tr ("In groups:") + ' ' + Qt::escape (entry->Groups ().join ("; "));
 		}
 
 		const QStringList& variants = entry->Variants ();
@@ -1223,7 +1225,8 @@ namespace Azoth
 		if (mucEntry)
 		{
 			const QString& jid = mucEntry->GetRealID (entry->GetObject ());
-			tip += "<br />" + tr ("Real ID:") + ' ' + (jid.isEmpty () ? tr ("unknown") : jid);
+			tip += "<br />" + tr ("Real ID:") + ' ';
+			tip += jid.isEmpty () ? tr ("unknown") : Qt::escape (jid);
 		}
 
 		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
@@ -1279,13 +1282,13 @@ namespace Azoth
 				tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
 
 				if (info.contains ("client_name"))
-					tip += "<br />" + tr ("Using:") + ' ' + info.value ("client_name").toString ();
+					tip += "<br />" + tr ("Using:") + ' ' + Qt::escape (info.value ("client_name").toString ());
 				if (info.contains ("client_version"))
-					tip += " " + info.value ("client_version").toString ();
+					tip += " " + Qt::escape (info.value ("client_version").toString ());
 				if (info.contains ("client_remote_name"))
-					tip += "<br />" + tr ("Claiming:") + ' ' + info.value ("client_remote_name").toString ();
+					tip += "<br />" + tr ("Claiming:") + ' ' + Qt::escape (info.value ("client_remote_name").toString ());
 				if (info.contains ("client_os"))
-					tip += "<br />" + tr ("OS:") + ' ' + info.value ("client_os").toString ();
+					tip += "<br />" + tr ("OS:") + ' ' + Qt::escape (info.value ("client_os").toString ());
 
 				if (info.contains ("user_mood"))
 					FormatMood (tip, info ["user_mood"].toMap ());
@@ -1298,7 +1301,7 @@ namespace Azoth
 				{
 					const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
 					Q_FOREACH (const QString& key, map.keys ())
-						tip += "<br />" + key + ": " + map [key].toString () + "<br />";
+						tip += "<br />" + key + ": " + Qt::escape (map [key].toString ()) + "<br />";
 				}
 			}
 

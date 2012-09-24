@@ -59,14 +59,6 @@ namespace Lastfmscrobble
 	{
 	}
 
-	namespace
-	{
-		QString GetQueueFilename ()
-		{
-			return Util::CreateIfNotExists ("lastfmscrobble").absoluteFilePath ("queue.xml");
-		}
-	}
-
 	LastFMSubmitter::LastFMSubmitter (QObject *parent)
 	: QObject (parent)
 	, SubmitTimer_ (new QTimer (this))

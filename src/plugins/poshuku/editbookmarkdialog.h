@@ -33,6 +33,7 @@ namespace Poshuku
 	public:
 		EditBookmarkDialog (const QModelIndex&, QWidget* = 0);
 
+		QString GetURL () const;
 		QString GetTitle () const;
 		QStringList GetTags () const;
 	};

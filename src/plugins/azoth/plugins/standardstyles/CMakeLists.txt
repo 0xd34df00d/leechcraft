@@ -31,4 +31,4 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth_standardstyles
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_azoth_standardstyles DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (DIRECTORY share/azoth DESTINATION share/leechcraft)
+INSTALL (DIRECTORY share/azoth DESTINATION ${LC_SHARE_DEST})

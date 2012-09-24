@@ -817,10 +817,7 @@ namespace Azoth
 		const QPixmap& px = QPixmap::fromImage (avatar);
 		if (!px.isNull ())
 		{
-			const int maxHeight = Ui_.AvatarLabel_->
-					property ("Azoth/MaxHeight").toInt ();
-			const QSize& size = px.size ().boundedTo (QSize (maxHeight, maxHeight));
-			const QPixmap& scaled = px.scaled (size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			const QPixmap& scaled = px.scaled (QSize (18, 18), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 			Ui_.AvatarLabel_->setPixmap (scaled);
 			Ui_.AvatarLabel_->resize (scaled.size ());
 			Ui_.AvatarLabel_->setMaximumSize (scaled.size ());
@@ -1286,12 +1283,6 @@ namespace Azoth
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (handleAvatarChanged (const QImage&)));
-
-		const int resHeight = std::max (
-				std::max (Ui_.AccountName_->height (), Ui_.EntryInfo_->height ()),
-				Ui_.VariantBox_->height ()
-			);
-		Ui_.AvatarLabel_->setProperty ("Azoth/MaxHeight", resHeight);
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		handleVariantsChanged (e->Variants ());

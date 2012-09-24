@@ -46,5 +46,6 @@ namespace LeechCraft
 				SIGNAL (released ()),
 				XSD_,
 				SLOT (handlePushButtonReleased ()));
+		button->setProperty ("SearchTerms", button->text ());
 	}
 };

@@ -135,9 +135,9 @@ namespace LMP
 			{
 				album.CoverPath_ = FindAlbumArtPath (info.LocalPath_);
 				AddAlbum (artist, album);
-				artists [artist.ID_].Albums_ << Collection::Album_ptr (new Collection::Album (album));
 			}
 
+			artists [artist.ID_].Albums_ << Collection::Album_ptr (new Collection::Album (album));
 			Collection::Track track =
 			{
 				0,
@@ -271,6 +271,21 @@ namespace LMP
 		GetTrackStats_.finish ();
 
 		return result;
+	}
+
+	void LocalCollectionStorage::SetTrackStats (const Collection::TrackStats& stats)
+	{
+		//"(:track_id, :playcount, :added, :last_play;"
+		SetTrackStats_.bindValue (":track_id", stats.TrackID_);
+		SetTrackStats_.bindValue (":playcount", stats.Playcount_);
+		SetTrackStats_.bindValue (":added", stats.Added_);
+		SetTrackStats_.bindValue (":last_play", stats.LastPlay_);
+
+		if (!SetTrackStats_.exec ())
+		{
+			Util::DBLock::DumpError (SetTrackStats_);
+			throw std::runtime_error ("cannot set track statistics");
+		}
 	}
 
 	void LocalCollectionStorage::RecordTrackPlayed (int trackId)
@@ -533,6 +548,11 @@ namespace LMP
 
 		GetTrackStats_ = QSqlQuery (DB_);
 		GetTrackStats_.prepare ("SELECT Playcount, Added, LastPlay, Score, Rating FROM statistics WHERE TrackId = :track_id;");
+
+		SetTrackStats_ = QSqlQuery (DB_);
+		SetTrackStats_.prepare ("INSERT OR REPLACE INTO statistics "
+				"(TrackId, Playcount, Added, LastPlay) VALUES "
+				"(:track_id, :playcount, :added, :last_play);");
 
 		UpdateTrackStats_ = QSqlQuery (DB_);
 		UpdateTrackStats_.prepare ("INSERT OR REPLACE INTO statistics (TrackId, Playcount, Added, LastPlay) "

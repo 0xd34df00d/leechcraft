@@ -36,7 +36,7 @@ namespace LMP
 		std::transform (Bio_.BasicInfo_.Tags_.begin (), Bio_.BasicInfo_.Tags_.end (),
 				std::back_inserter (tags),
 				[] (decltype (Bio_.BasicInfo_.Tags_.front ()) item) { return item.Name_; });
-		CachedTags_ = tags.join ("; ");
+		CachedTags_ = tags.join ("<br />");
 
 		CachedInfo_ = Bio_.BasicInfo_.FullDesc_.isEmpty () ?
 				Bio_.BasicInfo_.ShortDesc_ :

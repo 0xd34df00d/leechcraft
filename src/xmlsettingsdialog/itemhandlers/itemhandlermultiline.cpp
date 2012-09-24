@@ -58,8 +58,8 @@ namespace LeechCraft
 				this,
 				SLOT (updatePreferences ()));
 
-		edit->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
+		edit->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		edit->setProperty ("SearchTerms", label->text ());
 
 		int row = lay->rowCount ();
 		QString pos = item.attribute ("position");
@@ -106,7 +106,7 @@ namespace LeechCraft
 	}
 
 	QVariant ItemHandlerMultiLine::GetValue (const QDomElement& item,
-			QVariant value) const
+			QVariant) const
 	{
 		QString def = item.attribute ("default");
 		if (item.attribute ("translatable") == "true")
@@ -121,7 +121,7 @@ namespace LeechCraft
 		element.setAttribute ("default", value.toString ());
 	}
 
-	QVariant ItemHandlerMultiLine::GetValue (QObject *object) const
+	QVariant ItemHandlerMultiLine::GetObjectValue (QObject *object) const
 	{
 		QTextEdit *edit = qobject_cast<QTextEdit*> (object);
 		if (!edit)

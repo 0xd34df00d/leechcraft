@@ -6,7 +6,7 @@
     <message>
         <location filename="depester.cpp" line="57"/>
         <source>Allows one to block messages from unwanted contacts in MUCs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Позволяет блокировать сообщения от нежелательных участников конференций.</translation>
     </message>
 </context>
 </TS>

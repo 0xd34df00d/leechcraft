@@ -45,7 +45,6 @@ namespace Poshuku
 		BookmarksWidget (QWidget* = 0);
 	private slots:
 		void on_ActionEditBookmark__triggered ();
-		void on_ActionChangeURL__triggered ();
 		void on_ActionDeleteBookmark__triggered ();
 		void translateRemoveFavoritesItem (const QModelIndex&);
 		void updateFavoritesFilter ();

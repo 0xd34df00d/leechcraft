@@ -85,14 +85,6 @@
     <string>Edit title and tags</string>
    </property>
   </action>
-  <action name="ActionChangeURL_">
-   <property name="text">
-    <string>Change URL...</string>
-   </property>
-   <property name="toolTip">
-    <string>Change URL of the bookmark</string>
-   </property>
-  </action>
   <action name="ActionDeleteBookmark_">
    <property name="text">
     <string>Delete bookmark</string>

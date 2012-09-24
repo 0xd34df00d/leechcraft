@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <QKeyEvent>
 #include <QSortFilterProxyModel>
+#include <QTimer>
 #include <util/util.h>
 #include <util/gui/clearlineeditaddon.h>
 #include "player.h"
@@ -76,15 +77,19 @@ namespace LMP
 				if (e->type () != QEvent::KeyRelease)
 					return false;
 
-				const auto key = static_cast<QKeyEvent*> (e)->key ();
-				if (key == Qt::Key_Enter || key == Qt::Key_Return || key == Qt::Key_Space)
+				auto keyEvent = static_cast<QKeyEvent*> (e);
+
+				const auto key = keyEvent->key ();
+				if (key == Qt::Key_Enter ||
+						key == Qt::Key_Return ||
+						(key == Qt::Key_Space && keyEvent->modifiers () == Qt::NoModifier))
 				{
 					Player_->play (PlaylistFilter_->mapToSource (View_->currentIndex ()));
 					return true;
 				}
 
 				if (key == Qt::Key_F &&
-						static_cast<QKeyEvent*> (e)->modifiers () == Qt::CTRL)
+						keyEvent->modifiers () == Qt::CTRL)
 				{
 					FilterLine_->setVisible (!FilterLine_->isVisible ());
 					FilterToggle_->toggle ();
@@ -117,9 +122,10 @@ namespace LMP
 
 				const auto& idx = sourceModel ()->index (row, 0, parent);
 				const auto& info = idx.data (Player::Role::Info).value<MediaInfo> ();
+				bool isInt = false;
 				if (check (info.Artist_) ||
 					check (info.Album_) ||
-					check (QString::number (info.Year_)))
+					(info.Year_ == str.toInt (&isInt) && isInt))
 					return true;
 
 				if (parent.isValid () && check (info.Title_))
@@ -140,6 +146,7 @@ namespace LMP
 	, PlaylistFilter_ (new TreeFilterModel (this))
 	, UndoStack_ (new QUndoStack (this))
 	, Player_ (0)
+	, ExpandAllScheduled_ (false)
 	, ActionRemoveSelected_ (0)
 	, ActionStopAfterSelected_ (0)
 	, ActionShowTrackProps_ (0)
@@ -159,13 +166,13 @@ namespace LMP
 
 		connect (PlaylistFilter_,
 				SIGNAL (rowsInserted (QModelIndex, int, int)),
-				Ui_.Playlist_,
-				SLOT (expandAll ()),
+				this,
+				SLOT (scheduleExpandAll ()),
 				Qt::QueuedConnection);
 		connect (PlaylistFilter_,
 				SIGNAL (modelReset ()),
-				Ui_.Playlist_,
-				SLOT (expandAll ()),
+				this,
+				SLOT (scheduleExpandAll ()),
 				Qt::QueuedConnection);
 		connect (PlaylistFilter_,
 				SIGNAL (modelReset ()),
@@ -559,6 +566,24 @@ namespace LMP
 	void PlaylistWidget::expand (const QModelIndex& index)
 	{
 		Ui_.Playlist_->expand (PlaylistFilter_->mapFromSource (index));
+	}
+
+	void PlaylistWidget::scheduleExpandAll ()
+	{
+		if (ExpandAllScheduled_)
+			return;
+
+		ExpandAllScheduled_ = true;
+		QTimer::singleShot (10,
+				this,
+				SLOT (expandAll ()));
+	}
+
+	void PlaylistWidget::expandAll ()
+	{
+		ExpandAllScheduled_ = false;
+		Ui_.Playlist_->expandAll ();
+		checkSelections ();
 	}
 
 	void PlaylistWidget::checkSelections ()

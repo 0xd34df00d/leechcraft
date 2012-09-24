@@ -67,7 +67,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , WasMaximized_ (false)
 , DefaultSystemStyleName_ (QApplication::style ()->objectName ())
 , IsQuitting_ (false)
-, Splash_ (new QSplashScreen (QPixmap (":/resources/images/funsplash.jpg"),
+, Splash_ (new QSplashScreen (QPixmap (":/resources/images/splash.svg"),
 		Qt::SplashScreen))
 , IsToolBarVisible_ (true)
 {
@@ -93,7 +93,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	//Splash_->setMask (QPixmap (":/resources/images/funsplash.jpg").mask ());
 	Splash_->show ();
 	Splash_->setUpdatesEnabled (true);
-	Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom);
+	Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
 	QApplication::processEvents ();
 
 #ifdef Q_OS_WIN32
@@ -118,7 +118,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
 
-	Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom);
+	Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
 
 	connect (Core::Instance ().GetNewTabMenuManager (),
 			SIGNAL (restoreTabActionAdded (QAction*)),
@@ -175,7 +175,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			0,
 			Qt::ApplicationShortcut);
 
-    Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
+	Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
 }
 
 void LeechCraft::MainWindow::handleShortcutFullscreenMode ()
@@ -343,7 +343,7 @@ void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 
 void LeechCraft::MainWindow::InitializeInterface ()
 {
- 	installEventFilter (new ChildActionEventFilter (this));
+	installEventFilter (new ChildActionEventFilter (this));
 
 	Ui_.setupUi (this);
 
@@ -360,13 +360,21 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	MenuView_->addAction (Ui_.ActionFullscreenMode_);
 	MenuTools_ = new QMenu (tr ("Tools"), this);
 
+#ifdef Q_OS_MAC
+	Ui_.ActionFullscreenMode_->setVisible (false);
+#endif
+
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "list-add");
 	Ui_.ActionCloseTab_->setProperty ("ActionIcon", "tab-close");
 	Ui_.ActionSettings_->setProperty ("ActionIcon", "preferences-system");
+	Ui_.ActionSettings_->setMenuRole (QAction::PreferencesRole);
 	Ui_.ActionAboutLeechCraft_->setProperty ("ActionIcon", "help-about");
+	Ui_.ActionAboutLeechCraft_->setMenuRole (QAction::AboutRole);
 	Ui_.ActionAboutQt_->setIcon (qApp->style ()->
 			standardIcon (QStyle::SP_MessageBoxQuestion).pixmap (32, 32));
+	Ui_.ActionAboutQt_->setMenuRole (QAction::AboutQtRole);
 	Ui_.ActionQuit_->setProperty ("ActionIcon", "application-exit");
+	Ui_.ActionQuit_->setMenuRole (QAction::QuitRole);
 	Ui_.ActionFullscreenMode_->setProperty ("ActionIcon", "view-fullscreen");
 	Ui_.ActionFullscreenMode_->setParent (this);
 
@@ -797,11 +805,16 @@ void LeechCraft::MainWindow::doDelayedInit ()
 
 void LeechCraft::MainWindow::handleLoadProgress (const QString& str)
 {
-	Splash_->showMessage (str, Qt::AlignLeft | Qt::AlignBottom);
+	Splash_->showMessage (str, Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
 }
 
 void LeechCraft::MainWindow::FillQuickLaunch ()
 {
+	Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+	emit hookGonnaFillMenu (proxy);
+	if (proxy->IsCancelled ())
+		return;
+
 	const auto& exporters = Core::Instance ().GetPluginManager ()->GetAllCastableTo<IActionsExporter*> ();
 	Q_FOREACH (auto exp, exporters)
 	{
@@ -810,7 +823,7 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 			AddMenus (map);
 	}
 
-	Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+	proxy.reset (new Util::DefaultHookProxy);
 	emit hookGonnaFillQuickLaunch (proxy);
 	if (proxy->IsCancelled ())
 		return;

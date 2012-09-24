@@ -57,39 +57,6 @@ namespace Lastfmscrobble
 			emit ready ();
 	}
 
-	namespace
-	{
-		Media::ArtistInfo GetAdditional (const QByteArray& raw)
-		{
-			Media::ArtistInfo result;
-
-			QDomDocument doc;
-			if (!doc.setContent (raw))
-				return result;
-
-			auto text = [&doc] (const QString& elemName)
-			{
-				auto items = doc.elementsByTagName (elemName);
-				if (items.isEmpty ())
-					return QString ();
-				auto str = items.at (0).toElement ().text ();
-				str.replace ('\r', '\n');
-				str.remove ("\n\n");
-				str.replace ("&quot;", "\"");
-				return str;
-			};
-
-			result.ShortDesc_ = text ("summary");
-			result.FullDesc_ = text ("content");
-
-			const auto& artist = doc.documentElement ().firstChildElement ("artist");
-			result.Image_ = GetImage (artist, "extralarge");
-			result.LargeImage_ = GetImage (artist, "mega");
-
-			return result;
-		}
-	}
-
 	void BaseSimilarArtists::handleInfoReplyFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());

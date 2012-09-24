@@ -71,10 +71,9 @@
 #include "xmppbobmanager.h"
 #include "xmppcaptchamanager.h"
 #include "clientconnectionerrormgr.h"
-
-#ifdef ENABLE_CRYPT
-#include "pgpmanager.h"
-#endif
+#include "accountsettingsholder.h"
+#include "crypthandler.h"
+#include "serverinfostorage.h"
 
 namespace LeechCraft
 {
@@ -82,11 +81,10 @@ namespace Azoth
 {
 namespace Xoox
 {
-	const int ErrorLimit = 5;
-
-	ClientConnection::ClientConnection (const QString& jid,
-			GlooxAccount *account)
-	: Client_ (new QXmppClient (this))
+	ClientConnection::ClientConnection (GlooxAccount *account)
+	: Account_ (account)
+	, Settings_ (account->GetSettings ())
+	, Client_ (new QXmppClient (this))
 	, MUCManager_ (new QXmppMucManager)
 	, XferManager_ (new QXmppTransferManager)
 	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
@@ -109,15 +107,13 @@ namespace Xoox
 	, RIEXManager_ (new RIEXManager)
 	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
-#ifdef ENABLE_CRYPT
-	, PGPManager_ (0)
-#endif
+	, CryptHandler_ (new CryptHandler (this))
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
-	, OurJID_ (jid)
-	, SelfContact_ (new SelfContact (jid, account))
-	, Account_ (account)
+	, OurJID_ (Settings_->GetFullJID ())
+	, SelfContact_ (new SelfContact (OurJID_, account))
 	, ProxyObject_ (0)
 	, CapsManager_ (new CapsManager (this))
+	, ServerInfoStorage_ (new ServerInfoStorage (this, Settings_))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
 	, VCardQueue_ (new FetchQueue ([this] (QString str, bool report)
@@ -125,23 +121,19 @@ namespace Xoox
 					const auto& id = Client_->vCardManager ().requestVCard (str);
 					ErrorMgr_->Whitelist (id, report);
 				},
-				jid.contains ("gmail.com") ? 1700 : 300, 1, this))
+				OurJID_.contains ("gmail.com") ? 1700 : 600, 1, this))
 	, CapsQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = DiscoveryManager_->requestInfo (str, "");
 					ErrorMgr_->Whitelist (id, report);
 				},
-				jid.contains ("gmail.com") ? 1000 : 200, 1, this))
+				OurJID_.contains ("gmail.com") ? 1000 : 400, 1, this))
 	, VersionQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = Client_->versionManager ().requestVersion (str);
 					ErrorMgr_->Whitelist (id, report);
 				},
-				jid.contains ("gmail.com") ? 1200 : 250, 1, this))
-	, SocketErrorAccumulator_ (0)
-	, KAInterval_ (90)
-	, KATimeout_ (30)
-	, FileLogEnabled_ (false)
+				OurJID_.contains ("gmail.com") ? 2000 : 1000, 1, this))
 	{
 		SetOurJID (OurJID_);
 
@@ -153,13 +145,7 @@ namespace Xoox
 				SIGNAL (serverAuthFailed ()));
 
 		LastState_.State_ = SOffline;
-
-		QTimer *decrTimer = new QTimer (this);
-		connect (decrTimer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (decrementErrAccumulators ()));
-		decrTimer->start (15000);
+		handlePriorityChanged (Settings_->GetPriority ());
 
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
@@ -187,7 +173,7 @@ namespace Xoox
 				this,
 				SLOT (handlePEPAvatarUpdated (QString, QImage)));
 
-		InitializeQCA ();
+		CryptHandler_->Init ();
 
 		Client_->addExtension (BMManager_);
 		Client_->addExtension (BobManager_);
@@ -195,7 +181,6 @@ namespace Xoox
 		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (XferManager_);
-		Client_->addExtension (BMManager_);
 		Client_->addExtension (ArchiveManager_);
 		Client_->addExtension (CaptchaManager_);
 		Client_->addExtension (new LegacyEntityTimeExt);
@@ -241,10 +226,6 @@ namespace Xoox
 				SIGNAL (disconnected ()),
 				this,
 				SLOT (handleDisconnected ()));
-		connect (Client_,
-				SIGNAL (error (QXmppClient::Error)),
-				this,
-				SLOT (handleError (QXmppClient::Error)));
 		connect (Client_,
 				SIGNAL (iqReceived (const QXmppIq&)),
 				this,
@@ -331,6 +312,33 @@ namespace Xoox
 				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
 				this,
 				SLOT (handleDiscoItems (const QXmppDiscoveryIq&)));
+
+		connect (Settings_,
+				SIGNAL (kaParamsChanged (QPair<int,int>)),
+				this,
+				SLOT (setKAParams (QPair<int,int>)));
+		connect (Settings_,
+				SIGNAL (fileLogChanged (bool)),
+				this,
+				SLOT (setFileLogging (bool)));
+		connect (Settings_,
+				SIGNAL (photoHashChanged (QByteArray)),
+				this,
+				SLOT (handlePhotoHash ()));
+		connect (Settings_,
+				SIGNAL (priorityChanged (int)),
+				this,
+				SLOT (handlePriorityChanged (int)));
+		connect (Settings_,
+				SIGNAL (fileTransferSettingsChanged ()),
+				this,
+				SLOT (updateFTSettings ()));
+		updateFTSettings ();
+
+		connect (ServerInfoStorage_,
+				SIGNAL (bytestreamsProxyChanged (QString)),
+				this,
+				SLOT (handleDetectedBSProxy (QString)));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -343,10 +351,10 @@ namespace Xoox
 		LastState_ = state;
 
 		auto pres = XooxUtil::StatusToPresence (state.State_, state.Status_, state.Priority_);
-		if (!OurPhotoHash_.isEmpty ())
+		if (!Settings_->GetPhotoHash ().isEmpty ())
 		{
 			pres.setVCardUpdateType (QXmppPresence::VCardUpdateValidPhoto);
-			pres.setPhotoHash (OurPhotoHash_);
+			pres.setPhotoHash (Settings_->GetPhotoHash ());
 		}
 
 		if (IsConnected_ ||
@@ -366,14 +374,14 @@ namespace Xoox
 			QXmppConfiguration conf;
 			conf.setJid (OurJID_);
 			conf.setPassword (Password_);
-			const QString& host = Account_->GetHost ();
-			const int port = Account_->GetPort ();
+			const QString& host = Settings_->GetHost ();
+			const int port = Settings_->GetPort ();
 			if (!host.isEmpty ())
 				conf.setHost (host);
 			if (port >= 0)
 				conf.setPort (port);
-			conf.setKeepAliveInterval (KAInterval_);
-			conf.setKeepAliveTimeout (KATimeout_);
+			conf.setKeepAliveInterval (Settings_->GetKAParams ().first);
+			conf.setKeepAliveTimeout (Settings_->GetKAParams ().second);
 			Client_->connectToServer (conf, pres);
 
 			FirstTimeConnect_ = false;
@@ -391,8 +399,6 @@ namespace Xoox
 				JID2CLEntry_.remove (jid);
 				ODSEntries_ [jid] = entry;
 				entry->Convert2ODS ();
-
-				qDebug () << "converting" << jid;
 			}
 			SelfContact_->RemoveVariant (OurResource_);
 		}
@@ -409,34 +415,6 @@ namespace Xoox
 	GlooxAccountState ClientConnection::GetLastState () const
 	{
 		return LastState_;
-	}
-
-	QPair<int, int> ClientConnection::GetKAParams () const
-	{
-		return qMakePair (KAInterval_, KATimeout_);
-	}
-
-	void ClientConnection::SetKAParams (const QPair<int, int>& p)
-	{
-		KAInterval_ = p.first;
-		KATimeout_ = p.second;
-
-		if (Client_)
-		{
-			Client_->configuration ().setKeepAliveInterval (KAInterval_);
-			Client_->configuration ().setKeepAliveTimeout (KATimeout_);
-		}
-	}
-
-	void ClientConnection::SetFileLogging (bool fileLog)
-	{
-		FileLogEnabled_ = fileLog;
-
-		auto type = Client_->logger ()->loggingType ();
-		if (type == QXmppLogger::FileLogging && !fileLog)
-			Client_->logger ()->setLoggingType (QXmppLogger::NoLogging);
-		else if (type == QXmppLogger::NoLogging && fileLog)
-			Client_->logger ()->setLoggingType (QXmppLogger::FileLogging);
 	}
 
 	void ClientConnection::SetPassword (const QString& pwd)
@@ -456,11 +434,6 @@ namespace Xoox
 		Split (jid, &OurBareJID_, &OurResource_);
 
 		SelfContact_->UpdateJID (jid);
-	}
-
-	void ClientConnection::SetOurPhotoHash (const QByteArray& hash)
-	{
-		OurPhotoHash_ = hash;
 	}
 
 	RoomCLEntry* ClientConnection::JoinRoom (const QString& jid, const QString& nick)
@@ -576,22 +549,15 @@ namespace Xoox
 		return SDManager_;
 	}
 
-#ifdef ENABLE_CRYPT
-	PgpManager* ClientConnection::GetPGPManager () const
+	CryptHandler* ClientConnection::GetCryptHandler () const
 	{
-		return PGPManager_;
+		return CryptHandler_;
 	}
 
-	bool ClientConnection::SetEncryptionEnabled (const QString& jid, bool enabled)
+	ServerInfoStorage* ClientConnection::GetServerInfoStorage () const
 	{
-		if (enabled)
-			Entries2Crypt_ << jid;
-		else
-			Entries2Crypt_.remove (jid);
-
-		return true;
+		return ServerInfoStorage_;
 	}
-#endif
 
 	void ClientConnection::SetSignaledLog (bool signaled)
 	{
@@ -610,7 +576,7 @@ namespace Xoox
 					SIGNAL (message (QXmppLogger::MessageType, const QString&)),
 					this,
 					SLOT (handleLog (QXmppLogger::MessageType, const QString&)));
-			Client_->logger ()->setLoggingType (FileLogEnabled_ ?
+			Client_->logger ()->setLoggingType (Settings_->GetFileLogEnabled () ?
 						QXmppLogger::FileLogging :
 						QXmppLogger::NoLogging);
 		}
@@ -753,28 +719,7 @@ namespace Xoox
 		if (msg.isReceiptRequested ())
 			UndeliveredMessages_ [msg.id ()] = msgObj;
 
-#ifdef ENABLE_CRYPT
-		EntryBase *entry = qobject_cast<EntryBase*> (msgObj->OtherPart ());
-		if (entry &&
-				Entries2Crypt_.contains (entry->GetJID ()))
-		{
-			const QCA::PGPKey& key = PGPManager_->PublicKey (entry->GetJID ());
-
-			if (!key.isNull ())
-			{
-				const QString& body = msg.body ();
-				msg.setBody (tr ("This message is encrypted. Please decrypt "
-								"it to view the original contents."));
-
-				QXmppElement crypt;
-				crypt.setTagName ("x");
-				crypt.setAttribute ("xmlns", "jabber:x:encrypted");
-				crypt.setValue (PGPManager_->EncryptBody (key, body.toUtf8 ()));
-
-				msg.setExtensions (msg.extensions () << crypt);
-			}
-		}
-#endif
+		CryptHandler_->ProcessOutgoing (msg, msgObj);
 
 		Client_->sendPacket (msg);
 	}
@@ -837,18 +782,18 @@ namespace Xoox
 
 	void ClientConnection::FetchVCard (const QString& jid, bool reportErrors)
 	{
-		ScheduleFetchVCard (jid);
+		ScheduleFetchVCard (jid, reportErrors);
 	}
 
 	void ClientConnection::FetchVCard (const QString& jid, VCardCallback_t callback, bool reportErrors)
 	{
 		VCardFetchCallbacks_ [jid] << callback;
-		ScheduleFetchVCard (jid);
+		ScheduleFetchVCard (jid, reportErrors);
 	}
 
 	void ClientConnection::FetchVersion (const QString& jid, bool reportErrors)
 	{
-		VersionQueue_->Schedule (jid);
+		VersionQueue_->Schedule (jid, FetchQueue::Priority::PLow, reportErrors);
 	}
 
 	QXmppBookmarkSet ClientConnection::GetBookmarks () const
@@ -961,49 +906,6 @@ namespace Xoox
 	void ClientConnection::handleDisconnected ()
 	{
 		emit statusChanged (EntryStatus (SOffline, LastState_.Status_));
-	}
-
-	void ClientConnection::handleError (QXmppClient::Error error)
-	{
-		QString str;
-		switch (error)
-		{
-		case QXmppClient::SocketError:
-			if (SocketErrorAccumulator_ < ErrorLimit)
-			{
-				++SocketErrorAccumulator_;
-				str = tr ("socket error: %1.")
-						.arg (Util::GetSocketErrorString (Client_->socketError ()));
-			}
-			break;
-		case QXmppClient::KeepAliveError:
-			str = tr ("keep-alive error.");
-			break;
-		case QXmppClient::XmppStreamError:
-			str = tr ("error while connecting: ");
-			str += ErrorMgr_->HandleErrorCondition (Client_->xmppStreamError ());
-			break;
-		case QXmppClient::NoError:
-			str = tr ("no error.");
-			break;
-		}
-
-		if (str.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "suppressed"
-					<< str
-					<< error
-					<< Client_->socketError ()
-					<< Client_->xmppStreamError ();
-			return;
-		}
-
-		const Entity& e = Util::MakeNotification ("Azoth",
-				tr ("Account %1:").arg (OurJID_) +
-					' ' + str,
-				PCritical_);
-		Core::Instance ().SendEntity (e);
 	}
 
 	void ClientConnection::handleIqReceived (const QXmppIq& iq)
@@ -1144,10 +1046,8 @@ namespace Xoox
 		}
 
 		JID2CLEntry_ [jid]->HandlePresence (pres, resource);
-		if (SignedPresences_.remove (jid))
-		{
-			qDebug () << "got signed presence" << jid;
-		}
+
+		CryptHandler_->HandlePresence (pres, jid, resource);
 	}
 
 	namespace
@@ -1184,8 +1084,7 @@ namespace Xoox
 		QString resource;
 		Split (msg.from (), &jid, &resource);
 
-		if (EncryptedMessages_.contains (msg.from ()))
-			msg.setBody (EncryptedMessages_.take (msg.from ()));
+		CryptHandler_->ProcessIncoming (msg);
 
 		if (AwaitingRIEXItems_.contains (msg.from ()))
 		{
@@ -1211,13 +1110,8 @@ namespace Xoox
 			}
 			HandleMessageForEntry (SelfContact_, msg, resource, this);
 		}
-		else
+		else if (msg.mucInvitationJid ().isEmpty ())
 		{
-			Q_FOREACH (const auto& extension, msg.extensions ())
-				if (extension.tagName () == "x" &&
-						extension.attribute ("xmlns") == "jabber:x:conference")
-					return;
-
 			qWarning () << Q_FUNC_INFO
 					<< "could not find source for"
 					<< msg.from ()
@@ -1384,25 +1278,6 @@ namespace Xoox
 			AwaitingDiscoItems_.take (jid) (iq);
 	}
 
-	void ClientConnection::handleEncryptedMessageReceived (const QString& id,
-			const QString& decrypted)
-	{
-		EncryptedMessages_ [id] = decrypted;
-	}
-
-	void ClientConnection::handleSignedMessageReceived (const QString&)
-	{
-	}
-
-	void ClientConnection::handleSignedPresenceReceived (const QString&)
-	{
-	}
-
-	void ClientConnection::handleInvalidSignatureReceived (const QString& id)
-	{
-		qDebug () << Q_FUNC_INFO << id;
-	}
-
 	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)
 	{
 		QString entryId;
@@ -1426,12 +1301,6 @@ namespace Xoox
 		default:
 			break;
 		}
-	}
-
-	void ClientConnection::decrementErrAccumulators ()
-	{
-		if (SocketErrorAccumulator_ > 0)
-			--SocketErrorAccumulator_;
 	}
 
 	/** @todo Handle action reasons in QXmppPresence::Subscribe and
@@ -1534,38 +1403,61 @@ namespace Xoox
 				Q_ARG (QXmppIq, iq));
 	}
 
-	void ClientConnection::InitializeQCA ()
+	void ClientConnection::setKAParams (const QPair<int, int>& p)
 	{
-#ifdef ENABLE_CRYPT
-		PGPManager_ = new PgpManager ();
+		if (!Client_)
+			return;
 
-		Client_->addExtension (PGPManager_);
-		connect (PGPManager_,
-				SIGNAL (encryptedMessageReceived (QString, QString)),
-				this,
-				SLOT (handleEncryptedMessageReceived (QString, QString)));
-		connect (PGPManager_,
-				SIGNAL (signedMessageReceived (const QString&)),
-				this,
-				SLOT (handleSignedMessageReceived (const QString&)));
-		connect (PGPManager_,
-				SIGNAL (signedPresenceReceived (const QString&)),
-				this,
-				SLOT (handleSignedPresenceReceived (const QString&)));
-		connect (PGPManager_,
-				SIGNAL (invalidSignatureReceived (const QString&)),
-				this,
-				SLOT (handleInvalidSignatureReceived (const QString&)));
-#endif
+		Client_->configuration ().setKeepAliveInterval (p.first);
+		Client_->configuration ().setKeepAliveTimeout (p.second);
 	}
 
-	void ClientConnection::ScheduleFetchVCard (const QString& jid)
+	void ClientConnection::setFileLogging (bool fileLog)
+	{
+		auto type = Client_->logger ()->loggingType ();
+		if (type == QXmppLogger::FileLogging && !fileLog)
+			Client_->logger ()->setLoggingType (QXmppLogger::NoLogging);
+		else if (type == QXmppLogger::NoLogging && fileLog)
+			Client_->logger ()->setLoggingType (QXmppLogger::FileLogging);
+	}
+
+	void ClientConnection::handlePhotoHash ()
+	{
+		if (LastState_.State_ != SOffline)
+			SetState (LastState_);
+	}
+
+	void ClientConnection::handlePriorityChanged (int prio)
+	{
+		LastState_.Priority_ = prio;
+		if (LastState_.State_ != SOffline)
+			SetState (LastState_);
+	}
+
+	void ClientConnection::updateFTSettings ()
+	{
+		auto ft = GetTransferManager ();
+		ft->setSupportedMethods (Settings_->GetFTMethods ());
+		ft->setProxy (Settings_->GetUseSOCKS5Proxy () ? Settings_->GetSOCKS5Proxy () : QString ());
+
+		handleDetectedBSProxy (ServerInfoStorage_->GetBytestreamsProxy ());
+	}
+
+	void ClientConnection::handleDetectedBSProxy (const QString& proxy)
+	{
+		if (Settings_->GetUseSOCKS5Proxy () && !Settings_->GetSOCKS5Proxy ().isEmpty ())
+			return;
+
+		GetTransferManager ()->setProxy (proxy);
+	}
+
+	void ClientConnection::ScheduleFetchVCard (const QString& jid, bool report)
 	{
 		FetchQueue::Priority prio = !JID2CLEntry_.contains (jid) ||
 					JID2CLEntry_ [jid]->GetStatus (QString ()).State_ == SOffline ?
 				FetchQueue::PLow :
 				FetchQueue::PHigh;
-		VCardQueue_->Schedule (jid, prio);
+		VCardQueue_->Schedule (jid, prio, report);
 	}
 
 	GlooxCLEntry* ClientConnection::CreateCLEntry (const QString& jid)
@@ -1585,8 +1477,8 @@ namespace Xoox
 			{
 				entry = new GlooxCLEntry (bareJID, Account_);
 				JID2CLEntry_ [bareJID] = entry;
-				ScheduleFetchVCard (bareJID);
-				FetchVersion (bareJID);
+				ScheduleFetchVCard (bareJID, false);
+				FetchVersion (bareJID, false);
 			}
 		}
 		else

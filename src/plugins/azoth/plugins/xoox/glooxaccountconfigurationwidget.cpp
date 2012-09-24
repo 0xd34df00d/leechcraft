@@ -127,6 +127,45 @@ namespace Xoox
 		Ui_.FileLogCheckbox_->setCheckState (log ? Qt::Checked : Qt::Unchecked);
 	}
 
+	QXmppTransferJob::Methods GlooxAccountConfigurationWidget::GetFTMethods () const
+	{
+		QXmppTransferJob::Methods result;
+		if (Ui_.AllowFileTransferIBB_->checkState () == Qt::Checked)
+			result |= QXmppTransferJob::InBandMethod;
+		if (Ui_.AllowFileTransferSOCKS5_->checkState () == Qt::Checked)
+			result |= QXmppTransferJob::SocksMethod;
+		return result;
+	}
+
+	void GlooxAccountConfigurationWidget::SetFTMethods (QXmppTransferJob::Methods methods)
+	{
+		const bool ibb = methods & QXmppTransferJob::InBandMethod;
+		Ui_.AllowFileTransferIBB_->setCheckState (ibb ? Qt::Checked : Qt::Unchecked);
+
+		const bool socks = methods & QXmppTransferJob::SocksMethod;
+		Ui_.AllowFileTransferSOCKS5_->setCheckState (socks ? Qt::Checked : Qt::Unchecked);
+	}
+
+	bool GlooxAccountConfigurationWidget::GetUseSOCKS5Proxy () const
+	{
+		return Ui_.UseSOCKS5Proxy_->isChecked ();
+	}
+
+	void GlooxAccountConfigurationWidget::SetUseSOCKS5Proxy (bool use)
+	{
+		Ui_.UseSOCKS5Proxy_->setChecked (use);
+	}
+
+	QString GlooxAccountConfigurationWidget::GetSOCKS5Proxy () const
+	{
+		return Ui_.SOCKS5ProxyAddress_->text ();
+	}
+
+	void GlooxAccountConfigurationWidget::SetSOCKS5Proxy (const QString& proxy)
+	{
+		Ui_.SOCKS5ProxyAddress_->setText (proxy);
+	}
+
 	QString GlooxAccountConfigurationWidget::GetPassword () const
 	{
 		return Password_;
