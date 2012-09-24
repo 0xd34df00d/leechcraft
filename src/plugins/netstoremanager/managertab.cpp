@@ -277,10 +277,7 @@ namespace NetStoreManager
 					children << parentItem->child (i);
 			}
 
-			auto tempItems = parents;
-			parents = children;
-			children = tempItems;
-
+			std::swap (parents, children);
 			children.clear ();
 		}
 
@@ -301,7 +298,7 @@ namespace NetStoreManager
 		}
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
 		const bool trashSupporting = sfl &&
-				sfl->GetListingOps () & ListingOp::TrashSupporing;
+				sfl->GetListingOps () & ListingOp::TrashSupporting;
 
 		QStandardItem *trashItem = new QStandardItem (Proxy_->GetIcon ("user-trash"),
 				tr ("Trash"));
@@ -335,11 +332,25 @@ namespace NetStoreManager
 	void ManagerTab::handleGotNewItem (const QList<QStandardItem*>& item,
 			const QStringList& parentId)
 	{
-		QStandardItem *parentItem = GetItemFromId (parentId);
-		if (!parentItem)
-			Model_->appendRow (item);
+		QStandardItem *thisItem = GetItemFromId (item [0]->data (ListingRole::ID).toStringList ());
+		if (thisItem)
+		{
+			const QModelIndex index = Model_->indexFromItem (thisItem);
+			const int columnCount = index.parent ().isValid () ?
+				thisItem->parent ()->columnCount () :
+				Model_->columnCount ();
+
+			for (int i = 0; i < columnCount; ++i)
+				Model_->setData (index.sibling (index.row (), i), item.value (i)->text ());
+		}
 		else
-			parentItem->appendRow (item);
+		{
+			QStandardItem *parentItem = GetItemFromId (parentId);
+			if (!parentItem)
+				Model_->appendRow (item);
+			else
+				parentItem->appendRow (item);
+		}
 	}
 
 	void ManagerTab::flCopyURL ()
@@ -444,7 +455,6 @@ namespace NetStoreManager
 
 		QModelIndex idx = Ui_.FilesTree_->currentIndex ();
 		idx = idx.sibling (idx.row (), Columns::FirstColumnNumber);
-		QStringList id = idx.data (ListingRole::ID).toStringList ();
 
 		acc->Download (idx.data (ListingRole::ID).toStringList (), "");
 	}
@@ -464,7 +474,7 @@ namespace NetStoreManager
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
 		DeleteFile_->setEnabled (sfl->GetListingOps () & ListingOp::Delete);
-		MoveToTrash_->setEnabled (sfl->GetListingOps () & ListingOp::TrashSupporing);
+		MoveToTrash_->setEnabled (sfl->GetListingOps () & ListingOp::TrashSupporting);
 	}
 
 	void ManagerTab::on_Update__released ()

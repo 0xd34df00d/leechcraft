@@ -38,13 +38,13 @@ namespace Blogique
 	public:
 		virtual ~IBlogiqueSideWidget () {};
 
-		/** @brief returns human readable name of widget.
+		/** @brief Returns human readable name of widget.
 		*
-		* @return a human readable widget name.
+		* @return A human readable widget name.
 		**/
 		virtual QString GetName () const = 0;
 
-		/** @brief returns a type of blogique side widget.
+		/** @brief Returns a type of blogique side widget.
 		*
 		* If type of widget is SideWidgetType::PostOptionsSideWidget widget should
 		* implement IPostOptionsWidget interface and ICustomSideWidget interface

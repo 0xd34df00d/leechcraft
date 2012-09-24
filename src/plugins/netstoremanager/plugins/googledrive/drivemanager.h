@@ -148,12 +148,13 @@ namespace GoogleDrive
 		void ShareEntry (const QString& id);
 		void Upload (const QString& filePath,
 				const QStringList& parentId = QStringList ());
-		void Download (const QString& id, const QString& filePath);
+		void Download (const QString& id, const QString& filePath, bool silent);
 
 		void CreateDirectory (const QString& name,
 				const QString& parentId = QString ());
 		void Copy (const QString& id, const QString& parentId);
 		void Move (const QString& id, const QString& parentId);
+		void Rename (const QString& id, const QString& newName);
 
 		void RequestFileChanges (qlonglong startId);
 	private:
@@ -172,7 +173,11 @@ namespace GoogleDrive
 				const QString& parentId, const QString& key);
 		void GetFileChanges (qlonglong startId, const QString& key);
 		void RequestFileInfo (const QString& id, const QString& key);
-		void DownloadFile (const QString& filePath, const QUrl& url);
+		void RequestRenameItem (const QString& id,
+				const QString& name,  const QString& key);
+
+		void DownloadFile (const QString& filePath, const QUrl& url,
+				bool silent = false);
 
 		void FindSyncableItems (const QStringList& pathes,
 				const QString& baseDir, const QList<DriveItem>& items);
@@ -196,6 +201,7 @@ namespace GoogleDrive
 		void handleMoveItem ();
 		void handleGetFileChanges ();
 		void handleGetFileInfo ();
+		void handleItemRenamed ();
 
 	signals:
 		void gotFiles (const QList<DriveItem>& items);

@@ -47,7 +47,7 @@ namespace NetStoreManager
 	public:
 		FilesWatcher (QObject *parent = 0);
 
-		Q_INVOKABLE bool AddPath (QString path, bool baseDir = false);
+		Q_INVOKABLE bool AddPath (QString path);
 		Q_INVOKABLE void AddPathes (QStringList pathes);
 
 		Q_INVOKABLE void Release ();
@@ -55,7 +55,7 @@ namespace NetStoreManager
 	private:
 		void HandleNotification (int descriptor);
 		void AddPathWithNotify (const QString& path);
-		bool IsInExceptionList (const QString& path);
+		bool IsInExceptionList (const QString& path) const;
 		void RemoveWatchingPath (int descriptor);
 
 	public slots:

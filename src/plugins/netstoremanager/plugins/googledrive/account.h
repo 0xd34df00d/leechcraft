@@ -54,7 +54,6 @@ namespace GoogleDrive
 
 		DriveManager *DriveManager_;
 		QHash<QString, DriveItem> Items_;
-		Syncer *Syncer_;
 
 	public:
 		Account (const QString& name, QObject *parentPlugin = 0);
@@ -65,10 +64,13 @@ namespace GoogleDrive
 		AccountFeatures GetAccountFeatures () const;
 		QString GetAccountName () const;
 		void Upload (const QString& filepath,
-				const QStringList& parentId = QStringList ());
-		void Download (const QStringList& id, const QString& filepath);
+				const QStringList& parentId = QStringList (),
+				UploadType ut = UploadType::Upload,
+				const QStringList& id = QStringList ());
+		void Download (const QStringList& id, const QString& filepath,
+				bool silent = false);
 
-		void Delete (const QList<QStringList>& id);
+		void Delete (const QList<QStringList>& id, bool ask = true);
 		QStringList GetListingHeaders () const;
 		ListingOps GetListingOps () const;
 		void MoveToTrash (const QList<QStringList>& ids);
@@ -79,9 +81,7 @@ namespace GoogleDrive
 		void CreateDirectory (const QString& name, const QStringList& parentId);
 		void Copy (const QStringList& id, const QStringList& newParentId);
 		void Move (const QStringList& id, const QStringList& newParentId);
-
-		void RequestFileChanges ();
-		void CheckForSyncUpload (const QStringList& pathes, const QString& baseDir);
+		void Rename (const QStringList& id, const QString& newName);
 
 		QByteArray Serialize ();
 		static Account_ptr Deserialize (const QByteArray& data, QObject *parentPlugin);

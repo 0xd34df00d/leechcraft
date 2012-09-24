@@ -39,6 +39,15 @@ namespace NetStoreManager
 	class IStorageAccount;
 	class AccountsManager;
 
+	struct DownloadParams
+	{
+		DownloadParams () : Account_ (0) {};
+		IStorageAccount *Account_;
+		QString Path_;
+		QString LocalHash_;
+		QString RemoteHash_;
+	};
+
 	class SyncManager : public QObject
 	{
 		Q_OBJECT
@@ -52,11 +61,18 @@ namespace NetStoreManager
 
 		QMap<ISupportFileListings*, QMap<QString, QStringList>> Isfl2PathId_;
 		QQueue<std::function<void (void)>> ApiCallQueue_;
+		QTimer *QueueCheckTimer_;
 
+		const int RemoteStorageCheckingTimeout_;
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
 
 		void Release ();
+	private:
+		void CreateDirectory (const QString& path);
+		void DownloadFile (const QString& path, const QStringList& id,
+				const QDateTime& modifiedDate, const QString& hash,
+				IStorageAccount *isa);
 
 	public slots:
 		void handleDirectoryAdded (const QVariantMap& dirs);
@@ -75,6 +91,14 @@ namespace NetStoreManager
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
 		void handleGotNewItem (const QList<QStandardItem*>& item,
 				const QStringList& parentId);
+
+		void checkApiCallQueue ();
+
+		void finishedHashCounting (const DownloadParams& params = DownloadParams ());
+
+	signals:
+		void uploadRequested (IStorageAccount *account,
+				const QString& fileName, const QStringList& parentId);
 	};
 }
 }

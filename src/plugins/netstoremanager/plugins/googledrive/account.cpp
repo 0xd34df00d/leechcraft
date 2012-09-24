@@ -26,7 +26,6 @@
 #include "core.h"
 #include "uploadmanager.h"
 #include "xmlsettingsmanager.h"
-#include "syncer.h"
 
 namespace LeechCraft
 {
@@ -40,7 +39,6 @@ namespace GoogleDrive
 	, Name_ (name)
 	, Trusted_ (false)
 	, DriveManager_ (new DriveManager (this, this))
-	, Syncer_ (new Syncer (DriveManager_, this))
 	{
 		connect (DriveManager_,
 				SIGNAL (gotFiles (const QList<DriveItem>&)),
@@ -81,10 +79,11 @@ namespace GoogleDrive
 		return Name_;
 	}
 
-	void Account::Upload (const QString& filepath, const QStringList& parentId)
+	void Account::Upload (const QString& filepath, const QStringList& parentId,
+			UploadType ut, const QStringList& id)
 	{
 		auto uploadManager = new UploadManager (filepath,
-				UploadType::Upload, parentId, this);
+				ut, parentId, this, id);
 
 		connect (uploadManager,
 				SIGNAL (uploadProgress (quint64, quint64, QString)),
@@ -104,14 +103,27 @@ namespace GoogleDrive
 				SIGNAL (upStatusChanged (QString, QString)));
 	}
 
-	void Account::Download (const QStringList& id, const QString& filepath)
+	void Account::Download (const QStringList& id, const QString& filepath,
+			bool silent)
 	{
-		DriveManager_->Download (id [0], filepath);
+		if (id.isEmpty ())
+			return;
+
+		DriveManager_->Download (id.value (0), filepath, silent);
 	}
 
-	void Account::Delete (const QList<QStringList>& id)
+	void Account::Delete (const QList<QStringList>& ids, bool ask)
 	{
-		const QString& itemId = id [0] [0];
+		if (ids.isEmpty ())
+			return;
+
+		const QString& itemId = ids.value (0).value (0);
+		if (!ask)
+		{
+			DriveManager_->RemoveEntry (itemId);
+			return;
+		}
+
 		auto res = QMessageBox::warning (Core::Instance ().GetProxy ()->GetMainWindow (),
 				tr ("Remove item"),
 				tr ("Are you sure you want to delete %1? This action cannot be undone."
@@ -133,23 +145,27 @@ namespace GoogleDrive
 
 	ListingOps Account::GetListingOps () const
 	{
-		return ListingOp::Delete | ListingOp::TrashSupporing | ListingOp::DirectorySupport;
+		return ListingOp::Delete | ListingOp::TrashSupporting | ListingOp::DirectorySupport;
 	}
 
 	void Account::MoveToTrash (const QList<QStringList>& ids)
 	{
-		DriveManager_->MoveEntryToTrash (ids [0] [0]);
+		if (ids.isEmpty ())
+			return;
+		DriveManager_->MoveEntryToTrash (ids.value (0).value (0));
 	}
 
 	void Account::RestoreFromTrash (const QList<QStringList>& ids)
 	{
-		DriveManager_->RestoreEntryFromTrash (ids [0] [0]);
+		if (ids.isEmpty ())
+			return;
+		DriveManager_->RestoreEntryFromTrash (ids.value (0).value (0));
 	}
 
 	void Account::EmptyTrash (const QList<QStringList>& ids)
 	{
 		for (const auto& id : ids)
-			DriveManager_->RemoveEntry (id [0]);
+			DriveManager_->RemoveEntry (id.value (0));
 	}
 
 	void Account::RefreshListing ()
@@ -157,8 +173,11 @@ namespace GoogleDrive
 		DriveManager_->RefreshListing ();
 	}
 
-	void Account::RequestUrl (const QList<QStringList>& id)
+	void Account::RequestUrl (const QList<QStringList>& ids)
 	{
+		if (ids.isEmpty ())
+			return;
+
 		if (!XmlSettingsManager::Instance ().property ("AutoShareOnUrlRequest").toBool ())
 		{
 			QMessageBox mbox (QMessageBox::Question,
@@ -177,33 +196,35 @@ namespace GoogleDrive
 				XmlSettingsManager::Instance ().setProperty ("AutoShareOnUrlRequest", true);
 		}
 
-		DriveManager_->ShareEntry (id [0] [0]);
+		DriveManager_->ShareEntry (ids.value (0).value (0));
 	}
 
 	void Account::CreateDirectory (const QString& name, const QStringList& parentId)
 	{
+		if (name.isEmpty ())
+			return;
 		DriveManager_->CreateDirectory (name, parentId.value (0));
 	}
 
 	void Account::Copy (const QStringList& id, const QStringList& newParentId)
 	{
+		if (id.isEmpty ())
+			return;
 		DriveManager_->Copy (id [0], newParentId.value (0));
 	}
 
 	void Account::Move (const QStringList& id, const QStringList& newParentId)
 	{
+		if (id.isEmpty ())
+			return;
 		DriveManager_->Move (id [0], newParentId.value (0));
 	}
 
-	void Account::RequestFileChanges ()
+	void Account::Rename (const QStringList& id, const QString& newName)
 	{
-		Syncer_->CheckRemoteStorage ();
-	}
-
-	void Account::CheckForSyncUpload (const QStringList& pathes,
-			const QString& baseDir)
-	{
-		Syncer_->CheckLocalStorage (pathes, baseDir);
+		if (id.isEmpty ())
+			return;
+		DriveManager_->Rename (id.value (0), newName);
 	}
 
 	QByteArray Account::Serialize ()
@@ -281,6 +302,8 @@ namespace GoogleDrive
 				row [0]->setData (item.Id_, ListingRole::ID);
 				row [0]->setData (static_cast<bool> (item.Labels_ & DriveItem::ILRemoved),
 						ListingRole::InTrash);
+				row [0]->setData (item.ModifiedDate_, ListingRole::ModifiedDate);
+				row [0]->setData (item.Md5_, ListingRole::Hash);
 
 				if (!item.IsFolder_)
 				{

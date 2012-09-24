@@ -78,6 +78,7 @@ namespace GoogleDrive
 		void accountAdded (QObject *accObj);
 		void accountRemoved (QObject *accObj);
 		void gotEntity (const LeechCraft::Entity& e);
+		void delegateEntity (const LeechCraft::Entity& entity, int *id, QObject **provider);
 	};
 }
 }

@@ -32,14 +32,16 @@ namespace NetStoreManager
 	{
 		ID = Qt::UserRole + 20,
 		InTrash,
-		Directory
+		Directory,
+		ModifiedDate,
+		Hash
 	};
 
 	enum ListingOp
 	{
 		NoneOp = 0x00,
 		Delete = 0x01,
-		TrashSupporing = 0x02,
+		TrashSupporting = 0x02,
 		DirectorySupport = 0x04
 	};
 
@@ -55,7 +57,7 @@ namespace NetStoreManager
 		virtual void RefreshListing () = 0;
 		virtual QStringList GetListingHeaders () const = 0;
 
-		virtual void Delete (const QList<QStringList>& id) = 0;
+		virtual void Delete (const QList<QStringList>& id, bool ask = true) = 0;
 		virtual void MoveToTrash (const QList<QStringList>& id) = 0;
 		virtual void RestoreFromTrash (const QList<QStringList>& id) = 0;
 		virtual void EmptyTrash (const QList<QStringList>& id) = 0;
@@ -63,9 +65,8 @@ namespace NetStoreManager
 		virtual void CreateDirectory (const QString& name, const QStringList& parentId) = 0;
 		virtual void Copy (const QStringList& id, const QStringList& newParentId) = 0;
 		virtual void Move (const QStringList& id, const QStringList& newParentId) = 0;
+		virtual void Rename (const QStringList& id, const QString& newName) = 0;
 
-		virtual void RequestFileChanges () = 0;
-		virtual void CheckForSyncUpload (const QStringList& pathes, const QString& baseDir) = 0;
 	protected:
 		virtual void gotListing (const QList<QList<QStandardItem*>>&) = 0;
 		virtual void gotFileUrl (const QUrl& url, const QStringList& id) = 0;
