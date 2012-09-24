@@ -99,6 +99,9 @@ namespace Azoth
 		void expandIndex (const QPersistentModelIndex&);
 		void on_CLTree__expanded (const QModelIndex&);
 		void on_CLTree__collapsed (const QModelIndex&);
+		void on_CLTree__keyPressed (const QChar&);
+		void on_CLTree__escPressed ();
+		void on_FilterLine__textChanged (const QString&);
 	signals:
 		void gotConsoleWidget (ConsoleWidget*);
 		void gotSDWidget (ServiceDiscoveryWidget*);
