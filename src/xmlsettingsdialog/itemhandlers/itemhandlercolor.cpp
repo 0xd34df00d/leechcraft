@@ -92,7 +92,7 @@ namespace LeechCraft
 		element.setAttribute ("default", value.value<QColor> ().name ());
 	}
 
-	QVariant ItemHandlerColor::GetValue (QObject *object) const
+	QVariant ItemHandlerColor::GetObjectValue (QObject *object) const
 	{
 		ColorPicker *colorPicker = qobject_cast<ColorPicker*> (object);
 		if (!colorPicker)

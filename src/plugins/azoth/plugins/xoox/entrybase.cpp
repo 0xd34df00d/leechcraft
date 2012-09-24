@@ -427,7 +427,6 @@ namespace Xoox
 				CurrentStatus_ [variant].State_ == SOffline :
 				false;
 
-		qDebug () << "SetStatus" << this << variant << presence.priority () << Variant2ClientInfo_.value (variant).value ("priority");
 		if (existed &&
 				status == CurrentStatus_ [variant] &&
 				presence.priority () == Variant2ClientInfo_.value (variant).value ("priority"))
@@ -618,7 +617,6 @@ namespace Xoox
 		auto capsManager = Account_->GetClientConnection ()->GetCapsManager ();
 		const auto& storedIds = capsManager->GetIdentities (ver);
 
-		qDebug () << "known stored identities for" << ver.toHex () << GetJID () << storedIds.size ();
 		if (!storedIds.isEmpty ())
 			SetDiscoIdentities (reqVar, storedIds);
 		else

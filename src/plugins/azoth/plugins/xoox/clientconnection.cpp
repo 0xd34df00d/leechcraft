@@ -121,19 +121,19 @@ namespace Xoox
 					const auto& id = Client_->vCardManager ().requestVCard (str);
 					ErrorMgr_->Whitelist (id, report);
 				},
-				OurJID_.contains ("gmail.com") ? 1700 : 300, 1, this))
+				OurJID_.contains ("gmail.com") ? 1700 : 600, 1, this))
 	, CapsQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = DiscoveryManager_->requestInfo (str, "");
 					ErrorMgr_->Whitelist (id, report);
 				},
-				OurJID_.contains ("gmail.com") ? 1000 : 200, 1, this))
+				OurJID_.contains ("gmail.com") ? 1000 : 400, 1, this))
 	, VersionQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = Client_->versionManager ().requestVersion (str);
 					ErrorMgr_->Whitelist (id, report);
 				},
-				OurJID_.contains ("gmail.com") ? 1200 : 250, 1, this))
+				OurJID_.contains ("gmail.com") ? 2000 : 1000, 1, this))
 	{
 		SetOurJID (OurJID_);
 
@@ -782,18 +782,18 @@ namespace Xoox
 
 	void ClientConnection::FetchVCard (const QString& jid, bool reportErrors)
 	{
-		ScheduleFetchVCard (jid);
+		ScheduleFetchVCard (jid, reportErrors);
 	}
 
 	void ClientConnection::FetchVCard (const QString& jid, VCardCallback_t callback, bool reportErrors)
 	{
 		VCardFetchCallbacks_ [jid] << callback;
-		ScheduleFetchVCard (jid);
+		ScheduleFetchVCard (jid, reportErrors);
 	}
 
 	void ClientConnection::FetchVersion (const QString& jid, bool reportErrors)
 	{
-		VersionQueue_->Schedule (jid);
+		VersionQueue_->Schedule (jid, FetchQueue::Priority::PLow, reportErrors);
 	}
 
 	QXmppBookmarkSet ClientConnection::GetBookmarks () const
@@ -1451,13 +1451,13 @@ namespace Xoox
 		GetTransferManager ()->setProxy (proxy);
 	}
 
-	void ClientConnection::ScheduleFetchVCard (const QString& jid)
+	void ClientConnection::ScheduleFetchVCard (const QString& jid, bool report)
 	{
 		FetchQueue::Priority prio = !JID2CLEntry_.contains (jid) ||
 					JID2CLEntry_ [jid]->GetStatus (QString ()).State_ == SOffline ?
 				FetchQueue::PLow :
 				FetchQueue::PHigh;
-		VCardQueue_->Schedule (jid, prio);
+		VCardQueue_->Schedule (jid, prio, report);
 	}
 
 	GlooxCLEntry* ClientConnection::CreateCLEntry (const QString& jid)
@@ -1477,8 +1477,8 @@ namespace Xoox
 			{
 				entry = new GlooxCLEntry (bareJID, Account_);
 				JID2CLEntry_ [bareJID] = entry;
-				ScheduleFetchVCard (bareJID);
-				FetchVersion (bareJID);
+				ScheduleFetchVCard (bareJID, false);
+				FetchVersion (bareJID, false);
 			}
 		}
 		else

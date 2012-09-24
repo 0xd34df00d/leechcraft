@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "documentadapter.h"
+#include <cmath>
 #include <QTextDocument>
 #include <QPainter>
 #include <QtDebug>

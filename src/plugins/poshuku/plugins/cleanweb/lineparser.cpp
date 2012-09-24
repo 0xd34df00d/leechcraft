@@ -18,7 +18,6 @@
 
 #include "lineparser.h"
 #include <QtDebug>
-#include <boost/graph/graph_concepts.hpp>
 #include "filter.h"
 
 namespace LeechCraft
@@ -44,54 +43,12 @@ namespace CleanWeb
 		return Success_;
 	}
 
-	void LineParser::operator() (const QString& line)
+	namespace
 	{
-		if (line.startsWith ('!'))
-			return;
-
-		++Total_;
-
-		QString actualLine = line;
-		FilterOption f = FilterOption ();
-		bool cs = false;
-
-		if (actualLine.contains ("##"))
+		QStringList ParseOptions (QStringList options, FilterOption& f)
 		{
-			const auto& split = actualLine.split ("##");
-			if (split.size () != 2)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "incorrect usage of ##-pattern:"
-					<< split.size ()
-					<< line;
-				return;
-			}
-
-			actualLine = split.at (0);
-			f.HideSelector_ = split.at (1);
-		}
-
-		if (actualLine.contains ('$'))
-		{
-			const auto& splitted = actualLine.split ('$', QString::SkipEmptyParts);
-
-			if (splitted.size () != 2)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "incorrect usage of $-pattern:"
-					<< splitted.size ()
-					<< actualLine;
-				return;
-			}
-
-			actualLine = splitted.at (0);
-			auto options = splitted.at (1).split (',', QString::SkipEmptyParts);
-
 			if (options.removeAll ("match-case"))
-			{
 				f.Case_ = Qt::CaseSensitive;
-				cs = true;
-			}
 
 			if (options.removeAll ("third-party"))
 				f.AbortForeign_ = true;
@@ -126,12 +83,178 @@ namespace CleanWeb
 			handleSubobj ("xmlhttprequest", FilterOption::MatchObject::AJAX);
 			handleSubobj ("popup", FilterOption::MatchObject::Popup);
 
-			if (options.size ())
+			return options;
+		}
+
+		void ParseWithOption (QString actualLine, FilterOption f, QList<FilterItem>& items)
+		{
+			if (actualLine.startsWith ('/') &&
+					actualLine.endsWith ('/'))
+			{
+				actualLine = actualLine.mid (1, actualLine.size () - 2);
+				f.MatchType_ = FilterOption::MTRegexp;
+				const FilterItem item
+				{
+					actualLine.toUtf8 (),
+					RegExp (actualLine, f.Case_),
+					QByteArrayMatcher (),
+					f
+				};
+				items << item;
+				return;
+			}
+
+			while (!actualLine.isEmpty () && actualLine.at (0) == '*')
+				actualLine = actualLine.mid (1);
+			while (!actualLine.isEmpty () && actualLine.at (actualLine.size () - 1) == '*')
+				actualLine.chop (1);
+
+			if (actualLine.startsWith ("||"))
+			{
+				auto spawned = "." + actualLine.mid (2);
+				if (f.Case_ == Qt::CaseInsensitive)
+					spawned = spawned.toLower ();
+				f.MatchType_ = FilterOption::MTPlain;
+				ParseWithOption (spawned, f, items);
+
+				actualLine = actualLine.mid (2);
+				actualLine.prepend ('/');
+			}
+
+			if (actualLine.endsWith ('|') && actualLine.startsWith ('|'))
+				actualLine = actualLine.mid (1, actualLine.size () - 2);
+			else if (actualLine.endsWith ('|'))
+			{
+				actualLine.chop (1);
+				if (actualLine.contains ('*'))
+				{
+					actualLine.prepend ('*');
+					f.MatchType_ = FilterOption::MTWildcard;
+				}
+				else
+					f.MatchType_ = FilterOption::MTEnd;
+			}
+			else if (actualLine.startsWith ('|'))
+			{
+				actualLine.remove (0, 1);
+				if (actualLine.contains ('*'))
+				{
+					actualLine.append ('*');
+					f.MatchType_ = FilterOption::MTWildcard;
+				}
+				else
+					f.MatchType_ = FilterOption::MTBegin;
+			}
+			else
+			{
+				if (actualLine.contains ('*'))
+				{
+					actualLine.prepend ('*');
+					actualLine.append ('*');
+					f.MatchType_ = FilterOption::MTWildcard;
+				}
+				else
+					f.MatchType_ = FilterOption::MTPlain;
+			}
+
+			if (f.MatchType_ == FilterOption::MTWildcard)
+				actualLine.replace ('?', "\\?");
+
+			if (f.MatchType_ != FilterOption::MTRegexp && actualLine.contains ('^'))
+			{
+				if (!RegExp::IsFast ())
+					return;
+
+				actualLine.replace ('*', ".*");
+				if (f.MatchType_ != FilterOption::MTWildcard)
+					actualLine.replace ('?', "\\?");
+				switch (f.MatchType_)
+				{
+				case FilterOption::MTEnd:
+					actualLine.prepend (".*");
+					break;
+				case FilterOption::MTBegin:
+					actualLine.append (".*");
+					break;
+				case FilterOption::MTPlain:
+					actualLine.prepend (".*");
+					actualLine.append (".*");
+					break;
+				case FilterOption::MTWildcard:
+				case FilterOption::MTRegexp:
+					break;
+				}
+				actualLine.replace ('^', "[^a-zA-Z0-9_\\.%-]");
+				f.MatchType_ = FilterOption::MTRegexp;
+			}
+
+			const auto& itemRx = f.MatchType_ == FilterOption::MTRegexp ?
+					RegExp (actualLine, f.Case_) :
+					RegExp ();
+			const QByteArrayMatcher matcher = f.MatchType_ == FilterOption::MTPlain ?
+					QByteArrayMatcher (actualLine.toUtf8 ()) :
+					QByteArrayMatcher ();
+			const FilterItem item
+			{
+				(f.Case_ == Qt::CaseSensitive ? actualLine : actualLine.toLower ()).toUtf8 (),
+				itemRx,
+				matcher,
+				f
+			};
+
+			items << item;
+		}
+	}
+
+	void LineParser::operator() (const QString& line)
+	{
+		if (line.startsWith ('!'))
+			return;
+
+		++Total_;
+
+		QString actualLine = line;
+		QStringList additionalLines;
+		FilterOption f = FilterOption ();
+
+		if (actualLine.contains ("##"))
+		{
+			const auto& split = actualLine.split ("##");
+			if (split.size () != 2)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "incorrect usage of ##-pattern:"
+					<< split.size ()
+					<< line;
+				return;
+			}
+
+			actualLine = split.at (0);
+			f.HideSelector_ = split.at (1);
+		}
+
+		if (actualLine.contains ('$'))
+		{
+			const auto& splitted = actualLine.split ('$', QString::SkipEmptyParts);
+
+			if (splitted.size () != 2)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "incorrect usage of $-pattern:"
+					<< splitted.size ()
+					<< actualLine;
+				return;
+			}
+
+			actualLine = splitted.at (0);
+
+			const auto& remaining = ParseOptions (splitted.at (1).split (',', QString::SkipEmptyParts), f);
+			if (remaining.size ())
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "unsupported options for filter"
 						<< actualLine
-						<< options;
+						<< remaining;
 				return;
 			}
 		}
@@ -143,86 +266,7 @@ namespace CleanWeb
 			white = true;
 		}
 
-		if (actualLine.startsWith ('/') &&
-				actualLine.endsWith ('/'))
-		{
-			actualLine = actualLine.mid (1, actualLine.size () - 2);
-			f.MatchType_ = FilterOption::MTRegexp;
-		}
-		else
-		{
-			while (!actualLine.isEmpty () && actualLine.at (0) == '*')
-				actualLine = actualLine.mid (1);
-			while (!actualLine.isEmpty () && actualLine.at (actualLine.size () - 1) == '*')
-				actualLine.chop (1);
-
-			if (actualLine.startsWith ("||"))
-			{
-				auto spawned = "." + actualLine.mid (2);
-				if (!cs)
-					spawned = spawned.toLower ();
-
-				f.MatchType_ = FilterOption::MTPlain;
-				const FilterItem item { spawned.toUtf8 (), QRegExp (), QByteArrayMatcher (spawned.toUtf8 ()), f };
-				if (white)
-					Filter_->Exceptions_ << item;
-				else
-					Filter_->Filters_ << item;
-
-				actualLine = actualLine.mid (2);
-				actualLine.prepend ('/');
-			}
-			else if (actualLine.endsWith ('|') && actualLine.startsWith ('|'))
-				actualLine = actualLine.mid (1, actualLine.size () - 2);
-			else if (actualLine.endsWith ('|'))
-			{
-				actualLine.chop (1);
-				if (actualLine.contains ('*'))
-					actualLine.prepend ('*');
-				else
-					f.MatchType_ = FilterOption::MTEnd;
-			}
-			else if (actualLine.startsWith ('|'))
-			{
-				actualLine.remove (0, 1);
-				if (actualLine.contains ('*'))
-					actualLine.append ('*');
-				else
-					f.MatchType_ = FilterOption::MTBegin;
-			}
-			else
-			{
-				if (actualLine.contains ('*'))
-				{
-					actualLine.prepend ('*');
-					actualLine.append ('*');
-				}
-				else
-					f.MatchType_ = FilterOption::MTPlain;
-			}
-
-			if (f.MatchType_ == FilterOption::MTWildcard)
-				actualLine.replace ('?', "\\?");
-		}
-
-		const auto& itemRx = f.MatchType_ == FilterOption::MTRegexp ?
-				QRegExp (actualLine, f.Case_, QRegExp::RegExp) :
-				QRegExp ();
-		const QByteArrayMatcher matcher = f.MatchType_ == FilterOption::MTPlain ?
-				QByteArrayMatcher (actualLine.toUtf8 ()) :
-				QByteArrayMatcher ();
-		const FilterItem item
-		{
-			(cs ? actualLine : actualLine.toLower ()).toUtf8 (),
-			itemRx,
-			matcher,
-			f
-		};
-
-		if (white)
-			Filter_->Exceptions_ << item;
-		else
-			Filter_->Filters_ << item;
+		ParseWithOption (actualLine, f, white ? Filter_->Exceptions_ : Filter_->Filters_);
 
 		++Success_;
 	}

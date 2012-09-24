@@ -73,7 +73,7 @@ namespace LeechCraft
 		checkbox->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
 	}
 
-	QVariant ItemHandlerCheckbox::GetValue (QObject *object) const
+	QVariant ItemHandlerCheckbox::GetObjectValue (QObject *object) const
 	{
 		QCheckBox *checkbox = qobject_cast<QCheckBox*> (object);
 		if (!checkbox)

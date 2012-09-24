@@ -91,7 +91,7 @@ namespace LeechCraft
 		radiogroup->SetValue (value.toString ());
 	}
 
-	QVariant ItemHandlerRadio::GetValue (QObject *object) const
+	QVariant ItemHandlerRadio::GetObjectValue (QObject *object) const
 	{
 		RadioGroup *radiogroup = qobject_cast<RadioGroup*> (object);
 		if (!radiogroup)

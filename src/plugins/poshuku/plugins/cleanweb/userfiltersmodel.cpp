@@ -164,8 +164,8 @@ namespace CleanWeb
 	bool UserFiltersModel::Add (const RuleOptionDialog& dia)
 	{
 		const auto& itemRx = dia.GetType () == FilterOption::MTRegexp ?
-				QRegExp (dia.GetString (), dia.GetCase (), QRegExp::RegExp) :
-				QRegExp ();
+				RegExp (dia.GetString (), dia.GetCase ()) :
+				RegExp ();
 		FilterOption fo;
 		fo.Case_ = dia.GetCase ();
 		fo.MatchType_ = dia.GetType ();

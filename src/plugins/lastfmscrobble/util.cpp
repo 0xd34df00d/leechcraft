@@ -18,6 +18,7 @@
 
 #include "util.h"
 #include <algorithm>
+#include <numeric>
 #include <QCryptographicHash>
 #include <QUrl>
 #include <QDomElement>

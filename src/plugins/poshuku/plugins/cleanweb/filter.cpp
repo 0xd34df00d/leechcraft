@@ -92,9 +92,10 @@ namespace CleanWeb
 
 	QDataStream& operator<< (QDataStream& out, const FilterItem& item)
 	{
-		out << static_cast<quint8> (1)
+		out << static_cast<quint8> (2)
 			<< item.OrigString_
-			<< item.RegExp_
+			<< item.RegExp_.GetPattern ()
+			<< static_cast<quint8> (item.RegExp_.GetCaseSensitivity ())
 			<< item.Option_;
 		return out;
 	}
@@ -103,7 +104,7 @@ namespace CleanWeb
 	{
 		quint8 version = 0;
 		in >> version;
-		if (version != 1)
+		if (version < 1 || version > 2)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -111,9 +112,21 @@ namespace CleanWeb
 			return in;
 		}
 
-		in >> item.OrigString_
-			>> item.RegExp_
-			>> item.Option_;
+		in >> item.OrigString_;
+		if (version == 1)
+		{
+			QRegExp rx;
+			in >> rx;
+			item.RegExp_ = RegExp (rx.pattern (), rx.caseSensitivity ());
+		}
+		else if (version == 2)
+		{
+			QString str;
+			quint8 cs;
+			in >> str >> cs;
+			item.RegExp_ = RegExp (str, static_cast<Qt::CaseSensitivity> (cs));
+		}
+		in >> item.Option_;
 		return in;
 	}
 
