@@ -134,7 +134,8 @@ namespace Azoth
 		Ui_.setupUi (this);
 		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.FilterLine_);
 		Ui_.FilterLine_->setPlaceholderText (tr ("Search..."));
-		Ui_.FilterLine_->setVisible (false);
+		XmlSettingsManager::Instance ().RegisterObject ("ShowSearchBar", this, "showSearchBarParamChanged");
+		showSearchBarParamChanged ();
 
 		Ui_.FilterLine_->installEventFilter (new KeyboardRosterFixer (Ui_.CLTree_, this));
 
@@ -231,15 +232,23 @@ namespace Azoth
 		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
 	}
 	
+	void MainWidget::showSearchBarParamChanged ()
+	{
+		Ui_.FilterLine_->setVisible (XmlSettingsManager::Instance ()
+				.property ("ShowSearchBar").toBool ());
+	}
+	
 	void MainWidget::on_FilterLine__textChanged (const QString& text)
 	{
-		if (text.isEmpty ())
+		if (text.isEmpty () && !XmlSettingsManager::Instance ()
+				.property ("ShowSearchBar").toBool ())
 			Ui_.FilterLine_->hide ();
 	}
 	
 	void MainWidget::on_CLTree__keyPressed (const QChar& key)
 	{
-		if (!Ui_.FilterLine_->isVisible ())
+		if (!Ui_.FilterLine_->isVisible () && !XmlSettingsManager::Instance ()
+				.property ("ShowSearchBar").toBool ())
 		{
 			Ui_.FilterLine_->show ();
 			Ui_.FilterLine_->setFocus ();
@@ -249,7 +258,9 @@ namespace Azoth
 	
 	void MainWidget::on_CLTree__escPressed ()
 	{
-		Ui_.FilterLine_->hide ();
+		if (!XmlSettingsManager::Instance ()
+				.property ("ShowSearchBar").toBool ())
+			Ui_.FilterLine_->hide ();
 	}
 
 	QList<QAction*> MainWidget::GetMenuActions()

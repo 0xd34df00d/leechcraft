@@ -102,6 +102,7 @@ namespace Azoth
 		void on_CLTree__keyPressed (const QChar&);
 		void on_CLTree__escPressed ();
 		void on_FilterLine__textChanged (const QString&);
+		void showSearchBarParamChanged ();
 	signals:
 		void gotConsoleWidget (ConsoleWidget*);
 		void gotSDWidget (ServiceDiscoveryWidget*);

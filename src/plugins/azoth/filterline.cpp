@@ -18,6 +18,7 @@
  **********************************************************************/
 #include "filterline.h"
 #include <QKeyEvent>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -30,7 +31,8 @@ namespace Azoth
 	
 	void FilterLine::keyPressEvent (QKeyEvent *event)
 	{
-		if (event->key () == Qt::Key_Escape)
+		if (event->key () == Qt::Key_Escape && !XmlSettingsManager::Instance ()
+				.property ("ShowSearchBar").toBool ())
 			hide ();
 		
 		QLineEdit::keyPressEvent (event);
