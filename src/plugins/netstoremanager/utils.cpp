@@ -27,15 +27,15 @@ namespace Utils
 	QStringList ScanDir (QDir::Filters filter, const QString& path, bool recursive)
 	{
 		QDir baseDir (path);
-		QStringList pathes;
+		QStringList paths;
 		for (const auto& entry : baseDir.entryInfoList (filter))
 		{
-			pathes << entry.absoluteFilePath ();
+			paths << entry.absoluteFilePath ();
 			if (recursive &&
 					entry.isDir ())
-				pathes << ScanDir (filter, entry.absoluteFilePath (), recursive);
+				paths << ScanDir (filter, entry.absoluteFilePath (), recursive);
 		}
-		return pathes;
+		return paths;
 	}
 }
 }

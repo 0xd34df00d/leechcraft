@@ -332,6 +332,9 @@ namespace NetStoreManager
 	void ManagerTab::handleGotNewItem (const QList<QStandardItem*>& item,
 			const QStringList& parentId)
 	{
+		if (item.isEmpty ())
+			return;
+
 		QStandardItem *thisItem = GetItemFromId (item [0]->data (ListingRole::ID).toStringList ());
 		if (thisItem)
 		{

@@ -179,7 +179,7 @@ namespace GoogleDrive
 		void DownloadFile (const QString& filePath, const QUrl& url,
 				bool silent = false);
 
-		void FindSyncableItems (const QStringList& pathes,
+		void FindSyncableItems (const QStringList& paths,
 				const QString& baseDir, const QList<DriveItem>& items);
 
 		void RequestAccessToken ();

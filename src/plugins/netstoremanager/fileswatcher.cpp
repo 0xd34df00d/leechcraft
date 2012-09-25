@@ -186,10 +186,10 @@ namespace NetStoreManager
 			return;
 
 		emit dirWasCreated (path);
-		auto pathes = Utils::ScanDir (QDir::Dirs | QDir::NoDotAndDotDot,
+		auto paths = Utils::ScanDir (QDir::Dirs | QDir::NoDotAndDotDot,
 				path,
 				true);
-		for (const auto& p : pathes)
+		for (const auto& p : paths)
 		{
 			if (!AddPath (p))
 				continue;
@@ -197,10 +197,10 @@ namespace NetStoreManager
 			emit dirWasCreated (p);
 		}
 
-		pathes = Utils::ScanDir (QDir::AllEntries | QDir::NoDotAndDotDot,
+		paths = Utils::ScanDir (QDir::AllEntries | QDir::NoDotAndDotDot,
 				path,
 				true);
-		for (const auto& p : pathes)
+		for (const auto& p : paths)
 			if (!QFileInfo (p).isDir ())
 				emit fileWasCreated (p);
 	}
