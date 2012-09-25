@@ -60,6 +60,9 @@ namespace Azoth
 				(event->key () == Qt::Key_PageUp ||
 				 event->key () == Qt::Key_PageDown))
 			emit scroll (event->key () == Qt::Key_PageUp ? -1 : 1);
+		else if (event->modifiers () == Qt::ControlModifier &&
+				(event->key () >= Qt::Key_0 && event->key () <= Qt::Key_9))
+			event->ignore ();
 		else
 		{
 			emit clearAvailableNicks ();
