@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,47 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NETSTOREMANAGER_ACCOUNTSMANAGER_H
-#define PLUGINS_NETSTOREMANAGER_ACCOUNTSMANAGER_H
-#include <QObject>
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QModelIndex;
+#include "utils.h"
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	class IStoragePlugin;
-	class IStorageAccount;
-
-	class AccountsManager : public QObject
+namespace Utils
+{
+	QStringList ScanDir (QDir::Filters filter, const QString& path, bool recursive)
 	{
-		Q_OBJECT
-
-		QStandardItemModel *Model_;
-		enum Roles
+		QDir baseDir (path);
+		QStringList paths;
+		for (const auto& entry : baseDir.entryInfoList (filter))
 		{
-			AccountObj = Qt::UserRole + 1
-		};
-
-		QList<IStoragePlugin*> Plugins_;
-	public:
-		AccountsManager (QObject* = 0);
-
-		void AddPlugin (IStoragePlugin*);
-		QList<IStoragePlugin*> GetPlugins () const;
-		QList<IStorageAccount*> GetAccounts () const;
-		IStorageAccount* GetAccountFromUniqueID (const QString& id) const;
-		QAbstractItemModel* GetModel () const;
-
-		void RemoveAccount (const QModelIndex&);
-	private slots:
-		void handleAccountAdded (QObject*);
-		void handleAccountRemoved (QObject*);
-	};
+			paths << entry.absoluteFilePath ();
+			if (recursive &&
+					entry.isDir ())
+				paths << ScanDir (filter, entry.absoluteFilePath (), recursive);
+		}
+		return paths;
+	}
 }
 }
-
-#endif
+}

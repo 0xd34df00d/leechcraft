@@ -20,11 +20,13 @@
 #include <QNetworkRequest>
 #include <QtDebug>
 #include <QFileInfo>
+#include <QDesktopServices>
 #include <util/util.h>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #include "account.h"
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -58,24 +60,32 @@ namespace GoogleDrive
 
 	void DriveManager::RemoveEntry (const QString& id)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestEntryRemoving (id, key); };
 		RequestAccessToken ();
 	}
 
 	void DriveManager::MoveEntryToTrash (const QString& id)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestMovingEntryToTrash (id, key); };
 		RequestAccessToken ();
 	}
 
 	void DriveManager::RestoreEntryFromTrash (const QString& id)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestRestoreEntryFromTrash (id, key); };
 		RequestAccessToken ();
 	}
 
 	void DriveManager::ShareEntry (const QString& id)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestSharingEntry (id, key); };
 		RequestAccessToken ();
 	}
@@ -87,21 +97,51 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::CreateDirectory (const QString& name, const QString& parentId)
+	void DriveManager::Download (const QString& id, const QString& filepath,
+			bool silent)
 	{
-		ApiCallQueue_ << [this, name, parentId] (const QString& key) { RequestCreateDirectory (name, parentId, key); };
+		if (id.isEmpty ())
+			return;
+		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
+		DownloadsQueue_ << [this, filepath, silent] (const QUrl& url) { DownloadFile (filepath, url, silent); };
+		RequestAccessToken ();
+	}
+
+	void DriveManager::CreateDirectory (const QString& name,
+			const QString& parentId)
+	{
+		ApiCallQueue_ << [this, name, parentId] (const QString& key)
+			{ RequestCreateDirectory (name, parentId, key); };
 		RequestAccessToken ();
 	}
 
 	void DriveManager::Copy (const QString& id, const QString& parentId)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestCopyItem (id, parentId, key); };
 		RequestAccessToken ();
 	}
 
 	void DriveManager::Move (const QString& id, const QString& parentId)
 	{
+		if (id.isEmpty ())
+			return;
 		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestMoveItem (id, parentId, key); };
+		RequestAccessToken ();
+	}
+
+	void DriveManager::Rename (const QString& id, const QString& newName)
+	{
+		if (id.isEmpty ())
+			return;
+		ApiCallQueue_ << [this, id, newName] (const QString& key) { RequestRenameItem (id, newName, key); };
+		RequestAccessToken ();
+	}
+
+	void DriveManager::RequestFileChanges (qlonglong startId)
+	{
+		ApiCallQueue_ << [this, startId] (const QString& key) { GetFileChanges (startId, key); };
 		RequestAccessToken ();
 	}
 
@@ -344,14 +384,105 @@ namespace GoogleDrive
 				SLOT (handleMoveItem ()));
 	}
 
+	void DriveManager::GetFileChanges (qlonglong startId, const QString& key)
+	{
+		const QString str = startId ?
+			QString ("https://www.googleapis.com/drive/v2/changes?includeDeleted=true&startChangeId=%1&access_token=%2")
+					.arg (startId)
+					.arg (key) :
+			QString ("https://www.googleapis.com/drive/v2/changes?includeDeleted=true&access_token=%1")
+					.arg (key);
+
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				get (QNetworkRequest (str));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGetFileChanges ()));
+	}
+
+	void DriveManager::RequestFileInfo (const QString& id, const QString& key)
+	{
+		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1?access_token=%2")
+				.arg (id)
+				.arg (key);
+
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				get (QNetworkRequest (str));
+		Reply2DownloadAccessToken_ [reply] = key;
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGetFileInfo ()));
+	}
+
+	void DriveManager::RequestRenameItem (const QString& id, const QString& name, const QString& key)
+	{
+		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1?access_token=%2")
+				.arg (id)
+				.arg (key);
+
+		QNetworkRequest request (str);
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
+		QVariantMap data;
+		data ["title"] = name;
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->GetNetworkAccessManager ()->
+				put (request, QJson::Serializer ().serialize (data));
+		Reply2DownloadAccessToken_ [reply] = key;
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleItemRenamed ()));
+	}
+
+	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url,
+			bool silent)
+	{
+		TaskParameters tp = OnlyDownload | FromUserInitiated;
+		if (silent)
+			tp |= AutoAccept | Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					DoNotAnnounceEntity;
+		LeechCraft::Entity e = Util::MakeEntity (url,
+				QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
+						"/" + QFileInfo (filePath).fileName (),
+				tp);
+		silent ?
+			Core::Instance ().DelegateEntity (e, filePath) :
+			Core::Instance ().SendEntity (e);
+	}
+
+	void DriveManager::FindSyncableItems (const QStringList& paths,
+			const QString& baseDir, const QList<DriveItem>& items)
+	{
+		const QString& baseName = QFileInfo (baseDir).fileName ();
+
+		DriveItem rootItem;
+		bool found = false;
+		for (const auto& item : items)
+			if (item.Name_ == baseName &&
+					item.IsFolder_ &&
+					!(item.Labels_ & DriveItem::ILRemoved))
+			{
+				rootItem = item;
+				found = true;
+				break;
+			}
+
+		if (!found)
+			CreateDirectory (baseName);
+	}
+
 	void DriveManager::ParseError (const QVariantMap& map)
 	{
 		const auto& errorMap = map ["error"].toMap ();
 		const QString& code = errorMap ["code"].toString ();
 		QString msg = errorMap ["message"].toString ();
 
-		if (code == "500")
-			msg = tr ("Google Drive API v.2 doesn't support directory copying.");
+		//TODO fix false execute
+// 		if (code == "500")
+// 			msg = tr ("Google Drive API v.2 doesn't support directory copying.");
 		Core::Instance ().SendEntity (Util::MakeNotification ("NetStoreManager",
 				msg,
 				PWarning_));
@@ -366,8 +497,7 @@ namespace GoogleDrive
 		reply->deleteLater ();
 
 		bool ok = false;
-		QByteArray ba = reply->readAll ();
-		QVariant res = QJson::Parser ().parse (ba, &ok);
+		QVariant res = QJson::Parser ().parse (reply->readAll (), &ok);
 
 		if (!ok)
 		{
@@ -706,6 +836,7 @@ namespace GoogleDrive
 			qDebug () << Q_FUNC_INFO
 					<< "file uploaded successfully";
 			RefreshListing ();
+			emit gotNewItem (CreateDriveItem (res));
 			emit finished (id, Reply2FilePath_.take (reply));
 			return;
 		}
@@ -758,7 +889,8 @@ namespace GoogleDrive
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "directory created successfully";
-			RefreshListing ();
+
+			emit gotNewItem (CreateDriveItem (res));
 			return;
 		}
 
@@ -819,6 +951,118 @@ namespace GoogleDrive
 		}
 
 		ParseError (res.toMap ());
+	}
+
+	void DriveManager::handleGetFileChanges ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		bool ok = false;
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+
+		const QVariantMap& map = res.toMap ();
+		if (map.contains ("error"))
+		{
+			ParseError (map);
+			return;
+		}
+
+		QList<DriveChanges> changes;
+
+		if (!map.contains ("items") ||
+				map ["items"].toList ().isEmpty ())
+			return;
+
+		for (auto item : map ["items"].toList ())
+		{
+			QVariantMap itemMap = item.toMap ();
+			DriveChanges change;
+			DriveItem item = CreateDriveItem (itemMap ["file"]);
+			change.FileId_ = itemMap ["fileId"].toString ();
+			change.Id_ = itemMap ["id"].toString ();
+			change.Deleted_ = itemMap ["deleted"].toBool ();
+			change.FileResource_ = item;
+
+			changes << change;
+		}
+
+		gotChanges (changes, map ["largestChangeId"].toLongLong () + 1);
+	}
+
+	void DriveManager::handleGetFileInfo ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		bool ok = false;
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+
+		const QVariantMap& map = res.toMap ();
+		QString access_token = Reply2DownloadAccessToken_.take (reply);
+
+		if (!map.contains ("error"))
+		{
+			DriveItem it = CreateDriveItem (res);
+			if (!access_token.isEmpty ())
+				it.DownloadUrl_.addQueryItem ("access_token", access_token);
+
+			if (!DownloadsQueue_.isEmpty ())
+				DownloadsQueue_.dequeue () (it.DownloadUrl_);
+			return;
+		}
+
+		ParseError (map);
+	}
+
+	void DriveManager::handleItemRenamed ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+
+		bool ok = false;
+		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		if (!ok)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "parse error";
+			return;
+		}
+
+		const QVariantMap& map = res.toMap ();
+
+		if (!map.contains ("error"))
+		{
+			DriveItem it = CreateDriveItem (res);
+			qDebug () << Q_FUNC_INFO
+					<< "entry renamed successfully";
+			emit gotNewItem (it);
+
+			return;
+		}
+
+		ParseError (map);
 	}
 
 }

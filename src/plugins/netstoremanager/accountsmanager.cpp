@@ -66,6 +66,15 @@ namespace NetStoreManager
 		return accounts;
 	}
 
+	IStorageAccount* AccountsManager::GetAccountFromUniqueID (const QString& id) const
+	{
+		auto accounts = GetAccounts ();
+		auto it = std::find_if (accounts.begin (), accounts.end (),
+				[id] (decltype (accounts.front ()) acc)
+					{ return acc->GetUniqueID () == id; });
+		return it == accounts.end () ? 0 : *it;
+	}
+
 	QAbstractItemModel* AccountsManager::GetModel () const
 	{
 		return Model_;

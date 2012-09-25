@@ -19,60 +19,37 @@
 #pragma once
 
 #include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "ui_blogiquewidget.h"
+#include "ui_syncwidget.h"
 
-class IEditorWidget;
-class QToolBar;
-class QComboBox;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace Blogique
+namespace NetStoreManager
 {
-	class IBlogiqueSideWidget;
-	class IAccount;
+	class AccountsManager;
 
-	class BlogiqueWidget : public QWidget
-						,  public ITabWidget
+	class SyncWidget : public QWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
 
-		enum BlogiqueSideWidgets
-		{
-			PostOptionsWidget = 2
-		};
+		Ui::SynchronizationWidget Ui_;
 
-		static QObject *S_ParentMultiTabs_;
+		AccountsManager *AM_;
+		QStandardItemModel *Model_;
 
-		Ui::BlogiqueWidget Ui_;
-
-		IEditorWidget *PostEdit_;
-		QWidget *PostEditWidget_;
-		QToolBar *ToolBar_;
-		QComboBox *AccountsBox_;
-
-		QHash<int, IAccount*> Id2Account_;
-		int PrevAccountId_;
-		QList<QWidget*> SidePluginsWidgets_;
 	public:
-		BlogiqueWidget (QWidget *parent = 0);
+		SyncWidget (AccountsManager *am, QWidget *parent = 0);
+		void RestoreData ();
 
-		QObject* ParentMultiTabs ();
-		TabClassInfo GetTabClassInfo () const;
-		QToolBar* GetToolBar () const;
-		void Remove ();
-
-		static void SetParentMultiTabs (QObject *tab);
-
+	public slots:
+		void accept ();
 	private slots:
-		void handleCurrentAccountChanged (int id);
-		void saveEntry ();
-		void submit ();
-		void saveSplitterPosition (int, int);
+		void on_Add__released ();
+		void on_Remove__released ();
+
 	signals:
-		void removeTab (QWidget *tab);
+		void directoryAdded (const QVariantMap& dirs);
 	};
 }
 }

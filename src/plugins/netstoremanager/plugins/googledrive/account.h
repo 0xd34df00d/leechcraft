@@ -32,6 +32,7 @@ namespace NetStoreManager
 namespace GoogleDrive
 {
 	class Account;
+	class Syncer;
 
 	typedef std::shared_ptr<Account> Account_ptr;
 
@@ -59,12 +60,17 @@ namespace GoogleDrive
 
 		QObject* GetObject ();
 		QObject* GetParentPlugin () const;
+		QByteArray GetUniqueID () const;
 		AccountFeatures GetAccountFeatures () const;
 		QString GetAccountName () const;
 		void Upload (const QString& filepath,
-				const QStringList& parentId = QStringList ());
+				const QStringList& parentId = QStringList (),
+				UploadType ut = UploadType::Upload,
+				const QStringList& id = QStringList ());
+		void Download (const QStringList& id, const QString& filepath,
+				bool silent = false);
 
-		void Delete (const QList<QStringList>& id);
+		void Delete (const QList<QStringList>& id, bool ask = true);
 		QStringList GetListingHeaders () const;
 		ListingOps GetListingOps () const;
 		void MoveToTrash (const QList<QStringList>& ids);
@@ -75,6 +81,7 @@ namespace GoogleDrive
 		void CreateDirectory (const QString& name, const QStringList& parentId);
 		void Copy (const QStringList& id, const QStringList& newParentId);
 		void Move (const QStringList& id, const QStringList& newParentId);
+		void Rename (const QStringList& id, const QString& newName);
 
 		QByteArray Serialize ();
 		static Account_ptr Deserialize (const QByteArray& data, QObject *parentPlugin);
@@ -90,7 +97,7 @@ namespace GoogleDrive
 	private slots:
 		void handleFileList (const QList<DriveItem>& items);
 		void handleSharedFileId (const QString& id);
-
+		void handleGotNewItem (const DriveItem& item);
 	signals:
 		void upError (const QString& error, const QString& filepath);
 		void upFinished (const QStringList& id, const QString& filepath);
@@ -99,6 +106,10 @@ namespace GoogleDrive
 
 		void gotListing (const QList<QList<QStandardItem*>>& items);
 		void gotFileUrl (const QUrl& url, const QStringList& id);
+
+		void gotChanges (QObject *account);
+
+		void gotNewItem (const QList<QStandardItem*>& item, const QStringList& parentId);
 	};
 }
 }

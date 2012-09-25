@@ -15,21 +15,25 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
+IF (UNIX)
+	find_package(PkgConfig)
+	pkg_check_modules(PC_POPPLERQT4 QUIET poppler-qt4)
+	
+	set(POPPLER_QT4_DEFINITIONS ${PC_POPPLERQT4_CFLAGS_OTHER})
+ENDIF (UNIX)
 
-find_package(PkgConfig)
-pkg_check_modules(PC_POPPLERQT4 QUIET poppler-qt4)
 
-set(POPPLER_QT4_DEFINITIONS ${PC_POPPLERQT4_CFLAGS_OTHER})
-
-find_path(POPPLER_QT4_INCLUDE_DIR
-  NAMES poppler-qt4.h
-  HINTS ${PC_POPPLERQT4_INCLUDEDIR}
-  PATH_SUFFIXES poppler/qt4 poppler
-)
+FIND_PATH (POPPLER_QT4_INCLUDE_DIR
+	NAMES poppler-qt4.h
+	PATHS ${PC_POPPLERQT4_INCLUDEDIR}
+		${POPPLER_DIR}
+ 	PATH_SUFFIXES poppler/qt4 poppler qt4/src)
 
 find_library(POPPLER_QT4_LIBRARY
-  NAMES poppler-qt4
-  HINTS ${PC_POPPLERQT4_LIBDIR}
+	NAMES poppler-qt4 libpoppler-qt4.dll.a
+	PATHS ${PC_POPPLERQT4_LIBDIR}
+		${POPPLER_DIR}
+  	PATH_SUFFIXES build/qt4/src
 )
 
 set(POPPLER_QT4_LIBRARIES ${POPPLER_QT4_LIBRARY})

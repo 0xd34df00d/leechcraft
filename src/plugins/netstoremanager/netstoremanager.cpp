@@ -27,6 +27,8 @@
 #include "accountsmanager.h"
 #include "accountslistwidget.h"
 #include "upmanager.h"
+#include "syncmanager.h"
+#include "syncwidget.h"
 
 namespace LeechCraft
 {
@@ -68,6 +70,19 @@ namespace NetStoreManager
 
 	void Plugin::SecondInit ()
 	{
+		SyncManager_ = new SyncManager (AccountsManager_, this);
+		SyncWidget *w = new SyncWidget (AccountsManager_);
+		connect (w,
+				SIGNAL (directoryAdded (QVariantMap)),
+				SyncManager_,
+				SLOT (handleDirectoryAdded (QVariantMap)));
+		w->RestoreData ();
+		XSD_->SetCustomWidget ("SyncWidget", w);
+
+		connect (SyncManager_,
+				SIGNAL (uploadRequested (IStorageAccount*, QString, QStringList)),
+				UpManager_,
+				SLOT (handleUploadRequest (IStorageAccount*, QString, QStringList)));
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -77,6 +92,7 @@ namespace NetStoreManager
 
 	void Plugin::Release ()
 	{
+		SyncManager_->Release ();
 	}
 
 	QString Plugin::GetName () const

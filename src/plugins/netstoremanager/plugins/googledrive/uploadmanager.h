@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QPointer>
 #include <QStandardItem>
+#include <interfaces/netstoremanager/istorageaccount.h>
 
 class QNetworkAccessManager;
 
@@ -33,12 +34,6 @@ namespace GoogleDrive
 	class Account;
 	class DriveManager;
 
-	enum class UploadType
-	{
-		Upload,
-		Update
-	};
-
 	class UploadManager : public QObject
 	{
 		Q_OBJECT
@@ -46,13 +41,16 @@ namespace GoogleDrive
 		Account *Account_;
 		QString FilePath_;
 		QNetworkAccessManager *NAM_;
-		UploadType UploadType_;
 		QStringList ParentId_;
+		QStringList Id_;
 	public:
 		UploadManager (const QString& path, UploadType ut,
-				const QStringList& parentId, Account *account);
+				const QStringList& parentId, Account *account,
+				const QStringList& id = QStringList ());
 	private:
 		void InitiateUploadSession ();
+		void InitiateUpdateSession ();
+
 	private slots:
 		void handleUploadProgress (qint64 sent, qint64 total, const QString& filePath);
 		void handleStatusChanged (const QString& status, const QString& filePath);
