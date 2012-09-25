@@ -133,6 +133,7 @@ namespace Azoth
 		void handleImageDropped (const QImage&);
 		void handleFilesDropped (const QList<QUrl>&);
 	private slots:
+		void needShowInfoBar (bool);
 		void on_MUCEventsButton__toggled (bool);
 		void handleSeparateMUCLog ();
 
@@ -148,6 +149,7 @@ namespace Azoth
 		void handleHistoryBack ();
 		void handleRichTextToggled ();
 		void handleQuoteSelection ();
+		void neeedHideInfoBar ();
 #ifdef ENABLE_MEDIACALLS
 		void handleCallRequested ();
 		void handleCall (QObject*);

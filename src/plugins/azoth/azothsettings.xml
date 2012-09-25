@@ -109,6 +109,9 @@
 			<label value="Chat windows" />
 			<groupbox>
 				<label value="Chat view formatting"/>
+				<item type="checkbox" property="HideInfoBar" default="false">
+					<label value="Hide information bar if it's not needed" />
+				</item>
 				<item type="lineedit" property="PreNickText" default="">
 					<label value="Pre-nick text:" />
 				</item>

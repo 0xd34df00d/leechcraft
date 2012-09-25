@@ -121,6 +121,8 @@ namespace Azoth
 		AnimatedIconManager<QStandardItem*> *ItemIconManager_;
 
 		QMap<State, int> StateCounter_;
+		
+		bool NeedHideInfoBar_;
 	public:
 		enum ResourceLoaderType
 		{
@@ -302,6 +304,8 @@ namespace Azoth
 		QList<QColor> GenerateColors (const QString& coloringScheme) const;
 
 		QString GetNickColor (const QString& nick, const QList<QColor>& colors) const;
+		
+		bool HideInfoBar () const;
 
 		QString FormatDate (QDateTime, IMessage*);
 		QString FormatNickname (QString, IMessage*, const QString& color);
@@ -414,6 +418,8 @@ namespace Azoth
 
 		void saveAccountVisibility (IAccount*);
 	private slots:
+		void handleHideInfoBar ();
+		
 		void handleNewProtocols (const QList<QObject*>&);
 
 		/** Handles a new account. This account may be both a new one

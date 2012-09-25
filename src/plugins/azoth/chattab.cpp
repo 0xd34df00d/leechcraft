@@ -216,8 +216,21 @@ namespace Azoth
 		Ui_.View_->setFocusProxy (Ui_.MsgEdit_);
 
 		HandleMUCParticipantsChanged ();
+		
+		XmlSettingsManager::Instance ().RegisterObject ("HideInfoBar", this, "needHideInfoBar");
+		neeedHideInfoBar ();
+		
+		connect (Ui_.View_,
+				SIGNAL (needShowInfoBar (bool)),
+				this,
+				SLOT (needShowInfoBar (bool)));
 	}
-
+	
+	void ChatTab::needShowInfoBar (bool val)
+	{
+		Ui_.InfoBar_->setVisible (val);
+	}
+	
 	ChatTab::~ChatTab ()
 	{
 		SetChatPartState (CPSGone);
@@ -226,6 +239,11 @@ namespace Azoth
 		delete Ui_.MsgEdit_->document ();
 
 		delete MUCEventLog_;
+	}
+	
+	void ChatTab::neeedHideInfoBar ()
+	{
+		Ui_.InfoBar_->setVisible (!Core::Instance ().HideInfoBar ());
 	}
 
 	void ChatTab::PrepareTheme ()

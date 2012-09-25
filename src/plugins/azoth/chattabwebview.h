@@ -35,6 +35,7 @@ namespace Azoth
 		void SetQuoteAction (QAction*);
 	protected:
 		void contextMenuEvent (QContextMenuEvent*);
+		void mouseMoveEvent (QMouseEvent *event);
 	private:
 		void HandleNick (QMenu*, const QUrl&);
 		void HandleURL (QMenu*, const QUrl&);
@@ -42,6 +43,8 @@ namespace Azoth
 		void handleOpenLink ();
 		void handleOpenExternally ();
 		void handleSaveLink ();
+	signals:
+		void needShowInfoBar (bool);
 	};
 }
 }
