@@ -33,10 +33,10 @@ namespace LeechCraft
 namespace AdvancedNotifications
 {
 	VisualNotificationsView::VisualNotificationsView (QWidget *parent)
-	: QDeclarativeView (parent)
+	: QDeclarativeView (0)
 	{
 		setStyleSheet ("background: transparent");
-		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool);
+		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
 
 		connect (this,
