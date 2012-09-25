@@ -53,13 +53,13 @@ namespace Vrooby
 	}
 
 	TrayView::TrayView (ICoreProxy_ptr proxy, QWidget *parent)
-	: QDeclarativeView (parent)
+	: QDeclarativeView (0)
 	, CoreProxy_ (proxy)
 	, Flattened_ (new FlatMountableItems (this))
 	, Backend_ (0)
 	{
 		setStyleSheet ("background: transparent");
-		setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
 
 		setResizeMode (SizeRootObjectToView);
