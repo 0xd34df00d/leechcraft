@@ -59,9 +59,8 @@ namespace Vrooby
 	, Backend_ (0)
 	{
 		setStyleSheet ("background: transparent");
-		setWindowFlags (Qt::ToolTip | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+		setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
 		setAttribute (Qt::WA_TranslucentBackground);
-		setAttribute (Qt::WA_OpaquePaintEvent, false);
 
 		setResizeMode (SizeRootObjectToView);
 		setFixedSize (500, 250);
