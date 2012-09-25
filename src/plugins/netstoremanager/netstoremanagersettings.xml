@@ -5,6 +5,16 @@
 		<item type="customwidget" name="AccountsWidget" label="own" />
 	</page>
 	<page>
-		<label value="Upload" />
+		<label value="Synchronization" />
+		<tab>
+			<label value="Directories" />
+			<item type="customwidget" name="SyncWidget" label="own" />
+		</tab>
+		<tab>
+			<label value="Exceptions" />
+			<item type="multiline" property="ExceptionsList" position="bottom">
+				<label value="Ignore synchronization for files with following masks:" />
+			</item>
+		</tab>
 	</page>
 </settings>

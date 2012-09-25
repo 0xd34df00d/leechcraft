@@ -200,6 +200,21 @@ namespace Blogique
 		 * @return The List of actions witch should be added to editor widget.
 		 */
 		virtual QList<QAction*> GetEditorActions () const = 0;
+
+		/** @brief Returns the widgets used for extended posting features.
+		 *
+		 * The widgets from the returned list are shown in the side dockwidget
+		 * in the same order they appear in the returned list.
+		 *
+		 * Each widget in list should implement IBlogiqueSideWidget.
+		 *
+		 * The ownership is transferred to the caller.
+		 *
+		 * @return The List of widgets witch should be added to dockbar.
+		 *
+		 * @sa IBlogiqueSideWidget
+		 */
+		virtual QList<QWidget*> GetBlogiqueSideWidgets () const = 0;
 	protected:
 		/** @brief Notifies about new account.
 		 *

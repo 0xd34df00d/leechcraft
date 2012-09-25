@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,47 +16,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NETSTOREMANAGER_ACCOUNTSMANAGER_H
-#define PLUGINS_NETSTOREMANAGER_ACCOUNTSMANAGER_H
-#include <QObject>
+#pragma once
 
-class QAbstractItemModel;
-class QStandardItemModel;
-class QModelIndex;
+#include <QObject>
+#include <QStringList>
+#include <QMap>
+#include <QQueue>
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	class IStoragePlugin;
-	class IStorageAccount;
+namespace GoogleDrive
+{
+	class DriveManager;
+	struct DriveChanges;
+	struct DriveItem;
 
-	class AccountsManager : public QObject
+	class Syncer : public QObject
 	{
 		Q_OBJECT
 
-		QStandardItemModel *Model_;
-		enum Roles
-		{
-			AccountObj = Qt::UserRole + 1
-		};
+		qlonglong LastChangesId_;
+		DriveManager *DM_;
 
-		QList<IStoragePlugin*> Plugins_;
+		QString BaseDir_;
+		QStringList Paths_;
+		QMap<QString, DriveItem> RealPath2Item_;
+		QQueue<QString> RealPathQueue_;
+		QList<DriveItem> Items_;
 	public:
-		AccountsManager (QObject* = 0);
+		Syncer (DriveManager *dm, QObject *parent = 0);
 
-		void AddPlugin (IStoragePlugin*);
-		QList<IStoragePlugin*> GetPlugins () const;
-		QList<IStorageAccount*> GetAccounts () const;
-		IStorageAccount* GetAccountFromUniqueID (const QString& id) const;
-		QAbstractItemModel* GetModel () const;
+		void CheckRemoteStorage ();
+		void CheckLocalStorage (const QStringList& paths, const QString& baseDir);
+	private:
+		void ContinueLocalStorageChecking ();
 
-		void RemoveAccount (const QModelIndex&);
 	private slots:
-		void handleAccountAdded (QObject*);
-		void handleAccountRemoved (QObject*);
+		void handleGotDriveChanges (const QList<DriveChanges>& changes, qlonglong);
+		void handleGotFiles (const QList<DriveItem>& files);
+		void handleGotNewItem (const DriveItem& item);
 	};
 }
 }
-
-#endif
+}

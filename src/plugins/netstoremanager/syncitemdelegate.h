@@ -18,61 +18,49 @@
 
 #pragma once
 
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "ui_blogiquewidget.h"
+#include <QItemDelegate>
 
-class IEditorWidget;
-class QToolBar;
 class QComboBox;
 
 namespace LeechCraft
 {
-namespace Blogique
+namespace NetStoreManager
 {
-	class IBlogiqueSideWidget;
-	class IAccount;
+	class AccountsManager;
 
-	class BlogiqueWidget : public QWidget
-						,  public ITabWidget
+	class SyncItemDelegate : public QItemDelegate
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
 
-		enum BlogiqueSideWidgets
+		AccountsManager *AM_;
+
+	public:
+		enum Columns
 		{
-			PostOptionsWidget = 2
+			Account,
+			Directory
 		};
 
-		static QObject *S_ParentMultiTabs_;
+		enum SyncItemDelegateRoles
+		{
+			AccountId = Qt::UserRole + 1
+		};
 
-		Ui::BlogiqueWidget Ui_;
+		SyncItemDelegate (AccountsManager *am, QObject *parent = 0);
 
-		IEditorWidget *PostEdit_;
-		QWidget *PostEditWidget_;
-		QToolBar *ToolBar_;
-		QComboBox *AccountsBox_;
-
-		QHash<int, IAccount*> Id2Account_;
-		int PrevAccountId_;
-		QList<QWidget*> SidePluginsWidgets_;
-	public:
-		BlogiqueWidget (QWidget *parent = 0);
-
-		QObject* ParentMultiTabs ();
-		TabClassInfo GetTabClassInfo () const;
-		QToolBar* GetToolBar () const;
-		void Remove ();
-
-		static void SetParentMultiTabs (QObject *tab);
+		QWidget* createEditor (QWidget *parent,
+				const QStyleOptionViewItem& option, const QModelIndex& index) const;
+		void setEditorData (QWidget *editor, const QModelIndex& index) const;
+		void setModelData (QWidget *editor, QAbstractItemModel *model,
+				const QModelIndex& index) const;
+		void updateEditorGeometry (QWidget *editor,
+				const QStyleOptionViewItem& option, const QModelIndex& index) const;
+	private:
+		void FillAccounts (QComboBox *box) const;
+// 		void FillAccountsAndSetCurrent (QComboBox *box, );
 
 	private slots:
-		void handleCurrentAccountChanged (int id);
-		void saveEntry ();
-		void submit ();
-		void saveSplitterPosition (int, int);
-	signals:
-		void removeTab (QWidget *tab);
+		void handleCloseDirectoryEditor (QWidget *w);
 	};
 }
 }
