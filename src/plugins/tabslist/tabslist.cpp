@@ -104,26 +104,33 @@ namespace TabsList
 				if (event->type () != QEvent::KeyPress)
 					return false;
 
-				QKeyEvent *key = static_cast<QKeyEvent*> (event);
-				if (key->key () == Qt::Key_Escape)
+				auto key = static_cast<QKeyEvent*> (event);
+				switch (key->key ())
 				{
+				case Qt::Key_Escape:
 					obj->deleteLater ();
 					return true;
-				}
-				else if (key->key () == Qt::Key_Backspace)
-				{
+				case Qt::Key_Backspace:
 					SearchText_.chop (1);
 					FocusSearch ();
 					return true;
-				}
-				else if (key->key () == Qt::Key_Enter || key->key () == Qt::Key_Return)
-				{
+				case Qt::Key_Enter:
+				case Qt::Key_Return:
 					Q_FOREACH (auto button, AllButtons_)
 						if (button->hasFocus ())
 							button->animateClick ();
 					return true;
+				case Qt::Key_Home:
+					AllButtons_.first ()->setFocus ();
+					break;
+				case Qt::Key_End:
+					AllButtons_.last ()->setFocus ();
+					break;
+				default:
+					break;
 				}
-				else if (!key->text ().isEmpty ())
+
+				if (!key->text ().isEmpty ())
 				{
 					SearchText_ += key->text ();
 					FocusSearch ();
