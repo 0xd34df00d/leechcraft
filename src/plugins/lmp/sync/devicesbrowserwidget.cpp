@@ -98,9 +98,6 @@ namespace LMP
 
 		Ui_.TSProgress_->hide ();
 		Ui_.UploadProgress_->hide ();
-
-		if (DevUploadModel_->rowCount ())
-			on_DevicesSelector__activated (0);
 	}
 
 	void DevicesBrowserWidget::InitializeDevices ()
@@ -130,15 +127,30 @@ namespace LMP
 	void DevicesBrowserWidget::handleDevDataChanged (const QModelIndex& from, const QModelIndex& to)
 	{
 		const int idx = Ui_.DevicesSelector_->currentIndex ();
-		if (idx >= from.row () && idx <= to.row ())
-			on_DevicesSelector__activated (idx);
+		if (idx < from.row () && idx > to.row ())
+			return;
+
+		on_DevicesSelector__activated (idx);
+	}
+
+	namespace
+	{
+		QList<ISyncPlugin*> FindSuitables (const QString& mountPath)
+		{
+			QList<ISyncPlugin*> suitables;
+			auto syncers = Core::Instance ().GetSyncPlugins ();
+			Q_FOREACH (auto syncer, syncers)
+			{
+				auto isp = qobject_cast<ISyncPlugin*> (syncer);
+				if (isp->CouldSync (mountPath) != SyncConfLevel::None)
+					suitables << isp;
+			}
+			return suitables;
+		}
 	}
 
 	void DevicesBrowserWidget::on_UploadButton__released ()
 	{
-		if (!CurrentSyncer_)
-			return;
-
 		const int idx = Ui_.DevicesSelector_->currentIndex ();
 		if (idx < 0)
 			return;
@@ -146,6 +158,26 @@ namespace LMP
 		const auto& to = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
 		if (to.isEmpty ())
 			return;
+
+		const auto& suitables = FindSuitables (to);
+		if (suitables.size () == 1)
+			CurrentSyncer_ = suitables.value (0);
+		else
+		{
+			QStringList items;
+			Q_FOREACH (ISyncPlugin *plugin, suitables)
+				items << plugin->GetSyncSystemName ();
+
+			const auto& name = QInputDialog::getItem (this,
+					tr ("Select syncer"),
+					tr ("Multiple different syncers can handle the device %1, what do you want to use?")
+						.arg (Ui_.DevicesSelector_->itemText (idx)),
+					items);
+			if (name.isEmpty ())
+				return;
+
+			CurrentSyncer_ = suitables.value (items.indexOf (name));
+		}
 
 		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
 		QStringList paths;
@@ -182,42 +214,7 @@ namespace LMP
 			return;
 		}
 
-		QList<ISyncPlugin*> suitables;
-
-		auto syncers = Core::Instance ().GetSyncPlugins ();
-		Q_FOREACH (auto syncer, syncers)
-		{
-			auto isp = qobject_cast<ISyncPlugin*> (syncer);
-			if (isp->CouldSync (mountPath) != SyncConfLevel::None)
-				suitables << isp;
-		}
-
-		if (suitables.isEmpty ())
-		{
-			Core::Instance ().SendEntity (Util::MakeNotification ("LMP",
-						tr ("No plugins are able to sync this device."),
-						PWarning_));
-			return;
-		}
-
-		if (suitables.size () == 1)
-			CurrentSyncer_ = suitables.value (0);
-		else
-		{
-			QStringList items;
-			Q_FOREACH (ISyncPlugin *plugin, suitables)
-				items << plugin->GetSyncSystemName ();
-
-			const auto& name = QInputDialog::getItem (this,
-					tr ("Select syncer"),
-					tr ("Multiple different syncers can handle the device %1, what do you want to use?")
-						.arg (Ui_.DevicesSelector_->itemText (idx)),
-					items);
-			if (name.isEmpty ())
-				return;
-
-			CurrentSyncer_ = suitables.value (items.indexOf (name));
-		}
+		Ui_.SyncTabs_->setEnabled (!FindSuitables (mountPath).isEmpty ());
 	}
 
 	void DevicesBrowserWidget::on_MountButton__released ()
