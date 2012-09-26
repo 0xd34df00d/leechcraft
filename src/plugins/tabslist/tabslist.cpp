@@ -90,10 +90,12 @@ namespace TabsList
 	{
 		class ListEventFilter : public QObject
 		{
+			QList<QToolButton*> AllButtons_;
 			QString SearchText_;
 		public:
-			ListEventFilter (QObject *parent = 0)
+			ListEventFilter (const QList<QToolButton*>& buttons, QObject *parent = 0)
 			: QObject (parent)
+			, AllButtons_ (buttons)
 			{
 			}
 		protected:
@@ -112,6 +114,13 @@ namespace TabsList
 				{
 					SearchText_.chop (1);
 					FocusSearch ();
+					return true;
+				}
+				else if (key->key () == Qt::Key_Enter || key->key () == Qt::Key_Return)
+				{
+					Q_FOREACH (auto button, AllButtons_)
+						if (button->hasFocus ())
+							button->animateClick ();
 					return true;
 				}
 				else if (!key->text ().isEmpty ())
@@ -148,7 +157,6 @@ namespace TabsList
 		QWidget *widget = new QWidget (Proxy_->GetMainWindow (),
 				Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 		widget->setAttribute (Qt::WA_TranslucentBackground);
-		widget->installEventFilter (new ListEventFilter (widget));
 		widget->setWindowModality (Qt::ApplicationModal);
 
 		QVBoxLayout *layout = new QVBoxLayout ();
@@ -157,6 +165,7 @@ namespace TabsList
 
 		const int currentIdx = tw->CurrentIndex ();
 		QToolButton *toFocus = 0;
+		QList<QToolButton*> allButtons;
 		for (int i = 0, count = tw->WidgetCount (); i < count; ++i)
 		{
 			const QString& origText = tw->TabText (i);
@@ -175,7 +184,7 @@ namespace TabsList
 					widget,
 					SLOT (deleteLater ()));
 
-			QToolButton *button = new QToolButton ();
+			auto button = new QToolButton ();
 			button->setDefaultAction (action);
 			button->setToolButtonStyle (Qt::ToolButtonTextBesideIcon);
 			button->setSizePolicy (QSizePolicy::Expanding,
@@ -185,8 +194,11 @@ namespace TabsList
 
 			if (currentIdx == i)
 				toFocus = button;
+
+			allButtons << button;
 		}
 
+		widget->installEventFilter (new ListEventFilter (allButtons, widget));
 		widget->setLayout (layout);
 		layout->update ();
 		layout->activate ();
