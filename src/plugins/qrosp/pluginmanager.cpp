@@ -34,6 +34,8 @@ namespace Qrosp
 	PluginManager::PluginManager ()
 	{
 		Qross::Manager::self ().registerMetaTypeHandler ("LeechCraft::Entity", EntityHandler);
+		Qross::Manager::self ().addQObject (new TypesFactory, "TypesFactory");
+		Qross::Manager::self ().addQObject (new UtilProxy, "Util");
 
 		const auto& interpreters = Qross::Manager::self ().interpreters ();
 		qDebug () << Q_FUNC_INFO
@@ -44,13 +46,6 @@ namespace Qrosp
 		qDebug () << Q_FUNC_INFO
 				<< "found"
 				<< plugins;
-
-		Qross::Manager::self ().addQObject (new TypesFactory, "TypesFactory");
-		Qross::Manager::self ().addQObject (new UtilProxy, "Util");
-
-#ifndef QROSP_NO_QTSCRIPT
-		//qScriptRegisterMetaType (Priority, ToScriptValue, FromScriptValue);
-#endif
 
 		Q_FOREACH (const auto& type, plugins.keys ())
 		{
