@@ -74,9 +74,8 @@ namespace Qrosp
 		qRegisterMetaType<QWebPage*> ("QWebPage*");
 		qRegisterMetaType<QNetworkAccessManager*> ("QNetworkAccessManager*");
 		qRegisterMetaType<QStandardItemModel*> ("QStandardItemModel*");
-		BuildMetaObject ();
-
 		ScriptAction_->addObject (this, "Signals");
+		BuildMetaObject ();
 
 		ScriptAction_->setInterpreter (type);
 		ScriptAction_->setFile (path);
@@ -139,11 +138,12 @@ namespace Qrosp
 		QDir scriptDir (path);
 
 		QMetaObjectBuilder builder;
-
 		builder.setSuperClass (QObject::metaObject ());
 		builder.setClassName (QString ("LeechCraft::Qross::%1::%2")
 					.arg (Type_)
 					.arg (SCALL (QString) ("GetUniqueID").remove ('.')).toLatin1 ());
+
+		ThisMetaObject_ = builder.toMetaObject ();
 
 		int currentMetaMethod = 0;
 
@@ -167,6 +167,7 @@ namespace Qrosp
 			builder.addSignal (sigArray);
 		}
 
+		qFree (ThisMetaObject_);
 		ThisMetaObject_ = builder.toMetaObject ();
 
 		for (int i = ThisMetaObject_->methodOffset (),
