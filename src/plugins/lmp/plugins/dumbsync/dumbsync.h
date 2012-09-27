@@ -60,7 +60,8 @@ namespace DumbSync
 		QObject* GetObject ();
 		QString GetSyncSystemName () const;
 		SyncConfLevel CouldSync (const QString&);
-		void Upload (const QString& localPath, const QString& to, const QString& relPath);
+		void Upload (const QString& localPath, const QString& origLocalPath,
+				const QString& to, const QString& relPath);
 	private slots:
 		void handleCopyFinished ();
 	signals:

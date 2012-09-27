@@ -57,7 +57,7 @@ namespace LMP
 				SLOT (handleUploadFinished (QString, QFile::FileError, QString)),
 				Qt::UniqueConnection);
 
-		job.Syncer_->Upload (job.From_, job.MountPoint_, job.Filename_);
+		job.Syncer_->Upload (job.From_, job.OrigPath_, job.MountPoint_, job.Filename_);
 
 		emit startedCopying (job.Filename_);
 	}

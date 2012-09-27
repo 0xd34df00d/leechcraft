@@ -43,7 +43,7 @@ namespace LMP
 
 		virtual SyncConfLevel CouldSync (const QString& path) = 0;
 
-		virtual void Upload (const QString& localPath,
+		virtual void Upload (const QString& localPath, const QString& origLocalPath,
 				const QString& to, const QString& relPath) = 0;
 	protected:
 		virtual void uploadFinished (const QString& localPath,

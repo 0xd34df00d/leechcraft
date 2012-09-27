@@ -111,7 +111,7 @@ namespace DumbSync
 		};
 	}
 
-	void Plugin::Upload (const QString& localPath, const QString& to, const QString& relPath)
+	void Plugin::Upload (const QString& localPath, const QString& origLocalPath, const QString& to, const QString& relPath)
 	{
 		QString target = to;
 		if (!target.endsWith ('/') && !relPath.startsWith ('/'))
