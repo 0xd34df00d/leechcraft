@@ -28,6 +28,7 @@
 #include "interfaces/lmp/isyncplugin.h"
 #include "interfaces/lmp/icloudstorageplugin.h"
 #include "interfaces/lmp/iplaylistprovider.h"
+#include "lmpproxy.h"
 
 namespace LeechCraft
 {
@@ -80,6 +81,8 @@ namespace LMP
 					<< "doesn't implement ILMPPlugin";
 			return;
 		}
+
+		ilmpPlug->SetLMPProxy (ILMPProxy_Ptr (new LMPProxy ()));
 
 		const auto& classes = ip2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.LMP.CollectionSync") &&
