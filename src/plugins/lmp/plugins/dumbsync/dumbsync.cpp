@@ -25,6 +25,7 @@
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include "xmlsettingsmanager.h"
 
@@ -38,6 +39,8 @@ namespace DumbSync
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("lmp_dumbsync");
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpdumbsyncsettings.xml");
 	}
