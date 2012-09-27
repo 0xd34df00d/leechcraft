@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES (${LMP_INCLUDE_DIR}
 
 SET (DUMBSYNC_SRCS
 	dumbsync.cpp
+	xmlsettingsmanager.cpp
 	)
 
 ADD_LIBRARY (leechcraft_lmp_dumbsync SHARED
@@ -22,3 +23,4 @@ TARGET_LINK_LIBRARIES (leechcraft_lmp_dumbsync
 	)
 
 INSTALL (TARGETS leechcraft_lmp_dumbsync DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES lmpdumbsyncsettings.xml DESTINATION ${LC_SETTINGS_DEST})
