@@ -26,6 +26,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/ihavetabs.h>
 
 class QTranslator;
 
@@ -39,6 +40,7 @@ namespace Qrosp
 						, public IJobHolder
 						, public IPlugin2
 						, public IActionsExporter
+						, public IHaveTabs
 	{
 		QString Type_;
 		QString Path_;
@@ -89,7 +91,13 @@ namespace Qrosp
 		// IPlugin2
 		QSet<QByteArray> GetPluginClasses () const;
 
+		// IHaveTabs
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
+
 		// Signals hacks
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
 		void changeTabName (QWidget*, const QString&);
 		void changeTabIcon (QWidget*, const QIcon&);
 		void statusBarChanged (QWidget*, const QString&);

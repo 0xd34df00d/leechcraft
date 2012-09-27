@@ -55,7 +55,7 @@ Q_DECLARE_METATYPE (QString*);
 Q_DECLARE_METATYPE (QWebView*);
 Q_DECLARE_METATYPE (QWebPage*);
 
-#define SCALL(x) (Call<x > (ScriptAction_))
+#define SCALL(x) (Call<x> (ScriptAction_))
 
 namespace LeechCraft
 {
@@ -222,6 +222,9 @@ namespace Qrosp
 		if (!strcmp (interfaceName, "IActionsExporter") ||
 				!strcmp (interfaceName, "org.Deviant.LeechCraft.IActionsExporter/1.0"))
 			return static_cast<IActionsExporter*> (this);
+		if (!strcmp (interfaceName, "IHaveTabs") ||
+				!strcmp (interfaceName, "org.Deviant.LeechCraft.IHaveTabs/1.0"))
+			return static_cast<IHaveTabs*> (this);
 
 		return QObject::qt_metacast (interfaceName);
 	}
@@ -403,6 +406,51 @@ namespace Qrosp
 				SCALL (QStringList) ("GetPluginClasses"))
 			result << pclass.toUtf8 ();
 		return result;
+	}
+
+	TabClasses_t WrapperObject::GetTabClasses () const
+	{
+		TabClasses_t result;
+		Q_FOREACH (const QVariant& mapVar, SCALL (QVariantList) ("GetPluginClasses"))
+		{
+			const auto& map = mapVar.toMap ();
+			TabClassInfo info
+			{
+				map ["TabClass_"].toByteArray (),
+				map ["VisibleName_"].toString (),
+				map ["Description_"].toString (),
+				map ["Icon_"].value<QIcon> (),
+				map ["Priority_"].value<quint16> (),
+				TabFeature::TFEmpty
+			};
+			const auto& tabFeatures = map ["Features_"].toStringList ();
+			auto checkFeature = [&tabFeatures, &info] (const QString& str, TabFeature feature)
+			{
+				if (tabFeatures.contains (str))
+					info.Features_ |= feature;
+			};
+			checkFeature ("OpenableByRequest", TabFeature::TFOpenableByRequest);
+			checkFeature ("Singe", TabFeature::TFSingle);
+			checkFeature ("ByDefault", TabFeature::TFByDefault);
+			checkFeature ("SuggestOpening", TabFeature::TFSuggestOpening);
+		}
+		return result;
+	}
+
+	void WrapperObject::TabOpenRequested (const QByteArray& tabClass)
+	{
+	}
+
+	void WrapperObject::addNewTab (const QString&, QWidget*)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "is called, but this should never happen";
+	}
+
+	void WrapperObject::removeTab (QWidget*)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "is called, but this should never happen";
 	}
 
 	void WrapperObject::changeTabName (QWidget*, const QString&)
