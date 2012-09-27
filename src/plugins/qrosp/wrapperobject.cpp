@@ -143,9 +143,9 @@ namespace Qrosp
 		QMetaObjectBuilder builder;
 
 		builder.setSuperClass (QObject::metaObject ());
-		builder.setClassName (QString ("LeechCraft::Plugins::Qross::%1::%2")
+		builder.setClassName (QString ("LeechCraft::Qross::%1::%2")
 					.arg (Type_)
-					.arg (SCALL (QString) ("GetName").remove (' ')).toLatin1 ());
+					.arg (SCALL (QString) ("GetUniqueID").remove ('.')).toLatin1 ());
 
 		int currentMetaMethod = 0;
 
