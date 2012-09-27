@@ -53,7 +53,7 @@ namespace DumbSync
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		void SetLMPProxy (ILMPProxy*);
+		void SetLMPProxy (ILMPProxy_ptr);
 
 		QObject* GetObject ();
 		QString GetSyncSystemName () const;

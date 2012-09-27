@@ -73,7 +73,7 @@ namespace DumbSync
 		return result;
 	}
 
-	void Plugin::SetLMPProxy (ILMPProxy*)
+	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)
 	{
 	}
 
