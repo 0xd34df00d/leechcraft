@@ -24,6 +24,7 @@
 #include <QDir>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
+#include <interfaces/lmp/ilmpproxy.h>
 
 typedef std::shared_ptr<QFile> QFile_ptr;
 
@@ -75,6 +76,7 @@ namespace DumbSync
 
 	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)
 	{
+		LMPProxy_ = proxy;
 	}
 
 	QObject* Plugin::GetObject ()
@@ -100,6 +102,15 @@ namespace DumbSync
 		return SyncConfLevel::Medium;
 	}
 
+	namespace
+	{
+		struct WorkerThreadResult
+		{
+			QFile_ptr File_;
+			QPixmap ScaledPixmap_;
+		};
+	}
+
 	void Plugin::Upload (const QString& localPath, const QString& to, const QString& relPath)
 	{
 		QString target = to;
@@ -118,17 +129,17 @@ namespace DumbSync
 			return;
 		}
 
-		auto watcher = new QFutureWatcher<QFile_ptr> (this);
+		auto watcher = new QFutureWatcher<WorkerThreadResult> (this);
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleCopyFinished ()));
 
-		std::function<QFile_ptr (void)> copier = [target, localPath] ()
+		std::function<WorkerThreadResult (void)> copier = [target, localPath] () -> WorkerThreadResult
 				{
 					QFile_ptr file (new QFile (localPath));
 					file->copy (target);
-					return file;
+					return { file, QPixmap () };
 				};
 		const auto& future = QtConcurrent::run (copier);
 		watcher->setFuture (future);
@@ -136,11 +147,12 @@ namespace DumbSync
 
 	void Plugin::handleCopyFinished ()
 	{
-		auto watcher = dynamic_cast<QFutureWatcher<QFile_ptr>*> (sender ());
+		auto watcher = dynamic_cast<QFutureWatcher<WorkerThreadResult>*> (sender ());
 		if (!watcher)
 			return;
 
-		const auto& file = watcher->result ();
+		const auto& result = watcher->result ();
+		auto file = result.File_;
 		qDebug () << Q_FUNC_INFO << file->error ();
 		if (file->error () != QFile::NoError)
 			qWarning () << Q_FUNC_INFO

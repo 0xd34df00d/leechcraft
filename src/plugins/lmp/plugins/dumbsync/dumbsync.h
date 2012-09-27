@@ -41,6 +41,8 @@ namespace DumbSync
 				IPlugin2
 				LeechCraft::LMP::ILMPPlugin
 				LeechCraft::LMP::ISyncPlugin)
+
+		ILMPProxy_ptr LMPProxy_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
