@@ -107,8 +107,33 @@ namespace DumbSync
 		struct WorkerThreadResult
 		{
 			QFile_ptr File_;
-			QPixmap ScaledPixmap_;
 		};
+
+		QImage GetScaledPixmap (const QString& pxFile)
+		{
+			if (pxFile.isEmpty ())
+				return QImage ();
+
+			QImage img (pxFile);
+			const int maxDim = 200;
+			if (img.size ().width () <= maxDim && img.size ().height () <= maxDim)
+				return img;
+
+			return img.scaled (maxDim, maxDim, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		}
+
+		void WriteScaledPixmap (const QString& pxFile, const QString& target)
+		{
+			const auto& targetDir = QFileInfo (target).absoluteDir ();
+			if (targetDir.exists ("cover.jpg"))
+				return;
+
+			const auto& px = GetScaledPixmap (pxFile);
+			if (px.isNull ())
+				return;
+
+			px.save (targetDir.absoluteFilePath ("cover.jpg"), "JPG", 80);
+		}
 	}
 
 	void Plugin::Upload (const QString& localPath, const QString& origLocalPath, const QString& to, const QString& relPath)
@@ -135,11 +160,13 @@ namespace DumbSync
 				this,
 				SLOT (handleCopyFinished ()));
 
-		std::function<WorkerThreadResult (void)> copier = [target, localPath] () -> WorkerThreadResult
+		const auto& artPath = LMPProxy_->FindAlbumArt (origLocalPath);
+		std::function<WorkerThreadResult (void)> copier = [target, localPath, artPath] () -> WorkerThreadResult
 				{
 					QFile_ptr file (new QFile (localPath));
 					file->copy (target);
-					return { file, QPixmap () };
+					WriteScaledPixmap (artPath, target);
+					return { file };
 				};
 		const auto& future = QtConcurrent::run (copier);
 		watcher->setFuture (future);
