@@ -112,9 +112,7 @@ namespace Qrosp
 
 	void WrapperObject::InitScript ()
 	{
-		QVariantList pathArgs;
-		pathArgs << QFileInfo (Path_).absolutePath ();
-		SCALL (void) ("SetScriptPath", pathArgs);
+		SCALL (void) ("SetScriptPath", { QFileInfo (Path_).absolutePath () });
 
 #ifndef QROSP_NO_QTSCRIPT
 		if (Type_ == "qtscript")
@@ -149,34 +147,24 @@ namespace Qrosp
 
 		int currentMetaMethod = 0;
 
-		if (scriptDir.exists ("ExportedSlots"))
+		Q_FOREACH (auto signature, SCALL (QStringList) ("ExportedSlots"))
 		{
-			QFile slotsFile (scriptDir.filePath ("ExportedSlots"));
-			slotsFile.open (QIODevice::ReadOnly);
-			QList<QByteArray> sigSlots = slotsFile.readAll ().split ('\n');
-			Q_FOREACH (QByteArray signature, sigSlots)
-			{
-				signature = signature.trimmed ();
-				if (signature.isEmpty ())
-					continue;
-				Index2ExportedSignatures_ [currentMetaMethod++] = signature;
-				builder.addSlot (signature);
-			}
+			signature = signature.trimmed ();
+			if (signature.isEmpty ())
+				continue;
+			const auto& sigArray = signature.toLatin1 ();
+			Index2ExportedSignatures_ [currentMetaMethod++] = sigArray;
+			builder.addSlot (sigArray);
 		}
 
-		if (scriptDir.exists ("ExportedSignals"))
+		Q_FOREACH (auto signature, SCALL (QStringList) ("ExportedSlots"))
 		{
-			QFile sigsFile (scriptDir.filePath ("ExportedSignals"));
-			sigsFile.open (QIODevice::ReadOnly);
-			QList<QByteArray> sigSignals = sigsFile.readAll ().split ('\n');
-			Q_FOREACH (QByteArray signature, sigSignals)
-			{
-				signature = signature.trimmed ();
-				if (signature.isEmpty ())
-					continue;
-				Index2ExportedSignatures_ [currentMetaMethod++] = signature;
-				builder.addSignal (signature);
-			}
+			signature = signature.trimmed ();
+			if (signature.isEmpty ())
+				continue;
+			const auto& sigArray = signature.toLatin1 ();
+			Index2ExportedSignatures_ [currentMetaMethod++] = sigArray;
+			builder.addSignal (sigArray);
 		}
 
 		ThisMetaObject_ = builder.toMetaObject ();
