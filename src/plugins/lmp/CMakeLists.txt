@@ -81,6 +81,7 @@ SET (SRCS
 	eventswidget.cpp
 	plmanagerwidget.cpp
 	nowplayingpixmaphandler.cpp
+	lmpproxy.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
