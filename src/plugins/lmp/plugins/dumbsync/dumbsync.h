@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/isyncplugin.h>
@@ -32,26 +33,30 @@ namespace DumbSync
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IHaveSettings
 				 , public IPlugin2
 				 , public ILMPPlugin
 				 , public ISyncPlugin
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
+				IHaveSettings
 				IPlugin2
 				LeechCraft::LMP::ILMPPlugin
 				LeechCraft::LMP::ISyncPlugin)
 
+		Util::XmlSettingsDialog_ptr XSD_;
 		ILMPProxy_ptr LMPProxy_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
 		void Release ();
 		QByteArray GetUniqueID () const;
-
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
 

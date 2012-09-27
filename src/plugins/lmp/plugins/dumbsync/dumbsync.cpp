@@ -24,7 +24,9 @@
 #include <QDir>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/lmp/ilmpproxy.h>
+#include "xmlsettingsmanager.h"
 
 typedef std::shared_ptr<QFile> QFile_ptr;
 
@@ -36,6 +38,8 @@ namespace DumbSync
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpdumbsyncsettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -65,6 +69,11 @@ namespace DumbSync
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -115,7 +124,7 @@ namespace DumbSync
 				return QImage ();
 
 			QImage img (pxFile);
-			const int maxDim = 200;
+			const int maxDim = XmlSettingsManager::Instance ().property ("CoverDim").toInt ();
 			if (img.size ().width () <= maxDim && img.size ().height () <= maxDim)
 				return img;
 
@@ -132,7 +141,8 @@ namespace DumbSync
 			if (px.isNull ())
 				return;
 
-			px.save (targetDir.absoluteFilePath ("cover.jpg"), "JPG", 80);
+			const auto& name = XmlSettingsManager::Instance ().property ("CoverName").toString ();
+			px.save (targetDir.absoluteFilePath (name), "JPG", 80);
 		}
 	}
 
@@ -165,7 +175,8 @@ namespace DumbSync
 				{
 					QFile_ptr file (new QFile (localPath));
 					file->copy (target);
-					WriteScaledPixmap (artPath, target);
+					if (XmlSettingsManager::Instance ().property ("UploadCovers").toBool ())
+						WriteScaledPixmap (artPath, target);
 					return { file };
 				};
 		const auto& future = QtConcurrent::run (copier);
