@@ -57,6 +57,14 @@ namespace Metacontacts
 				SIGNAL (removedCLItems (const QList<QObject*>&)),
 				acc,
 				SIGNAL (removedCLItems (const QList<QObject*>&)));
+		connect (this,
+				SIGNAL (accountAdded (QObject*)),
+				Account_->GetParentProtocol (),
+				SIGNAL (accountAdded (QObject*)));
+		connect (this,
+				SIGNAL (accountRemoved (QObject*)),
+				Account_->GetParentProtocol (),
+				SIGNAL (accountRemoved (QObject*)));
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Metacontacts_Entries");
@@ -101,6 +109,9 @@ namespace Metacontacts
 				UnavailRealEntries_ [id] = entry;
 		}
 		settings.endArray ();
+
+		if (!Entries_.isEmpty ())
+			emit accountAdded (Account_);
 	}
 
 	QList<QObject*> Core::GetEntries () const
@@ -232,6 +243,9 @@ namespace Metacontacts
 		handleEntriesRemoved (entry->GetAvailEntryObjs ());
 
 		entry->deleteLater ();
+
+		if (Entries_.isEmpty ())
+			emit accountRemoved (Account_);
 	}
 
 	void Core::ScheduleSaveEntries ()
@@ -261,6 +275,9 @@ namespace Metacontacts
 		const QString& id = QUuid::createUuid ().toString ();
 		MetaEntry *result = new MetaEntry (id, Account_);
 		ConnectSignals (result);
+
+		if (Entries_.isEmpty ())
+			emit accountAdded (Account_);
 
 		Entries_ << result;
 

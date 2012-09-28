@@ -30,13 +30,14 @@ namespace NetStoreManager
 namespace GoogleDrive
 {
 	UploadManager::UploadManager (const QString& path,
-			UploadType ut, const QStringList& parentid, Account *account)
+			UploadType ut, const QStringList& parentid, Account *account,
+			const QStringList& id)
 	: QObject (account)
 	, Account_ (account)
 	, FilePath_ (path)
 	, NAM_ (new QNetworkAccessManager (this))
-	, UploadType_ (ut)
 	, ParentId_ (parentid)
+	, Id_ (id)
 	{
 		connect (Account_->GetDriveManager (),
 				SIGNAL (uploadProgress (qint64, qint64, QString)),
@@ -55,12 +56,20 @@ namespace GoogleDrive
 				this,
 				SLOT (handleFinished (QString, QString)));
 
-		if (UploadType_ == UploadType::Upload)
+		if (ut == UploadType::Upload)
 			InitiateUploadSession ();
+		else if (ut == UploadType::Update)
+			InitiateUpdateSession ();
 	}
 
 	void UploadManager::InitiateUploadSession ()
 	{
+		Account_->GetDriveManager ()->Upload (FilePath_, ParentId_);
+	}
+
+	void UploadManager::InitiateUpdateSession ()
+	{
+		Account_->GetDriveManager ()->RemoveEntry (Id_.value (0));
 		Account_->GetDriveManager ()->Upload (FilePath_, ParentId_);
 	}
 

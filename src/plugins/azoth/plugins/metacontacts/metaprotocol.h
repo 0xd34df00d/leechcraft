@@ -34,12 +34,12 @@ namespace Metacontacts
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
-		
+
 		QObject *ParentPlugin_;
 		MetaAccount *Account_;
 	public:
 		MetaProtocol (QObject*);
-		
+
 		QObject* GetObject ();
 		ProtocolFeatures GetFeatures () const;
 		QList<QObject*> GetRegisteredAccounts ();

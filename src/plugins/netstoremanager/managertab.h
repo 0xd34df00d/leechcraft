@@ -64,6 +64,7 @@ namespace NetStoreManager
 		QAction *EmptyTrash_;
 		QAction *CreateDir_;
 		QAction *UploadInCurrentDir_;
+		QAction *Download_;
 		QHash<IStorageAccount*, QHash<QString, bool>> Account2ItemExpandState_;
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
@@ -80,9 +81,13 @@ namespace NetStoreManager
 		void RestoreModelState ();
 		void ExpandModelItems (const QModelIndex& parent = QModelIndex ());
 		QList<QStringList> GetTrashedFiles () const;
+		QStandardItem* GetItemFromId (const QStringList& id) const;
+
 	private slots:
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
 		void handleGotFileUrl (const QUrl& url, const QStringList& id);
+		void handleGotNewItem (const QList<QStandardItem*>& item,
+				const QStringList& parentId);
 		void flCopyURL ();
 		void flDelete ();
 		void flMoveToTrash ();
@@ -90,6 +95,7 @@ namespace NetStoreManager
 		void flEmptyTrash ();
 		void flCreateDir ();
 		void flUploadInCurrentDir ();
+		void flDownload ();
 		void on_AccountsBox__activated (int);
 		void on_Update__released ();
 		void on_Upload__released ();
@@ -100,6 +106,7 @@ namespace NetStoreManager
 				const QStringList& newParentId);
 		void handleRestoredFromTrash (const QStringList& id);
 		void handleTrashedItem (const QStringList& id);
+
 	signals:
 		void removeTab (QWidget*);
 

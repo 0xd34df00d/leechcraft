@@ -34,7 +34,7 @@ namespace LeechCraft
 		QVariant GetValue (const QDomElement&, QVariant) const;
 		void UpdateValue (QDomElement&, const QVariant&) const;
 	protected:
-		QVariant GetValue (QObject *object) const;
+		QVariant GetObjectValue (QObject *object) const;
 	};
 };
 

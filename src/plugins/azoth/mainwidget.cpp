@@ -689,6 +689,9 @@ namespace Azoth
 
 	void MainWidget::clearFilter ()
 	{
+		if (!XmlSettingsManager::Instance ().property ("ClearSearchAfterFocus").toBool ())
+			return;
+
 		if (!Ui_.FilterLine_->text ().isEmpty ())
 			Ui_.FilterLine_->setText (QString ());
 	}

@@ -26,6 +26,7 @@
 #include "core.h"
 #include "ljaccount.h"
 #include "ljaccountconfigurationwidget.h"
+#include "postoptionswidget.h"
 
 namespace LeechCraft
 {
@@ -141,6 +142,11 @@ namespace Metida
 	QList<QAction*> LJBloggingPlatform::GetEditorActions () const
 	{
 		return { FirstSeparator_, LJUser_, LJCut_ };
+	}
+
+	QList<QWidget*> LJBloggingPlatform::GetBlogiqueSideWidgets () const
+	{
+		return { new PostOptionsWidget };
 	}
 
 	void LJBloggingPlatform::SetPluginProxy (QObject *proxy)

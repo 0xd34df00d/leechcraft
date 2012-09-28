@@ -20,6 +20,12 @@ SET (SRCS
 	upmanager.cpp
 	filesmodel.cpp
 	filesview.cpp
+	syncmanager.cpp
+	syncwidget.cpp
+	syncitemdelegate.cpp
+	directorywidget.cpp
+	fileswatcher.cpp
+	utils.cpp
 	)
 SET (HEADERS
 	netstoremanager.h
@@ -31,11 +37,19 @@ SET (HEADERS
 	upmanager.h
 	filesmodel.h
 	filesview.h
+	syncmanager.h
+	syncwidget.h
+	syncitemdelegate.h
+	directorywidget.h
+	fileswatcher.h
+	utils.h
 	)
 SET (FORMS
 	managertab.ui
 	accountslistwidget.ui
 	addaccountdialog.ui
+	syncwidget.ui
+	directorywidget.ui
 	)
 SET (RESOURCES netstoremanagerresources.qrc)
 IF (NOT LC_NO_MOC)

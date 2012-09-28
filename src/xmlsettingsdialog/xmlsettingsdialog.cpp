@@ -31,6 +31,7 @@
 #include <QUrl>
 #include <QScrollArea>
 #include <QComboBox>
+#include <QTextDocument>
 #include <QDomNodeList>
 #include <QtScript>
 #include <util/util.h>
@@ -496,7 +497,7 @@ namespace Util
 		QDomElement label = item.firstChildElement ("tooltip");
 		if (!label.isNull ())
 			return QCoreApplication::translate (qPrintable (Basename_),
-					label.text ().toUtf8 ().constData ());
+					Qt::escape (label.text ()).toUtf8 ().constData ());
 		return QString ();
 	}
 

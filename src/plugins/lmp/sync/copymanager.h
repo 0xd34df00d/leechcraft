@@ -35,6 +35,7 @@ namespace LMP
 		{
 			ISyncPlugin *Syncer_;
 			QString From_;
+			QString OrigPath_;
 			bool RemoveOnFinish_;
 			QString MountPoint_;
 			QString Filename_;

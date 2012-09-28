@@ -18,7 +18,10 @@
 
 #pragma once
 
+#include <memory>
 #include <QtPlugin>
+
+class QPixmap;
 
 namespace LeechCraft
 {
@@ -32,7 +35,11 @@ namespace LMP
 		virtual ~ILMPProxy () {}
 
 		virtual ILocalCollection* GetLocalCollection () const = 0;
+
+		virtual QString FindAlbumArt (const QString& near, bool includeCollection = true) const = 0;
 	};
+
+	typedef std::shared_ptr<ILMPProxy> ILMPProxy_Ptr;
 }
 }
 

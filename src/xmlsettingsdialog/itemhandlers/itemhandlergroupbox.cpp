@@ -77,7 +77,7 @@ namespace LeechCraft
 		groupbox->setChecked (value.toBool ());
 	}
 
-	QVariant ItemHandlerGroupbox::GetValue (QObject *object) const
+	QVariant ItemHandlerGroupbox::GetObjectValue (QObject *object) const
 	{
 		QGroupBox *groupbox = qobject_cast<QGroupBox*> (object);
 		if (!groupbox)

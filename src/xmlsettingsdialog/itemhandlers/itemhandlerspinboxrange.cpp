@@ -114,7 +114,7 @@ namespace LeechCraft
 		element.setAttribute ("default", vals.at (0) + ':' + vals.at (1));
 	}
 
-	QVariant ItemHandlerSpinboxRange::GetValue (QObject *object) const
+	QVariant ItemHandlerSpinboxRange::GetObjectValue (QObject *object) const
 	{
 		RangeWidget *widget = qobject_cast<RangeWidget*> (object);
 		if (!widget)

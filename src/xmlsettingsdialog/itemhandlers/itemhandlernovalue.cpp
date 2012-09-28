@@ -41,7 +41,7 @@ namespace LeechCraft
 	{
 	}
 
-	QVariant ItemHandlerNoValue::GetValue (QObject*) const
+	QVariant ItemHandlerNoValue::GetObjectValue (QObject*) const
 	{
 		return QVariant ();
 	}

@@ -121,7 +121,7 @@ namespace LeechCraft
 		 *
 		 * @sa Handle()
 		 */
-		virtual QVariant GetValue (QObject *object) const = 0;
+		virtual QVariant GetObjectValue (QObject *object) const = 0;
 
 		Prop2NewValue_t ChangedProperties_;
 		Util::XmlSettingsDialog *XSD_;
