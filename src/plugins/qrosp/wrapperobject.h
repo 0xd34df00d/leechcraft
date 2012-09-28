@@ -130,6 +130,7 @@ namespace Qrosp
 
 		void LoadScriptTranslations ();
 		void InitScript ();
+		void InitQTS ();
 		void BuildMetaObject ();
 	};
 

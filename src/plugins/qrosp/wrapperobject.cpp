@@ -115,22 +115,28 @@ namespace Qrosp
 	{
 		SCALL (void) ("SetScriptPath", { QFileInfo (Path_).absolutePath () });
 
-#ifndef QROSP_NO_QTSCRIPT
 		if (Type_ == "qtscript")
+			InitQTS ();
+	}
+
+	void WrapperObject::InitQTS ()
+	{
+#ifndef QROSP_NO_QTSCRIPT
+		QStringList requires = SCALL (QStringList) ("Requires");
+		QObject *scriptEngineObject = 0;
+		QMetaObject::invokeMethod (ScriptAction_->script (),
+				"engine", Q_RETURN_ARG (QObject*, scriptEngineObject));
+		QScriptEngine *engine = qobject_cast<QScriptEngine*> (scriptEngineObject);
+		if (!engine)
 		{
-			QStringList requires = SCALL (QStringList) ("Requires");
-			QObject *scriptEngineObject = 0;
-			QMetaObject::invokeMethod (ScriptAction_->script (),
-					"engine", Q_RETURN_ARG (QObject*, scriptEngineObject));
-			QScriptEngine *engine = qobject_cast<QScriptEngine*> (scriptEngineObject);
-			if (!engine)
-				qWarning () << Q_FUNC_INFO
-						<< "unable to obtain script engine from the"
-						<< "script action though we are Qt Script";
-			else
-				Q_FOREACH (QString req, requires)
-					engine->importExtension (req);
+			qWarning () << Q_FUNC_INFO
+					<< "unable to obtain script engine from the"
+					<< "script action though we are Qt Script";
+			return;
 		}
+
+		Q_FOREACH (QString req, requires)
+			engine->importExtension (req);
 #endif
 	}
 
