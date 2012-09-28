@@ -28,6 +28,7 @@
 #include <qross/core/script.h>
 #include <qross/core/manager.h>
 #include <qross/core/wrapperinterface.h>
+#include <qjson/parser.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/ihookproxy.h>
 #include <util/util.h>
@@ -74,8 +75,9 @@ namespace Qrosp
 		qRegisterMetaType<QWebPage*> ("QWebPage*");
 		qRegisterMetaType<QNetworkAccessManager*> ("QNetworkAccessManager*");
 		qRegisterMetaType<QStandardItemModel*> ("QStandardItemModel*");
-		ScriptAction_->addObject (this, "Signals");
+
 		BuildMetaObject ();
+		ScriptAction_->addObject (this, "Signals");
 
 		ScriptAction_->setInterpreter (type);
 		ScriptAction_->setFile (path);
@@ -132,22 +134,36 @@ namespace Qrosp
 #endif
 	}
 
+	namespace
+	{
+		QVariantMap ParseManifest (const QString& path)
+		{
+			QFile file (path);
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to open file"
+						<< path;
+				return QVariantMap ();
+			}
+
+			return QJson::Parser ().parse (file.readAll ()).toMap ();
+		}
+	}
+
 	void WrapperObject::BuildMetaObject ()
 	{
-		QString path = QFileInfo (Path_).absolutePath ();
-		QDir scriptDir (path);
-
 		QMetaObjectBuilder builder;
 		builder.setSuperClass (QObject::metaObject ());
 		builder.setClassName (QString ("LeechCraft::Qross::%1::%2")
 					.arg (Type_)
 					.arg (SCALL (QString) ("GetUniqueID").remove ('.')).toLatin1 ());
 
-		ThisMetaObject_ = builder.toMetaObject ();
-
 		int currentMetaMethod = 0;
 
-		Q_FOREACH (auto signature, SCALL (QStringList) ("ExportedSlots"))
+		const auto& manifest = ParseManifest (Path_ + ".manifest.json");
+
+		Q_FOREACH (auto signature, manifest ["ExportedSlots"].toStringList ())
 		{
 			signature = signature.trimmed ();
 			if (signature.isEmpty ())
@@ -157,7 +173,7 @@ namespace Qrosp
 			builder.addSlot (sigArray);
 		}
 
-		Q_FOREACH (auto signature, SCALL (QStringList) ("ExportedSignals"))
+		Q_FOREACH (auto signature, manifest ["ExportedSignals"].toStringList ())
 		{
 			signature = signature.trimmed ();
 			if (signature.isEmpty ())
@@ -167,7 +183,6 @@ namespace Qrosp
 			builder.addSignal (sigArray);
 		}
 
-		qFree (ThisMetaObject_);
 		ThisMetaObject_ = builder.toMetaObject ();
 
 		for (int i = ThisMetaObject_->methodOffset (),
