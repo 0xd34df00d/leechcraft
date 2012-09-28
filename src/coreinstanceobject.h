@@ -72,8 +72,6 @@ namespace LeechCraft
 		SettingsTab* GetSettingsTab () const;
 	private:
 		void BuildNewTabModel ();
-	private slots:
-		void handleSettingsButton (const QString&);
 #ifdef STRICT_LICENSING
 		void notifyLicensing ();
 #endif

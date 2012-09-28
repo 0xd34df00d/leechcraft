@@ -164,7 +164,10 @@ namespace Azoth
 	, EventsNotifier_ (new EventsNotifier)
 	, ImportManager_ (new ImportManager)
 	, UnreadQueueManager_ (new UnreadQueueManager)
+	, NeedHideInfoBar_ (XmlSettingsManager::Instance ().property ("HideInfoBar").toBool ())
 	{
+		XmlSettingsManager::Instance ().RegisterObject ("HideInfoBar", this, "handleHideInfoBar");
+		
 		FillANFields ();
 
 		auto addSOM = [this] (const QByteArray& option)
@@ -248,6 +251,17 @@ namespace Azoth
 				this, "updateStatusIconset");
 		XmlSettingsManager::Instance ().RegisterObject ("GroupContacts",
 				this, "handleGroupContactsChanged");
+	}
+	
+	bool Core::HideInfoBar () const
+	{
+		return NeedHideInfoBar_;
+	}
+	
+	void Core::handleHideInfoBar ()
+	{
+		NeedHideInfoBar_ = XmlSettingsManager::Instance ()
+				.property ("HideInfoBar").toBool ();
 	}
 
 	Core& Core::Instance ()

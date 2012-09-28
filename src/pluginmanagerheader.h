@@ -1,5 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,37 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#define PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#include <QWebView>
+#pragma once
+#include <QHeaderView>
+
+class QCheckBox;
 
 namespace LeechCraft
 {
-namespace Azoth
-{
-	class ChatTabWebView : public QWebView
+	class PluginManagerHeader : public QHeaderView
 	{
 		Q_OBJECT
-
-		QAction *QuoteAct_;
+		
+		QCheckBox *SelectAllCheckBox_;
 	public:
-		ChatTabWebView (QWidget* = 0);
-
-		void SetQuoteAction (QAction*);
-	protected:
-		void contextMenuEvent (QContextMenuEvent*);
-		void mouseMoveEvent (QMouseEvent *event);
-	private:
-		void HandleNick (QMenu*, const QUrl&);
-		void HandleURL (QMenu*, const QUrl&);
-	private slots:
-		void handleOpenLink ();
-		void handleOpenExternally ();
-		void handleSaveLink ();
+		PluginManagerHeader (QWidget* = 0);
+	public slots:
+		void selectAll (Qt::CheckState state);
+		void onSelectAllCheckBoxClicked (int state);
 	signals:
-		void needShowInfoBar (bool);
+		void needSelectAll (int);
 	};
 }
-}
-
-#endif

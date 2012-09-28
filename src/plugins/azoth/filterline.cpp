@@ -1,5 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2011-2012  Minh Ngo
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,38 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
-
-#ifndef PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#define PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#include <QWebView>
+#include "filterline.h"
+#include <QKeyEvent>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class ChatTabWebView : public QWebView
+	FilterLine::FilterLine (QWidget *parent)
+	: QLineEdit (parent)
 	{
-		Q_OBJECT
-
-		QAction *QuoteAct_;
-	public:
-		ChatTabWebView (QWidget* = 0);
-
-		void SetQuoteAction (QAction*);
-	protected:
-		void contextMenuEvent (QContextMenuEvent*);
-		void mouseMoveEvent (QMouseEvent *event);
-	private:
-		void HandleNick (QMenu*, const QUrl&);
-		void HandleURL (QMenu*, const QUrl&);
-	private slots:
-		void handleOpenLink ();
-		void handleOpenExternally ();
-		void handleSaveLink ();
-	signals:
-		void needShowInfoBar (bool);
-	};
+	}
+	
+	void FilterLine::keyPressEvent (QKeyEvent *event)
+	{
+		if (event->key () == Qt::Key_Escape && !XmlSettingsManager::Instance ()
+				.property ("ShowSearchBar").toBool ())
+			hide ();
+		
+		QLineEdit::keyPressEvent (event);
+	}
 }
 }
-
-#endif

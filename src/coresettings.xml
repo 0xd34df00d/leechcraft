@@ -187,12 +187,6 @@
 		<groupbox>
 			<label lang="en" value="Plugins manager" />
 			<item type="customwidget" label="own" name="PluginManager" />
-			<item type="pushbutton" name="EnableAllPlugins">
-				<label value="Enable all plugins" />
-			</item>
-			<item type="pushbutton" name="DisableAllPlugins">
-				<label value="Disable all plugins" />
-			</item>
 		</groupbox>
 	</page>
 </settings>

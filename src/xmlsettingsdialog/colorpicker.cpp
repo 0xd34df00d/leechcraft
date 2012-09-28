@@ -17,45 +17,67 @@
  **********************************************************************/
 
 #include "colorpicker.h"
-#include <QLabel>
-#include <QPushButton>
-#include <QHBoxLayout>
 #include <QColorDialog>
 #include <QApplication>
-#include <QtDebug>
+#include <QStyle>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QStyleOption>
 
 namespace LeechCraft
 {
+	const int Padding_ = 6;
+	const int DoublePadding_ = Padding_ * 2;
+	
 	ColorPicker::ColorPicker (const QString& title, QWidget *parent)
-	: QWidget (parent)
+	: QPushButton (parent)
 	, Title_ (title)
 	{
-		if (Title_.isEmpty ())
-			Title_ = tr ("Choose color");
-		Label_ = new QLabel (this);
-		ChooseButton_ = new QPushButton (tr ("Choose..."));
-		QHBoxLayout *lay = new QHBoxLayout;
-		lay->setContentsMargins (0, 0, 0, 0);
-		lay->addWidget (Label_);
-		lay->addWidget (ChooseButton_);
-		setLayout (lay);
-		connect (ChooseButton_,
+		connect (this,
 				SIGNAL (released ()),
 				this,
 				SLOT (chooseColor ()));
-		Label_->setMinimumWidth (QApplication::fontMetrics ()
-				.width ("  #RRRRGGGGBBBB  "));
 	}
+	
+	void ColorPicker::paintEvent (QPaintEvent *event)
+	{
+		QStyleOptionButton option;
+		option.initFrom (this);
+		option.state = isDown () ? QStyle::State_Sunken : QStyle::State_Raised;
+		
+		if (isDefault ())
+			option.features |= QStyleOptionButton::DefaultButton;
+		
+		option.text = text ();
+		option.icon = icon ();
+		const QRect& rect = event->rect ();
+		option.rect = rect;
+		
+		const QRect itemRect (rect.x () + Padding_, rect.y () + Padding_,
+				rect.width () - DoublePadding_, rect.height () - DoublePadding_);
+		
+		
+		const QRect colorRect (QPoint (0, 0), rect.size () - QSize (DoublePadding_, DoublePadding_));
+		
+		QPixmap pixmap (colorRect.size ());
+		QPainter painter (&pixmap);
+		
+		painter.setRenderHint (QPainter::Antialiasing);
+		
+		painter.fillRect (colorRect, Color_);
+		
+		QPainter widgetPainter (this);
+		QApplication::style ()->drawControl (QStyle::CE_PushButton, &option,
+				&widgetPainter, this);
+		widgetPainter.setRenderHint (QPainter::Antialiasing);
+		widgetPainter.drawPixmap (itemRect, pixmap);
+	}
+
 
 	void ColorPicker::SetCurrentColor (const QColor& color)
 	{
 		Color_ = color;
-
-		int height = QApplication::fontMetrics ().height ();
-		int width = 1.62 * height;
-		QPixmap pixmap (width, height);
-		pixmap.fill (Color_);
-		Label_->setPixmap (pixmap);
+		update ();
 	}
 
 	QColor ColorPicker::GetCurrentColor () const
@@ -65,7 +87,7 @@ namespace LeechCraft
 
 	void ColorPicker::chooseColor ()
 	{
-		QColor color = QColorDialog::getColor (Color_,
+		const QColor& color = QColorDialog::getColor (Color_,
 				this,
 				Title_);
 

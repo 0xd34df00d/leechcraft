@@ -226,7 +226,7 @@ namespace LeechCraft
 			return false;
 
 		QPluginLoader_ptr loader = AvailablePlugins_.at (index.row ());
-
+		
 		if (!data.toBool () &&
 				PluginContainers_.contains (loader))
 		{
@@ -294,7 +294,7 @@ namespace LeechCraft
 		settings.endGroup ();
 
 		emit dataChanged (index, index);
-
+		emit needSelectAll (SelectionState ());
 		return true;
 	}
 
@@ -575,7 +575,28 @@ namespace LeechCraft
 		}
 	}
 
-	void PluginManager::SetAllPlugins (Qt::CheckState state)
+	Qt::CheckState PluginManager::SelectionState () const
+	{	
+		bool selectedAll = true;
+		bool notSelected = true;
+		
+		for (int i = 0, max = GetSize (); i < max; ++i)
+		{
+			if (data (index (i, 0), Qt::CheckStateRole).toInt () == Qt::Checked)
+				notSelected = false;
+			else
+				selectedAll = false;
+		}
+
+		if (selectedAll && !notSelected)
+			return Qt::Checked;
+		else if (notSelected && !selectedAll)
+			return Qt::Unchecked;
+		else
+			return Qt::PartiallyChecked;
+	}
+	
+	void PluginManager::selectAllPlugins (int state)
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");

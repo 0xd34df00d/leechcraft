@@ -115,6 +115,8 @@ SET (SRCS
 	filesenddialog.cpp
 	pendinguploadpaster.cpp
 	contactdropfilter.cpp
+	contactlist.cpp
+	filterline.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -169,6 +171,8 @@ SET (HEADERS
 	contactdropfilter.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
+	contactlist.h
+	filterline.h
 	)
 SET (FORMS
 	mainwidget.ui

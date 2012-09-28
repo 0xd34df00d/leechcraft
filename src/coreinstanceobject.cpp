@@ -115,11 +115,7 @@ namespace LeechCraft
 	{
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"coresettings.xml");
-		connect (XmlSettingsDialog_.get (),
-				SIGNAL (pushButtonClicked (QString)),
-				this,
-				SLOT (handleSettingsButton (QString)));
-
+		
 		connect (SettingsTab_,
 				SIGNAL (remove (QWidget*)),
 				this,
@@ -130,7 +126,21 @@ namespace LeechCraft
 	{
 		Classes_ << SettingsTab_->GetTabClassInfo ();
 
-		XmlSettingsDialog_->SetCustomWidget ("PluginManager", new PluginManagerDialog);
+		PluginManagerDialog *managerDialog = new PluginManagerDialog;
+		PluginManager *pm = Core::Instance ().GetPluginManager ();
+		managerDialog->selectAll (pm->SelectionState ());
+		
+		connect (pm,
+				SIGNAL (needSelectAll (Qt::CheckState)),
+				managerDialog,
+				SLOT (selectAll (Qt::CheckState)));
+				
+		connect (managerDialog,
+				SIGNAL (needSelectAll (int)),
+				pm,
+				SLOT (selectAllPlugins (int)));
+		
+		XmlSettingsDialog_->SetCustomWidget ("PluginManager", managerDialog);
 		XmlSettingsDialog_->SetCustomWidget ("TagsViewer", new TagsViewer);
 
 		XmlSettingsDialog_->SetDataSource ("Language",
@@ -256,15 +266,6 @@ namespace LeechCraft
 
 		Core::Instance ().GetCoreInstanceObject ()->
 				GetSettingsDialog ()->SetDataSource ("DefaultNewTab", newTabsModel);
-	}
-
-	void CoreInstanceObject::handleSettingsButton (const QString& name)
-	{
-		auto pm = Core::Instance ().GetPluginManager ();
-		if (name == "EnableAllPlugins")
-			pm->SetAllPlugins (Qt::Checked);
-		else if (name == "DisableAllPlugins")
-			pm->SetAllPlugins (Qt::Unchecked);
 	}
 
 #ifdef STRICT_LICENSING

@@ -21,7 +21,7 @@
 #include <QWidget>
 #include <QFont>
 
-class QLabel;
+class QLineEdit;
 class QPushButton;
 
 namespace LeechCraft
@@ -32,7 +32,7 @@ namespace LeechCraft
 
 		QString Title_;
 		QFont Font_;
-		QLabel *Label_;
+		QLineEdit *LineEdit_;
 		QPushButton *ChooseButton_;
 	public:
 		FontPicker (const QString& = QString (), QWidget* = 0);

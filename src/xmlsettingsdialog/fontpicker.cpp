@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "fontpicker.h"
-#include <QLabel>
+#include <QLineEdit>
 #include <QFontInfo>
 #include <QPushButton>
 #include <QFontDialog>
@@ -32,18 +32,19 @@ namespace LeechCraft
 	{
 		if (Title_.isEmpty ())
 			Title_ = tr ("Choose font");
-		Label_ = new QLabel (this);
+		LineEdit_ = new QLineEdit (this);
+		LineEdit_->setReadOnly (true);
 		ChooseButton_ = new QPushButton (tr ("Choose..."));
 		QHBoxLayout *lay = new QHBoxLayout;
 		lay->setContentsMargins (0, 0, 0, 0);
-		lay->addWidget (Label_);
+		lay->addWidget (LineEdit_);
 		lay->addWidget (ChooseButton_);
 		setLayout (lay);
 		connect (ChooseButton_,
 				SIGNAL (released ()),
 				this,
 				SLOT (chooseFont ()));
-		Label_->setMinimumWidth (1.5 * QApplication::fontMetrics ()
+		LineEdit_->setMinimumWidth (1.5 * QApplication::fontMetrics ()
 				.width (QApplication::font ().toString ()));
 	}
 
@@ -61,7 +62,8 @@ namespace LeechCraft
 			text += tr (", underlined");
 		if (Font_.strikeOut ())
 			text += tr (", striken out");
-		Label_->setText (text);
+		LineEdit_->setText (text);
+		LineEdit_->setFont (Font_);
 	}
 
 	QFont FontPicker::GetCurrentFont () const

@@ -21,10 +21,10 @@
     <number>1</number>
    </property>
    <item>
-    <widget class="QLineEdit" name="FilterLine_"/>
+    <widget class="LeechCraft::Azoth::FilterLine" name="FilterLine_"/>
    </item>
    <item>
-    <widget class="QTreeView" name="CLTree_">
+    <widget class="LeechCraft::Azoth::ContactList" name="CLTree_">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
@@ -72,6 +72,18 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LeechCraft::Azoth::ContactList</class>
+   <extends>QTreeView</extends>
+   <header>contactlist.h</header>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::Azoth::FilterLine</class>
+   <extends>QLineEdit</extends>
+   <header>filterline.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

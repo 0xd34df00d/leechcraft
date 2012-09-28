@@ -26,6 +26,7 @@
 #include "skinengine.h"
 #include "coreinstanceobject.h"
 #include "settingstab.h"
+#include "pluginmanagerheader.h"
 
 namespace LeechCraft
 {
@@ -132,6 +133,7 @@ namespace LeechCraft
 	PluginManagerDialog::PluginManagerDialog (QWidget *parent)
 	: QWidget (parent)
 	, FilterProxy_ (new PluginsProxyModel (this))
+	, Header_ (new PluginManagerHeader (this))
 	{
 		Ui_.setupUi (this);
 		Ui_.PluginsTree_->setWordWrap (true);
@@ -149,11 +151,23 @@ namespace LeechCraft
 		}
 
 		Ui_.PluginsTree_->installEventFilter (new SizeFilter (this));
+		
+		connect (Header_,
+				SIGNAL (needSelectAll (int)),
+				this,
+				SIGNAL (needSelectAll (int)));
+		
+		Ui_.PluginsTree_->setHeader (Header_);
 
 		connect (Ui_.FilterLine_,
 				SIGNAL (textChanged (QString)),
 				FilterProxy_,
 				SLOT (setFilterFixedString (QString)));
+	}
+	
+	void PluginManagerDialog::selectAll (Qt::CheckState selectState)
+	{
+		Header_->selectAll (selectState);
 	}
 
 	void PluginManagerDialog::readjustColumns ()

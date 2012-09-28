@@ -26,15 +26,31 @@
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "actionsmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+	const int MaxY_ = 15;
+	
 	ChatTabWebView::ChatTabWebView (QWidget *parent)
 	: QWebView (parent)
 	, QuoteAct_ (0)
 	{
+		if (Core::Instance ().HideInfoBar ())
+			setMouseTracking (true);
+	}
+	
+	void ChatTabWebView::mouseMoveEvent (QMouseEvent *event)
+	{
+		if (Core::Instance ().HideInfoBar ())
+		{
+			if (event->y () < MaxY_)
+				emit needShowInfoBar (true);
+			else if (event->y () < MaxY_ * 2)
+				emit needShowInfoBar (false);
+		}
 	}
 
 	void ChatTabWebView::SetQuoteAction (QAction *act)

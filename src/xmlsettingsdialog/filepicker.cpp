@@ -30,9 +30,9 @@ FilePicker::FilePicker (FilePicker::Type type, QWidget *parent)
 : QWidget (parent)
 , ClearOnCancel_ (false)
 , Type_ (type)
+, LineEdit_ (new QLineEdit (this))
+, BrowseButton_ (new QPushButton (tr ("Browse...")))
 {
-	LineEdit_ = new QLineEdit (this);
-	BrowseButton_ = new QPushButton (tr ("Browse..."));
 	QHBoxLayout *lay = new QHBoxLayout;
 	lay->setContentsMargins (0, 0, 0, 0);
 	lay->addWidget (LineEdit_);
