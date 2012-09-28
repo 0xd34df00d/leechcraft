@@ -157,7 +157,7 @@ namespace Qrosp
 			builder.addSlot (sigArray);
 		}
 
-		Q_FOREACH (auto signature, SCALL (QStringList) ("ExportedSlots"))
+		Q_FOREACH (auto signature, SCALL (QStringList) ("ExportedSignals"))
 		{
 			signature = signature.trimmed ();
 			if (signature.isEmpty ())
