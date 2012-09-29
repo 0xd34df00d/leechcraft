@@ -18,6 +18,7 @@
 
 #include "mtpsync.h"
 #include <QIcon>
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -27,6 +28,14 @@ namespace MTPSync
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		LIBMTP_Init ();
+
+		auto timer = new QTimer ();
+		connect (timer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (pollDevices ()));
+		timer->start (5000);
 	}
 
 	void Plugin::SecondInit ()
@@ -35,7 +44,6 @@ namespace MTPSync
 
 	void Plugin::Release ()
 	{
-
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -70,23 +78,25 @@ namespace MTPSync
 		LMPProxy_ = proxy;
 	}
 
-	QObject* Plugin::GetObject ()
-	{
-		return this;
-	}
-
 	QString Plugin::GetSyncSystemName () const
 	{
 		return "MTP";
 	}
 
-	SyncConfLevel Plugin::CouldSync (const QString& path)
+	UnmountableDevInfos_t Plugin::AvailableDevices () const
 	{
-		return SyncConfLevel::None;
+		return UnmountableDevInfos_t ();
 	}
 
-	void Plugin::Upload (const QString& localPath, const QString& origLocalPath, const QString& to, const QString& relPath)
+	void Plugin::Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& devId)
 	{
+	}
+
+	void Plugin::pollDevices ()
+	{
+		LIBMTP_mtpdevice_t *devices;
+		qDebug () << LIBMTP_Get_Connected_Devices (&devices);
+		qDebug () << LIBMTP_Number_Devices_In_List (devices);
 	}
 }
 }

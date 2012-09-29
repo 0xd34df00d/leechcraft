@@ -22,7 +22,8 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
-#include <interfaces/lmp/isyncplugin.h>
+#include <interfaces/lmp/iunmountablesync.h>
+#include <libmtp.h>
 
 namespace LeechCraft
 {
@@ -34,13 +35,13 @@ namespace MTPSync
 				 , public IInfo
 				 , public IPlugin2
 				 , public ILMPPlugin
-				 , public ISyncPlugin
+				 , public IUnmountableSync
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
 				LeechCraft::LMP::ILMPPlugin
-				LeechCraft::LMP::ISyncPlugin)
+				LeechCraft::LMP::IUnmountableSync)
 
 		ILMPProxy_ptr LMPProxy_;
 	public:
@@ -56,13 +57,13 @@ namespace MTPSync
 
 		void SetLMPProxy (ILMPProxy_ptr);
 
-		QObject* GetObject ();
 		QString GetSyncSystemName () const;
-		SyncConfLevel CouldSync (const QString&);
-		void Upload (const QString& localPath, const QString& origLocalPath,
-				const QString& to, const QString& relPath);
+		UnmountableDevInfos_t AvailableDevices () const;
+		void Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to);
+	private slots:
+		void pollDevices ();
 	signals:
-		void uploadFinished (const QString&, QFile::FileError, const QString&);
+		void availableDevicesChanged ();
 	};
 }
 }
