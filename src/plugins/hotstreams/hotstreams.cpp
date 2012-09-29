@@ -23,6 +23,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "somafmlistfetcher.h"
 #include "stealkilllistfetcher.h"
+#include "icecastfetcher.h"
 
 #ifdef HAVE_QJSON
 #include "audioaddictstreamfetcher.h"
@@ -30,6 +31,9 @@
 
 #include "radiostation.h"
 #include "roles.h"
+#include "stringlistradiostation.h"
+
+Q_DECLARE_METATYPE (QList<QUrl>);
 
 namespace LeechCraft
 {
@@ -64,6 +68,12 @@ namespace HotStreams
 		stealkill->setEditable (false);
 		stealkill->setIcon (QIcon (":/hotstreams/resources/images/radio.png"));
 		Roots_ ["42fm"] = stealkill;
+
+		auto icecast = new QStandardItem ("Icecast");
+		icecast->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
+		icecast->setEditable (false);
+		icecast->setIcon (QIcon (":/hotstreams/resources/images/radio.png"));
+		Roots_ ["icecast"] = icecast;
 	}
 
 	void Plugin::SecondInit ()
@@ -105,10 +115,18 @@ namespace HotStreams
 	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem *item, const QString&)
 	{
 		const auto& name = item->data (StreamItemRoles::PristineName).toString ();
-		const auto& url = item->data (Media::RadioItemRole::RadioID).toUrl ();
-		auto nam = Proxy_->GetNetworkAccessManager ();
 		const auto& format = item->data (StreamItemRoles::PlaylistFormat).toString ();
-		return Media::IRadioStation_ptr (new RadioStation (url, name, nam, format));
+		if (format != "urllist")
+		{
+			auto nam = Proxy_->GetNetworkAccessManager ();
+			const auto& url = item->data (Media::RadioItemRole::RadioID).toUrl ();
+			return Media::IRadioStation_ptr (new RadioStation (url, name, nam, format));
+		}
+		else
+		{
+			const auto& urlList = item->data (Media::RadioItemRole::RadioID).value<QList<QUrl>> ();
+			return Media::IRadioStation_ptr (new StringListRadioStation (urlList, name));
+		}
 	}
 
 	void Plugin::refreshRadios ()
@@ -126,6 +144,13 @@ namespace HotStreams
 
 		clearRoot (Roots_ ["42fm"]);
 		new StealKillListFetcher (Roots_ ["42fm"], nam, this);
+
+		clearRoot (Roots_ ["icecast"]);
+		auto icecastFetcher = new IcecastFetcher (Roots_ ["icecast"], nam, this);
+		connect (icecastFetcher,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
 
 #ifdef HAVE_QJSON
 		clearRoot (Roots_ ["di"]);
