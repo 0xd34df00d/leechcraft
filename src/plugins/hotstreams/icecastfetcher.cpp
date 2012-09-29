@@ -188,7 +188,7 @@ namespace HotStreams
 			for (const auto& genre : stations.keys ())
 			{
 				auto& genreStations = stations [genre];
-				if (genreStations.size () <= threshold)
+				if (genreStations.size () <= threshold && genre != "metal")
 				{
 					otherInfos += genreStations;
 					stations.remove (genre);
