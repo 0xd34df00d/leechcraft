@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "fileswatcher.h"
+#include "fileswatcher_inotify.h"
 #include <stdexcept>
 #include <sys/inotify.h>
 #include <sys/poll.h>
@@ -29,8 +29,8 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	FilesWatcher::FilesWatcher (QObject *parent)
-	: QObject (parent)
+	FilesWatcherInotify::FilesWatcherInotify (QObject *parent)
+	: FilesWatcherBase (parent)
 	, INotifyDescriptor_ (inotify_init ())
 	, WatchMask_ (IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY |IN_MOVED_FROM | IN_MOVED_TO )
 	, WaitMSecs_ (50)
@@ -48,7 +48,7 @@ namespace NetStoreManager
 				SLOT (checkNotifications ()));
 	}
 
-	void FilesWatcher::HandleNotification (int descriptor)
+	void FilesWatcherInotify::HandleNotification (int descriptor)
 	{
 		char buffer [BufferLength_];
 		ssize_t length = read (descriptor, buffer, BufferLength_);
@@ -143,7 +143,7 @@ namespace NetStoreManager
 		}
 	}
 
-	void FilesWatcher::AddPathWithNotify (const QString& path)
+	void FilesWatcherInotify::AddPathWithNotify (const QString& path)
 	{
 		if (!addPath (path))
 			return;
@@ -168,7 +168,7 @@ namespace NetStoreManager
 				emit fileWasCreated (p);
 	}
 
-	bool FilesWatcher::IsInExceptionList (const QString& path) const
+	bool FilesWatcherInotify::IsInExceptionList (const QString& path) const
 	{
 		if (ExceptionMasks_.isEmpty ())
 			return false;
@@ -189,13 +189,13 @@ namespace NetStoreManager
 		return false;
 	}
 
-	void FilesWatcher::RemoveWatchingPath (int descriptor)
+	void FilesWatcherInotify::RemoveWatchingPath (int descriptor)
 	{
 		inotify_rm_watch (INotifyDescriptor_, descriptor);
 		WatchedPathes2Descriptors_.right.erase (descriptor);
 	}
 
-	void FilesWatcher::checkNotifications ()
+	void FilesWatcherInotify::checkNotifications ()
 	{
 		struct pollfd pfd = { INotifyDescriptor_, POLLIN, 0 };
 		int res = poll (&pfd, 1, WaitMSecs_);
@@ -209,38 +209,38 @@ namespace NetStoreManager
 			HandleNotification (INotifyDescriptor_);
 	}
 
-	bool FilesWatcher::addPath (QString path)
+	bool FilesWatcherInotify::addPath (QString path)
 	{
 		int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
 		WatchedPathes2Descriptors_.insert ({ path, fd });
-		
+
 		if (!Timer_->isActive ())
 			Timer_->start (1000);
-		
+
 		return true;
 	}
-	
-	void FilesWatcher::addPathes (QStringList paths)
+
+	void FilesWatcherInotify::addPathes (QStringList paths)
 	{
 		for (const auto& path : paths)
 			addPath (path);
 	}
-	
-	void FilesWatcher::release ()
+
+	void FilesWatcherInotify::release ()
 	{
 		for (auto map : WatchedPathes2Descriptors_.left)
 			inotify_rm_watch (INotifyDescriptor_, map.second);
-		
+
 		WatchedPathes2Descriptors_.clear ();
 		close (INotifyDescriptor_);
 	}
-	
-	void FilesWatcher::updateExceptions (QStringList masks)
+
+	void FilesWatcherInotify::updateExceptions (QStringList masks)
 	{
 		ExceptionMasks_ = masks;
 		ExceptionMasks_.removeAll ("");
 		ExceptionMasks_.removeDuplicates ();
-		
+
 		for (const auto& pair : WatchedPathes2Descriptors_.left)
 			if (IsInExceptionList (pair.first))
 				RemoveWatchingPath (pair.second);
