@@ -21,6 +21,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <util/models/flattenfiltermodel.h>
+#include <util/models/mergemodel.h>
 #include <util/util.h>
 #include <interfaces/iremovabledevmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -72,8 +73,8 @@ namespace LMP
 
 	DevicesBrowserWidget::DevicesBrowserWidget (QWidget *parent)
 	: QWidget (parent)
-	, DevMgr_ (0)
 	, DevUploadModel_ (new UploadModel (this))
+	, Merger_ (new Util::MergeModel (QStringList ("Device name"), this))
 	, CurrentSyncer_ (0)
 	{
 		Ui_.setupUi (this);
@@ -103,34 +104,22 @@ namespace LMP
 	void DevicesBrowserWidget::InitializeDevices ()
 	{
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+
 		const auto& mgrs = pm->GetAllCastableTo<IRemovableDevManager*> ();
-		if (mgrs.isEmpty ())
+		Q_FOREACH (const auto& mgr, mgrs)
 		{
-			setEnabled (false);
-			return;
+			auto flattener = new MountableFlattener (this);
+			flattener->SetSource (mgr->GetDevicesModel ());
+			Merger_->AddModel (flattener);
+			Flattener2DevMgr_ [flattener] = mgr;
 		}
 
-		DevMgr_ = mgrs.at (0);
+		Ui_.DevicesSelector_->setModel (Merger_);
 
-		auto flattener = new MountableFlattener (this);
-		flattener->SetSource (DevMgr_->GetDevicesModel ());
-		Ui_.DevicesSelector_->setModel (flattener);
-
-		Ui_.DevicesSelector_->setCurrentIndex (-1);
-
-		connect (flattener,
+		connect (Merger_,
 				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleDevDataChanged (QModelIndex, QModelIndex)));
-	}
-
-	void DevicesBrowserWidget::handleDevDataChanged (const QModelIndex& from, const QModelIndex& to)
-	{
-		const int idx = Ui_.DevicesSelector_->currentIndex ();
-		if (idx < from.row () && idx > to.row ())
-			return;
-
-		on_DevicesSelector__activated (idx);
 	}
 
 	namespace
@@ -149,12 +138,8 @@ namespace LMP
 		}
 	}
 
-	void DevicesBrowserWidget::on_UploadButton__released ()
+	void DevicesBrowserWidget::UploadMountable (int idx)
 	{
-		const int idx = Ui_.DevicesSelector_->currentIndex ();
-		if (idx < 0)
-			return;
-
 		const auto& to = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
 		if (to.isEmpty ())
 			return;
@@ -187,6 +172,27 @@ namespace LMP
 
 		Ui_.UploadLog_->clear ();
 		Core::Instance ().GetSyncManager ()->AddFiles (CurrentSyncer_, to, paths, Ui_.TranscodingOpts_->GetParams ());
+	}
+
+	void DevicesBrowserWidget::handleDevDataChanged (const QModelIndex& from, const QModelIndex& to)
+	{
+		const int idx = Ui_.DevicesSelector_->currentIndex ();
+		if (idx < from.row () && idx > to.row ())
+			return;
+
+		on_DevicesSelector__activated (idx);
+	}
+
+	void DevicesBrowserWidget::on_UploadButton__released ()
+	{
+		const int idx = Ui_.DevicesSelector_->currentIndex ();
+		if (idx < 0)
+			return;
+
+		auto model = Merger_->GetModelForRow (idx);
+		qDebug () << *model << Flattener2DevMgr_;
+		if (Flattener2DevMgr_.contains (*model))
+			UploadMountable (idx);
 	}
 
 	void DevicesBrowserWidget::on_DevicesSelector__activated (int idx)
@@ -223,8 +229,12 @@ namespace LMP
 		if (idx < 0)
 			return;
 
+		const auto model = *Merger_->GetModelForRow (idx);
+		if (!Flattener2DevMgr_.contains (model))
+			return;
+
 		const auto& id = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::DevID).toString ();
-		DevMgr_->MountDevice (id);
+		Flattener2DevMgr_ [model]->MountDevice (id);
 	}
 
 	void DevicesBrowserWidget::appendUpLog (QString text)
