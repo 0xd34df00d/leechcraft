@@ -54,6 +54,7 @@ namespace LMP
 		void InitializeDevices ();
 	private:
 		void UploadMountable (int);
+		void UploadUnmountable (int);
 		void HandleMountableSelected (int);
 		void HandleUnmountableSelected (int);
 	private slots:

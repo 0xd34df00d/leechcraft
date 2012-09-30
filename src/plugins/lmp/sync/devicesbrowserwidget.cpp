@@ -33,6 +33,7 @@
 #include "syncmanager.h"
 #include "transcodingparams.h"
 #include "unmountabledevmanager.h"
+#include "syncunmountablemanager.h"
 
 namespace LeechCraft
 {
@@ -179,6 +180,27 @@ namespace LMP
 		Core::Instance ().GetSyncManager ()->AddFiles (CurrentSyncer_, to, paths, Ui_.TranscodingOpts_->GetParams ());
 	}
 
+	void DevicesBrowserWidget::UploadUnmountable (int idx)
+	{
+		int starting = 0;
+		Merger_->GetModelForRow (idx, &starting);
+		idx -= starting;
+
+		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
+		QStringList paths;
+		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
+				[] (const QModelIndex& idx) { return idx.data (LocalCollection::Role::TrackPath).toString (); });
+		paths.removeAll (QString ());
+
+		auto syncer = qobject_cast<IUnmountableSync*> (UnmountableMgr_->GetDeviceManager (idx));
+		const auto& info = UnmountableMgr_->GetDeviceInfo (idx);
+
+		const int partIdx = Ui_.UnmountablePartsBox_->currentIndex ();
+		const auto& storageId = Ui_.UnmountablePartsBox_->itemData (partIdx).toByteArray ();
+		Core::Instance ().GetSyncUnmountableManager ()->AddFiles ({ syncer, info.ID_,
+				storageId, paths, Ui_.TranscodingOpts_->GetParams () });
+	}
+
 	void DevicesBrowserWidget::HandleMountableSelected (int idx)
 	{
 		Ui_.MountButton_->show ();
@@ -244,6 +266,8 @@ namespace LMP
 
 		if (Flattener2DevMgr_.contains (*Merger_->GetModelForRow (idx)))
 			UploadMountable (idx);
+		else
+			UploadUnmountable (idx);
 	}
 
 	void DevicesBrowserWidget::on_DevicesSelector__activated (int idx)
