@@ -33,41 +33,12 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	namespace
-	{
-		QStringList MP3Params (const TranscodingParams& params)
-		{
-			return QStringList ("-acodec") << "libvorbis"
-					<< "-aq"
-					<< QString::number (params.Quality_);
-		}
-
-		QStringList OggParams (const TranscodingParams& params)
-		{
-			return QStringList ("-acodec") << "libvorbis"
-					<< "-aq"
-					<< QString::number (params.Quality_);
-		}
-
-		QStringList WmaParams (const TranscodingParams& params)
-		{
-			return QStringList ("-acodec") << "wmav2"
-					<< "-aq"
-					<< QString::number (params.Quality_);
-		}
-	}
-
 	TranscodeJob::TranscodeJob (const QString& path, const TranscodingParams& params, QObject* parent)
 	: QObject (parent)
 	, Process_ (new QProcess (this))
 	, OriginalPath_ (path)
 	, TargetPattern_ (params.FilePattern_)
 	{
-		QMap<QString, std::function<QStringList (TranscodingParams)>> trans;
-		trans ["mp3"] = MP3Params;
-		trans ["ogg"] = OggParams;
-		trans ["wma"] = WmaParams;
-
 		QDir dir = QDir::temp ();
 		if (!dir.exists ("lmp_transcode"))
 			dir.mkdir ("lmp_transcode");
@@ -77,9 +48,11 @@ namespace LMP
 		const QFileInfo fi (path);
 		TranscodedPath_ = dir.absoluteFilePath (fi.fileName () + '.' + params.FormatID_);
 
+		const auto format = Formats ().GetFormat (params.FormatID_);
+
 		QStringList args;
 		args << "-i" << path;
-		args << trans [params.FormatID_] (params);
+		args << format->ToFFmpeg (params);
 		args << "-map_metadata" << "0";
 		args << TranscodedPath_;
 

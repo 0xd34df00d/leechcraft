@@ -72,6 +72,8 @@ namespace LMP
 						<< QString::number (params.Quality_);
 				break;
 			}
+
+			return result;
 		}
 	};
 
