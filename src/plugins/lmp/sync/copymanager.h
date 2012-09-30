@@ -81,7 +81,7 @@ namespace LMP
 
 		bool IsRunning () const
 		{
-			return !CurrentJob_.From_.isEmpty ();
+			return !CurrentJob_.Filename_.isEmpty ();
 		}
 	protected:
 		void handleUploadFinished (const QString& localPath, QFile::FileError error, const QString& errorStr)
