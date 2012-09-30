@@ -49,6 +49,7 @@ namespace LMP
 		QAbstractItemModel* GetDevListModel () const;
 		void InitializePlugins ();
 
+		QObject* GetDeviceManager (int) const;
 		UnmountableDevInfo GetDeviceInfo (int) const;
 	private slots:
 		void rebuildAvailableDevices ();

@@ -51,6 +51,15 @@ namespace LMP
 		rebuildAvailableDevices ();
 	}
 
+	QObject* UnmountableDevManager::GetDeviceManager (int row) const
+	{
+		auto item = DevListModel_->item (row);
+		if (!item)
+			return 0;
+
+		return item->data (Roles::ManagerObj).value<QObject*> ();
+	}
+
 	UnmountableDevInfo UnmountableDevManager::GetDeviceInfo (int row) const
 	{
 		auto item = DevListModel_->item (row);
