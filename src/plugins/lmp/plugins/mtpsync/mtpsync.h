@@ -44,6 +44,7 @@ namespace MTPSync
 				LeechCraft::LMP::IUnmountableSync)
 
 		ILMPProxy_ptr LMPProxy_;
+		UnmountableDevInfos_t Infos_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
