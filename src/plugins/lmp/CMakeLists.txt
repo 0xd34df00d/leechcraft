@@ -92,6 +92,7 @@ SET (SRCS
 	sync/transcodejob.cpp
 	sync/transcodemanager.cpp
 	sync/transcodingparamswidget.cpp
+	sync/unmountabledevmanager.cpp
 	sync/uploadmodel.cpp
 	playlistparsers/commonpl.cpp
 	playlistparsers/playlistfactory.cpp
