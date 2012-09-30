@@ -89,6 +89,7 @@ SET (SRCS
 	sync/devicesbrowserwidget.cpp
 	sync/syncmanagerbase.cpp
 	sync/syncmanager.cpp
+	sync/syncunmountablemanager.cpp
 	sync/transcodejob.cpp
 	sync/transcodemanager.cpp
 	sync/transcodingparamswidget.cpp
