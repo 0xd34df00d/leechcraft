@@ -63,7 +63,7 @@ namespace LMP
 		return
 		{
 			Ui_.FilenameMask_->text (),
-			transcode ? Ui_.TranscodingFormat_->currentText () : QString (),
+			transcode ? GetCurrentFormat ()->GetFormatID () : QString (),
 			bitrateType,
 			Ui_.QualitySlider_->value (),
 			Ui_.ThreadsSlider_->value ()
