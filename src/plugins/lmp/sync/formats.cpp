@@ -24,6 +24,24 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		void StandardQualityAppend (QStringList& result, const TranscodingParams& params)
+		{
+			switch (params.BitrateType_)
+			{
+			case Format::BitrateType::CBR:
+				result << "-ab"
+						<< (QString::number (params.Quality_) + "k");
+				break;
+			case Format::BitrateType::VBR:
+				result << "-aq"
+						<< QString::number (params.Quality_);
+				break;
+			}
+		}
+	}
+
 	class OggFormat : public Format
 	{
 	public:
@@ -61,18 +79,49 @@ namespace LMP
 		{
 			QStringList result;
 			result << "-acodec" << "libvorbis";
-			switch (params.BitrateType_)
+			StandardQualityAppend (result, params);
+			return result;
+		}
+	};
+
+	class MP3Format : public Format
+	{
+	public:
+		QString GetFormatID () const
+		{
+			return "mp3";
+		}
+
+		QString GetFormatName () const
+		{
+			return "MP3";
+		}
+
+		QList<BitrateType> GetSupportedBitrates () const
+		{
+			return { BitrateType::CBR, BitrateType::VBR };
+		}
+
+		QList<int> GetBitrateLabels (BitrateType type) const
+		{
+			switch (type)
 			{
 			case BitrateType::CBR:
-				result << "-ab"
-						<< (QString::number (params.Quality_) + "k");
-				break;
+				return { 64, 96, 128, 144, 160, 192, 224, 256, 320 };
 			case BitrateType::VBR:
-				result << "-aq"
-						<< QString::number (params.Quality_);
-				break;
+				return { -9, -8, -7, -6, -5, -4, -3, -2, -1 };
 			}
 
+			qWarning () << Q_FUNC_INFO
+					<< "unknown bitrate type";
+			return QList<int> ();
+		}
+
+		QStringList ToFFmpeg (const TranscodingParams& params) const
+		{
+			QStringList result;
+			result << "-acodec" << "libmp3lame";
+			StandardQualityAppend (result, params);
 			return result;
 		}
 	};
@@ -80,6 +129,7 @@ namespace LMP
 	Formats::Formats ()
 	{
 		Formats_ << Format_ptr (new OggFormat);
+		Formats_ << Format_ptr (new MP3Format);
 	}
 
 	QList<Format_ptr> Formats::GetFormats () const
