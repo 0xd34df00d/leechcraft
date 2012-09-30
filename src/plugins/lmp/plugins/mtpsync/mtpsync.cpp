@@ -96,8 +96,141 @@ namespace MTPSync
 		OrigInfos_ [origLocalPath] = info;
 	}
 
-	void Plugin::Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& devId, const QByteArray& storageId)
+	void Plugin::Upload (const QString& localPath, const QString&, const QByteArray& devId, const QByteArray& storageId)
 	{
+		bool found = false;
+
+		LIBMTP_raw_device_t *rawDevices;
+		int numRawDevices = 0;
+		LIBMTP_Detect_Raw_Devices (&rawDevices, &numRawDevices);
+		for (int i = 0; i < numRawDevices; ++i)
+		{
+			std::shared_ptr<LIBMTP_mtpdevice_t> device (LIBMTP_Open_Raw_Device (&rawDevices [i]), LIBMTP_Release_Device);
+			if (!device)
+				continue;
+
+			const auto& serial = LIBMTP_Get_Serialnumber (device.get ());
+			if (serial == devId)
+			{
+				UploadTo (device.get (), storageId, localPath);
+				found = true;
+				break;
+			}
+		}
+		free (rawDevices);
+
+		if (!found)
+			emit uploadFinished (localPath,
+					QFile::ResourceError,
+					tr ("Unable to find the requested device."));
+	}
+
+	void Plugin::HandleTransfer (const QString& path, quint64 sent, quint64 total)
+	{
+		if (sent == total)
+			emit uploadFinished (path, QFile::NoError, QString ());
+	}
+
+	namespace
+	{
+		struct CallbackData
+		{
+			Plugin *Plugin_;
+			QString LocalPath_;
+		};
+
+		int TransferCallback (uint64_t sent, uint64_t total, const void *rawData)
+		{
+			qDebug () << sent << total;
+			auto data = static_cast<const CallbackData*> (rawData);
+
+			data->Plugin_->HandleTransfer (data->LocalPath_, sent, total);
+
+			if (sent == total)
+				delete data;
+
+			return 0;
+		}
+	}
+
+	void Plugin::UploadTo (LIBMTP_mtpdevice_t *device, const QByteArray& storageId, const QString& localPath)
+	{
+		LIBMTP_Get_Storage (device, 0);
+
+		auto storage = device->storage;
+
+		while (storage)
+		{
+			if (QByteArray::number (storage->id) == storageId)
+				break;
+			storage = storage->next;
+		}
+
+		if (!storage)
+		{
+			emit uploadFinished (localPath,
+					QFile::ResourceError,
+					tr ("Unable to find the requested storage."));
+			return;
+		}
+
+		qDebug () << "uploading" << localPath << "to" << storage->id;
+
+		const auto id = storage->id;
+		auto album = GetAlbum (device, localPath, id);
+
+		auto track = LIBMTP_new_track_t ();
+		track->parent_id = album ? album->album_id : 0;
+		track->storage_id = id;
+
+		qDebug () << LIBMTP_Send_Track_From_File (device, localPath.toUtf8 ().constData (), track, TransferCallback, new CallbackData ({ this, localPath }));
+		LIBMTP_destroy_track_t (track);
+	}
+
+	namespace
+	{
+		bool IsRightAlbum (const UnmountableFileInfo& info, const LIBMTP_album_t *album)
+		{
+			return info.Artist_ == album->artist &&
+					info.Album_ == album->name &&
+					info.Genres_.join ("; ") == album->genre;
+		}
+	}
+
+	LIBMTP_album_t* Plugin::GetAlbum (LIBMTP_mtpdevice_t *device, const QString& localPath, uint32_t storageId)
+	{
+		if (!OrigInfos_.contains (localPath))
+			return 0;
+
+		const auto& info = OrigInfos_.take (localPath);
+		const auto pos = std::find_if (ExistingAlbums_.begin (), ExistingAlbums_.end (),
+				[&info] (const LIBMTP_album_t *album) { return IsRightAlbum (info, album); });
+		if (pos != ExistingAlbums_.end ())
+			return *pos;
+
+		auto album = LIBMTP_new_album_t ();
+
+		album->artist = strdup (info.Artist_.toUtf8 ().constData ());
+		album->name = strdup (info.Album_.toUtf8 ().constData ());
+		album->genre = strdup (info.Genres_.join ("; ").toUtf8 ().constData ());
+
+		album->album_id = 0;
+		album->next = 0;
+		album->no_tracks = 0;
+		album->parent_id = 0;
+		album->storage_id = storageId;
+		album->tracks = 0;
+
+		if (!LIBMTP_Create_New_Album (device, album))
+		{
+			ExistingAlbums_ << album;
+			return album;
+		}
+
+		qWarning () << Q_FUNC_INFO << "unable to create album";
+
+		LIBMTP_destroy_album_t (album);
+		return 0;
 	}
 
 	namespace
