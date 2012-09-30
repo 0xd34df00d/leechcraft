@@ -253,6 +253,7 @@ namespace LMP
 		if (idx < 0)
 		{
 			Ui_.MountButton_->setEnabled (false);
+			Ui_.UnmountablePartsWidget_->hide ();
 			return;
 		}
 
