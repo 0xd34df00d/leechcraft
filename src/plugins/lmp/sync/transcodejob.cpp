@@ -35,9 +35,23 @@ namespace LMP
 {
 	namespace
 	{
+		QStringList MP3Params (const TranscodingParams& params)
+		{
+			return QStringList ("-acodec") << "libvorbis"
+					<< "-aq"
+					<< QString::number (params.Quality_);
+		}
+
 		QStringList OggParams (const TranscodingParams& params)
 		{
 			return QStringList ("-acodec") << "libvorbis"
+					<< "-aq"
+					<< QString::number (params.Quality_);
+		}
+
+		QStringList WmaParams (const TranscodingParams& params)
+		{
+			return QStringList ("-acodec") << "wmav2"
 					<< "-aq"
 					<< QString::number (params.Quality_);
 		}
@@ -50,7 +64,9 @@ namespace LMP
 	, TargetPattern_ (params.FilePattern_)
 	{
 		QMap<QString, std::function<QStringList (TranscodingParams)>> trans;
+		trans ["mp3"] = MP3Params;
 		trans ["ogg"] = OggParams;
+		trans ["wma"] = WmaParams;
 
 		QDir dir = QDir::temp ();
 		if (!dir.exists ("lmp_transcode"))
@@ -59,11 +75,11 @@ namespace LMP
 			throw std::runtime_error ("unable to cd into temp dir");
 
 		const QFileInfo fi (path);
-		TranscodedPath_ = dir.absoluteFilePath (fi.fileName () + '.' + params.Format_);
+		TranscodedPath_ = dir.absoluteFilePath (fi.fileName () + '.' + params.FormatID_);
 
 		QStringList args;
 		args << "-i" << path;
-		args << trans [params.Format_] (params);
+		args << trans [params.FormatID_] (params);
 		args << "-map_metadata" << "0";
 		args << TranscodedPath_;
 
