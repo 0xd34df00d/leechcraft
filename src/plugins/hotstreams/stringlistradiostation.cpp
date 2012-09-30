@@ -16,42 +16,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QHash>
-#include <interfaces/iinfo.h>
-#include <interfaces/media/iradiostationprovider.h>
+#include "stringlistradiostation.h"
+#include <QTimer>
+#include <QTemporaryFile>
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace HotStreams
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public Media::IRadioStationProvider
+	StringListRadioStation::StringListRadioStation (const QList<QUrl>& urls, const QString& name)
+	: Name_ (name)
+	, URLs_ (urls)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo Media::IRadioStationProvider)
+		QTimer::singleShot (0,
+				this,
+				SLOT (emitPlaylist ()));
+	}
 
-		ICoreProxy_ptr Proxy_;
-		QHash<QString, QStandardItem*> Roots_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	QObject* StringListRadioStation::GetObject ()
+	{
+		return this;
+	}
 
-		QList<QStandardItem*> GetRadioListItems () const;
-		Media::IRadioStation_ptr GetRadioStation (QStandardItem* , const QString&);
-	protected slots:
-		void refreshRadios ();
-	signals:
-		void delegateEntity (const LeechCraft::Entity& entity, int*, QObject**);
-	};
+	QString StringListRadioStation::GetRadioName () const
+	{
+		return Name_;
+	}
+
+	void StringListRadioStation::RequestNewStream ()
+	{
+	}
+
+	void StringListRadioStation::emitPlaylist ()
+	{
+		QTemporaryFile file;
+		file.setAutoRemove (false);
+		if (!file.open ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open temporary file";
+			return;
+		}
+
+		for (const auto& url : URLs_)
+			file.write (url.toEncoded () + '\n');
+
+		file.close ();
+		emit gotPlaylist (file.fileName (), "m3u8");
+	}
 }
 }
-

@@ -19,39 +19,36 @@
 #pragma once
 
 #include <QObject>
-#include <QHash>
-#include <interfaces/iinfo.h>
-#include <interfaces/media/iradiostationprovider.h>
+#include <QIcon>
+
+class QStandardItem;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace HotStreams
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public Media::IRadioStationProvider
+	class IcecastFetcher : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo Media::IRadioStationProvider)
 
-		ICoreProxy_ptr Proxy_;
-		QHash<QString, QStandardItem*> Roots_;
+		QStandardItem *Root_;
+		int JobID_;
+		QIcon RadioIcon_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QList<QStandardItem*> GetRadioListItems () const;
-		Media::IRadioStation_ptr GetRadioStation (QStandardItem* , const QString&);
-	protected slots:
-		void refreshRadios ();
+		IcecastFetcher (QStandardItem*, QNetworkAccessManager*, QObject* = 0);
+	private:
+		void FetchList ();
+		void ParseList ();
+	private slots:
+		void handleFetchList ();
+		void handleParsed ();
+		void handleJobFinished (int);
+		void checkDelete (int);
 	signals:
-		void delegateEntity (const LeechCraft::Entity& entity, int*, QObject**);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
-

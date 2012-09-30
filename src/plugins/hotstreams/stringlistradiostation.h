@@ -19,39 +19,33 @@
 #pragma once
 
 #include <QObject>
-#include <QHash>
-#include <interfaces/iinfo.h>
-#include <interfaces/media/iradiostationprovider.h>
+#include <QUrl>
+#include <interfaces/media/iradiostation.h>
 
 namespace LeechCraft
 {
 namespace HotStreams
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public Media::IRadioStationProvider
+	class StringListRadioStation : public QObject
+								 , public Media::IRadioStation
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo Media::IRadioStationProvider)
+		Q_INTERFACES (Media::IRadioStation)
 
-		ICoreProxy_ptr Proxy_;
-		QHash<QString, QStandardItem*> Roots_;
+		QString Name_;
+		QList<QUrl> URLs_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		StringListRadioStation (const QList<QUrl>&, const QString&);
 
-		QList<QStandardItem*> GetRadioListItems () const;
-		Media::IRadioStation_ptr GetRadioStation (QStandardItem* , const QString&);
-	protected slots:
-		void refreshRadios ();
+		QObject* GetObject ();
+		QString GetRadioName () const;
+		void RequestNewStream ();
+	private slots:
+		void emitPlaylist ();
 	signals:
-		void delegateEntity (const LeechCraft::Entity& entity, int*, QObject**);
+		void gotNewStream (const QUrl&, const Media::AudioInfo&);
+		void gotPlaylist (const QString&, const QString&);
+		void gotError (const QString&);
 	};
 }
 }
-

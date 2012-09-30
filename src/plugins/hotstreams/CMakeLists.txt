@@ -16,10 +16,12 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	hotstreams.cpp
+	icecastfetcher.cpp
 	radiostation.cpp
 	somafmlistfetcher.cpp
-	streamlistfetcherbase.cpp
 	stealkilllistfetcher.cpp
+	streamlistfetcherbase.cpp
+	stringlistradiostation.cpp
 	)
 
 IF (QJSON_FOUND)
