@@ -101,6 +101,15 @@ namespace LMP
 				this,
 				SLOT (handleUploadProgress (int, int)));
 
+		connect (Core::Instance ().GetSyncUnmountableManager (),
+				SIGNAL (transcodingProgress (int, int)),
+				this,
+				SLOT (handleTranscodingProgress (int, int)));
+		connect (Core::Instance ().GetSyncUnmountableManager (),
+				SIGNAL (uploadProgress (int, int)),
+				this,
+				SLOT (handleUploadProgress (int, int)));
+
 		Ui_.TSProgress_->hide ();
 		Ui_.UploadProgress_->hide ();
 	}
