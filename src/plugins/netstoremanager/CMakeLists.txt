@@ -2,6 +2,14 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_netstoremanager)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+IF (CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE)
+	SET (INOTIFY_DEFAULT TRUE)
+ELSE (CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE)
+	SET (INOTIFY_DEFAULT FALSE)
+ENDIF (CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE)
+
+OPTION (ENABLE_NETSTOREMANAGER_INOTIFY "Enable inotify file watcher backend for NetStoreManager" ${INOTIFY_DEFAULT})
+
 SET (QT_USE_QTNETWORK TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
@@ -24,7 +32,7 @@ SET (SRCS
 	syncwidget.cpp
 	syncitemdelegate.cpp
 	directorywidget.cpp
-	fileswatcher.cpp
+	fileswatcherbase.cpp
 	utils.cpp
 	)
 SET (HEADERS
@@ -42,6 +50,7 @@ SET (HEADERS
 	syncitemdelegate.h
 	directorywidget.h
 	fileswatcher.h
+	fileswatcherbase.h
 	utils.h
 	)
 SET (FORMS
@@ -51,6 +60,16 @@ SET (FORMS
 	syncwidget.ui
 	directorywidget.ui
 	)
+
+IF (ENABLE_NETSTOREMANAGER_INOTIFY)
+	ADD_DEFINITIONS (-DENABLE_INOTIFY)
+	SET (SRCS ${SRCS} fileswatcher_inotify.cpp)
+	SET (HEADERS ${HEADERS} fileswatcher_inotify.h)
+ELSE (ENABLE_NETSTOREMANAGER_INOTIFY)
+	SET (SRCS ${SRCS} fileswatcher_dummy.cpp)
+	SET (HEADERS ${HEADERS} fileswatcher_dummy.h)
+ENDIF (ENABLE_NETSTOREMANAGER_INOTIFY)
+
 SET (RESOURCES netstoremanagerresources.qrc)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

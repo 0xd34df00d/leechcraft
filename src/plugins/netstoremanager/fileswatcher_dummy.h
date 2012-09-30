@@ -1,5 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2006-2012	Georg Rudoy
  * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,55 +19,25 @@
 
 #pragma once
 
-#include <boost/bimap.hpp>
-#include <QObject>
-#include <QStringList>
-#include <QMultiMap>
-
-class QTimer;
+#include "fileswatcherbase.h"
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	class FilesWatcher : public QObject
+	class FilesWatcherDummy : public FilesWatcherBase
 	{
 		Q_OBJECT
-
-		int INotifyDescriptor_;
-		const uint32_t WatchMask_;
-		const int  WaitMSecs_;
-		size_t BufferLength_;
-		size_t EventSize_;
-
-		typedef boost::bimaps::bimap<QString, int> descriptorsMap;
-		descriptorsMap WatchedPathes2Descriptors_;
-
-		QStringList ExceptionMasks_;
-		QTimer *Timer_;
 	public:
-		FilesWatcher (QObject *parent = 0);
-	private:
-		void HandleNotification (int descriptor);
-		void AddPathWithNotify (const QString& path);
-		bool IsInExceptionList (const QString& path) const;
-		void RemoveWatchingPath (int descriptor);
-
+		FilesWatcherDummy (QObject* = 0);
 	public slots:
 		void checkNotifications ();
 		bool addPath (QString path);
 		void addPathes (QStringList paths);
 		void release ();
 		void updateExceptions (QStringList masks);
-
-	signals:
-		void dirWasCreated (const QString& path);
-		void fileWasCreated (const QString& path);
-		void dirWasRemoved (const QString& path);
-		void fileWasRemoved (const QString& path);
-		void fileWasUpdated (const QString& path);
-		void entryWasRenamed (const QString& oldName, const QString& newName);
-		void entryWasMoved (const QString& oldPath, const QString& newPath);
 	};
+
+	typedef FilesWatcherDummy FilesWatcher;
 }
 }

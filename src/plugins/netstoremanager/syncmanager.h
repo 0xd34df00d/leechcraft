@@ -35,7 +35,7 @@ namespace LeechCraft
 namespace NetStoreManager
 {
 	class ISupportFileListings;
-	class FilesWatcher;
+	class FilesWatcherBase;
 	class IStorageAccount;
 	class AccountsManager;
 
@@ -57,7 +57,7 @@ namespace NetStoreManager
 		QTimer *Timer_;
 
 		QThread *Thread_;
-		FilesWatcher *FilesWatcher_;
+		FilesWatcherBase *FilesWatcher_;
 
 		QMap<ISupportFileListings*, QMap<QString, QStringList>> Isfl2PathId_;
 		QQueue<std::function<void (void)>> ApiCallQueue_;

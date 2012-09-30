@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,42 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iactionsexporter.h>
+#include "fileswatcher_dummy.h"
+#include <QStringList>
 
 namespace LeechCraft
 {
-namespace Dolozhee
+namespace NetStoreManager
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IActionsExporter
+	FilesWatcherDummy::FilesWatcherDummy (QObject *parent)
+	: FilesWatcherBase (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
+	}
+	void FilesWatcherDummy::checkNotifications ()
+	{
+	}
 
-		ICoreProxy_ptr Proxy_;
-		QAction *Report_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	bool FilesWatcherDummy::addPath (QString)
+	{
+		return true;
+	}
 
-		QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace area) const;
-	private slots:
-		void initiateReporting ();
-	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+	void FilesWatcherDummy::addPathes (QStringList)
+	{
+	}
 
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-	};
+	void FilesWatcherDummy::release ()
+	{
+	}
+
+	void FilesWatcherDummy::updateExceptions (QStringList)
+	{
+	}
 }
 }

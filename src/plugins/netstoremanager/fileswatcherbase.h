@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2012	Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,39 +20,30 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
 {
-namespace Dolozhee
+namespace NetStoreManager
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IActionsExporter
+	class FilesWatcherBase : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
-
-		ICoreProxy_ptr Proxy_;
-		QAction *Report_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace area) const;
-	private slots:
-		void initiateReporting ();
+		FilesWatcherBase (QObject* = 0);
+	public slots:
+		virtual void checkNotifications () = 0;
+		virtual bool addPath (QString path) = 0;
+		virtual void addPathes (QStringList paths) = 0;
+		virtual void release () = 0;
+		virtual void updateExceptions (QStringList masks) = 0;
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		void dirWasCreated (const QString& path);
+		void fileWasCreated (const QString& path);
+		void dirWasRemoved (const QString& path);
+		void fileWasRemoved (const QString& path);
+		void fileWasUpdated (const QString& path);
+		void entryWasRenamed (const QString& oldName, const QString& newName);
+		void entryWasMoved (const QString& oldPath, const QString& newPath);
 	};
 }
 }
