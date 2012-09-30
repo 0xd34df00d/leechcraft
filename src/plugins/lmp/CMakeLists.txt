@@ -87,6 +87,7 @@ SET (SRCS
 	sync/clouduploader.cpp
 	sync/copymanager.cpp
 	sync/devicesbrowserwidget.cpp
+	sync/formats.cpp
 	sync/syncmanagerbase.cpp
 	sync/syncmanager.cpp
 	sync/syncunmountablemanager.cpp
