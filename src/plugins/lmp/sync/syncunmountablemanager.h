@@ -20,8 +20,10 @@
 
 #include <QStringList>
 #include <QHash>
+#include "interfaces/lmp/iunmountablesync.h"
 #include "transcodingparams.h"
 #include "syncmanagerbase.h"
+#include "copymanager.h"
 
 namespace LeechCraft
 {
@@ -43,6 +45,28 @@ namespace LMP
 		};
 	private:
 		QHash<QString, AddFilesParams> Source2Params_;
+
+		struct CopyJob
+		{
+			QObject* GetObject () const
+			{
+				return Syncer_->GetObject ();
+			}
+
+			void Upload () const
+			{
+				Syncer_->Upload (Filename_, OrigPath_, DevID_, StorageID_);
+			}
+
+			QString Filename_;
+			bool RemoveOnFinish_;
+
+			IUnmountableSync *Syncer_;
+			QByteArray DevID_;
+			QByteArray StorageID_;
+			QString OrigPath_;
+		};
+		CopyManager<CopyJob> *CopyMgr_;
 	public:
 		SyncUnmountableManager (QObject* = 0);
 

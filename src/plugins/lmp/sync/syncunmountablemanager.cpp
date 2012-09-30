@@ -27,7 +27,16 @@ namespace LMP
 {
 	SyncUnmountableManager::SyncUnmountableManager (QObject *parent)
 	: SyncManagerBase (parent)
+	, CopyMgr_ (new CopyManager<CopyJob> (this))
 	{
+		connect (CopyMgr_,
+				SIGNAL (startedCopying (QString)),
+				this,
+				SLOT (handleStartedCopying (QString)));
+		connect (CopyMgr_,
+				SIGNAL (finishedCopying ()),
+				this,
+				SLOT (handleFinishedCopying ()));
 	}
 
 	void SyncUnmountableManager::AddFiles (const AddFilesParams& params)
@@ -61,8 +70,10 @@ namespace LMP
 
 	void SyncUnmountableManager::handleFileTranscoded (const QString& from, const QString& transcoded, QString)
 	{
+		SyncManagerBase::HandleFileTranscoded (from, transcoded);
+
 		const auto& params = Source2Params_.take (from);
-		if (params.Syncer_)
+		if (!params.Syncer_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "no syncer for file"
@@ -70,7 +81,16 @@ namespace LMP
 			return;
 		}
 
-		params.Syncer_->Upload (transcoded, from, params.DevID_, params.StorageID_);
+		const CopyJob copyJob
+		{
+			transcoded,
+			from != transcoded,
+			params.Syncer_,
+			params.DevID_,
+			params.StorageID_,
+			from
+		};
+		CopyMgr_->Copy (copyJob);
 	}
 }
 }
