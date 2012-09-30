@@ -26,11 +26,13 @@
 #include <interfaces/iremovabledevmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/isyncplugin.h>
+#include <interfaces/lmp/iunmountablesync.h>
 #include "core.h"
 #include "localcollection.h"
-#include "sync/uploadmodel.h"
-#include "sync/syncmanager.h"
-#include "sync/transcodingparams.h"
+#include "uploadmodel.h"
+#include "syncmanager.h"
+#include "transcodingparams.h"
+#include "unmountabledevmanager.h"
 
 namespace LeechCraft
 {
@@ -75,6 +77,7 @@ namespace LMP
 	: QWidget (parent)
 	, DevUploadModel_ (new UploadModel (this))
 	, Merger_ (new Util::MergeModel (QStringList ("Device name"), this))
+	, UnmountableMgr_ (new UnmountableDevManager (this))
 	, CurrentSyncer_ (0)
 	{
 		Ui_.setupUi (this);
@@ -114,8 +117,10 @@ namespace LMP
 			Flattener2DevMgr_ [flattener] = mgr;
 		}
 
-		Ui_.DevicesSelector_->setModel (Merger_);
+		UnmountableMgr_->InitializePlugins ();
+		Merger_->AddModel (UnmountableMgr_->GetDevListModel ());
 
+		Ui_.DevicesSelector_->setModel (Merger_);
 		connect (Merger_,
 				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 				this,
@@ -174,36 +179,11 @@ namespace LMP
 		Core::Instance ().GetSyncManager ()->AddFiles (CurrentSyncer_, to, paths, Ui_.TranscodingOpts_->GetParams ());
 	}
 
-	void DevicesBrowserWidget::handleDevDataChanged (const QModelIndex& from, const QModelIndex& to)
+	void DevicesBrowserWidget::HandleMountableSelected (int idx)
 	{
-		const int idx = Ui_.DevicesSelector_->currentIndex ();
-		if (idx < from.row () && idx > to.row ())
-			return;
-
-		on_DevicesSelector__activated (idx);
-	}
-
-	void DevicesBrowserWidget::on_UploadButton__released ()
-	{
-		const int idx = Ui_.DevicesSelector_->currentIndex ();
-		if (idx < 0)
-			return;
-
-		auto model = Merger_->GetModelForRow (idx);
-		qDebug () << *model << Flattener2DevMgr_;
-		if (Flattener2DevMgr_.contains (*model))
-			UploadMountable (idx);
-	}
-
-	void DevicesBrowserWidget::on_DevicesSelector__activated (int idx)
-	{
-		CurrentSyncer_ = 0;
-
-		if (idx < 0)
-		{
-			Ui_.MountButton_->setEnabled (false);
-			return;
-		}
+		Ui_.MountButton_->show ();
+		Ui_.TranscodingOpts_->SetMaskVisible (true);
+		Ui_.UnmountablePartsWidget_->hide ();
 
 		auto isMounted = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::IsMounted).toBool ();
 		Ui_.MountButton_->setEnabled (!isMounted);
@@ -221,6 +201,65 @@ namespace LMP
 		}
 
 		Ui_.SyncTabs_->setEnabled (!FindSuitables (mountPath).isEmpty ());
+	}
+
+	void DevicesBrowserWidget::HandleUnmountableSelected (int idx)
+	{
+		Ui_.MountButton_->hide ();
+		Ui_.TranscodingOpts_->SetMaskVisible (false);
+		Ui_.UnmountablePartsWidget_->show ();
+
+		int starting = 0;
+		Merger_->GetModelForRow (idx, &starting);
+		idx -= starting;
+
+		Ui_.UnmountablePartsBox_->clear ();
+		const auto& info = UnmountableMgr_->GetDeviceInfo (idx);
+		for (const auto& storage : info.Partitions_)
+		{
+			const auto& boxText = storage.TotalSize_ > 0 ?
+					tr ("%1 (%2 available of %3)")
+							.arg (storage.Name_)
+							.arg (Util::MakePrettySize (storage.AvailableSize_))
+							.arg (Util::MakePrettySize (storage.TotalSize_)) :
+					storage.Name_;
+			Ui_.UnmountablePartsBox_->addItem (boxText, storage.ID_);
+		}
+	}
+
+	void DevicesBrowserWidget::handleDevDataChanged (const QModelIndex& from, const QModelIndex& to)
+	{
+		const int idx = Ui_.DevicesSelector_->currentIndex ();
+		if (idx < from.row () && idx > to.row ())
+			return;
+
+		on_DevicesSelector__activated (idx);
+	}
+
+	void DevicesBrowserWidget::on_UploadButton__released ()
+	{
+		const int idx = Ui_.DevicesSelector_->currentIndex ();
+		if (idx < 0)
+			return;
+
+		if (Flattener2DevMgr_.contains (*Merger_->GetModelForRow (idx)))
+			UploadMountable (idx);
+	}
+
+	void DevicesBrowserWidget::on_DevicesSelector__activated (int idx)
+	{
+		CurrentSyncer_ = 0;
+
+		if (idx < 0)
+		{
+			Ui_.MountButton_->setEnabled (false);
+			return;
+		}
+
+		if (Flattener2DevMgr_.contains (*Merger_->GetModelForRow (idx)))
+			HandleMountableSelected (idx);
+		else
+			HandleUnmountableSelected (idx);
 	}
 
 	void DevicesBrowserWidget::on_MountButton__released ()

@@ -34,6 +34,7 @@ namespace LMP
 {
 	class ISyncPlugin;
 	class UploadModel;
+	class UnmountableDevManager;
 
 	class DevicesBrowserWidget : public QWidget
 	{
@@ -43,7 +44,7 @@ namespace LMP
 		UploadModel *DevUploadModel_;
 
 		Util::MergeModel *Merger_;
-
+		UnmountableDevManager *UnmountableMgr_;
 		QMap<QAbstractItemModel*, IRemovableDevManager*> Flattener2DevMgr_;
 
 		ISyncPlugin *CurrentSyncer_;
@@ -53,6 +54,8 @@ namespace LMP
 		void InitializeDevices ();
 	private:
 		void UploadMountable (int);
+		void HandleMountableSelected (int);
+		void HandleUnmountableSelected (int);
 	private slots:
 		void handleDevDataChanged (const QModelIndex&, const QModelIndex&);
 		void on_UploadButton__released ();
