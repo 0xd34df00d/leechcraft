@@ -20,6 +20,9 @@
 
 #include <QObject>
 #include <QFile>
+#include <QFileInfo>
+#include <util/util.h>
+#include "../core.h"
 
 namespace LeechCraft
 {
@@ -27,35 +30,80 @@ namespace LMP
 {
 	class ISyncPlugin;
 
-	class CopyManager : public QObject
+	class CopyManagerBase : public QObject
 	{
 		Q_OBJECT
-	public:
-		struct CopyJob
-		{
-			ISyncPlugin *Syncer_;
-			QString From_;
-			QString OrigPath_;
-			bool RemoveOnFinish_;
-			QString MountPoint_;
-			QString Filename_;
-		};
-	private:
-		QList<CopyJob> Queue_;
-		CopyJob CurrentJob_;
-	public:
-		CopyManager (QObject* = 0);
-
-		void Copy (const CopyJob&);
-	private:
-		void StartJob (const CopyJob&);
-		bool IsRunning () const;
-	private slots:
-		void handleUploadFinished (const QString& localPath,
-				QFile::FileError error, const QString& errorStr);
+	protected:
+		CopyManagerBase (QObject* parent = 0);
+	protected slots:
+		virtual void handleUploadFinished (const QString& localPath,
+				QFile::FileError error, const QString& errorStr) = 0;
 	signals:
 		void startedCopying (const QString&);
 		void finishedCopying ();
+	};
+
+	template<typename CopyJobT>
+	class CopyManager : public CopyManagerBase
+	{
+	public:
+	private:
+		QList<CopyJobT> Queue_;
+		CopyJobT CurrentJob_;
+	public:
+		CopyManager (QObject *parent = 0)
+		: CopyManagerBase (parent)
+		{
+		}
+
+		void Copy (const CopyJobT& job)
+		{
+			if (IsRunning ())
+				Queue_ << job;
+			else
+				StartJob (job);
+		}
+	private:
+		void StartJob (const CopyJobT& job)
+		{
+			CurrentJob_ = job;
+
+			connect (job.GetObject (),
+					SIGNAL (uploadFinished (QString, QFile::FileError, QString)),
+					this,
+					SLOT (handleUploadFinished (QString, QFile::FileError, QString)),
+					Qt::UniqueConnection);
+
+			job.Upload ();
+
+			emit startedCopying (job.Filename_);
+		}
+
+		bool IsRunning () const
+		{
+			return !CurrentJob_.From_.isEmpty ();
+		}
+	protected:
+		void handleUploadFinished (const QString& localPath, QFile::FileError error, const QString& errorStr)
+		{
+			emit finishedCopying ();
+
+			const bool remove = CurrentJob_.RemoveOnFinish_;
+			CurrentJob_ = CopyJobT ();
+
+			if (!Queue_.isEmpty ())
+				StartJob (Queue_.takeFirst ());
+
+			if (error == QFile::NoError && remove)
+				QFile::remove (localPath);
+
+			if (!errorStr.isEmpty () && error != QFile::NoError)
+				Core::Instance ().SendEntity (Util::MakeNotification ("LMP",
+							tr ("Error uploading file %1 to cloud: %2.")
+								.arg (QFileInfo (localPath).fileName ())
+								.arg (errorStr),
+							PWarning_));
+		}
 	};
 }
 }
