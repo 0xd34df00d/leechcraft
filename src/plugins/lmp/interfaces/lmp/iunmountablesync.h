@@ -52,6 +52,15 @@ namespace LMP
 
 	typedef QList<UnmountableDevInfo> UnmountableDevInfos_t;
 
+	struct UnmountableFileInfo
+	{
+		QString Artist_;
+		QString Album_;
+		int AlbumYear_;
+		QString AlbumArtPath_;
+		QStringList Genres_;
+	};
+
 	class IUnmountableSync
 	{
 	public:
@@ -61,7 +70,10 @@ namespace LMP
 
 		virtual QString GetSyncSystemName () const = 0;
 
-		virtual void Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& devId) = 0;
+		virtual void SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info) = 0;
+
+		virtual void Upload (const QString& localPath, const QString& origLocalPath,
+				const QByteArray& devId, const QByteArray& storageId) = 0;
 	protected:
 		virtual void availableDevicesChanged () = 0;
 	};

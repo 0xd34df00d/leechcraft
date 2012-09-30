@@ -86,7 +86,12 @@ namespace MTPSync
 		return Infos_;
 	}
 
-	void Plugin::Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& devId)
+	void Plugin::SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info)
+	{
+		OrigInfos_ [origLocalPath] = info;
+	}
+
+	void Plugin::Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& devId, const QByteArray& storageId)
 	{
 	}
 

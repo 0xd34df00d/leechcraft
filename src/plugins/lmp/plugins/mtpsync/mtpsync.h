@@ -19,11 +19,12 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
+#include <libmtp.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/iunmountablesync.h>
-#include <libmtp.h>
 
 namespace LeechCraft
 {
@@ -45,6 +46,8 @@ namespace MTPSync
 
 		ILMPProxy_ptr LMPProxy_;
 		UnmountableDevInfos_t Infos_;
+
+		QHash<QString, UnmountableFileInfo> OrigInfos_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -60,7 +63,8 @@ namespace MTPSync
 
 		QString GetSyncSystemName () const;
 		UnmountableDevInfos_t AvailableDevices () const;
-		void Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to);
+		void SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info);
+		void Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to, const QByteArray& storageId);
 	private slots:
 		void pollDevices ();
 	signals:
