@@ -62,6 +62,7 @@ namespace MTPSync
 		void SetLMPProxy (ILMPProxy_ptr);
 
 		QString GetSyncSystemName () const;
+		QObject* GetObject ();
 		UnmountableDevInfos_t AvailableDevices () const;
 		void SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info);
 		void Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to, const QByteArray& storageId);
@@ -69,6 +70,7 @@ namespace MTPSync
 		void pollDevices ();
 	signals:
 		void availableDevicesChanged ();
+		void uploadFinished (const QString&, QFile::FileError, const QString&);
 	};
 }
 }

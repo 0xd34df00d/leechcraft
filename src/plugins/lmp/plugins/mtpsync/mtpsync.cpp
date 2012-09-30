@@ -81,6 +81,11 @@ namespace MTPSync
 		return "MTP";
 	}
 
+	QObject* Plugin::GetObject ()
+	{
+		return this;
+	}
+
 	UnmountableDevInfos_t Plugin::AvailableDevices () const
 	{
 		return Infos_;

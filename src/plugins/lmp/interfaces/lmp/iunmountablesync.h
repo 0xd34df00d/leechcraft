@@ -20,6 +20,7 @@
 
 #include <QStringList>
 #include <QMetaType>
+#include <QFile>
 #include <QtPlugin>
 
 namespace LeechCraft
@@ -70,12 +71,16 @@ namespace LMP
 
 		virtual QString GetSyncSystemName () const = 0;
 
+		virtual QObject* GetObject () = 0;
+
 		virtual void SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info) = 0;
 
 		virtual void Upload (const QString& localPath, const QString& origLocalPath,
 				const QByteArray& devId, const QByteArray& storageId) = 0;
 	protected:
 		virtual void availableDevicesChanged () = 0;
+
+		virtual void uploadFinished (const QString&, QFile::FileError, const QString&) = 0;
 	};
 }
 }
