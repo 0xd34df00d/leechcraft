@@ -42,6 +42,8 @@ namespace LMP
 		virtual QList<int> GetBitrateLabels (BitrateType) const = 0;
 
 		virtual QStringList ToFFmpeg (const TranscodingParams&) const = 0;
+	protected:
+		void StandardQualityAppend (QStringList&, const TranscodingParams&) const;
 	};
 	typedef std::shared_ptr<Format> Format_ptr;
 

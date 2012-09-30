@@ -24,21 +24,19 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	namespace
+	void Format::StandardQualityAppend (QStringList& result, const TranscodingParams& params) const
 	{
-		void StandardQualityAppend (QStringList& result, const TranscodingParams& params)
+		const auto& num = GetBitrateLabels (params.BitrateType_).value (params.Quality_);
+		switch (params.BitrateType_)
 		{
-			switch (params.BitrateType_)
-			{
-			case Format::BitrateType::CBR:
-				result << "-ab"
-						<< (QString::number (params.Quality_) + "k");
-				break;
-			case Format::BitrateType::VBR:
-				result << "-aq"
-						<< QString::number (params.Quality_);
-				break;
-			}
+		case Format::BitrateType::CBR:
+			result << "-ab"
+					<< (QString::number (num) + "k");
+			break;
+		case Format::BitrateType::VBR:
+			result << "-aq"
+					<< QString::number (num);
+			break;
 		}
 	}
 
