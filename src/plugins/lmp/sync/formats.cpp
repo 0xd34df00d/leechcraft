@@ -223,12 +223,47 @@ namespace LMP
 		}
 	};
 
+	class WMAFormat : public Format
+	{
+	public:
+		QString GetFormatID () const
+		{
+			return "wma";
+		}
+
+		QString GetFormatName () const
+		{
+			return "Windows Media Audio";
+		}
+
+		QString GetCodecName () const
+		{
+			return "wmav2";
+		}
+
+		QList<BitrateType> GetSupportedBitrates () const
+		{
+			return { BitrateType::CBR };
+		}
+
+		QList<int> GetBitrateLabels (BitrateType type) const
+		{
+			if (type == BitrateType::CBR)
+				return { 65, 75, 88, 106, 133, 180, 271, 545 };
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown bitrate type";
+			return QList<int> ();
+		}
+	};
+
 	Formats::Formats ()
 	{
 		Formats_ << Format_ptr (new OggFormat);
 		Formats_ << Format_ptr (new AACFormat);
 		Formats_ << Format_ptr (new FAACFormat);
 		Formats_ << Format_ptr (new MP3Format);
+		Formats_ << Format_ptr (new WMAFormat);
 	}
 
 	QList<Format_ptr> Formats::GetFormats () const
