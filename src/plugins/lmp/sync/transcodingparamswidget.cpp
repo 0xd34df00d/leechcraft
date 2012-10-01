@@ -45,10 +45,21 @@ namespace LMP
 		else
 			Ui_.ThreadsSlider_->setMaximum (4);
 
-		for (const auto& format : Formats_->GetFormats ())
-			Ui_.TranscodingFormat_->addItem (format->GetFormatName (), format->GetFormatID ());
+		const auto& formats = Formats_->GetFormats ();
+		if (!formats.isEmpty ())
+		{
+			for (const auto& format : formats)
+				Ui_.TranscodingFormat_->addItem (format->GetFormatName (), format->GetFormatID ());
+			on_TranscodingFormat__currentIndexChanged (0);
+			Ui_.StatusLabel_->hide ();
+		}
+		else
+		{
+			Ui_.TranscodingBox_->setChecked (false);
+			Ui_.TranscodingBox_->setEnabled (false);
 
-		on_TranscodingFormat__currentIndexChanged (0);
+			Ui_.StatusLabel_->setText (tr ("No transcoding formats are available. Is ffmpeg installed?"));
+		}
 	}
 
 	void TranscodingParamsWidget::SetMaskVisible (bool visible)
