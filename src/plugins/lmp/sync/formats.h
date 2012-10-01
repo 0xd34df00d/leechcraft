@@ -52,6 +52,9 @@ namespace LMP
 	class Formats
 	{
 		QList<Format_ptr> Formats_;
+		QList<Format_ptr> EnabledFormats_;
+
+		static QString S_FFmpegCodecs_;
 	public:
 		Formats ();
 

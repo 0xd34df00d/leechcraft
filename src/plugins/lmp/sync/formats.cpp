@@ -18,6 +18,7 @@
 
 #include "formats.h"
 #include <QtDebug>
+#include <QProcess>
 #include "transcodingparams.h"
 
 namespace LeechCraft
@@ -257,25 +258,41 @@ namespace LMP
 		}
 	};
 
+	QString Formats::S_FFmpegCodecs_;
+
 	Formats::Formats ()
 	{
+		if (S_FFmpegCodecs_.isEmpty ())
+		{
+			QProcess ffmpegProcess;
+			ffmpegProcess.start ("ffmpeg", QStringList ("-codecs"));
+			ffmpegProcess.waitForFinished (1000);
+			S_FFmpegCodecs_ = ffmpegProcess.readAllStandardOutput ();
+		}
+
 		Formats_ << Format_ptr (new OggFormat);
 		Formats_ << Format_ptr (new AACFormat);
 		Formats_ << Format_ptr (new FAACFormat);
 		Formats_ << Format_ptr (new MP3Format);
 		Formats_ << Format_ptr (new WMAFormat);
+
+		std::copy_if (Formats_.begin (), Formats_.end (), std::back_inserter (EnabledFormats_),
+				[] (const Format_ptr format)
+				{
+					return S_FFmpegCodecs_.contains (QRegExp (".EA... " + format->GetCodecName ()));
+				});
 	}
 
 	QList<Format_ptr> Formats::GetFormats () const
 	{
-		return Formats_;
+		return EnabledFormats_;
 	}
 
 	Format_ptr Formats::GetFormat (const QString& id) const
 	{
-		const auto pos = std::find_if (Formats_.begin (), Formats_.end (),
+		const auto pos = std::find_if (EnabledFormats_.begin (), EnabledFormats_.end (),
 				[&id] (const Format_ptr format) { return format->GetFormatID () == id; });
-		return pos == Formats_.end () ?
+		return pos == EnabledFormats_.end () ?
 				Format_ptr () :
 				*pos;
 	}
