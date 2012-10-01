@@ -46,9 +46,10 @@ namespace LMP
 			throw std::runtime_error ("unable to cd into temp dir");
 
 		const QFileInfo fi (path);
-		TranscodedPath_ = dir.absoluteFilePath (fi.fileName () + '.' + params.FormatID_);
 
 		const auto format = Formats ().GetFormat (params.FormatID_);
+
+		TranscodedPath_ = dir.absoluteFilePath (fi.fileName () + '.' + format->GetFileExtension ());
 
 		QStringList args;
 		args << "-i" << path;
