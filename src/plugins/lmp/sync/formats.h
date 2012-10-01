@@ -31,7 +31,9 @@ namespace LMP
 	{
 	public:
 		virtual QString GetFormatID () const = 0;
+		virtual QString GetFileExtension () const;
 		virtual QString GetFormatName () const = 0;
+		virtual QString GetCodecName () const = 0;
 
 		enum class BitrateType
 		{
@@ -41,7 +43,7 @@ namespace LMP
 		virtual QList<BitrateType> GetSupportedBitrates () const = 0;
 		virtual QList<int> GetBitrateLabels (BitrateType) const = 0;
 
-		virtual QStringList ToFFmpeg (const TranscodingParams&) const = 0;
+		virtual QStringList ToFFmpeg (const TranscodingParams&) const;
 	protected:
 		void StandardQualityAppend (QStringList&, const TranscodingParams&) const;
 	};

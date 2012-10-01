@@ -24,6 +24,19 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	QString Format::GetFileExtension () const
+	{
+		return GetFormatID ();
+	}
+
+	QStringList Format::ToFFmpeg (const TranscodingParams& params) const
+	{
+		QStringList result;
+		result << "-acodec" << GetCodecName ();
+		StandardQualityAppend (result, params);
+		return result;
+	}
+
 	void Format::StandardQualityAppend (QStringList& result, const TranscodingParams& params) const
 	{
 		const auto& num = GetBitrateLabels (params.BitrateType_).value (params.Quality_);
@@ -51,6 +64,11 @@ namespace LMP
 		QString GetFormatName () const
 		{
 			return "OGG Vorbis";
+		}
+
+		QString GetCodecName () const
+		{
+			return "libvorbis";
 		}
 
 		QList<BitrateType> GetSupportedBitrates() const
@@ -93,6 +111,11 @@ namespace LMP
 		QString GetFormatName () const
 		{
 			return "MP3";
+		}
+
+		QString GetCodecName () const
+		{
+			return "libmp3lame";
 		}
 
 		QList<BitrateType> GetSupportedBitrates () const
