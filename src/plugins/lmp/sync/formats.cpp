@@ -90,13 +90,97 @@ namespace LMP
 					<< "unknown bitrate type";
 			return QList<int> ();
 		}
+	};
+
+	class AACFormatBase : public Format
+	{
+	public:
+		QString GetFileExtension () const
+		{
+			return "m4a";
+		}
+
+		QList<BitrateType> GetSupportedBitrates () const
+		{
+			return { BitrateType::VBR, BitrateType::CBR };
+		}
+
+		QList<int> GetBitrateLabels (BitrateType type) const
+		{
+			switch (type)
+			{
+			case BitrateType::CBR:
+				return { 24, 56, 76, 92, 128, 144, 176, 180, 192, 200, 224 };
+			case BitrateType::VBR:
+			{
+				QList<int> result;
+				for (int i = 0; i <= 10; ++i)
+					result << i * 25 + 5;
+				return result;
+			}
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown bitrate type";
+			return QList<int> ();
+		}
 
 		QStringList ToFFmpeg (const TranscodingParams& params) const
 		{
 			QStringList result;
-			result << "-acodec" << "libvorbis";
+			AppendCodec (result);
 			StandardQualityAppend (result, params);
 			return result;
+		}
+	protected:
+		virtual void AppendCodec (QStringList& result) const = 0;
+	};
+
+	class AACFormat : public AACFormatBase
+	{
+	public:
+		QString GetFormatID () const
+		{
+			return "aac-free";
+		}
+
+		QString GetFormatName () const
+		{
+			return QObject::tr ("AAC (free)");
+		}
+
+		QString GetCodecName () const
+		{
+			return "aac";
+		}
+	protected:
+		void AppendCodec (QStringList& result) const
+		{
+			result << "-acodec" << "aac" << "-strict" << "-2";
+		}
+	};
+
+	class FAACFormat : public AACFormatBase
+	{
+	public:
+		QString GetFormatID () const
+		{
+			return "aac-nonfree";
+		}
+
+		QString GetFormatName () const
+		{
+			return QObject::tr ("AAC (non-free libfaac implementation)");
+		}
+
+		QString GetCodecName () const
+		{
+			return "libfaac";
+		}
+	protected:
+		void AppendCodec (QStringList& result) const
+		{
+			result << "-acodec" << "libfaac";
 		}
 	};
 
@@ -137,19 +221,13 @@ namespace LMP
 					<< "unknown bitrate type";
 			return QList<int> ();
 		}
-
-		QStringList ToFFmpeg (const TranscodingParams& params) const
-		{
-			QStringList result;
-			result << "-acodec" << "libmp3lame";
-			StandardQualityAppend (result, params);
-			return result;
-		}
 	};
 
 	Formats::Formats ()
 	{
 		Formats_ << Format_ptr (new OggFormat);
+		Formats_ << Format_ptr (new AACFormat);
+		Formats_ << Format_ptr (new FAACFormat);
 		Formats_ << Format_ptr (new MP3Format);
 	}
 
