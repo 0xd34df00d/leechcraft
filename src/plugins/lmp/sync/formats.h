@@ -25,7 +25,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	class TranscodingParams;
+	struct TranscodingParams;
 
 	class Format
 	{
