@@ -52,6 +52,10 @@ namespace GoogleDrive
 				SIGNAL (gotNewItem (DriveItem)),
 				this,
 				SLOT (handleGotNewItem (DriveItem)));
+		connect (DriveManager_,
+				SIGNAL (gotChanges (QList<DriveChanges>, qlonglong)),
+				this,
+				SLOT (handleGotChanges (QList<DriveChanges>, qlonglong)));
 	}
 
 	QObject* Account::GetObject ()
@@ -225,6 +229,12 @@ namespace GoogleDrive
 		if (id.isEmpty ())
 			return;
 		DriveManager_->Rename (id.value (0), newName);
+	}
+
+	void Account::RequestChanges ()
+	{
+		DriveManager_->RequestFileChanges (XmlSettingsManager::Instance ()
+				.Property ("LastChangesId", 0).toLongLong ());
 	}
 
 	QByteArray Account::Serialize ()
@@ -413,6 +423,27 @@ namespace GoogleDrive
 		QHash<QString, QList<QStandardItem*>> map;
 		auto row = CreateItem (map, item);
 		emit gotNewItem (row, QStringList (item.ParentId_));
+	}
+
+	void Account::handleGotChanges (const QList<DriveChanges>& driveChanges, qlonglong lastId)
+	{
+		XmlSettingsManager::Instance ().setProperty ("LastChangesId", lastId);
+
+		QList<Change> changes;
+		for (const auto& driveChange : driveChanges)
+		{
+			QHash<QString, QList<QStandardItem*>> map;
+			QList<QStandardItem*> row = CreateItem (map, driveChange.FileResource_);
+
+			Change change;
+			change.Deleted_ = driveChange.Deleted_;
+			change.Id_ << driveChange.FileId_;
+			change.Row_ = row;
+
+			changes << change;
+		}
+
+		emit gotChanges (changes);
 	}
 
 }

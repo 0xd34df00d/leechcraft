@@ -388,7 +388,7 @@ namespace GoogleDrive
 	{
 		const QString str = startId ?
 			QString ("https://www.googleapis.com/drive/v2/changes?includeDeleted=true&startChangeId=%1&access_token=%2")
-					.arg (startId)
+					.arg (startId + 1)
 					.arg (key) :
 			QString ("https://www.googleapis.com/drive/v2/changes?includeDeleted=true&access_token=%1")
 					.arg (key);
@@ -444,6 +444,7 @@ namespace GoogleDrive
 					DoNotNotifyUser |
 					DoNotSaveInHistory |
 					DoNotAnnounceEntity;
+
 		LeechCraft::Entity e = Util::MakeEntity (url,
 				QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
 						"/" + QFileInfo (filePath).fileName (),
@@ -985,13 +986,13 @@ namespace GoogleDrive
 
 		for (auto item : map ["items"].toList ())
 		{
-			QVariantMap itemMap = item.toMap ();
+			auto itemMap = item.toMap ();
+			DriveItem driveItem = CreateDriveItem (itemMap ["file"]);
 			DriveChanges change;
-			DriveItem item = CreateDriveItem (itemMap ["file"]);
 			change.FileId_ = itemMap ["fileId"].toString ();
 			change.Id_ = itemMap ["id"].toString ();
 			change.Deleted_ = itemMap ["deleted"].toBool ();
-			change.FileResource_ = item;
+			change.FileResource_ = driveItem;
 
 			changes << change;
 		}

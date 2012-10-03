@@ -25,6 +25,7 @@
 #include <QFileSystemWatcher>
 #include <QPointer>
 #include <QQueue>
+#include "interfaces/netstoremanager/isupportfilelistings.h"
 
 class QTimer;
 class QThread;
@@ -70,6 +71,10 @@ namespace NetStoreManager
 		void Release ();
 	private:
 		void CreateDirectory (const QString& path);
+		void RemoveDirectory (QMap<QString, QStringList>& map,
+				const QString& basePath, const QString& path);
+		void RemoveFile (QMap<QString, QStringList>& map,
+				const QString& basePath, const QString& path);
 		void DownloadFile (const QString& path, const QStringList& id,
 				const QDateTime& modifiedDate, const QString& hash,
 				IStorageAccount *isa);
@@ -91,11 +96,12 @@ namespace NetStoreManager
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
 		void handleGotNewItem (const QList<QStandardItem*>& item,
 				const QStringList& parentId);
+		void handleGotChanges (const QList<Change>& changes);
 
 		void checkApiCallQueue ();
 
 		void finishedHashCounting (const DownloadParams& params = DownloadParams ());
-
+		
 	signals:
 		void uploadRequested (IStorageAccount *account,
 				const QString& fileName, const QStringList& parentId);
