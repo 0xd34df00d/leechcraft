@@ -519,10 +519,8 @@ namespace Poshuku
 				XmlSettingsManager::Instance ()->property ("OfflineWebApplicationCache").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::LocalStorageEnabled,
 				XmlSettingsManager::Instance ()->property ("LocalStorageDB").toBool ());
-#if QT_VERSION >= 0x040700
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::XSSAuditingEnabled,
 				XmlSettingsManager::Instance ()->property ("EnableXSSAuditing").toBool ());
-#endif
 #if QT_VERSION >= 0x040800
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::HyperlinkAuditingEnabled,
 				XmlSettingsManager::Instance ()->property ("EnableHyperlinkAuditing").toBool ());

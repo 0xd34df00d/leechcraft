@@ -984,9 +984,9 @@ namespace GoogleDrive
 				map ["items"].toList ().isEmpty ())
 			return;
 
-		for (auto item : map ["items"].toList ())
+		for (auto itemVar : map ["items"].toList ())
 		{
-			auto itemMap = item.toMap ();
+			QVariantMap itemMap = itemVar.toMap ();
 			DriveItem driveItem = CreateDriveItem (itemMap ["file"]);
 			DriveChanges change;
 			change.FileId_ = itemMap ["fileId"].toString ();

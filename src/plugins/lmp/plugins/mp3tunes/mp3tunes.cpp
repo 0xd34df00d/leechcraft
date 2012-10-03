@@ -103,7 +103,7 @@ namespace MP3Tunes
 		return XSD_;
 	}
 
-	void Plugin::SetLMPProxy (ILMPProxy*)
+	void Plugin::SetLMPProxy (ILMPProxy_ptr)
 	{
 	}
 

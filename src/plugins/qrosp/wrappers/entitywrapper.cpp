@@ -36,14 +36,14 @@ namespace Qrosp
 	{
 	}
 
-	Entity EntityWrapper::ToEntity () const
-	{
-		return E_;
-	}
-
 	void* EntityWrapper::wrappedObject () const
 	{
-		return const_cast<Entity*> (&E_);
+		return &E_;
+	}
+
+	Entity EntityWrapper::Native () const
+	{
+		return E_;
 	}
 
 	const QVariant& EntityWrapper::GetEntity () const

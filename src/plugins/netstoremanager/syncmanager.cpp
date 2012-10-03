@@ -29,9 +29,14 @@
 #include <QFutureWatcher>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "accountsmanager.h"
-#include "fileswatcher.h"
 #include "xmlsettingsmanager.h"
 #include "utils.h"
+
+#ifdef ENABLE_INOTIFY
+#include "fileswatcher_inotify.h"
+#else
+#include "fileswatcher_dummy.h"
+#endif
 
 namespace LeechCraft
 {

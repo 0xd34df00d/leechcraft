@@ -23,11 +23,13 @@
 #include "xmlsettingsmanager.h"
 #include "playlistmanager.h"
 #include "sync/syncmanager.h"
+#include "sync/syncunmountablemanager.h"
 #include "sync/clouduploadmanager.h"
 #include "interfaces/lmp/ilmpplugin.h"
 #include "interfaces/lmp/isyncplugin.h"
 #include "interfaces/lmp/icloudstorageplugin.h"
 #include "interfaces/lmp/iplaylistprovider.h"
+#include "lmpproxy.h"
 
 namespace LeechCraft
 {
@@ -38,6 +40,7 @@ namespace LMP
 	, Collection_ (new LocalCollection)
 	, PLManager_ (new PlaylistManager)
 	, SyncManager_ (new SyncManager)
+	, SyncUnmountableManager_ (new SyncUnmountableManager)
 	, CloudUpMgr_ (new CloudUploadManager)
 	{
 	}
@@ -80,6 +83,8 @@ namespace LMP
 					<< "doesn't implement ILMPPlugin";
 			return;
 		}
+
+		ilmpPlug->SetLMPProxy (ILMPProxy_Ptr (new LMPProxy ()));
 
 		const auto& classes = ip2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.LMP.CollectionSync") &&
@@ -126,6 +131,11 @@ namespace LMP
 	SyncManager* Core::GetSyncManager () const
 	{
 		return SyncManager_;
+	}
+
+	SyncUnmountableManager* Core::GetSyncUnmountableManager () const
+	{
+		return SyncUnmountableManager_;
 	}
 
 	CloudUploadManager* Core::GetCloudUploadManager () const

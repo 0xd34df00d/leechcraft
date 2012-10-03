@@ -35,6 +35,7 @@ namespace LMP
 	class LocalFileResolver;
 	class PlaylistManager;
 	class SyncManager;
+	class SyncUnmountableManager;
 	class CloudUploadManager;
 
 	class Core : public QObject
@@ -47,6 +48,7 @@ namespace LMP
 		LocalCollection *Collection_;
 		PlaylistManager *PLManager_;
 		SyncManager *SyncManager_;
+		SyncUnmountableManager *SyncUnmountableManager_;
 		CloudUploadManager *CloudUpMgr_;
 
 		QObjectList SyncPlugins_;
@@ -71,6 +73,7 @@ namespace LMP
 		LocalCollection* GetLocalCollection () const;
 		PlaylistManager* GetPlaylistManager () const;
 		SyncManager* GetSyncManager () const;
+		SyncUnmountableManager* GetSyncUnmountableManager () const;
 		CloudUploadManager* GetCloudUploadManager () const;
 
 		boost::optional<MediaInfo> TryURLResolve (const QUrl&) const;

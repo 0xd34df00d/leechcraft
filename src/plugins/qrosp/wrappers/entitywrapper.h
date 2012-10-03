@@ -30,7 +30,7 @@ namespace Qrosp
 	{
 		Q_OBJECT
 
-		Entity E_;
+		mutable Entity E_;
 
 		Q_PROPERTY (QVariant Entity READ GetEntity WRITE SetEntity);
 		Q_PROPERTY (QString Location READ GetLocation WRITE SetLocation);
@@ -44,7 +44,7 @@ namespace Qrosp
 
 		void* wrappedObject () const;
 	public slots:
-		LeechCraft::Entity ToEntity () const;
+		LeechCraft::Entity Native () const;
 		const QVariant& GetEntity () const;
 		void SetEntity (const QVariant&);
 		const QString& GetLocation () const;

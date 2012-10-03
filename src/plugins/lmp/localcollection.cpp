@@ -348,6 +348,19 @@ namespace LMP
 		}
 	}
 
+	QList<int> LocalCollection::GetAlbumArtists (int albumId) const
+	{
+		QList<int> result;
+		for (const auto& artist : Artists_)
+		{
+			if (std::find_if (artist.Albums_.begin (), artist.Albums_.end (),
+					[albumId] (decltype (artist.Albums_.front ()) album)
+						{ return album->ID_ == albumId; }) != artist.Albums_.end ())
+				result << artist.ID_;
+		}
+		return result;
+	}
+
 	Collection::Artist LocalCollection::GetArtist (int id) const
 	{
 		auto pos = std::find_if (Artists_.begin (), Artists_.end (),

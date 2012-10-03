@@ -33,25 +33,12 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	namespace
-	{
-		QStringList OggParams (const TranscodingParams& params)
-		{
-			return QStringList ("-acodec") << "libvorbis"
-					<< "-aq"
-					<< QString::number (params.Quality_);
-		}
-	}
-
 	TranscodeJob::TranscodeJob (const QString& path, const TranscodingParams& params, QObject* parent)
 	: QObject (parent)
 	, Process_ (new QProcess (this))
 	, OriginalPath_ (path)
 	, TargetPattern_ (params.FilePattern_)
 	{
-		QMap<QString, std::function<QStringList (TranscodingParams)>> trans;
-		trans ["ogg"] = OggParams;
-
 		QDir dir = QDir::temp ();
 		if (!dir.exists ("lmp_transcode"))
 			dir.mkdir ("lmp_transcode");
@@ -59,11 +46,14 @@ namespace LMP
 			throw std::runtime_error ("unable to cd into temp dir");
 
 		const QFileInfo fi (path);
-		TranscodedPath_ = dir.absoluteFilePath (fi.fileName () + '.' + params.Format_);
+
+		const auto format = Formats ().GetFormat (params.FormatID_);
+
+		TranscodedPath_ = dir.absoluteFilePath (fi.fileName () + '.' + format->GetFileExtension ());
 
 		QStringList args;
 		args << "-i" << path;
-		args << trans [params.Format_] (params);
+		args << format->ToFFmpeg (params);
 		args << "-map_metadata" << "0";
 		args << TranscodedPath_;
 

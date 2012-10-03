@@ -47,7 +47,7 @@ namespace LMP
 
 	void SyncManager::CreateSyncer (const QString& mount)
 	{
-		auto mgr = new CopyManager (this);
+		auto mgr = new CopyManager<CopyJob> (this);
 		connect (mgr,
 				SIGNAL (startedCopying (QString)),
 				this,
@@ -108,7 +108,16 @@ namespace LMP
 
 		if (!Mount2Copiers_.contains (syncTo.MountPath_))
 			CreateSyncer (syncTo.MountPath_);
-		Mount2Copiers_ [syncTo.MountPath_]->Copy ({ syncTo.Syncer_, transcoded, from != transcoded, syncTo.MountPath_, mask });
+		const CopyJob copyJob
+		{
+			transcoded,
+			from != transcoded,
+			syncTo.Syncer_,
+			from,
+			syncTo.MountPath_,
+			mask
+		};
+		Mount2Copiers_ [syncTo.MountPath_]->Copy (copyJob);
 	}
 }
 }

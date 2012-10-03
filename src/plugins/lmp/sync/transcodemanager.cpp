@@ -34,7 +34,7 @@ namespace LMP
 
 	void TranscodeManager::Enqueue (const QStringList& files, const TranscodingParams& params)
 	{
-		if (params.Format_.isEmpty ())
+		if (params.FormatID_.isEmpty ())
 		{
 			std::for_each (files.begin (), files.end (),
 						[this, &params] (decltype (files.front ()) file)

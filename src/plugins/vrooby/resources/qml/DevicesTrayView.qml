@@ -5,7 +5,7 @@ Rectangle {
     id: rootRect
     anchors.fill: parent
     smooth: true
-    radius: 10
+    radius: 5
 
     color: "#ee000000"
 
