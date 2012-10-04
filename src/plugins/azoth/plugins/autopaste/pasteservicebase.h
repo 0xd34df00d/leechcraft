@@ -40,6 +40,7 @@ namespace Autopaste
 		CPP0x,
 		Haskell,
 		Java,
+		Python,
 		XML
 	};
 
