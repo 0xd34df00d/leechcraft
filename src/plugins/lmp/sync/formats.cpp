@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "formats.h"
+#include <algorithm>
 #include <QtDebug>
 #include <QProcess>
 #include "transcodingparams.h"
