@@ -205,7 +205,7 @@ IF (ENABLE_CRYPT)
 	SET (FORMS ${FORMS} pgpkeyselectiondialog.ui)
 ENDIF (ENABLE_CRYPT)
 
-CreateTrs ("azoth" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrs ("azoth" "en;es;ru_RU;tt;uk_UA" COMPILED_TRANSLATIONS)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
