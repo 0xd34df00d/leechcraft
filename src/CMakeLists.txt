@@ -553,6 +553,7 @@ SET (SRCS
 	coreplugin2manager.cpp
 	dockmanager.cpp
 	acceptlangwidget.cpp
+	entitymanager.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -595,6 +596,7 @@ SET (HEADERS
 	coreplugin2manager.h
 	dockmanager.h
 	acceptlangwidget.h
+	entitymanager.h
 	interfaces/structures.h
 	)
 SET (FORMS

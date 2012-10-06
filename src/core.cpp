@@ -66,6 +66,7 @@
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
 #include "dockmanager.h"
+#include "entitymanager.h"
 
 using namespace LeechCraft::Util;
 
@@ -388,7 +389,7 @@ namespace LeechCraft
 							FromUserInitiated,
 							format);
 
-					if (CouldHandle (e))
+					if (EntityManager ().CouldHandle (e))
 					{
 						event->acceptProposedAction ();
 						break;
@@ -506,295 +507,22 @@ namespace LeechCraft
 		}
 	}
 
-	bool Core::CouldHandle (Entity e) const
-	{
-		if (!(e.Parameters_ & OnlyHandle))
-			if (GetObjects (e, OTDownloaders, true).size ())
-				return true;
-
-		if (!(e.Parameters_ & OnlyDownload))
-			if (GetObjects (e, OTHandlers, true).size ())
-				return true;
-
-		return false;
-	}
-
-	namespace
-	{
-		bool DoDownload (IDownload *sd,
-				Entity p,
-				int *id,
-				QObject **pr)
-		{
-			int l = -1;
-			try
-			{
-				l = sd->AddJob (p);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not add job"
-					<< e.what ();
-				return false;
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not add job";
-				return false;
-			}
-
-			if (id)
-				*id = l;
-			if (pr)
-			{
-				const QObjectList& plugins = Core::Instance ().GetPluginManager ()->
-					GetAllCastableRoots<IDownload*> ();
-				*pr = *std::find_if (plugins.begin (), plugins.end (),
-						[sd] (QObject *d) { return qobject_cast<IDownload*> (d) == sd; });
-			}
-
-			return true;
-		}
-
-		bool DoHandle (IEntityHandler *sh,
-				Entity p)
-		{
-			try
-			{
-				sh->Handle (p);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not handle job"
-					<< e.what ();
-				return false;
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not add job";
-				return false;
-			}
-			return true;
-		}
-	};
-
-	QList<QObject*> Core::GetObjects (const Entity& p,
-			Core::ObjectType type, bool detectOnly) const
-	{
-		QObjectList plugins;
-		switch (type)
-		{
-			case OTDownloaders:
-				plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
-				break;
-			case OTHandlers:
-				plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
-				break;
-		}
-
-		QObjectList result;
-		for (QObjectList::const_iterator it = plugins.begin (), end = plugins.end (); it != end; ++it)
-		{
-			if (*it == sender () &&
-					!(p.Parameters_ & ShouldQuerySource))
-				continue;
-
-			try
-			{
-				EntityTestHandleResult r;
-				switch (type)
-				{
-					case OTDownloaders:
-						{
-							IDownload *id = qobject_cast<IDownload*> (*it);
-							r = id->CouldDownload (p);
-						}
-						break;
-					case OTHandlers:
-						{
-							IEntityHandler *ih = qobject_cast<IEntityHandler*> (*it);
-							r = ih->CouldHandle (p);
-						}
-						break;
-				}
-
-				if (r.HandlePriority_ <= 0)
-					continue;
-
-				const bool single = type == OTHandlers && r.CancelOthers_;
-				if (single)
-					result.clear ();
-
-				result << *it;
-
-				if (single)
-					break;
-
-				if (detectOnly && result.size ())
-					break;
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not query"
-					<< e.what ()
-					<< *it;
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "could not query"
-					<< *it;
-			}
-		}
-
-		return result;
-	}
-
-	namespace
-	{
-		bool HandleNoHandlers (const Entity& p)
-		{
-			if (p.Entity_.toUrl ().isValid () &&
-					(p.Parameters_ & FromUserInitiated) &&
-					!(p.Parameters_ & OnlyDownload) &&
-					XmlSettingsManager::Instance ()->
-						property ("FallbackExternalHandlers").toBool ())
-			{
-				QDesktopServices::openUrl (p.Entity_.toUrl ());
-				return true;
-			}
-			else
-				return false;
-		}
-	}
-
 	bool Core::handleGotEntity (Entity p, int *id, QObject **pr)
 	{
-		const QString& string = Util::GetUserText (p);
-
-		std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string, ReallyMainWindow_));
-
-		int numDownloaders = 0;
-		if (!(p.Parameters_ & OnlyHandle))
-			Q_FOREACH (QObject *plugin, GetObjects (p, OTDownloaders, false))
-				numDownloaders +=
-					dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IDownload*> (plugin));
-
-		int numHandlers = 0;
-		// Handlers don't fit when we want to delegate.
-		if (!id && !(p.Parameters_ & OnlyDownload))
-			Q_FOREACH (QObject *plugin, GetObjects (p, OTHandlers, false))
-				numHandlers +=
-					dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IEntityHandler*> (plugin));
-
-		if (!(numHandlers + numDownloaders))
-			return HandleNoHandlers (p);
-
-		const bool bcastCandidate = !id && !pr && numHandlers;
-
-		if (p.Parameters_ & FromUserInitiated &&
-				!(p.Parameters_ & AutoAccept))
+		if (id && pr)
 		{
-			bool ask = true;
-			if (XmlSettingsManager::Instance ()->
-					property ("DontAskWhenSingle").toBool ())
-				ask = (numDownloaders || numHandlers != 1);
-
-			IDownload *sd = 0;
-			IEntityHandler *sh = 0;
-			if (ask)
-			{
-				dia->SetFilenameSuggestion (p.Location_);
-				if (dia->exec () == QDialog::Rejected)
-					return false;
-				sd = dia->GetDownload ();
-				sh = dia->GetEntityHandler ();
-			}
-			else
-			{
-				sd = dia->GetFirstDownload ();
-				sh = dia->GetFirstEntityHandler ();
-			}
-
-			if (sd)
-			{
-				const QString& dir = dia->GetFilename ();
-				if (dir.isEmpty ())
-					return false;
-
-				p.Location_ = dir;
-
-				if (!DoDownload (sd, p, id, pr))
-				{
-					if (dia->NumChoices () > 1 &&
-							QMessageBox::question (ReallyMainWindow_,
-							tr ("Error"),
-							tr ("Could not add task to the selected downloader, "
-								"would you like to try another one?"),
-							QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-						return handleGotEntity (p, id, pr);
-					else
-						return false;
-				}
-				else
-					return true;
-			}
-			if (sh)
-			{
-				if (!DoHandle (sh, p))
-				{
-					if (dia->NumChoices () > 1 &&
-							QMessageBox::question (ReallyMainWindow_,
-							tr ("Error"),
-							tr ("Could not handle task with the selected handler, "
-								"would you like to try another one?"),
-							QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-						return handleGotEntity (p, id, pr);
-					else
-						return false;
-				}
-				else
-					return true;
-			}
+			const auto& result = EntityManager ().DelegateEntity (p);
+			*id = result.ID_;
+			*pr = result.Handler_;
+			return result.Handler_;
 		}
-		else if (bcastCandidate)
-		{
-			bool success = false;
-			Q_FOREACH (IEntityHandler *ieh, dia->GetAllEntityHandlers ())
-				success = DoHandle (ieh, p) || success;
-			return success;
-		}
-		else if (dia->GetDownload ())
-		{
-			IDownload *sd = dia->GetDownload ();
-			if (p.Location_.isEmpty ())
-				p.Location_ = QDir::tempPath ();
-			return DoDownload (sd, p, id, pr);
-		}
-		else if (((p.Parameters_ & AutoAccept) ||
-					(numHandlers == 1 &&
-					XmlSettingsManager::Instance ()->
-						property ("DontAskWhenSingle").toBool ())) &&
-				dia->GetFirstEntityHandler ())
-			return DoHandle (dia->GetFirstEntityHandler (), p);
 		else
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "Could not handle download entity %1.";
-			return false;
-		}
-
-		return true;
+			return EntityManager ().HandleEntity (p);
 	}
 
 	void Core::handleCouldHandle (const Entity& e, bool *could)
 	{
-		*could = CouldHandle (e);
+		*could = EntityManager ().CouldHandle (e);
 	}
 
 	void Core::queueEntity (Entity e)
