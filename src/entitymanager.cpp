@@ -133,7 +133,7 @@ namespace LeechCraft
 			bool shouldAsk = false;
 			if (e.Parameters_ & FromUserInitiated && !(e.Parameters_ & AutoAccept))
 				shouldAsk = numDownloaders || (XmlSettingsManager::Instance ()->property ("DontAskWhenSingle").toBool () ?
-							numHandlers != 1 :
+							numHandlers > 1 :
 							numHandlers);
 
 			if (shouldAsk)
