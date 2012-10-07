@@ -143,7 +143,7 @@ namespace LeechCraft
 				return XmlSettingsDialog_;
 			}
 
-			EntityTestHandleResult SeekThru::CouldHandle (const LeechCraft::Entity& e) const
+			EntityTestHandleResult SeekThru::CouldHandle (const Entity& e) const
 			{
 				return Core::Instance ().CouldHandle (e) ?
 						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
@@ -154,6 +154,18 @@ namespace LeechCraft
 			{
 				Core::Instance ().Handle (e);
 			}
+
+			QList<SeekThru::FilterVariant> SeekThru::GetFilterVariants () const
+			{
+				QList<FilterVariant> result;
+				for (const auto& cat : Core::Instance ().GetCategories ())
+					result << FilterVariant
+						{
+							cat.toUtf8 (),
+							cat,
+							tr ("Search this term in OpenSearch engines in category %1.").arg (cat)
+						};
+				return result;
 			}
 
 			QList<QWizardPage*> SeekThru::GetWizardPages () const
