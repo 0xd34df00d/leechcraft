@@ -419,6 +419,14 @@ namespace LMP
 				SLOT (showCollectionTrackProps ()));
 		Ui_.CollectionTree_->addAction (CollectionShowTrackProps_);
 
+		CollectionShowAlbumArt_ = new QAction (tr ("Show album art"), Ui_.CollectionTree_);
+		CollectionShowAlbumArt_->setProperty ("ActionIcon", "media-optical");
+		connect (CollectionShowAlbumArt_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showCollectionAlbumArt ()));
+		Ui_.CollectionTree_->addAction (CollectionShowAlbumArt_);
+
 		Ui_.CollectionTree_->addAction (Util::CreateSeparator (Ui_.CollectionTree_));
 
 		CollectionRemove_ = new QAction (tr ("Remove from collection..."), Ui_.CollectionTree_);
@@ -716,11 +724,21 @@ namespace LMP
 	void PlayerTab::showCollectionTrackProps ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& info = index.data (LocalCollection::Role::TrackPath).value<QString> ();
+		const auto& info = index.data (LocalCollection::Role::TrackPath).toString ();
 		if (info.isEmpty ())
 			return;
 
 		AudioPropsWidget::MakeDialog ()->SetProps (info);
+	}
+
+	void PlayerTab::showCollectionAlbumArt ()
+	{
+		const auto& index = Ui_.CollectionTree_->currentIndex ();
+		const auto& path = index.data (LocalCollection::Role::AlbumArt).toString ();
+		if (path.isEmpty ())
+			return;
+
+		ShowAlbumArt (path, QCursor::pos ());
 	}
 
 	namespace
@@ -805,6 +823,7 @@ namespace LMP
 	{
 		const int nodeType = index.data (LocalCollection::Role::Node).value<int> ();
 		CollectionShowTrackProps_->setEnabled (nodeType == LocalCollection::NodeType::Track);
+		CollectionShowAlbumArt_->setEnabled (nodeType == LocalCollection::NodeType::Album);
 	}
 
 	void PlayerTab::handlePlayerAvailable (bool available)
