@@ -249,7 +249,7 @@ namespace Monocle
 				SIGNAL (navigateRequested (QString, int, double, double)),
 				this,
 				SLOT (handleNavigateRequested (QString, int, double, double)),
-				Qt::UniqueConnection);
+				Qt::QueuedConnection);
 
 		emit fileLoaded (path);
 
