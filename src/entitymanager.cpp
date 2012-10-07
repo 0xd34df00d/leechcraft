@@ -145,14 +145,17 @@ namespace LeechCraft
 				if (dia.exec () != QDialog::Accepted || !dia.GetSelected ())
 					return false;
 
-				const QString& dir = dia.GetFilename ();
-				if (dir.isEmpty ())
-					return false;
-
-				e.Location_ = dir;
+				auto selected = dia.GetSelected ();
+				if (qobject_cast<IDownload*> (selected))
+				{
+					const QString& dir = dia.GetFilename ();
+					if (dir.isEmpty ())
+						return false;
+					e.Location_ = dir;
+				}
 
 				handlers.clear ();
-				handlers << dia.GetSelected ();
+				handlers << selected;
 			}
 
 			return true;
