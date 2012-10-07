@@ -77,6 +77,11 @@
        </item>
        <item>
         <property name="text">
+         <string notr="true">Python</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string notr="true">XML</string>
         </property>
        </item>

@@ -24,6 +24,7 @@
 #include <QFutureWatcher>
 #include <QTimer>
 #include <QDirIterator>
+#include <QMutexLocker>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -52,6 +53,18 @@ namespace LeechCraft
 			return QNetworkDiskCache::prepare (metadata);
 	}
 
+	void NetworkDiskCache::insert (QIODevice *device)
+	{
+		QMutexLocker lock (&InsertRemoveMutex_);
+		QNetworkDiskCache::insert (device);
+	}
+
+	bool NetworkDiskCache::remove (const QUrl &url)
+	{
+		QMutexLocker lock (&InsertRemoveMutex_);
+		return QNetworkDiskCache::remove (url);
+	}
+
 	qint64 NetworkDiskCache::expire ()
 	{
 		collectGarbage ();
@@ -74,41 +87,41 @@ namespace LeechCraft
 	{
 		qint64 Collector (QString& cacheDirectory, qint64 goal)
 		{
-		    if (cacheDirectory.isEmpty ())
-		        return 0;
+			if (cacheDirectory.isEmpty ())
+				return 0;
 
-		    QDir::Filters filters = QDir::AllDirs | QDir:: Files | QDir::NoDotAndDotDot;
-		    QDirIterator it (cacheDirectory, filters, QDirIterator::Subdirectories);
+			QDir::Filters filters = QDir::AllDirs | QDir:: Files | QDir::NoDotAndDotDot;
+			QDirIterator it (cacheDirectory, filters, QDirIterator::Subdirectories);
 
-		    QMultiMap<QDateTime, QString> cacheItems;
-		    qint64 totalSize = 0;
-		    while (it.hasNext ())
-		    {
-		        QString path = it.next ();
-		        QFileInfo info = it.fileInfo ();
-		        QString fileName = info.fileName ();
-		        if (fileName.endsWith(".cache") &&
-		        		fileName.startsWith("cache_"))
-		        {
-		            cacheItems.insert(info.created (), path);
-		            totalSize += info.size ();
-		        }
-		    }
+			QMultiMap<QDateTime, QString> cacheItems;
+			qint64 totalSize = 0;
+			while (it.hasNext ())
+			{
+				QString path = it.next ();
+				QFileInfo info = it.fileInfo ();
+				QString fileName = info.fileName ();
+				if (fileName.endsWith(".cache") &&
+						fileName.startsWith("cache_"))
+				{
+					cacheItems.insert(info.created (), path);
+					totalSize += info.size ();
+				}
+			}
 
-		    QMultiMap<QDateTime, QString>::const_iterator i = cacheItems.constBegin();
-		    while (i != cacheItems.constEnd())
-		    {
-		        if (totalSize < goal)
-		            break;
-		        QString name = i.value ();
-		        QFile file (name);
-		        qint64 size = file.size ();
-		        file.remove ();
-		        totalSize -= size;
-		        ++i;
-		    }
+			QMultiMap<QDateTime, QString>::const_iterator i = cacheItems.constBegin();
+			while (i != cacheItems.constEnd())
+			{
+				if (totalSize < goal)
+					break;
+				QString name = i.value ();
+				QFile file (name);
+				qint64 size = file.size ();
+				file.remove ();
+				totalSize -= size;
+				++i;
+			}
 
-		    return totalSize;
+			return totalSize;
 		}
 	};
 

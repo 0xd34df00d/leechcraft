@@ -93,7 +93,12 @@
         <translation>Опции перекодирования</translation>
     </message>
     <message>
-        <location filename="sync/devicesbrowserwidget.ui" line="108"/>
+        <location filename="sync/devicesbrowserwidget.ui" line="110"/>
+        <source>Storages:</source>
+        <translation>Хранилища:</translation>
+    </message>
+    <message>
+        <location filename="sync/devicesbrowserwidget.ui" line="151"/>
         <source>Upload log</source>
         <translation>Журнал загрузки</translation>
     </message>
@@ -252,29 +257,21 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::CopyManager</name>
-    <message>
-        <location filename="sync/copymanager.cpp" line="86"/>
-        <source>Error uploading file %1 to cloud: %2.</source>
-        <translation>Ошибка загрузки файла %1 в облако: %2.</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::LMP::DevicesBrowserWidget</name>
     <message>
-        <location filename="sync/devicesbrowserwidget.cpp" line="198"/>
-        <source>No plugins are able to sync this device.</source>
-        <translation>Нет модулей для синхронизации с этим устройством.</translation>
-    </message>
-    <message>
-        <location filename="sync/devicesbrowserwidget.cpp" line="212"/>
+        <location filename="sync/devicesbrowserwidget.cpp" line="172"/>
         <source>Select syncer</source>
         <translation>Выбор модуля синхронизации</translation>
     </message>
     <message>
-        <location filename="sync/devicesbrowserwidget.cpp" line="213"/>
+        <location filename="sync/devicesbrowserwidget.cpp" line="173"/>
         <source>Multiple different syncers can handle the device %1, what do you want to use?</source>
         <translation>Устройство %1 может быть синхронизировано несколькими различными модулями, какой вы хотите использовать?</translation>
+    </message>
+    <message>
+        <location filename="sync/devicesbrowserwidget.cpp" line="252"/>
+        <source>%1 (%2 available of %3)</source>
+        <translation>%1 (доступно %2 из %3)</translation>
     </message>
 </context>
 <context>
@@ -354,7 +351,7 @@
 <context>
     <name>LeechCraft::LMP::LocalCollection</name>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="768"/>
+        <location filename="localcollection.cpp" line="781"/>
         <source>%n new artist(s)</source>
         <translation>
             <numerusform>%n новый исполнитель</numerusform>
@@ -363,7 +360,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="769"/>
+        <location filename="localcollection.cpp" line="782"/>
         <source>%n new album(s)</source>
         <translation>
             <numerusform>%n новый альбом</numerusform>
@@ -372,7 +369,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="770"/>
+        <location filename="localcollection.cpp" line="783"/>
         <source>%n new track(s)</source>
         <translation>
             <numerusform>%n новый трек</numerusform>
@@ -381,7 +378,7 @@
         </translation>
     </message>
     <message>
-        <location filename="localcollection.cpp" line="771"/>
+        <location filename="localcollection.cpp" line="784"/>
         <source>Local collection updated: %1, %2, %3.</source>
         <translation>Локальная коллекция обновлена: %1, %2, %3.</translation>
     </message>
@@ -389,12 +386,12 @@
 <context>
     <name>LeechCraft::LMP::MountableFlattener</name>
     <message>
-        <location filename="sync/devicesbrowserwidget.cpp" line="55"/>
+        <location filename="sync/devicesbrowserwidget.cpp" line="59"/>
         <source>not mounted</source>
         <translation>не подключено</translation>
     </message>
     <message>
-        <location filename="sync/devicesbrowserwidget.cpp" line="56"/>
+        <location filename="sync/devicesbrowserwidget.cpp" line="60"/>
         <source>mounted at %1</source>
         <translation>подключено на %1</translation>
     </message>
@@ -930,6 +927,25 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::LMP::TranscodingParamsWidget</name>
+    <message>
+        <location filename="sync/transcodingparamswidget.cpp" line="35"/>
+        <location filename="sync/transcodingparamswidget.cpp" line="130"/>
+        <source>Quality %1</source>
+        <translation>Качество: %1</translation>
+    </message>
+    <message>
+        <location filename="sync/transcodingparamswidget.cpp" line="61"/>
+        <source>No transcoding formats are available. Is ffmpeg installed?</source>
+        <translation>Нет доступных форматов перекодирования. Установлен ли ffmpeg?</translation>
+    </message>
+    <message>
+        <location filename="sync/transcodingparamswidget.cpp" line="129"/>
+        <source>%1 kbps</source>
+        <translation>%1 kbps</translation>
+    </message>
+</context>
+<context>
     <name>NowPlayingWidget</name>
     <message>
         <location filename="nowplayingwidget.ui" line="86"/>
@@ -1040,6 +1056,16 @@
         <source>Album art</source>
         <translation>Обложка альбома</translation>
     </message>
+    <message>
+        <location filename="sync/formats.cpp" line="150"/>
+        <source>AAC (free)</source>
+        <translation>AAC (свободный)</translation>
+    </message>
+    <message>
+        <location filename="sync/formats.cpp" line="174"/>
+        <source>AAC (non-free libfaac implementation)</source>
+        <translation>AAC (проприетарная реализация libfaac)</translation>
+    </message>
 </context>
 <context>
     <name>RecommendationsWidget</name>
@@ -1086,14 +1112,19 @@
         <translation>Формат:</translation>
     </message>
     <message>
-        <location filename="sync/transcodingparamswidget.ui" line="75"/>
+        <location filename="sync/transcodingparamswidget.ui" line="64"/>
         <source>Quality:</source>
         <translation>Качество:</translation>
     </message>
     <message>
-        <location filename="sync/transcodingparamswidget.ui" line="82"/>
+        <location filename="sync/transcodingparamswidget.ui" line="71"/>
         <source>Threads:</source>
         <translation>Количество потоков:</translation>
+    </message>
+    <message>
+        <location filename="sync/transcodingparamswidget.ui" line="141"/>
+        <source>Bitrate:</source>
+        <translation>Битрейт:</translation>
     </message>
 </context>
 <context>

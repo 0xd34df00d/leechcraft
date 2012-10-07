@@ -22,7 +22,9 @@
 #include <QSettings>
 #include <QDir>
 #include <QFileDialog>
-#include <interfaces/iinfo.h>
+#include "interfaces/iinfo.h"
+#include "interfaces/idownload.h"
+#include "interfaces/ientityhandler.h"
 
 namespace LeechCraft
 {
@@ -44,6 +46,17 @@ namespace LeechCraft
 	void HandlerChoiceDialog::SetFilenameSuggestion (const QString& location)
 	{
 		Suggestion_ = location;
+	}
+
+	void HandlerChoiceDialog::Add (QObject *obj)
+	{
+		auto ii = qobject_cast<IInfo*> (obj);
+		if (auto idl = qobject_cast<IDownload*> (obj))
+			Add (ii, idl);
+		if (auto ieh = qobject_cast<IEntityHandler*> (obj))
+			Add (ii, ieh);
+
+		IInfo2QObject_ [ii] = obj;
 	}
 
 	bool HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
@@ -85,6 +98,7 @@ namespace LeechCraft
 		Buttons_->addButton (but);
 		Ui_.DownloadersLayout_->addWidget (but);
 		Downloaders_ [name] = id;
+		Infos_ [name] = ii;
 
 		Ui_.DownloadersLabel_->show ();
 
@@ -132,6 +146,7 @@ namespace LeechCraft
 
 		Buttons_->addButton (but);
 		Handlers_ [name] = ih;
+		Infos_ [name] = ii;
 		Ui_.HandlersLayout_->addWidget (but);
 
 		Ui_.HandlersLabel_->show ();
@@ -140,6 +155,16 @@ namespace LeechCraft
 			populateLocationsBox ();
 
 		return true;
+	}
+
+	QObject* HandlerChoiceDialog::GetSelected () const
+	{
+		auto checked = Buttons_->checkedButton ();
+		if (!checked)
+			return 0;
+
+		// TODO rework this when we add IInfo::GetObject().
+		return IInfo2QObject_.value (Infos_.value (checked->text ()));
 	}
 
 	IDownload* HandlerChoiceDialog::GetDownload ()

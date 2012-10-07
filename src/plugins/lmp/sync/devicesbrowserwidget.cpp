@@ -112,6 +112,8 @@ namespace LMP
 
 		Ui_.TSProgress_->hide ();
 		Ui_.UploadProgress_->hide ();
+
+		Ui_.UnmountablePartsWidget_->hide ();
 	}
 
 	void DevicesBrowserWidget::InitializeDevices ()

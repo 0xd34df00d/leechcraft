@@ -19,57 +19,30 @@
 #pragma once
 
 #include <QObject>
-#include <QPointer>
-
-class QNetworkAccessManager;
-class QNetworkReply;
 
 namespace LeechCraft
 {
-struct Entity;
+	struct Entity;
+}
 
-namespace Azoth
+class IEntityManager
 {
-namespace Autopaste
-{
-	enum class Highlight
+public:
+	struct DelegationResult
 	{
-		None,
-		C,
-		CPP,
-		CPP0x,
-		Haskell,
-		Java,
-		Python,
-		XML
+		QObject *Handler_;
+		int ID_;
 	};
 
-	class PasteServiceBase : public QObject
-	{
-		Q_OBJECT
+	virtual ~IEntityManager () {}
 
-		QPointer<QObject> Entry_;
-	public:
-		struct PasteParams
-		{
-			QNetworkAccessManager *NAM_;
-			QString Text_;
-			Highlight High_;
-		};
+	virtual DelegationResult DelegateEntity (LeechCraft::Entity, QObject *desired = 0) = 0;
 
-		PasteServiceBase (QObject *entry, QObject* = 0);
+	virtual bool HandleEntity (LeechCraft::Entity, QObject *desired = 0) = 0;
 
-		virtual void Paste (const PasteParams&) = 0;
-	protected:
-		void InitReply (QNetworkReply*);
-		void FeedURL (const QString&);
-	protected slots:
-		virtual void handleMetadata ();
-		virtual void handleFinished ();
-		virtual void handleError ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-	};
-}
-}
-}
+	virtual bool CouldHandle (const LeechCraft::Entity&) = 0;
+
+	virtual QList<QObject*> GetPossibleHandlers (const LeechCraft::Entity&) = 0;
+};
+
+Q_DECLARE_INTERFACE (IEntityManager, "org.Deviant.LeechCraft.IEntityManager/1.0");

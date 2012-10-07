@@ -53,7 +53,6 @@ namespace Autopaste
 			run = true;
 			break;
 		case Highlight::XML:
-			highlight = "XML";
 			break;
 		case Highlight::Haskell:
 			highlight = "Haskell";
@@ -61,6 +60,10 @@ namespace Autopaste
 			break;
 		case Highlight::Java:
 			highlight = "Java";
+			run = true;
+			break;
+		case Highlight::Python:
+			highlight = "Python";
 			run = true;
 			break;
 		case Highlight::None:
