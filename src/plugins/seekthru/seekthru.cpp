@@ -150,9 +150,10 @@ namespace LeechCraft
 						EntityTestHandleResult ();
 			}
 
-			void SeekThru::Handle (LeechCraft::Entity e)
+			void SeekThru::Handle (Entity e)
 			{
-				Core::Instance ().Add (e.Entity_.toUrl ());
+				Core::Instance ().Handle (e);
+			}
 			}
 
 			QList<QWizardPage*> SeekThru::GetWizardPages () const

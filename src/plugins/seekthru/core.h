@@ -91,7 +91,8 @@ namespace LeechCraft
 				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 				void SetProvider (QObject*, const QString&);
-				bool CouldHandle (const LeechCraft::Entity&) const;
+				bool CouldHandle (const Entity&) const;
+				void Handle (const Entity&);
 
 				Sync::Payloads_t GetAllDeltas (const Sync::ChainID_t&);
 				Sync::Payloads_t GetNewDeltas (const Sync::ChainID_t&);
