@@ -155,6 +155,11 @@ namespace LeechCraft
 				Core::Instance ().Handle (e);
 			}
 
+			QString SeekThru::GetFilterVerb () const
+			{
+				return tr ("Search in OpenSearch engines");
+			}
+
 			QList<SeekThru::FilterVariant> SeekThru::GetFilterVariants () const
 			{
 				QList<FilterVariant> result;

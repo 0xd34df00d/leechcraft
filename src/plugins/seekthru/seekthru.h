@@ -79,6 +79,7 @@ namespace LeechCraft
 				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
 
+				QString GetFilterVerb () const;
 				QList<FilterVariant> GetFilterVariants () const;
 
 				QList<QWizardPage*> GetWizardPages () const;

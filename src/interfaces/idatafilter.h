@@ -31,7 +31,11 @@
  *
  * Plugins implementing this interface are also expected to implement
  * IEntityHandler, considering (and accepting) entities with MIME
- * "x-leechcraft/data-filter".
+ * "x-leechcraft/data-filter-request".
+ *
+ * The list of possible data filter variants is returned from
+ * GetFilterVariants(). The chosen variant should then be passed in
+ * the "DataFilter" element of the Entity::Additional_ map.
  */
 class IDataFilter
 {
@@ -44,6 +48,8 @@ public:
 	};
 
 	virtual ~IDataFilter () {}
+
+	virtual QString GetFilterVerb () const = 0;
 
 	virtual QList<FilterVariant> GetFilterVariants () const = 0;
 };
