@@ -157,41 +157,10 @@ namespace LeechCraft
 				SearchString_ = r.String_;
 				Q_FOREACH (UrlDescription u, D_.URLs_)
 				{
-					QUrl url (u.Template_);
-					QList<QPair<QString, QString>> items = url.queryItems (),
-						newItems;
-					QPair<QString, QString> item;
-					Q_FOREACH (item, items)
-					{
-						// Currently skips optional parameters
-						if (item.second.size () >= 3 &&
-								item.second.at (0) == '{' &&
-								item.second.at (item.second.size () - 1) == '}' &&
-								item.second.at (item.second.size () - 2) == '?')
-							continue;
+					const auto& url = u.MakeUrl (r.String_, r.Params_);
 
-						if (item.second == "{searchTerms}")
-							item.second = SearchString_;
-						else if (item.second.size () > 2 &&
-								*item.second.begin () == '{' &&
-								*(item.second.end () - 1) == '}')
-						{
-							QString key = item.second.mid (1,
-									item.second.size () - 2);
-							// To the correct string if Params_ has this key or to
-							// empty string otherwise.
-							item.second = r.Params_ [key].toString ();
-						}
-						else
-							item.second = "";
-
-						newItems << item;
-					}
-					url.setQueryItems (newItems);
-
-					QString fname = LeechCraft::Util::GetTemporaryName ();
-					LeechCraft::Entity e =
-						LeechCraft::Util::MakeEntity (url,
+					QString fname = Util::GetTemporaryName ();
+					auto e = Util::MakeEntity (url,
 							fname,
 							LeechCraft::Internal |
 								LeechCraft::DoNotNotifyUser |

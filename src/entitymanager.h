@@ -16,36 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#define PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#include <QWebView>
+#pragma once
+
+#include <QObject>
+#include "interfaces/core/ientitymanager.h"
 
 namespace LeechCraft
 {
-namespace Azoth
-{
-	class ChatTabWebView : public QWebView
+	class EntityManager : public QObject
+						, public IEntityManager
 	{
 		Q_OBJECT
-
-		QAction *QuoteAct_;
+		Q_INTERFACES (IEntityManager)
 	public:
-		ChatTabWebView (QWidget* = 0);
+		EntityManager (QObject* = 0);
 
-		void SetQuoteAction (QAction*);
-	protected:
-		void contextMenuEvent (QContextMenuEvent*);
-	private:
-		void HandleNick (QMenu*, const QUrl&);
-		void HandleURL (QMenu*, const QUrl&);
-		void HandleDataFilters (QMenu*, const QString&);
-	private slots:
-		void handleOpenLink ();
-		void handleOpenExternally ();
-		void handleSaveLink ();
-		void handleDataFilterAction ();
+		DelegationResult DelegateEntity (Entity, QObject* = 0);
+		bool HandleEntity (Entity, QObject* = 0);
+		bool CouldHandle (const Entity&);
+		QList<QObject*> GetPossibleHandlers (const Entity&);
 	};
 }
-}
-
-#endif

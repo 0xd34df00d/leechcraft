@@ -27,6 +27,7 @@ class IMWProxy;
 class ITagsManager;
 class IPluginsManager;
 class ICoreTabWidget;
+class IEntityManager;
 class QTreeView;
 class QModelIndex;
 class QIcon;
@@ -150,6 +151,15 @@ public:
 	/** @brief Returns the application's plugin manager.
 	 */
 	virtual IPluginsManager* GetPluginsManager () const = 0;
+
+	/** @brief Returns the entity manager object.
+	 *
+	 * Entity manager is used to perform interoperation with other plugins
+	 * by exchanging entity objects with them.
+	 *
+	 * @sa LeechCraft::Entity
+	 */
+	virtual IEntityManager* GetEntityManager () const = 0;
 
 	/** @brief Returns the version of LeechCraft core and base system.
 	 */

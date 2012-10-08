@@ -16,36 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#define PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#include <QWebView>
+#pragma once
+
+#include <QObject>
 
 namespace LeechCraft
 {
-namespace Azoth
+	struct Entity;
+}
+
+class IEntityManager
 {
-	class ChatTabWebView : public QWebView
+public:
+	struct DelegationResult
 	{
-		Q_OBJECT
-
-		QAction *QuoteAct_;
-	public:
-		ChatTabWebView (QWidget* = 0);
-
-		void SetQuoteAction (QAction*);
-	protected:
-		void contextMenuEvent (QContextMenuEvent*);
-	private:
-		void HandleNick (QMenu*, const QUrl&);
-		void HandleURL (QMenu*, const QUrl&);
-		void HandleDataFilters (QMenu*, const QString&);
-	private slots:
-		void handleOpenLink ();
-		void handleOpenExternally ();
-		void handleSaveLink ();
-		void handleDataFilterAction ();
+		QObject *Handler_;
+		int ID_;
 	};
-}
-}
 
-#endif
+	virtual ~IEntityManager () {}
+
+	virtual DelegationResult DelegateEntity (LeechCraft::Entity, QObject *desired = 0) = 0;
+
+	virtual bool HandleEntity (LeechCraft::Entity, QObject *desired = 0) = 0;
+
+	virtual bool CouldHandle (const LeechCraft::Entity&) = 0;
+
+	virtual QList<QObject*> GetPossibleHandlers (const LeechCraft::Entity&) = 0;
+};
+
+Q_DECLARE_INTERFACE (IEntityManager, "org.Deviant.LeechCraft.IEntityManager/1.0");

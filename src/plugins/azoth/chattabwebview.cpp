@@ -23,6 +23,9 @@
 #include <QMenu>
 #include <QDesktopServices>
 #include <util/util.h>
+#include <interfaces/idatafilter.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "actionsmanager.h"
@@ -42,11 +45,28 @@ namespace Azoth
 		QuoteAct_ = act;
 	}
 
+	namespace
+	{
+		struct DataFilterActionInfo
+		{
+			Entity Entity_;
+			QObject *Plugin_;
+			QByteArray VarID_;
+		};
+	}
+}
+}
+
+Q_DECLARE_METATYPE (LeechCraft::Azoth::DataFilterActionInfo)
+
+namespace LeechCraft
+{
+namespace Azoth
+{
 	void ChatTabWebView::contextMenuEvent (QContextMenuEvent *e)
 	{
 		QPointer<QMenu> menu (new QMenu (this));
-		const QWebHitTestResult r = page ()->
-				mainFrame ()->hitTestContent (e->pos ());
+		const auto r = page ()->mainFrame ()->hitTestContent (e->pos ());
 
 		if (!r.linkUrl ().isEmpty ())
 		{
@@ -56,11 +76,14 @@ namespace Azoth
 				HandleURL (menu, r.linkUrl ());
 		}
 
-		if (!page ()->selectedText ().isEmpty ())
+		const auto& text = page ()->selectedText ();
+		if (!text.isEmpty ())
 		{
 			menu->addAction (pageAction (QWebPage::Copy));
 			menu->addAction (QuoteAct_);
 			menu->addSeparator ();
+
+			HandleDataFilters (menu, text);
 		}
 
 		if (!r.imageUrl ().isEmpty ())
@@ -117,6 +140,58 @@ namespace Azoth
 		menu->addSeparator ();
 	}
 
+	void ChatTabWebView::HandleDataFilters (QMenu *menu, const QString& text)
+	{
+		auto entity = Util::MakeEntity (text,
+				QString (),
+				static_cast<TaskParameters> (FromUserInitiated) | OnlyHandle,
+				"x-leechcraft/data-filter-request");
+		auto em	= Core::Instance ().GetProxy ()->GetEntityManager ();
+		for (auto plugin : em->GetPossibleHandlers (entity))
+		{
+			auto ii = qobject_cast<IInfo*> (plugin);
+			auto idf = qobject_cast<IDataFilter*> (plugin);
+			if (!idf)
+				continue;
+			const auto& vars = idf->GetFilterVariants ();
+			if (!vars.isEmpty ())
+			{
+				auto searchMenu = menu->addMenu (ii->GetIcon (), idf->GetFilterVerb ());
+				searchMenu->menuAction ()->setIcon (ii->GetIcon ());
+				for (const auto& var : vars)
+				{
+					auto act = searchMenu->addAction (var.Name_);
+					const DataFilterActionInfo info
+					{
+						entity,
+						plugin,
+						var.ID_
+					};
+					act->setData (QVariant::fromValue (info));
+					connect (act,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleDataFilterAction ()));
+				}
+			}
+			else
+			{
+				auto searchAct = menu->addAction (ii->GetIcon (), idf->GetFilterVerb ());
+				const DataFilterActionInfo info
+				{
+					entity,
+					plugin,
+					QByteArray ()
+				};
+				searchAct->setData (QVariant::fromValue (info));
+				connect (searchAct,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleDataFilterAction ()));
+			}
+		}
+	}
+
 	void ChatTabWebView::handleOpenLink ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
@@ -144,6 +219,16 @@ namespace Azoth
 				FromUserInitiated);
 		e.Additional_ ["AllowedSemantics"] = QStringList ("fetch") << "save";
 		Core::Instance ().SendEntity (e);
+	}
+
+	void ChatTabWebView::handleDataFilterAction ()
+	{
+		auto action = qobject_cast<QAction*> (sender ());
+		const auto& data = action->data ().value<DataFilterActionInfo> ();
+
+		auto entity = data.Entity_;
+		entity.Additional_ ["DataFilter"] = data.VarID_;
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity, data.Plugin_);
 	}
 }
 }

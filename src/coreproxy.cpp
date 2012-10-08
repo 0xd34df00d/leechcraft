@@ -25,6 +25,7 @@
 #include "skinengine.h"
 #include "tagsmanager.h"
 #include "mwproxy.h"
+#include "entitymanager.h"
 #include "config.h"
 
 namespace LeechCraft
@@ -32,6 +33,7 @@ namespace LeechCraft
 	CoreProxy::CoreProxy (QObject *parent)
 	: QObject (parent)
 	, MWProxy_ (new MWProxy (this))
+	, EM_ (new EntityManager (this))
 	{
 	}
 
@@ -112,6 +114,11 @@ namespace LeechCraft
 	IPluginsManager* CoreProxy::GetPluginsManager () const
 	{
 		return Core::Instance ().GetPluginManager ();
+	}
+
+	IEntityManager* CoreProxy::GetEntityManager () const
+	{
+		return EM_;
 	}
 
 	QString CoreProxy::GetVersion () const
