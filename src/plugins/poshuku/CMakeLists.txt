@@ -181,7 +181,10 @@ OPTION (ENABLE_POSHUKU_FILESCHEME "Build support of local file browsing for Posh
 OPTION (ENABLE_POSHUKU_FUA "Build user agent customization plugin for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_KEYWORDS "Build support of url keywords for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" ON)
-OPTION (ENABLE_POSHUKU_POGOOGLUE "Build support for searching selected text in Google" ON)
+
+IF (ENABLE_POSHUKU_POGOOGLUE)
+	MESSAGE (WARNING "ENABLE_POSHUKU_POGOOGLUE option is removed, so is Poshuku Pogooglue plugin. Use the global Pogooglue plugin instead.")
+ENDIF (ENABLE_POSHUKU_POGOOGLUE)
 
 IF (ENABLE_POSHUKU_CLEANWEB)
 	ADD_SUBDIRECTORY (plugins/cleanweb)
@@ -201,6 +204,3 @@ ENDIF (ENABLE_POSHUKU_FILESCHEME)
 IF (ENABLE_POSHUKU_ONLINEBOOKMARKS)
 	ADD_SUBDIRECTORY (plugins/onlinebookmarks)
 ENDIF (ENABLE_POSHUKU_ONLINEBOOKMARKS)
-IF (ENABLE_POSHUKU_POGOOGLUE)
-	ADD_SUBDIRECTORY (plugins/pogooglue)
-ENDIF (ENABLE_POSHUKU_POGOOGLUE)
