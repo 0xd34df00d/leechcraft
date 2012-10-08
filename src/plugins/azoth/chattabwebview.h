@@ -43,7 +43,6 @@ namespace Azoth
 		void handleOpenLink ();
 		void handleOpenExternally ();
 		void handleSaveLink ();
-		void handleDataFilterAction ();
 	};
 }
 }
