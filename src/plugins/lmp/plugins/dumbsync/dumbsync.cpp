@@ -24,6 +24,10 @@
 #include <QDir>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
+#include <interfaces/lmp/ilmpproxy.h>
+#include "xmlsettingsmanager.h"
 
 typedef std::shared_ptr<QFile> QFile_ptr;
 
@@ -35,6 +39,10 @@ namespace DumbSync
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("lmp_dumbsync");
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpdumbsyncsettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -66,6 +74,11 @@ namespace DumbSync
 		return QIcon ();
 	}
 
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
+	}
+
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> result;
@@ -73,8 +86,9 @@ namespace DumbSync
 		return result;
 	}
 
-	void Plugin::SetLMPProxy (ILMPProxy*)
+	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)
 	{
+		LMPProxy_ = proxy;
 	}
 
 	QObject* Plugin::GetObject ()
@@ -100,7 +114,42 @@ namespace DumbSync
 		return SyncConfLevel::Medium;
 	}
 
-	void Plugin::Upload (const QString& localPath, const QString& to, const QString& relPath)
+	namespace
+	{
+		struct WorkerThreadResult
+		{
+			QFile_ptr File_;
+		};
+
+		QImage GetScaledPixmap (const QString& pxFile)
+		{
+			if (pxFile.isEmpty ())
+				return QImage ();
+
+			QImage img (pxFile);
+			const int maxDim = XmlSettingsManager::Instance ().property ("CoverDim").toInt ();
+			if (img.size ().width () <= maxDim && img.size ().height () <= maxDim)
+				return img;
+
+			return img.scaled (maxDim, maxDim, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		}
+
+		void WriteScaledPixmap (const QString& pxFile, const QString& target)
+		{
+			const auto& targetDir = QFileInfo (target).absoluteDir ();
+			if (targetDir.exists ("cover.jpg"))
+				return;
+
+			const auto& px = GetScaledPixmap (pxFile);
+			if (px.isNull ())
+				return;
+
+			const auto& name = XmlSettingsManager::Instance ().property ("CoverName").toString ();
+			px.save (targetDir.absoluteFilePath (name), "JPG", 80);
+		}
+	}
+
+	void Plugin::Upload (const QString& localPath, const QString& origLocalPath, const QString& to, const QString& relPath)
 	{
 		QString target = to;
 		if (!target.endsWith ('/') && !relPath.startsWith ('/'))
@@ -118,17 +167,20 @@ namespace DumbSync
 			return;
 		}
 
-		auto watcher = new QFutureWatcher<QFile_ptr> (this);
+		auto watcher = new QFutureWatcher<WorkerThreadResult> (this);
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleCopyFinished ()));
 
-		std::function<QFile_ptr (void)> copier = [target, localPath] ()
+		const auto& artPath = LMPProxy_->FindAlbumArt (origLocalPath);
+		std::function<WorkerThreadResult (void)> copier = [target, localPath, artPath] () -> WorkerThreadResult
 				{
 					QFile_ptr file (new QFile (localPath));
 					file->copy (target);
-					return file;
+					if (XmlSettingsManager::Instance ().property ("UploadCovers").toBool ())
+						WriteScaledPixmap (artPath, target);
+					return { file };
 				};
 		const auto& future = QtConcurrent::run (copier);
 		watcher->setFuture (future);
@@ -136,11 +188,12 @@ namespace DumbSync
 
 	void Plugin::handleCopyFinished ()
 	{
-		auto watcher = dynamic_cast<QFutureWatcher<QFile_ptr>*> (sender ());
+		auto watcher = dynamic_cast<QFutureWatcher<WorkerThreadResult>*> (sender ());
 		if (!watcher)
 			return;
 
-		const auto& file = watcher->result ();
+		const auto& result = watcher->result ();
+		auto file = result.File_;
 		qDebug () << Q_FUNC_INFO << file->error ();
 		if (file->error () != QFile::NoError)
 			qWarning () << Q_FUNC_INFO

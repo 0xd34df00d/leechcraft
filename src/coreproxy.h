@@ -25,6 +25,7 @@
 namespace LeechCraft
 {
 	class MWProxy;
+	class EntityManager;
 
 	/** Implements the ICoreProxy's interface.
 	 */
@@ -36,6 +37,7 @@ namespace LeechCraft
 
 		Util::IDPool<int> Pool_;
 		MWProxy *MWProxy_;
+		EntityManager *EM_;
 	public:
 		CoreProxy (QObject* = 0);
 		QNetworkAccessManager* GetNetworkAccessManager () const;
@@ -52,6 +54,7 @@ namespace LeechCraft
 		int GetID ();
 		void FreeID (int);
 		IPluginsManager* GetPluginsManager () const;
+		IEntityManager* GetEntityManager () const;
 		QString GetVersion () const;
 		QObject* GetSelf ();
 		void RegisterSkinnable (QAction*);

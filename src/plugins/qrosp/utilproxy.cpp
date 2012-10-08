@@ -76,10 +76,33 @@ namespace Qrosp
 		return new EntityWrapper (Util::MakeEntity (entity, location, tp,  mime));
 	}
 
-	QObject* UtilProxy::MakeNotification (const QString& header,
-			const QString& text, Priority priority) const
+	namespace
 	{
-		return new EntityWrapper (Util::MakeNotification (header, text, priority));
+		Priority Str2Priority (QString str)
+		{
+			str = str.toLower ();
+			if (str == "log")
+				return PLog_;
+			else if (str == "info")
+				return PInfo_;
+			else if (str == "warning")
+				return PWarning_;
+			else if (str == "critical")
+				return PCritical_;
+			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unknown priority"
+						<< str;
+				return PInfo_;
+			}
+		}
+	}
+
+	QObject* UtilProxy::MakeNotification (const QString& header,
+			const QString& text, QString priorityStr) const
+	{
+		return new EntityWrapper (Util::MakeNotification (header, text, Str2Priority (priorityStr)));
 	}
 }
 }

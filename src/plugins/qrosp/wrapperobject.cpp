@@ -28,6 +28,7 @@
 #include <qross/core/script.h>
 #include <qross/core/manager.h>
 #include <qross/core/wrapperinterface.h>
+#include <qjson/parser.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/ihookproxy.h>
 #include <util/util.h>
@@ -55,7 +56,7 @@ Q_DECLARE_METATYPE (QString*);
 Q_DECLARE_METATYPE (QWebView*);
 Q_DECLARE_METATYPE (QWebPage*);
 
-#define SCALL(x) (Call<x > (ScriptAction_))
+#define SCALL(x) (Call<x> (ScriptAction_))
 
 namespace LeechCraft
 {
@@ -74,8 +75,8 @@ namespace Qrosp
 		qRegisterMetaType<QWebPage*> ("QWebPage*");
 		qRegisterMetaType<QNetworkAccessManager*> ("QNetworkAccessManager*");
 		qRegisterMetaType<QStandardItemModel*> ("QStandardItemModel*");
-		BuildMetaObject ();
 
+		BuildMetaObject ();
 		ScriptAction_->addObject (this, "Signals");
 
 		ScriptAction_->setInterpreter (type);
@@ -112,71 +113,80 @@ namespace Qrosp
 
 	void WrapperObject::InitScript ()
 	{
-		QVariantList pathArgs;
-		pathArgs << QFileInfo (Path_).absolutePath ();
-		SCALL (void) ("SetScriptPath", pathArgs);
+		SCALL (void) ("SetScriptPath", { QFileInfo (Path_).absolutePath () });
 
-#ifndef QROSP_NO_QTSCRIPT
 		if (Type_ == "qtscript")
+			InitQTS ();
+	}
+
+	void WrapperObject::InitQTS ()
+	{
+#ifndef QROSP_NO_QTSCRIPT
+		QStringList requires = SCALL (QStringList) ("Requires");
+		QObject *scriptEngineObject = 0;
+		QMetaObject::invokeMethod (ScriptAction_->script (),
+				"engine", Q_RETURN_ARG (QObject*, scriptEngineObject));
+		QScriptEngine *engine = qobject_cast<QScriptEngine*> (scriptEngineObject);
+		if (!engine)
 		{
-			QStringList requires = SCALL (QStringList) ("Requires");
-			QObject *scriptEngineObject = 0;
-			QMetaObject::invokeMethod (ScriptAction_->script (),
-					"engine", Q_RETURN_ARG (QObject*, scriptEngineObject));
-			QScriptEngine *engine = qobject_cast<QScriptEngine*> (scriptEngineObject);
-			if (!engine)
-				qWarning () << Q_FUNC_INFO
-						<< "unable to obtain script engine from the"
-						<< "script action though we are Qt Script";
-			else
-				Q_FOREACH (QString req, requires)
-					engine->importExtension (req);
+			qWarning () << Q_FUNC_INFO
+					<< "unable to obtain script engine from the"
+					<< "script action though we are Qt Script";
+			return;
 		}
+
+		Q_FOREACH (QString req, requires)
+			engine->importExtension (req);
 #endif
+	}
+
+	namespace
+	{
+		QVariantMap ParseManifest (const QString& path)
+		{
+			QFile file (path);
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to open file"
+						<< path;
+				return QVariantMap ();
+			}
+
+			return QJson::Parser ().parse (file.readAll ()).toMap ();
+		}
 	}
 
 	void WrapperObject::BuildMetaObject ()
 	{
-		QString path = QFileInfo (Path_).absolutePath ();
-		QDir scriptDir (path);
-
 		QMetaObjectBuilder builder;
-
 		builder.setSuperClass (QObject::metaObject ());
-		builder.setClassName (QString ("LeechCraft::Plugins::Qross::%1::%2")
+		builder.setClassName (QString ("LeechCraft::Qross::%1::%2")
 					.arg (Type_)
-					.arg (SCALL (QString) ("GetName").remove (' ')).toLatin1 ());
+					.arg (SCALL (QString) ("GetUniqueID").remove ('.')).toLatin1 ());
 
 		int currentMetaMethod = 0;
 
-		if (scriptDir.exists ("ExportedSlots"))
+		const auto& manifest = ParseManifest (Path_ + ".manifest.json");
+
+		Q_FOREACH (auto signature, manifest ["ExportedSlots"].toStringList ())
 		{
-			QFile slotsFile (scriptDir.filePath ("ExportedSlots"));
-			slotsFile.open (QIODevice::ReadOnly);
-			QList<QByteArray> sigSlots = slotsFile.readAll ().split ('\n');
-			Q_FOREACH (QByteArray signature, sigSlots)
-			{
-				signature = signature.trimmed ();
-				if (signature.isEmpty ())
-					continue;
-				Index2ExportedSignatures_ [currentMetaMethod++] = signature;
-				builder.addSlot (signature);
-			}
+			signature = signature.trimmed ();
+			if (signature.isEmpty ())
+				continue;
+			const auto& sigArray = signature.toLatin1 ();
+			Index2ExportedSignatures_ [currentMetaMethod++] = sigArray;
+			builder.addSlot (sigArray);
 		}
 
-		if (scriptDir.exists ("ExportedSignals"))
+		Q_FOREACH (auto signature, manifest ["ExportedSignals"].toStringList ())
 		{
-			QFile sigsFile (scriptDir.filePath ("ExportedSignals"));
-			sigsFile.open (QIODevice::ReadOnly);
-			QList<QByteArray> sigSignals = sigsFile.readAll ().split ('\n');
-			Q_FOREACH (QByteArray signature, sigSignals)
-			{
-				signature = signature.trimmed ();
-				if (signature.isEmpty ())
-					continue;
-				Index2ExportedSignatures_ [currentMetaMethod++] = signature;
-				builder.addSignal (signature);
-			}
+			signature = signature.trimmed ();
+			if (signature.isEmpty ())
+				continue;
+			const auto& sigArray = signature.toLatin1 ();
+			Index2ExportedSignatures_ [currentMetaMethod++] = sigArray;
+			builder.addSignal (sigArray);
 		}
 
 		ThisMetaObject_ = builder.toMetaObject ();
@@ -222,6 +232,9 @@ namespace Qrosp
 		if (!strcmp (interfaceName, "IActionsExporter") ||
 				!strcmp (interfaceName, "org.Deviant.LeechCraft.IActionsExporter/1.0"))
 			return static_cast<IActionsExporter*> (this);
+		if (!strcmp (interfaceName, "IHaveTabs") ||
+				!strcmp (interfaceName, "org.Deviant.LeechCraft.IHaveTabs/1.0"))
+			return static_cast<IHaveTabs*> (this);
 
 		return QObject::qt_metacast (interfaceName);
 	}
@@ -403,6 +416,51 @@ namespace Qrosp
 				SCALL (QStringList) ("GetPluginClasses"))
 			result << pclass.toUtf8 ();
 		return result;
+	}
+
+	TabClasses_t WrapperObject::GetTabClasses () const
+	{
+		TabClasses_t result;
+		Q_FOREACH (const QVariant& mapVar, SCALL (QVariantList) ("GetPluginClasses"))
+		{
+			const auto& map = mapVar.toMap ();
+			TabClassInfo info
+			{
+				map ["TabClass_"].toByteArray (),
+				map ["VisibleName_"].toString (),
+				map ["Description_"].toString (),
+				map ["Icon_"].value<QIcon> (),
+				map ["Priority_"].value<quint16> (),
+				TabFeature::TFEmpty
+			};
+			const auto& tabFeatures = map ["Features_"].toStringList ();
+			auto checkFeature = [&tabFeatures, &info] (const QString& str, TabFeature feature)
+			{
+				if (tabFeatures.contains (str))
+					info.Features_ |= feature;
+			};
+			checkFeature ("OpenableByRequest", TabFeature::TFOpenableByRequest);
+			checkFeature ("Singe", TabFeature::TFSingle);
+			checkFeature ("ByDefault", TabFeature::TFByDefault);
+			checkFeature ("SuggestOpening", TabFeature::TFSuggestOpening);
+		}
+		return result;
+	}
+
+	void WrapperObject::TabOpenRequested (const QByteArray& tabClass)
+	{
+	}
+
+	void WrapperObject::addNewTab (const QString&, QWidget*)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "is called, but this should never happen";
+	}
+
+	void WrapperObject::removeTab (QWidget*)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "is called, but this should never happen";
 	}
 
 	void WrapperObject::changeTabName (QWidget*, const QString&)

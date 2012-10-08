@@ -102,7 +102,7 @@ namespace LMP
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
 
-		void gotActions (QList<QAction*>, ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 
 		void gotEntity (const LeechCraft::Entity&);
 	};

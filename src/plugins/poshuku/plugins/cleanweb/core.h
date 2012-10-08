@@ -159,6 +159,7 @@ namespace CleanWeb
 		void update ();
 		void handleJobFinished (int);
 		void handleJobError (int, IDownload::Error);
+		void handleFrameLayout (QPointer<QWebFrame>);
 		void delayedRemoveElements (QPointer<QWebFrame>, const QString&);
 		void moreDelayedRemoveElements ();
 		void handleFrameDestroyed ();

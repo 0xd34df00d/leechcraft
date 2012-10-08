@@ -234,8 +234,8 @@ QString Application::GetSocketName ()
 void Application::InitiateRestart ()
 {
 	QStringList arguments = Arguments_;
+	arguments.removeFirst ();
 	arguments << "-restart";
-
 	QProcess::startDetached (applicationFilePath (), arguments);
 
 	qApp->quit ();

@@ -58,8 +58,8 @@ namespace Qrosp
 	void ScriptLoaderInstance::AddLocalPrefix (QString prefix)
 	{
 		if (!prefix.isEmpty () &&
-					!prefix.endsWith ('/'))
-				prefix.append ('/');
+				!prefix.endsWith ('/'))
+			prefix.append ('/');
 		Prefixes_ << QDir::homePath () + "/.leechcraft/data/scripts/" + prefix;
 	}
 

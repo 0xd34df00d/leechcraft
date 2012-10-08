@@ -19,21 +19,41 @@
 #pragma once
 
 #include "syncmanagerbase.h"
+#include "copymanager.h"
+#include "interfaces/lmp/isyncplugin.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class ISyncPlugin;
 	class TranscodeManager;
-	class CopyManager;
 	struct TranscodingParams;
 
 	class SyncManager : public SyncManagerBase
 	{
 		Q_OBJECT
 
-		QMap<QString, CopyManager*> Mount2Copiers_;
+		struct CopyJob
+		{
+			QObject* GetObject () const
+			{
+				return Syncer_->GetObject ();
+			}
+
+			void Upload () const
+			{
+				Syncer_->Upload (From_, OrigPath_, MountPoint_, Filename_);
+			}
+
+			QString From_;
+			bool RemoveOnFinish_;
+
+			ISyncPlugin *Syncer_;
+			QString OrigPath_;
+			QString MountPoint_;
+			QString Filename_;
+		};
+		QMap<QString, CopyManager<CopyJob>*> Mount2Copiers_;
 
 		struct SyncTo
 		{

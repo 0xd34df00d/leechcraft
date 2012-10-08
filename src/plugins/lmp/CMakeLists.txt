@@ -81,16 +81,20 @@ SET (SRCS
 	eventswidget.cpp
 	plmanagerwidget.cpp
 	nowplayingpixmaphandler.cpp
+	lmpproxy.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
 	sync/copymanager.cpp
 	sync/devicesbrowserwidget.cpp
+	sync/formats.cpp
 	sync/syncmanagerbase.cpp
 	sync/syncmanager.cpp
+	sync/syncunmountablemanager.cpp
 	sync/transcodejob.cpp
 	sync/transcodemanager.cpp
 	sync/transcodingparamswidget.cpp
+	sync/unmountabledevmanager.cpp
 	sync/uploadmodel.cpp
 	playlistparsers/commonpl.cpp
 	playlistparsers/playlistfactory.cpp
@@ -150,6 +154,7 @@ INSTALL (DIRECTORY interfaces DESTINATION include/leechcraft)
 
 OPTION (ENABLE_LMP_DUMBSYNC "Enable DumbSync, plugin for syncing with Flash-like media players" ON)
 OPTION (ENABLE_LMP_MP3TUNES "Enable plugin for syncing and using the mp3tunes.com service" ON)
+OPTION (ENABLE_LMP_MTPSYNC "Enable plugin for syncing with MTP devices" OFF)
 
 IF (ENABLE_LMP_DUMBSYNC)
 	ADD_SUBDIRECTORY (plugins/dumbsync)
@@ -157,3 +162,6 @@ ENDIF (ENABLE_LMP_DUMBSYNC)
 IF (ENABLE_LMP_MP3TUNES)
 	ADD_SUBDIRECTORY (plugins/mp3tunes)
 ENDIF (ENABLE_LMP_MP3TUNES)
+IF (ENABLE_LMP_MTPSYNC)
+	ADD_SUBDIRECTORY (plugins/mtpsync)
+ENDIF (ENABLE_LMP_MTPSYNC)

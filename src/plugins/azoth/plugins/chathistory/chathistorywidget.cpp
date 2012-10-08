@@ -470,8 +470,6 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::on_Calendar__activated (const QDate& date)
 	{
-		Ui_.Calendar_->setDateTextFormat (QDate (), QTextCharFormat ());
-
 		if (CurrentEntry_.isEmpty ())
 			return;
 

@@ -19,6 +19,7 @@
 #include "transcodingparamswidget.h"
 #include <QThread>
 #include "transcodingparams.h"
+#include "formats.h"
 
 namespace LeechCraft
 {
@@ -26,8 +27,14 @@ namespace LMP
 {
 	TranscodingParamsWidget::TranscodingParamsWidget (QWidget *parent)
 	: QWidget (parent)
+	, Formats_ (new Formats)
 	{
 		Ui_.setupUi (this);
+		const auto& fm = fontMetrics ();
+		const auto qualityWidth = std::min (fm.width (" 9999 kbps "),
+				fm.width (tr ("Quality %1").arg (10)));
+		Ui_.QualityDisplay_->setFixedWidth (qualityWidth);
+		Ui_.QualityDisplay_->setFrameShape (Ui_.ThreadsDisplay_->frameShape ());
 
 		const int idealThreads = QThread::idealThreadCount ();
 		if (idealThreads > 0)
@@ -37,6 +44,22 @@ namespace LMP
 		}
 		else
 			Ui_.ThreadsSlider_->setMaximum (4);
+
+		const auto& formats = Formats_->GetFormats ();
+		if (!formats.isEmpty ())
+		{
+			for (const auto& format : formats)
+				Ui_.TranscodingFormat_->addItem (format->GetFormatName (), format->GetFormatID ());
+			on_TranscodingFormat__currentIndexChanged (0);
+			Ui_.StatusLabel_->hide ();
+		}
+		else
+		{
+			Ui_.TranscodingBox_->setChecked (false);
+			Ui_.TranscodingBox_->setEnabled (false);
+
+			Ui_.StatusLabel_->setText (tr ("No transcoding formats are available. Is ffmpeg installed?"));
+		}
 	}
 
 	void TranscodingParamsWidget::SetMaskVisible (bool visible)
@@ -47,13 +70,65 @@ namespace LMP
 	TranscodingParams TranscodingParamsWidget::GetParams () const
 	{
 		const bool transcode = Ui_.TranscodingBox_->isChecked ();
+		const auto bitrateType = GetCurrentBitrateType ();
 		return
 		{
 			Ui_.FilenameMask_->text (),
-			transcode ? Ui_.TranscodingFormat_->currentText () : QString (),
+			transcode ? GetCurrentFormat ()->GetFormatID () : QString (),
+			bitrateType,
 			Ui_.QualitySlider_->value (),
 			Ui_.ThreadsSlider_->value ()
 		};
+	}
+
+	Format_ptr TranscodingParamsWidget::GetCurrentFormat () const
+	{
+		return Formats_->GetFormats ().value (Ui_.TranscodingFormat_->currentIndex ());
+	}
+
+	Format::BitrateType TranscodingParamsWidget::GetCurrentBitrateType () const
+	{
+		const auto& data = Ui_.BitrateTypeBox_->itemData (Ui_.BitrateTypeBox_->currentIndex ());
+		return static_cast<Format::BitrateType> (data.toInt ());
+	}
+
+	void TranscodingParamsWidget::on_TranscodingFormat__currentIndexChanged (int idx)
+	{
+		Ui_.BitrateTypeBox_->clear ();
+
+		auto format = GetCurrentFormat ();
+		if (!format)
+			return;
+
+		Q_FOREACH (auto type, format->GetSupportedBitrates ())
+			Ui_.BitrateTypeBox_->addItem (type == Format::BitrateType::CBR ? "CBR" : "VBR", static_cast<int> (type));
+
+		on_BitrateTypeBox__currentIndexChanged (0);
+	}
+
+	void TranscodingParamsWidget::on_BitrateTypeBox__currentIndexChanged (int)
+	{
+		const auto& bitrate = GetCurrentBitrateType ();
+		const auto& items = GetCurrentFormat ()->GetBitrateLabels (bitrate);
+
+		const auto& value = items.size () == Ui_.QualitySlider_->maximum () + 1 ?
+				Ui_.QualitySlider_->value () :
+				items.size () / 2 + 1;
+
+		Ui_.QualitySlider_->setMinimum (0);
+		Ui_.QualitySlider_->setMaximum (items.size () - 1);
+		Ui_.QualitySlider_->setValue (value);
+		on_QualitySlider__valueChanged (value);
+	}
+
+	void TranscodingParamsWidget::on_QualitySlider__valueChanged (int pos)
+	{
+		const auto& bitrate = GetCurrentBitrateType ();
+		const auto& items = GetCurrentFormat ()->GetBitrateLabels (bitrate);
+		const auto& str = bitrate == Format::BitrateType::CBR ?
+				tr ("%1 kbps").arg (items.value (pos)) :
+				tr ("Quality %1").arg (items.value (pos));
+				Ui_.QualityDisplay_->setText (str);
 	}
 }
 }

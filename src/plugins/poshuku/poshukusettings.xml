@@ -22,6 +22,9 @@
 			<item type="checkbox" property="DifferLocationsByExtension" state="on">
 				<label lang="en" value="Differ download locations by file extension" />
 			</item>
+			<item type="checkbox" property="UseSummaryForSearches" default="false">
+				<label value="Use Summary for displaying search results" />
+			</item>
 			<item type="checkbox" property="TryToDetectRSSLinks" state="on">
 				<label lang="en" value="Try to detect links to RSS/Atom feeds" />
 			</item>
