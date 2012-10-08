@@ -19,19 +19,16 @@
 
 #include "pogooglue.h"
 #include <QIcon>
-#include <QMenu>
-#include <QGraphicsWebView>
+#include <QUrl>
 #include <util/util.h>
 
 namespace LeechCraft
-{
-namespace Poshuku
 {
 namespace Pogooglue
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("poshuku_pogooglue");
+		Util::InstallTranslator ("pogooglue");
 	}
 
 	void Plugin::SecondInit ()
@@ -44,12 +41,12 @@ namespace Pogooglue
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.Poshuku.Pogooglue";
+		return "org.LeechCraft.Pogooglue";
 	}
 
 	QString Plugin::GetName () const
 	{
-		return "Poshuku Pogooglue";
+		return "Pogooglue";
 	}
 
 	QString Plugin::GetInfo () const
@@ -62,17 +59,11 @@ namespace Pogooglue
 		return QIcon ();
 	}
 
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Poshuku.Plugins/1.0";
-		return result;
-	}
-
 	void Plugin::handleGoogleIt ()
 	{
 		Entity e;
 
+		QString SelectedText_;
 		QString withoutPercent = SelectedText_;
 		withoutPercent.remove (QRegExp ("%%??",
 				Qt::CaseInsensitive, QRegExp::Wildcard));
@@ -106,27 +97,7 @@ namespace Pogooglue
 
 		emit gotEntity (e);
 	}
-
-	void Plugin::hookWebViewContextMenu (IHookProxy_ptr, QGraphicsWebView *view,
-			QGraphicsSceneContextMenuEvent*, const QWebHitTestResult&, QMenu *menu,
-			WebViewCtxMenuStage stage)
-	{
-		if (stage != WVSAfterSelectedText)
-			return;
-
-		SelectedText_ = view->page ()->selectedText ();
-
-		if (SelectedText_.isEmpty ())
-			return;
-
-		menu->addAction (QIcon (":/plugins/poshuku/plugins/pogooglue/resources/images/google.png"),
-				tr ("Google It!"),
-				this,
-				SLOT (handleGoogleIt ()));
-	}
-
-}
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_pogooglue, LeechCraft::Poshuku::Pogooglue::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_pogooglue, LeechCraft::Pogooglue::Plugin);
