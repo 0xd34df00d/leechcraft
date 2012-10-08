@@ -21,16 +21,20 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ientityhandler.h>
+#include <interfaces/idatafilter.h>
 
 namespace LeechCraft
 {
 namespace Pogooglue
 {
 	class Plugin : public QObject
-					, public IInfo
+				 , public IInfo
+				 , public IEntityHandler
+				 , public IDataFilter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IEntityHandler IDataFilter)
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -39,8 +43,14 @@ namespace Pogooglue
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-	private slots:
-		void handleGoogleIt ();
+
+		EntityTestHandleResult CouldHandle (const Entity& entity) const;
+		void Handle (Entity entity);
+
+		QString GetFilterVerb () const;
+		QList<FilterVariant> GetFilterVariants () const;
+	private:
+		void GoogleIt (QString);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

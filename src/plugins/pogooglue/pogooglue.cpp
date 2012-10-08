@@ -21,6 +21,7 @@
 #include <QIcon>
 #include <QUrl>
 #include <util/util.h>
+#include <interfaces/entitytesthandleresult.h>
 
 namespace LeechCraft
 {
@@ -59,42 +60,67 @@ namespace Pogooglue
 		return QIcon ();
 	}
 
-	void Plugin::handleGoogleIt ()
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
-		Entity e;
+		if (e.Mime_ != "x-leechcraft/data-filter-request" ||
+				!e.Entity_.canConvert<QString> ())
+			return EntityTestHandleResult ();
 
-		QString SelectedText_;
-		QString withoutPercent = SelectedText_;
+		const auto& str = e.Entity_.toString ();
+		return str.size () < 200 && str.count ("\n") < 3 ?
+				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult ();
+	}
+
+	void Plugin::Handle (Entity e)
+	{
+		const auto& str = e.Entity_.toString ();
+		GoogleIt (str);
+	}
+
+	QString Plugin::GetFilterVerb () const
+	{
+		return tr ("Google it!");
+	}
+
+	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants () const
+	{
+		return QList<FilterVariant> ();
+	}
+
+	void Plugin::GoogleIt (QString text)
+	{
+		QString withoutPercent = text;
 		withoutPercent.remove (QRegExp ("%%??",
 				Qt::CaseInsensitive, QRegExp::Wildcard));
 		QUrl testUrl (withoutPercent);
 		QUrl result;
 		if (testUrl.toString () == withoutPercent)
-			result = QUrl::fromEncoded (SelectedText_.toUtf8 ());
+			result = QUrl::fromEncoded (text.toUtf8 ());
 		else
-			result = QUrl (SelectedText_);
+			result = QUrl (text);
 
 		if (result.scheme ().isEmpty ())
 		{
-			if (!SelectedText_.count (' ') && SelectedText_.count ('.'))
-				result = QUrl (QString ("http://") + SelectedText_);
+			if (!text.count (' ') && text.count ('.'))
+				result = QUrl (QString ("http://") + text);
 			else
 			{
-				SelectedText_.replace ('+', "%2B");
-				SelectedText_.replace (' ', '+');
+				text.replace ('+', "%2B");
+				text.replace (' ', '+');
 				QString urlStr = QString ("http://www.google.com/search?q=%2"
 						"&client=leechcraft_poshuku"
 						"&ie=utf-8"
 						"&rls=org.leechcraft:%1")
 					.arg (QLocale::system ().name ().replace ('_', '-'))
-					.arg (SelectedText_);
+					.arg (text);
 				result = QUrl::fromEncoded (urlStr.toUtf8 ());
 			}
 		}
 
-		e.Entity_ = result;
-		e.Parameters_ = LeechCraft::FromUserInitiated | LeechCraft::OnlyHandle;
-
+		const auto& e = Util::MakeEntity (result,
+				QString (),
+				LeechCraft::FromUserInitiated | LeechCraft::OnlyHandle);
 		emit gotEntity (e);
 	}
 }
