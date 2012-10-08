@@ -33,6 +33,8 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
+#include <util/xpc/stddatafiltermenucreator.h>
+#include <interfaces/core/icoreproxy.h>
 #include "interfaces/poshukutypes.h"
 #include "core.h"
 #include "customwebpage.h"
@@ -244,8 +246,7 @@ namespace Poshuku
 	void CustomWebView::contextMenuEvent (QGraphicsSceneContextMenuEvent *e)
 	{
 		QPointer<QMenu> menu (new QMenu ());
-		QWebHitTestResult r = page ()->
-			mainFrame ()->hitTestContent (e->pos ().toPoint ());
+		const auto& r = page ()->mainFrame ()->hitTestContent (e->pos ().toPoint ());
 
 		IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 
@@ -372,6 +373,8 @@ namespace Poshuku
 			menu->addAction (Browser_->Find_);
 			menu->addAction (tr ("Search..."),
 					this, SLOT (searchSelectedText ()));
+			new Util::StdDataFilterMenuCreator (page ()->selectedText (),
+					Core::Instance ().GetProxy ()->GetEntityManager (), menu);
 		}
 
 		emit hookWebViewContextMenu (proxy, this, e, r,
