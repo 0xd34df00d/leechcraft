@@ -151,6 +151,8 @@ namespace Azoth
 		{
 			auto ii = qobject_cast<IInfo*> (plugin);
 			auto idf = qobject_cast<IDataFilter*> (plugin);
+			if (!idf)
+				continue;
 			const auto& vars = idf->GetFilterVariants ();
 			if (!vars.isEmpty ())
 			{
