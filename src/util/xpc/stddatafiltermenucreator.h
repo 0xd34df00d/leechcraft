@@ -16,35 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#define PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#include <QWebView>
+#pragma once
+
+#include <QObject>
+#include <util/utilconfig.h>
+
+class QVariant;
+class IEntityManager;
+class QMenu;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Util
 {
-	class ChatTabWebView : public QWebView
+	class StdDataFilterMenuCreator : public QObject
 	{
 		Q_OBJECT
 
-		QAction *QuoteAct_;
+		IEntityManager *EntityMgr_;
 	public:
-		ChatTabWebView (QWidget* = 0);
-
-		void SetQuoteAction (QAction*);
-	protected:
-		void contextMenuEvent (QContextMenuEvent*);
-	private:
-		void HandleNick (QMenu*, const QUrl&);
-		void HandleURL (QMenu*, const QUrl&);
-		void HandleDataFilters (QMenu*, const QString&);
+		UTIL_API StdDataFilterMenuCreator (const QVariant&, IEntityManager*, QMenu*);
 	private slots:
-		void handleOpenLink ();
-		void handleOpenExternally ();
-		void handleSaveLink ();
+		void handleDataFilterAction ();
 	};
 }
 }
-
-#endif

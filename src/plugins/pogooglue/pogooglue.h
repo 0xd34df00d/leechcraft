@@ -17,32 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_POGOOGLUE_POGOOGLUE_H
-#define PLUGINS_POSHUKU_PLUGINS_POGOOGLUE_POGOOGLUE_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/poshukutypes.h>
-#include <interfaces/core/ihookproxy.h>
-
-class QGraphicsWebView;
-class QGraphicsSceneContextMenuEvent;
-class QWebHitTestResult;
+#include <interfaces/ientityhandler.h>
+#include <interfaces/idatafilter.h>
 
 namespace LeechCraft
-{
-namespace Poshuku
 {
 namespace Pogooglue
 {
 	class Plugin : public QObject
-					, public IInfo
-					, public IPlugin2
+				 , public IInfo
+				 , public IEntityHandler
+				 , public IDataFilter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
-
-		QString SelectedText_;
+		Q_INTERFACES (IInfo IEntityHandler IDataFilter)
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -51,21 +43,16 @@ namespace Pogooglue
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		QSet<QByteArray> GetPluginClasses () const;
 
-	private slots:
-		void handleGoogleIt ();
-	public slots:
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QGraphicsWebView*,
-				QGraphicsSceneContextMenuEvent*,
-				const QWebHitTestResult&, QMenu*,
-				WebViewCtxMenuStage);
+		EntityTestHandleResult CouldHandle (const Entity& entity) const;
+		void Handle (Entity entity);
+
+		QString GetFilterVerb () const;
+		QList<FilterVariant> GetFilterVariants () const;
+	private:
+		void GoogleIt (QString);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
-}
-
-#endif // PLUGINS_POSHUKU_PLUGINS_POGOOGLUE_POGOOGLUE_H
