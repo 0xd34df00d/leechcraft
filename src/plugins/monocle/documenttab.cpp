@@ -419,7 +419,10 @@ namespace Monocle
 				pageIdx = 0;
 
 			double dim = dimGetter (CurrentDoc_->GetPageSize (pageIdx));
-			return dimGetter (Ui_.PagesView_->viewport ()->contentsRect ().size ()) / dim;
+			auto size = Ui_.PagesView_->maximumViewportSize ();
+			size.rwidth () -= Ui_.PagesView_->verticalScrollBar ()->size ().width ();
+			size.rheight () -= Ui_.PagesView_->horizontalScrollBar ()->size ().height ();
+			return dimGetter (size) / dim;
 		};
 
 		const int idx = ScalesBox_->currentIndex ();

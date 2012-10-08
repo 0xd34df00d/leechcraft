@@ -41,7 +41,7 @@ namespace GoogleDrive
 		DriveManager *DM_;
 
 		QString BaseDir_;
-		QStringList Pathes_;
+		QStringList Paths_;
 		QMap<QString, DriveItem> RealPath2Item_;
 		QQueue<QString> RealPathQueue_;
 		QList<DriveItem> Items_;
@@ -49,7 +49,7 @@ namespace GoogleDrive
 		Syncer (DriveManager *dm, QObject *parent = 0);
 
 		void CheckRemoteStorage ();
-		void CheckLocalStorage (const QStringList& pathes, const QString& baseDir);
+		void CheckLocalStorage (const QStringList& paths, const QString& baseDir);
 	private:
 		void ContinueLocalStorageChecking ();
 

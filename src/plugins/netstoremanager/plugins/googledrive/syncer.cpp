@@ -47,12 +47,12 @@ namespace GoogleDrive
 		DM_->RequestFileChanges (LastChangesId_);
 	}
 
-	void Syncer::CheckLocalStorage (const QStringList& pathes,
+	void Syncer::CheckLocalStorage (const QStringList& paths,
 			const QString& baseDir)
 	{
 		BaseDir_ = baseDir;
-		Pathes_ =  pathes;
-		std::sort (Pathes_.begin (), Pathes_.end ());
+		Paths_ =  paths;
+		std::sort (Paths_.begin (), Paths_.end ());
 		connect (DM_,
 				SIGNAL (gotFiles (QList<DriveItem>)),
 				this,
@@ -62,14 +62,14 @@ namespace GoogleDrive
 
 	void Syncer::ContinueLocalStorageChecking ()
 	{
-		if (Pathes_.isEmpty ())
+		if (Paths_.isEmpty ())
 		{
 			//TODO checking finished
 			qDebug () << "finished";
 			return;
 		}
 
-		QString path = Pathes_.takeAt (0);
+		QString path = Paths_.takeAt (0);
 		QFileInfo info (path);
 		DriveItem parentItem = RealPath2Item_.value (info.dir ().absolutePath ());
 

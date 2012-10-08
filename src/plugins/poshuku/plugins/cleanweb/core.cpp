@@ -549,6 +549,16 @@ namespace CleanWeb
 
 	bool Core::Matches (const FilterItem& item, const QString& urlStr, const QByteArray& urlUtf8, const QString& domain) const
 	{
+		if (item.Option_.MatchObjects_ != FilterOption::MatchObject::All)
+		{
+			if (!(item.Option_.MatchObjects_ & FilterOption::MatchObject::CSS) &&
+					!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Image) &&
+					!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Script) &&
+					!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Object) &&
+					!(item.Option_.MatchObjects_ & FilterOption::MatchObject::ObjSubrequest))
+				return false;
+		}
+
 		const auto& opt = item.Option_;
 		if (!opt.NotDomains_.isEmpty ())
 		{

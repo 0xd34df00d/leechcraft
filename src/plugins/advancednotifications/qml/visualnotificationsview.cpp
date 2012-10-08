@@ -35,9 +35,9 @@ namespace AdvancedNotifications
 	VisualNotificationsView::VisualNotificationsView (QWidget *parent)
 	: QDeclarativeView (parent)
 	{
-		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
-		setAttribute (Qt::WA_TranslucentBackground);
 		setStyleSheet ("background: transparent");
+		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool);
+		setAttribute (Qt::WA_TranslucentBackground);
 
 		connect (this,
 				SIGNAL (statusChanged (QDeclarativeView::Status)),

@@ -453,7 +453,7 @@ namespace GoogleDrive
 			Core::Instance ().SendEntity (e);
 	}
 
-	void DriveManager::FindSyncableItems (const QStringList& pathes,
+	void DriveManager::FindSyncableItems (const QStringList& paths,
 			const QString& baseDir, const QList<DriveItem>& items)
 	{
 		const QString& baseName = QFileInfo (baseDir).fileName ();
@@ -971,32 +971,32 @@ namespace GoogleDrive
 		}
 
 		const QVariantMap& map = res.toMap ();
-		if (!map.contains ("error"))
+		if (map.contains ("error"))
 		{
-			QList<DriveChanges> changes;
-
-			if (!map.contains ("items") ||
-					map ["items"].toList ().isEmpty ())
-				return;
-
-			for (auto item : map ["items"].toList ())
-			{
-				QVariantMap itemMap = item.toMap ();
-				DriveChanges change;
-				DriveItem item = CreateDriveItem (itemMap ["file"]);
-				change.FileId_ = itemMap ["fileId"].toString ();
-				change.Id_ = itemMap ["id"].toString ();
-				change.Deleted_ = itemMap ["deleted"].toBool ();
-				change.FileResource_ = item;
-
-				changes << change;
-			}
-
-			gotChanges (changes, map ["largestChangeId"].toLongLong () + 1);
+			ParseError (map);
 			return;
 		}
 
-		ParseError (map);
+		QList<DriveChanges> changes;
+
+		if (!map.contains ("items") ||
+				map ["items"].toList ().isEmpty ())
+			return;
+
+		for (auto item : map ["items"].toList ())
+		{
+			QVariantMap itemMap = item.toMap ();
+			DriveChanges change;
+			DriveItem item = CreateDriveItem (itemMap ["file"]);
+			change.FileId_ = itemMap ["fileId"].toString ();
+			change.Id_ = itemMap ["id"].toString ();
+			change.Deleted_ = itemMap ["deleted"].toBool ();
+			change.FileResource_ = item;
+
+			changes << change;
+		}
+
+		gotChanges (changes, map ["largestChangeId"].toLongLong () + 1);
 	}
 
 	void DriveManager::handleGetFileInfo ()

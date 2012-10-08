@@ -39,23 +39,23 @@ namespace NetStoreManager
 	{
 		switch (index.column ())
 		{
-			case Account:
-			{
-				QComboBox *box = new QComboBox (parent);
-				FillAccounts (box);
-				return box;
-			}
-			case Directory:
-			{
-				DirectoryWidget *dw = new DirectoryWidget (parent);
-				connect (dw,
-						SIGNAL (finished (QWidget*)),
-						this,
-						SLOT (handleCloseDirectoryEditor (QWidget*)));
-				return dw;
-			}
-			default:
-				return QItemDelegate::createEditor (parent, option, index);
+		case Account:
+		{
+			QComboBox *box = new QComboBox (parent);
+			FillAccounts (box);
+			return box;
+		}
+		case Directory:
+		{
+			DirectoryWidget *dw = new DirectoryWidget (parent);
+			connect (dw,
+					SIGNAL (finished (QWidget*)),
+					this,
+					SLOT (handleCloseDirectoryEditor (QWidget*)));
+			return dw;
+		}
+		default:
+			return QItemDelegate::createEditor (parent, option, index);
 		}
 	}
 
@@ -64,21 +64,21 @@ namespace NetStoreManager
 	{
 		switch (index.column ())
 		{
-			case Account:
-			{
-				auto box = static_cast<QComboBox*> (editor);
-				QString accText = index.data (Qt::EditRole).toString ();
-				box->setCurrentIndex (box->findText (accText, Qt::MatchExactly));
-				break;
-			}
-			case Directory:
-			{
-				auto dw = static_cast<DirectoryWidget*> (editor);
-				dw->SetPath (index.data (Qt::EditRole).toString ());
-				break;
-			}
-			default:
-				QItemDelegate::setEditorData (editor, index);
+		case Account:
+		{
+			auto box = static_cast<QComboBox*> (editor);
+			QString accText = index.data (Qt::EditRole).toString ();
+			box->setCurrentIndex (box->findText (accText, Qt::MatchExactly));
+			break;
+		}
+		case Directory:
+		{
+			auto dw = static_cast<DirectoryWidget*> (editor);
+			dw->SetPath (index.data (Qt::EditRole).toString ());
+			break;
+		}
+		default:
+			QItemDelegate::setEditorData (editor, index);
 		}
 	}
 
@@ -87,26 +87,26 @@ namespace NetStoreManager
 	{
 		switch (index.column ())
 		{
-			case Account:
-			{
-				auto box = static_cast<QComboBox*> (editor);
+		case Account:
+		{
+			auto box = static_cast<QComboBox*> (editor);
 
-				model->setData (index, box->currentText (), Qt::EditRole);
-				model->setData (index,
-						box->itemData (box->currentIndex (),
-								SyncItemDelegateRoles::AccountId),
-						SyncItemDelegateRoles::AccountId);
-				break;
-			}
-			case Directory:
-			{
-				auto dw = static_cast<DirectoryWidget*> (editor);
+			model->setData (index, box->currentText (), Qt::EditRole);
+			model->setData (index,
+					box->itemData (box->currentIndex (),
+							SyncItemDelegateRoles::AccountId),
+					SyncItemDelegateRoles::AccountId);
+			break;
+		}
+		case Directory:
+		{
+			auto dw = static_cast<DirectoryWidget*> (editor);
 
-				model->setData (index, dw->GetPath (), Qt::EditRole);
-				break;
-			}
-			default:
-				QItemDelegate::setModelData (editor, model, index);
+			model->setData (index, dw->GetPath (), Qt::EditRole);
+			break;
+		}
+		default:
+			QItemDelegate::setModelData (editor, model, index);
 		}
 	}
 

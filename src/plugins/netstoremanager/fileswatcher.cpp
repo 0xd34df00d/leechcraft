@@ -48,43 +48,6 @@ namespace NetStoreManager
 				SLOT (checkNotifications ()));
 	}
 
-	bool FilesWatcher::AddPath (QString path)
-	{
-		int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
-		WatchedPathes2Descriptors_.insert ({ path, fd });
-
-		if (!Timer_->isActive ())
-			Timer_->start (1000);
-
-		return true;
-	}
-
-	void FilesWatcher::AddPathes (QStringList paths)
-	{
-		for (const auto& path : paths)
-			AddPath (path);
-	}
-
-	void FilesWatcher::Release ()
-	{
-		for (auto map : WatchedPathes2Descriptors_.left)
-			inotify_rm_watch (INotifyDescriptor_, map.second);
-
-		WatchedPathes2Descriptors_.clear ();
-		close (INotifyDescriptor_);
-	}
-
-	void FilesWatcher::UpdateExceptions (QStringList masks)
-	{
-		ExceptionMasks_ = masks;
-		ExceptionMasks_.removeAll ("");
-		ExceptionMasks_.removeDuplicates ();
-
-		for (const auto& pair : WatchedPathes2Descriptors_.left)
-			if (IsInExceptionList (pair.first))
-				RemoveWatchingPath (pair.second);
-	}
-
 	void FilesWatcher::HandleNotification (int descriptor)
 	{
 		char buffer [BufferLength_];
@@ -182,25 +145,25 @@ namespace NetStoreManager
 
 	void FilesWatcher::AddPathWithNotify (const QString& path)
 	{
-		if (!AddPath (path))
+		if (!addPath (path))
 			return;
 
 		emit dirWasCreated (path);
-		auto pathes = Utils::ScanDir (QDir::Dirs | QDir::NoDotAndDotDot,
+		auto paths = Utils::ScanDir (QDir::Dirs | QDir::NoDotAndDotDot,
 				path,
 				true);
-		for (const auto& p : pathes)
+		for (const auto& p : paths)
 		{
-			if (!AddPath (p))
+			if (!addPath (p))
 				continue;
 
 			emit dirWasCreated (p);
 		}
 
-		pathes = Utils::ScanDir (QDir::AllEntries | QDir::NoDotAndDotDot,
+		paths = Utils::ScanDir (QDir::AllEntries | QDir::NoDotAndDotDot,
 				path,
 				true);
-		for (const auto& p : pathes)
+		for (const auto& p : paths)
 			if (!QFileInfo (p).isDir ())
 				emit fileWasCreated (p);
 	}
@@ -244,6 +207,43 @@ namespace NetStoreManager
 		}
 		else
 			HandleNotification (INotifyDescriptor_);
+	}
+
+	bool FilesWatcher::addPath (QString path)
+	{
+		int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
+		WatchedPathes2Descriptors_.insert ({ path, fd });
+		
+		if (!Timer_->isActive ())
+			Timer_->start (1000);
+		
+		return true;
+	}
+	
+	void FilesWatcher::addPathes (QStringList paths)
+	{
+		for (const auto& path : paths)
+			addPath (path);
+	}
+	
+	void FilesWatcher::release ()
+	{
+		for (auto map : WatchedPathes2Descriptors_.left)
+			inotify_rm_watch (INotifyDescriptor_, map.second);
+		
+		WatchedPathes2Descriptors_.clear ();
+		close (INotifyDescriptor_);
+	}
+	
+	void FilesWatcher::updateExceptions (QStringList masks)
+	{
+		ExceptionMasks_ = masks;
+		ExceptionMasks_.removeAll ("");
+		ExceptionMasks_.removeDuplicates ();
+		
+		for (const auto& pair : WatchedPathes2Descriptors_.left)
+			if (IsInExceptionList (pair.first))
+				RemoveWatchingPath (pair.second);
 	}
 }
 }

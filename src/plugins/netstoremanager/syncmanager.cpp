@@ -65,7 +65,8 @@ namespace NetStoreManager
 	{
 		if (FilesWatcher_)
 			QMetaObject::invokeMethod (FilesWatcher_,
-					"Release");
+					"Release",
+					Qt::QueuedConnection);
 		Thread_->exit ();
 	}
 
@@ -175,7 +176,8 @@ namespace NetStoreManager
 			catch (const std::exception& e)
 			{
 				FilesWatcher_ = 0;
-				qWarning () << e.what ();
+				qWarning () << Q_FUNC_INFO
+						<< e.what ();
 				return;
 			}
 		}
@@ -522,14 +524,14 @@ namespace NetStoreManager
 			children.clear ();
 		}
 
-		QStringList pathes = Utils::ScanDir (QDir::NoDotAndDotDot | QDir::Dirs,
+		QStringList paths = Utils::ScanDir (QDir::NoDotAndDotDot | QDir::Dirs,
 				dirPath, true);
 		QMetaObject::invokeMethod (FilesWatcher_,
 				"AddPath",
 				Q_ARG (QString, dirPath));
 		QMetaObject::invokeMethod (FilesWatcher_,
 				"AddPathes",
-				Q_ARG (QStringList, pathes));
+				Q_ARG (QStringList, paths));
 	}
 
 	void SyncManager::handleGotNewItem (const QList<QStandardItem*>& item,
