@@ -23,6 +23,7 @@ SET (SRCS
 	tags/tagscompletionmodel.cpp
 	tags/tagslineedit.cpp
 	tags/tagsfiltermodel.cpp
+	xpc/stddatafiltermenucreator.cpp
 	util.cpp
 	dblock.cpp
 	customcookiejar.cpp
@@ -56,6 +57,7 @@ SET (HEADERS
 	tags/tagscompletionmodel.h
 	tags/tagslineedit.h
 	tags/tagsfiltermodel.h
+	xpc/stddatafiltermenucreator.h
 	util.h
 	dblock.h
 	customcookiejar.h
