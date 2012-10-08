@@ -230,8 +230,11 @@ namespace Kinotify
 		setStyleSheet ("background: transparent");
 		page ()->mainFrame ()->setScrollBarPolicy (Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 		page ()->mainFrame ()->setScrollBarPolicy (Qt::Vertical, Qt::ScrollBarAlwaysOff);
-
+#ifndef Q_OS_MAC
 		setWindowFlags (Qt::ToolTip | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+#else
+		setWindowFlags (windowFlags () | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+#endif
 
 		QPalette pal = palette ();
 		pal.setBrush (QPalette::Base, Qt::transparent);

@@ -27,6 +27,14 @@ namespace LeechCraft
 {
 namespace Blogique
 {
+	struct Event
+	{
+		QString Subject_;
+		QString Content_;
+		QVariantMap PostOptions_;
+		QVariantMap CustomData_;
+	};
+
 	/** @brief Interface representing a single account.
 	 *
 	 **/
@@ -98,6 +106,11 @@ namespace Blogique
 		 * @return The account's profile.
 		 */
 		virtual QObject* GetProfile () = 0;
+
+		/** @brief Submit post to blog.
+		 *
+		 */
+		virtual void submit (const Event& event) = 0;
 
 	protected:
 		/** @brief This signal should be emitted when account is renamed.

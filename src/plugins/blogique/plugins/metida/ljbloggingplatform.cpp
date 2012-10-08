@@ -39,7 +39,7 @@ namespace Metida
 	, ParentBlogginPlatfromPlugin_ (parent)
 	, PluginProxy_ (0)
 	, LJUser_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("user-properties"),
-			"Add LJ user", this))
+			tr ("Add LJ user"), this))
 	, LJCut_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("view-split-top-bottom"),
 			"Cut", this))
 	, FirstSeparator_ (new QAction (this))

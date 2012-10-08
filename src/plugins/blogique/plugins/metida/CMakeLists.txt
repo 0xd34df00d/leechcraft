@@ -37,6 +37,7 @@ SET (METIDA_SRCS
 SET (METIDA_HEADERS
 	addeditentrydialog.h
 	core.h
+	entryoptions.h
 	frienditemdelegate.h
 	friendsmodel.h
 	ljaccount.h

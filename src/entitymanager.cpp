@@ -133,7 +133,7 @@ namespace LeechCraft
 			bool shouldAsk = false;
 			if (e.Parameters_ & FromUserInitiated && !(e.Parameters_ & AutoAccept))
 				shouldAsk = numDownloaders || (XmlSettingsManager::Instance ()->property ("DontAskWhenSingle").toBool () ?
-							numHandlers != 1 :
+							numHandlers > 1 :
 							numHandlers);
 
 			if (shouldAsk)
@@ -145,14 +145,17 @@ namespace LeechCraft
 				if (dia.exec () != QDialog::Accepted || !dia.GetSelected ())
 					return false;
 
-				const QString& dir = dia.GetFilename ();
-				if (dir.isEmpty ())
-					return false;
-
-				e.Location_ = dir;
+				auto selected = dia.GetSelected ();
+				if (qobject_cast<IDownload*> (selected))
+				{
+					const QString& dir = dia.GetFilename ();
+					if (dir.isEmpty ())
+						return false;
+					e.Location_ = dir;
+				}
 
 				handlers.clear ();
-				handlers << dia.GetSelected ();
+				handlers << selected;
 			}
 
 			return true;

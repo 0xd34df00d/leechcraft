@@ -24,6 +24,7 @@
 #include <interfaces/blogique/iaccount.h>
 #include "profiletypes.h"
 #include "ljfriendentry.h"
+#include "entryoptions.h"
 
 namespace LeechCraft
 {
@@ -31,6 +32,35 @@ namespace Blogique
 {
 namespace Metida
 {
+	struct LJEventProperties
+	{
+		QString CurrentLocation_;
+		QString CurrentMood_;
+		int ExistsMoodId_;
+		QString CurrentMusic_;
+		bool ShowInFriendsPage_;
+		bool AutoFormat_;
+		AdultContent AdultContent_;
+		CommentsManagement CommentsManagement_;
+		CommentsManagement ScreeningComments_;
+		QString PostAvatar_;
+		bool EntryVisibility_;
+		QStringList TagList_;
+		bool UsedRTE_;
+	};
+
+	struct LJEvent
+	{
+		QString Event_;
+		QString Subject_;
+		Access Security_;
+		bool AllowMask_;
+		QDateTime DateTime_;
+		QString TimeZone_;
+		QString UseJournal_;
+		LJEventProperties Props_;
+	};
+
 	class LJFriendEntry;
 	class LJAccountConfigurationWidget;
 	class LJBloggingPlatform;
@@ -86,7 +116,7 @@ namespace Metida
 		void handleValidatingFinished (bool success);
 		void handleXmlRpcError (int errorCode, const QString& msgInEng);
 		void updateProfile ();
-
+		void submit (const Event& event);
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();

@@ -570,11 +570,23 @@ namespace Poshuku
 		const QString& category = url.mid (1, pos - 1);
 		const QString& query = url.mid (pos + 1);
 
-		Entity e = Util::MakeEntity (query,
-				QString (),
-				FromUserInitiated,
-				"x-leechcraft/category-search-request");
-		e.Additional_ ["Categories"] = QStringList (category);
+		Entity e;
+		if (XmlSettingsManager::Instance ()->property ("UseSummaryForSearches").toBool ())
+		{
+			e = Util::MakeEntity (query,
+					QString (),
+					FromUserInitiated,
+					"x-leechcraft/category-search-request");
+			e.Additional_ ["Categories"] = QStringList (category);
+		}
+		else
+		{
+			e = Util::MakeEntity (query,
+					QString (),
+					FromUserInitiated | OnlyHandle,
+					"x-leechcraft/data-filter-request");
+			e.Additional_ ["DataFilter"] = category.toUtf8 ();
+		}
 		emit gotEntity (e);
 	}
 
