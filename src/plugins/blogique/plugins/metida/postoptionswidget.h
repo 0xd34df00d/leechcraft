@@ -40,6 +40,15 @@ namespace Metida
 
 		QString GetName () const;
 		SideWidgetType GetWidgetType () const;
+
+		QVariantMap GetPostOptions () const;
+
+		QVariantMap GetCustomData () const;
+	private:
+		void FillItems ();
+
+	private slots:
+		void on_CurrentTime__released ();
 	};
 }
 }

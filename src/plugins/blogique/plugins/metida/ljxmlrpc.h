@@ -26,6 +26,7 @@
 #include <QNetworkRequest>
 #include "core.h"
 #include "profiletypes.h"
+#include "ljaccount.h"
 
 namespace LeechCraft
 {
@@ -34,7 +35,6 @@ namespace Blogique
 namespace Metida
 {
 	class LJFriendEntry;
-	class LJAccount;
 
 	class LJXmlRPC : public QObject
 	{
@@ -55,6 +55,7 @@ namespace Metida
 		void DeleteGroup (int id);
 
 		void UpdateProfileInfo ();
+		void Submit (const LJEvent& event);
 	private:
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
@@ -73,6 +74,8 @@ namespace Metida
 		void AddGroupRequest (const QString& name, bool isPublic, int id,
 				const QString& challenge);
 		void DeleteGroupRequest (int id, const QString& challenge);
+
+		void PostEventRequest (const LJEvent& event, const QString& challenge);
 	private slots:
 		void handleChallengeReplyFinished ();
 		void handleValidateReplyFinished ();

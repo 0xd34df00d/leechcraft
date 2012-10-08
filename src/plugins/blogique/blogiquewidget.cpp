@@ -19,6 +19,8 @@
 #include "blogiquewidget.h"
 #include <QWidgetAction>
 #include <QComboBox>
+#include <boost/concept_check.hpp>
+#include <boost/graph/graph_concepts.hpp>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/blogique/iaccount.h"
@@ -201,7 +203,35 @@ namespace Blogique
 
 	void BlogiqueWidget::submit ()
 	{
+		if (!AccountsBox_->currentIndex ())
+			return;
 
+		QVariantMap postOptions, customData;
+		for (auto w : SidePluginsWidgets_)
+		{
+			auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
+			if (!ibsw)
+				continue;
+
+			switch (ibsw->GetWidgetType ())
+			{
+			case SideWidgetType::PostOptionsSideWidget:
+				postOptions.unite (ibsw->GetPostOptions ());
+			case SideWidgetType::CustomSideWidget:
+				customData.unite (ibsw->GetCustomData ());
+			}
+		}
+
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		Event e;
+		e.Content_ = PostEdit_->GetContents (ContentType::HTML);
+		e.Subject_ = Ui_.Subject_->text ();
+		e.PostOptions_ = postOptions;
+		e.CustomData_ = customData;
+		acc->submit (e);
 	}
 
 	void BlogiqueWidget::saveSplitterPosition (int, int)

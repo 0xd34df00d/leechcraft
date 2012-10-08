@@ -26,7 +26,6 @@
 #include <util/sysinfo.h>
 #include "profiletypes.h"
 #include "ljfriendentry.h"
-#include "ljaccount.h"
 
 namespace LeechCraft
 {
@@ -206,11 +205,11 @@ namespace Metida
 		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
 				"1", document));
 		//TODO
-// 		result.second.appendChild (GetMemberElement ("clientversion", "string",
-// 				Util::SysInfo::GetOSName () +
-// 						"-LeechCraft Blogique " +
-// 						Core::Instance ().GetCoreProxy ()->GetVersion (),
-// 				document));
+		result.second.appendChild (GetSimpleMemberElement ("clientversion", "string",
+				Util::SysInfo::GetOSName () +
+						"-LeechCraft Blogique: " +
+						Core::Instance ().GetCoreProxy ()->GetVersion (),
+				document));
 		result.second.appendChild (GetSimpleMemberElement ("getmoods", "int",
 				"0", document));
 		result.second.appendChild (GetSimpleMemberElement ("getmenus", "int",
@@ -564,9 +563,52 @@ namespace Metida
 				SLOT (handleReplyWithProfileUpdate ()));
 	}
 
+	void LJXmlRPC::PostEventRequest (const LJEvent& event, const QString& challenge)
+	{
+		QDomDocument document ("PostEventRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.postevent", document);
+		document.appendChild (result.first);
+		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
+				"challenge", document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
+				challenge, document));
+		result.second.appendChild (GetSimpleMemberElement ("username", "string",
+				Account_->GetOurLogin (), document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
+				GetPassword (Account_->GetPassword (), challenge), document));
+		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
+				"1", document));
+
+		result.second.appendChild (GetSimpleMemberElement ("event", "string",
+				event.Event_, document));
+		result.second.appendChild (GetSimpleMemberElement ("subject", "string",
+				event.Subject_, document));
+// 		result.second.appendChild (GetSimpleMemberElement (, document));
+// 		result.second.appendChild (GetSimpleMemberElement (, document));
+// 		result.second.appendChild (GetSimpleMemberElement (, document));
+// 		result.second.appendChild (GetSimpleMemberElement (, document));
+// 		result.second.appendChild (GetSimpleMemberElement (, document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+		GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+										  document.toByteArray ());
+
+		connect (reply,
+				 SIGNAL (finished ()),
+				 this,
+		   SLOT (handleReplyWithProfileUpdate ()));
+	}
+
 	void LJXmlRPC::UpdateProfileInfo ()
 	{
 		Validate (Account_->GetOurLogin (), Account_->GetPassword ());
+	}
+
+	void LJXmlRPC::Submit (const LJEvent& event)
+	{
+		ApiCallQueue_ << [event, this] (const QString& challenge)
+				{ PostEventRequest (event, challenge); };
+		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::handleChallengeReplyFinished ()

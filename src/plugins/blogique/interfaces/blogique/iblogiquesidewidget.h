@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QMetaType>
+#include <QVariant>
 
 namespace LeechCraft
 {
@@ -55,6 +56,10 @@ namespace Blogique
 		* @sa IPostOptionsWidget, ICustomSideWidget.
 		**/
 		virtual SideWidgetType GetWidgetType () const = 0;
+
+		virtual QVariantMap GetPostOptions () const = 0;
+
+		virtual QVariantMap GetCustomData () const = 0;
 	};
 }
 }

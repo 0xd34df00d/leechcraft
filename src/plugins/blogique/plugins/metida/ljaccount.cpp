@@ -261,6 +261,70 @@ namespace Metida
 		LJXmlRpc_->UpdateProfileInfo ();
 	}
 
+	void LJAccount::submit (const Event& event)
+	{
+		LJEvent ljEvent;
+		LJEventProperties props;
+		const QVariantMap& postOptions = event.PostOptions_;
+		const QVariantMap& customData = event.CustomData_;
+
+		ljEvent.Subject_ = event.Subject_;
+		ljEvent.Event_ = event.Content_;
+		ljEvent.UseJournal_ = Login_;
+		ljEvent.DateTime_ = postOptions.value ("time").toDateTime ();
+		Access access = static_cast<Access> (postOptions.value ("access").toInt ());
+		ljEvent.Security_ = access < Access::MAXAccess ?
+			access :
+			Access::Public;
+
+		AdultContent adultContent = static_cast<AdultContent> (postOptions
+				.value ("adults").toInt ());
+		props.AdultContent_ = adultContent < AdultContent::MAXAdult ?
+			adultContent :
+			AdultContent::WithoutAdultContent;
+
+		CommentsManagement managment, screening;
+		managment = static_cast<CommentsManagement> (postOptions
+				.value ("comment").toInt ());
+		screening =  static_cast<CommentsManagement> (postOptions
+				.value ("hidecomment").toInt ());
+
+		props.CommentsManagement_ = managment < CommentsManagement::MAXManagment ?
+			managment :
+			CommentsManagement::Default;
+		props.ScreeningComments_ = screening > CommentsManagement::MAXManagment &&
+				screening < CommentsManagement::MAXScreening ?
+			screening :
+			CommentsManagement::ShowComments;
+
+		props.CurrentLocation_ = postOptions.value ("place").toString ();
+		props.CurrentMusic_ = postOptions.value ("music").toString ();
+		props.TagList_ = postOptions.value ("tags").toStringList ();
+
+// 		//TODO custom access
+// 		ljEvent.AllowMask_ = false;
+//
+// 		//TODO autoformat option
+// 		props.AutoFormat_ = true;
+//
+// 		//TODO mood
+// 		props.CurrentMood_ = postOptions.value ("mood").toString ();
+//
+// 		//TODO visibility option
+// 		props.EntryVisibility_ = true;
+//
+// 		//TODO post avatar
+// 		props.PostAvatar_ = QString ();
+//
+// 		//TODO option for showing in friends pages
+// 		props.ShowInFriendsPage_ = true;
+//
+// 		props.UsedRTE_ = true;
+
+		ljEvent.Props_ = props;
+		LJXmlRpc_->Submit (ljEvent);
+	}
+
 }
 }
 }
