@@ -133,6 +133,22 @@ namespace MetidaUtils
 				return "public";
 		}
 	}
+
+	QString GetStringForAdultContent (AdultContent adult)
+	{
+		switch (adult)
+		{
+			case AdultContent::AdultsFrom14:
+				return "concepts";
+			case AdultContent::AdultsFrom18:
+				return "explicit";
+			case AdultContent::WithoutAdultContent:
+			default:
+				return "none";
+		}
+
+	}
+
 }
 }
 }

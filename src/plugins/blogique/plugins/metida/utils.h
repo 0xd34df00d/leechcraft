@@ -32,6 +32,7 @@ namespace MetidaUtils
 	QString GetLocalizedErrorMessage (int errorCode);
 
 	QString GetStringForAccess (Access access);
+	QString GetStringForAdultContent (AdultContent adult);
 }
 }
 }
