@@ -42,6 +42,8 @@ namespace Metida
 
 		LJAccount *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
+
+		const int BitMaskForFriendsOnlyComments_;
 	public:
 		LJXmlRPC (LJAccount *acc, QObject *parent = 0);
 
@@ -82,6 +84,7 @@ namespace Metida
 		void handleRequestFriendsInfoFinished ();
 		void handleAddNewFriendReplyFinished ();
 		void handleReplyWithProfileUpdate ();
+		void handlePostEventReplyFinished ();
 	signals:
 		void validatingFinished (bool success);
 		void profileUpdated (const LJProfileData& profile);

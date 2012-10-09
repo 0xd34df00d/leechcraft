@@ -276,6 +276,8 @@ namespace Metida
 		ljEvent.Security_ = access < Access::MAXAccess ?
 			access :
 			Access::Public;
+		if (access == Access::Custom)
+			ljEvent.AllowMask_ = postOptions ["allowMask"].toUInt ();
 
 		AdultContent adultContent = static_cast<AdultContent> (postOptions
 				.value ("adults").toInt ());
@@ -301,15 +303,16 @@ namespace Metida
 		props.CurrentMusic_ = postOptions.value ("music").toString ();
 		props.TagList_ = postOptions.value ("tags").toStringList ();
 
-// 		//TODO custom access
-// 		ljEvent.AllowMask_ = false;
-//
+		int currentMoodId = postOptions.value ("moodId").toInt ();
+		if (!currentMoodId)
+			props.CurrentMood_ = postOptions.value ("mood").toString ();
+		else
+			props.CurrentMoodId_ = currentMoodId;
+
 // 		//TODO autoformat option
 // 		props.AutoFormat_ = true;
 //
-// 		//TODO mood
-// 		props.CurrentMood_ = postOptions.value ("mood").toString ();
-//
+
 // 		//TODO visibility option
 // 		props.EntryVisibility_ = true;
 //
@@ -322,6 +325,8 @@ namespace Metida
 // 		props.UsedRTE_ = true;
 
 		ljEvent.Props_ = props;
+		//TODO
+		ljEvent.Event_.append ("<em style=\"font-size: 0.8em;\">This entry was posted via <a href=\"http://leechcraft.org/plugins-blogique\">LeechCraft Blogique</a>.</em>");
 		LJXmlRpc_->Submit (ljEvent);
 	}
 

@@ -36,7 +36,7 @@ namespace Metida
 	{
 		QString CurrentLocation_;
 		QString CurrentMood_;
-		int ExistsMoodId_;
+		int CurrentMoodId_;
 		QString CurrentMusic_;
 		bool ShowInFriendsPage_;
 		bool AutoFormat_;
@@ -54,7 +54,7 @@ namespace Metida
 		QString Event_;
 		QString Subject_;
 		Access Security_;
-		bool AllowMask_;
+		quint32 AllowMask_;
 		QDateTime DateTime_;
 		QString TimeZone_;
 		QString UseJournal_;
