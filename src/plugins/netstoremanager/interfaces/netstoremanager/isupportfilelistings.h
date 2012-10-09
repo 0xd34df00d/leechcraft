@@ -52,6 +52,9 @@ namespace NetStoreManager
 		QStringList Id_;
 		bool Deleted_;
 		QList<QStandardItem*> Row_;
+
+		QStringList ParentId_;
+		bool ParentIsRoot_;
 	};
 
 	class ISupportFileListings

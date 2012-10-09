@@ -963,7 +963,8 @@ namespace GoogleDrive
 		reply->deleteLater ();
 
 		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		auto ba = reply->readAll ();
+		const auto& res = QJson::Parser ().parse (ba, &ok);
 		if (!ok)
 		{
 			qDebug () << Q_FUNC_INFO

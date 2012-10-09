@@ -432,13 +432,21 @@ namespace GoogleDrive
 		QList<Change> changes;
 		for (const auto& driveChange : driveChanges)
 		{
+			//TODO setting for shared files
+			if (driveChange.FileResource_.PermissionRole_ != DriveItem::Roles::Owner)
+				continue;
+
 			QHash<QString, QList<QStandardItem*>> map;
 			QList<QStandardItem*> row = CreateItem (map, driveChange.FileResource_);
+			if (row.value (0)->text ().isEmpty ())
+				continue;
 
 			Change change;
 			change.Deleted_ = driveChange.Deleted_;
 			change.Id_ << driveChange.FileId_;
 			change.Row_ = row;
+			change.ParentId_ << driveChange.FileResource_.ParentId_;
+			change.ParentIsRoot_ = driveChange.FileResource_.ParentIsRoot_;
 
 			changes << change;
 		}
