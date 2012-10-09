@@ -523,7 +523,7 @@ namespace GoogleDrive
 	{
 		DriveItem CreateDriveItem (const QVariant& itemData)
 		{
-			QVariantMap map = itemData.toMap ();
+			const QVariantMap& map = itemData.toMap ();
 
 			const QVariantMap& permission = map ["userPermission"].toMap ();
 			const QString& role = permission ["role"].toString ();
