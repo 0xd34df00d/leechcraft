@@ -5,9 +5,9 @@ INCLUDE (InitLCPlugin OPTIONAL)
 SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 FIND_PACKAGE (Qwt6)
 
-IF (NOT WIN32)
+IF (NOT WIN32 AND NOT APPLE)
 	SET (QT_USE_QTDBUS TRUE)
-ENDIF (NOT WIN32)
+ENDIF (NOT WIN32 AND NOT APPLE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -44,6 +44,12 @@ SET (UPOWER_HEADERS
 	dbusthread.h
 	dbusconnector.h
 	)
+SET (MAC_SRCS
+	platformmac.mm
+	)
+SET (MAC_HEADERS
+	platformmac.h
+	)
 SET (WIN32_SRCS
 	platformwinapi.cpp
 	fakeqwidgetwinapi.cpp
@@ -53,7 +59,10 @@ SET (WIN32_HEADERS
 	fakeqwidgetwinapi.h
 	)
 # Default implementation using UPower
-IF (NOT WIN32)
+IF (APPLE)
+	SET (SRCS ${SRCS} ${MAC_SRCS})
+	SET (HEADERS ${HEADERS} ${MAC_HEADERS})
+ELSEIF (NOT WIN32)
 	IF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
 		SET (SRCS
 			${SRCS}
@@ -74,7 +83,7 @@ IF (NOT WIN32)
 			)
 	ENDIF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
 # Windows implementation using WinAPI
-ELSE (NOT WIN32)
+ELSE (APPLE)
 	SET (SRCS
 		${SRCS}
 		${WIN32_SRCS}
@@ -83,7 +92,7 @@ ELSE (NOT WIN32)
 		${HEADERS}
 		${WIN32_HEADERS}
 		)
-ENDIF (NOT WIN32)
+ENDIF (APPLE)
 
 SET (FORMS
 	batteryhistorydialog.ui
