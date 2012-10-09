@@ -25,8 +25,6 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-	class IAccount;
-
 	enum class SideWidgetType
 	{
 		PostOptionsSideWidget,
@@ -59,11 +57,33 @@ namespace Blogique
 		**/
 		virtual SideWidgetType GetWidgetType () const = 0;
 
+		/** @brief Returns a map with post options (tags, timestamp, etc).
+		 *
+		 * If type of widget is not a SideWidgetType::PostOptionsSideWidget widget
+		 * should return empty map.
+		 *
+		 * @return QVariantMap with post options.
+		 *
+		 * @sa IPostOptionsWidget, ICustomSideWidget.
+		 **/
 		virtual QVariantMap GetPostOptions () const = 0;
 
+		/** @brief Returns a map with custom options.
+		 *
+		 * If type of widget is a SideWidgetType::PostOptionsSideWidget widget
+		 * should return empty map.
+		 *
+		 * @return QVariantMap with custom options.
+		 *
+		 * @sa IPostOptionsWidget, ICustomSideWidget.
+		 **/
 		virtual QVariantMap GetCustomData () const = 0;
 
-		virtual void SetAccount (IAccount *account) = 0;
+		/** @brief Set account object.
+		 *
+		 * @sa IAccount.
+		 **/
+		virtual void SetAccount (QObject *accountObj) = 0;
 	};
 }
 }

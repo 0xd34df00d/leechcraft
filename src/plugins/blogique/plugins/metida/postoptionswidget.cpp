@@ -86,14 +86,14 @@ namespace Metida
 		return QVariantMap ();
 	}
 
-	void PostOptionsWidget::SetAccount (IAccount *account)
+	void PostOptionsWidget::SetAccount (QObject *accObj)
 	{
-		auto ljAcc = qobject_cast<LJAccount*> (account->GetObject ());
+		auto ljAcc = qobject_cast<LJAccount*> (accObj);
 		if (!ljAcc)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "account"
-					<< account
+					<< accObj
 					<< "doesn't belong to LivJournal";
 			return;
 		}

@@ -26,8 +26,6 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-class IAccount;
-
 namespace Metida
 {
 	class PostOptionsWidget : public QWidget
@@ -47,7 +45,7 @@ namespace Metida
 
 		QVariantMap GetCustomData () const;
 
-		void SetAccount (IAccount *account);
+		void SetAccount (QObject *account);
 	private:
 		void FillItems ();
 
