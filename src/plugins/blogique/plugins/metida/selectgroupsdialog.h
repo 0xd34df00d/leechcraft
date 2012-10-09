@@ -18,9 +18,10 @@
 
 #pragma once
 
-#include <QWidget>
-#include <interfaces/blogique/iblogiquesidewidget.h>
-#include "ui_postoptionswidget.h"
+#include <QDialog>
+#include "ui_selectgroupsdialog.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -28,34 +29,18 @@ namespace Blogique
 {
 namespace Metida
 {
-	class LJAccount;
+	class LJProfile;
 
-	class PostOptionsWidget : public QWidget
-							, public IBlogiqueSideWidget
+	class SelectGroupsDialog : public QDialog
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget)
 
-		Ui::PostOptions Ui_;
-		LJAccount *Account_;
-		quint32 AllowMask_;
+		Ui::SelectGroupsDlg Ui_;
+		QStandardItemModel *Model_;
 	public:
-		PostOptionsWidget (QWidget *parent = 0);
+		SelectGroupsDialog (LJProfile *profile, quint32 allowMask, QWidget *parent = 0);
 
-		QString GetName () const;
-		SideWidgetType GetWidgetType () const;
-
-		QVariantMap GetPostOptions () const;
-
-		QVariantMap GetCustomData () const;
-
-		void SetAccount (QObject *account);
-	private:
-		void FillItems ();
-
-	private slots:
-		void on_CurrentTime__released ();
-		void on_Access__activated (int index);
+		QList<uint> GetSelectedGroupsIds () const;
 	};
 }
 }

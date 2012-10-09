@@ -21,6 +21,7 @@
 #include "entryoptions.h"
 #include "ljaccount.h"
 #include "ljprofile.h"
+#include "selectgroupsdialog.h"
 
 namespace LeechCraft
 {
@@ -30,6 +31,8 @@ namespace Metida
 {
 	PostOptionsWidget::PostOptionsWidget (QWidget *parent)
 	: QWidget (parent)
+	, Account_ (0)
+	, AllowMask_ (0)
 	{
 		Ui_.setupUi (this);
 
@@ -62,7 +65,7 @@ namespace Metida
 					Ui_.Time_->time ());
 		map ["access"] = Ui_.Access_->itemData (Ui_.Access_->currentIndex (),
 				Qt::UserRole);
-
+		map ["allowMask"] = AllowMask_;
 		int moodId = Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()).toInt ();
 		if (moodId)
 			map ["moodId"] = moodId;
@@ -75,7 +78,7 @@ namespace Metida
 		map ["notify"] = Ui_.NotifyAboutComments_->isChecked ();
 		map ["hidecomment"] = Ui_.ScreenComments_->
 				itemData (Ui_.ScreenComments_->currentIndex (), Qt::UserRole);
-		map ["adults"] =Ui_.Adult_->itemData (Ui_.Adult_->currentIndex (),
+		map ["adults"] = Ui_.Adult_->itemData (Ui_.Adult_->currentIndex (),
 				Qt::UserRole);
 
 		return map;
@@ -88,8 +91,8 @@ namespace Metida
 
 	void PostOptionsWidget::SetAccount (QObject *accObj)
 	{
-		auto ljAcc = qobject_cast<LJAccount*> (accObj);
-		if (!ljAcc)
+		Account_ = qobject_cast<LJAccount*> (accObj);
+		if (!Account_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "account"
@@ -98,7 +101,7 @@ namespace Metida
 			return;
 		}
 
-		LJProfile *profile = qobject_cast<LJProfile*> (ljAcc->GetProfile ());
+		LJProfile *profile = qobject_cast<LJProfile*> (Account_->GetProfile ());
 		if (!profile)
 			return;
 
@@ -143,6 +146,23 @@ namespace Metida
 		Ui_.Time_->setTime (current.time ());
 	}
 
+	void PostOptionsWidget::on_Access__activated (int index)
+	{
+		if (static_cast<Access> (Ui_.Access_->itemData (index).toInt ()) == Access::Custom)
+		{
+			SelectGroupsDialog dlg (qobject_cast<LJProfile*> (Account_->GetProfile ()),
+					AllowMask_);
+
+			if (dlg.exec () == QDialog::Rejected ||
+					dlg.GetSelectedGroupsIds ().isEmpty ())
+				Ui_.Access_->setCurrentIndex (0);
+			else
+				for (uint num : dlg.GetSelectedGroupsIds ())
+					AllowMask_ |= 1 << num;
+
+				qDebug () << Q_FUNC_INFO << AllowMask_;
+		}
+	}
 }
 }
 }

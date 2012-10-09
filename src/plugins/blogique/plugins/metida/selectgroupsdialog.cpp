@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include <interfaces/blogique/iblogiquesidewidget.h>
-#include "ui_postoptionswidget.h"
+#include "selectgroupsdialog.h"
+#include <QStandardItemModel>
+#include <QtDebug>
+#include "ljprofile.h"
 
 namespace LeechCraft
 {
@@ -28,35 +27,37 @@ namespace Blogique
 {
 namespace Metida
 {
-	class LJAccount;
-
-	class PostOptionsWidget : public QWidget
-							, public IBlogiqueSideWidget
+	SelectGroupsDialog::SelectGroupsDialog (LJProfile *profile, quint32 allowMask,
+			QWidget *parent)
+	: QDialog (parent)
+	, Model_ (new QStandardItemModel (this))
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget)
+		Ui_.setupUi (this);
 
-		Ui::PostOptions Ui_;
-		LJAccount *Account_;
-		quint32 AllowMask_;
-	public:
-		PostOptionsWidget (QWidget *parent = 0);
+		Ui_.Groups_->setModel (Model_);
+		Model_->setHorizontalHeaderLabels ({ tr ("Group") });
 
-		QString GetName () const;
-		SideWidgetType GetWidgetType () const;
+		for (const auto& group : profile->GetProfileData ().FriendGroups_)
+		{
+			QStandardItem *item = new QStandardItem (group.Name_);
+			item->setData (group.Id_);
+			item->setCheckable (true);
+			if (allowMask & 1 << group.Id_)
+				item->setCheckState (Qt::Checked);
+			Model_->appendRow (item);
+		}
+	}
 
-		QVariantMap GetPostOptions () const;
+	QList<uint> SelectGroupsDialog::GetSelectedGroupsIds () const
+	{
+		QList<uint> result;
+		for (int i = 0; i < Model_->rowCount (); ++i)
+			if (Model_->item (i)->checkState () == Qt::Checked)
+				result << Model_->item (i)->data ().toUInt ();
 
-		QVariantMap GetCustomData () const;
+		return result;
+	}
 
-		void SetAccount (QObject *account);
-	private:
-		void FillItems ();
-
-	private slots:
-		void on_CurrentTime__released ();
-		void on_Access__activated (int index);
-	};
 }
 }
 }
