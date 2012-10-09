@@ -17,7 +17,10 @@
  **********************************************************************/
 
 #include "postoptionswidget.h"
+#include <QtDebug>
 #include "entryoptions.h"
+#include "ljaccount.h"
+#include "ljprofile.h"
 
 namespace LeechCraft
 {
@@ -54,17 +57,22 @@ namespace Metida
 		map ["time"] = !Ui_.TimestampBox_->isChecked () ?
 			QDateTime::currentDateTime () :
 			QDateTime (QDate (Ui_.Year_->value (),
-						Ui_.Month_->currentIndex (),
+						Ui_.Month_->currentIndex () + 1,
 						Ui_.Date_->value ()),
 					Ui_.Time_->time ());
 		map ["access"] = Ui_.Access_->itemData (Ui_.Access_->currentIndex (),
 				Qt::UserRole);
-		//TODO mood
-// 		map ["mood"]
+
+		int moodId = Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()).toInt ();
+		if (moodId)
+			map ["moodId"] = moodId;
+		else
+			map ["mood"] = Ui_.Mood_->currentText ();
 		map ["place"] = Ui_.Place_->text ();
 		map ["music"] = Ui_.Music_->text ();
 		map ["comment"] = Ui_.Comments_->itemData (Ui_.Comments_->currentIndex (),
 				Qt::UserRole);
+		map ["notify"] = Ui_.NotifyAboutComments_->isChecked ();
 		map ["hidecomment"] = Ui_.ScreenComments_->
 				itemData (Ui_.ScreenComments_->currentIndex (), Qt::UserRole);
 		map ["adults"] =Ui_.Adult_->itemData (Ui_.Adult_->currentIndex (),
@@ -78,6 +86,27 @@ namespace Metida
 		return QVariantMap ();
 	}
 
+	void PostOptionsWidget::SetAccount (IAccount *account)
+	{
+		auto ljAcc = qobject_cast<LJAccount*> (account->GetObject ());
+		if (!ljAcc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "account"
+					<< account
+					<< "doesn't belong to LivJournal";
+			return;
+		}
+
+		LJProfile *profile = qobject_cast<LJProfile*> (ljAcc->GetProfile ());
+		if (!profile)
+			return;
+
+		Ui_.Mood_->clear ();
+		for (const auto& mood : profile->GetProfileData ().Moods_)
+			Ui_.Mood_->addItem (mood.Name_, mood.Id_);
+	}
+
 	void PostOptionsWidget::FillItems ()
 	{
 		Ui_.Access_->addItem (tr ("Public"), Access::Public);
@@ -87,7 +116,6 @@ namespace Metida
 
 		Ui_.Comments_->addItem (tr ("Enable"), CommentsManagement::EnableComments);
 		Ui_.Comments_->addItem (tr ("Disable"), CommentsManagement::DisableComments);
-		Ui_.Comments_->addItem (tr ("Don't notify"), CommentsManagement::WithoutNotification);
 
 		Ui_.ScreenComments_->addItem (tr ("Default"), CommentsManagement::Default);
 		Ui_.ScreenComments_->addItem (tr ("Anonymouse only"),

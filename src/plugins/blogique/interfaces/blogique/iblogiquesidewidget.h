@@ -25,6 +25,8 @@ namespace LeechCraft
 {
 namespace Blogique
 {
+	class IAccount;
+
 	enum class SideWidgetType
 	{
 		PostOptionsSideWidget,
@@ -60,6 +62,8 @@ namespace Blogique
 		virtual QVariantMap GetPostOptions () const = 0;
 
 		virtual QVariantMap GetCustomData () const = 0;
+
+		virtual void SetAccount (IAccount *account) = 0;
 	};
 }
 }
