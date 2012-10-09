@@ -561,7 +561,7 @@ namespace GoogleDrive
 					"application/vnd.google-apps.folder";
 			driveItem.Mime_ = map ["mimeType"].toString ();
 
-			driveItem.DownloadUrl_ = map ["downloadUrl"].toUrl ();
+			driveItem.DownloadUrl_ = QUrl (map ["downloadUrl"].toString ());
 
 			const QVariantMap& labels = map ["labels"].toMap ();
 			driveItem.Labels_ = DriveItem::ILNone;
