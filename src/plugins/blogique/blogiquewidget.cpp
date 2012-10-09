@@ -19,8 +19,6 @@
 #include "blogiquewidget.h"
 #include <QWidgetAction>
 #include <QComboBox>
-#include <boost/concept_check.hpp>
-#include <boost/graph/graph_concepts.hpp>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/blogique/iaccount.h"
