@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QString>
+#include "entryoptions.h"
 
 namespace LeechCraft
 {
@@ -29,6 +30,8 @@ namespace Metida
 namespace MetidaUtils
 {
 	QString GetLocalizedErrorMessage (int errorCode);
+
+	QString GetStringForAccess (Access access);
 }
 }
 }

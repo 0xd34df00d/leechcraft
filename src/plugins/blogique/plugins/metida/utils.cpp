@@ -109,6 +109,7 @@ namespace MetidaUtils
 			}
 		};
 	}
+
 	QString GetLocalizedErrorMessage (int errorCode)
 	{
 		static ErrorCode2Message e2msg;
@@ -116,6 +117,21 @@ namespace MetidaUtils
 			return QString ();
 
 		return e2msg.ErrorCode2Message_ [errorCode];
+	}
+
+	QString GetStringForAccess (Access access)
+	{
+		switch (access)
+		{
+			case Access::Private:
+				return "private";
+			case Access::FriendsOnly:
+			case Access::Custom:
+				return "usemask";
+			case Access::Public:
+			default:
+				return "public";
+		}
 	}
 }
 }
