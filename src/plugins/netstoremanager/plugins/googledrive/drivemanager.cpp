@@ -438,16 +438,22 @@ namespace GoogleDrive
 	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url,
 			bool silent)
 	{
-		TaskParameters tp = OnlyDownload | FromUserInitiated;
+		TaskParameters tp = OnlyDownload;
+		QString savePath;
 		if (silent)
-			tp |= AutoAccept | Internal |
+		{
+			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
+						"/" + QFileInfo (filePath).fileName ();
+			tp |= AutoAccept |
+					Internal |
 					DoNotNotifyUser |
 					DoNotSaveInHistory |
 					DoNotAnnounceEntity;
-		LeechCraft::Entity e = Util::MakeEntity (url,
-				QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-						"/" + QFileInfo (filePath).fileName (),
-				tp);
+		}
+		else
+			tp |= FromUserInitiated;
+
+		const auto& e = Util::MakeEntity (url, savePath, tp);
 		silent ?
 			Core::Instance ().DelegateEntity (e, filePath) :
 			Core::Instance ().SendEntity (e);
