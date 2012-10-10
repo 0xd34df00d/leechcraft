@@ -316,7 +316,7 @@ namespace Metida
 
 		ljEvent.Props_ = props;
 		//TODO
-		ljEvent.Event_.append ("<em style=\"font-size: 0.8em;\">This entry was posted via <a href=\"http://leechcraft.org/plugins-blogique\">LeechCraft Blogique</a>.</em>");
+		ljEvent.Event_.append ("<em style=\"font-size: 0.8em;\">Posted via <a href=\"http://leechcraft.org/plugins-blogique\">LeechCraft Blogique</a>.</em>");
 		LJXmlRpc_->Submit (ljEvent);
 	}
 

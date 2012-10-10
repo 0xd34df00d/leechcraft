@@ -22,6 +22,7 @@
 #include "ljaccount.h"
 #include "ljprofile.h"
 #include "selectgroupsdialog.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -113,6 +114,13 @@ namespace Metida
 		Ui_.Mood_->clear ();
 		for (const auto& mood : profile->GetProfileData ().Moods_)
 			Ui_.Mood_->addItem (mood.Name_, mood.Id_);
+
+		//TODO other images
+		Ui_.UserPic_->addItem (tr ("(default)"));
+		const QString& path = Util::CreateIfNotExists ("blogique/metida/avatars")
+				.absoluteFilePath (Account_->GetAccountID ().toBase64 ().replace ('/', '_'));
+		QPixmap pxm (path);
+		Ui_.UserPicLabel_->setPixmap (pxm.scaled (64, 64));
 	}
 
 	void PostOptionsWidget::FillItems ()
