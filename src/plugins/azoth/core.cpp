@@ -1085,6 +1085,8 @@ namespace Azoth
 			cats << tr ("General");
 
 		QList<QStandardItem*> result;
+		QMetaObject::invokeMethod (CLModel_, "modelAboutToBeReset");
+		CLModel_->blockSignals (true);
 		Q_FOREACH (const QString& cat, cats)
 		{
 			if (!Account2Category2Item_ [account].keys ().contains (cat))
@@ -1102,6 +1104,8 @@ namespace Azoth
 
 			result << Account2Category2Item_ [account] [cat];
 		}
+		CLModel_->blockSignals (false);
+		QMetaObject::invokeMethod (CLModel_, "modelReset");
 
 		return result;
 	}
@@ -1651,7 +1655,11 @@ namespace Azoth
 				Qt::ItemIsDragEnabled |
 				Qt::ItemIsDropEnabled);
 
+		QMetaObject::invokeMethod (CLModel_, "modelAboutToBeReset");
+		CLModel_->blockSignals (true);
 		catItem->appendRow (clItem);
+		CLModel_->blockSignals (false);
+		QMetaObject::invokeMethod (CLModel_, "modelReset");
 
 		Entry2Items_ [clEntry] << clItem;
 	}
@@ -1881,7 +1889,11 @@ namespace Azoth
 				CLREntryType);
 		ItemIconManager_->SetIcon (accItem,
 				GetIconPathForState (account->GetState ().State_).get ());
+		QMetaObject::invokeMethod (CLModel_, "modelAboutToBeReset");
+		CLModel_->blockSignals (true);
 		CLModel_->appendRow (accItem);
+		CLModel_->blockSignals (false);
+		QMetaObject::invokeMethod (CLModel_, "modelReset");
 
 		accItem->setEditable (false);
 
