@@ -621,7 +621,6 @@ namespace Metida
 		propsStruct.second.appendChild (GetSimpleMemberElement ("current_music",
 				"string", event.Props_.CurrentMusic_, document));
 
-		//TODO more than one option for comments
 		propsStruct.second.appendChild (GetSimpleMemberElement ("opt_nocomments",
 				"boolean", event.Props_.CommentsManagement_ == CommentsManagement::DisableComments ?
 					"1" :
@@ -634,7 +633,6 @@ namespace Metida
 				document));
 
 		QString screening;
-		//TODO contains links
 		switch (event.Props_.ScreeningComments_)
 		{
 			case CommentsManagement::ScreenAnonymouseComments:

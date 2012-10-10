@@ -311,9 +311,6 @@ namespace Metida
 
 		props.ShowInFriendsPage_ = postOptions.value ("showInFriendsPage").toBool ();
 
-// 		//TODO visibility option
-// 		props.EntryVisibility_ = true;
-//
 // 		//TODO post avatar
 // 		props.PostAvatar_ = QString ();
 
