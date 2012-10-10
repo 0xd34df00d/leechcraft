@@ -80,6 +80,7 @@ namespace Metida
 				itemData (Ui_.ScreenComments_->currentIndex (), Qt::UserRole);
 		map ["adults"] = Ui_.Adult_->itemData (Ui_.Adult_->currentIndex (),
 				Qt::UserRole);
+		map ["showInFriendsPage"] = Ui_.ShowInFriendsPage_->isChecked ();
 
 		return map;
 	}
@@ -125,6 +126,8 @@ namespace Metida
 				CommentsManagement::ScreenAnonymouseComments);
 		Ui_.ScreenComments_->addItem (tr ("Not from friends"),
 				CommentsManagement::ShowFriendsComments);
+		Ui_.ScreenComments_->addItem (tr ("Not from friends with links"),
+				CommentsManagement::ScreenNotFromFriendsWithLinks);
 		Ui_.ScreenComments_->addItem (tr ("Don't hide'"),
 				CommentsManagement::ShowComments);
 		Ui_.ScreenComments_->addItem (tr ("All"),

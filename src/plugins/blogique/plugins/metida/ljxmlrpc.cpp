@@ -649,6 +649,9 @@ namespace Metida
 			case CommentsManagement::ShowFriendsComments:
 				screening = "F";
 				break;
+			case CommentsManagement::ScreenNotFromFriendsWithLinks:
+				screening = "L";
+				break;
 			case CommentsManagement::Default:
 			default:
 				screening = "";

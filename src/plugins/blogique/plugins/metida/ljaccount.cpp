@@ -309,20 +309,13 @@ namespace Metida
 		else
 			props.CurrentMoodId_ = currentMoodId;
 
-// 		//TODO autoformat option
-// 		props.AutoFormat_ = true;
-//
+		props.ShowInFriendsPage_ = postOptions.value ("showInFriendsPage").toBool ();
 
 // 		//TODO visibility option
 // 		props.EntryVisibility_ = true;
 //
 // 		//TODO post avatar
 // 		props.PostAvatar_ = QString ();
-//
-// 		//TODO option for showing in friends pages
-// 		props.ShowInFriendsPage_ = true;
-//
-// 		props.UsedRTE_ = true;
 
 		ljEvent.Props_ = props;
 		//TODO
