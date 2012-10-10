@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "pasteservicefactory.h"
-#include <QIcon>
-#include "codepadservice.h"
-#include "bpasteservice.h"
+#pragma once
+
+#include "pasteservicebase.h"
 
 namespace LeechCraft
 {
@@ -27,16 +26,16 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	PasteServiceFactory::PasteServiceFactory ()
+	class BPasteService : public PasteServiceBase
 	{
-		Infos_.push_back ({ "bpaste.net", QIcon (), [] (QObject *entry) { return new BPasteService (entry); } });
-		Infos_.push_back ({ "codepad.org", QIcon (), [] (QObject *entry) { return new CodepadService (entry); } });
-	}
+		Q_OBJECT
+	public:
+		BPasteService (QObject *entry, QObject* = 0);
 
-	QList<PasteServiceFactory::PasteInfo> PasteServiceFactory::GetInfos () const
-	{
-		return Infos_;
-	}
+		void Paste (const PasteParams&);
+	private slots:
+		void handleMetadata ();
+	};
 }
 }
 }
