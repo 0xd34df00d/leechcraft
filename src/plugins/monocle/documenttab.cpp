@@ -517,11 +517,16 @@ namespace Monocle
 		}
 	}
 
-	void DocumentTab::handleNavigateRequested (const QString& path, int num, double x, double y)
+	void DocumentTab::handleNavigateRequested (QString path, int num, double x, double y)
 	{
 		if (!path.isEmpty ())
+		{
+			if (QFileInfo (path).isRelative ())
+				path = QFileInfo (CurrentDocPath_).dir ().absoluteFilePath (path);
+
 			if (!SetDoc (path))
 				return;
+		}
 
 		SetCurrentPage (num);
 

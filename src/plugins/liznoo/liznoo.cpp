@@ -34,6 +34,8 @@
 	#include "platformwinapi.h"
 #elif defined(Q_OS_FREEBSD)
 	#include "platformfreebsd.h"
+#elif defined(Q_OS_MAC)
+	#include "platformmac.h"
 #else
 	#pragma message ("Unsupported system")
 #endif
@@ -60,6 +62,8 @@ namespace Liznoo
 		PL_ = new PlatformWinAPI (this);
 #elif defined(Q_OS_FREEBSD)
 		PL_ = new PlatformFreeBSD (this);
+#elif defined(Q_OS_MAC)
+		PL_ = new PlatformMac (this);
 #else
 		PL_ = 0;
 #endif
