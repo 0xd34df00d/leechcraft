@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012       Maxim Ignatenko
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,37 +19,26 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/structures.h>
-#include "batteryinfo.h"
+#include "platformlayer.h"
+#include <IOKit/pwr_mgt/IOPMLib.h>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	class PlatformLayer : public QObject
+	class PlatformMac : public PlatformLayer
 	{
 		Q_OBJECT
+
+		IONotificationPortRef NotifyPortRef_;
+		io_object_t NotifierObject_;
+		io_connect_t Port_;
 	public:
-		PlatformLayer (QObject* = 0);
+		PlatformMac (QObject* = 0);
+		~PlatformMac ();
 
-		virtual void Stop () = 0;
-
-		enum class PowerState
-		{
-			Suspend,
-			Hibernate
-		};
-		virtual void ChangeState (PowerState);
-	protected:
-		void EmitGonnaSleep (int);
-		void EmitWokeUp ();
-	signals:
-		void started ();
-		void gotEntity (const LeechCraft::Entity&);
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
+		void Stop ();
+		void IOCallback (io_service_t, natural_t, void*);
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Liznoo::PlatformLayer::PowerState);
