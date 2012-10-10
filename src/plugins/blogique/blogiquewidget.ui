@@ -28,7 +28,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="sizeConstraint">
         <enum>QLayout::SetMaximumSize</enum>
@@ -102,7 +102,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>851</width>
+             <width>840</width>
              <height>457</height>
             </rect>
            </property>
@@ -157,8 +157,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>851</width>
-             <height>457</height>
+             <width>268</width>
+             <height>124</height>
             </rect>
            </property>
            <attribute name="label">
@@ -212,6 +212,11 @@
   <action name="Submit_">
    <property name="text">
     <string>Submit</string>
+   </property>
+  </action>
+  <action name="UpdateProfile_">
+   <property name="text">
+    <string>Update profile</string>
    </property>
   </action>
  </widget>

@@ -27,6 +27,7 @@
 #include "blogique.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -92,6 +93,8 @@ namespace Blogique
 				.GetCoreProxy ()->GetIcon ("applications-internet"));
 		ToolBar_->addAction (Ui_.OpenInBrowser_);
 
+		Ui_.UpdateProfile_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("view-refresh"));
 		connect (Ui_.SaveEntry_,
 				SIGNAL (triggered ()),
 				this,
@@ -168,8 +171,12 @@ namespace Blogique
 
 		PrevAccountId_ = id;
 		if (!PrevAccountId_)
+		{
+			ToolBar_->removeAction (Ui_.UpdateProfile_);
 			return;
+		}
 
+		ToolBar_->insertAction (Ui_.OpenInBrowser_, Ui_.UpdateProfile_);
 		auto ibp = qobject_cast<IBloggingPlatform*> (Id2Account_ [PrevAccountId_]->
 				GetParentBloggingPlatform ());
 		for (auto action : ibp->GetEditorActions ())
@@ -205,6 +212,14 @@ namespace Blogique
 		if (!AccountsBox_->currentIndex ())
 			return;
 
+		const QString& content = PostEdit_->GetContents (ContentType::PlainText);
+		if (content.isEmpty ())
+		{
+			Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
+					tr ("Event can't be empty."), Priority::PInfo_));
+			return;
+		}
+
 		QVariantMap postOptions, customData;
 		for (auto w : SidePluginsWidgets_)
 		{
@@ -239,6 +254,15 @@ namespace Blogique
 				Ui_.MainSplitter_->saveState ());
 		XmlSettingsManager::Instance ().setProperty ("CalendarSplitterPosition",
 				Ui_.CalendarSplitter_->saveState ());
+	}
+
+	void BlogiqueWidget::on_UpdateProfile__triggered ()
+	{
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		acc->updateProfile ();
 	}
 
 }

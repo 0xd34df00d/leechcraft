@@ -22,6 +22,7 @@
 #include "ljaccount.h"
 #include "ljprofile.h"
 #include "selectgroupsdialog.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -66,11 +67,15 @@ namespace Metida
 		map ["access"] = Ui_.Access_->itemData (Ui_.Access_->currentIndex (),
 				Qt::UserRole);
 		map ["allowMask"] = AllowMask_;
-		int moodId = Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()).toInt ();
-		if (moodId)
-			map ["moodId"] = moodId;
-		else
+
+		int index = Ui_.Mood_->findText (Ui_.Mood_->currentText ());
+		int moodId = Ui_.Mood_->itemData (index).toInt ();
+		if (index == -1 ||
+				!moodId)
 			map ["mood"] = Ui_.Mood_->currentText ();
+		else
+			map ["moodId"] = moodId;
+
 		map ["place"] = Ui_.Place_->text ();
 		map ["music"] = Ui_.Music_->text ();
 		map ["comment"] = Ui_.Comments_->itemData (Ui_.Comments_->currentIndex (),
@@ -80,6 +85,7 @@ namespace Metida
 				itemData (Ui_.ScreenComments_->currentIndex (), Qt::UserRole);
 		map ["adults"] = Ui_.Adult_->itemData (Ui_.Adult_->currentIndex (),
 				Qt::UserRole);
+		map ["showInFriendsPage"] = Ui_.ShowInFriendsPage_->isChecked ();
 
 		return map;
 	}
@@ -108,6 +114,13 @@ namespace Metida
 		Ui_.Mood_->clear ();
 		for (const auto& mood : profile->GetProfileData ().Moods_)
 			Ui_.Mood_->addItem (mood.Name_, mood.Id_);
+
+		//TODO other images
+		Ui_.UserPic_->addItem (tr ("(default)"));
+		const QString& path = Util::CreateIfNotExists ("blogique/metida/avatars")
+				.absoluteFilePath (Account_->GetAccountID ().toBase64 ().replace ('/', '_'));
+		QPixmap pxm (path);
+		Ui_.UserPicLabel_->setPixmap (pxm.scaled (64, 64));
 	}
 
 	void PostOptionsWidget::FillItems ()
@@ -125,6 +138,8 @@ namespace Metida
 				CommentsManagement::ScreenAnonymouseComments);
 		Ui_.ScreenComments_->addItem (tr ("Not from friends"),
 				CommentsManagement::ShowFriendsComments);
+		Ui_.ScreenComments_->addItem (tr ("Not from friends with links"),
+				CommentsManagement::ScreenNotFromFriendsWithLinks);
 		Ui_.ScreenComments_->addItem (tr ("Don't hide'"),
 				CommentsManagement::ShowComments);
 		Ui_.ScreenComments_->addItem (tr ("All"),

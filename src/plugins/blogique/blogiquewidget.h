@@ -71,6 +71,8 @@ namespace Blogique
 		void saveEntry ();
 		void submit ();
 		void saveSplitterPosition (int, int);
+		void on_UpdateProfile__triggered ();
+
 	signals:
 		void removeTab (QWidget *tab);
 	};

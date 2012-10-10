@@ -48,6 +48,7 @@ namespace Metida
 		ShowFriendsComments,
 		ScreenComments,
 		ScreenAnonymouseComments,
+		ScreenNotFromFriendsWithLinks,
 
 		MAXScreening
 	};
