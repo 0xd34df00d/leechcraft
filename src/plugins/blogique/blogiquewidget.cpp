@@ -27,6 +27,7 @@
 #include "blogique.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -210,6 +211,14 @@ namespace Blogique
 	{
 		if (!AccountsBox_->currentIndex ())
 			return;
+
+		const QString& content = PostEdit_->GetContents (ContentType::PlainText);
+		if (content.isEmpty ())
+		{
+			Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
+					tr ("Event can't be empty."), Priority::PInfo_));
+			return;
+		}
 
 		QVariantMap postOptions, customData;
 		for (auto w : SidePluginsWidgets_)
