@@ -45,7 +45,7 @@ namespace LMP
 		QUndoStack *UndoStack_;
 
 		Player *Player_;
-		
+
 		bool ExpandAllScheduled_;
 
 		QAction *ActionRemoveSelected_;
