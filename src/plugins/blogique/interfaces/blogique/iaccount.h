@@ -112,6 +112,10 @@ namespace Blogique
 		 */
 		virtual void submit (const Event& event) = 0;
 
+		/** @brief Request updating profile data.
+		 *
+		 */
+		virtual void updateProfile () = 0;
 	protected:
 		/** @brief This signal should be emitted when account is renamed.
 		 *
