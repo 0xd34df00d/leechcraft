@@ -71,6 +71,13 @@ namespace Monocle
 		} MouseMode_;
 
 		bool RelayoutScheduled_;
+
+		struct OnloadData
+		{
+			int Num_;
+			double X_;
+			double Y_;
+		} Onload_;
 	public:
 		DocumentTab (const TabClassInfo&, QObject*);
 
