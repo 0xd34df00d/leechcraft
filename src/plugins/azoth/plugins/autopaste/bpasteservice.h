@@ -33,8 +33,6 @@ namespace Autopaste
 		BPasteService (QObject *entry, QObject* = 0);
 
 		void Paste (const PasteParams&);
-	private slots:
-		void handleMetadata ();
 	};
 }
 }
