@@ -18,18 +18,83 @@
  **********************************************************************/
 
 #include "platformmac.h"
+#include <ctype.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <QTimer>
+#include <mach/mach_port.h>
+#include <mach/mach_interface.h>
+#include <mach/mach_init.h>
+#include <IOKit/pwr_mgt/IOPMLib.h>
+#include <IOKit/IOMessage.h>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
+	namespace
+	{
+		void IOCallbackProxy (void *refCon, io_service_t service, natural_t messageType, void *messageArgument)
+		{
+			auto platform = static_cast<PlatformMac*> (refCon);
+			platform->IOCallback (service, messageType, messageArgument);
+		}
+	}
+
 	PlatformMac::PlatformMac (QObject *parent)
 	: PlatformLayer (parent)
+	, Port_ (IORegisterForSystemPower (this, &NotifyPortRef_, IOCallbackProxy, &NotifierObject_))
 	{
+		if (!Port_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to register for system power";
+			return;
+		}
+
+		CFRunLoopAddSource (CFRunLoopGetCurrent (),
+				IONotificationPortGetRunLoopSource (NotifyPortRef_),
+				kCFRunLoopCommonModes);
+		QTimer::singleShot (100,
+				this,
+				SIGNAL (started ()));
+	}
+
+	PlatformMac::~PlatformMac ()
+	{
+		Stop ();
 	}
 
 	void PlatformMac::Stop ()
 	{
+		if (!Port_)
+			return;
+
+		CFRunLoopRemoveSource (CFRunLoopGetCurrent (),
+				IONotificationPortGetRunLoopSource (NotifyPortRef_),
+				kCFRunLoopCommonModes);
+		IODeregisterForSystemPower (&NotifierObject_);
+		IOServiceClose (Port_);
+		IONotificationPortDestroy (NotifyPortRef_);
+		Port_ = 0;
+	}
+
+	void PlatformMac::IOCallback (io_service_t service, natural_t messageType, void *messageArgument)
+	{
+		switch (messageType)
+		{
+		case kIOMessageCanSystemSleep:
+			IOCancelPowerChange (Port_, reinterpret_cast<long> (messageArgument));
+			break;
+		case kIOMessageSystemWillSleep:
+			EmitGonnaSleep (30000);
+			break;
+		case kIOMessageSystemHasPoweredOn:
+			EmitWokeUp ();
+			break;
+		default:
+			break;
+		}
 	}
 }
 }

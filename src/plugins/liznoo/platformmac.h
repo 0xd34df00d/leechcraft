@@ -20,6 +20,7 @@
 #pragma once
 
 #include "platformlayer.h"
+#include <IOKit/pwr_mgt/IOPMLib.h>
 
 namespace LeechCraft
 {
@@ -28,10 +29,16 @@ namespace Liznoo
 	class PlatformMac : public PlatformLayer
 	{
 		Q_OBJECT
+
+		IONotificationPortRef NotifyPortRef_;
+		io_object_t NotifierObject_;
+		io_connect_t Port_;
 	public:
 		PlatformMac (QObject* = 0);
+		~PlatformMac ();
 
 		void Stop ();
+		void IOCallback (io_service_t, natural_t, void*);
 	};
 }
 }
