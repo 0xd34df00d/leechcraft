@@ -66,11 +66,15 @@ namespace Metida
 		map ["access"] = Ui_.Access_->itemData (Ui_.Access_->currentIndex (),
 				Qt::UserRole);
 		map ["allowMask"] = AllowMask_;
-		int moodId = Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()).toInt ();
-		if (moodId)
-			map ["moodId"] = moodId;
-		else
+
+		int index = Ui_.Mood_->findText (Ui_.Mood_->currentText ());
+		int moodId = Ui_.Mood_->itemData (index).toInt ();
+		if (index == -1 ||
+				!moodId)
 			map ["mood"] = Ui_.Mood_->currentText ();
+		else
+			map ["moodId"] = moodId;
+
 		map ["place"] = Ui_.Place_->text ();
 		map ["music"] = Ui_.Music_->text ();
 		map ["comment"] = Ui_.Comments_->itemData (Ui_.Comments_->currentIndex (),
