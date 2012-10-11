@@ -52,13 +52,10 @@ namespace LeechCraft
 			private slots:
 				void on_OverallDownloadRateController__valueChanged (int);
 				void on_OverallUploadRateController__valueChanged (int);
-				void on_DesiredRating__valueChanged (double);
 				void on_TorrentDownloadRateController__valueChanged (int);
 				void on_TorrentUploadRateController__valueChanged (int);
-				void on_TorrentDesiredRating__valueChanged (double);
 				void on_TorrentManaged__stateChanged (int);
 				void on_TorrentSequentialDownload__stateChanged (int);
-				void on_TorrentSuperSeeding__stateChanged (int);
 				void on_DownloadingTorrents__valueChanged (int);
 				void on_UploadingTorrents__valueChanged (int);
 				void on_TorrentTags__editingFinished ();

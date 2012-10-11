@@ -248,7 +248,7 @@ namespace BitTorrent
 	{
 		TorrentSelectionChanged_ = true;
 		Ui_.TorrentTags_->setText (Core::Instance ()->GetProxy ()->GetTagsManager ()->
-				Join (Core::Instance ()->GetTagsForIndex ()));
+				Join (Core::Instance ()->GetTagsForIndex (Index_)));
 		updateTorrentStats ();
 	}
 
@@ -268,16 +268,16 @@ namespace BitTorrent
 	{
 		switch (currentIndex ())
 		{
-			case 0:
-				UpdateDashboard ();
-				UpdateOverallStats ();
-				break;
-			case 1:
-				UpdateTorrentControl ();
-				break;
-			case 2:
-				UpdateFilesPage ();
-				break;
+		case 0:
+			UpdateDashboard ();
+			UpdateOverallStats ();
+			break;
+		case 1:
+			UpdateTorrentControl ();
+			break;
+		case 2:
+			UpdateFilesPage ();
+			break;
 		}
 		TorrentSelectionChanged_ = false;
 	}
@@ -420,22 +420,22 @@ namespace BitTorrent
 	void TorrentTabWidget::UpdateTorrentControl ()
 	{
 		Ui_.TorrentDownloadRateController_->
-			setValue (Core::Instance ()->GetTorrentDownloadRate ());
+			setValue (Core::Instance ()->GetTorrentDownloadRate (Core::Instance ()->GetCurrentTorrent ()));
 		Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->
-				GetTorrentUploadRate ());
+				GetTorrentUploadRate (Core::Instance ()->GetCurrentTorrent ()));
 		Ui_.TorrentDesiredRating_->setValue (Core::Instance ()->
-				GetTorrentDesiredRating ());
+				GetTorrentDesiredRating (Core::Instance ()->GetCurrentTorrent ()));
 		Ui_.TorrentManaged_->setCheckState (Core::Instance ()->
-				IsTorrentManaged () ? Qt::Checked : Qt::Unchecked);
+				IsTorrentManaged (Core::Instance ()->GetCurrentTorrent ()) ? Qt::Checked : Qt::Unchecked);
 		Ui_.TorrentSequentialDownload_->setCheckState (Core::Instance ()->
-				IsTorrentSequentialDownload () ? Qt::Checked : Qt::Unchecked);
+				IsTorrentSequentialDownload (Core::Instance ()->GetCurrentTorrent ()) ? Qt::Checked : Qt::Unchecked);
 		Ui_.TorrentSuperSeeding_->setCheckState (Core::Instance ()->
-				IsTorrentSuperSeeding () ? Qt::Checked : Qt::Unchecked);
+				IsTorrentSuperSeeding (Core::Instance ()->GetCurrentTorrent ()) ? Qt::Checked : Qt::Unchecked);
 
 		std::unique_ptr<TorrentInfo> i;
 		try
 		{
-			i = Core::Instance ()->GetTorrentStats ();
+			i = Core::Instance ()->GetTorrentStats (Index_);
 		}
 		catch (...)
 		{
@@ -586,32 +586,32 @@ namespace BitTorrent
 
 	void TorrentTabWidget::on_TorrentDownloadRateController__valueChanged (int val)
 	{
-		Core::Instance ()->SetTorrentDownloadRate (val);
+		Core::Instance ()->SetTorrentDownloadRate (val, Index_);
 	}
 
 	void TorrentTabWidget::on_TorrentUploadRateController__valueChanged (int val)
 	{
-		Core::Instance ()->SetTorrentUploadRate (val);
+		Core::Instance ()->SetTorrentUploadRate (val, Index_);
 	}
 
 	void TorrentTabWidget::on_TorrentDesiredRating__valueChanged (double val)
 	{
-		Core::Instance ()->SetTorrentDesiredRating (val);
+		Core::Instance ()->SetTorrentDesiredRating (val, Index_);
 	}
 
 	void TorrentTabWidget::on_TorrentManaged__stateChanged (int state)
 	{
-		Core::Instance ()->SetTorrentManaged (state == Qt::Checked);
+		Core::Instance ()->SetTorrentManaged (state == Qt::Checked, Index_);
 	}
 
 	void TorrentTabWidget::on_TorrentSequentialDownload__stateChanged (int state)
 	{
-		Core::Instance ()->SetTorrentSequentialDownload (state == Qt::Checked);
+		Core::Instance ()->SetTorrentSequentialDownload (state == Qt::Checked, Index_);
 	}
 
 	void TorrentTabWidget::on_TorrentSuperSeeding__stateChanged (int state)
 	{
-		Core::Instance ()->SetTorrentSuperSeeding (state == Qt::Checked);
+		Core::Instance ()->SetTorrentSuperSeeding (state == Qt::Checked, Index_);
 	}
 
 	void TorrentTabWidget::on_DownloadingTorrents__valueChanged (int newValue)
@@ -627,7 +627,7 @@ namespace BitTorrent
 	void TorrentTabWidget::on_TorrentTags__editingFinished ()
 	{
 		Core::Instance ()->UpdateTags (Core::Instance ()->GetProxy ()->
-				GetTagsManager ()->Split (Ui_.TorrentTags_->text ()));
+				GetTagsManager ()->Split (Ui_.TorrentTags_->text ()), Index_);
 	}
 
 	void TorrentTabWidget::currentFileChanged (const QModelIndex& index)
@@ -736,7 +736,7 @@ namespace BitTorrent
 		if (peer.exec () != QDialog::Accepted)
 			return;
 
-		Core::Instance ()->AddPeer (peer.GetIP (), peer.GetPort ());
+		Core::Instance ()->AddPeer (peer.GetIP (), peer.GetPort (), Index_);
 	}
 
 	void TorrentTabWidget::handleBanPeer ()

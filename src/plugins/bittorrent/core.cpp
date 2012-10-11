@@ -393,8 +393,6 @@ namespace LeechCraft
 			QAbstractItemModel* Core::GetWebSeedsModel (int idx)
 			{
 				if (idx < 0)
-					idx = CurrentTorrent_;
-				if (CurrentTorrent_ < 0)
 					return 0;
 
 				auto model = new QStandardItemModel;
@@ -634,12 +632,12 @@ namespace LeechCraft
 				return true;
 			}
 
-			std::unique_ptr<TorrentInfo> Core::GetTorrentStats () const
+			std::unique_ptr<TorrentInfo> Core::GetTorrentStats (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					throw std::runtime_error ("Invalid torrent for stats");
 
-				const libtorrent::torrent_handle& handle = Handles_.at (CurrentTorrent_).Handle_;
+				const libtorrent::torrent_handle& handle = Handles_.at (idx).Handle_;
 
 				std::unique_ptr<TorrentInfo> result (new TorrentInfo);
 				result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));
@@ -1040,57 +1038,57 @@ namespace LeechCraft
 				return XmlSettingsManager::Instance ()->property ("DesiredRating").toInt ();
 			}
 
-			void Core::SetTorrentDownloadRate (int val)
+			void Core::SetTorrentDownloadRate (int val, int idx)
 			{
-				if (CheckValidity (CurrentTorrent_))
-					Handles_.at (CurrentTorrent_).Handle_.set_download_limit (val == 0 ? -1 : val * 1024);
+				if (CheckValidity (idx))
+					Handles_.at (idx).Handle_.set_download_limit (val == 0 ? -1 : val * 1024);
 			}
 
-			void Core::SetTorrentUploadRate (int val)
+			void Core::SetTorrentUploadRate (int val, int idx)
 			{
-				if (CheckValidity (CurrentTorrent_))
-					Handles_.at (CurrentTorrent_).Handle_.set_upload_limit (val == 0 ? -1 : val * 1024);
+				if (CheckValidity (idx))
+					Handles_.at (idx).Handle_.set_upload_limit (val == 0 ? -1 : val * 1024);
 			}
 
-			void Core::SetTorrentDesiredRating (double val)
+			void Core::SetTorrentDesiredRating (double val, int idx)
 			{
-				if (CheckValidity (CurrentTorrent_))
+				if (CheckValidity (idx))
 				{
-					Handles_.at (CurrentTorrent_).Handle_.set_ratio (val ? 1/val : 0);
-					Handles_ [CurrentTorrent_].Ratio_ = val;
+					Handles_.at (idx).Handle_.set_ratio (val ? 1/val : 0);
+					Handles_ [idx].Ratio_ = val;
 				}
 			}
 
-			int Core::GetTorrentDownloadRate () const
+			int Core::GetTorrentDownloadRate (int idx) const
 			{
-				if (CheckValidity (CurrentTorrent_))
-					return Handles_.at (CurrentTorrent_).Handle_.download_limit () / 1024;
+				if (CheckValidity (idx))
+					return Handles_.at (idx).Handle_.download_limit () / 1024;
 				else
 					return -1;
 			}
 
-			int Core::GetTorrentUploadRate () const
+			int Core::GetTorrentUploadRate (int idx) const
 			{
-				if (CheckValidity (CurrentTorrent_))
-					return Handles_.at (CurrentTorrent_).Handle_.upload_limit () / 1024;
+				if (CheckValidity (idx))
+					return Handles_.at (idx).Handle_.upload_limit () / 1024;
 				else
 					return -1;
 			}
 
-			double Core::GetTorrentDesiredRating () const
+			double Core::GetTorrentDesiredRating (int idx) const
 			{
-				if (CheckValidity (CurrentTorrent_))
-					return Handles_.at (CurrentTorrent_).Ratio_;
+				if (CheckValidity (idx))
+					return Handles_.at (idx).Ratio_;
 				else
 					return -1;
 			}
 
-			void Core::AddPeer (const QString& ip, int port)
+			void Core::AddPeer (const QString& ip, int port, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
-				Handles_.at (CurrentTorrent_).Handle_.connect_peer (
+				Handles_.at (idx).Handle_.connect_peer (
 							libtorrent::tcp::endpoint (
 								libtorrent::address::from_string (ip.toStdString ()),
 								port
@@ -1214,53 +1212,53 @@ namespace LeechCraft
 				return CurrentTorrent_;
 			}
 
-			bool Core::IsTorrentManaged () const
+			bool Core::IsTorrentManaged (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return false;
 
-				return Handles_.at (CurrentTorrent_).Handle_.is_auto_managed ();
+				return Handles_.at (idx).Handle_.is_auto_managed ();
 			};
 
-			void Core::SetTorrentManaged (bool man)
+			void Core::SetTorrentManaged (bool man, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
-				Handles_.at (CurrentTorrent_).Handle_.auto_managed (man);
-				Handles_ [CurrentTorrent_].AutoManaged_ = man;
+				Handles_.at (idx).Handle_.auto_managed (man);
+				Handles_ [idx].AutoManaged_ = man;
 			}
 
-			bool Core::IsTorrentSequentialDownload () const
+			bool Core::IsTorrentSequentialDownload (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return false;
 
-				return Handles_.at (CurrentTorrent_).Handle_.is_sequential_download ();
+				return Handles_.at (idx).Handle_.is_sequential_download ();
 			}
 
-			void Core::SetTorrentSequentialDownload (bool seq)
+			void Core::SetTorrentSequentialDownload (bool seq, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
-				Handles_.at (CurrentTorrent_).Handle_.set_sequential_download (seq);
+				Handles_.at (idx).Handle_.set_sequential_download (seq);
 			}
 
-			bool Core::IsTorrentSuperSeeding () const
+			bool Core::IsTorrentSuperSeeding (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return false;
 
-				return Handles_.at (CurrentTorrent_).Handle_.super_seeding ();
+				return Handles_.at (idx).Handle_.super_seeding ();
 			}
 
-			void Core::SetTorrentSuperSeeding (bool sup)
+			void Core::SetTorrentSuperSeeding (bool sup, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
-				Handles_.at (CurrentTorrent_).Handle_.super_seeding (sup);
+				Handles_.at (idx).Handle_.super_seeding (sup);
 			}
 
 			void Core::MakeTorrent (const NewTorrentParams& params) const
