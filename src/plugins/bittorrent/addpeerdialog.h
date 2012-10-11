@@ -16,31 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_TORRENT_ADDPEERDIALOG_H
-#define PLUGINS_TORRENT_ADDPEERDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_addpeerdialog.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	class AddPeerDialog : public QDialog
 	{
-		namespace BitTorrent
-		{
-			class AddPeerDialog : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::AddPeerDialog Ui_;
-			public:
-				AddPeerDialog (QWidget* = 0);
+		Ui::AddPeerDialog Ui_;
+	public:
+		AddPeerDialog (QWidget* = 0);
 
-				QString GetIP () const;
-				int GetPort () const;
-			};
-		};
+		QString GetIP () const;
+		int GetPort () const;
 	};
-};
-
-#endif
-
+}
+}
+}
