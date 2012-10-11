@@ -172,30 +172,6 @@ namespace LMP
 				return Qt::CopyAction | Qt::MoveAction;
 			}
 		};
-
-		QVariant SaveCriteria (const QList<SortingCriteria>& criteria)
-		{
-			QVariantList result;
-			for (const auto& crit : criteria)
-				result << static_cast<quint8> (crit);
-			return result;
-		}
-
-		QList<SortingCriteria> LoadCriteria (const QVariant& var)
-		{
-			QList<SortingCriteria> result;
-			for (const auto& critVar : var.toList ())
-			{
-				const auto val = critVar.value<quint8> ();
-				for (auto crit : GetAllCriteria ())
-					if (static_cast<decltype (val)> (crit) == val)
-					{
-						result << crit;
-						break;
-					}
-			}
-			return result;
-		}
 	}
 
 	Player::Sorter::Sorter ()

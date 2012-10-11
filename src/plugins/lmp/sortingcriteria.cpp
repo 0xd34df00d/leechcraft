@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "sortingcriteria.h"
+#include <QVariant>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -33,6 +35,54 @@ namespace LMP
 			SortingCriteria::TrackTitle,
 			SortingCriteria::FilePath
 		};
+	}
+
+	QVariant SaveCriteria (const QList<SortingCriteria>& criteria)
+		{
+			QVariantList result;
+			for (const auto& crit : criteria)
+				result << static_cast<quint8> (crit);
+			return result;
+		}
+
+	QList<SortingCriteria> LoadCriteria (const QVariant& var)
+	{
+		QList<SortingCriteria> result;
+		for (const auto& critVar : var.toList ())
+		{
+			const auto val = critVar.value<quint8> ();
+			for (auto crit : GetAllCriteria ())
+				if (static_cast<decltype (val)> (crit) == val)
+				{
+					result << crit;
+					break;
+				}
+		}
+		return result;
+	}
+
+	QString GetCriteriaName (SortingCriteria crit)
+	{
+		switch (crit)
+		{
+		case SortingCriteria::Artist:
+			return QObject::tr ("Artist");
+		case SortingCriteria::Year:
+			return QObject::tr ("Year");
+		case SortingCriteria::Album:
+			return QObject::tr ("Album");
+		case SortingCriteria::TrackNumber:
+			return QObject::tr ("Track number");
+		case SortingCriteria::TrackTitle:
+			return QObject::tr ("Title");
+		case SortingCriteria::FilePath:
+			return QObject::tr ("File path");
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown sorting criteria"
+				<< static_cast<int> (crit);
+		return QString ();
 	}
 }
 }

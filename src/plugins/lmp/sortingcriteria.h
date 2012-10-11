@@ -20,6 +20,9 @@
 
 #include <QList>
 
+class QVariant;
+class QString;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -35,5 +38,10 @@ namespace LMP
 	};
 
 	QList<SortingCriteria> GetAllCriteria ();
+
+	QVariant SaveCriteria (const QList<SortingCriteria>&);
+	QList<SortingCriteria> LoadCriteria (const QVariant&);
+
+	QString GetCriteriaName (SortingCriteria);
 }
 }
