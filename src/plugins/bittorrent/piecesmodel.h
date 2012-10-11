@@ -31,8 +31,6 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
-			class Core;
-
 			class PiecesModel : public QAbstractItemModel
 			{
 				Q_OBJECT
@@ -63,7 +61,7 @@ namespace LeechCraft
 				virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 			public slots:
 				void update ();
-			protected:
+			private:
 				void Clear ();
 				void Update (const std::vector<libtorrent::partial_piece_info>&);
 			};
