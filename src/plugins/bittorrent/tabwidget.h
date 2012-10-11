@@ -19,7 +19,7 @@
 #ifndef PLUGINS_TORRENT_TABWIDGET_H
 #define PLUGINS_TORRENT_TABWIDGET_H
 #include <memory>
-#include <QTabWidget>
+#include <QWidget>
 #include <QAction>
 #include <util/tags/tagscompleter.h>
 #include "ui_tabwidget.h"
@@ -30,7 +30,7 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
-			class TabWidget : public QTabWidget
+			class TabWidget : public QWidget
 			{
 				Q_OBJECT
 

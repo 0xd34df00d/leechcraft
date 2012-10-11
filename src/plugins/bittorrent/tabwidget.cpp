@@ -43,7 +43,7 @@ namespace LeechCraft
 			using namespace Util;
 
 			TabWidget::TabWidget (QAction *editTrackers, QWidget *parent)
-			: QTabWidget (parent)
+			: QWidget (parent)
 			, TorrentSelectionChanged_ (false)
 			{
 				Ui_.setupUi (this);
@@ -136,16 +136,9 @@ namespace LeechCraft
 				if (Core::Instance ()->GetCurrentTorrent () == -1)
 					return;
 
-				switch (currentIndex ())
-				{
-					case 0:
-						UpdateTorrentControl ();
-						break;
-					case 1:
-						UpdateDashboard ();
-						UpdateOverallStats ();
-						break;
-				}
+				UpdateTorrentControl ();
+				UpdateDashboard ();
+				UpdateOverallStats ();
 				TorrentSelectionChanged_ = false;
 			}
 
@@ -157,22 +150,6 @@ namespace LeechCraft
 					setText (Util::MakePrettySize (stats.download_rate) + tr ("/s"));
 				Ui_.LabelTotalUploadRate_->
 					setText (Util::MakePrettySize (stats.upload_rate) + tr ("/s"));
-
-				Ui_.LabelTotalDownloaded_->
-					setText (Util::MakePrettySize (stats.total_download));
-				Ui_.LabelTotalUploaded_->
-					setText (Util::MakePrettySize (stats.total_upload));
-
-				Ui_.LabelListenPort_->
-					setText (QString::number (Core::Instance ()->GetListenPort ()));
-				if (stats.total_payload_download)
-					Ui_.LabelSessionRating_->
-						setText (QString::number (stats.total_payload_upload /
-									static_cast<double> (stats.total_payload_download), 'g', 4));
-				else
-					Ui_.LabelSessionRating_->setText (QString::fromUtf8 ("\u221E"));
-				Ui_.LabelExternalAddress_->
-					setText (Core::Instance ()->GetExternalAddress ());
 
 				Core::pertrackerstats_t ptstats;
 				Core::Instance ()->GetPerTracker (ptstats);
@@ -215,11 +192,11 @@ namespace LeechCraft
 				}
 				catch (...)
 				{
-					Ui_.TorrentControlTab_->setEnabled (false);
+					Ui_.TorrentSettingsBox_->setEnabled (false);
 					return;
 				}
 
-				Ui_.TorrentControlTab_->setEnabled (true);
+				Ui_.TorrentSettingsBox_->setEnabled (true);
 				Ui_.LabelState_->setText (i->State_);
 				Ui_.LabelDownloadRate_->
 					setText (Util::MakePrettySize (i->Status_.download_rate) + tr ("/s"));
