@@ -186,21 +186,7 @@ namespace LeechCraft
 
 			void PeersModel::update ()
 			{
-				int current = -1;
-				if (Index_ >= 0)
-					current = Index_;
-				else
-				{
-					current = Core::Instance ()->GetCurrentTorrent ();
-					if (current != CurrentTorrent_)
-					{
-						CurrentTorrent_ = current;
-						Peers_.clear ();
-						reset ();
-					}
-				}
-
-				Update (Core::Instance ()->GetPeers (current));
+				Update (Core::Instance ()->GetPeers (Index_));
 			}
 
 			void PeersModel::Clear ()

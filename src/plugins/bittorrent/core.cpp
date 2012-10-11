@@ -1120,9 +1120,9 @@ namespace LeechCraft
 					Handles_.at (idx).Handle_.remove_http_seed (ws.toStdString ());
 			}
 
-			void Core::SetFilePriority (int file, int priority)
+			void Core::SetFilePriority (int file, int priority, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
 				if (priority > 7)
@@ -1132,23 +1132,23 @@ namespace LeechCraft
 
 				try
 				{
-					Handles_ [CurrentTorrent_].FilePriorities_.at (file) = priority;
-					Handles_.at (CurrentTorrent_).Handle_.prioritize_files (Handles_.at (CurrentTorrent_).FilePriorities_);
+					Handles_ [idx].FilePriorities_.at (file) = priority;
+					Handles_.at (idx).Handle_.prioritize_files (Handles_.at (idx).FilePriorities_);
 				}
 				catch (...)
 				{
 					qWarning () << Q_FUNC_INFO
 						<< QString ("index for torrent %1, file %2 is out of bounds")
-							.arg (CurrentTorrent_).arg (file);
+							.arg (idx).arg (file);
 				}
 			}
 
-			void Core::SetFilename (int index, const QString& name)
+			void Core::SetFilename (int index, const QString& name, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
-				Handles_ [CurrentTorrent_].Handle_.rename_file (index, std::string (name.toUtf8 ().data ()));
+				Handles_ [idx].Handle_.rename_file (index, std::string (name.toUtf8 ().data ()));
 
 				ResetFiles ();
 			}

@@ -34,17 +34,14 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
-			TorrentFilesModel::TorrentFilesModel (bool addDia, QObject *parent)
+			TorrentFilesModel::TorrentFilesModel (QObject *parent)
 			: QAbstractItemModel (parent)
-			, AdditionDialog_ (addDia)
+			, AdditionDialog_ (true)
 			, FilesInTorrent_ (0)
 			, Index_ (-1)
 			{
 				QList<QVariant> rootData;
-				if (AdditionDialog_)
-					rootData << tr ("Name") << tr ("Size");
-				else
-					rootData << tr ("Name") << tr ("Priority") << tr ("Progress");
+				rootData << tr ("Name") << tr ("Size");
 				RootItem_ = new TreeItem (rootData);
 			}
 
@@ -257,8 +254,7 @@ namespace LeechCraft
 					if (index.column () == 1)
 					{
 						TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-						Core::Instance ()->
-							SetFilePriority (item->Data (1, RolePath).toInt (), value.toInt ());
+						Core::Instance ()->SetFilePriority (item->Data (1, RolePath).toInt (), value.toInt (), Index_);
 						item->ModifyData (index.column (), value);
 						emit dataChanged (index, index);
 						return true;
@@ -266,9 +262,7 @@ namespace LeechCraft
 					else if (index.column () == 0)
 					{
 						TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-						Core::Instance ()->
-							SetFilename (item->Data (1, RolePath).toInt (),
-									value.toString ());
+						Core::Instance ()->SetFilename (item->Data (1, RolePath).toInt (), value.toString (), Index_);
 						return true;
 					}
 					else

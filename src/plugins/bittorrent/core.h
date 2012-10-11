@@ -260,8 +260,8 @@ namespace LeechCraft
 				void AddPeer (const QString&, int);
 				void AddWebSeed (const QString&, bool, int);
 				void RemoveWebSeed (const QString&, bool, int);
-				void SetFilePriority (int, int);
-				void SetFilename (int, const QString&);
+				void SetFilePriority (int, int, int);
+				void SetFilename (int, const QString&, int);
 				std::vector<libtorrent::announce_entry> GetTrackers (const boost::optional<int>& = boost::optional<int> ()) const;
 				void SetTrackers (const std::vector<libtorrent::announce_entry>&,
 						const boost::optional<int>& = boost::optional<int> ());

@@ -39,7 +39,7 @@ namespace BitTorrent
 	: QDialog (parent)
 	{
 		setupUi (this);
-		FilesModel_ = new TorrentFilesModel (true, this);
+		FilesModel_ = new TorrentFilesModel (this);
 		FilesView_->header ()->setStretchLastSection (true);
 		FilesView_->setModel (FilesModel_);
 		OK_->setEnabled (false);

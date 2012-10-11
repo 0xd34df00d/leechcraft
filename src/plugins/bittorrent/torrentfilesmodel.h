@@ -92,7 +92,7 @@ namespace LeechCraft
 					ColumnProgress
 				};
 
-				TorrentFilesModel (bool, QObject *parent = 0);
+				TorrentFilesModel (QObject *parent = 0);
 				TorrentFilesModel (int);
 				virtual ~TorrentFilesModel ();
 
