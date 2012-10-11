@@ -144,14 +144,10 @@ namespace LeechCraft
 				// IInfo
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
-				virtual ~TorrentPlugin ();
 				QByteArray GetUniqueID () const;
 				QString GetName () const;
 				QString GetInfo () const;
 				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
 				void Release ();
 				QIcon GetIcon () const;
 
@@ -181,7 +177,7 @@ namespace LeechCraft
 				void SetTags (int, const QStringList&);
 
 				// IHaveSettings
-				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 				// IHaveShortcuts
 				void SetShortcut (const QString&, const QKeySequences_t&);

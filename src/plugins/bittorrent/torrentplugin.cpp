@@ -52,10 +52,6 @@
 #include "ipfilterdialog.h"
 #include "speedselectoraction.h"
 
-#ifdef AddJob
-#undef AddJob
-#endif
-
 using LeechCraft::ActionInfo;
 using namespace LeechCraft::Util;
 
@@ -80,10 +76,6 @@ namespace LeechCraft
 			{
 			}
 
-			TorrentPlugin::~TorrentPlugin ()
-			{
-			}
-
 			QByteArray TorrentPlugin::GetUniqueID () const
 			{
 				return "org.LeechCraft.BitTorrent";
@@ -102,20 +94,6 @@ namespace LeechCraft
 			QStringList TorrentPlugin::Provides () const
 			{
 				return QStringList ("bittorrent") << "resume" << "remoteable";
-			}
-
-			QStringList TorrentPlugin::Needs () const
-			{
-				return QStringList ();
-			}
-
-			QStringList TorrentPlugin::Uses () const
-			{
-				return QStringList ();
-			}
-
-			void TorrentPlugin::SetProvider (QObject*, const QString&)
-			{
 			}
 
 			void TorrentPlugin::Release ()
@@ -321,7 +299,7 @@ namespace LeechCraft
 				Core::Instance ()->UpdateTags (tags, torrent);
 			}
 
-			std::shared_ptr<XmlSettingsDialog> TorrentPlugin::GetSettingsDialog () const
+			XmlSettingsDialog_ptr TorrentPlugin::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}
