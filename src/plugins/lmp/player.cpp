@@ -335,6 +335,11 @@ namespace LMP
 		emit playModeChanged (PlayMode_);
 	}
 
+	QList< Player::SortingCriteria > Player::GetSortingCriteria () const
+	{
+		return Sorter_.Criteria_;
+	}
+
 	void Player::SetSortingCriteria (const QList<Player::SortingCriteria>& criteria)
 	{
 		Sorter_.Criteria_ = criteria;
