@@ -173,8 +173,7 @@ namespace LeechCraft
 				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
 				PiecesModel* GetPiecesModel ();
-				void ClearPieces ();
-				void UpdatePieces ();
+				PiecesModel* GetPiecesModel (int);
 				PeersModel* GetPeersModel ();
 				QAbstractItemModel* GetWebSeedsModel ();
 				void ClearPeers ();
@@ -192,6 +191,8 @@ namespace LeechCraft
 				virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
 				virtual QModelIndex parent (const QModelIndex&) const;
 				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+
+				libtorrent::torrent_handle GetTorrentHandle (int) const;
 
 				libtorrent::torrent_info GetTorrentInfo (const QString&);
 				libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
@@ -317,11 +318,7 @@ namespace LeechCraft
 						bool,
 						bool);
 				void HandleSingleFinished (int);
-				int GetCurrentlyDownloading () const;
-				int GetCurrentlySeeding () const;
 				void ManipulateSettings ();
-				void CheckDownloadQueue ();
-				void CheckUploadQueue ();
 				/** Returns human-readable list of tags for the given torrent.
 				 *
 				 * @param[in] torrent The ID of the torrent.

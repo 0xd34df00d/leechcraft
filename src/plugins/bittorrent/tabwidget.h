@@ -55,7 +55,6 @@ namespace LeechCraft
 				void UpdateTorrentControl ();
 				void UpdateFilesPage ();
 				void UpdatePeersPage ();
-				void UpdatePiecesPage ();
 			private slots:
 				void on_OverallDownloadRateController__valueChanged (int);
 				void on_OverallUploadRateController__valueChanged (int);

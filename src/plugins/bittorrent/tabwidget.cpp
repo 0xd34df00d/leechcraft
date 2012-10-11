@@ -260,9 +260,6 @@ namespace LeechCraft
 					case 3:
 						UpdatePeersPage ();
 						break;
-					case 4:
-						UpdatePiecesPage ();
-						break;
 				}
 				TorrentSelectionChanged_ = false;
 			}
@@ -566,11 +563,6 @@ namespace LeechCraft
 			void TabWidget::UpdatePeersPage ()
 			{
 				Core::Instance ()->UpdatePeers ();
-			}
-
-			void TabWidget::UpdatePiecesPage ()
-			{
-				Core::Instance ()->UpdatePieces ();
 			}
 
 			void TabWidget::on_OverallDownloadRateController__valueChanged (int val)

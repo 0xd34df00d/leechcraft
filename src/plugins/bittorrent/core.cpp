@@ -127,7 +127,7 @@ namespace LeechCraft
 			, FinishedTimer_ (new QTimer ())
 			, WarningWatchdog_ (new QTimer ())
 			, ScrapeTimer_ (new QTimer ())
-			, PiecesModel_ (new PiecesModel ())
+			, PiecesModel_ (new PiecesModel (-1))
 			, PeersModel_ (new PeersModel ())
 			, TorrentFilesModel_ (new TorrentFilesModel (false))
 			, WebSeedsModel_ (new QStandardItemModel ())
@@ -399,22 +399,9 @@ namespace LeechCraft
 				return PiecesModel_.get ();
 			}
 
-			void Core::ClearPieces ()
+			PiecesModel* Core::GetPiecesModel (int idx)
 			{
-				PiecesModel_->Clear ();
-			}
-
-			void Core::UpdatePieces ()
-			{
-				if (!CheckValidity (CurrentTorrent_))
-				{
-					ClearPieces ();
-					return;
-				}
-
-				std::vector<libtorrent::partial_piece_info> queue;
-				Handles_.at (CurrentTorrent_).Handle_.get_download_queue (queue);
-				PiecesModel_->Update (queue);
+				return idx >= 0 ? new PiecesModel (idx) : 0;
 			}
 
 			PeersModel* Core::GetPeersModel ()
@@ -672,6 +659,13 @@ namespace LeechCraft
 					return 0;
 
 				return Handles_.size ();
+			}
+
+			libtorrent::torrent_handle Core::GetTorrentHandle (int idx) const
+			{
+				if (idx < 0)
+					idx = CurrentTorrent_;
+				return Handles_.value (idx).Handle_;
 			}
 
 			libtorrent::torrent_info Core::GetTorrentInfo (const QString& filename)
@@ -1287,6 +1281,7 @@ namespace LeechCraft
 			void Core::SetCurrentTorrent (int torrent)
 			{
 				CurrentTorrent_ = torrent;
+				PiecesModel_->update ();
 			}
 
 			int Core::GetCurrentTorrent () const
