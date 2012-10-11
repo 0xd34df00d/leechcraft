@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "torrenttab.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -28,6 +29,12 @@ namespace BitTorrent
 	: TC_ (tc)
 	, ParentMT_ (mt)
 	{
+		Ui_.setupUi (this);
+		Ui_.TorrentsView_->setModel (Core::Instance ());
+		connect (Ui_.TorrentsView_->selectionModel (),
+				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleTorrentSelected (QModelIndex)));
 	}
 
 	TabClassInfo TorrentTab::GetTabClassInfo () const
@@ -48,6 +55,11 @@ namespace BitTorrent
 	QToolBar* TorrentTab::GetToolBar () const
 	{
 		return 0;
+	}
+
+	void TorrentTab::handleTorrentSelected (const QModelIndex& index)
+	{
+		Ui_.Tabs_->SetCurrentIndex (index.row ());
 	}
 }
 }

@@ -20,6 +20,7 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "ui_torrenttab.h"
 
 namespace LeechCraft
 {
@@ -33,6 +34,8 @@ namespace BitTorrent
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
+		Ui::TorrentTab Ui_;
+
 		const TabClassInfo TC_;
 		QObject *ParentMT_;
 	public:
@@ -42,6 +45,8 @@ namespace BitTorrent
 		QObject* ParentMultiTabs ();
 		QToolBar* GetToolBar () const;
 		void Remove ();
+	private slots:
+		void handleTorrentSelected (const QModelIndex&);
 	signals:
 		void removeTab (QWidget*);
 	};

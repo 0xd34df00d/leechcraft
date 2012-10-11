@@ -6,14 +6,36 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>680</width>
+    <height>551</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string/>
   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>1</number>
+   </property>
+   <item>
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <widget class="QTreeView" name="TorrentsView_"/>
+     <widget class="LeechCraft::Plugins::BitTorrent::TorrentTabWidget" name="Tabs_" native="true"/>
+    </widget>
+   </item>
+  </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LeechCraft::Plugins::BitTorrent::TorrentTabWidget</class>
+   <extends>QWidget</extends>
+   <header>torrenttabwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
