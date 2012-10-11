@@ -23,6 +23,7 @@
 #include <phonon/path.h>
 #include <interfaces/media/iradiostation.h>
 #include "mediainfo.h"
+#include "sortingcriteria.h"
 
 class QModelIndex;
 class QStandardItem;
@@ -71,16 +72,6 @@ namespace LMP
 			RepeatTrack,
 			RepeatAlbum,
 			RepeatWhole
-		};
-
-		enum class SortingCriteria
-		{
-			Artist,
-			Year,
-			Album,
-			TrackNumber,
-			TrackTitle,
-			FilePath
 		};
 	private:
 		PlayMode PlayMode_;

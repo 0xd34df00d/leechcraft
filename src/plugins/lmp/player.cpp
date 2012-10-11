@@ -173,7 +173,7 @@ namespace LMP
 			}
 		};
 
-		QVariant SaveCriteria (const QList<Player::SortingCriteria>& criteria)
+		QVariant SaveCriteria (const QList<SortingCriteria>& criteria)
 		{
 			QVariantList result;
 			for (const auto& crit : criteria)
@@ -181,15 +181,13 @@ namespace LMP
 			return result;
 		}
 
-		QList<Player::SortingCriteria> LoadCriteria (const QVariant& var)
+		QList<SortingCriteria> LoadCriteria (const QVariant& var)
 		{
-			QList<Player::SortingCriteria> result;
+			QList<SortingCriteria> result;
 			for (const auto& critVar : var.toList ())
 			{
 				const auto val = critVar.value<quint8> ();
-				for (auto crit : { Player::SortingCriteria::Artist, Player::SortingCriteria::Year,
-							Player::SortingCriteria::Album, Player::SortingCriteria::TrackNumber,
-							Player::SortingCriteria::TrackTitle, Player::SortingCriteria::FilePath })
+				for (auto crit : GetAllCriteria ())
 					if (static_cast<decltype (val)> (crit) == val)
 					{
 						result << crit;
@@ -335,12 +333,12 @@ namespace LMP
 		emit playModeChanged (PlayMode_);
 	}
 
-	QList< Player::SortingCriteria > Player::GetSortingCriteria () const
+	QList< SortingCriteria > Player::GetSortingCriteria () const
 	{
 		return Sorter_.Criteria_;
 	}
 
-	void Player::SetSortingCriteria (const QList<Player::SortingCriteria>& criteria)
+	void Player::SetSortingCriteria (const QList<SortingCriteria>& criteria)
 	{
 		Sorter_.Criteria_ = criteria;
 
