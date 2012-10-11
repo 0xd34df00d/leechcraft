@@ -177,6 +177,7 @@ namespace LeechCraft
 				PeersModel* GetPeersModel ();
 				PeersModel* GetPeersModel (int);
 				QAbstractItemModel* GetWebSeedsModel ();
+				QAbstractItemModel* GetWebSeedsModel (int);
 				void ClearPeers ();
 				void UpdatePeers ();
 				TorrentFilesModel* GetTorrentFilesModel ();

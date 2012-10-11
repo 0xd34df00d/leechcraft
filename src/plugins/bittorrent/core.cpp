@@ -419,6 +419,33 @@ namespace LeechCraft
 				return WebSeedsModel_.get ();
 			}
 
+			QAbstractItemModel* Core::GetWebSeedsModel (int idx)
+			{
+				if (idx < 0)
+					idx = CurrentTorrent_;
+				if (CurrentTorrent_ < 0)
+					return 0;
+
+				auto model = new QStandardItemModel;
+				Q_FOREACH (std::string url,
+						Handles_.at (idx).Handle_.url_seeds ())
+				{
+					QList<QStandardItem*> items;
+					items << new QStandardItem (QString::fromUtf8 (url.c_str ()));
+					items << new QStandardItem ("BEP 19");
+					model->appendRow (items);
+				}
+				Q_FOREACH (std::string url,
+						Handles_.at (idx).Handle_.http_seeds ())
+				{
+					QList<QStandardItem*> items;
+					items << new QStandardItem (QString::fromUtf8 (url.c_str ()));
+					items << new QStandardItem ("BEP 17");
+					model->appendRow (items);
+				}
+				return model;
+			}
+
 			void Core::ClearPeers ()
 			{
 				WebSeedsModel_->clear ();

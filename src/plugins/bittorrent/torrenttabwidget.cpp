@@ -237,7 +237,7 @@ namespace BitTorrent
 		// TODO
 		//new PeersTabLinker (&Ui_, peersSorter, this);
 
-		//Ui_.WebSeedsView_->setModel (Core::Instance ()->GetWebSeedsModel (Index_));
+		Ui_.WebSeedsView_->setModel (Core::Instance ()->GetWebSeedsModel (Index_));
 		connect (Ui_.WebSeedsView_->selectionModel (),
 				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
 				this,
