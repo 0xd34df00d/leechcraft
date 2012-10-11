@@ -172,6 +172,32 @@ namespace LMP
 				return Qt::CopyAction | Qt::MoveAction;
 			}
 		};
+
+		QVariant SaveCriteria (const QList<Player::SortingCriteria>& criteria)
+		{
+			QVariantList result;
+			for (const auto& crit : criteria)
+				result << static_cast<quint8> (crit);
+			return result;
+		}
+
+		QList<Player::SortingCriteria> LoadCriteria (const QVariant& var)
+		{
+			QList<Player::SortingCriteria> result;
+			for (const auto& critVar : var.toList ())
+			{
+				const auto val = critVar.value<quint8> ();
+				for (auto crit : { Player::SortingCriteria::Artist, Player::SortingCriteria::Year,
+							Player::SortingCriteria::Album, Player::SortingCriteria::TrackNumber,
+							Player::SortingCriteria::TrackTitle, Player::SortingCriteria::FilePath })
+					if (static_cast<decltype (val)> (crit) == val)
+					{
+						result << crit;
+						break;
+					}
+			}
+			return result;
+		}
 	}
 
 	Player::Sorter::Sorter ()
