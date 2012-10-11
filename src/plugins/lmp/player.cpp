@@ -274,6 +274,10 @@ namespace LMP
 		XmlSettingsManager::Instance ().RegisterObject ("SingleTrackDisplayMask",
 				this, "refillPlaylist");
 
+		const auto& criteriaVar = XmlSettingsManager::Instance ().property ("SortingCriteria");
+		if (!criteriaVar.isNull ())
+			Sorter_.Criteria_ = LoadCriteria (criteriaVar);
+
 		connect (Source_,
 				SIGNAL (finished ()),
 				this,
@@ -336,6 +340,8 @@ namespace LMP
 		Sorter_.Criteria_ = criteria;
 
 		AddToPlaylistModel (QList<Phonon::MediaSource> (), true);
+
+		XmlSettingsManager::Instance ().setProperty ("SortingCriteria", SaveCriteria (criteria));
 	}
 
 	namespace
