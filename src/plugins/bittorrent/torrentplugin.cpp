@@ -51,6 +51,7 @@
 #include "fastspeedcontrolwidget.h"
 #include "ipfilterdialog.h"
 #include "speedselectoraction.h"
+#include "torrenttab.h"
 
 using LeechCraft::ActionInfo;
 using namespace LeechCraft::Util;
@@ -64,12 +65,27 @@ namespace LeechCraft
 
 			void TorrentPlugin::Init (ICoreProxy_ptr proxy)
 			{
-				Translator_.reset (InstallTranslator ("bittorrent"));
+				InstallTranslator ("bittorrent");
 				Core::Instance ()->SetProxy (proxy);
 				SetupCore ();
 				SetupStuff ();
 
 				setActionsEnabled ();
+
+				TabTC_ =
+				{
+					GetUniqueID () + "_TorrentTab",
+					tr ("BitTorrent tab"),
+					tr ("Full BitTorrent downloads tab."),
+					GetIcon (),
+					0,
+					TFSingle | TFOpenableByRequest
+				};
+				TorrentTab_ = new TorrentTab (TabTC_, this);
+				connect (TorrentTab_,
+						SIGNAL (removeTab (QWidget*)),
+						this,
+						SIGNAL (removeTab (QWidget*)));
 			}
 
 			void TorrentPlugin::SecondInit ()
@@ -313,6 +329,24 @@ namespace LeechCraft
 			QMap<QString, ActionInfo> TorrentPlugin::GetActionInfo () const
 			{
 				return ShortcutMgr_->GetActionInfo ();
+			}
+
+			TabClasses_t TorrentPlugin::GetTabClasses () const
+			{
+				return { TabTC_ };
+			}
+
+			void TorrentPlugin::TabOpenRequested (const QByteArray& tc)
+			{
+				if (tc == TabTC_.TabClass_)
+				{
+					emit addNewTab ("BitTorrent", TorrentTab_);
+					emit raiseTab (TorrentTab_);
+				}
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "unknown tab class"
+							<< tc;
 			}
 
 			QList<QWizardPage*> TorrentPlugin::GetWizardPages () const
