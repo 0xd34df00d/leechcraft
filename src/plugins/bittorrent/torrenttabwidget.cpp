@@ -64,7 +64,6 @@ namespace BitTorrent
 
 		// TODO
 		//Ui_.TrackersButton_->setDefaultAction (editTrackers);
-		new PeersTabLinker (&Ui_, PeersSorter_, this);
 
 		Ui_.TorrentTags_->AddSelector ();
 		Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
@@ -76,6 +75,7 @@ namespace BitTorrent
 				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
 				this,
 				SLOT (currentPeerChanged (const QModelIndex&)));
+		new PeersTabLinker (&Ui_, PeersSorter_, this);
 
 		header = Ui_.WebSeedsView_->header ();
 		header->resizeSection (0,
