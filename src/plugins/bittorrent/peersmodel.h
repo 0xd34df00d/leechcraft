@@ -33,16 +33,15 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				friend class Core;
-
 				QStringList Headers_;
 				QList<PeerInfo> Peers_;
 				int CurrentTorrent_;
+				const int Index_;
 
 				QString FlagsPath_;
 			public:
 				enum { SortRole = 45 };
-				PeersModel (QObject *parent = 0);
+				PeersModel (int idx, QObject *parent = 0);
 				virtual ~PeersModel ();
 
 				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
@@ -55,9 +54,11 @@ namespace LeechCraft
 				virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 
 				const PeerInfo& GetPeerInfo (const QModelIndex&) const;
-			protected:
+			public slots:
+				void update ();
+			private:
 				void Clear ();
-				void Update (const QList<PeerInfo>&, int);
+				void Update (const QList<PeerInfo>&);
 			};
 		};
 	};

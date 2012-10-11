@@ -128,7 +128,7 @@ namespace LeechCraft
 			, WarningWatchdog_ (new QTimer ())
 			, ScrapeTimer_ (new QTimer ())
 			, PiecesModel_ (new PiecesModel (-1))
-			, PeersModel_ (new PeersModel ())
+			, PeersModel_ (new PeersModel (-1))
 			, TorrentFilesModel_ (new TorrentFilesModel (false))
 			, WebSeedsModel_ (new QStandardItemModel ())
 			, LiveStreamManager_ (new LiveStreamManager ())
@@ -409,6 +409,11 @@ namespace LeechCraft
 				return PeersModel_.get ();
 			}
 
+			PeersModel* Core::GetPeersModel (int idx)
+			{
+				return idx >= 0 ? new PeersModel (idx) : 0;
+			}
+
 			QAbstractItemModel* Core::GetWebSeedsModel ()
 			{
 				return WebSeedsModel_.get ();
@@ -416,7 +421,6 @@ namespace LeechCraft
 
 			void Core::ClearPeers ()
 			{
-				PeersModel_->Clear ();
 				WebSeedsModel_->clear ();
 			}
 
@@ -427,8 +431,6 @@ namespace LeechCraft
 					ClearPeers ();
 					return;
 				}
-
-				PeersModel_->Update (GetPeers (), CurrentTorrent_);
 
 				if (CheckValidity (CurrentTorrent_) &&
 						!WebSeedsModel_->rowCount ())
@@ -721,16 +723,19 @@ namespace LeechCraft
 				return Session_->get_cache_status ();
 			}
 
-			QList<PeerInfo> Core::GetPeers () const
+			QList<PeerInfo> Core::GetPeers (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (idx < 0)
+					idx = CurrentTorrent_;
+
+				if (!CheckValidity (idx))
 					return QList<PeerInfo> ();
 
 				QList<PeerInfo> result;
 				std::vector<libtorrent::peer_info> peerInfos;
-				Handles_.at (CurrentTorrent_).Handle_.get_peer_info (peerInfos);
+				Handles_.at (idx).Handle_.get_peer_info (peerInfos);
 
-				const auto& localPieces = Handles_.at (CurrentTorrent_).Handle_.status ().pieces;
+				const auto& localPieces = Handles_.at (idx).Handle_.status ().pieces;
 				QList<int> ourMissing;
 				for (auto i = localPieces.begin (), end = localPieces.end (); i != end; ++i)
 				{

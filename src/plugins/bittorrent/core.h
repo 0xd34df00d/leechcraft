@@ -175,6 +175,7 @@ namespace LeechCraft
 				PiecesModel* GetPiecesModel ();
 				PiecesModel* GetPiecesModel (int);
 				PeersModel* GetPeersModel ();
+				PeersModel* GetPeersModel (int);
 				QAbstractItemModel* GetWebSeedsModel ();
 				void ClearPeers ();
 				void UpdatePeers ();
@@ -203,7 +204,7 @@ namespace LeechCraft
 				void GetPerTracker (pertrackerstats_t&) const;
 				int GetListenPort () const;
 				libtorrent::cache_status GetCacheStats () const;
-				QList<PeerInfo> GetPeers () const;
+				QList<PeerInfo> GetPeers (int = -1) const;
 				QStringList GetTagsForIndex (int = -1) const;
 				void UpdateTags (const QStringList&, int = -1);
 				/** @brief Adds the  given magnet link to the queue.

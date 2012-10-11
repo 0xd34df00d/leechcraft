@@ -232,7 +232,7 @@ namespace BitTorrent
 				this,
 				SLOT (currentFileChanged (const QModelIndex&)));
 
-		//PeersSorter_->setSourceModel (Core::Instance ()->GetPeersModel (Index_));
+		PeersSorter_->setSourceModel (Core::Instance ()->GetPeersModel (Index_));
 
 		// TODO
 		//new PeersTabLinker (&Ui_, peersSorter, this);
