@@ -117,14 +117,14 @@ namespace LeechCraft
 				void MarkIndexes (const QList<QModelIndex>&);
 				void UnmarkIndexes (const QList<QModelIndex>&);
 
-				void HandleFileActivated (QModelIndex);
+				void HandleFileActivated (QModelIndex) const;
 			public slots:
 				void update ();
 			private:
 				void MkParentIfDoesntExist (const boost::filesystem::path&);
 				void UpdateSizeGraph (LeechCraft::Util::TreeItem*);
 			signals:
-				void gotEntity (const LeechCraft::Entity&);
+				void gotEntity (const LeechCraft::Entity&) const;
 			};
 		};
 	};

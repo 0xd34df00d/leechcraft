@@ -20,7 +20,7 @@
 #include <QTimer>
 #include <QSortFilterProxyModel>
 #include <util/util.h>
-#include "ui_tabwidget.h"
+#include "ui_torrenttabwidget.h"
 #include "core.h"
 #include "peersmodel.h"
 
@@ -31,7 +31,7 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
-			PeersTabLinker::PeersTabLinker (Ui::TabWidget *ui,
+			PeersTabLinker::PeersTabLinker (Ui::TorrentTabWidget *ui,
 					QSortFilterProxyModel *proxy,
 					QObject *parent)
 			: QObject (parent)
@@ -81,8 +81,8 @@ namespace LeechCraft
 				PeerInfo p;
 				try
 				{
-					p = Core::Instance ()->
-						GetPeersModel ()->GetPeerInfo (Current_);
+					auto model = static_cast<const PeersModel*> (Current_.model ());
+					p = model->GetPeerInfo (Current_);
 				}
 				catch (...)
 				{

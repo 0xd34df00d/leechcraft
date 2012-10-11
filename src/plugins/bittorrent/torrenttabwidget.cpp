@@ -64,6 +64,7 @@ namespace BitTorrent
 
 		// TODO
 		//Ui_.TrackersButton_->setDefaultAction (editTrackers);
+		new PeersTabLinker (&Ui_, PeersSorter_, this);
 
 		Ui_.TorrentTags_->AddSelector ();
 		Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
@@ -234,9 +235,6 @@ namespace BitTorrent
 
 		PeersSorter_->setSourceModel (Core::Instance ()->GetPeersModel (Index_));
 
-		// TODO
-		//new PeersTabLinker (&Ui_, peersSorter, this);
-
 		Ui_.WebSeedsView_->setModel (Core::Instance ()->GetWebSeedsModel (Index_));
 		connect (Ui_.WebSeedsView_->selectionModel (),
 				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
@@ -279,9 +277,6 @@ namespace BitTorrent
 				break;
 			case 2:
 				UpdateFilesPage ();
-				break;
-			case 3:
-				UpdatePeersPage ();
 				break;
 		}
 		TorrentSelectionChanged_ = false;
@@ -574,11 +569,6 @@ namespace BitTorrent
 		currentFileChanged (sel ? sel->currentIndex () : QModelIndex ());
 	}
 
-	void TorrentTabWidget::UpdatePeersPage ()
-	{
-		Core::Instance ()->UpdatePeers ();
-	}
-
 	void TorrentTabWidget::on_OverallDownloadRateController__valueChanged (int val)
 	{
 		Core::Instance ()->SetOverallDownloadRate (val);
@@ -697,7 +687,7 @@ namespace BitTorrent
 
 		struct Applier
 		{
-			Applier (const QModelIndexList& indexes, int prio)
+			Applier (TorrentFilesModel *model, const QModelIndexList& indexes, int prio)
 			{
 				Q_FOREACH (QModelIndex s, indexes)
 				{
@@ -707,17 +697,17 @@ namespace BitTorrent
 						QModelIndexList childs;
 						for (int i = 0; i < rows; ++i)
 							childs.append (s.child (i, TorrentFilesModel::ColumnPriority));
-						Applier (childs, prio);
+						Applier (model, childs, prio);
 					}
 					else
-						Core::Instance ()->GetTorrentFilesModel ()->
-							setData (s.sibling (s.row (),
+						model->setData (s.sibling (s.row (),
 									TorrentFilesModel::ColumnPriority), prio);
 				}
 			}
-		}
+		};
 
-		Applier (selected, prio);
+		auto model = static_cast<TorrentFilesModel*> (Ui_.FilesView_->model ());
+		Applier (model, selected, prio);
 	}
 
 	void TorrentTabWidget::setTabWidgetSettings ()
@@ -771,7 +761,7 @@ namespace BitTorrent
 		if (!QUrl (ws.GetURL ()).isValid ())
 			return;
 
-		Core::Instance ()->AddWebSeed (ws.GetURL (), ws.GetType ());
+		Core::Instance ()->AddWebSeed (ws.GetURL (), ws.GetType (), Index_);
 	}
 
 	void TorrentTabWidget::currentPeerChanged (const QModelIndex& index)
@@ -789,12 +779,13 @@ namespace BitTorrent
 		QModelIndex index = Ui_.WebSeedsView_->currentIndex ();
 		QString url = index.sibling (index.row (), 0).data ().toString ();
 		bool bep19 = index.sibling (index.row (), 1).data ().toString () == "BEP 19";
-		Core::Instance ()->RemoveWebSeed (index.data ().toString (), bep19);
+		Core::Instance ()->RemoveWebSeed (index.data ().toString (), bep19, Index_);
 	}
 
 	void TorrentTabWidget::handleFileActivated (const QModelIndex& index)
 	{
-		Core::Instance ()->GetTorrentFilesModel ()->HandleFileActivated (index);
+		auto model = static_cast<const TorrentFilesModel*> (index.model ());
+		model->HandleFileActivated (index);
 	}
 }
 }

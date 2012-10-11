@@ -127,10 +127,6 @@ namespace LeechCraft
 			, FinishedTimer_ (new QTimer ())
 			, WarningWatchdog_ (new QTimer ())
 			, ScrapeTimer_ (new QTimer ())
-			, PiecesModel_ (new PiecesModel (-1))
-			, PeersModel_ (new PeersModel (-1))
-			, TorrentFilesModel_ (new TorrentFilesModel (false))
-			, WebSeedsModel_ (new QStandardItemModel ())
 			, LiveStreamManager_ (new LiveStreamManager ())
 			, SaveScheduled_ (false)
 			, Toolbar_ (0)
@@ -140,14 +136,8 @@ namespace LeechCraft
 			{
 				setObjectName ("BitTorrent Core");
 				ExternalAddress_ = tr ("Unknown");
-				WebSeedsModel_->setHorizontalHeaderLabels (QStringList (tr ("URL"))
-						<< tr ("Standard"));
 
 				connect (LiveStreamManager_.get (),
-						SIGNAL (gotEntity (const LeechCraft::Entity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-				connect (TorrentFilesModel_.get (),
 						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
@@ -305,10 +295,6 @@ namespace LeechCraft
 				FinishedTimer_.reset ();
 				WarningWatchdog_.reset ();
 				ScrapeTimer_.reset ();
-				PiecesModel_.reset ();
-				PeersModel_.reset ();
-				TorrentFilesModel_.reset ();
-				WebSeedsModel_.reset ();
 
 				QObjectList kids = children ();
 				for (int i = 0; i < kids.size (); ++i)
@@ -394,29 +380,14 @@ namespace LeechCraft
 			{
 			}
 
-			PiecesModel* Core::GetPiecesModel ()
-			{
-				return PiecesModel_.get ();
-			}
-
 			PiecesModel* Core::GetPiecesModel (int idx)
 			{
 				return idx >= 0 ? new PiecesModel (idx) : 0;
 			}
 
-			PeersModel* Core::GetPeersModel ()
-			{
-				return PeersModel_.get ();
-			}
-
 			PeersModel* Core::GetPeersModel (int idx)
 			{
 				return idx >= 0 ? new PeersModel (idx) : 0;
-			}
-
-			QAbstractItemModel* Core::GetWebSeedsModel ()
-			{
-				return WebSeedsModel_.get ();
 			}
 
 			QAbstractItemModel* Core::GetWebSeedsModel (int idx)
@@ -427,6 +398,7 @@ namespace LeechCraft
 					return 0;
 
 				auto model = new QStandardItemModel;
+				model->setHorizontalHeaderLabels ({tr ("URL"), tr ("Standard") });
 				Q_FOREACH (std::string url,
 						Handles_.at (idx).Handle_.url_seeds ())
 				{
@@ -446,65 +418,17 @@ namespace LeechCraft
 				return model;
 			}
 
-			void Core::ClearPeers ()
-			{
-				WebSeedsModel_->clear ();
-			}
-
-			void Core::UpdatePeers ()
-			{
-				if (!CheckValidity (CurrentTorrent_))
-				{
-					ClearPeers ();
-					return;
-				}
-
-				if (CheckValidity (CurrentTorrent_) &&
-						!WebSeedsModel_->rowCount ())
-				{
-					Q_FOREACH (std::string url,
-							Handles_.at (CurrentTorrent_).Handle_.url_seeds ())
-					{
-						QList<QStandardItem*> items;
-						items << new QStandardItem (QString::fromUtf8 (url.c_str ()));
-						items << new QStandardItem ("BEP 19");
-						WebSeedsModel_->appendRow (items);
-					}
-					Q_FOREACH (std::string url,
-							Handles_.at (CurrentTorrent_).Handle_.http_seeds ())
-					{
-						QList<QStandardItem*> items;
-						items << new QStandardItem (QString::fromUtf8 (url.c_str ()));
-						items << new QStandardItem ("BEP 17");
-						WebSeedsModel_->appendRow (items);
-					}
-				}
-			}
-
-			TorrentFilesModel* Core::GetTorrentFilesModel ()
-			{
-				return TorrentFilesModel_.get ();
-			}
-
 			TorrentFilesModel* Core::GetTorrentFilesModel (int idx)
 			{
-				return idx >= 0 ? new TorrentFilesModel (idx) : 0;
-			}
+				if (idx < 0)
+					return 0;
 
-			void Core::ClearFiles ()
-			{
-				TorrentFilesModel_->Clear ();
-			}
-
-			void Core::UpdateFiles ()
-			{
-				TorrentFilesModel_->update ();
-			}
-
-			void Core::ResetFiles ()
-			{
-				TorrentFilesModel_->Clear ();
-				TorrentFilesModel_->update ();
+				auto model = new TorrentFilesModel (idx);
+				connect (model,
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				return model;
 			}
 
 			int Core::columnCount (const QModelIndex&) const
@@ -1174,30 +1098,26 @@ namespace LeechCraft
 							);
 			}
 
-			void Core::AddWebSeed (const QString& ws, bool url)
+			void Core::AddWebSeed (const QString& ws, bool url, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
 				if (url)
-					Handles_.at (CurrentTorrent_).Handle_.add_url_seed (ws.toStdString ());
+					Handles_.at (idx).Handle_.add_url_seed (ws.toStdString ());
 				else
-					Handles_.at (CurrentTorrent_).Handle_.add_http_seed (ws.toStdString ());
-				WebSeedsModel_->clear ();
-				UpdatePeers ();
+					Handles_.at (idx).Handle_.add_http_seed (ws.toStdString ());
 			}
 
-			void Core::RemoveWebSeed (const QString& ws, bool url)
+			void Core::RemoveWebSeed (const QString& ws, bool url, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
 				if (url)
-					Handles_.at (CurrentTorrent_).Handle_.remove_url_seed (ws.toStdString ());
+					Handles_.at (idx).Handle_.remove_url_seed (ws.toStdString ());
 				else
-					Handles_.at (CurrentTorrent_).Handle_.remove_http_seed (ws.toStdString ());
-				WebSeedsModel_->clear ();
-				UpdatePeers ();
+					Handles_.at (idx).Handle_.remove_http_seed (ws.toStdString ());
 			}
 
 			void Core::SetFilePriority (int file, int priority)
@@ -1287,7 +1207,6 @@ namespace LeechCraft
 			void Core::SetCurrentTorrent (int torrent)
 			{
 				CurrentTorrent_ = torrent;
-				PiecesModel_->update ();
 			}
 
 			int Core::GetCurrentTorrent () const

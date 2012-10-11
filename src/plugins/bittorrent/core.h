@@ -125,10 +125,6 @@ namespace LeechCraft
 				QList<QString> Headers_;
 				mutable int CurrentTorrent_;
 				std::unique_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
-				std::shared_ptr<PiecesModel> PiecesModel_;
-				std::shared_ptr<PeersModel> PeersModel_;
-				std::shared_ptr<TorrentFilesModel> TorrentFilesModel_;
-				std::shared_ptr<QStandardItemModel> WebSeedsModel_;
 				std::shared_ptr<LiveStreamManager> LiveStreamManager_;
 				QString ExternalAddress_;
 				bool SaveScheduled_;
@@ -172,15 +168,9 @@ namespace LeechCraft
 				EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
 				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
-				PiecesModel* GetPiecesModel ();
 				PiecesModel* GetPiecesModel (int);
-				PeersModel* GetPeersModel ();
 				PeersModel* GetPeersModel (int);
-				QAbstractItemModel* GetWebSeedsModel ();
 				QAbstractItemModel* GetWebSeedsModel (int);
-				void ClearPeers ();
-				void UpdatePeers ();
-				TorrentFilesModel* GetTorrentFilesModel ();
 				TorrentFilesModel* GetTorrentFilesModel (int);
 				void ClearFiles ();
 				void UpdateFiles ();
@@ -268,8 +258,8 @@ namespace LeechCraft
 				int GetTorrentUploadRate () const;
 				double GetTorrentDesiredRating () const;
 				void AddPeer (const QString&, int);
-				void AddWebSeed (const QString&, bool);
-				void RemoveWebSeed (const QString&, bool);
+				void AddWebSeed (const QString&, bool, int);
+				void RemoveWebSeed (const QString&, bool, int);
 				void SetFilePriority (int, int);
 				void SetFilename (int, const QString&);
 				std::vector<libtorrent::announce_entry> GetTrackers (const boost::optional<int>& = boost::optional<int> ()) const;

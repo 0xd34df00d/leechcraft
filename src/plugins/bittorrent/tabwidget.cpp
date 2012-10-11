@@ -59,49 +59,7 @@ namespace LeechCraft
 				TagsChangeCompleter_.reset (new TagsCompleter (Ui_.TorrentTags_));
 				Ui_.TorrentTags_->AddSelector ();
 
-				Ui_.PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
-
-				Ui_.FilesView_->setModel (Core::Instance ()->GetTorrentFilesModel ());
-				Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
-
 				Ui_.TrackersButton_->setDefaultAction (editTrackers);
-
-				QSortFilterProxyModel *peersSorter = new QSortFilterProxyModel (this);
-				peersSorter->setDynamicSortFilter (true);
-				peersSorter->setSourceModel (Core::Instance ()->GetPeersModel ());
-				peersSorter->setSortRole (PeersModel::SortRole);
-				Ui_.PeersView_->setModel (peersSorter);
-
-				new PeersTabLinker (&Ui_, peersSorter, this);
-
-				Ui_.WebSeedsView_->setModel (Core::Instance ()->GetWebSeedsModel ());
-
-				header = Ui_.WebSeedsView_->header ();
-				header->resizeSection (0,
-						fm.width ("average.domain.name.of.a.tracker"));
-				header->resizeSection (1,
-						fm.width ("  BEP 99  "));
-
-                connect (Ui_.FilesView_->selectionModel (),
-                        SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
-                        this,
-                        SLOT (currentFileChanged (const QModelIndex&)));
-                connect (Ui_.FilesView_,
-                		SIGNAL (doubleClicked (const QModelIndex&)),
-                		this,
-                		SLOT (handleFileActivated (const QModelIndex&)));
-
-                currentFileChanged (QModelIndex ());
-
-				connect (Ui_.PeersView_->selectionModel (),
-						SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
-						this,
-						SLOT (currentPeerChanged (const QModelIndex&)));
-
-				connect (Ui_.WebSeedsView_->selectionModel (),
-						SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
-						this,
-						SLOT (currentWebSeedChanged (const QModelIndex&)));
 
 				connect (Ui_.OverallDownloadRateController_,
 						SIGNAL (valueChanged (int)),
@@ -163,61 +121,6 @@ namespace LeechCraft
 						SLOT (updateTorrentStats ()));
 
 				UpdateDashboard ();
-
-				AddPeer_ = new QAction (tr ("Add peer..."),
-						Ui_.PeersView_);
-				AddPeer_->setProperty ("ActionIcon", "list-add-user");
-				AddPeer_->setObjectName ("AddPeer_");
-				connect (AddPeer_,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleAddPeer ()));
-				Ui_.PeersView_->addAction (AddPeer_);
-
-				BanPeer_ = new QAction (tr ("Ban peer..."),
-						Ui_.PeersView_);
-				BanPeer_->setProperty ("ActionIcon", "im-ban-user");
-				BanPeer_->setObjectName ("BanPeer_");
-				BanPeer_->setEnabled (false);
-				connect (BanPeer_,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleBanPeer ()));
-				Ui_.PeersView_->addAction (BanPeer_);
-
-				AddWebSeed_ = new QAction (tr ("Add web seed..."),
-						Ui_.WebSeedsView_);
-				AddWebSeed_->setObjectName ("AddWebSeed_");
-				connect (AddWebSeed_,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleAddWebSeed ()));
-
-				RemoveWebSeed_ = new QAction (tr ("Remove web seed"),
-						Ui_.WebSeedsView_);
-				RemoveWebSeed_->setProperty ("ActionIcon", "list-remove-user");
-				RemoveWebSeed_->setObjectName ("RemoveWebSeed_");
-				RemoveWebSeed_->setEnabled (false);
-				connect (RemoveWebSeed_,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleRemoveWebSeed ()));
-				Ui_.WebSeedsView_->addAction (AddWebSeed_);
-				Ui_.WebSeedsView_->addAction (RemoveWebSeed_);
-
-				QList<QByteArray> tabWidgetSettings;
-				tabWidgetSettings << "ActiveSessionStats"
-					<< "ActiveAdvancedSessionStats"
-					<< "ActiveTrackerStats"
-					<< "ActiveCacheStats"
-					<< "ActiveTorrentStatus"
-					<< "ActiveTorrentAdvancedStatus"
-					<< "ActiveTorrentInfo"
-					<< "ActiveTorrentPeers";
-				XmlSettingsManager::Instance ()->RegisterObject (tabWidgetSettings,
-						this, "setTabWidgetSettings");
-
-				setTabWidgetSettings ();
 			}
 
 			void TabWidget::InvalidateSelection ()
@@ -253,12 +156,6 @@ namespace LeechCraft
 						break;
 					case 1:
 						UpdateTorrentControl ();
-						break;
-					case 2:
-						UpdateFilesPage ();
-						break;
-					case 3:
-						UpdatePeersPage ();
 						break;
 				}
 				TorrentSelectionChanged_ = false;
@@ -545,26 +442,6 @@ namespace LeechCraft
 					setText (QString::number (i->Status_.down_bandwidth_queue));
 			}
 
-			void TabWidget::UpdateFilesPage ()
-			{
-				if (TorrentSelectionChanged_)
-				{
-					Core::Instance ()->ResetFiles ();
-					Ui_.FilesView_->expandAll ();
-				}
-				else
-				{
-					Core::Instance ()->UpdateFiles ();
-                    currentFileChanged (Ui_.FilesView_->selectionModel ()->currentIndex ());
-					Ui_.FilesView_->expandAll ();
-				}
-			}
-
-			void TabWidget::UpdatePeersPage ()
-			{
-				Core::Instance ()->UpdatePeers ();
-			}
-
 			void TabWidget::on_OverallDownloadRateController__valueChanged (int val)
 			{
 				Core::Instance ()->SetOverallDownloadRate (val);
@@ -625,163 +502,6 @@ namespace LeechCraft
 				Core::Instance ()->UpdateTags (Core::Instance ()->GetProxy ()->
 						GetTagsManager ()->Split (Ui_.TorrentTags_->text ()));
 			}
-
-			void TabWidget::currentFileChanged (const QModelIndex& index)
-			{
-				Ui_.FilePriorityRegulator_->setEnabled (index.isValid ());
-
-				if (!index.isValid ())
-				{
-					Ui_.FilePath_->setText ("");
-					Ui_.FileProgress_->setText ("");
-					Ui_.FilePriorityRegulator_->blockSignals (true);
-					Ui_.FilePriorityRegulator_->setValue (0);
-					Ui_.FilePriorityRegulator_->blockSignals (false);
-				}
-				else
-				{
-					QString path = static_cast<TreeItem*> (index.internalPointer ())->
-						Data (TorrentFilesModel::ColumnPath,
-								TorrentFilesModel::RawDataRole).toString ();
-					path = QApplication::fontMetrics ()
-						.elidedText (path,
-								Qt::ElideLeft,
-								Ui_.FilePath_->width ());
-					Ui_.FilePath_->setText (path);
-
-					QModelIndex sindex = index.sibling (index.row (),
-							TorrentFilesModel::ColumnProgress);
-					double progress = sindex.data (TorrentFilesModel::RoleProgress).toDouble ();
-					qint64 size = sindex.data (TorrentFilesModel::RoleSize).toLongLong ();
-					qint64 done = progress * size;
-					Ui_.FileProgress_->setText (tr ("%1% (%2 of %3)")
-							.arg (progress * 100, 0, 'f', 1)
-							.arg (Util::MakePrettySize (done))
-							.arg (Util::MakePrettySize (size)));
-
-					Ui_.FilePriorityRegulator_->blockSignals (true);
-					if (index.model ()->rowCount (index))
-						Ui_.FilePriorityRegulator_->setValue (1);
-					else
-					{
-						QModelIndex prindex = index.sibling (index.row (),
-								TorrentFilesModel::ColumnPriority);
-						int priority = prindex.data ().toInt ();
-						Ui_.FilePriorityRegulator_->setValue (priority);
-					}
-					Ui_.FilePriorityRegulator_->blockSignals (false);
-				}
-			}
-
-			void TabWidget::on_FilePriorityRegulator__valueChanged (int prio)
-			{
-				QModelIndex current = Ui_.FilesView_->selectionModel ()->currentIndex ();
-
-				QModelIndexList selected = Ui_.FilesView_->selectionModel ()->selectedRows ();
-				if (!selected.contains (current))
-					selected.append (current);
-
-				struct Applier
-				{
-					Applier (const QModelIndexList& indexes, int prio)
-					{
-						Q_FOREACH (QModelIndex s, indexes)
-						{
-							int rows = s.model ()->rowCount (s);
-							if (rows)
-							{
-								QModelIndexList childs;
-								for (int i = 0; i < rows; ++i)
-									childs.append (s.child (i, TorrentFilesModel::ColumnPriority));
-								Applier (childs, prio);
-							}
-							else
-								Core::Instance ()->GetTorrentFilesModel ()->
-									setData (s.sibling (s.row (),
-											TorrentFilesModel::ColumnPriority), prio);
-						}
-					}
-				}
-
-				Applier (selected, prio);
-			}
-
-			void TabWidget::setTabWidgetSettings ()
-			{
-				Ui_.BoxSessionStats_->setVisible (XmlSettingsManager::Instance ()->
-						property ("ActiveSessionStats").toBool ());
-				Ui_.BoxAdvancedSessionStats_->setVisible (XmlSettingsManager::Instance ()->
-						property ("ActiveAdvancedSessionStats").toBool ());
-				Ui_.BoxPerTrackerStats_->setVisible (XmlSettingsManager::Instance ()->
-						property ("ActiveTrackerStats").toBool ());
-				Ui_.BoxCacheStats_->setVisible (XmlSettingsManager::Instance ()->
-						property ("ActiveCacheStats").toBool ());
-				Ui_.BoxTorrentStatus_->setVisible (XmlSettingsManager::Instance ()->
-						property ("ActiveTorrentStatus").toBool ());
-				Ui_.BoxTorrentAdvancedStatus_->setVisible (XmlSettingsManager::Instance ()->
-						property ("ActiveTorrentAdvancedStatus").toBool ());
-				Ui_.BoxTorrentInfo_->setVisible (XmlSettingsManager::Instance ()->
-						property ("ActiveTorrentInfo").toBool ());
-				Ui_.BoxTorrentPeers_->setVisible (XmlSettingsManager::Instance ()->
-						property ("ActiveTorrentPeers").toBool ());
-			}
-
-			void TabWidget::handleAddPeer ()
-			{
-				AddPeerDialog peer;
-				if (peer.exec () != QDialog::Accepted)
-					return;
-
-				Core::Instance ()->AddPeer (peer.GetIP (), peer.GetPort ());
-			}
-
-			void TabWidget::handleBanPeer ()
-			{
-				QModelIndex peerIndex = Ui_.PeersView_->currentIndex ();
-
-				BanPeersDialog ban;
-				ban.SetIP (peerIndex.sibling (peerIndex.row (), 0).data ().toString ());
-				if (ban.exec () != QDialog::Accepted)
-					return;
-
-				Core::Instance ()->BanPeers (qMakePair (ban.GetStart (), ban.GetEnd ()));
-			}
-
-			void TabWidget::handleAddWebSeed ()
-			{
-				AddWebSeedDialog ws;
-				if (ws.exec () != QDialog::Accepted ||
-						ws.GetURL ().isEmpty ())
-					return;
-
-				if (!QUrl (ws.GetURL ()).isValid ())
-					return;
-
-				Core::Instance ()->AddWebSeed (ws.GetURL (), ws.GetType ());
-			}
-
-			void TabWidget::currentPeerChanged (const QModelIndex& index)
-			{
-				BanPeer_->setEnabled (index.isValid ());
-			}
-
-			void TabWidget::currentWebSeedChanged (const QModelIndex& index)
-			{
-				RemoveWebSeed_->setEnabled (index.isValid ());
-			}
-
-			void TabWidget::handleRemoveWebSeed ()
-			{
-				QModelIndex index = Ui_.WebSeedsView_->currentIndex ();
-				QString url = index.sibling (index.row (), 0).data ().toString ();
-				bool bep19 = index.sibling (index.row (), 1).data ().toString () == "BEP 19";
-				Core::Instance ()->RemoveWebSeed (index.data ().toString (), bep19);
-			}
-
-			void TabWidget::handleFileActivated (const QModelIndex& index)
-			{
-				Core::Instance ()->GetTorrentFilesModel ()->HandleFileActivated (index);
-			}
-		};
+		}
 	};
 };

@@ -476,7 +476,7 @@ namespace LeechCraft
 				}
 			}
 
-			void TorrentFilesModel::HandleFileActivated (QModelIndex index)
+			void TorrentFilesModel::HandleFileActivated (QModelIndex index) const
 			{
 				if (!index.isValid ())
 					return;
@@ -485,8 +485,7 @@ namespace LeechCraft
 					index = index.sibling (index.row (), 0);
 
 				TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-				for (Path2TreeItem_t::const_iterator i = Path2TreeItem_.begin (),
-						end = Path2TreeItem_.end (); i != end; ++i)
+				for (auto i = Path2TreeItem_.begin (), end = Path2TreeItem_.end (); i != end; ++i)
 				{
 					if (i->second == item)
 					{

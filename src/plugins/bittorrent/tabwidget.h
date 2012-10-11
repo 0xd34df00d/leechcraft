@@ -37,10 +37,6 @@ namespace LeechCraft
 				Ui::TabWidget Ui_;
 				bool TorrentSelectionChanged_;
 				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsChangeCompleter_;
-				QAction *AddPeer_;
-				QAction *BanPeer_;
-				QAction *AddWebSeed_;
-				QAction *RemoveWebSeed_;
 			public:
 				TabWidget (QAction*, QWidget* = 0);
 
@@ -53,8 +49,6 @@ namespace LeechCraft
 				void UpdateDashboard ();
 				void UpdateOverallStats ();
 				void UpdateTorrentControl ();
-				void UpdateFilesPage ();
-				void UpdatePeersPage ();
 			private slots:
 				void on_OverallDownloadRateController__valueChanged (int);
 				void on_OverallUploadRateController__valueChanged (int);
@@ -68,16 +62,6 @@ namespace LeechCraft
 				void on_DownloadingTorrents__valueChanged (int);
 				void on_UploadingTorrents__valueChanged (int);
 				void on_TorrentTags__editingFinished ();
-				void setTabWidgetSettings ();
-                void currentFileChanged (const QModelIndex&);
-                void on_FilePriorityRegulator__valueChanged (int);
-				void handleAddPeer ();
-				void handleBanPeer ();
-				void handleAddWebSeed ();
-				void currentPeerChanged (const QModelIndex&);
-				void currentWebSeedChanged (const QModelIndex&);
-				void handleRemoveWebSeed ();
-				void handleFileActivated (const QModelIndex&);
 			};
 		};
 	};
