@@ -179,6 +179,7 @@ namespace LeechCraft
 				void ClearPeers ();
 				void UpdatePeers ();
 				TorrentFilesModel* GetTorrentFilesModel ();
+				TorrentFilesModel* GetTorrentFilesModel (int);
 				void ClearFiles ();
 				void UpdateFiles ();
 				void ResetFiles ();
@@ -306,8 +307,9 @@ namespace LeechCraft
 				void MoveToBottom (const std::deque<int>&);
 
 				void SetPreset (SettingsPreset);
+
+				QList<FileInfo> GetTorrentFiles (int = -1) const;
 			private:
-				QList<FileInfo> GetTorrentFiles () const;
 				void MoveToTop (int);
 				void MoveToBottom (int);
 				QString GetStringForState (libtorrent::torrent_status::state_t) const;

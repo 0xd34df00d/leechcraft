@@ -457,6 +457,11 @@ namespace LeechCraft
 				return TorrentFilesModel_.get ();
 			}
 
+			TorrentFilesModel* Core::GetTorrentFilesModel (int idx)
+			{
+				return idx >= 0 ? new TorrentFilesModel (idx) : 0;
+			}
+
 			void Core::ClearFiles ()
 			{
 				TorrentFilesModel_->Clear ();
@@ -464,44 +469,13 @@ namespace LeechCraft
 
 			void Core::UpdateFiles ()
 			{
-				if (!CheckValidity (CurrentTorrent_))
-				{
-					ClearFiles ();
-					return;
-				}
-
-				try
-				{
-					boost::filesystem::path base = Handles_
-							.at (CurrentTorrent_).Handle_.save_path ();
-					TorrentFilesModel_->UpdateFiles (base, GetTorrentFiles ());
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO << e.what ();
-					TorrentFilesModel_->Clear ();
-				}
+				TorrentFilesModel_->update ();
 			}
 
 			void Core::ResetFiles ()
 			{
-				if (!CheckValidity (CurrentTorrent_))
-				{
-					ClearFiles ();
-					return;
-				}
-
-				try
-				{
-					boost::filesystem::path base = Handles_
-							.at (CurrentTorrent_).Handle_.save_path ();
-					TorrentFilesModel_->ResetFiles (base, GetTorrentFiles ());
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO << e.what ();
-					TorrentFilesModel_->Clear ();
-				}
+				TorrentFilesModel_->Clear ();
+				TorrentFilesModel_->update ();
 			}
 
 			int Core::columnCount (const QModelIndex&) const
@@ -1829,13 +1803,16 @@ namespace LeechCraft
 				setGeneralSettings ();
 			}
 
-			QList<FileInfo> Core::GetTorrentFiles () const
+			QList<FileInfo> Core::GetTorrentFiles (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (idx == -1)
+					idx = CurrentTorrent_;
+
+				if (!CheckValidity (idx))
 					return QList<FileInfo> ();
 
 				QList<FileInfo> result;
-				const auto& handle = Handles_.at (CurrentTorrent_).Handle_;
+				const auto& handle = Handles_.at (idx).Handle_;
 				const auto& info = handle.get_torrent_info ();
 				std::vector<libtorrent::size_type> prbytes;
 
@@ -1856,7 +1833,7 @@ namespace LeechCraft
 					fi.Path_ = i->path;
 #endif
 					fi.Size_ = i->size;
-					fi.Priority_ = Handles_.at (CurrentTorrent_).FilePriorities_.at (i - info.begin_files ());
+					fi.Priority_ = Handles_.at (idx).FilePriorities_.at (i - info.begin_files ());
 					fi.Progress_ = static_cast<float> (prbytes.at (i - info.begin_files ())) /
 						static_cast<float> (fi.Size_);
 					result << fi;

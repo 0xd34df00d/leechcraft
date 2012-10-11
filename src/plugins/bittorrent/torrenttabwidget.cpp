@@ -19,6 +19,7 @@
 #include "torrenttabwidget.h"
 #include <QSortFilterProxyModel>
 #include <QUrl>
+#include <QTimer>
 #include <util/util.h>
 #include <util/models/treeitem.h>
 #include <util/tags/tagscompleter.h>
@@ -221,7 +222,11 @@ namespace BitTorrent
 
 		auto piecesModel = Core::Instance ()->GetPiecesModel (Index_);
 		Ui_.PiecesView_->setModel (piecesModel);
-		//Ui_.FilesView_->setModel (Core::Instance ()->GetTorrentFilesModel (Index_));
+
+		Ui_.FilesView_->setModel (Core::Instance ()->GetTorrentFilesModel (Index_));
+		QTimer::singleShot (0,
+				Ui_.FilesView_,
+				SLOT (expandAll ()));
 		connect (Ui_.FilesView_->selectionModel (),
 				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
 				this,
@@ -565,17 +570,8 @@ namespace BitTorrent
 
 	void TorrentTabWidget::UpdateFilesPage ()
 	{
-		if (TorrentSelectionChanged_)
-		{
-			Core::Instance ()->ResetFiles ();
-			Ui_.FilesView_->expandAll ();
-		}
-		else
-		{
-			Core::Instance ()->UpdateFiles ();
-			currentFileChanged (Ui_.FilesView_->selectionModel ()->currentIndex ());
-			Ui_.FilesView_->expandAll ();
-		}
+		auto sel = Ui_.FilesView_->selectionModel ();
+		currentFileChanged (sel ? sel->currentIndex () : QModelIndex ());
 	}
 
 	void TorrentTabWidget::UpdatePeersPage ()
