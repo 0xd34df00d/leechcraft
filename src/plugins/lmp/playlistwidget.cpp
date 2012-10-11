@@ -41,6 +41,7 @@
 #include "staticplaylistmanager.h"
 #include "audiopropswidget.h"
 #include "playlistundocommand.h"
+#include "sortingcriteriadialog.h"
 #include "util.h"
 
 namespace LeechCraft
@@ -406,23 +407,40 @@ namespace LMP
 		stdSorts << SortPair_t (tr ("No sort"), {});
 #endif
 
+		const auto& currentCriteria = Player_->GetSortingCriteria ();
+
 		auto sortGroup = new QActionGroup (this);
-		bool isFirst = true;
+		bool wasChecked = false;
 		Q_FOREACH (const auto& pair, stdSorts)
 		{
 			auto act = menu->addAction (pair.first);
 			act->setProperty ("SortInts", getInts (pair.second));
 			act->setCheckable (true);
-			act->setChecked (isFirst);
 			sortGroup->addAction (act);
-
-			isFirst = false;
+			if (pair.second == currentCriteria)
+			{
+				act->setChecked (true);
+				wasChecked = true;
+			}
+			else
+				act->setChecked (false);
 
 			connect (act,
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleStdSort ()));
 		}
+
+		menu->addSeparator ();
+		auto customAct = menu->addAction (tr ("Custom..."));
+		customAct->setCheckable (true);
+		if (!wasChecked)
+			customAct->setChecked (true);
+		sortGroup->addAction (customAct);
+		connect (customAct,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleCustomSort ()));
 
 		PlaylistToolbar_->addWidget (sortButton);
 	}
@@ -611,6 +629,21 @@ namespace LMP
 		Player_->SetSortingCriteria (criteria);
 
 		EnableMoveButtons (criteria.isEmpty ());
+	}
+
+	void PlaylistWidget::handleCustomSort ()
+	{
+		const auto& current = Player_->GetSortingCriteria ();
+		SortingCriteriaDialog dia (this);
+		dia.SetCriteria (current);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& newCriteria = dia.GetCriteria ();
+		if (newCriteria == current)
+			return;
+
+		Player_->SetSortingCriteria (newCriteria);
 	}
 
 	void PlaylistWidget::removeSelectedSongs ()

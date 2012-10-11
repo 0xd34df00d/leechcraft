@@ -93,6 +93,7 @@ namespace LMP
 		void handleBufferStatus (int);
 
 		void handleStdSort ();
+		void handleCustomSort ();
 
 		void removeSelectedSongs ();
 		void setStopAfterSelected ();
