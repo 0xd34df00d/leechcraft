@@ -59,6 +59,7 @@ SET (SRCS
 	torrentmaker.cpp
 	singletrackerchanger.cpp
 	torrenttab.cpp
+	torrenttabwidget.cpp
 	)
 SET (HEADERS
 	torrentplugin.h
@@ -95,6 +96,7 @@ SET (HEADERS
 	torrentmaker.h
 	singletrackerchanger.h
 	torrenttab.h
+	torrenttabwidget.h
 	newtorrentparams.h
 	torrentinfo.h
 	fileinfo.h
@@ -118,6 +120,7 @@ SET (FORMS
 	ipfilterdialog.ui
 	singletrackerchanger.ui
 	torrenttab.ui
+	torrenttabwidget.ui
 	)
 SET (RESOURCES bittorrentresources.qrc)
 CreateTrs ("bittorrent" "ar;be;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
