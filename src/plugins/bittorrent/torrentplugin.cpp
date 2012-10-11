@@ -114,6 +114,7 @@ namespace LeechCraft
 
 			void TorrentPlugin::Release ()
 			{
+				delete TorrentTab_;
 				Core::Instance ()->Release ();
 				XmlSettingsManager::Instance ()->Release ();
 				XmlSettingsDialog_.reset ();
