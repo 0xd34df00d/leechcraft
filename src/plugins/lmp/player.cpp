@@ -888,7 +888,9 @@ namespace LMP
 						AlbumRoots_ [albumID].isEmpty ())
 				{
 					PlaylistModel_->appendRow (item);
-					AlbumRoots_ [albumID] << item;
+
+					if (!info.Album_.simplified ().isEmpty ())
+						AlbumRoots_ [albumID] << item;
 				}
 				else if (AlbumRoots_ [albumID].last ()->data (Role::IsAlbum).toBool ())
 				{
