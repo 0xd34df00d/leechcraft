@@ -1,0 +1,4 @@
+language: cpp
+compiler: gcc
+# Change this to your needs
+script: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug ../src && cd build && make && make install
