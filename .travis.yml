@@ -7,7 +7,7 @@ before_install:
   - sudo add-apt-repository -y ppa:tehnick/leechcraft-unstable
   - sudo apt-get update
   - sudo apt-get build-dep leechcraft-unstable
-  - sudo apt-get libqt4-multimedia
+  - sudo apt-get qtmultimedia
 script:
   - mkdir build 
   - cd build 
