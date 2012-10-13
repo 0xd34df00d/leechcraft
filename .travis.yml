@@ -5,7 +5,7 @@ compiler:
   - clang++
 before_install:
   - sudo apt-get install libboost-dev
-  - sudo apt-get install libtorrent-rasterbar
+  - sudo apt-get install libtorrent-rasterbar-dev
 script:
   - mkdir build 
   - cd build 
