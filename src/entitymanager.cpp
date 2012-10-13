@@ -81,21 +81,32 @@ namespace LeechCraft
 			return result;
 		}
 
-		QObjectList GetObjects (const Entity& e, bool fullScan, int *downloaders = 0, int *handlers = 0)
+		QObjectList GetObjects (const Entity& e, int *downloaders = 0, int *handlers = 0)
 		{
+			const auto& unwanted = e.Additional_ ["IgnorePlugins"].toStringList ();
+			auto removeUnwanted = [&unwanted] (QObjectList& handlers)
+			{
+				const auto remBegin = std::remove_if (handlers.begin (), handlers.end (),
+						[&unwanted] (QObject *obj)
+							{ return unwanted.contains (qobject_cast<IInfo*> (obj)->GetUniqueID ()); });
+				handlers.erase (remBegin, handlers.end ());
+			};
+
 			QObjectList result;
 			if (!(e.Parameters_ & TaskParameter::OnlyHandle))
 			{
-				const auto& sub = GetSubtype<IDownload*> (e, fullScan,
+				auto sub = GetSubtype<IDownload*> (e, true,
 						[] (Entity e, IDownload *dl) { return dl->CouldDownload (e); });
+				removeUnwanted (sub);
 				if (downloaders)
 					*downloaders = sub.size ();
 				result += sub;
 			}
 			if (!(e.Parameters_ & TaskParameter::OnlyDownload))
 			{
-				const auto& sub = GetSubtype<IEntityHandler*> (e, fullScan,
+				auto sub = GetSubtype<IEntityHandler*> (e, true,
 						[] (Entity e, IEntityHandler *eh) { return eh->CouldHandle (e); });
+				removeUnwanted (sub);
 				if (handlers)
 					*handlers = sub.size ();
 				result += sub;
@@ -125,7 +136,7 @@ namespace LeechCraft
 			if (desired)
 				handlers << desired;
 			else
-				handlers = GetObjects (e, true, &numDownloaders, &numHandlers);
+				handlers = GetObjects (e, &numDownloaders, &numHandlers);
 
 			if (handlers.isEmpty () && !desired)
 				return handling ? NoHandlersAvailable (e) : false;
@@ -218,6 +229,6 @@ namespace LeechCraft
 
 	QList<QObject*> EntityManager::GetPossibleHandlers (const Entity& e)
 	{
-		return GetObjects (e, true);
+		return GetObjects (e);
 	}
 }
