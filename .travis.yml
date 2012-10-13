@@ -10,6 +10,6 @@ before_install:
 script:
   - mkdir build 
   - cd build 
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_MEDIACALLS=False ../src 
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_MEDIACALLS=False -DENABLE_LIZNOO=False ../src 
   - make 
   - make install
