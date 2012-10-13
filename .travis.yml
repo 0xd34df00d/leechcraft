@@ -4,8 +4,9 @@ compiler:
   - g++
   - clang++
 before_install:
-  - sudo apt-get install libboost-dev
-  - sudo apt-get install libtorrent-rasterbar-dev
+  - sudo add-apt-repository ppa:tehnick/leechcraft-unstable
+  - sudo apt-get update
+  - sudo apt-get build-dep
 script:
   - mkdir build 
   - cd build 
