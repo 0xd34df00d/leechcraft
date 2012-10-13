@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "sysinfo.h"
-#if not defined(Q_OS_WIN32)
+#if !defined(Q_OS_WIN32)
 #include <sys/utsname.h>
 #endif
 
