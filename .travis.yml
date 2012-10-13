@@ -6,7 +6,7 @@ compiler:
 before_install:
   - sudo add-apt-repository -y ppa:tehnick/leechcraft-unstable
   - sudo apt-get update
-  - sudo apt-get build-dep
+  - sudo apt-get build-dep leechcraft-unstable
 script:
   - mkdir build 
   - cd build 
