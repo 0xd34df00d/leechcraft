@@ -552,7 +552,7 @@ namespace LeechCraft
 
 			namespace
 			{
-				std::deque<int> GetSelections (QAbstractItemModel *model,
+				std::vector<int> GetSelections (QAbstractItemModel *model,
 						QObject *sender)
 				{
 					QModelIndexList sis;
@@ -567,7 +567,7 @@ namespace LeechCraft
 						throw;
 					}
 
-					std::deque<int> selections;
+					std::vector<int> selections;
 					Q_FOREACH (QModelIndex si, sis)
 					{
 						QModelIndex mapped = Core::Instance ()->GetProxy ()->MapToSource (si);
@@ -594,7 +594,7 @@ namespace LeechCraft
 					return;
 				}
 
-				std::deque<int> selections;
+				std::vector<int> selections;
 				try
 				{
 					selections = GetSelections (GetRepresentation (), sender ());
@@ -643,7 +643,7 @@ namespace LeechCraft
 					return;
 				}
 
-				std::deque<int> selections;
+				std::vector<int> selections;
 				try
 				{
 					selections = GetSelections (GetRepresentation (), sender ());
@@ -791,7 +791,7 @@ namespace LeechCraft
 
 			void TorrentPlugin::on_MoveFiles__triggered ()
 			{
-				QString oldDir = Core::Instance ()->GetTorrentDirectory ();
+				QString oldDir = Core::Instance ()->GetTorrentDirectory (Core::Instance ()->GetCurrentTorrent ());
 				MoveTorrentFiles mtf (oldDir);
 				if (mtf.exec () == QDialog::Rejected)
 					return;
@@ -799,7 +799,7 @@ namespace LeechCraft
 				if (oldDir == newDir)
 					return;
 
-				if (!Core::Instance ()->MoveTorrentFiles (newDir))
+				if (!Core::Instance ()->MoveTorrentFiles (newDir, Core::Instance ()->GetCurrentTorrent ()))
 				{
 					QString text = tr ("Failed to move torrent's files from %1 to %2")
 							.arg (oldDir)
@@ -810,7 +810,7 @@ namespace LeechCraft
 
 			void TorrentPlugin::on_MakeMagnetLink__triggered ()
 			{
-				QString magnet = Core::Instance ()->GetMagnetLink ();
+				QString magnet = Core::Instance ()->GetMagnetLink (Core::Instance ()->GetCurrentTorrent ());
 				if (magnet.isEmpty ())
 					return;
 
@@ -869,8 +869,6 @@ namespace LeechCraft
 
 			void TorrentPlugin::SetupCore ()
 			{
-				ShortcutMgr_ = new Util::ShortcutManager (Core::Instance ()->GetProxy (), this);
-
 				XmlSettingsDialog_.reset (new XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 						"torrentsettings.xml");

@@ -180,9 +180,6 @@ namespace LeechCraft
 				PeersModel* GetPeersModel (int);
 				QAbstractItemModel* GetWebSeedsModel (int);
 				TorrentFilesModel* GetTorrentFilesModel (int);
-				void ClearFiles ();
-				void UpdateFiles ();
-				void ResetFiles ();
 
 				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
@@ -270,12 +267,16 @@ namespace LeechCraft
 				void RemoveWebSeed (const QString&, bool, int);
 				void SetFilePriority (int, int, int);
 				void SetFilename (int, const QString&, int);
+
 				std::vector<libtorrent::announce_entry> GetTrackers (const boost::optional<int>& = boost::optional<int> ()) const;
 				void SetTrackers (const std::vector<libtorrent::announce_entry>&,
 						const boost::optional<int>& = boost::optional<int> ());
-				QString GetMagnetLink () const;
-				QString GetTorrentDirectory () const;
-				bool MoveTorrentFiles (const QString&);
+
+				QString GetMagnetLink (int) const;
+
+				QString GetTorrentDirectory (int) const;
+				bool MoveTorrentFiles (const QString&, int);
+
 				void SetCurrentTorrent (int);
 				int GetCurrentTorrent () const;
 				bool IsTorrentManaged (int) const;
@@ -301,10 +302,10 @@ namespace LeechCraft
 				void FileFinished (const libtorrent::torrent_handle&, int);
 				void PieceRead (const libtorrent::read_piece_alert&);
 
-				void MoveUp (const std::deque<int>&);
-				void MoveDown (const std::deque<int>&);
-				void MoveToTop (const std::deque<int>&);
-				void MoveToBottom (const std::deque<int>&);
+				void MoveUp (const std::vector<int>&);
+				void MoveDown (const std::vector<int>&);
+				void MoveToTop (const std::vector<int>&);
+				void MoveToBottom (const std::vector<int>&);
 
 				void SetPreset (SettingsPreset);
 

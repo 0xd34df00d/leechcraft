@@ -1151,8 +1151,6 @@ namespace LeechCraft
 					return;
 
 				Handles_ [idx].Handle_.rename_file (index, std::string (name.toUtf8 ().data ()));
-
-				ResetFiles ();
 			}
 
 			std::vector<libtorrent::announce_entry> Core::GetTrackers (const boost::optional<int>& row) const
@@ -1175,21 +1173,21 @@ namespace LeechCraft
 				Handles_ [tor].Handle_.force_reannounce ();
 			}
 
-			QString Core::GetMagnetLink () const
+			QString Core::GetMagnetLink (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return QString ();
 
-				const std::string& result = libtorrent::make_magnet_uri (Handles_ [CurrentTorrent_].Handle_);
+				const std::string& result = libtorrent::make_magnet_uri (Handles_ [idx].Handle_);
 				return QString::fromStdString (result);
 			}
 
-			QString Core::GetTorrentDirectory () const
+			QString Core::GetTorrentDirectory (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return QString ();
 
-				const auto& path = Handles_.at (CurrentTorrent_).Handle_.save_path ();
+				const auto& path = Handles_.at (idx).Handle_.save_path ();
 #if LIBTORRENT_VERSION_NUM >= 1600
 				return QString::fromUtf8 (path.c_str ());
 #else
@@ -1197,12 +1195,12 @@ namespace LeechCraft
 #endif
 			}
 
-			bool Core::MoveTorrentFiles (const QString& newDir)
+			bool Core::MoveTorrentFiles (const QString& newDir, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_) || newDir == GetTorrentDirectory ())
+				if (!CheckValidity (idx) || newDir == GetTorrentDirectory (idx))
 					return false;
 
-				Handles_.at (CurrentTorrent_).Handle_.move_storage (newDir.toUtf8 ().constData ());
+				Handles_.at (idx).Handle_.move_storage (newDir.toUtf8 ().constData ());
 				return true;
 			}
 
@@ -1598,17 +1596,17 @@ namespace LeechCraft
 				LiveStreamManager_->PieceRead (a);
 			}
 
-			void Core::MoveUp (const std::deque<int>& selections)
+			void Core::MoveUp (const std::vector<int>& selections)
 			{
 				if (!selections.size ())
 					return;
 
-				for (std::deque<int>::const_iterator i = selections.begin (),
+				for (auto i = selections.begin (),
 						end = selections.end (); i != end; ++i)
 					if (*i <= 0 || !CheckValidity (*i))
 						return;
 
-				for (std::deque<int>::const_iterator i = selections.begin (),
+				for (auto i = selections.begin (),
 						end = selections.end (); i != end; ++i)
 				{
 					Handles_.at (*i).Handle_.queue_position_up ();
@@ -1620,17 +1618,17 @@ namespace LeechCraft
 				}
 			}
 
-			void Core::MoveDown (const std::deque<int>& selections)
+			void Core::MoveDown (const std::vector<int>& selections)
 			{
 				if (!selections.size ())
 					return;
 
-				for (std::deque<int>::const_iterator i = selections.begin (),
+				for (auto i = selections.begin (),
 						end = selections.end (); i != end; ++i)
 					if (*i < 0 || !CheckValidity (*i) || !CheckValidity (*i + 1))
 						return;
 
-				for (std::deque<int>::const_reverse_iterator i = selections.rbegin (),
+				for (auto i = selections.rbegin (),
 						end = selections.rend (); i != end; ++i)
 				{
 					Handles_.at (*i).Handle_.queue_position_down ();
@@ -1642,32 +1640,32 @@ namespace LeechCraft
 				}
 			}
 
-			void Core::MoveToTop (const std::deque<int>& selections)
+			void Core::MoveToTop (const std::vector<int>& selections)
 			{
 				if (!selections.size ())
 					return;
 
-				for (std::deque<int>::const_iterator i = selections.begin (),
+				for (auto i = selections.begin (),
 						end = selections.end (); i != end; ++i)
 					if (*i <= 0 || !CheckValidity (*i))
 						return;
 
-				for (std::deque<int>::const_reverse_iterator i = selections.rbegin (),
+				for (auto i = selections.rbegin (),
 						end = selections.rend (); i != end; ++i)
 					MoveToTop (*i);
 			}
 
-			void Core::MoveToBottom (const std::deque<int>& selections)
+			void Core::MoveToBottom (const std::vector<int>& selections)
 			{
 				if (!selections.size ())
 					return;
 
-				for (std::deque<int>::const_iterator i = selections.begin (),
+				for (auto i = selections.begin (),
 						end = selections.end (); i != end; ++i)
 					if (*i < 0 || !CheckValidity (*i))
 						return;
 
-				for (std::deque<int>::const_iterator i = selections.begin (),
+				for (auto i = selections.begin (),
 						end = selections.end (); i != end; ++i)
 					MoveToBottom (*i);
 			}
