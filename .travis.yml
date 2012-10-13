@@ -1,8 +1,15 @@
-language: cpp
-compiler: gcc
-# Change this to your needs
+language:
+  - cpp
+compiler:
+  - g++
+  - clang++
 before_install:
-  - sudo apt-get install libboost-dev
+  - sudo apt-get install libboost-dev
   - sudo apt-get install libtorrent-rasterbar
-
-script: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug ../src && cd build && make && make install
+script:
+  - mkdir build 
+  - cd build 
+  - cmake -DCMAKE_BUILD_TYPE=Debug ../src 
+  - cd build 
+  - make 
+  - make install
