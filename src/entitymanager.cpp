@@ -194,7 +194,7 @@ namespace LeechCraft
 
 	bool EntityManager::CouldHandle (const Entity& e)
 	{
-		return !GetObjects (e, false).isEmpty ();
+		return !GetObjects (e).isEmpty ();
 	}
 
 	bool EntityManager::HandleEntity (Entity e, QObject *desired)
