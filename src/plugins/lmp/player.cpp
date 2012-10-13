@@ -209,15 +209,21 @@ namespace LMP
 					return left.Title_ < right.Title_;
 				break;
 			case SortingCriteria::DirectoryPath:
-				if (left.LocalPath_ != right.LocalPath_)
-					return QFileInfo (left.LocalPath_).dir ().absolutePath () <
-							QFileInfo (right.LocalPath_).dir ().absolutePath ();
+			{
+				const auto& leftPath = QFileInfo (left.LocalPath_).dir ().absolutePath ();
+				const auto& rightPath = QFileInfo (right.LocalPath_).dir ().absolutePath ();
+				if (leftPath != rightPath)
+					return QString::localeAwareCompare (leftPath, rightPath) < 0;
 				break;
+			}
 			case SortingCriteria::FileName:
-				if (left.LocalPath_ != right.LocalPath_)
-					return QString::localeAwareCompare (QFileInfo (left.LocalPath_).fileName (),
-							QFileInfo (right.LocalPath_).fileName ()) < 0;
+			{
+				const auto& leftPath = QFileInfo (left.LocalPath_).fileName ();
+				const auto& rightPath = QFileInfo (right.LocalPath_).fileName ();
+				if (leftPath != rightPath)
+					return QString::localeAwareCompare (leftPath, rightPath) < 0;
 				break;
+			}
 			}
 		}
 
