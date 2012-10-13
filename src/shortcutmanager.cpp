@@ -48,9 +48,8 @@ namespace LeechCraft
 
 			auto checkStr = [row, parent, &filter, this] (int col)
 			{
-				const QString& content = this->sourceModel ()->
-						index (row, col, parent).data ().toString ();
-				return content.contains (filter, Qt::CaseInsensitive);
+				return sourceModel ()->index (row, col, parent).data ()
+						.toString ().contains (filter, Qt::CaseInsensitive);
 			};
 			if (checkStr (0) || checkStr (1))
 				return true;

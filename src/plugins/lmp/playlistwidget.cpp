@@ -376,7 +376,7 @@ namespace LMP
 		auto menu = new QMenu (tr ("Sorting"));
 		sortButton->setMenu (menu);
 
-		auto getInts = [] (const QList<Player::SortingCriteria>& crit)
+		auto getInts = [] (const QList<Player::SortingCriteria>& crit) -> QVariantList
 		{
 			QVariantList result;
 			std::transform (crit.begin (), crit.end (), std::back_inserter (result),

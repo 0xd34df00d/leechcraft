@@ -140,7 +140,7 @@ namespace LMP
 				if (action == Qt::MoveAction)
 					Q_FOREACH (const auto& src, sources)
 					{
-						auto pred = [&src] (decltype (existingQueue.front ()) item)
+						auto pred = [&src] (decltype (existingQueue.front ()) item) -> bool
 						{
 							if (src.type () != item.type ())
 								return false;

@@ -184,7 +184,7 @@ namespace MP3Tunes
 				.firstChildElement ("item");
 		while (!trackItem.isNull ())
 		{
-			auto getText = [&trackItem] (const QString& elem)
+			auto getText = [&trackItem] (const QString& elem) -> QString
 			{
 				const auto& text = trackItem.firstChildElement (elem).text ();
 				return text.isEmpty () ? "unknown" : text;

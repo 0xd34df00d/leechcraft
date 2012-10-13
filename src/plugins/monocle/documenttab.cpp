@@ -410,7 +410,7 @@ namespace Monocle
 		if (!CurrentDoc_)
 			return 1;
 
-		auto calcRatio = [this] (std::function<double (const QSize&)> dimGetter)
+		auto calcRatio = [this] (std::function<double (const QSize&)> dimGetter) -> double
 		{
 			if (Pages_.isEmpty ())
 				return 1.0;

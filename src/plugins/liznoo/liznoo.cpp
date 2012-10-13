@@ -224,7 +224,7 @@ namespace Liznoo
 
 	void Plugin::CheckNotifications (const BatteryInfo& info)
 	{
-		auto check = [&info, this] (std::function<bool (const BatteryInfo&)> f)
+		auto check = [&info, this] (std::function<bool (const BatteryInfo&)> f) -> bool
 		{
 			if (!Battery2LastInfo_.contains (info.ID_))
 				return f (info);
