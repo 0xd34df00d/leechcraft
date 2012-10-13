@@ -33,7 +33,8 @@ namespace LMP
 			SortingCriteria::Album,
 			SortingCriteria::TrackNumber,
 			SortingCriteria::TrackTitle,
-			SortingCriteria::FilePath
+			SortingCriteria::DirectoryPath,
+			SortingCriteria::FileName
 		};
 	}
 
@@ -75,8 +76,10 @@ namespace LMP
 			return QObject::tr ("Track number");
 		case SortingCriteria::TrackTitle:
 			return QObject::tr ("Title");
-		case SortingCriteria::FilePath:
-			return QObject::tr ("File path");
+		case SortingCriteria::DirectoryPath:
+			return QObject::tr ("Directory");
+		case SortingCriteria::FileName:
+			return QObject::tr ("File name");
 		}
 
 		qWarning () << Q_FUNC_INFO

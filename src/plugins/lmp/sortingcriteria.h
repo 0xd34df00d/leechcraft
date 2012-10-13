@@ -34,7 +34,8 @@ namespace LMP
 		Album,
 		TrackNumber,
 		TrackTitle,
-		FilePath
+		DirectoryPath,
+		FileName
 	};
 
 	QList<SortingCriteria> GetAllCriteria ();

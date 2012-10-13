@@ -402,7 +402,8 @@ namespace LMP
 					});
 		stdSorts << SortPair_t (tr ("File path"),
 					{
-						SortingCriteria::FilePath
+						SortingCriteria::DirectoryPath,
+						SortingCriteria::FileName
 					});
 		stdSorts << SortPair_t (tr ("No sort"), {});
 #endif
