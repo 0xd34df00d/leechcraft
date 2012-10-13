@@ -139,8 +139,10 @@ namespace LeechCraft
 			if (shouldAsk)
 			{
 				HandlerChoiceDialog dia (Util::GetUserText (e));
-				for (auto handler : handlers)
-					dia.Add (handler);
+				for (auto handler : handlers.mid (0, numDownloaders))
+					dia.Add (qobject_cast<IInfo*> (handler), qobject_cast<IDownload*> (handler));
+				for (auto handler : handlers.mid (numDownloaders, numHandlers))
+					dia.Add (qobject_cast<IInfo*> (handler), qobject_cast<IEntityHandler*> (handler));
 				dia.SetFilenameSuggestion (e.Location_);
 				if (dia.exec () != QDialog::Accepted || !dia.GetSelected ())
 					return false;
