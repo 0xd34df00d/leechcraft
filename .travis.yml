@@ -2,7 +2,6 @@ language:
   - cpp
 compiler:
   - g++
-  - clang++
 before_install:
   - sudo add-apt-repository -y ppa:tehnick/leechcraft-unstable
   - sudo apt-get update
