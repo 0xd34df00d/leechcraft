@@ -1,7 +1,5 @@
-language: 
-    cpp
-compiler:  
-    - g++
+language: cpp
+compiler: gcc
 # Change this to your needs
 before_install:
   - sudo apt-get install libboost-dev
