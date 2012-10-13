@@ -78,6 +78,8 @@ namespace SysInfo
 			return SplitInfo_t ("Windows", "Vista");
 		else if (v == QSysInfo::WV_WINDOWS7)
 			return SplitInfo_t ("Windows", "7");
+		else if (v == 0x00a0)
+			return SplitInfo_t ("Windows", "8");
 		else if (v == QSysInfo::WV_NT_based)
 			return SplitInfo_t ("Windows", "NT-based");
 #else
