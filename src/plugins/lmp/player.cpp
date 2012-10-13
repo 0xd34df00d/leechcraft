@@ -248,6 +248,10 @@ namespace LMP
 		XmlSettingsManager::Instance ().RegisterObject ("SingleTrackDisplayMask",
 				this, "refillPlaylist");
 
+		const auto& criteriaVar = XmlSettingsManager::Instance ().property ("SortingCriteria");
+		if (!criteriaVar.isNull ())
+			Sorter_.Criteria_ = LoadCriteria (criteriaVar);
+
 		connect (Source_,
 				SIGNAL (finished ()),
 				this,
@@ -305,11 +309,18 @@ namespace LMP
 		emit playModeChanged (PlayMode_);
 	}
 
-	void Player::SetSortingCriteria (const QList<Player::SortingCriteria>& criteria)
+	QList< SortingCriteria > Player::GetSortingCriteria () const
+	{
+		return Sorter_.Criteria_;
+	}
+
+	void Player::SetSortingCriteria (const QList<SortingCriteria>& criteria)
 	{
 		Sorter_.Criteria_ = criteria;
 
 		AddToPlaylistModel (QList<Phonon::MediaSource> (), true);
+
+		XmlSettingsManager::Instance ().setProperty ("SortingCriteria", SaveCriteria (criteria));
 	}
 
 	namespace
@@ -888,7 +899,9 @@ namespace LMP
 						AlbumRoots_ [albumID].isEmpty ())
 				{
 					PlaylistModel_->appendRow (item);
-					AlbumRoots_ [albumID] << item;
+
+					if (!info.Album_.simplified ().isEmpty ())
+						AlbumRoots_ [albumID] << item;
 				}
 				else if (AlbumRoots_ [albumID].last ()->data (Role::IsAlbum).toBool ())
 				{

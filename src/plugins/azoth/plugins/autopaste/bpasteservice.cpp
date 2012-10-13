@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "codepadservice.h"
-#include <QNetworkAccessManager>
+#include "bpasteservice.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
@@ -28,54 +27,46 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	CodepadService::CodepadService (QObject *entry, QObject *parent)
+	BPasteService::BPasteService (QObject* entry, QObject *parent)
 	: PasteServiceBase (entry, parent)
 	{
 	}
 
-	void CodepadService::Paste (const PasteParams& params)
+	void BPasteService::Paste (const PasteParams& params)
 	{
-		QNetworkRequest req (QUrl ("http://codepad.org"));
+		QNetworkRequest req (QUrl ("http://bpaste.net"));
 		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-		req.setRawHeader ("Referer", "http://codepad.org");
+		req.setRawHeader ("Referer", "http://bpaste.net");
 
-		QByteArray highlight = "Plain+Text";
-		bool run = false;
+		QByteArray highlight;
 		switch (params.High_)
 		{
 		case Highlight::CPP:
 		case Highlight::CPP0x:
-			highlight = "C%2B%2B";
-			run = true;
+			highlight = "cpp";
 			break;
 		case Highlight::C:
-			highlight = "C";
-			run = true;
+			highlight = "c";
 			break;
 		case Highlight::XML:
+			highlight = "xml";
 			break;
 		case Highlight::Haskell:
-			highlight = "Haskell";
-			run = true;
+			highlight = "haskell";
 			break;
 		case Highlight::Java:
-			highlight = "Java";
-			run = true;
+			highlight = "java";
 			break;
 		case Highlight::Python:
-			highlight = "Python";
-			run = true;
+			highlight = "python";
 			break;
 		case Highlight::None:
-			highlight = "Plain+Text";
 			break;
 		}
 
-		QByteArray data = "lang=" + highlight + "&code=";
+		QByteArray data = "language=" + highlight + "&code=";
 		data += params.Text_.toUtf8 ().toPercentEncoding ();
-		data += "&private=True&submit=Submit";
-		if (run)
-			data += "&run=True";
+		data += "&private=on&webpage=";
 
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 

@@ -76,22 +76,24 @@ namespace LeechCraft
 				Path2Position_t Path2OriginalPosition_;
 				int FilesInTorrent_;
 				boost::filesystem::path BasePath_;
+				const int Index_;
 			public:
 				enum
 				{
-					RawDataRole = 46,
+					RawDataRole = Qt::UserRole + 1,
 					RolePath,
 					RoleSize,
 					RoleProgress
 				};
-                enum
-                {
-                    ColumnPath,
-                    ColumnPriority,
-                    ColumnProgress
-                };
+				enum
+				{
+					ColumnPath,
+					ColumnPriority,
+					ColumnProgress
+				};
 
-				TorrentFilesModel (bool, QObject *parent = 0);
+				TorrentFilesModel (QObject *parent = 0);
+				TorrentFilesModel (int);
 				virtual ~TorrentFilesModel ();
 
 				virtual int columnCount (const QModelIndex&) const;
@@ -115,12 +117,14 @@ namespace LeechCraft
 				void MarkIndexes (const QList<QModelIndex>&);
 				void UnmarkIndexes (const QList<QModelIndex>&);
 
-				void HandleFileActivated (QModelIndex);
+				void HandleFileActivated (QModelIndex) const;
+			public slots:
+				void update ();
 			private:
 				void MkParentIfDoesntExist (const boost::filesystem::path&);
 				void UpdateSizeGraph (LeechCraft::Util::TreeItem*);
 			signals:
-				void gotEntity (const LeechCraft::Entity&);
+				void gotEntity (const LeechCraft::Entity&) const;
 			};
 		};
 	};

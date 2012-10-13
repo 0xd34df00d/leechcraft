@@ -25,7 +25,7 @@ class QSortFilterProxyModel;
 
 namespace Ui
 {
-	class TabWidget;
+	class TorrentTabWidget;
 };
 
 namespace LeechCraft
@@ -38,11 +38,11 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				Ui::TabWidget *Ui_;
+				Ui::TorrentTabWidget *Ui_;
 				QSortFilterProxyModel *ProxyModel_;
 				QPersistentModelIndex Current_;
 			public:
-				PeersTabLinker (Ui::TabWidget*,
+				PeersTabLinker (Ui::TorrentTabWidget*,
 						QSortFilterProxyModel*, QObject* = 0);
 			private slots:
 				void handleNewRow (const QModelIndex&);

@@ -20,6 +20,7 @@
 #include <iterator>
 #include <boost/functional/hash.hpp>
 #include <QUrl>
+#include <QTimer>
 #include <QtDebug>
 #include <util/models/treeitem.h>
 #include <util/util.h>
@@ -33,17 +34,36 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
-			TorrentFilesModel::TorrentFilesModel (bool addDia, QObject *parent)
+			TorrentFilesModel::TorrentFilesModel (QObject *parent)
 			: QAbstractItemModel (parent)
-			, AdditionDialog_ (addDia)
+			, AdditionDialog_ (true)
 			, FilesInTorrent_ (0)
+			, Index_ (-1)
 			{
 				QList<QVariant> rootData;
-				if (AdditionDialog_)
-					rootData << tr ("Name") << tr ("Size");
-				else
-					rootData << tr ("Name") << tr ("Priority") << tr ("Progress");
+				rootData << tr ("Name") << tr ("Size");
 				RootItem_ = new TreeItem (rootData);
+			}
+
+			TorrentFilesModel::TorrentFilesModel (int index)
+			: AdditionDialog_ (false)
+			, FilesInTorrent_ (0)
+			, Index_ (index)
+			{
+				QList<QVariant> rootData;
+				rootData << tr ("Name") << tr ("Priority") << tr ("Progress");
+				RootItem_ = new TreeItem (rootData);
+
+				auto timer = new QTimer (this);
+				connect (timer,
+						SIGNAL (timeout ()),
+						this,
+						SLOT (update ()));
+				timer->start (2000);
+
+				QTimer::singleShot (0,
+						this,
+						SLOT (update ()));
 			}
 
 			TorrentFilesModel::~TorrentFilesModel ()
@@ -234,8 +254,7 @@ namespace LeechCraft
 					if (index.column () == 1)
 					{
 						TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-						Core::Instance ()->
-							SetFilePriority (item->Data (1, RolePath).toInt (), value.toInt ());
+						Core::Instance ()->SetFilePriority (item->Data (1, RolePath).toInt (), value.toInt (), Index_);
 						item->ModifyData (index.column (), value);
 						emit dataChanged (index, index);
 						return true;
@@ -243,9 +262,7 @@ namespace LeechCraft
 					else if (index.column () == 0)
 					{
 						TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-						Core::Instance ()->
-							SetFilename (item->Data (1, RolePath).toInt (),
-									value.toString ());
+						Core::Instance ()->SetFilename (item->Data (1, RolePath).toInt (), value.toString (), Index_);
 						return true;
 					}
 					else
@@ -268,6 +285,7 @@ namespace LeechCraft
 				endRemoveRows ();
 				FilesInTorrent_ = 0;
 				Path2TreeItem_.clear ();
+				Path2OriginalPosition_.clear ();
 			}
 
 			void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begin,
@@ -339,6 +357,7 @@ namespace LeechCraft
 					displayData << QString::fromUtf8 (fi.Path_.leaf ().c_str ())
 						<< QString::number (fi.Priority_)
 						<< QString::number (fi.Progress_, 'f', 3);
+					qDebug () << Q_FUNC_INFO << fi.Priority_;
 
 					TreeItem *parentItem = Path2TreeItem_ [parentPath],
 							 *item = new TreeItem (displayData, parentItem);
@@ -375,7 +394,9 @@ namespace LeechCraft
 					if (!Path2TreeItem_.count (fi.Path_))
 					{
 						Path2TreeItem_.clear ();
+						Clear ();
 						ResetFiles (BasePath_, infos);
+						return;
 					}
 
 					TreeItem *item = Path2TreeItem_ [fi.Path_];
@@ -449,7 +470,7 @@ namespace LeechCraft
 				}
 			}
 
-			void TorrentFilesModel::HandleFileActivated (QModelIndex index)
+			void TorrentFilesModel::HandleFileActivated (QModelIndex index) const
 			{
 				if (!index.isValid ())
 					return;
@@ -458,8 +479,7 @@ namespace LeechCraft
 					index = index.sibling (index.row (), 0);
 
 				TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
-				for (Path2TreeItem_t::const_iterator i = Path2TreeItem_.begin (),
-						end = Path2TreeItem_.end (); i != end; ++i)
+				for (auto i = Path2TreeItem_.begin (), end = Path2TreeItem_.end (); i != end; ++i)
 				{
 					if (i->second == item)
 					{
@@ -484,6 +504,15 @@ namespace LeechCraft
 						break;
 					}
 				}
+			}
+
+			void TorrentFilesModel::update ()
+			{
+				const auto& handle = Core::Instance ()->GetTorrentHandle (Index_);
+				const auto& base = handle.save_path ();
+
+				const auto& files = Core::Instance ()->GetTorrentFiles (Index_);
+				UpdateFiles (base, files);
 			}
 
 			void TorrentFilesModel::MkParentIfDoesntExist (const boost::filesystem::path& path)

@@ -19,25 +19,31 @@
 #pragma once
 
 #include <QDialog>
-#include "ui_addpeerdialog.h"
+#include "ui_sortingcriteriadialog.h"
+#include "sortingcriteria.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace Plugins
+namespace LMP
 {
-namespace BitTorrent
-{
-	class AddPeerDialog : public QDialog
+	class SortingCriteriaDialog : public QDialog
 	{
 		Q_OBJECT
 
-		Ui::AddPeerDialog Ui_;
+		Ui::SortingCriteriaDialog Ui_;
+		QStandardItemModel *Model_;
 	public:
-		AddPeerDialog (QWidget* = 0);
+		SortingCriteriaDialog (QWidget* = 0);
 
-		QString GetIP () const;
-		int GetPort () const;
+		void SetCriteria (const QList<SortingCriteria>&);
+		QList<SortingCriteria> GetCriteria () const;
+	private:
+		void AddCriteria (SortingCriteria);
+	private slots:
+		void on_Add__released ();
+		void on_Remove__released ();
 	};
-}
 }
 }

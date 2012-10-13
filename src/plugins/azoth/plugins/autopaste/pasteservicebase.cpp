@@ -107,6 +107,18 @@ namespace Autopaste
 
 	void PasteServiceBase::handleMetadata ()
 	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not a QNetworkReply:"
+					<< sender ();
+			return;
+		}
+
+		const auto& location = reply->header (QNetworkRequest::LocationHeader).toString ();
+		if (!location.isEmpty ())
+			FeedURL (location);
 	}
 }
 }

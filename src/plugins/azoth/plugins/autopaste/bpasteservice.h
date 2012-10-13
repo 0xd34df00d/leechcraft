@@ -18,25 +18,21 @@
 
 #pragma once
 
-#include <QDialog>
-#include "ui_addpeerdialog.h"
+#include "pasteservicebase.h"
 
 namespace LeechCraft
 {
-namespace Plugins
+namespace Azoth
 {
-namespace BitTorrent
+namespace Autopaste
 {
-	class AddPeerDialog : public QDialog
+	class BPasteService : public PasteServiceBase
 	{
 		Q_OBJECT
-
-		Ui::AddPeerDialog Ui_;
 	public:
-		AddPeerDialog (QWidget* = 0);
+		BPasteService (QObject *entry, QObject* = 0);
 
-		QString GetIP () const;
-		int GetPort () const;
+		void Paste (const PasteParams&);
 	};
 }
 }

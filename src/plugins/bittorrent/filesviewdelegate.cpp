@@ -42,17 +42,17 @@ namespace LeechCraft
 			};
 
 			using LeechCraft::Util::TreeItem;
-			
+
 			FilesViewDelegate::FilesViewDelegate (QTreeView *parent)
 			: QStyledItemDelegate (parent)
 			, View_ (parent)
 			{
 			}
-			
+
 			FilesViewDelegate::~FilesViewDelegate ()
 			{
 			}
-			
+
 			QWidget* FilesViewDelegate::createEditor (QWidget *parent,
 					const QStyleOptionViewItem& option, const QModelIndex& index) const
 			{
@@ -69,7 +69,7 @@ namespace LeechCraft
 				else
 					return QStyledItemDelegate::createEditor (parent, option, index);
 			}
-			
+
 			void FilesViewDelegate::paint (QPainter *painter,
 					const QStyleOptionViewItem& option, const QModelIndex& index) const
 			{
@@ -105,7 +105,7 @@ namespace LeechCraft
 							&progressBarOption, painter);
 				}
 			}
-			
+
 			void FilesViewDelegate::setEditorData (QWidget *editor, const QModelIndex& index) const
 			{
 				if (index.column () == TorrentFilesModel::ColumnPriority &&
@@ -123,7 +123,7 @@ namespace LeechCraft
 				else
 					QStyledItemDelegate::setEditorData (editor, index);
 			}
-			
+
 			void FilesViewDelegate::setModelData (QWidget *editor, QAbstractItemModel *model,
 					const QModelIndex& index) const
 			{
@@ -147,7 +147,7 @@ namespace LeechCraft
 				else
 					QStyledItemDelegate::setModelData (editor, model, index);
 			}
-			
+
 		};
 	};
 };

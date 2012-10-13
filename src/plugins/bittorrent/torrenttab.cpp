@@ -16,10 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QDialog>
-#include "ui_addpeerdialog.h"
+#include "torrenttab.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -27,17 +25,42 @@ namespace Plugins
 {
 namespace BitTorrent
 {
-	class AddPeerDialog : public QDialog
+	TorrentTab::TorrentTab (const TabClassInfo& tc, QObject *mt)
+	: TC_ (tc)
+	, ParentMT_ (mt)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
+		Ui_.TorrentsView_->setModel (Core::Instance ());
+		connect (Ui_.TorrentsView_->selectionModel (),
+				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleTorrentSelected (QModelIndex)));
+	}
 
-		Ui::AddPeerDialog Ui_;
-	public:
-		AddPeerDialog (QWidget* = 0);
+	TabClassInfo TorrentTab::GetTabClassInfo () const
+	{
+		return TC_;
+	}
 
-		QString GetIP () const;
-		int GetPort () const;
-	};
+	QObject* TorrentTab::ParentMultiTabs ()
+	{
+		return ParentMT_;
+	}
+
+	void TorrentTab::Remove ()
+	{
+		emit removeTab (this);
+	}
+
+	QToolBar* TorrentTab::GetToolBar () const
+	{
+		return 0;
+	}
+
+	void TorrentTab::handleTorrentSelected (const QModelIndex& index)
+	{
+		Ui_.Tabs_->SetCurrentIndex (index.row ());
+	}
 }
 }
 }

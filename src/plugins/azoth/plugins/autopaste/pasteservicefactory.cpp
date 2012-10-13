@@ -19,6 +19,7 @@
 #include "pasteservicefactory.h"
 #include <QIcon>
 #include "codepadservice.h"
+#include "bpasteservice.h"
 
 namespace LeechCraft
 {
@@ -28,6 +29,7 @@ namespace Autopaste
 {
 	PasteServiceFactory::PasteServiceFactory ()
 	{
+		Infos_.push_back ({ "bpaste.net", QIcon (), [] (QObject *entry) { return new BPasteService (entry); } });
 		Infos_.push_back ({ "codepad.org", QIcon (), [] (QObject *entry) { return new CodepadService (entry); } });
 	}
 

@@ -18,8 +18,9 @@
 
 #pragma once
 
-#include <QDialog>
-#include "ui_addpeerdialog.h"
+#include <QWidget>
+#include <interfaces/ihavetabs.h>
+#include "ui_torrenttab.h"
 
 namespace LeechCraft
 {
@@ -27,16 +28,27 @@ namespace Plugins
 {
 namespace BitTorrent
 {
-	class AddPeerDialog : public QDialog
+	class TorrentTab : public QWidget
+					 , public ITabWidget
 	{
 		Q_OBJECT
+		Q_INTERFACES (ITabWidget)
 
-		Ui::AddPeerDialog Ui_;
+		Ui::TorrentTab Ui_;
+
+		const TabClassInfo TC_;
+		QObject *ParentMT_;
 	public:
-		AddPeerDialog (QWidget* = 0);
+		TorrentTab (const TabClassInfo&, QObject*);
 
-		QString GetIP () const;
-		int GetPort () const;
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		QToolBar* GetToolBar () const;
+		void Remove ();
+	private slots:
+		void handleTorrentSelected (const QModelIndex&);
+	signals:
+		void removeTab (QWidget*);
 	};
 }
 }

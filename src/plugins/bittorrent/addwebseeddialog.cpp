@@ -20,26 +20,25 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	AddWebSeedDialog::AddWebSeedDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace BitTorrent
-		{
-			AddWebSeedDialog::AddWebSeedDialog (QWidget *parent)
-			: QDialog (parent)
-			{
-				Ui_.setupUi (this);
-			}
+		Ui_.setupUi (this);
+	}
 
-			QString AddWebSeedDialog::GetURL () const
-			{
-				return Ui_.URL_->text ();
-			}
+	QString AddWebSeedDialog::GetURL () const
+	{
+		return Ui_.URL_->text ();
+	}
 
-			bool AddWebSeedDialog::GetType () const
-			{
-				return Ui_.BEP19_->isChecked ();
-			}
-		};
-	};
-};
-
+	bool AddWebSeedDialog::GetType () const
+	{
+		return Ui_.BEP19_->isChecked ();
+	}
+}
+}
+}

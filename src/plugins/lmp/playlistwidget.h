@@ -45,7 +45,7 @@ namespace LMP
 		QUndoStack *UndoStack_;
 
 		Player *Player_;
-		
+
 		bool ExpandAllScheduled_;
 
 		QAction *ActionRemoveSelected_;
@@ -93,6 +93,7 @@ namespace LMP
 		void handleBufferStatus (int);
 
 		void handleStdSort ();
+		void handleCustomSort ();
 
 		void removeSelectedSongs ();
 		void setStopAfterSelected ();

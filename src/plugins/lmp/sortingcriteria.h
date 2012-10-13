@@ -18,26 +18,30 @@
 
 #pragma once
 
-#include <QDialog>
-#include "ui_addpeerdialog.h"
+#include <QList>
+
+class QVariant;
+class QString;
 
 namespace LeechCraft
 {
-namespace Plugins
+namespace LMP
 {
-namespace BitTorrent
-{
-	class AddPeerDialog : public QDialog
+	enum class SortingCriteria
 	{
-		Q_OBJECT
-
-		Ui::AddPeerDialog Ui_;
-	public:
-		AddPeerDialog (QWidget* = 0);
-
-		QString GetIP () const;
-		int GetPort () const;
+		Artist,
+		Year,
+		Album,
+		TrackNumber,
+		TrackTitle,
+		FilePath
 	};
-}
+
+	QList<SortingCriteria> GetAllCriteria ();
+
+	QVariant SaveCriteria (const QList<SortingCriteria>&);
+	QList<SortingCriteria> LoadCriteria (const QVariant&);
+
+	QString GetCriteriaName (SortingCriteria);
 }
 }

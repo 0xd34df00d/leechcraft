@@ -60,6 +60,7 @@ namespace Monocle
 	, LayMode_ (LayoutMode::OnePage)
 	, MouseMode_ (MouseMode::Move)
 	, RelayoutScheduled_ (true)
+	, Onload_ ({ -1, 0, 0 })
 	{
 		Ui_.setupUi (this);
 		Ui_.PagesView_->setScene (&Scene_);
@@ -504,7 +505,13 @@ namespace Monocle
 		}
 
 		Scene_.setSceneRect (Scene_.itemsBoundingRect ());
-		SetCurrentPage (std::max (GetCurrentPage (), 0));
+		if (Onload_.Num_ >= 0)
+		{
+			handleNavigateRequested (QString (), Onload_.Num_, Onload_.X_, Onload_.Y_);
+			Onload_.Num_ = -1;
+		}
+		else
+			SetCurrentPage (std::max (GetCurrentPage (), 0));
 		updateNumLabel ();
 	}
 
@@ -517,11 +524,19 @@ namespace Monocle
 		}
 	}
 
-	void DocumentTab::handleNavigateRequested (const QString& path, int num, double x, double y)
+	void DocumentTab::handleNavigateRequested (QString path, int num, double x, double y)
 	{
 		if (!path.isEmpty ())
+		{
+			if (QFileInfo (path).isRelative ())
+				path = QFileInfo (CurrentDocPath_).dir ().absoluteFilePath (path);
+
+			Onload_ = { num, x, y };
+
 			if (!SetDoc (path))
-				return;
+				Onload_.Num_ = -1;
+			return;
+		}
 
 		SetCurrentPage (num);
 
