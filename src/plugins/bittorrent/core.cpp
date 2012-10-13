@@ -63,6 +63,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/ijobholder.h>
 #include <util/tags/tagscompletionmodel.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
@@ -132,6 +133,7 @@ namespace LeechCraft
 			, Toolbar_ (0)
 			, TabWidget_ (0)
 			, Menu_ (0)
+			, ShortcutMgr_ (0)
 			, TorrentIcon_ (":/resources/images/bittorrent.svg")
 			{
 				setObjectName ("BitTorrent Core");
@@ -144,10 +146,6 @@ namespace LeechCraft
 
 				qRegisterMetaType<libtorrent::entry> ("libtorrent::entry");
 				qRegisterMetaTypeStreamOperators<libtorrent::entry> ("libtorrent::entry");
-			}
-
-			Core::~Core ()
-			{
 			}
 
 			void Core::SetWidgets (QToolBar *tool, QWidget *tab)
@@ -311,11 +309,17 @@ namespace LeechCraft
 			void Core::SetProxy (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
+				ShortcutMgr_ = new ShortcutManager (proxy, this);
 			}
 
 			ICoreProxy_ptr Core::GetProxy () const
 			{
 				return Proxy_;
+			}
+
+			Util::ShortcutManager* Core::GetShortcutManager () const
+			{
+				return ShortcutMgr_;
 			}
 
 			EntityTestHandleResult Core::CouldDownload (const Entity& e) const

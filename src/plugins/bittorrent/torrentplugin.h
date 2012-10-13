@@ -47,11 +47,6 @@ class QTranslator;
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class ShortcutManager;
-	}
-
 	namespace Plugins
 	{
 		namespace BitTorrent
@@ -119,8 +114,6 @@ namespace LeechCraft
 
 				SpeedSelectorAction *DownSelectorAction_,
 						*UpSelectorAction_;
-
-				Util::ShortcutManager *ShortcutMgr_;
 
 				enum
 				{

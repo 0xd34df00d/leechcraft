@@ -54,6 +54,11 @@ struct EntityTestHandleResult;
 
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class ShortcutManager;
+	}
+
 	namespace Plugins
 	{
 		namespace BitTorrent
@@ -124,7 +129,7 @@ namespace LeechCraft
 				HandleDict_t Handles_;
 				QList<QString> Headers_;
 				mutable int CurrentTorrent_;
-				std::unique_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
+				std::shared_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
 				std::shared_ptr<LiveStreamManager> LiveStreamManager_;
 				QString ExternalAddress_;
 				bool SaveScheduled_;
@@ -132,6 +137,7 @@ namespace LeechCraft
 				QWidget *TabWidget_;
 				ICoreProxy_ptr Proxy_;
 				QMenu *Menu_;
+				Util::ShortcutManager *ShortcutMgr_;
 
 				const QIcon TorrentIcon_;
 
@@ -156,7 +162,7 @@ namespace LeechCraft
 				};
 
 				static Core* Instance ();
-				virtual ~Core ();
+
 				void SetWidgets (QToolBar*, QWidget*);
 				void SetMenu (QMenu*);
 				void DoDelayedInit ();
@@ -164,6 +170,8 @@ namespace LeechCraft
 
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
+
+				Util::ShortcutManager* GetShortcutManager () const;
 
 				EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
 				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;

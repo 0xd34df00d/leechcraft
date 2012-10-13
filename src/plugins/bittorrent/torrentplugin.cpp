@@ -324,12 +324,12 @@ namespace LeechCraft
 			void TorrentPlugin::SetShortcut (const QString& name,
 					const QKeySequences_t& shortcuts)
 			{
-				ShortcutMgr_->SetShortcut (name, shortcuts);
+				Core::Instance ()->GetShortcutManager ()->SetShortcut (name, shortcuts);
 			}
 
 			QMap<QString, ActionInfo> TorrentPlugin::GetActionInfo () const
 			{
-				return ShortcutMgr_->GetActionInfo ();
+				return Core::Instance ()->GetShortcutManager ()->GetActionInfo ();
 			}
 
 			TabClasses_t TorrentPlugin::GetTabClasses () const
@@ -939,7 +939,7 @@ namespace LeechCraft
 #define _LC_MERGE(a) "Torrent"#a
 
 #define _LC_SINGLE(a) \
-				ShortcutMgr_->RegisterAction (_LC_MERGE(a), a.get ());
+				Core::Instance ()->GetShortcutManager ()->RegisterAction (_LC_MERGE(a), a.get ());
 
 #define _LC_TRAVERSER(z,i,array) \
 				_LC_SINGLE (BOOST_PP_SEQ_ELEM(i, array))
