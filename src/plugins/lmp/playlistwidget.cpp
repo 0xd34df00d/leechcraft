@@ -377,7 +377,7 @@ namespace LMP
 		auto menu = new QMenu (tr ("Sorting"));
 		sortButton->setMenu (menu);
 
-		auto getInts = [] (const QList<SortingCriteria>& crit)
+		auto getInts = [] (const QList<SortingCriteria>& crit) -> QVariantList
 		{
 			QVariantList result;
 			std::transform (crit.begin (), crit.end (), std::back_inserter (result),
@@ -402,7 +402,8 @@ namespace LMP
 					});
 		stdSorts << SortPair_t (tr ("File path"),
 					{
-						SortingCriteria::FilePath
+						SortingCriteria::DirectoryPath,
+						SortingCriteria::FileName
 					});
 		stdSorts << SortPair_t (tr ("No sort"), {});
 #endif

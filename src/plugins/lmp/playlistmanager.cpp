@@ -64,7 +64,7 @@ namespace LMP
 				{
 					const auto& sources = Manager_->GetSources (idx);
 					std::transform (sources.begin (), sources.end (), std::back_inserter (urls),
-							[] (decltype (sources.front ()) src)
+							[] (decltype (sources.front ()) src) -> QUrl
 							{
 								switch (src.type ())
 								{
@@ -157,7 +157,7 @@ namespace LMP
 	QList<Phonon::MediaSource> PlaylistManager::GetSources (const QModelIndex& index) const
 	{
 		auto col = Core::Instance ().GetLocalCollection ();
-		auto toSrcs = [col] (const QList<int>& ids)
+		auto toSrcs = [col] (const QList<int>& ids) -> QList<Phonon::MediaSource>
 		{
 			const auto& paths = col->TrackList2PathList (ids);
 			QList<Phonon::MediaSource> result;

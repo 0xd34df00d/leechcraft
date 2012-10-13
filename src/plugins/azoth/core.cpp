@@ -745,7 +745,7 @@ namespace Azoth
 
 	QList<QColor> Core::GenerateColors (const QString& coloring) const
 	{
-		auto fix = [] (qreal h)
+		auto fix = [] (qreal h) -> qreal
 		{
 			while (h < 0)
 				h += 1;

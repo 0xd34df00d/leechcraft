@@ -71,7 +71,7 @@ namespace Lastfmscrobble
 		RadioRoot_ = new QStandardItem ("Last.FM");
 		RadioRoot_->setEditable (false);
 		RadioRoot_->setIcon (QIcon (":/resources/images/lastfm.png"));
-		auto addPredefined = [this] (const QString& name, const QString& id, const QIcon& icon)
+		auto addPredefined = [this] (const QString& name, const QString& id, const QIcon& icon) -> QStandardItem*
 		{
 			auto item = new QStandardItem (name);
 			item->setData (Media::RadioType::Predefined, Media::RadioItemRole::ItemType);

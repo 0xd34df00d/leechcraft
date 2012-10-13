@@ -35,11 +35,9 @@ namespace
 {
 	void Write (QtMsgType type, const char *message, bool bt)
 	{
-#if not defined (Q_OS_WIN32) && not defined (Q_OS_MAC)
-
+#if !defined (Q_OS_WIN32) && !defined (Q_OS_MAC)
 		if (!strcmp (message, "QPixmap::handle(): Pixmap is not an X11 class pixmap"))
 			return;
-
 #endif
 		static const std::map<QtMsgType, QString> fileName =
 		{
@@ -68,7 +66,6 @@ namespace
 			 << std::endl;
 
 #ifdef _GNU_SOURCE
-
 		if (type != QtDebugMsg && bt)
 		{
 			const int maxSize = 100;
@@ -83,7 +80,6 @@ namespace
 
 			std::free (strings);
 		}
-
 #endif
 
 		ostr.close ();

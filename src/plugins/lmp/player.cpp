@@ -140,7 +140,7 @@ namespace LMP
 				if (action == Qt::MoveAction)
 					Q_FOREACH (const auto& src, sources)
 					{
-						auto pred = [&src] (decltype (existingQueue.front ()) item)
+						auto pred = [&src] (decltype (existingQueue.front ()) item) -> bool
 						{
 							if (src.type () != item.type ())
 								return false;
@@ -208,9 +208,15 @@ namespace LMP
 				if (left.Title_ != right.Title_)
 					return left.Title_ < right.Title_;
 				break;
-			case SortingCriteria::FilePath:
+			case SortingCriteria::DirectoryPath:
 				if (left.LocalPath_ != right.LocalPath_)
-					return left.LocalPath_ < right.LocalPath_;
+					return QFileInfo (left.LocalPath_).dir ().absolutePath () <
+							QFileInfo (right.LocalPath_).dir ().absolutePath ();
+				break;
+			case SortingCriteria::FileName:
+				if (left.LocalPath_ != right.LocalPath_)
+					return QString::localeAwareCompare (QFileInfo (left.LocalPath_).fileName (),
+							QFileInfo (right.LocalPath_).fileName ()) < 0;
 				break;
 			}
 		}

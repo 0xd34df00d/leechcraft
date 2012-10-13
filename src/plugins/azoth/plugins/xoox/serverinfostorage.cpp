@@ -66,7 +66,7 @@ namespace Xoox
 
 	void ServerInfoStorage::HandleItemInfo (const QXmppDiscoveryIq& iq)
 	{
-		auto hasIdentity = [&iq] (const QString& cat, const QString& type)
+		auto hasIdentity = [&iq] (const QString& cat, const QString& type) -> bool
 		{
 			const auto& ids = iq.identities ();
 			return std::find_if (ids.begin (), ids.end (),

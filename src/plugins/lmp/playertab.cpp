@@ -642,7 +642,7 @@ namespace LMP
 
 	void PlayerTab::handleCurrentPlayTime (qint64 time)
 	{
-		auto niceTime = [] (qint64 time)
+		auto niceTime = [] (qint64 time) -> QString
 		{
 			if (!time)
 				return QString ();

@@ -672,7 +672,7 @@ namespace LMP
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
 
 		emit scanStarted (newPaths.size ());
-		auto worker = [resolver] (const QString& path)
+		auto worker = [resolver] (const QString& path) -> MediaInfo
 		{
 			try
 			{
