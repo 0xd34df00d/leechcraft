@@ -22,7 +22,14 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QTreeView" name="TorrentsView_"/>
+     <widget class="QTreeView" name="TorrentsView_">
+      <property name="rootIsDecorated">
+       <bool>false</bool>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
      <widget class="LeechCraft::Plugins::BitTorrent::TorrentTabWidget" name="Tabs_" native="true"/>
     </widget>
    </item>
