@@ -1316,6 +1316,7 @@ namespace Poshuku
 				LeechCraft::OnlyHandle;
 			e.Additional_ ["UserVisibleName"] = entity;
 			e.Additional_ ["LinkRel"] = link.attribute ("rel");
+			e.Additional_ ["IgnorePlugins"] = QStringList ("org.LeechCraft.Poshuku");
 
 			bool ch = false;
 			emit couldHandle (e, &ch);
