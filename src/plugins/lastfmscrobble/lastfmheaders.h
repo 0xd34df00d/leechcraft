@@ -22,15 +22,8 @@
 #include <lastfm/misc.h>
 
 #if LASTFM_MAJOR_VERSION < 1
-#include <lastfm/ParseError>
-#include <lastfm/Xspf>
-#include <lastfm/MutableTrack>
-#include <lastfm/Track>
-#include <lastfm/ScrobbleCache>
-#include <lastfm/Scrobble>
-#include <lastfm/Audioscrobbler>
-#include <lastfm/RadioTuner>
-#include <lastfm/RadioStation>
+
+#include <lastfm.h>
 
 #else
 

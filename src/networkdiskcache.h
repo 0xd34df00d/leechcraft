@@ -19,6 +19,7 @@
 #ifndef NETWORKDISKCACHE_H
 #define NETWORKDISKCACHE_H
 #include <QNetworkDiskCache>
+#include <QMutex>
 
 namespace LeechCraft
 {
@@ -28,10 +29,15 @@ namespace LeechCraft
 
 		bool IsCollectingGarbage_;
 		qint64 PreviousSize_;
+
+		QMutex InsertRemoveMutex_;
 	public:
 		NetworkDiskCache (QObject* = 0);
 
 		virtual QIODevice* prepare (const QNetworkCacheMetaData&);
+
+		virtual void insert (QIODevice *device);
+		virtual bool remove (const QUrl &url);
 	protected:
 		virtual qint64 expire ();
 	public slots:

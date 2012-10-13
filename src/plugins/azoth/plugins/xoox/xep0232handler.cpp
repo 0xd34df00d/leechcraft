@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "xep0232handler.h"
+#include <algorithm>
 #include <QtDebug>
 #include <QXmppDataForm.h>
 
@@ -38,8 +39,25 @@ namespace XEP0232Handler
 
 	SoftwareInformation FromDataForm (const QXmppDataForm& form)
 	{
+		if (form.isNull ())
+			return SoftwareInformation ();
+
+		const auto& fields = form.fields ();
+		auto pos = std::find_if (fields.begin (), fields.end (),
+				[] (decltype (fields.front ()) field) { return field.key () == "FORM_TYPE"; });
+		if (pos == fields.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no FORM_TYPE"
+					<< form.title ();
+			return SoftwareInformation ();
+		}
+
+		if (pos->value () != SWInfoFormType)
+			return SoftwareInformation ();
+
 		SoftwareInformation si;
-		Q_FOREACH (const QXmppDataForm::Field& f, form.fields ())
+		Q_FOREACH (const QXmppDataForm::Field& f, fields)
 		{
 			const auto& var = f.key ();
 			if (var == "icon")
@@ -64,7 +82,7 @@ namespace XEP0232Handler
 				si.Software_ = f.value ().toString ();
 			else if (var == "software_version")
 				si.SoftwareVer_ = f.value ().toString ();
-			else
+			else if (var != "FORM_TYPE")
 				qWarning () << Q_FUNC_INFO
 						<< "unknown field"
 						<< var
@@ -86,13 +104,16 @@ namespace XEP0232Handler
 		{
 			QXmppDataForm::Field iconField;
 			iconField.setKey ("icon");
-			QXmppDataForm::Media media (si.IconHeight_, si.IconWidth_);
+			QXmppDataForm::Media media;
+			media.setWidth (si.IconHeight_);
+			media.setHeight (si.IconWidth_);
 			QList<QPair<QString, QString>> uris;
 			if (!si.IconCID_.isEmpty ())
 				uris << qMakePair (si.IconType_, si.IconCID_);
 			uris << qMakePair (si.IconType_, QString (si.IconURL_.toEncoded ()));
 			media.setUris (uris);
 			iconField.setMedia (media);
+			iconField.setValue (si.IconURL_.toEncoded ());
 
 			fields << iconField;
 		}

@@ -27,7 +27,7 @@ namespace Azoth
 namespace Xoox
 {
 	const QString NsPrivacy = "jabber:iq:privacy";
-	
+
 	PrivacyListItem::PrivacyListItem (const QString& value,
 			PrivacyListItem::Type type, PrivacyListItem::Action action)
 	: Value_ (value)
@@ -36,7 +36,7 @@ namespace Xoox
 	, Stanzas_ (STAll)
 	{
 	}
-	
+
 	void PrivacyListItem::Parse (const QDomElement& itemElem)
 	{
 		const QString& type = itemElem.attribute ("type");
@@ -48,7 +48,7 @@ namespace Xoox
 			Type_ = TGroup;
 		else
 			Type_ = TNone;
-		
+
 		Value_ = itemElem.attribute ("value");
 		Action_ = itemElem.attribute ("action") == "deny" ?
 				ADeny :
@@ -63,11 +63,11 @@ namespace Xoox
 			Stanzas_ |= STPresenceOut;
 		if (!itemElem.firstChildElement ("iq").isNull ())
 			Stanzas_ |= STIq;
-		
+
 		if (Stanzas_ == STNone)
 			Stanzas_ = STAll;
 	}
-	
+
 	QXmppElement PrivacyListItem::ToXML() const
 	{
 		QXmppElement item;
@@ -87,12 +87,12 @@ namespace Xoox
 		case TNone:
 			break;
 		}
-		
+
 		item.setAttribute ("action", Action_ == ADeny ? "deny" : "allow");
 
 		if (!Value_.isEmpty ())
 			item.setAttribute ("value", Value_);
-		
+
 		if (Stanzas_ != STAll)
 		{
 			if (Stanzas_ & STMessage)
@@ -120,59 +120,59 @@ namespace Xoox
 				item.appendChild (elem);
 			}
 		}
-		
+
 		return item;
 	}
-	
+
 	PrivacyListItem::Type PrivacyListItem::GetType () const
 	{
 		return Type_;
 	}
-	
+
 	void PrivacyListItem::SetType (PrivacyListItem::Type type)
 	{
 		Type_ = type;
 	}
-	
+
 	PrivacyListItem::Action PrivacyListItem::GetAction () const
 	{
 		return Action_;
 	}
-	
+
 	void PrivacyListItem::SetAction (PrivacyListItem::Action action)
 	{
 		Action_ = action;
 	}
-	
+
 	QString PrivacyListItem::GetValue () const
 	{
 		return Value_;
 	}
-	
+
 	void PrivacyListItem::SetValue (const QString& value)
 	{
 		Value_ = value;
 	}
-	
+
 	PrivacyListItem::StanzaTypes PrivacyListItem::GetStanzaTypes () const
 	{
 		return Stanzas_;
 	}
-	
+
 	void PrivacyListItem::SetStanzaTypes (PrivacyListItem::StanzaTypes st)
 	{
 		Stanzas_ = st;
 	}
-	
+
 	PrivacyList::PrivacyList (const QString& name)
 	: Name_ (name)
 	{
 	}
-	
+
 	void PrivacyList::Parse (const QDomElement& list)
 	{
 		Name_ = list.attribute ("name");
-		
+
 		QMap<int, PrivacyListItem> items;
 
 		QDomElement itemElem = list.firstChildElement ("item");
@@ -184,16 +184,16 @@ namespace Xoox
 
 			itemElem = itemElem.nextSiblingElement ("item");
 		}
-		
+
 		SetItems (items.values ());
 	}
-	
+
 	QXmppElement PrivacyList::ToXML () const
 	{
 		QXmppElement listElem;
 		listElem.setTagName ("list");
 		listElem.setAttribute ("name", Name_);
-		
+
 		int i = 1;
 		Q_FOREACH (const PrivacyListItem& item, Items_)
 		{
@@ -201,44 +201,44 @@ namespace Xoox
 			itemElem.setAttribute ("order", QString::number (i++));
 			listElem.appendChild (itemElem);
 		}
-		
+
 		return listElem;
 	}
-	
+
 	QString PrivacyList::GetName () const
 	{
 		return Name_;
 	}
-	
+
 	void PrivacyList::SetName (const QString& name)
 	{
 		Name_ = name;
 	}
-	
+
 	QList<PrivacyListItem> PrivacyList::GetItems () const
 	{
 		return Items_;
 	}
-	
+
 	void PrivacyList::SetItems (const QList<PrivacyListItem>& items)
 	{
 		Items_ = items;
 	}
-	
+
 	void PrivacyListsManager::QueryLists ()
 	{
 		QXmppElement query;
 		query.setTagName ("query");
 		query.setAttribute ("xmlns", NsPrivacy);
-		
+
 		QXmppIq iq;
-		iq.setExtensions (query);
-		
+		iq.setExtensions (QXmppElementList () << query);
+
 		ID2Type_ [iq.id ()] = QTQueryLists;
-		
+
 		client ()->sendPacket (iq);
 	}
-	
+
 	void PrivacyListsManager::QueryList (const QString& name)
 	{
 		QXmppElement list;
@@ -249,15 +249,15 @@ namespace Xoox
 		query.setTagName ("query");
 		query.setAttribute ("xmlns", NsPrivacy);
 		query.appendChild (list);
-		
+
 		QXmppIq iq;
-		iq.setExtensions (query);
-		
+		iq.setExtensions (QXmppElementList () << query);
+
 		ID2Type_ [iq.id ()] = QTGetList;
-		
+
 		client ()->sendPacket (iq);
 	}
-	
+
 	void PrivacyListsManager::ActivateList (const QString& name, ListType type)
 	{
 		QXmppElement list;
@@ -269,23 +269,23 @@ namespace Xoox
 		query.setTagName ("query");
 		query.setAttribute ("xmlns", NsPrivacy);
 		query.appendChild (list);
-		
+
 		QXmppIq iq (QXmppIq::Set);
-		iq.setExtensions (query);
-		
+		iq.setExtensions (QXmppElementList () << query);
+
 		client ()->sendPacket (iq);
 	}
-	
+
 	void PrivacyListsManager::SetList (const PrivacyList& list)
 	{
 		QXmppElement query;
 		query.setTagName ("query");
 		query.setAttribute ("xmlns", NsPrivacy);
 		query.appendChild (list.ToXML ());
-		
+
 		QXmppIq iq (QXmppIq::Set);
-		iq.setExtensions (query);
-		
+		iq.setExtensions (QXmppElementList () << query);
+
 		client ()->sendPacket (iq);
 	}
 
@@ -293,12 +293,12 @@ namespace Xoox
 	{
 		return QStringList (NsPrivacy);
 	}
-	
+
 	bool PrivacyListsManager::handleStanza (const QDomElement& elem)
 	{
 		if (elem.tagName () != "iq")
 			return false;
-		
+
 		if (elem.attribute ("type") == "set" &&
 				elem.firstChildElement ("query").namespaceURI () == NsPrivacy)
 		{
@@ -307,10 +307,10 @@ namespace Xoox
 			client ()->sendPacket (iq);
 			return true;
 		}
-		
+
 		if (!ID2Type_.contains (elem.attribute ("id")))
 			return false;
-		
+
 		switch (ID2Type_ [elem.attribute ("id")])
 		{
 		case QTQueryLists:
@@ -320,16 +320,16 @@ namespace Xoox
 			HandleList (elem);
 			break;
 		}
-		
+
 		return true;
 	}
-	
+
 	void PrivacyListsManager::HandleListQueryResult (const QDomElement& elem)
 	{
 		const QDomElement& query = elem.firstChildElement ("query");
 		const QString& active = query.firstChildElement ("active").attribute ("name");
 		const QString& def = query.firstChildElement ("default").attribute ("name");
-		
+
 		QStringList lists;
 		QDomElement listElem = query.firstChildElement ("list");
 		while (!listElem.isNull ())
@@ -337,17 +337,17 @@ namespace Xoox
 			lists << listElem.attribute ("name");
 			listElem = listElem.nextSiblingElement ("list");
 		}
-		
+
 		emit gotLists (lists, active, def);
 	}
-	
+
 	void PrivacyListsManager::HandleList (const QDomElement& elem)
 	{
 		const QDomElement& query = elem.firstChildElement ("query");
 
 		PrivacyList list;
 		list.Parse (query.firstChildElement ("list"));
-		
+
 		emit gotList (list);
 	}
 }

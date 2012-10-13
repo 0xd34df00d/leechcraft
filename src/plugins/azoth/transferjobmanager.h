@@ -27,11 +27,14 @@ class QStandardItemModel;
 class QStandardItem;
 class QAbstractItemModel;
 class QToolBar;
+class QUrl;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+	class ICLEntry;
+
 	class TransferJobManager : public QObject
 	{
 		Q_OBJECT
@@ -46,9 +49,9 @@ namespace Azoth
 		typedef QHash<QObject*, QStandardItem*> ObjectDictionary_t;
 		ObjectDictionary_t Object2Status_;
 		ObjectDictionary_t Object2Progress_;
-		
+
 		QHash<QString, QObjectList> Entry2Incoming_;
-		
+
 		QModelIndex Selected_;
 		QToolBar *ReprBar_;
 	public:
@@ -56,13 +59,15 @@ namespace Azoth
 
 		void AddAccountManager (QObject*);
 		QObjectList GetPendingIncomingJobsFor (const QString&);
-		
+
 		void SelectionChanged (const QModelIndex&);
 
 		void HandleJob (QObject*);
 		void AcceptJob (QObject*, QString);
 		void DenyJob (QObject*);
 		QAbstractItemModel* GetSummaryModel () const;
+
+		bool OfferURLs (ICLEntry *entry, const QList<QUrl>& urls);
 	private:
 		QString CheckSavePath (QString);
 		void HandleDeoffer (QObject*);

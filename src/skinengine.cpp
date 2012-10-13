@@ -45,6 +45,8 @@ SkinEngine::SkinEngine ()
 
 #ifdef Q_OS_WIN32
 	QIcon::setThemeSearchPaths (QStringList (qApp->applicationDirPath () + "/icons/"));
+#elif defined (Q_OS_MAC)
+	QIcon::setThemeSearchPaths (QStringList (qApp->applicationDirPath () + "/../Resources/icons/"));
 #endif
 
 	const QDir& dir = Util::CreateIfNotExists ("/icons/");
@@ -80,7 +82,9 @@ QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconO
 		return result;
 	}
 
+#ifdef QT_DEBUG
 	qDebug () << Q_FUNC_INFO << "no icon for" << actionIcon << actionIconOff << QIcon::themeName () << QIcon::themeSearchPaths ();
+#endif
 
 	return QIcon ();
 }

@@ -38,6 +38,7 @@ namespace Azoth
 	private:
 		void HandleNick (QMenu*, const QUrl&);
 		void HandleURL (QMenu*, const QUrl&);
+		void HandleDataFilters (QMenu*, const QString&);
 	private slots:
 		void handleOpenLink ();
 		void handleOpenExternally ();

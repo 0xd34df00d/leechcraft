@@ -19,9 +19,7 @@
 #include "xspf.h"
 #include <QFile>
 #include <QDomDocument>
-#include <QFileInfo>
-#include <QDir>
-#include <QUrl>
+#include "commonpl.h"
 
 namespace LeechCraft
 {
@@ -67,28 +65,7 @@ namespace XSPF
 
 	QList<Phonon::MediaSource> Read2Sources (const QString& path)
 	{
-		const auto& plDir = QFileInfo (path).absoluteDir ();
-
-		QList<Phonon::MediaSource> result;
-		Q_FOREACH (const auto& src, Read (path))
-		{
-			QUrl url (src);
-			if (!url.scheme ().isEmpty ())
-			{
-				result << (url.scheme () == "file" ? url.toLocalFile () : url);
-				continue;
-			}
-
-			const QFileInfo fi (src);
-			if (fi.suffix () == "xspf")
-				result += Read2Sources (plDir.absoluteFilePath (src));
-			else if (fi.isRelative ())
-				result << plDir.absoluteFilePath (src);
-			else
-				result << src;
-		}
-
-		return result;
+		return CommonRead2Sources ({ QStringList ("xspf"), path, Read });
 	}
 }
 }

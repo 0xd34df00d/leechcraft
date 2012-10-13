@@ -57,8 +57,8 @@ namespace LeechCraft
 				this,
 				SLOT (updatePreferences ()));
 
-		widget->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
+		widget->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		widget->setProperty ("SearchTerms", label->text ());
 
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0, Qt::AlignRight);
@@ -114,7 +114,7 @@ namespace LeechCraft
 		element.setAttribute ("default", vals.at (0) + ':' + vals.at (1));
 	}
 
-	QVariant ItemHandlerSpinboxRange::GetValue (QObject *object) const
+	QVariant ItemHandlerSpinboxRange::GetObjectValue (QObject *object) const
 	{
 		RangeWidget *widget = qobject_cast<RangeWidget*> (object);
 		if (!widget)

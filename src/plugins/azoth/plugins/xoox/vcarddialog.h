@@ -19,9 +19,9 @@
 #ifndef VCARDDIALOG_H
 #define VCARDDIALOG_H
 #include <QDialog>
-#include <QXmppAnnotationsIq.h>
 #include <QXmppVCardIq.h>
 #include "ui_vcarddialog.h"
+#include "xmppannotationsiq.h"
 
 namespace LeechCraft
 {
@@ -32,6 +32,10 @@ namespace Xoox
 	class EntryBase;
 	class GlooxAccount;
 
+	typedef QList<QXmppVCardPhone> QXmppVCardPhoneList;
+	typedef QList<QXmppVCardEmail> QXmppVCardEmailList;
+	typedef QList<QXmppVCardAddress> QXmppVCardAddressList;
+
 	class VCardDialog : public QDialog
 	{
 		Q_OBJECT
@@ -39,7 +43,7 @@ namespace Xoox
 		Ui::VCardDialog Ui_;
 		GlooxAccount *Account_;
 		QString JID_;
-		QXmppAnnotationsIq::NoteItem Note_;
+		XMPPAnnotationsIq::NoteItem Note_;
 
 		QXmppVCardIq VCard_;
 

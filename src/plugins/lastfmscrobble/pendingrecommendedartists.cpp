@@ -33,7 +33,7 @@ namespace Lastfmscrobble
 	: BaseSimilarArtists (QString (), num, obj)
 	, NAM_ (nam)
 	{
-		if (auth)
+		if (auth->IsAuthenticated ())
 			request ();
 		else
 			connect (auth,

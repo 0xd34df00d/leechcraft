@@ -39,7 +39,6 @@ SET (SRCS
 	customwebview.cpp
 	progresslineedit.cpp
 	favoritesmodel.cpp
-	addtofavoritesdialog.cpp
 	filtermodel.cpp
 	favoritesdelegate.cpp
 	favoritestreeview.cpp
@@ -87,7 +86,6 @@ SET (HEADERS
 	customwebview.h
 	progresslineedit.h
 	favoritesmodel.h
-	addtofavoritesdialog.h
 	filtermodel.h
 	favoritesdelegate.h
 	favoritestreeview.h
@@ -131,7 +129,6 @@ SET (HEADERS
 	)
 SET (FORMS
 	browserwidget.ui
-	addtofavoritesdialog.ui
 	finddialog.ui
 	screenshotsavedialog.ui
 	cookieseditdialog.ui
@@ -146,7 +143,7 @@ SET (FORMS
 	urlframe.ui
 	)
 SET (RESOURCES poshukuresources.qrc)
-CreateTrVars ("poshuku" "ar;be;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrs ("poshuku" "ar;be;de;en;eo;es;fr;it;pl;ru_RU;tt;uk_UA" COMPILED_TRANSLATIONS)
 
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
@@ -154,12 +151,6 @@ ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_CUSTOM_COMMAND (OUTPUT
-	${COMPILED_TRANSLATIONS}
-	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
-	DEPENDS ${TRANSLATIONS}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
 ADD_LIBRARY (leechcraft_poshuku SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
@@ -190,7 +181,10 @@ OPTION (ENABLE_POSHUKU_FILESCHEME "Build support of local file browsing for Posh
 OPTION (ENABLE_POSHUKU_FUA "Build user agent customization plugin for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_KEYWORDS "Build support of url keywords for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" ON)
-OPTION (ENABLE_POSHUKU_POGOOGLUE "Build support for searching selected text in Google" ON)
+
+IF (ENABLE_POSHUKU_POGOOGLUE)
+	MESSAGE (WARNING "ENABLE_POSHUKU_POGOOGLUE option is removed, so is Poshuku Pogooglue plugin. Use the global Pogooglue plugin instead.")
+ENDIF (ENABLE_POSHUKU_POGOOGLUE)
 
 IF (ENABLE_POSHUKU_CLEANWEB)
 	ADD_SUBDIRECTORY (plugins/cleanweb)
@@ -210,6 +204,3 @@ ENDIF (ENABLE_POSHUKU_FILESCHEME)
 IF (ENABLE_POSHUKU_ONLINEBOOKMARKS)
 	ADD_SUBDIRECTORY (plugins/onlinebookmarks)
 ENDIF (ENABLE_POSHUKU_ONLINEBOOKMARKS)
-IF (ENABLE_POSHUKU_POGOOGLUE)
-	ADD_SUBDIRECTORY (plugins/pogooglue)
-ENDIF (ENABLE_POSHUKU_POGOOGLUE)

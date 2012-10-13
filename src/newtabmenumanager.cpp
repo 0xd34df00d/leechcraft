@@ -136,7 +136,7 @@ namespace LeechCraft
 		ToggleHide (itw->ParentMultiTabs (), itw->GetTabClassInfo ().TabClass_, hide);
 	}
 
-	void NewTabMenuManager::HideAction (ITabWidget *itw, bool hide)
+	void NewTabMenuManager::HideAction (ITabWidget *itw)
 	{
 		QObject *pObj = itw->ParentMultiTabs ();
 		const auto& tabClass = itw->GetTabClassInfo ().TabClass_;

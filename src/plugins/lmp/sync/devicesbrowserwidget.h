@@ -25,24 +25,38 @@ class IRemovableDevManager;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class MergeModel;
+}
+
 namespace LMP
 {
 	class ISyncPlugin;
 	class UploadModel;
+	class UnmountableDevManager;
 
 	class DevicesBrowserWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::DevicesBrowserWidget Ui_;
-		IRemovableDevManager *DevMgr_;
 		UploadModel *DevUploadModel_;
+
+		Util::MergeModel *Merger_;
+		UnmountableDevManager *UnmountableMgr_;
+		QMap<QAbstractItemModel*, IRemovableDevManager*> Flattener2DevMgr_;
 
 		ISyncPlugin *CurrentSyncer_;
 	public:
 		DevicesBrowserWidget (QWidget* = 0);
 
 		void InitializeDevices ();
+	private:
+		void UploadMountable (int);
+		void UploadUnmountable (int);
+		void HandleMountableSelected (int);
+		void HandleUnmountableSelected (int);
 	private slots:
 		void handleDevDataChanged (const QModelIndex&, const QModelIndex&);
 		void on_UploadButton__released ();

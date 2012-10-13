@@ -253,41 +253,9 @@ namespace LeechCraft
 		 */
 		void handleStatusBarChanged (QWidget *sender, const QString& msg);
 	private:
-		enum ObjectType
-		{
-			OTDownloaders,
-			OTHandlers
-		};
-		/** Returns the list of objects, either downloaders or handlers,
-		 * that are able to handle given entity.
-		 *
-		 * @param[in] entity The download entity to download/handle.
-		 * @param[in] downloaders Query for downloaders (if true) or
-		 * handlers (if false).
-		 * @param[in] detectOnly Only detect the ability to handle the
-		 * entity — return immediately after the first suitable object
-		 * was found.
-		 *
-		 * @return The list of objects that are able/download the entity.
-		 */
-		QList<QObject*> GetObjects (const LeechCraft::Entity& entity,
-				ObjectType type, bool detectOnly) const;
-
-		/** Checks whether given entity could be handled or downloaded.
-		 *
-		 * @param[in] entity The entity to check.
-		 * @return Whether the given entity could be handled.
-		 */
-		bool CouldHandle (LeechCraft::Entity entity) const;
-
 		/** Initializes IInfo's signals of the object.
 		 */
 		void InitDynamicSignals (QObject *object);
-
-		/** Initializes the object as a IJobHolder. The object is assumed
-		 * to be a valid IJobHolder*.
-		 */
-		void InitJobHolder (QObject *object);
 
 		/** Initializes the object as a IEmbedTab. The object is assumed
 		 * to be a valid IEmbedTab*.

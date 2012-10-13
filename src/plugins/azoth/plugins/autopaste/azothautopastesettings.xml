@@ -17,11 +17,5 @@
 				<label value="Number of lines to be detected as paste:" />
 			</item>
 		</groupbox>
-		<groupbox>
-			<label value="Behavior" />
-			<item type="checkbox" property="ConfirmPasting" default="true">
-				<label value="Confirm pasting" />
-			</item>
-		</groupbox>
 	</page>
 </settings>

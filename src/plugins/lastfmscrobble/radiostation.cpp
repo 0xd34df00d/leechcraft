@@ -42,22 +42,24 @@ namespace Lastfmscrobble
 	}
 
 	RadioStation::RadioStation (QNetworkAccessManager *nam,
-			Media::IRadioStationProvider::Type type, const QString& param)
+			Media::RadioType type, const QString& param, const QString& visibleName)
 	{
 		lastfm::RadioStation station;
 		switch (type)
 		{
-		case Media::IRadioStationProvider::Type::SimilarArtists:
+		case Media::RadioType::SimilarArtists:
 			station = lastfm::RadioStation::similar (lastfm::Artist (param));
+			RadioName_ = tr ("Similar to \"%1\" radio").arg (param);
 			break;
-		case Media::IRadioStationProvider::Type::GlobalTag:
-#if LASTFM_MAJOR_VERSION < 1
+		case Media::RadioType::GlobalTag:
+#if LASTFM_VERSION < 0x00010000
 			station = lastfm::RadioStation::globalTag (lastfm::Tag (param));
 #else
 			station = lastfm::RadioStation::tag (lastfm::Tag (param));
 #endif
+			RadioName_ = tr ("Tag \"%1\" radio").arg (param);
 			break;
-		case Media::IRadioStationProvider::Type::Predefined:
+		case Media::RadioType::Predefined:
 		{
 			const auto& login = XmlSettingsManager::Instance ().property ("lastfm.login").toString ();
 			const lastfm::User user (login);
@@ -67,13 +69,16 @@ namespace Lastfmscrobble
 			else if (param == "recommendations")
 				station = lastfm::RadioStation::recommendations (user);
 			else if (param == "loved")
-#if LASTFM_MAJOR_VERSION < 1
+#if LASTFM_VERSION < 0x00010000
 				station = lastfm::RadioStation::lovedTracks (user);
 #else
 				station = lastfm::RadioStation::mix (user);
 #endif
 			else if (param == "neighbourhood")
 				station = lastfm::RadioStation::neighbourhood (user);
+
+			RadioName_ = visibleName;
+
 			break;
 		}
 		default:
@@ -115,6 +120,11 @@ namespace Lastfmscrobble
 				SLOT (handleNextTrack ()));
 	}
 
+	QString RadioStation::GetRadioName () const
+	{
+		return RadioName_;
+	}
+
 	void RadioStation::EmitTrack (const lastfm::Track& track)
 	{
 		qDebug () << Q_FUNC_INFO << track.url ();
@@ -124,9 +134,10 @@ namespace Lastfmscrobble
 			track.album (),
 			track.title (),
 			QStringList (),
-			track.duration () / 1000,
+			static_cast<qint32> (track.duration () / 1000),
 			0,
-			track.trackNumber ()
+			static_cast<qint32> (track.trackNumber ()),
+			QVariantMap ()
 		};
 		emit gotNewStream (track.url (), info);
 	}

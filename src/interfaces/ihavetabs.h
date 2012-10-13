@@ -234,6 +234,15 @@ public:
 	virtual void TabMadeCurrent ()
 	{
 	}
+
+	/** @brief This method is called when another tab becomes active.
+	 *
+	 * This method is called only if this tab was active before the
+	 * other tab activates.
+	 */
+	virtual void TabLostCurrent ()
+	{
+	}
 };
 
 /** @brief Interface for plugins that have one or more tabs.

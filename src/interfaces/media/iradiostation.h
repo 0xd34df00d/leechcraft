@@ -35,8 +35,12 @@ namespace Media
 		virtual QObject* GetObject () = 0;
 
 		virtual void RequestNewStream () = 0;
+
+		virtual QString GetRadioName () const = 0;
 	protected:
 		virtual void gotNewStream (const QUrl&, const AudioInfo&) = 0;
+
+		virtual void gotPlaylist (const QString&, const QString&) = 0;
 
 		virtual void gotError (const QString&) = 0;
 	};

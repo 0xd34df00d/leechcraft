@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "pls.h"
+#include "commonpl.h"
 #include <algorithm>
 #include <QSettings>
 
@@ -48,10 +49,7 @@ namespace PLS
 
 	QList<Phonon::MediaSource> Read2Sources (const QString& path)
 	{
-		QList<Phonon::MediaSource> result;
-		const auto& paths = Read (path);
-		std::copy (paths.begin (), paths.end (), std::back_inserter (result));
-		return result;
+		return CommonRead2Sources ({ QStringList ("pls"), path, Read });
 	}
 }
 }

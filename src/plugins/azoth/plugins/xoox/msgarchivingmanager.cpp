@@ -35,7 +35,7 @@ namespace Xoox
 		template<typename T>
 		class BaseConverter
 		{
-			const QString& Str_;
+			const QString Str_;
 			const T T_;
 
 			const QString DefStr_;
@@ -209,7 +209,7 @@ namespace Xoox
 		elem.setAttribute ("xmlns", NsArchive);
 
 		QXmppIq iq;
-		iq.setExtensions (elem);
+		iq.setExtensions (QXmppElementList () << elem);
 		client ()->sendPacket (iq);
 	}
 
@@ -235,7 +235,7 @@ namespace Xoox
 		pref.appendChild (def);
 
 		QXmppIq iq (QXmppIq::Set);
-		iq.setExtensions (pref);
+		iq.setExtensions (QXmppElementList () << pref);
 		client ()->sendPacket (iq);
 	}
 
@@ -258,7 +258,7 @@ namespace Xoox
 		}
 
 		QXmppIq iq (QXmppIq::Set);
-		iq.setExtensions (pref);
+		iq.setExtensions (QXmppElementList () << pref);
 		client ()->sendPacket (iq);
 	}
 
@@ -300,7 +300,7 @@ namespace Xoox
 		handleMeth (localMeth);
 		handleMeth (manualMeth);
 
-		auto handleSetting = [] (const QDomElement& elem)
+		auto handleSetting = [] (const QDomElement& elem) -> MsgArchSetting
 		{
 			MsgArchSetting setting =
 			{

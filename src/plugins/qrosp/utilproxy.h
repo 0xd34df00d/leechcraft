@@ -28,8 +28,6 @@ class QTranslator;
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace Qrosp
 {
 	class UtilProxy : public QObject
@@ -53,7 +51,7 @@ namespace Qrosp
 				const QString& mime) const;
 		QObject* MakeNotification (const QString& header,
 				const QString& text,
-				Priority priority) const;
+				QString priority) const;
 	};
 }
 }

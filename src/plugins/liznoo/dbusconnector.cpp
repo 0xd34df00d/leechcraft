@@ -78,6 +78,10 @@ namespace Liznoo
 			case PlatformLayer::PowerState::Hibernate:
 				return "Hibernate";
 			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown state";
+			return "";
 		};
 
 		face.call (QDBus::NoBlock, st2meth (state));

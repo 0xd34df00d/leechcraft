@@ -112,6 +112,9 @@ SET (SRCS
 	chatstyleoptionmanager.cpp
 	microblogstab.cpp
 	riexhandler.cpp
+	filesenddialog.cpp
+	pendinguploadpaster.cpp
+	contactdropfilter.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -161,6 +164,9 @@ SET (HEADERS
 	chatstyleoptionmanager.h
 	microblogstab.h
 	riexhandler.h
+	filesenddialog.h
+	pendinguploadpaster.h
+	contactdropfilter.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	)
@@ -189,6 +195,7 @@ SET (FORMS
 	mucinvitedialog.ui
 	groupsenddialog.ui
 	microblogstab.ui
+	filesenddialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 
@@ -198,7 +205,7 @@ IF (ENABLE_CRYPT)
 	SET (FORMS ${FORMS} pgpkeyselectiondialog.ui)
 ENDIF (ENABLE_CRYPT)
 
-CreateTrVars ("azoth" "en;es;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrs ("azoth" "en;es;ru_RU;tt;uk_UA" COMPILED_TRANSLATIONS)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
@@ -210,12 +217,6 @@ IF (WIN32)
 	SET (CUSTOM_SPEEX ${SPEEX_LIBRARIES})
 ENDIF (WIN32)
 
-ADD_CUSTOM_COMMAND (OUTPUT
-	${COMPILED_TRANSLATIONS}
-	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
-	DEPENDS ${TRANSLATIONS}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
 ADD_LIBRARY (leechcraft_azoth SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
@@ -233,7 +234,7 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth
 INSTALL (TARGETS leechcraft_azoth DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES azothsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (DIRECTORY share/azoth DESTINATION share/leechcraft)
+INSTALL (DIRECTORY share/azoth DESTINATION ${LC_SHARE_DEST})
 INSTALL (DIRECTORY interfaces DESTINATION include/leechcraft)
 
 SET (AZOTH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
@@ -243,6 +244,7 @@ OPTION (ENABLE_AZOTH_ADIUMSTYLES "Build support for Adium styles" ON)
 OPTION (ENABLE_AZOTH_ASTRALITY "Build support for protocols provided by Telepathy" OFF)
 OPTION (ENABLE_AZOTH_AUTOPASTE "Build Autopaste for automatic pasting of long messages to pastebins" ON)
 OPTION (ENABLE_AZOTH_AUTOIDLER "Build Autoidler for automatic changing of status according to idle time" ON)
+OPTION (ENABLE_AZOTH_BIRTHDAYNOTIFIER "Build Birthday Notifier so you don't miss your contacts' birthdays" ON)
 OPTION (ENABLE_AZOTH_CHATHISTORY "Build ChatHistory which keeps, well, chat history" ON)
 OPTION (ENABLE_AZOTH_DEPESTER "Build Depester for ignoring unwanted MUC participants" ON)
 OPTION (ENABLE_AZOTH_EMBEDMEDIA "Build EmbedMedia  enables embedding different media objects in chat tab" ON)
@@ -279,6 +281,9 @@ ENDIF (ENABLE_AZOTH_AUTOPASTE)
 IF (ENABLE_AZOTH_AUTOIDLER)
 	ADD_SUBDIRECTORY (plugins/autoidler)
 ENDIF (ENABLE_AZOTH_AUTOIDLER)
+IF (ENABLE_AZOTH_BIRTHDAYNOTIFIER)
+	ADD_SUBDIRECTORY (plugins/birthdaynotifier)
+ENDIF (ENABLE_AZOTH_BIRTHDAYNOTIFIER)
 IF (ENABLE_AZOTH_CHATHISTORY)
 	ADD_SUBDIRECTORY (plugins/chathistory)
 ENDIF (ENABLE_AZOTH_CHATHISTORY)

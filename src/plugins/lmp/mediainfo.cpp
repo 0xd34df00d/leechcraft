@@ -35,9 +35,14 @@ namespace LMP
 		return *this;
 	}
 
+	bool MediaInfo::IsUseless () const
+	{
+		return (Artist_ + Album_ + Title_).trimmed ().isEmpty ();
+	}
+
 	MediaInfo::operator Media::AudioInfo () const
 	{
-		const Media::AudioInfo aInfo =
+		Media::AudioInfo aInfo =
 		{
 			Artist_,
 			Album_,
@@ -48,6 +53,7 @@ namespace LMP
 			TrackNumber_,
 			QVariantMap ()
 		};
+		aInfo.Other_ ["URL"] = QUrl::fromLocalFile (LocalPath_);
 		return aInfo;
 	}
 

@@ -18,12 +18,15 @@
 
 #include "ljbloggingplatform.h"
 #include <QIcon>
+#include <QInputDialog>
 #include <QSettings>
 #include <QtDebug>
+#include <QMainWindow>
 #include <util/passutils.h>
 #include "core.h"
 #include "ljaccount.h"
 #include "ljaccountconfigurationwidget.h"
+#include "postoptionswidget.h"
 
 namespace LeechCraft
 {
@@ -35,7 +38,22 @@ namespace Metida
 	: QObject (parent)
 	, ParentBlogginPlatfromPlugin_ (parent)
 	, PluginProxy_ (0)
+	, LJUser_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("user-properties"),
+			"Add LJ user", this))
+	, LJCut_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("view-split-top-bottom"),
+			"Cut", this))
+	, FirstSeparator_ (new QAction (this))
 	{
+		FirstSeparator_->setSeparator (true);
+
+		connect (LJUser_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAddLJUser ()));
+		connect (LJUser_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAddLJCut ()));
 	}
 
 	QObject* LJBloggingPlatform::GetObject ()
@@ -121,6 +139,16 @@ namespace Metida
 		}
 	}
 
+	QList<QAction*> LJBloggingPlatform::GetEditorActions () const
+	{
+		return { FirstSeparator_, LJUser_, LJCut_ };
+	}
+
+	QList<QWidget*> LJBloggingPlatform::GetBlogiqueSideWidgets () const
+	{
+		return { new PostOptionsWidget };
+	}
+
 	void LJBloggingPlatform::SetPluginProxy (QObject *proxy)
 	{
 		PluginProxy_ = proxy;
@@ -178,6 +206,21 @@ namespace Metida
 		}
 		settings.endArray ();
 		settings.sync ();
+	}
+
+	void LJBloggingPlatform::handleAddLJUser ()
+	{
+		QString name = QInputDialog::getText (Core::Instance ().GetCoreProxy ()->
+				GetMainWindow (),
+				tr ("Add LJ User"),
+				tr ("Enter LJ user name"));
+		if (name.isEmpty ())
+			return;
+	}
+
+	void LJBloggingPlatform::handleAddLJCut ()
+	{
+
 	}
 
 	void LJBloggingPlatform::handleAccountValidated (bool validated)

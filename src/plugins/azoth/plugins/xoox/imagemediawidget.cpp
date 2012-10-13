@@ -17,9 +17,9 @@
  **********************************************************************/
 
 #include "imagemediawidget.h"
-#include <QXmppBobManager.h>
-#include <QXmppBobIq.h>
 #include <QDebug>
+#include "xmppbobmanager.h"
+#include "xmppbobiq.h"
 
 namespace LeechCraft
 {
@@ -28,14 +28,14 @@ namespace Azoth
 namespace Xoox
 {
 	ImageMediaWidget::ImageMediaWidget (const QPair<QString, QString>& uri,
-			QXmppBobManager *manager, const QString& from, QWidget *parent)
+			XMPPBobManager *manager, const QString& from, QWidget *parent)
 	: QLabel (parent)
 	{
 		QByteArray data;
 		if (uri.second.startsWith ("cid:"))
 		{
 			Cid_ = uri.second.mid (4);
-			data = manager->take (from, Cid_);
+			data = manager->Take (from, Cid_);
 		}
 		else
 		{
@@ -50,17 +50,17 @@ namespace Xoox
 		else if (!Cid_.isEmpty ())
 		{
 			connect (manager,
-					SIGNAL (bobReceived (const QXmppBobIq&)),
+					SIGNAL (bobReceived (const XMPPBobIq&)),
 					this,
-					SLOT (bobReceived (const QXmppBobIq&)));
-			manager->requestBob (from, Cid_);
+					SLOT (bobReceived (const XMPPBobIq&)));
+			manager->RequestBob (from, Cid_);
 		}
 	}
 
-	void ImageMediaWidget::bobReceived (const QXmppBobIq& bob)
+	void ImageMediaWidget::bobReceived (const XMPPBobIq& bob)
 	{
-		if (bob.cid () == Cid_)
-			setPixmap (QPixmap::fromImage (QImage::fromData (bob.data ())));
+		if (bob.GetCid () == Cid_)
+			setPixmap (QPixmap::fromImage (QImage::fromData (bob.GetData ())));
 	}
 }
 }

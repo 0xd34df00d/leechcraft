@@ -37,6 +37,7 @@ namespace LeechCraft
 		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr proxy,
 				QDockWidget *dock,
 				bool toggleActionVisible);
+		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr proxy);
 		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
 				QNetworkAccessManager *manager,

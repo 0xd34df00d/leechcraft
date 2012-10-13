@@ -98,7 +98,7 @@ namespace Metida
 
 		std::sort (existingIds.begin (), existingIds.end ());
 		QVector<int> result;
-		auto it = std::set_difference (baseVector.begin (), baseVector.end (),
+		std::set_difference (baseVector.begin (), baseVector.end (),
 				existingIds.begin (), existingIds.end (),
 				std::back_inserter (result));
 

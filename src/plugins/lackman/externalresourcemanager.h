@@ -64,7 +64,7 @@ namespace LackMan
 			* @return The resource data (if fetched already) or
 			* nothing (if not).
 			*/
-		boost::optional<QByteArray> GetResourceData (const QUrl& url);
+		void GetResourceData (const QUrl& url);
 
 		/** @brief Returns the path of the resource at a given
 			* url.

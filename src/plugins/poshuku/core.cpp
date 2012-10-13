@@ -49,7 +49,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include "browserwidget.h"
 #include "customwebview.h"
-#include "addtofavoritesdialog.h"
 #include "xmlsettingsmanager.h"
 #include "sqlstoragebackend.h"
 #include "xbelparser.h"
@@ -282,9 +281,7 @@ namespace Poshuku
 			return QUrl ();
 		}
 
-		QHostAddress testAddress;
-		bool success = testAddress.setAddress (url);
-		if (success)
+		if (QHostAddress ().setAddress (url))
 		{
 			QUrl result;
 			result.setHost (url);
@@ -573,11 +570,23 @@ namespace Poshuku
 		const QString& category = url.mid (1, pos - 1);
 		const QString& query = url.mid (pos + 1);
 
-		Entity e = Util::MakeEntity (query,
-				QString (),
-				FromUserInitiated,
-				"x-leechcraft/category-search-request");
-		e.Additional_ ["Categories"] = QStringList (category);
+		Entity e;
+		if (XmlSettingsManager::Instance ()->property ("UseSummaryForSearches").toBool ())
+		{
+			e = Util::MakeEntity (query,
+					QString (),
+					FromUserInitiated,
+					"x-leechcraft/category-search-request");
+			e.Additional_ ["Categories"] = QStringList (category);
+		}
+		else
+		{
+			e = Util::MakeEntity (query,
+					QString (),
+					FromUserInitiated | OnlyHandle,
+					"x-leechcraft/data-filter-request");
+			e.Additional_ ["DataFilter"] = category.toUtf8 ();
+		}
 		emit gotEntity (e);
 	}
 
@@ -688,31 +697,12 @@ namespace Poshuku
 		proxy->FillValue ("title", title);
 		proxy->FillValue ("url", url);
 
-		std::auto_ptr<AddToFavoritesDialog> dia (new AddToFavoritesDialog (title,
-					url,
-					qApp->activeWindow ()));
-
-		bool result = false;
 		bool oneClick = XmlSettingsManager::Instance ()->property ("BookmarkInOneClick").toBool ();
 
-		do
-		{
-			if (!oneClick)
-			{
-				if (dia->exec () == QDialog::Rejected)
-					return;
+		const auto& index = FavoritesModel_->addItem (title, url, QStringList ());
 
-				result = FavoritesModel_->addItem (dia->GetTitle (),
-						url, dia->GetTags ());
-			}
-			else
-			{
-				result = FavoritesModel_->addItem (title,
-						url, QStringList ());
-				oneClick = false;
-			}
-		}
-		while (!result);
+		if (!oneClick)
+			FavoritesModel_->EditBookmark (index);
 
 		emit bookmarkAdded (url);
 	}

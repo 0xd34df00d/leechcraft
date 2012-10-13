@@ -18,6 +18,16 @@
     <number>0</number>
    </property>
    <item>
+    <widget class="QLineEdit" name="SearchPlaylist_">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string>Search playlist</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QTreeView" name="Playlist_">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
@@ -48,6 +58,16 @@
      </property>
      <property name="itemsExpandable">
       <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QProgressBar" name="BufferProgress_">
+     <property name="value">
+      <number>0</number>
+     </property>
+     <property name="format">
+      <string>Buffering: %p%</string>
      </property>
     </widget>
    </item>

@@ -28,6 +28,7 @@
 #include <QXmppDiscoveryIq.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iadvancedclentry.h>
+#include <interfaces/azoth/imetainfoentry.h>
 #include <interfaces/azoth/ihavedirectedstatus.h>
 #include <interfaces/azoth/isupportgeolocation.h>
 #include <interfaces/azoth/isupportmicroblogs.h>
@@ -56,12 +57,14 @@ namespace Xoox
 	class EntryBase : public QObject
 					, public ICLEntry
 					, public IAdvancedCLEntry
+					, public IMetaInfoEntry
 					, public IHaveDirectedStatus
 					, public ISupportMicroblogs
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
 				LeechCraft::Azoth::IAdvancedCLEntry
+				LeechCraft::Azoth::IMetaInfoEntry
 				LeechCraft::Azoth::IHaveDirectedStatus
 				LeechCraft::Azoth::ISupportMicroblogs)
 	protected:
@@ -113,6 +116,9 @@ namespace Xoox
 		AdvancedFeatures GetAdvancedFeatures () const;
 		void DrawAttention (const QString&, const QString&);
 
+		// IMetaInfoEntry
+		QVariant GetMetaInfo (DataField) const;
+
 		// IHaveDirectedStatus
 		bool CanSendDirectedStatusNow (const QString&);
 		void SendDirectedStatus (const EntryStatus&, const QString&);
@@ -127,7 +133,7 @@ namespace Xoox
 		void HandlePEPEvent (QString, PEPEventBase*);
 		void HandleAttentionMessage (const QXmppMessage&);
 		void UpdateChatState (QXmppMessage::State, const QString&);
-		void SetStatus (const EntryStatus&, const QString&);
+		void SetStatus (const EntryStatus&, const QString&, const QXmppPresence&);
 		void SetAvatar (const QByteArray&);
 		void SetAvatar (const QImage&);
 		QXmppVCardIq GetVCard () const;

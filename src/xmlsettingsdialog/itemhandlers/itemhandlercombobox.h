@@ -41,7 +41,7 @@ namespace LeechCraft
 		void Handle (const QDomElement&, QWidget*);
 		void SetValue (QWidget*, const QVariant&) const;
 	protected:
-		QVariant GetValue (QObject*) const;
+		QVariant GetObjectValue (QObject*) const;
 	private:
 		void SetDataSource (const QString&, QAbstractItemModel*, Util::XmlSettingsDialog*);
 	};

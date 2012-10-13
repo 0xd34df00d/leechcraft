@@ -67,9 +67,6 @@ namespace PDF
 	void Link::ExecutePageLink ()
 	{
 		auto link = std::dynamic_pointer_cast<Poppler::LinkGoto> (Link_);
-		if (link->isExternal ())
-			return;
-
 		const QString& filename = link->isExternal () ?
 				link->fileName () :
 				QString ();

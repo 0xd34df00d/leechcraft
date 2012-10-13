@@ -18,9 +18,11 @@
 
 #include "localcollectionwatcher.h"
 #include <algorithm>
+#include <QtConcurrentRun>
 #include <QFileSystemWatcher>
 #include <QtDebug>
 #include <QDir>
+#include <QTimer>
 #include "core.h"
 #include "localcollection.h"
 #include "util.h"
@@ -32,6 +34,7 @@ namespace LMP
 	LocalCollectionWatcher::LocalCollectionWatcher (QObject *parent)
 	: QObject (parent)
 	, Watcher_ (new QFileSystemWatcher (this))
+	, ScanScheduled_ (false)
 	{
 		connect (Watcher_,
 				SIGNAL (directoryChanged (QString)),
@@ -56,9 +59,15 @@ namespace LMP
 
 	void LocalCollectionWatcher::AddPath (const QString& path)
 	{
-		const auto& paths = CollectSubdirs (path);
-		Dir2Subdirs_ [path] = paths;
-		Watcher_->addPaths (paths);
+		qDebug () << Q_FUNC_INFO << "scanning" << path;
+		auto watcher = new QFutureWatcher<QStringList> ();
+		watcher->setProperty ("Path", path);
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleSubdirsCollected ()));
+
+		watcher->setFuture (QtConcurrent::run (CollectSubdirs, path));
 	}
 
 	void LocalCollectionWatcher::RemovePath (const QString& path)
@@ -66,9 +75,47 @@ namespace LMP
 		Watcher_->removePaths (Dir2Subdirs_ [path]);
 	}
 
+	void LocalCollectionWatcher::ScheduleDir (const QString& dir)
+	{
+		if (ScheduledDirs_.contains (dir))
+			return;
+
+		ScheduledDirs_ << dir;
+		if (ScanScheduled_)
+			return;
+
+		QTimer::singleShot (1000,
+				this,
+				SLOT (rescanQueue ()));
+		ScanScheduled_ = true;
+	}
+
+	void LocalCollectionWatcher::handleSubdirsCollected ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<QStringList>*> (sender ());
+		if (!watcher)
+			return;
+
+		watcher->deleteLater ();
+
+		const auto& paths = watcher->result ();
+		const auto& path = watcher->property ("Path").toString ();
+		Dir2Subdirs_ [path] = paths;
+		Watcher_->addPaths (paths);
+	}
+
 	void LocalCollectionWatcher::handleDirectoryChanged (const QString& path)
 	{
-		Core::Instance ().GetLocalCollection ()->Scan (path, false);
+		ScheduleDir (path);
+	}
+
+	void LocalCollectionWatcher::rescanQueue ()
+	{
+		Q_FOREACH (const auto& path, ScheduledDirs_)
+			Core::Instance ().GetLocalCollection ()->Scan (path, false);
+
+		ScheduledDirs_.clear ();
+		ScanScheduled_ = false;
 	}
 }
 }

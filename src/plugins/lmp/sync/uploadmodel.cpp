@@ -76,7 +76,7 @@ namespace LMP
 		return true;
 	}
 
-	bool UploadModel::filterAcceptsRow (int srcRow, const QModelIndex& sourceParent) const
+	bool UploadModel::filterAcceptsRow (int, const QModelIndex&) const
 	{
 		return true;
 	}

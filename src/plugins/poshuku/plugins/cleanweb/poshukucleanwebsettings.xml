@@ -10,9 +10,13 @@
 					<label lang="en" value="Update interval:" />
 				</item>
 			</item>
+			<item type="checkbox" property="EnableJIT" default="true">
+				<label value="Enable JIT for regexps" />
+				<tooltip>This option controls the usage of Just-In-Time compilation for regular expressions if CleanWeb was built with PCRE 8.20 and upper. JIT speeds up rules matching at the cost of higher memory usage. The speedup is somewhere between 25% and 50% depending on page being loaded, but this option uses about 2.1 KiB of RAM per regular expression.&lt;br/>Disable this if you want to lower memory footprint.</tooltip>
+			</item>
 		</tab>
 		<tab>
-			<label lang="en" value="User filters" />
+			<label lang="en" value="User rules" />
 			<item type="customwidget" name="UserFilters" label="own" />
 		</tab>
 		<tab>

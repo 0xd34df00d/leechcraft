@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QString>
+#include "formats.h"
 
 namespace LeechCraft
 {
@@ -28,9 +29,9 @@ namespace LMP
 	{
 		QString FilePattern_;
 
-		QString Format_;
+		QString FormatID_;
+		Format::BitrateType BitrateType_;
 		int Quality_;
-
 		int NumThreads_;
 	};
 }

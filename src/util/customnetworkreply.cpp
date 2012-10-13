@@ -24,9 +24,10 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		CustomNetworkReply::CustomNetworkReply (QObject *parent)
+		CustomNetworkReply::CustomNetworkReply (const QUrl& url, QObject *parent)
 		: QNetworkReply (parent)
 		{
+			setUrl (url);
 		}
 
 		CustomNetworkReply::~CustomNetworkReply ()

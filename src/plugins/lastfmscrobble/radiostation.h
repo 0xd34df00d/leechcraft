@@ -39,15 +39,20 @@ namespace Lastfmscrobble
 		Q_INTERFACES (Media::IRadioStation)
 
 		std::shared_ptr<RadioTuner> Tuner_;
+		QString RadioName_;
 	public:
 		struct UnsupportedType {};
 
 		static QMap<QByteArray, QString> GetPredefinedStations ();
 
-		RadioStation (QNetworkAccessManager*, Media::IRadioStationProvider::Type, const QString&);
+		RadioStation (QNetworkAccessManager*,
+				Media::RadioType,
+				const QString& param,
+				const QString& visibleName);
 
 		QObject* GetObject ();
 		void RequestNewStream ();
+		QString GetRadioName () const;
 	private:
 		void EmitTrack (const lastfm::Track&);
 	private slots:
@@ -55,6 +60,7 @@ namespace Lastfmscrobble
 		void handleError (const QString&);
 		void handleNextTrack ();
 	signals:
+		void gotPlaylist (const QString&, const QString&);
 		void gotNewStream (const QUrl&, const Media::AudioInfo&);
 		void gotError (const QString&);
 	};

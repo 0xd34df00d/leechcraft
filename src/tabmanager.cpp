@@ -167,7 +167,7 @@ void TabManager::add (const QString& name, QWidget *contents,
 		icon = itw->GetTabClassInfo ().Icon_;
 
 		if (itw->GetTabClassInfo ().Features_ & TFSingle)
-			Core::Instance ().GetNewTabMenuManager ()->HideAction (itw, true);
+			Core::Instance ().GetNewTabMenuManager ()->HideAction (itw);
 	}
 
 	if (XmlSettingsManager::Instance ()->
@@ -295,6 +295,10 @@ void TabManager::handleCurrentChanged (int index)
 		return;
 
 	InvalidateName ();
+
+	if (auto prevTab = TabWidget_->GetPreviousWidget ())
+		if (auto imtw = qobject_cast<ITabWidget*> (prevTab))
+			imtw->TabLostCurrent ();
 
 	if (TabWidget_->WidgetCount () != 1)
 		Core::Instance ().GetReallyMainWindow ()->RemoveMenus (Menus_);

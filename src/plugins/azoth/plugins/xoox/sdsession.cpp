@@ -87,9 +87,11 @@ namespace Xoox
 
 		QPointer<SDSession> ptr (this);
 		Account_->GetClientConnection ()->RequestInfo (query,
-				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleInfo (iq); });
+				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleInfo (iq); },
+				true);
 		Account_->GetClientConnection ()->RequestItems (query,
-				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleItems (iq); });
+				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleItems (iq); },
+				true);
 	}
 
 	QString SDSession::GetQuery () const
@@ -331,6 +333,7 @@ namespace Xoox
 
 			Account_->GetClientConnection ()->RequestInfo (item.jid (),
 					[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleInfo (iq); },
+					true,
 					item.node ());
 		}
 	}
@@ -344,6 +347,7 @@ namespace Xoox
 		const QString& node = item->data (DRNode).toString ();
 		Account_->GetClientConnection ()->RequestItems (jid,
 				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleItems (iq); },
+				true,
 				node);
 	}
 
@@ -357,7 +361,8 @@ namespace Xoox
 		dia->show ();
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		Account_->GetClientConnection ()->FetchVCard (jid,
-				[dia] (const QXmppVCardIq& iq) { if (dia) dia->UpdateInfo (iq); });
+				[dia] (const QXmppVCardIq& iq) { if (dia) dia->UpdateInfo (iq); },
+				true);
 	}
 
 	void SDSession::AddToRoster (const SDSession::ItemInfo& info)
@@ -381,7 +386,7 @@ namespace Xoox
 		QXmppElement elem;
 		elem.setTagName ("query");
 		elem.setAttribute ("xmlns", "jabber:iq:register");
-		iq.setExtensions (QXmppElementList (elem));
+		iq.setExtensions (QXmppElementList () << elem);
 
 		Account_->GetClientConnection ()->SendPacketWCallback (iq, this, "handleRegistrationForm");
 	}
@@ -436,8 +441,7 @@ namespace Xoox
 			return;
 		}
 
-		QXmppBobManager *mgr = Account_->GetClientConnection ()->GetBobManager ();
-		FormBuilder builder (QString (), mgr);
+		FormBuilder builder (QString (), Account_->GetClientConnection ()->GetBobManager ());
 		QWidget *widget = builder.CreateForm (form);
 		if (!XooxUtil::RunFormDialog (widget))
 			return;
@@ -453,7 +457,7 @@ namespace Xoox
 		elem.setAttribute ("xmlns", "jabber:iq:register");
 		elem.appendChild (XooxUtil::Form2XmppElem (form));
 
-		regIq.setExtensions (QXmppElementList (elem));
+		regIq.setExtensions (QXmppElementList () << elem);
 
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (regIq);
 	}

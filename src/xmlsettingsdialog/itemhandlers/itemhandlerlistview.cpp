@@ -57,8 +57,8 @@ namespace LeechCraft
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
 
-		list->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
+		list->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		list->setProperty ("SearchTerms", label->text ());
 
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0, Qt::AlignLeft);
@@ -78,7 +78,7 @@ namespace LeechCraft
 	{
 	}
 
-	QVariant ItemHandlerListView::GetValue (QObject*) const
+	QVariant ItemHandlerListView::GetObjectValue (QObject*) const
 	{
 		return QVariant ();
 	}

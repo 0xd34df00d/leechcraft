@@ -253,7 +253,7 @@ namespace MPRIS
 		Player_->GetSourceObject ()->seek (offset / 1000);
 	}
 
-	void PlayerAdaptor::SetPosition (const QDBusObjectPath& TrackId, qlonglong Position)
+	void PlayerAdaptor::SetPosition (const QDBusObjectPath&, qlonglong)
 	{
 	}
 

@@ -82,6 +82,19 @@ SET (XOOX_SRCS
 	xep0232handler.cpp
 	pepmicroblog.cpp
 	vcardlisteditdialog.cpp
+	regformhandlerwidget.cpp
+	gwoptionsdialog.cpp
+	clientconnectionerrormgr.cpp
+	accstatusrestorer.cpp
+	accountsettingsholder.cpp
+	crypthandler.cpp
+	serverinfostorage.cpp
+	xmppannotationsiq.cpp
+	xmppannotationsmanager.cpp
+	xmppbobiq.cpp
+	xmppbobmanager.cpp
+	xmppcaptchaiq.cpp
+	xmppcaptchamanager.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -146,6 +159,19 @@ SET (XOOX_HEADERS
 	xep0232handler.h
 	pepmicroblog.h
 	vcardlisteditdialog.h
+	regformhandlerwidget.h
+	gwoptionsdialog.h
+	clientconnectionerrormgr.h
+	accstatusrestorer.h
+	accountsettingsholder.h
+	crypthandler.h
+	serverinfostorage.h
+	xmppannotationsiq.h
+	xmppannotationsmanager.h
+	xmppbobiq.h
+	xmppbobmanager.h
+	xmppcaptchaiq.h
+	xmppcaptchamanager.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -162,6 +188,7 @@ SET (XOOX_FORMS
 	commandslistpage.ui
 	commandresultpage.ui
 	vcardlisteditdialog.ui
+	gwoptionsdialog.ui
 	)
 SET (XOOX_RESOURCES azothxooxresources.qrc)
 
@@ -179,19 +206,13 @@ IF (ENABLE_MEDIACALLS)
 	SET (XOOX_HEADERS ${XOOX_HEADERS} mediacall.h)
 ENDIF (ENABLE_MEDIACALLS)
 
-CreateTrVars ("azoth_xoox" "de;en;es;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
+CreateTrs ("azoth_xoox" "de;en;es;fr;it;ru_RU;uk_UA" XOOX_COMPILED_TRANSLATIONS)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
 ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (XOOX_UIS_H ${XOOX_FORMS})
 QT4_ADD_RESOURCES (XOOX_RCCS ${XOOX_RESOURCES})
 
-ADD_CUSTOM_COMMAND (OUTPUT
-	${XOOX_COMPILED_TRANSLATIONS}
-	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${XOOX_TRANSLATIONS}
-	DEPENDS ${XOOX_TRANSLATIONS}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
 ADD_LIBRARY (leechcraft_azoth_xoox SHARED
 	${XOOX_COMPILED_TRANSLATIONS}
 	${XOOX_SRCS}

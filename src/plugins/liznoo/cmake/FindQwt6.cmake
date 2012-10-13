@@ -29,7 +29,7 @@ ENDIF(NOT QT4_FOUND)
 IF( QT4_FOUND )
 	# Is Qwt6 installed? Look for header files
 	FIND_PATH( Qwt6_INCLUDE_DIR qwt.h 
-               PATHS ${QT_INCLUDE_DIR} /usr/local/qwt6/include /usr/include/qwt6 ${QWT_DIR}/include
+               PATHS ${QT_INCLUDE_DIR} /usr/local/qwt6/include /usr/include/qwt6 ${QWT_DIR}/include ${QWT_DIR}/src
                PATH_SUFFIXES qwt qwt6 qwt-qt4 qwt6-qt4 qwt-qt3 qwt6-qt3 include qwt/include qwt6/include qwt-qt4/include qwt6-qt4/include qwt-qt3/include qwt6-qt3/include ENV PATH)
 	
 	# Find Qwt version
@@ -41,10 +41,10 @@ IF( QT4_FOUND )
 			STRING(REGEX REPLACE ".*#define[\\t\\ ]+QWT_VERSION_STR[\\t\\ ]+\"([0-9]+\\.[0-9]+\\.[0-9]+)\".*" "\\1" Qwt_VERSION "${QWT_GLOBAL_H}")
 
 			# Find Qwt6 library linked to Qt4
-			IF (NOT MSVC)
+			IF (UNIX)
 				# General purpose method
 				FIND_LIBRARY( Qwt6_Qt4_TENTATIVE_LIBRARY NAMES qwt6-qt4 qwt-qt4 qwt6 qwt PATHS /usr/local/qwt/lib /usr/local/lib /usr/lib )
-				IF( UNIX AND NOT CYGWIN)
+				IF( UNIX AND NOT CYGWIN AND NOT APPLE)
 					IF( Qwt6_Qt4_TENTATIVE_LIBRARY )
 						#MESSAGE("Qwt6_Qt4_TENTATIVE_LIBRARY = ${Qwt6_Qt4_TENTATIVE_LIBRARY}")
 						EXECUTE_PROCESS( COMMAND "ldd" ${Qwt6_Qt4_TENTATIVE_LIBRARY} OUTPUT_VARIABLE Qwt_Qt4_LIBRARIES_LINKED_TO )
@@ -57,18 +57,18 @@ IF( QT4_FOUND )
 							ENDIF (NOT Qwt6_FIND_QUIETLY)
 						ENDIF( Qwt6_IS_LINKED_TO_Qt4 )
 					ENDIF( Qwt6_Qt4_TENTATIVE_LIBRARY )
-				ELSE( UNIX AND NOT CYGWIN)
+				ELSE( UNIX AND NOT CYGWIN AND NOT APPLE)
 				# Assumes qwt.dll is in the Qt dir
 					SET( Qwt6_Qt4_LIBRARY ${Qwt6_Qt4_TENTATIVE_LIBRARY} )
 					SET( Qwt6_Qt4_FOUND TRUE )
 					IF (NOT Qwt6_FIND_QUIETLY)
 						MESSAGE( STATUS "Found Qwt version ${Qwt_VERSION} linked to Qt4" )
 					ENDIF (NOT Qwt6_FIND_QUIETLY)
-				ENDIF( UNIX AND NOT CYGWIN)
+				ENDIF( UNIX AND NOT CYGWIN AND NOT APPLE)
 			
 				# Find Qwt6 library linked to Qt3
 				FIND_LIBRARY( Qwt6_Qt3_TENTATIVE_LIBRARY NAMES qwt-qt3 qwt qwt6-qt3 qwt6 )
-				IF( UNIX AND NOT CYGWIN)
+				IF( UNIX AND NOT CYGWIN AND NOT APPLE)
 					IF( Qwt6_Qt3_TENTATIVE_LIBRARY )
 						#MESSAGE("Qwt6_Qt3_TENTATIVE_LIBRARY = ${Qwt6_Qt3_TENTATIVE_LIBRARY}")
 						EXECUTE_PROCESS( COMMAND "ldd" ${Qwt6_Qt3_TENTATIVE_LIBRARY} OUTPUT_VARIABLE Qwt-Qt3_LIBRARIES_LINKED_TO )
@@ -81,33 +81,46 @@ IF( QT4_FOUND )
 							ENDIF (NOT Qwt6_FIND_QUIETLY)
 						ENDIF( Qwt6_IS_LINKED_TO_Qt3 )
 					ENDIF( Qwt6_Qt3_TENTATIVE_LIBRARY )
-				ELSE( UNIX AND NOT CYGWIN)
+				ELSE( UNIX AND NOT CYGWIN AND NOT APPLE)
 					SET( Qwt6_Qt3_LIBRARY ${Qwt6_Qt3_TENTATIVE_LIBRARY} )
 					SET( Qwt6_Qt3_FOUND TRUE )
 					IF (NOT Qwt6_FIND_QUIETLY)
 						MESSAGE( STATUS "Found Qwt: ${Qwt6_Qt3_LIBRARY}" )
 					ENDIF (NOT Qwt6_FIND_QUIETLY)
-				ENDIF( UNIX AND NOT CYGWIN)
-			ELSE (NOT MSVC)
-				# Ad-hoc windows method for MSVC
-				# At this time assumes Qt4 version 
-				FIND_LIBRARY(QWT6_LIBRARY_RELEASE 
-					NAMES qwt.lib
-					PATHS ${QWT_DIR}/lib)
-				FIND_LIBRARY(QWT6_LIBRARY_DEBUG
-					NAMES qwtd.lib
-					PATHS ${QWT_DIR}/lib)
-				win32_tune_libs_names (QWT6)
-				
-				SET (Qwt6_Qt4_LIBRARY ${QWT6_LIBRARIES})			
-
-				IF (QWT6_LIBRARIES)
-					SET( Qwt6_Qt4_FOUND TRUE )
-					IF (NOT Qwt6_FIND_QUIETLY)
-						MESSAGE( STATUS "Found Qwt version ${Qwt_VERSION} linked to Qt4" )
-					ENDIF (NOT Qwt6_FIND_QUIETLY)
-				ENDIF (QWT6_LIBRARIES)
-			ENDIF (NOT MSVC)
+				ENDIF( UNIX AND NOT CYGWIN AND NOT APPLE)
+			ELSE (UNIX)
+				IF (MSVC)
+					# Ad-hoc windows method for MSVC
+					# At this time assumes Qt4 version 
+					FIND_LIBRARY(QWT6_LIBRARY_RELEASE 
+						NAMES qwt.lib
+						PATHS ${QWT_DIR}/lib)
+					FIND_LIBRARY(QWT6_LIBRARY_DEBUG
+						NAMES qwtd.lib
+						PATHS ${QWT_DIR}/lib)
+					win32_tune_libs_names (QWT6)
+					
+					SET (Qwt6_Qt4_LIBRARY ${QWT6_LIBRARIES})			
+	
+					IF (QWT6_LIBRARIES)
+						SET( Qwt6_Qt4_FOUND TRUE )
+						IF (NOT Qwt6_FIND_QUIETLY)
+							MESSAGE( STATUS "Found Qwt version ${Qwt_VERSION} linked to Qt4" )
+						ENDIF (NOT Qwt6_FIND_QUIETLY)
+					ENDIF (QWT6_LIBRARIES)
+				ELSE (MSVC)
+					FIND_LIBRARY(QWT6_QT4_LIBRARY
+						NAMES libqwt.a
+						PATHS ${QWT_DIR}/lib)
+	
+					IF (QWT6_LIBRARIES)
+						SET( Qwt6_Qt4_FOUND TRUE )
+						IF (NOT Qwt6_FIND_QUIETLY)
+							MESSAGE( STATUS "Found Qwt version ${Qwt_VERSION} linked to Qt4" )
+						ENDIF (NOT Qwt6_FIND_QUIETLY)
+					ENDIF (QWT6_LIBRARIES)
+				ENDIF (MSVC)
+			ENDIF (UNIX)
 			
 		ENDIF( QWT_IS_VERSION_6 )
 		

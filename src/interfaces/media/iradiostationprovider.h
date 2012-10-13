@@ -22,31 +22,36 @@
 #include <QMap>
 #include <QtPlugin>
 
+class QStandardItem;
+
 namespace Media
 {
 	class IRadioStation;
 	typedef std::shared_ptr<IRadioStation> IRadioStation_ptr;
+
+	enum RadioType
+	{
+		None,
+		SimilarArtists,
+		GlobalTag,
+		Predefined
+	};
+
+	enum RadioItemRole
+	{
+		ItemType = Qt::UserRole + 1,
+		RadioID,
+		MaxRadioRole
+	};
 
 	class IRadioStationProvider
 	{
 	public:
 		virtual ~IRadioStationProvider () {}
 
-		enum class Type
-		{
-			SimilarArtists,
-			GlobalTag,
-			Predefined
-		};
+		virtual IRadioStation_ptr GetRadioStation (QStandardItem*, const QString&) = 0;
 
-		virtual bool IsRadioSupported (Type) const = 0;
-
-		virtual QString GetRadioName () const = 0;
-		virtual IRadioStation_ptr GetRadioStation (Type, const QString&) = 0;
-
-		virtual QMap<QByteArray, QString> GetPredefinedStations () const = 0;
-	protected:
-		virtual void predefinedStationsChanged () = 0;
+		virtual QList<QStandardItem*> GetRadioListItems () const = 0;
 	};
 }
 

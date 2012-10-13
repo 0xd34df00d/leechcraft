@@ -40,6 +40,7 @@ namespace LeechCraft
 		setIconSize (QSize (15, 15));
 		setContextMenuPolicy (Qt::CustomContextMenu);
 		setElideMode (Qt::ElideRight);
+		setDocumentMode (true);
 
 		addTab (QString ());
 
@@ -70,7 +71,7 @@ namespace LeechCraft
 			return;
 		}
 
-		setTabButton (index, GetCloseButtonPosition (), closeButton);
+		setTabButton (index, GetCloseButtonPosition (), closable ? closeButton : 0);
 	}
 
 	void SeparateTabBar::SetLastTab (bool isLast)
@@ -167,7 +168,7 @@ namespace LeechCraft
 			removeTab (count () - 1);
 			emit showAddTabButton (true);
 		}
-		
+
 		if (index != count () - 1 && (IsLastTab_))
 			emit tabWasInserted (index);
 	}
@@ -205,7 +206,7 @@ namespace LeechCraft
 			QStyleOptionTabV2 option;
 			initStyleOption (&option, count () - 1);
 			QIcon icon = proxy.GetIcon ("list-add");
-			painter.drawItemPixmap (option.rect, Qt::AlignCenter, 
+			painter.drawItemPixmap (option.rect, Qt::AlignCenter,
 					icon.pixmap (QSize (15, 15)));
 		}
 	}

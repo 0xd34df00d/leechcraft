@@ -26,89 +26,85 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DBusManager
+{
+	void DBusManager::Init (ICoreProxy_ptr proxy)
 	{
-		namespace DBusManager
-		{
-			void DBusManager::Init (ICoreProxy_ptr proxy)
-			{
-				Translator_.reset (LeechCraft::Util::InstallTranslator ("dbusmanager"));
+		Translator_.reset (Util::InstallTranslator ("dbusmanager"));
 
-				Core::Instance ().SetProxy (proxy);
+		Core::Instance ().SetProxy (proxy);
 
-				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
-				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-						"dbusmanagersettings.xml");
-			}
+		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"dbusmanagersettings.xml");
+	}
 
-			void DBusManager::SecondInit ()
-			{
-			}
+	void DBusManager::SecondInit ()
+	{
+	}
 
-			void DBusManager::Release ()
-			{
-				Core::Instance ().Release ();
-			}
+	void DBusManager::Release ()
+	{
+		Core::Instance ().Release ();
+	}
 
-			QByteArray DBusManager::GetUniqueID () const
-			{
-				return "org.LeechCraft.DBusManager";
-			}
+	QByteArray DBusManager::GetUniqueID () const
+	{
+		return "org.LeechCraft.DBusManager";
+	}
 
-			QString DBusManager::GetName () const
-			{
-				return "DBus Manager";
-			}
+	QString DBusManager::GetName () const
+	{
+		return "DBus Manager";
+	}
 
-			QString DBusManager::GetInfo () const
-			{
-				return tr ("DBus support for LeechCraft");
-			}
+	QString DBusManager::GetInfo () const
+	{
+		return tr ("DBus support for LeechCraft");
+	}
 
-			QStringList DBusManager::Provides () const
-			{
-				return QStringList ("dbus");
-			}
+	QStringList DBusManager::Provides () const
+	{
+		return QStringList ("dbus");
+	}
 
-			QStringList DBusManager::Uses () const
-			{
-				return QStringList ();
-			}
+	QStringList DBusManager::Uses () const
+	{
+		return QStringList ();
+	}
 
-			QStringList DBusManager::Needs () const
-			{
-				return QStringList ();
-			}
+	QStringList DBusManager::Needs () const
+	{
+		return QStringList ();
+	}
 
-			void DBusManager::SetProvider (QObject*, const QString&)
-			{
-			}
+	void DBusManager::SetProvider (QObject*, const QString&)
+	{
+	}
 
-			QIcon DBusManager::GetIcon () const
-			{
-				static QIcon icon (":/resources/images/dbusmanager.svg");
-				return icon;
-			}
+	QIcon DBusManager::GetIcon () const
+	{
+		static QIcon icon (":/resources/images/dbusmanager.svg");
+		return icon;
+	}
 
-			std::shared_ptr<Util::XmlSettingsDialog> DBusManager::GetSettingsDialog () const
-			{
-				return SettingsDialog_;
-			}
+	std::shared_ptr<Util::XmlSettingsDialog> DBusManager::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
 
-			EntityTestHandleResult DBusManager::CouldHandle (const Entity& e) const
-			{
-				return Core::Instance ().CouldHandle (e) ?
-						EntityTestHandleResult (EntityTestHandleResult::PHigh) :
-						EntityTestHandleResult ();
-			}
+	EntityTestHandleResult DBusManager::CouldHandle (const Entity& e) const
+	{
+		return Core::Instance ().CouldHandle (e) ?
+				EntityTestHandleResult (EntityTestHandleResult::PHigh) :
+				EntityTestHandleResult ();
+	}
 
-			void DBusManager::Handle (Entity e)
-			{
-				Core::Instance ().Handle (e);
-			}
-		};
-	};
-};
+	void DBusManager::Handle (Entity e)
+	{
+		Core::Instance ().Handle (e);
+	}
+}
+}
 
-LC_EXPORT_PLUGIN (leechcraft_dbusmanager, LeechCraft::Plugins::DBusManager::DBusManager);
-
+LC_EXPORT_PLUGIN (leechcraft_dbusmanager, LeechCraft::DBusManager::DBusManager);

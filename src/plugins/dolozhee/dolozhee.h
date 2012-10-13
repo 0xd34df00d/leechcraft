@@ -48,7 +48,7 @@ namespace Dolozhee
 	private slots:
 		void initiateReporting ();
 	signals:
-		void gotActions (QList<QAction*>, ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

@@ -176,8 +176,18 @@ namespace LeechCraft
 				Providers_ [feature] = provider;
 			}
 
-			bool Core::CouldHandle (const LeechCraft::Entity& e) const
+			bool Core::CouldHandle (const Entity& e) const
 			{
+				if (e.Mime_ == "x-leechcraft/data-filter-request")
+				{
+					const auto& textVar = e.Entity_;
+					if (!textVar.canConvert<QString> ())
+						return false;
+
+					const auto& text = textVar.toString ().trimmed ().simplified ();
+					return text.count ('\n') < 3 && text.size () < 200;
+				}
+
 				if (!e.Entity_.canConvert<QUrl> ())
 					return false;
 
@@ -190,6 +200,38 @@ namespace LeechCraft
 					return false;
 
 				return true;
+			}
+
+			void Core::Handle (const Entity& e)
+			{
+				if (e.Mime_ != "x-leechcraft/data-filter-request")
+				{
+					Add (e.Entity_.toUrl ());
+					return;
+				}
+
+				const auto& text = e.Entity_.toString ();
+				const auto& catVar = e.Additional_ ["DataFilter"];
+				const auto& catStr = QString::fromUtf8 (catVar.toByteArray ().constData ());
+
+				auto tm = Proxy_->GetTagsManager ();
+				for (const auto& d : Descriptions_)
+				{
+					if (std::find_if (d.Tags_.begin (), d.Tags_.end (),
+							[&catStr, tm] (const QString& id)
+								{ return catStr == tm->GetTag (id); }) == d.Tags_.end ())
+						continue;
+
+					for (const auto& u : d.URLs_)
+					{
+						if (!u.Type_.startsWith ("text/"))
+							continue;
+
+						const auto& url = u.MakeUrl (text, QHash<QString, QVariant> ());
+						const auto& e = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
+						emit gotEntity (e);
+					}
+				}
 			}
 
 			Sync::Payloads_t Core::GetAllDeltas (const Sync::ChainID_t& chainId)

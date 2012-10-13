@@ -23,6 +23,8 @@
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/ipendingsimilarartists.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -32,6 +34,16 @@ namespace LMP
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
+	}
+
+	void RecommendationsWidget::InitializeProviders ()
+	{
+		const auto& lastProv = ShouldRememberProvs () ?
+				XmlSettingsManager::Instance ()
+					.Property ("LastUsedRecsProvider", QString ()).toString () :
+				QString ();
+
+		bool lastFound = false;
 
 		const auto& roots = Core::Instance ().GetProxy ()->GetPluginsManager ()->
 				GetAllCastableRoots<Media::IRecommendedArtists*> ();
@@ -42,10 +54,20 @@ namespace LMP
 				continue;
 
 			Ui_.RecProvider_->addItem (scrob->GetServiceName ());
+			ProvRoots_ << root;
 			Providers_ << qobject_cast<Media::IRecommendedArtists*> (root);
+
+			if (scrob->GetServiceName () == lastProv)
+			{
+				const int idx = Providers_.size () - 1;
+				Ui_.RecProvider_->setCurrentIndex (idx);
+				on_RecProvider__activated (idx);
+				lastFound = true;
+			}
 		}
 
-		Ui_.RecProvider_->setCurrentIndex (-1);
+		if (!lastFound)
+			Ui_.RecProvider_->setCurrentIndex (-1);
 	}
 
 	void RecommendationsWidget::handleGotRecs ()
@@ -73,6 +95,10 @@ namespace LMP
 				SIGNAL (ready ()),
 				this,
 				SLOT (handleGotRecs ()));
+
+		auto scrob = qobject_cast<Media::IAudioScrobbler*> (ProvRoots_.at (index));
+		XmlSettingsManager::Instance ()
+				.setProperty ("LastUsedRecsProvider", scrob->GetServiceName ());
 	}
 }
 }

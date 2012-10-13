@@ -22,7 +22,9 @@
 #include <QSettings>
 #include <QDir>
 #include <QFileDialog>
-#include <interfaces/iinfo.h>
+#include "interfaces/iinfo.h"
+#include "interfaces/idownload.h"
+#include "interfaces/ientityhandler.h"
 
 namespace LeechCraft
 {
@@ -44,6 +46,17 @@ namespace LeechCraft
 	void HandlerChoiceDialog::SetFilenameSuggestion (const QString& location)
 	{
 		Suggestion_ = location;
+	}
+
+	void HandlerChoiceDialog::Add (QObject *obj)
+	{
+		auto ii = qobject_cast<IInfo*> (obj);
+		if (auto idl = qobject_cast<IDownload*> (obj))
+			Add (ii, idl);
+		if (auto ieh = qobject_cast<IEntityHandler*> (obj))
+			Add (ii, ieh);
+
+		IInfo2QObject_ [ii] = obj;
 	}
 
 	bool HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
@@ -85,6 +98,7 @@ namespace LeechCraft
 		Buttons_->addButton (but);
 		Ui_.DownloadersLayout_->addWidget (but);
 		Downloaders_ [name] = id;
+		Infos_ [name] = ii;
 
 		Ui_.DownloadersLabel_->show ();
 
@@ -132,6 +146,7 @@ namespace LeechCraft
 
 		Buttons_->addButton (but);
 		Handlers_ [name] = ih;
+		Infos_ [name] = ii;
 		Ui_.HandlersLayout_->addWidget (but);
 
 		Ui_.HandlersLabel_->show ();
@@ -140,6 +155,16 @@ namespace LeechCraft
 			populateLocationsBox ();
 
 		return true;
+	}
+
+	QObject* HandlerChoiceDialog::GetSelected () const
+	{
+		auto checked = Buttons_->checkedButton ();
+		if (!checked)
+			return 0;
+
+		// TODO rework this when we add IInfo::GetObject().
+		return IInfo2QObject_.value (Infos_.value (checked->text ()));
 	}
 
 	IDownload* HandlerChoiceDialog::GetDownload ()
@@ -168,7 +193,7 @@ namespace LeechCraft
 	{
 		return Handlers_.empty () ? 0 : Handlers_.begin ().value ();
 	}
-	
+
 	QList<IEntityHandler*> HandlerChoiceDialog::GetAllEntityHandlers ()
 	{
 		return Handlers_.values ();
@@ -213,7 +238,7 @@ namespace LeechCraft
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName ());
 		settings.beginGroup ("SavePaths");
-		
+
 		const QStringList& l = settings.value (plugin).toStringList ();
 		settings.endGroup ();
 		return l;
@@ -302,7 +327,7 @@ namespace LeechCraft
 				Ui_.LocationsBox_->setCurrentIndex (2);
 		}
 	}
-	
+
 	void HandlerChoiceDialog::on_BrowseButton__released ()
 	{
 		const QString& name = Buttons_->checkedButton ()->
@@ -313,11 +338,10 @@ namespace LeechCraft
 
 		const QString& result = QFileDialog::getExistingDirectory (0,
 				tr ("Select save location"),
-				Suggestion_,
-				QFileDialog::Option (~QFileDialog::ShowDirsOnly));
+				Suggestion_);
 		if (result.isEmpty ())
 			return;
-		
+
 		Ui_.LocationsBox_->setCurrentIndex (0);
 		Ui_.LocationsBox_->setItemText (0, result);
 	}

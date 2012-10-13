@@ -18,8 +18,10 @@
 
 #pragma once
 
+#include <memory>
 #include <QWidget>
 #include "ui_transcodingparamswidget.h"
+#include "formats.h"
 
 namespace LeechCraft
 {
@@ -32,12 +34,20 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::TranscodingParamsWidget Ui_;
+		std::shared_ptr<Formats> Formats_;
 	public:
 		TranscodingParamsWidget (QWidget* = 0);
 
 		void SetMaskVisible (bool);
 
 		TranscodingParams GetParams () const;
+	private:
+		Format_ptr GetCurrentFormat () const;
+		Format::BitrateType GetCurrentBitrateType () const;
+	private slots:
+		void on_TranscodingFormat__currentIndexChanged (int);
+		void on_BitrateTypeBox__currentIndexChanged (int);
+		void on_QualitySlider__valueChanged (int);
 	};
 }
 }

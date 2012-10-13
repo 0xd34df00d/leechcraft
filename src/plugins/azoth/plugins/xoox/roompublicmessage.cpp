@@ -72,7 +72,7 @@ namespace Xoox
 	, Direction_ (DIn)
 	, Type_ (MTMUCMessage)
 	, SubType_ (MSTOther)
-	, XHTML_ (msg.getXhtml ())
+	, XHTML_ (msg.xhtml ())
 	{
 		ClientConnection::Split (msg.from (), &FromJID_, &FromVariant_);
 	}

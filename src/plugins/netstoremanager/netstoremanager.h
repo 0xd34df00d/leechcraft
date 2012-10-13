@@ -25,6 +25,7 @@
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/iwebfilestorage.h>
 
 namespace LeechCraft
 {
@@ -32,6 +33,7 @@ namespace NetStoreManager
 {
 	class AccountsManager;
 	class UpManager;
+	class SyncManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -39,15 +41,24 @@ namespace NetStoreManager
 				 , public IPluginReady
 				 , public IHaveSettings
 				 , public IJobHolder
+				 , public IWebFileStorage
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IPluginReady IHaveSettings IJobHolder)
+		Q_INTERFACES (IInfo
+				IHaveTabs
+				IPluginReady
+				IHaveSettings
+				IJobHolder
+				IWebFileStorage)
 
 		TabClassInfo ManagerTC_;
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		AccountsManager *AccountsManager_;
 		UpManager *UpManager_;
+		SyncManager *SyncManager_;
+
+		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -66,6 +77,9 @@ namespace NetStoreManager
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QAbstractItemModel* GetRepresentation () const;
+
+		QStringList GetServiceVariants () const;
+		void UploadFile (const QString& filename, const QString& service);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
@@ -75,6 +89,8 @@ namespace NetStoreManager
 		void raiseTab (QWidget*);
 
 		void gotEntity (const LeechCraft::Entity&);
+
+		void fileUploaded (const QString&, const QUrl&);
 	};
 }
 }

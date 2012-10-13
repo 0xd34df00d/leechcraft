@@ -33,7 +33,7 @@ namespace Xoox
 	{
 		return QStringList (NsLegacyEntityTime);
 	}
-	
+
 	bool LegacyEntityTimeExt::handleStanza (const QDomElement& elem)
 	{
 		if (elem.tagName () != "iq" ||
@@ -42,17 +42,17 @@ namespace Xoox
 
 		if (elem.firstChildElement ("query").namespaceURI () != NsLegacyEntityTime)
 			return false;
-		
+
 		const QString& from = elem.attribute ("from");
 		if (from.isEmpty ())
 			return false;
-		
+
 		const QDateTime& date = QDateTime::currentDateTime ().toUTC ();
-		
+
 		QXmppElement utcElem;
 		utcElem.setTagName ("utc");
 		utcElem.setValue (date.toString ("yyyyMMddThh:mm:ss"));
-		
+
 		const QString& displayStr = "Your client/bot sucks since it "
 				"uses the long-deprecated XEP-0090. Upgrade your code. "
 				"Ah, and, regarding your question, it's " +
@@ -60,20 +60,20 @@ namespace Xoox
 		QXmppElement displayElem;
 		displayElem.setTagName ("display");
 		displayElem.setValue (displayStr);
-		
+
 		QXmppElement queryElem;
 		queryElem.setTagName ("query");
 		queryElem.setAttribute ("xmlns", NsLegacyEntityTime);
 		queryElem.appendChild (utcElem);
 		queryElem.appendChild (displayElem);
-		
+
 		QXmppIq iq (QXmppIq::Result);
 		iq.setTo (from);
 		iq.setId (elem.attribute ("id"));
-		iq.setExtensions (queryElem);
-		
+		iq.setExtensions (QXmppElementList () << queryElem);
+
 		client ()->sendPacket (iq);
-		
+
 		return true;
 	}
 }

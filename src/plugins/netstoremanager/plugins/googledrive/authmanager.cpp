@@ -21,6 +21,7 @@
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QMainWindow>
 #include <qjson/parser.h>
 #include <util/util.h>
 #include "account.h"
@@ -55,19 +56,22 @@ namespace GoogleDrive
 				FromUserInitiated | OnlyHandle);
 		emit gotEntity (e);
 
-		InputDialog_ = new QInputDialog;
+		InputDialog_ = new QInputDialog (Core::Instance ().GetProxy ()->GetMainWindow (),
+				Qt::Widget);
 		Dialog2Account_ [InputDialog_] = acc;
 		connect (InputDialog_,
 				SIGNAL (finished (int)),
 				this,
 				SLOT (handleDialogFinished (int)));
 
-		InputDialog_->setLabelText (tr ("Enter account verification code:"));
+		InputDialog_->setLabelText (tr ("A browser window will pop up with a request for "
+				"permissions to access your Google Drive account. Once you accept it, a "
+				"verification code will appear. Enter that verification code in the box below:"));
 		InputDialog_->setWindowTitle (tr ("Account configuration"));
-		InputDialog_->setWindowModality (Qt::WindowModal);
 		InputDialog_->setTextEchoMode (QLineEdit::Normal);
 
 		InputDialog_->show ();
+		InputDialog_->activateWindow ();
 	}
 
 	void AuthManager::RequestAuthToken (const QString& code, Account *acc)

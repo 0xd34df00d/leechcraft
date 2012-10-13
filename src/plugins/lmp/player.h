@@ -23,6 +23,7 @@
 #include <phonon/path.h>
 #include <interfaces/media/iradiostation.h>
 #include "mediainfo.h"
+#include "sortingcriteria.h"
 
 class QModelIndex;
 class QStandardItem;
@@ -34,6 +35,8 @@ namespace Phonon
 	class MediaObject;
 	class AudioOutput;
 }
+
+typedef QPair<QString, QString> StringPair_t;
 
 namespace LeechCraft
 {
@@ -59,6 +62,8 @@ namespace LMP
 		Media::IRadioStation_ptr CurrentStation_;
 		QStandardItem *RadioItem_;
 		QHash<QUrl, MediaInfo> Url2Info_;
+
+		MediaInfo LastPhononMediaInfo_;
 	public:
 		enum class PlayMode
 		{
@@ -67,16 +72,6 @@ namespace LMP
 			RepeatTrack,
 			RepeatAlbum,
 			RepeatWhole
-		};
-
-		enum class SortingCriteria
-		{
-			Artist,
-			Year,
-			Album,
-			TrackNumber,
-			TrackTitle,
-			FilePath
 		};
 	private:
 		PlayMode PlayMode_;
@@ -109,6 +104,7 @@ namespace LMP
 		PlayMode GetPlayMode () const;
 		void SetPlayMode (PlayMode);
 
+		QList<SortingCriteria> GetSortingCriteria () const;
 		void SetSortingCriteria (const QList<SortingCriteria>&);
 
 		void Enqueue (const QStringList&, bool = true);
@@ -130,7 +126,6 @@ namespace LMP
 		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
 		MediaInfo GetPhononMediaInfo () const;
 		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
-		void ApplyOrdering (QList<Phonon::MediaSource>&);
 
 		bool HandleCurrentStop (const Phonon::MediaSource&);
 
@@ -146,20 +141,30 @@ namespace LMP
 		void stop ();
 		void clear ();
 	private slots:
+		void handleSorted ();
+		void continueAfterSorted (const QList<QPair<Phonon::MediaSource, MediaInfo>>&);
+
 		void restorePlaylist ();
 		void handleStationError (const QString&);
 		void handleRadioStream (const QUrl&, const Media::AudioInfo&);
+		void handleGotRadioPlaylist (const QString&, const QString&);
+		void postPlaylistCleanup (const QString&);
 		void handleUpdateSourceQueue ();
 		void handlePlaybackFinished ();
 		void handleStateChanged (Phonon::State);
 		void handleCurrentSourceChanged (const Phonon::MediaSource&);
 		void handleMetadata ();
+		void refillPlaylist ();
 		void setTransitionTime ();
 	signals:
 		void songChanged (const MediaInfo&);
+		void indexChanged (const QModelIndex&);
 		void insertedAlbum (const QModelIndex&);
 
 		void playModeChanged (Player::PlayMode);
+		void bufferStatusChanged (int);
+
+		void playerAvailable (bool);
 	};
 }
 }

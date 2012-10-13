@@ -27,6 +27,7 @@ SET (METIDA_SRCS
 	ljprofile.cpp
 	ljxmlrpc.cpp
 	metida.cpp
+	postoptionswidget.cpp
 	profiletypes.cpp
 	profilewidget.cpp
 	utils.cpp
@@ -46,6 +47,7 @@ SET (METIDA_HEADERS
 	ljprofile.h
 	ljxmlrpc.h
 	metida.h
+	postoptionswidget.h
 	profiletypes.h
 	profilewidget.h
 	utils.h
@@ -57,6 +59,7 @@ SET (METIDA_FORMS
 	ljaccountconfigurationdialog.ui
 	ljaccountconfigurationwidget.ui
 	profilewidget.ui
+	postoptionswidget.ui
 	)
 
 SET (METIDA_RESOURCES blogiquemetidaresources.qrc)

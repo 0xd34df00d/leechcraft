@@ -38,6 +38,23 @@ namespace VaderUtil
 			return SOffline;
 	}
 
+	quint32 State2StatusID (State state)
+	{
+		switch (state)
+		{
+		case SOnline:
+		case SChat:
+			return Proto::UserState::Online;
+		case SOffline:
+			return Proto::UserState::Offline;
+		case SConnecting:
+		case SError:
+			return Proto::UserState::Undeterm;
+		default:
+			return Proto::UserState::Away;
+		}
+	}
+
 	QList<QAction*> GetBuddyServices (QObject *receiver, const char *slot)
 	{
 		QList<QAction*> result;
@@ -71,7 +88,7 @@ namespace VaderUtil
 		result << blogs;
 		return result;
 	}
-	
+
 	QString SubstituteNameDomain (const QString& string, const QString& fullEmail)
 	{
 		const QStringList& splitted = fullEmail.split ('@', QString::SkipEmptyParts);

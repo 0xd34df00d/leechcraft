@@ -43,6 +43,7 @@ namespace Azoth
 		IMUCBookmarkEditorWidget *CurrentEditor_;
 	public:
 		BookmarksManagerDialog (QWidget* = 0);
+		~BookmarksManagerDialog ();
 
 		void FocusOn (IAccount*);
 		void SuggestSaving (QObject*);

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DBUSMANAGER_DBUSMANAGER_H
-#define PLUGINS_DBUSMANAGER_DBUSMANAGER_H
+#pragma once
+
 #include <memory>
 #include <QTranslator>
 #include <interfaces/iinfo.h>
@@ -26,41 +26,35 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DBusManager
+{
+	class DBusManager : public QObject
+						, public IInfo
+						, public IHaveSettings
+						, public IEntityHandler
 	{
-		namespace DBusManager
-		{
-			class DBusManager : public QObject
-							  , public IInfo
-							  , public IHaveSettings
-							  , public IEntityHandler
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveSettings IEntityHandler);
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveSettings IEntityHandler);
 
-				std::auto_ptr<QTranslator> Translator_;
-				std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QStringList Provides () const;
-				QStringList Uses () const;
-				QStringList Needs () const;
-				void SetProvider (QObject*, const QString&);
-				QIcon GetIcon () const;
+		std::auto_ptr<QTranslator> Translator_;
+		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QStringList Provides () const;
+		QStringList Uses () const;
+		QStringList Needs () const;
+		void SetProvider (QObject*, const QString&);
+		QIcon GetIcon () const;
 
-				std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-				EntityTestHandleResult CouldHandle (const Entity&) const;
-				void Handle (Entity);
-			};
-		};
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 	};
-};
-
-#endif
-
+}
+}

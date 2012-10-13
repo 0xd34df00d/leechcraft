@@ -26,7 +26,7 @@ namespace Monocle
 {
 namespace FXB
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 	}
 

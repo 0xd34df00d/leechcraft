@@ -46,7 +46,8 @@ namespace Metacontacts
 	QList<QObject*> MetaProtocol::GetRegisteredAccounts ()
 	{
 		QList<QObject*> result;
-		result << Account_;
+		if (!Account_->GetCLEntries ().isEmpty ())
+			result << Account_;
 		return result;
 	}
 

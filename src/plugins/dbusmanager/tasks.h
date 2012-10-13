@@ -16,31 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DBUSMANAGER_TASKS_H
-#define PLUGINS_DBUSMANAGER_TASKS_H
+#pragma once
+
 #include <QObject>
 #include <QStringList>
 #include <QVariantList>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DBusManager
+{
+	class Tasks : public QObject
 	{
-		namespace DBusManager
-		{
-			class Tasks : public QObject
-			{
-				Q_OBJECT
-			public:
-				Tasks (QObject* = 0);
+		Q_OBJECT
+	public:
+		Tasks (QObject* = 0);
 
-				QStringList GetHolders () const;
-				int RowCount (const QString& holder) const;
-				QVariantList GetData (const QString&, int, int) const;
-			};
-		};
+		QStringList GetHolders () const;
+		int RowCount (const QString& holder) const;
+		QVariantList GetData (const QString&, int, int) const;
 	};
-};
-
-#endif
-
+}
+}

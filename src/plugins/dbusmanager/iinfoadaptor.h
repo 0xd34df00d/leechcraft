@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DBUSMANAGER_IINFOADAPTOR_H
-#define PLUGINS_DBUSMANAGER_IINFOADAPTOR_H
+#pragma once
+
 #include <QDBusAbstractAdaptor>
 
 class IInfo;
@@ -25,21 +25,15 @@ class QObject;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DBusManager
+{
+	class IInfoAdaptor : public QDBusAbstractAdaptor
 	{
-		namespace DBusManager
-		{
-			class IInfoAdaptor : public QDBusAbstractAdaptor
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				IInfo *Object_;
-			public:
-				IInfoAdaptor (QObject*);
-			};
-		};
+		IInfo *Object_;
+	public:
+		IInfoAdaptor (QObject*);
 	};
-};
-
-#endif
-
+}
+}

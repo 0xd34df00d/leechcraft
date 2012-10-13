@@ -79,6 +79,13 @@ namespace Monocle
 		Invalid_ = true;
 	}
 
+	void PageGraphicsItem::UpdatePixmap ()
+	{
+		Invalid_ = true;
+		if (isVisible ())
+			update ();
+	}
+
 	void PageGraphicsItem::paint (QPainter *painter,
 			const QStyleOptionGraphicsItem *option, QWidget *w)
 	{

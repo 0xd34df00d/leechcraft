@@ -445,6 +445,7 @@ namespace LackMan
 		{
 			QueryGetPackage_.value (0).toString (),
 			QStringList (version),
+			QMap<QString, QString> ()
 		};
 		QueryGetPackage_.finish ();
 

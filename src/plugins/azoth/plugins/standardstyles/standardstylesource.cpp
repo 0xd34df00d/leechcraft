@@ -53,7 +53,7 @@ namespace StandardStyles
 		return StylesLoader_->GetSubElemModel ();
 	}
 
-	QUrl StandardStyleSource::GetBaseURL (const QString& pack) const
+	QUrl StandardStyleSource::GetBaseURL (const QString&) const
 	{
 		return QUrl ();
 	}

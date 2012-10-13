@@ -5,5 +5,6 @@
 	<file>resources/images/special/gtalk.svg</file>
 	<file>resources/images/special/facebook.svg</file>
 	<file>resources/images/special/vk.svg</file>
+	<file>resources/images/special/odnoklassniki.svg</file>
   </qresource>
 </RCC>

@@ -20,6 +20,8 @@
 
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/structures.h>
+#include <interfaces/idownload.h>
 
 namespace LeechCraft
 {
@@ -35,11 +37,29 @@ namespace GoogleDrive
 		ICoreProxy_ptr Proxy_;
 
 		Core ();
+
+		QObjectList Downloaders_;
+		QMap<int, QObject*> Id2Downloader_;
+		QMap<int, QString> Id2SavePath_;
 	public:
 		static Core& Instance ();
 
 		void SetProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetProxy () const;
+
+		void SendEntity (const LeechCraft::Entity& e);
+		void DelegateEntity (const LeechCraft::Entity& e, const QString& targetPath);
+	private:
+		void HandleProvider (QObject *provider, int id);
+
+	private slots:
+		void handleJobFinished (int id);
+		void handleJobRemoved (int id);
+		void handleJobError (int id, IDownload::Error err);
+
+	signals:
+		void gotEntity (const LeechCraft::Entity& e);
+		void delegateEntity (const LeechCraft::Entity& e, int *id, QObject **provider);
 	};
 }
 }

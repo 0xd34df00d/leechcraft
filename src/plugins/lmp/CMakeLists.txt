@@ -27,18 +27,20 @@ FIND_PACKAGE (Taglib REQUIRED)
 ADD_DEFINITIONS (${TAGLIB_CFLAGS})
 
 SET (QT_USE_QTDECLARATIVE TRUE)
+SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTSQL TRUE)
 SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
-IF (NOT PHONON_FOUND)
+IF (NOT WIN32 AND NOT PHONON_FOUND)
 	MESSAGE (FATAL_ERROR "No Phonon is found, LMP cannot be built")
-ENDIF (NOT PHONON_FOUND)
+ENDIF (NOT WIN32 AND NOT PHONON_FOUND)
 
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${QT_PHONON_INCLUDES}
+	${TAGLIB_INCLUDES}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 SET (SRCS
@@ -75,17 +77,28 @@ SET (SRCS
 	playlistwidget.cpp
 	aalabeleventfilter.cpp
 	collectionsortermodel.cpp
+	collectionstatsdialog.cpp
+	eventswidget.cpp
+	plmanagerwidget.cpp
+	nowplayingpixmaphandler.cpp
+	lmpproxy.cpp
+	sortingcriteria.cpp
+	sortingcriteriadialog.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
 	sync/copymanager.cpp
 	sync/devicesbrowserwidget.cpp
+	sync/formats.cpp
 	sync/syncmanagerbase.cpp
 	sync/syncmanager.cpp
+	sync/syncunmountablemanager.cpp
 	sync/transcodejob.cpp
 	sync/transcodemanager.cpp
 	sync/transcodingparamswidget.cpp
+	sync/unmountabledevmanager.cpp
 	sync/uploadmodel.cpp
+	playlistparsers/commonpl.cpp
 	playlistparsers/playlistfactory.cpp
 	playlistparsers/m3u.cpp
 	playlistparsers/pls.cpp
@@ -101,23 +114,21 @@ SET (FORMS
 	biowidget.ui
 	audiopropswidget.ui
 	playlistwidget.ui
+	collectionstatsdialog.ui
+	eventswidget.ui
+	plmanagerwidget.ui
+	sortingcriteriadialog.ui
 	sync/cloudwidget.ui
 	sync/devicesbrowserwidget.ui
 	sync/transcodingparamswidget.ui
 	)
 SET (RESOURCES resources.qrc)
-CreateTrVars ("lmp" "en;es;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrs ("lmp" "en;es;ru_RU" COMPILED_TRANSLATIONS)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-OPTION (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" FALSE)
+OPTION (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" TRUE)
 
-ADD_CUSTOM_COMMAND (OUTPUT
-	${COMPILED_TRANSLATIONS}
-	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
-	DEPENDS ${TRANSLATIONS}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
 ADD_LIBRARY (leechcraft_lmp SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
@@ -136,6 +147,9 @@ TARGET_LINK_LIBRARIES (leechcraft_lmp
 
 	${MPRIS_SUBLIB}
 	)
+
+CreateTrsUpTarget("lmp" "en;ru_RU" "${SRCS}" "${FORMS}" "lmpsettings.xml")
+
 INSTALL (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES lmpsettings.xml DESTINATION ${LC_SETTINGS_DEST})
@@ -143,6 +157,7 @@ INSTALL (DIRECTORY interfaces DESTINATION include/leechcraft)
 
 OPTION (ENABLE_LMP_DUMBSYNC "Enable DumbSync, plugin for syncing with Flash-like media players" ON)
 OPTION (ENABLE_LMP_MP3TUNES "Enable plugin for syncing and using the mp3tunes.com service" ON)
+OPTION (ENABLE_LMP_MTPSYNC "Enable plugin for syncing with MTP devices" OFF)
 
 IF (ENABLE_LMP_DUMBSYNC)
 	ADD_SUBDIRECTORY (plugins/dumbsync)
@@ -150,3 +165,6 @@ ENDIF (ENABLE_LMP_DUMBSYNC)
 IF (ENABLE_LMP_MP3TUNES)
 	ADD_SUBDIRECTORY (plugins/mp3tunes)
 ENDIF (ENABLE_LMP_MP3TUNES)
+IF (ENABLE_LMP_MTPSYNC)
+	ADD_SUBDIRECTORY (plugins/mtpsync)
+ENDIF (ENABLE_LMP_MTPSYNC)

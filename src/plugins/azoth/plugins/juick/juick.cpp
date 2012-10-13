@@ -122,13 +122,13 @@ namespace Juick
 		if (body.startsWith ("@"))
 			body.insert (0, "<br />");
 
-		body.replace(TagRX_,
-			     " <a href=\"azoth://msgeditreplace/\\1\">\\1</a> ");
+		body.replace (TagRX_,
+			     " <a href=\"azoth://msgeditinsert/\\1\">\\1</a> ");
 
 		InsertAvatars (body);
 		InsertNickLinks (body);
 		body.replace (PostRX_,
-				"<br /> <a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> "
+				"<br /> <a href=\"azoth://msgeditinsert/%23\\1%20\">#\\1</a> "
 				"("
 				"<a href=\"azoth://msgeditreplace/S%20%23\\1\">S</a> "
 				"<a href=\"azoth://msgeditreplace/%23\\1+\">+</a> "
@@ -136,8 +136,8 @@ namespace Juick
 				") ");
 		body.replace (UnsubRX_,
 				"#\\1/\\2 (<a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a>) \\3");
-		body.replace (IdRX_, "<a href=\"azoth://msgeditreplace/%23\\1+\">#\\1</a>\\2");
-		body.replace (ReplyRX_, "<a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> ");
+		body.replace (IdRX_, "<a href=\"azoth://msgeditinsert/%23\\1%20/%23/%23\\1+\">#\\1</a>\\2");
+		body.replace (ReplyRX_, "<a href=\"azoth://msgeditinsert/%23\\1%20\">#\\1</a> ");
 
 		return body;
 	}
@@ -335,8 +335,8 @@ namespace Juick
 		{
 			const QString& userLink =
 				QString (IsBehind (body, index, "Private message from .*size=32'>") ?
-					"<a href=\"azoth://msgeditreplace/PM%20%1\">" :
-					"<a href=\"azoth://msgeditreplace/%1+\">")
+					"<a href=\"azoth://msgeditinsert/%1/%23/PM%20%1\">" :
+					"<a href=\"azoth://msgeditinsert/%1/%23/%1+\">")
 						.arg (UserRX_.cap (1));
 
 			body.insert (index, userLink);

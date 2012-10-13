@@ -36,8 +36,8 @@ namespace Metida
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquemetidasettings.xml");
 
-		Core::Instance ().CreateBloggingPlatfroms (this);
 		Core::Instance ().SetCoreProxy (proxy);
+		Core::Instance ().CreateBloggingPlatfroms (this);
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),

@@ -128,6 +128,13 @@ namespace Azoth
 			return;
 
 		AccountBox_->setCurrentIndex (pos);
+		auto ihsd = qobject_cast<IHaveServiceDiscovery*> (obj);
+		const auto& query = ihsd->GetDefaultQuery ();
+		if (query.isEmpty ())
+			return;
+
+		AddressLine_->setText (query);
+		discover ();
 	}
 
 	void ServiceDiscoveryWidget::SetSDSession (ISDSession *session)

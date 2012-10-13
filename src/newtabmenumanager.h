@@ -50,7 +50,7 @@ namespace LeechCraft
 		QMenu* GetAdditionalMenu ();
 
 		void ToggleHide (ITabWidget*, bool hide);
-		void HideAction (ITabWidget *itw, bool hide);
+		void HideAction (ITabWidget *itw);
 	private:
 		QString AccelerateName (QString);
 		void ToggleHide (QObject*, const QByteArray&, bool);

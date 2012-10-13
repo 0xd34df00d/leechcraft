@@ -1140,17 +1140,21 @@ namespace Aggregator
 
 	QList<ITagsManager::tag_id> SQLStorageBackendMysql::GetItemTags (const IDType_t& id)
 	{
+		Q_UNUSED (id);
 		// TODO
 		return QList<ITagsManager::tag_id> ();
 	}
 
 	void SQLStorageBackendMysql::SetItemTags (const IDType_t& id, const QList<ITagsManager::tag_id>& tags)
 	{
+		Q_UNUSED (id);
+		Q_UNUSED (tags);
 		// TODO
 	}
 
 	QList<IDType_t> SQLStorageBackendMysql::GetItemsForTag (const ITagsManager::tag_id& tag)
 	{
+		Q_UNUSED (tag);
 		// TODO
 		return QList<IDType_t> ();
 	}

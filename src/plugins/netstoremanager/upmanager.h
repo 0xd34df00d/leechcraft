@@ -18,10 +18,12 @@
 
 #ifndef PLUGINS_NETSTOREMANAGER_UPMANAGER_H
 #define PLUGINS_NETSTOREMANAGER_UPMANAGER_H
+#include <functional>
 #include <QObject>
 #include <QHash>
 #include <QStringList>
 #include <QUrl>
+#include <QSet>
 
 class QStandardItemModel;
 class QStandardItem;
@@ -43,22 +45,30 @@ namespace NetStoreManager
 		QHash<IStorageAccount*, QStringList> Uploads_;
 		QStandardItemModel *ReprModel_;
 		QHash<IStorageAccount*, QHash<QString, QList<QStandardItem*>>> ReprItems_;
+		QSet<QString> Autoshare_;
+
+		typedef std::function<void (QUrl, QStringList)> URLHandler_f;
+		QHash<QStringList, QList<URLHandler_f>> URLHandlers_;
 	public:
 		UpManager (QObject* = 0);
 
 		QAbstractItemModel* GetRepresentationModel () const;
+		void ScheduleAutoshare (const QString&);
 	private:
 		void RemovePending (const QString&);
 		IStoragePlugin* GetSenderPlugin ();
 	public slots:
-		void handleUploadRequest (IStorageAccount*, const QString&);
+		void handleUploadRequest (IStorageAccount *isa, const QString& file,
+				const QStringList& id = QStringList ());
 	private slots:
-		void handleGotURL (const QUrl&, const QString&);
+		void handleGotURL (const QUrl&, const QStringList&);
 		void handleError (const QString&, const QString&);
 		void handleUpStatusChanged (const QString&, const QString&);
+		void handleUpFinished (const QStringList&, const QString&);
 		void handleUpProgress (quint64, quint64, const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+		void fileUploaded (const QString&, const QUrl&);
 	};
 }
 }

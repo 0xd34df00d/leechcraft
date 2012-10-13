@@ -26,7 +26,7 @@ namespace Azoth
 {
 namespace Xoox
 {
-	FetchQueue::FetchQueue (boost::function<void (const QString&)> func,
+	FetchQueue::FetchQueue (std::function<void (const QString&, bool)> func,
 			int timeout, int perShot, QObject *parent)
 	: QObject (parent)
 	, FetchTimer_ (new QTimer (this))
@@ -40,8 +40,11 @@ namespace Xoox
 				SLOT (handleFetch ()));
 	}
 
-	void FetchQueue::Schedule (const QString& string, FetchQueue::Priority prio)
+	void FetchQueue::Schedule (const QString& string, FetchQueue::Priority prio, bool report)
 	{
+		if (report)
+			Reports_ << string;
+
 		if (Queue_.contains (string))
 			return;
 
@@ -68,7 +71,10 @@ namespace Xoox
 	{
 		int num = std::min (PerShot_, Queue_.size ());
 		while (num--)
-			FetchFunction_ (Queue_.takeFirst ());
+		{
+			const auto& str = Queue_.takeFirst ();
+			FetchFunction_ (str, Reports_.remove (str));
+		}
 
 		if (Queue_.isEmpty () &&
 				FetchTimer_->isActive ())

@@ -4,6 +4,160 @@ the rest.
 Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
+!!! 0.5.85
+! Devel digest #32 ( http://leechcraft.org/devel-digest-32 ):
+* Core: use system style by default instead of Plastique.
+* Core: workaround for QTBUG-13175.
+* Overall: Mac OS build/runtime fixes.
+* XmlSettingsDialog: support searching for settings.
+* AdvancedNotifications: proper notifications view height.
+* Azoth: separate dialog for file sending, supporting file comments and
+  sending via NSM-like plugins.
+* Azoth: much improved DnD support for file/images sending.
+* Azoth: user-visible strings are properly escaped in contact tooltips.
+* Azoth: fixed Ctrl+1 handling.
+* Azoth Autopaste: added support for Python language.
+* Azoth ChatHistory: fixed links not being clickable sometimes.
+* Azoth Metacontacts: show dummy account iff there are metacontacts.
+* Azoth Xoox: automatic SOCKS5 proxy discovery.
+* Azoth Xoox: support manually overriding SOCKS5 proxy.
+* Azoth Xoox: selectable file transfer methods.
+* HotStreams: fetch radio list from dir.xiph.org.
+* LastFMScrobble: fixed tags ordering in biography info.
+* LastFMScrobble: fixed build with Debian liblastfm snapshot.
+* LMP: playlist loading is now asynchronous.
+* LMP: autodetect and rescan changed files.
+* LMP: remember last used events/biography/etc providers.
+* LMP: clickable artist names in biography/similar/etc view.
+* LMP: choosing next track now respects play mode.
+* LMP: fixed Repeat Album play mode.
+* LMP: improved transcoding params.
+* LMP: up/down buttons.
+* LMP: rescan fixes.
+* LMP DumbSync: support uploading covers as well.
+* Monocle: fixed fitting ratio calculation.
+* Pierre: Mac OS X integration layer.
+* Poshuku: menus for back/forward history navigation.
+* Poshuku: reworked bookmarks management UI.
+* Poshuku CleanWeb: severely optimized, improved AdBlock+ compatibility.
+* TabsList: handle Enter, Return, Home and End buttons.
+* TabSessManager: tabs order is now saved as well.
+
+! Devel digest #31 ( http://leechcraft.org/devel-digest-31 ):
+* Core: support restaring LeechCraft from LeechCraft.
+* Core: support setting startup password.
+* Azoth: fixed a rare segfault where nick hash was negative.
+* Azoth: leave chat view enabled when the other contact is deleted.
+* Azoth: added "clear line edit" to roster filter.
+* Azoth Autopaste: allow choosing the paste service and highlighting.
+* Azoth Vader: online/offline status handling fixes.
+* Azoth Xoox: support editing registration information on gateways.
+* Azoth Xoox: properly reconnect after account changes.
+* Azoth Xoox: logging all data to file is now optional.
+* Azoth Xoox: finally synced with upstream QXmpp.
+* DBusManager: expose plugins like NetStoreManager via D-Bus.
+* LastFMScrobble: support fetching recommended events.
+* Launchy: new plugin for launching applications and LC tabs.
+* LMP: detect deleted files.
+* LMP: deleting tracks from UI.
+* LMP: fetch & display recommended events.
+* LMP: properly re-add root paths on rescan.
+* LMP: directory iterator now asynchronous in FS watcher.
+* LMP: scale pixmaps to 48x48 in playlist, conserves memory a lot.
+* LMP: play on Enter/Space/Return.
+* LMP: support playlist searching.
+* LMP: handle links in biography and similar views.
+* LMP: fetch artist image for radio tracks.
+* LMP: support banning current track.
+* LMP: support deleting static playlists.
+* LMP: support Phonon in non-KDE installations.
+* LMP: "clear line edit" in collection and playlist filters.
+* LMP: background blurring in QML templates.
+* LMP: lots of small QML template fixes and improvements.
+* Monocle Seen: new plugin for DjVu format support.
+
+! Devel digest #30 ( http://leechcraft.org/devel-digest-30 ):
+* Core: use native file dialogs.
+* Core: subplugins are now in their parent plugins' settings pages.
+* Azoth: adjust variant chooser to contents.
+* Azoth: fixed non-expanding smiles in smiles chooser.
+* Azoth: MUC-aware groups sorting (MUC groups are now at the bottom).
+* Azoth: optional separate MUC log.
+* Azoth: fixed handling of tabs losing focus.
+* Azoth: fixed several segfaults.
+* Azoth Acetamide: support 307, 310, 320, 378 answers for UnrealIRCD.
+* Azoth Acetamide: default IRC port is 6667 now.
+* Azoth p100q: support in-place insertions instead of replaces.
+* Azoth p100q: fixed last ID shortcut.
+* Azoth Xoox: detect and eliminate duplicate bookmarks.
+* Azoth Xoox: fixed a bug in stanza generation in XEP-0016.
+* Azoth Xoox: proper Cancel/Auth error handling.
+* Azoth Xoox: don't reconnect on account nick change.
+* Dolozhee: fixed reporting Core issues.
+* HotStreams: added new plugin, supporting SomaFM, Digitally Imported,
+  SkyFM and 42fm.ru.
+* Kinotify: configurable screen corner for the notifier balloon.
+* LackMan: remove caching.
+* Liznoo: added FreeBSD native platform backend.
+* LMP: reworked radio plugins interoperation.
+* LMP: added listview-based tabs switcher.
+* LMP: added buffer status indicator.
+* LMP: added collection statistics dialog.
+* LMP: new collection items are added immediately.
+* NetStoreManager: lots of improvements, like better support for DnD.
+* NetStoreManager: removed obsolete support for Yandex.Narod service.
+* Poshuku: fixed error page template.
+
+!!! 0.5.80
+! Devel digest #29 ( http://leechcraft.org/devel-digest-29 ):
+* Core: fallback to using external apps is now optional.
+* Core: fixed showing main window in some WMs.
+* Azoth: autoselect other resources only when a chat message is recieved.
+* Azoth: tooltip is updated on avatar changes.
+* Azoth: fixed a couple of bookmarks-related memory leaks.
+* Azoth: added default queries in Service Discovery.
+* Azoth: more compatibility with full Unicode JIDs.
+* Azoth: MUC icon is preserved on MUC tabs on account state change.
+* Azoth: slightly changed variant state change handler.
+* Azoth: MUCs with unread messages are marked with "*" now.
+* Azoth BirthdayNotifier: new plugin for notifying about birthdays.
+* Azoth ChatHistory: dates with logs for that day are displayed in bold.
+* Azoth ChatHistory: configurable amount of logs to show on one page.
+* Azoth Xoox: synced QXmpp with upstream.
+* Azoth Xoox: added icon for odnoklassniki.
+* Azoth Xoox: birthday field is now editable for self vcards.
+* Azoth Xtazy: added /np and /sharesong commands.
+* BitTorrent: optional flags for peers' countries.
+* Glance: nice Close button right on thumbnails.
+* LMP: initial support for MP3tunes.com service: uploading & playlists.
+* LMP: support different sorting styles in the playlist.
+* LMP: support Drag'n'Drop and actions for reordering items in the playlist.
+* LMP: all found lyrics can be displayed, not the last found one.
+* LMP: faster prescaler for huge album arts in notifications.
+* LMP: fixed compatibility with taglib built without ASF or MP4.
+* NSM: initial Google Drive support.
+* NSM: other plugins can request uploads now.
+
+! Devel digest #28 ( http://leechcraft.org/devel-digest-28 ):
+* Aggregator: support exporting feeds to PDF.
+* Azoth: display avatar in tooltips.
+* Azoth: fixed a segfault when Ctrl+Clicking.
+* BitTorrent: compatibility with Boost-1.50.
+* Dolozhee: fetch the list of issue categories and assign issues to them.
+* LastFMScrobble: expose some predefined radio stations.
+* LastFMScrobble: liblastfm-1.0 compatibility.
+* LMP: support adding artists to wishlists.
+* LMP: support predefined radio stations from radio plugins.
+* LMP: playlist stats below the playlist.
+* LMP: configurable shortcuts.
+* LMP: close the Album Art display on Esc or mouse click.
+* LMP: added an option to ignore "The " when sorting artists.
+* LMP: URLs are displayed in playlist instead of just the string "URL".
+* LMP: fixed background in QMLs.
+* LMP: more file types are now supported.
+* Otlozhu: support adding tasks from other plugins.
+* Vrooby: fixed a segfault on startup on some systems.
+
 !!! 0.5.75
 ! Devel digest #27 ( http://leechcraft.org/devel-digest-27 ):
 * Core: ignore LanguageChange event.

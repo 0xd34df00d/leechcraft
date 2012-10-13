@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/netstoremanager/istorageplugin.h>
 #include "account.h"
 
@@ -35,15 +36,18 @@ namespace GoogleDrive
 	class Plugin : public QObject
 				, public IInfo
 				, public IPlugin2
+				, public IHaveSettings
 				, public IStoragePlugin
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
+				IHaveSettings
 				LeechCraft::NetStoreManager::IStoragePlugin)
 
 		QList<Account_ptr> Accounts_;
 		AuthManager *AuthManager_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -54,6 +58,8 @@ namespace GoogleDrive
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QObject* GetObject ();
 		QObjectList GetAccounts () const;
@@ -71,7 +77,8 @@ namespace GoogleDrive
 	signals:
 		void accountAdded (QObject *accObj);
 		void accountRemoved (QObject *accObj);
-		void gotEntity (LeechCraft::Entity e);
+		void gotEntity (const LeechCraft::Entity& e);
+		void delegateEntity (const LeechCraft::Entity& entity, int *id, QObject **provider);
 	};
 }
 }

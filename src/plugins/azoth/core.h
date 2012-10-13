@@ -157,7 +157,8 @@ namespace Azoth
 			CLRUnreadMsgCount,
 			CLRRole,
 			CLRAffiliation,
-			CLRNumOnline
+			CLRNumOnline,
+			CLRIsMUCCategory
 		};
 
 		enum CLEntryType

@@ -36,11 +36,11 @@ namespace ChatHistory
 	{
 		return Storage_.get ();
 	}
-	
+
 	void StorageThread::run ()
 	{
 		Storage_.reset (new Storage);
-		
+
 		QTimer::singleShot (0,
 				this,
 				SLOT (connectSignals ()));
@@ -48,7 +48,7 @@ namespace ChatHistory
 		QThread::run ();
 		Storage_.reset ();
 	}
-	
+
 	void StorageThread::connectSignals ()
 	{
 		connect (Storage_.get (),
@@ -70,6 +70,11 @@ namespace ChatHistory
 				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
 				Core::Instance ().get (),
 				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
+				Qt::QueuedConnection);
+		connect (Storage_.get (),
+				SIGNAL (gotDaysForSheet (QString, QString, int, int, QList<int>)),
+				Core::Instance ().get (),
+				SIGNAL (gotDaysForSheet (QString, QString, int, int, QList<int>)),
 				Qt::QueuedConnection);
 	}
 }

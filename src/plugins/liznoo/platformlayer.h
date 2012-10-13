@@ -40,6 +40,9 @@ namespace Liznoo
 			Hibernate
 		};
 		virtual void ChangeState (PowerState);
+	protected:
+		void EmitGonnaSleep (int);
+		void EmitWokeUp ();
 	signals:
 		void started ();
 		void gotEntity (const LeechCraft::Entity&);

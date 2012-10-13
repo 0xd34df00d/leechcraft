@@ -77,7 +77,7 @@ namespace MP3Tunes
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		void SetLMPProxy (ILMPProxy*);
+		void SetLMPProxy (ILMPProxy_ptr);
 
 		QObject* GetObject ();
 		QString GetCloudName () const;

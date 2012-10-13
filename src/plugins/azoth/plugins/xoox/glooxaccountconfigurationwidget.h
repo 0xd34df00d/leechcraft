@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNTCONFIGURATIONWIDGET_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNTCONFIGURATIONWIDGET_H
 #include <QWidget>
+#include <QXmppTransferManager.h>
 #include "ui_glooxaccountconfigurationwidget.h"
 
 namespace LeechCraft
@@ -55,6 +56,18 @@ namespace Xoox
 		void SetKAInterval (int);
 		int GetKATimeout () const;
 		void SetKATimeout (int);
+
+		bool GetFileLogEnabled () const;
+		void SetFileLogEnabled (bool);
+
+		QXmppTransferJob::Methods GetFTMethods () const;
+		void SetFTMethods (QXmppTransferJob::Methods);
+
+		bool GetUseSOCKS5Proxy () const;
+		void SetUseSOCKS5Proxy (bool);
+
+		QString GetSOCKS5Proxy () const;
+		void SetSOCKS5Proxy (const QString&);
 
 		QString GetPassword () const;
 	private slots:

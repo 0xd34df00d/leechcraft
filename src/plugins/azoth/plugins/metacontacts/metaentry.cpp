@@ -410,10 +410,8 @@ namespace Metacontacts
 			std::stable_sort (Messages_.begin (), Messages_.end (),
 					[] (QObject *lObj, QObject *rObj)
 					{
-						IMessage *left = qobject_cast<IMessage*> (lObj);
-						IMessage *right = qobject_cast<IMessage*> (rObj);
-
-						return left->GetDateTime () < right->GetDateTime ();
+						return qobject_cast<IMessage*> (lObj)->GetDateTime () <
+								qobject_cast<IMessage*> (rObj)->GetDateTime ();
 					});
 
 		emit gotMessage (message);
@@ -453,7 +451,7 @@ namespace Metacontacts
 		}
 	}
 
-	void MetaEntry::handleRealNameChanged (const QString& name)
+	void MetaEntry::handleRealNameChanged (const QString&)
 	{
 		QObject *obj = sender ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);

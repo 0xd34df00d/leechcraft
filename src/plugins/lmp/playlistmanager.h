@@ -32,7 +32,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	class MediaInfo;
+	struct MediaInfo;
 	class StaticPlaylistManager;
 
 	class PlaylistManager : public QObject
@@ -63,6 +63,9 @@ namespace LMP
 		StaticPlaylistManager* GetStaticManager () const;
 
 		void AddProvider (QObject*);
+
+		bool CanDeletePlaylist (const QModelIndex&) const;
+		void DeletePlaylist (const QModelIndex&);
 
 		QList<Phonon::MediaSource> GetSources (const QModelIndex&) const;
 

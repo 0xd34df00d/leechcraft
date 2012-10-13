@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "bookmarkswidget.h"
-#include <QInputDialog>
 #include <QMessageBox>
 #include <util/models/flattofoldersproxymodel.h>
 #include <interfaces/core/icoreproxy.h>
@@ -25,7 +24,6 @@
 #include "core.h"
 #include "favoritesdelegate.h"
 #include "favoritesmodel.h"
-#include "editbookmarkdialog.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -50,7 +48,6 @@ namespace Poshuku
 
 		Ui_.FavoritesView_->setItemDelegate (new FavoritesDelegate (this));
 		Ui_.FavoritesView_->addAction (Ui_.ActionEditBookmark_);
-		Ui_.FavoritesView_->addAction (Ui_.ActionChangeURL_);
 		Ui_.FavoritesView_->addAction (Ui_.ActionDeleteBookmark_);
 		connect (Ui_.FavoritesView_,
 				SIGNAL (deleteSelected (const QModelIndex&)),
@@ -91,64 +88,13 @@ namespace Poshuku
 
 	void BookmarksWidget::on_ActionEditBookmark__triggered ()
 	{
-		QModelIndex current = Ui_.FavoritesView_->
-			selectionModel ()->currentIndex ();
+		auto current = Ui_.FavoritesView_->selectionModel ()->currentIndex ();
 		if (FlatToFolders_->GetSourceModel ())
 			current = FlatToFolders_->MapToSource (current);
 		if (!current.isValid ())
 			return;
 
-		QModelIndex source = FavoritesFilterModel_->mapToSource (current);
-
-		EditBookmarkDialog dia (source, this);
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		FavoritesModel *model = Core::Instance ().GetFavoritesModel ();
-		model->setData (source.sibling (source.row (),
-					FavoritesModel::ColumnTitle),
-				dia.GetTitle ());
-		model->setData (source.sibling (source.row (),
-					FavoritesModel::ColumnTags),
-				dia.GetTags ());
-	}
-
-	void BookmarksWidget::on_ActionChangeURL__triggered ()
-	{
-		QModelIndex current = Ui_.FavoritesView_->
-			selectionModel ()->currentIndex ();
-		if (FlatToFolders_->GetSourceModel ())
-			current = FlatToFolders_->MapToSource (current);
-		if (!current.isValid ())
-			return;
-
-		QModelIndex source = FavoritesFilterModel_->mapToSource (current);
-
-		QString title = source.sibling (source.row (),
-				FavoritesModel::ColumnTitle).data ().toString ();
-
-		QString currentURL = source.sibling (source.row (),
-				FavoritesModel::ColumnURL).data ().toString ();
-
-		bool ok = false;
-
-		QString newURL = QInputDialog::getText (this,
-				tr ("Change URL"),
-				tr ("Enter new URL for<br />%1")
-					.arg (title),
-				QLineEdit::Normal,
-				currentURL,
-				&ok);
-
-		if (!ok)
-			return;
-
-		if (newURL.isEmpty ())
-			QMessageBox::critical (this,
-					"LeechCraft",
-					tr ("URL of a bookmark can't be empty."));
-
-		Core::Instance ().GetFavoritesModel ()->ChangeURL (source, newURL);
+		Core::Instance ().GetFavoritesModel ()->EditBookmark (FavoritesFilterModel_->mapToSource (current));
 	}
 
 	void BookmarksWidget::on_ActionDeleteBookmark__triggered ()
@@ -227,7 +173,6 @@ namespace Poshuku
 			index = FlatToFolders_->MapToSource (act);
 
 		Ui_.ActionEditBookmark_->setEnabled (index.isValid ());
-		Ui_.ActionChangeURL_->setEnabled (index.isValid ());
 		Ui_.ActionDeleteBookmark_->setEnabled (index.isValid ());
 
 		if (index.isValid ())

@@ -18,6 +18,7 @@
 
 #include "util.h"
 #include <algorithm>
+#include <numeric>
 #include <QCryptographicHash>
 #include <QUrl>
 #include <QDomElement>
@@ -80,7 +81,7 @@ namespace Lastfmscrobble
 	{
 		Media::ArtistInfo result;
 
-		auto text = [&artist] (const QString& elemName)
+		auto text = [&artist] (const QString& elemName) -> QString
 		{
 			const auto& items = artist.elementsByTagName (elemName);
 			if (items.isEmpty ())

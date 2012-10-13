@@ -29,6 +29,7 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/icoretabwidget.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/ihavetabs.h>
 #include "restoresessiondialog.h"
@@ -72,6 +73,11 @@ namespace TabSessManager
 				QCoreApplication::applicationName () + "_TabSessManager");
 		Q_FOREACH (const auto& group, settings.childGroups ())
 			AddCustomSession (group);
+
+		connect (proxy->GetTabWidget ()->GetObject (),
+				SIGNAL (tabWasMoved (int, int)),
+				this,
+				SLOT (handleTabMoved (int, int)));
 	}
 
 	void Plugin::SecondInit ()
@@ -121,7 +127,7 @@ namespace TabSessManager
 		return result;
 	}
 
-	bool Plugin::eventFilter (QObject *obj, QEvent *e)
+	bool Plugin::eventFilter (QObject*, QEvent *e)
 	{
 		if (e->type () != QEvent::DynamicPropertyChange)
 			return false;
@@ -216,7 +222,7 @@ namespace TabSessManager
 
 		auto removeGuard = [this, widget] (void*)
 		{
-			Tabs_.remove (widget);
+			Tabs_.removeAll (widget);
 			handleTabRecoverDataChanged ();
 		};
 		std::shared_ptr<void> guard (static_cast<void*> (0), removeGuard);
@@ -225,7 +231,7 @@ namespace TabSessManager
 		if (recoverData.isEmpty ())
 			return;
 
-		const TabUncloseInfo& info =
+		const TabUncloseInfo info
 		{
 			{
 				recoverData,
@@ -261,6 +267,27 @@ namespace TabSessManager
 		action->setShortcut (QString ("Ctrl+Shift+T"));
 	}
 
+	void Plugin::handleTabMoved (int from, int to)
+	{
+		if (std::max (from, to) >= Tabs_.size () ||
+			std::min (from, to) < 0)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid"
+					<< from
+					<< "->"
+					<< to
+					<< "; total tabs:"
+					<< Tabs_.size ();
+			return;
+		}
+
+		auto tab = Tabs_.takeAt (from);
+		Tabs_.insert (to, tab);
+
+		handleTabRecoverDataChanged ();
+	}
+
 	namespace
 	{
 		QHash<QObject*, QList<RecInfo>> GetTabsFromStream (QDataStream& str, ICoreProxy_ptr proxy)
@@ -268,6 +295,7 @@ namespace TabSessManager
 			QHash<QByteArray, QObject*> pluginCache;
 			QHash<QObject*, QList<RecInfo>> tabs;
 
+			int order = 0;
 			while (!str.atEnd ())
 			{
 				QByteArray pluginId;
@@ -291,7 +319,7 @@ namespace TabSessManager
 					continue;
 				}
 
-				tabs [plugin] << RecInfo { recData, props, name, icon };
+				tabs [plugin] << RecInfo { order++, recData, props, name, icon };
 
 				qDebug () << Q_FUNC_INFO << "got restore data for"
 						<< pluginId << name << plugin;
@@ -322,20 +350,23 @@ namespace TabSessManager
 
 		void OpenTabs (const QHash<QObject*, QList<RecInfo>>& tabs)
 		{
-			Q_FOREACH (QObject *plugin, tabs.keys ())
+			QList<QPair<IHaveRecoverableTabs*, RecInfo>> ordered;
+			Q_FOREACH (auto plugin, tabs.keys ())
 			{
 				auto ihrt = qobject_cast<IHaveRecoverableTabs*> (plugin);
 				if (!ihrt)
 					continue;
 
-				QList<TabRecoverInfo> datas;
-				const auto& infos = tabs [plugin];
-				std::transform (infos.begin (), infos.end (), std::back_inserter (datas),
-						[] (const RecInfo& rec) { return TabRecoverInfo { rec.Data_, rec.Props_ }; });
-				qDebug () << Q_FUNC_INFO << "recovering"
-						<< plugin << infos.size ();
-				ihrt->RecoverTabs (datas);
+				Q_FOREACH (const auto& info, tabs [plugin])
+					ordered << qMakePair (ihrt, info);
 			}
+
+			std::sort (ordered.begin (), ordered.end (),
+					[] (decltype (ordered.at (0)) left, decltype (ordered.at (0)) right)
+						{ return left.second.Order_ < right.second.Order_; });
+
+			Q_FOREACH (const auto& pair, ordered)
+				pair.first->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, pair.second.Props_ } });
 		}
 	}
 

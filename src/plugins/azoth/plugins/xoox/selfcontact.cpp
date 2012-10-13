@@ -17,9 +17,10 @@
  **********************************************************************/
 
 #include "selfcontact.h"
+#include <QXmppVCardManager.h>
 #include "clientconnection.h"
 #include "vcarddialog.h"
-#include <QXmppVCardManager.h>
+#include "accountsettingsholder.h"
 
 namespace LeechCraft
 {
@@ -72,7 +73,7 @@ namespace Xoox
 
 	QString SelfContact::GetHumanReadableID () const
 	{
-		return Account_->GetJID ();
+		return Account_->GetSettings ()->GetJID ();
 	}
 
 	QStringList SelfContact::Groups () const
@@ -114,6 +115,7 @@ namespace Xoox
 
 	void SelfContact::UpdatePriority (const QString& resource, int prio)
 	{
+		Prio2Status_.remove (Prio2Status_.key (resource));
 		Prio2Status_ [prio] = resource;
 		emit availableVariantsChanged (Variants ());
 	}
@@ -123,7 +125,9 @@ namespace Xoox
 		Prio2Status_.remove (Prio2Status_.key (resource));
 		CurrentStatus_.remove (resource);
 
-		EntryBase::SetStatus (EntryStatus (SOffline, QString ()), resource);
+		EntryBase::SetStatus (EntryStatus (SOffline, QString ()),
+				resource,
+				QXmppPresence (QXmppPresence::Unavailable));
 	}
 
 	QString SelfContact::GetJID () const

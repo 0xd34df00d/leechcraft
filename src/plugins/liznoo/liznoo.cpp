@@ -32,6 +32,10 @@
 	#include "platformupower.h"
 #elif defined(Q_OS_WIN32)
 	#include "platformwinapi.h"
+#elif defined(Q_OS_FREEBSD)
+	#include "platformfreebsd.h"
+#elif defined(Q_OS_MAC)
+	#include "platformmac.h"
 #else
 	#pragma message ("Unsupported system")
 #endif
@@ -56,6 +60,10 @@ namespace Liznoo
 		PL_ = new PlatformUPower (this);
 #elif defined(Q_OS_WIN32)
 		PL_ = new PlatformWinAPI (this);
+#elif defined(Q_OS_FREEBSD)
+		PL_ = new PlatformFreeBSD (this);
+#elif defined(Q_OS_MAC)
+		PL_ = new PlatformMac (this);
 #else
 		PL_ = 0;
 #endif
@@ -119,6 +127,8 @@ namespace Liznoo
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
 		QList<QAction*> result;
+		if (place == ActionsEmbedPlace::LCTray)
+			result << Battery2Action_.values ();
 		return result;
 	}
 
@@ -214,7 +224,7 @@ namespace Liznoo
 
 	void Plugin::CheckNotifications (const BatteryInfo& info)
 	{
-		auto check = [&info, this] (std::function<bool (const BatteryInfo&)> f)
+		auto check = [&info, this] (std::function<bool (const BatteryInfo&)> f) -> bool
 		{
 			if (!Battery2LastInfo_.contains (info.ID_))
 				return f (info);

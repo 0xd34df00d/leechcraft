@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import Effects 1.0
 
 Rectangle {
     id: rootRect
@@ -17,6 +18,7 @@ Rectangle {
     anchors.fill: parent
 
     signal bookmarkArtistRequested(string id, string page, string tags)
+    signal linkActivated(string id)
 
     Image {
         id: fullSizeArtistImg
@@ -35,15 +37,20 @@ Rectangle {
             State {
                 name: "hidden"
                 PropertyChanges { target: fullSizeArtistImg; opacity: 0 }
+                PropertyChanges { target: similarViewBlur; blurRadius: 0 }
             },
             State {
                 name: "visible"
                 PropertyChanges { target: fullSizeArtistImg; opacity: 1 }
+                PropertyChanges { target: similarViewBlur; blurRadius: 10 }
             }
         ]
 
         transitions: Transition {
-            PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+            ParallelAnimation {
+                PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+                PropertyAnimation { target: similarViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
+            }
         }
 
         MouseArea {
@@ -57,11 +64,18 @@ Rectangle {
     ListView {
         anchors.fill: parent
         id: similarView
+        smooth: true
+
+        effect: Blur {
+            id: similarViewBlur
+            blurRadius: 0.0
+        }
 
         model: similarModel
         delegate: Item {
             height: 150
             width: similarView.width
+            smooth: true
 
             Rectangle {
                 id: delegateRect
@@ -93,12 +107,19 @@ Rectangle {
                     id: artistNameLabel
                     text: artistName
                     font.bold: true
+                    font.underline: true
                     font.pointSize: 12
                     color: "#dddddd"
                     anchors.top: parent.top
                     anchors.topMargin: 2
                     anchors.left: artistImageThumb.right
                     anchors.leftMargin: 5
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: rootRect.linkActivated(artistPageURL)
+                    }
                 }
 
                 Image {
@@ -181,6 +202,9 @@ Rectangle {
                     anchors.left: artistImageThumb.right
                     anchors.top: artistNameLabel.bottom
                     anchors.topMargin: 0
+                    anchors.right: parent.right
+                    anchors.rightMargin: 5
+                    elide: Text.ElideRight
                     font.pointSize: 8
                 }
 
@@ -197,6 +221,35 @@ Rectangle {
                     anchors.top: artistTagsLabel.bottom
                     anchors.topMargin: 5
                     anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 1
+
+                    onLinkActivated: rootRect.linkActivated(link)
+                }
+
+                Rectangle {
+                    id: downTextShade
+                    z: 3
+                    height: 10
+                    radius: parent.radius
+
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 1
+                    anchors.left: parent.left
+                    anchors.leftMargin: 1
+                    anchors.right: parent.right
+                    anchors.rightMargin: 1
+
+                    gradient: Gradient {
+                        GradientStop {
+                            position: 0
+                            color: "#0042394b"
+                        }
+
+                        GradientStop {
+                            position: 1
+                            color: "#ff42394b"
+                        }
+                    }
                 }
             }
         }

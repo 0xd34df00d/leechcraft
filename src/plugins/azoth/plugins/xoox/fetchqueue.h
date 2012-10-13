@@ -18,8 +18,9 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_FETCHQUEUE_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_FETCHQUEUE_H
-#include <boost/function.hpp>
+#include <functional>
 #include <QObject>
+#include <QSet>
 #include <QStringList>
 
 class QTimer;
@@ -33,21 +34,22 @@ namespace Xoox
 	class FetchQueue : public QObject
 	{
 		Q_OBJECT
-		
+
 		QTimer *FetchTimer_;
 		QStringList Queue_;
-		boost::function<void (const QString&)> FetchFunction_;
+		std::function<void (const QString&, bool)> FetchFunction_;
 		int PerShot_;
+		QSet<QString> Reports_;
 	public:
 		enum Priority
 		{
 			PHigh,
 			PLow
 		};
-		FetchQueue (boost::function<void (const QString&)> func,
+		FetchQueue (std::function<void (const QString&, bool)> func,
 				int timeout, int perShot, QObject* = 0);
-		
-		void Schedule (const QString&, Priority = PLow);
+
+		void Schedule (const QString&, Priority = PLow, bool report = false);
 	private slots:
 		void handleFetch ();
 	};

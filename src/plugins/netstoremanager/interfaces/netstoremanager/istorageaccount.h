@@ -19,6 +19,7 @@
 #ifndef PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISTORAGEACCOUNT_H
 #define PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISTORAGEACCOUNT_H
 #include <QString>
+#include <QStringList>
 #include <QUrl>
 #include <QMetaType>
 #include <QtPlugin>
@@ -36,6 +37,12 @@ namespace NetStoreManager
 
 	Q_DECLARE_FLAGS (AccountFeatures, AccountFeature);
 
+	enum class UploadType
+	{
+		Upload,
+		Update
+	};
+
 	class IStorageAccount
 	{
 	public:
@@ -44,15 +51,21 @@ namespace NetStoreManager
 		virtual QObject* GetParentPlugin () const = 0;
 		virtual QObject* GetObject () = 0;
 
+		virtual QByteArray GetUniqueID () const = 0;
+
 		virtual QString GetAccountName () const = 0;
 		virtual AccountFeatures GetAccountFeatures () const = 0;
 
-		virtual void Upload (const QString& filepath) = 0;
+		virtual void Upload (const QString& filepath,
+				const QStringList& parentId = QStringList (),
+				UploadType ut = UploadType::Upload,
+				const QStringList& id = QStringList ()) = 0;
+		virtual void Download (const QStringList& id, const QString& filepath, bool silent = false) = 0;
 	protected:
 		virtual void upStatusChanged (const QString& status, const QString& filepath) = 0;
 		virtual void upProgress (quint64 done, quint64 total, const QString& filepath) = 0;
 		virtual void upError (const QString& error, const QString& filepath) = 0;
-		virtual void gotURL (const QUrl& url, const QString& filepath) = 0;
+		virtual void upFinished (const QStringList& id, const QString& filepath) = 0;
 	};
 }
 }

@@ -19,6 +19,9 @@
 #ifndef PLUGINS_SEEKTHRU_DESCRIPTION_H
 #define PLUGINS_SEEKTHRU_DESCRIPTION_H
 #include <QStringList>
+#include <QString>
+#include <QVariantMap>
+#include <QUrl>
 #include <QMetaType>
 
 namespace LeechCraft
@@ -33,6 +36,8 @@ namespace LeechCraft
 				QString Type_;
 				qint32 IndexOffset_;
 				qint32 PageOffset_;
+
+				QUrl MakeUrl (const QString&, const QHash<QString, QVariant>&) const;
 			};
 
 			QDataStream& operator<< (QDataStream&, const UrlDescription&);

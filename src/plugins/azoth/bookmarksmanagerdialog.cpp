@@ -32,7 +32,10 @@ namespace Azoth
 	BookmarksManagerDialog::BookmarksManagerDialog (QWidget *parent)
 	: QDialog (parent)
 	, BMModel_ (new QStandardItemModel (this))
+	, CurrentEditor_ (0)
 	{
+		setAttribute (Qt::WA_DeleteOnClose, true);
+
 		Ui_.setupUi (this);
 		Ui_.MoveDown_->setIcon (QIcon::fromTheme ("go-down"));
 		Ui_.MoveUp_->setIcon (QIcon::fromTheme ("go-up"));
@@ -80,6 +83,12 @@ namespace Azoth
 
 		if (Ui_.AccountBox_->count ())
 			on_AccountBox__currentIndexChanged (0);
+	}
+
+	BookmarksManagerDialog::~BookmarksManagerDialog ()
+	{
+		delete CurrentEditor_;
+		qDeleteAll (Proto2Joiner_.values ());
 	}
 
 	void BookmarksManagerDialog::FocusOn (IAccount *acc)
@@ -193,6 +202,7 @@ namespace Azoth
 			delete item;
 		}
 		QWidget *w = supBms->GetMUCBookmarkEditorWidget ();
+		delete CurrentEditor_;
 		CurrentEditor_ = qobject_cast<IMUCBookmarkEditorWidget*> (w);
 		if (CurrentEditor_)
 			Ui_.BMFrameLayout_->addWidget (w);
@@ -232,6 +242,14 @@ namespace Azoth
 
 		const int index = Ui_.AccountBox_->currentIndex ();
 		IAccount *account = Ui_.AccountBox_->itemData (index).value<IAccount*> ();
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no account available for index"
+					<< index;
+			return;
+		}
+
 		qobject_cast<ISupportBookmarks*> (account->GetObject ())->SetBookmarkedMUCs (datas);
 
 		on_AccountBox__currentIndexChanged (index);
@@ -305,12 +323,17 @@ namespace Azoth
 
 	void BookmarksManagerDialog::on_AddButton__released ()
 	{
+		if (!CurrentEditor_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no editor available";
+			return;
+		}
+
 		QStandardItem *selected = GetSelectedItem ();
 		const QVariantMap& data = selected ?
 				selected->data ().toMap () :
-				(CurrentEditor_ ?
-					CurrentEditor_->GetIdentifyingData () :
-					QVariantMap ());
+				CurrentEditor_->GetIdentifyingData ();
 
 		QStandardItem *item = new QStandardItem (data.value ("HumanReadableName").toString ());
 		item->setData (data);

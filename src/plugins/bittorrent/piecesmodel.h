@@ -31,13 +31,9 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
-			class Core;
-
 			class PiecesModel : public QAbstractItemModel
 			{
 				Q_OBJECT
-
-				friend class Core;
 
 				QStringList Headers_;
 				struct Info
@@ -50,9 +46,10 @@ namespace LeechCraft
 					bool operator== (const Info&) const;
 				};
 				QList<Info> Pieces_;
+
+				const int Index_;
 			public:
-				PiecesModel (QObject *parent = 0);
-				virtual ~PiecesModel ();
+				PiecesModel (int, QObject *parent = 0);
 
 				virtual int columnCount (const QModelIndex&) const;
 				virtual QVariant data (const QModelIndex&, int role = Qt::DisplayRole) const;
@@ -62,7 +59,9 @@ namespace LeechCraft
 				virtual QModelIndex index (int, int, const QModelIndex& parent = QModelIndex ()) const;
 				virtual QModelIndex parent (const QModelIndex&) const;
 				virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
-			protected:
+			public slots:
+				void update ();
+			private:
 				void Clear ();
 				void Update (const std::vector<libtorrent::partial_piece_info>&);
 			};

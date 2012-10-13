@@ -1,6 +1,7 @@
 #include "twitterpage.h"
 #include "core.h"
 #include <qjson/parser.h>
+#include <QListWidgetItem>
 
 
 Q_DECLARE_METATYPE (QObject**);
@@ -160,8 +161,9 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 	Q_FOREACH (twit, screenTwits)
 	{
 		QListWidgetItem *tmpitem = new QListWidgetItem();
+		tmpitem->
 		tmpitem->setText (twit->text() + "\n" +
-						  "\t\t" + twit->author()->username() + "\t" +
+						  "\t\t<b>" + twit->author()->username() + "</b>\t" +
 						  twit->dateTime().toLocalTime().toString());
 		tmpitem->setData (Qt::UserRole, twit->id());
 		if (twit->author()->avatar.isNull())

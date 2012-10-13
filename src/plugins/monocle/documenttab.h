@@ -69,6 +69,15 @@ namespace Monocle
 			Move,
 			Select
 		} MouseMode_;
+
+		bool RelayoutScheduled_;
+
+		struct OnloadData
+		{
+			int Num_;
+			double X_;
+			double Y_;
+		} Onload_;
 	public:
 		DocumentTab (const TabClassInfo&, QObject*);
 
@@ -98,7 +107,12 @@ namespace Monocle
 
 		void ClearViewActions ();
 	private slots:
-		void handleNavigateRequested (const QString&, int, double, double);
+		void handleNavigateRequested (QString, int, double, double);
+
+		void handlePageSizeChanged (int);
+		void handlePageContentsChanged (int);
+		void handleRelayout ();
+
 		void handleRecentOpenAction (QAction*);
 
 		void selectFile ();

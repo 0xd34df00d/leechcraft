@@ -38,6 +38,16 @@ namespace Metida
 		QObject *ParentBlogginPlatfromPlugin_;
 		QObject *PluginProxy_;
 		QList<LJAccount*> LJAccounts_;
+
+		QAction *LJUser_;
+		QAction *LJCut_;
+		QAction *FirstSeparator_;
+
+		enum BloqiqueSidePosition
+		{
+			First,
+			Second
+		};
 	public:
 		LJBloggingPlatform (QObject *parent = 0);
 
@@ -52,15 +62,20 @@ namespace Metida
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
 		void RemoveAccount (QObject *account);
+		QList<QAction*> GetEditorActions () const;
+		QList<QWidget*> GetBlogiqueSideWidgets () const;
 
 		void SetPluginProxy (QObject *proxy);
 		void Prepare ();
 		void Release ();
+
 	private:
 		void RestoreAccounts ();
 
 	private slots:
 		void saveAccounts ();
+		void handleAddLJUser ();
+		void handleAddLJCut ();
 	public slots:
 		void handleAccountValidated (bool validated);
 

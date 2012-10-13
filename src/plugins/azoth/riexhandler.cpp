@@ -102,7 +102,7 @@ namespace RIEX
 			}
 		}
 
-		void ModifyRIEX (const RIEXItem& item, const QHash<QString, ICLEntry*> entries, IAccount *acc)
+		void ModifyRIEX (const RIEXItem& item, const QHash<QString, ICLEntry*> entries, IAccount*)
 		{
 			if (!entries.contains (item.ID_))
 			{

@@ -23,6 +23,9 @@
 #include <QMenu>
 #include <QDesktopServices>
 #include <util/util.h>
+#include <util/xpc/stddatafiltermenucreator.h>
+#include <interfaces/idatafilter.h>
+#include <interfaces/core/icoreproxy.h>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "actionsmanager.h"
@@ -45,8 +48,7 @@ namespace Azoth
 	void ChatTabWebView::contextMenuEvent (QContextMenuEvent *e)
 	{
 		QPointer<QMenu> menu (new QMenu (this));
-		const QWebHitTestResult r = page ()->
-				mainFrame ()->hitTestContent (e->pos ());
+		const auto r = page ()->mainFrame ()->hitTestContent (e->pos ());
 
 		if (!r.linkUrl ().isEmpty ())
 		{
@@ -56,11 +58,14 @@ namespace Azoth
 				HandleURL (menu, r.linkUrl ());
 		}
 
-		if (!page ()->selectedText ().isEmpty ())
+		const auto& text = page ()->selectedText ();
+		if (!text.isEmpty ())
 		{
 			menu->addAction (pageAction (QWebPage::Copy));
 			menu->addAction (QuoteAct_);
 			menu->addSeparator ();
+
+			HandleDataFilters (menu, text);
 		}
 
 		if (!r.imageUrl ().isEmpty ())
@@ -115,6 +120,12 @@ namespace Azoth
 				SLOT (handleOpenExternally ()))->setData (url);
 		menu->addAction (pageAction (QWebPage::CopyLinkToClipboard));
 		menu->addSeparator ();
+	}
+
+	void ChatTabWebView::HandleDataFilters (QMenu *menu, const QString& text)
+	{
+		new Util::StdDataFilterMenuCreator (text,
+				Core::Instance ().GetProxy ()->GetEntityManager (), menu);
 	}
 
 	void ChatTabWebView::handleOpenLink ()

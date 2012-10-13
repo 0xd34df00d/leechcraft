@@ -230,8 +230,11 @@ namespace Kinotify
 		setStyleSheet ("background: transparent");
 		page ()->mainFrame ()->setScrollBarPolicy (Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 		page ()->mainFrame ()->setScrollBarPolicy (Qt::Vertical, Qt::ScrollBarAlwaysOff);
-
+#ifndef Q_OS_MAC
 		setWindowFlags (Qt::ToolTip | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+#else
+		setWindowFlags (windowFlags () | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+#endif
 
 		QPalette pal = palette ();
 		pal.setBrush (QPalette::Base, Qt::transparent);
@@ -333,22 +336,30 @@ namespace Kinotify
 
 	void KinotifyWidget::SetWidgetPlace ()
 	{
-		const QRect& geometry = QApplication::desktop ()->
-				availableGeometry (QCursor::pos ());
-		const QSize& desktopSize = geometry.size ();
+		const auto& curPos = QCursor::pos ();
 
-		QPoint point (desktopSize.width () - DefaultSize_.width () - 5,
-				desktopSize.height () - DefaultSize_.height () - 20);
-		point += geometry.topLeft ();
+		QPoint point;
+		const QRect& geometry = QApplication::desktop ()->availableGeometry (curPos);
+		const auto& placeStr = XmlSettingsManager::Instance ()->
+				property ("NotifyPosition").toString ();
+		if (placeStr.startsWith ("Top"))
+			point.setY (geometry.top () + 20);
+		else
+			point.setY (geometry.bottom () - 20);
 
-		QRect place (point, DefaultSize_);
+		if (placeStr.endsWith ("Left"))
+			point.setX (geometry.left () + 5);
+		else
+			point.setX (geometry.right () - 5);
+
+		QRect place (Util::FitRectScreen (point, DefaultSize_), DefaultSize_);
 		setGeometry (place);
 	}
 
 	void KinotifyWidget::ShowNotification ()
 	{
-		show ();
 		setWindowOpacity (0.0);
+		show ();
 		Machine_.start ();
 	}
 

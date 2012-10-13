@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_AUTOPASTE_AUTOPASTE_H
-#define PLUGINS_AZOTH_PLUGINS_AUTOPASTE_AUTOPASTE_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -42,7 +42,6 @@ namespace Autopaste
 
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-		QMap<QNetworkReply*, QPointer<QObject>> Reply2Entry_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -55,21 +54,15 @@ namespace Autopaste
 		QSet<QByteArray> GetPluginClasses () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	private:
-		void Paste (const QString&, QObject*);
 	public slots:
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
 				int type,
 				QString variant);
-	private slots:
-		void handleMetadata ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
 }
-
-#endif

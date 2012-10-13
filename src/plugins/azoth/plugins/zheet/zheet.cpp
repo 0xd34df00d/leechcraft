@@ -28,7 +28,7 @@ namespace Azoth
 {
 namespace Zheet
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("azoth_zheet");
 		connect (&Core::Instance (),

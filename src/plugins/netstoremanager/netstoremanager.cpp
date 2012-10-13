@@ -21,11 +21,14 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include "interfaces/netstoremanager/istorageplugin.h"
+#include "interfaces/netstoremanager/istorageaccount.h"
 #include "managertab.h"
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
 #include "accountslistwidget.h"
 #include "upmanager.h"
+#include "syncmanager.h"
+#include "syncwidget.h"
 
 namespace LeechCraft
 {
@@ -57,10 +60,29 @@ namespace NetStoreManager
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (UpManager_,
+				SIGNAL (fileUploaded (QString, QUrl)),
+				this,
+				SIGNAL (fileUploaded (QString, QUrl)));
+
+		Proxy_ = proxy;
 	}
 
 	void Plugin::SecondInit ()
 	{
+		SyncManager_ = new SyncManager (AccountsManager_, this);
+		SyncWidget *w = new SyncWidget (AccountsManager_);
+		connect (w,
+				SIGNAL (directoryAdded (QVariantMap)),
+				SyncManager_,
+				SLOT (handleDirectoryAdded (QVariantMap)));
+		w->RestoreData ();
+		XSD_->SetCustomWidget ("SyncWidget", w);
+
+		connect (SyncManager_,
+				SIGNAL (uploadRequested (IStorageAccount*, QString, QStringList)),
+				UpManager_,
+				SLOT (handleUploadRequest (IStorageAccount*, QString, QStringList)));
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -70,6 +92,7 @@ namespace NetStoreManager
 
 	void Plugin::Release ()
 	{
+		SyncManager_->Release ();
 	}
 
 	QString Plugin::GetName () const
@@ -97,7 +120,8 @@ namespace NetStoreManager
 	{
 		if (id == ManagerTC_.TabClass_)
 		{
-			ManagerTab *tab = new ManagerTab (ManagerTC_, AccountsManager_, this);
+			ManagerTab *tab = new ManagerTab (ManagerTC_, AccountsManager_,
+					Proxy_, this);
 			emit addNewTab (tr ("Net storage"), tab);
 			emit changeTabIcon (tab, GetIcon ());
 			emit raiseTab (tab);
@@ -106,9 +130,13 @@ namespace NetStoreManager
 					this,
 					SIGNAL (removeTab (QWidget*)));
 			connect (tab,
-					SIGNAL (uploadRequested (IStorageAccount*, QString)),
+					SIGNAL (uploadRequested (IStorageAccount*, QString, QStringList)),
 					UpManager_,
-					SLOT (handleUploadRequest (IStorageAccount*, QString)));
+					SLOT (handleUploadRequest (IStorageAccount*, QString, QStringList)));
+			connect (tab,
+					SIGNAL (gotEntity (LeechCraft::Entity)),
+					this,
+					SIGNAL (gotEntity (LeechCraft::Entity)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO
@@ -139,6 +167,36 @@ namespace NetStoreManager
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
 		return UpManager_->GetRepresentationModel ();
+	}
+
+	QStringList Plugin::GetServiceVariants () const
+	{
+		QStringList result;
+		Q_FOREACH (auto account, AccountsManager_->GetAccounts ())
+		{
+			auto parent = qobject_cast<IStoragePlugin*> (account->GetParentPlugin ());
+			result << QString ("%1: %2")
+					.arg (parent->GetStorageName ())
+					.arg (account->GetAccountName ());
+		}
+		return result;
+	}
+
+	void Plugin::UploadFile (const QString& filename, const QString& service)
+	{
+		const int idx = GetServiceVariants ().indexOf (service);
+		auto account = AccountsManager_->GetAccounts ().value (idx);
+		if (!account)
+		{
+			emit gotEntity (Util::MakeNotification ("NetStoreManager",
+					tr ("No account for service name %1.")
+						.arg ("<em>" + service + "</em>"),
+					PCritical_));
+			return;
+		}
+
+		UpManager_->handleUploadRequest (account, filename);
+		UpManager_->ScheduleAutoshare (filename);
 	}
 }
 }

@@ -21,7 +21,7 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeError>
 
-#ifdef Q_OS_WIN32
+#if defined (Q_OS_WIN32) || defined (Q_OS_MAC)
 #include <QApplication>
 #endif
 
@@ -33,11 +33,11 @@ namespace LeechCraft
 namespace AdvancedNotifications
 {
 	VisualNotificationsView::VisualNotificationsView (QWidget *parent)
-	: QDeclarativeView (parent)
+	: QDeclarativeView (0)
 	{
-		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
-		setAttribute (Qt::WA_TranslucentBackground);
 		setStyleSheet ("background: transparent");
+		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::ToolTip);
+		setAttribute (Qt::WA_TranslucentBackground);
 
 		connect (this,
 				SIGNAL (statusChanged (QDeclarativeView::Status)),
@@ -47,6 +47,8 @@ namespace AdvancedNotifications
 		QStringList candidates;
 #ifdef Q_OS_WIN32
 		candidates << QApplication::applicationDirPath () + "/share/qml/advancednotifications/";
+#elif defined (Q_OS_MAC)
+		candidates << QApplication::applicationDirPath () + "/../Resources/share/qml/advancednotifications/";
 #else
 		candidates << "/usr/local/share/leechcraft/qml/advancednotifications/"
 				<< "/usr/share/leechcraft/qml/advancednotifications/";

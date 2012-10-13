@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import Effects 1.0
 
 Rectangle {
     gradient: Gradient {
@@ -31,15 +32,18 @@ Rectangle {
             State {
                 name: "hidden"
                 PropertyChanges { target: fullSizeAA; opacity: 0 }
+                PropertyChanges { target: releasesViewBlur; blurRadius: 0 }
             },
             State {
                 name: "visible"
                 PropertyChanges { target: fullSizeAA; opacity: 1 }
+                PropertyChanges { target: releasesViewBlur; blurRadius: 10 }
             }
         ]
 
         transitions: Transition {
             PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+            PropertyAnimation { target: releasesViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
         }
 
         MouseArea {
@@ -57,6 +61,11 @@ Rectangle {
         model: releasesModel
         cellHeight: 180
         cellWidth: 300
+
+        effect: Blur {
+            id: releasesViewBlur
+            blurRadius: 0.0
+        }
 
         delegate: Item {
             height: releasesView.cellHeight

@@ -24,6 +24,7 @@
 #include "copymanager.h"
 #include "../core.h"
 #include "../localfileresolver.h"
+#include "../util.h"
 
 namespace LeechCraft
 {
@@ -46,7 +47,7 @@ namespace LMP
 
 	void SyncManager::CreateSyncer (const QString& mount)
 	{
-		auto mgr = new CopyManager (this);
+		auto mgr = new CopyManager<CopyJob> (this);
 		connect (mgr,
 				SIGNAL (startedCopying (QString)),
 				this,
@@ -74,18 +75,10 @@ namespace LMP
 				return false;
 			}
 
-			mask.replace ("$artist", info.Artist_);
-			mask.replace ("$year", QString::number (info.Year_));
-			mask.replace ("$album", info.Album_);
-			QString trackNumStr = QString::number (info.TrackNumber_);
-			if (info.TrackNumber_ < 10)
-				trackNumStr.prepend ('0');
-			mask.replace ("$trackNumber", trackNumStr);
-			mask.replace ("$title", info.Title_);
-
+			mask = PerformSubstitutions (mask, info);
 			const auto& ext = QFileInfo (transcoded).suffix ();
 			if (!mask.endsWith (ext))
-				mask+= "." + ext;
+				mask += "." + ext;
 
 			return true;
 		}
@@ -115,7 +108,16 @@ namespace LMP
 
 		if (!Mount2Copiers_.contains (syncTo.MountPath_))
 			CreateSyncer (syncTo.MountPath_);
-		Mount2Copiers_ [syncTo.MountPath_]->Copy ({ syncTo.Syncer_, transcoded, from != transcoded, syncTo.MountPath_, mask });
+		const CopyJob copyJob
+		{
+			transcoded,
+			from != transcoded,
+			syncTo.Syncer_,
+			from,
+			syncTo.MountPath_,
+			mask
+		};
+		Mount2Copiers_ [syncTo.MountPath_]->Copy (copyJob);
 	}
 }
 }

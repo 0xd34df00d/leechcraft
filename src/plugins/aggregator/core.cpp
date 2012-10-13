@@ -745,7 +745,7 @@ namespace Aggregator
 		}
 	}
 
-	void Core::UpdateFeed (const QModelIndex& si, bool isRepr)
+	void Core::UpdateFeed (const QModelIndex& si)
 	{
 		QModelIndex index = si;
 
@@ -759,8 +759,7 @@ namespace Aggregator
 			qWarning () << Q_FUNC_INFO
 				<< e.what ()
 				<< si
-				<< index
-				<< isRepr;
+				<< index;
 			ErrorNotification (tr ("Feed update error"),
 					tr ("Could not update feed"),
 					false);

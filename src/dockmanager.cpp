@@ -41,8 +41,6 @@ namespace LeechCraft
 				this,
 				SLOT (handleDockLocationChanged (Qt::DockWidgetArea)));
 
-		ManageInto (dw, MW_->GetDockListWidget (area));
-
 		connect (dw,
 				SIGNAL (destroyed (QObject*)),
 				this,
@@ -79,38 +77,6 @@ namespace LeechCraft
 		return false;
 	}
 
-	void DockManager::UnmanageFrom (QDockWidget *dw, QWidget *w)
-	{
-		if (!w)
-			return;
-
-		/*
-		for (int i = 0; i < w->layout ()->count (); ++i)
-		{
-			QToolButton *but = qobject_cast<QToolButton*> (w->layout ()->widget ());
-			if (but->defaultAction () == dw->toggleViewAction ())
-			{
-				but->deleteLater ();
-				w->layout ()->removeItem (w->layout ()->itemAt (i));
-			}
-		}
-		*/
-	}
-
-	void DockManager::ManageInto (QDockWidget *dw, QWidget *w)
-	{
-		if (!w)
-			return;
-
-		/*
-		QToolButton *button = new QToolButton ();
-		button->setDefaultAction (dw->toggleViewAction ());
-		w->layout ()->addWidget (button);
-		if (!w->isVisible ())
-			w->show ();
-		*/
-	}
-
 	void DockManager::handleDockDestroyed ()
 	{
 		auto dock = static_cast<QDockWidget*> (sender ());
@@ -134,9 +100,6 @@ namespace LeechCraft
 		}
 
 		Area2Widgets_ [area] << dw;
-
-		UnmanageFrom (dw, MW_->GetDockListWidget (from));
-		ManageInto (dw, MW_->GetDockListWidget (area));
 	}
 
 	void DockManager::handleDockToggled (bool isVisible)

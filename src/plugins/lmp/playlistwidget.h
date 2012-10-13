@@ -25,6 +25,7 @@
 class QToolBar;
 class QActionGroup;
 class QUndoStack;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -39,15 +40,29 @@ namespace LMP
 		Ui::PlaylistWidget Ui_;
 		QToolBar *PlaylistToolbar_;
 		QActionGroup *PlayModesGroup_;
+		QSortFilterProxyModel *PlaylistFilter_;
 
 		QUndoStack *UndoStack_;
 
 		Player *Player_;
 
+		bool ExpandAllScheduled_;
+
 		QAction *ActionRemoveSelected_;
 		QAction *ActionStopAfterSelected_;
 		QAction *ActionShowTrackProps_;
 		QAction *ActionShowAlbumArt_;
+		QAction *ActionMoveTop_;
+		QAction *ActionMoveUp_;
+		QAction *ActionMoveDown_;
+		QAction *ActionMoveBottom_;
+
+		QAction *MoveUpButtonAction_;
+		QAction *MoveDownButtonAction_;
+
+		QAction *ActionToggleSearch_;
+
+		QList<Phonon::MediaSource> NextResetSelect_;
 	public:
 		PlaylistWidget (QWidget* = 0);
 
@@ -57,18 +72,39 @@ namespace LMP
 		void SetPlayModeButton ();
 		void SetSortOrderButton ();
 		void InitViewActions ();
+
+		void EnableMoveButtons (bool);
+
+		QList<Phonon::MediaSource> GetSelected () const;
+		void SelectSources (const QList<Phonon::MediaSource>&);
+	public slots:
+		void focusIndex (const QModelIndex&);
 	private slots:
 		void on_Playlist__customContextMenuRequested (const QPoint&);
 		void handleChangePlayMode ();
 		void handlePlayModeChanged (Player::PlayMode);
 
+		void play (const QModelIndex&);
+		void expand (const QModelIndex&);
+		void scheduleExpandAll ();
+		void expandAll ();
+		void checkSelections ();
+
+		void handleBufferStatus (int);
+
 		void handleStdSort ();
+		void handleCustomSort ();
 
 		void removeSelectedSongs ();
 		void setStopAfterSelected ();
 		void showTrackProps ();
 
 		void showAlbumArt ();
+
+		void handleMoveUp ();
+		void handleMoveTop ();
+		void handleMoveDown ();
+		void handleMoveBottom();
 
 		void handleSavePlaylist ();
 		void loadFromDisk ();

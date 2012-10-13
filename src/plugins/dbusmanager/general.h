@@ -16,30 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DBUSMANAGER_GENERAL_H
-#define PLUGINS_DBUSMANAGER_GENERAL_H
+#pragma once
+
 #include <QObject>
 #include <QStringList>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace DBusManager
+{
+	class General : public QObject
 	{
-		namespace DBusManager
-		{
-			class General : public QObject
-			{
-				Q_OBJECT
-			public:
-				General (QObject* = 0);
+		Q_OBJECT
+	public:
+		General (QObject* = 0);
 
-				QStringList GetLoadedPlugins ();
-				QString GetDescription (const QString&);
-				QByteArray GetIcon (const QString&, int);
-			};
-		};
+		QStringList GetLoadedPlugins ();
+		QString GetDescription (const QString&);
+		QByteArray GetIcon (const QString&, int);
 	};
-};
-
-#endif
-
+}
+}

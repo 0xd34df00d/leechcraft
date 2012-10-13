@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "documenttab.h"
+#include <functional>
 #include <QToolBar>
 #include <QComboBox>
 #include <QFileDialog>
@@ -30,10 +31,12 @@
 #include <QDockWidget>
 #include <QClipboard>
 #include <QtDebug>
+#include <QTimer>
 #include <interfaces/imwproxy.h>
 #include "interfaces/monocle/ihavetoc.h"
 #include "interfaces/monocle/ihavetextcontent.h"
 #include "interfaces/monocle/isupportannotations.h"
+#include "interfaces/monocle/idynamicdocument.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
@@ -57,6 +60,8 @@ namespace Monocle
 	, TOCWidget_ (new TOCWidget ())
 	, LayMode_ (LayoutMode::OnePage)
 	, MouseMode_ (MouseMode::Move)
+	, RelayoutScheduled_ (true)
+	, Onload_ ({ -1, 0, 0 })
 	{
 		Ui_.setupUi (this);
 		Ui_.PagesView_->setScene (&Scene_);
@@ -246,11 +251,23 @@ namespace Monocle
 				SIGNAL (navigateRequested (QString, int, double, double)),
 				this,
 				SLOT (handleNavigateRequested (QString, int, double, double)),
-				Qt::UniqueConnection);
+				Qt::QueuedConnection);
 
 		emit fileLoaded (path);
 
 		emit tabRecoverDataChanged ();
+
+		if (qobject_cast<IDynamicDocument*> (CurrentDoc_->GetObject ()))
+		{
+			connect (CurrentDoc_->GetObject (),
+					SIGNAL (pageSizeChanged (int)),
+					this,
+					SLOT (handlePageSizeChanged (int)));
+			connect (CurrentDoc_->GetObject (),
+					SIGNAL (pageContentsChanged (int)),
+					this,
+					SLOT (handlePageContentsChanged (int)));
+		}
 
 		return true;
 	}
@@ -395,7 +412,7 @@ namespace Monocle
 		if (!CurrentDoc_)
 			return 1;
 
-		auto calcRatio = [this] (std::function<double (const QSize&)> dimGetter)
+		auto calcRatio = [this] (std::function<double (const QSize&)> dimGetter) -> double
 		{
 			if (Pages_.isEmpty ())
 				return 1.0;
@@ -404,7 +421,10 @@ namespace Monocle
 				pageIdx = 0;
 
 			double dim = dimGetter (CurrentDoc_->GetPageSize (pageIdx));
-			return dimGetter (Ui_.PagesView_->viewport ()->contentsRect ().size ()) / dim;
+			auto size = Ui_.PagesView_->maximumViewportSize ();
+			size.rwidth () -= Ui_.PagesView_->verticalScrollBar ()->size ().width ();
+			size.rheight () -= Ui_.PagesView_->horizontalScrollBar ()->size ().height ();
+			return dimGetter (size) / dim;
 		};
 
 		const int idx = ScalesBox_->currentIndex ();
@@ -462,6 +482,8 @@ namespace Monocle
 
 	void DocumentTab::Relayout (double scale)
 	{
+		RelayoutScheduled_ = false;
+
 		if (!CurrentDoc_)
 			return;
 
@@ -484,7 +506,13 @@ namespace Monocle
 		}
 
 		Scene_.setSceneRect (Scene_.itemsBoundingRect ());
-		SetCurrentPage (std::max (GetCurrentPage (), 0));
+		if (Onload_.Num_ >= 0)
+		{
+			handleNavigateRequested (QString (), Onload_.Num_, Onload_.X_, Onload_.Y_);
+			Onload_.Num_ = -1;
+		}
+		else
+			SetCurrentPage (std::max (GetCurrentPage (), 0));
 		updateNumLabel ();
 	}
 
@@ -497,11 +525,19 @@ namespace Monocle
 		}
 	}
 
-	void DocumentTab::handleNavigateRequested (const QString& path, int num, double x, double y)
+	void DocumentTab::handleNavigateRequested (QString path, int num, double x, double y)
 	{
 		if (!path.isEmpty ())
+		{
+			if (QFileInfo (path).isRelative ())
+				path = QFileInfo (CurrentDocPath_).dir ().absoluteFilePath (path);
+
+			Onload_ = { num, x, y };
+
 			if (!SetDoc (path))
-				return;
+				Onload_.Num_ = -1;
+			return;
+		}
 
 		SetCurrentPage (num);
 
@@ -515,6 +551,31 @@ namespace Monocle
 			const auto& mapped = page->mapToScene (size.width () * x, size.height () * y);
 			Ui_.PagesView_->centerOn (mapped.x (), mapped.y ());
 		}
+	}
+
+	void DocumentTab::handlePageSizeChanged (int)
+	{
+		if (RelayoutScheduled_)
+			return;
+
+		QTimer::singleShot (500,
+				this,
+				SLOT (handleRelayout ()));
+		RelayoutScheduled_ = true;
+	}
+
+	void DocumentTab::handlePageContentsChanged (int idx)
+	{
+		auto pageItem = Pages_.at (idx);
+		pageItem->UpdatePixmap ();
+	}
+
+	void DocumentTab::handleRelayout ()
+	{
+		if (!RelayoutScheduled_)
+			return;
+
+		Relayout (GetCurrentScale ());
 	}
 
 	void DocumentTab::handleRecentOpenAction (QAction *action)

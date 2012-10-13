@@ -21,6 +21,8 @@
 #include <QFileInfo>
 #include <QSystemTrayIcon>
 #include <QUrl>
+#include <QtDeclarative>
+#include <QGraphicsEffect>
 #include <phonon/mediaobject.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
@@ -30,6 +32,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "rootpathsettingsmanager.h"
+#include "collectionstatsdialog.h"
 
 namespace LeechCraft
 {
@@ -39,8 +42,21 @@ namespace LMP
 	{
 		Util::InstallTranslator ("lmp");
 
+		const auto& paths = QCoreApplication::libraryPaths ();
+		if (std::find_if (paths.begin (), paths.end (),
+				[] (const QString& path) { return path.contains ("kde4"); }) == paths.end ())
+		{
+			QCoreApplication::addLibraryPath ("/usr/lib/kde4/plugins");
+			QCoreApplication::addLibraryPath ("/usr/lib64/kde4/plugins");
+		}
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");
+
+		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
+		qmlRegisterType<QGraphicsColorizeEffect> ("Effects", 1, 0, "Colorize");
+		qmlRegisterType<QGraphicsDropShadowEffect> ("Effects", 1, 0, "DropShadow");
+		qmlRegisterType<QGraphicsOpacityEffect> ("Effects", 1, 0, "OpacityEffect");
 
 		PlayerTC_ =
 		{
@@ -93,6 +109,12 @@ namespace LMP
 				&Core::Instance (),
 				SLOT (rescan ()));
 
+		ActionCollectionStats_ = new QAction (tr ("Collection statistics"), this);
+		ActionCollectionStats_->setProperty ("ActionIcon", "view-statistics");
+		connect (ActionCollectionStats_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showCollectionStats ()));
 
 		Entity e = Util::MakeEntity (QVariant (), QString (), 0,
 				"x-leechcraft/global-action-register");
@@ -249,15 +271,18 @@ namespace LMP
 		}
 	}
 
-	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace area) const
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
 	{
 		return QList<QAction*> ();
 	}
 
 	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
 	{
-		decltype(GetMenuActions ()) result;
-		result [GetName ()] << ActionRescan_;
+		const auto& name = GetName ();
+
+		QMap<QString, QList<QAction*>> result;
+		result [name] << ActionRescan_;
+		result [name] << ActionCollectionStats_;
 		return result;
 	}
 
@@ -299,6 +324,13 @@ namespace LMP
 	void Plugin::handleFullRaiseRequested ()
 	{
 		TabOpenRequested (PlayerTC_.TabClass_);
+	}
+
+	void Plugin::showCollectionStats ()
+	{
+		auto dia = new CollectionStatsDialog ();
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 	}
 }
 }

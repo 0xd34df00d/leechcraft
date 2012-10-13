@@ -29,6 +29,11 @@
 #include "flgetter.h"
 #include "simpleactor.h"
 
+inline uint qHash (const QStringList& list)
+{
+	return qHash (list.join ("|"));
+}
+
 namespace LeechCraft
 {
 namespace NetStoreManager
@@ -192,6 +197,25 @@ namespace YandexDisk
 		SimpleAction ("prolongate", ids);
 	}
 
+	void Account::MoveToTrash (const QList<QStringList>&)
+	{
+	}
+
+	void Account::RestoreFromTrash (const QList<QStringList>&)
+	{
+	}
+
+	void Account::EmptyTrash (const QList<QStringList>&)
+	{
+	}
+
+	void Account::RequestUrl (const QList<QStringList>& ids)
+	{
+		qDebug () << Q_FUNC_INFO << ids << ID2URL_;
+		Q_FOREACH (const auto& id, ids)
+			emit gotFileUrl (ID2URL_.value (id), id);
+	}
+
 	QNetworkRequest Account::MakeRequest (const QUrl& url) const
 	{
 		QNetworkRequest rq (url);
@@ -228,6 +252,8 @@ namespace YandexDisk
 
 	void Account::handleFileList (const QList<FLItem>& items)
 	{
+		ID2URL_.clear ();
+
 		QList<QList<QStandardItem*>> treeItems;
 
 		qDebug () << Q_FUNC_INFO << items.size ();
@@ -241,13 +267,14 @@ namespace YandexDisk
 			row << new QStandardItem (item.PassSet_ ? tr ("yes") : tr ("no"));
 
 			row.first ()->setIcon (item.Icon_);
-			row.first ()->setData (QUrl (item.URL_), ListingRole::URL);
 
 			QStringList id;
 			id << item.ID_
 				<< item.Token_
 				<< item.PassToken_;
 			row.first ()->setData (id, ListingRole::ID);
+
+			ID2URL_ [id] = QUrl::fromEncoded (item.URL_.toUtf8 ());
 
 			treeItems << row;
 		}

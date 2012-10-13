@@ -22,6 +22,10 @@
 #include "interfaces/ihavetabs.h"
 #include "ui_settingstab.h"
 
+class IHaveSettings;
+class QLineEdit;
+class QToolButton;
+
 namespace LeechCraft
 {
 	class SettingsTab : public QWidget
@@ -36,7 +40,10 @@ namespace LeechCraft
 		QAction *ActionApply_;
 		QAction *ActionCancel_;
 
-		QObject *CurrentIHS_;
+		QString LastSearch_;
+		QHash<QToolButton*, QObject*> Button2SettableRoot_;
+		QHash<IHaveSettings*, QList<int>> Obj2SearchMatchingPages_;
+		QHash<QListWidgetItem*, QPair<IHaveSettings*, int>> Item2Page_;
 	public:
 		SettingsTab (QWidget* = 0);
 
@@ -46,14 +53,18 @@ namespace LeechCraft
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private:
+		void FillPages (QObject*, bool);
 	public slots:
 		void showSettingsFor (QObject*);
 	private slots:
+		void addSearchBox ();
+		void handleSearch (const QString&);
 		void handleSettingsCalled ();
 		void handleBackRequested ();
 		void handleApply ();
 		void handleCancel ();
-		void on_Cats__currentItemChanged (QTreeWidgetItem*);
+		void on_Cats__currentItemChanged (QListWidgetItem*);
 	signals:
 		void remove (QWidget*);
 	};

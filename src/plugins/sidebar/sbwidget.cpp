@@ -201,7 +201,7 @@ namespace Sidebar
 			AddToFolder (tc.TabClass_, newAct);
 	}
 
-	void SBWidget::AddToFolder (const QByteArray& tabClass, QAction *act)
+	void SBWidget::AddToFolder (const QByteArray&, QAction *act)
 	{
 		delete CurTab2Button_.take (act);
 	}

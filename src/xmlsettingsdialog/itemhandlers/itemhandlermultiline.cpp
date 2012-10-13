@@ -58,12 +58,38 @@ namespace LeechCraft
 				this,
 				SLOT (updatePreferences ()));
 
-		edit->setProperty ("ItemHandler",
-				QVariant::fromValue<QObject*> (this));
+		edit->setProperty ("ItemHandler", QVariant::fromValue<QObject*> (this));
+		edit->setProperty ("SearchTerms", label->text ());
 
 		int row = lay->rowCount ();
-		lay->addWidget (label, row, 0, Qt::AlignRight | Qt::AlignTop);
-		lay->addWidget (edit, row, 1);
+		QString pos = item.attribute ("position");
+		if (pos == "bottom")
+		{
+			lay->addWidget (label, row, 0, Qt::AlignLeft);
+			lay->addWidget (edit, row + 1, 0);
+		}
+		else if (pos == "right")
+		{
+			lay->addWidget (label, row, 0, Qt::AlignRight | Qt::AlignTop);
+			lay->addWidget (edit, row, 1);
+		}
+		else if (pos == "left")
+		{
+			lay->addWidget (label, row, 1, Qt::AlignLeft | Qt::AlignTop);
+			lay->addWidget (edit, row, 0);
+		}
+		else if (pos == "top")
+		{
+			lay->addWidget (edit, row, 0);
+			lay->addWidget (label, row + 1, 0, Qt::AlignLeft);
+		}
+		else
+		{
+			lay->addWidget (label, row, 0, Qt::AlignRight | Qt::AlignTop);
+			lay->addWidget (edit, row, 1);
+		}
+
+		lay->setContentsMargins (2, 2, 2, 2);
 	}
 
 	void ItemHandlerMultiLine::SetValue (QWidget *widget, const QVariant& value) const
@@ -80,7 +106,7 @@ namespace LeechCraft
 	}
 
 	QVariant ItemHandlerMultiLine::GetValue (const QDomElement& item,
-			QVariant value) const
+			QVariant) const
 	{
 		QString def = item.attribute ("default");
 		if (item.attribute ("translatable") == "true")
@@ -95,7 +121,7 @@ namespace LeechCraft
 		element.setAttribute ("default", value.toString ());
 	}
 
-	QVariant ItemHandlerMultiLine::GetValue (QObject *object) const
+	QVariant ItemHandlerMultiLine::GetObjectValue (QObject *object) const
 	{
 		QTextEdit *edit = qobject_cast<QTextEdit*> (object);
 		if (!edit)
