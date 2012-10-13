@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "documenttab.h"
+#include <functional>
 #include <QToolBar>
 #include <QComboBox>
 #include <QFileDialog>
