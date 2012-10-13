@@ -4,12 +4,12 @@ compiler:
   - g++
 before_install:
   - sudo add-apt-repository -y ppa:tehnick/leechcraft-unstable
+  - sudo apt-get install qtmobility-dev
   - sudo apt-get update
   - sudo apt-get build-dep leechcraft-unstable
-  - sudo apt-get install qtmobility-dev
 script:
   - mkdir build 
   - cd build 
-  - cmake -DCMAKE_BUILD_TYPE=Debug ../src 
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_MEDIACALLS=False ../src 
   - make 
   - make install
