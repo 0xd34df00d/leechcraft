@@ -173,11 +173,8 @@ OPTION (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging client" OFF)
 OPTION (ENABLE_MONOCLE "Build Monocle, modular document viewer for LeechCraft" ${WITH_PLUGINS})
 OPTION (ENABLE_LADS "Build Lads, Ubuntu Unity integration layer" ${WITH_PLUGINS})
 OPTION (ENABLE_VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
-<<<<<<< HEAD
 OPTION (ENABLE_WOODPECKER "Build Woodpecker, twitter client" ${WITH_PLUGINS})
-=======
 
->>>>>>> upstream/master
 IF (WIN32)
 	OPTION (ENABLE_Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS})
 ENDIF (WIN32)
