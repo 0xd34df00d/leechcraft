@@ -66,6 +66,17 @@ namespace Pogooglue
 				!e.Entity_.canConvert<QString> ())
 			return EntityTestHandleResult ();
 
+		if (e.Additional_.contains ("DataFilter"))
+		{
+			const auto& rawCat = e.Additional_ ["DataFilter"].toByteArray ();
+			const auto& catStr = QString::fromUtf8 (rawCat.data ());
+			const auto& vars = GetFilterVariants ();
+			if (std::find_if (vars.begin (), vars.end (),
+					[&catStr] (decltype (vars.front ()) var)
+						{ return var.ID_ == catStr; }) == vars.end ())
+				return EntityTestHandleResult ();
+		}
+
 		const auto& str = e.Entity_.toString ();
 		return str.size () < 200 && str.count ("\n") < 3 ?
 				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
@@ -85,7 +96,7 @@ namespace Pogooglue
 
 	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants () const
 	{
-		return QList<FilterVariant> ();
+		return { { GetUniqueID () + "_Google", "Google", "Google" } };
 	}
 
 	void Plugin::GoogleIt (QString text)
