@@ -89,5 +89,34 @@ namespace LMP
 
 		Model_->removeRow (current.row ());
 	}
+
+	void SortingCriteriaDialog::on_MoveUp__released ()
+	{
+		const auto& current = Ui_.CriteriaView_->currentIndex ();
+		const int row = current.row ();
+		if (row <= 0)
+			return;
+
+		Model_->insertRow (row - 1, Model_->takeRow (row));
+		const auto& newIdx = current.sibling (current.row () - 1, 0);
+		Ui_.CriteriaView_->selectionModel ()->select (newIdx, QItemSelectionModel::ClearAndSelect);
+		Ui_.CriteriaView_->setCurrentIndex (newIdx);
+	}
+
+	void SortingCriteriaDialog::on_MoveDown__released ()
+	{
+		const auto& current = Ui_.CriteriaView_->currentIndex ();
+		if (!current.isValid ())
+			return;
+
+		const int row = current.row ();
+		if (row >= Model_->rowCount () - 1)
+			return;
+
+		Model_->insertRow (row + 1, Model_->takeRow (row));
+		const auto& newIdx = current.sibling (current.row () + 1, 0);
+		Ui_.CriteriaView_->selectionModel ()->select (newIdx, QItemSelectionModel::ClearAndSelect);
+		Ui_.CriteriaView_->setCurrentIndex (newIdx);
+	}
 }
 }
