@@ -832,13 +832,13 @@ namespace CleanWeb
 
 	void Core::handleFrameLayout (QPointer<QWebFrame> frame)
 	{
-		const QUrl& url = frame->url ();
-		const QString& urlStr = url.toString ();
+		const QUrl& frameUrl = frame->url ();
+		const QString& urlStr = frameUrl.toString ();
 		const auto& urlUtf8 = urlStr.toUtf8 ();
 		const QString& cinUrlStr = urlStr.toLower ();
 		const auto& cinUrlUtf8 = cinUrlStr.toUtf8 ();
 
-		const QString& domain = url.host ();
+		const QString& domain = frameUrl.host ();
 
 		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
