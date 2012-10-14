@@ -839,8 +839,6 @@ namespace Poshuku
 		QDataStream str (&result, QIODevice::WriteOnly);
 		str << WebView_->url ();
 		str << GetWidgetSettings ();
-		qDebug () << Q_FUNC_INFO << WebView_->url ();
-		qDebug () << result;
 		return result;
 	}
 
