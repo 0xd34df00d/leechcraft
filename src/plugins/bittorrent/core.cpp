@@ -254,8 +254,12 @@ namespace LeechCraft
 				}
 
 				Headers_ << tr ("Name")
-					<< tr ("Progress")
-					<< tr ("State");
+						<< tr ("State")
+						<< tr ("Progress")
+						<< tr ("Down speed")
+						<< tr ("Up speed")
+						<< tr ("Leechers")
+						<< tr ("Seeders");
 
 				connect (SettingsSaveTimer_.get (),
 						SIGNAL (timeout ()),
@@ -457,6 +461,7 @@ namespace LeechCraft
 
 				switch (role)
 				{
+				case Roles::FullLengthText:
 				case Qt::DisplayRole:
 					switch (column)
 					{
@@ -479,33 +484,67 @@ namespace LeechCraft
 							return stateStr;
 					}
 					case ColumnProgress:
-						if (status.state == libtorrent::torrent_status::downloading)
-							return tr ("%1% (%2 of %3 at %4 from %5 peers)")
-									.arg (status.progress * 100, 0, 'f', 2)
-									.arg (Util::MakePrettySize (status.total_wanted_done))
-									.arg (Util::MakePrettySize (status.total_wanted))
-									.arg (Util::MakePrettySize (status.download_payload_rate) +
-											tr ("/s"))
-									.arg (status.num_peers);
-						else if (!status.paused &&
-									(status.state == libtorrent::torrent_status::finished ||
-									 status.state == libtorrent::torrent_status::seeding))
+						if (role == Roles::FullLengthText)
 						{
-							auto total = status.num_incomplete;
-							if (total <= 0)
-								total = status.list_peers - status.list_seeds;
-							return tr ("%1, seeding at %2 to %3 leechers (of around %4)")
-									.arg (Util::MakePrettySize (status.total_wanted))
-									.arg (Util::MakePrettySize (status.upload_payload_rate) +
-											tr ("/s"))
-									.arg (status.num_peers - status.num_seeds)
-									.arg (total);
+							if (status.state == libtorrent::torrent_status::downloading)
+								return tr ("%1% (%2 of %3 at %4 from %5 peers)")
+										.arg (status.progress * 100, 0, 'f', 2)
+										.arg (Util::MakePrettySize (status.total_wanted_done))
+										.arg (Util::MakePrettySize (status.total_wanted))
+										.arg (Util::MakePrettySize (status.download_payload_rate) +
+												tr ("/s"))
+										.arg (status.num_peers);
+							else if (!status.paused &&
+										(status.state == libtorrent::torrent_status::finished ||
+										status.state == libtorrent::torrent_status::seeding))
+							{
+								auto total = status.num_incomplete;
+								if (total <= 0)
+									total = status.list_peers - status.list_seeds;
+								return tr ("%1, seeding at %2 to %3 leechers (of around %4)")
+										.arg (Util::MakePrettySize (status.total_wanted))
+										.arg (Util::MakePrettySize (status.upload_payload_rate) +
+												tr ("/s"))
+										.arg (status.num_peers - status.num_seeds)
+										.arg (total);
+							}
+							else
+								return tr ("%1% (%2 of %3)")
+										.arg (status.progress * 100, 0, 'f', 2)
+										.arg (Util::MakePrettySize (status.total_wanted_done))
+										.arg (Util::MakePrettySize (status.total_wanted));
 						}
 						else
-							return tr ("%1% (%2 of %3)")
-									.arg (status.progress * 100, 0, 'f', 2)
-									.arg (Util::MakePrettySize (status.total_wanted_done))
-									.arg (Util::MakePrettySize (status.total_wanted));
+						{
+							if (status.state == libtorrent::torrent_status::downloading)
+								return tr ("%1% (%2 of %3)")
+										.arg (status.progress * 100, 0, 'f', 2)
+										.arg (Util::MakePrettySize (status.total_wanted_done))
+										.arg (Util::MakePrettySize (status.total_wanted));
+							else if (!status.paused &&
+										(status.state == libtorrent::torrent_status::finished ||
+										status.state == libtorrent::torrent_status::seeding))
+							{
+								auto total = status.num_incomplete;
+								if (total <= 0)
+									total = status.list_peers - status.list_seeds;
+								return tr ("100% (%1)")
+										.arg (Util::MakePrettySize (status.total_wanted));
+							}
+							else
+								return tr ("%1% (%2 of %3)")
+										.arg (status.progress * 100, 0, 'f', 2)
+										.arg (Util::MakePrettySize (status.total_wanted_done))
+										.arg (Util::MakePrettySize (status.total_wanted));
+						}
+					case ColumnDownSpeed:
+						return Util::MakePrettySize (status.download_payload_rate);
+					case ColumnUpSpeed:
+						return Util::MakePrettySize (status.upload_payload_rate);
+					case ColumnLeechers:
+						return QString::number (status.num_peers - status.num_seeds);
+					case ColumnSeeders:
+						return QString::number (status.num_seeds);
 					default:
 						return QVariant ();
 					}

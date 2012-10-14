@@ -145,20 +145,28 @@ namespace LeechCraft
 			public:
 				enum Columns
 				{
-					ColumnName = 0
-					, ColumnState
-					, ColumnProgress  // percentage, Downloaded of Size
+					ColumnName,
+					ColumnState,
+					ColumnProgress,  // percentage, Downloaded of Size
+					ColumnDownSpeed,
+					ColumnUpSpeed,
+					ColumnLeechers,
+					ColumnSeeders
 				};
 				enum AddType
 				{
-					Started
-					, Paused
+					Started,
+					Paused
 				};
 				enum SettingsPreset
 				{
-					SPDefault
-					, SPMinMemoryUsage
-					, SPHighPerfSeed
+					SPDefault,
+					SPMinMemoryUsage,
+					SPHighPerfSeed
+				};
+				enum Roles
+				{
+					FullLengthText = Qt::UserRole + 1
 				};
 
 				static Core* Instance ();
