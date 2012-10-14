@@ -52,8 +52,6 @@ namespace LeechCraft
 		handlers_t Handlers_;
 		QMap<QString, const IInfo*> Infos_;
 
-		QMap<const IInfo*, QObject*> IInfo2QObject_;
-
 		mutable QString Suggestion_;
 	public:
 		/** Constructs the dialog for the given entity.
