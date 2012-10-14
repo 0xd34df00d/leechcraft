@@ -538,9 +538,9 @@ namespace LeechCraft
 										.arg (Util::MakePrettySize (status.total_wanted));
 						}
 					case ColumnDownSpeed:
-						return Util::MakePrettySize (status.download_payload_rate);
+						return Util::MakePrettySize (status.download_payload_rate) + tr ("/s");
 					case ColumnUpSpeed:
-						return Util::MakePrettySize (status.upload_payload_rate);
+						return Util::MakePrettySize (status.upload_payload_rate) + tr ("/s");
 					case ColumnLeechers:
 						return QString::number (status.num_peers - status.num_seeds);
 					case ColumnSeeders:
