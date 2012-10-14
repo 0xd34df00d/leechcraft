@@ -56,6 +56,8 @@ namespace BitTorrent
 		QAction *MoveFiles_;
 		QAction *ChangeTrackers_;
 		QAction *MakeMagnetLink_;
+
+		QSortFilterProxyModel *ViewFilter_;
 	public:
 		TorrentTab (const TabClassInfo&, QObject*);
 

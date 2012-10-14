@@ -20,10 +20,12 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QSortFilterProxyModel>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "addtorrent.h"
 #include "addmultipletorrents.h"
@@ -38,17 +40,64 @@ namespace Plugins
 {
 namespace BitTorrent
 {
+	namespace
+	{
+		class ViewFilter : public QSortFilterProxyModel
+		{
+		public:
+			ViewFilter (QObject *parent = 0)
+			: QSortFilterProxyModel (parent)
+			{
+			}
+		protected:
+			bool filterAcceptsRow (int row, const QModelIndex&) const
+			{
+				const auto& pattern = filterRegExp ().pattern ();
+				if (pattern.isEmpty ())
+					return true;
+
+				const auto& idx = Core::Instance ()->index (row, Core::ColumnName);
+				qDebug () << pattern << idx.data ().toString ();
+				if (idx.data ().toString ().contains (pattern, Qt::CaseInsensitive))
+					return true;
+
+				auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
+
+				const auto& reqTags = tm->Split (pattern);
+
+				const auto& torrentTags = idx.data (RoleTags).toStringList ();
+				Q_FOREACH (const auto& tagId, torrentTags)
+					if (reqTags.contains (tm->GetTag (tagId)))
+						return true;
+
+				return false;
+			}
+		};
+	}
+
 	TorrentTab::TorrentTab (const TabClassInfo& tc, QObject *mt)
 	: TC_ (tc)
 	, ParentMT_ (mt)
 	, Toolbar_ (new QToolBar ("BitTorrent"))
+	, ViewFilter_ (new ViewFilter (this))
 	{
 		Ui_.setupUi (this);
-		Ui_.TorrentsView_->setModel (Core::Instance ());
+
+		ViewFilter_->setDynamicSortFilter (true);
+		ViewFilter_->setSourceModel (Core::Instance ());
+
+		Ui_.TorrentsView_->setModel (ViewFilter_);
 		connect (Ui_.TorrentsView_->selectionModel (),
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleTorrentSelected (QModelIndex)));
+
+		new Util::TagsCompleter (Ui_.SearchLine_);
+		Ui_.SearchLine_->AddSelector ();
+		connect (Ui_.SearchLine_,
+				SIGNAL (textChanged (QString)),
+				ViewFilter_,
+				SLOT (setFilterFixedString (QString)));
 
 		OpenTorrent_ = new QAction (tr ("Open torrent..."), Toolbar_);
 		OpenTorrent_->setShortcut (Qt::Key_Insert);
@@ -250,7 +299,7 @@ namespace BitTorrent
 
 	int TorrentTab::GetCurrentTorrent () const
 	{
-		return Ui_.TorrentsView_->currentIndex ().row ();
+		return ViewFilter_->mapToSource (Ui_.TorrentsView_->currentIndex ()).row ();
 	}
 
 	QList<int> TorrentTab::GetSelectedRows () const
@@ -263,12 +312,15 @@ namespace BitTorrent
 
 	QModelIndexList TorrentTab::GetSelectedRowIndexes () const
 	{
-		return Ui_.TorrentsView_->selectionModel ()->selectedRows ();
+		QModelIndexList result;
+		Q_FOREACH (const auto& idx, Ui_.TorrentsView_->selectionModel ()->selectedRows ())
+			result << ViewFilter_->mapToSource (idx);
+		return result;
 	}
 
 	void TorrentTab::handleTorrentSelected (const QModelIndex& index)
 	{
-		Ui_.Tabs_->SetCurrentIndex (index.row ());
+		Ui_.Tabs_->SetCurrentIndex (ViewFilter_->mapToSource (index).row ());
 	}
 
 	void TorrentTab::setActionsEnabled ()

@@ -18,6 +18,13 @@
     <number>1</number>
    </property>
    <item>
+    <widget class="LeechCraft::Util::TagsLineEdit" name="SearchLine_">
+     <property name="placeholderText">
+      <string>Search...</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -36,6 +43,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>LeechCraft::Util::TagsLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">util/tags/tagslineedit.h</header>
+  </customwidget>
   <customwidget>
    <class>LeechCraft::Plugins::BitTorrent::TorrentTabWidget</class>
    <extends>QWidget</extends>
