@@ -31,6 +31,7 @@
 #include <QToolBar>
 #include <QHeaderView>
 #include <QInputDialog>
+#include <QSortFilterProxyModel>
 #include <libtorrent/session.hpp>
 #include <libtorrent/version.hpp>
 #include <interfaces/entitytesthandleresult.h>
@@ -62,6 +63,32 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
+			namespace
+			{
+				class ReprProxy : public QSortFilterProxyModel
+				{
+				public:
+					ReprProxy (QAbstractItemModel *model)
+					: QSortFilterProxyModel (model)
+					{
+						setDynamicSortFilter (true);
+						setSourceModel (model);
+					}
+
+					QVariant data (const QModelIndex& index, int role) const
+					{
+						if (index.column () == Core::ColumnProgress && role == Qt::DisplayRole)
+							return sourceModel ()->data (index, Core::Roles::FullLengthText);
+						else
+							return QSortFilterProxyModel::data (index, role);
+					}
+				protected:
+					bool filterAcceptsColumn (int sourceColumn, const QModelIndex&) const
+					{
+						return sourceColumn < 3;
+					}
+				};
+			}
 
 			void TorrentPlugin::Init (ICoreProxy_ptr proxy)
 			{
@@ -86,6 +113,8 @@ namespace LeechCraft
 						SIGNAL (removeTab (QWidget*)),
 						this,
 						SIGNAL (removeTab (QWidget*)));
+
+				ReprProxy_ = new ReprProxy (Core::Instance ());
 			}
 
 			void TorrentPlugin::SecondInit ()
@@ -276,7 +305,7 @@ namespace LeechCraft
 
 			QAbstractItemModel* TorrentPlugin::GetRepresentation () const
 			{
-				return Core::Instance ();
+				return ReprProxy_;
 			}
 
 			void TorrentPlugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& si, const QModelIndex&)

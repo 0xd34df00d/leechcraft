@@ -44,6 +44,7 @@ class QToolBar;
 class QComboBox;
 class QTabWidget;
 class QTranslator;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -139,6 +140,8 @@ namespace LeechCraft
 
 				TabClassInfo TabTC_;
 				TorrentTab *TorrentTab_;
+
+				QSortFilterProxyModel *ReprProxy_;
 			public:
 				// IInfo
 				void Init (ICoreProxy_ptr);
