@@ -872,7 +872,7 @@ namespace LMP
 		QMetaObject::invokeMethod (PlaylistModel_, "modelAboutToBeReset");
 		PlaylistModel_->blockSignals (true);
 
-		QPair<QString, QString> prevAlbumRoot;
+		QString prevAlbumRoot;
 
 		Q_FOREACH (const auto& sourcePair, sources)
 		{
@@ -905,7 +905,7 @@ namespace LMP
 			{
 				const auto& info = sourcePair.second;
 
-				const auto& albumID = qMakePair (info.Artist_, info.Album_);
+				const auto& albumID = info.Album_;
 				FillItem (item, info);
 				if (albumID != prevAlbumRoot ||
 						AlbumRoots_ [albumID].isEmpty ())
