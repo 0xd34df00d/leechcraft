@@ -92,6 +92,10 @@ namespace BitTorrent
 				this,
 				SLOT (handleTorrentSelected (QModelIndex)));
 
+		const auto& fm = Ui_.TorrentsView_->fontMetrics ();
+		QHeaderView *header = Ui_.TorrentsView_->header ();
+		header->resizeSection (0, fm.width ("boardwalk.empire.s03e02.hdtv.720p.ac3.rus.eng.novafilm.tv.mkv") * 1.3);
+
 		new Util::TagsCompleter (Ui_.SearchLine_);
 		Ui_.SearchLine_->AddSelector ();
 		connect (Ui_.SearchLine_,
