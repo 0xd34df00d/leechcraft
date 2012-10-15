@@ -18,6 +18,7 @@
 
 #include "playertab.h"
 #include <algorithm>
+#include <functional>
 #include <QToolBar>
 #include <QFileDialog>
 #include <QStandardItemModel>
@@ -658,29 +659,39 @@ namespace LMP
 		RemainingTime_->setText (remaining < 0 ? tr ("unknown") : niceTime (remaining));
 	}
 
+	namespace
+	{
+		void AddToLovedBanned (const QString& trackPath,
+				LocalCollection::StaticRating rating,
+				std::function<void (Media::IAudioScrobbler*)> marker)
+		{
+			const int trackId = Core::Instance ().GetLocalCollection ()->FindTrack (trackPath);
+			if (trackId >= 0)
+				Core::Instance ().GetLocalCollection ()->AddTrackTo (trackId, rating);
+
+			if (!XmlSettingsManager::Instance ()
+					.property ("EnableScrobbling").toBool ())
+				return;
+
+			auto scrobblers = Core::Instance ().GetProxy ()->
+						GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
+			std::for_each (scrobblers.begin (), scrobblers.end (),
+					[marker] (decltype (scrobblers.front ()) s) { marker (s); });
+		}
+	}
+
 	void PlayerTab::handleLoveTrack ()
 	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("EnableScrobbling").toBool ())
-			return;
-
-		auto scrobblers = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
-		std::for_each (scrobblers.begin (), scrobblers.end (),
-				[] (decltype (scrobblers.front ()) s) { s->LoveCurrentTrack (); });
+		AddToLovedBanned (Player_->GetCurrentMediaInfo ().LocalPath_,
+				LocalCollection::StaticRating::Loved,
+				[] (Media::IAudioScrobbler *s) { s->LoveCurrentTrack (); });
 	}
 
 	void PlayerTab::handleBanTrack ()
 	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("EnableScrobbling").toBool ())
-			return;
-
-		auto scrobblers = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
-		std::for_each (scrobblers.begin (), scrobblers.end (),
-				[] (decltype (scrobblers.front ()) s) { s->BanCurrentTrack (); });
-		Player_->nextTrack ();
+		AddToLovedBanned (Player_->GetCurrentMediaInfo ().LocalPath_,
+				LocalCollection::StaticRating::Banned,
+				[] (Media::IAudioScrobbler *s) { s->BanCurrentTrack (); });
 	}
 
 	void PlayerTab::handleSimilarError ()

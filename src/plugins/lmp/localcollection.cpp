@@ -328,6 +328,19 @@ namespace LMP
 		return result;
 	}
 
+	void LocalCollection::AddTrackTo (int trackId, StaticRating rating)
+	{
+		switch (rating)
+		{
+		case StaticRating::Loved:
+			Storage_->SetTrackLoved (trackId);
+			break;
+		case StaticRating::Banned:
+			Storage_->SetTrackBanned (trackId);
+			break;
+		}
+	}
+
 	Collection::TrackStats LocalCollection::GetTrackStats (const QString& path) const
 	{
 		if (!Path2Track_.contains (path))
