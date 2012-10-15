@@ -304,6 +304,66 @@ namespace LMP
 		}
 	}
 
+	const int LovedStateID = 1;
+	const int BannedStateID = 2;
+
+	void LocalCollectionStorage::SetTrackLoved (int trackId)
+	{
+		MarkLovedBanned (trackId, LovedStateID);
+	}
+
+	void LocalCollectionStorage::SetTrackBanned (int trackId)
+	{
+		MarkLovedBanned (trackId, BannedStateID);
+	}
+
+	void LocalCollectionStorage::ClearTrackLovedBanned (int trackId)
+	{
+		RemoveLovedBanned_.bindValue (":track_id", trackId);
+		if (!RemoveLovedBanned_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveLovedBanned_);
+			throw std::runtime_error ("cannot remove track from loved/banned");
+		}
+	}
+
+	QList<int> LocalCollectionStorage::GetLovedTracks ()
+	{
+		return GetLovedBanned (LovedStateID);
+	}
+
+	QList<int> LocalCollectionStorage::GetBannedTracks ()
+	{
+		return GetLovedBanned (BannedStateID);
+	}
+
+	void LocalCollectionStorage::MarkLovedBanned (int trackId, int state)
+	{
+		SetLovedBanned_.bindValue (":track_id", trackId);
+		SetLovedBanned_.bindValue (":state", state);
+		if (!SetLovedBanned_.exec ())
+		{
+			Util::DBLock::DumpError (SetLovedBanned_);
+			throw std::runtime_error ("cannot mark track as loved/banned");
+		}
+	}
+
+	QList<int> LocalCollectionStorage::GetLovedBanned (int state)
+	{
+		GetLovedBanned_.bindValue (":state", state);
+		if (!GetLovedBanned_.exec ())
+		{
+			Util::DBLock::DumpError (GetLovedBanned_);
+			throw std::runtime_error ("cannot get loved/banned tracks");
+		}
+
+		QList<int> result;
+		while (GetLovedBanned_.next ())
+			result << GetLovedBanned_.value (0).toInt ();
+		GetLovedBanned_.finish ();
+		return result;
+	}
+
 	Collection::Artists_t LocalCollectionStorage::GetAllArtists ()
 	{
 		Collection::Artists_t artists;
@@ -561,6 +621,16 @@ namespace LMP
 				"		coalesce ((SELECT Added FROM statistics WHERE TrackId = :track_id_add), :add_date),"
 				"		:play_date"
 				");");
+
+		GetLovedBanned_ = QSqlQuery (DB_);
+		GetLovedBanned_.prepare ("SELECT TrackId FROM lovedBanned WHERE State = :state;");
+
+		SetLovedBanned_ = QSqlQuery (DB_);
+		SetLovedBanned_.prepare ("INSERT OR REPLACE INTO lovedBanned (TrackId, State) "
+				" VALUES (:track_id, :state);");
+
+		RemoveLovedBanned_ = QSqlQuery (DB_);
+		RemoveLovedBanned_.prepare ("DELETE FROM lovedBanned WHERE TrackId = :track_id;");
 	}
 
 	void LocalCollectionStorage::CreateTables ()
@@ -603,6 +673,11 @@ namespace LMP
 				"LastPlay TIMESTAMP, "
 				"Score INTEGER, "
 				"Rating INTEGER "
+				");";
+		table2query ["lovedBanned"] = "CREATE TABLE lovedBanned ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				"TrackId NOT NULL UNIQUE REFERENCES tracks (Id) ON DELETE CASCADE, "
+				"State INTEGER"
 				");";
 
 		Util::DBLock lock (DB_);
