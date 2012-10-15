@@ -108,8 +108,19 @@ namespace LMP
 		dynamicRoot->setEditable (false);
 		Model_->appendRow (dynamicRoot);
 
-		const std::vector<PlaylistTypes> types = { PlaylistTypes::Random50 };
-		const std::vector<QString> names = { tr ("50 random tracks") };
+		const std::vector<PlaylistTypes> types =
+		{
+			PlaylistTypes::Random50,
+			PlaylistTypes::LovedTracks,
+			PlaylistTypes::BannedTracks
+		};
+		const std::vector<QString> names =
+		{
+			tr ("50 random tracks"),
+			tr ("Loved tracks"),
+			tr ("Banned tracks")
+		};
+
 		for (size_t i = 0, size = types.size (); i < size; ++i)
 		{
 			auto item = new QStandardItem (names.at (i));
@@ -172,6 +183,10 @@ namespace LMP
 			return Static_->GetCustomPlaylist (index.data ().toString ());
 		case PlaylistTypes::Random50:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::Random50));
+		case PlaylistTypes::LovedTracks:
+			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::LovedTracks));
+			case PlaylistTypes::BannedTracks:
+			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::BannedTracks));
 		default:
 		{
 			QList<Phonon::MediaSource> result;
