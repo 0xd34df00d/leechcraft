@@ -54,12 +54,9 @@ namespace BitTorrent
 		TagsChangeCompleter_ = new TagsCompleter (Ui_.TorrentTags_, this);
 		QFontMetrics fm = QApplication::fontMetrics ();
 		QHeaderView *header = Ui_.PerTrackerStats_->header ();
-		header->resizeSection (0,
-				fm.width ("www.domain.name.org"));
-		header->resizeSection (1,
-				fm.width ("1234.5678 bytes/s"));
-		header->resizeSection (2,
-				fm.width ("1234.5678 bytes/s"));
+		header->resizeSection (0, fm.width ("www.domain.name.org"));
+		header->resizeSection (1, fm.width ("1234.5678 bytes/s"));
+		header->resizeSection (2, fm.width ("1234.5678 bytes/s"));
 
 		// TODO
 		//Ui_.TrackersButton_->setDefaultAction (editTrackers);
@@ -227,6 +224,10 @@ namespace BitTorrent
 				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
 				this,
 				SLOT (currentFileChanged (const QModelIndex&)));
+
+		const auto& fm = Ui_.FilesView_->fontMetrics ();
+		auto header = Ui_.FilesView_->header ();
+		header->resizeSection (0, fm.width ("some very long file name or a directory name in a torrent file"));
 
 		PeersSorter_->setSourceModel (Core::Instance ()->GetPeersModel (Index_));
 
