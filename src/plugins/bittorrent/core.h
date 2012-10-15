@@ -266,10 +266,8 @@ namespace LeechCraft
 				double GetDesiredRating () const;
 				void SetTorrentDownloadRate (int, int);
 				void SetTorrentUploadRate (int, int);
-				void SetTorrentDesiredRating (double, int);
 				int GetTorrentDownloadRate (int) const;
 				int GetTorrentUploadRate (int) const;
-				double GetTorrentDesiredRating (int) const;
 				void AddPeer (const QString&, int, int);
 				void AddWebSeed (const QString&, bool, int);
 				void RemoveWebSeed (const QString&, bool, int);

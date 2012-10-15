@@ -1093,15 +1093,6 @@ namespace LeechCraft
 					Handles_.at (idx).Handle_.set_upload_limit (val == 0 ? -1 : val * 1024);
 			}
 
-			void Core::SetTorrentDesiredRating (double val, int idx)
-			{
-				if (CheckValidity (idx))
-				{
-					Handles_.at (idx).Handle_.set_ratio (val ? 1/val : 0);
-					Handles_ [idx].Ratio_ = val;
-				}
-			}
-
 			int Core::GetTorrentDownloadRate (int idx) const
 			{
 				if (CheckValidity (idx))
@@ -1114,14 +1105,6 @@ namespace LeechCraft
 			{
 				if (CheckValidity (idx))
 					return Handles_.at (idx).Handle_.upload_limit () / 1024;
-				else
-					return -1;
-			}
-
-			double Core::GetTorrentDesiredRating (int idx) const
-			{
-				if (CheckValidity (idx))
-					return Handles_.at (idx).Ratio_;
 				else
 					return -1;
 			}
