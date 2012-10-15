@@ -315,6 +315,12 @@ namespace LMP
 			for (int i = 0; i < 50; ++i)
 				result << keys [qrand () % keys.size ()];
 			break;
+		case DynamicPlaylist::LovedTracks:
+			result = Storage_->GetLovedTracks ();
+			break;
+		case DynamicPlaylist::BannedTracks:
+			result = Storage_->GetBannedTracks ();
+			break;
 		}
 		return result;
 	}

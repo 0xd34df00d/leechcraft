@@ -96,9 +96,12 @@ namespace LMP
 			TrackTitle,
 			TrackPath
 		};
+
 		enum class DynamicPlaylist
 		{
-			Random50
+			Random50,
+			LovedTracks,
+			BannedTracks
 		};
 
 		enum class DirStatus
