@@ -50,6 +50,8 @@ namespace LeechCraft
 		downloaders_t Downloaders_;
 		typedef QMap<QString, IEntityHandler*> handlers_t;
 		handlers_t Handlers_;
+		QMap<QString, const IInfo*> Infos_;
+
 		mutable QString Suggestion_;
 	public:
 		/** Constructs the dialog for the given entity.
@@ -67,6 +69,14 @@ namespace LeechCraft
 		 */
 		void SetFilenameSuggestion (const QString& filename);
 
+		/** Adds the plugin to the list of downloaders, if it's a
+		 * downloader, and to the list of entity handlers, if it's
+		 * IEntityHandler.
+		 *
+		 * @param[in] object The plugin instance object.
+		 */
+		void Add (QObject*);
+
 		/** Adds a downloader to the list of downloaders.
 		 *
 		 * @param[in] ii The IInfo portion of this downloader.
@@ -75,13 +85,21 @@ namespace LeechCraft
 		 */
 		bool Add (const IInfo *ii, IDownload *id);
 
-		/* Adds a handler to the list of handlers.
+		/** Adds a handler to the list of handlers.
 		 *
 		 * @param[in] ii The IInfo portion of this handler.
 		 * @param[in] ieh The IEntityHandler portion of this handler.
 		 * @return True if addition was successful, false otherwise.
 		 */
 		bool Add (const IInfo *ii, IEntityHandler *ieh);
+
+		/** Returns the selected downloader or selector plugin instance
+		 * object.
+		 *
+		 * This function will only be useful if the objects are added
+		 * via the single-parameter Add() overload.
+		 */
+		QObject* GetSelected () const;
 
 		/** Returns the selected downloader or NULL if no downloader was
 		 * selected by user.
@@ -116,10 +134,10 @@ namespace LeechCraft
 		 * handlers were added.
 		 */
 		IEntityHandler* GetFirstEntityHandler ();
-		
+
 		/** Returns the list of all entity handlers that were added to
 		 * this dialog.
-		 * 
+		 *
 		 * @return All entity handlers added to this dialog.
 		 */
 		QList<IEntityHandler*> GetAllEntityHandlers ();
@@ -153,7 +171,7 @@ namespace LeechCraft
 		 * - Third, save locations for all other plugins.
 		 */
 		void populateLocationsBox ();
-		
+
 		void on_BrowseButton__released ();
 	};
 }

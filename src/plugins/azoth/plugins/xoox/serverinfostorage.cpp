@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "serverinfostorage.h"
+#include <algorithm>
 #include <QTimer>
 #include <QXmppDiscoveryManager.h>
 #include "clientconnection.h"
@@ -65,7 +66,7 @@ namespace Xoox
 
 	void ServerInfoStorage::HandleItemInfo (const QXmppDiscoveryIq& iq)
 	{
-		auto hasIdentity = [&iq] (const QString& cat, const QString& type)
+		auto hasIdentity = [&iq] (const QString& cat, const QString& type) -> bool
 		{
 			const auto& ids = iq.identities ();
 			return std::find_if (ids.begin (), ids.end (),

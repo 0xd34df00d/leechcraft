@@ -3,12 +3,15 @@ digraph dependencies {
 	eLibLastFm [label="liblastfm", shape=diamond];
 	eLibnotify [label="libnotify", shape=diamond];
 	eLibOTR [label="libotr", shape=diamond];
+	ePCRE [label="PCRE", shape=diamond];
 	ePhonon [label="Phonon", shape=diamond];
 	eRBLT [label="Rasterbar Libtorrent", shape=diamond];
+	eQJson [label="QJson", shape=diamond];
 	eQross [label="Qross", shape=diamond];
 	eQtCrypt [label="QtCrypt", shape=diamond];
 	eQtDBus [label="QtDBus", shape=diamond];
-	eQXmpp [label="QXmpp-dev", shape=diamond];
+	eQwt [label="Qwt6", shape=diamond];
+	eQXmpp [label="QXmpp", shape=diamond];
 	eTar [label="tar binary", shape=diamond];
 	eTeX [label="TeX", shape=diamond];
 	eVLC [label="libvlc", shape=diamond];
@@ -17,12 +20,25 @@ digraph dependencies {
 	pAN [label="AN", shape=box];
 	pAudioPlayer [label="Audio player", shape=box];
 	pAzothStyles [label="Azoth chat styler", shape=box];
+	pCloudStorage [label="Cloud storage", shape=box];
+	pDataFilterText [label="Text data filter", shape=box];
 	pHTTP [label="HTTP", shape=box];
+	pPowerManager [label="Power manager", shape=box];
 	pSecStore [label="Secure Storage", shape=box];
 	pScripting [label="Scripting", shape=box];
 	pSummaryRepresentation [label="Summary representaiton", shape=box];
 	pVisualNotifier [label="Visual notifications", shape=box];
 	pWebBrowser [label="Web browser", shape=box];
+
+	pAlbumArt[label="AlbumArtProvider", shape="box"];
+	pAudioScrobbler[label="AudioScrobbler", shape="box"];
+	pSimilarArtists[label="SimilarArtistsProvider", shape="box"];
+	pRecommendedArtists[label="RecommendedArtistsProvider", shape="box"];
+	pRadioStation[label="RadioStationProvider", shape="box"];
+	pRecentReleases[label="RecentReleasesProvider", shape="box"];
+	pEventsProvider[label="EventsProvider", shape="box"];
+	pArtistBio[label="ArtistBioProvider", shape="box"];
+	pLyrics[label="LyricsProvider", shape="box"];
 
 	AggregatorBodyFetch [label="Aggregator BodyFetch"];
 	//AzothAcetamide [label="Azoth Acetamide"];
@@ -45,7 +61,8 @@ digraph dependencies {
 	//AzothRosenthal [label="Azoth Rosenthal"];
 	AzothStandardStyles [label="Azoth StandardStyles"];
 	AzothXoox [label="Azoth Xoox"];
-	//AzothXtazy [label="Azoth Xtazy"];
+	AzothXtazy [label="Azoth Xtazy"];
+	NetStoreManagerGD [label="NSM GoogleDrive"];
 	PoshukuCleanWeb [label="Poshuku CleanWeb"];
 	PoshukuOB [label="Poshuku OnlineBookmarks"];
 	PoshukuOBDelicious [label="Poshuku OB Del.ici.us"];
@@ -58,7 +75,9 @@ digraph dependencies {
 	pAudioPlayer -> Laure;
 	pAzothStyles -> AzothAdiumStyles;
 	pAzothStyles -> AzothStandardStyles;
+	pCloudStorage -> NetStoreManager;
 	pHTTP -> CSTP;
+	pPowerManager -> Liznoo;
 	pScripting -> Qrosp;
 	pSecStore -> Secman;
 	pSummaryRepresentation -> Summary;
@@ -66,16 +85,33 @@ digraph dependencies {
 	pVisualNotifier -> DBusManager;
 	pWebBrowser -> Poshuku;
 
+	pDataFilterText -> SeekThru;
+	pDataFilterText -> Pogooglue;
+
+	pAlbumArt -> LastFMScrobble;
+	pAudioScrobbler -> LastFMScrobble;
+	pSimilarArtists -> LastFMScrobble;
+	pRecommendedArtists -> LastFMScrobble;
+	pRadioStation -> LastFMScrobble;
+	pRadioStation -> HotStreams;
+	pRecentReleases -> LastFMScrobble;
+	pEventsProvider -> LastFMScrobble;
+	pArtistBio -> LastFMScrobble;
+	pLyrics -> DeadLyrics;
+
 	AdvancedNotifications -> pAudioPlayer [color="blue"];
 	AdvancedNotifications -> pVisualNotifier [color="red"];
 
 	Azoth -> eQtCrypt [color="blue"];
 	Azoth -> pAN [color="blue"];
 	Azoth -> pAzothStyles [color="red"];
+	Azoth -> pDataFilterText [color="blue"];
 	Azoth -> pScripting [color="blue"];
 	Azoth -> pSecStore [color="red"];
 	Azoth -> pSummaryRepresentation [color="blue"];
 	Azoth -> pVisualNotifier [color="blue"];
+	Azoth -> pPowerManager [color="blue"];
+	Azoth -> pCloudStorage [color="blue"];
 	//AzothAcetamide -> Azoth [color="orange"];
 	AzothAdiumStyles -> Azoth [color="orange"];
 	//AzothAutoidler -> Azoth [color="orange"];
@@ -100,7 +136,8 @@ digraph dependencies {
 	AzothXoox -> Azoth [color="orange"];
 	AzothXoox -> eQtCrypt [color="blue"];
 	AzothXoox -> eQXmpp [color="red"];
-	//AzothXtazy -> Azoth [color="orange"];
+	AzothXtazy -> Azoth [color="orange"];
+	AzothXtazy -> pCloudStorage [color="blue"];
 
 	Aggregator -> pAudioPlayer [color="blue"];
 	Aggregator -> pHTTP [color="red"];
@@ -127,22 +164,45 @@ digraph dependencies {
 
 	HistoryHolder -> pSummaryRepresentation [color="red"];
 
+	HotStreams -> eQJson [color="blue"];
+	HotStreams -> pHTTP [color="blue"];
+
 	LackMan -> eGzip [color="red"];
 	LackMan -> eTar [color="red"];
 	LackMan -> pHTTP [color="red"];
 	LackMan -> pVisualNotifier [color="blue"];
 	LackMan -> pWebBrowser [color="blue"];
 
-	Laure -> eLibLastFm [color="red"];
+	LastFMScrobble -> eLibLastFm [color="red"];
+	LastFMScrobble -> pSecStore [color="red"];
+
 	Laure -> eVLC [color="red"];
 	Laure -> pVisualNotifier [color="blue"];
 
+	Liznoo -> eQwt [color="red"];
+
 	LMP -> ePhonon [color="red"];
+	LMP -> pAlbumArt [color="blue"];
+	LMP -> pAudioScrobbler [color="blue"];
+	LMP -> pSimilarArtists [color="blue"];
+	LMP -> pRecommendedArtists [color="blue"];
+	LMP -> pRadioStation [color="blue"];
+	LMP -> pRecentReleases [color="blue"];
+	LMP -> pEventsProvider [color="blue"];
+	LMP -> pArtistBio [color="blue"];
+	LMP -> pLyrics [color="blue"];
+
+	NetStoreManager -> pSummaryRepresentation [color="blue"];
+	NetStoreManager -> pSecStore [color="red"];
+	NetStoreManager -> pVisualNotifier [color="blue"];
+	NetStoreManagerGD -> NetStoreManager [color="yellow"];
+	NetStoreManagerGD -> eQJson [color="red"];
 
 	Otzerkalu -> pHTTP [color="red"];
 	Otzerkalu -> pSummaryRepresentation [color="blue"];
 	Otzerkalu -> pVisualNotifier [color="blue"];
 
+	Poshuku -> pDataFilterText [color="blue"];
 	Poshuku -> pHTTP [color="blue"];
 	Poshuku -> pScripting [color="blue"];
 	Poshuku -> pSecStore [color="blue"];
@@ -151,6 +211,7 @@ digraph dependencies {
 	PoshukuCleanWeb -> pHTTP [color="red"];
 	PoshukuCleanWeb -> Poshuku [color="orange"];
 	PoshukuCleanWeb -> pVisualNotifier [color="blue"];
+	PoshukuCleanWeb -> ePCRE [color="blue"];
 
 	PoshukuOB -> pSecStore [color="red"];
 	PoshukuOB -> pVisualNotifier [color="blue"];

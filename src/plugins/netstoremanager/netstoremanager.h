@@ -33,6 +33,7 @@ namespace NetStoreManager
 {
 	class AccountsManager;
 	class UpManager;
+	class SyncManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -55,6 +56,7 @@ namespace NetStoreManager
 
 		AccountsManager *AccountsManager_;
 		UpManager *UpManager_;
+		SyncManager *SyncManager_;
 
 		ICoreProxy_ptr Proxy_;
 	public:

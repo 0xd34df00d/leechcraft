@@ -58,6 +58,8 @@ SET (SRCS
 	speedselectoraction.cpp
 	torrentmaker.cpp
 	singletrackerchanger.cpp
+	torrenttab.cpp
+	torrenttabwidget.cpp
 	)
 SET (HEADERS
 	torrentplugin.h
@@ -93,6 +95,8 @@ SET (HEADERS
 	speedselectoraction.h
 	torrentmaker.h
 	singletrackerchanger.h
+	torrenttab.h
+	torrenttabwidget.h
 	newtorrentparams.h
 	torrentinfo.h
 	fileinfo.h
@@ -115,6 +119,8 @@ SET (FORMS
 	banpeersdialog.ui
 	ipfilterdialog.ui
 	singletrackerchanger.ui
+	torrenttab.ui
+	torrenttabwidget.ui
 	)
 SET (RESOURCES bittorrentresources.qrc)
 CreateTrs ("bittorrent" "ar;be;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
@@ -156,6 +162,7 @@ ENDIF (UNIX)
 IF (WIN32)
 	ADD_DEFINITIONS(-DWIN32)
 	ADD_DEFINITIONS(-D_WIN32_WINNT=0x0502)
+	ADD_DEFINITIONS (-DBOOST_ASIO_DYN_LINK)
 ENDIF (WIN32)
 #ADD_DEFINITIONS(-DBOOST_DYN_LINK)
 ADD_DEFINITIONS(-DTORRENT_LINKING_SHARED)

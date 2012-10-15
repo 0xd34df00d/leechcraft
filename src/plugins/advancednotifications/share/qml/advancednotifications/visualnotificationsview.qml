@@ -6,7 +6,7 @@ Rectangle {
     width: 450
     height: Math.min(200, listView.count * 61)
     smooth: true
-    radius: 12
+    radius: 5
     gradient: Gradient {
         GradientStop { position: 0.0; color: "#CF414141" }
         GradientStop { position: 1.0; color: "#CF1A1A1A" }
@@ -20,7 +20,7 @@ Rectangle {
             width: listView.width
             height: eventPic.height + 4 + actionsListView.height + 5
             smooth: true
-            radius: 12
+            radius: 5
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "#DF3A3A3A" }
                 GradientStop { position: 1.0; color: "#DF101010" }
@@ -63,7 +63,7 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.topMargin: 2
                 anchors.right: parent.right
-                anchors.rightMargin: 2
+                anchors.rightMargin: 5
             }
 
             ListView {

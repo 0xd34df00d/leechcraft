@@ -1,5 +1,6 @@
 *.qm
 builds/
+build32/
 backup/
 debug/
 release/
@@ -11,3 +12,4 @@ src/data/leechcraft.1.gz
 *~
 dummyfile.cpp
 *.kdev4
+*.user

@@ -25,6 +25,7 @@
 #include <interfaces/ifinder.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/idatafilter.h>
 #include <interfaces/istartupwizard.h>
 #include <interfaces/isyncable.h>
 #include <interfaces/structures.h>
@@ -40,11 +41,18 @@ namespace LeechCraft
 						   , public IFinder
 						   , public IHaveSettings
 						   , public IEntityHandler
+						   , public IDataFilter
 						   , public IStartupWizard
 						   , public ISyncable
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IFinder IHaveSettings IEntityHandler IStartupWizard ISyncable)
+				Q_INTERFACES (IInfo
+						IFinder
+						IHaveSettings
+						IEntityHandler
+						IDataFilter
+						IStartupWizard
+						ISyncable)
 
 				std::auto_ptr<QTranslator> Translator_;
 				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
@@ -70,6 +78,9 @@ namespace LeechCraft
 
 				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
+
+				QString GetFilterVerb () const;
+				QList<FilterVariant> GetFilterVariants () const;
 
 				QList<QWizardPage*> GetWizardPages () const;
 

@@ -175,24 +175,6 @@
 		<label value="Behavior" />
 		<tab>
 			<label value="Behavior" />
-			<item type="checkbox" property="JumpToNewTabOnOpen" default="true">
-				<label value="Jump to new tab on open" />
-			</item>
-			<item type="checkbox" property="OpenTabOnNewMsg" default="false">
-				<label value="Open chat tab on new message" />
-			</item>
-			<item type="checkbox" property="CloseConfOnLeave" default="false">
-				<label value="Close conferences tabs when leaving" />
-			</item>
-			<item type="checkbox" property="LeaveConfOnClose" default="false">
-				<label value="Leave conferences when closing their tabs" />
-			</item>
-			<item type="checkbox" property="AutoMUCMode" default="false">
-				<label value="Automatically switch roster to conference mode when needed" />
-			</item>
-			<item type="checkbox" property="HideMUCPartsInWholeCL" default="false">
-				<label value="Hide MUC participants in Whole CL mode" />
-			</item>
 			<item type="checkbox" property="IsAutojoinAllowed" default="true">
 				<label value="Autojoin allowed" />
 			</item>
@@ -210,6 +192,21 @@
 				<label value="Nick suffix to append on nick conflict in chat rooms:" />
 				<tooltip>This string would be appended to the nick you've chosen if another chat room participant already uses your nick.</tooltip>
 			</item>
+			<item type="path" property="DefaultXferSavePath" default="{DOCUMENTS}/Downloads">
+				<label value="Default file transfers save path:" />
+			</item>
+		</tab>
+		<tab>
+			<label value="Roster" />
+			<item type="checkbox" property="AutoMUCMode" default="false">
+				<label value="Automatically switch roster to conference mode when needed" />
+			</item>
+			<item type="checkbox" property="HideMUCPartsInWholeCL" default="false">
+				<label value="Hide MUC participants in Whole CL mode" />
+			</item>
+			<item type="checkbox" property="ClearSearchAfterFocus" default="false">
+				<label value="Clear search field after entry activation" />
+			</item>
 			<item type="combobox" property="EntryActivationType">
 				<label value="Entry activates on:" />
 				<option name="click" default="true">
@@ -222,26 +219,20 @@
 					<label value="Let the environment decide" />
 				</option>
 			</item>
-			<item type="combobox" property="SendOnModifier">
-				<label value="Send message on:" />
-				<option name="Enter" default="true">
-					<label value="Enter" />
-				</option>
-				<option name="ShiftEnter">
-					<label value="Shift+Enter" />
-				</option>
-				<option name="CtrlEnter">
-					<label value="Ctrl+Enter" />
-				</option>
+		</tab>
+		<tab>
+			<label value="Tabs" />
+			<item type="checkbox" property="JumpToNewTabOnOpen" default="true">
+				<label value="Jump to new tab on open" />
 			</item>
-			<item type="checkbox" property="KPEnterAlias" default="true">
-				<label value="Keypad Enter is analogous to Enter" />
+			<item type="checkbox" property="OpenTabOnNewMsg" default="false">
+				<label value="Open chat tab on new message" />
 			</item>
-			<item type="spinbox" property="ShowLastNMessages" default="10" minimum="0" maximum="50">
-				<label value="Load at most messages from history:" />
+			<item type="checkbox" property="CloseConfOnLeave" default="false">
+				<label value="Close conferences tabs when leaving" />
 			</item>
-			<item type="path" property="DefaultXferSavePath" default="{DOCUMENTS}/Downloads">
-				<label value="Default file transfers save path:" />
+			<item type="checkbox" property="LeaveConfOnClose" default="false">
+				<label value="Leave conferences when closing their tabs" />
 			</item>
 		</tab>
 		<tab>
@@ -305,6 +296,24 @@
 			</item>
 			<item type="checkbox" property="SeparateMUCEventLogWindow" default="false">
 				<label value="Separate MUC event log window" />
+			</item>
+			<item type="checkbox" property="KPEnterAlias" default="true">
+				<label value="Keypad Enter is analogous to Enter" />
+			</item>
+			<item type="combobox" property="SendOnModifier">
+				<label value="Send message on:" />
+				<option name="Enter" default="true">
+					<label value="Enter" />
+				</option>
+				<option name="ShiftEnter">
+					<label value="Shift+Enter" />
+				</option>
+				<option name="CtrlEnter">
+					<label value="Ctrl+Enter" />
+				</option>
+			</item>
+			<item type="spinbox" property="ShowLastNMessages" default="10" minimum="0" maximum="50">
+				<label value="Load at most messages from history:" />
 			</item>
 		</tab>
 	</page>

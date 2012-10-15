@@ -21,15 +21,19 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <util/models/flattenfiltermodel.h>
+#include <util/models/mergemodel.h>
 #include <util/util.h>
 #include <interfaces/iremovabledevmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/isyncplugin.h>
+#include <interfaces/lmp/iunmountablesync.h>
 #include "core.h"
 #include "localcollection.h"
-#include "sync/uploadmodel.h"
-#include "sync/syncmanager.h"
-#include "sync/transcodingparams.h"
+#include "uploadmodel.h"
+#include "syncmanager.h"
+#include "transcodingparams.h"
+#include "unmountabledevmanager.h"
+#include "syncunmountablemanager.h"
 
 namespace LeechCraft
 {
@@ -72,8 +76,9 @@ namespace LMP
 
 	DevicesBrowserWidget::DevicesBrowserWidget (QWidget *parent)
 	: QWidget (parent)
-	, DevMgr_ (0)
 	, DevUploadModel_ (new UploadModel (this))
+	, Merger_ (new Util::MergeModel (QStringList ("Device name"), this))
+	, UnmountableMgr_ (new UnmountableDevManager (this))
 	, CurrentSyncer_ (0)
 	{
 		Ui_.setupUi (this);
@@ -96,110 +101,67 @@ namespace LMP
 				this,
 				SLOT (handleUploadProgress (int, int)));
 
+		connect (Core::Instance ().GetSyncUnmountableManager (),
+				SIGNAL (transcodingProgress (int, int)),
+				this,
+				SLOT (handleTranscodingProgress (int, int)));
+		connect (Core::Instance ().GetSyncUnmountableManager (),
+				SIGNAL (uploadProgress (int, int)),
+				this,
+				SLOT (handleUploadProgress (int, int)));
+
 		Ui_.TSProgress_->hide ();
 		Ui_.UploadProgress_->hide ();
 
-		if (DevUploadModel_->rowCount ())
-			on_DevicesSelector__activated (0);
+		Ui_.UnmountablePartsWidget_->hide ();
 	}
 
 	void DevicesBrowserWidget::InitializeDevices ()
 	{
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+
 		const auto& mgrs = pm->GetAllCastableTo<IRemovableDevManager*> ();
-		if (mgrs.isEmpty ())
+		Q_FOREACH (const auto& mgr, mgrs)
 		{
-			setEnabled (false);
-			return;
+			auto flattener = new MountableFlattener (this);
+			flattener->SetSource (mgr->GetDevicesModel ());
+			Merger_->AddModel (flattener);
+			Flattener2DevMgr_ [flattener] = mgr;
 		}
 
-		DevMgr_ = mgrs.at (0);
+		UnmountableMgr_->InitializePlugins ();
+		Merger_->AddModel (UnmountableMgr_->GetDevListModel ());
 
-		auto flattener = new MountableFlattener (this);
-		flattener->SetSource (DevMgr_->GetDevicesModel ());
-		Ui_.DevicesSelector_->setModel (flattener);
-
-		Ui_.DevicesSelector_->setCurrentIndex (-1);
-
-		connect (flattener,
+		Ui_.DevicesSelector_->setModel (Merger_);
+		connect (Merger_,
 				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleDevDataChanged (QModelIndex, QModelIndex)));
 	}
 
-	void DevicesBrowserWidget::handleDevDataChanged (const QModelIndex& from, const QModelIndex& to)
+	namespace
 	{
-		const int idx = Ui_.DevicesSelector_->currentIndex ();
-		if (idx >= from.row () && idx <= to.row ())
-			on_DevicesSelector__activated (idx);
+		QList<ISyncPlugin*> FindSuitables (const QString& mountPath)
+		{
+			QList<ISyncPlugin*> suitables;
+			auto syncers = Core::Instance ().GetSyncPlugins ();
+			Q_FOREACH (auto syncer, syncers)
+			{
+				auto isp = qobject_cast<ISyncPlugin*> (syncer);
+				if (isp->CouldSync (mountPath) != SyncConfLevel::None)
+					suitables << isp;
+			}
+			return suitables;
+		}
 	}
 
-	void DevicesBrowserWidget::on_UploadButton__released ()
+	void DevicesBrowserWidget::UploadMountable (int idx)
 	{
-		if (!CurrentSyncer_)
-			return;
-
-		const int idx = Ui_.DevicesSelector_->currentIndex ();
-		if (idx < 0)
-			return;
-
 		const auto& to = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
 		if (to.isEmpty ())
 			return;
 
-		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
-		QStringList paths;
-		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
-				[] (const QModelIndex& idx) { return idx.data (LocalCollection::Role::TrackPath).toString (); });
-		paths.removeAll (QString ());
-
-		Ui_.UploadLog_->clear ();
-		Core::Instance ().GetSyncManager ()->AddFiles (CurrentSyncer_, to, paths, Ui_.TranscodingOpts_->GetParams ());
-	}
-
-	void DevicesBrowserWidget::on_DevicesSelector__activated (int idx)
-	{
-		CurrentSyncer_ = 0;
-
-		if (idx < 0)
-		{
-			Ui_.MountButton_->setEnabled (false);
-			return;
-		}
-
-		auto isMounted = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::IsMounted).toBool ();
-		Ui_.MountButton_->setEnabled (!isMounted);
-
-		if (!isMounted)
-			return;
-
-		const auto& mountPath = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
-		if (mountPath.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "device seems to be mounted, but no mount points available:"
-					<< Ui_.DevicesSelector_->itemData (idx, DeviceRoles::DevID).toString ();
-			return;
-		}
-
-		QList<ISyncPlugin*> suitables;
-
-		auto syncers = Core::Instance ().GetSyncPlugins ();
-		Q_FOREACH (auto syncer, syncers)
-		{
-			auto isp = qobject_cast<ISyncPlugin*> (syncer);
-			if (isp->CouldSync (mountPath) != SyncConfLevel::None)
-				suitables << isp;
-		}
-
-		if (suitables.isEmpty ())
-		{
-			Core::Instance ().SendEntity (Util::MakeNotification ("LMP",
-						tr ("No plugins are able to sync this device."),
-						PWarning_));
-			return;
-		}
-
+		const auto& suitables = FindSuitables (to);
 		if (suitables.size () == 1)
 			CurrentSyncer_ = suitables.value (0);
 		else
@@ -218,6 +180,122 @@ namespace LMP
 
 			CurrentSyncer_ = suitables.value (items.indexOf (name));
 		}
+
+		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
+		QStringList paths;
+		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
+				[] (const QModelIndex& idx) { return idx.data (LocalCollection::Role::TrackPath).toString (); });
+		paths.removeAll (QString ());
+
+		Ui_.UploadLog_->clear ();
+		Core::Instance ().GetSyncManager ()->AddFiles (CurrentSyncer_, to, paths, Ui_.TranscodingOpts_->GetParams ());
+	}
+
+	void DevicesBrowserWidget::UploadUnmountable (int idx)
+	{
+		int starting = 0;
+		Merger_->GetModelForRow (idx, &starting);
+		idx -= starting;
+
+		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
+		QStringList paths;
+		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
+				[] (const QModelIndex& idx) { return idx.data (LocalCollection::Role::TrackPath).toString (); });
+		paths.removeAll (QString ());
+
+		auto syncer = qobject_cast<IUnmountableSync*> (UnmountableMgr_->GetDeviceManager (idx));
+		const auto& info = UnmountableMgr_->GetDeviceInfo (idx);
+
+		const int partIdx = Ui_.UnmountablePartsBox_->currentIndex ();
+		const auto& storageId = Ui_.UnmountablePartsBox_->itemData (partIdx).toByteArray ();
+		Core::Instance ().GetSyncUnmountableManager ()->AddFiles ({ syncer, info.ID_,
+				storageId, paths, Ui_.TranscodingOpts_->GetParams () });
+	}
+
+	void DevicesBrowserWidget::HandleMountableSelected (int idx)
+	{
+		Ui_.MountButton_->show ();
+		Ui_.TranscodingOpts_->SetMaskVisible (true);
+		Ui_.UnmountablePartsWidget_->hide ();
+
+		auto isMounted = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::IsMounted).toBool ();
+		Ui_.MountButton_->setEnabled (!isMounted);
+
+		if (!isMounted)
+			return;
+
+		const auto& mountPath = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
+		if (mountPath.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "device seems to be mounted, but no mount points available:"
+					<< Ui_.DevicesSelector_->itemData (idx, DeviceRoles::DevID).toString ();
+			return;
+		}
+
+		Ui_.SyncTabs_->setEnabled (!FindSuitables (mountPath).isEmpty ());
+	}
+
+	void DevicesBrowserWidget::HandleUnmountableSelected (int idx)
+	{
+		Ui_.MountButton_->hide ();
+		Ui_.TranscodingOpts_->SetMaskVisible (false);
+		Ui_.UnmountablePartsWidget_->show ();
+
+		int starting = 0;
+		Merger_->GetModelForRow (idx, &starting);
+		idx -= starting;
+
+		Ui_.UnmountablePartsBox_->clear ();
+		const auto& info = UnmountableMgr_->GetDeviceInfo (idx);
+		for (const auto& storage : info.Partitions_)
+		{
+			const auto& boxText = storage.TotalSize_ > 0 ?
+					tr ("%1 (%2 available of %3)")
+							.arg (storage.Name_)
+							.arg (Util::MakePrettySize (storage.AvailableSize_))
+							.arg (Util::MakePrettySize (storage.TotalSize_)) :
+					storage.Name_;
+			Ui_.UnmountablePartsBox_->addItem (boxText, storage.ID_);
+		}
+	}
+
+	void DevicesBrowserWidget::handleDevDataChanged (const QModelIndex& from, const QModelIndex& to)
+	{
+		const int idx = Ui_.DevicesSelector_->currentIndex ();
+		if (idx < from.row () && idx > to.row ())
+			return;
+
+		on_DevicesSelector__activated (idx);
+	}
+
+	void DevicesBrowserWidget::on_UploadButton__released ()
+	{
+		const int idx = Ui_.DevicesSelector_->currentIndex ();
+		if (idx < 0)
+			return;
+
+		if (Flattener2DevMgr_.contains (*Merger_->GetModelForRow (idx)))
+			UploadMountable (idx);
+		else
+			UploadUnmountable (idx);
+	}
+
+	void DevicesBrowserWidget::on_DevicesSelector__activated (int idx)
+	{
+		CurrentSyncer_ = 0;
+
+		if (idx < 0)
+		{
+			Ui_.MountButton_->setEnabled (false);
+			Ui_.UnmountablePartsWidget_->hide ();
+			return;
+		}
+
+		if (Flattener2DevMgr_.contains (*Merger_->GetModelForRow (idx)))
+			HandleMountableSelected (idx);
+		else
+			HandleUnmountableSelected (idx);
 	}
 
 	void DevicesBrowserWidget::on_MountButton__released ()
@@ -226,8 +304,12 @@ namespace LMP
 		if (idx < 0)
 			return;
 
+		const auto model = *Merger_->GetModelForRow (idx);
+		if (!Flattener2DevMgr_.contains (model))
+			return;
+
 		const auto& id = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::DevID).toString ();
-		DevMgr_->MountDevice (id);
+		Flattener2DevMgr_ [model]->MountDevice (id);
 	}
 
 	void DevicesBrowserWidget::appendUpLog (QString text)

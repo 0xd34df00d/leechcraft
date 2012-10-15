@@ -48,7 +48,9 @@ namespace LMP
 		{
 			Other,
 			Static,
-			Random50
+			Random50,
+			LovedTracks,
+			BannedTracks
 		};
 		enum Roles
 		{

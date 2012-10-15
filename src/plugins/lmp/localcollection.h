@@ -84,6 +84,7 @@ namespace LMP
 			Album,
 			Track
 		};
+
 		enum Role
 		{
 			Node = Qt::UserRole + 1,
@@ -95,9 +96,12 @@ namespace LMP
 			TrackTitle,
 			TrackPath
 		};
+
 		enum class DynamicPlaylist
 		{
-			Random50
+			Random50,
+			LovedTracks,
+			BannedTracks
 		};
 
 		enum class DirStatus
@@ -105,6 +109,12 @@ namespace LMP
 			RootPath,
 			SubPath,
 			None
+		};
+
+		enum class StaticRating
+		{
+			Loved,
+			Banned
 		};
 
 		LocalCollection (QObject* = 0);
@@ -136,8 +146,11 @@ namespace LMP
 		QList<int> GetDynamicPlaylist (DynamicPlaylist) const;
 		QStringList TrackList2PathList (const QList<int>&) const;
 
+		void AddTrackTo (int, StaticRating);
+
 		Collection::TrackStats GetTrackStats (const QString&) const;
 
+		QList<int> GetAlbumArtists (int) const;
 		Collection::Artist GetArtist (int) const;
 		Collection::Artists_t GetAllArtists () const;
 

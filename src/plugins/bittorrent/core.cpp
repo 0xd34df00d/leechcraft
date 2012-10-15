@@ -63,6 +63,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/ijobholder.h>
 #include <util/tags/tagscompletionmodel.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
@@ -127,37 +128,24 @@ namespace LeechCraft
 			, FinishedTimer_ (new QTimer ())
 			, WarningWatchdog_ (new QTimer ())
 			, ScrapeTimer_ (new QTimer ())
-			, PiecesModel_ (new PiecesModel ())
-			, PeersModel_ (new PeersModel ())
-			, TorrentFilesModel_ (new TorrentFilesModel (false))
-			, WebSeedsModel_ (new QStandardItemModel ())
 			, LiveStreamManager_ (new LiveStreamManager ())
 			, SaveScheduled_ (false)
 			, Toolbar_ (0)
 			, TabWidget_ (0)
 			, Menu_ (0)
+			, ShortcutMgr_ (0)
 			, TorrentIcon_ (":/resources/images/bittorrent.svg")
 			{
 				setObjectName ("BitTorrent Core");
 				ExternalAddress_ = tr ("Unknown");
-				WebSeedsModel_->setHorizontalHeaderLabels (QStringList (tr ("URL"))
-						<< tr ("Standard"));
 
 				connect (LiveStreamManager_.get (),
-						SIGNAL (gotEntity (const LeechCraft::Entity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-				connect (TorrentFilesModel_.get (),
 						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 				qRegisterMetaType<libtorrent::entry> ("libtorrent::entry");
 				qRegisterMetaTypeStreamOperators<libtorrent::entry> ("libtorrent::entry");
-			}
-
-			Core::~Core ()
-			{
 			}
 
 			void Core::SetWidgets (QToolBar *tool, QWidget *tab)
@@ -266,8 +254,12 @@ namespace LeechCraft
 				}
 
 				Headers_ << tr ("Name")
-					<< tr ("Progress")
-					<< tr ("State");
+						<< tr ("State")
+						<< tr ("Progress")
+						<< tr ("Down speed")
+						<< tr ("Up speed")
+						<< tr ("Leechers")
+						<< tr ("Seeders");
 
 				connect (SettingsSaveTimer_.get (),
 						SIGNAL (timeout ()),
@@ -305,10 +297,6 @@ namespace LeechCraft
 				FinishedTimer_.reset ();
 				WarningWatchdog_.reset ();
 				ScrapeTimer_.reset ();
-				PiecesModel_.reset ();
-				PeersModel_.reset ();
-				TorrentFilesModel_.reset ();
-				WebSeedsModel_.reset ();
 
 				QObjectList kids = children ();
 				for (int i = 0; i < kids.size (); ++i)
@@ -325,11 +313,17 @@ namespace LeechCraft
 			void Core::SetProxy (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
+				ShortcutMgr_ = new ShortcutManager (proxy, this);
 			}
 
 			ICoreProxy_ptr Core::GetProxy () const
 			{
 				return Proxy_;
+			}
+
+			Util::ShortcutManager* Core::GetShortcutManager () const
+			{
+				return ShortcutMgr_;
 			}
 
 			EntityTestHandleResult Core::CouldDownload (const Entity& e) const
@@ -394,127 +388,53 @@ namespace LeechCraft
 			{
 			}
 
-			PiecesModel* Core::GetPiecesModel ()
+			PiecesModel* Core::GetPiecesModel (int idx)
 			{
-				return PiecesModel_.get ();
+				return idx >= 0 ? new PiecesModel (idx) : 0;
 			}
 
-			void Core::ClearPieces ()
+			PeersModel* Core::GetPeersModel (int idx)
 			{
-				PiecesModel_->Clear ();
+				return idx >= 0 ? new PeersModel (idx) : 0;
 			}
 
-			void Core::UpdatePieces ()
+			QAbstractItemModel* Core::GetWebSeedsModel (int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (idx < 0)
+					return 0;
+
+				auto model = new QStandardItemModel;
+				model->setHorizontalHeaderLabels ({tr ("URL"), tr ("Standard") });
+				Q_FOREACH (std::string url,
+						Handles_.at (idx).Handle_.url_seeds ())
 				{
-					ClearPieces ();
-					return;
+					QList<QStandardItem*> items;
+					items << new QStandardItem (QString::fromUtf8 (url.c_str ()));
+					items << new QStandardItem ("BEP 19");
+					model->appendRow (items);
 				}
-
-				std::vector<libtorrent::partial_piece_info> queue;
-				Handles_.at (CurrentTorrent_).Handle_.get_download_queue (queue);
-				PiecesModel_->Update (queue);
+				Q_FOREACH (std::string url,
+						Handles_.at (idx).Handle_.http_seeds ())
+				{
+					QList<QStandardItem*> items;
+					items << new QStandardItem (QString::fromUtf8 (url.c_str ()));
+					items << new QStandardItem ("BEP 17");
+					model->appendRow (items);
+				}
+				return model;
 			}
 
-			PeersModel* Core::GetPeersModel ()
+			TorrentFilesModel* Core::GetTorrentFilesModel (int idx)
 			{
-				return PeersModel_.get ();
-			}
+				if (idx < 0)
+					return 0;
 
-			QAbstractItemModel* Core::GetWebSeedsModel ()
-			{
-				return WebSeedsModel_.get ();
-			}
-
-			void Core::ClearPeers ()
-			{
-				PeersModel_->Clear ();
-				WebSeedsModel_->clear ();
-			}
-
-			void Core::UpdatePeers ()
-			{
-				if (!CheckValidity (CurrentTorrent_))
-				{
-					ClearPeers ();
-					return;
-				}
-
-				PeersModel_->Update (GetPeers (), CurrentTorrent_);
-
-				if (CheckValidity (CurrentTorrent_) &&
-						!WebSeedsModel_->rowCount ())
-				{
-					Q_FOREACH (std::string url,
-							Handles_.at (CurrentTorrent_).Handle_.url_seeds ())
-					{
-						QList<QStandardItem*> items;
-						items << new QStandardItem (QString::fromUtf8 (url.c_str ()));
-						items << new QStandardItem ("BEP 19");
-						WebSeedsModel_->appendRow (items);
-					}
-					Q_FOREACH (std::string url,
-							Handles_.at (CurrentTorrent_).Handle_.http_seeds ())
-					{
-						QList<QStandardItem*> items;
-						items << new QStandardItem (QString::fromUtf8 (url.c_str ()));
-						items << new QStandardItem ("BEP 17");
-						WebSeedsModel_->appendRow (items);
-					}
-				}
-			}
-
-			TorrentFilesModel* Core::GetTorrentFilesModel ()
-			{
-				return TorrentFilesModel_.get ();
-			}
-
-			void Core::ClearFiles ()
-			{
-				TorrentFilesModel_->Clear ();
-			}
-
-			void Core::UpdateFiles ()
-			{
-				if (!CheckValidity (CurrentTorrent_))
-				{
-					ClearFiles ();
-					return;
-				}
-
-				try
-				{
-					boost::filesystem::path base = Handles_
-							.at (CurrentTorrent_).Handle_.save_path ();
-					TorrentFilesModel_->UpdateFiles (base, GetTorrentFiles ());
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO << e.what ();
-					TorrentFilesModel_->Clear ();
-				}
-			}
-
-			void Core::ResetFiles ()
-			{
-				if (!CheckValidity (CurrentTorrent_))
-				{
-					ClearFiles ();
-					return;
-				}
-
-				try
-				{
-					boost::filesystem::path base = Handles_
-							.at (CurrentTorrent_).Handle_.save_path ();
-					TorrentFilesModel_->ResetFiles (base, GetTorrentFiles ());
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO << e.what ();
-					TorrentFilesModel_->Clear ();
-				}
+				auto model = new TorrentFilesModel (idx);
+				connect (model,
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				return model;
 			}
 
 			int Core::columnCount (const QModelIndex&) const
@@ -541,6 +461,7 @@ namespace LeechCraft
 
 				switch (role)
 				{
+				case Roles::FullLengthText:
 				case Qt::DisplayRole:
 					switch (column)
 					{
@@ -563,33 +484,67 @@ namespace LeechCraft
 							return stateStr;
 					}
 					case ColumnProgress:
-						if (status.state == libtorrent::torrent_status::downloading)
-							return tr ("%1% (%2 of %3 at %4 from %5 peers)")
-									.arg (status.progress * 100, 0, 'f', 2)
-									.arg (Util::MakePrettySize (status.total_wanted_done))
-									.arg (Util::MakePrettySize (status.total_wanted))
-									.arg (Util::MakePrettySize (status.download_payload_rate) +
-											tr ("/s"))
-									.arg (status.num_peers);
-						else if (!status.paused &&
-									(status.state == libtorrent::torrent_status::finished ||
-									 status.state == libtorrent::torrent_status::seeding))
+						if (role == Roles::FullLengthText)
 						{
-							auto total = status.num_incomplete;
-							if (total <= 0)
-								total = status.list_peers - status.list_seeds;
-							return tr ("%1, seeding at %2 to %3 leechers (of around %4)")
-									.arg (Util::MakePrettySize (status.total_wanted))
-									.arg (Util::MakePrettySize (status.upload_payload_rate) +
-											tr ("/s"))
-									.arg (status.num_peers - status.num_seeds)
-									.arg (total);
+							if (status.state == libtorrent::torrent_status::downloading)
+								return tr ("%1% (%2 of %3 at %4 from %5 peers)")
+										.arg (status.progress * 100, 0, 'f', 2)
+										.arg (Util::MakePrettySize (status.total_wanted_done))
+										.arg (Util::MakePrettySize (status.total_wanted))
+										.arg (Util::MakePrettySize (status.download_payload_rate) +
+												tr ("/s"))
+										.arg (status.num_peers);
+							else if (!status.paused &&
+										(status.state == libtorrent::torrent_status::finished ||
+										status.state == libtorrent::torrent_status::seeding))
+							{
+								auto total = status.num_incomplete;
+								if (total <= 0)
+									total = status.list_peers - status.list_seeds;
+								return tr ("%1, seeding at %2 to %3 leechers (of around %4)")
+										.arg (Util::MakePrettySize (status.total_wanted))
+										.arg (Util::MakePrettySize (status.upload_payload_rate) +
+												tr ("/s"))
+										.arg (status.num_peers - status.num_seeds)
+										.arg (total);
+							}
+							else
+								return tr ("%1% (%2 of %3)")
+										.arg (status.progress * 100, 0, 'f', 2)
+										.arg (Util::MakePrettySize (status.total_wanted_done))
+										.arg (Util::MakePrettySize (status.total_wanted));
 						}
 						else
-							return tr ("%1% (%2 of %3)")
-									.arg (status.progress * 100, 0, 'f', 2)
-									.arg (Util::MakePrettySize (status.total_wanted_done))
-									.arg (Util::MakePrettySize (status.total_wanted));
+						{
+							if (status.state == libtorrent::torrent_status::downloading)
+								return tr ("%1% (%2 of %3)")
+										.arg (status.progress * 100, 0, 'f', 2)
+										.arg (Util::MakePrettySize (status.total_wanted_done))
+										.arg (Util::MakePrettySize (status.total_wanted));
+							else if (!status.paused &&
+										(status.state == libtorrent::torrent_status::finished ||
+										status.state == libtorrent::torrent_status::seeding))
+							{
+								auto total = status.num_incomplete;
+								if (total <= 0)
+									total = status.list_peers - status.list_seeds;
+								return tr ("100% (%1)")
+										.arg (Util::MakePrettySize (status.total_wanted));
+							}
+							else
+								return tr ("%1% (%2 of %3)")
+										.arg (status.progress * 100, 0, 'f', 2)
+										.arg (Util::MakePrettySize (status.total_wanted_done))
+										.arg (Util::MakePrettySize (status.total_wanted));
+						}
+					case ColumnDownSpeed:
+						return Util::MakePrettySize (status.download_payload_rate) + tr ("/s");
+					case ColumnUpSpeed:
+						return Util::MakePrettySize (status.upload_payload_rate) + tr ("/s");
+					case ColumnLeechers:
+						return QString::number (status.num_peers - status.num_seeds);
+					case ColumnSeeders:
+						return QString::number (status.num_seeds);
 					default:
 						return QVariant ();
 					}
@@ -674,6 +629,13 @@ namespace LeechCraft
 				return Handles_.size ();
 			}
 
+			libtorrent::torrent_handle Core::GetTorrentHandle (int idx) const
+			{
+				if (idx < 0)
+					idx = CurrentTorrent_;
+				return Handles_.value (idx).Handle_;
+			}
+
 			libtorrent::torrent_info Core::GetTorrentInfo (const QString& filename)
 			{
 				QFile file (filename);
@@ -713,12 +675,12 @@ namespace LeechCraft
 				return true;
 			}
 
-			std::unique_ptr<TorrentInfo> Core::GetTorrentStats () const
+			std::unique_ptr<TorrentInfo> Core::GetTorrentStats (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					throw std::runtime_error ("Invalid torrent for stats");
 
-				const libtorrent::torrent_handle& handle = Handles_.at (CurrentTorrent_).Handle_;
+				const libtorrent::torrent_handle& handle = Handles_.at (idx).Handle_;
 
 				std::unique_ptr<TorrentInfo> result (new TorrentInfo);
 				result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));
@@ -753,16 +715,19 @@ namespace LeechCraft
 				return Session_->get_cache_status ();
 			}
 
-			QList<PeerInfo> Core::GetPeers () const
+			QList<PeerInfo> Core::GetPeers (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (idx < 0)
+					idx = CurrentTorrent_;
+
+				if (!CheckValidity (idx))
 					return QList<PeerInfo> ();
 
 				QList<PeerInfo> result;
 				std::vector<libtorrent::peer_info> peerInfos;
-				Handles_.at (CurrentTorrent_).Handle_.get_peer_info (peerInfos);
+				Handles_.at (idx).Handle_.get_peer_info (peerInfos);
 
-				const auto& localPieces = Handles_.at (CurrentTorrent_).Handle_.status ().pieces;
+				const auto& localPieces = Handles_.at (idx).Handle_.status ().pieces;
 				QList<int> ourMissing;
 				for (auto i = localPieces.begin (), end = localPieces.end (); i != end; ++i)
 				{
@@ -1116,57 +1081,57 @@ namespace LeechCraft
 				return XmlSettingsManager::Instance ()->property ("DesiredRating").toInt ();
 			}
 
-			void Core::SetTorrentDownloadRate (int val)
+			void Core::SetTorrentDownloadRate (int val, int idx)
 			{
-				if (CheckValidity (CurrentTorrent_))
-					Handles_.at (CurrentTorrent_).Handle_.set_download_limit (val == 0 ? -1 : val * 1024);
+				if (CheckValidity (idx))
+					Handles_.at (idx).Handle_.set_download_limit (val == 0 ? -1 : val * 1024);
 			}
 
-			void Core::SetTorrentUploadRate (int val)
+			void Core::SetTorrentUploadRate (int val, int idx)
 			{
-				if (CheckValidity (CurrentTorrent_))
-					Handles_.at (CurrentTorrent_).Handle_.set_upload_limit (val == 0 ? -1 : val * 1024);
+				if (CheckValidity (idx))
+					Handles_.at (idx).Handle_.set_upload_limit (val == 0 ? -1 : val * 1024);
 			}
 
-			void Core::SetTorrentDesiredRating (double val)
+			void Core::SetTorrentDesiredRating (double val, int idx)
 			{
-				if (CheckValidity (CurrentTorrent_))
+				if (CheckValidity (idx))
 				{
-					Handles_.at (CurrentTorrent_).Handle_.set_ratio (val ? 1/val : 0);
-					Handles_ [CurrentTorrent_].Ratio_ = val;
+					Handles_.at (idx).Handle_.set_ratio (val ? 1/val : 0);
+					Handles_ [idx].Ratio_ = val;
 				}
 			}
 
-			int Core::GetTorrentDownloadRate () const
+			int Core::GetTorrentDownloadRate (int idx) const
 			{
-				if (CheckValidity (CurrentTorrent_))
-					return Handles_.at (CurrentTorrent_).Handle_.download_limit () / 1024;
+				if (CheckValidity (idx))
+					return Handles_.at (idx).Handle_.download_limit () / 1024;
 				else
 					return -1;
 			}
 
-			int Core::GetTorrentUploadRate () const
+			int Core::GetTorrentUploadRate (int idx) const
 			{
-				if (CheckValidity (CurrentTorrent_))
-					return Handles_.at (CurrentTorrent_).Handle_.upload_limit () / 1024;
+				if (CheckValidity (idx))
+					return Handles_.at (idx).Handle_.upload_limit () / 1024;
 				else
 					return -1;
 			}
 
-			double Core::GetTorrentDesiredRating () const
+			double Core::GetTorrentDesiredRating (int idx) const
 			{
-				if (CheckValidity (CurrentTorrent_))
-					return Handles_.at (CurrentTorrent_).Ratio_;
+				if (CheckValidity (idx))
+					return Handles_.at (idx).Ratio_;
 				else
 					return -1;
 			}
 
-			void Core::AddPeer (const QString& ip, int port)
+			void Core::AddPeer (const QString& ip, int port, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
-				Handles_.at (CurrentTorrent_).Handle_.connect_peer (
+				Handles_.at (idx).Handle_.connect_peer (
 							libtorrent::tcp::endpoint (
 								libtorrent::address::from_string (ip.toStdString ()),
 								port
@@ -1174,35 +1139,31 @@ namespace LeechCraft
 							);
 			}
 
-			void Core::AddWebSeed (const QString& ws, bool url)
+			void Core::AddWebSeed (const QString& ws, bool url, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
 				if (url)
-					Handles_.at (CurrentTorrent_).Handle_.add_url_seed (ws.toStdString ());
+					Handles_.at (idx).Handle_.add_url_seed (ws.toStdString ());
 				else
-					Handles_.at (CurrentTorrent_).Handle_.add_http_seed (ws.toStdString ());
-				WebSeedsModel_->clear ();
-				UpdatePeers ();
+					Handles_.at (idx).Handle_.add_http_seed (ws.toStdString ());
 			}
 
-			void Core::RemoveWebSeed (const QString& ws, bool url)
+			void Core::RemoveWebSeed (const QString& ws, bool url, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
 				if (url)
-					Handles_.at (CurrentTorrent_).Handle_.remove_url_seed (ws.toStdString ());
+					Handles_.at (idx).Handle_.remove_url_seed (ws.toStdString ());
 				else
-					Handles_.at (CurrentTorrent_).Handle_.remove_http_seed (ws.toStdString ());
-				WebSeedsModel_->clear ();
-				UpdatePeers ();
+					Handles_.at (idx).Handle_.remove_http_seed (ws.toStdString ());
 			}
 
-			void Core::SetFilePriority (int file, int priority)
+			void Core::SetFilePriority (int file, int priority, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
 				if (priority > 7)
@@ -1212,25 +1173,23 @@ namespace LeechCraft
 
 				try
 				{
-					Handles_ [CurrentTorrent_].FilePriorities_.at (file) = priority;
-					Handles_.at (CurrentTorrent_).Handle_.prioritize_files (Handles_.at (CurrentTorrent_).FilePriorities_);
+					Handles_ [idx].FilePriorities_.at (file) = priority;
+					Handles_.at (idx).Handle_.prioritize_files (Handles_.at (idx).FilePriorities_);
 				}
 				catch (...)
 				{
 					qWarning () << Q_FUNC_INFO
 						<< QString ("index for torrent %1, file %2 is out of bounds")
-							.arg (CurrentTorrent_).arg (file);
+							.arg (idx).arg (file);
 				}
 			}
 
-			void Core::SetFilename (int index, const QString& name)
+			void Core::SetFilename (int index, const QString& name, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
-				Handles_ [CurrentTorrent_].Handle_.rename_file (index, std::string (name.toUtf8 ().data ()));
-
-				ResetFiles ();
+				Handles_ [idx].Handle_.rename_file (index, std::string (name.toUtf8 ().data ()));
 			}
 
 			std::vector<libtorrent::announce_entry> Core::GetTrackers (const boost::optional<int>& row) const
@@ -1253,21 +1212,21 @@ namespace LeechCraft
 				Handles_ [tor].Handle_.force_reannounce ();
 			}
 
-			QString Core::GetMagnetLink () const
+			QString Core::GetMagnetLink (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return QString ();
 
-				const std::string& result = libtorrent::make_magnet_uri (Handles_ [CurrentTorrent_].Handle_);
+				const std::string& result = libtorrent::make_magnet_uri (Handles_ [idx].Handle_);
 				return QString::fromStdString (result);
 			}
 
-			QString Core::GetTorrentDirectory () const
+			QString Core::GetTorrentDirectory (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return QString ();
 
-				const auto& path = Handles_.at (CurrentTorrent_).Handle_.save_path ();
+				const auto& path = Handles_.at (idx).Handle_.save_path ();
 #if LIBTORRENT_VERSION_NUM >= 1600
 				return QString::fromUtf8 (path.c_str ());
 #else
@@ -1275,12 +1234,12 @@ namespace LeechCraft
 #endif
 			}
 
-			bool Core::MoveTorrentFiles (const QString& newDir)
+			bool Core::MoveTorrentFiles (const QString& newDir, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_) || newDir == GetTorrentDirectory ())
+				if (!CheckValidity (idx) || newDir == GetTorrentDirectory (idx))
 					return false;
 
-				Handles_.at (CurrentTorrent_).Handle_.move_storage (newDir.toUtf8 ().constData ());
+				Handles_.at (idx).Handle_.move_storage (newDir.toUtf8 ().constData ());
 				return true;
 			}
 
@@ -1294,53 +1253,53 @@ namespace LeechCraft
 				return CurrentTorrent_;
 			}
 
-			bool Core::IsTorrentManaged () const
+			bool Core::IsTorrentManaged (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return false;
 
-				return Handles_.at (CurrentTorrent_).Handle_.is_auto_managed ();
+				return Handles_.at (idx).Handle_.is_auto_managed ();
 			};
 
-			void Core::SetTorrentManaged (bool man)
+			void Core::SetTorrentManaged (bool man, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
-				Handles_.at (CurrentTorrent_).Handle_.auto_managed (man);
-				Handles_ [CurrentTorrent_].AutoManaged_ = man;
+				Handles_.at (idx).Handle_.auto_managed (man);
+				Handles_ [idx].AutoManaged_ = man;
 			}
 
-			bool Core::IsTorrentSequentialDownload () const
+			bool Core::IsTorrentSequentialDownload (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return false;
 
-				return Handles_.at (CurrentTorrent_).Handle_.is_sequential_download ();
+				return Handles_.at (idx).Handle_.is_sequential_download ();
 			}
 
-			void Core::SetTorrentSequentialDownload (bool seq)
+			void Core::SetTorrentSequentialDownload (bool seq, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
-				Handles_.at (CurrentTorrent_).Handle_.set_sequential_download (seq);
+				Handles_.at (idx).Handle_.set_sequential_download (seq);
 			}
 
-			bool Core::IsTorrentSuperSeeding () const
+			bool Core::IsTorrentSuperSeeding (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return false;
 
-				return Handles_.at (CurrentTorrent_).Handle_.super_seeding ();
+				return Handles_.at (idx).Handle_.super_seeding ();
 			}
 
-			void Core::SetTorrentSuperSeeding (bool sup)
+			void Core::SetTorrentSuperSeeding (bool sup, int idx)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (!CheckValidity (idx))
 					return;
 
-				Handles_.at (CurrentTorrent_).Handle_.super_seeding (sup);
+				Handles_.at (idx).Handle_.super_seeding (sup);
 			}
 
 			void Core::MakeTorrent (const NewTorrentParams& params) const
@@ -1676,17 +1635,17 @@ namespace LeechCraft
 				LiveStreamManager_->PieceRead (a);
 			}
 
-			void Core::MoveUp (const std::deque<int>& selections)
+			void Core::MoveUp (const std::vector<int>& selections)
 			{
 				if (!selections.size ())
 					return;
 
-				for (std::deque<int>::const_iterator i = selections.begin (),
+				for (auto i = selections.begin (),
 						end = selections.end (); i != end; ++i)
 					if (*i <= 0 || !CheckValidity (*i))
 						return;
 
-				for (std::deque<int>::const_iterator i = selections.begin (),
+				for (auto i = selections.begin (),
 						end = selections.end (); i != end; ++i)
 				{
 					Handles_.at (*i).Handle_.queue_position_up ();
@@ -1698,17 +1657,17 @@ namespace LeechCraft
 				}
 			}
 
-			void Core::MoveDown (const std::deque<int>& selections)
+			void Core::MoveDown (const std::vector<int>& selections)
 			{
 				if (!selections.size ())
 					return;
 
-				for (std::deque<int>::const_iterator i = selections.begin (),
+				for (auto i = selections.begin (),
 						end = selections.end (); i != end; ++i)
 					if (*i < 0 || !CheckValidity (*i) || !CheckValidity (*i + 1))
 						return;
 
-				for (std::deque<int>::const_reverse_iterator i = selections.rbegin (),
+				for (auto i = selections.rbegin (),
 						end = selections.rend (); i != end; ++i)
 				{
 					Handles_.at (*i).Handle_.queue_position_down ();
@@ -1720,32 +1679,32 @@ namespace LeechCraft
 				}
 			}
 
-			void Core::MoveToTop (const std::deque<int>& selections)
+			void Core::MoveToTop (const std::vector<int>& selections)
 			{
 				if (!selections.size ())
 					return;
 
-				for (std::deque<int>::const_iterator i = selections.begin (),
+				for (auto i = selections.begin (),
 						end = selections.end (); i != end; ++i)
 					if (*i <= 0 || !CheckValidity (*i))
 						return;
 
-				for (std::deque<int>::const_reverse_iterator i = selections.rbegin (),
+				for (auto i = selections.rbegin (),
 						end = selections.rend (); i != end; ++i)
 					MoveToTop (*i);
 			}
 
-			void Core::MoveToBottom (const std::deque<int>& selections)
+			void Core::MoveToBottom (const std::vector<int>& selections)
 			{
 				if (!selections.size ())
 					return;
 
-				for (std::deque<int>::const_iterator i = selections.begin (),
+				for (auto i = selections.begin (),
 						end = selections.end (); i != end; ++i)
 					if (*i < 0 || !CheckValidity (*i))
 						return;
 
-				for (std::deque<int>::const_iterator i = selections.begin (),
+				for (auto i = selections.begin (),
 						end = selections.end (); i != end; ++i)
 					MoveToBottom (*i);
 			}
@@ -1834,13 +1793,16 @@ namespace LeechCraft
 				setGeneralSettings ();
 			}
 
-			QList<FileInfo> Core::GetTorrentFiles () const
+			QList<FileInfo> Core::GetTorrentFiles (int idx) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				if (idx == -1)
+					idx = CurrentTorrent_;
+
+				if (!CheckValidity (idx))
 					return QList<FileInfo> ();
 
 				QList<FileInfo> result;
-				const auto& handle = Handles_.at (CurrentTorrent_).Handle_;
+				const auto& handle = Handles_.at (idx).Handle_;
 				const auto& info = handle.get_torrent_info ();
 				std::vector<libtorrent::size_type> prbytes;
 
@@ -1861,7 +1823,7 @@ namespace LeechCraft
 					fi.Path_ = i->path;
 #endif
 					fi.Size_ = i->size;
-					fi.Priority_ = Handles_.at (CurrentTorrent_).FilePriorities_.at (i - info.begin_files ());
+					fi.Priority_ = Handles_.at (idx).FilePriorities_.at (i - info.begin_files ());
 					fi.Progress_ = static_cast<float> (prbytes.at (i - info.begin_files ())) /
 						static_cast<float> (fi.Size_);
 					result << fi;

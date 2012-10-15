@@ -78,6 +78,11 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flUploadInCurrentDir ()));
+		Download_ = new QAction (tr ("Download"), this);
+		connect (Download_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flDownload ()));
 
 		Ui_.setupUi (this);
 		Ui_.FilesTree_->setModel (Model_);
@@ -99,6 +104,11 @@ namespace NetStoreManager
 						SIGNAL (gotFileUrl (const QUrl&, const QStringList&)),
 						this,
 						SLOT (handleGotFileUrl (const QUrl&, const QStringList&)));
+
+				connect (acc->GetObject (),
+						SIGNAL (gotNewItem (QList<QStandardItem*>, QStringList)),
+						this,
+						SLOT (handleGotNewItem (QList<QStandardItem*>, QStringList)));
 			}
 		}
 		if (Ui_.AccountsBox_->count ())
@@ -248,6 +258,32 @@ namespace NetStoreManager
 		return result;
 	}
 
+	QStandardItem* ManagerTab::GetItemFromId (const QStringList& id) const
+	{
+		QList<QStandardItem*> parents;
+		QList<QStandardItem*> children;
+
+		for (int i = 0; i < Model_->rowCount (); ++i)
+			parents << Model_->item (i);
+
+		while (!parents.isEmpty ())
+		{
+			for (auto parentItem : parents)
+			{
+				if (parentItem->data (ListingRole::ID) == id)
+					return parentItem;
+
+				for (int i = 0; i < parentItem->rowCount (); ++i)
+					children << parentItem->child (i);
+			}
+
+			std::swap (parents, children);
+			children.clear ();
+		}
+
+		return 0;
+	}
+
 	void ManagerTab::handleGotListing (const QList<QList<QStandardItem*>>& items)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
@@ -262,7 +298,7 @@ namespace NetStoreManager
 		}
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
 		const bool trashSupporting = sfl &&
-				sfl->GetListingOps () & ListingOp::TrashSupporing;
+				sfl->GetListingOps () & ListingOp::TrashSupporting;
 
 		QStandardItem *trashItem = new QStandardItem (Proxy_->GetIcon ("user-trash"),
 				tr ("Trash"));
@@ -291,6 +327,33 @@ namespace NetStoreManager
 		QString text = tr ("File URL %1 has been copied to the clipboard.")
 				.arg (str);
 		emit gotEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
+	}
+
+	void ManagerTab::handleGotNewItem (const QList<QStandardItem*>& item,
+			const QStringList& parentId)
+	{
+		if (item.isEmpty ())
+			return;
+
+		QStandardItem *thisItem = GetItemFromId (item [0]->data (ListingRole::ID).toStringList ());
+		if (thisItem)
+		{
+			const QModelIndex index = Model_->indexFromItem (thisItem);
+			const int columnCount = index.parent ().isValid () ?
+				thisItem->parent ()->columnCount () :
+				Model_->columnCount ();
+
+			for (int i = 0; i < columnCount; ++i)
+				Model_->setData (index.sibling (index.row (), i), item.value (i)->text ());
+		}
+		else
+		{
+			QStandardItem *parentItem = GetItemFromId (parentId);
+			if (!parentItem)
+				Model_->appendRow (item);
+			else
+				parentItem->appendRow (item);
+		}
 	}
 
 	void ManagerTab::flCopyURL ()
@@ -387,6 +450,18 @@ namespace NetStoreManager
 		emit uploadRequested (acc, filename, id);
 	}
 
+	void ManagerTab::flDownload ()
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		QModelIndex idx = Ui_.FilesTree_->currentIndex ();
+		idx = idx.sibling (idx.row (), Columns::FirstColumnNumber);
+
+		acc->Download (idx.data (ListingRole::ID).toStringList (), "");
+	}
+
 	void ManagerTab::on_AccountsBox__activated (int)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
@@ -402,7 +477,7 @@ namespace NetStoreManager
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
 		DeleteFile_->setEnabled (sfl->GetListingOps () & ListingOp::Delete);
-		MoveToTrash_->setEnabled (sfl->GetListingOps () & ListingOp::TrashSupporing);
+		MoveToTrash_->setEnabled (sfl->GetListingOps () & ListingOp::TrashSupporting);
 	}
 
 	void ManagerTab::on_Update__released ()
@@ -463,6 +538,8 @@ namespace NetStoreManager
 				menu->insertAction (MoveToTrash_, CreateDir_);
 				if (index.data (ListingRole::Directory).toBool ())
 					menu->addActions ({ menu->addSeparator (), UploadInCurrentDir_ });
+				else
+					menu->addActions ({ menu->addSeparator (), Download_ });
 			}
 		}
 		else

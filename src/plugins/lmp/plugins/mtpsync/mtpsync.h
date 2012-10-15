@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2011  Oleg Linkin
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,55 +16,68 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_POGOOGLUE_POGOOGLUE_H
-#define PLUGINS_POSHUKU_PLUGINS_POGOOGLUE_POGOOGLUE_H
+#pragma once
+
 #include <QObject>
+#include <QHash>
+#include <libmtp.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/poshukutypes.h>
-#include <interfaces/core/ihookproxy.h>
-
-class QGraphicsWebView;
-class QGraphicsSceneContextMenuEvent;
-class QWebHitTestResult;
+#include <interfaces/lmp/ilmpplugin.h>
+#include <interfaces/lmp/iunmountablesync.h>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace LMP
 {
-namespace Pogooglue
+namespace MTPSync
 {
 	class Plugin : public QObject
-					, public IInfo
-					, public IPlugin2
+				 , public IInfo
+				 , public IPlugin2
+				 , public ILMPPlugin
+				 , public IUnmountableSync
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				LeechCraft::LMP::ILMPPlugin
+				LeechCraft::LMP::IUnmountableSync)
 
-		QString SelectedText_;
+		ILMPProxy_ptr LMPProxy_;
+		UnmountableDevInfos_t Infos_;
+
+		QHash<QString, UnmountableFileInfo> OrigInfos_;
+		QList<LIBMTP_album_t*> ExistingAlbums_;
 	public:
-		void Init (ICoreProxy_ptr);
+		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
 		void Release ();
 		QByteArray GetUniqueID () const;
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
 		QSet<QByteArray> GetPluginClasses () const;
 
+		void SetLMPProxy (ILMPProxy_ptr);
+
+		QString GetSyncSystemName () const;
+		QObject* GetObject ();
+		UnmountableDevInfos_t AvailableDevices () const;
+		void SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info);
+		void Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to, const QByteArray& storageId);
+
+		void HandleTransfer (const QString&, quint64, quint64);
+	private:
+		void UploadTo (LIBMTP_mtpdevice_t*, const QByteArray&, const QString&);
+		LIBMTP_album_t* GetAlbum (LIBMTP_mtpdevice_t*, const QString&, uint32_t);
 	private slots:
-		void handleGoogleIt ();
-	public slots:
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QGraphicsWebView*,
-				QGraphicsSceneContextMenuEvent*,
-				const QWebHitTestResult&, QMenu*,
-				WebViewCtxMenuStage);
+		void pollDevices ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void availableDevicesChanged ();
+		void uploadFinished (const QString&, QFile::FileError, const QString&);
 	};
 }
 }
 }
-
-#endif // PLUGINS_POSHUKU_PLUGINS_POGOOGLUE_POGOOGLUE_H

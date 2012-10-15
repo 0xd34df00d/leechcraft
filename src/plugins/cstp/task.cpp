@@ -100,7 +100,8 @@ namespace CSTP
 				ua = "LeechCraft.CSTP/" + Core::Instance ().GetCoreProxy ()->GetVersion ();
 
 			QNetworkRequest req (URL_);
-			req.setRawHeader ("Range", QString ("bytes=%1-").arg (tof->size ()).toLatin1 ());
+			if (tof->size ())
+				req.setRawHeader ("Range", QString ("bytes=%1-").arg (tof->size ()).toLatin1 ());
 			req.setRawHeader ("User-Agent", ua.toLatin1 ());
 			req.setRawHeader ("Referer", QString (QString ("http://") + URL_.host ()).toLatin1 ());
 

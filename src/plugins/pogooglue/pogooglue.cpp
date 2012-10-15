@@ -19,19 +19,17 @@
 
 #include "pogooglue.h"
 #include <QIcon>
-#include <QMenu>
-#include <QGraphicsWebView>
+#include <QUrl>
 #include <util/util.h>
+#include <interfaces/entitytesthandleresult.h>
 
 namespace LeechCraft
-{
-namespace Poshuku
 {
 namespace Pogooglue
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Util::InstallTranslator ("poshuku_pogooglue");
+		Util::InstallTranslator ("pogooglue");
 	}
 
 	void Plugin::SecondInit ()
@@ -44,12 +42,12 @@ namespace Pogooglue
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.Poshuku.Pogooglue";
+		return "org.LeechCraft.Pogooglue";
 	}
 
 	QString Plugin::GetName () const
 	{
-		return "Poshuku Pogooglue";
+		return "Pogooglue";
 	}
 
 	QString Plugin::GetInfo () const
@@ -62,71 +60,81 @@ namespace Pogooglue
 		return QIcon ();
 	}
 
-	QSet<QByteArray> Plugin::GetPluginClasses () const
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Poshuku.Plugins/1.0";
-		return result;
+		if (e.Mime_ != "x-leechcraft/data-filter-request" ||
+				!e.Entity_.canConvert<QString> ())
+			return EntityTestHandleResult ();
+
+		if (e.Additional_.contains ("DataFilter"))
+		{
+			const auto& rawCat = e.Additional_ ["DataFilter"].toByteArray ();
+			const auto& catStr = QString::fromUtf8 (rawCat.data ());
+			const auto& vars = GetFilterVariants ();
+			if (std::find_if (vars.begin (), vars.end (),
+					[&catStr] (decltype (vars.front ()) var)
+						{ return var.ID_ == catStr; }) == vars.end ())
+				return EntityTestHandleResult ();
+		}
+
+		const auto& str = e.Entity_.toString ();
+		return str.size () < 200 && str.count ("\n") < 3 ?
+				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult ();
 	}
 
-	void Plugin::handleGoogleIt ()
+	void Plugin::Handle (Entity e)
 	{
-		Entity e;
+		const auto& str = e.Entity_.toString ();
+		GoogleIt (str);
+	}
 
-		QString withoutPercent = SelectedText_;
+	QString Plugin::GetFilterVerb () const
+	{
+		return tr ("Google it!");
+	}
+
+	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants () const
+	{
+		return { { GetUniqueID () + "_Google", "Google", "Google" } };
+	}
+
+	void Plugin::GoogleIt (QString text)
+	{
+		QString withoutPercent = text;
 		withoutPercent.remove (QRegExp ("%%??",
 				Qt::CaseInsensitive, QRegExp::Wildcard));
 		QUrl testUrl (withoutPercent);
 		QUrl result;
 		if (testUrl.toString () == withoutPercent)
-			result = QUrl::fromEncoded (SelectedText_.toUtf8 ());
+			result = QUrl::fromEncoded (text.toUtf8 ());
 		else
-			result = QUrl (SelectedText_);
+			result = QUrl (text);
 
 		if (result.scheme ().isEmpty ())
 		{
-			if (!SelectedText_.count (' ') && SelectedText_.count ('.'))
-				result = QUrl (QString ("http://") + SelectedText_);
+			if (!text.count (' ') && text.count ('.'))
+				result = QUrl (QString ("http://") + text);
 			else
 			{
-				SelectedText_.replace ('+', "%2B");
-				SelectedText_.replace (' ', '+');
+				text.replace ('+', "%2B");
+				text.replace (' ', '+');
 				QString urlStr = QString ("http://www.google.com/search?q=%2"
 						"&client=leechcraft_poshuku"
 						"&ie=utf-8"
 						"&rls=org.leechcraft:%1")
 					.arg (QLocale::system ().name ().replace ('_', '-'))
-					.arg (SelectedText_);
+					.arg (text);
 				result = QUrl::fromEncoded (urlStr.toUtf8 ());
 			}
 		}
 
-		e.Entity_ = result;
-		e.Parameters_ = LeechCraft::FromUserInitiated | LeechCraft::OnlyHandle;
-
+		const auto& e = Util::MakeEntity (result,
+				QString (),
+				LeechCraft::FromUserInitiated | LeechCraft::OnlyHandle);
 		emit gotEntity (e);
 	}
-
-	void Plugin::hookWebViewContextMenu (IHookProxy_ptr, QGraphicsWebView *view,
-			QGraphicsSceneContextMenuEvent*, const QWebHitTestResult&, QMenu *menu,
-			WebViewCtxMenuStage stage)
-	{
-		if (stage != WVSAfterSelectedText)
-			return;
-
-		SelectedText_ = view->page ()->selectedText ();
-
-		if (SelectedText_.isEmpty ())
-			return;
-
-		menu->addAction (QIcon (":/plugins/poshuku/plugins/pogooglue/resources/images/google.png"),
-				tr ("Google It!"),
-				this,
-				SLOT (handleGoogleIt ()));
-	}
-
-}
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_poshuku_pogooglue, LeechCraft::Poshuku::Pogooglue::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_pogooglue, LeechCraft::Pogooglue::Plugin);

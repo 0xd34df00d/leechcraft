@@ -64,7 +64,7 @@ namespace LMP
 				{
 					const auto& sources = Manager_->GetSources (idx);
 					std::transform (sources.begin (), sources.end (), std::back_inserter (urls),
-							[] (decltype (sources.front ()) src)
+							[] (decltype (sources.front ()) src) -> QUrl
 							{
 								switch (src.type ())
 								{
@@ -108,8 +108,19 @@ namespace LMP
 		dynamicRoot->setEditable (false);
 		Model_->appendRow (dynamicRoot);
 
-		const std::vector<PlaylistTypes> types = { PlaylistTypes::Random50 };
-		const std::vector<QString> names = { tr ("50 random tracks") };
+		const std::vector<PlaylistTypes> types =
+		{
+			PlaylistTypes::Random50,
+			PlaylistTypes::LovedTracks,
+			PlaylistTypes::BannedTracks
+		};
+		const std::vector<QString> names =
+		{
+			tr ("50 random tracks"),
+			tr ("Loved tracks"),
+			tr ("Banned tracks")
+		};
+
 		for (size_t i = 0, size = types.size (); i < size; ++i)
 		{
 			auto item = new QStandardItem (names.at (i));
@@ -157,7 +168,7 @@ namespace LMP
 	QList<Phonon::MediaSource> PlaylistManager::GetSources (const QModelIndex& index) const
 	{
 		auto col = Core::Instance ().GetLocalCollection ();
-		auto toSrcs = [col] (const QList<int>& ids)
+		auto toSrcs = [col] (const QList<int>& ids) -> QList<Phonon::MediaSource>
 		{
 			const auto& paths = col->TrackList2PathList (ids);
 			QList<Phonon::MediaSource> result;
@@ -172,6 +183,10 @@ namespace LMP
 			return Static_->GetCustomPlaylist (index.data ().toString ());
 		case PlaylistTypes::Random50:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::Random50));
+		case PlaylistTypes::LovedTracks:
+			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::LovedTracks));
+			case PlaylistTypes::BannedTracks:
+			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::BannedTracks));
 		default:
 		{
 			QList<Phonon::MediaSource> result;

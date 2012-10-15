@@ -49,6 +49,8 @@ namespace HotStreams
 		Media::IRadioStation_ptr GetRadioStation (QStandardItem* , const QString&);
 	protected slots:
 		void refreshRadios ();
+	signals:
+		void delegateEntity (const LeechCraft::Entity& entity, int*, QObject**);
 	};
 }
 }

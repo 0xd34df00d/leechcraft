@@ -24,18 +24,25 @@
 
 class IEditorWidget;
 class QToolBar;
+class QComboBox;
 
 namespace LeechCraft
 {
 namespace Blogique
 {
+	class IBlogiqueSideWidget;
 	class IAccount;
 
 	class BlogiqueWidget : public QWidget
-				,  public ITabWidget
+						,  public ITabWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
+
+		enum BlogiqueSideWidgets
+		{
+			PostOptionsWidget = 2
+		};
 
 		static QObject *S_ParentMultiTabs_;
 
@@ -48,6 +55,7 @@ namespace Blogique
 
 		QHash<int, IAccount*> Id2Account_;
 		int PrevAccountId_;
+		QList<QWidget*> SidePluginsWidgets_;
 	public:
 		BlogiqueWidget (QWidget *parent = 0);
 
@@ -60,7 +68,9 @@ namespace Blogique
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
-
+		void saveEntry ();
+		void submit ();
+		void saveSplitterPosition (int, int);
 	signals:
 		void removeTab (QWidget *tab);
 	};

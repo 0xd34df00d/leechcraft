@@ -140,7 +140,7 @@ namespace LMP
 				if (action == Qt::MoveAction)
 					Q_FOREACH (const auto& src, sources)
 					{
-						auto pred = [&src] (decltype (existingQueue.front ()) item)
+						auto pred = [&src] (decltype (existingQueue.front ()) item) -> bool
 						{
 							if (src.type () != item.type ())
 								return false;
@@ -208,10 +208,22 @@ namespace LMP
 				if (left.Title_ != right.Title_)
 					return left.Title_ < right.Title_;
 				break;
-			case SortingCriteria::FilePath:
-				if (left.LocalPath_ != right.LocalPath_)
-					return left.LocalPath_ < right.LocalPath_;
+			case SortingCriteria::DirectoryPath:
+			{
+				const auto& leftPath = QFileInfo (left.LocalPath_).dir ().absolutePath ();
+				const auto& rightPath = QFileInfo (right.LocalPath_).dir ().absolutePath ();
+				if (leftPath != rightPath)
+					return QString::localeAwareCompare (leftPath, rightPath) < 0;
 				break;
+			}
+			case SortingCriteria::FileName:
+			{
+				const auto& leftPath = QFileInfo (left.LocalPath_).fileName ();
+				const auto& rightPath = QFileInfo (right.LocalPath_).fileName ();
+				if (leftPath != rightPath)
+					return QString::localeAwareCompare (leftPath, rightPath) < 0;
+				break;
+			}
 			}
 		}
 
@@ -247,6 +259,10 @@ namespace LMP
 
 		XmlSettingsManager::Instance ().RegisterObject ("SingleTrackDisplayMask",
 				this, "refillPlaylist");
+
+		const auto& criteriaVar = XmlSettingsManager::Instance ().property ("SortingCriteria");
+		if (!criteriaVar.isNull ())
+			Sorter_.Criteria_ = LoadCriteria (criteriaVar);
 
 		connect (Source_,
 				SIGNAL (finished ()),
@@ -305,11 +321,18 @@ namespace LMP
 		emit playModeChanged (PlayMode_);
 	}
 
-	void Player::SetSortingCriteria (const QList<Player::SortingCriteria>& criteria)
+	QList< SortingCriteria > Player::GetSortingCriteria () const
+	{
+		return Sorter_.Criteria_;
+	}
+
+	void Player::SetSortingCriteria (const QList<SortingCriteria>& criteria)
 	{
 		Sorter_.Criteria_ = criteria;
 
 		AddToPlaylistModel (QList<Phonon::MediaSource> (), true);
+
+		XmlSettingsManager::Instance ().setProperty ("SortingCriteria", SaveCriteria (criteria));
 	}
 
 	namespace
@@ -849,7 +872,7 @@ namespace LMP
 		QMetaObject::invokeMethod (PlaylistModel_, "modelAboutToBeReset");
 		PlaylistModel_->blockSignals (true);
 
-		QPair<QString, QString> prevAlbumRoot;
+		QString prevAlbumRoot;
 
 		Q_FOREACH (const auto& sourcePair, sources)
 		{
@@ -882,13 +905,15 @@ namespace LMP
 			{
 				const auto& info = sourcePair.second;
 
-				const auto& albumID = qMakePair (info.Artist_, info.Album_);
+				const auto& albumID = info.Album_;
 				FillItem (item, info);
 				if (albumID != prevAlbumRoot ||
 						AlbumRoots_ [albumID].isEmpty ())
 				{
 					PlaylistModel_->appendRow (item);
-					AlbumRoots_ [albumID] << item;
+
+					if (!info.Album_.simplified ().isEmpty ())
+						AlbumRoots_ [albumID] << item;
 				}
 				else if (AlbumRoots_ [albumID].last ()->data (Role::IsAlbum).toBool ())
 				{
@@ -1077,8 +1102,6 @@ namespace LMP
 		const auto& source = Source_->currentSource ();
 		const auto& isUrl = source.type () == Phonon::MediaSource::Stream ||
 				(source.type () == Phonon::MediaSource::Url && source.url ().scheme () != "file");
-		qDebug () << Q_FUNC_INFO << isUrl << CurrentStation_.get () << !Items_.contains (source);
-		qDebug () << Source_->metaData ();
 		if (!isUrl ||
 				CurrentStation_ ||
 				!Items_.contains (source))

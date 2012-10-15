@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>438</width>
-    <height>147</height>
+    <height>176</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -56,46 +56,26 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="TranscodingFormat_">
-        <item>
-         <property name="text">
-          <string notr="true">ogg</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string notr="true">mp3</string>
-         </property>
-        </item>
-       </widget>
+       <widget class="QComboBox" name="TranscodingFormat_"/>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Quality:</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Threads:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="2" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QSlider" name="QualitySlider_">
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>12</number>
-          </property>
-          <property name="value">
-           <number>8</number>
-          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -108,18 +88,24 @@
          </widget>
         </item>
         <item>
-         <widget class="QLCDNumber" name="QualityDisplay_">
-          <property name="numDigits">
-           <number>3</number>
+         <widget class="QLabel" name="QualityDisplay_">
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
           </property>
-          <property name="intValue" stdset="0">
-           <number>8</number>
+          <property name="lineWidth">
+           <number>1</number>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="3" column="1">
+      <item row="4" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QSlider" name="ThreadsSlider_">
@@ -149,7 +135,24 @@
         </item>
        </layout>
       </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Bitrate:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="BitrateTypeBox_"/>
+      </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="StatusLabel_">
+     <property name="text">
+      <string/>
+     </property>
     </widget>
    </item>
   </layout>
@@ -157,34 +160,18 @@
  <resources/>
  <connections>
   <connection>
-   <sender>QualitySlider_</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>QualityDisplay_</receiver>
-   <slot>display(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>290</x>
-     <y>80</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>403</x>
-     <y>85</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>ThreadsSlider_</sender>
    <signal>valueChanged(int)</signal>
    <receiver>ThreadsDisplay_</receiver>
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>221</x>
-     <y>122</y>
+     <x>284</x>
+     <y>171</y>
     </hint>
     <hint type="destinationlabel">
-     <x>398</x>
-     <y>122</y>
+     <x>433</x>
+     <y>171</y>
     </hint>
    </hints>
   </connection>

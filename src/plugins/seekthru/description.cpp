@@ -35,7 +35,7 @@ namespace LeechCraft
 					<< d.PageOffset_;
 				return out;
 			}
-			
+
 			QDataStream& operator>> (QDataStream& in, UrlDescription& d)
 			{
 				quint8 version = 0;
@@ -48,7 +48,43 @@ namespace LeechCraft
 					>> d.PageOffset_;
 				return in;
 			}
-			
+
+			QUrl UrlDescription::MakeUrl (const QString& searchStr, const QHash<QString, QVariant>& params) const
+			{
+				QUrl url (Template_);
+				QList<QPair<QString, QString>> items = url.queryItems (),
+					newItems;
+				QPair<QString, QString> item;
+				Q_FOREACH (item, items)
+				{
+					// Currently skips optional parameters
+					if (item.second.size () >= 3 &&
+							item.second.at (0) == '{' &&
+							item.second.at (item.second.size () - 1) == '}' &&
+							item.second.at (item.second.size () - 2) == '?')
+						continue;
+
+					if (item.second == "{searchTerms}")
+						item.second = searchStr;
+					else if (item.second.size () > 2 &&
+							*item.second.begin () == '{' &&
+							*(item.second.end () - 1) == '}')
+					{
+						QString key = item.second.mid (1,
+								item.second.size () - 2);
+						// To the correct string if Params_ has this key or to
+						// empty string otherwise.
+						item.second = params [key].toString ();
+					}
+					else
+						item.second = "";
+
+					newItems << item;
+				}
+				url.setQueryItems (newItems);
+				return url;
+			}
+
 			QDataStream& operator<< (QDataStream& out, const QueryDescription& d)
 			{
 				quint8 version = 1;
@@ -65,7 +101,7 @@ namespace LeechCraft
 					<< d.OutputEncoding_;
 				return out;
 			}
-			
+
 			QDataStream& operator>> (QDataStream& in, QueryDescription& d)
 			{
 				quint8 version = 0;
@@ -86,7 +122,7 @@ namespace LeechCraft
 					>> d.OutputEncoding_;
 				return in;
 			}
-			
+
 			QDataStream& operator<< (QDataStream& out, const Description& d)
 			{
 				quint8 version = 1;
@@ -106,7 +142,7 @@ namespace LeechCraft
 					<< d.OutputEncodings_;
 				return out;
 			}
-			
+
 			QDataStream& operator>> (QDataStream& in, Description& d)
 			{
 				quint8 version = 0;
@@ -130,7 +166,7 @@ namespace LeechCraft
 					>> d.OutputEncodings_;
 				return in;
 			}
-			
+
 		};
 	};
 };

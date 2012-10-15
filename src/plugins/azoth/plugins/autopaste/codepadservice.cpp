@@ -53,7 +53,6 @@ namespace Autopaste
 			run = true;
 			break;
 		case Highlight::XML:
-			highlight = "XML";
 			break;
 		case Highlight::Haskell:
 			highlight = "Haskell";
@@ -61,6 +60,10 @@ namespace Autopaste
 			break;
 		case Highlight::Java:
 			highlight = "Java";
+			run = true;
+			break;
+		case Highlight::Python:
+			highlight = "Python";
 			run = true;
 			break;
 		case Highlight::None:
@@ -77,20 +80,6 @@ namespace Autopaste
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 
 		InitReply (params.NAM_->post (req, data));
-	}
-
-	void CodepadService::handleMetadata ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a QNetworkReply:"
-					<< sender ();
-			return;
-		}
-
-		FeedURL (reply->header (QNetworkRequest::LocationHeader).toString ());
 	}
 }
 }

@@ -23,6 +23,7 @@
 #include <phonon/path.h>
 #include <interfaces/media/iradiostation.h>
 #include "mediainfo.h"
+#include "sortingcriteria.h"
 
 class QModelIndex;
 class QStandardItem;
@@ -54,7 +55,7 @@ namespace LMP
 
 		QList<Phonon::MediaSource> CurrentQueue_;
 		QHash<Phonon::MediaSource, QStandardItem*> Items_;
-		QHash<QPair<QString, QString>, QList<QStandardItem*>> AlbumRoots_;
+		QHash<QString, QList<QStandardItem*>> AlbumRoots_;
 
 		Phonon::MediaSource CurrentStopSource_;
 
@@ -71,16 +72,6 @@ namespace LMP
 			RepeatTrack,
 			RepeatAlbum,
 			RepeatWhole
-		};
-
-		enum class SortingCriteria
-		{
-			Artist,
-			Year,
-			Album,
-			TrackNumber,
-			TrackTitle,
-			FilePath
 		};
 	private:
 		PlayMode PlayMode_;
@@ -113,6 +104,7 @@ namespace LMP
 		PlayMode GetPlayMode () const;
 		void SetPlayMode (PlayMode);
 
+		QList<SortingCriteria> GetSortingCriteria () const;
 		void SetSortingCriteria (const QList<SortingCriteria>&);
 
 		void Enqueue (const QStringList&, bool = true);

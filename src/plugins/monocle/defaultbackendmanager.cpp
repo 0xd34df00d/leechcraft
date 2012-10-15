@@ -102,7 +102,7 @@ namespace Monocle
 		set.removeAll (QByteArray ());
 
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
-		auto getName = [pm] (const QByteArray& id)
+		auto getName = [pm] (const QByteArray& id) -> QString
 		{
 			auto plugin = pm->GetPluginByID (id);
 			return plugin ? qobject_cast<IInfo*> (plugin)->GetName () : QString ();

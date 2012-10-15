@@ -16,7 +16,7 @@ IF (MSVC)
 	SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 	INCLUDE (LibHelperWin32Macros)
 ENDIF (MSVC)
-IF (UNIX)
+IF (UNIX OR (WIN32 AND MINGW))
 	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-strict-aliasing -std=c++0x")
 	IF (NOT APPLE)
 		SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--as-needed")
@@ -28,10 +28,10 @@ IF (UNIX)
 	IF (USE_PIPE)
 		SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe")
 	ENDIF (USE_PIPE)
-ENDIF (UNIX)
-IF (WIN32 AND NOT MSVC)
-	SET (CMAKE_CXX_FLAGS "-Wall")
-ENDIF (WIN32 AND NOT MSVC)
+	IF (WIN32 AND MINGW)
+		SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
+	ENDIF (WIN32 AND MINGW)
+ENDIF (UNIX OR (WIN32 AND MINGW))
 
 IF (GPTOOLS_CPU AND GPTOOLS_MEM)
 	SET (GPTOOLS_CPU FALSE)
@@ -133,6 +133,7 @@ OPTION (ENABLE_LMP "Build LMP, the LeechCraft Music Player" ${WITH_PLUGINS})
 OPTION (ENABLE_NETWORKMONITOR "Build NetworkMonitor, the monitor for HTTP requests" ${WITH_PLUGINS})
 OPTION (ENABLE_NEWLIFE "Build NewLife, the settings importer" ${WITH_PLUGINS})
 OPTION (ENABLE_PINTAB "Build Pintab for pinning important tabs" ${WITH_PLUGINS})
+OPTION (ENABLE_POGOOGLUE "Build Pogooglue, Google search client" ${WITH_PLUGINS})
 OPTION (ENABLE_POSHUKU "Build Poshuku, the WWW Browser" ${WITH_PLUGINS})
 OPTION (ENABLE_SECMAN "Build SecMan, security & personal data manager" ${WITH_PLUGINS})
 OPTION (ENABLE_SEEKTHRU "Build SeekThru, the client for the OpenSearch-aware web sites" ${WITH_PLUGINS})
@@ -460,6 +461,10 @@ IF (ENABLE_PINTAB)
 	ADD_SUBDIRECTORY (plugins/pintab)
 ENDIF (ENABLE_PINTAB)
 
+IF (ENABLE_POGOOGLUE)
+	ADD_SUBDIRECTORY (plugins/pogooglue)
+ENDIF (ENABLE_POGOOGLUE)
+
 IF (ENABLE_OTLOZHU)
 	ADD_SUBDIRECTORY (plugins/otlozhu)
 ENDIF (ENABLE_OTLOZHU)
@@ -560,6 +565,7 @@ SET (SRCS
 	coreplugin2manager.cpp
 	dockmanager.cpp
 	acceptlangwidget.cpp
+	entitymanager.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -602,6 +608,7 @@ SET (HEADERS
 	coreplugin2manager.h
 	dockmanager.h
 	acceptlangwidget.h
+	entitymanager.h
 	interfaces/structures.h
 	)
 SET (FORMS
@@ -720,14 +727,14 @@ INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcra
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft.cmake DESTINATION ${LC_SHARE_DEST}/cmake/)
 INSTALL (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
 
-INSTALL (DIRECTORY share/leechcraft DESTINATION ${LC_SHARE_DEST})
+INSTALL (DIRECTORY share/leechcraft/ DESTINATION ${LC_SHARE_DEST})
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)
-IF (UNIX)
+IF (UNIX AND NOT APPLE)
 	INSTALL (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)
 	INSTALL (FILES data/leechcraft.1.gz DESTINATION share/man/man1)
 	INSTALL (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS
 		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
 		WORLD_EXECUTE WORLD_READ)
-ENDIF (UNIX)
+ENDIF (UNIX AND NOT APPLE)

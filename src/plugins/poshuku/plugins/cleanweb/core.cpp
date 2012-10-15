@@ -294,35 +294,10 @@ namespace CleanWeb
 
 	void Core::HandleInitialLayout (QWebPage*, QWebFrame *frame)
 	{
-		const QUrl& url = frame->url ();
-		const QString& urlStr = url.toString ();
-		const auto& urlUtf8 = urlStr.toUtf8 ();
-		const QString& cinUrlStr = urlStr.toLower ();
-		const auto& cinUrlUtf8 = cinUrlStr.toUtf8 ();
-
-		const QString& domain = url.host ();
-
-		QList<Filter> allFilters = Filters_;
-		allFilters << UserFilters_->GetFilter ();
-		int numItems = 0;
-		Q_FOREACH (const Filter& filter, allFilters)
-			Q_FOREACH (const auto& item, filter.Filters_)
-			{
-				if (item.Option_.HideSelector_.isEmpty ())
-					continue;
-
-				const auto& opt = item.Option_;
-				const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
-				const auto& utf8 = opt.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
-				if (!item.OrigString_.isEmpty () && !Matches (item, url, utf8, domain))
-					continue;
-
-				Q_FOREACH (auto elem, frame->findAllElements (item.Option_.HideSelector_))
-					RemoveElem (elem);
-
-				if (!(++numItems % 100))
-					qApp->processEvents ();
-			}
+		QMetaObject::invokeMethod (this,
+				"handleFrameLayout",
+				Qt::QueuedConnection,
+				Q_ARG (QPointer<QWebFrame>, QPointer<QWebFrame> (frame)));
 	}
 
 	QNetworkReply* Core::Hook (IHookProxy_ptr hook,
@@ -443,6 +418,30 @@ namespace CleanWeb
 		if (!req.hasRawHeader ("referer"))
 			return false;
 
+		auto acceptList = req.rawHeader ("Accept").split (',');
+		for (auto& item : acceptList)
+		{
+			const int pos = item.indexOf (';');
+			if (pos > 0)
+				item = item.left (pos);
+		}
+		acceptList.removeAll ("*/*");
+		FilterOption::MatchObjects objs = FilterOption::MatchObject::All;
+		if (!acceptList.isEmpty ())
+		{
+			auto find = [&acceptList] (std::function<bool (QByteArray)> f)
+			{
+				return std::find_if (acceptList.begin (), acceptList.end (), f) != acceptList.end ();
+			};
+
+			if (find ([] (const QByteArray& arr) { return arr.startsWith ("image/"); }))
+				objs |= FilterOption::MatchObject::Image;
+			if (find ([] (const QByteArray& arr) { return arr == "text/html" || arr == "application/xhtml+xml" || arr == "application/xml"; }))
+				objs |= FilterOption::MatchObject::Subdocument;
+			if (find ([] (const QByteArray& arr) { return arr == "text/css"; }))
+				objs |= FilterOption::MatchObject::CSS;
+		}
+
 		const QUrl& url = req.url ();
 		const QString& urlStr = url.toString ();
 		const auto& urlUtf8 = urlStr.toUtf8 ();
@@ -451,7 +450,7 @@ namespace CleanWeb
 
 		const QString& domain = url.host ();
 		const auto& domainUtf8 = domain.toUtf8 ();
-		const bool isForeign = !req.rawHeader ("referer").contains (domainUtf8);
+		const bool isForeign = !req.rawHeader ("Referer").contains (domainUtf8);
 
 		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
@@ -472,6 +471,11 @@ namespace CleanWeb
 
 				const auto& opt = item.Option_;
 				if (opt.AbortForeign_ && isForeign)
+					continue;
+
+				if (opt.MatchObjects_ != FilterOption::MatchObject::All &&
+						objs != FilterOption::MatchObject::All &&
+						!(objs & opt.MatchObjects_))
 					continue;
 
 				const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
@@ -549,6 +553,16 @@ namespace CleanWeb
 
 	bool Core::Matches (const FilterItem& item, const QString& urlStr, const QByteArray& urlUtf8, const QString& domain) const
 	{
+		if (item.Option_.MatchObjects_ != FilterOption::MatchObject::All)
+		{
+			if (!(item.Option_.MatchObjects_ & FilterOption::MatchObject::CSS) &&
+					!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Image) &&
+					!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Script) &&
+					!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Object) &&
+					!(item.Option_.MatchObjects_ & FilterOption::MatchObject::ObjSubrequest))
+				return false;
+		}
+
 		const auto& opt = item.Option_;
 		if (!opt.NotDomains_.isEmpty ())
 		{
@@ -843,6 +857,56 @@ namespace CleanWeb
 			return;
 
 		PendingJobs_.remove (id);
+	}
+
+	void Core::handleFrameLayout (QPointer<QWebFrame> frame)
+	{
+		const QUrl& frameUrl = frame->url ();
+		const QString& urlStr = frameUrl.toString ();
+		const auto& urlUtf8 = urlStr.toUtf8 ();
+		const QString& cinUrlStr = urlStr.toLower ();
+		const auto& cinUrlUtf8 = cinUrlStr.toUtf8 ();
+
+		const QString& domain = frameUrl.host ();
+
+		QList<Filter> allFilters = Filters_;
+		allFilters << UserFilters_->GetFilter ();
+		int numItems = 0;
+		QList<QWebElement> elems;
+		Q_FOREACH (const Filter& filter, allFilters)
+			Q_FOREACH (const auto& item, filter.Filters_)
+			{
+				if (item.Option_.HideSelector_.isEmpty ())
+					continue;
+
+				const auto& opt = item.Option_;
+				const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
+				const auto& utf8 = opt.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
+				if (!item.OrigString_.isEmpty () && !Matches (item, url, utf8, domain))
+					continue;
+
+				const auto& matchingElems = frame->findAllElements (item.Option_.HideSelector_);
+				if (matchingElems.count ())
+					qDebug () << "removing"
+							<< matchingElems.count ()
+							<< "elems for"
+							<< item.Option_.HideSelector_
+							<< frameUrl;
+
+				Q_FOREACH (auto elem, matchingElems)
+					RemoveElem (elem);
+
+				if (!(++numItems % 100))
+				{
+					qApp->processEvents ();
+					if (!frame)
+					{
+						qDebug () << Q_FUNC_INFO
+								<< "frame destroyed in processEvents(), stopping";
+						return;
+					}
+				}
+			}
 	}
 
 	void Core::delayedRemoveElements (QPointer<QWebFrame> frame, const QString& url)

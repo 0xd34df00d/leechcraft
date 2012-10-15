@@ -10,7 +10,11 @@ INCLUDE_DIRECTORIES (${LMP_INCLUDE_DIR}
 
 SET (DUMBSYNC_SRCS
 	dumbsync.cpp
+	xmlsettingsmanager.cpp
 	)
+
+CreateTrs ("lmp_dumbsync" "en;ru_RU" DUMBSYNC_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("lmp_dumbsync" "en;ru_RU" "${DUMBSYNC_SRCS}" "${DUMBSYNC_FORMS}" "lmpdumbsyncsettings.xml")
 
 ADD_LIBRARY (leechcraft_lmp_dumbsync SHARED
 	${DUMBSYNC_COMPILED_TRANSLATIONS}
@@ -22,3 +26,5 @@ TARGET_LINK_LIBRARIES (leechcraft_lmp_dumbsync
 	)
 
 INSTALL (TARGETS leechcraft_lmp_dumbsync DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES lmpdumbsyncsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+INSTALL (FILES ${DUMBSYNC_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

@@ -30,6 +30,7 @@
 #include <interfaces/itaggablejobs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/istartupwizard.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavediaginfo.h>
@@ -43,14 +44,10 @@ class QToolBar;
 class QComboBox;
 class QTabWidget;
 class QTranslator;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class ShortcutManager;
-	}
-
 	namespace Plugins
 	{
 		namespace BitTorrent
@@ -58,6 +55,7 @@ namespace LeechCraft
 			class AddTorrent;
 			class RepresentationModel;
 			class SpeedSelectorAction;
+			class TorrentTab;
 
 			class TorrentPlugin : public QObject
 								, public IInfo
@@ -68,6 +66,7 @@ namespace LeechCraft
 								, public ITaggableJobs
 								, public IHaveSettings
 								, public IHaveShortcuts
+								, public IHaveTabs
 								, public IStartupWizard
 								, public IActionsExporter
 								, public IHaveDiagInfo
@@ -82,6 +81,7 @@ namespace LeechCraft
 						ITaggableJobs
 						IHaveSettings
 						IHaveShortcuts
+						IHaveTabs
 						IStartupWizard
 						IActionsExporter
 						IHaveDiagInfo);
@@ -112,12 +112,9 @@ namespace LeechCraft
 					MakeMagnetLink_,
 					Import_,
 					Export_;
-				std::unique_ptr<QTranslator> Translator_;
 
 				SpeedSelectorAction *DownSelectorAction_,
 						*UpSelectorAction_;
-
-				Util::ShortcutManager *ShortcutMgr_;
 
 				enum
 				{
@@ -140,18 +137,19 @@ namespace LeechCraft
 					EAMakeMagnetLink_,
 					EAIPFilter_
 				};
+
+				TabClassInfo TabTC_;
+				TorrentTab *TorrentTab_;
+
+				QSortFilterProxyModel *ReprProxy_;
 			public:
 				// IInfo
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
-				virtual ~TorrentPlugin ();
 				QByteArray GetUniqueID () const;
 				QString GetName () const;
 				QString GetInfo () const;
 				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
 				void Release ();
 				QIcon GetIcon () const;
 
@@ -181,11 +179,15 @@ namespace LeechCraft
 				void SetTags (int, const QStringList&);
 
 				// IHaveSettings
-				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 				// IHaveShortcuts
 				void SetShortcut (const QString&, const QKeySequences_t&);
 				QMap<QString, ActionInfo> GetActionInfo () const;
+
+				// IHaveTabs
+				TabClasses_t GetTabClasses () const;
+				void TabOpenRequested (const QByteArray&);
 
 				// IStartupWizard
 				QList<QWizardPage*> GetWizardPages () const;
@@ -226,6 +228,13 @@ namespace LeechCraft
 				void gotEntity (const LeechCraft::Entity&);
 				void jobFinished (int);
 				void jobRemoved (int);
+
+				void addNewTab (const QString&, QWidget*);
+				void changeTabIcon (QWidget*, const QIcon&);
+				void changeTabName (QWidget*, const QString&);
+				void raiseTab (QWidget*);
+				void removeTab (QWidget*);
+				void statusBarChanged (QWidget*, const QString&);
 
 				void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 			};

@@ -54,6 +54,11 @@ struct EntityTestHandleResult;
 
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class ShortcutManager;
+	}
+
 	namespace Plugins
 	{
 		namespace BitTorrent
@@ -124,11 +129,7 @@ namespace LeechCraft
 				HandleDict_t Handles_;
 				QList<QString> Headers_;
 				mutable int CurrentTorrent_;
-				std::unique_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
-				std::shared_ptr<PiecesModel> PiecesModel_;
-				std::shared_ptr<PeersModel> PeersModel_;
-				std::shared_ptr<TorrentFilesModel> TorrentFilesModel_;
-				std::shared_ptr<QStandardItemModel> WebSeedsModel_;
+				std::shared_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
 				std::shared_ptr<LiveStreamManager> LiveStreamManager_;
 				QString ExternalAddress_;
 				bool SaveScheduled_;
@@ -136,6 +137,7 @@ namespace LeechCraft
 				QWidget *TabWidget_;
 				ICoreProxy_ptr Proxy_;
 				QMenu *Menu_;
+				Util::ShortcutManager *ShortcutMgr_;
 
 				const QIcon TorrentIcon_;
 
@@ -143,24 +145,32 @@ namespace LeechCraft
 			public:
 				enum Columns
 				{
-					ColumnName = 0
-					, ColumnState
-					, ColumnProgress  // percentage, Downloaded of Size
+					ColumnName,
+					ColumnState,
+					ColumnProgress,  // percentage, Downloaded of Size
+					ColumnDownSpeed,
+					ColumnUpSpeed,
+					ColumnLeechers,
+					ColumnSeeders
 				};
 				enum AddType
 				{
-					Started
-					, Paused
+					Started,
+					Paused
 				};
 				enum SettingsPreset
 				{
-					SPDefault
-					, SPMinMemoryUsage
-					, SPHighPerfSeed
+					SPDefault,
+					SPMinMemoryUsage,
+					SPHighPerfSeed
+				};
+				enum Roles
+				{
+					FullLengthText = Qt::UserRole + 1
 				};
 
 				static Core* Instance ();
-				virtual ~Core ();
+
 				void SetWidgets (QToolBar*, QWidget*);
 				void SetMenu (QMenu*);
 				void DoDelayedInit ();
@@ -169,20 +179,15 @@ namespace LeechCraft
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 
+				Util::ShortcutManager* GetShortcutManager () const;
+
 				EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
 				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
-				PiecesModel* GetPiecesModel ();
-				void ClearPieces ();
-				void UpdatePieces ();
-				PeersModel* GetPeersModel ();
-				QAbstractItemModel* GetWebSeedsModel ();
-				void ClearPeers ();
-				void UpdatePeers ();
-				TorrentFilesModel* GetTorrentFilesModel ();
-				void ClearFiles ();
-				void UpdateFiles ();
-				void ResetFiles ();
+				PiecesModel* GetPiecesModel (int);
+				PeersModel* GetPeersModel (int);
+				QAbstractItemModel* GetWebSeedsModel (int);
+				TorrentFilesModel* GetTorrentFilesModel (int);
 
 				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
@@ -193,15 +198,17 @@ namespace LeechCraft
 				virtual QModelIndex parent (const QModelIndex&) const;
 				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
+				libtorrent::torrent_handle GetTorrentHandle (int) const;
+
 				libtorrent::torrent_info GetTorrentInfo (const QString&);
 				libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
 				bool IsValidTorrent (const QByteArray&) const;
-				std::unique_ptr<TorrentInfo> GetTorrentStats () const;
+				std::unique_ptr<TorrentInfo> GetTorrentStats (int) const;
 				libtorrent::session_status GetOverallStats () const;
 				void GetPerTracker (pertrackerstats_t&) const;
 				int GetListenPort () const;
 				libtorrent::cache_status GetCacheStats () const;
-				QList<PeerInfo> GetPeers () const;
+				QList<PeerInfo> GetPeers (int = -1) const;
 				QStringList GetTagsForIndex (int = -1) const;
 				void UpdateTags (const QStringList&, int = -1);
 				/** @brief Adds the  given magnet link to the queue.
@@ -257,31 +264,35 @@ namespace LeechCraft
 				int GetMaxDownloadingTorrents () const;
 				int GetMaxUploadingTorrents () const;
 				double GetDesiredRating () const;
-				void SetTorrentDownloadRate (int);
-				void SetTorrentUploadRate (int);
-				void SetTorrentDesiredRating (double);
-				int GetTorrentDownloadRate () const;
-				int GetTorrentUploadRate () const;
-				double GetTorrentDesiredRating () const;
-				void AddPeer (const QString&, int);
-				void AddWebSeed (const QString&, bool);
-				void RemoveWebSeed (const QString&, bool);
-				void SetFilePriority (int, int);
-				void SetFilename (int, const QString&);
+				void SetTorrentDownloadRate (int, int);
+				void SetTorrentUploadRate (int, int);
+				void SetTorrentDesiredRating (double, int);
+				int GetTorrentDownloadRate (int) const;
+				int GetTorrentUploadRate (int) const;
+				double GetTorrentDesiredRating (int) const;
+				void AddPeer (const QString&, int, int);
+				void AddWebSeed (const QString&, bool, int);
+				void RemoveWebSeed (const QString&, bool, int);
+				void SetFilePriority (int, int, int);
+				void SetFilename (int, const QString&, int);
+
 				std::vector<libtorrent::announce_entry> GetTrackers (const boost::optional<int>& = boost::optional<int> ()) const;
 				void SetTrackers (const std::vector<libtorrent::announce_entry>&,
 						const boost::optional<int>& = boost::optional<int> ());
-				QString GetMagnetLink () const;
-				QString GetTorrentDirectory () const;
-				bool MoveTorrentFiles (const QString&);
+
+				QString GetMagnetLink (int) const;
+
+				QString GetTorrentDirectory (int) const;
+				bool MoveTorrentFiles (const QString&, int);
+
 				void SetCurrentTorrent (int);
 				int GetCurrentTorrent () const;
-				bool IsTorrentManaged () const;
-				void SetTorrentManaged (bool);
-				bool IsTorrentSequentialDownload () const;
-				void SetTorrentSequentialDownload (bool);
-				bool IsTorrentSuperSeeding () const;
-				void SetTorrentSuperSeeding (bool);
+				bool IsTorrentManaged (int) const;
+				void SetTorrentManaged (bool, int);
+				bool IsTorrentSequentialDownload (int) const;
+				void SetTorrentSequentialDownload (bool, int);
+				bool IsTorrentSuperSeeding (int) const;
+				void SetTorrentSuperSeeding (bool, int);
 				void MakeTorrent (const NewTorrentParams&) const;
 				void LogMessage (const QString&);
 				void SetExternalAddress (const QString&);
@@ -299,14 +310,15 @@ namespace LeechCraft
 				void FileFinished (const libtorrent::torrent_handle&, int);
 				void PieceRead (const libtorrent::read_piece_alert&);
 
-				void MoveUp (const std::deque<int>&);
-				void MoveDown (const std::deque<int>&);
-				void MoveToTop (const std::deque<int>&);
-				void MoveToBottom (const std::deque<int>&);
+				void MoveUp (const std::vector<int>&);
+				void MoveDown (const std::vector<int>&);
+				void MoveToTop (const std::vector<int>&);
+				void MoveToBottom (const std::vector<int>&);
 
 				void SetPreset (SettingsPreset);
+
+				QList<FileInfo> GetTorrentFiles (int = -1) const;
 			private:
-				QList<FileInfo> GetTorrentFiles () const;
 				void MoveToTop (int);
 				void MoveToBottom (int);
 				QString GetStringForState (libtorrent::torrent_status::state_t) const;
@@ -317,11 +329,7 @@ namespace LeechCraft
 						bool,
 						bool);
 				void HandleSingleFinished (int);
-				int GetCurrentlyDownloading () const;
-				int GetCurrentlySeeding () const;
 				void ManipulateSettings ();
-				void CheckDownloadQueue ();
-				void CheckUploadQueue ();
 				/** Returns human-readable list of tags for the given torrent.
 				 *
 				 * @param[in] torrent The ID of the torrent.

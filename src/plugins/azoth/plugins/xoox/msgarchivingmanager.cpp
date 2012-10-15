@@ -300,7 +300,7 @@ namespace Xoox
 		handleMeth (localMeth);
 		handleMeth (manualMeth);
 
-		auto handleSetting = [] (const QDomElement& elem)
+		auto handleSetting = [] (const QDomElement& elem) -> MsgArchSetting
 		{
 			MsgArchSetting setting =
 			{

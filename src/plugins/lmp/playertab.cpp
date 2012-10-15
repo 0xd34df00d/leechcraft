@@ -18,6 +18,7 @@
 
 #include "playertab.h"
 #include <algorithm>
+#include <functional>
 #include <QToolBar>
 #include <QFileDialog>
 #include <QStandardItemModel>
@@ -419,6 +420,14 @@ namespace LMP
 				SLOT (showCollectionTrackProps ()));
 		Ui_.CollectionTree_->addAction (CollectionShowTrackProps_);
 
+		CollectionShowAlbumArt_ = new QAction (tr ("Show album art"), Ui_.CollectionTree_);
+		CollectionShowAlbumArt_->setProperty ("ActionIcon", "media-optical");
+		connect (CollectionShowAlbumArt_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showCollectionAlbumArt ()));
+		Ui_.CollectionTree_->addAction (CollectionShowAlbumArt_);
+
 		Ui_.CollectionTree_->addAction (Util::CreateSeparator (Ui_.CollectionTree_));
 
 		CollectionRemove_ = new QAction (tr ("Remove from collection..."), Ui_.CollectionTree_);
@@ -634,7 +643,7 @@ namespace LMP
 
 	void PlayerTab::handleCurrentPlayTime (qint64 time)
 	{
-		auto niceTime = [] (qint64 time)
+		auto niceTime = [] (qint64 time) -> QString
 		{
 			if (!time)
 				return QString ();
@@ -650,29 +659,39 @@ namespace LMP
 		RemainingTime_->setText (remaining < 0 ? tr ("unknown") : niceTime (remaining));
 	}
 
+	namespace
+	{
+		void AddToLovedBanned (const QString& trackPath,
+				LocalCollection::StaticRating rating,
+				std::function<void (Media::IAudioScrobbler*)> marker)
+		{
+			const int trackId = Core::Instance ().GetLocalCollection ()->FindTrack (trackPath);
+			if (trackId >= 0)
+				Core::Instance ().GetLocalCollection ()->AddTrackTo (trackId, rating);
+
+			if (!XmlSettingsManager::Instance ()
+					.property ("EnableScrobbling").toBool ())
+				return;
+
+			auto scrobblers = Core::Instance ().GetProxy ()->
+						GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
+			std::for_each (scrobblers.begin (), scrobblers.end (),
+					[marker] (decltype (scrobblers.front ()) s) { marker (s); });
+		}
+	}
+
 	void PlayerTab::handleLoveTrack ()
 	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("EnableScrobbling").toBool ())
-			return;
-
-		auto scrobblers = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
-		std::for_each (scrobblers.begin (), scrobblers.end (),
-				[] (decltype (scrobblers.front ()) s) { s->LoveCurrentTrack (); });
+		AddToLovedBanned (Player_->GetCurrentMediaInfo ().LocalPath_,
+				LocalCollection::StaticRating::Loved,
+				[] (Media::IAudioScrobbler *s) { s->LoveCurrentTrack (); });
 	}
 
 	void PlayerTab::handleBanTrack ()
 	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("EnableScrobbling").toBool ())
-			return;
-
-		auto scrobblers = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetAllCastableTo<Media::IAudioScrobbler*> ();
-		std::for_each (scrobblers.begin (), scrobblers.end (),
-				[] (decltype (scrobblers.front ()) s) { s->BanCurrentTrack (); });
-		Player_->nextTrack ();
+		AddToLovedBanned (Player_->GetCurrentMediaInfo ().LocalPath_,
+				LocalCollection::StaticRating::Banned,
+				[] (Media::IAudioScrobbler *s) { s->BanCurrentTrack (); });
 	}
 
 	void PlayerTab::handleSimilarError ()
@@ -716,11 +735,21 @@ namespace LMP
 	void PlayerTab::showCollectionTrackProps ()
 	{
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
-		const auto& info = index.data (LocalCollection::Role::TrackPath).value<QString> ();
+		const auto& info = index.data (LocalCollection::Role::TrackPath).toString ();
 		if (info.isEmpty ())
 			return;
 
 		AudioPropsWidget::MakeDialog ()->SetProps (info);
+	}
+
+	void PlayerTab::showCollectionAlbumArt ()
+	{
+		const auto& index = Ui_.CollectionTree_->currentIndex ();
+		const auto& path = index.data (LocalCollection::Role::AlbumArt).toString ();
+		if (path.isEmpty ())
+			return;
+
+		ShowAlbumArt (path, QCursor::pos ());
 	}
 
 	namespace
@@ -805,6 +834,7 @@ namespace LMP
 	{
 		const int nodeType = index.data (LocalCollection::Role::Node).value<int> ();
 		CollectionShowTrackProps_->setEnabled (nodeType == LocalCollection::NodeType::Track);
+		CollectionShowAlbumArt_->setEnabled (nodeType == LocalCollection::NodeType::Album);
 	}
 
 	void PlayerTab::handlePlayerAvailable (bool available)

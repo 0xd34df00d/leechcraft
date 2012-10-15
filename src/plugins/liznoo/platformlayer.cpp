@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "platformlayer.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -31,6 +32,25 @@ namespace Liznoo
 	{
 		qWarning () << Q_FUNC_INFO
 				<< "not supported";
+	}
+
+	void PlatformLayer::EmitGonnaSleep (int timeout)
+	{
+		Entity e = Util::MakeEntity ("Sleeping",
+				QString (),
+				TaskParameter::Internal,
+				"x-leechcraft/power-state-changed");
+		e.Additional_ ["TimeLeft"] = timeout;
+		emit gotEntity (e);
+	}
+
+	void PlatformLayer::EmitWokeUp ()
+	{
+		Entity e = Util::MakeEntity ("WokeUp",
+				QString (),
+				TaskParameter::Internal,
+				"x-leechcraft/power-state-changed");
+		emit gotEntity (e);
 	}
 }
 }

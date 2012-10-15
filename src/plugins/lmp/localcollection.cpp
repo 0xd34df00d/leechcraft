@@ -315,6 +315,12 @@ namespace LMP
 			for (int i = 0; i < 50; ++i)
 				result << keys [qrand () % keys.size ()];
 			break;
+		case DynamicPlaylist::LovedTracks:
+			result = Storage_->GetLovedTracks ();
+			break;
+		case DynamicPlaylist::BannedTracks:
+			result = Storage_->GetBannedTracks ();
+			break;
 		}
 		return result;
 	}
@@ -326,6 +332,19 @@ namespace LMP
 				[this] (int id) { return Track2Path_ [id]; });
 		result.removeAll (QString ());
 		return result;
+	}
+
+	void LocalCollection::AddTrackTo (int trackId, StaticRating rating)
+	{
+		switch (rating)
+		{
+		case StaticRating::Loved:
+			Storage_->SetTrackLoved (trackId);
+			break;
+		case StaticRating::Banned:
+			Storage_->SetTrackBanned (trackId);
+			break;
+		}
 	}
 
 	Collection::TrackStats LocalCollection::GetTrackStats (const QString& path) const
@@ -346,6 +365,19 @@ namespace LMP
 					<< e.what ();
 			return Collection::TrackStats ();
 		}
+	}
+
+	QList<int> LocalCollection::GetAlbumArtists (int albumId) const
+	{
+		QList<int> result;
+		for (const auto& artist : Artists_)
+		{
+			if (std::find_if (artist.Albums_.begin (), artist.Albums_.end (),
+					[albumId] (decltype (artist.Albums_.front ()) album)
+						{ return album->ID_ == albumId; }) != artist.Albums_.end ())
+				result << artist.ID_;
+		}
+		return result;
 	}
 
 	Collection::Artist LocalCollection::GetArtist (int id) const
@@ -659,7 +691,7 @@ namespace LMP
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
 
 		emit scanStarted (newPaths.size ());
-		auto worker = [resolver] (const QString& path)
+		auto worker = [resolver] (const QString& path) -> MediaInfo
 		{
 			try
 			{

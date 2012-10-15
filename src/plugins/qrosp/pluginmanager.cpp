@@ -34,6 +34,8 @@ namespace Qrosp
 	PluginManager::PluginManager ()
 	{
 		Qross::Manager::self ().registerMetaTypeHandler ("LeechCraft::Entity", EntityHandler);
+		Qross::Manager::self ().addQObject (new TypesFactory, "TypesFactory");
+		Qross::Manager::self ().addQObject (new UtilProxy, "Util");
 
 		const auto& interpreters = Qross::Manager::self ().interpreters ();
 		qDebug () << Q_FUNC_INFO
@@ -45,17 +47,16 @@ namespace Qrosp
 				<< "found"
 				<< plugins;
 
-		Qross::Manager::self ().addQObject (new TypesFactory, "TypesFactory");
-		Qross::Manager::self ().addQObject (new UtilProxy, "Util");
-
-#ifndef QROSP_NO_QTSCRIPT
-		//qScriptRegisterMetaType (Priority, ToScriptValue, FromScriptValue);
-#endif
-
 		Q_FOREACH (const auto& type, plugins.keys ())
 		{
 			if (!interpreters.contains (type))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no interpreter for type"
+						<< type
+						<< interpreters;
 				continue;
+			}
 			Q_FOREACH (const auto& path, plugins [type])
 				Wrappers_ << new WrapperObject (type, path);
 		}
@@ -80,7 +81,7 @@ namespace Qrosp
 	QMap<QString, QStringList> PluginManager::FindPlugins ()
 	{
 		QMap<QString, QStringList> knownExtensions;
-		knownExtensions ["javascript"] << "*.es" << "*.js" << "*.qs";
+		knownExtensions ["qtscript"] << "*.es" << "*.js" << "*.qs";
 		knownExtensions ["python"] << "*.py";
 		knownExtensions ["ruby"] << "*.rb";
 
