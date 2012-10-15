@@ -171,6 +171,7 @@ OPTION (ENABLE_NACHEKU "Build Nacheku, clipboard/download dir watcher" ${WITH_PL
 OPTION (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging client" OFF)
 OPTION (ENABLE_MONOCLE "Build Monocle, modular document viewer for LeechCraft" ${WITH_PLUGINS})
 OPTION (ENABLE_LADS "Build Lads, Ubuntu Unity integration layer" ${WITH_PLUGINS})
+OPTION (ENABLE_SHAITAN "Build Shaitan, Embedded terminal emulator" ${WITH_PLUGINS})
 OPTION (ENABLE_VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
 
 IF (WIN32)
@@ -483,11 +484,17 @@ IF (ENABLE_VROOBY)
 	ADD_SUBDIRECTORY (plugins/vrooby)
 ENDIF (ENABLE_VROOBY)
 
-IF (NOT WIN32)
+IF (UNIX AND NOT APPLE)
+	IF (ENABLE_SHAITAN)
+		ADD_SUBDIRECTORY (plugins/shaitan)
+	ENDIF (ENABLE_SHAITAN)
+ENDIF (UNIX AND NOT APPLE)
+
+IF (UNIX AND NOT APPLE)
 	IF (ENABLE_LADS)
 		ADD_SUBDIRECTORY (plugins/lads)
 	ENDIF (ENABLE_LADS)
-ENDIF (NOT WIN32)
+ENDIF (UNIX AND NOT APPLE)
 
 IF (WIN32)
 	IF (ENABLE_Y7)
