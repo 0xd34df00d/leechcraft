@@ -30,6 +30,12 @@
       <enum>Qt::Vertical</enum>
      </property>
      <widget class="QTreeView" name="TorrentsView_">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
+      </property>
       <property name="rootIsDecorated">
        <bool>false</bool>
       </property>
@@ -37,7 +43,14 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="LeechCraft::Plugins::BitTorrent::TorrentTabWidget" name="Tabs_" native="true"/>
+     <widget class="LeechCraft::Plugins::BitTorrent::TorrentTabWidget" name="Tabs_" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>

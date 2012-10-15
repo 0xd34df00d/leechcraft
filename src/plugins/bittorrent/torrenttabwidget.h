@@ -39,7 +39,6 @@ namespace BitTorrent
 		Q_OBJECT
 
 		Ui::TorrentTabWidget Ui_;
-		bool TorrentSelectionChanged_;
 		Util::TagsCompleter *TagsChangeCompleter_;
 		QAction *AddPeer_;
 		QAction *BanPeer_;
@@ -68,7 +67,6 @@ namespace BitTorrent
 		void on_DesiredRating__valueChanged (double);
 		void on_TorrentDownloadRateController__valueChanged (int);
 		void on_TorrentUploadRateController__valueChanged (int);
-		void on_TorrentDesiredRating__valueChanged (double);
 		void on_TorrentManaged__stateChanged (int);
 		void on_TorrentSequentialDownload__stateChanged (int);
 		void on_TorrentSuperSeeding__stateChanged (int);

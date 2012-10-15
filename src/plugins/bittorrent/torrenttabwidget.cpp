@@ -46,7 +46,6 @@ namespace BitTorrent
 
 	TorrentTabWidget::TorrentTabWidget (QWidget *parent)
 	: QTabWidget (parent)
-	, TorrentSelectionChanged_ (false)
 	, TagsChangeCompleter_ (0)
 	, Index_ (-1)
 	, PeersSorter_ (new QSortFilterProxyModel (this))
@@ -110,10 +109,6 @@ namespace BitTorrent
 				SIGNAL (valueChanged (int)),
 				this,
 				SLOT (on_TorrentUploadRateController__valueChanged (int)));
-		connect (Ui_.TorrentDesiredRating_,
-				SIGNAL (valueChanged (double)),
-				this,
-				SLOT (on_TorrentDesiredRating__valueChanged (double)));
 		connect (Ui_.TorrentManaged_,
 				SIGNAL (stateChanged (int)),
 				this,
@@ -246,7 +241,6 @@ namespace BitTorrent
 
 	void TorrentTabWidget::InvalidateSelection ()
 	{
-		TorrentSelectionChanged_ = true;
 		Ui_.TorrentTags_->setText (Core::Instance ()->GetProxy ()->GetTagsManager ()->
 				Join (Core::Instance ()->GetTagsForIndex (Index_)));
 		updateTorrentStats ();
@@ -266,20 +260,10 @@ namespace BitTorrent
 
 	void TorrentTabWidget::updateTorrentStats ()
 	{
-		switch (currentIndex ())
-		{
-		case 0:
-			UpdateDashboard ();
-			UpdateOverallStats ();
-			break;
-		case 1:
-			UpdateTorrentControl ();
-			break;
-		case 2:
-			UpdateFilesPage ();
-			break;
-		}
-		TorrentSelectionChanged_ = false;
+		UpdateDashboard ();
+		UpdateOverallStats ();
+		UpdateTorrentControl ();
+		UpdateFilesPage ();
 	}
 
 	namespace
@@ -423,8 +407,6 @@ namespace BitTorrent
 			setValue (Core::Instance ()->GetTorrentDownloadRate (Core::Instance ()->GetCurrentTorrent ()));
 		Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->
 				GetTorrentUploadRate (Core::Instance ()->GetCurrentTorrent ()));
-		Ui_.TorrentDesiredRating_->setValue (Core::Instance ()->
-				GetTorrentDesiredRating (Core::Instance ()->GetCurrentTorrent ()));
 		Ui_.TorrentManaged_->setCheckState (Core::Instance ()->
 				IsTorrentManaged (Core::Instance ()->GetCurrentTorrent ()) ? Qt::Checked : Qt::Unchecked);
 		Ui_.TorrentSequentialDownload_->setCheckState (Core::Instance ()->
@@ -592,11 +574,6 @@ namespace BitTorrent
 	void TorrentTabWidget::on_TorrentUploadRateController__valueChanged (int val)
 	{
 		Core::Instance ()->SetTorrentUploadRate (val, Index_);
-	}
-
-	void TorrentTabWidget::on_TorrentDesiredRating__valueChanged (double val)
-	{
-		Core::Instance ()->SetTorrentDesiredRating (val, Index_);
 	}
 
 	void TorrentTabWidget::on_TorrentManaged__stateChanged (int state)
