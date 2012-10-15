@@ -42,24 +42,15 @@ namespace LeechCraft
 		{
 			using namespace Util;
 
-			TabWidget::TabWidget (QAction *editTrackers, QWidget *parent)
+			TabWidget::TabWidget (QWidget *parent)
 			: QWidget (parent)
 			, TorrentSelectionChanged_ (false)
 			{
 				Ui_.setupUi (this);
 				QFontMetrics fm = QApplication::fontMetrics ();
-				QHeaderView *header = Ui_.PerTrackerStats_->header ();
-				header->resizeSection (0,
-						fm.width ("www.domain.name.org"));
-				header->resizeSection (1,
-						fm.width ("1234.5678 bytes/s"));
-				header->resizeSection (2,
-						fm.width ("1234.5678 bytes/s"));
 
 				TagsChangeCompleter_.reset (new TagsCompleter (Ui_.TorrentTags_));
 				Ui_.TorrentTags_->AddSelector ();
-
-				Ui_.TrackersButton_->setDefaultAction (editTrackers);
 
 				connect (Ui_.OverallDownloadRateController_,
 						SIGNAL (valueChanged (int)),
@@ -144,26 +135,11 @@ namespace LeechCraft
 
 			void TabWidget::UpdateOverallStats ()
 			{
-				libtorrent::session_status stats = Core::Instance ()->GetOverallStats ();
-
+				const auto& stats = Core::Instance ()->GetOverallStats ();
 				Ui_.LabelTotalDownloadRate_->
 					setText (Util::MakePrettySize (stats.download_rate) + tr ("/s"));
 				Ui_.LabelTotalUploadRate_->
 					setText (Util::MakePrettySize (stats.upload_rate) + tr ("/s"));
-
-				Core::pertrackerstats_t ptstats;
-				Core::Instance ()->GetPerTracker (ptstats);
-				Ui_.PerTrackerStats_->clear ();
-				for (Core::pertrackerstats_t::const_iterator i = ptstats.begin (),
-						end = ptstats.end (); i != end; ++i)
-				{
-					QStringList strings;
-					strings	<< i->first
-						<< Util::MakePrettySize (i->second.DownloadRate_) + tr ("/s")
-						<< Util::MakePrettySize (i->second.UploadRate_) + tr ("/s");
-
-					new QTreeWidgetItem (Ui_.PerTrackerStats_, strings);
-				}
 			}
 
 			void TabWidget::UpdateDashboard ()
@@ -208,12 +184,9 @@ namespace LeechCraft
 					setText (Util::MakePrettySize (i->Status_.total_wanted_done));
 				Ui_.LabelWantedSize_->
 					setText (Util::MakePrettySize (i->Status_.total_wanted));
+				Ui_.LabelTotalUploaded_->
+					setText (Util::MakePrettySize (i->Status_.all_time_upload));
 				Ui_.PiecesWidget_->setPieceMap (i->Status_.pieces);
-				Ui_.LabelTracker_->
-					setText (QString::fromStdString (i->Status_.current_tracker));
-				Ui_.LabelDestination_->
-					setText (QString ("<a href='%1'>%1</a>")
-							.arg (i->Destination_));
 				Ui_.LabelName_->
 					setText (QString::fromUtf8 (i->Info_->name ().c_str ()));
 			}
