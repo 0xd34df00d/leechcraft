@@ -33,6 +33,12 @@ namespace Xoox
 		return NsTuneNode;
 	}
 
+	UserTune::UserTune ()
+	: Length_ (0)
+	, Rating_ (0)
+	{
+	}
+
 	QXmppElement UserTune::ToXML () const
 	{
 		QXmppElement result;
