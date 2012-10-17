@@ -18,8 +18,10 @@
 
 #include "releaseswidget.h"
 #include <QDeclarativeContext>
+#include <QGraphicsObject>
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecentreleases.h>
@@ -77,6 +79,11 @@ namespace LMP
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (request ()));
+
+		connect (Ui_.ReleasesView_->rootObject (),
+				SIGNAL (linkActivated (QString)),
+				this,
+				SLOT (handleLink (QString)));
 	}
 
 	void ReleasesWidget::InitializeProviders ()
@@ -147,6 +154,13 @@ namespace LMP
 			item->setData (release.ReleaseURL_, ReleasesModel::Role::ReleaseURL);
 			ReleasesModel_->appendRow (item);
 		}
+	}
+
+	void ReleasesWidget::handleLink (const QString& link)
+	{
+		Core::Instance ().SendEntity (Util::MakeEntity (QUrl (link),
+					QString (),
+					FromUserInitiated | OnlyHandle));
 	}
 }
 }
