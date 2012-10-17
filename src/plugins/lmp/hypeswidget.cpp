@@ -19,6 +19,7 @@
 #include "hypeswidget.h"
 #include <QStandardItemModel>
 #include <QDeclarativeContext>
+#include <QDeclarativeEngine>
 #include <QGraphicsObject>
 #include <util/util.h>
 #include <interfaces/media/ihypesprovider.h>
@@ -28,6 +29,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "similarmodel.h"
+#include "sysiconsprovider.h"
 
 namespace LeechCraft
 {
@@ -72,6 +74,9 @@ namespace LMP
 	, TracksModel_ (new TracksModel (this))
 	{
 		Ui_.setupUi (this);
+
+		Ui_.HypesView_->engine ()->addImageProvider ("sysIcons",
+				new SysIconProvider (Core::Instance ().GetProxy ()));
 
 		auto root = Ui_.HypesView_->rootContext ();
 		root->setContextProperty ("artistsModel", ArtistsModel_);
