@@ -36,6 +36,7 @@
 #include "receventsfetcher.h"
 #include "eventsfetchaggregator.h"
 #include "eventattendmarker.h"
+#include "hypedartistsfetcher.h"
 
 namespace LeechCraft
 {
@@ -243,6 +244,38 @@ namespace Lastfmscrobble
 				SIGNAL (finished ()),
 				this,
 				SLOT (reloadRecommendedEvents ()));
+	}
+
+	bool Plugin::SupportsHype (HypeType type)
+	{
+		switch (type)
+		{
+		case HypeType::Artist:
+		case HypeType::Track:
+			return true;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown hype type"
+				<< static_cast<int> (type);
+		return false;
+	}
+
+	void Plugin::RequestHype (HypeType type)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+
+		switch (type)
+		{
+		case HypeType::Artist:
+			connect (new HypedArtistsFetcher (nam, this),
+					SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>)),
+					this,
+					SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>)));
+			break;
+		case HypeType::Track:
+			break;
+		}
 	}
 
 	void Plugin::reloadRecommendedEvents ()
