@@ -31,14 +31,49 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		class TracksModel : public QStandardItemModel
+		{
+		public:
+			enum Role
+			{
+				TrackName = Qt::UserRole + 1,
+				TrackURL,
+				ArtistName,
+				ArtistURL,
+				ThumbImageURL,
+				FullImageURL,
+				PercentageChange
+			};
+
+			TracksModel (QObject *parent)
+			: QStandardItemModel (parent)
+			{
+				QHash<int, QByteArray> names;
+				names [TrackName] = "trackName";
+				names [TrackURL] = "trackURL";
+				names [ArtistName] = "artistName";
+				names [ArtistURL] = "artistURL";
+				names [ThumbImageURL] = "thumbImageURL";
+				names [FullImageURL] = "fullURL";
+				names [PercentageChange] = "change";
+
+				setRoleNames (names);
+			}
+		};
+	}
+
 	HypesWidget::HypesWidget (QWidget *parent)
 	: QWidget (parent)
 	, ArtistsModel_ (new SimilarModel (this))
+	, TracksModel_ (new TracksModel (this))
 	{
 		Ui_.setupUi (this);
 
 		auto root = Ui_.HypesView_->rootContext ();
 		root->setContextProperty ("artistsModel", ArtistsModel_);
+		root->setContextProperty ("tracksModel", TracksModel_);
 		root->setContextProperty ("artistsLabelText", tr ("Hyped artists"));
 		root->setContextProperty ("tracksLabelText", tr ("Hyped tracks"));
 		Ui_.HypesView_->setSource (QUrl ("qrc:/lmp/resources/qml/HypesView.qml"));
@@ -80,6 +115,7 @@ namespace LMP
 	void HypesWidget::request ()
 	{
 		ArtistsModel_->clear ();
+		TracksModel_->clear ();
 
 		const auto idx = Ui_.InfoProvider_->currentIndex ();
 		if (idx < 0)
@@ -100,6 +136,14 @@ namespace LMP
 					SLOT (handleArtists (QList<Media::HypedArtistInfo>)));
 			prov->RequestHype (Media::IHypesProvider::HypeType::Artist);
 		}
+		if (prov->SupportsHype (Media::IHypesProvider::HypeType::Track))
+		{
+			connect (dynamic_cast<QObject*> (prov),
+					SIGNAL (gotHypedTracks(QList<Media::HypedTrackInfo>)),
+					this,
+					SLOT (handleTracks (QList<Media::HypedTrackInfo>)));
+			prov->RequestHype (Media::IHypesProvider::HypeType::Track);
+		}
 
 		XmlSettingsManager::Instance ()
 				.setProperty ("LastUsedReleasesProvider", prov->GetServiceName ());
@@ -117,8 +161,8 @@ namespace LMP
 
 			auto item = SimilarModel::ConstructItem (artist);
 
-			const auto& perc = tr ("Popularity growth: %1%")
-					.arg (info.PercentageChange_);
+			const auto& perc = tr ("Growth: x%1", "better use unicode multiplication sign here instead of 'x'")
+					.arg (info.PercentageChange_ / 100.0, 0, 'f', 2);
 			item->setData (perc, SimilarModel::Role::Similarity);
 
 			ArtistsModel_->appendRow (item);
@@ -128,6 +172,31 @@ namespace LMP
 				SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>)),
 				this,
 				SLOT (handleArtists (QList<Media::HypedArtistInfo>)));
+	}
+
+	void HypesWidget::handleTracks (const QList<Media::HypedTrackInfo>& infos)
+	{
+		for (const auto& info : infos)
+		{
+			auto item = new QStandardItem;
+			item->setData (info.TrackName_, TracksModel::Role::TrackName);
+			item->setData (info.TrackPage_, TracksModel::Role::TrackURL);
+			item->setData (info.ArtistName_, TracksModel::Role::ArtistName);
+			item->setData (info.ArtistPage_, TracksModel::Role::ArtistURL);
+			item->setData (info.Image_, TracksModel::Role::ThumbImageURL);
+			item->setData (info.LargeImage_, TracksModel::Role::FullImageURL);
+
+			const auto& perc = tr ("Growth: x%1", "better use unicode multiplication sign here instead of 'x'")
+					.arg (info.PercentageChange_ / 100., 0, 'f', 2);
+			item->setData (perc, TracksModel::Role::PercentageChange);
+
+			TracksModel_->appendRow (item);
+		}
+
+		disconnect (sender (),
+				SIGNAL (gotHypedTracks(QList<Media::HypedTrackInfo>)),
+				this,
+				SLOT (handleTracks (QList<Media::HypedTrackInfo>)));
 	}
 }
 }

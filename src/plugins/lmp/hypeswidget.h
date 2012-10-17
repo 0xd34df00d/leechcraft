@@ -39,6 +39,7 @@ namespace LMP
 
 		Ui::HypesWidget Ui_;
 		QStandardItemModel *ArtistsModel_;
+		QStandardItemModel *TracksModel_;
 
 		QList<Media::IHypesProvider*> Providers_;
 	public:
@@ -48,6 +49,7 @@ namespace LMP
 	private slots:
 		void request ();
 		void handleArtists (const QList<Media::HypedArtistInfo>&);
+		void handleTracks (const QList<Media::HypedTrackInfo>&);
 	};
 }
 }
