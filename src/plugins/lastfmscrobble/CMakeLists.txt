@@ -35,6 +35,7 @@ SET (SRCS
 	receventsfetcher.cpp
 	eventsfetchaggregator.cpp
 	eventattendmarker.cpp
+	hypedartistsfetcher.cpp
 	)
 SET (HEADERS
 	lastfmsubmitter.h
@@ -53,6 +54,7 @@ SET (HEADERS
 	receventsfetcher.h
 	eventsfetchaggregator.h
 	eventattendmarker.h
+	hypedartistsfetcher.h
 	)
 SET (RESOURCES lastfmscrobbleresources.qrc)
 IF (NOT LC_NO_MOC)
