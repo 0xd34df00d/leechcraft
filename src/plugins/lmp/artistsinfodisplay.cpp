@@ -26,6 +26,7 @@
 #include <util/util.h>
 #include "core.h"
 #include "localcollection.h"
+#include "similarmodel.h"
 
 namespace LeechCraft
 {
@@ -53,39 +54,6 @@ namespace LMP
 				if (size)
 					*size = icon.actualSize (getSize);
 				return icon.pixmap (getSize);
-			}
-		};
-
-		class SimilarModel : public QStandardItemModel
-		{
-		public:
-			enum Role
-			{
-				ArtistName = Qt::UserRole + 1,
-				Similarity,
-				ArtistImageURL,
-				ArtistBigImageURL,
-				ArtistPageURL,
-				ArtistTags,
-				ShortDesc,
-				FullDesc,
-				IsInCollection
-			};
-
-			SimilarModel (QObject *parent = 0)
-			: QStandardItemModel (parent)
-			{
-				QHash<int, QByteArray> names;
-				names [ArtistName] = "artistName";
-				names [Similarity] = "similarity";
-				names [ArtistImageURL] = "artistImageURL";
-				names [ArtistBigImageURL] = "artistBigImageURL";
-				names [ArtistPageURL] = "artistPageURL";
-				names [ArtistTags] = "artistTags";
-				names [ShortDesc] = "shortDesc";
-				names [FullDesc] = "fullDesc";
-				names [IsInCollection] = "artistInCollection";
-				setRoleNames (names);
 			}
 		};
 	}
