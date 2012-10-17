@@ -27,37 +27,12 @@
 #include "core.h"
 #include "localcollection.h"
 #include "similarmodel.h"
+#include "sysiconsprovider.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	namespace
-	{
-		class SysIconProvider : public QDeclarativeImageProvider
-		{
-			ICoreProxy_ptr Proxy_;
-		public:
-			SysIconProvider (ICoreProxy_ptr proxy)
-			: QDeclarativeImageProvider (Pixmap)
-			, Proxy_ (proxy)
-			{
-			}
-
-			QPixmap requestPixmap (const QString& id, QSize *size, const QSize& requestedSize)
-			{
-				const auto& icon = Proxy_->GetIcon (id);
-
-				const auto& getSize = requestedSize.width () > 2 && requestedSize.height () > 2 ?
-						requestedSize :
-						QSize (48, 48);
-				if (size)
-					*size = icon.actualSize (getSize);
-				return icon.pixmap (getSize);
-			}
-		};
-	}
-
 	ArtistsInfoDisplay::ArtistsInfoDisplay (QWidget *parent)
 	: QDeclarativeView (parent)
 	, Model_ (new SimilarModel (this))
