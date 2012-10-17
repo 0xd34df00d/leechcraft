@@ -8,13 +8,15 @@ Rectangle {
 
     color: "#000000"
 
+    signal linkActivated(string id)
+
     Rectangle {
         id: artistsRect
 
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        width: parent.width / 2
+        width: 3 * parent.width / 5
 
         color: "#000000"
 
@@ -141,6 +143,106 @@ Rectangle {
                 GradientStop {
                     position: 1
                     color: "#222222"
+                }
+            }
+
+            ListView {
+                id: hypedTracksView
+
+                anchors.fill: parent
+                smooth: true
+
+                model: tracksModel
+
+                delegate: Item {
+                    height: 78
+                    width: hypedTracksView.width
+                    smooth: true
+
+                    Rectangle {
+                        id: delegateRect
+
+                        anchors.fill: parent
+                        anchors.leftMargin: 10
+                        anchors.rightMargin: 10
+                        anchors.topMargin: 5
+                        anchors.bottomMargin: 5
+
+                        radius: 5
+
+                        gradient: Gradient {
+                            GradientStop {
+                                position: 1
+                                color: "#42394b"
+                            }
+
+                            GradientStop {
+                                position: 0
+                                color: "#000000"
+                            }
+                        }
+
+                        border.width: 1
+                        border.color: "#000000"
+                        smooth: true
+
+                        Image {
+                            id: trackImageThumb
+                            width: 64
+                            height: 64
+                            smooth: true
+
+                            fillMode: Image.PreserveAspectFit
+                            source: thumbImageURL
+
+                            anchors.left: parent.left
+                            anchors.leftMargin: 2
+                            anchors.top: parent.top
+                            anchors.topMargin: 2
+                        }
+
+                        Text {
+                            id: trackNameLabel
+                            text: trackName
+
+                            font.bold: true
+                            font.underline: true
+                            font.pointSize: 12
+                            color: "#dddddd"
+                            anchors.top: parent.top
+                            anchors.topMargin: 2
+                            anchors.left: trackImageThumb.right
+                            anchors.leftMargin: 5
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: rootRect.linkActivated(trackURL)
+                            }
+                        }
+
+                        Text {
+                            id: trackArtistNameLabel
+                            text: artistName
+
+                            font.underline: true
+                            font.pointSize: 11
+                            color: "#bbbbbb"
+                            anchors.top: trackNameLabel.bottom
+                            anchors.topMargin: 2
+                            anchors.left: trackImageThumb.right
+                            anchors.leftMargin: 5
+                        }
+
+                        Text {
+                            id: artistTagsLabel
+                            text: change
+                            color: "#888888"
+                            anchors.top: parent.top
+                            anchors.topMargin: 2
+                            anchors.right: parent.right
+                            anchors.rightMargin: 2
+                        }
+                    }
                 }
             }
         }
