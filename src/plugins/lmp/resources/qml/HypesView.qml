@@ -16,7 +16,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        width: 3 * parent.width / 5
+        width: parent.width / 2
 
         color: "#000000"
 
@@ -72,6 +72,8 @@ Rectangle {
 
             SimilarView {
                 model: artistsModel
+
+                onLinkActivated: rootRect.linkActivated(id)
             }
         }
     }
@@ -155,7 +157,7 @@ Rectangle {
                 model: tracksModel
 
                 delegate: Item {
-                    height: 78
+                    height: 75
                     width: hypedTracksView.width
                     smooth: true
 
@@ -188,8 +190,8 @@ Rectangle {
 
                         Image {
                             id: trackImageThumb
-                            width: 64
-                            height: 64
+                            width: 62
+                            height: 62
                             smooth: true
 
                             fillMode: Image.PreserveAspectFit
@@ -231,6 +233,11 @@ Rectangle {
                             anchors.topMargin: 2
                             anchors.left: trackImageThumb.right
                             anchors.leftMargin: 5
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: rootRect.linkActivated(artistURL)
+                            }
                         }
 
                         Text {
