@@ -37,6 +37,7 @@
 #include "eventsfetchaggregator.h"
 #include "eventattendmarker.h"
 #include "hypedartistsfetcher.h"
+#include "hypedtracksfetcher.h"
 
 namespace LeechCraft
 {
@@ -268,12 +269,18 @@ namespace Lastfmscrobble
 		switch (type)
 		{
 		case HypeType::Artist:
+			/*
 			connect (new HypedArtistsFetcher (nam, this),
 					SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>)),
 					this,
 					SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>)));
+					*/
 			break;
 		case HypeType::Track:
+			connect (new HypedTracksFetcher (nam, this),
+					SIGNAL (gotHypedTracks (QList<Media::HypedTrackInfo>)),
+					this,
+					SIGNAL (gotHypedTracks (QList<Media::HypedTrackInfo>)));
 			break;
 		}
 	}

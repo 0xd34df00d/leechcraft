@@ -121,6 +121,7 @@ namespace Lastfmscrobble
 		void gotRecommendedEvents (const Media::EventInfos_t&);
 
 		void gotHypedArtists (const QList<Media::HypedArtistInfo>&);
+		void gotHypedTracks (const QList<Media::HypedTrackInfo>&);
 	};
 }
 }

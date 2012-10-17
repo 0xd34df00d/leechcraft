@@ -18,53 +18,25 @@
 
 #pragma once
 
-#include <QString>
-#include <QList>
-#include <QUrl>
-#include "audiostructs.h"
+#include <QObject>
+#include <interfaces/media/ihypesprovider.h>
 
-namespace Media
+class QNetworkAccessManager;
+
+namespace LeechCraft
 {
-	struct HypedArtistInfo
+namespace Lastfmscrobble
+{
+	class HypedTracksFetcher : public QObject
 	{
-		ArtistInfo Info_;
-		int PercentageChange_;
-	};
-
-	struct HypedTrackInfo
-	{
-		QString TrackName_;
-		QUrl TrackPage_;
-		int PercentageChange_;
-		int Duration_;
-
-		QUrl Image_;
-		QUrl LargeImage_;
-
-		QString ArtistName_;
-		QUrl ArtistPage_;
-	};
-
-	class IHypesProvider
-	{
+		Q_OBJECT
 	public:
-		virtual ~IHypesProvider () {}
-
-		virtual QString GetServiceName () const = 0;
-
-		enum class HypeType
-		{
-			Artist,
-			Track
-		};
-
-		virtual bool SupportsHype (HypeType) = 0;
-
-		virtual void RequestHype (HypeType) = 0;
-	protected:
-		virtual void gotHypedArtists (const QList<HypedArtistInfo>&) = 0;
-		virtual void gotHypedTracks (const QList<HypedTrackInfo>&) = 0;
+		HypedTracksFetcher (QNetworkAccessManager*, QObject* = 0);
+	private slots:
+		void handleFinished ();
+		void handleError ();
+	signals:
+		void gotHypedTracks (const QList<Media::HypedTrackInfo>&);
 	};
 }
-
-Q_DECLARE_INTERFACE (Media::IHypesProvider, "org.LeechCraft.Media.IHypesProvider/1.0");
+}
