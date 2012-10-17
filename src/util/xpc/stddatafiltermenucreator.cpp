@@ -68,7 +68,7 @@ namespace Util
 				for (const auto& var : vars)
 				{
 					auto act = searchMenu->addAction (var.Name_);
-					const DataFilterActionInfo info
+					const DataFilterActionInfo info =
 					{
 						entity,
 						plugin,
