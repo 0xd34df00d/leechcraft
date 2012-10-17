@@ -30,11 +30,21 @@ namespace Lastfmscrobble
 	class HypedArtistsFetcher : public QObject
 	{
 		Q_OBJECT
+
+		QNetworkAccessManager *NAM_;
+		QList<Media::HypedArtistInfo> Infos_;
+
+		int InfoCount_;
 	public:
 		HypedArtistsFetcher (QNetworkAccessManager*, QObject* = 0);
+	private:
+		void DecrementWaiting ();
 	private slots:
 		void handleFinished ();
 		void handleError ();
+
+		void pendingBioReady ();
+		void pendingBioError ();
 	signals:
 		void gotHypedArtists (const QList<Media::HypedArtistInfo>&);
 	};

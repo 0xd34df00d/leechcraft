@@ -17,12 +17,14 @@
  **********************************************************************/
 
 #include "hypedartistsfetcher.h"
+#include <algorithm>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QDomDocument>
 #include <QtDebug>
 #include "util.h"
+#include "pendingartistbio.h"
 
 namespace LeechCraft
 {
@@ -30,9 +32,12 @@ namespace Lastfmscrobble
 {
 	HypedArtistsFetcher::HypedArtistsFetcher (QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
+	, NAM_ (nam)
+	, InfoCount_ (0)
 	{
-		qDebug () << Q_FUNC_INFO;
-		auto reply = Request ("chart.getHypedArtists", nam);
+		QMap<QString, QString> params;
+		params ["limit"] = "20";
+		auto reply = Request ("chart.getHypedArtists", nam, params);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -43,14 +48,21 @@ namespace Lastfmscrobble
 				SLOT (handleError ()));
 	}
 
+	void HypedArtistsFetcher::DecrementWaiting ()
+	{
+		if (--InfoCount_)
+			return;
+
+		emit gotHypedArtists (Infos_);
+		deleteLater ();
+	}
+
 	void HypedArtistsFetcher::handleFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
-		deleteLater ();
 
 		const auto& data = reply->readAll ();
-		qDebug () << data;
 		QDomDocument doc;
 		if (!doc.setContent (data))
 		{
@@ -59,8 +71,6 @@ namespace Lastfmscrobble
 					<< data;
 			return;
 		}
-
-		QList<Media::HypedArtistInfo> infos;
 
 		auto artistElem = doc
 				.documentElement ()
@@ -73,11 +83,13 @@ namespace Lastfmscrobble
 				return artistElem.firstChildElement (name).text ();
 			};
 
-			infos << Media::HypedArtistInfo
+			const auto& name = getText ("name");
+
+			Infos_ << Media::HypedArtistInfo
 			{
 				Media::ArtistInfo
 				{
-					getText ("name"),
+					name,
 					QString (),
 					QString (),
 					GetImage (artistElem, "medium"),
@@ -87,10 +99,23 @@ namespace Lastfmscrobble
 				},
 				getText ("percentagechange").toInt ()
 			};
+
+			auto pendingBio = new PendingArtistBio (name, NAM_, this);
+			connect (pendingBio,
+					SIGNAL (ready ()),
+					this,
+					SLOT (pendingBioReady ()));
+			connect (pendingBio,
+					SIGNAL (error ()),
+					this,
+					SLOT (pendingBioError ()));
+
 			artistElem = artistElem.nextSiblingElement ("artist");
 		}
 
-		emit gotHypedArtists (infos);
+		InfoCount_ = Infos_.size ();
+		if (!InfoCount_)
+			deleteLater ();
 	}
 
 	void HypedArtistsFetcher::handleError ()
@@ -102,6 +127,27 @@ namespace Lastfmscrobble
 
 		reply->deleteLater ();
 		deleteLater ();
+	}
+
+	void HypedArtistsFetcher::pendingBioReady ()
+	{
+		auto pendingBio = qobject_cast<PendingArtistBio*> (sender ());
+		pendingBio->deleteLater ();
+
+		const auto& info = pendingBio->GetArtistBio ();
+		const auto pos = std::find_if (Infos_.begin (), Infos_.end (),
+				[&info] (decltype (Infos_.at (0)) thatInfo) { return thatInfo.Info_.Name_ == info.BasicInfo_.Name_; });
+		if (pos != Infos_.end ())
+			pos->Info_ = info.BasicInfo_;
+
+		DecrementWaiting ();
+	}
+
+	void HypedArtistsFetcher::pendingBioError ()
+	{
+		sender ()->deleteLater ();
+
+		DecrementWaiting ();
 	}
 }
 }
