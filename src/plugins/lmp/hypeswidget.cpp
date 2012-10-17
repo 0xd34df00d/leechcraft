@@ -36,7 +36,11 @@ namespace LMP
 	, ArtistsModel_ (new SimilarModel (this))
 	{
 		Ui_.setupUi (this);
-		Ui_.HypesView_->rootContext ()->setContextProperty ("artistsModel", ArtistsModel_);
+
+		auto root = Ui_.HypesView_->rootContext ();
+		root->setContextProperty ("artistsModel", ArtistsModel_);
+		root->setContextProperty ("artistsLabelText", tr ("Hyped artists"));
+		root->setContextProperty ("tracksLabelText", tr ("Hyped tracks"));
 		Ui_.HypesView_->setSource (QUrl ("qrc:/lmp/resources/qml/HypesView.qml"));
 
 		connect (Ui_.InfoProvider_,
@@ -105,17 +109,16 @@ namespace LMP
 	{
 		for (const auto& info : infos)
 		{
-			auto item = new QStandardItem;
+			auto artist = info.Info_;
 
-			const auto& artist = info.Info_;
-			item->setData (artist.Name_, SimilarModel::Role::ArtistName);
-			item->setData (artist.Image_, SimilarModel::Role::ArtistImageURL);
-			item->setData (artist.LargeImage_, SimilarModel::Role::ArtistBigImageURL);
-			item->setData (artist.ShortDesc_, SimilarModel::Role::ShortDesc);
-			item->setData (artist.FullDesc_, SimilarModel::Role::FullDesc);
-			item->setData (artist.Page_, SimilarModel::Role::ArtistPageURL);
+			if (artist.ShortDesc_.isEmpty ())
+				artist.ShortDesc_ = tr ("%1 is not <em>that</em> mainstream to have a description.")
+						.arg (artist.Name_);
 
-			const auto& perc = tr ("Percentage change: %1%").arg (info.PercentageChange_);
+			auto item = SimilarModel::ConstructItem (artist);
+
+			const auto& perc = tr ("Popularity growth: %1%")
+					.arg (info.PercentageChange_);
 			item->setData (perc, SimilarModel::Role::Similarity);
 
 			ArtistsModel_->appendRow (item);
