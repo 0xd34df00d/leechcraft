@@ -40,6 +40,27 @@ Rectangle {
         }
 
         Rectangle {
+            z: 2
+
+            anchors.top: artistsLabel.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 5
+
+            gradient: Gradient {
+                GradientStop {
+                    position: 0
+                    color: "#ff53485F"
+                }
+
+                GradientStop {
+                    position: 1
+                    color: "#0053485F"
+                }
+            }
+        }
+
+        Rectangle {
             anchors.top: artistsLabel.bottom
             anchors.left: parent.left
             anchors.right: parent.right
@@ -79,6 +100,27 @@ Rectangle {
                 font.pointSize: 14
                 color: "#dddddd"
                 anchors.centerIn: parent
+            }
+        }
+
+        Rectangle {
+            z: 2
+
+            anchors.top: tracksLabel.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 5
+
+            gradient: Gradient {
+                GradientStop {
+                    position: 0
+                    color: "#ff53485F"
+                }
+
+                GradientStop {
+                    position: 1
+                    color: "#0053485F"
+                }
             }
         }
 
