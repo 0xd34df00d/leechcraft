@@ -20,6 +20,11 @@
 
 #include <QStandardItemModel>
 
+namespace Media
+{
+	struct ArtistInfo;
+}
+
 namespace LeechCraft
 {
 namespace LMP
@@ -41,6 +46,8 @@ namespace LMP
 		};
 
 		SimilarModel (QObject* = 0);
+
+		static QStandardItem* ConstructItem (const Media::ArtistInfo&);
 	};
 }
 }
