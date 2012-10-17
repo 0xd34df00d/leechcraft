@@ -50,6 +50,7 @@ namespace LMP
 		void request ();
 		void handleArtists (const QList<Media::HypedArtistInfo>&);
 		void handleTracks (const QList<Media::HypedTrackInfo>&);
+		void handleLink (const QString&);
 	};
 }
 }

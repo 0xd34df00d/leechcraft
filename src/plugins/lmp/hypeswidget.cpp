@@ -19,6 +19,8 @@
 #include "hypeswidget.h"
 #include <QStandardItemModel>
 #include <QDeclarativeContext>
+#include <QGraphicsObject>
+#include <util/util.h>
 #include <interfaces/media/ihypesprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -82,6 +84,11 @@ namespace LMP
 				SIGNAL (activated (int)),
 				this,
 				SLOT (request ()));
+
+		connect (Ui_.HypesView_->rootObject (),
+				SIGNAL (linkActivated (QString)),
+				this,
+				SLOT (handleLink (QString)));
 	}
 
 	void HypesWidget::InitializeProviders ()
@@ -197,6 +204,13 @@ namespace LMP
 				SIGNAL (gotHypedTracks(QList<Media::HypedTrackInfo>)),
 				this,
 				SLOT (handleTracks (QList<Media::HypedTrackInfo>)));
+	}
+
+	void HypesWidget::handleLink (const QString& link)
+	{
+		Core::Instance ().SendEntity (Util::MakeEntity (QUrl (link),
+					QString (),
+					FromUserInitiated | OnlyHandle));
 	}
 }
 }
