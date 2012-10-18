@@ -19,6 +19,7 @@
 #include "icecastfetcher.h"
 #include "roles.h"
 #include <algorithm>
+#include <functional>
 #include <QStandardItem>
 #include <QFileInfo>
 #include <QUrl>
@@ -153,7 +154,7 @@ namespace HotStreams
 				const auto& genre = getText ("genre");
 
 				auto& genreStations = stations [genre];
-				const StationInfo info
+				const StationInfo info =
 				{
 					getText ("server_name"),
 					genre,
