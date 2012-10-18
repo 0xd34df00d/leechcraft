@@ -315,7 +315,11 @@ namespace LeechCraft
 					MkParentIfDoesntExist (path);
 
 					QList<QVariant> displayData;
+#ifdef Q_OS_WIN32
+					displayData << QString::fromUtf16 (reinterpret_cast<const ushort*> (path.leaf ().c_str ()))
+#else
 					displayData << QString::fromUtf8 (path.leaf ().c_str ())
+#endif
 						<< Util::MakePrettySize (begin->size);
 
 					TreeItem *parentItem = Path2TreeItem_ [parentPath],
@@ -354,7 +358,11 @@ namespace LeechCraft
 					QString pathStr = QString::fromUtf8 (fi.Path_.string ().c_str ());
 
 					QList<QVariant> displayData;
+#ifdef Q_OS_WIN32
+					displayData << QString::fromUtf16 (reinterpret_cast<const ushort*> (fi.Path_.leaf ().c_str ()))
+#else
 					displayData << QString::fromUtf8 (fi.Path_.leaf ().c_str ())
+#endif
 						<< QString::number (fi.Priority_)
 						<< QString::number (fi.Progress_, 'f', 3);
 					qDebug () << Q_FUNC_INFO << fi.Priority_;
@@ -485,7 +493,11 @@ namespace LeechCraft
 					{
 						if (item->Data (0, RoleProgress).toDouble () != 1)
 						{
+#ifdef Q_OS_WIN32
+							QString filename = QString::fromUtf16 (reinterpret_cast<const ushort*> (i->first.filename ().c_str ()));
+#else
 							QString filename = QString::fromUtf8 (i->first.filename ().c_str ());
+#endif
 							emit gotEntity (Util::MakeNotification ("BitTorrent",
 									tr ("The file %1 hasn't finished downloading yet.")
 										.arg (filename),
@@ -525,7 +537,11 @@ namespace LeechCraft
 				TreeItem *parent = Path2TreeItem_ [parentPath.branch_path ()];
 
 				QList<QVariant> data;
+#ifdef Q_OS_WIN32
+				data << QString::fromUtf16 (reinterpret_cast<const ushort*> (parentPath.leaf ().c_str ())) << QString ("");
+#else
 				data << QString::fromUtf8 (parentPath.leaf ().c_str ()) << QString ("");
+#endif
 				if (!AdditionDialog_)
 					data << QString ("") << QString ("");
 				TreeItem *item = new TreeItem (data, parent);

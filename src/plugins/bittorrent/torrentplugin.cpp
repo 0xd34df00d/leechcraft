@@ -32,6 +32,9 @@
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QSortFilterProxyModel>
+#include <boost/preprocessor/seq/size.hpp>
+#include <boost/preprocessor/seq/elem.hpp>
+#include <boost/preprocessor/repetition/repeat.hpp>
 #include <libtorrent/session.hpp>
 #include <libtorrent/version.hpp>
 #include <interfaces/entitytesthandleresult.h>
