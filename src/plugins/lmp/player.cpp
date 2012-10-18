@@ -38,6 +38,12 @@
 #include "xmlsettingsmanager.h"
 #include "playlistparsers/playlistfactory.h"
 
+#if defined(Q_OS_WIN32)
+	#ifdef GetObject
+		#undef GetObject
+	#endif
+#endif
+
 Q_DECLARE_METATYPE (Phonon::MediaSource);
 Q_DECLARE_METATYPE (QList<Phonon::MediaSource>);
 
