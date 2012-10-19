@@ -44,11 +44,15 @@ namespace LMP
 		auto coll = Core::Instance ().GetLocalCollection ();
 
 		auto syncer = params.Syncer_;
-		for (auto i = 0, size = params.Files_.size (); i < size; ++i)
+		for (const auto& file : params.Files_)
 		{
-			const auto& file = params.Files_.at (i);
-
 			const auto trackId = coll->FindTrack (file);
+			if (trackId < 0)
+				continue;
+
+			const auto trackNumber = coll->GetTrackData (trackId, LocalCollection::Role::TrackNumber).toInt ();
+			const auto& trackTitle = coll->GetTrackData (trackId, LocalCollection::Role::TrackTitle).toString ();
+
 			const auto album = coll->GetTrackAlbum (trackId);
 			if (!album)
 				continue;
@@ -60,7 +64,15 @@ namespace LMP
 			const auto& artist = coll->GetArtist (artists.at (0));
 
 			syncer->SetFileInfo (file,
-					{ artist.Name_, album->Name_, album->Year_, album->CoverPath_, QStringList () });
+					{
+						trackNumber,
+						trackTitle,
+						artist.Name_,
+						album->Name_,
+						album->Year_,
+						album->CoverPath_,
+						QStringList ()
+					});
 
 			Source2Params_ [file] = params;
 		}
