@@ -43,6 +43,8 @@ namespace LMP
 	{
 		auto coll = Core::Instance ().GetLocalCollection ();
 
+		const auto& format = params.TCParams_.FormatID_;
+
 		auto syncer = params.Syncer_;
 		for (const auto& file : params.Files_)
 		{
@@ -65,6 +67,9 @@ namespace LMP
 
 			syncer->SetFileInfo (file,
 					{
+						format.isEmpty () ?
+							QFileInfo (file).suffix ().toLower () :
+							format,
 						trackNumber,
 						trackTitle,
 						artist.Name_,

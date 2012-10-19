@@ -55,6 +55,8 @@ namespace LMP
 
 	struct UnmountableFileInfo
 	{
+		QString FileFormat_;
+
 		int TrackNumber_;
 		QString TrackTitle_;
 
