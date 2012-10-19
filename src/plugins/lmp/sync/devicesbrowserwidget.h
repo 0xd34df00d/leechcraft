@@ -59,6 +59,7 @@ namespace LMP
 		void HandleUnmountableSelected (int);
 	private slots:
 		void handleDevDataChanged (const QModelIndex&, const QModelIndex&);
+		void handleRowsInserted (const QModelIndex&, int, int);
 		void on_UploadButton__released ();
 		void on_DevicesSelector__activated (int);
 		void on_MountButton__released ();
