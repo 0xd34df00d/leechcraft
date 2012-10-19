@@ -18,6 +18,7 @@
 
 #include "entitymanager.h"
 #include <functional>
+#include <algorithm>
 #include <QDesktopServices>
 #include <QUrl>
 #include "util/util.h"
