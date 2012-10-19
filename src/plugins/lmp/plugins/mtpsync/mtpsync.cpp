@@ -159,6 +159,19 @@ namespace MTPSync
 
 			return 0;
 		}
+
+		LIBMTP_filetype_t GetFileType (const QString& format)
+		{
+			QMap<QString, LIBMTP_filetype_t> map;
+			map ["mp3"] = LIBMTP_FILETYPE_MP3;
+			map ["ogg"] = LIBMTP_FILETYPE_OGG;
+			map ["aac"] = LIBMTP_FILETYPE_AAC;
+			map ["aac-free"] = LIBMTP_FILETYPE_AAC;
+			map ["aac-nonfree"] = LIBMTP_FILETYPE_AAC;
+			map ["flac"] = LIBMTP_FILETYPE_FLAC;
+			map ["wma"] = LIBMTP_FILETYPE_WMA;
+			return map.value (format, LIBMTP_FILETYPE_UNDEF_AUDIO);
+		}
 	}
 
 	void Plugin::UploadTo (LIBMTP_mtpdevice_t *device, const QByteArray& storageId,
@@ -203,7 +216,7 @@ namespace MTPSync
 		track->genre = getStr (info.Genres_.join ("; "));
 		track->artist = getStr (info.Artist_);
 		track->tracknumber = info.TrackNumber_;
-		track->filetype = LIBMTP_FILETYPE_UNDEF_AUDIO;
+		track->filetype = GetFileType (info.FileFormat_);
 
 		const auto res = LIBMTP_Send_Track_From_File (device,
 				localPath.toUtf8 ().constData (), track,
