@@ -19,7 +19,7 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/media/ieventsprovider.h>
+#include <interfaces/media/ihypesprovider.h>
 
 class QNetworkAccessManager;
 
@@ -27,23 +27,16 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	class Authenticator;
-
-	class EventAttendMarker : public QObject
+	class HypedTracksFetcher : public QObject
 	{
 		Q_OBJECT
-
-		QNetworkAccessManager *NAM_;
-		qint64 ID_;
-		int Code_;
 	public:
-		EventAttendMarker (Authenticator*, QNetworkAccessManager*, qint64, Media::EventAttendType, QObject* = 0);
+		HypedTracksFetcher (QNetworkAccessManager*, QObject* = 0);
 	private slots:
-		void mark ();
 		void handleFinished ();
 		void handleError ();
 	signals:
-		void finished ();
+		void gotHypedTracks (const QList<Media::HypedTrackInfo>&);
 	};
 }
 }

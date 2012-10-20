@@ -18,32 +18,39 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/media/ieventsprovider.h>
+#include <QWidget>
+#include <interfaces/media/ihypesprovider.h>
+#include "ui_hypeswidget.h"
 
-class QNetworkAccessManager;
+namespace Media
+{
+	class IHypesProvider;
+}
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace LMP
 {
-	class Authenticator;
-
-	class EventAttendMarker : public QObject
+	class HypesWidget : public QWidget
 	{
 		Q_OBJECT
 
-		QNetworkAccessManager *NAM_;
-		qint64 ID_;
-		int Code_;
+		Ui::HypesWidget Ui_;
+		QStandardItemModel *ArtistsModel_;
+		QStandardItemModel *TracksModel_;
+
+		QList<Media::IHypesProvider*> Providers_;
 	public:
-		EventAttendMarker (Authenticator*, QNetworkAccessManager*, qint64, Media::EventAttendType, QObject* = 0);
+		HypesWidget (QWidget* = 0);
+
+		void InitializeProviders ();
 	private slots:
-		void mark ();
-		void handleFinished ();
-		void handleError ();
-	signals:
-		void finished ();
+		void request ();
+		void handleArtists (const QList<Media::HypedArtistInfo>&);
+		void handleTracks (const QList<Media::HypedTrackInfo>&);
+		void handleLink (const QString&);
 	};
 }
 }

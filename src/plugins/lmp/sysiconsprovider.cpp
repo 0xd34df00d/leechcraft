@@ -16,34 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/media/ieventsprovider.h>
-
-class QNetworkAccessManager;
+#include "sysiconsprovider.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace LMP
 {
-	class Authenticator;
-
-	class EventAttendMarker : public QObject
+	SysIconProvider::SysIconProvider (ICoreProxy_ptr proxy)
+	: QDeclarativeImageProvider (Pixmap)
+	, Proxy_ (proxy)
 	{
-		Q_OBJECT
+	}
 
-		QNetworkAccessManager *NAM_;
-		qint64 ID_;
-		int Code_;
-	public:
-		EventAttendMarker (Authenticator*, QNetworkAccessManager*, qint64, Media::EventAttendType, QObject* = 0);
-	private slots:
-		void mark ();
-		void handleFinished ();
-		void handleError ();
-	signals:
-		void finished ();
-	};
+	QPixmap SysIconProvider::requestPixmap (const QString& id, QSize *size, const QSize& requestedSize)
+	{
+		const auto& icon = Proxy_->GetIcon (id);
+
+		const auto& getSize = requestedSize.width () > 2 && requestedSize.height () > 2 ?
+				requestedSize :
+				QSize (48, 48);
+		if (size)
+			*size = icon.actualSize (getSize);
+		return icon.pixmap (getSize);
+	}
 }
 }

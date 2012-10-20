@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "richeditorwidget.h"
+#include <functional>
 #include <QWebFrame>
 #include <QWebPage>
 #include <QWebElement>

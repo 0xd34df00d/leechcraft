@@ -48,7 +48,6 @@ namespace MTPSync
 		UnmountableDevInfos_t Infos_;
 
 		QHash<QString, UnmountableFileInfo> OrigInfos_;
-		QList<LIBMTP_album_t*> ExistingAlbums_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -70,8 +69,8 @@ namespace MTPSync
 
 		void HandleTransfer (const QString&, quint64, quint64);
 	private:
-		void UploadTo (LIBMTP_mtpdevice_t*, const QByteArray&, const QString&);
-		LIBMTP_album_t* GetAlbum (LIBMTP_mtpdevice_t*, const QString&, uint32_t);
+		void UploadTo (LIBMTP_mtpdevice_t*, const QByteArray&, const QString&, const QString&);
+		LIBMTP_album_t* GetAlbum (LIBMTP_mtpdevice_t*, const UnmountableFileInfo&, uint32_t);
 	private slots:
 		void pollDevices ();
 	signals:

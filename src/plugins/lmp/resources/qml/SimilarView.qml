@@ -20,6 +20,8 @@ Rectangle {
     signal bookmarkArtistRequested(string id, string page, string tags)
     signal linkActivated(string id)
 
+    property alias model: similarView.model
+
     Image {
         id: fullSizeArtistImg
         state: "hidden"

@@ -18,32 +18,20 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/media/ieventsprovider.h>
-
-class QNetworkAccessManager;
+#include <QDeclarativeImageProvider>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace LMP
 {
-	class Authenticator;
-
-	class EventAttendMarker : public QObject
+	class SysIconProvider : public QDeclarativeImageProvider
 	{
-		Q_OBJECT
-
-		QNetworkAccessManager *NAM_;
-		qint64 ID_;
-		int Code_;
+		ICoreProxy_ptr Proxy_;
 	public:
-		EventAttendMarker (Authenticator*, QNetworkAccessManager*, qint64, Media::EventAttendType, QObject* = 0);
-	private slots:
-		void mark ();
-		void handleFinished ();
-		void handleError ();
-	signals:
-		void finished ();
+		SysIconProvider (ICoreProxy_ptr);
+
+		QPixmap requestPixmap (const QString&, QSize*, const QSize&);
 	};
 }
 }

@@ -227,6 +227,7 @@ namespace LMP
 		Ui_.RadioWidget_->InitializeProviders ();
 		Ui_.EventsWidget_->InitializeProviders ();
 		Ui_.ReleasesWidget_->InitializeProviders ();
+		Ui_.HypesWidget_->InitializeProviders ();
 		Ui_.RecommendationsWidget_->InitializeProviders ();
 	}
 
