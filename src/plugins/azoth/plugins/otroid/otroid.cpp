@@ -30,6 +30,10 @@ extern "C"
 #include <libotr/instag.h>
 }
 
+#if OTRL_VERSION_MAJOR >= 4
+#include <QTimer>
+#endif
+
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
@@ -88,6 +92,11 @@ namespace OTRoid
 					<< event
 					<< msg;
 		}
+
+		void TimerControl (void *opData, unsigned int interval)
+		{
+			static_cast<Plugin*> (opData)->SetPollTimerInterval (interval);
+		}
 #else
 		void LogMsg (void *opData, const char *msg)
 		{
@@ -118,7 +127,15 @@ namespace OTRoid
 		OtrOps_.account_name_free = &OTR::FreeAccountName;
 #if OTRL_VERSION_MAJOR >= 4
 		OtrOps_.handle_msg_event = &OTR::HandleMsgEvent;
-		//OtrOps_.timer_control = &OTR::TimerControl;
+		OtrOps_.timer_control = &OTR::TimerControl;
+
+		PollTimer_ = new QTimer (this);
+		connect (PollTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (pollOTR ()));
+
+		SetPollTimerInterval (otrl_message_poll_get_default_interval (UserState_));
 #else
 		OtrOps_.log_message = &OTR::LogMsg;
 #endif
@@ -225,6 +242,14 @@ namespace OTRoid
 	}
 
 #if OTRL_VERSION_MAJOR >= 4
+	void Plugin::SetPollTimerInterval (unsigned int seconds)
+	{
+		if (PollTimer_->isActive ())
+			PollTimer_->stop ();
+
+		if (seconds)
+			PollTimer_->start (seconds * 1000);
+	}
 #else
 	void Plugin::LogMsg (const QString& msg)
 	{
@@ -391,6 +416,13 @@ namespace OTRoid
 
 		Entry2Action_ [entry] = otr;
 	}
+
+#if OTRL_VERSION_MAJOR >= 4
+	void Plugin::pollOTR ()
+	{
+		otrl_message_poll (UserState_, &OtrOps_, this);
+	}
+#endif
 }
 }
 }
