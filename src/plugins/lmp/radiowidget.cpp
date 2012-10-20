@@ -20,6 +20,7 @@
 #include <QStandardItemModel>
 #include <QInputDialog>
 #include <QSortFilterProxyModel>
+#include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include "core.h"
@@ -70,6 +71,8 @@ namespace LMP
 				SIGNAL (textChanged (QString)),
 				StationsProxy_,
 				SLOT (setFilterFixedString (QString)));
+
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.StationsSearch_);
 	}
 
 	void RadioWidget::InitializeProviders ()
