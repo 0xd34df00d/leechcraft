@@ -73,8 +73,12 @@ namespace OTRoid
 				Priority, const QString& title,
 				const QString& primary, const QString& secondary);
 		void WriteFingerprints ();
-		void LogMsg (const QString&);
 		QString GetAccountName (const QString& accId);
+
+#if OTRL_VERSION_MAJOR >= 4
+#else
+		void LogMsg (const QString&);
+#endif
 	private:
 		const char* GetOTRFilename (const QString&) const;
 		void CreateActions (QObject*);
