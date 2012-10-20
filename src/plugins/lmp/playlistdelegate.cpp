@@ -134,7 +134,7 @@ namespace LMP
 			else if (!info.Title_.isEmpty ())
 				itemStr = info.Title_;
 			else
-				itemStr = QFileInfo (info.Title_).fileName ();
+				itemStr = QFileInfo (info.LocalPath_).fileName ();
 		}
 		itemStr = option.fontMetrics.elidedText (itemStr, Qt::ElideRight, itemTextRect.width ());
 

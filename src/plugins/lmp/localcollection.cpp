@@ -305,6 +305,12 @@ namespace LMP
 		return AlbumID2Album_ [Track2Album_ [trackId]];
 	}
 
+	QVariant LocalCollection::GetTrackData (int trackId, Role role) const
+	{
+		auto item = Track2Item_ [trackId];
+		return item ? item->data (role) : QVariant ();
+	}
+
 	QList<int> LocalCollection::GetDynamicPlaylist (DynamicPlaylist type) const
 	{
 		QList<int> result;
@@ -314,6 +320,12 @@ namespace LMP
 		case DynamicPlaylist::Random50:
 			for (int i = 0; i < 50; ++i)
 				result << keys [qrand () % keys.size ()];
+			break;
+		case DynamicPlaylist::LovedTracks:
+			result = Storage_->GetLovedTracks ();
+			break;
+		case DynamicPlaylist::BannedTracks:
+			result = Storage_->GetBannedTracks ();
 			break;
 		}
 		return result;
@@ -326,6 +338,19 @@ namespace LMP
 				[this] (int id) { return Track2Path_ [id]; });
 		result.removeAll (QString ());
 		return result;
+	}
+
+	void LocalCollection::AddTrackTo (int trackId, StaticRating rating)
+	{
+		switch (rating)
+		{
+		case StaticRating::Loved:
+			Storage_->SetTrackLoved (trackId);
+			break;
+		case StaticRating::Banned:
+			Storage_->SetTrackBanned (trackId);
+			break;
+		}
 	}
 
 	Collection::TrackStats LocalCollection::GetTrackStats (const QString& path) const

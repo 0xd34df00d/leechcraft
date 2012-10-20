@@ -44,14 +44,10 @@ class QToolBar;
 class QComboBox;
 class QTabWidget;
 class QTranslator;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class ShortcutManager;
-	}
-
 	namespace Plugins
 	{
 		namespace BitTorrent
@@ -120,8 +116,6 @@ namespace LeechCraft
 				SpeedSelectorAction *DownSelectorAction_,
 						*UpSelectorAction_;
 
-				Util::ShortcutManager *ShortcutMgr_;
-
 				enum
 				{
 					EAOpenTorrent_,
@@ -146,6 +140,8 @@ namespace LeechCraft
 
 				TabClassInfo TabTC_;
 				TorrentTab *TorrentTab_;
+
+				QSortFilterProxyModel *ReprProxy_;
 			public:
 				// IInfo
 				void Init (ICoreProxy_ptr);

@@ -25,6 +25,7 @@
 #include "interfaces/iinfo.h"
 #include "interfaces/idownload.h"
 #include "interfaces/ientityhandler.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -55,8 +56,6 @@ namespace LeechCraft
 			Add (ii, idl);
 		if (auto ieh = qobject_cast<IEntityHandler*> (obj))
 			Add (ii, ieh);
-
-		IInfo2QObject_ [ii] = obj;
 	}
 
 	bool HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
@@ -90,7 +89,7 @@ namespace LeechCraft
 		but->setIconSize (QSize (32, 32));
 		but->setIcon (icon);
 		but->setProperty ("AddedAs", "IDownload");
-		but->setProperty ("PluginName", name);
+		but->setProperty ("PluginID", ii->GetUniqueID ());
 
 		if (Buttons_->buttons ().isEmpty ())
 			but->setChecked (true);
@@ -139,7 +138,7 @@ namespace LeechCraft
 		but->setIconSize (QSize (32, 32));
 		but->setIcon (icon);
 		but->setProperty ("AddedAs", "IEntityHandler");
-		but->setProperty ("PluginName", name);
+		but->setProperty ("PluginID", ii->GetUniqueID ());
 
 		if (Buttons_->buttons ().isEmpty ())
 			but->setChecked (true);
@@ -163,8 +162,8 @@ namespace LeechCraft
 		if (!checked)
 			return 0;
 
-		// TODO rework this when we add IInfo::GetObject().
-		return IInfo2QObject_.value (Infos_.value (checked->text ()));
+		const auto& id = checked->property ("PluginID").toByteArray ();
+		return Core::Instance ().GetPluginManager ()->GetPluginByID (id);
 	}
 
 	IDownload* HandlerChoiceDialog::GetDownload ()
@@ -202,7 +201,7 @@ namespace LeechCraft
 	QString HandlerChoiceDialog::GetFilename ()
 	{
 		const QString& name = Buttons_->checkedButton ()->
-			property ("PluginName").toString ();
+			property ("PluginID").toString ();
 
 		QString result;
 		if (Ui_.LocationsBox_->currentIndex () == 0 &&
@@ -267,7 +266,7 @@ namespace LeechCraft
 		if (Suggestion_.size ())
 			Ui_.LocationsBox_->addItem (Suggestion_);
 
-		const QString& plugin = checked->property ("PluginName").toString ();
+		const QString& plugin = checked->property ("PluginID").toString ();
 		const QStringList& pluginTexts = GetPluginSavePaths (plugin).mid (0, 7);
 
 		QSettings settings (QCoreApplication::organizationName (),
@@ -331,7 +330,7 @@ namespace LeechCraft
 	void HandlerChoiceDialog::on_BrowseButton__released ()
 	{
 		const QString& name = Buttons_->checkedButton ()->
-			property ("PluginName").toString ();
+			property ("PluginID").toString ();
 
 		if (Suggestion_.isEmpty ())
 			Suggestion_ = GetPluginSavePaths (name).value (0, QDir::homePath ());

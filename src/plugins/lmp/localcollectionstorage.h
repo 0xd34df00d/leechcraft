@@ -59,6 +59,11 @@ namespace LMP
 		QSqlQuery GetTrackStats_;
 		QSqlQuery SetTrackStats_;
 		QSqlQuery UpdateTrackStats_;
+
+		// 1 is loved, 2 is banned
+		QSqlQuery GetLovedBanned_;
+		QSqlQuery SetLovedBanned_;
+		QSqlQuery RemoveLovedBanned_;
 	public:
 		struct LoadResult
 		{
@@ -84,7 +89,16 @@ namespace LMP
 		Collection::TrackStats GetTrackStats (int);
 		void SetTrackStats (const Collection::TrackStats&);
 		void RecordTrackPlayed (int);
+
+		void SetTrackLoved (int);
+		void SetTrackBanned (int);
+		void ClearTrackLovedBanned (int);
+		QList<int> GetLovedTracks ();
+		QList<int> GetBannedTracks ();
 	private:
+		void MarkLovedBanned (int, int);
+		QList<int> GetLovedBanned (int);
+
 		Collection::Artists_t GetAllArtists ();
 		QHash<int, Collection::Album_ptr> GetAllAlbums ();
 		QList<Collection::Track> GetAlbumTracks (int);

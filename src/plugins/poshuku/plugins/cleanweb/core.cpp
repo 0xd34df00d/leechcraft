@@ -18,6 +18,7 @@
 
 #include "core.h"
 #include <algorithm>
+#include <functional>
 #include <QNetworkRequest>
 #include <QRegExp>
 #include <QFile>
@@ -418,6 +419,30 @@ namespace CleanWeb
 		if (!req.hasRawHeader ("referer"))
 			return false;
 
+		auto acceptList = req.rawHeader ("Accept").split (',');
+		for (auto& item : acceptList)
+		{
+			const int pos = item.indexOf (';');
+			if (pos > 0)
+				item = item.left (pos);
+		}
+		acceptList.removeAll ("*/*");
+		FilterOption::MatchObjects objs = FilterOption::MatchObject::All;
+		if (!acceptList.isEmpty ())
+		{
+			auto find = [&acceptList] (std::function<bool (QByteArray)> f)
+			{
+				return std::find_if (acceptList.begin (), acceptList.end (), f) != acceptList.end ();
+			};
+
+			if (find ([] (const QByteArray& arr) { return arr.startsWith ("image/"); }))
+				objs |= FilterOption::MatchObject::Image;
+			if (find ([] (const QByteArray& arr) { return arr == "text/html" || arr == "application/xhtml+xml" || arr == "application/xml"; }))
+				objs |= FilterOption::MatchObject::Subdocument;
+			if (find ([] (const QByteArray& arr) { return arr == "text/css"; }))
+				objs |= FilterOption::MatchObject::CSS;
+		}
+
 		const QUrl& url = req.url ();
 		const QString& urlStr = url.toString ();
 		const auto& urlUtf8 = urlStr.toUtf8 ();
@@ -426,7 +451,7 @@ namespace CleanWeb
 
 		const QString& domain = url.host ();
 		const auto& domainUtf8 = domain.toUtf8 ();
-		const bool isForeign = !req.rawHeader ("referer").contains (domainUtf8);
+		const bool isForeign = !req.rawHeader ("Referer").contains (domainUtf8);
 
 		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
@@ -447,6 +472,11 @@ namespace CleanWeb
 
 				const auto& opt = item.Option_;
 				if (opt.AbortForeign_ && isForeign)
+					continue;
+
+				if (opt.MatchObjects_ != FilterOption::MatchObject::All &&
+						objs != FilterOption::MatchObject::All &&
+						!(objs & opt.MatchObjects_))
 					continue;
 
 				const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
@@ -832,13 +862,13 @@ namespace CleanWeb
 
 	void Core::handleFrameLayout (QPointer<QWebFrame> frame)
 	{
-		const QUrl& url = frame->url ();
-		const QString& urlStr = url.toString ();
+		const QUrl& frameUrl = frame->url ();
+		const QString& urlStr = frameUrl.toString ();
 		const auto& urlUtf8 = urlStr.toUtf8 ();
 		const QString& cinUrlStr = urlStr.toLower ();
 		const auto& cinUrlUtf8 = cinUrlStr.toUtf8 ();
 
-		const QString& domain = url.host ();
+		const QString& domain = frameUrl.host ();
 
 		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
@@ -856,7 +886,15 @@ namespace CleanWeb
 				if (!item.OrigString_.isEmpty () && !Matches (item, url, utf8, domain))
 					continue;
 
-				Q_FOREACH (auto elem, frame->findAllElements (item.Option_.HideSelector_))
+				const auto& matchingElems = frame->findAllElements (item.Option_.HideSelector_);
+				if (matchingElems.count ())
+					qDebug () << "removing"
+							<< matchingElems.count ()
+							<< "elems for"
+							<< item.Option_.HideSelector_
+							<< frameUrl;
+
+				Q_FOREACH (auto elem, matchingElems)
 					RemoveElem (elem);
 
 				if (!(++numItems % 100))

@@ -54,6 +54,11 @@ struct EntityTestHandleResult;
 
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class ShortcutManager;
+	}
+
 	namespace Plugins
 	{
 		namespace BitTorrent
@@ -124,7 +129,7 @@ namespace LeechCraft
 				HandleDict_t Handles_;
 				QList<QString> Headers_;
 				mutable int CurrentTorrent_;
-				std::unique_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
+				std::shared_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
 				std::shared_ptr<LiveStreamManager> LiveStreamManager_;
 				QString ExternalAddress_;
 				bool SaveScheduled_;
@@ -132,6 +137,7 @@ namespace LeechCraft
 				QWidget *TabWidget_;
 				ICoreProxy_ptr Proxy_;
 				QMenu *Menu_;
+				Util::ShortcutManager *ShortcutMgr_;
 
 				const QIcon TorrentIcon_;
 
@@ -139,24 +145,32 @@ namespace LeechCraft
 			public:
 				enum Columns
 				{
-					ColumnName = 0
-					, ColumnState
-					, ColumnProgress  // percentage, Downloaded of Size
+					ColumnName,
+					ColumnState,
+					ColumnProgress,  // percentage, Downloaded of Size
+					ColumnDownSpeed,
+					ColumnUpSpeed,
+					ColumnLeechers,
+					ColumnSeeders
 				};
 				enum AddType
 				{
-					Started
-					, Paused
+					Started,
+					Paused
 				};
 				enum SettingsPreset
 				{
-					SPDefault
-					, SPMinMemoryUsage
-					, SPHighPerfSeed
+					SPDefault,
+					SPMinMemoryUsage,
+					SPHighPerfSeed
+				};
+				enum Roles
+				{
+					FullLengthText = Qt::UserRole + 1
 				};
 
 				static Core* Instance ();
-				virtual ~Core ();
+
 				void SetWidgets (QToolBar*, QWidget*);
 				void SetMenu (QMenu*);
 				void DoDelayedInit ();
@@ -165,6 +179,8 @@ namespace LeechCraft
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 
+				Util::ShortcutManager* GetShortcutManager () const;
+
 				EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
 				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
@@ -172,9 +188,6 @@ namespace LeechCraft
 				PeersModel* GetPeersModel (int);
 				QAbstractItemModel* GetWebSeedsModel (int);
 				TorrentFilesModel* GetTorrentFilesModel (int);
-				void ClearFiles ();
-				void UpdateFiles ();
-				void ResetFiles ();
 
 				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
@@ -253,21 +266,23 @@ namespace LeechCraft
 				double GetDesiredRating () const;
 				void SetTorrentDownloadRate (int, int);
 				void SetTorrentUploadRate (int, int);
-				void SetTorrentDesiredRating (double, int);
 				int GetTorrentDownloadRate (int) const;
 				int GetTorrentUploadRate (int) const;
-				double GetTorrentDesiredRating (int) const;
 				void AddPeer (const QString&, int, int);
 				void AddWebSeed (const QString&, bool, int);
 				void RemoveWebSeed (const QString&, bool, int);
 				void SetFilePriority (int, int, int);
 				void SetFilename (int, const QString&, int);
+
 				std::vector<libtorrent::announce_entry> GetTrackers (const boost::optional<int>& = boost::optional<int> ()) const;
 				void SetTrackers (const std::vector<libtorrent::announce_entry>&,
 						const boost::optional<int>& = boost::optional<int> ());
-				QString GetMagnetLink () const;
-				QString GetTorrentDirectory () const;
-				bool MoveTorrentFiles (const QString&);
+
+				QString GetMagnetLink (int) const;
+
+				QString GetTorrentDirectory (int) const;
+				bool MoveTorrentFiles (const QString&, int);
+
 				void SetCurrentTorrent (int);
 				int GetCurrentTorrent () const;
 				bool IsTorrentManaged (int) const;
@@ -293,10 +308,10 @@ namespace LeechCraft
 				void FileFinished (const libtorrent::torrent_handle&, int);
 				void PieceRead (const libtorrent::read_piece_alert&);
 
-				void MoveUp (const std::deque<int>&);
-				void MoveDown (const std::deque<int>&);
-				void MoveToTop (const std::deque<int>&);
-				void MoveToBottom (const std::deque<int>&);
+				void MoveUp (const std::vector<int>&);
+				void MoveDown (const std::vector<int>&);
+				void MoveToTop (const std::vector<int>&);
+				void MoveToBottom (const std::vector<int>&);
 
 				void SetPreset (SettingsPreset);
 

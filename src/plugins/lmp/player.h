@@ -55,7 +55,7 @@ namespace LMP
 
 		QList<Phonon::MediaSource> CurrentQueue_;
 		QHash<Phonon::MediaSource, QStandardItem*> Items_;
-		QHash<QPair<QString, QString>, QList<QStandardItem*>> AlbumRoots_;
+		QHash<QString, QList<QStandardItem*>> AlbumRoots_;
 
 		Phonon::MediaSource CurrentStopSource_;
 

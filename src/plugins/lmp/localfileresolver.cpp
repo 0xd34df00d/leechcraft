@@ -49,7 +49,7 @@ namespace LMP
 	TagLib::FileRef LocalFileResolver::GetFileRef (const QString& file) const
 	{
 #ifdef Q_OS_WIN32
-		return TagLib::FileRef (file.toStdWString ().c_str ());
+		return TagLib::FileRef (reinterpret_cast<const wchar_t*> (file.utf16 ()));
 #else
 		return TagLib::FileRef (file.toUtf8 ().constData ());
 #endif

@@ -38,7 +38,7 @@ namespace LeechCraft
 				bool TorrentSelectionChanged_;
 				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsChangeCompleter_;
 			public:
-				TabWidget (QAction*, QWidget* = 0);
+				TabWidget (QWidget* = 0);
 
 				void InvalidateSelection ();
 				void SetOverallDownloadRateController (int);

@@ -18,6 +18,7 @@
 
 #include "entitymanager.h"
 #include <functional>
+#include <algorithm>
 #include <QDesktopServices>
 #include <QUrl>
 #include "util/util.h"
@@ -81,21 +82,32 @@ namespace LeechCraft
 			return result;
 		}
 
-		QObjectList GetObjects (const Entity& e, bool fullScan, int *downloaders = 0, int *handlers = 0)
+		QObjectList GetObjects (const Entity& e, int *downloaders = 0, int *handlers = 0)
 		{
+			const auto& unwanted = e.Additional_ ["IgnorePlugins"].toStringList ();
+			auto removeUnwanted = [&unwanted] (QObjectList& handlers)
+			{
+				const auto remBegin = std::remove_if (handlers.begin (), handlers.end (),
+						[&unwanted] (QObject *obj)
+							{ return unwanted.contains (qobject_cast<IInfo*> (obj)->GetUniqueID ()); });
+				handlers.erase (remBegin, handlers.end ());
+			};
+
 			QObjectList result;
 			if (!(e.Parameters_ & TaskParameter::OnlyHandle))
 			{
-				const auto& sub = GetSubtype<IDownload*> (e, fullScan,
+				auto sub = GetSubtype<IDownload*> (e, true,
 						[] (Entity e, IDownload *dl) { return dl->CouldDownload (e); });
+				removeUnwanted (sub);
 				if (downloaders)
 					*downloaders = sub.size ();
 				result += sub;
 			}
 			if (!(e.Parameters_ & TaskParameter::OnlyDownload))
 			{
-				const auto& sub = GetSubtype<IEntityHandler*> (e, fullScan,
+				auto sub = GetSubtype<IEntityHandler*> (e, true,
 						[] (Entity e, IEntityHandler *eh) { return eh->CouldHandle (e); });
+				removeUnwanted (sub);
 				if (handlers)
 					*handlers = sub.size ();
 				result += sub;
@@ -125,7 +137,7 @@ namespace LeechCraft
 			if (desired)
 				handlers << desired;
 			else
-				handlers = GetObjects (e, true, &numDownloaders, &numHandlers);
+				handlers = GetObjects (e, &numDownloaders, &numHandlers);
 
 			if (handlers.isEmpty () && !desired)
 				return handling ? NoHandlersAvailable (e) : false;
@@ -139,8 +151,10 @@ namespace LeechCraft
 			if (shouldAsk)
 			{
 				HandlerChoiceDialog dia (Util::GetUserText (e));
-				for (auto handler : handlers)
-					dia.Add (handler);
+				for (auto handler : handlers.mid (0, numDownloaders))
+					dia.Add (qobject_cast<IInfo*> (handler), qobject_cast<IDownload*> (handler));
+				for (auto handler : handlers.mid (numDownloaders, numHandlers))
+					dia.Add (qobject_cast<IInfo*> (handler), qobject_cast<IEntityHandler*> (handler));
 				dia.SetFilenameSuggestion (e.Location_);
 				if (dia.exec () != QDialog::Accepted || !dia.GetSelected ())
 					return false;
@@ -164,11 +178,9 @@ namespace LeechCraft
 
 	IEntityManager::DelegationResult EntityManager::DelegateEntity (Entity e, QObject *desired)
 	{
-		qDebug () << Q_FUNC_INFO;
 		e.Parameters_ |= OnlyDownload;
 		QObjectList handlers;
 		const bool foundOk = GetPreparedObjectList (e, desired, handlers, false);
-		qDebug () << foundOk << handlers;
 		if (!foundOk)
 			return { 0, 0 };
 
@@ -181,15 +193,13 @@ namespace LeechCraft
 
 	bool EntityManager::CouldHandle (const Entity& e)
 	{
-		return !GetObjects (e, false).isEmpty ();
+		return !GetObjects (e).isEmpty ();
 	}
 
 	bool EntityManager::HandleEntity (Entity e, QObject *desired)
 	{
-		qDebug () << Q_FUNC_INFO;
 		QObjectList handlers;
 		const bool foundOk = GetPreparedObjectList (e, desired, handlers, true);
-		qDebug () << foundOk << handlers;
 		if (!foundOk || handlers.isEmpty ())
 			return false;
 		if (foundOk && handlers.isEmpty ())
@@ -216,6 +226,6 @@ namespace LeechCraft
 
 	QList<QObject*> EntityManager::GetPossibleHandlers (const Entity& e)
 	{
-		return GetObjects (e, true);
+		return GetObjects (e);
 	}
 }

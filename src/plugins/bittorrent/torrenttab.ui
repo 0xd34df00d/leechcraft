@@ -18,17 +18,49 @@
     <number>1</number>
    </property>
    <item>
+    <widget class="LeechCraft::Util::TagsLineEdit" name="SearchLine_">
+     <property name="placeholderText">
+      <string>Search...</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QTreeView" name="TorrentsView_"/>
-     <widget class="LeechCraft::Plugins::BitTorrent::TorrentTabWidget" name="Tabs_" native="true"/>
+     <widget class="QTreeView" name="TorrentsView_">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="rootIsDecorated">
+       <bool>false</bool>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="LeechCraft::Plugins::BitTorrent::TorrentTabWidget" name="Tabs_" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>LeechCraft::Util::TagsLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">util/tags/tagslineedit.h</header>
+  </customwidget>
   <customwidget>
    <class>LeechCraft::Plugins::BitTorrent::TorrentTabWidget</class>
    <extends>QWidget</extends>

@@ -29,6 +29,14 @@ namespace LMP
 	{
 		QString FilePattern_;
 
+		/** Possible format IDs are:
+		 *
+		 * - ogg
+		 * - aac-nonfree
+		 * - aac-free
+		 * - mp3
+		 * - wma
+		 */
 		QString FormatID_;
 		Format::BitrateType BitrateType_;
 		int Quality_;

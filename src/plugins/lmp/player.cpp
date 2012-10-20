@@ -38,6 +38,12 @@
 #include "xmlsettingsmanager.h"
 #include "playlistparsers/playlistfactory.h"
 
+#if defined(Q_OS_WIN32)
+	#ifdef GetObject
+		#undef GetObject
+	#endif
+#endif
+
 Q_DECLARE_METATYPE (Phonon::MediaSource);
 Q_DECLARE_METATYPE (QList<Phonon::MediaSource>);
 
@@ -208,10 +214,22 @@ namespace LMP
 				if (left.Title_ != right.Title_)
 					return left.Title_ < right.Title_;
 				break;
-			case SortingCriteria::FilePath:
-				if (left.LocalPath_ != right.LocalPath_)
-					return left.LocalPath_ < right.LocalPath_;
+			case SortingCriteria::DirectoryPath:
+			{
+				const auto& leftPath = QFileInfo (left.LocalPath_).dir ().absolutePath ();
+				const auto& rightPath = QFileInfo (right.LocalPath_).dir ().absolutePath ();
+				if (leftPath != rightPath)
+					return QString::localeAwareCompare (leftPath, rightPath) < 0;
 				break;
+			}
+			case SortingCriteria::FileName:
+			{
+				const auto& leftPath = QFileInfo (left.LocalPath_).fileName ();
+				const auto& rightPath = QFileInfo (right.LocalPath_).fileName ();
+				if (leftPath != rightPath)
+					return QString::localeAwareCompare (leftPath, rightPath) < 0;
+				break;
+			}
 			}
 		}
 
@@ -860,7 +878,7 @@ namespace LMP
 		QMetaObject::invokeMethod (PlaylistModel_, "modelAboutToBeReset");
 		PlaylistModel_->blockSignals (true);
 
-		QPair<QString, QString> prevAlbumRoot;
+		QString prevAlbumRoot;
 
 		Q_FOREACH (const auto& sourcePair, sources)
 		{
@@ -893,7 +911,7 @@ namespace LMP
 			{
 				const auto& info = sourcePair.second;
 
-				const auto& albumID = qMakePair (info.Artist_, info.Album_);
+				const auto& albumID = info.Album_;
 				FillItem (item, info);
 				if (albumID != prevAlbumRoot ||
 						AlbumRoots_ [albumID].isEmpty ())
@@ -1090,8 +1108,6 @@ namespace LMP
 		const auto& source = Source_->currentSource ();
 		const auto& isUrl = source.type () == Phonon::MediaSource::Stream ||
 				(source.type () == Phonon::MediaSource::Url && source.url ().scheme () != "file");
-		qDebug () << Q_FUNC_INFO << isUrl << CurrentStation_.get () << !Items_.contains (source);
-		qDebug () << Source_->metaData ();
 		if (!isUrl ||
 				CurrentStation_ ||
 				!Items_.contains (source))
