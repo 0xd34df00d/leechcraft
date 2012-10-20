@@ -27,7 +27,10 @@ extern "C"
 {
 #include <libotr/version.h>
 #include <libotr/privkey.h>
+
+#if OTRL_VERSION_MAJOR >= 4
 #include <libotr/instag.h>
+#endif
 }
 
 #if OTRL_VERSION_MAJOR >= 4
