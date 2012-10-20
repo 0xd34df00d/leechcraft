@@ -21,11 +21,13 @@
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
 #include <util/util.h>
+#include <util/gui/clearlineeditaddon.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "chathistory.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -54,6 +56,10 @@ namespace ChatHistory
 	, EntryToFocus_ (entry)
 	{
 		Ui_.setupUi (this);
+
+		auto proxy = Core::Instance ()->GetCoreProxy ();
+		new Util::ClearLineEditAddon (proxy, Ui_.ContactsSearch_);
+		new Util::ClearLineEditAddon (proxy, Ui_.HistorySearch_);
 
 		SortFilter_->setDynamicSortFilter (true);
 		SortFilter_->setSortCaseSensitivity (Qt::CaseInsensitive);

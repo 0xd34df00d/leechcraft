@@ -23,6 +23,8 @@
 
 #ifdef ENABLE_UDISKS
 #include "backends/udisks/udisksbackend.h"
+#else
+#include "devbackend.h"
 #endif
 
 #include "trayview.h"

@@ -20,6 +20,7 @@
 #include <map>
 #include <QIcon>
 #include <QTimer>
+#include <QFileInfo>
 
 namespace LeechCraft
 {
@@ -96,8 +97,9 @@ namespace MTPSync
 		OrigInfos_ [origLocalPath] = info;
 	}
 
-	void Plugin::Upload (const QString& localPath, const QString&, const QByteArray& devId, const QByteArray& storageId)
+	void Plugin::Upload (const QString& localPath, const QString& origPath, const QByteArray& devId, const QByteArray& storageId)
 	{
+		qDebug () << Q_FUNC_INFO << localPath << devId;
 		bool found = false;
 
 		LIBMTP_raw_device_t *rawDevices;
@@ -110,9 +112,10 @@ namespace MTPSync
 				continue;
 
 			const auto& serial = LIBMTP_Get_Serialnumber (device.get ());
+			qDebug () << "matching against" << serial;
 			if (serial == devId)
 			{
-				UploadTo (device.get (), storageId, localPath);
+				UploadTo (device.get (), storageId, localPath, origPath);
 				found = true;
 				break;
 			}
@@ -120,9 +123,14 @@ namespace MTPSync
 		free (rawDevices);
 
 		if (!found)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find device"
+					<< devId;
 			emit uploadFinished (localPath,
 					QFile::ResourceError,
 					tr ("Unable to find the requested device."));
+		}
 	}
 
 	void Plugin::HandleTransfer (const QString& path, quint64 sent, quint64 total)
@@ -151,9 +159,23 @@ namespace MTPSync
 
 			return 0;
 		}
+
+		LIBMTP_filetype_t GetFileType (const QString& format)
+		{
+			QMap<QString, LIBMTP_filetype_t> map;
+			map ["mp3"] = LIBMTP_FILETYPE_MP3;
+			map ["ogg"] = LIBMTP_FILETYPE_OGG;
+			map ["aac"] = LIBMTP_FILETYPE_AAC;
+			map ["aac-free"] = LIBMTP_FILETYPE_AAC;
+			map ["aac-nonfree"] = LIBMTP_FILETYPE_AAC;
+			map ["flac"] = LIBMTP_FILETYPE_FLAC;
+			map ["wma"] = LIBMTP_FILETYPE_WMA;
+			return map.value (format, LIBMTP_FILETYPE_UNDEF_AUDIO);
+		}
 	}
 
-	void Plugin::UploadTo (LIBMTP_mtpdevice_t *device, const QByteArray& storageId, const QString& localPath)
+	void Plugin::UploadTo (LIBMTP_mtpdevice_t *device, const QByteArray& storageId,
+			const QString& localPath, const QString& origPath)
 	{
 		LIBMTP_Get_Storage (device, 0);
 
@@ -168,22 +190,43 @@ namespace MTPSync
 
 		if (!storage)
 		{
+			qWarning () << Q_FUNC_INFO
+					<< "could not find storage"
+					<< storageId;
 			emit uploadFinished (localPath,
 					QFile::ResourceError,
 					tr ("Unable to find the requested storage."));
 			return;
 		}
 
-		qDebug () << "uploading" << localPath << "to" << storage->id;
-
 		const auto id = storage->id;
-		auto album = GetAlbum (device, localPath, id);
+		const auto& info = OrigInfos_.take (origPath);
+
+		qDebug () << "uploading" << localPath << QFileInfo (localPath).size () << "to" << storage->id;
 
 		auto track = LIBMTP_new_track_t ();
-		track->parent_id = album ? album->album_id : 0;
+		//track->parent_id = album ? album->album_id : 0;
 		track->storage_id = id;
 
-		qDebug () << LIBMTP_Send_Track_From_File (device, localPath.toUtf8 ().constData (), track, TransferCallback, new CallbackData ({ this, localPath }));
+		auto getStr = [] (const QString& str) { return strdup (str.toUtf8 ().constData ()); };
+
+		track->filename = getStr (QFileInfo (localPath).fileName ());
+		track->album = getStr (info.Album_);
+		track->title = getStr (info.TrackTitle_);
+		track->genre = getStr (info.Genres_.join ("; "));
+		track->artist = getStr (info.Artist_);
+		track->tracknumber = info.TrackNumber_;
+		track->filetype = GetFileType (info.FileFormat_);
+
+		const auto res = LIBMTP_Send_Track_From_File (device,
+				localPath.toUtf8 ().constData (), track,
+				TransferCallback, new CallbackData ({ this, localPath }));
+		qDebug () << "send result:" << res;
+		if (res)
+		{
+			LIBMTP_Dump_Errorstack (device);
+			LIBMTP_Clear_Errorstack (device);
+		}
 		LIBMTP_destroy_track_t (track);
 	}
 
@@ -197,17 +240,8 @@ namespace MTPSync
 		}
 	}
 
-	LIBMTP_album_t* Plugin::GetAlbum (LIBMTP_mtpdevice_t *device, const QString& localPath, uint32_t storageId)
+	LIBMTP_album_t* Plugin::GetAlbum (LIBMTP_mtpdevice_t *device, const UnmountableFileInfo& info, uint32_t storageId)
 	{
-		if (!OrigInfos_.contains (localPath))
-			return 0;
-
-		const auto& info = OrigInfos_.take (localPath);
-		const auto pos = std::find_if (ExistingAlbums_.begin (), ExistingAlbums_.end (),
-				[&info] (const LIBMTP_album_t *album) { return IsRightAlbum (info, album); });
-		if (pos != ExistingAlbums_.end ())
-			return *pos;
-
 		auto album = LIBMTP_new_album_t ();
 
 		album->artist = strdup (info.Artist_.toUtf8 ().constData ());
@@ -222,12 +256,11 @@ namespace MTPSync
 		album->tracks = 0;
 
 		if (!LIBMTP_Create_New_Album (device, album))
-		{
-			ExistingAlbums_ << album;
 			return album;
-		}
 
 		qWarning () << Q_FUNC_INFO << "unable to create album";
+		LIBMTP_Dump_Errorstack (device);
+		LIBMTP_Clear_Errorstack (device);
 
 		LIBMTP_destroy_album_t (album);
 		return 0;

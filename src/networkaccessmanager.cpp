@@ -176,6 +176,12 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 	if (r.url ().scheme ().startsWith ("http") && !LocaleStr_.isEmpty ())
 		r.setRawHeader ("Accept-Language", LocaleStr_.toUtf8 ());
 
+	if (XmlSettingsManager::Instance ()->property ("SetDNT").toBool ())
+	{
+		const bool dnt = XmlSettingsManager::Instance ()->property ("DNTValue").toBool ();
+		r.setRawHeader ("DNT", dnt ? "1" : "0");
+	}
+
 	QNetworkReply *result = QNetworkAccessManager::createRequest (op, r, out);
 	emit requestCreated (op, r, result);
 	return result;

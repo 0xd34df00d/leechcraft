@@ -305,6 +305,12 @@ namespace LMP
 		return AlbumID2Album_ [Track2Album_ [trackId]];
 	}
 
+	QVariant LocalCollection::GetTrackData (int trackId, Role role) const
+	{
+		auto item = Track2Item_ [trackId];
+		return item ? item->data (role) : QVariant ();
+	}
+
 	QList<int> LocalCollection::GetDynamicPlaylist (DynamicPlaylist type) const
 	{
 		QList<int> result;

@@ -519,17 +519,17 @@ namespace Aggregator
 		}
 	}
 
-	QByteArray Aggregator::Aggregator::GetTabRecoverData () const
+	QByteArray Aggregator::GetTabRecoverData () const
 	{
 		return "aggregatortab";
 	}
 
-	QIcon Aggregator::Aggregator::GetTabRecoverIcon () const
+	QIcon Aggregator::GetTabRecoverIcon () const
 	{
 		return GetIcon ();
 	}
 
-	QString Aggregator::Aggregator::GetTabRecoverName () const
+	QString Aggregator::GetTabRecoverName () const
 	{
 		return GetName ();
 	}

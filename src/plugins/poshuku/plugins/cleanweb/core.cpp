@@ -18,6 +18,7 @@
 
 #include "core.h"
 #include <algorithm>
+#include <functional>
 #include <QNetworkRequest>
 #include <QRegExp>
 #include <QFile>

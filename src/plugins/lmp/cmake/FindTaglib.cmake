@@ -52,7 +52,7 @@ else(TAGLIBCONFIG_EXECUTABLE)
 
   find_path(TAGLIB_INCLUDES
     NAMES
-    tag.h
+    taglib/tag.h
     PATH_SUFFIXES taglib
     PATHS
     ${KDE4_INCLUDE_DIR}
