@@ -179,6 +179,12 @@
 			<item type="pushbutton" name="ClearCookies">
 				<label lang="en" value="Clear cookies" />
 			</item>
+			<item type="groupbox" property="SetDNT" default="false" checkable="true">
+				<label value="Set Do Not Track option" />
+				<item type="checkbox" property="DNTValue" default="true">
+					<label value="Do not track" />
+				</item>
+			</item>
 		</tab>
 		<tab>
 			<label value="Languages" />
