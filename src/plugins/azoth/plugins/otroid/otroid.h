@@ -55,6 +55,10 @@ namespace OTRoid
 		QHash<QObject*, QAction*> Entry2Action_;
 
 		QDir OtrDir_;
+
+#if OTRL_VERSION_MAJOR >= 4
+		QTimer *PollTimer_;
+#endif
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -73,8 +77,13 @@ namespace OTRoid
 				Priority, const QString& title,
 				const QString& primary, const QString& secondary);
 		void WriteFingerprints ();
-		void LogMsg (const QString&);
 		QString GetAccountName (const QString& accId);
+
+#if OTRL_VERSION_MAJOR >= 4
+		void SetPollTimerInterval (unsigned int seconds);
+#else
+		void LogMsg (const QString&);
+#endif
 	private:
 		const char* GetOTRFilename (const QString&) const;
 		void CreateActions (QObject*);
@@ -93,6 +102,10 @@ namespace OTRoid
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);
+	private slots:
+#if OTRL_VERSION_MAJOR >= 4
+		void pollOTR ();
+#endif
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
