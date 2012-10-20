@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "paths.h"
+#include <QFile>
 #if defined (Q_OS_WIN32) || defined (Q_OS_MAC)
 #include <QApplication>
 #endif
@@ -50,6 +51,19 @@ namespace Util
 				<< "unknown system path"
 				<< static_cast<int> (path);
 		return QStringList ();
+	}
+
+	QString GetSysPath (SysPath path, const QString& suffix, const QString& filename)
+	{
+		for (const QString& cand : GetPathCandidates (SysPath::QML, suffix))
+			if (QFile::exists (cand + filename))
+				return cand + filename;
+
+		qWarning () << Q_FUNC_INFO
+				<< "unable to find"
+				<< suffix
+				<< filename;
+		return QString ();
 	}
 }
 }

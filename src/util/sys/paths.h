@@ -31,5 +31,6 @@ namespace Util
 	};
 
 	UTIL_API QStringList GetPathCandidates (SysPath path, QString suffix);
+	UTIL_API QString GetSysPath (SysPath path, const QString& suffix, const QString& filename);
 }
 }
