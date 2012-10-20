@@ -85,6 +85,16 @@ namespace ChatHistory
 		return TabClass_;
 	}
 
+	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
+	{
+		CoreProxy_ = proxy;
+	}
+
+	ICoreProxy_ptr Core::GetCoreProxy () const
+	{
+		return CoreProxy_;
+	}
+
 	void Core::SetPluginProxy (QObject *proxy)
 	{
 		PluginProxy_ = qobject_cast<IProxyObject*> (proxy);
