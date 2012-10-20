@@ -41,13 +41,7 @@ namespace AdvancedNotifications
 				this,
 				SLOT (handleStatusChanged (QDeclarativeView::Status)));
 
-		QString fileLocation;
-		Q_FOREACH (const QString& cand, Util::GetPathCandidates (Util::SysPath::QML, "advancednotifications"))
-			if (QFile::exists (cand + "visualnotificationsview.qml"))
-			{
-				fileLocation = cand + "visualnotificationsview.qml";
-				break;
-			}
+		const auto& fileLocation = Util::GetSysPath (Util::SysPath::QML, "advancednotifications", "visualnotificationsview.qml");
 
 		if (fileLocation.isEmpty ())
 		{
