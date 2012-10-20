@@ -50,7 +50,7 @@ namespace LMP
 				if (idx.data (Media::RadioItemRole::ItemType).toInt () == Media::RadioType::None)
 					return true;
 
-				return idx.data ().toString ().contains (pat);
+				return idx.data ().toString ().contains (pat, Qt::CaseInsensitive);
 			}
 		};
 	}
