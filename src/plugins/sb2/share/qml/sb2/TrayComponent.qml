@@ -61,8 +61,7 @@ Rectangle {
                         from: ""
                         to: "hovered"
                         reversible: true
-                        PropertyAnimation { properties: "border.color"; duration: 200 }
-                        AnchorAnimation { duration: 200 }
+                        PropertyAnimation { properties: "border.color,anchors.margins"; duration: 200 }
                     }
                 ]
 
