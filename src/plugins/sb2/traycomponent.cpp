@@ -110,7 +110,7 @@ namespace SB2
 		}
 	};
 
-	const QString ImageProviderID = "LeechCraft_SB2_TrayActionImage";
+	const QString ImageProviderID = "SB2_TrayActionImage";
 
 	TrayComponent::TrayComponent (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
@@ -120,7 +120,7 @@ namespace SB2
 	, NextActionId_ (0)
 	{
 		Component_.Url_ = Util::GetSysPath (Util::SysPath::QML, "sb2", "TrayComponent.qml");
-		Component_.DynamicProps_ << QPair<QString, QObject*> ("trayModel", Model_);
+		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_trayModel", Model_);
 		Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
 
 		const auto& hasActions = Proxy_->GetPluginsManager ()->

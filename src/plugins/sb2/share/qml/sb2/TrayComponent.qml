@@ -14,7 +14,7 @@ Rectangle {
         anchors.fill: parent
         boundsBehavior: Flickable.StopAtBounds
 
-        model: trayModel
+        model: SB2_trayModel
 
         delegate: Rectangle {
             id: trayViewDelegate
