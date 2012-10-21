@@ -10,9 +10,11 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	shaitan.cpp
+	terminalwidget.cpp
 	)
 SET (HEADERS
 	shaitan.h
+	terminalwidget.h
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

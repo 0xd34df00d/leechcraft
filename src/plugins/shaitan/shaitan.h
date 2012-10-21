@@ -32,6 +32,8 @@ namespace Shaitan
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs)
+		
+		TabClassInfo TerminalTC_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -43,6 +45,7 @@ namespace Shaitan
 		
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
+		void statusBarChanged ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
@@ -50,7 +53,7 @@ namespace Shaitan
 		void changeTabIcon (QWidget*, const QIcon&);
 		void changeTooltip (QWidget*, QWidget*);
 		void raiseTab (QWidget*);
-		
+		void statusBarChanged (QWidget*, const QString&);	
 	};
 }
 }

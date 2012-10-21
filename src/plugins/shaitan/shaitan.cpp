@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "shaitan.h"
+#include "terminalwidget.h"
 #include <QIcon>
 
 namespace LeechCraft
@@ -25,6 +26,15 @@ namespace Shaitan
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		TerminalTC_ =
+		{
+			GetUniqueID () + "",
+			"Shaitan",
+			GetInfo (),
+			GetIcon (),
+			40,
+			TFOpenableByRequest
+		};
 	}
 
 	void Plugin::SecondInit ()
@@ -39,11 +49,30 @@ namespace Shaitan
 	void Plugin::Release ()
 	{
 	}
+	
+	void Plugin::TabOpenRequested(const QByteArray& tabClass)
+	{
+		TerminalWidget *terminal = new TerminalWidget (TerminalTC_, this);
+		emit addNewTab ("Shaitan", terminal);
+		emit raiseTab (terminal);
+		connect (terminal, 
+				SIGNAL (removeTab(QWidget*)),
+				this, 
+				SIGNAL (removeTab(QWidget*)));
+	}
 
 	QString Plugin::GetName () const
 	{
 		return "Shaitan";
 	}
+	
+	TabClasses_t Plugin::GetTabClasses() const
+	{
+		TabClasses_t tcs;
+		tcs << TerminalTC_;
+		return tcs;
+	}
+
 
 	QString Plugin::GetInfo () const
 	{
@@ -54,6 +83,7 @@ namespace Shaitan
 	{
 		return QIcon ();
 	}
+	
 }
 }
 
