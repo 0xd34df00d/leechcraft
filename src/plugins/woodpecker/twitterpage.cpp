@@ -1,5 +1,6 @@
 #include "twitterpage.h"
 #include "core.h"
+#include "util/util.h"
 #include <qjson/parser.h>
 #include <QListWidgetItem>
 
@@ -130,6 +131,10 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 	int i;
 
 	if (! (twits.length())) return; // if we have no tweets to parse
+	
+	Entity notification = Util::MakeNotification ("Woodpecker" , tr( "You have " ) + QString(twits.length()) + 
+	tr( " new twits" ), PInfo_);
+	emit gotEntity(notification);
 
 	firstNewTwit = twits.first();
 
@@ -148,11 +153,7 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 
 
 		for (i = 0; i < insertionShift; i++)
-		{
-			qDebug() << "uTL: cycle i " << i << endl;
 			twits.removeFirst();
-		}
-
 
 		screenTwits.append (twits);
 	}
@@ -161,7 +162,6 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 	Q_FOREACH (twit, screenTwits)
 	{
 		QListWidgetItem *tmpitem = new QListWidgetItem();
-		tmpitem->
 		tmpitem->setText (twit->text() + "\n" +
 						  "\t\t<b>" + twit->author()->username() + "</b>\t" +
 						  twit->dateTime().toLocalTime().toString());

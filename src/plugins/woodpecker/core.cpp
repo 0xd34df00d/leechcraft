@@ -99,9 +99,9 @@ TwitterPage* Core::MakeTwitterPage ()
              SIGNAL (delegateEntity (const LeechCraft::Entity&,
                                      int*, QObject**)));
     connect (result,
-             SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+             SIGNAL (gotEntity (const LeechCraft::Entity&)),
              this,
-             SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+             SIGNAL (gotEntity (const LeechCraft::Entity&)));
     return result;
 }
 };
