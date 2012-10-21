@@ -28,10 +28,10 @@ namespace SB2
 		setResizeMode (SizeRootObjectToView);
 	}
 
-	QSize SBView::minimumSizeHint() const
+	QSize SBView::minimumSizeHint () const
 	{
 		auto res = QAbstractScrollArea::minimumSizeHint ();
-		res.rwidth () = 22;
+		res.rwidth () = 32;
 		return res;
 	}
 }
