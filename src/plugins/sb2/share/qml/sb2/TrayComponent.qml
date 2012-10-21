@@ -31,21 +31,6 @@ Rectangle {
                 border.width: 1
                 border.color: "black"
 
-                states: [
-                    State {
-                        name: "hovered"
-                        when: actionMouseArea.containsMouse
-                        PropertyChanges { target: trayViewDelegate; border.color: "white"; anchors.margins: 0 }
-                    }
-                ]
-
-                transitions: [
-                    Transition {
-                        PropertyAnimation { properties: "border.color"; duration: 200 }
-                        AnchorAnimation { duration: 200 }
-                    }
-                ]
-
                 gradient: Gradient {
                     GradientStop {
                         position: 1
@@ -57,6 +42,29 @@ Rectangle {
                         color: "#000000"
                     }
                 }
+
+                states: [
+                    State {
+                        name: "hovered"
+                        when: actionMouseArea.containsMouse && !actionMouseArea.pressed
+                        PropertyChanges { target: trayViewDelegate; border.color: "white"; anchors.margins: 0 }
+                    },
+                    State {
+                        name: "pressed"
+                        when: actionMouseArea.containsMouse && actionMouseArea.pressed
+                        PropertyChanges { target: trayViewDelegate; border.color: "black" }
+                    }
+                ]
+
+                transitions: [
+                    Transition {
+                        from: ""
+                        to: "hovered"
+                        reversible: true
+                        PropertyAnimation { properties: "border.color"; duration: 200 }
+                        AnchorAnimation { duration: 200 }
+                    }
+                ]
 
                 Image {
                     id: actionImageElem
