@@ -152,7 +152,10 @@ namespace SB2
 
 	void TrayComponent::handleGotActions (const QList<QAction*>& acts, ActionsEmbedPlace aep)
 	{
-		if (acts.isEmpty () || aep != ActionsEmbedPlace::LCTray)
+		if (aep != ActionsEmbedPlace::LCTray && aep != ActionsEmbedPlace::QuickLaunch)
+			return;
+
+		if (acts.isEmpty ())
 			return;
 
 		const auto& prefix = "image://" + ImageProviderID + '/';
@@ -216,11 +219,12 @@ namespace SB2
 
 	void TrayComponent::handlePluginsAvailable ()
 	{
+		const auto places = { ActionsEmbedPlace::QuickLaunch, ActionsEmbedPlace::LCTray };
 		const auto& hasActions = Proxy_->GetPluginsManager ()->
 				GetAllCastableTo<IActionsExporter*> ();
-		for (auto exp : hasActions)
-			handleGotActions (exp->GetActions (ActionsEmbedPlace::LCTray),
-					ActionsEmbedPlace::LCTray);
+		for (auto place : places)
+			for (auto exp : hasActions)
+				handleGotActions (exp->GetActions (place), place);
 	}
 }
 }
