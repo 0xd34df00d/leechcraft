@@ -34,7 +34,9 @@ namespace SB2
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Mgr_ = new ViewManager (this);
-		proxy->GetMWProxy ()->AddSideWidget (Mgr_->GetView ());
+		auto view = Mgr_->GetView ();
+		proxy->GetMWProxy ()->AddSideWidget (view);
+
 		proxy->GetMainWindow ()->statusBar ()->hide ();
 
 		auto tray = new TrayComponent (proxy);
