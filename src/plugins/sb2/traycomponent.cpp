@@ -54,10 +54,12 @@ namespace SB2
 
 	class ActionImageProvider : public QDeclarativeImageProvider
 	{
+		ICoreProxy_ptr Proxy_;
 		QHash<int, QAction*> Actions_;
 	public:
-		ActionImageProvider ()
+		ActionImageProvider (ICoreProxy_ptr proxy)
 		: QDeclarativeImageProvider (Pixmap)
+		, Proxy_ (proxy)
 		{
 		}
 
@@ -83,7 +85,12 @@ namespace SB2
 				realSize = QSize (width, width);
 			}
 
-			const auto& icon = Actions_ [id]->icon ();
+			auto act = Actions_ [id];
+			auto icon = act->icon ();
+			if (icon.isNull ())
+				icon = Proxy_->GetIcon (act->property ("ActionIcon").toString (),
+						act->property ("ActionIconOff").toString ());
+
 			if (size)
 				*size = icon.actualSize (realSize);
 
@@ -102,7 +109,7 @@ namespace SB2
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Model_ (new TrayModel (this))
-	, ImageProv_ (new ActionImageProvider)
+	, ImageProv_ (new ActionImageProvider (proxy))
 	, NextActionId_ (0)
 	{
 		Component_.Url_ = Util::GetSysPath (Util::SysPath::QML, "sb2", "TrayComponent.qml");
