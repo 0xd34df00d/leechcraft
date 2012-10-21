@@ -84,8 +84,6 @@ namespace SB2
 		auto item = new QStandardItem;
 		item->setData (comp.Url_, ViewItemsModel::Role::SourceURL);
 		ViewItemsModel_->appendRow (item);
-
-		qDebug () << Q_FUNC_INFO << View_->rootContext ()->findChildren<QObject*> ();
 	}
 }
 }
