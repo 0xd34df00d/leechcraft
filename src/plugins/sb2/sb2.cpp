@@ -18,6 +18,14 @@
 
 #include "sb2.h"
 #include <QIcon>
+#include <QMainWindow>
+#include <QStatusBar>
+#include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/imwproxy.h>
+#include "viewmanager.h"
+#include "sbview.h"
+#include "traycomponent.h"
 
 namespace LeechCraft
 {
@@ -25,10 +33,21 @@ namespace SB2
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Mgr_ = new ViewManager (this);
+		proxy->GetMWProxy ()->AddSideWidget (Mgr_->GetView ());
+		proxy->GetMainWindow ()->statusBar ()->hide ();
+
+		auto tray = new TrayComponent (proxy);
+		Mgr_->AddComponent (tray->GetComponent ());
+		connect (this,
+				SIGNAL (pluginsAvailable ()),
+				tray,
+				SLOT (handlePluginsAvailable ()));
 	}
 
 	void Plugin::SecondInit ()
 	{
+		emit pluginsAvailable ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
