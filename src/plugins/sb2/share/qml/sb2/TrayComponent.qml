@@ -9,10 +9,10 @@ Rectangle {
 
     ListView {
         id: trayView
+        anchors.fill: parent
+        boundsBehavior: Flickable.StopAtBounds
 
         model: trayModel
-
-        anchors.fill: parent
 
         delegate: Rectangle {
             id: trayViewDelegate
