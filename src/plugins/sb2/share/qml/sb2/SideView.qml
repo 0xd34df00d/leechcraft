@@ -18,6 +18,8 @@ Rectangle {
             height: itemLoader.height
             width: itemsView.width
 
+            color: "transparent"
+
             Loader {
                 id: itemLoader
 
