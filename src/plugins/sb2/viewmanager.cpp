@@ -21,6 +21,7 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QtDebug>
+#include <QDir>
 #include <util/sys/paths.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include "sbview.h"
@@ -71,8 +72,28 @@ namespace SB2
 		return View_;
 	}
 
+	void ViewManager::SecondInit ()
+	{
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, "quarks"))
+		{
+			QDir dir (cand);
+			for (const auto& entry : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable))
+			{
+				QDir quarkDir (dir);
+				quarkDir.cd (entry);
+				if (!quarkDir.exists (entry + ".qml"))
+					continue;
+
+				QuarkComponent c;
+				c.Url_ = QUrl::fromLocalFile (quarkDir.absoluteFilePath (entry + ".qml"));
+				AddComponent (c);
+			}
+		}
+	}
+
 	void ViewManager::AddComponent (const QuarkComponent& comp)
 	{
+		qDebug () << Q_FUNC_INFO << "adding" << comp.Url_;
 		auto ctx = View_->rootContext ();
 		for (const auto& pair : comp.StaticProps_)
 			ctx->setContextProperty (pair.first, pair.second);

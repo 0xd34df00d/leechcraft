@@ -50,6 +50,8 @@ namespace SB2
 	void Plugin::SecondInit ()
 	{
 		emit pluginsAvailable ();
+
+		Mgr_->SecondInit ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const

@@ -41,6 +41,8 @@ namespace SB2
 
 		SBView* GetView () const;
 
+		void SecondInit ();
+
 		void AddComponent (const QuarkComponent&);
 	};
 }
