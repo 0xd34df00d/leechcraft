@@ -23,6 +23,7 @@
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -47,8 +48,12 @@ namespace SB2
 		TrayComponent (ICoreProxy_ptr, QObject* parent = 0);
 
 		QuarkComponent GetComponent () const;
+	private:
+		QStandardItem* FindItem (QAction*) const;
 	private slots:
 		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
+		void handleActionDestroyed ();
+		void handleActionChanged ();
 		void handlePluginsAvailable ();
 	};
 }

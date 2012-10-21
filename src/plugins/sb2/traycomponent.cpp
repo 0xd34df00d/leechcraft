@@ -37,7 +37,8 @@ namespace SB2
 		public:
 			enum Roles
 			{
-				ActionText = Qt::UserRole + 1,
+				ActionObject = Qt::UserRole + 1,
+				ActionText,
 				ActionIcon
 			};
 
@@ -101,6 +102,12 @@ namespace SB2
 		{
 			Actions_ [id] = act;
 		}
+
+		void RemoveAction (QAction *act)
+		{
+			for (auto key : Actions_.keys (act))
+				Actions_.remove (key);
+		}
 	};
 
 	const QString ImageProviderID = "LeechCraft_SB2_TrayActionImage";
@@ -130,6 +137,18 @@ namespace SB2
 		return Component_;
 	}
 
+	QStandardItem* TrayComponent::FindItem (QAction *action) const
+	{
+		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
+		{
+			auto item = Model_->item (i);
+			const auto& objVar = item->data (TrayModel::Roles::ActionObject);
+			if (objVar.value<QObject*> () == action)
+				return item;
+		}
+		return 0;
+	}
+
 	void TrayComponent::handleGotActions (const QList<QAction*>& acts, ActionsEmbedPlace aep)
 	{
 		if (acts.isEmpty () || aep != ActionsEmbedPlace::LCTray)
@@ -142,6 +161,14 @@ namespace SB2
 
 		for (auto act : acts)
 		{
+			connect (act,
+					SIGNAL (destroyed ()),
+					this,
+					SLOT (handleActionDestroyed ()));
+			connect (act,
+					SIGNAL (changed ()),
+					this,
+					SLOT (handleActionChanged ()));
 			ImageProv_->SetAction (NextActionId_, act);
 
 			const auto& idStr = QString::number (NextActionId_);
@@ -149,6 +176,7 @@ namespace SB2
 			auto item = new QStandardItem;
 			item->setData (act->text (), TrayModel::Roles::ActionText);
 			item->setData (prefix + idStr + "/0", TrayModel::Roles::ActionIcon);
+			item->setData (QVariant::fromValue<QObject*> (act), TrayModel::Roles::ActionObject);
 			Model_->appendRow (item);
 
 			++NextActionId_;
@@ -156,6 +184,33 @@ namespace SB2
 
 		Model_->blockSignals (false);
 		QMetaObject::invokeMethod (Model_, "modelReset");
+	}
+
+	void TrayComponent::handleActionDestroyed ()
+	{
+		auto obj = sender ();
+		if (auto item = FindItem (static_cast<QAction*> (obj)))
+			Model_->removeRow (item->row ());
+
+		ImageProv_->RemoveAction (static_cast<QAction*> (obj));
+	}
+
+	void TrayComponent::handleActionChanged ()
+	{
+		auto item = FindItem (static_cast<QAction*> (sender ()));
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender not found"
+					<< sender ();
+			return;
+		}
+
+		auto str = item->data (TrayModel::Roles::ActionIcon).toString ();
+		const int lastSlash = str.lastIndexOf ('/');
+		const auto& uncacheStr = str.mid (lastSlash + 1);
+		str.replace (lastSlash + 1, uncacheStr.size (), uncacheStr.toInt () + 1);
+		item->setData (str, TrayModel::Roles::ActionIcon);
 	}
 
 	void TrayComponent::handlePluginsAvailable ()
