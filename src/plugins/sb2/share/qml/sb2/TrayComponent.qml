@@ -29,17 +29,17 @@ Rectangle {
                 anchors.fill: parent
                 anchors.margins: 2
                 border.width: 1
-                border.color: "black"
+                border.color: actionObject.checked ? "#a51e00" : "black"
 
                 gradient: Gradient {
                     GradientStop {
                         position: 1
-                        color: "#42394b"
+                        color: actionObject.checked ? "#5a3238" : "#42394b"
                     }
 
                     GradientStop {
                         position: 0
-                        color: "#000000"
+                        color: actionObject.checked ? "#290700" : "#000000"
                     }
                 }
 
