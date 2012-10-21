@@ -83,7 +83,7 @@ namespace SB2
 			auto realSize = requestedSize;
 			if (realSize.width () <= 0)
 			{
-				const int width = list.last ().toInt ();
+				const int width = list.last ().toDouble ();
 				realSize = QSize (width, width);
 			}
 
