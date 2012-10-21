@@ -46,6 +46,7 @@ namespace SB2
 			: QStandardItemModel (parent)
 			{
 				QHash<int, QByteArray> roleNames;
+				roleNames [Roles::ActionObject] = "actionObject";
 				roleNames [Roles::ActionText] = "actionText";
 				roleNames [Roles::ActionIcon] = "actionIcon";
 				setRoleNames (roleNames);
