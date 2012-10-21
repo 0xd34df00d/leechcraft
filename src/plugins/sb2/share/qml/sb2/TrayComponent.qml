@@ -45,6 +45,12 @@ Rectangle {
                 source: actionIcon + '/' + width
                 smooth: true
             }
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: actionObject.trigger()
+            }
         }
     }
 }
