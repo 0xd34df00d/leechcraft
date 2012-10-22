@@ -25,6 +25,7 @@
 #include <interfaces/imwproxy.h>
 #include "viewmanager.h"
 #include "sbview.h"
+#include "launchercomponent.h"
 #include "traycomponent.h"
 
 namespace LeechCraft
@@ -38,6 +39,13 @@ namespace SB2
 		proxy->GetMWProxy ()->AddSideWidget (view);
 
 		proxy->GetMainWindow ()->statusBar ()->hide ();
+
+		auto launcher = new LauncherComponent (proxy);
+		Mgr_->AddComponent (launcher->GetComponent ());
+		connect (this,
+				SIGNAL (pluginsAvailable ()),
+				launcher,
+				SLOT (handlePluginsAvailable ()));
 
 		auto tray = new TrayComponent (proxy);
 		Mgr_->AddComponent (tray->GetComponent ());
