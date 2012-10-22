@@ -15,7 +15,6 @@ SET (SRCS
 ADD_LIBRARY (leechcraft_shaitan SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_shaitan
 	${QT_LIBRARIES}
