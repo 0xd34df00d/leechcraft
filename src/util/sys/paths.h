@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,33 +18,19 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
+#include <QStringList>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	class ViewManager;
-
-	class Plugin : public QObject
-				 , public IInfo
+	enum class SysPath
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo)
-
-		ViewManager *Mgr_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	signals:
-		void pluginsAvailable ();
+		QML
 	};
-}
-}
 
+	UTIL_API QStringList GetPathCandidates (SysPath path, QString suffix);
+	UTIL_API QString GetSysPath (SysPath path, const QString& suffix, const QString& filename);
+}
+}

@@ -16,35 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
+#include "sbview.h"
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	class ViewManager;
-
-	class Plugin : public QObject
-				 , public IInfo
+	SBView::SBView (QWidget *parent)
+	: QDeclarativeView (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		setResizeMode (SizeRootObjectToView);
+	}
 
-		ViewManager *Mgr_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	signals:
-		void pluginsAvailable ();
-	};
+	QSize SBView::minimumSizeHint () const
+	{
+		auto res = QAbstractScrollArea::minimumSizeHint ();
+		res.rwidth () = 32;
+		return res;
+	}
 }
 }
-

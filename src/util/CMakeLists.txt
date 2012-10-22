@@ -18,6 +18,7 @@ SET (SRCS
 	models/treeitem.cpp
 	sync/syncdeltamanager.cpp
 	sync/syncops.cpp
+	sys/paths.cpp
 	tags/categoryselector.cpp
 	tags/tagscompleter.cpp
 	tags/tagscompletionmodel.cpp
@@ -52,6 +53,7 @@ SET (HEADERS
 	models/treeitem.h
 	sync/syncdeltamanager.h
 	sync/syncops.h
+	sys/paths.h
 	tags/categoryselector.h
 	tags/tagscompleter.h
 	tags/tagscompletionmodel.h
