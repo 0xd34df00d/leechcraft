@@ -96,7 +96,10 @@ namespace SB2
 		}
 	};
 
-	const QString ImageProviderID = "SB2_TrayActionImage";
+	namespace
+	{
+		const QString ImageProviderID = "SB2_TrayActionImage";
+	}
 
 	TrayComponent::TrayComponent (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
