@@ -29,7 +29,7 @@ namespace Aggregator
 {
 	struct AppWideActions
 	{
-		Q_DECLARE_TR_FUNCTIONS (AppWideActions);
+		Q_DECLARE_TR_FUNCTIONS (AppWideActions)
 	public:
 		QAction *ActionAddFeed_;
 		QAction *ActionUpdateFeeds_;
@@ -46,7 +46,7 @@ namespace Aggregator
 
 	struct ChannelActions
 	{
-		Q_DECLARE_TR_FUNCTIONS (ChannelActions);
+		Q_DECLARE_TR_FUNCTIONS (ChannelActions)
 	public:
 		QAction *ActionRemoveFeed_;
 		QAction *ActionUpdateSelectedFeed_;

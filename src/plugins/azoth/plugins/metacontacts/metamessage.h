@@ -33,7 +33,7 @@ namespace Metacontacts
 					  , public IMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage);
+		Q_INTERFACES (LeechCraft::Azoth::IMessage)
 
 		MetaEntry *Entry_;
 		QObject *MessageObj_;

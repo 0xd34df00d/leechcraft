@@ -34,7 +34,7 @@ namespace Azoth
 						, public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget);
+		Q_INTERFACES (ITabWidget)
 
 		Ui::ConsoleWidget Ui_;
 		QObject *ParentMultiTabs_;

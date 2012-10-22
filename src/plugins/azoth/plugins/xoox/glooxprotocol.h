@@ -41,7 +41,7 @@ namespace Xoox
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol
 				LeechCraft::Azoth::IURIHandler
-				LeechCraft::Azoth::ISupportImport);
+				LeechCraft::Azoth::ISupportImport)
 
 		QObject *ParentProtocolPlugin_;
 		QList<GlooxAccount*> Accounts_;

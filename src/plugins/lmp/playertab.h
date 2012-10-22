@@ -55,7 +55,7 @@ namespace LMP
 					, public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget IRecoverableTab);
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		Ui::PlayerTab Ui_;
 

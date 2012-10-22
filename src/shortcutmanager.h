@@ -31,7 +31,7 @@ namespace LeechCraft
 						  , public IShortcutProxy
 	{
 		Q_OBJECT
-		Q_INTERFACES (IShortcutProxy);
+		Q_INTERFACES (IShortcutProxy)
 
 		Ui::ShortcutManager Ui_;
 		QStandardItemModel *Model_;

@@ -84,7 +84,7 @@ namespace Xoox
 		void HandleRegResult (const QXmppIq&);
 	private slots:
 		void handleError (QXmppClient::Error);
-		void handleIqReceived (const QXmppIq&);;
+		void handleIqReceived (const QXmppIq&);
 	signals:
 		void completeChanged ();
 		void successfulReg ();

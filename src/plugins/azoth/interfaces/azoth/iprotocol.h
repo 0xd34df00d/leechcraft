@@ -83,7 +83,7 @@ namespace Azoth
 			PFNoAccountRegistration = 0x08
 		};
 
-		Q_DECLARE_FLAGS (ProtocolFeatures, ProtocolFeature);
+		Q_DECLARE_FLAGS (ProtocolFeatures, ProtocolFeature)
 
 		/** This enum describes the options that may be selected by the
 		 * user when adding a new account.
@@ -101,7 +101,7 @@ namespace Azoth
 			AAORegisterNewAccount = 0x01
 		};
 
-		Q_DECLARE_FLAGS (AccountAddOptions, AccountAddOption);
+		Q_DECLARE_FLAGS (AccountAddOptions, AccountAddOption)
 
 		/** @brief Returns the protocol object as a QObject.
 		 *

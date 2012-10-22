@@ -31,7 +31,7 @@ namespace LeechCraft
 					  , public ITagsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITagsManager);
+		Q_INTERFACES (ITagsManager)
 
 		TagsManager ();
 	public:

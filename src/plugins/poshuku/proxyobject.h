@@ -29,7 +29,7 @@ namespace Poshuku
 					  , public IProxyObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IProxyObject);
+		Q_INTERFACES (LeechCraft::Poshuku::IProxyObject)
 	public slots:
 		QObject* GetHistoryModel () const;
 		QObject* GetFavoritesModel () const;

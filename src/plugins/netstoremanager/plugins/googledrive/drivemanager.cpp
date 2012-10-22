@@ -486,6 +486,7 @@ namespace GoogleDrive
 		const QString& code = errorMap ["code"].toString ();
 		QString msg = errorMap ["message"].toString ();
 
+		Q_UNUSED (code)
 		//TODO fix false execute
 // 		if (code == "500")
 // 			msg = tr ("Google Drive API v.2 doesn't support directory copying.");

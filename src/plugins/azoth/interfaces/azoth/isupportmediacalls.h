@@ -28,20 +28,20 @@ namespace Azoth
 	{
 	public:
 		virtual ~ISupportMediaCalls () {}
-		
+
 		enum MediaCallFeature
 		{
 			MCFNoFeatures,
 			MCFSupportsAudioCalls = 0x01,
 			MCFSupportsVideoCalls = 0x02
 		};
-		
-		Q_DECLARE_FLAGS (MediaCallFeatures, MediaCallFeature);
-		
+
+		Q_DECLARE_FLAGS (MediaCallFeatures, MediaCallFeature)
+
 		virtual MediaCallFeatures GetMediaCallFeatures () const = 0;
-		
+
 		virtual QObject* Call (const QString& id, const QString& variant) = 0;
-		
+
 		virtual void called (QObject*) = 0;
 	};
 }

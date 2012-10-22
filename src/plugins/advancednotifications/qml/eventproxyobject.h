@@ -29,10 +29,10 @@ namespace AdvancedNotifications
 	class EventProxyObject : public QObject
 	{
 		Q_OBJECT
-		Q_PROPERTY (int count READ count NOTIFY countChanged);
-		Q_PROPERTY (QUrl image READ image NOTIFY imageChanged);
-		Q_PROPERTY (QString extendedText READ extendedText NOTIFY extendedTextChanged);
-		Q_PROPERTY (QVariant eventActionsModel READ eventActionsModel NOTIFY eventActionsModelChanged);
+		Q_PROPERTY (int count READ count NOTIFY countChanged)
+		Q_PROPERTY (QUrl image READ image NOTIFY imageChanged)
+		Q_PROPERTY (QString extendedText READ extendedText NOTIFY extendedTextChanged)
+		Q_PROPERTY (QVariant eventActionsModel READ eventActionsModel NOTIFY eventActionsModelChanged)
 
 		EventData E_;
 		QUrl CachedImage_;

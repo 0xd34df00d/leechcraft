@@ -44,7 +44,7 @@ namespace Xoox
 					<< "unhandled uri:"
 					<< uri.second;
 		}
-		
+
 		if (!data.isNull ())
 			setPixmap (QPixmap::fromImage (QImage::fromData (data)));
 		else if (!Cid_.isEmpty ())

@@ -48,7 +48,6 @@ namespace Delicious
 		bool oAuth = map.value ("OAuth", false).toBool ();
 		Ui_.YahooID_->setChecked (oAuth);
 	}
-
 }
 }
 }

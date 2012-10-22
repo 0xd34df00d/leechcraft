@@ -47,7 +47,7 @@ namespace Xoox
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
 						LeechCraft::Azoth::IMUCEntry
 						LeechCraft::Azoth::IMUCPerms
-						LeechCraft::Azoth::IConfigurableMUC);
+						LeechCraft::Azoth::IConfigurableMUC)
 
 		friend class RoomHandler;
 

@@ -38,7 +38,7 @@ namespace Xoox
 					, public IMediaCall
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMediaCall);
+		Q_INTERFACES (LeechCraft::Azoth::IMediaCall)
 
 		QXmppCall *Call_;
 		GlooxAccount *Account_;

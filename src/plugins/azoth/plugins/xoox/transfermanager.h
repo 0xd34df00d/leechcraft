@@ -34,7 +34,7 @@ namespace Xoox
 						  , public ITransferManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ITransferManager);
+		Q_INTERFACES (LeechCraft::Azoth::ITransferManager)
 
 		QXmppTransferManager *Manager_;
 		GlooxAccount *Account_;

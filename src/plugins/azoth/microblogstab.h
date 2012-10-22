@@ -32,7 +32,7 @@ namespace Azoth
 						, public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget);
+		Q_INTERFACES (ITabWidget)
 
 		static QObject* S_ParentMultiTabs_;
 		static TabClassInfo S_TC_;

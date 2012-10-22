@@ -50,7 +50,7 @@ namespace Acetamide
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
 				LeechCraft::Azoth::IHaveConsole
-				LeechCraft::Azoth::ISupportBookmarks);
+				LeechCraft::Azoth::ISupportBookmarks)
 
 		QString AccountName_;
 		IrcProtocol *ParentProtocol_;

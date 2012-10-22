@@ -40,7 +40,7 @@ namespace LeechCraft
 						, public IPluginsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IPluginsManager);
+		Q_INTERFACES (IPluginsManager)
 
 		typedef QList<QPluginLoader_ptr> PluginsContainer_t;
 
