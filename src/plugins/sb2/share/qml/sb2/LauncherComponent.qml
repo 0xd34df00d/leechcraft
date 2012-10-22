@@ -6,7 +6,8 @@ Rectangle {
 
     width: parent.width
     property real launcherItemHeight: parent.width
-    height: launcherView.count * launcherItemHeight
+    property real currentGapSize: 5
+    height: launcherView.count * launcherItemHeight + 2 * rootRect.currentGapSize
 
     color: "transparent"
 
@@ -17,13 +18,40 @@ Rectangle {
 
         model: SB2_launcherModel
 
-        delegate: ActionButton {
-            height: rootRect.launcherItemHeight
+        delegate: Item {
+            id: tcItem
+
+            height: rootRect.launcherItemHeight + pregap.height + postgap.height
             width: rootRect.width
 
-            actionIconURL: tabClassIcon
+            Item {
+                id: pregap
+                height: isCurrentTab ? rootRect.currentGapSize : 0
+                Behavior on height { PropertyAnimation { duration: 200 } }
+                anchors.top: parent.top
+            }
 
-            onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
+            ActionButton {
+                id: tcButton
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: pregap.bottom
+                anchors.bottom: postgap.top
+
+                actionIconURL: tabClassIcon
+                isHighlight: hasOpenedTab
+                isStrongHighlight: hasOpenedTab
+                isCurrent: isCurrentTab
+
+                onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
+            }
+
+            Item {
+                id: postgap
+                height: isCurrentTab ? rootRect.currentGapSize : 0
+                Behavior on height { PropertyAnimation { duration: 200 } }
+                anchors.bottom: parent.bottom
+            }
         }
     }
 }

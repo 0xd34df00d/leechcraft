@@ -21,6 +21,7 @@
 #include <QtDebug>
 #include <util/sys/paths.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/icoretabwidget.h>
 #include <interfaces/ihavetabs.h>
 #include "widthiconprovider.h"
 
@@ -36,7 +37,9 @@ namespace SB2
 			enum Roles
 			{
 				TabClassIcon = Qt::UserRole + 1,
-				TabClassID
+				TabClassID,
+				HasOpenedTab,
+				IsCurrentTab
 			};
 
 			LauncherModel (QObject *parent)
@@ -45,6 +48,8 @@ namespace SB2
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::TabClassIcon] = "tabClassIcon";
 				roleNames [Roles::TabClassID] = "tabClassID";
+				roleNames [Roles::HasOpenedTab] = "hasOpenedTab";
+				roleNames [Roles::IsCurrentTab] = "isCurrentTab";
 				setRoleNames (roleNames);
 			}
 		};
@@ -86,6 +91,11 @@ namespace SB2
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherModel", Model_);
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
 		Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
+
+		connect (proxy->GetTabWidget ()->GetObject (),
+				SIGNAL (currentChanged (int)),
+				this,
+				SLOT (handleCurrentTabChanged (int)));
 	}
 
 	QuarkComponent LauncherComponent::GetComponent () const
@@ -93,29 +103,51 @@ namespace SB2
 		return Component_;
 	}
 
-	void LauncherComponent::handlePluginsAvailable ()
+	QStandardItem* LauncherComponent::AddTC (const TabClassInfo& tc)
 	{
 		const auto& prefix = "image://" + ImageProviderID + '/';
 
+		if (!(tc.Features_ & TabFeature::TFOpenableByRequest))
+			return 0;
+
+		if (tc.Icon_.isNull ())
+			return 0;
+
+		if (!tc.Priority_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "skipping due to low priority"
+					<< tc.TabClass_;
+			return 0;
+		}
+
+		ImageProv_->AddTabClass (tc);
+
+		auto item = new QStandardItem;
+		item->setData (prefix + tc.TabClass_, LauncherModel::Roles::TabClassIcon);
+		item->setData (tc.TabClass_, LauncherModel::Roles::TabClassID);
+		Model_->appendRow (item);
+
+		TC2Items_ [tc.TabClass_] << item;
+
+		return item;
+	}
+
+	void LauncherComponent::handlePluginsAvailable ()
+	{
 		auto hasTabs = Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IHaveTabs*> ();
 		for (auto ihtObj : hasTabs)
 		{
 			auto iht = qobject_cast<IHaveTabs*> (ihtObj);
 			for (const auto& tc : iht->GetTabClasses ())
-			{
-				if (!(tc.Features_ & TabFeature::TFOpenableByRequest))
-					continue;
+				if (AddTC (tc))
+					TC2Obj_ [tc.TabClass_] = iht;
 
-				ImageProv_->AddTabClass (tc);
-
-				auto item = new QStandardItem;
-				item->setData (prefix + tc.TabClass_, LauncherModel::Roles::TabClassIcon);
-				item->setData (tc.TabClass_, LauncherModel::Roles::TabClassID);
-				Model_->appendRow (item);
-
-				TC2Obj_ [tc.TabClass_] = iht;
-			}
+			connect (ihtObj,
+					SIGNAL (addNewTab (QString, QWidget*)),
+					this,
+					SLOT (handleNewTab (QString, QWidget*)));
 		}
 	}
 
@@ -132,6 +164,35 @@ namespace SB2
 		}
 
 		obj->TabOpenRequested (tc);
+	}
+
+	void LauncherComponent::handleNewTab (const QString&, QWidget *w)
+	{
+		auto itw = qobject_cast<ITabWidget*> (w);
+		const auto& tc = itw->GetTabClassInfo ();
+
+		TC2Widgets_ [tc.TabClass_] << w;
+
+		for (auto item : TC2Items_ [tc.TabClass_])
+			item->setData (true, LauncherModel::Roles::HasOpenedTab);
+	}
+
+	void LauncherComponent::handleCurrentTabChanged (int idx)
+	{
+		auto widget = idx >= 0 ?
+				Proxy_->GetTabWidget ()->Widget (idx) :
+				0;
+
+		const auto& tc = widget ?
+				qobject_cast<ITabWidget*> (widget)->GetTabClassInfo () :
+				TabClassInfo ();
+
+		for (const auto& key : TC2Items_.keys ())
+		{
+			const bool isSelectedTC = key == tc.TabClass_;
+			for (auto item : TC2Items_ [key])
+				item->setData (isSelectedTC, LauncherModel::Roles::IsCurrentTab);
+		}
 	}
 }
 }
