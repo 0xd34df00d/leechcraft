@@ -37,9 +37,8 @@ namespace Shaitan
 		Embedder_->adjustSize ();
 		
 		Embedder_->show ();
-		Process_->start ("xterm", QStringList () << 
-							"-into" << 
-							QString::number (Embedder_->winId ()));
+		Process_->start ("xterm",
+			{ "-into", QString::number (Embedder_->winId ()) });
 	}
 	
 	TabClassInfo TerminalWidget::GetTabClassInfo () const

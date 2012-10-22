@@ -28,7 +28,7 @@ namespace Shaitan
 	{
 		TerminalTC_ =
 		{
-			GetUniqueID () + "",
+			GetUniqueID (),
 			"Shaitan",
 			GetInfo (),
 			GetIcon (),
@@ -50,15 +50,15 @@ namespace Shaitan
 	{
 	}
 	
-	void Plugin::TabOpenRequested(const QByteArray& tabClass)
+	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
 		TerminalWidget *terminal = new TerminalWidget (TerminalTC_, this);
 		emit addNewTab ("Shaitan", terminal);
 		emit raiseTab (terminal);
 		connect (terminal, 
-				SIGNAL (removeTab(QWidget*)),
+				SIGNAL (removeTab (QWidget*)),
 				this, 
-				SIGNAL (removeTab(QWidget*)));
+				SIGNAL (removeTab (QWidget*)));
 	}
 
 	QString Plugin::GetName () const
@@ -66,7 +66,7 @@ namespace Shaitan
 		return "Shaitan";
 	}
 	
-	TabClasses_t Plugin::GetTabClasses() const
+	TabClasses_t Plugin::GetTabClasses () const
 	{
 		TabClasses_t tcs;
 		tcs << TerminalTC_;

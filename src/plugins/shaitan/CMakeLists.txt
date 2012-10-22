@@ -12,14 +12,6 @@ SET (SRCS
 	shaitan.cpp
 	terminalwidget.cpp
 	)
-SET (HEADERS
-	shaitan.h
-	terminalwidget.h
-	)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
-
 ADD_LIBRARY (leechcraft_shaitan SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
