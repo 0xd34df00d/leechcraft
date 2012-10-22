@@ -22,6 +22,7 @@
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/icoreproxy.h>
 
+class IHaveTabs;
 class QStandardItemModel;
 
 namespace LeechCraft
@@ -30,20 +31,26 @@ struct QuarkComponent;
 
 namespace SB2
 {
+	class TabClassImageProvider;
+
 	class LauncherComponent : public QObject
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
 		QStandardItemModel *Model_;
-
 		QuarkComponent Component_;
+
+		TabClassImageProvider *ImageProv_;
+		QHash<QByteArray, IHaveTabs*> TC2Obj_;
 	public:
 		LauncherComponent (ICoreProxy_ptr, QObject* = 0);
 
 		QuarkComponent GetComponent () const;
 	public slots:
 		void handlePluginsAvailable ();
+
+		void tabOpenRequested (const QByteArray&);
 	};
 }
 }

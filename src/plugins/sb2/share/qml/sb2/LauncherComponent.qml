@@ -22,6 +22,8 @@ Rectangle {
             width: rootRect.width
 
             actionIconURL: tabClassIcon
+
+            onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
         }
     }
 }

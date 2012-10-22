@@ -18,9 +18,11 @@
 
 #include "launchercomponent.h"
 #include <QStandardItemModel>
+#include <QtDebug>
 #include <util/sys/paths.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/ihavetabs.h>
+#include "widthiconprovider.h"
 
 namespace LeechCraft
 {
@@ -31,21 +33,59 @@ namespace SB2
 		class LauncherModel : public QStandardItemModel
 		{
 		public:
+			enum Roles
+			{
+				TabClassIcon = Qt::UserRole + 1,
+				TabClassID
+			};
+
 			LauncherModel (QObject *parent)
 			: QStandardItemModel (parent)
 			{
+				QHash<int, QByteArray> roleNames;
+				roleNames [Roles::TabClassIcon] = "tabClassIcon";
+				roleNames [Roles::TabClassID] = "tabClassID";
+				setRoleNames (roleNames);
 			}
 		};
+	}
+
+	class TabClassImageProvider : public WidthIconProvider
+	{
+		ICoreProxy_ptr Proxy_;
+		QHash<QByteArray, QIcon> TabClasses_;
+	public:
+		TabClassImageProvider (ICoreProxy_ptr proxy)
+		: Proxy_ (proxy)
+		{
+		}
+
+		QIcon GetIcon (const QStringList& list)
+		{
+			return TabClasses_.value (list.first ().toLatin1 ());
+		}
+
+		void AddTabClass (const TabClassInfo& tc)
+		{
+			TabClasses_ [tc.TabClass_] = tc.Icon_;
+		}
+	};
+
+	namespace
+	{
+		const QString ImageProviderID = "SB2_TabClassImage";
 	}
 
 	LauncherComponent::LauncherComponent (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Model_ (new LauncherModel (this))
+	, ImageProv_ (new TabClassImageProvider (proxy))
 	{
 		Component_.Url_ = Util::GetSysPath (Util::SysPath::QML, "sb2", "LauncherComponent.qml");
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherModel", Model_);
-		//Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
+		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
+		Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
 	}
 
 	QuarkComponent LauncherComponent::GetComponent () const
@@ -55,6 +95,8 @@ namespace SB2
 
 	void LauncherComponent::handlePluginsAvailable ()
 	{
+		const auto& prefix = "image://" + ImageProviderID + '/';
+
 		auto hasTabs = Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IHaveTabs*> ();
 		for (auto ihtObj : hasTabs)
@@ -65,9 +107,31 @@ namespace SB2
 				if (!(tc.Features_ & TabFeature::TFOpenableByRequest))
 					continue;
 
+				ImageProv_->AddTabClass (tc);
+
 				auto item = new QStandardItem;
+				item->setData (prefix + tc.TabClass_, LauncherModel::Roles::TabClassIcon);
+				item->setData (tc.TabClass_, LauncherModel::Roles::TabClassID);
+				Model_->appendRow (item);
+
+				TC2Obj_ [tc.TabClass_] = iht;
 			}
 		}
+	}
+
+	void LauncherComponent::tabOpenRequested (const QByteArray& tc)
+	{
+		auto obj = TC2Obj_ [tc];
+		if (!obj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "tabclass"
+					<< tc
+					<< "not found";
+			return;
+		}
+
+		obj->TabOpenRequested (tc);
 	}
 }
 }
