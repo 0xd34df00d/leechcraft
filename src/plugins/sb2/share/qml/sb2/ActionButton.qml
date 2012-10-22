@@ -4,6 +4,8 @@ Item {
     id: actionRoot
 
     property bool isHighlight
+    property bool isStrongHighlight
+    property bool isCurrent
     property string actionIconURL
 
     signal triggered()
@@ -16,8 +18,8 @@ Item {
 
         anchors.fill: parent
         anchors.margins: 2
-        border.width: 1
-        border.color: actionRoot.isHighlight ? "#a51e00" : "black"
+        border.width: isStrongHighlight ? 2 : 1
+        border.color: actionRoot.isHighlight ? "#FF6500" : "black"
 
         gradient: Gradient {
             GradientStop {
@@ -33,6 +35,11 @@ Item {
 
         states: [
             State {
+                name: "current"
+                when: actionRoot.isCurrent && !actionMouseArea.containsMouse
+                PropertyChanges { target: actionRect; anchors.margins: 0 }
+            },
+            State {
                 name: "hovered"
                 when: actionMouseArea.containsMouse && !actionMouseArea.pressed
                 PropertyChanges { target: actionRect; border.color: "white"; anchors.margins: 0 }
@@ -47,7 +54,7 @@ Item {
         transitions: [
             Transition {
                 from: ""
-                to: "hovered"
+                to: "hovered,current"
                 reversible: true
                 PropertyAnimation { properties: "border.color,anchors.margins"; duration: 200 }
             }
