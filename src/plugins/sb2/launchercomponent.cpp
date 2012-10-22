@@ -148,6 +148,10 @@ namespace SB2
 					SIGNAL (addNewTab (QString, QWidget*)),
 					this,
 					SLOT (handleNewTab (QString, QWidget*)));
+			connect (ihtObj,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SLOT (handleRemoveTab (QWidget*)));
 		}
 	}
 
@@ -175,6 +179,18 @@ namespace SB2
 
 		for (auto item : TC2Items_ [tc.TabClass_])
 			item->setData (true, LauncherModel::Roles::HasOpenedTab);
+	}
+
+	void LauncherComponent::handleRemoveTab (QWidget *w)
+	{
+		auto itw = qobject_cast<ITabWidget*> (w);
+		const auto& tc = itw->GetTabClassInfo ();
+
+		auto& wList = TC2Widgets_ [tc.TabClass_];
+		wList.removeAll (w);
+
+		for (auto item : TC2Items_ [tc.TabClass_])
+			item->setData (!wList.isEmpty (), LauncherModel::Roles::HasOpenedTab);
 	}
 
 	void LauncherComponent::handleCurrentTabChanged (int idx)

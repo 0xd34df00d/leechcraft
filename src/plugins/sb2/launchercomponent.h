@@ -61,6 +61,7 @@ namespace SB2
 		void tabOpenRequested (const QByteArray&);
 	private slots:
 		void handleNewTab (const QString&, QWidget*);
+		void handleRemoveTab (QWidget*);
 		void handleCurrentTabChanged (int);
 	};
 }
