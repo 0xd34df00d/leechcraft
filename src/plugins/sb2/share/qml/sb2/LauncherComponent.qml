@@ -6,7 +6,7 @@ Rectangle {
 
     width: parent.width
     property real launcherItemHeight: parent.width
-    property real currentGapSize: 5
+    property real currentGapSize: launcherItemHeight / 4
     height: launcherView.count * launcherItemHeight + 2 * rootRect.currentGapSize
 
     color: "transparent"
