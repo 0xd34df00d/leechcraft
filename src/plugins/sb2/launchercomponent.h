@@ -19,32 +19,31 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
+#include <interfaces/iquarkcomponentprovider.h>
+#include <interfaces/core/icoreproxy.h>
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
+struct QuarkComponent;
+
 namespace SB2
 {
-	class ViewManager;
-
-	class Plugin : public QObject
-				 , public IInfo
+	class LauncherComponent : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
 
-		ViewManager *Mgr_;
+		ICoreProxy_ptr Proxy_;
+		QStandardItemModel *Model_;
+
+		QuarkComponent Component_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	signals:
-		void pluginsAvailable ();
+		LauncherComponent (ICoreProxy_ptr, QObject* = 0);
+
+		QuarkComponent GetComponent () const;
+	public slots:
+		void handlePluginsAvailable ();
 	};
 }
 }
-

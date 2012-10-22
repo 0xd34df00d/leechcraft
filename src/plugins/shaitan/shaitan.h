@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2012  Like-all
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,20 +20,20 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Shaitan
 {
-	class ViewManager;
-
 	class Plugin : public QObject
-				 , public IInfo
+					, public IInfo
+					, public IHaveTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
-
-		ViewManager *Mgr_;
+		Q_INTERFACES (IInfo IHaveTabs)
+		
+		TabClassInfo TerminalTC_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -42,8 +42,18 @@ namespace SB2
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+		
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
+		void statusBarChanged ();
 	signals:
-		void pluginsAvailable ();
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void changeTooltip (QWidget*, QWidget*);
+		void raiseTab (QWidget*);
+		void statusBarChanged (QWidget*, const QString&);	
 	};
 }
 }

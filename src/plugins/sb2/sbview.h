@@ -18,33 +18,19 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
+#include <QDeclarativeView>
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	class ViewManager;
-
-	class Plugin : public QObject
-				 , public IInfo
+	class SBView : public QDeclarativeView
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
-
-		ViewManager *Mgr_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	signals:
-		void pluginsAvailable ();
+		SBView (QWidget* = 0);
+
+		QSize minimumSizeHint () const;
 	};
 }
 }
-
