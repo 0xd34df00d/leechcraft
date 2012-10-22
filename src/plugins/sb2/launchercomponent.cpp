@@ -38,7 +38,7 @@ namespace SB2
 			{
 				TabClassIcon = Qt::UserRole + 1,
 				TabClassID,
-				HasOpenedTab,
+				OpenedTabsCount,
 				IsCurrentTab
 			};
 
@@ -48,7 +48,7 @@ namespace SB2
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::TabClassIcon] = "tabClassIcon";
 				roleNames [Roles::TabClassID] = "tabClassID";
-				roleNames [Roles::HasOpenedTab] = "hasOpenedTab";
+				roleNames [Roles::OpenedTabsCount] = "openedTabsCount";
 				roleNames [Roles::IsCurrentTab] = "isCurrentTab";
 				setRoleNames (roleNames);
 			}
@@ -175,10 +175,11 @@ namespace SB2
 		auto itw = qobject_cast<ITabWidget*> (w);
 		const auto& tc = itw->GetTabClassInfo ();
 
-		TC2Widgets_ [tc.TabClass_] << w;
+		auto& wList = TC2Widgets_ [tc.TabClass_];
+		wList << w;
 
 		for (auto item : TC2Items_ [tc.TabClass_])
-			item->setData (true, LauncherModel::Roles::HasOpenedTab);
+			item->setData (wList.size (), LauncherModel::Roles::OpenedTabsCount);
 	}
 
 	void LauncherComponent::handleRemoveTab (QWidget *w)
@@ -190,7 +191,7 @@ namespace SB2
 		wList.removeAll (w);
 
 		for (auto item : TC2Items_ [tc.TabClass_])
-			item->setData (!wList.isEmpty (), LauncherModel::Roles::HasOpenedTab);
+			item->setData (wList.size (), LauncherModel::Roles::OpenedTabsCount);
 	}
 
 	void LauncherComponent::handleCurrentTabChanged (int idx)
