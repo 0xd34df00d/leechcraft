@@ -97,7 +97,7 @@ namespace LMP
 
 	void RadioWidget::on_StationsView__doubleClicked (const QModelIndex& unmapped)
 	{
-		const auto& index = StationsProxy_->mapFromSource (unmapped);
+		const auto& index = StationsProxy_->mapToSource (unmapped);
 		const auto item = StationsModel_->itemFromIndex (index);
 		auto root = item;
 		while (auto parent = root->parent ())
