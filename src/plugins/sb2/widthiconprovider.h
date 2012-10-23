@@ -18,51 +18,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iquarkcomponentprovider.h>
-#include <interfaces/core/icoreproxy.h>
+#include <QDeclarativeImageProvider>
 
-class QStandardItemModel;
-class QStandardItem;
-class IHaveTabs;
+class QIcon;
 
 namespace LeechCraft
 {
-struct TabClassInfo;
-struct QuarkComponent;
-
 namespace SB2
 {
-	class TabClassImageProvider;
-
-	class LauncherComponent : public QObject
+	class WidthIconProvider : public QDeclarativeImageProvider
 	{
-		Q_OBJECT
-
-		ICoreProxy_ptr Proxy_;
-		QStandardItemModel *Model_;
-		QuarkComponent Component_;
-
-		TabClassImageProvider *ImageProv_;
-		QHash<QByteArray, IHaveTabs*> TC2Obj_;
-
-		QHash<QByteArray, QList<QStandardItem*>> TC2Items_;
-
-		QHash<QByteArray, QList<QWidget*>> TC2Widgets_;
 	public:
-		LauncherComponent (ICoreProxy_ptr, QObject* = 0);
+		WidthIconProvider ();
 
-		QuarkComponent GetComponent () const;
-	private:
-		QStandardItem* AddTC (const TabClassInfo&);
-	public slots:
-		void handlePluginsAvailable ();
+		QPixmap requestPixmap (const QString&, QSize*, const QSize&);
 
-		void tabOpenRequested (const QByteArray&);
-	private slots:
-		void handleNewTab (const QString&, QWidget*);
-		void handleRemoveTab (QWidget*);
-		void handleCurrentTabChanged (int);
+		virtual QIcon GetIcon (const QStringList&) = 0;
 	};
 }
 }

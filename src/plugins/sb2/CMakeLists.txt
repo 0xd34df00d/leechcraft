@@ -13,6 +13,7 @@ SET (SRCS
 	sb2.cpp
 	sbview.cpp
 	viewmanager.cpp
+	widthiconprovider.cpp
 	launchercomponent.cpp
 	traycomponent.cpp
 	)

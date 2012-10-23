@@ -49,7 +49,7 @@ namespace ChatHistory
 	class Core : public QObject
 	{
 		Q_OBJECT
-		static std::weak_ptr<Core> InstPtr_;
+		static std::shared_ptr<Core> InstPtr_;
 
 		StorageThread *StorageThread_;
 		ICoreProxy_ptr CoreProxy_;
