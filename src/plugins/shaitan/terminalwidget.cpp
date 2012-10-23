@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2012  Like-all
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,35 +16,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
+#include "terminalwidget.h"
+#include <QVBoxLayout>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Shaitan
 {
-	class ViewManager;
-
-	class Plugin : public QObject
-				 , public IInfo
+	TerminalWidget::TerminalWidget (const TabClassInfo& tc, QObject *mt)
+	: TC_ (tc)
+	, ParentMT_ (mt)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo)
-
-		ViewManager *Mgr_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	signals:
-		void pluginsAvailable ();
-	};
+		Embedder_ = new QX11EmbedContainer;
+		Process_ = new QProcess (this);
+		
+		auto lay = new QVBoxLayout;
+		setLayout (lay);
+		lay->addWidget (Embedder_);
+		
+		Embedder_->adjustSize ();
+		
+		Embedder_->show ();
+		Process_->start ("xterm",
+			{ "-into", QString::number (Embedder_->winId ()) });
+	}
+	
+	TabClassInfo TerminalWidget::GetTabClassInfo () const
+	{
+		return TC_;
+	}
+	
+	QToolBar* TerminalWidget::GetToolBar () const
+	{
+		return 0;
+	}
+	
+	QObject* TerminalWidget::ParentMultiTabs ()
+	{
+		return ParentMT_;
+	}
+	
+	void TerminalWidget::Remove ()
+	{
+		emit removeTab (this);
+		deleteLater ();
+	}
 }
 }
-

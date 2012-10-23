@@ -18,33 +18,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
+#include <QDeclarativeImageProvider>
+
+class QIcon;
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	class ViewManager;
-
-	class Plugin : public QObject
-				 , public IInfo
+	class WidthIconProvider : public QDeclarativeImageProvider
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo)
-
-		ViewManager *Mgr_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	signals:
-		void pluginsAvailable ();
+		WidthIconProvider ();
+
+		QPixmap requestPixmap (const QString&, QSize*, const QSize&);
+
+		virtual QIcon GetIcon (const QStringList&) = 0;
 	};
 }
 }
-

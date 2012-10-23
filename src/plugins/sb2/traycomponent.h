@@ -19,32 +19,42 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
+#include <interfaces/iquarkcomponentprovider.h>
+#include <interfaces/core/icoreproxy.h>
+
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
+enum class ActionsEmbedPlace;
+
 namespace SB2
 {
-	class ViewManager;
+	class ActionImageProvider;
 
-	class Plugin : public QObject
-				 , public IInfo
+	class TrayComponent : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
 
-		ViewManager *Mgr_;
+		ICoreProxy_ptr Proxy_;
+		QStandardItemModel *Model_;
+		QuarkComponent Component_;
+
+		ActionImageProvider *ImageProv_;
+
+		int NextActionId_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	signals:
-		void pluginsAvailable ();
+		TrayComponent (ICoreProxy_ptr, QObject* parent = 0);
+
+		QuarkComponent GetComponent () const;
+	private:
+		QStandardItem* FindItem (QAction*) const;
+	private slots:
+		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
+		void handleActionDestroyed ();
+		void handleActionChanged ();
+		void handlePluginsAvailable ();
 	};
 }
 }
-

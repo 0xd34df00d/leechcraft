@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,33 +18,31 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
+#include <QString>
+#include <QUrl>
+#include <QVariant>
+
+class QDeclarativeImageProvider;
 
 namespace LeechCraft
 {
-namespace SB2
-{
-	class ViewManager;
-
-	class Plugin : public QObject
-				 , public IInfo
+	struct QuarkComponent
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo)
-
-		ViewManager *Mgr_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	signals:
-		void pluginsAvailable ();
+		QUrl Url_;
+		QList<QPair<QString, QObject*>> DynamicProps_;
+		QList<QPair<QString, QVariant>> StaticProps_;
+		QList<QPair<QString, QDeclarativeImageProvider*>> ImageProviders_;
 	};
-}
+
+	typedef QList<QuarkComponent> QuarkComponents_t;
 }
 
+class IQuarkComponentProvider
+{
+public:
+	virtual ~IQuarkComponentProvider () {}
+
+	virtual LeechCraft::QuarkComponents_t GetComponents () const = 0;
+};
+
+Q_DECLARE_INTERFACE (IQuarkComponentProvider, "org.Deviant.LeechCraft.IQuarkComponentProvider/1.0");

@@ -16,35 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
+#include "widthiconprovider.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	class ViewManager;
-
-	class Plugin : public QObject
-				 , public IInfo
+	WidthIconProvider::WidthIconProvider ()
+	: QDeclarativeImageProvider (Pixmap)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo)
+	}
 
-		ViewManager *Mgr_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	signals:
-		void pluginsAvailable ();
-	};
+	QPixmap WidthIconProvider::requestPixmap (const QString& idStr, QSize *size, const QSize& requestedSize)
+	{
+		const auto& list = idStr.split ('/', QString::SkipEmptyParts);
+		if (list.isEmpty ())
+			return QPixmap ();
+
+		auto realSize = requestedSize;
+		if (realSize.width () <= 0)
+		{
+			const int width = list.last ().toDouble ();
+			realSize = QSize (width, width);
+		}
+
+		const auto& icon = GetIcon (list);
+
+		if (size)
+			*size = icon.actualSize (realSize);
+
+		return icon.pixmap (realSize);
+	}
 }
 }
-

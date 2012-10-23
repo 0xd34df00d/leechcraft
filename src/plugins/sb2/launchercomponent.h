@@ -19,32 +19,50 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
+#include <interfaces/iquarkcomponentprovider.h>
+#include <interfaces/core/icoreproxy.h>
+
+class QStandardItemModel;
+class QStandardItem;
+class IHaveTabs;
 
 namespace LeechCraft
 {
+struct TabClassInfo;
+struct QuarkComponent;
+
 namespace SB2
 {
-	class ViewManager;
+	class TabClassImageProvider;
 
-	class Plugin : public QObject
-				 , public IInfo
+	class LauncherComponent : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
 
-		ViewManager *Mgr_;
+		ICoreProxy_ptr Proxy_;
+		QStandardItemModel *Model_;
+		QuarkComponent Component_;
+
+		TabClassImageProvider *ImageProv_;
+		QHash<QByteArray, IHaveTabs*> TC2Obj_;
+
+		QHash<QByteArray, QList<QStandardItem*>> TC2Items_;
+
+		QHash<QByteArray, QList<QWidget*>> TC2Widgets_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	signals:
-		void pluginsAvailable ();
+		LauncherComponent (ICoreProxy_ptr, QObject* = 0);
+
+		QuarkComponent GetComponent () const;
+	private:
+		QStandardItem* AddTC (const TabClassInfo&);
+	public slots:
+		void handlePluginsAvailable ();
+
+		void tabOpenRequested (const QByteArray&);
+	private slots:
+		void handleNewTab (const QString&, QWidget*);
+		void handleRemoveTab (QWidget*);
+		void handleCurrentTabChanged (int);
 	};
 }
 }
-
