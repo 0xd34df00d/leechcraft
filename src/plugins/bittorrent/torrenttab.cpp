@@ -57,7 +57,6 @@ namespace BitTorrent
 					return true;
 
 				const auto& idx = Core::Instance ()->index (row, Core::ColumnName);
-				qDebug () << pattern << idx.data ().toString ();
 				if (idx.data ().toString ().contains (pattern, Qt::CaseInsensitive))
 					return true;
 
