@@ -145,6 +145,7 @@ namespace LeechCraft
 			public:
 				enum Columns
 				{
+					ColumnID,
 					ColumnName,
 					ColumnState,
 					ColumnProgress,  // percentage, Downloaded of Size
@@ -197,6 +198,8 @@ namespace LeechCraft
 				virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
 				virtual QModelIndex parent (const QModelIndex&) const;
 				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+
+				QIcon GetTorrentIcon (int) const;
 
 				libtorrent::torrent_handle GetTorrentHandle (int) const;
 

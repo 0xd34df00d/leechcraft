@@ -25,6 +25,7 @@
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iactionsexporter.h>
+#include "widthiconprovider.h"
 
 namespace LeechCraft
 {
@@ -54,37 +55,25 @@ namespace SB2
 		};
 	}
 
-	class ActionImageProvider : public QDeclarativeImageProvider
+	class ActionImageProvider : public WidthIconProvider
 	{
 		ICoreProxy_ptr Proxy_;
 		QHash<int, QAction*> Actions_;
 	public:
 		ActionImageProvider (ICoreProxy_ptr proxy)
-		: QDeclarativeImageProvider (Pixmap)
-		, Proxy_ (proxy)
+		: Proxy_ (proxy)
 		{
 		}
 
-		QPixmap requestPixmap (const QString& idStr, QSize *size, const QSize& requestedSize)
+		QIcon GetIcon (const QStringList& list)
 		{
-			const auto& list = idStr.split ('/', QString::SkipEmptyParts);
-			if (list.isEmpty ())
-				return QPixmap ();
-
 			const auto id = list.at (0).toInt ();
 			if (!Actions_.contains (id))
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "id not found:"
 						<< id;
-				return QPixmap ();
-			}
-
-			auto realSize = requestedSize;
-			if (realSize.width () <= 0)
-			{
-				const int width = list.last ().toDouble ();
-				realSize = QSize (width, width);
+				return QIcon ();
 			}
 
 			auto act = Actions_ [id];
@@ -92,11 +81,7 @@ namespace SB2
 			if (icon.isNull ())
 				icon = Proxy_->GetIcon (act->property ("ActionIcon").toString (),
 						act->property ("ActionIconOff").toString ());
-
-			if (size)
-				*size = icon.actualSize (realSize);
-
-			return icon.pixmap (realSize);
+			return icon;
 		}
 
 		void SetAction (int id, QAction *act)
@@ -111,7 +96,10 @@ namespace SB2
 		}
 	};
 
-	const QString ImageProviderID = "SB2_TrayActionImage";
+	namespace
+	{
+		const QString ImageProviderID = "SB2_TrayActionImage";
+	}
 
 	TrayComponent::TrayComponent (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
