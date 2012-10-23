@@ -198,6 +198,8 @@ namespace LeechCraft
 				virtual QModelIndex parent (const QModelIndex&) const;
 				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
+				QIcon GetTorrentIcon (int) const;
+
 				libtorrent::torrent_handle GetTorrentHandle (int) const;
 
 				libtorrent::torrent_info GetTorrentInfo (const QString&);

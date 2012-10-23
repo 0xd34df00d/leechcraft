@@ -629,6 +629,11 @@ namespace LeechCraft
 				return Handles_.size ();
 			}
 
+			QIcon Core::GetTorrentIcon (int) const
+			{
+				return TorrentIcon_;
+			}
+
 			libtorrent::torrent_handle Core::GetTorrentHandle (int idx) const
 			{
 				if (idx < 0)
