@@ -108,7 +108,7 @@ namespace LeechCraft
 					tr ("BitTorrent tab"),
 					tr ("Full BitTorrent downloads tab."),
 					GetIcon (),
-					0,
+					10,
 					TFSingle | TFOpenableByRequest
 				};
 				TorrentTab_ = new TorrentTab (TabTC_, this);
