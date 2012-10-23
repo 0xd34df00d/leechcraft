@@ -78,17 +78,25 @@ namespace LeechCraft
 						setSourceModel (model);
 					}
 
-					QVariant data (const QModelIndex& index, int role) const
+					QVariant data (const QModelIndex& unmapped, int role) const
 					{
-						if (index.column () == Core::ColumnProgress && role == Qt::DisplayRole)
+						const auto& index = mapToSource (unmapped);
+						const int normCol = index.column ();
+
+						if (normCol == Core::ColumnProgress && role == Qt::DisplayRole)
 							return sourceModel ()->data (index, Core::Roles::FullLengthText);
+						else if (role == Qt::DecorationRole)
+							return normCol == Core::ColumnName ?
+									Core::Instance ()->GetTorrentIcon (index.row ()) :
+									QVariant ();
 						else
-							return QSortFilterProxyModel::data (index, role);
+							return QSortFilterProxyModel::data (unmapped, role);
 					}
 				protected:
 					bool filterAcceptsColumn (int sourceColumn, const QModelIndex&) const
 					{
-						return sourceColumn < 3;
+						return sourceColumn >= Core::Columns::ColumnName &&
+								sourceColumn <= Core::Columns::ColumnProgress;
 					}
 				};
 			}

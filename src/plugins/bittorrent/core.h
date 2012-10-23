@@ -145,6 +145,7 @@ namespace LeechCraft
 			public:
 				enum Columns
 				{
+					ColumnID,
 					ColumnName,
 					ColumnState,
 					ColumnProgress,  // percentage, Downloaded of Size
