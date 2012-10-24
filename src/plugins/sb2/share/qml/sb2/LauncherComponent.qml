@@ -1,4 +1,5 @@
 import QtQuick 1.1
+import Effects 1.0
 import "."
 
 Rectangle {
@@ -41,6 +42,13 @@ Rectangle {
                     isCurrent: isCurrentTab
 
                     onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
+
+                    effect: Colorize {
+                        strength: openedTabsCount ? 0 : 0.3
+                        color: "gray"
+
+                        Behavior on strength { PropertyAnimation {} }
+                    }
                 }
 
                 Item {
