@@ -34,7 +34,10 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: pregap.bottom
-                    anchors.bottom: postgap.top
+
+                    height: rootRect.launcherItemHeight
+
+                    z: 5
 
                     actionIconURL: tabClassIcon
                     isHighlight: openedTabsCount
