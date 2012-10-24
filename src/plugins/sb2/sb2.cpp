@@ -20,6 +20,8 @@
 #include <QIcon>
 #include <QMainWindow>
 #include <QStatusBar>
+#include <QGraphicsEffect>
+#include <QtDeclarative>
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/imwproxy.h>
@@ -34,6 +36,11 @@ namespace SB2
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
+		qmlRegisterType<QGraphicsColorizeEffect> ("Effects", 1, 0, "Colorize");
+		qmlRegisterType<QGraphicsDropShadowEffect> ("Effects", 1, 0, "DropShadow");
+		qmlRegisterType<QGraphicsOpacityEffect> ("Effects", 1, 0, "OpacityEffect");
+
 		Mgr_ = new ViewManager (this);
 		auto view = Mgr_->GetView ();
 		proxy->GetMWProxy ()->AddSideWidget (view);
