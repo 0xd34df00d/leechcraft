@@ -281,30 +281,8 @@ namespace AdvancedNotifications
 		qDeleteAll (actsDel);
 	}
 
-	namespace
-	{
-		void FitSize (QFont& font, const QSize& iconSize, const QString& countText,
-				std::function<int (QFont)> g, std::function<void (QFont&, int)> s)
-		{
-			s (font, ((iconSize.height () + 2 * g (font)) / 3));
-			int numIters = 0;
-			while (true)
-			{
-				const int width = QFontMetrics (font).width (countText);
-				if (width > iconSize.width () ||
-						g (font) >= iconSize.height ())
-					s (font, g (font) - 1);
-				else
-					break;
-
-				if (++numIters >= 12)
-					break;
-			}
-		}
-	}
-
 	template<typename T>
-	void SystemTrayHandler::UpdateIcon (T iconable, const QString& category, std::function<QSize (T)> iconSizeGetter)
+	void SystemTrayHandler::UpdateIcon (T iconable, const QString& category)
 	{
 		QIcon icon = GH_->GetIconForCategory (category);
 		if (!XmlSettingsManager::Instance ()
@@ -314,58 +292,33 @@ namespace AdvancedNotifications
 			return;
 		}
 
-		const QSize& iconSize = iconSizeGetter (iconable);
-		QPixmap px = icon.pixmap (iconSize);
-
 		int eventCount = 0;
 		Q_FOREACH (const EventData& event, Events_.values ())
 			if (event.Category_ == category)
 				eventCount += event.Count_;
 
-		const QString& countText = QString::number (eventCount);
-
 		QFont font = qApp->font ();
 		font.setBold (true);
 		font.setItalic (true);
 
-		// Cause gcc 4.5.x sucks and fails to compile without being such explicit.
-		std::function<int (QFont)> getPointSize = [] (QFont f) { return f.pointSize (); };
-		std::function<int (QFont)> getPixelSize = [] (QFont f) { return f.pixelSize (); };
-		auto gFunc = font.pointSize () > 1 ? getPointSize : getPixelSize;
+		QIcon withText;
+		for (const auto& size : icon.availableSizes ())
+		{
+			const auto& px = icon.pixmap (size);
+			withText.addPixmap (Util::DrawOverlayText (px, QString::number (eventCount), font));
+		}
 
-		std::function<void (QFont&, int)> setPointSize = [] (QFont& f, int size) { f.setPointSize (size); };
-		std::function<void (QFont&, int)> setPixelSize = [] (QFont& f, int size) { f.setPixelSize (size); };
-		auto sFunc = font.pointSize () > 1 ? setPointSize : setPixelSize;
-		FitSize (font, iconSize, countText, gFunc, sFunc);
-
-		const bool tooSmall = gFunc (font) < 5;
-		if (tooSmall)
-			sFunc (font, gFunc (qApp->font ()));
-
-		QPainter p (&px);
-		p.setFont (font);
-		p.setPen (Qt::darkCyan);
-		p.drawText (0, 1,
-				iconSize.width (), iconSize.height (),
-				Qt::AlignBottom | Qt::AlignRight,
-				tooSmall ? "#" : countText);
-		p.end ();
-
-		iconable->setIcon (QIcon (px));
+		iconable->setIcon (withText);
 	}
 
 	void SystemTrayHandler::UpdateSysTrayIcon (QSystemTrayIcon *trayIcon)
 	{
-		const QString& category = Category2Icon_.key (trayIcon);
-		UpdateIcon<QSystemTrayIcon*> (trayIcon, category,
-				[] (QSystemTrayIcon *icon) { return icon->geometry ().size (); });
+		UpdateIcon<QSystemTrayIcon*> (trayIcon, Category2Icon_.key (trayIcon));
 	}
 
 	void SystemTrayHandler::UpdateTrayAction (QAction *action)
 	{
-		const QString& category = Category2Action_.key (action);
-		UpdateIcon<QAction*> (action, category,
-				[] (QAction*) { return QSize (22, 22); });
+		UpdateIcon<QAction*> (action, Category2Action_.key (action));
 	}
 
 	void SystemTrayHandler::handleActionTriggered ()
