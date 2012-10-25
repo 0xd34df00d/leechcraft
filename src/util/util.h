@@ -285,7 +285,7 @@ namespace LeechCraft
 
 		UTIL_API QPoint FitRectScreen (QPoint pos, const QSize& size);
 
-		UTIL_API QPixmap DrawOverlayText (QPixmap px, const QString& text, QFont font);
+		UTIL_API QPixmap DrawOverlayText (QPixmap px, const QString& text, QFont font, const QPen& pen);
 
 		/** @brief Returns an element for a given tags list.
 		 *

@@ -305,7 +305,9 @@ namespace AdvancedNotifications
 		for (const auto& size : icon.availableSizes ())
 		{
 			const auto& px = icon.pixmap (size);
-			withText.addPixmap (Util::DrawOverlayText (px, QString::number (eventCount), font));
+			const auto& overlaid = Util::DrawOverlayText (px,
+					QString::number (eventCount), font, QPen (Qt::darkCyan));
+			withText.addPixmap (overlaid);
 		}
 
 		iconable->setIcon (withText);

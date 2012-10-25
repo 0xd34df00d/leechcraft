@@ -388,7 +388,7 @@ namespace
 	}
 }
 
-QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px, const QString& text, QFont font)
+QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px, const QString& text, QFont font, const QPen& pen)
 {
 	const auto& iconSize = px.size ();
 
@@ -408,7 +408,7 @@ QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px, const QString& text, QFon
 
 	QPainter p (&px);
 	p.setFont (font);
-	p.setPen (Qt::darkCyan);
+	p.setPen (pen);
 	p.drawText (0, 1,
 			iconSize.width (), iconSize.height (),
 			Qt::AlignBottom | Qt::AlignRight,
