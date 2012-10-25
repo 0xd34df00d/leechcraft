@@ -253,7 +253,8 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO << typeid (e).name () << e.what ();
 				}
 
-				Headers_ << tr ("Name")
+				Headers_ << "#"
+						<< tr ("Name")
 						<< tr ("State")
 						<< tr ("Progress")
 						<< tr ("Down speed")
@@ -465,6 +466,8 @@ namespace LeechCraft
 				case Qt::DisplayRole:
 					switch (column)
 					{
+					case ColumnID:
+						return QString::number (row + 1);
 					case ColumnName:
 						return QString::fromUtf8 (h.name ().c_str ());
 					case ColumnState:
@@ -572,8 +575,6 @@ namespace LeechCraft
 					result += tr ("Peers/seeds: %1/%2").arg (status.num_peers).arg (status.num_seeds);
 					return result;
 				}
-				case Qt::DecorationRole:
-					return column ? QVariant () : TorrentIcon_;
 				case RoleTags:
 					return Handles_.at (row).Tags_;
 				case CustomDataRoles::RoleJobHolderRow:
@@ -627,6 +628,11 @@ namespace LeechCraft
 					return 0;
 
 				return Handles_.size ();
+			}
+
+			QIcon Core::GetTorrentIcon (int) const
+			{
+				return TorrentIcon_;
 			}
 
 			libtorrent::torrent_handle Core::GetTorrentHandle (int idx) const

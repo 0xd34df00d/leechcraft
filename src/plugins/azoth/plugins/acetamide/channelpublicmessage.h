@@ -37,7 +37,7 @@ namespace Acetamide
 								, public IMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage);
+		Q_INTERFACES (LeechCraft::Azoth::IMessage)
 
 		QPointer<ChannelCLEntry> ParentEntry_;
 		ChannelParticipantEntry_ptr ParticipantEntry_;

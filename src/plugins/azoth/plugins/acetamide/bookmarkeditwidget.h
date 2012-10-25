@@ -33,12 +33,12 @@ namespace Acetamide
 							 , public IMUCBookmarkEditorWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCBookmarkEditorWidget);
-		
+		Q_INTERFACES (LeechCraft::Azoth::IMUCBookmarkEditorWidget)
+
 		Ui::BookmarkEditWidget Ui_;
 	public:
 		BookmarkEditWidget (QWidget* = 0);
-		
+
 		QVariantMap GetIdentifyingData () const;
 		void SetIdentifyingData (const QVariantMap&);
 	};

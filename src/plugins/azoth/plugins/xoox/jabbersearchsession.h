@@ -36,7 +36,7 @@ namespace Xoox
 							  , public ISearchSession
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ISearchSession);
+		Q_INTERFACES (LeechCraft::Azoth::ISearchSession)
 
 		GlooxAccount *Acc_;
 		QStandardItemModel *Model_;

@@ -41,7 +41,7 @@ namespace ChatHistory
 							, public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget);
+		Q_INTERFACES (ITabWidget)
 
 		Ui::ChatHistoryWidget Ui_;
 

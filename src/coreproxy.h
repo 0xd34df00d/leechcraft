@@ -33,7 +33,7 @@ namespace LeechCraft
 					, public ICoreProxy
 	{
 		Q_OBJECT
-		Q_INTERFACES (ICoreProxy);
+		Q_INTERFACES (ICoreProxy)
 
 		Util::IDPool<int> Pool_;
 		MWProxy *MWProxy_;

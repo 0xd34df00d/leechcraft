@@ -60,6 +60,7 @@ SET (SRCS
 	singletrackerchanger.cpp
 	torrenttab.cpp
 	torrenttabwidget.cpp
+	tabviewproxymodel.cpp
 	)
 SET (HEADERS
 	torrentplugin.h
@@ -97,6 +98,7 @@ SET (HEADERS
 	singletrackerchanger.h
 	torrenttab.h
 	torrenttabwidget.h
+	tabviewproxymodel.h
 	newtorrentparams.h
 	torrentinfo.h
 	fileinfo.h

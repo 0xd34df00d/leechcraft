@@ -190,6 +190,6 @@ namespace Acetamide
 		return ISH_->GetISupport ();
 	}
 
-};
-};
-};
+}
+}
+}

@@ -76,7 +76,7 @@ namespace Util
 			Apply = 0x01,
 			Select = 0x02
 		};
-		Q_DECLARE_FLAGS (EventFlags, EventFlag);
+		Q_DECLARE_FLAGS (EventFlags, EventFlag)
 
 		/** @brief Subscribes object to property changes.
 		 *

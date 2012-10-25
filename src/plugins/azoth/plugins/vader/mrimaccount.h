@@ -52,7 +52,7 @@ namespace Vader
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
 				LeechCraft::Azoth::ISupportTune
-				LeechCraft::Azoth::IExtSelfInfoAccount);
+				LeechCraft::Azoth::IExtSelfInfoAccount)
 
 		MRIMProtocol *Proto_;
 		QString Name_;

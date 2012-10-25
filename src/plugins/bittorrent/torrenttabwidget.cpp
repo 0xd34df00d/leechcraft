@@ -405,15 +405,15 @@ namespace BitTorrent
 	void TorrentTabWidget::UpdateTorrentControl ()
 	{
 		Ui_.TorrentDownloadRateController_->
-			setValue (Core::Instance ()->GetTorrentDownloadRate (Core::Instance ()->GetCurrentTorrent ()));
+			setValue (Core::Instance ()->GetTorrentDownloadRate (Index_));
 		Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->
-				GetTorrentUploadRate (Core::Instance ()->GetCurrentTorrent ()));
+				GetTorrentUploadRate (Index_));
 		Ui_.TorrentManaged_->setCheckState (Core::Instance ()->
-				IsTorrentManaged (Core::Instance ()->GetCurrentTorrent ()) ? Qt::Checked : Qt::Unchecked);
+				IsTorrentManaged (Index_) ? Qt::Checked : Qt::Unchecked);
 		Ui_.TorrentSequentialDownload_->setCheckState (Core::Instance ()->
-				IsTorrentSequentialDownload (Core::Instance ()->GetCurrentTorrent ()) ? Qt::Checked : Qt::Unchecked);
+				IsTorrentSequentialDownload (Index_) ? Qt::Checked : Qt::Unchecked);
 		Ui_.TorrentSuperSeeding_->setCheckState (Core::Instance ()->
-				IsTorrentSuperSeeding (Core::Instance ()->GetCurrentTorrent ()) ? Qt::Checked : Qt::Unchecked);
+				IsTorrentSuperSeeding (Index_) ? Qt::Checked : Qt::Unchecked);
 
 		std::unique_ptr<TorrentInfo> i;
 		try

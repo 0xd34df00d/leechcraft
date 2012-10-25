@@ -16,47 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLES_H
-#define PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLES_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/azoth/iresourceplugin.h>
+#pragma once
+
+#include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Plugins
 {
-class IProxyObject;
-namespace StandardStyles
+namespace BitTorrent
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IResourcePlugin
+	class TabViewProxyModel : public QSortFilterProxyModel
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin)
 
-		IProxyObject *Proxy_;
-		QObjectList ResourceSources_;
+		enum class StateFilterMode
+		{
+			All,
+			Downloading,
+			Seeding
+		} StateFilter_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-
-		QList<QObject*> GetResourceSources () const;
+		TabViewProxyModel (QObject* = 0);
+	protected:
+		bool filterAcceptsRow (int, const QModelIndex&) const;
 	public slots:
-		void initPlugin (QObject*);
+		void setStateFilterMode (int);
 	};
 }
 }
 }
-
-#endif

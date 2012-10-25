@@ -41,7 +41,7 @@ namespace Vader
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
-				LeechCraft::Azoth::IAdvancedCLEntry);
+				LeechCraft::Azoth::IAdvancedCLEntry)
 
 		MRIMAccount *A_;
 		Proto::ContactInfo Info_;

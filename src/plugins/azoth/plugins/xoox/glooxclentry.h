@@ -54,7 +54,7 @@ namespace Xoox
 					   , public IAuthable
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAuthable);
+		Q_INTERFACES (LeechCraft::Azoth::IAuthable)
 
 		QString BareJID_;
 	private:

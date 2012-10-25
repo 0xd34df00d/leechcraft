@@ -33,6 +33,7 @@
 #include "newtorrentwizard.h"
 #include "trackerschanger.h"
 #include "movetorrentfiles.h"
+#include "tabviewproxymodel.h"
 
 namespace LeechCraft
 {
@@ -40,46 +41,11 @@ namespace Plugins
 {
 namespace BitTorrent
 {
-	namespace
-	{
-		class ViewFilter : public QSortFilterProxyModel
-		{
-		public:
-			ViewFilter (QObject *parent = 0)
-			: QSortFilterProxyModel (parent)
-			{
-			}
-		protected:
-			bool filterAcceptsRow (int row, const QModelIndex&) const
-			{
-				const auto& pattern = filterRegExp ().pattern ();
-				if (pattern.isEmpty ())
-					return true;
-
-				const auto& idx = Core::Instance ()->index (row, Core::ColumnName);
-				qDebug () << pattern << idx.data ().toString ();
-				if (idx.data ().toString ().contains (pattern, Qt::CaseInsensitive))
-					return true;
-
-				auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
-
-				const auto& reqTags = tm->Split (pattern);
-
-				const auto& torrentTags = idx.data (RoleTags).toStringList ();
-				Q_FOREACH (const auto& tagId, torrentTags)
-					if (reqTags.contains (tm->GetTag (tagId)))
-						return true;
-
-				return false;
-			}
-		};
-	}
-
 	TorrentTab::TorrentTab (const TabClassInfo& tc, QObject *mt)
 	: TC_ (tc)
 	, ParentMT_ (mt)
 	, Toolbar_ (new QToolBar ("BitTorrent"))
-	, ViewFilter_ (new ViewFilter (this))
+	, ViewFilter_ (new TabViewProxyModel (this))
 	{
 		Ui_.setupUi (this);
 
@@ -94,7 +60,8 @@ namespace BitTorrent
 
 		const auto& fm = Ui_.TorrentsView_->fontMetrics ();
 		QHeaderView *header = Ui_.TorrentsView_->header ();
-		header->resizeSection (0, fm.width ("boardwalk.empire.s03e02.hdtv.720p.ac3.rus.eng.novafilm.tv.mkv") * 1.3);
+		header->resizeSection (Core::Columns::ColumnID, fm.width ("999"));
+		header->resizeSection (Core::Columns::ColumnName, fm.width ("boardwalk.empire.s03e02.hdtv.720p.ac3.rus.eng.novafilm.tv.mkv") * 1.3);
 
 		new Util::TagsCompleter (Ui_.SearchLine_);
 		Ui_.SearchLine_->AddSelector ();
@@ -102,6 +69,10 @@ namespace BitTorrent
 				SIGNAL (textChanged (QString)),
 				ViewFilter_,
 				SLOT (setFilterFixedString (QString)));
+		connect (Ui_.TorrentStateFilter_,
+				SIGNAL (currentIndexChanged (int)),
+				ViewFilter_,
+				SLOT (setStateFilterMode (int)));
 
 		OpenTorrent_ = new QAction (tr ("Open torrent..."), Toolbar_);
 		OpenTorrent_->setShortcut (Qt::Key_Insert);

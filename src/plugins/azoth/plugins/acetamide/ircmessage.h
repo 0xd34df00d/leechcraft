@@ -41,7 +41,7 @@ namespace Acetamide
 						, public IMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage);
+		Q_INTERFACES (LeechCraft::Azoth::IMessage)
 
 		MessageType Type_;
 		MessageSubType SubType_;

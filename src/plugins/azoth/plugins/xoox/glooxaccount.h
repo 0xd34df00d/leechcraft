@@ -99,15 +99,17 @@ namespace Xoox
 				LeechCraft::Azoth::ISupportMood
 				LeechCraft::Azoth::ISupportActivity
 				LeechCraft::Azoth::ISupportGeolocation
-#ifdef ENABLE_MEDIACALLS
-				LeechCraft::Azoth::ISupportMediaCalls
-#endif
 				LeechCraft::Azoth::ISupportRIEX
 				LeechCraft::Azoth::ISupportBookmarks
-#ifdef ENABLE_CRYPT
-				LeechCraft::Azoth::ISupportPGP
+			)
+
+#ifdef ENABLE_MEDIACALLS
+		Q_INTERFACES (LeechCraft::Azoth::ISupportMediaCalls)
 #endif
-			);
+
+#ifdef ENABLE_CRYPT
+		Q_INTERFACES (LeechCraft::Azoth::ISupportPGP)
+#endif
 
 		QString Name_;
 		GlooxProtocol *ParentProtocol_;
