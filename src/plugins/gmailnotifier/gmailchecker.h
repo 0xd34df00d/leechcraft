@@ -59,7 +59,7 @@ namespace GmailNotifier
 		void timeOut ();
 	signals:
 		void anErrorOccupied (const QString& title, const QString& msg);
-		void newConversationsAvailable (const QString& title, const QString& msg);
+		void newConversationsAvailable (const QString& title, const QString& msg, int number);
 
 		void waitMe ();
 		void canContinue ();
