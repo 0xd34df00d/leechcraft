@@ -1,19 +1,6 @@
-IF (NOT QT_USE_FILE)
-	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-	IF (COMMAND cmake_policy)
-		cmake_policy (SET CMP0003 NEW)
-	ENDIF (COMMAND cmake_policy)
-
-	PROJECT (leechcraft_secman)
-
-	IF (NOT CMAKE_MODULE_PATH)
-		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	ENDIF (NOT CMAKE_MODULE_PATH)
-
-	FIND_PACKAGE (Boost REQUIRED)
-	FIND_PACKAGE (Qt4 REQUIRED)
-	FIND_PACKAGE (LeechCraft REQUIRED)
-ENDIF (NOT QT_USE_FILE)
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
+PROJECT (leechcraft_secman)
+INCLUDE (InitLCPlugin OPTIONAL)
 
 OPTION (TESTS_SECMAN "Enable SecMan tests")
 
@@ -43,18 +30,10 @@ SET (SRCS
 	secman.cpp
 	core.cpp
 	)
-SET (HEADERS
-	secman.h
-	core.h
-	)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
 
 ADD_LIBRARY (leechcraft_secman SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_secman
 	${QT_LIBRARIES}
