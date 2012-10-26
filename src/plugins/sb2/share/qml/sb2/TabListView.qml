@@ -8,6 +8,12 @@ Rectangle {
     radius: 5
     focus: true
 
+    opacity: 0
+    SequentialAnimation on opacity {
+        loops: 1
+        PropertyAnimation { to: 1; duration: 100 }
+    }
+
     signal closeRequested()
     signal tabSwitchRequested(int index)
 
