@@ -25,6 +25,7 @@
 #include <util/sys/paths.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include "sbview.h"
+#include "quarkproxy.h"
 
 namespace LeechCraft
 {
@@ -64,6 +65,7 @@ namespace SB2
 		}
 
 		View_->rootContext ()->setContextProperty ("itemsModel", ViewItemsModel_);
+		View_->rootContext ()->setContextProperty ("quarkProxy", new QuarkProxy (this, this));
 		View_->setSource (QUrl::fromLocalFile (file));
 	}
 

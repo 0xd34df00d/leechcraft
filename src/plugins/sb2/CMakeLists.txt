@@ -17,6 +17,7 @@ SET (SRCS
 	launchercomponent.cpp
 	tablistview.cpp
 	traycomponent.cpp
+	quarkproxy.cpp
 	)
 
 ADD_LIBRARY (leechcraft_sb2 SHARED
