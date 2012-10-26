@@ -8,7 +8,7 @@ Rectangle {
     width: parent.width
     property real launcherItemHeight: parent.width
     property real currentGapSize: (launcherItemHeight + Math.sqrt(8 * launcherItemHeight)) / 4
-    height: launcherColumn.height
+    height: launcherColumn.height + 20
 
     color: "transparent"
 
@@ -55,7 +55,7 @@ Rectangle {
                             return result;
                         }
                         var absPoint = quarkProxy.mapToGlobal(getAbsPos("x"), getAbsPos("y"));
-                        SB2_launcherProxy.tabListRequested(tabClassID, absPoint.x + rootRect.width, absPoint.y);
+                        SB2_launcherProxy.tabListRequested(tabClassID, absPoint.x + rootRect.width, absPoint.y + pregap.height);
                     }
 
                     effect: Colorize {
