@@ -54,7 +54,8 @@ namespace SB2
 
 		QuarkComponent GetComponent () const;
 	private:
-		QStandardItem* AddTC (const TabClassInfo&);
+		QStandardItem* TryAddTC (const TabClassInfo&);
+		QStandardItem* CreateItem (const TabClassInfo&);
 	public slots:
 		void handlePluginsAvailable ();
 
