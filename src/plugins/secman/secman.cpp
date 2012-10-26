@@ -23,66 +23,65 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace SecMan
+{
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		namespace SecMan
-		{
-			void Plugin::Init (ICoreProxy_ptr)
-			{
-			}
+	}
 
-			void Plugin::SecondInit ()
-			{
-			}
+	void Plugin::SecondInit ()
+	{
+	}
 
-			void Plugin::Release ()
-			{
-			}
+	void Plugin::Release ()
+	{
+	}
 
-			QByteArray Plugin::GetUniqueID () const
-			{
-				return "org.LeechCraft.SecMan";
-			}
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.SecMan";
+	}
 
-			QString Plugin::GetName () const
-			{
-				return "SecMan";
-			}
+	QString Plugin::GetName () const
+	{
+		return "SecMan";
+	}
 
-			QString Plugin::GetInfo () const
-			{
-				return tr ("Security and personal data manager for LeechCraft");
-			}
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Security and personal data manager for LeechCraft");
+	}
 
-			QIcon Plugin::GetIcon () const
-			{
-				return QIcon ();
-			}
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
 
-			EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
-			{
-				return Core::Instance ().CouldHandle (e) ?
-						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
-						EntityTestHandleResult ();
-			}
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
+	{
+		return Core::Instance ().CouldHandle (e) ?
+				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult ();
+	}
 
-			void Plugin::Handle (Entity e)
-			{
-				Core::Instance ().Handle (e);
-			}
+	void Plugin::Handle (Entity e)
+	{
+		Core::Instance ().Handle (e);
+	}
 
-			QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
-			{
-				return Core::Instance ().GetExpectedPluginClasses ();
-			}
+	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
+	{
+		return Core::Instance ().GetExpectedPluginClasses ();
+	}
 
-			void Plugin::AddPlugin (QObject *plugin)
-			{
-				Core::Instance ().AddPlugin (plugin);
-			}
-		};
-	};
-};
+	void Plugin::AddPlugin (QObject *plugin)
+	{
+		Core::Instance ().AddPlugin (plugin);
+	}
+}
+}
+}
 
 LC_EXPORT_PLUGIN (leechcraft_secman, LeechCraft::Plugins::SecMan::Plugin);
-

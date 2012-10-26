@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SECMAN_SECMAN_H
-#define PLUGINS_SECMAN_SECMAN_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
@@ -25,35 +25,32 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace SecMan
+{
+	class Plugin : public QObject
+					, public IInfo
+					, public IEntityHandler
+					, public IPluginReady
 	{
-		namespace SecMan
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IEntityHandler
-						 , public IPluginReady
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IEntityHandler IPluginReady)
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
+		Q_OBJECT
+		Q_INTERFACES (IInfo IEntityHandler IPluginReady)
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-				EntityTestHandleResult CouldHandle (const Entity&) const;
-				void Handle (Entity);
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 
-				QSet<QByteArray> GetExpectedPluginClasses () const;
-				void AddPlugin (QObject*);
-			};
-		};
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
 	};
-};
-
-#endif
-
+}
+}
+}
