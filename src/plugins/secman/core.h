@@ -39,6 +39,8 @@ namespace SecMan
 		void Handle (Entity);
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
+
+		QObjectList GetStoragePlugins () const;
 	private:
 		/** This one is called internally from AddPlugin, so it
 			* has no need to make sanity checks of the object.

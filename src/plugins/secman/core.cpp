@@ -146,6 +146,11 @@ namespace SecMan
 			AddStoragePlugin (plugin);
 	}
 
+	QObjectList Core::GetStoragePlugins () const
+	{
+		return QObjectList () << GetStoragePlugin ();
+	}
+
 	void Core::AddStoragePlugin (QObject *plugin)
 	{
 		if (!qobject_cast<IStoragePlugin*> (plugin))
