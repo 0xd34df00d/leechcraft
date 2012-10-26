@@ -11,6 +11,7 @@ Item {
     property alias isHovered: actionMouseArea.containsMouse
 
     signal triggered()
+    signal held()
 
     Rectangle {
         id: actionRect
@@ -79,6 +80,7 @@ Item {
             hoverEnabled: true
 
             onClicked: actionRoot.triggered()
+            onPressAndHold: actionRoot.held()
         }
     }
 }
