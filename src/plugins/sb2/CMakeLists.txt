@@ -15,6 +15,7 @@ SET (SRCS
 	viewmanager.cpp
 	widthiconprovider.cpp
 	launchercomponent.cpp
+	tablistview.cpp
 	traycomponent.cpp
 	)
 
