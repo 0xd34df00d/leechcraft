@@ -18,6 +18,7 @@
 
 #include "tablistview.h"
 #include <QStandardItemModel>
+#include <QGraphicsObject>
 #include <QDeclarativeContext>
 #include <QtDebug>
 #include <util/util.h>
@@ -37,7 +38,8 @@ namespace SB2
 			enum Roles
 			{
 				TabIcon = Qt::UserRole + 1,
-				TabName
+				TabName,
+				TabWidgetObj
 			};
 
 			TabsListModel (QObject *parent)
@@ -87,11 +89,38 @@ namespace SB2
 			const auto& px = ictw->TabIcon (idx).pixmap (32, 32);
 			item->setData (Util::GetAsBase64Src (px.toImage ()), TabsListModel::Roles::TabIcon);
 
+			item->setData (QVariant::fromValue<QObject*> (w), TabsListModel::Roles::TabWidgetObj);
+
 			Model_->appendRow (item);
 		}
 
 		rootContext ()->setContextProperty ("tabsListModel", Model_);
 		setSource (QUrl::fromLocalFile (file));
+
+		connect (rootObject (),
+				SIGNAL (closeRequested ()),
+				this,
+				SLOT (deleteLater ()));
+		connect (rootObject (),
+				SIGNAL (tabSwitchRequested (int)),
+				this,
+				SLOT (switchToItem (int)));
+	}
+
+	void TabListView::switchToItem (int idx)
+	{
+		auto item = Model_->item (idx);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null item at"
+					<< idx;
+			return;
+		}
+
+		auto widgetObj = item->data (TabsListModel::Roles::TabWidgetObj).value<QObject*> ();
+		Proxy_->GetTabWidget ()->setCurrentWidget (static_cast<QWidget*> (widgetObj));
+		deleteLater ();
 	}
 }
 }

@@ -35,6 +35,8 @@ namespace SB2
 		QStandardItemModel *Model_;
 	public:
 		TabListView (const QList<QWidget*>&, ICoreProxy_ptr, QWidget* = 0);
+	private slots:
+		void switchToItem (int);
 	};
 }
 }
