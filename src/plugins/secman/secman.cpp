@@ -18,8 +18,10 @@
 
 #include "secman.h"
 #include <QIcon>
+#include <QAction>
 #include <interfaces/entitytesthandleresult.h>
 #include "core.h"
+#include "contentsdisplaydialog.h"
 
 namespace LeechCraft
 {
@@ -29,6 +31,12 @@ namespace SecMan
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		auto displayContentsAction = new QAction (tr ("Display storages' contents"), this);
+		connect (displayContentsAction,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleDisplayContents ()));
+		MenuActions_ ["tools"] << displayContentsAction;
 	}
 
 	void Plugin::SecondInit ()
@@ -79,6 +87,23 @@ namespace SecMan
 	void Plugin::AddPlugin (QObject *plugin)
 	{
 		Core::Instance ().AddPlugin (plugin);
+	}
+
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace area) const
+	{
+		return QList<QAction*> ();
+	}
+
+	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
+	{
+		return MenuActions_;
+	}
+
+	void Plugin::handleDisplayContents ()
+	{
+		auto dia = new ContentsDisplayDialog;
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 	}
 }
 }

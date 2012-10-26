@@ -22,6 +22,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ipluginready.h>
+#include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
 {
@@ -33,9 +34,12 @@ namespace SecMan
 					, public IInfo
 					, public IEntityHandler
 					, public IPluginReady
+					, public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler IPluginReady)
+		Q_INTERFACES (IInfo IEntityHandler IPluginReady IActionsExporter)
+
+		QMap<QString, QList<QAction*>> MenuActions_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -50,6 +54,13 @@ namespace SecMan
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
+
+		QList<QAction*> GetActions (ActionsEmbedPlace area) const;
+		QMap<QString, QList<QAction*>> GetMenuActions () const;
+	private slots:
+		void handleDisplayContents ();
+	signals:
+		void gotActions (QList<QAction*>, ActionsEmbedPlace);
 	};
 }
 }
