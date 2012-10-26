@@ -197,10 +197,15 @@ namespace SB2
 		if (widgets.size () < 2)
 			return;
 
+		if (CurrentTabList_)
+			delete CurrentTabList_;
+
 		auto view = new TabListView (widgets, Proxy_);
 		view->move (x, y);
 		view->show ();
 		view->setFocus ();
+
+		CurrentTabList_ = view;
 	}
 
 	void LauncherComponent::handleNewTab (const QString&, QWidget *w)

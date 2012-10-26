@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <QPointer>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/icoreproxy.h>
 
@@ -34,6 +35,7 @@ struct QuarkComponent;
 namespace SB2
 {
 	class TabClassImageProvider;
+	class TabListView;
 
 	class LauncherComponent : public QObject
 	{
@@ -45,10 +47,10 @@ namespace SB2
 
 		TabClassImageProvider *ImageProv_;
 		QHash<QByteArray, IHaveTabs*> TC2Obj_;
-
 		QHash<QByteArray, QList<QStandardItem*>> TC2Items_;
-
 		QHash<QByteArray, QList<QWidget*>> TC2Widgets_;
+
+		QPointer<TabListView> CurrentTabList_;
 	public:
 		LauncherComponent (ICoreProxy_ptr, QObject* = 0);
 
