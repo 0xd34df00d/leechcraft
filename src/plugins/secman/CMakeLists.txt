@@ -29,11 +29,17 @@ ENDIF (ENABLE_SECMAN_SIMPLESTORAGE)
 SET (SRCS
 	secman.cpp
 	core.cpp
+	contentsdisplaydialog.cpp
 	)
+SET (FORMS
+	contentsdisplaydialog.ui
+	)
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_secman SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_secman
 	${QT_LIBRARIES}
