@@ -47,7 +47,7 @@ Rectangle {
                     onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
 
                     effect: Colorize {
-                        strength: openedTabsCount ? 0 : 0.3
+                        strength: openedTabsCount || tcButton.isHovered ? 0 : 0.3
                         color: "gray"
 
                         Behavior on strength { PropertyAnimation {} }
