@@ -14,10 +14,11 @@ SET (SRCS
 	sbview.cpp
 	viewmanager.cpp
 	widthiconprovider.cpp
-	launchercomponent.cpp
-	tablistview.cpp
-	traycomponent.cpp
 	quarkproxy.cpp
+	tablistview.cpp
+	launchercomponent.cpp
+	lcmenucomponent.cpp
+	traycomponent.cpp
 	)
 
 ADD_LIBRARY (leechcraft_sb2 SHARED
