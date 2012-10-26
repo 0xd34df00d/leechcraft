@@ -29,6 +29,7 @@
 #include "sbview.h"
 #include "launchercomponent.h"
 #include "traycomponent.h"
+#include "lcmenucomponent.h"
 
 namespace LeechCraft
 {
@@ -46,6 +47,8 @@ namespace SB2
 		proxy->GetMWProxy ()->AddSideWidget (view);
 
 		proxy->GetMainWindow ()->statusBar ()->hide ();
+
+		Mgr_->AddComponent ((new LCMenuComponent (proxy))->GetComponent ());
 
 		auto launcher = new LauncherComponent (proxy);
 		Mgr_->AddComponent (launcher->GetComponent ());
