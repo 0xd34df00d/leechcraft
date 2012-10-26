@@ -60,6 +60,7 @@ namespace SB2
 		void handlePluginsAvailable ();
 
 		void tabOpenRequested (const QByteArray&);
+		void tabListRequested (const QByteArray&, int, int);
 	private slots:
 		void handleNewTab (const QString&, QWidget*);
 		void handleRemoveTab (QWidget*);

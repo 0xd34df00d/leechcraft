@@ -25,7 +25,7 @@ Rectangle {
                 Item {
                     id: pregap
                     height: isCurrentTab ? rootRect.currentGapSize : 0
-                    Behavior on height { PropertyAnimation { duration: 200 } }
+                    Behavior on height { PropertyAnimation { duration: 100 } }
                     anchors.top: parent.top
                 }
 
@@ -37,14 +37,26 @@ Rectangle {
 
                     height: rootRect.launcherItemHeight
 
-                    z: 5
-
                     actionIconURL: tabClassIcon
                     isHighlight: openedTabsCount
                     isStrongHighlight: openedTabsCount
                     isCurrent: isCurrentTab
 
                     onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
+                    onHeld: {
+                        function getAbsPos(field) {
+                            var result = 0;
+                            var it = tcItem;
+                            while (it)
+                            {
+                                result += it[field];
+                                it = it.parent;
+                            }
+                            return result;
+                        }
+                        var absPoint = quarkProxy.mapToGlobal(getAbsPos("x"), getAbsPos("y"));
+                        SB2_launcherProxy.tabListRequested(tabClassID, absPoint.x + rootRect.width, absPoint.y);
+                    }
 
                     effect: Colorize {
                         strength: openedTabsCount || tcButton.isHovered ? 0 : 0.3
@@ -57,7 +69,7 @@ Rectangle {
                 Item {
                     id: postgap
                     height: isCurrentTab ? rootRect.currentGapSize : 0
-                    Behavior on height { PropertyAnimation { duration: 200 } }
+                    Behavior on height { PropertyAnimation { duration: 100 } }
                     anchors.bottom: parent.bottom
                 }
             }

@@ -19,11 +19,13 @@
 #include "launchercomponent.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <util/util.h>
 #include <util/sys/paths.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/ihavetabs.h>
 #include "widthiconprovider.h"
+#include "tablistview.h"
 
 namespace LeechCraft
 {
@@ -40,7 +42,8 @@ namespace SB2
 				TabClassID,
 				OpenedTabsCount,
 				IsCurrentTab,
-				CanOpenTab
+				CanOpenTab,
+				IsSingletonTab
 			};
 
 			LauncherModel (QObject *parent)
@@ -52,6 +55,7 @@ namespace SB2
 				roleNames [Roles::OpenedTabsCount] = "openedTabsCount";
 				roleNames [Roles::IsCurrentTab] = "isCurrentTab";
 				roleNames [Roles::CanOpenTab] = "canOpenTab";
+				roleNames [Roles::IsSingletonTab] = "isSingletonTab";
 				setRoleNames (roleNames);
 			}
 		};
@@ -129,6 +133,8 @@ namespace SB2
 
 		auto item = CreateItem (tc);
 		item->setData (true, LauncherModel::Roles::CanOpenTab);
+		const bool isSingle = tc.Features_ & TabFeature::TFSingle;
+		item->setData (isSingle, LauncherModel::Roles::IsSingletonTab);
 		return item;
 	}
 
@@ -183,6 +189,18 @@ namespace SB2
 		}
 
 		obj->TabOpenRequested (tc);
+	}
+
+	void LauncherComponent::tabListRequested (const QByteArray& tc, int x, int y)
+	{
+		const auto& widgets = TC2Widgets_ [tc];
+		if (widgets.size () < 2)
+			return;
+
+		auto view = new TabListView (widgets, Proxy_);
+		view->move (x, y);
+		view->show ();
+		view->setFocus ();
 	}
 
 	void LauncherComponent::handleNewTab (const QString&, QWidget *w)
