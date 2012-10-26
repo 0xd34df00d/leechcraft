@@ -47,12 +47,14 @@ Rectangle {
 
                 gradient: Gradient {
                     GradientStop {
-                        position: 1
-                        color: "#42394b"
+                        position: 0
+                        id: upperStop
+                        color: "#000000"
                     }
                     GradientStop {
-                        position: 0
-                        color: "#000000"
+                        position: 1
+                        id: lowerStop
+                        color: "#42394b"
                     }
                 }
 
@@ -92,6 +94,8 @@ Rectangle {
                         name: "hovered"
                         when: rectMouseArea.containsMouse
                         PropertyChanges { target: tabRect; border.color: "#ff6500" }
+                        PropertyChanges { target: upperStop; color: "#5a3238" }
+                        PropertyChanges { target: lowerStop; color: "#290700" }
                     }
                 ]
 
@@ -101,6 +105,7 @@ Rectangle {
                         to: "hovered"
                         reversible: true
                         PropertyAnimation { properties: "border.color"; duration: 200 }
+                        PropertyAnimation { properties: "color"; duration: 200 }
                     }
                 ]
             }
