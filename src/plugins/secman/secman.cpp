@@ -36,7 +36,6 @@ namespace SecMan
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleDisplayContents ()));
-		MenuActions_ ["tools"] << displayContentsAction;
 	}
 
 	void Plugin::SecondInit ()
