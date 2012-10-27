@@ -18,6 +18,7 @@
 
 #include "lcmenucomponent.h"
 #include <QMenu>
+#include <QDeclarativeImageProvider>
 #include <util/sys/paths.h>
 #include <util/util.h>
 #include <interfaces/imwproxy.h>
@@ -26,6 +27,25 @@ namespace LeechCraft
 {
 namespace SB2
 {
+	namespace
+	{
+		class LCMenuImageProvider : public QDeclarativeImageProvider
+		{
+		public:
+			LCMenuImageProvider ()
+			: QDeclarativeImageProvider (Image)
+			{
+			}
+
+			QImage requestImage (const QString&, QSize*, const QSize&)
+			{
+				return QImage (":/resources/images/leechcraft.svg");
+			}
+		};
+
+		const QString ImageProviderID = "SB2_LCMenuImage";
+	}
+
 	LCMenuComponent::LCMenuComponent (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
@@ -33,8 +53,8 @@ namespace SB2
 		Component_.Url_ = Util::GetSysPath (Util::SysPath::QML, "sb2", "LCMenuComponent.qml");
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_menuComponentProxy", this);
 
-		const auto& base64 = Util::GetAsBase64Src (QImage (":/resources/images/leechcraft.svg"));
-		Component_.StaticProps_ << QPair<QString, QVariant> ("SB2_menuComponentLCIcon", base64);
+		Component_.StaticProps_ << QPair<QString, QVariant> ("SB2_menuComponentLCIcon", "image://" + ImageProviderID + "/icon");
+		Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, new LCMenuImageProvider);
 
 		Proxy_->GetMWProxy ()->HideMainMenu ();
 	}
