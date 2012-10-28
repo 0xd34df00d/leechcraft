@@ -19,11 +19,13 @@
 #include "launchercomponent.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <util/util.h>
 #include <util/sys/paths.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/ihavetabs.h>
 #include "widthiconprovider.h"
+#include "tablistview.h"
 
 namespace LeechCraft
 {
@@ -39,7 +41,9 @@ namespace SB2
 				TabClassIcon = Qt::UserRole + 1,
 				TabClassID,
 				OpenedTabsCount,
-				IsCurrentTab
+				IsCurrentTab,
+				CanOpenTab,
+				IsSingletonTab
 			};
 
 			LauncherModel (QObject *parent)
@@ -50,6 +54,8 @@ namespace SB2
 				roleNames [Roles::TabClassID] = "tabClassID";
 				roleNames [Roles::OpenedTabsCount] = "openedTabsCount";
 				roleNames [Roles::IsCurrentTab] = "isCurrentTab";
+				roleNames [Roles::CanOpenTab] = "canOpenTab";
+				roleNames [Roles::IsSingletonTab] = "isSingletonTab";
 				setRoleNames (roleNames);
 			}
 		};
@@ -103,23 +109,38 @@ namespace SB2
 		return Component_;
 	}
 
-	QStandardItem* LauncherComponent::AddTC (const TabClassInfo& tc)
+	namespace
+	{
+		bool IsTabclassOpenable (const TabClassInfo& tc)
+		{
+			if (!(tc.Features_ & TabFeature::TFOpenableByRequest))
+				return false;
+
+			if (tc.Icon_.isNull ())
+				return false;
+
+			if (!tc.Priority_)
+				return false;
+
+			return true;
+		}
+	}
+
+	QStandardItem* LauncherComponent::TryAddTC (const TabClassInfo& tc)
+	{
+		if (!IsTabclassOpenable (tc))
+			return 0;
+
+		auto item = CreateItem (tc);
+		item->setData (true, LauncherModel::Roles::CanOpenTab);
+		const bool isSingle = tc.Features_ & TabFeature::TFSingle;
+		item->setData (isSingle, LauncherModel::Roles::IsSingletonTab);
+		return item;
+	}
+
+	QStandardItem* LauncherComponent::CreateItem (const TabClassInfo& tc)
 	{
 		const auto& prefix = "image://" + ImageProviderID + '/';
-
-		if (!(tc.Features_ & TabFeature::TFOpenableByRequest))
-			return 0;
-
-		if (tc.Icon_.isNull ())
-			return 0;
-
-		if (!tc.Priority_)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "skipping due to low priority"
-					<< tc.TabClass_;
-			return 0;
-		}
 
 		ImageProv_->AddTabClass (tc);
 
@@ -141,7 +162,7 @@ namespace SB2
 		{
 			auto iht = qobject_cast<IHaveTabs*> (ihtObj);
 			for (const auto& tc : iht->GetTabClasses ())
-				if (AddTC (tc))
+				if (TryAddTC (tc))
 					TC2Obj_ [tc.TabClass_] = iht;
 
 			connect (ihtObj,
@@ -170,6 +191,23 @@ namespace SB2
 		obj->TabOpenRequested (tc);
 	}
 
+	void LauncherComponent::tabListRequested (const QByteArray& tc, int x, int y)
+	{
+		const auto& widgets = TC2Widgets_ [tc];
+		if (widgets.size () < 2)
+			return;
+
+		if (CurrentTabList_)
+			delete CurrentTabList_;
+
+		auto view = new TabListView (widgets, Proxy_);
+		view->move (x, y);
+		view->show ();
+		view->setFocus ();
+
+		CurrentTabList_ = view;
+	}
+
 	void LauncherComponent::handleNewTab (const QString&, QWidget *w)
 	{
 		auto itw = qobject_cast<ITabWidget*> (w);
@@ -177,6 +215,9 @@ namespace SB2
 
 		auto& wList = TC2Widgets_ [tc.TabClass_];
 		wList << w;
+
+		if (!TC2Items_.contains (tc.TabClass_))
+			CreateItem (tc);
 
 		for (auto item : TC2Items_ [tc.TabClass_])
 			item->setData (wList.size (), LauncherModel::Roles::OpenedTabsCount);
@@ -190,8 +231,12 @@ namespace SB2
 		auto& wList = TC2Widgets_ [tc.TabClass_];
 		wList.removeAll (w);
 
-		for (auto item : TC2Items_ [tc.TabClass_])
-			item->setData (wList.size (), LauncherModel::Roles::OpenedTabsCount);
+		if (wList.isEmpty () && !IsTabclassOpenable (tc))
+			for (auto item : TC2Items_.take (tc.TabClass_))
+				Model_->removeRow (item->row ());
+		else
+			for (auto item : TC2Items_ [tc.TabClass_])
+				item->setData (wList.size (), LauncherModel::Roles::OpenedTabsCount);
 	}
 
 	void LauncherComponent::handleCurrentTabChanged (int idx)

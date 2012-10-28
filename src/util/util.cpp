@@ -32,6 +32,7 @@
 #include <QAction>
 #include <QBuffer>
 #include <QDesktopWidget>
+#include <QPainter>
 #include <QtDebug>
 
 Q_DECLARE_METATYPE (QList<QModelIndex>);
@@ -363,4 +364,56 @@ QPoint LeechCraft::Util::FitRectScreen (QPoint pos, const QSize& size)
 		pos.rx () -= size.width ();
 
 	return pos;
+}
+
+namespace
+{
+	void FitSize (QFont& font, const QSize& iconSize, const QString& countText,
+			std::function<int (QFont)> g, std::function<void (QFont&, int)> s)
+	{
+		s (font, ((iconSize.height () + 2 * g (font)) / 3));
+		int numIters = 0;
+		while (true)
+		{
+			const int width = QFontMetrics (font).width (countText);
+			if (width > iconSize.width () ||
+					g (font) >= iconSize.height ())
+				s (font, g (font) - 1);
+			else
+				break;
+
+			if (++numIters >= 12)
+				break;
+		}
+	}
+}
+
+QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px, const QString& text, QFont font, const QPen& pen)
+{
+	const auto& iconSize = px.size ();
+
+	// Cause gcc 4.5.x sucks and fails to compile without being such explicit.
+	std::function<int (QFont)> getPointSize = [] (QFont f) { return f.pointSize (); };
+	std::function<int (QFont)> getPixelSize = [] (QFont f) { return f.pixelSize (); };
+	auto gFunc = font.pointSize () > 1 ? getPointSize : getPixelSize;
+
+	std::function<void (QFont&, int)> setPointSize = [] (QFont& f, int size) { f.setPointSize (size); };
+	std::function<void (QFont&, int)> setPixelSize = [] (QFont& f, int size) { f.setPixelSize (size); };
+	auto sFunc = font.pointSize () > 1 ? setPointSize : setPixelSize;
+	FitSize (font, iconSize, text, gFunc, sFunc);
+
+	const bool tooSmall = gFunc (font) < 5;
+	if (tooSmall)
+		sFunc (font, gFunc (qApp->font ()));
+
+	QPainter p (&px);
+	p.setFont (font);
+	p.setPen (pen);
+	p.drawText (0, 1,
+			iconSize.width (), iconSize.height (),
+			Qt::AlignBottom | Qt::AlignRight,
+			tooSmall ? "#" : text);
+	p.end ();
+
+	return px;
 }

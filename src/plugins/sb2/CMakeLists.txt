@@ -14,7 +14,10 @@ SET (SRCS
 	sbview.cpp
 	viewmanager.cpp
 	widthiconprovider.cpp
+	quarkproxy.cpp
+	tablistview.cpp
 	launchercomponent.cpp
+	lcmenucomponent.cpp
 	traycomponent.cpp
 	)
 

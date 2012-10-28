@@ -18,11 +18,10 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
-#include <interfaces/ipluginready.h>
-#include <interfaces/iactionsexporter.h>
+#include <QDialog>
+#include "ui_contentsdisplaydialog.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -30,37 +29,14 @@ namespace Plugins
 {
 namespace SecMan
 {
-	class Plugin : public QObject
-					, public IInfo
-					, public IEntityHandler
-					, public IPluginReady
-					, public IActionsExporter
+	class ContentsDisplayDialog : public QDialog
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler IPluginReady IActionsExporter)
 
-		QMap<QString, QList<QAction*>> MenuActions_;
+		Ui::ContentsDisplayDialog Ui_;
+		QStandardItemModel *ContentsModel_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
-
-		QList<QAction*> GetActions (ActionsEmbedPlace area) const;
-		QMap<QString, QList<QAction*>> GetMenuActions () const;
-	private slots:
-		void handleDisplayContents ();
-	signals:
-		void gotActions (QList<QAction*>, ActionsEmbedPlace);
+		ContentsDisplayDialog (QWidget* = 0);
 	};
 }
 }

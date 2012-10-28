@@ -222,7 +222,7 @@ QMenu* LeechCraft::MainWindow::GetMainMenu () const
 
 void LeechCraft::MainWindow::HideMainMenu ()
 {
-	Ui_.MainTabWidget_->RemoveActionFromTabBarLayout (QTabBar::LeftSide, Ui_.ActionMenu_);
+	Ui_.ActionMenu_->setVisible (false);
 }
 
 QWidget* LeechCraft::MainWindow::GetDockListWidget (Qt::DockWidgetArea area) const

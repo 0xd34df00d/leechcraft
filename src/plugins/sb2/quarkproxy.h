@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,40 +19,24 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/structures.h>
+
+class QPoint;
 
 namespace LeechCraft
 {
-namespace Plugins
+namespace SB2
 {
-namespace SecMan
-{
-	class Core : public QObject
+	class ViewManager;
+
+	class QuarkProxy : public QObject
 	{
-		Core ();
+		Q_OBJECT
 
-		QObjectList StoragePlugins_;
+		ViewManager *Manager_;
 	public:
-		static Core& Instance ();
-
-		bool CouldHandle (const Entity&) const;
-		void Handle (Entity);
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
-
-		QObjectList GetStoragePlugins () const;
-	private:
-		/** This one is called internally from AddPlugin, so it
-			* has no need to make sanity checks of the object.
-			*
-			* @param[in] object The storage plugin instance object.
-			*/
-		void AddStoragePlugin (QObject *object);
-		void Store (const QList<QByteArray>&, const QList<QVariantList>&, bool, bool);
-		QList<QVariantList> Load (const QList<QByteArray>&, bool);
-
-		QObject* GetStoragePlugin () const;
+		QuarkProxy (ViewManager*, QObject* = 0);
+	public slots:
+		QPoint mapToGlobal (double, double);
 	};
-}
 }
 }

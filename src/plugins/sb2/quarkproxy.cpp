@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,43 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/structures.h>
+#include "quarkproxy.h"
+#include "viewmanager.h"
+#include "sbview.h"
 
 namespace LeechCraft
 {
-namespace Plugins
+namespace SB2
 {
-namespace SecMan
-{
-	class Core : public QObject
+	QuarkProxy::QuarkProxy (ViewManager *mgr, QObject *parent)
+	: QObject (parent)
+	, Manager_ (mgr)
 	{
-		Core ();
+	}
 
-		QObjectList StoragePlugins_;
-	public:
-		static Core& Instance ();
-
-		bool CouldHandle (const Entity&) const;
-		void Handle (Entity);
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
-
-		QObjectList GetStoragePlugins () const;
-	private:
-		/** This one is called internally from AddPlugin, so it
-			* has no need to make sanity checks of the object.
-			*
-			* @param[in] object The storage plugin instance object.
-			*/
-		void AddStoragePlugin (QObject *object);
-		void Store (const QList<QByteArray>&, const QList<QVariantList>&, bool, bool);
-		QList<QVariantList> Load (const QList<QByteArray>&, bool);
-
-		QObject* GetStoragePlugin () const;
-	};
-}
+	QPoint QuarkProxy::mapToGlobal (double x, double y)
+	{
+		return Manager_->GetView ()->mapToGlobal (QPoint (x, y));
+	}
 }
 }

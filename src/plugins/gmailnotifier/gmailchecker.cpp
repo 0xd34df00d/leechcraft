@@ -157,7 +157,7 @@ namespace GmailNotifier
 			result += "<p><em>&hellip;" +
 					tr ("and %1 more").arg (fullCount - fullShow) +
 					"</em></p>";
-		emit newConversationsAvailable (title, result);
+		emit newConversationsAvailable (title, result, fullCount);
 	}
 
 	void GmailChecker::httpFinished ()

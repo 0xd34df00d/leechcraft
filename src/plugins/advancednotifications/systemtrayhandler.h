@@ -18,7 +18,6 @@
 
 #ifndef PLUGINS_ADVANCEDNOTIFICATIONS_SYSTEMTRAYHANDLER_H
 #define PLUGINS_ADVANCEDNOTIFICATIONS_SYSTEMTRAYHANDLER_H
-#include <functional>
 #include <QMap>
 #include <QStringList>
 #include <QPixmap>
@@ -65,7 +64,7 @@ namespace AdvancedNotifications
 		void UpdateMenu (QMenu*, const QString&, const EventData&);
 		void RebuildState ();
 		template<typename T>
-		void UpdateIcon (T iconable, const QString&, std::function<QSize (T)>);
+		void UpdateIcon (T iconable, const QString&);
 		void UpdateSysTrayIcon (QSystemTrayIcon*);
 		void UpdateTrayAction (QAction*);
 	private slots:
