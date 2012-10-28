@@ -10,18 +10,12 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	tpi.cpp
+	infomodelmanager.cpp
 	)
-SET (HEADERS
-	tpi.h
-	)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
 
 ADD_LIBRARY (leechcraft_tpi SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_tpi
 	${QT_LIBRARIES}
