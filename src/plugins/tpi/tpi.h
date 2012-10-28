@@ -26,6 +26,8 @@ namespace LeechCraft
 {
 namespace TPI
 {
+	class InfoModelManager;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IQuarkComponentProvider
@@ -34,6 +36,8 @@ namespace TPI
 		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
 		QuarkComponents_t Components_;
+
+		InfoModelManager *ModelMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

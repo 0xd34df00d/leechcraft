@@ -18,7 +18,9 @@
 
 #include "tpi.h"
 #include <QIcon>
+#include <QAbstractItemModel>
 #include <util/sys/paths.h>
+#include "infomodelmanager.h"
 
 namespace LeechCraft
 {
@@ -26,14 +28,18 @@ namespace TPI
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		ModelMgr_ = new InfoModelManager (proxy);
+
 		QuarkComponent comp;
 		comp.Url_ = Util::GetSysPath (Util::SysPath::QML, "tpi", "TPIQuark.qml");
+		comp.DynamicProps_ << QPair<QString, QObject*> ("TPI_infoModel", ModelMgr_->GetModel ());
 
 		Components_ << comp;
 	}
 
 	void Plugin::SecondInit ()
 	{
+		ModelMgr_->SecondInit ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
