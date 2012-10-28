@@ -11,6 +11,7 @@ Rectangle {
         anchors.fill: parent
 
         model: itemsModel
+        spacing: 2
 
         delegate: Rectangle {
             id: itemsDelegate
