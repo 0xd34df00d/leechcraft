@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iquarkcomponentprovider.h>
 
 namespace LeechCraft
 {
@@ -27,9 +28,12 @@ namespace TPI
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IQuarkComponentProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IQuarkComponentProvider)
+
+		QuarkComponents_t Components_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -38,6 +42,8 @@ namespace TPI
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QuarkComponents_t GetComponents () const;
 	};
 }
 }

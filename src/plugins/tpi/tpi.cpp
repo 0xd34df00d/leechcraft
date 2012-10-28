@@ -18,6 +18,7 @@
 
 #include "tpi.h"
 #include <QIcon>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {
@@ -25,6 +26,10 @@ namespace TPI
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		QuarkComponent comp;
+		comp.Url_ = Util::GetSysPath (Util::SysPath::QML, "tpi", "TPIQuark.qml");
+
+		Components_ << comp;
 	}
 
 	void Plugin::SecondInit ()
@@ -53,6 +58,11 @@ namespace TPI
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return Components_;
 	}
 }
 }
