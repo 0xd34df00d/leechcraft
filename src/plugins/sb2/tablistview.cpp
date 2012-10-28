@@ -21,6 +21,7 @@
 #include <QGraphicsObject>
 #include <QDeclarativeContext>
 #include <QtDebug>
+#include <QTimer>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <interfaces/ihavetabs.h>
@@ -57,6 +58,7 @@ namespace SB2
 	: QDeclarativeView (parent)
 	, Proxy_ (proxy)
 	, Model_ (new TabsListModel (this))
+	, LeaveTimer_ (new QTimer (this))
 	{
 		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "TabListView.qml");
 		if (file.isEmpty ())
@@ -105,6 +107,25 @@ namespace SB2
 				SIGNAL (tabSwitchRequested (int)),
 				this,
 				SLOT (switchToItem (int)));
+
+		LeaveTimer_->setSingleShot (true);
+		connect (LeaveTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (deleteLater ()));
+		LeaveTimer_->start (3000);
+	}
+
+	void TabListView::enterEvent (QEvent *e)
+	{
+		LeaveTimer_->stop ();
+		QDeclarativeView::enterEvent (e);
+	}
+
+	void TabListView::leaveEvent (QEvent *e)
+	{
+		LeaveTimer_->start (1500);
+		QDeclarativeView::leaveEvent (e);
 	}
 
 	void TabListView::switchToItem (int idx)
