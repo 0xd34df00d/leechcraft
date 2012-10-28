@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
 
@@ -34,10 +35,11 @@ namespace SB2
 	{
 		Q_OBJECT
 
+		ICoreProxy_ptr Proxy_;
 		QStandardItemModel *ViewItemsModel_;
 		SBView *View_;
 	public:
-		ViewManager (QObject* = 0);
+		ViewManager (ICoreProxy_ptr, QObject* = 0);
 
 		SBView* GetView () const;
 

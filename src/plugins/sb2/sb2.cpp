@@ -42,7 +42,7 @@ namespace SB2
 		qmlRegisterType<QGraphicsDropShadowEffect> ("Effects", 1, 0, "DropShadow");
 		qmlRegisterType<QGraphicsOpacityEffect> ("Effects", 1, 0, "OpacityEffect");
 
-		Mgr_ = new ViewManager (this);
+		Mgr_ = new ViewManager (proxy, this);
 		auto view = Mgr_->GetView ();
 		proxy->GetMWProxy ()->AddSideWidget (view);
 

@@ -51,8 +51,9 @@ namespace SB2
 		};
 	}
 
-	ViewManager::ViewManager (QObject *parent)
+	ViewManager::ViewManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	, ViewItemsModel_ (new ViewItemsModel (this))
 	, View_ (new SBView)
 	{
