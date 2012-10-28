@@ -201,7 +201,7 @@ namespace SB2
 		auto str = item->data (TrayModel::Roles::ActionIcon).toString ();
 		const int lastSlash = str.lastIndexOf ('/');
 		const auto& uncacheStr = str.mid (lastSlash + 1);
-		str.replace (lastSlash + 1, uncacheStr.size (), uncacheStr.toInt () + 1);
+		str.replace (lastSlash + 1, uncacheStr.size (), QString::number (uncacheStr.toInt () + 1));
 		item->setData (str, TrayModel::Roles::ActionIcon);
 	}
 
