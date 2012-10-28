@@ -8,6 +8,10 @@ Rectangle {
     property real trayItemHeight: parent.width
     height: trayView.count * trayItemHeight
 
+    border.width: 1
+    border.color: "#333333"
+    radius: 2
+
     color: "transparent"
 
     ListView {
