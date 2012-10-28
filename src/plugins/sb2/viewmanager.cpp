@@ -24,6 +24,7 @@
 #include <QDir>
 #include <util/sys/paths.h>
 #include <interfaces/iquarkcomponentprovider.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "sbview.h"
 #include "quarkproxy.h"
 
@@ -92,6 +93,11 @@ namespace SB2
 				AddComponent (c);
 			}
 		}
+
+		auto pm = Proxy_->GetPluginsManager ();
+		for (auto prov : pm->GetAllCastableTo<IQuarkComponentProvider*> ())
+			for (auto quark : prov->GetComponents ())
+				AddComponent (quark);
 	}
 
 	void ViewManager::AddComponent (const QuarkComponent& comp)
