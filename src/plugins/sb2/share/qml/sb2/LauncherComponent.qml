@@ -43,7 +43,7 @@ Rectangle {
                     isCurrent: isCurrentTab
 
                     onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
-                    onHeld: {
+                    onHovered: {
                         function getAbsPos(field) {
                             var result = 0;
                             var it = tcItem;
