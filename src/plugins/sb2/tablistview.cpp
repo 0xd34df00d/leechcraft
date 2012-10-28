@@ -113,7 +113,7 @@ namespace SB2
 				SIGNAL (timeout ()),
 				this,
 				SLOT (deleteLater ()));
-		LeaveTimer_->start (3000);
+		LeaveTimer_->start (1200);
 	}
 
 	void TabListView::enterEvent (QEvent *e)
@@ -124,7 +124,7 @@ namespace SB2
 
 	void TabListView::leaveEvent (QEvent *e)
 	{
-		LeaveTimer_->start (1500);
+		LeaveTimer_->start (800);
 		QDeclarativeView::leaveEvent (e);
 	}
 
