@@ -7,10 +7,12 @@ Item {
     property bool isStrongHighlight
     property bool isCurrent
     property string actionIconURL
+    property bool hoverScalesIcons: true
 
     property alias isHovered: actionMouseArea.containsMouse
 
     signal triggered()
+    signal hovered()
     signal held()
 
     Rectangle {
@@ -20,7 +22,7 @@ Item {
         smooth: true
 
         anchors.fill: parent
-        anchors.margins: 2
+        anchors.margins: hoverScalesIcons ? 2 : 0
         border.width: isStrongHighlight ? 2 : 1
         border.color: actionRoot.isHighlight ? "#FF6500" : "black"
 
@@ -81,6 +83,7 @@ Item {
 
             onClicked: actionRoot.triggered()
             onPressAndHold: actionRoot.held()
+            onEntered: actionRoot.hovered()
         }
     }
 }

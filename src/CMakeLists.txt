@@ -159,6 +159,7 @@ OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entiti
 OPTION (ENABLE_SIDEBAR "Build Sidebar, a nice side bar with quick launch, tabs and tray areas" ${WITH_PLUGINS})
 OPTION (ENABLE_SB2 "Build SB2, next-gen fluid sidebar" OFF)
 OPTION (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
+OPTION (ENABLE_TPI "Build Task Progress Indicator quark plugin" ${WITH_PLUGINS})
 OPTION (ENABLE_TWIFEE "Build Twifee, the Twitter client" OFF)
 OPTION (ENABLE_LASTFMSCROBBLE "Build Last.fm scrobbler" OFF)
 OPTION (ENABLE_LEMON "Build LeechCraft Network Monitor" OFF)
@@ -418,6 +419,10 @@ ENDIF (ENABLE_SB2)
 IF (ENABLE_SNAILS)
 	ADD_SUBDIRECTORY (plugins/snails)
 ENDIF (ENABLE_SNAILS)
+
+IF (ENABLE_TPI)
+	ADD_SUBDIRECTORY (plugins/tpi)
+ENDIF (ENABLE_TPI)
 
 IF (ENABLE_TWIFEE)
 	ADD_SUBDIRECTORY (plugins/twifee)

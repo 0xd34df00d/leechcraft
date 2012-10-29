@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,33 +19,36 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/core/icoreproxy.h>
-
-class QStandardItemModel;
+#include <interfaces/iinfo.h>
+#include <interfaces/iquarkcomponentprovider.h>
 
 namespace LeechCraft
 {
-struct QuarkComponent;
-
-namespace SB2
+namespace TPI
 {
-	class SBView;
+	class InfoModelManager;
 
-	class ViewManager : public QObject
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IQuarkComponentProvider
 	{
 		Q_OBJECT
+		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
-		ICoreProxy_ptr Proxy_;
-		QStandardItemModel *ViewItemsModel_;
-		SBView *View_;
+		QuarkComponents_t Components_;
+
+		InfoModelManager *ModelMgr_;
 	public:
-		ViewManager (ICoreProxy_ptr, QObject* = 0);
-
-		SBView* GetView () const;
-
+		void Init (ICoreProxy_ptr);
 		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		void AddComponent (const QuarkComponent&);
+		QuarkComponents_t GetComponents () const;
 	};
 }
 }
+

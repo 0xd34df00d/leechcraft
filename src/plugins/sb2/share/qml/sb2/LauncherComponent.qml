@@ -8,13 +8,22 @@ Rectangle {
     width: parent.width
     property real launcherItemHeight: parent.width
     property real currentGapSize: (launcherItemHeight + Math.sqrt(8 * launcherItemHeight)) / 4
-    height: launcherColumn.height + 20
+    height: launcherColumn.height + 2
+
+    border.width: 1
+    border.color: "#333333"
+    radius: 2
+
+    smooth: true
 
     color: "transparent"
 
     Column {
         id: launcherColumn
+        anchors.top: parent.top
+        anchors.topMargin: 1
         Repeater {
+            id: launcherItemRepeater
             model: SB2_launcherModel
             Item {
                 id: tcItem
@@ -24,7 +33,7 @@ Rectangle {
 
                 Item {
                     id: pregap
-                    height: isCurrentTab ? rootRect.currentGapSize : 0
+                    height: (index && isCurrentTab) ? rootRect.currentGapSize : 0
                     Behavior on height { PropertyAnimation { duration: 100 } }
                     anchors.top: parent.top
                 }
@@ -43,7 +52,7 @@ Rectangle {
                     isCurrent: isCurrentTab
 
                     onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
-                    onHeld: {
+                    onHovered: {
                         function getAbsPos(field) {
                             var result = 0;
                             var it = tcItem;
@@ -68,7 +77,7 @@ Rectangle {
 
                 Item {
                     id: postgap
-                    height: isCurrentTab ? rootRect.currentGapSize : 0
+                    height: (index != launcherItemRepeater.count - 1 && isCurrentTab) ? rootRect.currentGapSize : 0
                     Behavior on height { PropertyAnimation { duration: 100 } }
                     anchors.bottom: parent.bottom
                 }

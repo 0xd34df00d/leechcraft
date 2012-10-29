@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,33 +19,39 @@
 #pragma once
 
 #include <QObject>
+#include <QPersistentModelIndex>
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
+class QStandardItem;
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
-struct QuarkComponent;
-
-namespace SB2
+namespace TPI
 {
-	class SBView;
-
-	class ViewManager : public QObject
+	class InfoModelManager : public QObject
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		QStandardItemModel *ViewItemsModel_;
-		SBView *View_;
-	public:
-		ViewManager (ICoreProxy_ptr, QObject* = 0);
+		QStandardItemModel *Model_;
 
-		SBView* GetView () const;
+		QHash<QPersistentModelIndex, QStandardItem*> PIdx2Item_;
+	public:
+		InfoModelManager (ICoreProxy_ptr, QObject* = 0);
+
+		QAbstractItemModel* GetModel () const;
 
 		void SecondInit ();
-
-		void AddComponent (const QuarkComponent&);
+	private:
+		void ManageModel (QAbstractItemModel*);
+		void HandleRows (QAbstractItemModel*, int, int);
+		void HandleData (QAbstractItemModel*, int, int);
+	private slots:
+		void handleRowsInserted (const QModelIndex&, int, int);
+		void handleRowsRemoved (const QModelIndex&, int, int);
+		void handleDataChanged (const QModelIndex&, const QModelIndex&);
 	};
 }
 }

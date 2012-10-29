@@ -2891,7 +2891,7 @@ namespace LeechCraft
 			void Core::updateRows ()
 			{
 				if (rowCount ())
-					emit dataChanged (index (0, 1), index (rowCount () - 1, 2));
+					emit dataChanged (index (0, 0), index (rowCount () - 1, columnCount () - 1));
 			}
 		};
 	};

@@ -22,6 +22,7 @@
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
+class QTimer;
 
 namespace LeechCraft
 {
@@ -33,8 +34,13 @@ namespace SB2
 
 		ICoreProxy_ptr Proxy_;
 		QStandardItemModel *Model_;
+
+		QTimer *LeaveTimer_;
 	public:
 		TabListView (const QList<QWidget*>&, ICoreProxy_ptr, QWidget* = 0);
+	protected:
+		void enterEvent (QEvent*);
+		void leaveEvent (QEvent*);
 	private slots:
 		void switchToItem (int);
 	};
