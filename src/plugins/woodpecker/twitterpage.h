@@ -11,6 +11,7 @@
 #include <interfaces/structures.h>
 
 #include "twitterinterface.h"
+#include "core.h"
 
 #include "ui_twitterpage.h"
 

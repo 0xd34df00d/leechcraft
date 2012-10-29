@@ -1,5 +1,7 @@
 #include "twitterpage.h"
 #include "core.h"
+#include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/icoreproxy.h>
 #include "util/util.h"
 #include <qjson/parser.h>
 #include <QListWidgetItem>
@@ -132,10 +134,6 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 
 	if (! (twits.length())) return; // if we have no tweets to parse
 	
-	Entity notification = Util::MakeNotification ("Woodpecker" , tr( "You have " ) + QString(twits.length()) + 
-	tr( " new twits" ), PInfo_);
-	emit gotEntity(notification);
-
 	firstNewTwit = twits.first();
 
 	if (screenTwits.length() && (twits.last()->id() == screenTwits.first()->id())) // if we should prepend
@@ -143,7 +141,6 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 			screenTwits.insert(0,*i);
 	else
 	{
-
 		// Now we'd find firstNewTwit in twitList
 
 		for (i = 0; i < screenTwits.length(); i++)
@@ -151,10 +148,13 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 
 		int insertionShift = screenTwits.length() - i;    // We've already got insertionShift twits to our list
 
-
 		for (i = 0; i < insertionShift; i++)
 			twits.removeFirst();
 
+		Entity notification = Util::MakeNotification ("Woodpecker" , QString(twits.length()) + tr (" new twit(s)"), PInfo_);
+		emit gotEntity(notification);
+		Core::Instance().GetProxy()->GetEntityManager()->HandleEntity(notification);
+		
 		screenTwits.append (twits);
 	}
 	ui->TwitList_->clear();
@@ -162,8 +162,9 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 	Q_FOREACH (twit, screenTwits)
 	{
 		QListWidgetItem *tmpitem = new QListWidgetItem();
-		tmpitem->setText (twit->text() + "\n" +
-						  "\t\t<b>" + twit->author()->username() + "</b>\t" +
+		
+		tmpitem->setText (twit->text().replace(QChar('\n'),QChar(' ')) + "\n" +
+						  "\t\t" + twit->author()->username() + "\t" +
 						  twit->dateTime().toLocalTime().toString());
 		tmpitem->setData (Qt::UserRole, twit->id());
 		if (twit->author()->avatar.isNull())
@@ -171,6 +172,8 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 		else
 			tmpitem->setIcon (twit->author()->avatar);
 		ui->TwitList_->insertItem (0, tmpitem);
+		ui->TwitList_->updateGeometry();
+		
 	}
 //	QTimer::singleShot(1000, ui->TwitList_, SLOT(update()));
 	
