@@ -86,6 +86,12 @@ namespace Monocle
 		mw->AddDockWidget (Qt::RightDockWidgetArea, DockTOC_);
 		mw->AssociateDockWidget (DockTOC_, this);
 		mw->ToggleViewActionVisiblity (DockTOC_, false);
+
+		connect (Ui_.PagesView_,
+				SIGNAL (sizeChanged ()),
+				this,
+				SLOT (scheduleRelayout ()),
+				Qt::QueuedConnection);
 	}
 
 	TabClassInfo DocumentTab::GetTabClassInfo () const
@@ -555,6 +561,17 @@ namespace Monocle
 
 	void DocumentTab::handlePageSizeChanged (int)
 	{
+		scheduleRelayout ();
+	}
+
+	void DocumentTab::handlePageContentsChanged (int idx)
+	{
+		auto pageItem = Pages_.at (idx);
+		pageItem->UpdatePixmap ();
+	}
+
+	void DocumentTab::scheduleRelayout ()
+	{
 		if (RelayoutScheduled_)
 			return;
 
@@ -562,12 +579,6 @@ namespace Monocle
 				this,
 				SLOT (handleRelayout ()));
 		RelayoutScheduled_ = true;
-	}
-
-	void DocumentTab::handlePageContentsChanged (int idx)
-	{
-		auto pageItem = Pages_.at (idx);
-		pageItem->UpdatePixmap ();
 	}
 
 	void DocumentTab::handleRelayout ()

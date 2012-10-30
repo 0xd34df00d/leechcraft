@@ -37,6 +37,9 @@ namespace Monocle
 	protected:
 		void mouseMoveEvent (QMouseEvent*);
 		void mouseReleaseEvent (QMouseEvent*);
+		void resizeEvent (QResizeEvent*);
+	signals:
+		void sizeChanged ();
 	};
 }
 }

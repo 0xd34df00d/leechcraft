@@ -60,5 +60,11 @@ namespace Monocle
 			ShowOnNextRelease_ = false;
 		}
 	}
+
+	void PagesView::resizeEvent (QResizeEvent *e)
+	{
+		QGraphicsView::resizeEvent (e);
+		emit sizeChanged ();
+	}
 }
 }
