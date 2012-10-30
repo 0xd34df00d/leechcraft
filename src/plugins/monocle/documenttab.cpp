@@ -430,6 +430,11 @@ namespace Monocle
 			auto size = Ui_.PagesView_->maximumViewportSize ();
 			size.rwidth () -= Ui_.PagesView_->verticalScrollBar ()->size ().width ();
 			size.rheight () -= Ui_.PagesView_->horizontalScrollBar ()->size ().height ();
+
+			const int margin = 3;
+			size.rwidth () -= 2 * margin;
+			size.rheight () -= 2 * margin;
+
 			return dimGetter (size) / dim;
 		};
 
