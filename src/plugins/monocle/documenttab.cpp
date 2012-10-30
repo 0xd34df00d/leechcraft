@@ -772,8 +772,6 @@ namespace Monocle
 		painter.end ();
 
 		QApplication::clipboard ()->setImage (image);
-
-		Ui_.PagesView_->SetShowReleaseMenu (false);
 	}
 
 	void DocumentTab::handleCopyAsText ()
