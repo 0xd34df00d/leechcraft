@@ -46,6 +46,7 @@ namespace Azoth
 		 * - "title" of type QString.
 		 * - "source" of type QString.
 		 * - "length" of type QString.
+		 * - "track" of type int.
 		 */
 		virtual void PublishTune (const QMap<QString, QVariant>& tuneData) = 0;
 	};

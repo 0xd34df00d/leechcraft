@@ -111,6 +111,8 @@ namespace Monocle
 
 		void handlePageSizeChanged (int);
 		void handlePageContentsChanged (int);
+
+		void scheduleRelayout ();
 		void handleRelayout ();
 
 		void handleRecentOpenAction (QAction*);
