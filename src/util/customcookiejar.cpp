@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "customcookiejar.h"
+#include <QNetworkCookie>
 #include <QtDebug>
 
 using namespace LeechCraft::Util;

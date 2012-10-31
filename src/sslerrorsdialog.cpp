@@ -93,32 +93,37 @@ void LeechCraft::SslErrorsDialog::PopulateTree (const QSslError& error)
 			QStringList (tr ("Issuer info")));
 
 	QString tmpString;
-	tmpString = cer.issuerInfo (QSslCertificate::Organization);
+#if QT_VERSION >= 0x050000
+	auto cvt = [] (const QStringList& list) { return list.join ("; "); };
+#else
+	auto cvt = [] (const QString& str) { return str; };
+#endif
+	tmpString = cvt (cer.issuerInfo (QSslCertificate::Organization));
 	if (!tmpString.isEmpty ())
 		new QTreeWidgetItem (issuer,
 				QStringList (tr ("Organization:")) << tmpString);
 
-	tmpString = cer.issuerInfo (QSslCertificate::CommonName);
+	tmpString = cvt (cer.issuerInfo (QSslCertificate::CommonName));
 	if (!tmpString.isEmpty ())
 		new QTreeWidgetItem (issuer,
 				QStringList (tr ("Common name:")) << tmpString);
 
-	tmpString = cer.issuerInfo (QSslCertificate::LocalityName);
+	tmpString = cvt (cer.issuerInfo (QSslCertificate::LocalityName));
 	if (!tmpString.isEmpty ())
 		new QTreeWidgetItem (issuer,
 				QStringList (tr ("Locality:")) << tmpString);
 
-	tmpString = cer.issuerInfo (QSslCertificate::OrganizationalUnitName);
+	tmpString = cvt (cer.issuerInfo (QSslCertificate::OrganizationalUnitName));
 	if (!tmpString.isEmpty ())
 		new QTreeWidgetItem (issuer,
 				QStringList (tr ("Organizational unit name:")) << tmpString);
 
-	tmpString = cer.issuerInfo (QSslCertificate::CountryName);
+	tmpString = cvt (cer.issuerInfo (QSslCertificate::CountryName));
 	if (!tmpString.isEmpty ())
 		new QTreeWidgetItem (issuer,
 				QStringList (tr ("Country name:")) << tmpString);
 
-	tmpString = cer.issuerInfo (QSslCertificate::StateOrProvinceName);
+	tmpString = cvt (cer.issuerInfo (QSslCertificate::StateOrProvinceName));
 	if (!tmpString.isEmpty ())
 		new QTreeWidgetItem (issuer,
 				QStringList (tr ("State or province name:")) << tmpString);
@@ -126,32 +131,32 @@ void LeechCraft::SslErrorsDialog::PopulateTree (const QSslError& error)
 	QTreeWidgetItem *subject = new QTreeWidgetItem (item,
 			QStringList (tr ("Subject info")));
 
-	tmpString = cer.subjectInfo (QSslCertificate::Organization);
+	tmpString = cvt (cer.subjectInfo (QSslCertificate::Organization));
 	if (!tmpString.isEmpty ())
 		new QTreeWidgetItem (subject,
 				QStringList (tr ("Organization:")) << tmpString);
 
-	tmpString = cer.subjectInfo (QSslCertificate::CommonName);
+	tmpString = cvt (cer.subjectInfo (QSslCertificate::CommonName));
 	if (!tmpString.isEmpty ())
 		new QTreeWidgetItem (subject,
 				QStringList (tr ("Common name:")) << tmpString);
 
-	tmpString = cer.subjectInfo (QSslCertificate::LocalityName);
+	tmpString = cvt (cer.subjectInfo (QSslCertificate::LocalityName));
 	if (!tmpString.isEmpty ())
 		new QTreeWidgetItem (subject,
 				QStringList (tr ("Locality:")) << tmpString);
 
-	tmpString = cer.subjectInfo (QSslCertificate::OrganizationalUnitName);
+	tmpString = cvt (cer.subjectInfo (QSslCertificate::OrganizationalUnitName));
 	if (!tmpString.isEmpty ())
 		new QTreeWidgetItem (subject,
 				QStringList (tr ("Organizational unit name:")) << tmpString);
 
-	tmpString = cer.subjectInfo (QSslCertificate::CountryName);
+	tmpString = cvt (cer.subjectInfo (QSslCertificate::CountryName));
 	if (!tmpString.isEmpty ())
 		new QTreeWidgetItem (subject,
 				QStringList (tr ("Country name:")) << tmpString);
 
-	tmpString = cer.subjectInfo (QSslCertificate::StateOrProvinceName);
+	tmpString = cvt (cer.subjectInfo (QSslCertificate::StateOrProvinceName));
 	if (!tmpString.isEmpty ())
 		new QTreeWidgetItem (subject,
 				QStringList (tr ("State or province name:")) << tmpString);

@@ -25,6 +25,8 @@
 #include <QString>
 #include <QByteArray>
 #include <QToolBar>
+#include <QMenu>
+#include <QNetworkReply>
 #include <QtDebug>
 #include <util/idpool.h>
 
