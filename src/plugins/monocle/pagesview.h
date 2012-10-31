@@ -20,6 +20,8 @@
 
 #include <QGraphicsView>
 
+class QTimeLine;
+
 namespace LeechCraft
 {
 namespace Monocle
@@ -30,14 +32,24 @@ namespace Monocle
 
 		bool ShowReleaseMenu_;
 		bool ShowOnNextRelease_;
+
+		QTimeLine *ScrollTimeline_;
+
+		QPair<qreal, qreal> XPath_;
+		QPair<qreal, qreal> YPath_;
 	public:
 		PagesView (QWidget* = 0);
 
 		void SetShowReleaseMenu (bool);
+
+		QPointF GetCurrentCenter () const;
+		void SmoothCenterOn (qreal, qreal);
 	protected:
 		void mouseMoveEvent (QMouseEvent*);
 		void mouseReleaseEvent (QMouseEvent*);
 		void resizeEvent (QResizeEvent*);
+	private slots:
+		void handleSmoothScroll (int);
 	signals:
 		void sizeChanged ();
 	};

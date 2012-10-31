@@ -195,8 +195,7 @@ namespace Monocle
 		CurrentDoc_ = IDocument_ptr ();
 		CurrentDocPath_.clear ();
 
-		const auto& rectSize = Ui_.PagesView_->viewport ()->contentsRect ().size () / 2;
-		const auto& pos = Ui_.PagesView_->mapToScene (QPoint (rectSize.width (), rectSize.height ()));
+		const auto& pos = Ui_.PagesView_->GetCurrentCenter ();
 
 		SetDoc (doc);
 
@@ -488,7 +487,7 @@ namespace Monocle
 		const auto& pos = page->scenePos ();
 		int xCenter = pos.x () + rect.width () / 2;
 		int yCenter = pos.y () + Ui_.PagesView_->viewport ()->contentsRect ().height () / 2;
-		Ui_.PagesView_->centerOn (xCenter, yCenter);
+		Ui_.PagesView_->SmoothCenterOn (xCenter, yCenter);
 	}
 
 	void DocumentTab::Relayout (double scale)
@@ -560,7 +559,7 @@ namespace Monocle
 		{
 			const auto& size = page->boundingRect ().size ();
 			const auto& mapped = page->mapToScene (size.width () * x, size.height () * y);
-			Ui_.PagesView_->centerOn (mapped.x (), mapped.y ());
+			Ui_.PagesView_->SmoothCenterOn (mapped.x (), mapped.y ());
 		}
 	}
 
@@ -830,7 +829,7 @@ namespace Monocle
 
 	void DocumentTab::delayedCenterOn (const QPoint& point)
 	{
-		Ui_.PagesView_->centerOn (point);
+		Ui_.PagesView_->SmoothCenterOn (point.x (), point.y ());
 	}
 
 	void DocumentTab::handleScaleChosen (int)
