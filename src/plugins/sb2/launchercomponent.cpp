@@ -194,7 +194,7 @@ namespace SB2
 	void LauncherComponent::tabListRequested (const QByteArray& tc, int x, int y)
 	{
 		const auto& widgets = TC2Widgets_ [tc];
-		if (widgets.size () < 2)
+		if (widgets.isEmpty ())
 			return;
 
 		if (CurrentTabList_)
