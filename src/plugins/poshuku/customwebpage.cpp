@@ -41,6 +41,7 @@
 #include "browserwidget.h"
 
 Q_DECLARE_METATYPE (QVariantList*);
+Q_DECLARE_METATYPE (QNetworkReply*);
 
 namespace LeechCraft
 {

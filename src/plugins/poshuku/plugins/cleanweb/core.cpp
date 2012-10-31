@@ -44,6 +44,7 @@
 
 Q_DECLARE_METATYPE (QWebFrame*);
 Q_DECLARE_METATYPE (QPointer<QWebFrame>);
+Q_DECLARE_METATYPE (QNetworkReply*);
 
 namespace LeechCraft
 {

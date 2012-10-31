@@ -51,6 +51,9 @@
             </property>
             <item>
              <widget class="QGraphicsView" name="WebGraphicsView_">
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
               <property name="verticalScrollBarPolicy">
                <enum>Qt::ScrollBarAlwaysOff</enum>
               </property>

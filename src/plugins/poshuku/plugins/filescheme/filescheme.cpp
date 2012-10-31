@@ -22,6 +22,8 @@
 #include <util/util.h>
 #include "schemereply.h"
 
+Q_DECLARE_METATYPE (QNetworkReply*);
+
 namespace LeechCraft
 {
 namespace Poshuku
