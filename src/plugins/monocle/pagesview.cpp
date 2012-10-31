@@ -20,6 +20,7 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QTimeLine>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -52,6 +53,12 @@ namespace Monocle
 
 	void PagesView::SmoothCenterOn (qreal x, qreal y)
 	{
+		if (!XmlSettingsManager::Instance ().property ("SmoothScrolling").toBool ())
+		{
+			centerOn (x, y);
+			return;
+		}
+
 		const auto& current = GetCurrentCenter ();
 		XPath_ = qMakePair (current.x (), x);
 		YPath_ = qMakePair (current.y (), y);
