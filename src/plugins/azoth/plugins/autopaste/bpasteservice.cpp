@@ -38,7 +38,7 @@ namespace Autopaste
 		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		req.setRawHeader ("Referer", "http://bpaste.net");
 
-		QByteArray highlight;
+		QByteArray highlight = "text";
 		switch (params.High_)
 		{
 		case Highlight::CPP:
