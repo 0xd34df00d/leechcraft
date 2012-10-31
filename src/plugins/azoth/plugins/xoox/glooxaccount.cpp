@@ -369,6 +369,13 @@ namespace Xoox
 		tune.SetSource (tuneInfo ["source"].toString ());
 		tune.SetLength (tuneInfo ["length"].toInt ());
 
+		if (tuneInfo.contains ("track"))
+		{
+			const int track = tuneInfo ["track"].toInt ();
+			if (track > 0)
+				tune.SetTrack (QString::number (track));
+		}
+
 		ClientConnection_->GetPubSubManager ()->PublishEvent (&tune);
 	}
 
