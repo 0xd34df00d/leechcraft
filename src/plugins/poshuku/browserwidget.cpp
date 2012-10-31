@@ -53,8 +53,7 @@
 #include <QDataStream>
 #include <QRegExp>
 #include <QKeySequence>
-#include <QGraphicsScene>
-#include <QGraphicsOpacityEffect>
+#include <QLabel>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <util/notificationactionhandler.h>
@@ -82,27 +81,6 @@ namespace Poshuku
 
 	QObject *BrowserWidget::S_MultiTabsParent_ = 0;
 
-	namespace
-	{
-		class ResizeEventFilter : public QObject
-		{
-		public:
-			ResizeEventFilter (QObject *parent = 0)
-			: QObject (parent)
-			{
-			}
-		protected:
-			bool eventFilter (QObject *obj, QEvent *e)
-			{
-				if (e->type () == QEvent::Resize)
-					QMetaObject::invokeMethod (parent (),
-							"refitWebView", Qt::QueuedConnection);
-
-				return QObject::eventFilter (obj, e);
-			}
-		};
-	}
-
 	BrowserWidget::BrowserWidget (QWidget *parent)
 	: QWidget (parent)
 	, ReloadTimer_ (new QTimer (this))
@@ -117,16 +95,7 @@ namespace Poshuku
 		Ui_.Progress_->hide ();
 
 		WebView_ = new CustomWebView;
-
-		QGraphicsScene *scene = new QGraphicsScene (this);
-		scene->addItem (WebView_);
-
-		Ui_.WebGraphicsView_->setScene (scene);
-		QTimer::singleShot (0,
-				this,
-				SLOT (refitWebView ()));
-
-		Ui_.WebGraphicsView_->installEventFilter (new ResizeEventFilter (this));
+		Ui_.WebFrame_->layout ()->addWidget (WebView_);
 
 		WebView_->SetBrowserWidget (this);
 		connect (WebView_,
@@ -577,11 +546,6 @@ namespace Poshuku
 		ZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomReset_"));
 	}
 
-	QGraphicsView* BrowserWidget::GetGraphicsView () const
-	{
-		return Ui_.WebGraphicsView_;
-	}
-
 	CustomWebView* BrowserWidget::GetView () const
 	{
 		return WebView_;
@@ -939,32 +903,24 @@ namespace Poshuku
 			return;
 		}
 
-		LinkTextItem_.reset (new QGraphicsTextItem (WebView_));
-		LinkTextItem_->setZValue (1);
+		LinkTextItem_.reset (new QLabel (WebView_));
 
 		const QFontMetrics metrics (LinkTextItem_->font ());
-
-		msg = metrics.elidedText (msg, Qt::ElideMiddle, WebView_->boundingRect ().width () * 2 / 3);
-
-		LinkTextItem_->setPlainText (msg);
+		msg = metrics.elidedText (msg, Qt::ElideMiddle, WebView_->rect ().width () * 2 / 3);
+		LinkTextItem_->setTextFormat (Qt::TextFormat::PlainText);
+		LinkTextItem_->setText (msg);
 
 		const int textHeight = metrics.boundingRect (msg).height ();
 		const qreal x = 1;
-		const qreal y = WebView_->boundingRect ().height () - textHeight - 7;
-		LinkTextItem_->setX (x);
-		LinkTextItem_->setY (y);
+		const qreal y = WebView_->rect ().height () - textHeight - 7;
+		LinkTextItem_->move (x, y);
 
-		QGraphicsRectItem *rect = new QGraphicsRectItem (0, 0,
-				LinkTextItem_->boundingRect ().width (),
-				LinkTextItem_->boundingRect ().height (),
-				LinkTextItem_.get ());
-		rect->setFlag (QGraphicsItem::ItemStacksBehindParent);
-		rect->setBrush (palette ().color (QPalette::AlternateBase));
-		rect->setPen (QPen (palette ().color (QPalette::Text), 0.5));
+		auto palette = LinkTextItem_->palette ();
+		palette.setColor (QPalette::Window, palette.color (QPalette::AlternateBase));
+		LinkTextItem_->setAutoFillBackground (true);
+		LinkTextItem_->setPalette (palette);
 
-		QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect ();
-		eff->setOpacity (0.8);
-		rect->setGraphicsEffect (eff);
+		LinkTextItem_->show ();
 	}
 
 	void BrowserWidget::handleURLFrameLoad (const QString& text)
@@ -1163,7 +1119,7 @@ namespace Poshuku
 		checkPageAsFavorite (WebView_->url ().toString ());
 	}
 
-	QGraphicsWebView* BrowserWidget::getWebView () const
+	QWebView* BrowserWidget::getWebView () const
 	{
 		return WebView_;
 	}
@@ -1590,13 +1546,6 @@ namespace Poshuku
 		Ui_.URLFrame_->GetEdit ()->repaint ();
 
 		emit urlChanged (value);
-	}
-
-	void BrowserWidget::refitWebView ()
-	{
-		WebView_->resize (Ui_.WebGraphicsView_->viewport ()->size ());
-		Ui_.WebGraphicsView_->ensureVisible (WebView_, 0, 0);
-		Ui_.WebGraphicsView_->centerOn (WebView_);
 	}
 
 	void BrowserWidget::handleUrlTextChanged (const QString& url)

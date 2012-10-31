@@ -117,7 +117,7 @@ namespace OnlineBookmarks
 		Core::Instance ().SetPluginProxy (proxy);
 	}
 
-	void Plugin::hookMoreMenuFillEnd (IHookProxy_ptr, QMenu *menu, QGraphicsWebView*, QObject*)
+	void Plugin::hookMoreMenuFillEnd (IHookProxy_ptr, QMenu *menu, QWebView*, QObject*)
 	{
 		QMenu *menuBookmarksSyn = menu->addMenu (tr ("Sync bookmarks"));
 
