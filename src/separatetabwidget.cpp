@@ -145,7 +145,7 @@ namespace LeechCraft
 
 	QString SeparateTabWidget::TabText (int index) const
 	{
-		return MainTabBar_->tabText (index);
+		return TabNames_.value (index);
 	}
 
 	void SeparateTabWidget::SetTabText (int index, const QString& text)
@@ -164,6 +164,8 @@ namespace LeechCraft
 			return;
 
 		MainTabBar_->setTabText (index, text);
+		if (!text.isEmpty ())
+			TabNames_ [index] = text;
 	}
 
 	QIcon SeparateTabWidget::TabIcon (int index) const
@@ -376,6 +378,8 @@ namespace LeechCraft
 		else
 			newIndex = MainTabBar_->addTab (icon, text);
 
+		TabNames_ << text;
+
 		MainTabBar_->setTabToolTip (newIndex, text);
 
 		if (MainTabBar_->currentIndex () >= WidgetCount ())
@@ -401,6 +405,8 @@ namespace LeechCraft
 		int idx = MainTabBar_->insertTab (newIndex, icon, text);
 		MainTabBar_->setTabToolTip (idx, text);
 
+		TabNames_.insert (index, text);
+
 		if (MainTabBar_->currentIndex () >= WidgetCount ())
 			setCurrentTab (WidgetCount () - 1);
 
@@ -423,6 +429,8 @@ namespace LeechCraft
 
 		MainStackedWidget_->removeWidget (Widget (index));
 		MainTabBar_->removeTab (index);
+
+		TabNames_.removeAt (index);
 	}
 
 	bool SeparateTabWidget::IsAddTabActionVisible () const
@@ -616,6 +624,8 @@ namespace LeechCraft
 		if ((to == MainTabBar_->count () - 1) &&
 				!AddTabButtonAction_->isVisible ())
 			return;
+
+		std::swap (TabNames_ [from], TabNames_ [to]);
 
 		MainStackedWidget_->insertWidget (to, MainStackedWidget_->widget (from));
 
