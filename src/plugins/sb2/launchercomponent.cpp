@@ -214,6 +214,9 @@ namespace SB2
 		const auto& tc = itw->GetTabClassInfo ();
 
 		auto& wList = TC2Widgets_ [tc.TabClass_];
+		if (wList.contains (w))
+			return;
+
 		wList << w;
 
 		if (!TC2Items_.contains (tc.TabClass_))
