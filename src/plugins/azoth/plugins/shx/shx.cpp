@@ -109,10 +109,15 @@ namespace SHX
 			return;
 		}
 
-		const auto& out = proc->readAllStandardOutput ();
+		auto out = QString::fromUtf8 (proc->readAllStandardOutput ());
+		const auto& err = proc->readAllStandardError ();
+
+		if (!err.isEmpty ())
+			out.prepend (tr ("Error: %1").arg (QString::fromUtf8 (err)) + "\n");
+
 		QMetaObject::invokeMethod (Process2Chat_.take (proc),
 				"prepareMessageText",
-				Q_ARG (QString, QString::fromUtf8 (out)));
+				Q_ARG (QString, out));
 	}
 }
 }
