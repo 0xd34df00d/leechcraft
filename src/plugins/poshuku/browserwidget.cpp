@@ -1550,14 +1550,6 @@ namespace Poshuku
 
 	void BrowserWidget::handleUrlTextChanged (const QString& url)
 	{
-		IAddressBar *iab = qobject_cast<IAddressBar*> (GetURLEdit ());
-		if (!iab)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< GetURLEdit ()
-					<< "isn't an IAddressBar object";
-			return;
-		}
 		checkPageAsFavorite (url);
 	}
 
