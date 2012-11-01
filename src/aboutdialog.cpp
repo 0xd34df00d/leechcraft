@@ -155,7 +155,7 @@ namespace LeechCraft
 				QList<int> () << 2011 << 2012);
 		contribs << ContributorInfo ("Azer Abdullaev", "Like-all",
 				QString (), "lik3a11@gmail.com",
-				QStringList (tr ("Artwork.")),
+				QStringList (tr ("Shaitan plugin")) << tr ("Artwork."),
 				QList<int> () << 2011 << 2012);
 		contribs << ContributorInfo ("Boris Pek", "Tehnick",
 				QString (), "tehnick-8@mail.ru",
