@@ -19,9 +19,13 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
+#include <QPointer>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
+
+class QProcess;
 
 namespace LeechCraft
 {
@@ -35,6 +39,8 @@ namespace SHX
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
+
+		QHash<QProcess*, QPointer<QObject>> Process2Chat_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -51,6 +57,8 @@ namespace SHX
 				QObject *entry,
 				int type,
 				QString variant);
+	private slots:
+		void handleFinished ();
 	};
 }
 }

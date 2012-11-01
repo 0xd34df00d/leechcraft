@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "shx.h"
+#include <QProcess>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -64,9 +66,46 @@ namespace SHX
 	}
 
 	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-			QObject*, QObject *entry, int, QString text)
+			QObject *chatTab, QObject*, int, QString)
 	{
+		QString text = proxy->GetValue ("text").toString ();
+
+		const QString marker = "!exec ";
+		if (!text.startsWith (marker))
+			return;
+
+		proxy->CancelDefault ();
+		text = text.mid (marker.size ());
+
+		auto proc = new QProcess ();
+		Process2Chat_ [proc] = chatTab;
+		connect (proc,
+				SIGNAL (finished (int, QProcess::ExitStatus)),
+				this,
+				SLOT (handleFinished ()));
+		proc->start ("/bin/sh", { "-c", text });
+	}
+
+	void Plugin::handleFinished ()
+	{
+		auto proc = qobject_cast<QProcess*> (sender ());
+		proc->deleteLater ();
+
+		if (!Process2Chat_.contains (proc))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no chat for process"
+					<< proc;
+			return;
+		}
+
+		const auto& out = proc->readAllStandardOutput ();
+		QMetaObject::invokeMethod (Process2Chat_.take (proc),
+				"prepareMessageText",
+				Q_ARG (QString, QString::fromUtf8 (out)));
 	}
 }
 }
 }
+
+LC_EXPORT_PLUGIN (leechcraft_azoth_shx, LeechCraft::Azoth::SHX::Plugin);
