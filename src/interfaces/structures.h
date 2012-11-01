@@ -25,11 +25,11 @@
 #include <QString>
 #include <QByteArray>
 #include <QToolBar>
+#include <QMenu>
 #include <QtDebug>
 #include <util/idpool.h>
 
 class QMenu;
-class QNetworkReply;
 class QIODevice;
 
 namespace LeechCraft
@@ -282,7 +282,6 @@ namespace LeechCraft
 typedef std::shared_ptr<QObject> QObject_ptr;
 
 Q_DECLARE_METATYPE (LeechCraft::Entity);
-Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_METATYPE (QIODevice*);
 Q_DECLARE_METATYPE (QToolBar*);
 Q_DECLARE_METATYPE (QMenu*);

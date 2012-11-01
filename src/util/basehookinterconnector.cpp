@@ -53,14 +53,20 @@ namespace LeechCraft
 					if (method.parameterTypes ().at (0) != "LeechCraft::IHookProxy_ptr")
 						continue;
 
+#if QT_VERSION >= 0x050000
+					const auto& signature = method.methodSignature ();
+#else
+					const auto& signature = method.signature ();
+#endif
+
 					if (receiver->metaObject ()->
-							indexOfMethod (LC_N (method.signature ())) == -1)
+							indexOfMethod (LC_N (signature)) == -1)
 					{
 						if (!destSlot)
 						{
 							qWarning () << Q_FUNC_INFO
 									<< "not found meta method for"
-									<< method.signature ()
+									<< signature
 									<< "in receiver object"
 									<< receiver;
 						}
@@ -68,9 +74,9 @@ namespace LeechCraft
 					}
 
 					if (!QObject::connect (sender,
-							LC_TOSIGNAL (method.signature ()),
+							LC_TOSIGNAL (signature),
 							receiver,
-							destSlot ? LC_TOSLOT (method.signature ()) : LC_TOSIGNAL (method.signature ()),
+							destSlot ? LC_TOSLOT (signature) : LC_TOSIGNAL (signature),
 							Qt::UniqueConnection))
 					{
 						qWarning () << Q_FUNC_INFO
@@ -79,7 +85,7 @@ namespace LeechCraft
 								<< "->"
 								<< receiver
 								<< ":"
-								<< method.signature ()
+								<< signature
 								<< "failed";
 					}
 				}

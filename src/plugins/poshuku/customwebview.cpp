@@ -20,7 +20,6 @@
 #include <cmath>
 #include <limits>
 #include <qwebframe.h>
-#include <QGraphicsSceneMouseEvent>
 #include <QMenu>
 #include <QApplication>
 #include <QBuffer>
@@ -46,8 +45,8 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	CustomWebView::CustomWebView (QGraphicsItem *parent)
-	: QGraphicsWebView (parent)
+	CustomWebView::CustomWebView (QWidget *parent)
+	: QWebView (parent)
 	, ScrollTimer_ (new QTimer (this))
 	, ScrollDelta_ (0)
 	, AccumulatedScrollShift_ (0)
@@ -182,9 +181,8 @@ namespace Poshuku
 			QNetworkAccessManager::Operation op, const QByteArray& ba)
 	{
 		emit titleChanged (tr ("Loading..."));
-		QGraphicsWebView::load (req, op, ba);
+		QWebView::load (req, op, ba);
 	}
-
 
 	QString CustomWebView::URLToProperString (const QUrl& url)
 	{
@@ -208,7 +206,7 @@ namespace Poshuku
 		return string;
 	}
 
-	void CustomWebView::mousePressEvent (QGraphicsSceneMouseEvent *e)
+	void CustomWebView::mousePressEvent (QMouseEvent *e)
 	{
 		qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());
 		qobject_cast<CustomWebPage*> (page ())->SetModifiers (e->modifiers ());
@@ -222,10 +220,10 @@ namespace Poshuku
 			return;
 		}
 
-		QGraphicsWebView::mousePressEvent (e);
+		QWebView::mousePressEvent (e);
 	}
 
-	void CustomWebView::wheelEvent (QGraphicsSceneWheelEvent *e)
+	void CustomWebView::wheelEvent (QWheelEvent *e)
 	{
 		if (e->modifiers () & Qt::ControlModifier)
 		{
@@ -235,7 +233,7 @@ namespace Poshuku
 			e->accept ();
 		}
 		else
-			QGraphicsWebView::wheelEvent (e);
+			QWebView::wheelEvent (e);
 	}
 
 	namespace
@@ -243,10 +241,10 @@ namespace Poshuku
 		const QRegExp UrlInText ("://|www\\.|\\w\\.\\w");
 	}
 
-	void CustomWebView::contextMenuEvent (QGraphicsSceneContextMenuEvent *e)
+	void CustomWebView::contextMenuEvent (QContextMenuEvent *e)
 	{
 		QPointer<QMenu> menu (new QMenu ());
-		const auto& r = page ()->mainFrame ()->hitTestContent (e->pos ().toPoint ());
+		const auto& r = page ()->mainFrame ()->hitTestContent (e->pos ());
 
 		IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 
@@ -404,10 +402,9 @@ namespace Poshuku
 				menu, WVSAfterFinish);
 
 		if (!menu->isEmpty ())
-			menu->exec (Browser_->GetGraphicsView ()->viewport ()->
-					mapToGlobal (e->pos ().toPoint ()));
+			menu->exec (mapToGlobal (e->pos ()));
 		else
-			QGraphicsWebView::contextMenuEvent (e);
+			QWebView::contextMenuEvent (e);
 
 		if (menu)
 			delete menu;
@@ -446,7 +443,7 @@ namespace Poshuku
 		}
 
 		if (!handled)
-			QGraphicsWebView::keyReleaseEvent (event);
+			QWebView::keyReleaseEvent (event);
 	}
 
 	int CustomWebView::LevelForZoom (qreal zoom)

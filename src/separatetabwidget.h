@@ -64,6 +64,8 @@ namespace LeechCraft
 		QWidget *CurrentWidget_;
 		int CurrentIndex_;
 		QWidget *PreviousWidget_;
+
+		QStringList TabNames_;
 	public:
 		explicit SeparateTabWidget (QWidget *parent = 0);
 

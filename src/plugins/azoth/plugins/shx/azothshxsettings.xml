@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Azoth SHX" />
+		<groupbox>
+			<label value="Detection" />
+			<item type="lineedit" property="Marker" default="/exec ">
+				<label value="Command marker:" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

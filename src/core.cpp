@@ -34,6 +34,8 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QInputDialog>
+#include <QMimeData>
+#include <QNetworkCookie>
 #include <util/util.h>
 #include <util/customcookiejar.h>
 #include <util/defaulthookproxy.h>

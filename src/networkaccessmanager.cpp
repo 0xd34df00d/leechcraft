@@ -38,6 +38,8 @@
 #include "config.h"
 #include "storagebackend.h"
 
+Q_DECLARE_METATYPE (QNetworkReply*);
+
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 

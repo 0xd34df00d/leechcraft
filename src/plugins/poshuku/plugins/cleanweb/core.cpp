@@ -33,7 +33,7 @@
 #include <QCoreApplication>
 #include <QMenu>
 #include <QMainWindow>
-#include <qgraphicswebview.h>
+#include <qwebview.h>
 #include <util/util.h>
 #include <util/customnetworkreply.h>
 #include "xmlsettingsmanager.h"
@@ -44,6 +44,7 @@
 
 Q_DECLARE_METATYPE (QWebFrame*);
 Q_DECLARE_METATYPE (QPointer<QWebFrame>);
+Q_DECLARE_METATYPE (QNetworkReply*);
 
 namespace LeechCraft
 {
@@ -361,7 +362,7 @@ namespace CleanWeb
 	}
 
 	void Core::HandleContextMenu (const QWebHitTestResult& r,
-		QGraphicsWebView *view, QMenu *menu,
+		QWebView *view, QMenu *menu,
 		LeechCraft::Poshuku::WebViewCtxMenuStage stage)
 	{
 		QUrl iurl = r.imageUrl ();

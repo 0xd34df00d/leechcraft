@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2011  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,65 +16,55 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
+#pragma once
 
 #include <QObject>
-#include <QTranslator>
+#include <QHash>
+#include <QPointer>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
-#include <interfaces/ipluginready.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QMenu;
-class QWebView;
+class QProcess;
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Azoth
 {
-namespace OnlineBookmarks
+namespace SHX
 {
 	class Plugin : public QObject
-				, public IInfo
-				, public IPlugin2
-				, public IHaveSettings
-				, public IPluginReady
+				 , public IInfo
+				 , public IPlugin2
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings IPluginReady)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		std::shared_ptr<QTranslator> Translator_;
+		Util::XmlSettingsDialog_ptr XSD_;
+		QHash<QProcess*, QPointer<QObject>> Process2Chat_;
 	public:
-		// IInfo methods
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
-		void Release ();
 		QByteArray GetUniqueID () const;
+		void Release ();
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
-		// IPlugin2 methods
 		QSet<QByteArray> GetPluginClasses () const;
 
-		// IHaveSettings methods
-		Util::XmlSettingsDialog_ptr GetSettingsDialog() const;
-
-		//IPluginReady
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
-		void initPlugin (QObject*);
-		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr, QMenu*, QWebView*, QObject*);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QObject *entry,
+				int type,
+				QString variant);
+	private slots:
+		void handleFinished ();
 	};
 }
 }
 }
-
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H

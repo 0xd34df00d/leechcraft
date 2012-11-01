@@ -12,6 +12,9 @@
 			<label value="Pixmap cache size:" />
 			<suffix value=" MiB" />
 		</item>
+		<item type="checkbox" property="SmoothScrolling" default="true">
+			<label value="Smooth scrolling" />
+		</item>
 	</page>
 	<page>
 		<label value="Default backends" />
