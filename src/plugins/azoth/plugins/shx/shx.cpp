@@ -19,6 +19,8 @@
 #include "shx.h"
 #include <QProcess>
 #include <QtDebug>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -28,6 +30,8 @@ namespace SHX
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothshxsettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -65,12 +69,18 @@ namespace SHX
 		return result;
 	}
 
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
+	}
+
 	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 			QObject *chatTab, QObject*, int, QString)
 	{
 		QString text = proxy->GetValue ("text").toString ();
 
-		const QString marker = "!exec ";
+		const QString marker = XmlSettingsManager::Instance ()
+				.property ("Marker").toString ();
 		if (!text.startsWith (marker))
 			return;
 
