@@ -298,8 +298,6 @@ namespace BitTorrent
 		void LogMessage (const QString&);
 		void SetExternalAddress (const QString&);
 		QString GetExternalAddress () const;
-		void Import (const QString&);
-		void Export (const QString&, bool, bool) const;
 		typedef QPair<QString, QString> BanRange_t;
 		void BanPeers (const BanRange_t&, bool = true);
 		void ClearFilter ();
@@ -343,7 +341,6 @@ namespace BitTorrent
 		 * @param[in] torrent The ID of the torrent.
 		 */
 		void UpdateTagsImpl (const QStringList& tags, int torrent);
-		void ParseStorage (const QDomElement&);
 		void ScheduleSave ();
 		void HandleLibtorrentException (const libtorrent::libtorrent_exception&);
 	private slots:

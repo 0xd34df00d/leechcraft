@@ -864,23 +864,6 @@ namespace LeechCraft
 				dia->show ();
 			}
 
-			void TorrentPlugin::on_Import__triggered ()
-			{
-			}
-
-			void TorrentPlugin::on_Export__triggered ()
-			{
-				ExportDialog dia;
-				if (dia.exec () == QDialog::Rejected)
-					return;
-
-				bool settings = dia.GetSettings ();
-				bool active = dia.GetActive ();
-				QString where = dia.GetLocation ();
-
-				Core::Instance ()->Export (where, settings, active);
-			}
-
 			void TorrentPlugin::handleFastSpeedComboboxes ()
 			{
 				int down = DownSelectorAction_->CurrentData ();
@@ -1000,8 +983,6 @@ namespace LeechCraft
 						(ForceReannounce_)
 						(ForceRecheck_)
 						(MoveFiles_)
-						(Import_)
-						(Export_)
 						(MakeMagnetLink_));
 			}
 
@@ -1149,22 +1130,6 @@ namespace LeechCraft
 						this,
 						SLOT (on_MakeMagnetLink__triggered ()));
 
-				Import_.reset (new QAction (tr ("Import..."),
-							Toolbar_.get ()));
-				connect (Import_.get (),
-						SIGNAL (triggered ()),
-						this,
-						SLOT (on_Import__triggered ()));
-				Import_->setProperty ("ActionIcon", "document-import");
-
-				Export_.reset (new QAction (tr ("Export..."),
-							Toolbar_.get ()));
-				connect (Export_.get (),
-						SIGNAL (triggered ()),
-						this,
-						SLOT (on_Export__triggered ()));
-				Export_->setProperty ("ActionIcon", "document-export");
-
 				Toolbar_->addAction (OpenTorrent_.get ());
 				Toolbar_->addAction (RemoveTorrent_.get ());
 				Toolbar_->addSeparator ();
@@ -1181,9 +1146,6 @@ namespace LeechCraft
 				Toolbar_->addAction (MoveFiles_.get ());
 				Toolbar_->addAction (ChangeTrackers_.get ());
 				Toolbar_->addAction (MakeMagnetLink_.get ());
-				Toolbar_->addSeparator ();
-				Toolbar_->addAction (Import_.get ());
-				Toolbar_->addAction (Export_.get ());
 				Toolbar_->addSeparator ();
 				DownSelectorAction_ = new SpeedSelectorAction ("Down", this);
 				DownSelectorAction_->handleSpeedsChanged ();
