@@ -1543,6 +1543,10 @@ namespace Poshuku
 			}
 		}
 #endif
+
+		if (userText.isEmpty ())
+			return;
+
 		Ui_.URLFrame_->GetEdit ()->setText (userText);
 		Ui_.URLFrame_->GetEdit ()->repaint ();
 
