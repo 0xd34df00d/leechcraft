@@ -16,33 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_TORRENT_BANPEERSDIALOG_H
-#define PLUGINS_TORRENT_BANPEERSDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_banpeersdialog.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	class BanPeersDialog : public QDialog
 	{
-		namespace BitTorrent
-		{
-			class BanPeersDialog : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::BanPeersDialog Ui_;
-			public:
-				BanPeersDialog (QWidget* = 0);
+		Ui::BanPeersDialog Ui_;
+	public:
+		BanPeersDialog (QWidget* = 0);
 
-				void SetIP (const QString&);
-				void SetIP (const QString&, const QString&);
-				QString GetStart () const;
-				QString GetEnd () const;
-			};
-		};
+		void SetIP (const QString&);
+		void SetIP (const QString&, const QString&);
+		QString GetStart () const;
+		QString GetEnd () const;
 	};
-};
-
-#endif
-
+}
+}
+}
