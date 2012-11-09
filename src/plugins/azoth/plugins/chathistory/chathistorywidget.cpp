@@ -67,6 +67,8 @@ namespace ChatHistory
 		SortFilter_->sort (0);
 		Ui_.Contacts_->setModel (SortFilter_);
 
+		ShowLoading ();
+
 		connect (Ui_.ContactsSearch_,
 				SIGNAL (textChanged (const QString&)),
 				SortFilter_,
@@ -194,6 +196,8 @@ namespace ChatHistory
 		IProxyObject *proxy = Core::Instance ()->GetPluginProxy ();
 		ContactsModel_->clear ();
 
+		Ui_.HistView_->clear ();
+
 		QStandardItem *ourFocus = 0;
 		const QString& focusId = EntryToFocus_ ?
 				EntryToFocus_->GetEntryID () :
@@ -221,6 +225,7 @@ namespace ChatHistory
 
 		if (ourFocus)
 		{
+			ShowLoading ();
 			QModelIndex idx = ContactsModel_->indexFromItem (ourFocus);
 			idx = SortFilter_->mapFromSource (idx);
 			Ui_.Contacts_->selectionModel ()->
@@ -432,12 +437,16 @@ namespace ChatHistory
 		}
 		ContactSelectedAsGlobSearch_ = false;
 
+		ShowLoading ();
+
 		RequestLogs ();
 		UpdateDates ();
 	}
 
 	void ChatHistoryWidget::on_HistorySearch__returnPressed ()
 	{
+		ShowLoading ();
+
 		const QString& text = Ui_.HistorySearch_->text ();
 		if (text.isEmpty ())
 		{
@@ -478,6 +487,8 @@ namespace ChatHistory
 	{
 		if (CurrentEntry_.isEmpty ())
 			return;
+
+		ShowLoading ();
 
 		PreviousSearchText_.clear ();
 		Ui_.HistorySearch_->clear ();
@@ -526,6 +537,14 @@ namespace ChatHistory
 		emit gotEntity (Util::MakeEntity (url,
 				QString (),
 				static_cast<TaskParameters> (FromUserInitiated | OnlyHandle)));
+	}
+
+	void ChatHistoryWidget::ShowLoading ()
+	{
+		const auto& html = "<html><head/><body><span style='color:#666666'>" +
+				tr ("History is loading...") +
+				"</span></body></html>";
+		Ui_.HistView_->setHtml (html);
 	}
 
 	void ChatHistoryWidget::UpdateDates ()

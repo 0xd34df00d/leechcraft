@@ -100,6 +100,7 @@ namespace ChatHistory
 
 		void on_HistView__anchorClicked (const QUrl&);
 	private:
+		void ShowLoading ();
 		void UpdateDates ();
 		void RequestLogs ();
 		void RequestSearch ();
