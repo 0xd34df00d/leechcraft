@@ -108,11 +108,14 @@ Rectangle {
             z: 2
             text: artistTags
             color: "#999999"
-            anchors.left: artistImageThumb.left
-            anchors.top: artistImageThumb.bottom
-            anchors.topMargin: 0
-            anchors.right: flickableBioText.left
-            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+            anchors.left: artistNameLabel.right
+            anchors.leftMargin: 2
+            anchors.bottom: artistNameLabel.bottom
+            anchors.right: parent.right
+            anchors.rightMargin: 2
+
+            elide: Text.ElideRight
+            horizontalAlignment: Text.AlignRight
             font.pointSize: 8
         }
 
@@ -120,7 +123,7 @@ Rectangle {
             id: artistDiscoView
             z: 2
             anchors.left: parent.left
-            anchors.top: artistTagsLabel.bottom
+            anchors.top: artistImageThumb.bottom
             anchors.topMargin: 2
             anchors.right: flickableBioText.left
             anchors.bottom: parent.bottom
