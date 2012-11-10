@@ -152,6 +152,7 @@ Rectangle {
                         anchors.rightMargin: 20
                         height: width
 
+                        smooth: true
                         fillMode: Image.PreserveAspectFit
                     }
 

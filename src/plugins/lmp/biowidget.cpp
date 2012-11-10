@@ -57,6 +57,8 @@ namespace LMP
 				setRoleNames (roleNames);
 			}
 		};
+
+		const int AASize = 170;
 	}
 
 	BioWidget::BioWidget (QWidget *parent)
@@ -203,7 +205,10 @@ namespace LMP
 			return;
 		}
 
-		item->setData (Util::GetAsBase64Src (images.first ()), DiscoModel::Roles::AlbumImage);
+		auto img = images.first ();
+		if (img.width () > AASize)
+			img = img.scaled (AASize, AASize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		item->setData (Util::GetAsBase64Src (img), DiscoModel::Roles::AlbumImage);
 	}
 
 	void BioWidget::handleLink (const QString& link)
