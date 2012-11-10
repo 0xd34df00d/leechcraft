@@ -17,11 +17,13 @@
  **********************************************************************/
 
 #include "biowidget.h"
+#include <QStandardItemModel>
 #include <QDeclarativeContext>
 #include <QGraphicsObject>
 #include <QtDebug>
 #include <util/util.h>
 #include <interfaces/media/iartistbiofetcher.h>
+#include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
@@ -32,13 +34,39 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		class DiscoModel : public QStandardItemModel
+		{
+		public:
+			enum Roles
+			{
+				AlbumName = Qt::UserRole + 1,
+				AlbumYear,
+				AlbumImage
+			};
+
+			DiscoModel (QObject *parent)
+			: QStandardItemModel (parent)
+			{
+				QHash<int, QByteArray> roleNames;
+				roleNames [Roles::AlbumName] = "albumName";
+				roleNames [Roles::AlbumYear] = "albumYear";
+				roleNames [Roles::AlbumImage] = "albumImage";
+				setRoleNames (roleNames);
+			}
+		};
+	}
+
 	BioWidget::BioWidget (QWidget *parent)
 	: QWidget (parent)
 	, BioPropProxy_ (new BioPropProxy (this))
+	, DiscoModel_ (new DiscoModel (this))
 	{
 		Ui_.setupUi (this);
 
 		Ui_.View_->rootContext ()->setContextObject (BioPropProxy_);
+		Ui_.View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
 		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/BioView.qml"));
 
 		const auto& lastProv = XmlSettingsManager::Instance ()
@@ -77,6 +105,18 @@ namespace LMP
 		requestBiography ();
 	}
 
+	QStandardItem* BioWidget::FindAlbumItem (const QString& albumName) const
+	{
+		for (int i = 0, rc = DiscoModel_->rowCount (); i < rc; ++i)
+		{
+			auto item = DiscoModel_->item (i);
+			const auto& itemData = item->data (DiscoModel::Roles::AlbumName);
+			if (itemData.toString () == albumName)
+				return item;
+		}
+		return 0;
+	}
+
 	void BioWidget::saveLastUsedProv ()
 	{
 		const int idx = Ui_.Provider_->currentIndex ();
@@ -89,6 +129,8 @@ namespace LMP
 
 	void BioWidget::requestBiography ()
 	{
+		DiscoModel_->clear ();
+
 		const int idx = Ui_.Provider_->currentIndex ();
 		if (idx < 0 || CurrentArtist_.isEmpty ())
 			return;
@@ -98,6 +140,16 @@ namespace LMP
 				SIGNAL (ready ()),
 				this,
 				SLOT (handleBioReady ()));
+
+		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		for (auto prov : pm->GetAllCastableTo<Media::IDiscographyProvider*> ())
+		{
+			auto fetcher = prov->GetDiscography (CurrentArtist_);
+			connect (fetcher->GetObject (),
+					SIGNAL (ready ()),
+					this,
+					SLOT (handleDiscographyReady ()));
+		}
 	}
 
 	void BioWidget::handleBioReady ()
@@ -107,6 +159,21 @@ namespace LMP
 		BioPropProxy_->SetBio (bio);
 
 		emit gotArtistImage (bio.BasicInfo_.Name_, bio.BasicInfo_.LargeImage_);
+	}
+
+	void BioWidget::handleDiscographyReady ()
+	{
+		auto fetcher = qobject_cast<Media::IPendingDisco*> (sender ());
+		for (const auto& release : fetcher->GetReleases ())
+		{
+			if (FindAlbumItem (release.Name_))
+				continue;
+
+			auto item = new QStandardItem;
+			item->setData (release.Name_, DiscoModel::Roles::AlbumName);
+			item->setData (QString::number (release.Year_), DiscoModel::Roles::AlbumYear);
+			DiscoModel_->appendRow (item);
+		}
 	}
 
 	void BioWidget::handleLink (const QString& link)
