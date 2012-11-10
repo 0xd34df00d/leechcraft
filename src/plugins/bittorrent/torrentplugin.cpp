@@ -50,7 +50,6 @@
 #include "xmlsettingsmanager.h"
 #include "movetorrentfiles.h"
 #include "trackerschanger.h"
-#include "exportdialog.h"
 #include "wizardgenerator.h"
 #include "fastspeedcontrolwidget.h"
 #include "ipfilterdialog.h"

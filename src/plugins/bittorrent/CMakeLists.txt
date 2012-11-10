@@ -43,7 +43,6 @@ SET (SRCS
 	filesviewdelegate.cpp
 	movetorrentfiles.cpp
 	trackerschanger.cpp
-	exportdialog.cpp
 	peerstablinker.cpp
 	addpeerdialog.cpp
 	ipvalidators.cpp
@@ -81,7 +80,6 @@ SET (HEADERS
 	filesviewdelegate.h
 	movetorrentfiles.h
 	trackerschanger.h
-	exportdialog.h
 	peerstablinker.h
 	addpeerdialog.h
 	ipvalidators.h
@@ -113,7 +111,6 @@ SET (FORMS
 	newtorrentthirdstep.ui
 	movetorrentfiles.ui
 	trackerschanger.ui
-	exportdialog.ui
 	addpeerdialog.ui
 	addwebseeddialog.ui
 	startupfirstpage.ui
