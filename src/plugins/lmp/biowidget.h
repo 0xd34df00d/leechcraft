@@ -27,6 +27,7 @@ class QStandardItem;
 namespace Media
 {
 	struct ArtistBio;
+	struct AlbumInfo;
 	class IArtistBioFetcher;
 }
 
@@ -59,6 +60,7 @@ namespace LMP
 
 		void handleBioReady ();
 		void handleDiscographyReady ();
+		void handleAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 
 		void handleLink (const QString&);
 	signals:

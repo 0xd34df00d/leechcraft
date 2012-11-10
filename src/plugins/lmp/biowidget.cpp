@@ -24,6 +24,7 @@
 #include <util/util.h>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/media/idiscographyprovider.h>
+#include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
@@ -163,6 +164,16 @@ namespace LMP
 
 	void BioWidget::handleDiscographyReady ()
 	{
+		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		auto aaProvObj = pm->GetAllCastableRoots<Media::IAlbumArtProvider*> ().value (0);
+		auto aaProv = qobject_cast<Media::IAlbumArtProvider*> (aaProvObj);
+		if (aaProvObj)
+			connect (aaProvObj,
+					SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
+					this,
+					SLOT (handleAlbumArt (Media::AlbumInfo, QList<QImage>)),
+					Qt::UniqueConnection);
+
 		auto fetcher = qobject_cast<Media::IPendingDisco*> (sender ());
 		for (const auto& release : fetcher->GetReleases ())
 		{
@@ -173,7 +184,26 @@ namespace LMP
 			item->setData (release.Name_, DiscoModel::Roles::AlbumName);
 			item->setData (QString::number (release.Year_), DiscoModel::Roles::AlbumYear);
 			DiscoModel_->appendRow (item);
+
+			aaProv->RequestAlbumArt ({ CurrentArtist_, release.Name_ });
 		}
+	}
+
+	void BioWidget::handleAlbumArt (const Media::AlbumInfo& info, const QList<QImage>& images)
+	{
+		if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
+			return;
+
+		auto item = FindAlbumItem (info.Album_);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown item for"
+					<< info.Album_;
+			return;
+		}
+
+		item->setData (Util::GetAsBase64Src (images.first ()), DiscoModel::Roles::AlbumImage);
 	}
 
 	void BioWidget::handleLink (const QString& link)
