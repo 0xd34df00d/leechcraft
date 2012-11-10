@@ -116,11 +116,17 @@ namespace MusicZombie
 			if (elemText ("status") != "Official")
 				continue;
 
+			const auto& dateStr = elemText ("date");
+			const int dashPos = dateStr.indexOf ('-');
+			const int date = (dashPos > 0 ? dateStr.left (dashPos) : dateStr).toInt ();
+			if (date < 1000)
+				continue;
+
 			const auto& title = elemText ("title");
 			infos [title] [elemText ("country")] =
 			{
 				title,
-				elemText ("date").left (4).toInt (),
+				date,
 				Media::ReleaseInfo::Type::Standard
 			};
 		}
