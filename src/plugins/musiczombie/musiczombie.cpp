@@ -18,6 +18,8 @@
 
 #include "musiczombie.h"
 #include <QIcon>
+#include <interfaces/core/icoreproxy.h>
+#include "pendingdisco.h"
 
 namespace LeechCraft
 {
@@ -25,6 +27,8 @@ namespace MusicZombie
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+		GetDiscography ("Unearth");
 	}
 
 	void Plugin::SecondInit ()
@@ -53,6 +57,16 @@ namespace MusicZombie
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QString Plugin::GetServiceName () const
+	{
+		return "MusicBrainz.org";
+	}
+
+	Media::IPendingDisco* Plugin::GetDiscography (const QString& artist)
+	{
+		return new PendingDisco (artist, Proxy_->GetNetworkAccessManager (), this);
 	}
 }
 }

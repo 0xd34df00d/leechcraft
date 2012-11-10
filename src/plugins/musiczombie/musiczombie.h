@@ -20,16 +20,20 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/media/idiscographyprovider.h>
 
 namespace LeechCraft
 {
 namespace MusicZombie
 {
 	class Plugin : public QObject
-					, public IInfo
+				 , public IInfo
+				 , public Media::IDiscographyProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo Media::IDiscographyProvider)
+
+		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -38,6 +42,10 @@ namespace MusicZombie
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QString GetServiceName () const;
+
+		Media::IPendingDisco* GetDiscography (const QString&);
 	};
 }
 }
