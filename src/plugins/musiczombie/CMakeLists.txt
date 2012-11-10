@@ -13,6 +13,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	musiczombie.cpp
 	artistlookup.cpp
+	pendingdisco.cpp
 	)
 
 ADD_LIBRARY (leechcraft_musiczombie SHARED
