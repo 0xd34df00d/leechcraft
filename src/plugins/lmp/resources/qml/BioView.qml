@@ -125,6 +125,8 @@ Rectangle {
             anchors.right: flickableBioText.left
             anchors.bottom: parent.bottom
 
+            clip: true
+
             model: artistDiscoModel
 
             delegate: Item {
@@ -134,22 +136,42 @@ Rectangle {
                 Rectangle {
                     anchors.fill: parent
 
+                    color: "transparent"
+
+                    Image {
+                        id: albumArtImage
+                        source: albumImage
+
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.leftMargin: 20
+                        anchors.rightMargin: 20
+                        height: width
+
+                        fillMode: Image.PreserveAspectFit
+                    }
+
                     Text {
                         id: albumNameLabel
-                        anchors.top: parent.top
+                        anchors.top: albumArtImage.bottom
                         anchors.left: parent.left
                         anchors.right: parent.right
 
                         text: albumName
+                        color: "#bbbbbb"
+                        horizontalAlignment: Text.AlignHCenter
                     }
 
                     Text {
                         id: albumYearLabel
-                        anchors.top: albumNameLabel.top
+                        anchors.top: albumNameLabel.bottom
                         anchors.left: parent.left
                         anchors.right: parent.right
 
                         text: albumYear
+                        color: "#999999"
+                        horizontalAlignment: Text.AlignHCenter
                     }
                 }
             }
