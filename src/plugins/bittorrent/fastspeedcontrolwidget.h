@@ -16,42 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_FASTSPEEDCONTROLWIDGET_H
-#define PLUGINS_BITTORRENT_FASTSPEEDCONTROLWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include <QList>
 #include "ui_fastspeedcontrolwidget.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	class FastSpeedControlWidget : public QWidget
 	{
-		namespace BitTorrent
-		{
-			class FastSpeedControlWidget : public QWidget
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::FastSpeedControlWidget Ui_;
-				QList<QPair<QSpinBox*, QSpinBox*>> Widgets_;
-			public:
-				FastSpeedControlWidget (QWidget* = 0);
-			private:
-				void LoadSettings ();
-				void SaveSettings ();
-				void SetNum (int);
-			private slots:
-				void on_Box__valueChanged (int);
-				void on_Slider__valueChanged (int);
-			public slots:
-				void accept ();
-				void reject ();
-			signals:
-				void speedsChanged ();
-			};
-		};
+		Ui::FastSpeedControlWidget Ui_;
+		QList<QPair<QSpinBox*, QSpinBox*>> Widgets_;
+	public:
+		FastSpeedControlWidget (QWidget* = 0);
+	private:
+		void LoadSettings ();
+		void SaveSettings ();
+		void SetNum (int);
+	private slots:
+		void on_Box__valueChanged (int);
+		void on_Slider__valueChanged (int);
+	public slots:
+		void accept ();
+		void reject ();
+	signals:
+		void speedsChanged ();
 	};
-};
-
-#endif
-
+}
+}
+}

@@ -116,6 +116,45 @@ Rectangle {
             font.pointSize: 8
         }
 
+        ListView {
+            id: artistDiscoView
+            z: 2
+            anchors.left: parent.left
+            anchors.top: artistTagsLabel.bottom
+            anchors.topMargin: 2
+            anchors.right: flickableBioText.left
+            anchors.bottom: parent.bottom
+
+            model: artistDiscoModel
+
+            delegate: Item {
+                width: artistDiscoView.width
+                height: artistDiscoView.width
+
+                Rectangle {
+                    anchors.fill: parent
+
+                    Text {
+                        id: albumNameLabel
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+
+                        text: albumName
+                    }
+
+                    Text {
+                        id: albumYearLabel
+                        anchors.top: albumNameLabel.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+
+                        text: albumYear
+                    }
+                }
+            }
+        }
+
         Rectangle {
             id: upTextShade
             z: 3

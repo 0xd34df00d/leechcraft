@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_PEERSMODEL_H
-#define PLUGINS_BITTORRENT_PEERSMODEL_H
+#pragma once
+
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QList>
@@ -25,44 +25,41 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	class PeersModel : public QAbstractItemModel
 	{
-		namespace BitTorrent
-		{
-			class PeersModel : public QAbstractItemModel
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				QStringList Headers_;
-				QList<PeerInfo> Peers_;
-				int CurrentTorrent_;
-				const int Index_;
+		QStringList Headers_;
+		QList<PeerInfo> Peers_;
+		int CurrentTorrent_;
+		const int Index_;
 
-				QString FlagsPath_;
-			public:
-				enum { SortRole = 45 };
-				PeersModel (int idx, QObject *parent = 0);
-				virtual ~PeersModel ();
+		QString FlagsPath_;
+	public:
+		enum { SortRole = 45 };
+		PeersModel (int idx, QObject *parent = 0);
+		virtual ~PeersModel ();
 
-				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-				virtual Qt::ItemFlags flags (const QModelIndex&) const;
-				virtual bool hasChildren (const QModelIndex&) const;
-				virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-				virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-				virtual QModelIndex parent (const QModelIndex&) const;
-				virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
+		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		virtual Qt::ItemFlags flags (const QModelIndex&) const;
+		virtual bool hasChildren (const QModelIndex&) const;
+		virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
+		virtual QModelIndex parent (const QModelIndex&) const;
+		virtual int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 
-				const PeerInfo& GetPeerInfo (const QModelIndex&) const;
-			public slots:
-				void update ();
-			private:
-				void Clear ();
-				void Update (const QList<PeerInfo>&);
-			};
-		};
+		const PeerInfo& GetPeerInfo (const QModelIndex&) const;
+	public slots:
+		void update ();
+	private:
+		void Clear ();
+		void Update (const QList<PeerInfo>&);
 	};
-};
-
-#endif
-
+}
+}
+}

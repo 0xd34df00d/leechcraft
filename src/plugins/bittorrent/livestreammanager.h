@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_LIVESTREAMMANAGER_H
-#define PLUGINS_BITTORRENT_LIVESTREAMMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QList>
 #include <libtorrent/torrent_handle.hpp>
@@ -26,31 +26,28 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	class LiveStreamDevice;
+
+	class LiveStreamManager : public QObject
 	{
-		namespace BitTorrent
-		{
-			class LiveStreamDevice;
+		Q_OBJECT
 
-			class LiveStreamManager : public QObject
-			{
-				Q_OBJECT
+		QMap<libtorrent::torrent_handle, LiveStreamDevice*> Handle2Device_;
+	public:
+		LiveStreamManager (QObject* = 0);
 
-				QMap<libtorrent::torrent_handle, LiveStreamDevice*> Handle2Device_;
-			public:
-				LiveStreamManager (QObject* = 0);
-
-				void EnableOn (libtorrent::torrent_handle);
-				bool IsEnabledOn (libtorrent::torrent_handle);
-				void PieceRead (const libtorrent::read_piece_alert&);
-			private slots:
-				void handleDeviceReady ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		void EnableOn (libtorrent::torrent_handle);
+		bool IsEnabledOn (libtorrent::torrent_handle);
+		void PieceRead (const libtorrent::read_piece_alert&);
+	private slots:
+		void handleDeviceReady ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
-
-#endif
-
+}
+}
+}

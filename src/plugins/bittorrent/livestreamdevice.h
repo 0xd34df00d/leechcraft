@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_LIVESTREAMDEVICE_H
-#define PLUGINS_BITTORRENT_LIVESTREAMDEVICE_H
+#pragma once
+
 #include <QVector>
 #include <QFile>
 #include <libtorrent/torrent_handle.hpp>
@@ -25,50 +25,47 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	class LiveStreamDevice : public QIODevice
 	{
-		namespace BitTorrent
-		{
-			class LiveStreamDevice : public QIODevice
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				libtorrent::torrent_handle Handle_;
-				int NumPieces_;
-				int LastIndex_;
-				// Which piece would be read next.
-				int ReadPos_;
-				// Offset in the next piece pointed by ReadPos_;
-				int Offset_;
-				bool IsReady_;
-				QFile File_;
-			public:
-				LiveStreamDevice (const libtorrent::torrent_handle&,
-						QObject* = 0);
+		libtorrent::torrent_handle Handle_;
+		int NumPieces_;
+		int LastIndex_;
+		// Which piece would be read next.
+		int ReadPos_;
+		// Offset in the next piece pointed by ReadPos_;
+		int Offset_;
+		bool IsReady_;
+		QFile File_;
+	public:
+		LiveStreamDevice (const libtorrent::torrent_handle&,
+				QObject* = 0);
 
-				virtual qint64 bytesAvailable () const;
-				virtual bool isSequential () const;
-				virtual bool isWritable () const;
-				virtual bool open (OpenMode);
-				virtual qint64 pos () const;
-				virtual bool seek (qint64);
-				virtual qint64 size () const;
+		virtual qint64 bytesAvailable () const;
+		virtual bool isSequential () const;
+		virtual bool isWritable () const;
+		virtual bool open (OpenMode);
+		virtual qint64 pos () const;
+		virtual bool seek (qint64);
+		virtual qint64 size () const;
 
-				void PieceRead (const libtorrent::read_piece_alert&);
-				void CheckReady ();
-			protected:
-				virtual qint64 readData (char*, qint64);
-				virtual qint64 writeData (const char*, qint64);
-			private:
-				void CheckNextChunk ();
-			private slots:
-				void reschedule ();
-			signals:
-				void ready ();
-			};
-		};
+		void PieceRead (const libtorrent::read_piece_alert&);
+		void CheckReady ();
+	protected:
+		virtual qint64 readData (char*, qint64);
+		virtual qint64 writeData (const char*, qint64);
+	private:
+		void CheckNextChunk ();
+	private slots:
+		void reschedule ();
+	signals:
+		void ready ();
 	};
-};
-
-#endif
-
+}
+}
+}

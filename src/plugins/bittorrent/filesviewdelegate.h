@@ -16,35 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_FILESVIEWDELEGATE_H
-#define PLUGINS_BITTORRENT_FILESVIEWDELEGATE_H
+#pragma once
+
 #include <QStyledItemDelegate>
 
 class QTreeView;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	class FilesViewDelegate : public QStyledItemDelegate
 	{
-		namespace BitTorrent
-		{
-			class FilesViewDelegate : public QStyledItemDelegate
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				QTreeView *View_;
-			public:
-				FilesViewDelegate (QTreeView *parent = 0);
-				virtual ~FilesViewDelegate ();
+		QTreeView *View_;
+	public:
+		FilesViewDelegate (QTreeView *parent = 0);
+		virtual ~FilesViewDelegate ();
 
-				virtual QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const;
-				virtual void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
-				virtual void setEditorData (QWidget*, const QModelIndex&) const;
-				virtual void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const;
-			};
-		};
+		virtual QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const;
+		virtual void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
+		virtual void setEditorData (QWidget*, const QModelIndex&) const;
+		virtual void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const;
 	};
-};
-
-#endif
-
+}
+}
+}

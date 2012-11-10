@@ -23,105 +23,104 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	FirstStep::FirstStep (QWidget *parent)
+	: QWizardPage (parent)
 	{
-		namespace BitTorrent
-		{
-			FirstStep::FirstStep (QWidget *parent)
-			: QWizardPage (parent)
-			{
-				setupUi (this);
-				registerField ("Output", Output_);
-				registerField ("AnnounceURL*", AnnounceURL_);
-				registerField ("Date", Date_);
-				registerField ("Comment", Comment_);
-				registerField ("RootPath", RootPath_);
-				Date_->setDateTime (QDateTime::currentDateTime ());
-				Output_->setText (XmlSettingsManager::Instance ()->
-						property ("LastMakeTorrentDirectory").toString ());
-				RootPath_->setText (XmlSettingsManager::Instance ()->
-						property ("LastAddDirectory").toString ());
-				connect (RootPath_,
-						SIGNAL (textChanged (const QString&)),
-						this,
-						SIGNAL (completeChanged ()));
-			}
+		setupUi (this);
+		registerField ("Output", Output_);
+		registerField ("AnnounceURL*", AnnounceURL_);
+		registerField ("Date", Date_);
+		registerField ("Comment", Comment_);
+		registerField ("RootPath", RootPath_);
+		Date_->setDateTime (QDateTime::currentDateTime ());
+		Output_->setText (XmlSettingsManager::Instance ()->
+				property ("LastMakeTorrentDirectory").toString ());
+		RootPath_->setText (XmlSettingsManager::Instance ()->
+				property ("LastAddDirectory").toString ());
+		connect (RootPath_,
+				SIGNAL (textChanged (const QString&)),
+				this,
+				SIGNAL (completeChanged ()));
+	}
 
-			bool FirstStep::isComplete () const
-			{
-				QFileInfo info (RootPath_->text ());
-				return info.exists () &&
-					info.isReadable ();
-			}
+	bool FirstStep::isComplete () const
+	{
+		QFileInfo info (RootPath_->text ());
+		return info.exists () &&
+			info.isReadable ();
+	}
 
-			QString FirstStep::PrepareDirectory () const
-			{
-				QString directory = RootPath_->text ();
-				if (!QFileInfo (directory).isDir ())
-					directory = QFileInfo (directory).absolutePath ();
+	QString FirstStep::PrepareDirectory () const
+	{
+		QString directory = RootPath_->text ();
+		if (!QFileInfo (directory).isDir ())
+			directory = QFileInfo (directory).absolutePath ();
 
-				if (!QFileInfo (directory).exists ())
-					directory = QDir::homePath ();
+		if (!QFileInfo (directory).exists ())
+			directory = QDir::homePath ();
 
-				if (!directory.endsWith ('/'))
-					directory.append ('/');
+		if (!directory.endsWith ('/'))
+			directory.append ('/');
 
-				return directory;
-			}
+		return directory;
+	}
 
-			void FirstStep::on_BrowseOutput__released ()
-			{
-				QString last = XmlSettingsManager::Instance ()->
-					property ("LastMakeTorrentDirectory").toString ();
-				if (!last.endsWith ('/'))
-					last += '/';
-				if (!QFileInfo (last).exists ())
-					last = QDir::homePath ();
+	void FirstStep::on_BrowseOutput__released ()
+	{
+		QString last = XmlSettingsManager::Instance ()->
+			property ("LastMakeTorrentDirectory").toString ();
+		if (!last.endsWith ('/'))
+			last += '/';
+		if (!QFileInfo (last).exists ())
+			last = QDir::homePath ();
 
-				QString directory = QFileDialog::getSaveFileName (this,
-						tr ("Select where to save torrent file"),
-						last);
-				if (directory.isEmpty ())
-					return;
+		QString directory = QFileDialog::getSaveFileName (this,
+				tr ("Select where to save torrent file"),
+				last);
+		if (directory.isEmpty ())
+			return;
 
-				Output_->setText (directory);
-				XmlSettingsManager::Instance ()->
-					setProperty ("LastMakeTorrentDirectory",
-							QFileInfo (directory).absolutePath ());
-			}
+		Output_->setText (directory);
+		XmlSettingsManager::Instance ()->
+			setProperty ("LastMakeTorrentDirectory",
+					QFileInfo (directory).absolutePath ());
+	}
 
-			void FirstStep::on_BrowseFile__released ()
-			{
-				QString path = QFileDialog::getOpenFileName (this,
-						tr ("Select torrent contents"),
-						PrepareDirectory ());
-				if (path.isEmpty ())
-					return;
+	void FirstStep::on_BrowseFile__released ()
+	{
+		QString path = QFileDialog::getOpenFileName (this,
+				tr ("Select torrent contents"),
+				PrepareDirectory ());
+		if (path.isEmpty ())
+			return;
 
-				RootPath_->setText (path);
-				XmlSettingsManager::Instance ()->
-					setProperty ("LastAddDirectory",
-							QFileInfo (path).absolutePath ());
+		RootPath_->setText (path);
+		XmlSettingsManager::Instance ()->
+			setProperty ("LastAddDirectory",
+					QFileInfo (path).absolutePath ());
 
-				emit completeChanged ();
-			}
+		emit completeChanged ();
+	}
 
-			void FirstStep::on_BrowseDirectory__released ()
-			{
-				QString path = QFileDialog::getExistingDirectory (this,
-						tr ("Select torrent contents"),
-						PrepareDirectory ());
-				if (path.isEmpty ())
-					return;
+	void FirstStep::on_BrowseDirectory__released ()
+	{
+		QString path = QFileDialog::getExistingDirectory (this,
+				tr ("Select torrent contents"),
+				PrepareDirectory ());
+		if (path.isEmpty ())
+			return;
 
-				RootPath_->setText (path);
-				XmlSettingsManager::Instance ()->
-					setProperty ("LastAddDirectory",
-							path);
+		RootPath_->setText (path);
+		XmlSettingsManager::Instance ()->
+			setProperty ("LastAddDirectory",
+					path);
 
-				emit completeChanged ();
-			}
-		};
-	};
-};
-
+		emit completeChanged ();
+	}
+}
+}
+}
