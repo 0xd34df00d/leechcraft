@@ -22,6 +22,31 @@
 
 namespace Media
 {
+	struct ReleaseTrackInfo
+	{
+		int Number_;
+		QString Name_;
+		int Length_;
+	};
+
+	struct ReleaseInfo
+	{
+		QString ID_;
+
+		QString Name_;
+		int Year_;
+
+		enum class Type
+		{
+			Standard,
+			EP,
+			Single,
+			Other
+		} Type_;
+
+		QList<QList<ReleaseTrackInfo>> TrackInfos_;
+	};
+
 	class IPendingDisco
 	{
 	public:

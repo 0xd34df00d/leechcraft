@@ -49,20 +49,6 @@ namespace Media
 	};
 	typedef QList<TagInfo> TagInfos_t;
 
-	struct ReleaseInfo
-	{
-		QString Name_;
-		int Year_;
-
-		enum class Type
-		{
-			Standard,
-			EP,
-			Single,
-			Other
-		} Type_;
-	};
-
 	struct ArtistInfo
 	{
 		QString Name_;
