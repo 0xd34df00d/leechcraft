@@ -32,22 +32,19 @@ namespace Util
 	void BaseSettingsManager::Init ()
 	{
 		auto settings = GetSettings ();
-		QStringList properties = ReadAllKeys_ ?
+		const auto& properties = ReadAllKeys_ ?
 				settings->allKeys () :
 				settings->childKeys ();
-		for (int i = 0; i < properties.size (); ++i)
-			setProperty (PROP2CHAR (properties.at (i)),
-					settings->value (properties.at (i)));
+		for (const auto& prop : properties)
+			setProperty (PROP2CHAR (prop), settings->value (prop));
 	}
 
 	void BaseSettingsManager::Release ()
 	{
 		auto settings = GetSettings ();
 
-		const auto& dProperties = dynamicPropertyNames ();
-		for (int i = 0; i < dProperties.size (); ++i)
-			settings->setValue (QString::fromUtf8 (dProperties.at (i)),
-					property (dProperties.at (i).constData ()));
+		for (const auto& dProp : dynamicPropertyNames ())
+			settings->setValue (QString::fromUtf8 (dProp), property (dProp.constData ()));
 	}
 
 	void BaseSettingsManager::RegisterObject (const QByteArray& propName,
