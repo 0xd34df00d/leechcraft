@@ -20,6 +20,7 @@
 #include <QCoreApplication>
 #include <QDeclarativeContext>
 #include <QFileInfo>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -42,6 +43,11 @@ namespace SB2
 	void QuarkSettingsManager::EndSettings (QSettings *settings) const
 	{
 		settings->endGroup ();
+	}
+
+	void QuarkSettingsManager::PropertyChanged (const QString& name, const QVariant& val)
+	{
+		Ctx_->setContextProperty (name.toUtf8 ().constData (), val);
 	}
 }
 }

@@ -36,6 +36,7 @@ namespace SB2
 	protected:
 		QSettings* BeginSettings () const;
 		void EndSettings (QSettings*) const;
+		void PropertyChanged (const QString&, const QVariant&);
 	};
 }
 }
