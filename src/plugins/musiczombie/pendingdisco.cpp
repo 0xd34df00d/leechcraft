@@ -33,6 +33,7 @@ namespace MusicZombie
 	PendingDisco::PendingDisco (const QString& artist, QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
+	, PendingReleases_ (0)
 	{
 		auto idLookup = new ArtistLookup (artist, nam, this);
 		connect (idLookup,
@@ -57,6 +58,15 @@ namespace MusicZombie
 	QList<Media::ReleaseInfo> PendingDisco::GetReleases () const
 	{
 		return Releases_;
+	}
+
+	void PendingDisco::DecrementPending ()
+	{
+		if (!--PendingReleases_)
+		{
+			emit ready ();
+			deleteLater ();
+		}
 	}
 
 	void PendingDisco::handleGotID (const QString& id)
@@ -104,7 +114,7 @@ namespace MusicZombie
 				.firstChildElement ("release");
 		while (!releaseElem.isNull ())
 		{
-			std::shared_ptr<void> guard (static_cast<void*> (0),
+			std::shared_ptr<void> guard (nullptr,
 					[&releaseElem] (void*)
 						{ releaseElem = releaseElem.nextSiblingElement ("release"); });
 
@@ -125,27 +135,39 @@ namespace MusicZombie
 			const auto& title = elemText ("title");
 			infos [title] [elemText ("country")] =
 			{
+				releaseElem.attribute ("id"),
 				title,
 				date,
-				Media::ReleaseInfo::Type::Standard
+				Media::ReleaseInfo::Type::Standard,
+				QList<QList<Media::ReleaseTrackInfo>> ()
 			};
 		}
 
 		for (const auto& key : infos.keys ())
 		{
 			const auto& countries = infos [key];
-			if (countries.contains ("US"))
-				Releases_ << countries ["US"];
-			else
-				Releases_ << countries.values ().first ();
+			const auto& release = countries.contains ("US") ?
+					countries ["US"] :
+					countries.values ().first ();
+			Releases_ << release;
+
+			++PendingReleases_;
+
+			const auto& urlStr = "http://musicbrainz.org/ws/2/release/" + release.ID_ + "?inc=recordings";
+			auto reply = NAM_->get (QNetworkRequest (QUrl (urlStr)));
+			connect (reply,
+					SIGNAL (finished ()),
+					this,
+					SLOT (handleReleaseLookupFinished ()));
+			connect (reply,
+					SIGNAL (error (QNetworkReply::NetworkError)),
+					this,
+					SLOT (handleReleaseLookupError ()));
 		}
 
 		std::sort (Releases_.begin (), Releases_.end (),
 				[] (decltype (Releases_.at (0)) left, decltype (Releases_.at (0)) right)
 					{ return left.Year_ < right.Year_; });
-
-		emit ready ();
-		deleteLater ();
 	}
 
 	void PendingDisco::handleLookupError ()
@@ -154,10 +176,76 @@ namespace MusicZombie
 		reply->deleteLater ();
 
 		qWarning () << Q_FUNC_INFO
-				<< "error lookup stuff up"
+				<< "error looking stuff up"
 				<< reply->errorString ();
 		emit error (tr ("Error performing artist lookup: %1.")
 					.arg (reply->errorString ()));
+	}
+
+	void PendingDisco::handleReleaseLookupFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		std::shared_ptr<void> decrementGuard (nullptr, [this] (void*) { DecrementPending (); });
+
+		const auto& data = reply->readAll ();
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse"
+					<< data;
+		}
+
+		const auto& releaseElem = doc.documentElement ().firstChildElement ("release");
+		const auto& id = releaseElem.attribute ("id");
+		auto pos = std::find_if (Releases_.begin (), Releases_.end (),
+				[id] (decltype (Releases_.at (0)) release)
+					{ return release.ID_ == id; });
+		if (pos == Releases_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "release"
+					<< id
+					<< "not found";
+			return;
+		}
+
+		auto& release = *pos;
+		auto mediumElem = releaseElem.firstChildElement ("medium-list").firstChildElement ("medium");
+		while (!mediumElem.isNull ())
+		{
+			auto trackElem = mediumElem.firstChildElement ("track-list").firstChildElement ("track");
+
+			QList<Media::ReleaseTrackInfo> tracks;
+			while (!trackElem.isNull ())
+			{
+				const int num = trackElem.firstChildElement ("number").text ().toInt ();
+
+				const auto& recElem = trackElem.firstChildElement ("recording");
+				const auto& title = recElem.firstChildElement ("title").text ();
+				const int length = recElem.firstChildElement ("length").text ().toInt () / 1000;
+
+				tracks.push_back ({ num, title, length });
+				trackElem = trackElem.nextSiblingElement ("track");
+			}
+
+			release.TrackInfos_ << tracks;
+
+			mediumElem = mediumElem.nextSiblingElement ("medium");
+		}
+	}
+
+	void PendingDisco::handleReleaseLookupError ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		qWarning () << Q_FUNC_INFO
+				<< "error looking release stuff up"
+				<< reply->errorString ();
+		DecrementPending ();
 	}
 }
 }
