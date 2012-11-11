@@ -18,6 +18,9 @@
 
 #include "viewmanager.h"
 #include <QStandardItemModel>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QtDebug>
@@ -147,8 +150,32 @@ namespace SB2
 			return;
 
 		auto xsd = Quark2Settings_ [url].XSD_;
-		xsd->move (QCursor::pos ());
-		xsd->show ();
+
+		QDialog dia;
+		dia.setLayout (new QVBoxLayout ());
+		dia.layout ()->addWidget (xsd.get ());
+
+		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		connect (box,
+				SIGNAL (accepted ()),
+				&dia,
+				SLOT (accept ()));
+		connect (box,
+				SIGNAL (rejected ()),
+				&dia,
+				SLOT (reject ()));
+		connect (box,
+				SIGNAL (accepted ()),
+				xsd.get (),
+				SLOT (accept ()));
+		connect (box,
+				SIGNAL (rejected ()),
+				xsd.get (),
+				SLOT (reject ()));
+		dia.layout ()->addWidget (box);
+
+		dia.exec ();
+		xsd->setParent (0);
 	}
 
 	bool ViewManager::CreateSettings (const QUrl& url)
