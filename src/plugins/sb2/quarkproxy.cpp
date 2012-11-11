@@ -34,5 +34,10 @@ namespace SB2
 	{
 		return Manager_->GetView ()->mapToGlobal (QPoint (x, y));
 	}
+
+	void QuarkProxy::showSettings (const QUrl& url)
+	{
+		Manager_->ShowSettings (url);
+	}
 }
 }
