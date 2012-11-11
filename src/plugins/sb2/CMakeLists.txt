@@ -15,6 +15,7 @@ SET (SRCS
 	viewmanager.cpp
 	widthiconprovider.cpp
 	quarkproxy.cpp
+	quarksettingsmanager.cpp
 	tablistview.cpp
 	launchercomponent.cpp
 	lcmenucomponent.cpp
