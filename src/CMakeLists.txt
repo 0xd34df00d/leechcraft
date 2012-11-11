@@ -566,9 +566,8 @@ ADD_SUBDIRECTORY (xmlsettingsdialog)
 ADD_SUBDIRECTORY (core)
 
 IF (UNIX)
-	ADD_CUSTOM_COMMAND (OUTPUT
-		data/leechcraft.1.gz
-		COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/data/compress"
+	ADD_CUSTOM_TARGET (data_leechcraft_gz ALL
+		"${CMAKE_CURRENT_SOURCE_DIR}/data/compress"
 		DEPENDS data/leechcraft.1
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
 		)
@@ -592,8 +591,8 @@ INSTALL (DIRECTORY share/leechcraft/ DESTINATION ${LC_SHARE_DEST})
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)
 IF (UNIX AND NOT APPLE)
-	INSTALL (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)
 	INSTALL (FILES data/leechcraft.1.gz DESTINATION share/man/man1)
+	INSTALL (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)
 	INSTALL (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS
 		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
 		WORLD_EXECUTE WORLD_READ)
