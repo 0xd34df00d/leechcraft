@@ -44,7 +44,7 @@ namespace OnlineBookmarks
 
 			FCanRegisterAccount = 0x01
 		};
-		Q_DECLARE_FLAGS (Features, Feature);
+		Q_DECLARE_FLAGS (Features, Feature)
 
 		//
 		virtual Features GetFeatures () const = 0;
@@ -68,7 +68,7 @@ namespace OnlineBookmarks
 
 		//
 		virtual void UploadBookmarks (QObject*, const QVariantList&) = 0;
-		
+
 		//
 		virtual void DownloadBookmarks (QObject*, const QDateTime& from = QDateTime ()) = 0;
 

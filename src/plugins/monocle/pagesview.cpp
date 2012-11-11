@@ -19,6 +19,8 @@
 #include "pagesview.h"
 #include <QMenu>
 #include <QMouseEvent>
+#include <QTimeLine>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -28,13 +30,42 @@ namespace Monocle
 	: QGraphicsView (parent)
 	, ShowReleaseMenu_ (false)
 	, ShowOnNextRelease_ (false)
+	, ScrollTimeline_ (new QTimeLine (400, this))
 	{
+		ScrollTimeline_->setFrameRange (0, 100);
+		connect (ScrollTimeline_,
+				SIGNAL (frameChanged (int)),
+				this,
+				SLOT (handleSmoothScroll (int)));
 	}
 
 	void PagesView::SetShowReleaseMenu (bool show)
 	{
 		ShowReleaseMenu_ = show;
 		ShowOnNextRelease_ = false;
+	}
+
+	QPointF PagesView::GetCurrentCenter () const
+	{
+		const auto& rectSize = viewport ()->contentsRect ().size () / 2;
+		return mapToScene (QPoint (rectSize.width (), rectSize.height ()));
+	}
+
+	void PagesView::SmoothCenterOn (qreal x, qreal y)
+	{
+		if (!XmlSettingsManager::Instance ().property ("SmoothScrolling").toBool ())
+		{
+			centerOn (x, y);
+			return;
+		}
+
+		const auto& current = GetCurrentCenter ();
+		XPath_ = qMakePair (current.x (), x);
+		YPath_ = qMakePair (current.y (), y);
+
+		if (ScrollTimeline_->state () != QTimeLine::NotRunning)
+			ScrollTimeline_->stop ();
+		ScrollTimeline_->start ();
 	}
 
 	void PagesView::mouseMoveEvent (QMouseEvent *event)
@@ -59,6 +90,20 @@ namespace Monocle
 
 			ShowOnNextRelease_ = false;
 		}
+	}
+
+	void PagesView::resizeEvent (QResizeEvent *e)
+	{
+		QGraphicsView::resizeEvent (e);
+		emit sizeChanged ();
+	}
+
+	void PagesView::handleSmoothScroll (int frame)
+	{
+		const int endFrame = ScrollTimeline_->endFrame ();
+		auto interp = [frame, endFrame] (const QPair<qreal, qreal>& pair)
+				{ return pair.first + (pair.second - pair.first) * frame / endFrame; };
+		centerOn (interp (XPath_), interp (YPath_));
 	}
 }
 }

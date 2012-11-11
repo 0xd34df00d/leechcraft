@@ -32,7 +32,7 @@ namespace GoogleDrive
 	class Core : public QObject
 	{
 		Q_OBJECT
-		Q_DISABLE_COPY (Core);
+		Q_DISABLE_COPY (Core)
 
 		ICoreProxy_ptr Proxy_;
 

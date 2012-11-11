@@ -32,7 +32,7 @@ namespace LeechCraft
 							, public IFindProxy
 			{
 				Q_OBJECT
-				Q_INTERFACES (IFindProxy);
+				Q_INTERFACES (IFindProxy)
 
 				Request R_;
 			public:
@@ -48,4 +48,3 @@ namespace LeechCraft
 };
 
 #endif
-

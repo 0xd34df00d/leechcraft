@@ -37,7 +37,7 @@ namespace Vader
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMessage
-				LeechCraft::Azoth::IAdvancedMessage);
+				LeechCraft::Azoth::IAdvancedMessage)
 
 		MRIMBuddy *Buddy_;
 		MRIMAccount *A_;

@@ -33,7 +33,7 @@ namespace Metacontacts
 					   , public IProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
 
 		QObject *ParentPlugin_;
 		MetaAccount *Account_;

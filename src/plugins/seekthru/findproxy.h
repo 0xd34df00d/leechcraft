@@ -37,7 +37,7 @@ namespace LeechCraft
 							, public IFindProxy
 			{
 				Q_OBJECT
-				Q_INTERFACES (IFindProxy);
+				Q_INTERFACES (IFindProxy)
 
 				LeechCraft::Request R_;
 				std::shared_ptr<LeechCraft::Util::MergeModel> MergeModel_;

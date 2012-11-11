@@ -24,6 +24,7 @@
 
 class QStandardItemModel;
 class QStandardItem;
+class QSortFilterProxyModel;
 
 namespace Media
 {
@@ -44,6 +45,7 @@ namespace LMP
 
 		Player *Player_;
 		QStandardItemModel *StationsModel_;
+		QSortFilterProxyModel *StationsProxy_;
 		QHash<QStandardItem*, Media::IRadioStationProvider*> Root2Prov_;
 	public:
 		RadioWidget (QWidget* = 0);

@@ -2,6 +2,11 @@ import QtQuick 1.0
 import Effects 1.0
 
 Rectangle {
+    id: rootRect
+    anchors.fill: parent
+
+    signal linkActivated(string id)
+
     gradient: Gradient {
         GradientStop {
             position: 0
@@ -13,7 +18,6 @@ Rectangle {
             color: "#222222"
         }
     }
-    anchors.fill: parent
 
     Image {
         id: fullSizeAA
@@ -126,8 +130,14 @@ Rectangle {
                         anchors.leftMargin: 0
                         elide: Text.ElideMiddle
                         font.bold: true
+                        font.underline: true
                         font.pointSize: 12
                         color: "#dddddd"
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: rootRect.linkActivated(releaseURL)
+                        }
                     }
 
                     Text {

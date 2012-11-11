@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_CONSOLEWIDGET_H
 #define PLUGINS_AZOTH_CONSOLEWIDGET_H
 #include <QWidget>
+#include <QPointer>
 #include <interfaces/ihavetabs.h>
 #include "interfaces/azoth/ihaveconsole.h"
 #include "ui_consolewidget.h"
@@ -34,12 +35,13 @@ namespace Azoth
 						, public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget);
+		Q_INTERFACES (ITabWidget)
 
 		Ui::ConsoleWidget Ui_;
 		QObject *ParentMultiTabs_;
 		TabClassInfo TabClass_;
 
+		QPointer<QObject> AsObject_;
 		IAccount *AsAccount_;
 		IHaveConsole *AsConsole_;
 		const IHaveConsole::PacketFormat Format_;

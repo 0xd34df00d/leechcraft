@@ -16,26 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_FILEINFO_H
-#define PLUGINS_BITTORRENT_FILEINFO_H
+#pragma once
+
 #include <boost/filesystem/path.hpp>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	struct FileInfo
 	{
-		namespace BitTorrent
-		{
-			struct FileInfo
-			{
-				boost::filesystem::path Path_;
-				quint64 Size_;
-				int Priority_;
-				float Progress_;
-			};
-		};
+		boost::filesystem::path Path_;
+		quint64 Size_;
+		int Priority_;
+		float Progress_;
 	};
-};
-
-#endif
-
+}
+}
+}

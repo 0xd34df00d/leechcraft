@@ -6,5 +6,6 @@
 	<file>resources/qml/SimilarView.qml</file>
 	<file>resources/qml/EventsView.qml</file>
 	<file>resources/qml/TextButton.qml</file>
+	<file>resources/qml/HypesView.qml</file>
   </qresource>
 </RCC>

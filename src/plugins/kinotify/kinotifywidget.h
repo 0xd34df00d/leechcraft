@@ -38,7 +38,7 @@ namespace Kinotify
 	class KinotifyWidget : public QWebView
 	{
 		Q_OBJECT
-		Q_PROPERTY (qreal opacity READ windowOpacity WRITE setWindowOpacity);
+		Q_PROPERTY (qreal opacity READ windowOpacity WRITE setWindowOpacity)
 
 		QString Title_;
 		QString Body_;

@@ -20,12 +20,9 @@
 #include <QFile>
 #include <QDeclarativeContext>
 #include <QDeclarativeError>
-
-#if defined (Q_OS_WIN32) || defined (Q_OS_MAC)
-#include <QApplication>
-#endif
-
 #include <QtDebug>
+#include <util/util.h>
+#include <util/sys/paths.h>
 #include "eventproxyobject.h"
 
 namespace LeechCraft
@@ -44,23 +41,7 @@ namespace AdvancedNotifications
 				this,
 				SLOT (handleStatusChanged (QDeclarativeView::Status)));
 
-		QStringList candidates;
-#ifdef Q_OS_WIN32
-		candidates << QApplication::applicationDirPath () + "/share/qml/advancednotifications/";
-#elif defined (Q_OS_MAC)
-		candidates << QApplication::applicationDirPath () + "/../Resources/share/qml/advancednotifications/";
-#else
-		candidates << "/usr/local/share/leechcraft/qml/advancednotifications/"
-				<< "/usr/share/leechcraft/qml/advancednotifications/";
-#endif
-
-		QString fileLocation;
-		Q_FOREACH (const QString& cand, candidates)
-			if (QFile::exists (cand + "visualnotificationsview.qml"))
-			{
-				fileLocation = cand + "visualnotificationsview.qml";
-				break;
-			}
+		const auto& fileLocation = Util::GetSysPath (Util::SysPath::QML, "advancednotifications", "visualnotificationsview.qml");
 
 		if (fileLocation.isEmpty ())
 		{

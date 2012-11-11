@@ -31,7 +31,7 @@ namespace ChatHistory
 						 , public IMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage);
+		Q_INTERFACES (LeechCraft::Azoth::IMessage)
 
 		Direction Direction_;
 		QObject *OtherPart_;

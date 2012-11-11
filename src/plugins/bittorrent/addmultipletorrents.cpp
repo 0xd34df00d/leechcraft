@@ -24,84 +24,80 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	AddMultipleTorrents::AddMultipleTorrents (QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace BitTorrent
+		setupUi (this);
+		OpenDirectory_->setText (XmlSettingsManager::Instance ()->
+				property ("LastTorrentDirectory").toString ());
+		SaveDirectory_->setText (XmlSettingsManager::Instance ()->
+				property ("LastSaveDirectory").toString ());
+	}
+
+	QString AddMultipleTorrents::GetOpenDirectory () const
+	{
+		return OpenDirectory_->text ();
+	}
+
+	QString AddMultipleTorrents::GetSaveDirectory () const
+	{
+		return SaveDirectory_->text ();
+	}
+
+	Core::AddType AddMultipleTorrents::GetAddType () const
+	{
+		switch (AddTypeBox_->currentIndex ())
 		{
-			AddMultipleTorrents::AddMultipleTorrents (QWidget *parent)
-			: QDialog (parent)
-			{
-				setupUi (this);
-				OpenDirectory_->setText (XmlSettingsManager::Instance ()->
-						property ("LastTorrentDirectory").toString ());
-				SaveDirectory_->setText (XmlSettingsManager::Instance ()->
-						property ("LastSaveDirectory").toString ());
-			}
+			case 0:
+				return Core::Started;
+			case 1:
+				return Core::Paused;
+			default:
+				return Core::Started;
+		}
+	}
 
-			QString AddMultipleTorrents::GetOpenDirectory () const
-			{
-				return OpenDirectory_->text ();
-			}
+	Util::TagsLineEdit* AddMultipleTorrents::GetEdit ()
+	{
+		return TagsEdit_;
+	}
 
-			QString AddMultipleTorrents::GetSaveDirectory () const
-			{
-				return SaveDirectory_->text ();
-			}
+	QStringList AddMultipleTorrents::GetTags () const
+	{
+		auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
+		QStringList result;
+		Q_FOREACH (const auto& tag, tm->Split (TagsEdit_->text ()))
+			result << tm->GetID (tag);
+		return result;
+	}
 
-			Core::AddType AddMultipleTorrents::GetAddType () const
-			{
-				switch (AddTypeBox_->currentIndex ())
-				{
-					case 0:
-						return Core::Started;
-					case 1:
-						return Core::Paused;
-					default:
-						return Core::Started;
-				}
-			}
+	void AddMultipleTorrents::on_BrowseOpen__released ()
+	{
+		QString dir = QFileDialog::getExistingDirectory (this,
+				tr ("Select directory with torrents"),
+				OpenDirectory_->text ());
+		if (dir.isEmpty ())
+			return;
 
-			LeechCraft::Util::TagsLineEdit* AddMultipleTorrents::GetEdit ()
-			{
-				return TagsEdit_;
-			}
+		XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory", dir);
+		OpenDirectory_->setText (dir);
+	}
 
-			QStringList AddMultipleTorrents::GetTags () const
-			{
-				QStringList tags = Core::Instance ()->GetProxy ()->
-					GetTagsManager ()->Split (TagsEdit_->text ());
-				QStringList result;
-				Q_FOREACH (QString tag, tags)
-					result << Core::Instance ()->GetProxy ()->
-						GetTagsManager ()->GetID (tag);
-				return result;
-			}
+	void AddMultipleTorrents::on_BrowseSave__released ()
+	{
+		QString dir = QFileDialog::getExistingDirectory (this,
+				tr ("Select save directory"),
+				SaveDirectory_->text ());
+		if (dir.isEmpty ())
+			return;
 
-			void AddMultipleTorrents::on_BrowseOpen__released ()
-			{
-				QString dir = QFileDialog::getExistingDirectory (this,
-						tr ("Select directory with torrents"),
-						OpenDirectory_->text ());
-				if (dir.isEmpty ())
-					return;
-
-				XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory", dir);
-				OpenDirectory_->setText (dir);
-			}
-
-			void AddMultipleTorrents::on_BrowseSave__released ()
-			{
-				QString dir = QFileDialog::getExistingDirectory (this,
-						tr ("Select save directory"),
-						SaveDirectory_->text ());
-				if (dir.isEmpty ())
-					return;
-
-				XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
-				SaveDirectory_->setText (dir);
-			}
-
-		};
-	};
-};
-
+		XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
+		SaveDirectory_->setText (dir);
+	}
+}
+}
+}

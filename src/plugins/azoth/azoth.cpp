@@ -246,11 +246,19 @@ namespace Azoth
 				else
 				{
 					auto acc = Core::Instance ().GetAccount (accountId);
+					if (!acc)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "no account for ID"
+								<< accountId;
+						continue;
+					}
+
 					auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 					auto widgetObj = proto->GetMUCJoinWidget ();
 					auto widget = qobject_cast<IMUCJoinWidget*> (widgetObj);
 					if (!widget)
-						return;
+						continue;
 
 					widget->SetIdentifyingData (data);
 					widget->Join (acc->GetObject ());

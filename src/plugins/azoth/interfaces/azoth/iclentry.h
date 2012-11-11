@@ -136,7 +136,7 @@ namespace Azoth
 			FSupportsGrouping = 0x0100
 		};
 
-		Q_DECLARE_FLAGS (Features, Feature);
+		Q_DECLARE_FLAGS (Features, Feature)
 
 		enum EntryType
 		{

@@ -34,7 +34,7 @@ namespace Xoox
 							  , public IMUCJoinWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCJoinWidget);
+		Q_INTERFACES (LeechCraft::Azoth::IMUCJoinWidget)
 
 		Ui::JoinGroupchatWidget Ui_;
 		GlooxAccount *SelectedAccount_;

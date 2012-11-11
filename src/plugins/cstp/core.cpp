@@ -48,6 +48,8 @@ extern "C"
 	#endif
 }
 
+Q_DECLARE_METATYPE (QNetworkReply*);
+
 namespace LeechCraft
 {
 namespace CSTP

@@ -41,7 +41,7 @@ namespace ChatHistory
 							, public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget);
+		Q_INTERFACES (ITabWidget)
 
 		Ui::ChatHistoryWidget Ui_;
 
@@ -100,6 +100,7 @@ namespace ChatHistory
 
 		void on_HistView__anchorClicked (const QUrl&);
 	private:
+		void ShowLoading ();
 		void UpdateDates ();
 		void RequestLogs ();
 		void RequestSearch ();

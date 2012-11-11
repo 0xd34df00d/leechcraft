@@ -395,7 +395,7 @@ namespace GoogleDrive
 		treeItems.removeAll (QList<QStandardItem*> ());
 
 		std::sort (treeItems.begin (), treeItems.end (),
-				[] (const QList<QStandardItem*>& leftItem, const QList<QStandardItem*>& rightItem)
+				[] (const QList<QStandardItem*>& leftItem, const QList<QStandardItem*>& rightItem) -> bool
 				{
 					if (leftItem [0]->data (ListingRole::Directory).toBool () &&
 							!rightItem [0]->data (ListingRole::Directory).toBool ())

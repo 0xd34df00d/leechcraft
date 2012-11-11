@@ -33,7 +33,7 @@ namespace Xoox
 							 , public IMUCBookmarkEditorWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCBookmarkEditorWidget);
+		Q_INTERFACES (LeechCraft::Azoth::IMUCBookmarkEditorWidget)
 
 		Ui::BookmarkEditWidget Ui_;
 	public:

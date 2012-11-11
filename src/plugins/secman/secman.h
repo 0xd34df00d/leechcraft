@@ -16,44 +16,52 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SECMAN_SECMAN_H
-#define PLUGINS_SECMAN_SECMAN_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ipluginready.h>
+#include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace SecMan
+{
+	class Plugin : public QObject
+					, public IInfo
+					, public IEntityHandler
+					, public IPluginReady
+					, public IActionsExporter
 	{
-		namespace SecMan
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IEntityHandler
-						 , public IPluginReady
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IEntityHandler IPluginReady)
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
+		Q_OBJECT
+		Q_INTERFACES (IInfo IEntityHandler IPluginReady IActionsExporter)
 
-				EntityTestHandleResult CouldHandle (const Entity&) const;
-				void Handle (Entity);
+		QMap<QString, QList<QAction*>> MenuActions_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-				QSet<QByteArray> GetExpectedPluginClasses () const;
-				void AddPlugin (QObject*);
-			};
-		};
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
+
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
+
+		QList<QAction*> GetActions (ActionsEmbedPlace area) const;
+		QMap<QString, QList<QAction*>> GetMenuActions () const;
+	private slots:
+		void handleDisplayContents ();
+	signals:
+		void gotActions (QList<QAction*>, ActionsEmbedPlace);
 	};
-};
-
-#endif
-
+}
+}
+}

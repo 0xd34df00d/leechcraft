@@ -27,6 +27,13 @@ class QWidget;
 
 namespace LeechCraft
 {
+	enum JobHolderColumn
+	{
+		JobName,
+		JobStatus,
+		JobProgress
+	};
+
 	/** Values of this enum are used to describe the semantics of rows
 	 * in the representation models.
 	 *

@@ -76,7 +76,7 @@ namespace Lastfmscrobble
 
 		QList<Media::AlbumRelease> releases;
 
-		static auto months = { "Jan", "Feb", "Mar",
+		const auto months = { "Jan", "Feb", "Mar",
 				"Apr", "May", "Jun",
 				"Jul", "Aug", "Sep",
 				"Oct", "Nov", "Dec" };

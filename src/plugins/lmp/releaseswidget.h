@@ -48,6 +48,7 @@ namespace LMP
 	private slots:
 		void handleRecentReleases (const QList<Media::AlbumRelease>&);
 		void request ();
+		void handleLink (const QString&);
 	};
 }
 }

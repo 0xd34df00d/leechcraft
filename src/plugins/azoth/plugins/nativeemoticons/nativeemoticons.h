@@ -35,7 +35,7 @@ namespace NativeEmoticons
 				 , public IResourcePlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin);
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin)
 
 		QObjectList ResourceSources_;
 	public:

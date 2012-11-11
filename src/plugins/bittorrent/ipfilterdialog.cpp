@@ -22,106 +22,105 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	const int BlockRole = 101;
+
+	IPFilterDialog::IPFilterDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace BitTorrent
+		Ui_.setupUi (this);
+
+		QMap<Core::BanRange_t, bool> filter = Core::Instance ()->GetFilter ();
+		QList<Core::BanRange_t> keys = filter.keys ();
+		Q_FOREACH (Core::BanRange_t key, keys)
 		{
-			const int BlockRole = 101;
+			QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.Tree_);
+			item->setText (0, key.first);
+			item->setText (1, key.second);
+			bool block = filter [key];
+			item->setText (2, block ?
+					tr ("block") :
+					tr ("allow"));
+			item->setData (2, BlockRole, block);
+		}
 
-			IPFilterDialog::IPFilterDialog (QWidget *parent)
-			: QDialog (parent)
-			{
-				Ui_.setupUi (this);
+		on_Tree__currentItemChanged (0);
+	}
 
-				QMap<Core::BanRange_t, bool> filter = Core::Instance ()->GetFilter ();
-				QList<Core::BanRange_t> keys = filter.keys ();
-				Q_FOREACH (Core::BanRange_t key, keys)
-				{
-					QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.Tree_);
-					item->setText (0, key.first);
-					item->setText (1, key.second);
-					bool block = filter [key];
-					item->setText (2, block ?
-							tr ("block") :
-							tr ("allow"));
-					item->setData (2, BlockRole, block);
-				}
+	QList<QPair<Core::BanRange_t, bool>> IPFilterDialog::GetFilter () const
+	{
+		QList<QPair<Core::BanRange_t, bool>> result;
+		for (int i = 0, size = Ui_.Tree_->topLevelItemCount (); i < size; ++i)
+		{
+			QTreeWidgetItem *item = Ui_.Tree_->topLevelItem (i);
+			result << qMakePair (qMakePair (item->text (0), item->text (1)),
+					item->data (2, BlockRole).toBool ());
+		}
+		return result;
+	}
 
-				on_Tree__currentItemChanged (0);
-			}
+	void IPFilterDialog::on_Tree__currentItemChanged (QTreeWidgetItem *current)
+	{
+		Ui_.Modify_->setEnabled (current);
+		Ui_.Remove_->setEnabled (current);
+	}
 
-			QList<QPair<Core::BanRange_t, bool>> IPFilterDialog::GetFilter () const
-			{
-				QList<QPair<Core::BanRange_t, bool>> result;
-				for (int i = 0, size = Ui_.Tree_->topLevelItemCount (); i < size; ++i)
-				{
-					QTreeWidgetItem *item = Ui_.Tree_->topLevelItem (i);
-					result << qMakePair (qMakePair (item->text (0), item->text (1)),
-							item->data (2, BlockRole).toBool ());
-				}
-				return result;
-			}
+	void IPFilterDialog::on_Tree__itemClicked (QTreeWidgetItem *item, int column)
+	{
+		if (column != 2)
+			return;
 
-			void IPFilterDialog::on_Tree__currentItemChanged (QTreeWidgetItem *current)
-			{
-				Ui_.Modify_->setEnabled (current);
-				Ui_.Remove_->setEnabled (current);
-			}
+		bool block = !item->data (2, BlockRole).toBool ();
+		item->setData (2, BlockRole, block);
+		item->setText (2, block ?
+				tr ("block") :
+				tr ("allow"));
+	}
 
-			void IPFilterDialog::on_Tree__itemClicked (QTreeWidgetItem *item, int column)
-			{
-				if (column != 2)
-					return;
+	void IPFilterDialog::on_Add__released ()
+	{
+		BanPeersDialog dia;
+		if (dia.exec () != QDialog::Accepted)
+			return;
 
-				bool block = !item->data (2, BlockRole).toBool ();
-				item->setData (2, BlockRole, block);
-				item->setText (2, block ?
-						tr ("block") :
-						tr ("allow"));
-			}
+		QString start = dia.GetStart ();
+		QString end = dia.GetEnd ();
+		if (start.isEmpty () ||
+				end.isEmpty ())
+			return;
 
-			void IPFilterDialog::on_Add__released ()
-			{
-				BanPeersDialog dia;
-				if (dia.exec () != QDialog::Accepted)
-					return;
+		QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.Tree_);
+		item->setText (0, start);
+		item->setText (1, end);
+		item->setText (2, tr ("block"));
+		item->setData (2, BlockRole, true);
+	}
 
-				QString start = dia.GetStart ();
-				QString end = dia.GetEnd ();
-				if (start.isEmpty () ||
-						end.isEmpty ())
-					return;
+	void IPFilterDialog::on_Modify__released ()
+	{
+		BanPeersDialog dia;
+		QTreeWidgetItem *item = Ui_.Tree_->currentItem ();
+		dia.SetIP (item->text (0), item->text (1));
+		if (dia.exec () != QDialog::Accepted)
+			return;
 
-				QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.Tree_);
-				item->setText (0, start);
-				item->setText (1, end);
-				item->setText (2, tr ("block"));
-				item->setData (2, BlockRole, true);
-			}
+		QString start = dia.GetStart ();
+		QString end = dia.GetEnd ();
+		if (start.isEmpty () ||
+				end.isEmpty ())
+			return;
 
-			void IPFilterDialog::on_Modify__released ()
-			{
-				BanPeersDialog dia;
-				QTreeWidgetItem *item = Ui_.Tree_->currentItem ();
-				dia.SetIP (item->text (0), item->text (1));
-				if (dia.exec () != QDialog::Accepted)
-					return;
+		item->setText (0, start);
+		item->setText (1, end);
+	}
 
-				QString start = dia.GetStart ();
-				QString end = dia.GetEnd ();
-				if (start.isEmpty () ||
-						end.isEmpty ())
-					return;
-
-				item->setText (0, start);
-				item->setText (1, end);
-			}
-
-			void IPFilterDialog::on_Remove__released ()
-			{
-				delete Ui_.Tree_->currentItem ();
-			}
-		};
-	};
-};
-
+	void IPFilterDialog::on_Remove__released ()
+	{
+		delete Ui_.Tree_->currentItem ();
+	}
+}
+}
+}

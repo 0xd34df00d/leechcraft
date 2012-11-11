@@ -25,39 +25,31 @@ namespace Util
 {
 	BaseSettingsManager::BaseSettingsManager (bool readAllKeys, QObject *parent)
 	: QObject (parent)
-	, Settings_ (0)
 	, ReadAllKeys_ (readAllKeys)
 	{
 	}
 
 	void BaseSettingsManager::Init ()
 	{
-		Settings_ = BeginSettings ();
+		auto settings = GetSettings ();
 		QStringList properties = ReadAllKeys_ ?
-				Settings_->allKeys () :
-				Settings_->childKeys ();
+				settings->allKeys () :
+				settings->childKeys ();
 		Initializing_ = true;
 		for (int i = 0; i < properties.size (); ++i)
 			setProperty (PROP2CHAR (properties.at (i)),
-					Settings_->value (properties.at (i)));
+					settings->value (properties.at (i)));
 		Initializing_ = false;
 	}
 
 	void BaseSettingsManager::Release ()
 	{
-		if (!Settings_)
-		{
-			qWarning () << Q_FUNC_INFO << "already released";
-			return;
-		}
+		auto settings = GetSettings ();
 
-		QList<QByteArray> dProperties = dynamicPropertyNames ();
+		const auto& dProperties = dynamicPropertyNames ();
 		for (int i = 0; i < dProperties.size (); ++i)
-			Settings_->setValue (QString::fromUtf8 (dProperties.at (i)),
+			settings->setValue (QString::fromUtf8 (dProperties.at (i)),
 					property (dProperties.at (i).constData ()));
-		EndSettings (Settings_);
-		delete Settings_;
-		Settings_ = 0;
 	}
 
 	void BaseSettingsManager::RegisterObject (const QByteArray& propName,
@@ -90,12 +82,12 @@ namespace Util
 
 	void BaseSettingsManager::SetRawValue (const QString& path, const QVariant& val)
 	{
-		Settings_->setValue (path, val);
+		GetSettings ()->setValue (path, val);
 	}
 
 	QVariant BaseSettingsManager::GetRawValue (const QString& path, const QVariant& def) const
 	{
-		return Settings_->value (path, def);
+		return GetSettings ()->value (path, def);
 	}
 
 	void BaseSettingsManager::OptionSelected (const QByteArray& prop, const QVariant& val)
@@ -128,7 +120,7 @@ namespace Util
 		auto event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
 
 		const QByteArray& name = event->propertyName ();
-		Settings_->setValue (QString::fromUtf8 (name), property (name));
+		GetSettings ()->setValue (QString::fromUtf8 (name), property (name));
 
 		if (ApplyProps_.contains (name))
 		{
@@ -149,6 +141,16 @@ namespace Util
 
 		event->accept ();
 		return true;
+	}
+
+	Settings_ptr BaseSettingsManager::GetSettings() const
+	{
+		return Settings_ptr (BeginSettings (),
+				[this] (QSettings *settings)
+				{
+					EndSettings (settings);
+					delete settings;
+				});
 	}
 }
 }

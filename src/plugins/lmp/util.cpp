@@ -107,7 +107,7 @@ namespace LMP
 		const QDir& dir = QFileInfo (near).absoluteDir ();
 		const QStringList& entryList = dir.entryList (QStringList ("*.jpg") << "*.png" << "*.bmp");
 		auto pos = std::find_if (entryList.begin (), entryList.end (),
-				[&possibleBases] (const QString& name)
+				[&possibleBases] (const QString& name) -> bool
 				{
 					Q_FOREACH (const QString& pBase, possibleBases)
 						if (name.startsWith (pBase, Qt::CaseInsensitive))

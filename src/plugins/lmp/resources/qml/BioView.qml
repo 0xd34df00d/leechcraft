@@ -108,12 +108,125 @@ Rectangle {
             z: 2
             text: artistTags
             color: "#999999"
-            anchors.left: artistImageThumb.left
-            anchors.top: artistImageThumb.bottom
-            anchors.topMargin: 0
-            anchors.right: flickableBioText.left
-            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+            anchors.left: artistNameLabel.right
+            anchors.leftMargin: 2
+            anchors.bottom: artistNameLabel.bottom
+            anchors.right: parent.right
+            anchors.rightMargin: 2
+
+            elide: Text.ElideRight
+            horizontalAlignment: Text.AlignRight
             font.pointSize: 8
+        }
+
+        Rectangle {
+            id: trackListContainer
+            z: 0
+            opacity: 0
+
+            radius: 5
+            width: 400
+            height: trackListText.height
+
+            color: "#e9000000"
+
+            Text {
+                id: trackListText
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+
+                elide: Text.ElideRight
+                color: "#999999"
+            }
+
+            states: [
+                State {
+                    name: "visible"
+                    PropertyChanges { target: trackListContainer; z: 5; opacity: 1 }
+                }
+            ]
+
+            transitions: Transition {
+                ParallelAnimation {
+                    PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+                }
+            }
+        }
+
+        ListView {
+            id: artistDiscoView
+            z: 2
+            anchors.left: parent.left
+            anchors.top: artistImageThumb.bottom
+            anchors.topMargin: 2
+            anchors.right: flickableBioText.left
+            anchors.bottom: parent.bottom
+
+            clip: true
+
+            model: artistDiscoModel
+
+            delegate: Item {
+                width: artistDiscoView.width
+                height: artistDiscoView.width
+
+                Rectangle {
+                    anchors.fill: parent
+
+                    color: "transparent"
+
+                    Image {
+                        id: albumArtImage
+                        source: albumImage
+
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.leftMargin: 20
+                        anchors.rightMargin: 20
+                        height: width
+
+                        smooth: true
+                        fillMode: Image.PreserveAspectFit
+                    }
+
+                    Text {
+                        id: albumNameLabel
+                        anchors.top: albumArtImage.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+
+                        text: albumName
+                        color: "#bbbbbb"
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+
+                    Text {
+                        id: albumYearLabel
+                        anchors.top: albumNameLabel.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+
+                        text: albumYear
+                        color: "#999999"
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+
+                        onEntered: {
+                            trackListText.text = albumTrackListTooltip
+                            trackListContainer.state = "visible"
+                            trackListContainer.x = artistDiscoView.x + artistDiscoView.width
+                            trackListContainer.y = artistDiscoView.y + parent.parent.y - artistDiscoView.contentY
+                        }
+                        onExited: trackListContainer.state = ""
+                    }
+                }
+            }
         }
 
         Rectangle {

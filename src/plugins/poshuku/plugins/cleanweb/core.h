@@ -32,7 +32,7 @@
 
 class QNetworkRequest;
 class QWebPage;
-class QGraphicsWebView;
+class QWebView;
 class QWebHitTestResult;
 
 namespace LeechCraft
@@ -101,7 +101,7 @@ namespace CleanWeb
 				const QWebPage::ExtensionOption*,
 				QWebPage::ExtensionReturn*);
 		void HandleContextMenu (const QWebHitTestResult&,
-				QGraphicsWebView*, QMenu*,
+				QWebView*, QMenu*,
 				WebViewCtxMenuStage);
 
 		bool ShouldReject (const QNetworkRequest&, QString*) const;

@@ -25,8 +25,17 @@
 
 extern "C"
 {
+#include <libotr/version.h>
 #include <libotr/privkey.h>
+
+#if OTRL_VERSION_MAJOR >= 4
+#include <libotr/instag.h>
+#endif
 }
+
+#if OTRL_VERSION_MAJOR >= 4
+#include <QTimer>
+#endif
 
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iaccount.h>
@@ -62,11 +71,6 @@ namespace OTRoid
 			static_cast<Plugin*> (opData)->WriteFingerprints ();
 		}
 
-		void LogMsg (void *opData, const char *msg)
-		{
-			static_cast<Plugin*> (opData)->LogMsg (QString::fromUtf8 (msg).trimmed ());
-		}
-
 		const char* GetAccountName (void *opData, const char *acc, const char*)
 		{
 			const QString& name = static_cast<Plugin*> (opData)->
@@ -82,6 +86,26 @@ namespace OTRoid
 		{
 			delete [] name;
 		}
+
+#if OTRL_VERSION_MAJOR >= 4
+		void HandleMsgEvent (void*, OtrlMessageEvent event,
+				ConnContext*, const char *msg, gcry_error_t)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< event
+					<< msg;
+		}
+
+		void TimerControl (void *opData, unsigned int interval)
+		{
+			static_cast<Plugin*> (opData)->SetPollTimerInterval (interval);
+		}
+#else
+		void LogMsg (void *opData, const char *msg)
+		{
+			static_cast<Plugin*> (opData)->LogMsg (QString::fromUtf8 (msg).trimmed ());
+		}
+#endif
 	}
 
 	void Plugin::Init (ICoreProxy_ptr)
@@ -102,9 +126,22 @@ namespace OTRoid
 		OtrOps_.is_logged_in = &OTR::IsLoggedIn;
 		OtrOps_.inject_message = &OTR::InjectMessage;
 		OtrOps_.write_fingerprints = &OTR::WriteFingerprints;
-		OtrOps_.log_message = &OTR::LogMsg;
 		OtrOps_.account_name = &OTR::GetAccountName;
 		OtrOps_.account_name_free = &OTR::FreeAccountName;
+#if OTRL_VERSION_MAJOR >= 4
+		OtrOps_.handle_msg_event = &OTR::HandleMsgEvent;
+		OtrOps_.timer_control = &OTR::TimerControl;
+
+		PollTimer_ = new QTimer (this);
+		connect (PollTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (pollOTR ()));
+
+		SetPollTimerInterval (otrl_message_poll_get_default_interval (UserState_));
+#else
+		OtrOps_.log_message = &OTR::LogMsg;
+#endif
 	}
 
 	void Plugin::SecondInit ()
@@ -191,11 +228,6 @@ namespace OTRoid
 		otrl_privkey_write_fingerprints (UserState_, GetOTRFilename ("fingerprints"));
 	}
 
-	void Plugin::LogMsg (const QString& msg)
-	{
-		qDebug () << "OTR:" << msg;
-	}
-
 	QString Plugin::GetAccountName (const QString& accId)
 	{
 		QObject *accObj = AzothProxy_->GetAccount (accId);
@@ -211,6 +243,22 @@ namespace OTRoid
 
 		return acc->GetAccountName ();
 	}
+
+#if OTRL_VERSION_MAJOR >= 4
+	void Plugin::SetPollTimerInterval (unsigned int seconds)
+	{
+		if (PollTimer_->isActive ())
+			PollTimer_->stop ();
+
+		if (seconds)
+			PollTimer_->start (seconds * 1000);
+	}
+#else
+	void Plugin::LogMsg (const QString& msg)
+	{
+		qDebug () << "OTR:" << msg;
+	}
+#endif
 
 	void Plugin::initPlugin (QObject *obj)
 	{
@@ -277,7 +325,12 @@ namespace OTRoid
 				entry->GetEntryID ().toUtf8 ().constData (),
 				msg->GetBody ().toUtf8 ().constData (),
 				&newMsg,
-				NULL, NULL, NULL);
+				NULL,
+				NULL,
+#if OTRL_VERSION_MAJOR >= 4
+				NULL,
+#endif
+				NULL);
 
 		if (ignore)
 		{
@@ -320,14 +373,24 @@ namespace OTRoid
 		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 		char *newMsg = 0;
-		gcry_error_t err = otrl_message_sending (UserState_, &OtrOps_, this,
+		gcry_error_t err = otrl_message_sending (UserState_,
+				&OtrOps_,
+				this,
 				acc->GetAccountID ().constData (),
 				proto->GetProtocolID ().constData (),
 				entry->GetEntryID ().toUtf8 ().constData (),
+#if OTRL_VERSION_MAJOR >= 4
+				OTRL_INSTAG_BEST,
+#endif
 				msg->GetBody ().toUtf8 ().constData (),
 				NULL,
 				&newMsg,
-				NULL, NULL);
+#if OTRL_VERSION_MAJOR >= 4
+				OTRL_FRAGMENT_SEND_SKIP,
+				NULL,
+#endif
+				NULL,
+				NULL);
 
 		if (err)
 		{
@@ -356,6 +419,13 @@ namespace OTRoid
 
 		Entry2Action_ [entry] = otr;
 	}
+
+#if OTRL_VERSION_MAJOR >= 4
+	void Plugin::pollOTR ()
+	{
+		otrl_message_poll (UserState_, &OtrOps_, this);
+	}
+#endif
 }
 }
 }

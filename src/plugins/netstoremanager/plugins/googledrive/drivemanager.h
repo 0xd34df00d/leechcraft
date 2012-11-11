@@ -52,7 +52,7 @@ namespace GoogleDrive
 			ILShared = 0x08,
 			ILViewed = 0x10
 		};
-		Q_DECLARE_FLAGS (ItemLabels, ItemLabel);
+		Q_DECLARE_FLAGS (ItemLabels, ItemLabel)
 
 		enum class Roles
 		{
@@ -66,7 +66,7 @@ namespace GoogleDrive
 			ARNone = 0x00,
 			ARCommenter = 0x01
 		};
-		Q_DECLARE_FLAGS (AdditionalRoles, AdditionalRole);
+		Q_DECLARE_FLAGS (AdditionalRoles, AdditionalRole)
 
 		enum class PermissionTypes
 		{

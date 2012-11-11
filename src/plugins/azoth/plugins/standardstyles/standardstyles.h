@@ -36,7 +36,7 @@ namespace StandardStyles
 				 , public IResourcePlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin);
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin)
 
 		IProxyObject *Proxy_;
 		QObjectList ResourceSources_;

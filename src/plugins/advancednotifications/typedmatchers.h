@@ -98,7 +98,7 @@ namespace AdvancedNotifications
 			OEqual = 0x04
 		};
 
-		Q_DECLARE_FLAGS (Operations, Operation);
+		Q_DECLARE_FLAGS (Operations, Operation)
 
 		Operations Ops_;
 

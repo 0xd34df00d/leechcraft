@@ -38,7 +38,7 @@ namespace Acetamide
 						, public IURIHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol LeechCraft::Azoth::IURIHandler);
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol LeechCraft::Azoth::IURIHandler)
 
 		QObject *ParentProtocolPlugin_;
 		QList<IrcAccount*> IrcAccounts_;

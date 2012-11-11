@@ -61,7 +61,7 @@ namespace Azoth
 			MUCFCanInvite = 0x0004
 		};
 
-		Q_DECLARE_FLAGS (MUCFeatures, MUCFeature);
+		Q_DECLARE_FLAGS (MUCFeatures, MUCFeature)
 
 		/** @brief The list of features of this MUC.
 		 *

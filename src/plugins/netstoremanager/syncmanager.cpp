@@ -271,8 +271,9 @@ namespace NetStoreManager
 			if (!(account->GetAccountFeatures () & FileListings))
 				continue;
 
+			// TODO finish this
 			auto isfl = qobject_cast<ISupportFileListings*> (account->GetObject ());
-			isfl->RequestChanges ();
+			Q_UNUSED (isfl)
 		}
 	}
 

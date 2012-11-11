@@ -86,7 +86,7 @@
          <widget class="QWidget" name="NPTab_">
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <property name="margin">
-            <number>1</number>
+            <number>0</number>
            </property>
            <item>
             <widget class="LeechCraft::LMP::NowPlayingWidget" name="NPWidget_" native="true"/>
@@ -96,7 +96,7 @@
          <widget class="QWidget" name="CollectionTab_">
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <property name="margin">
-            <number>1</number>
+            <number>0</number>
            </property>
            <item>
             <widget class="QLineEdit" name="CollectionFilter_">
@@ -149,7 +149,7 @@
          <widget class="QWidget" name="SocialTab_">
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <property name="margin">
-            <number>1</number>
+            <number>0</number>
            </property>
            <item>
             <widget class="QTabWidget" name="tabWidget">
@@ -195,6 +195,19 @@
                </item>
               </layout>
              </widget>
+             <widget class="QWidget" name="HypesTab_">
+              <attribute name="title">
+               <string>Hypes</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_11">
+               <property name="margin">
+                <number>1</number>
+               </property>
+               <item>
+                <widget class="LeechCraft::LMP::HypesWidget" name="HypesWidget_" native="true"/>
+               </item>
+              </layout>
+             </widget>
             </widget>
            </item>
           </layout>
@@ -202,7 +215,7 @@
          <widget class="QWidget" name="InternetTab_">
           <layout class="QVBoxLayout" name="verticalLayout_13">
            <property name="margin">
-            <number>1</number>
+            <number>0</number>
            </property>
            <item>
             <widget class="QTabWidget" name="tabWidget_2">
@@ -242,7 +255,7 @@
          <widget class="QWidget" name="FSTab_">
           <layout class="QVBoxLayout" name="verticalLayout">
            <property name="margin">
-            <number>1</number>
+            <number>0</number>
            </property>
            <item>
             <widget class="LeechCraft::LMP::FSBrowserWidget" name="FSBrowser_" native="true"/>
@@ -252,7 +265,7 @@
          <widget class="QWidget" name="DevicesTaB_">
           <layout class="QVBoxLayout" name="verticalLayout_10">
            <property name="margin">
-            <number>1</number>
+            <number>0</number>
            </property>
            <item>
             <widget class="LeechCraft::LMP::DevicesBrowserWidget" name="DevicesBrowser_" native="true"/>
@@ -334,6 +347,12 @@
    <class>LeechCraft::LMP::PLManagerWidget</class>
    <extends>QWidget</extends>
    <header>plmanagerwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::LMP::HypesWidget</class>
+   <extends>QWidget</extends>
+   <header>hypeswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

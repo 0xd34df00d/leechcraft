@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	)
 SET (AUTOPASTE_SRCS
 	autopaste.cpp
+	bpasteservice.cpp
 	codepadservice.cpp
 	pastedialog.cpp
 	pasteservicebase.cpp
@@ -19,6 +20,7 @@ SET (AUTOPASTE_SRCS
 	)
 SET (AUTOPASTE_HEADERS
 	autopaste.h
+	bpasteservice.h
 	codepadservice.h
 	pastedialog.h
 	pasteservicebase.h

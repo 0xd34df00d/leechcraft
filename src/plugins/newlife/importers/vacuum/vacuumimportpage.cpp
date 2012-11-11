@@ -43,13 +43,13 @@ namespace Importers
 			[] (const QDomElement&) { return "xmpp"; },
 			[=] (const QDomElement& acc) { return tfd (acc, "name"); },
 			[=] (const QDomElement& acc) { return tfd (acc, "active") == "true"; },
-			[=] (const QDomElement& acc)
+			[=] (const QDomElement& acc) -> QString
 			{
 				const auto& sjid = tfd (acc, "streamJid");
 				const int pos = sjid.indexOf ('/');
 				return pos < 0 ? sjid : sjid.left (pos);
 			},
-			[=] (const QDomElement& acc, QVariantMap& accountData)
+			[=] (const QDomElement& acc, QVariantMap& accountData) -> void
 			{
 				const QDomElement& conn = acc.firstChildElement ("connection");
 

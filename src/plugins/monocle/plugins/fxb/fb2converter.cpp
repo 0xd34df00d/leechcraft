@@ -152,7 +152,7 @@ namespace FXB
 
 	void FB2Converter::HandleDescription (const QDomElement& elem)
 	{
-		auto getChildValues = [&elem] (const QString& nodeName)
+		auto getChildValues = [&elem] (const QString& nodeName) -> QStringList
 		{
 			QStringList result;
 			auto elems = elem.elementsByTagName (nodeName);

@@ -35,7 +35,7 @@ namespace Xoox
 					  , public ITransferJob
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ITransferJob);
+		Q_INTERFACES (LeechCraft::Azoth::ITransferJob)
 
 		QXmppTransferJob *Job_;
 		TransferManager *Manager_;

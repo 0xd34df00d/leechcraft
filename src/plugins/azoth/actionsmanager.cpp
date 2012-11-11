@@ -269,7 +269,8 @@ namespace Azoth
 				SLOT (handleActionRenameTriggered ()));
 		rename->setProperty ("ActionIcon", "edit-rename");
 		Entry2Actions_ [entry] ["rename"] = rename;
-		Action2Areas_ [rename] << CLEAAContactListCtxtMenu;
+		Action2Areas_ [rename] << CLEAAContactListCtxtMenu
+				<< CLEAATabCtxtMenu;
 
 		if (entry->GetEntryFeatures () & ICLEntry::FSupportsGrouping)
 		{
@@ -299,7 +300,8 @@ namespace Azoth
 		{
 			QMenu *authMenu = new QMenu (tr ("Authorization"));
 			Entry2Actions_ [entry] ["authorization"] = authMenu->menuAction ();
-			Action2Areas_ [authMenu->menuAction ()] << CLEAAContactListCtxtMenu;
+			Action2Areas_ [authMenu->menuAction ()] << CLEAAContactListCtxtMenu
+					<< CLEAATabCtxtMenu;
 
 			QAction *grantAuth = authMenu->addAction (tr ("Grant"),
 					this, SLOT (handleActionGrantAuthTriggered ()));
@@ -385,7 +387,8 @@ namespace Azoth
 					QMenu *changeClass = new QMenu (perms->GetUserString (permClass));
 					Entry2Actions_ [entry] [permClass] = changeClass->menuAction ();
 					Action2Areas_ [changeClass->menuAction ()] << CLEAAContactListCtxtMenu
-							<< CLEAAChatCtxtMenu;
+							<< CLEAAChatCtxtMenu
+							<< CLEAATabCtxtMenu;
 
 					Q_FOREACH (const QByteArray& perm, possible [permClass])
 					{

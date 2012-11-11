@@ -35,8 +35,6 @@ namespace Autopaste
 		CodepadService (QObject *entry, QObject* = 0);
 
 		void Paste (const PasteParams&);
-	protected:
-		void handleMetadata ();
 	};
 }
 }

@@ -19,6 +19,9 @@
 #include "gmailnotifier.h"
 #include <QIcon>
 #include <QTimer>
+#include <QAction>
+#include <QApplication>
+#include <QPen>
 #include <QTranslator>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -31,6 +34,8 @@ namespace GmailNotifier
 {
 	void GmailNotifier::Init (ICoreProxy_ptr)
 	{
+		NotifierAction_ = 0;
+
 		Util::InstallTranslator ("gmailnotifier");
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -38,6 +43,8 @@ namespace GmailNotifier
 		XmlSettingsManager::Instance ()->RegisterObject (QList<QByteArray> () << "Login" << "Password",
 				this,
 				"setAuthorization");
+
+		XmlSettingsManager::Instance ()->RegisterObject ("ShowUnreadNumInTray", this, "setShowUnreadNumInTray");
 
 		GmailChecker_ = new GmailChecker (this);
 		setAuthorization ();
@@ -69,9 +76,9 @@ namespace GmailNotifier
 				this,
 				SLOT (sendMeNotification (const QString&, const QString&)));
 		connect (GmailChecker_,
-				SIGNAL (newConversationsAvailable (const QString&, const QString&)),
+				SIGNAL (newConversationsAvailable (const QString&, const QString&, int)),
 				this,
-				SLOT (sendMeNotification (const QString&, const QString&)));
+				SLOT (sendMeNotification (const QString&, const QString&, int)));
 	}
 
 	void GmailNotifier::SecondInit ()
@@ -99,7 +106,7 @@ namespace GmailNotifier
 
 	QIcon GmailNotifier::GetIcon () const
 	{
-		static QIcon icon (":/gmailnotifier.svg");
+		static QIcon icon (":/gmailnotifier/gmailnotifier.svg");
 		return icon;
 	}
 
@@ -108,10 +115,39 @@ namespace GmailNotifier
 		return SettingsDialog_;
 	}
 
+	QList<QAction*> GmailNotifier::GmailNotifier::GetActions (ActionsEmbedPlace aep) const
+	{
+		QList<QAction*> result;
+		if (aep == ActionsEmbedPlace::LCTray && NotifierAction_)
+			result << NotifierAction_;
+		return result;
+	}
+
+	void GmailNotifier::CheckCreateAction ()
+	{
+		if (NotifierAction_)
+			return;
+
+		NotifierAction_ = new QAction (this);
+		emit gotActions ({ NotifierAction_ }, ActionsEmbedPlace::LCTray);
+	}
+
 	void GmailNotifier::setAuthorization ()
 	{
 		GmailChecker_->SetAuthSettings (XmlSettingsManager::Instance ()->property ("Login").toString (),
 				XmlSettingsManager::Instance ()->property ("Password").toString ());
+	}
+
+	void GmailNotifier::setShowUnreadNumInTray ()
+	{
+		const bool enabled = XmlSettingsManager::Instance ()->property ("ShowUnreadNumInTray").toBool ();
+		if (!enabled)
+		{
+			delete NotifierAction_;
+			NotifierAction_ = 0;
+		}
+		else
+			GmailChecker_->checkNow ();
 	}
 
 	void GmailNotifier::applyInterval ()
@@ -122,14 +158,34 @@ namespace GmailNotifier
 		UpdateTimer_->start ();
 	}
 
-	void GmailNotifier::sendMeNotification (const QString& title, const QString& msg)
+	void GmailNotifier::sendMeNotification (const QString& title, const QString& msg, int num)
 	{
 		if (msg == LastMsg_)
 			return;
 
+		if (num && XmlSettingsManager::Instance ()->property ("ShowUnreadNumInTray").toBool ())
+		{
+			CheckCreateAction ();
+
+			NotifierAction_->setText (tr ("%n new message(s)", 0, num));
+			NotifierAction_->setToolTip (msg);
+
+			auto font = qApp->font ();
+			font.setBold (true);
+			font.setItalic (true);
+
+			const QIcon srcIcon (":/gmailnotifier/gmailicon.svg");
+			QIcon result;
+			for (auto sz : { 16, 22, 32, 48, 64, 96, 128, 192 })
+			{
+				const auto& px = srcIcon.pixmap (sz, sz);
+				result.addPixmap (Util::DrawOverlayText (px, QString::number (num), font, QPen (Qt::black)));
+			}
+			NotifierAction_->setIcon (result);
+		}
+
 		LastMsg_ = msg;
-		Entity e = Util::MakeNotification (title, msg, PInfo_);
-		emit gotEntity (e);
+		emit gotEntity (Util::MakeNotification (title, msg, PInfo_));
 	}
 }
 }

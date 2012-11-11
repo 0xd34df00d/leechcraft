@@ -86,7 +86,6 @@ namespace Acetamide
 			ISupportMap_.insert (QString::fromUtf8 ((*it_begin).first.c_str ()),
 					QString::fromUtf8 ((*it_begin).second.c_str ()));
 	}
-
 }
 }
 }

@@ -37,7 +37,7 @@ namespace Vader
 					, public IProtocolPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
+		Q_INTERFACES (IInfo IHaveSettings IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
 
 		Util::XmlSettingsDialog_ptr XSD_;
 

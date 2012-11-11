@@ -319,6 +319,21 @@ namespace Poshuku
 				result = QUrl::fromEncoded (urlStr.toUtf8 ());
 			}
 		}
+		else if (result.host ().isEmpty ())
+		{
+			bool isHostNum = false;
+			auto num = result.path ().toInt (&isHostNum);
+			if (isHostNum)
+			{
+				QMap<int, QString> port2scheme;
+				port2scheme [443] = "https";
+
+				result.setPort (num);
+				result.setHost (result.scheme ());
+				result.setScheme (port2scheme.value (num, "http"));
+				result.setPath (QString ());
+			}
+		}
 
 		return result;
 	}

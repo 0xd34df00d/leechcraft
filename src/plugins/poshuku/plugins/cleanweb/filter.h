@@ -56,7 +56,7 @@ namespace CleanWeb
 			AJAX = 0x40,
 			Popup = 0x80
 		};
-		Q_DECLARE_FLAGS (MatchObjects, MatchObject);
+		Q_DECLARE_FLAGS (MatchObjects, MatchObject)
 		MatchObjects MatchObjects_;
 
 		QStringList Domains_;

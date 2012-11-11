@@ -29,6 +29,7 @@
 #include <interfaces/media/irecentreleases.h>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/media/ieventsprovider.h>
+#include <interfaces/media/ihypesprovider.h>
 
 namespace LeechCraft
 {
@@ -48,6 +49,7 @@ namespace Lastfmscrobble
 				, public Media::IRecentReleases
 				, public Media::IArtistBioFetcher
 				, public Media::IEventsProvider
+				, public Media::IHypesProvider
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
@@ -59,7 +61,8 @@ namespace Lastfmscrobble
 				Media::IRadioStationProvider
 				Media::IRecentReleases
 				Media::IArtistBioFetcher
-				Media::IEventsProvider)
+				Media::IEventsProvider
+				Media::IHypesProvider)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
@@ -102,6 +105,9 @@ namespace Lastfmscrobble
 
 		void UpdateRecommendedEvents ();
 		void AttendEvent (qint64, Media::EventAttendType);
+
+		bool SupportsHype (HypeType);
+		void RequestHype (HypeType);
 	private slots:
 		void reloadRecommendedEvents ();
 	signals:
@@ -113,6 +119,9 @@ namespace Lastfmscrobble
 		void gotRecentReleases (const QList<Media::AlbumRelease>&);
 
 		void gotRecommendedEvents (const Media::EventInfos_t&);
+
+		void gotHypedArtists (const QList<Media::HypedArtistInfo>&);
+		void gotHypedTracks (const QList<Media::HypedTrackInfo>&);
 	};
 }
 }

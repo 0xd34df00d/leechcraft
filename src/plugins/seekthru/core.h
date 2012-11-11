@@ -113,6 +113,7 @@ namespace LeechCraft
 			private:
 				void SetTags (int, const QStringList&);
 				QStringList ComputeUniqueCategories () const;
+				QList<Description> FindMatchingHRTag (const QString&) const;
 				Description ParseData (const QString&, const QString&);
 				void HandleProvider (QObject*);
 				void ReadSettings ();
