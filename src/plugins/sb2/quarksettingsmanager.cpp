@@ -30,6 +30,7 @@ namespace SB2
 	: QuarkURL_ (url)
 	, Ctx_ (ctx)
 	{
+		Util::BaseSettingsManager::Init ();
 	}
 
 	QSettings* QuarkSettingsManager::BeginSettings () const
