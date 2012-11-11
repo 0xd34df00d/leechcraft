@@ -251,5 +251,7 @@ namespace Util
 		XMLSETTINGSMANAGER_API void pushButtonClicked (const QString&);
 		XMLSETTINGSMANAGER_API void moreThisStuffRequested (const QString&);
 	};
+
+	typedef std::shared_ptr<XmlSettingsDialog> XmlSettingsDialog_ptr;
 }
 }
