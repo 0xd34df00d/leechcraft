@@ -44,7 +44,8 @@ namespace LMP
 			{
 				AlbumName = Qt::UserRole + 1,
 				AlbumYear,
-				AlbumImage
+				AlbumImage,
+				AlbumTrackListTooltip
 			};
 
 			DiscoModel (QObject *parent)
@@ -54,6 +55,7 @@ namespace LMP
 				roleNames [Roles::AlbumName] = "albumName";
 				roleNames [Roles::AlbumYear] = "albumYear";
 				roleNames [Roles::AlbumImage] = "albumImage";
+				roleNames [Roles::AlbumTrackListTooltip] = "albumTrackListTooltip";
 				setRoleNames (roleNames);
 			}
 		};
@@ -185,6 +187,32 @@ namespace LMP
 			auto item = new QStandardItem;
 			item->setData (release.Name_, DiscoModel::Roles::AlbumName);
 			item->setData (QString::number (release.Year_), DiscoModel::Roles::AlbumYear);
+
+			QString trackTooltip;
+			int mediumPos = 0;
+			for (const auto& medium : release.TrackInfos_)
+			{
+				if (release.TrackInfos_.size () > 1)
+				{
+					if (mediumPos)
+						trackTooltip += "<br />";
+					trackTooltip += tr ("CD %1:").arg (++mediumPos);
+				}
+
+				for (const auto& track : medium)
+				{
+					trackTooltip += QString::number (track.Number_) + ". ";
+					trackTooltip += track.Name_;
+					if (track.Length_)
+					{
+						const auto lengthStr = Util::MakeTimeFromLong (track.Length_).remove ("00:");
+						trackTooltip += " (" + lengthStr + ")";
+					}
+					trackTooltip += "<br/>";
+				}
+			}
+			item->setData (trackTooltip, DiscoModel::Roles::AlbumTrackListTooltip);
+
 			DiscoModel_->appendRow (item);
 
 			aaProv->RequestAlbumArt ({ CurrentArtist_, release.Name_ });

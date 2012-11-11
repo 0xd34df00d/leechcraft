@@ -119,6 +119,41 @@ Rectangle {
             font.pointSize: 8
         }
 
+        Rectangle {
+            id: trackListContainer
+            z: 0
+            opacity: 0
+
+            radius: 5
+            width: 400
+            height: trackListText.height
+
+            color: "#e9000000"
+
+            Text {
+                id: trackListText
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+
+                elide: Text.ElideRight
+                color: "#999999"
+            }
+
+            states: [
+                State {
+                    name: "visible"
+                    PropertyChanges { target: trackListContainer; z: 5; opacity: 1 }
+                }
+            ]
+
+            transitions: Transition {
+                ParallelAnimation {
+                    PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+                }
+            }
+        }
+
         ListView {
             id: artistDiscoView
             z: 2
@@ -176,6 +211,19 @@ Rectangle {
                         text: albumYear
                         color: "#999999"
                         horizontalAlignment: Text.AlignHCenter
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+
+                        onEntered: {
+                            trackListText.text = albumTrackListTooltip
+                            trackListContainer.state = "visible"
+                            trackListContainer.x = artistDiscoView.x + artistDiscoView.width
+                            trackListContainer.y = artistDiscoView.y + parent.parent.y - artistDiscoView.contentY
+                        }
+                        onExited: trackListContainer.state = ""
                     }
                 }
             }
