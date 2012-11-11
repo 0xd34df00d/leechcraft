@@ -46,8 +46,18 @@ namespace SB2
 		settings->endGroup ();
 	}
 
-	void QuarkSettingsManager::PropertyChanged (const QString& name, const QVariant& val)
+	void QuarkSettingsManager::PropertyChanged (const QString& name, const QVariant& srcVal)
 	{
+		QVariant val = srcVal;
+		if (val.type () == QVariant::String)
+		{
+			if (val.canConvert<bool> ())
+				val = val.toBool ();
+			else if (val.canConvert<double> ())
+				val = val.toDouble ();
+			else if (val.canConvert<int> ())
+				val = val.toInt ();
+		}
 		Ctx_->setContextProperty (name.toUtf8 ().constData (), val);
 	}
 }
