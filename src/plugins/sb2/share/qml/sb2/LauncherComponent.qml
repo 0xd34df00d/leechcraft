@@ -51,22 +51,35 @@ Rectangle {
                     isStrongHighlight: openedTabsCount
                     isCurrent: isCurrentTab
 
-                    onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
-                    onHovered: {
-                        function getAbsPos(field) {
-                            var result = 0;
-                            var it = tcItem;
-                            while (it)
-                            {
-                                result += it[field];
-                                it = it.parent;
+                    Timer {
+                        id: fadeInInterval
+                        interval: SB2Launcher_FadeInTimeout
+
+                        onIntervalChanged: console.log("interval: " + SB2Launcher_FadeInTimeout)
+                        Component.onCompleted: console.log("interval: " + SB2Launcher_FadeInTimeout)
+
+                        onTriggered: {
+                            function getAbsPos(field) {
+                                var result = 0;
+                                var it = tcItem;
+                                while (it)
+                                {
+                                    result += it[field];
+                                    it = it.parent;
+                                }
+                                return result;
                             }
-                            return result;
+                            var absPoint = quarkProxy.mapToGlobal(getAbsPos("x"), getAbsPos("y"));
+                            SB2_launcherProxy.tabListRequested(tabClassID, absPoint.x + rootRect.width, absPoint.y + pregap.height);
                         }
-                        var absPoint = quarkProxy.mapToGlobal(getAbsPos("x"), getAbsPos("y"));
-                        SB2_launcherProxy.tabListRequested(tabClassID, absPoint.x + rootRect.width, absPoint.y + pregap.height);
                     }
-                    onHoverLeft: SB2_launcherProxy.tabListUnhovered(tabClassID)
+
+                    onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
+                    onHovered: fadeInInterval.start()
+                    onHoverLeft: {
+                        fadeInInterval.stop()
+                        SB2_launcherProxy.tabListUnhovered(tabClassID)
+                    }
 
                     effect: Colorize {
                         strength: openedTabsCount || tcButton.isHovered ? 0 : 0.3
