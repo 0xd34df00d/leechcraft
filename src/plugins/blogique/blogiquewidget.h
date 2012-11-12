@@ -52,6 +52,8 @@ namespace Blogique
 		QWidget *PostEditWidget_;
 		QToolBar *ToolBar_;
 		QComboBox *AccountsBox_;
+		QComboBox *PostTargetBox_;
+		QAction *PostTargetAction_;
 
 		QHash<int, IAccount*> Id2Account_;
 		int PrevAccountId_;
