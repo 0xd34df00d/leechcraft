@@ -51,7 +51,7 @@ namespace SB2
 		QVariant val = srcVal;
 		if (val.type () == QVariant::String)
 		{
-			if (val.canConvert<bool> ())
+			if (val == "true" || val == "false")
 				val = val.toBool ();
 			else if (val.canConvert<double> ())
 				val = val.toDouble ();
