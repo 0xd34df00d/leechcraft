@@ -85,7 +85,11 @@ Rectangle {
 
                     anchors.left: tabIconImage.right
                     anchors.leftMargin: 4
+                    anchors.right: parent.right
+                    anchors.rightMargin: 4
                     anchors.verticalCenter: parent.verticalCenter
+
+                    elide: Text.ElideMiddle
                 }
 
                 MouseArea {
