@@ -78,7 +78,6 @@ namespace LeechCraft
 		void handleCloseAllButCurrent ();
 	private:
 		int FindTabForWidget (QWidget*) const;
-		QString MakeTabName (const QString&) const;
 		void InvalidateName ();
 
 		QStringList GetOriginalNames () const;
