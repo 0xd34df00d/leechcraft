@@ -39,13 +39,15 @@ namespace Xoox
 		int Rating_;
 	public:
 		static QString GetNodeString ();
-		
+
+		UserTune ();
+
 		QXmppElement ToXML () const;
 		void Parse (const QDomElement&);
 		QString Node () const;
-		
+
 		PEPEventBase* Clone () const;
-		
+
 		QString GetArtist () const;
 		void SetArtist (const QString&);
 
@@ -66,7 +68,7 @@ namespace Xoox
 
 		int GetRating () const;
 		void SetRating (int);
-		
+
 		bool IsNull () const;
 	};
 }

@@ -35,7 +35,7 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	std::weak_ptr<Core> Core::InstPtr_;
+	std::shared_ptr<Core> Core::InstPtr_;
 
 	Core::Core ()
 	: StorageThread_ (new StorageThread ())
@@ -55,13 +55,9 @@ namespace ChatHistory
 
 	std::shared_ptr<Core> Core::Instance ()
 	{
-		if (InstPtr_.expired ())
-		{
-			std::shared_ptr<Core> ptr (new Core);
-			InstPtr_ = ptr;
-			return ptr;
-		}
-		return InstPtr_.lock ();
+		if (!InstPtr_)
+			InstPtr_.reset (new Core);
+		return InstPtr_;
 	}
 
 	Core::~Core ()
@@ -83,6 +79,16 @@ namespace ChatHistory
 	TabClassInfo Core::GetTabClass () const
 	{
 		return TabClass_;
+	}
+
+	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
+	{
+		CoreProxy_ = proxy;
+	}
+
+	ICoreProxy_ptr Core::GetCoreProxy () const
+	{
+		return CoreProxy_;
 	}
 
 	void Core::SetPluginProxy (QObject *proxy)

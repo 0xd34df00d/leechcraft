@@ -31,6 +31,10 @@
 #include <QToolBar>
 #include <QHeaderView>
 #include <QInputDialog>
+#include <QSortFilterProxyModel>
+#include <boost/preprocessor/seq/size.hpp>
+#include <boost/preprocessor/seq/elem.hpp>
+#include <boost/preprocessor/repetition/repeat.hpp>
 #include <libtorrent/session.hpp>
 #include <libtorrent/version.hpp>
 #include <interfaces/entitytesthandleresult.h>
@@ -46,15 +50,11 @@
 #include "xmlsettingsmanager.h"
 #include "movetorrentfiles.h"
 #include "trackerschanger.h"
-#include "exportdialog.h"
 #include "wizardgenerator.h"
 #include "fastspeedcontrolwidget.h"
 #include "ipfilterdialog.h"
 #include "speedselectoraction.h"
-
-#ifdef AddJob
-#undef AddJob
-#endif
+#include "torrenttab.h"
 
 using LeechCraft::ActionInfo;
 using namespace LeechCraft::Util;
@@ -65,22 +65,69 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
+			namespace
+			{
+				class ReprProxy : public QSortFilterProxyModel
+				{
+				public:
+					ReprProxy (QAbstractItemModel *model)
+					: QSortFilterProxyModel (model)
+					{
+						setDynamicSortFilter (true);
+						setSourceModel (model);
+					}
+
+					QVariant data (const QModelIndex& unmapped, int role) const
+					{
+						const auto& index = mapToSource (unmapped);
+						const int normCol = index.column ();
+
+						if (normCol == Core::ColumnProgress && role == Qt::DisplayRole)
+							return sourceModel ()->data (index, Core::Roles::FullLengthText);
+						else if (role == Qt::DecorationRole)
+							return normCol == Core::ColumnName ?
+									Core::Instance ()->GetTorrentIcon (index.row ()) :
+									QVariant ();
+						else
+							return QSortFilterProxyModel::data (unmapped, role);
+					}
+				protected:
+					bool filterAcceptsColumn (int sourceColumn, const QModelIndex&) const
+					{
+						return sourceColumn >= Core::Columns::ColumnName &&
+								sourceColumn <= Core::Columns::ColumnProgress;
+					}
+				};
+			}
 
 			void TorrentPlugin::Init (ICoreProxy_ptr proxy)
 			{
-				Translator_.reset (InstallTranslator ("bittorrent"));
+				InstallTranslator ("bittorrent");
 				Core::Instance ()->SetProxy (proxy);
 				SetupCore ();
 				SetupStuff ();
 
 				setActionsEnabled ();
+
+				TabTC_ =
+				{
+					GetUniqueID () + "_TorrentTab",
+					tr ("BitTorrent tab"),
+					tr ("Full BitTorrent downloads tab."),
+					GetIcon (),
+					10,
+					TFSingle | TFOpenableByRequest
+				};
+				TorrentTab_ = new TorrentTab (TabTC_, this);
+				connect (TorrentTab_,
+						SIGNAL (removeTab (QWidget*)),
+						this,
+						SIGNAL (removeTab (QWidget*)));
+
+				ReprProxy_ = new ReprProxy (Core::Instance ());
 			}
 
 			void TorrentPlugin::SecondInit ()
-			{
-			}
-
-			TorrentPlugin::~TorrentPlugin ()
 			{
 			}
 
@@ -104,22 +151,9 @@ namespace LeechCraft
 				return QStringList ("bittorrent") << "resume" << "remoteable";
 			}
 
-			QStringList TorrentPlugin::Needs () const
-			{
-				return QStringList ();
-			}
-
-			QStringList TorrentPlugin::Uses () const
-			{
-				return QStringList ();
-			}
-
-			void TorrentPlugin::SetProvider (QObject*, const QString&)
-			{
-			}
-
 			void TorrentPlugin::Release ()
 			{
+				delete TorrentTab_;
 				Core::Instance ()->Release ();
 				XmlSettingsManager::Instance ()->Release ();
 				XmlSettingsDialog_.reset ();
@@ -281,7 +315,7 @@ namespace LeechCraft
 
 			QAbstractItemModel* TorrentPlugin::GetRepresentation () const
 			{
-				return Core::Instance ();
+				return ReprProxy_;
 			}
 
 			void TorrentPlugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& si, const QModelIndex&)
@@ -321,7 +355,7 @@ namespace LeechCraft
 				Core::Instance ()->UpdateTags (tags, torrent);
 			}
 
-			std::shared_ptr<XmlSettingsDialog> TorrentPlugin::GetSettingsDialog () const
+			XmlSettingsDialog_ptr TorrentPlugin::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}
@@ -329,12 +363,30 @@ namespace LeechCraft
 			void TorrentPlugin::SetShortcut (const QString& name,
 					const QKeySequences_t& shortcuts)
 			{
-				ShortcutMgr_->SetShortcut (name, shortcuts);
+				Core::Instance ()->GetShortcutManager ()->SetShortcut (name, shortcuts);
 			}
 
 			QMap<QString, ActionInfo> TorrentPlugin::GetActionInfo () const
 			{
-				return ShortcutMgr_->GetActionInfo ();
+				return Core::Instance ()->GetShortcutManager ()->GetActionInfo ();
+			}
+
+			TabClasses_t TorrentPlugin::GetTabClasses () const
+			{
+				return { TabTC_ };
+			}
+
+			void TorrentPlugin::TabOpenRequested (const QByteArray& tc)
+			{
+				if (tc == TabTC_.TabClass_)
+				{
+					emit addNewTab ("BitTorrent", TorrentTab_);
+					emit raiseTab (TorrentTab_);
+				}
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "unknown tab class"
+							<< tc;
 			}
 
 			QList<QWizardPage*> TorrentPlugin::GetWizardPages () const
@@ -539,7 +591,7 @@ namespace LeechCraft
 
 			namespace
 			{
-				std::deque<int> GetSelections (QAbstractItemModel *model,
+				std::vector<int> GetSelections (QAbstractItemModel *model,
 						QObject *sender)
 				{
 					QModelIndexList sis;
@@ -554,7 +606,7 @@ namespace LeechCraft
 						throw;
 					}
 
-					std::deque<int> selections;
+					std::vector<int> selections;
 					Q_FOREACH (QModelIndex si, sis)
 					{
 						QModelIndex mapped = Core::Instance ()->GetProxy ()->MapToSource (si);
@@ -581,7 +633,7 @@ namespace LeechCraft
 					return;
 				}
 
-				std::deque<int> selections;
+				std::vector<int> selections;
 				try
 				{
 					selections = GetSelections (GetRepresentation (), sender ());
@@ -630,7 +682,7 @@ namespace LeechCraft
 					return;
 				}
 
-				std::deque<int> selections;
+				std::vector<int> selections;
 				try
 				{
 					selections = GetSelections (GetRepresentation (), sender ());
@@ -778,7 +830,7 @@ namespace LeechCraft
 
 			void TorrentPlugin::on_MoveFiles__triggered ()
 			{
-				QString oldDir = Core::Instance ()->GetTorrentDirectory ();
+				QString oldDir = Core::Instance ()->GetTorrentDirectory (Core::Instance ()->GetCurrentTorrent ());
 				MoveTorrentFiles mtf (oldDir);
 				if (mtf.exec () == QDialog::Rejected)
 					return;
@@ -786,7 +838,7 @@ namespace LeechCraft
 				if (oldDir == newDir)
 					return;
 
-				if (!Core::Instance ()->MoveTorrentFiles (newDir))
+				if (!Core::Instance ()->MoveTorrentFiles (newDir, Core::Instance ()->GetCurrentTorrent ()))
 				{
 					QString text = tr ("Failed to move torrent's files from %1 to %2")
 							.arg (oldDir)
@@ -797,7 +849,7 @@ namespace LeechCraft
 
 			void TorrentPlugin::on_MakeMagnetLink__triggered ()
 			{
-				QString magnet = Core::Instance ()->GetMagnetLink ();
+				QString magnet = Core::Instance ()->GetMagnetLink (Core::Instance ()->GetCurrentTorrent ());
 				if (magnet.isEmpty ())
 					return;
 
@@ -809,23 +861,6 @@ namespace LeechCraft
 				dia->setTextValue (magnet);
 				dia->resize (700, dia->height ());
 				dia->show ();
-			}
-
-			void TorrentPlugin::on_Import__triggered ()
-			{
-			}
-
-			void TorrentPlugin::on_Export__triggered ()
-			{
-				ExportDialog dia;
-				if (dia.exec () == QDialog::Rejected)
-					return;
-
-				bool settings = dia.GetSettings ();
-				bool active = dia.GetActive ();
-				QString where = dia.GetLocation ();
-
-				Core::Instance ()->Export (where, settings, active);
 			}
 
 			void TorrentPlugin::handleFastSpeedComboboxes ()
@@ -856,8 +891,6 @@ namespace LeechCraft
 
 			void TorrentPlugin::SetupCore ()
 			{
-				ShortcutMgr_ = new Util::ShortcutManager (Core::Instance ()->GetProxy (), this);
-
 				XmlSettingsDialog_.reset (new XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 						"torrentsettings.xml");
@@ -865,7 +898,7 @@ namespace LeechCraft
 				Core::Instance ()->DoDelayedInit ();
 
 				SetupActions ();
-				TabWidget_.reset (new TabWidget (ChangeTrackers_.get ()));
+				TabWidget_.reset (new TabWidget);
 				TorrentSelectionChanged_ = true;
 				LastPeersUpdate_.reset (new QTime);
 				LastPeersUpdate_->start ();
@@ -926,7 +959,7 @@ namespace LeechCraft
 #define _LC_MERGE(a) "Torrent"#a
 
 #define _LC_SINGLE(a) \
-				ShortcutMgr_->RegisterAction (_LC_MERGE(a), a.get ());
+				Core::Instance ()->GetShortcutManager ()->RegisterAction (_LC_MERGE(a), a.get ());
 
 #define _LC_TRAVERSER(z,i,array) \
 				_LC_SINGLE (BOOST_PP_SEQ_ELEM(i, array))
@@ -949,8 +982,6 @@ namespace LeechCraft
 						(ForceReannounce_)
 						(ForceRecheck_)
 						(MoveFiles_)
-						(Import_)
-						(Export_)
 						(MakeMagnetLink_));
 			}
 
@@ -1098,22 +1129,6 @@ namespace LeechCraft
 						this,
 						SLOT (on_MakeMagnetLink__triggered ()));
 
-				Import_.reset (new QAction (tr ("Import..."),
-							Toolbar_.get ()));
-				connect (Import_.get (),
-						SIGNAL (triggered ()),
-						this,
-						SLOT (on_Import__triggered ()));
-				Import_->setProperty ("ActionIcon", "document-import");
-
-				Export_.reset (new QAction (tr ("Export..."),
-							Toolbar_.get ()));
-				connect (Export_.get (),
-						SIGNAL (triggered ()),
-						this,
-						SLOT (on_Export__triggered ()));
-				Export_->setProperty ("ActionIcon", "document-export");
-
 				Toolbar_->addAction (OpenTorrent_.get ());
 				Toolbar_->addAction (RemoveTorrent_.get ());
 				Toolbar_->addSeparator ();
@@ -1130,9 +1145,6 @@ namespace LeechCraft
 				Toolbar_->addAction (MoveFiles_.get ());
 				Toolbar_->addAction (ChangeTrackers_.get ());
 				Toolbar_->addAction (MakeMagnetLink_.get ());
-				Toolbar_->addSeparator ();
-				Toolbar_->addAction (Import_.get ());
-				Toolbar_->addAction (Export_.get ());
 				Toolbar_->addSeparator ();
 				DownSelectorAction_ = new SpeedSelectorAction ("Down", this);
 				DownSelectorAction_->handleSpeedsChanged ();

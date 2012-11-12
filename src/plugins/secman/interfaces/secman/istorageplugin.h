@@ -38,7 +38,7 @@ namespace LeechCraft
 					STSecure
 				};
 
-				Q_DECLARE_FLAGS (StorageTypes, StorageType);
+				Q_DECLARE_FLAGS (StorageTypes, StorageType)
 
 				virtual StorageTypes GetStorageTypes () const = 0;
 				virtual QList<QByteArray> ListKeys (StorageType st = STInsecure) = 0;

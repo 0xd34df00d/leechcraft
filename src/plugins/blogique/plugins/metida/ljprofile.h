@@ -38,7 +38,7 @@ namespace Metida
 					, public IProfile
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IProfile);
+		Q_INTERFACES (LeechCraft::Blogique::IProfile)
 
 		QObject *ParentAccount_;
 		LJProfileData ProfileData_;

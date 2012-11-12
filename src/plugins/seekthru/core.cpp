@@ -184,6 +184,14 @@ namespace LeechCraft
 					if (!textVar.canConvert<QString> ())
 						return false;
 
+					if (e.Additional_.contains ("DataFilter"))
+					{
+						const auto& catVar = e.Additional_ ["DataFilter"].toByteArray ();
+						const auto& catStr = QString::fromUtf8 (catVar.constData ());
+						if (FindMatchingHRTag (catStr).isEmpty ())
+							return false;
+					}
+
 					const auto& text = textVar.toString ().trimmed ().simplified ();
 					return text.count ('\n') < 3 && text.size () < 200;
 				}
@@ -211,17 +219,9 @@ namespace LeechCraft
 				}
 
 				const auto& text = e.Entity_.toString ();
-				const auto& catVar = e.Additional_ ["DataFilter"];
-				const auto& catStr = QString::fromUtf8 (catVar.toByteArray ().constData ());
+				const auto& catVar = e.Additional_ ["DataFilter"].toByteArray ();
 
-				auto tm = Proxy_->GetTagsManager ();
-				for (const auto& d : Descriptions_)
-				{
-					if (std::find_if (d.Tags_.begin (), d.Tags_.end (),
-							[&catStr, tm] (const QString& id)
-								{ return catStr == tm->GetTag (id); }) == d.Tags_.end ())
-						continue;
-
+				for (const auto& d : FindMatchingHRTag (QString::fromUtf8 (catVar.constData ())))
 					for (const auto& u : d.URLs_)
 					{
 						if (!u.Type_.startsWith ("text/"))
@@ -231,7 +231,6 @@ namespace LeechCraft
 						const auto& e = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
 						emit gotEntity (e);
 					}
-				}
 			}
 
 			Sync::Payloads_t Core::GetAllDeltas (const Sync::ChainID_t& chainId)
@@ -509,6 +508,22 @@ namespace LeechCraft
 				QStringList result;
 				Q_FOREACH (QString id, ids)
 					result << Proxy_->GetTagsManager ()->GetTag (id);
+				return result;
+			}
+
+			QList<Description> Core::FindMatchingHRTag (const QString& catStr) const
+			{
+				QList<Description> result;
+
+				auto tm = Proxy_->GetTagsManager ();
+				for (const auto& d : Descriptions_)
+				{
+					const auto matchingItem = std::find_if (d.Tags_.begin (), d.Tags_.end (),
+							[&catStr, tm] (const QString& id) { return catStr == tm->GetTag (id); });
+					if (matchingItem != d.Tags_.end ())
+						result << d;
+				}
+
 				return result;
 			}
 

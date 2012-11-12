@@ -16,32 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_TORRENT_ADDWEBSEEDDIALOG_H
-#define PLUGINS_TORRENT_ADDWEBSEEDDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_addwebseeddialog.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	class AddWebSeedDialog : public QDialog
 	{
-		namespace BitTorrent
-		{
-			class AddWebSeedDialog : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::AddWebSeedDialog Ui_;
-			public:
-				AddWebSeedDialog (QWidget* = 0);
+		Ui::AddWebSeedDialog Ui_;
+	public:
+		AddWebSeedDialog (QWidget* = 0);
 
-				QString GetURL () const;
-				// True if URL (BEP 19), false if HTTP (BEP 17).
-				bool GetType () const;
-			};
-		};
+		QString GetURL () const;
+		// True if URL (BEP 19), false if HTTP (BEP 17).
+		bool GetType () const;
 	};
-};
-
-#endif
-
+}
+}
+}

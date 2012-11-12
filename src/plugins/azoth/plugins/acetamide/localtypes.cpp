@@ -54,6 +54,6 @@ namespace Acetamide
 				(nsi1.AuthString_ == nsi2.AuthString_) &&
 				(nsi1.AuthMessage_ == nsi2.AuthMessage_);
 	}
-};
-};
-};
+}
+}
+}

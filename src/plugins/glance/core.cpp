@@ -50,7 +50,6 @@ namespace Glance
 	{
 		return Proxy_->GetMainWindow ();
 	}
-
-};
-};
-};
+}
+}
+}

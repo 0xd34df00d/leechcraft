@@ -30,8 +30,8 @@ namespace LeechCraft
 		QString ConfigDir_;
 		QString ThemesConfigDir_;
 
-		Q_PROPERTY (QString ConfigDir READ GetConfigDir);
-		Q_PROPERTY (QString ThemesConfigDir READ GetThemesConfigDir);
+		Q_PROPERTY (QString ConfigDir READ GetConfigDir)
+		Q_PROPERTY (QString ThemesConfigDir READ GetThemesConfigDir)
 	public:
 		Settings ();
 		const QString& GetConfigDir () const;

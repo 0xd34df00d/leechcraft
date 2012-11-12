@@ -81,20 +81,6 @@ namespace Autopaste
 
 		InitReply (params.NAM_->post (req, data));
 	}
-
-	void CodepadService::handleMetadata ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a QNetworkReply:"
-					<< sender ();
-			return;
-		}
-
-		FeedURL (reply->header (QNetworkRequest::LocationHeader).toString ());
-	}
 }
 }
 }

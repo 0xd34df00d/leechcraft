@@ -63,10 +63,9 @@ namespace Summary
 	void ModelDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		if (index.column () == 2)
+		if (index.column () == JobHolderColumn::JobProgress)
 		{
-			auto rowRole = index.data (CustomDataRoles::RoleJobHolderRow)
-					.value<JobHolderRow> ();
+			auto rowRole = index.data (CustomDataRoles::RoleJobHolderRow).value<JobHolderRow> ();
 			if ((rowRole == JobHolderRow::DownloadProgress ||
 						rowRole == JobHolderRow::ProcessProgress) &&
 					DrawProgress (painter, option, index))

@@ -29,12 +29,12 @@ namespace LMP
 	{
 		Q_OBJECT
 
-		Q_PROPERTY (QString artistName READ GetArtistName NOTIFY artistNameChanged);
-		Q_PROPERTY (QUrl artistImageURL READ GetArtistImageURL NOTIFY artistImageURLChanged);
-		Q_PROPERTY (QUrl artistBigImageURL READ GetArtistBigImageURL NOTIFY artistBigImageURLChanged);
-		Q_PROPERTY (QString artistTags READ GetArtistTags NOTIFY artistTagsChanged);
-		Q_PROPERTY (QString artistInfo READ GetArtistInfo NOTIFY artistInfoChanged);
-		Q_PROPERTY (QUrl artistPageURL READ GetArtistPageURL NOTIFY artistPageURLChanged);
+		Q_PROPERTY (QString artistName READ GetArtistName NOTIFY artistNameChanged)
+		Q_PROPERTY (QUrl artistImageURL READ GetArtistImageURL NOTIFY artistImageURLChanged)
+		Q_PROPERTY (QUrl artistBigImageURL READ GetArtistBigImageURL NOTIFY artistBigImageURLChanged)
+		Q_PROPERTY (QString artistTags READ GetArtistTags NOTIFY artistTagsChanged)
+		Q_PROPERTY (QString artistInfo READ GetArtistInfo NOTIFY artistInfoChanged)
+		Q_PROPERTY (QUrl artistPageURL READ GetArtistPageURL NOTIFY artistPageURLChanged)
 
 		Media::ArtistBio Bio_;
 

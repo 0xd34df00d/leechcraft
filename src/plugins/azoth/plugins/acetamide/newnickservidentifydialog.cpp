@@ -92,7 +92,6 @@ namespace Acetamide
 	{
 		Ui_.AuthMessage_->setText (authMessage);
 	}
-
 }
 }
 }

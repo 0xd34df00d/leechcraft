@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "documenttab.h"
+#include <functional>
 #include <QToolBar>
 #include <QComboBox>
 #include <QFileDialog>
@@ -60,6 +61,7 @@ namespace Monocle
 	, LayMode_ (LayoutMode::OnePage)
 	, MouseMode_ (MouseMode::Move)
 	, RelayoutScheduled_ (true)
+	, Onload_ ({ -1, 0, 0 })
 	{
 		Ui_.setupUi (this);
 		Ui_.PagesView_->setScene (&Scene_);
@@ -84,6 +86,12 @@ namespace Monocle
 		mw->AddDockWidget (Qt::RightDockWidgetArea, DockTOC_);
 		mw->AssociateDockWidget (DockTOC_, this);
 		mw->ToggleViewActionVisiblity (DockTOC_, false);
+
+		connect (Ui_.PagesView_,
+				SIGNAL (sizeChanged ()),
+				this,
+				SLOT (scheduleRelayout ()),
+				Qt::QueuedConnection);
 	}
 
 	TabClassInfo DocumentTab::GetTabClassInfo () const
@@ -187,8 +195,7 @@ namespace Monocle
 		CurrentDoc_ = IDocument_ptr ();
 		CurrentDocPath_.clear ();
 
-		const auto& rectSize = Ui_.PagesView_->viewport ()->contentsRect ().size () / 2;
-		const auto& pos = Ui_.PagesView_->mapToScene (QPoint (rectSize.width (), rectSize.height ()));
+		const auto& pos = Ui_.PagesView_->GetCurrentCenter ();
 
 		SetDoc (doc);
 
@@ -410,7 +417,7 @@ namespace Monocle
 		if (!CurrentDoc_)
 			return 1;
 
-		auto calcRatio = [this] (std::function<double (const QSize&)> dimGetter)
+		auto calcRatio = [this] (std::function<double (const QSize&)> dimGetter) -> double
 		{
 			if (Pages_.isEmpty ())
 				return 1.0;
@@ -422,6 +429,11 @@ namespace Monocle
 			auto size = Ui_.PagesView_->maximumViewportSize ();
 			size.rwidth () -= Ui_.PagesView_->verticalScrollBar ()->size ().width ();
 			size.rheight () -= Ui_.PagesView_->horizontalScrollBar ()->size ().height ();
+
+			const int margin = 3;
+			size.rwidth () -= 2 * margin;
+			size.rheight () -= 2 * margin;
+
 			return dimGetter (size) / dim;
 		};
 
@@ -475,7 +487,7 @@ namespace Monocle
 		const auto& pos = page->scenePos ();
 		int xCenter = pos.x () + rect.width () / 2;
 		int yCenter = pos.y () + Ui_.PagesView_->viewport ()->contentsRect ().height () / 2;
-		Ui_.PagesView_->centerOn (xCenter, yCenter);
+		Ui_.PagesView_->SmoothCenterOn (xCenter, yCenter);
 	}
 
 	void DocumentTab::Relayout (double scale)
@@ -504,7 +516,13 @@ namespace Monocle
 		}
 
 		Scene_.setSceneRect (Scene_.itemsBoundingRect ());
-		SetCurrentPage (std::max (GetCurrentPage (), 0));
+		if (Onload_.Num_ >= 0)
+		{
+			handleNavigateRequested (QString (), Onload_.Num_, Onload_.X_, Onload_.Y_);
+			Onload_.Num_ = -1;
+		}
+		else
+			SetCurrentPage (std::max (GetCurrentPage (), 0));
 		updateNumLabel ();
 	}
 
@@ -517,11 +535,19 @@ namespace Monocle
 		}
 	}
 
-	void DocumentTab::handleNavigateRequested (const QString& path, int num, double x, double y)
+	void DocumentTab::handleNavigateRequested (QString path, int num, double x, double y)
 	{
 		if (!path.isEmpty ())
+		{
+			if (QFileInfo (path).isRelative ())
+				path = QFileInfo (CurrentDocPath_).dir ().absoluteFilePath (path);
+
+			Onload_ = { num, x, y };
+
 			if (!SetDoc (path))
-				return;
+				Onload_.Num_ = -1;
+			return;
+		}
 
 		SetCurrentPage (num);
 
@@ -533,11 +559,22 @@ namespace Monocle
 		{
 			const auto& size = page->boundingRect ().size ();
 			const auto& mapped = page->mapToScene (size.width () * x, size.height () * y);
-			Ui_.PagesView_->centerOn (mapped.x (), mapped.y ());
+			Ui_.PagesView_->SmoothCenterOn (mapped.x (), mapped.y ());
 		}
 	}
 
 	void DocumentTab::handlePageSizeChanged (int)
+	{
+		scheduleRelayout ();
+	}
+
+	void DocumentTab::handlePageContentsChanged (int idx)
+	{
+		auto pageItem = Pages_.at (idx);
+		pageItem->UpdatePixmap ();
+	}
+
+	void DocumentTab::scheduleRelayout ()
 	{
 		if (RelayoutScheduled_)
 			return;
@@ -546,12 +583,6 @@ namespace Monocle
 				this,
 				SLOT (handleRelayout ()));
 		RelayoutScheduled_ = true;
-	}
-
-	void DocumentTab::handlePageContentsChanged (int idx)
-	{
-		auto pageItem = Pages_.at (idx);
-		pageItem->UpdatePixmap ();
 	}
 
 	void DocumentTab::handleRelayout ()
@@ -756,8 +787,6 @@ namespace Monocle
 		painter.end ();
 
 		QApplication::clipboard ()->setImage (image);
-
-		Ui_.PagesView_->SetShowReleaseMenu (false);
 	}
 
 	void DocumentTab::handleCopyAsText ()
@@ -800,7 +829,7 @@ namespace Monocle
 
 	void DocumentTab::delayedCenterOn (const QPoint& point)
 	{
-		Ui_.PagesView_->centerOn (point);
+		Ui_.PagesView_->SmoothCenterOn (point.x (), point.y ());
 	}
 
 	void DocumentTab::handleScaleChosen (int)

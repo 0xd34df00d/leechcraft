@@ -82,6 +82,11 @@ SET (SRCS
 	plmanagerwidget.cpp
 	nowplayingpixmaphandler.cpp
 	lmpproxy.cpp
+	sortingcriteria.cpp
+	sortingcriteriadialog.cpp
+	similarmodel.cpp
+	hypeswidget.cpp
+	sysiconsprovider.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
@@ -115,6 +120,8 @@ SET (FORMS
 	collectionstatsdialog.ui
 	eventswidget.ui
 	plmanagerwidget.ui
+	sortingcriteriadialog.ui
+	hypeswidget.ui
 	sync/cloudwidget.ui
 	sync/devicesbrowserwidget.ui
 	sync/transcodingparamswidget.ui

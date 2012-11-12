@@ -16,34 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_FIRSTSTEP_H
-#define PLUGINS_BITTORRENT_FIRSTSTEP_H
+#pragma once
+
 #include <QWizardPage>
 #include "ui_newtorrentfirststep.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	class FirstStep : public QWizardPage, private Ui::NewTorrentFirstStep
 	{
-		namespace BitTorrent
-		{
-			class FirstStep : public QWizardPage, private Ui::NewTorrentFirstStep
-			{
-				Q_OBJECT
-			public:
-				FirstStep (QWidget *parent = 0);
+		Q_OBJECT
+	public:
+		FirstStep (QWidget *parent = 0);
 
-				bool isComplete () const;
-			private:
-				QString PrepareDirectory () const;
-			private slots:
-				void on_BrowseOutput__released ();
-				void on_BrowseFile__released ();
-				void on_BrowseDirectory__released ();
-			};
-		};
+		bool isComplete () const;
+	private:
+		QString PrepareDirectory () const;
+	private slots:
+		void on_BrowseOutput__released ();
+		void on_BrowseFile__released ();
+		void on_BrowseDirectory__released ();
 	};
-};
-
-#endif
-
+}
+}
+}

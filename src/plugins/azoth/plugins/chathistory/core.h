@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QSet>
 #include <QVariantMap>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
@@ -48,9 +49,10 @@ namespace ChatHistory
 	class Core : public QObject
 	{
 		Q_OBJECT
-		static std::weak_ptr<Core> InstPtr_;
+		static std::shared_ptr<Core> InstPtr_;
 
 		StorageThread *StorageThread_;
+		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *PluginProxy_;
 		QSet<QString> DisabledIDs_;
 
@@ -63,6 +65,9 @@ namespace ChatHistory
 		~Core ();
 
 		TabClassInfo GetTabClass () const;
+
+		void SetCoreProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetCoreProxy () const;
 
 		void SetPluginProxy (QObject*);
 		IProxyObject* GetPluginProxy () const;

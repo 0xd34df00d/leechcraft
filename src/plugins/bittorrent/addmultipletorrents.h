@@ -16,44 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_ADDMULTIPLETORRENTS_H
-#define PLUGINS_BITTORRENT_ADDMULTIPLETORRENTS_H
+#pragma once
+
 #include "ui_addmultipletorrents.h"
 #include "core.h"
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class TagsLineEdit;
-	};
-
-	namespace Plugins
-	{
-		namespace BitTorrent
-		{
-
-			class AddMultipleTorrents : public QDialog, private Ui::AddMultipleTorrents
-			{
-				Q_OBJECT
-			public:
-				AddMultipleTorrents (QWidget *parent = 0);
-				QString GetOpenDirectory () const;
-				QString GetSaveDirectory () const;
-				Core::AddType GetAddType () const;
-				Util::TagsLineEdit* GetEdit ();
-				/** Returns the list of tags after the dialog is executed.
-				 *
-				 * @return List if IDs of tags.
-				 */
-				QStringList GetTags () const;
-			private slots:
-				void on_BrowseOpen__released ();
-				void on_BrowseSave__released ();
-			};
-		};
-	};
+namespace Util
+{
+	class TagsLineEdit;
 };
 
-#endif
+namespace Plugins
+{
+namespace BitTorrent
+{
 
+	class AddMultipleTorrents : public QDialog
+							  , private Ui::AddMultipleTorrents
+	{
+		Q_OBJECT
+	public:
+		AddMultipleTorrents (QWidget *parent = 0);
+		QString GetOpenDirectory () const;
+		QString GetSaveDirectory () const;
+		Core::AddType GetAddType () const;
+		Util::TagsLineEdit* GetEdit ();
+		QStringList GetTags () const;
+	private slots:
+		void on_BrowseOpen__released ();
+		void on_BrowseSave__released ();
+	};
+}
+}
+}

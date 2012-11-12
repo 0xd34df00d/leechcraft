@@ -36,13 +36,13 @@ namespace Xoox
 			TGroup,
 			TSubscription
 		};
-		
+
 		enum Action
 		{
 			AAllow,
 			ADeny
 		};
-		
+
 		enum StanzaType
 		{
 			STNone = 0x00,
@@ -52,8 +52,8 @@ namespace Xoox
 			STIq = 0x08,
 			STAll = 0x0f
 		};
-		
-		Q_DECLARE_FLAGS (StanzaTypes, StanzaType);
+
+		Q_DECLARE_FLAGS (StanzaTypes, StanzaType)
 	private:
 		QString Value_;
 		Type Type_;
@@ -61,19 +61,19 @@ namespace Xoox
 		StanzaTypes Stanzas_;
 	public:
 		PrivacyListItem (const QString& = QString (), Type = TNone, Action = ADeny);
-		
+
 		void Parse (const QDomElement&);
 		QXmppElement ToXML () const;
-		
+
 		Type GetType () const;
 		void SetType (Type);
-		
+
 		Action GetAction () const;
 		void SetAction (Action);
-		
+
 		QString GetValue () const;
 		void SetValue (const QString&);
-		
+
 		StanzaTypes GetStanzaTypes () const;
 		void SetStanzaTypes (StanzaTypes);
 	};
@@ -84,13 +84,13 @@ namespace Xoox
 		QList<PrivacyListItem> Items_;
 	public:
 		PrivacyList (const QString& = QString ());
-		
+
 		void Parse (const QDomElement&);
 		QXmppElement ToXML () const;
-		
+
 		QString GetName () const;
 		void SetName (const QString&);
-		
+
 		QList<PrivacyListItem> GetItems () const;
 		void SetItems (const QList<PrivacyListItem>&);
 	};
@@ -98,7 +98,7 @@ namespace Xoox
 	class PrivacyListsManager : public QXmppClientExtension
 	{
 		Q_OBJECT
-		
+
 		enum QueryType
 		{
 			QTQueryLists,

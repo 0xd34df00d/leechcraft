@@ -34,8 +34,8 @@
 class QToolBar;
 class QDataStream;
 class QShortcut;
-class QGraphicsWebView;
 class QWebFrame;
+class QLabel;
 
 namespace LeechCraft
 {
@@ -96,7 +96,7 @@ namespace Poshuku
 		QMap<QString, QList<QAction*>> WindowMenus_;
 
 		CustomWebView *WebView_;
-		std::shared_ptr<QGraphicsTextItem> LinkTextItem_;
+		std::shared_ptr<QLabel> LinkTextItem_;
 
 		static QObject* S_MultiTabsParent_;
 
@@ -109,7 +109,6 @@ namespace Poshuku
 		void Deown ();
 		void InitShortcuts ();
 
-		QGraphicsView* GetGraphicsView () const;
 		CustomWebView* GetView () const;
 		QLineEdit* GetURLEdit () const;
 
@@ -149,7 +148,7 @@ namespace Poshuku
 		void handleShortcutHistory ();
 		void handleShortcutBookmarks ();
 		void loadURL (const QUrl&);
-		QGraphicsWebView* getWebView () const;
+		QWebView* getWebView () const;
 		QLineEdit* getAddressBar () const;
 		QWidget* getSideBar () const;
 		void checkPageAsFavorite (const QString&);
@@ -184,7 +183,6 @@ namespace Poshuku
 		void updateLogicalPath ();
 		void showSendersMenu ();
 		void handleUrlChanged (const QString&);
-		void refitWebView ();
 		void handleUrlTextChanged (const QString&);
 	signals:
 		void titleChanged (const QString&);
@@ -214,14 +212,14 @@ namespace Poshuku
 				int progress);
 		void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QGraphicsWebView *webView,
+				QWebView *webView,
 				QObject *browserWidget);
 		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QGraphicsWebView *webView,
+				QWebView *webView,
 				QObject *browserWidget);
 		void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
-				QGraphicsWebView *view,
+				QWebView *view,
 				QObject *browserWidget,
 				bool ok,
 				bool notifyWhenFinished,

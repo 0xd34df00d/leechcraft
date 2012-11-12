@@ -94,7 +94,7 @@ namespace Azoth
 			FMUCsSupportFileTransfers = 0x20
 		};
 
-		Q_DECLARE_FLAGS (AccountFeatures, AccountFeature);
+		Q_DECLARE_FLAGS (AccountFeatures, AccountFeature)
 
 		/** @brief Returns the account object as a QObject.
 		 *

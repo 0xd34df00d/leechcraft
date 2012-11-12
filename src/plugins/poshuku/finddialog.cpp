@@ -27,11 +27,11 @@ namespace Poshuku
 	{
 		Ui_.setupUi (this);
 	}
-	
+
 	FindDialog::~FindDialog ()
 	{
 	}
-	
+
 	void FindDialog::SetText (const QString& text)
 	{
 		Ui_.Pattern_->setText (text);
@@ -53,12 +53,12 @@ namespace Poshuku
 	{
 		Ui_.Pattern_->setFocus ();
 	}
-	
+
 	void FindDialog::on_Pattern__textChanged (const QString& newText)
 	{
 		Ui_.FindButton_->setEnabled (!newText.isEmpty ());
 	}
-	
+
 	void FindDialog::on_FindButton__released ()
 	{
 		QWebPage::FindFlags flags;
@@ -68,10 +68,10 @@ namespace Poshuku
 			flags |= QWebPage::FindCaseSensitively;
 		if (Ui_.WrapAround_->checkState () == Qt::Checked)
 			flags |= QWebPage::FindWrapsAroundDocument;
-	
+
 		emit next (Ui_.Pattern_->text (), flags);
 	}
-	
+
 	void FindDialog::reject ()
 	{
 		hide ();

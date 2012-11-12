@@ -41,7 +41,7 @@ namespace Xoox
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMessage
-				LeechCraft::Azoth::IRichTextMessage);
+				LeechCraft::Azoth::IRichTextMessage)
 
 		QPointer<RoomCLEntry> ParentEntry_;
 		RoomParticipantEntry_ptr ParticipantEntry_;

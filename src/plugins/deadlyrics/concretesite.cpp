@@ -132,7 +132,7 @@ namespace DeadLyrics
 			urlFormat = urlFormat.nextSiblingElement ("urlFormat");
 		}
 
-		auto fillMatchers = [&elem] (const QString& name, MatcherBase::Mode mode)
+		auto fillMatchers = [&elem] (const QString& name, MatcherBase::Mode mode) -> QList<MatcherBase_ptr>
 		{
 			QList<MatcherBase_ptr> result;
 
@@ -162,7 +162,7 @@ namespace DeadLyrics
 	, Query_ (query)
 	, Desc_ (desc)
 	{
-		auto replace = [this] (QString str)
+		auto replace = [this] (QString str) -> QString
 		{
 			Q_FOREACH (const QChar c, Desc_.Replacements_.keys ())
 				str.replace (c, Desc_.Replacements_ [c]);
@@ -178,7 +178,7 @@ namespace DeadLyrics
 		url.replace ("{album}", album);
 		url.replace ("{title}", title);
 
-		auto cap = [] (QString str)
+		auto cap = [] (QString str) -> QString
 		{
 			if (!str.isEmpty ())
 				str [0] = str [0].toUpper ();

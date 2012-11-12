@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "piecesmodel.h"
+#include "core.h"
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -29,14 +31,20 @@ namespace LeechCraft
 				return Index_ == other.Index_;
 			}
 
-			PiecesModel::PiecesModel (QObject *parent)
+			PiecesModel::PiecesModel (int index, QObject *parent)
 			: QAbstractItemModel (parent)
+			, Index_ (index)
 			{
 				Headers_ << tr ("Index") << tr ("Speed") << tr ("State");
-			}
-
-			PiecesModel::~PiecesModel ()
-			{
+				auto timer = new QTimer (this);
+				connect (timer,
+						SIGNAL (timeout ()),
+						this,
+						SLOT (update ()));
+				timer->start (2000);
+				QTimer::singleShot (0,
+						this,
+						SLOT (update ()));
 			}
 
 			int PiecesModel::columnCount (const QModelIndex&) const
@@ -114,6 +122,18 @@ namespace LeechCraft
 					return 0;
 
 				return Pieces_.size ();
+			}
+
+			void PiecesModel::update ()
+			{
+				Clear ();
+				const auto& handle = Core::Instance ()->GetTorrentHandle (Index_);
+				if (!handle.is_valid ())
+					return;
+
+				std::vector<libtorrent::partial_piece_info> queue;
+				handle.get_download_queue (queue);
+				Update (queue);
 			}
 
 			void PiecesModel::Clear ()

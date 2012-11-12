@@ -27,16 +27,16 @@ namespace AdvancedNotifications
 	class ActionsProxyObject : public QObject
 	{
 		Q_OBJECT
-		Q_PROPERTY (QString actionText READ actionText NOTIFY actionTextChanged);
-		
+		Q_PROPERTY (QString actionText READ actionText NOTIFY actionTextChanged)
+
 		QString ActionText_;
 	public:
 		ActionsProxyObject (const QString&, QObject* = 0);
-		
+
 		QString actionText () const;
 	signals:
 		void actionTextChanged ();
-		
+
 		void actionSelected ();
 	};
 }

@@ -28,6 +28,7 @@ namespace Azoth
 	ConsoleWidget::ConsoleWidget (QObject *obj, QWidget *parent)
 	: QWidget (parent)
 	, ParentMultiTabs_ (0)
+	, AsObject_ (obj)
 	, AsAccount_ (qobject_cast<IAccount*> (obj))
 	, AsConsole_ (qobject_cast<IHaveConsole*> (obj))
 	, Format_ (AsConsole_->GetPacketFormat ())
@@ -73,7 +74,8 @@ namespace Azoth
 
 	void ConsoleWidget::Remove ()
 	{
-		AsConsole_->SetConsoleEnabled (false);
+		if (AsObject_)
+			AsConsole_->SetConsoleEnabled (false);
 		emit removeTab (this);
 		deleteLater ();
 	}

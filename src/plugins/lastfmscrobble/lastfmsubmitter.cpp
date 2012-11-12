@@ -110,7 +110,8 @@ namespace Lastfmscrobble
 			if (!NextSubmit_.duration () && secsTo > 30)
 			{
 				NextSubmit_.setDuration (secsTo);
-				cacheAndSubmit ();
+				if (Scrobbler_)
+					cacheAndSubmit ();
 			}
 			else
 				NextSubmit_ = lastfm::Track ();

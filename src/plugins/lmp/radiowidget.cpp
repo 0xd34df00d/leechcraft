@@ -19,6 +19,8 @@
 #include "radiowidget.h"
 #include <QStandardItemModel>
 #include <QInputDialog>
+#include <QSortFilterProxyModel>
+#include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include "core.h"
@@ -28,13 +30,49 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		class StationsFilterModel : public QSortFilterProxyModel
+		{
+		public:
+			StationsFilterModel (QObject *parent)
+			: QSortFilterProxyModel (parent)
+			{
+			}
+		protected:
+			bool filterAcceptsRow (int row, const QModelIndex& parent) const
+			{
+				const auto& pat = this->filterRegExp ().pattern ();
+				if (pat.isEmpty ())
+					return true;
+
+				const auto& idx = sourceModel ()->index (row, 0, parent);
+				if (idx.data (Media::RadioItemRole::ItemType).toInt () == Media::RadioType::None)
+					return true;
+
+				return idx.data ().toString ().contains (pat, Qt::CaseInsensitive);
+			}
+		};
+	}
+
 	RadioWidget::RadioWidget (QWidget *parent)
 	: QWidget (parent)
 	, Player_ (0)
 	, StationsModel_ (new QStandardItemModel (this))
+	, StationsProxy_ (new StationsFilterModel (this))
 	{
 		Ui_.setupUi (this);
-		Ui_.StationsView_->setModel (StationsModel_);
+
+		StationsProxy_->setDynamicSortFilter (true);
+		StationsProxy_->setSourceModel (StationsModel_);
+		Ui_.StationsView_->setModel (StationsProxy_);
+
+		connect (Ui_.StationsSearch_,
+				SIGNAL (textChanged (QString)),
+				StationsProxy_,
+				SLOT (setFilterFixedString (QString)));
+
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.StationsSearch_);
 	}
 
 	void RadioWidget::InitializeProviders ()
@@ -57,8 +95,9 @@ namespace LMP
 		Player_ = player;
 	}
 
-	void RadioWidget::on_StationsView__doubleClicked (const QModelIndex& index)
+	void RadioWidget::on_StationsView__doubleClicked (const QModelIndex& unmapped)
 	{
+		const auto& index = StationsProxy_->mapToSource (unmapped);
 		const auto item = StationsModel_->itemFromIndex (index);
 		auto root = item;
 		while (auto parent = root->parent ())

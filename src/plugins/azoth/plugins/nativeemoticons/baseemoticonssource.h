@@ -37,7 +37,7 @@ namespace NativeEmoticons
 							  , public IEmoticonResourceSource
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IEmoticonResourceSource);
+		Q_INTERFACES (LeechCraft::Azoth::IEmoticonResourceSource)
 	protected:
 		std::shared_ptr<Util::ResourceLoader> EmoLoader_;
 

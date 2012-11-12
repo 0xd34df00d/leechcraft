@@ -282,7 +282,6 @@ namespace Acetamide
 		Ui_.Password_->setChecked (ChannelMode_.ChannelKey_.first);
 		Ui_.Key_->setText (ChannelMode_.ChannelKey_.second);
 	}
-
 }
 }
 }

@@ -34,7 +34,7 @@ namespace Poshuku
 							, public IAddressBar
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IAddressBar);
+		Q_INTERFACES (LeechCraft::Poshuku::IAddressBar)
 
 		bool IsCompleting_;
 		QString PreviousUrl_;

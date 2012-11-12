@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_POSHUKU_CUSTOMWEBVIEW_H
 #define PLUGINS_POSHUKU_CUSTOMWEBVIEW_H
-#include <qgraphicswebview.h>
+#include <qwebview.h>
 #include <interfaces/structures.h>
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/poshukutypes.h"
@@ -32,7 +32,7 @@ namespace Poshuku
 {
 	class BrowserWidget;
 
-	class CustomWebView : public QGraphicsWebView
+	class CustomWebView : public QWebView
 	{
 		Q_OBJECT
 
@@ -43,7 +43,7 @@ namespace Poshuku
 		double ScrollDelta_;
 		double AccumulatedScrollShift_;
 	public:
-		CustomWebView (QGraphicsItem* = 0);
+		CustomWebView (QWidget* = 0);
 		virtual ~CustomWebView ();
 
 		void SetBrowserWidget (BrowserWidget*);
@@ -65,9 +65,9 @@ namespace Poshuku
 		 */
 		QString URLToProperString (const QUrl& url);
 	protected:
-		virtual void mousePressEvent (QGraphicsSceneMouseEvent*);
-		virtual void wheelEvent (QGraphicsSceneWheelEvent*);
-		virtual void contextMenuEvent (QGraphicsSceneContextMenuEvent*);
+		virtual void mousePressEvent (QMouseEvent*);
+		virtual void wheelEvent (QWheelEvent*);
+		virtual void contextMenuEvent (QContextMenuEvent*);
 		virtual void keyReleaseEvent (QKeyEvent*);
 	private:
 		int LevelForZoom (qreal);
@@ -108,7 +108,7 @@ namespace Poshuku
 
 		// Hook support signals
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QGraphicsWebView*, QGraphicsSceneContextMenuEvent*,
+				QWebView*, QContextMenuEvent*,
 				const QWebHitTestResult&, QMenu*,
 				WebViewCtxMenuStage);
 	};

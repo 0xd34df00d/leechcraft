@@ -1119,7 +1119,7 @@ namespace Azoth
 			const QDateTime& dt = msg->GetDateTime ();
 
 			if (std::find_if (rMsgs.begin (), rMsgs.end (),
-					[msg] (QObject *msgObj)
+					[msg] (QObject *msgObj) -> bool
 					{
 						IMessage *tMsg = qobject_cast<IMessage*> (msgObj);
 						if (!tMsg)
@@ -1621,7 +1621,7 @@ namespace Azoth
 
 			const auto& parts = mucEntry->GetParticipants ();
 			auto partPos = std::find_if (parts.begin (), parts.end (),
-					[&nick] (QObject *entryObj)
+					[&nick] (QObject *entryObj) -> bool
 					{
 						auto entry = qobject_cast<ICLEntry*> (entryObj);
 						return entry && entry->GetEntryName () == nick;

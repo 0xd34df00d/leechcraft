@@ -38,12 +38,14 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Translator_.reset (Util::InstallTranslator ("azoth_chathistory"));
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothchathistorysettings.xml");
+
+		Core::Instance ()->SetCoreProxy (proxy);
 
 		ChatHistoryWidget::SetParentMultiTabs (this);
 
@@ -170,7 +172,7 @@ namespace ChatHistory
 	{
 		Core::Instance ()->Process (map);
 	}
-	
+
 	void Plugin::InitWidget (ChatHistoryWidget *wh)
 	{
 		connect (wh,

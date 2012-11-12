@@ -33,7 +33,7 @@ namespace Vader
 					   , public IProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
 
 		QList<MRIMAccount*> Accounts_;
 	public:

@@ -24,190 +24,195 @@ Q_DECLARE_METATYPE (QVariantList*);
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace SecMan
+{
+	Core::Core ()
 	{
-		namespace SecMan
+	}
+
+	Core& Core::Instance ()
+	{
+		static Core c;
+		return c;
+	}
+
+	bool Core::CouldHandle (const Entity& e) const
+	{
+		if (e.Mime_ == "x-leechcraft/data-persistent-save" ||
+				e.Mime_ == "x-leechcraft/data-persistent-load")
+			return true;
+
+		return false;
+	}
+
+	void Core::Handle (Entity e)
+	{
+		if (e.Mime_ == "x-leechcraft/data-persistent-load")
 		{
-			Core::Core ()
+			QList<QVariant> rawKeys = e.Entity_.toList ();
+
+			QVariant valuesList = e.Additional_ ["Values"];
+			if (!valuesList.canConvert<QVariantList*> ())
 			{
+				qWarning () << Q_FUNC_INFO
+						<< "could not convert Entity.Additional_ [\"Values\"] "
+							"to QVariant*, sender plugin sucks";
+				return;
 			}
 
-			Core& Core::Instance ()
+			QVariantList *valuesListPtr = valuesList.value<QVariantList*> ();
+			if (!valuesListPtr)
 			{
-				static Core c;
-				return c;
+				qWarning () << Q_FUNC_INFO
+						<< "null Entity.Additional_ [\"Values\"] pointer";
+				return;
 			}
 
-			bool Core::CouldHandle (const Entity& e) const
-			{
-				if (e.Mime_ == "x-leechcraft/data-persistent-save" ||
-						e.Mime_ == "x-leechcraft/data-persistent-load")
-					return true;
+			bool secure = e.Additional_.value ("SecureStorage", false).toBool ();
 
-				return false;
+			QList<QByteArray> keys;
+			Q_FOREACH (const QVariant& rKey, rawKeys)
+			{
+				QByteArray key = rKey.toByteArray ();
+				if (key.isEmpty ())
+					continue;
+				keys << key;
 			}
 
-			void Core::Handle (Entity e)
+			QList<QVariantList> values = Load (keys, secure);
+			if (values.size () != keys.size ())
+				return;
+
+			valuesListPtr->clear ();
+			Q_FOREACH (const QVariantList& value, values)
+				*valuesListPtr << QVariant (value);
+		}
+		else if (e.Mime_ == "x-leechcraft/data-persistent-save")
+		{
+			QList<QVariant> rawKeys = e.Entity_.toList ();
+			QList<QVariant> rawValues = e.Additional_ ["Values"].toList ();
+
+			QList<QByteArray> keys;
+			Q_FOREACH (const QVariant& rKey, rawKeys)
 			{
-				if (e.Mime_ == "x-leechcraft/data-persistent-load")
-				{
-					QList<QVariant> rawKeys = e.Entity_.toList ();
-
-					QVariant valuesList = e.Additional_ ["Values"];
-					if (!valuesList.canConvert<QVariantList*> ())
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "could not convert Entity.Additional_ [\"Values\"] "
-									"to QVariant*, sender plugin sucks";
-						return;
-					}
-
-					QVariantList *valuesListPtr = valuesList.value<QVariantList*> ();
-					if (!valuesListPtr)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "null Entity.Additional_ [\"Values\"] pointer";
-						return;
-					}
-
-					bool secure = e.Additional_.value ("SecureStorage", false).toBool ();
-
-					QList<QByteArray> keys;
-					Q_FOREACH (const QVariant& rKey, rawKeys)
-					{
-						QByteArray key = rKey.toByteArray ();
-						if (key.isEmpty ())
-							continue;
-						keys << key;
-					}
-
-					QList<QVariantList> values = Load (keys, secure);
-					if (values.size () != keys.size ())
-						return;
-
-					valuesListPtr->clear ();
-					Q_FOREACH (const QVariantList& value, values)
-						*valuesListPtr << QVariant (value);
-				}
-				else if (e.Mime_ == "x-leechcraft/data-persistent-save")
-				{
-					QList<QVariant> rawKeys = e.Entity_.toList ();
-					QList<QVariant> rawValues = e.Additional_ ["Values"].toList ();
-
-					QList<QByteArray> keys;
-					Q_FOREACH (const QVariant& rKey, rawKeys)
-					{
-						QByteArray key = rKey.toByteArray ();
-						if (key.isEmpty ())
-							continue;
-						keys << key;
-					}
-
-					QList<QVariantList> values;
-					Q_FOREACH (const QVariant& rValue, rawValues)
-						values << rValue.toList ();
-
-					if (values.size () != keys.size ())
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "keys size doesn't match values size, raw data:"
-								<< rawKeys
-								<< values;
-						return;
-					}
-
-					if (keys.size () == 0)
-						return;
-
-					bool secure = e.Additional_.value ("SecureStorage", false).toBool ();
-					bool overwrite = e.Additional_.value ("Overwrite", false).toBool ();
-					Store (keys, values, secure, overwrite);
-				}
+				QByteArray key = rKey.toByteArray ();
+				if (key.isEmpty ())
+					continue;
+				keys << key;
 			}
 
-			QSet<QByteArray> Core::GetExpectedPluginClasses () const
+			QList<QVariantList> values;
+			Q_FOREACH (const QVariant& rValue, rawValues)
+				values << rValue.toList ();
+
+			if (values.size () != keys.size ())
 			{
-				return QSet<QByteArray> () << "org.LeechCraft.SecMan.StoragePlugins/1.0";
+				qWarning () << Q_FUNC_INFO
+						<< "keys size doesn't match values size, raw data:"
+						<< rawKeys
+						<< values;
+				return;
 			}
 
-			void Core::AddPlugin (QObject *plugin)
-			{
-				IPlugin2 *ip2 = qobject_cast<IPlugin2*> (plugin);
-				if (!ip2)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "passed object is not a IPlugin2"
-							<< plugin;
-					return;
-				}
+			if (keys.size () == 0)
+				return;
 
-				QSet<QByteArray> classes = ip2->GetPluginClasses ();
-				if (classes.contains ("org.LeechCraft.SecMan.StoragePlugins/1.0"))
-					AddStoragePlugin (plugin);
-			}
-
-			void Core::AddStoragePlugin (QObject *plugin)
-			{
-				if (!qobject_cast<IStoragePlugin*> (plugin))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "passed object is not a IStoragePlugin"
-							<< plugin;
-					return;
-				}
-				StoragePlugins_ << plugin;
-			}
-
-			void Core::Store (const QList<QByteArray>& keys,
-					const QList<QVariantList>& values, bool secure, bool overwrite)
-			{
-				Q_ASSERT (keys.size () == values.size ());
-				Q_ASSERT (keys.size ());
-
-				QObject *storage = GetStoragePlugin ();
-
-				if (!storage)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "null storage";
-					return;
-				}
-
-				IStoragePlugin::StorageType type = secure ?
-						IStoragePlugin::STSecure :
-						IStoragePlugin::STInsecure;
-
-				QList<QPair<QByteArray, QVariantList>> data;
-				for (int i = 0; i < keys.size (); ++i)
-					data << qMakePair (keys.at (i), values.at (i));
-				qobject_cast<IStoragePlugin*> (storage)->Save (data, type, overwrite);
-			}
-
-			QList<QVariantList> Core::Load (const QList<QByteArray>& keys, bool secure)
-			{
-				if (!keys.size ())
-					return QList<QVariantList> ();
-
-				QObject *storage = GetStoragePlugin ();
-
-				if (!storage)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "null storage";
-					return QList<QVariantList> ();
-				}
-
-				IStoragePlugin::StorageType type = secure ?
-						IStoragePlugin::STSecure :
-						IStoragePlugin::STInsecure;
-
-				return qobject_cast<IStoragePlugin*> (storage)->Load (keys, type);
-			}
-
-			QObject* Core::GetStoragePlugin () const
-			{
-				return StoragePlugins_.size () ? StoragePlugins_.at (0) : 0;
-			}
+			bool secure = e.Additional_.value ("SecureStorage", false).toBool ();
+			bool overwrite = e.Additional_.value ("Overwrite", false).toBool ();
+			Store (keys, values, secure, overwrite);
 		}
 	}
+
+	QSet<QByteArray> Core::GetExpectedPluginClasses () const
+	{
+		return QSet<QByteArray> () << "org.LeechCraft.SecMan.StoragePlugins/1.0";
+	}
+
+	void Core::AddPlugin (QObject *plugin)
+	{
+		IPlugin2 *ip2 = qobject_cast<IPlugin2*> (plugin);
+		if (!ip2)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "passed object is not a IPlugin2"
+					<< plugin;
+			return;
+		}
+
+		QSet<QByteArray> classes = ip2->GetPluginClasses ();
+		if (classes.contains ("org.LeechCraft.SecMan.StoragePlugins/1.0"))
+			AddStoragePlugin (plugin);
+	}
+
+	QObjectList Core::GetStoragePlugins () const
+	{
+		return QObjectList () << GetStoragePlugin ();
+	}
+
+	void Core::AddStoragePlugin (QObject *plugin)
+	{
+		if (!qobject_cast<IStoragePlugin*> (plugin))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "passed object is not a IStoragePlugin"
+					<< plugin;
+			return;
+		}
+		StoragePlugins_ << plugin;
+	}
+
+	void Core::Store (const QList<QByteArray>& keys,
+			const QList<QVariantList>& values, bool secure, bool overwrite)
+	{
+		Q_ASSERT (keys.size () == values.size ());
+		Q_ASSERT (keys.size ());
+
+		QObject *storage = GetStoragePlugin ();
+
+		if (!storage)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null storage";
+			return;
+		}
+
+		IStoragePlugin::StorageType type = secure ?
+				IStoragePlugin::STSecure :
+				IStoragePlugin::STInsecure;
+
+		QList<QPair<QByteArray, QVariantList>> data;
+		for (int i = 0; i < keys.size (); ++i)
+			data << qMakePair (keys.at (i), values.at (i));
+		qobject_cast<IStoragePlugin*> (storage)->Save (data, type, overwrite);
+	}
+
+	QList<QVariantList> Core::Load (const QList<QByteArray>& keys, bool secure)
+	{
+		if (!keys.size ())
+			return QList<QVariantList> ();
+
+		QObject *storage = GetStoragePlugin ();
+
+		if (!storage)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null storage";
+			return QList<QVariantList> ();
+		}
+
+		IStoragePlugin::StorageType type = secure ?
+				IStoragePlugin::STSecure :
+				IStoragePlugin::STInsecure;
+
+		return qobject_cast<IStoragePlugin*> (storage)->Load (keys, type);
+	}
+
+	QObject* Core::GetStoragePlugin () const
+	{
+		return StoragePlugins_.size () ? StoragePlugins_.at (0) : 0;
+	}
+}
+}
 }

@@ -137,6 +137,13 @@ namespace LMP
 				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleDevDataChanged (QModelIndex, QModelIndex)));
+		connect (Merger_,
+				SIGNAL (rowsInserted (QModelIndex, int, int)),
+				this,
+				SLOT (handleRowsInserted (QModelIndex, int, int)));
+
+		if (Ui_.DevicesSelector_->count ())
+			on_DevicesSelector__activated (0);
 	}
 
 	namespace
@@ -267,6 +274,12 @@ namespace LMP
 			return;
 
 		on_DevicesSelector__activated (idx);
+	}
+
+	void DevicesBrowserWidget::handleRowsInserted (const QModelIndex&, int start, int end)
+	{
+		if (start - end + 1 == Merger_->rowCount ())
+			on_DevicesSelector__activated (0);
 	}
 
 	void DevicesBrowserWidget::on_UploadButton__released ()

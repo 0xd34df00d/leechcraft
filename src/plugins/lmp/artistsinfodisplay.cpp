@@ -26,70 +26,13 @@
 #include <util/util.h>
 #include "core.h"
 #include "localcollection.h"
+#include "similarmodel.h"
+#include "sysiconsprovider.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	namespace
-	{
-		class SysIconProvider : public QDeclarativeImageProvider
-		{
-			ICoreProxy_ptr Proxy_;
-		public:
-			SysIconProvider (ICoreProxy_ptr proxy)
-			: QDeclarativeImageProvider (Pixmap)
-			, Proxy_ (proxy)
-			{
-			}
-
-			QPixmap requestPixmap (const QString& id, QSize *size, const QSize& requestedSize)
-			{
-				const auto& icon = Proxy_->GetIcon (id);
-
-				const auto& getSize = requestedSize.width () > 2 && requestedSize.height () > 2 ?
-						requestedSize :
-						QSize (48, 48);
-				if (size)
-					*size = icon.actualSize (getSize);
-				return icon.pixmap (getSize);
-			}
-		};
-
-		class SimilarModel : public QStandardItemModel
-		{
-		public:
-			enum Role
-			{
-				ArtistName = Qt::UserRole + 1,
-				Similarity,
-				ArtistImageURL,
-				ArtistBigImageURL,
-				ArtistPageURL,
-				ArtistTags,
-				ShortDesc,
-				FullDesc,
-				IsInCollection
-			};
-
-			SimilarModel (QObject *parent = 0)
-			: QStandardItemModel (parent)
-			{
-				QHash<int, QByteArray> names;
-				names [ArtistName] = "artistName";
-				names [Similarity] = "similarity";
-				names [ArtistImageURL] = "artistImageURL";
-				names [ArtistBigImageURL] = "artistBigImageURL";
-				names [ArtistPageURL] = "artistPageURL";
-				names [ArtistTags] = "artistTags";
-				names [ShortDesc] = "shortDesc";
-				names [FullDesc] = "fullDesc";
-				names [IsInCollection] = "artistInCollection";
-				setRoleNames (names);
-			}
-		};
-	}
-
 	ArtistsInfoDisplay::ArtistsInfoDisplay (QWidget *parent)
 	: QDeclarativeView (parent)
 	, Model_ (new SimilarModel (this))
@@ -116,18 +59,9 @@ namespace LMP
 				[] (const Media::SimilarityInfo& left, const Media::SimilarityInfo& right)
 					{ return left.Similarity_ > right.Similarity_; });
 
-		const auto col = Core::Instance ().GetLocalCollection ();
 		Q_FOREACH (const Media::SimilarityInfo& info, infos)
 		{
-			auto item = new QStandardItem ();
-
-			const auto& artist = info.Artist_;
-			item->setData (artist.Name_, SimilarModel::Role::ArtistName);
-			item->setData (artist.Image_, SimilarModel::Role::ArtistImageURL);
-			item->setData (artist.LargeImage_, SimilarModel::Role::ArtistBigImageURL);
-			item->setData (artist.ShortDesc_, SimilarModel::Role::ShortDesc);
-			item->setData (artist.FullDesc_, SimilarModel::Role::FullDesc);
-			item->setData (artist.Page_, SimilarModel::Role::ArtistPageURL);
+			auto item = SimilarModel::ConstructItem (info.Artist_);
 
 			QString simStr;
 			if (info.Similarity_ > 0)
@@ -138,18 +72,6 @@ namespace LMP
 					.arg (info.SimilarTo_.join ("; "));
 			if (!simStr.isEmpty ())
 				item->setData (simStr, SimilarModel::Role::Similarity);
-
-			QStringList tags;
-			const int diff = artist.Tags_.size () - 5;
-			auto begin = artist.Tags_.begin ();
-			if (diff > 0)
-				std::advance (begin, diff);
-			std::transform (begin, artist.Tags_.end (), std::back_inserter (tags),
-					[] (decltype (artist.Tags_.front ()) tag) { return tag.Name_; });
-			std::reverse (tags.begin (), tags.end ());
-			item->setData (tr ("Tags: %1").arg (tags.join ("; ")), SimilarModel::Role::ArtistTags);
-
-			item->setData (col->FindArtist (artist.Name_) >= 0, SimilarModel::Role::IsInCollection);
 
 			Model_->appendRow (item);
 		}

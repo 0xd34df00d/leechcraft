@@ -288,7 +288,7 @@ namespace Poshuku
 		return Core::Instance ().GetWidget ();
 	}
 
-	QGraphicsWebView* Poshuku::CreateWindow ()
+	QWebView* Poshuku::CreateWindow ()
 	{
 		return Core::Instance ().MakeWebView ();
 	}

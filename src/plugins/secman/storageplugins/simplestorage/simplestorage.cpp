@@ -101,7 +101,8 @@ namespace LeechCraft
 						if (st != STInsecure)
 							return QList<QByteArray> ();
 
-						QStringList keys = Storage_->childKeys ();
+						QStringList keys = Storage_->allKeys ();
+						qDebug () << Q_FUNC_INFO << keys;
 						QList<QByteArray> result;
 						Q_FOREACH (const QString& key, keys)
 							result << key.toUtf8 ();

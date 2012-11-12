@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_PEERINFO_H
-#define PLUGINS_BITTORRENT_PEERINFO_H
+#pragma once
+
 #include <vector>
 #include <memory>
 #include <QTime>
@@ -26,21 +26,18 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	struct PeerInfo
 	{
-		namespace BitTorrent
-		{
-			struct PeerInfo
-			{
-				QString IP_;
-				QString Client_;
-				int RemoteHas_;
-				QString CountryCode_;
-				std::shared_ptr<libtorrent::peer_info> PI_;
-			};
-		};
+		QString IP_;
+		QString Client_;
+		int RemoteHas_;
+		QString CountryCode_;
+		std::shared_ptr<libtorrent::peer_info> PI_;
 	};
-};
-
-#endif
-
+}
+}
+}

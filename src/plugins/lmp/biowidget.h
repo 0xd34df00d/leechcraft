@@ -21,9 +21,13 @@
 #include <QWidget>
 #include "ui_biowidget.h"
 
+class QStandardItemModel;
+class QStandardItem;
+
 namespace Media
 {
 	struct ArtistBio;
+	struct AlbumInfo;
 	class IArtistBioFetcher;
 }
 
@@ -43,14 +47,21 @@ namespace LMP
 		QString CurrentArtist_;
 
 		BioPropProxy *BioPropProxy_;
+		QStandardItemModel *DiscoModel_;
 	public:
 		BioWidget (QWidget* = 0);
 
 		void SetCurrentArtist (const QString&);
+	private:
+		QStandardItem* FindAlbumItem (const QString&) const;
 	private slots:
 		void saveLastUsedProv ();
 		void requestBiography ();
+
 		void handleBioReady ();
+		void handleDiscographyReady ();
+		void handleAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
+
 		void handleLink (const QString&);
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);

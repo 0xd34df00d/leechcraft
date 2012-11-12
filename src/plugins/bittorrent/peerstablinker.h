@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_PEERSTABLINKER_H
-#define PLUGINS_BITTORRENT_PEERSTABLINKER_H
+#pragma once
+
 #include <QObject>
 #include <QPersistentModelIndex>
 
@@ -25,32 +25,29 @@ class QSortFilterProxyModel;
 
 namespace Ui
 {
-	class TabWidget;
-};
+	class TorrentTabWidget;
+}
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	class PeersTabLinker : public QObject
 	{
-		namespace BitTorrent
-		{
-			class PeersTabLinker : public QObject
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::TabWidget *Ui_;
-				QSortFilterProxyModel *ProxyModel_;
-				QPersistentModelIndex Current_;
-			public:
-				PeersTabLinker (Ui::TabWidget*,
-						QSortFilterProxyModel*, QObject* = 0);
-			private slots:
-				void handleNewRow (const QModelIndex&);
-				void update ();
-			};
-		};
+		Ui::TorrentTabWidget *Ui_;
+		QSortFilterProxyModel *ProxyModel_;
+		QPersistentModelIndex Current_;
+	public:
+		PeersTabLinker (Ui::TorrentTabWidget*,
+				QSortFilterProxyModel*, QObject* = 0);
+	private slots:
+		void handleNewRow (const QModelIndex&);
+		void update ();
 	};
-};
-
-#endif
-
+}
+}
+}

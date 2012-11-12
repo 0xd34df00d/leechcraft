@@ -18,6 +18,13 @@
     <number>0</number>
    </property>
    <item>
+    <widget class="QLineEdit" name="StationsSearch_">
+     <property name="placeholderText">
+      <string>Filter stations...</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QTreeView" name="StationsView_">
      <property name="rootIsDecorated">
       <bool>true</bool>

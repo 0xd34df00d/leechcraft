@@ -124,9 +124,18 @@ namespace LMP
 				Qt::AlignRight, option.palette, true, lengthText);
 
 		const auto& itemTextRect = option.rect.adjusted (0, 0, -width, 0);
-		auto itemStr = isSubAlbum ?
-				QString::fromUtf8 ("%1 — %2").arg (info.TrackNumber_).arg (info.Title_) :
-				index.data ().toString ();
+		QString itemStr;
+		if (!isSubAlbum)
+			itemStr = index.data ().toString ();
+		else
+		{
+			if (info.TrackNumber_ > 0 && !info.Title_.isEmpty ())
+				itemStr = QString::fromUtf8 ("%1 — %2").arg (info.TrackNumber_).arg (info.Title_);
+			else if (!info.Title_.isEmpty ())
+				itemStr = info.Title_;
+			else
+				itemStr = QFileInfo (info.LocalPath_).fileName ();
+		}
 		itemStr = option.fontMetrics.elidedText (itemStr, Qt::ElideRight, itemTextRect.width ());
 
 		style->drawItemText (painter, itemTextRect, 0, option.palette, true, itemStr);

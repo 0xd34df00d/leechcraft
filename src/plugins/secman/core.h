@@ -16,43 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SECMAN_CORE_H
-#define PLUGINS_SECMAN_CORE_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/structures.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace SecMan
+{
+	class Core : public QObject
 	{
-		namespace SecMan
-		{
-			class Core : public QObject
-			{
-				Core ();
+		Core ();
 
-				QObjectList StoragePlugins_;
-			public:
-				static Core& Instance ();
+		QObjectList StoragePlugins_;
+	public:
+		static Core& Instance ();
 
-				bool CouldHandle (const Entity&) const;
-				void Handle (Entity);
-				QSet<QByteArray> GetExpectedPluginClasses () const;
-				void AddPlugin (QObject*);
-			private:
-				/** This one is called internally from AddPlugin, so it
-				 * has no need to make sanity checks of the object.
-				 *
-				 * @param[in] object The storage plugin instance object.
-				 */
-				void AddStoragePlugin (QObject *object);
-				void Store (const QList<QByteArray>&, const QList<QVariantList>&, bool, bool);
-				QList<QVariantList> Load (const QList<QByteArray>&, bool);
+		bool CouldHandle (const Entity&) const;
+		void Handle (Entity);
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
 
-				QObject* GetStoragePlugin () const;
-			};
-		}
-	}
+		QObjectList GetStoragePlugins () const;
+	private:
+		/** This one is called internally from AddPlugin, so it
+			* has no need to make sanity checks of the object.
+			*
+			* @param[in] object The storage plugin instance object.
+			*/
+		void AddStoragePlugin (QObject *object);
+		void Store (const QList<QByteArray>&, const QList<QVariantList>&, bool, bool);
+		QList<QVariantList> Load (const QList<QByteArray>&, bool);
+
+		QObject* GetStoragePlugin () const;
+	};
 }
-
-#endif
+}
+}

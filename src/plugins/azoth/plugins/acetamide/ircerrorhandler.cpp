@@ -118,6 +118,6 @@ namespace Acetamide
 		ErrorKeys_ << 501;
 		ErrorKeys_ << 502;
 	}
-};
-};
-};
+}
+}
+}

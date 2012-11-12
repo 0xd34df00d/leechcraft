@@ -20,7 +20,7 @@
 #include "otzerkaludialog.h"
 
 namespace LeechCraft
-{	
+{
 namespace Otzerkalu
 {
 	OtzerkaluDialog::OtzerkaluDialog (QWidget *parent)
@@ -30,22 +30,22 @@ namespace Otzerkalu
 
 		Ui_.SaveDirLineEdit_->setText (QDir::homePath ());
 	}
-	
+
 	int OtzerkaluDialog::GetRecursionLevel () const
 	{
 		return Ui_.RecursionLevel_->value ();
 	}
-	
+
 	QString OtzerkaluDialog::GetDir () const
 	{
 		return Ui_.SaveDirLineEdit_->text ();
 	}
-	
+
 	bool OtzerkaluDialog::FetchFromExternalHosts () const
 	{
 		return Ui_.FromOtherSite_->isChecked ();
 	}
-		
+
 	void OtzerkaluDialog::on_ChooseDirButton__clicked ()
 	{
 		QString saveDir = QFileDialog::getExistingDirectory (this,
@@ -55,7 +55,7 @@ namespace Otzerkalu
 						QFileDialog::DontResolveSymlinks);
 		if (saveDir.isEmpty ())
 			return;
-		
+
 		Ui_.SaveDirLineEdit_->setText (saveDir);
 	}
 }

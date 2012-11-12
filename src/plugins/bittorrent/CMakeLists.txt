@@ -43,7 +43,6 @@ SET (SRCS
 	filesviewdelegate.cpp
 	movetorrentfiles.cpp
 	trackerschanger.cpp
-	exportdialog.cpp
 	peerstablinker.cpp
 	addpeerdialog.cpp
 	ipvalidators.cpp
@@ -58,6 +57,9 @@ SET (SRCS
 	speedselectoraction.cpp
 	torrentmaker.cpp
 	singletrackerchanger.cpp
+	torrenttab.cpp
+	torrenttabwidget.cpp
+	tabviewproxymodel.cpp
 	)
 SET (HEADERS
 	torrentplugin.h
@@ -78,7 +80,6 @@ SET (HEADERS
 	filesviewdelegate.h
 	movetorrentfiles.h
 	trackerschanger.h
-	exportdialog.h
 	peerstablinker.h
 	addpeerdialog.h
 	ipvalidators.h
@@ -93,6 +94,9 @@ SET (HEADERS
 	speedselectoraction.h
 	torrentmaker.h
 	singletrackerchanger.h
+	torrenttab.h
+	torrenttabwidget.h
+	tabviewproxymodel.h
 	newtorrentparams.h
 	torrentinfo.h
 	fileinfo.h
@@ -107,7 +111,6 @@ SET (FORMS
 	newtorrentthirdstep.ui
 	movetorrentfiles.ui
 	trackerschanger.ui
-	exportdialog.ui
 	addpeerdialog.ui
 	addwebseeddialog.ui
 	startupfirstpage.ui
@@ -115,11 +118,13 @@ SET (FORMS
 	banpeersdialog.ui
 	ipfilterdialog.ui
 	singletrackerchanger.ui
+	torrenttab.ui
+	torrenttabwidget.ui
 	)
 SET (RESOURCES bittorrentresources.qrc)
 CreateTrs ("bittorrent" "ar;be;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 
-ADD_DEFINITIONS (-DWIN32_LEAN_AND_MEAN -DBOOST_ALL_NO_LIB)
+ADD_DEFINITIONS (-DWIN32_LEAN_AND_MEAN -DBOOST_ALL_NO_LIB -DBOOST_ASIO_DYN_LINK)
 
 IF (APPLE)
 	ADD_DEFINITIONS (-DWITH_SHIPPED_GEOIP_H)
