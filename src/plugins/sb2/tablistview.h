@@ -36,8 +36,12 @@ namespace SB2
 		QStandardItemModel *Model_;
 
 		QTimer *LeaveTimer_;
+
+		bool ContainsMouse_;
 	public:
 		TabListView (const QList<QWidget*>&, ICoreProxy_ptr, QWidget* = 0);
+
+		void HandleLauncherUnhovered ();
 	protected:
 		void enterEvent (QEvent*);
 		void leaveEvent (QEvent*);

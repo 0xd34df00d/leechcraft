@@ -66,6 +66,7 @@ Rectangle {
                         var absPoint = quarkProxy.mapToGlobal(getAbsPos("x"), getAbsPos("y"));
                         SB2_launcherProxy.tabListRequested(tabClassID, absPoint.x + rootRect.width, absPoint.y + pregap.height);
                     }
+                    onHoverLeft: SB2_launcherProxy.tabListUnhovered(tabClassID)
 
                     effect: Colorize {
                         strength: openedTabsCount || tcButton.isHovered ? 0 : 0.3

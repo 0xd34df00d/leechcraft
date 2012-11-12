@@ -59,6 +59,7 @@ namespace SB2
 	, Proxy_ (proxy)
 	, Model_ (new TabsListModel (this))
 	, LeaveTimer_ (new QTimer (this))
+	, ContainsMouse_ (false)
 	{
 		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "TabListView.qml");
 		if (file.isEmpty ())
@@ -113,17 +114,24 @@ namespace SB2
 				SIGNAL (timeout ()),
 				this,
 				SLOT (deleteLater ()));
-		LeaveTimer_->start (1200);
+	}
+
+	void TabListView::HandleLauncherUnhovered ()
+	{
+		if (!ContainsMouse_)
+			LeaveTimer_->start (1200);
 	}
 
 	void TabListView::enterEvent (QEvent *e)
 	{
+		ContainsMouse_ = true;
 		LeaveTimer_->stop ();
 		QDeclarativeView::enterEvent (e);
 	}
 
 	void TabListView::leaveEvent (QEvent *e)
 	{
+		ContainsMouse_ = false;
 		LeaveTimer_->start (800);
 		QDeclarativeView::leaveEvent (e);
 	}
