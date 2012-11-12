@@ -93,7 +93,7 @@ namespace SB2
 	, Model_ (new LauncherModel (this))
 	, ImageProv_ (new TabClassImageProvider (proxy))
 	{
-		Component_.Url_ = Util::GetSysPath (Util::SysPath::QML, "sb2", "LauncherComponent.qml");
+		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "sb2", "LauncherComponent.qml"));
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherModel", Model_);
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
 		Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
