@@ -19,7 +19,10 @@
 #pragma once
 
 #include <QObject>
+#include <QUrl>
+#include <QHash>
 #include <interfaces/core/icoreproxy.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 class QStandardItemModel;
 
@@ -30,6 +33,7 @@ struct QuarkComponent;
 namespace SB2
 {
 	class SBView;
+	class QuarkSettingsManager;
 
 	class ViewManager : public QObject
 	{
@@ -38,14 +42,24 @@ namespace SB2
 		ICoreProxy_ptr Proxy_;
 		QStandardItemModel *ViewItemsModel_;
 		SBView *View_;
+
+		struct QuarkSettings
+		{
+			Util::XmlSettingsDialog_ptr XSD_;
+			QuarkSettingsManager *SettingsManager_;
+		};
+		QHash<QUrl, QuarkSettings> Quark2Settings_;
 	public:
 		ViewManager (ICoreProxy_ptr, QObject* = 0);
 
 		SBView* GetView () const;
 
 		void SecondInit ();
-
 		void AddComponent (const QuarkComponent&);
+
+		void ShowSettings (const QUrl&);
+	private:
+		bool CreateSettings (const QUrl&);
 	};
 }
 }

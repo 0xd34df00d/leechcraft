@@ -22,6 +22,7 @@
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/icoreproxy.h>
 
+class QDockWidget;
 class QStandardItemModel;
 class QStandardItem;
 
@@ -44,12 +45,21 @@ namespace SB2
 		ActionImageProvider *ImageProv_;
 
 		int NextActionId_;
+
+		enum class ActionPos
+		{
+			Beginning,
+			End
+		};
 	public:
 		TrayComponent (ICoreProxy_ptr, QObject* parent = 0);
 
 		QuarkComponent GetComponent () const;
+		void HandleDock (QDockWidget*, bool);
 	private:
 		QStandardItem* FindItem (QAction*) const;
+		void AddActions (const QList<QAction*>&, ActionPos);
+		void RemoveAction (QAction*);
 	private slots:
 		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
 		void handleActionDestroyed ();

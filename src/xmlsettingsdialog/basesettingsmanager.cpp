@@ -32,24 +32,19 @@ namespace Util
 	void BaseSettingsManager::Init ()
 	{
 		auto settings = GetSettings ();
-		QStringList properties = ReadAllKeys_ ?
+		const auto& properties = ReadAllKeys_ ?
 				settings->allKeys () :
 				settings->childKeys ();
-		Initializing_ = true;
-		for (int i = 0; i < properties.size (); ++i)
-			setProperty (PROP2CHAR (properties.at (i)),
-					settings->value (properties.at (i)));
-		Initializing_ = false;
+		for (const auto& prop : properties)
+			setProperty (PROP2CHAR (prop), settings->value (prop));
 	}
 
 	void BaseSettingsManager::Release ()
 	{
 		auto settings = GetSettings ();
 
-		const auto& dProperties = dynamicPropertyNames ();
-		for (int i = 0; i < dProperties.size (); ++i)
-			settings->setValue (QString::fromUtf8 (dProperties.at (i)),
-					property (dProperties.at (i).constData ()));
+		for (const auto& dProp : dynamicPropertyNames ())
+			settings->setValue (QString::fromUtf8 (dProp), property (dProp.constData ()));
 	}
 
 	void BaseSettingsManager::RegisterObject (const QByteArray& propName,
@@ -120,7 +115,10 @@ namespace Util
 		auto event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
 
 		const QByteArray& name = event->propertyName ();
-		GetSettings ()->setValue (QString::fromUtf8 (name), property (name));
+		const auto& propName = QString::fromUtf8 (name);
+		const auto& propValue = property (name);
+		GetSettings ()->setValue (propName, propValue);
+		PropertyChanged (propName, propValue);
 
 		if (ApplyProps_.contains (name))
 		{
@@ -141,6 +139,10 @@ namespace Util
 
 		event->accept ();
 		return true;
+	}
+
+	void BaseSettingsManager::PropertyChanged (const QString&, const QVariant&)
+	{
 	}
 
 	Settings_ptr BaseSettingsManager::GetSettings() const

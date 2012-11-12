@@ -20,6 +20,7 @@
 
 #include <QObject>
 
+class QUrl;
 class QPoint;
 
 namespace LeechCraft
@@ -37,6 +38,7 @@ namespace SB2
 		QuarkProxy (ViewManager*, QObject* = 0);
 	public slots:
 		QPoint mapToGlobal (double, double);
+		void showSettings (const QUrl&);
 	};
 }
 }

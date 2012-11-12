@@ -197,15 +197,29 @@ namespace SB2
 		if (widgets.isEmpty ())
 			return;
 
+		if (CurrentTabList_ && CurrentTabList_->GetTabClass () == tc)
+		{
+			CurrentTabList_->HandleLauncherHovered ();
+			return;
+		}
+
 		if (CurrentTabList_)
 			delete CurrentTabList_;
 
-		auto view = new TabListView (widgets, Proxy_);
+		auto view = new TabListView (tc, widgets, Proxy_);
 		view->move (x, y);
 		view->show ();
 		view->setFocus ();
 
 		CurrentTabList_ = view;
+	}
+
+	void LauncherComponent::tabListUnhovered (const QByteArray&)
+	{
+		if (!CurrentTabList_)
+			return;
+
+		CurrentTabList_->HandleLauncherUnhovered ();
 	}
 
 	void LauncherComponent::handleNewTab (const QString&, QWidget *w)

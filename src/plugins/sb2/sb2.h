@@ -20,20 +20,27 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/core/ihookproxy.h>
+
+class QDockWidget;
 
 namespace LeechCraft
 {
 namespace SB2
 {
 	class ViewManager;
+	class TrayComponent;
 
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IPlugin2
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IPlugin2)
 
 		ViewManager *Mgr_;
+		TrayComponent *Tray_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -42,6 +49,10 @@ namespace SB2
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QSet<QByteArray> GetPluginClasses () const;
+	public slots:
+		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QDockWidget*, bool);
 	signals:
 		void pluginsAvailable ();
 	};

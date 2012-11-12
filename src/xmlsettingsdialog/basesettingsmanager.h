@@ -49,7 +49,6 @@ namespace Util
 		typedef QMap<QByteArray, ObjectElement_t> Properties2Object_t;
 		Properties2Object_t ApplyProps_;
 		Properties2Object_t SelectProps_;
-		bool Initializing_;
 	protected:
 		bool ReadAllKeys_;
 	public:
@@ -154,6 +153,7 @@ namespace Util
 		void OptionSelected (const QByteArray&, const QVariant&);
 	protected:
 		virtual bool event (QEvent*);
+
 		/*! @brief Allocates and returns a QSettings object suitable for
 		 * use.
 		 *
@@ -172,6 +172,8 @@ namespace Util
 		 * @sa BeginSettings
 		 */
 		virtual void EndSettings (QSettings *settings) const = 0;
+
+		virtual void PropertyChanged (const QString&, const QVariant&);
 	private:
 		Settings_ptr GetSettings () const;
 	};

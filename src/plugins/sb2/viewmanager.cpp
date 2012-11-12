@@ -18,6 +18,9 @@
 
 #include "viewmanager.h"
 #include <QStandardItemModel>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QtDebug>
@@ -27,6 +30,8 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include "sbview.h"
 #include "quarkproxy.h"
+#include "quarksettingsmanager.h"
+#include "widthiconprovider.h"
 
 namespace LeechCraft
 {
@@ -34,12 +39,30 @@ namespace SB2
 {
 	namespace
 	{
+		class ThemeImageProvider : public WidthIconProvider
+		{
+			ICoreProxy_ptr Proxy_;
+		public:
+			ThemeImageProvider (ICoreProxy_ptr proxy)
+			: Proxy_ (proxy)
+			{
+			}
+
+			QIcon GetIcon (const QStringList& list)
+			{
+				return Proxy_->GetIcon (list.value (0));
+			}
+		};
+
+		const QString ImageProviderID = "ThemeIcons";
+
 		class ViewItemsModel : public QStandardItemModel
 		{
 		public:
 			enum Role
 			{
-				SourceURL= Qt::UserRole + 1
+				SourceURL= Qt::UserRole + 1,
+				QuarkHasSettings
 			};
 
 			ViewItemsModel (QObject *parent)
@@ -47,6 +70,7 @@ namespace SB2
 			{
 				QHash<int, QByteArray> names;
 				names [Role::SourceURL] = "sourceURL";
+				names [Role::QuarkHasSettings] = "quarkHasSettings";
 				setRoleNames (names);
 			}
 		};
@@ -68,6 +92,7 @@ namespace SB2
 
 		View_->rootContext ()->setContextProperty ("itemsModel", ViewItemsModel_);
 		View_->rootContext ()->setContextProperty ("quarkProxy", new QuarkProxy (this, this));
+		View_->engine ()->addImageProvider (ImageProviderID, new ThemeImageProvider (proxy));
 		View_->setSource (QUrl::fromLocalFile (file));
 	}
 
@@ -111,9 +136,63 @@ namespace SB2
 		for (const auto& pair : comp.ImageProviders_)
 			View_->engine ()->addImageProvider (pair.first, pair.second);
 
+		const bool hasSettings = CreateSettings (comp.Url_);
+
 		auto item = new QStandardItem;
 		item->setData (comp.Url_, ViewItemsModel::Role::SourceURL);
+		item->setData (hasSettings, ViewItemsModel::Role::QuarkHasSettings);
 		ViewItemsModel_->appendRow (item);
+	}
+
+	void ViewManager::ShowSettings (const QUrl& url)
+	{
+		if (!Quark2Settings_.contains (url))
+			return;
+
+		auto xsd = Quark2Settings_ [url].XSD_;
+
+		QDialog dia;
+		dia.setLayout (new QVBoxLayout ());
+		dia.layout ()->addWidget (xsd.get ());
+
+		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		connect (box,
+				SIGNAL (accepted ()),
+				&dia,
+				SLOT (accept ()));
+		connect (box,
+				SIGNAL (rejected ()),
+				&dia,
+				SLOT (reject ()));
+		connect (box,
+				SIGNAL (accepted ()),
+				xsd.get (),
+				SLOT (accept ()));
+		connect (box,
+				SIGNAL (rejected ()),
+				xsd.get (),
+				SLOT (reject ()));
+		dia.layout ()->addWidget (box);
+
+		dia.exec ();
+		xsd->setParent (0);
+	}
+
+	bool ViewManager::CreateSettings (const QUrl& url)
+	{
+		if (!url.isLocalFile ())
+			return false;
+
+		const auto& localName = url.toLocalFile ();
+		const auto& settingsName = localName + ".settings";
+		if (!QFile::exists (settingsName))
+			return false;
+
+		Util::XmlSettingsDialog_ptr xsd (new Util::XmlSettingsDialog);
+		auto sm = new QuarkSettingsManager (url, View_->rootContext ());
+		xsd->RegisterObject (sm, settingsName);
+		Quark2Settings_ [url] = { xsd, sm };
+		return true;
 	}
 }
 }

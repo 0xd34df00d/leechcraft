@@ -83,6 +83,6 @@ namespace LeechCraft
 				<< object;
 			return QVariant ();
 		}
-		return checkbox->checkState ();
+		return checkbox->checkState () == Qt::Checked;
 	}
 };
