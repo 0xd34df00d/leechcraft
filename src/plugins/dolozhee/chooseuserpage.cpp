@@ -59,6 +59,8 @@ namespace Dolozhee
 		if (login.isEmpty ())
 			return;
 
+		Ui_.Existing_->setChecked (true);
+
 		Ui_.Login_->setText (login);
 
 		const QString& text = tr ("Please enter password for user %1:")

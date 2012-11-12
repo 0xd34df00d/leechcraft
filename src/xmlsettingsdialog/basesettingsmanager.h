@@ -18,6 +18,7 @@
 
 #ifndef XMLSETTINGSDIALOG_BASESETTINGSMANAGER_H
 #define XMLSETTINGSDIALOG_BASESETTINGSMANAGER_H
+#include <memory>
 #include <QMap>
 #include <QPair>
 #include <QObject>
@@ -28,6 +29,8 @@
 #include "xsdconfig.h"
 
 #define PROP2CHAR(a) (a.toUtf8 ().constData ())
+
+typedef std::shared_ptr<QSettings> Settings_ptr;
 
 namespace LeechCraft
 {
@@ -47,7 +50,6 @@ namespace Util
 		Properties2Object_t ApplyProps_;
 		Properties2Object_t SelectProps_;
 		bool Initializing_;
-		QSettings *Settings_;
 	protected:
 		bool ReadAllKeys_;
 	public:
@@ -170,6 +172,8 @@ namespace Util
 		 * @sa BeginSettings
 		 */
 		virtual void EndSettings (QSettings *settings) const = 0;
+	private:
+		Settings_ptr GetSettings () const;
 	};
 }
 }

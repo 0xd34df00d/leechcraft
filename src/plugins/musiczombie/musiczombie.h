@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,26 +18,34 @@
 
 #pragma once
 
-#include <QDialog>
-#include "ui_movetorrentfiles.h"
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/media/idiscographyprovider.h>
 
 namespace LeechCraft
 {
-namespace Plugins
+namespace MusicZombie
 {
-namespace BitTorrent
-{
-	class MoveTorrentFiles : public QDialog
+	class Plugin : public QObject
+				 , public IInfo
+				 , public Media::IDiscographyProvider
 	{
 		Q_OBJECT
+		Q_INTERFACES (IInfo Media::IDiscographyProvider)
 
-		Ui::MoveTorrentFiles Ui_;
+		ICoreProxy_ptr Proxy_;
 	public:
-		MoveTorrentFiles (const QString&, QWidget* = 0);
-		QString GetNewLocation () const;
-	private slots:
-		void on_Browse__released ();
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+
+		QString GetServiceName () const;
+
+		Media::IPendingDisco* GetDiscography (const QString&);
 	};
-}
 }
 }

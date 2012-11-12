@@ -16,29 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_INTROPAGE_H
-#define PLUGINS_BITTORRENT_INTROPAGE_H
+#pragma once
+
 #include <QWizardPage>
 
 class QLabel;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	class IntroPage : public QWizardPage
 	{
-		namespace BitTorrent
-		{
-			class IntroPage : public QWizardPage
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				QLabel *Label_;
-			public:
-				IntroPage (QWidget *parent = 0);
-			};
-		};
+		QLabel *Label_;
+	public:
+		IntroPage (QWidget *parent = 0);
 	};
-};
-
-#endif
-
+}
+}
+}

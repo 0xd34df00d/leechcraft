@@ -96,6 +96,7 @@ namespace Poshuku
 
 		WebView_ = new CustomWebView;
 		Ui_.WebFrame_->layout ()->addWidget (WebView_);
+		WebView_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 		WebView_->SetBrowserWidget (this);
 		connect (WebView_,
@@ -1542,6 +1543,10 @@ namespace Poshuku
 			}
 		}
 #endif
+
+		if (userText.isEmpty ())
+			return;
+
 		Ui_.URLFrame_->GetEdit ()->setText (userText);
 		Ui_.URLFrame_->GetEdit ()->repaint ();
 

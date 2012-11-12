@@ -17,11 +17,14 @@
  **********************************************************************/
 
 #include "biowidget.h"
+#include <QStandardItemModel>
 #include <QDeclarativeContext>
 #include <QGraphicsObject>
 #include <QtDebug>
 #include <util/util.h>
 #include <interfaces/media/iartistbiofetcher.h>
+#include <interfaces/media/idiscographyprovider.h>
+#include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
@@ -32,13 +35,43 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		class DiscoModel : public QStandardItemModel
+		{
+		public:
+			enum Roles
+			{
+				AlbumName = Qt::UserRole + 1,
+				AlbumYear,
+				AlbumImage,
+				AlbumTrackListTooltip
+			};
+
+			DiscoModel (QObject *parent)
+			: QStandardItemModel (parent)
+			{
+				QHash<int, QByteArray> roleNames;
+				roleNames [Roles::AlbumName] = "albumName";
+				roleNames [Roles::AlbumYear] = "albumYear";
+				roleNames [Roles::AlbumImage] = "albumImage";
+				roleNames [Roles::AlbumTrackListTooltip] = "albumTrackListTooltip";
+				setRoleNames (roleNames);
+			}
+		};
+
+		const int AASize = 170;
+	}
+
 	BioWidget::BioWidget (QWidget *parent)
 	: QWidget (parent)
 	, BioPropProxy_ (new BioPropProxy (this))
+	, DiscoModel_ (new DiscoModel (this))
 	{
 		Ui_.setupUi (this);
 
 		Ui_.View_->rootContext ()->setContextObject (BioPropProxy_);
+		Ui_.View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
 		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/BioView.qml"));
 
 		const auto& lastProv = XmlSettingsManager::Instance ()
@@ -77,6 +110,18 @@ namespace LMP
 		requestBiography ();
 	}
 
+	QStandardItem* BioWidget::FindAlbumItem (const QString& albumName) const
+	{
+		for (int i = 0, rc = DiscoModel_->rowCount (); i < rc; ++i)
+		{
+			auto item = DiscoModel_->item (i);
+			const auto& itemData = item->data (DiscoModel::Roles::AlbumName);
+			if (itemData.toString () == albumName)
+				return item;
+		}
+		return 0;
+	}
+
 	void BioWidget::saveLastUsedProv ()
 	{
 		const int idx = Ui_.Provider_->currentIndex ();
@@ -89,6 +134,8 @@ namespace LMP
 
 	void BioWidget::requestBiography ()
 	{
+		DiscoModel_->clear ();
+
 		const int idx = Ui_.Provider_->currentIndex ();
 		if (idx < 0 || CurrentArtist_.isEmpty ())
 			return;
@@ -98,6 +145,16 @@ namespace LMP
 				SIGNAL (ready ()),
 				this,
 				SLOT (handleBioReady ()));
+
+		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		for (auto prov : pm->GetAllCastableTo<Media::IDiscographyProvider*> ())
+		{
+			auto fetcher = prov->GetDiscography (CurrentArtist_);
+			connect (fetcher->GetObject (),
+					SIGNAL (ready ()),
+					this,
+					SLOT (handleDiscographyReady ()));
+		}
 	}
 
 	void BioWidget::handleBioReady ()
@@ -107,6 +164,79 @@ namespace LMP
 		BioPropProxy_->SetBio (bio);
 
 		emit gotArtistImage (bio.BasicInfo_.Name_, bio.BasicInfo_.LargeImage_);
+	}
+
+	void BioWidget::handleDiscographyReady ()
+	{
+		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		auto aaProvObj = pm->GetAllCastableRoots<Media::IAlbumArtProvider*> ().value (0);
+		auto aaProv = qobject_cast<Media::IAlbumArtProvider*> (aaProvObj);
+		if (aaProvObj)
+			connect (aaProvObj,
+					SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
+					this,
+					SLOT (handleAlbumArt (Media::AlbumInfo, QList<QImage>)),
+					Qt::UniqueConnection);
+
+		auto fetcher = qobject_cast<Media::IPendingDisco*> (sender ());
+		for (const auto& release : fetcher->GetReleases ())
+		{
+			if (FindAlbumItem (release.Name_))
+				continue;
+
+			auto item = new QStandardItem;
+			item->setData (release.Name_, DiscoModel::Roles::AlbumName);
+			item->setData (QString::number (release.Year_), DiscoModel::Roles::AlbumYear);
+
+			QString trackTooltip;
+			int mediumPos = 0;
+			for (const auto& medium : release.TrackInfos_)
+			{
+				if (release.TrackInfos_.size () > 1)
+				{
+					if (mediumPos)
+						trackTooltip += "<br />";
+					trackTooltip += tr ("CD %1:").arg (++mediumPos);
+				}
+
+				for (const auto& track : medium)
+				{
+					trackTooltip += QString::number (track.Number_) + ". ";
+					trackTooltip += track.Name_;
+					if (track.Length_)
+					{
+						const auto lengthStr = Util::MakeTimeFromLong (track.Length_).remove ("00:");
+						trackTooltip += " (" + lengthStr + ")";
+					}
+					trackTooltip += "<br/>";
+				}
+			}
+			item->setData (trackTooltip, DiscoModel::Roles::AlbumTrackListTooltip);
+
+			DiscoModel_->appendRow (item);
+
+			aaProv->RequestAlbumArt ({ CurrentArtist_, release.Name_ });
+		}
+	}
+
+	void BioWidget::handleAlbumArt (const Media::AlbumInfo& info, const QList<QImage>& images)
+	{
+		if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
+			return;
+
+		auto item = FindAlbumItem (info.Album_);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown item for"
+					<< info.Album_;
+			return;
+		}
+
+		auto img = images.first ();
+		if (img.width () > AASize)
+			img = img.scaled (AASize, AASize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		item->setData (Util::GetAsBase64Src (img), DiscoModel::Roles::AlbumImage);
 	}
 
 	void BioWidget::handleLink (const QString& link)

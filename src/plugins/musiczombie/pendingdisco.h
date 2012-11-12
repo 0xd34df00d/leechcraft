@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,26 +18,44 @@
 
 #pragma once
 
-#include <QDialog>
-#include "ui_movetorrentfiles.h"
+#include <QObject>
+#include <interfaces/media/idiscographyprovider.h>
+
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
-namespace Plugins
+namespace MusicZombie
 {
-namespace BitTorrent
-{
-	class MoveTorrentFiles : public QDialog
+	class PendingDisco : public QObject
+					   , public Media::IPendingDisco
 	{
 		Q_OBJECT
+		Q_INTERFACES (Media::IPendingDisco)
 
-		Ui::MoveTorrentFiles Ui_;
+		QNetworkAccessManager *NAM_;
+		QList<Media::ReleaseInfo> Releases_;
+		int PendingReleases_;
 	public:
-		MoveTorrentFiles (const QString&, QWidget* = 0);
-		QString GetNewLocation () const;
+		PendingDisco (const QString&, QNetworkAccessManager*, QObject* = 0);
+
+		QObject* GetObject ();
+
+		QList<Media::ReleaseInfo> GetReleases () const;
+	private:
+		void DecrementPending ();
 	private slots:
-		void on_Browse__released ();
+		void handleGotID (const QString&);
+		void handleIDError ();
+
+		void handleLookupFinished ();
+		void handleLookupError ();
+
+		void handleReleaseLookupFinished ();
+		void handleReleaseLookupError ();
+	signals:
+		void ready ();
+		void error (const QString&);
 	};
-}
 }
 }

@@ -109,9 +109,7 @@ namespace LeechCraft
 					IPFilter_,
 					MoveFiles_,
 					ChangeTrackers_,
-					MakeMagnetLink_,
-					Import_,
-					Export_;
+					MakeMagnetLink_;
 
 				SpeedSelectorAction *DownSelectorAction_,
 						*UpSelectorAction_;
@@ -214,8 +212,6 @@ namespace LeechCraft
 				void on_ChangeTrackers__triggered ();
 				void on_MoveFiles__triggered ();
 				void on_MakeMagnetLink__triggered ();
-				void on_Import__triggered ();
-				void on_Export__triggered ();
 				void handleFastSpeedComboboxes ();
 				void setActionsEnabled ();
 				void showError (QString);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,35 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_EXPORTDIALOG_H
-#define PLUGINS_BITTORRENT_EXPORTDIALOG_H
-#include <QDialog>
-#include "ui_exportdialog.h"
+#pragma once
+
+#include <QObject>
+
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace MusicZombie
+{
+	class ArtistLookup : public QObject
 	{
-		namespace BitTorrent
-		{
-			class ExportDialog : public QDialog
-			{
-				Q_OBJECT
-
-				Ui::ExportDialog Ui_;
-			public:
-				ExportDialog (QWidget* = 0);
-				virtual ~ExportDialog ();
-
-				QString GetLocation () const;
-				bool GetSettings () const;
-				bool GetActive () const;
-			private slots:
-				void on_BrowseButton__released ();
-			};
-		};
+		Q_OBJECT
+	public:
+		ArtistLookup (const QString&, QNetworkAccessManager*, QObject* = 0);
+	private slots:
+		void handleFinished ();
+		void handleError ();
+	signals:
+		void gotID (const QString&);
+		void replyError ();
+		void networkError ();
 	};
-};
-
-#endif
-
+}
+}

@@ -16,36 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_TORRENT_IPVALIDATORS_H
-#define PLUGINS_TORRENT_IPVALIDATORS_H
+#pragma once
+
 #include <QValidator>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace BitTorrent
+{
+	class ValidateIPv4 : public QValidator
 	{
-		namespace BitTorrent
-		{
-			class ValidateIPv4 : public QValidator
-			{
-				Q_OBJECT
-			public:
-				ValidateIPv4 (QObject* = 0);
+		Q_OBJECT
+	public:
+		ValidateIPv4 (QObject* = 0);
 
-				State validate (QString&, int&) const;
-			};
-
-			class ValidateIPv6 : public QValidator
-			{
-				Q_OBJECT
-			public:
-				ValidateIPv6 (QObject* = 0);
-
-				State validate (QString&, int&) const;
-			};
-		};
+		State validate (QString&, int&) const;
 	};
-};
 
-#endif
+	class ValidateIPv6 : public QValidator
+	{
+		Q_OBJECT
+	public:
+		ValidateIPv6 (QObject* = 0);
 
+		State validate (QString&, int&) const;
+	};
+}
+}
+}

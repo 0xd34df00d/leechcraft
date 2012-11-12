@@ -18,26 +18,58 @@
 
 #pragma once
 
-#include <QDialog>
-#include "ui_movetorrentfiles.h"
+#include "audiostructs.h"
 
-namespace LeechCraft
+namespace Media
 {
-namespace Plugins
-{
-namespace BitTorrent
-{
-	class MoveTorrentFiles : public QDialog
+	struct ReleaseTrackInfo
 	{
-		Q_OBJECT
+		int Number_;
+		QString Name_;
+		int Length_;
+	};
 
-		Ui::MoveTorrentFiles Ui_;
+	struct ReleaseInfo
+	{
+		QString ID_;
+
+		QString Name_;
+		int Year_;
+
+		enum class Type
+		{
+			Standard,
+			EP,
+			Single,
+			Other
+		} Type_;
+
+		QList<QList<ReleaseTrackInfo>> TrackInfos_;
+	};
+
+	class IPendingDisco
+	{
 	public:
-		MoveTorrentFiles (const QString&, QWidget* = 0);
-		QString GetNewLocation () const;
-	private slots:
-		void on_Browse__released ();
+		virtual ~IPendingDisco () {}
+
+		virtual QObject* GetObject () = 0;
+
+		virtual QList<ReleaseInfo> GetReleases () const = 0;
+	protected:
+		virtual void ready () = 0;
+		virtual void error (const QString&) = 0;
+	};
+
+	class IDiscographyProvider
+	{
+	public:
+		virtual ~IDiscographyProvider () {}
+
+		virtual QString GetServiceName () const = 0;
+
+		virtual IPendingDisco* GetDiscography (const QString&) = 0;
 	};
 }
-}
-}
+
+Q_DECLARE_INTERFACE (Media::IPendingDisco, "org.LeechCraft.Media.IPendingDisco/1.0");
+Q_DECLARE_INTERFACE (Media::IDiscographyProvider, "org.LeechCraft.Media.IDiscographyProvider/1.0");

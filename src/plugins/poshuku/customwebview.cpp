@@ -86,6 +86,11 @@ namespace Poshuku
 				SIGNAL (urlChanged (const QUrl&)),
 				this,
 				SLOT (remakeURL (const QUrl&)));
+		connect (page,
+				SIGNAL (loadingURL (const QUrl&)),
+				this,
+				SLOT (remakeURL (const QUrl&)));
+
 		connect (this,
 				SIGNAL (loadFinished (bool)),
 				this,
@@ -103,10 +108,6 @@ namespace Poshuku
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-		connect (page,
-				SIGNAL (loadingURL (const QUrl&)),
-				this,
-				SLOT (remakeURL (const QUrl&)));
 		connect (page,
 				SIGNAL (printRequested (QWebFrame*)),
 				this,
