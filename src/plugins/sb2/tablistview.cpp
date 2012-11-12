@@ -54,9 +54,11 @@ namespace SB2
 		};
 	}
 
-	TabListView::TabListView (const QList<QWidget*>& widgets, ICoreProxy_ptr proxy, QWidget *parent)
+	TabListView::TabListView (const QByteArray& tc,
+			const QList<QWidget*>& widgets, ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (parent)
 	, Proxy_ (proxy)
+	, TC_ (tc)
 	, Model_ (new TabsListModel (this))
 	, LeaveTimer_ (new QTimer (this))
 	, ContainsMouse_ (false)
@@ -114,6 +116,16 @@ namespace SB2
 				SIGNAL (timeout ()),
 				this,
 				SLOT (deleteLater ()));
+	}
+
+	QByteArray TabListView::GetTabClass () const
+	{
+		return TC_;
+	}
+
+	void TabListView::HandleLauncherHovered ()
+	{
+		LeaveTimer_->stop ();
 	}
 
 	void TabListView::HandleLauncherUnhovered ()

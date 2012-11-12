@@ -33,14 +33,18 @@ namespace SB2
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
+		const QByteArray TC_;
 		QStandardItemModel *Model_;
 
 		QTimer *LeaveTimer_;
 
 		bool ContainsMouse_;
 	public:
-		TabListView (const QList<QWidget*>&, ICoreProxy_ptr, QWidget* = 0);
+		TabListView (const QByteArray&, const QList<QWidget*>&, ICoreProxy_ptr, QWidget* = 0);
 
+		QByteArray GetTabClass () const;
+
+		void HandleLauncherHovered ();
 		void HandleLauncherUnhovered ();
 	protected:
 		void enterEvent (QEvent*);
