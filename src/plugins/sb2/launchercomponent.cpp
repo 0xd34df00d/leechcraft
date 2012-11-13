@@ -147,6 +147,8 @@ namespace SB2
 		auto item = new QStandardItem;
 		item->setData (prefix + tc.TabClass_, LauncherModel::Roles::TabClassIcon);
 		item->setData (tc.TabClass_, LauncherModel::Roles::TabClassID);
+		item->setData (0, LauncherModel::Roles::OpenedTabsCount);
+		item->setData (false, LauncherModel::Roles::IsCurrentTab);
 		Model_->appendRow (item);
 
 		TC2Items_ [tc.TabClass_] << item;
