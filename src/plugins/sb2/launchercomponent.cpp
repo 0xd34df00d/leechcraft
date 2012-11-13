@@ -29,6 +29,8 @@
 #include "tablistview.h"
 #include "launcherdroparea.h"
 
+Q_DECLARE_METATYPE (QSet<QByteArray>);
+
 namespace LeechCraft
 {
 namespace SB2
@@ -97,6 +99,9 @@ namespace SB2
 	{
 		qmlRegisterType<LauncherDropArea> ("SB2", 1, 0, "LauncherDropArea");
 
+		qRegisterMetaType<QSet<QByteArray>> ("QSet<QByteArray>");
+		qRegisterMetaTypeStreamOperators<QSet<QByteArray>> ();
+
 		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "sb2", "LauncherComponent.qml"));
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherModel", Model_);
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
@@ -106,11 +111,31 @@ namespace SB2
 				SIGNAL (currentChanged (int)),
 				this,
 				SLOT (handleCurrentTabChanged (int)));
+
+		LoadHiddenTCs ();
 	}
 
 	QuarkComponent LauncherComponent::GetComponent () const
 	{
 		return Component_;
+	}
+
+	void LauncherComponent::SaveHiddenTCs () const
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_SB2");
+		settings.beginGroup ("Launcher");
+		settings.setValue ("HiddenTCs", QVariant::fromValue (HiddenTCs_));
+		settings.endGroup ();
+	}
+
+	void LauncherComponent::LoadHiddenTCs ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_SB2");
+		settings.beginGroup ("Launcher");
+		HiddenTCs_ = settings.value ("HiddenTCs").value<decltype (HiddenTCs_)> ();
+		settings.endGroup ();
 	}
 
 	namespace
@@ -208,12 +233,16 @@ namespace SB2
 		if (TC2Widgets_.value (tc).isEmpty ())
 			for (auto item : TC2Items_.take (tc))
 				Model_->removeRow (item->row ());
+
+		SaveHiddenTCs ();
 	}
 
 	void LauncherComponent::tabClassUnhideRequested (const QByteArray& tc)
 	{
 		if (!HiddenTCs_.remove (tc))
 			return;
+
+		SaveHiddenTCs ();
 
 		if (!TC2Widgets_.value (tc).isEmpty ())
 			return;

@@ -59,6 +59,9 @@ namespace SB2
 
 		QuarkComponent GetComponent () const;
 	private:
+		void SaveHiddenTCs () const;
+		void LoadHiddenTCs ();
+
 		QStandardItem* TryAddTC (const TabClassInfo&);
 		QStandardItem* CreateItem (const TabClassInfo&);
 	public slots:
