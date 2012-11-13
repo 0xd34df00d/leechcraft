@@ -132,7 +132,7 @@ namespace SB2
 
 	QStandardItem* LauncherComponent::TryAddTC (const TabClassInfo& tc)
 	{
-		if (!IsTabclassOpenable (tc))
+		if (!IsTabclassOpenable (tc) || HiddenTCs_.contains (tc.TabClass_))
 			return 0;
 
 		auto item = CreateItem (tc);
@@ -168,8 +168,10 @@ namespace SB2
 		{
 			auto iht = qobject_cast<IHaveTabs*> (ihtObj);
 			for (const auto& tc : iht->GetTabClasses ())
-				if (TryAddTC (tc))
-					TC2Obj_ [tc.TabClass_] = iht;
+			{
+				TC2Obj_ [tc.TabClass_] = iht;
+				TryAddTC (tc);
+			}
 
 			connect (ihtObj,
 					SIGNAL (addNewTab (QString, QWidget*)),
@@ -223,6 +225,7 @@ namespace SB2
 				if (fullTC.TabClass_ == tc)
 				{
 					TryAddTC (fullTC);
+					TC2Obj_ [tc] = iht;
 					return;
 				}
 	}
