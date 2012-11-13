@@ -23,9 +23,9 @@ Rectangle {
         id: addTCButton
         visible: quarkDisplayRoot.settingsMode
         anchors.bottom: parent.bottom
-        anchors.horizontalCenter: launcherColumn.horizontalCenter
-        width: launcherColumn.width * 2 / 3
-        height: launcherColumn.width * 2 / 3
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width * 2 / 3
+        height: parent.width * 2 / 3
 
         actionIconURL: "image://ThemeIcons/list-add"
 
