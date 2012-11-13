@@ -84,6 +84,39 @@ Rectangle {
 
                         Behavior on strength { PropertyAnimation {} }
                     }
+
+                    ActionButton {
+                        id: removeButton
+
+                        visible: canOpenTab && quarkDisplayRoot.settingsMode
+                        opacity: 0
+
+                        width: parent.width / 2
+                        height: parent.height / 2
+                        anchors.top: parent.top
+                        anchors.right: parent.right
+
+                        actionIconURL: "image://ThemeIcons/list-remove"
+                        transparentStyle: true
+                        onTriggered: SB2_launcherProxy.tabClassHideRequested(tabClassID)
+
+                        states: [
+                            State {
+                                name: "hovered"
+                                when: quarkDisplayRoot.settingsMode
+                                PropertyChanges { target: removeButton; opacity: 1 }
+                            }
+                        ]
+
+                        transitions: [
+                            Transition {
+                                from: ""
+                                to: "hovered"
+                                reversible: true
+                                PropertyAnimation { properties: "opacity"; duration: 200 }
+                            }
+                        ]
+                    }
                 }
 
                 Item {
