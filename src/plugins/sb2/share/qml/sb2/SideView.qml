@@ -1,9 +1,11 @@
 import QtQuick 1.1
 
 Rectangle {
-    id: rootRect
+    id: quarkDisplayRoot
     color: "black"
     anchors.fill: parent
+
+    property alias settingsMode: enableSettingsModeButton.settingsMode
 
     ActionButton {
         id: enableSettingsModeButton
