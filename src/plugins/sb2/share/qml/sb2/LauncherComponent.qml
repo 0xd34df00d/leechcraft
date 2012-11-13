@@ -55,9 +55,6 @@ Rectangle {
                         id: fadeInInterval
                         interval: SB2Launcher_FadeInTimeout
 
-                        onIntervalChanged: console.log("interval: " + SB2Launcher_FadeInTimeout)
-                        Component.onCompleted: console.log("interval: " + SB2Launcher_FadeInTimeout)
-
                         onTriggered: {
                             function getAbsPos(field) {
                                 var result = 0;
