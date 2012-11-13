@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include <QSet>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/icoreproxy.h>
 
@@ -51,6 +52,8 @@ namespace SB2
 		QHash<QByteArray, QList<QWidget*>> TC2Widgets_;
 
 		QPointer<TabListView> CurrentTabList_;
+
+		QSet<QByteArray> HiddenTCs_;
 	public:
 		LauncherComponent (ICoreProxy_ptr, QObject* = 0);
 
@@ -62,6 +65,7 @@ namespace SB2
 		void handlePluginsAvailable ();
 
 		void tabOpenRequested (const QByteArray&);
+		void tabClassHideRequested (const QByteArray&);
 		void tabListRequested (const QByteArray&, int, int);
 		void tabListUnhovered (const QByteArray&);
 	private slots:

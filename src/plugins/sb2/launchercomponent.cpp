@@ -193,6 +193,17 @@ namespace SB2
 		obj->TabOpenRequested (tc);
 	}
 
+	void LauncherComponent::tabClassHideRequested (const QByteArray& tc)
+	{
+		if (HiddenTCs_.contains (tc))
+			return;
+
+		HiddenTCs_ << tc;
+		if (TC2Widgets_.value (tc).isEmpty ())
+			for (auto item : TC2Items_.take (tc))
+				Model_->removeRow (item->row ());
+	}
+
 	void LauncherComponent::tabListRequested (const QByteArray& tc, int x, int y)
 	{
 		const auto& widgets = TC2Widgets_ [tc];
@@ -250,7 +261,7 @@ namespace SB2
 		auto& wList = TC2Widgets_ [tc.TabClass_];
 		wList.removeAll (w);
 
-		if (wList.isEmpty () && !IsTabclassOpenable (tc))
+		if (wList.isEmpty () && (!IsTabclassOpenable (tc) || HiddenTCs_.contains (tc.TabClass_)))
 			for (auto item : TC2Items_.take (tc.TabClass_))
 				Model_->removeRow (item->row ());
 		else
