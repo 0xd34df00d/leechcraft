@@ -23,11 +23,11 @@
 #include <QStyleOption>
 #include <QApplication>
 #include <QtDebug>
+#include <interfaces/ihavetabs.h>
 #include "coreproxy.h"
 #include "separatetabwidget.h"
 #include "core.h"
 #include "tabmanager.h"
-#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
