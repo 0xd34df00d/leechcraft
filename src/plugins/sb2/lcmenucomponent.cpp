@@ -50,7 +50,7 @@ namespace SB2
 	: QObject (parent)
 	, Proxy_ (proxy)
 	{
-		Component_.Url_ = Util::GetSysPath (Util::SysPath::QML, "sb2", "LCMenuComponent.qml");
+		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "sb2", "LCMenuComponent.qml"));
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_menuComponentProxy", this);
 
 		Component_.StaticProps_ << QPair<QString, QVariant> ("SB2_menuComponentLCIcon", "image://" + ImageProviderID + "/icon");

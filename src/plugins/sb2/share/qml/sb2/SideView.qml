@@ -5,10 +5,26 @@ Rectangle {
     color: "black"
     anchors.fill: parent
 
+    ActionButton {
+        id: enableSettingsModeButton
+        height: width
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+
+        actionIconURL: "image://ThemeIcons/preferences-plugin"
+
+        property bool settingsMode: false
+        onTriggered: { isHighlight = !isHighlight; settingsMode = !settingsMode; }
+    }
+
     ListView {
         id: itemsView
 
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: enableSettingsModeButton.top
 
         model: itemsModel
         spacing: 2
@@ -29,6 +45,41 @@ Rectangle {
                 width: parent.width
 
                 clip: true
+            }
+
+            ActionButton {
+                id: settingsButton
+
+                visible: quarkHasSettings
+                opacity: 0
+                z: 10
+
+                actionIconURL: "image://ThemeIcons/preferences-desktop"
+
+                property real dimension: Math.min(itemLoader.width / 2, itemLoader.height / 2)
+                width: dimension
+                height: dimension
+                anchors.bottom: itemLoader.bottom
+                anchors.right: itemLoader.right
+
+                states: [
+                    State {
+                        name: "hovered"
+                        when: enableSettingsModeButton.settingsMode
+                        PropertyChanges { target: settingsButton; opacity: 1 }
+                    }
+                ]
+
+                transitions: [
+                    Transition {
+                        from: ""
+                        to: "hovered"
+                        reversible: true
+                        PropertyAnimation { properties: "opacity"; duration: 200 }
+                    }
+                ]
+
+                onTriggered: quarkProxy.showSettings(sourceURL)
             }
         }
     }

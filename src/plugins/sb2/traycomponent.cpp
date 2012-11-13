@@ -21,6 +21,7 @@
 #include <QAction>
 #include <QDeclarativeImageProvider>
 #include <QApplication>
+#include <QDockWidget>
 #include <util/sys/paths.h>
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -108,7 +109,7 @@ namespace SB2
 	, ImageProv_ (new ActionImageProvider (proxy))
 	, NextActionId_ (0)
 	{
-		Component_.Url_ = Util::GetSysPath (Util::SysPath::QML, "sb2", "TrayComponent.qml");
+		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "sb2", "TrayComponent.qml"));
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_trayModel", Model_);
 		Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
 
@@ -126,6 +127,15 @@ namespace SB2
 		return Component_;
 	}
 
+	void TrayComponent::HandleDock (QDockWidget *dw, bool visible)
+	{
+		QAction *act = dw->toggleViewAction ();
+		if (!visible)
+			RemoveAction (act);
+		else
+			AddActions ({ act }, ActionPos::Beginning);
+	}
+
 	QStandardItem* TrayComponent::FindItem (QAction *action) const
 	{
 		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
@@ -138,11 +148,8 @@ namespace SB2
 		return 0;
 	}
 
-	void TrayComponent::handleGotActions (const QList<QAction*>& acts, ActionsEmbedPlace aep)
+	void TrayComponent::AddActions (const QList<QAction*>& acts, ActionPos pos)
 	{
-		if (aep != ActionsEmbedPlace::LCTray && aep != ActionsEmbedPlace::QuickLaunch)
-			return;
-
 		if (acts.isEmpty ())
 			return;
 
@@ -150,6 +157,17 @@ namespace SB2
 
 		QMetaObject::invokeMethod (Model_, "modelAboutToBeReset");
 		Model_->blockSignals (true);
+
+		int insRow = 0;
+		switch (pos)
+		{
+		case ActionPos::Beginning:
+			insRow = 0;
+			break;
+		case ActionPos::End:
+			insRow = Model_->rowCount ();
+			break;
+		}
 
 		for (auto act : acts)
 		{
@@ -169,7 +187,7 @@ namespace SB2
 			item->setData (act->text (), TrayModel::Roles::ActionText);
 			item->setData (prefix + idStr + "/0", TrayModel::Roles::ActionIcon);
 			item->setData (QVariant::fromValue<QObject*> (act), TrayModel::Roles::ActionObject);
-			Model_->appendRow (item);
+			Model_->insertRow (insRow++, item);
 
 			++NextActionId_;
 		}
@@ -178,13 +196,26 @@ namespace SB2
 		QMetaObject::invokeMethod (Model_, "modelReset");
 	}
 
+	void TrayComponent::RemoveAction (QAction *action)
+	{
+		if (auto item = FindItem (action))
+			Model_->removeRow (item->row ());
+
+		ImageProv_->RemoveAction (action);
+	}
+
+	void TrayComponent::handleGotActions (const QList<QAction*>& acts, ActionsEmbedPlace aep)
+	{
+		if (aep != ActionsEmbedPlace::LCTray && aep != ActionsEmbedPlace::QuickLaunch)
+			return;
+
+		AddActions (acts, ActionPos::End);
+	}
+
 	void TrayComponent::handleActionDestroyed ()
 	{
 		auto obj = sender ();
-		if (auto item = FindItem (static_cast<QAction*> (obj)))
-			Model_->removeRow (item->row ());
-
-		ImageProv_->RemoveAction (static_cast<QAction*> (obj));
+		RemoveAction (static_cast<QAction*> (obj));
 	}
 
 	void TrayComponent::handleActionChanged ()

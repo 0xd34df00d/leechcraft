@@ -13,6 +13,7 @@ Item {
 
     signal triggered()
     signal hovered()
+    signal hoverLeft()
     signal held()
 
     Rectangle {
@@ -84,6 +85,7 @@ Item {
             onClicked: actionRoot.triggered()
             onPressAndHold: actionRoot.held()
             onEntered: actionRoot.hovered()
+            onExited: actionRoot.hoverLeft()
         }
     }
 }

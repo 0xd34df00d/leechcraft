@@ -57,11 +57,11 @@ namespace SB2
 				launcher,
 				SLOT (handlePluginsAvailable ()));
 
-		auto tray = new TrayComponent (proxy);
-		Mgr_->AddComponent (tray->GetComponent ());
+		Tray_ = new TrayComponent (proxy);
+		Mgr_->AddComponent (Tray_->GetComponent ());
 		connect (this,
 				SIGNAL (pluginsAvailable ()),
-				tray,
+				Tray_,
 				SLOT (handlePluginsAvailable ()));
 	}
 
@@ -94,6 +94,19 @@ namespace SB2
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Core.Plugins/1.0";
+		return result;
+	}
+
+	void Plugin::hookDockWidgetActionVisToggled (IHookProxy_ptr proxy, QDockWidget *dw, bool visible)
+	{
+		Tray_->HandleDock (dw, visible);
+		proxy->CancelDefault ();
 	}
 }
 }

@@ -18,39 +18,25 @@
 
 #pragma once
 
-#include <QDeclarativeView>
-#include <interfaces/core/icoreproxy.h>
+#include <QUrl>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
-class QStandardItemModel;
-class QTimer;
+class QDeclarativeContext;
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	class TabListView : public QDeclarativeView
+	class QuarkSettingsManager : public Util::BaseSettingsManager
 	{
-		Q_OBJECT
-
-		ICoreProxy_ptr Proxy_;
-		const QByteArray TC_;
-		QStandardItemModel *Model_;
-
-		QTimer *LeaveTimer_;
-
-		bool ContainsMouse_;
+		QUrl QuarkURL_;
+		QDeclarativeContext *Ctx_;
 	public:
-		TabListView (const QByteArray&, const QList<QWidget*>&, ICoreProxy_ptr, QWidget* = 0);
-
-		QByteArray GetTabClass () const;
-
-		void HandleLauncherHovered ();
-		void HandleLauncherUnhovered ();
+		QuarkSettingsManager (const QUrl&, QDeclarativeContext*);
 	protected:
-		void enterEvent (QEvent*);
-		void leaveEvent (QEvent*);
-	private slots:
-		void switchToItem (int);
+		QSettings* BeginSettings () const;
+		void EndSettings (QSettings*) const;
+		void PropertyChanged (const QString&, const QVariant&);
 	};
 }
 }
