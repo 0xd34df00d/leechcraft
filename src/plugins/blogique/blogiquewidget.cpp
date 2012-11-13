@@ -41,6 +41,7 @@ namespace Blogique
 	, PostEditWidget_ (0)
 	, ToolBar_ (new QToolBar)
 	, PrevAccountId_ (0)
+	, PostTargetAction_ (0)
 	{
 		Ui_.setupUi (this);
 		auto plugs = Core::Instance ().GetCoreProxy ()->
@@ -74,6 +75,15 @@ namespace Blogique
 				.GetCoreProxy ()->GetIcon ("svn-commit"));
 		ToolBar_->addAction (Ui_.Submit_);
 
+		Ui_.OpenInBrowser_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("applications-internet"));
+		ToolBar_->addAction (Ui_.OpenInBrowser_);
+
+		Ui_.UpdateProfile_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("view-refresh"));
+
+		ToolBar_->addSeparator ();
+
 		AccountsBox_ = new QComboBox (ToolBar_);
 		AccountsBox_->addItem (QString ());
 		connect (AccountsBox_,
@@ -85,16 +95,8 @@ namespace Blogique
 			AccountsBox_->addItem (acc->GetAccountName ());
 			Id2Account_ [AccountsBox_->count () - 1] = acc;
 		}
-		QWidgetAction *action = new QWidgetAction (ToolBar_);
-		action->setDefaultWidget (AccountsBox_);
-		ToolBar_->addAction (action);
+		ToolBar_->addWidget (AccountsBox_);
 
-		Ui_.OpenInBrowser_->setIcon (Core::Instance ()
-				.GetCoreProxy ()->GetIcon ("applications-internet"));
-		ToolBar_->addAction (Ui_.OpenInBrowser_);
-
-		Ui_.UpdateProfile_->setIcon (Core::Instance ()
-				.GetCoreProxy ()->GetIcon ("view-refresh"));
 		connect (Ui_.SaveEntry_,
 				SIGNAL (triggered ()),
 				this,
@@ -167,6 +169,12 @@ namespace Blogique
 			for (auto w : SidePluginsWidgets_)
 				w->deleteLater ();
 			SidePluginsWidgets_.clear ();
+
+			if (PostTargetAction_)
+			{
+				ToolBar_->removeAction (PostTargetAction_);
+				PostTargetAction_ = 0;
+			}
 		}
 
 		PrevAccountId_ = id;
@@ -177,8 +185,17 @@ namespace Blogique
 		}
 
 		ToolBar_->insertAction (Ui_.OpenInBrowser_, Ui_.UpdateProfile_);
+
 		auto ibp = qobject_cast<IBloggingPlatform*> (Id2Account_ [PrevAccountId_]->
 				GetParentBloggingPlatform ());
+
+		if (ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination)
+		{
+			PostTargetAction_ = ToolBar_->addWidget (PostTargetBox_);
+
+			//TODO fill targets
+		}
+
 		for (auto action : ibp->GetEditorActions ())
 			PostEdit_->AppendAction (action);
 
