@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import Effects 1.0
+import SB2 1.0
 import "."
 
 Rectangle {
@@ -8,7 +9,7 @@ Rectangle {
     width: parent.width
     property real launcherItemHeight: parent.width
     property real currentGapSize: (launcherItemHeight + Math.sqrt(8 * launcherItemHeight)) / 4
-    height: launcherColumn.height + 2
+    height: launcherColumn.height + 2 + (addTCButton.visible ? addTCButton.height : 0)
 
     border.width: 1
     border.color: "#333333"
@@ -17,6 +18,23 @@ Rectangle {
     smooth: true
 
     color: "transparent"
+
+    ActionButton {
+        id: addTCButton
+        visible: quarkDisplayRoot.settingsMode
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: launcherColumn.horizontalCenter
+        width: launcherColumn.width * 2 / 3
+        height: launcherColumn.width * 2 / 3
+
+        actionIconURL: "image://ThemeIcons/list-add"
+
+        LauncherDropArea {
+            id: dropArea
+            anchors.fill: parent
+            onTabDropped: SB2_launcherProxy.tabClassUnhideRequested(tabClass)
+        }
+    }
 
     Column {
         id: launcherColumn
