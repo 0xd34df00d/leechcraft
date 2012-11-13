@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 #include "launchercomponent.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <QtDeclarative>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -26,6 +27,7 @@
 #include <interfaces/ihavetabs.h>
 #include "widthiconprovider.h"
 #include "tablistview.h"
+#include "launcherdroparea.h"
 
 namespace LeechCraft
 {
@@ -93,6 +95,8 @@ namespace SB2
 	, Model_ (new LauncherModel (this))
 	, ImageProv_ (new TabClassImageProvider (proxy))
 	{
+		qmlRegisterType<LauncherDropArea> ("SB2", 1, 0, "LauncherDropArea");
+
 		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "sb2", "LauncherComponent.qml"));
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherModel", Model_);
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
@@ -202,6 +206,25 @@ namespace SB2
 		if (TC2Widgets_.value (tc).isEmpty ())
 			for (auto item : TC2Items_.take (tc))
 				Model_->removeRow (item->row ());
+	}
+
+	void LauncherComponent::tabClassUnhideRequested (const QByteArray& tc)
+	{
+		if (!HiddenTCs_.remove (tc))
+			return;
+
+		if (!TC2Widgets_.value (tc).isEmpty ())
+			return;
+
+		auto hasTabs = Proxy_->GetPluginsManager ()->
+				GetAllCastableTo<IHaveTabs*> ();
+		for (auto iht : Proxy_->GetPluginsManager ()->GetAllCastableTo<IHaveTabs*> ())
+			for (const auto& fullTC : iht->GetTabClasses ())
+				if (fullTC.TabClass_ == tc)
+				{
+					TryAddTC (fullTC);
+					return;
+				}
 	}
 
 	void LauncherComponent::tabListRequested (const QByteArray& tc, int x, int y)
