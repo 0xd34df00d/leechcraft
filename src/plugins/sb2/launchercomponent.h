@@ -64,12 +64,15 @@ namespace SB2
 
 		QStandardItem* TryAddTC (const TabClassInfo&);
 		QStandardItem* CreateItem (const TabClassInfo&);
+
+		QPair<TabClassInfo, IHaveTabs*> FindTC (const QByteArray&) const;
 	public slots:
 		void handlePluginsAvailable ();
 
 		void tabOpenRequested (const QByteArray&);
 		void tabClassHideRequested (const QByteArray&);
 		void tabClassUnhideRequested (const QByteArray&);
+		void tabUnhideListRequested (int, int);
 		void tabListRequested (const QByteArray&, int, int);
 		void tabListUnhovered (const QByteArray&);
 	private slots:

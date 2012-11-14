@@ -30,7 +30,7 @@ Rectangle {
 
         actionIconURL: "image://ThemeIcons/list-add"
 
-        onTriggered: Common.showTooltip(addTCButton, function(x, y) { SB2_launcherProxy.tabUnhideListRequested(tabClass, x, y) })
+        onTriggered: Common.showTooltip(addTCButton, function(x, y) { SB2_launcherProxy.tabUnhideListRequested(x, y) })
 
         LauncherDropArea {
             id: dropArea
