@@ -16,6 +16,7 @@ Rectangle {
 
     signal closeRequested()
     signal tabSwitchRequested(int index)
+    signal tabCloseRequested(int index)
 
     Keys.onEscapePressed: rootRect.closeRequested()
 
@@ -85,7 +86,11 @@ Rectangle {
 
                     anchors.left: tabIconImage.right
                     anchors.leftMargin: 4
+                    anchors.right: closeTabButton.right
+                    anchors.rightMargin: 4
                     anchors.verticalCenter: parent.verticalCenter
+
+                    elide: Text.ElideMiddle
                 }
 
                 MouseArea {
@@ -93,6 +98,22 @@ Rectangle {
                     anchors.fill: parent
                     hoverEnabled: true
                     onReleased: rootRect.tabSwitchRequested(index)
+                }
+
+                ActionButton {
+                    id: closeTabButton
+                    z: rectMouseArea.z + 1
+
+                    height: parent.height * 2 / 3
+                    width: height
+
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 4
+
+                    actionIconURL: "image://ThemeIcons/tab-close"
+
+                    onTriggered: rootRect.tabCloseRequested(index)
                 }
 
                 states: [

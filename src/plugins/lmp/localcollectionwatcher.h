@@ -24,6 +24,7 @@
 #include <QStringList>
 
 class QFileSystemWatcher;
+class QTimer;
 
 namespace LeechCraft
 {
@@ -37,7 +38,7 @@ namespace LMP
 		QHash<QString, QStringList> Dir2Subdirs_;
 
 		QList<QString> ScheduledDirs_;
-		bool ScanScheduled_;
+		QTimer *ScanTimer_;
 	public:
 		LocalCollectionWatcher (QObject* = 0);
 

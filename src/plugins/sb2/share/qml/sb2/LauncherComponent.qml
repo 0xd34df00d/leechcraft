@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import Effects 1.0
+import SB2 1.0
 import "."
 
 Rectangle {
@@ -8,7 +9,7 @@ Rectangle {
     width: parent.width
     property real launcherItemHeight: parent.width
     property real currentGapSize: (launcherItemHeight + Math.sqrt(8 * launcherItemHeight)) / 4
-    height: launcherColumn.height + 2
+    height: launcherColumn.height + 2 + (addTCButton.visible ? addTCButton.height : 0)
 
     border.width: 1
     border.color: "#333333"
@@ -17,6 +18,40 @@ Rectangle {
     smooth: true
 
     color: "transparent"
+
+    function getAbsPos(field, item) {
+        var result = 0;
+        while (item)
+        {
+            result += item[field];
+            item = item.parent;
+        }
+        return result;
+    }
+
+    function showMenu(item, func) {
+        var absPoint = quarkProxy.mapToGlobal(getAbsPos("x", item), getAbsPos("y", item));
+        func(absPoint.x + rootRect.width, absPoint.y);
+    }
+
+    ActionButton {
+        id: addTCButton
+        visible: quarkDisplayRoot.settingsMode
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width * 2 / 3
+        height: parent.width * 2 / 3
+
+        actionIconURL: "image://ThemeIcons/list-add"
+
+        onTriggered: showMenu(addTCButton, function(x, y) { SB2_launcherProxy.tabUnhideListRequested(tabClass, x, y) })
+
+        LauncherDropArea {
+            id: dropArea
+            anchors.fill: parent
+            onTabDropped: SB2_launcherProxy.tabClassUnhideRequested(tabClass)
+        }
+    }
 
     Column {
         id: launcherColumn
@@ -51,28 +86,58 @@ Rectangle {
                     isStrongHighlight: openedTabsCount
                     isCurrent: isCurrentTab
 
-                    onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
-                    onHovered: {
-                        function getAbsPos(field) {
-                            var result = 0;
-                            var it = tcItem;
-                            while (it)
-                            {
-                                result += it[field];
-                                it = it.parent;
-                            }
-                            return result;
-                        }
-                        var absPoint = quarkProxy.mapToGlobal(getAbsPos("x"), getAbsPos("y"));
-                        SB2_launcherProxy.tabListRequested(tabClassID, absPoint.x + rootRect.width, absPoint.y + pregap.height);
+                    Timer {
+                        id: fadeInInterval
+                        interval: SB2Launcher_FadeInTimeout
+
+                        onTriggered: showMenu(tcItem, function(x, y) { SB2_launcherProxy.tabListRequested(tabClassID, x, y + pregap.height) })
                     }
-                    onHoverLeft: SB2_launcherProxy.tabListUnhovered(tabClassID)
+
+                    onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
+                    onHovered: fadeInInterval.start()
+                    onHoverLeft: {
+                        fadeInInterval.stop()
+                        SB2_launcherProxy.tabListUnhovered(tabClassID)
+                    }
 
                     effect: Colorize {
                         strength: openedTabsCount || tcButton.isHovered ? 0 : 0.3
                         color: "gray"
 
                         Behavior on strength { PropertyAnimation {} }
+                    }
+
+                    ActionButton {
+                        id: removeButton
+
+                        visible: canOpenTab && quarkDisplayRoot.settingsMode
+                        opacity: 0
+
+                        width: parent.width / 2
+                        height: parent.height / 2
+                        anchors.top: parent.top
+                        anchors.right: parent.right
+
+                        actionIconURL: "image://ThemeIcons/list-remove"
+                        transparentStyle: true
+                        onTriggered: SB2_launcherProxy.tabClassHideRequested(tabClassID)
+
+                        states: [
+                            State {
+                                name: "hovered"
+                                when: quarkDisplayRoot.settingsMode
+                                PropertyChanges { target: removeButton; opacity: 1 }
+                            }
+                        ]
+
+                        transitions: [
+                            Transition {
+                                from: ""
+                                to: "hovered"
+                                reversible: true
+                                PropertyAnimation { properties: "opacity"; duration: 200 }
+                            }
+                        ]
                     }
                 }
 

@@ -34,12 +34,18 @@ namespace LMP
 	LocalCollectionWatcher::LocalCollectionWatcher (QObject *parent)
 	: QObject (parent)
 	, Watcher_ (new QFileSystemWatcher (this))
-	, ScanScheduled_ (false)
+	, ScanTimer_ (new QTimer (this))
 	{
 		connect (Watcher_,
 				SIGNAL (directoryChanged (QString)),
 				this,
 				SLOT (handleDirectoryChanged (QString)));
+
+		ScanTimer_->setSingleShot (true);
+		connect (ScanTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (rescanQueue ()));
 	}
 
 	namespace
@@ -77,17 +83,12 @@ namespace LMP
 
 	void LocalCollectionWatcher::ScheduleDir (const QString& dir)
 	{
-		if (ScheduledDirs_.contains (dir))
-			return;
+		if (ScanTimer_->isActive ())
+			ScanTimer_->stop ();
+		ScanTimer_->start (2000);
 
-		ScheduledDirs_ << dir;
-		if (ScanScheduled_)
-			return;
-
-		QTimer::singleShot (1000,
-				this,
-				SLOT (rescanQueue ()));
-		ScanScheduled_ = true;
+		if (!ScheduledDirs_.contains (dir))
+			ScheduledDirs_ << dir;
 	}
 
 	void LocalCollectionWatcher::handleSubdirsCollected ()
@@ -115,7 +116,6 @@ namespace LMP
 			Core::Instance ().GetLocalCollection ()->Scan (path, false);
 
 		ScheduledDirs_.clear ();
-		ScanScheduled_ = false;
 	}
 }
 }

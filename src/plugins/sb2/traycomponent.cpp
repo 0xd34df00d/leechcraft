@@ -109,7 +109,7 @@ namespace SB2
 	, ImageProv_ (new ActionImageProvider (proxy))
 	, NextActionId_ (0)
 	{
-		Component_.Url_ = Util::GetSysPath (Util::SysPath::QML, "sb2", "TrayComponent.qml");
+		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "sb2", "TrayComponent.qml"));
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_trayModel", Model_);
 		Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
 

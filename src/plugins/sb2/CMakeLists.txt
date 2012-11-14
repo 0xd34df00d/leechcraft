@@ -17,6 +17,8 @@ SET (SRCS
 	quarkproxy.cpp
 	quarksettingsmanager.cpp
 	tablistview.cpp
+	themeimageprovider.cpp
+	launcherdroparea.cpp
 	launchercomponent.cpp
 	lcmenucomponent.cpp
 	traycomponent.cpp

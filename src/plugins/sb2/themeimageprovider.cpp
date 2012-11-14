@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,43 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QDeclarativeView>
-#include <interfaces/core/icoreproxy.h>
-
-class QStandardItemModel;
-class QTimer;
+#include "themeimageprovider.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	class TabListView : public QDeclarativeView
+	ThemeImageProvider::ThemeImageProvider (ICoreProxy_ptr proxy)
+	: Proxy_ (proxy)
 	{
-		Q_OBJECT
+	}
 
-		ICoreProxy_ptr Proxy_;
-		const QByteArray TC_;
-		QStandardItemModel *Model_;
-
-		QTimer *LeaveTimer_;
-
-		bool ContainsMouse_;
-	public:
-		TabListView (const QByteArray&, const QList<QWidget*>&, ICoreProxy_ptr, QWidget* = 0);
-
-		QByteArray GetTabClass () const;
-
-		void HandleLauncherHovered ();
-		void HandleLauncherUnhovered ();
-	protected:
-		void enterEvent (QEvent*);
-		void leaveEvent (QEvent*);
-	private slots:
-		void handleTabRemoved (QWidget*);
-		void switchToItem (int);
-		void closeItem (int);
-	};
+	QIcon ThemeImageProvider::GetIcon (const QStringList& list)
+	{
+		return Proxy_->GetIcon (list.value (0));
+	}
 }
 }

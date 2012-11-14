@@ -178,12 +178,12 @@ void TabManager::add (const QString& name, QWidget *contents,
 		TabWidget_->InsertTab (current + 1,
 				contents,
 				icon,
-				MakeTabName (name));
+				name);
 	}
 	else
 	{
 		OriginalTabNames_ << name;
-		TabWidget_->AddTab (contents, icon, MakeTabName (name));
+		TabWidget_->AddTab (contents, icon, name);
 	}
 	InvalidateName ();
 }
@@ -260,7 +260,7 @@ void TabManager::changeTabName (QWidget *contents, const QString& name)
 	int tabNumber = FindTabForWidget (contents);
 	if (tabNumber == -1)
 		return;
-	TabWidget_->SetTabText (tabNumber, MakeTabName (name));
+	TabWidget_->SetTabText (tabNumber, name);
 	OriginalTabNames_ [tabNumber] = name;
 	InvalidateName ();
 }
@@ -351,17 +351,6 @@ int TabManager::FindTabForWidget (QWidget *widget) const
 		if (TabWidget_->Widget (i) == widget)
 			return i;
 	return -1;
-}
-
-QString TabManager::MakeTabName (const QString& name) const
-{
-	int width = TabWidget_->fontMetrics ().averageCharWidth ();
-	int numChars = 180 / width;
-
-	QString result = name;
-	if (result.size () > numChars + 3)
-		result = name.left (numChars) + "...";
-	return result;
 }
 
 void TabManager::InvalidateName ()
