@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import Effects 1.0
+import SB2 1.0
 import "."
 
 Rectangle {
@@ -8,7 +9,7 @@ Rectangle {
     width: parent.width
     property real launcherItemHeight: parent.width
     property real currentGapSize: (launcherItemHeight + Math.sqrt(8 * launcherItemHeight)) / 4
-    height: launcherColumn.height + 2
+    height: launcherColumn.height + 2 + (addTCButton.visible ? addTCButton.height : 0)
 
     border.width: 1
     border.color: "#333333"
@@ -17,6 +18,23 @@ Rectangle {
     smooth: true
 
     color: "transparent"
+
+    ActionButton {
+        id: addTCButton
+        visible: quarkDisplayRoot.settingsMode
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width * 2 / 3
+        height: parent.width * 2 / 3
+
+        actionIconURL: "image://ThemeIcons/list-add"
+
+        LauncherDropArea {
+            id: dropArea
+            anchors.fill: parent
+            onTabDropped: SB2_launcherProxy.tabClassUnhideRequested(tabClass)
+        }
+    }
 
     Column {
         id: launcherColumn
@@ -55,9 +73,6 @@ Rectangle {
                         id: fadeInInterval
                         interval: SB2Launcher_FadeInTimeout
 
-                        onIntervalChanged: console.log("interval: " + SB2Launcher_FadeInTimeout)
-                        Component.onCompleted: console.log("interval: " + SB2Launcher_FadeInTimeout)
-
                         onTriggered: {
                             function getAbsPos(field) {
                                 var result = 0;
@@ -86,6 +101,39 @@ Rectangle {
                         color: "gray"
 
                         Behavior on strength { PropertyAnimation {} }
+                    }
+
+                    ActionButton {
+                        id: removeButton
+
+                        visible: canOpenTab && quarkDisplayRoot.settingsMode
+                        opacity: 0
+
+                        width: parent.width / 2
+                        height: parent.height / 2
+                        anchors.top: parent.top
+                        anchors.right: parent.right
+
+                        actionIconURL: "image://ThemeIcons/list-remove"
+                        transparentStyle: true
+                        onTriggered: SB2_launcherProxy.tabClassHideRequested(tabClassID)
+
+                        states: [
+                            State {
+                                name: "hovered"
+                                when: quarkDisplayRoot.settingsMode
+                                PropertyChanges { target: removeButton; opacity: 1 }
+                            }
+                        ]
+
+                        transitions: [
+                            Transition {
+                                from: ""
+                                to: "hovered"
+                                reversible: true
+                                PropertyAnimation { properties: "opacity"; duration: 200 }
+                            }
+                        ]
                     }
                 }
 

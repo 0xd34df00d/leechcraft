@@ -29,10 +29,13 @@ namespace LeechCraft
 	class SeparateTabBar : public QTabBar
 	{
 		Q_OBJECT
+
 		int Id_;
 		bool IsLastTab_;
 		bool InMove_;
 		SeparateTabWidget *TabWidget_;
+
+		QPoint DragStartPos_;
 	public:
 		explicit SeparateTabBar (QWidget* = 0);
 		void SetTabData (int);
@@ -45,9 +48,16 @@ namespace LeechCraft
 		void SetInMove (bool inMove);
 	protected:
 		QSize tabSizeHint (int) const;
+
 		void mouseReleaseEvent (QMouseEvent*);
-		void mousePressEvent (QMouseEvent *event);
+
+		void mousePressEvent (QMouseEvent*);
+		void mouseMoveEvent (QMouseEvent*);
+		void dragEnterEvent (QDragEnterEvent*);
+		void dropEvent (QDropEvent*);
+
 		void mouseDoubleClickEvent (QMouseEvent*);
+
 		void tabInserted (int);
 		void tabRemoved (int);
 		void paintEvent (QPaintEvent*);

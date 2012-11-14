@@ -61,7 +61,6 @@ namespace LeechCraft
 				GetCorePluginManager ()->RegisterHookable (this);
 		handleSelectionBehavior ();
 
-		MainTabBar_->setMovable (true);
 		MainTabBar_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Minimum);
 		MainTabBar_->SetTabWidget (this);
 
@@ -630,6 +629,7 @@ namespace LeechCraft
 		MainStackedWidget_->insertWidget (to, MainStackedWidget_->widget (from));
 
 		MainTabBar_->SetInMove (true);
+		setCurrentIndex (to);
 		emit tabWasMoved (from, to);
 	}
 
