@@ -270,7 +270,7 @@ namespace Metida
 
 		ljEvent.Subject_ = event.Subject_;
 		ljEvent.Event_ = event.Content_;
-		ljEvent.UseJournal_ = Login_;
+		ljEvent.UseJournal_ = event.Target_;
 		ljEvent.DateTime_ = postOptions.value ("time").toDateTime ();
 		Access access = static_cast<Access> (postOptions.value ("access").toInt ());
 		ljEvent.Security_ = access < Access::MAXAccess ?

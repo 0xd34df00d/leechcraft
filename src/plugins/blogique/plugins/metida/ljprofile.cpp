@@ -44,6 +44,21 @@ namespace Metida
 		return new ProfileWidget (this);
 	}
 
+	QList<QPair<QIcon, QString>> LJProfile::GetPostingTargets () const
+	{
+		QList<QPair<QIcon, QString>> targets;
+		QIcon icon = Core::Instance ().GetCoreProxy ()->GetIcon ("system-users");
+		IAccount *acc = qobject_cast<IAccount*> (ParentAccount_);
+		if (!acc)
+			return targets;
+
+		targets.append ({ Core::Instance ().GetCoreProxy ()->GetIcon ("im-user"),
+				acc->GetOurLogin () });
+		for (const auto& community : ProfileData_.Communities_)
+			targets.append ({ icon, community });
+		return targets;
+	}
+
 	LJProfileData LJProfile::GetProfileData () const
 	{
 		return ProfileData_;

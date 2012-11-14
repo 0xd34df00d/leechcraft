@@ -44,7 +44,10 @@ namespace Metida
 		LJProfileData ProfileData_;
 	public:
 		LJProfile (QObject *parentAccount, QObject *parent = 0);
+
 		QWidget* GetProfileWidget ();
+		QList<QPair<QIcon, QString>> GetPostingTargets () const;
+
 		LJProfileData GetProfileData () const;
 		QObject* GetParentAccount () const;
 
