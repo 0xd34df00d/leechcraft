@@ -47,7 +47,7 @@ namespace Metida
 	QList<QPair<QIcon, QString>> LJProfile::GetPostingTargets () const
 	{
 		QList<QPair<QIcon, QString>> targets;
-		QIcon icon = Core::Instance ().GetCoreProxy ()->GetIcon ("system-users");
+		const QIcon& icon = Core::Instance ().GetCoreProxy ()->GetIcon ("system-users");
 		IAccount *acc = qobject_cast<IAccount*> (ParentAccount_);
 		if (!acc)
 			return targets;

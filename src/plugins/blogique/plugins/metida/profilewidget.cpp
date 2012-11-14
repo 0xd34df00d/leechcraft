@@ -142,7 +142,7 @@ namespace Metida
 
 	void ProfileWidget::FillCommunities (const QStringList& communities)
 	{
-		QIcon icon = Core::Instance ().GetCoreProxy ()->GetIcon ("system-users");
+		const QIcon& icon = Core::Instance ().GetCoreProxy ()->GetIcon ("system-users");
 		for (const auto& community : communities)
 		{
 			QStandardItem *item = new QStandardItem (icon, community);
