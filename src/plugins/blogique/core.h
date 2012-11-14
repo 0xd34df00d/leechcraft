@@ -55,7 +55,7 @@ namespace Blogique
 		QList<IAccount*> GetAccounts () const;
 
 		void SendEntity (const Entity& e);
-
+		void DelayedProfilesUpdate ();
 	private:
 		void AddBlogPlatformPlugin (QObject *plugin);
 
@@ -64,6 +64,8 @@ namespace Blogique
 		void addAccount (QObject *accObj);
 		void handleAccountRemoved (QObject *accObj);
 		void handleAccountValidated (QObject *accObj, bool validated);
+		void updateProfiles ();
+
 	signals:
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);

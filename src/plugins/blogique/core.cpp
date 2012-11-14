@@ -18,6 +18,7 @@
 
 #include "core.h"
 #include <QtDebug>
+#include <QTimer>
 #include <interfaces/iplugin2.h>
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatformplugin.h"
@@ -118,6 +119,11 @@ namespace Blogique
 		emit gotEntity (e);
 	}
 
+	void Core::DelayedProfilesUpdate ()
+	{
+		QTimer::singleShot (15000, this, SLOT (updateProfiles ()));
+	}
+
 	void Core::AddBlogPlatformPlugin (QObject *plugin)
 	{
 		IBloggingPlatformPlugin *ibpp = qobject_cast<IBloggingPlatformPlugin*> (plugin);
@@ -202,6 +208,12 @@ namespace Blogique
 		}
 		
 		emit accountValidated (accObj, validated);
+	}
+
+	void Core::updateProfiles ()
+	{
+		for (auto acc : GetAccounts ())
+			acc->updateProfile ();
 	}
 
 }

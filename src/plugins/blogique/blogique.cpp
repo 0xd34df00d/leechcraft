@@ -63,6 +63,7 @@ namespace Blogique
 
 	void Plugin::SecondInit ()
 	{
+		Core::Instance ().DelayedProfilesUpdate ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
