@@ -39,6 +39,12 @@ namespace Vader
 		RestoreAccounts ();
 	}
 
+	void MRIMProtocol::Release ()
+	{
+		Q_FOREACH (auto acc, Accounts_)
+			emit accountRemoved (acc);
+	}
+
 	QObject* MRIMProtocol::GetObject ()
 	{
 		return this;
