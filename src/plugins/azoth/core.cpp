@@ -1637,10 +1637,8 @@ namespace Azoth
 
 		ItemIconManager_->Cancel (item);
 
-		{
-			ModelUpdateSafeguard guard (CLModel_);
-			category->removeRow (item->row ());
-		}
+		ModelUpdateSafeguard guard (CLModel_);
+		category->removeRow (item->row ());
 
 		if (!category->rowCount ())
 		{
@@ -1649,10 +1647,7 @@ namespace Azoth
 
 			const QString& text = category->text ();
 
-			{
-				ModelUpdateSafeguard guard (CLModel_);
-				account->removeRow (category->row ());
-			}
+			account->removeRow (category->row ());
 			Account2Category2Item_ [account].remove (text);
 		}
 		else if (unread)
