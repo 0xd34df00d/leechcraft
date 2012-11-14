@@ -51,6 +51,7 @@ namespace SB2
 		void leaveEvent (QEvent*);
 	private slots:
 		void switchToItem (int);
+		void closeItem (int);
 	};
 }
 }

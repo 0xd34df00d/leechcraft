@@ -110,6 +110,10 @@ namespace SB2
 				SIGNAL (tabSwitchRequested (int)),
 				this,
 				SLOT (switchToItem (int)));
+		connect (rootObject (),
+				SIGNAL (tabCloseRequested (int)),
+				this,
+				SLOT (closeItem (int)));
 
 		LeaveTimer_->setSingleShot (true);
 		connect (LeaveTimer_,
@@ -162,6 +166,22 @@ namespace SB2
 		auto widgetObj = item->data (TabsListModel::Roles::TabWidgetObj).value<QObject*> ();
 		Proxy_->GetTabWidget ()->setCurrentWidget (static_cast<QWidget*> (widgetObj));
 		deleteLater ();
+	}
+
+	void TabListView::closeItem (int idx)
+	{
+		auto item = Model_->item (idx);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null item at"
+					<< idx;
+			return;
+		}
+
+		auto widgetObj = item->data (TabsListModel::Roles::TabWidgetObj).value<QObject*> ();
+		auto itw = qobject_cast<ITabWidget*> (widgetObj);
+		itw->Remove ();
 	}
 }
 }
