@@ -1,6 +1,7 @@
 import QtQuick 1.1
 import Effects 1.0
 import SB2 1.0
+import "Common.js" as Common
 import "."
 
 Rectangle {
@@ -19,21 +20,6 @@ Rectangle {
 
     color: "transparent"
 
-    function getAbsPos(field, item) {
-        var result = 0;
-        while (item)
-        {
-            result += item[field];
-            item = item.parent;
-        }
-        return result;
-    }
-
-    function showMenu(item, func) {
-        var absPoint = quarkProxy.mapToGlobal(getAbsPos("x", item), getAbsPos("y", item));
-        func(absPoint.x + rootRect.width, absPoint.y);
-    }
-
     ActionButton {
         id: addTCButton
         visible: quarkDisplayRoot.settingsMode
@@ -44,7 +30,7 @@ Rectangle {
 
         actionIconURL: "image://ThemeIcons/list-add"
 
-        onTriggered: showMenu(addTCButton, function(x, y) { SB2_launcherProxy.tabUnhideListRequested(tabClass, x, y) })
+        onTriggered: Common.showTooltip(addTCButton, function(x, y) { SB2_launcherProxy.tabUnhideListRequested(tabClass, x, y) })
 
         LauncherDropArea {
             id: dropArea
@@ -90,7 +76,7 @@ Rectangle {
                         id: fadeInInterval
                         interval: SB2Launcher_FadeInTimeout
 
-                        onTriggered: showMenu(tcItem, function(x, y) { SB2_launcherProxy.tabListRequested(tabClassID, x, y + pregap.height) })
+                        onTriggered: Common.showTooltip(tcItem, function(x, y) { SB2_launcherProxy.tabListRequested(tabClassID, x, y + pregap.height) })
                     }
 
                     onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)
