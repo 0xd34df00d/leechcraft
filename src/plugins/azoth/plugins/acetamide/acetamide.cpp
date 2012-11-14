@@ -73,7 +73,7 @@ namespace Acetamide
 
 	QString Plugin::GetName () const
 	{
-		return "Acetamide";
+		return "Azoth Acetamide";
 	}
 
 	QString Plugin::GetInfo () const
