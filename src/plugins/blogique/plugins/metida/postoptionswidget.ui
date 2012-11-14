@@ -237,7 +237,7 @@
       <item row="5" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Notify about new replyes:</string>
+         <string>Notify about new replies:</string>
         </property>
        </widget>
       </item>
