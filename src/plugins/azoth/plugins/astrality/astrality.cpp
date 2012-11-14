@@ -28,6 +28,7 @@
 #include <interfaces/azoth/iaccount.h>
 #include "cmwrapper.h"
 #include "accountwrapper.h"
+#include "protowrapper.h"
 
 namespace LeechCraft
 {
@@ -55,12 +56,7 @@ namespace Astrality
 	{
 		Q_FOREACH (CMWrapper *cmWrapper, Wrappers_)
 			Q_FOREACH (QObject *protocol, cmWrapper->GetProtocols ())
-				Q_FOREACH (QObject *accObj,
-						qobject_cast<IProtocol*> (protocol)->GetRegisteredAccounts ())
-				{
-					auto acc = qobject_cast<AccountWrapper*> (accObj);
-					acc->Shutdown ();
-				}
+				qobject_cast<ProtoWrapper*> (protocol)->Release ();
 
 		qDeleteAll (Wrappers_);
 	}
