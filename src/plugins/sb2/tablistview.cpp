@@ -20,12 +20,14 @@
 #include <QStandardItemModel>
 #include <QGraphicsObject>
 #include <QDeclarativeContext>
+#include <QDeclarativeEngine>
 #include <QtDebug>
 #include <QTimer>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoretabwidget.h>
+#include "themeimageprovider.h"
 
 namespace LeechCraft
 {
@@ -100,6 +102,7 @@ namespace SB2
 		}
 
 		rootContext ()->setContextProperty ("tabsListModel", Model_);
+		engine ()->addImageProvider ("ThemeIcons", new ThemeImageProvider (proxy));
 		setSource (QUrl::fromLocalFile (file));
 
 		connect (rootObject (),
