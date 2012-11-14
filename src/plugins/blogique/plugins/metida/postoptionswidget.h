@@ -56,6 +56,7 @@ namespace Metida
 	private slots:
 		void on_CurrentTime__released ();
 		void on_Access__activated (int index);
+		void on_UserPic__currentIndexChanged (int index);
 	};
 }
 }

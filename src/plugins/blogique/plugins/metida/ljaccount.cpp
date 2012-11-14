@@ -311,8 +311,7 @@ namespace Metida
 
 		props.ShowInFriendsPage_ = postOptions.value ("showInFriendsPage").toBool ();
 
-// 		//TODO post avatar
-// 		props.PostAvatar_ = QString ();
+		props.PostAvatar_ = postOptions.value ("avatar").toString ();
 
 		ljEvent.Props_ = props;
 		//TODO

@@ -86,6 +86,8 @@ namespace Metida
 		map ["adults"] = Ui_.Adult_->itemData (Ui_.Adult_->currentIndex (),
 				Qt::UserRole);
 		map ["showInFriendsPage"] = Ui_.ShowInFriendsPage_->isChecked ();
+		if (Ui_.UserPic_->currentIndex ())
+			map ["avatar"] = Ui_.UserPic_->currentText ();
 
 		return map;
 	}
@@ -121,6 +123,8 @@ namespace Metida
 				.absoluteFilePath (Account_->GetAccountID ().toBase64 ().replace ('/', '_'));
 		QPixmap pxm (path);
 		Ui_.UserPicLabel_->setPixmap (pxm.scaled (64, 64));
+
+		Ui_.UserPic_->addItems (profile->GetProfileData ().AvatarsID_);
 	}
 
 	void PostOptionsWidget::FillItems ()
@@ -177,6 +181,20 @@ namespace Metida
 
 				qDebug () << Q_FUNC_INFO << AllowMask_;
 		}
+	}
+
+	void PostOptionsWidget::on_UserPic__currentIndexChanged (int index)
+	{
+		QString path = index ?
+			Util::CreateIfNotExists ("blogique/metida/avatars")
+				.absoluteFilePath ((Account_->GetAccountID () +
+					Ui_.UserPic_->itemText (index).toUtf8 ())
+						.toBase64 ().replace ('/', '_')) :
+			Util::CreateIfNotExists ("blogique/metida/avatars")
+						.absoluteFilePath ((Account_->GetAccountID ())
+								.toBase64 ().replace ('/', '_'));
+		QPixmap pxm (path);
+		Ui_.UserPicLabel_->setPixmap (pxm.scaled (64, 64));
 	}
 }
 }

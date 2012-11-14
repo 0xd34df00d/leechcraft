@@ -136,10 +136,29 @@ namespace Metida
 				SLOT (handleAvatarDownloadFinished ()));
 	}
 
+	void LJProfile::SaveOthersAvatars (const QString& id, const QUrl& url)
+	{
+		if (id.isEmpty () ||
+				url.isEmpty ())
+			return;
+
+		QNetworkRequest request (url);
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->get (request);
+		Reply2AvatarId_ [reply] = id;
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleOtherAvatarDownloadFinished ()));
+	}
+
 	void LJProfile::handleProfileUpdate (const LJProfileData& profile)
 	{
 		ProfileData_ = profile;
 		SaveAvatar ();
+		for (int i = 0; i < ProfileData_.AvatarsID_.count (); ++i)
+			SaveOthersAvatars (ProfileData_.AvatarsID_.value (i),
+					ProfileData_.AvatarsUrls_.value (i));
 		emit profileUpdated ();
 	}
 
@@ -155,6 +174,29 @@ namespace Metida
 		if (!acc)
 			return;
 		const QByteArray filename = acc->GetAccountID ().toBase64 ().replace ('/', '_');
+		const QDir& avatarDir = Util::CreateIfNotExists ("blogique/metida/avatars");
+
+		const QString& path = avatarDir.absoluteFilePath (filename);
+		QFile file (path);
+		if (file.open (QIODevice::WriteOnly))
+			file.write (reply->readAll ());
+	}
+
+	void LJProfile::handleOtherAvatarDownloadFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		QString id = Reply2AvatarId_.take (reply);
+		reply->deleteLater ();
+
+		IAccount *acc = qobject_cast<IAccount*> (ParentAccount_);
+		if (!acc)
+			return;
+
+		const QByteArray filename = (acc->GetAccountID () + id.toUtf8 ())
+				.toBase64 ().replace ('/', '_');
 		const QDir& avatarDir = Util::CreateIfNotExists ("blogique/metida/avatars");
 
 		const QString& path = avatarDir.absoluteFilePath (filename);

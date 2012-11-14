@@ -667,8 +667,9 @@ namespace Metida
 				"string", event.Props_.TagList_.join (","), document));
 		propsStruct.second.appendChild (GetSimpleMemberElement ("useragent",
 				"string", "LeechCraft Blogique", document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("picture_keyword",
+				"string", event.Props_.PostAvatar_, document));
 
-		qDebug () << Q_FUNC_INFO << document.toByteArray ();
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
 						document.toByteArray ());
@@ -805,6 +806,18 @@ namespace Metida
 						const LJParserTypes::LJParseProfileEntry& entry)
 				{
 					profile.Caps_ = entry.ValueToLongLong ();
+				};
+				Id2ProfileField_ ["pickws"] = [] (LJProfileData& profile,
+						const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					for (const auto& val : entry.Value ())
+						profile.AvatarsID_ << val.toList ().value (0).toString ();
+				};
+				Id2ProfileField_ ["pickwurls"] = [] (LJProfileData& profile,
+						const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					for (const auto& val : entry.Value ())
+						profile.AvatarsUrls_ << QUrl (val.toList ().value (0).toString ());
 				};
 			}
 		};
