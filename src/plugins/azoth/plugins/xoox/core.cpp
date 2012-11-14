@@ -76,7 +76,7 @@ namespace Xoox
 	QList<QObject*> Core::GetProtocols () const
 	{
 		QList<QObject*> result;
-		result << qobject_cast<QObject*> (GlooxProtocol_.get ());
+		result << GlooxProtocol_.get ();
 		return result;
 	}
 
