@@ -29,6 +29,7 @@ namespace Blogique
 {
 	struct Event
 	{
+		QString Target_;
 		QString Subject_;
 		QString Content_;
 		QVariantMap PostOptions_;
