@@ -24,6 +24,7 @@
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "interfaces/blogique/iblogiquesidewidget.h"
+#include "interfaces/blogique/iprofile.h"
 #include "blogique.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -97,6 +98,8 @@ namespace Blogique
 		}
 		ToolBar_->addWidget (AccountsBox_);
 
+		PostTargetBox_ = new QComboBox;
+
 		connect (Ui_.SaveEntry_,
 				SIGNAL (triggered ()),
 				this,
@@ -149,12 +152,22 @@ namespace Blogique
 	void BlogiqueWidget::Remove ()
 	{
 		emit removeTab (this);
+		PostTargetBox_->deleteLater ();
 		deleteLater ();
 	}
 
 	void BlogiqueWidget::SetParentMultiTabs (QObject *tab)
 	{
 		S_ParentMultiTabs_ = tab;
+	}
+
+	void BlogiqueWidget::RemovePostingTargetsWidget ()
+	{
+		if (PostTargetAction_->isVisible ())
+		{
+			PostTargetAction_->setVisible (false);
+			PostTargetBox_->clear ();
+		}
 	}
 
 	void BlogiqueWidget::handleCurrentAccountChanged (int id)
@@ -170,19 +183,16 @@ namespace Blogique
 				w->deleteLater ();
 			SidePluginsWidgets_.clear ();
 
-			if (PostTargetAction_)
-			{
-				ToolBar_->removeAction (PostTargetAction_);
-				PostTargetAction_ = 0;
-			}
+			RemovePostingTargetsWidget ();
 		}
 
-		PrevAccountId_ = id;
-		if (!PrevAccountId_)
+		if (!id)
 		{
 			ToolBar_->removeAction (Ui_.UpdateProfile_);
+			RemovePostingTargetsWidget ();
 			return;
 		}
+		PrevAccountId_ = id;
 
 		ToolBar_->insertAction (Ui_.OpenInBrowser_, Ui_.UpdateProfile_);
 
@@ -191,9 +201,16 @@ namespace Blogique
 
 		if (ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination)
 		{
-			PostTargetAction_ = ToolBar_->addWidget (PostTargetBox_);
-
-			//TODO fill targets
+			if (!PostTargetAction_)
+				PostTargetAction_ = ToolBar_->addWidget (PostTargetBox_);
+			else
+				PostTargetAction_->setVisible (true);
+			IProfile *profile = qobject_cast<IProfile*> (Id2Account_ [id]->GetProfile ());
+			if (profile)
+			{
+				for (const auto& target : profile->GetPostingTargets ())
+					PostTargetBox_->addItem (target.first, target.second);
+			}
 		}
 
 		for (auto action : ibp->GetEditorActions ())
@@ -258,6 +275,7 @@ namespace Blogique
 			return;
 
 		Event e;
+		e.Target_ = PostTargetBox_->currentText ();
 		e.Content_ = PostEdit_->GetContents (ContentType::HTML);
 		e.Subject_ = Ui_.Subject_->text ();
 		e.PostOptions_ = postOptions;

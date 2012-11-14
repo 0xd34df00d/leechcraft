@@ -67,6 +67,8 @@ namespace Blogique
 		void Remove ();
 
 		static void SetParentMultiTabs (QObject *tab);
+	private:
+		void RemovePostingTargetsWidget ();
 
 	private slots:
 		void handleCurrentAccountChanged (int id);

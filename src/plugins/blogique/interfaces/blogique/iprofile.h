@@ -21,6 +21,7 @@
 #include <QMetaType>
 #include <QVariant>
 #include <QStringList>
+#include <QIcon>
 
 namespace LeechCraft
 {
@@ -37,6 +38,7 @@ namespace Blogique
 
 		virtual QWidget* GetProfileWidget () = 0;
 
+		virtual QList<QPair<QIcon, QString>> GetPostingTargets () const = 0;
 	protected:
 		virtual void profileUpdated () = 0;
 
