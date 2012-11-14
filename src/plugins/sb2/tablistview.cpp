@@ -99,6 +99,13 @@ namespace SB2
 			item->setData (QVariant::fromValue<QObject*> (w), TabsListModel::Roles::TabWidgetObj);
 
 			Model_->appendRow (item);
+
+			auto itw = qobject_cast<ITabWidget*> (w);
+			auto parent	= itw->ParentMultiTabs ();
+			connect (parent,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SLOT (handleTabRemoved (QWidget*)));
 		}
 
 		rootContext ()->setContextProperty ("tabsListModel", Model_);
@@ -153,6 +160,20 @@ namespace SB2
 		ContainsMouse_ = false;
 		LeaveTimer_->start (800);
 		QDeclarativeView::leaveEvent (e);
+	}
+
+	void TabListView::handleTabRemoved (QWidget *widget)
+	{
+		for (int i = 0; i < Model_->rowCount (); ++i)
+		{
+			auto item = Model_->item (i);
+			auto widgetObj = item->data (TabsListModel::Roles::TabWidgetObj).value<QObject*> ();
+			if (widgetObj != widget)
+				continue;
+
+			Model_->removeRow (i);
+			return;
+		}
 	}
 
 	void TabListView::switchToItem (int idx)

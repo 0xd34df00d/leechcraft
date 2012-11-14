@@ -50,6 +50,7 @@ namespace SB2
 		void enterEvent (QEvent*);
 		void leaveEvent (QEvent*);
 	private slots:
+		void handleTabRemoved (QWidget*);
 		void switchToItem (int);
 		void closeItem (int);
 	};
