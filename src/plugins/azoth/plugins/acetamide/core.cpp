@@ -62,7 +62,7 @@ namespace Acetamide
 	QList<QObject*> Core::GetProtocols () const
 	{
 		QList<QObject*> result;
-		result << qobject_cast<QObject*> (IrcProtocol_.get ());
+		result << IrcProtocol_.get ();
 		return result;
 	}
 
