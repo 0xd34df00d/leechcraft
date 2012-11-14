@@ -39,6 +39,9 @@ namespace Metacontacts
 		MetaAccount *Account_;
 	public:
 		MetaProtocol (QObject*);
+		~MetaProtocol ();
+
+		void Release ();
 
 		QObject* GetObject ();
 		ProtocolFeatures GetFeatures () const;
