@@ -48,12 +48,18 @@ namespace Util
 	}
 
 	void BaseSettingsManager::RegisterObject (const QByteArray& propName,
-			QObject* object, const QByteArray& funcName, EventFlags flags)
+			QObject *object, const QByteArray& funcName, EventFlags flags)
 	{
 		if (flags & EventFlag::Apply)
 			ApplyProps_.insertMulti (propName, qMakePair (QPointer<QObject> (object), funcName));
 		if (flags & EventFlag::Select)
 			SelectProps_.insertMulti (propName, qMakePair (QPointer<QObject> (object), funcName));
+
+		connect (object,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (cleanupObjects ()),
+				Qt::UniqueConnection);
 	}
 
 	void BaseSettingsManager::RegisterObject (const QList<QByteArray>& propNames,
@@ -153,6 +159,27 @@ namespace Util
 					EndSettings (settings);
 					delete settings;
 				});
+	}
+
+	void BaseSettingsManager::cleanupObjects ()
+	{
+		auto senderObj = sender ();
+		auto cleanupMap = [senderObj] (Properties2Object_t& map) -> void
+		{
+			for (const auto& key : map.keys ())
+			{
+				decltype (map.values (key)) vals2remove;
+				for (const auto& val : map.values (key))
+					if (!val.first || val.first == senderObj)
+						vals2remove << val;
+
+				for (const auto& val : vals2remove)
+					map.remove (key, val);
+			}
+		};
+
+		cleanupMap (ApplyProps_);
+		cleanupMap (SelectProps_);
 	}
 }
 }

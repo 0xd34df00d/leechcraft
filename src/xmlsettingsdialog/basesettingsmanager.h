@@ -46,7 +46,7 @@ namespace Util
 		Q_OBJECT
 
 		typedef QPair<QPointer<QObject>, QByteArray> ObjectElement_t;
-		typedef QMap<QByteArray, ObjectElement_t> Properties2Object_t;
+		typedef QMultiMap<QByteArray, ObjectElement_t> Properties2Object_t;
 		Properties2Object_t ApplyProps_;
 		Properties2Object_t SelectProps_;
 	protected:
@@ -176,6 +176,8 @@ namespace Util
 		virtual void PropertyChanged (const QString&, const QVariant&);
 	private:
 		Settings_ptr GetSettings () const;
+	private slots:
+		void cleanupObjects ();
 	};
 }
 }
