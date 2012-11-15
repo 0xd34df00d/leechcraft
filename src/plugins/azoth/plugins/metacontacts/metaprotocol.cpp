@@ -19,6 +19,7 @@
 #include "metaprotocol.h"
 #include <QIcon>
 #include "metaaccount.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -31,6 +32,21 @@ namespace Metacontacts
 	, ParentPlugin_ (parent)
 	{
 		Account_ = new MetaAccount (this);
+	}
+
+	MetaProtocol::~MetaProtocol ()
+	{
+		Release ();
+	}
+
+	void MetaProtocol::Release ()
+	{
+		if (!Account_)
+			return;
+
+		Core::Instance ().SetMetaAccount (0);
+		delete Account_;
+		Account_ = 0;
 	}
 
 	QObject* MetaProtocol::GetObject ()

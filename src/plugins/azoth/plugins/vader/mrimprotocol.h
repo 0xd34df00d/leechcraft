@@ -40,6 +40,7 @@ namespace Vader
 		MRIMProtocol (QObject* = 0);
 
 		void Init ();
+		void Release ();
 
 		QObject* GetObject ();
 		ProtocolFeatures GetFeatures () const;

@@ -57,6 +57,7 @@ namespace Vader
 
 	void Plugin::Release ()
 	{
+		Core::Instance ().GetProtocol ()->Release ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const

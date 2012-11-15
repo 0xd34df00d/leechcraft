@@ -54,6 +54,7 @@ namespace Metacontacts
 
 	void Plugin::Release ()
 	{
+		Proto_->Release ();
 	}
 
 	QString Plugin::GetName () const

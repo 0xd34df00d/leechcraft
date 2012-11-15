@@ -48,6 +48,14 @@ namespace Metacontacts
 
 	void Core::SetMetaAccount (MetaAccount *acc)
 	{
+		if (!acc)
+		{
+			if (Account_)
+				emit accountRemoved (Account_);
+			Account_ = 0;
+			return;
+		}
+
 		Account_ = acc;
 		connect (this,
 				SIGNAL (gotCLItems (const QList<QObject*>&)),

@@ -61,7 +61,7 @@ namespace Xoox
 
 	QString Plugin::GetName () const
 	{
-		return "Xoox";
+		return "Azoth Xoox";
 	}
 
 	QString Plugin::GetInfo () const
