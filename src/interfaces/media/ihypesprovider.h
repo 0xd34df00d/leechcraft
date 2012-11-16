@@ -54,16 +54,18 @@ namespace Media
 
 		enum class HypeType
 		{
-			Artist,
-			Track
+			NewArtist,
+			NewTrack,
+			TopArtist,
+			TopTrack
 		};
 
 		virtual bool SupportsHype (HypeType) = 0;
 
 		virtual void RequestHype (HypeType) = 0;
 	protected:
-		virtual void gotHypedArtists (const QList<HypedArtistInfo>&) = 0;
-		virtual void gotHypedTracks (const QList<HypedTrackInfo>&) = 0;
+		virtual void gotHypedArtists (const QList<HypedArtistInfo>&, HypeType) = 0;
+		virtual void gotHypedTracks (const QList<HypedTrackInfo>&, HypeType) = 0;
 	};
 }
 

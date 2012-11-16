@@ -106,11 +106,12 @@ namespace LMP
 		bool lastFound = false;
 
 		Providers_ = Core::Instance ().GetProxy ()->GetPluginsManager ()->
-				GetAllCastableTo<Media::IHypesProvider*> ();
-		for (auto prov : Providers_)
+				GetAllCastableRoots<Media::IHypesProvider*> ();
+		for (auto provObj : Providers_)
 		{
-			Ui_.InfoProvider_->addItem (prov->GetServiceName ());
+			auto prov = qobject_cast<Media::IHypesProvider*> (provObj);
 
+			Ui_.InfoProvider_->addItem (prov->GetServiceName ());
 			if (prov->GetServiceName () == lastProv)
 			{
 				const int idx = Providers_.size () - 1;
@@ -139,30 +140,34 @@ namespace LMP
 					this,
 					0);
 
-		auto prov = Providers_.at (idx);
-		if (prov->SupportsHype (Media::IHypesProvider::HypeType::Artist))
+		auto provObj = Providers_.at (idx);
+		auto prov = qobject_cast<Media::IHypesProvider*> (provObj);
+		if (prov->SupportsHype (Media::IHypesProvider::HypeType::NewArtist))
 		{
-			connect (dynamic_cast<QObject*> (prov),
-					SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>)),
+			connect (provObj,
+					SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>, Media::IHypesProvider::HypeType)),
 					this,
-					SLOT (handleArtists (QList<Media::HypedArtistInfo>)));
-			prov->RequestHype (Media::IHypesProvider::HypeType::Artist);
+					SLOT (handleArtists (QList<Media::HypedArtistInfo>, Media::IHypesProvider::HypeType)));
+			prov->RequestHype (Media::IHypesProvider::HypeType::NewArtist);
 		}
-		if (prov->SupportsHype (Media::IHypesProvider::HypeType::Track))
+		if (prov->SupportsHype (Media::IHypesProvider::HypeType::NewTrack))
 		{
-			connect (dynamic_cast<QObject*> (prov),
-					SIGNAL (gotHypedTracks(QList<Media::HypedTrackInfo>)),
+			connect (provObj,
+					SIGNAL (gotHypedTracks(QList<Media::HypedTrackInfo>, Media::IHypesProvider::HypeType)),
 					this,
-					SLOT (handleTracks (QList<Media::HypedTrackInfo>)));
-			prov->RequestHype (Media::IHypesProvider::HypeType::Track);
+					SLOT (handleTracks (QList<Media::HypedTrackInfo>, Media::IHypesProvider::HypeType)));
+			prov->RequestHype (Media::IHypesProvider::HypeType::NewTrack);
 		}
 
 		XmlSettingsManager::Instance ()
 				.setProperty ("LastUsedReleasesProvider", prov->GetServiceName ());
 	}
 
-	void HypesWidget::handleArtists (const QList<Media::HypedArtistInfo>& infos)
+	void HypesWidget::handleArtists (const QList<Media::HypedArtistInfo>& infos, Media::IHypesProvider::HypeType type)
 	{
+		if (type != Media::IHypesProvider::HypeType::NewArtist)
+			return;
+
 		for (const auto& info : infos)
 		{
 			auto artist = info.Info_;
@@ -186,8 +191,11 @@ namespace LMP
 				SLOT (handleArtists (QList<Media::HypedArtistInfo>)));
 	}
 
-	void HypesWidget::handleTracks (const QList<Media::HypedTrackInfo>& infos)
+	void HypesWidget::handleTracks (const QList<Media::HypedTrackInfo>& infos, Media::IHypesProvider::HypeType type)
 	{
+		if (type != Media::IHypesProvider::HypeType::NewTrack)
+			return;
+
 		for (const auto& info : infos)
 		{
 			auto item = new QStandardItem;

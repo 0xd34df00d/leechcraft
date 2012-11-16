@@ -30,9 +30,10 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	HypedArtistsFetcher::HypedArtistsFetcher (QNetworkAccessManager *nam, QObject *parent)
+	HypedArtistsFetcher::HypedArtistsFetcher (QNetworkAccessManager *nam, Media::IHypesProvider::HypeType type, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
+	, Type_ (type)
 	, InfoCount_ (0)
 	{
 		QMap<QString, QString> params;
@@ -53,7 +54,7 @@ namespace Lastfmscrobble
 		if (--InfoCount_)
 			return;
 
-		emit gotHypedArtists (Infos_);
+		emit gotHypedArtists (Infos_, Type_);
 		deleteLater ();
 	}
 
