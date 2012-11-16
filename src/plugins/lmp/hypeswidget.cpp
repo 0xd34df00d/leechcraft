@@ -48,9 +48,7 @@ namespace LMP
 				ArtistURL,
 				ThumbImageURL,
 				FullImageURL,
-				PercentageChange,
-				Listeners,
-				Playcount
+				PercentageChange
 			};
 
 			TracksModel (QObject *parent)
@@ -64,8 +62,6 @@ namespace LMP
 				names [ThumbImageURL] = "thumbImageURL";
 				names [FullImageURL] = "fullURL";
 				names [PercentageChange] = "change";
-				names [Listeners] = "listeners";
-				names [Playcount] = "playcount";
 
 				setRoleNames (names);
 			}
@@ -183,6 +179,23 @@ namespace LMP
 				.setProperty ("LastUsedReleasesProvider", prov->GetServiceName ());
 	}
 
+	namespace
+	{
+		template<typename T>
+		QStringList GetStats (const T& info)
+		{
+			QStringList stats;
+			if (info.PercentageChange_)
+				stats << HypesWidget::tr ("Growth: x%1", "better use unicode multiplication sign here instead of 'x'")
+						.arg (info.PercentageChange_ / 100., 0, 'f', 2);
+			if (info.Listeners_)
+				stats << HypesWidget::tr ("%n listener(s)", 0, info.Listeners_);
+			if (info.Playcount_)
+				stats << HypesWidget::tr ("%n playback(s)", 0, info.Playcount_);
+			return stats;
+		}
+	}
+
 	void HypesWidget::handleArtists (const QList<Media::HypedArtistInfo>& infos, Media::IHypesProvider::HypeType type)
 	{
 		auto model = type == Media::IHypesProvider::HypeType::NewArtists ?
@@ -198,11 +211,7 @@ namespace LMP
 						.arg (artist.Name_);
 
 			auto item = SimilarModel::ConstructItem (artist);
-
-			const auto& perc = tr ("Growth: x%1", "better use unicode multiplication sign here instead of 'x'")
-					.arg (info.PercentageChange_ / 100.0, 0, 'f', 2);
-			item->setData (perc, SimilarModel::Role::Similarity);
-
+			item->setData (GetStats (info).join ("; "), SimilarModel::Role::Similarity);
 			model->appendRow (item);
 		}
 	}
@@ -222,22 +231,7 @@ namespace LMP
 			item->setData (info.ArtistPage_, TracksModel::Role::ArtistURL);
 			item->setData (info.Image_, TracksModel::Role::ThumbImageURL);
 			item->setData (info.LargeImage_, TracksModel::Role::FullImageURL);
-
-			const auto& perc = info.PercentageChange_ ?
-					tr ("Growth: x%1", "better use unicode multiplication sign here instead of 'x'")
-						.arg (info.PercentageChange_ / 100., 0, 'f', 2) :
-					QString ();
-			item->setData (perc, TracksModel::Role::PercentageChange);
-
-			const auto& listeners = info.Listeners_ ?
-					tr ("%n listener(s)", 0, info.Listeners_) :
-					QString ();
-			item->setData (listeners, TracksModel::Role::Listeners);
-
-			const auto& playcount = info.Playcount_ ?
-					tr ("%n playback(s)", 0, info.Playcount_) :
-					QString ();
-			item->setData (playcount, TracksModel::Role::Playcount);
+			item->setData (GetStats (info).join ("; "), TracksModel::Role::PercentageChange);
 
 			model->appendRow (item);
 		}
