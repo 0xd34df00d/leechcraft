@@ -111,7 +111,7 @@ Rectangle {
                 id: modeButton
                 anchors.top: parent.top
                 anchors.right: parent.right
-                onReleased: { console.log(modeState.state); modeState.state = (modeState.state == "topsMode" ? "newsMode" : "topsMode"); }
+                onReleased: modeState.state = (modeState.state == "topsMode" ? "newsMode" : "topsMode")
 
                 Item {
                     id: modeState
