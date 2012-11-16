@@ -28,14 +28,21 @@ namespace Media
 	struct HypedArtistInfo
 	{
 		ArtistInfo Info_;
+
 		int PercentageChange_;
+		int Playcount_;
+		int Listeners_;
 	};
 
 	struct HypedTrackInfo
 	{
 		QString TrackName_;
 		QUrl TrackPage_;
+
 		int PercentageChange_;
+		int Playcount_;
+		int Listeners_;
+
 		int Duration_;
 
 		QUrl Image_;

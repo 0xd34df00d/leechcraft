@@ -80,6 +80,8 @@ namespace Lastfmscrobble
 				getText ("name"),
 				getText ("url"),
 				getText ("percentagechange").toInt (),
+				getText ("playcount").toInt (),
+				getText ("listeners").toInt (),
 				getText ("duration").toInt (),
 				GetImage (trackElem, "medium"),
 				GetImage (trackElem, "extralarge"),

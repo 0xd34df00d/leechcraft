@@ -98,7 +98,9 @@ namespace Lastfmscrobble
 					getText ("url"),
 					Media::TagInfos_t ()
 				},
-				getText ("percentagechange").toInt ()
+				getText ("percentagechange").toInt (),
+				getText ("playcount").toInt (),
+				getText ("listeners").toInt ()
 			};
 
 			auto pendingBio = new PendingArtistBio (name, NAM_, this);
