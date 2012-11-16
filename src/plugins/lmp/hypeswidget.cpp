@@ -48,7 +48,9 @@ namespace LMP
 				ArtistURL,
 				ThumbImageURL,
 				FullImageURL,
-				PercentageChange
+				PercentageChange,
+				Listeners,
+				Playcount
 			};
 
 			TracksModel (QObject *parent)
@@ -62,6 +64,8 @@ namespace LMP
 				names [ThumbImageURL] = "thumbImageURL";
 				names [FullImageURL] = "fullURL";
 				names [PercentageChange] = "change";
+				names [Listeners] = "listeners";
+				names [Playcount] = "playcount";
 
 				setRoleNames (names);
 			}
@@ -70,8 +74,10 @@ namespace LMP
 
 	HypesWidget::HypesWidget (QWidget *parent)
 	: QWidget (parent)
-	, ArtistsModel_ (new SimilarModel (this))
-	, TracksModel_ (new TracksModel (this))
+	, NewArtistsModel_ (new SimilarModel (this))
+	, TopArtistsModel_ (new SimilarModel (this))
+	, NewTracksModel_ (new TracksModel (this))
+	, TopTracksModel_ (new TracksModel (this))
 	{
 		Ui_.setupUi (this);
 
@@ -79,10 +85,14 @@ namespace LMP
 				new SysIconProvider (Core::Instance ().GetProxy ()));
 
 		auto root = Ui_.HypesView_->rootContext ();
-		root->setContextProperty ("artistsModel", ArtistsModel_);
-		root->setContextProperty ("tracksModel", TracksModel_);
+		root->setContextProperty ("newArtistsModel", NewArtistsModel_);
+		root->setContextProperty ("newTracksModel", NewTracksModel_);
+		root->setContextProperty ("topArtistsModel", TopArtistsModel_);
+		root->setContextProperty ("topTracksModel", TopTracksModel_);
 		root->setContextProperty ("artistsLabelText", tr ("Hyped artists"));
 		root->setContextProperty ("tracksLabelText", tr ("Hyped tracks"));
+		root->setContextProperty ("newsText", tr ("Show novelties"));
+		root->setContextProperty ("topsText", tr ("Show tops"));
 		Ui_.HypesView_->setSource (QUrl ("qrc:/lmp/resources/qml/HypesView.qml"));
 
 		connect (Ui_.InfoProvider_,
@@ -127,37 +137,47 @@ namespace LMP
 
 	void HypesWidget::request ()
 	{
-		ArtistsModel_->clear ();
-		TracksModel_->clear ();
+		NewArtistsModel_->clear ();
+		TopArtistsModel_->clear ();
+		NewTracksModel_->clear ();
+		TopTracksModel_->clear ();
 
 		const auto idx = Ui_.InfoProvider_->currentIndex ();
 		if (idx < 0)
 			return;
 
 		for (auto prov : Providers_)
-			disconnect (dynamic_cast<QObject*> (prov),
+			disconnect (prov,
 					0,
 					this,
 					0);
 
 		auto provObj = Providers_.at (idx);
 		auto prov = qobject_cast<Media::IHypesProvider*> (provObj);
-		if (prov->SupportsHype (Media::IHypesProvider::HypeType::NewArtist))
+		auto tryHype = [this, prov, provObj] (Media::IHypesProvider::HypeType type, const char *signal, const char *slot) -> void
 		{
+			if (!prov->SupportsHype (type))
+				return;
+
 			connect (provObj,
-					SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>, Media::IHypesProvider::HypeType)),
+					signal,
 					this,
-					SLOT (handleArtists (QList<Media::HypedArtistInfo>, Media::IHypesProvider::HypeType)));
-			prov->RequestHype (Media::IHypesProvider::HypeType::NewArtist);
-		}
-		if (prov->SupportsHype (Media::IHypesProvider::HypeType::NewTrack))
-		{
-			connect (provObj,
-					SIGNAL (gotHypedTracks(QList<Media::HypedTrackInfo>, Media::IHypesProvider::HypeType)),
-					this,
-					SLOT (handleTracks (QList<Media::HypedTrackInfo>, Media::IHypesProvider::HypeType)));
-			prov->RequestHype (Media::IHypesProvider::HypeType::NewTrack);
-		}
+					slot,
+					Qt::UniqueConnection);
+			prov->RequestHype (type);
+		};
+		tryHype (Media::IHypesProvider::HypeType::NewArtists,
+				SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>, Media::IHypesProvider::HypeType)),
+				SLOT (handleArtists (QList<Media::HypedArtistInfo>, Media::IHypesProvider::HypeType)));
+		tryHype (Media::IHypesProvider::HypeType::TopArtists,
+				SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>, Media::IHypesProvider::HypeType)),
+				SLOT (handleArtists (QList<Media::HypedArtistInfo>, Media::IHypesProvider::HypeType)));
+		tryHype (Media::IHypesProvider::HypeType::NewTracks,
+				SIGNAL (gotHypedTracks (QList<Media::HypedTrackInfo>, Media::IHypesProvider::HypeType)),
+				SLOT (handleTracks (QList<Media::HypedTrackInfo>, Media::IHypesProvider::HypeType)));
+		tryHype (Media::IHypesProvider::HypeType::TopTracks,
+				SIGNAL (gotHypedTracks (QList<Media::HypedTrackInfo>, Media::IHypesProvider::HypeType)),
+				SLOT (handleTracks (QList<Media::HypedTrackInfo>, Media::IHypesProvider::HypeType)));
 
 		XmlSettingsManager::Instance ()
 				.setProperty ("LastUsedReleasesProvider", prov->GetServiceName ());
@@ -165,8 +185,9 @@ namespace LMP
 
 	void HypesWidget::handleArtists (const QList<Media::HypedArtistInfo>& infos, Media::IHypesProvider::HypeType type)
 	{
-		if (type != Media::IHypesProvider::HypeType::NewArtist)
-			return;
+		auto model = type == Media::IHypesProvider::HypeType::NewArtists ?
+				NewArtistsModel_ :
+				TopArtistsModel_;
 
 		for (const auto& info : infos)
 		{
@@ -182,19 +203,15 @@ namespace LMP
 					.arg (info.PercentageChange_ / 100.0, 0, 'f', 2);
 			item->setData (perc, SimilarModel::Role::Similarity);
 
-			ArtistsModel_->appendRow (item);
+			model->appendRow (item);
 		}
-
-		disconnect (sender (),
-				SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>)),
-				this,
-				SLOT (handleArtists (QList<Media::HypedArtistInfo>)));
 	}
 
 	void HypesWidget::handleTracks (const QList<Media::HypedTrackInfo>& infos, Media::IHypesProvider::HypeType type)
 	{
-		if (type != Media::IHypesProvider::HypeType::NewTrack)
-			return;
+		auto model = type == Media::IHypesProvider::HypeType::NewTracks ?
+				NewTracksModel_ :
+				TopTracksModel_;
 
 		for (const auto& info : infos)
 		{
@@ -206,17 +223,24 @@ namespace LMP
 			item->setData (info.Image_, TracksModel::Role::ThumbImageURL);
 			item->setData (info.LargeImage_, TracksModel::Role::FullImageURL);
 
-			const auto& perc = tr ("Growth: x%1", "better use unicode multiplication sign here instead of 'x'")
-					.arg (info.PercentageChange_ / 100., 0, 'f', 2);
+			const auto& perc = info.PercentageChange_ ?
+					tr ("Growth: x%1", "better use unicode multiplication sign here instead of 'x'")
+						.arg (info.PercentageChange_ / 100., 0, 'f', 2) :
+					QString ();
 			item->setData (perc, TracksModel::Role::PercentageChange);
 
-			TracksModel_->appendRow (item);
-		}
+			const auto& listeners = info.Listeners_ ?
+					tr ("%n listener(s)", 0, info.Listeners_) :
+					QString ();
+			item->setData (listeners, TracksModel::Role::Listeners);
 
-		disconnect (sender (),
-				SIGNAL (gotHypedTracks(QList<Media::HypedTrackInfo>)),
-				this,
-				SLOT (handleTracks (QList<Media::HypedTrackInfo>)));
+			const auto& playcount = info.Playcount_ ?
+					tr ("%n playback(s)", 0, info.Playcount_) :
+					QString ();
+			item->setData (playcount, TracksModel::Role::Playcount);
+
+			model->appendRow (item);
+		}
 	}
 
 	void HypesWidget::handleLink (const QString& link)

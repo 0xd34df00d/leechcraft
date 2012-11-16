@@ -33,8 +33,10 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::HypesWidget Ui_;
-		QStandardItemModel *ArtistsModel_;
-		QStandardItemModel *TracksModel_;
+		QStandardItemModel *NewArtistsModel_;
+		QStandardItemModel *TopArtistsModel_;
+		QStandardItemModel *NewTracksModel_;
+		QStandardItemModel *TopTracksModel_;
 
 		QList<QObject*> Providers_;
 	public:

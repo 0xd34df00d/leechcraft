@@ -251,8 +251,10 @@ namespace Lastfmscrobble
 	{
 		switch (type)
 		{
-		case HypeType::NewArtist:
-		case HypeType::NewTrack:
+		case HypeType::NewArtists:
+		case HypeType::NewTracks:
+		case HypeType::TopArtists:
+		case HypeType::TopTracks:
 			return true;
 		}
 
@@ -268,7 +270,8 @@ namespace Lastfmscrobble
 
 		switch (type)
 		{
-		case HypeType::NewArtist:
+		case HypeType::NewArtists:
+		case HypeType::TopArtists:
 			connect (new HypedArtistsFetcher (nam, type, this),
 					SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>,
 							Media::IHypesProvider::HypeType)),
@@ -276,7 +279,8 @@ namespace Lastfmscrobble
 					SIGNAL (gotHypedArtists (QList<Media::HypedArtistInfo>,
 							Media::IHypesProvider::HypeType)));
 			break;
-		case HypeType::NewTrack:
+		case HypeType::NewTracks:
+		case HypeType::TopTracks:
 			connect (new HypedTracksFetcher (nam, type, this),
 					SIGNAL (gotHypedTracks (QList<Media::HypedTrackInfo>,
 							Media::IHypesProvider::HypeType)),

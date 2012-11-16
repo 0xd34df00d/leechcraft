@@ -28,7 +28,7 @@ Rectangle {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
-            height: artistNameLabel.height
+            height: Math.max(artistNameLabel.height, modeButton.height)
 
             Text {
                 id: artistNameLabel
@@ -71,7 +71,8 @@ Rectangle {
             clip: true
 
             SimilarView {
-                model: artistsModel
+                id: artistsView
+                model: topArtistsModel
 
                 onLinkActivated: rootRect.linkActivated(id)
             }
@@ -94,7 +95,7 @@ Rectangle {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
-            height: artistNameLabel.height
+            height: Math.max(artistNameLabel.height, modeButton.height)
 
             Text {
                 id: tracksNameLabel
@@ -104,6 +105,32 @@ Rectangle {
                 font.pointSize: 14
                 color: "#dddddd"
                 anchors.centerIn: parent
+            }
+
+            TextButton {
+                id: modeButton
+                anchors.top: parent.top
+                anchors.right: parent.right
+                onReleased: { console.log(modeState.state); modeState.state = (modeState.state == "topsMode" ? "newsMode" : "topsMode"); }
+
+                Item {
+                    id: modeState
+                    states: [
+                        State {
+                            name: "topsMode"
+                            PropertyChanges { target: modeButton; text: newsText }
+                            PropertyChanges { target: artistsView; model: topArtistsModel }
+                            PropertyChanges { target: hypedTracksView; model: topTracksModel }
+                        },
+                        State {
+                            name: "newsMode"
+                            PropertyChanges { target: modeButton; text: topsText }
+                            PropertyChanges { target: artistsView; model: newArtistsModel }
+                            PropertyChanges { target: hypedTracksView; model: newTracksModel }
+                        }
+                    ]
+                    state: "topsMode"
+                }
             }
         }
 
@@ -154,7 +181,7 @@ Rectangle {
                 anchors.fill: parent
                 smooth: true
 
-                model: tracksModel
+                model: topTracksModel
 
                 delegate: Item {
                     height: 75

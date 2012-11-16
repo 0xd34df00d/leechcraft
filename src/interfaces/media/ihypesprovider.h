@@ -61,10 +61,10 @@ namespace Media
 
 		enum class HypeType
 		{
-			NewArtist,
-			NewTrack,
-			TopArtist,
-			TopTrack
+			NewArtists,
+			NewTracks,
+			TopArtists,
+			TopTracks
 		};
 
 		virtual bool SupportsHype (HypeType) = 0;

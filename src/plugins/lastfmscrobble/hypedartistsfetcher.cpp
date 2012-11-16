@@ -38,7 +38,10 @@ namespace Lastfmscrobble
 	{
 		QMap<QString, QString> params;
 		params ["limit"] = "20";
-		auto reply = Request ("chart.getHypedArtists", nam, params);
+		const auto& method = type == Media::IHypesProvider::HypeType::NewArtists ?
+				"chart.getHypedArtists" :
+				"chart.getTopArtists";
+		auto reply = Request (method, nam, params);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
