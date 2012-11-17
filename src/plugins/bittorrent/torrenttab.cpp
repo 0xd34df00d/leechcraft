@@ -57,6 +57,7 @@ namespace BitTorrent
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleTorrentSelected (QModelIndex)));
+		Ui_.TorrentsView_->sortByColumn (Core::ColumnID, Qt::SortOrder::AscendingOrder);
 
 		const auto& fm = Ui_.TorrentsView_->fontMetrics ();
 		QHeaderView *header = Ui_.TorrentsView_->header ();

@@ -466,7 +466,7 @@ namespace BitTorrent
 			switch (column)
 			{
 			case ColumnID:
-				return QString::number (row + 1);
+				return row + 1;
 			case ColumnName:
 				return QString::fromUtf8 (h.name ().c_str ());
 			case ColumnState:
