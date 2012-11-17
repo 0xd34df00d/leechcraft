@@ -50,6 +50,8 @@ namespace BitTorrent
 	public:
 		TorrentTabWidget (QWidget* = 0);
 
+		void SetChangeTrackersAction (QAction*);
+
 		void SetCurrentIndex (int);
 		void InvalidateSelection ();
 		void SetOverallDownloadRateController (int);

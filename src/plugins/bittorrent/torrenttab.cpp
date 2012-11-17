@@ -190,6 +190,7 @@ namespace BitTorrent
 				SIGNAL (triggered ()),
 				this,
 				SLOT (on_ChangeTrackers__triggered ()));
+		Ui_.Tabs_->SetChangeTrackersAction (ChangeTrackers_);
 
 		MakeMagnetLink_ = new QAction (tr ("Make magnet link..."), Toolbar_);
 		MakeMagnetLink_->setProperty ("ActionIcon", "insert-link");

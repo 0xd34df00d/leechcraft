@@ -58,9 +58,6 @@ namespace BitTorrent
 		header->resizeSection (1, fm.width ("1234.5678 bytes/s"));
 		header->resizeSection (2, fm.width ("1234.5678 bytes/s"));
 
-		// TODO
-		//Ui_.TrackersButton_->setDefaultAction (editTrackers);
-
 		Ui_.TorrentTags_->AddSelector ();
 		Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
 
@@ -197,6 +194,11 @@ namespace BitTorrent
 				this, "setTorrentTabWidgetSettings");
 
 		setTabWidgetSettings ();
+	}
+
+	void TorrentTabWidget::SetChangeTrackersAction (QAction *changeTrackers)
+	{
+		Ui_.TrackersButton_->setDefaultAction (changeTrackers);
 	}
 
 	void TorrentTabWidget::SetCurrentIndex (int index)
