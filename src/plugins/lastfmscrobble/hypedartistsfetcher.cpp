@@ -30,14 +30,18 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	HypedArtistsFetcher::HypedArtistsFetcher (QNetworkAccessManager *nam, QObject *parent)
+	HypedArtistsFetcher::HypedArtistsFetcher (QNetworkAccessManager *nam, Media::IHypesProvider::HypeType type, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
+	, Type_ (type)
 	, InfoCount_ (0)
 	{
 		QMap<QString, QString> params;
 		params ["limit"] = "20";
-		auto reply = Request ("chart.getHypedArtists", nam, params);
+		const auto& method = type == Media::IHypesProvider::HypeType::NewArtists ?
+				"chart.getHypedArtists" :
+				"chart.getTopArtists";
+		auto reply = Request (method, nam, params);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -53,7 +57,7 @@ namespace Lastfmscrobble
 		if (--InfoCount_)
 			return;
 
-		emit gotHypedArtists (Infos_);
+		emit gotHypedArtists (Infos_, Type_);
 		deleteLater ();
 	}
 
@@ -97,7 +101,9 @@ namespace Lastfmscrobble
 					getText ("url"),
 					Media::TagInfos_t ()
 				},
-				getText ("percentagechange").toInt ()
+				getText ("percentagechange").toInt (),
+				getText ("playcount").toInt (),
+				getText ("listeners").toInt ()
 			};
 
 			auto pendingBio = new PendingArtistBio (name, NAM_, this);

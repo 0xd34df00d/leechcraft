@@ -28,12 +28,16 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	HypedTracksFetcher::HypedTracksFetcher (QNetworkAccessManager *nam, QObject *parent)
+	HypedTracksFetcher::HypedTracksFetcher (QNetworkAccessManager *nam, Media::IHypesProvider::HypeType type, QObject *parent)
 	: QObject (parent)
+	, Type_ (type)
 	{
 		QMap<QString, QString> params;
 		params ["limit"] = "50";
-		auto reply = Request ("chart.getHypedTracks", nam, params);
+		const auto& method = type == Media::IHypesProvider::HypeType::NewTracks ?
+				"chart.getHypedTracks" :
+				"chart.getTopTracks";
+		auto reply = Request (method, nam, params);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -79,6 +83,8 @@ namespace Lastfmscrobble
 				getText ("name"),
 				getText ("url"),
 				getText ("percentagechange").toInt (),
+				getText ("playcount").toInt (),
+				getText ("listeners").toInt (),
 				getText ("duration").toInt (),
 				GetImage (trackElem, "medium"),
 				GetImage (trackElem, "extralarge"),
@@ -89,7 +95,7 @@ namespace Lastfmscrobble
 			trackElem = trackElem.nextSiblingElement ("track");
 		}
 
-		emit gotHypedTracks (tracks);
+		emit gotHypedTracks (tracks, Type_);
 	}
 
 	void HypedTracksFetcher::handleError ()
