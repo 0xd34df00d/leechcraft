@@ -87,7 +87,8 @@ namespace LMP
 
 	void NowPlayingWidget::SetAlbumArt (const QPixmap& px)
 	{
-		Ui_.Art_->setPixmap (px);
+		Ui_.Art_->setPixmap (px.scaled (Ui_.Art_->minimumSize (),
+					Qt::KeepAspectRatio, Qt::SmoothTransformation));
 	}
 
 	void NowPlayingWidget::SetTrackInfo (const MediaInfo& info)
