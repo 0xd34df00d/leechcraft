@@ -379,13 +379,13 @@ namespace BitTorrent
 		Core::pertrackerstats_t ptstats;
 		Core::Instance ()->GetPerTracker (ptstats);
 		Ui_.PerTrackerStats_->clear ();
-		for (Core::pertrackerstats_t::const_iterator i = ptstats.begin (),
-				end = ptstats.end (); i != end; ++i)
+
+		for (auto i = ptstats.begin (), end = ptstats.end (); i != end; ++i)
 		{
 			QStringList strings;
-			strings	<< i->first
-				<< Util::MakePrettySize (i->second.DownloadRate_) + tr ("/s")
-				<< Util::MakePrettySize (i->second.UploadRate_) + tr ("/s");
+			strings	<< i.key ()
+				<< Util::MakePrettySize (i->DownloadRate_) + tr ("/s")
+				<< Util::MakePrettySize (i->UploadRate_) + tr ("/s");
 
 			new QTreeWidgetItem (Ui_.PerTrackerStats_, strings);
 		}

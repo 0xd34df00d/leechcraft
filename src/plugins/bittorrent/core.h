@@ -115,7 +115,7 @@ namespace BitTorrent
 
 			PerTrackerStats ();
 		};
-		typedef std::map<QString, PerTrackerStats> pertrackerstats_t;
+		typedef QMap<QString, PerTrackerStats> pertrackerstats_t;
 	private:
 		struct PerTrackerAccumulator
 		{
