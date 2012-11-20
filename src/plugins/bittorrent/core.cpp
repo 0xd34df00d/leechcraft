@@ -2376,7 +2376,7 @@ namespace BitTorrent
 			try
 			{
 				QString logmsg = QString::fromUtf8 (a->message ().c_str ());
-				Core::Instance ()->LogMessage (QDateTime::currentDateTime ().toString () + " " + logmsg);
+				LogMessage (QDateTime::currentDateTime ().toString () + " " + logmsg);
 
 				qDebug () << "<libtorrent>" << logmsg;
 			}
