@@ -492,7 +492,7 @@ namespace Acetamide
 			break;
 		}
 
-		ISH_->ShowAnswer ("away", opts.Message_, IMessage::MTStatusMessage);
+		ISH_->ShowAnswer ("away", opts.Message_, true, IMessage::MTStatusMessage);
 	}
 
 	void ServerResponseManager::GotUserHost (const IrcMessageOptions& opts)
