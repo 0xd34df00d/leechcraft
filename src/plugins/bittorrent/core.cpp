@@ -213,11 +213,7 @@ namespace BitTorrent
 #endif
 
 			setLoggingSettings ();
-
-			QList<QVariant> ports = XmlSettingsManager::Instance ()->
-				property ("TCPPortRange").toList ();
-			Session_->listen_on (std::make_pair (ports.at (0).toInt (),
-						ports.at (1).toInt ()));
+			tcpPortRangeChanged ();
 
 			if (XmlSettingsManager::Instance ()->
 					property ("EnableMetadata").toBool ())
@@ -232,10 +228,8 @@ namespace BitTorrent
 					property ("EnableSmartBan").toBool ())
 				Session_->add_extension (&libtorrent::create_smart_ban_plugin);
 
-			Session_->set_max_uploads (XmlSettingsManager::Instance ()->
-					property ("MaxUploads").toInt ());
-			Session_->set_max_connections (XmlSettingsManager::Instance ()->
-					property ("MaxConnections").toInt ());
+			maxUploadsChanged ();
+			maxConnectionsChanged ();
 
 			QVariant sstateVariant = XmlSettingsManager::Instance ()->
 					property ("SessionState");
