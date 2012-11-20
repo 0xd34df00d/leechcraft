@@ -99,7 +99,11 @@ namespace BitTorrent
 	int Core::PerTrackerAccumulator::operator() (int,
 			const Core::TorrentStruct& str)
 	{
+#if LIBTORRENT_VERSION_NUM >= 1600
+		const auto& s = str.Handle_.status (0);
+#else
 		libtorrent::torrent_status s = str.Handle_.status ();
+#endif
 		QString domain = QUrl (s.current_tracker.c_str ()).host ();
 		if (domain.size ())
 		{
@@ -450,7 +454,11 @@ namespace BitTorrent
 			return QVariant ();
 
 		const auto& h = Handles_.at (row).Handle_;
+#if LIBTORRENT_VERSION_NUM >= 1600
+		const auto& status = h.status (0);
+#else
 		const auto& status = h.status ();
+#endif
 
 		switch (role)
 		{
@@ -725,7 +733,12 @@ namespace BitTorrent
 		std::vector<libtorrent::peer_info> peerInfos;
 		Handles_.at (idx).Handle_.get_peer_info (peerInfos);
 
+#if LIBTORRENT_VERSION_NUM >= 1600
+		const auto& localPieces = Handles_.at (idx).Handle_.status (libtorrent::torrent_handle::query_pieces).pieces;
+#else
 		const auto& localPieces = Handles_.at (idx).Handle_.status ().pieces;
+#endif
+
 		QList<int> ourMissing;
 		for (auto i = localPieces.begin (), end = localPieces.end (); i != end; ++i)
 		{
@@ -1880,7 +1893,11 @@ namespace BitTorrent
 		const auto& info = torrent.Handle_.get_torrent_info ();
 
 		if (LiveStreamManager_->IsEnabledOn (torrent.Handle_) &&
+#if LIBTORRENT_VERSION_NUM >= 1600
+				torrent.Handle_.status (libtorrent::torrent_handle::query_pieces).num_pieces !=
+#else
 				torrent.Handle_.status ().num_pieces !=
+#endif
 					torrent.Handle_.get_torrent_info ().num_pieces ())
 			return;
 
@@ -2209,7 +2226,7 @@ namespace BitTorrent
 			if (Handles_.at (i).State_ == TSSeeding)
 				continue;
 
-			libtorrent::torrent_status status = Handles_.at (i).Handle_.status ();
+			const auto& status = Handles_.at (i).Handle_.status (0);
 			libtorrent::torrent_status::state_t state = status.state;
 
 			if (status.paused)
