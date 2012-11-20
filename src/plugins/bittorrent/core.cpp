@@ -1827,14 +1827,23 @@ namespace BitTorrent
 			bool pause)
 	{
 		libtorrent::lazy_entry e;
-
 		libtorrent::torrent_handle handle;
-		if (libtorrent::lazy_bdecode (data.constData (),
-					data.constData () + data.size (), e))
+
+#if LIBTORRENT_VERSION_NUM >= 1600
+		boost::system::error_code ec;
+		if (libtorrent::lazy_bdecode (data.constData (), data.constData () + data.size (), e, ec))
+		{
+			emit error (tr ("Bad bencoding in saved torrent data: %1")
+						.arg (QString::fromUtf8 (ec.message ().c_str ())));
+			return handle;
+		}
+#else
+		if (libtorrent::lazy_bdecode (data.constData (), data.constData () + data.size (), e))
 		{
 			emit error (tr ("Bad bencoding in saved torrent data"));
 			return handle;
 		}
+#endif
 
 		try
 		{
