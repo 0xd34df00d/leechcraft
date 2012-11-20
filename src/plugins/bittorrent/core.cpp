@@ -2410,8 +2410,30 @@ namespace BitTorrent
 
 	void Core::tcpPortRangeChanged ()
 	{
-		QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
-		Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
+		const auto& ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
+#if LIBTORRENT_VERSION_NUM >= 1600
+		boost::system::error_code ec;
+		Session_->listen_on (std::make_pair (ports.at (0).toInt (),
+					ports.at (1).toInt ()),
+				ec);
+		if (ec)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error listening on"
+					<< ports.at (0).toInt ()
+					<< ports.at (1).toInt ()
+					<< ec.message ().c_str ();
+
+			const QString& text = tr ("Error listening on ports %1-%2: %3")
+					.arg (ports.at (0).toInt ())
+					.arg (ports.at (1).toInt ())
+					.arg (QString::fromUtf8 (ec.message ().c_str ()));
+			NotifyManager_->AddNotification ("BitTorrent", text, PCritical_);
+		}
+#else
+		Session_->listen_on (std::make_pair (ports.at (0).toInt (),
+					ports.at (1).toInt ()));
+#endif
 	}
 
 	void Core::autosaveIntervalChanged ()
