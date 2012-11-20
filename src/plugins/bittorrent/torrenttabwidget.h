@@ -66,7 +66,6 @@ namespace BitTorrent
 	private slots:
 		void on_OverallDownloadRateController__valueChanged (int);
 		void on_OverallUploadRateController__valueChanged (int);
-		void on_DesiredRating__valueChanged (double);
 		void on_TorrentDownloadRateController__valueChanged (int);
 		void on_TorrentUploadRateController__valueChanged (int);
 		void on_TorrentManaged__stateChanged (int);

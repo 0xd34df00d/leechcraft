@@ -1046,19 +1046,6 @@ namespace BitTorrent
 		Session_->set_settings (settings);
 	}
 
-	void Core::SetDesiredRating (double val)
-	{
-		for (int i = 0; i < Handles_.size (); ++i)
-		{
-			if (!CheckValidity (i))
-				continue;
-
-			Handles_.at (i).Handle_.set_ratio (val ? 1/val : 0);
-		}
-
-		XmlSettingsManager::Instance ()->setProperty ("DesiredRating", val);
-	}
-
 	int Core::GetOverallDownloadRate () const
 	{
 		return XmlSettingsManager::Instance ()->property ("DownloadRateLimit").toInt ();
@@ -1077,11 +1064,6 @@ namespace BitTorrent
 	int Core::GetMaxUploadingTorrents () const
 	{
 		return XmlSettingsManager::Instance ()->Property ("MaxUploadingTorrents", -1).toInt ();
-	}
-
-	double Core::GetDesiredRating () const
-	{
-		return XmlSettingsManager::Instance ()->property ("DesiredRating").toInt ();
 	}
 
 	void Core::SetTorrentDownloadRate (int val, int idx)
@@ -1923,8 +1905,6 @@ namespace BitTorrent
 				Property ("MaxDownloadingTorrents", -1).toInt ());
 		SetMaxUploadingTorrents (XmlSettingsManager::Instance ()->
 				Property ("MaxUploadingTorrents", -1).toInt ());
-		SetDesiredRating (XmlSettingsManager::Instance ()->
-				Property ("DesiredRating", 0).toInt ());
 
 		XmlSettingsManager::Instance ()->RegisterObject ("TCPPortRange",
 				this, "tcpPortRangeChanged");

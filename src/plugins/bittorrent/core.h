@@ -265,12 +265,10 @@ namespace BitTorrent
 		void SetOverallUploadRate (int);
 		void SetMaxDownloadingTorrents (int);
 		void SetMaxUploadingTorrents (int);
-		void SetDesiredRating (double);
 		int GetOverallDownloadRate () const;
 		int GetOverallUploadRate () const;
 		int GetMaxDownloadingTorrents () const;
 		int GetMaxUploadingTorrents () const;
-		double GetDesiredRating () const;
 		void SetTorrentDownloadRate (int, int);
 		void SetTorrentUploadRate (int, int);
 		int GetTorrentDownloadRate (int) const;

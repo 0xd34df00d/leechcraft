@@ -91,10 +91,6 @@ namespace BitTorrent
 				SIGNAL (valueChanged (int)),
 				this,
 				SLOT (on_OverallUploadRateController__valueChanged (int)));
-		connect (Ui_.DesiredRating_,
-				SIGNAL (valueChanged (double)),
-				this,
-				SLOT (on_DesiredRating__valueChanged (double)));
 		connect (Ui_.TorrentDownloadRateController_,
 				SIGNAL (valueChanged (int)),
 				this,
@@ -401,7 +397,6 @@ namespace BitTorrent
 		Ui_.OverallUploadRateController_->setValue (Core::Instance ()->GetOverallUploadRate ());
 		Ui_.DownloadingTorrents_->setValue (Core::Instance ()->GetMaxDownloadingTorrents ());
 		Ui_.UploadingTorrents_->setValue (Core::Instance ()->GetMaxUploadingTorrents ());
-		Ui_.DesiredRating_->setValue (Core::Instance ()->GetDesiredRating ());
 	}
 
 	void TorrentTabWidget::UpdateTorrentControl ()
@@ -562,11 +557,6 @@ namespace BitTorrent
 	void TorrentTabWidget::on_OverallUploadRateController__valueChanged (int val)
 	{
 		Core::Instance ()->SetOverallUploadRate (val);
-	}
-
-	void TorrentTabWidget::on_DesiredRating__valueChanged (double val)
-	{
-		Core::Instance ()->SetDesiredRating (val);
 	}
 
 	void TorrentTabWidget::on_TorrentDownloadRateController__valueChanged (int val)
