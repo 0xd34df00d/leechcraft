@@ -71,6 +71,7 @@
 #include "torrentfilesmodel.h"
 #include "livestreammanager.h"
 #include "torrentmaker.h"
+#include "notifymanager.h"
 
 using namespace LeechCraft::Util;
 
@@ -123,7 +124,9 @@ namespace BitTorrent
 	}
 
 	Core::Core ()
-	: CurrentTorrent_ (-1)
+	: NotifyManager_ (new NotifyManager (this))
+	, Session_ (0)
+	, CurrentTorrent_ (-1)
 	, SettingsSaveTimer_ (new QTimer ())
 	, FinishedTimer_ (new QTimer ())
 	, WarningWatchdog_ (new QTimer ())

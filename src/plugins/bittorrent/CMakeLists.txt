@@ -60,6 +60,7 @@ SET (SRCS
 	torrenttab.cpp
 	torrenttabwidget.cpp
 	tabviewproxymodel.cpp
+	notifymanager.cpp
 	)
 SET (HEADERS
 	torrentplugin.h
@@ -97,6 +98,7 @@ SET (HEADERS
 	torrenttab.h
 	torrenttabwidget.h
 	tabviewproxymodel.h
+	notifymanager.h
 	newtorrentparams.h
 	torrentinfo.h
 	fileinfo.h

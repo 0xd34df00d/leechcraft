@@ -63,6 +63,7 @@ namespace Plugins
 {
 namespace BitTorrent
 {
+	class NotifyManager;
 	class PiecesModel;
 	class PeersModel;
 	class TorrentFilesModel;
@@ -124,7 +125,10 @@ namespace BitTorrent
 			int operator() (int, const Core::TorrentStruct& str);
 		};
 
+		NotifyManager *NotifyManager_;
+
 		libtorrent::session *Session_;
+
 		typedef QList<TorrentStruct> HandleDict_t;
 		HandleDict_t Handles_;
 		QList<QString> Headers_;
