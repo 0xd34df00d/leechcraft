@@ -1244,7 +1244,11 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
+#if LIBTORRENT_VERSION_NUM >= 1600
+		return Handles_.at (idx).Handle_.status (0).auto_managed;
+#else
 		return Handles_.at (idx).Handle_.is_auto_managed ();
+#endif
 	};
 
 	void Core::SetTorrentManaged (bool man, int idx)
@@ -1260,8 +1264,11 @@ namespace BitTorrent
 	{
 		if (!CheckValidity (idx))
 			return false;
-
+#if LIBTORRENT_VERSION_NUM >= 1600
+		return Handles_.at (idx).Handle_.status (0).sequential_download;
+#else
 		return Handles_.at (idx).Handle_.is_sequential_download ();
+#endif
 	}
 
 	void Core::SetTorrentSequentialDownload (bool seq, int idx)
@@ -1277,7 +1284,11 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
+#if LIBTORRENT_VERSION_NUM >= 1600
+		return Handles_.at (idx).Handle_.status (0).super_seeding;
+#else
 		return Handles_.at (idx).Handle_.super_seeding ();
+#endif
 	}
 
 	void Core::SetTorrentSuperSeeding (bool sup, int idx)
