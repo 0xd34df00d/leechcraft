@@ -896,7 +896,7 @@ namespace BitTorrent
 			HandleLibtorrentException (e);
 			return -1;
 		}
-		catch (const std::runtime_error& e)
+		catch (const std::runtime_error&)
 		{
 			emit error (tr ("Runtime error"));
 			return -1;
@@ -2404,10 +2404,10 @@ namespace BitTorrent
 					> alertHandler (a, sd);
 				Q_UNUSED (alertHandler);
 			}
-			catch (const libtorrent::libtorrent_exception& e)
+			catch (const libtorrent::libtorrent_exception&)
 			{
 			}
-			catch (const std::exception& e)
+			catch (const std::exception&)
 			{
 			}
 
