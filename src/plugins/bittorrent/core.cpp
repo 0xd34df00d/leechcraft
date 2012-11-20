@@ -2148,15 +2148,15 @@ namespace BitTorrent
 					file_info.write (Handles_.at (i).TorrentFileContents_);
 					file_info.close ();
 
-					Handles_.at (i).Handle_.save_resume_data ();
+					const auto& handle = Handles_.at (i).Handle_;
+					if (handle.need_save_resume_data () || handle.status (0).need_save_resume)
+						handle.save_resume_data ();
 
 					settings.setValue ("SavePath",
 #if LIBTORRENT_VERSION_NUM >= 1600
-							QString::fromUtf8 (Handles_.at (i)
-								.Handle_.save_path ().c_str ()));
+							QString::fromUtf8 (handle.save_path ().c_str ()));
 #else
-							QString::fromUtf8 (Handles_.at (i)
-								.Handle_.save_path ().string ().c_str ()));
+							QString::fromUtf8 (handle.save_path ().string ().c_str ()));
 #endif
 					settings.setValue ("Filename",
 							Handles_.at (i).TorrentFileName_);
