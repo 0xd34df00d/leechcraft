@@ -1598,7 +1598,8 @@ namespace Aggregator
 			qWarning () << Q_FUNC_INFO
 					<< "unable to obtain more info on"
 					<< itemId
-					<< "so won't update channel data";
+					<< "so won't update channel data"
+					<< e.what ();
 		}
 
 		Util::DBLock lock (DB_);
