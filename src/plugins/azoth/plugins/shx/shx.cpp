@@ -94,7 +94,7 @@ namespace SHX
 				this,
 				SLOT (handleFinished ()));
 #ifdef Q_OS_WIN32
-		proc->start ("cmd.exe", QStringList () << "/C" << text);
+		proc->start ("cmd.exe", QStringList () << "/U" << "/C" << text);
 #else
 		proc->start ("/bin/sh", { "-c", text });
 #endif
@@ -112,12 +112,19 @@ namespace SHX
 					<< proc;
 			return;
 		}
-
+#ifdef Q_OS_WIN32
+		auto out = QString::fromUtf16 (reinterpret_cast<const ushort*> (proc->readAllStandardOutput ().constData ()));
+#else
 		auto out = QString::fromUtf8 (proc->readAllStandardOutput ());
+#endif
 		const auto& err = proc->readAllStandardError ();
 
 		if (!err.isEmpty ())
+#ifdef Q_OS_WIN32
+			out.prepend (tr ("Error: %1").arg (QString::fromUtf16 (reinterpret_cast<const ushort*> (err.constData ()))) + "\n");
+#else
 			out.prepend (tr ("Error: %1").arg (QString::fromUtf8 (err)) + "\n");
+#endif
 
 		QMetaObject::invokeMethod (Process2Chat_.take (proc),
 				"prepareMessageText",
