@@ -812,16 +812,17 @@ namespace BitTorrent
 			atp.auto_managed = true;
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.paused = (params & NoAutostart);
+			atp.duplicate_is_error = true;
 #if LIBTORRENT_VERSION_NUM >= 1600
 			atp.save_path = std::string (path.toUtf8 ().constData ());
+			atp.url = magnet.toStdString ();
+			handle = Session_->add_torrent (atp);
 #else
 			atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
-#endif
-			atp.duplicate_is_error = true;
-
 			handle = libtorrent::add_magnet_uri (*Session_,
 					magnet.toStdString (),
 					atp);
+#endif
 			if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
 				handle.resolve_countries (true);
 		}
