@@ -75,8 +75,6 @@
 
 using namespace LeechCraft::Util;
 
-Q_DECLARE_METATYPE (libtorrent::entry);
-
 namespace LeechCraft
 {
 namespace Plugins
@@ -146,9 +144,6 @@ namespace BitTorrent
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-
-		qRegisterMetaType<libtorrent::entry> ("libtorrent::entry");
-		qRegisterMetaTypeStreamOperators<libtorrent::entry> ("libtorrent::entry");
 	}
 
 	void Core::SetWidgets (QToolBar *tool, QWidget *tab)
@@ -234,10 +229,11 @@ namespace BitTorrent
 			QVariant sstateVariant = XmlSettingsManager::Instance ()->
 					property ("SessionState");
 			if (sstateVariant.isValid () &&
-					!sstateVariant.isNull ())
+					!sstateVariant.toByteArray ().isEmpty ())
 			{
-				libtorrent::entry sstate = sstateVariant.value<libtorrent::entry> ();
-				Session_->load_state (sstate);
+				libtorrent::lazy_entry state;
+				if (DecodeEntry (sstateVariant.toByteArray (), state))
+					Session_->load_state (state);
 			}
 
 			setProxySettings ();
@@ -1814,30 +1810,38 @@ namespace BitTorrent
 		settings.endGroup ();
 	}
 
-	libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
-			const QByteArray& resumeData,
-			const boost::filesystem::path& path,
-			bool automanaged,
-			bool pause)
+	bool Core::DecodeEntry (const QByteArray& data, libtorrent::lazy_entry& e)
 	{
-		libtorrent::lazy_entry e;
-		libtorrent::torrent_handle handle;
-
 #if LIBTORRENT_VERSION_NUM >= 1600
 		boost::system::error_code ec;
 		if (libtorrent::lazy_bdecode (data.constData (), data.constData () + data.size (), e, ec))
 		{
 			emit error (tr ("Bad bencoding in saved torrent data: %1")
 						.arg (QString::fromUtf8 (ec.message ().c_str ())));
-			return handle;
+			return false;
 		}
 #else
 		if (libtorrent::lazy_bdecode (data.constData (), data.constData () + data.size (), e))
 		{
 			emit error (tr ("Bad bencoding in saved torrent data"));
-			return handle;
+			return false;
 		}
 #endif
+
+		return true;
+	}
+
+	libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
+			const QByteArray& resumeData,
+			const boost::filesystem::path& path,
+			bool automanaged,
+			bool pause)
+	{
+		libtorrent::torrent_handle handle;
+
+		libtorrent::lazy_entry e;
+		if (!DecodeEntry (data, e))
+			return handle;
 
 		try
 		{
@@ -2189,9 +2193,9 @@ namespace BitTorrent
 		libtorrent::entry sessionState;
 		Session_->save_state (sessionState, saveflags);
 
-		XmlSettingsManager::Instance ()->
-			setProperty ("SessionState",
-					QVariant::fromValue<libtorrent::entry> (sessionState));
+		QByteArray sessionStateBA;
+		libtorrent::bencode (std::back_inserter (sessionStateBA), sessionState);
+		XmlSettingsManager::Instance ()->setProperty ("SessionState", sessionStateBA);
 
 		Session_->wait_for_alert (libtorrent::time_duration (5));
 
@@ -2787,15 +2791,6 @@ namespace BitTorrent
 
 namespace libtorrent
 {
-	QDataStream& operator<< (QDataStream& out, const entry& e)
-	{
-		QByteArray ba;
-		libtorrent::bencode (std::back_inserter (ba), e);
-
-		out << static_cast<qint8> (1) << ba;
-		return out;
-	}
-
 	QDataStream& operator>> (QDataStream& in, entry& e)
 	{
 		qint8 version;
