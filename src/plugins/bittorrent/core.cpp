@@ -1020,13 +1020,25 @@ namespace BitTorrent
 
 	void Core::SetOverallDownloadRate (int val)
 	{
+#if LIBTORRENT_VERSION_NUM >= 1600
+		auto settings = Session_->settings ();
+		settings.download_rate_limit = val == 0 ? -1 : val * 1024;
+		Session_->set_settings (settings);
+#else
 		Session_->set_download_rate_limit (val == 0 ? -1 : val * 1024);
+#endif
 		XmlSettingsManager::Instance ()->setProperty ("DownloadRateLimit", val);
 	}
 
 	void Core::SetOverallUploadRate (int val)
 	{
+#if LIBTORRENT_VERSION_NUM >= 1600
+		auto settings = Session_->settings ();
+		settings.upload_rate_limit = val == 0 ? -1 : val * 1024;
+		Session_->set_settings (settings);
+#else
 		Session_->set_upload_rate_limit (val == 0 ? -1 : val * 1024);
+#endif
 		XmlSettingsManager::Instance ()->setProperty ("UploadRateLimit", val);
 	}
 
@@ -2450,14 +2462,26 @@ namespace BitTorrent
 
 	void Core::maxUploadsChanged ()
 	{
-		Session_->set_max_uploads (XmlSettingsManager::Instance ()->
-				property ("MaxUploads").toInt ());
+		const int maxUps = XmlSettingsManager::Instance ()->property ("MaxUploads").toInt ();
+#if LIBTORRENT_VERSION_NUM >= 1603
+		auto settings = Session_->settings ();
+		settings.unchoke_slots_limit = maxUps;
+		Session_->set_settings (settings);
+#else
+		Session_->set_max_uploads (maxUps);
+#endif
 	}
 
 	void Core::maxConnectionsChanged ()
 	{
-		Session_->set_max_connections (XmlSettingsManager::Instance ()->
-				property ("MaxConnections").toInt ());
+		const int maxConn = XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ();
+#if LIBTORRENT_VERSION_NUM >= 1603
+		auto settings = Session_->settings ();
+		settings.connections_limit = maxConn;
+		Session_->set_settings (settings);
+#else
+		Session_->set_max_connections (maxConn);
+#endif
 	}
 
 	void Core::setProxySettings ()
