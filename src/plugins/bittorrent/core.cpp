@@ -2149,8 +2149,12 @@ namespace BitTorrent
 					file_info.close ();
 
 					const auto& handle = Handles_.at (i).Handle_;
+#if LIBTORRENT_VERSION_NUM >= 1600
 					if (handle.need_save_resume_data () || handle.status (0).need_save_resume)
 						handle.save_resume_data ();
+#else
+					handle.save_resume_data ();
+#endif
 
 					settings.setValue ("SavePath",
 #if LIBTORRENT_VERSION_NUM >= 1600
@@ -2226,7 +2230,11 @@ namespace BitTorrent
 			if (Handles_.at (i).State_ == TSSeeding)
 				continue;
 
+#if LIBTORRENT_VERSION_NUM >= 1600
 			const auto& status = Handles_.at (i).Handle_.status (0);
+#else
+			const auto& status = Handles_.at (i).Handle_.status ();
+#endif
 			libtorrent::torrent_status::state_t state = status.state;
 
 			if (status.paused)
