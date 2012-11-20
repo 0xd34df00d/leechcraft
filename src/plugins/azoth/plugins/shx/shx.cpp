@@ -93,7 +93,11 @@ namespace SHX
 				SIGNAL (finished (int, QProcess::ExitStatus)),
 				this,
 				SLOT (handleFinished ()));
+#ifdef Q_OS_WIN32
+		proc->start ("cmd.exe", QStringList () << "/C" << text);
+#else
 		proc->start ("/bin/sh", { "-c", text });
+#endif
 	}
 
 	void Plugin::handleFinished ()
