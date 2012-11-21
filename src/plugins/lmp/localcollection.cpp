@@ -207,14 +207,33 @@ namespace LMP
 			for (const auto& info : allInfos)
 			{
 				const auto& trackPath = info.absoluteFilePath ();
-
-				const auto& storedDt = storage.GetMTime (trackPath);
 				const auto& mtime = info.lastModified ();
-				if (storedDt.isValid () &&
-						std::abs (storedDt.msecsTo (mtime)) < 1500)
-					continue;
+				try
+				{
+					const auto& storedDt = storage.GetMTime (trackPath);
+					if (storedDt.isValid () &&
+							std::abs (storedDt.msecsTo (mtime)) < 1500)
+						continue;
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "error getting mtime"
+							<< trackPath
+							<< e.what ();
+				}
 
-				storage.SetMTime (trackPath, mtime);
+				try
+				{
+					storage.SetMTime (trackPath, mtime);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "error setting mtime"
+							<< trackPath
+							<< e.what ();
+				}
 				result << trackPath;
 			}
 
