@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QStringList>
+#include <QFileInfo>
 
 class QPixmap;
 class QPoint;
@@ -34,6 +35,7 @@ namespace LMP
 {
 	struct MediaInfo;
 
+	QList<QFileInfo> RecIterateInfo (const QString& dirPath, bool followSymlinks = false);
 	QStringList RecIterate (const QString& dirPath, bool followSymlinks = false);
 
 	QString FindAlbumArtPath (const QString& near, bool ignoreCollection = false);
