@@ -198,7 +198,29 @@ namespace LMP
 
 		const bool symLinks = XmlSettingsManager::Instance ()
 				.property ("FollowSymLinks").toBool ();
-		watcher->setFuture (QtConcurrent::run (RecIterate, path, symLinks));
+		auto worker = [path, symLinks] ()
+		{
+			LocalCollectionStorage storage;
+
+			const auto& allInfos = RecIterateInfo (path, symLinks);
+			QStringList result;
+			for (const auto& info : allInfos)
+			{
+				const auto& trackPath = info.absoluteFilePath ();
+
+				const auto& storedDt = storage.GetMTime (trackPath);
+				const auto& mtime = info.lastModified ();
+				if (storedDt.isValid () &&
+						std::abs (storedDt.msecsTo (mtime)) < 1500)
+					continue;
+
+				storage.SetMTime (trackPath, mtime);
+				result << trackPath;
+			}
+
+			return result;
+		};
+		watcher->setFuture (QtConcurrent::run (worker));
 	}
 
 	void LocalCollection::Unscan (const QString& path)
