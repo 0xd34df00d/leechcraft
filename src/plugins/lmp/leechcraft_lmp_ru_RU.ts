@@ -112,24 +112,27 @@
     </message>
 </context>
 <context>
+    <name>HypesWidget</name>
+    <message>
+        <location filename="hypeswidget.ui" line="25"/>
+        <source>Info from:</source>
+        <translation>Информация из:</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::LMP::ArtistsInfoDisplay</name>
     <message>
-        <location filename="artistsinfodisplay.cpp" line="134"/>
+        <location filename="artistsinfodisplay.cpp" line="68"/>
         <source>Similarity: %1%</source>
         <translation>Похожесть: %1%</translation>
     </message>
     <message>
-        <location filename="artistsinfodisplay.cpp" line="137"/>
+        <location filename="artistsinfodisplay.cpp" line="71"/>
         <source>Similar to: %1</source>
         <translation>Похоже на: %1</translation>
     </message>
     <message>
-        <location filename="artistsinfodisplay.cpp" line="150"/>
-        <source>Tags: %1</source>
-        <translation>Метки: %1</translation>
-    </message>
-    <message>
-        <location filename="artistsinfodisplay.cpp" line="160"/>
+        <location filename="artistsinfodisplay.cpp" line="82"/>
         <source>Check out &quot;%1&quot;</source>
         <translation>Послушать «%1»</translation>
     </message>
@@ -208,6 +211,14 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::LMP::BioWidget</name>
+    <message>
+        <location filename="biowidget.cpp" line="199"/>
+        <source>CD %1:</source>
+        <translation>Диск %1:</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::LMP::CloudUploadManager</name>
     <message>
         <location filename="sync/clouduploadmanager.cpp" line="75"/>
@@ -259,17 +270,17 @@
 <context>
     <name>LeechCraft::LMP::DevicesBrowserWidget</name>
     <message>
-        <location filename="sync/devicesbrowserwidget.cpp" line="172"/>
+        <location filename="sync/devicesbrowserwidget.cpp" line="181"/>
         <source>Select syncer</source>
         <translation>Выбор модуля синхронизации</translation>
     </message>
     <message>
-        <location filename="sync/devicesbrowserwidget.cpp" line="173"/>
+        <location filename="sync/devicesbrowserwidget.cpp" line="182"/>
         <source>Multiple different syncers can handle the device %1, what do you want to use?</source>
         <translation>Устройство %1 может быть синхронизировано несколькими различными модулями, какой вы хотите использовать?</translation>
     </message>
     <message>
-        <location filename="sync/devicesbrowserwidget.cpp" line="252"/>
+        <location filename="sync/devicesbrowserwidget.cpp" line="261"/>
         <source>%1 (%2 available of %3)</source>
         <translation>%1 (доступно %2 из %3)</translation>
     </message>
@@ -331,6 +342,58 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::LMP::HypesWidget</name>
+    <message>
+        <location filename="hypeswidget.cpp" line="88"/>
+        <source>Hyped artists</source>
+        <translation>Трендовые исполнители</translation>
+    </message>
+    <message>
+        <location filename="hypeswidget.cpp" line="89"/>
+        <source>Hyped tracks</source>
+        <translation>Трендовые треки</translation>
+    </message>
+    <message>
+        <location filename="hypeswidget.cpp" line="90"/>
+        <source>Show novelties</source>
+        <translation>Показывать новинки</translation>
+    </message>
+    <message>
+        <location filename="hypeswidget.cpp" line="91"/>
+        <source>Show tops</source>
+        <translation>Показывать топы</translation>
+    </message>
+    <message>
+        <location filename="hypeswidget.cpp" line="189"/>
+        <source>Growth: x%1</source>
+        <comment>better use unicode multiplication sign here instead of &apos;x&apos;</comment>
+        <translation>Рост: ×%1</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="hypeswidget.cpp" line="192"/>
+        <source>%n listener(s)</source>
+        <translation>
+            <numerusform>%n слушатель</numerusform>
+            <numerusform>%n слушателя</numerusform>
+            <numerusform>%n слушателей</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="hypeswidget.cpp" line="194"/>
+        <source>%n playback(s)</source>
+        <translation>
+            <numerusform>%n воспроизведение</numerusform>
+            <numerusform>%n воспроизведения</numerusform>
+            <numerusform>%n воспроизведений</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="hypeswidget.cpp" line="210"/>
+        <source>%1 is not &lt;em&gt;that&lt;/em&gt; mainstream to have a description.</source>
+        <translation>%1 не &lt;em&gt;настолько&lt;/em&gt; мейнстримен, чтобы иметь описание.</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::LMP::LMPSystemTrayIcon</name>
     <message>
         <location filename="lmpsystemtrayicon.cpp" line="56"/>
@@ -351,7 +414,7 @@
 <context>
     <name>LeechCraft::LMP::LocalCollection</name>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="781"/>
+        <location filename="localcollection.cpp" line="806"/>
         <source>%n new artist(s)</source>
         <translation>
             <numerusform>%n новый исполнитель</numerusform>
@@ -360,7 +423,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="782"/>
+        <location filename="localcollection.cpp" line="807"/>
         <source>%n new album(s)</source>
         <translation>
             <numerusform>%n новый альбом</numerusform>
@@ -369,7 +432,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="localcollection.cpp" line="783"/>
+        <location filename="localcollection.cpp" line="808"/>
         <source>%n new track(s)</source>
         <translation>
             <numerusform>%n новый трек</numerusform>
@@ -378,7 +441,7 @@
         </translation>
     </message>
     <message>
-        <location filename="localcollection.cpp" line="784"/>
+        <location filename="localcollection.cpp" line="809"/>
         <source>Local collection updated: %1, %2, %3.</source>
         <translation>Локальная коллекция обновлена: %1, %2, %3.</translation>
     </message>
@@ -399,12 +462,12 @@
 <context>
     <name>LeechCraft::LMP::NowPlayingWidget</name>
     <message>
-        <location filename="nowplayingwidget.cpp" line="102"/>
+        <location filename="nowplayingwidget.cpp" line="103"/>
         <source>unknown</source>
         <translation>неизвестно</translation>
     </message>
     <message numerus="yes">
-        <location filename="nowplayingwidget.cpp" line="138"/>
+        <location filename="nowplayingwidget.cpp" line="139"/>
         <source>%n day(s) ago</source>
         <translation>
             <numerusform>%n день назад</numerusform>
@@ -413,7 +476,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="nowplayingwidget.cpp" line="158"/>
+        <location filename="nowplayingwidget.cpp" line="159"/>
         <source>%n play(s) since %1</source>
         <translation>
             <numerusform>%n воспроизведение с %1</numerusform>
@@ -422,7 +485,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="nowplayingwidget.cpp" line="185"/>
+        <location filename="nowplayingwidget.cpp" line="186"/>
         <source>%n possible lyrics found</source>
         <translation>
             <numerusform>Найден %n возможный текст</numerusform>
@@ -447,22 +510,22 @@
 <context>
     <name>LeechCraft::LMP::Player</name>
     <message>
-        <location filename="player.cpp" line="470"/>
+        <location filename="player.cpp" line="499"/>
         <source>Radio</source>
         <translation>Радио</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="636"/>
+        <location filename="player.cpp" line="665"/>
         <source>Playlist</source>
         <translation>Список воспроизведения</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="865"/>
+        <location filename="player.cpp" line="894"/>
         <source>Stream</source>
         <translation>Поток</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="959"/>
+        <location filename="player.cpp" line="990"/>
         <source>Radio station error: %1.</source>
         <translation>Ошибка радиостанции: %1.</translation>
     </message>
@@ -470,122 +533,127 @@
 <context>
     <name>LeechCraft::LMP::PlayerTab</name>
     <message>
-        <location filename="playertab.cpp" line="267"/>
+        <location filename="playertab.cpp" line="269"/>
         <source>Current song</source>
         <translation>Текущая песня</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="268"/>
+        <location filename="playertab.cpp" line="270"/>
         <source>Collection</source>
         <translation>Коллекция</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="269"/>
+        <location filename="playertab.cpp" line="271"/>
         <source>Playlists</source>
         <translation>Списки воспроизведения</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="270"/>
+        <location filename="playertab.cpp" line="272"/>
         <source>Social</source>
         <translation>Социальное</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="271"/>
+        <location filename="playertab.cpp" line="273"/>
         <source>Internet</source>
         <translation>Интернет</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="272"/>
+        <location filename="playertab.cpp" line="274"/>
         <source>Filesystem</source>
         <translation>Файловая система</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="273"/>
+        <location filename="playertab.cpp" line="275"/>
         <source>Devices</source>
         <translation>Устройства</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="293"/>
+        <location filename="playertab.cpp" line="295"/>
         <source>Previous track</source>
         <translation>Предыдущий трек</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="301"/>
+        <location filename="playertab.cpp" line="303"/>
         <source>Play/Pause</source>
         <translation>Играть/Приостановить</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="310"/>
+        <location filename="playertab.cpp" line="312"/>
         <source>Stop</source>
         <translation>Остановить</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="318"/>
+        <location filename="playertab.cpp" line="320"/>
         <source>Next track</source>
         <translation>Следующий трек</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="328"/>
+        <location filename="playertab.cpp" line="330"/>
         <source>Love</source>
         <translation>Отметить как любимое</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="337"/>
+        <location filename="playertab.cpp" line="339"/>
         <source>Ban</source>
         <translation>Запретить</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="376"/>
+        <location filename="playertab.cpp" line="378"/>
         <source>Close LMP</source>
         <translation>Закрыть LMP</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="406"/>
+        <location filename="playertab.cpp" line="408"/>
         <source>Add to playlist</source>
         <translation>Добавить в список воспроизведения</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="414"/>
+        <location filename="playertab.cpp" line="416"/>
         <source>Show track properties</source>
         <translation>Показать свойства трека</translation>
     </message>
     <message>
         <location filename="playertab.cpp" line="424"/>
+        <source>Show album art</source>
+        <translation>Показать обложку альбома</translation>
+    </message>
+    <message>
+        <location filename="playertab.cpp" line="434"/>
         <source>Remove from collection...</source>
         <translation>Удалить из коллекции...</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="432"/>
+        <location filename="playertab.cpp" line="442"/>
         <source>Delete from disk...</source>
         <translation>Удалить с диска...</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="461"/>
+        <location filename="playertab.cpp" line="471"/>
         <source>unknown song</source>
         <translation>неизвестная песня</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="462"/>
+        <location filename="playertab.cpp" line="472"/>
         <source>unknown album</source>
         <translation>неизвестный альбом</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="463"/>
+        <location filename="playertab.cpp" line="473"/>
         <source>unknown artist</source>
         <translation>неизвестный исполнитель</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="465"/>
+        <location filename="playertab.cpp" line="475"/>
         <source>Now playing: %1 from %2 by %3</source>
         <translation>Сейчас играется: %1 с %2 от %3</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="650"/>
+        <location filename="playertab.cpp" line="660"/>
         <source>unknown</source>
         <translation>неизвестно</translation>
     </message>
     <message numerus="yes">
-        <location filename="playertab.cpp" line="754"/>
+        <location filename="playertab.cpp" line="784"/>
         <source>Are you sure you want to remove %n track(s) from your collection?&lt;br/&gt;&lt;br/&gt;Please note that if tracks remain on your disk they will be re-added next time collection is scanned, but you will lose the statistics.</source>
         <translation>
             <numerusform>Вы уверены, что хотите удалить %n трек из коллекции?&lt;br/&gt;&lt;br/&gt;Обратите внимание, что если треки останутся на диске, то они будут добавлены при следующем сканировании коллекции, но вы потеряете статистику.</numerusform>
@@ -594,7 +662,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="playertab.cpp" line="777"/>
+        <location filename="playertab.cpp" line="807"/>
         <source>Are you sure you want to erase %n track(s)? This action cannot be undone.</source>
         <translation>
             <numerusform>Вы уверены, что хотите удалить %n трек? Это действие невозможно отменить.</numerusform>
@@ -616,145 +684,160 @@
         <translation>Динамические списки воспроизведения</translation>
     </message>
     <message>
-        <location filename="playlistmanager.cpp" line="112"/>
+        <location filename="playlistmanager.cpp" line="119"/>
         <source>50 random tracks</source>
         <translation>50 случайных треков</translation>
+    </message>
+    <message>
+        <location filename="playlistmanager.cpp" line="120"/>
+        <source>Loved tracks</source>
+        <translation>Избранные треки</translation>
+    </message>
+    <message>
+        <location filename="playlistmanager.cpp" line="121"/>
+        <source>Banned tracks</source>
+        <translation>Забаненные треки</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::LMP::PlaylistWidget</name>
     <message>
-        <location filename="playlistwidget.cpp" line="238"/>
+        <location filename="playlistwidget.cpp" line="239"/>
         <source>Clear...</source>
         <translation>Очистить...</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="246"/>
+        <location filename="playlistwidget.cpp" line="247"/>
         <source>Save playlist...</source>
         <translation>Сохранить список воспроизведения...</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="254"/>
+        <location filename="playlistwidget.cpp" line="255"/>
         <source>Load from disk...</source>
         <translation>Загрузить с диска...</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="262"/>
+        <location filename="playlistwidget.cpp" line="263"/>
         <source>Add URL...</source>
         <translation>Добавить URL...</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="272"/>
+        <location filename="playlistwidget.cpp" line="273"/>
         <source>Move tracks to top</source>
         <translation>Переместить треки наверх</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="295"/>
+        <location filename="playlistwidget.cpp" line="296"/>
         <source>Move tracks to bottom</source>
         <translation>Переместить треки вниз</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="335"/>
+        <location filename="playlistwidget.cpp" line="336"/>
         <source>Play mode</source>
         <translation>Режим воспроизведения</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="341"/>
+        <location filename="playlistwidget.cpp" line="342"/>
         <source>Sequential</source>
         <translation>По очереди</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="342"/>
+        <location filename="playlistwidget.cpp" line="343"/>
         <source>Shuffle</source>
         <translation>Случайно</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="342"/>
+        <location filename="playlistwidget.cpp" line="343"/>
         <source>Repeat track</source>
         <translation>Повторять трек</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="343"/>
+        <location filename="playlistwidget.cpp" line="344"/>
         <source>Repeat album</source>
         <translation>Повторять альбом</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="343"/>
+        <location filename="playlistwidget.cpp" line="344"/>
         <source>Repeat whole</source>
         <translation>Повторять всё</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="376"/>
+        <location filename="playlistwidget.cpp" line="377"/>
         <source>Sorting</source>
         <translation>Сортировка</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="390"/>
+        <location filename="playlistwidget.cpp" line="391"/>
         <source>Artist / Year / Album / Track number</source>
         <translation>Исполнитель / Год / Альбом / Номер трека</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="397"/>
+        <location filename="playlistwidget.cpp" line="398"/>
         <source>Artist / Track title</source>
         <translation>Исполнитель / Название трека</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="402"/>
+        <location filename="playlistwidget.cpp" line="403"/>
         <source>File path</source>
         <translation>Путь к файлу</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="406"/>
+        <location filename="playlistwidget.cpp" line="408"/>
         <source>No sort</source>
         <translation>Без сортировки</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="432"/>
+        <location filename="playlistwidget.cpp" line="436"/>
+        <source>Custom...</source>
+        <translation>Особая...</translation>
+    </message>
+    <message>
+        <location filename="playlistwidget.cpp" line="451"/>
         <source>Delete from playlist</source>
         <translation>Удалить из списка воспроизведения</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="441"/>
+        <location filename="playlistwidget.cpp" line="460"/>
         <source>Stop after this track</source>
         <translation>Остановиться после этого трека</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="448"/>
+        <location filename="playlistwidget.cpp" line="467"/>
         <source>Show track properties</source>
         <translation>Показать свойства трека</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="455"/>
+        <location filename="playlistwidget.cpp" line="474"/>
         <source>Show album art</source>
         <translation>Показать обложку альбома</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="750"/>
+        <location filename="playlistwidget.cpp" line="784"/>
         <source>Music files (*.ogg *.flac *.mp3 *.wav);;Playlists (*.pls *.m3u *.m3u8 *.xspf);;All files (*.*)</source>
         <translation>Аудиофайлы (*.ogg *.flac *.mp3 *.wav);;Списки воспроизведения (*.pls *.m3u *.m3u8 *.xspf);;All files (*.*)</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="279"/>
+        <location filename="playlistwidget.cpp" line="280"/>
         <source>Move tracks up</source>
         <translation>Переместить треки вверх</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="287"/>
+        <location filename="playlistwidget.cpp" line="288"/>
         <source>Move tracks down</source>
         <translation>Переместить треки вниз</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="462"/>
+        <location filename="playlistwidget.cpp" line="481"/>
         <source>Toggle search field</source>
         <translation>Включить поле поиска</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="629"/>
+        <location filename="playlistwidget.cpp" line="663"/>
         <source>Remove %1</source>
         <translation>Удалить %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="playlistwidget.cpp" line="630"/>
+        <location filename="playlistwidget.cpp" line="664"/>
         <source>Remove %n song(s)</source>
         <translation>
             <numerusform>Удалить %n песню</numerusform>
@@ -763,37 +846,37 @@
         </translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="725"/>
+        <location filename="playlistwidget.cpp" line="759"/>
         <source>Save playlist</source>
         <translation>Сохранить список воспроизведения</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="726"/>
+        <location filename="playlistwidget.cpp" line="760"/>
         <source>Enter name for the playlist:</source>
         <translation>Введите имя для списка воспроизведения:</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="735"/>
+        <location filename="playlistwidget.cpp" line="769"/>
         <source>Playlist %1 already exists. Do you want to overwrite it?</source>
         <translation>Список воспроизведения %1 уже существует. Вы хотите его заменить?</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="748"/>
+        <location filename="playlistwidget.cpp" line="782"/>
         <source>Load files</source>
         <translation>Загрузить файлы</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="771"/>
+        <location filename="playlistwidget.cpp" line="805"/>
         <source>Enter URL to add to the play queue:</source>
         <translation>Введите URL для добавления в очередь воспроизведения:</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="782"/>
+        <location filename="playlistwidget.cpp" line="816"/>
         <source>Invalid URL.</source>
         <translation>Неверный URL.</translation>
     </message>
     <message numerus="yes">
-        <location filename="playlistwidget.cpp" line="803"/>
+        <location filename="playlistwidget.cpp" line="837"/>
         <source>%n track(s), total duration: %1</source>
         <translation>
             <numerusform>%n трек, продолжительность: %1</numerusform>
@@ -848,22 +931,22 @@
 <context>
     <name>LeechCraft::LMP::RadioWidget</name>
     <message>
-        <location filename="radiowidget.cpp" line="83"/>
+        <location filename="radiowidget.cpp" line="122"/>
         <source>Similar artists radio</source>
         <translation>Радио похожих исполнителей</translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="84"/>
+        <location filename="radiowidget.cpp" line="123"/>
         <source>Enter artist name for which to tune the similar artists radio station:</source>
         <translation>Введите имя исполнителя, на которого нужно настроить радио похожих:</translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="90"/>
+        <location filename="radiowidget.cpp" line="129"/>
         <source>Global tag radio</source>
         <translation>Радио тега</translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="91"/>
+        <location filename="radiowidget.cpp" line="130"/>
         <source>Enter global tag name:</source>
         <translation>Введите имя тега:</translation>
     </message>
@@ -874,6 +957,27 @@
         <location filename="rootpathsettingsmanager.cpp" line="35"/>
         <source>Path</source>
         <translation>Путь</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::LMP::SimilarModel</name>
+    <message>
+        <location filename="similarmodel.cpp" line="62"/>
+        <source>Tags: %1</source>
+        <translation>Метки: %1</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::LMP::SortingCriteriaDialog</name>
+    <message>
+        <location filename="sortingcriteriadialog.cpp" line="72"/>
+        <source>Select criteria</source>
+        <translation>Выбор критериев</translation>
+    </message>
+    <message>
+        <location filename="sortingcriteriadialog.cpp" line="73"/>
+        <source>Select criteria to be added:</source>
+        <translation>Выберите критерии для добавления:</translation>
     </message>
 </context>
 <context>
@@ -1006,32 +1110,37 @@
 <context>
     <name>PlayerTab</name>
     <message>
-        <location filename="playertab.ui" line="104"/>
+        <location filename="playertab.ui" line="101"/>
         <source>Search collection</source>
         <translation>Поиск по коллекции</translation>
     </message>
     <message>
-        <location filename="playertab.ui" line="161"/>
+        <location filename="playertab.ui" line="158"/>
         <source>Recommendations</source>
         <translation>Рекомендации</translation>
     </message>
     <message>
-        <location filename="playertab.ui" line="174"/>
+        <location filename="playertab.ui" line="171"/>
         <source>Events</source>
         <translation>События</translation>
     </message>
     <message>
-        <location filename="playertab.ui" line="214"/>
+        <location filename="playertab.ui" line="197"/>
+        <source>Hypes</source>
+        <translation>Тренды</translation>
+    </message>
+    <message>
+        <location filename="playertab.ui" line="224"/>
         <source>Radio</source>
         <translation>Радио</translation>
     </message>
     <message>
-        <location filename="playertab.ui" line="187"/>
+        <location filename="playertab.ui" line="184"/>
         <source>Releases</source>
         <translation>Новые альбомы</translation>
     </message>
     <message>
-        <location filename="playertab.ui" line="227"/>
+        <location filename="playertab.ui" line="237"/>
         <source>Cloud</source>
         <translation>Облако</translation>
     </message>
@@ -1052,19 +1161,62 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="178"/>
+        <location filename="util.cpp" line="182"/>
         <source>Album art</source>
         <translation>Обложка альбома</translation>
     </message>
     <message>
-        <location filename="sync/formats.cpp" line="150"/>
+        <location filename="sync/formats.cpp" line="152"/>
         <source>AAC (free)</source>
         <translation>AAC (свободный)</translation>
     </message>
     <message>
-        <location filename="sync/formats.cpp" line="174"/>
+        <location filename="sync/formats.cpp" line="176"/>
         <source>AAC (non-free libfaac implementation)</source>
         <translation>AAC (проприетарная реализация libfaac)</translation>
+    </message>
+    <message>
+        <location filename="sortingcriteria.cpp" line="70"/>
+        <source>Artist</source>
+        <translation>Исполнитель</translation>
+    </message>
+    <message>
+        <location filename="sortingcriteria.cpp" line="72"/>
+        <source>Year</source>
+        <translation>Год</translation>
+    </message>
+    <message>
+        <location filename="sortingcriteria.cpp" line="74"/>
+        <source>Album</source>
+        <translation>Альбом</translation>
+    </message>
+    <message>
+        <location filename="sortingcriteria.cpp" line="76"/>
+        <source>Track number</source>
+        <translation>Номер трека</translation>
+    </message>
+    <message>
+        <location filename="sortingcriteria.cpp" line="78"/>
+        <source>Title</source>
+        <translation>Название</translation>
+    </message>
+    <message>
+        <location filename="sortingcriteria.cpp" line="80"/>
+        <source>Directory</source>
+        <translation>Директория</translation>
+    </message>
+    <message>
+        <location filename="sortingcriteria.cpp" line="82"/>
+        <source>File name</source>
+        <translation>Имя файла</translation>
+    </message>
+</context>
+<context>
+    <name>RadioWidget</name>
+    <message>
+        <location filename="radiowidget.ui" line="23"/>
+        <source>Filter stations...</source>
+        <translation>Фильтр станций...</translation>
     </message>
 </context>
 <context>
@@ -1083,9 +1235,37 @@
         <translation>Информация из:</translation>
     </message>
     <message>
-        <location filename="releaseswidget.ui" line="42"/>
+        <location filename="releaseswidget.ui" line="45"/>
         <source>Including recommendations</source>
         <translation>Включая рекомендации</translation>
+    </message>
+</context>
+<context>
+    <name>SortingCriteriaDialog</name>
+    <message>
+        <location filename="sortingcriteriadialog.ui" line="14"/>
+        <source>Sorting criteria</source>
+        <translation>Критерии сортировки</translation>
+    </message>
+    <message>
+        <location filename="sortingcriteriadialog.ui" line="31"/>
+        <source>Add...</source>
+        <translation>Добавить...</translation>
+    </message>
+    <message>
+        <location filename="sortingcriteriadialog.ui" line="38"/>
+        <source>Remove</source>
+        <translation>Удалить</translation>
+    </message>
+    <message>
+        <location filename="sortingcriteriadialog.ui" line="52"/>
+        <source>Move up</source>
+        <translation>Вверх</translation>
+    </message>
+    <message>
+        <location filename="sortingcriteriadialog.ui" line="59"/>
+        <source>Move down</source>
+        <translation>Вниз</translation>
     </message>
 </context>
 <context>

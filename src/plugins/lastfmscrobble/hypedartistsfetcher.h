@@ -33,10 +33,11 @@ namespace Lastfmscrobble
 
 		QNetworkAccessManager *NAM_;
 		QList<Media::HypedArtistInfo> Infos_;
+		const Media::IHypesProvider::HypeType Type_;
 
 		int InfoCount_;
 	public:
-		HypedArtistsFetcher (QNetworkAccessManager*, QObject* = 0);
+		HypedArtistsFetcher (QNetworkAccessManager*, Media::IHypesProvider::HypeType, QObject* = 0);
 	private:
 		void DecrementWaiting ();
 	private slots:
@@ -46,7 +47,7 @@ namespace Lastfmscrobble
 		void pendingBioReady ();
 		void pendingBioError ();
 	signals:
-		void gotHypedArtists (const QList<Media::HypedArtistInfo>&);
+		void gotHypedArtists (const QList<Media::HypedArtistInfo>&, Media::IHypesProvider::HypeType);
 	};
 }
 }

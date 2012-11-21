@@ -19,26 +19,37 @@
 #pragma once
 
 #include <QObject>
-
-class QUrl;
-class QPoint;
+#include <interfaces/structures.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Plugins
 {
-	class ViewManager;
-
-	class QuarkProxy : public QObject
+namespace BitTorrent
+{
+	class NotifyManager : public QObject
 	{
 		Q_OBJECT
 
-		ViewManager *Manager_;
+		bool IsReady_;
+		QList<Entity> Queue_;
 	public:
-		QuarkProxy (ViewManager*, QObject* = 0);
-	public slots:
-		QPoint mapToGlobal (double, double);
-		void showSettings (const QUrl&);
+		NotifyManager (QObject* = 0);
+
+		void PluginsAvailable ();
+		void AddNotification (const Entity&);
+
+		template<typename T1, typename T2>
+		void AddNotification (T1&& header, T2&& text, Priority p)
+		{
+			AddNotification (Util::MakeNotification (std::forward<T1> (header), std::forward<T2> (text), p));
+		}
+	private:
+		void SendNotification (const Entity&);
+	private slots:
+		void makeDelayedReady ();
 	};
+}
 }
 }

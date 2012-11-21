@@ -29,12 +29,12 @@ namespace AdvancedNotifications
 	AudioHandler::AudioHandler ()
 	{
 	}
-	
+
 	NotificationMethod AudioHandler::GetHandlerMethod () const
 	{
 		return NMAudio;
 	}
-	
+
 	void AudioHandler::Handle (const Entity&, const NotificationRule& rule)
 	{
 		if (!XmlSettingsManager::Instance ()
@@ -44,7 +44,7 @@ namespace AdvancedNotifications
 		QString fname = rule.GetAudioParams ().Filename_;
 		if (fname.isEmpty ())
 			return;
-		
+
 		if (!fname.contains ('/'))
 		{
 			const QString& option = XmlSettingsManager::Instance ()
@@ -59,6 +59,12 @@ namespace AdvancedNotifications
 
 			fname = Core::Instance ().GetAudioThemeLoader ()->GetPath (pathVariants);
 		}
+
+		const auto& now = QDateTime::currentDateTime ();
+		if (LastNotify_ [fname].msecsTo (now) < 1000)
+			return;
+
+		LastNotify_ [fname] = now;
 
 		const Entity& e = Util::MakeEntity (fname, QString (), Internal);
 		Core::Instance ().SendEntity (e);

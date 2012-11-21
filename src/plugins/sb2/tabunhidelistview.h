@@ -18,27 +18,27 @@
 
 #pragma once
 
-#include <QObject>
+#include <QDeclarativeView>
+#include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
 
-class QUrl;
-class QPoint;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	class ViewManager;
-
-	class QuarkProxy : public QObject
+	class TabUnhideListView : public QDeclarativeView
 	{
 		Q_OBJECT
 
-		ViewManager *Manager_;
+		QStandardItemModel *Model_;
 	public:
-		QuarkProxy (ViewManager*, QObject* = 0);
-	public slots:
-		QPoint mapToGlobal (double, double);
-		void showSettings (const QUrl&);
+		TabUnhideListView (const QList<TabClassInfo>&, ICoreProxy_ptr, QWidget* = 0);
+	private slots:
+		void unhide (const QString&);
+	signals:
+		void unhideRequested (const QByteArray&);
 	};
 }
 }

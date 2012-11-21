@@ -30,7 +30,7 @@ namespace LMP
 	{
 	}
 
-	bool AALabelEventFilter::eventFilter (QObject* , QEvent *event)
+	bool AALabelEventFilter::eventFilter (QObject*, QEvent *event)
 	{
 		if (event->type () != QEvent::MouseButtonRelease)
 			return false;

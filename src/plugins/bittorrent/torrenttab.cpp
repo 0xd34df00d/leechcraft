@@ -22,6 +22,7 @@
 #include <QInputDialog>
 #include <QSortFilterProxyModel>
 #include <util/tags/tagscompleter.h>
+#include <util/gui/clearlineeditaddon.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -57,11 +58,14 @@ namespace BitTorrent
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleTorrentSelected (QModelIndex)));
+		Ui_.TorrentsView_->sortByColumn (Core::ColumnID, Qt::SortOrder::AscendingOrder);
 
 		const auto& fm = Ui_.TorrentsView_->fontMetrics ();
 		QHeaderView *header = Ui_.TorrentsView_->header ();
 		header->resizeSection (Core::Columns::ColumnID, fm.width ("999"));
 		header->resizeSection (Core::Columns::ColumnName, fm.width ("boardwalk.empire.s03e02.hdtv.720p.ac3.rus.eng.novafilm.tv.mkv") * 1.3);
+
+		new Util::ClearLineEditAddon (Core::Instance ()->GetProxy (), Ui_.SearchLine_);
 
 		new Util::TagsCompleter (Ui_.SearchLine_);
 		Ui_.SearchLine_->AddSelector ();
@@ -189,6 +193,7 @@ namespace BitTorrent
 				SIGNAL (triggered ()),
 				this,
 				SLOT (on_ChangeTrackers__triggered ()));
+		Ui_.Tabs_->SetChangeTrackersAction (ChangeTrackers_);
 
 		MakeMagnetLink_ = new QAction (tr ("Make magnet link..."), Toolbar_);
 		MakeMagnetLink_->setProperty ("ActionIcon", "insert-link");

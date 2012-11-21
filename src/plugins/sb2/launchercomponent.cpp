@@ -28,6 +28,7 @@
 #include "widthiconprovider.h"
 #include "tablistview.h"
 #include "launcherdroparea.h"
+#include "tabunhidelistview.h"
 
 Q_DECLARE_METATYPE (QSet<QByteArray>);
 
@@ -185,6 +186,16 @@ namespace SB2
 		return item;
 	}
 
+	QPair<TabClassInfo, IHaveTabs*> LauncherComponent::FindTC (const QByteArray& tc) const
+	{
+		for (auto iht : Proxy_->GetPluginsManager ()->GetAllCastableTo<IHaveTabs*> ())
+			for (const auto& fullTC : iht->GetTabClasses ())
+				if (fullTC.TabClass_ == tc)
+					return { fullTC, iht };
+
+		return QPair<TabClassInfo, IHaveTabs*> ();
+	}
+
 	void LauncherComponent::handlePluginsAvailable ()
 	{
 		auto hasTabs = Proxy_->GetPluginsManager ()->
@@ -247,16 +258,40 @@ namespace SB2
 		if (!TC2Widgets_.value (tc).isEmpty ())
 			return;
 
-		auto hasTabs = Proxy_->GetPluginsManager ()->
-				GetAllCastableTo<IHaveTabs*> ();
-		for (auto iht : Proxy_->GetPluginsManager ()->GetAllCastableTo<IHaveTabs*> ())
-			for (const auto& fullTC : iht->GetTabClasses ())
-				if (fullTC.TabClass_ == tc)
-				{
-					TryAddTC (fullTC);
-					TC2Obj_ [tc] = iht;
-					return;
-				}
+		const auto& pair = FindTC (tc);
+		if (!pair.second)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "tab class not found for"
+					<< tc;
+			return;
+		}
+
+		TryAddTC (pair.first);
+		TC2Obj_ [tc] = pair.second;
+	}
+
+	void LauncherComponent::tabUnhideListRequested (int x, int y)
+	{
+		if (HiddenTCs_.isEmpty ())
+			return;
+
+		QList<TabClassInfo> tcs;
+		for (const auto& tc : HiddenTCs_)
+		{
+			const auto& pair = FindTC (tc);
+			if (pair.second)
+				tcs << pair.first;
+		}
+
+		auto list = new TabUnhideListView (tcs, Proxy_);
+		list->move (x, y);
+		list->show ();
+		list->setFocus ();
+		connect (list,
+				SIGNAL (unhideRequested (QByteArray)),
+				this,
+				SLOT (tabClassUnhideRequested (QByteArray)));
 	}
 
 	void LauncherComponent::tabListRequested (const QByteArray& tc, int x, int y)

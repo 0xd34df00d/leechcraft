@@ -22,11 +22,6 @@
 #include <interfaces/media/ihypesprovider.h>
 #include "ui_hypeswidget.h"
 
-namespace Media
-{
-	class IHypesProvider;
-}
-
 class QStandardItemModel;
 
 namespace LeechCraft
@@ -38,18 +33,20 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::HypesWidget Ui_;
-		QStandardItemModel *ArtistsModel_;
-		QStandardItemModel *TracksModel_;
+		QStandardItemModel *NewArtistsModel_;
+		QStandardItemModel *TopArtistsModel_;
+		QStandardItemModel *NewTracksModel_;
+		QStandardItemModel *TopTracksModel_;
 
-		QList<Media::IHypesProvider*> Providers_;
+		QList<QObject*> Providers_;
 	public:
 		HypesWidget (QWidget* = 0);
 
 		void InitializeProviders ();
 	private slots:
 		void request ();
-		void handleArtists (const QList<Media::HypedArtistInfo>&);
-		void handleTracks (const QList<Media::HypedTrackInfo>&);
+		void handleArtists (const QList<Media::HypedArtistInfo>&, Media::IHypesProvider::HypeType);
+		void handleTracks (const QList<Media::HypedTrackInfo>&, Media::IHypesProvider::HypeType);
 		void handleLink (const QString&);
 	};
 }

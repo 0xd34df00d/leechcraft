@@ -128,6 +128,7 @@ SET (FORMS
 	)
 SET (RESOURCES resources.qrc)
 CreateTrs ("lmp" "en;es;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("lmp" "en;ru_RU" "${SRCS}" "${FORMS}" "lmpsettings.xml")
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
@@ -151,8 +152,6 @@ TARGET_LINK_LIBRARIES (leechcraft_lmp
 
 	${MPRIS_SUBLIB}
 	)
-
-CreateTrsUpTarget("lmp" "en;ru_RU" "${SRCS}" "${FORMS}" "lmpsettings.xml")
 
 INSTALL (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

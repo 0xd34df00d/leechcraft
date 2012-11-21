@@ -16,29 +16,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-
-class QUrl;
-class QPoint;
+#include "notifymanager.h"
+#include <QTimer>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
+#include "core.h"
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Plugins
 {
-	class ViewManager;
-
-	class QuarkProxy : public QObject
+namespace BitTorrent
+{
+	NotifyManager::NotifyManager (QObject *parent)
+	: QObject (parent)
+	, IsReady_ (false)
 	{
-		Q_OBJECT
+	}
 
-		ViewManager *Manager_;
-	public:
-		QuarkProxy (ViewManager*, QObject* = 0);
-	public slots:
-		QPoint mapToGlobal (double, double);
-		void showSettings (const QUrl&);
-	};
+	void NotifyManager::PluginsAvailable()
+	{
+		QTimer::singleShot (3000,
+				this,
+				SLOT (makeDelayedReady ()));
+	}
+
+	void NotifyManager::AddNotification (const Entity& e)
+	{
+		if (!IsReady_)
+			Queue_ << e;
+		else
+			SendNotification (e);
+	}
+
+	void NotifyManager::SendNotification (const Entity& e)
+	{
+		Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (e);
+	}
+
+	void NotifyManager::makeDelayedReady ()
+	{
+		IsReady_ = true;
+		for (const auto& e : Queue_)
+			SendNotification (e);
+		Queue_.clear ();
+	}
+}
 }
 }

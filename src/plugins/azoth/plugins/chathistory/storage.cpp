@@ -156,7 +156,8 @@ namespace ChatHistory
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to get saved users, we would be a bit more inefficient";
+					<< "unable to get saved users, we would be a bit more inefficient"
+					<< e.what ();
 		}
 
 		try
@@ -166,7 +167,8 @@ namespace ChatHistory
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to get saved accounts, we would be a bit more inefficient";
+					<< "unable to get saved accounts, we would be a bit more inefficient"
+					<< e.what ();
 		}
 	}
 

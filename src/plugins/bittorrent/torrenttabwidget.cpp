@@ -58,9 +58,6 @@ namespace BitTorrent
 		header->resizeSection (1, fm.width ("1234.5678 bytes/s"));
 		header->resizeSection (2, fm.width ("1234.5678 bytes/s"));
 
-		// TODO
-		//Ui_.TrackersButton_->setDefaultAction (editTrackers);
-
 		Ui_.TorrentTags_->AddSelector ();
 		Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
 
@@ -94,10 +91,6 @@ namespace BitTorrent
 				SIGNAL (valueChanged (int)),
 				this,
 				SLOT (on_OverallUploadRateController__valueChanged (int)));
-		connect (Ui_.DesiredRating_,
-				SIGNAL (valueChanged (double)),
-				this,
-				SLOT (on_DesiredRating__valueChanged (double)));
 		connect (Ui_.TorrentDownloadRateController_,
 				SIGNAL (valueChanged (int)),
 				this,
@@ -197,6 +190,11 @@ namespace BitTorrent
 				this, "setTorrentTabWidgetSettings");
 
 		setTabWidgetSettings ();
+	}
+
+	void TorrentTabWidget::SetChangeTrackersAction (QAction *changeTrackers)
+	{
+		Ui_.TrackersButton_->setDefaultAction (changeTrackers);
 	}
 
 	void TorrentTabWidget::SetCurrentIndex (int index)
@@ -381,13 +379,13 @@ namespace BitTorrent
 		Core::pertrackerstats_t ptstats;
 		Core::Instance ()->GetPerTracker (ptstats);
 		Ui_.PerTrackerStats_->clear ();
-		for (Core::pertrackerstats_t::const_iterator i = ptstats.begin (),
-				end = ptstats.end (); i != end; ++i)
+
+		for (auto i = ptstats.begin (), end = ptstats.end (); i != end; ++i)
 		{
 			QStringList strings;
-			strings	<< i->first
-				<< Util::MakePrettySize (i->second.DownloadRate_) + tr ("/s")
-				<< Util::MakePrettySize (i->second.UploadRate_) + tr ("/s");
+			strings	<< i.key ()
+				<< Util::MakePrettySize (i->DownloadRate_) + tr ("/s")
+				<< Util::MakePrettySize (i->UploadRate_) + tr ("/s");
 
 			new QTreeWidgetItem (Ui_.PerTrackerStats_, strings);
 		}
@@ -399,7 +397,6 @@ namespace BitTorrent
 		Ui_.OverallUploadRateController_->setValue (Core::Instance ()->GetOverallUploadRate ());
 		Ui_.DownloadingTorrents_->setValue (Core::Instance ()->GetMaxDownloadingTorrents ());
 		Ui_.UploadingTorrents_->setValue (Core::Instance ()->GetMaxUploadingTorrents ());
-		Ui_.DesiredRating_->setValue (Core::Instance ()->GetDesiredRating ());
 	}
 
 	void TorrentTabWidget::UpdateTorrentControl ()
@@ -560,11 +557,6 @@ namespace BitTorrent
 	void TorrentTabWidget::on_OverallUploadRateController__valueChanged (int val)
 	{
 		Core::Instance ()->SetOverallUploadRate (val);
-	}
-
-	void TorrentTabWidget::on_DesiredRating__valueChanged (double val)
-	{
-		Core::Instance ()->SetDesiredRating (val);
 	}
 
 	void TorrentTabWidget::on_TorrentDownloadRateController__valueChanged (int val)
