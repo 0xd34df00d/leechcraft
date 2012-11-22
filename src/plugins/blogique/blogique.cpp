@@ -59,6 +59,14 @@ namespace Blogique
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+		connect (&Core::Instance (),
+				SIGNAL(addNewTab (QString,QWidget*)),
+				this,
+				SIGNAL(addNewTab (QString,QWidget*)));
+		connect (&Core::Instance (),
+				SIGNAL(removeTab (QWidget*)),
+				this,
+				SIGNAL(removeTab (QWidget*)));
 	}
 
 	void Plugin::SecondInit ()
