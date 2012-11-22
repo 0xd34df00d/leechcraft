@@ -24,6 +24,7 @@
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "pluginproxy.h"
+#include "localstorage.h"
 
 namespace LeechCraft
 {
@@ -31,6 +32,7 @@ namespace Blogique
 {
 	Core::Core ()
 	: PluginProxy_ (std::make_shared<PluginProxy> ())
+	, Storage_ (new LocalStorage (this))
 	{
 	}
 
@@ -122,6 +124,11 @@ namespace Blogique
 	void Core::DelayedProfilesUpdate ()
 	{
 		QTimer::singleShot (15000, this, SLOT (updateProfiles ()));
+	}
+
+	LocalStorage* Core::GetStorage () const
+	{
+		return Storage_;
 	}
 
 	void Core::AddBlogPlatformPlugin (QObject *plugin)
