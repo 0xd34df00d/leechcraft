@@ -371,13 +371,12 @@ namespace LeechCraft
 
 		int newIndex = 0;
 		MainStackedWidget_->addWidget (page);
+		TabNames_ << text;
 		if (!AddTabButtonAction_->isVisible ())
 			newIndex = MainTabBar_->
 					insertTab (MainTabBar_->count () - 1, icon, text);
 		else
 			newIndex = MainTabBar_->addTab (icon, text);
-
-		TabNames_ << text;
 
 		MainTabBar_->setTabToolTip (newIndex, text);
 
