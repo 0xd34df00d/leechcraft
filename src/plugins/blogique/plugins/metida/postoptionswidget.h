@@ -20,6 +20,7 @@
 
 #include <QWidget>
 #include <interfaces/blogique/iblogiquesidewidget.h>
+#include <interfaces/blogique/ipostoptionswidget.h>
 #include "ui_postoptionswidget.h"
 
 namespace LeechCraft
@@ -32,9 +33,11 @@ namespace Metida
 
 	class PostOptionsWidget : public QWidget
 							, public IBlogiqueSideWidget
+							, public IPostOptionsWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget)
+		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget
+				LeechCraft::Blogique::IPostOptionsWidget)
 
 		Ui::PostOptions Ui_;
 		LJAccount *Account_;
@@ -44,12 +47,16 @@ namespace Metida
 
 		QString GetName () const;
 		SideWidgetType GetWidgetType () const;
-
 		QVariantMap GetPostOptions () const;
-
+		void SetPostOptions (const QVariantMap& map);
 		QVariantMap GetCustomData () const;
-
+		void SetCustomData (const QVariantMap& map);
 		void SetAccount (QObject *account);
+
+		QStringList GetTags () const;
+		void SetTags (const QStringList& tags);
+		QDateTime GetPostDate () const;
+		void SetPostDate (const QDateTime& date);
 	private:
 		void FillItems ();
 

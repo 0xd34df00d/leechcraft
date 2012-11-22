@@ -54,27 +54,23 @@ namespace Metida
 	{
 		QVariantMap map;
 
-		QStringList tags;
-		for (auto tag : Ui_.Tags_->text ().split (","))
-			tags << tag.trimmed ();
-		map ["tags"] = tags;
-		map ["time"] = !Ui_.TimestampBox_->isChecked () ?
-			QDateTime::currentDateTime () :
-			QDateTime (QDate (Ui_.Year_->value (),
-						Ui_.Month_->currentIndex () + 1,
-						Ui_.Date_->value ()),
-					Ui_.Time_->time ());
 		map ["access"] = Ui_.Access_->itemData (Ui_.Access_->currentIndex (),
 				Qt::UserRole);
 		map ["allowMask"] = AllowMask_;
 
-		int index = Ui_.Mood_->findText (Ui_.Mood_->currentText ());
-		int moodId = Ui_.Mood_->itemData (index).toInt ();
-		if (index == -1 ||
-				!moodId)
-			map ["mood"] = Ui_.Mood_->currentText ();
-		else
-			map ["moodId"] = moodId;
+		const bool noMood = Ui_.Mood_->currentText ().isEmpty ();
+		map ["noMood"] = noMood;
+
+		if (!noMood)
+		{
+			int index = Ui_.Mood_->findText (Ui_.Mood_->currentText ());
+			int moodId = Ui_.Mood_->itemData (index).toInt ();
+			if (index == -1 ||
+					!moodId)
+				map ["mood"] = Ui_.Mood_->currentText ();
+			else
+				map ["moodId"] = moodId;
+		}
 
 		map ["place"] = Ui_.Place_->text ();
 		map ["music"] = Ui_.Music_->text ();
@@ -92,9 +88,79 @@ namespace Metida
 		return map;
 	}
 
+	void PostOptionsWidget::SetPostOptions (const QVariantMap& map)
+	{
+		const QVariant& access = map ["access"];
+		for (int i = 0; i < Ui_.Access_->count (); ++i)
+			if (Ui_.Access_->itemData (i, Qt::UserRole) == access)
+			{
+				Ui_.Access_->setCurrentIndex (i);
+				break;
+			}
+
+		//TODO AllowMask_
+
+		if (map ["noMood"].toBool ())
+			Ui_.Mood_->setCurrentIndex (-1);
+		else
+		{
+			const QString& mood = map ["mood"].toString ();
+			if (!mood.isEmpty ())
+			{
+				Ui_.Mood_->addItem (mood);
+				Ui_.Mood_->setCurrentIndex (Ui_.Mood_->count () - 1);
+			}
+			else
+			{
+				int moodId = map ["moodId"].toInt ();
+				for (int i = 0; i < Ui_.Mood_->count (); ++i)
+					if (Ui_.Mood_->itemData (i, Qt::UserRole).toInt () == moodId)
+					{
+						Ui_.Mood_->setCurrentIndex (i);
+						break;
+					}
+			}
+		}
+
+		Ui_.Place_->setText (map ["place"].toString ());
+		Ui_.Music_->setText (map ["music"].toString ());
+
+		const QVariant& comment = map ["comment"];
+		for (int i = 0; i < Ui_.Comments_->count (); ++i)
+			if (Ui_.Comments_->itemData (i, Qt::UserRole) == comment)
+			{
+				Ui_.Comments_->setCurrentIndex (i);
+				break;
+			}
+		Ui_.NotifyAboutComments_->setChecked (map ["notify"].toBool ());
+
+		const QVariant& hideComments = map ["hidecomment"];
+		for (int i = 0; i < Ui_.ScreenComments_->count (); ++i)
+			if (Ui_.ScreenComments_->itemData (i, Qt::UserRole) == hideComments)
+			{
+				Ui_.ScreenComments_->setCurrentIndex (i);
+				break;
+			}
+
+		const QVariant& adults = map ["adults"];
+		for (int i = 0; i < Ui_.Adult_->count (); ++i)
+			if (Ui_.Adult_->itemData (i, Qt::UserRole) == adults)
+			{
+				Ui_.Adult_->setCurrentIndex (i);
+				break;
+			}
+
+		Ui_.ShowInFriendsPage_->setChecked (map ["showInFriendsPage"].toBool ());
+		Ui_.UserPic_->setCurrentIndex (Ui_.UserPic_->findText (map ["avatar"].toString ()));
+	}
+
 	QVariantMap PostOptionsWidget::GetCustomData () const
 	{
 		return QVariantMap ();
+	}
+
+	void PostOptionsWidget::SetCustomData (const QVariantMap&)
+	{
 	}
 
 	void PostOptionsWidget::SetAccount (QObject *accObj)
@@ -125,6 +191,37 @@ namespace Metida
 		Ui_.UserPicLabel_->setPixmap (pxm.scaled (64, 64));
 
 		Ui_.UserPic_->addItems (profile->GetProfileData ().AvatarsID_);
+	}
+
+	QStringList PostOptionsWidget::GetTags () const
+	{
+		QStringList tags;
+		for (auto tag : Ui_.Tags_->text ().split (","))
+			tags << tag.trimmed ();
+		return tags;
+	}
+
+	void PostOptionsWidget::SetTags (const QStringList& tags)
+	{
+		Ui_.Tags_->setText (tags.join (", "));
+	}
+
+	QDateTime PostOptionsWidget::GetPostDate () const
+	{
+		return !Ui_.TimestampBox_->isChecked () ?
+				QDateTime::currentDateTime () :
+				QDateTime (QDate (Ui_.Year_->value (),
+							Ui_.Month_->currentIndex () + 1,
+							Ui_.Date_->value ()),
+						Ui_.Time_->time ());
+	}
+
+	void PostOptionsWidget::SetPostDate (const QDateTime& date)
+	{
+		Ui_.Year_->setValue (date.date().year ());
+		Ui_.Month_->setCurrentIndex (date.date().month () - 1);
+		Ui_.Date_->setValue (date.date().day ());
+		Ui_.Time_->setTime (date.time ());
 	}
 
 	void PostOptionsWidget::FillItems ()
