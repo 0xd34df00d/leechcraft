@@ -57,7 +57,7 @@ namespace Blogique
 		**/
 		virtual SideWidgetType GetWidgetType () const = 0;
 
-		/** @brief Returns a map with post options (tags, timestamp, etc).
+		/** @brief Returns a map with post options.
 		 *
 		 * If type of widget is not a SideWidgetType::PostOptionsSideWidget widget
 		 * should return empty map.
@@ -67,6 +67,15 @@ namespace Blogique
 		 * @sa IPostOptionsWidget, ICustomSideWidget.
 		 **/
 		virtual QVariantMap GetPostOptions () const = 0;
+
+		/** @brief Fill widget with post options..
+		 * 
+		 * If type of widget is not a SideWidgetType::PostOptionsSideWidget widget
+		 * shouldn't do anything.
+		 *
+		 * @sa IPostOptionsWidget, ICustomSideWidget.
+		 **/
+		virtual void SetPostOptions (const QVariantMap& map) = 0;
 
 		/** @brief Returns a map with custom options.
 		 *
@@ -78,6 +87,15 @@ namespace Blogique
 		 * @sa IPostOptionsWidget, ICustomSideWidget.
 		 **/
 		virtual QVariantMap GetCustomData () const = 0;
+
+		/** @brief Fill widget with custom data.
+		 * 
+		 * If type of widget is a SideWidgetType::PostOptionsSideWidget widget
+		 * shouldn't do anything.
+		 *
+		 * @sa IPostOptionsWidget, ICustomSideWidget.
+		 **/
+		virtual void SetCustomData (const QVariantMap& map) = 0;
 
 		/** @brief Set account object.
 		 *
