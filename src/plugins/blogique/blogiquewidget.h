@@ -20,8 +20,11 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "interfaces/blogique/iaccount.h"
 #include "ui_blogiquewidget.h"
 
+class QStandardItem;
+class QStandardItemModel;
 class IEditorWidget;
 class QToolBar;
 class QComboBox;
@@ -32,6 +35,7 @@ namespace Blogique
 {
 	class IBlogiqueSideWidget;
 	class IAccount;
+	class LocalStorage;
 
 	class BlogiqueWidget : public QWidget
 						,  public ITabWidget
@@ -42,6 +46,17 @@ namespace Blogique
 		enum BlogiqueSideWidgets
 		{
 			PostOptionsWidget = 2
+		};
+
+		enum EntryIdRole
+		{
+			DBIdRole = Qt::UserRole + 1
+		};
+
+		enum DraftColumns
+		{
+			Date,
+			Subject
 		};
 
 		static QObject *S_ParentMultiTabs_;
@@ -58,6 +73,18 @@ namespace Blogique
 		QHash<int, IAccount*> Id2Account_;
 		int PrevAccountId_;
 		QList<QWidget*> SidePluginsWidgets_;
+
+		QStandardItemModel *PostsViewModel_;
+		QStandardItemModel *DraftsViewModel_;
+
+		LocalStorage *Storage_;
+
+		QHash<QStandardItem*, Event> DraftItem2Event_;
+
+		QAction *OpenDraftInNewTab_;
+		QAction *OpenDraftInCurrentTab_;
+
+		qlonglong DraftID_;
 	public:
 		BlogiqueWidget (QWidget *parent = 0);
 
@@ -66,19 +93,32 @@ namespace Blogique
 		QToolBar* GetToolBar () const;
 		void Remove ();
 
+		void FillWidget (const Event& e, const QByteArray& accId = QByteArray ());
+
 		static void SetParentMultiTabs (QObject *tab);
 	private:
 		void RemovePostingTargetsWidget ();
+		Event GetCurrentEvent ();
+		void LoadDrafts ();
+		Event LoadFullDraft (const QByteArray& id, qlonglong draftID);
+		void RemoveDraft (qlonglong id);
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
 		void saveEntry ();
-		void submit ();
+		void saveNewEntry ();
+		void submit (const Event& e = Event ());
 		void saveSplitterPosition (int, int);
 		void on_UpdateProfile__triggered ();
+		void on_RemoveDraft__released ();
+		void on_PublishDraft__released ();
+		void on_LocalEntriesView__doubleClicked (const QModelIndex& index);
+		void handleOpenInCurrentTab (const QModelIndex& index = QModelIndex ());
+		void handleOpenInNewTab (const QModelIndex& index = QModelIndex ());
 
 	signals:
 		void removeTab (QWidget *tab);
+		void addNewTab (const QString& name, QWidget *tab);
 	};
 }
 }
