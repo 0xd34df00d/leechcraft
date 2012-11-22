@@ -606,7 +606,8 @@ namespace Blogique
 
 	void BlogiqueWidget::on_LocalEntriesView__doubleClicked (const QModelIndex& index)
 	{
-		XmlSettingsManager::Instance ().Property ("OpenDraftInCurrentTab", true).toBool () ?
+		XmlSettingsManager::Instance ()
+				.property ("OpenDraftByDblClick").toString () == "CurrentTab" ?
 			handleOpenInCurrentTab (index) :
 			handleOpenInNewTab (index);
 	}
