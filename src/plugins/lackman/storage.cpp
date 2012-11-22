@@ -203,7 +203,8 @@ namespace LackMan
 		catch (const std::runtime_error& e)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "could not acquire DB lock";
+					<< "could not acquire DB lock"
+					<< e.what ();
 			throw;
 		}
 
@@ -349,7 +350,8 @@ namespace LackMan
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to start transaction";
+					<< "unable to start transaction"
+					<< e.what ();
 			throw std::runtime_error ("Unable to start transaction");
 		}
 

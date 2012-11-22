@@ -233,7 +233,8 @@ namespace Kinotify
 #ifndef Q_OS_MAC
 		setWindowFlags (Qt::ToolTip | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 #else
-		setWindowFlags (windowFlags () | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+		setWindowFlags (Qt::SubWindow | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+		setAttribute (Qt::WA_ShowWithoutActivating);
 #endif
 
 		QPalette pal = palette ();

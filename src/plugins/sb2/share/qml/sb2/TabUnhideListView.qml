@@ -2,10 +2,9 @@ import QtQuick 1.1
 
 Rectangle {
     id: rootRect
-    width: 600
-    height: Math.min(600, tabsView.count * 36)
+    width: 500
+    height: Math.min(600, closeTabButton.height + unhideView.count * 36)
     smooth: true
-    radius: 5
     focus: true
 
     opacity: 0
@@ -15,30 +14,37 @@ Rectangle {
     }
 
     signal closeRequested()
-    signal tabSwitchRequested(int index)
-    signal tabCloseRequested(int index)
+    signal tabUnhideRequested(string tabClass)
 
     Keys.onEscapePressed: rootRect.closeRequested()
 
-    gradient: Gradient {
-        GradientStop {
-            position: 1
-            color: "#42394b"
-        }
-        GradientStop {
-            position: 0
-            color: "#000000"
-        }
+    color: "#00000000"
+
+    ActionButton {
+        id: closeTabButton
+
+        width: 16
+        height: 16
+
+        anchors.top: parent.top
+        anchors.right: parent.right
+
+        actionIconURL: "image://ThemeIcons/tab-close"
+        transparentStyle: true
+
+        onTriggered: rootRect.closeRequested()
     }
 
     ListView {
-        id: tabsView
-        anchors.fill: parent
-
-        model: tabsListModel
+        id: unhideView
+        anchors.top: closeTabButton.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        model: unhideListModel
 
         delegate: Item {
-            width: tabsView.width
+            width: unhideView.width
             height: 36
 
             Rectangle {
@@ -80,13 +86,13 @@ Rectangle {
 
                 Text {
                     id: tabNameLabel
-                    text: tabName
+                    text: tabName + " (" + tabDescr + ")"
 
                     color: "lightgrey"
 
                     anchors.left: tabIconImage.right
                     anchors.leftMargin: 4
-                    anchors.right: closeTabButton.right
+                    anchors.right: parent.right
                     anchors.rightMargin: 4
                     anchors.verticalCenter: parent.verticalCenter
 
@@ -97,23 +103,7 @@ Rectangle {
                     id: rectMouseArea
                     anchors.fill: parent
                     hoverEnabled: true
-                    onReleased: rootRect.tabSwitchRequested(index)
-                }
-
-                ActionButton {
-                    id: closeTabButton
-                    z: rectMouseArea.z + 1
-
-                    height: parent.height * 2 / 3
-                    width: height
-
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 4
-
-                    actionIconURL: "image://ThemeIcons/tab-close"
-
-                    onTriggered: rootRect.tabCloseRequested(index)
+                    onReleased: rootRect.tabUnhideRequested(tabClass)
                 }
 
                 states: [

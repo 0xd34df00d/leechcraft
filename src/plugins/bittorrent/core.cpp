@@ -71,10 +71,9 @@
 #include "torrentfilesmodel.h"
 #include "livestreammanager.h"
 #include "torrentmaker.h"
+#include "notifymanager.h"
 
 using namespace LeechCraft::Util;
-
-Q_DECLARE_METATYPE (libtorrent::entry);
 
 namespace LeechCraft
 {
@@ -100,7 +99,11 @@ namespace BitTorrent
 	int Core::PerTrackerAccumulator::operator() (int,
 			const Core::TorrentStruct& str)
 	{
+#if LIBTORRENT_VERSION_NUM >= 1600
+		const auto& s = str.Handle_.status (0);
+#else
 		libtorrent::torrent_status s = str.Handle_.status ();
+#endif
 		QString domain = QUrl (s.current_tracker.c_str ()).host ();
 		if (domain.size ())
 		{
@@ -123,7 +126,9 @@ namespace BitTorrent
 	}
 
 	Core::Core ()
-	: CurrentTorrent_ (-1)
+	: NotifyManager_ (new NotifyManager (this))
+	, Session_ (0)
+	, CurrentTorrent_ (-1)
 	, SettingsSaveTimer_ (new QTimer ())
 	, FinishedTimer_ (new QTimer ())
 	, WarningWatchdog_ (new QTimer ())
@@ -143,9 +148,6 @@ namespace BitTorrent
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-
-		qRegisterMetaType<libtorrent::entry> ("libtorrent::entry");
-		qRegisterMetaTypeStreamOperators<libtorrent::entry> ("libtorrent::entry");
 	}
 
 	void Core::SetWidgets (QToolBar *tool, QWidget *tab)
@@ -210,11 +212,7 @@ namespace BitTorrent
 #endif
 
 			setLoggingSettings ();
-
-			QList<QVariant> ports = XmlSettingsManager::Instance ()->
-				property ("TCPPortRange").toList ();
-			Session_->listen_on (std::make_pair (ports.at (0).toInt (),
-						ports.at (1).toInt ()));
+			tcpPortRangeChanged ();
 
 			if (XmlSettingsManager::Instance ()->
 					property ("EnableMetadata").toBool ())
@@ -229,18 +227,17 @@ namespace BitTorrent
 					property ("EnableSmartBan").toBool ())
 				Session_->add_extension (&libtorrent::create_smart_ban_plugin);
 
-			Session_->set_max_uploads (XmlSettingsManager::Instance ()->
-					property ("MaxUploads").toInt ());
-			Session_->set_max_connections (XmlSettingsManager::Instance ()->
-					property ("MaxConnections").toInt ());
+			maxUploadsChanged ();
+			maxConnectionsChanged ();
 
 			QVariant sstateVariant = XmlSettingsManager::Instance ()->
 					property ("SessionState");
 			if (sstateVariant.isValid () &&
-					!sstateVariant.isNull ())
+					!sstateVariant.toByteArray ().isEmpty ())
 			{
-				libtorrent::entry sstate = sstateVariant.value<libtorrent::entry> ();
-				Session_->load_state (sstate);
+				libtorrent::lazy_entry state;
+				if (DecodeEntry (sstateVariant.toByteArray (), state))
+					Session_->load_state (state);
 			}
 
 			setProxySettings ();
@@ -457,7 +454,11 @@ namespace BitTorrent
 			return QVariant ();
 
 		const auto& h = Handles_.at (row).Handle_;
+#if LIBTORRENT_VERSION_NUM >= 1600
+		const auto& status = h.status (0);
+#else
 		const auto& status = h.status ();
+#endif
 
 		switch (role)
 		{
@@ -466,7 +467,7 @@ namespace BitTorrent
 			switch (column)
 			{
 			case ColumnID:
-				return QString::number (row + 1);
+				return row + 1;
 			case ColumnName:
 				return QString::fromUtf8 (h.name ().c_str ());
 			case ColumnState:
@@ -732,7 +733,12 @@ namespace BitTorrent
 		std::vector<libtorrent::peer_info> peerInfos;
 		Handles_.at (idx).Handle_.get_peer_info (peerInfos);
 
+#if LIBTORRENT_VERSION_NUM >= 1600
+		const auto& localPieces = Handles_.at (idx).Handle_.status (libtorrent::torrent_handle::query_pieces).pieces;
+#else
 		const auto& localPieces = Handles_.at (idx).Handle_.status ().pieces;
+#endif
+
 		QList<int> ourMissing;
 		for (auto i = localPieces.begin (), end = localPieces.end (); i != end; ++i)
 		{
@@ -809,16 +815,17 @@ namespace BitTorrent
 			atp.auto_managed = true;
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.paused = (params & NoAutostart);
+			atp.duplicate_is_error = true;
 #if LIBTORRENT_VERSION_NUM >= 1600
 			atp.save_path = std::string (path.toUtf8 ().constData ());
+			atp.url = magnet.toStdString ();
+			handle = Session_->add_torrent (atp);
 #else
 			atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
-#endif
-			atp.duplicate_is_error = true;
-
 			handle = libtorrent::add_magnet_uri (*Session_,
 					magnet.toStdString (),
 					atp);
+#endif
 			if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
 				handle.resolve_countries (true);
 		}
@@ -889,7 +896,7 @@ namespace BitTorrent
 			HandleLibtorrentException (e);
 			return -1;
 		}
-		catch (const std::runtime_error& e)
+		catch (const std::runtime_error&)
 		{
 			emit error (tr ("Runtime error"));
 			return -1;
@@ -1022,13 +1029,25 @@ namespace BitTorrent
 
 	void Core::SetOverallDownloadRate (int val)
 	{
+#if LIBTORRENT_VERSION_NUM >= 1600
+		auto settings = Session_->settings ();
+		settings.download_rate_limit = val == 0 ? -1 : val * 1024;
+		Session_->set_settings (settings);
+#else
 		Session_->set_download_rate_limit (val == 0 ? -1 : val * 1024);
+#endif
 		XmlSettingsManager::Instance ()->setProperty ("DownloadRateLimit", val);
 	}
 
 	void Core::SetOverallUploadRate (int val)
 	{
+#if LIBTORRENT_VERSION_NUM >= 1600
+		auto settings = Session_->settings ();
+		settings.upload_rate_limit = val == 0 ? -1 : val * 1024;
+		Session_->set_settings (settings);
+#else
 		Session_->set_upload_rate_limit (val == 0 ? -1 : val * 1024);
+#endif
 		XmlSettingsManager::Instance ()->setProperty ("UploadRateLimit", val);
 	}
 
@@ -1046,19 +1065,6 @@ namespace BitTorrent
 		libtorrent::session_settings settings = Session_->settings ();
 		settings.active_seeds = val;
 		Session_->set_settings (settings);
-	}
-
-	void Core::SetDesiredRating (double val)
-	{
-		for (int i = 0; i < Handles_.size (); ++i)
-		{
-			if (!CheckValidity (i))
-				continue;
-
-			Handles_.at (i).Handle_.set_ratio (val ? 1/val : 0);
-		}
-
-		XmlSettingsManager::Instance ()->setProperty ("DesiredRating", val);
 	}
 
 	int Core::GetOverallDownloadRate () const
@@ -1079,11 +1085,6 @@ namespace BitTorrent
 	int Core::GetMaxUploadingTorrents () const
 	{
 		return XmlSettingsManager::Instance ()->Property ("MaxUploadingTorrents", -1).toInt ();
-	}
-
-	double Core::GetDesiredRating () const
-	{
-		return XmlSettingsManager::Instance ()->property ("DesiredRating").toInt ();
 	}
 
 	void Core::SetTorrentDownloadRate (int val, int idx)
@@ -1246,7 +1247,11 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
+#if LIBTORRENT_VERSION_NUM >= 1600
+		return Handles_.at (idx).Handle_.status (0).auto_managed;
+#else
 		return Handles_.at (idx).Handle_.is_auto_managed ();
+#endif
 	};
 
 	void Core::SetTorrentManaged (bool man, int idx)
@@ -1262,8 +1267,11 @@ namespace BitTorrent
 	{
 		if (!CheckValidity (idx))
 			return false;
-
+#if LIBTORRENT_VERSION_NUM >= 1600
+		return Handles_.at (idx).Handle_.status (0).sequential_download;
+#else
 		return Handles_.at (idx).Handle_.is_sequential_download ();
+#endif
 	}
 
 	void Core::SetTorrentSequentialDownload (bool seq, int idx)
@@ -1279,7 +1287,11 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
+#if LIBTORRENT_VERSION_NUM >= 1600
+		return Handles_.at (idx).Handle_.status (0).super_seeding;
+#else
 		return Handles_.at (idx).Handle_.super_seeding ();
+#endif
 	}
 
 	void Core::SetTorrentSuperSeeding (bool sup, int idx)
@@ -1811,21 +1823,38 @@ namespace BitTorrent
 		settings.endGroup ();
 	}
 
+	bool Core::DecodeEntry (const QByteArray& data, libtorrent::lazy_entry& e)
+	{
+#if LIBTORRENT_VERSION_NUM >= 1600
+		boost::system::error_code ec;
+		if (libtorrent::lazy_bdecode (data.constData (), data.constData () + data.size (), e, ec))
+		{
+			emit error (tr ("Bad bencoding in saved torrent data: %1")
+						.arg (QString::fromUtf8 (ec.message ().c_str ())));
+			return false;
+		}
+#else
+		if (libtorrent::lazy_bdecode (data.constData (), data.constData () + data.size (), e))
+		{
+			emit error (tr ("Bad bencoding in saved torrent data"));
+			return false;
+		}
+#endif
+
+		return true;
+	}
+
 	libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
 			const QByteArray& resumeData,
 			const boost::filesystem::path& path,
 			bool automanaged,
 			bool pause)
 	{
-		libtorrent::lazy_entry e;
-
 		libtorrent::torrent_handle handle;
-		if (libtorrent::lazy_bdecode (data.constData (),
-					data.constData () + data.size (), e))
-		{
-			emit error (tr ("Bad bencoding in saved torrent data"));
+
+		libtorrent::lazy_entry e;
+		if (!DecodeEntry (data, e))
 			return handle;
-		}
 
 		try
 		{
@@ -1864,7 +1893,11 @@ namespace BitTorrent
 		const auto& info = torrent.Handle_.get_torrent_info ();
 
 		if (LiveStreamManager_->IsEnabledOn (torrent.Handle_) &&
+#if LIBTORRENT_VERSION_NUM >= 1600
+				torrent.Handle_.status (libtorrent::torrent_handle::query_pieces).num_pieces !=
+#else
 				torrent.Handle_.status ().num_pieces !=
+#endif
 					torrent.Handle_.get_torrent_info ().num_pieces ())
 			return;
 
@@ -1905,8 +1938,6 @@ namespace BitTorrent
 				Property ("MaxDownloadingTorrents", -1).toInt ());
 		SetMaxUploadingTorrents (XmlSettingsManager::Instance ()->
 				Property ("MaxUploadingTorrents", -1).toInt ());
-		SetDesiredRating (XmlSettingsManager::Instance ()->
-				Property ("DesiredRating", 0).toInt ());
 
 		XmlSettingsManager::Instance ()->RegisterObject ("TCPPortRange",
 				this, "tcpPortRangeChanged");
@@ -2117,15 +2148,19 @@ namespace BitTorrent
 					file_info.write (Handles_.at (i).TorrentFileContents_);
 					file_info.close ();
 
-					Handles_.at (i).Handle_.save_resume_data ();
+					const auto& handle = Handles_.at (i).Handle_;
+#if LIBTORRENT_VERSION_NUM >= 1600
+					if (handle.need_save_resume_data () || handle.status (0).need_save_resume)
+						handle.save_resume_data ();
+#else
+					handle.save_resume_data ();
+#endif
 
 					settings.setValue ("SavePath",
 #if LIBTORRENT_VERSION_NUM >= 1600
-							QString::fromUtf8 (Handles_.at (i)
-								.Handle_.save_path ().c_str ()));
+							QString::fromUtf8 (handle.save_path ().c_str ()));
 #else
-							QString::fromUtf8 (Handles_.at (i)
-								.Handle_.save_path ().string ().c_str ()));
+							QString::fromUtf8 (handle.save_path ().string ().c_str ()));
 #endif
 					settings.setValue ("Filename",
 							Handles_.at (i).TorrentFileName_);
@@ -2179,9 +2214,9 @@ namespace BitTorrent
 		libtorrent::entry sessionState;
 		Session_->save_state (sessionState, saveflags);
 
-		XmlSettingsManager::Instance ()->
-			setProperty ("SessionState",
-					QVariant::fromValue<libtorrent::entry> (sessionState));
+		QByteArray sessionStateBA;
+		libtorrent::bencode (std::back_inserter (sessionStateBA), sessionState);
+		XmlSettingsManager::Instance ()->setProperty ("SessionState", sessionStateBA);
 
 		Session_->wait_for_alert (libtorrent::time_duration (5));
 
@@ -2195,7 +2230,11 @@ namespace BitTorrent
 			if (Handles_.at (i).State_ == TSSeeding)
 				continue;
 
-			libtorrent::torrent_status status = Handles_.at (i).Handle_.status ();
+#if LIBTORRENT_VERSION_NUM >= 1600
+			const auto& status = Handles_.at (i).Handle_.status (0);
+#else
+			const auto& status = Handles_.at (i).Handle_.status ();
+#endif
 			libtorrent::torrent_status::state_t state = status.state;
 
 			if (status.paused)
@@ -2348,7 +2387,12 @@ namespace BitTorrent
 
 	void Core::queryLibtorrentForWarnings ()
 	{
+		// I know auto_ptr is bad & deprecated & things, but libtorrent API strongly needs it :(
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 		std::auto_ptr<libtorrent::alert> a (Session_->pop_alert ());
+#pragma GCC diagnostic pop
+
 		SimpleDispatcher sd;
 		while (a.get ())
 		{
@@ -2368,17 +2412,17 @@ namespace BitTorrent
 					> alertHandler (a, sd);
 				Q_UNUSED (alertHandler);
 			}
-			catch (const libtorrent::libtorrent_exception& e)
+			catch (const libtorrent::libtorrent_exception&)
 			{
 			}
-			catch (const std::exception& e)
+			catch (const std::exception&)
 			{
 			}
 
 			try
 			{
 				QString logmsg = QString::fromUtf8 (a->message ().c_str ());
-				Core::Instance ()->LogMessage (QDateTime::currentDateTime ().toString () + " " + logmsg);
+				LogMessage (QDateTime::currentDateTime ().toString () + " " + logmsg);
 
 				qDebug () << "<libtorrent>" << logmsg;
 			}
@@ -2412,8 +2456,30 @@ namespace BitTorrent
 
 	void Core::tcpPortRangeChanged ()
 	{
-		QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
-		Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
+		const auto& ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
+#if LIBTORRENT_VERSION_NUM >= 1600
+		boost::system::error_code ec;
+		Session_->listen_on (std::make_pair (ports.at (0).toInt (),
+					ports.at (1).toInt ()),
+				ec);
+		if (ec)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error listening on"
+					<< ports.at (0).toInt ()
+					<< ports.at (1).toInt ()
+					<< ec.message ().c_str ();
+
+			const QString& text = tr ("Error listening on ports %1-%2: %3")
+					.arg (ports.at (0).toInt ())
+					.arg (ports.at (1).toInt ())
+					.arg (QString::fromUtf8 (ec.message ().c_str ()));
+			NotifyManager_->AddNotification ("BitTorrent", text, PCritical_);
+		}
+#else
+		Session_->listen_on (std::make_pair (ports.at (0).toInt (),
+					ports.at (1).toInt ()));
+#endif
 	}
 
 	void Core::autosaveIntervalChanged ()
@@ -2425,14 +2491,26 @@ namespace BitTorrent
 
 	void Core::maxUploadsChanged ()
 	{
-		Session_->set_max_uploads (XmlSettingsManager::Instance ()->
-				property ("MaxUploads").toInt ());
+		const int maxUps = XmlSettingsManager::Instance ()->property ("MaxUploads").toInt ();
+#if LIBTORRENT_VERSION_NUM >= 1603
+		auto settings = Session_->settings ();
+		settings.unchoke_slots_limit = maxUps;
+		Session_->set_settings (settings);
+#else
+		Session_->set_max_uploads (maxUps);
+#endif
 	}
 
 	void Core::maxConnectionsChanged ()
 	{
-		Session_->set_max_connections (XmlSettingsManager::Instance ()->
-				property ("MaxConnections").toInt ());
+		const int maxConn = XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ();
+#if LIBTORRENT_VERSION_NUM >= 1603
+		auto settings = Session_->settings ();
+		settings.connections_limit = maxConn;
+		Session_->set_settings (settings);
+#else
+		Session_->set_max_connections (maxConn);
+#endif
 	}
 
 	void Core::setProxySettings ()
@@ -2738,15 +2816,6 @@ namespace BitTorrent
 
 namespace libtorrent
 {
-	QDataStream& operator<< (QDataStream& out, const entry& e)
-	{
-		QByteArray ba;
-		libtorrent::bencode (std::back_inserter (ba), e);
-
-		out << static_cast<qint8> (1) << ba;
-		return out;
-	}
-
 	QDataStream& operator>> (QDataStream& in, entry& e)
 	{
 		qint8 version;

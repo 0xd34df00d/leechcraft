@@ -63,6 +63,7 @@ namespace Plugins
 {
 namespace BitTorrent
 {
+	class NotifyManager;
 	class PiecesModel;
 	class PeersModel;
 	class TorrentFilesModel;
@@ -114,7 +115,7 @@ namespace BitTorrent
 
 			PerTrackerStats ();
 		};
-		typedef std::map<QString, PerTrackerStats> pertrackerstats_t;
+		typedef QMap<QString, PerTrackerStats> pertrackerstats_t;
 	private:
 		struct PerTrackerAccumulator
 		{
@@ -124,7 +125,10 @@ namespace BitTorrent
 			int operator() (int, const Core::TorrentStruct& str);
 		};
 
+		NotifyManager *NotifyManager_;
+
 		libtorrent::session *Session_;
+
 		typedef QList<TorrentStruct> HandleDict_t;
 		HandleDict_t Handles_;
 		QList<QString> Headers_;
@@ -261,12 +265,10 @@ namespace BitTorrent
 		void SetOverallUploadRate (int);
 		void SetMaxDownloadingTorrents (int);
 		void SetMaxUploadingTorrents (int);
-		void SetDesiredRating (double);
 		int GetOverallDownloadRate () const;
 		int GetOverallUploadRate () const;
 		int GetMaxDownloadingTorrents () const;
 		int GetMaxUploadingTorrents () const;
-		double GetDesiredRating () const;
 		void SetTorrentDownloadRate (int, int);
 		void SetTorrentUploadRate (int, int);
 		int GetTorrentDownloadRate (int) const;
@@ -322,6 +324,7 @@ namespace BitTorrent
 		void MoveToBottom (int);
 		QString GetStringForState (libtorrent::torrent_status::state_t) const;
 		void RestoreTorrents ();
+		bool DecodeEntry (const QByteArray&, libtorrent::lazy_entry&);
 		libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&,
 				const QByteArray&,
 				const boost::filesystem::path&,

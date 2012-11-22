@@ -18,49 +18,27 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/azoth/iprotocol.h>
+#include <QDeclarativeView>
+#include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace SB2
 {
-namespace Vader
-{
-	class MRIMAccount;
-
-	class MRIMProtocol : public QObject
-					   , public IProtocol
+	class TabUnhideListView : public QDeclarativeView
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
 
-		QList<MRIMAccount*> Accounts_;
+		QStandardItemModel *Model_;
 	public:
-		MRIMProtocol (QObject* = 0);
-
-		void Init ();
-		void Release ();
-
-		QObject* GetObject ();
-		ProtocolFeatures GetFeatures () const;
-		QList<QObject*> GetRegisteredAccounts ();
-		QObject* GetParentProtocolPlugin () const;
-		QString GetProtocolName () const;
-		QIcon GetProtocolIcon () const;
-		QByteArray GetProtocolID () const;
-		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
-		void RegisterAccount (const QString&, const QList<QWidget*>&);
-		QWidget* GetMUCJoinWidget ();
-		void RemoveAccount (QObject*);
-	private:
-		void RestoreAccounts ();
+		TabUnhideListView (const QList<TabClassInfo>&, ICoreProxy_ptr, QWidget* = 0);
 	private slots:
-		void saveAccounts ();
+		void unhide (const QString&);
 	signals:
-		void accountAdded (QObject*);
-		void accountRemoved (QObject*);
+		void unhideRequested (const QByteArray&);
 	};
-}
 }
 }

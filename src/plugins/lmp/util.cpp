@@ -122,6 +122,10 @@ namespace LMP
 		if (near.isEmpty ())
 			return QPixmap ();
 
+		const QPixmap nearPx (near);
+		if (!nearPx.isNull ())
+			return nearPx;
+
 		return QPixmap (FindAlbumArtPath (near, ignoreCollection));
 	}
 

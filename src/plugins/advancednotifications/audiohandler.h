@@ -19,6 +19,8 @@
 #ifndef PLUGINS_ADVANCEDNOTIFICATIONS_AUDIOHANDLER_H
 #define PLUGINS_ADVANCEDNOTIFICATIONS_AUDIOHANDLER_H
 #include <QObject>
+#include <QHash>
+#include <QDateTime>
 #include <interfaces/structures.h>
 #include "concretehandlerbase.h"
 #include "eventdata.h"
@@ -30,9 +32,11 @@ namespace AdvancedNotifications
 	class AudioHandler : public ConcreteHandlerBase
 	{
 		Q_OBJECT
+
+		QHash<QString, QDateTime> LastNotify_;
 	public:
 		AudioHandler ();
-		
+
 		NotificationMethod GetHandlerMethod () const;
 		void Handle (const Entity&, const NotificationRule&);
 	};

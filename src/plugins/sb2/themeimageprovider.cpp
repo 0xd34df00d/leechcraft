@@ -16,29 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-
-class QUrl;
-class QPoint;
+#include "themeimageprovider.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	class ViewManager;
-
-	class QuarkProxy : public QObject
+	ThemeImageProvider::ThemeImageProvider (ICoreProxy_ptr proxy)
+	: Proxy_ (proxy)
 	{
-		Q_OBJECT
+	}
 
-		ViewManager *Manager_;
-	public:
-		QuarkProxy (ViewManager*, QObject* = 0);
-	public slots:
-		QPoint mapToGlobal (double, double);
-		void showSettings (const QUrl&);
-	};
+	QIcon ThemeImageProvider::GetIcon (const QStringList& list)
+	{
+		return Proxy_->GetIcon (list.value (0));
+	}
 }
 }

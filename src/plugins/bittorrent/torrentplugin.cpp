@@ -513,8 +513,7 @@ namespace LeechCraft
 				Q_FOREACH (QModelIndex si, sis)
 				{
 					QModelIndex mapped = Core::Instance ()->GetProxy ()->MapToSource (si);
-					if (mapped.isValid () &&
-							mapped.model () == Core::Instance ())
+					if (mapped.isValid ())
 						rows << mapped.row ();
 				}
 

@@ -18,49 +18,19 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/azoth/iprotocol.h>
+#include "widthiconprovider.h"
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace SB2
 {
-namespace Vader
-{
-	class MRIMAccount;
-
-	class MRIMProtocol : public QObject
-					   , public IProtocol
+	class ThemeImageProvider : public WidthIconProvider
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
-
-		QList<MRIMAccount*> Accounts_;
+		ICoreProxy_ptr Proxy_;
 	public:
-		MRIMProtocol (QObject* = 0);
-
-		void Init ();
-		void Release ();
-
-		QObject* GetObject ();
-		ProtocolFeatures GetFeatures () const;
-		QList<QObject*> GetRegisteredAccounts ();
-		QObject* GetParentProtocolPlugin () const;
-		QString GetProtocolName () const;
-		QIcon GetProtocolIcon () const;
-		QByteArray GetProtocolID () const;
-		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
-		void RegisterAccount (const QString&, const QList<QWidget*>&);
-		QWidget* GetMUCJoinWidget ();
-		void RemoveAccount (QObject*);
-	private:
-		void RestoreAccounts ();
-	private slots:
-		void saveAccounts ();
-	signals:
-		void accountAdded (QObject*);
-		void accountRemoved (QObject*);
+		ThemeImageProvider (ICoreProxy_ptr);
+		QIcon GetIcon (const QStringList&);
 	};
-}
 }
 }

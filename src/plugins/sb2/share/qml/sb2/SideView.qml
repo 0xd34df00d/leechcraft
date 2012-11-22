@@ -1,9 +1,11 @@
 import QtQuick 1.1
 
 Rectangle {
-    id: rootRect
+    id: quarkDisplayRoot
     color: "black"
     anchors.fill: parent
+
+    property alias settingsMode: enableSettingsModeButton.settingsMode
 
     ActionButton {
         id: enableSettingsModeButton
@@ -55,6 +57,7 @@ Rectangle {
                 z: 10
 
                 actionIconURL: "image://ThemeIcons/preferences-desktop"
+                transparentStyle: true
 
                 property real dimension: Math.min(itemLoader.width / 2, itemLoader.height / 2)
                 width: dimension

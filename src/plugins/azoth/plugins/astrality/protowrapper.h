@@ -52,6 +52,8 @@ namespace Astrality
 		ProtoWrapper (Tp::ConnectionManagerPtr,
 				const QString&, QObject*);
 
+		void Release ();
+
 		QVariantMap GetParamsFromWidgets (const QList<QWidget*>&) const;
 		AccountWrapper::Settings GetSettingsFromWidgets (const QList<QWidget*>&) const;
 

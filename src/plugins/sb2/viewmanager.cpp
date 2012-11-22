@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 #include "sbview.h"
 #include "quarkproxy.h"
 #include "quarksettingsmanager.h"
-#include "widthiconprovider.h"
+#include "themeimageprovider.h"
 
 namespace LeechCraft
 {
@@ -39,21 +39,6 @@ namespace SB2
 {
 	namespace
 	{
-		class ThemeImageProvider : public WidthIconProvider
-		{
-			ICoreProxy_ptr Proxy_;
-		public:
-			ThemeImageProvider (ICoreProxy_ptr proxy)
-			: Proxy_ (proxy)
-			{
-			}
-
-			QIcon GetIcon (const QStringList& list)
-			{
-				return Proxy_->GetIcon (list.value (0));
-			}
-		};
-
 		const QString ImageProviderID = "ThemeIcons";
 
 		class ViewItemsModel : public QStandardItemModel

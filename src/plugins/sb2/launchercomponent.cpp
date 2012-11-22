@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 #include "launchercomponent.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <QtDeclarative>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -26,6 +27,10 @@
 #include <interfaces/ihavetabs.h>
 #include "widthiconprovider.h"
 #include "tablistview.h"
+#include "launcherdroparea.h"
+#include "tabunhidelistview.h"
+
+Q_DECLARE_METATYPE (QSet<QByteArray>);
 
 namespace LeechCraft
 {
@@ -93,6 +98,11 @@ namespace SB2
 	, Model_ (new LauncherModel (this))
 	, ImageProv_ (new TabClassImageProvider (proxy))
 	{
+		qmlRegisterType<LauncherDropArea> ("SB2", 1, 0, "LauncherDropArea");
+
+		qRegisterMetaType<QSet<QByteArray>> ("QSet<QByteArray>");
+		qRegisterMetaTypeStreamOperators<QSet<QByteArray>> ();
+
 		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "sb2", "LauncherComponent.qml"));
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherModel", Model_);
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
@@ -102,11 +112,31 @@ namespace SB2
 				SIGNAL (currentChanged (int)),
 				this,
 				SLOT (handleCurrentTabChanged (int)));
+
+		LoadHiddenTCs ();
 	}
 
 	QuarkComponent LauncherComponent::GetComponent () const
 	{
 		return Component_;
+	}
+
+	void LauncherComponent::SaveHiddenTCs () const
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_SB2");
+		settings.beginGroup ("Launcher");
+		settings.setValue ("HiddenTCs", QVariant::fromValue (HiddenTCs_));
+		settings.endGroup ();
+	}
+
+	void LauncherComponent::LoadHiddenTCs ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_SB2");
+		settings.beginGroup ("Launcher");
+		HiddenTCs_ = settings.value ("HiddenTCs").value<decltype (HiddenTCs_)> ();
+		settings.endGroup ();
 	}
 
 	namespace
@@ -128,7 +158,7 @@ namespace SB2
 
 	QStandardItem* LauncherComponent::TryAddTC (const TabClassInfo& tc)
 	{
-		if (!IsTabclassOpenable (tc))
+		if (!IsTabclassOpenable (tc) || HiddenTCs_.contains (tc.TabClass_))
 			return 0;
 
 		auto item = CreateItem (tc);
@@ -147,11 +177,23 @@ namespace SB2
 		auto item = new QStandardItem;
 		item->setData (prefix + tc.TabClass_, LauncherModel::Roles::TabClassIcon);
 		item->setData (tc.TabClass_, LauncherModel::Roles::TabClassID);
+		item->setData (0, LauncherModel::Roles::OpenedTabsCount);
+		item->setData (false, LauncherModel::Roles::IsCurrentTab);
 		Model_->appendRow (item);
 
 		TC2Items_ [tc.TabClass_] << item;
 
 		return item;
+	}
+
+	QPair<TabClassInfo, IHaveTabs*> LauncherComponent::FindTC (const QByteArray& tc) const
+	{
+		for (auto iht : Proxy_->GetPluginsManager ()->GetAllCastableTo<IHaveTabs*> ())
+			for (const auto& fullTC : iht->GetTabClasses ())
+				if (fullTC.TabClass_ == tc)
+					return { fullTC, iht };
+
+		return QPair<TabClassInfo, IHaveTabs*> ();
 	}
 
 	void LauncherComponent::handlePluginsAvailable ()
@@ -162,8 +204,10 @@ namespace SB2
 		{
 			auto iht = qobject_cast<IHaveTabs*> (ihtObj);
 			for (const auto& tc : iht->GetTabClasses ())
-				if (TryAddTC (tc))
-					TC2Obj_ [tc.TabClass_] = iht;
+			{
+				TC2Obj_ [tc.TabClass_] = iht;
+				TryAddTC (tc);
+			}
 
 			connect (ihtObj,
 					SIGNAL (addNewTab (QString, QWidget*)),
@@ -189,6 +233,65 @@ namespace SB2
 		}
 
 		obj->TabOpenRequested (tc);
+	}
+
+	void LauncherComponent::tabClassHideRequested (const QByteArray& tc)
+	{
+		if (HiddenTCs_.contains (tc))
+			return;
+
+		HiddenTCs_ << tc;
+		if (TC2Widgets_.value (tc).isEmpty ())
+			for (auto item : TC2Items_.take (tc))
+				Model_->removeRow (item->row ());
+
+		SaveHiddenTCs ();
+	}
+
+	void LauncherComponent::tabClassUnhideRequested (const QByteArray& tc)
+	{
+		if (!HiddenTCs_.remove (tc))
+			return;
+
+		SaveHiddenTCs ();
+
+		if (!TC2Widgets_.value (tc).isEmpty ())
+			return;
+
+		const auto& pair = FindTC (tc);
+		if (!pair.second)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "tab class not found for"
+					<< tc;
+			return;
+		}
+
+		TryAddTC (pair.first);
+		TC2Obj_ [tc] = pair.second;
+	}
+
+	void LauncherComponent::tabUnhideListRequested (int x, int y)
+	{
+		if (HiddenTCs_.isEmpty ())
+			return;
+
+		QList<TabClassInfo> tcs;
+		for (const auto& tc : HiddenTCs_)
+		{
+			const auto& pair = FindTC (tc);
+			if (pair.second)
+				tcs << pair.first;
+		}
+
+		auto list = new TabUnhideListView (tcs, Proxy_);
+		list->move (x, y);
+		list->show ();
+		list->setFocus ();
+		connect (list,
+				SIGNAL (unhideRequested (QByteArray)),
+				this,
+				SLOT (tabClassUnhideRequested (QByteArray)));
 	}
 
 	void LauncherComponent::tabListRequested (const QByteArray& tc, int x, int y)
@@ -248,7 +351,7 @@ namespace SB2
 		auto& wList = TC2Widgets_ [tc.TabClass_];
 		wList.removeAll (w);
 
-		if (wList.isEmpty () && !IsTabclassOpenable (tc))
+		if (wList.isEmpty () && (!IsTabclassOpenable (tc) || HiddenTCs_.contains (tc.TabClass_)))
 			for (auto item : TC2Items_.take (tc.TabClass_))
 				Model_->removeRow (item->row ());
 		else

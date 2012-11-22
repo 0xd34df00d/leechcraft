@@ -70,6 +70,16 @@ namespace Astrality
 				SLOT (handleNewAccount (Tp::AccountPtr)));
 	}
 
+	void ProtoWrapper::Release ()
+	{
+		Q_FOREACH (QObject *accObj, GetRegisteredAccounts ())
+		{
+			auto acc = qobject_cast<AccountWrapper*> (accObj);
+			emit accountRemoved (acc);
+			acc->Shutdown ();
+		}
+	}
+
 	QVariantMap ProtoWrapper::GetParamsFromWidgets (const QList<QWidget*>& widgets) const
 	{
 		QVariantMap params;

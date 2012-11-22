@@ -118,6 +118,27 @@ namespace Azoth
 			else
 				return "ChatWindowStyle";
 		}
+
+		class ModelUpdateSafeguard
+		{
+			QAbstractItemModel *Model_;
+		public:
+			ModelUpdateSafeguard (QAbstractItemModel *model)
+			: Model_ (model)
+			{
+				QMetaObject::invokeMethod (Model_, "modelAboutToBeReset");
+				Model_->blockSignals (true);
+			}
+
+			ModelUpdateSafeguard (const ModelUpdateSafeguard&) = delete;
+			ModelUpdateSafeguard& operator= (const ModelUpdateSafeguard&) = delete;
+
+			~ModelUpdateSafeguard ()
+			{
+				Model_->blockSignals (false);
+				QMetaObject::invokeMethod (Model_, "modelReset");
+			}
+		};
 	}
 
 	QList<IAccount*> GetAccountsPred (const QObjectList& protocols,
@@ -1085,8 +1106,7 @@ namespace Azoth
 			cats << tr ("General");
 
 		QList<QStandardItem*> result;
-		QMetaObject::invokeMethod (CLModel_, "modelAboutToBeReset");
-		CLModel_->blockSignals (true);
+		ModelUpdateSafeguard guard (CLModel_);
 		Q_FOREACH (const QString& cat, cats)
 		{
 			if (!Account2Category2Item_ [account].keys ().contains (cat))
@@ -1104,8 +1124,6 @@ namespace Azoth
 
 			result << Account2Category2Item_ [account] [cat];
 		}
-		CLModel_->blockSignals (false);
-		QMetaObject::invokeMethod (CLModel_, "modelReset");
 
 		return result;
 	}
@@ -1618,6 +1636,8 @@ namespace Azoth
 		const int unread = item->data (CLRUnreadMsgCount).toInt ();
 
 		ItemIconManager_->Cancel (item);
+
+		ModelUpdateSafeguard guard (CLModel_);
 		category->removeRow (item->row ());
 
 		if (!category->rowCount ())
@@ -1655,11 +1675,8 @@ namespace Azoth
 				Qt::ItemIsDragEnabled |
 				Qt::ItemIsDropEnabled);
 
-		QMetaObject::invokeMethod (CLModel_, "modelAboutToBeReset");
-		CLModel_->blockSignals (true);
+		ModelUpdateSafeguard guard (CLModel_);
 		catItem->appendRow (clItem);
-		CLModel_->blockSignals (false);
-		QMetaObject::invokeMethod (CLModel_, "modelReset");
 
 		Entry2Items_ [clEntry] << clItem;
 	}
@@ -1889,11 +1906,11 @@ namespace Azoth
 				CLREntryType);
 		ItemIconManager_->SetIcon (accItem,
 				GetIconPathForState (account->GetState ().State_).get ());
-		QMetaObject::invokeMethod (CLModel_, "modelAboutToBeReset");
-		CLModel_->blockSignals (true);
-		CLModel_->appendRow (accItem);
-		CLModel_->blockSignals (false);
-		QMetaObject::invokeMethod (CLModel_, "modelReset");
+
+		{
+			ModelUpdateSafeguard guard (CLModel_);
+			CLModel_->appendRow (accItem);
+		}
 
 		accItem->setEditable (false);
 
@@ -2029,7 +2046,10 @@ namespace Azoth
 			if (obj == account)
 			{
 				ItemIconManager_->Cancel (item);
-				CLModel_->removeRow (i);
+				{
+					ModelUpdateSafeguard guard (CLModel_);
+					CLModel_->removeRow (i);
+				}
 				break;
 			}
 		}

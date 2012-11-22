@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,9 @@ namespace SB2
 		void enterEvent (QEvent*);
 		void leaveEvent (QEvent*);
 	private slots:
+		void handleTabRemoved (QWidget*);
 		void switchToItem (int);
+		void closeItem (int);
 	};
 }
 }

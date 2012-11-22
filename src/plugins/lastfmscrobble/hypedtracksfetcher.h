@@ -30,13 +30,15 @@ namespace Lastfmscrobble
 	class HypedTracksFetcher : public QObject
 	{
 		Q_OBJECT
+
+		const Media::IHypesProvider::HypeType Type_;
 	public:
-		HypedTracksFetcher (QNetworkAccessManager*, QObject* = 0);
+		HypedTracksFetcher (QNetworkAccessManager*, Media::IHypesProvider::HypeType, QObject* = 0);
 	private slots:
 		void handleFinished ();
 		void handleError ();
 	signals:
-		void gotHypedTracks (const QList<Media::HypedTrackInfo>&);
+		void gotHypedTracks (const QList<Media::HypedTrackInfo>&, Media::IHypesProvider::HypeType);
 	};
 }
 }

@@ -134,6 +134,8 @@ namespace Poshuku
 		}
 		catch (const std::exception& e)
 		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
 			QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
 					"LeechCraft",
 					tr ("Poshuku failed to initialize properly. "

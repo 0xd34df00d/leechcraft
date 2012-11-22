@@ -18,49 +18,28 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/azoth/iprotocol.h>
+#include <QDeclarativeItem>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace SB2
 {
-namespace Vader
-{
-	class MRIMAccount;
-
-	class MRIMProtocol : public QObject
-					   , public IProtocol
+	class LauncherDropArea : public QDeclarativeItem
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
-
-		QList<MRIMAccount*> Accounts_;
+		Q_PROPERTY (bool acceptingDrops READ GetAcceptingDrops WRITE SetAcceptingDrops NOTIFY acceptingDropsChanged)
 	public:
-		MRIMProtocol (QObject* = 0);
+		LauncherDropArea (QDeclarativeItem* = 0);
 
-		void Init ();
-		void Release ();
-
-		QObject* GetObject ();
-		ProtocolFeatures GetFeatures () const;
-		QList<QObject*> GetRegisteredAccounts ();
-		QObject* GetParentProtocolPlugin () const;
-		QString GetProtocolName () const;
-		QIcon GetProtocolIcon () const;
-		QByteArray GetProtocolID () const;
-		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
-		void RegisterAccount (const QString&, const QList<QWidget*>&);
-		QWidget* GetMUCJoinWidget ();
-		void RemoveAccount (QObject*);
-	private:
-		void RestoreAccounts ();
-	private slots:
-		void saveAccounts ();
+		bool GetAcceptingDrops () const;
+		void SetAcceptingDrops (bool);
+	protected:
+		void dragEnterEvent (QGraphicsSceneDragDropEvent*);
+		void dragLeaveEvent (QGraphicsSceneDragDropEvent*);
+		void dropEvent (QGraphicsSceneDragDropEvent*);
 	signals:
-		void accountAdded (QObject*);
-		void accountRemoved (QObject*);
+		void acceptingDropsChanged (bool);
+		void tabDropped (const QByteArray& tabClass);
 	};
-}
 }
 }

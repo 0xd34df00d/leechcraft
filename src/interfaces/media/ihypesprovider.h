@@ -28,14 +28,21 @@ namespace Media
 	struct HypedArtistInfo
 	{
 		ArtistInfo Info_;
+
 		int PercentageChange_;
+		int Playcount_;
+		int Listeners_;
 	};
 
 	struct HypedTrackInfo
 	{
 		QString TrackName_;
 		QUrl TrackPage_;
+
 		int PercentageChange_;
+		int Playcount_;
+		int Listeners_;
+
 		int Duration_;
 
 		QUrl Image_;
@@ -54,16 +61,18 @@ namespace Media
 
 		enum class HypeType
 		{
-			Artist,
-			Track
+			NewArtists,
+			NewTracks,
+			TopArtists,
+			TopTracks
 		};
 
 		virtual bool SupportsHype (HypeType) = 0;
 
 		virtual void RequestHype (HypeType) = 0;
 	protected:
-		virtual void gotHypedArtists (const QList<HypedArtistInfo>&) = 0;
-		virtual void gotHypedTracks (const QList<HypedTrackInfo>&) = 0;
+		virtual void gotHypedArtists (const QList<HypedArtistInfo>&, HypeType) = 0;
+		virtual void gotHypedTracks (const QList<HypedTrackInfo>&, HypeType) = 0;
 	};
 }
 

@@ -280,7 +280,8 @@ namespace LackMan
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "error getting package"
-					<< packageId;
+					<< packageId
+					<< e.what ();
 			return result;
 		}
 
@@ -412,7 +413,9 @@ namespace LackMan
 							<< oc
 							<< "not present in freshly obtained description of"
 							<< id
-							<< url;
+							<< url
+							<< "because of"
+							<< e.what ();
 					emit gotEntity (Util::MakeNotification (tr ("Error updating repository"),
 							tr ("Unable to remove the component `%1` which "
 								"disappeared from the list of components for repo %2.")

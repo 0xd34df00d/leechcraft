@@ -19,47 +19,36 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/structures.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Plugins
 {
-namespace Vader
+namespace BitTorrent
 {
-	class MRIMAccount;
-
-	class MRIMProtocol : public QObject
-					   , public IProtocol
+	class NotifyManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
 
-		QList<MRIMAccount*> Accounts_;
+		bool IsReady_;
+		QList<Entity> Queue_;
 	public:
-		MRIMProtocol (QObject* = 0);
+		NotifyManager (QObject* = 0);
 
-		void Init ();
-		void Release ();
+		void PluginsAvailable ();
+		void AddNotification (const Entity&);
 
-		QObject* GetObject ();
-		ProtocolFeatures GetFeatures () const;
-		QList<QObject*> GetRegisteredAccounts ();
-		QObject* GetParentProtocolPlugin () const;
-		QString GetProtocolName () const;
-		QIcon GetProtocolIcon () const;
-		QByteArray GetProtocolID () const;
-		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
-		void RegisterAccount (const QString&, const QList<QWidget*>&);
-		QWidget* GetMUCJoinWidget ();
-		void RemoveAccount (QObject*);
+		template<typename T1, typename T2>
+		void AddNotification (T1&& header, T2&& text, Priority p)
+		{
+			AddNotification (Util::MakeNotification (std::forward<T1> (header), std::forward<T2> (text), p));
+		}
 	private:
-		void RestoreAccounts ();
+		void SendNotification (const Entity&);
 	private slots:
-		void saveAccounts ();
-	signals:
-		void accountAdded (QObject*);
-		void accountRemoved (QObject*);
+		void makeDelayedReady ();
 	};
 }
 }

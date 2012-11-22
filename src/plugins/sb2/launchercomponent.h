@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include <QSet>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/icoreproxy.h>
 
@@ -51,17 +52,27 @@ namespace SB2
 		QHash<QByteArray, QList<QWidget*>> TC2Widgets_;
 
 		QPointer<TabListView> CurrentTabList_;
+
+		QSet<QByteArray> HiddenTCs_;
 	public:
 		LauncherComponent (ICoreProxy_ptr, QObject* = 0);
 
 		QuarkComponent GetComponent () const;
 	private:
+		void SaveHiddenTCs () const;
+		void LoadHiddenTCs ();
+
 		QStandardItem* TryAddTC (const TabClassInfo&);
 		QStandardItem* CreateItem (const TabClassInfo&);
+
+		QPair<TabClassInfo, IHaveTabs*> FindTC (const QByteArray&) const;
 	public slots:
 		void handlePluginsAvailable ();
 
 		void tabOpenRequested (const QByteArray&);
+		void tabClassHideRequested (const QByteArray&);
+		void tabClassUnhideRequested (const QByteArray&);
+		void tabUnhideListRequested (int, int);
 		void tabListRequested (const QByteArray&, int, int);
 		void tabListUnhovered (const QByteArray&);
 	private slots:

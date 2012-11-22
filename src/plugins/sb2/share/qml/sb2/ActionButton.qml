@@ -5,9 +5,13 @@ Item {
 
     property bool isHighlight
     property bool isStrongHighlight
+
     property bool isCurrent
+
     property string actionIconURL
     property bool hoverScalesIcons: true
+
+    property bool transparentStyle: false
 
     property alias isHovered: actionMouseArea.containsMouse
 
@@ -24,18 +28,18 @@ Item {
 
         anchors.fill: parent
         anchors.margins: hoverScalesIcons ? 2 : 0
-        border.width: isStrongHighlight ? 2 : 1
+        border.width: transparentStyle ? 0 : (isStrongHighlight ? 2 : 1)
         border.color: actionRoot.isHighlight ? "#FF6500" : "black"
 
         gradient: Gradient {
             GradientStop {
                 position: 1
-                color: actionRoot.isHighlight ? "#5a3238" : "#42394b"
+                color: transparentStyle ? "#00000000" : (actionRoot.isHighlight ? "#5a3238" : "#42394b")
             }
 
             GradientStop {
                 position: 0
-                color: actionRoot.isHighlight ? "#290700" : "#000000"
+                color: transparentStyle ? "#00000000" : (actionRoot.isHighlight ? "#290700" : "#000000")
             }
         }
 
