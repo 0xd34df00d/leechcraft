@@ -19,6 +19,8 @@
 #include "shx.h"
 #include <QProcess>
 #include <QtDebug>
+#include <QTextDocument>
+#include <QMessageBox>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 
@@ -84,8 +86,18 @@ namespace SHX
 		if (!text.startsWith (marker))
 			return;
 
-		proxy->CancelDefault ();
 		text = text.mid (marker.size ());
+		if (XmlSettingsManager::Instance ().property ("WarnAboutExecution").toBool ())
+		{
+			const auto& msgText = tr ("Are you sure you want to execute this command?") +
+					"<blockquote><em>" + Qt::escape (text) + "</em></blockquote>";
+			if (QMessageBox::question (0, "LeechCraft",
+						msgText,
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+				return;
+		}
+
+		proxy->CancelDefault ();
 
 		auto proc = new QProcess ();
 		Process2Chat_ [proc] = chatTab;

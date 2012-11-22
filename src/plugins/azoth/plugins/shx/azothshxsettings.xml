@@ -7,6 +7,9 @@
 			<item type="lineedit" property="Marker" default="/exec ">
 				<label value="Command marker:" />
 			</item>
+			<item type="checkbox" property="WarnAboutExecution" default="true">
+				<label value="Warn about command execution" />
+			</item>
 		</groupbox>
 	</page>
 </settings>
