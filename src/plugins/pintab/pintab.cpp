@@ -197,10 +197,10 @@ namespace PinTab
 		if (MainTabWidget_->WidgetCount () <= index)
 			return;
 
-		bool IsPinned = MainTabWidget_->Widget (index)->
+		bool isPinned = MainTabWidget_->Widget (index)->
 				property ("SessionData/org.LeechCraft.PinTab.PinState").toBool ();
 
-		if (IsPinned)
+		if (isPinned)
 			pinTab (index);
 	}
 }
