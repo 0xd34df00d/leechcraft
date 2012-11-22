@@ -21,6 +21,7 @@
 #include <QMetaType>
 #include <QVariant>
 #include <QStringList>
+#include <QDateTime>
 
 class QWidget;
 namespace LeechCraft
@@ -32,8 +33,13 @@ namespace Blogique
 		QString Target_;
 		QString Subject_;
 		QString Content_;
+		QDateTime Date_;
+		QStringList Tags_;
 		QVariantMap PostOptions_;
 		QVariantMap CustomData_;
+		qlonglong EntryDBId_;
+		Event () { EntryDBId_ = -1; }
+		bool isEmpty () const { return Content_.isEmpty (); };
 	};
 
 	/** @brief Interface representing a single account.
