@@ -134,6 +134,13 @@ namespace Blogique
 		 * @param[out] newName The new name of this account.
 		 */
 		virtual void accountRenamed (const QString& newName) = 0;
+
+		/** @brief This signal should be emitted when entry
+		 * successfully posted to blog.
+		 * 
+		 * @note This function is expected to be a signal.
+		 */
+		virtual void entryPosted () = 0;
 	};
 }
 }

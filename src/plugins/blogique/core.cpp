@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include <QTimer>
 #include <interfaces/iplugin2.h>
+#include <util/util.h>
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
@@ -184,6 +185,11 @@ namespace Blogique
 			return;
 		}
 
+		connect (accObj,
+				SIGNAL (entryPosted ()),
+				this,
+				SLOT (handleEntryPosted ()));
+
 		emit accountAdded (accObj);
 	}
 
@@ -221,6 +227,12 @@ namespace Blogique
 	{
 		for (auto acc : GetAccounts ())
 			acc->updateProfile ();
+	}
+
+	void Core::handleEntryPosted ()
+	{
+		SendEntity ( Util::MakeNotification ("Blogique",
+				tr ("Entry was posted successfully."), Priority::PInfo_));
 	}
 
 }

@@ -1001,6 +1001,7 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			//TODO
+			emit entryPosted ();
 			return;
 		}
 

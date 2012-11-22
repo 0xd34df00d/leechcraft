@@ -117,10 +117,12 @@ namespace Metida
 		void handleXmlRpcError (int errorCode, const QString& msgInEng);
 		void updateProfile ();
 		void submit (const Event& event);
+
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
 		void accountValidated (bool validated);
+		void entryPosted ();
 	};
 }
 }

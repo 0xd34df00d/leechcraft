@@ -85,10 +85,12 @@ namespace Metida
 		void handleAddNewFriendReplyFinished ();
 		void handleReplyWithProfileUpdate ();
 		void handlePostEventReplyFinished ();
+
 	signals:
 		void validatingFinished (bool success);
 		void profileUpdated (const LJProfileData& profile);
 		void error (int code, const QString& msg);
+		void entryPosted ();
 	};
 }
 }

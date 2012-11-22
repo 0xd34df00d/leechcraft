@@ -70,6 +70,7 @@ namespace Blogique
 		void handleAccountRemoved (QObject *accObj);
 		void handleAccountValidated (QObject *accObj, bool validated);
 		void updateProfiles ();
+		void handleEntryPosted ();
 
 	signals:
 		void accountAdded (QObject *account);

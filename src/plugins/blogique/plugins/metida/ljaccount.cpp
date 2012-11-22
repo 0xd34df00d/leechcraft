@@ -60,6 +60,10 @@ namespace Metida
 				SIGNAL (profileUpdated (const LJProfileData&)),
 				LJProfile_.get (),
 				SLOT (handleProfileUpdate (const LJProfileData&)));
+		connect (LJXmlRpc_,
+				SIGNAL(entryPosted ()),
+				this,
+				SIGNAL (entryPosted ()));
 	}
 
 	QObject* LJAccount::GetObject ()
