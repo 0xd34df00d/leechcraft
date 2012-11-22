@@ -45,7 +45,6 @@ namespace Metida
 		CommentsManagement ScreeningComments_;
 		QString PostAvatar_;
 		bool EntryVisibility_;
-		QStringList TagList_;
 		bool UsedRTE_;
 	};
 
@@ -56,6 +55,7 @@ namespace Metida
 		Access Security_;
 		quint32 AllowMask_;
 		QDateTime DateTime_;
+		QStringList Tags_;
 		QString TimeZone_;
 		QString UseJournal_;
 		LJEventProperties Props_;

@@ -664,7 +664,7 @@ namespace Metida
 				MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_),
 				document));
 		propsStruct.second.appendChild (GetSimpleMemberElement ("taglist",
-				"string", event.Props_.TagList_.join (","), document));
+				"string", event.Tags_.join (","), document));
 		propsStruct.second.appendChild (GetSimpleMemberElement ("useragent",
 				"string", "LeechCraft Blogique", document));
 		propsStruct.second.appendChild (GetSimpleMemberElement ("picture_keyword",

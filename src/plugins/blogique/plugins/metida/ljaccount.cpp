@@ -271,7 +271,8 @@ namespace Metida
 		ljEvent.Subject_ = event.Subject_;
 		ljEvent.Event_ = event.Content_;
 		ljEvent.UseJournal_ = event.Target_;
-		ljEvent.DateTime_ = postOptions.value ("time").toDateTime ();
+		ljEvent.DateTime_ = event.Date_;
+		ljEvent.Tags_ = event.Tags_;
 		Access access = static_cast<Access> (postOptions.value ("access").toInt ());
 		ljEvent.Security_ = access < Access::MAXAccess ?
 			access :
@@ -301,7 +302,6 @@ namespace Metida
 
 		props.CurrentLocation_ = postOptions.value ("place").toString ();
 		props.CurrentMusic_ = postOptions.value ("music").toString ();
-		props.TagList_ = postOptions.value ("tags").toStringList ();
 
 		int currentMoodId = postOptions.value ("moodId").toInt ();
 		if (!currentMoodId)
