@@ -183,9 +183,18 @@ namespace LMP
 		RemoveRootPaths (RootPaths_);
 	}
 
+	namespace
+	{
+		struct IterateResult
+		{
+			QSet<QString> UnchangedFiles_;
+			QSet<QString> ChangedFiles_;
+		};
+	}
+
 	void LocalCollection::Scan (const QString& path, bool root)
 	{
-		auto watcher = new QFutureWatcher<QStringList> ();
+		auto watcher = new QFutureWatcher<IterateResult> ();
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,
@@ -198,12 +207,13 @@ namespace LMP
 
 		const bool symLinks = XmlSettingsManager::Instance ()
 				.property ("FollowSymLinks").toBool ();
-		auto worker = [path, symLinks] ()
+		auto worker = [path, symLinks] () -> IterateResult
 		{
+			IterateResult result;
+
 			LocalCollectionStorage storage;
 
 			const auto& allInfos = RecIterateInfo (path, symLinks);
-			QStringList result;
 			for (const auto& info : allInfos)
 			{
 				const auto& trackPath = info.absoluteFilePath ();
@@ -213,7 +223,10 @@ namespace LMP
 					const auto& storedDt = storage.GetMTime (trackPath);
 					if (storedDt.isValid () &&
 							std::abs (storedDt.msecsTo (mtime)) < 1500)
+					{
+						result.UnchangedFiles_ << trackPath;
 						continue;
+					}
 				}
 				catch (const std::exception& e)
 				{
@@ -234,7 +247,7 @@ namespace LMP
 							<< trackPath
 							<< e.what ();
 				}
-				result << trackPath;
+				result.ChangedFiles_ << trackPath;
 			}
 
 			return result;
@@ -805,15 +818,15 @@ namespace LMP
 
 		const auto& path = sender ()->property ("Path").toString ();
 
-		auto watcher = dynamic_cast<QFutureWatcher<QStringList>*> (sender ());
+		auto watcher = dynamic_cast<QFutureWatcher<IterateResult>*> (sender ());
+		const auto& result = watcher->result ();
 
-		const auto& origPaths = QSet<QString>::fromList (watcher->result ());
-		CheckRemovedFiles (origPaths, path);
+		CheckRemovedFiles (result.ChangedFiles_ + result.UnchangedFiles_, path);
 
 		if (Watcher_->isRunning ())
-			NewPathsQueue_ << origPaths;
+			NewPathsQueue_ << result.ChangedFiles_;
 		else
-			InitiateScan (origPaths);
+			InitiateScan (result.ChangedFiles_);
 	}
 
 	void LocalCollection::handleScanFinished ()
