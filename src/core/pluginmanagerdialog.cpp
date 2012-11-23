@@ -56,7 +56,7 @@ namespace LeechCraft
 				connect (button,
 						SIGNAL (released ()),
 						Core::Instance ().GetCoreInstanceObject ()->GetSettingsTab (),
-						SLOT (handleSettingsCalled ()));
+						SLOT (handleSettingsForObject ()));
 				return button;
 			}
 

@@ -399,6 +399,21 @@ namespace LeechCraft
 		showSettingsFor (obj);
 	}
 
+	void SettingsTab::handleSettingsForObject ()
+	{
+		auto obj = sender ()->property ("SettableObject").value<QObject*> ();
+		if (!obj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty object"
+					<< sender ();
+			return;
+		}
+
+		handleBackRequested ();
+		showSettingsFor (obj);
+	}
+
 	void SettingsTab::handleBackRequested ()
 	{
 		Toolbar_->clear ();
