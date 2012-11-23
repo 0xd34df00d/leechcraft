@@ -58,9 +58,6 @@
 					<label value="Bottom" />
 				</option>
 			</item>
-			<item type="spinbox" property="MaxLogLines" default="500" step="250" minimum="10" maximum="50000">
-				<label lang="en" value="Maximum log lines:" />
-			</item>
 		</groupbox>
 	</page>
 	<page>
