@@ -36,7 +36,8 @@ namespace
 	void Write (QtMsgType type, const char *message, bool bt)
 	{
 #if !defined (Q_OS_WIN32) && !defined (Q_OS_MAC)
-		if (!strcmp (message, "QPixmap::handle(): Pixmap is not an X11 class pixmap"))
+		if (!strcmp (message, "QPixmap::handle(): Pixmap is not an X11 class pixmap") ||
+				strstr (message, ": Painter not active"))
 			return;
 #endif
 		static const std::map<QtMsgType, QString> fileName =
