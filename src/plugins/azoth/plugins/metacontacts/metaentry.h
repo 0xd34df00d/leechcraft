@@ -99,7 +99,7 @@ namespace Metacontacts
 		void ConnectAdvancedSiganls (QObject*);
 	private:
 		void PerformRemoval (QObject*);
-		void SetNewEntryList (const QList<QObject*>&);
+		void SetNewEntryList (const QList<QObject*>&, bool readdRemoved);
 	private slots:
 		void handleRealGotMessage (QObject*);
 		void handleRealStatusChanged (const EntryStatus&, const QString&);
@@ -137,7 +137,6 @@ namespace Metacontacts
 		void locationChanged (const QString&);
 
 		// Own
-		void entriesRemoved (const QList<QObject*>&);
 		void shouldRemoveThis ();
 	};
 }
