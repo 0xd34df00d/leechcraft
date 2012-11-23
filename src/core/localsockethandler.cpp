@@ -142,7 +142,14 @@ namespace LeechCraft
 			else if (type == "file")
 				ve = QUrl::fromLocalFile (entity);
 			else
-				ve = entity;
+			{
+				if (QFile::exists (entity))
+					ve = QUrl::fromLocalFile (entity);
+				else if (QUrl::fromEncoded (entity.toUtf8 ()).isValid ())
+					ve = QUrl::fromEncoded (entity.toUtf8 ());
+				else
+					ve = entity;
+			}
 
 			Entity e = Util::MakeEntity (ve,
 					QString (),
