@@ -125,7 +125,9 @@ namespace Xoox
 		QAction *PrivacyDialogAction_;
 	public:
 		GlooxAccount (const QString&, QObject*);
+
 		void Init ();
+		void Release ();
 
 		AccountSettingsHolder* GetSettings () const;
 

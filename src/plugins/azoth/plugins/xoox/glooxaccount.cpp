@@ -174,6 +174,11 @@ namespace Xoox
 		regenAccountIcon (SettingsHolder_->GetJID ());
 	}
 
+	void GlooxAccount::Release ()
+	{
+		emit removedCLItems (GetCLEntries ());
+	}
+
 	AccountSettingsHolder* GlooxAccount::GetSettings () const
 	{
 		return SettingsHolder_;
