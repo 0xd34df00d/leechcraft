@@ -195,6 +195,9 @@ namespace Azoth
 		bool CouldHandle (const Entity&) const;
 		void Handle (Entity);
 
+		bool CouldHandleURL (const QUrl&) const;
+		void HandleURL (const QUrl&, ICLEntry* = 0);
+
 		const QObjectList& GetProtocolPlugins () const;
 
 		QAbstractItemModel* GetCLModel () const;
