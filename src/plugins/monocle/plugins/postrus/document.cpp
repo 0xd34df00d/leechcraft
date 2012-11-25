@@ -72,7 +72,6 @@ namespace Postrus
 		auto page = spectre_document_get_page (SD_, index);
 		const auto& result = GetSpectrePageSize (page);
 		spectre_page_free (page);
-		qDebug () << Q_FUNC_INFO << index << result;
 		return result;
 	}
 
