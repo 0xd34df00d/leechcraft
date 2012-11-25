@@ -26,5 +26,5 @@ TARGET_LINK_LIBRARIES (leechcraft_monocle_postrus
 	)
 INSTALL (TARGETS leechcraft_monocle_postrus DESTINATION ${LC_PLUGINS_DEST})
 IF (UNIX AND NOT APPLE)
-	#INSTALL (FILES freedesktop/leechcraft-monocle-pdf.desktop DESTINATION share/applications)
+	INSTALL (FILES freedesktop/leechcraft-monocle-postrus.desktop DESTINATION share/applications)
 ENDIF (UNIX AND NOT APPLE)
