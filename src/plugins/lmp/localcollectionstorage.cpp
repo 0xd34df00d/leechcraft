@@ -742,6 +742,8 @@ namespace LMP
 					throw std::runtime_error ("cannot create required tables");
 				}
 			}
+			
+		QSqlQuery (DB_).exec ("CREATE UNIQUE INDEX IF NOT EXISTS index_tracksPaths ON tracks (Path);");
 
 		lock.Good ();
 	}
