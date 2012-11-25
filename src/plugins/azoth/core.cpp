@@ -1103,15 +1103,18 @@ namespace Azoth
 		ID2Entry_ [id] = clEntry->GetObject ();
 
 		const QStringList& groups = GetDisplayGroups (clEntry);
-		QList<QStandardItem*> catItems = GetCategoriesItems (groups, accItem);
-		Q_FOREACH (QStandardItem *catItem, catItems)
 		{
-			AddEntryTo (clEntry, catItem);
+			ModelUpdateSafeguard outerGuard (CLModel_);
+			QList<QStandardItem*> catItems = GetCategoriesItems (groups, accItem);
+			Q_FOREACH (QStandardItem *catItem, catItems)
+			{
+				AddEntryTo (clEntry, catItem);
 
-			bool isMucCat = catItem->data (CLRIsMUCCategory).toBool ();
-			if (!isMucCat)
-				isMucCat = clEntry->GetEntryType () == ICLEntry::ETPrivateChat;
-			catItem->setData (isMucCat, CLRIsMUCCategory);
+				bool isMucCat = catItem->data (CLRIsMUCCategory).toBool ();
+				if (!isMucCat)
+					isMucCat = clEntry->GetEntryType () == ICLEntry::ETPrivateChat;
+				catItem->setData (isMucCat, CLRIsMUCCategory);
+			}
 		}
 
 		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString (), false, false);
@@ -1252,7 +1255,7 @@ namespace Azoth
 				avatar = GetDefaultAvatar (avatarSize);
 
 			if (std::max (avatar.width (), avatar.height ()) > avatarSize)
-				avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+				avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::FastTransformation);
 			else if (std::max (avatar.width (), avatar.height ()) < minAvatarSize)
 				avatar = avatar.scaled (minAvatarSize, minAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 			tip += "<img src='" + Util::GetAsBase64Src (avatar) + "' />";
@@ -2096,6 +2099,8 @@ namespace Azoth
 
 	void Core::handleGotCLItems (const QList<QObject*>& items)
 	{
+		ModelUpdateSafeguard outerGuard (CLModel_);
+
 		QMap<const QObject*, QStandardItem*> accountItemCache;
 		Q_FOREACH (QObject *item, items)
 		{
