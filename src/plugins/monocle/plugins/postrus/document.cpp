@@ -49,7 +49,12 @@ namespace Postrus
 
 	DocumentInfo Document::GetDocumentInfo () const
 	{
-		return DocumentInfo ();
+		DocumentInfo info;
+		if (const char *title = spectre_document_get_title (SD_))
+			info.Title_ = QString::fromUtf8 (title);
+		if (const char *author = spectre_document_get_creator (SD_))
+			info.Author_ = QString::fromUtf8 (author);
+		return info;
 	}
 
 	int Document::GetNumPages () const
