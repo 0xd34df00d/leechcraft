@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "util.h"
+#include <functional>
 #include <stdexcept>
 #include <QString>
 #include <QApplication>

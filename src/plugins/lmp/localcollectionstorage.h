@@ -60,6 +60,9 @@ namespace LMP
 		QSqlQuery SetTrackStats_;
 		QSqlQuery UpdateTrackStats_;
 
+		QSqlQuery GetFileMTime_;
+		QSqlQuery SetFileMTime_;
+
 		// 1 is loved, 2 is banned
 		QSqlQuery GetLovedBanned_;
 		QSqlQuery SetLovedBanned_;
@@ -89,6 +92,9 @@ namespace LMP
 		Collection::TrackStats GetTrackStats (int);
 		void SetTrackStats (const Collection::TrackStats&);
 		void RecordTrackPlayed (int);
+
+		QDateTime GetMTime (const QString&);
+		void SetMTime (const QString&, const QDateTime&);
 
 		void SetTrackLoved (int);
 		void SetTrackBanned (int);

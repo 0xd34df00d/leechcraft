@@ -78,12 +78,12 @@ namespace LeechCraft
 		in >> arguments;
 		arguments.removeFirst ();
 
-		std::vector<std::string> strings;
+		std::vector<std::wstring> strings;
 		Q_FOREACH (const QString& arg, arguments)
-			strings.push_back (arg.toStdString ());
+			strings.push_back (arg.toStdWString ());
 
 		boost::program_options::options_description desc;
-		boost::program_options::command_line_parser parser (strings);
+		boost::program_options::wcommand_line_parser parser (strings);
 		auto map = qobject_cast<Application*> (qApp)->Parse (parser, &desc);
 		DoLine (map);
 	}
@@ -128,19 +128,28 @@ namespace LeechCraft
 					<< e.what ();
 		}
 
-		std::vector<std::string> entities = map ["entity"].as<std::vector<std::string>> ();
-		Q_FOREACH (const std::string& entity, entities)
+		const auto& entities = map ["entity"].as<std::vector<std::wstring>> ();
+		Q_FOREACH (const std::wstring& rawEntity, entities)
 		{
 			QVariant ve;
 
+			const QString entity = QString::fromWCharArray (rawEntity.c_str ());
+
 			if (type == "url")
-				ve = QUrl (QString::fromUtf8 (entity.c_str ()));
+				ve = QUrl (entity);
 			else if (type == "url_encoded")
-				ve = QUrl::fromEncoded (entity.c_str ());
+				ve = QUrl::fromEncoded (entity.toUtf8 ());
 			else if (type == "file")
-				ve = QUrl::fromLocalFile (QString::fromUtf8 (entity.c_str ()));
+				ve = QUrl::fromLocalFile (entity);
 			else
-				ve = QString::fromUtf8 (entity.c_str ());
+			{
+				if (QFile::exists (entity))
+					ve = QUrl::fromLocalFile (entity);
+				else if (QUrl::fromEncoded (entity.toUtf8 ()).isValid ())
+					ve = QUrl::fromEncoded (entity.toUtf8 ());
+				else
+					ve = entity;
+			}
 
 			Entity e = Util::MakeEntity (ve,
 					QString (),

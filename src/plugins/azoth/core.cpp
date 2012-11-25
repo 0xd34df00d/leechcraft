@@ -388,6 +388,36 @@ namespace Azoth
 		if (!url.isValid ())
 			return false;
 
+		return CouldHandleURL (url);
+	}
+
+	void Core::Handle (Entity e)
+	{
+		if (e.Mime_ == "x-leechcraft/power-state-changed")
+		{
+			HandlePowerNotification (e);
+			return;
+		}
+		else if (e.Mime_ == "x-leechcraft/im-account-import")
+		{
+			ImportManager_->HandleAccountImport (e);
+			return;
+		}
+		else if (e.Mime_ == "x-leechcraft/im-history-import")
+		{
+			ImportManager_->HandleHistoryImport (e);
+			return;
+		}
+
+		const QUrl& url = e.Entity_.toUrl ();
+		if (!url.isValid ())
+			return;
+
+		HandleURL (url);
+	}
+
+	bool Core::CouldHandleURL (const QUrl& url) const
+	{
 		Q_FOREACH (QObject *obj, ProtocolPlugins_)
 		{
 			IProtocolPlugin *protoPlug = qobject_cast<IProtocolPlugin*> (obj);
@@ -413,28 +443,8 @@ namespace Azoth
 		return false;
 	}
 
-	void Core::Handle (Entity e)
+	void Core::HandleURL (const QUrl& url, ICLEntry *source)
 	{
-		if (e.Mime_ == "x-leechcraft/power-state-changed")
-		{
-			HandlePowerNotification (e);
-			return;
-		}
-		else if (e.Mime_ == "x-leechcraft/im-account-import")
-		{
-			ImportManager_->HandleAccountImport (e);
-			return;
-		}
-		else if (e.Mime_ == "x-leechcraft/im-history-import")
-		{
-			ImportManager_->HandleHistoryImport (e);
-			return;
-		}
-
-		const QUrl& url = e.Entity_.toUrl ();
-		if (!url.isValid ())
-			return;
-
 		QList<QObject*> accounts;
 		Q_FOREACH (QObject *obj, ProtocolPlugins_)
 		{
@@ -470,6 +480,12 @@ namespace Azoth
 
 		if (accounts.isEmpty ())
 			return;
+
+		if (source && accounts.contains (source->GetParentAccount ()))
+		{
+			accounts.clear ();
+			accounts << source->GetParentAccount ();
+		}
 
 		QObject *selected = 0;
 

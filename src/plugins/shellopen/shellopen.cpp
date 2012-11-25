@@ -70,7 +70,7 @@ namespace LeechCraft
 
 			EntityTestHandleResult Plugin::CouldHandle (const LeechCraft::Entity& e) const
 			{
-				if (!(e.Parameters_ & FromUserInitiated))
+				if (!(e.Parameters_ & FromUserInitiated) || !(e.Parameters_ & IsDownloaded))
 					return EntityTestHandleResult ();
 
 				if (!e.Entity_.canConvert<QUrl> ())
@@ -86,7 +86,7 @@ namespace LeechCraft
 				if (!QFileInfo (url.toLocalFile ()).exists ())
 					return EntityTestHandleResult ();
 
-				return EntityTestHandleResult (EntityTestHandleResult::PHigh);
+				return EntityTestHandleResult (EntityTestHandleResult::PNormal);
 			}
 
 			void Plugin::Handle (LeechCraft::Entity e)

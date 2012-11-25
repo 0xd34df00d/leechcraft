@@ -27,3 +27,6 @@ TARGET_LINK_LIBRARIES (leechcraft_monocle_fxb
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_monocle_fxb DESTINATION ${LC_PLUGINS_DEST})
+IF (UNIX AND NOT APPLE)
+	INSTALL (FILES freedesktop/leechcraft-monocle-fxb.desktop DESTINATION share/applications)
+ENDIF (UNIX AND NOT APPLE)

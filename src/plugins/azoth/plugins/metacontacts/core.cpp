@@ -248,7 +248,7 @@ namespace Metacontacts
 		Entries_.removeAll (entry);
 		emit removedCLItems (QObjectList () << entry);
 
-		handleEntriesRemoved (entry->GetAvailEntryObjs ());
+		HandleEntriesRemoved (entry->GetAvailEntryObjs (), true);
 
 		entry->deleteLater ();
 
@@ -265,6 +265,26 @@ namespace Metacontacts
 				this,
 				SLOT (saveEntries ()));
 		SaveEntriesScheduled_ = true;
+	}
+
+	void Core::HandleEntriesRemoved (const QList<QObject*>& entries, bool readd)
+	{
+		Q_FOREACH (QObject *entryObj, entries)
+		{
+			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+
+			AvailRealEntries_.remove (entry->GetEntryID ());
+
+			if (readd)
+			{
+				QObject *accObj = entry->GetParentAccount ();
+				QMetaObject::invokeMethod (accObj,
+						"gotCLItems",
+						Q_ARG (QList<QObject*>, QList<QObject*> () << entryObj));
+			}
+		}
+
+		ScheduleSaveEntries ();
 	}
 
 	void Core::AddRealToMeta (MetaEntry *existingMeta, ICLEntry *real)
@@ -297,30 +317,9 @@ namespace Metacontacts
 	void Core::ConnectSignals (MetaEntry *entry)
 	{
 		connect (entry,
-				SIGNAL (entriesRemoved (const QList<QObject*>&)),
-				this,
-				SLOT (handleEntriesRemoved (const QList<QObject*>&)));
-		connect (entry,
 				SIGNAL (shouldRemoveThis ()),
 				this,
 				SLOT (handleEntryShouldBeRemoved ()));
-	}
-
-	void Core::handleEntriesRemoved (const QList<QObject*>& entries)
-	{
-		Q_FOREACH (QObject *entryObj, entries)
-		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-
-			AvailRealEntries_.remove (entry->GetEntryID ());
-
-			QObject *accObj = entry->GetParentAccount ();
-			QMetaObject::invokeMethod (accObj,
-					"gotCLItems",
-					Q_ARG (QList<QObject*>, QList<QObject*> () << entryObj));
-		}
-
-		ScheduleSaveEntries ();
 	}
 
 	void Core::handleEntryShouldBeRemoved ()

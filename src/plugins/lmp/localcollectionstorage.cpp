@@ -21,6 +21,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QThread>
+#include <boost/graph/graph_concepts.hpp>
 #include <util/util.h>
 #include <util/dblock.h>
 #include "util.h"
@@ -275,7 +276,6 @@ namespace LMP
 
 	void LocalCollectionStorage::SetTrackStats (const Collection::TrackStats& stats)
 	{
-		//"(:track_id, :playcount, :added, :last_play;"
 		SetTrackStats_.bindValue (":track_id", stats.TrackID_);
 		SetTrackStats_.bindValue (":playcount", stats.Playcount_);
 		SetTrackStats_.bindValue (":added", stats.Added_);
@@ -301,6 +301,33 @@ namespace LMP
 		{
 			Util::DBLock::DumpError (UpdateTrackStats_);
 			throw std::runtime_error ("cannot update track statistics");
+		}
+	}
+
+	QDateTime LocalCollectionStorage::GetMTime (const QString& filepath)
+	{
+		GetFileMTime_.bindValue (":filepath", filepath);
+		if (!GetFileMTime_.exec ())
+		{
+			Util::DBLock::DumpError (GetFileMTime_);
+			throw std::runtime_error ("cannot get file mtime");
+		}
+
+		const auto& result = GetFileMTime_.next () ?
+				GetFileMTime_.value (0).toDateTime () :
+				QDateTime ();
+		GetFileMTime_.finish ();
+		return result;
+	}
+
+	void LocalCollectionStorage::SetMTime (const QString& filepath, const QDateTime& mtime)
+	{
+		SetFileMTime_.bindValue (":filepath", filepath);
+		SetFileMTime_.bindValue (":mtime", mtime);
+		if (!SetFileMTime_.exec ())
+		{
+			Util::DBLock::DumpError (SetFileMTime_);
+			throw std::runtime_error ("cannot set file mtime");
 		}
 	}
 
@@ -622,6 +649,12 @@ namespace LMP
 				"		:play_date"
 				");");
 
+		GetFileMTime_ = QSqlQuery (DB_);
+		GetFileMTime_.prepare ("SELECT MTime FROM fileTimes, tracks WHERE tracks.Path = :filepath AND tracks.Id = fileTimes.TrackID;");
+
+		SetFileMTime_ = QSqlQuery (DB_);
+		SetFileMTime_.prepare ("INSERT OR REPLACE INTO fileTimes (TrackID, MTime) VALUES ((SELECT Id FROM tracks WHERE Path = :filepath), :mtime);");
+
 		GetLovedBanned_ = QSqlQuery (DB_);
 		GetLovedBanned_.prepare ("SELECT TrackId FROM lovedBanned WHERE State = :state;");
 
@@ -635,23 +668,28 @@ namespace LMP
 
 	void LocalCollectionStorage::CreateTables ()
 	{
-		QMap<QString, QString> table2query;
-		table2query ["artists"] = "CREATE TABLE artists ("
+		typedef QPair<QString, QString> QueryPair_t;
+		QList<QueryPair_t> table2query;
+		table2query << QueryPair_t ("artists",
+				"CREATE TABLE artists ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"Name TEXT "
-				");";
-		table2query ["albums"] = "CREATE TABLE albums ("
+				");");
+		table2query << QueryPair_t ("albums",
+				"CREATE TABLE albums ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"Name TEXT, "
 				"Year INTEGER, "
 				"CoverPath TEXT "
-				");";
-		table2query ["artists2albums"] = "CREATE TABLE artists2albums ("
+				");");
+		table2query << QueryPair_t ("artists2albums",
+				"CREATE TABLE artists2albums ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"ArtistID INTEGER NOT NULL REFERENCES artists (Id) ON DELETE CASCADE, "
 				"AlbumID INTEGER NOT NULL REFERENCES albums (Id) ON DELETE CASCADE "
-				");";
-		table2query ["tracks"] = "CREATE TABLE tracks ("
+				");");
+		table2query << QueryPair_t ("tracks",
+				"CREATE TABLE tracks ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"ArtistID INTEGER NOT NULL REFERENCES artists (Id) ON DELETE CASCADE, "
 				"AlbumId NOT NULL REFERENCES albums (Id) ON DELETE CASCADE, "
@@ -659,13 +697,15 @@ namespace LMP
 				"Name TEXT NOT NULL, "
 				"TrackNumber INTEGER, "
 				"Length INTEGER "
-				");";
-		table2query ["genres"] = "CREATE TABLE genres ("
+				");");
+		table2query << QueryPair_t ("genres",
+				"CREATE TABLE genres ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"TrackId NOT NULL REFERENCES tracks (Id) ON DELETE CASCADE, "
 				"Name TEXT NOT NULL "
-				");";
-		table2query ["statistics"] = "CREATE TABLE statistics ("
+				");");
+		table2query << QueryPair_t ("statistics",
+				"CREATE TABLE statistics ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"TrackId NOT NULL UNIQUE REFERENCES tracks (Id) ON DELETE CASCADE, "
 				"Playcount INTEGER, "
@@ -673,23 +713,30 @@ namespace LMP
 				"LastPlay TIMESTAMP, "
 				"Score INTEGER, "
 				"Rating INTEGER "
-				");";
-		table2query ["lovedBanned"] = "CREATE TABLE lovedBanned ("
+				");");
+		table2query << QueryPair_t ("lovedBanned",
+				"CREATE TABLE lovedBanned ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"TrackId NOT NULL UNIQUE REFERENCES tracks (Id) ON DELETE CASCADE, "
 				"State INTEGER"
-				");";
+				");");
+		table2query << QueryPair_t ("fileTimes",
+				"CREATE TABLE fileTimes ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				"TrackID INTEGER UNIQUE NOT NULL REFERENCES tracks (Id) ON DELETE CASCADE, "
+				"MTime TIMESTAMP NOT NULL"
+				");");
 
 		Util::DBLock lock (DB_);
 
 		lock.Init ();
 
 		const auto& tables = DB_.tables ();
-		Q_FOREACH (const QString& key, table2query.keys ())
-			if (!tables.contains (key))
+		Q_FOREACH (const auto& pair, table2query)
+			if (!tables.contains (pair.first))
 			{
 				QSqlQuery q (DB_);
-				if (!q.exec (table2query [key]))
+				if (!q.exec (pair.second))
 				{
 					Util::DBLock::DumpError (q);
 					throw std::runtime_error ("cannot create required tables");
