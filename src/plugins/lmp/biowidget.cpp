@@ -20,7 +20,9 @@
 #include <QStandardItemModel>
 #include <QDeclarativeContext>
 #include <QGraphicsObject>
+#include <QtConcurrentRun>
 #include <QtDebug>
+#include <QFutureWatcher>
 #include <util/util.h>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/media/idiscographyprovider.h>
@@ -122,6 +124,20 @@ namespace LMP
 		return 0;
 	}
 
+	void BioWidget::SetAlbumImage (const QString& album, const QImage& img)
+	{
+		auto item = FindAlbumItem (album);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown item for"
+					<< album;
+			return;
+		}
+
+		item->setData (Util::GetAsBase64Src (img), DiscoModel::Roles::AlbumImage);
+	}
+
 	void BioWidget::saveLastUsedProv ()
 	{
 		const int idx = Ui_.Provider_->currentIndex ();
@@ -221,24 +237,44 @@ namespace LMP
 		}
 	}
 
+	namespace
+	{
+		struct ScaleResult
+		{
+			QImage Image_;
+			QString Album_;
+		};
+	}
+
 	void BioWidget::handleAlbumArt (const Media::AlbumInfo& info, const QList<QImage>& images)
 	{
 		if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
 			return;
 
-		auto item = FindAlbumItem (info.Album_);
-		if (!item)
+		auto img = images.first ();
+		if (img.width () <= AASize)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown item for"
-					<< info.Album_;
+			SetAlbumImage (info.Album_, img);
 			return;
 		}
 
-		auto img = images.first ();
-		if (img.width () > AASize)
-			img = img.scaled (AASize, AASize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-		item->setData (Util::GetAsBase64Src (img), DiscoModel::Roles::AlbumImage);
+		auto watcher = new QFutureWatcher<ScaleResult> ();
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleImageScaled ()));
+
+		watcher->setFuture (QtConcurrent::run ([img, info] () -> ScaleResult
+				{ return { img.scaled (AASize, AASize, Qt::KeepAspectRatio, Qt::SmoothTransformation), info.Album_ }; }));
+	}
+
+	void BioWidget::handleImageScaled ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<ScaleResult>*> (sender ());
+		watcher->deleteLater ();
+
+		const auto& result = watcher->result ();
+		SetAlbumImage (result.Album_, result.Image_);
 	}
 
 	void BioWidget::handleLink (const QString& link)
