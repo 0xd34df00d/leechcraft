@@ -624,12 +624,17 @@ namespace Xoox
 		if (PendingNickChanges_.remove (nick))
 			return;
 
-		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
+		const bool existed = Nick2Entry_.contains (nick);
+
+		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick, false);
 		entry->SetAffiliation (pres.mucItem ().affiliation ());
 		entry->SetRole (pres.mucItem ().role ());
 
 		entry->SetPhotoHash (pres.photoHash ());
 		entry->HandlePresence (pres, "");
+
+		if (!existed)
+			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
 
 		MakeJoinMessage (pres, nick);
 	}
