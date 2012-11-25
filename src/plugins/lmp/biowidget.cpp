@@ -179,6 +179,7 @@ namespace LMP
 					Qt::UniqueConnection);
 
 		auto fetcher = qobject_cast<Media::IPendingDisco*> (sender ());
+		const auto& icon = Core::Instance ().GetProxy ()->GetIcon ("media-optical").pixmap (AASize * 2, AASize * 2);
 		for (const auto& release : fetcher->GetReleases ())
 		{
 			if (FindAlbumItem (release.Name_))
@@ -187,6 +188,7 @@ namespace LMP
 			auto item = new QStandardItem;
 			item->setData (release.Name_, DiscoModel::Roles::AlbumName);
 			item->setData (QString::number (release.Year_), DiscoModel::Roles::AlbumYear);
+			item->setData (Util::GetAsBase64Src (icon.toImage ()), DiscoModel::Roles::AlbumImage);
 
 			QString trackTooltip;
 			int mediumPos = 0;
