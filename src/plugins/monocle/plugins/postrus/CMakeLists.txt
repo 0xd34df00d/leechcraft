@@ -14,6 +14,7 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	postrus.cpp
+	document.cpp
 	)
 ADD_LIBRARY (leechcraft_monocle_postrus SHARED
 	${SRCS}

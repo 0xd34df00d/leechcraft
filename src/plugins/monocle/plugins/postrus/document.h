@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "postrus.h"
-#include <QIcon>
-#include "document.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/monocle/idocument.h>
+#include <libspectre/spectre.h>
 
 namespace LeechCraft
 {
@@ -26,56 +28,26 @@ namespace Monocle
 {
 namespace Postrus
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	class Document : public QObject
+				   , public IDocument
 	{
-	}
+		Q_OBJECT
 
-	void Plugin::SecondInit ()
-	{
-	}
+		SpectreDocument *SD_;
+	public:
+		Document (const QString&, QObject* = 0);
+		~Document ();
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Monocle.Postrus";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Monocle Postrus";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("PostScript backend for Monocle.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
-	}
-
-	bool Plugin::CanLoadDocument (const QString& file)
-	{
-		return file.toLower ().endsWith (".ps");
-	}
-
-	IDocument_ptr Plugin::LoadDocument (const QString& file)
-	{
-		return IDocument_ptr (new Document (file));
-	}
+		QObject* GetObject ();
+		bool IsValid () const;
+		DocumentInfo GetDocumentInfo () const;
+		int GetNumPages () const;
+		QSize GetPageSize (int) const;
+		QImage RenderPage (int, double xRes, double yRes);
+		QList<ILink_ptr> GetPageLinks (int);
+	signals:
+		void navigateRequested (const QString&, int, double, double);
+	};
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_monocle_postrus, LeechCraft::Monocle::Postrus::Plugin);
