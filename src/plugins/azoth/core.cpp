@@ -121,13 +121,20 @@ namespace Azoth
 
 		class ModelUpdateSafeguard
 		{
+			const bool Recursive_;
+			const bool BlockEnabled_;
 			QAbstractItemModel *Model_;
 		public:
 			ModelUpdateSafeguard (QAbstractItemModel *model)
 			: Model_ (model)
+			, Recursive_ (Model_->signalsBlocked ())
+			, BlockEnabled_ (!XmlSettingsManager::Instance ().property ("OptimizedTreeRebuild").toBool ())
 			{
-				QMetaObject::invokeMethod (Model_, "modelAboutToBeReset");
-				Model_->blockSignals (true);
+				if (!Recursive_ && BlockEnabled_)
+				{
+					QMetaObject::invokeMethod (Model_, "modelAboutToBeReset");
+					Model_->blockSignals (true);
+				}
 			}
 
 			ModelUpdateSafeguard (const ModelUpdateSafeguard&) = delete;
@@ -135,8 +142,11 @@ namespace Azoth
 
 			~ModelUpdateSafeguard ()
 			{
-				Model_->blockSignals (false);
-				QMetaObject::invokeMethod (Model_, "modelReset");
+				if (!Recursive_ && BlockEnabled_)
+				{
+					Model_->blockSignals (false);
+					QMetaObject::invokeMethod (Model_, "modelReset");
+				}
 			}
 		};
 	}
