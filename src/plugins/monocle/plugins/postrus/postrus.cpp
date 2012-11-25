@@ -67,7 +67,7 @@ namespace Postrus
 
 	bool Plugin::CanLoadDocument (const QString& file)
 	{
-		return file.toLower ().endsWith (".ps");
+		return Document (file).IsValid ();
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)
