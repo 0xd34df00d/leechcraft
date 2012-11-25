@@ -121,9 +121,9 @@ namespace Azoth
 
 		class ModelUpdateSafeguard
 		{
+			QAbstractItemModel *Model_;
 			const bool Recursive_;
 			const bool BlockEnabled_;
-			QAbstractItemModel *Model_;
 		public:
 			ModelUpdateSafeguard (QAbstractItemModel *model)
 			: Model_ (model)
