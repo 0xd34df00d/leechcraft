@@ -12,7 +12,7 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
 
-SET (ACETAMIDE_SRCS 
+SET (ACETAMIDE_SRCS
 	acetamide.cpp
 	bookmarkeditwidget.cpp
 	channelclentry.cpp
@@ -133,3 +133,6 @@ INSTALL (FILES ${ACETAMIDE_COMPILED_TRANSLATIONS}
 		DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES azothacetamidesettings.xml
 		DESTINATION ${LC_SETTINGS_DEST})
+IF (UNIX AND NOT APPLE)
+	INSTALL (FILES freedesktop/leechcraft-azoth-acetamide.desktop DESTINATION share/applications)
+ENDIF (UNIX AND NOT APPLE)
