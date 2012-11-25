@@ -34,6 +34,7 @@ namespace Xoox
 	, SecondPage_ (second)
 	, ConfWidget_ (0)
 	, StateLabel_ (new QLabel ())
+	, RegState_ (RSIdle)
 	{
 		setLayout (new QVBoxLayout);
 		layout ()->addWidget (StateLabel_);
