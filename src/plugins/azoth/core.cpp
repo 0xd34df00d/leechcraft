@@ -1104,10 +1104,12 @@ namespace Azoth
 			catItem->setData (isMucCat, CLRIsMUCCategory);
 		}
 
-		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
+		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString (), false, false);
 
 		if (clEntry->GetEntryType () == ICLEntry::ETPrivateChat)
-			handleEntryPermsChanged (clEntry);
+			handleEntryPermsChanged (clEntry, false);
+
+		RebuildTooltip (clEntry);
 
 		ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetObject ());
 		ChatTabsManager_->SetChatEnabled (id, true);
@@ -1350,6 +1352,13 @@ namespace Azoth
 		return tip;
 	}
 
+	void Core::RebuildTooltip (ICLEntry *entry)
+	{
+		const QString& tip = MakeTooltipString (entry);
+		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			item->setToolTip (tip);
+	}
+
 	Entity Core::BuildStatusNotification (const EntryStatus& entrySt,
 		ICLEntry *entry, const QString& variant)
 	{
@@ -1399,22 +1408,22 @@ namespace Azoth
 	}
 
 	void Core::HandleStatusChanged (const EntryStatus& status,
-			ICLEntry *entry, const QString& variant, bool asSignal)
+			ICLEntry *entry, const QString& variant, bool asSignal, bool rebuildTooltip)
 	{
 		emit hookEntryStatusChanged (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 				entry->GetObject (), variant);
 
 		invalidateClientsIconCache (entry);
-		const QString& tip = MakeTooltipString (entry);
 
 		const State state = entry->GetStatus ().State_;
 		Util::QIODevice_ptr icon = GetIconPathForState (state);
 
+		if (rebuildTooltip)
+			RebuildTooltip (entry);
+
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
-			item->setToolTip (tip);
 			ItemIconManager_->SetIcon (item, icon.get ());
-
 			RecalculateOnlineForCat (item->parent ());
 		}
 
@@ -2251,9 +2260,7 @@ namespace Azoth
 			return;
 		}
 
-		const QString& tip = MakeTooltipString (entry);
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-			item->setToolTip (tip);
+		RebuildTooltip (entry);
 	}
 
 	void Core::handleEntryNameChanged (const QString& newName)
@@ -2314,7 +2321,7 @@ namespace Azoth
 		HandleStatusChanged (entry->GetStatus (), entry, QString ());
 	}
 
-	void Core::handleEntryPermsChanged (ICLEntry *suggest)
+	void Core::handleEntryPermsChanged (ICLEntry *suggest, bool rebuildTooltip)
 	{
 		ICLEntry *entry = suggest ? suggest : qobject_cast<ICLEntry*> (sender ());
 		if (!entry)
@@ -2330,13 +2337,12 @@ namespace Azoth
 		if (!mucPerms)
 			return;
 
-		const QString& tip = MakeTooltipString (entry);
 		const QString& name = mucPerms->GetAffName (entryObj);
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-		{
 			item->setData (name, CLRAffiliation);
-			item->setToolTip (tip);
-		}
+
+		if (rebuildTooltip)
+			RebuildTooltip (entry);
 	}
 
 	void Core::remakeTooltipForSender ()
@@ -2350,9 +2356,7 @@ namespace Azoth
 			return;
 		}
 
-		const QString& tip = MakeTooltipString (entry);
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-			item->setToolTip (tip);
+		RebuildTooltip (entry);
 	}
 
 	void Core::handleEntryGotMessage (QObject *msgObj)
