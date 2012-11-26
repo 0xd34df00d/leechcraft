@@ -34,6 +34,16 @@ namespace SHX
 	{
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothshxsettings.xml");
+
+		if (XmlSettingsManager::Instance ().property ("Command").toString ().isEmpty ())
+		{
+#ifdef Q_OS_WIN32
+			const QString& cmd = "cmd.exe /U /S";
+#else
+			const QString& cmd = "/bin/sh -c";
+#endif
+			XmlSettingsManager::Instance ().setProperty ("Command", cmd);
+		}
 	}
 
 	void Plugin::SecondInit ()
@@ -105,11 +115,17 @@ namespace SHX
 				SIGNAL (finished (int, QProcess::ExitStatus)),
 				this,
 				SLOT (handleFinished ()));
-#ifdef Q_OS_WIN32
-		proc->start ("cmd.exe", QStringList () << "/U" << "/C" << text);
-#else
-		proc->start ("/bin/sh", { "-c", text });
-#endif
+
+		const auto& commandParts = XmlSettingsManager::Instance ()
+				.property ("Command").toString ().split (" ", QString::SkipEmptyParts);
+		const auto& command = commandParts.value (0);
+		if (command.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty command";
+			return;
+		}
+		proc->start (command, commandParts.mid (1) << text);
 	}
 
 	void Plugin::handleFinished ()
