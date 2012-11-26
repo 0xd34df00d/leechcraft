@@ -8,7 +8,7 @@
 				<label value="Command marker:" />
 			</item>
 			<item type="lineedit" property="Command" default="">
-				<label value="Command to execute:" />
+				<label value="Executor:" />
 			</item>
 			<item type="checkbox" property="WarnAboutExecution" default="true">
 				<label value="Warn about command execution" />
