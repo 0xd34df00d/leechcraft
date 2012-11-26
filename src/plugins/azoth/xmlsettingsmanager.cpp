@@ -18,6 +18,9 @@
 
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
+#include <QColor>
+
+Q_DECLARE_METATYPE (QList<QColor>);
 
 namespace LeechCraft
 {
@@ -25,6 +28,12 @@ namespace Azoth
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
+		qRegisterMetaType<QColor> ("QColor");
+		qRegisterMetaTypeStreamOperators<QColor> ("QColor");
+
+		qRegisterMetaType<QList<QColor>> ("QList<QColor>");
+		qRegisterMetaTypeStreamOperators<QList<QColor>> ("QList<QColor>");
+
 		Util::BaseSettingsManager::Init ();
 	}
 
