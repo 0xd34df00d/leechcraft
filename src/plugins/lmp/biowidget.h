@@ -67,8 +67,6 @@ namespace LMP
 		void handleLink (const QString&);
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);
-		public slots:
-			void hanldeIm();
 	};
 }
 }
