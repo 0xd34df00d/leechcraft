@@ -126,7 +126,7 @@ Rectangle {
 
             radius: 5
             width: 400
-            height: trackListText.height
+            height: trackListText.height + 10
 
             color: "#e9000000"
 
@@ -135,6 +135,7 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
+                anchors.margins: 5
 
                 elide: Text.ElideRight
                 color: "#999999"
