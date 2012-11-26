@@ -16,15 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "pdf.h"
-#include "document.h"
+#include "postrus.h"
 #include <QIcon>
+#include "document.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-namespace PDF
+namespace Postrus
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
@@ -36,7 +36,7 @@ namespace PDF
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.Monocle.PDF";
+		return "org.LeechCraft.Monocle.Postrus";
 	}
 
 	void Plugin::Release ()
@@ -45,12 +45,12 @@ namespace PDF
 
 	QString Plugin::GetName () const
 	{
-		return "Monocle PDF";
+		return "Monocle Postrus";
 	}
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("PDF backend for Monocle.");
+		return tr ("PostScript backend for Monocle.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -78,4 +78,4 @@ namespace PDF
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_monocle_pdf, LeechCraft::Monocle::PDF::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_monocle_postrus, LeechCraft::Monocle::Postrus::Plugin);

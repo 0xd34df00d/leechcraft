@@ -18,55 +18,36 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_biowidget.h"
-
-class QStandardItemModel;
-class QStandardItem;
-
-namespace Media
-{
-	struct ArtistBio;
-	struct AlbumInfo;
-	class IArtistBioFetcher;
-}
+#include <QObject>
+#include <interfaces/monocle/idocument.h>
+#include <libspectre/spectre.h>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Monocle
 {
-	class BioPropProxy;
-
-	class BioWidget : public QWidget
+namespace Postrus
+{
+	class Document : public QObject
+				   , public IDocument
 	{
 		Q_OBJECT
 
-		Ui::BioWidget Ui_;
-
-		QList<Media::IArtistBioFetcher*> Providers_;
-		QString CurrentArtist_;
-
-		BioPropProxy *BioPropProxy_;
-		QStandardItemModel *DiscoModel_;
+		SpectreDocument *SD_;
 	public:
-		BioWidget (QWidget* = 0);
+		Document (const QString&, QObject* = 0);
+		~Document ();
 
-		void SetCurrentArtist (const QString&);
-	private:
-		QStandardItem* FindAlbumItem (const QString&) const;
-		void SetAlbumImage (const QString&, const QImage&);
-	private slots:
-		void saveLastUsedProv ();
-		void requestBiography ();
-
-		void handleBioReady ();
-		void handleDiscographyReady ();
-		void handleAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
-		void handleImageScaled ();
-
-		void handleLink (const QString&);
+		QObject* GetObject ();
+		bool IsValid () const;
+		DocumentInfo GetDocumentInfo () const;
+		int GetNumPages () const;
+		QSize GetPageSize (int) const;
+		QImage RenderPage (int, double xRes, double yRes);
+		QList<ILink_ptr> GetPageLinks (int);
 	signals:
-		void gotArtistImage (const QString&, const QUrl&);
+		void navigateRequested (const QString&, int, double, double);
 	};
+}
 }
 }

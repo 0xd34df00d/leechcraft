@@ -126,15 +126,19 @@ Rectangle {
 
             radius: 5
             width: 400
-            height: trackListText.height
+            height: trackListText.height + 10
 
             color: "#e9000000"
+
+            border.color: "#FF6500"
+            border.width: 1
 
             Text {
                 id: trackListText
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
+                anchors.margins: 5
 
                 elide: Text.ElideRight
                 color: "#999999"
@@ -221,7 +225,8 @@ Rectangle {
                             trackListText.text = albumTrackListTooltip
                             trackListContainer.state = "visible"
                             trackListContainer.x = artistDiscoView.x + artistDiscoView.width
-                            trackListContainer.y = artistDiscoView.y + parent.parent.y - artistDiscoView.contentY
+                            trackListContainer.y = Math.min(artistDiscoView.y + parent.parent.y - artistDiscoView.contentY,
+                                    trackListContainer.parent.height - trackListContainer.height - 5)
                         }
                         onExited: trackListContainer.state = ""
                     }

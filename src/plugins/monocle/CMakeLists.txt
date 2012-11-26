@@ -51,6 +51,7 @@ INSTALL (FILES monoclesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 OPTION (ENABLE_MONOCLE_FXB "Enable FictionBook backend for Monocle" ON)
 OPTION (ENABLE_MONOCLE_MU "Enable PDF backend for Monocle using the mupdf library" OFF)
 OPTION (ENABLE_MONOCLE_PDF "Enable PDF backend for Monocle using the Poppler library" ON)
+OPTION (ENABLE_MONOCLE_POSTRUS "Enable PostScript backend for Monocle using the libspectre library" ON)
 OPTION (ENABLE_MONOCLE_SEEN "Enable DjVu backend for Monocle using the DjVu library" ON)
 
 IF (ENABLE_MONOCLE_FXB)
@@ -64,6 +65,10 @@ ENDIF (ENABLE_MONOCLE_MU)
 IF (ENABLE_MONOCLE_PDF)
 	ADD_SUBDIRECTORY (plugins/pdf)
 ENDIF (ENABLE_MONOCLE_PDF)
+
+IF (ENABLE_MONOCLE_POSTRUS)
+	ADD_SUBDIRECTORY (plugins/postrus)
+ENDIF (ENABLE_MONOCLE_POSTRUS)
 
 IF (ENABLE_MONOCLE_SEEN)
 	ADD_SUBDIRECTORY (plugins/seen)

@@ -18,55 +18,38 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_biowidget.h"
-
-class QStandardItemModel;
-class QStandardItem;
-
-namespace Media
-{
-	struct ArtistBio;
-	struct AlbumInfo;
-	class IArtistBioFetcher;
-}
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/monocle/ibackendplugin.h>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Monocle
 {
-	class BioPropProxy;
-
-	class BioWidget : public QWidget
+namespace Postrus
+{
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
+				 , public IBackendPlugin
 	{
 		Q_OBJECT
-
-		Ui::BioWidget Ui_;
-
-		QList<Media::IArtistBioFetcher*> Providers_;
-		QString CurrentArtist_;
-
-		BioPropProxy *BioPropProxy_;
-		QStandardItemModel *DiscoModel_;
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
 	public:
-		BioWidget (QWidget* = 0);
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		void SetCurrentArtist (const QString&);
-	private:
-		QStandardItem* FindAlbumItem (const QString&) const;
-		void SetAlbumImage (const QString&, const QImage&);
-	private slots:
-		void saveLastUsedProv ();
-		void requestBiography ();
+		QSet<QByteArray> GetPluginClasses () const;
 
-		void handleBioReady ();
-		void handleDiscographyReady ();
-		void handleAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
-		void handleImageScaled ();
-
-		void handleLink (const QString&);
-	signals:
-		void gotArtistImage (const QString&, const QUrl&);
+		bool CanLoadDocument (const QString&);
+		IDocument_ptr LoadDocument (const QString&);
 	};
+}
 }
 }
