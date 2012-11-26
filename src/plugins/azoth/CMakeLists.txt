@@ -115,6 +115,7 @@ SET (SRCS
 	filesenddialog.cpp
 	pendinguploadpaster.cpp
 	contactdropfilter.cpp
+	colorlisteditorwidget.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -167,6 +168,7 @@ SET (HEADERS
 	filesenddialog.h
 	pendinguploadpaster.h
 	contactdropfilter.h
+	colorlisteditorwidget.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	)
@@ -196,6 +198,7 @@ SET (FORMS
 	groupsenddialog.ui
 	microblogstab.ui
 	filesenddialog.ui
+	colorlisteditorwidget.ui
 	)
 SET (RESOURCES azothresources.qrc)
 
