@@ -130,6 +130,9 @@ Rectangle {
 
             color: "#e9000000"
 
+            border.color: "#FF6500"
+            border.width: 1
+
             Text {
                 id: trackListText
                 anchors.top: parent.top
