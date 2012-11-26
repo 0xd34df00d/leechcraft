@@ -225,7 +225,8 @@ Rectangle {
                             trackListText.text = albumTrackListTooltip
                             trackListContainer.state = "visible"
                             trackListContainer.x = artistDiscoView.x + artistDiscoView.width
-                            trackListContainer.y = artistDiscoView.y + parent.parent.y - artistDiscoView.contentY
+                            trackListContainer.y = Math.min(artistDiscoView.y + parent.parent.y - artistDiscoView.contentY,
+                                    trackListContainer.parent.height - trackListContainer.height - 5)
                         }
                         onExited: trackListContainer.state = ""
                     }
