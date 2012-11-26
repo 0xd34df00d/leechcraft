@@ -36,14 +36,30 @@ namespace Common
 	void XMLIMAccount::FindAccounts ()
 	{
 		QDir dir = QDir::home ();
-		Q_FOREACH (const QString& path, C_.ProfilesPath_)
+		Q_FOREACH (QString path, C_.ProfilesPath_)
+		{
+			if (!dir.cd (path))
+			{
+				const auto& list = dir.entryList (QDir::AllDirs | QDir::Hidden | QDir::NoDotAndDotDot);
+				for (const auto& candidate : list)
+					if (!QString::compare (candidate, path, Qt::CaseInsensitive))
+					{
+						path = candidate;
+						break;
+					}
+			}
+			else
+				continue;
+
 			if (!dir.cd (path))
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "cannot cd into"
+						<< path
 						<< C_.ProfilesPath_.join ("/");
 				return;
 			}
+		}
 
 		Q_FOREACH (const QString& entry,
 				dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
