@@ -22,7 +22,7 @@
 #include <QTabWidget>
 #include <QActionEvent>
 #include <QtDebug>
-#include "skinengine.h"
+#include "iconthemeengine.h"
 
 using namespace LeechCraft;
 
@@ -46,12 +46,12 @@ bool ChildActionEventFilter::eventFilter (QObject *obj, QEvent *event)
 
 		QAction *act = dynamic_cast<QAction*> (child);
 		if (act)
-			SkinEngine::Instance ().UpdateIconSet (QList<QAction*> () << act);
+			IconThemeEngine::Instance ().UpdateIconSet (QList<QAction*> () << act);
 		else
 		{
-			SkinEngine::Instance ()
+			IconThemeEngine::Instance ()
 				.UpdateIconSet (child->findChildren<QAction*> ());
-			SkinEngine::Instance ()
+			IconThemeEngine::Instance ()
 				.UpdateIconSet (child->findChildren<QTabWidget*> ());
 		}
 		return false;

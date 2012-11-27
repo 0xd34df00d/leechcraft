@@ -24,7 +24,7 @@ SET (SRCS
 	pluginmanager.cpp
 	xmlsettingsmanager.cpp
 	pluginmanagerdialog.cpp
-	skinengine.cpp
+	iconthemeengine.cpp
 	childactioneventfilter.cpp
 	tabmanager.cpp
 	authenticationdialog.cpp
@@ -67,7 +67,7 @@ SET (HEADERS
 	pluginmanager.h
 	xmlsettingsmanager.h
 	pluginmanagerdialog.h
-	skinengine.h
+	iconthemeengine.h
 	childactioneventfilter.h
 	tabmanager.h
 	authenticationdialog.h

@@ -26,7 +26,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "pluginmanagerdialog.h"
-#include "skinengine.h"
+#include "iconthemeengine.h"
 #include "tagsviewer.h"
 #include "core.h"
 #include "settingstab.h"
@@ -136,7 +136,7 @@ namespace LeechCraft
 		XmlSettingsDialog_->SetDataSource ("Language",
 			GetInstalledLangsModel ());
 		XmlSettingsDialog_->SetDataSource ("IconSet",
-			new QStringListModel (SkinEngine::Instance ().ListIcons ()));
+			new QStringListModel (IconThemeEngine::Instance ().ListIcons ()));
 
 		QStringList appQStype = QStyleFactory::keys ();
 		appQStype.prepend ("Default");

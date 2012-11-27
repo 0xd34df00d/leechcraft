@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef SKINENGINE_H
-#define SKINENGINE_H
+#pragma once
+
 #include <QObject>
 #include <QMap>
 #include <QString>
@@ -32,7 +32,7 @@ class QFile;
 
 namespace LeechCraft
 {
-	class SkinEngine : public QObject
+	class IconThemeEngine : public QObject
 	{
 		Q_OBJECT
 
@@ -41,9 +41,9 @@ namespace LeechCraft
 
 		mutable QHash<QPair<QString, QString>, QIcon> IconCache_;
 
-		SkinEngine ();
+		IconThemeEngine ();
 	public:
-		static SkinEngine& Instance ();
+		static IconThemeEngine& Instance ();
 
 		QIcon GetIcon (const QString&, const QString&) const;
 		void UpdateIconSet (const QList<QAction*>&);
@@ -59,6 +59,3 @@ namespace LeechCraft
 		void flushCaches ();
 	};
 };
-
-#endif
-
