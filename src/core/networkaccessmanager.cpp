@@ -35,7 +35,6 @@
 #include "sslerrorsdialog.h"
 #include "xmlsettingsmanager.h"
 #include "mainwindow.h"
-#include "config.h"
 #include "storagebackend.h"
 
 Q_DECLARE_METATYPE (QNetworkReply*);
@@ -226,7 +225,8 @@ void LeechCraft::NetworkAccessManager::handleAuthentication (QNetworkReply *repl
 		.arg (authen->realm ())
 		.arg (QApplication::fontMetrics ()
 				.elidedText (reply->url ().toString (),
-						Qt::ElideMiddle, ELIDED_URL_WIDTH));
+						Qt::ElideMiddle,
+						300));
 
 	DoCommonAuth (msg, authen);
 }
@@ -267,7 +267,7 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 		QPointer<QNetworkReply> repGuarded (reply);
 		QString msg = tr ("<code>%1</code><br />has SSL errors."
 				" What do you want to do?")
-			.arg (QApplication::fontMetrics ().elidedText (urlString, Qt::ElideMiddle, ELIDED_URL_WIDTH));
+			.arg (QApplication::fontMetrics ().elidedText (urlString, Qt::ElideMiddle, 300));
 
 		std::auto_ptr<SslErrorsDialog> errDialog (new SslErrorsDialog ());
 		errDialog->Update (msg, errors);
