@@ -60,13 +60,13 @@ namespace Blogique
 				this,
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 		connect (&Core::Instance (),
-				SIGNAL(addNewTab (QString,QWidget*)),
+				SIGNAL (addNewTab (QString,QWidget*)),
 				this,
-				SIGNAL(addNewTab (QString,QWidget*)));
+				SIGNAL (addNewTab (QString,QWidget*)));
 		connect (&Core::Instance (),
-				SIGNAL(removeTab (QWidget*)),
+				SIGNAL (removeTab (QWidget*)),
 				this,
-				SIGNAL(removeTab (QWidget*)));
+				SIGNAL (removeTab (QWidget*)));
 	}
 
 	void Plugin::SecondInit ()

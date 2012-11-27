@@ -231,7 +231,7 @@ namespace Blogique
 
 	void Core::handleEntryPosted ()
 	{
-		SendEntity ( Util::MakeNotification ("Blogique",
+		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entry was posted successfully."), Priority::PInfo_));
 	}
 

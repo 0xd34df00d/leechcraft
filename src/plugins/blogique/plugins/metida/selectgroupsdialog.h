@@ -35,7 +35,7 @@ namespace Metida
 	{
 		Q_OBJECT
 
-		Ui::SelectGroupsDlg Ui_;
+		Ui::SelectGroupsDialog Ui_;
 		QStandardItemModel *Model_;
 	public:
 		SelectGroupsDialog (LJProfile *profile, quint32 allowMask, QWidget *parent = 0);

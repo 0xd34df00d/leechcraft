@@ -18,11 +18,11 @@
 
 #include "postoptionswidget.h"
 #include <QtDebug>
+#include <util/util.h>
 #include "entryoptions.h"
 #include "ljaccount.h"
 #include "ljprofile.h"
 #include "selectgroupsdialog.h"
-#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -171,7 +171,7 @@ namespace Metida
 			qWarning () << Q_FUNC_INFO
 					<< "account"
 					<< accObj
-					<< "doesn't belong to LivJournal";
+					<< "doesn't belong to LiveJournal";
 			return;
 		}
 
@@ -218,9 +218,9 @@ namespace Metida
 
 	void PostOptionsWidget::SetPostDate (const QDateTime& date)
 	{
-		Ui_.Year_->setValue (date.date().year ());
-		Ui_.Month_->setCurrentIndex (date.date().month () - 1);
-		Ui_.Date_->setValue (date.date().day ());
+		Ui_.Year_->setValue (date.date ().year ());
+		Ui_.Month_->setCurrentIndex (date.date ().month () - 1);
+		Ui_.Date_->setValue (date.date ().day ());
 		Ui_.Time_->setTime (date.time ());
 	}
 

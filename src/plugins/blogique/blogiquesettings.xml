@@ -14,7 +14,7 @@
 			</item>
 			-->
 			<item type="combobox" property="OpenDraftByDblClick" >
-				<label lang="en" value="Open draft by doubl click in: " />
+				<label lang="en" value="Open draft by double click in:" />
 				<option name="CurrentTab" default="true" >
 					<label lang="en" value="Current tab" />
 				</option>

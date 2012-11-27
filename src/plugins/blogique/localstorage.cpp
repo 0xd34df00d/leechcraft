@@ -19,7 +19,6 @@
 #include "localstorage.h"
 #include <stdexcept>
 #include <QSqlError>
-#include <boost/graph/graph_concepts.hpp>
 #include <util/util.h>
 #include <util/dblock.h>
 
@@ -46,7 +45,6 @@ namespace Blogique
 		{
 			QSqlQuery query (DB_);
 			query.exec ("PRAGMA foreign_keys = ON;");
-			query.exec ("PRAGMA synchronous = OFF;");
 		}
 
 		try
@@ -64,7 +62,7 @@ namespace Blogique
 
 	void LocalStorage::AddAccount (const QByteArray& accounId)
 	{
-		AddAccount_.bindValue (":account_id", QString (accounId));
+		AddAccount_.bindValue (":account_id", QString::fromUtf8 (accounId));
 		if (!AddAccount_.exec ())
 		{
 			Util::DBLock::DumpError (AddAccount_);
@@ -74,7 +72,10 @@ namespace Blogique
 
 	qlonglong LocalStorage::SaveDraft (const QByteArray& accountID, const Event& e)
 	{
-		AddDraft_.bindValue (":account_id", QString (accountID));
+		Util::DBLock lock (DB_);
+		lock.Init ();
+
+		AddDraft_.bindValue (":account_id", QString::fromUtf8 (accountID));
 		AddDraft_.bindValue (":entry", e.Content_);
 		AddDraft_.bindValue (":date", e.Date_);
 		AddDraft_.bindValue (":subject", e.Subject_);
@@ -111,11 +112,15 @@ namespace Blogique
 			}
 		}
 
+		lock.Good ();
 		return id;
 	}
 
 	void LocalStorage::UpdateDraft (qlonglong id, const Event& e)
 	{
+		Util::DBLock lock (DB_);
+		lock.Init ();
+
 		UpdateDraft_.bindValue (":entry", e.Content_);
 		UpdateDraft_.bindValue (":date", e.Date_);
 		UpdateDraft_.bindValue (":subject", e.Subject_);
@@ -126,9 +131,6 @@ namespace Blogique
 			Util::DBLock::DumpError (UpdateDraft_);
 			throw std::runtime_error ("unable to update draft");
 		}
-
-		Util::DBLock lock (DB_);
-		lock.Init ();
 
 		for (const auto& key : e.PostOptions_.keys ())
 		{
@@ -158,7 +160,7 @@ namespace Blogique
 
 	QList<Event> LocalStorage::GetDrafts (const QByteArray& accountId)
 	{
-		GetDrafts_.bindValue (":account_id", QString (accountId));
+		GetDrafts_.bindValue (":account_id", QString::fromUtf8 (accountId));
 		if (!GetDrafts_.exec ())
 		{
 			Util::DBLock::DumpError (GetDrafts_);
@@ -186,6 +188,7 @@ namespace Blogique
 			while (GetDraftPostOptions_.next ())
 				e.PostOptions_.insert (GetDraftPostOptions_.value (1).toString (),
 						GetDraftPostOptions_.value (2));
+			GetDraftPostOptions_.finish ();
 
 			GetDraftCustomOptions_.bindValue (":draft_id", draftId);
 			if (!GetDraftCustomOptions_.exec ())
@@ -197,16 +200,18 @@ namespace Blogique
 			while (GetDraftCustomOptions_.next ())
 				e.CustomData_.insert (GetDraftCustomOptions_.value (1).toString (),
 						GetDraftCustomOptions_.value (2));
+			GetDraftCustomOptions_.finish ();
 
 			list << e;
 		}
+		GetDrafts_.finish ();
 
 		return list;
 	}
 
 	Event LocalStorage::GetFullDraft (const QByteArray& accountId, qlonglong draftId)
 	{
-		GetFullDraft_.bindValue (":account_id", QString (accountId));
+		GetFullDraft_.bindValue (":account_id", QString::fromUtf8 (accountId));
 		GetFullDraft_.bindValue (":draft_id", draftId);
 		if (!GetFullDraft_.exec ())
 		{
@@ -221,6 +226,7 @@ namespace Blogique
 		e.Date_ = GetFullDraft_.value (2).toDateTime ();
 		e.Subject_ = GetFullDraft_.value (3).toString ();
 		e.Tags_ = GetFullDraft_.value (4).toStringList ();
+		GetFullDraft_.finish ();
 
 		GetDraftPostOptions_.bindValue (":draft_id", draftId);
 		if (!GetDraftPostOptions_.exec ())
@@ -232,8 +238,9 @@ namespace Blogique
 		while (GetDraftPostOptions_.next ())
 			e.PostOptions_.insert (GetDraftPostOptions_.value (1).toString (),
 					GetDraftPostOptions_.value (2));
+		GetDraftPostOptions_.finish ();
 
-			GetDraftCustomOptions_.bindValue (":draft_id", draftId);
+		GetDraftCustomOptions_.bindValue (":draft_id", draftId);
 		if (!GetDraftCustomOptions_.exec ())
 		{
 			Util::DBLock::DumpError (GetDraftCustomOptions_);
@@ -243,13 +250,14 @@ namespace Blogique
 		while (GetDraftCustomOptions_.next ())
 			e.CustomData_.insert (GetDraftCustomOptions_.value (1).toString (),
 					GetDraftCustomOptions_.value (2));
+		GetDraftCustomOptions_.finish ();
 
 		return e;
 	}
 
 	QList<Event> LocalStorage::GetShortDrafts (const QByteArray& accountId)
 	{
-		GetShortDrafts_.bindValue (":account_id", QString (accountId));
+		GetShortDrafts_.bindValue (":account_id", QString::fromUtf8 (accountId));
 		if (!GetShortDrafts_.exec ())
 		{
 			Util::DBLock::DumpError (GetShortDrafts_);
@@ -266,6 +274,7 @@ namespace Blogique
 
 			list << e;
 		}
+		GetShortDrafts_.finish ();
 
 		return list;
 	}
@@ -303,26 +312,26 @@ namespace Blogique
 				"Subject TEXT, "
 				"Tags TEXT "
 				");";
-		table2query ["draft_post_options"] = "CREATE TABLE IF NOT EXISTS "
-				"draft_post_options (Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+		table2query ["draft_post_options"] = "CREATE TABLE IF NOT EXISTS draft_post_options ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"DraftID INTEGER NOT NULL REFERENCES drafts (Id) ON DELETE CASCADE, "
 				"Name TEXT, "
 				"Value TEXT "
 				");";
-		table2query ["draft_custom_options"] = "CREATE TABLE IF NOT EXISTS "
-				"draft_custom_options (Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+		table2query ["draft_custom_options"] = "CREATE TABLE IF NOT EXISTS draft_custom_options ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"DraftID INTEGER NOT NULL REFERENCES drafts (Id) ON DELETE CASCADE, "
 				"Name TEXT, "
 				"Value TEXT "
 				");";
-		table2query ["entry_post_options"] = "CREATE TABLE IF NOT EXISTS "
-				"entry_post_options (Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+		table2query ["entry_post_options"] = "CREATE TABLE IF NOT EXISTS entry_post_options ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"EntryID INTEGER NOT NULL REFERENCES entries (Id) ON DELETE CASCADE, "
 				"Name TEXT, "
 				"Value TEXT "
 				");";
-		table2query ["entry_custom_options"] = "CREATE TABLE IF NOT EXISTS "
-				"entry_custom_options (Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+		table2query ["entry_custom_options"] = "CREATE TABLE IF NOT EXISTS entry_custom_options ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"EntryID INTEGER NOT NULL REFERENCES entries (Id) ON DELETE CASCADE, "
 				"Name TEXT, "
 				"Value TEXT "
@@ -355,19 +364,19 @@ namespace Blogique
 
 		AddDraft_ = QSqlQuery (DB_);
 		AddDraft_.prepare ("INSERT INTO drafts (AccountID, Entry, Date, Subject, Tags) "
-				"VALUES ((SELECT accounts.ID FROM accounts WHERE accounts.AccountID=:account_id), "
+				"VALUES ((SELECT accounts.ID FROM accounts WHERE accounts.AccountID = :account_id), "
 				":entry, :date, :subject, :tags);");
 		UpdateDraft_ = QSqlQuery (DB_);
-		UpdateDraft_.prepare ("UPDATE drafts SET Entry=:entry, Date=:date, "
-				"Subject=:subject, Tags=:tags WHERE Id=:draft_id;");
+		UpdateDraft_.prepare ("UPDATE drafts SET Entry = :entry, Date = :date, "
+				"Subject = :subject, Tags = :tags WHERE Id = :draft_id;");
 
 		AddDraftPostOptions_ = QSqlQuery (DB_);
 		AddDraftPostOptions_.prepare ("INSERT INTO draft_post_options "
 				"(DraftId, Name, Value) VALUES (:draft_id, :name, :value);");
 
 		UpdateDraftPostOptions_ = QSqlQuery (DB_);
-		UpdateDraftPostOptions_.prepare ("UPDATE draft_post_options SET Value=:value "
-				"WHERE DraftId=:draft_id AND Name=:name;");
+		UpdateDraftPostOptions_.prepare ("UPDATE draft_post_options SET Value = :value "
+				"WHERE DraftId = :draft_id AND Name = :name;");
 		
 		AddDraftCustomOptions_ = QSqlQuery (DB_);
 		AddDraftCustomOptions_.prepare ("INSERT INTO draft_custom_options "
@@ -375,7 +384,7 @@ namespace Blogique
 
 		UpdateDraftCustomOptions_ = QSqlQuery (DB_);
 		UpdateDraftCustomOptions_.prepare ("UPDATE draft_custom_options "
-				"SET Value=:val WHERE DraftId=:draft_id AND Name=:name;");
+				"SET Value = :val WHERE DraftId = :draft_id AND Name = :name;");
 
 		GetShortDrafts_ = QSqlQuery (DB_);
 		GetShortDrafts_.prepare ("SELECT Id, Date, Subject FROM drafts "
@@ -385,12 +394,12 @@ namespace Blogique
 		GetDrafts_ = QSqlQuery (DB_);
 		GetDrafts_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM drafts "
 				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
-				"WHERE accounts.AccountID=:account_id) ORDER BY Date;");
+				"WHERE accounts.AccountID = :account_id) ORDER BY Date;");
 
 		GetFullDraft_ = QSqlQuery (DB_);
 		GetFullDraft_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM drafts "
 				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
-				"WHERE accounts.AccountID=:account_id) AND Id=:draft_id;");
+				"WHERE accounts.AccountID = :account_id) AND Id = :draft_id;");
 
 		GetDraftPostOptions_ = QSqlQuery (DB_);
 		GetDraftPostOptions_.prepare ("SELECT Id, Name, Value FROM draft_post_options "
@@ -401,7 +410,7 @@ namespace Blogique
 				"WHERE DraftID = :draft_id;");
 
 		RemoveDraft_ = QSqlQuery (DB_);
-		RemoveDraft_.prepare ("DELETE FROM drafts WHERE Id=:id;");
+		RemoveDraft_.prepare ("DELETE FROM drafts WHERE Id = :id;");
 	}
 }
 }

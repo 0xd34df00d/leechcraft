@@ -22,6 +22,7 @@
 #include <QVariant>
 #include <QStringList>
 #include <QDateTime>
+#include <boost/graph/graph_concepts.hpp>
 
 class QWidget;
 namespace LeechCraft
@@ -38,8 +39,16 @@ namespace Blogique
 		QVariantMap PostOptions_;
 		QVariantMap CustomData_;
 		qlonglong EntryDBId_;
-		Event () { EntryDBId_ = -1; }
-		bool isEmpty () const { return Content_.isEmpty (); };
+
+		Event ()
+		: EntryDBId_ (-1)
+		{
+		}
+
+		bool IsEmpty () const
+		{
+			return Content_.isEmpty ();
+		};
 	};
 
 	/** @brief Interface representing a single account.

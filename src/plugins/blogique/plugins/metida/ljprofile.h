@@ -62,7 +62,7 @@ namespace Metida
 		int GetFreeGroupId () const;
 	private:
 		void SaveAvatar (QUrl url = QUrl ());
-		void SaveOthersAvatars  (const QString& id, const QUrl& url);
+		void SaveOthersAvatars (const QString& id, const QUrl& url);
 
 	public slots:
 		void handleProfileUpdate (const LJProfileData& profile);

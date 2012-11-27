@@ -652,7 +652,6 @@ namespace Metida
 				break;
 			case CommentsManagement::Default:
 			default:
-				screening = "";
 				break;
 		}
 		if (!screening.isEmpty ())

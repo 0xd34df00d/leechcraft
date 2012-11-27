@@ -68,7 +68,7 @@ namespace Blogique
 		 **/
 		virtual QVariantMap GetPostOptions () const = 0;
 
-		/** @brief Fill widget with post options..
+		/** @brief Fill widget with post options.
 		 * 
 		 * If type of widget is not a SideWidgetType::PostOptionsSideWidget widget
 		 * shouldn't do anything.

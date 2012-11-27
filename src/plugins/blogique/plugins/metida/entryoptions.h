@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #pragma once
-#include <qnamespace.h>
 
 namespace LeechCraft
 {

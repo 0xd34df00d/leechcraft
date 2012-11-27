@@ -61,7 +61,7 @@ namespace Metida
 				LJProfile_.get (),
 				SLOT (handleProfileUpdate (const LJProfileData&)));
 		connect (LJXmlRpc_,
-				SIGNAL(entryPosted ()),
+				SIGNAL (entryPosted ()),
 				this,
 				SIGNAL (entryPosted ()));
 	}

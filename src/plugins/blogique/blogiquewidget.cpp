@@ -119,7 +119,6 @@ namespace Blogique
 				qWarning () << Q_FUNC_INFO
 						<< "error adding account"
 						<< e.what ();
-				throw;
 			}
 			Id2Account_ [AccountsBox_->count () - 1] = acc;
 		}
@@ -134,7 +133,7 @@ namespace Blogique
 		connect (Ui_.SaveNewEntry_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT(saveNewEntry ()));
+				SLOT (saveNewEntry ()));
 		connect (Ui_.Submit_,
 				SIGNAL (triggered ()),
 				this,
@@ -167,18 +166,18 @@ namespace Blogique
 		Ui_.LocalEntriesView_->setModel (DraftsViewModel_);
 
 		connect (OpenDraftInCurrentTab_,
-				SIGNAL(triggered ()),
+				SIGNAL (triggered ()),
 				this,
-				SLOT(handleOpenInCurrentTab ()));
+				SLOT (handleOpenInCurrentTab ()));
 		connect (OpenDraftInNewTab_,
-				SIGNAL(triggered ()),
+				SIGNAL (triggered ()),
 				this,
-				SLOT(handleOpenInNewTab ()));
+				SLOT (handleOpenInNewTab ()));
 		Ui_.LocalEntriesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
 		Ui_.LocalEntriesView_->addActions ({ OpenDraftInNewTab_, OpenDraftInCurrentTab_ });
 
 		connect (this,
-				SIGNAL(addNewTab (QString, QWidget*)),
+				SIGNAL (addNewTab (QString, QWidget*)),
 				&Core::Instance (),
 				SIGNAL (addNewTab (QString, QWidget*)));
 	}
@@ -271,8 +270,9 @@ namespace Blogique
 		const QString& content = PostEdit_->GetContents (ContentType::PlainText);
 		if (content.isEmpty ())
 		{
-			Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
-					tr ("Event can't be empty."), Priority::PInfo_));
+			QMessageBox::warning (this,
+					tr ("LeechCraft"),
+					tr ("Entry can't be emprty."));
 			return Event ();
 		}
 
@@ -298,9 +298,11 @@ namespace Blogique
 						dt = ipow->GetPostDate ();
 					if (tags.isEmpty ())
 						tags = ipow->GetTags ();
+					break;
 				}
 				case SideWidgetType::CustomSideWidget:
 					customData.unite (ibsw->GetCustomData ());
+					break;
 			}
 		}
 
@@ -333,7 +335,6 @@ namespace Blogique
 			qWarning () << Q_FUNC_INFO
 					<< "error fetching short drafts"
 					<< e.what ();
-			throw;
 		}
 
 		for (const auto& entry : entries)
@@ -378,7 +379,6 @@ namespace Blogique
 			qWarning () << Q_FUNC_INFO
 					<< "error removing draft"
 					<< e.what ();
-			throw;
 		}
 	}
 
@@ -458,7 +458,7 @@ namespace Blogique
 			return;
 
 		const Event& e = GetCurrentEvent ();
-		if (!e.isEmpty ())
+		if (!e.IsEmpty ())
 			try
 			{
 				if (DraftID_ == -1 )
@@ -471,7 +471,6 @@ namespace Blogique
 				qWarning () << Q_FUNC_INFO
 						<< "error saving draft"
 						<< e.what ();
-				throw;
 			}
 
 		LoadDrafts ();
@@ -484,7 +483,7 @@ namespace Blogique
 			return;
 
 		const Event& e = GetCurrentEvent ();
-		if (!e.isEmpty ())
+		if (!e.IsEmpty ())
 			try
 			{
 				DraftID_ = Storage_->SaveDraft (acc->GetAccountID (), e);
@@ -494,7 +493,6 @@ namespace Blogique
 				qWarning () << Q_FUNC_INFO
 						<< "error saving draft"
 						<< e.what ();
-				throw;
 			}
 
 			LoadDrafts ();
@@ -506,11 +504,9 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		Event e = event;
-		if (e.isEmpty ())
-			e = GetCurrentEvent ();
+		const auto& e = event.IsEmpty () ? GetCurrentEvent () : event;
 
-		if (!e.isEmpty ())
+		if (!e.IsEmpty ())
 			acc->submit (e);
 	}
 
