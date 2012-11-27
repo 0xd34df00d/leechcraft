@@ -57,14 +57,14 @@ namespace Metacontacts
 		bool HandleDnDEntry2Entry (QObject*, QObject*);
 
 		void RemoveEntry (MetaEntry*);
-
 		void ScheduleSaveEntries ();
+
+		void HandleEntriesRemoved (const QList<QObject*>&, bool readd);
 	private:
 		void AddRealToMeta (MetaEntry*, ICLEntry*);
 		MetaEntry* CreateMetaEntry ();
 		void ConnectSignals (MetaEntry*);
 	private slots:
-		void handleEntriesRemoved (const QList<QObject*>&);
 		void handleEntryShouldBeRemoved ();
 		void saveEntries ();
 	signals:

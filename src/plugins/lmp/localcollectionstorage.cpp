@@ -21,6 +21,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QThread>
+#include <boost/graph/graph_concepts.hpp>
 #include <util/util.h>
 #include <util/dblock.h>
 #include "util.h"
@@ -164,35 +165,46 @@ namespace LMP
 
 	LocalCollectionStorage::LoadResult LocalCollectionStorage::Load ()
 	{
+		qDebug () << "begin";
 		Collection::Artists_t artists = GetAllArtists ();
+		qDebug () << "artists";
 		const auto& albums = GetAllAlbums ();
+		qDebug () << "albums";
 
-		for (auto i = artists.begin (), end = artists.end (); i != end; ++i)
+		QSqlQuery links (DB_);
+		links.exec ("SELECT ArtistID, AlbumID FROM artists2albums;");
+		QHash<int, QList<int>> artist2albums;
+		while (links.next ())
+			artist2albums [links.value (0).toInt ()] << links.value (1).toInt ();
+		links.finish ();
+
+		qDebug () << "filled";
+		for (auto& artist : artists)
 		{
-			AddToPresent (*i);
-
-			GetArtistAlbums_.bindValue (":artist_id", i->ID_);
-			if (!GetArtistAlbums_.exec ())
+			AddToPresent (artist);
+			for (auto aid : artist2albums [artist.ID_])
 			{
-				Util::DBLock::DumpError (GetArtists_);
-				throw std::runtime_error ("cannot fetch artists");
-			}
-			while (GetArtistAlbums_.next ())
-			{
-				const int albumID = GetArtistAlbums_.value (0).toInt ();
-				auto album = albums [albumID];
-				i->Albums_ << album;
-				AddToPresent (*i, *album);
+				auto album = albums [aid];
+				if (!album)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "no album for"
+							<< artist.ID_
+							<< aid;
+					continue;
+				}
+				artist.Albums_ << album;
+				AddToPresent (artist, *album);
 			}
 		}
-		GetArtistAlbums_.finish ();
-
 		LoadResult result =
 		{
 			artists,
 			PresentArtists_,
 			PresentAlbums_
 		};
+		qDebug () << "end";
+
 		return result;
 	}
 
@@ -275,7 +287,6 @@ namespace LMP
 
 	void LocalCollectionStorage::SetTrackStats (const Collection::TrackStats& stats)
 	{
-		//"(:track_id, :playcount, :added, :last_play;"
 		SetTrackStats_.bindValue (":track_id", stats.TrackID_);
 		SetTrackStats_.bindValue (":playcount", stats.Playcount_);
 		SetTrackStats_.bindValue (":added", stats.Added_);
@@ -301,6 +312,33 @@ namespace LMP
 		{
 			Util::DBLock::DumpError (UpdateTrackStats_);
 			throw std::runtime_error ("cannot update track statistics");
+		}
+	}
+
+	QDateTime LocalCollectionStorage::GetMTime (const QString& filepath)
+	{
+		GetFileMTime_.bindValue (":filepath", filepath);
+		if (!GetFileMTime_.exec ())
+		{
+			Util::DBLock::DumpError (GetFileMTime_);
+			throw std::runtime_error ("cannot get file mtime");
+		}
+
+		const auto& result = GetFileMTime_.next () ?
+				GetFileMTime_.value (0).toDateTime () :
+				QDateTime ();
+		GetFileMTime_.finish ();
+		return result;
+	}
+
+	void LocalCollectionStorage::SetMTime (const QString& filepath, const QDateTime& mtime)
+	{
+		SetFileMTime_.bindValue (":filepath", filepath);
+		SetFileMTime_.bindValue (":mtime", mtime);
+		if (!SetFileMTime_.exec ())
+		{
+			Util::DBLock::DumpError (SetFileMTime_);
+			throw std::runtime_error ("cannot set file mtime");
 		}
 	}
 
@@ -391,76 +429,61 @@ namespace LMP
 
 	QHash<int, Collection::Album_ptr> LocalCollectionStorage::GetAllAlbums ()
 	{
-		QHash<int, Collection::Album_ptr> albums;
+		QHash<int, Collection::Album_ptr> newAlbums;
 
-		if (!GetAlbums_.exec ())
+		QSqlQuery getter (DB_);
+		QHash<int, QStringList> trackGenres;
+		if (!getter.exec ("SELECT TrackId, Name FROM genres;"))
 		{
-			Util::DBLock::DumpError (GetAlbums_);
+			Util::DBLock::DumpError (getter);
+			throw std::runtime_error ("cannot fetch genres");
+		}
+
+		while (getter.next ())
+			trackGenres [getter.value (0).toInt ()] << getter.value (1).toString ();
+
+		if (!getter.exec ("SELECT albums.Id, albums.Name, albums.Year, albums.CoverPath, tracks.Id, tracks.TrackNumber, tracks.Name, tracks.Length, tracks.Path FROM tracks INNER JOIN albums ON tracks.AlbumID = albums.Id;"))
+		{
+			Util::DBLock::DumpError (getter);
 			throw std::runtime_error ("cannot fetch albums");
 		}
-		while (GetAlbums_.next ())
+
+		while (getter.next ())
 		{
-			const int albumID = GetAlbums_.value (0).toInt ();
-			Collection::Album a =
+			const int albumID = getter.value (0).toInt ();
+			auto albumPos = newAlbums.find (albumID);
+			if (albumPos == newAlbums.end ())
 			{
-				albumID,
-				GetAlbums_.value (1).toString (),
-				GetAlbums_.value (2).toInt (),
-				GetAlbums_.value (3).toString (),
-				GetAlbumTracks (albumID)
-			};
+				const Collection::Album a =
+				{
+					albumID,
+					getter.value (1).toString (),
+					getter.value (2).toInt (),
+					getter.value (3).toString (),
+					QList<Collection::Track> ()
+				};
+				albumPos = newAlbums.insert (albumID, Collection::Album_ptr (new Collection::Album (a)));
+			}
 
-			albums [albumID] = Collection::Album_ptr (new Collection::Album (a));
-		}
-		GetAlbums_.finish ();
+			auto albumPtr = *albumPos;
+			auto& tracks = albumPtr->Tracks_;
 
-		return albums;
-	}
-
-	QList<Collection::Track> LocalCollectionStorage::GetAlbumTracks (int albumId)
-	{
-		QList<Collection::Track> tracks;
-
-		GetAlbumTracks_.bindValue (":album_id", albumId);
-		if (!GetAlbumTracks_.exec ())
-		{
-			Util::DBLock::DumpError (GetAlbumTracks_);
-			throw std::runtime_error ("cannot fetch album tracks");
-		}
-		while (GetAlbumTracks_.next ())
-		{
-			const int trackId = GetAlbumTracks_.value (0).toInt ();
+			const int trackId = getter.value (4).toInt ();
 			Collection::Track t =
 			{
 				trackId,
-				GetAlbumTracks_.value (1).toInt (),
-				GetAlbumTracks_.value (2).toString (),
-				GetAlbumTracks_.value (3).toInt (),
-				GetTrackGenres (trackId),
-				GetAlbumTracks_.value (4).toString ()
+				getter.value (5).toInt (),
+				getter.value (6).toString (),
+				getter.value (7).toInt (),
+				trackGenres.value (trackId),
+				getter.value (8).toString ()
 			};
+
 			tracks << t;
 		}
-		GetAlbumTracks_.finish ();
+		getter.finish ();
 
-		return tracks;
-	}
-
-	QStringList LocalCollectionStorage::GetTrackGenres (int trackId)
-	{
-		QStringList genres;
-
-		GetTrackGenres_.bindValue (":track_id", trackId);
-		if (!GetTrackGenres_.exec ())
-		{
-			Util::DBLock::DumpError (GetTrackGenres_);
-			throw std::runtime_error ("cannot fetch track genres");
-		}
-		while (GetTrackGenres_.next ())
-			genres << GetTrackGenres_.value (0).toString ();
-		GetTrackGenres_.finish ();
-
-		return genres;
+		return newAlbums;
 	}
 
 	void LocalCollectionStorage::AddArtist (Collection::Artist& artist)
@@ -569,15 +592,6 @@ namespace LMP
 		GetAlbums_ = QSqlQuery (DB_);
 		GetAlbums_.prepare ("SELECT Id, Name, Year, CoverPath FROM albums;");
 
-		GetArtistAlbums_ = QSqlQuery (DB_);
-		GetArtistAlbums_.prepare ("SELECT albums.Id FROM albums INNER JOIN artists2albums ON albums.Id = artists2albums.AlbumId WHERE artists2albums.ArtistId = :artist_id;");
-
-		GetAlbumTracks_ = QSqlQuery (DB_);
-		GetAlbumTracks_.prepare ("SELECT Id, TrackNumber, Name, Length, Path FROM tracks WHERE AlbumId = :album_id;");
-
-		GetTrackGenres_ = QSqlQuery (DB_);
-		GetTrackGenres_.prepare ("SELECT Name FROM genres WHERE TrackId = :track_id;");
-
 		AddArtist_ = QSqlQuery (DB_);
 		AddArtist_.prepare ("INSERT INTO artists (Name) VALUES (:name);");
 
@@ -622,6 +636,12 @@ namespace LMP
 				"		:play_date"
 				");");
 
+		GetFileMTime_ = QSqlQuery (DB_);
+		GetFileMTime_.prepare ("SELECT MTime FROM fileTimes, tracks WHERE tracks.Path = :filepath AND tracks.Id = fileTimes.TrackID;");
+
+		SetFileMTime_ = QSqlQuery (DB_);
+		SetFileMTime_.prepare ("INSERT OR REPLACE INTO fileTimes (TrackID, MTime) VALUES ((SELECT Id FROM tracks WHERE Path = :filepath), :mtime);");
+
 		GetLovedBanned_ = QSqlQuery (DB_);
 		GetLovedBanned_.prepare ("SELECT TrackId FROM lovedBanned WHERE State = :state;");
 
@@ -635,23 +655,28 @@ namespace LMP
 
 	void LocalCollectionStorage::CreateTables ()
 	{
-		QMap<QString, QString> table2query;
-		table2query ["artists"] = "CREATE TABLE artists ("
+		typedef QPair<QString, QString> QueryPair_t;
+		QList<QueryPair_t> table2query;
+		table2query << QueryPair_t ("artists",
+				"CREATE TABLE artists ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"Name TEXT "
-				");";
-		table2query ["albums"] = "CREATE TABLE albums ("
+				");");
+		table2query << QueryPair_t ("albums",
+				"CREATE TABLE albums ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"Name TEXT, "
 				"Year INTEGER, "
 				"CoverPath TEXT "
-				");";
-		table2query ["artists2albums"] = "CREATE TABLE artists2albums ("
+				");");
+		table2query << QueryPair_t ("artists2albums",
+				"CREATE TABLE artists2albums ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"ArtistID INTEGER NOT NULL REFERENCES artists (Id) ON DELETE CASCADE, "
 				"AlbumID INTEGER NOT NULL REFERENCES albums (Id) ON DELETE CASCADE "
-				");";
-		table2query ["tracks"] = "CREATE TABLE tracks ("
+				");");
+		table2query << QueryPair_t ("tracks",
+				"CREATE TABLE tracks ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"ArtistID INTEGER NOT NULL REFERENCES artists (Id) ON DELETE CASCADE, "
 				"AlbumId NOT NULL REFERENCES albums (Id) ON DELETE CASCADE, "
@@ -659,13 +684,15 @@ namespace LMP
 				"Name TEXT NOT NULL, "
 				"TrackNumber INTEGER, "
 				"Length INTEGER "
-				");";
-		table2query ["genres"] = "CREATE TABLE genres ("
+				");");
+		table2query << QueryPair_t ("genres",
+				"CREATE TABLE genres ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"TrackId NOT NULL REFERENCES tracks (Id) ON DELETE CASCADE, "
 				"Name TEXT NOT NULL "
-				");";
-		table2query ["statistics"] = "CREATE TABLE statistics ("
+				");");
+		table2query << QueryPair_t ("statistics",
+				"CREATE TABLE statistics ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"TrackId NOT NULL UNIQUE REFERENCES tracks (Id) ON DELETE CASCADE, "
 				"Playcount INTEGER, "
@@ -673,28 +700,37 @@ namespace LMP
 				"LastPlay TIMESTAMP, "
 				"Score INTEGER, "
 				"Rating INTEGER "
-				");";
-		table2query ["lovedBanned"] = "CREATE TABLE lovedBanned ("
+				");");
+		table2query << QueryPair_t ("lovedBanned",
+				"CREATE TABLE lovedBanned ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"TrackId NOT NULL UNIQUE REFERENCES tracks (Id) ON DELETE CASCADE, "
 				"State INTEGER"
-				");";
+				");");
+		table2query << QueryPair_t ("fileTimes",
+				"CREATE TABLE fileTimes ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				"TrackID INTEGER UNIQUE NOT NULL REFERENCES tracks (Id) ON DELETE CASCADE, "
+				"MTime TIMESTAMP NOT NULL"
+				");");
 
 		Util::DBLock lock (DB_);
 
 		lock.Init ();
 
 		const auto& tables = DB_.tables ();
-		Q_FOREACH (const QString& key, table2query.keys ())
-			if (!tables.contains (key))
+		Q_FOREACH (const auto& pair, table2query)
+			if (!tables.contains (pair.first))
 			{
 				QSqlQuery q (DB_);
-				if (!q.exec (table2query [key]))
+				if (!q.exec (pair.second))
 				{
 					Util::DBLock::DumpError (q);
 					throw std::runtime_error ("cannot create required tables");
 				}
 			}
+
+		QSqlQuery (DB_).exec ("CREATE UNIQUE INDEX IF NOT EXISTS index_tracksPaths ON tracks (Path);");
 
 		lock.Good ();
 	}

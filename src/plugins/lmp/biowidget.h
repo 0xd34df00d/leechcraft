@@ -54,6 +54,7 @@ namespace LMP
 		void SetCurrentArtist (const QString&);
 	private:
 		QStandardItem* FindAlbumItem (const QString&) const;
+		void SetAlbumImage (const QString&, const QImage&);
 	private slots:
 		void saveLastUsedProv ();
 		void requestBiography ();
@@ -61,6 +62,7 @@ namespace LMP
 		void handleBioReady ();
 		void handleDiscographyReady ();
 		void handleAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
+		void handleImageScaled ();
 
 		void handleLink (const QString&);
 	signals:

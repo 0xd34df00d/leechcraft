@@ -147,6 +147,13 @@
 			</groupbox>
 		</tab>
 		<tab>
+			<label value="Nick coloring" />
+			<item type="groupbox" checkable="true" property="OverrideHashColors">
+				<label value="Override color list" />
+				<item type="customwidget" name="ColorListEditor" label="own" />
+			</item>
+		</tab>
+		<tab>
 			<label value="Fonts" />
 			<groupbox>
 				<label value="Fonts" />
@@ -206,6 +213,9 @@
 			</item>
 			<item type="checkbox" property="ClearSearchAfterFocus" default="false">
 				<label value="Clear search field after entry activation" />
+			</item>
+			<item type="checkbox" property="OptimizedTreeRebuild" default="false">
+				<label value="Optimized tree rebuild (may lead to segfaults on buggy Qt versions)" />
 			</item>
 			<item type="combobox" property="EntryActivationType">
 				<label value="Entry activates on:" />

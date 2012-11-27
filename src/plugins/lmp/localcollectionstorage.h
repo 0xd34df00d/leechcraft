@@ -40,9 +40,6 @@ namespace LMP
 
 		QSqlQuery GetArtists_;
 		QSqlQuery GetAlbums_;
-		QSqlQuery GetArtistAlbums_;
-		QSqlQuery GetAlbumTracks_;
-		QSqlQuery GetTrackGenres_;
 
 		QSqlQuery AddArtist_;
 		QSqlQuery AddAlbum_;
@@ -59,6 +56,9 @@ namespace LMP
 		QSqlQuery GetTrackStats_;
 		QSqlQuery SetTrackStats_;
 		QSqlQuery UpdateTrackStats_;
+
+		QSqlQuery GetFileMTime_;
+		QSqlQuery SetFileMTime_;
 
 		// 1 is loved, 2 is banned
 		QSqlQuery GetLovedBanned_;
@@ -90,6 +90,9 @@ namespace LMP
 		void SetTrackStats (const Collection::TrackStats&);
 		void RecordTrackPlayed (int);
 
+		QDateTime GetMTime (const QString&);
+		void SetMTime (const QString&, const QDateTime&);
+
 		void SetTrackLoved (int);
 		void SetTrackBanned (int);
 		void ClearTrackLovedBanned (int);
@@ -102,7 +105,6 @@ namespace LMP
 		Collection::Artists_t GetAllArtists ();
 		QHash<int, Collection::Album_ptr> GetAllAlbums ();
 		QList<Collection::Track> GetAlbumTracks (int);
-		QStringList GetTrackGenres (int);
 
 		void AddArtist (Collection::Artist&);
 		void AddAlbum (const Collection::Artist&, Collection::Album&);

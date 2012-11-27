@@ -50,8 +50,11 @@ namespace Xoox
 
 	GlooxProtocol::~GlooxProtocol ()
 	{
-		Q_FOREACH (QObject *acc, GetRegisteredAccounts ())
+		Q_FOREACH (auto acc, Accounts_)
+		{
+			acc->Release ();
 			emit accountRemoved (acc);
+		}
 	}
 
 	void GlooxProtocol::Prepare ()
@@ -193,6 +196,7 @@ namespace Xoox
 				Q_ARG (QList<QObject*>, accObj->GetCLEntries ()));
 
 		Accounts_.removeAll (accObj);
+		accObj->Release ();
 		emit accountRemoved (accObj);
 
 		accObj->deleteLater ();

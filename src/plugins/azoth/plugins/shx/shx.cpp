@@ -19,6 +19,8 @@
 #include "shx.h"
 #include <QProcess>
 #include <QtDebug>
+#include <QTextDocument>
+#include <QMessageBox>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 
@@ -32,6 +34,16 @@ namespace SHX
 	{
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothshxsettings.xml");
+
+		if (XmlSettingsManager::Instance ().property ("Command").toString ().isEmpty ())
+		{
+#ifdef Q_OS_WIN32
+			const QString& cmd = "cmd.exe /U /S";
+#else
+			const QString& cmd = "/bin/sh -c";
+#endif
+			XmlSettingsManager::Instance ().setProperty ("Command", cmd);
+		}
 	}
 
 	void Plugin::SecondInit ()
@@ -84,8 +96,18 @@ namespace SHX
 		if (!text.startsWith (marker))
 			return;
 
-		proxy->CancelDefault ();
 		text = text.mid (marker.size ());
+		if (XmlSettingsManager::Instance ().property ("WarnAboutExecution").toBool ())
+		{
+			const auto& msgText = tr ("Are you sure you want to execute this command?") +
+					"<blockquote><em>" + Qt::escape (text) + "</em></blockquote>";
+			if (QMessageBox::question (0, "LeechCraft",
+						msgText,
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+				return;
+		}
+
+		proxy->CancelDefault ();
 
 		auto proc = new QProcess ();
 		Process2Chat_ [proc] = chatTab;
@@ -93,7 +115,17 @@ namespace SHX
 				SIGNAL (finished (int, QProcess::ExitStatus)),
 				this,
 				SLOT (handleFinished ()));
-		proc->start ("/bin/sh", { "-c", text });
+
+		const auto& commandParts = XmlSettingsManager::Instance ()
+				.property ("Command").toString ().split (" ", QString::SkipEmptyParts);
+		const auto& command = commandParts.value (0);
+		if (command.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty command";
+			return;
+		}
+		proc->start (command, commandParts.mid (1) << text);
 	}
 
 	void Plugin::handleFinished ()
@@ -108,12 +140,19 @@ namespace SHX
 					<< proc;
 			return;
 		}
-
+#ifdef Q_OS_WIN32
+		auto out = QString::fromUtf16 (reinterpret_cast<const ushort*> (proc->readAllStandardOutput ().constData ()));
+#else
 		auto out = QString::fromUtf8 (proc->readAllStandardOutput ());
+#endif
 		const auto& err = proc->readAllStandardError ();
 
 		if (!err.isEmpty ())
+#ifdef Q_OS_WIN32
+			out.prepend (tr ("Error: %1").arg (QString::fromUtf16 (reinterpret_cast<const ushort*> (err.constData ()))) + "\n");
+#else
 			out.prepend (tr ("Error: %1").arg (QString::fromUtf8 (err)) + "\n");
+#endif
 
 		QMetaObject::invokeMethod (Process2Chat_.take (proc),
 				"prepareMessageText",

@@ -66,7 +66,7 @@ namespace LeechCraft
 		 */
 		const QStringList& Arguments () const;
 
-		boost::program_options::variables_map Parse (boost::program_options::command_line_parser& parser,
+		boost::program_options::variables_map Parse (boost::program_options::wcommand_line_parser& parser,
 				boost::program_options::options_description *desc) const;
 		const boost::program_options::variables_map& GetVarMap () const;
 

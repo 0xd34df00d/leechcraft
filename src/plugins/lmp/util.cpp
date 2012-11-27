@@ -34,9 +34,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	QStringList RecIterate (const QString& dirPath, bool followSymlinks)
+	QList<QFileInfo> RecIterateInfo (const QString& dirPath, bool followSymlinks)
 	{
-		QStringList result;
 		QStringList nameFilters;
 		nameFilters << "*.aiff"
 				<< "*.ape"
@@ -55,18 +54,20 @@ namespace LMP
 				<< "*.wv"
 				<< "*.wvp";
 
-		if (QFileInfo (dirPath).isFile ())
+		const QFileInfo dirInfo (dirPath);
+		if (dirInfo.isFile ())
 		{
 			Q_FOREACH (const auto& filter, nameFilters)
 				if (dirPath.endsWith (filter.mid (1), Qt::CaseInsensitive))
-					return QStringList (dirPath);
-			return QStringList ();
+					return { dirInfo };
+			return QList<QFileInfo> ();
 		}
 
 		auto filters = QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot;
 		if (!followSymlinks)
 			filters |= QDir::NoSymLinks;
 
+		QList<QFileInfo> result;
 		const auto& list = QDir (dirPath).entryInfoList (nameFilters, filters);
 		Q_FOREACH (const QFileInfo& entryInfo, list)
 		{
@@ -76,11 +77,21 @@ namespace LMP
 				continue;
 
 			if (entryInfo.isDir ())
-				result += RecIterate (path, followSymlinks);
+				result += RecIterateInfo (path, followSymlinks);
 			else if (entryInfo.isFile ())
-				result += path;
+				result += entryInfo;
 		}
 
+		return result;
+	}
+
+	QStringList RecIterate (const QString& dirPath, bool followSymlinks)
+	{
+		const auto& infos = RecIterateInfo (dirPath, followSymlinks);
+		QStringList result;
+		result.reserve (infos.size ());
+		for (const auto& info : infos)
+			result << info.absoluteFilePath ();
 		return result;
 	}
 

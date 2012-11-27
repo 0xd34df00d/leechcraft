@@ -206,7 +206,7 @@ namespace Monocle
 	bool DocumentTab::SetDoc (const QString& path)
 	{
 		auto document = Core::Instance ().LoadDocument (path);
-		if (!document)
+		if (!document || !document->IsValid ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to navigate to"

@@ -28,3 +28,6 @@ TARGET_LINK_LIBRARIES (leechcraft_monocle_seen
 	${DJVULIBRE_LIBRARY}
 	)
 INSTALL (TARGETS leechcraft_monocle_seen DESTINATION ${LC_PLUGINS_DEST})
+IF (UNIX AND NOT APPLE)
+	INSTALL (FILES freedesktop/leechcraft-monocle-seen.desktop DESTINATION share/applications)
+ENDIF (UNIX AND NOT APPLE)

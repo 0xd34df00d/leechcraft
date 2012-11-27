@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "util.h"
+#include <functional>
 #include <stdexcept>
 #include <QString>
 #include <QApplication>
@@ -44,7 +45,7 @@ QString LeechCraft::Util::GetAsBase64Src (const QImage& pix)
 {
 	QBuffer buf;
 	buf.open (QIODevice::ReadWrite);
-	pix.save (&buf, "PNG");
+	pix.save (&buf, "PNG", 100);
 	return QString ("data:image/png;base64,%1")
 			.arg (QString (buf.buffer ().toBase64 ()));
 }

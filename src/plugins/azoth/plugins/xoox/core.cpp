@@ -315,7 +315,7 @@ namespace Xoox
 			return;
 
 		const QString& path = avatarDir.absoluteFilePath (filename);
-		entry->GetAvatar ().save (path, "PNG");
+		entry->GetAvatar ().save (path, "PNG", 100);
 	}
 }
 }

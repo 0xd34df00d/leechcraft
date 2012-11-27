@@ -61,6 +61,7 @@ namespace LeechCraft
 		void addSearchBox ();
 		void handleSearch (const QString&);
 		void handleSettingsCalled ();
+		void handleSettingsForObject ();
 		void handleBackRequested ();
 		void handleApply ();
 		void handleCancel ();

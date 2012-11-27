@@ -23,6 +23,7 @@
 #include <QImage>
 #include <QAction>
 #include <QtDebug>
+#include <boost/concept_check.hpp>
 #include <util/util.h>
 #include "metaaccount.h"
 #include "metamessage.h"
@@ -307,6 +308,15 @@ namespace Metacontacts
 				SIGNAL (removedCLItems (QList<QObject*>)),
 				this,
 				SLOT (checkRemovedCLItems (QList<QObject*>)));
+
+		/*
+		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		connect (account->GetParentProtocol (),
+				SIGNAL (accountRemoved (QObject*)),
+				this,
+				SLOT (handleAccountRemoved (QObject*)),
+				Qt::QueuedConnection);
+				*/
 	}
 
 	void MetaEntry::ConnectAdvancedSiganls (QObject *entryObj)
@@ -360,7 +370,7 @@ namespace Metacontacts
 		emit availableVariantsChanged (Variants ());
 	}
 
-	void MetaEntry::SetNewEntryList (const QList<QObject*>& newList)
+	void MetaEntry::SetNewEntryList (const QList<QObject*>& newList, bool readdRemoved)
 	{
 		if (newList == AvailableRealEntries_)
 			return;
@@ -376,7 +386,7 @@ namespace Metacontacts
 		Q_FOREACH (QObject *entryObj, removedContacts)
 			PerformRemoval (entryObj);
 
-		emit entriesRemoved (removedContacts);
+		Core::Instance ().HandleEntriesRemoved (removedContacts, readdRemoved);
 
 		if (AvailableRealEntries_.isEmpty () &&
 				UnavailableRealEntries_.isEmpty ())
@@ -502,7 +512,7 @@ namespace Metacontacts
 			leave.removeAll (obj);
 
 		if (leave.size () != AvailableRealEntries_.size ())
-			SetNewEntryList (leave);
+			SetNewEntryList (leave, false);
 	}
 
 	void MetaEntry::handleManageContacts ()
@@ -511,7 +521,7 @@ namespace Metacontacts
 		if (dia.exec () == QDialog::Rejected)
 			return;
 
-		SetNewEntryList (dia.GetObjects ());
+		SetNewEntryList (dia.GetObjects (), true);
 	}
 }
 }

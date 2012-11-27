@@ -76,6 +76,8 @@
 #include "chatstyleoptionmanager.h"
 #include "riexhandler.h"
 
+Q_DECLARE_METATYPE (QList<QColor>);
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -122,12 +124,19 @@ namespace Azoth
 		class ModelUpdateSafeguard
 		{
 			QAbstractItemModel *Model_;
+			const bool Recursive_;
+			const bool BlockEnabled_;
 		public:
 			ModelUpdateSafeguard (QAbstractItemModel *model)
 			: Model_ (model)
+			, Recursive_ (Model_->signalsBlocked ())
+			, BlockEnabled_ (!XmlSettingsManager::Instance ().property ("OptimizedTreeRebuild").toBool ())
 			{
-				QMetaObject::invokeMethod (Model_, "modelAboutToBeReset");
-				Model_->blockSignals (true);
+				if (!Recursive_ && BlockEnabled_)
+				{
+					QMetaObject::invokeMethod (Model_, "modelAboutToBeReset");
+					Model_->blockSignals (true);
+				}
 			}
 
 			ModelUpdateSafeguard (const ModelUpdateSafeguard&) = delete;
@@ -135,8 +144,11 @@ namespace Azoth
 
 			~ModelUpdateSafeguard ()
 			{
-				Model_->blockSignals (false);
-				QMetaObject::invokeMethod (Model_, "modelReset");
+				if (!Recursive_ && BlockEnabled_)
+				{
+					Model_->blockSignals (false);
+					QMetaObject::invokeMethod (Model_, "modelReset");
+				}
 			}
 		};
 	}
@@ -388,6 +400,36 @@ namespace Azoth
 		if (!url.isValid ())
 			return false;
 
+		return CouldHandleURL (url);
+	}
+
+	void Core::Handle (Entity e)
+	{
+		if (e.Mime_ == "x-leechcraft/power-state-changed")
+		{
+			HandlePowerNotification (e);
+			return;
+		}
+		else if (e.Mime_ == "x-leechcraft/im-account-import")
+		{
+			ImportManager_->HandleAccountImport (e);
+			return;
+		}
+		else if (e.Mime_ == "x-leechcraft/im-history-import")
+		{
+			ImportManager_->HandleHistoryImport (e);
+			return;
+		}
+
+		const QUrl& url = e.Entity_.toUrl ();
+		if (!url.isValid ())
+			return;
+
+		HandleURL (url);
+	}
+
+	bool Core::CouldHandleURL (const QUrl& url) const
+	{
 		Q_FOREACH (QObject *obj, ProtocolPlugins_)
 		{
 			IProtocolPlugin *protoPlug = qobject_cast<IProtocolPlugin*> (obj);
@@ -413,28 +455,8 @@ namespace Azoth
 		return false;
 	}
 
-	void Core::Handle (Entity e)
+	void Core::HandleURL (const QUrl& url, ICLEntry *source)
 	{
-		if (e.Mime_ == "x-leechcraft/power-state-changed")
-		{
-			HandlePowerNotification (e);
-			return;
-		}
-		else if (e.Mime_ == "x-leechcraft/im-account-import")
-		{
-			ImportManager_->HandleAccountImport (e);
-			return;
-		}
-		else if (e.Mime_ == "x-leechcraft/im-history-import")
-		{
-			ImportManager_->HandleHistoryImport (e);
-			return;
-		}
-
-		const QUrl& url = e.Entity_.toUrl ();
-		if (!url.isValid ())
-			return;
-
 		QList<QObject*> accounts;
 		Q_FOREACH (QObject *obj, ProtocolPlugins_)
 		{
@@ -470,6 +492,12 @@ namespace Azoth
 
 		if (accounts.isEmpty ())
 			return;
+
+		if (source && accounts.contains (source->GetParentAccount ()))
+		{
+			accounts.clear ();
+			accounts << source->GetParentAccount ();
+		}
 
 		QObject *selected = 0;
 
@@ -776,6 +804,14 @@ namespace Azoth
 		};
 
 		QList<QColor> result;
+		if (XmlSettingsManager::Instance ().property ("OverrideHashColors").toBool ())
+		{
+			result = XmlSettingsManager::Instance ()
+					.property ("OverrideColorsList").value<decltype (result)> ();
+			if (!result.isEmpty ())
+				return result;
+		}
+
 		if (coloring == "hash" ||
 				coloring.isEmpty ())
 		{
@@ -1077,21 +1113,26 @@ namespace Azoth
 		ID2Entry_ [id] = clEntry->GetObject ();
 
 		const QStringList& groups = GetDisplayGroups (clEntry);
-		QList<QStandardItem*> catItems = GetCategoriesItems (groups, accItem);
-		Q_FOREACH (QStandardItem *catItem, catItems)
 		{
-			AddEntryTo (clEntry, catItem);
+			ModelUpdateSafeguard outerGuard (CLModel_);
+			QList<QStandardItem*> catItems = GetCategoriesItems (groups, accItem);
+			Q_FOREACH (QStandardItem *catItem, catItems)
+			{
+				AddEntryTo (clEntry, catItem);
 
-			bool isMucCat = catItem->data (CLRIsMUCCategory).toBool ();
-			if (!isMucCat)
-				isMucCat = clEntry->GetEntryType () == ICLEntry::ETPrivateChat;
-			catItem->setData (isMucCat, CLRIsMUCCategory);
+				bool isMucCat = catItem->data (CLRIsMUCCategory).toBool ();
+				if (!isMucCat)
+					isMucCat = clEntry->GetEntryType () == ICLEntry::ETPrivateChat;
+				catItem->setData (isMucCat, CLRIsMUCCategory);
+			}
 		}
 
-		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
+		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString (), false, false);
 
 		if (clEntry->GetEntryType () == ICLEntry::ETPrivateChat)
-			handleEntryPermsChanged (clEntry);
+			handleEntryPermsChanged (clEntry, false);
+
+		RebuildTooltip (clEntry);
 
 		ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetObject ());
 		ChatTabsManager_->SetChatEnabled (id, true);
@@ -1224,7 +1265,7 @@ namespace Azoth
 				avatar = GetDefaultAvatar (avatarSize);
 
 			if (std::max (avatar.width (), avatar.height ()) > avatarSize)
-				avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+				avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::FastTransformation);
 			else if (std::max (avatar.width (), avatar.height ()) < minAvatarSize)
 				avatar = avatar.scaled (minAvatarSize, minAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 			tip += "<img src='" + Util::GetAsBase64Src (avatar) + "' />";
@@ -1334,6 +1375,13 @@ namespace Azoth
 		return tip;
 	}
 
+	void Core::RebuildTooltip (ICLEntry *entry)
+	{
+		const QString& tip = MakeTooltipString (entry);
+		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			item->setToolTip (tip);
+	}
+
 	Entity Core::BuildStatusNotification (const EntryStatus& entrySt,
 		ICLEntry *entry, const QString& variant)
 	{
@@ -1383,22 +1431,22 @@ namespace Azoth
 	}
 
 	void Core::HandleStatusChanged (const EntryStatus& status,
-			ICLEntry *entry, const QString& variant, bool asSignal)
+			ICLEntry *entry, const QString& variant, bool asSignal, bool rebuildTooltip)
 	{
 		emit hookEntryStatusChanged (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 				entry->GetObject (), variant);
 
 		invalidateClientsIconCache (entry);
-		const QString& tip = MakeTooltipString (entry);
 
 		const State state = entry->GetStatus ().State_;
 		Util::QIODevice_ptr icon = GetIconPathForState (state);
 
+		if (rebuildTooltip)
+			RebuildTooltip (entry);
+
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
-			item->setToolTip (tip);
 			ItemIconManager_->SetIcon (item, icon.get ());
-
 			RecalculateOnlineForCat (item->parent ());
 		}
 
@@ -2061,6 +2109,8 @@ namespace Azoth
 
 	void Core::handleGotCLItems (const QList<QObject*>& items)
 	{
+		ModelUpdateSafeguard outerGuard (CLModel_);
+
 		QMap<const QObject*, QStandardItem*> accountItemCache;
 		Q_FOREACH (QObject *item, items)
 		{
@@ -2235,9 +2285,7 @@ namespace Azoth
 			return;
 		}
 
-		const QString& tip = MakeTooltipString (entry);
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-			item->setToolTip (tip);
+		RebuildTooltip (entry);
 	}
 
 	void Core::handleEntryNameChanged (const QString& newName)
@@ -2298,7 +2346,7 @@ namespace Azoth
 		HandleStatusChanged (entry->GetStatus (), entry, QString ());
 	}
 
-	void Core::handleEntryPermsChanged (ICLEntry *suggest)
+	void Core::handleEntryPermsChanged (ICLEntry *suggest, bool rebuildTooltip)
 	{
 		ICLEntry *entry = suggest ? suggest : qobject_cast<ICLEntry*> (sender ());
 		if (!entry)
@@ -2314,13 +2362,12 @@ namespace Azoth
 		if (!mucPerms)
 			return;
 
-		const QString& tip = MakeTooltipString (entry);
 		const QString& name = mucPerms->GetAffName (entryObj);
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-		{
 			item->setData (name, CLRAffiliation);
-			item->setToolTip (tip);
-		}
+
+		if (rebuildTooltip)
+			RebuildTooltip (entry);
 	}
 
 	void Core::remakeTooltipForSender ()
@@ -2334,9 +2381,7 @@ namespace Azoth
 			return;
 		}
 
-		const QString& tip = MakeTooltipString (entry);
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-			item->setToolTip (tip);
+		RebuildTooltip (entry);
 	}
 
 	void Core::handleEntryGotMessage (QObject *msgObj)

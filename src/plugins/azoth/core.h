@@ -195,6 +195,9 @@ namespace Azoth
 		bool CouldHandle (const Entity&) const;
 		void Handle (Entity);
 
+		bool CouldHandleURL (const QUrl&) const;
+		void HandleURL (const QUrl&, ICLEntry* = 0);
+
 		const QObjectList& GetProtocolPlugins () const;
 
 		QAbstractItemModel* GetCLModel () const;
@@ -358,13 +361,15 @@ namespace Azoth
 		 */
 		QString MakeTooltipString (ICLEntry *entry) const;
 
+		void RebuildTooltip (ICLEntry *entry);
+
 		Entity BuildStatusNotification (const EntryStatus&,
 				ICLEntry*, const QString&);
 
 		/** Handles the event of status changes in a contact list entry.
 		 */
 		void HandleStatusChanged (const EntryStatus& status,
-				ICLEntry *entry, const QString& variant, bool asSignal = false);
+				ICLEntry *entry, const QString& variant, bool asSignal = false, bool rebuildTooltip = true);
 
 		/** Checks whether icon representing incoming file should be
 		 * drawn for the entry with the given id.
@@ -478,7 +483,7 @@ namespace Azoth
 		 * If the passed entry is not NULL, it will be used, otherwise
 		 * sender() will be used.
 		 */
-		void handleEntryPermsChanged (ICLEntry *entry = 0);
+		void handleEntryPermsChanged (ICLEntry *entry = 0, bool rebuildTooltip = true);
 
 		void remakeTooltipForSender ();
 

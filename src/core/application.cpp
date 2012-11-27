@@ -52,8 +52,14 @@ LeechCraft::Application::Application (int& argc, char **argv)
 {
 	Arguments_ = arguments ();
 	bpo::options_description desc ("Allowed options");
-	bpo::command_line_parser parser (argc, argv);
-	VarMap_ = Parse (parser, &desc);
+
+	{
+		std::vector<std::wstring> strings;
+		for (const auto& arg : Arguments_)
+			strings.push_back (arg.toStdWString ());
+		bpo::wcommand_line_parser parser (strings);
+		VarMap_ = Parse (parser, &desc);
+	}
 
 	if (VarMap_.count ("help"))
 	{
@@ -155,13 +161,13 @@ const QStringList& Application::Arguments () const
 	return Arguments_;
 }
 
-bpo::variables_map Application::Parse (bpo::command_line_parser& parser,
+bpo::variables_map Application::Parse (bpo::wcommand_line_parser& parser,
 		bpo::options_description *desc) const
 {
 	bpo::variables_map vm;
 	bpo::options_description invisible ("Invisible options");
 	invisible.add_options ()
-			("entity,E", bpo::value<std::vector<std::string>> (), "the entity to handle");
+			("entity,E", bpo::wvalue<std::vector<std::wstring>> (), "the entity to handle");
 
 	desc->add_options ()
 			("help", "show the help message")
