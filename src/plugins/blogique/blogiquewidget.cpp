@@ -110,16 +110,6 @@ namespace Blogique
 		for (IAccount *acc : Core::Instance ().GetAccounts ())
 		{
 			AccountsBox_->addItem (acc->GetAccountName ());
-			try
-			{
-				Storage_->AddAccount (acc->GetAccountID ());
-			}
-			catch (const std::runtime_error& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "error adding account"
-						<< e.what ();
-			}
 			Id2Account_ [AccountsBox_->count () - 1] = acc;
 		}
 		ToolBar_->addWidget (AccountsBox_);
