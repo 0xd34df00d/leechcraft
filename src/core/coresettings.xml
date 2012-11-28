@@ -28,6 +28,12 @@
 					<label lang="en" value="Oxygen" />
 				</option>
 			</item>
+			<item type="combobox" property="ColorTheme" mayHaveDataSource="true">
+				<label value="Color theme:" />
+				<option name="crafty" default="true">
+					<label value="Crafty" />
+				</option>
+			</item>
 			<item type="combobox" property="AppQStyle" mayHaveDataSource="true">
 				<label lang="en" value="Style:" />
 				<option name="Default" default="true">
