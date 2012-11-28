@@ -61,11 +61,10 @@ namespace StandardStyles
 	QString StandardStyleSource::GetHTMLTemplate (const QString& pack,
 			const QString&, QObject *entryObj, QWebFrame*) const
 	{
+		Coloring2Colors_.clear ();
 		if (pack != LastPack_)
 		{
-			Coloring2Colors_.clear ();
 			LastPack_ = pack;
-
 			StylesLoader_->FlushCache ();
 		}
 
@@ -125,7 +124,7 @@ namespace StandardStyles
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
 		QObject *azothSettings = Proxy_->GetSettingsManager ();
-		const QList<QColor>& colors = CreateColors (frame->metaData ().value ("coloring"));
+		const auto& colors = CreateColors (frame->metaData ().value ("coloring"));
 
 		const bool isHighlightMsg = info.IsHighlightMsg_;
 		const bool isActiveChat = info.IsActiveChat_;

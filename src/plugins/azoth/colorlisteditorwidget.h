@@ -16,42 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QCoreApplication>
-#include <QColor>
+#pragma once
 
-Q_DECLARE_METATYPE (QList<QColor>);
+#include <QWidget>
+#include "ui_colorlisteditorwidget.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	XmlSettingsManager::XmlSettingsManager ()
+	class ColorListEditorWidget : public QWidget
 	{
-		qRegisterMetaType<QColor> ("QColor");
-		qRegisterMetaTypeStreamOperators<QColor> ("QColor");
+		Q_OBJECT
 
-		qRegisterMetaType<QList<QColor>> ("QList<QColor>");
-		qRegisterMetaTypeStreamOperators<QList<QColor>> ("QList<QColor>");
-
-		Util::BaseSettingsManager::Init ();
-	}
-
-	XmlSettingsManager& XmlSettingsManager::Instance ()
-	{
-		static XmlSettingsManager xsm;
-		return xsm;
-	}
-
-	QSettings* XmlSettingsManager::BeginSettings () const
-	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth");
-		return settings;
-	}
-
-	void XmlSettingsManager::EndSettings (QSettings*) const
-	{
-	}
+		Ui::ColorListEditorWidget Ui_;
+		QStandardItemModel *Model_;
+	public:
+		ColorListEditorWidget (QWidget* = 0);
+	private:
+		void AddColor (const QColor&);
+	public slots:
+		void accept ();
+		void reject ();
+	private slots:
+		void on_AddColorButton__released ();
+		void on_RemoveColorButton__released ();
+	};
 }
 }

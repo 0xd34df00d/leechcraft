@@ -22,7 +22,7 @@
 #include "core.h"
 #include "mainwindow.h"
 #include "xmlsettingsmanager.h"
-#include "skinengine.h"
+#include "iconthemeengine.h"
 #include "tagsmanager.h"
 #include "mwproxy.h"
 #include "entitymanager.h"
@@ -74,12 +74,12 @@ namespace LeechCraft
 
 	QIcon CoreProxy::GetIcon (const QString& icon, const QString& iconOff) const
 	{
-		return SkinEngine::Instance ().GetIcon (icon, iconOff);
+		return IconThemeEngine::Instance ().GetIcon (icon, iconOff);
 	}
 
 	void CoreProxy::UpdateIconset (const QList<QAction*>& actions) const
 	{
-		SkinEngine::Instance ().UpdateIconSet (actions);
+		IconThemeEngine::Instance ().UpdateIconSet (actions);
 	}
 
 	ITagsManager* CoreProxy::GetTagsManager () const
@@ -133,7 +133,7 @@ namespace LeechCraft
 
 	void CoreProxy::RegisterSkinnable (QAction *act)
 	{
-		SkinEngine::Instance ().UpdateIconSet (QList<QAction*> () << act);
+		IconThemeEngine::Instance ().UpdateIconSet (QList<QAction*> () << act);
 	}
 
 	bool CoreProxy::IsShuttingDown ()

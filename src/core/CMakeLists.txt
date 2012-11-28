@@ -24,7 +24,7 @@ SET (SRCS
 	pluginmanager.cpp
 	xmlsettingsmanager.cpp
 	pluginmanagerdialog.cpp
-	skinengine.cpp
+	iconthemeengine.cpp
 	childactioneventfilter.cpp
 	tabmanager.cpp
 	authenticationdialog.cpp
@@ -59,6 +59,7 @@ SET (SRCS
 	dockmanager.cpp
 	acceptlangwidget.cpp
 	entitymanager.cpp
+	colorthemeengine.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -67,7 +68,7 @@ SET (HEADERS
 	pluginmanager.h
 	xmlsettingsmanager.h
 	pluginmanagerdialog.h
-	skinengine.h
+	iconthemeengine.h
 	childactioneventfilter.h
 	tabmanager.h
 	authenticationdialog.h
@@ -102,6 +103,7 @@ SET (HEADERS
 	dockmanager.h
 	acceptlangwidget.h
 	entitymanager.h
+	colorthemeengine.h
 	interfaces/structures.h
 	)
 SET (FORMS

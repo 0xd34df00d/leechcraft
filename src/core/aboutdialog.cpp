@@ -19,8 +19,8 @@
 #include "aboutdialog.h"
 #include "util/sysinfo.h"
 #include "interfaces/ihavediaginfo.h"
-#include "config.h"
 #include "core.h"
+#include "coreproxy.h"
 
 namespace LeechCraft
 {
@@ -117,7 +117,7 @@ namespace LeechCraft
 		Ui_.setupUi (this);
 
 		Ui_.ProgramName_->setText (QString ("LeechCraft %1")
-				.arg (LEECHCRAFT_VERSION));
+				.arg (CoreProxy ().GetVersion ()));
 
 		QList<ContributorInfo> authors;
 		authors << ContributorInfo ("Georg Rudoy", "0xd34df00d",
@@ -261,7 +261,7 @@ namespace LeechCraft
 
 	void AboutDialog::BuildDiagInfo ()
 	{
-		QString text = QString ("LeechCraft ") + LEECHCRAFT_VERSION + "\n";
+		QString text = QString ("LeechCraft ") + CoreProxy ().GetVersion () + "\n";
 		text += QString ("Built with Qt %1, running with Qt %2\n")
 				.arg (QT_VERSION_STR)
 				.arg (qVersion ());

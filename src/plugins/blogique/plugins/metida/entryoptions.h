@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,42 +16,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QCoreApplication>
-#include <QColor>
-
-Q_DECLARE_METATYPE (QList<QColor>);
+#pragma once
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Blogique
 {
-	XmlSettingsManager::XmlSettingsManager ()
+namespace Metida
+{
+	enum Access
 	{
-		qRegisterMetaType<QColor> ("QColor");
-		qRegisterMetaTypeStreamOperators<QColor> ("QColor");
+		Public,
+		FriendsOnly,
+		Private,
+		Custom,
 
-		qRegisterMetaType<QList<QColor>> ("QList<QColor>");
-		qRegisterMetaTypeStreamOperators<QList<QColor>> ("QList<QColor>");
+		MAXAccess
+	};
 
-		Util::BaseSettingsManager::Init ();
-	}
-
-	XmlSettingsManager& XmlSettingsManager::Instance ()
+	enum CommentsManagement
 	{
-		static XmlSettingsManager xsm;
-		return xsm;
-	}
+		DisableComments,
+		EnableComments,
+		WithoutNotification,
 
-	QSettings* XmlSettingsManager::BeginSettings () const
-	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth");
-		return settings;
-	}
+		MAXManagment,
 
-	void XmlSettingsManager::EndSettings (QSettings*) const
+		Default,
+		ShowComments,
+		ShowFriendsComments,
+		ScreenComments,
+		ScreenAnonymouseComments,
+		ScreenNotFromFriendsWithLinks,
+
+		MAXScreening
+	};
+
+	enum AdultContent
 	{
-	}
+		WithoutAdultContent,
+		AdultsFrom14,
+		AdultsFrom18,
+
+		MAXAdult
+	};
+}
 }
 }

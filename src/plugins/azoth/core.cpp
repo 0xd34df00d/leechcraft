@@ -76,6 +76,8 @@
 #include "chatstyleoptionmanager.h"
 #include "riexhandler.h"
 
+Q_DECLARE_METATYPE (QList<QColor>);
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -802,6 +804,14 @@ namespace Azoth
 		};
 
 		QList<QColor> result;
+		if (XmlSettingsManager::Instance ().property ("OverrideHashColors").toBool ())
+		{
+			result = XmlSettingsManager::Instance ()
+					.property ("OverrideColorsList").value<decltype (result)> ();
+			if (!result.isEmpty ())
+				return result;
+		}
+
 		if (coloring == "hash" ||
 				coloring.isEmpty ())
 		{

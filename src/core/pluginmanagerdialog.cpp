@@ -23,7 +23,7 @@
 #include "interfaces/ihavesettings.h"
 #include "interfaces/iinfo.h"
 #include "core.h"
-#include "skinengine.h"
+#include "iconthemeengine.h"
 #include "coreinstanceobject.h"
 #include "settingstab.h"
 
@@ -48,7 +48,7 @@ namespace LeechCraft
 					return QStyledItemDelegate::createEditor (parent, option, index);
 
 				QPushButton *button = new QPushButton (parent);
-				button->setIcon (SkinEngine::Instance ().GetIcon ("configure", QString ()));
+				button->setIcon (IconThemeEngine::Instance ().GetIcon ("configure", QString ()));
 				button->setToolTip (tr ("Configure..."));
 				button->setMaximumWidth (48);
 				button->setProperty ("SettableObject",

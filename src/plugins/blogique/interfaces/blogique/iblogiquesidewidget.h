@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QMetaType>
+#include <QVariant>
 
 namespace LeechCraft
 {
@@ -55,6 +56,52 @@ namespace Blogique
 		* @sa IPostOptionsWidget, ICustomSideWidget.
 		**/
 		virtual SideWidgetType GetWidgetType () const = 0;
+
+		/** @brief Returns a map with post options.
+		 *
+		 * If type of widget is not a SideWidgetType::PostOptionsSideWidget widget
+		 * should return empty map.
+		 *
+		 * @return QVariantMap with post options.
+		 *
+		 * @sa IPostOptionsWidget, ICustomSideWidget.
+		 **/
+		virtual QVariantMap GetPostOptions () const = 0;
+
+		/** @brief Fill widget with post options.
+		 * 
+		 * If type of widget is not a SideWidgetType::PostOptionsSideWidget widget
+		 * shouldn't do anything.
+		 *
+		 * @sa IPostOptionsWidget, ICustomSideWidget.
+		 **/
+		virtual void SetPostOptions (const QVariantMap& map) = 0;
+
+		/** @brief Returns a map with custom options.
+		 *
+		 * If type of widget is a SideWidgetType::PostOptionsSideWidget widget
+		 * should return empty map.
+		 *
+		 * @return QVariantMap with custom options.
+		 *
+		 * @sa IPostOptionsWidget, ICustomSideWidget.
+		 **/
+		virtual QVariantMap GetCustomData () const = 0;
+
+		/** @brief Fill widget with custom data.
+		 * 
+		 * If type of widget is a SideWidgetType::PostOptionsSideWidget widget
+		 * shouldn't do anything.
+		 *
+		 * @sa IPostOptionsWidget, ICustomSideWidget.
+		 **/
+		virtual void SetCustomData (const QVariantMap& map) = 0;
+
+		/** @brief Set account object.
+		 *
+		 * @sa IAccount.
+		 **/
+		virtual void SetAccount (QObject *accountObj) = 0;
 	};
 }
 }

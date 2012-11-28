@@ -16,42 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QCoreApplication>
-#include <QColor>
+#pragma once
 
-Q_DECLARE_METATYPE (QList<QColor>);
+#include <QObject>
+#include <QMap>
+#include <QString>
+#include <QDir>
+#include <QHash>
+#include <QIcon>
+
+class QIcon;
+class QAction;
+class QTabWidget;
+class QFile;
 
 namespace LeechCraft
 {
-namespace Azoth
-{
-	XmlSettingsManager::XmlSettingsManager ()
+	class IconThemeEngine : public QObject
 	{
-		qRegisterMetaType<QColor> ("QColor");
-		qRegisterMetaTypeStreamOperators<QColor> ("QColor");
+		Q_OBJECT
 
-		qRegisterMetaType<QList<QColor>> ("QList<QColor>");
-		qRegisterMetaTypeStreamOperators<QList<QColor>> ("QList<QColor>");
+		QString OldIconSet_;
+		QStringList IconSets_;
 
-		Util::BaseSettingsManager::Init ();
-	}
+		mutable QHash<QPair<QString, QString>, QIcon> IconCache_;
 
-	XmlSettingsManager& XmlSettingsManager::Instance ()
-	{
-		static XmlSettingsManager xsm;
-		return xsm;
-	}
+		IconThemeEngine ();
+	public:
+		static IconThemeEngine& Instance ();
 
-	QSettings* XmlSettingsManager::BeginSettings () const
-	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth");
-		return settings;
-	}
-
-	void XmlSettingsManager::EndSettings (QSettings*) const
-	{
-	}
-}
-}
+		QIcon GetIcon (const QString&, const QString&) const;
+		void UpdateIconSet (const QList<QAction*>&);
+		void UpdateIconSet (const QList<QTabWidget*>&);
+		QStringList ListIcons () const;
+	protected:
+		bool eventFilter (QObject*, QEvent*);
+	private:
+		void SetIcon (QAction*);
+		void FindIconSets ();
+		void FindIcons ();
+	private slots:
+		void flushCaches ();
+	};
+};

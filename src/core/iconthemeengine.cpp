@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "skinengine.h"
+#include "iconthemeengine.h"
 #include <algorithm>
 #include <QAction>
 #include <QTabWidget>
@@ -34,7 +34,7 @@ using namespace LeechCraft;
 
 const int MaxIconSize = 32;
 
-SkinEngine::SkinEngine ()
+IconThemeEngine::IconThemeEngine ()
 {
 	QTimer *timer = new QTimer (this);
 	connect (timer,
@@ -55,13 +55,13 @@ SkinEngine::SkinEngine ()
 	FindIconSets ();
 }
 
-SkinEngine& SkinEngine::Instance ()
+IconThemeEngine& IconThemeEngine::Instance ()
 {
-	static SkinEngine e;
+	static IconThemeEngine e;
 	return e;
 }
 
-QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconOff) const
+QIcon IconThemeEngine::GetIcon (const QString& actionIcon, const QString& actionIconOff) const
 {
 	const QPair<QString, QString>& namePair = qMakePair (actionIcon, actionIconOff);
 	if (IconCache_.contains (namePair))
@@ -89,7 +89,7 @@ QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconO
 	return QIcon ();
 }
 
-void SkinEngine::UpdateIconSet (const QList<QAction*>& actions)
+void IconThemeEngine::UpdateIconSet (const QList<QAction*>& actions)
 {
 	FindIcons ();
 
@@ -106,7 +106,7 @@ void SkinEngine::UpdateIconSet (const QList<QAction*>& actions)
 	}
 }
 
-void SkinEngine::UpdateIconSet (const QList<QTabWidget*>& tabs)
+void IconThemeEngine::UpdateIconSet (const QList<QTabWidget*>& tabs)
 {
 	FindIcons ();
 
@@ -123,12 +123,12 @@ void SkinEngine::UpdateIconSet (const QList<QTabWidget*>& tabs)
 	}
 }
 
-QStringList SkinEngine::ListIcons () const
+QStringList IconThemeEngine::ListIcons () const
 {
 	return IconSets_;
 }
 
-bool SkinEngine::eventFilter (QObject *obj, QEvent *e)
+bool IconThemeEngine::eventFilter (QObject *obj, QEvent *e)
 {
 	if (e->type () != QEvent::DynamicPropertyChange)
 		return QObject::eventFilter (obj, e);
@@ -142,7 +142,7 @@ bool SkinEngine::eventFilter (QObject *obj, QEvent *e)
 	return QObject::eventFilter (obj, e);
 }
 
-void SkinEngine::SetIcon (QAction *act)
+void IconThemeEngine::SetIcon (QAction *act)
 {
 	QString actionIcon = act->property ("ActionIcon").toString ();
 	QString actionIconOff = act->property ("ActionIconOff").toString ();
@@ -150,7 +150,7 @@ void SkinEngine::SetIcon (QAction *act)
 	act->setIcon (GetIcon (actionIcon, actionIconOff));
 }
 
-void SkinEngine::FindIconSets ()
+void IconThemeEngine::FindIconSets ()
 {
 	IconSets_.clear ();
 
@@ -167,7 +167,7 @@ void SkinEngine::FindIconSets ()
 	}
 }
 
-void SkinEngine::FindIcons ()
+void IconThemeEngine::FindIcons ()
 {
 	QString iconSet = XmlSettingsManager::Instance ()->
 		property ("IconSet").toString ();
@@ -181,7 +181,7 @@ void SkinEngine::FindIcons ()
 	}
 }
 
-void SkinEngine::flushCaches ()
+void IconThemeEngine::flushCaches ()
 {
 	IconCache_.clear ();
 }

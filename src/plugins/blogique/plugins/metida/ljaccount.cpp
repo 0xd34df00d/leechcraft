@@ -60,6 +60,10 @@ namespace Metida
 				SIGNAL (profileUpdated (const LJProfileData&)),
 				LJProfile_.get (),
 				SLOT (handleProfileUpdate (const LJProfileData&)));
+		connect (LJXmlRpc_,
+				SIGNAL (entryPosted ()),
+				this,
+				SIGNAL (entryPosted ()));
 	}
 
 	QObject* LJAccount::GetObject ()
@@ -259,6 +263,64 @@ namespace Metida
 	void LJAccount::updateProfile ()
 	{
 		LJXmlRpc_->UpdateProfileInfo ();
+	}
+
+	void LJAccount::submit (const Event& event)
+	{
+		LJEvent ljEvent;
+		LJEventProperties props;
+		const QVariantMap& postOptions = event.PostOptions_;
+		const QVariantMap& customData = event.CustomData_;
+
+		ljEvent.Subject_ = event.Subject_;
+		ljEvent.Event_ = event.Content_;
+		ljEvent.UseJournal_ = event.Target_;
+		ljEvent.DateTime_ = event.Date_;
+		ljEvent.Tags_ = event.Tags_;
+		Access access = static_cast<Access> (postOptions.value ("access").toInt ());
+		ljEvent.Security_ = access < Access::MAXAccess ?
+			access :
+			Access::Public;
+		if (access == Access::Custom)
+			ljEvent.AllowMask_ = postOptions ["allowMask"].toUInt ();
+
+		AdultContent adultContent = static_cast<AdultContent> (postOptions
+				.value ("adults").toInt ());
+		props.AdultContent_ = adultContent < AdultContent::MAXAdult ?
+			adultContent :
+			AdultContent::WithoutAdultContent;
+
+		CommentsManagement managment, screening;
+		managment = static_cast<CommentsManagement> (postOptions
+				.value ("comment").toInt ());
+		screening =  static_cast<CommentsManagement> (postOptions
+				.value ("hidecomment").toInt ());
+
+		props.CommentsManagement_ = managment < CommentsManagement::MAXManagment ?
+			managment :
+			CommentsManagement::Default;
+		props.ScreeningComments_ = screening > CommentsManagement::MAXManagment &&
+				screening < CommentsManagement::MAXScreening ?
+			screening :
+			CommentsManagement::ShowComments;
+
+		props.CurrentLocation_ = postOptions.value ("place").toString ();
+		props.CurrentMusic_ = postOptions.value ("music").toString ();
+
+		int currentMoodId = postOptions.value ("moodId").toInt ();
+		if (!currentMoodId)
+			props.CurrentMood_ = postOptions.value ("mood").toString ();
+		else
+			props.CurrentMoodId_ = currentMoodId;
+
+		props.ShowInFriendsPage_ = postOptions.value ("showInFriendsPage").toBool ();
+
+		props.PostAvatar_ = postOptions.value ("avatar").toString ();
+
+		ljEvent.Props_ = props;
+		//TODO
+		ljEvent.Event_.append ("<em style=\"font-size: 0.8em;\">Posted via <a href=\"http://leechcraft.org/plugins-blogique\">LeechCraft Blogique</a>.</em>");
+		LJXmlRpc_->Submit (ljEvent);
 	}
 
 }

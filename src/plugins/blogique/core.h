@@ -27,6 +27,8 @@ namespace LeechCraft
 {
 namespace Blogique
 {
+
+	class LocalStorage;
 	class IAccount;
 	class IBloggingPlatform;
 	class PluginProxy;
@@ -38,6 +40,7 @@ namespace Blogique
 		ICoreProxy_ptr Proxy_;
 		QObjectList BlogPlatformPlugins_;
 		std::shared_ptr<PluginProxy> PluginProxy_;
+		LocalStorage *Storage_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
@@ -55,7 +58,9 @@ namespace Blogique
 		QList<IAccount*> GetAccounts () const;
 
 		void SendEntity (const Entity& e);
+		void DelayedProfilesUpdate ();
 
+		LocalStorage* GetStorage () const;
 	private:
 		void AddBlogPlatformPlugin (QObject *plugin);
 
@@ -64,6 +69,9 @@ namespace Blogique
 		void addAccount (QObject *accObj);
 		void handleAccountRemoved (QObject *accObj);
 		void handleAccountValidated (QObject *accObj, bool validated);
+		void updateProfiles ();
+		void handleEntryPosted ();
+
 	signals:
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);
@@ -71,6 +79,9 @@ namespace Blogique
 
 		void gotEntity (LeechCraft::Entity e);
 		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
+
+		void addNewTab (const QString& name, QWidget *tab);
+		void removeTab (QWidget *tab);
 	};
 }
 }

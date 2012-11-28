@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,42 +16,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QCoreApplication>
-#include <QColor>
+#pragma once
 
-Q_DECLARE_METATYPE (QList<QColor>);
+#include <QMetaType>
+#include <QVariant>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Blogique
 {
-	XmlSettingsManager::XmlSettingsManager ()
+	/** @brief Interface representing a side widget with main post options'.
+	*
+	**/
+	class IPostOptionsWidget
 	{
-		qRegisterMetaType<QColor> ("QColor");
-		qRegisterMetaTypeStreamOperators<QColor> ("QColor");
+	public:
+		virtual ~IPostOptionsWidget () {};
 
-		qRegisterMetaType<QList<QColor>> ("QList<QColor>");
-		qRegisterMetaTypeStreamOperators<QList<QColor>> ("QList<QColor>");
+		/** @brief Returns list of tags for entry.
+		*
+		* @return List of tags
+		**/
+		virtual QStringList GetTags () const = 0;
 
-		Util::BaseSettingsManager::Init ();
-	}
+		/** @brief Set tags.
+		 * 
+		 **/
+		virtual void SetTags (const QStringList& tags) = 0;
 
-	XmlSettingsManager& XmlSettingsManager::Instance ()
-	{
-		static XmlSettingsManager xsm;
-		return xsm;
-	}
+		/** @brief Returns date when post was written.
+		 * 
+		 * @return Post date
+		 **/
+		virtual QDateTime GetPostDate () const = 0;
 
-	QSettings* XmlSettingsManager::BeginSettings () const
-	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth");
-		return settings;
-	}
-
-	void XmlSettingsManager::EndSettings (QSettings*) const
-	{
-	}
+		/** @brief Set post timestamp.
+		 * 
+		 **/
+		virtual void SetPostDate (const QDateTime& dt) = 0;
+	};
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::Blogique::IPostOptionsWidget,
+		"org.Deviant.LeechCraft.Blogique.IPostOptionsWidget/1.0");

@@ -60,10 +60,15 @@ namespace Blogique
 			 */
 			BPFSupportsRegistration = 0x1,
 
-			/** This blogging platform support account profilest with extended
+			/** This blogging platform supports account profilest with extended
 			 * information.
 			 */
-			BPFSupportsProfiles = 0x2
+			BPFSupportsProfiles = 0x2,
+
+			/** This blogging platform supports variouse posting destinations
+			 * such as private blog, communities, etc.
+			 */
+			BPFSelectablePostDestination = 0x4
 		};
 		Q_DECLARE_FLAGS (BloggingPlatfromFeatures, BloggingPlatfromFeature)
 

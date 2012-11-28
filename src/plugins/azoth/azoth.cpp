@@ -48,6 +48,7 @@
 #include "consolewidget.h"
 #include "searchwidget.h"
 #include "chatstyleoptionmanager.h"
+#include "colorlisteditorwidget.h"
 
 namespace LeechCraft
 {
@@ -378,6 +379,8 @@ namespace Azoth
 				SIGNAL (accountVisibilityChanged (IAccount*)),
 				&Core::Instance (),
 				SLOT (saveAccountVisibility (IAccount*)));
+
+		XmlSettingsDialog_->SetCustomWidget ("ColorListEditor", new ColorListEditorWidget);
 	}
 
 	void Plugin::InitMW ()

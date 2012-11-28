@@ -16,49 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef SKINENGINE_H
-#define SKINENGINE_H
-#include <QObject>
-#include <QMap>
-#include <QString>
-#include <QDir>
-#include <QHash>
-#include <QIcon>
+#pragma once
 
-class QIcon;
-class QAction;
-class QTabWidget;
-class QFile;
+#include <QObject>
+#include <QPalette>
 
 namespace LeechCraft
 {
-	class SkinEngine : public QObject
+	class ColorThemeEngine : public QObject
 	{
 		Q_OBJECT
 
-		QString OldIconSet_;
-		QStringList IconSets_;
+		QPalette StartupPalette_;
 
-		mutable QHash<QPair<QString, QString>, QIcon> IconCache_;
-
-		SkinEngine ();
+		ColorThemeEngine ();
 	public:
-		static SkinEngine& Instance ();
-
-		QIcon GetIcon (const QString&, const QString&) const;
-		void UpdateIconSet (const QList<QAction*>&);
-		void UpdateIconSet (const QList<QTabWidget*>&);
-		QStringList ListIcons () const;
-	protected:
-		bool eventFilter (QObject*, QEvent*);
+		static ColorThemeEngine& Instance ();
 	private:
-		void SetIcon (QAction*);
-		void FindIconSets ();
-		void FindIcons ();
-	private slots:
-		void flushCaches ();
+		void SetTheme (const QString&);
 	};
-};
-
-#endif
-
+}

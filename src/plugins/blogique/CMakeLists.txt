@@ -2,6 +2,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_blogique)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (QT_USE_QTSQL TRUE)
 INCLUDE (${QT_USE_FILE})
 
 INCLUDE_DIRECTORIES (
@@ -17,6 +18,7 @@ SET (SRCS
 	blogique.cpp
 	blogiquewidget.cpp
 	core.cpp
+	localstorage.cpp
 	pluginproxy.cpp
 	profiledialog.cpp
 	xmlsettingsmanager.cpp
@@ -28,6 +30,7 @@ SET (HEADERS
 	blogique.h
 	blogiquewidget.h
 	core.h
+	localstorage.h
 	pluginproxy.h
 	profiledialog.h
 	xmlsettingsmanager.h

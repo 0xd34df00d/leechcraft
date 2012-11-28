@@ -38,7 +38,7 @@
 #include "core.h"
 #include "commonjobadder.h"
 #include "xmlsettingsmanager.h"
-#include "skinengine.h"
+#include "iconthemeengine.h"
 #include "childactioneventfilter.h"
 #include "graphwidget.h"
 #include "shortcutmanager.h"
@@ -284,7 +284,7 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*>>& men
 			Ui_.ActionMenu_->menu ()->insertMenu (MenuTools_->menuAction (), menu);
 		}
 
-		SkinEngine::Instance ().UpdateIconSet (menus [menuName]);
+		IconThemeEngine::Instance ().UpdateIconSet (menus [menuName]);
 	}
 }
 
@@ -782,8 +782,8 @@ void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::Activatio
 
 void LeechCraft::MainWindow::updateIconSet ()
 {
-	SkinEngine::Instance ().UpdateIconSet (findChildren<QAction*> ());
-	SkinEngine::Instance ().UpdateIconSet (findChildren<QTabWidget*> ());
+	IconThemeEngine::Instance ().UpdateIconSet (findChildren<QAction*> ());
+	IconThemeEngine::Instance ().UpdateIconSet (findChildren<QTabWidget*> ());
 }
 
 void LeechCraft::MainWindow::doDelayedInit ()
@@ -834,7 +834,7 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 		if (actions.isEmpty ())
 			continue;
 
-		SkinEngine::Instance ().UpdateIconSet (actions);
+		IconThemeEngine::Instance ().UpdateIconSet (actions);
 
 		QLBar_->addSeparator ();
 		QLBar_->addActions (actions);
@@ -855,7 +855,7 @@ void LeechCraft::MainWindow::FillTray ()
 	Q_FOREACH (auto o, trayMenus)
 	{
 		const auto& actions = o->GetActions (ActionsEmbedPlace::TrayMenu);
-		SkinEngine::Instance ().UpdateIconSet (actions);
+		IconThemeEngine::Instance ().UpdateIconSet (actions);
 		iconMenu->addActions (actions);
 		if (actions.size ())
 			iconMenu->addSeparator ();
@@ -881,7 +881,7 @@ void LeechCraft::MainWindow::FillToolMenu ()
 				GetAllCastableTo<IActionsExporter*> ())
 	{
 		const auto& acts = e->GetActions (ActionsEmbedPlace::ToolsMenu);
-		SkinEngine::Instance ().UpdateIconSet (acts);
+		IconThemeEngine::Instance ().UpdateIconSet (acts);
 		MenuTools_->addActions (acts);
 		if (acts.size ())
 			MenuTools_->addSeparator ();
