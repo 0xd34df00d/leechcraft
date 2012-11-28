@@ -11,7 +11,7 @@ TopColor=0,0,0
 BottomColor=0,0,0
 
 [TextBox]
-TopColor=0,0,0
+TopColor=5,5,5
 BottomColor=66,57,75
 BorderColor=0,0,0
 HighlightBorderColor=255,101,0
