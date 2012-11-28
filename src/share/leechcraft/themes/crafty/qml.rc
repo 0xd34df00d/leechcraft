@@ -22,8 +22,8 @@ Aux2TextColor=136,136,136
 Aux3TextColor=119,119,119
 
 [TextView]
-TopColor=0,0,0
-BottomColor=66,57,75
+TopColor=66,57,75
+BottomColor=10,10,10
 TitleTextColor=221,221,221
 TextColor=170,170,170
 Aux1TextColor=153,153,153
