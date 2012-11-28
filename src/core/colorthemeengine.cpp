@@ -17,9 +17,11 @@
  **********************************************************************/
 
 #include "colorthemeengine.h"
+#include <algorithm>
 #include <QFile>
 #include <QStringList>
 #include <QApplication>
+#include <QDir>
 #include <QtDebug>
 #include <QSettings>
 
@@ -34,6 +36,42 @@ namespace LeechCraft
 	{
 		static ColorThemeEngine engine;
 		return engine;
+	}
+
+	namespace
+	{
+		QStringList GetCandidates ()
+		{
+			QStringList candidates;
+#ifdef Q_OS_WIN32
+			candidates << QApplication::applicationDirPath () + "/share/leechcraft/themes/";
+#elif defined (Q_OS_MAC)
+			candidates << QApplication::applicationDirPath () + "/../Resources/share/leechcraft/themes";
+#else
+			candidates << "/usr/local/share/leechcraft/themes/"
+					<< "/usr/share/leechcraft/themes/";
+#endif
+			return candidates;
+		}
+
+		QStringList FindThemes ()
+		{
+			QStringList result;
+			for (const auto& candidate : GetCandidates ())
+			{
+				QDir dir (candidate);
+				const auto& list = dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot);
+				result += list;
+			}
+			result.removeDuplicates ();
+			std::sort (result.begin (), result.end ());
+			return result;
+		}
+	}
+
+	QStringList ColorThemeEngine::ListThemes () const
+	{
+		return FindThemes ();
 	}
 
 	namespace
@@ -99,14 +137,7 @@ namespace LeechCraft
 
 	void ColorThemeEngine::SetTheme (const QString& themeName)
 	{
-		QStringList candidates;
-#ifdef Q_OS_WIN32
-		candidates << QApplication::applicationDirPath () + "/share/leechcraft/themes/";
-#elif defined (Q_OS_MAC)
-#else
-		candidates << "/usr/local/share/leechcraft/themes/"
-				<< "/usr/share/leechcraft/themes/";
-#endif
+		const auto& candidates = GetCandidates ();
 
 		QString themePath;
 		for (const auto& path : candidates)

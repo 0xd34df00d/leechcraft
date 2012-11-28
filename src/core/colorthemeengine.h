@@ -32,7 +32,8 @@ namespace LeechCraft
 		ColorThemeEngine ();
 	public:
 		static ColorThemeEngine& Instance ();
-	private:
+
+		QStringList ListThemes () const;
 		void SetTheme (const QString&);
 	};
 }
