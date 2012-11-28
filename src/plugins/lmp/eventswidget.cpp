@@ -26,6 +26,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
+#include "colorproxy.h"
 
 namespace LeechCraft
 {
@@ -83,6 +84,8 @@ namespace LMP
 		Ui_.View_->rootContext ()->setContextProperty ("attendSureTextString", tr ("Sure!"));
 		Ui_.View_->rootContext ()->setContextProperty ("attendMaybeTextString", tr ("Maybe"));
 		Ui_.View_->rootContext ()->setContextProperty ("unattendTextString", tr ("Unattend"));
+		Ui_.View_->rootContext ()->setContextProperty ("colorProxy",
+				new ColorProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
 		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/EventsView.qml"));
 
 		connect (Ui_.View_->rootObject (),

@@ -12,12 +12,11 @@ Rectangle {
     gradient: Gradient {
         GradientStop {
             position: 0
-            color: "#53485F"
+            color: colorProxy.color_TextView_TopColor
         }
-
         GradientStop {
             position: 1
-            color: "#222222"
+            color: colorProxy.color_TextView_BottomColor
         }
     }
     anchors.fill: parent
@@ -88,18 +87,17 @@ Rectangle {
                 radius: 5
                 gradient: Gradient {
                     GradientStop {
-                        position: 1
-                        color: "#42394b"
-                    }
-
-                    GradientStop {
                         position: 0
-                        color: "#000000"
+                        color: colorProxy.color_TextBox_TopColor
+                    }
+                    GradientStop {
+                        position: 1
+                        color: colorProxy.color_TextBox_BottomColor
                     }
                 }
 
                 border.width: 1
-                border.color: "#000000"
+                border.color: colorProxy.color_TextBox_BorderColor
                 smooth: true
 
                 Rectangle {
@@ -138,7 +136,7 @@ Rectangle {
                     text: eventName
                     font.bold: true
                     font.pointSize: 12
-                    color: "#dddddd"
+                    color: colorProxy.color_TextBox_TitleTextColor
                     anchors.top: parent.top
                     anchors.topMargin: 2
                     anchors.left: eventImageThumb.right
@@ -149,7 +147,7 @@ Rectangle {
                 Text {
                     id: eventDateLabel
                     text: eventDate
-                    color: "#bbbbbb"
+                    color: colorProxy.color_TextBox_TextColor
                     anchors.left: eventImageThumb.right
                     anchors.leftMargin: 5
                     anchors.top: eventNameLabel.bottom
@@ -161,7 +159,7 @@ Rectangle {
                 Text {
                     id: eventPlaceLabel
                     text: eventCity.length ? eventCity + ", " + eventPlace : eventPlace
-                    color: "#aaaaaa"
+                    color: colorProxy.color_TextBox_TextColor
                     anchors.left: eventImageThumb.right
                     anchors.leftMargin: 5
                     anchors.top: eventDateLabel.bottom
@@ -173,7 +171,7 @@ Rectangle {
                 Text {
                     id: eventTagsLabel
                     text: eventTags
-                    color: "#999999"
+                    color: colorProxy.color_TextBox_Aux1TextColor
                     clip: true
                     anchors.left: eventImageThumb.right
                     anchors.leftMargin: 5
@@ -187,7 +185,7 @@ Rectangle {
                     id: eventHeadlinerLabel
                     text: eventArtists.length ? eventHeadliner : ""
                     font.bold: true
-                    color: "#dddddd"
+                    color: colorProxy.color_TextBox_TitleTextColor
                     anchors.left: eventImageThumb.right
                     anchors.leftMargin: 5
                     anchors.top: eventTagsLabel.bottom
@@ -199,7 +197,7 @@ Rectangle {
                 Text {
                     id: eventArtistsLabel
                     text: eventArtists
-                    color: "#999999"
+                    color: colorProxy.color_TextBox_Aux1TextColor
                     clip: true
                     anchors.left: eventImageThumb.right
                     anchors.leftMargin: 5
