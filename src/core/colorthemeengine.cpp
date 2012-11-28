@@ -51,7 +51,7 @@ namespace LeechCraft
 #ifdef Q_OS_WIN32
 			candidates << QApplication::applicationDirPath () + "/share/leechcraft/themes/";
 #elif defined (Q_OS_MAC)
-			candidates << QApplication::applicationDirPath () + "/../Resources/share/leechcraft/themes";
+			candidates << QApplication::applicationDirPath () + "/../Resources/share/themes/";
 #else
 			candidates << "/usr/local/share/leechcraft/themes/"
 					<< "/usr/share/leechcraft/themes/";
