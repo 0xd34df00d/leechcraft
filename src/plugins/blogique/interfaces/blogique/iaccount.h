@@ -22,9 +22,9 @@
 #include <QVariant>
 #include <QStringList>
 #include <QDateTime>
-#include <boost/graph/graph_concepts.hpp>
 
 class QWidget;
+
 namespace LeechCraft
 {
 namespace Blogique
@@ -146,7 +146,7 @@ namespace Blogique
 
 		/** @brief This signal should be emitted when entry
 		 * successfully posted to blog.
-		 * 
+		 *
 		 * @note This function is expected to be a signal.
 		 */
 		virtual void entryPosted () = 0;

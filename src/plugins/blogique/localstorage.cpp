@@ -263,7 +263,7 @@ namespace Blogique
 			Util::DBLock::DumpError (GetShortDrafts_);
 			throw std::runtime_error ("unable to get short drafts");
 		}
-		
+
 		QList<Event> list;
 		while (GetShortDrafts_.next ())
 		{
@@ -377,7 +377,7 @@ namespace Blogique
 		UpdateDraftPostOptions_ = QSqlQuery (DB_);
 		UpdateDraftPostOptions_.prepare ("UPDATE draft_post_options SET Value = :value "
 				"WHERE DraftId = :draft_id AND Name = :name;");
-		
+
 		AddDraftCustomOptions_ = QSqlQuery (DB_);
 		AddDraftCustomOptions_.prepare ("INSERT INTO draft_custom_options "
 				"(DraftId, Name, Value) VALUES (:draft_id, :name, :value);");
