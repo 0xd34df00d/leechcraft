@@ -20,6 +20,8 @@
 
 #include <QObject>
 #include <QPalette>
+#include <QHash>
+class QSettings;
 
 namespace LeechCraft
 {
@@ -28,6 +30,7 @@ namespace LeechCraft
 		Q_OBJECT
 
 		QPalette StartupPalette_;
+		QHash<QString, QHash<QString, QColor>> QMLColors_;
 
 		ColorThemeEngine ();
 	public:
@@ -35,5 +38,7 @@ namespace LeechCraft
 
 		QStringList ListThemes () const;
 		void SetTheme (const QString&);
+	private:
+		void FillQML (QSettings&);
 	};
 }

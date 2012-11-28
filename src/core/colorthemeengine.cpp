@@ -76,28 +76,30 @@ namespace LeechCraft
 
 	namespace
 	{
+		QColor ParseColor (const QVariant& var)
+		{
+			const auto& elems = var.toStringList ();
+			if (elems.size () != 3)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "wrong color"
+						<< var
+						<< elems;
+				return QColor ();
+			}
+
+			return QColor (elems.at (0).toInt (),
+					elems.at (1).toInt (),
+					elems.at (2).toInt ());
+		}
+
 		void UpdateColor (QPalette& palette, QSettings& settings,
 				QPalette::ColorGroup group, QPalette::ColorRole role,
 				const QString& settingsGroup, const QString& key)
 		{
 			settings.beginGroup ("Colors:" + settingsGroup);
-			const auto& elems = settings.value (key).toStringList ();
+			palette.setColor (group, role, ParseColor (settings.value (key)));
 			settings.endGroup ();
-
-			if (elems.size () != 3)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "wrong color"
-						<< settingsGroup
-						<< role
-						<< key
-						<< elems;
-				return;
-			}
-
-			const QColor color (elems.at (0).toInt (),
-					elems.at (1).toInt (), elems.at (2).toInt ());
-			palette.setColor (group, role, color);
 		}
 
 		QPalette UpdatePalette (QPalette palette, QSettings& settings)
@@ -168,5 +170,22 @@ namespace LeechCraft
 
 		auto palette = UpdatePalette (StartupPalette_, settings);
 		QApplication::setPalette (palette);
+
+		QSettings qmlSettings (themePath + "/qml.rc", QSettings::IniFormat);
+		FillQML (qmlSettings);
+	}
+
+	void ColorThemeEngine::FillQML (QSettings& settings)
+	{
+		QMLColors_.clear ();
+
+		for (const auto& group : settings.childGroups ())
+		{
+			settings.beginGroup (group);
+			auto& hash = QMLColors_ [group];
+			for (const auto& key : settings.childKeys ())
+				hash [key] = ParseColor (settings.value (key));
+			settings.endGroup ();
+		}
 	}
 }
