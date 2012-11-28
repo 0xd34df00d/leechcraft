@@ -25,6 +25,8 @@
 #include "profiletypes.h"
 #include "ljfriendentry.h"
 
+class QNetworkReply;
+
 namespace LeechCraft
 {
 namespace Blogique
@@ -42,9 +44,13 @@ namespace Metida
 
 		QObject *ParentAccount_;
 		LJProfileData ProfileData_;
+		QHash<QNetworkReply*, QString> Reply2AvatarId_;
 	public:
 		LJProfile (QObject *parentAccount, QObject *parent = 0);
+
 		QWidget* GetProfileWidget ();
+		QList<QPair<QIcon, QString>> GetPostingTargets () const;
+
 		LJProfileData GetProfileData () const;
 		QObject* GetParentAccount () const;
 
@@ -56,12 +62,14 @@ namespace Metida
 		int GetFreeGroupId () const;
 	private:
 		void SaveAvatar (QUrl url = QUrl ());
+		void SaveOthersAvatars (const QString& id, const QUrl& url);
 
 	public slots:
 		void handleProfileUpdate (const LJProfileData& profile);
 	private slots:
 		void handleAvatarDownloadFinished ();
-
+		void handleOtherAvatarDownloadFinished ();
+		
 	signals:
 		void profileUpdated ();
 	};

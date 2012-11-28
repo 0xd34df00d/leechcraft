@@ -21,11 +21,13 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <QWizard>
+#include <stdexcept>
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "interfaces/blogique/iaccount.h"
 #include "addaccountwizardfirstpage.h"
 #include "core.h"
 #include "profiledialog.h"
+#include "localstorage.h"
 
 namespace LeechCraft
 {
@@ -96,6 +98,18 @@ namespace Blogique
 
 		Item2Account_ [item] = acc;
 		Account2Item_ [acc] = item;
+
+		try
+		{
+			LocalStorage *storage = new LocalStorage (this);
+			storage->AddAccount (acc->GetAccountID ());
+		}
+		catch (const std::runtime_error& e)
+		{
+			QMessageBox::warning (this,
+					tr ("LeechCraft"),
+					tr ("Error adding account."));
+		}
 	}
 
 	void AccountsListWidget::handleAccountRemoved (QObject *accObj)

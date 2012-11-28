@@ -388,7 +388,7 @@ namespace GoogleDrive
 	{
 		const QString str = startId ?
 			QString ("https://www.googleapis.com/drive/v2/changes?includeDeleted=true&startChangeId=%1&access_token=%2")
-					.arg (startId)
+					.arg (startId + 1)
 					.arg (key) :
 			QString ("https://www.googleapis.com/drive/v2/changes?includeDeleted=true&access_token=%1")
 					.arg (key);
@@ -969,7 +969,8 @@ namespace GoogleDrive
 		reply->deleteLater ();
 
 		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
+		auto ba = reply->readAll ();
+		const auto& res = QJson::Parser ().parse (ba, &ok);
 		if (!ok)
 		{
 			qDebug () << Q_FUNC_INFO
@@ -993,12 +994,12 @@ namespace GoogleDrive
 		for (auto itemVar : map ["items"].toList ())
 		{
 			QVariantMap itemMap = itemVar.toMap ();
+			DriveItem driveItem = CreateDriveItem (itemMap ["file"]);
 			DriveChanges change;
-			DriveItem item = CreateDriveItem (itemMap ["file"]);
 			change.FileId_ = itemMap ["fileId"].toString ();
 			change.Id_ = itemMap ["id"].toString ();
 			change.Deleted_ = itemMap ["deleted"].toBool ();
-			change.FileResource_ = item;
+			change.FileResource_ = driveItem;
 
 			changes << change;
 		}

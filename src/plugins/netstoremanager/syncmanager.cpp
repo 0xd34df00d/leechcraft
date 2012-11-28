@@ -28,7 +28,6 @@
 #include <QStandardItemModel>
 #include <QFutureWatcher>
 #include "interfaces/netstoremanager/istorageaccount.h"
-#include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "accountsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "utils.h"
@@ -70,7 +69,7 @@ namespace NetStoreManager
 	{
 		if (FilesWatcher_)
 			QMetaObject::invokeMethod (FilesWatcher_,
-					"Release",
+					"release",
 					Qt::QueuedConnection);
 		Thread_->exit ();
 	}
@@ -78,6 +77,50 @@ namespace NetStoreManager
 	void SyncManager::CreateDirectory (const QString& path)
 	{
 		QDir ().mkpath (path);
+	}
+
+	void SyncManager::RemoveDirectory (QMap<QString, QStringList>& map,
+			const QString& basePath, const QString& path)
+	{
+		qDebug () << Q_FUNC_INFO << path << map.contains (path);
+		if (!map.contains (path))
+			return;
+
+		QString fullPath = QFileInfo (basePath).dir ().absolutePath () + path;
+		QDir dir (fullPath);
+
+		qDebug () << -1 << fullPath;
+		if (dir.exists (fullPath))
+		{
+			for (const auto& info : dir.entryInfoList (QDir::NoDotAndDotDot |
+					QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files,
+					QDir::DirsFirst))
+			{
+				QString relativePath = info.absoluteFilePath ();
+				relativePath.remove (0, basePath.length ());
+				qDebug () << 0 << relativePath;
+				info.isDir () ?
+					RemoveDirectory (map, basePath, relativePath) :
+					RemoveFile (map, basePath, relativePath);
+			}
+
+			if (dir.rmdir (fullPath))
+				qDebug () << 1 << fullPath;
+			else
+				qDebug () << 2 << fullPath;
+			map.remove (path);
+		}
+	}
+
+	void SyncManager::RemoveFile (QMap<QString, QStringList>& map,
+			const QString& basePath, const QString& path)
+	{
+		if (!map.contains (path))
+			return;
+
+		QString fullPath = QFileInfo (basePath).dir ().absolutePath () + path;
+		if (QFile::remove (fullPath))
+			map.remove (path);
 	}
 
 	namespace
@@ -136,55 +179,55 @@ namespace NetStoreManager
 	{
 		if (!FilesWatcher_)
 		{
-			try
-			{
-				FilesWatcher_ = new FilesWatcher;
-				FilesWatcher_->moveToThread (Thread_);
-				Thread_->start ();
-
-				connect (FilesWatcher_,
-						SIGNAL (dirWasCreated (QString)),
-						this,
-						SLOT (handleDirWasCreated (QString)),
-						Qt::QueuedConnection);
-				connect (FilesWatcher_,
-						SIGNAL (fileWasCreated (QString)),
-						this,
-						SLOT (handleFileWasCreated (QString)),
-						Qt::QueuedConnection);
-				connect (FilesWatcher_,
-						SIGNAL (dirWasRemoved (QString)),
-						this,
-						SLOT (handleDirWasRemoved (QString)),
-						Qt::QueuedConnection);
-				connect (FilesWatcher_,
-						SIGNAL (fileWasRemoved (QString)),
-						this,
-						SLOT (handleFileWasRemoved (QString)),
-						Qt::QueuedConnection);
-				connect (FilesWatcher_,
-						SIGNAL (entryWasRenamed (QString, QString)),
-						this,
-						SLOT (handleEntryWasRenamed (QString, QString)),
-						Qt::QueuedConnection);
-				connect (FilesWatcher_,
-						SIGNAL (entryWasMoved (QString, QString)),
-						this,
-						SLOT (handleEntryWasMoved (QString, QString)),
-						Qt::QueuedConnection);
-				connect (FilesWatcher_,
-						SIGNAL (fileWasUpdated (QString)),
-						this,
-						SLOT (handleFileWasUpdated (QString)),
-						Qt::QueuedConnection);
-			}
-			catch (const std::exception& e)
-			{
-				FilesWatcher_ = 0;
-				qWarning () << Q_FUNC_INFO
-						<< e.what ();
-				return;
-			}
+// 			try
+// 			{
+// 				FilesWatcher_ = new FilesWatcher;
+// 				FilesWatcher_->moveToThread (Thread_);
+// 				Thread_->start ();
+// 
+// // 				connect (FilesWatcher_,
+// // 						SIGNAL (dirWasCreated (QString)),
+// // 						this,
+// // 						SLOT (handleDirWasCreated (QString)),
+// // 						Qt::QueuedConnection);
+// // 				connect (FilesWatcher_,
+// // 						SIGNAL (fileWasCreated (QString)),
+// // 						this,
+// // 						SLOT (handleFileWasCreated (QString)),
+// // 						Qt::QueuedConnection);
+// // 				connect (FilesWatcher_,
+// // 						SIGNAL (dirWasRemoved (QString)),
+// // 						this,
+// // 						SLOT (handleDirWasRemoved (QString)),
+// // 						Qt::QueuedConnection);
+// // 				connect (FilesWatcher_,
+// // 						SIGNAL (fileWasRemoved (QString)),
+// // 						this,
+// // 						SLOT (handleFileWasRemoved (QString)),
+// // 						Qt::QueuedConnection);
+// // 				connect (FilesWatcher_,
+// // 						SIGNAL (entryWasRenamed (QString, QString)),
+// // 						this,
+// // 						SLOT (handleEntryWasRenamed (QString, QString)),
+// // 						Qt::QueuedConnection);
+// // 				connect (FilesWatcher_,
+// // 						SIGNAL (entryWasMoved (QString, QString)),
+// // 						this,
+// // 						SLOT (handleEntryWasMoved (QString, QString)),
+// // 						Qt::QueuedConnection);
+// // 				connect (FilesWatcher_,
+// // 						SIGNAL (fileWasUpdated (QString)),
+// // 						this,
+// // 						SLOT (handleFileWasUpdated (QString)),
+// // 						Qt::QueuedConnection);
+// 			}
+// 			catch (const std::exception& e)
+// 			{
+// 				FilesWatcher_ = 0;
+// 				qWarning () << Q_FUNC_INFO
+// 						<< e.what ();
+// 				return;
+// 			}
 		}
 
 		handleUpdateExceptionsList ();
@@ -209,15 +252,16 @@ namespace NetStoreManager
 					SIGNAL (gotNewItem (QList<QStandardItem*>, QStringList)),
 					this,
 					SLOT (handleGotNewItem (QList<QStandardItem*>, QStringList)));
+			connect (isa->GetObject (),
+					SIGNAL (gotChanges (QList<Change>)),
+					this,
+					SLOT (handleGotChanges (QList<Change>)));
+
 			isfl->RefreshListing ();
 			Path2Account_ [dirPath] = isa;
 			qDebug () << "watching directory "
 					<< dirPath;
 		}
-
-		Timer_->start (RemoteStorageCheckingTimeout_);
-		handleTimeout ();
-		QueueCheckTimer_->start (1000);
 	}
 
 	void SyncManager::handleTimeout ()
@@ -229,7 +273,7 @@ namespace NetStoreManager
 
 			// TODO finish this
 			auto isfl = qobject_cast<ISupportFileListings*> (account->GetObject ());
-			Q_UNUSED (isfl)
+			isfl->RequestChanges ();
 		}
 	}
 
@@ -240,7 +284,7 @@ namespace NetStoreManager
 
 		if (FilesWatcher_)
 			QMetaObject::invokeMethod (FilesWatcher_,
-					"UpdateExceptions",
+					"updateExceptions",
 					Q_ARG (QStringList, masks));
 	}
 
@@ -302,7 +346,6 @@ namespace NetStoreManager
 				continue;
 
 			const QString& parentPath = QFileInfo (remotePath).dir ().absolutePath ();
-			qDebug () << Q_FUNC_INFO << remotePath << map [remotePath] << parentPath << map [parentPath];
 			if (map.contains (parentPath))
 				emit uploadRequested (Path2Account_ [basePath], path, map [parentPath]);
 			else
@@ -325,7 +368,6 @@ namespace NetStoreManager
 						<< "isn't an ISupportFileListings";
 				continue;
 			}
-
 
 			auto map = Isfl2PathId_ [isfl];
 			const QString rootDirPath = QFileInfo (basePath).dir ().absolutePath ();
@@ -481,7 +523,7 @@ namespace NetStoreManager
 		if (!isfl)
 			return;
 
-		QString dirPath = Path2Account_.key (isa);
+		const QString dirPath = Path2Account_.key (isa);
 		if (dirPath.isEmpty ())
 			return;
 
@@ -506,17 +548,17 @@ namespace NetStoreManager
 					path + "/" + parentItem->text ();
 
 				QFileInfo baseDirFI (dirPath);
-				const QString baseDir = "/" + baseDirFI.fileName ();
-				if (relativePath != baseDir &&
-						!relativePath.startsWith (baseDir + "/"))
-					continue;
+// 				const QString baseDir = "/" + baseDirFI.fileName ();
+// 				if (relativePath != baseDir &&
+// 						!relativePath.startsWith (baseDir + "/"))
+// 					continue;
 
-				const QString resultPath = baseDirFI.dir ().absolutePath () +
+				const QString resultPath = baseDirFI.absoluteFilePath () +
 						relativePath;
 				map [relativePath] = parentItem->data (ListingRole::ID).toStringList ();
 
-				if (relativePath != baseDir)
-					parentItem->data (ListingRole::Directory).toBool () ?
+// 				if (relativePath != baseDir)
+				parentItem->data (ListingRole::Directory).toBool () ?
 						CreateDirectory (resultPath) :
 						DownloadFile (resultPath,
 								parentItem->data (ListingRole::ID).toStringList (),
@@ -534,11 +576,17 @@ namespace NetStoreManager
 		QStringList paths = Utils::ScanDir (QDir::NoDotAndDotDot | QDir::Dirs,
 				dirPath, true);
 		QMetaObject::invokeMethod (FilesWatcher_,
-				"AddPath",
+				"addPath",
 				Q_ARG (QString, dirPath));
 		QMetaObject::invokeMethod (FilesWatcher_,
-				"AddPathes",
+				"addPathes",
 				Q_ARG (QStringList, paths));
+
+		if (!Timer_->isActive ())
+		{
+			Timer_->start (RemoteStorageCheckingTimeout_);
+			handleTimeout ();
+		}
 	}
 
 	void SyncManager::handleGotNewItem (const QList<QStandardItem*>& item,
@@ -558,6 +606,47 @@ namespace NetStoreManager
 		}
 
 		Isfl2PathId_ [isfl] = map;
+	}
+
+	void SyncManager::handleGotChanges (const QList<Change>& changes)
+	{
+		auto isfl = qobject_cast<ISupportFileListings*> (sender ());
+		if (!isfl)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not an ISupportFileListings object";
+			return;
+		}
+
+		auto isa = qobject_cast<IStorageAccount*> (sender ());
+		if (!isa)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not an IStorageAccount object";
+			return;
+		}
+
+		auto& map = Isfl2PathId_ [isfl];
+		const QString basePath = Path2Account_.key (isa);
+
+		for (const auto& change : changes)
+		{
+			const QString& name = change.Row_.value (0)->text ();
+// 			if (change.ParentIsRoot_)
+// 			{
+				qDebug () << basePath << name << change.Row_.value (0)->data (ListingRole::Directory).toBool () << QFileInfo (basePath + "/" + name).exists ();
+// 				if (change.Row_.value (0)->data (ListingRole::Directory).toBool ())
+// 					CreateDirectory (basePath + "/" + name);
+// 				else if (!QFileInfo (basePath + "/" + name).exists ())
+// 					isa->Download (change.Id_, basePath, true);
+// 				else
+// 				{
+// 					//TODO compare cheksums
+// 				}
+// 			}
+		}
 	}
 
 	void SyncManager::checkApiCallQueue ()

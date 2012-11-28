@@ -4,4 +4,24 @@
 		<label value="Accounts" />
 		<item type="customwidget" name="AccountsWidget" label="own" />
 	</page>
+	<page>
+		<label value="Behavior" />
+		<groupbox>
+			<label lang="en" value="Drafts" />
+<!--			<item type="spinbox" property="AutoSaveDraft" default="5" minimum="1" maximum="60" step="1">
+				<label value="Draft save timeout:" />
+				<suffix value=" min" />
+			</item>
+			-->
+			<item type="combobox" property="OpenDraftByDblClick" >
+				<label lang="en" value="Open draft by double click in:" />
+				<option name="CurrentTab" default="true" >
+					<label lang="en" value="Current tab" />
+				</option>
+				<option name="NewTab">
+					<label lang="en" value="New tab" />
+				</option>
+			</item>
+		</groupbox>
+	</page>
 </settings>
