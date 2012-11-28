@@ -15,6 +15,11 @@ TopColor=0,0,0
 BottomColor=66,57,75
 BorderColor=0,0,0
 HighlightBorderColor=255,101,0
+TitleTextColor=221,221,221
+TextColor=170,170,170
+Aux1TextColor=153,153,153
+Aux2TextColor=136,136,136
+Aux3TextColor=119,119,119
 
 [TextView]
 TopColor=0,0,0
