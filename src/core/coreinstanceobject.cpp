@@ -135,8 +135,10 @@ namespace LeechCraft
 
 		XmlSettingsDialog_->SetDataSource ("Language",
 			GetInstalledLangsModel ());
+
 		XmlSettingsDialog_->SetDataSource ("IconSet",
 			new QStringListModel (IconThemeEngine::Instance ().ListIcons ()));
+		XmlSettingsManager::Instance ()->RegisterObject ("IconSet", this, "updateIconSet");
 
 		QStringList appQStype = QStyleFactory::keys ();
 		appQStype.prepend ("Default");
@@ -265,6 +267,12 @@ namespace LeechCraft
 			pm->SetAllPlugins (Qt::Checked);
 		else if (name == "DisableAllPlugins")
 			pm->SetAllPlugins (Qt::Unchecked);
+	}
+
+	void CoreInstanceObject::updateIconSet ()
+	{
+		IconThemeEngine::Instance ().UpdateIconSet (findChildren<QAction*> ());
+		IconThemeEngine::Instance ().UpdateIconSet (findChildren<QTabWidget*> ());
 	}
 
 #ifdef STRICT_LICENSING

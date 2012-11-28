@@ -135,7 +135,6 @@ namespace LeechCraft
 		void updateSpeedIndicators ();
 		void updateClock ();
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
-		void updateIconSet ();
 		void doDelayedInit ();
 		void handleLoadProgress (const QString&);
 	private:

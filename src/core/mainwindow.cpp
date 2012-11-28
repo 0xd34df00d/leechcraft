@@ -138,8 +138,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	speedUpd->start ();
 	qApp->setQuitOnLastWindowClosed (false);
 
-	updateIconSet ();
-
 	setUpdatesEnabled (true);
 
 	if (!qobject_cast<Application*> (qApp)->GetVarMap ().count ("minimized"))
@@ -412,8 +410,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	menu->addAction (Ui_.ActionRestart_);
 	menu->addAction (Ui_.ActionQuit_);
 	Ui_.ActionMenu_->setMenu (menu);
-
-	XmlSettingsManager::Instance ()->RegisterObject ("IconSet", this, "updateIconSet");
 
 	ShortcutManager_ = new ShortcutManager (this);
 
@@ -780,12 +776,6 @@ void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::Activatio
 	}
 }
 
-void LeechCraft::MainWindow::updateIconSet ()
-{
-	IconThemeEngine::Instance ().UpdateIconSet (findChildren<QAction*> ());
-	IconThemeEngine::Instance ().UpdateIconSet (findChildren<QTabWidget*> ());
-}
-
 void LeechCraft::MainWindow::doDelayedInit ()
 {
 	QObjectList shortcuts = Core::Instance ().GetShortcuts ();
@@ -973,5 +963,3 @@ void LeechCraft::MainWindow::keyReleaseEvent (QKeyEvent *e)
 		Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
 	}
 }
-
-
