@@ -8,7 +8,7 @@ Rectangle {
     smooth: true
     z: 0
 
-    color: colorProxy.color_TextView_BottomColor
+    color: colorProxy.color_TextBox_TopColor
 
     signal linkActivated(string id)
 
@@ -67,7 +67,7 @@ Rectangle {
             font.bold: true
             font.underline: true
             font.pointSize: 12
-            color: colorProxy.color_TextView_TitleTextColor
+            color: colorProxy.color_TextBox_TitleTextColor
             anchors.top: parent.top
             anchors.topMargin: 2
             anchors.left: artistImageThumb.right
@@ -107,7 +107,7 @@ Rectangle {
             id: artistTagsLabel
             z: 2
             text: artistTags
-            color: colorProxy.color_TextView_Aux1TextColor
+            color: colorProxy.color_TextBox_Aux1TextColor
             anchors.left: artistNameLabel.right
             anchors.leftMargin: 2
             anchors.bottom: artistNameLabel.bottom
@@ -202,7 +202,7 @@ Rectangle {
                         anchors.right: parent.right
 
                         text: albumName
-                        color: colorProxy.color_TextView_TextColor
+                        color: colorProxy.color_TextBox_TextColor
                         horizontalAlignment: Text.AlignHCenter
                     }
 
@@ -213,7 +213,7 @@ Rectangle {
                         anchors.right: parent.right
 
                         text: albumYear
-                        color: colorProxy.color_TextView_Aux2TextColor
+                        color: colorProxy.color_TextBox_Aux2TextColor
                         horizontalAlignment: Text.AlignHCenter
                     }
 
@@ -246,11 +246,11 @@ Rectangle {
             gradient: Gradient {
                 GradientStop {
                     position: 0
-                    color: colorProxy.color_TextView_BottomColor
+                    color: colorProxy.color_TextBox_TopColor
                 }
                 GradientStop {
                     position: 1
-                    color: colorProxy.setAlpha(colorProxy.color_TextView_BottomColor, 0)
+                    color: colorProxy.setAlpha(colorProxy.color_TextBox_TopColor, 0)
                 }
             }
         }
@@ -277,7 +277,7 @@ Rectangle {
                 text: artistInfo
                 textFormat: Text.RichText
                 clip: true
-                color: colorProxy.color_TextView_TextColor
+                color: colorProxy.color_TextBox_TextColor
                 wrapMode: Text.WordWrap
 
                 anchors.top: parent.top
@@ -299,11 +299,11 @@ Rectangle {
             gradient: Gradient {
                 GradientStop {
                     position: 0
-                    color: colorProxy.color_TextView_BottomColor
+                    color: colorProxy.color_TextBox_TopColor
                 }
                 GradientStop {
                     position: 1
-                    color: colorProxy.color_TextView_TopColor
+                    color: colorProxy.color_TextBox_BottomColor
                 }
             }
         }
@@ -320,12 +320,12 @@ Rectangle {
             gradient: Gradient {
                 GradientStop {
                     position: 0
-                    color: colorProxy.color_TextView_TopColor
+                    color: colorProxy.color_TextBox_BottomColor
                 }
 
                 GradientStop {
                     position: 1
-                    color: colorProxy.setAlpha(colorProxy.color_TextView_TopColor, 0)
+                    color: colorProxy.setAlpha(colorProxy.color_TextBox_BottomColor, 0)
                 }
             }
         }
