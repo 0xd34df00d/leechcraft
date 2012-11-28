@@ -21,13 +21,17 @@
 #include <QObject>
 #include <QPalette>
 #include <QHash>
+#include <interfaces/core/icolorthememanager.h>
+
 class QSettings;
 
 namespace LeechCraft
 {
 	class ColorThemeEngine : public QObject
+						   , public IColorThemeManager
 	{
 		Q_OBJECT
+		Q_INTERFACES (IColorThemeManager)
 
 		QPalette StartupPalette_;
 		QHash<QString, QHash<QString, QColor>> QMLColors_;
@@ -36,9 +40,13 @@ namespace LeechCraft
 	public:
 		static ColorThemeEngine& Instance ();
 
+		QColor GetQMLColor (const QString& section, const QString& key);
+
 		QStringList ListThemes () const;
 		void SetTheme (const QString&);
 	private:
 		void FillQML (QSettings&);
+	signals:
+		void themeChanged ();
 	};
 }

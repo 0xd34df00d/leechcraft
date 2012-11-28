@@ -38,6 +38,11 @@ namespace LeechCraft
 		return engine;
 	}
 
+	QColor ColorThemeEngine::GetQMLColor (const QString& section, const QString& key)
+	{
+		return QMLColors_ [section] [key];
+	}
+
 	namespace
 	{
 		QStringList GetCandidates ()
@@ -166,13 +171,13 @@ namespace LeechCraft
 			return;
 		}
 
-		qDebug () << settings.childGroups ();
-
 		auto palette = UpdatePalette (StartupPalette_, settings);
 		QApplication::setPalette (palette);
 
 		QSettings qmlSettings (themePath + "/qml.rc", QSettings::IniFormat);
 		FillQML (qmlSettings);
+
+		emit themeChanged ();
 	}
 
 	void ColorThemeEngine::FillQML (QSettings& settings)
