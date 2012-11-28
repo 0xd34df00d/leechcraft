@@ -47,6 +47,16 @@ namespace NetStoreManager
 
 	Q_DECLARE_FLAGS (ListingOps, ListingOp);
 
+	struct Change
+	{
+		QStringList Id_;
+		bool Deleted_;
+		QList<QStandardItem*> Row_;
+
+		QStringList ParentId_;
+		bool ParentIsRoot_;
+	};
+
 	class ISupportFileListings
 	{
 	public:
@@ -66,11 +76,12 @@ namespace NetStoreManager
 		virtual void Copy (const QStringList& id, const QStringList& newParentId) = 0;
 		virtual void Move (const QStringList& id, const QStringList& newParentId) = 0;
 		virtual void Rename (const QStringList& id, const QString& newName) = 0;
+		virtual void RequestChanges () = 0;
 
 	protected:
 		virtual void gotListing (const QList<QList<QStandardItem*>>&) = 0;
 		virtual void gotFileUrl (const QUrl& url, const QStringList& id) = 0;
-		virtual void gotChanges (QObject *account) = 0;
+		virtual void gotChanges (const QList<Change>& changes) = 0;
 		virtual void gotNewItem (const QList<QStandardItem*>& item, const QStringList& parentId) = 0;
 	};
 }

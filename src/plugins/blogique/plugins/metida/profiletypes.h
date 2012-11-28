@@ -56,6 +56,8 @@ namespace Metida
 		QStringList Communities_;
 		QString FullName_;
 		QList<LJFriendEntry_ptr> Friends_;
+		QStringList AvatarsID_;
+		QList<QUrl> AvatarsUrls_;
 	};
 
 	namespace LJParserTypes

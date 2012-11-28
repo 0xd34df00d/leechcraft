@@ -18,33 +18,48 @@
 
 #pragma once
 
-#include <QMetaType>
-#include <QVariant>
-#include <QStringList>
-#include <QIcon>
-
 namespace LeechCraft
 {
 namespace Blogique
 {
-	/** @brief Interface representing an account's profile.
-		*
-		* This interface represents an account's profile.
-		**/
-	class IProfile
+namespace Metida
+{
+	enum Access
 	{
-	public:
-		virtual ~IProfile () {}
+		Public,
+		FriendsOnly,
+		Private,
+		Custom,
 
-		virtual QWidget* GetProfileWidget () = 0;
+		MAXAccess
+	};
 
-		virtual QList<QPair<QIcon, QString>> GetPostingTargets () const = 0;
-	protected:
-		virtual void profileUpdated () = 0;
+	enum CommentsManagement
+	{
+		DisableComments,
+		EnableComments,
+		WithoutNotification,
 
+		MAXManagment,
+
+		Default,
+		ShowComments,
+		ShowFriendsComments,
+		ScreenComments,
+		ScreenAnonymouseComments,
+		ScreenNotFromFriendsWithLinks,
+
+		MAXScreening
+	};
+
+	enum AdultContent
+	{
+		WithoutAdultContent,
+		AdultsFrom14,
+		AdultsFrom18,
+
+		MAXAdult
 	};
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Blogique::IProfile,
-		"org.Deviant.LeechCraft.Blogique.IProfile/1.0");
+}

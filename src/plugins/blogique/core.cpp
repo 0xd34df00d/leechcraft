@@ -18,11 +18,14 @@
 
 #include "core.h"
 #include <QtDebug>
+#include <QTimer>
 #include <interfaces/iplugin2.h>
+#include <util/util.h>
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "pluginproxy.h"
+#include "localstorage.h"
 
 namespace LeechCraft
 {
@@ -30,6 +33,7 @@ namespace Blogique
 {
 	Core::Core ()
 	: PluginProxy_ (std::make_shared<PluginProxy> ())
+	, Storage_ (new LocalStorage (this))
 	{
 	}
 
@@ -118,6 +122,16 @@ namespace Blogique
 		emit gotEntity (e);
 	}
 
+	void Core::DelayedProfilesUpdate ()
+	{
+		QTimer::singleShot (15000, this, SLOT (updateProfiles ()));
+	}
+
+	LocalStorage* Core::GetStorage () const
+	{
+		return Storage_;
+	}
+
 	void Core::AddBlogPlatformPlugin (QObject *plugin)
 	{
 		IBloggingPlatformPlugin *ibpp = qobject_cast<IBloggingPlatformPlugin*> (plugin);
@@ -171,6 +185,11 @@ namespace Blogique
 			return;
 		}
 
+		connect (accObj,
+				SIGNAL (entryPosted ()),
+				this,
+				SLOT (handleEntryPosted ()));
+
 		emit accountAdded (accObj);
 	}
 
@@ -202,6 +221,18 @@ namespace Blogique
 		}
 		
 		emit accountValidated (accObj, validated);
+	}
+
+	void Core::updateProfiles ()
+	{
+		for (auto acc : GetAccounts ())
+			acc->updateProfile ();
+	}
+
+	void Core::handleEntryPosted ()
+	{
+		SendEntity (Util::MakeNotification ("Blogique",
+				tr ("Entry was posted successfully."), Priority::PInfo_));
 	}
 
 }

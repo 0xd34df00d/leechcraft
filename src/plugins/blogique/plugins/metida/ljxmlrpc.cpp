@@ -26,7 +26,7 @@
 #include <util/sysinfo.h>
 #include "profiletypes.h"
 #include "ljfriendentry.h"
-#include "ljaccount.h"
+#include "utils.h"
 
 namespace LeechCraft
 {
@@ -37,6 +37,7 @@ namespace Metida
 	LJXmlRPC::LJXmlRPC (LJAccount *acc, QObject *parent)
 	: QObject (parent)
 	, Account_ (acc)
+	, BitMaskForFriendsOnlyComments_ (0)
 	{
 	}
 
@@ -206,11 +207,11 @@ namespace Metida
 		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
 				"1", document));
 		//TODO
-// 		result.second.appendChild (GetMemberElement ("clientversion", "string",
-// 				Util::SysInfo::GetOSName () +
-// 						"-LeechCraft Blogique " +
-// 						Core::Instance ().GetCoreProxy ()->GetVersion (),
-// 				document));
+		result.second.appendChild (GetSimpleMemberElement ("clientversion", "string",
+				Util::SysInfo::GetOSName () +
+						"-LeechCraft Blogique: " +
+						Core::Instance ().GetCoreProxy ()->GetVersion (),
+				document));
 		result.second.appendChild (GetSimpleMemberElement ("getmoods", "int",
 				"0", document));
 		result.second.appendChild (GetSimpleMemberElement ("getmenus", "int",
@@ -564,9 +565,130 @@ namespace Metida
 				SLOT (handleReplyWithProfileUpdate ()));
 	}
 
+	void LJXmlRPC::PostEventRequest (const LJEvent& event, const QString& challenge)
+	{
+		QDomDocument document ("PostEventRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.postevent", document);
+		document.appendChild (result.first);
+		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
+				"challenge", document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
+				challenge, document));
+		result.second.appendChild (GetSimpleMemberElement ("username", "string",
+				Account_->GetOurLogin (), document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
+				GetPassword (Account_->GetPassword (), challenge), document));
+		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
+				"1", document));
+
+		result.second.appendChild (GetSimpleMemberElement ("event", "string",
+				event.Event_, document));
+		result.second.appendChild (GetSimpleMemberElement ("subject", "string",
+				event.Subject_, document));
+
+		result.second.appendChild (GetSimpleMemberElement ("security", "string",
+				MetidaUtils::GetStringForAccess (event.Security_), document));
+		if (event.Security_ == Access::FriendsOnly)
+			result.second.appendChild (GetSimpleMemberElement ("allowmask", "int",
+					QString::number (BitMaskForFriendsOnlyComments_), document));
+		else if (event.Security_ == Access::Custom)
+			result.second.appendChild (GetSimpleMemberElement ("allowmask", "int",
+					QString::number (event.AllowMask_), document));
+		result.second.appendChild (GetSimpleMemberElement ("year", "int",
+				QString::number (event.DateTime_.date ().year ()), document));
+		result.second.appendChild (GetSimpleMemberElement ("mon", "int",
+				QString::number (event.DateTime_.date ().month ()), document));
+		result.second.appendChild (GetSimpleMemberElement ("day", "int",
+				QString::number (event.DateTime_.date ().day ()), document));
+		result.second.appendChild (GetSimpleMemberElement ("hour", "int",
+				QString::number (event.DateTime_.time ().hour ()), document));
+		result.second.appendChild (GetSimpleMemberElement ("min", "int",
+				QString::number (event.DateTime_.time ().minute ()), document));
+		result.second.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		auto propsStruct = GetComplexMemberElement ("props", "struct", document);
+		result.second.appendChild (propsStruct.first);
+
+		propsStruct.second.appendChild (GetSimpleMemberElement ("current_location",
+				"string", event.Props_.CurrentLocation_, document));
+		if (!event.Props_.CurrentMood_.isEmpty ())
+			propsStruct.second.appendChild (GetSimpleMemberElement ("current_mood",
+					"string", event.Props_.CurrentMood_, document));
+		else
+			propsStruct.second.appendChild (GetSimpleMemberElement ("current_moodid",
+					"int", QString::number (event.Props_.CurrentMoodId_), document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("current_music",
+				"string", event.Props_.CurrentMusic_, document));
+
+		propsStruct.second.appendChild (GetSimpleMemberElement ("opt_nocomments",
+				"boolean", event.Props_.CommentsManagement_ == CommentsManagement::DisableComments ?
+					"1" :
+					"0",
+				document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("opt_noemail",
+				"boolean", event.Props_.CommentsManagement_ == CommentsManagement::WithoutNotification ?
+					"1" :
+					"0",
+				document));
+
+		QString screening;
+		switch (event.Props_.ScreeningComments_)
+		{
+			case CommentsManagement::ScreenAnonymouseComments:
+				screening = "R";
+				break;
+			case CommentsManagement::ScreenComments:
+				screening = "A";
+				break;
+			case CommentsManagement::ShowComments:
+				screening = "N";
+				break;
+			case CommentsManagement::ShowFriendsComments:
+				screening = "F";
+				break;
+			case CommentsManagement::ScreenNotFromFriendsWithLinks:
+				screening = "L";
+				break;
+			case CommentsManagement::Default:
+			default:
+				break;
+		}
+		if (!screening.isEmpty ())
+			propsStruct.second.appendChild (GetSimpleMemberElement ("opt_screening",
+					"string", screening, document));
+
+		propsStruct.second.appendChild (GetSimpleMemberElement ("adult_content",
+				"string",
+				MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_),
+				document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("taglist",
+				"string", event.Tags_.join (","), document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("useragent",
+				"string", "LeechCraft Blogique", document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("picture_keyword",
+				"string", event.Props_.PostAvatar_, document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePostEventReplyFinished ()));
+	}
+
 	void LJXmlRPC::UpdateProfileInfo ()
 	{
 		Validate (Account_->GetOurLogin (), Account_->GetPassword ());
+	}
+
+	void LJXmlRPC::Submit (const LJEvent& event)
+	{
+		ApiCallQueue_ << [event, this] (const QString& challenge)
+				{ PostEventRequest (event, challenge); };
+		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::handleChallengeReplyFinished ()
@@ -683,6 +805,18 @@ namespace Metida
 						const LJParserTypes::LJParseProfileEntry& entry)
 				{
 					profile.Caps_ = entry.ValueToLongLong ();
+				};
+				Id2ProfileField_ ["pickws"] = [] (LJProfileData& profile,
+						const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					for (const auto& val : entry.Value ())
+						profile.AvatarsID_ << val.toList ().value (0).toString ();
+				};
+				Id2ProfileField_ ["pickwurls"] = [] (LJProfileData& profile,
+						const LJParserTypes::LJParseProfileEntry& entry)
+				{
+					for (const auto& val : entry.Value ())
+						profile.AvatarsUrls_ << QUrl (val.toList ().value (0).toString ());
 				};
 			}
 		};
@@ -834,6 +968,39 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			Account_->updateProfile ();
+			return;
+		}
+
+		ParseForError (content);
+	}
+
+	void LJXmlRPC::handlePostEventReplyFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		const auto& content = reply->readAll ();
+		reply->deleteLater ();
+		QDomDocument document;
+		QString errorMsg;
+		int errorLine = -1, errorColumn = -1;
+		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< errorMsg
+					<< "in line:"
+					<< errorLine
+					<< "column:"
+					<< errorColumn;
+			return;
+		}
+
+		qDebug () << document.toByteArray ();
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			//TODO
+			emit entryPosted ();
 			return;
 		}
 

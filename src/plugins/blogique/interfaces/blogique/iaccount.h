@@ -21,12 +21,36 @@
 #include <QMetaType>
 #include <QVariant>
 #include <QStringList>
+#include <QDateTime>
+#include <boost/graph/graph_concepts.hpp>
 
 class QWidget;
 namespace LeechCraft
 {
 namespace Blogique
 {
+	struct Event
+	{
+		QString Target_;
+		QString Subject_;
+		QString Content_;
+		QDateTime Date_;
+		QStringList Tags_;
+		QVariantMap PostOptions_;
+		QVariantMap CustomData_;
+		qlonglong EntryDBId_;
+
+		Event ()
+		: EntryDBId_ (-1)
+		{
+		}
+
+		bool IsEmpty () const
+		{
+			return Content_.isEmpty ();
+		};
+	};
+
 	/** @brief Interface representing a single account.
 	 *
 	 **/
@@ -99,6 +123,15 @@ namespace Blogique
 		 */
 		virtual QObject* GetProfile () = 0;
 
+		/** @brief Submit post to blog.
+		 *
+		 */
+		virtual void submit (const Event& event) = 0;
+
+		/** @brief Request updating profile data.
+		 *
+		 */
+		virtual void updateProfile () = 0;
 	protected:
 		/** @brief This signal should be emitted when account is renamed.
 		 *
@@ -110,6 +143,13 @@ namespace Blogique
 		 * @param[out] newName The new name of this account.
 		 */
 		virtual void accountRenamed (const QString& newName) = 0;
+
+		/** @brief This signal should be emitted when entry
+		 * successfully posted to blog.
+		 * 
+		 * @note This function is expected to be a signal.
+		 */
+		virtual void entryPosted () = 0;
 	};
 }
 }

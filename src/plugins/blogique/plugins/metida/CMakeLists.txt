@@ -30,6 +30,7 @@ SET (METIDA_SRCS
 	postoptionswidget.cpp
 	profiletypes.cpp
 	profilewidget.cpp
+	selectgroupsdialog.cpp
 	utils.cpp
 	xmlsettingsmanager.cpp
 	)
@@ -37,6 +38,7 @@ SET (METIDA_SRCS
 SET (METIDA_HEADERS
 	addeditentrydialog.h
 	core.h
+	entryoptions.h
 	frienditemdelegate.h
 	friendsmodel.h
 	ljaccount.h
@@ -50,6 +52,7 @@ SET (METIDA_HEADERS
 	postoptionswidget.h
 	profiletypes.h
 	profilewidget.h
+	selectgroupsdialog.h
 	utils.h
 	xmlsettingsmanager.h
 	)
@@ -60,6 +63,7 @@ SET (METIDA_FORMS
 	ljaccountconfigurationwidget.ui
 	profilewidget.ui
 	postoptionswidget.ui
+	selectgroupsdialog.ui
 	)
 
 SET (METIDA_RESOURCES blogiquemetidaresources.qrc)

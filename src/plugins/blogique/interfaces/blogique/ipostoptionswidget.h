@@ -20,31 +20,43 @@
 
 #include <QMetaType>
 #include <QVariant>
-#include <QStringList>
-#include <QIcon>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	/** @brief Interface representing an account's profile.
-		*
-		* This interface represents an account's profile.
-		**/
-	class IProfile
+	/** @brief Interface representing a side widget with main post options'.
+	*
+	**/
+	class IPostOptionsWidget
 	{
 	public:
-		virtual ~IProfile () {}
+		virtual ~IPostOptionsWidget () {};
 
-		virtual QWidget* GetProfileWidget () = 0;
+		/** @brief Returns list of tags for entry.
+		*
+		* @return List of tags
+		**/
+		virtual QStringList GetTags () const = 0;
 
-		virtual QList<QPair<QIcon, QString>> GetPostingTargets () const = 0;
-	protected:
-		virtual void profileUpdated () = 0;
+		/** @brief Set tags.
+		 * 
+		 **/
+		virtual void SetTags (const QStringList& tags) = 0;
 
+		/** @brief Returns date when post was written.
+		 * 
+		 * @return Post date
+		 **/
+		virtual QDateTime GetPostDate () const = 0;
+
+		/** @brief Set post timestamp.
+		 * 
+		 **/
+		virtual void SetPostDate (const QDateTime& dt) = 0;
 	};
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blogique::IProfile,
-		"org.Deviant.LeechCraft.Blogique.IProfile/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Blogique::IPostOptionsWidget,
+		"org.Deviant.LeechCraft.Blogique.IPostOptionsWidget/1.0");

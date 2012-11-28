@@ -6,16 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>371</height>
+    <width>347</width>
+    <height>617</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string/>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <widget class="QGroupBox" name="groupBox_3">
+    <widget class="QGroupBox" name="TagsBox_">
      <property name="title">
       <string>Tags</string>
      </property>
@@ -43,7 +43,7 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="TimestampBox_">
      <property name="title">
       <string>Modify timestamp</string>
      </property>
@@ -173,202 +173,211 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="EntryOptions_">
      <property name="title">
       <string>Entry options</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_2">
-      <property name="horizontalSpacing">
-       <number>0</number>
-      </property>
-      <property name="verticalSpacing">
-       <number>-1</number>
-      </property>
-      <property name="margin">
-       <number>2</number>
-      </property>
-      <item row="0" column="1">
-       <layout class="QFormLayout" name="formLayout">
-        <property name="fieldGrowthPolicy">
-         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="accessLabel">
+        <property name="text">
+         <string>Access:</string>
         </property>
-        <property name="rowWrapPolicy">
-         <enum>QFormLayout::DontWrapRows</enum>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="horizontalSpacing">
-         <number>-1</number>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="moodLabel">
+        <property name="text">
+         <string>Mood:</string>
         </property>
-        <property name="verticalSpacing">
-         <number>-1</number>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <item row="1" column="0">
-         <widget class="QLabel" name="moodLabel">
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="whereIsYouLabel">
+        <property name="text">
+         <string>Where is you:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QLineEdit" name="Place_"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="musicLabel">
+        <property name="text">
+         <string>Music:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="QLineEdit" name="Music_"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="commentsLabel">
+        <property name="text">
+         <string>Comments:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Notify about new replies:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QCheckBox" name="NotifyAboutComments_">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="hideCommentsLabel">
+        <property name="text">
+         <string>Screen comments:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="adultContentLabel">
+        <property name="text">
+         <string>Adult content:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Show in friends page:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QCheckBox" name="ShowInFriendsPage_">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Mood:</string>
+           <string>Userpic:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="Mood_">
-          <property name="editable">
-           <bool>true</bool>
+        <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
           </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="whereIsYouLabel">
-          <property name="text">
-           <string>Where is you:</string>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
           </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="Place_"/>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="musicLabel">
-          <property name="text">
-           <string>Music:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QLineEdit" name="Music_"/>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="commentsLabel">
-          <property name="text">
-           <string>Comments:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QComboBox" name="Comments_">
-          <property name="currentIndex">
-           <number>0</number>
-          </property>
-          <item>
-           <property name="text">
-            <string>Default</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Off</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Don't notify</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="hideCommentsLabel">
-          <property name="text">
-           <string>Hide comments:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="QComboBox" name="HideComments_">
-          <property name="currentIndex">
-           <number>0</number>
-          </property>
-          <item>
-           <property name="text">
-            <string>Default</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Don't hide</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Anonymouse only</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Not from friends</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>All</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="adultContentLabel">
-          <property name="text">
-           <string>Adult content:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="1">
-         <widget class="QComboBox" name="Adult_">
-          <property name="currentIndex">
-           <number>0</number>
-          </property>
-          <item>
-           <property name="text">
-            <string>Default</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Without adult content</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>For adults (&gt; 14)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>For adults (&gt;18)</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="Access_">
-          <item>
-           <property name="text">
-            <string>Public</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Friends only</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Private</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Custome</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="accessLabel">
-          <property name="text">
-           <string>Access</string>
-          </property>
-         </widget>
+         </spacer>
         </item>
        </layout>
+      </item>
+      <item row="9" column="1">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QComboBox" name="UserPic_"/>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="9" column="2">
+       <widget class="QLabel" name="UserPicLabel_">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QComboBox" name="Access_"/>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QComboBox" name="Mood_">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" colspan="2">
+       <widget class="QComboBox" name="Comments_">
+        <property name="currentIndex">
+         <number>-1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1" colspan="2">
+       <widget class="QComboBox" name="ScreenComments_">
+        <property name="currentIndex">
+         <number>-1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1" colspan="2">
+       <widget class="QComboBox" name="Adult_">
+        <property name="currentIndex">
+         <number>-1</number>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

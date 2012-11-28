@@ -82,6 +82,7 @@ namespace GoogleDrive
 		void Copy (const QStringList& id, const QStringList& newParentId);
 		void Move (const QStringList& id, const QStringList& newParentId);
 		void Rename (const QStringList& id, const QString& newName);
+		void RequestChanges ();
 
 		QByteArray Serialize ();
 		static Account_ptr Deserialize (const QByteArray& data, QObject *parentPlugin);
@@ -98,6 +99,8 @@ namespace GoogleDrive
 		void handleFileList (const QList<DriveItem>& items);
 		void handleSharedFileId (const QString& id);
 		void handleGotNewItem (const DriveItem& item);
+		void handleGotChanges (const QList<DriveChanges>& changes, qlonglong lastId);
+
 	signals:
 		void upError (const QString& error, const QString& filepath);
 		void upFinished (const QStringList& id, const QString& filepath);
@@ -107,7 +110,7 @@ namespace GoogleDrive
 		void gotListing (const QList<QList<QStandardItem*>>& items);
 		void gotFileUrl (const QUrl& url, const QStringList& id);
 
-		void gotChanges (QObject *account);
+		void gotChanges (const QList<Change>& changes);
 
 		void gotNewItem (const QList<QStandardItem*>& item, const QStringList& parentId);
 	};

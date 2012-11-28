@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,49 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NETSTOREMANAGER_ACCOUNTSMANAGER_H
-#define PLUGINS_NETSTOREMANAGER_ACCOUNTSMANAGER_H
-#include <QObject>
-#include "interfaces/netstoremanager/isupportfilelistings.h"
+#pragma once
 
-class QAbstractItemModel;
+#include <QDialog>
+#include "ui_selectgroupsdialog.h"
+
 class QStandardItemModel;
-class QModelIndex;
 
 namespace LeechCraft
 {
-namespace NetStoreManager
+namespace Blogique
 {
-	class IStoragePlugin;
-	class IStorageAccount;
+namespace Metida
+{
+	class LJProfile;
 
-	class AccountsManager : public QObject
+	class SelectGroupsDialog : public QDialog
 	{
 		Q_OBJECT
 
+		Ui::SelectGroupsDialog Ui_;
 		QStandardItemModel *Model_;
-		enum Roles
-		{
-			AccountObj = Qt::UserRole + 1
-		};
-
-		QList<IStoragePlugin*> Plugins_;
 	public:
-		AccountsManager (QObject* = 0);
+		SelectGroupsDialog (LJProfile *profile, quint32 allowMask, QWidget *parent = 0);
 
-		void AddPlugin (IStoragePlugin*);
-		QList<IStoragePlugin*> GetPlugins () const;
-		QList<IStorageAccount*> GetAccounts () const;
-		IStorageAccount* GetAccountFromUniqueID (const QString& id) const;
-		QAbstractItemModel* GetModel () const;
-
-		void RemoveAccount (const QModelIndex&);
-
-	private slots:
-		void handleAccountAdded (QObject*);
-		void handleAccountRemoved (QObject*);
+		QList<uint> GetSelectedGroupsIds () const;
 	};
 }
 }
+}
 
-#endif
