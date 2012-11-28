@@ -27,6 +27,7 @@
 #include "mwproxy.h"
 #include "entitymanager.h"
 #include "config.h"
+#include "colorthemeengine.h"
 
 namespace LeechCraft
 {
@@ -80,6 +81,11 @@ namespace LeechCraft
 	void CoreProxy::UpdateIconset (const QList<QAction*>& actions) const
 	{
 		IconThemeEngine::Instance ().UpdateIconSet (actions);
+	}
+
+	IColorThemeManager* CoreProxy::GetColorThemeManager () const
+	{
+		return &ColorThemeEngine::Instance ();
 	}
 
 	ITagsManager* CoreProxy::GetTagsManager () const

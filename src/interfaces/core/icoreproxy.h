@@ -34,6 +34,7 @@ class QIcon;
 class QMainWindow;
 class QAbstractItemModel;
 class QTabWidget;
+class IColorThemeManager;
 
 namespace LeechCraft
 {
@@ -107,6 +108,10 @@ public:
 	/** @brief Updates the icons of the given actions according to current iconset.
 	 */
 	virtual void UpdateIconset (const QList<QAction*>& actions) const = 0;
+
+	/** @brief Returns the color theme manager.
+	 */
+	virtual IColorThemeManager* GetColorThemeManager () const = 0;
 
 	/** Returns main LeechCraft's window.
 	 */
