@@ -24,11 +24,11 @@
 #include <QDeclarativeImageProvider>
 #include <QDeclarativeEngine>
 #include <util/util.h>
+#include <util/qml/colorthemeproxy.h>
 #include "core.h"
 #include "localcollection.h"
 #include "similarmodel.h"
 #include "sysiconsprovider.h"
-#include "colorproxy.h"
 
 namespace LeechCraft
 {
@@ -41,7 +41,7 @@ namespace LMP
 		engine ()->addImageProvider ("sysIcons", new SysIconProvider (Core::Instance ().GetProxy ()));
 		rootContext ()->setContextProperty ("similarModel", Model_);
 		rootContext ()->setContextProperty ("colorProxy",
-				new ColorProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
+				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
 		setSource (QUrl ("qrc:/lmp/resources/qml/SimilarView.qml"));
 
 		connect (rootObject (),

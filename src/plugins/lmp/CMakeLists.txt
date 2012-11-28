@@ -86,7 +86,6 @@ SET (SRCS
 	sortingcriteriadialog.cpp
 	similarmodel.cpp
 	hypeswidget.cpp
-	colorproxy.cpp
 	sysiconsprovider.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp

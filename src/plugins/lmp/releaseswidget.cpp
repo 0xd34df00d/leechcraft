@@ -22,13 +22,13 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/qml/colorthemeproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecentreleases.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
-#include "colorproxy.h"
 
 namespace LeechCraft
 {
@@ -71,7 +71,7 @@ namespace LMP
 		Ui_.setupUi (this);
 		Ui_.ReleasesView_->rootContext ()->setContextProperty ("releasesModel", ReleasesModel_);
 		Ui_.ReleasesView_->rootContext ()->setContextProperty ("colorProxy",
-				new ColorProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
+				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
 		Ui_.ReleasesView_->setSource (QUrl ("qrc:/lmp/resources/qml/ReleasesView.qml"));
 
 		connect (Ui_.InfoProvider_,

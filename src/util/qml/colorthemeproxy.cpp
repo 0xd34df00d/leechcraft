@@ -16,15 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "colorproxy.h"
+#include "colorthemeproxy.h"
 #include <QtDebug>
 #include <interfaces/core/icolorthememanager.h>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Util
 {
-	ColorProxy::ColorProxy (IColorThemeManager *manager, QObject *parent)
+	ColorThemeProxy::ColorThemeProxy (IColorThemeManager *manager, QObject *parent)
 	: QObject (parent)
 	, Manager_ (manager)
 	{
@@ -34,13 +34,13 @@ namespace LMP
 				SIGNAL (colorsChanged ()));
 	}
 
-	QColor ColorProxy::setAlpha (QColor color, qreal alpha)
+	QColor ColorThemeProxy::setAlpha (QColor color, qreal alpha)
 	{
 		color.setAlphaF (alpha);
 		return color;
 	}
 
-	QColor ColorProxy::GetColor (const QString& group, const QString& color) const
+	QColor ColorThemeProxy::GetColor (const QString& group, const QString& color) const
 	{
 		return Manager_->GetQMLColor (group, color);
 	}

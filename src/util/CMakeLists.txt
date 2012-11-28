@@ -1,4 +1,5 @@
 IF (NOT USE_QT5)
+	SET (QT_USE_QTDECLARATIVE TRUE)
 	SET (QT_USE_QTNETWORK TRUE)
 	SET (QT_USE_QTSQL TRUE)
 	SET (QT_USE_QTXML TRUE)
@@ -18,6 +19,7 @@ SET (SRCS
 	models/listmodel.cpp
 	models/mergemodel.cpp
 	models/treeitem.cpp
+	qml/colorthemeproxy.cpp
 	sync/syncdeltamanager.cpp
 	sync/syncops.cpp
 	sys/paths.cpp
@@ -53,6 +55,7 @@ SET (HEADERS
 	models/listmodel.h
 	models/mergemodel.h
 	models/treeitem.h
+	qml/colorthemeproxy.h
 	sync/syncdeltamanager.h
 	sync/syncops.h
 	sys/paths.h
@@ -119,5 +122,5 @@ SET_PROPERTY (TARGET lcutil PROPERTY SOVERSION 0.5.0)
 INSTALL (TARGETS lcutil DESTINATION ${LIBDIR})
 
 IF (USE_QT5)
-	QT5_USE_MODULES (lcutil Network Xml Sql Widgets)
+	QT5_USE_MODULES (lcutil Declarative Network Xml Sql Widgets)
 ENDIF ()

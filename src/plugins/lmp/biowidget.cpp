@@ -24,6 +24,7 @@
 #include <QtDebug>
 #include <QFutureWatcher>
 #include <util/util.h>
+#include <util/qml/colorthemeproxy.h>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
@@ -32,7 +33,6 @@
 #include "core.h"
 #include "biopropproxy.h"
 #include "xmlsettingsmanager.h"
-#include "colorproxy.h"
 
 namespace LeechCraft
 {
@@ -76,7 +76,7 @@ namespace LMP
 		Ui_.View_->rootContext ()->setContextObject (BioPropProxy_);
 		Ui_.View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
 		Ui_.View_->rootContext ()->setContextProperty ("colorProxy",
-				new ColorProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
+				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
 		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/BioView.qml"));
 
 		const auto& lastProv = XmlSettingsManager::Instance ()

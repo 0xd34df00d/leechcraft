@@ -20,20 +20,21 @@
 
 #include <QObject>
 #include <QColor>
+#include <util/utilconfig.h>
 
 class IColorThemeManager;
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Util
 {
-	class ColorProxy : public QObject
+	class UTIL_API ColorThemeProxy : public QObject
 	{
 		Q_OBJECT
 
 		IColorThemeManager *Manager_;
 	public:
-		ColorProxy (IColorThemeManager*, QObject* = 0);
+		ColorThemeProxy (IColorThemeManager*, QObject* = 0);
 
 #ifdef GEN_RUN
 #define DECL_PROP(group,col) \
