@@ -8,7 +8,7 @@ Rectangle {
     smooth: true
     z: 0
 
-    color: "black"
+    color: colorProxy.color_TextView_BottomColor
 
     signal linkActivated(string id)
 
@@ -67,7 +67,7 @@ Rectangle {
             font.bold: true
             font.underline: true
             font.pointSize: 12
-            color: "#dddddd"
+            color: colorProxy.color_TextView_TitleTextColor
             anchors.top: parent.top
             anchors.topMargin: 2
             anchors.left: artistImageThumb.right
@@ -107,7 +107,7 @@ Rectangle {
             id: artistTagsLabel
             z: 2
             text: artistTags
-            color: "#999999"
+            color: colorProxy.color_TextView_Aux1TextColor
             anchors.left: artistNameLabel.right
             anchors.leftMargin: 2
             anchors.bottom: artistNameLabel.bottom
@@ -128,9 +128,9 @@ Rectangle {
             width: 400
             height: trackListText.height + 10
 
-            color: "#e9000000"
+            color: colorProxy.setAlpha(colorProxy.color_TextBox_TopColor, 0.9)
 
-            border.color: "#FF6500"
+            border.color: colorProxy.color_TextBox_HighlightBorderColor
             border.width: 1
 
             Text {
@@ -141,7 +141,7 @@ Rectangle {
                 anchors.margins: 5
 
                 elide: Text.ElideRight
-                color: "#999999"
+                color: colorProxy.color_TextBox_TextColor
             }
 
             states: [
@@ -202,7 +202,7 @@ Rectangle {
                         anchors.right: parent.right
 
                         text: albumName
-                        color: "#bbbbbb"
+                        color: colorProxy.color_TextView_TextColor
                         horizontalAlignment: Text.AlignHCenter
                     }
 
@@ -213,7 +213,7 @@ Rectangle {
                         anchors.right: parent.right
 
                         text: albumYear
-                        color: "#999999"
+                        color: colorProxy.color_TextView_Aux2TextColor
                         horizontalAlignment: Text.AlignHCenter
                     }
 
@@ -245,13 +245,12 @@ Rectangle {
 
             gradient: Gradient {
                 GradientStop {
-                    position: 1
-                    color: "#00000000"
-                }
-
-                GradientStop {
                     position: 0
-                    color: "#ff000000"
+                    color: colorProxy.color_TextView_BottomColor
+                }
+                GradientStop {
+                    position: 1
+                    color: colorProxy.setAlpha(colorProxy.color_TextView_BottomColor, 0)
                 }
             }
         }
@@ -278,7 +277,7 @@ Rectangle {
                 text: artistInfo
                 textFormat: Text.RichText
                 clip: true
-                color: "#aaaaaa"
+                color: colorProxy.color_TextView_TextColor
                 wrapMode: Text.WordWrap
 
                 anchors.top: parent.top
@@ -300,12 +299,11 @@ Rectangle {
             gradient: Gradient {
                 GradientStop {
                     position: 0
-                    color: "#000000"
+                    color: colorProxy.color_TextView_BottomColor
                 }
-
                 GradientStop {
                     position: 1
-                    color: "#42394b"
+                    color: colorProxy.color_TextView_TopColor
                 }
             }
         }
@@ -322,12 +320,12 @@ Rectangle {
             gradient: Gradient {
                 GradientStop {
                     position: 0
-                    color: "#0042394b"
+                    color: colorProxy.color_TextView_TopColor
                 }
 
                 GradientStop {
                     position: 1
-                    color: "#ff42394b"
+                    color: colorProxy.setAlpha(colorProxy.color_TextView_TopColor, 0)
                 }
             }
         }

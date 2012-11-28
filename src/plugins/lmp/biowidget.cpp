@@ -32,6 +32,7 @@
 #include "core.h"
 #include "biopropproxy.h"
 #include "xmlsettingsmanager.h"
+#include "colorproxy.h"
 
 namespace LeechCraft
 {
@@ -74,6 +75,8 @@ namespace LMP
 
 		Ui_.View_->rootContext ()->setContextObject (BioPropProxy_);
 		Ui_.View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
+		Ui_.View_->rootContext ()->setContextProperty ("colorProxy",
+				new ColorProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
 		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/BioView.qml"));
 
 		const auto& lastProv = XmlSettingsManager::Instance ()
