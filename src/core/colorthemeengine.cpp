@@ -29,7 +29,6 @@ namespace LeechCraft
 {
 	ColorThemeEngine::ColorThemeEngine ()
 	{
-		SetTheme ("crafty");
 	}
 
 	ColorThemeEngine& ColorThemeEngine::Instance ()
@@ -167,17 +166,22 @@ namespace LeechCraft
 			return;
 		}
 
-		QSettings settings (themePath + "/colors.rc", QSettings::IniFormat);
-		if (settings.childGroups ().isEmpty ())
+		if (QFile::exists (themePath + "/colors.rc"))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "error opening colors file for"
-					<< themeName;
-			return;
-		}
+			QSettings settings (themePath + "/colors.rc", QSettings::IniFormat);
+			if (settings.childGroups ().isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error opening colors file for"
+						<< themeName;
+				return;
+			}
 
-		auto palette = UpdatePalette (StartupPalette_, settings);
-		QApplication::setPalette (palette);
+			auto palette = UpdatePalette (StartupPalette_, settings);
+			QApplication::setPalette (palette);
+		}
+		else
+			QApplication::setPalette (StartupPalette_);
 
 		QSettings qmlSettings (themePath + "/qml.rc", QSettings::IniFormat);
 		FillQML (qmlSettings);
