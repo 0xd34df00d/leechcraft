@@ -26,6 +26,8 @@ public:
 	virtual ~IColorThemeManager () {}
 
 	virtual QColor GetQMLColor (const QString& section, const QString& key) = 0;
+
+	virtual QObject* GetObject () = 0;
 protected:
 	virtual void themeChanged () = 0;
 };

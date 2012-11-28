@@ -41,6 +41,7 @@ namespace LeechCraft
 		static ColorThemeEngine& Instance ();
 
 		QColor GetQMLColor (const QString& section, const QString& key);
+		QObject* GetObject ();
 
 		QStringList ListThemes () const;
 		void SetTheme (const QString&);
