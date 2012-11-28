@@ -30,6 +30,7 @@
 #include "core.h"
 #include "similarmodel.h"
 #include "sysiconsprovider.h"
+#include "colorproxy.h"
 
 namespace LeechCraft
 {
@@ -89,6 +90,8 @@ namespace LMP
 		root->setContextProperty ("tracksLabelText", tr ("Hyped tracks"));
 		root->setContextProperty ("newsText", tr ("Show novelties"));
 		root->setContextProperty ("topsText", tr ("Show tops"));
+		root->setContextProperty ("colorProxy",
+				new ColorProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
 		Ui_.HypesView_->setSource (QUrl ("qrc:/lmp/resources/qml/HypesView.qml"));
 
 		connect (Ui_.InfoProvider_,
