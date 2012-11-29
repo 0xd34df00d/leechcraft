@@ -27,6 +27,7 @@
 #include "xmlsettingsmanager.h"
 #include "pluginmanagerdialog.h"
 #include "iconthemeengine.h"
+#include "colorthemeengine.h"
 #include "tagsviewer.h"
 #include "core.h"
 #include "settingstab.h"
@@ -135,8 +136,16 @@ namespace LeechCraft
 
 		XmlSettingsDialog_->SetDataSource ("Language",
 			GetInstalledLangsModel ());
+
 		XmlSettingsDialog_->SetDataSource ("IconSet",
 			new QStringListModel (IconThemeEngine::Instance ().ListIcons ()));
+		XmlSettingsManager::Instance ()->RegisterObject ("IconSet", this, "updateIconSet");
+		updateIconSet ();
+
+		XmlSettingsDialog_->SetDataSource ("ColorTheme",
+			new QStringListModel (ColorThemeEngine::Instance ().ListThemes ()));
+		XmlSettingsManager::Instance ()->RegisterObject ("ColorTheme", this, "updateColorTheme");
+		updateColorTheme ();
 
 		QStringList appQStype = QStyleFactory::keys ();
 		appQStype.prepend ("Default");
@@ -265,6 +274,19 @@ namespace LeechCraft
 			pm->SetAllPlugins (Qt::Checked);
 		else if (name == "DisableAllPlugins")
 			pm->SetAllPlugins (Qt::Unchecked);
+	}
+
+	void CoreInstanceObject::updateIconSet ()
+	{
+		IconThemeEngine::Instance ().UpdateIconSet (findChildren<QAction*> ());
+		IconThemeEngine::Instance ().UpdateIconSet (findChildren<QTabWidget*> ());
+	}
+
+	void CoreInstanceObject::updateColorTheme ()
+	{
+		const auto& theme = XmlSettingsManager::Instance ()->
+				property ("ColorTheme").toString ();
+		ColorThemeEngine::Instance ().SetTheme (theme);
 	}
 
 #ifdef STRICT_LICENSING

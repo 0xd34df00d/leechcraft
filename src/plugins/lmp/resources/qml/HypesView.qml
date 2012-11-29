@@ -6,7 +6,17 @@ Rectangle {
     id: rootRect
     anchors.fill: parent
 
-    color: "#000000"
+    gradient: Gradient {
+        GradientStop {
+            position: 0
+            color: colorProxy.color_TextView_TopColor
+        }
+
+        GradientStop {
+            position: 1
+            color: colorProxy.color_TextView_BottomColor
+        }
+    }
 
     signal linkActivated(string id)
 
@@ -18,12 +28,22 @@ Rectangle {
         anchors.bottom: parent.bottom
         width: parent.width / 2
 
-        color: "#000000"
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: colorProxy.color_TextView_TopColor
+            }
+
+            GradientStop {
+                position: 1
+                color: colorProxy.color_TextView_BottomColor
+            }
+        }
 
         Rectangle {
             id: artistsLabel
 
-            color: "#53485F"
+            color: colorProxy.color_TextView_TopColor
 
             anchors.left: parent.left
             anchors.right: parent.right
@@ -36,7 +56,7 @@ Rectangle {
                 text: artistsLabelText
                 font.bold: true
                 font.pointSize: 14
-                color: "#dddddd"
+                color: colorProxy.color_TextView_TitleTextColor
                 anchors.centerIn: parent
             }
         }
@@ -52,12 +72,12 @@ Rectangle {
             gradient: Gradient {
                 GradientStop {
                     position: 0
-                    color: "#ff53485F"
+                    color: colorProxy.color_TextView_TopColor
                 }
 
                 GradientStop {
                     position: 1
-                    color: "#0053485F"
+                    color: colorProxy.setAlpha(colorProxy.color_TextView_TopColor, 0)
                 }
             }
         }
@@ -74,6 +94,8 @@ Rectangle {
                 id: artistsView
                 model: topArtistsModel
 
+                anchors.fill: parent
+
                 onLinkActivated: rootRect.linkActivated(id)
             }
         }
@@ -85,12 +107,22 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
 
-        color: "#000000"
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: colorProxy.color_TextView_TopColor
+            }
+
+            GradientStop {
+                position: 1
+                color: colorProxy.color_TextView_BottomColor
+            }
+        }
 
         Rectangle {
             id: tracksLabel
 
-            color: "#53485F"
+            color: colorProxy.color_TextView_TopColor
 
             anchors.left: parent.left
             anchors.right: parent.right
@@ -103,7 +135,7 @@ Rectangle {
                 text: tracksLabelText
                 font.bold: true
                 font.pointSize: 14
-                color: "#dddddd"
+                color: colorProxy.color_TextView_TitleTextColor
                 anchors.centerIn: parent
             }
 
@@ -145,12 +177,12 @@ Rectangle {
             gradient: Gradient {
                 GradientStop {
                     position: 0
-                    color: "#ff53485F"
+                    color: colorProxy.color_TextView_TopColor
                 }
 
                 GradientStop {
                     position: 1
-                    color: "#0053485F"
+                    color: colorProxy.setAlpha(colorProxy.color_TextView_TopColor, 0)
                 }
             }
         }
@@ -166,12 +198,12 @@ Rectangle {
             gradient: Gradient {
                 GradientStop {
                     position: 0
-                    color: "#53485F"
+                    color: colorProxy.color_TextView_TopColor
                 }
 
                 GradientStop {
                     position: 1
-                    color: "#222222"
+                    color: colorProxy.color_TextView_BottomColor
                 }
             }
 
@@ -201,18 +233,17 @@ Rectangle {
 
                         gradient: Gradient {
                             GradientStop {
-                                position: 1
-                                color: "#42394b"
-                            }
-
-                            GradientStop {
                                 position: 0
-                                color: "#000000"
+                                color: colorProxy.color_TextBox_TopColor
+                            }
+                            GradientStop {
+                                position: 1
+                                color: colorProxy.color_TextBox_BottomColor
                             }
                         }
 
                         border.width: 1
-                        border.color: "#000000"
+                        border.color: colorProxy.color_TextBox_BorderColor
                         smooth: true
 
                         Image {
@@ -237,7 +268,7 @@ Rectangle {
                             font.bold: true
                             font.underline: true
                             font.pointSize: 12
-                            color: "#dddddd"
+                            color: colorProxy.color_TextBox_TitleTextColor
                             anchors.top: parent.top
                             anchors.topMargin: 2
                             anchors.left: trackImageThumb.right
@@ -255,7 +286,7 @@ Rectangle {
 
                             font.underline: true
                             font.pointSize: 11
-                            color: "#bbbbbb"
+                            color: colorProxy.color_TextBox_TextColor
                             anchors.top: trackNameLabel.bottom
                             anchors.topMargin: 2
                             anchors.left: trackImageThumb.right
@@ -270,7 +301,7 @@ Rectangle {
                         Text {
                             id: artistTagsLabel
                             text: change
-                            color: "#888888"
+                            color: colorProxy.color_TextBox_Aux1TextColor
                             anchors.top: parent.top
                             anchors.topMargin: 2
                             anchors.right: parent.right

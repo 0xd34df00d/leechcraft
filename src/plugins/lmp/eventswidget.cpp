@@ -23,6 +23,7 @@
 #include <QtDebug>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/ieventsprovider.h>
+#include <util/qml/colorthemeproxy.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -83,6 +84,8 @@ namespace LMP
 		Ui_.View_->rootContext ()->setContextProperty ("attendSureTextString", tr ("Sure!"));
 		Ui_.View_->rootContext ()->setContextProperty ("attendMaybeTextString", tr ("Maybe"));
 		Ui_.View_->rootContext ()->setContextProperty ("unattendTextString", tr ("Unattend"));
+		Ui_.View_->rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
 		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/EventsView.qml"));
 
 		connect (Ui_.View_->rootObject (),

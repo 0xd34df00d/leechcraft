@@ -17,9 +17,11 @@
  **********************************************************************/
 
 #include "colorthemeengine.h"
+#include <algorithm>
 #include <QFile>
 #include <QStringList>
 #include <QApplication>
+#include <QDir>
 #include <QtDebug>
 #include <QSettings>
 
@@ -27,7 +29,6 @@ namespace LeechCraft
 {
 	ColorThemeEngine::ColorThemeEngine ()
 	{
-		SetTheme ("crafty");
 	}
 
 	ColorThemeEngine& ColorThemeEngine::Instance ()
@@ -36,30 +37,78 @@ namespace LeechCraft
 		return engine;
 	}
 
+	QColor ColorThemeEngine::GetQMLColor (const QString& section, const QString& key)
+	{
+		return QMLColors_ [section] [key];
+	}
+
+	QObject* ColorThemeEngine::GetObject ()
+	{
+		return this;
+	}
+
 	namespace
 	{
+		QStringList GetCandidates ()
+		{
+			QStringList candidates;
+#ifdef Q_OS_WIN32
+			candidates << QApplication::applicationDirPath () + "/share/leechcraft/themes/";
+#elif defined (Q_OS_MAC)
+			candidates << QApplication::applicationDirPath () + "/../Resources/share/themes/";
+#else
+			candidates << "/usr/local/share/leechcraft/themes/"
+					<< "/usr/share/leechcraft/themes/";
+#endif
+			return candidates;
+		}
+
+		QStringList FindThemes ()
+		{
+			QStringList result;
+			for (const auto& candidate : GetCandidates ())
+			{
+				QDir dir (candidate);
+				const auto& list = dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot);
+				result += list;
+			}
+			result.removeDuplicates ();
+			std::sort (result.begin (), result.end ());
+			return result;
+		}
+	}
+
+	QStringList ColorThemeEngine::ListThemes () const
+	{
+		return FindThemes ();
+	}
+
+	namespace
+	{
+		QColor ParseColor (const QVariant& var)
+		{
+			const auto& elems = var.toStringList ();
+			if (elems.size () != 3)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "wrong color"
+						<< var
+						<< elems;
+				return QColor ();
+			}
+
+			return QColor (elems.at (0).toInt (),
+					elems.at (1).toInt (),
+					elems.at (2).toInt ());
+		}
+
 		void UpdateColor (QPalette& palette, QSettings& settings,
 				QPalette::ColorGroup group, QPalette::ColorRole role,
 				const QString& settingsGroup, const QString& key)
 		{
 			settings.beginGroup ("Colors:" + settingsGroup);
-			const auto& elems = settings.value (key).toStringList ();
+			palette.setColor (group, role, ParseColor (settings.value (key)));
 			settings.endGroup ();
-
-			if (elems.size () != 3)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "wrong color"
-						<< settingsGroup
-						<< role
-						<< key
-						<< elems;
-				return;
-			}
-
-			const QColor color (elems.at (0).toInt (),
-					elems.at (1).toInt (), elems.at (2).toInt ());
-			palette.setColor (group, role, color);
 		}
 
 		QPalette UpdatePalette (QPalette palette, QSettings& settings)
@@ -99,14 +148,7 @@ namespace LeechCraft
 
 	void ColorThemeEngine::SetTheme (const QString& themeName)
 	{
-		QStringList candidates;
-#ifdef Q_OS_WIN32
-		candidates << QApplication::applicationDirPath () + "/share/leechcraft/themes/";
-#elif defined (Q_OS_MAC)
-#else
-		candidates << "/usr/local/share/leechcraft/themes/"
-				<< "/usr/share/leechcraft/themes/";
-#endif
+		const auto& candidates = GetCandidates ();
 
 		QString themePath;
 		for (const auto& path : candidates)
@@ -124,18 +166,40 @@ namespace LeechCraft
 			return;
 		}
 
-		QSettings settings (themePath + "/colors.rc", QSettings::IniFormat);
-		if (settings.childGroups ().isEmpty ())
+		if (QFile::exists (themePath + "/colors.rc"))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "error opening colors file for"
-					<< themeName;
-			return;
+			QSettings settings (themePath + "/colors.rc", QSettings::IniFormat);
+			if (settings.childGroups ().isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error opening colors file for"
+						<< themeName;
+				return;
+			}
+
+			auto palette = UpdatePalette (StartupPalette_, settings);
+			QApplication::setPalette (palette);
 		}
+		else
+			QApplication::setPalette (StartupPalette_);
 
-		qDebug () << settings.childGroups ();
+		QSettings qmlSettings (themePath + "/qml.rc", QSettings::IniFormat);
+		FillQML (qmlSettings);
 
-		auto palette = UpdatePalette (StartupPalette_, settings);
-		QApplication::setPalette (palette);
+		emit themeChanged ();
+	}
+
+	void ColorThemeEngine::FillQML (QSettings& settings)
+	{
+		QMLColors_.clear ();
+
+		for (const auto& group : settings.childGroups ())
+		{
+			settings.beginGroup (group);
+			auto& hash = QMLColors_ [group];
+			for (const auto& key : settings.childKeys ())
+				hash [key] = ParseColor (settings.value (key));
+			settings.endGroup ();
+		}
 	}
 }

@@ -24,6 +24,7 @@
 #include <QtDebug>
 #include <util/sys/paths.h>
 #include <util/util.h>
+#include <util/qml/colorthemeproxy.h>
 #include "themeimageprovider.h"
 
 namespace LeechCraft
@@ -74,6 +75,8 @@ namespace SB2
 		setAttribute (Qt::WA_TranslucentBackground);
 
 		rootContext ()->setContextProperty ("unhideListModel", Model_);
+		rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		engine ()->addImageProvider ("ThemeIcons", new ThemeImageProvider (proxy));
 		setSource (QUrl::fromLocalFile (file));
 

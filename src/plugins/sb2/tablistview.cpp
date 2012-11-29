@@ -25,6 +25,7 @@
 #include <QTimer>
 #include <util/util.h>
 #include <util/sys/paths.h>
+#include <util/qml/colorthemeproxy.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoretabwidget.h>
 #include "themeimageprovider.h"
@@ -109,6 +110,8 @@ namespace SB2
 		}
 
 		rootContext ()->setContextProperty ("tabsListModel", Model_);
+		rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		engine ()->addImageProvider ("ThemeIcons", new ThemeImageProvider (proxy));
 		setSource (QUrl::fromLocalFile (file));
 

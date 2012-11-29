@@ -6,8 +6,6 @@ Rectangle {
     width: parent.width
     height: parent.width
 
-    border.width: 1
-    border.color: "#333333"
     radius: 2
 
     color: "transparent"

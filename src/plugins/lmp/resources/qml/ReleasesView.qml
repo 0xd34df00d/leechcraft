@@ -10,12 +10,12 @@ Rectangle {
     gradient: Gradient {
         GradientStop {
             position: 0
-            color: "#53485F"
+            color: colorProxy.color_TextView_TopColor
         }
 
         GradientStop {
             position: 1
-            color: "#222222"
+            color: colorProxy.color_TextView_BottomColor
         }
     }
 
@@ -82,18 +82,17 @@ Rectangle {
                 radius: 5
                 gradient: Gradient {
                     GradientStop {
-                        position: 1
-                        color: "#42394b"
-                    }
-
-                    GradientStop {
                         position: 0
-                        color: "#000000"
+                        color: colorProxy.color_TextBox_TopColor
+                    }
+                    GradientStop {
+                        position: 1
+                        color: colorProxy.color_TextBox_BottomColor
                     }
                 }
 
                 border.width: 1
-                border.color: "#000000"
+                border.color: colorProxy.color_TextBox_BorderColor
                 smooth: true
 
                 Column {
@@ -132,7 +131,7 @@ Rectangle {
                         font.bold: true
                         font.underline: true
                         font.pointSize: 12
-                        color: "#dddddd"
+                        color: colorProxy.color_TextBox_TitleTextColor
 
                         MouseArea {
                             anchors.fill: parent
@@ -144,7 +143,7 @@ Rectangle {
                         id: artistLabel
                         text: artistName
                         elide: Text.ElideMiddle
-                        color: "#999999"
+                        color: colorProxy.color_TextBox_TextColor
                         anchors.horizontalCenter: parent.horizontalCenter
                         font.pointSize: 8
                     }
@@ -152,7 +151,7 @@ Rectangle {
                     Text {
                         id: dateLabel
                         text: releaseDate
-                        color: "#888888"
+                        color: colorProxy.color_TextBox_TextColor
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                 }

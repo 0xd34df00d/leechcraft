@@ -22,6 +22,7 @@
 #include <QDeclarativeEngine>
 #include <QGraphicsObject>
 #include <util/util.h>
+#include <util/qml/colorthemeproxy.h>
 #include <interfaces/media/ihypesprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -89,6 +90,8 @@ namespace LMP
 		root->setContextProperty ("tracksLabelText", tr ("Hyped tracks"));
 		root->setContextProperty ("newsText", tr ("Show novelties"));
 		root->setContextProperty ("topsText", tr ("Show tops"));
+		root->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
 		Ui_.HypesView_->setSource (QUrl ("qrc:/lmp/resources/qml/HypesView.qml"));
 
 		connect (Ui_.InfoProvider_,

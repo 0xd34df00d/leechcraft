@@ -46,8 +46,8 @@ namespace Blogique
 	, PostEdit_ (0)
 	, PostEditWidget_ (0)
 	, ToolBar_ (new QToolBar)
-	, PrevAccountId_ (0)
 	, PostTargetAction_ (0)
+	, PrevAccountId_ (0)
 	, PostsViewModel_ (new QStandardItemModel (this))
 	, DraftsViewModel_ (new QStandardItemModel (this))
 	, Storage_ (Core::Instance ().GetStorage ())
@@ -524,7 +524,7 @@ namespace Blogique
 // 			//TODO mesage box with error
 // 			return;
 // 		}
-// 
+//
 // 		QInputDialog dlg;
 // 		dlg.setInputMode (QInputDialog::IntInput);
 // 		dlg.setLabelText (tr ("Number of entries to fetch:"));
@@ -534,7 +534,7 @@ namespace Blogique
 // 		dlg.setIntRange (0, 50);
 // 		if (dlg.exec () == QDialog::Rejected)
 // 			return;
-// 
+//
 // 		int count = dlg.intValue ();
 // 	}
 
@@ -581,7 +581,7 @@ namespace Blogique
 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
 			return;
-		
+
 		idx = idx.sibling (idx.row (), DraftColumns::Date);
 		const Event& e = LoadFullDraft (acc->GetAccountID (),
 				idx.data (EntryIdRole::DBIdRole).toLongLong ());

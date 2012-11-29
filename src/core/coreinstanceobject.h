@@ -74,6 +74,8 @@ namespace LeechCraft
 		void BuildNewTabModel ();
 	private slots:
 		void handleSettingsButton (const QString&);
+		void updateIconSet ();
+		void updateColorTheme ();
 #ifdef STRICT_LICENSING
 		void notifyLicensing ();
 #endif

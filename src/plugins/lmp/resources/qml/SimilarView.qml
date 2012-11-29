@@ -7,12 +7,11 @@ Rectangle {
     gradient: Gradient {
         GradientStop {
             position: 0
-            color: "#53485F"
+            color: colorProxy.color_TextView_TopColor
         }
-
         GradientStop {
             position: 1
-            color: "#222222"
+            color: colorProxy.color_TextView_BottomColor
         }
     }
     anchors.fill: parent
@@ -91,18 +90,17 @@ Rectangle {
                 radius: 5
                 gradient: Gradient {
                     GradientStop {
-                        position: 1
-                        color: "#42394b"
-                    }
-
-                    GradientStop {
                         position: 0
-                        color: "#000000"
+                        color: colorProxy.color_TextBox_TopColor
+                    }
+                    GradientStop {
+                        position: 1
+                        color: colorProxy.color_TextBox_BottomColor
                     }
                 }
 
                 border.width: 1
-                border.color: "#000000"
+                border.color: colorProxy.color_TextBox_BorderColor
                 smooth: true
 
                 Text {
@@ -111,7 +109,7 @@ Rectangle {
                     font.bold: true
                     font.underline: true
                     font.pointSize: 12
-                    color: "#dddddd"
+                    color: colorProxy.color_TextBox_TitleTextColor
                     anchors.top: parent.top
                     anchors.topMargin: 2
                     anchors.left: artistImageThumb.right
@@ -189,7 +187,7 @@ Rectangle {
                 Text {
                     id: similarityLabel
                     text: similarity
-                    color: "#888888"
+                    color: colorProxy.color_TextBox_Aux2TextColor
                     anchors.top: parent.top
                     anchors.topMargin: 2
                     anchors.right: parent.right
@@ -199,7 +197,7 @@ Rectangle {
                 Text {
                     id: artistTagsLabel
                     text: artistTags
-                    color: "#999999"
+                    color: colorProxy.color_TextBox_Aux1TextColor
                     anchors.leftMargin: 5
                     anchors.left: artistImageThumb.right
                     anchors.top: artistNameLabel.bottom
@@ -216,7 +214,7 @@ Rectangle {
                     textFormat: Text.RichText
                     width: parent.width - artistImageThumb.width - 10
                     clip: true
-                    color: "#aaaaaa"
+                    color: colorProxy.color_TextBox_TextColor
                     wrapMode: Text.WordWrap
                     anchors.leftMargin: 5
                     anchors.left: artistImageThumb.right
@@ -244,12 +242,12 @@ Rectangle {
                     gradient: Gradient {
                         GradientStop {
                             position: 0
-                            color: "#0042394b"
+                            color: colorProxy.setAlpha(colorProxy.color_TextBox_BottomColor, 0)
                         }
 
                         GradientStop {
                             position: 1
-                            color: "#ff42394b"
+                            color: colorProxy.color_TextBox_BottomColor
                         }
                     }
                 }

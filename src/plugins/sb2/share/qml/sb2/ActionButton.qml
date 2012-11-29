@@ -29,17 +29,16 @@ Item {
         anchors.fill: parent
         anchors.margins: hoverScalesIcons ? 2 : 0
         border.width: transparentStyle ? 0 : (isStrongHighlight ? 2 : 1)
-        border.color: actionRoot.isHighlight ? "#FF6500" : "black"
+        border.color: actionRoot.isHighlight ? colorProxy.color_ToolButton_SelectedBorderColor : colorProxy.color_ToolButton_BorderColor
 
         gradient: Gradient {
             GradientStop {
-                position: 1
-                color: transparentStyle ? "#00000000" : (actionRoot.isHighlight ? "#5a3238" : "#42394b")
-            }
-
-            GradientStop {
                 position: 0
-                color: transparentStyle ? "#00000000" : (actionRoot.isHighlight ? "#290700" : "#000000")
+                color: transparentStyle ? "#00000000" : (actionRoot.isHighlight ? colorProxy.color_ToolButton_SelectedTopColor : colorProxy.color_ToolButton_TopColor)
+            }
+            GradientStop {
+                position: 1
+                color: transparentStyle ? "#00000000" : (actionRoot.isHighlight ? colorProxy.color_ToolButton_SelectedBottomColor : colorProxy.color_ToolButton_BottomColor)
             }
         }
 

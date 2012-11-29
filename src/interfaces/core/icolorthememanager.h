@@ -18,36 +18,18 @@
 
 #pragma once
 
-#include <QObject>
-#include <QPalette>
-#include <QHash>
-#include <interfaces/core/icolorthememanager.h>
+class QColor;
 
-class QSettings;
-
-namespace LeechCraft
+class IColorThemeManager
 {
-	class ColorThemeEngine : public QObject
-						   , public IColorThemeManager
-	{
-		Q_OBJECT
-		Q_INTERFACES (IColorThemeManager)
+public:
+	virtual ~IColorThemeManager () {}
 
-		QPalette StartupPalette_;
-		QHash<QString, QHash<QString, QColor>> QMLColors_;
+	virtual QColor GetQMLColor (const QString& section, const QString& key) = 0;
 
-		ColorThemeEngine ();
-	public:
-		static ColorThemeEngine& Instance ();
+	virtual QObject* GetObject () = 0;
+protected:
+	virtual void themeChanged () = 0;
+};
 
-		QColor GetQMLColor (const QString& section, const QString& key);
-		QObject* GetObject ();
-
-		QStringList ListThemes () const;
-		void SetTheme (const QString&);
-	private:
-		void FillQML (QSettings&);
-	signals:
-		void themeChanged ();
-	};
-}
+Q_DECLARE_INTERFACE (IColorThemeManager, "org.Deviant.LeechCraft.IColorThemeManager/1.0");

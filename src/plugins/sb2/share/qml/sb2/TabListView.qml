@@ -22,12 +22,12 @@ Rectangle {
 
     gradient: Gradient {
         GradientStop {
-            position: 1
-            color: "#42394b"
+            position: 0
+            color: colorProxy.color_TextView_TopColor
         }
         GradientStop {
-            position: 0
-            color: "#000000"
+            position: 1
+            color: colorProxy.color_TextView_BottomColor
         }
     }
 
@@ -56,12 +56,12 @@ Rectangle {
                     GradientStop {
                         position: 0
                         id: upperStop
-                        color: "#000000"
+                        color: colorProxy.color_TextBox_TopColor
                     }
                     GradientStop {
                         position: 1
                         id: lowerStop
-                        color: "#42394b"
+                        color: colorProxy.color_TextBox_BottomColor
                     }
                 }
 
@@ -82,7 +82,7 @@ Rectangle {
                     id: tabNameLabel
                     text: tabName
 
-                    color: "lightgrey"
+                    color: colorProxy.color_TextBox_TextColor
 
                     anchors.left: tabIconImage.right
                     anchors.leftMargin: 4
@@ -120,9 +120,9 @@ Rectangle {
                     State {
                         name: "hovered"
                         when: rectMouseArea.containsMouse
-                        PropertyChanges { target: tabRect; border.color: "#ff6500" }
-                        PropertyChanges { target: upperStop; color: "#5a3238" }
-                        PropertyChanges { target: lowerStop; color: "#290700" }
+                        PropertyChanges { target: tabRect; border.color: colorProxy.color_TextBox_HighlightBorderColor }
+                        PropertyChanges { target: upperStop; color: colorProxy.color_TextBox_HighlightTopColor }
+                        PropertyChanges { target: lowerStop; color: colorProxy.color_TextBox_HighlightBottomColor }
                     }
                 ]
 

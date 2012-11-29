@@ -2,10 +2,20 @@ import QtQuick 1.1
 
 Rectangle {
     id: quarkDisplayRoot
-    color: "black"
     anchors.fill: parent
 
     property alias settingsMode: enableSettingsModeButton.settingsMode
+
+    gradient: Gradient {
+        GradientStop {
+            position: 0
+            color: colorProxy.color_Panel_TopColor
+        }
+        GradientStop {
+            position: 1
+            color: colorProxy.color_Panel_BottomColor
+        }
+    }
 
     ActionButton {
         id: enableSettingsModeButton

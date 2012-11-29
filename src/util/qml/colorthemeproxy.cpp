@@ -16,38 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QPalette>
-#include <QHash>
+#include "colorthemeproxy.h"
+#include <QtDebug>
 #include <interfaces/core/icolorthememanager.h>
-
-class QSettings;
 
 namespace LeechCraft
 {
-	class ColorThemeEngine : public QObject
-						   , public IColorThemeManager
+namespace Util
+{
+	ColorThemeProxy::ColorThemeProxy (IColorThemeManager *manager, QObject *parent)
+	: QObject (parent)
+	, Manager_ (manager)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IColorThemeManager)
+		connect (manager->GetObject (),
+				SIGNAL (themeChanged ()),
+				this,
+				SIGNAL (colorsChanged ()));
+	}
 
-		QPalette StartupPalette_;
-		QHash<QString, QHash<QString, QColor>> QMLColors_;
+	QColor ColorThemeProxy::setAlpha (QColor color, qreal alpha)
+	{
+		color.setAlphaF (alpha);
+		return color;
+	}
 
-		ColorThemeEngine ();
-	public:
-		static ColorThemeEngine& Instance ();
-
-		QColor GetQMLColor (const QString& section, const QString& key);
-		QObject* GetObject ();
-
-		QStringList ListThemes () const;
-		void SetTheme (const QString&);
-	private:
-		void FillQML (QSettings&);
-	signals:
-		void themeChanged ();
-	};
+	QColor ColorThemeProxy::GetColor (const QString& group, const QString& color) const
+	{
+		return Manager_->GetQMLColor (group, color);
+	}
+}
 }
