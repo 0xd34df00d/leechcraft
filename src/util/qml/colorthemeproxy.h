@@ -52,6 +52,8 @@ namespace Util
 		DECL_PROP(TextBox, TopColor)
 		DECL_PROP(TextBox, BottomColor)
 		DECL_PROP(TextBox, BorderColor)
+		DECL_PROP(TextBox, HighlightTopColor)
+		DECL_PROP(TextBox, HighlightBottomColor)
 		DECL_PROP(TextBox, HighlightBorderColor)
 		DECL_PROP(TextBox, TitleTextColor)
 		DECL_PROP(TextBox, TextColor)
@@ -61,13 +63,14 @@ namespace Util
 
 		DECL_PROP(ToolButton, TopColor)
 		DECL_PROP(ToolButton, BottomColor)
-		DECL_PROP(ToolButton, BorderColorColor)
+		DECL_PROP(ToolButton, BorderColor)
 		DECL_PROP(ToolButton, SelectedTopColor)
 		DECL_PROP(ToolButton, SelectedBottomColor)
 		DECL_PROP(ToolButton, SelectedBorderColor)
 
 		DECL_PROP(Panel, TopColor)
 		DECL_PROP(Panel, BottomColor)
+		DECL_PROP(Panel, TextColor)
 #else
 		Q_PROPERTY(QColor color_TextView_TopColor READ GetTextViewTopColor NOTIFY colorsChanged) QColor GetTextViewTopColor () const { return GetColor ("TextView", "TopColor"); }
 		Q_PROPERTY(QColor color_TextView_BottomColor READ GetTextViewBottomColor NOTIFY colorsChanged) QColor GetTextViewBottomColor () const { return GetColor ("TextView", "BottomColor"); }
@@ -80,6 +83,8 @@ namespace Util
 		Q_PROPERTY(QColor color_TextBox_TopColor READ GetTextBoxTopColor NOTIFY colorsChanged) QColor GetTextBoxTopColor () const { return GetColor ("TextBox", "TopColor"); }
 		Q_PROPERTY(QColor color_TextBox_BottomColor READ GetTextBoxBottomColor NOTIFY colorsChanged) QColor GetTextBoxBottomColor () const { return GetColor ("TextBox", "BottomColor"); }
 		Q_PROPERTY(QColor color_TextBox_BorderColor READ GetTextBoxBorderColor NOTIFY colorsChanged) QColor GetTextBoxBorderColor () const { return GetColor ("TextBox", "BorderColor"); }
+		Q_PROPERTY(QColor color_TextBox_HighlightTopColor READ GetTextBoxHighlightTopColor NOTIFY colorsChanged) QColor GetTextBoxHighlightTopColor () const { return GetColor ("TextBox", "HighlightTopColor"); }
+		Q_PROPERTY(QColor color_TextBox_HighlightBottomColor READ GetTextBoxHighlightBottomColor NOTIFY colorsChanged) QColor GetTextBoxHighlightBottomColor () const { return GetColor ("TextBox", "HighlightBottomColor"); }
 		Q_PROPERTY(QColor color_TextBox_HighlightBorderColor READ GetTextBoxHighlightBorderColor NOTIFY colorsChanged) QColor GetTextBoxHighlightBorderColor () const { return GetColor ("TextBox", "HighlightBorderColor"); }
 		Q_PROPERTY(QColor color_TextBox_TitleTextColor READ GetTextBoxTitleTextColor NOTIFY colorsChanged) QColor GetTextBoxTitleTextColor () const { return GetColor ("TextBox", "TitleTextColor"); }
 		Q_PROPERTY(QColor color_TextBox_TextColor READ GetTextBoxTextColor NOTIFY colorsChanged) QColor GetTextBoxTextColor () const { return GetColor ("TextBox", "TextColor"); }
@@ -89,13 +94,14 @@ namespace Util
 
 		Q_PROPERTY(QColor color_ToolButton_TopColor READ GetToolButtonTopColor NOTIFY colorsChanged) QColor GetToolButtonTopColor () const { return GetColor ("ToolButton", "TopColor"); }
 		Q_PROPERTY(QColor color_ToolButton_BottomColor READ GetToolButtonBottomColor NOTIFY colorsChanged) QColor GetToolButtonBottomColor () const { return GetColor ("ToolButton", "BottomColor"); }
-		Q_PROPERTY(QColor color_ToolButton_BorderColorColor READ GetToolButtonBorderColorColor NOTIFY colorsChanged) QColor GetToolButtonBorderColorColor () const { return GetColor ("ToolButton", "BorderColorColor"); }
+		Q_PROPERTY(QColor color_ToolButton_BorderColor READ GetToolButtonBorderColorColor NOTIFY colorsChanged) QColor GetToolButtonBorderColorColor () const { return GetColor ("ToolButton", "BorderColorColor"); }
 		Q_PROPERTY(QColor color_ToolButton_SelectedTopColor READ GetToolButtonSelectedTopColor NOTIFY colorsChanged) QColor GetToolButtonSelectedTopColor () const { return GetColor ("ToolButton", "SelectedTopColor"); }
 		Q_PROPERTY(QColor color_ToolButton_SelectedBottomColor READ GetToolButtonSelectedBottomColor NOTIFY colorsChanged) QColor GetToolButtonSelectedBottomColor () const { return GetColor ("ToolButton", "SelectedBottomColor"); }
 		Q_PROPERTY(QColor color_ToolButton_SelectedBorderColor READ GetToolButtonSelectedBorderColor NOTIFY colorsChanged) QColor GetToolButtonSelectedBorderColor () const { return GetColor ("ToolButton", "SelectedBorderColor"); }
 
 		Q_PROPERTY(QColor color_Panel_TopColor READ GetPanelTopColor NOTIFY colorsChanged) QColor GetPanelTopColor () const { return GetColor ("Panel", "TopColor"); }
 		Q_PROPERTY(QColor color_Panel_BottomColor READ GetPanelBottomColor NOTIFY colorsChanged) QColor GetPanelBottomColor () const { return GetColor ("Panel", "BottomColor"); }
+		Q_PROPERTY(QColor color_Panel_TextColor READ GetPanelTextColor NOTIFY colorsChanged) QColor GetPanelTextColor () const { return GetColor ("Panel", "TextColor"); }
 #endif
 	public slots:
 		QColor setAlpha (QColor, qreal);
