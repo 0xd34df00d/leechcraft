@@ -101,8 +101,7 @@ namespace Blogique
 
 		try
 		{
-			LocalStorage *storage = new LocalStorage (this);
-			storage->AddAccount (acc->GetAccountID ());
+			Core::Instance ().GetStorage()->AddAccount (acc->GetAccountID ());
 		}
 		catch (const std::runtime_error& e)
 		{
