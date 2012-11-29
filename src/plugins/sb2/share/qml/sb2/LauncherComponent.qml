@@ -12,8 +12,6 @@ Rectangle {
     property real currentGapSize: (launcherItemHeight + Math.sqrt(8 * launcherItemHeight)) / 4
     height: launcherColumn.height + 2 + (addTCButton.visible ? addTCButton.height : 0)
 
-    border.width: 1
-    border.color: "#333333"
     radius: 2
 
     smooth: true

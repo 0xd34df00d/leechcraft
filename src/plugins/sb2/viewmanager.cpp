@@ -26,6 +26,7 @@
 #include <QtDebug>
 #include <QDir>
 #include <util/sys/paths.h>
+#include <util/qml/colorthemeproxy.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "sbview.h"
@@ -77,6 +78,8 @@ namespace SB2
 
 		View_->rootContext ()->setContextProperty ("itemsModel", ViewItemsModel_);
 		View_->rootContext ()->setContextProperty ("quarkProxy", new QuarkProxy (this, this));
+		View_->rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		View_->engine ()->addImageProvider (ImageProviderID, new ThemeImageProvider (proxy));
 		View_->setSource (QUrl::fromLocalFile (file));
 	}
