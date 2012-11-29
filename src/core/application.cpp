@@ -55,7 +55,7 @@ LeechCraft::Application::Application (int& argc, char **argv)
 
 	{
 		std::vector<std::wstring> strings;
-		for (const auto& arg : Arguments_)
+		for (const auto& arg : Arguments_.mid (1))
 			strings.push_back (arg.toStdWString ());
 		bpo::wcommand_line_parser parser (strings);
 		VarMap_ = Parse (parser, &desc);
