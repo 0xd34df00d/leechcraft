@@ -107,11 +107,13 @@ namespace Blogique
 				this,
 				SLOT (handleCurrentAccountChanged (int)));
 
-		for (IAccount *acc : Core::Instance ().GetAccounts ())
+		const auto& accounts = Core::Instance ().GetAccounts ();
+		for (IAccount *acc : accounts)
 		{
 			AccountsBox_->addItem (acc->GetAccountName ());
 			Id2Account_ [AccountsBox_->count () - 1] = acc;
 		}
+
 		ToolBar_->addWidget (AccountsBox_);
 
 		PostTargetBox_ = new QComboBox;
@@ -170,6 +172,9 @@ namespace Blogique
 				SIGNAL (addNewTab (QString, QWidget*)),
 				&Core::Instance (),
 				SIGNAL (addNewTab (QString, QWidget*)));
+
+		if (accounts.count () == 1)
+			AccountsBox_->setCurrentIndex (accounts.count ());
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
