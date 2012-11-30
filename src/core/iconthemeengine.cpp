@@ -93,16 +93,18 @@ void IconThemeEngine::UpdateIconSet (const QList<QAction*>& actions)
 {
 	FindIcons ();
 
-	for (QList<QAction*>::const_iterator i = actions.begin (),
-			end = actions.end (); i != end; ++i)
+	for (auto action : actions)
 	{
-		if ((*i)->property ("WatchActionIconChange").toBool ())
-			(*i)->installEventFilter (this);
+		if (action->menu ())
+			UpdateIconSet (action->menu ()->actions ());
 
-		if (!(*i)->property ("ActionIcon").isValid ())
+		if (action->property ("WatchActionIconChange").toBool ())
+			action->installEventFilter (this);
+
+		if (!action->property ("ActionIcon").isValid ())
 			continue;
 
-		SetIcon (*i);
+		SetIcon (action);
 	}
 }
 
