@@ -68,7 +68,12 @@ namespace Blogique
 			/** This blogging platform supports variouse posting destinations
 			 * such as private blog, communities, etc.
 			 */
-			BPFSelectablePostDestination = 0x4
+			BPFSelectablePostDestination = 0x4,
+
+			/** This blogging platform supports downloading of all posts for
+			 * backup in localstorage.
+			 */
+			BPFSupportsBackup = 0x8
 		};
 		Q_DECLARE_FLAGS (BloggingPlatfromFeatures, BloggingPlatfromFeature)
 

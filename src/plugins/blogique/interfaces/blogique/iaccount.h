@@ -132,6 +132,8 @@ namespace Blogique
 		 *
 		 */
 		virtual void updateProfile () = 0;
+
+		virtual void backup () = 0;
 	protected:
 		/** @brief This signal should be emitted when account is renamed.
 		 *
