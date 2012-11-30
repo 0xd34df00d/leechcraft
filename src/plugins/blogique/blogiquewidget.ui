@@ -72,6 +72,9 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="windowTitle">
+       <string notr="true">Blogique</string>
+      </property>
       <widget class="QWidget" name="dockWidgetContents">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -102,7 +105,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>463</width>
+             <width>445</width>
              <height>459</height>
             </rect>
            </property>
@@ -157,8 +160,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>463</width>
-             <height>459</height>
+             <width>268</width>
+             <height>124</height>
             </rect>
            </property>
            <attribute name="label">
