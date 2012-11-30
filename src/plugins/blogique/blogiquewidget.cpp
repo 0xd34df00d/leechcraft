@@ -106,7 +106,7 @@ namespace Blogique
 
 		ToolBar_->addSeparator ();
 
-		AccountsBox_ = new QComboBox (ToolBar_);
+		AccountsBox_ = new QComboBox ();
 		AccountsBox_->addItem (QString ());
 		connect (AccountsBox_,
 				SIGNAL (currentIndexChanged (int)),
@@ -144,10 +144,6 @@ namespace Blogique
 			Ui_.CalendarSplitter_->setStretchFactor (1, 4);
 		}
 
-		connect (Ui_.MainSplitter_,
-				SIGNAL (splitterMoved (int, int)),
-				this,
-				SLOT (saveSplitterPosition (int, int)));
 		connect (Ui_.CalendarSplitter_,
 				SIGNAL (splitterMoved (int, int)),
 				this,
@@ -507,8 +503,6 @@ namespace Blogique
 
 	void BlogiqueWidget::saveSplitterPosition (int, int)
 	{
-		XmlSettingsManager::Instance ().setProperty ("MainSplitterPosition",
-				Ui_.MainSplitter_->saveState ());
 		XmlSettingsManager::Instance ().setProperty ("CalendarSplitterPosition",
 				Ui_.CalendarSplitter_->saveState ());
 	}
