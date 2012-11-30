@@ -25,7 +25,9 @@
 #include <interfaces/ipluginready.h>
 #include <interfaces/iactionsexporter.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/ihookproxy.h>
 
+class QWebView;
 namespace LeechCraft
 {
 namespace Blogique
@@ -35,12 +37,16 @@ namespace Blogique
 				, public IHaveTabs
 				, public IHaveSettings
 				, public IPluginReady
+				, public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IPluginReady)
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IPluginReady IActionsExporter)
 
 		TabClasses_t TabClasses_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		QMenu *ToolMenu_;
+		QAction *BackupBlog_;
+
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -57,6 +63,8 @@ namespace Blogique
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject* plugin);
+
+		QList<QAction*> GetActions (ActionsEmbedPlace area) const;
 	private:
 		void CreateTab ();
 
