@@ -83,6 +83,9 @@ namespace LeechCraft
 		TabAssociations_.remove (dock);
 		ToggleAct2Dock_.remove (ToggleAct2Dock_.key (dock));
 		ForcefullyClosed_.remove (dock);
+
+		for (const auto& key : Area2Widgets_.keys ())
+			Area2Widgets_ [key].removeAll (dock);
 	}
 
 	void DockManager::handleDockLocationChanged (Qt::DockWidgetArea area)
