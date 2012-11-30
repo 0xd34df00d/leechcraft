@@ -26,6 +26,7 @@
 #include <util/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/imwproxy.h>
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "interfaces/blogique/iblogiquesidewidget.h"
 #include "interfaces/blogique/iprofile.h"
@@ -56,6 +57,11 @@ namespace Blogique
 	, DraftID_ (-1)
 	{
 		Ui_.setupUi (this);
+
+		auto mw = Core::Instance ().GetCoreProxy ()->GetMWProxy ();
+		mw->AddDockWidget (Qt::RightDockWidgetArea, Ui_.SideWidget_);
+		mw->AssociateDockWidget (Ui_.SideWidget_, this);
+		mw->ToggleViewActionVisiblity (Ui_.SideWidget_, false);
 
 		auto plugs = Core::Instance ().GetCoreProxy ()->
 				GetPluginsManager ()->GetAllCastableTo<ITextEditor*> ();
@@ -129,13 +135,6 @@ namespace Blogique
 				this,
 				SLOT (submit ()));
 
-		if (!Ui_.MainSplitter_->restoreState (XmlSettingsManager::Instance ()
-				.property ("MainSplitterPosition").toByteArray ()))
-		{
-			Ui_.MainSplitter_->setStretchFactor (0, 6);
-			Ui_.MainSplitter_->setStretchFactor (1, 1);
-		}
-
 		if (!Ui_.CalendarSplitter_->restoreState (XmlSettingsManager::Instance ()
 				.property ("CalendarSplitterPosition").toByteArray ()))
 		{
@@ -192,6 +191,7 @@ namespace Blogique
 	{
 		emit removeTab (this);
 		PostTargetBox_->deleteLater ();
+		Ui_.SideWidget_->deleteLater ();
 		deleteLater ();
 	}
 
