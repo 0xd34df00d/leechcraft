@@ -27,7 +27,7 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-
+	class BackupManager;
 	class LocalStorage;
 	class IAccount;
 	class IBloggingPlatform;
@@ -41,6 +41,7 @@ namespace Blogique
 		QObjectList BlogPlatformPlugins_;
 		std::shared_ptr<PluginProxy> PluginProxy_;
 		LocalStorage *Storage_;
+		BackupManager *BackupManager_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
@@ -61,6 +62,7 @@ namespace Blogique
 		void DelayedProfilesUpdate ();
 
 		LocalStorage* GetStorage () const;
+		BackupManager* GetBackupManager () const;
 	private:
 		void AddBlogPlatformPlugin (QObject *plugin);
 

@@ -323,6 +323,11 @@ namespace Metida
 		LJXmlRpc_->Submit (ljEvent);
 	}
 
+	void LJAccount::backup ()
+	{
+
+	}
+
 }
 }
 }

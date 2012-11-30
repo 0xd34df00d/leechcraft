@@ -26,6 +26,7 @@
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "pluginproxy.h"
 #include "localstorage.h"
+#include "backupmanager.h"
 
 namespace LeechCraft
 {
@@ -34,6 +35,7 @@ namespace Blogique
 	Core::Core ()
 	: PluginProxy_ (std::make_shared<PluginProxy> ())
 	, Storage_ (new LocalStorage (this))
+	, BackupManager_ (new BackupManager (this))
 	{
 	}
 
@@ -132,6 +134,11 @@ namespace Blogique
 		return Storage_;
 	}
 
+	BackupManager* Core::GetBackupManager () const
+	{
+		return BackupManager_;
+	}
+
 	void Core::AddBlogPlatformPlugin (QObject *plugin)
 	{
 		IBloggingPlatformPlugin *ibpp = qobject_cast<IBloggingPlatformPlugin*> (plugin);
@@ -219,7 +226,7 @@ namespace Blogique
 					<< sender ();
 			return;
 		}
-		
+
 		emit accountValidated (accObj, validated);
 	}
 
