@@ -712,6 +712,12 @@ void MainWindow::handleShowTrayIconChanged()
 {
 	const bool isVisible = XmlSettingsManager::Instance ()->
 			property ("ShowTrayIcon").toBool ();
+
+	Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+	emit hookTrayIconVisibilityChanged (proxy, TrayIcon_, isVisible);
+	if (proxy->IsCancelled ())
+		return;
+
 	TrayIcon_->setVisible (isVisible);
 }
 
@@ -860,8 +866,11 @@ void LeechCraft::MainWindow::FillTray ()
 			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
 			this,
 			SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
+
+	emit hookTrayIconCreated (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy), TrayIcon_);
 	XmlSettingsManager::Instance ()->RegisterObject ("ShowTrayIcon",
 			this, "handleShowTrayIconChanged");
+	handleShowTrayIconChanged ();
 }
 
 void LeechCraft::MainWindow::FillToolMenu ()

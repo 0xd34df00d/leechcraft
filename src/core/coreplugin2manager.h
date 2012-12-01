@@ -25,6 +25,7 @@
 
 class QMenu;
 class QDockWidget;
+class QSystemTrayIcon;
 
 namespace LeechCraft
 {
@@ -49,6 +50,11 @@ namespace LeechCraft
 				int index);
 		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy,
 				int index);
+		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr,
+				QSystemTrayIcon*);
+		void hookTrayIconVisibilityChanged (LeechCraft::IHookProxy_ptr,
+				QSystemTrayIcon*,
+				bool);
 	};
 }
 
