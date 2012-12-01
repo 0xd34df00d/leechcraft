@@ -25,6 +25,7 @@
 #include <util/util.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 #ifdef HAVE_QML
 #include "qml/visualnotificationsview.h"
@@ -251,7 +252,15 @@ namespace AdvancedNotifications
 			if (icon)
 				UpdateMenu (icon->contextMenu (), event, data);
 			UpdateMenu (action->menu (), event, data);
+
+			eventCount += data.Count_;
 		}
+
+		const auto& entity = Util::MakeEntity (eventCount,
+				QString (),
+				LeechCraft::Internal,
+				"x-leechcraft/notification-event-count-info");
+		Core::Instance ().SendEntity (entity);
 
 #ifdef HAVE_QML
 		Q_FOREACH (QSystemTrayIcon *icon, Category2Icon_.values ())
