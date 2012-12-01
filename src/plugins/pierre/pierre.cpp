@@ -21,11 +21,14 @@
 #include <QMenuBar>
 #include <QMainWindow>
 #include <QTimer>
+#include <QSystemTrayIcon>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/iactionsexporter.h>
 #include "fullscreen.h"
+
+extern void qt_mac_set_dock_menu (QMenu*);
 
 namespace LeechCraft
 {
@@ -33,6 +36,8 @@ namespace Pierre
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		TrayIconMenu_ = 0;
+
 		Proxy_ = proxy;
 		MenuBar_ = new QMenuBar (0);
 
@@ -79,6 +84,17 @@ namespace Pierre
 		QTimer::singleShot (0,
 				this,
 				SLOT (fillMenu ()));
+	}
+
+	void Plugin::hookTrayIconCreated (IHookProxy_ptr proxy, QSystemTrayIcon *icon)
+	{
+		TrayIconMenu_ = icon->contextMenu ();
+		qt_mac_set_dock_menu (TrayIconMenu_);
+	}
+
+	void Plugin::hookTrayIconVisibilityChanged (IHookProxy_ptr proxy, QSystemTrayIcon*, bool)
+	{
+		proxy->CancelDefault ();
 	}
 
 	void Plugin::handleGotActions (const QList<QAction*>&, ActionsEmbedPlace aep)

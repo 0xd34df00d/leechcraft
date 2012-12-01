@@ -25,6 +25,7 @@
 #include <interfaces/iplugin2.h>
 
 class QMenuBar;
+class QSystemTrayIcon;
 
 namespace LeechCraft
 {
@@ -39,6 +40,8 @@ namespace Pierre
 
 		QMenuBar *MenuBar_;
 		ICoreProxy_ptr Proxy_;
+
+		QMenu *TrayIconMenu_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -51,6 +54,11 @@ namespace Pierre
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
 		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
+		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr,
+				QSystemTrayIcon*);
+		void hookTrayIconVisibilityChanged (LeechCraft::IHookProxy_ptr,
+				QSystemTrayIcon*,
+				bool);
 	private slots:
 		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
 		void fillMenu ();
