@@ -191,6 +191,29 @@
       <string>Entry options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="11" column="0" colspan="2">
+       <widget class="QCheckBox" name="NotifyAboutComments_">
+        <property name="text">
+         <string>Notify about replies</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="0" colspan="2">
+       <widget class="QCheckBox" name="ShowInFriendsPage_">
+        <property name="text">
+         <string>Show in friends page</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="accessLabel">
         <property name="text">
@@ -324,13 +347,6 @@
         </item>
        </layout>
       </item>
-      <item row="14" column="2">
-       <widget class="QLabel" name="UserPicLabel_">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1" colspan="2">
        <widget class="QComboBox" name="Access_"/>
       </item>
@@ -362,26 +378,10 @@
         </property>
        </widget>
       </item>
-      <item row="12" column="0" colspan="2">
-       <widget class="QCheckBox" name="ShowInFriendsPage_">
+      <item row="14" column="2">
+       <widget class="QLabel" name="UserPicLabel_">
         <property name="text">
-         <string>Show in friends page</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-        <property name="tristate">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="0" colspan="2">
-       <widget class="QCheckBox" name="NotifyAboutComments_">
-        <property name="text">
-         <string>Notify about replies</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
+         <string/>
         </property>
        </widget>
       </item>
