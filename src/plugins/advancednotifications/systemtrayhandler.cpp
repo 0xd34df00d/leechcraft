@@ -38,6 +38,16 @@ namespace AdvancedNotifications
 	{
 	}
 
+	SystemTrayHandler::~SystemTrayHandler ()
+	{
+		const auto& icons = Category2Icon_.values ();
+		for (auto icon : icons)
+		{
+			icon->hide ();
+			delete icon;
+		}
+	}
+
 	NotificationMethod SystemTrayHandler::GetHandlerMethod () const
 	{
 		return NMTray;

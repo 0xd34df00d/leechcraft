@@ -40,6 +40,10 @@ namespace
 				strstr (message, ": Painter not active"))
 			return;
 #endif
+#if defined (Q_OS_WIN32)
+		if (!strcmp (message, "QObject::startTimer: QTimer can only be used with threads started with QThread"))
+			return;
+#endif
 		static const std::map<QtMsgType, QString> fileName =
 		{
 			{QtDebugMsg, "debug.log"},
