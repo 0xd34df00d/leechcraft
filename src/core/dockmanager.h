@@ -47,6 +47,8 @@ namespace LeechCraft
 		void AssociateDockWidget (QDockWidget*, QWidget*);
 	protected:
 		bool eventFilter (QObject*, QEvent*);
+	private:
+		void TabifyDW (QDockWidget*, Qt::DockWidgetArea);
 	private slots:
 		void handleDockDestroyed ();
 		void handleDockLocationChanged (Qt::DockWidgetArea);
