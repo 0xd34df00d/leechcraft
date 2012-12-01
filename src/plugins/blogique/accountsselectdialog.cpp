@@ -18,6 +18,7 @@
 
 #include "accountsselectdialog.h"
 #include "interfaces/blogique/iaccount.h"
+#include "interfaces/blogique/ibloggingplatform.h"
 #include <QStandardItemModel>
 
 namespace LeechCraft
@@ -38,6 +39,11 @@ namespace Blogique
 	{
 		for (auto acc : accounts)
 		{
+			auto ibp = qobject_cast<IBloggingPlatform*> (acc->GetParentBloggingPlatform ());
+			if (!ibp ||
+					!(ibp->GetFeatures () & IBloggingPlatform::BPFSupportsBackup))
+				continue;
+
 			QStandardItem *item = new QStandardItem (acc->GetAccountName ());
 			item->setCheckable (true);
 			item->setEditable (false);
