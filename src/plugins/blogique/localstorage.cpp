@@ -62,12 +62,16 @@ namespace Blogique
 
 	void LocalStorage::AddAccount (const QByteArray& accounId)
 	{
+		Util::DBLock lock (DB_);
+
+		lock.Init ();
 		AddAccount_.bindValue (":account_id", QString::fromUtf8 (accounId));
 		if (!AddAccount_.exec ())
 		{
 			Util::DBLock::DumpError (AddAccount_);
 			throw std::runtime_error ("unable to add account");
 		}
+		lock.Good ();
 	}
 
 	qlonglong LocalStorage::SaveDraft (const QByteArray& accountID, const Event& e)
@@ -274,6 +278,7 @@ namespace Blogique
 
 			list << e;
 		}
+
 		GetShortDrafts_.finish ();
 
 		return list;

@@ -16,19 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
+#include "dockutil.h"
+#include <QString>
+#include <AppKit/NSApplication.h>
+#include <AppKit/NSDockTile.h>
+#include <Foundation/NSString.h>
 
-class QMainWindow;
+static NSString* toNsString (const QString& text)
+{
+	auto utf8String = text.toUtf8 ().constData ();
+	return [[NSString alloc] initWithUTF8String: utf8String];
+}
+
+static void SetDockBadgeImpl (const QString& text)
+{
+	auto badgeString = toNsString (text);
+	[[NSApp dockTile] setBadgeLabel: badgeString];
+	[badgeString release];
+}
 
 namespace LeechCraft
 {
 namespace Pierre
 {
-namespace FS
+namespace DU
 {
-	bool SupportsFS ();
-	void AddAction (QMainWindow*);
-	void Toggle (QMainWindow*);
+	void SetDockBadge (const QString& text)
+	{
+		SetDockBadgeImpl (text);
+	}
 }
 }
 }

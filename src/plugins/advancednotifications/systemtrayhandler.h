@@ -55,6 +55,7 @@ namespace AdvancedNotifications
 #endif
 	public:
 		SystemTrayHandler ();
+		~SystemTrayHandler ();
 
 		NotificationMethod GetHandlerMethod () const;
 		void Handle (const Entity&, const NotificationRule&);

@@ -18,17 +18,15 @@
 
 #pragma once
 
-class QMainWindow;
+class QString;
 
 namespace LeechCraft
 {
 namespace Pierre
 {
-namespace FS
+namespace DU
 {
-	bool SupportsFS ();
-	void AddAction (QMainWindow*);
-	void Toggle (QMainWindow*);
+	void SetDockBadge (const QString&);
 }
 }
 }

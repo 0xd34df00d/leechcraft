@@ -26,6 +26,7 @@
 #include <util/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/imwproxy.h>
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "interfaces/blogique/iblogiquesidewidget.h"
 #include "interfaces/blogique/iprofile.h"
@@ -56,6 +57,11 @@ namespace Blogique
 	, DraftID_ (-1)
 	{
 		Ui_.setupUi (this);
+
+		auto mw = Core::Instance ().GetCoreProxy ()->GetMWProxy ();
+		mw->AddDockWidget (Qt::RightDockWidgetArea, Ui_.SideWidget_);
+		mw->AssociateDockWidget (Ui_.SideWidget_, this);
+		mw->ToggleViewActionVisiblity (Ui_.SideWidget_, false);
 
 		auto plugs = Core::Instance ().GetCoreProxy ()->
 				GetPluginsManager ()->GetAllCastableTo<ITextEditor*> ();
@@ -100,18 +106,20 @@ namespace Blogique
 
 		ToolBar_->addSeparator ();
 
-		AccountsBox_ = new QComboBox (ToolBar_);
+		AccountsBox_ = new QComboBox ();
 		AccountsBox_->addItem (QString ());
 		connect (AccountsBox_,
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (handleCurrentAccountChanged (int)));
 
-		for (IAccount *acc : Core::Instance ().GetAccounts ())
+		const auto& accounts = Core::Instance ().GetAccounts ();
+		for (IAccount *acc : accounts)
 		{
 			AccountsBox_->addItem (acc->GetAccountName ());
 			Id2Account_ [AccountsBox_->count () - 1] = acc;
 		}
+
 		ToolBar_->addWidget (AccountsBox_);
 
 		PostTargetBox_ = new QComboBox;
@@ -129,13 +137,6 @@ namespace Blogique
 				this,
 				SLOT (submit ()));
 
-		if (!Ui_.MainSplitter_->restoreState (XmlSettingsManager::Instance ()
-				.property ("MainSplitterPosition").toByteArray ()))
-		{
-			Ui_.MainSplitter_->setStretchFactor (0, 6);
-			Ui_.MainSplitter_->setStretchFactor (1, 1);
-		}
-
 		if (!Ui_.CalendarSplitter_->restoreState (XmlSettingsManager::Instance ()
 				.property ("CalendarSplitterPosition").toByteArray ()))
 		{
@@ -143,10 +144,6 @@ namespace Blogique
 			Ui_.CalendarSplitter_->setStretchFactor (1, 4);
 		}
 
-		connect (Ui_.MainSplitter_,
-				SIGNAL (splitterMoved (int, int)),
-				this,
-				SLOT (saveSplitterPosition (int, int)));
 		connect (Ui_.CalendarSplitter_,
 				SIGNAL (splitterMoved (int, int)),
 				this,
@@ -170,6 +167,9 @@ namespace Blogique
 				SIGNAL (addNewTab (QString, QWidget*)),
 				&Core::Instance (),
 				SIGNAL (addNewTab (QString, QWidget*)));
+
+		if (accounts.count () == 1)
+			AccountsBox_->setCurrentIndex (accounts.count ());
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
@@ -192,6 +192,7 @@ namespace Blogique
 	{
 		emit removeTab (this);
 		PostTargetBox_->deleteLater ();
+		Ui_.SideWidget_->deleteLater ();
 		deleteLater ();
 	}
 
@@ -502,8 +503,6 @@ namespace Blogique
 
 	void BlogiqueWidget::saveSplitterPosition (int, int)
 	{
-		XmlSettingsManager::Instance ().setProperty ("MainSplitterPosition",
-				Ui_.MainSplitter_->saveState ());
 		XmlSettingsManager::Instance ().setProperty ("CalendarSplitterPosition",
 				Ui_.CalendarSplitter_->saveState ());
 	}

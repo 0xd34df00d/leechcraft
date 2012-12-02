@@ -45,6 +45,9 @@ namespace LeechCraft
 				SIGNAL (destroyed (QObject*)),
 				this,
 				SLOT (handleDockDestroyed ()));
+
+		TabifyDW (dw, area);
+		Area2Widgets_ [area] << dw;
 	}
 
 	void DockManager::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
@@ -61,6 +64,18 @@ namespace LeechCraft
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handleDockToggled (bool)));
+	}
+
+	void DockManager::TabifyDW (QDockWidget *dw, Qt::DockWidgetArea area)
+	{
+		auto widgets = Area2Widgets_ [area];
+		widgets.removeAll (dw);
+		if (!widgets.isEmpty ())
+		{
+			MW_->tabifyDockWidget (dw, widgets.last ());
+			dw->show ();
+			dw->raise ();
+		}
 	}
 
 	bool DockManager::eventFilter (QObject *obj, QEvent *event)
@@ -83,6 +98,9 @@ namespace LeechCraft
 		TabAssociations_.remove (dock);
 		ToggleAct2Dock_.remove (ToggleAct2Dock_.key (dock));
 		ForcefullyClosed_.remove (dock);
+
+		for (const auto& key : Area2Widgets_.keys ())
+			Area2Widgets_ [key].removeAll (dock);
 	}
 
 	void DockManager::handleDockLocationChanged (Qt::DockWidgetArea area)
@@ -126,7 +144,10 @@ namespace LeechCraft
 			if (TabAssociations_ [dock] != tabWidget)
 				dock->setVisible (false);
 			else if (!ForcefullyClosed_.contains (dock))
+			{
 				dock->setVisible (true);
+				TabifyDW (dock, MW_->dockWidgetArea (dock));
+			}
 		}
 	}
 }
