@@ -243,7 +243,7 @@ namespace Poshuku
 		else if (e.Entity_.canConvert<QUrl> ())
 		{
 			QUrl url = e.Entity_.toUrl ();
-			NewURL (url, true);
+			NewURL (url, !e.Additional_ ["BackgroundHandle"].toBool ());
 		}
 	}
 
