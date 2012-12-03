@@ -16,42 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "calendarwidget.h"
-#include <QPainter>
+#pragma once
+
+#include <QDialog>
+#include "ui_updateentriesdialog.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	CalendarWidget::CalendarWidget (QWidget *parent)
-	: QCalendarWidget (parent)
+	class UpdateEntriesDialog : public QDialog
 	{
-	}
+		Q_OBJECT
 
-	void CalendarWidget::SetStatistic (const QMap<QDate, int>& statistic)
-	{
-		Date2EntriesCount_ = statistic;
-		update ();
-	}
+		Ui::UpdateEntriesDialog Ui_;
 
-	void CalendarWidget::paintCell (QPainter *painter, const QRect& rect, const QDate& date) const
-	{
-		QCalendarWidget::paintCell (painter, rect, date);
+	public:
+		UpdateEntriesDialog (QWidget *parent = 0);
 
-		if (Date2EntriesCount_.contains (date) &&
-				Date2EntriesCount_ [date])
-		{
-			painter->save ();
-			painter->setBrush (QBrush (Qt::blue));
-			const QPointF points [3] =
-			{
-				QPointF (rect.x (), rect.bottom () - 8),
-				QPointF (rect.x () + 8, rect.bottom ()),
-				QPointF (rect.x (), rect.bottom ())
-			};
-			painter->drawPolygon (points, 3);
-			painter->restore ();
-		}
-	}
+		int GetCount () const;
+
+	public slots:
+		void accept ();
+	};
 }
 }

@@ -204,6 +204,10 @@ namespace Blogique
 				SIGNAL (gettingEvents2BackupFinished ()),
 				this,
 				SLOT (handleGettingEvents2BackupFinished ()));
+		connect (accObj,
+				SIGNAL (gotEvents (QList<Event>)),
+				this,
+				SLOT (handleGotEvents (QList<Event>)));
 
 		emit accountAdded (accObj);
 	}
@@ -263,6 +267,17 @@ namespace Blogique
 	{
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entries were backup successfully."), Priority::PInfo_));
+		emit eventsStored ();
+	}
+
+	void Core::handleGotEvents (const QList<Event>& events)
+	{
+		auto acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+			return;
+
+		Storage_->SaveEntries (acc->GetAccountID (), events);
+		emit eventsStored ();
 	}
 
 }

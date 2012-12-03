@@ -35,6 +35,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "localstorage.h"
+#include "updateentriesdialog.h"
 
 namespace LeechCraft
 {
@@ -177,6 +178,11 @@ namespace Blogique
 
 		if (accounts.count () == 1)
 			AccountsBox_->setCurrentIndex (accounts.count ());
+
+		connect (&Core::Instance (),
+				SIGNAL (eventsStored ()),
+				this,
+				SLOT (handleEventsStored ()));
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
@@ -392,7 +398,9 @@ namespace Blogique
 		QList<Event> entries;
 		try
 		{
-			entries = Storage_->GetLast20Entries (acc->GetAccountID ());
+			entries = Storage_->GetLastNEntries (acc->GetAccountID (),
+					XmlSettingsManager::Instance ()
+						.Property ("LastEntriesToUpdate", 20).toInt ());
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -402,6 +410,20 @@ namespace Blogique
 		}
 
 		FillPostsView (entries);
+
+		QMap<QDate, int> statistic;
+		try
+		{
+			statistic = Storage_->GetEntriesCountByDate (acc->GetAccountID ());
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error fetching entries"
+					<< e.what ();
+		}
+
+		Ui_.Calendar_->SetStatistic (statistic);
 	}
 
 	void BlogiqueWidget::FillPostsView (const QList<Event> entries)
@@ -492,19 +514,6 @@ namespace Blogique
 
 		LoadDrafts ();
 		LoadEntries ();
-		QMap<QDate, int> statistic;
-		try
-		{
-			statistic = Storage_->GetEntriesCountByDate (Id2Account_ [id]->GetAccountID ());
-		}
-		catch (const std::runtime_error& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error fetching entries"
-					<< e.what ();
-		}
-
-		Ui_.Calendar_->SetStatistic (statistic);
 	}
 
 	void BlogiqueWidget::saveEntry ()
@@ -581,27 +590,6 @@ namespace Blogique
 		acc->updateProfile ();
 	}
 
-// 	void BlogiqueWidget::on_UpdateEntrysList__released ()
-// 	{
-// 		if (!AccountsBox_->currentIndex ())
-// 		{
-// 			//TODO mesage box with error
-// 			return;
-// 		}
-//
-// 		QInputDialog dlg;
-// 		dlg.setInputMode (QInputDialog::IntInput);
-// 		dlg.setLabelText (tr ("Number of entries to fetch:"));
-// 		dlg.setOkButtonText (tr ("Fetch"));
-// 		dlg.setIntStep (1);
-// 		dlg.setIntValue (20);
-// 		dlg.setIntRange (0, 50);
-// 		if (dlg.exec () == QDialog::Rejected)
-// 			return;
-//
-// 		int count = dlg.intValue ();
-// 	}
-
 	void BlogiqueWidget::on_RemoveDraft__released ()
 	{
 		if (!AccountsBox_->currentIndex ())
@@ -652,6 +640,31 @@ namespace Blogique
 
 		submit (e);
 		//TODO remove after publish
+	}
+
+	void BlogiqueWidget::on_UpdateLastEntries__released ()
+	{
+		if (!AccountsBox_->currentIndex ())
+		{
+			//TODO mesage box with error
+			return;
+		}
+
+		int count = XmlSettingsManager::Instance ()
+				.Property ("LastEntriesToUpdate", 20).toInt ();
+		if (XmlSettingsManager::Instance ().Property ("UpdateAsk", true).toBool ())
+		{
+			UpdateEntriesDialog dlg;
+			if (dlg.exec () == QDialog::Rejected)
+				return;
+			count = dlg.GetCount ();
+		}
+
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		acc->GetLastEntries (count);
 	}
 
 	void BlogiqueWidget::on_LocalEntriesView__doubleClicked (const QModelIndex& index)
@@ -727,6 +740,11 @@ namespace Blogique
 		}
 
 		FillPostsView (entries);
+	}
+
+	void BlogiqueWidget::handleEventsStored ()
+	{
+		LoadEntries ();
 	}
 
 }

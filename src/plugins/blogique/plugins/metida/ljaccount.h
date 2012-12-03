@@ -122,6 +122,7 @@ namespace Metida
 		QString GetPassword () const;
 
 		QObject* GetProfile ();
+		void GetLastEntries (int count);
 
 		void FillSettings (LJAccountConfigurationWidget *widget);
 
@@ -140,9 +141,6 @@ namespace Metida
 		void AddGroup (const QString& name, bool isPublic, int id);
 		void DeleteGroup (int id);
 
-	private:
-		QVariantMap GetPostOptionsMapFromLJEvent (const LJEvent& event);
-
 	public slots:
 		void handleValidatingFinished (bool success);
 		void handleXmlRpcError (int errorCode, const QString& msgInEng);
@@ -150,6 +148,8 @@ namespace Metida
 		void submit (const Event& event);
 		void backup ();
 		void handleGotEntries2Backup (const QList<LJEvent>& events);
+		void handleGettingEvents2BackupFinished ();
+		void handleGotEntries (const QList<LJEvent>& events);
 
 	signals:
 		void accountRenamed (const QString& newName);
@@ -158,6 +158,7 @@ namespace Metida
 		void entryPosted ();
 
 		void gotEvents2Backup (const QList<Event>& events);
+		void gotEvents (const QList<Event>& events);
 		void gettingEvents2BackupFinished ();
 	};
 }

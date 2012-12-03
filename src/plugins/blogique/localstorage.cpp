@@ -83,8 +83,6 @@ namespace Blogique
 		AddDraft_.bindValue (":entry", e.Content_);
 		AddDraft_.bindValue (":date", e.Date_);
 		AddDraft_.bindValue (":subject", e.Subject_);
-		AddDraft_.bindValue (":tags", e.Tags_);
-
 		if (!AddDraft_.exec ())
 		{
 			Util::DBLock::DumpError (AddDraft_);
@@ -92,6 +90,18 @@ namespace Blogique
 		}
 
 		const int id = AddDraft_.lastInsertId ().toInt ();
+
+		for (const auto& tag : e.Tags_)
+		{
+			AddDraftTag_.bindValue (":tag", tag);
+			AddDraftTag_.bindValue (":draft_id", id);
+			if (!AddDraftTag_.exec ())
+			{
+				Util::DBLock::DumpError (AddDraftTag_);
+				throw std::runtime_error ("unable to add draft's tag");
+			}
+		}
+
 		for (const auto& key : e.PostOptions_.keys ())
 		{
 			AddDraftPostOptions_.bindValue (":draft_id", id);
@@ -128,12 +138,29 @@ namespace Blogique
 		UpdateDraft_.bindValue (":entry", e.Content_);
 		UpdateDraft_.bindValue (":date", e.Date_);
 		UpdateDraft_.bindValue (":subject", e.Subject_);
-		UpdateDraft_.bindValue (":tags", e.Tags_);
 		UpdateDraft_.bindValue (":draft_id", id);
 		if (!UpdateDraft_.exec ())
 		{
 			Util::DBLock::DumpError (UpdateDraft_);
 			throw std::runtime_error ("unable to update draft");
+		}
+
+		RemoveDraftTags_.bindValue (":draft_id", id);
+		if (!RemoveDraftTags_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveDraftTags_);
+			throw std::runtime_error ("unable to remove draft's tags");
+		}
+
+		for (const auto& tag : e.Tags_)
+		{
+			AddDraftTag_.bindValue (":tag", tag);
+			AddDraftTag_.bindValue (":draft_id", id);
+			if (!AddDraftTag_.exec ())
+			{
+				Util::DBLock::DumpError (AddDraftTag_);
+				throw std::runtime_error ("unable to add draft's tag");
+			}
 		}
 
 		for (const auto& key : e.PostOptions_.keys ())
@@ -162,6 +189,42 @@ namespace Blogique
 		lock.Good ();
 	}
 
+	namespace
+	{
+		QVariantMap GetEntryOptions (QSqlQuery query)
+		{
+			if (!query.exec ())
+			{
+				Util::DBLock::DumpError (query);
+				throw std::runtime_error ("unable to get entry's params");
+			}
+
+			QVariantMap map;
+			while (query.next ())
+				map.insert (query.value (1).toString (), query.value (2));
+			query.finish ();
+
+			return map;
+		}
+
+		QStringList GetTags (QSqlQuery query)
+		{
+			if (!query.exec ())
+			{
+				Util::DBLock::DumpError (query);
+				throw std::runtime_error ("unable to get entry's tag");
+			}
+
+			QStringList tags;
+			while (query.next ())
+				tags << query.value (1).toString ();
+
+			query.finish ();
+
+			return tags;
+		}
+	}
+
 	QList<Event> LocalStorage::GetDrafts (const QByteArray& accountId)
 	{
 		GetDrafts_.bindValue (":account_id", QString::fromUtf8 (accountId));
@@ -180,7 +243,9 @@ namespace Blogique
 			e.Content_ = GetDrafts_.value (1).toString ();
 			e.Date_ = GetDrafts_.value (2).toDateTime ();
 			e.Subject_ = GetDrafts_.value (3).toString ();
-			e.Tags_ = GetDrafts_.value (4).toStringList ();
+
+			GetDraftTags_.bindValue (":draft_id", draftId);
+			e.Tags_ = GetTags (GetDraftTags_);
 
 			GetDraftPostOptions_.bindValue (":draft_id", draftId);
 			e.PostOptions_ = GetEntryOptions (GetDraftPostOptions_);
@@ -211,8 +276,10 @@ namespace Blogique
 		e.Content_ = GetFullDraft_.value (1).toString ();
 		e.Date_ = GetFullDraft_.value (2).toDateTime ();
 		e.Subject_ = GetFullDraft_.value (3).toString ();
-		e.Tags_ = GetFullDraft_.value (4).toStringList ();
 		GetFullDraft_.finish ();
+
+		GetDraftTags_.bindValue (":draft_id", draftId);
+		e.Tags_ = GetTags (GetDraftTags_);
 
 		GetDraftPostOptions_.bindValue (":draft_id", draftId);
 		e.PostOptions_ = GetEntryOptions (GetDraftPostOptions_);
@@ -266,11 +333,11 @@ namespace Blogique
 		for (const auto& event : events)
 		{
 			AddEntry_.bindValue (":account_id", QString::fromUtf8 (accountID));
+			AddEntry_.bindValue (":entry_id", event.EntryId_);
 			AddEntry_.bindValue (":entry", event.Content_);
 			AddEntry_.bindValue (":date", event.Date_);
 			AddEntry_.bindValue (":subject", event.Subject_);
-			AddEntry_.bindValue (":tags", event.Tags_);
-			
+
 			if (!AddEntry_.exec ())
 			{
 				Util::DBLock::DumpError (AddEntry_);
@@ -278,6 +345,18 @@ namespace Blogique
 			}
 
 			const int id = AddEntry_.lastInsertId ().toInt ();
+
+			for (const auto& tag : event.Tags_)
+			{
+				AddEntryTag_.bindValue (":tag", tag);
+				AddEntryTag_.bindValue (":entry_id", id);
+				if (!AddEntryTag_.exec ())
+				{
+					Util::DBLock::DumpError (AddEntryTag_);
+					throw std::runtime_error ("unable to add entry's tag");
+				}
+			}
+
 			for (const auto& key : event.PostOptions_.keys ())
 			{
 				AddEntryPostOptions_.bindValue (":entry_id", id);
@@ -310,6 +389,7 @@ namespace Blogique
 		Util::DBLock lock (DB_);
 		lock.Init ();
 
+		UpdateEntry_.bindValue (":entry_id", e.EntryId_);
 		UpdateEntry_.bindValue (":entry", e.Content_);
 		UpdateEntry_.bindValue (":date", e.Date_);
 		UpdateEntry_.bindValue (":subject", e.Subject_);
@@ -320,7 +400,25 @@ namespace Blogique
 			Util::DBLock::DumpError (UpdateEntry_);
 			throw std::runtime_error ("unable to update entry");
 		}
-		
+
+		RemoveEntryTags_.bindValue (":entry_id", id);
+		if (!RemoveEntryTags_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveEntryTags_);
+			throw std::runtime_error ("unable to remove entry's tags");
+		}
+
+		for (const auto& tag : e.Tags_)
+		{
+			AddEntryTag_.bindValue (":tag", tag);
+			AddEntryTag_.bindValue (":entry_id", id);
+			if (!AddEntryTag_.exec ())
+			{
+				Util::DBLock::DumpError (AddEntryTag_);
+				throw std::runtime_error ("unable to add entry's tag");
+			}
+		}
+
 		for (const auto& key : e.PostOptions_.keys ())
 		{
 			UpdateEntryPostOptions_.bindValue (":entry_id", id);
@@ -332,7 +430,7 @@ namespace Blogique
 				throw std::runtime_error ("unable to update entry's options");
 			}
 		}
-		
+
 		for (const auto& key : e.CustomData_.keys ())
 		{
 			UpdateEntryCustomOptions_.bindValue (":entry_id", id);
@@ -366,15 +464,18 @@ namespace Blogique
 			Util::DBLock::DumpError (GetEntry_);
 			throw std::runtime_error ("unable to get entry");
 		}
-		
+
 		GetEntry_.next ();
 		Event e;
 		e.EntryDBId_ = entryId;
-		e.Content_ = GetEntry_.value (1).toString ();
-		e.Date_ = GetEntry_.value (2).toDateTime ();
-		e.Subject_ = GetEntry_.value (3).toString ();
-		e.Tags_ = GetEntry_.value (4).toStringList ();
+		e.EntryId_ = GetEntry_.value (1).toLongLong ();
+		e.Content_ = GetEntry_.value (2).toString ();
+		e.Date_ = GetEntry_.value (3).toDateTime ();
+		e.Subject_ = GetEntry_.value (4).toString ();
 		GetEntry_.finish ();
+
+		GetEntryTags_.bindValue (":entry_id", entryId);
+		e.Tags_ = GetTags (GetEntryTags_);
 
 		GetEntryPostOptions_.bindValue (":entry_id", entryId);
 		e.PostOptions_ = GetEntryOptions (GetEntryPostOptions_);
@@ -400,10 +501,13 @@ namespace Blogique
 			Event e;
 			const int entryId = GetAllEntries_.value (0).toInt ();
 			e.EntryDBId_ = entryId;
-			e.Content_ = GetAllEntries_.value (1).toString ();
-			e.Date_ = GetAllEntries_.value (2).toDateTime ();
-			e.Subject_ = GetAllEntries_.value (3).toString ();
-			e.Tags_ = GetAllEntries_.value (4).toStringList ();
+			e.EntryId_ = GetAllEntries_.value (1).toLongLong ();
+			e.Content_ = GetAllEntries_.value (2).toString ();
+			e.Date_ = GetAllEntries_.value (3).toDateTime ();
+			e.Subject_ = GetAllEntries_.value (4).toString ();
+
+			GetEntryTags_.bindValue (":entry_id", entryId);
+			e.Tags_ = GetTags (GetEntryTags_);
 
 			GetEntryPostOptions_.bindValue (":entry_id", entryId);
 			e.PostOptions_ = GetEntryOptions (GetEntryPostOptions_);
@@ -418,26 +522,30 @@ namespace Blogique
 		return list;
 	}
 
-	QList<Event> LocalStorage::GetLast20Entries (const QByteArray& accountId)
+	QList<Event> LocalStorage::GetLastNEntries (const QByteArray& accountId, int count)
 	{
-		GetLast20Entries_.bindValue (":account_id", QString::fromUtf8 (accountId));
-		if (!GetLast20Entries_.exec ())
+		GetLastNEntries_.bindValue (":account_id", QString::fromUtf8 (accountId));
+		GetLastNEntries_.bindValue (":limit", count);
+		if (!GetLastNEntries_.exec ())
 		{
-			Util::DBLock::DumpError (GetLast20Entries_);
+			Util::DBLock::DumpError (GetLastNEntries_);
 			throw std::runtime_error ("unable to get entries");
 		}
-		
+
 		QList<Event> list;
-		while (GetLast20Entries_.next ())
+		while (GetLastNEntries_.next ())
 		{
 			Event e;
-			const int entryId = GetLast20Entries_.value (0).toInt ();
+			const int entryId = GetLastNEntries_.value (0).toInt ();
 			e.EntryDBId_ = entryId;
-			e.Content_ = GetLast20Entries_.value (1).toString ();
-			e.Date_ = GetLast20Entries_.value (2).toDateTime ();
-			e.Subject_ = GetLast20Entries_.value (3).toString ();
-			e.Tags_ = GetLast20Entries_.value (4).toStringList ();
-			
+			e.EntryId_ = GetLastNEntries_.value (1).toLongLong ();
+			e.Content_ = GetLastNEntries_.value (2).toString ();
+			e.Date_ = GetLastNEntries_.value (3).toDateTime ();
+			e.Subject_ = GetLastNEntries_.value (4).toString ();
+
+			GetEntryTags_.bindValue (":entry_id", entryId);
+			e.Tags_ = GetTags (GetEntryTags_);
+
 			GetEntryPostOptions_.bindValue (":entry_id", entryId);
 			e.PostOptions_ = GetEntryOptions (GetEntryPostOptions_);
 
@@ -446,7 +554,7 @@ namespace Blogique
 
 			list << e;
 		}
-		GetLast20Entries_.finish ();
+		GetLastNEntries_.finish ();
 
 		return list;
 	}
@@ -467,10 +575,13 @@ namespace Blogique
 			Event e;
 			const int entryId = GetEntriesByDate_.value (0).toInt ();
 			e.EntryDBId_ = entryId;
-			e.Content_ = GetEntriesByDate_.value (1).toString ();
-			e.Date_ = GetEntriesByDate_.value (2).toDateTime ();
-			e.Subject_ = GetEntriesByDate_.value (3).toString ();
-			e.Tags_ = GetEntriesByDate_.value (4).toStringList ();
+			e.EntryId_ = GetEntriesByDate_.value (1).toLongLong ();
+			e.Content_ = GetEntriesByDate_.value (2).toString ();
+			e.Date_ = GetEntriesByDate_.value (3).toDateTime ();
+			e.Subject_ = GetEntriesByDate_.value (4).toString ();
+
+			GetEntryTags_.bindValue (":entry_id", entryId);
+			e.Tags_ = GetTags (GetEntryTags_);
 
 			GetEntryPostOptions_.bindValue (":entry_id", entryId);
 			e.PostOptions_ = GetEntryOptions (GetEntryPostOptions_);
@@ -515,16 +626,15 @@ namespace Blogique
 				"AccountID INTEGER NOT NULL REFERENCES accounts (Id) ON DELETE CASCADE, "
 				"Entry TEXT, "
 				"Date DATE, "
-				"Subject TEXT, "
-				"Tags TEXT "
+				"Subject TEXT "
 				");";
 		table2query ["entries"] = "CREATE TABLE IF NOT EXISTS entries ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"AccountID INTEGER NOT NULL REFERENCES accounts (Id) ON DELETE CASCADE, "
+				"EntryId INTEGER NOT NULL UNIQUE, "
 				"Entry TEXT, "
 				"Date DATE, "
-				"Subject TEXT, "
-				"Tags TEXT "
+				"Subject TEXT "
 				");";
 		table2query ["draft_post_options"] = "CREATE TABLE IF NOT EXISTS draft_post_options ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -538,6 +648,11 @@ namespace Blogique
 				"Name TEXT, "
 				"Value TEXT "
 				");";
+		table2query ["draft_tags"] = "CREATE TABLE IF NOT EXISTS draft_tags ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				"Tag TEXT NOT NULL UNIQUE, "
+				"DraftId INTEGER NOT NULL REFERENCES drafts (Id) ON DELETE CASCADE "
+				");";
 		table2query ["entry_post_options"] = "CREATE TABLE IF NOT EXISTS entry_post_options ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"EntryID INTEGER NOT NULL REFERENCES entries (Id) ON DELETE CASCADE, "
@@ -549,6 +664,11 @@ namespace Blogique
 				"EntryID INTEGER NOT NULL REFERENCES entries (Id) ON DELETE CASCADE, "
 				"Name TEXT, "
 				"Value TEXT "
+				");";
+		table2query ["entry_tags"] = "CREATE TABLE IF NOT EXISTS entry_tags ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				"Tag TEXT NOT NULL UNIQUE, "
+				"EntryId INTEGER NOT NULL REFERENCES entries (Id) ON DELETE CASCADE "
 				");";
 
 		Util::DBLock lock (DB_);
@@ -577,12 +697,12 @@ namespace Blogique
 				"VALUES (:account_id);");
 
 		AddDraft_ = QSqlQuery (DB_);
-		AddDraft_.prepare ("INSERT INTO drafts (AccountID, Entry, Date, Subject, Tags) "
+		AddDraft_.prepare ("INSERT INTO drafts (AccountID, Entry, Date, Subject) "
 				"VALUES ((SELECT accounts.ID FROM accounts WHERE accounts.AccountID = :account_id), "
-				":entry, :date, :subject, :tags);");
+				":entry, :date, :subject);");
 		UpdateDraft_ = QSqlQuery (DB_);
 		UpdateDraft_.prepare ("UPDATE drafts SET Entry = :entry, Date = :date, "
-				"Subject = :subject, Tags = :tags WHERE Id = :draft_id;");
+				"Subject = :subject WHERE Id = :draft_id;");
 
 		AddDraftPostOptions_ = QSqlQuery (DB_);
 		AddDraftPostOptions_.prepare ("INSERT INTO draft_post_options "
@@ -606,12 +726,12 @@ namespace Blogique
 				"WHERE accounts.AccountID=:account_id) ORDER BY Date DESC;");
 
 		GetDrafts_ = QSqlQuery (DB_);
-		GetDrafts_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM drafts "
+		GetDrafts_.prepare ("SELECT Id, Entry, Date, Subject FROM drafts "
 				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
 				"WHERE accounts.AccountID = :account_id) ORDER BY Date DESC;");
 
 		GetFullDraft_ = QSqlQuery (DB_);
-		GetFullDraft_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM drafts "
+		GetFullDraft_.prepare ("SELECT Id, Entry, Date, Subject FROM drafts "
 				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
 				"WHERE accounts.AccountID = :account_id) AND Id = :draft_id;");
 
@@ -626,14 +746,24 @@ namespace Blogique
 		RemoveDraft_ = QSqlQuery (DB_);
 		RemoveDraft_.prepare ("DELETE FROM drafts WHERE Id = :id;");
 
+		AddDraftTag_ = QSqlQuery (DB_);
+		AddDraftTag_.prepare ("INSERT INTO draft_tags "
+				"(Tag, DraftId) VALUES (:tag, :draft_id);");
+
+		RemoveDraftTags_ = QSqlQuery (DB_);
+		RemoveDraftTags_.prepare ("DELETE FROM draft_tags WHERE DraftID = :draft_id;");
+
+		GetDraftTags_ = QSqlQuery (DB_);
+		GetDraftTags_.prepare ("SELECT Id, Tag FROM draft_tags WHERE DraftID = :draft_id;");
+
 		AddEntry_ = QSqlQuery (DB_);
-		AddEntry_.prepare ("INSERT INTO entries (AccountID, Entry, Date, Subject, Tags) "
+		AddEntry_.prepare ("INSERT OR REPLACE INTO entries (AccountID, EntryId, Entry, Date, Subject) "
 				"VALUES ((SELECT accounts.ID FROM accounts WHERE accounts.AccountID = :account_id), "
-				":entry, :date, :subject, :tags);");
+				":entry_id, :entry, :date, :subject);");
 
 		UpdateEntry_ = QSqlQuery (DB_);
-		UpdateEntry_.prepare ("UPDATE entries SET Entry = :entry, Date = :date, "
-				"Subject = :subject, Tags = :tags WHERE Id = :entry_id;");
+		UpdateEntry_.prepare ("UPDATE entries SET EntryId = :entry_id, Entry = :entry, Date = :date, "
+				"Subject = :subject WHERE Id = :entry_id;");
 
 		RemoveEntry_ = QSqlQuery (DB_);
 		RemoveEntry_.prepare ("DELETE FROM entries WHERE Id = :id;");
@@ -663,22 +793,22 @@ namespace Blogique
 				"WHERE EntryID = :entry_id;");
 
 		GetEntry_ = QSqlQuery (DB_);
-		GetEntry_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM entries "
+		GetEntry_.prepare ("SELECT Id, EntryId, Entry, Date, Subject FROM entries "
 				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
 				"WHERE accounts.AccountID = :account_id) AND Id = :entry_id");
 
 		GetAllEntries_ = QSqlQuery (DB_);
-		GetAllEntries_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM entries "
+		GetAllEntries_.prepare ("SELECT Id, EntryId,  Entry, Date, Subject FROM entries "
 				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
 				"WHERE accounts.AccountID = :account_id) ORDER BY Date DESC;");
 
-		GetLast20Entries_= QSqlQuery (DB_);
-		GetLast20Entries_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM entries "
+		GetLastNEntries_= QSqlQuery (DB_);
+		GetLastNEntries_.prepare ("SELECT Id, EntryId, Entry, Date, Subject FROM entries "
 				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
-				"WHERE accounts.AccountID = :account_id) ORDER BY Date DESC LIMIT 20;");
+				"WHERE accounts.AccountID = :account_id) ORDER BY Date DESC LIMIT :limit;");
 
 		GetEntriesByDate_= QSqlQuery (DB_);;
-		GetEntriesByDate_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM entries "
+		GetEntriesByDate_.prepare ("SELECT Id, EntryId, Entry, Date, Subject FROM entries "
 				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
 				"WHERE accounts.AccountID = :account_id) AND date (Date) = :date;");
 
@@ -686,23 +816,15 @@ namespace Blogique
 		GetEntriesCountByDate_.prepare ("SELECT date (Date), COUNT (Id) FROM entries "
 				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
 				"WHERE accounts.AccountID = :account_id) GROUP BY date (Date);");
+		AddEntryTag_ = QSqlQuery (DB_);
+		AddEntryTag_.prepare ("INSERT INTO entry_tags "
+				"(Tag, EntryID) VALUES (:tag, :entry_id);");
+
+		RemoveEntryTags_ = QSqlQuery (DB_);
+		RemoveEntryTags_.prepare ("DELETE FROM entry_tags WHERE EntryID = :entry_id;");
+
+		GetEntryTags_ = QSqlQuery (DB_);
+		GetEntryTags_.prepare ("SELECT Id, Tag FROM entry_tags WHERE EntryID = :entry_id;");
 	}
-
-	QVariantMap LocalStorage::GetEntryOptions (QSqlQuery query)
-	{
-		if (!query.exec ())
-		{
-			Util::DBLock::DumpError (query);
-			throw std::runtime_error ("unable to get entry's params");
-		}
-
-		QVariantMap map;
-		while (query.next ())
-			map.insert (query.value (1).toString (), query.value (2));
-		query.finish ();
-
-		return map;
-	}
-
 }
 }
