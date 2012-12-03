@@ -16,51 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGTHIRDPAGE_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGTHIRDPAGE_H
-#include <QWizardPage>
+#pragma once
 
-class QLabel;
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Dumbeep
 {
-namespace Xoox
-{
-	class InBandAccountRegSecondPage;
-	class GlooxAccountConfigurationWidget;
-
-	class InBandAccountRegThirdPage : public QWizardPage
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 
-		InBandAccountRegSecondPage *SecondPage_;
-		GlooxAccountConfigurationWidget *ConfWidget_;
-		QLabel *StateLabel_;
-
-		enum RegState
-		{
-			RSIdle,
-			RSAwaitingResult,
-			RSSuccess,
-			RSError
-		} RegState_;
+		XmlSettingsManager ();
 	public:
-		InBandAccountRegThirdPage (InBandAccountRegSecondPage*, QWidget* = 0);
-
-		void SetConfWidget (GlooxAccountConfigurationWidget*);
-
-		bool isComplete () const;
-		void initializePage ();
-	private:
-		void SetState (RegState);
-	private slots:
-		void handleSuccessfulReg ();
-		void handleRegError (const QString&);
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }
-}
-
-#endif

@@ -904,7 +904,8 @@ namespace Poshuku
 			return;
 		}
 
-		LinkTextItem_.reset (new QLabel (WebView_));
+		LinkTextItem_.reset (new QLabel);
+		LinkTextItem_->setWindowFlags (Qt::ToolTip);
 
 		const QFontMetrics metrics (LinkTextItem_->font ());
 		msg = metrics.elidedText (msg, Qt::ElideMiddle, WebView_->rect ().width () * 2 / 3);
@@ -914,12 +915,7 @@ namespace Poshuku
 		const int textHeight = metrics.boundingRect (msg).height ();
 		const qreal x = 1;
 		const qreal y = WebView_->rect ().height () - textHeight - 7;
-		LinkTextItem_->move (x, y);
-
-		auto palette = LinkTextItem_->palette ();
-		palette.setColor (QPalette::Window, palette.color (QPalette::AlternateBase));
-		LinkTextItem_->setAutoFillBackground (true);
-		LinkTextItem_->setPalette (palette);
+		LinkTextItem_->move (WebView_->mapToGlobal (QPoint (x, y)));
 
 		LinkTextItem_->show ();
 	}
