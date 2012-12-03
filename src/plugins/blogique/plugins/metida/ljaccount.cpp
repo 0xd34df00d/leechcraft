@@ -377,7 +377,6 @@ namespace Metida
 			event.Tags_ = ljEvent.Tags_;
 			event.Target_ = login;
 			event.PostOptions_ = GetPostOptionsMapFromLJEvent (ljEvent);
-
 			return event;
 		}
 	}
