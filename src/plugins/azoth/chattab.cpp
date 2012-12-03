@@ -906,7 +906,7 @@ namespace Azoth
 		{
 			if (Core::Instance ().CouldHandleURL (url))
 			{
-				Core::Instance ().HandleURL (url);
+				Core::Instance ().HandleURL (url, GetEntry<ICLEntry> ());
 				return;
 			}
 
@@ -1921,12 +1921,12 @@ namespace Azoth
 	void ChatTab::prepareMessageText (const QString& text)
 	{
 		Ui_.MsgEdit_->setText (text);
+		Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 	}
 
 	void ChatTab::appendMessageText (const QString& text)
 	{
-		Ui_.MsgEdit_->setText (Ui_.MsgEdit_->toPlainText () + text);
-		Ui_.MsgEdit_->moveCursor (QTextCursor::End);
+		prepareMessageText (Ui_.MsgEdit_->toPlainText () + text);
 	}
 
 	void ChatTab::selectVariant (const QString& var)
