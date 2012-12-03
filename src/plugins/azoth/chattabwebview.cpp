@@ -63,6 +63,12 @@ namespace Azoth
 		{
 			menu->addAction (pageAction (QWebPage::Copy));
 			menu->addAction (QuoteAct_);
+
+			if (!text.contains (' ') && text.contains ('.'))
+				menu->addAction (tr ("Open as URL"),
+						this,
+						SLOT (handleOpenAsURL ()))->setData (text);
+
 			menu->addSeparator ();
 
 			HandleDataFilters (menu, text);
@@ -145,6 +151,22 @@ namespace Azoth
 			return;
 
 		QDesktopServices::openUrl (url);
+	}
+
+	void ChatTabWebView::handleOpenAsURL()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		const auto& str = action->data ().toString ().trimmed ();
+
+		QUrl url (str);
+		if (url.scheme ().isEmpty () &&
+					url.host ().isEmpty ())
+			url = "http://" + url.toString ();
+
+		const Entity& e = Util::MakeEntity (url,
+				QString (),
+				static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+		Core::Instance ().SendEntity (e);
 	}
 
 	void ChatTabWebView::handleSaveLink ()

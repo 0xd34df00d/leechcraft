@@ -42,6 +42,7 @@ namespace Azoth
 	private slots:
 		void handleOpenLink ();
 		void handleOpenExternally ();
+		void handleOpenAsURL ();
 		void handleSaveLink ();
 	};
 }
