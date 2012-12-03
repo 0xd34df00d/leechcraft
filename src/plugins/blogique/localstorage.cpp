@@ -345,7 +345,6 @@ namespace Blogique
 			}
 
 			const int id = AddEntry_.lastInsertId ().toInt ();
-
 			for (const auto& tag : event.Tags_)
 			{
 				AddEntryTag_.bindValue (":tag", tag);
@@ -394,7 +393,7 @@ namespace Blogique
 		UpdateEntry_.bindValue (":date", e.Date_);
 		UpdateEntry_.bindValue (":subject", e.Subject_);
 		UpdateEntry_.bindValue (":tags", e.Tags_);
-		UpdateEntry_.bindValue (":entry_id", id);
+		UpdateEntry_.bindValue (":id", id);
 		if (!UpdateEntry_.exec ())
 		{
 			Util::DBLock::DumpError (UpdateEntry_);
@@ -650,7 +649,7 @@ namespace Blogique
 				");";
 		table2query ["draft_tags"] = "CREATE TABLE IF NOT EXISTS draft_tags ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
-				"Tag TEXT NOT NULL UNIQUE, "
+				"Tag TEXT NOT NULL, "
 				"DraftId INTEGER NOT NULL REFERENCES drafts (Id) ON DELETE CASCADE "
 				");";
 		table2query ["entry_post_options"] = "CREATE TABLE IF NOT EXISTS entry_post_options ("
@@ -667,7 +666,7 @@ namespace Blogique
 				");";
 		table2query ["entry_tags"] = "CREATE TABLE IF NOT EXISTS entry_tags ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
-				"Tag TEXT NOT NULL UNIQUE, "
+				"Tag TEXT NOT NULL, "
 				"EntryId INTEGER NOT NULL REFERENCES entries (Id) ON DELETE CASCADE "
 				");";
 
@@ -763,7 +762,7 @@ namespace Blogique
 
 		UpdateEntry_ = QSqlQuery (DB_);
 		UpdateEntry_.prepare ("UPDATE entries SET EntryId = :entry_id, Entry = :entry, Date = :date, "
-				"Subject = :subject WHERE Id = :entry_id;");
+				"Subject = :subject WHERE Id = :id;");
 
 		RemoveEntry_ = QSqlQuery (DB_);
 		RemoveEntry_.prepare ("DELETE FROM entries WHERE Id = :id;");
