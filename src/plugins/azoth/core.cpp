@@ -167,9 +167,13 @@ namespace Azoth
 				if (!protoPred (proto))
 					continue;
 
-				QObjectList accountObjs = proto->GetRegisteredAccounts ();
-				Q_FOREACH (QObject *accountObj, accountObjs)
-					accounts << qobject_cast<IAccount*> (accountObj);
+				Q_FOREACH (QObject *accountObj, proto->GetRegisteredAccounts ())
+				{
+					auto acc = qobject_cast<IAccount*> (accountObj);
+					if (!acc->IsShownInRoster ())
+						continue;
+					accounts << acc;
+				}
 			}
 		}
 		return accounts;
