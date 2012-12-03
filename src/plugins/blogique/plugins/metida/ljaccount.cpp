@@ -19,6 +19,7 @@
 #include <memory>
 #include "ljaccount.h"
 #include <QtDebug>
+#include <boost/graph/graph_concepts.hpp>
 #include <util/passutils.h>
 #include <util/util.h>
 #include "core.h"
@@ -64,6 +65,14 @@ namespace Metida
 				SIGNAL (entryPosted ()),
 				this,
 				SIGNAL (entryPosted ()));
+		connect (LJXmlRpc_,
+				SIGNAL (gotEntries2Backup (QList<LJEvent>)),
+				this,
+				SLOT (handleGotEntries2Backup (QList<LJEvent>)));
+		connect (LJXmlRpc_,
+				SIGNAL (gettingEntries2BackupFinished ()),
+				this,
+				SIGNAL (gettingEvents2BackupFinished ()));
 	}
 
 	QObject* LJAccount::GetObject ()
@@ -231,6 +240,24 @@ namespace Metida
 		LJXmlRpc_->DeleteGroup (id);
 	}
 
+	QVariantMap LJAccount::GetPostOptionsMapFromLJEvent (const LJEvent& event)
+	{
+		QVariantMap map;
+		map ["access"] = event.Security_;
+		map ["allowMask"] = event.AllowMask_;
+		map ["adults"] = MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_);
+		map ["comments"] = MetidaUtils::GetStringFromCommentsManagment (event.Props_.CommentsManagement_);
+		map ["hidecomment"] = MetidaUtils::GetStringFromCommentsManagment (event.Props_.ScreeningComments_);
+		map ["place"] = event.Props_.CurrentLocation_;
+		map ["music"] = event.Props_.CurrentMusic_;
+		map ["moodId"] = event.Props_.CurrentMoodId_;
+		map ["mood"] = event.Props_.CurrentMood_;
+		map ["showInFriendsPage"] = event.Props_.ShowInFriendsPage_;
+		map ["avatar"] = event.Props_.PostAvatar_;
+
+		return map;
+	}
+
 	void LJAccount::handleValidatingFinished (bool success)
 	{
 		IsValidated_ = success;
@@ -325,7 +352,27 @@ namespace Metida
 
 	void LJAccount::backup ()
 	{
+		LJXmlRpc_->BackupEvents ();
+	}
 
+	void LJAccount::handleGotEntries2Backup (const QList<LJEvent>& ljEvents)
+	{
+		QList<Event> events;
+		for (const auto& ljEvent : ljEvents)
+		{
+			Event event;
+			event.Content_ = ljEvent.Event_;
+			event.Date_ = ljEvent.DateTime_;
+			event.Subject_ = ljEvent.Subject_;
+			event.Tags_ = ljEvent.Tags_;
+			event.Target_ = GetOurLogin ();
+
+			event.PostOptions_ = GetPostOptionsMapFromLJEvent (ljEvent);
+
+			events << event;
+		}
+
+		emit gotEvents2Backup (events);
 	}
 
 }

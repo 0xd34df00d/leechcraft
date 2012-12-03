@@ -19,6 +19,7 @@ SET (SRCS
 	backupmanager.cpp
 	blogique.cpp
 	blogiquewidget.cpp
+	calendarwidget.cpp
 	core.cpp
 	localstorage.cpp
 	pluginproxy.cpp
@@ -33,6 +34,7 @@ SET (HEADERS
 	backupmanager.h
 	blogique.h
 	blogiquewidget.h
+	calendarwidget.h
 	core.h
 	localstorage.h
 	pluginproxy.h

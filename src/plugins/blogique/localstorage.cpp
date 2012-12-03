@@ -183,28 +183,10 @@ namespace Blogique
 			e.Tags_ = GetDrafts_.value (4).toStringList ();
 
 			GetDraftPostOptions_.bindValue (":draft_id", draftId);
-			if (!GetDraftPostOptions_.exec ())
-			{
-				Util::DBLock::DumpError (GetDraftPostOptions_);
-				throw std::runtime_error ("unable to get draft params");
-			}
-
-			while (GetDraftPostOptions_.next ())
-				e.PostOptions_.insert (GetDraftPostOptions_.value (1).toString (),
-						GetDraftPostOptions_.value (2));
-			GetDraftPostOptions_.finish ();
+			e.PostOptions_ = GetEntryOptions (GetDraftPostOptions_);
 
 			GetDraftCustomOptions_.bindValue (":draft_id", draftId);
-			if (!GetDraftCustomOptions_.exec ())
-			{
-				Util::DBLock::DumpError (GetDraftCustomOptions_);
-				throw std::runtime_error ("unable to get draft params");
-			}
-
-			while (GetDraftCustomOptions_.next ())
-				e.CustomData_.insert (GetDraftCustomOptions_.value (1).toString (),
-						GetDraftCustomOptions_.value (2));
-			GetDraftCustomOptions_.finish ();
+			e.CustomData_ = GetEntryOptions (GetDraftCustomOptions_);
 
 			list << e;
 		}
@@ -233,28 +215,10 @@ namespace Blogique
 		GetFullDraft_.finish ();
 
 		GetDraftPostOptions_.bindValue (":draft_id", draftId);
-		if (!GetDraftPostOptions_.exec ())
-		{
-			Util::DBLock::DumpError (GetDraftPostOptions_);
-			throw std::runtime_error ("unable to get draft params");
-		}
-
-		while (GetDraftPostOptions_.next ())
-			e.PostOptions_.insert (GetDraftPostOptions_.value (1).toString (),
-					GetDraftPostOptions_.value (2));
-		GetDraftPostOptions_.finish ();
+		e.PostOptions_ = GetEntryOptions (GetDraftPostOptions_);
 
 		GetDraftCustomOptions_.bindValue (":draft_id", draftId);
-		if (!GetDraftCustomOptions_.exec ())
-		{
-			Util::DBLock::DumpError (GetDraftCustomOptions_);
-			throw std::runtime_error ("unable to get draft params");
-		}
-
-		while (GetDraftCustomOptions_.next ())
-			e.CustomData_.insert (GetDraftCustomOptions_.value (1).toString (),
-					GetDraftCustomOptions_.value (2));
-		GetDraftCustomOptions_.finish ();
+		e.CustomData_ = GetEntryOptions (GetDraftCustomOptions_);
 
 		return e;
 	}
@@ -292,6 +256,251 @@ namespace Blogique
 			Util::DBLock::DumpError (RemoveDraft_);
 			throw std::runtime_error ("unable to remove draft");
 		}
+	}
+
+	void LocalStorage::SaveEntries (const QByteArray& accountID,
+			const QList<Event>& events)
+	{
+		Util::DBLock lock (DB_);
+		lock.Init ();
+		for (const auto& event : events)
+		{
+			AddEntry_.bindValue (":account_id", QString::fromUtf8 (accountID));
+			AddEntry_.bindValue (":entry", event.Content_);
+			AddEntry_.bindValue (":date", event.Date_);
+			AddEntry_.bindValue (":subject", event.Subject_);
+			AddEntry_.bindValue (":tags", event.Tags_);
+			
+			if (!AddEntry_.exec ())
+			{
+				Util::DBLock::DumpError (AddEntry_);
+				throw std::runtime_error ("unable to add entry");
+			}
+
+			const int id = AddEntry_.lastInsertId ().toInt ();
+			for (const auto& key : event.PostOptions_.keys ())
+			{
+				AddEntryPostOptions_.bindValue (":entry_id", id);
+				AddEntryPostOptions_.bindValue (":name", key);
+				AddEntryPostOptions_.bindValue (":value", event.PostOptions_.value (key));
+				if (!AddEntryPostOptions_.exec ())
+				{
+					Util::DBLock::DumpError (AddEntryPostOptions_);
+					throw std::runtime_error ("unable to add entry's' params");
+				}
+			}
+
+			for (const auto& key : event.CustomData_.keys ())
+			{
+				AddEntryCustomOptions_.bindValue (":entry_id", id);
+				AddEntryCustomOptions_.bindValue (":name", key);
+				AddEntryCustomOptions_.bindValue (":value", event.CustomData_.value (key));
+				if (!AddEntryCustomOptions_.exec ())
+				{
+					Util::DBLock::DumpError (AddEntryCustomOptions_);
+					throw std::runtime_error ("unable to add entry's params");
+				}
+			}
+		}
+		lock.Good ();
+	}
+
+	void LocalStorage::UpdateEntry (qlonglong id, const Event& e)
+	{
+		Util::DBLock lock (DB_);
+		lock.Init ();
+
+		UpdateEntry_.bindValue (":entry", e.Content_);
+		UpdateEntry_.bindValue (":date", e.Date_);
+		UpdateEntry_.bindValue (":subject", e.Subject_);
+		UpdateEntry_.bindValue (":tags", e.Tags_);
+		UpdateEntry_.bindValue (":entry_id", id);
+		if (!UpdateEntry_.exec ())
+		{
+			Util::DBLock::DumpError (UpdateEntry_);
+			throw std::runtime_error ("unable to update entry");
+		}
+		
+		for (const auto& key : e.PostOptions_.keys ())
+		{
+			UpdateEntryPostOptions_.bindValue (":entry_id", id);
+			UpdateEntryPostOptions_.bindValue (":name", key);
+			UpdateEntryPostOptions_.bindValue (":value", e.PostOptions_.value (key));
+			if (!UpdateEntryPostOptions_.exec ())
+			{
+				Util::DBLock::DumpError (UpdateEntryPostOptions_);
+				throw std::runtime_error ("unable to update entry's options");
+			}
+		}
+		
+		for (const auto& key : e.CustomData_.keys ())
+		{
+			UpdateEntryCustomOptions_.bindValue (":entry_id", id);
+			UpdateEntryCustomOptions_.bindValue (":name", key);
+			UpdateEntryCustomOptions_.bindValue (":value", e.PostOptions_.value (key));
+			if (!UpdateEntryCustomOptions_.exec ())
+			{
+				Util::DBLock::DumpError (UpdateEntryCustomOptions_);
+				throw std::runtime_error ("unable to update entry's options");
+			}
+		}
+		lock.Good ();
+	}
+
+	void LocalStorage::RemoveEntry (qlonglong id)
+	{
+		RemoveEntry_.bindValue (":id", id);
+		if (!RemoveEntry_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveEntry_);
+			throw std::runtime_error ("unable to remove entry");
+		}
+	}
+
+	Event LocalStorage::GetEntry (const QByteArray& accountId, qlonglong entryId)
+	{
+		GetEntry_.bindValue (":account_id", QString::fromUtf8 (accountId));
+		GetEntry_.bindValue (":entry_id", entryId);
+		if (!GetEntry_.exec ())
+		{
+			Util::DBLock::DumpError (GetEntry_);
+			throw std::runtime_error ("unable to get entry");
+		}
+		
+		GetEntry_.next ();
+		Event e;
+		e.EntryDBId_ = entryId;
+		e.Content_ = GetEntry_.value (1).toString ();
+		e.Date_ = GetEntry_.value (2).toDateTime ();
+		e.Subject_ = GetEntry_.value (3).toString ();
+		e.Tags_ = GetEntry_.value (4).toStringList ();
+		GetEntry_.finish ();
+
+		GetEntryPostOptions_.bindValue (":entry_id", entryId);
+		e.PostOptions_ = GetEntryOptions (GetEntryPostOptions_);
+
+		GetEntryCustomOptions_.bindValue (":entry_id", entryId);
+		e.CustomData_ = GetEntryOptions (GetEntryCustomOptions_);
+
+		return e;
+	}
+
+	QList<Event> LocalStorage::GetAllEntries (const QByteArray& accountId)
+	{
+		GetAllEntries_.bindValue (":account_id", QString::fromUtf8 (accountId));
+		if (!GetAllEntries_.exec ())
+		{
+			Util::DBLock::DumpError (GetAllEntries_);
+			throw std::runtime_error ("unable to get entries");
+		}
+
+		QList<Event> list;
+		while (GetAllEntries_.next ())
+		{
+			Event e;
+			const int entryId = GetAllEntries_.value (0).toInt ();
+			e.EntryDBId_ = entryId;
+			e.Content_ = GetAllEntries_.value (1).toString ();
+			e.Date_ = GetAllEntries_.value (2).toDateTime ();
+			e.Subject_ = GetAllEntries_.value (3).toString ();
+			e.Tags_ = GetAllEntries_.value (4).toStringList ();
+
+			GetEntryPostOptions_.bindValue (":entry_id", entryId);
+			e.PostOptions_ = GetEntryOptions (GetEntryPostOptions_);
+
+			GetEntryCustomOptions_.bindValue (":entry_id", entryId);
+			e.CustomData_ = GetEntryOptions (GetEntryCustomOptions_);
+
+			list << e;
+		}
+		GetAllEntries_.finish ();
+
+		return list;
+	}
+
+	QList<Event> LocalStorage::GetLast20Entries (const QByteArray& accountId)
+	{
+		GetLast20Entries_.bindValue (":account_id", QString::fromUtf8 (accountId));
+		if (!GetLast20Entries_.exec ())
+		{
+			Util::DBLock::DumpError (GetLast20Entries_);
+			throw std::runtime_error ("unable to get entries");
+		}
+		
+		QList<Event> list;
+		while (GetLast20Entries_.next ())
+		{
+			Event e;
+			const int entryId = GetLast20Entries_.value (0).toInt ();
+			e.EntryDBId_ = entryId;
+			e.Content_ = GetLast20Entries_.value (1).toString ();
+			e.Date_ = GetLast20Entries_.value (2).toDateTime ();
+			e.Subject_ = GetLast20Entries_.value (3).toString ();
+			e.Tags_ = GetLast20Entries_.value (4).toStringList ();
+			
+			GetEntryPostOptions_.bindValue (":entry_id", entryId);
+			e.PostOptions_ = GetEntryOptions (GetEntryPostOptions_);
+
+			GetEntryCustomOptions_.bindValue (":entry_id", entryId);
+			e.CustomData_ = GetEntryOptions (GetEntryCustomOptions_);
+
+			list << e;
+		}
+		GetLast20Entries_.finish ();
+
+		return list;
+	}
+
+	QList<Event> LocalStorage::GetEntriesByDate (const QByteArray& accountId, const QDate& date)
+	{
+		GetEntriesByDate_.bindValue (":account_id", QString::fromUtf8 (accountId));
+		GetEntriesByDate_.bindValue (":date", date.toString ("yyyy-MM-dd"));
+		if (!GetEntriesByDate_.exec ())
+		{
+			Util::DBLock::DumpError (GetEntriesByDate_);
+			throw std::runtime_error ("unable to get entries");
+		}
+
+		QList<Event> list;
+		while (GetEntriesByDate_.next ())
+		{
+			Event e;
+			const int entryId = GetEntriesByDate_.value (0).toInt ();
+			e.EntryDBId_ = entryId;
+			e.Content_ = GetEntriesByDate_.value (1).toString ();
+			e.Date_ = GetEntriesByDate_.value (2).toDateTime ();
+			e.Subject_ = GetEntriesByDate_.value (3).toString ();
+			e.Tags_ = GetEntriesByDate_.value (4).toStringList ();
+
+			GetEntryPostOptions_.bindValue (":entry_id", entryId);
+			e.PostOptions_ = GetEntryOptions (GetEntryPostOptions_);
+
+			GetEntryCustomOptions_.bindValue (":entry_id", entryId);
+			e.CustomData_ = GetEntryOptions (GetEntryCustomOptions_);
+
+			list << e;
+		}
+		GetEntriesByDate_.finish ();
+
+		return list;
+	}
+
+	QMap<QDate, int> LocalStorage::GetEntriesCountByDate (const QByteArray& accountId)
+	{
+		GetEntriesCountByDate_.bindValue (":account_id", QString::fromUtf8 (accountId));
+		if (!GetEntriesCountByDate_.exec ())
+		{
+			Util::DBLock::DumpError (GetEntriesCountByDate_);
+			throw std::runtime_error ("unable to get entries");
+		}
+
+		QMap<QDate, int>  statistic;
+		while (GetEntriesCountByDate_.next ())
+			statistic.insert (GetEntriesCountByDate_.value (0).toDate (),
+					GetEntriesCountByDate_.value (1).toInt ());
+		GetAllEntries_.finish ();
+
+		return statistic;
 	}
 
 	void LocalStorage::CreateTables ()
@@ -394,12 +603,12 @@ namespace Blogique
 		GetShortDrafts_ = QSqlQuery (DB_);
 		GetShortDrafts_.prepare ("SELECT Id, Date, Subject FROM drafts "
 				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
-				"WHERE accounts.AccountID=:account_id) ORDER BY Date;");
+				"WHERE accounts.AccountID=:account_id) ORDER BY Date DESC;");
 
 		GetDrafts_ = QSqlQuery (DB_);
 		GetDrafts_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM drafts "
 				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
-				"WHERE accounts.AccountID = :account_id) ORDER BY Date;");
+				"WHERE accounts.AccountID = :account_id) ORDER BY Date DESC;");
 
 		GetFullDraft_ = QSqlQuery (DB_);
 		GetFullDraft_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM drafts "
@@ -416,6 +625,84 @@ namespace Blogique
 
 		RemoveDraft_ = QSqlQuery (DB_);
 		RemoveDraft_.prepare ("DELETE FROM drafts WHERE Id = :id;");
+
+		AddEntry_ = QSqlQuery (DB_);
+		AddEntry_.prepare ("INSERT INTO entries (AccountID, Entry, Date, Subject, Tags) "
+				"VALUES ((SELECT accounts.ID FROM accounts WHERE accounts.AccountID = :account_id), "
+				":entry, :date, :subject, :tags);");
+
+		UpdateEntry_ = QSqlQuery (DB_);
+		UpdateEntry_.prepare ("UPDATE entries SET Entry = :entry, Date = :date, "
+				"Subject = :subject, Tags = :tags WHERE Id = :entry_id;");
+
+		RemoveEntry_ = QSqlQuery (DB_);
+		RemoveEntry_.prepare ("DELETE FROM entries WHERE Id = :id;");
+
+		AddEntryPostOptions_ = QSqlQuery (DB_);
+		AddEntryPostOptions_.prepare ("INSERT INTO entry_post_options "
+				"(EntryId, Name, Value) VALUES (:entry_id, :name, :value);");
+
+		UpdateEntryPostOptions_ = QSqlQuery (DB_);
+		UpdateEntryPostOptions_.prepare ("UPDATE entry_post_options SET Value = :value "
+				"WHERE EntryId = :entry_id AND Name = :name;");
+
+		GetEntryPostOptions_ = QSqlQuery (DB_);
+		GetEntryPostOptions_.prepare ("SELECT Id, Name, Value FROM entry_post_options "
+				"WHERE EntryID = :entry_id;");
+
+		AddEntryCustomOptions_ = QSqlQuery (DB_);
+		AddEntryCustomOptions_.prepare ("INSERT INTO entry_custom_options "
+				"(EntryId, Name, Value) VALUES (:entry_id, :name, :value);");
+
+		UpdateEntryCustomOptions_ = QSqlQuery (DB_);
+		UpdateEntryCustomOptions_.prepare ("UPDATE entry_custom_options "
+				"SET Value = :val WHERE EntryId = :entry_id AND Name = :name;");
+
+		GetEntryCustomOptions_ = QSqlQuery (DB_);
+		GetEntryCustomOptions_.prepare ("SELECT Id, Name, Value FROM entry_custom_options "
+				"WHERE EntryID = :entry_id;");
+
+		GetEntry_ = QSqlQuery (DB_);
+		GetEntry_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM entries "
+				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
+				"WHERE accounts.AccountID = :account_id) AND Id = :entry_id");
+
+		GetAllEntries_ = QSqlQuery (DB_);
+		GetAllEntries_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM entries "
+				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
+				"WHERE accounts.AccountID = :account_id) ORDER BY Date DESC;");
+
+		GetLast20Entries_= QSqlQuery (DB_);
+		GetLast20Entries_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM entries "
+				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
+				"WHERE accounts.AccountID = :account_id) ORDER BY Date DESC LIMIT 20;");
+
+		GetEntriesByDate_= QSqlQuery (DB_);;
+		GetEntriesByDate_.prepare ("SELECT Id, Entry, Date, Subject, Tags FROM entries "
+				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
+				"WHERE accounts.AccountID = :account_id) AND date (Date) = :date;");
+
+		GetEntriesCountByDate_ = QSqlQuery (DB_);
+		GetEntriesCountByDate_.prepare ("SELECT date (Date), COUNT (Id) FROM entries "
+				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
+				"WHERE accounts.AccountID = :account_id) GROUP BY date (Date);");
 	}
+
+	QVariantMap LocalStorage::GetEntryOptions (QSqlQuery query)
+	{
+		if (!query.exec ())
+		{
+			Util::DBLock::DumpError (query);
+			throw std::runtime_error ("unable to get entry's params");
+		}
+
+		QVariantMap map;
+		while (query.next ())
+			map.insert (query.value (1).toString (), query.value (2));
+		query.finish ();
+
+		return map;
+	}
+
 }
 }

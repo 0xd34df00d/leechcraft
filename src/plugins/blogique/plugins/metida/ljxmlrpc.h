@@ -44,6 +44,10 @@ namespace Metida
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
 
 		const int BitMaskForFriendsOnlyComments_;
+		const int MaxGetEventsCount_;
+
+		QHash<QNetworkReply*, int> Reply2Skip_;
+
 	public:
 		LJXmlRPC (LJAccount *acc, QObject *parent = 0);
 
@@ -58,6 +62,7 @@ namespace Metida
 
 		void UpdateProfileInfo ();
 		void Submit (const LJEvent& event);
+		void BackupEvents ();
 	private:
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
@@ -66,6 +71,7 @@ namespace Metida
 				const QString& pass, const QString& challenge);
 		void ParseForError (const QByteArray& content);
 		void ParseFriends (const QDomDocument& doc);
+		QList<LJEvent> ParseBackupEvents (const QDomDocument& doc);
 
 		void AddNewFriendRequest (const QString& username,
 				const QString& bgcolor, const QString& fgcolor,
@@ -78,6 +84,8 @@ namespace Metida
 		void DeleteGroupRequest (int id, const QString& challenge);
 
 		void PostEventRequest (const LJEvent& event, const QString& challenge);
+		void BackupEventsRequest (int skip, const QString& challenge);
+
 	private slots:
 		void handleChallengeReplyFinished ();
 		void handleValidateReplyFinished ();
@@ -85,12 +93,15 @@ namespace Metida
 		void handleAddNewFriendReplyFinished ();
 		void handleReplyWithProfileUpdate ();
 		void handlePostEventReplyFinished ();
+		void handleBackupEventsReplyFinished ();
 
 	signals:
 		void validatingFinished (bool success);
 		void profileUpdated (const LJProfileData& profile);
 		void error (int code, const QString& msg);
 		void entryPosted ();
+		void gotEntries2Backup (const QList<LJEvent>& events);
+		void gettingEntries2BackupFinished ();
 	};
 }
 }

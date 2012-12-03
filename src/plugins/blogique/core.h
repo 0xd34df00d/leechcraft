@@ -27,6 +27,7 @@ namespace LeechCraft
 {
 namespace Blogique
 {
+	struct Event;
 	class BackupManager;
 	class LocalStorage;
 	class IAccount;
@@ -73,6 +74,9 @@ namespace Blogique
 		void handleAccountValidated (QObject *accObj, bool validated);
 		void updateProfiles ();
 		void handleEntryPosted ();
+
+		void handleGotEvents2Backup (const QList<Event>& events);
+		void handleGettingEvents2BackupFinished ();
 
 	signals:
 		void accountAdded (QObject *account);

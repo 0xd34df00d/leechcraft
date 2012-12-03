@@ -38,6 +38,7 @@ namespace Metida
 	: QObject (parent)
 	, Account_ (acc)
 	, BitMaskForFriendsOnlyComments_ (0)
+	, MaxGetEventsCount_ (50)
 	{
 	}
 
@@ -415,6 +416,86 @@ namespace Metida
 		}
 	}
 
+	QList<LJEvent> LJXmlRPC::ParseBackupEvents (const QDomDocument& document)
+	{
+		QList<LJEvent> events;
+		const auto& firstStructElement = document.elementsByTagName ("struct");
+		if (firstStructElement.at (0).isNull ())
+			return events;;
+
+		const auto& members = firstStructElement.at (0).childNodes ();
+		for (int i = 0, count = members.count (); i < count; ++i)
+		{
+			const QDomNode& member = members.at (i);
+			if (!member.isElement () ||
+					member.toElement ().tagName () != "member")
+				continue;
+
+			auto res = ParseMember (member);
+			if (res.Name () == "events")
+			{
+				for (const auto& event : res.Value ())
+				{
+					LJEvent ljEvent;
+					for (const auto& field : event.toList ())
+					{
+						LJParserTypes::LJParseProfileEntry fieldEntry =
+								field.value<LJParserTypes::LJParseProfileEntry> ();
+						if (fieldEntry.Name () == "itemid")
+							ljEvent.ItemID_ = fieldEntry.ValueToLongLong ();
+						else if (fieldEntry.Name () == "subject")
+							ljEvent.Subject_ = fieldEntry.ValueToString ();
+						else if (fieldEntry.Name () == "event")
+							ljEvent.Event_ = fieldEntry.ValueToString ();
+						else if (fieldEntry.Name () == "ditemid")
+							ljEvent.DItemID_ = fieldEntry.ValueToLongLong ();
+						else if (fieldEntry.Name () == "eventtime")
+							ljEvent.DateTime_ = QDateTime::fromString (fieldEntry.ValueToString (),
+									"yyyy-MM-dd hh:mm:ss");
+						else if (fieldEntry.Name () == "props")
+						{
+							for (const auto& prop : fieldEntry.Value ())
+							{
+								LJEventProperties props;
+								for (const auto& field : prop.toList ())
+								{
+									LJParserTypes::LJParseProfileEntry fieldEntry =
+											field.value<LJParserTypes::LJParseProfileEntry> ();
+									if (fieldEntry.Name () == "picture_keyword")
+										props.PostAvatar_ = fieldEntry.ValueToString ();
+									else if (fieldEntry.Name () == "opt_screening")
+										props.CommentsManagement_ = MetidaUtils::GetCommentsManagmentFromString (fieldEntry.ValueToString ());
+									else if (fieldEntry.Name () == "current_music")
+										props.CurrentMusic_ = fieldEntry.ValueToString ();
+									else if (fieldEntry.Name () == "current_mood")
+										props.CurrentMood_ = fieldEntry.ValueToString ();
+									else if (fieldEntry.Name () == "current_location")
+										props.CurrentLocation_ = fieldEntry.ValueToString ();
+									else if (fieldEntry.Name () == "taglist")
+										ljEvent.Tags_ = fieldEntry.ValueToString ().split (',');
+									else if (fieldEntry.Name () == "adult_content")
+										props.AdultContent_ = MetidaUtils::GetAdultContentFromString (fieldEntry.ValueToString ());
+								}
+								ljEvent.Props_ = props;
+							}
+						}
+						else if (fieldEntry.Name () == "url")
+						{
+							QString url = fieldEntry.ValueToString ();
+							url.replace ("http://", "http://" + Account_->GetOurLogin ());
+							ljEvent.Url_ = QUrl (url);
+						}
+						else if (fieldEntry.Name () == "anum")
+							ljEvent.ANum_ = fieldEntry.ValueToInt ();
+					}
+					events << ljEvent;
+				}
+			}
+		}
+
+		return events;
+	}
+
 	void LJXmlRPC::AddNewFriendRequest (const QString& username,
 			const QString& bgcolor, const QString& fgcolor,
 			int groupId, const QString& challenge)
@@ -632,28 +713,7 @@ namespace Metida
 					"0",
 				document));
 
-		QString screening;
-		switch (event.Props_.ScreeningComments_)
-		{
-			case CommentsManagement::ScreenAnonymouseComments:
-				screening = "R";
-				break;
-			case CommentsManagement::ScreenComments:
-				screening = "A";
-				break;
-			case CommentsManagement::ShowComments:
-				screening = "N";
-				break;
-			case CommentsManagement::ShowFriendsComments:
-				screening = "F";
-				break;
-			case CommentsManagement::ScreenNotFromFriendsWithLinks:
-				screening = "L";
-				break;
-			case CommentsManagement::Default:
-			default:
-				break;
-		}
+		QString screening = MetidaUtils::GetStringFromCommentsManagment (event.Props_.CommentsManagement_);
 		if (!screening.isEmpty ())
 			propsStruct.second.appendChild (GetSimpleMemberElement ("opt_screening",
 					"string", screening, document));
@@ -679,6 +739,45 @@ namespace Metida
 				SLOT (handlePostEventReplyFinished ()));
 	}
 
+	void LJXmlRPC::BackupEventsRequest (int skip, const QString& challenge)
+	{
+		QDomDocument document ("BackupEventsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
+		document.appendChild (result.first);
+		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
+				"challenge", document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
+				challenge, document));
+		result.second.appendChild (GetSimpleMemberElement ("username", "string",
+				Account_->GetOurLogin (), document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
+				GetPassword (Account_->GetPassword (), challenge), document));
+		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
+				"1", document));
+
+		result.second.appendChild (GetSimpleMemberElement ("selecttype", "string",
+				"before", document));
+		result.second.appendChild (GetSimpleMemberElement ("howmany", "int",
+				"50", document));
+		result.second.appendChild (GetSimpleMemberElement ("skip", "int",
+				QString::number (skip), document));
+		result.second.appendChild (GetSimpleMemberElement ("before", "string",
+				QDateTime::currentDateTime ().toString ("yyyy-MM-dd hh:mm:ss"),
+				document));
+		result.second.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+				document.toByteArray ());
+		Reply2Skip_ [reply] = skip;
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleBackupEventsReplyFinished ()));
+	}
+
 	void LJXmlRPC::UpdateProfileInfo ()
 	{
 		Validate (Account_->GetOurLogin (), Account_->GetPassword ());
@@ -688,6 +787,13 @@ namespace Metida
 	{
 		ApiCallQueue_ << [event, this] (const QString& challenge)
 				{ PostEventRequest (event, challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::BackupEvents ()
+	{
+		ApiCallQueue_ << [this] (const QString& challenge)
+				{ BackupEventsRequest (0, challenge); };
 		GenerateChallenge ();
 	}
 
@@ -1001,6 +1107,48 @@ namespace Metida
 		{
 			//TODO
 			emit entryPosted ();
+			return;
+		}
+
+		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleBackupEventsReplyFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		const auto& content = reply->readAll ();
+		const int skip = Reply2Skip_.take (reply);
+		reply->deleteLater ();
+		QDomDocument document;
+		QString errorMsg;
+		int errorLine = -1, errorColumn = -1;
+		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< errorMsg
+					<< "in line:"
+					<< errorLine
+					<< "column:"
+					<< errorColumn;
+			return;
+		}
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			const auto& eventsList = ParseBackupEvents (document);
+			emit gotEntries2Backup (eventsList);
+			
+			if (!eventsList.isEmpty ())
+			{
+				ApiCallQueue_ << [skip, this] (const QString& challenge)
+						{ BackupEventsRequest (skip + MaxGetEventsCount_, challenge); };
+				GenerateChallenge ();
+			}
+			else
+				emit gettingEntries2BackupFinished ();
 			return;
 		}
 

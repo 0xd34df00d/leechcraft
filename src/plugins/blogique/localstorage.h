@@ -46,22 +46,49 @@ namespace Blogique
 		QSqlQuery GetDraftPostOptions_;
 		QSqlQuery GetDraftCustomOptions_;
 		QSqlQuery RemoveDraft_;
+		
 		QSqlQuery AddEntry_;
-		QSqlQuery AddEntryParam_;
+		QSqlQuery UpdateEntry_;
+		QSqlQuery GetEntry_;
+		QSqlQuery RemoveEntry_;
+		QSqlQuery AddEntryPostOptions_;
+		QSqlQuery UpdateEntryPostOptions_;
+		QSqlQuery GetEntryPostOptions_;
+		QSqlQuery AddEntryCustomOptions_;
+		QSqlQuery UpdateEntryCustomOptions_;
+		QSqlQuery GetEntryCustomOptions_;
+		QSqlQuery GetAllEntries_;
+		QSqlQuery GetLast20Entries_;
+		QSqlQuery GetEntriesByDate_;
+		QSqlQuery GetEntriesCountByDate_;
+		
 	public:
 		LocalStorage (QObject *obj = 0);
 
 		void AddAccount (const QByteArray& accounId);
+
 		qlonglong SaveDraft (const QByteArray& accountID, const Event& e);
 		void UpdateDraft (qlonglong id, const Event& e);
 		QList<Event> GetDrafts (const QByteArray& accountId);
 		Event GetFullDraft (const QByteArray& accountId, qlonglong draftId);
 		QList<Event> GetShortDrafts (const QByteArray& accountId);
 		void RemoveDraft (qlonglong id);
+
+		void SaveEntries (const QByteArray& accountID, const QList<Event>& events);
+		void UpdateEntry (qlonglong id, const Event& e);
+		void RemoveEntry (qlonglong id);
+		Event GetEntry (const QByteArray& accountId, qlonglong entryId);
+		QList<Event> GetAllEntries (const QByteArray& accountId);
+		QList<Event> GetLast20Entries (const QByteArray& accountId);
+		QList<Event> GetEntriesByDate (const QByteArray& accountId,
+				const QDate& date);
+		QMap<QDate, int> GetEntriesCountByDate (const QByteArray& accountId);
 	private:
 		void CreateTables ();
 		void PrepareQueries ();
+		QVariantMap GetEntryOptions (QSqlQuery query);
 	};
+
 }
 }
 

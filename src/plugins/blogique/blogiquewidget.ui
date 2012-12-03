@@ -132,13 +132,29 @@
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
-             <widget class="QCalendarWidget" name="Calendar_"/>
-             <widget class="QListView" name="PostsView_">
+             <widget class="LeechCraft::Blogique::CalendarWidget" name="Calendar_">
+              <property name="firstDayOfWeek">
+               <enum>Qt::Monday</enum>
+              </property>
+              <property name="gridVisible">
+               <bool>true</bool>
+              </property>
+              <property name="dateEditEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+             <widget class="QTreeView" name="PostsView_">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="rootIsDecorated">
+               <bool>false</bool>
               </property>
              </widget>
             </widget>
@@ -150,8 +166,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>363</width>
-            <height>451</height>
+            <width>369</width>
+            <height>463</height>
            </rect>
           </property>
           <attribute name="label">
@@ -223,6 +239,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LeechCraft::Blogique::CalendarWidget</class>
+   <extends>QCalendarWidget</extends>
+   <header>calendarwidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

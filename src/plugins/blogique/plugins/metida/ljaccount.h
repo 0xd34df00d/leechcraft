@@ -46,10 +46,23 @@ namespace Metida
 		QString PostAvatar_;
 		bool EntryVisibility_;
 		bool UsedRTE_;
+
+		LJEventProperties ()
+		: CurrentMoodId_ (-1)
+		, ShowInFriendsPage_ (true)
+		, AutoFormat_ (true)
+		, AdultContent_ (AdultContent::WithoutAdultContent)
+		, CommentsManagement_ (CommentsManagement::EnableComments)
+		, ScreeningComments_ (CommentsManagement::Default)
+		, EntryVisibility_ (true)
+		, UsedRTE_ (true)
+		{
+		}
 	};
 
 	struct LJEvent
 	{
+		//for posting
 		QString Event_;
 		QString Subject_;
 		Access Security_;
@@ -59,6 +72,21 @@ namespace Metida
 		QString TimeZone_;
 		QString UseJournal_;
 		LJEventProperties Props_;
+
+		// for getting
+		qlonglong ItemID_;
+		qlonglong DItemID_;
+		uint ANum_;
+		QUrl Url_;
+
+		LJEvent ()
+		: Security_ (Access::Public)
+		, AllowMask_ (0)
+		, ItemID_ (-1)
+		, DItemID_ (-1)
+		, ANum_ (0)
+		{
+		}
 	};
 
 	class LJFriendEntry;
@@ -112,18 +140,25 @@ namespace Metida
 		void AddGroup (const QString& name, bool isPublic, int id);
 		void DeleteGroup (int id);
 
+	private:
+		QVariantMap GetPostOptionsMapFromLJEvent (const LJEvent& event);
+
 	public slots:
 		void handleValidatingFinished (bool success);
 		void handleXmlRpcError (int errorCode, const QString& msgInEng);
 		void updateProfile ();
 		void submit (const Event& event);
 		void backup ();
+		void handleGotEntries2Backup (const QList<LJEvent>& events);
 
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
 		void accountValidated (bool validated);
 		void entryPosted ();
+
+		void gotEvents2Backup (const QList<Event>& events);
+		void gettingEvents2BackupFinished ();
 	};
 }
 }

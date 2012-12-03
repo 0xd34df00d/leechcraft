@@ -149,8 +149,15 @@ namespace Blogique
 				this,
 				SLOT (saveSplitterPosition (int, int)));
 
+		connect (Ui_.Calendar_,
+				SIGNAL(activated (QDate)),
+				this,
+				SLOT (loadPostsByDate (QDate)));
+
 		DraftsViewModel_->setHorizontalHeaderLabels ({ tr ("Date"), tr ("Name") });
 		Ui_.LocalEntriesView_->setModel (DraftsViewModel_);
+		PostsViewModel_->setHorizontalHeaderLabels ({ tr ("Date"), tr ("Name") });
+		Ui_.PostsView_->setModel (PostsViewModel_);
 
 		connect (OpenDraftInCurrentTab_,
 				SIGNAL (triggered ()),
@@ -331,11 +338,13 @@ namespace Blogique
 		for (const auto& entry : entries)
 		{
 			QStandardItem *dateItem = new QStandardItem (entry.Date_
-					.toString (Qt::DefaultLocaleShortDate));
+					.toString ("dd-MM-yyyy hh:mm"));
 			dateItem->setData (entry.EntryDBId_, EntryIdRole::DBIdRole);
 			dateItem->setEditable (false);
+			dateItem->setData (entry.Subject_, Qt::ToolTipRole);
 			QStandardItem *itemSubj = new QStandardItem (entry.Subject_);
 			itemSubj->setEditable (false);
+			itemSubj->setData (entry.Subject_, Qt::ToolTipRole);
 			DraftsViewModel_->appendRow ({ dateItem, itemSubj });
 
 			DraftItem2Event_ [dateItem] = entry;
@@ -371,6 +380,48 @@ namespace Blogique
 					<< "error removing draft"
 					<< e.what ();
 		}
+	}
+
+	void BlogiqueWidget::LoadEntries ()
+	{
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		PostsViewModel_->removeRows (0, PostsViewModel_->rowCount ());
+		QList<Event> entries;
+		try
+		{
+			entries = Storage_->GetLast20Entries (acc->GetAccountID ());
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error fetching entries"
+					<< e.what ();
+		}
+
+		FillPostsView (entries);
+	}
+
+	void BlogiqueWidget::FillPostsView (const QList<Event> entries)
+	{
+		for (const auto& entry : entries)
+		{
+			QStandardItem *dateItem = new QStandardItem (entry.Date_
+					.toString ("dd-MM-yyyy hh:mm"));
+			dateItem->setData (entry.EntryDBId_, EntryIdRole::DBIdRole);
+			dateItem->setEditable (false);
+			dateItem->setData (entry.Subject_, Qt::ToolTipRole);
+
+			QStandardItem *itemSubj = new QStandardItem (entry.Subject_);
+			itemSubj->setEditable (false);
+			itemSubj->setData (entry.Subject_, Qt::ToolTipRole);
+			PostsViewModel_->appendRow ({ dateItem, itemSubj });
+
+			PostItem2Event_ [dateItem] = entry;
+		}
+		Ui_.PostsView_->resizeColumnToContents (0);
 	}
 
 	void BlogiqueWidget::handleCurrentAccountChanged (int id)
@@ -440,6 +491,20 @@ namespace Blogique
 		}
 
 		LoadDrafts ();
+		LoadEntries ();
+		QMap<QDate, int> statistic;
+		try
+		{
+			statistic = Storage_->GetEntriesCountByDate (Id2Account_ [id]->GetAccountID ());
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error fetching entries"
+					<< e.what ();
+		}
+
+		Ui_.Calendar_->SetStatistic (statistic);
 	}
 
 	void BlogiqueWidget::saveEntry ()
@@ -486,7 +551,7 @@ namespace Blogique
 						<< e.what ();
 			}
 
-			LoadDrafts ();
+		LoadDrafts ();
 	}
 
 	void BlogiqueWidget::submit (const Event& event)
@@ -641,6 +706,29 @@ namespace Blogique
 		newTab->FillWidget (e, acc->GetAccountID ());
 		emit addNewTab ("Blogique", newTab);
 	}
+
+	void BlogiqueWidget::loadPostsByDate (const QDate& date)
+	{
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		PostsViewModel_->removeRows (0, PostsViewModel_->rowCount ());
+		QList<Event> entries;
+		try
+		{
+			entries = Storage_->GetEntriesByDate (acc->GetAccountID (), date);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error fetching entries"
+					<< e.what ();
+		}
+
+		FillPostsView (entries);
+	}
+
 }
 }
 

@@ -152,6 +152,19 @@ namespace Blogique
 		 * @note This function is expected to be a signal.
 		 */
 		virtual void entryPosted () = 0;
+
+		/** @brief This signal should be emitted when account want to backup
+		 * some amount of entries.
+		 *
+		 * @note This function is expected to be a signal.
+		 */
+		virtual void gotEvents2Backup (const QList<Event>& events) = 0;
+
+		/** @brief This signal should be emitted all entries for backup were downloaded.
+		 *
+		 * @note This function is expected to be a signal.
+		 */
+		virtual void gettingEvents2BackupFinished () = 0;
 	};
 }
 }

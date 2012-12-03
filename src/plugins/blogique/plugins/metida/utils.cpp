@@ -149,6 +149,53 @@ namespace MetidaUtils
 
 	}
 
+	AdultContent GetAdultContentFromString (const QString& str)
+	{
+		if (str == "concepts")
+			return AdultContent::AdultsFrom14;
+		else if (str == "explicit")
+			return AdultContent::AdultsFrom18;
+		else 
+			return AdultContent::WithoutAdultContent;
+	}
+
+	CommentsManagement GetCommentsManagmentFromString (const QString& str)
+	{
+		CommentsManagement cm = CommentsManagement::Default;
+		if (str == "N")
+			cm = CommentsManagement::ShowComments;
+		else if (str == "R")
+			cm = CommentsManagement::ScreenAnonymouseComments;
+		else if (str == "F")
+			cm = CommentsManagement::ShowFriendsComments;
+		else if (str == "L")
+			cm = CommentsManagement::ScreenNotFromFriendsWithLinks;
+		else if (str == "A")
+			cm = CommentsManagement::ScreenComments;
+
+		return cm;
+	}
+
+	QString GetStringFromCommentsManagment (CommentsManagement cm)
+	{
+		switch (cm)
+		{
+			case CommentsManagement::ScreenAnonymouseComments:
+				return "R";
+			case CommentsManagement::ScreenComments:
+				return "A";
+			case CommentsManagement::ShowComments:
+				return "N";
+			case CommentsManagement::ShowFriendsComments:
+				return "F";
+			case CommentsManagement::ScreenNotFromFriendsWithLinks:
+				return "L";
+			case CommentsManagement::Default:
+			default:
+				return QString ();
+		}
+	}
+
 }
 }
 }

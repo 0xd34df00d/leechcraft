@@ -80,6 +80,7 @@ namespace Blogique
 		LocalStorage *Storage_;
 
 		QHash<QStandardItem*, Event> DraftItem2Event_;
+		QHash<QStandardItem*, Event> PostItem2Event_;
 
 		QAction *OpenDraftInNewTab_;
 		QAction *OpenDraftInCurrentTab_;
@@ -103,6 +104,10 @@ namespace Blogique
 		Event LoadFullDraft (const QByteArray& id, qlonglong draftID);
 		void RemoveDraft (qlonglong id);
 
+		void LoadEntries ();
+
+		void FillPostsView (const QList<Event> entries);
+
 	private slots:
 		void handleCurrentAccountChanged (int id);
 		void saveEntry ();
@@ -115,6 +120,8 @@ namespace Blogique
 		void on_LocalEntriesView__doubleClicked (const QModelIndex& index);
 		void handleOpenInCurrentTab (const QModelIndex& index = QModelIndex ());
 		void handleOpenInNewTab (const QModelIndex& index = QModelIndex ());
+
+		void loadPostsByDate (const QDate& date);
 
 	signals:
 		void removeTab (QWidget *tab);
