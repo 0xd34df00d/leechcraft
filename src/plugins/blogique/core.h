@@ -78,6 +78,8 @@ namespace Blogique
 		void handleGotEvents2Backup (const QList<Event>& events);
 		void handleGettingEvents2BackupFinished ();
 
+		void handleGotEvents (const QList<Event>& events);
+
 	signals:
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);
@@ -88,6 +90,9 @@ namespace Blogique
 
 		void addNewTab (const QString& name, QWidget *tab);
 		void removeTab (QWidget *tab);
+
+	signals:
+		void eventsStored ();
 	};
 }
 }

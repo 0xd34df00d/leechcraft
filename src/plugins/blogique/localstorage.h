@@ -46,7 +46,10 @@ namespace Blogique
 		QSqlQuery GetDraftPostOptions_;
 		QSqlQuery GetDraftCustomOptions_;
 		QSqlQuery RemoveDraft_;
-		
+		QSqlQuery AddDraftTag_;
+		QSqlQuery RemoveDraftTags_;
+		QSqlQuery GetDraftTags_;
+
 		QSqlQuery AddEntry_;
 		QSqlQuery UpdateEntry_;
 		QSqlQuery GetEntry_;
@@ -58,10 +61,13 @@ namespace Blogique
 		QSqlQuery UpdateEntryCustomOptions_;
 		QSqlQuery GetEntryCustomOptions_;
 		QSqlQuery GetAllEntries_;
-		QSqlQuery GetLast20Entries_;
+		QSqlQuery GetLastNEntries_;
 		QSqlQuery GetEntriesByDate_;
 		QSqlQuery GetEntriesCountByDate_;
-		
+		QSqlQuery AddEntryTag_;
+		QSqlQuery RemoveEntryTags_;
+		QSqlQuery GetEntryTags_;
+
 	public:
 		LocalStorage (QObject *obj = 0);
 
@@ -79,14 +85,13 @@ namespace Blogique
 		void RemoveEntry (qlonglong id);
 		Event GetEntry (const QByteArray& accountId, qlonglong entryId);
 		QList<Event> GetAllEntries (const QByteArray& accountId);
-		QList<Event> GetLast20Entries (const QByteArray& accountId);
+		QList<Event> GetLastNEntries (const QByteArray& accountId, int count);
 		QList<Event> GetEntriesByDate (const QByteArray& accountId,
 				const QDate& date);
 		QMap<QDate, int> GetEntriesCountByDate (const QByteArray& accountId);
 	private:
 		void CreateTables ();
 		void PrepareQueries ();
-		QVariantMap GetEntryOptions (QSqlQuery query);
 	};
 
 }

@@ -30,6 +30,7 @@
 #include "ljxmlrpc.h"
 #include "profilewidget.h"
 #include "utils.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -72,7 +73,11 @@ namespace Metida
 		connect (LJXmlRpc_,
 				SIGNAL (gettingEntries2BackupFinished ()),
 				this,
-				SIGNAL (gettingEvents2BackupFinished ()));
+				SLOT (handleGettingEvents2BackupFinished ()));
+		connect (LJXmlRpc_,
+				SIGNAL (gotEntries (QList<LJEvent>)),
+				this,
+				SLOT (handleGotEntries (QList<LJEvent>)));
 	}
 
 	QObject* LJAccount::GetObject ()
@@ -134,6 +139,11 @@ namespace Metida
 	QObject* LJAccount::GetProfile ()
 	{
 		return LJProfile_.get ();
+	}
+
+	void LJAccount::GetLastEntries (int count)
+	{
+		LJXmlRpc_->GetLastEntries (count);
 	}
 
 	void LJAccount::FillSettings (LJAccountConfigurationWidget *widget)
@@ -240,24 +250,6 @@ namespace Metida
 		LJXmlRpc_->DeleteGroup (id);
 	}
 
-	QVariantMap LJAccount::GetPostOptionsMapFromLJEvent (const LJEvent& event)
-	{
-		QVariantMap map;
-		map ["access"] = event.Security_;
-		map ["allowMask"] = event.AllowMask_;
-		map ["adults"] = MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_);
-		map ["comments"] = MetidaUtils::GetStringFromCommentsManagment (event.Props_.CommentsManagement_);
-		map ["hidecomment"] = MetidaUtils::GetStringFromCommentsManagment (event.Props_.ScreeningComments_);
-		map ["place"] = event.Props_.CurrentLocation_;
-		map ["music"] = event.Props_.CurrentMusic_;
-		map ["moodId"] = event.Props_.CurrentMoodId_;
-		map ["mood"] = event.Props_.CurrentMood_;
-		map ["showInFriendsPage"] = event.Props_.ShowInFriendsPage_;
-		map ["avatar"] = event.Props_.PostAvatar_;
-
-		return map;
-	}
-
 	void LJAccount::handleValidatingFinished (bool success)
 	{
 		IsValidated_ = success;
@@ -355,24 +347,62 @@ namespace Metida
 		LJXmlRpc_->BackupEvents ();
 	}
 
-	void LJAccount::handleGotEntries2Backup (const QList<LJEvent>& ljEvents)
+	namespace
 	{
-		QList<Event> events;
-		for (const auto& ljEvent : ljEvents)
+		QVariantMap GetPostOptionsMapFromLJEvent (const LJEvent& event)
+		{
+			QVariantMap map;
+			map ["access"] = event.Security_;
+			map ["allowMask"] = event.AllowMask_;
+			map ["adults"] = MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_);
+			map ["comments"] = MetidaUtils::GetStringFromCommentsManagment (event.Props_.CommentsManagement_);
+			map ["hidecomment"] = MetidaUtils::GetStringFromCommentsManagment (event.Props_.ScreeningComments_);
+			map ["place"] = event.Props_.CurrentLocation_;
+			map ["music"] = event.Props_.CurrentMusic_;
+			map ["moodId"] = event.Props_.CurrentMoodId_;
+			map ["mood"] = event.Props_.CurrentMood_;
+			map ["showInFriendsPage"] = event.Props_.ShowInFriendsPage_;
+			map ["avatar"] = event.Props_.PostAvatar_;
+
+			return map;
+		}
+
+		Event LJEvent2Event (const LJEvent& ljEvent, const QString& login)
 		{
 			Event event;
+			event.EntryId_ = ljEvent.DItemID_;
 			event.Content_ = ljEvent.Event_;
 			event.Date_ = ljEvent.DateTime_;
 			event.Subject_ = ljEvent.Subject_;
 			event.Tags_ = ljEvent.Tags_;
-			event.Target_ = GetOurLogin ();
-
+			event.Target_ = login;
 			event.PostOptions_ = GetPostOptionsMapFromLJEvent (ljEvent);
 
-			events << event;
+			return event;
 		}
+	}
+
+	void LJAccount::handleGotEntries2Backup (const QList<LJEvent>& ljEvents)
+	{
+		QList<Event> events;
+		for (const auto& ljEvent : ljEvents)
+			events << LJEvent2Event (ljEvent, Login_);
 
 		emit gotEvents2Backup (events);
+	}
+
+	void LJAccount::handleGettingEvents2BackupFinished ()
+	{
+		emit gettingEvents2BackupFinished ();
+	}
+
+	void LJAccount::handleGotEntries (const QList<LJEvent>& ljEvents)
+	{
+		QList<Event> events;
+		for (const auto& ljEvent : ljEvents)
+			events << LJEvent2Event (ljEvent, Login_);
+
+		emit gotEvents (events);
 	}
 
 }

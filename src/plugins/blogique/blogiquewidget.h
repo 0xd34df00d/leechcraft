@@ -117,11 +117,14 @@ namespace Blogique
 		void on_UpdateProfile__triggered ();
 		void on_RemoveDraft__released ();
 		void on_PublishDraft__released ();
+		void on_UpdateLastEntries__released ();
 		void on_LocalEntriesView__doubleClicked (const QModelIndex& index);
 		void handleOpenInCurrentTab (const QModelIndex& index = QModelIndex ());
 		void handleOpenInNewTab (const QModelIndex& index = QModelIndex ());
 
 		void loadPostsByDate (const QDate& date);
+
+		void handleEventsStored ();
 
 	signals:
 		void removeTab (QWidget *tab);

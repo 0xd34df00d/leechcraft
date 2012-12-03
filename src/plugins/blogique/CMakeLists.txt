@@ -24,6 +24,7 @@ SET (SRCS
 	localstorage.cpp
 	pluginproxy.cpp
 	profiledialog.cpp
+	updateentriesdialog.cpp
 	xmlsettingsmanager.cpp
 	)
 
@@ -39,6 +40,7 @@ SET (HEADERS
 	localstorage.h
 	pluginproxy.h
 	profiledialog.h
+	updateentriesdialog.h
 	xmlsettingsmanager.h
 	)
 
@@ -47,6 +49,7 @@ SET (FORMS accountslistwidget.ui
 	addaccountwizardfirstpage.ui
 	blogiquewidget.ui
 	profiledialog.ui
+	updateentriesdialog.ui
 	)
 
 SET (RESOURCES blogiqueresources.qrc)

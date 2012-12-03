@@ -39,9 +39,11 @@ namespace Blogique
 		QVariantMap PostOptions_;
 		QVariantMap CustomData_;
 		qlonglong EntryDBId_;
+		qlonglong EntryId_;
 
 		Event ()
 		: EntryDBId_ (-1)
+		, EntryId_ (-1)
 		{
 		}
 
@@ -123,6 +125,12 @@ namespace Blogique
 		 */
 		virtual QObject* GetProfile () = 0;
 
+		/** @brief Fetch last entries from blog.
+		 *
+		 * @param[in] count Amount of entries to fetch.
+		 */
+		virtual void GetLastEntries (int count) = 0;
+
 		/** @brief Submit post to blog.
 		 *
 		 */
@@ -134,6 +142,7 @@ namespace Blogique
 		virtual void updateProfile () = 0;
 
 		virtual void backup () = 0;
+
 	protected:
 		/** @brief This signal should be emitted when account is renamed.
 		 *

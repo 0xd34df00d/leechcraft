@@ -63,6 +63,7 @@ namespace Metida
 		void UpdateProfileInfo ();
 		void Submit (const LJEvent& event);
 		void BackupEvents ();
+		void GetLastEntries (int count);
 	private:
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
@@ -71,7 +72,7 @@ namespace Metida
 				const QString& pass, const QString& challenge);
 		void ParseForError (const QByteArray& content);
 		void ParseFriends (const QDomDocument& doc);
-		QList<LJEvent> ParseBackupEvents (const QDomDocument& doc);
+		QList<LJEvent> ParseFullEvents (const QDomDocument& doc);
 
 		void AddNewFriendRequest (const QString& username,
 				const QString& bgcolor, const QString& fgcolor,
@@ -86,6 +87,8 @@ namespace Metida
 		void PostEventRequest (const LJEvent& event, const QString& challenge);
 		void BackupEventsRequest (int skip, const QString& challenge);
 
+		void GetLastEventsRequest (int count, const QString& challenge);
+
 	private slots:
 		void handleChallengeReplyFinished ();
 		void handleValidateReplyFinished ();
@@ -94,6 +97,7 @@ namespace Metida
 		void handleReplyWithProfileUpdate ();
 		void handlePostEventReplyFinished ();
 		void handleBackupEventsReplyFinished ();
+		void handleGetLastEventsReplyFinished ();
 
 	signals:
 		void validatingFinished (bool success);
@@ -102,6 +106,7 @@ namespace Metida
 		void entryPosted ();
 		void gotEntries2Backup (const QList<LJEvent>& events);
 		void gettingEntries2BackupFinished ();
+		void gotEntries (const QList<LJEvent>& events);
 	};
 }
 }
