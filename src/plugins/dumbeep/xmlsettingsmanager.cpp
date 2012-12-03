@@ -16,19 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-class QMainWindow;
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-namespace Pierre
+namespace Dumbeep
 {
-namespace FS
-{
-	bool SupportsFS ();
-	void AddAction (QMainWindow*);
-	void Toggle (QMainWindow*);
-}
+	XmlSettingsManager::XmlSettingsManager ()
+	{
+		Util::BaseSettingsManager::Init ();
+	}
+
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return manager;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Dumbeep");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 }
 }

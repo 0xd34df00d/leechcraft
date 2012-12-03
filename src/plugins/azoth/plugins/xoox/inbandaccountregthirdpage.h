@@ -48,7 +48,7 @@ namespace Xoox
 		} RegState_;
 	public:
 		InBandAccountRegThirdPage (InBandAccountRegSecondPage*, QWidget* = 0);
-		
+
 		void SetConfWidget (GlooxAccountConfigurationWidget*);
 
 		bool isComplete () const;

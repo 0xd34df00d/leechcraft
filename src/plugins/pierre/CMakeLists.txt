@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	pierre.cpp
 	fullscreen.mm
+	dockutil.mm
 	)
 
 ADD_LIBRARY (leechcraft_pierre SHARED

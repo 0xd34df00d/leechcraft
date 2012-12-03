@@ -53,6 +53,8 @@ namespace LeechCraft
 				ICoreProxy_ptr CoreProxy_;
 				QAction *Remove_;
 
+				bool WriteScheduled_;
+
 				enum Shortcuts
 				{
 					SRemove
@@ -76,8 +78,9 @@ namespace LeechCraft
 			public slots:
 				void handleTasksTreeActivated (const QModelIndex&);
 			private:
-				void WriteSettings ();
+				void ScheduleWrite ();
 			private slots:
+				void writeSettings ();
 				void remove ();
 			signals:
 				void gotEntity (const LeechCraft::Entity&);

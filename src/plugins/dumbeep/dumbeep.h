@@ -19,31 +19,23 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/core/ihookproxy.h>
 #include <interfaces/iinfo.h>
-#include <interfaces/iactionsexporter.h>
-#include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
-
-class QMenuBar;
-class QSystemTrayIcon;
 
 namespace LeechCraft
 {
-namespace Pierre
+namespace Dumbeep
 {
 	class Plugin : public QObject
 				 , public IInfo
-				 , public IPlugin2
+				 , public IHaveSettings
 				 , public IEntityHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IEntityHandler)
+		Q_INTERFACES (IInfo IHaveSettings IEntityHandler)
 
-		QMenuBar *MenuBar_;
-		ICoreProxy_ptr Proxy_;
-
-		QMenu *TrayIconMenu_;
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -53,21 +45,10 @@ namespace Pierre
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
-	public slots:
-		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
-		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr,
-				QSystemTrayIcon*);
-		void hookTrayIconVisibilityChanged (LeechCraft::IHookProxy_ptr,
-				QSystemTrayIcon*,
-				bool);
-	private slots:
-		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
-		void fillMenu ();
 	};
 }
 }
-

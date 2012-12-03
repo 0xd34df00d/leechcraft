@@ -18,17 +18,22 @@
 
 #pragma once
 
-class QMainWindow;
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-namespace Pierre
+namespace Dumbeep
 {
-namespace FS
-{
-	bool SupportsFS ();
-	void AddAction (QMainWindow*);
-	void Toggle (QMainWindow*);
-}
+	class XmlSettingsManager : public Util::BaseSettingsManager
+	{
+		Q_OBJECT
+
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
+	};
 }
 }
