@@ -16,40 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#define PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#include <QWebView>
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Dumbeep
 {
-	class ChatTabWebView : public QWebView
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
+		Util::BaseSettingsManager::Init ();
+	}
 
-		QAction *QuoteAct_;
-	public:
-		ChatTabWebView (QWidget* = 0);
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return manager;
+	}
 
-		void SetQuoteAction (QAction*);
-	protected:
-		void mouseReleaseEvent (QMouseEvent*);
-		void contextMenuEvent (QContextMenuEvent*);
-	private:
-		void HandleNick (QMenu*, const QUrl&);
-		void HandleURL (QMenu*, const QUrl&);
-		void HandleDataFilters (QMenu*, const QString&);
-	private slots:
-		void handleOpenLink ();
-		void handleOpenExternally ();
-		void handleOpenAsURL ();
-		void handleSaveLink ();
-		void handlePageLinkClicked (const QUrl&);
-	signals:
-		void linkClicked (const QUrl&, bool);
-	};
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Dumbeep");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 }
 }
-
-#endif

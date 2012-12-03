@@ -27,6 +27,7 @@
 #include <QTreeView>
 #include <QMainWindow>
 #include <QCoreApplication>
+#include <QTimer>
 #include <util/structuresops.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
@@ -66,6 +67,7 @@ QDataStream& operator>> (QDataStream& in, Core::HistoryEntry& e)
 
 LeechCraft::Plugins::HistoryHolder::Core::Core ()
 : ToolBar_ (new QToolBar)
+, WriteScheduled_ (false)
 {
 	Headers_ << tr ("Entity/location")
 			<< tr ("Date")
@@ -129,7 +131,7 @@ void Core::Handle (const LeechCraft::Entity& entity)
 	History_.prepend (entry);
 	endInsertRows ();
 
-	WriteSettings ();
+	ScheduleWrite ();
 }
 
 void Core::SetShortcut (const QString& id, const QKeySequences_t& seq)
@@ -237,7 +239,18 @@ int Core::rowCount (const QModelIndex& index) const
 	return index.isValid () ? 0 : History_.size ();
 }
 
-void Core::WriteSettings ()
+void Core::ScheduleWrite ()
+{
+	if (WriteScheduled_)
+		return;
+
+	QTimer::singleShot (2000,
+			this,
+			SLOT (writeSettings ()));
+	WriteScheduled_ = true;
+}
+
+void Core::writeSettings ()
 {
 	QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_HistoryHolder");
@@ -250,6 +263,8 @@ void Core::WriteSettings ()
 		settings.setValue ("Item", QVariant::fromValue<HistoryEntry> (e));
 	}
 	settings.endArray ();
+
+	WriteScheduled_ = false;
 }
 
 void Core::remove ()
@@ -294,7 +309,7 @@ void Core::remove ()
 		endRemoveRows ();
 	}
 
-	WriteSettings ();
+	ScheduleWrite ();
 }
 
 void Core::handleTasksTreeActivated (const QModelIndex& si)

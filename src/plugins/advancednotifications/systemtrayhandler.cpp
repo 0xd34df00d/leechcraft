@@ -25,6 +25,7 @@
 #include <util/util.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 #ifdef HAVE_QML
 #include "qml/visualnotificationsview.h"
@@ -116,6 +117,10 @@ namespace AdvancedNotifications
 
 	void SystemTrayHandler::PrepareSysTrayIcon (const QString& category)
 	{
+#ifdef Q_OS_MAC
+		return;
+#endif
+
 		if (Category2Icon_.contains (category))
 			return;
 
@@ -222,26 +227,40 @@ namespace AdvancedNotifications
 		QSet<QSystemTrayIcon*> visibleIcons;
 		QSet<QAction*> actsUpd;
 
+		int eventCount = 0;
 		Q_FOREACH (const QString& event, Events_.keys ())
 		{
 			const EventData& data = Events_ [event];
 
-			QSystemTrayIcon *icon = Category2Icon_ [data.Category_];
-			icons2hide.remove (icon);
-			visibleIcons << icon;
+			QSystemTrayIcon *icon = Category2Icon_.value (data.Category_);
+			if (icon)
+			{
+				icons2hide.remove (icon);
+				visibleIcons << icon;
+			}
 
 			QAction *action = Category2Action_ [data.Category_];
 			actsDel.remove (action);
 			actsUpd << action;
 
 #ifdef HAVE_QML
-			EventsForIcon_ [icon] << data;
+			if (icon)
+				EventsForIcon_ [icon] << data;
 			EventsForAction_ [action] << data;
 #endif
 
-			UpdateMenu (icon->contextMenu (), event, data);
+			if (icon)
+				UpdateMenu (icon->contextMenu (), event, data);
 			UpdateMenu (action->menu (), event, data);
+
+			eventCount += data.Count_;
 		}
+
+		const auto& entity = Util::MakeEntity (eventCount,
+				QString (),
+				LeechCraft::Internal,
+				"x-leechcraft/notification-event-count-info");
+		Core::Instance ().SendEntity (entity);
 
 #ifdef HAVE_QML
 		Q_FOREACH (QSystemTrayIcon *icon, Category2Icon_.values ())

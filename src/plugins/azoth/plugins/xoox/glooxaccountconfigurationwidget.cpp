@@ -29,6 +29,7 @@ namespace Xoox
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
+		SetFTMethods (QXmppTransferJob::AnyMethod);
 	}
 
 	QString GlooxAccountConfigurationWidget::GetJID () const

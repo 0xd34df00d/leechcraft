@@ -36,6 +36,7 @@ class IShortcutProxy;
 class QToolButton;
 class QShortcut;
 class QSplashScreen;
+class QSystemTrayIcon;
 
 namespace LeechCraft
 {
@@ -147,6 +148,8 @@ namespace LeechCraft
 		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QDockWidget*, bool);
 		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
+		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr, QSystemTrayIcon*);
+		void hookTrayIconVisibilityChanged (LeechCraft::IHookProxy_ptr, QSystemTrayIcon*, bool);
 	};
 };
 

@@ -16,40 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#define PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#include <QWebView>
+#pragma once
+
+class QString;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Pierre
 {
-	class ChatTabWebView : public QWebView
-	{
-		Q_OBJECT
-
-		QAction *QuoteAct_;
-	public:
-		ChatTabWebView (QWidget* = 0);
-
-		void SetQuoteAction (QAction*);
-	protected:
-		void mouseReleaseEvent (QMouseEvent*);
-		void contextMenuEvent (QContextMenuEvent*);
-	private:
-		void HandleNick (QMenu*, const QUrl&);
-		void HandleURL (QMenu*, const QUrl&);
-		void HandleDataFilters (QMenu*, const QString&);
-	private slots:
-		void handleOpenLink ();
-		void handleOpenExternally ();
-		void handleOpenAsURL ();
-		void handleSaveLink ();
-		void handlePageLinkClicked (const QUrl&);
-	signals:
-		void linkClicked (const QUrl&, bool);
-	};
+namespace DU
+{
+	void SetDockBadge (const QString&);
 }
 }
-
-#endif
+}

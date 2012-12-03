@@ -16,40 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#define PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#include <QWebView>
+#pragma once
+
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
+#include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Dumbeep
 {
-	class ChatTabWebView : public QWebView
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IHaveSettings
+				 , public IEntityHandler
 	{
 		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveSettings IEntityHandler)
 
-		QAction *QuoteAct_;
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
-		ChatTabWebView (QWidget* = 0);
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		void SetQuoteAction (QAction*);
-	protected:
-		void mouseReleaseEvent (QMouseEvent*);
-		void contextMenuEvent (QContextMenuEvent*);
-	private:
-		void HandleNick (QMenu*, const QUrl&);
-		void HandleURL (QMenu*, const QUrl&);
-		void HandleDataFilters (QMenu*, const QString&);
-	private slots:
-		void handleOpenLink ();
-		void handleOpenExternally ();
-		void handleOpenAsURL ();
-		void handleSaveLink ();
-		void handlePageLinkClicked (const QUrl&);
-	signals:
-		void linkClicked (const QUrl&, bool);
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 	};
 }
 }
-
-#endif

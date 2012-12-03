@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,16 @@
 #include <QMenuBar>
 #include <QMainWindow>
 #include <QTimer>
+#include <QSystemTrayIcon>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/entitytesthandleresult.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/iactionsexporter.h>
 #include "fullscreen.h"
+#include "dockutil.h"
+
+extern void qt_mac_set_dock_menu (QMenu*);
 
 namespace LeechCraft
 {
@@ -33,6 +38,8 @@ namespace Pierre
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		TrayIconMenu_ = 0;
+
 		Proxy_ = proxy;
 		MenuBar_ = new QMenuBar (0);
 
@@ -74,11 +81,36 @@ namespace Pierre
 		return result;
 	}
 
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
+	{
+		const bool isCountInfo = entity.Mime_ == "x-leechcraft/notification-event-count-info";
+		return EntityTestHandleResult (isCountInfo ?
+					EntityTestHandleResult::PIdeal :
+					EntityTestHandleResult::PNone);
+	}
+
+	void Plugin::Handle (Entity e)
+	{
+		const int count = e.Entity_.toInt ();
+		DU::SetDockBadge (count ? QString::number (count) : QString ());
+	}
+
 	void Plugin::hookGonnaFillMenu (IHookProxy_ptr)
 	{
 		QTimer::singleShot (0,
 				this,
 				SLOT (fillMenu ()));
+	}
+
+	void Plugin::hookTrayIconCreated (IHookProxy_ptr proxy, QSystemTrayIcon *icon)
+	{
+		TrayIconMenu_ = icon->contextMenu ();
+		qt_mac_set_dock_menu (TrayIconMenu_);
+	}
+
+	void Plugin::hookTrayIconVisibilityChanged (IHookProxy_ptr proxy, QSystemTrayIcon*, bool)
+	{
+		proxy->CancelDefault ();
 	}
 
 	void Plugin::handleGotActions (const QList<QAction*>&, ActionsEmbedPlace aep)

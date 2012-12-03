@@ -1,6 +1,6 @@
 [ToolButton]
 TopColor=0,0,0
-BottomColor=66,57,75
+BottomColor=75,75,75
 BorderColor=0,0,0
 SelectedTopColor=47,7,0
 SelectedBottomColor=90,50,56
@@ -15,7 +15,7 @@ TextColor=170,170,170
 
 [TextBox]
 TopColor=5,5,5
-BottomColor=66,57,75
+BottomColor=75,75,75
 BorderColor=0,0,0
 HighlightTopColor=90,50,56
 HighlightBottomColor=41,7,0
@@ -27,7 +27,7 @@ Aux2TextColor=136,136,136
 Aux3TextColor=119,119,119
 
 [TextView]
-TopColor=66,57,75
+TopColor=75,75,75
 BottomColor=10,10,10
 TitleTextColor=221,221,221
 TextColor=170,170,170

@@ -181,10 +181,10 @@ namespace Azoth
 
 		Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
 
-		connect (Ui_.View_->page (),
-				SIGNAL (linkClicked (const QUrl&)),
+		connect (Ui_.View_,
+				SIGNAL (linkClicked (QUrl, bool)),
 				this,
-				SLOT (handleViewLinkClicked (const QUrl&)));
+				SLOT (handleViewLinkClicked (QUrl, bool)));
 
 		TypeTimer_->setInterval (2000);
 		connect (TypeTimer_,
@@ -900,7 +900,7 @@ namespace Azoth
 		}
 	}
 
-	void ChatTab::handleViewLinkClicked (QUrl url)
+	void ChatTab::handleViewLinkClicked (QUrl url, bool raise)
 	{
 		if (url.scheme () != "azoth")
 		{
@@ -918,6 +918,8 @@ namespace Azoth
 			Entity e = Util::MakeEntity (url,
 					QString (),
 					static_cast<TaskParameter> (FromUserInitiated | OnlyHandle | ShouldQuerySource));
+			if (!raise)
+				e.Additional_ ["BackgroundHandle"] = true;
 			Core::Instance ().SendEntity (e);
 			return;
 		}

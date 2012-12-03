@@ -38,11 +38,27 @@ namespace Azoth
 	: QWebView (parent)
 	, QuoteAct_ (0)
 	{
+		connect (page (),
+				SIGNAL (linkClicked (QUrl)),
+				this,
+				SLOT (handlePageLinkClicked (QUrl)));
 	}
 
 	void ChatTabWebView::SetQuoteAction (QAction *act)
 	{
 		QuoteAct_ = act;
+	}
+
+	void ChatTabWebView::mouseReleaseEvent (QMouseEvent *e)
+	{
+		if (e->button () != Qt::MiddleButton)
+			return QWebView::mouseReleaseEvent (e);
+
+		const auto r = page ()->mainFrame ()->hitTestContent (e->pos ());
+		if (r.linkUrl ().isEmpty ())
+			return QWebView::mouseReleaseEvent (e);
+
+		emit linkClicked (r.linkUrl (), false);
 	}
 
 	void ChatTabWebView::contextMenuEvent (QContextMenuEvent *e)
@@ -63,6 +79,12 @@ namespace Azoth
 		{
 			menu->addAction (pageAction (QWebPage::Copy));
 			menu->addAction (QuoteAct_);
+
+			if (!text.contains (' ') && text.contains ('.'))
+				menu->addAction (tr ("Open as URL"),
+						this,
+						SLOT (handleOpenAsURL ()))->setData (text);
+
 			menu->addSeparator ();
 
 			HandleDataFilters (menu, text);
@@ -147,6 +169,22 @@ namespace Azoth
 		QDesktopServices::openUrl (url);
 	}
 
+	void ChatTabWebView::handleOpenAsURL()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		const auto& str = action->data ().toString ().trimmed ();
+
+		QUrl url (str);
+		if (url.scheme ().isEmpty () &&
+					url.host ().isEmpty ())
+			url = "http://" + url.toString ();
+
+		const Entity& e = Util::MakeEntity (url,
+				QString (),
+				static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+		Core::Instance ().SendEntity (e);
+	}
+
 	void ChatTabWebView::handleSaveLink ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
@@ -155,6 +193,11 @@ namespace Azoth
 				FromUserInitiated);
 		e.Additional_ ["AllowedSemantics"] = QStringList ("fetch") << "save";
 		Core::Instance ().SendEntity (e);
+	}
+
+	void ChatTabWebView::handlePageLinkClicked (const QUrl& url)
+	{
+		emit linkClicked (url, true);
 	}
 }
 }

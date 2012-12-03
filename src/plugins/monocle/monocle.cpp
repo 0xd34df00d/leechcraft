@@ -85,6 +85,9 @@ namespace Monocle
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
+		if (!(e.Parameters_ & FromUserInitiated))
+			return EntityTestHandleResult ();
+
 		if (!e.Entity_.canConvert<QUrl> ())
 			return EntityTestHandleResult ();
 

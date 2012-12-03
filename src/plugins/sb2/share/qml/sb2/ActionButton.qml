@@ -51,12 +51,12 @@ Item {
             State {
                 name: "hovered"
                 when: actionMouseArea.containsMouse && !actionMouseArea.pressed
-                PropertyChanges { target: actionRect; border.color: "white"; anchors.margins: 0 }
+                PropertyChanges { target: actionRect; border.color: colorProxy.color_ToolButton_HoveredBorderColor; anchors.margins: 0 }
             },
             State {
                 name: "pressed"
                 when: actionMouseArea.containsMouse && actionMouseArea.pressed
-                PropertyChanges { target: actionRect; border.color: "black" }
+                PropertyChanges { target: actionRect; border.color: colorProxy.color_ToolButton_PressedBorderColor }
             }
         ]
 

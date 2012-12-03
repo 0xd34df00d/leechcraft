@@ -16,40 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#define PLUGINS_AZOTH_CHATTABWEBVIEW_H
-#include <QWebView>
+#include "dockutil.h"
+#include <QString>
+#include <AppKit/NSApplication.h>
+#include <AppKit/NSDockTile.h>
+#include <Foundation/NSString.h>
+
+static NSString* toNsString (const QString& text)
+{
+	auto utf8String = text.toUtf8 ().constData ();
+	return [[NSString alloc] initWithUTF8String: utf8String];
+}
+
+static void SetDockBadgeImpl (const QString& text)
+{
+	auto badgeString = toNsString (text);
+	[[NSApp dockTile] setBadgeLabel: badgeString];
+	[badgeString release];
+}
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Pierre
 {
-	class ChatTabWebView : public QWebView
+namespace DU
+{
+	void SetDockBadge (const QString& text)
 	{
-		Q_OBJECT
-
-		QAction *QuoteAct_;
-	public:
-		ChatTabWebView (QWidget* = 0);
-
-		void SetQuoteAction (QAction*);
-	protected:
-		void mouseReleaseEvent (QMouseEvent*);
-		void contextMenuEvent (QContextMenuEvent*);
-	private:
-		void HandleNick (QMenu*, const QUrl&);
-		void HandleURL (QMenu*, const QUrl&);
-		void HandleDataFilters (QMenu*, const QString&);
-	private slots:
-		void handleOpenLink ();
-		void handleOpenExternally ();
-		void handleOpenAsURL ();
-		void handleSaveLink ();
-		void handlePageLinkClicked (const QUrl&);
-	signals:
-		void linkClicked (const QUrl&, bool);
-	};
+		SetDockBadgeImpl (text);
+	}
 }
 }
-
-#endif
+}

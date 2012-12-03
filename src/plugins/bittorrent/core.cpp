@@ -1909,6 +1909,12 @@ namespace BitTorrent
 		const auto& savePath = torrent.Handle_.save_path ();
 
 		auto localeCodec = QTextCodec::codecForLocale ();
+		Entity e;
+		e.Parameters_ = LeechCraft::IsDownloaded |
+			LeechCraft::ShouldQuerySource;
+		e.Location_ = torrent.TorrentFileName_;
+		e.Additional_ [" Tags"] = torrent.Tags_;
+		e.Additional_ ["IgnorePlugins"] = QStringList ("org.LeechCraft.BitTorrent");
 		for (auto i = info.begin_files (), end = info.end_files (); i != end; ++i)
 		{
 #if LIBTORRENT_VERSION_NUM >= 1600
@@ -1916,12 +1922,7 @@ namespace BitTorrent
 #else
 			const auto& path = QByteArray ((savePath / i->path).string ().c_str ());
 #endif
-			Entity e;
 			e.Entity_ = QUrl::fromLocalFile (localeCodec->toUnicode (path));
-			e.Parameters_ = LeechCraft::IsDownloaded |
-				LeechCraft::ShouldQuerySource;
-			e.Location_ = torrent.TorrentFileName_;
-			e.Additional_ [" Tags"] = torrent.Tags_;
 			emit gotEntity (e);
 		}
 
@@ -2388,10 +2389,14 @@ namespace BitTorrent
 	void Core::queryLibtorrentForWarnings ()
 	{
 		// I know auto_ptr is bad & deprecated & things, but libtorrent API strongly needs it :(
+#if defined __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 		std::auto_ptr<libtorrent::alert> a (Session_->pop_alert ());
+#if defined __GNUC__
 #pragma GCC diagnostic pop
+#endif
 
 		SimpleDispatcher sd;
 		while (a.get ())
