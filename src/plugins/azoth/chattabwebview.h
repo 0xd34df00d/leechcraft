@@ -34,6 +34,7 @@ namespace Azoth
 
 		void SetQuoteAction (QAction*);
 	protected:
+		void mouseReleaseEvent (QMouseEvent*);
 		void contextMenuEvent (QContextMenuEvent*);
 	private:
 		void HandleNick (QMenu*, const QUrl&);

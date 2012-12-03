@@ -45,6 +45,22 @@ namespace Azoth
 		QuoteAct_ = act;
 	}
 
+	void ChatTabWebView::mouseReleaseEvent (QMouseEvent *e)
+	{
+		if (e->button () != Qt::MiddleButton)
+			return QWebView::mouseReleaseEvent (e);
+
+		const auto r = page ()->mainFrame ()->hitTestContent (e->pos ());
+		if (r.linkUrl ().isEmpty ())
+			return QWebView::mouseReleaseEvent (e);
+
+		auto entity = Util::MakeEntity (r.linkUrl (),
+				QString (),
+				static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+		entity.Additional_ ["BackgroundHandle"] = true;
+		Core::Instance ().SendEntity (entity);
+	}
+
 	void ChatTabWebView::contextMenuEvent (QContextMenuEvent *e)
 	{
 		QPointer<QMenu> menu (new QMenu (this));
