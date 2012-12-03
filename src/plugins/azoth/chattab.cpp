@@ -906,7 +906,7 @@ namespace Azoth
 		{
 			if (Core::Instance ().CouldHandleURL (url))
 			{
-				Core::Instance ().HandleURL (url);
+				Core::Instance ().HandleURL (url, GetEntry<ICLEntry> ());
 				return;
 			}
 
