@@ -53,7 +53,7 @@ namespace Blogique
 			DBIdRole = Qt::UserRole + 1
 		};
 
-		enum DraftColumns
+		enum Columns
 		{
 			Date,
 			Subject
@@ -84,6 +84,8 @@ namespace Blogique
 
 		QAction *OpenDraftInNewTab_;
 		QAction *OpenDraftInCurrentTab_;
+		QAction *OpenEntryInNewTab_;
+		QAction *OpenEntryInCurrentTab_;
 
 		qlonglong DraftID_;
 	public:
@@ -105,6 +107,7 @@ namespace Blogique
 		void RemoveDraft (qlonglong id);
 
 		void LoadEntries ();
+		Event LoadEntry (const QByteArray& id, qlonglong Id);
 
 		void FillPostsView (const QList<Event> entries);
 
@@ -119,8 +122,10 @@ namespace Blogique
 		void on_PublishDraft__released ();
 		void on_UpdateLastEntries__released ();
 		void on_LocalEntriesView__doubleClicked (const QModelIndex& index);
-		void handleOpenInCurrentTab (const QModelIndex& index = QModelIndex ());
-		void handleOpenInNewTab (const QModelIndex& index = QModelIndex ());
+		void handleOpenEntryInCurrentTab (const QModelIndex& index = QModelIndex ());
+		void handleOpenEntryInNewTab (const QModelIndex& index = QModelIndex ());
+		void handleOpenDraftInCurrentTab (const QModelIndex& index = QModelIndex ());
+		void handleOpenDraftInNewTab (const QModelIndex& index = QModelIndex ());
 
 		void loadPostsByDate (const QDate& date);
 
