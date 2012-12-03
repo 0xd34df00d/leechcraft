@@ -5,6 +5,8 @@ BorderColor=0,0,0
 SelectedTopColor=47,7,0
 SelectedBottomColor=90,50,56
 SelectedBorderColor=255,101,0
+HoveredBorderColor=255,255,255
+PressedBorderColor=0,0,0
 
 [Panel]
 TopColor=0,0,0

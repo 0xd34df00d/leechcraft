@@ -16,51 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGTHIRDPAGE_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGTHIRDPAGE_H
-#include <QWizardPage>
+#pragma once
 
-class QLabel;
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
+#include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Dumbeep
 {
-namespace Xoox
-{
-	class InBandAccountRegSecondPage;
-	class GlooxAccountConfigurationWidget;
-
-	class InBandAccountRegThirdPage : public QWizardPage
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IHaveSettings
+				 , public IEntityHandler
 	{
 		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveSettings IEntityHandler)
 
-		InBandAccountRegSecondPage *SecondPage_;
-		GlooxAccountConfigurationWidget *ConfWidget_;
-		QLabel *StateLabel_;
-
-		enum RegState
-		{
-			RSIdle,
-			RSAwaitingResult,
-			RSSuccess,
-			RSError
-		} RegState_;
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
-		InBandAccountRegThirdPage (InBandAccountRegSecondPage*, QWidget* = 0);
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		void SetConfWidget (GlooxAccountConfigurationWidget*);
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		bool isComplete () const;
-		void initializePage ();
-	private:
-		void SetState (RegState);
-	private slots:
-		void handleSuccessfulReg ();
-		void handleRegError (const QString&);
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 	};
 }
 }
-}
-
-#endif

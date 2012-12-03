@@ -20,6 +20,9 @@
 #include "fswinwatcher.h"
 #include <QMainWindow>
 #include <windows.h>
+#if (NTDDI_VERSION >= NTDDI_VISTA)
+#include <shellapi.h>
+#endif
 
 namespace LeechCraft
 {
@@ -33,6 +36,12 @@ namespace Kinotify
 
 	bool FSWinWatcher::IsCurrentFS ()
 	{
+#if (NTDDI_VERSION >= NTDDI_VISTA)
+		QUERY_USER_NOTIFICATION_STATE state;
+		if (SHQueryUserNotificationState (&state) != S_OK)
+			return false;
+		return state != QUNS_ACCEPTS_NOTIFICATIONS;
+#else
 		HWND hWnd = GetForegroundWindow ();
 		if (!hWnd)
 			return false;
@@ -51,6 +60,7 @@ namespace Kinotify
 		GetWindowRect (hWnd, &windowRect);
 		return EqualRect (&windowRect, &monitorRect) &&
 				Proxy_->GetMainWindow ()->effectiveWinId () != hWnd;
+#endif
 	}
 }
 }

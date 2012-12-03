@@ -16,51 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGTHIRDPAGE_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGTHIRDPAGE_H
-#include <QWizardPage>
-
-class QLabel;
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Dumbeep
 {
-namespace Xoox
-{
-	class InBandAccountRegSecondPage;
-	class GlooxAccountConfigurationWidget;
-
-	class InBandAccountRegThirdPage : public QWizardPage
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
+		Util::BaseSettingsManager::Init ();
+	}
 
-		InBandAccountRegSecondPage *SecondPage_;
-		GlooxAccountConfigurationWidget *ConfWidget_;
-		QLabel *StateLabel_;
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return manager;
+	}
 
-		enum RegState
-		{
-			RSIdle,
-			RSAwaitingResult,
-			RSSuccess,
-			RSError
-		} RegState_;
-	public:
-		InBandAccountRegThirdPage (InBandAccountRegSecondPage*, QWidget* = 0);
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Dumbeep");
+		return settings;
+	}
 
-		void SetConfWidget (GlooxAccountConfigurationWidget*);
-
-		bool isComplete () const;
-		void initializePage ();
-	private:
-		void SetState (RegState);
-	private slots:
-		void handleSuccessfulReg ();
-		void handleRegError (const QString&);
-	};
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 }
 }
-}
-
-#endif

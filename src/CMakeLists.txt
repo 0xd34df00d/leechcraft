@@ -184,6 +184,9 @@ OPTION (ENABLE_SHAITAN "Build Shaitan, Embedded terminal emulator" ${WITH_PLUGIN
 OPTION (ENABLE_VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
 OPTION (ENABLE_WOODPECKER "Build Woodpecker, twitter client" ${WITH_PLUGINS})
 
+# Dumb alternatives
+OPTION (ENABLE_DUMBEEP "Build Dumbeep, a dumb sound notifier for those fearing true LMP power" OFF)
+
 IF (WIN32)
 	OPTION (ENABLE_Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS})
 ENDIF (WIN32)
@@ -513,6 +516,10 @@ ENDIF (ENABLE_VROOBY)
 IF (ENABLE_WOODPECKER)
 	ADD_SUBDIRECTORY (plugins/woodpecker)
 ENDIF (ENABLE_WOODPECKER)
+
+IF (ENABLE_DUMBEEP)
+	ADD_SUBDIRECTORY (plugins/dumbeep)
+ENDIF (ENABLE_DUMBEEP)
 
 IF (UNIX AND NOT APPLE)
 	IF (ENABLE_SHAITAN)
