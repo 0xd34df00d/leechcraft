@@ -38,6 +38,10 @@ namespace Azoth
 	: QWebView (parent)
 	, QuoteAct_ (0)
 	{
+		connect (page (),
+				SIGNAL (linkClicked (QUrl)),
+				this,
+				SLOT (handlePageLinkClicked (QUrl)));
 	}
 
 	void ChatTabWebView::SetQuoteAction (QAction *act)
@@ -54,11 +58,7 @@ namespace Azoth
 		if (r.linkUrl ().isEmpty ())
 			return QWebView::mouseReleaseEvent (e);
 
-		auto entity = Util::MakeEntity (r.linkUrl (),
-				QString (),
-				static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
-		entity.Additional_ ["BackgroundHandle"] = true;
-		Core::Instance ().SendEntity (entity);
+		emit linkClicked (r.linkUrl (), false);
 	}
 
 	void ChatTabWebView::contextMenuEvent (QContextMenuEvent *e)
@@ -193,6 +193,11 @@ namespace Azoth
 				FromUserInitiated);
 		e.Additional_ ["AllowedSemantics"] = QStringList ("fetch") << "save";
 		Core::Instance ().SendEntity (e);
+	}
+
+	void ChatTabWebView::handlePageLinkClicked (const QUrl& url)
+	{
+		emit linkClicked (url, true);
 	}
 }
 }

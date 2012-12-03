@@ -45,6 +45,9 @@ namespace Azoth
 		void handleOpenExternally ();
 		void handleOpenAsURL ();
 		void handleSaveLink ();
+		void handlePageLinkClicked (const QUrl&);
+	signals:
+		void linkClicked (const QUrl&, bool);
 	};
 }
 }

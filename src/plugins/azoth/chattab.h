@@ -164,7 +164,7 @@ namespace Azoth
 		void handleAvatarChanged (const QImage&);
 		void handleStatusChanged (const EntryStatus&, const QString&);
 		void handleChatPartStateChanged (const ChatPartState&, const QString&);
-		void handleViewLinkClicked (QUrl);
+		void handleViewLinkClicked (QUrl, bool);
 		void handleHistoryUp ();
 		void handleHistoryDown ();
 		void typeTimeout ();
