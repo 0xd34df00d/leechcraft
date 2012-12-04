@@ -104,6 +104,7 @@ namespace XooxUtil
 				Node2ClientID_ ["http://mail.google.com/xmpp/client/caps"] = "mail.google.com";
 				Node2ClientID_ ["http://mcabber.com/caps"] = "mcabber";
 				Node2ClientID_ ["http://miranda-im.org/caps"] = "miranda";
+				Node2ClientID_ ["http://miranda-ng.org/caps"] = "miranda-ng";
 				Node2ClientID_ ["http://online.yandex.ru/caps"] = "yaonline";
 				Node2ClientID_ ["http://palringo.com/caps"] = "palringo";
 				Node2ClientID_ ["http://pda.qip.ru/caps"] = "qippda";
@@ -113,6 +114,7 @@ namespace XooxUtil
 				Node2ClientID_ ["http://qip.ru/caps"] = "qipinfium";
 				Node2ClientID_ ["http://qip.ru/caps?QIP Mobile Java"] = "qipmobile";
 				Node2ClientID_ ["http://sip-communicator.org"] = "sip-communicator";
+				Node2ClientID_ ["http://spectrum.im/transport"] = "spectrum";
 				Node2ClientID_ ["http://swift.im"] = "swift";
 				Node2ClientID_ ["http://talk.google.com/xmpp/bot/caps"] = "talk.google.com";
 				Node2ClientID_ ["http://talkgadget.google.com/client/caps"] = "talkgadget.google.com";
@@ -181,6 +183,7 @@ namespace XooxUtil
 				Node2ClientHR_ ["http://mail.google.com/xmpp/client/caps"] = "GMail chat widget";
 				Node2ClientHR_ ["http://mcabber.com/caps"] = "MCabber";
 				Node2ClientHR_ ["http://miranda-im.org/caps"] = "Miranda IM";
+				Node2ClientHR_ ["http://miranda-ng.org/caps"] = "Miranda NG";
 				Node2ClientHR_ ["http://online.yandex.ru/caps"] = "Ya.Online";
 				Node2ClientHR_ ["http://palringo.com/caps"] = "Palringo";
 				Node2ClientHR_ ["http://pda.qip.ru/caps"] = "QIP PDA";
@@ -190,6 +193,7 @@ namespace XooxUtil
 				Node2ClientHR_ ["http://qip.ru/caps"] = "QIP Infium";
 				Node2ClientHR_ ["http://qip.ru/caps?QIP Mobile Java"] = "QIP Mobile";
 				Node2ClientHR_ ["http://sip-communicator.org"] = "SIP Communicator";
+				Node2ClientHR_ ["http://spectrum.im/transport"] = "Spectrum XMPP Gateway";
 				Node2ClientHR_ ["http://swift.im"] = "Swift";
 				Node2ClientHR_ ["http://talk.google.com/xmpp/bot/caps"] = "Google Talk";
 				Node2ClientHR_ ["http://talkgadget.google.com/client/caps"] = "Google Talk gadget";
