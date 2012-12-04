@@ -449,6 +449,10 @@ namespace Poshuku
 				this,
 				SLOT (handleIconChanged ()));
 		connect (WebView_,
+				SIGNAL (loadFinished (bool)),
+				this,
+				SLOT (checkLoadedDocument ()));
+		connect (WebView_,
 				SIGNAL (loadStarted ()),
 				this,
 				SLOT (enableActions ()));
@@ -1303,6 +1307,27 @@ namespace Poshuku
 				}
 			}
 		}
+	}
+
+	void BrowserWidget::checkLoadedDocument ()
+	{
+		const auto& html = WebView_->page ()->mainFrame ()->toHtml ();
+		QDomDocument doc;
+		if (!doc.setContent (html))
+			return;
+
+		const auto& rootTagName = doc.documentElement ().tagName ().toLower ();
+		if (rootTagName == "html" || rootTagName == "xhtml")
+			return;
+
+		LeechCraft::Entity e;
+		e.Entity_ = WebView_->url ();
+		e.Mime_ = "text/xml";
+		e.Parameters_ = LeechCraft::FromUserInitiated |
+			LeechCraft::OnlyHandle;
+		e.Additional_ ["IgnorePlugins"] = QStringList ("org.LeechCraft.Poshuku");
+		e.Additional_ ["URLData"] = html;
+		emit gotEntity (e);
 	}
 
 	void BrowserWidget::setScrollPosition ()
