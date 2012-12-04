@@ -237,7 +237,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="whereIsYouLabel">
         <property name="text">
-         <string>Where is you:</string>
+         <string>Location:</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

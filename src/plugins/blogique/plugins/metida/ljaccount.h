@@ -46,6 +46,7 @@ namespace Metida
 		QString PostAvatar_;
 		bool EntryVisibility_;
 		bool UsedRTE_;
+		bool NotifyByEmail_;
 
 		LJEventProperties ()
 		: CurrentMoodId_ (-1)
@@ -56,6 +57,7 @@ namespace Metida
 		, ScreeningComments_ (CommentsManagement::Default)
 		, EntryVisibility_ (true)
 		, UsedRTE_ (true)
+		, NotifyByEmail_ (true)
 		{
 		}
 	};

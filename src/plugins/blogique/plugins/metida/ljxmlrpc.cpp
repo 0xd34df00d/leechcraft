@@ -454,30 +454,27 @@ namespace Metida
 									"yyyy-MM-dd hh:mm:ss");
 						else if (fieldEntry.Name () == "props")
 						{
+							LJEventProperties props;
 							for (const auto& prop : fieldEntry.Value ())
 							{
-								LJEventProperties props;
-								for (const auto& field : prop.toList ())
-								{
-									LJParserTypes::LJParseProfileEntry fieldEntry =
-											field.value<LJParserTypes::LJParseProfileEntry> ();
-									if (fieldEntry.Name () == "picture_keyword")
-										props.PostAvatar_ = fieldEntry.ValueToString ();
-									else if (fieldEntry.Name () == "opt_screening")
-										props.CommentsManagement_ = MetidaUtils::GetCommentsManagmentFromString (fieldEntry.ValueToString ());
-									else if (fieldEntry.Name () == "current_music")
-										props.CurrentMusic_ = fieldEntry.ValueToString ();
-									else if (fieldEntry.Name () == "current_mood")
-										props.CurrentMood_ = fieldEntry.ValueToString ();
-									else if (fieldEntry.Name () == "current_location")
-										props.CurrentLocation_ = fieldEntry.ValueToString ();
-									else if (fieldEntry.Name () == "taglist")
-										ljEvent.Tags_ = fieldEntry.ValueToString ().split (',');
-									else if (fieldEntry.Name () == "adult_content")
-										props.AdultContent_ = MetidaUtils::GetAdultContentFromString (fieldEntry.ValueToString ());
-								}
-								ljEvent.Props_ = props;
+								LJParserTypes::LJParseProfileEntry propsFieldEntry =
+										prop.value<LJParserTypes::LJParseProfileEntry> ();
+								if (propsFieldEntry.Name () == "picture_keyword")
+									props.PostAvatar_ = propsFieldEntry.ValueToString ();
+								else if (propsFieldEntry.Name () == "opt_screening")
+									props.CommentsManagement_ = MetidaUtils::GetCommentsManagmentFromString (propsFieldEntry.ValueToString ());
+								else if (propsFieldEntry.Name () == "current_music")
+									props.CurrentMusic_ = propsFieldEntry.ValueToString ();
+								else if (propsFieldEntry.Name () == "current_mood")
+									props.CurrentMood_ = propsFieldEntry.ValueToString ();
+								else if (propsFieldEntry.Name () == "current_location")
+									props.CurrentLocation_ = propsFieldEntry.ValueToString ();
+								else if (propsFieldEntry.Name () == "taglist")
+									ljEvent.Tags_ = propsFieldEntry.ValueToString ().split (", ");
+								else if (propsFieldEntry.Name () == "adult_content")
+									props.AdultContent_ = MetidaUtils::GetAdultContentFromString (propsFieldEntry.ValueToString ());
 							}
+							ljEvent.Props_ = props;
 						}
 						else if (fieldEntry.Name () == "url")
 						{

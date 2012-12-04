@@ -55,6 +55,8 @@ namespace Blogique
 	, Storage_ (Core::Instance ().GetStorage ())
 	, OpenDraftInNewTab_ (new QAction (tr ("Open in new tab"), this))
 	, OpenDraftInCurrentTab_ (new QAction (tr ("Open here"), this))
+	, OpenEntryInNewTab_ (new QAction (tr ("Open in new tab"), this))
+	, OpenEntryInCurrentTab_ (new QAction (tr ("Open here"), this))
 	, DraftID_ (-1)
 	{
 		Ui_.setupUi (this);
@@ -160,14 +162,25 @@ namespace Blogique
 		PostsViewModel_->setHorizontalHeaderLabels ({ tr ("Date"), tr ("Name") });
 		Ui_.PostsView_->setModel (PostsViewModel_);
 
+		connect (OpenEntryInCurrentTab_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleOpenEntryInCurrentTab ()));
+		connect (OpenEntryInNewTab_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleOpenEntryInNewTab ()));
+		Ui_.PostsView_->setContextMenuPolicy (Qt::ActionsContextMenu);
+		Ui_.PostsView_->addActions ({ OpenEntryInNewTab_, OpenEntryInCurrentTab_ });
+
 		connect (OpenDraftInCurrentTab_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleOpenInCurrentTab ()));
+				SLOT (handleOpenDraftInCurrentTab ()));
 		connect (OpenDraftInNewTab_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleOpenInNewTab ()));
+				SLOT (handleOpenDraftInNewTab ()));
 		Ui_.LocalEntriesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
 		Ui_.LocalEntriesView_->addActions ({ OpenDraftInNewTab_, OpenDraftInCurrentTab_ });
 
@@ -360,7 +373,6 @@ namespace Blogique
 
 	Event BlogiqueWidget::LoadFullDraft (const QByteArray& id, qlonglong draftID)
 	{
-		Event event;
 		try
 		{
 			return Storage_->GetFullDraft (id, draftID);
@@ -424,6 +436,21 @@ namespace Blogique
 		}
 
 		Ui_.Calendar_->SetStatistic (statistic);
+	}
+
+	Event BlogiqueWidget::LoadEntry (const QByteArray& id, qlonglong entryId)
+	{
+		try
+		{
+			return Storage_->GetEntry (id, entryId);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error fetching event"
+					<< e.what ();
+			return Event ();
+		}
 	}
 
 	void BlogiqueWidget::FillPostsView (const QList<Event> entries)
@@ -616,7 +643,7 @@ namespace Blogique
 		}
 
 		QModelIndex idx = Ui_.LocalEntriesView_->currentIndex ();
-		idx = idx.sibling (idx.row (), DraftColumns::Date);
+		idx = idx.sibling (idx.row (), Columns::Date);
 		RemoveDraft (idx.data (EntryIdRole::DBIdRole).toLongLong ());
 		DraftsViewModel_->removeRow (idx.row ());
 	}
@@ -634,7 +661,7 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		idx = idx.sibling (idx.row (), DraftColumns::Date);
+		idx = idx.sibling (idx.row (), Columns::Date);
 		const Event& e = LoadFullDraft (acc->GetAccountID (),
 				idx.data (EntryIdRole::DBIdRole).toLongLong ());
 
@@ -671,11 +698,57 @@ namespace Blogique
 	{
 		XmlSettingsManager::Instance ()
 				.property ("OpenDraftByDblClick").toString () == "CurrentTab" ?
-			handleOpenInCurrentTab (index) :
-			handleOpenInNewTab (index);
+			handleOpenDraftInCurrentTab (index) :
+			handleOpenDraftInNewTab (index);
 	}
 
-	void BlogiqueWidget::handleOpenInCurrentTab (const QModelIndex& index)
+	void BlogiqueWidget::handleOpenEntryInCurrentTab (const QModelIndex& index)
+	{
+		QModelIndex idx = index.isValid () ?
+				index :
+				Ui_.PostsView_->currentIndex ();
+		if (!idx.isValid ())
+			return;
+
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+		
+		idx = idx.sibling (idx.row (), Columns::Date);
+		
+		const Event& e = LoadEntry (acc->GetAccountID (),
+				idx.data (EntryIdRole::DBIdRole).toLongLong ());
+
+		FillWidget (e);
+	}
+
+	void BlogiqueWidget::handleOpenEntryInNewTab (const QModelIndex& index)
+	{
+		QModelIndex idx = index.isValid () ?
+				index :
+				Ui_.PostsView_->currentIndex ();
+		if (!idx.isValid ())
+			return;
+
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		idx = idx.sibling (idx.row (), Columns::Date);
+		const Event& e = LoadEntry (acc->GetAccountID (),
+				idx.data (EntryIdRole::DBIdRole).toLongLong ());
+
+		auto newTab = new BlogiqueWidget;
+		connect (newTab,
+				 SIGNAL (removeTab (QWidget*)),
+				 &Core::Instance (),
+				 SIGNAL (removeTab (QWidget*)));
+
+		newTab->FillWidget (e, acc->GetAccountID ());
+		emit addNewTab ("Blogique", newTab);
+	}
+
+	void BlogiqueWidget::handleOpenDraftInCurrentTab (const QModelIndex& index)
 	{
 		QModelIndex idx = index.isValid () ?
 			index :
@@ -687,14 +760,14 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		idx = idx.sibling (idx.row (), DraftColumns::Date);
+		idx = idx.sibling (idx.row (), Columns::Date);
 		const Event& e = LoadFullDraft (acc->GetAccountID (),
 				idx.data (EntryIdRole::DBIdRole).toLongLong ());
 
 		FillWidget (e);
 	}
 
-	void BlogiqueWidget::handleOpenInNewTab (const QModelIndex& index)
+	void BlogiqueWidget::handleOpenDraftInNewTab (const QModelIndex& index)
 	{
 		QModelIndex idx = index.isValid () ?
 				index :
@@ -706,7 +779,7 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		idx = idx.sibling (idx.row (), DraftColumns::Date);
+		idx = idx.sibling (idx.row (), Columns::Date);
 		const Event& e = LoadFullDraft (acc->GetAccountID (),
 				idx.data (EntryIdRole::DBIdRole).toLongLong ());
 

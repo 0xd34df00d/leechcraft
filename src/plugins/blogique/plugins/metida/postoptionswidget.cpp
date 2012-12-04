@@ -150,8 +150,14 @@ namespace Metida
 				break;
 			}
 
-		Ui_.ShowInFriendsPage_->setChecked (map ["showInFriendsPage"].toBool ());
-		Ui_.UserPic_->setCurrentIndex (Ui_.UserPic_->findText (map ["avatar"].toString ()));
+		Ui_.ShowInFriendsPage_->setChecked (map.contains ("showInFriendsPage") ?
+			map ["showInFriendsPage"].toBool () : true);
+		Ui_.UserPic_->setCurrentIndex (!map ["avatar"].toString ().isEmpty () ?
+			Ui_.UserPic_->findText (map ["avatar"].toString ()) :
+			0);
+		Ui_.NotifyAboutComments_->setChecked (map.contains ("notify") ?
+			map ["notify"].toBool () :
+			true);
 	}
 
 	QVariantMap PostOptionsWidget::GetCustomData () const
@@ -183,7 +189,6 @@ namespace Metida
 		for (const auto& mood : profile->GetProfileData ().Moods_)
 			Ui_.Mood_->addItem (mood.Name_, mood.Id_);
 
-		//TODO other images
 		Ui_.UserPic_->addItem (tr ("(default)"));
 		const QString& path = Util::CreateIfNotExists ("blogique/metida/avatars")
 				.absoluteFilePath (Account_->GetAccountID ().toBase64 ().replace ('/', '_'));
