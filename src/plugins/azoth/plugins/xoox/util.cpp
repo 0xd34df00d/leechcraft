@@ -134,6 +134,8 @@ namespace XooxUtil
 				Node2ClientIDBegin_ ["http://pidgin.im/"] = "pidgin";
 				Node2ClientIDBegin_ ["http://qutim.org"] = "qutim";
 				Node2ClientIDBegin_ ["http://tkabber.jabber.ru"] = "tkabber";
+
+				Node2ClientID_ ["none"] = "unknown";
 			}
 		};
 	}
@@ -213,6 +215,8 @@ namespace XooxUtil
 				Node2ClientHRBegin_ ["http://pidgin.im/"] = "Pidgin IM";
 				Node2ClientHRBegin_ ["http://qutim.org"] = "QutIM";
 				Node2ClientHRBegin_ ["http://tkabber.jabber.ru"] = "Tkabber";
+
+				Node2ClientHR_ ["none"] = "Unknown";
 			}
 		};
 	}
