@@ -1421,7 +1421,7 @@ namespace Poshuku
 			w.writeEndElement ();
 		w.writeEndDocument ();
 
-		GetView ()->setHtml (formatted);
+		GetView ()->setHtml (formatted, WebView_->url ());
 	}
 
 	void BrowserWidget::setScrollPosition ()
