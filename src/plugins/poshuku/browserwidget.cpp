@@ -54,6 +54,7 @@
 #include <QRegExp>
 #include <QKeySequence>
 #include <QLabel>
+#include <QXmlStreamWriter>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <util/notificationactionhandler.h>
@@ -1309,6 +1310,83 @@ namespace Poshuku
 		}
 	}
 
+	namespace
+	{
+		void ToHtml (const QDomElement& elem, QXmlStreamWriter& w)
+		{
+			auto writeColored = [&w] (const QString& color, const QString& text, bool pad) -> void
+			{
+				const auto& padStr = (pad ? "; margin-left: 1em;" : QString ());
+
+				w.writeStartElement ("span");
+				w.writeAttribute ("style", "color:" + color + padStr);
+				w.writeCharacters (text);
+				w.writeEndElement ();
+			};
+
+			w.writeStartElement ("div");
+			w.writeAttribute ("style", "color: #881280; margin-left: 1em;");
+			w.writeCharacters ("<" + elem.tagName ());
+
+			const auto& attrs = elem.attributes ();
+			for (int i = 0; i < attrs.size (); ++i)
+			{
+				const auto& attrNode = attrs.item (i).toAttr ();
+
+				writeColored ("#994500", " " + attrNode.name (), false);
+				writeColored ("#881280", "=\"", false);
+				writeColored ("#1A1AA6", attrNode.value (), false);
+				writeColored ("#881280", "\"", false);
+			}
+
+			bool hasChildren = false;
+			auto childrenize = [&hasChildren, &w, writeColored] () -> void
+			{
+				if (hasChildren)
+					return;
+
+				hasChildren = true;
+				w.writeCharacters (">");
+				w.writeEmptyElement ("br");
+			};
+
+			auto child = elem.firstChild ();
+			while (!child.isNull ())
+			{
+				switch (child.nodeType ())
+				{
+				case QDomDocument::TextNode:
+					childrenize ();
+					writeColored ("#000000", child.toText ().data (), true);
+					w.writeEmptyElement ("br");
+					break;
+				case QDomDocument::CDATASectionNode:
+					childrenize ();
+					writeColored ("#000000", "<![CDATA[ " + child.toCDATASection ().data () + " ]]>", true);
+					w.writeEmptyElement ("br");
+					break;
+				case QDomDocument::CommentNode:
+					childrenize ();
+					writeColored ("#00BB00", "<!--" + child.toComment ().data () + "-->", true);
+					w.writeEmptyElement ("br");
+					break;
+				case QDomNode::ElementNode:
+					childrenize ();
+					ToHtml (child.toElement (), w);
+					break;
+				case QDomNode::AttributeNode:
+				case QDomNode::CharacterDataNode:
+				case QDomNode::BaseNode:
+					break;
+				}
+				child = child.nextSibling ();
+			}
+
+			w.writeCharacters (hasChildren ? ("</" + elem.tagName () + ">") : " />");
+			w.writeEndElement ();
+		}
+	}
+
 	void BrowserWidget::checkLoadedDocument ()
 	{
 		const auto& html = WebView_->page ()->mainFrame ()->toHtml ();
@@ -1328,6 +1406,22 @@ namespace Poshuku
 		e.Additional_ ["IgnorePlugins"] = QStringList ("org.LeechCraft.Poshuku");
 		e.Additional_ ["URLData"] = html;
 		emit gotEntity (e);
+
+		QString formatted;
+		QXmlStreamWriter w (&formatted);
+		w.writeStartDocument ();
+			w.writeStartElement ("html");
+				w.writeStartElement ("head");
+					w.writeTextElement ("title", WebView_->url ().toString ());
+				w.writeEndElement ();
+				w.writeStartElement ("body");
+					w.writeAttribute ("style", "font-family:monospace;");
+					ToHtml (doc.documentElement (), w);
+				w.writeEndElement ();
+			w.writeEndElement ();
+		w.writeEndDocument ();
+
+		GetView ()->setHtml (formatted);
 	}
 
 	void BrowserWidget::setScrollPosition ()
