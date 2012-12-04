@@ -1412,7 +1412,7 @@ namespace Poshuku
 		w.writeStartDocument ();
 			w.writeStartElement ("html");
 				w.writeStartElement ("head");
-					w.writeTextElement ("title", WebView_->url ().toString ());
+					w.writeTextElement ("title", Qt::escape (WebView_->url ().toString ()));
 				w.writeEndElement ();
 				w.writeStartElement ("body");
 					w.writeAttribute ("style", "font-family:monospace;");
