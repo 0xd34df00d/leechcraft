@@ -81,7 +81,8 @@ namespace Shaitan
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/resources/images/shaitan.svg");
+		return icon;
 	}
 	
 }
