@@ -2389,10 +2389,14 @@ namespace BitTorrent
 	void Core::queryLibtorrentForWarnings ()
 	{
 		// I know auto_ptr is bad & deprecated & things, but libtorrent API strongly needs it :(
+#if defined __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 		std::auto_ptr<libtorrent::alert> a (Session_->pop_alert ());
+#if defined __GNUC__
 #pragma GCC diagnostic pop
+#endif
 
 		SimpleDispatcher sd;
 		while (a.get ())

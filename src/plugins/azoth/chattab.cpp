@@ -181,10 +181,10 @@ namespace Azoth
 
 		Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
 
-		connect (Ui_.View_->page (),
-				SIGNAL (linkClicked (const QUrl&)),
+		connect (Ui_.View_,
+				SIGNAL (linkClicked (QUrl, bool)),
 				this,
-				SLOT (handleViewLinkClicked (const QUrl&)));
+				SLOT (handleViewLinkClicked (QUrl, bool)));
 
 		TypeTimer_->setInterval (2000);
 		connect (TypeTimer_,
@@ -900,13 +900,13 @@ namespace Azoth
 		}
 	}
 
-	void ChatTab::handleViewLinkClicked (QUrl url)
+	void ChatTab::handleViewLinkClicked (QUrl url, bool raise)
 	{
 		if (url.scheme () != "azoth")
 		{
 			if (Core::Instance ().CouldHandleURL (url))
 			{
-				Core::Instance ().HandleURL (url);
+				Core::Instance ().HandleURL (url, GetEntry<ICLEntry> ());
 				return;
 			}
 
@@ -918,6 +918,8 @@ namespace Azoth
 			Entity e = Util::MakeEntity (url,
 					QString (),
 					static_cast<TaskParameter> (FromUserInitiated | OnlyHandle | ShouldQuerySource));
+			if (!raise)
+				e.Additional_ ["BackgroundHandle"] = true;
 			Core::Instance ().SendEntity (e);
 			return;
 		}
@@ -1919,12 +1921,12 @@ namespace Azoth
 	void ChatTab::prepareMessageText (const QString& text)
 	{
 		Ui_.MsgEdit_->setText (text);
+		Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 	}
 
 	void ChatTab::appendMessageText (const QString& text)
 	{
-		Ui_.MsgEdit_->setText (Ui_.MsgEdit_->toPlainText () + text);
-		Ui_.MsgEdit_->moveCursor (QTextCursor::End);
+		prepareMessageText (Ui_.MsgEdit_->toPlainText () + text);
 	}
 
 	void ChatTab::selectVariant (const QString& var)
