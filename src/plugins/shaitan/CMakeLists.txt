@@ -12,9 +12,13 @@ SET (SRCS
 	shaitan.cpp
 	terminalwidget.cpp
 	)
+SET (RESOURCES shaitanresources.qrc)
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+
 ADD_LIBRARY (leechcraft_shaitan SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_shaitan
 	${QT_LIBRARIES}
