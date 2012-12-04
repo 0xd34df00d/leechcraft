@@ -35,7 +35,7 @@ namespace Xoox
 	{
 		if (PublicKeys_.contains (id))
 			return PublicKeys_.value (id);
-		
+
 		const QString& bare = id.left (id.indexOf ('/'));
 		return PublicKeys_.value (bare);
 	}
@@ -54,13 +54,13 @@ namespace Xoox
 	{
 		PrivateKey_ = privateKey;
 	}
-	
+
 	namespace
 	{
 		QString WrapPGP (const QString& str, bool sig)
 		{
 			const QString type = sig ? "SIGNATURE" : "MESSAGE";
-			
+
 			QString result;
 			result += QString ("-----BEGIN PGP %1-----\n").arg (type);
 			result += "Version: PGP\n\n";
@@ -106,7 +106,7 @@ namespace Xoox
 			warning (QString ("Cannot sign: private key is null"));
 			return QByteArray ();
 		}
-		
+
 		msgKey.setPGPSecretKey (PrivateKey_);
 		QCA::OpenPGP pgp;
 		QCA::SecureMessage msg (&pgp);
@@ -122,21 +122,21 @@ namespace Xoox
 			warning (QString ("Error signing: %1").arg (msg.errorCode ()));
 			return QByteArray ();
 		}
-		
+
 		const QByteArray& sig = msg.signature ();
 		const QList<QByteArray>& arrs = sig.split ('\n');
 		QList<QByteArray>::const_iterator it = arrs.begin ();
 		++it;
 		if (it == arrs.end ())
 			return sig;
-		
+
 		for (; it != arrs.end (); ++it)
 			if (it->isEmpty ())
 				break;
-			
+
 		if (++it >= arrs.end ())
 			return sig;
-		
+
 		QByteArray result;
 		for (; it != arrs.end (); ++it)
 		{
@@ -204,7 +204,7 @@ namespace Xoox
 			warning (QString ("Cannot encrypt: public key is null"));
 			return false;
 		}
-		
+
 		QCA::OpenPGP pgp;
 		QCA::SecureMessageKey key;
 		QCA::SecureMessage msg (&pgp);
@@ -250,7 +250,7 @@ namespace Xoox
 			else if (tagName == "presence")
 				emit signedPresenceReceived (from);
 		}
-		
+
 		// Case 2: encrypted message
 		if (x_element.namespaceURI () == NsEncrypted)
 		{

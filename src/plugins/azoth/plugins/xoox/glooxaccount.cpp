@@ -586,6 +586,11 @@ namespace Xoox
 		ClientConnection_->GetCryptHandler ()->GetPGPManager ()->SetPrivateKey (key);
 	}
 
+	QCA::PGPKey GlooxAccount::GetPrivateKey () const
+	{
+		return ClientConnection_->GetCryptHandler ()->GetPGPManager ()->PrivateKey ();
+	}
+
 	void GlooxAccount::SetEntryKey (QObject *entryObj, const QCA::PGPKey& pubKey)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -597,7 +602,23 @@ namespace Xoox
 			return;
 		}
 
-		ClientConnection_->GetCryptHandler ()->GetPGPManager ()->SetPublicKey (entry->GetHumanReadableID (), pubKey);
+		auto mgr = ClientConnection_->GetCryptHandler ()->GetPGPManager ();
+		mgr->SetPublicKey (entry->GetHumanReadableID (), pubKey);
+	}
+
+	QCA::PGPKey GlooxAccount::GetEntryKey (QObject *entryObj) const
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "doesn't implement ICLEntry";
+			return QCA::PGPKey ();
+		}
+
+		auto mgr = ClientConnection_->GetCryptHandler ()->GetPGPManager ();
+		return mgr->PublicKey (entry->GetHumanReadableID ());
 	}
 
 	void GlooxAccount::SetEncryptionEnabled (QObject *entry, bool enabled)
