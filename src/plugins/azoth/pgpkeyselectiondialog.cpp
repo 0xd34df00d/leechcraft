@@ -24,12 +24,14 @@ namespace LeechCraft
 namespace Azoth
 {
 	PGPKeySelectionDialog::PGPKeySelectionDialog (const QString& label,
-			PGPKeySelectionDialog::Type type, QWidget *parent)
+			PGPKeySelectionDialog::Type type,
+			const QCA::PGPKey& focusKey,
+			QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
 		Ui_.LabelText_->setText (label);
-		
+
 		switch (type)
 		{
 		case TPrivate:
@@ -39,11 +41,16 @@ namespace Azoth
 			Keys_ = Core::Instance ().GetPublicKeys ();
 			break;
 		}
-				
+
+		const auto& focusArr = focusKey.toArray ();
 		Q_FOREACH (const QCA::PGPKey& key, Keys_)
+		{
 			Ui_.KeyCombo_->addItem (key.primaryUserId () + " (" + key.keyId () + ")");
+			if (key.toArray () == focusArr)
+				Ui_.KeyCombo_->setCurrentIndex (Ui_.KeyCombo_->count () - 1);
+		}
 	}
-	
+
 	QCA::PGPKey PGPKeySelectionDialog::GetSelectedKey () const
 	{
 		const int idx = Ui_.KeyCombo_->currentIndex ();
