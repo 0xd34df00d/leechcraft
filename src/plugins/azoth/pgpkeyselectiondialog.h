@@ -39,8 +39,8 @@ namespace Azoth
 			TPrivate
 		};
 
-		PGPKeySelectionDialog (const QString&, Type, QWidget* = 0);
-		
+		PGPKeySelectionDialog (const QString&, Type, const QCA::PGPKey&, QWidget* = 0);
+
 		QCA::PGPKey GetSelectedKey () const;
 	};
 }

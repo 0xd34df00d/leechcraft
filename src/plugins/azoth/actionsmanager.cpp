@@ -847,7 +847,8 @@ namespace Azoth
 		const QString& str = tr ("Please select the key for %1 (%2).")
 				.arg (entry->GetEntryName ())
 				.arg (entry->GetHumanReadableID ());
-		PGPKeySelectionDialog dia (str, PGPKeySelectionDialog::TPublic);
+		PGPKeySelectionDialog dia (str, PGPKeySelectionDialog::TPublic,
+				pgp->GetEntryKey (entry->GetObject ()));
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
