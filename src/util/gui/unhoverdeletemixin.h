@@ -32,7 +32,7 @@ namespace Util
 		QTimer *LeaveTimer_;
 		bool ContainsMouse_;
 	public:
-		UTIL_API UnhoverDeleteMixin (QWidget*);
+		UTIL_API UnhoverDeleteMixin (QWidget*, const char *slot = SLOT (deleteLater ()));
 
 		void UTIL_API Start (int);
 		void UTIL_API Stop ();
