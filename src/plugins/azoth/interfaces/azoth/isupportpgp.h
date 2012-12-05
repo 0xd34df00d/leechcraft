@@ -44,12 +44,29 @@ namespace Azoth
 		 */
 		virtual void SetPrivateKey (const QCA::PGPKey& key) = 0;
 
+		/** @brief Returns the private key for the account, if any.
+		 *
+		 * @return Private key for the account, or an empty key if no
+		 * key has been set.
+		 */
+		virtual QCA::PGPKey GetPrivateKey () const = 0;
+
 		/** @brief Sets the public key for the given entry.
 		 *
 		 * @param[in] entry The entry for which to set the public key.
 		 * @param[in] pubKey The public key to set.
 		 */
 		virtual void SetEntryKey (QObject *entry, const QCA::PGPKey& pubKey) = 0;
+
+		/** @brief Returns the public key for the given entry, if any.
+		 *
+		 * If there is no public key for the entry, an empty key should
+		 * be returned.
+		 *
+		 * @param[in] entry The entry for which to return the public key.
+		 * @return The public key for the given entry, if any.
+		 */
+		virtual QCA::PGPKey GetEntryKey (QObject *entry) const = 0;
 
 		/** @brief Enables or disables encryption for the given entry.
 		 *

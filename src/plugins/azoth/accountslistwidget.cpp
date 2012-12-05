@@ -127,7 +127,8 @@ namespace Azoth
 
 		const QString& str = tr ("Please select new PGP key for the account %1.")
 				.arg (acc->GetAccountName ());
-		PGPKeySelectionDialog dia (str, PGPKeySelectionDialog::TPrivate, this);
+		PGPKeySelectionDialog dia (str,
+				PGPKeySelectionDialog::TPrivate, pgpAcc->GetPrivateKey (), this);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
