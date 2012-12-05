@@ -121,6 +121,7 @@ namespace Blogique
 		void on_RemoveDraft__released ();
 		void on_PublishDraft__released ();
 		void on_UpdateLastEntries__released ();
+		void on_RemoveRemotePost__released ();
 		void on_LocalEntriesView__doubleClicked (const QModelIndex& index);
 		void handleOpenEntryInCurrentTab (const QModelIndex& index = QModelIndex ());
 		void handleOpenEntryInNewTab (const QModelIndex& index = QModelIndex ());

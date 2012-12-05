@@ -64,6 +64,9 @@ namespace Metida
 		void Submit (const LJEvent& event);
 		void BackupEvents ();
 		void GetLastEntries (int count);
+
+		void RemoveEvent (const LJEvent& event);
+		void EditEvent (const LJEvent& event);
 	private:
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
@@ -85,6 +88,9 @@ namespace Metida
 		void DeleteGroupRequest (int id, const QString& challenge);
 
 		void PostEventRequest (const LJEvent& event, const QString& challenge);
+		void RemoveEventRequest (const LJEvent& event, const QString& challenge);
+		void EditEventRequest (const LJEvent& event, const QString& challenge);
+
 		void BackupEventsRequest (int skip, const QString& challenge);
 
 		void GetLastEventsRequest (int count, const QString& challenge);
@@ -98,12 +104,16 @@ namespace Metida
 		void handlePostEventReplyFinished ();
 		void handleBackupEventsReplyFinished ();
 		void handleGetLastEventsReplyFinished ();
+		void handleRemoveEventReplyFinished ();
+		void handleEditEventReplyFinished ();
 
 	signals:
 		void validatingFinished (bool success);
 		void profileUpdated (const LJProfileData& profile);
 		void error (int code, const QString& msg);
 		void entryPosted ();
+		void entryUpdated (int itemId);
+		void entryRemoved (int itemId);
 		void gotEntries2Backup (const QList<LJEvent>& events);
 		void gettingEntries2BackupFinished ();
 		void gotEntries (const QList<LJEvent>& events);

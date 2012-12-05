@@ -74,6 +74,8 @@ namespace Blogique
 		void handleAccountValidated (QObject *accObj, bool validated);
 		void updateProfiles ();
 		void handleEntryPosted ();
+		void handleEntryRemoved (int itemId);
+		void handleEntryUpdated (int itemId);
 
 		void handleGotEvents2Backup (const QList<Event>& events);
 		void handleGettingEvents2BackupFinished ();

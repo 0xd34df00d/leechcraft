@@ -98,6 +98,12 @@ namespace Metida
 				break;
 			}
 
+		if (Ui_.Access_->itemData (Ui_.Access_->currentIndex ()) != Access::Private)
+			Ui_.ShowInFriendsPage_->setChecked (map.contains ("showInFriendsPage") ?
+				map ["showInFriendsPage"].toBool () : true);
+		else
+			Ui_.ShowInFriendsPage_->setChecked (false);
+
 		//TODO AllowMask_
 
 		if (map ["noMood"].toBool ())
@@ -150,8 +156,6 @@ namespace Metida
 				break;
 			}
 
-		Ui_.ShowInFriendsPage_->setChecked (map.contains ("showInFriendsPage") ?
-			map ["showInFriendsPage"].toBool () : true);
 		Ui_.UserPic_->setCurrentIndex (!map ["avatar"].toString ().isEmpty () ?
 			Ui_.UserPic_->findText (map ["avatar"].toString ()) :
 			0);

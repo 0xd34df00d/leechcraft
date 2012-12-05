@@ -88,7 +88,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="BlogPosts_">
           <property name="geometry">
@@ -122,7 +122,7 @@
                <bool>false</bool>
               </property>
              </widget>
-             <widget class="QWidget" name="">
+             <widget class="QWidget" name="layoutWidget">
               <layout class="QVBoxLayout" name="verticalLayout_2">
                <property name="spacing">
                 <number>2</number>
@@ -217,7 +217,7 @@
            </rect>
           </property>
           <attribute name="label">
-           <string>Drafts</string>
+           <string>Local Entries</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout_3">
            <property name="margin">
