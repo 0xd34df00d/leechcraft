@@ -125,6 +125,7 @@ SET (FORMS
 	)
 SET (RESOURCES bittorrentresources.qrc)
 CreateTrs ("bittorrent" "ar;be;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("bittorrent" "en;ru_RU" "${SRCS}" "${FORMS}" "torrentsettings.xml")
 
 ADD_DEFINITIONS (-DWIN32_LEAN_AND_MEAN -DBOOST_ALL_NO_LIB -DBOOST_ASIO_DYN_LINK)
 
