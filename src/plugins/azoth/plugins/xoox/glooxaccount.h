@@ -200,7 +200,9 @@ namespace Xoox
 #ifdef ENABLE_CRYPT
 		// ISupportPGP
 		void SetPrivateKey (const QCA::PGPKey&);
+		QCA::PGPKey GetPrivateKey () const;
 		void SetEntryKey (QObject*, const QCA::PGPKey&);
+		QCA::PGPKey GetEntryKey (QObject* entry) const;
 		void SetEncryptionEnabled (QObject*, bool);
 #endif
 

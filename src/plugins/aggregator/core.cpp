@@ -26,6 +26,7 @@
 #include <QUrl>
 #include <QTimer>
 #include <QTextCodec>
+#include <QXmlStreamWriter>
 #include <QNetworkReply>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/core/icoreproxy.h>
@@ -125,7 +126,7 @@ namespace Aggregator
 				!Initialized_)
 			return false;
 
-		QUrl url = e.Entity_.toUrl ();
+		const auto& url = e.Entity_.toUrl ();
 
 		if (e.Mime_ == "text/x-opml")
 		{
@@ -134,6 +135,23 @@ namespace Aggregator
 					url.scheme () != "https" &&
 					url.scheme () != "itpc")
 				return false;
+		}
+		else if (e.Mime_ == "text/xml")
+		{
+			if (url.scheme () != "http" &&
+					url.scheme () != "https")
+				return false;
+
+			const auto& pageData = e.Additional_ ["URLData"].toString ();
+			QXmlStreamReader xmlReader (pageData);
+			while (!xmlReader.atEnd ())
+			{
+				if (!xmlReader.readNextStartElement ())
+					return false;
+				return xmlReader.name () == "rss" || xmlReader.name () == "atom";
+			}
+
+			return false;
 		}
 		else
 		{
