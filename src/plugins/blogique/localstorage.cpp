@@ -345,6 +345,13 @@ namespace Blogique
 			}
 
 			const int id = AddEntry_.lastInsertId ().toInt ();
+			RemoveEntryTags_.bindValue (":entry_id", id);
+			if (!RemoveEntryTags_.exec ())
+			{
+				Util::DBLock::DumpError (RemoveEntryTags_);
+				throw std::runtime_error ("unable to remove entry's tags");
+			}
+
 			for (const auto& tag : event.Tags_)
 			{
 				AddEntryTag_.bindValue (":tag", tag);
@@ -454,6 +461,17 @@ namespace Blogique
 		}
 	}
 
+	void LocalStorage::RemoveEntryByItemId (const QByteArray& accId, int id)
+	{
+		RemoveEntryByItemId_.bindValue (":id", id);
+		RemoveEntryByItemId_.bindValue (":account_id", accId);
+		if (!RemoveEntryByItemId_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveEntryByItemId_);
+			throw std::runtime_error ("unable to remove entry");
+		}
+	}
+
 	Event LocalStorage::GetEntry (const QByteArray& accountId, qlonglong entryId)
 	{
 		GetEntry_.bindValue (":account_id", QString::fromUtf8 (accountId));
@@ -480,6 +498,37 @@ namespace Blogique
 		e.PostOptions_ = GetEntryOptions (GetEntryPostOptions_);
 
 		GetEntryCustomOptions_.bindValue (":entry_id", entryId);
+		e.CustomData_ = GetEntryOptions (GetEntryCustomOptions_);
+
+		return e;
+	}
+
+	Event LocalStorage::GetEntryByItemId (const QByteArray& accountId, int itemId)
+	{
+		GetEntryByItemId_.bindValue (":account_id", QString::fromUtf8 (accountId));
+		GetEntryByItemId_.bindValue (":item_id", itemId);
+		if (!GetEntryByItemId_.exec ())
+		{
+			Util::DBLock::DumpError (GetEntryByItemId_);
+			throw std::runtime_error ("unable to get entry");
+		}
+
+		GetEntryByItemId_.next ();
+		Event e;
+		e.EntryDBId_ = GetEntry_.value (0).toLongLong ();
+		e.EntryId_ = itemId;
+		e.Content_ = GetEntry_.value (2).toString ();
+		e.Date_ = GetEntry_.value (3).toDateTime ();
+		e.Subject_ = GetEntry_.value (4).toString ();
+		GetEntry_.finish ();
+
+		GetEntryTags_.bindValue (":entry_id", e.EntryDBId_);
+		e.Tags_ = GetTags (GetEntryTags_);
+
+		GetEntryPostOptions_.bindValue (":entry_id", e.EntryDBId_);
+		e.PostOptions_ = GetEntryOptions (GetEntryPostOptions_);
+
+		GetEntryCustomOptions_.bindValue (":entry_id", e.EntryDBId_);
 		e.CustomData_ = GetEntryOptions (GetEntryCustomOptions_);
 
 		return e;
@@ -611,6 +660,16 @@ namespace Blogique
 		GetAllEntries_.finish ();
 
 		return statistic;
+	}
+
+	void LocalStorage::MoveFromEntriesToDrafts (const QByteArray& accId, int itemId)
+	{
+		qWarning () << itemId;
+		const auto& e = GetEntryByItemId (accId, itemId);
+		qWarning () << e.Content_ << e.EntryDBId_;
+		RemoveEntry (e.EntryDBId_);
+		qWarning () << "save";
+		SaveDraft (accId, e);
 	}
 
 	void LocalStorage::CreateTables ()
@@ -767,6 +826,11 @@ namespace Blogique
 		RemoveEntry_ = QSqlQuery (DB_);
 		RemoveEntry_.prepare ("DELETE FROM entries WHERE Id = :id;");
 
+		RemoveEntryByItemId_ = QSqlQuery (DB_);
+		RemoveEntryByItemId_.prepare ("DELETE FROM entries WHERE EntryId = :id "
+				"AND AccountID = (SELECT accounts.Id FROM accounts "
+				"WHERE accounts.AccountID = :account_id);");
+
 		AddEntryPostOptions_ = QSqlQuery (DB_);
 		AddEntryPostOptions_.prepare ("INSERT INTO entry_post_options "
 				"(EntryId, Name, Value) VALUES (:entry_id, :name, :value);");
@@ -795,6 +859,10 @@ namespace Blogique
 		GetEntry_.prepare ("SELECT Id, EntryId, Entry, Date, Subject FROM entries "
 				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
 				"WHERE accounts.AccountID = :account_id) AND Id = :entry_id");
+		GetEntryByItemId_ = QSqlQuery (DB_);
+		GetEntryByItemId_.prepare ("SELECT Id, EntryId, Entry, Date, Subject FROM entries "
+				"WHERE AccountID = (SELECT accounts.Id FROM accounts "
+				"WHERE accounts.AccountID = :account_id) AND EntryId = :item_id");
 
 		GetAllEntries_ = QSqlQuery (DB_);
 		GetAllEntries_.prepare ("SELECT Id, EntryId,  Entry, Date, Subject FROM entries "

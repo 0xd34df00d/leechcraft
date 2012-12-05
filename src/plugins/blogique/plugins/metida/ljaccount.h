@@ -32,6 +32,12 @@ namespace Blogique
 {
 namespace Metida
 {
+	class LJFriendEntry;
+	class LJAccountConfigurationWidget;
+	class LJBloggingPlatform;
+	class LJXmlRPC;
+	class LJProfile;
+
 	struct LJEventProperties
 	{
 		QString CurrentLocation_;
@@ -91,12 +97,6 @@ namespace Metida
 		}
 	};
 
-	class LJFriendEntry;
-	class LJAccountConfigurationWidget;
-	class LJBloggingPlatform;
-	class LJXmlRPC;
-	class LJProfile;
-
 	class LJAccount : public QObject
 					, public IAccount
 	{
@@ -125,6 +125,7 @@ namespace Metida
 
 		QObject* GetProfile ();
 		void GetLastEntries (int count);
+		void RemoveEntry (const Event& event);
 
 		void FillSettings (LJAccountConfigurationWidget *widget);
 
@@ -158,6 +159,8 @@ namespace Metida
 		void accountSettingsChanged ();
 		void accountValidated (bool validated);
 		void entryPosted ();
+		void entryUpdated (int itemId);
+		void entryRemoved (int itemId);
 
 		void gotEvents2Backup (const QList<Event>& events);
 		void gotEvents (const QList<Event>& events);

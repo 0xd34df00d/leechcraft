@@ -131,8 +131,15 @@ namespace Blogique
 		 */
 		virtual void GetLastEntries (int count) = 0;
 
+		/** @brief Remove entry from blog.
+		 *
+		 * @param[in] event Removing event.
+		 */
+		virtual void RemoveEntry (const Event& event) = 0;
+
 		/** @brief Submit post to blog.
 		 *
+		 * @param[in] event Posting event.
 		 */
 		virtual void submit (const Event& event) = 0;
 
@@ -161,6 +168,12 @@ namespace Blogique
 		 * @note This function is expected to be a signal.
 		 */
 		virtual void entryPosted () = 0;
+
+		//TODO
+		virtual void entryRemoved (int itemId) = 0;
+
+		//TODO
+		virtual void entryUpdated (int ItemId) = 0;
 
 		/** @brief This signal should be emitted when account want to backup
 		 * some amount of entries.

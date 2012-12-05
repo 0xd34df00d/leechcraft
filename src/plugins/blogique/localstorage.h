@@ -53,7 +53,9 @@ namespace Blogique
 		QSqlQuery AddEntry_;
 		QSqlQuery UpdateEntry_;
 		QSqlQuery GetEntry_;
+		QSqlQuery GetEntryByItemId_;
 		QSqlQuery RemoveEntry_;
+		QSqlQuery RemoveEntryByItemId_;
 		QSqlQuery AddEntryPostOptions_;
 		QSqlQuery UpdateEntryPostOptions_;
 		QSqlQuery GetEntryPostOptions_;
@@ -83,12 +85,16 @@ namespace Blogique
 		void SaveEntries (const QByteArray& accountID, const QList<Event>& events);
 		void UpdateEntry (qlonglong id, const Event& e);
 		void RemoveEntry (qlonglong id);
+		void RemoveEntryByItemId (const QByteArray& accId, int id);
 		Event GetEntry (const QByteArray& accountId, qlonglong entryId);
+		Event GetEntryByItemId (const QByteArray& accountId, int itemId);
 		QList<Event> GetAllEntries (const QByteArray& accountId);
 		QList<Event> GetLastNEntries (const QByteArray& accountId, int count);
 		QList<Event> GetEntriesByDate (const QByteArray& accountId,
 				const QDate& date);
 		QMap<QDate, int> GetEntriesCountByDate (const QByteArray& accountId);
+
+		void MoveFromEntriesToDrafts (const QByteArray& id, int itemId);
 	private:
 		void CreateTables ();
 		void PrepareQueries ();

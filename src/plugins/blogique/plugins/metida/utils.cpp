@@ -134,6 +134,16 @@ namespace MetidaUtils
 		}
 	}
 
+	Access GetAccessForString (const QString& access)
+	{
+		if (access == "private")
+			return Access::Private;
+		else if (access == "usemask")
+			return Access::Custom;
+		else
+			return Access::Public;
+	}
+
 	QString GetStringForAdultContent (AdultContent adult)
 	{
 		switch (adult)
@@ -155,7 +165,7 @@ namespace MetidaUtils
 			return AdultContent::AdultsFrom14;
 		else if (str == "explicit")
 			return AdultContent::AdultsFrom18;
-		else 
+		else
 			return AdultContent::WithoutAdultContent;
 	}
 
@@ -174,6 +184,18 @@ namespace MetidaUtils
 			cm = CommentsManagement::ScreenComments;
 
 		return cm;
+	}
+
+	CommentsManagement GetCommentsManagmentFromInt (int cm)
+	{
+		switch (cm)
+		{
+			case 1:
+				return CommentsManagement::DisableComments;
+			case 0:
+			default:
+				return CommentsManagement::EnableComments;
+		}
 	}
 
 	QString GetStringFromCommentsManagment (CommentsManagement cm)

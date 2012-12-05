@@ -67,6 +67,14 @@ namespace Metida
 				this,
 				SIGNAL (entryPosted ()));
 		connect (LJXmlRpc_,
+				SIGNAL(entryRemoved (int)),
+				this,
+				SIGNAL (entryRemoved (int)));
+		connect (LJXmlRpc_,
+				SIGNAL (entryUpdated (int)),
+				this,
+				SIGNAL (entryUpdated (int)));
+		connect (LJXmlRpc_,
 				SIGNAL (gotEntries2Backup (QList<LJEvent>)),
 				this,
 				SLOT (handleGotEntries2Backup (QList<LJEvent>)));
@@ -144,6 +152,24 @@ namespace Metida
 	void LJAccount::GetLastEntries (int count)
 	{
 		LJXmlRpc_->GetLastEntries (count);
+	}
+
+	namespace
+	{
+
+		LJEvent Event2LJEvent (const Event& event)
+		{
+			LJEvent ljEvent;
+			ljEvent.ItemID_ = event.EntryId_;
+			ljEvent.Event_ = event.Content_;
+
+			return ljEvent;
+		}
+	}
+
+	void LJAccount::RemoveEntry (const Event& event)
+	{
+		LJXmlRpc_->RemoveEvent (Event2LJEvent (event));
 	}
 
 	void LJAccount::FillSettings (LJAccountConfigurationWidget *widget)
@@ -354,9 +380,9 @@ namespace Metida
 			QVariantMap map;
 			map ["access"] = event.Security_;
 			map ["allowMask"] = event.AllowMask_;
-			map ["adults"] = MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_);
-			map ["comments"] = MetidaUtils::GetStringFromCommentsManagment (event.Props_.CommentsManagement_);
-			map ["hidecomment"] = MetidaUtils::GetStringFromCommentsManagment (event.Props_.ScreeningComments_);
+			map ["adults"] = event.Props_.AdultContent_;
+			map ["comment"] = event.Props_.CommentsManagement_;
+			map ["hidecomment"] = event.Props_.ScreeningComments_;
 			map ["place"] = event.Props_.CurrentLocation_;
 			map ["music"] = event.Props_.CurrentMusic_;
 			map ["moodId"] = event.Props_.CurrentMoodId_;
@@ -370,7 +396,7 @@ namespace Metida
 		Event LJEvent2Event (const LJEvent& ljEvent, const QString& login)
 		{
 			Event event;
-			event.EntryId_ = ljEvent.DItemID_;
+			event.EntryId_ = ljEvent.ItemID_;
 			event.Content_ = ljEvent.Event_;
 			event.Date_ = ljEvent.DateTime_;
 			event.Subject_ = ljEvent.Subject_;

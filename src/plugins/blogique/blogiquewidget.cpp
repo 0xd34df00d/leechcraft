@@ -23,6 +23,7 @@
 #include <QInputDialog>
 #include <QStandardItemModel>
 #include <QMessageBox>
+#include <boost/graph/graph_concepts.hpp>
 #include <util/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -494,6 +495,7 @@ namespace Blogique
 			ToolBar_->removeAction (Ui_.UpdateProfile_);
 			RemovePostingTargetsWidget ();
 			DraftsViewModel_->removeRows (0, DraftsViewModel_->rowCount ());
+			PostsViewModel_->removeRows (0, PostsViewModel_->rowCount ());
 			return;
 		}
 		PrevAccountId_ = id;
@@ -671,12 +673,6 @@ namespace Blogique
 
 	void BlogiqueWidget::on_UpdateLastEntries__released ()
 	{
-		if (!AccountsBox_->currentIndex ())
-		{
-			//TODO mesage box with error
-			return;
-		}
-
 		int count = XmlSettingsManager::Instance ()
 				.Property ("LastEntriesToUpdate", 20).toInt ();
 		if (XmlSettingsManager::Instance ().Property ("UpdateAsk", true).toBool ())
@@ -692,6 +688,27 @@ namespace Blogique
 			return;
 
 		acc->GetLastEntries (count);
+	}
+
+	void BlogiqueWidget::on_RemoveRemotePost__released ()
+	{
+		if (!Ui_.PostsView_->currentIndex ().isValid ())
+			return;
+
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		auto idx = Ui_.PostsView_->currentIndex ();
+		idx = idx.sibling (idx.row (), Columns::Date);
+		const Event& e = LoadEntry (acc->GetAccountID (),
+				idx.data (EntryIdRole::DBIdRole).toLongLong ());
+
+		if (QMessageBox::question (this, "LeechCraft",
+				tr ("Do you want to remove this entry from blog?"),
+				QMessageBox::Ok | QMessageBox::Cancel,
+				QMessageBox::Cancel) == QMessageBox::Ok)
+			acc->RemoveEntry (e);
 	}
 
 	void BlogiqueWidget::on_LocalEntriesView__doubleClicked (const QModelIndex& index)
@@ -713,9 +730,9 @@ namespace Blogique
 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
 			return;
-		
+
 		idx = idx.sibling (idx.row (), Columns::Date);
-		
+
 		const Event& e = LoadEntry (acc->GetAccountID (),
 				idx.data (EntryIdRole::DBIdRole).toLongLong ());
 
@@ -817,6 +834,7 @@ namespace Blogique
 
 	void BlogiqueWidget::handleEventsStored ()
 	{
+		LoadDrafts ();
 		LoadEntries ();
 	}
 

@@ -19,6 +19,8 @@
 #include "core.h"
 #include <QtDebug>
 #include <QTimer>
+#include <QMessageBox>
+#include <QMainWindow>
 #include <interfaces/iplugin2.h>
 #include <util/util.h>
 #include "interfaces/blogique/iaccount.h"
@@ -197,6 +199,14 @@ namespace Blogique
 				this,
 				SLOT (handleEntryPosted ()));
 		connect (accObj,
+				SIGNAL (entryRemoved (int)),
+				this,
+				SLOT (handleEntryRemoved (int)));
+		connect (accObj,
+				SIGNAL (entryUpdated (int)),
+				this,
+				SLOT (handleEntryUpdated (int)));
+		connect (accObj,
 				SIGNAL (gotEvents2Backup (QList<Event>)),
 				this,
 				SLOT (handleGotEvents2Backup (QList<Event>)));
@@ -252,6 +262,29 @@ namespace Blogique
 	{
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entry was posted successfully."), Priority::PInfo_));
+	}
+
+	void Core::handleEntryRemoved (int itemId)
+	{
+		auto acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+			return;
+
+		if (QMessageBox::question (Proxy_->GetMainWindow (),
+				"LeechCraft",
+				tr ("Entry was removed successfully.\n Remove post from local storage?"),
+				QMessageBox::Ok | QMessageBox::No,
+				QMessageBox::No) == QMessageBox::No)
+			Storage_->MoveFromEntriesToDrafts (acc->GetAccountID (), itemId);
+		else
+			Storage_->RemoveEntryByItemId (acc->GetAccountID (), itemId);
+
+		emit eventsStored ();
+	}
+
+	void Core::handleEntryUpdated (int itemId)
+	{
+
 	}
 
 	void Core::handleGotEvents2Backup (const QList<Event>& events)
