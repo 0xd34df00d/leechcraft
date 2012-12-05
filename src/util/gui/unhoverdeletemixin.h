@@ -34,7 +34,7 @@ namespace Util
 	public:
 		UTIL_API UnhoverDeleteMixin (QWidget*, const char *slot = SLOT (deleteLater ()));
 
-		void UTIL_API Start (int);
+		void UTIL_API Start (int = 1200);
 		void UTIL_API Stop ();
 	protected:
 		bool eventFilter (QObject*, QEvent*);
