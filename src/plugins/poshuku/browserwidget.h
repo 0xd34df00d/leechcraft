@@ -174,6 +174,8 @@ namespace Poshuku
 
 		void handleEntityAction ();
 		void checkLinkRels ();
+		void checkLoadedDocument ();
+
 		void setScrollPosition ();
 		void pageFocus ();
 		void handleLoadProgress (int);
