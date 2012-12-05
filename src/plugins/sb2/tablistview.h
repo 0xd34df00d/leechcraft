@@ -26,6 +26,11 @@ class QTimer;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class UnhoverDeleteMixin;
+}
+
 namespace SB2
 {
 	class TabListView : public QDeclarativeView
@@ -36,9 +41,7 @@ namespace SB2
 		const QByteArray TC_;
 		QStandardItemModel *Model_;
 
-		QTimer *LeaveTimer_;
-
-		bool ContainsMouse_;
+		Util::UnhoverDeleteMixin *UnhoverDeleteMixin_;
 	public:
 		TabListView (const QByteArray&, const QList<QWidget*>&, ICoreProxy_ptr, QWidget* = 0);
 
@@ -46,9 +49,6 @@ namespace SB2
 
 		void HandleLauncherHovered ();
 		void HandleLauncherUnhovered ();
-	protected:
-		void enterEvent (QEvent*);
-		void leaveEvent (QEvent*);
 	private slots:
 		void handleTabRemoved (QWidget*);
 		void switchToItem (int);
