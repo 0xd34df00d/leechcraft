@@ -24,7 +24,7 @@ Item {
 
     Rectangle {
         id: highlight
-        width: rootItem.width * (value - minimum) / (maximum - minimum)
+        width: Math.floor(rootItem.width * (value - minimum) / (maximum - minimum) - 4)
 
         anchors.left: parent.left
         anchors.top: parent.top
