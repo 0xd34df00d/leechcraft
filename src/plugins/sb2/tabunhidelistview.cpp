@@ -25,6 +25,7 @@
 #include <util/sys/paths.h>
 #include <util/util.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/gui/unhoverdeletemixin.h>
 #include "themeimageprovider.h"
 
 namespace LeechCraft
@@ -61,6 +62,8 @@ namespace SB2
 	: QDeclarativeView (parent)
 	, Model_ (new UnhideListModel (this))
 	{
+		new Util::UnhoverDeleteMixin (this);
+
 		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "TabUnhideListView.qml");
 		if (file.isEmpty ())
 		{
