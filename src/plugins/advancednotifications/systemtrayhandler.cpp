@@ -23,6 +23,7 @@
 #include <QPainter>
 #include <QApplication>
 #include <util/util.h>
+#include <util/gui/unhoverdeletemixin.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -144,6 +145,9 @@ namespace AdvancedNotifications
 				this,
 				SLOT (dismissNotification (const QString&)));
 		Icon2NotificationView_ [trayIcon] = vnv;
+
+		if (XmlSettingsManager::Instance ().property ("HideOnHoverOut").toBool ())
+			new Util::UnhoverDeleteMixin (vnv, SLOT (hide ()));
 #endif
 	}
 
@@ -174,6 +178,9 @@ namespace AdvancedNotifications
 				this,
 				SLOT (dismissNotification (const QString&)));
 		Action2NotificationView_ [action] = vnv;
+
+		if (XmlSettingsManager::Instance ().property ("HideOnHoverOut").toBool ())
+			new Util::UnhoverDeleteMixin (vnv, SLOT (hide ()));
 #endif
 	}
 

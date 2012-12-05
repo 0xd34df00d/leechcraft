@@ -26,6 +26,12 @@
 					<label value="Enable for IM events" />
 				</item>
 			</groupbox>
+			<groupbox>
+				<label value="Behavior" />
+				<item type="checkbox" property="HideOnHoverOut" default="true">
+					<label value="Hide when mouse leaves the notifier" />
+				</item>
+			</groupbox>
 		</tab>
 	</page>
 </settings>
