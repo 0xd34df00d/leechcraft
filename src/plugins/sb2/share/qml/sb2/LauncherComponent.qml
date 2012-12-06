@@ -1,7 +1,7 @@
 import QtQuick 1.1
 import Effects 1.0
 import SB2 1.0
-import "Common.js" as Common
+import "../common/Common.js" as Common
 import "."
 
 Rectangle {
