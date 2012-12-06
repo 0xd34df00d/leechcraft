@@ -75,7 +75,7 @@ namespace Blogique
 		void updateProfiles ();
 		void handleEntryPosted ();
 		void handleEntryRemoved (int itemId);
-		void handleEntryUpdated (int itemId);
+		void handleEntryUpdated ();
 
 		void handleGotEvents2Backup (const QList<Event>& events);
 		void handleGettingEvents2BackupFinished ();

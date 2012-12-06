@@ -176,7 +176,7 @@ namespace Blogique
 		virtual void entryRemoved (int itemId) = 0;
 
 		//TODO
-		virtual void entryUpdated (int ItemId) = 0;
+		virtual void entryUpdated () = 0;
 
 		/** @brief This signal should be emitted when account want to backup
 		 * some amount of entries.

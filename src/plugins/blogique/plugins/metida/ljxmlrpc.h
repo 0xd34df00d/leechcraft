@@ -114,7 +114,7 @@ namespace Metida
 		void profileUpdated (const LJProfileData& profile);
 		void error (int code, const QString& msg);
 		void entryPosted ();
-		void entryUpdated (int itemId);
+		void entryUpdated ();
 		void entryRemoved (int itemId);
 		void gotEntries2Backup (const QList<LJEvent>& events);
 		void gettingEntries2BackupFinished ();

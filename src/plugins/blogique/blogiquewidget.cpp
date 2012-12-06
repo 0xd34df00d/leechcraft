@@ -273,7 +273,7 @@ namespace Blogique
 		}
 		else
 		{
-			EventID_ = e.EntryDBId_;
+			EventID_ = e.EntryId_;
 			DraftID_ = -1;
 		}
 	}

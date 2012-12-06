@@ -285,8 +285,6 @@ namespace Metida
 			else
 				for (uint num : dlg.GetSelectedGroupsIds ())
 					AllowMask_ |= 1 << num;
-
-				qDebug () << Q_FUNC_INFO << AllowMask_;
 		}
 	}
 

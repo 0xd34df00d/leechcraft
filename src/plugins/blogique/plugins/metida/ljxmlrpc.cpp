@@ -795,7 +795,6 @@ namespace Metida
 		result.second.appendChild (GetSimpleMemberElement ("subject", "string",
 				event.Subject_, document));
 
-		qDebug () << event.DateTime_ << event.DateTime_.date ().year ();
 		result.second.appendChild (GetSimpleMemberElement ("security", "string",
 				MetidaUtils::GetStringForAccess (event.Security_), document));
 		if (event.Security_ == Access::FriendsOnly)
@@ -1485,7 +1484,6 @@ namespace Metida
 			return;
 		}
 
-		qDebug () << document.toByteArray ();
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			int id = GetEntryItemId (document);
@@ -1523,7 +1521,12 @@ namespace Metida
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
-			emit gotEntries (ParseFullEvents (document));
+			const auto& events = ParseFullEvents (document);
+			if (!events.isEmpty ())
+			{
+				emit gotEntries (events);
+				emit entryUpdated ();
+			}
 			return;
 		}
 

@@ -71,9 +71,9 @@ namespace Metida
 				this,
 				SIGNAL (entryRemoved (int)));
 		connect (LJXmlRpc_,
-				SIGNAL (entryUpdated (int)),
+				SIGNAL (entryUpdated ()),
 				this,
-				SIGNAL (entryUpdated (int)));
+				SIGNAL (entryUpdated ()));
 		connect (LJXmlRpc_,
 				SIGNAL (gotEntries2Backup (QList<LJEvent>)),
 				this,

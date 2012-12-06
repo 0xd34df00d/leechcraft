@@ -160,7 +160,7 @@ namespace Metida
 		void accountSettingsChanged ();
 		void accountValidated (bool validated);
 		void entryPosted ();
-		void entryUpdated (int itemId);
+		void entryUpdated ();
 		void entryRemoved (int itemId);
 
 		void gotEvents2Backup (const QList<Event>& events);

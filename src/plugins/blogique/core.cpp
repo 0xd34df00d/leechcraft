@@ -203,9 +203,9 @@ namespace Blogique
 				this,
 				SLOT (handleEntryRemoved (int)));
 		connect (accObj,
-				SIGNAL (entryUpdated (int)),
+				SIGNAL (entryUpdated ()),
 				this,
-				SLOT (handleEntryUpdated (int)));
+				SLOT (handleEntryUpdated ()));
 		connect (accObj,
 				SIGNAL (gotEvents2Backup (QList<Event>)),
 				this,
@@ -282,9 +282,10 @@ namespace Blogique
 		emit eventsStored ();
 	}
 
-	void Core::handleEntryUpdated (int itemId)
+	void Core::handleEntryUpdated ()
 	{
-
+		SendEntity (Util::MakeNotification ("Blogique",
+				tr ("Entry was updated successfully."), Priority::PInfo_));
 	}
 
 	void Core::handleGotEvents2Backup (const QList<Event>& events)
