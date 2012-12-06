@@ -23,5 +23,17 @@
 				</option>
 			</item>
 		</groupbox>
+		<groupbox>
+			<label lang="en" value="RemotePosts" />
+			<item type="combobox" property="OpenEntryByDblClick" >
+				<label lang="en" value="Open entry by double click in:" />
+				<option name="CurrentTab" default="true" >
+					<label lang="en" value="Current tab" />
+				</option>
+				<option name="NewTab">
+					<label lang="en" value="New tab" />
+				</option>
+			</item>
+		</groupbox>
 	</page>
 </settings>

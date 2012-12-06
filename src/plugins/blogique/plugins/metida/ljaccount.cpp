@@ -156,13 +156,33 @@ namespace Metida
 
 	namespace
 	{
+		LJEventProperties GetLJEventPropetriesFromMap (const QVariantMap& map)
+		{
+			LJEventProperties props;
+			props.AdultContent_ = static_cast<AdultContent> (map ["adults"].toInt ());
+			props.CommentsManagement_ = static_cast<CommentsManagement> (map ["comment"].toInt ());
+			props.CurrentLocation_ = map ["place"].toString ();
+			props.CurrentMood_ = map ["mood"].toString ();
+			props.CurrentMoodId_ = map ["moodId"].toInt ();
+			props.CurrentMusic_ = map ["music"].toString ();
+			props.ScreeningComments_ = static_cast<CommentsManagement> (map ["hidecomment"].toInt ());
+			props.PostAvatar_ = map ["avatar"].toString ();
+			props.ShowInFriendsPage_ = map ["showInFriendsPage"].toBool ();
+
+			return props;
+		}
 
 		LJEvent Event2LJEvent (const Event& event)
 		{
 			LJEvent ljEvent;
 			ljEvent.ItemID_ = event.EntryId_;
 			ljEvent.Event_ = event.Content_;
-
+			ljEvent.DateTime_ = event.Date_;
+			ljEvent.Subject_ = event.Subject_;
+			ljEvent.Tags_ = event.Tags_;
+			ljEvent.AllowMask_ = event.PostOptions_ ["allowMask"].toUInt ();
+			ljEvent.Security_ = static_cast<Access> (event.PostOptions_ ["access"].toInt ());
+			ljEvent.Props_ = GetLJEventPropetriesFromMap (event.PostOptions_);
 			return ljEvent;
 		}
 	}
@@ -170,6 +190,11 @@ namespace Metida
 	void LJAccount::RemoveEntry (const Event& event)
 	{
 		LJXmlRpc_->RemoveEvent (Event2LJEvent (event));
+	}
+
+	void LJAccount::UpdateEntry (const Event& event)
+	{
+		LJXmlRpc_->UpdateEvent (Event2LJEvent (event));
 	}
 
 	void LJAccount::FillSettings (LJAccountConfigurationWidget *widget)

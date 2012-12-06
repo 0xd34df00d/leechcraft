@@ -88,6 +88,7 @@ namespace Blogique
 		QAction *OpenEntryInCurrentTab_;
 
 		qlonglong DraftID_;
+		qlonglong EventID_;
 	public:
 		BlogiqueWidget (QWidget *parent = 0);
 
@@ -96,7 +97,8 @@ namespace Blogique
 		QToolBar* GetToolBar () const;
 		void Remove ();
 
-		void FillWidget (const Event& e, const QByteArray& accId = QByteArray ());
+		void FillWidget (const Event& e, bool isDraft = false,
+				const QByteArray& accId = QByteArray ());
 
 		static void SetParentMultiTabs (QObject *tab);
 	private:
@@ -122,9 +124,11 @@ namespace Blogique
 		void on_PublishDraft__released ();
 		void on_UpdateLastEntries__released ();
 		void on_RemoveRemotePost__released ();
-		void on_LocalEntriesView__doubleClicked (const QModelIndex& index);
+		void on_Edit__released ();
+		void on_PostsView__doubleClicked (const QModelIndex& index);
 		void handleOpenEntryInCurrentTab (const QModelIndex& index = QModelIndex ());
 		void handleOpenEntryInNewTab (const QModelIndex& index = QModelIndex ());
+		void on_LocalEntriesView__doubleClicked (const QModelIndex& index);
 		void handleOpenDraftInCurrentTab (const QModelIndex& index = QModelIndex ());
 		void handleOpenDraftInNewTab (const QModelIndex& index = QModelIndex ());
 

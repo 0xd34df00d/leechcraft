@@ -59,6 +59,7 @@ namespace Blogique
 	, OpenEntryInNewTab_ (new QAction (tr ("Open in new tab"), this))
 	, OpenEntryInCurrentTab_ (new QAction (tr ("Open here"), this))
 	, DraftID_ (-1)
+	, EventID_ (-1)
 	{
 		Ui_.setupUi (this);
 
@@ -223,7 +224,7 @@ namespace Blogique
 		deleteLater ();
 	}
 
-	void BlogiqueWidget::FillWidget (const Event& e, const QByteArray& accId)
+	void BlogiqueWidget::FillWidget (const Event& e, bool isDraft, const QByteArray& accId)
 	{
 		for (int i = 0; !accId.isEmpty () && i < AccountsBox_->count (); ++i)
 		{
@@ -263,6 +264,17 @@ namespace Blogique
 					break;
 				}
 			}
+		}
+
+		if (isDraft)
+		{
+			DraftID_ = e.EntryDBId_;
+			EventID_ = -1;
+		}
+		else
+		{
+			EventID_ = e.EntryDBId_;
+			DraftID_ = -1;
 		}
 	}
 
@@ -332,6 +344,11 @@ namespace Blogique
 		e.Tags_ = tags;
 		e.PostOptions_ = postOptions;
 		e.CustomData_ = customData;
+
+		if (EventID_ > 0)
+			e.EntryId_ = EventID_;
+		else if (DraftID_ > 0)
+			e.EntryId_ = DraftID_;
 
 		return e;
 	}
@@ -601,7 +618,27 @@ namespace Blogique
 		const auto& e = event.IsEmpty () ? GetCurrentEvent () : event;
 
 		if (!e.IsEmpty ())
-			acc->submit (e);
+			if (EventID_ > 0)
+			{
+				QMessageBox mbox (QMessageBox::Question,
+						"LeechCraft",
+						tr ("Do you want to update entry or to post new?"),
+						QMessageBox::Yes | QMessageBox::Cancel,
+						this);
+				mbox.setDefaultButton (QMessageBox::Cancel);
+				mbox.setButtonText (QMessageBox::Yes, tr ("Update post"));
+				QPushButton newPostButton (tr ("Post new"));
+				mbox.addButton (&newPostButton, QMessageBox::AcceptRole);
+
+				if (mbox.exec () == QMessageBox::Cancel)
+					return;
+				else if (mbox.clickedButton () == &newPostButton)
+					acc->submit (e);
+				else
+					acc->UpdateEntry (e);
+			}
+			else
+				acc->submit (e);
 	}
 
 	void BlogiqueWidget::saveSplitterPosition (int, int)
@@ -711,12 +748,20 @@ namespace Blogique
 			acc->RemoveEntry (e);
 	}
 
-	void BlogiqueWidget::on_LocalEntriesView__doubleClicked (const QModelIndex& index)
+	void BlogiqueWidget::on_Edit__released ()
+	{
+		if (!Ui_.PostsView_->currentIndex ().isValid ())
+			return;
+
+		handleOpenEntryInCurrentTab (Ui_.PostsView_->currentIndex ());
+	}
+
+	void BlogiqueWidget::on_PostsView__doubleClicked (const QModelIndex& index)
 	{
 		XmlSettingsManager::Instance ()
-				.property ("OpenDraftByDblClick").toString () == "CurrentTab" ?
-			handleOpenDraftInCurrentTab (index) :
-			handleOpenDraftInNewTab (index);
+				.property ("OpenEntryByDblClick").toString () == "CurrentTab" ?
+			handleOpenEntryInCurrentTab (index) :
+			handleOpenEntryInNewTab (index);
 	}
 
 	void BlogiqueWidget::handleOpenEntryInCurrentTab (const QModelIndex& index)
@@ -761,8 +806,16 @@ namespace Blogique
 				 &Core::Instance (),
 				 SIGNAL (removeTab (QWidget*)));
 
-		newTab->FillWidget (e, acc->GetAccountID ());
+		newTab->FillWidget (e, false, acc->GetAccountID ());
 		emit addNewTab ("Blogique", newTab);
+	}
+
+	void BlogiqueWidget::on_LocalEntriesView__doubleClicked (const QModelIndex& index)
+	{
+		XmlSettingsManager::Instance ()
+				.property ("OpenDraftByDblClick").toString () == "CurrentTab" ?
+		handleOpenDraftInCurrentTab (index) :
+		handleOpenDraftInNewTab (index);
 	}
 
 	void BlogiqueWidget::handleOpenDraftInCurrentTab (const QModelIndex& index)
@@ -781,7 +834,7 @@ namespace Blogique
 		const Event& e = LoadFullDraft (acc->GetAccountID (),
 				idx.data (EntryIdRole::DBIdRole).toLongLong ());
 
-		FillWidget (e);
+		FillWidget (e, true);
 	}
 
 	void BlogiqueWidget::handleOpenDraftInNewTab (const QModelIndex& index)
@@ -806,7 +859,7 @@ namespace Blogique
 				&Core::Instance (),
 				SIGNAL (removeTab (QWidget*)));
 
-		newTab->FillWidget (e, acc->GetAccountID ());
+		newTab->FillWidget (e, true, acc->GetAccountID ());
 		emit addNewTab ("Blogique", newTab);
 	}
 

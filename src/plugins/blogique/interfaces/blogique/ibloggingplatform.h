@@ -225,6 +225,7 @@ namespace Blogique
 		 * @sa IBlogiqueSideWidget
 		 */
 		virtual QList<QWidget*> GetBlogiqueSideWidgets () const = 0;
+
 	protected:
 		/** @brief Notifies about new account.
 		 *

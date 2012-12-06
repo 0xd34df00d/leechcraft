@@ -137,6 +137,9 @@ namespace Blogique
 		 */
 		virtual void RemoveEntry (const Event& event) = 0;
 
+		//TODO
+		virtual void UpdateEntry (const Event& event) = 0;
+
 		/** @brief Submit post to blog.
 		 *
 		 * @param[in] event Posting event.

@@ -88,7 +88,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="BlogPosts_">
           <property name="geometry">
@@ -96,7 +96,7 @@
             <x>0</x>
             <y>0</y>
             <width>369</width>
-            <height>461</height>
+            <height>463</height>
            </rect>
           </property>
           <attribute name="label">
@@ -172,21 +172,36 @@
             </widget>
            </item>
            <item row="2" column="0">
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,1,1">
              <item>
-              <widget class="QPushButton" name="UpdateLastEntries_">
+              <widget class="QToolButton" name="UpdateBy__">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="toolTip">
                 <string>Show last entries.</string>
                </property>
                <property name="text">
-                <string>Update</string>
+                <string>Load</string>
+               </property>
+               <property name="popupMode">
+                <enum>QToolButton::InstantPopup</enum>
+               </property>
+               <property name="autoRaise">
+                <bool>false</bool>
+               </property>
+               <property name="arrowType">
+                <enum>Qt::NoArrow</enum>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="Edit_">
                <property name="toolTip">
-                <string>Post will be opened in new tab for editing.</string>
+                <string>Post will be opened for editing in current tab.</string>
                </property>
                <property name="text">
                 <string>Edit</string>
@@ -213,7 +228,7 @@
             <x>0</x>
             <y>0</y>
             <width>369</width>
-            <height>461</height>
+            <height>463</height>
            </rect>
           </property>
           <attribute name="label">

@@ -93,7 +93,6 @@ namespace Blogique
 		void addNewTab (const QString& name, QWidget *tab);
 		void removeTab (QWidget *tab);
 
-	signals:
 		void eventsStored ();
 	};
 }

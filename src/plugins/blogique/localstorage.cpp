@@ -91,8 +91,18 @@ namespace Blogique
 
 		const int id = AddDraft_.lastInsertId ().toInt ();
 
+		RemoveDraftTags_.bindValue (":draft_id", id);
+		if (!RemoveDraftTags_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveDraftTags_);
+			throw std::runtime_error ("unable to remove draft's tags");
+		}
+
 		for (const auto& tag : e.Tags_)
 		{
+			if (tag.isEmpty ())
+				continue;
+
 			AddDraftTag_.bindValue (":tag", tag);
 			AddDraftTag_.bindValue (":draft_id", id);
 			if (!AddDraftTag_.exec ())
@@ -154,6 +164,9 @@ namespace Blogique
 
 		for (const auto& tag : e.Tags_)
 		{
+			if (tag.isEmpty ())
+				continue;
+
 			AddDraftTag_.bindValue (":tag", tag);
 			AddDraftTag_.bindValue (":draft_id", id);
 			if (!AddDraftTag_.exec ())
@@ -354,6 +367,9 @@ namespace Blogique
 
 			for (const auto& tag : event.Tags_)
 			{
+				if (tag.isEmpty ())
+					continue;
+
 				AddEntryTag_.bindValue (":tag", tag);
 				AddEntryTag_.bindValue (":entry_id", id);
 				if (!AddEntryTag_.exec ())
@@ -416,6 +432,9 @@ namespace Blogique
 
 		for (const auto& tag : e.Tags_)
 		{
+			if (tag.isEmpty ())
+				continue;
+
 			AddEntryTag_.bindValue (":tag", tag);
 			AddEntryTag_.bindValue (":entry_id", id);
 			if (!AddEntryTag_.exec ())
@@ -453,23 +472,33 @@ namespace Blogique
 
 	void LocalStorage::RemoveEntry (qlonglong id)
 	{
+		Util::DBLock lock (DB_);
+		lock.Init ();
+
 		RemoveEntry_.bindValue (":id", id);
 		if (!RemoveEntry_.exec ())
 		{
 			Util::DBLock::DumpError (RemoveEntry_);
 			throw std::runtime_error ("unable to remove entry");
 		}
+
+		lock.Good ();
 	}
 
 	void LocalStorage::RemoveEntryByItemId (const QByteArray& accId, int id)
 	{
+		Util::DBLock lock (DB_);
+		lock.Init ();
+
 		RemoveEntryByItemId_.bindValue (":id", id);
-		RemoveEntryByItemId_.bindValue (":account_id", accId);
+		RemoveEntryByItemId_.bindValue (":account_id", QString::fromUtf8 (accId));
 		if (!RemoveEntryByItemId_.exec ())
 		{
 			Util::DBLock::DumpError (RemoveEntryByItemId_);
 			throw std::runtime_error ("unable to remove entry");
 		}
+
+		lock.Good ();
 	}
 
 	Event LocalStorage::GetEntry (const QByteArray& accountId, qlonglong entryId)
@@ -515,12 +544,12 @@ namespace Blogique
 
 		GetEntryByItemId_.next ();
 		Event e;
-		e.EntryDBId_ = GetEntry_.value (0).toLongLong ();
+		e.EntryDBId_ = GetEntryByItemId_.value (0).toLongLong ();
 		e.EntryId_ = itemId;
-		e.Content_ = GetEntry_.value (2).toString ();
-		e.Date_ = GetEntry_.value (3).toDateTime ();
-		e.Subject_ = GetEntry_.value (4).toString ();
-		GetEntry_.finish ();
+		e.Content_ = GetEntryByItemId_.value (2).toString ();
+		e.Date_ = GetEntryByItemId_.value (3).toDateTime ();
+		e.Subject_ = GetEntryByItemId_.value (4).toString ();
+		GetEntryByItemId_.finish ();
 
 		GetEntryTags_.bindValue (":entry_id", e.EntryDBId_);
 		e.Tags_ = GetTags (GetEntryTags_);
@@ -664,11 +693,8 @@ namespace Blogique
 
 	void LocalStorage::MoveFromEntriesToDrafts (const QByteArray& accId, int itemId)
 	{
-		qWarning () << itemId;
 		const auto& e = GetEntryByItemId (accId, itemId);
-		qWarning () << e.Content_ << e.EntryDBId_;
 		RemoveEntry (e.EntryDBId_);
-		qWarning () << "save";
 		SaveDraft (accId, e);
 	}
 

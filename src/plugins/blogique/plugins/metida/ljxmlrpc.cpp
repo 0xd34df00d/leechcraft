@@ -772,7 +772,7 @@ namespace Metida
 				SLOT (handleRemoveEventReplyFinished ()));
 	}
 
-	void LJXmlRPC::EditEventRequest (const LJEvent& event, const QString& challenge)
+	void LJXmlRPC::UpdateEventRequest (const LJEvent& event, const QString& challenge)
 	{
 		QDomDocument document ("EditEventRequest");
 		auto result = GetStartPart ("LJ.XMLRPC.editevent", document);
@@ -795,6 +795,7 @@ namespace Metida
 		result.second.appendChild (GetSimpleMemberElement ("subject", "string",
 				event.Subject_, document));
 
+		qDebug () << event.DateTime_ << event.DateTime_.date ().year ();
 		result.second.appendChild (GetSimpleMemberElement ("security", "string",
 				MetidaUtils::GetStringForAccess (event.Security_), document));
 		if (event.Security_ == Access::FriendsOnly)
@@ -864,7 +865,7 @@ namespace Metida
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
-				SLOT (handleEditEventReplyFinished ()));
+				SLOT (handleUpdateEventReplyFinished ()));
 	}
 
 	void LJXmlRPC::BackupEventsRequest (int skip, const QString& challenge)
@@ -939,6 +940,39 @@ namespace Metida
 				SLOT (handleGetLastEventsReplyFinished ()));
 	}
 
+	void LJXmlRPC::GetParticularEventRequest (int id, const QString& challenge)
+	{
+		QDomDocument document ("GetParticularEventsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
+		document.appendChild (result.first);
+		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
+				"challenge", document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
+				challenge, document));
+		result.second.appendChild (GetSimpleMemberElement ("username", "string",
+				Account_->GetOurLogin (), document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
+				GetPassword (Account_->GetPassword (), challenge), document));
+		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
+				"1", document));
+
+		result.second.appendChild (GetSimpleMemberElement ("selecttype", "string",
+				"one", document));
+		result.second.appendChild (GetSimpleMemberElement ("itemid", "int",
+				QString::number (id), document));
+		result.second.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGetParticularEventReplyFinished ()));
+	}
+
 	void LJXmlRPC::UpdateProfileInfo ()
 	{
 		Validate (Account_->GetOurLogin (), Account_->GetPassword ());
@@ -972,10 +1006,10 @@ namespace Metida
 		GenerateChallenge ();
 	}
 
-	void LJXmlRPC::EditEvent (const LJEvent& event)
+	void LJXmlRPC::UpdateEvent (const LJEvent& event)
 	{
 		ApiCallQueue_ << [event, this] (const QString& challenge)
-				{ EditEventRequest (event, challenge); };
+				{ UpdateEventRequest (event, challenge); };
 		GenerateChallenge ();
 	}
 
@@ -1285,7 +1319,7 @@ namespace Metida
 			return;
 		}
 
-		qDebug () << document.toByteArray ();
+		qDebug () << Q_FUNC_INFO << document.toByteArray ();
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			//TODO
@@ -1361,7 +1395,6 @@ namespace Metida
 			return;
 		}
 
-		qDebug () << Q_FUNC_INFO << document.toByteArray ();
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			emit gotEntries (ParseFullEvents (document));
@@ -1389,7 +1422,7 @@ namespace Metida
 					continue;
 
 				auto res = ParseMember (member);
-				if (res.Name () == "itemId")
+				if (res.Name () == "itemid")
 					return res.ValueToInt ();
 			}
 
@@ -1429,7 +1462,7 @@ namespace Metida
 		ParseForError (content);
 	}
 
-	void LJXmlRPC::handleEditEventReplyFinished()
+	void LJXmlRPC::handleUpdateEventReplyFinished ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
@@ -1452,10 +1485,45 @@ namespace Metida
 			return;
 		}
 
-		qDebug () << Q_FUNC_INFO << document.toByteArray ();
+		qDebug () << document.toByteArray ();
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
-			emit entryUpdated (-1);
+			int id = GetEntryItemId (document);
+			ApiCallQueue_ << [id, this] (const QString& challenge)
+					{ GetParticularEventRequest (id, challenge); };
+			GenerateChallenge ();
+			return;
+		}
+
+		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleGetParticularEventReplyFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		const auto& content = reply->readAll ();
+		reply->deleteLater ();
+
+		QDomDocument document;
+		QString errorMsg;
+		int errorLine = -1, errorColumn = -1;
+		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< errorMsg
+					<< "in line:"
+					<< errorLine
+					<< "column:"
+					<< errorColumn;
+			return;
+		}
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			emit gotEntries (ParseFullEvents (document));
 			return;
 		}
 

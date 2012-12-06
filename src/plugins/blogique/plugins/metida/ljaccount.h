@@ -126,6 +126,7 @@ namespace Metida
 		QObject* GetProfile ();
 		void GetLastEntries (int count);
 		void RemoveEntry (const Event& event);
+		void UpdateEntry (const Event& event);
 
 		void FillSettings (LJAccountConfigurationWidget *widget);
 

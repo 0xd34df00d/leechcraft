@@ -227,6 +227,7 @@ namespace Metida
 
 	void PostOptionsWidget::SetPostDate (const QDateTime& date)
 	{
+		Ui_.TimestampBox_->setChecked (true);
 		Ui_.Year_->setValue (date.date ().year ());
 		Ui_.Month_->setCurrentIndex (date.date ().month () - 1);
 		Ui_.Date_->setValue (date.date ().day ());
