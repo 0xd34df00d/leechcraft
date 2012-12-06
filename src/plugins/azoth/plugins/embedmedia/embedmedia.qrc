@@ -2,7 +2,7 @@
   <qresource prefix="/plugins/azoth/plugins/embedmedia">
     <file>resources/scripts/embedder.js</file>
   </qresource>
-  <qresource prefix="/" >
+  <qresource prefix="/azoth/embedmedia" >
     <file>resources/images/embedmedia.svg</file>
   </qresource>
 </RCC> 

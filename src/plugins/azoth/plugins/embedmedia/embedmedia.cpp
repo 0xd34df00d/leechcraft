@@ -76,7 +76,7 @@ namespace EmbedMedia
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/embedmedia.svg");
+		static QIcon icon (":/azoth/embedmedia/resources/images/embedmedia.svg");
 		return icon;
 	}
 
