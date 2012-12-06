@@ -1296,6 +1296,31 @@ namespace Metida
 		ParseForError (content);
 	}
 
+	namespace
+	{
+		int GetEntryItemId (const QDomDocument& document)
+		{
+			const auto& firstStructElement = document.elementsByTagName ("struct");
+			if (firstStructElement.at (0).isNull ())
+				return -1;
+
+			const auto& members = firstStructElement.at (0).childNodes ();
+			for (int i = 0, count = members.count (); i < count; ++i)
+			{
+				const QDomNode& member = members.at (i);
+				if (!member.isElement () ||
+					member.toElement ().tagName () != "member")
+					continue;
+
+				auto res = ParseMember (member);
+				if (res.Name () == "itemid")
+					return res.ValueToInt ();
+			}
+
+			return -1;
+		}
+	}
+
 	void LJXmlRPC::handlePostEventReplyFinished ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
@@ -1318,10 +1343,12 @@ namespace Metida
 			return;
 		}
 
-		qDebug () << Q_FUNC_INFO << document.toByteArray ();
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
-			//TODO
+			int id = GetEntryItemId (document);
+			ApiCallQueue_ << [id, this] (const QString& challenge)
+					{ GetParticularEventRequest (id, challenge); };
+			GenerateChallenge ();
 			emit entryPosted ();
 			return;
 		}
@@ -1404,31 +1431,6 @@ namespace Metida
 		ParseForError (content);
 	}
 
-	namespace
-	{
-		int GetEntryItemId (const QDomDocument& document)
-		{
-			const auto& firstStructElement = document.elementsByTagName ("struct");
-			if (firstStructElement.at (0).isNull ())
-				return -1;
-
-			const auto& members = firstStructElement.at (0).childNodes ();
-			for (int i = 0, count = members.count (); i < count; ++i)
-			{
-				const QDomNode& member = members.at (i);
-				if (!member.isElement () ||
-						member.toElement ().tagName () != "member")
-					continue;
-
-				auto res = ParseMember (member);
-				if (res.Name () == "itemid")
-					return res.ValueToInt ();
-			}
-
-			return -1;
-		}
-	}
-
 	void LJXmlRPC::handleRemoveEventReplyFinished ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
@@ -1490,6 +1492,7 @@ namespace Metida
 			ApiCallQueue_ << [id, this] (const QString& challenge)
 					{ GetParticularEventRequest (id, challenge); };
 			GenerateChallenge ();
+			emit entryUpdated ();
 			return;
 		}
 
@@ -1523,10 +1526,8 @@ namespace Metida
 		{
 			const auto& events = ParseFullEvents (document);
 			if (!events.isEmpty ())
-			{
 				emit gotEntries (events);
-				emit entryUpdated ();
-			}
+
 			return;
 		}
 
