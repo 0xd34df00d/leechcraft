@@ -705,7 +705,6 @@ namespace Blogique
 				idx.data (EntryIdRole::DBIdRole).toLongLong ());
 
 		submit (e);
-		//TODO remove after publish
 	}
 
 	void BlogiqueWidget::on_UpdateLastEntries__released ()
