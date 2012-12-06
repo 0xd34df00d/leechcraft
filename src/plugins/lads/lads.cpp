@@ -70,7 +70,8 @@ namespace Lads
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/resources/images/lads.svg");
+		return icon;
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
