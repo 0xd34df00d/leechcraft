@@ -23,6 +23,7 @@
 #include <QStringList>
 #include <QDateTime>
 
+class QAction;
 class QWidget;
 
 namespace LeechCraft
@@ -137,8 +138,13 @@ namespace Blogique
 		 */
 		virtual void RemoveEntry (const Event& event) = 0;
 
-		//TODO
+		/** @brief Update entry in blog.
+		 *
+		 * @param[in] event Updating event.
+		 */
 		virtual void UpdateEntry (const Event& event) = 0;
+
+		virtual QList<QAction*> GetUpdateActions () const = 0;
 
 		/** @brief Submit post to blog.
 		 *

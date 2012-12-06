@@ -58,6 +58,7 @@ namespace Blogique
 	, OpenDraftInCurrentTab_ (new QAction (tr ("Open here"), this))
 	, OpenEntryInNewTab_ (new QAction (tr ("Open in new tab"), this))
 	, OpenEntryInCurrentTab_ (new QAction (tr ("Open here"), this))
+	, LoadLocalEntries_ (new QAction (tr ("Local entries"), this))
 	, DraftID_ (-1)
 	, EventID_ (-1)
 	{
@@ -198,6 +199,13 @@ namespace Blogique
 				SIGNAL (eventsStored ()),
 				this,
 				SLOT (handleEventsStored ()));
+
+		Ui_.UpdateEntries_->addAction (LoadLocalEntries_);
+
+		connect (LoadLocalEntries_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (loadLocalEntries ()));
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
@@ -424,13 +432,12 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		PostsViewModel_->removeRows (0, PostsViewModel_->rowCount ());
 		QList<Event> entries;
 		try
 		{
 			entries = Storage_->GetLastNEntries (acc->GetAccountID (),
 					XmlSettingsManager::Instance ()
-						.Property ("LastEntriesToUpdate", 20).toInt ());
+						.Property ("LastLocalEntriesToView", 20).toInt ());
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -473,6 +480,7 @@ namespace Blogique
 
 	void BlogiqueWidget::FillPostsView (const QList<Event> entries)
 	{
+		PostsViewModel_->removeRows (0, PostsViewModel_->rowCount ());
 		for (const auto& entry : entries)
 		{
 			QStandardItem *dateItem = new QStandardItem (entry.Date_
@@ -505,6 +513,10 @@ namespace Blogique
 			SidePluginsWidgets_.clear ();
 
 			RemovePostingTargetsWidget ();
+
+			for (auto act : LoadActions_)
+				Ui_.UpdateEntries_->removeAction (act);
+			LoadActions_.clear ();
 		}
 
 		if (!id)
@@ -518,8 +530,13 @@ namespace Blogique
 		PrevAccountId_ = id;
 
 		ToolBar_->insertAction (Ui_.OpenInBrowser_, Ui_.UpdateProfile_);
+		auto account = Id2Account_ [id];
 
-		auto ibp = qobject_cast<IBloggingPlatform*> (Id2Account_ [PrevAccountId_]->
+		auto actions = account->GetUpdateActions ();
+		Ui_.UpdateEntries_->insertActions (LoadLocalEntries_, actions);
+		LoadActions_ = actions;
+
+		auto ibp = qobject_cast<IBloggingPlatform*> (account->
 				GetParentBloggingPlatform ());
 
 		if (ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination)
@@ -528,7 +545,7 @@ namespace Blogique
 				PostTargetAction_ = ToolBar_->addWidget (PostTargetBox_);
 			else
 				PostTargetAction_->setVisible (true);
-			IProfile *profile = qobject_cast<IProfile*> (Id2Account_ [id]->GetProfile ());
+			IProfile *profile = qobject_cast<IProfile*> (account->GetProfile ());
 			if (profile)
 			{
 				for (const auto& target : profile->GetPostingTargets ())
@@ -554,7 +571,7 @@ namespace Blogique
 			}
 
 			SidePluginsWidgets_ << w;
-			ibsw->SetAccount (Id2Account_ [id]->GetObject ());
+			ibsw->SetAccount (account->GetObject ());
 			Ui_.Tools_->addItem (w, ibsw->GetName ());
 		}
 
@@ -707,25 +724,6 @@ namespace Blogique
 		submit (e);
 	}
 
-	void BlogiqueWidget::on_UpdateLastEntries__released ()
-	{
-		int count = XmlSettingsManager::Instance ()
-				.Property ("LastEntriesToUpdate", 20).toInt ();
-		if (XmlSettingsManager::Instance ().Property ("UpdateAsk", true).toBool ())
-		{
-			UpdateEntriesDialog dlg;
-			if (dlg.exec () == QDialog::Rejected)
-				return;
-			count = dlg.GetCount ();
-		}
-
-		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-		if (!acc)
-			return;
-
-		acc->GetLastEntries (count);
-	}
-
 	void BlogiqueWidget::on_RemoveRemotePost__released ()
 	{
 		if (!Ui_.PostsView_->currentIndex ().isValid ())
@@ -868,7 +866,6 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		PostsViewModel_->removeRows (0, PostsViewModel_->rowCount ());
 		QList<Event> entries;
 		try
 		{
@@ -888,6 +885,26 @@ namespace Blogique
 	{
 		LoadDrafts ();
 		LoadEntries ();
+	}
+
+	void BlogiqueWidget::loadLocalEntries ()
+	{
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		int count = XmlSettingsManager::Instance ()
+				.Property ("LastLocalEntriesToView", 20).toInt ();
+		if (XmlSettingsManager::Instance ().Property ("LocalLoadAsk", true).toBool ())
+		{
+			UpdateEntriesDialog dlg;
+			if (dlg.exec () == QDialog::Rejected)
+				return;
+			count = dlg.GetCount ();
+		}
+
+		const auto& entries = Storage_->GetLastNEntries (acc->GetAccountID (), count);
+		FillPostsView (entries);
 	}
 
 }

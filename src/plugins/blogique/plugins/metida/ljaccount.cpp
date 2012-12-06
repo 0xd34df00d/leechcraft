@@ -31,6 +31,7 @@
 #include "profilewidget.h"
 #include "utils.h"
 #include "xmlsettingsmanager.h"
+#include "updatetypedialog.h"
 
 namespace LeechCraft
 {
@@ -45,6 +46,8 @@ namespace Metida
 	, Name_ (name)
 	, IsValidated_ (false)
 	, LJProfile_ (std::make_shared<LJProfile> (this))
+	, LoadLastEntries_ (new QAction (tr ("Last entries"), this))
+	, LoadChangedEntries_ (new QAction (tr ("Changed entries"), this))
 	{
 		qRegisterMetaType<LJProfileData> ("LJProfileData");
 		qRegisterMetaTypeStreamOperators<QList<LJFriendGroup>> ("QList<LJFriendGroup>");
@@ -86,6 +89,15 @@ namespace Metida
 				SIGNAL (gotEntries (QList<LJEvent>)),
 				this,
 				SLOT (handleGotEntries (QList<LJEvent>)));
+
+		connect (LoadLastEntries_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleLoadLastEntries ()));
+		connect (LoadChangedEntries_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleLoadChangedEntries ()));
 	}
 
 	QObject* LJAccount::GetObject ()
@@ -195,6 +207,11 @@ namespace Metida
 	void LJAccount::UpdateEntry (const Event& event)
 	{
 		LJXmlRpc_->UpdateEvent (Event2LJEvent (event));
+	}
+
+	QList<QAction*> LJAccount::GetUpdateActions () const
+	{
+		return { LoadLastEntries_, LoadChangedEntries_ };
 	}
 
 	void LJAccount::FillSettings (LJAccountConfigurationWidget *widget)
@@ -453,6 +470,34 @@ namespace Metida
 			events << LJEvent2Event (ljEvent, Login_);
 
 		emit gotEvents (events);
+	}
+
+	void LJAccount::handleLoadLastEntries ()
+	{
+		int count = 0;
+		if (XmlSettingsManager::Instance ().Property ("LoadLastAsk", true).toBool ())
+		{
+			UpdateTypeDialog dlg (UpdateTypeDialog::LoadType::LoadLastEntries);
+			if (dlg.exec () == QDialog::Rejected)
+				return;
+			count = dlg.GetCount ();
+		}
+
+		LJXmlRpc_->GetLastEntries (count);
+	}
+
+	void LJAccount::handleLoadChangedEntries ()
+	{
+		QDateTime dt;
+		if (XmlSettingsManager::Instance ().Property ("LoadChangedAsk", true).toBool ())
+		{
+			UpdateTypeDialog dlg (UpdateTypeDialog::LoadType::LoadChangesEntries);
+			if (dlg.exec () == QDialog::Rejected)
+				return;
+			dt = dlg.GetDateTime ();
+		}
+
+		LJXmlRpc_->GetChangedEntries (dt);
 	}
 
 }

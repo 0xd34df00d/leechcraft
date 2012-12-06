@@ -939,6 +939,39 @@ namespace Metida
 				SLOT (handleGetLastEventsReplyFinished ()));
 	}
 
+	void LJXmlRPC::GetChangedEventsRequest (const QDateTime& dt, const QString& challenge)
+	{
+		QDomDocument document ("GetLastEventsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
+		document.appendChild (result.first);
+		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
+				"challenge", document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
+				challenge, document));
+		result.second.appendChild (GetSimpleMemberElement ("username", "string",
+				Account_->GetOurLogin (), document));
+		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
+				GetPassword (Account_->GetPassword (), challenge), document));
+		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
+				"1", document));
+
+		result.second.appendChild (GetSimpleMemberElement ("selecttype", "string",
+				"syncitems", document));
+		result.second.appendChild (GetSimpleMemberElement ("lastsync", "string",
+				dt.toString ("yyyy-MM-dd hh:mm:ss"), document));
+		result.second.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGetLastEventsReplyFinished ()));
+	}
+
 	void LJXmlRPC::GetParticularEventRequest (int id, const QString& challenge)
 	{
 		QDomDocument document ("GetParticularEventsRequest");
@@ -995,6 +1028,13 @@ namespace Metida
 	{
 		ApiCallQueue_ << [count, this] (const QString& challenge)
 				{ GetLastEventsRequest (count, challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::GetChangedEntries (const QDateTime& dt)
+	{
+		ApiCallQueue_ << [dt, this] (const QString& challenge)
+				{ GetChangedEventsRequest (dt, challenge); };
 		GenerateChallenge ();
 	}
 

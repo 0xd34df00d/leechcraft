@@ -64,6 +64,7 @@ namespace Metida
 		void Submit (const LJEvent& event);
 		void BackupEvents ();
 		void GetLastEntries (int count);
+		void GetChangedEntries (const QDateTime& dt);
 
 		void RemoveEvent (const LJEvent& event);
 		void UpdateEvent (const LJEvent& event);
@@ -94,6 +95,7 @@ namespace Metida
 		void BackupEventsRequest (int skip, const QString& challenge);
 
 		void GetLastEventsRequest (int count, const QString& challenge);
+		void GetChangedEventsRequest (const QDateTime& dt, const QString& challenge);
 		void GetParticularEventRequest (int id, const QString& challenge);
 
 	private slots:

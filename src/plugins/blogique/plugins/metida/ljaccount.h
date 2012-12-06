@@ -109,6 +109,10 @@ namespace Metida
 		QString Login_;
 		bool IsValidated_;
 		std::shared_ptr<LJProfile> LJProfile_;
+
+		QAction *LoadLastEntries_;
+		QAction *LoadChangedEntries_;
+
 	public:
 		LJAccount (const QString& name, QObject *parent = 0);
 
@@ -127,6 +131,7 @@ namespace Metida
 		void GetLastEntries (int count);
 		void RemoveEntry (const Event& event);
 		void UpdateEntry (const Event& event);
+		QList<QAction*> GetUpdateActions () const;
 
 		void FillSettings (LJAccountConfigurationWidget *widget);
 
@@ -154,6 +159,9 @@ namespace Metida
 		void handleGotEntries2Backup (const QList<LJEvent>& events);
 		void handleGettingEvents2BackupFinished ();
 		void handleGotEntries (const QList<LJEvent>& events);
+
+		void handleLoadLastEntries ();
+		void handleLoadChangedEntries ();
 
 	signals:
 		void accountRenamed (const QString& newName);

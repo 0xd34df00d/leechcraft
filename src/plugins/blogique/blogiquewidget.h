@@ -87,6 +87,9 @@ namespace Blogique
 		QAction *OpenEntryInNewTab_;
 		QAction *OpenEntryInCurrentTab_;
 
+		QAction *LoadLocalEntries_;
+		QList<QAction*> LoadActions_;
+
 		qlonglong DraftID_;
 		qlonglong EventID_;
 	public:
@@ -122,7 +125,6 @@ namespace Blogique
 		void on_UpdateProfile__triggered ();
 		void on_RemoveDraft__released ();
 		void on_PublishDraft__released ();
-		void on_UpdateLastEntries__released ();
 		void on_RemoveRemotePost__released ();
 		void on_Edit__released ();
 		void on_PostsView__doubleClicked (const QModelIndex& index);
@@ -135,6 +137,8 @@ namespace Blogique
 		void loadPostsByDate (const QDate& date);
 
 		void handleEventsStored ();
+
+		void loadLocalEntries ();
 
 	signals:
 		void removeTab (QWidget *tab);

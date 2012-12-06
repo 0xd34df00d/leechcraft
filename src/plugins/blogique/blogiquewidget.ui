@@ -174,7 +174,7 @@
            <item row="2" column="0">
             <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0,0">
              <item>
-              <widget class="QPushButton" name="UpdateLastEntries_">
+              <widget class="QToolButton" name="UpdateEntries_">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -186,6 +186,9 @@
                </property>
                <property name="text">
                 <string>Load</string>
+               </property>
+               <property name="popupMode">
+                <enum>QToolButton::InstantPopup</enum>
                </property>
               </widget>
              </item>

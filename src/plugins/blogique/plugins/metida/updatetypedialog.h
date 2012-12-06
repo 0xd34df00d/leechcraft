@@ -16,35 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "updateentriesdialog.h"
-#include "xmlsettingsmanager.h"
+#pragma once
+
+#include <QDialog>
+#include "ui_updatetypedialog.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	UpdateEntriesDialog::UpdateEntriesDialog (QWidget *parent)
-	: QDialog (parent)
+namespace Metida
+{
+	class UpdateTypeDialog : public QDialog
 	{
-		Ui_.setupUi (this);
+		Q_OBJECT
 
-		Ui_.EntriesCount_->setValue (XmlSettingsManager::Instance ()
-				.Property ("LastLocalEntriesToView", 20).toInt ());
-	}
+		Ui::UpdateTypeDialog Ui_;
 
-	int UpdateEntriesDialog::GetCount() const
-	{
-		return  Ui_.EntriesCount_->value ();
-	}
+	public:
+		enum LoadType
+		{
+			LoadLastEntries,
+			LoadChangesEntries
+		};
 
-	void UpdateEntriesDialog::accept ()
-	{
-		XmlSettingsManager::Instance ()
-				.setProperty ("LocalLoadAsk", !Ui_.UpdateAsk_->isChecked ());
-		XmlSettingsManager::Instance ()
-				.setProperty ("LastLocalEntriesToView", Ui_.EntriesCount_->value ());
-		QDialog::accept ();
-	}
+	private:
+		LoadType LT_;
 
+	public:
+		UpdateTypeDialog (LoadType lt, QWidget *parent = 0);
+
+		int GetCount () const;
+		QDateTime GetDateTime () const;
+
+	public slots:
+		void accept ();
+	};
+}
 }
 }
