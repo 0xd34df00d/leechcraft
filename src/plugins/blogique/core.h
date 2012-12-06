@@ -27,7 +27,7 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-	struct Event;
+	struct Entry;
 	class BackupManager;
 	class LocalStorage;
 	class IAccount;
@@ -73,14 +73,12 @@ namespace Blogique
 		void handleAccountRemoved (QObject *accObj);
 		void handleAccountValidated (QObject *accObj, bool validated);
 		void updateProfiles ();
-		void handleEntryPosted ();
+		void handleEntryPosted (const QList<Entry>& entries);
 		void handleEntryRemoved (int itemId);
-		void handleEntryUpdated ();
+		void handleEntryUpdated (const QList<Entry>& entries);
 
-		void handleGotEvents2Backup (const QList<Event>& events);
-		void handleGettingEvents2BackupFinished ();
-
-		void handleGotEvents (const QList<Event>& events);
+		void handleGotEntries2Backup (const QList<Entry>& events);
+		void handleGettingEntries2BackupFinished ();
 
 	signals:
 		void accountAdded (QObject *account);
@@ -93,7 +91,8 @@ namespace Blogique
 		void addNewTab (const QString& name, QWidget *tab);
 		void removeTab (QWidget *tab);
 
-		void eventsStored ();
+		void gotEntries (const QList<Entry>& entries);
+		void storageUpdated ();
 	};
 }
 }

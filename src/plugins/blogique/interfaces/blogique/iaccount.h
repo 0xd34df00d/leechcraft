@@ -30,7 +30,7 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-	struct Event
+	struct Entry
 	{
 		QString Target_;
 		QString Subject_;
@@ -39,12 +39,10 @@ namespace Blogique
 		QStringList Tags_;
 		QVariantMap PostOptions_;
 		QVariantMap CustomData_;
-		qlonglong EntryDBId_;
 		qlonglong EntryId_;
 
-		Event ()
-		: EntryDBId_ (-1)
-		, EntryId_ (-1)
+		Entry ()
+		: EntryId_ (-1)
 		{
 		}
 
@@ -136,13 +134,13 @@ namespace Blogique
 		 *
 		 * @param[in] event Removing event.
 		 */
-		virtual void RemoveEntry (const Event& event) = 0;
+		virtual void RemoveEntry (const Entry& event) = 0;
 
 		/** @brief Update entry in blog.
 		 *
 		 * @param[in] event Updating event.
 		 */
-		virtual void UpdateEntry (const Event& event) = 0;
+		virtual void UpdateEntry (const Entry& event) = 0;
 
 		virtual QList<QAction*> GetUpdateActions () const = 0;
 
@@ -150,7 +148,7 @@ namespace Blogique
 		 *
 		 * @param[in] event Posting event.
 		 */
-		virtual void submit (const Event& event) = 0;
+		virtual void submit (const Entry& event) = 0;
 
 		/** @brief Request updating profile data.
 		 *
@@ -189,7 +187,7 @@ namespace Blogique
 		 *
 		 * @note This function is expected to be a signal.
 		 */
-		virtual void gotEvents2Backup (const QList<Event>& events) = 0;
+		virtual void gotEvents2Backup (const QList<Entry>& events) = 0;
 
 		/** @brief This signal should be emitted all entries for backup were downloaded.
 		 *

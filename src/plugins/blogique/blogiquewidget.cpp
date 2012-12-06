@@ -69,143 +69,29 @@ namespace Blogique
 		mw->AssociateDockWidget (Ui_.SideWidget_, this);
 		mw->ToggleViewActionVisiblity (Ui_.SideWidget_, false);
 
-		auto plugs = Core::Instance ().GetCoreProxy ()->
-				GetPluginsManager ()->GetAllCastableTo<ITextEditor*> ();
+		SetTextEditor ();
 
-		QVBoxLayout *editFrameLay = new QVBoxLayout ();
-		editFrameLay->setContentsMargins (0, 0, 0, 0);
-		Ui_.PostFrame_->setLayout (editFrameLay);
-		Q_FOREACH (ITextEditor *plug, plugs)
-		{
-			if (!plug->SupportsEditor (ContentType::PlainText))
-				continue;
+		SetToolBarActions ();
 
-			QWidget *w = plug->GetTextEditor (ContentType::PlainText);
-			PostEdit_ = qobject_cast<IEditorWidget*> (w);
-			if (!PostEdit_)
-			{
-				delete w;
-				continue;
-			}
+		SetDeafultSideWidgets ();
 
-			PostEditWidget_ = w;
-			editFrameLay->addWidget (w);
-			break;
-		}
-
-		Ui_.SaveEntry_->setIcon (Core::Instance ()
-				.GetCoreProxy ()->GetIcon ("document-save"));
-		ToolBar_->addAction (Ui_.SaveEntry_);
-		Ui_.SaveNewEntry_->setIcon (Core::Instance ()
-				.GetCoreProxy ()->GetIcon ("document-save-as"));
-		ToolBar_->addAction (Ui_.SaveNewEntry_);
-		Ui_.Submit_->setIcon (Core::Instance ()
-				.GetCoreProxy ()->GetIcon ("svn-commit"));
-		ToolBar_->addAction (Ui_.Submit_);
-
-		Ui_.OpenInBrowser_->setIcon (Core::Instance ()
-				.GetCoreProxy ()->GetIcon ("applications-internet"));
-		ToolBar_->addAction (Ui_.OpenInBrowser_);
-
-		Ui_.UpdateProfile_->setIcon (Core::Instance ()
-				.GetCoreProxy ()->GetIcon ("view-refresh"));
-
-		ToolBar_->addSeparator ();
-
-		AccountsBox_ = new QComboBox ();
-		AccountsBox_->addItem (QString ());
-		connect (AccountsBox_,
-				SIGNAL (currentIndexChanged (int)),
-				this,
-				SLOT (handleCurrentAccountChanged (int)));
-
-		const auto& accounts = Core::Instance ().GetAccounts ();
-		for (IAccount *acc : accounts)
-		{
-			AccountsBox_->addItem (acc->GetAccountName ());
-			Id2Account_ [AccountsBox_->count () - 1] = acc;
-		}
-
-		ToolBar_->addWidget (AccountsBox_);
-
-		PostTargetBox_ = new QComboBox;
-
-		connect (Ui_.SaveEntry_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (saveEntry ()));
-		connect (Ui_.SaveNewEntry_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (saveNewEntry ()));
-		connect (Ui_.Submit_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (submit ()));
-
-		if (!Ui_.CalendarSplitter_->restoreState (XmlSettingsManager::Instance ()
-				.property ("CalendarSplitterPosition").toByteArray ()))
-		{
-			Ui_.CalendarSplitter_->setStretchFactor (0, 1);
-			Ui_.CalendarSplitter_->setStretchFactor (1, 4);
-		}
-
-		connect (Ui_.CalendarSplitter_,
-				SIGNAL (splitterMoved (int, int)),
-				this,
-				SLOT (saveSplitterPosition (int, int)));
-
-		connect (Ui_.Calendar_,
-				SIGNAL(activated (QDate)),
-				this,
-				SLOT (loadPostsByDate (QDate)));
-
-		DraftsViewModel_->setHorizontalHeaderLabels ({ tr ("Date"), tr ("Name") });
-		Ui_.LocalEntriesView_->setModel (DraftsViewModel_);
-		PostsViewModel_->setHorizontalHeaderLabels ({ tr ("Date"), tr ("Name") });
-		Ui_.PostsView_->setModel (PostsViewModel_);
-
-		connect (OpenEntryInCurrentTab_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleOpenEntryInCurrentTab ()));
-		connect (OpenEntryInNewTab_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleOpenEntryInNewTab ()));
-		Ui_.PostsView_->setContextMenuPolicy (Qt::ActionsContextMenu);
-		Ui_.PostsView_->addActions ({ OpenEntryInNewTab_, OpenEntryInCurrentTab_ });
-
-		connect (OpenDraftInCurrentTab_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleOpenDraftInCurrentTab ()));
-		connect (OpenDraftInNewTab_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleOpenDraftInNewTab ()));
-		Ui_.LocalEntriesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
-		Ui_.LocalEntriesView_->addActions ({ OpenDraftInNewTab_, OpenDraftInCurrentTab_ });
+		const int accCount = Core::Instance ().GetAccounts ().count ();
+		if (accCount == 1)
+			AccountsBox_->setCurrentIndex (accCount);
 
 		connect (this,
 				SIGNAL (addNewTab (QString, QWidget*)),
 				&Core::Instance (),
 				SIGNAL (addNewTab (QString, QWidget*)));
-
-		if (accounts.count () == 1)
-			AccountsBox_->setCurrentIndex (accounts.count ());
-
+		
 		connect (&Core::Instance (),
-				SIGNAL (eventsStored ()),
+				SIGNAL(gotEntries (QList<Entry>)),
 				this,
-				SLOT (handleEventsStored ()));
-
-		Ui_.UpdateEntries_->addAction (LoadLocalEntries_);
-
-		connect (LoadLocalEntries_,
-				SIGNAL (triggered ()),
+				SLOT (handleGotEntries (QList<Entry>)));
+		connect (&Core::Instance (),
+				SIGNAL(storageUpdated ()),
 				this,
-				SLOT (loadLocalEntries ()));
+				SLOT (handleStorageUpdated ()));
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
@@ -232,7 +118,7 @@ namespace Blogique
 		deleteLater ();
 	}
 
-	void BlogiqueWidget::FillWidget (const Event& e, bool isDraft, const QByteArray& accId)
+	void BlogiqueWidget::FillWidget (const Entry& e, bool isDraft, const QByteArray& accId)
 	{
 		for (int i = 0; !accId.isEmpty () && i < AccountsBox_->count (); ++i)
 		{
@@ -267,16 +153,16 @@ namespace Blogique
 					break;
 				}
 				case SideWidgetType::CustomSideWidget:
-				{
 					ibsw->SetCustomData (e.CustomData_);
 					break;
-				}
+				default:
+					break;
 			}
 		}
 
 		if (isDraft)
 		{
-			DraftID_ = e.EntryDBId_;
+			DraftID_ = e.EntryId_;
 			EventID_ = -1;
 		}
 		else
@@ -291,6 +177,140 @@ namespace Blogique
 		S_ParentMultiTabs_ = tab;
 	}
 
+	void BlogiqueWidget::SetTextEditor ()
+	{
+		auto plugs = Core::Instance ().GetCoreProxy ()->
+				GetPluginsManager ()->GetAllCastableTo<ITextEditor*> ();
+
+		QVBoxLayout *editFrameLay = new QVBoxLayout ();
+		editFrameLay->setContentsMargins (0, 0, 0, 0);
+		Ui_.PostFrame_->setLayout (editFrameLay);
+
+		Q_FOREACH (ITextEditor *plug, plugs)
+		{
+			if (!plug->SupportsEditor (ContentType::PlainText))
+				continue;
+
+			QWidget *w = plug->GetTextEditor (ContentType::PlainText);
+			PostEdit_ = qobject_cast<IEditorWidget*> (w);
+			if (!PostEdit_)
+			{
+				delete w;
+				continue;
+			}
+
+			PostEditWidget_ = w;
+			editFrameLay->addWidget (w);
+			break;
+		}
+	}
+
+	void BlogiqueWidget::SetToolBarActions ()
+	{
+		Ui_.SaveEntry_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("document-save"));
+		ToolBar_->addAction (Ui_.SaveEntry_);
+		connect (Ui_.SaveEntry_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (saveEntry ()));
+
+		Ui_.SaveNewEntry_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("document-save-as"));
+		ToolBar_->addAction (Ui_.SaveNewEntry_);
+		connect (Ui_.SaveNewEntry_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (saveNewEntry ()));
+
+		Ui_.Submit_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("svn-commit"));
+		ToolBar_->addAction (Ui_.Submit_);
+		connect (Ui_.Submit_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (submit ()));
+
+		Ui_.OpenInBrowser_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("applications-internet"));
+		ToolBar_->addAction (Ui_.OpenInBrowser_);
+
+		Ui_.UpdateProfile_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("view-refresh"));
+
+		ToolBar_->addSeparator ();
+
+		AccountsBox_ = new QComboBox ();
+		AccountsBox_->addItem (QString ());
+		connect (AccountsBox_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (handleCurrentAccountChanged (int)));
+
+		for (IAccount *acc : Core::Instance ().GetAccounts ())
+		{
+			AccountsBox_->addItem (acc->GetAccountName ());
+			Id2Account_ [AccountsBox_->count () - 1] = acc;
+		}
+
+		ToolBar_->addWidget (AccountsBox_);
+
+		PostTargetBox_ = new QComboBox;
+	}
+
+	void BlogiqueWidget::SetDeafultSideWidgets ()
+	{
+		if (!Ui_.CalendarSplitter_->restoreState (XmlSettingsManager::Instance ()
+				.property ("CalendarSplitterPosition").toByteArray ()))
+		{
+			Ui_.CalendarSplitter_->setStretchFactor (0, 1);
+			Ui_.CalendarSplitter_->setStretchFactor (1, 4);
+		}
+
+		connect (Ui_.CalendarSplitter_,
+				SIGNAL (splitterMoved (int, int)),
+				this,
+				SLOT (saveSplitterPosition (int, int)));
+
+		connect (Ui_.Calendar_,
+				SIGNAL(activated (QDate)),
+				this,
+				SLOT (loadPostsByDate (QDate)));
+
+		DraftsViewModel_->setHorizontalHeaderLabels ({ tr ("Date"), tr ("Name") });
+		Ui_.LocalEntriesView_->setModel (DraftsViewModel_);
+		connect (OpenDraftInCurrentTab_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleOpenDraftInCurrentTab ()));
+		connect (OpenDraftInNewTab_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleOpenDraftInNewTab ()));
+		Ui_.LocalEntriesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
+		Ui_.LocalEntriesView_->addActions ({ OpenDraftInNewTab_, OpenDraftInCurrentTab_ });
+
+		PostsViewModel_->setHorizontalHeaderLabels ({ tr ("Date"), tr ("Name") });
+		Ui_.PostsView_->setModel (PostsViewModel_);
+
+		connect (OpenEntryInCurrentTab_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleOpenEntryInCurrentTab ()));
+		connect (OpenEntryInNewTab_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleOpenEntryInNewTab ()));
+		Ui_.PostsView_->setContextMenuPolicy (Qt::ActionsContextMenu);
+		Ui_.PostsView_->addActions ({ OpenEntryInNewTab_, OpenEntryInCurrentTab_ });
+
+		Ui_.UpdateEntries_->addAction (LoadLocalEntries_);
+		connect (LoadLocalEntries_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (loadLocalEntries ()));
+	}
+
 	void BlogiqueWidget::RemovePostingTargetsWidget ()
 	{
 		if (PostTargetAction_->isVisible ())
@@ -300,10 +320,45 @@ namespace Blogique
 		}
 	}
 
-	Event BlogiqueWidget::GetCurrentEvent ()
+	void BlogiqueWidget::FillPostingStatistic ()
+	{
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		QMap<QDate, int> statistic;
+		try
+		{
+			statistic = Storage_->GetEntriesCountByDate (acc->GetAccountID ());
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error fetching entries"
+					<< e.what ();
+		}
+
+		Ui_.Calendar_->SetStatistic (statistic);
+	}
+
+	QList<QStandardItem*> BlogiqueWidget::CreateItemsToView (const Entry& entry) const
+	{
+		QStandardItem *dateItem = new QStandardItem (entry.Date_
+				.toString ("dd-MM-yyyy hh:mm"));
+		dateItem->setData (entry.EntryId_, EntryIdRole::DBIdRole);
+		dateItem->setEditable (false);
+		dateItem->setData (entry.Subject_, Qt::ToolTipRole);
+		QStandardItem *itemSubj = new QStandardItem (entry.Subject_);
+		itemSubj->setEditable (false);
+		itemSubj->setData (entry.Subject_, Qt::ToolTipRole);
+
+		return { dateItem, itemSubj };
+	}
+
+	Entry BlogiqueWidget::GetCurrentEntry ()
 	{
 		if (!AccountsBox_->currentIndex ())
-			return Event ();
+			return Entry ();
 
 		const QString& content = PostEdit_->GetContents (ContentType::PlainText);
 		if (content.isEmpty ())
@@ -311,7 +366,7 @@ namespace Blogique
 			QMessageBox::warning (this,
 					tr ("LeechCraft"),
 					tr ("Entry can't be emprty."));
-			return Event ();
+			return Entry ();
 		}
 
 		QVariantMap postOptions, customData;
@@ -341,12 +396,14 @@ namespace Blogique
 				case SideWidgetType::CustomSideWidget:
 					customData.unite (ibsw->GetCustomData ());
 					break;
+				default:
+					break;
 			}
 		}
 
-		Event e;
+		Entry e;
 		e.Target_ = PostTargetBox_->currentText ();
-		e.Content_ = PostEdit_->GetContents (ContentType::HTML);
+		e.Content_ = content;
 		e.Subject_ = Ui_.Subject_->text ();
 		e.Date_ = dt;
 		e.Tags_ = tags;
@@ -367,8 +424,7 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		DraftsViewModel_->removeRows (0, DraftsViewModel_->rowCount ());
-		QList<Event> entries;
+		QList<Entry> entries;
 		try
 		{
 			entries = Storage_->GetShortDrafts (acc->GetAccountID ());
@@ -380,43 +436,37 @@ namespace Blogique
 					<< e.what ();
 		}
 
-		for (const auto& entry : entries)
-		{
-			QStandardItem *dateItem = new QStandardItem (entry.Date_
-					.toString ("dd-MM-yyyy hh:mm"));
-			dateItem->setData (entry.EntryDBId_, EntryIdRole::DBIdRole);
-			dateItem->setEditable (false);
-			dateItem->setData (entry.Subject_, Qt::ToolTipRole);
-			QStandardItem *itemSubj = new QStandardItem (entry.Subject_);
-			itemSubj->setEditable (false);
-			itemSubj->setData (entry.Subject_, Qt::ToolTipRole);
-			DraftsViewModel_->appendRow ({ dateItem, itemSubj });
-
-			DraftItem2Event_ [dateItem] = entry;
-		}
-		Ui_.LocalEntriesView_->resizeColumnToContents (0);
+		FillDraftsView (entries);
 	}
 
-	Event BlogiqueWidget::LoadFullDraft (const QByteArray& id, qlonglong draftID)
+	Entry BlogiqueWidget::LoadFullDraft (qlonglong draftID)
 	{
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return Entry ();
+
 		try
 		{
-			return Storage_->GetFullDraft (id, draftID);
+			return Storage_->GetFullDraft (acc->GetAccountID (), draftID);
 		}
 		catch (const std::runtime_error& e)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "error fetching full draft"
 					<< e.what ();
-			return Event ();
+			return Entry ();
 		}
 	}
 
-	void BlogiqueWidget::RemoveDraft (qlonglong id)
+	void BlogiqueWidget::RemoveDraft (qlonglong draftId)
 	{
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
 		try
 		{
-			Storage_->RemoveDraft (id);
+			Storage_->RemoveDraft (acc->GetAccountID (), draftId);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -432,10 +482,10 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		QList<Event> entries;
+		QList<Entry> entries;
 		try
 		{
-			entries = Storage_->GetLastNEntries (acc->GetAccountID (),
+			entries = Storage_->GetLastEntries (acc->GetAccountID (),
 					XmlSettingsManager::Instance ()
 						.Property ("LastLocalEntriesToView", 20).toInt ());
 		}
@@ -447,56 +497,56 @@ namespace Blogique
 		}
 
 		FillPostsView (entries);
-
-		QMap<QDate, int> statistic;
-		try
-		{
-			statistic = Storage_->GetEntriesCountByDate (acc->GetAccountID ());
-		}
-		catch (const std::runtime_error& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error fetching entries"
-					<< e.what ();
-		}
-
-		Ui_.Calendar_->SetStatistic (statistic);
+		FillPostingStatistic ();
 	}
 
-	Event BlogiqueWidget::LoadEntry (const QByteArray& id, qlonglong entryId)
+	Entry BlogiqueWidget::LoadEntry (qlonglong entryId)
 	{
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return Entry ();
+
 		try
 		{
-			return Storage_->GetEntry (id, entryId);
+			return Storage_->GetEntry (acc->GetAccountID (), entryId);
 		}
 		catch (const std::runtime_error& e)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "error fetching event"
 					<< e.what ();
-			return Event ();
+			return Entry ();
 		}
 	}
 
-	void BlogiqueWidget::FillPostsView (const QList<Event> entries)
+	void BlogiqueWidget::FillPostsView (const QList<Entry> entries)
 	{
 		PostsViewModel_->removeRows (0, PostsViewModel_->rowCount ());
 		for (const auto& entry : entries)
 		{
-			QStandardItem *dateItem = new QStandardItem (entry.Date_
-					.toString ("dd-MM-yyyy hh:mm"));
-			dateItem->setData (entry.EntryDBId_, EntryIdRole::DBIdRole);
-			dateItem->setEditable (false);
-			dateItem->setData (entry.Subject_, Qt::ToolTipRole);
+			const auto& items = CreateItemsToView (entry);
+			if (items.isEmpty ())
+				continue;
 
-			QStandardItem *itemSubj = new QStandardItem (entry.Subject_);
-			itemSubj->setEditable (false);
-			itemSubj->setData (entry.Subject_, Qt::ToolTipRole);
-			PostsViewModel_->appendRow ({ dateItem, itemSubj });
-
-			PostItem2Event_ [dateItem] = entry;
+			PostsViewModel_->appendRow (items);
+			PostItem2Entry_ [items.first ()] = entry;
 		}
 		Ui_.PostsView_->resizeColumnToContents (0);
+	}
+
+	void BlogiqueWidget::FillDraftsView (const QList<Entry> entries)
+	{
+		DraftsViewModel_->removeRows (0, DraftsViewModel_->rowCount ());
+		for (const auto& entry : entries)
+		{
+			const auto& items = CreateItemsToView (entry);
+			if (items.isEmpty ())
+				continue;
+
+			DraftsViewModel_->appendRow (items);
+			DraftItem2Entry_ [items.first ()] = entry;
+		}
+		Ui_.LocalEntriesView_->resizeColumnToContents (0);
 	}
 
 	void BlogiqueWidget::handleCurrentAccountChanged (int id)
@@ -527,11 +577,11 @@ namespace Blogique
 			PostsViewModel_->removeRows (0, PostsViewModel_->rowCount ());
 			return;
 		}
-		PrevAccountId_ = id;
 
 		ToolBar_->insertAction (Ui_.OpenInBrowser_, Ui_.UpdateProfile_);
-		auto account = Id2Account_ [id];
 
+
+		auto account = Id2Account_ [id];
 		auto actions = account->GetUpdateActions ();
 		Ui_.UpdateEntries_->insertActions (LoadLocalEntries_, actions);
 		LoadActions_ = actions;
@@ -545,6 +595,7 @@ namespace Blogique
 				PostTargetAction_ = ToolBar_->addWidget (PostTargetBox_);
 			else
 				PostTargetAction_->setVisible (true);
+
 			IProfile *profile = qobject_cast<IProfile*> (account->GetProfile ());
 			if (profile)
 			{
@@ -577,6 +628,8 @@ namespace Blogique
 
 		LoadDrafts ();
 		LoadEntries ();
+
+		PrevAccountId_ = id;
 	}
 
 	void BlogiqueWidget::saveEntry ()
@@ -585,11 +638,11 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		const Event& e = GetCurrentEvent ();
+		const Entry& e = GetCurrentEntry ();
 		if (!e.IsEmpty ())
 			try
 			{
-				if (DraftID_ == -1 )
+				if (DraftID_ == -1)
 					DraftID_ = Storage_->SaveDraft (acc->GetAccountID (), e);
 				else
 					Storage_->UpdateDraft (DraftID_, e);
@@ -610,7 +663,7 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		const Event& e = GetCurrentEvent ();
+		const Entry& e = GetCurrentEntry ();
 		if (!e.IsEmpty ())
 			try
 			{
@@ -626,13 +679,15 @@ namespace Blogique
 		LoadDrafts ();
 	}
 
-	void BlogiqueWidget::submit (const Event& event)
+	void BlogiqueWidget::submit (const Entry& event)
 	{
 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
 			return;
 
-		const auto& e = event.IsEmpty () ? GetCurrentEvent () : event;
+		const auto& e = event.IsEmpty () ?
+			GetCurrentEntry () :
+			event;
 
 		if (!e.IsEmpty ())
 			if (EventID_ > 0)
@@ -675,7 +730,8 @@ namespace Blogique
 
 	void BlogiqueWidget::on_RemoveDraft__released ()
 	{
-		if (!AccountsBox_->currentIndex ())
+		QModelIndex idx = Ui_.LocalEntriesView_->currentIndex ();
+		if (!idx.isValid ())
 			return;
 
 		if (XmlSettingsManager::Instance ()
@@ -683,7 +739,7 @@ namespace Blogique
 		{
 			QMessageBox mbox (QMessageBox::Question,
 					"LeechCraft",
-					tr ("Do you really want to delete selected draft?"),
+					tr ("Do you want to delete selected draft?"),
 					QMessageBox::Yes | QMessageBox::No,
 					this);
 			mbox.setDefaultButton (QMessageBox::No);
@@ -698,7 +754,6 @@ namespace Blogique
 						.setProperty ("ConfirmDraftRemoving", false);
 		}
 
-		QModelIndex idx = Ui_.LocalEntriesView_->currentIndex ();
 		idx = idx.sibling (idx.row (), Columns::Date);
 		RemoveDraft (idx.data (EntryIdRole::DBIdRole).toLongLong ());
 		DraftsViewModel_->removeRow (idx.row ());
@@ -706,20 +761,14 @@ namespace Blogique
 
 	void BlogiqueWidget::on_PublishDraft__released ()
 	{
-		if (!AccountsBox_->currentIndex ())
-			return;
-
 		QModelIndex idx = Ui_.LocalEntriesView_->currentIndex ();
 		if (!idx.isValid ())
 			return;
 
-		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-		if (!acc)
-			return;
-
 		idx = idx.sibling (idx.row (), Columns::Date);
-		const Event& e = LoadFullDraft (acc->GetAccountID (),
-				idx.data (EntryIdRole::DBIdRole).toLongLong ());
+		const Entry& e = LoadFullDraft (idx.data (EntryIdRole::DBIdRole).toLongLong ());
+		if (e.IsEmpty ())
+			return;
 
 		submit (e);
 	}
@@ -735,8 +784,9 @@ namespace Blogique
 
 		auto idx = Ui_.PostsView_->currentIndex ();
 		idx = idx.sibling (idx.row (), Columns::Date);
-		const Event& e = LoadEntry (acc->GetAccountID (),
-				idx.data (EntryIdRole::DBIdRole).toLongLong ());
+		const Entry& e = LoadEntry (idx.data (EntryIdRole::DBIdRole).toLongLong ());
+		if (e.IsEmpty ())
+			return;
 
 		if (QMessageBox::question (this, "LeechCraft",
 				tr ("Do you want to remove this entry from blog?"),
@@ -747,10 +797,11 @@ namespace Blogique
 
 	void BlogiqueWidget::on_Edit__released ()
 	{
-		if (!Ui_.PostsView_->currentIndex ().isValid ())
+		const QModelIndex& currentIndex = Ui_.PostsView_->currentIndex ();
+		if (!currentIndex.isValid ())
 			return;
 
-		handleOpenEntryInCurrentTab (Ui_.PostsView_->currentIndex ());
+		handleOpenEntryInCurrentTab (currentIndex);
 	}
 
 	void BlogiqueWidget::on_PostsView__doubleClicked (const QModelIndex& index)
@@ -769,15 +820,8 @@ namespace Blogique
 		if (!idx.isValid ())
 			return;
 
-		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-		if (!acc)
-			return;
-
 		idx = idx.sibling (idx.row (), Columns::Date);
-
-		const Event& e = LoadEntry (acc->GetAccountID (),
-				idx.data (EntryIdRole::DBIdRole).toLongLong ());
-
+		const Entry& e = LoadEntry (idx.data (EntryIdRole::DBIdRole).toLongLong ());
 		FillWidget (e);
 	}
 
@@ -794,8 +838,7 @@ namespace Blogique
 			return;
 
 		idx = idx.sibling (idx.row (), Columns::Date);
-		const Event& e = LoadEntry (acc->GetAccountID (),
-				idx.data (EntryIdRole::DBIdRole).toLongLong ());
+		const Entry& e = LoadEntry (idx.data (EntryIdRole::DBIdRole).toLongLong ());
 
 		auto newTab = new BlogiqueWidget;
 		connect (newTab,
@@ -811,8 +854,8 @@ namespace Blogique
 	{
 		XmlSettingsManager::Instance ()
 				.property ("OpenDraftByDblClick").toString () == "CurrentTab" ?
-		handleOpenDraftInCurrentTab (index) :
-		handleOpenDraftInNewTab (index);
+			handleOpenDraftInCurrentTab (index) :
+			handleOpenDraftInNewTab (index);
 	}
 
 	void BlogiqueWidget::handleOpenDraftInCurrentTab (const QModelIndex& index)
@@ -823,14 +866,8 @@ namespace Blogique
 		if (!idx.isValid ())
 			return;
 
-		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-		if (!acc)
-			return;
-
 		idx = idx.sibling (idx.row (), Columns::Date);
-		const Event& e = LoadFullDraft (acc->GetAccountID (),
-				idx.data (EntryIdRole::DBIdRole).toLongLong ());
-
+		const Entry& e = LoadFullDraft (idx.data (EntryIdRole::DBIdRole).toLongLong ());
 		FillWidget (e, true);
 	}
 
@@ -847,8 +884,7 @@ namespace Blogique
 			return;
 
 		idx = idx.sibling (idx.row (), Columns::Date);
-		const Event& e = LoadFullDraft (acc->GetAccountID (),
-				idx.data (EntryIdRole::DBIdRole).toLongLong ());
+		const Entry& e = LoadFullDraft (idx.data (EntryIdRole::DBIdRole).toLongLong ());
 
 		auto newTab = new BlogiqueWidget;
 		connect (newTab,
@@ -866,7 +902,7 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		QList<Event> entries;
+		QList<Entry> entries;
 		try
 		{
 			entries = Storage_->GetEntriesByDate (acc->GetAccountID (), date);
@@ -881,10 +917,15 @@ namespace Blogique
 		FillPostsView (entries);
 	}
 
-	void BlogiqueWidget::handleEventsStored ()
+	void BlogiqueWidget::handleGotEntries (const QList<Entry>& entries)
+	{
+		handleLoadEntries (entries);
+		LoadDrafts ();
+	}
+
+	void BlogiqueWidget::handleStorageUpdated ()
 	{
 		LoadDrafts ();
-		LoadEntries ();
 	}
 
 	void BlogiqueWidget::loadLocalEntries ()
@@ -903,8 +944,28 @@ namespace Blogique
 			count = dlg.GetCount ();
 		}
 
-		const auto& entries = Storage_->GetLastNEntries (acc->GetAccountID (), count);
+		QList<Entry> entries;
+		try
+		{
+			entries = Storage_->GetLastEntries (acc->GetAccountID (), count);
+		}
+		catch (const std::runtime_error& err)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error fetching entries"
+					<< err.what ();
+		}
 		FillPostsView (entries);
+	}
+
+	void BlogiqueWidget::handleLoadEntries (const QList<Entry>& entries)
+	{
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		FillPostsView (entries);
+		FillPostingStatistic ();
 	}
 
 }

@@ -79,8 +79,8 @@ namespace Blogique
 
 		LocalStorage *Storage_;
 
-		QHash<QStandardItem*, Event> DraftItem2Event_;
-		QHash<QStandardItem*, Event> PostItem2Event_;
+		QHash<QStandardItem*, Entry> DraftItem2Entry_;
+		QHash<QStandardItem*, Entry> PostItem2Entry_;
 
 		QAction *OpenDraftInNewTab_;
 		QAction *OpenDraftInCurrentTab_;
@@ -100,27 +100,36 @@ namespace Blogique
 		QToolBar* GetToolBar () const;
 		void Remove ();
 
-		void FillWidget (const Event& e, bool isDraft = false,
+		void FillWidget (const Entry& e, bool isDraft = false,
 				const QByteArray& accId = QByteArray ());
 
 		static void SetParentMultiTabs (QObject *tab);
 	private:
+		void SetTextEditor ();
+		void SetToolBarActions ();
+		void SetDeafultSideWidgets ();
 		void RemovePostingTargetsWidget ();
-		Event GetCurrentEvent ();
+		void FillPostingStatistic ();
+
+		QList<QStandardItem*> CreateItemsToView (const Entry& entry) const;
+
+		Entry GetCurrentEntry ();
+
 		void LoadDrafts ();
-		Event LoadFullDraft (const QByteArray& id, qlonglong draftID);
+		Entry LoadFullDraft (qlonglong draftID);
 		void RemoveDraft (qlonglong id);
 
 		void LoadEntries ();
-		Event LoadEntry (const QByteArray& id, qlonglong Id);
+		Entry LoadEntry (qlonglong Id);
 
-		void FillPostsView (const QList<Event> entries);
+		void FillPostsView (const QList<Entry> entries);
+		void FillDraftsView (const QList<Entry> entries);
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
 		void saveEntry ();
 		void saveNewEntry ();
-		void submit (const Event& e = Event ());
+		void submit (const Entry& e = Entry ());
 		void saveSplitterPosition (int, int);
 		void on_UpdateProfile__triggered ();
 		void on_RemoveDraft__released ();
@@ -136,9 +145,11 @@ namespace Blogique
 
 		void loadPostsByDate (const QDate& date);
 
-		void handleEventsStored ();
+		void handleGotEntries (const QList<Entry>& entries = QList<Entry> ());
+		void handleStorageUpdated ();
 
 		void loadLocalEntries ();
+		void handleLoadEntries (const QList<Entry>& entries);
 
 	signals:
 		void removeTab (QWidget *tab);

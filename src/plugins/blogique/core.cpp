@@ -152,7 +152,6 @@ namespace Blogique
 		else
 		{
 			BlogPlatformPlugins_ << plugin;
-
 			handleNewBloggingPlatforms (ibpp->GetBloggingPlatforms ());
 		}
 	}
@@ -207,17 +206,13 @@ namespace Blogique
 				this,
 				SLOT (handleEntryUpdated ()));
 		connect (accObj,
-				SIGNAL (gotEvents2Backup (QList<Event>)),
+				SIGNAL (gotEntries2Backup (QList<Entry>)),
 				this,
-				SLOT (handleGotEvents2Backup (QList<Event>)));
+				SLOT (handleGotEntries2Backup (QList<Entry>)));
 		connect (accObj,
-				SIGNAL (gettingEvents2BackupFinished ()),
+				SIGNAL (gettingEntries2BackupFinished ()),
 				this,
-				SLOT (handleGettingEvents2BackupFinished ()));
-		connect (accObj,
-				SIGNAL (gotEvents (QList<Event>)),
-				this,
-				SLOT (handleGotEvents (QList<Event>)));
+				SLOT (handleGettingEntries2BackupFinished ()));
 
 		emit accountAdded (accObj);
 	}
@@ -258,10 +253,17 @@ namespace Blogique
 			acc->updateProfile ();
 	}
 
-	void Core::handleEntryPosted ()
+	void Core::handleEntryPosted (const QList<Entry>& entries)
 	{
+		auto acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+			return;
+		Storage_->SaveEntries (acc->GetAccountID (), entries);
+		emit storageUpdated ();
+
 		SendEntity (Util::MakeNotification ("Blogique",
-				tr ("Entry was posted successfully."), Priority::PInfo_));
+				tr ("Entry was posted successfully."),
+				Priority::PInfo_));
 	}
 
 	void Core::handleEntryRemoved (int itemId)
@@ -272,46 +274,45 @@ namespace Blogique
 
 		if (QMessageBox::question (Proxy_->GetMainWindow (),
 				"LeechCraft",
-				tr ("Entry was removed successfully.\n Remove post from local storage?"),
+				tr ("Entry was removed successfully.\nRemove entry from local storage?"),
 				QMessageBox::Ok | QMessageBox::No,
 				QMessageBox::No) == QMessageBox::No)
 			Storage_->MoveFromEntriesToDrafts (acc->GetAccountID (), itemId);
 		else
-			Storage_->RemoveEntryByItemId (acc->GetAccountID (), itemId);
+			Storage_->RemoveEntry (acc->GetAccountID (), itemId);
 
-		emit eventsStored ();
+		emit storageUpdated ();
 	}
 
-	void Core::handleEntryUpdated ()
+	void Core::handleEntryUpdated (const QList<Entry>& entries)
 	{
+		if (entries.isEmpty ())
+			return;
+
+		Storage_->UpdateEntry (entries.first ());
+		emit storageUpdated ();
+
 		SendEntity (Util::MakeNotification ("Blogique",
-				tr ("Entry was updated successfully."), Priority::PInfo_));
+				tr ("Entry was updated successfully."),
+				Priority::PInfo_));
 	}
 
-	void Core::handleGotEvents2Backup (const QList<Event>& events)
+	void Core::handleGotEntries2Backup (const QList<Entry>& entries)
 	{
 		auto acc = qobject_cast<IAccount*> (sender ());
 		if (!acc)
 			return;
 
-		Storage_->SaveEntries (acc->GetAccountID (), events);
+		Storage_->SaveEntries (acc->GetAccountID (), entries);
+		emit storageUpdated ();
 	}
 
-	void Core::handleGettingEvents2BackupFinished ()
+	void Core::handleGettingEntries2BackupFinished ()
 	{
 		SendEntity (Util::MakeNotification ("Blogique",
-				tr ("Entries were backup successfully."), Priority::PInfo_));
-		emit eventsStored ();
-	}
-
-	void Core::handleGotEvents (const QList<Event>& events)
-	{
-		auto acc = qobject_cast<IAccount*> (sender ());
-		if (!acc)
-			return;
-
-		Storage_->SaveEntries (acc->GetAccountID (), events);
-		emit eventsStored ();
+				tr ("Entries were backup successfully."),
+				Priority::PInfo_));
+		emit storageUpdated ();
 	}
 
 }
