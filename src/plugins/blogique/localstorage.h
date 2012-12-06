@@ -84,10 +84,8 @@ namespace Blogique
 
 		void SaveEntries (const QByteArray& accountID, const QList<Event>& events);
 		void UpdateEntry (qlonglong id, const Event& e);
-		void RemoveEntry (qlonglong id);
-		void RemoveEntryByItemId (const QByteArray& accId, int id);
+		void RemoveEntry (const QByteArray& accountId, qlonglong id);
 		Event GetEntry (const QByteArray& accountId, qlonglong entryId);
-		Event GetEntryByItemId (const QByteArray& accountId, int itemId);
 		QList<Event> GetAllEntries (const QByteArray& accountId);
 		QList<Event> GetLastNEntries (const QByteArray& accountId, int count);
 		QList<Event> GetEntriesByDate (const QByteArray& accountId,
