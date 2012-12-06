@@ -21,6 +21,7 @@
 #include <QDeclarativeView>
 
 class QAbstractItemModel;
+class IColorThemeManager;
 
 namespace LeechCraft
 {
@@ -35,7 +36,7 @@ namespace TPI
 	{
 		Util::UnhoverDeleteMixin *UnhoverDeleter_;
 	public:
-		TooltipView (QAbstractItemModel*, QWidget* = 0);
+		TooltipView (QAbstractItemModel*, IColorThemeManager*, QWidget* = 0);
 
 		void Hovered ();
 		void Unhovered ();

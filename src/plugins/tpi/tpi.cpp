@@ -21,6 +21,7 @@
 #include <QAbstractItemModel>
 #include <util/sys/paths.h>
 #include "infomodelmanager.h"
+#include "tooltipview.h"
 
 namespace LeechCraft
 {
@@ -28,12 +29,14 @@ namespace TPI
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		ModelMgr_ = new InfoModelManager (proxy);
 
 		QuarkComponent comp;
-		comp.Url_ = Util::GetSysPath (Util::SysPath::QML, "tpi", "TPIQuark.qml");
+		comp.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "tpi", "TPIQuark.qml"));
 		comp.DynamicProps_ << QPair<QString, QObject*> ("TPI_infoModel", ModelMgr_->GetModel ());
-
+		comp.DynamicProps_ << QPair<QString, QObject*> ("TPI_proxy", this);
 		Components_ << comp;
 	}
 
@@ -69,6 +72,22 @@ namespace TPI
 	QuarkComponents_t Plugin::GetComponents () const
 	{
 		return Components_;
+	}
+
+	void Plugin::hovered (double x, double y)
+	{
+		if (!TooltipView_)
+			TooltipView_ = new TooltipView (ModelMgr_->GetModel (), Proxy_->GetColorThemeManager ());
+
+		TooltipView_->move (x, y);
+		TooltipView_->show ();
+		TooltipView_->Hovered ();
+	}
+
+	void Plugin::hoverLeft ()
+	{
+		if (TooltipView_)
+			TooltipView_->Unhovered ();
 	}
 }
 }

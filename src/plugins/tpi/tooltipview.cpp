@@ -21,12 +21,14 @@
 #include <QDeclarativeContext>
 #include <util/sys/paths.h>
 #include <util/gui/unhoverdeletemixin.h>
+#include <util/qml/colorthemeproxy.h>
 
 namespace LeechCraft
 {
 namespace TPI
 {
-	TooltipView::TooltipView (QAbstractItemModel *model, QWidget *parent)
+	TooltipView::TooltipView (QAbstractItemModel *model,
+			IColorThemeManager *manager, QWidget *parent)
 	: QDeclarativeView (parent)
 	, UnhoverDeleter_ (new Util::UnhoverDeleteMixin (this, SLOT (hide ())))
 	{
@@ -34,7 +36,8 @@ namespace TPI
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
 
-		rootContext ()->setContextProperty ("model", model);
+		rootContext ()->setContextProperty ("infoModel", model);
+		rootContext ()->setContextProperty ("colorProxy", new Util::ColorThemeProxy (manager, this));
 		setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "tpi", "Tooltip.qml")));
 	}
 
