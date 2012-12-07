@@ -110,8 +110,8 @@ namespace Metida
 		bool IsValidated_;
 		std::shared_ptr<LJProfile> LJProfile_;
 
-		QAction *LoadLastEntries_;
-		QAction *LoadChangedEntries_;
+		QAction *LoadLastEvents_;
+		QAction *LoadChangedEvents_;
 
 	public:
 		LJAccount (const QString& name, QObject *parent = 0);
@@ -128,9 +128,11 @@ namespace Metida
 		QString GetPassword () const;
 
 		QObject* GetProfile ();
+
 		void GetLastEntries (int count);
-		void RemoveEntry (const Event& event);
-		void UpdateEntry (const Event& event);
+		void RemoveEntry (const Entry& entry);
+		void UpdateEntry (const Entry& entry);
+
 		QList<QAction*> GetUpdateActions () const;
 
 		void FillSettings (LJAccountConfigurationWidget *widget);
@@ -142,7 +144,6 @@ namespace Metida
 		void Init ();
 
 		void AddFriends (const QList<LJFriendEntry_ptr>& friends);
-
 		void AddNewFriend (const QString& username,
 				const QString& bgcolor, const QString& fgcolor, uint groupId);
 		void DeleteFriend (const QString& username);
@@ -154,26 +155,33 @@ namespace Metida
 		void handleValidatingFinished (bool success);
 		void handleXmlRpcError (int errorCode, const QString& msgInEng);
 		void updateProfile ();
-		void submit (const Event& event);
-		void backup ();
-		void handleGotEntries2Backup (const QList<LJEvent>& events);
-		void handleGettingEvents2BackupFinished ();
-		void handleGotEntries (const QList<LJEvent>& events);
 
-		void handleLoadLastEntries ();
-		void handleLoadChangedEntries ();
+		void submit (const Entry& event);
+		void backup ();
+
+		void handleEventPosted (const QList<LJEvent>& entries);
+		void handleEventUpdated (const QList<LJEvent>& entries);
+
+		void handleGotEvents2Backup (const QList<LJEvent>& events);
+		void handleGettingEvents2BackupFinished ();
+		void handleGotEvents (const QList<LJEvent>& events);
+
+		void handleLoadLastEvents ();
+		void handleLoadChangedEvents ();
 
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
 		void accountValidated (bool validated);
-		void entryPosted ();
-		void entryUpdated ();
+
+		void entryPosted (const QList<Entry>& entries);
+		void entryUpdated (const QList<Entry>& entries);
 		void entryRemoved (int itemId);
 
-		void gotEvents2Backup (const QList<Event>& events);
-		void gotEvents (const QList<Event>& events);
-		void gettingEvents2BackupFinished ();
+		void gotEntries2Backup (const QList<Entry>& entries);
+		void gettingEntries2BackupFinished ();
+
+		void gotEntries (const QList<Entry>& entries);
 	};
 }
 }

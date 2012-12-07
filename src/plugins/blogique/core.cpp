@@ -194,17 +194,21 @@ namespace Blogique
 		}
 
 		connect (accObj,
-				SIGNAL (entryPosted ()),
+				SIGNAL (entryPosted (QList<Entry>)),
 				this,
-				SLOT (handleEntryPosted ()));
+				SLOT (handleEntryPosted (QList<Entry>)));
 		connect (accObj,
 				SIGNAL (entryRemoved (int)),
 				this,
 				SLOT (handleEntryRemoved (int)));
 		connect (accObj,
-				SIGNAL (entryUpdated ()),
+				SIGNAL (entryUpdated (QList<Entry>)),
 				this,
-				SLOT (handleEntryUpdated ()));
+				SLOT (handleEntryUpdated (QList<Entry>)));
+		connect (accObj,
+				SIGNAL (gotEntries (QList<Entry>)),
+				this,
+				SLOT (handleGotEntries (QList<Entry>)));
 		connect (accObj,
 				SIGNAL (gotEntries2Backup (QList<Entry>)),
 				this,
@@ -313,6 +317,17 @@ namespace Blogique
 				tr ("Entries were backup successfully."),
 				Priority::PInfo_));
 		emit storageUpdated ();
+	}
+
+	void Core::handleGotEntries (const QList<Entry>& entries)
+	{
+		auto acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+			return;
+
+		Storage_->SaveEntries (acc->GetAccountID (), entries);
+		emit storageUpdated ();
+		emit gotEntries (entries);
 	}
 
 }

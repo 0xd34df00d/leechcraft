@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QSet>
+#include <boost/graph/graph_concepts.hpp>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
 
@@ -77,8 +78,10 @@ namespace Blogique
 		void handleEntryRemoved (int itemId);
 		void handleEntryUpdated (const QList<Entry>& entries);
 
-		void handleGotEntries2Backup (const QList<Entry>& events);
+		void handleGotEntries2Backup (const QList<Entry>& entries);
 		void handleGettingEntries2BackupFinished ();
+
+		void handleGotEntries (const QList<Entry>& entries);
 
 	signals:
 		void accountAdded (QObject *account);

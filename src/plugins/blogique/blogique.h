@@ -79,7 +79,7 @@ namespace Blogique
 		void gotEntity (const LeechCraft::Entity& e);
 		void delegateEntity (const LeechCraft::Entity& e, int *id, QObject **obj);
 
-		void gotActions (QList<QAction*> actions, ActionsEmbedPlace area);
+		void gotActions (QList<QAction*> actions, LeechCraft::ActionsEmbedPlace area);
 	};
 }
 }

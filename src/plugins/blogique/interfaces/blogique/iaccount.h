@@ -174,26 +174,26 @@ namespace Blogique
 		 *
 		 * @note This function is expected to be a signal.
 		 */
-		virtual void entryPosted () = 0;
+		virtual void entryPosted (const QList<Entry>& entries) = 0;
 
 		//TODO
 		virtual void entryRemoved (int itemId) = 0;
 
 		//TODO
-		virtual void entryUpdated () = 0;
+		virtual void entryUpdated (const QList<Entry>& entries) = 0;
 
 		/** @brief This signal should be emitted when account want to backup
 		 * some amount of entries.
 		 *
 		 * @note This function is expected to be a signal.
 		 */
-		virtual void gotEvents2Backup (const QList<Entry>& events) = 0;
+		virtual void gotEntries2Backup (const QList<Entry>& entries) = 0;
 
 		/** @brief This signal should be emitted all entries for backup were downloaded.
 		 *
 		 * @note This function is expected to be a signal.
 		 */
-		virtual void gettingEvents2BackupFinished () = 0;
+		virtual void gettingEntries2BackupFinished () = 0;
 	};
 }
 }

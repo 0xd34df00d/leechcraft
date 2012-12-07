@@ -48,6 +48,13 @@ namespace Metida
 
 		QHash<QNetworkReply*, int> Reply2Skip_;
 
+		enum class RequestType
+		{
+			Update,
+			Post
+		};
+		QHash<QNetworkReply*, RequestType> Reply2RequestType_;
+
 	public:
 		LJXmlRPC (LJAccount *acc, QObject *parent = 0);
 
@@ -61,14 +68,16 @@ namespace Metida
 		void DeleteGroup (int id);
 
 		void UpdateProfileInfo ();
+
 		void Submit (const LJEvent& event);
 		void BackupEvents ();
-		void GetLastEntries (int count);
-		void GetChangedEntries (const QDateTime& dt);
+		void GetLastEvents (int count);
+		void GetChangedEvents (const QDateTime& dt);
 
 		void RemoveEvent (const LJEvent& event);
 		void UpdateEvent (const LJEvent& event);
 	private:
+
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
 				const QString& pass, const QString& challenge);
@@ -76,6 +85,7 @@ namespace Metida
 				const QString& pass, const QString& challenge);
 		void ParseForError (const QByteArray& content);
 		void ParseFriends (const QDomDocument& doc);
+
 		QList<LJEvent> ParseFullEvents (const QDomDocument& doc);
 
 		void AddNewFriendRequest (const QString& username,
@@ -96,7 +106,8 @@ namespace Metida
 
 		void GetLastEventsRequest (int count, const QString& challenge);
 		void GetChangedEventsRequest (const QDateTime& dt, const QString& challenge);
-		void GetParticularEventRequest (int id, const QString& challenge);
+		void GetParticularEventRequest (int id, RequestType prt,
+				const QString& challenge);
 
 	private slots:
 		void handleChallengeReplyFinished ();
@@ -115,12 +126,15 @@ namespace Metida
 		void validatingFinished (bool success);
 		void profileUpdated (const LJProfileData& profile);
 		void error (int code, const QString& msg);
-		void entryPosted ();
-		void entryUpdated ();
-		void entryRemoved (int itemId);
-		void gotEntries2Backup (const QList<LJEvent>& events);
-		void gettingEntries2BackupFinished ();
-		void gotEntries (const QList<LJEvent>& events);
+
+		void eventPosted (const QList<LJEvent>& events);
+		void eventUpdated (const QList<LJEvent>& events);
+		void eventRemoved (int itemId);
+
+		void gotEvents2Backup (const QList<LJEvent>& events);
+		void gettingEvents2BackupFinished ();
+
+		void gotEvents (const QList<LJEvent>& events);
 	};
 }
 }

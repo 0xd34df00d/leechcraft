@@ -36,8 +36,8 @@ namespace Metida
 	public:
 		enum LoadType
 		{
-			LoadLastEntries,
-			LoadChangesEntries
+			LoadLastEvents,
+			LoadChangesEvents
 		};
 
 	private:

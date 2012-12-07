@@ -35,13 +35,13 @@ namespace Metida
 
 		switch (LT_)
 		{
-		case LoadType::LoadLastEntries:
-			Ui_.UpdatesWidgetStack_->setCurrentIndex (LoadLastEntries);
+		case LoadType::LoadLastEvents:
+			Ui_.UpdatesWidgetStack_->setCurrentIndex (LoadLastEvents);
 			Ui_.EntriesCount_->setValue (XmlSettingsManager::Instance ()
-					.Property ("LastLocalEntriesToView", 20).toInt ());
+					.Property ("LoadEntriesToView", 20).toInt ());
 			break;
-		case LoadType::LoadChangesEntries:
-			Ui_.UpdatesWidgetStack_->setCurrentIndex (LoadChangesEntries);
+		case LoadType::LoadChangesEvents:
+			Ui_.UpdatesWidgetStack_->setCurrentIndex (LoadChangesEvents);
 			Ui_.DateEdit_->setDateTime (XmlSettingsManager::Instance ()
 					.Property ("ChangedDateToView",
 						QDateTime::fromString ("01.01.1980 00:00", "dd.MM.yyyy hh:mm"))
@@ -64,15 +64,15 @@ namespace Metida
 	{
 		switch (LT_)
 		{
-			case LoadType::LoadLastEntries:
+			case LoadType::LoadLastEvents:
 				XmlSettingsManager::Instance ()
 						.setProperty ("LoadEntriesToView", Ui_.EntriesCount_->value ());
 				XmlSettingsManager::Instance ()
 						.setProperty ("LoadLastAsk", !Ui_.UpdateAsk_->isChecked ());
 				break;
-			case LoadType::LoadChangesEntries:
+			case LoadType::LoadChangesEvents:
 				XmlSettingsManager::Instance ()
-						.setProperty ("ChangedDateToView", Ui_.DateEdit_->dateTime ());
+						.setProperty ("ChangedDateToView", QDateTime::currentDateTime ());
 				XmlSettingsManager::Instance ()
 						.setProperty ("LoadChangedAsk", !Ui_.UpdateAsk_->isChecked ());
 				break;

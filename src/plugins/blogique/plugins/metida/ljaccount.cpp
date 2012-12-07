@@ -19,7 +19,6 @@
 #include <memory>
 #include "ljaccount.h"
 #include <QtDebug>
-#include <boost/graph/graph_concepts.hpp>
 #include <util/passutils.h>
 #include <util/util.h>
 #include "core.h"
@@ -46,8 +45,8 @@ namespace Metida
 	, Name_ (name)
 	, IsValidated_ (false)
 	, LJProfile_ (std::make_shared<LJProfile> (this))
-	, LoadLastEntries_ (new QAction (tr ("Last entries"), this))
-	, LoadChangedEntries_ (new QAction (tr ("Changed entries"), this))
+	, LoadLastEvents_ (new QAction (tr ("Last entries"), this))
+	, LoadChangedEvents_ (new QAction (tr ("Changed entries"), this))
 	{
 		qRegisterMetaType<LJProfileData> ("LJProfileData");
 		qRegisterMetaTypeStreamOperators<QList<LJFriendGroup>> ("QList<LJFriendGroup>");
@@ -66,38 +65,38 @@ namespace Metida
 				LJProfile_.get (),
 				SLOT (handleProfileUpdate (const LJProfileData&)));
 		connect (LJXmlRpc_,
-				SIGNAL (entryPosted ()),
+				SIGNAL (eventPosted (QList<LJEvent>)),
 				this,
-				SIGNAL (entryPosted ()));
+				SLOT (handleEventPosted (QList<LJEvent>)));
 		connect (LJXmlRpc_,
-				SIGNAL(entryRemoved (int)),
+				SIGNAL (eventRemoved (int)),
 				this,
 				SIGNAL (entryRemoved (int)));
 		connect (LJXmlRpc_,
-				SIGNAL (entryUpdated ()),
+				SIGNAL (eventUpdated (QList<LJEvent>)),
 				this,
-				SIGNAL (entryUpdated ()));
+				SLOT (handleEventUpdated (QList<LJEvent>)));
 		connect (LJXmlRpc_,
-				SIGNAL (gotEntries2Backup (QList<LJEvent>)),
+				SIGNAL (gotEvents2Backup (QList<LJEvent>)),
 				this,
-				SLOT (handleGotEntries2Backup (QList<LJEvent>)));
+				SLOT (handleGotEvents2Backup (QList<LJEvent>)));
 		connect (LJXmlRpc_,
-				SIGNAL (gettingEntries2BackupFinished ()),
+				SIGNAL (gettingEvents2BackupFinished ()),
 				this,
 				SLOT (handleGettingEvents2BackupFinished ()));
 		connect (LJXmlRpc_,
-				SIGNAL (gotEntries (QList<LJEvent>)),
+				SIGNAL (gotEvents (QList<LJEvent>)),
 				this,
-				SLOT (handleGotEntries (QList<LJEvent>)));
+				SLOT (handleGotEvents (QList<LJEvent>)));
 
-		connect (LoadLastEntries_,
+		connect (LoadLastEvents_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleLoadLastEntries ()));
-		connect (LoadChangedEntries_,
+				SLOT (handleLoadLastEvents ()));
+		connect (LoadChangedEvents_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleLoadChangedEntries ()));
+				SLOT (handleLoadChangedEvents ()));
 	}
 
 	QObject* LJAccount::GetObject ()
@@ -163,7 +162,7 @@ namespace Metida
 
 	void LJAccount::GetLastEntries (int count)
 	{
-		LJXmlRpc_->GetLastEntries (count);
+		LJXmlRpc_->GetLastEvents (count);
 	}
 
 	namespace
@@ -184,34 +183,66 @@ namespace Metida
 			return props;
 		}
 
-		LJEvent Event2LJEvent (const Event& event)
+		LJEvent Entry2LJEvent (const Entry& entry)
 		{
 			LJEvent ljEvent;
-			ljEvent.ItemID_ = event.EntryId_;
-			ljEvent.Event_ = event.Content_;
-			ljEvent.DateTime_ = event.Date_;
-			ljEvent.Subject_ = event.Subject_;
-			ljEvent.Tags_ = event.Tags_;
-			ljEvent.AllowMask_ = event.PostOptions_ ["allowMask"].toUInt ();
-			ljEvent.Security_ = static_cast<Access> (event.PostOptions_ ["access"].toInt ());
-			ljEvent.Props_ = GetLJEventPropetriesFromMap (event.PostOptions_);
+			ljEvent.ItemID_ = entry.EntryId_;
+			ljEvent.Event_ = entry.Content_;
+			ljEvent.DateTime_ = entry.Date_;
+			ljEvent.Subject_ = entry.Subject_;
+			ljEvent.Tags_ = entry.Tags_;
+			ljEvent.AllowMask_ = entry.PostOptions_ ["allowMask"].toUInt ();
+			ljEvent.Security_ = static_cast<Access> (entry.PostOptions_ ["access"].toInt ());
+			ljEvent.Props_ = GetLJEventPropetriesFromMap (entry.PostOptions_);
+
 			return ljEvent;
+		}
+
+		QVariantMap GetPostOptionsMapFromLJEvent (const LJEvent& event)
+		{
+			QVariantMap map;
+			map ["access"] = event.Security_;
+			map ["allowMask"] = event.AllowMask_;
+			map ["adults"] = event.Props_.AdultContent_;
+			map ["comment"] = event.Props_.CommentsManagement_;
+			map ["hidecomment"] = event.Props_.ScreeningComments_;
+			map ["place"] = event.Props_.CurrentLocation_;
+			map ["music"] = event.Props_.CurrentMusic_;
+			map ["moodId"] = event.Props_.CurrentMoodId_;
+			map ["mood"] = event.Props_.CurrentMood_;
+			map ["showInFriendsPage"] = event.Props_.ShowInFriendsPage_;
+			map ["avatar"] = event.Props_.PostAvatar_;
+
+			return map;
+		}
+
+		Entry LJEvent2Entry (const LJEvent& ljEvent, const QString& login)
+		{
+			Entry entry;
+			entry.EntryId_ = ljEvent.ItemID_;
+			entry.Content_ = ljEvent.Event_;
+			entry.Date_ = ljEvent.DateTime_;
+			entry.Subject_ = ljEvent.Subject_;
+			entry.Tags_ = ljEvent.Tags_;
+			entry.Target_ = login;
+			entry.PostOptions_ = GetPostOptionsMapFromLJEvent (ljEvent);
+			return entry;
 		}
 	}
 
-	void LJAccount::RemoveEntry (const Event& event)
+	void LJAccount::RemoveEntry (const Entry& entry)
 	{
-		LJXmlRpc_->RemoveEvent (Event2LJEvent (event));
+		LJXmlRpc_->RemoveEvent (Entry2LJEvent (entry));
 	}
 
-	void LJAccount::UpdateEntry (const Event& event)
+	void LJAccount::UpdateEntry (const Entry& entry)
 	{
-		LJXmlRpc_->UpdateEvent (Event2LJEvent (event));
+		LJXmlRpc_->UpdateEvent (Entry2LJEvent (entry));
 	}
 
 	QList<QAction*> LJAccount::GetUpdateActions () const
 	{
-		return { LoadLastEntries_, LoadChangedEntries_ };
+		return { LoadLastEvents_, LoadChangedEvents_ };
 	}
 
 	void LJAccount::FillSettings (LJAccountConfigurationWidget *widget)
@@ -333,18 +364,17 @@ namespace Metida
 
 	void LJAccount::handleXmlRpcError (int errorCode, const QString& msgInEng)
 	{
-		Entity e = Util::MakeNotification ("Blogique",
-				tr ("%1 (original message: %2)")
-						.arg (MetidaUtils::GetLocalizedErrorMessage (errorCode), msgInEng),
-				PWarning_);
-
 		qWarning () << Q_FUNC_INFO
 				<< "error code:"
 				<< errorCode
 				<< "error text:"
 				<< msgInEng;
 
-		Core::Instance ().SendEntity (e);
+		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
+				tr ("%1 (original message: %2)")
+						.arg (MetidaUtils::GetLocalizedErrorMessage (errorCode),
+						msgInEng),
+				PWarning_));
 	}
 
 	void LJAccount::updateProfile ()
@@ -352,18 +382,20 @@ namespace Metida
 		LJXmlRpc_->UpdateProfileInfo ();
 	}
 
-	void LJAccount::submit (const Event& event)
+	void LJAccount::submit (const Entry& entry)
 	{
 		LJEvent ljEvent;
 		LJEventProperties props;
-		const QVariantMap& postOptions = event.PostOptions_;
-		const QVariantMap& customData = event.CustomData_;
 
-		ljEvent.Subject_ = event.Subject_;
-		ljEvent.Event_ = event.Content_;
-		ljEvent.UseJournal_ = event.Target_;
-		ljEvent.DateTime_ = event.Date_;
-		ljEvent.Tags_ = event.Tags_;
+		const QVariantMap& postOptions = entry.PostOptions_;
+		const QVariantMap& customData = entry.CustomData_;
+
+		ljEvent.Subject_ = entry.Subject_;
+		ljEvent.Event_ = entry.Content_;
+		ljEvent.UseJournal_ = entry.Target_;
+		ljEvent.DateTime_ = entry.Date_;
+		ljEvent.Tags_ = entry.Tags_;
+
 		Access access = static_cast<Access> (postOptions.value ("access").toInt ());
 		ljEvent.Security_ = access < Access::MAXAccess ?
 			access :
@@ -405,8 +437,8 @@ namespace Metida
 		props.PostAvatar_ = postOptions.value ("avatar").toString ();
 
 		ljEvent.Props_ = props;
-		//TODO
 		ljEvent.Event_.append ("<em style=\"font-size: 0.8em;\">Posted via <a href=\"http://leechcraft.org/plugins-blogique\">LeechCraft Blogique</a>.</em>");
+
 		LJXmlRpc_->Submit (ljEvent);
 	}
 
@@ -415,89 +447,73 @@ namespace Metida
 		LJXmlRpc_->BackupEvents ();
 	}
 
-	namespace
+	void LJAccount::handleEventPosted (const QList<LJEvent>& events)
 	{
-		QVariantMap GetPostOptionsMapFromLJEvent (const LJEvent& event)
-		{
-			QVariantMap map;
-			map ["access"] = event.Security_;
-			map ["allowMask"] = event.AllowMask_;
-			map ["adults"] = event.Props_.AdultContent_;
-			map ["comment"] = event.Props_.CommentsManagement_;
-			map ["hidecomment"] = event.Props_.ScreeningComments_;
-			map ["place"] = event.Props_.CurrentLocation_;
-			map ["music"] = event.Props_.CurrentMusic_;
-			map ["moodId"] = event.Props_.CurrentMoodId_;
-			map ["mood"] = event.Props_.CurrentMood_;
-			map ["showInFriendsPage"] = event.Props_.ShowInFriendsPage_;
-			map ["avatar"] = event.Props_.PostAvatar_;
+		QList<Entry> entries;
+		for (const auto& ljEvent : events)
+			entries << LJEvent2Entry (ljEvent, Login_);
 
-			return map;
-		}
-
-		Event LJEvent2Event (const LJEvent& ljEvent, const QString& login)
-		{
-			Event event;
-			event.EntryId_ = ljEvent.ItemID_;
-			event.Content_ = ljEvent.Event_;
-			event.Date_ = ljEvent.DateTime_;
-			event.Subject_ = ljEvent.Subject_;
-			event.Tags_ = ljEvent.Tags_;
-			event.Target_ = login;
-			event.PostOptions_ = GetPostOptionsMapFromLJEvent (ljEvent);
-			return event;
-		}
+		emit entryPosted (entries);
 	}
 
-	void LJAccount::handleGotEntries2Backup (const QList<LJEvent>& ljEvents)
+	void LJAccount::handleEventUpdated (const QList<LJEvent>& events)
 	{
-		QList<Event> events;
-		for (const auto& ljEvent : ljEvents)
-			events << LJEvent2Event (ljEvent, Login_);
+		QList<Entry> entries;
+		for (const auto& ljEvent : events)
+			entries << LJEvent2Entry (ljEvent, Login_);
 
-		emit gotEvents2Backup (events);
+		emit entryUpdated (entries);
+	}
+
+	void LJAccount::handleGotEvents2Backup (const QList<LJEvent>& ljEvents)
+	{
+		QList<Entry> entries;
+		for (const auto& ljEvent : ljEvents)
+			entries << LJEvent2Entry (ljEvent, Login_);
+
+		emit gotEntries2Backup (entries);
 	}
 
 	void LJAccount::handleGettingEvents2BackupFinished ()
 	{
-		emit gettingEvents2BackupFinished ();
+		emit gettingEntries2BackupFinished ();
 	}
 
-	void LJAccount::handleGotEntries (const QList<LJEvent>& ljEvents)
+	void LJAccount::handleGotEvents (const QList<LJEvent>& ljEvents)
 	{
-		QList<Event> events;
+		QList<Entry> entries;
 		for (const auto& ljEvent : ljEvents)
-			events << LJEvent2Event (ljEvent, Login_);
+			entries << LJEvent2Entry (ljEvent, Login_);
 
-		emit gotEvents (events);
+		emit gotEntries (entries);
 	}
 
-	void LJAccount::handleLoadLastEntries ()
+	void LJAccount::handleLoadLastEvents ()
 	{
 		int count = 0;
 		if (XmlSettingsManager::Instance ().Property ("LoadLastAsk", true).toBool ())
 		{
-			UpdateTypeDialog dlg (UpdateTypeDialog::LoadType::LoadLastEntries);
+			UpdateTypeDialog dlg (UpdateTypeDialog::LoadType::LoadLastEvents);
 			if (dlg.exec () == QDialog::Rejected)
 				return;
 			count = dlg.GetCount ();
 		}
 
-		LJXmlRpc_->GetLastEntries (count);
+		LJXmlRpc_->GetLastEvents (count);
 	}
 
-	void LJAccount::handleLoadChangedEntries ()
+	void LJAccount::handleLoadChangedEvents ()
 	{
 		QDateTime dt;
 		if (XmlSettingsManager::Instance ().Property ("LoadChangedAsk", true).toBool ())
 		{
-			UpdateTypeDialog dlg (UpdateTypeDialog::LoadType::LoadChangesEntries);
+			UpdateTypeDialog dlg (UpdateTypeDialog::LoadType::LoadChangesEvents);
 			if (dlg.exec () == QDialog::Rejected)
 				return;
 			dt = dlg.GetDateTime ();
 		}
 
-		LJXmlRpc_->GetChangedEntries (dt);
+		LJXmlRpc_->GetChangedEvents (dt);
 	}
 
 }

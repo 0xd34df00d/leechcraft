@@ -23,7 +23,6 @@
 #include <QInputDialog>
 #include <QStandardItemModel>
 #include <QMessageBox>
-#include <boost/graph/graph_concepts.hpp>
 #include <util/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -83,7 +82,7 @@ namespace Blogique
 				SIGNAL (addNewTab (QString, QWidget*)),
 				&Core::Instance (),
 				SIGNAL (addNewTab (QString, QWidget*)));
-		
+
 		connect (&Core::Instance (),
 				SIGNAL(gotEntries (QList<Entry>)),
 				this,
@@ -360,7 +359,7 @@ namespace Blogique
 		if (!AccountsBox_->currentIndex ())
 			return Entry ();
 
-		const QString& content = PostEdit_->GetContents (ContentType::PlainText);
+		const QString& content = PostEdit_->GetContents (ContentType::HTML);
 		if (content.isEmpty ())
 		{
 			QMessageBox::warning (this,
