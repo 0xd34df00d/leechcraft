@@ -320,12 +320,12 @@ Rectangle {
             gradient: Gradient {
                 GradientStop {
                     position: 0
-                    color: colorProxy.color_TextBox_BottomColor
+                    color: colorProxy.setAlpha(colorProxy.color_TextBox_BottomColor, 0)
                 }
 
                 GradientStop {
                     position: 1
-                    color: colorProxy.setAlpha(colorProxy.color_TextBox_BottomColor, 0)
+                    color: colorProxy.color_TextBox_BottomColor
                 }
             }
         }
