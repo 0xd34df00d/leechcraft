@@ -84,11 +84,11 @@ namespace Blogique
 				SIGNAL (addNewTab (QString, QWidget*)));
 
 		connect (&Core::Instance (),
-				SIGNAL(gotEntries (QList<Entry>)),
+				SIGNAL (gotEntries (QList<Entry>)),
 				this,
 				SLOT (handleGotEntries (QList<Entry>)));
 		connect (&Core::Instance (),
-				SIGNAL(storageUpdated ()),
+				SIGNAL (storageUpdated ()),
 				this,
 				SLOT (handleStorageUpdated ()));
 	}
@@ -272,7 +272,7 @@ namespace Blogique
 				SLOT (saveSplitterPosition (int, int)));
 
 		connect (Ui_.Calendar_,
-				SIGNAL(activated (QDate)),
+				SIGNAL (activated (QDate)),
 				this,
 				SLOT (loadPostsByDate (QDate)));
 

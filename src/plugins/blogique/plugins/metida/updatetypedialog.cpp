@@ -50,7 +50,7 @@ namespace Metida
 		};
 	}
 
-	int UpdateTypeDialog::GetCount() const
+	int UpdateTypeDialog::GetCount () const
 	{
 		return  Ui_.EntriesCount_->value ();
 	}

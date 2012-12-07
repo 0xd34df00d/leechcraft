@@ -118,7 +118,7 @@ namespace Metida
 
 		const QString& pass = w->GetPassword ();
 		if (!pass.isEmpty ())
-			Util::SavePassword(pass,
+			Util::SavePassword (pass,
 					"org.LeechCraft.Blogique.PassForAccount/" + account->GetAccountID (),
 					&Core::Instance ());
 

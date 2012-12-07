@@ -20,7 +20,6 @@
 
 #include <QObject>
 #include <QSet>
-#include <boost/graph/graph_concepts.hpp>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
 

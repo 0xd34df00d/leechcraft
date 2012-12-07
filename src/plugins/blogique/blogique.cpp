@@ -73,9 +73,9 @@ namespace Blogique
 		BackupBlog_->setProperty ("ActionIcon", "document-export");
 
 		connect (BackupBlog_,
-				SIGNAL(triggered ()),
+				SIGNAL (triggered ()),
 				Core::Instance ().GetBackupManager (),
-				SLOT(backup ()));
+				SLOT (backup ()));
 
 		ToolMenu_ = new QMenu ("Blogique");
 		ToolMenu_->setIcon (GetIcon ());

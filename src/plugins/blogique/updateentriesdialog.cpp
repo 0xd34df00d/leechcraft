@@ -32,7 +32,7 @@ namespace Blogique
 				.Property ("LastLocalEntriesToView", 20).toInt ());
 	}
 
-	int UpdateEntriesDialog::GetCount() const
+	int UpdateEntriesDialog::GetCount () const
 	{
 		return  Ui_.EntriesCount_->value ();
 	}
