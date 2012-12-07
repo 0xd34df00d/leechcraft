@@ -48,6 +48,8 @@ namespace Monocle
 
 		QToolBar *Toolbar_;
 		QComboBox *ScalesBox_;
+		QAction *ZoomOut_;
+		QAction *ZoomIn_;
 		QLineEdit *PageNumLabel_;
 
 		QDockWidget *DockTOC_;
@@ -125,6 +127,9 @@ namespace Monocle
 		void handleGoNext ();
 		void navigateNumLabel ();
 		void updateNumLabel ();
+
+		void zoomOut ();
+		void zoomIn ();
 
 		void showOnePage ();
 		void showTwoPages ();
