@@ -61,10 +61,10 @@ namespace SB2
 				for (int x = 0; x < img.width (); ++x)
 				{
 					const auto color = img.pixel (x, y);
-					const auto gray = qGray (color);
-					const auto r = qRed (color) * (1 - Strength_) + Strength_ * gray;
-					const auto g = qGreen (color) * (1 - Strength_) + Strength_ * gray;
-					const auto b = qBlue (color) * (1 - Strength_) + Strength_ * gray;
+					const auto grayPart = qGray (color) * Strength_;
+					const auto r = qRed (color) * (1 - Strength_) + grayPart;
+					const auto g = qGreen (color) * (1 - Strength_) + grayPart;
+					const auto b = qBlue (color) * (1 - Strength_) + grayPart;
 					img.setPixel (x, y, qRgb (r, g, b));
 				}
 
