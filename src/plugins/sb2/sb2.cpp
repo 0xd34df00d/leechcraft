@@ -30,6 +30,7 @@
 #include "launchercomponent.h"
 #include "traycomponent.h"
 #include "lcmenucomponent.h"
+#include "desaturateeffect.h"
 
 namespace LeechCraft
 {
@@ -41,6 +42,7 @@ namespace SB2
 		qmlRegisterType<QGraphicsColorizeEffect> ("Effects", 1, 0, "Colorize");
 		qmlRegisterType<QGraphicsDropShadowEffect> ("Effects", 1, 0, "DropShadow");
 		qmlRegisterType<QGraphicsOpacityEffect> ("Effects", 1, 0, "OpacityEffect");
+		qmlRegisterType<DesaturateEffect> ("Effects", 1, 0, "Desaturate");
 
 		Mgr_ = new ViewManager (proxy, this);
 		auto view = Mgr_->GetView ();

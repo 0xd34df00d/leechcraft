@@ -23,6 +23,7 @@ SET (SRCS
 	launchercomponent.cpp
 	lcmenucomponent.cpp
 	traycomponent.cpp
+	desaturateeffect.cpp
 	)
 
 ADD_LIBRARY (leechcraft_sb2 SHARED
