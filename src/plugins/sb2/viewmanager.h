@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QUrl>
 #include <QHash>
@@ -34,6 +35,8 @@ namespace SB2
 	class SBView;
 	class QuarkManager;
 
+	typedef std::shared_ptr<QuarkManager> QuarkManager_ptr;
+
 	class ViewManager : public QObject
 	{
 		Q_OBJECT
@@ -42,7 +45,7 @@ namespace SB2
 		QStandardItemModel *ViewItemsModel_;
 		SBView *View_;
 
-		QHash<QUrl, QuarkManager*> Quark2Manager_;
+		QHash<QUrl, QuarkManager_ptr> Quark2Manager_;
 	public:
 		ViewManager (ICoreProxy_ptr, QObject* = 0);
 

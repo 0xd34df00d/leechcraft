@@ -112,7 +112,21 @@ namespace SB2
 
 	void ViewManager::AddComponent (const QuarkComponent& comp)
 	{
-		auto mgr = new QuarkManager (comp, this);
+		QuarkManager_ptr mgr;
+		try
+		{
+			mgr.reset (new QuarkManager (comp, this));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+			return;
+		}
+
+		if (!mgr->IsValidArea ())
+			return;
+
 		Quark2Manager_ [comp.Url_] = mgr;
 
 		auto item = new QStandardItem;
