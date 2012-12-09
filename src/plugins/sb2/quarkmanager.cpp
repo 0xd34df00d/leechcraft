@@ -56,6 +56,11 @@ namespace SB2
 		CreateSettings ();
 	}
 
+	bool QuarkManager::IsValidArea () const
+	{
+		return Areas_.isEmpty () || Areas_.contains ("panel");
+	}
+
 	bool QuarkManager::HasSettings () const
 	{
 		return SettingsManager_;

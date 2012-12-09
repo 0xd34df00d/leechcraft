@@ -45,6 +45,8 @@ namespace SB2
 	public:
 		QuarkManager (const QuarkComponent&, ViewManager*);
 
+		bool IsValidArea () const;
+
 		bool HasSettings () const;
 		void ShowSettings ();
 	private:
