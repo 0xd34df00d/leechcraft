@@ -39,12 +39,17 @@ namespace SB2
 
 		Util::XmlSettingsDialog_ptr XSD_;
 		QuarkSettingsManager *SettingsManager_;
+
+		QString Name_;
+		QStringList Areas_;
 	public:
 		QuarkManager (const QuarkComponent&, ViewManager*);
 
 		bool HasSettings () const;
 		void ShowSettings ();
 	private:
+		QString GetSuffixedName (const QString&) const;
+		void ParseManifest ();
 		void CreateSettings ();
 	};
 }

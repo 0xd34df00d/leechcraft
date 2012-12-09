@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "quarkmanager.h"
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QStandardItem>
@@ -40,6 +42,8 @@ namespace SB2
 	, URL_ (comp.Url_)
 	, SettingsManager_ (0)
 	{
+		ParseManifest ();
+
 		qDebug () << Q_FUNC_INFO << "adding" << comp.Url_;
 		auto ctx = manager->GetView ()->rootContext ();
 		for (const auto& pair : comp.StaticProps_)
@@ -89,14 +93,37 @@ namespace SB2
 		XSD_->setParent (0);
 	}
 
-	void QuarkManager::CreateSettings ()
+	QString QuarkManager::GetSuffixedName (const QString& suffix) const
 	{
 		if (!URL_.isLocalFile ())
-			return;
+			return QString ();
 
 		const auto& localName = URL_.toLocalFile ();
-		const auto& settingsName = localName + ".settings";
-		if (!QFile::exists (settingsName))
+		const auto& suffixed = localName + suffix;
+		if (!QFile::exists (suffixed))
+			return QString ();
+
+		return suffixed;
+	}
+
+	void QuarkManager::ParseManifest ()
+	{
+		const auto& manifestName = GetSuffixedName (".manifest");
+		if (manifestName.isEmpty ())
+			return;
+
+		boost::property_tree::ptree pt;
+		boost::property_tree::read_json (manifestName.toUtf8 ().constData (), pt);
+
+		Name_ = QString::fromUtf8 (pt.get<std::string> ("quarkName").c_str ());
+		for (const auto& v : pt.get_child ("areas"))
+			Areas_ << QString::fromUtf8 (v.second.data ().c_str ());
+	}
+
+	void QuarkManager::CreateSettings ()
+	{
+		const auto& settingsName = GetSuffixedName (".settings");
+		if (settingsName.isEmpty ())
 			return;
 
 		XSD_.reset (new Util::XmlSettingsDialog);
