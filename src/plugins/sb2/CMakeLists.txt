@@ -14,7 +14,9 @@ SET (SRCS
 	sbview.cpp
 	viewmanager.cpp
 	widthiconprovider.cpp
+	desaturateeffect.cpp
 	quarkproxy.cpp
+	quarkmanager.cpp
 	quarksettingsmanager.cpp
 	tablistview.cpp
 	tabunhidelistview.cpp
@@ -23,7 +25,6 @@ SET (SRCS
 	launchercomponent.cpp
 	lcmenucomponent.cpp
 	traycomponent.cpp
-	desaturateeffect.cpp
 	)
 
 ADD_LIBRARY (leechcraft_sb2 SHARED

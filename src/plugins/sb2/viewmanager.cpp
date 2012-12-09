@@ -18,9 +18,6 @@
 
 #include "viewmanager.h"
 #include <QStandardItemModel>
-#include <QDialog>
-#include <QVBoxLayout>
-#include <QDialogButtonBox>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QtDebug>
@@ -31,8 +28,8 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include "sbview.h"
 #include "quarkproxy.h"
-#include "quarksettingsmanager.h"
 #include "themeimageprovider.h"
+#include "quarkmanager.h"
 
 namespace LeechCraft
 {
@@ -115,72 +112,19 @@ namespace SB2
 
 	void ViewManager::AddComponent (const QuarkComponent& comp)
 	{
-		qDebug () << Q_FUNC_INFO << "adding" << comp.Url_;
-		auto ctx = View_->rootContext ();
-		for (const auto& pair : comp.StaticProps_)
-			ctx->setContextProperty (pair.first, pair.second);
-		for (const auto& pair : comp.DynamicProps_)
-			ctx->setContextProperty (pair.first, pair.second);
-		for (const auto& pair : comp.ImageProviders_)
-			View_->engine ()->addImageProvider (pair.first, pair.second);
-
-		const bool hasSettings = CreateSettings (comp.Url_);
+		auto mgr = new QuarkManager (comp, this);
+		Quark2Manager_ [comp.Url_] = mgr;
 
 		auto item = new QStandardItem;
 		item->setData (comp.Url_, ViewItemsModel::Role::SourceURL);
-		item->setData (hasSettings, ViewItemsModel::Role::QuarkHasSettings);
+		item->setData (mgr->HasSettings (), ViewItemsModel::Role::QuarkHasSettings);
 		ViewItemsModel_->appendRow (item);
 	}
 
 	void ViewManager::ShowSettings (const QUrl& url)
 	{
-		if (!Quark2Settings_.contains (url))
-			return;
-
-		auto xsd = Quark2Settings_ [url].XSD_;
-
-		QDialog dia;
-		dia.setLayout (new QVBoxLayout ());
-		dia.layout ()->addWidget (xsd.get ());
-
-		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-		connect (box,
-				SIGNAL (accepted ()),
-				&dia,
-				SLOT (accept ()));
-		connect (box,
-				SIGNAL (rejected ()),
-				&dia,
-				SLOT (reject ()));
-		connect (box,
-				SIGNAL (accepted ()),
-				xsd.get (),
-				SLOT (accept ()));
-		connect (box,
-				SIGNAL (rejected ()),
-				xsd.get (),
-				SLOT (reject ()));
-		dia.layout ()->addWidget (box);
-
-		dia.exec ();
-		xsd->setParent (0);
-	}
-
-	bool ViewManager::CreateSettings (const QUrl& url)
-	{
-		if (!url.isLocalFile ())
-			return false;
-
-		const auto& localName = url.toLocalFile ();
-		const auto& settingsName = localName + ".settings";
-		if (!QFile::exists (settingsName))
-			return false;
-
-		Util::XmlSettingsDialog_ptr xsd (new Util::XmlSettingsDialog);
-		auto sm = new QuarkSettingsManager (url, View_->rootContext ());
-		xsd->RegisterObject (sm, settingsName);
-		Quark2Settings_ [url] = { xsd, sm };
-		return true;
+		auto manager = Quark2Manager_ [url];
+		manager->ShowSettings ();
 	}
 }
 }

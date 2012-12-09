@@ -20,10 +20,7 @@
 
 #include <QObject>
 #include <QUrl>
-#include <QHash>
-#include <interfaces/core/icoreproxy.h>
-
-class QStandardItemModel;
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LeechCraft
 {
@@ -31,27 +28,24 @@ struct QuarkComponent;
 
 namespace SB2
 {
-	class SBView;
-	class QuarkManager;
+	class ViewManager;
+	class QuarkSettingsManager;
 
-	class ViewManager : public QObject
+	class QuarkManager : public QObject
 	{
-		Q_OBJECT
+		ViewManager * const ViewMgr_;
 
-		ICoreProxy_ptr Proxy_;
-		QStandardItemModel *ViewItemsModel_;
-		SBView *View_;
+		const QUrl URL_;
 
-		QHash<QUrl, QuarkManager*> Quark2Manager_;
+		Util::XmlSettingsDialog_ptr XSD_;
+		QuarkSettingsManager *SettingsManager_;
 	public:
-		ViewManager (ICoreProxy_ptr, QObject* = 0);
+		QuarkManager (const QuarkComponent&, ViewManager*);
 
-		SBView* GetView () const;
-
-		void SecondInit ();
-		void AddComponent (const QuarkComponent&);
-
-		void ShowSettings (const QUrl&);
+		bool HasSettings () const;
+		void ShowSettings ();
+	private:
+		void CreateSettings ();
 	};
 }
 }
