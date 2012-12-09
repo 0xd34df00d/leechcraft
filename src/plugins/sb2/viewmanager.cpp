@@ -89,20 +89,13 @@ namespace SB2
 	void ViewManager::SecondInit ()
 	{
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, "quarks"))
-		{
-			QDir dir (cand);
-			for (const auto& entry : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable))
-			{
-				QDir quarkDir (dir);
-				quarkDir.cd (entry);
-				if (!quarkDir.exists (entry + ".qml"))
-					continue;
+			AddRootDir (QDir (cand));
 
-				QuarkComponent c;
-				c.Url_ = QUrl::fromLocalFile (quarkDir.absoluteFilePath (entry + ".qml"));
-				AddComponent (c);
-			}
-		}
+		QDir local = QDir::home ();
+		if (local.cd (".leechcraft") &&
+			local.cd ("data") &&
+			local.cd ("quarks"))
+			AddRootDir (local);
 
 		auto pm = Proxy_->GetPluginsManager ();
 		for (auto prov : pm->GetAllCastableTo<IQuarkComponentProvider*> ())
@@ -139,6 +132,21 @@ namespace SB2
 	{
 		auto manager = Quark2Manager_ [url];
 		manager->ShowSettings ();
+	}
+
+	void ViewManager::AddRootDir (const QDir& dir)
+	{
+		for (const auto& entry : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable))
+		{
+			QDir quarkDir (dir);
+			quarkDir.cd (entry);
+			if (!quarkDir.exists (entry + ".qml"))
+				continue;
+
+			QuarkComponent c;
+			c.Url_ = QUrl::fromLocalFile (quarkDir.absoluteFilePath (entry + ".qml"));
+			AddComponent (c);
+		}
 	}
 }
 }

@@ -24,6 +24,7 @@
 #include <QHash>
 #include <interfaces/core/icoreproxy.h>
 
+class QDir;
 class QStandardItemModel;
 
 namespace LeechCraft
@@ -55,6 +56,8 @@ namespace SB2
 		void AddComponent (const QuarkComponent&);
 
 		void ShowSettings (const QUrl&);
+	private:
+		void AddRootDir (const QDir&);
 	};
 }
 }
