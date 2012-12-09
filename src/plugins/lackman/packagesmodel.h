@@ -45,14 +45,26 @@ namespace LackMan
 			PMRScreenshots,
 			PMRSize
 		};
+		enum Columns
+		{
+			Inst,
+			Upd,
+			Name,
+			Description,
+			Version,
+			Size,
+			MaxColumn
+		};
 		PackagesModel (QObject* = 0);
 
-		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		virtual Qt::ItemFlags flags (const QModelIndex&) const;
-		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-		virtual QModelIndex parent (const QModelIndex&) const;
-		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+		int columnCount (const QModelIndex& = QModelIndex ()) const;
+		QVariant headerData (int, Qt::Orientation, int) const;
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		bool setData (const QModelIndex&, const QVariant&, int);
+		Qt::ItemFlags flags (const QModelIndex&) const;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
+		QModelIndex parent (const QModelIndex&) const;
+		int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 		void AddRow (const ListPackageInfo&);
 		void UpdateRow (const ListPackageInfo&);
