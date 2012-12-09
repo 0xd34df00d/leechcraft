@@ -72,6 +72,11 @@ namespace SB2
 			return;
 
 		QDialog dia;
+		const auto& settingsTitle = Name_.isEmpty () ?
+				tr ("Settings") :
+				tr ("Settings for %1").arg (Name_);
+		dia.setWindowTitle (settingsTitle);
+
 		dia.setLayout (new QVBoxLayout ());
 		dia.layout ()->addWidget (XSD_.get ());
 
