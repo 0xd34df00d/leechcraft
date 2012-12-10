@@ -67,6 +67,7 @@ namespace LHTR
 		void on_HTML__textChanged ();
 		void updateActions ();
 		void handleCmd ();
+		void handleInlineCmd ();
 		void handleBgColor ();
 		void handleFgColor ();
 		void handleFont ();

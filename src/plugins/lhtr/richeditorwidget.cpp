@@ -360,6 +360,24 @@ namespace LHTR
 				sender ()->property ("Editor/Args").toString ());
 	}
 
+	void RichEditorWidget::handleInlineCmd ()
+	{
+		const auto& tag = sender ()->property ("Editor/Command").toString ();
+		const auto& args = sender ()->property ("Editor/Args").toStringList ();
+
+		QString jstr;
+		jstr += "var selection = window.getSelection().getRangeAt(0);"
+				"var selectedText = selection.extractContents();"
+				"var span = document.createElement('" + tag + "');";
+		for (const auto& arg : args)
+			jstr += "span." + arg + ';';
+		jstr += "span.appendChild(selectedText);"
+				"selection.insertNode(span);";
+
+		auto frame = Ui_.View_->page ()->mainFrame ();
+		frame->evaluateJavaScript (jstr);
+	}
+
 	void RichEditorWidget::handleBgColor ()
 	{
 		const auto& color = QColorDialog::getColor (Qt::white, this);
