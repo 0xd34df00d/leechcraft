@@ -111,6 +111,8 @@ namespace Blogique
 		void RemovePostingTargetsWidget ();
 		void FillPostingStatistic ();
 
+		void ClearEntry ();
+
 		QList<QStandardItem*> CreateItemsToView (const Entry& entry) const;
 
 		Entry GetCurrentEntry ();
@@ -127,6 +129,7 @@ namespace Blogique
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
+		void newEntry ();
 		void saveEntry ();
 		void saveNewEntry ();
 		void submit (const Entry& e = Entry ());

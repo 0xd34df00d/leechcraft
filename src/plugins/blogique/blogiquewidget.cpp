@@ -206,6 +206,14 @@ namespace Blogique
 
 	void BlogiqueWidget::SetToolBarActions ()
 	{
+		Ui_.NewEntry_->setIcon (Core::Instance ()
+				.GetCoreProxy ()->GetIcon ("document-new"));
+		ToolBar_->addAction (Ui_.NewEntry_);
+		connect (Ui_.NewEntry_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (newEntry ()));
+
 		Ui_.SaveEntry_->setIcon (Core::Instance ()
 				.GetCoreProxy ()->GetIcon ("document-save"));
 		ToolBar_->addAction (Ui_.SaveEntry_);
@@ -338,6 +346,38 @@ namespace Blogique
 		}
 
 		Ui_.Calendar_->SetStatistic (statistic);
+	}
+
+	void BlogiqueWidget::ClearEntry ()
+	{
+		Ui_.Subject_->clear ();
+		PostEdit_->SetContents (QString (), ContentType::PlainText);
+		for (auto w : SidePluginsWidgets_)
+		{
+			auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
+			if (!ibsw)
+				continue;
+
+			switch (ibsw->GetWidgetType ())
+			{
+				case SideWidgetType::PostOptionsSideWidget:
+				{
+					ibsw->SetPostOptions (QVariantMap ());
+					auto ipow = qobject_cast<IPostOptionsWidget*> (w);
+					if (!ipow)
+						continue;
+
+					ipow->SetPostDate (QDateTime::currentDateTime ());
+					ipow->SetTags (QStringList ());
+					break;
+				}
+				case SideWidgetType::CustomSideWidget:
+					ibsw->SetCustomData (QVariantMap ());
+					break;
+				default:
+					break;
+			}
+		}
 	}
 
 	QList<QStandardItem*> BlogiqueWidget::CreateItemsToView (const Entry& entry) const
@@ -629,6 +669,12 @@ namespace Blogique
 		LoadEntries ();
 
 		PrevAccountId_ = id;
+	}
+
+	void BlogiqueWidget::newEntry ()
+	{
+		//TODO ask about save.
+		ClearEntry ();
 	}
 
 	void BlogiqueWidget::saveEntry ()
