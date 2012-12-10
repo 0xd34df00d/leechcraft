@@ -19,8 +19,14 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/ihookproxy.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/ientityhandler.h>
+
+class QMenuBar;
+class QMainWindow;
 
 namespace LeechCraft
 {
@@ -28,13 +34,16 @@ namespace Lads
 {
 	class Plugin : public QObject
 					, public IInfo
+					, public IPlugin2
 					, public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
+		Q_INTERFACES (IInfo IPlugin2 IActionsExporter)
 	private:
 		QAction *Action_;
+		QMenuBar *MenuBar_;
 		ICoreProxy_ptr Proxy_;
+		QMainWindow *MW_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -43,11 +52,17 @@ namespace Lads
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+		
+		QSet<QByteArray> GetPluginClasses () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 
 	public slots:
 		void showHideMain () const;
+		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
+	private slots:
+		void fillMenu ();
+		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
