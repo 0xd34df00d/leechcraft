@@ -165,8 +165,6 @@ namespace LHTR
 		fwdCmd (tr ("Superscript"), "format-text-superscript",
 				QWebPage::ToggleSuperscript, barAdd)->setCheckable (true);
 
-		ViewBar_->addSeparator ();
-
 		auto addInlineCmd = [this] (const QString& name,
 				const QString& icon,
 				const QString& cmd,
