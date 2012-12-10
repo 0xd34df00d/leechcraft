@@ -144,6 +144,23 @@ namespace LHTR
 
 		ViewBar_->addSeparator ();
 
+		auto addInlineCmd = [this] (const QString& name,
+				const QString& icon,
+				const QString& cmd,
+				const QStringList& args,
+				Addable addable) -> QAction*
+		{
+			auto act = addable.addAction (name, this, SLOT (handleInlineCmd ()));
+			act->setProperty ("ActionIcon", icon);
+			act->setProperty ("Editor/Command", cmd);
+			act->setProperty ("Editor/Args", args);
+			return act;
+		};
+
+		addInlineCmd (tr ("Code"), "code-context", "code", QStringList (), barAdd);
+
+		ViewBar_->addSeparator ();
+
 		QList<QAction*> alignActs;
 		alignActs << fwdCmd (tr ("Align left"), "format-justify-left",
 				QWebPage::AlignLeft, barAdd);
