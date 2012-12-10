@@ -63,6 +63,7 @@ namespace LHTR
 		void ExecCommand (const QString&, const QString& = QString ());
 		bool QueryCommandState (const QString& cmd);
 	private slots:
+		void handleLinkClicked (const QUrl&);
 		void on_TabWidget__currentChanged (int);
 		void on_HTML__textChanged ();
 		void updateActions ();

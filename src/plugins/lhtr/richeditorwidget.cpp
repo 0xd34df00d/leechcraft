@@ -28,8 +28,10 @@
 #include <QInputDialog>
 #include <QTextDocument>
 #include <QXmlStreamWriter>
+#include <QNetworkRequest>
 #include <QtDebug>
 #include <util/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "hyperlinkdialog.h"
 #include "imagedialog.h"
 
@@ -77,6 +79,22 @@ namespace LHTR
 				return 0;
 			}
 		};
+
+		class EditorPage : public QWebPage
+		{
+		public:
+			EditorPage (QObject *parent)
+			: QWebPage (parent)
+			{
+			}
+		protected:
+			bool acceptNavigationRequest (QWebFrame*, const QNetworkRequest& request, NavigationType type)
+			{
+				if (type == NavigationTypeLinkClicked || type == NavigationTypeOther)
+					emit linkClicked (request.url ());
+				return false;
+			}
+		};
 	}
 
 	RichEditorWidget::RichEditorWidget (ICoreProxy_ptr proxy, QWidget *parent)
@@ -87,9 +105,14 @@ namespace LHTR
 	{
 		Ui_.setupUi (this);
 
+		Ui_.View_->setPage (new EditorPage (Ui_.View_));
 		Ui_.View_->page ()->setContentEditable (true);
 		Ui_.View_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 		Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
+		connect (Ui_.View_->page (),
+				SIGNAL (linkClicked (QUrl)),
+				this,
+				SLOT (handleLinkClicked (QUrl)));
 		connect (Ui_.View_->page (),
 				SIGNAL (selectionChanged ()),
 				this,
@@ -309,6 +332,12 @@ namespace LHTR
 		const QString& js = QString ("document.queryCommandState(\"%1\", false, null)").arg (cmd);
 		auto res = frame->evaluateJavaScript (js);
 		return res.toString ().simplified ().toLower () == "true";
+	}
+
+	void RichEditorWidget::handleLinkClicked (const QUrl& url)
+	{
+		const auto& e = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	namespace
