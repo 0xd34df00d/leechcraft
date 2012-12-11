@@ -131,6 +131,7 @@ namespace Blogique
 		void saveNewEntry ();
 		void submit (const Entry& e = Entry ());
 		void saveSplitterPosition (int, int);
+		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
 		void on_UpdateProfile__triggered ();
 		void on_RemoveDraft__released ();
 		void on_PublishDraft__released ();

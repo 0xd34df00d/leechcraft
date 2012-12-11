@@ -63,8 +63,12 @@ namespace Blogique
 	{
 		Ui_.setupUi (this);
 
+		auto dwa = static_cast<Qt::DockWidgetArea> (XmlSettingsManager::Instance ()
+				.Property ("DockWidgetArea", Qt::RightDockWidgetArea).toInt ());
+		if (dwa == Qt::NoDockWidgetArea)
+			dwa = Qt::RightDockWidgetArea;
 		auto mw = Core::Instance ().GetCoreProxy ()->GetMWProxy ();
-		mw->AddDockWidget (Qt::RightDockWidgetArea, Ui_.SideWidget_);
+		mw->AddDockWidget (dwa, Ui_.SideWidget_);
 		mw->AssociateDockWidget (Ui_.SideWidget_, this);
 		mw->ToggleViewActionVisiblity (Ui_.SideWidget_, false);
 
@@ -716,6 +720,13 @@ namespace Blogique
 	{
 		XmlSettingsManager::Instance ().setProperty ("CalendarSplitterPosition",
 				Ui_.CalendarSplitter_->saveState ());
+	}
+
+	void BlogiqueWidget::on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area)
+	{
+		if (area != Qt::AllDockWidgetAreas &&
+				area != Qt::NoDockWidgetArea)
+			XmlSettingsManager::Instance ().setProperty ("DockWidgetArea", area);
 	}
 
 	void BlogiqueWidget::on_UpdateProfile__triggered ()
