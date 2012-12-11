@@ -22,6 +22,7 @@
 #include <QVariant>
 #include <QStringList>
 #include <QDateTime>
+#include <QUrl>
 
 class QAction;
 class QWidget;
@@ -40,6 +41,7 @@ namespace Blogique
 		QVariantMap PostOptions_;
 		QVariantMap CustomData_;
 		qlonglong EntryId_;
+		QUrl EntryUrl_;
 
 		Entry ()
 		: EntryId_ (-1)

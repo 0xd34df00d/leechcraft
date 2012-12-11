@@ -266,7 +266,8 @@ namespace Blogique
 		emit storageUpdated ();
 
 		SendEntity (Util::MakeNotification ("Blogique",
-				tr ("Entry was posted successfully."),
+				tr ("Entry was posted successfully: <a href=\"%1\">%1</a>\n")
+						.arg (entries.value (0).EntryUrl_.toString ()),
 				Priority::PInfo_));
 	}
 

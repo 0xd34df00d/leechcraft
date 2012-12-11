@@ -225,6 +225,7 @@ namespace Metida
 			entry.Subject_ = ljEvent.Subject_;
 			entry.Tags_ = ljEvent.Tags_;
 			entry.Target_ = login;
+			entry.EntryUrl_ = ljEvent.Url_;
 			entry.PostOptions_ = GetPostOptionsMapFromLJEvent (ljEvent);
 			return entry;
 		}
