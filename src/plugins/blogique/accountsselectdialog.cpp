@@ -17,9 +17,9 @@
  **********************************************************************/
 
 #include "accountsselectdialog.h"
+#include <QStandardItemModel>
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatform.h"
-#include <QStandardItemModel>
 
 namespace LeechCraft
 {
@@ -59,7 +59,7 @@ namespace Blogique
 		{
 			auto item = Model_->item (i);
 			if (item->checkState () == Qt::Checked)
-				accounts <<Item2Accotun_ [item];
+				accounts << Item2Accotun_ [item];
 		}
 
 		return accounts;
