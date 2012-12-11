@@ -90,13 +90,18 @@ namespace Metida
 
 	void PostOptionsWidget::SetPostOptions (const QVariantMap& map)
 	{
-		const QVariant& access = map ["access"];
-		for (int i = 0; i < Ui_.Access_->count (); ++i)
-			if (Ui_.Access_->itemData (i, Qt::UserRole) == access)
-			{
-				Ui_.Access_->setCurrentIndex (i);
-				break;
-			}
+		if (map.contains ("access"))
+		{
+			const QVariant& access = map ["access"];
+			for (int i = 0; i < Ui_.Access_->count (); ++i)
+				if (Ui_.Access_->itemData (i, Qt::UserRole) == access)
+				{
+					Ui_.Access_->setCurrentIndex (i);
+					break;
+				}
+		}
+		else
+			Ui_.Access_->setCurrentIndex (0);
 
 		if (Ui_.Access_->itemData (Ui_.Access_->currentIndex ()) != Access::Private)
 			Ui_.ShowInFriendsPage_->setChecked (map.contains ("showInFriendsPage") ?
@@ -106,7 +111,8 @@ namespace Metida
 
 		//TODO AllowMask_
 
-		if (map ["noMood"].toBool ())
+		if (map.contains ("noMood") &&
+				map ["noMood"].toBool ())
 			Ui_.Mood_->setCurrentIndex (-1);
 		else
 		{
@@ -131,30 +137,44 @@ namespace Metida
 		Ui_.Place_->setText (map ["place"].toString ());
 		Ui_.Music_->setText (map ["music"].toString ());
 
-		const QVariant& comment = map ["comment"];
-		for (int i = 0; i < Ui_.Comments_->count (); ++i)
-			if (Ui_.Comments_->itemData (i, Qt::UserRole) == comment)
-			{
-				Ui_.Comments_->setCurrentIndex (i);
-				break;
-			}
-		Ui_.NotifyAboutComments_->setChecked (map ["notify"].toBool ());
+		if (map.contains ("comment"))
+		{
+			const QVariant& comment = map ["comment"];
+			for (int i = 0; i < Ui_.Comments_->count (); ++i)
+				if (Ui_.Comments_->itemData (i, Qt::UserRole) == comment)
+				{
+					Ui_.Comments_->setCurrentIndex (i);
+					break;
+				}
+		}
+		else
+			Ui_.Comments_->setCurrentIndex (0);
 
-		const QVariant& hideComments = map ["hidecomment"];
-		for (int i = 0; i < Ui_.ScreenComments_->count (); ++i)
-			if (Ui_.ScreenComments_->itemData (i, Qt::UserRole) == hideComments)
-			{
-				Ui_.ScreenComments_->setCurrentIndex (i);
-				break;
-			}
+		if (map.contains ("hidecomments"))
+		{
+			const QVariant& hideComments = map ["hidecomment"];
+			for (int i = 0; i < Ui_.ScreenComments_->count (); ++i)
+				if (Ui_.ScreenComments_->itemData (i, Qt::UserRole) == hideComments)
+				{
+					Ui_.ScreenComments_->setCurrentIndex (i);
+					break;
+				}
+		}
+		else
+			Ui_.ScreenComments_->setCurrentIndex (0);
 
-		const QVariant& adults = map ["adults"];
-		for (int i = 0; i < Ui_.Adult_->count (); ++i)
-			if (Ui_.Adult_->itemData (i, Qt::UserRole) == adults)
-			{
-				Ui_.Adult_->setCurrentIndex (i);
-				break;
-			}
+		if (map.contains ("adults"))
+		{
+			const QVariant& adults = map ["adults"];
+			for (int i = 0; i < Ui_.Adult_->count (); ++i)
+				if (Ui_.Adult_->itemData (i, Qt::UserRole) == adults)
+				{
+					Ui_.Adult_->setCurrentIndex (i);
+					break;
+				}
+		}
+		else
+			Ui_.Adult_->setCurrentIndex (0);
 
 		Ui_.UserPic_->setCurrentIndex (!map ["avatar"].toString ().isEmpty () ?
 			Ui_.UserPic_->findText (map ["avatar"].toString ()) :
