@@ -32,6 +32,7 @@
 #include "radiostation.h"
 #include "roles.h"
 #include "stringlistradiostation.h"
+#include "rockradiolistfetcher.h"
 
 Q_DECLARE_METATYPE (QList<QUrl>);
 
@@ -56,6 +57,12 @@ namespace HotStreams
 		sky->setIcon (QIcon (":/hotstreams/resources/images/skyfm.png"));
 		Roots_ ["sky"] = sky;
 #endif
+
+		auto rr = new QStandardItem ("RockRadio");
+		rr->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
+		rr->setEditable (false);
+		rr->setIcon (QIcon (":/hotstreams/resources/images/rockradio.png"));
+		Roots_ ["rr"] = rr;
 
 		auto somafm = new QStandardItem ("SomaFM");
 		somafm->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
@@ -138,6 +145,9 @@ namespace HotStreams
 			while (item->rowCount ())
 				item->removeRow (0);
 		};
+
+		clearRoot (Roots_ ["rr"]);
+		new RockRadioListFetcher (Roots_ ["rr"], nam, this);
 
 		clearRoot (Roots_ ["somafm"]);
 		new SomaFMListFetcher (Roots_ ["somafm"], nam, this);

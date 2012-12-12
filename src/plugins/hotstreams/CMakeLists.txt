@@ -18,6 +18,7 @@ SET (SRCS
 	hotstreams.cpp
 	icecastfetcher.cpp
 	radiostation.cpp
+	rockradiolistfetcher.cpp
 	somafmlistfetcher.cpp
 	stealkilllistfetcher.cpp
 	streamlistfetcherbase.cpp
