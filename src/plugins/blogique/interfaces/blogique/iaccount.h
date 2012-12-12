@@ -134,15 +134,15 @@ namespace Blogique
 
 		/** @brief Remove entry from blog.
 		 *
-		 * @param[in] event Removing event.
+		 * @param[in] entry Entry to remove.
 		 */
-		virtual void RemoveEntry (const Entry& event) = 0;
+		virtual void RemoveEntry (const Entry& entry) = 0;
 
 		/** @brief Update entry in blog.
 		 *
-		 * @param[in] event Updating event.
+		 * @param[in] entry Entry to update.
 		 */
-		virtual void UpdateEntry (const Entry& event) = 0;
+		virtual void UpdateEntry (const Entry& entry) = 0;
 
 		virtual QList<QAction*> GetUpdateActions () const = 0;
 

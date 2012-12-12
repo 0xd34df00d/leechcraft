@@ -381,7 +381,7 @@ namespace Blogique
 				}
 			}
 
-			for (const auto& key :entry.PostOptions_.keys ())
+			for (const auto& key : entry.PostOptions_.keys ())
 			{
 				AddEntryPostOptions_.bindValue (":entry_id", entry.EntryId_);
 				AddEntryPostOptions_.bindValue (":name", key);
@@ -631,7 +631,7 @@ namespace Blogique
 			throw std::runtime_error ("unable to get entries");
 		}
 
-		QMap<QDate, int>  statistic;
+		QMap<QDate, int> statistic;
 		while (GetEntriesCountByDate_.next ())
 			statistic.insert (GetEntriesCountByDate_.value (0).toDate (),
 					GetEntriesCountByDate_.value (1).toInt ());

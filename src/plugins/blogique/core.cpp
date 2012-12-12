@@ -266,7 +266,8 @@ namespace Blogique
 		emit storageUpdated ();
 
 		SendEntity (Util::MakeNotification ("Blogique",
-				tr ("Entry was posted successfully: <a href=\"%1\">%1</a>\n")
+				tr ("Entry was posted successfully:") +
+					QString (" <a href=\"%1\">%1</a>\n")
 						.arg (entries.value (0).EntryUrl_.toString ()),
 				Priority::PInfo_));
 	}
@@ -315,7 +316,7 @@ namespace Blogique
 	void Core::handleGettingEntries2BackupFinished ()
 	{
 		SendEntity (Util::MakeNotification ("Blogique",
-				tr ("Entries were backup successfully."),
+				tr ("Entries were backuped successfully."),
 				Priority::PInfo_));
 		emit storageUpdated ();
 	}

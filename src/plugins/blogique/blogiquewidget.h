@@ -91,7 +91,7 @@ namespace Blogique
 		QList<QAction*> LoadActions_;
 
 		qlonglong DraftID_;
-		qlonglong EventID_;
+		qlonglong EntryID_;
 	public:
 		BlogiqueWidget (QWidget *parent = 0);
 
@@ -107,13 +107,13 @@ namespace Blogique
 	private:
 		void SetTextEditor ();
 		void SetToolBarActions ();
-		void SetDeafultSideWidgets ();
+		void SetDefaultSideWidgets ();
 		void RemovePostingTargetsWidget ();
 		void FillPostingStatistic ();
 
 		void ClearEntry ();
 
-		QList<QStandardItem*> CreateItemsToView (const Entry& entry) const;
+		QList<QStandardItem*> CreateItemsRow (const Entry& entry) const;
 
 		Entry GetCurrentEntry ();
 
@@ -124,8 +124,8 @@ namespace Blogique
 		void LoadEntries ();
 		Entry LoadEntry (qlonglong Id);
 
-		void FillPostsView (const QList<Entry> entries);
-		void FillDraftsView (const QList<Entry> entries);
+		void FillPostsView (const QList<Entry>& entries);
+		void FillDraftsView (const QList<Entry>& entries);
 
 	private slots:
 		void handleCurrentAccountChanged (int id);

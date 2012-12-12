@@ -59,7 +59,7 @@ namespace Blogique
 	, OpenEntryInCurrentTab_ (new QAction (tr ("Open here"), this))
 	, LoadLocalEntries_ (new QAction (tr ("Local entries"), this))
 	, DraftID_ (-1)
-	, EventID_ (-1)
+	, EntryID_ (-1)
 	{
 		Ui_.setupUi (this);
 
@@ -76,7 +76,7 @@ namespace Blogique
 
 		SetToolBarActions ();
 
-		SetDeafultSideWidgets ();
+		SetDefaultSideWidgets ();
 
 		const int accCount = Core::Instance ().GetAccounts ().count ();
 		if (accCount == 1)
@@ -144,33 +144,33 @@ namespace Blogique
 
 			switch (ibsw->GetWidgetType ())
 			{
-				case SideWidgetType::PostOptionsSideWidget:
-				{
-					ibsw->SetPostOptions (e.PostOptions_);
-					auto ipow = qobject_cast<IPostOptionsWidget*> (w);
-					if (!ipow)
-						break;
+			case SideWidgetType::PostOptionsSideWidget:
+			{
+				ibsw->SetPostOptions (e.PostOptions_);
+				auto ipow = qobject_cast<IPostOptionsWidget*> (w);
+				if (!ipow)
+					break;
 
-					ipow->SetTags (e.Tags_);
-					ipow->SetPostDate (e.Date_);
-					break;
-				}
-				case SideWidgetType::CustomSideWidget:
-					ibsw->SetCustomData (e.CustomData_);
-					break;
-				default:
-					break;
+				ipow->SetTags (e.Tags_);
+				ipow->SetPostDate (e.Date_);
+				break;
+			}
+			case SideWidgetType::CustomSideWidget:
+				ibsw->SetCustomData (e.CustomData_);
+				break;
+			default:
+				break;
 			}
 		}
 
 		if (isDraft)
 		{
 			DraftID_ = e.EntryId_;
-			EventID_ = -1;
+			EntryID_ = -1;
 		}
 		else
 		{
-			EventID_ = e.EntryId_;
+			EntryID_ = e.EntryId_;
 			DraftID_ = -1;
 		}
 	}
@@ -210,44 +210,38 @@ namespace Blogique
 
 	void BlogiqueWidget::SetToolBarActions ()
 	{
-		Ui_.NewEntry_->setIcon (Core::Instance ()
-				.GetCoreProxy ()->GetIcon ("document-new"));
+		Ui_.NewEntry_->setProperty ("ActionIcon", "document-new");
 		ToolBar_->addAction (Ui_.NewEntry_);
 		connect (Ui_.NewEntry_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (newEntry ()));
 
-		Ui_.SaveEntry_->setIcon (Core::Instance ()
-				.GetCoreProxy ()->GetIcon ("document-save"));
+		Ui_.SaveEntry_->setProperty ("ActionIcon", "document-save");
 		ToolBar_->addAction (Ui_.SaveEntry_);
 		connect (Ui_.SaveEntry_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (saveEntry ()));
 
-		Ui_.SaveNewEntry_->setIcon (Core::Instance ()
-				.GetCoreProxy ()->GetIcon ("document-save-as"));
+		Ui_.SaveNewEntry_->setProperty ("ActionIcon", "document-save-as");
 		ToolBar_->addAction (Ui_.SaveNewEntry_);
 		connect (Ui_.SaveNewEntry_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (saveNewEntry ()));
 
-		Ui_.Submit_->setIcon (Core::Instance ()
-				.GetCoreProxy ()->GetIcon ("svn-commit"));
+		Ui_.Submit_->setProperty ("ActionIcon", "svn-commit");
 		ToolBar_->addAction (Ui_.Submit_);
 		connect (Ui_.Submit_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (submit ()));
 
-		Ui_.OpenInBrowser_->setIcon (Core::Instance ()
-				.GetCoreProxy ()->GetIcon ("applications-internet"));
+		Ui_.OpenInBrowser_->setProperty ("ActionIcon", "applications-internet");
 		ToolBar_->addAction (Ui_.OpenInBrowser_);
 
-		Ui_.UpdateProfile_->setIcon (Core::Instance ()
-				.GetCoreProxy ()->GetIcon ("view-refresh"));
+		Ui_.UpdateProfile_->setProperty ("ActionIcon", "view-refresh");
 
 		ToolBar_->addSeparator ();
 
@@ -269,7 +263,7 @@ namespace Blogique
 		PostTargetBox_ = new QComboBox;
 	}
 
-	void BlogiqueWidget::SetDeafultSideWidgets ()
+	void BlogiqueWidget::SetDefaultSideWidgets ()
 	{
 		if (!Ui_.CalendarSplitter_->restoreState (XmlSettingsManager::Instance ()
 				.property ("CalendarSplitterPosition").toByteArray ()))
@@ -364,27 +358,27 @@ namespace Blogique
 
 			switch (ibsw->GetWidgetType ())
 			{
-				case SideWidgetType::PostOptionsSideWidget:
-				{
-					ibsw->SetPostOptions (QVariantMap ());
-					auto ipow = qobject_cast<IPostOptionsWidget*> (w);
-					if (!ipow)
-						continue;
+			case SideWidgetType::PostOptionsSideWidget:
+			{
+				ibsw->SetPostOptions (QVariantMap ());
+				auto ipow = qobject_cast<IPostOptionsWidget*> (w);
+				if (!ipow)
+					continue;
 
-					ipow->SetPostDate (QDateTime::currentDateTime ());
-					ipow->SetTags (QStringList ());
-					break;
-				}
-				case SideWidgetType::CustomSideWidget:
-					ibsw->SetCustomData (QVariantMap ());
-					break;
-				default:
-					break;
+				ipow->SetPostDate (QDateTime::currentDateTime ());
+				ipow->SetTags (QStringList ());
+				break;
+			}
+			case SideWidgetType::CustomSideWidget:
+				ibsw->SetCustomData (QVariantMap ());
+				break;
+			default:
+				break;
 			}
 		}
 	}
 
-	QList<QStandardItem*> BlogiqueWidget::CreateItemsToView (const Entry& entry) const
+	QList<QStandardItem*> BlogiqueWidget::CreateItemsRow (const Entry& entry) const
 	{
 		QStandardItem *dateItem = new QStandardItem (entry.Date_
 				.toString ("dd-MM-yyyy hh:mm"));
@@ -453,8 +447,8 @@ namespace Blogique
 		e.PostOptions_ = postOptions;
 		e.CustomData_ = customData;
 
-		if (EventID_ > 0)
-			e.EntryId_ = EventID_;
+		if (EntryID_ > 0)
+			e.EntryId_ = EntryID_;
 		else if (DraftID_ > 0)
 			e.EntryId_ = DraftID_;
 
@@ -562,12 +556,12 @@ namespace Blogique
 		}
 	}
 
-	void BlogiqueWidget::FillPostsView (const QList<Entry> entries)
+	void BlogiqueWidget::FillPostsView (const QList<Entry>& entries)
 	{
 		PostsViewModel_->removeRows (0, PostsViewModel_->rowCount ());
 		for (const auto& entry : entries)
 		{
-			const auto& items = CreateItemsToView (entry);
+			const auto& items = CreateItemsRow (entry);
 			if (items.isEmpty ())
 				continue;
 
@@ -577,12 +571,12 @@ namespace Blogique
 		Ui_.PostsView_->resizeColumnToContents (0);
 	}
 
-	void BlogiqueWidget::FillDraftsView (const QList<Entry> entries)
+	void BlogiqueWidget::FillDraftsView (const QList<Entry>& entries)
 	{
 		DraftsViewModel_->removeRows (0, DraftsViewModel_->rowCount ());
 		for (const auto& entry : entries)
 		{
-			const auto& items = CreateItemsToView (entry);
+			const auto& items = CreateItemsRow (entry);
 			if (items.isEmpty ())
 				continue;
 
@@ -678,6 +672,8 @@ namespace Blogique
 	void BlogiqueWidget::newEntry ()
 	{
 		//TODO ask about save.
+		DraftID_ = -1;
+		EntryID_ = -1;
 		ClearEntry ();
 	}
 
@@ -739,11 +735,11 @@ namespace Blogique
 			event;
 
 		if (!e.IsEmpty ())
-			if (EventID_ > 0)
+			if (EntryID_ > 0)
 			{
 				QMessageBox mbox (QMessageBox::Question,
 						"LeechCraft",
-						tr ("Do you want to update entry or to post new?"),
+						tr ("Do you want to update entry or to post new one?"),
 						QMessageBox::Yes | QMessageBox::Cancel,
 						this);
 				mbox.setDefaultButton (QMessageBox::Cancel);

@@ -64,18 +64,18 @@ namespace Metida
 	{
 		switch (LT_)
 		{
-			case LoadType::LoadLastEvents:
-				XmlSettingsManager::Instance ()
-						.setProperty ("LoadEntriesToView", Ui_.EntriesCount_->value ());
-				XmlSettingsManager::Instance ()
-						.setProperty ("LoadLastAsk", !Ui_.UpdateAsk_->isChecked ());
-				break;
-			case LoadType::LoadChangesEvents:
-				XmlSettingsManager::Instance ()
-						.setProperty ("ChangedDateToView", QDateTime::currentDateTime ());
-				XmlSettingsManager::Instance ()
-						.setProperty ("LoadChangedAsk", !Ui_.UpdateAsk_->isChecked ());
-				break;
+		case LoadType::LoadLastEvents:
+			XmlSettingsManager::Instance ()
+					.setProperty ("LoadEntriesToView", Ui_.EntriesCount_->value ());
+			XmlSettingsManager::Instance ()
+					.setProperty ("LoadLastAsk", !Ui_.UpdateAsk_->isChecked ());
+			break;
+		case LoadType::LoadChangesEvents:
+			XmlSettingsManager::Instance ()
+					.setProperty ("ChangedDateToView", QDateTime::currentDateTime ());
+			XmlSettingsManager::Instance ()
+					.setProperty ("LoadChangedAsk", !Ui_.UpdateAsk_->isChecked ());
+			break;
 		};
 		QDialog::accept ();
 	}

@@ -347,8 +347,7 @@ namespace Metida
 
 				for (const auto& field : friendEntry.toList ())
 				{
-					LJParserTypes::LJParseProfileEntry fieldEntry =
-							field.value<LJParserTypes::LJParseProfileEntry> ();
+					auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
 					if (fieldEntry.Name () == "defaultpicurl")
 						fr->SetAvatarUrl (fieldEntry.ValueToUrl ());
 					else if (fieldEntry.Name () == "bgcolor")
@@ -402,8 +401,7 @@ namespace Metida
 			LJEventProperties props;
 			for (const auto& prop : data)
 			{
-				LJParserTypes::LJParseProfileEntry propsFieldEntry =
-						prop.value<LJParserTypes::LJParseProfileEntry> ();
+				auto propsFieldEntry = prop.value<LJParserTypes::LJParseProfileEntry> ();
 				if (propsFieldEntry.Name () == "picture_keyword")
 					props.PostAvatar_ = propsFieldEntry.ValueToString ();
 				else if (propsFieldEntry.Name () == "opt_screening")
@@ -430,8 +428,7 @@ namespace Metida
 			LJEvent ljEvent;
 			for (const auto& field : data.toList ())
 			{
-				LJParserTypes::LJParseProfileEntry fieldEntry =
-						field.value<LJParserTypes::LJParseProfileEntry> ();
+				auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
 				if (fieldEntry.Name () == "itemid")
 					ljEvent.ItemID_ = fieldEntry.ValueToLongLong ();
 				else if (fieldEntry.Name () == "subject")
@@ -490,7 +487,7 @@ namespace Metida
 		QList<LJEvent> events;
 		const auto& firstStructElement = document.elementsByTagName ("struct");
 		if (firstStructElement.at (0).isNull ())
-			return events;;
+			return events;
 
 		const auto& members = firstStructElement.at (0).childNodes ();
 		for (int i = 0, count = members.count (); i < count; ++i)
