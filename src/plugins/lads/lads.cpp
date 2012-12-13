@@ -22,8 +22,14 @@
 #include <QDBusReply>
 #include <QDBusConnectionInterface>
 #include <QAction>
+#include <QTimer>
+#include <QMenuBar>
+#include <QMainWindow>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/entitytesthandleresult.h>
 #include <interfaces/imwproxy.h>
+
 
 namespace LeechCraft
 {
@@ -31,10 +37,13 @@ namespace Lads
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		UnityDetected_ = false;	
 		auto sb = QDBusConnection::sessionBus ();
-		const auto& services = sb.interface ()->registeredServiceNames ().value ();
 		Action_ = 0;
 		Proxy_ = proxy;
+		MenuBar_ = new QMenuBar (0);
+		MW_ = Proxy_->GetMainWindow ();
+		const auto& services = sb.interface ()->registeredServiceNames ().value ();
 		if (services.contains ("com.canonical.Unity"))
 		{
 			Action_ = new QAction (tr ("Show/hide LeechCraft window"), this);
@@ -42,6 +51,8 @@ namespace Lads
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showHideMain ()));
+			UnityDetected_ = true;
+			MW_->setMenuBar (MenuBar_);
 		}
 	}
 
@@ -73,6 +84,23 @@ namespace Lads
 		static QIcon icon (":/resources/images/lads.svg");
 		return icon;
 	}
+	
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Core.Plugins/1.0";
+		return result;
+	}
+
+	void Plugin::hookGonnaFillMenu (IHookProxy_ptr)
+	{
+		if (!UnityDetected_)
+			return;
+		
+		QTimer::singleShot (0,
+				this,
+				SLOT (fillMenu ()));
+	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
 	{
@@ -86,6 +114,59 @@ namespace Lads
 	{
 		Proxy_->GetMWProxy ()->ToggleVisibility ();
 	}
+	
+	void Plugin::handleGotActions (const QList<QAction*>&, ActionsEmbedPlace aep)
+	{
+		if (!UnityDetected_)
+			return;
+		
+		if (aep != ActionsEmbedPlace::ToolsMenu)
+			return;
+
+		MenuBar_->clear ();
+		QTimer::singleShot (0,
+				this,
+				SLOT (fillMenu ()));
+	}
+	
+	void Plugin::fillMenu ()
+	{
+		if (!UnityDetected_)
+			return;
+		
+		auto menu = Proxy_->GetMWProxy ()->GetMainMenu ();
+
+		QMenu *lcMenu = 0;
+		QList<QAction*> firstLevelActions;
+		Q_FOREACH (auto action, menu->actions ())
+			if (action->menu ())
+			{
+				MenuBar_->addAction (action);
+				if (!lcMenu)
+					lcMenu = action->menu ();
+			}
+			else
+			{
+				if (action->menuRole () == QAction::TextHeuristicRole)
+					action->setMenuRole (QAction::ApplicationSpecificRole);
+				firstLevelActions << action;
+			}
+
+		Q_FOREACH (auto act, firstLevelActions)
+			lcMenu->addAction (act);
+
+		if (!lcMenu->actions ().isEmpty ())
+			MenuBar_->addMenu (lcMenu);
+
+		const auto& actors = Proxy_->GetPluginsManager ()->
+				GetAllCastableRoots<IActionsExporter*> ();
+		Q_FOREACH (auto actor, actors)
+			connect (actor,
+					SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+					this,
+					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
+	}
+	
 }
 }
 
