@@ -44,6 +44,7 @@ namespace Lads
 		QMenuBar *MenuBar_;
 		ICoreProxy_ptr Proxy_;
 		QMainWindow *MW_;
+		bool UnityDetected;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -52,6 +53,7 @@ namespace Lads
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+		void SetUnityDetected (bool Flag);
 		
 		QSet<QByteArray> GetPluginClasses () const;
 
