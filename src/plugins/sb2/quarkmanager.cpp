@@ -17,8 +17,6 @@
  **********************************************************************/
 
 #include "quarkmanager.h"
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/ptree.hpp>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QStandardItem>
@@ -27,6 +25,7 @@
 #include <QDialogButtonBox>
 #include <QFile>
 #include <QtDebug>
+#include <qjson/parser.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include "viewmanager.h"
 #include "sbview.h"
@@ -122,12 +121,18 @@ namespace SB2
 		if (manifestName.isEmpty ())
 			return;
 
-		boost::property_tree::ptree pt;
-		boost::property_tree::read_json (manifestName.toUtf8 ().constData (), pt);
+		QFile file (manifestName);
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open manifest file"
+					<< file.errorString ();
+			return;
+		}
 
-		Name_ = QString::fromUtf8 (pt.get<std::string> ("quarkName").c_str ());
-		for (const auto& v : pt.get_child ("areas"))
-			Areas_ << QString::fromUtf8 (v.second.data ().c_str ());
+		const auto& varMap = QJson::Parser ().parse (&file).toMap ();
+		Name_ = varMap ["quarkName"].toString ();
+		Areas_ = varMap ["areas"].toStringList ();
 	}
 
 	void QuarkManager::CreateSettings ()
