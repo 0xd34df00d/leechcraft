@@ -17,10 +17,9 @@
  **********************************************************************/
 
 #include "rockradiolistfetcher.h"
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
 #include <QNetworkRequest>
 #include <QtDebug>
+#include <qjson/parser.h>
 
 namespace LeechCraft
 {
@@ -36,19 +35,19 @@ namespace HotStreams
 	{
 		QList<StreamInfo> result;
 
-		boost::property_tree::ptree pt;
-		std::istringstream istr (data.constData ());
-		boost::property_tree::read_json (istr, pt);
+		const auto& map = QJson::Parser ().parse (data);
 
-		for (const auto& v : pt.get_child (""))
+		for (const auto& var : map.toList ())
 		{
-			const QByteArray key (v.second.get<std::string> ("key").c_str ());
+			const auto& map = var.toMap ();
+
+			const auto& key = map ["key"].toByteArray ();
 			StreamInfo info =
 			{
-				QString::fromUtf8 (v.second.get<std::string> ("name").c_str ()),
-				QString::fromUtf8 (v.second.get<std::string> ("description").c_str ()),
+				map ["name"].toString (),
+				map ["description"].toString (),
 				QStringList (),
-				QUrl (v.second.get<std::string> ("playlist").c_str ()),
+				QUrl (map ["playlist"].toByteArray ()),
 				QUrl ("http://www.rockradio.com/images/channels/" + key + ".jpg"),
 				QString (),
 				"pls"

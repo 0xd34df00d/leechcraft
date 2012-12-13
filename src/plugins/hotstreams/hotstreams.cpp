@@ -27,12 +27,12 @@
 
 #ifdef HAVE_QJSON
 #include "audioaddictstreamfetcher.h"
+#include "rockradiolistfetcher.h"
 #endif
 
 #include "radiostation.h"
 #include "roles.h"
 #include "stringlistradiostation.h"
-#include "rockradiolistfetcher.h"
 
 Q_DECLARE_METATYPE (QList<QUrl>);
 
@@ -56,13 +56,13 @@ namespace HotStreams
 		sky->setEditable (false);
 		sky->setIcon (QIcon (":/hotstreams/resources/images/skyfm.png"));
 		Roots_ ["sky"] = sky;
-#endif
 
 		auto rr = new QStandardItem ("RockRadio");
 		rr->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		rr->setEditable (false);
 		rr->setIcon (QIcon (":/hotstreams/resources/images/rockradio.png"));
 		Roots_ ["rr"] = rr;
+#endif
 
 		auto somafm = new QStandardItem ("SomaFM");
 		somafm->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
@@ -146,9 +146,6 @@ namespace HotStreams
 				item->removeRow (0);
 		};
 
-		clearRoot (Roots_ ["rr"]);
-		new RockRadioListFetcher (Roots_ ["rr"], nam, this);
-
 		clearRoot (Roots_ ["somafm"]);
 		new SomaFMListFetcher (Roots_ ["somafm"], nam, this);
 
@@ -163,6 +160,9 @@ namespace HotStreams
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
 
 #ifdef HAVE_QJSON
+		clearRoot (Roots_ ["rr"]);
+		new RockRadioListFetcher (Roots_ ["rr"], nam, this);
+
 		clearRoot (Roots_ ["di"]);
 		new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::DI,
 				Roots_ ["di"], nam, this);
