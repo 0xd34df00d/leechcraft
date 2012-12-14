@@ -65,7 +65,7 @@ namespace SB2
 					const auto r = qRed (color) * (1 - Strength_) + grayPart;
 					const auto g = qGreen (color) * (1 - Strength_) + grayPart;
 					const auto b = qBlue (color) * (1 - Strength_) + grayPart;
-					img.setPixel (x, y, qRgb (r, g, b));
+					img.setPixel (x, y, qRgba (r, g, b, qAlpha (color)));
 				}
 
 			painter->drawImage (offset, img);
