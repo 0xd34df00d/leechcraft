@@ -11,7 +11,6 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	lemon.cpp
-	actionsmanager.cpp
 	core.cpp
 	modelmanager.cpp
 	)
