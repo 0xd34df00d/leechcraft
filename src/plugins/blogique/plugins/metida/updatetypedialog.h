@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include <QString>
-#include "entryoptions.h"
+#include <QDialog>
+#include "ui_updatetypedialog.h"
 
 namespace LeechCraft
 {
@@ -27,21 +27,31 @@ namespace Blogique
 {
 namespace Metida
 {
-namespace MetidaUtils
-{
-	QString GetLocalizedErrorMessage (int errorCode);
+	class UpdateTypeDialog : public QDialog
+	{
+		Q_OBJECT
 
-	QString GetStringForAccess (Access access);
-	Access GetAccessForString (const QString& access);
+		Ui::UpdateTypeDialog Ui_;
 
-	QString GetStringForAdultContent (AdultContent adult);
-	AdultContent GetAdultContentFromString (const QString& str);
+	public:
+		enum LoadType
+		{
+			LoadLastEvents,
+			LoadChangesEvents
+		};
 
-	CommentsManagement GetCommentsManagmentFromString (const QString& str);
-	CommentsManagement GetCommentsManagmentFromInt (int cm);
-	QString GetStringFromCommentsManagment (CommentsManagement cm);
+	private:
+		LoadType LT_;
+
+	public:
+		UpdateTypeDialog (LoadType lt, QWidget *parent = 0);
+
+		int GetCount () const;
+		QDateTime GetDateTime () const;
+
+	public slots:
+		void accept ();
+	};
 }
 }
 }
-}
-

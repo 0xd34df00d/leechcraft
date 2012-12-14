@@ -16,32 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QString>
-#include "entryoptions.h"
+#include "backupmanager.h"
+#include "interfaces/blogique/iaccount.h"
+#include "core.h"
+#include "accountsselectdialog.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Metida
-{
-namespace MetidaUtils
-{
-	QString GetLocalizedErrorMessage (int errorCode);
+	BackupManager::BackupManager (QObject *parent)
+	: QObject (parent)
+	{
+	}
 
-	QString GetStringForAccess (Access access);
-	Access GetAccessForString (const QString& access);
+	void BackupManager::backup ()
+	{
+		const auto& accounts = Core::Instance ().GetAccounts ();
+		AccountsSelectDialog dlg;
+		dlg.FillAccounts (accounts);
+		if (dlg.exec () == QDialog::Rejected)
+			return;
 
-	QString GetStringForAdultContent (AdultContent adult);
-	AdultContent GetAdultContentFromString (const QString& str);
+		for (auto acc : dlg.GetSelectedAccounts ())
+			acc->backup ();
+	}
 
-	CommentsManagement GetCommentsManagmentFromString (const QString& str);
-	CommentsManagement GetCommentsManagmentFromInt (int cm);
-	QString GetStringFromCommentsManagment (CommentsManagement cm);
+	void BackupManager::backup (IAccount*)
+	{
+	}
+
 }
 }
-}
-}
-

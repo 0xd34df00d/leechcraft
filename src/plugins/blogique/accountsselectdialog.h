@@ -18,30 +18,33 @@
 
 #pragma once
 
-#include <QString>
-#include "entryoptions.h"
+#include <QDialog>
+#include "ui_accountsselectdialog.h"
+
+class QStandardItem;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Metida
-{
-namespace MetidaUtils
-{
-	QString GetLocalizedErrorMessage (int errorCode);
+	class IAccount;
 
-	QString GetStringForAccess (Access access);
-	Access GetAccessForString (const QString& access);
+	class AccountsSelectDialog : public QDialog
+	{
+		Q_OBJECT
 
-	QString GetStringForAdultContent (AdultContent adult);
-	AdultContent GetAdultContentFromString (const QString& str);
+		Ui::AccountsSelectDialog Ui_;
 
-	CommentsManagement GetCommentsManagmentFromString (const QString& str);
-	CommentsManagement GetCommentsManagmentFromInt (int cm);
-	QString GetStringFromCommentsManagment (CommentsManagement cm);
-}
-}
+		QStandardItemModel *Model_;
+		QHash<QStandardItem*, IAccount*> Item2Accotun_;
+
+	public:
+		AccountsSelectDialog (QWidget *parent = 0);
+
+		void FillAccounts (const QList<IAccount*>& accounts);
+		QList<IAccount*> GetSelectedAccounts () const;
+	};
 }
 }
 

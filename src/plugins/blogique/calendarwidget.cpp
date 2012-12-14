@@ -16,32 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QString>
-#include "entryoptions.h"
+#include "calendarwidget.h"
+#include <QPainter>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Metida
-{
-namespace MetidaUtils
-{
-	QString GetLocalizedErrorMessage (int errorCode);
+	CalendarWidget::CalendarWidget (QWidget *parent)
+	: QCalendarWidget (parent)
+	{
+	}
 
-	QString GetStringForAccess (Access access);
-	Access GetAccessForString (const QString& access);
+	void CalendarWidget::SetStatistic (const QMap<QDate, int>& statistic)
+	{
+		Date2EntriesCount_ = statistic;
+		update ();
+	}
 
-	QString GetStringForAdultContent (AdultContent adult);
-	AdultContent GetAdultContentFromString (const QString& str);
+	void CalendarWidget::paintCell (QPainter *painter, const QRect& rect, const QDate& date) const
+	{
+		QCalendarWidget::paintCell (painter, rect, date);
 
-	CommentsManagement GetCommentsManagmentFromString (const QString& str);
-	CommentsManagement GetCommentsManagmentFromInt (int cm);
-	QString GetStringFromCommentsManagment (CommentsManagement cm);
+		if (Date2EntriesCount_.contains (date) &&
+				Date2EntriesCount_ [date])
+		{
+			painter->save ();
+			painter->setBrush (QBrush (Qt::blue));
+			const QPointF points [3] =
+			{
+				QPointF (rect.x (), rect.bottom () - 8),
+				QPointF (rect.x () + 8, rect.bottom ()),
+				QPointF (rect.x (), rect.bottom ())
+			};
+			painter->drawPolygon (points, 3);
+			painter->restore ();
+		}
+	}
 }
 }
-}
-}
-
