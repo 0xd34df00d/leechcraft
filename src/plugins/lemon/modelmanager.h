@@ -44,6 +44,8 @@ namespace Lemon
 
 		struct InterfaceInfo
 		{
+			QString Name_;
+
 			QStandardItem *Item_;
 			qint64 PrevRead_;
 			qint64 PrevWritten_;

@@ -21,6 +21,8 @@
 #include <QNetworkConfigurationManager>
 #include <QNetworkSession>
 #include <QTimer>
+#include "core.h"
+#include "platformbackend.h"
 
 namespace LeechCraft
 {
@@ -111,14 +113,17 @@ namespace Lemon
 			return;
 
 		auto iface = sess->interface ();
-		const auto& ifaceId = iface.hardwareAddress ();
+		const auto& ifaceId = iface.name ();
 		const auto& config = sess->configuration ();
 
 		if (!ActiveInterfaces_.contains (ifaceId))
 		{
 			auto item = new QStandardItem;
 			Model_->appendRow (item);
-			ActiveInterfaces_ [ifaceId] = InterfaceInfo (item);
+
+			InterfaceInfo info (item);
+			info.Name_ = ifaceId;
+			ActiveInterfaces_ [ifaceId] = info;
 		}
 
 		auto& info = ActiveInterfaces_ [ifaceId];
@@ -136,19 +141,34 @@ namespace Lemon
 
 	void ModelManager::updateCounters ()
 	{
+		auto backend = Core::Instance ().GetPlatformBackend ();
+		if (!backend)
+			return;
+
+		backend->update (ActiveInterfaces_.keys ());
+
+		auto updateCounts = [] (const qint64 now, qint64& prev, QList<qint64>& list) -> qint64
+		{
+			const auto diff = now - prev;
+			list << diff;
+			if (list.size () > 500)
+				list.erase (list.begin ());
+			prev = now;
+			return diff;
+		};
+
 		for (auto& info : ActiveInterfaces_)
 		{
-			const auto newRead = info.LastSession_->bytesReceived ();
-			const auto readDiff = newRead - info.PrevRead_;
-			info.DownSpeeds_ << readDiff;
-			info.PrevRead_ = newRead;
+			const auto& name = info.Name_;
 
-			const auto newWritten = info.LastSession_->bytesWritten ();
-			const auto writeDiff = newWritten - info.PrevWritten_;
-			info.UpSpeeds_ << newWritten - info.PrevWritten_;
-			info.PrevWritten_ = newWritten;
+			const auto& bytesStats = backend->GetCurrentNumBytes (name);
 
-			info.Item_->setData (readDiff > 1024 || writeDiff > 1024, IfacesModel::Roles::IsActive);
+			auto readDiff = updateCounts (bytesStats.Down_, info.PrevRead_, info.DownSpeeds_);
+			auto writeDiff = updateCounts (bytesStats.Up_, info.PrevWritten_, info.UpSpeeds_);
+
+			qDebug () << name << readDiff << writeDiff;
+			info.Item_->setData (readDiff > 3 * 1024 || writeDiff > 3 * 1024,
+					IfacesModel::Roles::IsActive);
 		}
 	}
 }

@@ -28,7 +28,7 @@ Rectangle {
                 source: "image://ThemeIcons/" + iconName + '/' + width
 
                 effect: Colorize {
-                    strength: isActive ? 0 : 0.5
+                    strength: isActive ? 0.5 : 0
                     color: "green"
 
                     Behavior on strength { PropertyAnimation {} }
