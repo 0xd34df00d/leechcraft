@@ -45,6 +45,13 @@ Rectangle {
                 anchors.fill: parent
                 source: "image://ThemeIcons/" + iconName + '/' + width
             }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onHovered: Lemon_proxy.showGraph(ifaceName)
+            }
         }
     }
 }

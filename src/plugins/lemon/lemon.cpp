@@ -21,7 +21,7 @@
 #include <QAbstractItemModel>
 #include <util/sys/paths.h>
 #include "core.h"
-#include "modelmanager.h"
+#include "trafficmanager.h"
 
 namespace LeechCraft
 {
@@ -31,10 +31,10 @@ namespace Lemon
 	{
 		Core::Instance ().SetProxy (proxy);
 
-		ModelMgr_ = new ModelManager;
+		TrafficMgr_ = new TrafficManager;
 
 		PanelComponent_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "lemon", "LemonQuark.qml"));
-		PanelComponent_.DynamicProps_ << QPair<QString, QObject*> ("Lemon_infoModel", ModelMgr_->GetModel ());
+		PanelComponent_.DynamicProps_ << QPair<QString, QObject*> ("Lemon_infoModel", TrafficMgr_->GetModel ());
 		PanelComponent_.DynamicProps_ << QPair<QString, QObject*> ("Lemon_proxy", this);
 	}
 
@@ -70,6 +70,10 @@ namespace Lemon
 	QuarkComponents_t Plugin::GetComponents () const
 	{
 		return { PanelComponent_ };
+	}
+
+	void Plugin::showGraph (const QString& ifaceName)
+	{
 	}
 }
 }

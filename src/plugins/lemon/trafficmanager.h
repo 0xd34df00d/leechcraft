@@ -35,7 +35,7 @@ namespace LeechCraft
 {
 namespace Lemon
 {
-	class ModelManager : public QObject
+	class TrafficManager : public QObject
 	{
 		Q_OBJECT
 
@@ -64,7 +64,7 @@ namespace Lemon
 		};
 		QHash<QString, InterfaceInfo> ActiveInterfaces_;
 	public:
-		ModelManager (QObject* = 0);
+		TrafficManager (QObject* = 0);
 
 		QAbstractItemModel* GetModel () const;
 	private slots:

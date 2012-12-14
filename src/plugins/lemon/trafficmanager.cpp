@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "modelmanager.h"
+#include "trafficmanager.h"
 #include <QStandardItemModel>
 #include <QNetworkConfigurationManager>
 #include <QNetworkSession>
@@ -60,7 +60,7 @@ namespace Lemon
 		};
 	}
 
-	ModelManager::ModelManager (QObject *parent)
+	TrafficManager::TrafficManager (QObject *parent)
 	: QObject (parent)
 	, Model_ (new IfacesModel (this))
 	, ConfManager_ (new QNetworkConfigurationManager (this))
@@ -83,7 +83,7 @@ namespace Lemon
 		timer->start (1000);
 	}
 
-	QAbstractItemModel* ModelManager::GetModel () const
+	QAbstractItemModel* TrafficManager::GetModel () const
 	{
 		return Model_;
 	}
@@ -110,7 +110,7 @@ namespace Lemon
 		};
 	}
 
-	void ModelManager::addConfiguration (const QNetworkConfiguration& conf)
+	void TrafficManager::addConfiguration (const QNetworkConfiguration& conf)
 	{
 		static NetIcons icons;
 
@@ -154,7 +154,7 @@ namespace Lemon
 		info.LastSession_ = sess;
 	}
 
-	void ModelManager::updateCounters ()
+	void TrafficManager::updateCounters ()
 	{
 		auto backend = Core::Instance ().GetPlatformBackend ();
 		if (!backend)

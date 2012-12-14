@@ -26,7 +26,7 @@ namespace LeechCraft
 {
 namespace Lemon
 {
-	class ModelManager;
+	class TrafficManager;
 	class ActionsManager;
 
 	class Plugin : public QObject
@@ -36,7 +36,7 @@ namespace Lemon
 		Q_OBJECT
 		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
-		ModelManager *ModelMgr_;
+		TrafficManager *TrafficMgr_;
 		QuarkComponent PanelComponent_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -48,6 +48,8 @@ namespace Lemon
 		QIcon GetIcon () const;
 
 		QuarkComponents_t GetComponents () const;
+	public slots:
+		void showGraph (const QString&);
 	};
 }
 }

@@ -16,7 +16,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	lemon.cpp
 	core.cpp
-	modelmanager.cpp
+	trafficmanager.cpp
 	platformbackend.cpp
 	linuxplatformbackend.cpp
 	)
