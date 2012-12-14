@@ -78,6 +78,8 @@ namespace SB2
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
 
+		QString longestText;
+
 		auto ictw = proxy->GetTabWidget ();
 		for (auto w : widgets)
 		{
@@ -91,7 +93,11 @@ namespace SB2
 			}
 
 			auto item = new QStandardItem;
-			item->setData (ictw->TabText (idx), TabsListModel::Roles::TabName);
+
+			const auto& tabText = ictw->TabText (idx);
+			item->setData (tabText, TabsListModel::Roles::TabName);
+			if (tabText.size () > longestText.size ())
+				longestText = tabText;
 
 			const auto& px = ictw->TabIcon (idx).pixmap (32, 32);
 			item->setData (Util::GetAsBase64Src (px.toImage ()), TabsListModel::Roles::TabIcon);
@@ -111,6 +117,7 @@ namespace SB2
 		rootContext ()->setContextProperty ("tabsListModel", Model_);
 		rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
+		rootContext ()->setContextProperty ("longestText", longestText);
 		engine ()->addImageProvider ("ThemeIcons", new ThemeImageProvider (proxy));
 		setSource (QUrl::fromLocalFile (file));
 
