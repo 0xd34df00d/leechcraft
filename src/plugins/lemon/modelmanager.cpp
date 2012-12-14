@@ -38,7 +38,10 @@ namespace Lemon
 				IfaceName = Qt::UserRole + 1,
 				BearerType,
 				IconName,
-				IsActive
+				UpSpeed,
+				DownSpeed,
+				MaxUpSpeed,
+				MaxDownSpeed
 			};
 
 			IfacesModel (QObject *parent)
@@ -48,7 +51,10 @@ namespace Lemon
 				roleNames [Roles::IfaceName] = "ifaceName";
 				roleNames [Roles::BearerType] = "bearerType";
 				roleNames [Roles::IconName] = "iconName";
-				roleNames [Roles::IsActive] = "isActive";
+				roleNames [Roles::UpSpeed] = "upSpeed";
+				roleNames [Roles::DownSpeed] = "downSpeed";
+				roleNames [Roles::MaxUpSpeed] = "maxUpSpeed";
+				roleNames [Roles::MaxDownSpeed] = "maxDownSpeed";
 				setRoleNames (roleNames);
 			}
 		};
@@ -123,6 +129,16 @@ namespace Lemon
 
 			InterfaceInfo info (item);
 			info.Name_ = ifaceId;
+
+			auto backend = Core::Instance ().GetPlatformBackend ();
+			if (backend)
+			{
+				backend->update ({ ifaceId });
+				const auto& bytesStats = backend->GetCurrentNumBytes (ifaceId);
+				info.PrevRead_ = bytesStats.Down_;
+				info.PrevWritten_ = bytesStats.Up_;
+			}
+
 			ActiveInterfaces_ [ifaceId] = info;
 		}
 
@@ -132,11 +148,10 @@ namespace Lemon
 		item->setData (iface.humanReadableName (), IfacesModel::Roles::IfaceName);
 		item->setData (config.bearerTypeName (), IfacesModel::Roles::BearerType);
 		item->setData (icons.Icons_ [config.bearerType ()], IfacesModel::Roles::IconName);
-		item->setData (false, IfacesModel::Roles::IsActive);
+		item->setData (0, IfacesModel::Roles::MaxDownSpeed);
+		item->setData (0, IfacesModel::Roles::MaxUpSpeed);
 
 		info.LastSession_ = sess;
-		info.PrevRead_ = sess->bytesReceived ();
-		info.PrevWritten_ = sess->bytesWritten ();
 	}
 
 	void ModelManager::updateCounters ()
@@ -147,28 +162,38 @@ namespace Lemon
 
 		backend->update (ActiveInterfaces_.keys ());
 
-		auto updateCounts = [] (const qint64 now, qint64& prev, QList<qint64>& list) -> qint64
-		{
-			const auto diff = now - prev;
-			list << diff;
-			if (list.size () > 500)
-				list.erase (list.begin ());
-			prev = now;
-			return diff;
-		};
-
 		for (auto& info : ActiveInterfaces_)
 		{
 			const auto& name = info.Name_;
 
 			const auto& bytesStats = backend->GetCurrentNumBytes (name);
 
-			auto readDiff = updateCounts (bytesStats.Down_, info.PrevRead_, info.DownSpeeds_);
-			auto writeDiff = updateCounts (bytesStats.Up_, info.PrevWritten_, info.UpSpeeds_);
+			auto updateCounts = [&info] (const qint64 now, qint64& prev, QList<qint64>& list, IfacesModel::Roles role) -> qint64
+			{
+				const auto diff = now - prev;
 
-			qDebug () << name << readDiff << writeDiff;
-			info.Item_->setData (readDiff > 3 * 1024 || writeDiff > 3 * 1024,
-					IfacesModel::Roles::IsActive);
+				info.Item_->setData (diff, role);
+
+				list << diff;
+				if (list.size () > 500)
+					list.erase (list.begin ());
+
+				prev = now;
+				return diff;
+			};
+
+			updateCounts (bytesStats.Down_,
+					info.PrevRead_, info.DownSpeeds_, IfacesModel::Roles::DownSpeed);
+			updateCounts (bytesStats.Up_,
+					info.PrevWritten_, info.UpSpeeds_, IfacesModel::Roles::UpSpeed);
+
+			auto updateMax = [&info] (const QList<qint64>& speeds, IfacesModel::Roles role)
+			{
+				const auto max = *std::max_element (speeds.begin (), speeds.end ());
+				info.Item_->setData (max, role);
+			};
+			updateMax (info.DownSpeeds_, IfacesModel::Roles::MaxDownSpeed);
+			updateMax (info.UpSpeeds_, IfacesModel::Roles::MaxUpSpeed);
 		}
 	}
 }

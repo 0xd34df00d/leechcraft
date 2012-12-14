@@ -23,16 +23,27 @@ Rectangle {
 
             color: "transparent"
 
+            Rectangle {
+                anchors.left: parent.left
+                anchors.bottom: parent.bottom
+                width: parent.width / 2
+                height: maxDownSpeed ? parent.height * downSpeed / maxDownSpeed : 0
+
+                color: "#bb009900"
+            }
+
+            Rectangle {
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                width: parent.width / 2
+                height: maxUpSpeed ? parent.height * upSpeed / maxUpSpeed : 0
+
+                color: "#bb990000"
+            }
+
             Image {
                 anchors.fill: parent
                 source: "image://ThemeIcons/" + iconName + '/' + width
-
-                effect: Colorize {
-                    strength: isActive ? 0.5 : 0
-                    color: "green"
-
-                    Behavior on strength { PropertyAnimation {} }
-                }
             }
         }
     }
