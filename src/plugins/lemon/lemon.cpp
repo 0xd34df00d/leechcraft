@@ -22,6 +22,7 @@
 #include <util/sys/paths.h>
 #include "core.h"
 #include "trafficmanager.h"
+#include "trafficdialog.h"
 
 namespace LeechCraft
 {
@@ -74,6 +75,9 @@ namespace Lemon
 
 	void Plugin::showGraph (const QString& ifaceName)
 	{
+		auto dia = new TrafficDialog (ifaceName, TrafficMgr_);
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 	}
 }
 }
