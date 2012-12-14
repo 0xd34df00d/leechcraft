@@ -4,6 +4,7 @@ INCLUDE (InitLCPlugin OPTIONAL)
 
 SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 FIND_PACKAGE (Libnl REQUIRED)
+FIND_PACKAGE (Qwt6 REQUIRED)
 
 SET (QT_USE_QTNETWORK TRUE)
 INCLUDE (${QT_USE_FILE})
@@ -12,23 +13,31 @@ INCLUDE_DIRECTORIES (
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LIBNL_INCLUDE_DIR}
+	${Qwt6_INCLUDE_DIR}
 	)
 SET (SRCS
 	lemon.cpp
 	core.cpp
 	trafficmanager.cpp
+	trafficdialog.cpp
 	platformbackend.cpp
 	linuxplatformbackend.cpp
 	)
+SET (FORMS
+	trafficdialog.ui
+	)
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_lemon SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_lemon
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${LIBNL_LIBRARIES}
+	${Qwt6_Qt4_LIBRARY}
 	)
 INSTALL (TARGETS leechcraft_lemon DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (DIRECTORY share/qml/lemon DESTINATION ${LC_QML_DEST})
