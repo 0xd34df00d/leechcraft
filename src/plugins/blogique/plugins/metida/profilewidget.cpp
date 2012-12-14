@@ -159,7 +159,7 @@ namespace Metida
 		FriendsModel_->setHorizontalHeaderLabels ({ tr ("UserName"),
 				tr ("Status"), tr ("FullName"), tr ("Birthday") });
 		Item2Friend_.clear ();
-		Item2FriendGroup_.clear();
+		Item2FriendGroup_.clear ();
 		FillFriends (data.FriendGroups_);
 
 		CommunitiesModel_->clear ();

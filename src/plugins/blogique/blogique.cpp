@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include "accountslistwidget.h"
+#include "backupmanager.h"
 #include "blogiquewidget.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -67,6 +68,18 @@ namespace Blogique
 				SIGNAL (removeTab (QWidget*)),
 				this,
 				SIGNAL (removeTab (QWidget*)));
+
+		BackupBlog_ = new QAction (tr ("Backup"), this);
+		BackupBlog_->setProperty ("ActionIcon", "document-export");
+
+		connect (BackupBlog_,
+				SIGNAL (triggered ()),
+				Core::Instance ().GetBackupManager (),
+				SLOT (backup ()));
+
+		ToolMenu_ = new QMenu ("Blogique");
+		ToolMenu_->setIcon (GetIcon ());
+		ToolMenu_->addAction (BackupBlog_);
 	}
 
 	void Plugin::SecondInit ()
@@ -129,15 +142,25 @@ namespace Blogique
 		Core::Instance ().AddPlugin (plugin);
 	}
 
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace area) const
+	{
+		QList<QAction*> result;
+
+		switch (area)
+		{
+			case ActionsEmbedPlace::ToolsMenu:
+				result << ToolMenu_->menuAction ();
+				break;
+			default:
+				break;
+		}
+
+		return result;
+	}
+
 	void Plugin::CreateTab ()
 	{
-		BlogiqueWidget *blogPage = new BlogiqueWidget ();
-
-		connect (blogPage,
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-
+		BlogiqueWidget *blogPage = Core::Instance ().CreateBlogiqueWidget ();
 		emit addNewTab ("Blogique", blogPage);
 		emit changeTabIcon (blogPage, GetIcon ());
 		emit raiseTab (blogPage);

@@ -69,7 +69,7 @@ namespace Metida
 	private slots:
 		void handleAvatarDownloadFinished ();
 		void handleOtherAvatarDownloadFinished ();
-		
+
 	signals:
 		void profileUpdated ();
 	};

@@ -19,6 +19,8 @@
 #include "core.h"
 #include <QtDebug>
 #include <QTimer>
+#include <QMessageBox>
+#include <QMainWindow>
 #include <interfaces/iplugin2.h>
 #include <util/util.h>
 #include "interfaces/blogique/iaccount.h"
@@ -26,6 +28,8 @@
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "pluginproxy.h"
 #include "localstorage.h"
+#include "backupmanager.h"
+#include "blogiquewidget.h"
 
 namespace LeechCraft
 {
@@ -34,6 +38,7 @@ namespace Blogique
 	Core::Core ()
 	: PluginProxy_ (std::make_shared<PluginProxy> ())
 	, Storage_ (new LocalStorage (this))
+	, BackupManager_ (new BackupManager (this))
 	{
 	}
 
@@ -132,6 +137,22 @@ namespace Blogique
 		return Storage_;
 	}
 
+	BackupManager* Core::GetBackupManager () const
+	{
+		return BackupManager_;
+	}
+
+	BlogiqueWidget* Core::CreateBlogiqueWidget ()
+	{
+		auto newTab = new BlogiqueWidget;
+		connect (newTab,
+				SIGNAL (removeTab (QWidget*)),
+				&Core::Instance (),
+				SIGNAL (removeTab (QWidget*)));
+
+		return newTab;
+	}
+
 	void Core::AddBlogPlatformPlugin (QObject *plugin)
 	{
 		IBloggingPlatformPlugin *ibpp = qobject_cast<IBloggingPlatformPlugin*> (plugin);
@@ -143,7 +164,6 @@ namespace Blogique
 		else
 		{
 			BlogPlatformPlugins_ << plugin;
-
 			handleNewBloggingPlatforms (ibpp->GetBloggingPlatforms ());
 		}
 	}
@@ -186,9 +206,29 @@ namespace Blogique
 		}
 
 		connect (accObj,
-				SIGNAL (entryPosted ()),
+				SIGNAL (entryPosted (QList<Entry>)),
 				this,
-				SLOT (handleEntryPosted ()));
+				SLOT (handleEntryPosted (QList<Entry>)));
+		connect (accObj,
+				SIGNAL (entryRemoved (int)),
+				this,
+				SLOT (handleEntryRemoved (int)));
+		connect (accObj,
+				SIGNAL (entryUpdated (QList<Entry>)),
+				this,
+				SLOT (handleEntryUpdated (QList<Entry>)));
+		connect (accObj,
+				SIGNAL (gotEntries (QList<Entry>)),
+				this,
+				SLOT (handleGotEntries (QList<Entry>)));
+		connect (accObj,
+				SIGNAL (gotEntries2Backup (QList<Entry>)),
+				this,
+				SLOT (handleGotEntries2Backup (QList<Entry>)));
+		connect (accObj,
+				SIGNAL (gettingEntries2BackupFinished ()),
+				this,
+				SLOT (handleGettingEntries2BackupFinished ()));
 
 		emit accountAdded (accObj);
 	}
@@ -219,7 +259,7 @@ namespace Blogique
 					<< sender ();
 			return;
 		}
-		
+
 		emit accountValidated (accObj, validated);
 	}
 
@@ -229,10 +269,79 @@ namespace Blogique
 			acc->updateProfile ();
 	}
 
-	void Core::handleEntryPosted ()
+	void Core::handleEntryPosted (const QList<Entry>& entries)
+	{
+		auto acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+			return;
+		Storage_->SaveEntries (acc->GetAccountID (), entries);
+		emit storageUpdated ();
+
+		SendEntity (Util::MakeNotification ("Blogique",
+				tr ("Entry was posted successfully:") +
+					QString (" <a href=\"%1\">%1</a>\n")
+						.arg (entries.value (0).EntryUrl_.toString ()),
+				Priority::PInfo_));
+	}
+
+	void Core::handleEntryRemoved (int itemId)
+	{
+		auto acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+			return;
+
+		if (QMessageBox::question (Proxy_->GetMainWindow (),
+				"LeechCraft",
+				tr ("Entry was removed successfully.\nRemove entry from local storage?"),
+				QMessageBox::Ok | QMessageBox::No,
+				QMessageBox::No) == QMessageBox::No)
+			Storage_->MoveFromEntriesToDrafts (acc->GetAccountID (), itemId);
+		else
+			Storage_->RemoveEntry (acc->GetAccountID (), itemId);
+
+		emit storageUpdated ();
+	}
+
+	void Core::handleEntryUpdated (const QList<Entry>& entries)
+	{
+		if (entries.isEmpty ())
+			return;
+
+		Storage_->UpdateEntry (entries.first ());
+		emit storageUpdated ();
+
+		SendEntity (Util::MakeNotification ("Blogique",
+				tr ("Entry was updated successfully."),
+				Priority::PInfo_));
+	}
+
+	void Core::handleGotEntries2Backup (const QList<Entry>& entries)
+	{
+		auto acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+			return;
+
+		Storage_->SaveEntries (acc->GetAccountID (), entries);
+		emit storageUpdated ();
+	}
+
+	void Core::handleGettingEntries2BackupFinished ()
 	{
 		SendEntity (Util::MakeNotification ("Blogique",
-				tr ("Entry was posted successfully."), Priority::PInfo_));
+				tr ("Entries were backuped successfully."),
+				Priority::PInfo_));
+		emit storageUpdated ();
+	}
+
+	void Core::handleGotEntries (const QList<Entry>& entries)
+	{
+		auto acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+			return;
+
+		Storage_->SaveEntries (acc->GetAccountID (), entries);
+		emit storageUpdated ();
+		emit gotEntries (entries);
 	}
 
 }
