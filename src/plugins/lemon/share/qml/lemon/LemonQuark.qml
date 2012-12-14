@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import Effects 1.0
+import "../common/"
 
 Rectangle {
     id: rootRect
@@ -23,34 +24,28 @@ Rectangle {
 
             color: "transparent"
 
-            Rectangle {
-                anchors.left: parent.left
-                anchors.bottom: parent.bottom
-                width: parent.width / 2
-                height: maxDownSpeed ? parent.height * downSpeed / maxDownSpeed : 0
-
-                color: "#bb009900"
-            }
-
-            Rectangle {
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                width: parent.width / 2
-                height: maxUpSpeed ? parent.height * upSpeed / maxUpSpeed : 0
-
-                color: "#bb990000"
-            }
-
-            Image {
+            ActionButton {
                 anchors.fill: parent
-                source: "image://ThemeIcons/" + iconName + '/' + width
-            }
+                actionIconURL: "image://ThemeIcons/" + iconName + '/' + width
+                onTriggered: Lemon_proxy.showGraph(ifaceName)
 
-            MouseArea {
-                anchors.fill: parent
-                hoverEnabled: true
+                Rectangle {
+                    anchors.left: parent.left
+                    anchors.bottom: parent.bottom
+                    width: parent.width / 2
+                    height: maxDownSpeed ? parent.height * downSpeed / maxDownSpeed : 0
 
-                onHovered: Lemon_proxy.showGraph(ifaceName)
+                    color: "#44009900"
+                }
+
+                Rectangle {
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    width: parent.width / 2
+                    height: maxUpSpeed ? parent.height * upSpeed / maxUpSpeed : 0
+
+                    color: "#44990000"
+                }
             }
         }
     }
