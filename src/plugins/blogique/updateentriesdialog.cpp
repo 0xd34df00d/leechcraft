@@ -16,32 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QString>
-#include "entryoptions.h"
+#include "updateentriesdialog.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Metida
-{
-namespace MetidaUtils
-{
-	QString GetLocalizedErrorMessage (int errorCode);
+	UpdateEntriesDialog::UpdateEntriesDialog (QWidget *parent)
+	: QDialog (parent)
+	{
+		Ui_.setupUi (this);
 
-	QString GetStringForAccess (Access access);
-	Access GetAccessForString (const QString& access);
+		Ui_.EntriesCount_->setValue (XmlSettingsManager::Instance ()
+				.Property ("LastLocalEntriesToView", 20).toInt ());
+	}
 
-	QString GetStringForAdultContent (AdultContent adult);
-	AdultContent GetAdultContentFromString (const QString& str);
+	int UpdateEntriesDialog::GetCount () const
+	{
+		return  Ui_.EntriesCount_->value ();
+	}
 
-	CommentsManagement GetCommentsManagmentFromString (const QString& str);
-	CommentsManagement GetCommentsManagmentFromInt (int cm);
-	QString GetStringFromCommentsManagment (CommentsManagement cm);
+	void UpdateEntriesDialog::accept ()
+	{
+		XmlSettingsManager::Instance ()
+				.setProperty ("LocalLoadAsk", !Ui_.UpdateAsk_->isChecked ());
+		XmlSettingsManager::Instance ()
+				.setProperty ("LastLocalEntriesToView", Ui_.EntriesCount_->value ());
+		QDialog::accept ();
+	}
+
 }
 }
-}
-}
-

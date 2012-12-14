@@ -155,6 +155,10 @@ namespace Metida
 	void LJProfile::handleProfileUpdate (const LJProfileData& profile)
 	{
 		ProfileData_ = profile;
+		std::sort (ProfileData_.Moods_.begin (), ProfileData_.Moods_.end (),
+				[] (decltype (ProfileData_.Moods_.at (0)) mood1,
+						decltype (ProfileData_.Moods_.at (0)) mood2)
+					{ return QString::localeAwareCompare (mood1.Name_, mood2.Name_) < 0; });
 		SaveAvatar ();
 		for (int i = 0; i < ProfileData_.AvatarsID_.count (); ++i)
 			SaveOthersAvatars (ProfileData_.AvatarsID_.value (i),

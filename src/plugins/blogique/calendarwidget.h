@@ -18,30 +18,26 @@
 
 #pragma once
 
-#include <QString>
-#include "entryoptions.h"
+#include <QCalendarWidget>
+#include <QMap>
+#include "localstorage.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Metida
-{
-namespace MetidaUtils
-{
-	QString GetLocalizedErrorMessage (int errorCode);
+	class CalendarWidget : public QCalendarWidget
+	{
+		Q_OBJECT
 
-	QString GetStringForAccess (Access access);
-	Access GetAccessForString (const QString& access);
+		QMap<QDate, int> Date2EntriesCount_;
+	public:
+		CalendarWidget (QWidget *parent = 0);
+		void SetStatistic (const QMap<QDate, int>& statistic);
 
-	QString GetStringForAdultContent (AdultContent adult);
-	AdultContent GetAdultContentFromString (const QString& str);
-
-	CommentsManagement GetCommentsManagmentFromString (const QString& str);
-	CommentsManagement GetCommentsManagmentFromInt (int cm);
-	QString GetStringFromCommentsManagment (CommentsManagement cm);
-}
-}
+	protected:
+		void paintCell (QPainter *painter, const QRect& rect, const QDate& date) const;
+	};
 }
 }
 

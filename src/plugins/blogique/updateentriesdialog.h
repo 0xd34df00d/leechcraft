@@ -18,30 +18,26 @@
 
 #pragma once
 
-#include <QString>
-#include "entryoptions.h"
+#include <QDialog>
+#include "ui_updateentriesdialog.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Metida
-{
-namespace MetidaUtils
-{
-	QString GetLocalizedErrorMessage (int errorCode);
+	class UpdateEntriesDialog : public QDialog
+	{
+		Q_OBJECT
 
-	QString GetStringForAccess (Access access);
-	Access GetAccessForString (const QString& access);
+		Ui::UpdateEntriesDialog Ui_;
 
-	QString GetStringForAdultContent (AdultContent adult);
-	AdultContent GetAdultContentFromString (const QString& str);
+	public:
+		UpdateEntriesDialog (QWidget *parent = 0);
 
-	CommentsManagement GetCommentsManagmentFromString (const QString& str);
-	CommentsManagement GetCommentsManagmentFromInt (int cm);
-	QString GetStringFromCommentsManagment (CommentsManagement cm);
+		int GetCount () const;
+
+	public slots:
+		void accept ();
+	};
 }
 }
-}
-}
-

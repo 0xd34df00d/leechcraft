@@ -18,30 +18,24 @@
 
 #pragma once
 
-#include <QString>
-#include "entryoptions.h"
+#include <QObject>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Metida
-{
-namespace MetidaUtils
-{
-	QString GetLocalizedErrorMessage (int errorCode);
+	class IAccount;
 
-	QString GetStringForAccess (Access access);
-	Access GetAccessForString (const QString& access);
+	class BackupManager : public QObject
+	{
+		Q_OBJECT
 
-	QString GetStringForAdultContent (AdultContent adult);
-	AdultContent GetAdultContentFromString (const QString& str);
+	public:
+		BackupManager (QObject *parent = 0);
 
-	CommentsManagement GetCommentsManagmentFromString (const QString& str);
-	CommentsManagement GetCommentsManagmentFromInt (int cm);
-	QString GetStringFromCommentsManagment (CommentsManagement cm);
+	public slots:
+		void backup ();
+		void backup (IAccount *acc);
+	};
 }
 }
-}
-}
-

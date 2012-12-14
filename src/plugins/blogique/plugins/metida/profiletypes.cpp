@@ -74,7 +74,7 @@ namespace Metida
 
 	QDataStream& operator<< (QDataStream& out, const LJProfileData& data)
 	{
-		out << static_cast<qint8> (2)
+		out << static_cast<qint8> (3)
 				<< data.AvatarUrl_
 				<< data.Caps_
 				<< data.Communities_
@@ -89,6 +89,9 @@ namespace Metida
 			QByteArray ba = fr->Serialize ();
 			out << ba;
 		}
+
+		out << data.AvatarsID_
+				<< data.AvatarsUrls_;
 
 		return out;
 	}
@@ -105,7 +108,7 @@ namespace Metida
 					>> data.UserId_
 					>> data.FriendGroups_
 					>> data.Moods_;
-		if (version == 2)
+		if (version >= 2)
 		{
 			int count = 0;
 			in >> count;
@@ -117,6 +120,12 @@ namespace Metida
 			}
 
 			data.Friends_.removeAll (0);
+		}
+
+		if (version >= 3)
+		{
+			in >> data.AvatarsID_
+					>> data.AvatarsUrls_;
 		}
 		return in;
 	}
