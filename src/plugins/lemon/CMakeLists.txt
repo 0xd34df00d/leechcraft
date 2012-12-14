@@ -13,6 +13,7 @@ SET (SRCS
 	lemon.cpp
 	actionsmanager.cpp
 	core.cpp
+	modelmanager.cpp
 	)
 
 ADD_LIBRARY (leechcraft_lemon SHARED
@@ -24,3 +25,4 @@ TARGET_LINK_LIBRARIES (leechcraft_lemon
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_lemon DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (DIRECTORY share/qml/lemon DESTINATION ${LC_QML_DEST})

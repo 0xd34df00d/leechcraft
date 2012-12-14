@@ -18,36 +18,56 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iquarkcomponentprovider.h>
+#include <QHash>
+
+class QStandardItem;
+class QNetworkConfiguration;
+class QNetworkConfigurationManager;
+class QAbstractItemModel;
+class QStandardItemModel;
+
+class QNetworkSession;
+typedef std::shared_ptr<QNetworkSession> QNetworkSession_ptr;
 
 namespace LeechCraft
 {
 namespace Lemon
 {
-	class ModelManager;
-	class ActionsManager;
-
-	class Plugin : public QObject
-				, public IInfo
-				, public IQuarkComponentProvider
+	class ModelManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
-		ModelManager *ModelMgr_;
-		QuarkComponent PanelComponent_;
+		QStandardItemModel *Model_;
+		QNetworkConfigurationManager *ConfManager_;
+
+		struct InterfaceInfo
+		{
+			QStandardItem *Item_;
+			qint64 PrevRead_;
+			qint64 PrevWritten_;
+
+			QNetworkSession_ptr LastSession_;
+
+			QList<qint64> DownSpeeds_;
+			QList<qint64> UpSpeeds_;
+
+			InterfaceInfo (QStandardItem *item = 0)
+			: Item_ (item)
+			, PrevRead_ (0)
+			, PrevWritten_ (0)
+			{
+			}
+		};
+		QHash<QString, InterfaceInfo> ActiveInterfaces_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		ModelManager (QObject* = 0);
 
-		QuarkComponents_t GetComponents () const;
+		QAbstractItemModel* GetModel () const;
+	private slots:
+		void addConfiguration (const QNetworkConfiguration&);
+		void updateCounters ();
 	};
 }
 }
