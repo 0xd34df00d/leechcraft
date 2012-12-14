@@ -380,8 +380,10 @@ namespace Blogique
 
 	QList<QStandardItem*> BlogiqueWidget::CreateItemsRow (const Entry& entry) const
 	{
-		QStandardItem *dateItem = new QStandardItem (entry.Date_
-				.toString ("dd-MM-yyyy hh:mm"));
+		QStandardItem *dateItem = new QStandardItem (entry.Date_.date ()
+					.toString (Qt::SystemLocaleShortDate) +
+				" " +
+				entry.Date_.time ().toString ("hh:mm"));
 		dateItem->setData (entry.EntryId_, EntryIdRole::DBIdRole);
 		dateItem->setEditable (false);
 		dateItem->setData (entry.Subject_, Qt::ToolTipRole);
@@ -892,12 +894,7 @@ namespace Blogique
 		idx = idx.sibling (idx.row (), Columns::Date);
 		const Entry& e = LoadEntry (idx.data (EntryIdRole::DBIdRole).toLongLong ());
 
-		auto newTab = new BlogiqueWidget;
-		connect (newTab,
-				 SIGNAL (removeTab (QWidget*)),
-				 &Core::Instance (),
-				 SIGNAL (removeTab (QWidget*)));
-
+		auto newTab = Core::Instance ().CreateBlogiqueWidget ();
 		newTab->FillWidget (e, false, acc->GetAccountID ());
 		emit addNewTab ("Blogique", newTab);
 	}
@@ -938,12 +935,7 @@ namespace Blogique
 		idx = idx.sibling (idx.row (), Columns::Date);
 		const Entry& e = LoadFullDraft (idx.data (EntryIdRole::DBIdRole).toLongLong ());
 
-		auto newTab = new BlogiqueWidget;
-		connect (newTab,
-				SIGNAL (removeTab (QWidget*)),
-				&Core::Instance (),
-				SIGNAL (removeTab (QWidget*)));
-
+		auto newTab = Core::Instance ().CreateBlogiqueWidget ();
 		newTab->FillWidget (e, true, acc->GetAccountID ());
 		emit addNewTab ("Blogique", newTab);
 	}

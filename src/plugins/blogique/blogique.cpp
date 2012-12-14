@@ -160,13 +160,7 @@ namespace Blogique
 
 	void Plugin::CreateTab ()
 	{
-		BlogiqueWidget *blogPage = new BlogiqueWidget ();
-
-		connect (blogPage,
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-
+		BlogiqueWidget *blogPage = Core::Instance ().CreateBlogiqueWidget ();
 		emit addNewTab ("Blogique", blogPage);
 		emit changeTabIcon (blogPage, GetIcon ());
 		emit raiseTab (blogPage);

@@ -27,6 +27,8 @@ namespace LeechCraft
 {
 namespace Blogique
 {
+
+		class BlogiqueWidget;
 	struct Entry;
 	class BackupManager;
 	class LocalStorage;
@@ -64,6 +66,8 @@ namespace Blogique
 
 		LocalStorage* GetStorage () const;
 		BackupManager* GetBackupManager () const;
+
+		BlogiqueWidget* CreateBlogiqueWidget ();
 	private:
 		void AddBlogPlatformPlugin (QObject *plugin);
 

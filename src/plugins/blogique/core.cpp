@@ -29,6 +29,7 @@
 #include "pluginproxy.h"
 #include "localstorage.h"
 #include "backupmanager.h"
+#include "blogiquewidget.h"
 
 namespace LeechCraft
 {
@@ -139,6 +140,17 @@ namespace Blogique
 	BackupManager* Core::GetBackupManager () const
 	{
 		return BackupManager_;
+	}
+
+	BlogiqueWidget* Core::CreateBlogiqueWidget ()
+	{
+		auto newTab = new BlogiqueWidget;
+		connect (newTab,
+				SIGNAL (removeTab (QWidget*)),
+				&Core::Instance (),
+				SIGNAL (removeTab (QWidget*)));
+
+		return newTab;
 	}
 
 	void Core::AddBlogPlatformPlugin (QObject *plugin)
