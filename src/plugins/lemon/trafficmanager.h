@@ -67,9 +67,16 @@ namespace Lemon
 		TrafficManager (QObject* = 0);
 
 		QAbstractItemModel* GetModel () const;
+
+		QList<qint64> GetDownHistory (const QString&) const;
+		QList<qint64> GetUpHistory (const QString&) const;
+
+		int GetBacktrackSize () const;
 	private slots:
 		void addConfiguration (const QNetworkConfiguration&);
 		void updateCounters ();
+	signals:
+		void updated ();
 	};
 }
 }

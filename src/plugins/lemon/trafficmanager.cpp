@@ -88,6 +88,21 @@ namespace Lemon
 		return Model_;
 	}
 
+	QList<qint64> TrafficManager::GetDownHistory (const QString& name) const
+	{
+		return ActiveInterfaces_ [name].DownSpeeds_;
+	}
+
+	QList<qint64> TrafficManager::GetUpHistory (const QString& name) const
+	{
+		return ActiveInterfaces_ [name].UpSpeeds_;
+	}
+
+	int TrafficManager::GetBacktrackSize () const
+	{
+		return 500;
+	}
+
 	namespace
 	{
 		struct NetIcons
@@ -162,20 +177,23 @@ namespace Lemon
 
 		backend->update (ActiveInterfaces_.keys ());
 
+		const auto backtrack = GetBacktrackSize ();
+
 		for (auto& info : ActiveInterfaces_)
 		{
 			const auto& name = info.Name_;
 
 			const auto& bytesStats = backend->GetCurrentNumBytes (name);
 
-			auto updateCounts = [&info] (const qint64 now, qint64& prev, QList<qint64>& list, IfacesModel::Roles role) -> qint64
+			auto updateCounts = [&info, backtrack] (const qint64 now,
+					qint64& prev, QList<qint64>& list, IfacesModel::Roles role) -> qint64
 			{
 				const auto diff = now - prev;
 
 				info.Item_->setData (diff, role);
 
 				list << diff;
-				if (list.size () > 500)
+				if (list.size () > backtrack)
 					list.erase (list.begin ());
 
 				prev = now;
@@ -195,6 +213,8 @@ namespace Lemon
 			updateMax (info.DownSpeeds_, IfacesModel::Roles::MaxDownSpeed);
 			updateMax (info.UpSpeeds_, IfacesModel::Roles::MaxUpSpeed);
 		}
+
+		emit updated ();
 	}
 }
 }
