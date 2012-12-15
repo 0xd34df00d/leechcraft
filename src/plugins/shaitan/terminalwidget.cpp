@@ -25,6 +25,16 @@ namespace LeechCraft
 {
 namespace Shaitan
 {
+	namespace
+	{
+			class TerminalContainer : public QX11EmbedContainer
+			{
+			public:
+				TerminalContainer (QWidget* parent = 0);
+				virtual bool eventFilter (QObject* , QEvent* );
+			};
+	}
+	
 	TerminalContainer::TerminalContainer (QWidget* parent): QX11EmbedContainer (parent)
 	{
 	
@@ -46,6 +56,7 @@ namespace Shaitan
 	TerminalWidget::TerminalWidget (const TabClassInfo& tc, QObject *mt)
 	: TC_ (tc)
 	, ParentMT_ (mt)
+	, Embedder_ (new TerminalContainer (this))
 	{
 		Embedder_ = new TerminalContainer;
 		Process_ = new QProcess (this);
