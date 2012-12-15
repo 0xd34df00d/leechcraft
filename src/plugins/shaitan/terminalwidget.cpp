@@ -70,9 +70,9 @@ namespace Shaitan
 	}
 	void TerminalWidget::gotError(QProcess::ProcessError error)
 	{
-		QMessageBox::critical (this,
+		QMessageBox::critical(this,
 		      "LeechCraft",
-		      tr ("XTerm has not started: %1.").arg (error)); 
+		      tr("XTerm has not started: %1.").arg(error)); 
 	}
 
 }
