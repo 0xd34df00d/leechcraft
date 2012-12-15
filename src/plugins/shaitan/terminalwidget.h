@@ -38,6 +38,8 @@ namespace Shaitan
 		
 		QX11EmbedContainer *Embedder_;
 		QProcess *Process_;
+	private slots:
+		void gotError ( QProcess::ProcessError );
 	public:
 		TerminalWidget (const TabClassInfo&, QObject*);
 		
@@ -47,8 +49,6 @@ namespace Shaitan
 		void Remove ();
 	signals:
 		void removeTab (QWidget*);
-	public slots:
-		void gotError ( QProcess::ProcessError );
 	};
 }
 }

@@ -39,8 +39,10 @@ namespace Shaitan
 		
 		Embedder_->show ();
 		
-		connect(Process_, SIGNAL(error(QProcess::ProcessError)), this, 
-			  SLOT(gotError(QProcess::ProcessError)));
+		connect(Process_,
+			SIGNAL(error(QProcess::ProcessError)),
+			this, 
+			SLOT(gotError(QProcess::ProcessError)));
 		
 		Process_->start ("xterm",
 			{ "-into", QString::number (Embedder_->winId ()) });
@@ -66,10 +68,11 @@ namespace Shaitan
 		emit removeTab (this);
 		deleteLater ();
 	}
-	void TerminalWidget::gotError( QProcess::ProcessError error )
+	void TerminalWidget::gotError(QProcess::ProcessError error)
 	{
-		QMessageBox::critical (this, "LeechCraft", tr ("XTerm has not started:")
-				+ error);
+		QMessageBox::critical (this,
+		      "LeechCraft",
+		      tr ("XTerm has not started: %1.").arg (error)); 
 	}
 
 }
