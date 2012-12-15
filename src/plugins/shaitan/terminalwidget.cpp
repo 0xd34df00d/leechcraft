@@ -42,7 +42,7 @@ namespace Shaitan
 		connect (Process_,
 			SIGNAL (error (QProcess::ProcessError)),
 			this, 
-			SLOT (gotError (QProcess::ProcessError)));
+			SLOT (gotError ()));
 		
 		Process_->start ("xterm",
 			{ "-into", QString::number (Embedder_->winId ()) });
@@ -68,11 +68,11 @@ namespace Shaitan
 		emit removeTab (this);
 		deleteLater ();
 	}
-	void TerminalWidget::gotError (QProcess::ProcessError error)
+	void TerminalWidget::gotError ()
 	{
 		QMessageBox::critical (this,
 		      "LeechCraft",
-		      tr ("XTerm has not started: %1.").arg (error)); 
+		      tr ("XTerm has not started: %1.").arg (Process_->errorString())); 
 	}
 
 }
