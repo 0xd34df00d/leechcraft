@@ -3,4 +3,7 @@
 	<file>resources/qml/DevicesTrayView.qml</file>
 	<file>resources/qml/ProgressBar.qml</file>
   </qresource>
+  <qresource prefix="/">
+	<file>resources/images/vrooby.svg</file>
+  </qresource>
 </RCC>
