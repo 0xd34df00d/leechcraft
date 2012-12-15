@@ -47,6 +47,8 @@ namespace Shaitan
 		void Remove ();
 	signals:
 		void removeTab (QWidget*);
+	public slots:
+		void gotError ( QProcess::ProcessError );
 	};
 }
 }
