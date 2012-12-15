@@ -18,6 +18,7 @@
 
 #include "terminalwidget.h"
 #include <QVBoxLayout>
+#include <QMessageBox>
 
 namespace LeechCraft
 {
@@ -39,6 +40,9 @@ namespace Shaitan
 		Embedder_->show ();
 		Process_->start ("xterm",
 			{ "-into", QString::number (Embedder_->winId ()) });
+		if (!Process_->waitForStarted(1000))
+		   QMessageBox::critical (this, "LeechCraft", tr ("XTerm has not started:")
+					+ Process_->errorString ());
 	}
 	
 	TabClassInfo TerminalWidget::GetTabClassInfo () const
