@@ -87,7 +87,12 @@ namespace Poshuku
 	, ReloadTimer_ (new QTimer (this))
 	, HtmlMode_ (false)
 	, Own_ (true)
+	, LinkTextItem_ (new QLabel (this))
 	{
+		LinkTextItem_->setWindowFlags (Qt::ToolTip);
+		LinkTextItem_->raise ();
+		LinkTextItem_->hide ();
+
 		Ui_.setupUi (this);
 		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 		Ui_.Sidebar_->AddPage (tr ("Bookmarks"), new BookmarksWidget);
@@ -410,7 +415,8 @@ namespace Poshuku
 		connect (WebView_,
 				SIGNAL (statusBarMessage (const QString&)),
 				this,
-				SLOT (handleStatusBarMessage (const QString&)));
+				SLOT (handleStatusBarMessage (const QString&)),
+				Qt::QueuedConnection);
 		connect (WebView_,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
@@ -428,7 +434,8 @@ namespace Poshuku
 						const QString&,
 						const QString&)),
 				this,
-				SLOT (handleStatusBarMessage (const QString&)));
+				SLOT (handleStatusBarMessage (const QString&)),
+				Qt::QueuedConnection);
 		connect (WebView_,
 				SIGNAL (loadFinished (bool)),
 				this,
@@ -905,23 +912,23 @@ namespace Poshuku
 
 		if (msg.isEmpty ())
 		{
-			LinkTextItem_.reset ();
+			LinkTextItem_->hide ();
 			return;
 		}
 
-		LinkTextItem_.reset (new QLabel);
-		LinkTextItem_->setWindowFlags (Qt::ToolTip);
-
 		const QFontMetrics metrics (LinkTextItem_->font ());
-		msg = metrics.elidedText (msg, Qt::ElideMiddle, WebView_->rect ().width () * 2 / 3);
+		msg = metrics.elidedText (msg, Qt::ElideMiddle, WebView_->rect ().width () * 5 / 11);
 		LinkTextItem_->setTextFormat (Qt::TextFormat::PlainText);
 		LinkTextItem_->setText (msg);
 
-		const int textHeight = metrics.boundingRect (msg).height ();
-		const qreal x = 1;
-		const qreal y = WebView_->rect ().height () - textHeight - 7;
-		LinkTextItem_->move (WebView_->mapToGlobal (QPoint (x, y)));
+		const auto& localCursorPos = WebView_->mapFromGlobal (QCursor::pos ());
 
+		const int textHeight = metrics.boundingRect (msg).height ();
+		const qreal y = WebView_->rect ().height () - textHeight - 7;
+		const qreal x = QRect (QPoint (0, y), LinkTextItem_->size ()).contains (localCursorPos) ?
+				WebView_->rect ().width () - LinkTextItem_->width () + 1 :
+				1;
+		LinkTextItem_->move (WebView_->mapToGlobal (QPoint (x, y)));
 		LinkTextItem_->show ();
 	}
 
