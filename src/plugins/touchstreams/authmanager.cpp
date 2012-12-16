@@ -19,7 +19,6 @@
 #include "authmanager.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QDomDocument>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -53,6 +52,7 @@ namespace TouchStreams
 
 	void AuthManager::RequestURL (const QUrl& url)
 	{
+		qDebug () << Q_FUNC_INFO << url;
 		auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
 		connect (reply,
 				SIGNAL (finished ()),
@@ -101,29 +101,10 @@ namespace TouchStreams
 		}
 
 		const auto& data = reply->readAll ();
-		QDomDocument doc;
-		if (!doc.setContent (data))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to parse reply data:"
-					<< data;
-			HandleError ();
-			return;
-		}
-
-		const auto& forms = doc.elementsByTagName ("form");
-		if (forms.size () != 1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "incorrect number of forms"
-					<< forms.size ()
-					<< data;
-			HandleError ();
-			return;
-		}
-
-		const auto& formElem = forms.at (0).toElement ();
-		const auto& url = QUrl::fromEncoded (formElem.attribute ("action").toUtf8 ());
+		const int formPos = data.indexOf ("<form");
+		const int urlPos = data.indexOf ("action=", formPos) + QByteArray ("action=\"").size ();
+		const int end = data.indexOf ('"', urlPos + 1);
+		const auto url = QUrl::fromEncoded (data.mid (urlPos, end - urlPos));
 
 		reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
 		connect (reply,
