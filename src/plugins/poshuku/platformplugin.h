@@ -19,7 +19,7 @@
 #pragma once
 
 #include <QObject>
-#include <QWebKitPlatformPlugin>
+#include <qwebkitplatformplugin.h>
 
 namespace LeechCraft
 {

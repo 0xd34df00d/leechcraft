@@ -14,32 +14,42 @@ INCLUDE_DIRECTORIES (
 
 SET (SRCS
 	accountslistwidget.cpp
+	accountsselectdialog.cpp
 	addaccountwizardfirstpage.cpp
+	backupmanager.cpp
 	blogique.cpp
 	blogiquewidget.cpp
+	calendarwidget.cpp
 	core.cpp
 	localstorage.cpp
 	pluginproxy.cpp
 	profiledialog.cpp
+	updateentriesdialog.cpp
 	xmlsettingsmanager.cpp
 	)
 
 SET (HEADERS
 	accountslistwidget.h
+	accountsselectdialog.h
 	addaccountwizardfirstpage.h
+	backupmanager.h
 	blogique.h
 	blogiquewidget.h
+	calendarwidget.h
 	core.h
 	localstorage.h
 	pluginproxy.h
 	profiledialog.h
+	updateentriesdialog.h
 	xmlsettingsmanager.h
 	)
 
 SET (FORMS accountslistwidget.ui
+	accountsselectdialog.ui
 	addaccountwizardfirstpage.ui
 	blogiquewidget.ui
 	profiledialog.ui
+	updateentriesdialog.ui
 	)
 
 SET (RESOURCES blogiqueresources.qrc)

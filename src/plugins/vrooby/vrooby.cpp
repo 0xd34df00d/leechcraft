@@ -85,7 +85,8 @@ namespace Vrooby
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/resources/images/vrooby.svg");
+		return icon;
 	}
 
 	QAbstractItemModel* Plugin::GetDevicesModel () const

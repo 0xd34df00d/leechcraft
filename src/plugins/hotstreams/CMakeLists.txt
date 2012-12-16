@@ -26,7 +26,10 @@ SET (SRCS
 
 IF (QJSON_FOUND)
 	ADD_DEFINITIONS (-DHAVE_QJSON)
-	SET (SRCS ${SRCS} audioaddictstreamfetcher.cpp)
+	SET (SRCS
+		${SRCS}
+		audioaddictstreamfetcher.cpp
+		rockradiolistfetcher.cpp)
 ENDIF (QJSON_FOUND)
 
 SET (RESOURCES hotstreamsresources.qrc)

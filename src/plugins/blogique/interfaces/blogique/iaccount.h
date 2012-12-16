@@ -22,14 +22,16 @@
 #include <QVariant>
 #include <QStringList>
 #include <QDateTime>
+#include <QUrl>
 
+class QAction;
 class QWidget;
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	struct Event
+	struct Entry
 	{
 		QString Target_;
 		QString Subject_;
@@ -38,10 +40,11 @@ namespace Blogique
 		QStringList Tags_;
 		QVariantMap PostOptions_;
 		QVariantMap CustomData_;
-		qlonglong EntryDBId_;
+		qlonglong EntryId_;
+		QUrl EntryUrl_;
 
-		Event ()
-		: EntryDBId_ (-1)
+		Entry ()
+		: EntryId_ (-1)
 		{
 		}
 
@@ -123,15 +126,39 @@ namespace Blogique
 		 */
 		virtual QObject* GetProfile () = 0;
 
+		/** @brief Fetch last entries from blog.
+		 *
+		 * @param[in] count Amount of entries to fetch.
+		 */
+		virtual void GetLastEntries (int count) = 0;
+
+		/** @brief Remove entry from blog.
+		 *
+		 * @param[in] entry Entry to remove.
+		 */
+		virtual void RemoveEntry (const Entry& entry) = 0;
+
+		/** @brief Update entry in blog.
+		 *
+		 * @param[in] entry Entry to update.
+		 */
+		virtual void UpdateEntry (const Entry& entry) = 0;
+
+		virtual QList<QAction*> GetUpdateActions () const = 0;
+
 		/** @brief Submit post to blog.
 		 *
+		 * @param[in] event Posting event.
 		 */
-		virtual void submit (const Event& event) = 0;
+		virtual void submit (const Entry& event) = 0;
 
 		/** @brief Request updating profile data.
 		 *
 		 */
 		virtual void updateProfile () = 0;
+
+		virtual void backup () = 0;
+
 	protected:
 		/** @brief This signal should be emitted when account is renamed.
 		 *
@@ -149,7 +176,26 @@ namespace Blogique
 		 *
 		 * @note This function is expected to be a signal.
 		 */
-		virtual void entryPosted () = 0;
+		virtual void entryPosted (const QList<Entry>& entries) = 0;
+
+		//TODO
+		virtual void entryRemoved (int itemId) = 0;
+
+		//TODO
+		virtual void entryUpdated (const QList<Entry>& entries) = 0;
+
+		/** @brief This signal should be emitted when account want to backup
+		 * some amount of entries.
+		 *
+		 * @note This function is expected to be a signal.
+		 */
+		virtual void gotEntries2Backup (const QList<Entry>& entries) = 0;
+
+		/** @brief This signal should be emitted all entries for backup were downloaded.
+		 *
+		 * @note This function is expected to be a signal.
+		 */
+		virtual void gettingEntries2BackupFinished () = 0;
 	};
 }
 }

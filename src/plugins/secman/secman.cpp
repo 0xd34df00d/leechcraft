@@ -66,7 +66,8 @@ namespace SecMan
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/resources/images/secman.svg");
+		return icon;
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const

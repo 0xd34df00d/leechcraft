@@ -1,12 +1,19 @@
 import QtQuick 1.1
+import "../common/"
 
 Rectangle {
     id: rootRect
-    width: 600
+    width: Math.min(Math.max(300, longestTextLabel.paintedWidth + 10), 600)
     height: Math.min(600, tabsView.count * 36)
     smooth: true
     radius: 5
     focus: true
+
+    Text {
+        id: longestTextLabel
+        visible: false
+        text: longestText
+    }
 
     opacity: 0
     SequentialAnimation on opacity {

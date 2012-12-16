@@ -32,7 +32,14 @@ namespace MetidaUtils
 	QString GetLocalizedErrorMessage (int errorCode);
 
 	QString GetStringForAccess (Access access);
+	Access GetAccessForString (const QString& access);
+
 	QString GetStringForAdultContent (AdultContent adult);
+	AdultContent GetAdultContentFromString (const QString& str);
+
+	CommentsManagement GetCommentsManagmentFromString (const QString& str);
+	CommentsManagement GetCommentsManagmentFromInt (int cm);
+	QString GetStringFromCommentsManagment (CommentsManagement cm);
 }
 }
 }
