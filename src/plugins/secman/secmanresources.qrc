@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/" >
+    <file>resources/images/secman.svg</file>
+  </qresource>
+</RCC>
