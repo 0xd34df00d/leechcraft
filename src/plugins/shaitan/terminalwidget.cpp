@@ -27,61 +27,61 @@ namespace Shaitan
 {
 	namespace
 	{
-			class TerminalContainer : public QX11EmbedContainer
+		class TerminalContainer : public QX11EmbedContainer
+		{
+		public:
+			TerminalContainer (QWidget *parent)
+			: QX11EmbedContainer (parent)
 			{
-			public:
-				TerminalContainer (QWidget* parent)
-				: QX11EmbedContainer (parent)
+			}
+
+			virtual bool eventFilter (QObject *obj, QEvent *event)
+			{
+				if (obj == this && event->type () == QEvent::KeyPress)
 				{
-					
+					auto keyEvent = static_cast<QKeyEvent*> (event);
+					if (keyEvent->key () == (Qt::Key_PageDown & Qt::Key_Control) ||
+						keyEvent->key () == (Qt::Key_PageUp & Qt::Key_Control))
+						return false;
 				}
-				virtual bool eventFilter (QObject *obj, QEvent *event)
-				{
-					if (obj == this && event->type () == QEvent::KeyPress)
-					{
-						auto keyEvent = static_cast<QKeyEvent*> (event);
-						if (keyEvent->key () == (Qt::Key_PageDown & Qt::Key_Control) ||
-							keyEvent->key () == (Qt::Key_PageUp & Qt::Key_Control))
-							return QX11EmbedContainer::eventFilter (obj, event);
-					}
-					QX11EmbedContainer::eventFilter (obj, event);
-				}
-			};
+				return QX11EmbedContainer::eventFilter (obj, event);
+			}
+		};
 	}
-	
+
 	TerminalWidget::TerminalWidget (const TabClassInfo& tc, QObject *mt)
 	: TC_ (tc)
 	, ParentMT_ (mt)
 	, Embedder_ (new TerminalContainer (this))
 	{
 		Process_ = new QProcess (this);
-		
+
 		auto lay = new QVBoxLayout;
 		setLayout (lay);
 		lay->addWidget (Embedder_);
-		
+
 		Embedder_->adjustSize ();
-		
+
 		Embedder_->show ();
 		Process_->start ("xterm",
 			{ "-into", QString::number (Embedder_->winId ()) });
 	}
-	
+
 	TabClassInfo TerminalWidget::GetTabClassInfo () const
 	{
 		return TC_;
 	}
-	
+
 	QToolBar* TerminalWidget::GetToolBar () const
 	{
 		return 0;
 	}
-	
+
 	QObject* TerminalWidget::ParentMultiTabs ()
 	{
 		return ParentMT_;
 	}
-	
+
 	void TerminalWidget::Remove ()
 	{
 		emit removeTab (this);
