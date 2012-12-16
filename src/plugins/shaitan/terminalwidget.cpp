@@ -20,6 +20,7 @@
 #include <QVBoxLayout>
 #include <QEvent>
 #include <QKeyEvent>
+#include <QMessageBox>
 
 namespace LeechCraft
 {
@@ -63,6 +64,12 @@ namespace Shaitan
 		Embedder_->adjustSize ();
 
 		Embedder_->show ();
+
+		connect (Process_,
+			SIGNAL (error (QProcess::ProcessError)),
+			this,
+			SLOT (gotError ()));
+
 		Process_->start ("xterm",
 			{ "-into", QString::number (Embedder_->winId ()) });
 	}
@@ -86,6 +93,13 @@ namespace Shaitan
 	{
 		emit removeTab (this);
 		deleteLater ();
+	}
+
+	void TerminalWidget::gotError ()
+	{
+		QMessageBox::critical (this,
+		      "LeechCraft",
+		      tr ("XTerm has not started: %1.").arg (Process_->errorString()));
 	}
 }
 }
