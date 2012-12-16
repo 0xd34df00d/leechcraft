@@ -14,6 +14,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	touchstreams.cpp
 	authmanager.cpp
+	xmlsettingsmanager.cpp
 	)
 
 ADD_LIBRARY (leechcraft_touchstreams SHARED
@@ -26,3 +27,4 @@ TARGET_LINK_LIBRARIES (leechcraft_touchstreams
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_touchstreams DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES touchstreamssettings.xml DESTINATION ${LC_SETTINGS_DEST})
