@@ -14,6 +14,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	touchstreams.cpp
 	authmanager.cpp
+	audiosearch.cpp
 	xmlsettingsmanager.cpp
 	)
 
