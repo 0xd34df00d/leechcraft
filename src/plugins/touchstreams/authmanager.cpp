@@ -20,17 +20,29 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <QWebView>
+#include <util/customcookiejar.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace TouchStreams
 {
+	const QUrl AuthURL = QUrl::fromEncoded ("https://oauth.vk.com/authorize?client_id=3298289&redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&response_type=token&scope=8&state=");
 	AuthManager::AuthManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
+	, AuthNAM_ (new QNetworkAccessManager (this))
+	, Cookies_ (new Util::CustomCookieJar)
 	, ValidFor_ (0)
 	, IsRequesting_ (false)
 	{
+		AuthNAM_->setCookieJar (Cookies_);
+
+		const auto& cookies = XmlSettingsManager::Instance ()
+				.property ("Cookies").toByteArray ();
+		if (!cookies.isEmpty ())
+			Cookies_->Load (cookies);
 	}
 
 	void AuthManager::GetAuthKey ()
@@ -45,6 +57,23 @@ namespace TouchStreams
 		emit gotAuthKey (Token_);
 	}
 
+	void AuthManager::Reauth ()
+	{
+		auto view = new QWebView;
+		view->setWindowTitle (tr ("VK.com authentication"));
+		view->setWindowFlags (Qt::Window);
+		view->resize (800, 600);
+		view->page ()->setNetworkAccessManager (AuthNAM_);
+		view->show ();
+
+		view->setUrl (AuthURL);
+
+		connect (view,
+				SIGNAL (urlChanged (QUrl)),
+				this,
+				SLOT (handleViewUrlChanged (QUrl)));
+	}
+
 	void AuthManager::HandleError ()
 	{
 		IsRequesting_ = false;
@@ -53,7 +82,7 @@ namespace TouchStreams
 	void AuthManager::RequestURL (const QUrl& url)
 	{
 		qDebug () << Q_FUNC_INFO << url;
-		auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
+		auto reply = AuthNAM_->get (QNetworkRequest (url));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -69,8 +98,7 @@ namespace TouchStreams
 		if (IsRequesting_)
 			return;
 
-		const auto& url = QUrl::fromEncoded ("https://oauth.vk.com/authorize?client_id=3298289&redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&response_type=token&scope=8&state=&display=wap");
-		RequestURL (url);
+		RequestURL (AuthURL);
 	}
 
 	bool AuthManager::CheckIsBlank (QUrl location)
@@ -91,30 +119,16 @@ namespace TouchStreams
 		reply->deleteLater ();
 
 		const auto& location = reply->header (QNetworkRequest::LocationHeader).toUrl ();
-		if (!location.isEmpty ())
+		if (location.isEmpty ())
 		{
-			if (CheckIsBlank (location))
-				return;
-
-			RequestURL (location);
+			Reauth ();
 			return;
 		}
 
-		const auto& data = reply->readAll ();
-		const int formPos = data.indexOf ("<form");
-		const int urlPos = data.indexOf ("action=", formPos) + QByteArray ("action=\"").size ();
-		const int end = data.indexOf ('"', urlPos + 1);
-		const auto url = QUrl::fromEncoded (data.mid (urlPos, end - urlPos));
+		if (CheckIsBlank (location))
+			return;
 
-		reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGotForm ()));
-		connect (reply,
-				SIGNAL(error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleFormFetchError ()));
+		RequestURL (location);
 	}
 
 	void AuthManager::handleFormFetchError ()
@@ -126,6 +140,15 @@ namespace TouchStreams
 				<< reply->errorString ();
 
 		HandleError ();
+	}
+
+	void AuthManager::handleViewUrlChanged (const QUrl& url)
+	{
+		if (!CheckIsBlank (url))
+			return;
+
+		XmlSettingsManager::Instance ().setProperty ("Cookies", Cookies_->Save ());
+		sender ()->deleteLater ();
 	}
 }
 }

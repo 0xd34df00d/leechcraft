@@ -26,6 +26,11 @@ class QUrl;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class CustomCookieJar;
+}
+
 namespace TouchStreams
 {
 	class AuthManager : public QObject
@@ -33,6 +38,9 @@ namespace TouchStreams
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
+
+		QNetworkAccessManager *AuthNAM_;
+		Util::CustomCookieJar *Cookies_;
 
 		QString Token_;
 		QDateTime ReceivedAt_;
@@ -43,6 +51,7 @@ namespace TouchStreams
 		AuthManager (ICoreProxy_ptr, QObject* = 0);
 
 		void GetAuthKey ();
+		void Reauth ();
 	private:
 		void HandleError ();
 		void RequestURL (const QUrl&);
@@ -51,6 +60,7 @@ namespace TouchStreams
 	private slots:
 		void handleGotForm ();
 		void handleFormFetchError ();
+		void handleViewUrlChanged (const QUrl&);
 	signals:
 		void gotAuthKey (const QString&);
 	};

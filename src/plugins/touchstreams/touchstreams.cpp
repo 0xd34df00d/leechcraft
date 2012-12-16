@@ -18,6 +18,9 @@
 
 #include "touchstreams.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
+#include "authmanager.h"
 
 namespace LeechCraft
 {
@@ -25,6 +28,15 @@ namespace TouchStreams
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		AuthMgr_ = new AuthManager (proxy);
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "touchstreamssettings.xml");
+
+		connect (XSD_.get (),
+				SIGNAL (pushButtonClicked (QString)),
+				this,
+				SLOT (handlePushButton (QString)));
 	}
 
 	void Plugin::SecondInit ()
@@ -53,6 +65,21 @@ namespace TouchStreams
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
+	}
+
+	void Plugin::handlePushButton (const QString& name)
+	{
+		if (name == "AllowRequestsTriggered")
+			AuthMgr_->Reauth ();
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown name"
+					<< name;
 	}
 }
 }

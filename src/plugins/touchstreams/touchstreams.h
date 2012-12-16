@@ -20,16 +20,23 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
 namespace TouchStreams
 {
+	class AuthManager;
+
 	class Plugin : public QObject
-					, public IInfo
+				 , public IInfo
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IHaveSettings)
+
+		Util::XmlSettingsDialog_ptr XSD_;
+		AuthManager *AuthMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -38,6 +45,10 @@ namespace TouchStreams
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	private slots:
+		void handlePushButton (const QString&);
 	};
 }
 }
