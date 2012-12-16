@@ -29,6 +29,7 @@ namespace LeechCraft
 namespace TouchStreams
 {
 	const QUrl AuthURL = QUrl::fromEncoded ("https://oauth.vk.com/authorize?client_id=3298289&redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&response_type=token&scope=8&state=");
+
 	AuthManager::AuthManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
@@ -109,7 +110,12 @@ namespace TouchStreams
 		location = QUrl::fromEncoded (location.toEncoded ().replace ('#', '?'));
 		Token_ = location.queryItemValue ("access_token");
 		ValidFor_ = location.queryItemValue ("expires_in").toInt ();
+		ReceivedAt_ = QDateTime::currentDateTime ();
+		qDebug () << Q_FUNC_INFO << Token_ << ValidFor_;
 		IsRequesting_ = false;
+
+		emit gotAuthKey (Token_);
+
 		return true;
 	}
 
