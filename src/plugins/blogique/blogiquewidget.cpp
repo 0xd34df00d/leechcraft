@@ -737,6 +737,7 @@ namespace Blogique
 			event;
 
 		if (!e.IsEmpty ())
+		{
 			if (EntryID_ > 0)
 			{
 				QMessageBox mbox (QMessageBox::Question,
@@ -758,6 +759,7 @@ namespace Blogique
 			}
 			else
 				acc->submit (e);
+		}
 	}
 
 	void BlogiqueWidget::saveSplitterPosition (int, int)

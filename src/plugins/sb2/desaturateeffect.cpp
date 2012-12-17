@@ -18,6 +18,7 @@
 
 #include "desaturateeffect.h"
 #include <limits>
+#include <cmath>
 #include <QPainter>
 
 namespace LeechCraft
