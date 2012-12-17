@@ -103,6 +103,14 @@ namespace LMP
 				SIGNAL (linkActivated (QString)),
 				this,
 				SLOT (handleLink (QString)));
+		connect (Ui_.HypesView_->rootObject (),
+				SIGNAL (artistPreviewRequested (QString)),
+				this,
+				SIGNAL (artistPreviewRequested (QString)));
+		connect (Ui_.HypesView_->rootObject (),
+				SIGNAL (trackPreviewRequested (QString, QString)),
+				this,
+				SIGNAL (trackPreviewRequested (QString, QString)));
 	}
 
 	void HypesWidget::InitializeProviders ()

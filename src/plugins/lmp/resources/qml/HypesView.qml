@@ -19,6 +19,8 @@ Rectangle {
     }
 
     signal linkActivated(string id)
+    signal artistPreviewRequested(string artist)
+    signal trackPreviewRequested(string track, string artist)
 
     Rectangle {
         id: artistsRect
@@ -97,6 +99,7 @@ Rectangle {
                 anchors.fill: parent
 
                 onLinkActivated: rootRect.linkActivated(id)
+                onPreviewRequested: rootRect.artistPreviewRequested(artist)
             }
         }
     }
@@ -277,6 +280,42 @@ Rectangle {
                             MouseArea {
                                 anchors.fill: parent
                                 onClicked: rootRect.linkActivated(trackURL)
+                            }
+                        }
+
+                        Image {
+                            id: previewAudio
+
+                            width: 16
+                            height: 16
+                            smooth: true
+                            fillMode: Image.PreserveAspectFit
+
+                            anchors.top: parent.top
+                            anchors.topMargin: 2
+                            anchors.left: trackNameLabel.right
+                            anchors.leftMargin: 8
+                            source: "image://sysIcons/preferences-desktop-sound"
+
+                            MouseArea {
+                                id: previewAudioArea
+                                anchors.fill: parent
+                                anchors.margins: -2
+                                hoverEnabled: true
+                                onClicked: rootRect.trackPreviewRequested(trackName, artistName)
+                            }
+
+                            Rectangle {
+                                id: previewAudioHover
+                                anchors.fill: parent
+                                anchors.margins: -1
+                                radius: 2
+
+                                visible: previewAudioArea.containsMouse
+
+                                color: "#00000000"
+                                border.width: 1
+                                border.color: "#888888"
                             }
                         }
 
