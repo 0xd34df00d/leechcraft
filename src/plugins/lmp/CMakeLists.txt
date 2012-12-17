@@ -87,6 +87,7 @@ SET (SRCS
 	similarmodel.cpp
 	hypeswidget.cpp
 	sysiconsprovider.cpp
+	previewhandler.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
