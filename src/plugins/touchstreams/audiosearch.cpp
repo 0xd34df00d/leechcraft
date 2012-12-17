@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "audiosearch.h"
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -41,6 +43,16 @@ namespace TouchStreams
 		AuthMgr_->GetAuthKey ();
 	}
 
+	QObject* AudioSearch::GetObject ()
+	{
+		return this;
+	}
+
+	QList<Media::IPendingAudioSearch::Result> AudioSearch::GetResults () const
+	{
+		return Result_;
+	}
+
 	void AudioSearch::handleGotAuthKey (const QString& key)
 	{
 		QUrl url ("https://api.vk.com/method/audio.search");
@@ -60,7 +72,35 @@ namespace TouchStreams
 		reply->deleteLater ();
 
 		const auto& data = reply->readAll ();
-		qDebug () << data;
+		std::istringstream istr (data.constData ());
+		boost::property_tree::ptree pt;
+		boost::property_tree::read_json (istr, pt);
+
+		for (const auto& v : pt.get_child ("response"))
+		{
+			const auto& sub = v.second;
+			if (sub.empty ())
+				continue;
+
+			Media::IPendingAudioSearch::Result result;
+			try
+			{
+				result.Info_.Artist_ = QString::fromUtf8 (sub.get<std::string> ("artist").c_str ());
+				result.Info_.Title_ = QString::fromUtf8 (sub.get<std::string> ("title").c_str ());
+				result.Info_.Length_ = sub.get<qint32> ("duration");
+				result.Source_ = QUrl::fromEncoded (sub.get<std::string> ("url").c_str ());
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to get props"
+						<< e.what ();
+				continue;
+			}
+			Result_ << result;
+		}
+
+		emit ready ();
 	}
 }
 }

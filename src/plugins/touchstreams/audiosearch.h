@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/media/iaudiopile.h>
 
 namespace LeechCraft
 {
@@ -28,18 +29,27 @@ namespace TouchStreams
 	class AuthManager;
 
 	class AudioSearch : public QObject
+					  , public Media::IPendingAudioSearch
 	{
 		Q_OBJECT
+		Q_INTERFACES (Media::IPendingAudioSearch)
 
 		ICoreProxy_ptr Proxy_;
 
 		AuthManager *AuthMgr_;
 		const QString Query_;
+
+		QList<Media::IPendingAudioSearch::Result> Result_;
 	public:
 		AudioSearch (ICoreProxy_ptr, const QString&, AuthManager*, QObject* = 0);
+
+		QObject* GetObject ();
+		QList<Result> GetResults () const;
 	private slots:
 		void handleGotAuthKey (const QString&);
 		void handleGotReply ();
+	signals:
+		void ready ();
 	};
 }
 }
