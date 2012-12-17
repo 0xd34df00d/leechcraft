@@ -338,13 +338,13 @@ Rectangle {
                         }
 
                         Text {
-                            id: artistTagsLabel
+                            id: changeLabel
                             text: change
                             color: colorProxy.color_TextBox_Aux1TextColor
-                            anchors.top: parent.top
+                            anchors.top: trackArtistNameLabel.bottom
                             anchors.topMargin: 2
-                            anchors.right: parent.right
-                            anchors.rightMargin: 2
+                            anchors.left: trackImageThumb.right
+                            anchors.leftMargin: 5
                         }
                     }
                 }
