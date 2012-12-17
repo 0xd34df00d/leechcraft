@@ -579,7 +579,7 @@ namespace LMP
 						.property ("SingleTrackDisplayMask").toString ();
 
 				text = PerformSubstitutions (text, info).simplified ();
-				text.remove ("- -");
+				text.replace ("- -", "-");
 				if (text.startsWith ("- "))
 					text = text.mid (2);
 				if (text.endsWith (" -"))
