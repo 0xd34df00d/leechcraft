@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/media/iaudiopile.h>
 
 namespace LeechCraft
 {
@@ -31,9 +32,12 @@ namespace TouchStreams
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveSettings
+				 , public Media::IAudioPile
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
+		Q_INTERFACES (IInfo IHaveSettings Media::IAudioPile)
+
+		ICoreProxy_ptr Proxy_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
 		AuthManager *AuthMgr_;
@@ -47,6 +51,8 @@ namespace TouchStreams
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		Media::IPendingAudioSearch* Search (const Media::AudioSearchRequest&);
 	private slots:
 		void handlePushButton (const QString&);
 	};

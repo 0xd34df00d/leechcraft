@@ -21,6 +21,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "authmanager.h"
+#include "audiosearch.h"
 
 namespace LeechCraft
 {
@@ -28,6 +29,8 @@ namespace TouchStreams
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		AuthMgr_ = new AuthManager (proxy);
 
 		XSD_.reset (new Util::XmlSettingsDialog);
@@ -70,6 +73,19 @@ namespace TouchStreams
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XSD_;
+	}
+
+	Media::IPendingAudioSearch* Plugin::Search (const Media::AudioSearchRequest& req)
+	{
+		auto reqStr = req.FreeForm_;
+		if (reqStr.isEmpty ())
+		{
+			QStringList parts = { req.Artist_, req.Album_, req.Title_ };
+			parts.removeAll (QString ());
+			reqStr = parts.join (" - ");
+		}
+
+		return new AudioSearch (Proxy_, reqStr, AuthMgr_);
 	}
 
 	void Plugin::handlePushButton (const QString& name)
