@@ -61,13 +61,42 @@ namespace LMP
 		}
 	}
 
+	namespace
+	{
+		struct SamenessCheckInfo
+		{
+			QString Artist_;
+			QString Title_;
+			qint32 Length_;
+		};
+
+		bool operator== (const SamenessCheckInfo& i1, const SamenessCheckInfo& i2)
+		{
+			return i1.Artist_ == i2.Artist_ &&
+					i1.Title_ == i2.Title_ &&
+					i1.Length_ == i2.Length_;
+		}
+
+		uint qHash (const SamenessCheckInfo& info)
+		{
+			return (qHash (info.Artist_) << 20) + (qHash (info.Title_) << 8) + info.Length_;
+		}
+	}
+
 	void PreviewHandler::handlePendingReady ()
 	{
 		auto pending = qobject_cast<Media::IPendingAudioSearch*> (sender ());
 
 		QList<Phonon::MediaSource> sources;
+		QSet<SamenessCheckInfo> infos;
 		for (const auto& res : pending->GetResults ())
 		{
+			const SamenessCheckInfo checkInfo { res.Info_.Album_, res.Info_.Title_, res.Info_.Length_ };
+			if (infos.contains (checkInfo))
+				continue;
+
+			infos << checkInfo;
+
 			Player_->PrepareURLInfo (res.Source_, MediaInfo::FromAudioInfo (res.Info_));
 			sources << Phonon::MediaSource (res.Source_);
 		}
