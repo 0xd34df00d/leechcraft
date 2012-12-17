@@ -34,6 +34,11 @@ namespace LMP
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
+
+		connect (Ui_.RecView_,
+				SIGNAL (previewRequested (QString)),
+				this,
+				SIGNAL (artistPreviewRequested (QString)));
 	}
 
 	void RecommendationsWidget::InitializeProviders ()

@@ -175,6 +175,10 @@ namespace LMP
 				SIGNAL (audioPreviewRequested (QString)),
 				PreviewHandler_,
 				SLOT (previewArtist (QString)));
+		connect (Ui_.RecommendationsWidget_,
+				SIGNAL (artistPreviewRequested (QString)),
+				PreviewHandler_,
+				SLOT (previewArtist (QString)));
 
 #ifdef ENABLE_MPRIS
 		new MPRIS::Instance (this, Player_);
