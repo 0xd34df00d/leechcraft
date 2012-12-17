@@ -276,6 +276,10 @@ Rectangle {
                             anchors.topMargin: 2
                             anchors.left: trackImageThumb.right
                             anchors.leftMargin: 5
+                            anchors.right: previewAudio.left
+                            anchors.rightMargin: 8
+
+                            elide: Text.ElideRight
 
                             MouseArea {
                                 anchors.fill: parent
@@ -293,8 +297,8 @@ Rectangle {
 
                             anchors.top: parent.top
                             anchors.topMargin: 2
-                            anchors.left: trackNameLabel.right
-                            anchors.leftMargin: 8
+                            anchors.right: parent.right
+                            anchors.rightMargin: 5
                             source: "image://sysIcons/preferences-desktop-sound"
 
                             MouseArea {
