@@ -327,7 +327,7 @@ namespace LMP
 		emit playModeChanged (PlayMode_);
 	}
 
-	QList< SortingCriteria > Player::GetSortingCriteria () const
+	QList<SortingCriteria> Player::GetSortingCriteria () const
 	{
 		return Sorter_.Criteria_;
 	}
@@ -351,6 +351,11 @@ namespace LMP
 
 			return QList<Phonon::MediaSource> () << Phonon::MediaSource (file);
 		}
+	}
+
+	void Player::PrepareURLInfo (const QUrl& url, const MediaInfo& info)
+	{
+		Url2Info_ [url] = info;
 	}
 
 	void Player::Enqueue (const QStringList& paths, bool sort)
@@ -901,7 +906,10 @@ namespace LMP
 			{
 				const auto& url = source.url ();
 
-				const auto info = Core::Instance ().TryURLResolve (url);
+				auto info = Core::Instance ().TryURLResolve (url);
+				if (!info && Url2Info_.contains (url))
+					info = Url2Info_ [url];
+
 				if (info)
 					FillItem (item, *info);
 				else

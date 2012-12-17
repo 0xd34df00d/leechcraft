@@ -107,6 +107,7 @@ namespace LMP
 		QList<SortingCriteria> GetSortingCriteria () const;
 		void SetSortingCriteria (const QList<SortingCriteria>&);
 
+		void PrepareURLInfo (const QUrl&, const MediaInfo&);
 		void Enqueue (const QStringList&, bool = true);
 		void Enqueue (const QList<Phonon::MediaSource>&, bool = true);
 		void ReplaceQueue (const QList<Phonon::MediaSource>&, bool = true);
