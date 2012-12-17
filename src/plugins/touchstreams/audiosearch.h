@@ -48,6 +48,7 @@ namespace TouchStreams
 	private slots:
 		void handleGotAuthKey (const QString&);
 		void handleGotReply ();
+		void handleError ();
 	signals:
 		void ready ();
 	};

@@ -64,6 +64,10 @@ namespace TouchStreams
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleGotReply ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleError ()));
 	}
 
 	void AudioSearch::handleGotReply ()
@@ -101,6 +105,17 @@ namespace TouchStreams
 		}
 
 		emit ready ();
+		emit deleteLater ();
+	}
+
+	void AudioSearch::handleError ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		qWarning () << Q_FUNC_INFO
+				<< reply->errorString ();
+		deleteLater ();
 	}
 }
 }
