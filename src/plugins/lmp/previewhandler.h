@@ -23,6 +23,7 @@
 namespace Media
 {
 	class IAudioPile;
+	struct AudioSearchRequest;
 }
 
 namespace LeechCraft
@@ -42,6 +43,9 @@ namespace LMP
 		PreviewHandler (Player*, QObject*);
 	public slots:
 		void previewArtist (const QString&);
+		void previewTrack (const QString&, const QString&);
+	private:
+		void RequestPreview (const Media::AudioSearchRequest&);
 	private slots:
 		void handlePendingReady ();
 	};
