@@ -414,6 +414,8 @@ namespace LMP
 	{
 		Q_FOREACH (const auto& source, sources)
 		{
+			Url2Info_.remove (source.url ());
+
 			if (!CurrentQueue_.removeAll (source))
 				continue;
 
@@ -858,6 +860,7 @@ namespace LMP
 		Items_.clear ();
 		AlbumRoots_.clear ();
 		CurrentQueue_.clear ();
+		Url2Info_.clear ();
 		Source_->clearQueue ();
 
 		Core::Instance ().GetPlaylistManager ()->
@@ -1033,6 +1036,7 @@ namespace LMP
 	{
 		if (CurrentStation_)
 		{
+			Url2Info_.remove (Source_->currentSource ().url ());
 			CurrentStation_->RequestNewStream ();
 			return;
 		}
@@ -1078,9 +1082,9 @@ namespace LMP
 		if (curItem)
 			curItem->setData (true, Role::IsCurrent);
 
-		if (CurrentStation_)
+		if (Url2Info_.contains (source.url ()))
 		{
-			const auto& info = Url2Info_.take (source.url ());
+			const auto& info = Url2Info_ [source.url ()];
 			emit songChanged (info);
 		}
 		else if (curItem)
