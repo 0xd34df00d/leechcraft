@@ -39,6 +39,8 @@ namespace LMP
 	private slots:
 		void handleBookmark (const QString&, const QString&, const QString&);
 		void handleLink (const QString&);
+	signals:
+		void previewRequested (const QString&);
 	};
 }
 }

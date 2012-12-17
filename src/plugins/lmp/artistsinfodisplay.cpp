@@ -49,6 +49,10 @@ namespace LMP
 				this,
 				SLOT (handleBookmark (QString, QString, QString)));
 		connect (rootObject (),
+				SIGNAL (previewRequested (QString)),
+				this,
+				SIGNAL (previewRequested (QString)));
+		connect (rootObject (),
 				SIGNAL (linkActivated (QString)),
 				this,
 				SLOT (handleLink (QString)));

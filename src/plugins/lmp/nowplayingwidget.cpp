@@ -51,6 +51,11 @@ namespace LMP
 				SIGNAL (gotArtistImage (QString, QUrl)),
 				this,
 				SIGNAL (gotArtistImage (QString, QUrl)));
+
+		connect (Ui_.SimilarView_,
+				SIGNAL (previewRequested (QString)),
+				this,
+				SIGNAL (audioPreviewRequested (QString)));
 	}
 
 	void NowPlayingWidget::SetSimilarArtists (Media::SimilarityInfos_t infos)
