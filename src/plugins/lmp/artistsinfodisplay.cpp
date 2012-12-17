@@ -40,6 +40,7 @@ namespace LMP
 	{
 		engine ()->addImageProvider ("sysIcons", new SysIconProvider (Core::Instance ().GetProxy ()));
 		rootContext ()->setContextProperty ("similarModel", Model_);
+		rootContext ()->setContextProperty ("similarLabelPosition", "right");
 		rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
 		setSource (QUrl ("qrc:/lmp/resources/qml/SimilarView.qml"));
