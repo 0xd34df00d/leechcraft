@@ -5,7 +5,7 @@
 		<item type="checkbox" property="PreferPhonon" default="true">
 			<label value="Prefer Phonon (if available)" />
 		</item>
-		<item type="lineedit" property="PlayerCommand" default="aplay">
+		<item type="lineedit" property="PlayerCommand" default="mplayer">
 			<label value="Player command:" />
 		</item>
 	</page>

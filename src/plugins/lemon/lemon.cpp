@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,11 @@
 
 #include "lemon.h"
 #include <QIcon>
+#include <QAbstractItemModel>
+#include <util/sys/paths.h>
 #include "core.h"
-#include "actionsmanager.h"
+#include "trafficmanager.h"
+#include "trafficdialog.h"
 
 namespace LeechCraft
 {
@@ -29,11 +32,11 @@ namespace Lemon
 	{
 		Core::Instance ().SetProxy (proxy);
 
-		Manager_ = new ActionsManager (this);
-		connect (Manager_,
-				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
-				this,
-				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
+		TrafficMgr_ = new TrafficManager;
+
+		PanelComponent_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "lemon", "LemonQuark.qml"));
+		PanelComponent_.DynamicProps_ << QPair<QString, QObject*> ("Lemon_infoModel", TrafficMgr_->GetModel ());
+		PanelComponent_.DynamicProps_ << QPair<QString, QObject*> ("Lemon_proxy", this);
 	}
 
 	void Plugin::SecondInit ()
@@ -47,6 +50,7 @@ namespace Lemon
 
 	void Plugin::Release ()
 	{
+		Core::Instance ().Release ();
 	}
 
 	QString Plugin::GetName () const
@@ -64,11 +68,16 @@ namespace Lemon
 		return QIcon ();
 	}
 
-	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
+	QuarkComponents_t Plugin::GetComponents () const
 	{
-		return place == ActionsEmbedPlace::LCTray ?
-				Manager_->GetActions () :
-				QList<QAction*> ();
+		return { PanelComponent_ };
+	}
+
+	void Plugin::showGraph (const QString& ifaceName)
+	{
+		auto dia = new TrafficDialog (ifaceName, TrafficMgr_);
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 	}
 }
 }

@@ -38,6 +38,8 @@ namespace Shaitan
 		
 		QX11EmbedContainer *Embedder_;
 		QProcess *Process_;
+	private slots:
+		void gotError ();
 	public:
 		TerminalWidget (const TabClassInfo&, QObject*);
 		

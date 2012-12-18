@@ -34,12 +34,18 @@ SET (SRCS
 SET (FORMS
 	contentsdisplaydialog.ui
 	)
+SET (RESOURCES
+	secmanresources.qrc
+	)
+
 QT4_WRAP_UI (UIS_H ${FORMS})
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_secman SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${UIS_H}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_secman
 	${QT_LIBRARIES}

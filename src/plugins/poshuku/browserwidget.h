@@ -96,7 +96,7 @@ namespace Poshuku
 		QMap<QString, QList<QAction*>> WindowMenus_;
 
 		CustomWebView *WebView_;
-		std::shared_ptr<QLabel> LinkTextItem_;
+		QLabel *LinkTextItem_;
 
 		static QObject* S_MultiTabsParent_;
 

@@ -27,6 +27,7 @@ namespace LeechCraft
 namespace TPI
 {
 	class InfoModelManager;
+	class TooltipView;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -35,9 +36,12 @@ namespace TPI
 		Q_OBJECT
 		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
-		QuarkComponents_t Components_;
+		ICoreProxy_ptr Proxy_;
 
+		QuarkComponents_t Components_;
 		InfoModelManager *ModelMgr_;
+
+		QPointer<TooltipView> TooltipView_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -48,6 +52,9 @@ namespace TPI
 		QIcon GetIcon () const;
 
 		QuarkComponents_t GetComponents () const;
+	public slots:
+		void hovered (double, double);
+		void hoverLeft ();
 	};
 }
 }

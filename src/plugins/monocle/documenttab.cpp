@@ -355,7 +355,7 @@ namespace Monocle
 		ScalesBox_ = new QComboBox ();
 		ScalesBox_->addItem (tr ("Fit width"));
 		ScalesBox_->addItem (tr ("Fit page"));
-		std::vector<double> scales = { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2 };
+		std::vector<double> scales = { 0.1, 0.25, 0.33, 0.5, 0.66, 0.8, 1.0, 1.25, 1.5, 2, 3, 4, 5, 7.5, 10 };
 		Q_FOREACH (double scale, scales)
 			ScalesBox_->addItem (QString::number (scale * 100) + '%', scale);
 		ScalesBox_->setCurrentIndex (0);
@@ -364,6 +364,23 @@ namespace Monocle
 				this,
 				SLOT (handleScaleChosen (int)));
 		Toolbar_->addWidget (ScalesBox_);
+
+		ZoomOut_ = new QAction (tr ("Zoom out"), this);
+		ZoomOut_->setProperty ("ActionIcon", "zoom-out");
+		connect (ZoomOut_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (zoomOut ()));
+		Toolbar_->addAction(ZoomOut_);
+
+		ZoomIn_ = new QAction (tr ("Zoom in"), this);
+		ZoomIn_->setProperty ("ActionIcon", "zoom-in");
+		connect (ZoomIn_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (zoomIn ()));
+		Toolbar_->addAction (ZoomIn_);
+		Toolbar_->addSeparator ();
 
 		auto viewGroup = new QActionGroup (this);
 		auto onePage = new QAction (tr ("One page"), this);
@@ -716,6 +733,26 @@ namespace Monocle
 				" / " +
 				QString::number (CurrentDoc_->GetNumPages ());
 		PageNumLabel_->setText (str);
+	}
+
+	void DocumentTab::zoomOut ()
+	{
+		const int minIdx = 2;
+		auto newIndex = std::max (ScalesBox_->currentIndex () - 1, minIdx);
+		ScalesBox_->setCurrentIndex (newIndex);
+
+		ZoomOut_->setEnabled (newIndex > minIdx);
+		ZoomIn_->setEnabled (true);
+	}
+
+	void DocumentTab::zoomIn ()
+	{
+		const auto maxIdx = ScalesBox_->count () - 1;
+		auto newIndex = std::min (ScalesBox_->currentIndex () + 1, maxIdx);
+		ScalesBox_->setCurrentIndex (newIndex);
+
+		ZoomOut_->setEnabled (true);
+		ZoomIn_->setEnabled (newIndex < maxIdx);
 	}
 
 	void DocumentTab::showOnePage ()

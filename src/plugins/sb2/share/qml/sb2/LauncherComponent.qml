@@ -1,8 +1,8 @@
 import QtQuick 1.1
 import Effects 1.0
 import SB2 1.0
-import "Common.js" as Common
-import "."
+import "../common/Common.js" as Common
+import "../common/"
 
 Rectangle {
     id: rootRect
@@ -84,9 +84,8 @@ Rectangle {
                         SB2_launcherProxy.tabListUnhovered(tabClassID)
                     }
 
-                    effect: Colorize {
-                        strength: openedTabsCount || tcButton.isHovered ? 0 : 0.3
-                        color: "gray"
+                    effect: Desaturate {
+                        strength: openedTabsCount || tcButton.isHovered ? 0 : 0.5
 
                         Behavior on strength { PropertyAnimation {} }
                     }

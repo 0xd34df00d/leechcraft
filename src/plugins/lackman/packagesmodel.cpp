@@ -18,8 +18,11 @@
 
 #include "packagesmodel.h"
 #include <QIcon>
+#include <QApplication>
+#include <util/util.h>
 #include "core.h"
 #include "storage.h"
+#include "pendingmanager.h"
 
 namespace LeechCraft
 {
@@ -32,22 +35,90 @@ namespace LackMan
 
 	int PackagesModel::columnCount (const QModelIndex&) const
 	{
-		return 1;
+		return Columns::MaxColumn;
+	}
+
+	QVariant PackagesModel::headerData (int section, Qt::Orientation orientation, int role) const
+	{
+		if (orientation == Qt::Vertical)
+			return QVariant ();
+
+		if (role != Qt::DisplayRole)
+			return QVariant ();
+
+		switch (section)
+		{
+		case Columns::Inst:
+			return tr ("I");
+		case Columns::Upd:
+			return tr ("U");
+		case Columns::Name:
+			return tr ("Name");
+		case Columns::Description:
+			return tr ("Description");
+		case Columns::Version:
+			return tr ("Version");
+		case Columns::Size:
+			return tr ("Size");
+		default:
+			return "unknown";
+		}
 	}
 
 	QVariant PackagesModel::data (const QModelIndex& index, int role) const
 	{
-		if (index.column () != 0)
-			return QVariant ();
+		const auto& lpi = Packages_.at (index.row ());
 
-		ListPackageInfo lpi = Packages_.at (index.row ());
+		const int col = index.column ();
 
 		switch (role)
 		{
 		case Qt::DisplayRole:
-			return lpi.Name_;
+			switch (col)
+			{
+			case Columns::Name:
+				return lpi.Name_;
+			case Columns::Description:
+				return lpi.ShortDescription_;
+			case Columns::Version:
+				return lpi.Version_;
+			case Columns::Size:
+			{
+				const auto size = Core::Instance ().GetStorage ()->GetPackageSize (lpi.PackageID_);
+				return size > 0 ? Util::MakePrettySize (size) : tr ("unknown");
+			}
+			default:
+				return QVariant ();
+			}
 		case Qt::DecorationRole:
-			return Core::Instance ().GetIconForLPI (lpi);
+			return col != Columns::Name ?
+					QVariant () :
+					Core::Instance ().GetIconForLPI (lpi);
+		case Qt::CheckStateRole:
+		{
+			auto pm = Core::Instance ().GetPendingManager ();
+			switch (col)
+			{
+			case Columns::Inst:
+				if (lpi.IsInstalled_)
+					return pm->GetPendingRemove ().contains (lpi.PackageID_) ?
+							Qt::Unchecked :
+							Qt::Checked;
+				else
+					return pm->GetPendingInstall ().contains (lpi.PackageID_) ?
+							Qt::Checked :
+							Qt::Unchecked;
+				break;
+			case Columns::Upd:
+				if (!lpi.HasNewVersion_)
+					return QVariant ();
+				return pm->GetPendingUpdate ().contains (lpi.PackageID_) ?
+						Qt::Checked :
+						Qt::Unchecked;
+			default:
+				return QVariant ();
+			}
+		}
 		case PMRPackageID:
 			return lpi.PackageID_;
 		case PMRShortDescription:
@@ -65,8 +136,7 @@ namespace LackMan
 		case PMRThumbnails:
 		case PMRScreenshots:
 		{
-			const QList<Image>& images = Core::Instance ()
-					.GetStorage ()->GetImages (lpi.Name_);
+			const auto& images = Core::Instance ().GetStorage ()->GetImages (lpi.Name_);
 			QStringList result;
 			Q_FOREACH (const Image& img, images)
 				if (img.Type_ == (role == PMRThumbnails ? Image::TThumbnail : Image::TScreenshot))
@@ -80,12 +150,52 @@ namespace LackMan
 		}
 	}
 
+	bool PackagesModel::setData (const QModelIndex& index, const QVariant& value, int role)
+	{
+		if (role != Qt::CheckStateRole)
+			return false;
+
+		const auto& lpi = Packages_.at (index.row ());
+
+		const Qt::CheckState state = static_cast<Qt::CheckState> (value.toInt ());
+		switch (index.column ())
+		{
+		case Columns::Inst:
+		{
+			const bool isNewState = (state == Qt::Checked && !lpi.IsInstalled_) ||
+					(state == Qt::Unchecked && lpi.IsInstalled_);
+			Core::Instance ().GetPendingManager ()->
+					ToggleInstallRemove (lpi.PackageID_, isNewState, lpi.IsInstalled_);
+			emit dataChanged (index, index);
+			return true;
+		}
+		case Columns::Upd:
+			Core::Instance ().GetPendingManager ()->ToggleUpdate (lpi.PackageID_, state == Qt::Checked);
+			emit dataChanged (index, index);
+			return true;
+		default:
+			return false;
+		}
+	}
+
 	Qt::ItemFlags PackagesModel::flags (const QModelIndex& index) const
 	{
 		if (!index.isValid ())
 			return 0;
-		else
-			return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+		auto flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+		const auto& lpi = Packages_.at (index.row ());
+		switch (index.column ())
+		{
+		case Columns::Inst:
+			flags |= Qt::ItemIsUserCheckable;
+			break;
+		case Columns::Upd:
+			if (lpi.HasNewVersion_)
+				flags |= Qt::ItemIsUserCheckable;
+			break;
+		}
+		return flags;
 	}
 
 	QModelIndex PackagesModel::index (int row, int column, const QModelIndex& parent) const

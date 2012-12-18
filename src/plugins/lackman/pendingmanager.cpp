@@ -49,6 +49,7 @@ namespace LackMan
 
 	void PendingManager::ToggleInstallRemove (int id, bool enable, bool installed)
 	{
+		qDebug () << Q_FUNC_INFO << enable << installed;
 		if (enable)
 			EnablePackageInto (id, installed ? Action::Remove : Action::Install);
 		else

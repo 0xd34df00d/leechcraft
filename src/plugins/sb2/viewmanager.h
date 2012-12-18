@@ -18,12 +18,13 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QUrl>
 #include <QHash>
 #include <interfaces/core/icoreproxy.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
+class QDir;
 class QStandardItemModel;
 
 namespace LeechCraft
@@ -33,7 +34,9 @@ struct QuarkComponent;
 namespace SB2
 {
 	class SBView;
-	class QuarkSettingsManager;
+	class QuarkManager;
+
+	typedef std::shared_ptr<QuarkManager> QuarkManager_ptr;
 
 	class ViewManager : public QObject
 	{
@@ -43,12 +46,7 @@ namespace SB2
 		QStandardItemModel *ViewItemsModel_;
 		SBView *View_;
 
-		struct QuarkSettings
-		{
-			Util::XmlSettingsDialog_ptr XSD_;
-			QuarkSettingsManager *SettingsManager_;
-		};
-		QHash<QUrl, QuarkSettings> Quark2Settings_;
+		QHash<QUrl, QuarkManager_ptr> Quark2Manager_;
 	public:
 		ViewManager (ICoreProxy_ptr, QObject* = 0);
 
@@ -59,7 +57,7 @@ namespace SB2
 
 		void ShowSettings (const QUrl&);
 	private:
-		bool CreateSettings (const QUrl&);
+		void AddRootDir (const QDir&);
 	};
 }
 }

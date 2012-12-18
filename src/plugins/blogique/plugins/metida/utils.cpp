@@ -134,6 +134,16 @@ namespace MetidaUtils
 		}
 	}
 
+	Access GetAccessForString (const QString& access)
+	{
+		if (access == "private")
+			return Access::Private;
+		else if (access == "usemask")
+			return Access::Custom;
+		else
+			return Access::Public;
+	}
+
 	QString GetStringForAdultContent (AdultContent adult)
 	{
 		switch (adult)
@@ -147,6 +157,65 @@ namespace MetidaUtils
 				return "none";
 		}
 
+	}
+
+	AdultContent GetAdultContentFromString (const QString& str)
+	{
+		if (str == "concepts")
+			return AdultContent::AdultsFrom14;
+		else if (str == "explicit")
+			return AdultContent::AdultsFrom18;
+		else
+			return AdultContent::WithoutAdultContent;
+	}
+
+	CommentsManagement GetCommentsManagmentFromString (const QString& str)
+	{
+		CommentsManagement cm = CommentsManagement::Default;
+		if (str == "N")
+			cm = CommentsManagement::ShowComments;
+		else if (str == "R")
+			cm = CommentsManagement::ScreenAnonymouseComments;
+		else if (str == "F")
+			cm = CommentsManagement::ShowFriendsComments;
+		else if (str == "L")
+			cm = CommentsManagement::ScreenNotFromFriendsWithLinks;
+		else if (str == "A")
+			cm = CommentsManagement::ScreenComments;
+
+		return cm;
+	}
+
+	CommentsManagement GetCommentsManagmentFromInt (int cm)
+	{
+		switch (cm)
+		{
+			case 1:
+				return CommentsManagement::DisableComments;
+			case 0:
+			default:
+				return CommentsManagement::EnableComments;
+		}
+	}
+
+	QString GetStringFromCommentsManagment (CommentsManagement cm)
+	{
+		switch (cm)
+		{
+			case CommentsManagement::ScreenAnonymouseComments:
+				return "R";
+			case CommentsManagement::ScreenComments:
+				return "A";
+			case CommentsManagement::ShowComments:
+				return "N";
+			case CommentsManagement::ShowFriendsComments:
+				return "F";
+			case CommentsManagement::ScreenNotFromFriendsWithLinks:
+				return "L";
+			case CommentsManagement::Default:
+			default:
+				return QString ();
+		}
 	}
 
 }

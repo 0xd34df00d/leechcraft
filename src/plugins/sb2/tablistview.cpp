@@ -22,10 +22,10 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QtDebug>
-#include <QTimer>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/gui/unhoverdeletemixin.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoretabwidget.h>
 #include "themeimageprovider.h"
@@ -63,8 +63,7 @@ namespace SB2
 	, Proxy_ (proxy)
 	, TC_ (tc)
 	, Model_ (new TabsListModel (this))
-	, LeaveTimer_ (new QTimer (this))
-	, ContainsMouse_ (false)
+	, UnhoverDeleteMixin_ (new Util::UnhoverDeleteMixin (this))
 	{
 		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "TabListView.qml");
 		if (file.isEmpty ())
@@ -79,6 +78,8 @@ namespace SB2
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
 
+		QString longestText;
+
 		auto ictw = proxy->GetTabWidget ();
 		for (auto w : widgets)
 		{
@@ -92,7 +93,11 @@ namespace SB2
 			}
 
 			auto item = new QStandardItem;
-			item->setData (ictw->TabText (idx), TabsListModel::Roles::TabName);
+
+			const auto& tabText = ictw->TabText (idx);
+			item->setData (tabText, TabsListModel::Roles::TabName);
+			if (tabText.size () > longestText.size ())
+				longestText = tabText;
 
 			const auto& px = ictw->TabIcon (idx).pixmap (32, 32);
 			item->setData (Util::GetAsBase64Src (px.toImage ()), TabsListModel::Roles::TabIcon);
@@ -112,6 +117,7 @@ namespace SB2
 		rootContext ()->setContextProperty ("tabsListModel", Model_);
 		rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
+		rootContext ()->setContextProperty ("longestText", longestText);
 		engine ()->addImageProvider ("ThemeIcons", new ThemeImageProvider (proxy));
 		setSource (QUrl::fromLocalFile (file));
 
@@ -127,12 +133,6 @@ namespace SB2
 				SIGNAL (tabCloseRequested (int)),
 				this,
 				SLOT (closeItem (int)));
-
-		LeaveTimer_->setSingleShot (true);
-		connect (LeaveTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (deleteLater ()));
 	}
 
 	QByteArray TabListView::GetTabClass () const
@@ -142,27 +142,12 @@ namespace SB2
 
 	void TabListView::HandleLauncherHovered ()
 	{
-		LeaveTimer_->stop ();
+		UnhoverDeleteMixin_->Stop ();
 	}
 
 	void TabListView::HandleLauncherUnhovered ()
 	{
-		if (!ContainsMouse_)
-			LeaveTimer_->start (1200);
-	}
-
-	void TabListView::enterEvent (QEvent *e)
-	{
-		ContainsMouse_ = true;
-		LeaveTimer_->stop ();
-		QDeclarativeView::enterEvent (e);
-	}
-
-	void TabListView::leaveEvent (QEvent *e)
-	{
-		ContainsMouse_ = false;
-		LeaveTimer_->start (800);
-		QDeclarativeView::leaveEvent (e);
+		UnhoverDeleteMixin_->Start (1200);
 	}
 
 	void TabListView::handleTabRemoved (QWidget *widget)

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,46 +18,51 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
-#include <QMap>
-#include <interfaces/iactionsexporter.h>
+#include <QDateTime>
+#include <interfaces/core/icoreproxy.h>
 
-class QAction;
-class QNetworkConfigurationManager;
-class QNetworkConfiguration;
-class QNetworkSession;
-
-typedef std::shared_ptr<QNetworkSession> QNetworkSession_ptr;
+class QUrl;
 
 namespace LeechCraft
 {
-namespace Lemon
+namespace Util
 {
-	class ActionsManager : public QObject
+	class CustomCookieJar;
+}
+
+namespace TouchStreams
+{
+	class AuthManager : public QObject
 	{
 		Q_OBJECT
 
-		QNetworkConfigurationManager *Manager_;
+		ICoreProxy_ptr Proxy_;
 
-		struct InterfaceInfo
-		{
-			QAction *Action_;
-			QMap<QString, QNetworkSession_ptr> Sessions_;
-			quint64 PrevRead_;
-			quint64 PrevWritten_;
+		QNetworkAccessManager *AuthNAM_;
+		Util::CustomCookieJar *Cookies_;
 
-			InterfaceInfo ();
-		};
-		QMap<QString, InterfaceInfo> Infos_;
+		QString Token_;
+		QDateTime ReceivedAt_;
+		qint32 ValidFor_;
+
+		bool IsRequesting_;
 	public:
-		ActionsManager (QObject* = 0);
+		AuthManager (ICoreProxy_ptr, QObject* = 0);
 
-		QList<QAction*> GetActions () const;
+		void GetAuthKey ();
+		void Reauth ();
+	private:
+		void HandleError ();
+		void RequestURL (const QUrl&);
+		void RequestAuthKey ();
+		bool CheckIsBlank (QUrl);
 	private slots:
-		void addConfiguration (const QNetworkConfiguration&);
+		void handleGotForm ();
+		void handleFormFetchError ();
+		void handleViewUrlChanged (const QUrl&);
 	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void gotAuthKey (const QString&);
 	};
 }
 }

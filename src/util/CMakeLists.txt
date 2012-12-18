@@ -14,6 +14,7 @@ SET (SRCS
 	gui/clearlineeditaddon.cpp
 	gui/flowlayout.cpp
 	gui/selectablebrowser.cpp
+	gui/unhoverdeletemixin.cpp
 	models/flattenfiltermodel.cpp
 	models/flattofoldersproxymodel.cpp
 	models/listmodel.cpp
@@ -50,6 +51,7 @@ SET (HEADERS
 	gui/clearlineeditaddon.h
 	gui/flowlayout.h
 	gui/selectablebrowser.h
+	gui/unhoverdeletemixin.h
 	models/flattenfiltermodel.h
 	models/flattofoldersproxymodel.h
 	models/listmodel.h

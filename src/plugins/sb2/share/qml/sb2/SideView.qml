@@ -1,4 +1,5 @@
 import QtQuick 1.1
+import "../common/"
 
 Rectangle {
     id: quarkDisplayRoot

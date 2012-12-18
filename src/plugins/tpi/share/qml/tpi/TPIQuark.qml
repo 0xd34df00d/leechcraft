@@ -1,4 +1,5 @@
 import QtQuick 1.1
+import "../common/Common.js" as Common
 import "."
 
 Rectangle {
@@ -32,5 +33,13 @@ Rectangle {
                 anchors.fill: parent
             }
         }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+
+        onEntered: Common.showTooltip(rootRect, function(x, y) { TPI_proxy.hovered(x, y) })
+        onExited: TPI_proxy.hoverLeft()
     }
 }

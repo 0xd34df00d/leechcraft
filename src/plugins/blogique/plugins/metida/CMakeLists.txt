@@ -7,9 +7,9 @@ SET (QT_USE_QTXML TRUE)
 SET (QT_USE_QTXMLPATTERNS TRUE)
 INCLUDE (${QT_USE_FILE})
 
-INCLUDE_DIRECTORIES (${BLOGIQUE_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
+INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${BLOGIQUE_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/blogique
 	)
@@ -31,6 +31,7 @@ SET (METIDA_SRCS
 	profiletypes.cpp
 	profilewidget.cpp
 	selectgroupsdialog.cpp
+	updatetypedialog.cpp
 	utils.cpp
 	xmlsettingsmanager.cpp
 	)
@@ -53,6 +54,7 @@ SET (METIDA_HEADERS
 	profiletypes.h
 	profilewidget.h
 	selectgroupsdialog.h
+	updatetypedialog.h
 	utils.h
 	xmlsettingsmanager.h
 	)
@@ -64,6 +66,7 @@ SET (METIDA_FORMS
 	profilewidget.ui
 	postoptionswidget.ui
 	selectgroupsdialog.ui
+	updatetypedialog.ui
 	)
 
 SET (METIDA_RESOURCES blogiquemetidaresources.qrc)

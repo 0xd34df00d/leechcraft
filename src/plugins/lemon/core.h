@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,18 +25,26 @@ namespace LeechCraft
 {
 namespace Lemon
 {
+	class PlatformBackend;
+	typedef std::shared_ptr<PlatformBackend> PlatformBackend_ptr;
+
 	class Core : public QObject
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
 
+		PlatformBackend_ptr Backend_;
+
 		Core ();
 	public:
 		static Core& Instance ();
+		void Release ();
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
+
+		PlatformBackend_ptr GetPlatformBackend () const;
 	};
 }
 }

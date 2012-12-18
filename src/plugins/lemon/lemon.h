@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,22 +20,24 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
-#include <interfaces/iactionsexporter.h>
+#include <interfaces/iquarkcomponentprovider.h>
 
 namespace LeechCraft
 {
 namespace Lemon
 {
+	class TrafficManager;
 	class ActionsManager;
 
 	class Plugin : public QObject
 				, public IInfo
-				, public IActionsExporter
+				, public IQuarkComponentProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
+		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
-		ActionsManager *Manager_;
+		TrafficManager *TrafficMgr_;
+		QuarkComponent PanelComponent_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -45,9 +47,9 @@ namespace Lemon
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		QuarkComponents_t GetComponents () const;
+	public slots:
+		void showGraph (const QString&);
 	};
 }
 }

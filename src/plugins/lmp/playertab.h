@@ -49,6 +49,7 @@ namespace LMP
 	struct MediaInfo;
 	class Player;
 	class NowPlayingPixmapHandler;
+	class PreviewHandler;
 
 	class PlayerTab : public QWidget
 					, public ITabWidget
@@ -65,6 +66,8 @@ namespace LMP
 		QSortFilterProxyModel *CollectionFilterModel_;
 
 		Player *Player_;
+		PreviewHandler *PreviewHandler_;
+
 		QToolBar *TabToolbar_;
 
 		QLabel *PlayedTime_;

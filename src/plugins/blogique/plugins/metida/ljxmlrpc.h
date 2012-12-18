@@ -44,6 +44,17 @@ namespace Metida
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
 
 		const int BitMaskForFriendsOnlyComments_;
+		const int MaxGetEventsCount_;
+
+		QHash<QNetworkReply*, int> Reply2Skip_;
+
+		enum class RequestType
+		{
+			Update,
+			Post
+		};
+		QHash<QNetworkReply*, RequestType> Reply2RequestType_;
+
 	public:
 		LJXmlRPC (LJAccount *acc, QObject *parent = 0);
 
@@ -57,8 +68,16 @@ namespace Metida
 		void DeleteGroup (int id);
 
 		void UpdateProfileInfo ();
+
 		void Submit (const LJEvent& event);
+		void BackupEvents ();
+		void GetLastEvents (int count);
+		void GetChangedEvents (const QDateTime& dt);
+
+		void RemoveEvent (const LJEvent& event);
+		void UpdateEvent (const LJEvent& event);
 	private:
+
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
 				const QString& pass, const QString& challenge);
@@ -66,6 +85,8 @@ namespace Metida
 				const QString& pass, const QString& challenge);
 		void ParseForError (const QByteArray& content);
 		void ParseFriends (const QDomDocument& doc);
+
+		QList<LJEvent> ParseFullEvents (const QDomDocument& doc);
 
 		void AddNewFriendRequest (const QString& username,
 				const QString& bgcolor, const QString& fgcolor,
@@ -78,6 +99,16 @@ namespace Metida
 		void DeleteGroupRequest (int id, const QString& challenge);
 
 		void PostEventRequest (const LJEvent& event, const QString& challenge);
+		void RemoveEventRequest (const LJEvent& event, const QString& challenge);
+		void UpdateEventRequest (const LJEvent& event, const QString& challenge);
+
+		void BackupEventsRequest (int skip, const QString& challenge);
+
+		void GetLastEventsRequest (int count, const QString& challenge);
+		void GetChangedEventsRequest (const QDateTime& dt, const QString& challenge);
+		void GetParticularEventRequest (int id, RequestType prt,
+				const QString& challenge);
+
 	private slots:
 		void handleChallengeReplyFinished ();
 		void handleValidateReplyFinished ();
@@ -85,12 +116,25 @@ namespace Metida
 		void handleAddNewFriendReplyFinished ();
 		void handleReplyWithProfileUpdate ();
 		void handlePostEventReplyFinished ();
+		void handleBackupEventsReplyFinished ();
+		void handleGetLastEventsReplyFinished ();
+		void handleRemoveEventReplyFinished ();
+		void handleUpdateEventReplyFinished ();
+		void handleGetParticularEventReplyFinished ();
 
 	signals:
 		void validatingFinished (bool success);
 		void profileUpdated (const LJProfileData& profile);
 		void error (int code, const QString& msg);
-		void entryPosted ();
+
+		void eventPosted (const QList<LJEvent>& events);
+		void eventUpdated (const QList<LJEvent>& events);
+		void eventRemoved (int itemId);
+
+		void gotEvents2Backup (const QList<LJEvent>& events);
+		void gettingEvents2BackupFinished ();
+
+		void gotEvents (const QList<LJEvent>& events);
 	};
 }
 }

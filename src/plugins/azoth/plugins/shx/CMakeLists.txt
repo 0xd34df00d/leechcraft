@@ -13,10 +13,15 @@ SET (SHX_SRCS
 	xmlsettingsmanager.cpp
 	)
 #CreateTrs ("azoth_shx" "en;ru_RU" AUTOPASTE_COMPILED_TRANSLATIONS)
+SET (SHX_RESOURCES
+	shxresources.qrc
+	)
+QT4_ADD_RESOURCES (SHX_RCCS ${SHX_RESOURCES})
 
 ADD_LIBRARY (leechcraft_azoth_shx SHARED
 	${SHX_COMPILED_TRANSLATIONS}
 	${SHX_SRCS}
+	${SHX_RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_azoth_shx
 	${QT_LIBRARIES}

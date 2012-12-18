@@ -119,10 +119,22 @@ namespace LackMan
 		FilterString_->setFilterCaseSensitivity (Qt::CaseInsensitive);
 		FilterString_->setSortCaseSensitivity (Qt::CaseInsensitive);
 		FilterString_->setSourceModel (TypeFilter_);
-		FilterString_->sort (0);
+		FilterString_->sort (PackagesModel::Columns::Name);
 
 		Ui_.PackagesTree_->setModel (FilterString_);
 		Ui_.PackagesTree_->setItemDelegate (new PackagesDelegate (Ui_.PackagesTree_));
+
+		auto setColWidth = [this] (int col, const QString& sample)
+		{
+			Ui_.PackagesTree_->setColumnWidth (col, fontMetrics ().width (sample));
+		};
+		Ui_.PackagesTree_->setColumnWidth (PackagesModel::Columns::Inst, 32);
+		Ui_.PackagesTree_->setColumnWidth (PackagesModel::Columns::Upd, 32);
+		setColWidth (PackagesModel::Columns::Size, "999 KiB");
+		setColWidth (PackagesModel::Columns::Version, "0.1.2.3-r4");
+		setColWidth (PackagesModel::Columns::Description,
+				"This is a typical package short description for Capcom Fighting Evolution");
+		setColWidth (PackagesModel::Columns::Name, "Capcom Fighting Evolution package");
 
 		Ui_.PendingTree_->setModel (Core::Instance ()
 				.GetPendingManager ()->GetPendingModel ());

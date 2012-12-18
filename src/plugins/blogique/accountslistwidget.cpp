@@ -101,7 +101,7 @@ namespace Blogique
 
 		try
 		{
-			Core::Instance ().GetStorage()->AddAccount (acc->GetAccountID ());
+			Core::Instance ().GetStorage ()->AddAccount (acc->GetAccountID ());
 		}
 		catch (const std::runtime_error& e)
 		{

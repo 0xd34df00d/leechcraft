@@ -90,17 +90,29 @@ namespace Metida
 
 	void PostOptionsWidget::SetPostOptions (const QVariantMap& map)
 	{
-		const QVariant& access = map ["access"];
-		for (int i = 0; i < Ui_.Access_->count (); ++i)
-			if (Ui_.Access_->itemData (i, Qt::UserRole) == access)
-			{
-				Ui_.Access_->setCurrentIndex (i);
-				break;
-			}
+		if (map.contains ("access"))
+		{
+			const QVariant& access = map ["access"];
+			for (int i = 0; i < Ui_.Access_->count (); ++i)
+				if (Ui_.Access_->itemData (i, Qt::UserRole) == access)
+				{
+					Ui_.Access_->setCurrentIndex (i);
+					break;
+				}
+		}
+		else
+			Ui_.Access_->setCurrentIndex (0);
+
+		if (Ui_.Access_->itemData (Ui_.Access_->currentIndex ()) != Access::Private)
+			Ui_.ShowInFriendsPage_->setChecked (map.contains ("showInFriendsPage") ?
+				map ["showInFriendsPage"].toBool () : true);
+		else
+			Ui_.ShowInFriendsPage_->setChecked (false);
 
 		//TODO AllowMask_
 
-		if (map ["noMood"].toBool ())
+		if (map.contains ("noMood") &&
+				map ["noMood"].toBool ())
 			Ui_.Mood_->setCurrentIndex (-1);
 		else
 		{
@@ -125,33 +137,51 @@ namespace Metida
 		Ui_.Place_->setText (map ["place"].toString ());
 		Ui_.Music_->setText (map ["music"].toString ());
 
-		const QVariant& comment = map ["comment"];
-		for (int i = 0; i < Ui_.Comments_->count (); ++i)
-			if (Ui_.Comments_->itemData (i, Qt::UserRole) == comment)
-			{
-				Ui_.Comments_->setCurrentIndex (i);
-				break;
-			}
-		Ui_.NotifyAboutComments_->setChecked (map ["notify"].toBool ());
+		if (map.contains ("comment"))
+		{
+			const QVariant& comment = map ["comment"];
+			for (int i = 0; i < Ui_.Comments_->count (); ++i)
+				if (Ui_.Comments_->itemData (i, Qt::UserRole) == comment)
+				{
+					Ui_.Comments_->setCurrentIndex (i);
+					break;
+				}
+		}
+		else
+			Ui_.Comments_->setCurrentIndex (0);
 
-		const QVariant& hideComments = map ["hidecomment"];
-		for (int i = 0; i < Ui_.ScreenComments_->count (); ++i)
-			if (Ui_.ScreenComments_->itemData (i, Qt::UserRole) == hideComments)
-			{
-				Ui_.ScreenComments_->setCurrentIndex (i);
-				break;
-			}
+		if (map.contains ("hidecomments"))
+		{
+			const QVariant& hideComments = map ["hidecomment"];
+			for (int i = 0; i < Ui_.ScreenComments_->count (); ++i)
+				if (Ui_.ScreenComments_->itemData (i, Qt::UserRole) == hideComments)
+				{
+					Ui_.ScreenComments_->setCurrentIndex (i);
+					break;
+				}
+		}
+		else
+			Ui_.ScreenComments_->setCurrentIndex (0);
 
-		const QVariant& adults = map ["adults"];
-		for (int i = 0; i < Ui_.Adult_->count (); ++i)
-			if (Ui_.Adult_->itemData (i, Qt::UserRole) == adults)
-			{
-				Ui_.Adult_->setCurrentIndex (i);
-				break;
-			}
+		if (map.contains ("adults"))
+		{
+			const QVariant& adults = map ["adults"];
+			for (int i = 0; i < Ui_.Adult_->count (); ++i)
+				if (Ui_.Adult_->itemData (i, Qt::UserRole) == adults)
+				{
+					Ui_.Adult_->setCurrentIndex (i);
+					break;
+				}
+		}
+		else
+			Ui_.Adult_->setCurrentIndex (0);
 
-		Ui_.ShowInFriendsPage_->setChecked (map ["showInFriendsPage"].toBool ());
-		Ui_.UserPic_->setCurrentIndex (Ui_.UserPic_->findText (map ["avatar"].toString ()));
+		Ui_.UserPic_->setCurrentIndex (!map ["avatar"].toString ().isEmpty () ?
+			Ui_.UserPic_->findText (map ["avatar"].toString ()) :
+			0);
+		Ui_.NotifyAboutComments_->setChecked (map.contains ("notify") ?
+			map ["notify"].toBool () :
+			true);
 	}
 
 	QVariantMap PostOptionsWidget::GetCustomData () const
@@ -183,7 +213,6 @@ namespace Metida
 		for (const auto& mood : profile->GetProfileData ().Moods_)
 			Ui_.Mood_->addItem (mood.Name_, mood.Id_);
 
-		//TODO other images
 		Ui_.UserPic_->addItem (tr ("(default)"));
 		const QString& path = Util::CreateIfNotExists ("blogique/metida/avatars")
 				.absoluteFilePath (Account_->GetAccountID ().toBase64 ().replace ('/', '_'));
@@ -218,6 +247,7 @@ namespace Metida
 
 	void PostOptionsWidget::SetPostDate (const QDateTime& date)
 	{
+		Ui_.TimestampBox_->setChecked (true);
 		Ui_.Year_->setValue (date.date ().year ());
 		Ui_.Month_->setCurrentIndex (date.date ().month () - 1);
 		Ui_.Date_->setValue (date.date ().day ());
@@ -275,8 +305,6 @@ namespace Metida
 			else
 				for (uint num : dlg.GetSelectedGroupsIds ())
 					AllowMask_ |= 1 << num;
-
-				qDebug () << Q_FUNC_INFO << AllowMask_;
 		}
 	}
 
@@ -291,7 +319,7 @@ namespace Metida
 						.absoluteFilePath ((Account_->GetAccountID ())
 								.toBase64 ().replace ('/', '_'));
 		QPixmap pxm (path);
-		Ui_.UserPicLabel_->setPixmap (pxm.scaled (64, 64));
+		Ui_.UserPicLabel_->setPixmap (pxm.scaled (pxm.width (), pxm.height ()));
 	}
 }
 }

@@ -327,7 +327,7 @@ namespace LMP
 		emit playModeChanged (PlayMode_);
 	}
 
-	QList< SortingCriteria > Player::GetSortingCriteria () const
+	QList<SortingCriteria> Player::GetSortingCriteria () const
 	{
 		return Sorter_.Criteria_;
 	}
@@ -351,6 +351,11 @@ namespace LMP
 
 			return QList<Phonon::MediaSource> () << Phonon::MediaSource (file);
 		}
+	}
+
+	void Player::PrepareURLInfo (const QUrl& url, const MediaInfo& info)
+	{
+		Url2Info_ [url] = info;
 	}
 
 	void Player::Enqueue (const QStringList& paths, bool sort)
@@ -414,6 +419,8 @@ namespace LMP
 	{
 		Q_FOREACH (const auto& source, sources)
 		{
+			Url2Info_.remove (source.url ());
+
 			if (!CurrentQueue_.removeAll (source))
 				continue;
 
@@ -572,7 +579,7 @@ namespace LMP
 						.property ("SingleTrackDisplayMask").toString ();
 
 				text = PerformSubstitutions (text, info).simplified ();
-				text.remove ("- -");
+				text.replace ("- -", "-");
 				if (text.startsWith ("- "))
 					text = text.mid (2);
 				if (text.endsWith (" -"))
@@ -858,6 +865,7 @@ namespace LMP
 		Items_.clear ();
 		AlbumRoots_.clear ();
 		CurrentQueue_.clear ();
+		Url2Info_.clear ();
 		Source_->clearQueue ();
 
 		Core::Instance ().GetPlaylistManager ()->
@@ -898,7 +906,10 @@ namespace LMP
 			{
 				const auto& url = source.url ();
 
-				const auto info = Core::Instance ().TryURLResolve (url);
+				auto info = Core::Instance ().TryURLResolve (url);
+				if (!info && Url2Info_.contains (url))
+					info = Url2Info_ [url];
+
 				if (info)
 					FillItem (item, *info);
 				else
@@ -1033,6 +1044,7 @@ namespace LMP
 	{
 		if (CurrentStation_)
 		{
+			Url2Info_.remove (Source_->currentSource ().url ());
 			CurrentStation_->RequestNewStream ();
 			return;
 		}
@@ -1078,9 +1090,9 @@ namespace LMP
 		if (curItem)
 			curItem->setData (true, Role::IsCurrent);
 
-		if (CurrentStation_)
+		if (Url2Info_.contains (source.url ()))
 		{
-			const auto& info = Url2Info_.take (source.url ());
+			const auto& info = Url2Info_ [source.url ()];
 			emit songChanged (info);
 		}
 		else if (curItem)
