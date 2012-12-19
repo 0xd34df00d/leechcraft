@@ -59,6 +59,8 @@ public:
 	virtual void InsertHTML (const QString& html) = 0;
 
 	virtual void SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich) = 0;
+
+	virtual void ExecJS (const QString& js) = 0;
 };
 
 class ITextEditor

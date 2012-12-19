@@ -59,6 +59,7 @@ namespace LHTR
 
 		void InsertHTML (const QString&);
 		void SetTagsMappings (const Replacements_t&, const Replacements_t&);
+		void ExecJS (const QString&);
 	private:
 		void ExecCommand (const QString&, const QString& = QString ());
 		bool QueryCommandState (const QString& cmd);

@@ -315,6 +315,11 @@ namespace LHTR
 		HTML2Rich_ = html2rich;
 	}
 
+	void RichEditorWidget::ExecJS (const QString& js)
+	{
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
 	void RichEditorWidget::ExecCommand (const QString& cmd, const QString& arg)
 	{
 		auto frame = Ui_.View_->page ()->mainFrame ();
