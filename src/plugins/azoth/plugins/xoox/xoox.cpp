@@ -20,7 +20,9 @@
 #include <QIcon>
 #include <QTranslator>
 #include <util/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -30,7 +32,10 @@ namespace Xoox
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_xoox"));
+		Util::InstallTranslator ("azoth_xoox");
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothxooxsettings.xml");
 
 		Core::Instance ().SetProxy (proxy);
 
@@ -99,6 +104,11 @@ namespace Xoox
 		QSet<QByteArray> classes;
 		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
 		return classes;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	QObject* Plugin::GetObject ()

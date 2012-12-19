@@ -22,6 +22,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 
 class QTranslator;
@@ -33,14 +34,15 @@ namespace Azoth
 namespace Xoox
 {
 	class Plugin : public QObject
-					, public IInfo
-					, public IPlugin2
-					, public IProtocolPlugin
+				 , public IInfo
+				 , public IPlugin2
+				 , public IHaveSettings
+				 , public IProtocolPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Azoth::IProtocolPlugin)
 
-		std::shared_ptr<QTranslator> Translator_;
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -55,6 +57,8 @@ namespace Xoox
 		void SetProvider (QObject*, const QString&);
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QObject* GetObject ();
 		QList<QObject*> GetProtocols () const;
