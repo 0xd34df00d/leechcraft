@@ -4,6 +4,9 @@
 		<label value="Azoth Xoox" />
 		<groupbox>
 			<label value="Version" />
+			<item type="checkbox" property="AdvertiseOSVersion" default="true">
+				<label value="Advertise OS version" />
+			</item>
 			<item type="checkbox" property="AdvertiseQtVersion" default="true">
 				<label value="Advertise Qt version" />
 			</item>

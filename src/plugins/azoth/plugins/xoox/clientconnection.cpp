@@ -199,27 +199,11 @@ namespace Xoox
 
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
 
-		const auto& sysInfo = Util::SysInfo::GetOSNameSplit ();
 		auto& vm = Client_->versionManager ();
 		vm.setClientName ("LeechCraft Azoth");
-		vm.setClientVersion (Core::Instance ().GetProxy ()->GetVersion ());
 		handleVersionSettingsChanged ();
 		XmlSettingsManager::Instance ().RegisterObject ("AdvertiseQtVersion",
 				this, "handleVersionSettingsChanged");
-
-		XEP0232Handler::SoftwareInformation si =
-		{
-			64,
-			64,
-			QUrl ("http://leechcraft.org/leechcraft.png"),
-			QString (),
-			"image/png",
-			sysInfo.first,
-			sysInfo.second,
-			vm.clientName (),
-			vm.clientVersion ()
-		};
-		DiscoveryManager_->setClientInfoForm (XEP0232Handler::ToDataForm (si));
 
 		connect (Client_,
 				SIGNAL (connected ()),
@@ -1456,19 +1440,43 @@ namespace Xoox
 
 	void ClientConnection::handleVersionSettingsChanged ()
 	{
-		const auto& sysInfo = Util::SysInfo::GetOSNameSplit ();
-		auto infoStr = sysInfo.first + ' ' + sysInfo.second;
+		const bool advertiseQt = XmlSettingsManager::Instance ()
+				.property ("AdvertiseQtVersion").toBool ();
+		const bool advertiseOS = XmlSettingsManager::Instance ()
+				.property ("AdvertiseOSVersion").toBool ();
 
-		if (XmlSettingsManager::Instance ().property ("AdvertiseQtVersion").toBool ())
+		const auto& sysInfo = Util::SysInfo::GetOSNameSplit ();
+		auto infoStr = sysInfo.first;
+		if (advertiseOS)
+			infoStr += " " + sysInfo.second;
+
+		auto versionStr = Core::Instance ().GetProxy ()->GetVersion ();
+		if (advertiseQt)
 		{
-			infoStr += " (compiled with Qt ";
-			infoStr += QT_VERSION_STR;
-			infoStr += "; running with Qt ";
-			infoStr += qVersion ();
-			infoStr += ")";
+			versionStr += " (compiled with Qt ";
+			versionStr += QT_VERSION_STR;
+			versionStr += "; running with Qt ";
+			versionStr += qVersion ();
+			versionStr += ")";
 		}
 
-		Client_->versionManager ().setClientOs (infoStr);
+		auto& vm = Client_->versionManager ();
+		vm.setClientOs (infoStr);
+		vm.setClientVersion (versionStr);
+
+		XEP0232Handler::SoftwareInformation si =
+		{
+			64,
+			64,
+			QUrl ("http://leechcraft.org/leechcraft.png"),
+			QString (),
+			"image/png",
+			sysInfo.first,
+			advertiseOS ? sysInfo.second : QString (),
+			vm.clientName (),
+			vm.clientVersion ()
+		};
+		DiscoveryManager_->setClientInfoForm (XEP0232Handler::ToDataForm (si));
 	}
 
 	void ClientConnection::ScheduleFetchVCard (const QString& jid, bool report)
