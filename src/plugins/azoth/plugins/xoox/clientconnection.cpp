@@ -74,6 +74,7 @@
 #include "accountsettingsholder.h"
 #include "crypthandler.h"
 #include "serverinfostorage.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -202,7 +203,9 @@ namespace Xoox
 		auto& vm = Client_->versionManager ();
 		vm.setClientName ("LeechCraft Azoth");
 		vm.setClientVersion (Core::Instance ().GetProxy ()->GetVersion ());
-		vm.setClientOs (sysInfo.first + ' ' + sysInfo.second);
+		handleVersionSettingsChanged ();
+		XmlSettingsManager::Instance ().RegisterObject ("AdvertiseQtVersion",
+				this, "handleVersionSettingsChanged");
 
 		XEP0232Handler::SoftwareInformation si =
 		{
@@ -1449,6 +1452,23 @@ namespace Xoox
 			return;
 
 		GetTransferManager ()->setProxy (proxy);
+	}
+
+	void ClientConnection::handleVersionSettingsChanged ()
+	{
+		const auto& sysInfo = Util::SysInfo::GetOSNameSplit ();
+		auto infoStr = sysInfo.first + ' ' + sysInfo.second;
+
+		if (XmlSettingsManager::Instance ().property ("AdvertiseQtVersion").toBool ())
+		{
+			infoStr += " (compiled with Qt ";
+			infoStr += QT_VERSION_STR;
+			infoStr += "; running with Qt ";
+			infoStr += qVersion ();
+			infoStr += ")";
+		}
+
+		Client_->versionManager ().setClientOs (infoStr);
 	}
 
 	void ClientConnection::ScheduleFetchVCard (const QString& jid, bool report)
