@@ -77,7 +77,7 @@ namespace Lemon
 		grid->attach (Ui_.TrafficPlot_);
 
 		QwtLegend *legend = new QwtLegend;
-		legend->setItemMode (QwtLegend::ReadOnlyItem);
+		legend->setItemMode (QwtLegend::CheckableItem);
 		Ui_.TrafficPlot_->insertLegend (legend, QwtPlot::BottomLegend);
 
 		connect (manager,
@@ -133,6 +133,11 @@ namespace Lemon
 			Ui_.StatsFrame_->setVisible (false);
 
 		Ui_.TrafficPlot_->replot ();
+	}
+
+	void TrafficDialog::on_TrafficPlot__legendChecked (QwtPlotItem *item, bool on)
+	{
+		item->setVisible (!on);
 	}
 }
 }

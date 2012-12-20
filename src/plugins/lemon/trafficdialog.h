@@ -47,6 +47,7 @@ namespace Lemon
 		TrafficDialog (const QString&, TrafficManager*, QWidget* = 0);
 	private slots:
 		void handleUpdated ();
+		void on_TrafficPlot__legendChecked (QwtPlotItem*, bool);
 	};
 }
 }
