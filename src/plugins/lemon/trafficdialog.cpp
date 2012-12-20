@@ -17,9 +17,11 @@
  **********************************************************************/
 
 #include "trafficdialog.h"
+#include <QtDebug>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 #include <qwt_legend.h>
+#include <util/util.h>
 #include "trafficmanager.h"
 
 namespace LeechCraft
@@ -92,6 +94,29 @@ namespace Lemon
 		UpTraffic_->setSamples (xdata, up);
 
 		Ui_.TrafficPlot_->replot ();
+
+		if (!downList.isEmpty ())
+		{
+			Ui_.StatsFrame_->setVisible (true);
+
+			Ui_.RXSpeed_->setText (Util::MakePrettySize (downList.last ()) + tr ("/s"));
+			Ui_.TXSpeed_->setText (Util::MakePrettySize (upList.last ()) + tr ("/s"));
+
+			const auto maxRx = *std::max_element (downList.begin (), downList.end ());
+			const auto maxTx = *std::max_element (upList.begin (), upList.end ());
+			Ui_.MaxRXSpeed_->setText (Util::MakePrettySize (maxRx) + tr ("/s"));
+			Ui_.MaxTXSpeed_->setText (Util::MakePrettySize (maxTx) + tr ("/s"));
+
+			auto avgList = [] (const QList<qint64>& list)
+				{ return std::accumulate (list.begin (), list.end (), 0.0) / list.size (); };
+			const auto avgRx = avgList (downList);
+			const auto avgTx = avgList (upList);
+
+			Ui_.AvgRXSpeed_->setText (Util::MakePrettySize (avgRx) + tr ("/s"));
+			Ui_.AvgTXSpeed_->setText (Util::MakePrettySize (avgTx) + tr ("/s"));
+		}
+		else
+			Ui_.StatsFrame_->setVisible (false);
 	}
 }
 }
