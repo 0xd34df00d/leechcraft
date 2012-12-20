@@ -281,6 +281,8 @@ namespace Xoox
 		void handlePriorityChanged (int);
 		void updateFTSettings ();
 		void handleDetectedBSProxy (const QString&);
+
+		void handleVersionSettingsChanged ();
 	private:
 		void ScheduleFetchVCard (const QString&, bool);
 		GlooxCLEntry* CreateCLEntry (const QString&);

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Azoth Xoox" />
+		<groupbox>
+			<label value="Version" />
+			<item type="checkbox" property="AdvertiseOSVersion" default="true">
+				<label value="Advertise OS version" />
+			</item>
+			<item type="checkbox" property="AdvertiseQtVersion" default="true">
+				<label value="Advertise Qt version" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

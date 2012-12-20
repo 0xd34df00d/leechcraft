@@ -34,6 +34,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "hyperlinkdialog.h"
 #include "imagedialog.h"
+#include "finddialog.h"
 
 namespace LeechCraft
 {
@@ -102,7 +103,22 @@ namespace LHTR
 	, Proxy_ (proxy)
 	, ViewBar_ (0)
 	, HTMLDirty_ (false)
+	, FindAction_ (new QAction (tr ("Find"), this))
+	, ReplaceAction_ (new QAction (tr ("Replace"), this))
 	{
+		FindAction_->setProperty ("ActionIcon", "edit-find");
+		FindAction_->setShortcut (QKeySequence::Find);
+		connect (FindAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleFind ()));
+		ReplaceAction_->setProperty ("ActionIcon", "edit-find-replace");
+		ReplaceAction_->setShortcut (QKeySequence::Replace);
+		connect (ReplaceAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleReplace ()));
+
 		Ui_.setupUi (this);
 
 		Ui_.View_->setPage (new EditorPage (Ui_.View_));
@@ -304,6 +320,19 @@ namespace LHTR
 		ViewBar_->removeAction (act);
 	}
 
+	QAction* RichEditorWidget::GetEditorAction (EditorAction action)
+	{
+		switch (action)
+		{
+		case LeechCraft::EditorAction::Find:
+			return FindAction_;
+		case LeechCraft::EditorAction::Replace:
+			return ReplaceAction_;
+		}
+
+		return 0;
+	}
+
 	void RichEditorWidget::InsertHTML (const QString& html)
 	{
 		ExecCommand ("insertHTML", html);
@@ -313,6 +342,11 @@ namespace LHTR
 	{
 		Rich2HTML_ = rich2html;
 		HTML2Rich_ = html2rich;
+	}
+
+	void RichEditorWidget::ExecJS (const QString& js)
+	{
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
 	}
 
 	void RichEditorWidget::ExecCommand (const QString& cmd, const QString& arg)
@@ -330,6 +364,17 @@ namespace LHTR
 		const QString& js = QString ("document.queryCommandState(\"%1\", false, null)").arg (cmd);
 		auto res = frame->evaluateJavaScript (js);
 		return res.toString ().simplified ().toLower () == "true";
+	}
+
+	void RichEditorWidget::OpenFindReplace (bool)
+	{
+		const bool isView = Ui_.TabWidget_->currentIndex () == 0;
+
+		auto dia = isView ?
+				new FindDialog (Ui_.View_, Proxy_, this) :
+				new FindDialog (Ui_.HTML_, Proxy_, this);
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 	}
 
 	void RichEditorWidget::handleLinkClicked (const QUrl& url)
@@ -525,6 +570,16 @@ namespace LHTR
 		w.writeEndElement ();
 
 		ExecCommand ("insertHTML", html);
+	}
+
+	void RichEditorWidget::handleFind ()
+	{
+		OpenFindReplace (true);
+	}
+
+	void RichEditorWidget::handleReplace ()
+	{
+		OpenFindReplace (false);
 	}
 }
 }

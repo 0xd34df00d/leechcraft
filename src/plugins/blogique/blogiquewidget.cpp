@@ -245,6 +245,19 @@ namespace Blogique
 
 		ToolBar_->addSeparator ();
 
+		QList<QAction*> editorActions;
+		if (PostEdit_)
+		{
+			editorActions << PostEdit_->GetEditorAction (EditorAction::Find);
+			editorActions << PostEdit_->GetEditorAction (EditorAction::Replace);
+			editorActions.removeAll (0);
+		}
+		if (!editorActions.isEmpty ())
+		{
+			ToolBar_->addActions (editorActions);
+			ToolBar_->addSeparator ();
+		}
+
 		AccountsBox_ = new QComboBox ();
 		AccountsBox_->addItem (QString ());
 		connect (AccountsBox_,

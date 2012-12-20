@@ -33,6 +33,12 @@ namespace LeechCraft
 		HTML,
 		PlainText
 	};
+	
+	enum class EditorAction
+	{
+		Find,
+		Replace
+	};
 }
 
 class IEditorWidget
@@ -43,6 +49,8 @@ public:
 	virtual QString GetContents (LeechCraft::ContentType) const = 0;
 
 	virtual void SetContents (const QString& contents, LeechCraft::ContentType) = 0;
+	
+	virtual QAction* GetEditorAction (LeechCraft::EditorAction) = 0;
 
 	virtual void AppendAction (QAction*) = 0;
 	virtual void RemoveAction (QAction*) = 0;
@@ -59,6 +67,8 @@ public:
 	virtual void InsertHTML (const QString& html) = 0;
 
 	virtual void SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich) = 0;
+
+	virtual void ExecJS (const QString& js) = 0;
 };
 
 class ITextEditor

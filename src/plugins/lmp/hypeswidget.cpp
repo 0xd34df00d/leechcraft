@@ -92,6 +92,7 @@ namespace LMP
 		root->setContextProperty ("topsText", tr ("Show tops"));
 		root->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
+		root->setContextProperty ("similarLabelPosition", "underArtist");
 		Ui_.HypesView_->setSource (QUrl ("qrc:/lmp/resources/qml/HypesView.qml"));
 
 		connect (Ui_.InfoProvider_,

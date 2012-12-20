@@ -67,7 +67,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , WasMaximized_ (false)
 , DefaultSystemStyleName_ (QApplication::style ()->objectName ())
 , IsQuitting_ (false)
-, Splash_ (new QSplashScreen (QPixmap (":/resources/images/splash.svg"),
+, Splash_ (new QSplashScreen (QPixmap (":/resources/images/apocalypse.png"),
 		Qt::SplashScreen))
 , IsToolBarVisible_ (true)
 {
@@ -902,6 +902,12 @@ void LeechCraft::MainWindow::FillToolMenu ()
 
 void LeechCraft::MainWindow::InitializeShortcuts ()
 {
+#ifndef Q_OS_MAC
+	const auto sysModifier = Qt::CTRL;
+#else
+	const auto sysModifier = Qt::ALT;
+#endif
+
 	connect (new QShortcut (QKeySequence ("Ctrl+["), this),
 			SIGNAL (activated ()),
 			Core::Instance ().GetTabManager (),
@@ -910,11 +916,11 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			Core::Instance ().GetTabManager (),
 			SLOT (rotateRight ()));
-	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_Tab), this),
+	connect (new QShortcut (QKeySequence (sysModifier + Qt::Key_Tab), this),
 			SIGNAL (activated ()),
 			Core::Instance ().GetTabManager (),
 			SLOT (rotateRight ()));
-	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::SHIFT + Qt::Key_Tab), this),
+	connect (new QShortcut (QKeySequence (sysModifier + Qt::SHIFT + Qt::Key_Tab), this),
 			SIGNAL (activated ()),
 			Core::Instance ().GetTabManager (),
 			SLOT (rotateLeft ()));
@@ -930,7 +936,7 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			Ui_.MainTabWidget_,
 			SLOT (handleNewTabShortcutActivated ()));
-	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_Space), this),
+	connect (new QShortcut (QKeySequence (sysModifier + Qt::Key_Space), this),
 			SIGNAL (activated ()),
 			Ui_.MainTabWidget_,
 			SLOT (setPreviousTab ()));

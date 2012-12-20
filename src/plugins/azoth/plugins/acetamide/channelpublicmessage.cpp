@@ -127,7 +127,7 @@ namespace Acetamide
 
 	QString ChannelPublicMessage::GetOtherVariant () const
 	{
-		return FromVariant_;
+		return qobject_cast<ICLEntry*> (OtherPart ())->GetEntryName ();
 	}
 
 	QString ChannelPublicMessage::GetBody () const

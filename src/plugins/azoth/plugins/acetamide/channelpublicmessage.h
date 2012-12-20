@@ -45,7 +45,6 @@ namespace Acetamide
 		QDateTime Datetime_;
 		Direction Direction_;
 		QString FromChID_;
-		QString FromVariant_;
 		MessageType Type_;
 		MessageSubType SubType_;
 	public:

@@ -49,6 +49,9 @@ namespace LHTR
 		Replacements_t HTML2Rich_;
 
 		bool HTMLDirty_;
+
+		QAction *FindAction_;
+		QAction *ReplaceAction_;
 	public:
 		RichEditorWidget (ICoreProxy_ptr, QWidget* = 0);
 
@@ -56,12 +59,16 @@ namespace LHTR
 		void SetContents (const QString&, ContentType);
 		void AppendAction (QAction*);
 		void RemoveAction (QAction*);
+		QAction* GetEditorAction (EditorAction);
 
 		void InsertHTML (const QString&);
 		void SetTagsMappings (const Replacements_t&, const Replacements_t&);
+		void ExecJS (const QString&);
 	private:
 		void ExecCommand (const QString&, const QString& = QString ());
 		bool QueryCommandState (const QString& cmd);
+
+		void OpenFindReplace (bool findOnly);
 	private slots:
 		void handleLinkClicked (const QUrl&);
 		void on_TabWidget__currentChanged (int);
@@ -74,6 +81,9 @@ namespace LHTR
 		void handleFont ();
 		void handleInsertLink ();
 		void handleInsertImage ();
+
+		void handleFind ();
+		void handleReplace ();
 	};
 }
 }

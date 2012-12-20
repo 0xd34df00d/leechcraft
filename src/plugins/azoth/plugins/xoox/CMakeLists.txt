@@ -95,6 +95,7 @@ SET (XOOX_SRCS
 	xmppbobmanager.cpp
 	xmppcaptchaiq.cpp
 	xmppcaptchamanager.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -172,6 +173,7 @@ SET (XOOX_HEADERS
 	xmppbobmanager.h
 	xmppcaptchaiq.h
 	xmppcaptchamanager.h
+	xmlsettingsmanager.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -207,6 +209,7 @@ IF (ENABLE_MEDIACALLS)
 ENDIF (ENABLE_MEDIACALLS)
 
 CreateTrs ("azoth_xoox" "de;en;es;fr;it;ru_RU;uk_UA" XOOX_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("azoth_xoox" "en;ru_RU" "${SRCS}" "${FORMS}" "azothxooxsettings.xml")
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
 ENDIF (NOT LC_NO_MOC)
@@ -229,6 +232,7 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth_xoox
 	)
 INSTALL (TARGETS leechcraft_azoth_xoox DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${XOOX_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES azothxooxsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 IF (UNIX AND NOT APPLE)
 	INSTALL (FILES freedesktop/leechcraft-azoth-xoox.desktop DESTINATION share/applications)
 ENDIF (UNIX AND NOT APPLE)

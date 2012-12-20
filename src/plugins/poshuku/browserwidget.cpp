@@ -1014,6 +1014,7 @@ namespace Poshuku
 		if (PreviousFindText_ != text)
 		{
 			QWebPage::FindFlags nflags = flags | QWebPage::HighlightAllOccurrences;
+			WebView_->page ()->findText (QString (), nflags);
 			WebView_->page ()->findText (text, nflags);
 			PreviousFindText_ = text;
 		}
