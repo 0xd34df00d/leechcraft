@@ -21,6 +21,7 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 #include <qwt_legend.h>
+#include <qwt_dyngrid_layout.h>
 #include <util/util.h>
 #include "trafficmanager.h"
 
@@ -79,7 +80,17 @@ namespace Lemon
 
 		QwtLegend *legend = new QwtLegend;
 		legend->setItemMode (QwtLegend::CheckableItem);
-		Ui_.TrafficPlot_->insertLegend (legend, QwtPlot::BottomLegend);
+		Ui_.TrafficPlot_->insertLegend (legend, QwtPlot::ExternalLegend);
+
+		auto layout = qobject_cast<QwtDynGridLayout*> (legend->contentsWidget ()->layout ());
+		if (layout)
+			layout->setMaxCols (1);
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "legend contents layout is not a QwtDynGridLayout:"
+					<< legend->contentsWidget ()->layout ();
+
+		Ui_.StatsFrame_->layout ()->addWidget (legend);
 
 		connect (manager,
 				SIGNAL (updated ()),
