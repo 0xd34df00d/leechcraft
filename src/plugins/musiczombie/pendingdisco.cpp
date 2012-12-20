@@ -24,32 +24,38 @@
 #include <QNetworkAccessManager>
 #include <QDomDocument>
 #include <QtDebug>
+#include <QPointer>
+#include <util/queuemanager.h>
 #include "artistlookup.h"
 
 namespace LeechCraft
 {
 namespace MusicZombie
 {
-	PendingDisco::PendingDisco (const QString& artist,
+	PendingDisco::PendingDisco (Util::QueueManager *queue, const QString& artist,
 			const QString& release, QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	, ReleaseName_ (release.toLower ())
+	, Queue_ (queue)
 	, NAM_ (nam)
 	, PendingReleases_ (0)
 	{
-		auto idLookup = new ArtistLookup (artist, nam, this);
-		connect (idLookup,
-				SIGNAL(gotID (QString)),
-				this,
-				SLOT (handleGotID (QString)));
-		connect (idLookup,
-				SIGNAL (replyError ()),
-				this,
-				SLOT (handleIDError ()));
-		connect (idLookup,
-				SIGNAL (networkError ()),
-				this,
-				SLOT (handleIDError ()));
+		Queue_->Schedule ([this, artist, nam] () -> void
+			{
+				auto idLookup = new ArtistLookup (artist, nam, this);
+				connect (idLookup,
+						SIGNAL(gotID (QString)),
+						this,
+						SLOT (handleGotID (QString)));
+				connect (idLookup,
+						SIGNAL (replyError ()),
+						this,
+						SLOT (handleIDError ()));
+				connect (idLookup,
+						SIGNAL (networkError ()),
+						this,
+						SLOT (handleIDError ()));
+			}, this);
 	}
 
 	QObject* PendingDisco::GetObject ()
@@ -73,16 +79,20 @@ namespace MusicZombie
 
 	void PendingDisco::handleGotID (const QString& id)
 	{
-		const auto& urlStr = "http://musicbrainz.org/ws/2/artist/" + id + "?inc=releases";
-		auto reply = NAM_->get (QNetworkRequest (QUrl (urlStr)));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleLookupFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleLookupError ()));
+		const auto urlStr = "http://musicbrainz.org/ws/2/artist/" + id + "?inc=releases";
+
+		Queue_->Schedule ([this, urlStr] () -> void
+			{
+				auto reply = NAM_->get (QNetworkRequest (QUrl (urlStr)));
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleLookupFinished ()));
+				connect (reply,
+						SIGNAL (error (QNetworkReply::NetworkError)),
+						this,
+						SLOT (handleLookupError ()));
+			}, this);
 	}
 
 	void PendingDisco::handleIDError ()
@@ -158,16 +168,20 @@ namespace MusicZombie
 
 			++PendingReleases_;
 
-			const auto& urlStr = "http://musicbrainz.org/ws/2/release/" + release.ID_ + "?inc=recordings";
-			auto reply = NAM_->get (QNetworkRequest (QUrl (urlStr)));
-			connect (reply,
-					SIGNAL (finished ()),
-					this,
-					SLOT (handleReleaseLookupFinished ()));
-			connect (reply,
-					SIGNAL (error (QNetworkReply::NetworkError)),
-					this,
-					SLOT (handleReleaseLookupError ()));
+			const auto urlStr = "http://musicbrainz.org/ws/2/release/" + release.ID_ + "?inc=recordings";
+
+			Queue_->Schedule ([this, urlStr] () -> void
+				{
+					auto reply = NAM_->get (QNetworkRequest (QUrl (urlStr)));
+					connect (reply,
+							SIGNAL (finished ()),
+							this,
+							SLOT (handleReleaseLookupFinished ()));
+					connect (reply,
+							SIGNAL (error (QNetworkReply::NetworkError)),
+							this,
+							SLOT (handleReleaseLookupError ()));
+				}, this);
 		}
 
 		std::sort (Releases_.begin (), Releases_.end (),

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,11 @@ class QNetworkAccessManager;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class QueueManager;
+}
+
 namespace MusicZombie
 {
 	class PendingDisco : public QObject
@@ -35,11 +40,13 @@ namespace MusicZombie
 
 		const QString ReleaseName_;
 
+		Util::QueueManager *Queue_;
+
 		QNetworkAccessManager *NAM_;
 		QList<Media::ReleaseInfo> Releases_;
 		int PendingReleases_;
 	public:
-		PendingDisco (const QString&, const QString&, QNetworkAccessManager*, QObject* = 0);
+		PendingDisco (Util::QueueManager*, const QString&, const QString&, QNetworkAccessManager*, QObject* = 0);
 
 		QObject* GetObject ();
 
