@@ -68,6 +68,11 @@ namespace MusicZombie
 	{
 		return new PendingDisco (artist, Proxy_->GetNetworkAccessManager (), this);
 	}
+
+	Media::IPendingDisco* Plugin::GetReleaseInfo (const QString& artist, const QString& release)
+	{
+		return 0;
+	}
 }
 }
 

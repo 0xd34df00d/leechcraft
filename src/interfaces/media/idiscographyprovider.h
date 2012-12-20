@@ -67,7 +67,9 @@ namespace Media
 
 		virtual QString GetServiceName () const = 0;
 
-		virtual IPendingDisco* GetDiscography (const QString&) = 0;
+		virtual IPendingDisco* GetDiscography (const QString& artist) = 0;
+
+		virtual IPendingDisco* GetReleaseInfo (const QString& artist, const QString& release) = 0;
 	};
 }
 

@@ -46,6 +46,7 @@ namespace MusicZombie
 		QString GetServiceName () const;
 
 		Media::IPendingDisco* GetDiscography (const QString&);
+		Media::IPendingDisco* GetReleaseInfo (const QString&, const QString&);
 	};
 }
 }
