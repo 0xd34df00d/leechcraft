@@ -77,7 +77,7 @@ namespace Lemon
 		grid->attach (Ui_.TrafficPlot_);
 
 		QwtLegend *legend = new QwtLegend;
-		legend->setItemMode (QwtLegend::CheckableItem);
+		legend->setItemMode (QwtLegend::ReadOnlyItem);
 		Ui_.TrafficPlot_->insertLegend (legend, QwtPlot::BottomLegend);
 
 		connect (manager,
