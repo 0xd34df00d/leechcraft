@@ -123,10 +123,12 @@ Rectangle {
             id: trackListContainer
             z: 0
             opacity: 0
+            y: artistDiscoView.y
 
             radius: 5
             width: 400
             height: trackListText.height + 10
+            clip: true
 
             color: colorProxy.setAlpha(colorProxy.color_TextBox_TopColor, 0.9)
 
@@ -150,6 +152,9 @@ Rectangle {
                     PropertyChanges { target: trackListContainer; z: 5; opacity: 1 }
                 }
             ]
+
+            Behavior on y { PropertyAnimation { duration: 200 } }
+            Behavior on height { PropertyAnimation { duration: 200 } }
 
             transitions: Transition {
                 ParallelAnimation {
