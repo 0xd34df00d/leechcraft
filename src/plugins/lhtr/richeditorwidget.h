@@ -59,6 +59,7 @@ namespace LHTR
 		void SetContents (const QString&, ContentType);
 		void AppendAction (QAction*);
 		void RemoveAction (QAction*);
+		QAction* GetEditorAction (EditorAction);
 
 		void InsertHTML (const QString&);
 		void SetTagsMappings (const Replacements_t&, const Replacements_t&);

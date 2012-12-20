@@ -317,6 +317,19 @@ namespace LHTR
 		ViewBar_->removeAction (act);
 	}
 
+	QAction* RichEditorWidget::GetEditorAction (EditorAction action)
+	{
+		switch (action)
+		{
+		case LeechCraft::EditorAction::Find:
+			return FindAction_;
+		case LeechCraft::EditorAction::Replace:
+			return ReplaceAction_;
+		}
+
+		return 0;
+	}
+
 	void RichEditorWidget::InsertHTML (const QString& html)
 	{
 		ExecCommand ("insertHTML", html);
