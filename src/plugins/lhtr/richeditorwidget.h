@@ -67,6 +67,8 @@ namespace LHTR
 	private:
 		void ExecCommand (const QString&, const QString& = QString ());
 		bool QueryCommandState (const QString& cmd);
+
+		void OpenFindReplace (bool findOnly);
 	private slots:
 		void handleLinkClicked (const QUrl&);
 		void on_TabWidget__currentChanged (int);

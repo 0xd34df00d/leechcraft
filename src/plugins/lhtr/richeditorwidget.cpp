@@ -34,6 +34,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "hyperlinkdialog.h"
 #include "imagedialog.h"
+#include "finddialog.h"
 
 namespace LeechCraft
 {
@@ -106,11 +107,13 @@ namespace LHTR
 	, ReplaceAction_ (new QAction (tr ("Replace"), this))
 	{
 		FindAction_->setProperty ("ActionIcon", "edit-find");
+		FindAction_->setShortcut (QKeySequence::Find);
 		connect (FindAction_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleFind ()));
 		ReplaceAction_->setProperty ("ActionIcon", "edit-find-replace");
+		ReplaceAction_->setShortcut (QKeySequence::Replace);
 		connect (ReplaceAction_,
 				SIGNAL (triggered ()),
 				this,
@@ -363,6 +366,17 @@ namespace LHTR
 		return res.toString ().simplified ().toLower () == "true";
 	}
 
+	void RichEditorWidget::OpenFindReplace (bool)
+	{
+		const bool isView = Ui_.TabWidget_->currentIndex () == 0;
+
+		auto dia = isView ?
+				new FindDialog (Ui_.View_, Proxy_, this) :
+				new FindDialog (Ui_.HTML_, Proxy_, this);
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
+	}
+
 	void RichEditorWidget::handleLinkClicked (const QUrl& url)
 	{
 		const auto& e = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
@@ -560,10 +574,12 @@ namespace LHTR
 
 	void RichEditorWidget::handleFind ()
 	{
+		OpenFindReplace (true);
 	}
 
 	void RichEditorWidget::handleReplace ()
 	{
+		OpenFindReplace (false);
 	}
 }
 }
