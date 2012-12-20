@@ -33,16 +33,15 @@ namespace Lemon
 	, Rtsock_ (nl_socket_alloc ())
 	{
 		if (nl_connect (Rtsock_, NETLINK_ROUTE) >= 0)
-		{
 			rtnl_link_alloc_cache (Rtsock_, AF_UNSPEC, &LinkCache_);
-			rtnl_route_alloc_cache (Rtsock_, AF_UNSPEC, NL_AUTO_PROVIDE, &RouteCache_);
-		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unable to establish netlink conn";
 	}
 
 	LinuxPlatformBackend::~LinuxPlatformBackend ()
 	{
 		nl_cache_free (LinkCache_);
-		nl_cache_free (RouteCache_);
 		nl_close (Rtsock_);
 		nl_socket_free (Rtsock_);
 	}
@@ -55,7 +54,6 @@ namespace Lemon
 	void LinuxPlatformBackend::update (const QStringList& devices)
 	{
 		nl_cache_refill (Rtsock_, LinkCache_);
-		nl_cache_refill (Rtsock_, RouteCache_);
 
 		for (const auto& devName : devices)
 		{
