@@ -3,7 +3,7 @@
 TARGET=/usr/local
 
 sudo rm -rf $TARGET/leechcraft.app/Contents/Resources/qt.conf $TARGET/leechcraft.app/Contents/Frameworks $TARGET/Contents/PlugIns
-make install
+make -j8 install
 cp -Rv /usr/local/Cellar/qt/*/plugins/* $TARGET/leechcraft.app/Contents/PlugIns
 cd $TARGET
 sudo macdeployqt leechcraft.app -verbose=2
