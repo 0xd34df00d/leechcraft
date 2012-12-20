@@ -18,6 +18,7 @@
 
 #include "trafficdialog.h"
 #include <qwt_plot_curve.h>
+#include <qwt_plot_grid.h>
 #include <qwt_legend.h>
 #include "trafficmanager.h"
 
@@ -54,8 +55,14 @@ namespace Lemon
 		UpTraffic_->setRenderHint (QwtPlotItem::RenderAntialiased);
 		UpTraffic_->attach (Ui_.TrafficPlot_);
 
+		auto grid = new QwtPlotGrid;
+		grid->enableYMin (true);
+		grid->enableX (false);
+		grid->setMinPen (QPen (Qt::gray, 1, Qt::DashLine));
+		grid->attach (Ui_.TrafficPlot_);
+
 		QwtLegend *legend = new QwtLegend;
-		legend->setItemMode (QwtLegend::ClickableItem);
+		legend->setItemMode (QwtLegend::CheckableItem);
 		Ui_.TrafficPlot_->insertLegend (legend, QwtPlot::BottomLegend);
 
 		connect (manager,
