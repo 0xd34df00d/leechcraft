@@ -33,11 +33,13 @@ namespace MusicZombie
 		Q_OBJECT
 		Q_INTERFACES (Media::IPendingDisco)
 
+		const QString ReleaseName_;
+
 		QNetworkAccessManager *NAM_;
 		QList<Media::ReleaseInfo> Releases_;
 		int PendingReleases_;
 	public:
-		PendingDisco (const QString&, QNetworkAccessManager*, QObject* = 0);
+		PendingDisco (const QString&, const QString&, QNetworkAccessManager*, QObject* = 0);
 
 		QObject* GetObject ();
 

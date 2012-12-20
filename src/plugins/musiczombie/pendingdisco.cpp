@@ -30,8 +30,10 @@ namespace LeechCraft
 {
 namespace MusicZombie
 {
-	PendingDisco::PendingDisco (const QString& artist, QNetworkAccessManager *nam, QObject *parent)
+	PendingDisco::PendingDisco (const QString& artist,
+			const QString& release, QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
+	, ReleaseName_ (release.toLower ())
 	, NAM_ (nam)
 	, PendingReleases_ (0)
 	{
@@ -133,6 +135,9 @@ namespace MusicZombie
 				continue;
 
 			const auto& title = elemText ("title");
+			if (!ReleaseName_.isEmpty () && title.toLower () != ReleaseName_)
+				continue;
+
 			infos [title] [elemText ("country")] =
 			{
 				releaseElem.attribute ("id"),
