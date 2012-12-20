@@ -16,7 +16,6 @@ Rectangle {
         id: fullSizeArtistImg
         state: "hidden"
 
-        anchors.centerIn: parent
         width: parent.width - 60
         height: parent.height - 60
         z: 2
@@ -28,18 +27,18 @@ Rectangle {
         states: [
             State {
                 name: "hidden"
-                PropertyChanges { target: fullSizeArtistImg; opacity: 0 }
+                PropertyChanges { target: fullSizeArtistImg; opacity: 0; width: artistImageThumb.width; height: artistImageThumb.height; x: artistImageThumb.x; y: artistImageThumb.y }
                 PropertyChanges { target: bioViewBlur; blurRadius: 0 }
             },
             State {
                 name: "visible"
-                PropertyChanges { target: fullSizeArtistImg; opacity: 1 }
+                PropertyChanges { target: fullSizeArtistImg; opacity: 1; width: parent.width - 60; height: parent.height - 60; x: 30; y: 30 }
                 PropertyChanges { target: bioViewBlur; blurRadius: 10 }
             }
         ]
 
         transitions: Transition {
-            PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+            PropertyAnimation { properties: "opacity,width,height,x,y"; duration: 300; easing.type: Easing.OutSine }
             PropertyAnimation { target: bioViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
         }
 
