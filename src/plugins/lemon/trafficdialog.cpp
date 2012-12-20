@@ -139,6 +139,7 @@ namespace Lemon
 	void TrafficDialog::on_TrafficPlot__legendChecked (QwtPlotItem *item, bool on)
 	{
 		item->setVisible (!on);
+		Ui_.TrafficPlot_->replot ();
 	}
 }
 }
