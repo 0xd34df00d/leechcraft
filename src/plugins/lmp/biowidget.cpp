@@ -33,6 +33,7 @@
 #include "core.h"
 #include "biopropproxy.h"
 #include "xmlsettingsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -209,30 +210,8 @@ namespace LMP
 			item->setData (QString::number (release.Year_), DiscoModel::Roles::AlbumYear);
 			item->setData (Util::GetAsBase64Src (icon.toImage ()), DiscoModel::Roles::AlbumImage);
 
-			QString trackTooltip;
-			int mediumPos = 0;
-			for (const auto& medium : release.TrackInfos_)
-			{
-				if (release.TrackInfos_.size () > 1)
-				{
-					if (mediumPos)
-						trackTooltip += "<br />";
-					trackTooltip += tr ("CD %1:").arg (++mediumPos);
-				}
-
-				for (const auto& track : medium)
-				{
-					trackTooltip += QString::number (track.Number_) + ". ";
-					trackTooltip += track.Name_;
-					if (track.Length_)
-					{
-						const auto lengthStr = Util::MakeTimeFromLong (track.Length_).remove ("00:");
-						trackTooltip += " (" + lengthStr + ")";
-					}
-					trackTooltip += "<br/>";
-				}
-			}
-			item->setData (trackTooltip, DiscoModel::Roles::AlbumTrackListTooltip);
+			item->setData (MakeTrackListTooltip (release.TrackInfos_),
+					DiscoModel::Roles::AlbumTrackListTooltip);
 
 			DiscoModel_->appendRow (item);
 

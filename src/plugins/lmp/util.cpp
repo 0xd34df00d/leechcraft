@@ -29,6 +29,7 @@
 #include "core.h"
 #include "localcollection.h"
 #include "xmlsettingsmanager.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -216,6 +217,36 @@ namespace LMP
 	bool ShouldRememberProvs ()
 	{
 		return XmlSettingsManager::Instance ().property ("RememberUsedProviders").toBool ();
+	}
+
+	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>& infos)
+	{
+		QString trackTooltip;
+		int mediumPos = 0;
+		for (const auto& medium : infos)
+		{
+			if (infos.size () > 1)
+			{
+				if (mediumPos)
+					trackTooltip += "<br />";
+				trackTooltip += QObject::tr ("CD %1:").arg (++mediumPos) + "<br />";
+			}
+
+			for (const auto& track : medium)
+			{
+				trackTooltip += QString::number (track.Number_) + ". ";
+				trackTooltip += track.Name_;
+				if (track.Length_)
+				{
+					auto lengthStr = Util::MakeTimeFromLong (track.Length_);
+					if (lengthStr.startsWith ("00:"))
+						lengthStr = lengthStr.mid (3);
+					trackTooltip += " (" + lengthStr + ")";
+				}
+				trackTooltip += "<br/>";
+			}
+		}
+		return trackTooltip;
 	}
 
 	bool operator!= (const Phonon::MediaSource& left, const Phonon::MediaSource& right)

@@ -20,6 +20,7 @@
 
 #include <QStringList>
 #include <QFileInfo>
+#include <interfaces/media/idiscographyprovider.h>
 
 class QPixmap;
 class QPoint;
@@ -46,6 +47,8 @@ namespace LMP
 	QString PerformSubstitutions (QString mask, const MediaInfo& info);
 
 	bool ShouldRememberProvs ();
+
+	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>&);
 
 	bool operator!= (const Phonon::MediaSource&, const Phonon::MediaSource&);
 }
