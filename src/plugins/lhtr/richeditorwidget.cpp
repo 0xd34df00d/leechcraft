@@ -102,7 +102,20 @@ namespace LHTR
 	, Proxy_ (proxy)
 	, ViewBar_ (0)
 	, HTMLDirty_ (false)
+	, FindAction_ (new QAction (tr ("Find"), this))
+	, ReplaceAction_ (new QAction (tr ("Replace"), this))
 	{
+		FindAction_->setProperty ("ActionIcon", "edit-find");
+		connect (FindAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleFind ()));
+		ReplaceAction_->setProperty ("ActionIcon", "edit-find-replace");
+		connect (ReplaceAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleReplace ()));
+
 		Ui_.setupUi (this);
 
 		Ui_.View_->setPage (new EditorPage (Ui_.View_));
@@ -530,6 +543,14 @@ namespace LHTR
 		w.writeEndElement ();
 
 		ExecCommand ("insertHTML", html);
+	}
+
+	void RichEditorWidget::handleFind ()
+	{
+	}
+
+	void RichEditorWidget::handleReplace ()
+	{
 	}
 }
 }

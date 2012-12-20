@@ -49,6 +49,9 @@ namespace LHTR
 		Replacements_t HTML2Rich_;
 
 		bool HTMLDirty_;
+
+		QAction *FindAction_;
+		QAction *ReplaceAction_;
 	public:
 		RichEditorWidget (ICoreProxy_ptr, QWidget* = 0);
 
@@ -75,6 +78,9 @@ namespace LHTR
 		void handleFont ();
 		void handleInsertLink ();
 		void handleInsertImage ();
+
+		void handleFind ();
+		void handleReplace ();
 	};
 }
 }
