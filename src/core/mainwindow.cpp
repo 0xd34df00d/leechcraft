@@ -67,7 +67,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , WasMaximized_ (false)
 , DefaultSystemStyleName_ (QApplication::style ()->objectName ())
 , IsQuitting_ (false)
-, Splash_ (new QSplashScreen (QPixmap (":/resources/images/splash.svg"),
+, Splash_ (new QSplashScreen (QPixmap (":/resources/images/apocalypse.png"),
 		Qt::SplashScreen))
 , IsToolBarVisible_ (true)
 {
