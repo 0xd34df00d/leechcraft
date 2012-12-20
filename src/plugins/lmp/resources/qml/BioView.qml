@@ -171,6 +171,7 @@ Rectangle {
             anchors.topMargin: 2
             anchors.right: flickableBioText.left
             anchors.bottom: parent.bottom
+            spacing: 5
 
             clip: true
 
@@ -178,10 +179,14 @@ Rectangle {
 
             delegate: Item {
                 width: artistDiscoView.width
-                height: artistDiscoView.width
+                height: contentsRect.height
 
                 Rectangle {
-                    anchors.fill: parent
+                    id: contentsRect
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    height: childrenRect.height + 5
 
                     color: "transparent"
 
@@ -194,7 +199,6 @@ Rectangle {
                         anchors.right: parent.right
                         anchors.leftMargin: 20
                         anchors.rightMargin: 20
-                        height: width
 
                         smooth: true
                         fillMode: Image.PreserveAspectFit
@@ -209,6 +213,7 @@ Rectangle {
                         text: albumName
                         color: colorProxy.color_TextBox_TextColor
                         horizontalAlignment: Text.AlignHCenter
+                        wrapMode: Text.Wrap
                     }
 
                     Text {
