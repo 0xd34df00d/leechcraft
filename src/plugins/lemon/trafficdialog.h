@@ -40,6 +40,9 @@ namespace Lemon
 
 		QwtPlotCurve *DownTraffic_;
 		QwtPlotCurve *UpTraffic_;
+
+		QwtPlotCurve *DownAvg_;
+		QwtPlotCurve *UpAvg_;
 	public:
 		TrafficDialog (const QString&, TrafficManager*, QWidget* = 0);
 	private slots:
