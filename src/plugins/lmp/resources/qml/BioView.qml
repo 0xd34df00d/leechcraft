@@ -1,5 +1,6 @@
 import QtQuick 1.0
 import Effects 1.0
+import "."
 
 Rectangle {
     id: rootRect
@@ -118,49 +119,8 @@ Rectangle {
             font.pointSize: 8
         }
 
-        Rectangle {
+        TrackListContainer {
             id: trackListContainer
-            z: 0
-            opacity: 0
-            y: artistDiscoView.y
-
-            radius: 5
-            width: 400
-            property int targetHeight: trackListText.height + 10
-            height: targetHeight
-            clip: true
-
-            color: colorProxy.setAlpha(colorProxy.color_TextBox_TopColor, 0.9)
-
-            border.color: colorProxy.color_TextBox_HighlightBorderColor
-            border.width: 1
-
-            Text {
-                id: trackListText
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.margins: 5
-
-                elide: Text.ElideRight
-                color: colorProxy.color_TextBox_TextColor
-            }
-
-            states: [
-                State {
-                    name: "visible"
-                    PropertyChanges { target: trackListContainer; z: 5; opacity: 1 }
-                }
-            ]
-
-            Behavior on y { PropertyAnimation { duration: 200 } }
-            Behavior on height { PropertyAnimation { duration: 200 } }
-
-            transitions: Transition {
-                ParallelAnimation {
-                    PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
-                }
-            }
         }
 
         ListView {
@@ -232,7 +192,7 @@ Rectangle {
                         hoverEnabled: true
 
                         onEntered: {
-                            trackListText.text = albumTrackListTooltip
+                            trackListContainer.text = albumTrackListTooltip
                             trackListContainer.state = "visible"
                             trackListContainer.x = artistDiscoView.x + artistDiscoView.width
                             trackListContainer.y = Math.min(artistDiscoView.y + parent.parent.y - artistDiscoView.contentY,
