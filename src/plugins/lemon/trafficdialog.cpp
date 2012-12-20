@@ -40,6 +40,7 @@ namespace Lemon
 		Ui_.setupUi (this);
 		setWindowTitle (tr ("Traffic for %1").arg (name));
 
+		Ui_.TrafficPlot_->setAutoReplot (false);
 		Ui_.TrafficPlot_->setAxisScale (QwtPlot::xBottom, 0, manager->GetBacktrackSize ());
 		Ui_.TrafficPlot_->setAxisTitle (QwtPlot::yLeft, tr ("Traffic, KiB/s"));
 
