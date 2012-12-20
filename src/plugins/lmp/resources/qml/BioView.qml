@@ -121,6 +121,7 @@ Rectangle {
 
         TrackListContainer {
             id: trackListContainer
+            y: artistDiscoView.y
         }
 
         ListView {

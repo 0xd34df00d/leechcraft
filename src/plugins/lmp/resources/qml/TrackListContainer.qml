@@ -7,7 +7,6 @@ Rectangle {
     id: trackListContainerRect
     z: 0
     opacity: 0
-    y: artistDiscoView.y
 
     radius: 5
     width: 400
