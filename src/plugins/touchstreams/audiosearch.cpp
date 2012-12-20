@@ -23,6 +23,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <util/queuemanager.h>
 #include "authmanager.h"
 
 namespace LeechCraft
@@ -30,9 +31,10 @@ namespace LeechCraft
 namespace TouchStreams
 {
 	AudioSearch::AudioSearch (ICoreProxy_ptr proxy,
-			const QString& query, AuthManager *mgr, QObject *parent)
+			const QString& query, AuthManager *mgr, Util::QueueManager *queue, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
+	, Queue_ (queue)
 	, AuthMgr_ (mgr)
 	, Query_ (query)
 	{
@@ -59,15 +61,18 @@ namespace TouchStreams
 		url.addQueryItem ("access_token", key);
 		url.addQueryItem ("q", Query_);
 
-		auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGotReply ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleError ()));
+		Queue_->Schedule ([this, url] () -> void
+			{
+				auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleGotReply ()));
+				connect (reply,
+						SIGNAL (error (QNetworkReply::NetworkError)),
+						this,
+						SLOT (handleError ()));
+			}, this);
 	}
 
 	void AudioSearch::handleGotReply ()

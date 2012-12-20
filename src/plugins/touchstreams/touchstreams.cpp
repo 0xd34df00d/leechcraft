@@ -18,6 +18,7 @@
 
 #include "touchstreams.h"
 #include <QIcon>
+#include <util/queuemanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "authmanager.h"
@@ -30,6 +31,8 @@ namespace TouchStreams
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		Queue_ = new Util::QueueManager (350);
 
 		AuthMgr_ = new AuthManager (proxy);
 
@@ -53,6 +56,7 @@ namespace TouchStreams
 
 	void Plugin::Release ()
 	{
+		delete Queue_;
 	}
 
 	QString Plugin::GetName () const
@@ -85,7 +89,7 @@ namespace TouchStreams
 			reqStr = parts.join (" - ");
 		}
 
-		return new AudioSearch (Proxy_, reqStr, AuthMgr_);
+		return new AudioSearch (Proxy_, reqStr, AuthMgr_, Queue_);
 	}
 
 	void Plugin::handlePushButton (const QString& name)
