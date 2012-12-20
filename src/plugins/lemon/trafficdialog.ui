@@ -11,6 +11,9 @@
    </rect>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="margin">
+    <number>2</number>
+   </property>
    <item>
     <widget class="QwtPlot" name="TrafficPlot_">
      <property name="sizePolicy">
