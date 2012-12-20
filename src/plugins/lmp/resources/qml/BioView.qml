@@ -126,7 +126,8 @@ Rectangle {
 
             radius: 5
             width: 400
-            height: trackListText.height + 10
+            property int targetHeight: trackListText.height + 10
+            height: targetHeight
             clip: true
 
             color: colorProxy.setAlpha(colorProxy.color_TextBox_TopColor, 0.9)
@@ -230,7 +231,7 @@ Rectangle {
                             trackListContainer.state = "visible"
                             trackListContainer.x = artistDiscoView.x + artistDiscoView.width
                             trackListContainer.y = Math.min(artistDiscoView.y + parent.parent.y - artistDiscoView.contentY,
-                                    trackListContainer.parent.height - trackListContainer.height - 5)
+                                    trackListContainer.parent.height - trackListContainer.targetHeight - 5)
                         }
                         onExited: trackListContainer.state = ""
                     }
