@@ -43,11 +43,11 @@ namespace TouchStreams
 		Util::QueueManager *Queue_;
 
 		AuthManager *AuthMgr_;
-		const QString Query_;
+		const Media::AudioSearchRequest Query_;
 
 		QList<Media::IPendingAudioSearch::Result> Result_;
 	public:
-		AudioSearch (ICoreProxy_ptr, const QString&, AuthManager*, Util::QueueManager*, QObject* = 0);
+		AudioSearch (ICoreProxy_ptr, const Media::AudioSearchRequest&, AuthManager*, Util::QueueManager*, QObject* = 0);
 
 		QObject* GetObject ();
 		QList<Result> GetResults () const;

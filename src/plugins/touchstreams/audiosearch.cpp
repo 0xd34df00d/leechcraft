@@ -31,7 +31,7 @@ namespace LeechCraft
 namespace TouchStreams
 {
 	AudioSearch::AudioSearch (ICoreProxy_ptr proxy,
-			const QString& query, AuthManager *mgr, Util::QueueManager *queue, QObject *parent)
+			const Media::AudioSearchRequest& query, AuthManager *mgr, Util::QueueManager *queue, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Queue_ (queue)
@@ -59,7 +59,7 @@ namespace TouchStreams
 	{
 		QUrl url ("https://api.vk.com/method/audio.search");
 		url.addQueryItem ("access_token", key);
-		url.addQueryItem ("q", Query_);
+		url.addQueryItem ("q", Query_.FreeForm_);
 
 		Queue_->Schedule ([this, url] () -> void
 			{
@@ -94,9 +94,19 @@ namespace TouchStreams
 			Media::IPendingAudioSearch::Result result;
 			try
 			{
+				result.Info_.Length_ = sub.get<qint32> ("duration");
+
+				if (Query_.TrackLength_ > 0 && result.Info_.Length_ != Query_.TrackLength_)
+				{
+					qDebug () << Q_FUNC_INFO
+							<< "skipping track due to track length mismatch"
+							<< result.Info_.Length_
+							<< Query_.TrackLength_;
+					continue;
+				}
+
 				result.Info_.Artist_ = QString::fromUtf8 (sub.get<std::string> ("artist").c_str ());
 				result.Info_.Title_ = QString::fromUtf8 (sub.get<std::string> ("title").c_str ());
-				result.Info_.Length_ = sub.get<qint32> ("duration");
 				result.Source_ = QUrl::fromEncoded (sub.get<std::string> ("url").c_str ());
 			}
 			catch (const std::exception& e)

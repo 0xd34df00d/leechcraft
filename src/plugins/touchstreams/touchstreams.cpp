@@ -81,15 +81,15 @@ namespace TouchStreams
 
 	Media::IPendingAudioSearch* Plugin::Search (const Media::AudioSearchRequest& req)
 	{
-		auto reqStr = req.FreeForm_;
-		if (reqStr.isEmpty ())
+		auto realReq = req;
+		if (realReq.FreeForm_.isEmpty ())
 		{
 			QStringList parts = { req.Artist_, req.Album_, req.Title_ };
 			parts.removeAll (QString ());
-			reqStr = parts.join (" - ");
+			realReq.FreeForm_ = parts.join (" - ");
 		}
 
-		return new AudioSearch (Proxy_, reqStr, AuthMgr_, Queue_);
+		return new AudioSearch (Proxy_, realReq, AuthMgr_, Queue_);
 	}
 
 	void Plugin::handlePushButton (const QString& name)
