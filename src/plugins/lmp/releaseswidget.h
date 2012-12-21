@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QWidget>
+#include <interfaces/media/idiscographyprovider.h>
 #include "ui_releaseswidget.h"
 
 class QStandardItemModel;
@@ -26,7 +27,6 @@ class QStandardItemModel;
 namespace Media
 {
 	class IRecentReleases;
-	class IDiscographyProvider;
 	struct AlbumRelease;
 }
 
@@ -50,6 +50,8 @@ namespace LMP
 			QString Title_;
 		};
 		QHash<QObject*, PendingRelease> Pending2Release_;
+
+		QVector<QList<Media::ReleaseTrackInfo>> TrackLists_;
 	public:
 		ReleasesWidget (QWidget* = 0);
 
@@ -58,7 +60,10 @@ namespace LMP
 		void handleRecentReleases (const QList<Media::AlbumRelease>&);
 		void handleReleaseInfo ();
 		void request ();
+		void previewAlbum (int);
 		void handleLink (const QString&);
+	signals:
+		void previewRequested (const QString&, const QString&, int);
 	};
 }
 }

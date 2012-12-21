@@ -18,6 +18,7 @@
 
 #include "releaseswidget.h"
 #include <QDeclarativeContext>
+#include <QDeclarativeEngine>
 #include <QGraphicsObject>
 #include <QStandardItemModel>
 #include <QtDebug>
@@ -30,6 +31,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
+#include "sysiconsprovider.h"
 
 namespace LeechCraft
 {
@@ -72,6 +74,8 @@ namespace LMP
 	, ReleasesModel_ (new ReleasesModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.ReleasesView_->engine ()->addImageProvider ("sysIcons",
+				new SysIconProvider (Core::Instance ().GetProxy ()));
 		Ui_.ReleasesView_->rootContext ()->setContextProperty ("releasesModel", ReleasesModel_);
 		Ui_.ReleasesView_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
@@ -90,6 +94,10 @@ namespace LMP
 				SIGNAL (linkActivated (QString)),
 				this,
 				SLOT (handleLink (QString)));
+		connect (Ui_.ReleasesView_->rootObject (),
+				SIGNAL (albumPreviewRequested (int)),
+				this,
+				SLOT (previewAlbum (int)));
 	}
 
 	void ReleasesWidget::InitializeProviders ()
@@ -125,8 +133,9 @@ namespace LMP
 
 	void ReleasesWidget::handleRecentReleases (const QList<Media::AlbumRelease>& releases)
 	{
-		auto discoProv = DiscoProviders_.value (0);
+		TrackLists_.resize (releases.size ());
 
+		auto discoProv = DiscoProviders_.value (0);
 		Q_FOREACH (const auto& release, releases)
 		{
 			auto item = new QStandardItem ();
@@ -161,16 +170,22 @@ namespace LMP
 		if (infos.isEmpty ())
 			return;
 
+		const auto& info = infos.at (0);
+
 		QStandardItem *item = 0;
 		for (int i = 0; i < ReleasesModel_->rowCount (); ++i)
 		{
 			auto candidate = ReleasesModel_->item (i);
-			if (candidate->data (ReleasesModel::Role::ArtistName) == pendingRelease.Artist_ &&
-				candidate->data (ReleasesModel::Role::AlbumName) == pendingRelease.Title_)
-			{
-				item = candidate;
-				break;
-			}
+			if (candidate->data (ReleasesModel::Role::ArtistName) != pendingRelease.Artist_ ||
+				candidate->data (ReleasesModel::Role::AlbumName) != pendingRelease.Title_)
+				continue;
+
+			item = candidate;
+			QList<Media::ReleaseTrackInfo> trackList;
+			for (const auto& list : info.TrackInfos_)
+				trackList += list;
+			TrackLists_ [i] = trackList;
+			break;
 		}
 
 		if (!item)
@@ -182,14 +197,13 @@ namespace LMP
 			return;
 		}
 
-		const auto& info = infos.at (0);
 		item->setData (MakeTrackListTooltip (info.TrackInfos_), ReleasesModel::Role::TrackList);
 	}
 
 	void ReleasesWidget::request ()
 	{
 		Pending2Release_.clear ();
-
+		TrackLists_.clear ();
 		ReleasesModel_->clear ();
 
 		const auto idx = Ui_.InfoProvider_->currentIndex ();
@@ -212,6 +226,14 @@ namespace LMP
 
 		XmlSettingsManager::Instance ()
 				.setProperty ("LastUsedReleasesProvider", prov->GetServiceName ());
+	}
+
+	void ReleasesWidget::previewAlbum (int index)
+	{
+		auto item = ReleasesModel_->item (index);
+		const auto& artist = item->data (ReleasesModel::Role::ArtistName).toString ();
+		for (const auto& track : TrackLists_.value (index))
+			emit previewRequested (track.Name_, artist, track.Length_);
 	}
 
 	void ReleasesWidget::handleLink (const QString& link)
