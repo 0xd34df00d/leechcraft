@@ -19,6 +19,7 @@
 #include "touchstreams.h"
 #include <QIcon>
 #include <util/queuemanager.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "authmanager.h"
@@ -31,6 +32,8 @@ namespace TouchStreams
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		Util::InstallTranslator ("touchstreams");
 
 		Queue_ = new Util::QueueManager (350);
 
