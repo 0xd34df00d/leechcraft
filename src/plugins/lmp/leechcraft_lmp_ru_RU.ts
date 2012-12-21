@@ -410,8 +410,8 @@
         <source>%n new artist(s)</source>
         <translation>
             <numerusform>%n новый исполнитель</numerusform>
-            <numerusform>%n новый исполнителя</numerusform>
-            <numerusform>%n новый исполнителей</numerusform>
+            <numerusform>%n новых исполнителя</numerusform>
+            <numerusform>%n новых исполнителей</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -419,8 +419,8 @@
         <source>%n new album(s)</source>
         <translation>
             <numerusform>%n новый альбом</numerusform>
-            <numerusform>%n новый альбома</numerusform>
-            <numerusform>%n новый альбомов</numerusform>
+            <numerusform>%n новых альбома</numerusform>
+            <numerusform>%n новых альбомов</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -428,8 +428,8 @@
         <source>%n new track(s)</source>
         <translation>
             <numerusform>%n новый трек</numerusform>
-            <numerusform>%n новый трека</numerusform>
-            <numerusform>%n новый треков</numerusform>
+            <numerusform>%n новых трека</numerusform>
+            <numerusform>%n новых треков</numerusform>
         </translation>
     </message>
     <message>
