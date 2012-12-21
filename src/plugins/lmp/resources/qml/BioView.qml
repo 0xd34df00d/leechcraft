@@ -122,6 +122,7 @@ Rectangle {
         TrackListContainer {
             id: trackListContainer
             y: artistDiscoView.y
+            x: artistDiscoView.x + artistDiscoView.width
         }
 
         ListView {
@@ -195,7 +196,6 @@ Rectangle {
                         onEntered: {
                             trackListContainer.text = albumTrackListTooltip
                             trackListContainer.state = "visible"
-                            trackListContainer.x = artistDiscoView.x + artistDiscoView.width
                             trackListContainer.y = Math.min(artistDiscoView.y + parent.parent.y - artistDiscoView.contentY,
                                     trackListContainer.parent.height - trackListContainer.targetHeight - 5)
                         }
