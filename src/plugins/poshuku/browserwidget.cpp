@@ -1403,7 +1403,7 @@ namespace Poshuku
 			return;
 
 		const auto& rootTagName = doc.documentElement ().tagName ().toLower ();
-		if (rootTagName == "html" || rootTagName == "xhtml")
+		if (rootTagName == "html" || rootTagName == "xhtml" || rootTagName == "svg")
 			return;
 
 		LeechCraft::Entity e;
