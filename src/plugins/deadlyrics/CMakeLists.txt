@@ -14,7 +14,6 @@ SET (SRCS
 	deadlyrics.cpp
 	searcher.cpp
 	lyricscache.cpp
-	xmlsettingsmanager.cpp
 	sitessearcher.cpp
 	concretesite.cpp
 	)
@@ -22,7 +21,6 @@ SET (HEADERS
 	deadlyrics.h
 	searcher.h
 	lyricscache.h
-	xmlsettingsmanager.h
 	sitessearcher.h
 	concretesite.h
 	)
@@ -46,4 +44,3 @@ TARGET_LINK_LIBRARIES (leechcraft_deadlyrics
 	)
 INSTALL (TARGETS leechcraft_deadlyrics DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES deadlyricssettings.xml DESTINATION ${LC_SETTINGS_DEST})
