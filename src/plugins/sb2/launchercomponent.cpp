@@ -188,6 +188,7 @@ namespace SB2
 		item->setData (tc.TabClass_, LauncherModel::Roles::TabClassID);
 		item->setData (0, LauncherModel::Roles::OpenedTabsCount);
 		item->setData (false, LauncherModel::Roles::IsCurrentTab);
+		item->setData (false, LauncherModel::Roles::CanOpenTab);
 		Model_->appendRow (item);
 
 		TC2Items_ [tc.TabClass_] << item;
