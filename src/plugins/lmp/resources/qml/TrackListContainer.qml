@@ -36,6 +36,7 @@ Rectangle {
         }
     ]
 
+    Behavior on x { PropertyAnimation { duration: 200 } }
     Behavior on y { PropertyAnimation { duration: 200 } }
     Behavior on height { PropertyAnimation { duration: 200 } }
 
