@@ -85,7 +85,7 @@ namespace Vrooby
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/vrooby.svg");
+		static QIcon icon (":/vrooby/resources/images/vrooby.svg");
 		return icon;
 	}
 
