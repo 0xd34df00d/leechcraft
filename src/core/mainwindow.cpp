@@ -464,7 +464,7 @@ void LeechCraft::MainWindow::ReadSettings ()
 {
 	QSettings settings ("Deviant", "Leechcraft");
 	settings.beginGroup ("geometry");
-	resize (settings.value ("size", QSize  (750, 550)).toSize ());
+	resize (settings.value ("size", QSize  (1150, 800)).toSize ());
 	move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
 	WasMaximized_ = settings.value ("maximized").toBool ();
 	WasMaximized_ ? showMaximized () : showNormal ();
