@@ -48,7 +48,7 @@ namespace Otlozhu
 			GetInfo (),
 			GetIcon (),
 			20,
-			TFOpenableByRequest | TFSingle
+			TFOpenableByRequest | TFSingle | TFSuggestOpening
 		};
 	}
 
