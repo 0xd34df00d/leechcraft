@@ -54,6 +54,8 @@ namespace SB2
 		QPointer<TabListView> CurrentTabList_;
 
 		QSet<QByteArray> HiddenTCs_;
+
+		bool FirstRun_;
 	public:
 		LauncherComponent (ICoreProxy_ptr, QObject* = 0);
 

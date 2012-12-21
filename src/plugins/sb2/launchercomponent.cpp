@@ -136,6 +136,8 @@ namespace SB2
 				QCoreApplication::applicationName () + "_SB2");
 		settings.beginGroup ("Launcher");
 		HiddenTCs_ = settings.value ("HiddenTCs").value<decltype (HiddenTCs_)> ();
+		FirstRun_ = settings.value ("FirstRun", true).toBool () && HiddenTCs_.isEmpty ();
+		settings.setValue ("FirstRun", false);
 		settings.endGroup ();
 	}
 
@@ -160,6 +162,13 @@ namespace SB2
 	{
 		if (!IsTabclassOpenable (tc) || HiddenTCs_.contains (tc.TabClass_))
 			return 0;
+
+		if (FirstRun_ && !(tc.Features_ & TabFeature::TFSuggestOpening))
+		{
+			HiddenTCs_ << tc.TabClass_;
+			SaveHiddenTCs();
+			return 0;
+		}
 
 		auto item = CreateItem (tc);
 		item->setData (true, LauncherModel::Roles::CanOpenTab);
