@@ -35,7 +35,7 @@ namespace Util
 		Queue_.push_back ({ f, dep });
 
 		const auto diff = LastRequest_.msecsTo (now);
-		if (diff > 1.1 * Timeout_)
+		if (diff >= Timeout_)
 			exec ();
 		else if (Queue_.size () == 1)
 			QTimer::singleShot (Timeout_ - diff,
