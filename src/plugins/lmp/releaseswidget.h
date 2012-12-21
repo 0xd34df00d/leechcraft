@@ -26,6 +26,7 @@ class QStandardItemModel;
 namespace Media
 {
 	class IRecentReleases;
+	class IDiscographyProvider;
 	struct AlbumRelease;
 }
 
@@ -39,14 +40,23 @@ namespace LMP
 
 		Ui::ReleasesWidget Ui_;
 		QList<Media::IRecentReleases*> Providers_;
+		QList<Media::IDiscographyProvider*> DiscoProviders_;
 
 		QStandardItemModel *ReleasesModel_;
+
+		struct PendingRelease
+		{
+			QString Artist_;
+			QString Title_;
+		};
+		QHash<QObject*, PendingRelease> Pending2Release_;
 	public:
 		ReleasesWidget (QWidget* = 0);
 
 		void InitializeProviders ();
 	private slots:
 		void handleRecentReleases (const QList<Media::AlbumRelease>&);
+		void handleReleaseInfo ();
 		void request ();
 		void handleLink (const QString&);
 	};

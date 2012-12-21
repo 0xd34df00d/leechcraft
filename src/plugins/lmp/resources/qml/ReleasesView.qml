@@ -1,5 +1,6 @@
 import QtQuick 1.0
 import Effects 1.0
+import "."
 
 Rectangle {
     id: rootRect
@@ -95,6 +96,30 @@ Rectangle {
                 border.color: colorProxy.color_TextBox_BorderColor
                 smooth: true
 
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                    onEntered: {
+                        if (trackList.length > 0)
+                        {
+                            trackListContainer.text = trackList
+                            trackListContainer.state = "visible"
+
+                            var newPoint = delegateRect.mapToItem(rootRect, 0, 0)
+                            trackListContainer.x = newPoint.x
+
+                            var newY = newPoint.y + delegateRect.height
+                            if (newY + trackListContainer.targetHeight >= rootRect.height)
+                                newY = newPoint.y - trackListContainer.targetHeight
+                            trackListContainer.y = newY
+                        }
+                        else
+                            trackListContainer.state = ""
+                    }
+                    onExited: trackListContainer.state = ""
+                }
+
                 Column {
                     id: column1
                     anchors.fill: parent
@@ -157,5 +182,10 @@ Rectangle {
                 }
             }
         }
+    }
+
+    TrackListContainer {
+        id: trackListContainer
+        width: releasesView.cellWidth - 20
     }
 }
