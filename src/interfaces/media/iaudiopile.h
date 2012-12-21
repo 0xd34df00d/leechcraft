@@ -49,7 +49,14 @@ namespace Media
 		QString Artist_;
 		QString Album_;
 
+		int TrackLength_;
+
 		QString FreeForm_;
+
+		AudioSearchRequest ()
+		: TrackLength_ (0)
+		{
+		}
 	};
 
 	class IAudioPile
