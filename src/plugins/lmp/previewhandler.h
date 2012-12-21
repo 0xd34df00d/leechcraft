@@ -44,6 +44,7 @@ namespace LMP
 	public slots:
 		void previewArtist (const QString&);
 		void previewTrack (const QString&, const QString&);
+		void previewTrack (const QString&, const QString&, int);
 	private:
 		void RequestPreview (const Media::AudioSearchRequest&);
 	private slots:

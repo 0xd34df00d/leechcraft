@@ -23,6 +23,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <util/queuemanager.h>
 #include "authmanager.h"
 
 namespace LeechCraft
@@ -30,9 +31,10 @@ namespace LeechCraft
 namespace TouchStreams
 {
 	AudioSearch::AudioSearch (ICoreProxy_ptr proxy,
-			const QString& query, AuthManager *mgr, QObject *parent)
+			const Media::AudioSearchRequest& query, AuthManager *mgr, Util::QueueManager *queue, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
+	, Queue_ (queue)
 	, AuthMgr_ (mgr)
 	, Query_ (query)
 	{
@@ -57,17 +59,20 @@ namespace TouchStreams
 	{
 		QUrl url ("https://api.vk.com/method/audio.search");
 		url.addQueryItem ("access_token", key);
-		url.addQueryItem ("q", Query_);
+		url.addQueryItem ("q", Query_.FreeForm_);
 
-		auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGotReply ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleError ()));
+		Queue_->Schedule ([this, url] () -> void
+			{
+				auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleGotReply ()));
+				connect (reply,
+						SIGNAL (error (QNetworkReply::NetworkError)),
+						this,
+						SLOT (handleError ()));
+			}, this);
 	}
 
 	void AudioSearch::handleGotReply ()
@@ -89,9 +94,19 @@ namespace TouchStreams
 			Media::IPendingAudioSearch::Result result;
 			try
 			{
+				result.Info_.Length_ = sub.get<qint32> ("duration");
+
+				if (Query_.TrackLength_ > 0 && result.Info_.Length_ != Query_.TrackLength_)
+				{
+					qDebug () << Q_FUNC_INFO
+							<< "skipping track due to track length mismatch"
+							<< result.Info_.Length_
+							<< Query_.TrackLength_;
+					continue;
+				}
+
 				result.Info_.Artist_ = QString::fromUtf8 (sub.get<std::string> ("artist").c_str ());
 				result.Info_.Title_ = QString::fromUtf8 (sub.get<std::string> ("title").c_str ());
-				result.Info_.Length_ = sub.get<qint32> ("duration");
 				result.Source_ = QUrl::fromEncoded (sub.get<std::string> ("url").c_str ());
 			}
 			catch (const std::exception& e)

@@ -49,6 +49,15 @@ namespace LMP
 		RequestPreview (req);
 	}
 
+	void PreviewHandler::previewTrack (const QString& track, const QString& artist, int length)
+	{
+		Media::AudioSearchRequest req;
+		req.Title_ = track;
+		req.Artist_ = artist;
+		req.TrackLength_ = length;
+		RequestPreview (req);
+	}
+
 	void PreviewHandler::RequestPreview (const Media::AudioSearchRequest& req)
 	{
 		for (auto prov : Providers_)

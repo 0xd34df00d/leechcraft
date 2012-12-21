@@ -45,6 +45,7 @@ SET (SRCS
 	socketerrorstrings.cpp
 	sysinfo.cpp
 	passutils.cpp
+	queuemanager.cpp
 	shortcuts/shortcutmanager.cpp
 	)
 SET (HEADERS
@@ -82,6 +83,7 @@ SET (HEADERS
 	socketerrorstrings.h
 	sysinfo.h
 	passutils.h
+	queuemanager.h
 	shortcuts/shortcutmanager.h
 	idpool.h
 	)

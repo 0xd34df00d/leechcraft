@@ -18,45 +18,31 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/media/iaudiopile.h>
+#include <QDateTime>
+#include <QPointer>
+#include <QPair>
+#include "utilconfig.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class QueueManager;
-}
-
-namespace TouchStreams
-{
-	class AuthManager;
-
-	class AudioSearch : public QObject
-					  , public Media::IPendingAudioSearch
+	class QueueManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (Media::IPendingAudioSearch)
 
-		ICoreProxy_ptr Proxy_;
-		Util::QueueManager *Queue_;
+		const int Timeout_;
+		QDateTime LastRequest_;
 
-		AuthManager *AuthMgr_;
-		const Media::AudioSearchRequest Query_;
-
-		QList<Media::IPendingAudioSearch::Result> Result_;
+		QList<QPair<std::function<void ()>, QPointer<QObject>>> Queue_;
 	public:
-		AudioSearch (ICoreProxy_ptr, const Media::AudioSearchRequest&, AuthManager*, Util::QueueManager*, QObject* = 0);
+		UTIL_API QueueManager (int timeout, QObject* = 0);
 
-		QObject* GetObject ();
-		QList<Result> GetResults () const;
+		UTIL_API void Schedule (std::function<void ()>, QObject*);
 	private slots:
-		void handleGotAuthKey (const QString&);
-		void handleGotReply ();
-		void handleError ();
-	signals:
-		void ready ();
+		void exec ();
 	};
 }
 }

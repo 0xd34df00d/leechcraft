@@ -16,47 +16,52 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/media/iaudiopile.h>
+#include "queuemanager.h"
+#include <QTimer>
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class QueueManager;
-}
-
-namespace TouchStreams
-{
-	class AuthManager;
-
-	class AudioSearch : public QObject
-					  , public Media::IPendingAudioSearch
+	QueueManager::QueueManager (int timeout, QObject *parent)
+	: QObject (parent)
+	, Timeout_ (timeout)
 	{
-		Q_OBJECT
-		Q_INTERFACES (Media::IPendingAudioSearch)
+	}
 
-		ICoreProxy_ptr Proxy_;
-		Util::QueueManager *Queue_;
+	void QueueManager::Schedule (std::function<void ()> f, QObject *dep)
+	{
+		const auto& now = QDateTime::currentDateTime ();
+		Queue_.push_back ({ f, dep });
 
-		AuthManager *AuthMgr_;
-		const Media::AudioSearchRequest Query_;
+		const auto diff = LastRequest_.msecsTo (now);
+		if (diff >= Timeout_)
+			exec ();
+		else if (Queue_.size () == 1)
+			QTimer::singleShot (Timeout_ - diff,
+					this,
+					SLOT (exec ()));
+	}
 
-		QList<Media::IPendingAudioSearch::Result> Result_;
-	public:
-		AudioSearch (ICoreProxy_ptr, const Media::AudioSearchRequest&, AuthManager*, Util::QueueManager*, QObject* = 0);
+	void QueueManager::exec ()
+	{
+		if (Queue_.isEmpty ())
+			return;
 
-		QObject* GetObject ();
-		QList<Result> GetResults () const;
-	private slots:
-		void handleGotAuthKey (const QString&);
-		void handleGotReply ();
-		void handleError ();
-	signals:
-		void ready ();
-	};
+		const auto& pair = Queue_.takeFirst ();
+		if (!pair.second)
+		{
+			exec ();
+			return;
+		}
+
+		pair.first ();
+		LastRequest_ = QDateTime::currentDateTime ();
+
+		if (!Queue_.isEmpty ())
+			QTimer::singleShot (Timeout_,
+					this,
+					SLOT (exec ()));
+	}
 }
 }

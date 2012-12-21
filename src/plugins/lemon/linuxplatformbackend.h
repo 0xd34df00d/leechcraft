@@ -32,7 +32,6 @@ namespace Lemon
 
 		nl_sock *Rtsock_;
 		nl_cache *LinkCache_;
-		nl_cache *RouteCache_;
 
 		struct DevInfo
 		{
