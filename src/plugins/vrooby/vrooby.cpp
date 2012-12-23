@@ -23,6 +23,8 @@
 
 #ifdef ENABLE_UDISKS
 #include "backends/udisks/udisksbackend.h"
+#elif defined (ENABLE_UDISKS2)
+#include "backends/udisks2/udisks2backend.h"
 #else
 #include "devbackend.h"
 #endif
@@ -42,13 +44,16 @@ namespace Vrooby
 
 #ifdef ENABLE_UDISKS
 		Backend_ = new UDisks::Backend (this);
-		connect (Backend_,
+#elif defined (ENABLE_UDISKS2)
+		Backend_ = new UDisks2::Backend (this);
+#endif
+
+		if (Backend_)
+			connect (Backend_,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
-#endif
-
-		if (!Backend_)
+		else
 			return;
 
 		TrayView_->SetBackend (Backend_);
