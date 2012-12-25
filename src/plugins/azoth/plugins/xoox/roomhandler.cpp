@@ -36,6 +36,7 @@
 #include "formbuilder.h"
 #include "sdmanager.h"
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -85,6 +86,9 @@ namespace Xoox
 				Qt::QueuedConnection);
 
 		Room_->join ();
+
+		XmlSettingsManager::Instance ().RegisterObject ("RequestVersionInMUCs",
+				this, "handleRequestVersionChanged");
 	}
 
 	QString RoomHandler::GetRoomJID () const
@@ -589,7 +593,9 @@ namespace Xoox
 	{
 		RoomParticipantEntry_ptr entry (new RoomParticipantEntry (nick,
 					this, Account_));
-		if (IsGateway ())
+
+		const bool reqsEnabled = XmlSettingsManager::Instance ().property ("RequestVersionInMUCs").toBool ();
+		if (!reqsEnabled || IsGateway ())
 			entry->SetVersionReqsEnabled (false);
 
 		connect (entry.get (),
@@ -734,6 +740,18 @@ namespace Xoox
 		msg.setExtensions (QXmppElementList () << XooxUtil::Form2XmppElem (form));
 
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
+	}
+
+	void RoomHandler::handleRequestVersionChanged ()
+	{
+		if (IsGateway ())
+			return;
+
+		const bool reqEnabled = XmlSettingsManager::Instance ()
+				.property ("RequestVersionInMUCs").toBool ();
+
+		for (auto entry : Nick2Entry_.values ())
+			entry->SetVersionReqsEnabled (reqEnabled);
 	}
 
 	void RoomHandler::handleMessagesAreRead ()

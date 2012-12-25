@@ -11,5 +11,11 @@
 				<label value="Advertise Qt version" />
 			</item>
 		</groupbox>
+		<groupbox>
+			<label value="IQ requests" />
+			<item type="checkbox" property="RequestVersionInMUCs" default="true">
+				<label value="Request participant versions in MUCs" />
+			</item>
+		</groupbox>
 	</page>
 </settings>

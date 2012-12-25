@@ -102,6 +102,8 @@ namespace Xoox
 
 		void requestVoice ();
 
+		void handleRequestVersionChanged ();
+
 		void handleMessagesAreRead ();
 	private:
 		bool IsGateway () const;
