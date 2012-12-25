@@ -69,6 +69,7 @@
 #include "coreplugin2manager.h"
 #include "dockmanager.h"
 #include "entitymanager.h"
+#include "rootwindowsmanager.h"
 
 using namespace LeechCraft::Util;
 
@@ -83,6 +84,7 @@ namespace LeechCraft
 	, LocalSocketHandler_ (new LocalSocketHandler)
 	, NewTabMenuManager_ (new NewTabMenuManager)
 	, CoreInstanceObject_ (new CoreInstanceObject)
+	, RootWindowsManager_ (new RootWindowsManager)
 	, IsShuttingDown_ (false)
 	{
 		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (NetworkAccessManager_.get ());
@@ -342,6 +344,11 @@ namespace LeechCraft
 	QNetworkAccessManager* Core::GetNetworkAccessManager () const
 	{
 		return NetworkAccessManager_.get ();
+	}
+
+	RootWindowsManager* Core::GetRootWindowsManager () const
+	{
+		return RootWindowsManager_.get ();
 	}
 
 	QModelIndex Core::MapToSource (const QModelIndex& index) const

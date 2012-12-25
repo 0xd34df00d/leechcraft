@@ -59,6 +59,7 @@ SET (SRCS
 	acceptlangwidget.cpp
 	entitymanager.cpp
 	colorthemeengine.cpp
+	rootwindowsmanager.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -102,6 +103,7 @@ SET (HEADERS
 	acceptlangwidget.h
 	entitymanager.h
 	colorthemeengine.h
+	rootwindowsmanager.h
 	interfaces/structures.h
 	)
 SET (FORMS

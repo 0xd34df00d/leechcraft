@@ -28,6 +28,7 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/ihaverecoverabletabs.h>
@@ -74,10 +75,13 @@ namespace TabSessManager
 		Q_FOREACH (const auto& group, settings.childGroups ())
 			AddCustomSession (group);
 
+#warning "Don't forget to uncomment this."
+		/*
 		connect (proxy->GetTabWidget ()->GetObject (),
 				SIGNAL (tabWasMoved (int, int)),
 				this,
 				SLOT (handleTabMoved (int, int)));
+				*/
 	}
 
 	void Plugin::SecondInit ()
@@ -445,7 +449,8 @@ namespace TabSessManager
 
 	void Plugin::saveCustomSession ()
 	{
-		const QString& name = QInputDialog::getText (Proxy_->GetMainWindow (),
+		auto rootWM = Proxy_->GetRootWindowsManager ();
+		const QString& name = QInputDialog::getText (rootWM->GetPreferredWindow (),
 				tr ("Custom session"),
 				tr ("Enter the name of the session:"));
 		if (name.isEmpty ())

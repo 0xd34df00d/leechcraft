@@ -39,8 +39,14 @@ namespace SB2
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
 
-		ViewManager *Mgr_;
-		TrayComponent *Tray_;
+		ICoreProxy_ptr Proxy_;
+
+		struct WindowInfo
+		{
+			ViewManager *Mgr_;
+			TrayComponent *Tray_;
+		};
+		QList<WindowInfo> Managers_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -53,6 +59,9 @@ namespace SB2
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
 		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QDockWidget*, bool);
+	private slots:
+		void handleWindow (int, bool init = false);
+		void handleWindowRemoved (int);
 	signals:
 		void pluginsAvailable ();
 	};

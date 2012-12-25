@@ -31,6 +31,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/resourceloader.h>
 #include <util/util.h>
@@ -396,9 +397,9 @@ namespace Azoth
 		const bool floating = XmlSettingsManager::Instance ()
 				.Property ("MWFloating", false).toBool ();
 
-		auto proxy = Core::Instance ().GetProxy ();
-		proxy->GetMWProxy ()->AddDockWidget (static_cast<Qt::DockWidgetArea> (dockArea), dw);
-		proxy->GetMWProxy ()->SetViewActionShortcut (dw, QString ("Ctrl+J,A"));
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		rootWM->GetMWProxy (0)->AddDockWidget (static_cast<Qt::DockWidgetArea> (dockArea), dw);
+		rootWM->GetMWProxy (0)->SetViewActionShortcut (dw, QString ("Ctrl+J,A"));
 
 		dw->setFloating (floating);
 		connect (dw,

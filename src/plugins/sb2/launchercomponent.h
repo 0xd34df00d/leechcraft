@@ -43,6 +43,7 @@ namespace SB2
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
+		ICoreTabWidget *ICTW_;
 		QStandardItemModel *Model_;
 		QuarkComponent Component_;
 
@@ -57,7 +58,7 @@ namespace SB2
 
 		bool FirstRun_;
 	public:
-		LauncherComponent (ICoreProxy_ptr, QObject* = 0);
+		LauncherComponent (ICoreTabWidget*, ICoreProxy_ptr, QObject* = 0);
 
 		QuarkComponent GetComponent () const;
 	private:

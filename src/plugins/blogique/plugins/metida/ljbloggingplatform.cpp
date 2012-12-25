@@ -22,6 +22,7 @@
 #include <QSettings>
 #include <QtDebug>
 #include <QMainWindow>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/passutils.h>
 #include "core.h"
 #include "ljaccount.h"
@@ -210,8 +211,8 @@ namespace Metida
 
 	void LJBloggingPlatform::handleAddLJUser ()
 	{
-		QString name = QInputDialog::getText (Core::Instance ().GetCoreProxy ()->
-				GetMainWindow (),
+		auto rootWM = Core::Instance ().GetCoreProxy ()->GetRootWindowsManager ();
+		QString name = QInputDialog::getText (rootWM->GetPreferredWindow (),
 				tr ("Add LJ User"),
 				tr ("Enter LJ user name"));
 		if (name.isEmpty ())

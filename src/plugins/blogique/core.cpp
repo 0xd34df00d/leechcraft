@@ -22,6 +22,7 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <interfaces/iplugin2.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatformplugin.h"
@@ -290,7 +291,7 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		if (QMessageBox::question (Proxy_->GetMainWindow (),
+		if (QMessageBox::question (Proxy_->GetRootWindowsManager ()->GetPreferredWindow (),
 				"LeechCraft",
 				tr ("Entry was removed successfully.\nRemove entry from local storage?"),
 				QMessageBox::Ok | QMessageBox::No,

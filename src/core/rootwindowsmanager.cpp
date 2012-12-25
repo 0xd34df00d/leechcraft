@@ -16,41 +16,56 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
+#include "rootwindowsmanager.h"
 #include "core.h"
-#include <QMainWindow>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/irootwindowsmanager.h>
+#include "mainwindow.h"
+#include "mwproxy.h"
 
 namespace LeechCraft
 {
-namespace Plugins
-{
-namespace Glance
-{
-	Core::Core ()
+	RootWindowsManager::RootWindowsManager (QObject *parent)
+	: QObject (parent)
+	, MWProxy_ (new MWProxy (this))
 	{
 	}
 
-	Core& Core::Instance ()
+	QObject* RootWindowsManager::GetObject ()
 	{
-		static Core c;
-		return c;
+		return this;
 	}
 
-	void Core::SetProxy (ICoreProxy_ptr proxy)
+	int RootWindowsManager::GetWindowsCount () const
 	{
-		Proxy_ = proxy;
+		return 1;
 	}
 
-	ICoreProxy_ptr Core::GetProxy () const
+	int RootWindowsManager::GetPreferredWindowIndex () const
 	{
-		return Proxy_;
+		return 0;
 	}
 
-	QMainWindow* Core::GetMainWindow () const
+	int RootWindowsManager::GetWindowForTab (ITabWidget*) const
 	{
-		return Proxy_->GetRootWindowsManager ()->GetPreferredWindow ();
+		return 0;
 	}
-}
-}
+
+	int RootWindowsManager::GetWindowIndex (QMainWindow*) const
+	{
+		return 0;
+	}
+
+	QMainWindow* RootWindowsManager::GetMainWindow (int) const
+	{
+		return Core::Instance ().GetReallyMainWindow ();
+	}
+
+	IMWProxy* RootWindowsManager::GetMWProxy (int) const
+	{
+		return MWProxy_;
+	}
+
+	ICoreTabWidget* RootWindowsManager::GetTabWidget (int) const
+	{
+		return Core::Instance ().GetReallyMainWindow ()->GetTabWidget ();
+	}
 }

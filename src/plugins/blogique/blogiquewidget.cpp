@@ -26,6 +26,7 @@
 #include <util/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/imwproxy.h>
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "interfaces/blogique/iblogiquesidewidget.h"
@@ -67,7 +68,7 @@ namespace Blogique
 				.Property ("DockWidgetArea", Qt::RightDockWidgetArea).toInt ());
 		if (dwa == Qt::NoDockWidgetArea)
 			dwa = Qt::RightDockWidgetArea;
-		auto mw = Core::Instance ().GetCoreProxy ()->GetMWProxy ();
+		auto mw = Core::Instance ().GetCoreProxy ()->GetRootWindowsManager ()->GetMWProxy (0);
 		mw->AddDockWidget (dwa, Ui_.SideWidget_);
 		mw->AssociateDockWidget (Ui_.SideWidget_, this);
 		mw->ToggleViewActionVisiblity (Ui_.SideWidget_, false);

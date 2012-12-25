@@ -35,6 +35,7 @@
 #include <QMainWindow>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -251,8 +252,8 @@ namespace CSTP
 
 	void CSTP::handleFileExists (boost::logic::tribool *remove)
 	{
-		QMessageBox::StandardButton userReply =
-			QMessageBox::warning (Core::Instance ().GetCoreProxy ()->GetMainWindow (),
+		auto rootWM = Core::Instance ().GetCoreProxy ()->GetRootWindowsManager ();
+		auto userReply = QMessageBox::warning (rootWM->GetPreferredWindow (),
 				tr ("File exists"),
 				tr ("File %1 already exists, continue download?"),
 				QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);

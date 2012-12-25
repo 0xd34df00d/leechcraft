@@ -16,41 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "core.h"
-#include <QMainWindow>
-#include <interfaces/core/icoreproxy.h>
+#pragma once
+
+#include <QObject>
 #include <interfaces/core/irootwindowsmanager.h>
 
 namespace LeechCraft
 {
-namespace Plugins
-{
-namespace Glance
-{
-	Core::Core ()
-	{
-	}
+	class MWProxy;
 
-	Core& Core::Instance ()
+	class RootWindowsManager : public QObject
+							 , public IRootWindowsManager
 	{
-		static Core c;
-		return c;
-	}
+		Q_OBJECT
+		Q_INTERFACES (IRootWindowsManager);
 
-	void Core::SetProxy (ICoreProxy_ptr proxy)
-	{
-		Proxy_ = proxy;
-	}
+		MWProxy *MWProxy_;
+	public:
+		RootWindowsManager (QObject* = 0);
 
-	ICoreProxy_ptr Core::GetProxy () const
-	{
-		return Proxy_;
-	}
+		QObject* GetObject ();
 
-	QMainWindow* Core::GetMainWindow () const
-	{
-		return Proxy_->GetRootWindowsManager ()->GetPreferredWindow ();
-	}
-}
-}
+		int GetWindowsCount () const;
+		int GetPreferredWindowIndex () const;
+		int GetWindowForTab (ITabWidget*) const;
+		int GetWindowIndex (QMainWindow*) const;
+
+		IMWProxy* GetMWProxy (int) const;
+		QMainWindow* GetMainWindow (int) const;
+		ICoreTabWidget* GetTabWidget (int) const;
+	signals:
+		void windowAdded (int);
+		void windowRemoved (int);
+		void currentWindowChanged (int, int);
+		void tabMovedXWindows (int, int);
+	};
 }

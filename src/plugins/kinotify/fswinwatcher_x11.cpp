@@ -21,6 +21,7 @@
 #include <QMainWindow>
 #include <X11/Xlib.h>
 #include <X11/extensions/randr.h>
+#include <interfaces/core/irootwindowsmanager.h>
 
 namespace LeechCraft
 {
@@ -58,8 +59,10 @@ namespace Kinotify
 
 		XGetInputFocus (display, &focusWin, &reverToReturn);
 
-		if (Proxy_->GetMainWindow ()->effectiveWinId () == focusWin)
-			return false;
+		auto rootWM = Proxy_->GetRootWindowsManager ();
+		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
+			if (rootWM->GetMainWindow (i)->effectiveWinId () == focusWin)
+				return false;
 
 		if (!(getSize (display, RootWindow (display, screen), &screenWidth, &screenHeight) &&
 				getSize (display, focusWin, &width, &height)))

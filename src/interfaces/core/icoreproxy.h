@@ -44,6 +44,8 @@ namespace LeechCraft
 	}
 }
 
+class IRootWindowsManager;
+
 /** @brief Proxy class for the communication with LeechCraft.
  *
  * Allows one to talk with LeechCraft, requesting and getting various
@@ -71,12 +73,6 @@ public:
 	 * @sa IShortcutProxy
 	 */
 	virtual IShortcutProxy* GetShortcutProxy () const = 0;
-
-	/** @brief Returns the main window proxy.
-	 *
-	 * @sa IMWProxy
-	 */
-	virtual IMWProxy* GetMWProxy () const = 0;
 
 	/** @brief Maps the given index up to the plugin's through the
 	 * hierarchy of LeechCraft's models
@@ -113,13 +109,7 @@ public:
 	 */
 	virtual IColorThemeManager* GetColorThemeManager () const = 0;
 
-	/** Returns main LeechCraft's window.
-	 */
-	virtual QMainWindow* GetMainWindow () const = 0;
-
-	/** Returns the main tab widget.
-	 */
-	virtual ICoreTabWidget* GetTabWidget () const = 0;
+	virtual IRootWindowsManager* GetRootWindowsManager () const = 0;
 
 	/** Returns the application-wide tags manager.
 	 */

@@ -36,6 +36,7 @@ class QNetworkAccessManager;
 
 namespace LeechCraft
 {
+	class RootWindowsManager;
 	class MainWindow;
 	class TabManager;
 	class NewTabMenuManager;
@@ -60,6 +61,7 @@ namespace LeechCraft
 		std::shared_ptr<LocalSocketHandler> LocalSocketHandler_;
 		std::shared_ptr<NewTabMenuManager> NewTabMenuManager_;
 		std::shared_ptr<CoreInstanceObject> CoreInstanceObject_;
+		std::shared_ptr<RootWindowsManager> RootWindowsManager_;
 		QList<Entity> QueuedEntities_;
 		bool IsShuttingDown_;
 
@@ -177,6 +179,8 @@ namespace LeechCraft
 		/** Returns the app-wide network access manager.
 		 */
 		QNetworkAccessManager* GetNetworkAccessManager () const;
+
+		RootWindowsManager* GetRootWindowsManager () const;
 
 		/** Maps given index from a model obtained from GetTasksModel()
 		 * to the index provided by a corresponding plugin's model.

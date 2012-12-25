@@ -19,6 +19,7 @@
 #include "kbswitch.h"
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "keyboardlayoutswitcher.h"
 #include "xmlsettingsmanager.h"
@@ -29,17 +30,26 @@ namespace KBSwitch
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"kbswitchsettings.xml");
 
 		KBLayoutSwitcher_ = new KeyboardLayoutSwitcher (this);
 
-		MainTabWidget_ = proxy->GetTabWidget ();
-		connect (MainTabWidget_->GetObject (),
-				SIGNAL (currentChanged (int)),
+		auto rootWM = proxy->GetRootWindowsManager ();
+		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
+			handleWindow (i);
+
+		connect (rootWM->GetObject (),
+				SIGNAL (windowAdded (int)),
 				this,
-				SLOT (handleCurrentChanged (int)));
+				SLOT (handleWindow (int)));
+		connect (rootWM->GetObject (),
+				SIGNAL (currentWindowChanged (int, int)),
+				this,
+				SLOT(handleCurrentWindowChanged (int, int)));
 	}
 
 	void Plugin::SecondInit ()
@@ -81,9 +91,30 @@ namespace KBSwitch
 		if (KBLayoutSwitcher_->IsGlobalPolicy ())
 			return;
 
-		QWidget *currentWidget = MainTabWidget_->Widget (index);
-		QWidget *prevWidget = MainTabWidget_->GetPreviousWidget ();
+		auto ictw = qobject_cast<ICoreTabWidget*> (sender ());
+		QWidget *currentWidget = ictw->Widget (index);
+		QWidget *prevWidget = ictw->GetPreviousWidget ();
 		KBLayoutSwitcher_->updateKBLayouts (currentWidget, prevWidget);
+	}
+
+	void Plugin::handleCurrentWindowChanged (int from, int to)
+	{
+		auto rootWM = Proxy_->GetRootWindowsManager ();
+
+		auto currentTW = rootWM->GetTabWidget (to);
+		auto prevTW = rootWM->GetTabWidget (from);
+		auto currentWidget = currentTW->Widget (currentTW->CurrentIndex ());
+		auto prevWidget = prevTW->Widget (prevTW->CurrentIndex ());
+		KBLayoutSwitcher_->updateKBLayouts (currentWidget, prevWidget);
+	}
+
+	void Plugin::handleWindow (int index)
+	{
+		auto tabWidget = Proxy_->GetRootWindowsManager ()->GetTabWidget (index);
+		connect (tabWidget->GetObject (),
+				SIGNAL (currentChanged (int)),
+				this,
+				SLOT (handleCurrentChanged (int)));
 	}
 }
 }

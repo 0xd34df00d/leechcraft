@@ -24,6 +24,7 @@
 #include <QtDeclarative>
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/imwproxy.h>
 #include "viewmanager.h"
 #include "sbview.h"
@@ -38,40 +39,34 @@ namespace SB2
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
 		qmlRegisterType<QGraphicsColorizeEffect> ("Effects", 1, 0, "Colorize");
 		qmlRegisterType<QGraphicsDropShadowEffect> ("Effects", 1, 0, "DropShadow");
 		qmlRegisterType<QGraphicsOpacityEffect> ("Effects", 1, 0, "OpacityEffect");
 		qmlRegisterType<DesaturateEffect> ("Effects", 1, 0, "Desaturate");
 
-		Mgr_ = new ViewManager (proxy, this);
-		auto view = Mgr_->GetView ();
-		proxy->GetMWProxy ()->AddSideWidget (view);
+		auto rootWM = proxy->GetRootWindowsManager ();
+		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
+			handleWindow (i, true);
 
-		proxy->GetMainWindow ()->statusBar ()->hide ();
-
-		Mgr_->AddComponent ((new LCMenuComponent (proxy))->GetComponent ());
-
-		auto launcher = new LauncherComponent (proxy);
-		Mgr_->AddComponent (launcher->GetComponent ());
-		connect (this,
-				SIGNAL (pluginsAvailable ()),
-				launcher,
-				SLOT (handlePluginsAvailable ()));
-
-		Tray_ = new TrayComponent (proxy);
-		Mgr_->AddComponent (Tray_->GetComponent ());
-		connect (this,
-				SIGNAL (pluginsAvailable ()),
-				Tray_,
-				SLOT (handlePluginsAvailable ()));
+		connect (rootWM->GetObject (),
+				SIGNAL (windowAdded (int)),
+				this,
+				SLOT (handleWindow (int)));
+		connect (rootWM->GetObject (),
+				SIGNAL (windowRemoved (int)),
+				this,
+				SLOT (handleWindowRemoved (int)));
 	}
 
 	void Plugin::SecondInit ()
 	{
 		emit pluginsAvailable ();
 
-		Mgr_->SecondInit ();
+		for (const auto& info : Managers_)
+			info.Mgr_->SecondInit ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -107,8 +102,48 @@ namespace SB2
 
 	void Plugin::hookDockWidgetActionVisToggled (IHookProxy_ptr proxy, QDockWidget *dw, bool visible)
 	{
-		Tray_->HandleDock (dw, visible);
+		//Tray_->HandleDock (dw, visible);
 		proxy->CancelDefault ();
+	}
+
+	void Plugin::handleWindow (int index, bool init)
+	{
+		auto mgr = new ViewManager (Proxy_, this);
+		auto view = mgr->GetView ();
+
+		auto rootWM = Proxy_->GetRootWindowsManager ();
+		auto mwProxy = rootWM->GetMWProxy (index);
+		auto ictw = rootWM->GetTabWidget (index);
+		mwProxy->AddSideWidget (view);
+		rootWM->GetMainWindow (index)->statusBar ()->hide ();
+
+		mgr->AddComponent ((new LCMenuComponent (mwProxy))->GetComponent ());
+
+		auto launcher = new LauncherComponent (ictw, Proxy_);
+		mgr->AddComponent (launcher->GetComponent ());
+		connect (this,
+				SIGNAL (pluginsAvailable ()),
+				launcher,
+				SLOT (handlePluginsAvailable ()));
+
+		auto tray = new TrayComponent (Proxy_);
+		mgr->AddComponent (tray->GetComponent ());
+		connect (this,
+				SIGNAL (pluginsAvailable ()),
+				tray,
+				SLOT (handlePluginsAvailable ()));
+
+		if (!init)
+			mgr->SecondInit ();
+
+		Managers_.push_back ({ mgr, tray });
+	}
+
+	void Plugin::handleWindowRemoved (int index)
+	{
+		const auto& info = Managers_.takeAt (index);
+		delete info.Mgr_;
+		delete info.Tray_;
 	}
 }
 }

@@ -23,6 +23,7 @@
 #include <QFontMetrics>
 #include <QMainWindow>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -46,7 +47,8 @@ namespace Poshuku
 	{
 		if (Pending_.size ())
 		{
-			QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
+			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+			QMessageBox::critical (rootWM->GetPreferredWindow (),
 					"LeechCraft",
 					tr ("Already checking links, please wait..."));
 			return;
@@ -206,7 +208,8 @@ namespace Poshuku
 				.arg (serverStuff)
 				.arg (BuildMessage (redirectsList, "redirected", 10));
 
-			QMessageBox::information (Core::Instance ().GetProxy ()->GetMainWindow (),
+			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+			QMessageBox::information (rootWM->GetPreferredWindow (),
 					"LeechCraft",
 					message);
 

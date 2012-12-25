@@ -61,6 +61,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/ijobholder.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -2771,7 +2772,8 @@ namespace BitTorrent
 			mask |= libtorrent::alert::storage_notification;
 		else
 		{
-			if (QMessageBox::question (Proxy_->GetMainWindow  (),
+			auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
+			if (QMessageBox::question (rootWM->GetPreferredWindow (),
 						"LeechCraft BitTorrent",
 						tr ("Storage notifications are disabled. Live streaming "
 							"definitely won't work without them, so if you are "

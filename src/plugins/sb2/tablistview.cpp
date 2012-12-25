@@ -58,9 +58,10 @@ namespace SB2
 	}
 
 	TabListView::TabListView (const QByteArray& tc,
-			const QList<QWidget*>& widgets, ICoreProxy_ptr proxy, QWidget *parent)
+			const QList<QWidget*>& widgets, ICoreTabWidget *ictw, ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (parent)
 	, Proxy_ (proxy)
+	, ICTW_ (ictw)
 	, TC_ (tc)
 	, Model_ (new TabsListModel (this))
 	, UnhoverDeleteMixin_ (new Util::UnhoverDeleteMixin (this))
@@ -80,7 +81,6 @@ namespace SB2
 
 		QString longestText;
 
-		auto ictw = proxy->GetTabWidget ();
 		for (auto w : widgets)
 		{
 			const int idx = ictw->IndexOf (w);
@@ -176,7 +176,7 @@ namespace SB2
 		}
 
 		auto widgetObj = item->data (TabsListModel::Roles::TabWidgetObj).value<QObject*> ();
-		Proxy_->GetTabWidget ()->setCurrentWidget (static_cast<QWidget*> (widgetObj));
+		ICTW_->setCurrentWidget (static_cast<QWidget*> (widgetObj));
 		deleteLater ();
 	}
 

@@ -23,6 +23,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "summarywidget.h"
 #include "requestnormalizer.h"
 #include "summarytagsfilter.h"
@@ -58,10 +59,16 @@ namespace Summary
 	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-		connect (Proxy_->GetTabWidget ()->GetObject (),
-				SIGNAL (currentChanged (int)),
+
+		auto rootWM = proxy->GetRootWindowsManager ();
+		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
+			handleWindow (i);
+
+		connect (rootWM->GetObject (),
+				SIGNAL (windodwAdded (int)),
 				this,
-				SLOT (handleCurrentTabChanged (int)));
+				SLOT (handleWindow (int)));
+
 		connect (Proxy_->GetPluginsManager ()->GetObject (),
 				SIGNAL (pluginInjected (QObject*)),
 				this,
@@ -331,7 +338,16 @@ namespace Summary
 
 	void Core::handleCurrentTabChanged (int newIndex)
 	{
-		QWidget *newTab = Proxy_->GetTabWidget ()->Widget (newIndex);
+		auto tw = qobject_cast<ICoreTabWidget*> (sender ());
+		if (!tw)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not a tab widget:"
+					<< sender ();
+			return;
+		}
+
+		QWidget *newTab = tw->Widget (newIndex);
 		Current_ = qobject_cast<SummaryWidget*> (newTab);
 		MadeCurrent (Current_);
 	}
@@ -394,6 +410,15 @@ namespace Summary
 		}
 
 		KeepProxiesThisWay_.remove (model);
+	}
+
+	void Core::handleWindow (int index)
+	{
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		connect (rootWM->GetTabWidget (index)->GetObject (),
+				SIGNAL (currentChanged (int)),
+				this,
+				SLOT (handleCurrentTabChanged (int)));
 	}
 
 	void Core::handlePluginInjected (QObject *object)

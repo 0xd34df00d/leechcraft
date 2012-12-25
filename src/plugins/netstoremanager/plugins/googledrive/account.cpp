@@ -23,6 +23,7 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <QPushButton>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 #include "uploadmanager.h"
 #include "xmlsettingsmanager.h"
@@ -128,7 +129,8 @@ namespace GoogleDrive
 			return;
 		}
 
-		auto res = QMessageBox::warning (Core::Instance ().GetProxy ()->GetMainWindow (),
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		auto res = QMessageBox::warning (rootWM->GetPreferredWindow (),
 				tr ("Remove item"),
 				tr ("Are you sure you want to delete %1? This action cannot be undone."
 						"<br><i>Note: if you delete a directory then all files in it will also be deleted.</i>")
@@ -184,11 +186,12 @@ namespace GoogleDrive
 
 		if (!XmlSettingsManager::Instance ().property ("AutoShareOnUrlRequest").toBool ())
 		{
+			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 			QMessageBox mbox (QMessageBox::Question,
 					tr ("Share item"),
 					tr ("The item needs to be shared to obtain the URL. Do you want to share it?"),
 					QMessageBox::Yes | QMessageBox::No,
-					Core::Instance ().GetProxy ()->GetMainWindow ());
+					rootWM->GetPreferredWindow());
 			mbox.setDefaultButton (QMessageBox::Yes);
 
 			QPushButton always (tr ("Always"));

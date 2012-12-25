@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <QTimer>
 #include <interfaces/imwproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/monocle/ihavetoc.h"
 #include "interfaces/monocle/ihavetextcontent.h"
 #include "interfaces/monocle/isupportannotations.h"
@@ -71,8 +72,6 @@ namespace Monocle
 
 		new FileWatcher (this);
 
-		auto mw = Core::Instance ().GetProxy ()->GetMWProxy ();
-
 		DockTOC_ = new QDockWidget (tr ("Table of contents"));
 		DockTOC_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
 		DockTOC_->setWidget (TOCWidget_);
@@ -83,6 +82,7 @@ namespace Monocle
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (DockTOC_->toggleViewAction ());
 
+		auto mw = Core::Instance ().GetProxy ()->GetRootWindowsManager ()->GetMWProxy (0);
 		mw->AddDockWidget (Qt::RightDockWidgetArea, DockTOC_);
 		mw->AssociateDockWidget (DockTOC_, this);
 		mw->ToggleViewActionVisiblity (DockTOC_, false);

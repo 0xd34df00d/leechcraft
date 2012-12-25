@@ -19,6 +19,7 @@
 #include "unreadqueuemanager.h"
 #include <QMainWindow>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "chattabsmanager.h"
@@ -49,12 +50,17 @@ namespace Azoth
 			return;
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		Core::Instance ().GetChatTabsManager ()->OpenChat (entry);
+		auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (entry);
 
-		QMainWindow *mw = Core::Instance ().GetProxy ()->GetMainWindow ();
-		mw->show ();
-		mw->activateWindow ();
-		mw->raise ();
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		const auto idx = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (chatWidget));
+		auto mw = rootWM->GetMainWindow (idx);
+		if (mw)
+		{
+			mw->show ();
+			mw->activateWindow ();
+			mw->raise ();
+		}
 	}
 
 	void UnreadQueueManager::clearMessagesForEntry (QObject *entryObj)

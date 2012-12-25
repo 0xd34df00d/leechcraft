@@ -39,6 +39,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/azoth/iprotocolplugin.h"
 #include "interfaces/azoth/iprotocol.h"
 #include "interfaces/azoth/iaccount.h"
@@ -1738,7 +1739,8 @@ namespace Azoth
 		QList<IAccount*> accs;
 		accs << acc;
 
-		JoinConferenceDialog *dia = new JoinConferenceDialog (accs, Proxy_->GetMainWindow ());
+		auto rootWM = GetProxy ()->GetRootWindowsManager ();
+		auto dia = new JoinConferenceDialog (accs, rootWM->GetPreferredWindow ());
 		dia->SetIdentifyingData (ident);
 		dia->show ();
 	}
@@ -1892,7 +1894,8 @@ namespace Azoth
 		auto accounts = GetAccountsPred (ProtocolPlugins_,
 				[] (IProtocol *proto) { return proto->GetFeatures () & IProtocol::PFMUCsJoinable; });
 
-		JoinConferenceDialog *dia = new JoinConferenceDialog (accounts, Proxy_->GetMainWindow ());
+		auto rootWM = GetProxy ()->GetRootWindowsManager ();
+		auto dia = new JoinConferenceDialog (accounts, rootWM->GetPreferredWindow ());
 		dia->show ();
 	}
 

@@ -20,6 +20,7 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 #include "singletrackerchanger.h"
 
@@ -133,8 +134,8 @@ namespace LeechCraft
 				if (!current)
 					return;
 
-				if (QMessageBox::question (Core::Instance ()->
-								GetProxy ()->GetMainWindow (),
+				auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
+				if (QMessageBox::question (rootWM->GetPreferredWindow (),
 							tr ("Confirm tracker removal"),
 							tr ("Are you sure you want to remove the "
 								"following tracker:<br />%1")

@@ -28,6 +28,7 @@
 #include <QMainWindow>
 #include <libtorrent/create_torrent.hpp>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -143,7 +144,8 @@ namespace LeechCraft
 					file.write (&outbuf.at (i), 1);
 				file.close ();
 
-				if (QMessageBox::question (Core::Instance ()->GetProxy ()->GetMainWindow (),
+				auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
+				if (QMessageBox::question (rootWM->GetPreferredWindow (),
 							"LeechCraft",
 							tr ("Torrent file generated: %1.<br />Do you want to start seeding now?")
 								.arg (QDir::toNativeSeparators (filename)),

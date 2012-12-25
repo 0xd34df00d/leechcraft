@@ -30,10 +30,10 @@ namespace SB2
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
+		IMWProxy* Proxy_;
 		QuarkComponent Component_;
 	public:
-		LCMenuComponent (ICoreProxy_ptr, QObject* = 0);
+		LCMenuComponent (IMWProxy*, QObject* = 0);
 
 		QuarkComponent GetComponent () const;
 	public slots:
