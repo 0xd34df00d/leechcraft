@@ -53,6 +53,7 @@
 #include "useravatarmetadata.h"
 #include "capsdatabase.h"
 #include "avatarsstorage.h"
+#include "inforequestpolicymanager.h"
 
 namespace LeechCraft
 {
@@ -67,7 +68,6 @@ namespace Xoox
 	, DetectNick_ (new QAction (tr ("Detect nick"), Account_))
 	, StdSep_ (LeechCraft::Util::CreateSeparator (this))
 	, HasUnreadMsgs_ (false)
-	, VersionReqsEnabled_ (true)
 	, HasBlindlyRequestedVCard_ (false)
 	{
 		connect (this,
@@ -454,11 +454,14 @@ namespace Xoox
 		if ((!existed || wasOffline) &&
 				status.State_ != SOffline)
 		{
-			const QString& jid = variant.isEmpty () ?
-					GetJID () :
-					GetJID () + '/' + variant;
-			if (VersionReqsEnabled_)
-				Account_->GetClientConnection ()->FetchVersion (jid);
+			auto conn = Account_->GetClientConnection ();
+			if (conn->GetInfoReqPolicyManager ()->IsRequestAllowed (InfoRequest::Version, this))
+			{
+				const QString& jid = variant.isEmpty () ?
+						GetJID () :
+						GetJID () + '/' + variant;
+				conn->FetchVersion (jid);
+			}
 		}
 
 		if (status.State_ != SOffline)
@@ -681,11 +684,6 @@ namespace Xoox
 	GeolocationInfo_t EntryBase::GetGeolocationInfo (const QString& variant) const
 	{
 		return Location_ [variant];
-	}
-
-	void EntryBase::SetVersionReqsEnabled (bool enabled)
-	{
-		VersionReqsEnabled_ = enabled;
 	}
 
 	QByteArray EntryBase::GetVariantVerString (const QString& var) const

@@ -42,6 +42,7 @@ namespace Azoth
 {
 namespace Xoox
 {
+	class ClientConnection;
 	class PEPEventBase;
 	class GlooxMessage;
 	class VCardDialog;
@@ -93,7 +94,6 @@ namespace Xoox
 		QMap<QString, QList<QXmppDiscoveryIq::Identity>> Variant2Identities_;
 
 		bool HasUnreadMsgs_;
-		bool VersionReqsEnabled_;
 		bool HasBlindlyRequestedVCard_;
 	public:
 		EntryBase (GlooxAccount* = 0);
@@ -149,8 +149,6 @@ namespace Xoox
 		void SetDiscoIdentities (const QString&, const QList<QXmppDiscoveryIq::Identity>&);
 
 		GeolocationInfo_t GetGeolocationInfo (const QString&) const;
-
-		void SetVersionReqsEnabled (bool);
 
 		QByteArray GetVariantVerString (const QString&) const;
 		QXmppVersionIq GetClientVersion (const QString&) const;
