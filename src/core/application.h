@@ -100,12 +100,6 @@ namespace LeechCraft
 		 * command line options.
 		 */
 		virtual void saveState (QSessionManager& sm);
-	private slots:
-		/** Checks whether another copy of LeechCraft is still running
-		 * via a call to IsAlreadyRunning(), and if it isn't, starts a
-		 * new leechcraft process with the corresponding arguments.
-		 */
-		void checkStillRunning ();
 	private:
 		/** Parses command line and sets corresponding application-wide
 		 * options.
@@ -116,6 +110,14 @@ namespace LeechCraft
 		 * started with the '-restart' option.
 		 */
 		void EnterRestartMode ();
+
+		void CheckStartupPass ();
+	private slots:
+		/** Checks whether another copy of LeechCraft is still running
+		 * via a call to IsAlreadyRunning(), and if it isn't, starts a
+		 * new leechcraft process with the corresponding arguments.
+		 */
+		void checkStillRunning ();
 	};
 };
 

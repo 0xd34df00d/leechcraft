@@ -32,8 +32,10 @@
 #include <QMetaType>
 #include <QModelIndex>
 #include <QSessionManager>
+#include <QInputDialog>
 #include <QProcess>
 #include <QTimer>
+#include <QCryptographicHash>
 #include <interfaces/isyncable.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <util/util.h>
@@ -41,6 +43,7 @@
 #include "debugmessagehandler.h"
 #include "tagsmanager.h"
 #include "mainwindow.h"
+#include "xmlsettingsmanager.h"
 #include "config.h"
 
 using namespace LeechCraft;
@@ -151,6 +154,8 @@ LeechCraft::Application::Application (int& argc, char **argv)
 	// Say hello to logs
 	qDebug () << "======APPLICATION STARTUP======";
 	qWarning () << "======APPLICATION STARTUP======";
+
+	CheckStartupPass ();
 
 	// And finally!..
 	new LeechCraft::MainWindow ();
@@ -294,16 +299,6 @@ void Application::saveState (QSessionManager& sm)
 	commitData (sm);
 }
 
-void Application::checkStillRunning ()
-{
-	if (IsAlreadyRunning ())
-		return;
-
-	QProcess::startDetached (applicationFilePath (), Arguments_);
-
-	quit ();
-}
-
 bool Application::IsAlreadyRunning () const
 {
 	QLocalSocket socket;
@@ -393,3 +388,30 @@ void Application::EnterRestartMode ()
 	timer->start (1000);
 }
 
+void Application::CheckStartupPass ()
+{
+	const auto& storedPass = XmlSettingsManager::Instance ()->property ("StartupPassword").toString ();
+	if (storedPass.isEmpty ())
+		return;
+
+	const auto& pass = QInputDialog::getText (0,
+			tr ("Startup password"),
+			tr ("Enter startup password for LeechCraft:"),
+			QLineEdit::Password);
+	if (QCryptographicHash::hash (pass.toUtf8 (), QCryptographicHash::Sha1).toHex () != storedPass)
+	{
+		if (!pass.isEmpty ())
+			QMessageBox::critical (0, "LeechCraft", tr ("Sorry, incorrect password"));
+		std::exit (0);
+	}
+}
+
+void Application::checkStillRunning ()
+{
+	if (IsAlreadyRunning ())
+		return;
+
+	QProcess::startDetached (applicationFilePath (), Arguments_);
+
+	quit ();
+}

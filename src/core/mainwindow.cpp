@@ -25,11 +25,8 @@
 #include <QShortcut>
 #include <QMenu>
 #include <QSplashScreen>
-#include <QBitmap>
 #include <QTime>
-#include <QCryptographicHash>
 #include <QDockWidget>
-#include <QInputDialog>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
@@ -70,21 +67,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 		Qt::SplashScreen))
 , IsToolBarVisible_ (true)
 {
-	const auto& storedPass = XmlSettingsManager::Instance ()->property ("StartupPassword").toString ();
-	if (!storedPass.isEmpty ())
-	{
-		const auto& pass = QInputDialog::getText (this,
-				tr ("Startup password"),
-				tr ("Enter startup password for LeechCraft:"),
-				QLineEdit::Password);
-		if (QCryptographicHash::hash (pass.toUtf8 (), QCryptographicHash::Sha1).toHex () != storedPass)
-		{
-			if (!pass.isEmpty ())
-				QMessageBox::critical (this, "LeechCraft", tr ("Sorry, incorrect password"));
-			std::exit (0);
-		}
-	}
-
 	Guard_ = new ToolbarGuard (this);
 	setUpdatesEnabled (false);
 
