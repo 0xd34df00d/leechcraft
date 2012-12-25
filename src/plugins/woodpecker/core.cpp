@@ -57,7 +57,7 @@ ICoreProxy_ptr Core::GetProxy () const
 
 TwitterPage* Core::NewTabRequested ()
 {
-    TwitterPage *page = new TwitterPage ();//MakeTwitterPage ();
+    TwitterPage *page = MakeTwitterPage ();
     emit addNewTab ("Woodpecker", page);
     emit raiseTab (page);
     emit changeTabIcon (page, QIcon (":/resources/images/woodpecker.svg"));
