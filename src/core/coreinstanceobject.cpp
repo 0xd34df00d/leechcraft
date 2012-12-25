@@ -32,6 +32,8 @@
 #include "core.h"
 #include "settingstab.h"
 #include "coreplugin2manager.h"
+#include "acceptlangwidget.h"
+#include "shortcutmanager.h"
 
 namespace LeechCraft
 {
@@ -113,6 +115,7 @@ namespace LeechCraft
 	, XmlSettingsDialog_ (new Util::XmlSettingsDialog ())
 	, SettingsTab_ (new SettingsTab)
 	, CorePlugin2Manager_ (new CorePlugin2Manager)
+	, ShortcutManager_ (new ShortcutManager)
 	{
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"coresettings.xml");
@@ -149,8 +152,10 @@ namespace LeechCraft
 
 		QStringList appQStype = QStyleFactory::keys ();
 		appQStype.prepend ("Default");
-		XmlSettingsDialog_->SetDataSource ("AppQStyle",
-				new QStringListModel (appQStype));
+		XmlSettingsDialog_->SetDataSource ("AppQStyle", new QStringListModel (appQStype));
+
+		XmlSettingsDialog_->SetCustomWidget ("ShortcutManager", ShortcutManager_);
+		XmlSettingsDialog_->SetCustomWidget ("AcceptLanguages", new AcceptLangWidget);
 	}
 
 	void CoreInstanceObject::SecondInit ()
@@ -233,6 +238,16 @@ namespace LeechCraft
 	SettingsTab* CoreInstanceObject::GetSettingsTab () const
 	{
 		return SettingsTab_;
+	}
+
+	IShortcutProxy* CoreInstanceObject::GetShortcutProxy () const
+	{
+		return ShortcutManager_;
+	}
+
+	ShortcutManager* CoreInstanceObject::GetShortcutManager () const
+	{
+		return ShortcutManager_;
 	}
 
 	void CoreInstanceObject::BuildNewTabModel ()

@@ -44,6 +44,8 @@
 #include "tagsmanager.h"
 #include "mainwindow.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
+#include "coreinstanceobject.h"
 #include "config.h"
 
 namespace bpo = boost::program_options;
@@ -52,6 +54,7 @@ namespace LeechCraft
 {
 	Application::Application (int& argc, char **argv)
 	: QApplication (argc, argv)
+	, DefaultSystemStyleName_ (style ()->objectName ())
 	, CatchExceptions_ (true)
 	{
 		Arguments_ = arguments ();
@@ -157,6 +160,14 @@ namespace LeechCraft
 		qWarning () << "======APPLICATION STARTUP======";
 
 		CheckStartupPass ();
+		InitSettings ();
+
+		setQuitOnLastWindowClosed (false);
+
+		connect (this,
+				SIGNAL (aboutToQuit ()),
+				this,
+				SLOT (handleQuit ()));
 
 		// And finally!..
 		new MainWindow ();
@@ -405,6 +416,59 @@ namespace LeechCraft
 				QMessageBox::critical (0, "LeechCraft", tr ("Sorry, incorrect password"));
 			std::exit (0);
 		}
+	}
+
+	void Application::InitSettings ()
+	{
+		XmlSettingsManager::Instance ()->RegisterObject ("AppQStyle",
+				this, "handleAppStyle");
+		handleAppStyle ();
+
+		XmlSettingsManager::Instance ()->RegisterObject ("Language",
+				this, "handleLanguage");
+		PreviousLangName_ = XmlSettingsManager::Instance ()->property ("Language").toString ();
+	}
+
+	void Application::handleQuit ()
+	{
+		Core::Instance ().Release ();
+		XmlSettingsManager::Instance ()->Release ();
+	}
+
+	void Application::handleAppStyle ()
+	{
+		auto style = XmlSettingsManager::Instance ()->property ("AppQStyle").toString ();
+
+		if (style == "Default")
+			style = DefaultSystemStyleName_;
+
+		if (style.isEmpty ())
+		{
+#ifdef Q_OS_WIN32
+			style = "Plastique";
+			XmlSettingsManager::Instance ()->setProperty ("AppQStyle", style);
+#endif
+		}
+
+		setStyle (style);
+	}
+
+	void Application::handleLanguage ()
+	{
+		const auto& newLang = XmlSettingsManager::Instance ()->property ("Language").toString ();
+		if (newLang == PreviousLangName_)
+			return;
+
+		PreviousLangName_ = newLang;
+
+		if (QMessageBox::question (0,
+					"LeechCraft",
+					tr ("This change requires restarting LeechCraft. "
+						"Do you want to restart now?"),
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+			return;
+
+		InitiateRestart ();
 	}
 
 	void Application::checkStillRunning ()

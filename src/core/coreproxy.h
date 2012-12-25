@@ -44,7 +44,9 @@ namespace LeechCraft
 		IShortcutProxy* GetShortcutProxy () const;
 		IMWProxy* GetMWProxy () const;
 		QModelIndex MapToSource (const QModelIndex&) const;
+
 		Util::BaseSettingsManager* GetSettingsManager () const;
+
 		QMainWindow* GetMainWindow () const;
 		ICoreTabWidget* GetTabWidget () const;
 

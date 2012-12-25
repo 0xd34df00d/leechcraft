@@ -36,6 +36,9 @@ namespace LeechCraft
 
 		QStringList Arguments_;
 
+		const QString DefaultSystemStyleName_;
+		QString PreviousLangName_;
+
 		std::auto_ptr<QTranslator> Translator_;
 		boost::program_options::variables_map VarMap_;
 		bool CatchExceptions_;
@@ -112,7 +115,12 @@ namespace LeechCraft
 		void EnterRestartMode ();
 
 		void CheckStartupPass ();
+		void InitSettings ();
 	private slots:
+		void handleQuit ();
+		void handleAppStyle ();
+		void handleLanguage ();
+
 		/** Checks whether another copy of LeechCraft is still running
 		 * via a call to IsAlreadyRunning(), and if it isn't, starts a
 		 * new leechcraft process with the corresponding arguments.

@@ -27,7 +27,6 @@
 #include <QSplashScreen>
 #include <QTime>
 #include <QDockWidget>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <interfaces/iactionsexporter.h>
@@ -37,7 +36,6 @@
 #include "xmlsettingsmanager.h"
 #include "iconthemeengine.h"
 #include "childactioneventfilter.h"
-#include "shortcutmanager.h"
 #include "tagsviewer.h"
 #include "application.h"
 #include "startupwizard.h"
@@ -47,7 +45,6 @@
 #include "tabmanager.h"
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
-#include "acceptlangwidget.h"
 
 #ifdef Q_OS_WIN32
 #include "winwarndialog.h"
@@ -61,7 +58,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , TrayIcon_ (0)
 , IsShown_ (true)
 , WasMaximized_ (false)
-, DefaultSystemStyleName_ (QApplication::style ()->objectName ())
 , IsQuitting_ (false)
 , Splash_ (new QSplashScreen (QPixmap (":/resources/images/apocalypse.png"),
 		Qt::SplashScreen))
@@ -105,8 +101,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SIGNAL (restoreTabActionAdded (QAction*)),
 			this,
 			SLOT (handleRestoreActionAdded (QAction*)));
-
-	qApp->setQuitOnLastWindowClosed (false);
 
 	setUpdatesEnabled (true);
 
@@ -163,11 +157,6 @@ SeparateTabWidget* LeechCraft::MainWindow::GetTabWidget () const
 QSplitter* LeechCraft::MainWindow::GetMainSplitter () const
 {
 	return Ui_.MainSplitter_;
-}
-
-IShortcutProxy* LeechCraft::MainWindow::GetShortcutProxy () const
-{
-	return ShortcutManager_;
 }
 
 void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
@@ -352,20 +341,12 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			this,
 			SLOT (handleNewTabMenuRequested ()));
 
-	XmlSettingsManager::Instance ()->RegisterObject ("AppQStyle",
-			this, "handleAppStyle");
-	handleAppStyle ();
-
-	XmlSettingsManager::Instance ()->RegisterObject ("Language",
-			this, "handleLanguage");
 	XmlSettingsManager::Instance ()->RegisterObject ("ToolButtonStyle",
 			this, "handleToolButtonStyleChanged");
 	handleToolButtonStyleChanged ();
 	XmlSettingsManager::Instance ()->RegisterObject ("ToolBarVisibilityManipulation",
 			this, "handleToolBarManipulationChanged");
 	handleToolBarManipulationChanged ();
-
-	LanguageOnLoad_ = XmlSettingsManager::Instance ()->property ("Language").toString ();
 
 	QMenu *menu = new QMenu (this);
 	menu->addAction (Ui_.ActionAddTask_);
@@ -380,12 +361,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	menu->addAction (Ui_.ActionRestart_);
 	menu->addAction (Ui_.ActionQuit_);
 	Ui_.ActionMenu_->setMenu (menu);
-
-	ShortcutManager_ = new ShortcutManager (this);
-
-	auto xsd = Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ();
-	xsd->SetCustomWidget ("ShortcutManager", ShortcutManager_);
-	xsd->SetCustomWidget ("AcceptLanguages", new AcceptLangWidget);
 
 	SetStatusBar ();
 	ReadSettings ();
@@ -528,53 +503,8 @@ void LeechCraft::MainWindow::handleQuit ()
 				0,
 				0);
 
-	Core::Instance ().Release ();
-
 	TrayIcon_->hide ();
 	delete TrayIcon_;
-#ifdef QT_DEBUG
-	qDebug () << "Releasing XmlSettingsManager";
-#endif
-	XmlSettingsManager::Instance ()->Release ();
-#ifdef QT_DEBUG
-	qDebug () << "Destroyed fine";
-#endif
-}
-
-void LeechCraft::MainWindow::handleAppStyle ()
-{
-	QString style = XmlSettingsManager::Instance ()->
-			property ("AppQStyle").toString ();
-
-	if (style == "Default")
-		style = DefaultSystemStyleName_;
-
-	if (style.isEmpty ())
-	{
-#ifdef Q_OS_WIN32
-		style = "Plastique";
-		XmlSettingsManager::Instance ()->
-		setProperty ("AppQStyle", style);
-#endif
-	}
-
-	QApplication::setStyle (style);
-}
-
-void LeechCraft::MainWindow::handleLanguage ()
-{
-	if (LanguageOnLoad_ == XmlSettingsManager::Instance ()->
-			property ("Language").toString ())
-		return;
-
-	if (QMessageBox::question (this,
-				"LeechCraft",
-				tr ("This change requires restarting LeechCraft. "
-					"Do you want to restart now?"),
-				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-		return;
-
-	static_cast<Application*> (qApp)->InitiateRestart ();
 }
 
 void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
@@ -648,7 +578,7 @@ void MainWindow::handleToolBarManipulationChanged ()
 		MenuView_->removeAction (Ui_.ActionShowToolBar_);
 }
 
-void MainWindow::handleShowTrayIconChanged()
+void MainWindow::handleShowTrayIconChanged ()
 {
 	const bool isVisible = XmlSettingsManager::Instance ()->
 			property ("ShowTrayIcon").toBool ();
@@ -703,11 +633,6 @@ void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::Activatio
 
 void LeechCraft::MainWindow::doDelayedInit ()
 {
-	QObjectList shortcuts = Core::Instance ().GetShortcuts ();
-	for (QObjectList::const_iterator i = shortcuts.begin (),
-			end = shortcuts.end (); i != end; ++i)
-		ShortcutManager_->AddObject (*i);
-
 	FillQuickLaunch ();
 	FillTray ();
 	FillToolMenu ();

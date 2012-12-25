@@ -58,14 +58,11 @@ namespace LeechCraft
 		Ui::LeechCraft Ui_;
 
 		QSystemTrayIcon *TrayIcon_;
-		ShortcutManager *ShortcutManager_;
 		bool IsShown_;
 		bool WasMaximized_;
-		QString LanguageOnLoad_;
 		ToolbarGuard *Guard_;
 		QShortcut *FullScreenShortcut_;
 		QShortcut *CloseTabShortcut_;
-		const QString DefaultSystemStyleName_;
 		bool IsQuitting_;
 		QSplashScreen *Splash_;
 
@@ -81,7 +78,6 @@ namespace LeechCraft
 
 		SeparateTabWidget* GetTabWidget () const;
 		QSplitter* GetMainSplitter () const;
-		IShortcutProxy* GetShortcutProxy () const;
 		void SetAdditionalTitle (const QString&);
 		ToolbarGuard* GetGuard () const;
 
@@ -117,8 +113,6 @@ namespace LeechCraft
 		void on_ActionShowStatusBar__triggered ();
 		void on_ActionMenu__triggered ();
 		void handleQuit ();
-		void handleAppStyle ();
-		void handleLanguage ();
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_MainTabWidget__currentChanged (int);
 		void on_ActionShowToolBar__triggered (bool);

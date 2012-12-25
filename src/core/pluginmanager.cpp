@@ -40,6 +40,7 @@
 #include "plugintreebuilder.h"
 #include "config.h"
 #include "coreinstanceobject.h"
+#include "shortcutmanager.h"
 
 namespace LeechCraft
 {
@@ -390,6 +391,10 @@ namespace LeechCraft
 
 		Q_FOREACH (QObject *obj, ordered)
 			Core::Instance ().Setup (obj);
+
+		auto coreInstanceObj = Core::Instance ().GetCoreInstanceObject ();
+		for (auto obj : GetAllCastableRoots<IHaveShortcuts*> ())
+			coreInstanceObj->GetShortcutManager ()->AddObject (obj);
 
 		QObjectList plugins2 = GetAllCastableRoots<IPlugin2*> ();
 		Q_FOREACH (IPluginReady *provider, GetAllCastableTo<IPluginReady*> ())
