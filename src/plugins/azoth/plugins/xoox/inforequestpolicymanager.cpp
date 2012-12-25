@@ -37,12 +37,24 @@ namespace Xoox
 	{
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
 		{
-			if (!XmlSettingsManager::Instance ().property ("RequestVersionInMUCs").toBool ())
-				return false;
+			switch (req)
+			{
+			case InfoRequest::Version:
+			{
+				if (!XmlSettingsManager::Instance ().property ("RequestVersionInMUCs").toBool ())
+					return false;
 
-			auto room = qobject_cast<RoomCLEntry*> (entry->GetParentCLEntry ());
-			if (room->GetRoomHandler ()->IsGateway ())
-				return false;
+				auto room = qobject_cast<RoomCLEntry*> (entry->GetParentCLEntry ());
+				if (room->GetRoomHandler ()->IsGateway ())
+					return false;
+
+				break;
+			}
+			case InfoRequest::VCard:
+				if (!XmlSettingsManager::Instance ().property ("RequestVCardsInMUCs").toBool ())
+					return false;
+				break;
+			}
 		}
 
 		return true;

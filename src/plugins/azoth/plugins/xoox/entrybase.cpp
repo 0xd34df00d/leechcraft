@@ -698,10 +698,14 @@ namespace Xoox
 
 	void EntryBase::CheckVCardUpdate (const QXmppPresence& pres)
 	{
-		auto fetchVCard = [this] ()
+		auto conn = Account_->GetClientConnection ();
+		if (!conn->GetInfoReqPolicyManager ()->IsRequestAllowed (InfoRequest::VCard, this))
+			return;
+
+		auto fetchVCard = [this, conn] () -> void
 		{
 			QPointer<EntryBase> ptr (this);
-			Account_->GetClientConnection ()->FetchVCard (GetJID (),
+			conn->FetchVCard (GetJID (),
 					[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->SetVCard (iq); });
 		};
 

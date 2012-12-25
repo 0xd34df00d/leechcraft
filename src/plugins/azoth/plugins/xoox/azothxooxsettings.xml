@@ -16,6 +16,9 @@
 			<item type="checkbox" property="RequestVersionInMUCs" default="true">
 				<label value="Request participant versions in MUCs" />
 			</item>
+			<item type="checkbox" property="RequestVCardsInMUCs" default="true">
+				<label value="Request participant VCards in MUCs" />
+			</item>
 		</groupbox>
 	</page>
 </settings>
