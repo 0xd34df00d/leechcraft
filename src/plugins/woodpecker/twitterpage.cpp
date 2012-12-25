@@ -75,8 +75,7 @@ TwitterPage::~TwitterPage()
 	settings->deleteLater();
 	timer->stop();
 	timer->deleteLater();
-	delete interface;
-	delete ui;
+	interface->deleteLater();
 }
 
 TabClassInfo TwitterPage::GetTabClassInfo () const
