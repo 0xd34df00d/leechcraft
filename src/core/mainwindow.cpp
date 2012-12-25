@@ -40,7 +40,6 @@
 #include "xmlsettingsmanager.h"
 #include "iconthemeengine.h"
 #include "childactioneventfilter.h"
-#include "graphwidget.h"
 #include "shortcutmanager.h"
 #include "tagsviewer.h"
 #include "application.h"
@@ -125,17 +124,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			this,
 			SLOT (handleRestoreActionAdded (QAction*)));
 
-	QTimer *speedUpd = new QTimer (this);
-	speedUpd->setInterval (2000);
-	connect (speedUpd,
-			SIGNAL (timeout ()),
-			this,
-			SLOT (updateSpeedIndicators ()));
-	connect (speedUpd,
-			SIGNAL (timeout ()),
-			this,
-			SLOT (updateClock ()));
-	speedUpd->start ();
 	qApp->setQuitOnLastWindowClosed (false);
 
 	setUpdatesEnabled (true);
@@ -425,34 +413,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 void LeechCraft::MainWindow::SetStatusBar ()
 {
-	QFontMetrics fm = fontMetrics ();
-	int minSize = fm.width (Util::MakePrettySize (999) + tr ("/s	"));
-
-	DownloadSpeed_ = new QLabel;
-	DownloadSpeed_->setText (Util::MakePrettySize (0) + tr ("/s"));
-	DownloadSpeed_->setMinimumWidth (minSize);
-	DownloadSpeed_->setAlignment (Qt::AlignRight);
-	UploadSpeed_ = new QLabel;
-	UploadSpeed_->setText (Util::MakePrettySize (0) + tr ("/s"));
-	UploadSpeed_->setMinimumWidth (minSize);
-	UploadSpeed_->setAlignment (Qt::AlignRight);
-	QString current = QTime::currentTime ().toString ();
-	Clock_ = new QLabel;
-	Clock_->setMinimumWidth (fm.width (current + "___"));
-	Clock_->setText (current);
-	Clock_->setAlignment (Qt::AlignRight);
-
-	SpeedGraph_ = new GraphWidget (Qt::green, Qt::red);
-	SpeedGraph_->setMinimumWidth (250);
-
 	const int height = statusBar ()->sizeHint ().height ();
-
-	statusBar ()->addPermanentWidget (SpeedGraph_);
-	statusBar ()->addPermanentWidget (DownloadSpeed_);
-	statusBar ()->addPermanentWidget (UploadSpeed_);
-	statusBar ()->addPermanentWidget (Clock_);
-	if (!isFullScreen ())
-		Clock_->hide ();
 
 	QLBar_ = new QToolBar ();
 	QLBar_->setIconSize (QSize (height - 1, height - 1));
@@ -641,12 +602,10 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 		WasMaximized_ = isMaximized ();
 		ShowMenuAndBar (false);
 		showFullScreen ();
-		Clock_->show ();
 	}
 	else if (WasMaximized_)
 	{
 		ShowMenuAndBar (true);
-		Clock_->hide ();
 		showMaximized ();
 		// Because shit happens on X11 otherwise
 		QTimer::singleShot (200,
@@ -656,7 +615,6 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	else
 	{
 		ShowMenuAndBar (true);
-		Clock_->hide ();
 		showNormal ();
 	}
 }
@@ -731,27 +689,6 @@ void LeechCraft::MainWindow::handleNewTabMenuRequested ()
 void MainWindow::handleRestoreActionAdded (QAction *act)
 {
 	Ui_.MainTabWidget_->InsertAction2TabBar (Ui_.ActionCloseTab_, act);
-}
-
-void LeechCraft::MainWindow::updateSpeedIndicators ()
-{
-	QPair<qint64, qint64> speeds = Core::Instance ().GetSpeeds ();
-
-	QString down = Util::MakePrettySize (speeds.first) + tr ("/s");
-	QString up = Util::MakePrettySize (speeds.second) + tr ("/s");
-	DownloadSpeed_->setText (down);
-	UploadSpeed_->setText (up);
-	SpeedGraph_->PushSpeed (speeds.first, speeds.second);
-
-	if (TrayIcon_)
-		TrayIcon_->setToolTip (tr ("%1 down, %2 up")
-				.arg (down)
-				.arg (up));
-}
-
-void LeechCraft::MainWindow::updateClock ()
-{
-	Clock_->setText (QTime::currentTime ().toString ());
 }
 
 void LeechCraft::MainWindow::showHideMain ()

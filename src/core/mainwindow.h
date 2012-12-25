@@ -42,7 +42,6 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		class GraphWidget;
 		class XmlSettingsDialog;
 	};
 
@@ -59,10 +58,6 @@ namespace LeechCraft
 		Ui::LeechCraft Ui_;
 
 		QSystemTrayIcon *TrayIcon_;
-		QLabel *DownloadSpeed_;
-		QLabel *UploadSpeed_;
-		QLabel *Clock_;
-		Util::GraphWidget *SpeedGraph_;
 		ShortcutManager *ShortcutManager_;
 		bool IsShown_;
 		bool WasMaximized_;
@@ -133,8 +128,6 @@ namespace LeechCraft
 		void handleShowTrayIconChanged ();
 		void handleNewTabMenuRequested ();
 		void handleRestoreActionAdded (QAction*);
-		void updateSpeedIndicators ();
-		void updateClock ();
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void doDelayedInit ();
 		void handleLoadProgress (const QString&);

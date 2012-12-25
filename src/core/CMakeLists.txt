@@ -34,7 +34,6 @@ SET (SRCS
 	debugmessagehandler.cpp
 	application.cpp
 	handlerchoicedialog.cpp
-	graphwidget.cpp
 	shortcutmanager.cpp
 	keysequencer.cpp
 	networkdiskcache.cpp
@@ -78,7 +77,6 @@ SET (HEADERS
 	debugmessagehandler.h
 	application.h
 	handlerchoicedialog.h
-	graphwidget.h
 	shortcutmanager.h
 	keysequencer.h
 	networkdiskcache.h
