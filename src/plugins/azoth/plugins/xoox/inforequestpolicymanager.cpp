@@ -16,24 +16,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include "inforequestpolicymanager.h"
+#include "entrybase.h"
+#include "xmlsettingsmanager.h"
+#include "roomclentry.h"
+#include "roomhandler.h"
 
 namespace LeechCraft
 {
-namespace DeadLyrics
+namespace Azoth
 {
-	class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
+namespace Xoox
+{
+	InfoRequestPolicyManager::InfoRequestPolicyManager (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
+	}
 
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager* Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
-	};
+	bool InfoRequestPolicyManager::IsRequestAllowed (InfoRequest req, EntryBase *entry) const
+	{
+		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		{
+			switch (req)
+			{
+			case InfoRequest::Version:
+			{
+				if (!XmlSettingsManager::Instance ().property ("RequestVersionInMUCs").toBool ())
+					return false;
+
+				auto room = qobject_cast<RoomCLEntry*> (entry->GetParentCLEntry ());
+				if (room->GetRoomHandler ()->IsGateway ())
+					return false;
+
+				break;
+			}
+			case InfoRequest::VCard:
+				if (!XmlSettingsManager::Instance ().property ("RequestVCardsInMUCs").toBool ())
+					return false;
+				break;
+			}
+		}
+
+		return true;
+	}
+}
 }
 }

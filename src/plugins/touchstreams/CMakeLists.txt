@@ -18,6 +18,9 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	)
 
+CreateTrs ("touchstreams" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("touchstreams" "en;ru_RU" "${SRCS}" "${FORMS}" "touchstreamssettings.xml")
+
 ADD_LIBRARY (leechcraft_touchstreams SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}

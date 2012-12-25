@@ -75,6 +75,7 @@ namespace Xoox
 	class MsgArchivingManager;
 	class SDManager;
 
+	class InfoRequestPolicyManager;
 	class ClientConnectionErrorMgr;
 	class CryptHandler;
 	class ServerInfoStorage;
@@ -112,6 +113,8 @@ namespace Xoox
 
 		CryptHandler *CryptHandler_;
 		ClientConnectionErrorMgr *ErrorMgr_;
+
+		InfoRequestPolicyManager *InfoReqPolicyMgr_;
 
 		QString OurJID_;
 		QString OurBareJID_;
@@ -199,6 +202,8 @@ namespace Xoox
 		UserAvatarManager* GetUserAvatarManager () const;
 		RIEXManager* GetRIEXManager () const;
 		SDManager* GetSDManager () const;
+
+		InfoRequestPolicyManager* GetInfoReqPolicyManager () const;
 
 		CryptHandler* GetCryptHandler () const;
 		ServerInfoStorage* GetServerInfoStorage () const;

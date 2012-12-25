@@ -25,6 +25,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class QueueManager;
+}
+
 namespace TouchStreams
 {
 	class AuthManager;
@@ -38,6 +43,7 @@ namespace TouchStreams
 		Q_INTERFACES (IInfo IHaveSettings Media::IAudioPile)
 
 		ICoreProxy_ptr Proxy_;
+		Util::QueueManager *Queue_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
 		AuthManager *AuthMgr_;

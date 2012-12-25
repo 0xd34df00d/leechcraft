@@ -24,6 +24,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class QueueManager;
+}
+
 namespace MusicZombie
 {
 	class Plugin : public QObject
@@ -34,6 +39,7 @@ namespace MusicZombie
 		Q_INTERFACES (IInfo Media::IDiscographyProvider)
 
 		ICoreProxy_ptr Proxy_;
+		Util::QueueManager *Queue_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -46,6 +52,7 @@ namespace MusicZombie
 		QString GetServiceName () const;
 
 		Media::IPendingDisco* GetDiscography (const QString&);
+		Media::IPendingDisco* GetReleaseInfo (const QString&, const QString&);
 	};
 }
 }

@@ -95,6 +95,8 @@ namespace Xoox
 		 * already existing one.
 		 */
 		RoomParticipantEntry_ptr GetParticipantEntry (const QString& nick, bool announce = true);
+
+		bool IsGateway () const;
 	private slots:
 		void handleParticipantAdded (const QString&);
 		void handleParticipantChanged (const QString&);
@@ -104,7 +106,6 @@ namespace Xoox
 
 		void handleMessagesAreRead ();
 	private:
-		bool IsGateway () const;
 		/** Creates a new entry for the given nick.
 		 */
 		RoomParticipantEntry_ptr CreateParticipantEntry (const QString& nick, bool announce);

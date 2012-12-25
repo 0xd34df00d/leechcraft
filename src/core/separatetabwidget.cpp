@@ -623,7 +623,8 @@ namespace LeechCraft
 				!AddTabButtonAction_->isVisible ())
 			return;
 
-		std::swap (TabNames_ [from], TabNames_ [to]);
+		const auto& str = TabNames_.takeAt (from);
+		TabNames_.insert (to, str);
 
 		MainStackedWidget_->insertWidget (to, MainStackedWidget_->widget (from));
 

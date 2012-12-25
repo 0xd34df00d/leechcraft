@@ -18,6 +18,8 @@
 
 #include "touchstreams.h"
 #include <QIcon>
+#include <util/queuemanager.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "authmanager.h"
@@ -30,6 +32,10 @@ namespace TouchStreams
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		Util::InstallTranslator ("touchstreams");
+
+		Queue_ = new Util::QueueManager (350);
 
 		AuthMgr_ = new AuthManager (proxy);
 
@@ -53,6 +59,7 @@ namespace TouchStreams
 
 	void Plugin::Release ()
 	{
+		delete Queue_;
 	}
 
 	QString Plugin::GetName () const
@@ -77,15 +84,15 @@ namespace TouchStreams
 
 	Media::IPendingAudioSearch* Plugin::Search (const Media::AudioSearchRequest& req)
 	{
-		auto reqStr = req.FreeForm_;
-		if (reqStr.isEmpty ())
+		auto realReq = req;
+		if (realReq.FreeForm_.isEmpty ())
 		{
 			QStringList parts = { req.Artist_, req.Album_, req.Title_ };
 			parts.removeAll (QString ());
-			reqStr = parts.join (" - ");
+			realReq.FreeForm_ = parts.join (" - ");
 		}
 
-		return new AudioSearch (Proxy_, reqStr, AuthMgr_);
+		return new AudioSearch (Proxy_, realReq, AuthMgr_, Queue_);
 	}
 
 	void Plugin::handlePushButton (const QString& name)

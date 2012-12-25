@@ -37,7 +37,7 @@ namespace Lads
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		UnityDetected_ = false;	
+		UnityDetected_ = false;
 		auto sb = QDBusConnection::sessionBus ();
 		Action_ = 0;
 		Proxy_ = proxy;
@@ -84,7 +84,7 @@ namespace Lads
 		static QIcon icon (":/resources/images/lads.svg");
 		return icon;
 	}
-	
+
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> result;
@@ -96,7 +96,7 @@ namespace Lads
 	{
 		if (!UnityDetected_)
 			return;
-		
+
 		QTimer::singleShot (0,
 				this,
 				SLOT (fillMenu ()));
@@ -114,12 +114,12 @@ namespace Lads
 	{
 		Proxy_->GetMWProxy ()->ToggleVisibility ();
 	}
-	
+
 	void Plugin::handleGotActions (const QList<QAction*>&, ActionsEmbedPlace aep)
 	{
 		if (!UnityDetected_)
 			return;
-		
+
 		if (aep != ActionsEmbedPlace::ToolsMenu)
 			return;
 
@@ -128,12 +128,12 @@ namespace Lads
 				this,
 				SLOT (fillMenu ()));
 	}
-	
+
 	void Plugin::fillMenu ()
 	{
 		if (!UnityDetected_)
 			return;
-		
+
 		auto menu = Proxy_->GetMWProxy ()->GetMainMenu ();
 
 		QMenu *lcMenu = 0;
@@ -166,7 +166,7 @@ namespace Lads
 					this,
 					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 	}
-	
+
 }
 }
 

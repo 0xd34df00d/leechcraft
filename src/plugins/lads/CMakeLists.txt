@@ -19,6 +19,9 @@ IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
 
+SET (RESOURCES ladsresources.qrc)
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+
 IF (NOT UNIX)
 	MESSAGE (ERROR "This plugin is intendend to be built only on *NIX systems")
 ENDIF (NOT UNIX)
@@ -27,6 +30,7 @@ ADD_LIBRARY (leechcraft_lads SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_lads
 	${QT_LIBRARIES}

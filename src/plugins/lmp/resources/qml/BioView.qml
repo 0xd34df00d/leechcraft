@@ -1,5 +1,6 @@
 import QtQuick 1.0
 import Effects 1.0
+import "."
 
 Rectangle {
     id: rootRect
@@ -16,7 +17,6 @@ Rectangle {
         id: fullSizeArtistImg
         state: "hidden"
 
-        anchors.centerIn: parent
         width: parent.width - 60
         height: parent.height - 60
         z: 2
@@ -28,18 +28,18 @@ Rectangle {
         states: [
             State {
                 name: "hidden"
-                PropertyChanges { target: fullSizeArtistImg; opacity: 0 }
+                PropertyChanges { target: fullSizeArtistImg; opacity: 0; width: artistImageThumb.width; height: artistImageThumb.height; x: artistImageThumb.x; y: artistImageThumb.y }
                 PropertyChanges { target: bioViewBlur; blurRadius: 0 }
             },
             State {
                 name: "visible"
-                PropertyChanges { target: fullSizeArtistImg; opacity: 1 }
+                PropertyChanges { target: fullSizeArtistImg; opacity: 1; width: parent.width - 60; height: parent.height - 60; x: 30; y: 30 }
                 PropertyChanges { target: bioViewBlur; blurRadius: 10 }
             }
         ]
 
         transitions: Transition {
-            PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
+            PropertyAnimation { properties: "opacity,width,height,x,y"; duration: 300; easing.type: Easing.OutSine }
             PropertyAnimation { target: bioViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
         }
 
@@ -119,43 +119,10 @@ Rectangle {
             font.pointSize: 8
         }
 
-        Rectangle {
+        TrackListContainer {
             id: trackListContainer
-            z: 0
-            opacity: 0
-
-            radius: 5
-            width: 400
-            height: trackListText.height + 10
-
-            color: colorProxy.setAlpha(colorProxy.color_TextBox_TopColor, 0.9)
-
-            border.color: colorProxy.color_TextBox_HighlightBorderColor
-            border.width: 1
-
-            Text {
-                id: trackListText
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.margins: 5
-
-                elide: Text.ElideRight
-                color: colorProxy.color_TextBox_TextColor
-            }
-
-            states: [
-                State {
-                    name: "visible"
-                    PropertyChanges { target: trackListContainer; z: 5; opacity: 1 }
-                }
-            ]
-
-            transitions: Transition {
-                ParallelAnimation {
-                    PropertyAnimation { property: "opacity"; duration: 300; easing.type: Easing.OutSine }
-                }
-            }
+            y: artistDiscoView.y
+            x: artistDiscoView.x + artistDiscoView.width
         }
 
         ListView {
@@ -166,6 +133,7 @@ Rectangle {
             anchors.topMargin: 2
             anchors.right: flickableBioText.left
             anchors.bottom: parent.bottom
+            spacing: 5
 
             clip: true
 
@@ -173,10 +141,14 @@ Rectangle {
 
             delegate: Item {
                 width: artistDiscoView.width
-                height: artistDiscoView.width
+                height: contentsRect.height
 
                 Rectangle {
-                    anchors.fill: parent
+                    id: contentsRect
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    height: childrenRect.height + 5
 
                     color: "transparent"
 
@@ -189,7 +161,6 @@ Rectangle {
                         anchors.right: parent.right
                         anchors.leftMargin: 20
                         anchors.rightMargin: 20
-                        height: width
 
                         smooth: true
                         fillMode: Image.PreserveAspectFit
@@ -204,6 +175,7 @@ Rectangle {
                         text: albumName
                         color: colorProxy.color_TextBox_TextColor
                         horizontalAlignment: Text.AlignHCenter
+                        wrapMode: Text.Wrap
                     }
 
                     Text {
@@ -222,11 +194,10 @@ Rectangle {
                         hoverEnabled: true
 
                         onEntered: {
-                            trackListText.text = albumTrackListTooltip
+                            trackListContainer.text = albumTrackListTooltip
                             trackListContainer.state = "visible"
-                            trackListContainer.x = artistDiscoView.x + artistDiscoView.width
                             trackListContainer.y = Math.min(artistDiscoView.y + parent.parent.y - artistDiscoView.contentY,
-                                    trackListContainer.parent.height - trackListContainer.height - 5)
+                                    trackListContainer.parent.height - trackListContainer.targetHeight - 5)
                         }
                         onExited: trackListContainer.state = ""
                     }

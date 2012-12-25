@@ -18,45 +18,14 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/media/iaudiopile.h>
+#include <QVariantMap>
+#include <QtDBus/QDBusObjectPath>
 
-namespace LeechCraft
-{
-namespace Util
-{
-	class QueueManager;
-}
+typedef QMap<QString, QVariantMap> VariantMapMap_t;
+Q_DECLARE_METATYPE (VariantMapMap_t);
 
-namespace TouchStreams
-{
-	class AuthManager;
+typedef QMap<QDBusObjectPath, VariantMapMap_t> EnumerationResult_t;
+Q_DECLARE_METATYPE (EnumerationResult_t);
 
-	class AudioSearch : public QObject
-					  , public Media::IPendingAudioSearch
-	{
-		Q_OBJECT
-		Q_INTERFACES (Media::IPendingAudioSearch)
-
-		ICoreProxy_ptr Proxy_;
-		Util::QueueManager *Queue_;
-
-		AuthManager *AuthMgr_;
-		const Media::AudioSearchRequest Query_;
-
-		QList<Media::IPendingAudioSearch::Result> Result_;
-	public:
-		AudioSearch (ICoreProxy_ptr, const Media::AudioSearchRequest&, AuthManager*, Util::QueueManager*, QObject* = 0);
-
-		QObject* GetObject ();
-		QList<Result> GetResults () const;
-	private slots:
-		void handleGotAuthKey (const QString&);
-		void handleGotReply ();
-		void handleError ();
-	signals:
-		void ready ();
-	};
-}
-}
+typedef QList<QByteArray> ByteArrayList_t;
+Q_DECLARE_METATYPE (ByteArrayList_t);

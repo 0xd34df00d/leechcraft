@@ -24,6 +24,8 @@
 #include <QStringList>
 #include <QTranslator>
 
+class QSplashScreen;
+
 namespace LeechCraft
 {
 	/** Manages the main application-level behavior of LeechCraft like
@@ -36,9 +38,14 @@ namespace LeechCraft
 
 		QStringList Arguments_;
 
+		const QString DefaultSystemStyleName_;
+		QString PreviousLangName_;
+
 		std::auto_ptr<QTranslator> Translator_;
 		boost::program_options::variables_map VarMap_;
 		bool CatchExceptions_;
+
+		QSplashScreen *Splash_;
 	public:
 		enum Errors
 		{
@@ -100,12 +107,6 @@ namespace LeechCraft
 		 * command line options.
 		 */
 		virtual void saveState (QSessionManager& sm);
-	private slots:
-		/** Checks whether another copy of LeechCraft is still running
-		 * via a call to IsAlreadyRunning(), and if it isn't, starts a
-		 * new leechcraft process with the corresponding arguments.
-		 */
-		void checkStillRunning ();
 	private:
 		/** Parses command line and sets corresponding application-wide
 		 * options.
@@ -116,6 +117,21 @@ namespace LeechCraft
 		 * started with the '-restart' option.
 		 */
 		void EnterRestartMode ();
+
+		void CheckStartupPass ();
+		void InitSettings ();
+	private slots:
+		void handleQuit ();
+		void handleAppStyle ();
+		void handleLanguage ();
+
+		void handleLoadProgress (const QString&);
+
+		/** Checks whether another copy of LeechCraft is still running
+		 * via a call to IsAlreadyRunning(), and if it isn't, starts a
+		 * new leechcraft process with the corresponding arguments.
+		 */
+		void checkStillRunning ();
 	};
 };
 

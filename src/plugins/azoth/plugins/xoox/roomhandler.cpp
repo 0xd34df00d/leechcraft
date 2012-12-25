@@ -589,9 +589,6 @@ namespace Xoox
 	{
 		RoomParticipantEntry_ptr entry (new RoomParticipantEntry (nick,
 					this, Account_));
-		if (IsGateway ())
-			entry->SetVersionReqsEnabled (false);
-
 		connect (entry.get (),
 				SIGNAL (messagesAreRead ()),
 				this,

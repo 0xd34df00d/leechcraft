@@ -75,6 +75,7 @@
 #include "crypthandler.h"
 #include "serverinfostorage.h"
 #include "xmlsettingsmanager.h"
+#include "inforequestpolicymanager.h"
 
 namespace LeechCraft
 {
@@ -110,6 +111,7 @@ namespace Xoox
 	, SDManager_ (new SDManager (this))
 	, CryptHandler_ (new CryptHandler (this))
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
+	, InfoReqPolicyMgr_ (new InfoRequestPolicyManager (this))
 	, OurJID_ (Settings_->GetFullJID ())
 	, SelfContact_ (new SelfContact (OurJID_, account))
 	, ProxyObject_ (0)
@@ -534,6 +536,11 @@ namespace Xoox
 	SDManager* ClientConnection::GetSDManager () const
 	{
 		return SDManager_;
+	}
+
+	InfoRequestPolicyManager* ClientConnection::GetInfoReqPolicyManager () const
+	{
+		return InfoReqPolicyMgr_;
 	}
 
 	CryptHandler* ClientConnection::GetCryptHandler () const

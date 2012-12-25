@@ -1,11 +1,13 @@
 import QtQuick 1.0
 import Effects 1.0
+import "."
 
 Rectangle {
     id: rootRect
     anchors.fill: parent
 
     signal linkActivated(string id)
+    signal albumPreviewRequested(int idx)
 
     gradient: Gradient {
         GradientStop {
@@ -95,6 +97,68 @@ Rectangle {
                 border.color: colorProxy.color_TextBox_BorderColor
                 smooth: true
 
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                    onEntered: {
+                        if (trackList.length > 0)
+                        {
+                            trackListContainer.text = trackList
+                            trackListContainer.state = "visible"
+
+                            var newPoint = delegateRect.mapToItem(rootRect, 0, 0)
+                            trackListContainer.x = newPoint.x
+
+                            var newY = newPoint.y + delegateRect.height
+                            if (newY + trackListContainer.targetHeight >= rootRect.height)
+                                newY = newPoint.y - trackListContainer.targetHeight
+                            trackListContainer.y = newY
+                        }
+                        else
+                            trackListContainer.state = ""
+                    }
+                    onExited: trackListContainer.state = ""
+                }
+
+                Image {
+                    id: previewAudio
+
+                    width: 16
+                    height: 16
+                    smooth: true
+                    fillMode: Image.PreserveAspectFit
+
+                    visible: trackList.length > 0
+
+                    anchors.top: parent.top
+                    anchors.topMargin: 2
+                    anchors.right: parent.right
+                    anchors.rightMargin: 5
+                    source: "image://sysIcons/preferences-desktop-sound"
+
+                    MouseArea {
+                        id: previewAudioArea
+                        anchors.fill: parent
+                        anchors.margins: -2
+                        hoverEnabled: true
+                        onClicked: rootRect.albumPreviewRequested(index)
+                    }
+
+                    Rectangle {
+                        id: previewAudioHover
+                        anchors.fill: parent
+                        anchors.margins: -1
+                        radius: 2
+
+                        visible: previewAudioArea.containsMouse
+
+                        color: "#00000000"
+                        border.width: 1
+                        border.color: "#888888"
+                    }
+                }
+
                 Column {
                     id: column1
                     anchors.fill: parent
@@ -157,5 +221,10 @@ Rectangle {
                 }
             }
         }
+    }
+
+    TrackListContainer {
+        id: trackListContainer
+        width: releasesView.cellWidth - 20
     }
 }

@@ -24,10 +24,13 @@
 #include "interfaces/ihavetabs.h"
 #include "interfaces/ipluginready.h"
 
+class IShortcutProxy;
+
 namespace LeechCraft
 {
 	class SettingsTab;
 	class CorePlugin2Manager;
+	class ShortcutManager;
 
 	class CoreInstanceObject : public QObject
 							  , public IInfo
@@ -44,6 +47,8 @@ namespace LeechCraft
 		SettingsTab *SettingsTab_;
 
 		CorePlugin2Manager *CorePlugin2Manager_;
+
+		ShortcutManager *ShortcutManager_;
 	public:
 		CoreInstanceObject (QObject* = 0);
 
@@ -70,6 +75,9 @@ namespace LeechCraft
 		CorePlugin2Manager* GetCorePluginManager () const;
 
 		SettingsTab* GetSettingsTab () const;
+
+		IShortcutProxy* GetShortcutProxy () const;
+		ShortcutManager* GetShortcutManager () const;
 	private:
 		void BuildNewTabModel ();
 	private slots:

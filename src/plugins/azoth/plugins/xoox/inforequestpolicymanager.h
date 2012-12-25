@@ -16,33 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QCoreApplication>
+#pragma once
+
+#include <QObject>
 
 namespace LeechCraft
 {
-namespace DeadLyrics
+namespace Azoth
 {
-	XmlSettingsManager::XmlSettingsManager ()
-	{
-		LeechCraft::Util::BaseSettingsManager::Init ();
-	}
+namespace Xoox
+{
+	class EntryBase;
 
-	XmlSettingsManager* XmlSettingsManager::Instance ()
+	enum class InfoRequest
 	{
-		static XmlSettingsManager manager;
-		return &manager;
-	}
+		Version,
+		VCard
+	};
 
-	QSettings* XmlSettingsManager::BeginSettings () const
+	class InfoRequestPolicyManager : public QObject
 	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_DeadLyrics");
-		return settings;
-	}
+		Q_OBJECT
+	public:
+		InfoRequestPolicyManager (QObject* = 0);
 
-	void XmlSettingsManager::EndSettings (QSettings*) const
-	{
-	}
+		bool IsRequestAllowed (InfoRequest, EntryBase*) const;
+	};
+}
 }
 }

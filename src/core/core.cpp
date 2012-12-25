@@ -180,17 +180,12 @@ namespace LeechCraft
 
 	IShortcutProxy* Core::GetShortcutProxy () const
 	{
-		return ReallyMainWindow_->GetShortcutProxy ();
+		return CoreInstanceObject_->GetShortcutProxy ();
 	}
 
 	QObjectList Core::GetSettables () const
 	{
 		return PluginManager_->GetAllCastableRoots<IHaveSettings*> ();
-	}
-
-	QObjectList Core::GetShortcuts () const
-	{
-		return PluginManager_->GetAllCastableRoots<IHaveShortcuts*> ();
 	}
 
 	QList<QList<QAction*>> Core::GetActions2Embed () const

@@ -18,6 +18,7 @@
 
 #include "releaseswidget.h"
 #include <QDeclarativeContext>
+#include <QDeclarativeEngine>
 #include <QGraphicsObject>
 #include <QStandardItemModel>
 #include <QtDebug>
@@ -26,9 +27,11 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecentreleases.h>
+#include <interfaces/media/idiscographyprovider.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
+#include "sysiconsprovider.h"
 
 namespace LeechCraft
 {
@@ -46,7 +49,8 @@ namespace LMP
 				AlbumImageThumb,
 				AlbumImageFull,
 				ReleaseDate,
-				ReleaseURL
+				ReleaseURL,
+				TrackList
 			};
 
 			ReleasesModel (QObject *parent = 0)
@@ -59,6 +63,7 @@ namespace LMP
 				names [AlbumImageFull] = "albumFullImage";
 				names [ReleaseDate] = "releaseDate";
 				names [ReleaseURL] = "releaseURL";
+				names [TrackList] = "trackList";
 				setRoleNames (names);
 			}
 		};
@@ -69,6 +74,8 @@ namespace LMP
 	, ReleasesModel_ (new ReleasesModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.ReleasesView_->engine ()->addImageProvider ("sysIcons",
+				new SysIconProvider (Core::Instance ().GetProxy ()));
 		Ui_.ReleasesView_->rootContext ()->setContextProperty ("releasesModel", ReleasesModel_);
 		Ui_.ReleasesView_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
@@ -87,10 +94,16 @@ namespace LMP
 				SIGNAL (linkActivated (QString)),
 				this,
 				SLOT (handleLink (QString)));
+		connect (Ui_.ReleasesView_->rootObject (),
+				SIGNAL (albumPreviewRequested (int)),
+				this,
+				SLOT (previewAlbum (int)));
 	}
 
 	void ReleasesWidget::InitializeProviders ()
 	{
+		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+
 		const auto& lastProv = ShouldRememberProvs () ?
 				XmlSettingsManager::Instance ()
 					.Property ("LastUsedReleasesProvider", QString ()).toString () :
@@ -98,8 +111,7 @@ namespace LMP
 
 		bool lastFound = false;
 
-		Providers_ = Core::Instance ().GetProxy ()->GetPluginsManager ()->
-				GetAllCastableTo<Media::IRecentReleases*> ();
+		Providers_ = pm->GetAllCastableTo<Media::IRecentReleases*> ();
 		Q_FOREACH (auto prov, Providers_)
 		{
 			Ui_.InfoProvider_->addItem (prov->GetServiceName ());
@@ -115,10 +127,83 @@ namespace LMP
 
 		if (!lastFound)
 			Ui_.InfoProvider_->setCurrentIndex (-1);
+
+		DiscoProviders_ = pm->GetAllCastableTo<Media::IDiscographyProvider*> ();
+	}
+
+	void ReleasesWidget::handleRecentReleases (const QList<Media::AlbumRelease>& releases)
+	{
+		TrackLists_.resize (releases.size ());
+
+		auto discoProv = DiscoProviders_.value (0);
+		Q_FOREACH (const auto& release, releases)
+		{
+			auto item = new QStandardItem ();
+			item->setData (release.Title_, ReleasesModel::Role::AlbumName);
+			item->setData (release.Artist_, ReleasesModel::Role::ArtistName);
+			item->setData (release.ThumbImage_, ReleasesModel::Role::AlbumImageThumb);
+			item->setData (release.FullImage_, ReleasesModel::Role::AlbumImageFull);
+			item->setData (release.Date_.date ().toString (Qt::DefaultLocaleLongDate),
+						ReleasesModel::Role::ReleaseDate);
+			item->setData (release.ReleaseURL_, ReleasesModel::Role::ReleaseURL);
+			item->setData (QString (), ReleasesModel::Role::TrackList);
+			ReleasesModel_->appendRow (item);
+
+			if (discoProv)
+			{
+				auto pending = discoProv->GetReleaseInfo (release.Artist_, release.Title_);
+				connect (pending->GetObject (),
+						SIGNAL (ready ()),
+						this,
+						SLOT (handleReleaseInfo ()));
+				Pending2Release_ [pending->GetObject ()] = { release.Artist_, release.Title_ };
+			}
+		}
+	}
+
+	void ReleasesWidget::handleReleaseInfo ()
+	{
+		const auto& pendingRelease = Pending2Release_.take (sender ());
+
+		auto pending = qobject_cast<Media::IPendingDisco*> (sender ());
+		const auto& infos = pending->GetReleases ();
+		if (infos.isEmpty ())
+			return;
+
+		const auto& info = infos.at (0);
+
+		QStandardItem *item = 0;
+		for (int i = 0; i < ReleasesModel_->rowCount (); ++i)
+		{
+			auto candidate = ReleasesModel_->item (i);
+			if (candidate->data (ReleasesModel::Role::ArtistName) != pendingRelease.Artist_ ||
+				candidate->data (ReleasesModel::Role::AlbumName) != pendingRelease.Title_)
+				continue;
+
+			item = candidate;
+			QList<Media::ReleaseTrackInfo> trackList;
+			for (const auto& list : info.TrackInfos_)
+				trackList += list;
+			TrackLists_ [i] = trackList;
+			break;
+		}
+
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "item not found for"
+					<< pendingRelease.Artist_
+					<< pendingRelease.Title_;
+			return;
+		}
+
+		item->setData (MakeTrackListTooltip (info.TrackInfos_), ReleasesModel::Role::TrackList);
 	}
 
 	void ReleasesWidget::request ()
 	{
+		Pending2Release_.clear ();
+		TrackLists_.clear ();
 		ReleasesModel_->clear ();
 
 		const auto idx = Ui_.InfoProvider_->currentIndex ();
@@ -143,20 +228,12 @@ namespace LMP
 				.setProperty ("LastUsedReleasesProvider", prov->GetServiceName ());
 	}
 
-	void ReleasesWidget::handleRecentReleases (const QList<Media::AlbumRelease>& releases)
+	void ReleasesWidget::previewAlbum (int index)
 	{
-		Q_FOREACH (const auto& release, releases)
-		{
-			auto item = new QStandardItem ();
-			item->setData (release.Title_, ReleasesModel::Role::AlbumName);
-			item->setData (release.Artist_, ReleasesModel::Role::ArtistName);
-			item->setData (release.ThumbImage_, ReleasesModel::Role::AlbumImageThumb);
-			item->setData (release.FullImage_, ReleasesModel::Role::AlbumImageFull);
-			item->setData (release.Date_.date ().toString (Qt::DefaultLocaleLongDate),
-						ReleasesModel::Role::ReleaseDate);
-			item->setData (release.ReleaseURL_, ReleasesModel::Role::ReleaseURL);
-			ReleasesModel_->appendRow (item);
-		}
+		auto item = ReleasesModel_->item (index);
+		const auto& artist = item->data (ReleasesModel::Role::ArtistName).toString ();
+		for (const auto& track : TrackLists_.value (index))
+			emit previewRequested (track.Name_, artist, track.Length_);
 	}
 
 	void ReleasesWidget::handleLink (const QString& link)

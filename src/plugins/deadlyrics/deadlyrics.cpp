@@ -18,9 +18,7 @@
 
 #include "deadlyrics.h"
 #include <QIcon>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include "xmlsettingsmanager.h"
 #include "sitessearcher.h"
 
 namespace LeechCraft
@@ -39,10 +37,6 @@ namespace DeadLyrics
 					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)),
 					this,
 					SIGNAL (gotLyrics (Media::LyricsQuery, QStringList)));
-
-		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
-		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-				"deadlyricssettings.xml");
 	}
 
 	void DeadLyRicS::SecondInit ()
@@ -73,11 +67,6 @@ namespace DeadLyrics
 	{
 		static QIcon icon (":/deadlyrics/resources/images/deadlyrics.svg");
 		return icon;
-	}
-
-	Util::XmlSettingsDialog_ptr DeadLyRicS::GetSettingsDialog () const
-	{
-		return SettingsDialog_;
 	}
 
 	void DeadLyRicS::RequestLyrics (const Media::LyricsQuery& query, Media::QueryOptions options)

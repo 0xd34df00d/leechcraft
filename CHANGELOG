@@ -4,6 +4,151 @@ the rest.
 Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
+!!! 0.5.90
+* AN: don't show notification icons on Mac.
+* AN: emit notification count info.
+* AN: resolved ghost icons on Win32 after LC shutdown.
+* AN: support for hiding the notifier on hover out events.
+* AN: wait for at least a second between audio notifications.
+* Azoth: added miranda-ng icon.
+* Azoth: support overriding the nick color list.
+* Azoth: added Tatar translations.
+* Azoth: don't set the Animated flag for tree.
+* Azoth: focus on set key in PGPKeySelectionDialog.
+* Azoth: more contact controls in tabs.
+* Azoth: use Qt::ALT key on Mac OS X for history navigation.
+* Azoth: proper initialization order.
+* Azoth: properly handle "www."-only links without scheme.
+* Azoth: query installed data filters for search.
+* Azoth: ignore disabled accounts everywhere.
+* Azoth: try opening URL-looking things as URLs.
+* Azoth: try self-handling links.
+* Azoth: freaking ugly kludge around QTBUG-16292.
+* Azoth: don't segfault if account was removed before console.
+* Azoth: don't segfault on recover if acc ID has been changed.
+* Azoth: lots of optimizations.
+* Azoth Autoidler: link to CoreFoundation and Carbon on Mac OS X.
+* Azoth Acetamide: added .desktop file.
+* Azoth Acetamide: fixed nicknames in history.
+* Azoth Astrality: proper deinitialization.
+* Azoth Autopaste: added bpaste.net service.
+* Azoth CH: install clear line edits in ChatHistoryWidget.
+* Azoth CH: added history loading indicator.
+* Azoth MC: don't re-add entries that were removed from real account.
+* Azoth MC: properly release MC account.
+* Azoth OTRoid: basic libotr-4 compatibility.
+* Azoth OTRoid: fixed build with libotr-3.
+* Azoth OTRoid: libotr-4 timer support.
+* Azoth SHX: new plugin for commands execution.
+* Azoth Vader: proper account de-initialization.
+* Azoth Xoox: added .desktop file.
+* Azoth Xoox: added spectrum.im and miranda-ng caps identifiers.
+* Azoth Xoox: fixed rare incorrect User Tune PEPs.
+* Azoth Xoox: enable all FT methods on account creation.
+* Azoth Xoox: 'none' caps kludge.
+* Azoth Xoox: optionally advertise Qt version.
+* Azoth Xoox: OS version advertising is now optional.
+* Azoth Xoox: publish track number as well in User Tune.
+* Azoth Xoox: remove entities on account removal.
+* Azoth Xoox: lots of optimizations.
+* BitTorrent: added torrent tab, moving most of UI stuff there.
+* BitTorrent: added a .desktop file to open torrents.
+* BitTorrent: added clear line edit action to tab search.
+* BitTorrent: migrate to new API in 0.16.x.
+* Blogique: new plugin for blogging.
+* Core: added color themes.
+* Core: added DNT support.
+* Core: docks tabification.
+* Core: movable tabs with initial support for Drag'n'Drop.
+* Core: don't pass `leechcraft` as arg on command line invocations.
+* Core: fixed nasty memory corruption bug.
+* Core: fixed "settings" button in plugins list.
+* Core: recurse into submenus in UpdateIconSet.
+* Core: removed some quirks for older Qts.
+* Core: reworked entity management.
+* Core: try guessing the type of the passed parameter.
+* Core: unicode fixes for command line arg parsing.
+* Core: use Qt::ALT on Mac OS for tabs navigation.
+* CSTP: don't send Range: 0- header, helps caching.
+* DeadLyrics: get rid of settings (they are empty now).
+* Dolozhee: check "Existing user" if there is a saved login.
+* Dumbeep: new plugin for audio notifications for those fearing LMP.
+* GN: action in tray for the number of unread msgs.
+* GN: added GMail icon.
+* HistoryHolder: delayed history updating.
+* HotStreams: added RockRadio support.
+* Kinotify: Mac OS X fixes.
+* Kinotify: Now using native notification state query on Windows Vista and later.
+* LackMan: better newer multicolumn checkbox-based list.
+* Lads: Global menu.
+* Lads: icon added.
+* Lads: Unity detection fix.
+* LastFMScrobble: fetch hypes.
+* LastFMScrobble: fixed possible segfault when no scrobbler is available.
+* Lemon: new plugin for network interfaces monitoring.
+* LHTR: find/replace support.
+* LHTR: proper link opening.
+* LHTR: support for <code> command.
+* Liznoo: Mac platform layer.
+* LMP: support for track/artist/album previews via plugins like TouchStreams.
+* LMP: severe loading optimizations.
+* LMP: datetime-based rescanning; so only new files really get rescanned.
+* LMP: added support for fetching hypes.
+* LMP: support custom sorting criteria in playlist.
+* LMP: added stations searcher.
+* LMP: better handle crappy tags in playlist delegate.
+* LMP: clickable album title in Recent Releases.
+* LMP: display discography in biography (if plugins like MusicZombie are available).
+* LMP: fixed playlist delegate when there is no title.
+* LMP: fixed unifying tagless entities.
+* LMP: loved/banned tracks dynamic playlists.
+* LMP: rescale big album art in a separate thread.
+* LMP: wrap album title in Bio & dynamic item height.
+* LMP: lots of other fixes.
+* LMP MTPS: detect file type.
+* LMP MTPS: upload basically working.
+* Monocle: Desktop file to open pdf/djvu/fb2 via LC.
+* Monocle: check if the loaded document is really valid.
+* Monocle: content-based backend selector.
+* Monocle: delayed onload navigation.
+* Monocle: fixed menu non-displaying after "copy as image".
+* Monocle: handle only user-initiated entities.
+* Monocle: queued connection for navigation requests.
+* Monocle: relayout on size changes.
+* Monocle: support smooth scrolling.
+* Monocle: try resolving relative paths on navigation requests.
+* Monocle: zoom in / zoom out buttons.
+* Monocle PDF: handle external links.
+* Monocle PDF: icon added
+* Monocle Postrus: new plugin for PostScript files.
+* MZ: new plugin for MusicBrainz support.
+* New Life: case-insensitive profile searcher.
+* Overall: removed -fno-strict-aliasing flag.
+* Overall: build with clang -pedantic without warnings.
+* Overall: fixed lambda extensions usage.
+* Overall: moved .desktop files to corresponding plugins dirs.
+* Overall: "not defined" -> "!defined".
+* Pierre: added DockUtil.
+* Pierre: added tray icon hooks & menu.
+* Pierre: fixed copyrights.
+* Pierre: handle x-leechcraft/notification-event-count-info entities.
+* Pogooglue: implement IEntityHandler/IDataFilter & Google.
+* Poshuku: reverted back to QWidget-based WebKit.
+* Poshuku: format XMLs.
+* Poshuku: handle port nums in URL guesser.
+* Poshuku: clear selection on next search.
+* Poshuku CW: avoid name clash/overlap.
+* Poshuku CW: try detect & consider request MIME type.
+* SB2: new plugin for next-gen sidebar.
+* SeekThru: support the new data filters architecture.
+* Shaitan: new plugin for terminal emulation.
+* ShellOpen: handle only really downloaded files.
+* TouchStreams: new plugin for VK.com music streaming.
+* TPI: new plugin for task progress indication.
+* Vrooby: icon added
+* Win32: fix crash on Win32 when closing LC.
+* XSD: don't keep settings file open.
+
 !!! 0.5.85
 ! Devel digest #32 ( http://leechcraft.org/devel-digest-32 ):
 * Core: use system style by default instead of Plastique.
