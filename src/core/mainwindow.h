@@ -64,7 +64,6 @@ namespace LeechCraft
 		QShortcut *FullScreenShortcut_;
 		QShortcut *CloseTabShortcut_;
 		bool IsQuitting_;
-		QSplashScreen *Splash_;
 
 		QToolBar *QLBar_;
 
@@ -124,7 +123,6 @@ namespace LeechCraft
 		void handleRestoreActionAdded (QAction*);
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void doDelayedInit ();
-		void handleLoadProgress (const QString&);
 	private:
 		void FillQuickLaunch ();
 		void FillTray ();

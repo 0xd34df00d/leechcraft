@@ -46,10 +46,6 @@
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
 
-#ifdef Q_OS_WIN32
-#include "winwarndialog.h"
-#endif
-
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
@@ -59,23 +55,12 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , IsShown_ (true)
 , WasMaximized_ (false)
 , IsQuitting_ (false)
-, Splash_ (new QSplashScreen (QPixmap (":/resources/images/apocalypse.png"),
-		Qt::SplashScreen))
 , IsToolBarVisible_ (true)
 {
 	Guard_ = new ToolbarGuard (this);
 	setUpdatesEnabled (false);
 
 	hide ();
-	//Splash_->setMask (QPixmap (":/resources/images/funsplash.jpg").mask ());
-	Splash_->show ();
-	Splash_->setUpdatesEnabled (true);
-	Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
-	QApplication::processEvents ();
-
-#ifdef Q_OS_WIN32
-	new WinWarnDialog;
-#endif
 
 	Core::Instance ().GetCoreInstanceObject ()->
 			GetCorePluginManager ()->RegisterHookable (this);
@@ -86,16 +71,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SIGNAL (aboutToQuit ()),
 			this,
 			SLOT (handleQuit ()));
-
-	connect (Core::Instance ().GetPluginManager (),
-			SIGNAL (loadProgress (const QString&)),
-			this,
-			SLOT (handleLoadProgress (const QString&)));
-
-	Core::Instance ().SetReallyMainWindow (this);
-	Core::Instance ().DelayedInit ();
-
-	Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
 
 	connect (Core::Instance ().GetNewTabMenuManager (),
 			SIGNAL (restoreTabActionAdded (QAction*)),
@@ -115,8 +90,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 		IsShown_ = false;
 		hide ();
 	}
-
-	Splash_->finish (this);
 
 	WasMaximized_ = isMaximized ();
 	Ui_.ActionFullscreenMode_->setChecked (isFullScreen ());
@@ -641,11 +614,6 @@ void LeechCraft::MainWindow::doDelayedInit ()
 	setAcceptDrops (true);
 
 	new StartupWizard (this);
-}
-
-void LeechCraft::MainWindow::handleLoadProgress (const QString& str)
-{
-	Splash_->showMessage (str, Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
 }
 
 void LeechCraft::MainWindow::FillQuickLaunch ()

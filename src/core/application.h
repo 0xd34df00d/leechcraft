@@ -24,6 +24,8 @@
 #include <QStringList>
 #include <QTranslator>
 
+class QSplashScreen;
+
 namespace LeechCraft
 {
 	/** Manages the main application-level behavior of LeechCraft like
@@ -42,6 +44,8 @@ namespace LeechCraft
 		std::auto_ptr<QTranslator> Translator_;
 		boost::program_options::variables_map VarMap_;
 		bool CatchExceptions_;
+
+		QSplashScreen *Splash_;
 	public:
 		enum Errors
 		{
@@ -120,6 +124,8 @@ namespace LeechCraft
 		void handleQuit ();
 		void handleAppStyle ();
 		void handleLanguage ();
+
+		void handleLoadProgress (const QString&);
 
 		/** Checks whether another copy of LeechCraft is still running
 		 * via a call to IsAlreadyRunning(), and if it isn't, starts a

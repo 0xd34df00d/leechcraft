@@ -33,6 +33,7 @@
 #include <QModelIndex>
 #include <QSessionManager>
 #include <QInputDialog>
+#include <QSplashScreen>
 #include <QProcess>
 #include <QTimer>
 #include <QCryptographicHash>
@@ -47,6 +48,10 @@
 #include "core.h"
 #include "coreinstanceobject.h"
 #include "config.h"
+
+#ifdef Q_OS_WIN32
+#include "winwarndialog.h"
+#endif
 
 namespace bpo = boost::program_options;
 
@@ -159,6 +164,10 @@ namespace LeechCraft
 		qDebug () << "======APPLICATION STARTUP======";
 		qWarning () << "======APPLICATION STARTUP======";
 
+#ifdef Q_OS_WIN32
+		new WinWarnDialog;
+#endif
+
 		CheckStartupPass ();
 		InitSettings ();
 
@@ -169,8 +178,23 @@ namespace LeechCraft
 				this,
 				SLOT (handleQuit ()));
 
-		// And finally!..
-		new MainWindow ();
+		Splash_ = new QSplashScreen (QPixmap (":/resources/images/apocalypse.png"), Qt::SplashScreen);
+		Splash_->show ();
+		Splash_->setUpdatesEnabled (true);
+		Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
+
+		connect (Core::Instance ().GetPluginManager (),
+				SIGNAL (loadProgress (const QString&)),
+				this,
+				SLOT (handleLoadProgress (const QString&)));
+
+		auto mw = new MainWindow ();
+		Core::Instance ().SetReallyMainWindow (mw);
+		Core::Instance ().DelayedInit ();
+
+		Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
+
+		Splash_->finish (mw);
 	}
 
 	const QStringList& Application::Arguments () const
@@ -469,6 +493,11 @@ namespace LeechCraft
 			return;
 
 		InitiateRestart ();
+	}
+
+	void Application::handleLoadProgress (const QString& str)
+	{
+		Splash_->showMessage (str, Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
 	}
 
 	void Application::checkStillRunning ()
