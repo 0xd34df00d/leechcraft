@@ -45,6 +45,7 @@
 #include "tabmanager.h"
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
+#include "entitymanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -790,3 +791,44 @@ void LeechCraft::MainWindow::keyReleaseEvent (QKeyEvent *e)
 		Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
 	}
 }
+
+void MainWindow::dragEnterEvent (QDragEnterEvent *event)
+{
+	auto mimeData = event->mimeData ();
+	for (const QString& format : mimeData->formats ())
+	{
+		const Entity& e = Util::MakeEntity (mimeData->data (format),
+				QString (),
+				FromUserInitiated,
+				format);
+
+		if (EntityManager ().CouldHandle (e))
+		{
+			event->acceptProposedAction ();
+			return;
+		}
+	}
+
+	QMainWindow::dragEnterEvent (event);
+}
+
+void MainWindow::dropEvent (QDropEvent *event)
+{
+	auto mimeData = event->mimeData ();
+	Q_FOREACH (const QString& format, mimeData->formats ())
+	{
+		const Entity& e = Util::MakeEntity (mimeData->data (format),
+				QString (),
+				FromUserInitiated,
+				format);
+
+		if (EntityManager ().HandleEntity (e))
+		{
+			event->acceptProposedAction ();
+			break;
+		}
+	}
+
+	QWidget::dropEvent (event);
+}
+

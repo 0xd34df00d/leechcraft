@@ -96,6 +96,9 @@ namespace LeechCraft
 		virtual void closeEvent (QCloseEvent*);
 		virtual void keyPressEvent (QKeyEvent*);
 		virtual void keyReleaseEvent (QKeyEvent*);
+
+		virtual void dragEnterEvent (QDragEnterEvent*);
+		virtual void dropEvent (QDropEvent*);
 	private:
 		void InitializeInterface ();
 		void SetStatusBar ();

@@ -160,8 +160,6 @@ namespace LeechCraft
 	void Core::SetReallyMainWindow (MainWindow *win)
 	{
 		ReallyMainWindow_ = win;
-		ReallyMainWindow_->GetTabWidget ()->installEventFilter (this);
-		ReallyMainWindow_->installEventFilter (this);
 
 		LocalSocketHandler_->SetMainWindow (win);
 
@@ -367,57 +365,6 @@ namespace LeechCraft
 	NewTabMenuManager* Core::GetNewTabMenuManager () const
 	{
 		return NewTabMenuManager_.get ();
-	}
-
-	bool Core::eventFilter (QObject *watched, QEvent *e)
-	{
-		if (ReallyMainWindow_ &&
-				watched == ReallyMainWindow_)
-		{
-			if (e->type () == QEvent::DragEnter)
-			{
-				QDragEnterEvent *event = static_cast<QDragEnterEvent*> (e);
-
-				auto mimeData = event->mimeData ();
-				Q_FOREACH (const QString& format, mimeData->formats ())
-				{
-					const Entity& e = Util::MakeEntity (mimeData->data (format),
-							QString (),
-							FromUserInitiated,
-							format);
-
-					if (EntityManager ().CouldHandle (e))
-					{
-						event->acceptProposedAction ();
-						break;
-					}
-				}
-
-				return true;
-			}
-			else if (e->type () == QEvent::Drop)
-			{
-				QDropEvent *event = static_cast<QDropEvent*> (e);
-
-				auto mimeData = event->mimeData ();
-				Q_FOREACH (const QString& format, mimeData->formats ())
-				{
-					const Entity& e = Util::MakeEntity (mimeData->data (format),
-							QString (),
-							FromUserInitiated,
-							format);
-
-					if (handleGotEntity (e))
-					{
-						event->acceptProposedAction ();
-						break;
-					}
-				}
-
-				return true;
-			}
-		}
-		return QObject::eventFilter (watched, e);
 	}
 
 	void Core::handleProxySettings () const

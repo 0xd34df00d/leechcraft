@@ -197,8 +197,6 @@ namespace LeechCraft
 		void Setup (QObject *object);
 
 		void PostSecondInit (QObject *object);
-
-		virtual bool eventFilter (QObject*, QEvent*);
 	public slots:
 		/** Handles changes of proxy settings in the Settings Dialog.
 		 */
