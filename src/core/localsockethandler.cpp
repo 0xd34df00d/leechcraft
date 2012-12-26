@@ -19,19 +19,16 @@
 #include "localsockethandler.h"
 #include <cstdlib>
 #include <vector>
-#include <boost/scoped_array.hpp>
 #include <QLocalSocket>
 #include <QUrl>
 #include "util/util.h"
 #include "interfaces/structures.h"
-#include "mainwindow.h"
 #include "application.h"
 
 namespace LeechCraft
 {
 	LocalSocketHandler::LocalSocketHandler ()
 	: Server_ (new QLocalServer)
-	, Window_ (0)
 	{
 		if (!Server_->listen (Application::GetSocketName ()))
 		{
@@ -50,22 +47,8 @@ namespace LeechCraft
 				SLOT (handleNewLocalServerConnection ()));
 	}
 
-	void LocalSocketHandler::SetMainWindow (MainWindow *parent)
-	{
-		Window_ = parent;
-	}
-
 	void LocalSocketHandler::handleNewLocalServerConnection ()
 	{
-		if (Window_)
-		{
-			Window_->show ();
-			Window_->activateWindow ();
-			Window_->raise ();
-		}
-		else
-			qWarning () << Q_FUNC_INFO
-				<< "but Window_ is still NULL";
 		std::auto_ptr<QLocalSocket> socket (Server_->nextPendingConnection ());
 		// I think 100 msecs would be more than enough for the local
 		// connections.
@@ -157,5 +140,4 @@ namespace LeechCraft
 			emit gotEntity (e);
 		}
 	}
-};
-
+}
