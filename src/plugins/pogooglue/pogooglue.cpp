@@ -101,33 +101,15 @@ namespace Pogooglue
 
 	void Plugin::GoogleIt (QString text)
 	{
-		QString withoutPercent = text;
-		withoutPercent.remove (QRegExp ("%%??",
-				Qt::CaseInsensitive, QRegExp::Wildcard));
-		QUrl testUrl (withoutPercent);
-		QUrl result;
-		if (testUrl.toString () == withoutPercent)
-			result = QUrl::fromEncoded (text.toUtf8 ());
-		else
-			result = QUrl (text);
-
-		if (result.scheme ().isEmpty ())
-		{
-			if (!text.count (' ') && text.count ('.'))
-				result = QUrl (QString ("http://") + text);
-			else
-			{
-				text.replace ('+', "%2B");
-				text.replace (' ', '+');
-				QString urlStr = QString ("http://www.google.com/search?q=%2"
-						"&client=leechcraft_poshuku"
-						"&ie=utf-8"
-						"&rls=org.leechcraft:%1")
-					.arg (QLocale::system ().name ().replace ('_', '-'))
-					.arg (text);
-				result = QUrl::fromEncoded (urlStr.toUtf8 ());
-			}
-		}
+		text.replace ('+', "%2B");
+		text.replace (' ', '+');
+		QString urlStr = QString ("http://www.google.com/search?q=%2"
+				"&client=leechcraft_poshuku"
+				"&ie=utf-8"
+				"&rls=org.leechcraft:%1")
+			.arg (QLocale::system ().name ().replace ('_', '-'))
+			.arg (text);
+		QUrl result = QUrl::fromEncoded (urlStr.toUtf8 ());
 
 		const auto& e = Util::MakeEntity (result,
 				QString (),
