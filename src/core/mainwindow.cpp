@@ -307,6 +307,8 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	handleToolBarManipulationChanged ();
 
 	QMenu *menu = new QMenu (this);
+	menu->addMenu (Core::Instance ().GetNewTabMenuManager ()->GetNewTabMenu ());
+	menu->addSeparator ();
 	menu->addAction (Ui_.ActionAddTask_);
 	menu->addSeparator ();
 	menu->addMenu (MenuTools_);
