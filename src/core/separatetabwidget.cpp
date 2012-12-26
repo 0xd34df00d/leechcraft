@@ -40,6 +40,7 @@
 #include "coreplugin2manager.h"
 #include "tabmanager.h"
 #include "rootwindowsmanager.h"
+#include "mainwindow.h"
 
 namespace LeechCraft
 {
@@ -318,6 +319,36 @@ namespace LeechCraft
 					menu->addMenu (subMenu);
 				if (tabActions.size ())
 					menu->addSeparator ();
+			}
+		}
+
+		auto rootWM = Core::Instance ().GetRootWindowsManager ();
+		const int windowIndex = rootWM->GetWindowIndex (Window_);
+		qDebug () << Q_FUNC_INFO << Window_;
+
+		auto moveMenu = menu->addMenu (tr ("Move tab to"));
+		auto toNew = moveMenu->addAction (tr ("New window"),
+				rootWM, SLOT (moveTabToNewWindow ()));
+		toNew->setProperty ("TabIndex", index);
+		toNew->setProperty ("FromWindowIndex", windowIndex);
+		if (rootWM->GetWindowsCount () > 1)
+		{
+			moveMenu->addSeparator ();
+
+			for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
+			{
+				auto thatWin = rootWM->GetMainWindow (i);
+				if (thatWin == Window_)
+					continue;
+
+				const auto& actTitle = tr ("To window %1 (%2)")
+							.arg (i)
+							.arg (thatWin->windowTitle ());
+				auto toExisting = moveMenu->addAction (actTitle,
+						rootWM, SLOT (moveTabToExistingWindow ()));
+				toExisting->setProperty ("TabIndex", index);
+				toExisting->setProperty ("FromWindowIndex", windowIndex);
+				toExisting->setProperty ("ToWindowIndex", i);
 			}
 		}
 
