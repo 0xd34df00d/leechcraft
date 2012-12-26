@@ -54,6 +54,25 @@ namespace LeechCraft
 		return Windows_.value (index).TM_;
 	}
 
+	bool RootWindowsManager::WindowCloseRequested (MainWindow *win)
+	{
+		if (Windows_ [0].Window_ == win)
+			return false;
+
+		const int index = GetWindowIndex (win);
+		const auto& data = Windows_ [index];
+		for (int i = data.TM_->GetWidgetCount () - 1; i >= 0; --i)
+			qobject_cast<ITabWidget*> (data.TM_->GetWidget (i))->Remove ();
+
+		emit windowRemoved (index);
+
+		Windows_.removeAt (index);
+
+		win->deleteLater ();
+
+		return true;
+	}
+
 	QObject* RootWindowsManager::GetObject ()
 	{
 		return this;
@@ -66,12 +85,27 @@ namespace LeechCraft
 
 	int RootWindowsManager::GetPreferredWindowIndex () const
 	{
+		const auto active = QApplication::activeWindow ();
+		if (!active)
+			return 0;
+
+		for (int i = 0; i < GetWindowsCount (); ++i)
+			if (Windows_ [i].Window_ == active)
+				return i;
+
 		return 0;
 	}
 
-	int RootWindowsManager::GetWindowForTab (ITabWidget*) const
+	int RootWindowsManager::GetWindowForTab (ITabWidget *tab) const
 	{
-		return 0;
+		for (int i = 0; i < GetWindowsCount (); ++i)
+		{
+			const auto tw = Windows_ [i].Window_->GetTabWidget ();
+			if (tw->IndexOf (dynamic_cast<QWidget*> (tab)) >= 0)
+				return i;
+		}
+
+		return -1;
 	}
 
 	int RootWindowsManager::GetWindowIndex (QMainWindow *w) const
@@ -109,9 +143,9 @@ namespace LeechCraft
 
 		Windows_.push_back ({ win, proxy, tm });
 
-		win->Init ();
-
 		emit windowAdded (Windows_.size () - 1);
+
+		win->Init ();
 
 		return win;
 	}

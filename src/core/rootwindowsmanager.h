@@ -51,6 +51,8 @@ namespace LeechCraft
 		TabManager* GetTabManager (MainWindow*) const;
 		TabManager* GetTabManager (int) const;
 
+		bool WindowCloseRequested (MainWindow*);
+
 		QObject* GetObject ();
 
 		int GetWindowsCount () const;
