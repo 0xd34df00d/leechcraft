@@ -78,6 +78,11 @@ QWidget* TabManager::GetWidget (int position) const
 	return TabWidget_->Widget (position);
 }
 
+int TabManager::GetWidgetCount () const
+{
+	return TabWidget_->WidgetCount ();
+}
+
 QToolBar* TabManager::GetToolBar (int position) const
 {
 	QWidget *widget = TabWidget_->Widget (position);

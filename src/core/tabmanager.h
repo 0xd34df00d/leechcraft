@@ -51,6 +51,7 @@ namespace LeechCraft
 		QWidget* GetCurrentWidget () const;
 		QWidget* GetWidget (int) const;
 		QToolBar* GetToolBar (int) const;
+		int GetWidgetCount () const;
 		void ForwardKeyboard (QKeyEvent*);
 	public slots:
 		void rotateLeft ();
