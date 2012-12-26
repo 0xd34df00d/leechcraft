@@ -342,7 +342,7 @@ namespace LeechCraft
 					continue;
 
 				const auto& actTitle = tr ("To window %1 (%2)")
-							.arg (i)
+							.arg (i + 1)
 							.arg (thatWin->windowTitle ());
 				auto toExisting = moveMenu->addAction (actTitle,
 						rootWM, SLOT (moveTabToExistingWindow ()));
