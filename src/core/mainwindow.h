@@ -107,6 +107,7 @@ namespace LeechCraft
 		void WriteSettings ();
 	private slots:
 		void on_ActionAddTask__triggered ();
+		void on_ActionNewWindow__triggered ();
 		void on_ActionCloseTab__triggered ();
 		void handleCloseCurrentTab ();
 		void on_ActionSettings__triggered ();

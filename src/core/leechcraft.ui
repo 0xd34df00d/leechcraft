@@ -196,6 +196,11 @@
     <string>Restart LeechCraft...</string>
    </property>
   </action>
+  <action name="ActionNewWindow_">
+   <property name="text">
+    <string>New window</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

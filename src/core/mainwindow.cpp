@@ -63,6 +63,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	installEventFilter (new ChildActionEventFilter (this));
 
 	Ui_.setupUi (this);
+	Ui_.MainTabWidget_->SetWindow (this);
 }
 
 void LeechCraft::MainWindow::Init ()
@@ -111,8 +112,7 @@ void LeechCraft::MainWindow::Init ()
 	CloseTabShortcut_ = new QShortcut (QString ("Ctrl+W"),
 			this,
 			SLOT (handleCloseCurrentTab ()),
-			0,
-			Qt::ApplicationShortcut);
+			0);
 
 	Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
 }
@@ -311,6 +311,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	handleToolBarManipulationChanged ();
 
 	QMenu *menu = new QMenu (this);
+	menu->addAction (Ui_.ActionNewWindow_);
 	menu->addMenu (Core::Instance ().GetNewTabMenuManager ()->GetNewTabMenu ());
 	menu->addSeparator ();
 	menu->addAction (Ui_.ActionAddTask_);
@@ -380,6 +381,11 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 	QString name = adder.GetString ();
 	if (!name.isEmpty ())
 		Core::Instance ().TryToAddJob (name);
+}
+
+void LeechCraft::MainWindow::on_ActionNewWindow__triggered ()
+{
+	Core::Instance ().GetRootWindowsManager ()->MakeMainWindow ();
 }
 
 void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
