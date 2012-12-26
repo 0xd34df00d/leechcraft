@@ -22,6 +22,7 @@
 #include <QMap>
 #include <QHash>
 #include <QSet>
+#include <interfaces/core/ihookproxy.h>
 
 class QDockWidget;
 class QAction;
@@ -29,22 +30,28 @@ class QAction;
 namespace LeechCraft
 {
 	class MainWindow;
+	class RootWindowsManager;
 
 	class DockManager : public QObject
 	{
 		Q_OBJECT
 
-		MainWindow *MW_;
+		RootWindowsManager *RootWM_;
+
 		QMap<Qt::DockWidgetArea, QList<QDockWidget*>> Area2Widgets_;
 
 		QHash<QDockWidget*, QWidget*> TabAssociations_;
 		QHash<QAction*, QDockWidget*> ToggleAct2Dock_;
 		QSet<QDockWidget*> ForcefullyClosed_;
+
+		QHash<QDockWidget*, MainWindow*> Dock2Widnow_;
 	public:
-		DockManager (MainWindow*, QObject* = 0);
+		DockManager (RootWindowsManager*, QObject* = 0);
 
 		void AddDockWidget (QDockWidget*, Qt::DockWidgetArea);
 		void AssociateDockWidget (QDockWidget*, QWidget*);
+
+		void ToggleViewActionVisiblity (QDockWidget*, bool);
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
@@ -54,5 +61,9 @@ namespace LeechCraft
 		void handleDockLocationChanged (Qt::DockWidgetArea);
 		void handleDockToggled (bool);
 		void handleTabChanged (QWidget*);
+
+		void handleWindow (int);
+	signals:
+		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QDockWidget*, bool);
 	};
 }

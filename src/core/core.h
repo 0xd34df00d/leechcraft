@@ -38,7 +38,6 @@ namespace LeechCraft
 {
 	class RootWindowsManager;
 	class MainWindow;
-	class TabManager;
 	class NewTabMenuManager;
 	class StorageBackend;
 	class LocalSocketHandler;
@@ -53,15 +52,13 @@ namespace LeechCraft
 		Q_OBJECT
 
 		PluginManager *PluginManager_;
-		MainWindow *ReallyMainWindow_;
-		DockManager *DM_;
-		std::shared_ptr<TabManager> TabManager_;
 		std::shared_ptr<QNetworkAccessManager> NetworkAccessManager_;
 		std::shared_ptr<StorageBackend> StorageBackend_;
 		std::shared_ptr<LocalSocketHandler> LocalSocketHandler_;
 		std::shared_ptr<NewTabMenuManager> NewTabMenuManager_;
 		std::shared_ptr<CoreInstanceObject> CoreInstanceObject_;
 		std::shared_ptr<RootWindowsManager> RootWindowsManager_;
+		DockManager *DM_;
 		QList<Entity> QueuedEntities_;
 		bool IsShuttingDown_;
 
@@ -80,15 +77,6 @@ namespace LeechCraft
 		void Release ();
 
 		bool IsShuttingDown () const;
-
-		/** Sets the pointer to the main window.
-		 */
-		void SetReallyMainWindow (MainWindow*);
-
-		/** Returns the pointer to the main window. The result is valid
-		 * only if a valid window was set with SetReallyMainWindow().
-		 */
-		MainWindow* GetReallyMainWindow ();
 
 		/** Returns the dock manager over the main window.
 		 */
@@ -141,16 +129,6 @@ namespace LeechCraft
 		 */
 		CoreInstanceObject* GetCoreInstanceObject () const;
 
-		/** Returns toolbar for plugin that represents the tab widget's
-		 * page with given index. If the index is invalid or plugin
-		 * doesn't provide a toolbar, 0 is returned.
-		 *
-		 * @param[in] index Index of the tab widget's page with the
-		 * plugin.
-		 * @return Toolbar for the given plugin's page.
-		 */
-		QToolBar* GetToolBar (int index) const;
-
 		/** Performs the initialization of systems that are dependant
 		 * on others, like the main window or the Tab Contents Manager.
 		 */
@@ -186,10 +164,6 @@ namespace LeechCraft
 		 * to the index provided by a corresponding plugin's model.
 		 */
 		QModelIndex MapToSource (const QModelIndex& index) const;
-
-		/** Returns the app-wide TabContainer.
-		 */
-		TabManager* GetTabManager () const;
 
 		/** Returns the app-wide new tab menu manager.
 		 */
@@ -240,29 +214,15 @@ namespace LeechCraft
 		void pullEntityQueue ();
 
 		void handlePluginLoadErrors ();
-
-		/** Handles requests to change statusbar's status text.
-		 *
-		 * @param[in] sender The sender of the event.
-		 * @param[in] msg The message to show.
-		 */
-		void handleStatusBarChanged (QWidget *sender, const QString& msg);
 	private:
 		/** Initializes IInfo's signals of the object.
 		 */
 		void InitDynamicSignals (QObject *object);
 
-		/** Initializes the object as a IEmbedTab. The object is assumed
-		 * to be a valid IEmbedTab*.
-		 */
-		void InitEmbedTab (QObject *object);
-
 		/** Initializes the object as a IMultiTabs. The object is assumed
 		 * to be a valid IMultiTabs*.
 		 */
 		void InitMultiTab (QObject *object);
-
-		void InitCommonTab (QObject *object);
 	signals:
 		/** Notifies the user about an error by a pop-up message box.
 		 */

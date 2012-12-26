@@ -17,16 +17,35 @@
  **********************************************************************/
 
 #include "rootwindowsmanager.h"
+#include <iterator>
+#include <algorithm>
 #include "core.h"
 #include "mainwindow.h"
 #include "mwproxy.h"
+#include "tabmanager.h"
+#include "dockmanager.h"
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
 	RootWindowsManager::RootWindowsManager (QObject *parent)
 	: QObject (parent)
-	, MWProxy_ (new MWProxy (this))
 	{
+	}
+
+	MainWindow* RootWindowsManager::MakeMainWindow ()
+	{
+		return CreateWindow ();
+	}
+
+	TabManager* RootWindowsManager::GetTabManager (MainWindow *win) const
+	{
+		return GetTabManager (GetWindowIndex (win));
+	}
+
+	TabManager* RootWindowsManager::GetTabManager (int index) const
+	{
+		return Windows_.value (index).TM_;
 	}
 
 	QObject* RootWindowsManager::GetObject ()
@@ -36,7 +55,7 @@ namespace LeechCraft
 
 	int RootWindowsManager::GetWindowsCount () const
 	{
-		return 1;
+		return Windows_.size ();
 	}
 
 	int RootWindowsManager::GetPreferredWindowIndex () const
@@ -49,23 +68,85 @@ namespace LeechCraft
 		return 0;
 	}
 
-	int RootWindowsManager::GetWindowIndex (QMainWindow*) const
+	int RootWindowsManager::GetWindowIndex (QMainWindow *w) const
 	{
-		return 0;
+		auto pos = std::find_if (Windows_.begin (), Windows_.end (),
+				[w] (decltype (Windows_.at (0)) item) { return item.Window_ == w; });
+		return pos == Windows_.end () ? -1 : std::distance (Windows_.begin (), pos);
 	}
 
-	QMainWindow* RootWindowsManager::GetMainWindow (int) const
+	QMainWindow* RootWindowsManager::GetMainWindow (int index) const
 	{
-		return Core::Instance ().GetReallyMainWindow ();
+		return Windows_ [index].Window_;
 	}
 
-	IMWProxy* RootWindowsManager::GetMWProxy (int) const
+	IMWProxy* RootWindowsManager::GetMWProxy (int index) const
 	{
-		return MWProxy_;
+		return Windows_ [index].Proxy_;
 	}
 
-	ICoreTabWidget* RootWindowsManager::GetTabWidget (int) const
+	ICoreTabWidget* RootWindowsManager::GetTabWidget (int index) const
 	{
-		return Core::Instance ().GetReallyMainWindow ()->GetTabWidget ();
+		return Windows_ [index].Window_->GetTabWidget ();
+	}
+
+	MainWindow* RootWindowsManager::CreateWindow ()
+	{
+		auto win = new MainWindow;
+		auto proxy = new MWProxy (win);
+		auto tm = new TabManager (win->GetTabWidget (), win, win->GetTabWidget ());
+
+		connect (tm,
+				SIGNAL (currentTabChanged (QWidget*)),
+				Core::Instance ().GetDockManager (),
+				SLOT (handleTabChanged (QWidget*)));
+
+		Windows_.push_back ({ win, proxy, tm });
+
+		win->Init ();
+
+		emit windowAdded (Windows_.size () - 1);
+
+		return win;
+	}
+
+	void RootWindowsManager::PerformWithTab (std::function<void (TabManager*)> f, QWidget *w)
+	{
+		const int idx = GetWindowForTab (qobject_cast<ITabWidget*> (w));
+		if (idx < 0)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no window for tab"
+					<< w;
+			return;
+		}
+
+		f (Windows_ [idx].TM_);
+	}
+
+	void RootWindowsManager::add (const QString& name, QWidget *w)
+	{
+		const int idx = GetPreferredWindowIndex ();
+		Windows_ [idx].TM_->add (name, w);
+	}
+
+	void RootWindowsManager::remove (QWidget *w)
+	{
+		PerformWithTab ([w] (TabManager *tm) { tm->remove (w); }, w);
+	}
+
+	void RootWindowsManager::changeTabName (QWidget *w, const QString& name)
+	{
+		PerformWithTab ([w, &name] (TabManager *tm) { tm->changeTabName (w, name); }, w);
+	}
+
+	void RootWindowsManager::changeTabIcon (QWidget *w, const QIcon& icon)
+	{
+		PerformWithTab ([w, &icon] (TabManager *tm) { tm->changeTabIcon (w, icon); }, w);
+	}
+
+	void RootWindowsManager::bringToFront (QWidget *w)
+	{
+		PerformWithTab ([w] (TabManager *tm) { tm->bringToFront (w); }, w);
 	}
 }

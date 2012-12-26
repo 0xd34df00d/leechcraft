@@ -18,11 +18,16 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <interfaces/core/irootwindowsmanager.h>
 
+class QIcon;
+
 namespace LeechCraft
 {
+	class MainWindow;
+	class TabManager;
 	class MWProxy;
 
 	class RootWindowsManager : public QObject
@@ -31,9 +36,19 @@ namespace LeechCraft
 		Q_OBJECT
 		Q_INTERFACES (IRootWindowsManager);
 
-		MWProxy *MWProxy_;
+		struct WinData
+		{
+			MainWindow *Window_;
+			MWProxy *Proxy_;
+			TabManager *TM_;
+		};
+		QList<WinData> Windows_;
 	public:
 		RootWindowsManager (QObject* = 0);
+
+		MainWindow* MakeMainWindow ();
+		TabManager* GetTabManager (MainWindow*) const;
+		TabManager* GetTabManager (int) const;
 
 		QObject* GetObject ();
 
@@ -45,6 +60,15 @@ namespace LeechCraft
 		IMWProxy* GetMWProxy (int) const;
 		QMainWindow* GetMainWindow (int) const;
 		ICoreTabWidget* GetTabWidget (int) const;
+	private:
+		MainWindow* CreateWindow ();
+		void PerformWithTab (std::function<void (TabManager*)>, QWidget*);
+	public slots:
+		void add (const QString&, QWidget*);
+		void remove (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void bringToFront (QWidget*);
 	signals:
 		void windowAdded (int);
 		void windowRemoved (int);

@@ -19,23 +19,34 @@
 #include "dockmanager.h"
 #include <QDockWidget>
 #include <QToolButton>
-#include "mainwindow.h"
+#include <util/defaulthookproxy.h>
+#include <interfaces/ihavetabs.h>
 #include "tabmanager.h"
 #include "core.h"
+#include "rootwindowsmanager.h"
+#include "mainwindow.h"
 
 namespace LeechCraft
 {
-	DockManager::DockManager (MainWindow *mw, QObject *parent)
+	DockManager::DockManager (RootWindowsManager *rootWM, QObject *parent)
 	: QObject (parent)
-	, MW_ (mw)
+	, RootWM_ (rootWM)
 	{
-		MW_->GetDockListWidget (Qt::LeftDockWidgetArea)->hide ();
-		MW_->GetDockListWidget (Qt::RightDockWidgetArea)->hide ();
+		for (int i = 0; i < RootWM_->GetWindowsCount (); ++i)
+			handleWindow (i);
+
+		connect (RootWM_,
+				SIGNAL (windowAdded (int)),
+				this,
+				SLOT (handleWindow (int)));
 	}
 
 	void DockManager::AddDockWidget (QDockWidget *dw, Qt::DockWidgetArea area)
 	{
-		MW_->addDockWidget (area, dw);
+		auto win = static_cast<MainWindow*> (RootWM_->GetPreferredWindow ());
+		win->addDockWidget (area, dw);
+		Dock2Widnow_ [dw] = win;
+
 		connect (dw,
 				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
 				this,
@@ -56,7 +67,10 @@ namespace LeechCraft
 
 		TabAssociations_ [dock] = tab;
 
-		handleTabChanged (Core::Instance ().GetTabManager ()->GetCurrentWidget ());
+		auto rootWM = Core::Instance ().GetRootWindowsManager ();
+		const auto winIdx = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (tab));
+		if (winIdx >= 0)
+			handleTabChanged (rootWM->GetTabManager (winIdx)->GetCurrentWidget ());
 
 		auto toggleAct = dock->toggleViewAction ();
 		ToggleAct2Dock_ [toggleAct] = dock;
@@ -66,13 +80,31 @@ namespace LeechCraft
 				SLOT (handleDockToggled (bool)));
 	}
 
+	void DockManager::ToggleViewActionVisiblity (QDockWidget *widget, bool visible)
+	{
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookDockWidgetActionVisToggled (proxy, widget, visible);
+		if (proxy->IsCancelled ())
+			return;
+
+		QAction *act = widget->toggleViewAction ();
+
+		// TODO
+		/*
+		if (!visible)
+			MenuView_->removeAction (act);
+		else
+			MenuView_->insertAction (MenuView_->actions ().first (), act);
+		*/
+	}
+
 	void DockManager::TabifyDW (QDockWidget *dw, Qt::DockWidgetArea area)
 	{
 		auto widgets = Area2Widgets_ [area];
 		widgets.removeAll (dw);
 		if (!widgets.isEmpty ())
 		{
-			MW_->tabifyDockWidget (dw, widgets.last ());
+			Dock2Widnow_ [dw]->tabifyDockWidget (dw, widgets.last ());
 			dw->show ();
 			dw->raise ();
 		}
@@ -146,8 +178,15 @@ namespace LeechCraft
 			else if (!ForcefullyClosed_.contains (dock))
 			{
 				dock->setVisible (true);
-				TabifyDW (dock, MW_->dockWidgetArea (dock));
+				TabifyDW (dock, Dock2Widnow_ [dock]->dockWidgetArea (dock));
 			}
 		}
+	}
+
+	void DockManager::handleWindow (int index)
+	{
+		auto win = static_cast<MainWindow*> (RootWM_->GetMainWindow (index));
+		win->GetDockListWidget (Qt::LeftDockWidgetArea)->hide ();
+		win->GetDockListWidget (Qt::RightDockWidgetArea)->hide ();
 	}
 }

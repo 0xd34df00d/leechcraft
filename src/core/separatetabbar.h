@@ -24,11 +24,14 @@
 
 namespace LeechCraft
 {
+	class MainWindow;
 	class SeparateTabWidget;
 
 	class SeparateTabBar : public QTabBar
 	{
 		Q_OBJECT
+
+		MainWindow *Window_;
 
 		int Id_;
 		bool IsLastTab_;
@@ -38,6 +41,9 @@ namespace LeechCraft
 		QPoint DragStartPos_;
 	public:
 		explicit SeparateTabBar (QWidget* = 0);
+
+		void SetWindow (MainWindow*);
+
 		void SetTabData (int);
 		void SetTabClosable (int index, bool closable, QWidget *closeButton = 0);
 		void SetLastTab (bool);

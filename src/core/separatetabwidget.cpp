@@ -39,11 +39,13 @@
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
 #include "tabmanager.h"
+#include "rootwindowsmanager.h"
 
 namespace LeechCraft
 {
 	SeparateTabWidget::SeparateTabWidget (QWidget *parent)
 	: QWidget (parent)
+	, Window_ (0)
 	, LastContextMenuTab_ (-1)
 	, MainStackedWidget_ (new QStackedWidget)
 	, MainTabBar_ (new SeparateTabBar)
@@ -103,6 +105,13 @@ namespace LeechCraft
 
 		Init ();
 		AddTabButtonInit ();
+	}
+
+	void SeparateTabWidget::SetWindow (MainWindow *window)
+	{
+		Window_ = window;
+
+		MainTabBar_->SetWindow (window);
 	}
 
 	QObject* SeparateTabWidget::GetObject ()
@@ -499,8 +508,9 @@ namespace LeechCraft
 		const bool mForward = event->button () == Qt::XButton2;
 		if (mBack || mForward)
 		{
-			mBack ? Core::Instance ().GetTabManager ()->rotateLeft () :
-					Core::Instance ().GetTabManager ()->rotateRight ();
+			auto rootWM = Core::Instance ().GetRootWindowsManager ();
+			auto tm = rootWM->GetTabManager (Window_);
+			mBack ? tm->rotateLeft () : tm->rotateRight ();
 			event->accept ();
 			return;
 		}

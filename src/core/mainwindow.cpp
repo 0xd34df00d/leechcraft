@@ -46,6 +46,7 @@
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
 #include "entitymanager.h"
+#include "rootwindowsmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -55,10 +56,17 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , TrayIcon_ (0)
 , IsShown_ (true)
 , WasMaximized_ (false)
+, Guard_ (new ToolbarGuard (this))
 , IsQuitting_ (false)
 , IsToolBarVisible_ (true)
 {
-	Guard_ = new ToolbarGuard (this);
+	installEventFilter (new ChildActionEventFilter (this));
+
+	Ui_.setupUi (this);
+}
+
+void LeechCraft::MainWindow::Init ()
+{
 	setUpdatesEnabled (false);
 
 	hide ();
@@ -169,21 +177,6 @@ QWidget* LeechCraft::MainWindow::GetDockListWidget (Qt::DockWidgetArea area) con
 	}
 }
 
-void LeechCraft::MainWindow::ToggleViewActionVisiblity (QDockWidget *widget, bool visible)
-{
-	Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-	emit hookDockWidgetActionVisToggled (proxy, widget, visible);
-	if (proxy->IsCancelled ())
-		return;
-
-	QAction *act = widget->toggleViewAction ();
-
-	if (!visible)
-		MenuView_->removeAction (act);
-	else
-		MenuView_->insertAction (MenuView_->actions ().first (), act);
-}
-
 void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*>>& menus)
 {
 	Q_FOREACH (const QString& menuName, menus.keys ())
@@ -274,10 +267,6 @@ void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 
 void LeechCraft::MainWindow::InitializeInterface ()
 {
-	installEventFilter (new ChildActionEventFilter (this));
-
-	Ui_.setupUi (this);
-
 	Ui_.MainTabWidget_->setObjectName ("org_LeechCraft_MainWindow_CentralTabWidget");
 	Ui_.MainTabWidget_->SetTabsClosable (true);
 	connect (Ui_.ActionAboutQt_,
@@ -394,14 +383,14 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 
 void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
 {
-	Core::Instance ().GetTabManager ()->
-			remove (Ui_.MainTabWidget_->GetLastContextMenuTab ());
+	auto rootWM = Core::Instance ().GetRootWindowsManager ();
+	rootWM->GetTabManager (this)->remove (Ui_.MainTabWidget_->GetLastContextMenuTab ());
 }
 
 void MainWindow::handleCloseCurrentTab ()
 {
-	Core::Instance ().GetTabManager ()->
-			remove (Ui_.MainTabWidget_->CurrentIndex ());
+	auto rootWM = Core::Instance ().GetRootWindowsManager ();
+	rootWM->GetTabManager (this)->remove (Ui_.MainTabWidget_->CurrentIndex ());
 }
 
 void LeechCraft::MainWindow::on_ActionSettings__triggered ()
@@ -507,7 +496,9 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 
 void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 {
-	QToolBar *bar = Core::Instance ().GetToolBar (index);
+	auto rootWM = Core::Instance ().GetRootWindowsManager ();
+	auto bar = rootWM->GetTabManager (this)->GetToolBar (index);
+
 	GetGuard ()->AddToolbar (bar);
 	if (Ui_.MainTabWidget_->WidgetCount () > 0 &&
 			bar)
@@ -517,7 +508,10 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 void MainWindow::on_ActionShowToolBar__triggered (bool visible)
 {
 	IsToolBarVisible_ = visible;
-	QToolBar *bar = Core::Instance ().GetToolBar (Ui_.MainTabWidget_->CurrentIndex ());
+
+	auto rootWM = Core::Instance ().GetRootWindowsManager ();
+	auto bar = rootWM->GetTabManager (this)->GetToolBar (Ui_.MainTabWidget_->CurrentIndex ());
+
 	if (bar)
 		bar->setVisible (IsToolBarVisible_);
 }
@@ -721,29 +715,32 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 	const auto sysModifier = Qt::ALT;
 #endif
 
+	auto rootWM = Core::Instance ().GetRootWindowsManager ();
+	auto tm = rootWM->GetTabManager (this);
+
 	connect (new QShortcut (QKeySequence ("Ctrl+["), this),
 			SIGNAL (activated ()),
-			Core::Instance ().GetTabManager (),
+			tm,
 			SLOT (rotateLeft ()));
 	connect (new QShortcut (QKeySequence ("Ctrl+]"), this),
 			SIGNAL (activated ()),
-			Core::Instance ().GetTabManager (),
+			tm,
 			SLOT (rotateRight ()));
 	connect (new QShortcut (QKeySequence (sysModifier + Qt::Key_Tab), this),
 			SIGNAL (activated ()),
-			Core::Instance ().GetTabManager (),
+			tm,
 			SLOT (rotateRight ()));
 	connect (new QShortcut (QKeySequence (sysModifier + Qt::SHIFT + Qt::Key_Tab), this),
 			SIGNAL (activated ()),
-			Core::Instance ().GetTabManager (),
+			tm,
 			SLOT (rotateLeft ()));
 	connect (new QShortcut (QKeySequence ("Ctrl+PgUp"), this),
 			SIGNAL (activated ()),
-			Core::Instance ().GetTabManager (),
+			tm,
 			SLOT (rotateLeft ()));
 	connect (new QShortcut (QKeySequence ("Ctrl+PgDown"), this),
 			SIGNAL (activated ()),
-			Core::Instance ().GetTabManager (),
+			tm,
 			SLOT (rotateRight ()));
 	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_T), this),
 			SIGNAL (activated ()),
@@ -759,9 +756,10 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 		QString seqStr = QString ("Ctrl+\\, %1").arg (i);
 		QShortcut *sc = new QShortcut (QKeySequence (seqStr), this);
 		sc->setProperty ("TabNumber", i);
+
 		connect (sc,
 				SIGNAL (activated ()),
-				Core::Instance ().GetTabManager (),
+				tm,
 				SLOT (navigateToTabNumber ()));
 	}
 }

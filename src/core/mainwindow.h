@@ -73,6 +73,7 @@ namespace LeechCraft
 		bool IsToolBarVisible_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
+		void Init ();
 		virtual ~MainWindow ();
 
 		SeparateTabWidget* GetTabWidget () const;
@@ -84,8 +85,6 @@ namespace LeechCraft
 		void HideMainMenu ();
 
 		QWidget* GetDockListWidget (Qt::DockWidgetArea) const;
-
-		void ToggleViewActionVisiblity (QDockWidget*, bool);
 
 		void AddMenus (const QMap<QString, QList<QAction*>>&);
 		void RemoveMenus (const QMap<QString, QList<QAction*>>&);
@@ -133,7 +132,6 @@ namespace LeechCraft
 		void InitializeShortcuts ();
 		void ShowMenuAndBar (bool);
 	signals:
-		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QDockWidget*, bool);
 		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
 		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr, QSystemTrayIcon*);

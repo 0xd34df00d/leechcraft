@@ -24,8 +24,9 @@
 
 namespace LeechCraft
 {
-	MWProxy::MWProxy (QObject *parent)
+	MWProxy::MWProxy (MainWindow *win, QObject *parent)
 	: QObject (parent)
+	, Win_ (win)
 	{
 	}
 
@@ -42,7 +43,7 @@ namespace LeechCraft
 
 	void MWProxy::ToggleViewActionVisiblity (QDockWidget *w, bool visible)
 	{
-		Core::Instance ().GetReallyMainWindow ()->ToggleViewActionVisiblity (w, visible);
+		Core::Instance ().GetDockManager ()->ToggleViewActionVisiblity (w, visible);
 	}
 
 	void MWProxy::SetViewActionShortcut (QDockWidget *w, const QKeySequence& seq)
@@ -52,15 +53,13 @@ namespace LeechCraft
 
 	void MWProxy::AddToolbar (QToolBar *bar, Qt::ToolBarArea area)
 	{
-		bar->setParent (Core::Instance ().GetReallyMainWindow ());
-		Core::Instance ().GetReallyMainWindow ()->addToolBar (area, bar);
+		bar->setParent (Win_);
+		Win_->addToolBar (area, bar);
 	}
 
 	void MWProxy::AddSideWidget (QWidget *w, WidgetArea area)
 	{
-		MainWindow *mw = Core::Instance ().GetReallyMainWindow ();
-
-		auto splitter = mw->GetMainSplitter ();
+		auto splitter = Win_->GetMainSplitter ();
 
 		switch (area)
 		{
@@ -79,16 +78,16 @@ namespace LeechCraft
 
 	void MWProxy::ToggleVisibility ()
 	{
-		Core::Instance ().GetReallyMainWindow ()->showHideMain ();
+		Win_->showHideMain ();
 	}
 
 	QMenu* MWProxy::GetMainMenu ()
 	{
-		return Core::Instance ().GetReallyMainWindow ()->GetMainMenu ();
+		return Win_->GetMainMenu ();
 	}
 
 	void MWProxy::HideMainMenu ()
 	{
-		Core::Instance ().GetReallyMainWindow ()->HideMainMenu ();
+		Win_->HideMainMenu ();
 	}
 }

@@ -77,14 +77,13 @@ namespace LeechCraft
 {
 	Core::Core ()
 	: PluginManager_ (0)
-	, ReallyMainWindow_ (0)
-	, DM_ (0)
 	, NetworkAccessManager_ (new NetworkAccessManager)
 	, StorageBackend_ (new SQLStorageBackend)
 	, LocalSocketHandler_ (new LocalSocketHandler)
 	, NewTabMenuManager_ (new NewTabMenuManager)
 	, CoreInstanceObject_ (new CoreInstanceObject)
 	, RootWindowsManager_ (new RootWindowsManager)
+	, DM_ (new DockManager (RootWindowsManager_.get (), this))
 	, IsShuttingDown_ (false)
 	{
 		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (NetworkAccessManager_.get ());
@@ -159,20 +158,6 @@ namespace LeechCraft
 		return IsShuttingDown_;
 	}
 
-	void Core::SetReallyMainWindow (MainWindow *win)
-	{
-		ReallyMainWindow_ = win;
-
-		LocalSocketHandler_->SetMainWindow (win);
-
-		DM_ = new DockManager (win, this);
-	}
-
-	MainWindow* Core::GetReallyMainWindow ()
-	{
-		return ReallyMainWindow_;
-	}
-
 	DockManager* Core::GetDockManager () const
 	{
 		return DM_;
@@ -223,11 +208,6 @@ namespace LeechCraft
 		return CoreInstanceObject_.get ();
 	}
 
-	QToolBar* Core::GetToolBar (int index) const
-	{
-		return TabManager_->GetToolBar (index);
-	}
-
 	void Core::Setup (QObject *plugin)
 	{
 		InitDynamicSignals (plugin);
@@ -250,19 +230,6 @@ namespace LeechCraft
 				std::cout << "Found plugin: " << loader->fileName ().toUtf8 ().constData () << std::endl;
 			std::exit (0);
 		}
-
-		connect (this,
-				SIGNAL (error (QString)),
-				ReallyMainWindow_,
-				SLOT (catchError (QString)));
-
-		TabManager_.reset (new TabManager (ReallyMainWindow_->GetTabWidget (),
-					ReallyMainWindow_->GetTabWidget ()));
-
-		connect (TabManager_.get (),
-				SIGNAL (currentTabChanged (QWidget*)),
-				DM_,
-				SLOT (handleTabChanged (QWidget*)));
 
 		PluginManager_->Init (map.count ("safe-mode"));
 
@@ -364,11 +331,6 @@ namespace LeechCraft
 		return QModelIndex ();
 	}
 
-	TabManager* Core::GetTabManager () const
-	{
-		return TabManager_.get ();
-	}
-
 	NewTabMenuManager* Core::GetNewTabMenuManager () const
 	{
 		return NewTabMenuManager_.get ();
@@ -404,9 +366,10 @@ namespace LeechCraft
 
 	void Core::handleSettingClicked (const QString& name)
 	{
+		auto win = RootWindowsManager_->GetPreferredWindow ();
 		if (name == "ClearCache")
 		{
-			if (QMessageBox::question (ReallyMainWindow_,
+			if (QMessageBox::question (win,
 						"LeechCraft",
 						tr ("Do you really want to clear the network cache?"),
 						QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
@@ -418,7 +381,7 @@ namespace LeechCraft
 		}
 		else if (name == "ClearCookies")
 		{
-			if (QMessageBox::question (ReallyMainWindow_,
+			if (QMessageBox::question (win,
 						"LeechCraft",
 						tr ("Do you really want to clear cookies?"),
 						QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
@@ -430,7 +393,7 @@ namespace LeechCraft
 		}
 		else if (name == "SetStartupPassword")
 		{
-			if (QMessageBox::question (ReallyMainWindow_,
+			if (QMessageBox::question (win,
 						"LeechCraft",
 						tr ("This security measure is easily circumvented by modifying "
 							"LeechCraft's settings files (or registry on Windows) in a text "
@@ -442,7 +405,7 @@ namespace LeechCraft
 				return;
 
 			bool ok = false;
-			const auto& newPass = QInputDialog::getText (ReallyMainWindow_,
+			const auto& newPass = QInputDialog::getText (win,
 					"LeechCraft",
 					tr ("Enter new startup password:"),
 					QLineEdit::Password,
@@ -495,14 +458,6 @@ namespace LeechCraft
 					error, PCritical_));
 	}
 
-	void Core::handleStatusBarChanged (QWidget *contents, const QString& origMessage)
-	{
-		if (contents->visibleRegion ().isEmpty ())
-			return;
-
-		ReallyMainWindow_->statusBar ()->showMessage (origMessage, 30000);
-	}
-
 	void Core::InitDynamicSignals (QObject *plugin)
 	{
 		const QMetaObject *qmo = plugin->metaObject ();
@@ -535,45 +490,29 @@ namespace LeechCraft
 							int*, QObject**)));
 	}
 
-	void Core::InitEmbedTab (QObject *plugin)
-	{
-		InitCommonTab (plugin);
-	}
-
 	void Core::InitMultiTab (QObject *plugin)
 	{
 		connect (plugin,
 				SIGNAL (addNewTab (const QString&, QWidget*)),
-				TabManager_.get (),
+				RootWindowsManager_.get (),
 				SLOT (add (const QString&, QWidget*)));
 		connect (plugin,
 				SIGNAL (removeTab (QWidget*)),
-				TabManager_.get (),
+				RootWindowsManager_.get (),
 				SLOT (remove (QWidget*)));
-
-		InitCommonTab (plugin);
-	}
-
-	void Core::InitCommonTab (QObject *plugin)
-	{
 		connect (plugin,
 				SIGNAL (changeTabName (QWidget*, const QString&)),
-				TabManager_.get (),
+				RootWindowsManager_.get (),
 				SLOT (changeTabName (QWidget*, const QString&)),
 				Qt::UniqueConnection);
 		connect (plugin,
 				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-				TabManager_.get (),
+				RootWindowsManager_.get (),
 				SLOT (changeTabIcon (QWidget*, const QIcon&)),
 				Qt::UniqueConnection);
 		connect (plugin,
-				SIGNAL (statusBarChanged (QWidget*, const QString&)),
-				this,
-				SLOT (handleStatusBarChanged (QWidget*, const QString&)),
-				Qt::UniqueConnection);
-		connect (plugin,
 				SIGNAL (raiseTab (QWidget*)),
-				TabManager_.get (),
+				RootWindowsManager_.get (),
 				SLOT (bringToFront (QWidget*)),
 				Qt::UniqueConnection);
 	}
