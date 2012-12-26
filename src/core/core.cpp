@@ -89,6 +89,11 @@ namespace LeechCraft
 		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (NetworkAccessManager_.get ());
 		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (DM_);
 
+		connect (RootWindowsManager_.get (),
+				SIGNAL (tabWillBeMovedXWindows (int, int, int)),
+				DM_,
+				SLOT (handleTabMove (int, int, int)));
+
 		connect (CoreInstanceObject_->GetSettingsDialog ().get (),
 				SIGNAL (pushButtonClicked (const QString&)),
 				this,

@@ -45,7 +45,7 @@ namespace LeechCraft
 	{
 		auto win = static_cast<MainWindow*> (RootWM_->GetPreferredWindow ());
 		win->addDockWidget (area, dw);
-		Dock2Widnow_ [dw] = win;
+		Dock2Window_ [dw] = win;
 
 		connect (dw,
 				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
@@ -82,7 +82,7 @@ namespace LeechCraft
 
 	void DockManager::ToggleViewActionVisiblity (QDockWidget *widget, bool visible)
 	{
-		auto win = Dock2Widnow_ [widget];
+		auto win = Dock2Window_ [widget];
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookDockWidgetActionVisToggled (proxy, win, widget, visible);
@@ -106,7 +106,7 @@ namespace LeechCraft
 		widgets.removeAll (dw);
 		if (!widgets.isEmpty ())
 		{
-			Dock2Widnow_ [dw]->tabifyDockWidget (dw, widgets.last ());
+			Dock2Window_ [dw]->tabifyDockWidget (dw, widgets.last ());
 			dw->show ();
 			dw->raise ();
 		}
@@ -124,6 +124,47 @@ namespace LeechCraft
 		ForcefullyClosed_ << dock;
 
 		return false;
+	}
+
+	namespace
+	{
+		Qt::DockWidgetArea Reverse (Qt::DockWidgetArea area)
+		{
+			switch (area)
+			{
+			case Qt::LeftDockWidgetArea:
+				return Qt::RightDockWidgetArea;
+			case Qt::RightDockWidgetArea:
+				return Qt::LeftDockWidgetArea;
+			case Qt::TopDockWidgetArea:
+				return Qt::BottomDockWidgetArea;
+			case Qt::BottomDockWidgetArea:
+				return Qt::TopDockWidgetArea;
+			default:
+				return area;
+			}
+		}
+	}
+
+	void DockManager::handleTabMove (int tab, int from, int to)
+	{
+		auto rootWM = Core::Instance ().GetRootWindowsManager ();
+
+		auto fromWin = static_cast<MainWindow*> (rootWM->GetMainWindow (from));
+		auto toWin = static_cast<MainWindow*> (rootWM->GetMainWindow (to));
+		auto widget = fromWin->GetTabWidget ()->Widget (tab);
+
+		for (auto i = TabAssociations_.begin (), end = TabAssociations_.end (); i != end; ++i)
+			if (*i == widget)
+			{
+				auto dw = i.key ();
+				Dock2Window_ [dw] = toWin;
+
+				const auto area = fromWin->dockWidgetArea (dw);
+
+				fromWin->removeDockWidget (dw);
+				toWin->addDockWidget (Reverse (area), dw);
+			}
 	}
 
 	void DockManager::handleDockDestroyed ()
@@ -180,7 +221,7 @@ namespace LeechCraft
 			else if (!ForcefullyClosed_.contains (dock))
 			{
 				dock->setVisible (true);
-				TabifyDW (dock, Dock2Widnow_ [dock]->dockWidgetArea (dock));
+				TabifyDW (dock, Dock2Window_ [dock]->dockWidgetArea (dock));
 			}
 		}
 	}

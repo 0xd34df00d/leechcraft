@@ -45,7 +45,7 @@ namespace LeechCraft
 		QHash<QAction*, QDockWidget*> ToggleAct2Dock_;
 		QSet<QDockWidget*> ForcefullyClosed_;
 
-		QHash<QDockWidget*, MainWindow*> Dock2Widnow_;
+		QHash<QDockWidget*, MainWindow*> Dock2Window_;
 	public:
 		DockManager (RootWindowsManager*, QObject* = 0);
 
@@ -57,6 +57,8 @@ namespace LeechCraft
 		bool eventFilter (QObject*, QEvent*);
 	private:
 		void TabifyDW (QDockWidget*, Qt::DockWidgetArea);
+	public slots:
+		void handleTabMove (int, int, int);
 	private slots:
 		void handleDockDestroyed ();
 		void handleDockLocationChanged (Qt::DockWidgetArea);

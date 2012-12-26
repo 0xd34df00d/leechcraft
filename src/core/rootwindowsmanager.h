@@ -80,6 +80,6 @@ namespace LeechCraft
 		void windowAdded (int);
 		void windowRemoved (int);
 		void currentWindowChanged (int, int);
-		void tabMovedXWindows (int, int);
+		void tabWillBeMovedXWindows (int tab, int from, int to);
 	};
 }

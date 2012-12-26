@@ -142,10 +142,9 @@ namespace LeechCraft
 				SLOT (handleTabChanged (QWidget*)));
 
 		Windows_.push_back ({ win, proxy, tm });
+		win->Init ();
 
 		emit windowAdded (Windows_.size () - 1);
-
-		win->Init ();
 
 		return win;
 	}
@@ -168,6 +167,8 @@ namespace LeechCraft
 	{
 		auto widget = Windows_ [fromWin].TM_->GetWidget (tabIdx);
 		const auto& name = Windows_ [fromWin].Window_->GetTabWidget ()->TabText (tabIdx);
+
+		emit tabWillBeMovedXWindows (tabIdx, fromWin, toWin);
 
 		Windows_ [fromWin].TM_->remove (widget);
 		Windows_ [toWin].TM_->add (name, widget);
