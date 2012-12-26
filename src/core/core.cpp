@@ -140,6 +140,8 @@ namespace LeechCraft
 
 	void Core::Release ()
 	{
+		RootWindowsManager_->Release ();
+
 		IsShuttingDown_ = true;
 		LocalSocketHandler_.reset ();
 		XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");

@@ -76,11 +76,6 @@ void LeechCraft::MainWindow::Init ()
 
 	InitializeInterface ();
 
-	connect (qApp,
-			SIGNAL (aboutToQuit ()),
-			this,
-			SLOT (handleQuit ()));
-
 	connect (Core::Instance ().GetNewTabMenuManager (),
 			SIGNAL (restoreTabActionAdded (QAction*)),
 			this,

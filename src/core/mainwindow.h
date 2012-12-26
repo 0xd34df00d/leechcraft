@@ -91,6 +91,8 @@ namespace LeechCraft
 	public slots:
 		void catchError (QString);
 		void showHideMain ();
+
+		void handleQuit ();
 	protected:
 		virtual void closeEvent (QCloseEvent*);
 		virtual void keyPressEvent (QKeyEvent*);
@@ -113,7 +115,6 @@ namespace LeechCraft
 		void on_ActionQuit__triggered ();
 		void on_ActionShowStatusBar__triggered ();
 		void on_ActionMenu__triggered ();
-		void handleQuit ();
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_MainTabWidget__currentChanged (int);
 		void on_ActionShowToolBar__triggered (bool);

@@ -46,6 +46,7 @@ namespace LeechCraft
 	public:
 		RootWindowsManager (QObject* = 0);
 
+		void Release ();
 		MainWindow* MakeMainWindow ();
 		TabManager* GetTabManager (MainWindow*) const;
 		TabManager* GetTabManager (int) const;

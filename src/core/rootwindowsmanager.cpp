@@ -33,6 +33,12 @@ namespace LeechCraft
 	{
 	}
 
+	void RootWindowsManager::Release ()
+	{
+		for (const auto& win : Windows_)
+			win.Window_->handleQuit ();
+	}
+
 	MainWindow* RootWindowsManager::MakeMainWindow ()
 	{
 		return CreateWindow ();
