@@ -324,7 +324,6 @@ namespace LeechCraft
 
 		auto rootWM = Core::Instance ().GetRootWindowsManager ();
 		const int windowIndex = rootWM->GetWindowIndex (Window_);
-		qDebug () << Q_FUNC_INFO << Window_;
 
 		auto moveMenu = menu->addMenu (tr ("Move tab to"));
 		auto toNew = moveMenu->addAction (tr ("New window"),
