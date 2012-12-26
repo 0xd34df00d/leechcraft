@@ -60,11 +60,12 @@ namespace SB2
 		QStandardItem* FindItem (QAction*) const;
 		void AddActions (const QList<QAction*>&, ActionPos);
 		void RemoveAction (QAction*);
+	public slots:
+		void handlePluginsAvailable ();
 	private slots:
 		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
 		void handleActionDestroyed ();
 		void handleActionChanged ();
-		void handlePluginsAvailable ();
 	};
 }
 }

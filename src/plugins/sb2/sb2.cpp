@@ -125,17 +125,23 @@ namespace SB2
 
 		auto launcher = new LauncherComponent (ictw, Proxy_);
 		mgr->AddComponent (launcher->GetComponent ());
-		connect (this,
-				SIGNAL (pluginsAvailable ()),
-				launcher,
-				SLOT (handlePluginsAvailable ()));
+		if (init)
+			connect (this,
+					SIGNAL (pluginsAvailable ()),
+					launcher,
+					SLOT (handlePluginsAvailable ()));
+		else
+			launcher->handlePluginsAvailable ();
 
 		auto tray = new TrayComponent (Proxy_);
 		mgr->AddComponent (tray->GetComponent ());
-		connect (this,
-				SIGNAL (pluginsAvailable ()),
-				tray,
-				SLOT (handlePluginsAvailable ()));
+		if (init)
+			connect (this,
+					SIGNAL (pluginsAvailable ()),
+					tray,
+					SLOT (handlePluginsAvailable ()));
+		else
+			tray->handlePluginsAvailable ();
 
 		if (!init)
 			mgr->SecondInit ();
