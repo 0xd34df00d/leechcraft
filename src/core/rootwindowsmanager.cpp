@@ -164,6 +164,31 @@ namespace LeechCraft
 		f (Windows_ [idx].TM_);
 	}
 
+	void RootWindowsManager::MoveTab (int tabIdx, int fromWin, int toWin)
+	{
+		auto widget = Windows_ [fromWin].TM_->GetWidget (tabIdx);
+		const auto& name = Windows_ [fromWin].Window_->GetTabWidget ()->TabText (tabIdx);
+
+		Windows_ [fromWin].TM_->remove (widget);
+		Windows_ [toWin].TM_->add (name, widget);
+	}
+
+	void RootWindowsManager::moveTabToNewWindow ()
+	{
+		CreateWindow ();
+
+		MoveTab (sender ()->property ("TabIndex").toInt (),
+				sender ()->property ("FromWindowIndex").toInt (),
+				GetWindowsCount () - 1);
+	}
+
+	void RootWindowsManager::moveTabToExistingWindow ()
+	{
+		MoveTab (sender ()->property ("TabIndex").toInt (),
+				sender ()->property ("FromWindowIndex").toInt (),
+				sender ()->property ("ToWindowIndex").toInt ());
+	}
+
 	void RootWindowsManager::add (const QString& name, QWidget *w)
 	{
 		const int winIdx = GetPreferredWindowIndex ();
