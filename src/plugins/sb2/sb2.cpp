@@ -100,9 +100,13 @@ namespace SB2
 		return result;
 	}
 
-	void Plugin::hookDockWidgetActionVisToggled (IHookProxy_ptr proxy, QDockWidget *dw, bool visible)
+	void Plugin::hookDockWidgetActionVisToggled (IHookProxy_ptr proxy,
+			QMainWindow *win, QDockWidget *dw, bool visible)
 	{
-		//Tray_->HandleDock (dw, visible);
+		auto rootWM = Proxy_->GetRootWindowsManager ();
+		const int idx = rootWM->GetWindowIndex (win);
+
+		Managers_ [idx].Tray_->HandleDock (dw, visible);
 		proxy->CancelDefault ();
 	}
 

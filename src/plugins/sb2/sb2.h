@@ -58,7 +58,8 @@ namespace SB2
 
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
-		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QDockWidget*, bool);
+		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr,
+				QMainWindow*, QDockWidget*, bool);
 	private slots:
 		void handleWindow (int, bool init = false);
 		void handleWindowRemoved (int);
