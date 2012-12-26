@@ -24,6 +24,7 @@
 #include <QSet>
 #include <interfaces/core/ihookproxy.h>
 
+class QMainWindow;
 class QDockWidget;
 class QAction;
 
@@ -64,6 +65,6 @@ namespace LeechCraft
 
 		void handleWindow (int);
 	signals:
-		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QDockWidget*, bool);
+		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QMainWindow*, QDockWidget*, bool);
 	};
 }

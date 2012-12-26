@@ -82,8 +82,10 @@ namespace LeechCraft
 
 	void DockManager::ToggleViewActionVisiblity (QDockWidget *widget, bool visible)
 	{
+		auto win = Dock2Widnow_ [widget];
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookDockWidgetActionVisToggled (proxy, widget, visible);
+		emit hookDockWidgetActionVisToggled (proxy, win, widget, visible);
 		if (proxy->IsCancelled ())
 			return;
 

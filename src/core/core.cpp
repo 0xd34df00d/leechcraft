@@ -87,6 +87,7 @@ namespace LeechCraft
 	, IsShuttingDown_ (false)
 	{
 		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (NetworkAccessManager_.get ());
+		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (DM_);
 
 		connect (CoreInstanceObject_->GetSettingsDialog ().get (),
 				SIGNAL (pushButtonClicked (const QString&)),
