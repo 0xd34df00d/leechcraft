@@ -65,7 +65,7 @@ namespace LeechCraft
 		ICoreTabWidget* GetTabWidget (int) const;
 	private:
 		MainWindow* CreateWindow ();
-		void PerformWithTab (std::function<void (TabManager*)>, QWidget*);
+		void PerformWithTab (std::function<void (TabManager*, int)>, QWidget*);
 		void MoveTab (int tab, int fromWin, int toWin);
 	public slots:
 		void moveTabToNewWindow ();
@@ -80,6 +80,9 @@ namespace LeechCraft
 		void windowAdded (int);
 		void windowRemoved (int);
 		void currentWindowChanged (int, int);
-		void tabWillBeMovedXWindows (int tab, int from, int to);
+		void tabAdded (int, int);
+		void tabIsRemoving (int, int);
+		void tabIsMoving (int, int, int);
+		void tabMoved (int, int, int);
 	};
 }
