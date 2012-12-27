@@ -352,10 +352,7 @@ void TabManager::handleCloseAllButCurrent ()
 
 int TabManager::FindTabForWidget (QWidget *widget) const
 {
-	for (int i = 0; i < TabWidget_->WidgetCount (); ++i)
-		if (TabWidget_->Widget (i) == widget)
-			return i;
-	return -1;
+	return TabWidget_->IndexOf (widget);
 }
 
 void TabManager::InvalidateName ()
