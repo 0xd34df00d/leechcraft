@@ -106,7 +106,6 @@ void Core::Release ()
 void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 {
 	CoreProxy_ = proxy;
-	Remove_->setParent (proxy->GetMainWindow ());
 }
 
 ICoreProxy_ptr Core::GetCoreProxy () const

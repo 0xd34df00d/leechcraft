@@ -38,12 +38,13 @@ namespace SB2
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
+		ICoreTabWidget *ICTW_;
 		const QByteArray TC_;
 		QStandardItemModel *Model_;
 
 		Util::UnhoverDeleteMixin *UnhoverDeleteMixin_;
 	public:
-		TabListView (const QByteArray&, const QList<QWidget*>&, ICoreProxy_ptr, QWidget* = 0);
+		TabListView (const QByteArray&, const QList<QWidget*>&, ICoreTabWidget*, ICoreProxy_ptr, QWidget* = 0);
 
 		QByteArray GetTabClass () const;
 

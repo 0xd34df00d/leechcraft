@@ -22,6 +22,7 @@
 #include <QProgressDialog>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -36,13 +37,15 @@ namespace Poshuku
 	void ImportEntityHandler::Import (const Entity& e)
 	{
 		qDebug () << Q_FUNC_INFO;
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+
 		QList<QVariant> history = e.Additional_ ["BrowserHistory"].toList ();
 		if (history.size ())
 		{
 			QProgressDialog progressDia (tr ("Importing history..."),
 					tr ("Abort history import"),
 					0, history.size (),
-					Core::Instance ().GetProxy ()->GetMainWindow ());
+					rootWM->GetPreferredWindow ());
 			int cur = 0;
 			qDebug () << "History:" << history.size ();
 			Q_FOREACH (const QVariant& hRowVar, history)
@@ -69,7 +72,7 @@ namespace Poshuku
 			QProgressDialog progressDia (tr ("Importing bookmarks..."),
 					tr ("Abort bookmarks import"),
 					0, bookmarks.size (),
-					Core::Instance ().GetProxy ()->GetMainWindow ());
+					rootWM->GetPreferredWindow ());
 			int cur = 0;
 			qDebug () << "Bookmarks" << bookmarks.size ();
 			Q_FOREACH (const QVariant& hBMVar, bookmarks)

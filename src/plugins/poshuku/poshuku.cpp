@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/backendselector.h>
@@ -61,6 +62,8 @@ namespace Poshuku
 		Core::Instance ().setParent (this);
 		Core::Instance ().SetProxy (coreProxy);
 
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+
 		try
 		{
 			QWebSettings::setIconDatabasePath (
@@ -70,7 +73,7 @@ namespace Poshuku
 		}
 		catch (const std::runtime_error& e)
 		{
-			QMessageBox::warning (Core::Instance ().GetProxy ()->GetMainWindow (),
+			QMessageBox::warning (rootWM->GetPreferredWindow (),
 					"LeechCraft",
 					e.what ());
 		}
@@ -84,7 +87,7 @@ namespace Poshuku
 		}
 		catch (const std::runtime_error& e)
 		{
-			QMessageBox::warning (Core::Instance ().GetProxy ()->GetMainWindow (),
+			QMessageBox::warning (rootWM->GetPreferredWindow (),
 					"LeechCraft",
 					e.what ());
 		}
@@ -98,7 +101,7 @@ namespace Poshuku
 		}
 		catch (const std::runtime_error& e)
 		{
-			QMessageBox::warning (Core::Instance ().GetProxy ()->GetMainWindow (),
+			QMessageBox::warning (rootWM->GetPreferredWindow (),
 					"LeechCraft",
 					e.what ());
 		}
@@ -136,7 +139,7 @@ namespace Poshuku
 		{
 			qWarning () << Q_FUNC_INFO
 					<< e.what ();
-			QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
+			QMessageBox::critical (rootWM->GetPreferredWindow (),
 					"LeechCraft",
 					tr ("Poshuku failed to initialize properly. "
 						"Check logs and talk with the developers. "
@@ -539,11 +542,15 @@ namespace Poshuku
 				property ("DeveloperExtrasEnabled").toBool ();
 		QWebSettings::globalSettings ()->
 				setAttribute (QWebSettings::DeveloperExtrasEnabled, enabled);
+
 		if (enabled && sender ())
-			QMessageBox::information (Core::Instance ().GetProxy ()->GetMainWindow (),
+		{
+			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+			QMessageBox::information (rootWM->GetPreferredWindow (),
 					"LeechCraft",
 					tr ("Please note that Developer Extras would work correctly "
 						"only for pages that are loaded after enabling."));
+		}
 	}
 
 	void Poshuku::cacheSettingsChanged ()
@@ -573,9 +580,8 @@ namespace Poshuku
 	{
 		if (name == "CookiesEdit")
 		{
-			CookiesEditDialog *dia =
-					new CookiesEditDialog (Core::Instance ()
-							.GetProxy ()->GetMainWindow ());
+			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+			auto dia = new CookiesEditDialog (rootWM->GetPreferredWindow ());
 			dia->show ();
 		}
 		else if (name == "ClearIconDatabase")

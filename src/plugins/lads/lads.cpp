@@ -27,9 +27,11 @@
 #include <QMainWindow>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/imwproxy.h>
 
+#warning "Don't forget to add support for multiple windows here."
 
 namespace LeechCraft
 {
@@ -42,7 +44,7 @@ namespace Lads
 		Action_ = 0;
 		Proxy_ = proxy;
 		MenuBar_ = new QMenuBar (0);
-		MW_ = Proxy_->GetMainWindow ();
+		MW_ = Proxy_->GetRootWindowsManager ()->GetMainWindow (0);
 		const auto& services = sb.interface ()->registeredServiceNames ().value ();
 		if (services.contains ("com.canonical.Unity"))
 		{
@@ -112,7 +114,7 @@ namespace Lads
 
 	void Plugin::showHideMain () const
 	{
-		Proxy_->GetMWProxy ()->ToggleVisibility ();
+		Proxy_->GetRootWindowsManager ()->GetMWProxy (0)->ToggleVisibility ();
 	}
 
 	void Plugin::handleGotActions (const QList<QAction*>&, ActionsEmbedPlace aep)
@@ -134,7 +136,7 @@ namespace Lads
 		if (!UnityDetected_)
 			return;
 
-		auto menu = Proxy_->GetMWProxy ()->GetMainMenu ();
+		auto menu = Proxy_->GetRootWindowsManager ()->GetMWProxy (0)->GetMainMenu ();
 
 		QMenu *lcMenu = 0;
 		QList<QAction*> firstLevelActions;

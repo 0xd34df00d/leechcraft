@@ -36,6 +36,7 @@ namespace LeechCraft
 		CorePlugin2Manager (QObject* = 0);
 	signals:
 		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr proxy,
+				QMainWindow *window,
 				QDockWidget *dock,
 				bool toggleActionVisible);
 		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);

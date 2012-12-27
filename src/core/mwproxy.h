@@ -23,13 +23,17 @@
 
 namespace LeechCraft
 {
+	class MainWindow;
+
 	class MWProxy : public QObject
 				  , public IMWProxy
 	{
 		Q_OBJECT
 		Q_INTERFACES (IMWProxy)
+
+		MainWindow *Win_;
 	public:
-		MWProxy (QObject* = 0);
+		MWProxy (MainWindow*, QObject* = 0);
 
 		void AddDockWidget (Qt::DockWidgetArea, QDockWidget*);
 		void AssociateDockWidget (QDockWidget*, QWidget*);

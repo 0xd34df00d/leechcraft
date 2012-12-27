@@ -24,6 +24,7 @@
 #include <QMainWindow>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 #include "glanceshower.h"
 
@@ -83,7 +84,8 @@ namespace Glance
 	void Plugin::on_ActionGlance__triggered ()
 	{
 		Glance_ = new GlanceShower;
-		Glance_->SetTabWidget (Core::Instance ().GetProxy ()->GetTabWidget ());
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		Glance_->SetTabWidget (rootWM->GetTabWidget (rootWM->GetPreferredWindowIndex ()));
 
 		connect (Glance_,
 				SIGNAL (finished (bool)),

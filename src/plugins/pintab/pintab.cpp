@@ -24,6 +24,9 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/icoretabwidget.h>
+#include <interfaces/core/irootwindowsmanager.h>
+
+#warning "Don't forget to add support for multiple windows here."
 
 namespace LeechCraft
 {
@@ -33,7 +36,7 @@ namespace PinTab
 	{
 		Util::InstallTranslator ("pintab");
 
-		MainTabWidget_ = proxy->GetTabWidget ();
+		MainTabWidget_ = proxy->GetRootWindowsManager ()->GetTabWidget (0);
 		connect (MainTabWidget_->GetObject (),
 				SIGNAL (tabInserted (int)),
 				this,

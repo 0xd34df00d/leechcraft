@@ -46,7 +46,7 @@ namespace SB2
 		const QString ImageProviderID = "SB2_LCMenuImage";
 	}
 
-	LCMenuComponent::LCMenuComponent (ICoreProxy_ptr proxy, QObject *parent)
+	LCMenuComponent::LCMenuComponent (IMWProxy *proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	{
@@ -56,7 +56,7 @@ namespace SB2
 		Component_.StaticProps_ << QPair<QString, QVariant> ("SB2_menuComponentLCIcon", "image://" + ImageProviderID + "/icon");
 		Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, new LCMenuImageProvider);
 
-		Proxy_->GetMWProxy ()->HideMainMenu ();
+		Proxy_->HideMainMenu ();
 	}
 
 	QuarkComponent LCMenuComponent::GetComponent () const
@@ -66,7 +66,7 @@ namespace SB2
 
 	void LCMenuComponent::execMenu ()
 	{
-		Proxy_->GetMWProxy ()->GetMainMenu ()->exec (QCursor::pos ());
+		Proxy_->GetMainMenu ()->exec (QCursor::pos ());
 	}
 }
 }

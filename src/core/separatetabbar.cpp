@@ -28,11 +28,13 @@
 #include "separatetabwidget.h"
 #include "core.h"
 #include "tabmanager.h"
+#include "rootwindowsmanager.h"
 
 namespace LeechCraft
 {
 	SeparateTabBar::SeparateTabBar (QWidget *parent)
 	: QTabBar (parent)
+	, Window_ (0)
 	, Id_ (0)
 	, IsLastTab_ (false)
 	, InMove_ (false)
@@ -50,6 +52,11 @@ namespace LeechCraft
 		addTab (QString ());
 
 		IsLastTab_ = true;
+	}
+
+	void SeparateTabBar::SetWindow (MainWindow *win)
+	{
+		Window_ = win;
 	}
 
 	void SeparateTabBar::SetTabData (int index)
@@ -137,7 +144,11 @@ namespace LeechCraft
 		else if (index != -1 &&
 				event->button () == Qt::MidButton &&
 				index != count () - 1)
-			Core::Instance ().GetTabManager ()->remove (index);
+		{
+			auto rootWM = Core::Instance ().GetRootWindowsManager ();
+			auto tm = rootWM->GetTabManager (Window_);
+			tm->remove (index);
+		}
 
 		QTabBar::mouseReleaseEvent (event);
 	}

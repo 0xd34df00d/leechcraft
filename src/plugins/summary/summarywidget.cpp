@@ -29,6 +29,8 @@
 #include <interfaces/ijobholder.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/imwproxy.h>
 #include "core.h"
 #include "searchwidget.h"
 #include "summary.h"
@@ -59,8 +61,9 @@ namespace Summary
 		Ui_.setupUi (this);
 		Ui_.PluginsTasksTree_->setItemDelegate (new ModelDelegate (this));
 
-		Core::Instance ().GetProxy ()->GetMainWindow ()->
-			addDockWidget (Qt::LeftDockWidgetArea, SearchWidget_);
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		rootWM->GetMWProxy (0)->AddDockWidget (Qt::LeftDockWidgetArea, SearchWidget_);
+		rootWM->GetMWProxy (0)->AssociateDockWidget (SearchWidget_, this);
 		SearchWidget_->hide ();
 
 		Q_FOREACH (QObject *plugin, Core::Instance ().GetProxy ()->

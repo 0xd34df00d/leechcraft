@@ -73,6 +73,7 @@ namespace LeechCraft
 		bool IsToolBarVisible_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
+		void Init ();
 		virtual ~MainWindow ();
 
 		SeparateTabWidget* GetTabWidget () const;
@@ -85,17 +86,20 @@ namespace LeechCraft
 
 		QWidget* GetDockListWidget (Qt::DockWidgetArea) const;
 
-		void ToggleViewActionVisiblity (QDockWidget*, bool);
-
 		void AddMenus (const QMap<QString, QList<QAction*>>&);
 		void RemoveMenus (const QMap<QString, QList<QAction*>>&);
 	public slots:
 		void catchError (QString);
 		void showHideMain ();
+
+		void handleQuit ();
 	protected:
 		virtual void closeEvent (QCloseEvent*);
 		virtual void keyPressEvent (QKeyEvent*);
 		virtual void keyReleaseEvent (QKeyEvent*);
+
+		virtual void dragEnterEvent (QDragEnterEvent*);
+		virtual void dropEvent (QDropEvent*);
 	private:
 		void InitializeInterface ();
 		void SetStatusBar ();
@@ -103,6 +107,7 @@ namespace LeechCraft
 		void WriteSettings ();
 	private slots:
 		void on_ActionAddTask__triggered ();
+		void on_ActionNewWindow__triggered ();
 		void on_ActionCloseTab__triggered ();
 		void handleCloseCurrentTab ();
 		void on_ActionSettings__triggered ();
@@ -111,7 +116,6 @@ namespace LeechCraft
 		void on_ActionQuit__triggered ();
 		void on_ActionShowStatusBar__triggered ();
 		void on_ActionMenu__triggered ();
-		void handleQuit ();
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_MainTabWidget__currentChanged (int);
 		void on_ActionShowToolBar__triggered (bool);
@@ -130,7 +134,6 @@ namespace LeechCraft
 		void InitializeShortcuts ();
 		void ShowMenuAndBar (bool);
 	signals:
-		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QDockWidget*, bool);
 		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
 		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr, QSystemTrayIcon*);

@@ -24,16 +24,15 @@
 #include "xmlsettingsmanager.h"
 #include "iconthemeengine.h"
 #include "tagsmanager.h"
-#include "mwproxy.h"
 #include "entitymanager.h"
 #include "config.h"
 #include "colorthemeengine.h"
+#include "rootwindowsmanager.h"
 
 namespace LeechCraft
 {
 	CoreProxy::CoreProxy (QObject *parent)
 	: QObject (parent)
-	, MWProxy_ (new MWProxy (this))
 	, EM_ (new EntityManager (this))
 	{
 	}
@@ -48,11 +47,6 @@ namespace LeechCraft
 		return Core::Instance ().GetShortcutProxy ();
 	}
 
-	IMWProxy* CoreProxy::GetMWProxy () const
-	{
-		return MWProxy_;
-	}
-
 	QModelIndex CoreProxy::MapToSource (const QModelIndex& index) const
 	{
 		return Core::Instance ().MapToSource (index);
@@ -63,14 +57,9 @@ namespace LeechCraft
 		return XmlSettingsManager::Instance ();
 	}
 
-	QMainWindow* CoreProxy::GetMainWindow () const
+	IRootWindowsManager* CoreProxy::GetRootWindowsManager () const
 	{
-		return Core::Instance ().GetReallyMainWindow ();
-	}
-
-	ICoreTabWidget* CoreProxy::GetTabWidget () const
-	{
-		return Core::Instance ().GetReallyMainWindow ()->GetTabWidget ();
+		return Core::Instance ().GetRootWindowsManager ();
 	}
 
 	QIcon CoreProxy::GetIcon (const QString& icon, const QString& iconOff) const

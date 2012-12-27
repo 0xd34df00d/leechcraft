@@ -170,6 +170,7 @@ namespace Summary
 		void handleCurrentTabChanged (int);
 		void handleNeedToClose ();
 		void handleTaskModelDestroyed ();
+		void handleWindow (int);
 		void handlePluginInjected (QObject*);
 	signals:
 		void addNewTab (const QString&, QWidget*);

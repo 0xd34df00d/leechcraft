@@ -121,6 +121,10 @@ namespace LHTR
 
 		Ui_.setupUi (this);
 
+		auto palette = Ui_.View_->palette ();
+		palette.setColor (QPalette::Base, Qt::white);
+		Ui_.View_->setPalette (palette);
+
 		Ui_.View_->setPage (new EditorPage (Ui_.View_));
 		Ui_.View_->page ()->setContentEditable (true);
 		Ui_.View_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);

@@ -27,7 +27,10 @@
 #include <QKeyEvent>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
+
+Q_DECLARE_METATYPE (ICoreTabWidget*)
 
 namespace LeechCraft
 {
@@ -39,8 +42,7 @@ namespace TabsList
 
 		Util::InstallTranslator ("tabslist");
 
-		ShowList_ = new QAction (tr ("List of tabs"),
-				Proxy_->GetMainWindow ());
+		ShowList_ = new QAction (tr ("List of tabs"), this);
 		ShowList_->setProperty ("ActionIcon", "view-list-details");
 		ShowList_->setShortcut (QString ("Ctrl+Shift+L"));
 		ShowList_->setProperty ("Action/ID", GetUniqueID () + "_showlist");
@@ -156,12 +158,14 @@ namespace TabsList
 
 	void Plugin::handleShowList ()
 	{
-		ICoreTabWidget *tw = Proxy_->GetTabWidget ();
+		auto rootWM = Proxy_->GetRootWindowsManager ();
+
+		ICoreTabWidget *tw = rootWM->GetTabWidget (rootWM->GetPreferredWindowIndex ());
 
 		if (tw->WidgetCount () < 2)
 			return;
 
-		QWidget *widget = new QWidget (Proxy_->GetMainWindow (),
+		QWidget *widget = new QWidget (rootWM->GetPreferredWindow (),
 				Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 		widget->setAttribute (Qt::WA_TranslucentBackground);
 		widget->setWindowModality (Qt::ApplicationModal);
@@ -182,6 +186,7 @@ namespace TabsList
 			QAction *action = new QAction (tw->TabIcon (i),
 					title, this);
 			action->setProperty ("TabIndex", i);
+			action->setProperty ("ICTW", QVariant::fromValue<ICoreTabWidget*> (tw));
 			connect (action,
 					SIGNAL (triggered ()),
 					this,
@@ -211,7 +216,7 @@ namespace TabsList
 		layout->activate ();
 
 		const QRect& rect = QApplication::desktop ()->
-				screenGeometry (Proxy_->GetMainWindow ());
+				screenGeometry (rootWM->GetPreferredWindow ());
 		QPoint pos = rect.center ();
 
 		const QSize& size = widget->sizeHint () / 2;
@@ -227,7 +232,8 @@ namespace TabsList
 	void Plugin::navigateToTab ()
 	{
 		const int idx = sender ()->property ("TabIndex").toInt ();
-		Proxy_->GetTabWidget ()->setCurrentTab (idx);
+		auto ictw = sender ()->property ("ICTW").value<ICoreTabWidget*> ();
+		ictw->setCurrentTab (idx);
 	}
 }
 }

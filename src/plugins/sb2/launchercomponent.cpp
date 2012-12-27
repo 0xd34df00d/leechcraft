@@ -92,9 +92,10 @@ namespace SB2
 		const QString ImageProviderID = "SB2_TabClassImage";
 	}
 
-	LauncherComponent::LauncherComponent (ICoreProxy_ptr proxy, QObject *parent)
+	LauncherComponent::LauncherComponent (ICoreTabWidget *ictw, ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
+	, ICTW_ (ictw)
 	, Model_ (new LauncherModel (this))
 	, ImageProv_ (new TabClassImageProvider (proxy))
 	{
@@ -108,7 +109,7 @@ namespace SB2
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
 		Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
 
-		connect (proxy->GetTabWidget ()->GetObject (),
+		connect (ICTW_->GetObject (),
 				SIGNAL (currentChanged (int)),
 				this,
 				SLOT (handleCurrentTabChanged (int)));
@@ -319,7 +320,7 @@ namespace SB2
 		if (CurrentTabList_)
 			delete CurrentTabList_;
 
-		auto view = new TabListView (tc, widgets, Proxy_);
+		auto view = new TabListView (tc, widgets, ICTW_, Proxy_);
 		view->move (x, y);
 		view->show ();
 		view->setFocus ();
@@ -372,7 +373,7 @@ namespace SB2
 	void LauncherComponent::handleCurrentTabChanged (int idx)
 	{
 		auto widget = idx >= 0 ?
-				Proxy_->GetTabWidget ()->Widget (idx) :
+				ICTW_->Widget (idx) :
 				0;
 
 		const auto& tc = widget ?

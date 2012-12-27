@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef LOCALSOCKETHANDLER_H
-#define LOCALSOCKETHANDLER_H
+#pragma once
+
 #include <memory>
 #include <boost/program_options.hpp>
 #include <QLocalServer>
@@ -25,17 +25,14 @@
 namespace LeechCraft
 {
 	struct Entity;
-	class MainWindow;
 
 	class LocalSocketHandler : public QObject
 	{
 		Q_OBJECT
 
 		std::auto_ptr<QLocalServer> Server_;
-		MainWindow *Window_;
 	public:
 		LocalSocketHandler ();
-		void SetMainWindow (MainWindow*);
 	private slots:
 		void handleNewLocalServerConnection ();
 		void pullCommandLine ();
@@ -45,5 +42,3 @@ namespace LeechCraft
 		void gotEntity (const LeechCraft::Entity&);
 	};
 };
-
-#endif

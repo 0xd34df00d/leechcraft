@@ -26,6 +26,7 @@
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "shooterdialog.h"
 #include "poster.h"
 
@@ -109,9 +110,7 @@ namespace Auscrie
 	{
 		ShotAction_->setEnabled (true);
 
-		qDebug () << Q_FUNC_INFO << Dialog_->isVisible ();
-
-		auto mw = Proxy_->GetMainWindow ();
+		auto mw = Proxy_->GetRootWindowsManager ()->GetPreferredWindow ();
 
 		const QPixmap& pm = GetPixmap ();
 		int quality = Dialog_->GetQuality ();
@@ -161,12 +160,14 @@ namespace Auscrie
 
 	QPixmap Plugin::GetPixmap () const
 	{
+		auto rootWin = Proxy_->GetRootWindowsManager ()->GetPreferredWindow ();
+
 		switch (Dialog_->GetMode ())
 		{
 		case ShooterDialog::Mode::LCWindowOverlay:
-			return QPixmap::grabWindow (Proxy_->GetMainWindow ()->winId ());
+			return QPixmap::grabWindow (rootWin->winId ());
 		case ShooterDialog::Mode::LCWindow:
-			return QPixmap::grabWidget (Proxy_->GetMainWindow ());
+			return QPixmap::grabWidget (rootWin);
 		case ShooterDialog::Mode::CurrentScreen:
 		{
  			auto desk = qApp->desktop ();

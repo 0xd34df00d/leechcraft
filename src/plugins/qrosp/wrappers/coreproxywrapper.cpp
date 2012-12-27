@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "coreproxywrapper.h"
+#include <interfaces/core/irootwindowsmanager.h>
 #include "shortcutproxywrapper.h"
 #include "pluginsmanagerwrapper.h"
 #include "tagsmanagerwrapper.h"
@@ -52,12 +53,12 @@ namespace Qrosp
 
 	QMainWindow* CoreProxyWrapper::GetMainWindow () const
 	{
-		return Proxy_->GetMainWindow ();
+		return Proxy_->GetRootWindowsManager ()->GetMainWindow (0);
 	}
 
 	ICoreTabWidget* CoreProxyWrapper::GetTabWidget () const
 	{
-		return Proxy_->GetTabWidget ();
+		return Proxy_->GetRootWindowsManager ()->GetTabWidget (0);
 	}
 
 	QObject* CoreProxyWrapper::GetTagsManager () const

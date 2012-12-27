@@ -26,6 +26,7 @@
 #include <util/util.h>
 #include "account.h"
 #include "core.h"
+#include <interfaces/core/irootwindowsmanager.h>
 
 namespace LeechCraft
 {
@@ -56,8 +57,8 @@ namespace GoogleDrive
 				FromUserInitiated | OnlyHandle);
 		emit gotEntity (e);
 
-		InputDialog_ = new QInputDialog (Core::Instance ().GetProxy ()->GetMainWindow (),
-				Qt::Widget);
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		InputDialog_ = new QInputDialog (rootWM->GetPreferredWindow (), Qt::Widget);
 		Dialog2Account_ [InputDialog_] = acc;
 		connect (InputDialog_,
 				SIGNAL (finished (int)),

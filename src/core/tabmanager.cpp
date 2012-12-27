@@ -32,10 +32,10 @@
 
 using namespace LeechCraft;
 
-TabManager::TabManager (SeparateTabWidget *tabWidget,
-		QObject *parent)
+TabManager::TabManager (SeparateTabWidget *tabWidget, MainWindow *window, QObject *parent)
 : QObject (parent)
 , TabWidget_ (tabWidget)
+, Window_ (window)
 {
 	for (int i = 0; i < TabWidget_->WidgetCount (); ++i)
 		OriginalTabNames_ << TabWidget_->TabText (i);
@@ -76,6 +76,11 @@ QWidget* TabManager::GetCurrentWidget () const
 QWidget* TabManager::GetWidget (int position) const
 {
 	return TabWidget_->Widget (position);
+}
+
+int TabManager::GetWidgetCount () const
+{
+	return TabWidget_->WidgetCount ();
 }
 
 QToolBar* TabManager::GetToolBar (int position) const
@@ -284,8 +289,8 @@ void TabManager::bringToFront (QWidget *widget) const
 	if (TabWidget_->IndexOf (widget) != -1)
 	{
 		TabWidget_->setCurrentWidget (widget);
-		Core::Instance ().GetReallyMainWindow ()->show ();
-		Core::Instance ().GetReallyMainWindow ()->activateWindow ();
+		Window_->show ();
+		Window_->activateWindow ();
 	}
 }
 
@@ -301,7 +306,7 @@ void TabManager::handleCurrentChanged (int index)
 			imtw->TabLostCurrent ();
 
 	if (TabWidget_->WidgetCount () != 1)
-		Core::Instance ().GetReallyMainWindow ()->RemoveMenus (Menus_);
+		Window_->RemoveMenus (Menus_);
 
 	auto tab = TabWidget_->Widget (index);
 	auto imtw = qobject_cast<ITabWidget*> (tab);
@@ -313,8 +318,8 @@ void TabManager::handleCurrentChanged (int index)
 		return;
 	}
 
-	QMap<QString, QList<QAction*>> menus = imtw->GetWindowMenus ();
-	Core::Instance ().GetReallyMainWindow ()->AddMenus (menus);
+	const auto menus = imtw->GetWindowMenus ();
+	Window_->AddMenus (menus);
 	Menus_ = menus;
 
 	emit currentTabChanged (tab);
@@ -357,11 +362,9 @@ void TabManager::InvalidateName ()
 {
 	int ci = TabWidget_->CurrentIndex ();
 	if (ci >= 0 && ci < TabWidget_->WidgetCount ())
-		Core::Instance ().GetReallyMainWindow ()->
-			SetAdditionalTitle (OriginalTabNames_.at (ci));
+		Window_->SetAdditionalTitle (OriginalTabNames_.at (ci));
 	else
-		Core::Instance ().GetReallyMainWindow ()->
-			SetAdditionalTitle (QString ());
+		Window_->SetAdditionalTitle (QString ());
 }
 
 QStringList TabManager::GetOriginalNames () const

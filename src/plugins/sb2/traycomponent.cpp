@@ -204,6 +204,16 @@ namespace SB2
 		ImageProv_->RemoveAction (action);
 	}
 
+	void TrayComponent::handlePluginsAvailable ()
+	{
+		const auto places = { ActionsEmbedPlace::QuickLaunch, ActionsEmbedPlace::LCTray };
+		const auto& hasActions = Proxy_->GetPluginsManager ()->
+				GetAllCastableTo<IActionsExporter*> ();
+		for (auto place : places)
+			for (auto exp : hasActions)
+				handleGotActions (exp->GetActions (place), place);
+	}
+
 	void TrayComponent::handleGotActions (const QList<QAction*>& acts, ActionsEmbedPlace aep)
 	{
 		if (aep != ActionsEmbedPlace::LCTray && aep != ActionsEmbedPlace::QuickLaunch)
@@ -234,16 +244,6 @@ namespace SB2
 		const auto& uncacheStr = str.mid (lastSlash + 1);
 		str.replace (lastSlash + 1, uncacheStr.size (), QString::number (uncacheStr.toInt () + 1));
 		item->setData (str, TrayModel::Roles::ActionIcon);
-	}
-
-	void TrayComponent::handlePluginsAvailable ()
-	{
-		const auto places = { ActionsEmbedPlace::QuickLaunch, ActionsEmbedPlace::LCTray };
-		const auto& hasActions = Proxy_->GetPluginsManager ()->
-				GetAllCastableTo<IActionsExporter*> ();
-		for (auto place : places)
-			for (auto exp : hasActions)
-				handleGotActions (exp->GetActions (place), place);
 	}
 }
 }

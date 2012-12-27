@@ -35,7 +35,7 @@ namespace TabSessManager
 		Q_INTERFACES (IInfo IActionsExporter)
 
 		ICoreProxy_ptr Proxy_;
-		QList<QObject*> Tabs_;
+		QList<QList<QObject*>> Tabs_;
 		bool IsRecovering_;
 
 		bool IsScheduled_;
@@ -74,6 +74,9 @@ namespace TabSessManager
 		void saveDefaultSession ();
 		void saveCustomSession ();
 		void loadCustomSession ();
+
+		void handleWindow (int);
+		void handleWindowRemoved (int);
 	signals:
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};

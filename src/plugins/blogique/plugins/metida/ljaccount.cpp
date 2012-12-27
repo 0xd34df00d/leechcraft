@@ -389,7 +389,6 @@ namespace Metida
 		LJEventProperties props;
 
 		const QVariantMap& postOptions = entry.PostOptions_;
-		const QVariantMap& customData = entry.CustomData_;
 
 		ljEvent.Subject_ = entry.Subject_;
 		ljEvent.Event_ = entry.Content_;

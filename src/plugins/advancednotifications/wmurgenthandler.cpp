@@ -21,6 +21,7 @@
 #include <QApplication>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -41,7 +42,8 @@ namespace AdvancedNotifications
 		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString () == "org.LC.AdvNotifications.Cancel")
 			return;
 
-		QApplication::alert (Core::Instance ().GetProxy ()->GetMainWindow ());
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		QApplication::alert (rootWM->GetPreferredWindow ());
 	}
 }
 }

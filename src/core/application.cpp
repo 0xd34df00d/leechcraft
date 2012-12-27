@@ -47,6 +47,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "coreinstanceobject.h"
+#include "rootwindowsmanager.h"
 #include "config.h"
 
 #ifdef Q_OS_WIN32
@@ -188,8 +189,7 @@ namespace LeechCraft
 				this,
 				SLOT (handleLoadProgress (const QString&)));
 
-		auto mw = new MainWindow ();
-		Core::Instance ().SetReallyMainWindow (mw);
+		auto mw = Core::Instance ().GetRootWindowsManager ()->MakeMainWindow ();
 		Core::Instance ().DelayedInit ();
 
 		Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));

@@ -19,6 +19,7 @@
 #include "core.h"
 #include <QMainWindow>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 
 namespace LeechCraft
 {
@@ -48,7 +49,7 @@ namespace Glance
 
 	QMainWindow* Core::GetMainWindow () const
 	{
-		return Proxy_->GetMainWindow ();
+		return Proxy_->GetRootWindowsManager ()->GetPreferredWindow ();
 	}
 }
 }

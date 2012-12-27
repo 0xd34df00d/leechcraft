@@ -47,6 +47,7 @@
 #include <util/defaulthookproxy.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "browserwidget.h"
 #include "customwebview.h"
 #include "xmlsettingsmanager.h"
@@ -624,7 +625,8 @@ namespace Poshuku
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
 		{
-			QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
+			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+			QMessageBox::critical (rootWM->GetPreferredWindow (),
 					"LeechCraft",
 					tr ("Could not open file %1 for reading.")
 						.arg (filename));
@@ -639,7 +641,8 @@ namespace Poshuku
 		}
 		catch (const std::exception& e)
 		{
-			QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
+			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+			QMessageBox::critical (rootWM->GetPreferredWindow (),
 					"LeechCraft",
 					e.what ());
 		}
@@ -667,7 +670,8 @@ namespace Poshuku
 		QFile file (filename);
 		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 		{
-			QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
+			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+			QMessageBox::critical (rootWM->GetPreferredWindow (),
 					"LeechCraft",
 					tr ("Could not open file %1 for writing.")
 						.arg (filename));

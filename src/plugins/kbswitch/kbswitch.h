@@ -36,9 +36,8 @@ namespace KBSwitch
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
 
+		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		ICoreTabWidget *MainTabWidget_;
-
 		KeyboardLayoutSwitcher *KBLayoutSwitcher_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
@@ -52,6 +51,8 @@ namespace KBSwitch
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private slots:
 		void handleCurrentChanged (int index);
+		void handleCurrentWindowChanged (int from, int to);
+		void handleWindow (int);
 	};
 }
 }

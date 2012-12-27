@@ -32,23 +32,26 @@ class QMenu;
 namespace LeechCraft
 {
 	class SeparateTabWidget;
+	class MainWindow;
 
 	class TabManager : public QObject
 	{
 		Q_OBJECT
 
 		SeparateTabWidget *TabWidget_;
+		MainWindow *Window_;
 		QStringList OriginalTabNames_;
 		QList<QKeyEvent*> Events_;
 		QMap<QWidget*, QObject*> EmbedTabs_;
 		QMenu *NewTabMenu_;
 		QMap<QString, QList<QAction*>> Menus_;
 	public:
-		TabManager (SeparateTabWidget*, QObject* = 0);
+		TabManager (SeparateTabWidget*, MainWindow*, QObject* = 0);
 
 		QWidget* GetCurrentWidget () const;
 		QWidget* GetWidget (int) const;
 		QToolBar* GetToolBar (int) const;
+		int GetWidgetCount () const;
 		void ForwardKeyboard (QKeyEvent*);
 	public slots:
 		void rotateLeft ();

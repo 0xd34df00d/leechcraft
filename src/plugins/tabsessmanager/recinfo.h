@@ -35,6 +35,7 @@ namespace TabSessManager
 		QList<QPair<QByteArray, QVariant>> Props_;
 		QString Name_;
 		QIcon Icon_;
+		int WindowID_;
 	};
 
 	bool operator== (const RecInfo&, const RecInfo&);

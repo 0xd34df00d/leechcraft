@@ -39,11 +39,14 @@
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
 #include "tabmanager.h"
+#include "rootwindowsmanager.h"
+#include "mainwindow.h"
 
 namespace LeechCraft
 {
 	SeparateTabWidget::SeparateTabWidget (QWidget *parent)
 	: QWidget (parent)
+	, Window_ (0)
 	, LastContextMenuTab_ (-1)
 	, MainStackedWidget_ (new QStackedWidget)
 	, MainTabBar_ (new SeparateTabBar)
@@ -103,6 +106,13 @@ namespace LeechCraft
 
 		Init ();
 		AddTabButtonInit ();
+	}
+
+	void SeparateTabWidget::SetWindow (MainWindow *window)
+	{
+		Window_ = window;
+
+		MainTabBar_->SetWindow (window);
 	}
 
 	QObject* SeparateTabWidget::GetObject ()
@@ -312,6 +322,35 @@ namespace LeechCraft
 			}
 		}
 
+		auto rootWM = Core::Instance ().GetRootWindowsManager ();
+		const int windowIndex = rootWM->GetWindowIndex (Window_);
+
+		auto moveMenu = menu->addMenu (tr ("Move tab to"));
+		auto toNew = moveMenu->addAction (tr ("New window"),
+				rootWM, SLOT (moveTabToNewWindow ()));
+		toNew->setProperty ("TabIndex", index);
+		toNew->setProperty ("FromWindowIndex", windowIndex);
+		if (rootWM->GetWindowsCount () > 1)
+		{
+			moveMenu->addSeparator ();
+
+			for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
+			{
+				auto thatWin = rootWM->GetMainWindow (i);
+				if (thatWin == Window_)
+					continue;
+
+				const auto& actTitle = tr ("To window %1 (%2)")
+							.arg (i + 1)
+							.arg (thatWin->windowTitle ());
+				auto toExisting = moveMenu->addAction (actTitle,
+						rootWM, SLOT (moveTabToExistingWindow ()));
+				toExisting->setProperty ("TabIndex", index);
+				toExisting->setProperty ("FromWindowIndex", windowIndex);
+				toExisting->setProperty ("ToWindowIndex", i);
+			}
+		}
+
 		Q_FOREACH (QAction *act, TabBarActions_)
 		{
 			if (!act)
@@ -499,8 +538,9 @@ namespace LeechCraft
 		const bool mForward = event->button () == Qt::XButton2;
 		if (mBack || mForward)
 		{
-			mBack ? Core::Instance ().GetTabManager ()->rotateLeft () :
-					Core::Instance ().GetTabManager ()->rotateRight ();
+			auto rootWM = Core::Instance ().GetRootWindowsManager ();
+			auto tm = rootWM->GetTabManager (Window_);
+			mBack ? tm->rotateLeft () : tm->rotateRight ();
 			event->accept ();
 			return;
 		}

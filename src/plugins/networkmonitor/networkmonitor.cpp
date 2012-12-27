@@ -40,8 +40,6 @@ namespace LeechCraft
 				NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
 
 				Ui_.setupUi (this);
-				Qt::WindowFlags	currentWindowFlags = windowFlags ();
-				setParent (proxy->GetMainWindow (), currentWindowFlags);
 				connect (Ui_.SearchString_,
 						SIGNAL (textChanged (const QString&)),
 						this,

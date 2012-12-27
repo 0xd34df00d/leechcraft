@@ -38,6 +38,7 @@ class QToolBar;
 
 namespace LeechCraft
 {
+	class MainWindow;
 	class SeparateTabBar;
 
 	class SeparateTabWidget : public QWidget
@@ -45,6 +46,8 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 		Q_INTERFACES (ICoreTabWidget)
+
+		MainWindow *Window_;
 
 		int LastContextMenuTab_;
 		QMenu *DefaultContextMenu_;
@@ -68,6 +71,7 @@ namespace LeechCraft
 		QStringList TabNames_;
 	public:
 		explicit SeparateTabWidget (QWidget *parent = 0);
+		void SetWindow (MainWindow*);
 
 		QObject* GetObject ();
 

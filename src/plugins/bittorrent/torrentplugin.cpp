@@ -40,6 +40,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -447,7 +448,8 @@ namespace LeechCraft
 
 			void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
 			{
-				AddMultipleTorrents dialog (Core::Instance ()->GetProxy ()->GetMainWindow ());
+				auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
+				AddMultipleTorrents dialog (rootWM->GetPreferredWindow ());
 				std::unique_ptr<TagsCompleter> completer (new TagsCompleter (dialog.GetEdit (), this));
 				dialog.GetEdit ()->AddSelector ();
 
@@ -489,9 +491,10 @@ namespace LeechCraft
 
 			void TorrentPlugin::on_CreateTorrent__triggered ()
 			{
-				std::auto_ptr<NewTorrentWizard> wizard (new NewTorrentWizard (Core::Instance ()->GetProxy ()->GetMainWindow ()));
-				if (wizard->exec () == QDialog::Accepted)
-					Core::Instance ()->MakeTorrent (wizard->GetParams ());
+				auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
+				NewTorrentWizard wizard (rootWM->GetPreferredWindow ());
+				if (wizard.exec () == QDialog::Accepted)
+					Core::Instance ()->MakeTorrent (wizard.GetParams ());
 				setActionsEnabled ();
 			}
 
@@ -517,17 +520,16 @@ namespace LeechCraft
 						rows << mapped.row ();
 				}
 
+				auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
 				QMessageBox confirm (QMessageBox::Question,
 						"LeechCraft BitTorrent",
 						tr ("Do you really want to delete %n torrent(s)?", 0, rows.size ()),
 						QMessageBox::Cancel,
-						Core::Instance ()->GetProxy ()->GetMainWindow ());
-				QPushButton *deleteTorrentsButton =
-						confirm.addButton (tr ("&Delete"),
-								QMessageBox::ActionRole);
-				QPushButton *deleteTorrentsAndFilesButton =
-						confirm.addButton (tr ("Delete with &files"),
-								QMessageBox::ActionRole);
+						rootWM->GetPreferredWindow ());
+				auto deleteTorrentsButton = confirm.addButton (tr ("&Delete"),
+						QMessageBox::ActionRole);
+				auto deleteTorrentsAndFilesButton = confirm.addButton (tr ("Delete with &files"),
+						QMessageBox::ActionRole);
 				confirm.setDefaultButton (QMessageBox::Cancel);
 
 				confirm.exec ();
@@ -817,8 +819,8 @@ namespace LeechCraft
 				if (allTrackers.empty ())
 					return;
 
-				TrackersChanger changer (Core::Instance ()->
-						GetProxy ()->GetMainWindow ());
+				auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
+				TrackersChanger changer (rootWM->GetPreferredWindow ());
 				changer.SetTrackers (allTrackers);
 
 				if (changer.exec () == QDialog::Accepted)
@@ -901,7 +903,8 @@ namespace LeechCraft
 				TorrentSelectionChanged_ = true;
 				LastPeersUpdate_.reset (new QTime);
 				LastPeersUpdate_->start ();
-				AddTorrentDialog_.reset (new AddTorrent (Core::Instance ()->GetProxy ()->GetMainWindow ()));
+
+				AddTorrentDialog_.reset (new AddTorrent);
 				connect (Core::Instance (),
 						SIGNAL (error (QString)),
 						this,
