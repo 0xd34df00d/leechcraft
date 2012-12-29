@@ -63,6 +63,12 @@ namespace LMP
 		return 0;
 	}
 
+	void ArtistBrowserTab::Browse (const QString& artist)
+	{
+		Ui_.ArtistNameEdit_->setText (artist);
+		on_ArtistNameEdit__returnPressed ();
+	}
+
 	void ArtistBrowserTab::on_ArtistNameEdit__returnPressed ()
 	{
 		auto provs = Core::Instance ().GetProxy ()->GetPluginsManager ()->

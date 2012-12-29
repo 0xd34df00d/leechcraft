@@ -42,8 +42,6 @@ namespace LMP
 
 		BioViewManager *BioMgr_;
 		SimilarViewManager *SimilarMgr_;
-
-
 	public:
 		ArtistBrowserTab (const TabClassInfo&, QObject*);
 
@@ -51,6 +49,8 @@ namespace LMP
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+
+		void Browse (const QString&);
 	private slots:
 		void on_ArtistNameEdit__returnPressed ();
 	signals:

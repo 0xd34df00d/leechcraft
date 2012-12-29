@@ -91,6 +91,8 @@ namespace LMP
 		void gotEntity (const LeechCraft::Entity&);
 
 		void cloudStoragePluginsChanged ();
+
+		void artistBrowseRequested (const QString&);
 	};
 }
 }

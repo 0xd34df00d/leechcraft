@@ -62,6 +62,10 @@ namespace LMP
 				SIGNAL (linkActivated (QString)),
 				this,
 				SLOT (handleLink (QString)));
+		connect (View_->rootObject (),
+				SIGNAL (browseInfo (QString)),
+				&Core::Instance (),
+				SIGNAL (artistBrowseRequested (QString)));
 	}
 
 	void SimilarViewManager::DefaultRequest (const QString& artist)

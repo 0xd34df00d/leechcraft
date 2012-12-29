@@ -10,6 +10,7 @@ Rectangle {
 
     signal bookmarkArtistRequested(string id, string page, string tags)
     signal previewRequested(string artist)
+    signal browseInfo(string artist)
 
     Item {
         id: bioViewContainer
@@ -35,6 +36,7 @@ Rectangle {
             anchors.fill: parent
             onBookmarkArtistRequested: rootRect.bookmarkArtistRequested(id, page, tags)
             onPreviewRequested: rootRect.previewRequested(artist)
+            onBrowseInfo: rootRect.browseInfo(artist)
         }
     }
 }

@@ -96,6 +96,8 @@ namespace LMP
 	private slots:
 		void handleFullRaiseRequested ();
 		void showCollectionStats ();
+
+		void handleArtistBrowseRequested (const QString&);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
