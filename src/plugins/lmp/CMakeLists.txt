@@ -90,6 +90,7 @@ SET (SRCS
 	previewhandler.cpp
 	bioviewmanager.cpp
 	similarviewmanager.cpp
+	artistbrowsertab.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
@@ -125,6 +126,7 @@ SET (FORMS
 	plmanagerwidget.ui
 	sortingcriteriadialog.ui
 	hypeswidget.ui
+	artistbrowsertab.ui
 	sync/cloudwidget.ui
 	sync/devicesbrowserwidget.ui
 	sync/transcodingparamswidget.ui

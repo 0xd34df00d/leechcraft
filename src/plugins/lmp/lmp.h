@@ -55,6 +55,8 @@ namespace LMP
 				IPluginReady)
 
 		TabClassInfo PlayerTC_;
+		TabClassInfo ArtistBrowserTC_;
+
 		PlayerTab *PlayerTab_;
 
 		Util::XmlSettingsDialog_ptr XSD_;

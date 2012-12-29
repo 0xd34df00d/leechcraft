@@ -33,6 +33,7 @@
 #include "core.h"
 #include "rootpathsettingsmanager.h"
 #include "collectionstatsdialog.h"
+#include "artistbrowsertab.h"
 
 namespace LeechCraft
 {
@@ -66,6 +67,16 @@ namespace LMP
 			GetIcon (),
 			40,
 			TFSingle | TFByDefault | TFOpenableByRequest
+		};
+
+		ArtistBrowserTC_ =
+		{
+			GetUniqueID () + "_artistBrowser",
+			tr ("Artist browser"),
+			tr ("Allows to browse information about different artists."),
+			GetIcon (),
+			35,
+			TFSuggestOpening | TFOpenableByRequest
 		};
 
 		Core::Instance ().SetProxy (proxy);
@@ -206,6 +217,7 @@ namespace LMP
 	{
 		TabClasses_t tcs;
 		tcs << PlayerTC_;
+		tcs << ArtistBrowserTC_;
 		return tcs;
 	}
 
@@ -215,6 +227,17 @@ namespace LMP
 		{
 			emit addNewTab ("LMP", PlayerTab_);
 			emit raiseTab (PlayerTab_);
+		}
+		else if (tc == ArtistBrowserTC_.TabClass_)
+		{
+			auto tab = new ArtistBrowserTab (ArtistBrowserTC_, this);
+			emit addNewTab (tr ("Artist browser"), tab);
+			emit raiseTab (tab);
+
+			connect (tab,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO
