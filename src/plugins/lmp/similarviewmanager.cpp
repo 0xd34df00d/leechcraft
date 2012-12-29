@@ -29,6 +29,9 @@
 #include "sysiconsprovider.h"
 #include "localcollection.h"
 #include "previewhandler.h"
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/media/isimilarartists.h>
+#include <interfaces/media/ipendingsimilarartists.h>
 
 namespace LeechCraft
 {
@@ -61,6 +64,28 @@ namespace LMP
 				SLOT (handleLink (QString)));
 	}
 
+	void SimilarViewManager::DefaultRequest (const QString& artist)
+	{
+		auto similars = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableTo<Media::ISimilarArtists*> ();
+
+		for (auto *similar : similars)
+		{
+			auto obj = similar->GetSimilarArtists (artist, 20);
+			if (!obj)
+				continue;
+
+			connect (obj->GetObject (),
+					SIGNAL (error ()),
+					obj->GetObject (),
+					SLOT (deleteLater ()));
+			connect (obj->GetObject (),
+					SIGNAL (ready ()),
+					this,
+					SLOT (handleSimilarReady ()));
+		}
+	}
+
 	void SimilarViewManager::SetInfos (Media::SimilarityInfos_t infos)
 	{
 		Model_->clear ();
@@ -85,6 +110,15 @@ namespace LMP
 
 			Model_->appendRow (item);
 		}
+	}
+
+	void SimilarViewManager::handleSimilarReady ()
+	{
+		sender ()->deleteLater ();
+		auto obj = qobject_cast<Media::IPendingSimilarArtists*> (sender ());
+
+		const auto& similar = obj->GetSimilar ();
+		SetInfos (similar);
 	}
 
 	void SimilarViewManager::handleBookmark (const QString& name, const QString& page, const QString& tags)
