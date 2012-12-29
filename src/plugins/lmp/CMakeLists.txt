@@ -89,6 +89,7 @@ SET (SRCS
 	sysiconsprovider.cpp
 	previewhandler.cpp
 	bioviewmanager.cpp
+	similarviewmanager.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp

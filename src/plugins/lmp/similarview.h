@@ -21,24 +21,21 @@
 #include <QDeclarativeView>
 #include <interfaces/media/audiostructs.h>
 
-class QStandardItemModel;
-
 namespace LeechCraft
 {
 namespace LMP
 {
+	class SimilarViewManager;
+
 	class SimilarView : public QDeclarativeView
 	{
 		Q_OBJECT
 
-		QStandardItemModel *Model_;
+		SimilarViewManager *Manager_;
 	public:
 		SimilarView (QWidget* = 0);
 
 		void SetSimilarArtists (Media::SimilarityInfos_t);
-	private slots:
-		void handleBookmark (const QString&, const QString&, const QString&);
-		void handleLink (const QString&);
 	signals:
 		void previewRequested (const QString&);
 	};

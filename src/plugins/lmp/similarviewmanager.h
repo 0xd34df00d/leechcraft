@@ -16,35 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "similarview.h"
-#include <QDeclarativeEngine>
-#include "sysiconsprovider.h"
-#include "similarviewmanager.h"
-#include "core.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/media/audiostructs.h>
+
+class QDeclarativeView;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	SimilarView::SimilarView (QWidget *parent)
-	: QDeclarativeView (parent)
-	, Manager_ (new SimilarViewManager (this, this))
+	class SimilarViewManager : public QObject
 	{
-		engine ()->addImageProvider ("sysIcons",
-				new SysIconProvider (Core::Instance ().GetProxy ()));
+		Q_OBJECT
 
-		setSource (QUrl ("qrc:/lmp/resources/qml/SimilarView.qml"));
-		Manager_->InitWithSource ();
+		QDeclarativeView *View_;
+		QStandardItemModel *Model_;
+	public:
+		SimilarViewManager (QDeclarativeView*, QObject* = 0);
 
-		connect (Manager_,
-				SIGNAL (previewRequested (QString)),
-				this,
-				SIGNAL (previewRequested (QString)));
-	}
+		void InitWithSource ();
 
-	void SimilarView::SetSimilarArtists (Media::SimilarityInfos_t infos)
-	{
-		Manager_->SetInfos (infos);
-	}
+		void SetInfos (Media::SimilarityInfos_t);
+	private slots:
+		void handleBookmark (const QString&, const QString&, const QString&);
+		void handleLink (const QString&);
+	signals:
+		void previewRequested (const QString&);
+	};
 }
 }
