@@ -28,6 +28,7 @@
 #include "core.h"
 #include "sysiconsprovider.h"
 #include "localcollection.h"
+#include "previewhandler.h"
 
 namespace LeechCraft
 {
@@ -52,8 +53,8 @@ namespace LMP
 				SLOT (handleBookmark (QString, QString, QString)));
 		connect (View_->rootObject (),
 				SIGNAL (previewRequested (QString)),
-				this,
-				SIGNAL (previewRequested (QString)));
+				Core::Instance ().GetPreviewHandler (),
+				SLOT (previewArtist (QString)));
 		connect (View_->rootObject (),
 				SIGNAL (linkActivated (QString)),
 				this,

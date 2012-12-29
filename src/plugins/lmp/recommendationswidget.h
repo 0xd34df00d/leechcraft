@@ -45,8 +45,6 @@ namespace LMP
 	private slots:
 		void handleGotRecs ();
 		void on_RecProvider__activated (int);
-	signals:
-		void artistPreviewRequested (const QString&);
 	};
 }
 }

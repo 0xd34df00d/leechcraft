@@ -57,9 +57,6 @@ namespace LMP
 		void resetSimilarArtists ();
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);
-
-		void audioPreviewRequested (const QString&);
-		void previewRequested (const QString&, const QString&, int);
 	};
 }
 }

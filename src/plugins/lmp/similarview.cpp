@@ -35,11 +35,6 @@ namespace LMP
 
 		setSource (QUrl ("qrc:/lmp/resources/qml/SimilarView.qml"));
 		Manager_->InitWithSource ();
-
-		connect (Manager_,
-				SIGNAL (previewRequested (QString)),
-				this,
-				SIGNAL (previewRequested (QString)));
 	}
 
 	void SimilarView::SetSimilarArtists (Media::SimilarityInfos_t infos)

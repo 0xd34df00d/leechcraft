@@ -31,6 +31,7 @@
 #include "biopropproxy.h"
 #include "core.h"
 #include "util.h"
+#include "previewhandler.h"
 
 namespace LeechCraft
 {
@@ -225,8 +226,10 @@ namespace LMP
 
 	void BioViewManager::handleAlbumPreviewRequested (int index)
 	{
+		qDebug () << Q_FUNC_INFO;
+		auto ph = Core::Instance ().GetPreviewHandler ();
 		for (const auto& track : Album2Tracks_.at (index))
-			emit previewRequested (track.Name_, CurrentArtist_, track.Length_);
+			ph->previewTrack (track.Name_, CurrentArtist_, track.Length_);
 	}
 
 	void BioViewManager::handleLink (const QString& link)

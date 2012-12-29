@@ -25,6 +25,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "bioviewmanager.h"
+#include "previewhandler.h"
 
 namespace LeechCraft
 {
@@ -65,8 +66,8 @@ namespace LMP
 				SIGNAL (gotArtistImage (QString, QUrl)));
 		connect (Manager_,
 				SIGNAL (previewRequested (QString, QString, int)),
-				this,
-				SIGNAL (previewRequested (QString, QString, int)));
+				Core::Instance ().GetPreviewHandler (),
+				SLOT (previewTrack (QString, QString, int)));
 	}
 
 	void BioWidget::SetCurrentArtist (const QString& artist)

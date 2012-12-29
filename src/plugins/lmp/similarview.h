@@ -36,8 +36,6 @@ namespace LMP
 		SimilarView (QWidget* = 0);
 
 		void SetSimilarArtists (Media::SimilarityInfos_t);
-	signals:
-		void previewRequested (const QString&);
 	};
 }
 }

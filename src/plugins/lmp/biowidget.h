@@ -51,7 +51,6 @@ namespace LMP
 		void requestBiography ();
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);
-		void previewRequested (const QString&, const QString&, int);
 	};
 }
 }

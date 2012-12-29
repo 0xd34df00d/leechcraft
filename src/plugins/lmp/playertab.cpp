@@ -171,14 +171,6 @@ namespace LMP
 				NPPixmapHandler_,
 				SLOT (handleGotArtistImage (QString, QUrl)));
 
-		connect (Ui_.NPWidget_,
-				SIGNAL (audioPreviewRequested (QString)),
-				PreviewHandler_,
-				SLOT (previewArtist (QString)));
-		connect (Ui_.RecommendationsWidget_,
-				SIGNAL (artistPreviewRequested (QString)),
-				PreviewHandler_,
-				SLOT (previewArtist (QString)));
 		connect (Ui_.HypesWidget_,
 				SIGNAL (artistPreviewRequested (QString)),
 				PreviewHandler_,
@@ -188,10 +180,6 @@ namespace LMP
 				PreviewHandler_,
 				SLOT (previewTrack (QString, QString)));
 		connect (Ui_.ReleasesWidget_,
-				SIGNAL (previewRequested (QString, QString, int)),
-				PreviewHandler_,
-				SLOT (previewTrack (QString, QString, int)));
-		connect (Ui_.NPWidget_,
 				SIGNAL (previewRequested (QString, QString, int)),
 				PreviewHandler_,
 				SLOT (previewTrack (QString, QString, int)));
