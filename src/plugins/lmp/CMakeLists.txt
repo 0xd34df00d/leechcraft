@@ -60,7 +60,7 @@ SET (SRCS
 	nowplayingwidget.cpp
 	staticplaylistmanager.cpp
 	playlistmanager.cpp
-	artistsinfodisplay.cpp
+	similarview.cpp
 	albumartmanager.cpp
 	lmpsystemtrayicon.cpp
 	fsbrowserwidget.cpp

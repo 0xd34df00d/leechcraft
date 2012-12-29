@@ -27,13 +27,13 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	class ArtistsInfoDisplay : public QDeclarativeView
+	class SimilarView : public QDeclarativeView
 	{
 		Q_OBJECT
 
 		QStandardItemModel *Model_;
 	public:
-		ArtistsInfoDisplay (QWidget* = 0);
+		SimilarView (QWidget* = 0);
 
 		void SetSimilarArtists (Media::SimilarityInfos_t);
 	private slots:

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "artistsinfodisplay.h"
+#include "similarview.h"
 #include <algorithm>
 #include <QStandardItemModel>
 #include <QGraphicsObject>
@@ -34,7 +34,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	ArtistsInfoDisplay::ArtistsInfoDisplay (QWidget *parent)
+	SimilarView::SimilarView (QWidget *parent)
 	: QDeclarativeView (parent)
 	, Model_ (new SimilarModel (this))
 	{
@@ -59,7 +59,7 @@ namespace LMP
 				SLOT (handleLink (QString)));
 	}
 
-	void ArtistsInfoDisplay::SetSimilarArtists (Media::SimilarityInfos_t infos)
+	void SimilarView::SetSimilarArtists (Media::SimilarityInfos_t infos)
 	{
 		Model_->clear ();
 
@@ -85,7 +85,7 @@ namespace LMP
 		}
 	}
 
-	void ArtistsInfoDisplay::handleBookmark (const QString& name, const QString& page, const QString& tags)
+	void SimilarView::handleBookmark (const QString& name, const QString& page, const QString& tags)
 	{
 		auto e = Util::MakeEntity (tr ("Check out \"%1\"").arg (name),
 				QString (),
@@ -96,7 +96,7 @@ namespace LMP
 		Core::Instance ().SendEntity (e);
 	}
 
-	void ArtistsInfoDisplay::handleLink (const QString& link)
+	void SimilarView::handleLink (const QString& link)
 	{
 		Core::Instance ().SendEntity (Util::MakeEntity (QUrl (link),
 					QString (),

@@ -49,7 +49,7 @@
     </layout>
    </item>
    <item>
-    <widget class="LeechCraft::LMP::ArtistsInfoDisplay" name="RecView_">
+    <widget class="LeechCraft::LMP::SimilarView" name="RecView_">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -73,9 +73,9 @@
    <header>QtDeclarative/QDeclarativeView</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::LMP::ArtistsInfoDisplay</class>
+   <class>LeechCraft::LMP::SimilarView</class>
    <extends>QDeclarativeView</extends>
-   <header>artistsinfodisplay.h</header>
+   <header>similarview.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
