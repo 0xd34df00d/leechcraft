@@ -33,6 +33,8 @@ Rectangle {
 
         SimilarView {
             anchors.fill: parent
+            onBookmarkArtistRequested: rootRect.bookmarkArtistRequested(id, page, tags)
+            onPreviewRequested: rootRect.previewRequested(artist)
         }
     }
 }
