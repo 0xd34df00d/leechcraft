@@ -12,6 +12,7 @@ Rectangle {
     color: colorProxy.color_TextBox_TopColor
 
     signal linkActivated(string id)
+    signal albumPreviewRequested(int idx)
 
     Image {
         id: fullSizeArtistImg
@@ -200,6 +201,17 @@ Rectangle {
                                     trackListContainer.parent.height - trackListContainer.targetHeight - 5)
                         }
                         onExited: trackListContainer.state = ""
+                    }
+
+                    PreviewAudioButton {
+                        id: previewAudio
+
+                        anchors.top: parent.top
+                        anchors.topMargin: 2
+                        anchors.right: parent.right
+                        anchors.rightMargin: 2
+
+                        onClicked: rootRect.albumPreviewRequested(index)
                     }
                 }
             }

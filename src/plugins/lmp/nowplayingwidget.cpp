@@ -51,6 +51,10 @@ namespace LMP
 				SIGNAL (gotArtistImage (QString, QUrl)),
 				this,
 				SIGNAL (gotArtistImage (QString, QUrl)));
+		connect (Ui_.BioWidget_,
+				SIGNAL (previewRequested (QString, QString, int)),
+				this,
+				SIGNAL (previewRequested (QString, QString, int)));
 
 		connect (Ui_.SimilarView_,
 				SIGNAL (previewRequested (QString)),

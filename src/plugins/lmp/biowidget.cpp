@@ -105,6 +105,10 @@ namespace LMP
 				SIGNAL (linkActivated (QString)),
 				this,
 				SLOT (handleLink (QString)));
+		connect (Ui_.View_->rootObject (),
+				SIGNAL (albumPreviewRequested (int)),
+				this,
+				SLOT (handleAlbumPreviewRequested (int)));
 	}
 
 	void BioWidget::SetCurrentArtist (const QString& artist)
@@ -213,6 +217,10 @@ namespace LMP
 			item->setData (MakeTrackListTooltip (release.TrackInfos_),
 					DiscoModel::Roles::AlbumTrackListTooltip);
 
+			auto tracks = std::accumulate (release.TrackInfos_.begin (), release.TrackInfos_.end (),
+					decltype (release.TrackInfos_.value (0)) ());
+			Album2Tracks_ << tracks;
+
 			DiscoModel_->appendRow (item);
 
 			aaProv->RequestAlbumArt ({ CurrentArtist_, release.Name_ });
@@ -257,6 +265,12 @@ namespace LMP
 
 		const auto& result = watcher->result ();
 		SetAlbumImage (result.Album_, result.Image_);
+	}
+
+	void BioWidget::handleAlbumPreviewRequested (int index)
+	{
+		for (const auto& track : Album2Tracks_.at (index))
+			emit previewRequested (track.Name_, CurrentArtist_, track.Length_);
 	}
 
 	void BioWidget::handleLink (const QString& link)

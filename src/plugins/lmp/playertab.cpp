@@ -191,6 +191,10 @@ namespace LMP
 				SIGNAL (previewRequested (QString, QString, int)),
 				PreviewHandler_,
 				SLOT (previewTrack (QString, QString, int)));
+		connect (Ui_.NPWidget_,
+				SIGNAL (previewRequested (QString, QString, int)),
+				PreviewHandler_,
+				SLOT (previewTrack (QString, QString, int)));
 
 #ifdef ENABLE_MPRIS
 		new MPRIS::Instance (this, Player_);

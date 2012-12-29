@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QWidget>
+#include <interfaces/media/idiscographyprovider.h>
 #include "ui_biowidget.h"
 
 class QStandardItemModel;
@@ -48,6 +49,7 @@ namespace LMP
 
 		BioPropProxy *BioPropProxy_;
 		QStandardItemModel *DiscoModel_;
+		QList<QList<Media::ReleaseTrackInfo>> Album2Tracks_;
 	public:
 		BioWidget (QWidget* = 0);
 
@@ -64,9 +66,11 @@ namespace LMP
 		void handleAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 		void handleImageScaled ();
 
+		void handleAlbumPreviewRequested (int);
 		void handleLink (const QString&);
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);
+		void previewRequested (const QString&, const QString&, int);
 	};
 }
 }
