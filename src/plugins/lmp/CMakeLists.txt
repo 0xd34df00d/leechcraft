@@ -88,6 +88,7 @@ SET (SRCS
 	hypeswidget.cpp
 	sysiconsprovider.cpp
 	previewhandler.cpp
+	bioviewmanager.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp

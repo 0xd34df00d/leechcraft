@@ -18,37 +18,53 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_biowidget.h"
+#include <QObject>
+#include <QImage>
+#include <interfaces/media/idiscographyprovider.h>
+
+class QDeclarativeView;
+class QStandardItemModel;
+class QStandardItem;
 
 namespace Media
 {
 	class IArtistBioFetcher;
+	class AlbumInfo;
 }
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class BioViewManager;
+	class BioPropProxy;
 
-	class BioWidget : public QWidget
+	class BioViewManager : public QObject
 	{
 		Q_OBJECT
 
-		Ui::BioWidget Ui_;
+		QDeclarativeView *View_;
 
-		BioViewManager *Manager_;
-
-		QList<Media::IArtistBioFetcher*> Providers_;
 		QString CurrentArtist_;
-	public:
-		BioWidget (QWidget* = 0);
 
-		void SetCurrentArtist (const QString&);
+		BioPropProxy *BioPropProxy_;
+		QStandardItemModel *DiscoModel_;
+		QList<QList<Media::ReleaseTrackInfo>> Album2Tracks_;
+	public:
+		BioViewManager (QDeclarativeView*, QObject* = 0);
+
+		void InitWithSource ();
+		void Request (Media::IArtistBioFetcher*, const QString&);
+	private:
+		QStandardItem* FindAlbumItem (const QString&) const;
+		void SetAlbumImage (const QString&, const QImage&);
 	private slots:
-		void saveLastUsedProv ();
-		void requestBiography ();
+		void handleBioReady ();
+		void handleDiscographyReady ();
+		void handleAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
+		void handleImageScaled ();
+
+		void handleAlbumPreviewRequested (int);
+		void handleLink (const QString&);
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);
 		void previewRequested (const QString&, const QString&, int);
