@@ -11,24 +11,28 @@ Rectangle {
     signal bookmarkArtistRequested(string id, string page, string tags)
     signal previewRequested(string artist)
 
-    BioView {
-        id: bioView
+    Item {
+        id: bioViewContainer
 
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         width: parent.width * 2 / 3
 
-        onLinkActivated: rootRect.linkActivated(id)
-        onAlbumPreviewRequested: rootRect.albumPreviewRequested(idx)
+        BioView {
+            onLinkActivated: rootRect.linkActivated(id)
+            onAlbumPreviewRequested: rootRect.albumPreviewRequested(idx)
+        }
     }
 
-    /*
-    SimilarView {
+    Item {
         anchors.top: parent.top
-        anchors.left: bioView.right
+        anchors.left: bioViewContainer.right
         anchors.right: parent.right
         anchors.bottom: parent.bottom
+
+        SimilarView {
+            anchors.fill: parent
+        }
     }
-    */
 }

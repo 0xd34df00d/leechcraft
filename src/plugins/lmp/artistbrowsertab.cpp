@@ -70,7 +70,10 @@ namespace LMP
 		if (provs.isEmpty ())
 			return;
 
-		BioMgr_->Request (provs.first (), Ui_.ArtistNameEdit_->text ());
+		auto artist = Ui_.ArtistNameEdit_->text ().trimmed ();
+
+		BioMgr_->Request (provs.first (), artist);
+		SimilarMgr_->DefaultRequest (artist);
 	}
 }
 }
