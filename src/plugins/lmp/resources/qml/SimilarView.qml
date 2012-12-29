@@ -1,5 +1,6 @@
 import QtQuick 1.0
 import Effects 1.0
+import "."
 
 Rectangle {
     id: rootRect
@@ -185,44 +186,17 @@ Rectangle {
                     }
                 }
 
-                Image {
+                PreviewAudioButton {
                     id: previewAudio
-
-                    width: 16
-                    height: 16
-                    smooth: true
-                    fillMode: Image.PreserveAspectFit
 
                     anchors.top: parent.top
                     anchors.topMargin: 2
                     anchors.left: addToList.right
                     anchors.leftMargin: 8
-                    source: "image://sysIcons/preferences-desktop-sound"
+
                     visible: !artistInCollection
 
-                    MouseArea {
-                        id: previewAudioArea
-                        anchors.fill: parent
-                        anchors.margins: -2
-                        hoverEnabled: true
-
-                        onClicked: {
-                            rootRect.previewRequested(artistName)
-                        }
-                    }
-
-                    Rectangle {
-                        id: previewAudioHover
-                        anchors.fill: parent
-                        anchors.margins: -1
-                        radius: 2
-
-                        visible: previewAudioArea.containsMouse
-
-                        color: "#00000000"
-                        border.width: 1
-                        border.color: "#888888"
-                    }
+                    onClicked: rootRect.previewRequested(artistName)
                 }
 
                 Text {
