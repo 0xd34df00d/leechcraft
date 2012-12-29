@@ -121,13 +121,8 @@ Rectangle {
                     onExited: trackListContainer.state = ""
                 }
 
-                Image {
+                PreviewAudioButton {
                     id: previewAudio
-
-                    width: 16
-                    height: 16
-                    smooth: true
-                    fillMode: Image.PreserveAspectFit
 
                     visible: trackList.length > 0
 
@@ -135,28 +130,8 @@ Rectangle {
                     anchors.topMargin: 2
                     anchors.right: parent.right
                     anchors.rightMargin: 5
-                    source: "image://sysIcons/preferences-desktop-sound"
 
-                    MouseArea {
-                        id: previewAudioArea
-                        anchors.fill: parent
-                        anchors.margins: -2
-                        hoverEnabled: true
-                        onClicked: rootRect.albumPreviewRequested(index)
-                    }
-
-                    Rectangle {
-                        id: previewAudioHover
-                        anchors.fill: parent
-                        anchors.margins: -1
-                        radius: 2
-
-                        visible: previewAudioArea.containsMouse
-
-                        color: "#00000000"
-                        border.width: 1
-                        border.color: "#888888"
-                    }
+                    onClicked: rootRect.albumPreviewRequested(index)
                 }
 
                 Column {
