@@ -112,6 +112,11 @@ namespace LMP
 				SIGNAL (trackPreviewRequested (QString, QString)),
 				this,
 				SIGNAL (trackPreviewRequested (QString, QString)));
+
+		connect (Ui_.HypesView_->rootObject (),
+				SIGNAL (browseInfo (QString)),
+				&Core::Instance (),
+				SIGNAL (artistBrowseRequested (QString)));
 	}
 
 	void HypesWidget::InitializeProviders ()
