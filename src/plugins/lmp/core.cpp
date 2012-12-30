@@ -30,6 +30,8 @@
 #include "interfaces/lmp/icloudstorageplugin.h"
 #include "interfaces/lmp/iplaylistprovider.h"
 #include "lmpproxy.h"
+#include "player.h"
+#include "previewhandler.h"
 
 namespace LeechCraft
 {
@@ -42,6 +44,8 @@ namespace LMP
 	, SyncManager_ (new SyncManager)
 	, SyncUnmountableManager_ (new SyncUnmountableManager)
 	, CloudUpMgr_ (new CloudUploadManager)
+	, Player_ (0)
+	, PreviewMgr_ (0)
 	{
 	}
 
@@ -69,6 +73,9 @@ namespace LMP
 	void Core::PostInit ()
 	{
 		Collection_->FinalizeInit ();
+
+		Player_ = new Player;
+		PreviewMgr_ = new PreviewHandler (Player_, this);
 	}
 
 	void Core::AddPlugin (QObject *pluginObj)
@@ -141,6 +148,16 @@ namespace LMP
 	CloudUploadManager* Core::GetCloudUploadManager () const
 	{
 		return CloudUpMgr_;
+	}
+
+	Player* Core::GetPlayer () const
+	{
+		return Player_;
+	}
+
+	PreviewHandler* Core::GetPreviewHandler () const
+	{
+		return PreviewMgr_;
 	}
 
 	boost::optional<MediaInfo> Core::TryURLResolve (const QUrl& url) const

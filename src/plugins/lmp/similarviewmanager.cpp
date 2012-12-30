@@ -16,50 +16,81 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "artistsinfodisplay.h"
+#include "similarviewmanager.h"
 #include <algorithm>
-#include <QStandardItemModel>
 #include <QGraphicsObject>
+#include <QDeclarativeView>
 #include <QDeclarativeContext>
 #include <QDeclarativeImageProvider>
-#include <QDeclarativeEngine>
-#include <util/util.h>
 #include <util/qml/colorthemeproxy.h>
-#include "core.h"
-#include "localcollection.h"
+#include <util/util.h>
 #include "similarmodel.h"
+#include "core.h"
 #include "sysiconsprovider.h"
+#include "localcollection.h"
+#include "previewhandler.h"
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/media/isimilarartists.h>
+#include <interfaces/media/ipendingsimilarartists.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	ArtistsInfoDisplay::ArtistsInfoDisplay (QWidget *parent)
-	: QDeclarativeView (parent)
+	SimilarViewManager::SimilarViewManager (QDeclarativeView *view, QObject *parent)
+	: QObject (parent)
+	, View_ (view)
 	, Model_ (new SimilarModel (this))
 	{
-		engine ()->addImageProvider ("sysIcons", new SysIconProvider (Core::Instance ().GetProxy ()));
-		rootContext ()->setContextProperty ("similarModel", Model_);
-		rootContext ()->setContextProperty ("similarLabelPosition", "right");
-		rootContext ()->setContextProperty ("colorProxy",
+		View_->rootContext ()->setContextProperty ("similarModel", Model_);
+		View_->rootContext ()->setContextProperty ("similarLabelPosition", "right");
+		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
-		setSource (QUrl ("qrc:/lmp/resources/qml/SimilarView.qml"));
+	}
 
-		connect (rootObject (),
+	void SimilarViewManager::InitWithSource ()
+	{
+		connect (View_->rootObject (),
 				SIGNAL (bookmarkArtistRequested (QString, QString, QString)),
 				this,
 				SLOT (handleBookmark (QString, QString, QString)));
-		connect (rootObject (),
+		connect (View_->rootObject (),
 				SIGNAL (previewRequested (QString)),
-				this,
-				SIGNAL (previewRequested (QString)));
-		connect (rootObject (),
+				Core::Instance ().GetPreviewHandler (),
+				SLOT (previewArtist (QString)));
+		connect (View_->rootObject (),
 				SIGNAL (linkActivated (QString)),
 				this,
 				SLOT (handleLink (QString)));
+		connect (View_->rootObject (),
+				SIGNAL (browseInfo (QString)),
+				&Core::Instance (),
+				SIGNAL (artistBrowseRequested (QString)));
 	}
 
-	void ArtistsInfoDisplay::SetSimilarArtists (Media::SimilarityInfos_t infos)
+	void SimilarViewManager::DefaultRequest (const QString& artist)
+	{
+		auto similars = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableTo<Media::ISimilarArtists*> ();
+
+		for (auto *similar : similars)
+		{
+			auto obj = similar->GetSimilarArtists (artist, 20);
+			if (!obj)
+				continue;
+
+			connect (obj->GetObject (),
+					SIGNAL (error ()),
+					obj->GetObject (),
+					SLOT (deleteLater ()));
+			connect (obj->GetObject (),
+					SIGNAL (ready ()),
+					this,
+					SLOT (handleSimilarReady ()));
+		}
+	}
+
+	void SimilarViewManager::SetInfos (Media::SimilarityInfos_t infos)
 	{
 		Model_->clear ();
 
@@ -85,7 +116,16 @@ namespace LMP
 		}
 	}
 
-	void ArtistsInfoDisplay::handleBookmark (const QString& name, const QString& page, const QString& tags)
+	void SimilarViewManager::handleSimilarReady ()
+	{
+		sender ()->deleteLater ();
+		auto obj = qobject_cast<Media::IPendingSimilarArtists*> (sender ());
+
+		const auto& similar = obj->GetSimilar ();
+		SetInfos (similar);
+	}
+
+	void SimilarViewManager::handleBookmark (const QString& name, const QString& page, const QString& tags)
 	{
 		auto e = Util::MakeEntity (tr ("Check out \"%1\"").arg (name),
 				QString (),
@@ -96,7 +136,7 @@ namespace LMP
 		Core::Instance ().SendEntity (e);
 	}
 
-	void ArtistsInfoDisplay::handleLink (const QString& link)
+	void SimilarViewManager::handleLink (const QString& link)
 	{
 		Core::Instance ().SendEntity (Util::MakeEntity (QUrl (link),
 					QString (),

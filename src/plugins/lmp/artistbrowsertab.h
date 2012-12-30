@@ -19,32 +19,42 @@
 #pragma once
 
 #include <QWidget>
-#include "ui_recommendationswidget.h"
-
-namespace Media
-{
-	class IRecommendedArtists;
-}
+#include <interfaces/ihavetabs.h>
+#include "ui_artistbrowsertab.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class RecommendationsWidget : public QWidget
+	class BioViewManager;
+	class SimilarViewManager;
+
+	class ArtistBrowserTab : public QWidget
+						   , public ITabWidget
 	{
 		Q_OBJECT
+		Q_INTERFACES (ITabWidget)
 
-		Ui::RecommendationsWidget Ui_;
+		const TabClassInfo TC_;
+		QObject * const Plugin_;
 
-		QList<QObject*> ProvRoots_;
-		QList<Media::IRecommendedArtists*> Providers_;
+		Ui::ArtistBrowserTab Ui_;
+
+		BioViewManager *BioMgr_;
+		SimilarViewManager *SimilarMgr_;
 	public:
-		RecommendationsWidget (QWidget* = 0);
+		ArtistBrowserTab (const TabClassInfo&, QObject*);
 
-		void InitializeProviders ();
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
+
+		void Browse (const QString&);
 	private slots:
-		void handleGotRecs ();
-		void on_RecProvider__activated (int);
+		void on_ArtistNameEdit__returnPressed ();
+	signals:
+		void removeTab (QWidget*);
 	};
 }
 }

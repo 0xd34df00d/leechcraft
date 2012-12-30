@@ -55,6 +55,8 @@ namespace LMP
 				IPluginReady)
 
 		TabClassInfo PlayerTC_;
+		TabClassInfo ArtistBrowserTC_;
+
 		PlayerTab *PlayerTab_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
@@ -94,6 +96,8 @@ namespace LMP
 	private slots:
 		void handleFullRaiseRequested ();
 		void showCollectionStats ();
+
+		void handleArtistBrowseRequested (const QString&);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RecommendationsWidget</class>
- <widget class="QWidget" name="RecommendationsWidget">
+ <class>ArtistBrowserTab</class>
+ <widget class="QWidget" name="ArtistBrowserTab">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>366</width>
-    <height>380</height>
+    <width>745</width>
+    <height>611</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,45 +15,28 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="margin">
-    <number>0</number>
+    <number>1</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Recommendations provider:</string>
+        <string>Artist:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="RecProvider_">
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContents</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
+      <widget class="QLineEdit" name="ArtistNameEdit_"/>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="LeechCraft::LMP::SimilarView" name="RecView_">
+    <widget class="QDeclarativeView" name="View_">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
-       <verstretch>1</verstretch>
+       <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="renderHints">
@@ -71,12 +54,6 @@
    <class>QDeclarativeView</class>
    <extends>QGraphicsView</extends>
    <header>QtDeclarative/QDeclarativeView</header>
-  </customwidget>
-  <customwidget>
-   <class>LeechCraft::LMP::SimilarView</class>
-   <extends>QDeclarativeView</extends>
-   <header>similarview.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

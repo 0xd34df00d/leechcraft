@@ -1,5 +1,6 @@
 import QtQuick 1.0
 import Effects 1.0
+import "."
 
 Rectangle {
     id: rootRect
@@ -19,6 +20,7 @@ Rectangle {
     signal bookmarkArtistRequested(string id, string page, string tags)
     signal previewRequested(string artist)
     signal linkActivated(string id)
+    signal browseInfo(string artist)
 
     property alias model: similarView.model
 
@@ -146,7 +148,7 @@ Rectangle {
                 }
 
                 Image {
-                    id: addToList
+                    id: browseInfoImage
 
                     width: 16
                     height: 16
@@ -157,6 +159,42 @@ Rectangle {
                     anchors.topMargin: 2
                     anchors.left: artistNameLabel.right
                     anchors.leftMargin: 8
+                    source: "image://sysIcons/dialog-information"
+
+                    MouseArea {
+                        id: browseInfoArea
+                        anchors.fill: parent
+                        anchors.margins: -2
+                        hoverEnabled: true
+
+                        onClicked: rootRect.browseInfo(artistName)
+                    }
+
+                    Rectangle {
+                        anchors.fill: parent
+                        anchors.margins: -1
+                        radius: 2
+
+                        visible: browseInfoArea.containsMouse
+
+                        color: "#00000000"
+                        border.width: 1
+                        border.color: "#888888"
+                    }
+                }
+
+                Image {
+                    id: addToList
+
+                    width: 16
+                    height: 16
+                    smooth: true
+                    fillMode: Image.PreserveAspectFit
+
+                    anchors.top: parent.top
+                    anchors.topMargin: 2
+                    anchors.left: browseInfoImage.right
+                    anchors.leftMargin: 8
                     source: "image://sysIcons/bookmark-new"
                     visible: !artistInCollection
 
@@ -166,13 +204,10 @@ Rectangle {
                         anchors.margins: -2
                         hoverEnabled: true
 
-                        onClicked: {
-                            rootRect.bookmarkArtistRequested(artistName, artistPageURL, artistTags)
-                        }
+                        onClicked: rootRect.bookmarkArtistRequested(artistName, artistPageURL, artistTags)
                     }
 
                     Rectangle {
-                        id: addToListHover
                         anchors.fill: parent
                         anchors.margins: -1
                         radius: 2
@@ -185,44 +220,17 @@ Rectangle {
                     }
                 }
 
-                Image {
+                PreviewAudioButton {
                     id: previewAudio
-
-                    width: 16
-                    height: 16
-                    smooth: true
-                    fillMode: Image.PreserveAspectFit
 
                     anchors.top: parent.top
                     anchors.topMargin: 2
                     anchors.left: addToList.right
                     anchors.leftMargin: 8
-                    source: "image://sysIcons/preferences-desktop-sound"
+
                     visible: !artistInCollection
 
-                    MouseArea {
-                        id: previewAudioArea
-                        anchors.fill: parent
-                        anchors.margins: -2
-                        hoverEnabled: true
-
-                        onClicked: {
-                            rootRect.previewRequested(artistName)
-                        }
-                    }
-
-                    Rectangle {
-                        id: previewAudioHover
-                        anchors.fill: parent
-                        anchors.margins: -1
-                        radius: 2
-
-                        visible: previewAudioArea.containsMouse
-
-                        color: "#00000000"
-                        border.width: 1
-                        border.color: "#888888"
-                    }
+                    onClicked: rootRect.previewRequested(artistName)
                 }
 
                 Text {

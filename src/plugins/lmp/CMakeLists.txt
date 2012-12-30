@@ -60,7 +60,7 @@ SET (SRCS
 	nowplayingwidget.cpp
 	staticplaylistmanager.cpp
 	playlistmanager.cpp
-	artistsinfodisplay.cpp
+	similarview.cpp
 	albumartmanager.cpp
 	lmpsystemtrayicon.cpp
 	fsbrowserwidget.cpp
@@ -88,6 +88,9 @@ SET (SRCS
 	hypeswidget.cpp
 	sysiconsprovider.cpp
 	previewhandler.cpp
+	bioviewmanager.cpp
+	similarviewmanager.cpp
+	artistbrowsertab.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
@@ -123,6 +126,7 @@ SET (FORMS
 	plmanagerwidget.ui
 	sortingcriteriadialog.ui
 	hypeswidget.ui
+	artistbrowsertab.ui
 	sync/cloudwidget.ui
 	sync/devicesbrowserwidget.ui
 	sync/transcodingparamswidget.ui

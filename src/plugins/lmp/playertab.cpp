@@ -91,8 +91,8 @@ namespace LMP
 	, Plugin_ (plugin)
 	, TC_ (info)
 	, CollectionFilterModel_ (new CollectionFilterModel (this))
-	, Player_ (new Player (this))
-	, PreviewHandler_ (new PreviewHandler (Player_, this))
+	, Player_ (Core::Instance ().GetPlayer ())
+	, PreviewHandler_ (Core::Instance ().GetPreviewHandler ())
 	, TabToolbar_ (new QToolBar ())
 	, PlayPause_ (0)
 	, TrayMenu_ (new QMenu ("LMP", this))
@@ -171,14 +171,6 @@ namespace LMP
 				NPPixmapHandler_,
 				SLOT (handleGotArtistImage (QString, QUrl)));
 
-		connect (Ui_.NPWidget_,
-				SIGNAL (audioPreviewRequested (QString)),
-				PreviewHandler_,
-				SLOT (previewArtist (QString)));
-		connect (Ui_.RecommendationsWidget_,
-				SIGNAL (artistPreviewRequested (QString)),
-				PreviewHandler_,
-				SLOT (previewArtist (QString)));
 		connect (Ui_.HypesWidget_,
 				SIGNAL (artistPreviewRequested (QString)),
 				PreviewHandler_,

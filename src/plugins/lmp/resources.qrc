@@ -8,5 +8,7 @@
 	<file>resources/qml/TextButton.qml</file>
 	<file>resources/qml/HypesView.qml</file>
 	<file>resources/qml/TrackListContainer.qml</file>
+	<file>resources/qml/PreviewAudioButton.qml</file>
+	<file>resources/qml/ArtistBrowserView.qml</file>
   </qresource>
 </RCC>
