@@ -18,6 +18,7 @@
 
 #include "richeditorwidget.h"
 #include <functional>
+#include <map>
 #include <QWebFrame>
 #include <QWebPage>
 #include <QWebElement>
@@ -197,17 +198,17 @@ namespace LHTR
 		auto addInlineCmd = [this] (const QString& name,
 				const QString& icon,
 				const QString& cmd,
-				const QStringList& args,
+				const std::map<QString, QVariant>& attrs,
 				Addable addable) -> QAction*
 		{
 			auto act = addable.addAction (name, this, SLOT (handleInlineCmd ()));
 			act->setProperty ("ActionIcon", icon);
 			act->setProperty ("Editor/Command", cmd);
-			act->setProperty ("Editor/Args", args);
+			act->setProperty ("Editor/Attrs", QVariantMap (attrs));
 			return act;
 		};
 
-		addInlineCmd (tr ("Code"), "code-context", "code", QStringList (), barAdd);
+		addInlineCmd (tr ("Code"), "code-context", "code", {}, barAdd);
 
 		ViewBar_->addSeparator ();
 
@@ -483,14 +484,16 @@ namespace LHTR
 	void RichEditorWidget::handleInlineCmd ()
 	{
 		const auto& tag = sender ()->property ("Editor/Command").toString ();
-		const auto& args = sender ()->property ("Editor/Args").toStringList ();
+		const auto& attrs = sender ()->property ("Editor/Attrs").toMap ();
 
 		QString jstr;
 		jstr += "var selection = window.getSelection().getRangeAt(0);"
 				"var selectedText = selection.extractContents();"
 				"var span = document.createElement('" + tag + "');";
-		for (const auto& arg : args)
-			jstr += "span." + arg + ';';
+		for (auto i = attrs.begin (), end = attrs.end (); i != end; ++i)
+			jstr += QString ("span.setAttribute ('%1', '%2');")
+					.arg (i.key ())
+					.arg (i->toString ());
 		jstr += "span.appendChild(selectedText);"
 				"selection.insertNode(span);";
 
