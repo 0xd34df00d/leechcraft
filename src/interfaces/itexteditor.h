@@ -33,7 +33,7 @@ namespace LeechCraft
 		HTML,
 		PlainText
 	};
-	
+
 	enum class EditorAction
 	{
 		Find,
@@ -49,11 +49,13 @@ public:
 	virtual QString GetContents (LeechCraft::ContentType) const = 0;
 
 	virtual void SetContents (const QString& contents, LeechCraft::ContentType) = 0;
-	
+
 	virtual QAction* GetEditorAction (LeechCraft::EditorAction) = 0;
 
 	virtual void AppendAction (QAction*) = 0;
 	virtual void RemoveAction (QAction*) = 0;
+protected:
+	virtual void textChanged () = 0;
 };
 
 class IAdvancedHTMLEditor
