@@ -22,6 +22,8 @@ Rectangle {
     signal artistPreviewRequested(string artist)
     signal trackPreviewRequested(string track, string artist)
 
+    signal browseInfo(string artist)
+
     Rectangle {
         id: artistsRect
 
@@ -100,6 +102,7 @@ Rectangle {
 
                 onLinkActivated: rootRect.linkActivated(id)
                 onPreviewRequested: rootRect.artistPreviewRequested(artist)
+                onBrowseInfo: rootRect.browseInfo(artist)
             }
         }
     }
@@ -276,7 +279,7 @@ Rectangle {
                             anchors.topMargin: 2
                             anchors.left: trackImageThumb.right
                             anchors.leftMargin: 5
-                            anchors.right: previewAudio.left
+                            anchors.right: browseInfoImage.left
                             anchors.rightMargin: 8
 
                             elide: Text.ElideRight
@@ -285,6 +288,17 @@ Rectangle {
                                 anchors.fill: parent
                                 onClicked: rootRect.linkActivated(trackURL)
                             }
+                        }
+
+                        BrowseButton {
+                            id: browseInfoImage
+
+                            anchors.top: parent.top
+                            anchors.topMargin: 2
+                            anchors.right: previewAudio.left
+                            anchors.rightMargin: 5
+
+                            onClicked: rootRect.browseInfo(artistName)
                         }
 
                         PreviewAudioButton {

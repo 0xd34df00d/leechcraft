@@ -191,7 +191,10 @@ Rectangle {
                     }
 
                     MouseArea {
-                        anchors.fill: parent
+                        anchors.top: albumArtImage.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: albumYearLabel.bottom
                         hoverEnabled: true
 
                         onEntered: {

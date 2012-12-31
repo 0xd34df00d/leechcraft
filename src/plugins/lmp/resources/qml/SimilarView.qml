@@ -147,40 +147,15 @@ Rectangle {
                     }
                 }
 
-                Image {
+                BrowseButton {
                     id: browseInfoImage
-
-                    width: 16
-                    height: 16
-                    smooth: true
-                    fillMode: Image.PreserveAspectFit
 
                     anchors.top: parent.top
                     anchors.topMargin: 2
                     anchors.left: artistNameLabel.right
                     anchors.leftMargin: 8
-                    source: "image://sysIcons/dialog-information"
 
-                    MouseArea {
-                        id: browseInfoArea
-                        anchors.fill: parent
-                        anchors.margins: -2
-                        hoverEnabled: true
-
-                        onClicked: rootRect.browseInfo(artistName)
-                    }
-
-                    Rectangle {
-                        anchors.fill: parent
-                        anchors.margins: -1
-                        radius: 2
-
-                        visible: browseInfoArea.containsMouse
-
-                        color: "#00000000"
-                        border.width: 1
-                        border.color: "#888888"
-                    }
+                    onClicked: rootRect.browseInfo(artistName)
                 }
 
                 Image {
