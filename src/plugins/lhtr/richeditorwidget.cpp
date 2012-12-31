@@ -121,6 +121,15 @@ namespace LHTR
 
 		Ui_.setupUi (this);
 
+		connect (Ui_.HTML_,
+				SIGNAL (textChanged ()),
+				this,
+				SIGNAL (textChanged ()));
+		connect (Ui_.View_->page (),
+				SIGNAL (contentsChanged ()),
+				this,
+				SIGNAL (textChanged ()));
+
 		auto palette = Ui_.View_->palette ();
 		palette.setColor (QPalette::Base, Qt::white);
 		Ui_.View_->setPalette (palette);
@@ -399,6 +408,15 @@ namespace LHTR
 
 	void RichEditorWidget::on_TabWidget__currentChanged (int idx)
 	{
+		disconnect (Ui_.HTML_,
+				SIGNAL (textChanged ()),
+				this,
+				SIGNAL (textChanged ()));
+		disconnect (Ui_.View_->page (),
+				SIGNAL (contentsChanged ()),
+				this,
+				SIGNAL (textChanged ()));
+
 		switch (idx)
 		{
 		case 1:
@@ -412,6 +430,15 @@ namespace LHTR
 			}
 			break;
 		}
+
+		connect (Ui_.HTML_,
+				SIGNAL (textChanged ()),
+				this,
+				SIGNAL (textChanged ()));
+		connect (Ui_.View_->page (),
+				SIGNAL (contentsChanged ()),
+				this,
+				SIGNAL (textChanged ()));
 	}
 
 	void RichEditorWidget::on_HTML__textChanged ()

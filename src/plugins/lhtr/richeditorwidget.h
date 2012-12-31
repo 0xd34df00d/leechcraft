@@ -84,6 +84,8 @@ namespace LHTR
 
 		void handleFind ();
 		void handleReplace ();
+	signals:
+		void textChanged ();
 	};
 }
 }
