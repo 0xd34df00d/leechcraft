@@ -31,6 +31,18 @@ Rectangle {
         onTriggered: { isHighlight = !isHighlight; settingsMode = !settingsMode; }
     }
 
+    ActionButton {
+        id: addQuarkButton
+
+        visible: enableSettingsModeButton.settingsMode
+        opacity: 0
+        z: 11
+
+        actionIconURL: "image://ThemeIcons/list-add"
+
+        onTriggered: quarkProxy.quarkAddRequested()
+    }
+
     ListView {
         id: itemsView
 
@@ -78,7 +90,7 @@ Rectangle {
 
                 states: [
                     State {
-                        name: "hovered"
+                        name: "inSettingsMode"
                         when: enableSettingsModeButton.settingsMode
                         PropertyChanges { target: settingsButton; opacity: 1 }
                     }
@@ -87,13 +99,49 @@ Rectangle {
                 transitions: [
                     Transition {
                         from: ""
-                        to: "hovered"
+                        to: "inSettingsMode"
                         reversible: true
                         PropertyAnimation { properties: "opacity"; duration: 200 }
                     }
                 ]
 
                 onTriggered: quarkProxy.showSettings(sourceURL)
+            }
+
+            ActionButton {
+                id: removeQuarkButton
+
+                visible: enableSettingsModeButton.settingsMode
+                opacity: 0
+                z: 11
+
+                actionIconURL: "image://ThemeIcons/edit-delete"
+                transparentStyle: true
+
+                anchors.top: itemLoader.top
+                anchors.left: itemLoader.left
+                anchors.right: itemLoader.right
+                height: width
+
+                states: [
+                    State {
+                        name: "inSettingsMode"
+                        when: enableSettingsModeButton.settingsMode
+                        PropertyChanges { target: removeQuarkButton; opacity: 1 }
+                        PropertyChanges { target: itemsDelegate; height: Math.max(itemLoader.item.height, itemsDelegate.width) }
+                    }
+                ]
+
+                transitions: [
+                    Transition {
+                        from: ""
+                        to: "inSettingsMode"
+                        reversible: true
+                        PropertyAnimation { properties: "opacity,height"; duration: 200 }
+                    }
+                ]
+
+                onTriggered: quarkProxy.removeQuark(sourceURL)
             }
         }
     }

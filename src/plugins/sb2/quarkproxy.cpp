@@ -39,5 +39,14 @@ namespace SB2
 	{
 		Manager_->ShowSettings (url);
 	}
+
+	void QuarkProxy::removeQuark (const QUrl& url)
+	{
+		Manager_->RemoveQuark (url);
+	}
+
+	void QuarkProxy::quarkAddRequested ()
+	{
+	}
 }
 }

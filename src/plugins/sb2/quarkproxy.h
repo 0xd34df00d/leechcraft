@@ -39,6 +39,9 @@ namespace SB2
 	public slots:
 		QPoint mapToGlobal (double, double);
 		void showSettings (const QUrl&);
+		void removeQuark (const QUrl&);
+
+		void quarkAddRequested ();
 	};
 }
 }
