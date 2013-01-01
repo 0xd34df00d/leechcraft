@@ -41,9 +41,12 @@ namespace SB2
 		QuarkSettingsManager *SettingsManager_;
 
 		QString Name_;
+		QString ID_;
 		QStringList Areas_;
 	public:
 		QuarkManager (const QuarkComponent&, ViewManager*);
+
+		QString GetID () const;
 
 		bool IsValidArea () const;
 

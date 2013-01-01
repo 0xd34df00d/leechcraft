@@ -25,6 +25,7 @@
 #include <QDialogButtonBox>
 #include <QFile>
 #include <QtDebug>
+#include <QFileInfo>
 #include <qjson/parser.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include "viewmanager.h"
@@ -41,6 +42,8 @@ namespace SB2
 	, URL_ (comp.Url_)
 	, SettingsManager_ (0)
 	{
+		ID_ = QFileInfo (URL_.path ()).fileName ();
+
 		ParseManifest ();
 
 		qDebug () << Q_FUNC_INFO << "adding" << comp.Url_;
@@ -53,6 +56,11 @@ namespace SB2
 			manager->GetView ()->engine ()->addImageProvider (pair.first, pair.second);
 
 		CreateSettings ();
+	}
+
+	QString QuarkManager::GetID () const
+	{
+		return ID_;
 	}
 
 	bool QuarkManager::IsValidArea () const
@@ -133,6 +141,9 @@ namespace SB2
 		const auto& varMap = QJson::Parser ().parse (&file).toMap ();
 		Name_ = varMap ["quarkName"].toString ();
 		Areas_ = varMap ["areas"].toStringList ();
+
+		if (varMap.contains ("quarkID"))
+			ID_ = varMap ["quarkID"].toString ();
 	}
 
 	void QuarkManager::CreateSettings ()
