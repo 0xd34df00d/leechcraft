@@ -329,6 +329,11 @@ namespace LHTR
 					SLOT (handleRemoveRow ()));
 		removeRow->setProperty ("ActionIcon", "edit-table-delete-row");
 
+		auto removeColumn = tablesMenu->addAction (tr ("Remove column"),
+					this,
+					SLOT (handleRemoveColumn ()));
+		removeColumn->setProperty ("ActionIcon", "edit-table-delete-column");
+
 		setupJS ();
 		connect (Ui_.View_->page ()->mainFrame (),
 				SIGNAL (javaScriptWindowObjectCleared ()),
@@ -672,6 +677,18 @@ namespace LHTR
 		js += "var row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');";
 		js += "var table = findParent(row, 'table');";
 		js += "table.deleteRow(row.rowIndex);";
+
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
+	void RichEditorWidget::handleRemoveColumn ()
+	{
+		QString js;
+		js += "var cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');";
+		js += "var colIdx = cell.cellIndex;";
+		js += "var table = findParent(cell, 'table');";
+		js += "for (var r = 0; r < table.rows.length; ++r)";
+		js += "    table.rows[r].deleteCell(colIdx);";
 
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
 	}
