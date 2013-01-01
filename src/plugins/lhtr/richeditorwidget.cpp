@@ -36,6 +36,7 @@
 #include "hyperlinkdialog.h"
 #include "imagedialog.h"
 #include "finddialog.h"
+#include "inserttabledialog.h"
 
 namespace LeechCraft
 {
@@ -548,14 +549,18 @@ namespace LHTR
 
 	void RichEditorWidget::handleInsertTable ()
 	{
+		InsertTableDialog dia;
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
 		QString html;
 		QXmlStreamWriter w (&html);
 		w.writeStartElement ("table");
 		w.writeAttribute ("style", "border: 1px solid black; border-collapse: collapse;");
-		for (int i = 0; i < 2; ++i)
+		for (int i = 0; i < dia.GetColumns (); ++i)
 		{
 			w.writeStartElement ("tr");
-			for (int j = 0; j < 2; ++j)
+			for (int j = 0; j < dia.GetRows (); ++j)
 			{
 				w.writeStartElement ("td");
 				w.writeAttribute ("style", "border: 1px solid black; min-width: 1em; height: 1em;");
