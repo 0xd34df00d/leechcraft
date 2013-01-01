@@ -602,11 +602,7 @@ namespace Xoox
 	RoomParticipantEntry_ptr RoomHandler::GetParticipantEntry (const QString& nick, bool announce)
 	{
 		if (!Nick2Entry_.contains (nick))
-		{
-			RoomParticipantEntry_ptr entry (CreateParticipantEntry (nick, announce));
-			Nick2Entry_ [nick] = entry;
-			return entry;
-		}
+			return CreateParticipantEntry (nick, announce);
 		else
 			return Nick2Entry_ [nick];
 	}
