@@ -28,6 +28,7 @@
 #include <QFontDialog>
 #include <QInputDialog>
 #include <QTextDocument>
+#include <QToolButton>
 #include <QXmlStreamWriter>
 #include <QNetworkRequest>
 #include <QtDebug>
@@ -272,11 +273,6 @@ namespace LHTR
 
 		ViewBar_->addSeparator ();
 
-		auto table = ViewBar_->addAction (tr ("Insert table..."),
-					this,
-					SLOT (handleInsertTable ()));
-		table->setProperty ("ActionIcon", "insert-table");
-
 		auto link = ViewBar_->addAction (tr ("Insert link..."),
 					this,
 					SLOT (handleInsertLink ()));
@@ -286,6 +282,19 @@ namespace LHTR
 					this,
 					SLOT (handleInsertImage ()));
 		img->setProperty ("ActionIcon", "insert-image");
+
+		auto tablesMenu = new QMenu (tr ("Tables..."), this);
+
+		auto tablesButton = new QToolButton;
+		tablesButton->setMenu (tablesMenu);
+		tablesButton->setPopupMode (QToolButton::InstantPopup);
+		tablesButton->setIcon (Proxy_->GetIcon ("view-form-table"));
+		ViewBar_->addWidget (tablesButton);
+
+		auto table = tablesMenu->addAction (tr ("Insert table..."),
+					this,
+					SLOT (handleInsertTable ()));
+		table->setProperty ("ActionIcon", "insert-table");
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
