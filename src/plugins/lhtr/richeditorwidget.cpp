@@ -321,6 +321,12 @@ namespace LHTR
 					SLOT (handleInsertColumn ()));
 		addColumnRight->setProperty ("ActionIcon", "edit-table-insert-column-right");
 		addColumnRight->setProperty ("LHTR/Shift", 1);
+
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("function findParent(item, name)"
+			"{"
+			"	while (item.tagName == null || item.tagName.toLowerCase() != name)"
+			"		item = item.parentNode; return item;"
+			"}");
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
