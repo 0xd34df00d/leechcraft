@@ -295,6 +295,13 @@ namespace LHTR
 					this,
 					SLOT (handleInsertTable ()));
 		table->setProperty ("ActionIcon", "insert-table");
+
+		tablesMenu->addSeparator ();
+
+		auto addRow = tablesMenu->addAction (tr ("Insert row"),
+					this,
+					SLOT (handleInsertRow ()));
+		addRow->setProperty ("ActionIcon", "edit-table-insert-row-below");
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
@@ -581,6 +588,23 @@ namespace LHTR
 		w.writeEndElement ();
 		w.writeEndElement ();
 		ExecCommand ("insertHTML", html);
+	}
+
+	void RichEditorWidget::handleInsertRow ()
+	{
+		QString js;
+		js += "var cell = window.getSelection().getRangeAt(0).endContainer;";
+		js += "var row = cell.parentNode;";
+		js += "var rowIdx = row.rowIndex;";
+		js += "var table = row.parentNode.parentNode;";
+		js += "var newRow = table.insertRow(rowIdx);";
+		js += "for (var j = 0; j < row.cells.length; ++j)";
+		js += "{";
+		js += "    var newCell = newRow.insertCell(j);";
+		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1em;');";
+		js += "}";
+
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
 	}
 
 	void RichEditorWidget::handleInsertLink ()
