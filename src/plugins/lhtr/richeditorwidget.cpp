@@ -329,11 +329,11 @@ namespace LHTR
 					SLOT (handleRemoveRow ()));
 		removeRow->setProperty ("ActionIcon", "edit-table-delete-row");
 
-		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("function findParent(item, name)"
-			"{"
-			"	while (item.tagName == null || item.tagName.toLowerCase() != name)"
-			"		item = item.parentNode; return item;"
-			"}");
+		setupJS ();
+		connect (Ui_.View_->page ()->mainFrame (),
+				SIGNAL (javaScriptWindowObjectCleared ()),
+				this,
+				SLOT (setupJS ()));
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
@@ -495,6 +495,15 @@ namespace LHTR
 				SIGNAL (contentsChanged ()),
 				this,
 				SIGNAL (textChanged ()));
+	}
+
+	void RichEditorWidget::setupJS ()
+	{
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("function findParent(item, name)"
+				"{"
+				"	while (item.tagName == null || item.tagName.toLowerCase() != name)"
+				"		item = item.parentNode; return item;"
+				"}");
 	}
 
 	void RichEditorWidget::on_HTML__textChanged ()
