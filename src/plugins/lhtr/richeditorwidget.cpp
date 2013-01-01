@@ -322,6 +322,13 @@ namespace LHTR
 		addColumnRight->setProperty ("ActionIcon", "edit-table-insert-column-right");
 		addColumnRight->setProperty ("LHTR/Shift", 1);
 
+		tablesMenu->addSeparator ();
+
+		auto removeRow = tablesMenu->addAction (tr ("Remove row"),
+					this,
+					SLOT (handleRemoveRow ()));
+		removeRow->setProperty ("ActionIcon", "edit-table-delete-row");
+
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("function findParent(item, name)"
 			"{"
 			"	while (item.tagName == null || item.tagName.toLowerCase() != name)"
@@ -647,6 +654,16 @@ namespace LHTR
 		js += "    var newCell = table.rows[r].insertCell(colIdx);";
 		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1em;');";
 		js += "}";
+
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
+	void RichEditorWidget::handleRemoveRow ()
+	{
+		QString js;
+		js += "var row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');";
+		js += "var table = findParent(row, 'table');";
+		js += "table.deleteRow(row.rowIndex);";
 
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
 	}
