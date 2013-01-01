@@ -270,12 +270,18 @@ namespace LHTR
 		addCmd (tr ("Unordered list"), "format-list-unordered", "insertUnorderedList", barAdd, QString ());
 
 		ViewBar_->addSeparator ();
-		QAction *link = ViewBar_->addAction (tr ("Insert link..."),
+
+		auto table = ViewBar_->addAction (tr ("Insert table..."),
+					this,
+					SLOT (handleInsertTable ()));
+		table->setProperty ("ActionIcon", "insert-table");
+
+		auto link = ViewBar_->addAction (tr ("Insert link..."),
 					this,
 					SLOT (handleInsertLink ()));
 		link->setProperty ("ActionIcon", "insert-link");
 
-		QAction *img = ViewBar_->addAction (tr ("Insert image..."),
+		auto img = ViewBar_->addAction (tr ("Insert image..."),
 					this,
 					SLOT (handleInsertImage ()));
 		img->setProperty ("ActionIcon", "insert-image");
@@ -538,6 +544,27 @@ namespace LHTR
 		checkWebAct (&QFont::bold, QWebPage::ToggleBold);
 		checkWebAct (&QFont::italic, QWebPage::ToggleItalic);
 		checkWebAct (&QFont::underline, QWebPage::ToggleUnderline);
+	}
+
+	void RichEditorWidget::handleInsertTable ()
+	{
+		QString html;
+		QXmlStreamWriter w (&html);
+		w.writeStartElement ("table");
+		w.writeAttribute ("style", "border: 1px solid black; border-collapse: collapse;");
+		for (int i = 0; i < 2; ++i)
+		{
+			w.writeStartElement ("tr");
+			for (int j = 0; j < 2; ++j)
+			{
+				w.writeStartElement ("td");
+				w.writeAttribute ("style", "border: 1px solid black; min-width: 1em; height: 1em;");
+				w.writeEndElement ();
+			}
+			w.writeEndElement ();
+		}
+		w.writeEndElement ();
+		ExecCommand ("insertHTML", html);
 	}
 
 	void RichEditorWidget::handleInsertLink ()
