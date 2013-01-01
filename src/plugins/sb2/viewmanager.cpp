@@ -88,19 +88,59 @@ namespace SB2
 
 	void ViewManager::SecondInit ()
 	{
+		for (const auto& component : FindAllQuarks ())
+			AddComponent (component);
+	}
+
+	void ViewManager::RegisterInternalComponent (const QuarkComponent& c)
+	{
+		InternalComponents_ << c;
+	}
+
+	void ViewManager::ShowSettings (const QUrl& url)
+	{
+		auto manager = Quark2Manager_ [url];
+		manager->ShowSettings ();
+	}
+
+	void ViewManager::RemoveQuark (const QUrl& url)
+	{
+		for (int i = 0; i < ViewItemsModel_->rowCount (); ++i)
+		{
+			auto item = ViewItemsModel_->item (i);
+			if (item->data (ViewItemsModel::Role::SourceURL) != url)
+				continue;
+
+			ViewItemsModel_->removeRow (i);
+		}
+
+		auto mgr = Quark2Manager_.take (url);
+		RemovedIDs_ << mgr->GetID ();
+	}
+
+	QList<QuarkComponent> ViewManager::FindAllQuarks () const
+	{
+		auto result = InternalComponents_;
+
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, "quarks"))
-			AddRootDir (QDir (cand));
+			result += ScanRootDir (QDir (cand));
 
 		QDir local = QDir::home ();
 		if (local.cd (".leechcraft") &&
 			local.cd ("data") &&
 			local.cd ("quarks"))
-			AddRootDir (local);
+			result += ScanRootDir (local);
 
 		auto pm = Proxy_->GetPluginsManager ();
 		for (auto prov : pm->GetAllCastableTo<IQuarkComponentProvider*> ())
-			for (auto quark : prov->GetComponents ())
-				AddComponent (quark);
+			result += prov->GetComponents ();
+
+		return result;
+	}
+
+	QList<QUrl> ViewManager::GetAddedQuarks () const
+	{
+		return Quark2Manager_.keys ();
 	}
 
 	void ViewManager::AddComponent (const QuarkComponent& comp)
@@ -120,6 +160,9 @@ namespace SB2
 		if (!mgr->IsValidArea ())
 			return;
 
+		if (RemovedIDs_.contains (mgr->GetID ()))
+			return;
+
 		Quark2Manager_ [comp.Url_] = mgr;
 
 		auto item = new QStandardItem;
@@ -128,14 +171,9 @@ namespace SB2
 		ViewItemsModel_->appendRow (item);
 	}
 
-	void ViewManager::ShowSettings (const QUrl& url)
+	QList<QuarkComponent> ViewManager::ScanRootDir (const QDir& dir) const
 	{
-		auto manager = Quark2Manager_ [url];
-		manager->ShowSettings ();
-	}
-
-	void ViewManager::AddRootDir (const QDir& dir)
-	{
+		QList<QuarkComponent> result;
 		for (const auto& entry : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable))
 		{
 			QDir quarkDir (dir);
@@ -145,8 +183,9 @@ namespace SB2
 
 			QuarkComponent c;
 			c.Url_ = QUrl::fromLocalFile (quarkDir.absoluteFilePath (entry + ".qml"));
-			AddComponent (c);
+			result << c;
 		}
+		return result;
 	}
 }
 }

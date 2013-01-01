@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QUrl>
 #include <QHash>
+#include <QSet>
 #include <interfaces/core/icoreproxy.h>
 
 class QDir;
@@ -47,17 +48,25 @@ namespace SB2
 		SBView *View_;
 
 		QHash<QUrl, QuarkManager_ptr> Quark2Manager_;
+		QSet<QString> RemovedIDs_;
+
+		QList<QuarkComponent> InternalComponents_;
 	public:
 		ViewManager (ICoreProxy_ptr, QObject* = 0);
 
 		SBView* GetView () const;
 
 		void SecondInit ();
-		void AddComponent (const QuarkComponent&);
+		void RegisterInternalComponent (const QuarkComponent&);
 
 		void ShowSettings (const QUrl&);
+		void RemoveQuark (const QUrl&);
+
+		QList<QuarkComponent> FindAllQuarks () const;
+		QList<QUrl> GetAddedQuarks () const;
 	private:
-		void AddRootDir (const QDir&);
+		void AddComponent (const QuarkComponent&);
+		QList<QuarkComponent> ScanRootDir (const QDir&) const;
 	};
 }
 }
