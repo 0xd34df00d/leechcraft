@@ -962,8 +962,15 @@ namespace Azoth
 		}
 		else if (host == "insertnick")
 		{
-			const QByteArray& encoded = url.encodedQueryItemValue ("nick");
-			InsertNick (QUrl::fromPercentEncoding (encoded));
+			const auto& encoded = url.encodedQueryItemValue ("nick");
+			const auto& nick = QUrl::fromPercentEncoding (encoded);
+			InsertNick (nick);
+
+			if (!GetMUCParticipants ().contains (nick))
+				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+							tr ("%1 isn't present in this conference at the moment.")
+								.arg ("<em>" + nick + "</em>"),
+							PWarning_));
 		}
 	}
 
