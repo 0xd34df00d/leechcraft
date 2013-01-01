@@ -33,6 +33,7 @@ namespace LHTR
 	public:
 		InsertTableDialog (QWidget* = 0);
 
+		QString GetCaption () const;
 		int GetRows () const;
 		int GetColumns () const;
 	};

@@ -624,6 +624,15 @@ namespace LHTR
 		QXmlStreamWriter w (&html);
 		w.writeStartElement ("table");
 		w.writeAttribute ("style", "border: 1px solid black; border-collapse: collapse;");
+
+		const auto& caption = dia.GetCaption ().trimmed ();
+		if (!caption.isEmpty ())
+		{
+			w.writeStartElement ("caption");
+			w.writeCharacters (caption);
+			w.writeEndElement ();
+		}
+
 		w.writeStartElement ("tbody");
 		for (int i = 0; i < dia.GetRows (); ++i)
 		{

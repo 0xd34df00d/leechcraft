@@ -28,6 +28,11 @@ namespace LHTR
 		Ui_.setupUi (this);
 	}
 
+	QString InsertTableDialog::GetCaption () const
+	{
+		return Ui_.Caption_->text ();
+	}
+
 	int InsertTableDialog::GetColumns () const
 	{
 		return Ui_.Columns_->value ();
