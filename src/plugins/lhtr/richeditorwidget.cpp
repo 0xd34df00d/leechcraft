@@ -283,56 +283,7 @@ namespace LHTR
 					SLOT (handleInsertImage ()));
 		img->setProperty ("ActionIcon", "insert-image");
 
-		auto tablesMenu = new QMenu (tr ("Tables..."), this);
-
-		auto tablesButton = new QToolButton;
-		tablesButton->setMenu (tablesMenu);
-		tablesButton->setPopupMode (QToolButton::InstantPopup);
-		tablesButton->setIcon (Proxy_->GetIcon ("view-form-table"));
-		ViewBar_->addWidget (tablesButton);
-
-		auto table = tablesMenu->addAction (tr ("Insert table..."),
-					this,
-					SLOT (handleInsertTable ()));
-		table->setProperty ("ActionIcon", "insert-table");
-
-		tablesMenu->addSeparator ();
-
-		auto addRowAbove = tablesMenu->addAction (tr ("Insert row above"),
-					this,
-					SLOT (handleInsertRow ()));
-		addRowAbove->setProperty ("ActionIcon", "edit-table-insert-row-above");
-		addRowAbove->setProperty ("LHTR/Shift", 0);
-
-		auto addRowBelow = tablesMenu->addAction (tr ("Insert row below"),
-					this,
-					SLOT (handleInsertRow ()));
-		addRowBelow->setProperty ("ActionIcon", "edit-table-insert-row-below");
-		addRowBelow->setProperty ("LHTR/Shift", 1);
-
-		auto addColumnLeft = tablesMenu->addAction (tr ("Insert column to the left"),
-					this,
-					SLOT (handleInsertColumn ()));
-		addColumnLeft->setProperty ("ActionIcon", "edit-table-insert-column-left");
-		addColumnLeft->setProperty ("LHTR/Shift", 0);
-
-		auto addColumnRight = tablesMenu->addAction (tr ("Insert column to the right"),
-					this,
-					SLOT (handleInsertColumn ()));
-		addColumnRight->setProperty ("ActionIcon", "edit-table-insert-column-right");
-		addColumnRight->setProperty ("LHTR/Shift", 1);
-
-		tablesMenu->addSeparator ();
-
-		auto removeRow = tablesMenu->addAction (tr ("Remove row"),
-					this,
-					SLOT (handleRemoveRow ()));
-		removeRow->setProperty ("ActionIcon", "edit-table-delete-row");
-
-		auto removeColumn = tablesMenu->addAction (tr ("Remove column"),
-					this,
-					SLOT (handleRemoveColumn ()));
-		removeColumn->setProperty ("ActionIcon", "edit-table-delete-column");
+		SetupTableMenu ();
 
 		setupJS ();
 		connect (Ui_.View_->page ()->mainFrame (),
@@ -421,6 +372,60 @@ namespace LHTR
 	void RichEditorWidget::ExecJS (const QString& js)
 	{
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
+	void RichEditorWidget::SetupTableMenu ()
+	{
+		auto tablesMenu = new QMenu (tr ("Tables..."), this);
+
+		auto tablesButton = new QToolButton;
+		tablesButton->setMenu (tablesMenu);
+		tablesButton->setPopupMode (QToolButton::InstantPopup);
+		tablesButton->setIcon (Proxy_->GetIcon ("view-form-table"));
+		ViewBar_->addWidget (tablesButton);
+
+		auto table = tablesMenu->addAction (tr ("Insert table..."),
+					this,
+					SLOT (handleInsertTable ()));
+		table->setProperty ("ActionIcon", "insert-table");
+
+		tablesMenu->addSeparator ();
+
+		auto addRowAbove = tablesMenu->addAction (tr ("Insert row above"),
+					this,
+					SLOT (handleInsertRow ()));
+		addRowAbove->setProperty ("ActionIcon", "edit-table-insert-row-above");
+		addRowAbove->setProperty ("LHTR/Shift", 0);
+
+		auto addRowBelow = tablesMenu->addAction (tr ("Insert row below"),
+					this,
+					SLOT (handleInsertRow ()));
+		addRowBelow->setProperty ("ActionIcon", "edit-table-insert-row-below");
+		addRowBelow->setProperty ("LHTR/Shift", 1);
+
+		auto addColumnLeft = tablesMenu->addAction (tr ("Insert column to the left"),
+					this,
+					SLOT (handleInsertColumn ()));
+		addColumnLeft->setProperty ("ActionIcon", "edit-table-insert-column-left");
+		addColumnLeft->setProperty ("LHTR/Shift", 0);
+
+		auto addColumnRight = tablesMenu->addAction (tr ("Insert column to the right"),
+					this,
+					SLOT (handleInsertColumn ()));
+		addColumnRight->setProperty ("ActionIcon", "edit-table-insert-column-right");
+		addColumnRight->setProperty ("LHTR/Shift", 1);
+
+		tablesMenu->addSeparator ();
+
+		auto removeRow = tablesMenu->addAction (tr ("Remove row"),
+					this,
+					SLOT (handleRemoveRow ()));
+		removeRow->setProperty ("ActionIcon", "edit-table-delete-row");
+
+		auto removeColumn = tablesMenu->addAction (tr ("Remove column"),
+					this,
+					SLOT (handleRemoveColumn ()));
+		removeColumn->setProperty ("ActionIcon", "edit-table-delete-column");
 	}
 
 	void RichEditorWidget::ExecCommand (const QString& cmd, const QString& arg)
