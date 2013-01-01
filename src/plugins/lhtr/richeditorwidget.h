@@ -82,6 +82,7 @@ namespace LHTR
 
 		void handleInsertTable ();
 		void handleInsertRow ();
+		void handleInsertColumn ();
 
 		void handleInsertLink ();
 		void handleInsertImage ();

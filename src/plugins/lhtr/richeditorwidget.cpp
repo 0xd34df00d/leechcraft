@@ -309,6 +309,18 @@ namespace LHTR
 					SLOT (handleInsertRow ()));
 		addRowBelow->setProperty ("ActionIcon", "edit-table-insert-row-below");
 		addRowBelow->setProperty ("LHTR/Shift", 1);
+
+		auto addColumnLeft = tablesMenu->addAction (tr ("Insert column to the left"),
+					this,
+					SLOT (handleInsertColumn ()));
+		addColumnLeft->setProperty ("ActionIcon", "edit-table-insert-column-left");
+		addColumnLeft->setProperty ("LHTR/Shift", 0);
+
+		auto addColumnRight = tablesMenu->addAction (tr ("Insert column to the right"),
+					this,
+					SLOT (handleInsertColumn ()));
+		addColumnRight->setProperty ("ActionIcon", "edit-table-insert-column-right");
+		addColumnRight->setProperty ("LHTR/Shift", 1);
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
@@ -610,6 +622,23 @@ namespace LHTR
 		js += "for (var j = 0; j < row.cells.length; ++j)";
 		js += "{";
 		js += "    var newCell = newRow.insertCell(j);";
+		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1em;');";
+		js += "}";
+
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
+	void RichEditorWidget::handleInsertColumn ()
+	{
+		auto shift = sender ()->property ("LHTR/Shift").toInt ();
+
+		QString js;
+		js += "var cell = window.getSelection().getRangeAt(0).endContainer;";
+		js += "var colIdx = cell.cellIndex + " + QString::number (shift) + ";";
+		js += "var table = cell.parentNode.parentNode.parentNode;";
+		js += "for (var r = 0; r < table.rows.length; ++r)";
+		js += "{";
+		js += "    var newCell = table.rows[r].insertCell(colIdx);";
 		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1em;');";
 		js += "}";
 
