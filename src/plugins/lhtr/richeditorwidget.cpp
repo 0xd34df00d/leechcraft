@@ -627,10 +627,9 @@ namespace LHTR
 		auto shift = sender ()->property ("LHTR/Shift").toInt ();
 
 		QString js;
-		js += "var cell = window.getSelection().getRangeAt(0).endContainer;";
-		js += "var row = cell.parentNode;";
+		js += "var row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');";
 		js += "var rowIdx = row.rowIndex;";
-		js += "var table = row.parentNode.parentNode;";
+		js += "var table = findParent(row, 'table');";
 		js += "var newRow = table.insertRow(rowIdx + " + QString::number (shift) + ");";
 		js += "for (var j = 0; j < row.cells.length; ++j)";
 		js += "{";
@@ -646,9 +645,9 @@ namespace LHTR
 		auto shift = sender ()->property ("LHTR/Shift").toInt ();
 
 		QString js;
-		js += "var cell = window.getSelection().getRangeAt(0).endContainer;";
+		js += "var cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');";
 		js += "var colIdx = cell.cellIndex + " + QString::number (shift) + ";";
-		js += "var table = cell.parentNode.parentNode.parentNode;";
+		js += "var table = findParent(cell, 'table');";
 		js += "for (var r = 0; r < table.rows.length; ++r)";
 		js += "{";
 		js += "    var newCell = table.rows[r].insertCell(colIdx);";
