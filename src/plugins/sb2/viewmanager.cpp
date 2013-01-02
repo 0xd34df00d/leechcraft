@@ -74,7 +74,7 @@ namespace SB2
 		}
 
 		View_->rootContext ()->setContextProperty ("itemsModel", ViewItemsModel_);
-		View_->rootContext ()->setContextProperty ("quarkProxy", new QuarkProxy (this, this));
+		View_->rootContext ()->setContextProperty ("quarkProxy", new QuarkProxy (this, proxy, this));
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		View_->engine ()->addImageProvider (ImageProviderID, new ThemeImageProvider (proxy));
