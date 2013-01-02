@@ -185,6 +185,7 @@ namespace SB2
 		if (px.isNull ())
 			return false;
 
+		Icon_ = QIcon ();
 		Icon_.addPixmap (px);
 		return true;
 	}
