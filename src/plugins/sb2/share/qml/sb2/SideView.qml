@@ -35,8 +35,10 @@ Rectangle {
         id: addQuarkButton
 
         visible: enableSettingsModeButton.settingsMode
-        opacity: 0
-        z: 11
+        height: width
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: enableSettingsModeButton.top
 
         actionIconURL: "image://ThemeIcons/list-add"
 
@@ -49,7 +51,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: enableSettingsModeButton.top
+        anchors.bottom: addQuarkButton.top
 
         model: itemsModel
         spacing: 2
