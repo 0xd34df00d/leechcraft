@@ -86,6 +86,11 @@ namespace SB2
 		return Icon_;
 	}
 
+	QString QuarkManager::GetDescription () const
+	{
+		return Description_;
+	}
+
 	bool QuarkManager::IsValidArea () const
 	{
 		return Areas_.isEmpty () || Areas_.contains ("panel");
@@ -164,6 +169,10 @@ namespace SB2
 		const auto& varMap = QJson::Parser ().parse (&file).toMap ();
 		Name_ = varMap ["quarkName"].toString ();
 		Areas_ = varMap ["areas"].toStringList ();
+
+		Description_ = varMap ["description"].toString ();
+
+
 
 		if (varMap.contains ("quarkID"))
 			ID_ = varMap ["quarkID"].toString ();

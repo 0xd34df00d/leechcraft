@@ -46,6 +46,7 @@ namespace SB2
 		QString Name_;
 		QString ID_;
 		QIcon Icon_;
+		QString Description_;
 		QStringList Areas_;
 	public:
 		QuarkManager (const QuarkComponent&, ViewManager*, ICoreProxy_ptr);
@@ -53,6 +54,7 @@ namespace SB2
 		QString GetID () const;
 		QString GetName () const;
 		QIcon GetIcon () const;
+		QString GetDescription () const;
 
 		bool IsValidArea () const;
 
