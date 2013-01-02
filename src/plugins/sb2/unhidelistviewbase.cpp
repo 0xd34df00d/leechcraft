@@ -19,6 +19,7 @@
 #include "unhidelistviewbase.h"
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
+#include <QGraphicsObject>
 #include <QtDebug>
 #include <util/qml/colorthemeproxy.h>
 #include <util/gui/unhoverdeletemixin.h>
@@ -54,6 +55,11 @@ namespace SB2
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		engine ()->addImageProvider ("ThemeIcons", new ThemeImageProvider (proxy));
 		setSource (QUrl::fromLocalFile (file));
+
+		connect (rootObject (),
+				SIGNAL (closeRequested ()),
+				this,
+				SLOT (deleteLater ()));
 	}
 }
 }

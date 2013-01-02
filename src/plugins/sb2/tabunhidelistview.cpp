@@ -41,10 +41,6 @@ namespace SB2
 		}
 
 		connect (rootObject (),
-				SIGNAL (closeRequested ()),
-				this,
-				SLOT (deleteLater ()));
-		connect (rootObject (),
 				SIGNAL (itemUnhideRequested (QString)),
 				this,
 				SLOT (unhide (QString)),
