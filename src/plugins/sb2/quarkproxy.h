@@ -43,7 +43,7 @@ namespace SB2
 		void showSettings (const QUrl&);
 		void removeQuark (const QUrl&);
 
-		void quarkAddRequested ();
+		void quarkAddRequested (int, int);
 	};
 }
 }

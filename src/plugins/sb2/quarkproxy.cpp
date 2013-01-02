@@ -49,7 +49,7 @@ namespace SB2
 		Manager_->RemoveQuark (url);
 	}
 
-	void QuarkProxy::quarkAddRequested ()
+	void QuarkProxy::quarkAddRequested (int x, int y)
 	{
 		auto toAdd = Manager_->FindAllQuarks ();
 		for (const auto& existing : Manager_->GetAddedQuarks ())
@@ -66,7 +66,7 @@ namespace SB2
 			return;
 
 		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Proxy_, Manager_->GetView ());
-		unhide->move (QCursor::pos ());
+		unhide->move (x, y);
 		unhide->show ();
 	}
 }

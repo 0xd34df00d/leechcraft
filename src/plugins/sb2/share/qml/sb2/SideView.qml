@@ -1,4 +1,5 @@
 import QtQuick 1.1
+import "../common/Common.js" as Common
 import "../common/"
 
 Rectangle {
@@ -42,7 +43,7 @@ Rectangle {
 
         actionIconURL: "image://ThemeIcons/list-add"
 
-        onTriggered: quarkProxy.quarkAddRequested()
+        onTriggered: Common.showTooltip(addQuarkButton, function(x, y) { quarkProxy.quarkAddRequested(x, y) })
     }
 
     ListView {
