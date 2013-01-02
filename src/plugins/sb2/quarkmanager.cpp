@@ -43,6 +43,7 @@ namespace SB2
 	, SettingsManager_ (0)
 	{
 		ID_ = QFileInfo (URL_.path ()).fileName ();
+		Name_ = ID_;
 
 		ParseManifest ();
 
@@ -61,6 +62,11 @@ namespace SB2
 	QString QuarkManager::GetID () const
 	{
 		return ID_;
+	}
+
+	QString QuarkManager::GetName () const
+	{
+		return Name_;
 	}
 
 	bool QuarkManager::IsValidArea () const

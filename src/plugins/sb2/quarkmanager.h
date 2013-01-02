@@ -47,6 +47,7 @@ namespace SB2
 		QuarkManager (const QuarkComponent&, ViewManager*);
 
 		QString GetID () const;
+		QString GetName () const;
 
 		bool IsValidArea () const;
 
@@ -57,5 +58,7 @@ namespace SB2
 		void ParseManifest ();
 		void CreateSettings ();
 	};
+
+	typedef std::shared_ptr<QuarkManager> QuarkManager_ptr;
 }
 }
