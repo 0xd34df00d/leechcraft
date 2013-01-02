@@ -53,7 +53,7 @@ namespace SB2
 			auto item = new QStandardItem;
 			item->setData (manager->GetID (), UnhideListModel::Roles::ItemClass);
 			item->setData (manager->GetName (), UnhideListModel::Roles::ItemName);
-			item->setData (QString (), UnhideListModel::Roles::ItemDescription);
+			item->setData (manager->GetDescription (), UnhideListModel::Roles::ItemDescription);
 			item->setData (Util::GetAsBase64Src (manager->GetIcon ().pixmap (32, 32).toImage ()),
 					UnhideListModel::Roles::ItemIcon);
 			Model_->appendRow (item);
