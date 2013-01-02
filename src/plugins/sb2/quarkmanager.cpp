@@ -172,7 +172,7 @@ namespace SB2
 		{
 			const auto& iconName = varMap ["icon"].toString ();
 
-			TryFullImage (iconName) || TryTheme (iconName);
+			TryFullImage (iconName) || TryTheme (iconName) || TryLC (iconName);
 		}
 	}
 
@@ -197,6 +197,16 @@ namespace SB2
 			return false;
 
 		Icon_ = icon;
+		return true;
+	}
+
+	bool QuarkManager::TryLC (const QString& iconName)
+	{
+		if (iconName != "leechcraft")
+			return false;
+
+		Icon_ = QIcon ();
+		Icon_.addFile (":/resources/images/leechcraft.svg");
 		return true;
 	}
 

@@ -61,8 +61,11 @@ namespace SB2
 	private:
 		QString GetSuffixedName (const QString&) const;
 		void ParseManifest ();
+
 		bool TryFullImage (const QString&);
 		bool TryTheme (const QString&);
+		bool TryLC (const QString&);
+
 		void CreateSettings ();
 	};
 
