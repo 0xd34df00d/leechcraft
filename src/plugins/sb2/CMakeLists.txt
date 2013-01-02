@@ -30,6 +30,7 @@ SET (SRCS
 	lcmenucomponent.cpp
 	traycomponent.cpp
 	unhidelistmodel.cpp
+	quarkunhidelistview.cpp
 	unhidelistviewbase.cpp
 	)
 
