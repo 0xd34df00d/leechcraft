@@ -75,20 +75,12 @@ Rectangle {
                 clip: true
             }
 
-            MouseArea {
-                id: settingsMouseArea
-                z: 10
-                anchors.fill: parent
-                visible: enableSettingsModeButton.settingsMode
-                hoverEnabled: true
-            }
-
             ActionButton {
                 id: settingsButton
 
                 visible: quarkHasSettings
                 opacity: 0
-                z: settingsMouseArea.z + 1
+                z: 10
 
                 actionIconURL: "image://ThemeIcons/preferences-desktop"
                 transparentStyle: true
@@ -124,20 +116,20 @@ Rectangle {
 
                 visible: enableSettingsModeButton.settingsMode
                 opacity: 0
-                z: settingsMouseArea.z + 1
+                z: 11
 
                 actionIconURL: "image://ThemeIcons/edit-delete"
                 transparentStyle: true
 
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.verticalCenter: itemsDelegate.verticalCenter
+                anchors.top: itemLoader.top
+                anchors.left: itemLoader.left
+                anchors.right: itemLoader.right
                 height: width
 
                 states: [
                     State {
                         name: "inSettingsMode"
-                        when: settingsMouseArea.containsMouse || removeQuarkButton.isHovered
+                        when: enableSettingsModeButton.settingsMode
                         PropertyChanges { target: removeQuarkButton; opacity: 1 }
                         PropertyChanges { target: itemsDelegate; height: Math.max(itemLoader.item.height, itemsDelegate.width) }
                     }
