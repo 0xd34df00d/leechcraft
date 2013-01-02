@@ -60,12 +60,15 @@ namespace SB2
 		void RegisterInternalComponent (const QuarkComponent&);
 
 		void ShowSettings (const QUrl&);
+
 		void RemoveQuark (const QUrl&);
+		void UnhideQuark (const QuarkComponent&, QuarkManager_ptr);
 
 		QList<QuarkComponent> FindAllQuarks () const;
 		QList<QUrl> GetAddedQuarks () const;
 	private:
 		void AddComponent (const QuarkComponent&);
+		void AddComponent (const QuarkComponent&, QuarkManager_ptr);
 		QList<QuarkComponent> ScanRootDir (const QDir&) const;
 	};
 }

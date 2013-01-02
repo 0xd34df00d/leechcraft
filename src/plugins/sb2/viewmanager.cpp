@@ -118,6 +118,16 @@ namespace SB2
 		RemovedIDs_ << mgr->GetID ();
 	}
 
+	void ViewManager::UnhideQuark (const QuarkComponent& component, QuarkManager_ptr manager)
+	{
+		if (!manager)
+			return;
+
+		RemovedIDs_.remove (manager->GetID ());
+
+		AddComponent (component, manager);
+	}
+
 	QList<QuarkComponent> ViewManager::FindAllQuarks () const
 	{
 		auto result = InternalComponents_;
@@ -157,6 +167,11 @@ namespace SB2
 			return;
 		}
 
+		AddComponent (comp, mgr);
+	}
+
+	void ViewManager::AddComponent (const QuarkComponent& comp, QuarkManager_ptr mgr)
+	{
 		if (!mgr->IsValidArea ())
 			return;
 
