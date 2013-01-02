@@ -87,7 +87,7 @@ Rectangle {
 
                 Text {
                     id: itemNameLabel
-                    text: itemName + itemDescr.length > 0 ? (" (" + itemDescr + ")") : ""
+                    text: itemName + (itemDescr.length > 0 ? (" (" + itemDescr + ")") : "")
 
                     color: "lightgrey"
 
