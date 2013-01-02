@@ -1,0 +1,6 @@
+{
+    "quarkID": "org.LeechCraft.TPI",
+    "quarkName": "TPI",
+    "description": "Task Progress Indicator",
+    "icon": "task-ongoing"
+}
