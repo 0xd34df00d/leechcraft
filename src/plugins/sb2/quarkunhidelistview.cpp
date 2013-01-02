@@ -34,6 +34,7 @@ namespace SB2
 	: UnhideListViewBase (proxy, parent)
 	, ViewManager_ (viewMgr)
 	{
+		BeginModelFill ();
 		for (const auto& comp : components)
 		{
 			QuarkManager_ptr manager;
@@ -58,6 +59,7 @@ namespace SB2
 
 			ID2Component_ [manager->GetID ()] = { comp, manager };
 		}
+		EndModelFill ();
 
 		connect (rootObject (),
 				SIGNAL (itemUnhideRequested (QString)),

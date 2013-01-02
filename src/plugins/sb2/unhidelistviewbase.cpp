@@ -61,5 +61,17 @@ namespace SB2
 				this,
 				SLOT (deleteLater ()));
 	}
+
+	void UnhideListViewBase::BeginModelFill ()
+	{
+		QMetaObject::invokeMethod (Model_, "modelAboutToBeReset");
+		Model_->blockSignals (true);
+	}
+
+	void UnhideListViewBase::EndModelFill ()
+	{
+		Model_->blockSignals (false);
+		QMetaObject::invokeMethod (Model_, "modelReset");;
+	}
 }
 }

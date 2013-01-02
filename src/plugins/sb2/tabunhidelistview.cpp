@@ -29,6 +29,7 @@ namespace SB2
 	TabUnhideListView::TabUnhideListView (const QList<TabClassInfo>& tcs, ICoreProxy_ptr proxy, QWidget *parent)
 	: UnhideListViewBase (proxy, parent)
 	{
+		BeginModelFill ();
 		for (const auto& tc : tcs)
 		{
 			auto item = new QStandardItem;
@@ -39,6 +40,7 @@ namespace SB2
 					UnhideListModel::Roles::ItemIcon);
 			Model_->appendRow (item);
 		}
+		EndModelFill ();
 
 		connect (rootObject (),
 				SIGNAL (itemUnhideRequested (QString)),
