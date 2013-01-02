@@ -54,7 +54,8 @@ namespace SB2
 			item->setData (manager->GetID (), UnhideListModel::Roles::ItemClass);
 			item->setData (manager->GetName (), UnhideListModel::Roles::ItemName);
 			item->setData (QString (), UnhideListModel::Roles::ItemDescription);
-			item->setData (Util::GetAsBase64Src (QImage ()), UnhideListModel::Roles::ItemIcon);
+			item->setData (Util::GetAsBase64Src (manager->GetIcon ().pixmap (32, 32).toImage ()),
+					UnhideListModel::Roles::ItemIcon);
 			Model_->appendRow (item);
 
 			ID2Component_ [manager->GetID ()] = { comp, manager };
