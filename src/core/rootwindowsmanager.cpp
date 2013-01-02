@@ -149,7 +149,7 @@ namespace LeechCraft
 		return win;
 	}
 
-	void RootWindowsManager::PerformWithTab (std::function<void (TabManager*)> f, QWidget *w)
+	void RootWindowsManager::PerformWithTab (std::function<void (TabManager*, int)> f, QWidget *w)
 	{
 		const int idx = GetWindowForTab (qobject_cast<ITabWidget*> (w));
 		if (idx < 0)
@@ -160,7 +160,7 @@ namespace LeechCraft
 			return;
 		}
 
-		f (Windows_ [idx].TM_);
+		f (Windows_ [idx].TM_, idx);
 	}
 
 	void RootWindowsManager::MoveTab (int tabIdx, int fromWin, int toWin)
@@ -168,10 +168,12 @@ namespace LeechCraft
 		auto widget = Windows_ [fromWin].TM_->GetWidget (tabIdx);
 		const auto& name = Windows_ [fromWin].Window_->GetTabWidget ()->TabText (tabIdx);
 
-		emit tabWillBeMovedXWindows (tabIdx, fromWin, toWin);
+		emit tabIsMoving (fromWin, toWin, tabIdx);
 
 		Windows_ [fromWin].TM_->remove (widget);
 		Windows_ [toWin].TM_->add (name, widget);
+
+		emit tabMoved (fromWin, toWin, Windows_ [toWin].TM_->FindTabForWidget (widget));
 	}
 
 	void RootWindowsManager::moveTabToNewWindow ()
@@ -197,28 +199,37 @@ namespace LeechCraft
 		auto itw = qobject_cast<ITabWidget*> (w);
 		const int oldWinIdx = GetWindowForTab (itw);
 		if (oldWinIdx >= 0 && oldWinIdx != winIdx)
-			Windows_ [oldWinIdx].TM_->remove (w);
+		{
+			const auto& oldData = Windows_ [oldWinIdx];
+			emit tabIsRemoving (winIdx, oldData.Window_->GetTabWidget ()->IndexOf (w));
+			oldData.TM_->remove (w);
+		}
 
 		Windows_ [winIdx].TM_->add (name, w);
+		emit tabAdded (winIdx, Windows_ [winIdx].Window_->GetTabWidget ()->IndexOf (w));
 	}
 
 	void RootWindowsManager::remove (QWidget *w)
 	{
-		PerformWithTab ([w] (TabManager *tm) { tm->remove (w); }, w);
+		PerformWithTab ([this, w] (TabManager *tm, int winIdx)
+			{
+				emit tabIsRemoving (winIdx, tm->FindTabForWidget (w));
+				tm->remove (w);
+			}, w);
 	}
 
 	void RootWindowsManager::changeTabName (QWidget *w, const QString& name)
 	{
-		PerformWithTab ([w, &name] (TabManager *tm) { tm->changeTabName (w, name); }, w);
+		PerformWithTab ([w, &name] (TabManager *tm, int) { tm->changeTabName (w, name); }, w);
 	}
 
 	void RootWindowsManager::changeTabIcon (QWidget *w, const QIcon& icon)
 	{
-		PerformWithTab ([w, &icon] (TabManager *tm) { tm->changeTabIcon (w, icon); }, w);
+		PerformWithTab ([w, &icon] (TabManager *tm, int) { tm->changeTabIcon (w, icon); }, w);
 	}
 
 	void RootWindowsManager::bringToFront (QWidget *w)
 	{
-		PerformWithTab ([w] (TabManager *tm) { tm->bringToFront (w); }, w);
+		PerformWithTab ([w] (TabManager *tm, int) { tm->bringToFront (w); }, w);
 	}
 }

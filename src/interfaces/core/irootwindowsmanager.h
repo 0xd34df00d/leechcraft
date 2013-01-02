@@ -63,6 +63,13 @@ protected:
 	virtual void windowRemoved (int) = 0;
 
 	virtual void currentWindowChanged (int, int) = 0;
+
+	virtual void tabAdded (int windowId, int tabId) = 0;
+
+	virtual void tabIsRemoving (int windowId, int tabId) = 0;
+
+	virtual void tabIsMoving (int fromWin, int toWin, int tabId) = 0;
+	virtual void tabMoved (int fromWin, int toWin, int tabId) = 0;
 };
 
 Q_DECLARE_INTERFACE (IRootWindowsManager, "org.LeechCraft.IRootWindowsManager/1.0");
