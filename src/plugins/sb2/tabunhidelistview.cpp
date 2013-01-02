@@ -17,16 +17,9 @@
  **********************************************************************/
 
 #include "tabunhidelistview.h"
-#include <QStandardItemModel>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
 #include <QGraphicsObject>
 #include <QtDebug>
-#include <util/sys/paths.h>
 #include <util/util.h>
-#include <util/qml/colorthemeproxy.h>
-#include <util/gui/unhoverdeletemixin.h>
-#include "themeimageprovider.h"
 #include "unhidelistmodel.h"
 
 namespace LeechCraft
@@ -34,30 +27,8 @@ namespace LeechCraft
 namespace SB2
 {
 	TabUnhideListView::TabUnhideListView (const QList<TabClassInfo>& tcs, ICoreProxy_ptr proxy, QWidget *parent)
-	: QDeclarativeView (parent)
-	, Model_ (new UnhideListModel (this))
+	: UnhideListViewBase (proxy, parent)
 	{
-		new Util::UnhoverDeleteMixin (this);
-
-		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "UnhideListView.qml");
-		if (file.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "file not found";
-			deleteLater ();
-			return;
-		}
-
-		setStyleSheet ("background: transparent");
-		setWindowFlags (Qt::ToolTip);
-		setAttribute (Qt::WA_TranslucentBackground);
-
-		rootContext ()->setContextProperty ("unhideListModel", Model_);
-		rootContext ()->setContextProperty ("colorProxy",
-				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		engine ()->addImageProvider ("ThemeIcons", new ThemeImageProvider (proxy));
-		setSource (QUrl::fromLocalFile (file));
-
 		for (const auto& tc : tcs)
 		{
 			auto item = new QStandardItem;

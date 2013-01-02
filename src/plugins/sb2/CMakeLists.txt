@@ -30,6 +30,7 @@ SET (SRCS
 	lcmenucomponent.cpp
 	traycomponent.cpp
 	unhidelistmodel.cpp
+	unhidelistviewbase.cpp
 	)
 
 ADD_LIBRARY (leechcraft_sb2 SHARED
