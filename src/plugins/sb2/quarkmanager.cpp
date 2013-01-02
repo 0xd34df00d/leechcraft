@@ -53,6 +53,9 @@ namespace SB2
 
 		ParseManifest ();
 
+		if (!ViewMgr_)
+			return;
+
 		qDebug () << Q_FUNC_INFO << "adding" << comp.Url_;
 		auto ctx = manager->GetView ()->rootContext ();
 		for (const auto& pair : comp.StaticProps_)
