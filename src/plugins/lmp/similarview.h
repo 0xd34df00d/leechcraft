@@ -18,33 +18,24 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_recommendationswidget.h"
-
-namespace Media
-{
-	class IRecommendedArtists;
-}
+#include <QDeclarativeView>
+#include <interfaces/media/audiostructs.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class RecommendationsWidget : public QWidget
+	class SimilarViewManager;
+
+	class SimilarView : public QDeclarativeView
 	{
 		Q_OBJECT
 
-		Ui::RecommendationsWidget Ui_;
-
-		QList<QObject*> ProvRoots_;
-		QList<Media::IRecommendedArtists*> Providers_;
+		SimilarViewManager *Manager_;
 	public:
-		RecommendationsWidget (QWidget* = 0);
+		SimilarView (QWidget* = 0);
 
-		void InitializeProviders ();
-	private slots:
-		void handleGotRecs ();
-		void on_RecProvider__activated (int);
+		void SetSimilarArtists (Media::SimilarityInfos_t);
 	};
 }
 }

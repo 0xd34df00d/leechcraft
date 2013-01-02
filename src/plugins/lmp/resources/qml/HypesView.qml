@@ -22,6 +22,8 @@ Rectangle {
     signal artistPreviewRequested(string artist)
     signal trackPreviewRequested(string track, string artist)
 
+    signal browseInfo(string artist)
+
     Rectangle {
         id: artistsRect
 
@@ -100,6 +102,7 @@ Rectangle {
 
                 onLinkActivated: rootRect.linkActivated(id)
                 onPreviewRequested: rootRect.artistPreviewRequested(artist)
+                onBrowseInfo: rootRect.browseInfo(artist)
             }
         }
     }
@@ -276,7 +279,7 @@ Rectangle {
                             anchors.topMargin: 2
                             anchors.left: trackImageThumb.right
                             anchors.leftMargin: 5
-                            anchors.right: previewAudio.left
+                            anchors.right: browseInfoImage.left
                             anchors.rightMargin: 8
 
                             elide: Text.ElideRight
@@ -287,40 +290,26 @@ Rectangle {
                             }
                         }
 
-                        Image {
-                            id: previewAudio
+                        BrowseButton {
+                            id: browseInfoImage
 
-                            width: 16
-                            height: 16
-                            smooth: true
-                            fillMode: Image.PreserveAspectFit
+                            anchors.top: parent.top
+                            anchors.topMargin: 2
+                            anchors.right: previewAudio.left
+                            anchors.rightMargin: 5
+
+                            onClicked: rootRect.browseInfo(artistName)
+                        }
+
+                        PreviewAudioButton {
+                            id: previewAudio
 
                             anchors.top: parent.top
                             anchors.topMargin: 2
                             anchors.right: parent.right
                             anchors.rightMargin: 5
-                            source: "image://sysIcons/preferences-desktop-sound"
 
-                            MouseArea {
-                                id: previewAudioArea
-                                anchors.fill: parent
-                                anchors.margins: -2
-                                hoverEnabled: true
-                                onClicked: rootRect.trackPreviewRequested(trackName, artistName)
-                            }
-
-                            Rectangle {
-                                id: previewAudioHover
-                                anchors.fill: parent
-                                anchors.margins: -1
-                                radius: 2
-
-                                visible: previewAudioArea.containsMouse
-
-                                color: "#00000000"
-                                border.width: 1
-                                border.color: "#888888"
-                            }
+                            onClicked: rootRect.trackPreviewRequested(trackName, artistName)
                         }
 
                         Text {

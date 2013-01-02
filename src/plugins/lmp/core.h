@@ -37,6 +37,8 @@ namespace LMP
 	class SyncManager;
 	class SyncUnmountableManager;
 	class CloudUploadManager;
+	class Player;
+	class PreviewHandler;
 
 	class Core : public QObject
 	{
@@ -50,6 +52,9 @@ namespace LMP
 		SyncManager *SyncManager_;
 		SyncUnmountableManager *SyncUnmountableManager_;
 		CloudUploadManager *CloudUpMgr_;
+
+		Player *Player_;
+		PreviewHandler *PreviewMgr_;
 
 		QObjectList SyncPlugins_;
 		QObjectList CloudPlugins_;
@@ -76,6 +81,9 @@ namespace LMP
 		SyncUnmountableManager* GetSyncUnmountableManager () const;
 		CloudUploadManager* GetCloudUploadManager () const;
 
+		Player* GetPlayer () const;
+		PreviewHandler* GetPreviewHandler () const;
+
 		boost::optional<MediaInfo> TryURLResolve (const QUrl&) const;
 	public slots:
 		void rescan ();
@@ -83,6 +91,8 @@ namespace LMP
 		void gotEntity (const LeechCraft::Entity&);
 
 		void cloudStoragePluginsChanged ();
+
+		void artistBrowseRequested (const QString&);
 	};
 }
 }

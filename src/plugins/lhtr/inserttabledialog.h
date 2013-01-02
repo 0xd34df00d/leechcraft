@@ -18,33 +18,24 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_recommendationswidget.h"
-
-namespace Media
-{
-	class IRecommendedArtists;
-}
+#include <QDialog>
+#include "ui_inserttabledialog.h"
 
 namespace LeechCraft
 {
-namespace LMP
+namespace LHTR
 {
-	class RecommendationsWidget : public QWidget
+	class InsertTableDialog : public QDialog
 	{
 		Q_OBJECT
 
-		Ui::RecommendationsWidget Ui_;
-
-		QList<QObject*> ProvRoots_;
-		QList<Media::IRecommendedArtists*> Providers_;
+		Ui::InsertTableDialog Ui_;
 	public:
-		RecommendationsWidget (QWidget* = 0);
+		InsertTableDialog (QWidget* = 0);
 
-		void InitializeProviders ();
-	private slots:
-		void handleGotRecs ();
-		void on_RecProvider__activated (int);
+		QString GetCaption () const;
+		int GetRows () const;
+		int GetColumns () const;
 	};
 }
 }

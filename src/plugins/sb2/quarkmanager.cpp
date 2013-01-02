@@ -25,6 +25,8 @@
 #include <QDialogButtonBox>
 #include <QFile>
 #include <QtDebug>
+#include <QFileInfo>
+#include <QDir>
 #include <qjson/parser.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include "viewmanager.h"
@@ -35,13 +37,24 @@ namespace LeechCraft
 {
 namespace SB2
 {
-	QuarkManager::QuarkManager (const QuarkComponent& comp, ViewManager *manager)
+	const int IconSize = 32;
+
+	QuarkManager::QuarkManager (const QuarkComponent& comp,
+			ViewManager *manager, ICoreProxy_ptr proxy)
 	: QObject (manager)
 	, ViewMgr_ (manager)
+	, Proxy_ (proxy)
 	, URL_ (comp.Url_)
+	, Icon_ (proxy->GetIcon ("applications-science"))
 	, SettingsManager_ (0)
 	{
+		ID_ = QFileInfo (URL_.path ()).fileName ();
+		Name_ = ID_;
+
 		ParseManifest ();
+
+		if (!ViewMgr_)
+			return;
 
 		qDebug () << Q_FUNC_INFO << "adding" << comp.Url_;
 		auto ctx = manager->GetView ()->rootContext ();
@@ -49,10 +62,33 @@ namespace SB2
 			ctx->setContextProperty (pair.first, pair.second);
 		for (const auto& pair : comp.DynamicProps_)
 			ctx->setContextProperty (pair.first, pair.second);
+
+		auto engine = manager->GetView ()->engine ();
 		for (const auto& pair : comp.ImageProviders_)
-			manager->GetView ()->engine ()->addImageProvider (pair.first, pair.second);
+			if (!engine->imageProvider (pair.first))
+				engine->addImageProvider (pair.first, pair.second);
 
 		CreateSettings ();
+	}
+
+	QString QuarkManager::GetID () const
+	{
+		return ID_;
+	}
+
+	QString QuarkManager::GetName () const
+	{
+		return Name_;
+	}
+
+	QIcon QuarkManager::GetIcon () const
+	{
+		return Icon_;
+	}
+
+	QString QuarkManager::GetDescription () const
+	{
+		return Description_;
 	}
 
 	bool QuarkManager::IsValidArea () const
@@ -133,6 +169,55 @@ namespace SB2
 		const auto& varMap = QJson::Parser ().parse (&file).toMap ();
 		Name_ = varMap ["quarkName"].toString ();
 		Areas_ = varMap ["areas"].toStringList ();
+
+		Description_ = varMap ["description"].toString ();
+
+
+
+		if (varMap.contains ("quarkID"))
+			ID_ = varMap ["quarkID"].toString ();
+
+		if (varMap.contains ("icon"))
+		{
+			const auto& iconName = varMap ["icon"].toString ();
+
+			TryFullImage (iconName) || TryTheme (iconName) || TryLC (iconName);
+		}
+	}
+
+	bool QuarkManager::TryFullImage (const QString& iconName)
+	{
+		const auto& dirName = QFileInfo (URL_.toLocalFile ()).absoluteDir ().path ();
+		const auto& fullName = dirName + iconName;
+
+		const QPixmap px (fullName);
+		if (px.isNull ())
+			return false;
+
+		Icon_ = QIcon ();
+		Icon_.addPixmap (px);
+		return true;
+	}
+
+	bool QuarkManager::TryTheme (const QString& iconName)
+	{
+		const auto& icon = Proxy_->GetIcon (iconName);
+		const auto& px = icon.pixmap (IconSize, IconSize);
+		if (px.isNull ())
+			return false;
+
+		Icon_ = icon;
+		return true;
+	}
+
+	bool QuarkManager::TryLC (const QString& iconName)
+	{
+		if (iconName != "leechcraft")
+			return false;
+
+		Icon_ = QIcon ();
+		Icon_.addFile (":/resources/images/leechcraft.svg");
+		return true;
 	}
 
 	void QuarkManager::CreateSettings ()

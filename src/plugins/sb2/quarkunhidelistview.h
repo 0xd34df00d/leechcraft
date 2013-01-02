@@ -18,33 +18,35 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_recommendationswidget.h"
-
-namespace Media
-{
-	class IRecommendedArtists;
-}
+#include <memory>
+#include <interfaces/iquarkcomponentprovider.h>
+#include "unhidelistviewbase.h"
 
 namespace LeechCraft
 {
-namespace LMP
+namespace SB2
 {
-	class RecommendationsWidget : public QWidget
+	class ViewManager;
+	class QuarkManager;
+
+	typedef std::shared_ptr<QuarkManager> QuarkManager_ptr;
+
+	class QuarkUnhideListView : public UnhideListViewBase
 	{
 		Q_OBJECT
 
-		Ui::RecommendationsWidget Ui_;
+		ViewManager *ViewManager_;
 
-		QList<QObject*> ProvRoots_;
-		QList<Media::IRecommendedArtists*> Providers_;
+		struct ComponentInfo
+		{
+			QuarkComponent Comp_;
+			QuarkManager_ptr Manager_;
+		};
+		QHash<QString, ComponentInfo> ID2Component_;
 	public:
-		RecommendationsWidget (QWidget* = 0);
-
-		void InitializeProviders ();
+		QuarkUnhideListView (const QList<QuarkComponent>&, ViewManager*, ICoreProxy_ptr, QWidget*  = 0);
 	private slots:
-		void handleGotRecs ();
-		void on_RecProvider__activated (int);
+		void unhide (const QString&);
 	};
 }
 }

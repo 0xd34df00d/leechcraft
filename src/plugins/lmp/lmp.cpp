@@ -33,6 +33,7 @@
 #include "core.h"
 #include "rootpathsettingsmanager.h"
 #include "collectionstatsdialog.h"
+#include "artistbrowsertab.h"
 
 namespace LeechCraft
 {
@@ -68,6 +69,16 @@ namespace LMP
 			TFSingle | TFByDefault | TFOpenableByRequest
 		};
 
+		ArtistBrowserTC_ =
+		{
+			GetUniqueID () + "_artistBrowser",
+			tr ("Artist browser"),
+			tr ("Allows to browse information about different artists."),
+			GetIcon (),
+			35,
+			TFSuggestOpening | TFOpenableByRequest
+		};
+
 		Core::Instance ().SetProxy (proxy);
 		Core::Instance ().PostInit ();
 
@@ -96,6 +107,10 @@ namespace LMP
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (&Core::Instance (),
+				SIGNAL (artistBrowseRequested (QString)),
+				this,
+				SLOT (handleArtistBrowseRequested (QString)));
 
 		connect (PlayerTab_,
 				SIGNAL (fullRaiseRequested ()),
@@ -206,6 +221,7 @@ namespace LMP
 	{
 		TabClasses_t tcs;
 		tcs << PlayerTC_;
+		tcs << ArtistBrowserTC_;
 		return tcs;
 	}
 
@@ -216,6 +232,8 @@ namespace LMP
 			emit addNewTab ("LMP", PlayerTab_);
 			emit raiseTab (PlayerTab_);
 		}
+		else if (tc == ArtistBrowserTC_.TabClass_)
+			handleArtistBrowseRequested (QString ());
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
@@ -331,6 +349,21 @@ namespace LMP
 		auto dia = new CollectionStatsDialog ();
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
+	}
+
+	void Plugin::handleArtistBrowseRequested (const QString& artist)
+	{
+		auto tab = new ArtistBrowserTab (ArtistBrowserTC_, this);
+		emit addNewTab (tr ("Artist browser"), tab);
+		emit raiseTab (tab);
+
+		connect (tab,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+
+		if (!artist.isEmpty ())
+			tab->Browse (artist);
 	}
 }
 }

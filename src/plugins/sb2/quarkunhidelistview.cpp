@@ -16,29 +16,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "tabunhidelistview.h"
+#include "quarkunhidelistview.h"
+#include <QDeclarativeView>
 #include <QGraphicsObject>
 #include <QtDebug>
 #include <util/util.h>
 #include "unhidelistmodel.h"
+#include "quarkmanager.h"
+#include "viewmanager.h"
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	TabUnhideListView::TabUnhideListView (const QList<TabClassInfo>& tcs, ICoreProxy_ptr proxy, QWidget *parent)
+	QuarkUnhideListView::QuarkUnhideListView (const QList<QuarkComponent>& components,
+			ViewManager *viewMgr, ICoreProxy_ptr proxy, QWidget *parent)
 	: UnhideListViewBase (proxy, parent)
+	, ViewManager_ (viewMgr)
 	{
 		BeginModelFill ();
-		for (const auto& tc : tcs)
+		for (const auto& comp : components)
 		{
+			QuarkManager_ptr manager;
+			try
+			{
+				manager.reset (new QuarkManager (comp, nullptr, proxy));
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error creating manager for quark"
+						<< comp.Url_;
+				continue;
+			}
+
 			auto item = new QStandardItem;
-			item->setData (tc.TabClass_, UnhideListModel::Roles::ItemClass);
-			item->setData (tc.VisibleName_, UnhideListModel::Roles::ItemName);
-			item->setData (tc.Description_, UnhideListModel::Roles::ItemDescription);
-			item->setData (Util::GetAsBase64Src (tc.Icon_.pixmap (32, 32).toImage ()),
+			item->setData (manager->GetID (), UnhideListModel::Roles::ItemClass);
+			item->setData (manager->GetName (), UnhideListModel::Roles::ItemName);
+			item->setData (manager->GetDescription (), UnhideListModel::Roles::ItemDescription);
+			item->setData (Util::GetAsBase64Src (manager->GetIcon ().pixmap (32, 32).toImage ()),
 					UnhideListModel::Roles::ItemIcon);
 			Model_->appendRow (item);
+
+			ID2Component_ [manager->GetID ()] = { comp, manager };
 		}
 		EndModelFill ();
 
@@ -49,20 +69,17 @@ namespace SB2
 				Qt::QueuedConnection);
 	}
 
-	void TabUnhideListView::unhide (const QString& idStr)
+	void QuarkUnhideListView::unhide (const QString& itemClass)
 	{
-		const auto& id = idStr.toUtf8 ();
-		emit unhideRequested (id);
+		const auto& info = ID2Component_.take (itemClass);
+		ViewManager_->UnhideQuark (info.Comp_, info.Manager_);
 
 		for (int i = 0; i < Model_->rowCount (); ++i)
-			if (Model_->item (i)->data (UnhideListModel::Roles::ItemClass).toByteArray () == id)
+			if (Model_->item (i)->data (UnhideListModel::Roles::ItemClass) == itemClass)
 			{
 				Model_->removeRow (i);
 				break;
 			}
-
-		if (!Model_->rowCount ())
-			deleteLater ();
 	}
 }
 }

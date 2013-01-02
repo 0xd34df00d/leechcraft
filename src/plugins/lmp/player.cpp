@@ -1067,7 +1067,15 @@ namespace LMP
 
 	void Player::handlePlaybackFinished ()
 	{
-		emit songChanged (MediaInfo ());
+		if (!Source_->queue ().isEmpty ())
+		{
+			auto queue = Source_->queue ();
+			Source_->setCurrentSource (Source_->queue ().takeFirst ());
+			Source_->play ();
+			Source_->setQueue (queue);
+		}
+		else
+			emit songChanged (MediaInfo ());
 	}
 
 	void Player::handleStateChanged (Phonon::State state)

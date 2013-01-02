@@ -1,0 +1,6 @@
+{
+    "quarkID": "org.LeechCraft.SB2.Tray",
+    "quarkName": "Tray",
+    "icon": "dialog-information",
+    "areas": [ "panel" ]
+}

@@ -20,7 +20,9 @@
 
 #include <QObject>
 #include <QUrl>
+#include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -34,6 +36,7 @@ namespace SB2
 	class QuarkManager : public QObject
 	{
 		ViewManager * const ViewMgr_;
+		ICoreProxy_ptr Proxy_;
 
 		const QUrl URL_;
 
@@ -41,9 +44,17 @@ namespace SB2
 		QuarkSettingsManager *SettingsManager_;
 
 		QString Name_;
+		QString ID_;
+		QIcon Icon_;
+		QString Description_;
 		QStringList Areas_;
 	public:
-		QuarkManager (const QuarkComponent&, ViewManager*);
+		QuarkManager (const QuarkComponent&, ViewManager*, ICoreProxy_ptr);
+
+		QString GetID () const;
+		QString GetName () const;
+		QIcon GetIcon () const;
+		QString GetDescription () const;
 
 		bool IsValidArea () const;
 
@@ -52,7 +63,14 @@ namespace SB2
 	private:
 		QString GetSuffixedName (const QString&) const;
 		void ParseManifest ();
+
+		bool TryFullImage (const QString&);
+		bool TryTheme (const QString&);
+		bool TryLC (const QString&);
+
 		void CreateSettings ();
 	};
+
+	typedef std::shared_ptr<QuarkManager> QuarkManager_ptr;
 }
 }

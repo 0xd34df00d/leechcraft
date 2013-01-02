@@ -34,6 +34,7 @@ namespace Util
 	{
 		if (!before.isValid ())
 		{
+			qDeleteAll (messages);
 			messages.clear ();
 			return;
 		}

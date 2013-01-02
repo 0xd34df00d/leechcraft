@@ -12,6 +12,7 @@ Rectangle {
     color: colorProxy.color_TextBox_TopColor
 
     signal linkActivated(string id)
+    signal albumPreviewRequested(int idx)
 
     Image {
         id: fullSizeArtistImg
@@ -190,7 +191,10 @@ Rectangle {
                     }
 
                     MouseArea {
-                        anchors.fill: parent
+                        anchors.top: albumArtImage.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: albumYearLabel.bottom
                         hoverEnabled: true
 
                         onEntered: {
@@ -200,6 +204,17 @@ Rectangle {
                                     trackListContainer.parent.height - trackListContainer.targetHeight - 5)
                         }
                         onExited: trackListContainer.state = ""
+                    }
+
+                    PreviewAudioButton {
+                        id: previewAudio
+
+                        anchors.top: parent.top
+                        anchors.topMargin: 2
+                        anchors.right: parent.right
+                        anchors.rightMargin: 2
+
+                        onClicked: rootRect.albumPreviewRequested(index)
                     }
                 }
             }

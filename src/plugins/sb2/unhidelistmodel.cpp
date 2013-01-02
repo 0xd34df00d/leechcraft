@@ -16,35 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include "ui_recommendationswidget.h"
-
-namespace Media
-{
-	class IRecommendedArtists;
-}
+#include "unhidelistmodel.h"
 
 namespace LeechCraft
 {
-namespace LMP
+namespace SB2
 {
-	class RecommendationsWidget : public QWidget
+	UnhideListModel::UnhideListModel (QObject *parent)
+	: QStandardItemModel (parent)
 	{
-		Q_OBJECT
-
-		Ui::RecommendationsWidget Ui_;
-
-		QList<QObject*> ProvRoots_;
-		QList<Media::IRecommendedArtists*> Providers_;
-	public:
-		RecommendationsWidget (QWidget* = 0);
-
-		void InitializeProviders ();
-	private slots:
-		void handleGotRecs ();
-		void on_RecProvider__activated (int);
-	};
+		QHash<int, QByteArray> roleNames;
+		roleNames [Roles::ItemClass] = "itemClass";
+		roleNames [Roles::ItemName] = "itemName";
+		roleNames [Roles::ItemDescription] = "itemDescr";
+		roleNames [Roles::ItemIcon] = "itemIcon";
+		setRoleNames (roleNames);
+	}
 }
 }

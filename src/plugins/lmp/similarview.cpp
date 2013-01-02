@@ -16,31 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QDeclarativeView>
-#include <interfaces/media/audiostructs.h>
-
-class QStandardItemModel;
+#include "similarview.h"
+#include <QDeclarativeEngine>
+#include "sysiconsprovider.h"
+#include "similarviewmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class ArtistsInfoDisplay : public QDeclarativeView
+	SimilarView::SimilarView (QWidget *parent)
+	: QDeclarativeView (parent)
+	, Manager_ (new SimilarViewManager (this, this))
 	{
-		Q_OBJECT
+		engine ()->addImageProvider ("sysIcons",
+				new SysIconProvider (Core::Instance ().GetProxy ()));
 
-		QStandardItemModel *Model_;
-	public:
-		ArtistsInfoDisplay (QWidget* = 0);
+		setSource (QUrl ("qrc:/lmp/resources/qml/SimilarView.qml"));
+		Manager_->InitWithSource ();
+	}
 
-		void SetSimilarArtists (Media::SimilarityInfos_t);
-	private slots:
-		void handleBookmark (const QString&, const QString&, const QString&);
-		void handleLink (const QString&);
-	signals:
-		void previewRequested (const QString&);
-	};
+	void SimilarView::SetSimilarArtists (Media::SimilarityInfos_t infos)
+	{
+		Manager_->SetInfos (infos);
+	}
 }
 }

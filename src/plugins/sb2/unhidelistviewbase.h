@@ -18,33 +18,25 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_recommendationswidget.h"
+#include <QDeclarativeView>
+#include <interfaces/core/icoreproxy.h>
 
-namespace Media
-{
-	class IRecommendedArtists;
-}
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace LMP
+namespace SB2
 {
-	class RecommendationsWidget : public QWidget
+	class UnhideListViewBase : public QDeclarativeView
 	{
 		Q_OBJECT
-
-		Ui::RecommendationsWidget Ui_;
-
-		QList<QObject*> ProvRoots_;
-		QList<Media::IRecommendedArtists*> Providers_;
+	protected:
+		QStandardItemModel *Model_;
 	public:
-		RecommendationsWidget (QWidget* = 0);
-
-		void InitializeProviders ();
-	private slots:
-		void handleGotRecs ();
-		void on_RecProvider__activated (int);
+		UnhideListViewBase (ICoreProxy_ptr, QWidget* = 0);
+	protected:
+		void BeginModelFill ();
+		void EndModelFill ();
 	};
 }
 }

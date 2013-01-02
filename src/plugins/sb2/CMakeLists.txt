@@ -29,6 +29,9 @@ SET (SRCS
 	launchercomponent.cpp
 	lcmenucomponent.cpp
 	traycomponent.cpp
+	unhidelistmodel.cpp
+	quarkunhidelistview.cpp
+	unhidelistviewbase.cpp
 	)
 
 ADD_LIBRARY (leechcraft_sb2 SHARED

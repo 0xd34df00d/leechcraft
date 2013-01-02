@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 class QUrl;
 class QPoint;
@@ -34,11 +35,15 @@ namespace SB2
 		Q_OBJECT
 
 		ViewManager *Manager_;
+		ICoreProxy_ptr Proxy_;
 	public:
-		QuarkProxy (ViewManager*, QObject* = 0);
+		QuarkProxy (ViewManager*, ICoreProxy_ptr, QObject* = 0);
 	public slots:
 		QPoint mapToGlobal (double, double);
 		void showSettings (const QUrl&);
+		void removeQuark (const QUrl&);
+
+		void quarkAddRequested ();
 	};
 }
 }

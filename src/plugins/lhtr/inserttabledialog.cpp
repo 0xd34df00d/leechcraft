@@ -16,35 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include "ui_recommendationswidget.h"
-
-namespace Media
-{
-	class IRecommendedArtists;
-}
+#include "inserttabledialog.h"
 
 namespace LeechCraft
 {
-namespace LMP
+namespace LHTR
 {
-	class RecommendationsWidget : public QWidget
+	InsertTableDialog::InsertTableDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
+	}
 
-		Ui::RecommendationsWidget Ui_;
+	QString InsertTableDialog::GetCaption () const
+	{
+		return Ui_.Caption_->text ();
+	}
 
-		QList<QObject*> ProvRoots_;
-		QList<Media::IRecommendedArtists*> Providers_;
-	public:
-		RecommendationsWidget (QWidget* = 0);
+	int InsertTableDialog::GetColumns () const
+	{
+		return Ui_.Columns_->value ();
+	}
 
-		void InitializeProviders ();
-	private slots:
-		void handleGotRecs ();
-		void on_RecProvider__activated (int);
-	};
+	int InsertTableDialog::GetRows () const
+	{
+		return Ui_.Rows_->value ();
+	}
 }
 }

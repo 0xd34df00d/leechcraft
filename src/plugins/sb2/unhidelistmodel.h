@@ -18,33 +18,24 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_recommendationswidget.h"
-
-namespace Media
-{
-	class IRecommendedArtists;
-}
+#include <QStandardItemModel>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace SB2
 {
-	class RecommendationsWidget : public QWidget
+	class UnhideListModel : public QStandardItemModel
 	{
-		Q_OBJECT
-
-		Ui::RecommendationsWidget Ui_;
-
-		QList<QObject*> ProvRoots_;
-		QList<Media::IRecommendedArtists*> Providers_;
 	public:
-		RecommendationsWidget (QWidget* = 0);
+		enum Roles
+		{
+			ItemClass = Qt::UserRole + 1,
+			ItemName,
+			ItemDescription,
+			ItemIcon
+		};
 
-		void InitializeProviders ();
-	private slots:
-		void handleGotRecs ();
-		void on_RecProvider__activated (int);
+		UnhideListModel (QObject*);
 	};
 }
 }

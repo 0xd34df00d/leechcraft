@@ -4,7 +4,7 @@ import "../common/"
 Rectangle {
     id: rootRect
     width: 500
-    height: Math.min(600, closeTabButton.height + unhideView.count * 36)
+    height: Math.min(600, closeitemButton.height + unhideView.count * 36)
     smooth: true
     focus: true
 
@@ -15,14 +15,14 @@ Rectangle {
     }
 
     signal closeRequested()
-    signal tabUnhideRequested(string tabClass)
+    signal itemUnhideRequested(string itemClass)
 
     Keys.onEscapePressed: rootRect.closeRequested()
 
     color: "#00000000"
 
     ActionButton {
-        id: closeTabButton
+        id: closeitemButton
 
         width: 16
         height: 16
@@ -38,7 +38,7 @@ Rectangle {
 
     ListView {
         id: unhideView
-        anchors.top: closeTabButton.bottom
+        anchors.top: closeitemButton.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
@@ -49,7 +49,7 @@ Rectangle {
             height: 36
 
             Rectangle {
-                id: tabRect
+                id: itemRect
                 anchors.fill: parent
                 radius: 5
                 smooth: true
@@ -73,8 +73,8 @@ Rectangle {
                 }
 
                 Image {
-                    id: tabIconImage
-                    source: tabIcon
+                    id: itemIconImage
+                    source: itemIcon
 
                     width: 32
                     height: 32
@@ -86,12 +86,12 @@ Rectangle {
                 }
 
                 Text {
-                    id: tabNameLabel
-                    text: tabName + " (" + tabDescr + ")"
+                    id: itemNameLabel
+                    text: itemName + (itemDescr.length > 0 ? (" (" + itemDescr + ")") : "")
 
                     color: "lightgrey"
 
-                    anchors.left: tabIconImage.right
+                    anchors.left: itemIconImage.right
                     anchors.leftMargin: 4
                     anchors.right: parent.right
                     anchors.rightMargin: 4
@@ -104,14 +104,14 @@ Rectangle {
                     id: rectMouseArea
                     anchors.fill: parent
                     hoverEnabled: true
-                    onReleased: rootRect.tabUnhideRequested(tabClass)
+                    onReleased: rootRect.itemUnhideRequested(itemClass)
                 }
 
                 states: [
                     State {
                         name: "hovered"
                         when: rectMouseArea.containsMouse
-                        PropertyChanges { target: tabRect; border.color: "#ff6500" }
+                        PropertyChanges { target: itemRect; border.color: "#ff6500" }
                         PropertyChanges { target: upperStop; color: "#5a3238" }
                         PropertyChanges { target: lowerStop; color: "#290700" }
                     }
