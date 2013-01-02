@@ -158,7 +158,7 @@ namespace SB2
 		QuarkManager_ptr mgr;
 		try
 		{
-			mgr.reset (new QuarkManager (comp, this));
+			mgr.reset (new QuarkManager (comp, this, Proxy_));
 		}
 		catch (const std::exception& e)
 		{

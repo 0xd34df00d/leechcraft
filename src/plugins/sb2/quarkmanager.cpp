@@ -26,6 +26,7 @@
 #include <QFile>
 #include <QtDebug>
 #include <QFileInfo>
+#include <QDir>
 #include <qjson/parser.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include "viewmanager.h"
@@ -36,10 +37,15 @@ namespace LeechCraft
 {
 namespace SB2
 {
-	QuarkManager::QuarkManager (const QuarkComponent& comp, ViewManager *manager)
+	const int IconSize = 32;
+
+	QuarkManager::QuarkManager (const QuarkComponent& comp,
+			ViewManager *manager, ICoreProxy_ptr proxy)
 	: QObject (manager)
 	, ViewMgr_ (manager)
+	, Proxy_ (proxy)
 	, URL_ (comp.Url_)
+	, Icon_ (proxy->GetIcon ("applications-science"))
 	, SettingsManager_ (0)
 	{
 		ID_ = QFileInfo (URL_.path ()).fileName ();
@@ -67,6 +73,11 @@ namespace SB2
 	QString QuarkManager::GetName () const
 	{
 		return Name_;
+	}
+
+	QIcon QuarkManager::GetIcon () const
+	{
+		return Icon_;
 	}
 
 	bool QuarkManager::IsValidArea () const
@@ -150,6 +161,37 @@ namespace SB2
 
 		if (varMap.contains ("quarkID"))
 			ID_ = varMap ["quarkID"].toString ();
+
+		if (varMap.contains ("icon"))
+		{
+			const auto& iconName = varMap ["icon"].toString ();
+
+			TryFullImage (iconName) || TryTheme (iconName);
+		}
+	}
+
+	bool QuarkManager::TryFullImage (const QString& iconName)
+	{
+		const auto& dirName = QFileInfo (URL_.toLocalFile ()).absoluteDir ().path ();
+		const auto& fullName = dirName + iconName;
+
+		const QPixmap px (fullName);
+		if (px.isNull ())
+			return false;
+
+		Icon_.addPixmap (px);
+		return true;
+	}
+
+	bool QuarkManager::TryTheme (const QString& iconName)
+	{
+		const auto& icon = Proxy_->GetIcon (iconName);
+		const auto& px = icon.pixmap (IconSize, IconSize);
+		if (px.isNull ())
+			return false;
+
+		Icon_ = icon;
+		return true;
 	}
 
 	void QuarkManager::CreateSettings ()
