@@ -70,9 +70,32 @@ Rectangle {
 
                 source: sourceURL
                 height: item.height
-                width: parent.width
+                anchors.left: itemsDelegate.left
+                anchors.right: itemsDelegate.right
+                anchors.leftMargin: 1
+                anchors.rightMargin: 1
 
                 clip: true
+            }
+
+            Rectangle {
+                visible: enableSettingsModeButton.settingsMode
+                anchors.fill: itemLoader
+
+                smooth: true
+                gradient: Gradient {
+                    GradientStop {
+                        position: 0
+                        color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedTopColor, 0.3)
+                    }
+                    GradientStop {
+                        position: 1
+                        color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBottomColor, 0.3)
+                    }
+                }
+                border.color: colorProxy.color_ToolButton_SelectedBorderColor
+                border.width: 1
+                radius: width / 10
             }
 
             ActionButton {
@@ -121,9 +144,11 @@ Rectangle {
                 actionIconURL: "image://ThemeIcons/edit-delete"
                 transparentStyle: true
 
-                anchors.top: itemLoader.top
-                anchors.left: itemLoader.left
-                anchors.right: itemLoader.right
+                anchors.verticalCenter: itemsDelegate.verticalCenter
+                anchors.left: itemsDelegate.left
+                anchors.right: itemsDelegate.right
+                anchors.leftMargin: itemsDelegate.width / 10
+                anchors.rightMargin: itemsDelegate.width / 10
                 height: width
 
                 states: [
