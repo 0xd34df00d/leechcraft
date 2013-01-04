@@ -60,7 +60,7 @@ Rectangle {
         delegate: Rectangle {
             id: itemsDelegate
 
-            height: itemLoader.height
+            height: itemLoader.height + settingsButtonsContainer.height
             width: itemsView.width
 
             color: "transparent"
@@ -85,17 +85,43 @@ Rectangle {
                 smooth: true
                 gradient: Gradient {
                     GradientStop {
+                        id: topHighlightGradient
                         position: 0
-                        color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedTopColor, 0.3)
+                        color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedTopColor, 0.1)
                     }
                     GradientStop {
+                        id: bottomHighlightGradient
                         position: 1
-                        color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBottomColor, 0.3)
+                        color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBottomColor, 0.1)
                     }
                 }
                 border.color: colorProxy.color_ToolButton_SelectedBorderColor
                 border.width: 1
                 radius: width / 10
+
+                states: [
+                    State {
+                        name: "highlight"
+                        when: removeQuarkButton.isHovered
+                        PropertyChanges {
+                            target: topHighlightGradient
+                            color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedTopColor, 0.3)
+                        }
+                        PropertyChanges {
+                            target: bottomHighlightGradient
+                            color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBottomColor, 0.3)
+                        }
+                    }
+                ]
+
+                transitions: [
+                    Transition {
+                        from: ""
+                        to: "highlight"
+                        reversible: true
+                        PropertyAnimation { properties: "color"; duration: 200 }
+                    }
+                ]
             }
 
             ActionButton {
@@ -134,42 +160,51 @@ Rectangle {
                 onTriggered: quarkProxy.showSettings(sourceURL)
             }
 
-            ActionButton {
-                id: removeQuarkButton
-
+            Item {
+                id: settingsButtonsContainer
                 visible: enableSettingsModeButton.settingsMode
-                opacity: 0
-                z: 11
 
-                actionIconURL: "image://ThemeIcons/edit-delete"
-                transparentStyle: true
-
-                anchors.verticalCenter: itemsDelegate.verticalCenter
+                anchors.top: itemLoader.bottom
                 anchors.left: itemsDelegate.left
                 anchors.right: itemsDelegate.right
                 anchors.leftMargin: itemsDelegate.width / 10
                 anchors.rightMargin: itemsDelegate.width / 10
-                height: width
 
-                states: [
-                    State {
-                        name: "inSettingsMode"
-                        when: enableSettingsModeButton.settingsMode
-                        PropertyChanges { target: removeQuarkButton; opacity: 1 }
-                        PropertyChanges { target: itemsDelegate; height: Math.max(itemLoader.item.height, itemsDelegate.width) }
-                    }
-                ]
+                height: childrenRect.height
 
-                transitions: [
-                    Transition {
-                        from: ""
-                        to: "inSettingsMode"
-                        reversible: true
-                        PropertyAnimation { properties: "opacity,height"; duration: 200 }
-                    }
-                ]
+                ActionButton {
+                    id: removeQuarkButton
 
-                onTriggered: quarkProxy.removeQuark(sourceURL)
+                    opacity: 0
+                    z: 11
+
+                    actionIconURL: "image://ThemeIcons/edit-delete"
+                    transparentStyle: true
+
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    height: enableSettingsModeButton.settingsMode ? width : 0
+
+                    states: [
+                        State {
+                            name: "inSettingsMode"
+                            when: enableSettingsModeButton.settingsMode
+                            PropertyChanges { target: removeQuarkButton; opacity: 1 }
+                        }
+                    ]
+
+                    transitions: [
+                        Transition {
+                            from: ""
+                            to: "inSettingsMode"
+                            reversible: true
+                            PropertyAnimation { properties: "opacity,height"; duration: 200 }
+                        }
+                    ]
+
+                    onTriggered: quarkProxy.removeQuark(sourceURL)
+                }
             }
         }
     }
