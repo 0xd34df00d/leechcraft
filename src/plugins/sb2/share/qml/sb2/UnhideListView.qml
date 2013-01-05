@@ -4,7 +4,7 @@ import "../common/"
 Rectangle {
     id: rootRect
     width: 500
-    height: Math.min(600, closeitemButton.height + unhideView.count * 36)
+    height: Math.min(600, closeItemButton.height + unhideView.count * 36)
     smooth: true
     focus: true
 
@@ -22,7 +22,7 @@ Rectangle {
     color: "transparent"
 
     ActionButton {
-        id: closeitemButton
+        id: closeItemButton
 
         width: 16
         height: 16
@@ -38,7 +38,7 @@ Rectangle {
 
     ListView {
         id: unhideView
-        anchors.top: closeitemButton.bottom
+        anchors.top: closeItemButton.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
