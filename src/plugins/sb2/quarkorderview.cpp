@@ -85,14 +85,44 @@ namespace SB2
 				this,
 				SLOT (deleteLater ()));
 		connect (rootObject (),
-				SIGNAL (moveRequested (int, int)),
+				SIGNAL (moveRequested (QString, QString, int)),
 				this,
-				SLOT (moveQuark (int, int)));
+				SLOT (moveQuark (QString, QString, int)));
 	}
 
-	void QuarkOrderView::moveQuark (int from, int to)
+	namespace
 	{
-		qDebug () << Q_FUNC_INFO << from << to;
+		int FindClassRow (QStandardItemModel *model, const QString& itemClass)
+		{
+			for (int i = 0, rc = model->rowCount (); i < rc; ++i)
+			{
+				auto item = model->item (i);
+				if (item->data (UnhideListModel::Roles::ItemClass).toString () == itemClass)
+					return i;
+			}
+			return -1;
+		}
+	}
+
+	void QuarkOrderView::moveQuark (const QString& from, const QString& to, int shift)
+	{
+		const auto fromPos = FindClassRow (Model_, from);
+		auto toPos = FindClassRow (Model_, to);
+		if (fromPos < 0 || toPos < 0)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "incorrect classes"
+					<< from
+					<< to
+					<< fromPos
+					<< toPos;
+			return;
+		}
+
+		toPos += shift;
+		if (toPos < fromPos)
+			--toPos;
+		Model_->insertRow (toPos, Model_->takeRow (fromPos));
 	}
 }
 }
