@@ -120,7 +120,10 @@ namespace SB2
 		}
 
 		toPos += shift;
-		if (toPos < fromPos)
+
+		Manager_->MoveQuark (fromPos, toPos);
+
+		if (fromPos < toPos)
 			--toPos;
 		Model_->insertRow (toPos, Model_->takeRow (fromPos));
 	}
