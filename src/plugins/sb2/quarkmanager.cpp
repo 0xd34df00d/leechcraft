@@ -45,12 +45,11 @@ namespace SB2
 	, ViewMgr_ (manager)
 	, Proxy_ (proxy)
 	, URL_ (comp.Url_)
-	, Icon_ (proxy->GetIcon ("applications-science"))
 	, SettingsManager_ (0)
+	, ID_ (QFileInfo (URL_.path ()).fileName ())
+	, Name_ (ID_)
+	, Icon_ (proxy->GetIcon ("applications-science"))
 	{
-		ID_ = QFileInfo (URL_.path ()).fileName ();
-		Name_ = ID_;
-
 		ParseManifest ();
 
 		if (!ViewMgr_)

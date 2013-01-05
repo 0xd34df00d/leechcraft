@@ -43,8 +43,8 @@ namespace SB2
 		Util::XmlSettingsDialog_ptr XSD_;
 		QuarkSettingsManager *SettingsManager_;
 
-		QString Name_;
 		QString ID_;
+		QString Name_;
 		QIcon Icon_;
 		QString Description_;
 		QStringList Areas_;
