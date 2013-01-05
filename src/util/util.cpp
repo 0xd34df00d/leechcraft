@@ -356,7 +356,7 @@ QVariantList LeechCraft::Util::GetPersistentData (const QList<QVariant>& keys,
 QPoint LeechCraft::Util::FitRectScreen (QPoint pos, const QSize& size)
 {
 	const QRect& geometry = QApplication::desktop ()->screenGeometry (pos);
-	const bool dropDown = pos.y () < geometry.height () / 2;
+	const bool dropDown = pos.y () + size.height () < geometry.height () + geometry.y ();
 	const bool dropRight = pos.x () + size.width () < geometry.width () + geometry.x ();
 
 	if (!dropDown)
