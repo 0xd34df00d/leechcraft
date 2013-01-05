@@ -41,6 +41,8 @@ namespace SB2
 		QuarkOrderView (ViewManager*, ICoreProxy_ptr, QWidget* = 0);
 	private slots:
 		void moveQuark (const QString& from, const QString& to, int shift);
+	signals:
+		void quarkClassHovered (const QString&);
 	};
 }
 }

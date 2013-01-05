@@ -16,6 +16,7 @@ Rectangle {
 
     signal closeRequested()
     signal moveRequested(string from, string to, int shift)
+    signal quarkClassHovered(string classID)
 
     Keys.onEscapePressed: rootRect.closeRequested()
 
@@ -137,6 +138,9 @@ Rectangle {
 
                         itemRect.z = 1;
                     }
+
+                    onEntered: rootRect.quarkClassHovered(itemClass)
+                    onExited: rootRect.quarkClassHovered("")
                 }
 
                 states: [

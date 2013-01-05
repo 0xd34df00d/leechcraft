@@ -33,11 +33,16 @@ namespace SB2
 	class QuarkProxy : public QObject
 	{
 		Q_OBJECT
+		Q_PROPERTY (QString extHoveredQuarkClass READ GetExtHoveredQuarkClass NOTIFY extHoveredQuarkClassChanged)
 
 		ViewManager *Manager_;
 		ICoreProxy_ptr Proxy_;
+
+		QString ExtHoveredQuarkClass_;
 	public:
 		QuarkProxy (ViewManager*, ICoreProxy_ptr, QObject* = 0);
+
+		const QString& GetExtHoveredQuarkClass () const;
 	public slots:
 		QPoint mapToGlobal (double, double);
 		void showSettings (const QUrl&);
@@ -45,6 +50,10 @@ namespace SB2
 
 		void quarkAddRequested (int, int);
 		void quarkOrderRequested (int, int);
+	private slots:
+		void handleExtHoveredQuarkClass (const QString&);
+	signals:
+		void extHoveredQuarkClassChanged ();
 	};
 }
 }

@@ -45,7 +45,8 @@ namespace SB2
 			enum Role
 			{
 				SourceURL= Qt::UserRole + 1,
-				QuarkHasSettings
+				QuarkHasSettings,
+				QuarkClass
 			};
 
 			ViewItemsModel (QObject *parent)
@@ -54,6 +55,7 @@ namespace SB2
 				QHash<int, QByteArray> names;
 				names [Role::SourceURL] = "sourceURL";
 				names [Role::QuarkHasSettings] = "quarkHasSettings";
+				names [Role::QuarkClass] = "quarkClass";
 				setRoleNames (names);
 			}
 		};
@@ -203,6 +205,7 @@ namespace SB2
 		auto item = new QStandardItem;
 		item->setData (comp.Url_, ViewItemsModel::Role::SourceURL);
 		item->setData (mgr->HasSettings (), ViewItemsModel::Role::QuarkHasSettings);
+		item->setData (mgr->GetID (), ViewItemsModel::Role::QuarkClass);
 		ViewItemsModel_->appendRow (item);
 	}
 

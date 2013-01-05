@@ -35,6 +35,11 @@ namespace SB2
 	{
 	}
 
+	const QString& QuarkProxy::GetExtHoveredQuarkClass () const
+	{
+		return ExtHoveredQuarkClass_;
+	}
+
 	QPoint QuarkProxy::mapToGlobal (double x, double y)
 	{
 		return Manager_->GetView ()->mapToGlobal (QPoint (x, y));
@@ -76,6 +81,20 @@ namespace SB2
 		auto view = new QuarkOrderView (Manager_, Proxy_);
 		view->move (x, y);
 		view->show ();
+
+		connect (view,
+				SIGNAL (quarkClassHovered (QString)),
+				this,
+				SLOT (handleExtHoveredQuarkClass (QString)));
+	}
+
+	void QuarkProxy::handleExtHoveredQuarkClass (const QString& qClass)
+	{
+		if (ExtHoveredQuarkClass_ == qClass)
+			return;
+
+		ExtHoveredQuarkClass_ = qClass;
+		emit extHoveredQuarkClassChanged ();
 	}
 }
 }

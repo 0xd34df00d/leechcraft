@@ -88,6 +88,10 @@ namespace SB2
 				SIGNAL (moveRequested (QString, QString, int)),
 				this,
 				SLOT (moveQuark (QString, QString, int)));
+		connect (rootObject (),
+				SIGNAL (quarkClassHovered (QString)),
+				this,
+				SIGNAL (quarkClassHovered (QString)));
 	}
 
 	namespace

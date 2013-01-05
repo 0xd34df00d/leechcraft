@@ -115,7 +115,7 @@ Rectangle {
                 states: [
                     State {
                         name: "highlight"
-                        when: removeQuarkButton.isHovered
+                        when: removeQuarkButton.isHovered || (quarkProxy.extHoveredQuarkClass == quarkClass)
                         PropertyChanges {
                             target: topHighlightGradient
                             color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedTopColor, 0.3)
