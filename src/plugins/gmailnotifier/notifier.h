@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Yury Erik Potapov
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,56 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_GMAILNOTIFIER_GMAILCHECKER_H
-#define PLUGINS_GMAILNOTIFIER_GMAILCHECKER_H
-#include <QObject>
-#include <QString>
-#include "convinfo.h"
+#pragma once
 
-class QNetworkAccessManager;
-class QNetworkReply;
-class QAuthenticator;
-class QTimer;
+#include <QObject>
+#include <interfaces/core/icoreproxy.h>
+#include "convinfo.h"
 
 namespace LeechCraft
 {
 namespace GmailNotifier
 {
-	class GmailChecker: public QObject
+	class Notifier : public QObject
 	{
 		Q_OBJECT
 
-		QNetworkAccessManager *QNAM_;
-		QNetworkReply *Reply_;
-		QTimer *TimeOutTimer_;
-
-		QString Username_;
-		QString Password_;
-
-		bool Failed_;
+		ICoreProxy_ptr Proxy_;
+		ConvInfos_t PreviousInfos_;
 	public:
-		GmailChecker(QObject* = 0);
-		void SetAuthSettings (const QString& login, const QString& passwd);
-
-		void Init ();
-		void ReInit ();
-	private:
-		void ParseData (const QString&);
+		Notifier (ICoreProxy_ptr, QObject* = 0);
 	public slots:
-		void checkNow ();
-	private slots:
-		void httpFinished ();
-		void httpAuthenticationRequired (QNetworkReply *networkReply, QAuthenticator *authenticator);
-		void timeOut ();
-	signals:
-		void gotConversations (const ConvInfos_t&);
-		void anErrorOccupied (const QString& title, const QString& msg);
-
-		void waitMe ();
-		void canContinue ();
+		void notifyAbout (const ConvInfos_t&);
 	};
 }
 }
-
-#endif
-

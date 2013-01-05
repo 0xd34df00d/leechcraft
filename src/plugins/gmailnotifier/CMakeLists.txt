@@ -12,26 +12,18 @@ INCLUDE_DIRECTORIES(
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 )
-SET(HEADERS
-	gmailnotifier.h
-	xmlsettingsmanager.h
-	gmailchecker.h
-)
 SET(SRCS
 	gmailnotifier.cpp
 	xmlsettingsmanager.cpp
 	gmailchecker.cpp
+	convinfo.cpp
+	notifier.cpp
 )
 SET(RESOURCES
 	res/resources.qrc
 )
 CreateTrs("gmailnotifier" "de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
-
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP(MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
 QT4_ADD_RESOURCES(RCCS ${RESOURCES})
-
 
 ADD_LIBRARY(leechcraft_gmailnotifier SHARED
 	${COMPILED_TRANSLATIONS}

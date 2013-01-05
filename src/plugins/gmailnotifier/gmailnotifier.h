@@ -21,7 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
-#include <interfaces/iactionsexporter.h>
+#include "convinfo.h"
 
 class QTranslator;
 class QTimer;
@@ -30,23 +30,22 @@ namespace LeechCraft
 {
 namespace GmailNotifier
 {
+	class Notifier;
 	class GmailChecker;
 
 	class GmailNotifier : public QObject
 						, public IInfo
 						, public IHaveSettings
-						, public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IActionsExporter)
+		Q_INTERFACES (IInfo IHaveSettings)
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 
 		GmailChecker *GmailChecker_;
 		QTimer *UpdateTimer_;
-		QString LastMsg_;
 
-		QAction *NotifierAction_;
+		Notifier *Notifier_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -57,19 +56,14 @@ namespace GmailNotifier
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	private:
 		void CheckCreateAction ();
 	private slots:
+		void notifyConvs (const ConvInfos_t&);
 		void setAuthorization ();
-		void setShowUnreadNumInTray ();
 		void applyInterval ();
-		void sendMeNotification (const QString&, const QString&, int);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
-
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }
