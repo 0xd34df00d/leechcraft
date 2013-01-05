@@ -16,6 +16,7 @@ Rectangle {
 
     signal closeRequested()
     signal moveRequested(string from, string to, int shift)
+    signal quarkRemoveRequested(string classID)
     signal quarkClassHovered(string classID)
 
     Keys.onEscapePressed: rootRect.closeRequested()
@@ -109,7 +110,7 @@ Rectangle {
 
                     anchors.left: itemIconImage.right
                     anchors.leftMargin: 4
-                    anchors.right: parent.right
+                    anchors.right: removeQuarkButton.left
                     anchors.rightMargin: 4
                     anchors.verticalCenter: parent.verticalCenter
 
@@ -141,6 +142,22 @@ Rectangle {
 
                     onEntered: rootRect.quarkClassHovered(itemClass)
                     onExited: rootRect.quarkClassHovered("")
+                }
+
+                ActionButton {
+                    id: removeQuarkButton
+                    z: rectMouseArea.z + 1
+
+                    height: parent.height * 2 / 3
+                    width: height
+
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 4
+
+                    actionIconURL: "image://ThemeIcons/edit-delete"
+
+                    onTriggered: rootRect.quarkRemoveRequested(itemClass)
                 }
 
                 states: [

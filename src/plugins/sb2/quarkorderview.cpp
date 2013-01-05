@@ -92,6 +92,26 @@ namespace SB2
 				SIGNAL (quarkClassHovered (QString)),
 				this,
 				SIGNAL (quarkClassHovered (QString)));
+		connect (rootObject (),
+				SIGNAL (quarkRemoveRequested (QString)),
+				this,
+				SLOT (handleQuarkCloseRequested (QString)),
+				Qt::QueuedConnection);
+	}
+
+	void QuarkOrderView::handleQuarkCloseRequested (const QString& qClass)
+	{
+		Manager_->RemoveQuark (qClass);
+
+		for (int i = 0, rc = Model_->rowCount (); i < rc; ++i)
+		{
+			auto item = Model_->item (i);
+			if (item->data (UnhideListModel::Roles::ItemClass) == qClass)
+			{
+				Model_->removeRow (i);
+				break;
+			}
+		}
 	}
 
 	namespace
