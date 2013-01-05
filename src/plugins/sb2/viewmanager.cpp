@@ -120,6 +120,26 @@ namespace SB2
 		RemovedIDs_ << mgr->GetID ();
 	}
 
+	void ViewManager::RemoveQuark (const QString& id)
+	{
+		QUrl url;
+		for (int i = 0; i < ViewItemsModel_->rowCount (); ++i)
+		{
+			auto item = ViewItemsModel_->item (i);
+			if (item->data (ViewItemsModel::Role::QuarkClass) != id)
+				continue;
+
+			url = item->data (ViewItemsModel::Role::SourceURL).toUrl ();
+			ViewItemsModel_->removeRow (i);
+		}
+
+		if (!url.isValid ())
+			return;
+
+		auto mgr = Quark2Manager_.take (url);
+		RemovedIDs_ << mgr->GetID ();
+	}
+
 	void ViewManager::UnhideQuark (const QuarkComponent& component, QuarkManager_ptr manager)
 	{
 		if (!manager)

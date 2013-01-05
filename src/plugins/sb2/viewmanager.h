@@ -61,7 +61,8 @@ namespace SB2
 
 		void ShowSettings (const QUrl&);
 
-		void RemoveQuark (const QUrl&);
+		void RemoveQuark (const QUrl& loadedUrl);
+		void RemoveQuark (const QString& id);
 		void UnhideQuark (const QuarkComponent&, QuarkManager_ptr);
 		void MoveQuark (int from, int to);
 
