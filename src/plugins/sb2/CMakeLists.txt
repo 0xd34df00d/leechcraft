@@ -32,6 +32,7 @@ SET (SRCS
 	unhidelistmodel.cpp
 	quarkunhidelistview.cpp
 	unhidelistviewbase.cpp
+	quarkorderview.cpp
 	)
 
 ADD_LIBRARY (leechcraft_sb2 SHARED
