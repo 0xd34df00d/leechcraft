@@ -24,9 +24,11 @@
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/util.h>
 #include "viewmanager.h"
 #include "themeimageprovider.h"
 #include "unhidelistmodel.h"
+#include "quarkmanager.h"
 
 namespace LeechCraft
 {
@@ -47,6 +49,25 @@ namespace SB2
 					<< "file not found";
 			deleteLater ();
 			return;
+		}
+
+		const auto& quarks = manager->GetAddedQuarks ();
+		if (quarks.isEmpty ())
+		{
+			deleteLater ();
+			return;
+		}
+
+		for (const auto& quark : quarks)
+		{
+			auto quarkMgr = manager->GetAddedQuarkManager (quark);
+			auto item = new QStandardItem;
+			item->setData (quarkMgr->GetName (), UnhideListModel::Roles::ItemName);
+			item->setData (quarkMgr->GetDescription (), UnhideListModel::Roles::ItemDescription);
+			item->setData (quarkMgr->GetID (), UnhideListModel::Roles::ItemClass);
+			item->setData (Util::GetAsBase64Src (quarkMgr->GetIcon ().pixmap (32, 32).toImage ()),
+					UnhideListModel::Roles::ItemIcon);
+			Model_->appendRow (item);
 		}
 
 		setStyleSheet ("background: transparent");
