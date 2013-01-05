@@ -18,11 +18,10 @@
 
 #pragma once
 
-#include <QObject>
+#include <QDeclarativeView>
 #include <interfaces/core/icoreproxy.h>
 
-class QUrl;
-class QPoint;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -30,30 +29,21 @@ namespace SB2
 {
 	class ViewManager;
 
-	class QuarkProxy : public QObject
+	class QuarkOrderView : public QDeclarativeView
 	{
 		Q_OBJECT
-		Q_PROPERTY (QString extHoveredQuarkClass READ GetExtHoveredQuarkClass NOTIFY extHoveredQuarkClassChanged)
 
-		ViewManager *Manager_;
+		ViewManager * const Manager_;
 		ICoreProxy_ptr Proxy_;
 
-		QString ExtHoveredQuarkClass_;
+		QStandardItemModel *Model_;
 	public:
-		QuarkProxy (ViewManager*, ICoreProxy_ptr, QObject* = 0);
-
-		const QString& GetExtHoveredQuarkClass () const;
-	public slots:
-		QPoint mapToGlobal (double, double);
-		void showSettings (const QUrl&);
-		void removeQuark (const QUrl&);
-
-		void quarkAddRequested (int, int);
-		void quarkOrderRequested (int, int);
+		QuarkOrderView (ViewManager*, ICoreProxy_ptr, QWidget* = 0);
 	private slots:
-		void handleExtHoveredQuarkClass (const QString&);
+		void handleQuarkCloseRequested (const QString&);
+		void moveQuark (const QString& from, const QString& to, int shift);
 	signals:
-		void extHoveredQuarkClassChanged ();
+		void quarkClassHovered (const QString&);
 	};
 }
 }

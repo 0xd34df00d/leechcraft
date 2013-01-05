@@ -4,7 +4,7 @@ import "../common/"
 Rectangle {
     id: rootRect
     width: 500
-    height: Math.min(600, closeItemButton.height + unhideView.count * 36)
+    height: Math.min(600, closeItemButton.height + quarkListView.count * 36)
     smooth: true
     focus: true
 
@@ -15,7 +15,9 @@ Rectangle {
     }
 
     signal closeRequested()
-    signal itemUnhideRequested(string itemClass)
+    signal moveRequested(string from, string to, int shift)
+    signal quarkRemoveRequested(string classID)
+    signal quarkClassHovered(string classID)
 
     Keys.onEscapePressed: rootRect.closeRequested()
 
@@ -36,21 +38,21 @@ Rectangle {
         onTriggered: rootRect.closeRequested()
     }
 
-    ListView {
-        id: unhideView
+    Column {
+        id: quarkListColumn
         anchors.top: closeItemButton.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        model: unhideListModel
-
-        delegate: Item {
-            width: unhideView.width
-            height: 36
+        Repeater {
+            id: quarkListView
+            model: quarkListModel
 
             Rectangle {
                 id: itemRect
-                anchors.fill: parent
+                width: quarkListColumn.width
+                height: 36
+                z: 1
                 radius: 5
                 smooth: true
 
@@ -58,6 +60,21 @@ Rectangle {
                 border.width: 1
 
                 Keys.onEscapePressed: rootRect.closeRequested()
+
+                property int yBeforeDrag
+                property string internalId: itemClass
+
+                function savePos() { yBeforeDrag = y }
+                function restorePos() { y = yBeforeDrag }
+
+                function moveTo(other, releasePt) {
+                    restorePos();
+
+                    var otherPt = other.mapFromItem(quarkListColumn, releasePt.x, releasePt.y);
+
+                    var shift = otherPt.y <= other.height / 2 ? 0 : 1;
+                    rootRect.moveRequested(internalId, other.internalId, shift);
+                }
 
                 gradient: Gradient {
                     GradientStop {
@@ -93,7 +110,7 @@ Rectangle {
 
                     anchors.left: itemIconImage.right
                     anchors.leftMargin: 4
-                    anchors.right: parent.right
+                    anchors.right: removeQuarkButton.left
                     anchors.rightMargin: 4
                     anchors.verticalCenter: parent.verticalCenter
 
@@ -104,7 +121,43 @@ Rectangle {
                     id: rectMouseArea
                     anchors.fill: parent
                     hoverEnabled: true
-                    onReleased: rootRect.itemUnhideRequested(itemClass)
+
+                    drag.target: itemRect
+                    drag.axis: Drag.YAxis
+
+                    onPressed: { itemRect.savePos(); itemRect.z = 2 }
+                    onReleased: {
+                        itemRect.z = 0;
+
+                        var quarkPt = mapToItem(quarkListColumn, mouseX, mouseY);
+                        var other = quarkListColumn.childAt(quarkPt.x, quarkPt.y);
+
+                        if (other !== null && other !== itemRect)
+                            itemRect.moveTo(other, quarkPt);
+                        else
+                            itemRect.restorePos();
+
+                        itemRect.z = 1;
+                    }
+
+                    onEntered: rootRect.quarkClassHovered(itemClass)
+                    onExited: rootRect.quarkClassHovered("")
+                }
+
+                ActionButton {
+                    id: removeQuarkButton
+                    z: rectMouseArea.z + 1
+
+                    height: parent.height * 2 / 3
+                    width: height
+
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 4
+
+                    actionIconURL: "image://ThemeIcons/edit-delete"
+
+                    onTriggered: rootRect.quarkRemoveRequested(itemClass)
                 }
 
                 states: [
@@ -130,3 +183,4 @@ Rectangle {
         }
     }
 }
+

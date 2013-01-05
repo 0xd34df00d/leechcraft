@@ -22,6 +22,7 @@
 #include "viewmanager.h"
 #include "sbview.h"
 #include "quarkunhidelistview.h"
+#include "quarkorderview.h"
 
 namespace LeechCraft
 {
@@ -32,6 +33,11 @@ namespace SB2
 	, Manager_ (mgr)
 	, Proxy_ (proxy)
 	{
+	}
+
+	const QString& QuarkProxy::GetExtHoveredQuarkClass () const
+	{
+		return ExtHoveredQuarkClass_;
 	}
 
 	QPoint QuarkProxy::mapToGlobal (double x, double y)
@@ -49,7 +55,7 @@ namespace SB2
 		Manager_->RemoveQuark (url);
 	}
 
-	void QuarkProxy::quarkAddRequested ()
+	void QuarkProxy::quarkAddRequested (int x, int y)
 	{
 		auto toAdd = Manager_->FindAllQuarks ();
 		for (const auto& existing : Manager_->GetAddedQuarks ())
@@ -66,8 +72,29 @@ namespace SB2
 			return;
 
 		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Proxy_, Manager_->GetView ());
-		unhide->move (QCursor::pos ());
+		unhide->move (x, y);
 		unhide->show ();
+	}
+
+	void QuarkProxy::quarkOrderRequested (int x, int y)
+	{
+		auto view = new QuarkOrderView (Manager_, Proxy_);
+		view->move (x, y);
+		view->show ();
+
+		connect (view,
+				SIGNAL (quarkClassHovered (QString)),
+				this,
+				SLOT (handleExtHoveredQuarkClass (QString)));
+	}
+
+	void QuarkProxy::handleExtHoveredQuarkClass (const QString& qClass)
+	{
+		if (ExtHoveredQuarkClass_ == qClass)
+			return;
+
+		ExtHoveredQuarkClass_ = qClass;
+		emit extHoveredQuarkClassChanged ();
 	}
 }
 }

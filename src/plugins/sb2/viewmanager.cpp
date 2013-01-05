@@ -45,7 +45,8 @@ namespace SB2
 			enum Role
 			{
 				SourceURL= Qt::UserRole + 1,
-				QuarkHasSettings
+				QuarkHasSettings,
+				QuarkClass
 			};
 
 			ViewItemsModel (QObject *parent)
@@ -54,6 +55,7 @@ namespace SB2
 				QHash<int, QByteArray> names;
 				names [Role::SourceURL] = "sourceURL";
 				names [Role::QuarkHasSettings] = "quarkHasSettings";
+				names [Role::QuarkClass] = "quarkClass";
 				setRoleNames (names);
 			}
 		};
@@ -118,6 +120,26 @@ namespace SB2
 		RemovedIDs_ << mgr->GetID ();
 	}
 
+	void ViewManager::RemoveQuark (const QString& id)
+	{
+		QUrl url;
+		for (int i = 0; i < ViewItemsModel_->rowCount (); ++i)
+		{
+			auto item = ViewItemsModel_->item (i);
+			if (item->data (ViewItemsModel::Role::QuarkClass) != id)
+				continue;
+
+			url = item->data (ViewItemsModel::Role::SourceURL).toUrl ();
+			ViewItemsModel_->removeRow (i);
+		}
+
+		if (!url.isValid ())
+			return;
+
+		auto mgr = Quark2Manager_.take (url);
+		RemovedIDs_ << mgr->GetID ();
+	}
+
 	void ViewManager::UnhideQuark (const QuarkComponent& component, QuarkManager_ptr manager)
 	{
 		if (!manager)
@@ -126,6 +148,13 @@ namespace SB2
 		RemovedIDs_.remove (manager->GetID ());
 
 		AddComponent (component, manager);
+	}
+
+	void ViewManager::MoveQuark (int from, int to)
+	{
+		if (from < to)
+			--to;
+		ViewItemsModel_->insertRow (to, ViewItemsModel_->takeRow (from));
 	}
 
 	QList<QuarkComponent> ViewManager::FindAllQuarks () const
@@ -150,7 +179,20 @@ namespace SB2
 
 	QList<QUrl> ViewManager::GetAddedQuarks () const
 	{
-		return Quark2Manager_.keys ();
+		QList<QUrl> result;
+
+		for (int i = 0, rc = ViewItemsModel_->rowCount (); i < rc; ++i)
+		{
+			const auto item = ViewItemsModel_->item (i);
+			result << item->data (ViewItemsModel::Role::SourceURL).toUrl ();
+		}
+
+		return result;
+	}
+
+	QuarkManager_ptr ViewManager::GetAddedQuarkManager (const QUrl& url) const
+	{
+		return Quark2Manager_ [url];
 	}
 
 	void ViewManager::AddComponent (const QuarkComponent& comp)
@@ -183,6 +225,7 @@ namespace SB2
 		auto item = new QStandardItem;
 		item->setData (comp.Url_, ViewItemsModel::Role::SourceURL);
 		item->setData (mgr->HasSettings (), ViewItemsModel::Role::QuarkHasSettings);
+		item->setData (mgr->GetID (), ViewItemsModel::Role::QuarkClass);
 		ViewItemsModel_->appendRow (item);
 	}
 
