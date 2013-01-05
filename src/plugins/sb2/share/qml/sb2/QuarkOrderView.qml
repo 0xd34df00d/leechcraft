@@ -125,7 +125,11 @@ Rectangle {
                     drag.target: itemRect
                     drag.axis: Drag.YAxis
 
-                    onPressed: { itemRect.savePos(); itemRect.z = 2 }
+                    onPressed: {
+                        itemRect.savePos();
+                        itemRect.z = 2;
+                        itemRect.opacity = 0.7;
+                    }
                     onReleased: {
                         itemRect.z = 0;
 
@@ -138,6 +142,8 @@ Rectangle {
                             itemRect.restorePos();
 
                         itemRect.z = 1;
+
+                        itemRect.opacity = 1;
                     }
 
                     onEntered: rootRect.quarkClassHovered(itemClass)
