@@ -128,6 +128,13 @@ namespace SB2
 		AddComponent (component, manager);
 	}
 
+	void ViewManager::MoveQuark (int from, int to)
+	{
+		if (from < to)
+			--to;
+		ViewItemsModel_->insertRow (to, ViewItemsModel_->takeRow (from));
+	}
+
 	QList<QuarkComponent> ViewManager::FindAllQuarks () const
 	{
 		auto result = InternalComponents_;

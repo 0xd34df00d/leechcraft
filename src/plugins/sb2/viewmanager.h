@@ -63,6 +63,7 @@ namespace SB2
 
 		void RemoveQuark (const QUrl&);
 		void UnhideQuark (const QuarkComponent&, QuarkManager_ptr);
+		void MoveQuark (int from, int to);
 
 		QList<QuarkComponent> FindAllQuarks () const;
 		QList<QUrl> GetAddedQuarks () const;
