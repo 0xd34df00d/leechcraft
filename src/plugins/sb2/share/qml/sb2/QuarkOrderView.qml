@@ -65,9 +65,13 @@ Rectangle {
                 function savePos() { yBeforeDrag = y }
                 function restorePos() { y = yBeforeDrag }
 
-                function moveTo(other) {
-                    restorePos()
-                    rootRect.moveRequested(internalId, other.internalId, 0)
+                function moveTo(other, releasePt) {
+                    restorePos();
+
+                    var otherPt = other.mapFromItem(quarkListColumn, releasePt.x, releasePt.y);
+
+                    var shift = otherPt.y <= other.height / 2 ? 0 : 1;
+                    rootRect.moveRequested(internalId, other.internalId, shift);
                 }
 
                 gradient: Gradient {
@@ -121,17 +125,17 @@ Rectangle {
 
                     onPressed: { itemRect.savePos(); itemRect.z = 2 }
                     onReleased: {
-                        itemRect.z = 0
+                        itemRect.z = 0;
 
-                        var quarkPt = mapToItem(quarkListColumn, mouseX, mouseY)
-                        var other = quarkListColumn.childAt(quarkPt.x, quarkPt.y)
+                        var quarkPt = mapToItem(quarkListColumn, mouseX, mouseY);
+                        var other = quarkListColumn.childAt(quarkPt.x, quarkPt.y);
 
                         if (other !== null && other !== itemRect)
-                            itemRect.moveTo(other)
+                            itemRect.moveTo(other, quarkPt);
                         else
-                            itemRect.restorePos()
+                            itemRect.restorePos();
 
-                        itemRect.z = 1
+                        itemRect.z = 1;
                     }
                 }
 
