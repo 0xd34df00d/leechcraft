@@ -66,6 +66,7 @@ namespace SB2
 
 		QList<QuarkComponent> FindAllQuarks () const;
 		QList<QUrl> GetAddedQuarks () const;
+		QuarkManager_ptr GetAddedQuarkManager (const QUrl&) const;
 	private:
 		void AddComponent (const QuarkComponent&);
 		void AddComponent (const QuarkComponent&, QuarkManager_ptr);

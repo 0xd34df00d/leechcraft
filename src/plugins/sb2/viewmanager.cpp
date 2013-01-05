@@ -150,7 +150,20 @@ namespace SB2
 
 	QList<QUrl> ViewManager::GetAddedQuarks () const
 	{
-		return Quark2Manager_.keys ();
+		QList<QUrl> result;
+
+		for (int i = 0, rc = ViewItemsModel_->rowCount (); i < rc; ++i)
+		{
+			const auto item = ViewItemsModel_->item (i);
+			result << item->data (ViewItemsModel::Role::SourceURL).toUrl ();
+		}
+
+		return result;
+	}
+
+	QuarkManager_ptr ViewManager::GetAddedQuarkManager (const QUrl& url) const
+	{
+		return Quark2Manager_ [url];
 	}
 
 	void ViewManager::AddComponent (const QuarkComponent& comp)
