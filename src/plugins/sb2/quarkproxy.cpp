@@ -22,6 +22,7 @@
 #include "viewmanager.h"
 #include "sbview.h"
 #include "quarkunhidelistview.h"
+#include "quarkorderview.h"
 
 namespace LeechCraft
 {
@@ -68,6 +69,13 @@ namespace SB2
 		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Proxy_, Manager_->GetView ());
 		unhide->move (x, y);
 		unhide->show ();
+	}
+
+	void QuarkProxy::quarkOrderRequested (int x, int y)
+	{
+		auto view = new QuarkOrderView (Manager_, Proxy_);
+		view->move (x, y);
+		view->show ();
 	}
 }
 }

@@ -33,6 +33,19 @@ Rectangle {
     }
 
     ActionButton {
+        id: setQuarkOrderButton
+        visible: enableSettingsModeButton.settingsMode
+        height: width
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: addQuarkButton.top
+
+        actionIconURL: "image://ThemeIcons/format-list-unordered"
+
+        onTriggered: Common.showTooltip(setQuarkOrderButton, function(x, y) { quarkProxy.quarkOrderRequested(x, y) })
+    }
+
+    ActionButton {
         id: addQuarkButton
 
         visible: enableSettingsModeButton.settingsMode
@@ -52,7 +65,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: addQuarkButton.top
+        anchors.bottom: setQuarkOrderButton.top
 
         model: itemsModel
         spacing: 2
@@ -176,7 +189,6 @@ Rectangle {
                     id: removeQuarkButton
 
                     opacity: 0
-                    z: 11
 
                     actionIconURL: "image://ThemeIcons/edit-delete"
                     transparentStyle: true
