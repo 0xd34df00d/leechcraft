@@ -23,6 +23,7 @@
 #include "sbview.h"
 #include "quarkunhidelistview.h"
 #include "quarkorderview.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -79,7 +80,7 @@ namespace SB2
 	void QuarkProxy::quarkOrderRequested (int x, int y)
 	{
 		auto view = new QuarkOrderView (Manager_, Proxy_);
-		view->move (x, y);
+		view->move (Util::FitRectScreen ({ x, y }, view->size ()));
 		view->show ();
 
 		connect (view,
