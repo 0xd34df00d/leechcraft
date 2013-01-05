@@ -54,7 +54,7 @@ Rectangle {
                 radius: 5
                 smooth: true
 
-                border.color: "black"
+                border.color: colorProxy.color_TextBox_BorderColor
                 border.width: 1
 
                 Keys.onEscapePressed: rootRect.closeRequested()

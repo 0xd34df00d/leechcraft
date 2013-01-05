@@ -19,7 +19,7 @@ Rectangle {
 
     Keys.onEscapePressed: rootRect.closeRequested()
 
-    color: "#00000000"
+    color: "transparent"
 
     ActionButton {
         id: closeitemButton
@@ -54,7 +54,7 @@ Rectangle {
                 radius: 5
                 smooth: true
 
-                border.color: "black"
+                border.color: colorProxy.color_TextBox_BorderColor
                 border.width: 1
 
                 Keys.onEscapePressed: rootRect.closeRequested()
@@ -63,12 +63,12 @@ Rectangle {
                     GradientStop {
                         position: 0
                         id: upperStop
-                        color: "#000000"
+                        color: colorProxy.color_TextBox_TopColor
                     }
                     GradientStop {
                         position: 1
                         id: lowerStop
-                        color: "#42394b"
+                        color: colorProxy.color_TextBox_BottomColor
                     }
                 }
 
@@ -89,7 +89,7 @@ Rectangle {
                     id: itemNameLabel
                     text: itemName + (itemDescr.length > 0 ? (" (" + itemDescr + ")") : "")
 
-                    color: "lightgrey"
+                    color: colorProxy.color_TextBox_TextColor
 
                     anchors.left: itemIconImage.right
                     anchors.leftMargin: 4
@@ -111,9 +111,9 @@ Rectangle {
                     State {
                         name: "hovered"
                         when: rectMouseArea.containsMouse
-                        PropertyChanges { target: itemRect; border.color: "#ff6500" }
-                        PropertyChanges { target: upperStop; color: "#5a3238" }
-                        PropertyChanges { target: lowerStop; color: "#290700" }
+                        PropertyChanges { target: itemRect; border.color: colorProxy.color_TextBox_HighlightBorderColor}
+                        PropertyChanges { target: upperStop; color: colorProxy.color_TextBox_HighlightTopColor }
+                        PropertyChanges { target: lowerStop; color: colorProxy.color_TextBox_HighlightBottomColor }
                     }
                 ]
 
