@@ -9,8 +9,9 @@ Item {
     property bool isCurrent
 
     property string actionIconURL
-    property bool hoverScalesIcons: true
+    property bool actionIconScales: true
 
+    property bool hoverScalesIcons: true
     property bool transparentStyle: false
 
     property alias isHovered: actionMouseArea.containsMouse
@@ -74,7 +75,7 @@ Item {
 
             anchors.fill: parent
 
-            source: actionIconURL + '/' + width
+            source: actionIconScales ? (actionIconURL + '/' + width) : actionIconURL
             smooth: true
             cache: false
         }
