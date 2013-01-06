@@ -109,10 +109,6 @@ namespace GmailNotifier
 		return SettingsDialog_;
 	}
 
-	void GmailNotifier::notifyConvs (const ConvInfos_t& infos)
-	{
-	}
-
 	void GmailNotifier::setAuthorization ()
 	{
 		GmailChecker_->SetAuthSettings (XmlSettingsManager::Instance ()->property ("Login").toString (),

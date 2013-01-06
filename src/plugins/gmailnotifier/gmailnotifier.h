@@ -56,10 +56,7 @@ namespace GmailNotifier
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	private:
-		void CheckCreateAction ();
 	private slots:
-		void notifyConvs (const ConvInfos_t&);
 		void setAuthorization ();
 		void applyInterval ();
 	signals:
