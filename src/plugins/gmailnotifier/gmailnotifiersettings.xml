@@ -23,9 +23,6 @@
 		</groupbox>
 		<groupbox>
 			<label value="Appearance" />
-			<item type="checkbox" property="ShowUnreadNumInTray" default="true">
-				<label value="Show number of unread messages in tray" />
-			</item>
 			<item type="spinbox" property="ShowLastNMessages" default="5">
 				<label value="Number of messages shown:" />
 			</item>
