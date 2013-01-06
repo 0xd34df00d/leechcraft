@@ -171,8 +171,6 @@ namespace SB2
 
 		Description_ = varMap ["description"].toString ();
 
-
-
 		if (varMap.contains ("quarkID"))
 			ID_ = varMap ["quarkID"].toString ();
 
@@ -187,7 +185,7 @@ namespace SB2
 	bool QuarkManager::TryFullImage (const QString& iconName)
 	{
 		const auto& dirName = QFileInfo (URL_.toLocalFile ()).absoluteDir ().path ();
-		const auto& fullName = dirName + iconName;
+		const auto& fullName = dirName + '/' + iconName;
 
 		const QPixmap px (fullName);
 		if (px.isNull ())
