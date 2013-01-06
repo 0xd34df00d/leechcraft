@@ -7,13 +7,13 @@ Rectangle {
     visible: GMN_proxy.msgCount > 0
 
     width: parent.width
-    height: parent.width
+    height: GMN_proxy.msgCount > 0 ? parent.width : 0
 
     color: "transparent"
 
     ActionButton {
         anchors.fill: parent
-        actionIconURL: "gmail.svg"
+        actionIconURL: "qrc:/gmailnotifier/gmailicon.svg"
         actionIconScales: false
 
         Text {
@@ -24,7 +24,11 @@ Rectangle {
             anchors.rightMargin: width / 10
             anchors.bottom: parent.bottom
 
-            text: GMN_proxy.msgCount
+            text: GMN_proxy.msgCount <= 99 ? GMN_proxy.msgCount : "+"
+            font.pixelSize: height * 2 / 3
+
+            verticalAlignment: Text.AlignBottom
+            horizontalAlignment: Text.AlignRight
         }
     }
 }
