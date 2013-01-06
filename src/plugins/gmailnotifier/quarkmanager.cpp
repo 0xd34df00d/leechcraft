@@ -17,30 +17,44 @@
  **********************************************************************/
 
 #include "quarkmanager.h"
+#include <QtDebug>
+#include "maillistview.h"
 
 namespace LeechCraft
 {
 namespace GmailNotifier
 {
-	QuarkManager::QuarkManager (QObject *parent)
+	QuarkManager::QuarkManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
-	, MsgCount_ (0)
+	, Proxy_ (proxy)
 	{
 	}
 
 	int QuarkManager::GetMsgCount () const
 	{
-		return MsgCount_;
+		return Infos_.size ();
 	}
 
 	void QuarkManager::handleConversations (const ConvInfos_t& infos)
 	{
-		const auto newCount = infos.size ();
-		if (MsgCount_ == newCount)
-			return;
+		const auto oldCount = Infos_.size ();
+		Infos_ = infos;
 
-		MsgCount_ = newCount;
-		emit msgCountChanged ();
+		if (oldCount != infos.size ())
+			emit msgCountChanged ();
+	}
+
+	void QuarkManager::showMailList (int x, int y)
+	{
+		if (MailListView_)
+		{
+			delete MailListView_;
+			return;
+		}
+
+		MailListView_ = new MailListView (Infos_, Proxy_);
+		MailListView_->move (x, y);
+		MailListView_->show ();
 	}
 }
 }

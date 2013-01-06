@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import "../common/"
+import "../common/Common.js" as Common
 
 Rectangle {
     id: rootRect
@@ -33,5 +34,7 @@ Rectangle {
             verticalAlignment: Text.AlignBottom
             horizontalAlignment: Text.AlignRight
         }
+
+        onTriggered: Common.showTooltip(this, function(x, y) { GMN_proxy.showMailList(x, y) })
     }
 }

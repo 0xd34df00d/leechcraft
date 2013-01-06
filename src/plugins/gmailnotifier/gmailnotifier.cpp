@@ -76,7 +76,7 @@ namespace GmailNotifier
 				Notifier_,
 				SLOT (notifyAbout (ConvInfos_t)));
 
-		auto manager = new QuarkManager (this);
+		auto manager = new QuarkManager (proxy, this);
 		const auto& quarkPath = Util::GetSysPath (Util::SysPath::QML,
 				"gmailnotifier", "GMQuark.qml");
 		Quark_.Url_ = QUrl::fromLocalFile (quarkPath);
