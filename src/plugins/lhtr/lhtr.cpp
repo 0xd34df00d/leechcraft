@@ -20,7 +20,9 @@
 #include <QIcon>
 #include <QtDebug>
 #include <util/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "richeditorwidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -31,6 +33,9 @@ namespace LHTR
 		Proxy_ = proxy;
 
 		Util::InstallTranslator ("lhtr");
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lhtrsettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -79,6 +84,11 @@ namespace LHTR
 	QWidget* Plugin::GetTextEditor (ContentType)
 	{
 		return new RichEditorWidget (Proxy_);
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 }
 }

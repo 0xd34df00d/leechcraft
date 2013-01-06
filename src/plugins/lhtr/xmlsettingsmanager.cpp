@@ -16,40 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/itexteditor.h>
-#include <interfaces/ihavesettings.h>
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
 namespace LHTR
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public ITextEditor
-				 , public IHaveSettings
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo ITextEditor IHaveSettings)
+		Util::BaseSettingsManager::Init ();
+	}
 
-		ICoreProxy_ptr Proxy_;
-		Util::XmlSettingsDialog_ptr XSD_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return manager;
+	}
 
-		bool SupportsEditor (ContentType) const;
-		QWidget* GetTextEditor (ContentType);
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_LHTR");
+		return settings;
+	}
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	};
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 }
 }

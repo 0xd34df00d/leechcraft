@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Appearance" />
+		<item type="groupbox" checkable="true" property="OverrideBgColor" default="false">
+			<label value="Override background color settings from other plugins" />
+		</item>
+	</page>
+</settings>

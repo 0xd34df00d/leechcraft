@@ -18,38 +18,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/itexteditor.h>
-#include <interfaces/ihavesettings.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace LHTR
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public ITextEditor
-				 , public IHaveSettings
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo ITextEditor IHaveSettings)
 
-		ICoreProxy_ptr Proxy_;
-		Util::XmlSettingsDialog_ptr XSD_;
+		XmlSettingsManager ();
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		bool SupportsEditor (ContentType) const;
-		QWidget* GetTextEditor (ContentType);
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }
