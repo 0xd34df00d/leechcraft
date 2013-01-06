@@ -38,6 +38,7 @@
 #include "imagedialog.h"
 #include "finddialog.h"
 #include "inserttabledialog.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -133,7 +134,8 @@ namespace LHTR
 				this,
 				SIGNAL (textChanged ()));
 
-		SetBackgroundColor (Qt::white);
+		handleBgColorSettings ();
+		XmlSettingsManager::Instance ().RegisterObject ("BgColor", this, "handleBgColorSettings");
 
 		Ui_.View_->setPage (new EditorPage (Ui_.View_));
 		Ui_.View_->page ()->setContentEditable (true);
@@ -358,9 +360,8 @@ namespace LHTR
 
 	void RichEditorWidget::SetBackgroundColor (const QColor& color)
 	{
-		auto palette = Ui_.View_->palette ();
-		palette.setColor (QPalette::Base, color);
-		Ui_.View_->setPalette (palette);
+		if (!XmlSettingsManager::Instance ().property ("OverrideBgColor").toBool ())
+			InternalSetBgColor (color);
 	}
 
 	void RichEditorWidget::InsertHTML (const QString& html)
@@ -377,6 +378,13 @@ namespace LHTR
 	void RichEditorWidget::ExecJS (const QString& js)
 	{
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
+	void RichEditorWidget::InternalSetBgColor (const QColor& color)
+	{
+		auto palette = Ui_.View_->palette ();
+		palette.setColor (QPalette::Base, color);
+		Ui_.View_->setPalette (palette);
 	}
 
 	void RichEditorWidget::SetupTableMenu ()
@@ -786,6 +794,13 @@ namespace LHTR
 	void RichEditorWidget::handleReplace ()
 	{
 		OpenFindReplace (false);
+	}
+
+	void RichEditorWidget::handleBgColorSettings ()
+	{
+		const auto& color = XmlSettingsManager::Instance ()
+				.property ("BgColor").value<QColor> ();
+		InternalSetBgColor (color);
 	}
 }
 }

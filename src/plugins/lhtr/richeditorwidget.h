@@ -66,6 +66,8 @@ namespace LHTR
 		void SetTagsMappings (const Replacements_t&, const Replacements_t&);
 		void ExecJS (const QString&);
 	private:
+		void InternalSetBgColor (const QColor&);
+
 		void SetupTableMenu ();
 
 		void ExecCommand (const QString&, const QString& = QString ());
@@ -73,6 +75,8 @@ namespace LHTR
 
 		void OpenFindReplace (bool findOnly);
 	private slots:
+		void handleBgColorSettings ();
+
 		void handleLinkClicked (const QUrl&);
 		void on_TabWidget__currentChanged (int);
 
