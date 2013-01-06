@@ -35,6 +35,6 @@ Rectangle {
             horizontalAlignment: Text.AlignRight
         }
 
-        onTriggered: Common.showTooltip(this, function(x, y) { GMN_proxy.showMailList(x, y) })
+        onTriggered: Common.showTooltip(rootRect, function(x, y) { GMN_proxy.showMailList(x, y) })
     }
 }
