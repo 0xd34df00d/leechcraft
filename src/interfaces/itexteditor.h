@@ -25,6 +25,7 @@
 class QWidget;
 class QString;
 class QAction;
+class QColor;
 
 namespace LeechCraft
 {
@@ -54,6 +55,8 @@ public:
 
 	virtual void AppendAction (QAction*) = 0;
 	virtual void RemoveAction (QAction*) = 0;
+
+	virtual void SetBackgroundColor (const QColor&) = 0;
 protected:
 	virtual void textChanged () = 0;
 };

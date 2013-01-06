@@ -133,9 +133,7 @@ namespace LHTR
 				this,
 				SIGNAL (textChanged ()));
 
-		auto palette = Ui_.View_->palette ();
-		palette.setColor (QPalette::Base, Qt::white);
-		Ui_.View_->setPalette (palette);
+		SetBackgroundColor (Qt::white);
 
 		Ui_.View_->setPage (new EditorPage (Ui_.View_));
 		Ui_.View_->page ()->setContentEditable (true);
@@ -356,6 +354,13 @@ namespace LHTR
 		}
 
 		return 0;
+	}
+
+	void RichEditorWidget::SetBackgroundColor (const QColor& color)
+	{
+		auto palette = Ui_.View_->palette ();
+		palette.setColor (QPalette::Base, color);
+		Ui_.View_->setPalette (palette);
 	}
 
 	void RichEditorWidget::InsertHTML (const QString& html)
