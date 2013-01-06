@@ -763,7 +763,8 @@ namespace Azoth
 		if (shouldReformat)
 			ReformatTitle ();
 
-		if (msg->GetMessageType () == IMessage::MTChatMessage)
+		if (msg->GetMessageType () == IMessage::MTChatMessage &&
+				msg->GetDirection () == IMessage::DIn)
 		{
 			const int idx = Ui_.VariantBox_->findText (msg->GetOtherVariant ());
 			if (idx != -1)
