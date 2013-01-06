@@ -59,7 +59,7 @@ namespace GmailNotifier
 			result += info.AuthorEmail_ + "\">";
 			result += info.AuthorName_ + "</a><br/>";
 			result += tr ("at") + " ";
-			result += info.Modified_.toLocalTime ().toString (Qt::SystemLocaleLongDate);
+			result += info.Modified_.toString (Qt::SystemLocaleLongDate);
 			result += "</p><p class=\"additionaltext\">";
 			result += info.Summary_ + "</p>";
 

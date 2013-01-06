@@ -124,6 +124,11 @@ namespace GmailNotifier
 		auto entry = root.firstChildElement ("entry");
 		auto text = [&entry] (const QString& elemName)
 			{ return entry.firstChildElement (elemName).text (); };
+		auto localDate = [&text] (const QString& name)
+		{
+			return QDateTime::fromString (text (name), Qt::ISODate)
+					.toTimeSpec (Qt::UTC).toLocalTime ();
+		};
 
 		while (!entry.isNull ())
 		{
@@ -134,8 +139,8 @@ namespace GmailNotifier
 				text ("title"),
 				text ("summary"),
 				entry.firstChildElement ("link").attribute ("href"),
-				QDateTime::fromString (text ("issued"), Qt::ISODate),
-				QDateTime::fromString (text ("modified"), Qt::ISODate),
+				localDate ("issued"),
+				localDate ("modified"),
 				author.firstChildElement ("name").text (),
 				author.firstChildElement ("email").text ()
 			};
