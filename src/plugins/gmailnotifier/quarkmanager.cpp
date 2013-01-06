@@ -18,6 +18,7 @@
 
 #include "quarkmanager.h"
 #include <QtDebug>
+#include <util/util.h>
 #include "maillistview.h"
 
 namespace LeechCraft
@@ -53,7 +54,7 @@ namespace GmailNotifier
 		}
 
 		MailListView_ = new MailListView (Infos_, Proxy_);
-		MailListView_->move (x, y);
+		MailListView_->move (Util::FitRectScreen (QPoint (x, y), MailListView_->size ()));
 		MailListView_->show ();
 	}
 }
