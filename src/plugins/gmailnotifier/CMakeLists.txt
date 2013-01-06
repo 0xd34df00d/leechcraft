@@ -18,6 +18,7 @@ SET(SRCS
 	gmailchecker.cpp
 	convinfo.cpp
 	notifier.cpp
+	quarkmanager.cpp
 )
 SET(RESOURCES
 	res/resources.qrc
