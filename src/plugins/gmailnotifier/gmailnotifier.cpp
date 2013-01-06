@@ -24,10 +24,12 @@
 #include <QPen>
 #include <QTranslator>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "gmailchecker.h"
 #include "notifier.h"
+#include "quarkmanager.h"
 
 namespace LeechCraft
 {
@@ -39,7 +41,7 @@ namespace GmailNotifier
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"gmailnotifiersettings.xml");
-		XmlSettingsManager::Instance ()->RegisterObject (QList<QByteArray> () << "Login" << "Password",
+		XmlSettingsManager::Instance ()->RegisterObject ({ "Login",  "Password"},
 				this,
 				"setAuthorization");
 
@@ -73,6 +75,17 @@ namespace GmailNotifier
 				SIGNAL (gotConversations (ConvInfos_t)),
 				Notifier_,
 				SLOT (notifyAbout (ConvInfos_t)));
+
+		auto manager = new QuarkManager (this);
+		const auto& quarkPath = Util::GetSysPath (Util::SysPath::QML,
+				"gmailnotifier", "GMQuark.qml");
+		Quark_.Url_ = QUrl::fromLocalFile (quarkPath);
+		Quark_.DynamicProps_ << QPair<QString, QObject*> ("GMN_proxy", manager);
+
+		connect (GmailChecker_,
+				SIGNAL (gotConversations (ConvInfos_t)),
+				manager,
+				SLOT (handleConversations (ConvInfos_t)));
 	}
 
 	void GmailNotifier::SecondInit ()
@@ -107,6 +120,11 @@ namespace GmailNotifier
 	Util::XmlSettingsDialog_ptr GmailNotifier::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
+	}
+
+	QuarkComponents_t GmailNotifier::GmailNotifier::GetComponents () const
+	{
+		return { Quark_ };
 	}
 
 	void GmailNotifier::setAuthorization ()

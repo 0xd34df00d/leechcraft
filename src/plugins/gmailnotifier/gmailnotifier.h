@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/iquarkcomponentprovider.h>
 #include "convinfo.h"
 
 class QTranslator;
@@ -36,9 +37,10 @@ namespace GmailNotifier
 	class GmailNotifier : public QObject
 						, public IInfo
 						, public IHaveSettings
+						, public IQuarkComponentProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
+		Q_INTERFACES (IInfo IHaveSettings IQuarkComponentProvider)
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 
@@ -46,6 +48,8 @@ namespace GmailNotifier
 		QTimer *UpdateTimer_;
 
 		Notifier *Notifier_;
+
+		QuarkComponent Quark_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -56,6 +60,8 @@ namespace GmailNotifier
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QuarkComponents_t GetComponents () const;
 	private slots:
 		void setAuthorization ();
 		void applyInterval ();
