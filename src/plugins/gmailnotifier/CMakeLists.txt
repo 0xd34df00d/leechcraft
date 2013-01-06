@@ -2,6 +2,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_gmailnotifier)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET(QT_USE_QTDECLARATIVE TRUE)
 SET(QT_USE_QTNETWORK TRUE)
 SET(QT_USE_QTXML TRUE)
 
@@ -19,6 +20,7 @@ SET(SRCS
 	convinfo.cpp
 	notifier.cpp
 	quarkmanager.cpp
+	maillistview.cpp
 )
 SET(RESOURCES
 	res/resources.qrc
