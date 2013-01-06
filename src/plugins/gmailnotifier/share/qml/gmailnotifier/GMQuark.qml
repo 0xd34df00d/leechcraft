@@ -25,7 +25,10 @@ Rectangle {
             anchors.bottom: parent.bottom
 
             text: GMN_proxy.msgCount <= 99 ? GMN_proxy.msgCount : "+"
+
+            color: "#000080"
             font.pixelSize: height * 2 / 3
+            smooth: true
 
             verticalAlignment: Text.AlignBottom
             horizontalAlignment: Text.AlignRight
