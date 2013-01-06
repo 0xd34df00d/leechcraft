@@ -108,7 +108,7 @@ namespace Pogooglue
 				"&ie=utf-8"
 				"&rls=org.leechcraft:%1")
 			.arg (QLocale::system ().name ().replace ('_', '-'))
-			.arg (text);
+			.arg (QString::fromUtf8 (QUrl::toPercentEncoding (text)));
 		QUrl result = QUrl::fromEncoded (urlStr.toUtf8 ());
 
 		const auto& e = Util::MakeEntity (result,
