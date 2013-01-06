@@ -85,6 +85,7 @@ Rectangle {
                 text: authorName + " <" + authorEmail + ">"
 
                 color: colorProxy.color_TextBox_TextColor
+                font.italic: true
                 elide: Text.ElideRight
             }
 
