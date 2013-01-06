@@ -119,6 +119,9 @@
 					<label value="Show rich text message body (if available)" />
 					<tooltip>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
 				</item>
+				<item type="checkbox" property="ShowNormalChatResources" default="false">
+					<label value="Show client resources in normal one-to-one chats" />
+				</item>
 				<item type="color" property="HighlightColor" default="#FF0000">
 					<label value="Highlight color:" />
 				</item>
