@@ -17,6 +17,7 @@ SET (SRCS
 	itemssortfilterproxymodel.cpp
 	fdodesktopparser.cpp
 	favoritesmanager.cpp
+	quarkmanager.cpp
 	itemimageprovider.cpp
 	)
 SET (RESOURCES resources.qrc)
@@ -34,3 +35,4 @@ TARGET_LINK_LIBRARIES (leechcraft_launchy
 	)
 INSTALL (TARGETS leechcraft_launchy DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (DIRECTORY share/qml/launchy DESTINATION ${LC_QML_DEST})
