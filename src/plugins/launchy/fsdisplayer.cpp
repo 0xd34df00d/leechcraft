@@ -218,7 +218,8 @@ namespace Launchy
 
 		addCustomCat ("LeechCraft", "X-LeechCraft", "leechcraft",
 				QIcon (":/resources/images/leechcraft.svg"));
-		addCustomCat ("Favorites", "X-Favorites", "favorites", QIcon ());
+		addCustomCat ("Favorites", "X-Favorites", "favorites",
+				Proxy_->GetIcon ("favorites"));
 	}
 
 	void FSDisplayer::MakeStdItems ()
