@@ -127,6 +127,10 @@ namespace Azoth
 				SIGNAL (stateChanged (LeechCraft::Azoth::IMediaCall::State)),
 				this,
 				SLOT (handleStateChanged (LeechCraft::Azoth::IMediaCall::State)));
+		connect (obj,
+				SIGNAL (audioModeChanged (QIODevice::OpenMode)),
+				this,
+				SLOT (handleAudioModeChanged (QIODevice::OpenMode)));
 	}
 
 	void CallManager::handleIncomingCall (QObject *obj)
@@ -154,36 +158,72 @@ namespace Azoth
 
 	void CallManager::handleStateChanged (IMediaCall::State state)
 	{
+		qDebug () << Q_FUNC_INFO << state << (state == IMediaCall::SActive);
+	}
+
+	void CallManager::handleAudioModeChanged (QIODevice::OpenMode mode)
+	{
+		qDebug () << Q_FUNC_INFO;
 #ifdef ENABLE_MEDIACALLS
 		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (sender ());
-		if (state == IMediaCall::SActive)
+		QIODevice *callAudioDev = mediaCall->GetAudioDevice ();
+
+		const QAudioFormat& format = mediaCall->GetAudioFormat ();
+		const int bufSize = (format.frequency () * format.channels () * (format.sampleSize () / 8) * 160) / 1000;
+
+		if (mode & QIODevice::WriteOnly)
 		{
-			QIODevice *callAudioDev = mediaCall->GetAudioDevice ();
-			QAudioDeviceInfo inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
+			qDebug () << "opening output...";
+			QAudioDeviceInfo info (QAudioDeviceInfo::defaultOutputDevice ());
+			if (!info.isFormatSupported (format))
+				qWarning () << "raw audio format not supported by backend, cannot play audio"
+						<< info.supportedByteOrders () << info.supportedChannelCounts ()
+						<< info.supportedCodecs () << info.supportedFrequencies ()
+						<< info.supportedSampleTypes ();
+
 			QAudioDeviceInfo outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
-
-			const QAudioFormat& callFormat = mediaCall->GetAudioFormat ();
-			const QAudioFormat& inFormat = callFormat;
-			const QAudioFormat& outFormat = callFormat;
-
-#if QT_VERSION >= 0x040700
-			const int bufSize = callFormat.sampleRate () * callFormat.channelCount () * callFormat.sampleSize () / 8 * 160 / 1000;
-#else
-			const int bufSize = 8000 * 2 * callFormat.sampleSize () / 8 * 160 / 1000;
-#endif
-
-			QAudioOutput *output = new QAudioOutput (outInfo, outFormat, sender ());
+			QAudioOutput *output = new QAudioOutput (/*outInfo, */format, sender ());
+			connect (output,
+					SIGNAL (stateChanged (QAudio::State)),
+					this,
+					SLOT (handleDevStateChanged (QAudio::State)));
 			output->setBufferSize (bufSize);
 			output->start (callAudioDev);
+		}
 
-			QAudioInput *input = new QAudioInput (inInfo, inFormat, sender ());
+		if (mode & QIODevice::ReadOnly)
+		{
+			qDebug () << "opening input...";
+			QAudioDeviceInfo info (QAudioDeviceInfo::defaultInputDevice ());
+			if (!info.isFormatSupported (format))
+				qWarning () << "raw audio format not supported by backend, cannot record audio"
+						<< info.supportedByteOrders () << info.supportedChannelCounts ()
+						<< info.supportedCodecs () << info.supportedFrequencies ()
+						<< info.supportedSampleTypes ();
+
+			QAudioDeviceInfo inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
+			QAudioInput *input = new QAudioInput (/*inInfo, */format, sender ());
+			connect (input,
+					SIGNAL (stateChanged (QAudio::State)),
+					this,
+					SLOT (handleDevStateChanged (QAudio::State)));
 			input->setBufferSize (bufSize);
 			input->start (callAudioDev);
-
-			qDebug () << input->state () << input->error () << inInfo.isFormatSupported (callFormat) << inInfo.supportedCodecs ();
-			qDebug () << output->state () << output->error ();
 		}
 #endif
+	}
+
+	void CallManager::handleDevStateChanged (QAudio::State state)
+	{
+		auto input = qobject_cast<QAudioInput*> (sender ());
+		auto output = qobject_cast<QAudioOutput*> (sender ());
+		if (state == QAudio::StoppedState)
+		{
+			 if (input && input->error () != QAudio::NoError)
+				 qWarning () << Q_FUNC_INFO << input->error ();
+			 if (output && output->error () != QAudio::NoError)
+				 qWarning () << Q_FUNC_INFO << output->error ();
+		}
 	}
 }
 }

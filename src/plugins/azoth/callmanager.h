@@ -20,6 +20,9 @@
 #define PLUGINS_AZOTH_CALLMANAGER_H
 #include <QObject>
 #include <QHash>
+#ifdef ENABLE_MEDIACALLS
+#include <QAudioInput>
+#endif
 #include "interfaces/azoth/imediacall.h"
 #include "interfaces/azoth/isupportmediacalls.h"
 
@@ -32,11 +35,11 @@ namespace Azoth
 	class CallManager : public QObject
 	{
 		Q_OBJECT
-		
+
 		QHash<QString, QObjectList> Entry2Calls_;
 	public:
 		CallManager (QObject* = 0);
-		
+
 		void AddAccount (QObject*);
 		QObject* Call (ICLEntry*, const QString&);
 		QObjectList GetCallsForEntry (const QString&) const;
@@ -45,6 +48,8 @@ namespace Azoth
 	private slots:
 		void handleIncomingCall (QObject*);
 		void handleStateChanged (LeechCraft::Azoth::IMediaCall::State);
+		void handleAudioModeChanged (QIODevice::OpenMode);
+		void handleDevStateChanged (QAudio::State);
 	signals:
 		void gotCall (QObject*);
 	};

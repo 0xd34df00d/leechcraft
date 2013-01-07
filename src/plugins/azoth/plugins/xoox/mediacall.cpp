@@ -39,6 +39,10 @@ namespace Xoox
 				SIGNAL (stateChanged (QXmppCall::State)),
 				this,
 				SLOT (handleStateChanged (QXmppCall::State)));
+		connect (Call_,
+				SIGNAL (audioModeChanged (QIODevice::OpenMode)),
+				this,
+				SIGNAL (audioModeChanged (QIODevice::OpenMode)));
 	}
 
 	IMediaCall::Direction MediaCall::GetDirection () const
@@ -77,7 +81,7 @@ namespace Xoox
 
 	QIODevice* MediaCall::GetAudioDevice ()
 	{
-		QXmppJinglePayloadType payload = Call_->audioChannel ()->payloadType ();
+		const auto& payload = Call_->audioChannel ()->payloadType ();
 		qDebug () << "INFO" << payload.name () << payload.parameters ();
 		qDebug () << payload.channels () << payload.clockrate ();
 		return Call_->audioChannel ();
@@ -85,13 +89,10 @@ namespace Xoox
 
 	QAudioFormat MediaCall::GetAudioFormat ()
 	{
-		const QXmppJinglePayloadType& payload =
-				Call_->audioChannel ()->payloadType ();
+		const auto& payload = Call_->audioChannel ()->payloadType ();
 		QAudioFormat result;
-#if QT_VERSION >= 0x040700
-		result.setSampleRate (payload.clockrate ());
+		result.setFrequency (payload.clockrate ());
 		result.setChannelCount (payload.channels ());
-#endif
 		result.setSampleSize (16);
 		result.setCodec ("audio/pcm");
 		result.setByteOrder (QAudioFormat::LittleEndian);
