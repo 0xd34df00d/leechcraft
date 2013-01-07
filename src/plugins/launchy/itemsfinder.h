@@ -36,8 +36,12 @@ namespace Launchy
 
 		ICoreProxy_ptr Proxy_;
 		QHash<QString, QList<Item_ptr>> Items_;
+
+		bool IsReady_;
 	public:
 		ItemsFinder (ICoreProxy_ptr, QObject* = 0);
+
+		bool IsReady () const;
 
 		QHash<QString, QList<Item_ptr>> GetItems () const;
 	public slots:

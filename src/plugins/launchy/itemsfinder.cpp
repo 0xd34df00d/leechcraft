@@ -29,8 +29,14 @@ namespace Launchy
 	ItemsFinder::ItemsFinder (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
+	, IsReady_ (false)
 	{
 		QTimer::singleShot (1000, this, SLOT (update ()));
+	}
+
+	bool ItemsFinder::IsReady () const
+	{
+		return IsReady_;
 	}
 
 	QHash<QString, QList<Item_ptr>> ItemsFinder::GetItems () const
@@ -81,6 +87,8 @@ namespace Launchy
 
 	void ItemsFinder::update ()
 	{
+		IsReady_ = true;
+
 		Items_.clear ();
 		auto paths = ScanDir ("/usr/share/applications");
 
