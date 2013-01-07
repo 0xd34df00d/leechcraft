@@ -22,9 +22,9 @@
 #include <QGraphicsObject>
 #include <QtDebug>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/themeimageprovider.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/sys/paths.h>
-#include "themeimageprovider.h"
 #include "unhidelistmodel.h"
 
 namespace LeechCraft
@@ -53,7 +53,7 @@ namespace SB2
 		rootContext ()->setContextProperty ("unhideListModel", Model_);
 		rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		engine ()->addImageProvider ("ThemeIcons", new ThemeImageProvider (proxy));
+		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 		setSource (QUrl::fromLocalFile (file));
 
 		connect (rootObject (),

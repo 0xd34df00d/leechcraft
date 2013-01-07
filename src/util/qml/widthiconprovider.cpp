@@ -16,21 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
 #include "widthiconprovider.h"
-#include <interfaces/core/icoreproxy.h>
+#include <QIcon>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	class ThemeImageProvider : public WidthIconProvider
+	WidthIconProvider::WidthIconProvider ()
+	: QDeclarativeImageProvider (Pixmap)
 	{
-		ICoreProxy_ptr Proxy_;
-	public:
-		ThemeImageProvider (ICoreProxy_ptr);
-		QIcon GetIcon (const QStringList&);
-	};
+	}
+
+	QPixmap WidthIconProvider::requestPixmap (const QString& idStr, QSize *size, const QSize& requestedSize)
+	{
+		const auto& list = idStr.split ('/', QString::SkipEmptyParts);
+		if (list.isEmpty ())
+			return QPixmap ();
+
+		auto realSize = requestedSize;
+		if (realSize.width () <= 0)
+		{
+			const int width = list.last ().toDouble ();
+			realSize = QSize (width, width);
+		}
+
+		const auto& icon = GetIcon (list);
+
+		if (size)
+			*size = icon.actualSize (realSize);
+
+		return icon.pixmap (realSize);
+	}
 }
 }

@@ -18,22 +18,20 @@
 
 #pragma once
 
-#include <QDeclarativeImageProvider>
-
-class QIcon;
+#include "widthiconprovider.h"
+#include <interfaces/core/icoreproxy.h>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	class WidthIconProvider : public QDeclarativeImageProvider
+	class UTIL_API ThemeImageProvider : public WidthIconProvider
 	{
+		ICoreProxy_ptr Proxy_;
 	public:
-		WidthIconProvider ();
-
-		QPixmap requestPixmap (const QString&, QSize*, const QSize&);
-
-		virtual QIcon GetIcon (const QStringList&) = 0;
+		ThemeImageProvider (ICoreProxy_ptr);
+		QIcon GetIcon (const QStringList&);
 	};
 }
 }

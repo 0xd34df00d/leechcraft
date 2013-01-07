@@ -22,10 +22,10 @@
 #include <QtDeclarative>
 #include <util/util.h>
 #include <util/sys/paths.h>
+#include <util/qml/widthiconprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/ihavetabs.h>
-#include "widthiconprovider.h"
 #include "tablistview.h"
 #include "launcherdroparea.h"
 #include "tabunhidelistview.h"
@@ -66,7 +66,7 @@ namespace SB2
 		};
 	}
 
-	class TabClassImageProvider : public WidthIconProvider
+	class TabClassImageProvider : public Util::WidthIconProvider
 	{
 		ICoreProxy_ptr Proxy_;
 		QHash<QByteArray, QIcon> TabClasses_;

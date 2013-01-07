@@ -17,14 +17,12 @@ SET (SRCS
 	sb2.cpp
 	sbview.cpp
 	viewmanager.cpp
-	widthiconprovider.cpp
 	desaturateeffect.cpp
 	quarkproxy.cpp
 	quarkmanager.cpp
 	quarksettingsmanager.cpp
 	tablistview.cpp
 	tabunhidelistview.cpp
-	themeimageprovider.cpp
 	launcherdroparea.cpp
 	launchercomponent.cpp
 	lcmenucomponent.cpp

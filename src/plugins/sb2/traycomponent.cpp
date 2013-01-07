@@ -24,9 +24,9 @@
 #include <QDockWidget>
 #include <util/sys/paths.h>
 #include <util/util.h>
+#include <util/qml/widthiconprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iactionsexporter.h>
-#include "widthiconprovider.h"
 
 namespace LeechCraft
 {
@@ -56,7 +56,7 @@ namespace SB2
 		};
 	}
 
-	class ActionImageProvider : public WidthIconProvider
+	class ActionImageProvider : public Util::WidthIconProvider
 	{
 		ICoreProxy_ptr Proxy_;
 		QHash<int, QAction*> Actions_;
