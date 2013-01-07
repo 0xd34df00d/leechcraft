@@ -21,6 +21,7 @@
 #include <memory>
 #include <QObject>
 #include <QHash>
+#include <QDeclarativeView>
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
@@ -69,6 +70,7 @@ namespace Launchy
 		void handleFinderUpdated ();
 		void handleCategorySelected (int);
 		void handleExecRequested (const QString&);
+		void handleViewStatus (QDeclarativeView::Status);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

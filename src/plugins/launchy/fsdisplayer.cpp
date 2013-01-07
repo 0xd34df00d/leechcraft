@@ -121,6 +121,11 @@ namespace Launchy
 		View_->rootContext ()->setContextProperty ("itemsModel", ItemsProxyModel_);
 		View_->rootContext ()->setContextProperty ("itemsModelFilter", ItemsProxyModel_);
 		View_->rootContext ()->setContextProperty ("catsModel", CatsModel_);
+
+		connect (View_,
+				SIGNAL (statusChanged (QDeclarativeView::Status)),
+				this,
+				SLOT (handleViewStatus (QDeclarativeView::Status)));
 		View_->setSource (QUrl ("qrc:/launchy/resources/qml/FSView.qml"));
 
 		connect (View_->rootObject (),
@@ -371,6 +376,15 @@ namespace Launchy
 		}
 
 		Execs_ [item] ();
+		deleteLater ();
+	}
+
+	void FSDisplayer::handleViewStatus (QDeclarativeView::Status status)
+	{
+		if (status != QDeclarativeView::Error)
+			return;
+
+		qWarning () << Q_FUNC_INFO << "declarative view error";
 		deleteLater ();
 	}
 }
