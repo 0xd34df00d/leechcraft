@@ -68,6 +68,11 @@ namespace Launchy
 				SIGNAL (favoriteAdded (QString)),
 				this,
 				SLOT (addItem (QString)));
+		connect (FavMgr_,
+				SIGNAL (favoriteRemoved (QString)),
+				this,
+				SLOT (handleItemRemoved (QString)),
+				Qt::QueuedConnection);
 	}
 
 	QAbstractItemModel* QuarkManager::GetModel () const
@@ -107,6 +112,11 @@ namespace Launchy
 		item->Execute (Proxy_);
 	}
 
+	void QuarkManager::remove (const QString& id)
+	{
+		FavMgr_->RemoveFavorite (id);
+	}
+
 	void QuarkManager::init ()
 	{
 		QList<QStandardItem*> items;
@@ -120,6 +130,16 @@ namespace Launchy
 	{
 		if (auto item = MakeItem (id))
 			Model_->appendRow (item);
+	}
+
+	void QuarkManager::handleItemRemoved (const QString& id)
+	{
+		for (int i = 0, rc = Model_->rowCount (); i < rc; ++i)
+			if (Model_->item (i)->data (LaunchModel::Roles::PermanentID) == id)
+			{
+				Model_->removeRow (i);
+				break;
+			}
 	}
 }
 }

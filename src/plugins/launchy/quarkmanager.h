@@ -51,9 +51,11 @@ namespace Launchy
 		QStandardItem* MakeItem (const QString&) const;
 	public slots:
 		void launch (const QString&);
+		void remove (const QString&);
 	private slots:
 		void init ();
 		void addItem (const QString&);
+		void handleItemRemoved (const QString&);
 	};
 }
 }
