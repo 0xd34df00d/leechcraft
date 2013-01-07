@@ -28,6 +28,9 @@
 #include <QDesktopWidget>
 #include <QProcess>
 #include <util/util.h>
+#include <util/qml/themeimageprovider.h>
+#include <util/qml/colorthemeproxy.h>
+#include <util/sys/paths.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/ihavetabs.h>
 #include "itemsfinder.h"
@@ -116,11 +119,16 @@ namespace Launchy
 		View_->setFixedSize (rect.size ());
 
 		View_->engine ()->addImageProvider ("appicon", IconsProvider_);
+		View_->engine ()->addImageProvider ("theme", new Util::ThemeImageProvider (proxy));
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			View_->engine ()->addImportPath (cand);
 
 		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
 		View_->rootContext ()->setContextProperty ("itemsModel", ItemsProxyModel_);
 		View_->rootContext ()->setContextProperty ("itemsModelFilter", ItemsProxyModel_);
 		View_->rootContext ()->setContextProperty ("catsModel", CatsModel_);
+		View_->rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (proxy->GetColorThemeManager ()));
 
 		connect (View_,
 				SIGNAL (statusChanged (QDeclarativeView::Status)),
