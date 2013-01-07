@@ -26,7 +26,6 @@
 #include <QStandardItemModel>
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QProcess>
 #include <util/util.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
@@ -164,42 +163,6 @@ namespace Launchy
 	FSDisplayer::~FSDisplayer ()
 	{
 		delete View_;
-	}
-
-	void FSDisplayer::Execute (Item_ptr item)
-	{
-		auto command = item->GetCommand ();
-
-		if (item->GetType () == Item::Type::Application)
-		{
-			command.remove ("%c");
-			command.remove ("%f");
-			command.remove ("%F");
-			command.remove ("%u");
-			command.remove ("%U");
-			command.remove ("%i");
-			auto items = command.split (' ', QString::SkipEmptyParts);
-			auto removePred = [] (const QString& str)
-				{ return str.size () == 2 && str.at (0) == '%'; };
-			items.erase (std::remove_if (items.begin (), items.end (), removePred),
-					items.end ());
-			if (items.isEmpty ())
-				return;
-
-			QProcess::startDetached (items.at (0), items.mid (1), item->GetWorkingDirectory ());
-		}
-		else if (item->GetType () == Item::Type::URL)
-		{
-			const auto& e = Util::MakeEntity (QUrl (command),
-					QString (),
-					FromUserInitiated | OnlyHandle);
-			emit gotEntity (e);
-		}
-		else
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "don't know how to execute this type of app";
-		}
 	}
 
 	void FSDisplayer::MakeStdCategories ()
@@ -372,7 +335,7 @@ namespace Launchy
 
 			ItemInfos_ [itemName] =
 			{
-				[this, item] () { Execute (item); },
+				[this, item] () { item->Execute (Proxy_); },
 				item->GetPermanentID ()
 			};
 

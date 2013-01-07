@@ -22,6 +22,7 @@
 #include <QHash>
 #include <QDebug>
 #include <QIcon>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -61,6 +62,8 @@ namespace Launchy
 		bool IsValid () const;
 
 		bool IsHidden () const;
+
+		void Execute (ICoreProxy_ptr) const;
 
 		QString GetName (const QString&) const;
 		QString GetGenericName (const QString&) const;

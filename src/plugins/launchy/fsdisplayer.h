@@ -68,7 +68,6 @@ namespace Launchy
 		FSDisplayer (ICoreProxy_ptr, ItemsFinder *finder, FavoritesManager*, QObject* = 0);
 		~FSDisplayer ();
 	private:
-		void Execute (Item_ptr);
 		void MakeStdCategories ();
 		void MakeStdItems ();
 		void MakeCategories (const QStringList&);
