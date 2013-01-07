@@ -47,9 +47,10 @@ namespace Launchy
 		};
 	}
 
-	QuarkManager::QuarkManager (FavoritesManager *favMgr, ItemsFinder *finder,
-			ItemImageProvider *prov, QObject *parent)
+	QuarkManager::QuarkManager (ICoreProxy_ptr proxy, FavoritesManager *favMgr,
+			ItemsFinder *finder, ItemImageProvider *prov, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	, FavMgr_ (favMgr)
 	, Finder_ (finder)
 	, ImageProv_ (prov)
@@ -90,6 +91,20 @@ namespace Launchy
 		auto modelItem = new QStandardItem;
 		modelItem->setData (item->GetPermanentID (), LaunchModel::Roles::PermanentID);
 		return modelItem;
+	}
+
+	void QuarkManager::launch (const QString& id)
+	{
+		auto item = Finder_->FindItem (id);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "item not found"
+					<< id;
+			return;
+		}
+
+		item->Execute (Proxy_);
 	}
 
 	void QuarkManager::init ()

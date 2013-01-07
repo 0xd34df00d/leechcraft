@@ -49,7 +49,7 @@ namespace Launchy
 				SLOT (handleFSRequested ()));
 
 		auto itemImageProv = new ItemImageProvider;
-		auto quarkMgr = new QuarkManager (FavManager_, Finder_, itemImageProv);
+		auto quarkMgr = new QuarkManager (proxy, FavManager_, Finder_, itemImageProv);
 		LaunchQuark_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "launchy", "LaunchyQuark.qml"));
 		LaunchQuark_.DynamicProps_.push_back ({ "Launchy_itemModel", quarkMgr->GetModel () });
 		LaunchQuark_.DynamicProps_.push_back ({ "Launchy_proxy", quarkMgr });

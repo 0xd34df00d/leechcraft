@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 class QStandardItem;
 class QAbstractItemModel;
@@ -36,17 +37,20 @@ namespace Launchy
 	{
 		Q_OBJECT
 
+		ICoreProxy_ptr Proxy_;
 		FavoritesManager *FavMgr_;
 		ItemsFinder *Finder_;
 		ItemImageProvider *ImageProv_;
 
 		QStandardItemModel *Model_;
 	public:
-		QuarkManager (FavoritesManager*, ItemsFinder*, ItemImageProvider*, QObject* = 0);
+		QuarkManager (ICoreProxy_ptr, FavoritesManager*, ItemsFinder*, ItemImageProvider*, QObject* = 0);
 
 		QAbstractItemModel* GetModel () const;
 	private:
 		QStandardItem* MakeItem (const QString&) const;
+	public slots:
+		void launch (const QString&);
 	private slots:
 		void init ();
 		void addItem (const QString&);

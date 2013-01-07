@@ -19,6 +19,8 @@ Rectangle {
             height: width
 
             actionIconURL: "image://LaunchyItemIcons/" + permanentID
+
+            onTriggered: Launchy_proxy.launch(permanentID)
         }
     }
 }
