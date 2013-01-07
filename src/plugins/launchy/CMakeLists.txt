@@ -16,6 +16,7 @@ SET (SRCS
 	itemsfinder.cpp
 	itemssortfilterproxymodel.cpp
 	fdodesktopparser.cpp
+	favoritesmanager.cpp
 	)
 SET (RESOURCES resources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
