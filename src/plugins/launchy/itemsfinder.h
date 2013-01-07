@@ -44,6 +44,7 @@ namespace Launchy
 		bool IsReady () const;
 
 		QHash<QString, QList<Item_ptr>> GetItems () const;
+		Item_ptr FindItem (const QString& permanentID) const;
 	public slots:
 		void update ();
 	signals:

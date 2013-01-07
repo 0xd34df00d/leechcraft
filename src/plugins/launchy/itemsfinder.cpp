@@ -44,6 +44,19 @@ namespace Launchy
 		return Items_;
 	}
 
+	Item_ptr ItemsFinder::FindItem (const QString& id) const
+	{
+		for (const auto& list : Items_)
+		{
+			const auto pos = std::find_if (list.begin (), list.end (),
+					[&id] (Item_ptr item) { return item->GetPermanentID () == id; });
+			if (pos != list.end ())
+				return *pos;
+		}
+
+		return Item_ptr ();
+	}
+
 	namespace
 	{
 		QStringList ScanDir (const QString& path)
