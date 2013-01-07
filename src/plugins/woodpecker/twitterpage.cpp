@@ -5,7 +5,7 @@
 #include "util/util.h"
 #include <qjson/parser.h>
 #include <QListWidgetItem>
-
+#include "xmlsettingsmanager.h"
 
 Q_DECLARE_METATYPE (QObject**);
 
@@ -150,13 +150,13 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 		for (i = 0; i < insertionShift; i++)
 			twits.removeFirst();
 
-		if (!twits.isEmpty()) {
+		if (!twits.isEmpty() && XmlSettingsManager::Instance ()->property ("notify").toBool()) {
 			Entity notification = Util::MakeNotification (tr ("Woodpecker") , tr ( "%1 new twit(s)" ).arg(twits.length()) , PInfo_);
 			emit gotEntity(notification);
 			Core::Instance().GetProxy()->GetEntityManager()->HandleEntity(notification);
-			screenTwits.append (twits);
 		}
 		
+		screenTwits.append (twits);
 	}
 	ui->TwitList_->clear();
 

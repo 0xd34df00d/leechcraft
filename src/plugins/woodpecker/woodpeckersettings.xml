@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-	  <label lang="en" value="Woodpecker settings" />
+	  <label lang="en" value="General settings" />
 			<groupbox>
 				<label value="Account" />
 			<item type="lineedit" property="login" default="">
 				<label lang="en" value="Login:" />
+			  </item>
 			<item type="lineedit" property="password" default="">
 				<label lang="en" value="Password:" />
 			</item>
+		      </groupbox>
 	</page>
+	<page>
+	  <label lang="en" value="Notification settings" />
+	  <item type="checkbox" property="notify" default="true">
+	    <label lang="en" value="Show notifications" />
+	  </item>
+	</page>
+	  
 </settings>
