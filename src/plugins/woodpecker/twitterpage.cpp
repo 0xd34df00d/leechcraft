@@ -131,13 +131,13 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 	std::shared_ptr<Tweet> firstNewTwit;
 	int i;
 
-	if (! (twits.length())) return; // if we have no tweets to parse
+	if (twits.isEmpty()) return; // if we have no tweets to parse
 	
 	firstNewTwit = twits.first();
 
 	if (screenTwits.length() && (twits.last()->id() == screenTwits.first()->id())) // if we should prepend
 		for (auto i = twits.end()-2; i >= twits.begin(); i--)
-			screenTwits.insert(0,*i);
+			screenTwits.insert(0, *i);
 	else
 	{
 		// Now we'd find firstNewTwit in twitList
@@ -150,11 +150,13 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 		for (i = 0; i < insertionShift; i++)
 			twits.removeFirst();
 
-		Entity notification = Util::MakeNotification ("Woodpecker" , QString(twits.length()) + tr (" new twit(s)"), PInfo_);
-		emit gotEntity(notification);
-		Core::Instance().GetProxy()->GetEntityManager()->HandleEntity(notification);
+		if (!twits.isEmpty()) {
+			Entity notification = Util::MakeNotification (tr ("Woodpecker") , tr ( "%1 new twit(s)" ).arg(twits.length()) , PInfo_);
+			emit gotEntity(notification);
+			Core::Instance().GetProxy()->GetEntityManager()->HandleEntity(notification);
+			screenTwits.append (twits);
+		}
 		
-		screenTwits.append (twits);
 	}
 	ui->TwitList_->clear();
 
@@ -285,6 +287,33 @@ void TwitterPage::reportSpam()
 			  (decltype (screenTwits.front ()) tweet) 
 			  { return tweet->id() == twitid; });
 	interface->reportSPAM((*spamTwit)->author()->username());
+}
+
+void TwitterPage::updateTweetList()
+{
+	ui->TwitList_->setEnabled(false);
+	ui->TwitList_->clear();
+
+	Q_FOREACH (auto twit, screenTwits)
+	{
+		QListWidgetItem *tmpitem = new QListWidgetItem();
+		
+		tmpitem->setText (twit->text().replace(QChar('\n'),QChar(' ')) + "\n" +
+						  "\t\t" + twit->author()->username() + "\t" +
+						  twit->dateTime().toLocalTime().toString());
+		tmpitem->setData (Qt::UserRole, twit->id());
+		if (twit->author()->avatar.isNull())
+			tmpitem->setIcon (QIcon (":/resources/images/woodpecker.svg"));
+		else
+			tmpitem->setIcon (twit->author()->avatar);
+		ui->TwitList_->insertItem (0, tmpitem);
+		ui->TwitList_->updateGeometry();
+		
+	}
+//	QTimer::singleShot(1000, ui->TwitList_, SLOT(update()));
+	
+	ui->TwitList_->update();
+	ui->TwitList_->setEnabled(true);
 }
 
 }

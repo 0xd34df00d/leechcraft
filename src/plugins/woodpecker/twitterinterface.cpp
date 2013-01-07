@@ -90,11 +90,12 @@ QList< std::shared_ptr<Tweet> > twitterInterface::parseReply (QByteArray json)
 		tweetMap = answers[i].toMap();
 		userMap = tweetMap["user"].toMap();
 		QLocale::setDefault (QLocale::English);
-		std::shared_ptr<Tweet> tempTweet (new Tweet (this));
+		std::shared_ptr<Tweet> tempTweet (new Tweet (this->parent()));
 
 		tempTweet->setText (tweetMap["text"].toString());
 		tempTweet->author()->setUsername (userMap["screen_name"].toString());
 		tempTweet->author()->downloadAvatar (userMap["profile_image_url"].toString());
+		connect(tempTweet->author(), SIGNAL(userReady()), this->parent(), SLOT(updateTweetList()));
 		tempTweet->setDateTime (QLocale().toDateTime (tweetMap["created_at"].toString(), QLatin1String ("ddd MMM dd HH:mm:ss +0000 yyyy")));
 		tempTweet->setId (tweetMap["id"].toULongLong());
 

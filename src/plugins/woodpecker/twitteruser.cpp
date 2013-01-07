@@ -24,6 +24,7 @@ void TwitterUser::avatarDownloaded (QNetworkReply *reply)
 	data = reply->readAll();
 	avatar.loadFromData (data);
 	reply->deleteLater();
+	emit userReady();
 }
 
 void TwitterUser::downloadAvatar (QString path)

@@ -37,6 +37,7 @@ private:
 	QNetworkAccessManager *http;
 
 signals:
+	void userReady();
 
 public slots:
 	void avatarDownloaded (QNetworkReply *reply);

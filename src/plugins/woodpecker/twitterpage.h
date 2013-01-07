@@ -67,6 +67,7 @@ public slots:
     void tryToLogin();
     void requestUserTimeline (QString username);
     void updateTweetList (QList<std::shared_ptr<Tweet>> twits);
+    void updateTweetList ();
     void recvdAuth (QString token, QString tokenSecret);
     void twit();
     void retwit();
