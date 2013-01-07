@@ -37,6 +37,7 @@
 #include "item.h"
 #include "itemssortfilterproxymodel.h"
 #include "modelroles.h"
+#include "favoritesmanager.h"
 
 namespace LeechCraft
 {
@@ -94,15 +95,17 @@ namespace Launchy
 				roleNames [ModelRoles::ItemIcon] = "itemIcon";
 				roleNames [ModelRoles::ItemDescription] = "itemDescription";
 				roleNames [ModelRoles::ItemID] = "itemID";
+				roleNames [ModelRoles::IsItemFavorite] = "isItemFavorite";
 				setRoleNames (roleNames);
 			}
 		};
 	}
 
-	FSDisplayer::FSDisplayer (ICoreProxy_ptr proxy, ItemsFinder *finder, QObject *parent)
+	FSDisplayer::FSDisplayer (ICoreProxy_ptr proxy, ItemsFinder *finder, FavoritesManager *favMgr, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Finder_ (finder)
+	, FavManager_ (favMgr)
 	, CatsModel_ (new DisplayModel (this))
 	, ItemsModel_ (new DisplayModel (this))
 	, ItemsProxyModel_ (new ItemsSortFilterProxyModel (ItemsModel_, this))
@@ -148,6 +151,10 @@ namespace Launchy
 				SIGNAL (itemSelected (QString)),
 				this,
 				SLOT (handleExecRequested (QString)));
+		connect (View_->rootObject (),
+				SIGNAL (itemBookmarkRequested (QString)),
+				this,
+				SLOT (handleItemBookmark (QString)));
 
 		handleFinderUpdated ();
 		handleCategorySelected (0);
@@ -196,13 +203,22 @@ namespace Launchy
 
 	void FSDisplayer::MakeStdCategories ()
 	{
-		auto lcCat = new QStandardItem;
-		lcCat->setData ("LeechCraft", ModelRoles::CategoryName);
-		lcCat->setData (QStringList ("X-LeechCraft"), ModelRoles::NativeCategories);
-		lcCat->setData ("leechcraft", ModelRoles::CategoryIcon);
+		auto addCustomCat = [this] (const QString& name, const QString& native,
+				const QString& iconName, const QIcon& icon) -> void
+		{
+			auto cat = new QStandardItem;
+			cat->setData (name, ModelRoles::CategoryName);
+			cat->setData (QStringList (native), ModelRoles::NativeCategories);
+			cat->setData (iconName, ModelRoles::CategoryIcon);
+			if (!icon.isNull ())
+				IconsProvider_->AddIcon (iconName, icon);
 
-		IconsProvider_->AddIcon ("leechcraft", QIcon (":/resources/images/leechcraft.svg"));
-		CatsModel_->appendRow (lcCat);
+			CatsModel_->appendRow (cat);
+		};
+
+		addCustomCat ("LeechCraft", "X-LeechCraft", "leechcraft",
+				QIcon (":/resources/images/leechcraft.svg"));
+		addCustomCat ("Favorites", "X-Favorites", "favorites", QIcon ());
 	}
 
 	void FSDisplayer::MakeStdItems ()
@@ -223,8 +239,13 @@ namespace Launchy
 				item->setData (iconId, ModelRoles::ItemIcon);
 				item->setData (QStringList ("X-LeechCraft"), ModelRoles::ItemNativeCategories);
 				item->setData (tc.TabClass_, ModelRoles::ItemID);
+				item->setData (FavManager_->IsFavorite (tc.TabClass_), ModelRoles::IsItemFavorite);
 
-				Execs_ [tc.TabClass_] = [iht, tc] () { iht->TabOpenRequested (tc.TabClass_); };
+				ItemInfos_ [tc.TabClass_] =
+				{
+					[iht, tc] () { iht->TabOpenRequested (tc.TabClass_); },
+					tc.TabClass_
+				};
 
 				ItemsModel_->appendRow (item);
 			}
@@ -342,10 +363,29 @@ namespace Launchy
 			appItem->setData (item->GetCategories (), ModelRoles::ItemNativeCategories);
 
 			appItem->setData (itemName, ModelRoles::ItemID);
-			Execs_ [itemName] = [this, item] () { Execute (item); };
+
+			appItem->setData (FavManager_->IsFavorite (item->GetPermanentID ()), ModelRoles::IsItemFavorite);
+
+			ItemInfos_ [itemName] =
+			{
+				[this, item] () { Execute (item); },
+				item->GetPermanentID ()
+			};
 
 			ItemsModel_->appendRow (appItem);
 		}
+	}
+
+	QStandardItem* FSDisplayer::FindItem (const QString& itemId) const
+	{
+		for (int i = 0, rc = ItemsModel_->rowCount (); i < rc; ++i)
+		{
+			auto item = ItemsModel_->item (i);
+			if (item->data (ModelRoles::ItemID) == itemId)
+				return item;
+		}
+
+		return 0;
 	}
 
 	void FSDisplayer::handleFinderUpdated ()
@@ -375,7 +415,7 @@ namespace Launchy
 
 	void FSDisplayer::handleExecRequested (const QString& item)
 	{
-		if (!Execs_.contains (item))
+		if (!ItemInfos_.contains (item))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "no such item"
@@ -383,8 +423,22 @@ namespace Launchy
 			return;
 		}
 
-		Execs_ [item] ();
+		ItemInfos_ [item].Exec_ ();
 		deleteLater ();
+	}
+
+	void FSDisplayer::handleItemBookmark (const QString& item)
+	{
+		if (!ItemInfos_.contains (item))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no such item"
+					<< item;
+			return;
+		}
+
+		FavManager_->AddFavorite (ItemInfos_ [item].PermanentID_);
+		FindItem (item)->setData (false, ModelRoles::IsItemFavorite);
 	}
 
 	void FSDisplayer::handleViewStatus (QDeclarativeView::Status status)

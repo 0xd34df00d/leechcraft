@@ -33,6 +33,8 @@ namespace Launchy
 		ItemDescription,
 		ItemID,
 
+		IsItemFavorite,
+
 		ItemNativeCategories,
 		NativeCategories
 	};

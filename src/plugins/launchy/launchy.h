@@ -27,6 +27,7 @@ namespace LeechCraft
 namespace Launchy
 {
 	class ItemsFinder;
+	class FavoritesManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -37,6 +38,7 @@ namespace Launchy
 
 		ICoreProxy_ptr Proxy_;
 		ItemsFinder *Finder_;
+		FavoritesManager *FavManager_;
 		QAction *FSLauncher_;
 	public:
 		void Init (ICoreProxy_ptr);

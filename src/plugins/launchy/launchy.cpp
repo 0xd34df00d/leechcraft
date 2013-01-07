@@ -22,6 +22,7 @@
 #include <util/util.h>
 #include "itemsfinder.h"
 #include "fsdisplayer.h"
+#include "favoritesmanager.h"
 
 namespace LeechCraft
 {
@@ -34,6 +35,8 @@ namespace Launchy
 		Proxy_ = proxy;
 
 		Finder_ = new ItemsFinder (proxy);
+
+		FavManager_ = new FavoritesManager;
 
 		FSLauncher_ = new QAction (tr ("Open fullscreen launcher..."), this);
 		FSLauncher_->setProperty ("ActionIcon", "system-run");
@@ -81,7 +84,7 @@ namespace Launchy
 
 	void Plugin::handleFSRequested ()
 	{
-		auto dis = new FSDisplayer (Proxy_, Finder_, this);
+		auto dis = new FSDisplayer (Proxy_, Finder_, FavManager_, this);
 		connect (dis,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,

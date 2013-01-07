@@ -24,6 +24,7 @@
 #include <QDeclarativeView>
 #include <interfaces/core/icoreproxy.h>
 
+class QStandardItem;
 class QStandardItemModel;
 class QDeclarativeView;
 
@@ -36,6 +37,7 @@ namespace Launchy
 	class ItemsFinder;
 	class ItemIconsProvider;
 	class ItemsSortFilterProxyModel;
+	class FavoritesManager;
 
 	class Item;
 	typedef std::shared_ptr<Item> Item_ptr;
@@ -45,8 +47,8 @@ namespace Launchy
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-
 		ItemsFinder *Finder_;
+		FavoritesManager *FavManager_;
 
 		QStandardItemModel *CatsModel_;
 		QStandardItemModel *ItemsModel_;
@@ -56,9 +58,14 @@ namespace Launchy
 		ItemIconsProvider *IconsProvider_;
 
 		typedef std::function<void ()> Executor_f;
-		QHash<QString, Executor_f> Execs_;
+		struct ItemInfo
+		{
+			Executor_f Exec_;
+			QString PermanentID_;
+		};
+		QHash<QString, ItemInfo> ItemInfos_;
 	public:
-		FSDisplayer (ICoreProxy_ptr, ItemsFinder *finder, QObject* = 0);
+		FSDisplayer (ICoreProxy_ptr, ItemsFinder *finder, FavoritesManager*, QObject* = 0);
 		~FSDisplayer ();
 	private:
 		void Execute (Item_ptr);
@@ -66,10 +73,12 @@ namespace Launchy
 		void MakeStdItems ();
 		void MakeCategories (const QStringList&);
 		void MakeItems (const QList<QList<Item_ptr>>&);
+		QStandardItem* FindItem (const QString&) const;
 	private slots:
 		void handleFinderUpdated ();
 		void handleCategorySelected (int);
 		void handleExecRequested (const QString&);
+		void handleItemBookmark (const QString&);
 		void handleViewStatus (QDeclarativeView::Status);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);

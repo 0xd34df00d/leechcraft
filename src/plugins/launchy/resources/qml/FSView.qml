@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import org.LC.common 1.0
 
 Rectangle {
     id: rootRect
@@ -8,6 +9,7 @@ Rectangle {
 
     signal closeRequested()
     signal itemSelected(string id)
+    signal itemBookmarkRequested(string id)
     signal categorySelected(int index)
 
     Keys.onEscapePressed: rootRect.closeRequested()
@@ -183,6 +185,21 @@ Rectangle {
 
                 onEntered: itemDescriptionLabel.text = itemDescription
                 onExited: itemDescriptionLabel.text = ""
+            }
+
+            ActionButton {
+                id: addToFavs
+
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                width: 24
+                height: 24
+
+                actionIconURL: "image://theme/favorites"
+                transparentStyle: true
+
+                onTriggered: rootRect.itemBookmarkRequested(itemID)
+                visible: !isItemFavorite
             }
 
             GridView.onAdd: SequentialAnimation {
