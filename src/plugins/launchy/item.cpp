@@ -95,6 +95,11 @@ namespace Launchy
 		return WD_;
 	}
 
+	QString Item::GetPermanentID () const
+	{
+		return GetCommand ();
+	}
+
 	void Item::SetIcon (const QIcon& icon)
 	{
 		Icon_ = icon;

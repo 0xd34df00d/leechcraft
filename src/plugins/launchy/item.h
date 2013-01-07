@@ -72,6 +72,8 @@ namespace Launchy
 		QString GetCommand () const;
 		QString GetWorkingDirectory () const;
 
+		QString GetPermanentID () const;
+
 		void SetIcon (const QIcon&);
 		QIcon GetIcon () const;
 
