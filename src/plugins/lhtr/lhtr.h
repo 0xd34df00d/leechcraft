@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/itexteditor.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -29,11 +30,13 @@ namespace LHTR
 	class Plugin : public QObject
 				 , public IInfo
 				 , public ITextEditor
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo ITextEditor)
+		Q_INTERFACES (IInfo ITextEditor IHaveSettings)
 
 		ICoreProxy_ptr Proxy_;
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -45,6 +48,8 @@ namespace LHTR
 
 		bool SupportsEditor (ContentType) const;
 		QWidget* GetTextEditor (ContentType);
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	};
 }
 }

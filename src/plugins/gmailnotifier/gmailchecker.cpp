@@ -95,7 +95,6 @@ namespace GmailNotifier
 		}
 
 		Failed_ = false;
-		Data_.clear ();
 
 		Reply_ = QNAM_->get (QNetworkRequest (QUrl ("https://mail.google.com/mail/feed/atom")));
 		connect (Reply_,
@@ -107,57 +106,51 @@ namespace GmailNotifier
 		emit waitMe ();
 	}
 
-	void GmailChecker::ParseData ()
+	void GmailChecker::ParseData (const QString& data)
 	{
 		QString error = tr ("Error");
 		error.prepend ("Gmail Notifier: ");
 
 		QDomDocument doc;
-		doc.setContent (Data_);
-
-		QDomElement root = doc.documentElement ();
-		bool ok = false;
-		const int fullCount = root.firstChildElement ("fullcount").text ().toInt (&ok);
-		if (!ok)
+		if (!doc.setContent (data))
 		{
 			emit anErrorOccupied (error, tr ("Cannot parse XML data"));
 			return;
 		}
-		if (!fullCount)
-			return;
 
-		QString title = root.firstChildElement ("title")
-				.text ().replace ("Gmail - ", "Gmail Notifier: ");
-		int i = 0;
-		const int fullShow = XmlSettingsManager::Instance ()->
-				property ("ShowLastNMessages").toInt ();
-		QString result;
-		for (QDomElement elem = root.firstChildElement ("entry");
-				!elem.isNull () && i < fullShow; elem = elem.nextSiblingElement ("entry"), ++i)
+		QList<ConvInfo> result;
+
+		const auto& root = doc.documentElement ();
+		auto entry = root.firstChildElement ("entry");
+		auto text = [&entry] (const QString& elemName)
+			{ return entry.firstChildElement (elemName).text (); };
+		auto localDate = [&text] (const QString& name)
 		{
-			const QString& dateText = elem.firstChildElement ("issued").text ();
-			const QDateTime& dt = QDateTime::fromString (dateText, Qt::ISODate);
-			const QString& subject = elem.firstChildElement ("title").text ().isEmpty () ?
-					tr ("No subject") :
-					elem.firstChildElement ("title").text ();
-			const QString& summary = elem.firstChildElement ("summary").text ().isEmpty () ?
-					tr ("No content") :
-					elem.firstChildElement ("summary").text ();
-			result += QString::fromUtf8 ("<p><font color=\"#004C00\">\302\273</font>&nbsp;<a href=\"");
-			result += elem.firstChildElement ("link").attribute ("href") + "\">";
-			result += subject + "</a> " + tr ("from") + " ";
-			result += "<a href=\"https://mail.google.com/mail?extsrc=mailto&url=mailto:";
-			result += elem.firstChildElement ("author").firstChildElement ("email").text () + "\">";
-			result += elem.firstChildElement ("author").firstChildElement ("name").text () + "</a><br/>";
-			result += tr ("at") + " " + dt.toLocalTime ().toString (Qt::SystemLocaleLongDate);
-			result += "</p><p class=\"additionaltext\">";
-			result += summary + "</p>";
+			return QDateTime::fromString (text (name), Qt::ISODate)
+					.toTimeSpec (Qt::UTC).toLocalTime ();
+		};
+
+		while (!entry.isNull ())
+		{
+			const auto& author = entry.firstChildElement ("author");
+
+			ConvInfo info =
+			{
+				text ("title"),
+				text ("summary"),
+				entry.firstChildElement ("link").attribute ("href"),
+				localDate ("issued"),
+				localDate ("modified"),
+				author.firstChildElement ("name").text (),
+				author.firstChildElement ("email").text ()
+			};
+			result << info;
+
+			entry = entry.nextSiblingElement ("entry");
 		}
-		if (fullCount > fullShow)
-			result += "<p><em>&hellip;" +
-					tr ("and %1 more").arg (fullCount - fullShow) +
-					"</em></p>";
-		emit newConversationsAvailable (title, result, fullCount);
+
+		qDebug () << Q_FUNC_INFO;
+		emit gotConversations (result);
 	}
 
 	void GmailChecker::httpFinished ()
@@ -178,10 +171,7 @@ namespace GmailNotifier
 				emit anErrorOccupied (error, Reply_->errorString ());
 		}
 		else
-		{
-			Data_ = QString::fromUtf8 (Reply_->readAll ());
-			ParseData ();
-		}
+			ParseData (QString::fromUtf8 (Reply_->readAll ()));
 
 		Reply_->deleteLater ();
 		Reply_ = 0;

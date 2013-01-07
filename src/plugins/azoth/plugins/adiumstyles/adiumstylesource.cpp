@@ -510,9 +510,15 @@ namespace AdiumStyles
 			return templ;
 		}
 
-		const QString& senderNick = in ?
-				other->GetEntryName () :
-				acc->GetOurNick ();
+		QString senderNick = in ? other->GetEntryName () : acc->GetOurNick ();
+		if (in &&
+				msg->GetMessageType () == IMessage::MTChatMessage &&
+				Proxy_->GetSettingsManager ()->property ("ShowNormalChatResources").toBool ())
+		{
+			const auto& resource = msg->GetOtherVariant ();
+			if (!resource.isEmpty ())
+				senderNick += '/' + resource;
+		}
 
 		// %time%
 		templ.replace ("%time%", msg->GetDateTime ().toString ());

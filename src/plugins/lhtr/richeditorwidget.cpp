@@ -18,6 +18,7 @@
 
 #include "richeditorwidget.h"
 #include <functional>
+#include <map>
 #include <QWebFrame>
 #include <QWebPage>
 #include <QWebElement>
@@ -27,6 +28,7 @@
 #include <QFontDialog>
 #include <QInputDialog>
 #include <QTextDocument>
+#include <QToolButton>
 #include <QXmlStreamWriter>
 #include <QNetworkRequest>
 #include <QtDebug>
@@ -35,6 +37,8 @@
 #include "hyperlinkdialog.h"
 #include "imagedialog.h"
 #include "finddialog.h"
+#include "inserttabledialog.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -121,9 +125,17 @@ namespace LHTR
 
 		Ui_.setupUi (this);
 
-		auto palette = Ui_.View_->palette ();
-		palette.setColor (QPalette::Base, Qt::white);
-		Ui_.View_->setPalette (palette);
+		connect (Ui_.HTML_,
+				SIGNAL (textChanged ()),
+				this,
+				SIGNAL (textChanged ()));
+		connect (Ui_.View_->page (),
+				SIGNAL (contentsChanged ()),
+				this,
+				SIGNAL (textChanged ()));
+
+		handleBgColorSettings ();
+		XmlSettingsManager::Instance ().RegisterObject ("BgColor", this, "handleBgColorSettings");
 
 		Ui_.View_->setPage (new EditorPage (Ui_.View_));
 		Ui_.View_->page ()->setContentEditable (true);
@@ -188,17 +200,17 @@ namespace LHTR
 		auto addInlineCmd = [this] (const QString& name,
 				const QString& icon,
 				const QString& cmd,
-				const QStringList& args,
+				const std::map<QString, QVariant>& attrs,
 				Addable addable) -> QAction*
 		{
 			auto act = addable.addAction (name, this, SLOT (handleInlineCmd ()));
 			act->setProperty ("ActionIcon", icon);
 			act->setProperty ("Editor/Command", cmd);
-			act->setProperty ("Editor/Args", args);
+			act->setProperty ("Editor/Attrs", QVariantMap (attrs));
 			return act;
 		};
 
-		addInlineCmd (tr ("Code"), "code-context", "code", QStringList (), barAdd);
+		addInlineCmd (tr ("Code"), "code-context", "code", {}, barAdd);
 
 		ViewBar_->addSeparator ();
 
@@ -260,15 +272,24 @@ namespace LHTR
 		addCmd (tr ("Unordered list"), "format-list-unordered", "insertUnorderedList", barAdd, QString ());
 
 		ViewBar_->addSeparator ();
-		QAction *link = ViewBar_->addAction (tr ("Insert link..."),
+
+		auto link = ViewBar_->addAction (tr ("Insert link..."),
 					this,
 					SLOT (handleInsertLink ()));
 		link->setProperty ("ActionIcon", "insert-link");
 
-		QAction *img = ViewBar_->addAction (tr ("Insert image..."),
+		auto img = ViewBar_->addAction (tr ("Insert image..."),
 					this,
 					SLOT (handleInsertImage ()));
 		img->setProperty ("ActionIcon", "insert-image");
+
+		SetupTableMenu ();
+
+		setupJS ();
+		connect (Ui_.View_->page ()->mainFrame (),
+				SIGNAL (javaScriptWindowObjectCleared ()),
+				this,
+				SLOT (setupJS ()));
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
@@ -337,6 +358,12 @@ namespace LHTR
 		return 0;
 	}
 
+	void RichEditorWidget::SetBackgroundColor (const QColor& color)
+	{
+		if (!XmlSettingsManager::Instance ().property ("OverrideBgColor").toBool ())
+			InternalSetBgColor (color);
+	}
+
 	void RichEditorWidget::InsertHTML (const QString& html)
 	{
 		ExecCommand ("insertHTML", html);
@@ -351,6 +378,67 @@ namespace LHTR
 	void RichEditorWidget::ExecJS (const QString& js)
 	{
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
+	void RichEditorWidget::InternalSetBgColor (const QColor& color)
+	{
+		auto palette = Ui_.View_->palette ();
+		palette.setColor (QPalette::Base, color);
+		Ui_.View_->setPalette (palette);
+	}
+
+	void RichEditorWidget::SetupTableMenu ()
+	{
+		auto tablesMenu = new QMenu (tr ("Tables..."), this);
+
+		auto tablesButton = new QToolButton;
+		tablesButton->setMenu (tablesMenu);
+		tablesButton->setPopupMode (QToolButton::InstantPopup);
+		tablesButton->setIcon (Proxy_->GetIcon ("view-form-table"));
+		ViewBar_->addWidget (tablesButton);
+
+		auto table = tablesMenu->addAction (tr ("Insert table..."),
+					this,
+					SLOT (handleInsertTable ()));
+		table->setProperty ("ActionIcon", "insert-table");
+
+		tablesMenu->addSeparator ();
+
+		auto addRowAbove = tablesMenu->addAction (tr ("Insert row above"),
+					this,
+					SLOT (handleInsertRow ()));
+		addRowAbove->setProperty ("ActionIcon", "edit-table-insert-row-above");
+		addRowAbove->setProperty ("LHTR/Shift", 0);
+
+		auto addRowBelow = tablesMenu->addAction (tr ("Insert row below"),
+					this,
+					SLOT (handleInsertRow ()));
+		addRowBelow->setProperty ("ActionIcon", "edit-table-insert-row-below");
+		addRowBelow->setProperty ("LHTR/Shift", 1);
+
+		auto addColumnLeft = tablesMenu->addAction (tr ("Insert column to the left"),
+					this,
+					SLOT (handleInsertColumn ()));
+		addColumnLeft->setProperty ("ActionIcon", "edit-table-insert-column-left");
+		addColumnLeft->setProperty ("LHTR/Shift", 0);
+
+		auto addColumnRight = tablesMenu->addAction (tr ("Insert column to the right"),
+					this,
+					SLOT (handleInsertColumn ()));
+		addColumnRight->setProperty ("ActionIcon", "edit-table-insert-column-right");
+		addColumnRight->setProperty ("LHTR/Shift", 1);
+
+		tablesMenu->addSeparator ();
+
+		auto removeRow = tablesMenu->addAction (tr ("Remove row"),
+					this,
+					SLOT (handleRemoveRow ()));
+		removeRow->setProperty ("ActionIcon", "edit-table-delete-row");
+
+		auto removeColumn = tablesMenu->addAction (tr ("Remove column"),
+					this,
+					SLOT (handleRemoveColumn ()));
+		removeColumn->setProperty ("ActionIcon", "edit-table-delete-column");
 	}
 
 	void RichEditorWidget::ExecCommand (const QString& cmd, const QString& arg)
@@ -399,6 +487,15 @@ namespace LHTR
 
 	void RichEditorWidget::on_TabWidget__currentChanged (int idx)
 	{
+		disconnect (Ui_.HTML_,
+				SIGNAL (textChanged ()),
+				this,
+				SIGNAL (textChanged ()));
+		disconnect (Ui_.View_->page (),
+				SIGNAL (contentsChanged ()),
+				this,
+				SIGNAL (textChanged ()));
+
 		switch (idx)
 		{
 		case 1:
@@ -412,6 +509,24 @@ namespace LHTR
 			}
 			break;
 		}
+
+		connect (Ui_.HTML_,
+				SIGNAL (textChanged ()),
+				this,
+				SIGNAL (textChanged ()));
+		connect (Ui_.View_->page (),
+				SIGNAL (contentsChanged ()),
+				this,
+				SIGNAL (textChanged ()));
+	}
+
+	void RichEditorWidget::setupJS ()
+	{
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("function findParent(item, name)"
+				"{"
+				"	while (item.tagName == null || item.tagName.toLowerCase() != name)"
+				"		item = item.parentNode; return item;"
+				"}");
 	}
 
 	void RichEditorWidget::on_HTML__textChanged ()
@@ -456,14 +571,16 @@ namespace LHTR
 	void RichEditorWidget::handleInlineCmd ()
 	{
 		const auto& tag = sender ()->property ("Editor/Command").toString ();
-		const auto& args = sender ()->property ("Editor/Args").toStringList ();
+		const auto& attrs = sender ()->property ("Editor/Attrs").toMap ();
 
 		QString jstr;
 		jstr += "var selection = window.getSelection().getRangeAt(0);"
 				"var selectedText = selection.extractContents();"
 				"var span = document.createElement('" + tag + "');";
-		for (const auto& arg : args)
-			jstr += "span." + arg + ';';
+		for (auto i = attrs.begin (), end = attrs.end (); i != end; ++i)
+			jstr += QString ("span.setAttribute ('%1', '%2');")
+					.arg (i.key ())
+					.arg (i->toString ());
 		jstr += "span.appendChild(selectedText);"
 				"selection.insertNode(span);";
 
@@ -508,6 +625,99 @@ namespace LHTR
 		checkWebAct (&QFont::bold, QWebPage::ToggleBold);
 		checkWebAct (&QFont::italic, QWebPage::ToggleItalic);
 		checkWebAct (&QFont::underline, QWebPage::ToggleUnderline);
+	}
+
+	void RichEditorWidget::handleInsertTable ()
+	{
+		InsertTableDialog dia;
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		QString html;
+		QXmlStreamWriter w (&html);
+		w.writeStartElement ("table");
+		w.writeAttribute ("style", "border: 1px solid black; border-collapse: collapse;");
+
+		const auto& caption = dia.GetCaption ().trimmed ();
+		if (!caption.isEmpty ())
+		{
+			w.writeStartElement ("caption");
+			w.writeCharacters (caption);
+			w.writeEndElement ();
+		}
+
+		w.writeStartElement ("tbody");
+		for (int i = 0; i < dia.GetRows (); ++i)
+		{
+			w.writeStartElement ("tr");
+			for (int j = 0; j < dia.GetColumns (); ++j)
+			{
+				w.writeStartElement ("td");
+				w.writeAttribute ("style", "border: 1px solid black; min-width: 1em; height: 1em;");
+				w.writeEndElement ();
+			}
+			w.writeEndElement ();
+		}
+		w.writeEndElement ();
+		w.writeEndElement ();
+		ExecCommand ("insertHTML", html);
+	}
+
+	void RichEditorWidget::handleInsertRow ()
+	{
+		auto shift = sender ()->property ("LHTR/Shift").toInt ();
+
+		QString js;
+		js += "var row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');";
+		js += "var rowIdx = row.rowIndex;";
+		js += "var table = findParent(row, 'table');";
+		js += "var newRow = table.insertRow(rowIdx + " + QString::number (shift) + ");";
+		js += "for (var j = 0; j < row.cells.length; ++j)";
+		js += "{";
+		js += "    var newCell = newRow.insertCell(j);";
+		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1em;');";
+		js += "}";
+
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
+	void RichEditorWidget::handleInsertColumn ()
+	{
+		auto shift = sender ()->property ("LHTR/Shift").toInt ();
+
+		QString js;
+		js += "var cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');";
+		js += "var colIdx = cell.cellIndex + " + QString::number (shift) + ";";
+		js += "var table = findParent(cell, 'table');";
+		js += "for (var r = 0; r < table.rows.length; ++r)";
+		js += "{";
+		js += "    var newCell = table.rows[r].insertCell(colIdx);";
+		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1em;');";
+		js += "}";
+
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
+	void RichEditorWidget::handleRemoveRow ()
+	{
+		QString js;
+		js += "var row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');";
+		js += "var table = findParent(row, 'table');";
+		js += "table.deleteRow(row.rowIndex);";
+
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
+	void RichEditorWidget::handleRemoveColumn ()
+	{
+		QString js;
+		js += "var cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');";
+		js += "var colIdx = cell.cellIndex;";
+		js += "var table = findParent(cell, 'table');";
+		js += "for (var r = 0; r < table.rows.length; ++r)";
+		js += "    table.rows[r].deleteCell(colIdx);";
+
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
 	}
 
 	void RichEditorWidget::handleInsertLink ()
@@ -584,6 +794,13 @@ namespace LHTR
 	void RichEditorWidget::handleReplace ()
 	{
 		OpenFindReplace (false);
+	}
+
+	void RichEditorWidget::handleBgColorSettings ()
+	{
+		const auto& color = XmlSettingsManager::Instance ()
+				.property ("BgColor").value<QColor> ();
+		InternalSetBgColor (color);
 	}
 }
 }

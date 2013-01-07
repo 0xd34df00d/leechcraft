@@ -18,21 +18,17 @@
 
 #pragma once
 
-#include <QDeclarativeView>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoreproxy.h>
-
-class QStandardItemModel;
+#include "unhidelistviewbase.h"
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	class TabUnhideListView : public QDeclarativeView
+	class TabUnhideListView : public UnhideListViewBase
 	{
 		Q_OBJECT
-
-		QStandardItemModel *Model_;
 	public:
 		TabUnhideListView (const QList<TabClassInfo>&, ICoreProxy_ptr, QWidget* = 0);
 	private slots:

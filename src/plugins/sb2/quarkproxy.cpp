@@ -17,17 +17,28 @@
  **********************************************************************/
 
 #include "quarkproxy.h"
+#include <QtDebug>
+#include <interfaces/iquarkcomponentprovider.h>
 #include "viewmanager.h"
 #include "sbview.h"
+#include "quarkunhidelistview.h"
+#include "quarkorderview.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	QuarkProxy::QuarkProxy (ViewManager *mgr, QObject *parent)
+	QuarkProxy::QuarkProxy (ViewManager *mgr, ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Manager_ (mgr)
+	, Proxy_ (proxy)
 	{
+	}
+
+	const QString& QuarkProxy::GetExtHoveredQuarkClass () const
+	{
+		return ExtHoveredQuarkClass_;
 	}
 
 	QPoint QuarkProxy::mapToGlobal (double x, double y)
@@ -38,6 +49,53 @@ namespace SB2
 	void QuarkProxy::showSettings (const QUrl& url)
 	{
 		Manager_->ShowSettings (url);
+	}
+
+	void QuarkProxy::removeQuark (const QUrl& url)
+	{
+		Manager_->RemoveQuark (url);
+	}
+
+	void QuarkProxy::quarkAddRequested (int x, int y)
+	{
+		auto toAdd = Manager_->FindAllQuarks ();
+		for (const auto& existing : Manager_->GetAddedQuarks ())
+		{
+			const auto pos = std::find_if (toAdd.begin (), toAdd.end (),
+					[&existing] (decltype (toAdd.at (0)) item) { return item.Url_ == existing; });
+			if (pos == toAdd.end ())
+				continue;
+
+			toAdd.erase (pos);
+		}
+
+		if (toAdd.isEmpty ())
+			return;
+
+		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Proxy_, Manager_->GetView ());
+		unhide->move (x, y);
+		unhide->show ();
+	}
+
+	void QuarkProxy::quarkOrderRequested (int x, int y)
+	{
+		auto view = new QuarkOrderView (Manager_, Proxy_);
+		view->move (Util::FitRectScreen ({ x, y }, view->size ()));
+		view->show ();
+
+		connect (view,
+				SIGNAL (quarkClassHovered (QString)),
+				this,
+				SLOT (handleExtHoveredQuarkClass (QString)));
+	}
+
+	void QuarkProxy::handleExtHoveredQuarkClass (const QString& qClass)
+	{
+		if (ExtHoveredQuarkClass_ == qClass)
+			return;
+
+		ExtHoveredQuarkClass_ = qClass;
+		emit extHoveredQuarkClassChanged ();
 	}
 }
 }

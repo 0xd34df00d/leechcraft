@@ -602,11 +602,7 @@ namespace Xoox
 	RoomParticipantEntry_ptr RoomHandler::GetParticipantEntry (const QString& nick, bool announce)
 	{
 		if (!Nick2Entry_.contains (nick))
-		{
-			RoomParticipantEntry_ptr entry (CreateParticipantEntry (nick, announce));
-			Nick2Entry_ [nick] = entry;
-			return entry;
-		}
+			return CreateParticipantEntry (nick, announce);
 		else
 			return Nick2Entry_ [nick];
 	}
@@ -623,7 +619,7 @@ namespace Xoox
 
 		const bool existed = Nick2Entry_.contains (nick);
 
-		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick, false);
+		const auto& entry = GetParticipantEntry (nick, false);
 		entry->SetAffiliation (pres.mucItem ().affiliation ());
 		entry->SetRole (pres.mucItem ().role ());
 
@@ -665,7 +661,7 @@ namespace Xoox
 
 		const bool us = Room_->nickName () == nick;
 
-		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
+		const auto& entry = GetParticipantEntry (nick);
 		const QXmppMucItem& item = pres.mucItem ();
 		if (!item.nick ().isEmpty () &&
 				item.nick () != nick)

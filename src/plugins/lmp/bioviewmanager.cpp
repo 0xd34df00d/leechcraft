@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "bioviewmanager.h"
+#include <numeric>
 #include <QDeclarativeView>
 #include <QDeclarativeContext>
 #include <QGraphicsObject>

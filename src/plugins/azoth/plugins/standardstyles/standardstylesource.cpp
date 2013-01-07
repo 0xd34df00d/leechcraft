@@ -136,6 +136,10 @@ namespace StandardStyles
 		QString entryName = other ?
 				Qt::escape (other->GetEntryName ()) :
 				QString ();
+		if (msg->GetMessageType () == IMessage::MTChatMessage &&
+				Proxy_->GetSettingsManager ()->property ("ShowNormalChatResources").toBool () &&
+				!msg->GetOtherVariant ().isEmpty ())
+			entryName += '/' + msg->GetOtherVariant ();
 
 		connect (msgObj,
 				SIGNAL (destroyed ()),

@@ -60,30 +60,50 @@ namespace LHTR
 		void AppendAction (QAction*);
 		void RemoveAction (QAction*);
 		QAction* GetEditorAction (EditorAction);
+		void SetBackgroundColor (const QColor&);
 
 		void InsertHTML (const QString&);
 		void SetTagsMappings (const Replacements_t&, const Replacements_t&);
 		void ExecJS (const QString&);
 	private:
+		void InternalSetBgColor (const QColor&);
+
+		void SetupTableMenu ();
+
 		void ExecCommand (const QString&, const QString& = QString ());
 		bool QueryCommandState (const QString& cmd);
 
 		void OpenFindReplace (bool findOnly);
 	private slots:
+		void handleBgColorSettings ();
+
 		void handleLinkClicked (const QUrl&);
 		void on_TabWidget__currentChanged (int);
+
+		void setupJS ();
+
 		void on_HTML__textChanged ();
 		void updateActions ();
+
 		void handleCmd ();
 		void handleInlineCmd ();
 		void handleBgColor ();
 		void handleFgColor ();
 		void handleFont ();
+
+		void handleInsertTable ();
+		void handleInsertRow ();
+		void handleInsertColumn ();
+		void handleRemoveRow ();
+		void handleRemoveColumn ();
+
 		void handleInsertLink ();
 		void handleInsertImage ();
 
 		void handleFind ();
 		void handleReplace ();
+	signals:
+		void textChanged ();
 	};
 }
 }

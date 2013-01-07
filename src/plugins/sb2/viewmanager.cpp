@@ -45,7 +45,8 @@ namespace SB2
 			enum Role
 			{
 				SourceURL= Qt::UserRole + 1,
-				QuarkHasSettings
+				QuarkHasSettings,
+				QuarkClass
 			};
 
 			ViewItemsModel (QObject *parent)
@@ -54,6 +55,7 @@ namespace SB2
 				QHash<int, QByteArray> names;
 				names [Role::SourceURL] = "sourceURL";
 				names [Role::QuarkHasSettings] = "quarkHasSettings";
+				names [Role::QuarkClass] = "quarkClass";
 				setRoleNames (names);
 			}
 		};
@@ -74,7 +76,7 @@ namespace SB2
 		}
 
 		View_->rootContext ()->setContextProperty ("itemsModel", ViewItemsModel_);
-		View_->rootContext ()->setContextProperty ("quarkProxy", new QuarkProxy (this, this));
+		View_->rootContext ()->setContextProperty ("quarkProxy", new QuarkProxy (this, proxy, this));
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		View_->engine ()->addImageProvider (ImageProviderID, new ThemeImageProvider (proxy));
@@ -88,44 +90,13 @@ namespace SB2
 
 	void ViewManager::SecondInit ()
 	{
-		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, "quarks"))
-			AddRootDir (QDir (cand));
-
-		QDir local = QDir::home ();
-		if (local.cd (".leechcraft") &&
-			local.cd ("data") &&
-			local.cd ("quarks"))
-			AddRootDir (local);
-
-		auto pm = Proxy_->GetPluginsManager ();
-		for (auto prov : pm->GetAllCastableTo<IQuarkComponentProvider*> ())
-			for (auto quark : prov->GetComponents ())
-				AddComponent (quark);
+		for (const auto& component : FindAllQuarks ())
+			AddComponent (component);
 	}
 
-	void ViewManager::AddComponent (const QuarkComponent& comp)
+	void ViewManager::RegisterInternalComponent (const QuarkComponent& c)
 	{
-		QuarkManager_ptr mgr;
-		try
-		{
-			mgr.reset (new QuarkManager (comp, this));
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< e.what ();
-			return;
-		}
-
-		if (!mgr->IsValidArea ())
-			return;
-
-		Quark2Manager_ [comp.Url_] = mgr;
-
-		auto item = new QStandardItem;
-		item->setData (comp.Url_, ViewItemsModel::Role::SourceURL);
-		item->setData (mgr->HasSettings (), ViewItemsModel::Role::QuarkHasSettings);
-		ViewItemsModel_->appendRow (item);
+		InternalComponents_ << c;
 	}
 
 	void ViewManager::ShowSettings (const QUrl& url)
@@ -134,8 +105,133 @@ namespace SB2
 		manager->ShowSettings ();
 	}
 
-	void ViewManager::AddRootDir (const QDir& dir)
+	void ViewManager::RemoveQuark (const QUrl& url)
 	{
+		for (int i = 0; i < ViewItemsModel_->rowCount (); ++i)
+		{
+			auto item = ViewItemsModel_->item (i);
+			if (item->data (ViewItemsModel::Role::SourceURL) != url)
+				continue;
+
+			ViewItemsModel_->removeRow (i);
+		}
+
+		auto mgr = Quark2Manager_.take (url);
+		RemovedIDs_ << mgr->GetID ();
+	}
+
+	void ViewManager::RemoveQuark (const QString& id)
+	{
+		QUrl url;
+		for (int i = 0; i < ViewItemsModel_->rowCount (); ++i)
+		{
+			auto item = ViewItemsModel_->item (i);
+			if (item->data (ViewItemsModel::Role::QuarkClass) != id)
+				continue;
+
+			url = item->data (ViewItemsModel::Role::SourceURL).toUrl ();
+			ViewItemsModel_->removeRow (i);
+		}
+
+		if (!url.isValid ())
+			return;
+
+		auto mgr = Quark2Manager_.take (url);
+		RemovedIDs_ << mgr->GetID ();
+	}
+
+	void ViewManager::UnhideQuark (const QuarkComponent& component, QuarkManager_ptr manager)
+	{
+		if (!manager)
+			return;
+
+		RemovedIDs_.remove (manager->GetID ());
+
+		AddComponent (component, manager);
+	}
+
+	void ViewManager::MoveQuark (int from, int to)
+	{
+		if (from < to)
+			--to;
+		ViewItemsModel_->insertRow (to, ViewItemsModel_->takeRow (from));
+	}
+
+	QList<QuarkComponent> ViewManager::FindAllQuarks () const
+	{
+		auto result = InternalComponents_;
+
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, "quarks"))
+			result += ScanRootDir (QDir (cand));
+
+		QDir local = QDir::home ();
+		if (local.cd (".leechcraft") &&
+			local.cd ("data") &&
+			local.cd ("quarks"))
+			result += ScanRootDir (local);
+
+		auto pm = Proxy_->GetPluginsManager ();
+		for (auto prov : pm->GetAllCastableTo<IQuarkComponentProvider*> ())
+			result += prov->GetComponents ();
+
+		return result;
+	}
+
+	QList<QUrl> ViewManager::GetAddedQuarks () const
+	{
+		QList<QUrl> result;
+
+		for (int i = 0, rc = ViewItemsModel_->rowCount (); i < rc; ++i)
+		{
+			const auto item = ViewItemsModel_->item (i);
+			result << item->data (ViewItemsModel::Role::SourceURL).toUrl ();
+		}
+
+		return result;
+	}
+
+	QuarkManager_ptr ViewManager::GetAddedQuarkManager (const QUrl& url) const
+	{
+		return Quark2Manager_ [url];
+	}
+
+	void ViewManager::AddComponent (const QuarkComponent& comp)
+	{
+		QuarkManager_ptr mgr;
+		try
+		{
+			mgr.reset (new QuarkManager (comp, this, Proxy_));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+			return;
+		}
+
+		AddComponent (comp, mgr);
+	}
+
+	void ViewManager::AddComponent (const QuarkComponent& comp, QuarkManager_ptr mgr)
+	{
+		if (!mgr->IsValidArea ())
+			return;
+
+		if (RemovedIDs_.contains (mgr->GetID ()))
+			return;
+
+		Quark2Manager_ [comp.Url_] = mgr;
+
+		auto item = new QStandardItem;
+		item->setData (comp.Url_, ViewItemsModel::Role::SourceURL);
+		item->setData (mgr->HasSettings (), ViewItemsModel::Role::QuarkHasSettings);
+		item->setData (mgr->GetID (), ViewItemsModel::Role::QuarkClass);
+		ViewItemsModel_->appendRow (item);
+	}
+
+	QList<QuarkComponent> ViewManager::ScanRootDir (const QDir& dir) const
+	{
+		QList<QuarkComponent> result;
 		for (const auto& entry : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable))
 		{
 			QDir quarkDir (dir);
@@ -145,8 +241,9 @@ namespace SB2
 
 			QuarkComponent c;
 			c.Url_ = QUrl::fromLocalFile (quarkDir.absoluteFilePath (entry + ".qml"));
-			AddComponent (c);
+			result << c;
 		}
+		return result;
 	}
 }
 }

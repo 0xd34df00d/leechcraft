@@ -23,6 +23,7 @@
 #include <QToolBar>
 #include <QMainWindow>
 #include <QWidgetAction>
+#include <QCloseEvent>
 #include <QtDebug>
 #include <interfaces/ifinder.h>
 #include <interfaces/structures.h>
@@ -64,6 +65,9 @@ namespace Summary
 		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 		rootWM->GetMWProxy (0)->AddDockWidget (Qt::LeftDockWidgetArea, SearchWidget_);
 		rootWM->GetMWProxy (0)->AssociateDockWidget (SearchWidget_, this);
+
+		QCloseEvent searchCloseEvent;
+		qApp->sendEvent (SearchWidget_, &searchCloseEvent);
 		SearchWidget_->hide ();
 
 		Q_FOREACH (QObject *plugin, Core::Instance ().GetProxy ()->

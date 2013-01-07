@@ -121,10 +121,10 @@ namespace SB2
 		mwProxy->AddSideWidget (view);
 		rootWM->GetMainWindow (index)->statusBar ()->hide ();
 
-		mgr->AddComponent ((new LCMenuComponent (mwProxy))->GetComponent ());
+		mgr->RegisterInternalComponent ((new LCMenuComponent (mwProxy))->GetComponent ());
 
 		auto launcher = new LauncherComponent (ictw, Proxy_);
-		mgr->AddComponent (launcher->GetComponent ());
+		mgr->RegisterInternalComponent (launcher->GetComponent ());
 		if (init)
 			connect (this,
 					SIGNAL (pluginsAvailable ()),
@@ -134,7 +134,7 @@ namespace SB2
 			launcher->handlePluginsAvailable ();
 
 		auto tray = new TrayComponent (Proxy_);
-		mgr->AddComponent (tray->GetComponent ());
+		mgr->RegisterInternalComponent (tray->GetComponent ());
 		if (init)
 			connect (this,
 					SIGNAL (pluginsAvailable ()),

@@ -21,7 +21,8 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
-#include <interfaces/iactionsexporter.h>
+#include <interfaces/iquarkcomponentprovider.h>
+#include "convinfo.h"
 
 class QTranslator;
 class QTimer;
@@ -30,23 +31,25 @@ namespace LeechCraft
 {
 namespace GmailNotifier
 {
+	class Notifier;
 	class GmailChecker;
 
 	class GmailNotifier : public QObject
 						, public IInfo
 						, public IHaveSettings
-						, public IActionsExporter
+						, public IQuarkComponentProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IActionsExporter)
+		Q_INTERFACES (IInfo IHaveSettings IQuarkComponentProvider)
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 
 		GmailChecker *GmailChecker_;
 		QTimer *UpdateTimer_;
-		QString LastMsg_;
 
-		QAction *NotifierAction_;
+		Notifier *Notifier_;
+
+		QuarkComponent Quark_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -58,18 +61,12 @@ namespace GmailNotifier
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	private:
-		void CheckCreateAction ();
+		QuarkComponents_t GetComponents () const;
 	private slots:
 		void setAuthorization ();
-		void setShowUnreadNumInTray ();
 		void applyInterval ();
-		void sendMeNotification (const QString&, const QString&, int);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
-
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

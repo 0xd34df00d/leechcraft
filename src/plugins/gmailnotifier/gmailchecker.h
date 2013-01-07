@@ -20,6 +20,7 @@
 #define PLUGINS_GMAILNOTIFIER_GMAILCHECKER_H
 #include <QObject>
 #include <QString>
+#include "convinfo.h"
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -42,7 +43,6 @@ namespace GmailNotifier
 		QString Password_;
 
 		bool Failed_;
-		QString Data_;
 	public:
 		GmailChecker(QObject* = 0);
 		void SetAuthSettings (const QString& login, const QString& passwd);
@@ -50,7 +50,7 @@ namespace GmailNotifier
 		void Init ();
 		void ReInit ();
 	private:
-		void ParseData ();
+		void ParseData (const QString&);
 	public slots:
 		void checkNow ();
 	private slots:
@@ -58,8 +58,8 @@ namespace GmailNotifier
 		void httpAuthenticationRequired (QNetworkReply *networkReply, QAuthenticator *authenticator);
 		void timeOut ();
 	signals:
+		void gotConversations (const ConvInfos_t&);
 		void anErrorOccupied (const QString& title, const QString& msg);
-		void newConversationsAvailable (const QString& title, const QString& msg, int number);
 
 		void waitMe ();
 		void canContinue ();

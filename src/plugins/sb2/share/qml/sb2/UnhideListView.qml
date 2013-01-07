@@ -4,7 +4,7 @@ import "../common/"
 Rectangle {
     id: rootRect
     width: 500
-    height: Math.min(600, closeTabButton.height + unhideView.count * 36)
+    height: Math.min(600, closeItemButton.height + unhideView.count * 36)
     smooth: true
     focus: true
 
@@ -15,14 +15,14 @@ Rectangle {
     }
 
     signal closeRequested()
-    signal tabUnhideRequested(string tabClass)
+    signal itemUnhideRequested(string itemClass)
 
     Keys.onEscapePressed: rootRect.closeRequested()
 
-    color: "#00000000"
+    color: "transparent"
 
     ActionButton {
-        id: closeTabButton
+        id: closeItemButton
 
         width: 16
         height: 16
@@ -38,7 +38,7 @@ Rectangle {
 
     ListView {
         id: unhideView
-        anchors.top: closeTabButton.bottom
+        anchors.top: closeItemButton.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
@@ -49,12 +49,12 @@ Rectangle {
             height: 36
 
             Rectangle {
-                id: tabRect
+                id: itemRect
                 anchors.fill: parent
                 radius: 5
                 smooth: true
 
-                border.color: "black"
+                border.color: colorProxy.color_TextBox_BorderColor
                 border.width: 1
 
                 Keys.onEscapePressed: rootRect.closeRequested()
@@ -63,18 +63,18 @@ Rectangle {
                     GradientStop {
                         position: 0
                         id: upperStop
-                        color: "#000000"
+                        color: colorProxy.color_TextBox_TopColor
                     }
                     GradientStop {
                         position: 1
                         id: lowerStop
-                        color: "#42394b"
+                        color: colorProxy.color_TextBox_BottomColor
                     }
                 }
 
                 Image {
-                    id: tabIconImage
-                    source: tabIcon
+                    id: itemIconImage
+                    source: itemIcon
 
                     width: 32
                     height: 32
@@ -86,12 +86,12 @@ Rectangle {
                 }
 
                 Text {
-                    id: tabNameLabel
-                    text: tabName + " (" + tabDescr + ")"
+                    id: itemNameLabel
+                    text: itemName + (itemDescr.length > 0 ? (" (" + itemDescr + ")") : "")
 
-                    color: "lightgrey"
+                    color: colorProxy.color_TextBox_TextColor
 
-                    anchors.left: tabIconImage.right
+                    anchors.left: itemIconImage.right
                     anchors.leftMargin: 4
                     anchors.right: parent.right
                     anchors.rightMargin: 4
@@ -104,16 +104,16 @@ Rectangle {
                     id: rectMouseArea
                     anchors.fill: parent
                     hoverEnabled: true
-                    onReleased: rootRect.tabUnhideRequested(tabClass)
+                    onReleased: rootRect.itemUnhideRequested(itemClass)
                 }
 
                 states: [
                     State {
                         name: "hovered"
                         when: rectMouseArea.containsMouse
-                        PropertyChanges { target: tabRect; border.color: "#ff6500" }
-                        PropertyChanges { target: upperStop; color: "#5a3238" }
-                        PropertyChanges { target: lowerStop; color: "#290700" }
+                        PropertyChanges { target: itemRect; border.color: colorProxy.color_TextBox_HighlightBorderColor}
+                        PropertyChanges { target: upperStop; color: colorProxy.color_TextBox_HighlightTopColor }
+                        PropertyChanges { target: lowerStop; color: colorProxy.color_TextBox_HighlightBottomColor }
                     }
                 ]
 

@@ -16,26 +16,19 @@ SET (SRCS
 	hyperlinkdialog.cpp
 	imagedialog.cpp
 	finddialog.cpp
-	)
-SET (HEADERS
-	lhtr.h
-	richeditorwidget.h
-	hyperlinkdialog.h
-	imagedialog.h
-	finddialog.h
+	inserttabledialog.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (FORMS
 	richeditorwidget.ui
 	hyperlinkdialog.ui
 	imagedialog.ui
 	finddialog.ui
+	inserttabledialog.ui
 	)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 CreateTrs ("lhtr" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget ("lhtr" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget ("lhtr" "en;ru_RU" "${SRCS}" "${FORMS}" "lhtrsettings.xml")
 
 ADD_LIBRARY (leechcraft_lhtr SHARED
 	${COMPILED_TRANSLATIONS}
@@ -48,3 +41,4 @@ TARGET_LINK_LIBRARIES (leechcraft_lhtr
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_lhtr DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES lhtrsettings.xml DESTINATION ${LC_SETTINGS_DEST})

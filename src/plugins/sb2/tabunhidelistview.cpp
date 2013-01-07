@@ -17,89 +17,33 @@
  **********************************************************************/
 
 #include "tabunhidelistview.h"
-#include <QStandardItemModel>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
 #include <QGraphicsObject>
 #include <QtDebug>
-#include <util/sys/paths.h>
 #include <util/util.h>
-#include <util/qml/colorthemeproxy.h>
-#include <util/gui/unhoverdeletemixin.h>
-#include "themeimageprovider.h"
+#include "unhidelistmodel.h"
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	namespace
-	{
-		class UnhideListModel : public QStandardItemModel
-		{
-		public:
-			enum Roles
-			{
-				TabClass = Qt::UserRole + 1,
-				TabName,
-				TabDescription,
-				TabIcon
-			};
-
-			UnhideListModel (QObject *parent)
-			: QStandardItemModel (parent)
-			{
-				QHash<int, QByteArray> roleNames;
-				roleNames [Roles::TabClass] = "tabClass";
-				roleNames [Roles::TabName] = "tabName";
-				roleNames [Roles::TabDescription] = "tabDescr";
-				roleNames [Roles::TabIcon] = "tabIcon";
-				setRoleNames (roleNames);
-			}
-		};
-	}
-
 	TabUnhideListView::TabUnhideListView (const QList<TabClassInfo>& tcs, ICoreProxy_ptr proxy, QWidget *parent)
-	: QDeclarativeView (parent)
-	, Model_ (new UnhideListModel (this))
+	: UnhideListViewBase (proxy, parent)
 	{
-		new Util::UnhoverDeleteMixin (this);
-
-		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "TabUnhideListView.qml");
-		if (file.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "file not found";
-			deleteLater ();
-			return;
-		}
-
-		setStyleSheet ("background: transparent");
-		setWindowFlags (Qt::ToolTip);
-		setAttribute (Qt::WA_TranslucentBackground);
-
-		rootContext ()->setContextProperty ("unhideListModel", Model_);
-		rootContext ()->setContextProperty ("colorProxy",
-				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		engine ()->addImageProvider ("ThemeIcons", new ThemeImageProvider (proxy));
-		setSource (QUrl::fromLocalFile (file));
-
+		BeginModelFill ();
 		for (const auto& tc : tcs)
 		{
 			auto item = new QStandardItem;
-			item->setData (tc.TabClass_, UnhideListModel::Roles::TabClass);
-			item->setData (tc.VisibleName_, UnhideListModel::Roles::TabName);
-			item->setData (tc.Description_, UnhideListModel::Roles::TabDescription);
+			item->setData (tc.TabClass_, UnhideListModel::Roles::ItemClass);
+			item->setData (tc.VisibleName_, UnhideListModel::Roles::ItemName);
+			item->setData (tc.Description_, UnhideListModel::Roles::ItemDescription);
 			item->setData (Util::GetAsBase64Src (tc.Icon_.pixmap (32, 32).toImage ()),
-					UnhideListModel::Roles::TabIcon);
+					UnhideListModel::Roles::ItemIcon);
 			Model_->appendRow (item);
 		}
+		EndModelFill ();
 
 		connect (rootObject (),
-				SIGNAL (closeRequested ()),
-				this,
-				SLOT (deleteLater ()));
-		connect (rootObject (),
-				SIGNAL (tabUnhideRequested (QString)),
+				SIGNAL (itemUnhideRequested (QString)),
 				this,
 				SLOT (unhide (QString)),
 				Qt::QueuedConnection);
@@ -111,7 +55,7 @@ namespace SB2
 		emit unhideRequested (id);
 
 		for (int i = 0; i < Model_->rowCount (); ++i)
-			if (Model_->item (i)->data (UnhideListModel::Roles::TabClass).toByteArray () == id)
+			if (Model_->item (i)->data (UnhideListModel::Roles::ItemClass).toByteArray () == id)
 			{
 				Model_->removeRow (i);
 				break;

@@ -53,6 +53,8 @@ namespace LeechCraft
 		QToolBar* GetToolBar (int) const;
 		int GetWidgetCount () const;
 		void ForwardKeyboard (QKeyEvent*);
+
+		int FindTabForWidget (QWidget*) const;
 	public slots:
 		void rotateLeft ();
 		void rotateRight ();
@@ -80,7 +82,6 @@ namespace LeechCraft
 		void handleMoveHappened (int, int);
 		void handleCloseAllButCurrent ();
 	private:
-		int FindTabForWidget (QWidget*) const;
 		void InvalidateName ();
 
 		QStringList GetOriginalNames () const;

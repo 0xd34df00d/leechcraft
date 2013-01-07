@@ -64,8 +64,8 @@ namespace Xoox
 	EntryBase::EntryBase (GlooxAccount *parent)
 	: QObject (parent)
 	, Account_ (parent)
-	, Commands_ (new QAction (tr ("Commands..."), Account_))
-	, DetectNick_ (new QAction (tr ("Detect nick"), Account_))
+	, Commands_ (new QAction (tr ("Commands..."), this))
+	, DetectNick_ (new QAction (tr ("Detect nick"), this))
 	, StdSep_ (LeechCraft::Util::CreateSeparator (this))
 	, HasUnreadMsgs_ (false)
 	, HasBlindlyRequestedVCard_ (false)
@@ -88,8 +88,8 @@ namespace Xoox
 	EntryBase::~EntryBase ()
 	{
 		qDeleteAll (AllMessages_);
+		qDeleteAll (UnreadMessages_);
 		qDeleteAll (Actions_);
-		delete Commands_;
 		delete VCardDialog_;
 	}
 
