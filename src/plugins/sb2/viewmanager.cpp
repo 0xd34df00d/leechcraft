@@ -75,6 +75,9 @@ namespace SB2
 			return;
 		}
 
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			View_->engine ()->addImportPath (cand);
+
 		View_->rootContext ()->setContextProperty ("itemsModel", ViewItemsModel_);
 		View_->rootContext ()->setContextProperty ("quarkProxy", new QuarkProxy (this, proxy, this));
 		View_->rootContext ()->setContextProperty ("colorProxy",

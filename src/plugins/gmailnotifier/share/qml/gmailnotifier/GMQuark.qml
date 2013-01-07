@@ -1,6 +1,5 @@
 import QtQuick 1.1
-import "../common/"
-import "../common/Common.js" as Common
+import org.LC.common 1.0
 
 Rectangle {
     id: rootRect
@@ -11,6 +10,8 @@ Rectangle {
     height: GMN_proxy.msgCount > 0 ? parent.width : 0
 
     color: "transparent"
+
+    Common { id: commonJS }
 
     ActionButton {
         anchors.fill: parent
@@ -35,6 +36,6 @@ Rectangle {
             horizontalAlignment: Text.AlignRight
         }
 
-        onTriggered: Common.showTooltip(rootRect, function(x, y) { GMN_proxy.showMailList(x, y) })
+        onTriggered: commonJS.showTooltip(rootRect, function(x, y) { GMN_proxy.showMailList(x, y) })
     }
 }

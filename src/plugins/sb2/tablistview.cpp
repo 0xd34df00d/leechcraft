@@ -114,6 +114,9 @@ namespace SB2
 					SLOT (handleTabRemoved (QWidget*)));
 		}
 
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			engine ()->addImportPath (cand);
+
 		rootContext ()->setContextProperty ("tabsListModel", Model_);
 		rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
