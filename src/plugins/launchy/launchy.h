@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/iquarkcomponentprovider.h>
 
 namespace LeechCraft
 {
@@ -32,14 +33,17 @@ namespace Launchy
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IActionsExporter
+				 , public IQuarkComponentProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
+		Q_INTERFACES (IInfo IActionsExporter IQuarkComponentProvider)
 
 		ICoreProxy_ptr Proxy_;
 		ItemsFinder *Finder_;
 		FavoritesManager *FavManager_;
 		QAction *FSLauncher_;
+
+		QuarkComponent LaunchQuark_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -50,6 +54,8 @@ namespace Launchy
 		QIcon GetIcon () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+
+		QuarkComponents_t GetComponents () const;
 	private slots:
 		void handleFSRequested ();
 	signals:

@@ -20,9 +20,12 @@
 #include <QIcon>
 #include <QAction>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "itemsfinder.h"
 #include "fsdisplayer.h"
 #include "favoritesmanager.h"
+#include "quarkmanager.h"
+#include "itemimageprovider.h"
 
 namespace LeechCraft
 {
@@ -44,6 +47,13 @@ namespace Launchy
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleFSRequested ()));
+
+		auto itemImageProv = new ItemImageProvider;
+		auto quarkMgr = new QuarkManager (FavManager_, Finder_, itemImageProv);
+		LaunchQuark_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "launchy", "LaunchyQuark.qml"));
+		LaunchQuark_.DynamicProps_.push_back ({ "Launchy_itemModel", quarkMgr->GetModel () });
+		LaunchQuark_.DynamicProps_.push_back ({ "Launchy_proxy", quarkMgr });
+		LaunchQuark_.ImageProviders_.push_back ({ "LaunchyItemIcons", itemImageProv });
 	}
 
 	void Plugin::SecondInit ()
@@ -80,6 +90,11 @@ namespace Launchy
 		if (aep == ActionsEmbedPlace::LCTray)
 			result << FSLauncher_;
 		return result;
+	}
+
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return { LaunchQuark_ };
 	}
 
 	void Plugin::handleFSRequested ()
