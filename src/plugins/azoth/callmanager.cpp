@@ -213,6 +213,7 @@ namespace Azoth
 #endif
 	}
 
+#ifdef ENABLE_MEDIACALLS
 	void CallManager::handleDevStateChanged (QAudio::State state)
 	{
 		auto input = qobject_cast<QAudioInput*> (sender ());
@@ -225,5 +226,6 @@ namespace Azoth
 				 qWarning () << Q_FUNC_INFO << output->error ();
 		}
 	}
+#endif
 }
 }
