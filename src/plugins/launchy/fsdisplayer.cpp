@@ -91,6 +91,7 @@ namespace Launchy
 				QHash<int, QByteArray> roleNames;
 				roleNames [ModelRoles::CategoryName] = "categoryName";
 				roleNames [ModelRoles::CategoryIcon] = "categoryIcon";
+				roleNames [ModelRoles::CategoryType] = "categoryType";
 				roleNames [ModelRoles::ItemName] = "itemName";
 				roleNames [ModelRoles::ItemIcon] = "itemIcon";
 				roleNames [ModelRoles::ItemDescription] = "itemDescription";
@@ -210,6 +211,7 @@ namespace Launchy
 			cat->setData (name, ModelRoles::CategoryName);
 			cat->setData (QStringList (native), ModelRoles::NativeCategories);
 			cat->setData (iconName, ModelRoles::CategoryIcon);
+			cat->setData ("std", ModelRoles::CategoryType);
 			if (!icon.isNull ())
 				IconsProvider_->AddIcon (iconName, icon);
 
@@ -321,6 +323,7 @@ namespace Launchy
 			catItem->setData (visibleName, ModelRoles::CategoryName);
 			catItem->setData (QStringList (cat), ModelRoles::NativeCategories);
 			catItem->setData (catInfo.IconName_, ModelRoles::CategoryIcon);
+			catItem->setData ("xdg", ModelRoles::CategoryType);
 			catItems [visibleName] = catItem;
 		}
 		for (auto item : catItems.values ())

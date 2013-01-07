@@ -93,6 +93,17 @@ Rectangle {
                     }
                 }
             }
+
+            section.criteria: ViewSection.FullString
+            section.property: "categoryType"
+            section.delegate: Rectangle {
+                width: catsView.width
+                height: 2
+                radius: 1
+
+                color: "#444444"
+                smooth: true
+            }
         }
     }
 

@@ -28,6 +28,8 @@ namespace Launchy
 	{
 		CategoryName = Qt::UserRole + 1,
 		CategoryIcon,
+		CategoryType,
+
 		ItemName,
 		ItemIcon,
 		ItemDescription,
