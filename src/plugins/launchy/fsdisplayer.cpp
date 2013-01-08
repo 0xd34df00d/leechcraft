@@ -207,9 +207,10 @@ namespace Launchy
 				item->setData (tc.TabClass_, ModelRoles::ItemID);
 				item->setData (FavManager_->IsFavorite (tc.TabClass_), ModelRoles::IsItemFavorite);
 
+				auto executor = [iht, tc] () { iht->TabOpenRequested (tc.TabClass_); };
 				ItemInfos_ [tc.TabClass_] =
 				{
-					[iht, tc] () { iht->TabOpenRequested (tc.TabClass_); },
+					executor,
 					tc.TabClass_
 				};
 
