@@ -17,13 +17,15 @@
  **********************************************************************/
 
 #include "quarkproxy.h"
+#include <QGraphicsObject>
 #include <QtDebug>
 #include <interfaces/iquarkcomponentprovider.h>
+#include <util/util.h>
 #include "viewmanager.h"
 #include "sbview.h"
 #include "quarkunhidelistview.h"
 #include "quarkorderview.h"
-#include <util/util.h>
+#include "declarativewindow.h"
 
 namespace LeechCraft
 {
@@ -54,6 +56,21 @@ namespace SB2
 	void QuarkProxy::removeQuark (const QUrl& url)
 	{
 		Manager_->RemoveQuark (url);
+	}
+
+	QVariant QuarkProxy::openWindow (const QUrl& url, const QString& str, const QVariant& var)
+	{
+		const auto& newUrl = url.resolved (str);
+
+		auto varMap = var.toMap ();
+		int x = varMap.take ("x").toInt ();
+		int y = varMap.take ("y").toInt ();
+
+		auto window = new DeclarativeWindow (newUrl, varMap, Proxy_);
+		window->move (Util::FitRectScreen ({ x, y }, window->size ()));
+		window->show ();
+
+		return QVariant::fromValue<QObject*> (window->rootObject ());
 	}
 
 	void QuarkProxy::quarkAddRequested (int x, int y)

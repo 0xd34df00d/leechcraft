@@ -47,6 +47,7 @@ namespace SB2
 		QPoint mapToGlobal (double, double);
 		void showSettings (const QUrl&);
 		void removeQuark (const QUrl&);
+		QVariant openWindow (const QUrl&, const QString&, const QVariant&);
 
 		void quarkAddRequested (int, int);
 		void quarkOrderRequested (int, int);
