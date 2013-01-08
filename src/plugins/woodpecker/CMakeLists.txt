@@ -31,6 +31,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	core.cpp
 	tweet.cpp
+	twitdelegate.cpp
 	twitterinterface.cpp
 	twitterpage.cpp
 	twitteruser.cpp
@@ -40,6 +41,7 @@ SET (SRCS
 SET (HEADERS
 	core.h
 	tweet.h
+	twitdelegate.h
 	twitterinterface.h
 	twitterpage.h
 	twitteruser.h

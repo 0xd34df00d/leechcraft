@@ -6,6 +6,7 @@
 #include <qjson/parser.h>
 #include <QListWidgetItem>
 #include "xmlsettingsmanager.h"
+#include "twitdelegate.h"
 
 Q_DECLARE_METATYPE (QObject**);
 
@@ -21,12 +22,20 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 	Toolbar_ (new QToolBar)
 {
 	ui->setupUi (this);
+	ui->TwitList_->setItemDelegate(new TwitDelegate(ui->TwitList_));
+	
+/*	myListWidget->setItemDelegate(new ListDelegate(myListWidget));
+	QListWidgetItem *item = new QListWidgetItem();
+	item->setData(Qt::DisplayRole, "Title");
+	item->setData(Qt::UserRole + 1, "Description");
+	myListWidget->addItem(item);
+	*/
 //	Toolbar_->addAction(ui->actionRefresh);
 	interface = new twitterInterface (this);
 	connect (interface, SIGNAL (tweetsReady (QList<std::shared_ptr<Tweet> >)),
 			 this, SLOT (updateTweetList (QList<std::shared_ptr<Tweet> >)));
 	timer = new QTimer (this);
-	timer->setInterval (90e3); // Update twits every 1.5 minutes
+	timer->setInterval (XmlSettingsManager::Instance()->property("timer").toInt() * 1000); // Update twits every 1.5 minutes by default
 	connect (timer, SIGNAL (timeout()), interface, SLOT (getHomeFeed()));
 	tryToLogin();
 	int newSliderPos;
@@ -150,10 +159,19 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 		for (i = 0; i < insertionShift; i++)
 			twits.removeFirst();
 
-		if (!twits.isEmpty() && XmlSettingsManager::Instance ()->property ("notify").toBool()) {
-			Entity notification = Util::MakeNotification (tr ("Woodpecker") , tr ( "%1 new twit(s)" ).arg(twits.length()) , PInfo_);
-			emit gotEntity(notification);
-			Core::Instance().GetProxy()->GetEntityManager()->HandleEntity(notification);
+		if (XmlSettingsManager::Instance ()->property ("notify").toBool())
+		{
+			if (twits.length() == 1)			// We can notify the only twit
+			{
+				Entity notification = Util::MakeNotification (twits.first()->author()->username() , twits.first()->text() , PInfo_);
+				emit gotEntity(notification);
+				Core::Instance().GetProxy()->GetEntityManager()->HandleEntity(notification);
+			}
+			else if (!twits.isEmpty()) {
+				Entity notification = Util::MakeNotification (tr ("Woodpecker") , tr ( "%1 new twit(s)" ).arg(twits.length()) , PInfo_);
+				emit gotEntity(notification);
+				Core::Instance().GetProxy()->GetEntityManager()->HandleEntity(notification);
+			}
 		}
 		
 		screenTwits.append (twits);
@@ -164,14 +182,16 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 	{
 		QListWidgetItem *tmpitem = new QListWidgetItem();
 		
-		tmpitem->setText (twit->text().replace(QChar('\n'),QChar(' ')) + "\n" +
-						  "\t\t" + twit->author()->username() + "\t" +
-						  twit->dateTime().toLocalTime().toString());
-		tmpitem->setData (Qt::UserRole, twit->id());
+		tmpitem->setData(Qt::DisplayRole, "Title");
+		tmpitem->setData(Qt::UserRole, twit->id());
+		tmpitem->setData(Qt::UserRole + 1, twit->author()->username());
+		tmpitem->setData(Qt::UserRole + 2, twit->dateTime().toLocalTime().toString());
+		
+		tmpitem->setText (twit->text().replace(QChar('\n'),QChar(' ')));
 		if (twit->author()->avatar.isNull())
-			tmpitem->setIcon (QIcon (":/resources/images/woodpecker.svg"));
+			tmpitem->setData(Qt::DecorationRole, QIcon (":/resources/images/woodpecker.svg"));
 		else
-			tmpitem->setIcon (twit->author()->avatar);
+			tmpitem->setData(Qt::DecorationRole, twit->author()->avatar);
 		ui->TwitList_->insertItem (0, tmpitem);
 		ui->TwitList_->updateGeometry();
 		
@@ -298,14 +318,16 @@ void TwitterPage::updateTweetList()
 	{
 		QListWidgetItem *tmpitem = new QListWidgetItem();
 		
-		tmpitem->setText (twit->text().replace(QChar('\n'),QChar(' ')) + "\n" +
-						  "\t\t" + twit->author()->username() + "\t" +
-						  twit->dateTime().toLocalTime().toString());
-		tmpitem->setData (Qt::UserRole, twit->id());
+		tmpitem->setData(Qt::DisplayRole, "Title");
+		tmpitem->setData(Qt::UserRole, twit->id());
+		tmpitem->setData(Qt::UserRole + 1, twit->author()->username());
+		tmpitem->setData(Qt::UserRole + 2, twit->dateTime().toLocalTime().toString());
+		
+		tmpitem->setText (twit->text().replace(QChar('\n'),QChar(' ')));
 		if (twit->author()->avatar.isNull())
-			tmpitem->setIcon (QIcon (":/resources/images/woodpecker.svg"));
+			tmpitem->setData(Qt::DecorationRole, QIcon (":/resources/images/woodpecker.svg"));
 		else
-			tmpitem->setIcon (twit->author()->avatar);
+			tmpitem->setData(Qt::DecorationRole, twit->author()->avatar);
 		ui->TwitList_->insertItem (0, tmpitem);
 		ui->TwitList_->updateGeometry();
 		
