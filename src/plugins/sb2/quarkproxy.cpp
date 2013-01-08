@@ -63,12 +63,24 @@ namespace SB2
 		const auto& newUrl = url.resolved (str);
 
 		auto varMap = var.toMap ();
+
+		const auto& existing = varMap.take ("existing").toString ();
+
+		if ((existing == "toggle" || existing.isEmpty ()) &&
+				URL2LastOpened_.value (newUrl))
+		{
+			URL2LastOpened_.take (newUrl)->deleteLater ();
+			return QVariant ();
+		}
+
 		int x = varMap.take ("x").toInt ();
 		int y = varMap.take ("y").toInt ();
 
 		auto window = new DeclarativeWindow (newUrl, varMap, Proxy_);
 		window->move (Util::FitRectScreen ({ x, y }, window->size ()));
 		window->show ();
+
+		URL2LastOpened_ [newUrl] = window;
 
 		return QVariant::fromValue<QObject*> (window->rootObject ());
 	}

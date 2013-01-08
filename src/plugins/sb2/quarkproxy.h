@@ -19,6 +19,9 @@
 #pragma once
 
 #include <QObject>
+#include <QPointer>
+#include <QHash>
+#include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 
 class QUrl;
@@ -29,6 +32,7 @@ namespace LeechCraft
 namespace SB2
 {
 	class ViewManager;
+	class DeclarativeWindow;
 
 	class QuarkProxy : public QObject
 	{
@@ -39,6 +43,8 @@ namespace SB2
 		ICoreProxy_ptr Proxy_;
 
 		QString ExtHoveredQuarkClass_;
+
+		QHash<QUrl, QPointer<DeclarativeWindow>> URL2LastOpened_;
 	public:
 		QuarkProxy (ViewManager*, ICoreProxy_ptr, QObject* = 0);
 
