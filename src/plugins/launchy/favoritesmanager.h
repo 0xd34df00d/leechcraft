@@ -16,37 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "widthiconprovider.h"
-#include <QIcon>
+#pragma once
+
+#include <QObject>
+#include <QSet>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Launchy
 {
-	WidthIconProvider::WidthIconProvider ()
-	: QDeclarativeImageProvider (Pixmap)
+	class FavoritesManager : public QObject
 	{
-	}
+		Q_OBJECT
 
-	QPixmap WidthIconProvider::requestPixmap (const QString& idStr, QSize *size, const QSize& requestedSize)
-	{
-		const auto& list = idStr.split ('/', QString::SkipEmptyParts);
-		if (list.isEmpty ())
-			return QPixmap ();
+		QSet<QString> Favorites_;
+	public:
+		FavoritesManager (QObject* = 0);
 
-		auto realSize = requestedSize;
-		if (realSize.width () <= 0)
-		{
-			const int width = list.last ().toDouble ();
-			realSize = QSize (width, width);
-		}
+		const QSet<QString>& GetFavorites () const;
+		bool IsFavorite (const QString&) const;
 
-		const auto& icon = GetIcon (list);
-
-		if (size)
-			*size = icon.actualSize (realSize);
-
-		return icon.pixmap (realSize);
-	}
+		void AddFavorite (const QString&);
+		void RemoveFavorite (const QString&);
+	private:
+		void Save () const;
+		void Load ();
+	signals:
+		void favoriteAdded (const QString&);
+		void favoriteRemoved (const QString&);
+	};
 }
 }

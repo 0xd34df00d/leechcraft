@@ -19,6 +19,9 @@
 #include <stdexcept>
 #include <algorithm>
 #include <functional>
+#if defined __GNUC__
+#include <cxxabi.h>
+#endif
 #include <QApplication>
 #include <QDir>
 #include <QStringList>
@@ -693,6 +696,35 @@ namespace LeechCraft
 			}
 		}
 
+		namespace
+		{
+			QString TryDemangle (const QString& errorStr)
+			{
+#if defined __GNUC__
+				const QString marker ("undefined symbol: ");
+				const auto pos = errorStr.indexOf (marker);
+				if (pos == -1)
+					return QString ();
+
+				auto mangled = errorStr.mid (pos + marker.size ());
+				const auto endPos = mangled.indexOf (')');
+				if (endPos >= 0)
+					mangled = mangled.left (endPos);
+
+				int status = 0;
+				QString result;
+				if (auto rawStr = abi::__cxa_demangle (mangled.toLatin1 ().constData (), 0, 0, &status))
+				{
+					result = QString::fromLatin1 (rawStr);
+					free (rawStr);
+				}
+				return result;
+#else
+				return QString ();
+#endif
+			}
+		}
+
 		void APILevel (QPluginLoader_ptr loader)
 		{
 			const QString& file = loader->fileName ();
@@ -702,10 +734,11 @@ namespace LeechCraft
 			QLibrary library (file);
 			if (!library.load ())
 			{
-				qWarning () << "Could not load library:"
-					<< library.fileName ()
-					<< ";"
-					<< library.errorString ();
+				auto message = "Could not load library " + library.fileName () + "; " + library.errorString ();
+				const auto& demangle = TryDemangle (library.errorString ());
+				if (!demangle.isEmpty ())
+					message += "; demangled name: " + demangle;
+				qWarning () << message.toUtf8 ().constData ();
 				throw Fail (PluginManager::tr ("Could not load library %1: %2.")
 							.arg (file)
 							.arg (library.errorString ()));

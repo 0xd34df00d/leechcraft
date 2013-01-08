@@ -25,10 +25,10 @@
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/themeimageprovider.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoretabwidget.h>
-#include "themeimageprovider.h"
 
 namespace LeechCraft
 {
@@ -114,11 +114,14 @@ namespace SB2
 					SLOT (handleTabRemoved (QWidget*)));
 		}
 
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			engine ()->addImportPath (cand);
+
 		rootContext ()->setContextProperty ("tabsListModel", Model_);
 		rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		rootContext ()->setContextProperty ("longestText", longestText);
-		engine ()->addImageProvider ("ThemeIcons", new ThemeImageProvider (proxy));
+		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 		setSource (QUrl::fromLocalFile (file));
 
 		connect (rootObject (),

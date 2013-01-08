@@ -17,14 +17,12 @@ SET (SRCS
 	sb2.cpp
 	sbview.cpp
 	viewmanager.cpp
-	widthiconprovider.cpp
 	desaturateeffect.cpp
 	quarkproxy.cpp
 	quarkmanager.cpp
 	quarksettingsmanager.cpp
 	tablistview.cpp
 	tabunhidelistview.cpp
-	themeimageprovider.cpp
 	launcherdroparea.cpp
 	launchercomponent.cpp
 	lcmenucomponent.cpp
@@ -47,4 +45,3 @@ TARGET_LINK_LIBRARIES (leechcraft_sb2
 	)
 INSTALL (TARGETS leechcraft_sb2 DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (DIRECTORY share/qml/sb2 DESTINATION ${LC_QML_DEST})
-INSTALL (DIRECTORY share/qml/common DESTINATION ${LC_QML_DEST})

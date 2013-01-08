@@ -19,6 +19,10 @@
 #include "item.h"
 #include <stdexcept>
 #include <QFile>
+#include <QUrl>
+#include <QProcess>
+#include <util/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "fdodesktopparser.h"
 
 namespace LeechCraft
@@ -45,6 +49,42 @@ namespace Launchy
 	bool Item::IsHidden () const
 	{
 		return IsHidden_;
+	}
+
+	void Item::Execute (ICoreProxy_ptr proxy) const
+	{
+		auto command = GetCommand ();
+
+		if (GetType () == Item::Type::Application)
+		{
+			command.remove ("%c");
+			command.remove ("%f");
+			command.remove ("%F");
+			command.remove ("%u");
+			command.remove ("%U");
+			command.remove ("%i");
+			auto items = command.split (' ', QString::SkipEmptyParts);
+			auto removePred = [] (const QString& str)
+				{ return str.size () == 2 && str.at (0) == '%'; };
+			items.erase (std::remove_if (items.begin (), items.end (), removePred),
+					items.end ());
+			if (items.isEmpty ())
+				return;
+
+			QProcess::startDetached (items.at (0), items.mid (1), GetWorkingDirectory ());
+		}
+		else if (GetType () == Item::Type::URL)
+		{
+			const auto& e = Util::MakeEntity (QUrl (command),
+					QString (),
+					FromUserInitiated | OnlyHandle);
+			proxy->GetEntityManager ()->HandleEntity (e);
+		}
+		else
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "don't know how to execute this type of app";
+		}
 	}
 
 	namespace
@@ -93,6 +133,11 @@ namespace Launchy
 	QString Item::GetWorkingDirectory () const
 	{
 		return WD_;
+	}
+
+	QString Item::GetPermanentID () const
+	{
+		return GetCommand ();
 	}
 
 	void Item::SetIcon (const QIcon& icon)

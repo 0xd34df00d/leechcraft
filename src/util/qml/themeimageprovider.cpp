@@ -16,24 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QDeclarativeImageProvider>
-
-class QIcon;
+#include "themeimageprovider.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	class WidthIconProvider : public QDeclarativeImageProvider
+	ThemeImageProvider::ThemeImageProvider (ICoreProxy_ptr proxy)
+	: Proxy_ (proxy)
 	{
-	public:
-		WidthIconProvider ();
+	}
 
-		QPixmap requestPixmap (const QString&, QSize*, const QSize&);
-
-		virtual QIcon GetIcon (const QStringList&) = 0;
-	};
+	QIcon ThemeImageProvider::GetIcon (const QStringList& list)
+	{
+		return Proxy_->GetIcon (list.value (0));
+	}
 }
 }

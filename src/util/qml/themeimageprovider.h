@@ -20,12 +20,13 @@
 
 #include "widthiconprovider.h"
 #include <interfaces/core/icoreproxy.h>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	class ThemeImageProvider : public WidthIconProvider
+	class UTIL_API ThemeImageProvider : public WidthIconProvider
 	{
 		ICoreProxy_ptr Proxy_;
 	public:

@@ -1,8 +1,7 @@
 import QtQuick 1.1
 import Effects 1.0
 import SB2 1.0
-import "../common/Common.js" as Common
-import "../common/"
+import org.LC.common 1.0
 
 Rectangle {
     id: rootRect
@@ -18,6 +17,8 @@ Rectangle {
 
     color: "transparent"
 
+    Common { id: commonJS }
+
     ActionButton {
         id: addTCButton
         visible: quarkDisplayRoot.settingsMode
@@ -28,7 +29,7 @@ Rectangle {
 
         actionIconURL: "image://ThemeIcons/list-add"
 
-        onTriggered: Common.showTooltip(addTCButton, function(x, y) { SB2_launcherProxy.tabUnhideListRequested(x, y) })
+        onTriggered: commonJS.showTooltip(addTCButton, function(x, y) { SB2_launcherProxy.tabUnhideListRequested(x, y) })
 
         LauncherDropArea {
             id: dropArea
@@ -74,7 +75,7 @@ Rectangle {
                         id: fadeInInterval
                         interval: SB2Launcher_FadeInTimeout
 
-                        onTriggered: Common.showTooltip(tcItem, function(x, y) { SB2_launcherProxy.tabListRequested(tabClassID, x, y + pregap.height) })
+                        onTriggered: commonJS.showTooltip(tcItem, function(x, y) { SB2_launcherProxy.tabListRequested(tabClassID, x, y + pregap.height) })
                     }
 
                     onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)

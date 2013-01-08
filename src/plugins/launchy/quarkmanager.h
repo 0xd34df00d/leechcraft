@@ -16,21 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "themeimageprovider.h"
-#include <QIcon>
+#pragma once
+
+#include <QObject>
+#include <interfaces/core/icoreproxy.h>
+
+class QStandardItem;
+class QAbstractItemModel;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Launchy
 {
-	ThemeImageProvider::ThemeImageProvider (ICoreProxy_ptr proxy)
-	: Proxy_ (proxy)
-	{
-	}
+	class FavoritesManager;
+	class ItemsFinder;
+	class ItemImageProvider;
 
-	QIcon ThemeImageProvider::GetIcon (const QStringList& list)
+	class QuarkManager : public QObject
 	{
-		return Proxy_->GetIcon (list.value (0));
-	}
+		Q_OBJECT
+
+		ICoreProxy_ptr Proxy_;
+		FavoritesManager *FavMgr_;
+		ItemsFinder *Finder_;
+		ItemImageProvider *ImageProv_;
+
+		QStandardItemModel *Model_;
+	public:
+		QuarkManager (ICoreProxy_ptr, FavoritesManager*, ItemsFinder*, ItemImageProvider*, QObject* = 0);
+
+		QAbstractItemModel* GetModel () const;
+	private:
+		QStandardItem* MakeItem (const QString&) const;
+	public slots:
+		void launch (const QString&);
+		void remove (const QString&);
+	private slots:
+		void init ();
+		void addItem (const QString&);
+		void handleItemRemoved (const QString&);
+	};
 }
 }

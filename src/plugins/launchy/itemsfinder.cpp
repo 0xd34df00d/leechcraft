@@ -29,13 +29,32 @@ namespace Launchy
 	ItemsFinder::ItemsFinder (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
+	, IsReady_ (false)
 	{
 		QTimer::singleShot (1000, this, SLOT (update ()));
+	}
+
+	bool ItemsFinder::IsReady () const
+	{
+		return IsReady_;
 	}
 
 	QHash<QString, QList<Item_ptr>> ItemsFinder::GetItems () const
 	{
 		return Items_;
+	}
+
+	Item_ptr ItemsFinder::FindItem (const QString& id) const
+	{
+		for (const auto& list : Items_)
+		{
+			const auto pos = std::find_if (list.begin (), list.end (),
+					[&id] (Item_ptr item) { return item->GetPermanentID () == id; });
+			if (pos != list.end ())
+				return *pos;
+		}
+
+		return Item_ptr ();
 	}
 
 	namespace
@@ -81,6 +100,8 @@ namespace Launchy
 
 	void ItemsFinder::update ()
 	{
+		IsReady_ = true;
+
 		Items_.clear ();
 		auto paths = ScanDir ("/usr/share/applications");
 

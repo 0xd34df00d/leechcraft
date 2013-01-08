@@ -24,9 +24,9 @@
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/themeimageprovider.h>
 #include <util/util.h>
 #include "viewmanager.h"
-#include "themeimageprovider.h"
 #include "unhidelistmodel.h"
 #include "quarkmanager.h"
 
@@ -74,10 +74,13 @@ namespace SB2
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
 
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			engine ()->addImportPath (cand);
+
 		rootContext ()->setContextProperty ("quarkListModel", Model_);
 		rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		engine ()->addImageProvider ("ThemeIcons", new ThemeImageProvider (proxy));
+		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 		setSource (QUrl::fromLocalFile (file));
 
 		connect (rootObject (),

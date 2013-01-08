@@ -22,6 +22,7 @@
 #include <QHash>
 #include <QDebug>
 #include <QIcon>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -62,6 +63,8 @@ namespace Launchy
 
 		bool IsHidden () const;
 
+		void Execute (ICoreProxy_ptr) const;
+
 		QString GetName (const QString&) const;
 		QString GetGenericName (const QString&) const;
 		QString GetComment (const QString&) const;
@@ -71,6 +74,8 @@ namespace Launchy
 		Type GetType () const;
 		QString GetCommand () const;
 		QString GetWorkingDirectory () const;
+
+		QString GetPermanentID () const;
 
 		void SetIcon (const QIcon&);
 		QIcon GetIcon () const;

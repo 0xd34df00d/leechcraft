@@ -18,49 +18,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iactionsexporter.h>
-#include <interfaces/iquarkcomponentprovider.h>
+#include <util/qml/widthiconprovider.h>
+#include "item.h"
 
 namespace LeechCraft
 {
 namespace Launchy
 {
-	class ItemsFinder;
-	class FavoritesManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IActionsExporter
-				 , public IQuarkComponentProvider
+	class ItemImageProvider : public Util::WidthIconProvider
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter IQuarkComponentProvider)
-
-		ICoreProxy_ptr Proxy_;
-		ItemsFinder *Finder_;
-		FavoritesManager *FavManager_;
-		QAction *FSLauncher_;
-
-		QuarkComponent LaunchQuark_;
+		QHash<QString, QIcon> PermID2Icon_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		ItemImageProvider ();
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		void AddItem (Item_ptr);
 
-		QuarkComponents_t GetComponents () const;
-	private slots:
-		void handleFSRequested ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		QIcon GetIcon (const QStringList&);
 	};
 }
 }

@@ -52,6 +52,10 @@ namespace Launchy
 			if (CategoryNames_.isEmpty ())
 				return false;
 
+			if (CategoryNames_.contains ("X-Favorites") &&
+					idx.data (ModelRoles::IsItemFavorite).toBool ())
+				return true;
+
 			const auto& itemCats = idx.data (ModelRoles::ItemNativeCategories).toStringList ();
 			return std::find_if (CategoryNames_.begin (), CategoryNames_.end (),
 					[&itemCats] (const QString& cat)

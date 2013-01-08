@@ -16,39 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
-#include <QHash>
-#include <interfaces/core/icoreproxy.h>
+#include "itemimageprovider.h"
 
 namespace LeechCraft
 {
 namespace Launchy
 {
-	class Item;
-	typedef std::shared_ptr<Item> Item_ptr;
-
-	class ItemsFinder : public QObject
+	ItemImageProvider::ItemImageProvider ()
 	{
-		Q_OBJECT
+	}
 
-		ICoreProxy_ptr Proxy_;
-		QHash<QString, QList<Item_ptr>> Items_;
+	void ItemImageProvider::AddItem (Item_ptr item)
+	{
+		PermID2Icon_ [item->GetPermanentID ()] = item->GetIcon ();
+	}
 
-		bool IsReady_;
-	public:
-		ItemsFinder (ICoreProxy_ptr, QObject* = 0);
-
-		bool IsReady () const;
-
-		QHash<QString, QList<Item_ptr>> GetItems () const;
-		Item_ptr FindItem (const QString& permanentID) const;
-	public slots:
-		void update ();
-	signals:
-		void itemsListChanged ();
-	};
+	QIcon ItemImageProvider::GetIcon (const QStringList& list)
+	{
+		const auto& id = list.at (0);
+		return PermID2Icon_.value (id);
+	}
 }
 }

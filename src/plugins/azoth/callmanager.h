@@ -21,7 +21,7 @@
 #include <QObject>
 #include <QHash>
 #ifdef ENABLE_MEDIACALLS
-#include <QAudioInput>
+#include <QAudio>
 #endif
 #include "interfaces/azoth/imediacall.h"
 #include "interfaces/azoth/isupportmediacalls.h"
@@ -49,7 +49,9 @@ namespace Azoth
 		void handleIncomingCall (QObject*);
 		void handleStateChanged (LeechCraft::Azoth::IMediaCall::State);
 		void handleAudioModeChanged (QIODevice::OpenMode);
+#ifdef ENABLE_MEDIACALLS
 		void handleDevStateChanged (QAudio::State);
+#endif
 	signals:
 		void gotCall (QObject*);
 	};

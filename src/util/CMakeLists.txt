@@ -21,6 +21,8 @@ SET (SRCS
 	models/mergemodel.cpp
 	models/treeitem.cpp
 	qml/colorthemeproxy.cpp
+	qml/widthiconprovider.cpp
+	qml/themeimageprovider.cpp
 	sync/syncdeltamanager.cpp
 	sync/syncops.cpp
 	sys/paths.cpp
@@ -59,6 +61,8 @@ SET (HEADERS
 	models/mergemodel.h
 	models/treeitem.h
 	qml/colorthemeproxy.h
+	qml/widthiconprovider.h
+	qml/themeimageprovider.h
 	sync/syncdeltamanager.h
 	sync/syncops.h
 	sys/paths.h

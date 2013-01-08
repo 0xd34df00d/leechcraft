@@ -20,8 +20,12 @@
 #include <QIcon>
 #include <QAction>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "itemsfinder.h"
 #include "fsdisplayer.h"
+#include "favoritesmanager.h"
+#include "quarkmanager.h"
+#include "itemimageprovider.h"
 
 namespace LeechCraft
 {
@@ -35,12 +39,21 @@ namespace Launchy
 
 		Finder_ = new ItemsFinder (proxy);
 
+		FavManager_ = new FavoritesManager;
+
 		FSLauncher_ = new QAction (tr ("Open fullscreen launcher..."), this);
 		FSLauncher_->setProperty ("ActionIcon", "system-run");
 		connect (FSLauncher_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleFSRequested ()));
+
+		auto itemImageProv = new ItemImageProvider;
+		auto quarkMgr = new QuarkManager (proxy, FavManager_, Finder_, itemImageProv);
+		LaunchQuark_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "launchy", "LaunchyQuark.qml"));
+		LaunchQuark_.DynamicProps_.push_back ({ "Launchy_itemModel", quarkMgr->GetModel () });
+		LaunchQuark_.DynamicProps_.push_back ({ "Launchy_proxy", quarkMgr });
+		LaunchQuark_.ImageProviders_.push_back ({ "LaunchyItemIcons", itemImageProv });
 	}
 
 	void Plugin::SecondInit ()
@@ -79,9 +92,14 @@ namespace Launchy
 		return result;
 	}
 
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return { LaunchQuark_ };
+	}
+
 	void Plugin::handleFSRequested ()
 	{
-		auto dis = new FSDisplayer (Proxy_, Finder_, this);
+		auto dis = new FSDisplayer (Proxy_, Finder_, FavManager_, this);
 		connect (dis,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,

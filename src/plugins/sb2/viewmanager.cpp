@@ -24,11 +24,11 @@
 #include <QDir>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/themeimageprovider.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "sbview.h"
 #include "quarkproxy.h"
-#include "themeimageprovider.h"
 #include "quarkmanager.h"
 
 namespace LeechCraft
@@ -75,11 +75,14 @@ namespace SB2
 			return;
 		}
 
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			View_->engine ()->addImportPath (cand);
+
 		View_->rootContext ()->setContextProperty ("itemsModel", ViewItemsModel_);
 		View_->rootContext ()->setContextProperty ("quarkProxy", new QuarkProxy (this, proxy, this));
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		View_->engine ()->addImageProvider (ImageProviderID, new ThemeImageProvider (proxy));
+		View_->engine ()->addImageProvider (ImageProviderID, new Util::ThemeImageProvider (proxy));
 		View_->setSource (QUrl::fromLocalFile (file));
 	}
 

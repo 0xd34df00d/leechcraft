@@ -16,39 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
-#include <QHash>
-#include <interfaces/core/icoreproxy.h>
+#include "widthiconprovider.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
-namespace Launchy
+namespace Util
 {
-	class Item;
-	typedef std::shared_ptr<Item> Item_ptr;
-
-	class ItemsFinder : public QObject
+	WidthIconProvider::WidthIconProvider ()
+	: QDeclarativeImageProvider (Pixmap)
 	{
-		Q_OBJECT
+	}
 
-		ICoreProxy_ptr Proxy_;
-		QHash<QString, QList<Item_ptr>> Items_;
+	QPixmap WidthIconProvider::requestPixmap (const QString& idStr, QSize *size, const QSize& requestedSize)
+	{
+		const auto& list = idStr.split ('/', QString::SkipEmptyParts);
+		if (list.isEmpty ())
+			return QPixmap ();
 
-		bool IsReady_;
-	public:
-		ItemsFinder (ICoreProxy_ptr, QObject* = 0);
+		auto realSize = requestedSize;
+		if (realSize.width () <= 0)
+		{
+			const int width = list.last ().toDouble ();
+			realSize = QSize (width, width);
+		}
 
-		bool IsReady () const;
+		const auto& icon = GetIcon (list);
 
-		QHash<QString, QList<Item_ptr>> GetItems () const;
-		Item_ptr FindItem (const QString& permanentID) const;
-	public slots:
-		void update ();
-	signals:
-		void itemsListChanged ();
-	};
+		if (size)
+			*size = icon.actualSize (realSize);
+
+		return icon.pixmap (realSize);
+	}
 }
 }

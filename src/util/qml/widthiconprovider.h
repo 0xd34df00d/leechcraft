@@ -18,37 +18,23 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <QHash>
-#include <interfaces/core/icoreproxy.h>
+#include <QDeclarativeImageProvider>
+#include <util/utilconfig.h>
+
+class QIcon;
 
 namespace LeechCraft
 {
-namespace Launchy
+namespace Util
 {
-	class Item;
-	typedef std::shared_ptr<Item> Item_ptr;
-
-	class ItemsFinder : public QObject
+	class UTIL_API WidthIconProvider : public QDeclarativeImageProvider
 	{
-		Q_OBJECT
-
-		ICoreProxy_ptr Proxy_;
-		QHash<QString, QList<Item_ptr>> Items_;
-
-		bool IsReady_;
 	public:
-		ItemsFinder (ICoreProxy_ptr, QObject* = 0);
+		WidthIconProvider ();
 
-		bool IsReady () const;
+		QPixmap requestPixmap (const QString&, QSize*, const QSize&);
 
-		QHash<QString, QList<Item_ptr>> GetItems () const;
-		Item_ptr FindItem (const QString& permanentID) const;
-	public slots:
-		void update ();
-	signals:
-		void itemsListChanged ();
+		virtual QIcon GetIcon (const QStringList&) = 0;
 	};
 }
 }
