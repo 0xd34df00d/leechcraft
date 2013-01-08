@@ -1,5 +1,15 @@
 #include "twitdelegate.h"
+#include "core.h"
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <QDebug>
+#include <QUrl>
+#include <qpushbutton.h>
+#include <qapplication.h>
+#include <QMouseEvent>
+#include <interfaces/structures.h>
+#include <util/util.h>
+
 namespace LeechCraft
 {
 namespace Woodpecker
@@ -9,7 +19,7 @@ TwitDelegate::TwitDelegate(QObject *parent)
   
 }
 
-void TwitDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const{
+void TwitDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
   QRect r = option.rect;
   
   //Color: #C4C4C4
@@ -82,10 +92,11 @@ void TwitDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
   painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignBottom|Qt::AlignLeft, text, &r);
   
   // Author
-  painter->setPen(linkFontPen);
   r = option.rect.adjusted(imageSpace, 30, -10, 0);
+  author_rect = std::unique_ptr<QRect>(new QRect(r.left(), r.bottom() - painter->fontMetrics().height() - 8, painter->fontMetrics().width(author), r.height()));
+  painter->setPen( linkFontPen );
   painter->setFont( mainFont );
-  painter->drawText(r.left(), r.bottom() - painter->fontMetrics().height() - 8, r.width(), r.height(), Qt::AlignLeft, author, &r);
+  painter->drawText(*(this->author_rect), Qt::AlignLeft, author, &r);
   painter->setPen(fontPen);
   
   // Time
@@ -101,7 +112,44 @@ QSize TwitDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModel
 
 TwitDelegate::~TwitDelegate()
 {
-  
+  author_rect.reset();
 }
+
+QWidget* TwitDelegate::TwitDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
+{
+  return new QPushButton("Push me", parent);
+}
+
+bool TwitDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index)
+{
+  
+  QRect r = option.rect.adjusted(5, 10, -10, -10);
+  QRect CheckBoxRect(r.left() + 60, r.bottom() - 10, r.bottom(), r.left() + 200);
+  if (event->type() == QEvent::MouseButtonRelease) {
+    QMouseEvent *mouse_event = static_cast<QMouseEvent*>(event);
+    if (mouse_event->button() != Qt::LeftButton ||
+        !author_rect->contains(mouse_event->pos())) {
+      return true;
+    }
+    else {
+//      model->setData(index, "Clicked", Qt::DisplayRole);
+      Entity url = Util::MakeEntity(QUrl("http://ya.ru"), QString(), OnlyHandle | FromUserInitiated, QString());
+      emit gotEntity(url);
+      Core::Instance().GetProxy()->GetEntityManager()->HandleEntity(url);
+      return false;
+    }
+  } else if (event->type() == QEvent::KeyPress) {
+    if (static_cast<QKeyEvent*>(event)->key() != Qt::Key_Space &&
+        static_cast<QKeyEvent*>(event)->key() != Qt::Key_Select) {
+      return false;
+    }
+  } else {
+    return false;
+  }
+
+  return false;
+//   return QAbstractItemDelegate::editorEvent(event, model, option, index);
+}
+
 }
 }
