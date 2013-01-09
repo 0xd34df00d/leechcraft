@@ -751,7 +751,7 @@ namespace LHTR
 
 	void RichEditorWidget::handleInsertLink ()
 	{
-		if (!Ui_.View_->selectedText ().isEmpty ())
+		if (Ui_.View_->hasSelection ())
 		{
 			const QString& url = QInputDialog::getText (this,
 					tr ("Insert link"), tr ("Enter URL:"));
