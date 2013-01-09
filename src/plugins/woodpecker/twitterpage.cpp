@@ -24,12 +24,6 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 	ui->setupUi (this);
 	ui->TwitList_->setItemDelegate(new TwitDelegate(ui->TwitList_));
 	
-/*	myListWidget->setItemDelegate(new ListDelegate(myListWidget));
-	QListWidgetItem *item = new QListWidgetItem();
-	item->setData(Qt::DisplayRole, "Title");
-	item->setData(Qt::UserRole + 1, "Description");
-	myListWidget->addItem(item);
-	*/
 //	Toolbar_->addAction(ui->actionRefresh);
 	interface = new twitterInterface (this);
 	connect (interface, SIGNAL (tweetsReady (QList<std::shared_ptr<Tweet> >)),
@@ -63,6 +57,10 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 	actionSPAM_ = new QAction (tr ("Report SPAM"), ui->TwitList_);
 	actionSPAM_->setProperty ("ActionIcon", "dialog-close");
 	connect (actionSPAM_, SIGNAL (triggered ()), this, SLOT (reportSpam()));
+	
+	actionOpenWeb_ = new QAction (tr ("Open twit in web interface"), ui->TwitList_);
+	actionOpenWeb_->setProperty ("ActionIcon", "webarchiver");
+	connect (actionOpenWeb_, SIGNAL (triggered ()), this, SLOT (webOpen()));
 	
 	connect(ui->TwitList_, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(reply()));
 	
@@ -284,6 +282,8 @@ void TwitterPage::on_TwitList__customContextMenuRequested(const QPoint& pos)
 		menu->addAction (actionReply_);
 		menu->addSeparator();
 		menu->addAction (actionSPAM_);
+		menu->addSeparator();
+		menu->addAction (actionOpenWeb_);
 /*		if (idx.data (Player::Role::IsAlbum).toBool ())
 			menu->addAction (ActionShowAlbumArt_);
 		else
@@ -307,6 +307,20 @@ void TwitterPage::reportSpam()
 			  (decltype (screenTwits.front ()) tweet) 
 			  { return tweet->id() == twitid; });
 	interface->reportSPAM((*spamTwit)->author()->username());
+}
+
+void TwitterPage::webOpen()
+{
+	const auto& idx = ui->TwitList_->currentItem();
+	const auto twitid = idx->data(Qt::UserRole).toULongLong();
+	auto currentTwit = std::find_if (screenTwits.begin (), screenTwits.end (), 
+					[twitid] 
+					(decltype (screenTwits.front ()) tweet) 
+					{ return tweet->id() == twitid; });
+	
+	Entity url = Util::MakeEntity(QUrl(QString("https://twitter.com/%1/status/%2").arg((*currentTwit)->author()->username()).arg(twitid)), 
+									   QString(), OnlyHandle | FromUserInitiated, QString());
+	Core::Instance().GetProxy()->GetEntityManager()->HandleEntity(url);
 }
 
 void TwitterPage::updateTweetList()

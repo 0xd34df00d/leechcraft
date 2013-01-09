@@ -47,6 +47,7 @@ class TwitterPage : public QWidget
 	QAction *actionRetwit_;
 	QAction *actionReply_;
 	QAction *actionSPAM_;
+	QAction *actionOpenWeb_;
 public:
     explicit TwitterPage (QWidget *parent = 0);
     ~TwitterPage();
@@ -75,6 +76,7 @@ public slots:
     void reply(QListWidgetItem*);
 	void reportSpam();
     void sendReply();
+	void webOpen();
 	void scrolledDown(int sliderPos);
 
 
