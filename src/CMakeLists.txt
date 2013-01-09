@@ -162,7 +162,6 @@ OPTION (ENABLE_LIZNOO "Build Liznoo, our nice power manager" ${WITH_PLUGINS})
 OPTION (ENABLE_MUSICZOMBIE "Build MusicZombie, MusicBrainz.org client" ${WITH_PLUGINS})
 OPTION (ENABLE_NETSTOREMANAGER "Build NetStoreManager for managing network data storages like Yandex.Disk" ${WITH_PLUGINS})
 OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" ${WITH_PLUGINS})
-OPTION (ENABLE_SIDEBAR "Build Sidebar, a nice side bar with quick launch, tabs and tray areas" OFF)
 OPTION (ENABLE_SB2 "Build SB2, next-gen fluid sidebar" ${WITH_PLUGINS})
 OPTION (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
 OPTION (ENABLE_TOUCHSTREAMS "Build TouchStreams, VK.com music streaming plugin" ${WITH_PLUGINS})
@@ -208,6 +207,7 @@ OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web site
 OPTION (ENABLE_LAURE "Build Laure, the new generation audio/video player" OFF)
 OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
 OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
+OPTION (ENABLE_SIDEBAR "Build Sidebar, a nice side bar with quick launch, tabs and tray areas" OFF)
 
 ENABLE_TESTING ()
 
